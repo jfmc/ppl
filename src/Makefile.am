@@ -178,7 +178,6 @@ DOC_FILES = \
 Integer.types.hh \
 Variable.types.hh \
 LinExpression.types.hh \
-Topology.hh \
 Constraint.types.hh \
 ConSys.types.hh \
 Generator.types.hh \
