@@ -1664,7 +1664,6 @@ ppl_Polyhedron_add_constraint __P((ppl_Polyhedron_t ph,
   \p ph.  Returns a positive integer if the resulting polyhedron is
   non-empty; returns 0 if it is empty.  Upon successful return, \p ph
   is guaranteed to be minimized.
-
 */
 int
 ppl_Polyhedron_add_constraint_and_minimize __P((ppl_Polyhedron_t ph,
@@ -1794,25 +1793,23 @@ ppl_Polyhedron_intersection_assign_and_minimize
 __P((ppl_Polyhedron_t x, ppl_const_Polyhedron_t y));
 
 /*! \brief
-  Assigns to \p x the poly-hull of the set-theoretic union
-  of \p x and \p y.
+  Assigns to \p x the poly-hull of \p x and \p y.
 */
 int
 ppl_Polyhedron_poly_hull_assign __P((ppl_Polyhedron_t x,
 				     ppl_const_Polyhedron_t y));
 
 /*! \brief
-  Assigns to \p x the poly-hull of the set-theoretic union of \p x
-  and \p y.  Returns a positive integer if the resulting polyhedron is
-  non-empty; returns 0 if it is empty.  Upon successful return, \p x is
-  also guaranteed to be minimized.
+  Assigns to \p x the poly-hull of \p x and \p y. Returns a positive
+  integer if the resulting polyhedron is non-empty; returns 0 if it is
+  empty. Upon successful return, \p x is also guaranteed to be minimized.
 */
 int
 ppl_Polyhedron_poly_hull_assign_and_minimize __P((ppl_Polyhedron_t x,
 						  ppl_const_Polyhedron_t y));
 
 /*! \brief
-  Assigns to \p x the poly-hull of the set-theoretic difference
+  Assigns to \p x the \ref poly_difference "poly-difference"
   of \p x and \p y.
 */
 int
