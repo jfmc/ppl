@@ -56,8 +56,66 @@ namespace Parma_Polyhedra_Library {
     An object of the class GenSys is a system of generators,
     i.e. a container of objects of the class Generator
     (lines, rays and vertices).
-
+    It is necessary that inside the set of generators there is
+    at least a vertex, because this indicates for a line one of its 
+    points, and for a ray the point from which it starts.
+    
     \par Example 1
+    The following code builds the axis \f$x\f$ in \f$\mathbb{R}^2\f$:
+    \code
+    Variable x(0);
+    Variable y(1);
+    GenSys gs;
+    gs.insert(0 * x + 0 * y /= 1);
+    gs.insert(1 | x + 0 * y);
+    \endcode
+    Instead, the following code builds a line parallel to the axis
+    \f$x\f$ in \f$\mathbb{R}^2\f$: 
+    \code
+    Variable x(0);
+    Variable y(1);
+    GenSys gs;
+    gs.insert(0 * x + y /= 1);
+    gs.insert(1 | x + 0 * y);
+    \endcode
+    If we use the following code:
+    \code
+    Variable x(0);
+    Variable y(1);
+    GenSys gs;
+    gs.insert(1 | x + 0 * y);
+    \endcode
+    this set of generators does not represent anything.
+
+    \par Example 2
+    The following code builds a ray that corresponds to the positive
+    part of the axis \f$x\f$ in \f$\mathbb{R}^2\f$:
+    \code
+    Variable x(0);
+    Variable y(1);
+    GenSys gs;
+    gs.insert(0 * x + 0 * y /= 1);
+    gs.insert(1 ^ x + 0 * y);
+    \endcode
+    Instead,the following code builds a ray parallel to the previuos:
+    \code
+    Variable x(0);
+    Variable y(1);
+    GenSys gs;
+    gs.insert(0 * x + y /= 1);
+    gs.insert(1 ^ x + 0 * y);
+    \endcode
+    If we use the following code:
+    \code
+    Variable x(0);
+    Variable y(1);
+    GenSys gs;
+    gs.insert(1 ^ x + 0 * y);
+    \endcode
+    this set of generators does not represent anything.
+
+
+    \par Example 3
     The following code builds a square in \f$\mathbb{R}^2\f$ 
     (the same of the first example for the system of constraints):
     \code
@@ -70,7 +128,7 @@ namespace Parma_Polyhedra_Library {
     gs.insert(3 * x + 3 * y /= 1);
     \endcode
 
-    \par Example 2
+    \par Example 4
     The following code builds an half-strip in \f$\mathbb{R}^2\f$:
     (the same of the second example for the system of constraints): 
     \code 
@@ -80,7 +138,7 @@ namespace Parma_Polyhedra_Library {
     gs.insert(0 * x + 0 * y /= 1);
     gs.insert(0 * x + y /= 1);
     gs.insert(1 ^ x - y);
-    \endcode
+    \endcode 
 */
 class Parma_Polyhedra_Library::GenSys : public Matrix {
 public:
