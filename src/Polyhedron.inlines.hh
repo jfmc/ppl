@@ -247,7 +247,7 @@ operator>=(const Polyhedron& x, const Polyhedron& y) {
 
 inline bool
 operator<(const Polyhedron& x, const Polyhedron& y) {
-  return x <= y && x != y;
+  return x <= y && !(x >= y);
 }
 
 inline bool
