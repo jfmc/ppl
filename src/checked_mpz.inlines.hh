@@ -302,10 +302,11 @@ assign_signed_int_mpz(To& to, const mpz_class& from) {
   return sgn(from) < 0 ? V_NEG_OVERFLOW : V_POS_OVERFLOW;
 }
 
-SPECIALIZE_ASSIGN(signed_int_mpz, int8_t, mpz_class)
-SPECIALIZE_ASSIGN(signed_int_mpz, int16_t, mpz_class)
-SPECIALIZE_ASSIGN(signed_int_mpz, int32_t, mpz_class)
-SPECIALIZE_ASSIGN(signed_int_mpz, int64_t, mpz_class)
+SPECIALIZE_ASSIGN(signed_int_mpz, signed char, mpz_class)
+SPECIALIZE_ASSIGN(signed_int_mpz, short, mpz_class)
+SPECIALIZE_ASSIGN(signed_int_mpz, int, mpz_class)
+SPECIALIZE_ASSIGN(signed_int_mpz, long, mpz_class)
+SPECIALIZE_ASSIGN(signed_int_mpz, long long, mpz_class)
 
 template <typename Policy, typename To>
 inline Result 
@@ -342,10 +343,11 @@ assign_unsigned_int_mpz(To& to, const mpz_class& from) {
   return V_POS_OVERFLOW;
 }
 
-SPECIALIZE_ASSIGN(unsigned_int_mpz, u_int8_t, mpz_class)
-SPECIALIZE_ASSIGN(unsigned_int_mpz, u_int16_t, mpz_class)
-SPECIALIZE_ASSIGN(unsigned_int_mpz, u_int32_t, mpz_class)
-SPECIALIZE_ASSIGN(unsigned_int_mpz, u_int64_t, mpz_class)
+SPECIALIZE_ASSIGN(unsigned_int_mpz, unsigned char, mpz_class)
+SPECIALIZE_ASSIGN(unsigned_int_mpz, unsigned short, mpz_class)
+SPECIALIZE_ASSIGN(unsigned_int_mpz, unsigned int, mpz_class)
+SPECIALIZE_ASSIGN(unsigned_int_mpz, unsigned long, mpz_class)
+SPECIALIZE_ASSIGN(unsigned_int_mpz, unsigned long long, mpz_class)
 
 template <typename Policy>
 inline Result 
@@ -436,14 +438,5 @@ SPECIALIZE_CMP(mp, mpq_class)
 } // namespace Checked
 
 } // namespace Parma_Polyhedra_Library
-
-namespace std {
-
-inline void
-swap(mpz_class& x, mpz_class& y) {
-  mpz_swap(x.get_mpz_t(), y.get_mpz_t());
-}
-
-} // namespace std
 
 #endif // !defined(PPL_checked_mpz_inlines_hh)

@@ -149,14 +149,16 @@ assign_int_mpq(To& to, const mpq_class& from) {
   return ret;
 }
 
-SPECIALIZE_ASSIGN(int_mpq, int8_t, mpq_class)
-SPECIALIZE_ASSIGN(int_mpq, int16_t, mpq_class)
-SPECIALIZE_ASSIGN(int_mpq, int32_t, mpq_class)
-SPECIALIZE_ASSIGN(int_mpq, int64_t, mpq_class)
-SPECIALIZE_ASSIGN(int_mpq, u_int8_t, mpq_class)
-SPECIALIZE_ASSIGN(int_mpq, u_int16_t, mpq_class)
-SPECIALIZE_ASSIGN(int_mpq, u_int32_t, mpq_class)
-SPECIALIZE_ASSIGN(int_mpq, u_int64_t, mpq_class)
+SPECIALIZE_ASSIGN(int_mpq, signed char, mpq_class)
+SPECIALIZE_ASSIGN(int_mpq, short, mpq_class)
+SPECIALIZE_ASSIGN(int_mpq, int, mpq_class)
+SPECIALIZE_ASSIGN(int_mpq, long, mpq_class)
+SPECIALIZE_ASSIGN(int_mpq, long long, mpq_class)
+SPECIALIZE_ASSIGN(int_mpq, unsigned char, mpq_class)
+SPECIALIZE_ASSIGN(int_mpq, unsigned short, mpq_class)
+SPECIALIZE_ASSIGN(int_mpq, unsigned int, mpq_class)
+SPECIALIZE_ASSIGN(int_mpq, unsigned long, mpq_class)
+SPECIALIZE_ASSIGN(int_mpq, unsigned long long, mpq_class)
 
 template <typename Policy, typename From>
 inline Result
@@ -256,14 +258,5 @@ SPECIALIZE_ABS(mpq, mpq_class, mpq_class)
 
 } // namespace Parma_Polyhedra_Library
 
-
-namespace std {
-
-inline void
-swap(mpq_class& x, mpq_class& y) {
-  mpq_swap(x.get_mpq_t(), y.get_mpq_t());
-}
-
-} // namespace std
 
 #endif // !defined(PPL_checked_mpq_inlines_hh)
