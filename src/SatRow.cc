@@ -252,51 +252,46 @@ bool
 PPL::strict_subset(const SatRow& x, const SatRow& y) {
   size_t x_size = mpz_size(x.vec);
   size_t y_size = mpz_size(y.vec);
-  bool one_diff = false;
   mp_srcptr xp = x.vec->_mp_d;
   mp_srcptr yp = y.vec->_mp_d;
+  bool different = false;
   if (x_size <= y_size) {
     y_size -= x_size;
     while (x_size > 0) {
-      const mp_limb_t a = *xp;
-      const mp_limb_t b = *yp;
-      const mp_limb_t c = a | b;
-      if (c != b)
+      mp_limb_t xl = *xp;
+      mp_limb_t yl = *yp;
+      if (xl & ~yl)
 	return false;
-      else if (c != a)
-	one_diff = true;
+      if (!different && xl != yl)
+	different = true;
       ++xp;
       ++yp;
       --x_size;
     }
-    if (x_size < y_size) {
-      if (one_diff)
+    if (different)
+      return true;
+    while (y_size > 0) {
+      if (*yp)
 	return true;
-      while (y_size > 0) {
-	if (*yp)
-	  return true;
-	++yp;
-	--y_size;
-      }
-      return false;
+      ++yp;
+      --y_size;
     }
+    return false;
   }
   else {
-    // x_size > y_size
     x_size -= y_size;
     while (y_size > 0) {
-      const mp_limb_t a = *xp;
-      const mp_limb_t b = *yp;
-      const mp_limb_t c = a | b;
-      if (c != b)
+      mp_limb_t xl = *xp;
+      mp_limb_t yl = *yp;
+      if (xl & ~yl)
 	return false;
-      else if (c != a)
-	one_diff = true;
+      if (!different && xl != yl)
+	different = true;
       ++xp;
       ++yp;
-      --x_size;
+      --y_size;
     }
-    if (!one_diff)
+    if (!different)
       return false;
     while (x_size > 0) {
       if (*xp)
@@ -304,8 +299,8 @@ PPL::strict_subset(const SatRow& x, const SatRow& y) {
       ++xp;
       --x_size;
     }
+    return true;
   }
-  return one_diff;
 }
 
 bool
