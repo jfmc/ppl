@@ -156,7 +156,12 @@ extern "C" void
 ppl_init(int /* when */) {
   for (size_t i = 0; i < sizeof(sp_atoms)/sizeof(sp_atoms[0]); ++i) {
     SP_atom a = SP_atom_from_string(sp_atoms[i].name);
-    SP_register_atom(a);
+    if (SP_register_atom(a) == 0) {
+      SP_term_ref et = SP_new_term_ref();
+      SP_put_string(et, "Cannot initialize the PPL interface");
+      SP_raise_exception(et);
+      return;
+    }
     *sp_atoms[i].p_atom = a;
   }
 }
@@ -164,7 +169,9 @@ ppl_init(int /* when */) {
 extern "C" void
 ppl_deinit(int /* when */) {
   for (size_t i = 0; i < sizeof(sp_atoms)/sizeof(sp_atoms[0]); ++i)
-    SP_unregister_atom(*sp_atoms[i].p_atom);
+    // SP_unregister_atom can fail.
+    // We ignore such failures: what else can we do?
+    (void) SP_unregister_atom(*sp_atoms[i].p_atom);
 }
 
 extern "C" void*
@@ -332,6 +339,14 @@ build_generator(SP_term_ref t) {
 
 extern "C" void
 ppl_insert_generator(void* pp, SP_term_ref t) {
+  try {
+    static_cast<PPL::Polyhedron*>(pp)->insert(build_generator(t));
+  }
+  CATCH_ALL;
+}
+
+extern "C" void
+ppl_check_empty(void* pp, SP_term_ref t) {
   try {
     static_cast<PPL::Polyhedron*>(pp)->insert(build_generator(t));
   }
