@@ -16,6 +16,10 @@ o  Now `make check' runs a number of tests with `ppl_lcdd', comparing
 Bugfixes
 ========
 
+o  Fixed a bug in a private method of class GenSys that in some
+   circumstances was affecting Polyhedron::H79_widening_assign(),
+   as well as all the limited and bounded extrapolation operators.
+
 o  Fixed a bug in the `ppl_lpsol' demo.
 
 
