@@ -118,6 +118,12 @@ Determinate<PH>::mutate() {
 }
 
 template <typename PH>
+const PH&
+Determinate<PH>::polyhedron() const {
+  return prep->ph;
+}
+
+template <typename PH>
 void
 Determinate<PH>::upper_bound_assign(const Determinate& y) {
   mutate();

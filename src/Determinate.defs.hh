@@ -103,6 +103,8 @@ public:
   Determinate& operator <<= (dimension_type n);
   Determinate& hide_assign(dimension_type n);
 
+  const PH& polyhedron() const;
+
   inline bool is_top() const;
   inline bool is_bottom() const;
 
