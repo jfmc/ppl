@@ -79,7 +79,6 @@ throw_result_exception(Result r) {
     throw std::domain_error("Unordered comparison.");
   default:
     throw std::logic_error("Unexpected result.");
-    break;
   }
 }
 
