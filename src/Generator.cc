@@ -264,8 +264,7 @@ PPL::Generator::OK() const {
     // that the epsilon coordinate is zero.
     if (g.all_homogeneous_terms_are_zero()) {
 #ifndef NDEBUG
-      cerr << "The origin of the vector space cannot be "
-	   << "a line or a ray!"
+      cerr << "The origin of the vector space cannot be a line or a ray!"
 	   << endl;
 #endif
       return false;
@@ -283,8 +282,7 @@ PPL::Generator::OK() const {
     if (!g.is_necessarily_closed())
       if (g[size() - 1] <= 0) {
 #ifndef NDEBUG
-	cerr << "In the NNC topology, "
-	     << "points must have epsilon > 0"
+	cerr << "In the NNC topology, points must have epsilon > 0"
 	     << endl;
 #endif
 	return false;
