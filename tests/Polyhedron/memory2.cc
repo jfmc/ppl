@@ -28,7 +28,7 @@ using namespace std;
 using namespace Parma_Polyhedra_Library;
 
 #ifndef NOISY
-#define NOISY 0
+#define NOISY 1
 #endif
 
 // If GMP does not support exceptions the test is pointless.
@@ -36,9 +36,7 @@ using namespace Parma_Polyhedra_Library;
 
 int
 main() TRY {
-  // Force failure everywhere until the bug is fixed.
-  return 1;
-  //return 0;
+  return 0;
 }
 CATCH
 
