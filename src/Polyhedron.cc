@@ -771,12 +771,17 @@ PPL::Polyhedron::strongly_minimize_constraints() const {
   SatRow sat_all_but_points;
   SatRow sat_all_but_closure_points;
 
+  dimension_type eps_index = x.space_dimension() + 1;
+  dimension_type index_minus_eps_ray = 0;
+
   dimension_type gs_rows = gen_sys.num_rows();
   dimension_type n_lines = gen_sys.num_lines();
   for (dimension_type i = gs_rows; i-- > n_lines; )
     switch (gen_sys[i].type()) {
     case Generator::RAY:
       sat_all_but_rays.set(i);
+      if (gen_sys[i][eps_index] < 0)
+	index_minus_eps_ray = i;
       break;
     case Generator::POINT:
       sat_all_but_points.set(i);
@@ -799,6 +804,10 @@ PPL::Polyhedron::strongly_minimize_constraints() const {
   set_union(sat_lines_and_rays, sat_lines_and_closure_points,
 	    sat_lines);
 
+  // CHECK ME.
+  // Have to disregard the minus-eps-ray.
+  sat_lines_and_rays.set(index_minus_eps_ray);
+
   // These flags are maintained to later decide
   // if we have to add back the eps_leq_one constraint
   // and whether or not the constraint system is changed.
@@ -815,7 +824,6 @@ PPL::Polyhedron::strongly_minimize_constraints() const {
   SatMatrix& sat = x.sat_g;
   dimension_type cs_rows = cs.num_rows();
   dimension_type n_equals = cs.num_equalities();
-  dimension_type eps_index = cs.num_columns() - 1;
   for (dimension_type i = n_equals; i < cs_rows; )
     if (cs[i].is_strict_inequality()) {
       // First, check if it is saturated by no closure points
@@ -3469,6 +3477,11 @@ PPL::Polyhedron::BBRZ02_widening_assign(const Polyhedron& y) {
   // CHECK ME: why should it be sorted?
   H79_con_sys.sort_rows();
 
+  // Reading once for all the sizes of these matrices.
+  dimension_type x_con_sys_num_rows = x.con_sys.num_rows();
+  dimension_type x_gen_sys_num_rows = x.gen_sys.num_rows();
+  dimension_type y_gen_sys_num_rows = y.gen_sys.num_rows();
+
   // The following heuristics are intrusive: to avoid problems,
   // we backup the current value of `x'.
   Polyhedron x_backup = x;
@@ -3482,11 +3495,10 @@ PPL::Polyhedron::BBRZ02_widening_assign(const Polyhedron& y) {
   // To choose this constraints we use `x.sat_g'
   if (!x.sat_g_is_up_to_date())
     x.update_sat_g();
-  dimension_type H79_con_sys_num_rows = H79_con_sys.num_rows();
-  dimension_type x_gen_sys_num_rows = x.gen_sys.num_rows();
   // We built a temporary saturation matrix that contains the
   // relations between the constraints of `H79_con_sys' and
   // the generators of `x'.
+  dimension_type H79_con_sys_num_rows = H79_con_sys.num_rows();
   SatMatrix common_sat_g(H79_con_sys_num_rows, x_gen_sys_num_rows);
   for (dimension_type i = H79_con_sys_num_rows; i-- > 0; ) {
     const Constraint& c = H79_con_sys[i];
@@ -3501,7 +3513,6 @@ PPL::Polyhedron::BBRZ02_widening_assign(const Polyhedron& y) {
   // The system of constraints `x_con_sys_minus_y_con_sys' contains
   // the constraints of `x' that does not belong also to `y'.
   ConSys x_con_sys_minus_y_con_sys;
-  dimension_type x_con_sys_num_rows = x.con_sys.num_rows();
   for (dimension_type i = x_con_sys_num_rows; i-- > 0; )
     if (!x.con_sys[i].is_equality())
       if (!common_sat_g.sorted_contains(x.sat_g[i]))
@@ -3512,7 +3523,6 @@ PPL::Polyhedron::BBRZ02_widening_assign(const Polyhedron& y) {
   ConSys new_con_sys = H79_con_sys;
   // We must choose a point or a closure point (if the polyhedra
   // are not necessarily closed) that belong to `x' and `y'.
-  dimension_type y_gen_sys_num_rows = y.gen_sys.num_rows();
   for (dimension_type i = y_gen_sys_num_rows; i-- > 0; ) {
     const Generator& g = y.gen_sys[i];
     if (g.is_point()
