@@ -144,6 +144,9 @@ public:
   //! Inserts a copy of the generator \p g into \p *this.
   void insert(const Generator& g);
 
+  //! Swaps \p *this with \p y.
+  void swap(GenSys& y);
+
   /*!
       A const_iterator is used to provide read-only access
       to each generator contained in an object of GenSys.

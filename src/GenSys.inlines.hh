@@ -47,6 +47,11 @@ Parma_Polyhedra_Library::GenSys::insert(const Generator& g) {
   Matrix::insert(g);
 }
 
+INLINE void 
+Parma_Polyhedra_Library::GenSys::swap(GenSys& y) {
+  Matrix::swap(y);
+}
+
 INLINE Parma_Polyhedra_Library::Generator&
 Parma_Polyhedra_Library::GenSys::operator [](size_t k) {
   return static_cast<Generator&>(Matrix::operator[](k));

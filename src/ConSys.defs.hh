@@ -77,6 +77,9 @@ public:
   //! Inserts a copy of the constraint \p c into \p *this.
   void insert(const Constraint& c);
 
+  //! Swaps \p *this with \p y
+  void swap(ConSys& y);
+  
   /*!
       A const_iterator is used to provide read-only access
       to each constraint contained in an object of ConSys.

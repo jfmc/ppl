@@ -61,6 +61,11 @@ Parma_Polyhedra_Library::ConSys::insert(const Constraint& c) {
   Matrix::insert(c);
 }
 
+INLINE void
+Parma_Polyhedra_Library::ConSys::swap(ConSys& y) {
+  Matrix::swap(y);
+}
+
 INLINE
 Parma_Polyhedra_Library::
 ConSys::const_iterator::const_iterator(const Matrix::const_iterator& iter,
