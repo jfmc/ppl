@@ -154,7 +154,7 @@ public:
   void clear();
 
   //! \brief
-  //! Inserts a copy of the constraint \p c into \p *this
+  //! Inserts in \p *this a copy of the constraint \p c,
   //! increasing the number of dimensions if needed.
   void insert(const Constraint& c);
 
@@ -387,7 +387,7 @@ private:
   dimension_type num_inequalities() const;
 
   //! \brief
-  //! Inserts a copy of the constraint \p c into \p *this
+  //! Inserts in \p *this a copy of the constraint \p c,
   //! increasing the number of dimensions if needed. It is
   //! a pending constraint.
   void insert_pending(const Constraint& c);

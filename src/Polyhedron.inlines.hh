@@ -458,7 +458,7 @@ Polyhedron::shrink_bounding_box(Box& box, Complexity_Class complexity) const {
     // Extract easy-to-find bounds from constraints.
     assert(constraints_are_up_to_date());
 
-    // We must copy `con_sys' into a temporary matrix,
+    // We must copy `con_sys' to a temporary matrix,
     // because we must apply gauss() and back_substitute()
     // to all the matrix and not only to the non-pending part.
     ConSys cs(con_sys);
@@ -659,7 +659,7 @@ Polyhedron::map_dimensions(const PartialFunction& pfunc) {
     std::vector<dimension_type> cycles;
     cycles.reserve(space_dim + space_dim/2);
 
-    // Used to mark elements as soon as they are inserted into a cycle.
+    // Used to mark elements as soon as they are inserted in a cycle.
     std::deque<bool> visited(space_dim);
 
     for (dimension_type i = space_dim; i-- > 0; ) {

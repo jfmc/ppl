@@ -145,7 +145,7 @@ public:
 
   //! \brief
   //! Adds \p m new dimensions and embeds the old polyhedron
-  //! into the new space.
+  //! in the new space.
   void add_dimensions_and_embed(dimension_type m);
 
   //! \brief
@@ -310,7 +310,7 @@ public:
   bool ascii_load(std::istream& s);
 
 private:
-  //! Records into \p cert_ms the certificates for this set of polyhedra.
+  //! Records in \p cert_ms the certificates for this set of polyhedra.
   template <typename Cert>
   void collect_certificates(std::map<Cert, size_type,
 		                     typename Cert::Compare>& cert_ms) const;

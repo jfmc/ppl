@@ -199,7 +199,7 @@ public:
 
   //! \brief
   //! Adds \p m new dimensions and embeds the old polyhedron
-  //! into the new space.
+  //! in the new space.
   void add_dimensions_and_embed(dimension_type m);
 
   //! \brief

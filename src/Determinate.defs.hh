@@ -145,7 +145,7 @@ public:
 
   //! \brief
   //! Returns <CODE>true</CODE> if and only if \p *this entails \p y
-  //! (i.e., \p *this is contained into \p y).
+  //! (i.e., \p *this is contained in \p y).
   bool definitely_entails(const Determinate& y) const;
 
   //! \brief
@@ -221,7 +221,7 @@ public:
 
   //! \brief
   //! Adds \p m new dimensions and embeds the old domain element
-  //! into the new vector space.
+  //! in the new vector space.
   void add_dimensions_and_embed(dimension_type m);
 
   //! \brief

@@ -1033,7 +1033,7 @@ public:
 
   //! \brief
   //! Assigns to \p *this the \ref affine_transformation "affine image"
-  //! of \p *this under the function mapping variable \p var into the
+  //! of \p *this under the function mapping variable \p var to the
   //! affine expression specified by \p expr and \p denominator.
   /*!
     \param var
@@ -1125,7 +1125,7 @@ public:
 
   //! \brief
   //! Assigns to \p *this the \ref affine_transformation "affine preimage"
-  //! of \p *this under the function mapping variable \p var into the
+  //! of \p *this under the function mapping variable \p var to the
   //! affine expression specified by \p expr and \p denominator.
   /*!
     \param var
@@ -1424,7 +1424,7 @@ public:
 
   //! \brief
   //! Adds \p m new dimensions and embeds the old polyhedron
-  //! into the new space.
+  //! in the new space.
   /*!
     \param m
     The number of dimensions to add.
@@ -2058,7 +2058,7 @@ private:
   //@{
 
   //! \brief
-  //! Copies into \p cs_selection the constraints of `y' corresponding
+  //! Copies to \p cs_selection the constraints of `y' corresponding
   //! to the definition of the CH78-widening of \p *this and \p y.
   void select_CH78_constraints(const Polyhedron& y,
 			       ConSys& cs_selected) const;

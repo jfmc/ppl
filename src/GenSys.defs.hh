@@ -207,7 +207,7 @@ public:
   void clear();
 
   //! \brief
-  //! Inserts a copy of the generator \p g into \p *this,
+  //! Inserts in \p *this a copy of the generator \p g,
   //! increasing the number of dimensions if needed.
   void insert(const Generator& g);
 
@@ -475,7 +475,7 @@ private:
   void remove_invalid_lines_and_rays();
 
   //! \brief
-  //! Inserts a copy of the generator \p g into \p *this,
+  //! Inserts in \p *this a copy of the generator \p g,
   //! increasing the number of dimensions if needed.
   //! It is a pending generator.
   void insert_pending(const Generator& g);
