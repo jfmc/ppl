@@ -239,9 +239,9 @@ affinetrans_SOURCES = affinetrans.cc
 append1_SOURCES = append1.cc
 append2_SOURCES = append2.cc
 
-ascii_dump_load1_SOURCES = ascii_dump_load1.cc
-ascii_dump_load2_SOURCES = ascii_dump_load2.cc
-ascii_dump_load3_SOURCES = ascii_dump_load3.cc
+ascii_dump_load1_SOURCES = ascii_dump_load1.cc files.cc
+ascii_dump_load2_SOURCES = ascii_dump_load2.cc files.cc
+ascii_dump_load3_SOURCES = ascii_dump_load3.cc files.cc
 
 bbrz02widening1_SOURCES = bbrz02widening1.cc
 bbrz02widening2_SOURCES = bbrz02widening2.cc
@@ -491,11 +491,11 @@ nnc_append1_CXXFLAGS = $(DERIVED_CXXFLAGS)
 nnc_append2_SOURCES = append2.cc
 nnc_append2_CXXFLAGS = $(DERIVED_CXXFLAGS)
 
-nnc_ascii_dump_load1_SOURCES = ascii_dump_load1.cc
+nnc_ascii_dump_load1_SOURCES = ascii_dump_load1.cc files.cc
 nnc_ascii_dump_load1_CXXFLAGS = $(DERIVED_CXXFLAGS)
-nnc_ascii_dump_load2_SOURCES = ascii_dump_load2.cc
+nnc_ascii_dump_load2_SOURCES = ascii_dump_load2.cc files.cc
 nnc_ascii_dump_load2_CXXFLAGS = $(DERIVED_CXXFLAGS)
-nnc_ascii_dump_load3_SOURCES = ascii_dump_load3.cc
+nnc_ascii_dump_load3_SOURCES = ascii_dump_load3.cc files.cc
 nnc_ascii_dump_load3_CXXFLAGS = $(DERIVED_CXXFLAGS)
 
 nnc_bbrz02widening1_SOURCES = bbrz02widening1.cc
