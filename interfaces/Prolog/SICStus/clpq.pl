@@ -286,11 +286,25 @@ do_command(notrace, _VN) :-
   !,
   notrace,
   main_loop_yes.
-do_command(spy, _VN) :-
+do_command(debug, _VN) :-
   !,
-  read(PredList),
-  Spy =.. [spy|PredList],
-  Spy,
+  debug,
+  main_loop_yes.
+do_command(nodebug, _VN) :-
+  !,
+  nodebug,
+  main_loop_yes.
+do_command(spy(Spec), _VN) :-
+  !,
+  spy(Spec),
+  main_loop_yes.
+do_command(nospy(Spec), _VN) :-
+  !,
+  nospy(Spec),
+  main_loop_yes.
+do_command(nospyall, _VN) :-
+  !,
+  nospyall,
   main_loop_yes.
 do_command([], _VN) :-
   !,
