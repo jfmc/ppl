@@ -1,4 +1,4 @@
-/* Compute poly-hulls of random polytopes.
+/* Testing C_Polyhedron::poly_difference_assign().
    Copyright (C) 2001, 2002 Roberto Bagnara <bagnara@cs.unipr.it>
 
 This file is part of the Parma Polyhedra Library (PPL).
@@ -22,6 +22,7 @@ For the most up-to-date information see the Parma Polyhedra Library
 site: http://www.cs.unipr.it/ppl/ . */
 
 #include "ppl_install.hh"
+#include "print.hh"
 #include "ehandlers.hh"
 
 using namespace std;
@@ -30,52 +31,51 @@ using namespace Parma_Polyhedra_Library;
 #define NOISY 0
 
 int
-count_points(const C_Polyhedron& ph) {
-  if (ph.check_empty() || (ph.space_dimension() == 0))
-    return 0;
-
-  int count = 0;
-  const GenSys& gs = ph.generators();
-  for (GenSys::const_iterator i = gs.begin(), gs_end = gs.end();
-       i != gs_end;
-       ++i)
-    if (i->type() == Generator::POINT)
-      ++count;
-  return count;
-}
-
-#if NOISY
-#define COUNT(ph) cout << count_points(ph) << endl
-#else
-#define COUNT(ph) (void) count_points(ph)
-#endif
-
-int
 main() {
   set_handlers();
 
-  // Set up a random numbers' generator.
-  gmp_randclass rg(gmp_randinit_default);
-
   Variable x(0);
   Variable y(1);
-  Variable z(2);
 
-  const Integer maxc = 10000;
+  GenSys gs1;
+  gs1.insert(point(0*x + 0*y));
+  gs1.insert(point(4*x + 0*y));
+  gs1.insert(point(2*x + 2*y));
 
-  // Polyhedra born full.
-  C_Polyhedron ph(3);
-  // We need an empty one.
-  ph.add_constraint(x <= 0);
-  ph.add_constraint(x >= 1);
+  C_Polyhedron ph1(gs1);
 
-  COUNT(ph);
-  for (int n = 1; n <= 200; ++n) {
-    ph.add_generator(point(rg.get_z_range(maxc)*x
-			   + rg.get_z_range(maxc)*y
-			   + rg.get_z_range(maxc)*z));
-    COUNT(ph);
-  }
+#if NOISY
+  print_generators(ph1, "*** ph1 ***");
+#endif
 
-  return 0;
+  GenSys gs2;
+  gs2.insert(point(0*x + 3*y));
+  gs2.insert(point(4*x + 3*y));
+  gs2.insert(point(2*x + 1*y));
+
+  C_Polyhedron ph2(gs2);
+
+#if NOISY
+  print_generators(ph2, "*** ph2 ***");
+#endif
+
+  C_Polyhedron computed_result = ph1;
+
+  computed_result.poly_difference_assign(ph2);
+
+  GenSys gs_known_result;
+  gs_known_result.insert(point());
+  gs_known_result.insert(point(3*x + 3*y, 2));
+  gs_known_result.insert(point(4*x));
+  gs_known_result.insert(point(5*x + 3*y, 2));
+
+  C_Polyhedron known_result(gs_known_result);
+
+  int retval = (computed_result == known_result) ? 0 : 1;
+
+#if NOISY
+  print_generators(computed_result, "*** After poly_difference_assign ***");
+#endif
+
+  return retval;
 }

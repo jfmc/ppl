@@ -108,9 +108,9 @@ main() {
 #if NOISY
     print_constraints(current, "*** after remove_dimensions ***");
 #endif
-    current.convex_hull_assign_and_minimize(previous);
+    current.poly_hull_assign_and_minimize(previous);
 #if NOISY
-    print_constraints(current, "*** after convex_hull_assign_and_minimize***");
+    print_constraints(current, "*** after poly_hull_assign_and_minimize***");
 #endif
   } while (current != previous);
 

@@ -50,17 +50,17 @@ TESTS = NNCinclusion1 \
         append1 append2 \
 	bounded1 \
 	boundingbox1 \
-	inclusion1 \
-	convexhull1 convexhull2 convexhull3 convexhull4 \
-	convexdifference1 \
         empty1 \
 	exceptions1 exceptions2 \
 	generators1 generators2 \
+	inclusion1 \
         inters1 inters2 inters3 inters4 inters5 inters6 inters7 \
 	limitedwidening1 limitedwidening2\
 	onepoint \
         permute \
-	randchull1 \
+	polydifference1 \
+	polyhull1 polyhull2 polyhull3 polyhull4 \
+	randphull1 \
 	relations1 relations2 relations3 relations4 relations5 relations6 \
 	relations7 relations8 relations9 \
 	removedim1 removedim2 removedim3 removedim4 removedim5 removedim6 \
@@ -124,15 +124,6 @@ bounded1_SOURCES = bounded1.cc
 
 boundingbox1_SOURCES = boundingbox1.cc
 
-inclusion1_SOURCES = inclusion1.cc
-
-convexhull1_SOURCES = convexhull1.cc
-convexhull2_SOURCES = convexhull2.cc
-convexhull3_SOURCES = convexhull3.cc
-convexhull4_SOURCES = convexhull4.cc
-
-convexdifference1_SOURCES = convexdifference1.cc
-
 empty1_SOURCES = empty1.cc
 
 exceptions1_SOURCES = exceptions1.cc
@@ -140,6 +131,8 @@ exceptions2_SOURCES = exceptions2.cc
 
 generators1_SOURCES = generators1.cc
 generators2_SOURCES = generators2.cc
+
+inclusion1_SOURCES = inclusion1.cc
 
 inters1_SOURCES = inters1.cc
 inters2_SOURCES = inters2.cc
@@ -156,6 +149,13 @@ onepoint_SOURCES = onepoint.cc
 
 permute_SOURCES = permute.cc
 
+polydifference1_SOURCES = polydifference1.cc
+
+polyhull1_SOURCES = polyhull1.cc
+polyhull2_SOURCES = polyhull2.cc
+polyhull3_SOURCES = polyhull3.cc
+polyhull4_SOURCES = polyhull4.cc
+
 relations1_SOURCES = relations1.cc
 relations2_SOURCES = relations2.cc
 relations3_SOURCES = relations3.cc
@@ -166,7 +166,7 @@ relations7_SOURCES = relations7.cc
 relations8_SOURCES = relations8.cc
 relations9_SOURCES = relations9.cc
 
-randchull1_SOURCES = randchull1.cc
+randphull1_SOURCES = randphull1.cc
 
 removedim1_SOURCES = removedim1.cc
 removedim2_SOURCES = removedim2.cc

@@ -48,10 +48,10 @@ main() {
 
   NNC_Polyhedron ph2(cs);
 
-  ph1.convex_hull_assign_and_minimize(ph2);
+  ph1.poly_hull_assign_and_minimize(ph2);
 
 #if NOISY
-  std::cout << "(Weakly) minimized convex hull" << std::endl;
+  std::cout << "(Weakly) minimized poly hull" << std::endl;
   print_constraints(ph1.constraints(), "*** ph1 constraints ***");
   print_generators(ph1.generators(), "*** ph1 generators ***");
 #endif
