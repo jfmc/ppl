@@ -30,7 +30,8 @@ TESTS = addconstraints1 addconstraints2 \
 	onepoint \
         permute \
 	randchull1 \
-	removedim1 removedim2 removedim3
+	removedim1 removedim2 removedim3 \
+	smm1
 
 addconstraints1_SOURCES = addconstraints1.cc
 addconstraints2_SOURCES = addconstraints2.cc
@@ -60,6 +61,8 @@ randchull1_SOURCES = randchull1.cc
 removedim1_SOURCES = removedim1.cc
 removedim2_SOURCES = removedim2.cc
 removedim3_SOURCES = removedim3.cc
+
+smm1_SOURCES = smm1.cc
 
 check_PROGRAMS = $(TESTS) $(BUGS)
 
