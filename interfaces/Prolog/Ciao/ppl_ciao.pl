@@ -1,0 +1,167 @@
+:- module(ppl_ciao,
+[
+%%FIXME
+///////////////// Initialization and finalization.
+	ppl_init/1,
+	ppl_deinit/1,
+/////////////////
+	ppl_new_polyhedron/2,
+	ppl_new_empty_polyhedron/2,
+	ppl_copy_polyhedron/2,
+	ppl_delete_polyhedron/1,
+	ppl_space_dimension/1,
+	ppl_insert_constraint/2,
+	ppl_insert_constraints/2,
+	ppl_insert_generator/2,
+	ppl_insert_generators/2,
+	ppl_add_constraints_and_minimize/2,
+	ppl_remove_dimensions/2,
+	ppl_remove_higher_dimensions/2,
+	ppl_add_dimensions_and_embed/2,
+	ppl_add_dimensions_and_project/2,
+	ppl_check_empty/1,
+	ppl_get_constraints/2,
+	ppl_get_generators/2,
+	ppl_intersection_assign/2,
+	ppl_convex_hull_assign/2,
+	ppl_widening_assign/2
+],
+[
+        assertions,
+        basic_modes,
+        regtypes,
+        foreign_interface
+]).
+
+:- use_foreign_source(ppl_ciao).
+
+:- impl_defined(
+[
+FIXME
+///////////////// Initialization and finalization.
+	ppl_init/1,
+	ppl_deinit/1,
+/////////////////
+	ppl_new_polyhedron/2,
+	ppl_new_empty_polyhedron/2,
+	ppl_copy_polyhedron/2,
+	ppl_delete_polyhedron/1,
+	ppl_space_dimension/1,
+	ppl_insert_constraint/2,
+	ppl_insert_generator/2,
+	ppl_add_constraints_and_minimize/3,
+	ppl_remove_dimensions/2,
+	ppl_remove_higher_dimensions/2,
+	ppl_add_dimensions_and_embed/2,
+	ppl_add_dimensions_and_project/2,
+	ppl_check_empty/2,
+	ppl_get_constraints/2,
+	ppl_get_generators/2,
+	ppl_intersection_assign/2,
+	ppl_convex_hull_assign/2,
+	ppl_widening_assign/2
+]).
+
+:- true pred ppl_new_polyhedron(go(Polyhedron), in(NumDims))
+             :: address * int
+             +  (foreign, returns(Polyhedron)).
+
+:- true pred ppl_new_empty_polyhedron(go(Polyhedron), in(NumDims))
+             :: address * int
+             +  (foreign, returns(Polyhedron)).
+
+:- true pred ppl_copy_polyhedron(in(Polyhedron), out(PolyhedronCopy))
+             :: address * address
+             +  (foreign, returns(PolyhedronCopy)).
+
+:- true pred ppl_delete_polyhedron(in(Polyhedron))
+             :: address
+             +  (foreign).
+
+:- true pred ppl_space_dimension(in(Polyhedron), out(NumDims))
+             :: address * int
+             +  (foreign, returns(NumDims)).
+
+:- true pred ppl_insert_constraint(in(Polyhedron), in(Constraint))
+%%FIXME : term ?
+             :: address * term
+             +  (foreign).
+
+:- true pred ppl_add_constraints_and_minimize(
+	in(Polyhedron),
+	in(Constraints),
+	go(Empty))
+%%FIXME : list of terms ?
+             :: address * term * int
+             +  (foreign, returns(Empty)).
+
+:- true pred ppl_insert_generator(in(Polyhedron), in(Generator))
+%%FIXME : term ?
+             :: address * term
+             +  (foreign).
+
+%%FIXME : here we could use `int_list' as the type of the second
+%%        argument, but this would require the addition of another
+%%        argument for the length of the list.
+%%:- true pred ppl_remove_dimensions(in(Polyhedron), in(Length), in(DimList))
+%%             :: address * int * int_list
+%%             +  (foreign, size_of(DimList, Length)).
+%%
+%% Using `term' (which still does not work) for the moment.
+:- true pred ppl_remove_dimensions(in(Polyhedron), in(DimList))
+             :: address * term
+             +  (foreign).
+
+:- true pred ppl_remove_higher_dimensions(in(Polyhedron), in(NumDims))
+             :: address * int
+             +  (foreign).
+
+:- true pred ppl_add_dimensions_and_project(in(Polyhedron), in(NumDims))
+             :: address * int
+             +  (foreign).
+
+:- true pred ppl_add_dimensions_and_embed(in(Polyhedron), in(NumDims))
+             :: address * int
+             +  (foreign).
+
+:- true pred ppl_check_empty(in(Polyhedron), go(Empty))
+             :: address * int
+             +  (foreign, returns(Empty)).
+
+:- true pred ppl_get_constraints(in(Polyhedron), go(Constraints))
+%%FIXME: list of terms ?
+             :: address * term
+             +  (foreign, returns(Constraints)).
+
+:- true pred ppl_get_generators(in(Polyhedron), go(Generators))
+%%FIXME: list of terms ?
+             :: address * term
+             +  (foreign, returns(Generators)).
+
+:- true pred ppl_intersection_assign(in(Polyhedron1), in(Polyhedron2))
+             :: address * address
+             +  (foreign).
+
+:- true pred ppl_convex_hull_assign(in(Polyhedron1), in(Polyhedron2))
+             :: address * address
+             +  (foreign).
+
+:- true pred ppl_widening_assign(in(Polyhedron1), in(Polyhedron2))
+             :: address * address
+             +  (foreign).
+
+ppl_check_empty(Polyhedron) :-
+  ppl_check_empty(Polyhedron, 1).
+
+ppl_insert_constraints(_Polyhedron, []).
+ppl_insert_constraints(Polyhedron, [C|Constraints]) :-
+  ppl_insert_constraint(Polyhedron, C),
+  ppl_insert_constraints(Polyhedron, Constraints).
+
+ppl_insert_generators(_Polyhedron, []).
+ppl_insert_generators(Polyhedron, [G|Generators]) :-
+  ppl_insert_generator(Polyhedron, G),
+  ppl_insert_generators(Polyhedron, Generators).
+
+ppl_add_constraints_and_minimize(Polyhedron, Constraints) :-
+  ppl_add_constraints_and_minimize(Polyhedron, Constraints, 1).
