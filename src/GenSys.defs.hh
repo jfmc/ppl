@@ -190,31 +190,47 @@ public:
     //! The const iterator over the matrix of generators.
     Matrix::const_iterator i;
 
-    //! Copy-constructor.
-    const_iterator(const Matrix::const_iterator& iter);
+    //! A const pointer to the matrix of generators.
+    const Matrix* gsp;
+
+    //! Constructor.
+    const_iterator(const Matrix::const_iterator& iter, const GenSys& gsys);
+    
+    //! \p *this skips to the next generator, skipping those
+    //! closure points that are immediately followed by a matching point.
+    void skip_forward();
 
     friend class GenSys;
 
   public:
     //! Default constructor.
     const_iterator();
+
     //! Ordinary copy-constructor.
     const_iterator(const const_iterator& y);
+
     //! Destructor.
     virtual ~const_iterator();
+
     //! Assignment operator.
     const_iterator& operator=(const const_iterator& y);
+
     //! Dereference operator.
     const Generator& operator*() const;
+
     //! Indirect member selector.
     const Generator* operator->() const;
+
     //! Prefix increment operator.
     const_iterator& operator++();
+
     //! Postfix increment operator.
     const_iterator operator++(int);
+
     //! Returns <CODE>true</CODE> if and only if
     //! \p *this and \p y are identical.
     bool operator==(const const_iterator& y) const;
+
     //! Returns <CODE>true</CODE> if and only if
     //! \p *this and \p y are different.
     bool operator!=(const const_iterator& y) const;
@@ -224,6 +240,7 @@ public:
   //! if \p *this is not empty;
   //! otherwise, returns the past-the-end const_iterator.
   const_iterator begin() const;
+
   //! Returns the past-the-end const_iterator.
   const_iterator end() const;
 
@@ -233,6 +250,7 @@ public:
   //! Constructor: builds an empty system of generators
   //! having the specified topology.
   GenSys(Topology topol);
+
 // FIXME: this is a kludge
 PPL_INTERNAL:
   //! Constructor: it builds a system of \p n_rows rays/points
@@ -270,6 +288,7 @@ PPL_INTERNAL:
 
   //! Returns the \p k- th generator of the system.
   Generator& operator[](size_t k);
+
   //! Returns a constant reference to the \p k- th generator of the system.
   const Generator& operator[](size_t k) const;
 
@@ -282,8 +301,10 @@ PPL_INTERNAL:
   void affine_image(size_t v,
 		    const LinExpression& expr,
 		    const Integer& denominator);
+
   //! Returns the number of lines of the system.
   size_t num_lines() const;
+
   //! Returns the number of rays of the system.
   size_t num_rays() const;
 
@@ -297,6 +318,7 @@ PPL_INTERNAL:
 private:
   //! Input operator.
   void get(std::istream& s);
+
   //! Output operator.
   void print(std::ostream& s) const;
 };

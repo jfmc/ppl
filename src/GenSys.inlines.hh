@@ -77,18 +77,19 @@ GenSys::operator[](size_t k) const {
 }
 
 inline
-GenSys::const_iterator::const_iterator(const Matrix::const_iterator& iter)
-  : i(iter) {
+GenSys::const_iterator::const_iterator(const Matrix::const_iterator& iter,
+				       const GenSys& gsys)
+  : i(iter), gsp(&gsys) {
 }
 
 inline
 GenSys::const_iterator::const_iterator()
-  : i() {
+  : i(), gsp(0) {
 }
 
 inline
 GenSys::const_iterator::const_iterator(const const_iterator& y)
-  : i(y.i) {
+  : i(y.i), gsp(y.gsp) {
 }
 
 inline
@@ -99,6 +100,7 @@ inline
 GenSys::const_iterator&
 GenSys::const_iterator::operator=(const const_iterator& y) {
   i = y.i;
+  gsp = y.gsp;
   return *this;
 }
 
@@ -115,6 +117,8 @@ GenSys::const_iterator::operator->() const {
 inline GenSys::const_iterator&
 GenSys::const_iterator::operator++() {
   ++i;
+  if (!gsp->is_necessarily_closed())
+    skip_forward();
   return *this;
 }
 
@@ -137,12 +141,16 @@ GenSys::const_iterator::operator!=(const const_iterator& y) const {
 
 inline GenSys::const_iterator
 GenSys::begin() const {
-  return const_iterator(Matrix::begin());
+  const_iterator i(Matrix::begin(), *this);
+  if (!is_necessarily_closed())
+    i.skip_forward();
+  return i;
 }
 
 inline GenSys::const_iterator
 GenSys::end() const {
-  return const_iterator(Matrix::end());
+  const_iterator i(Matrix::end(), *this);
+  return i;
 }
 
 inline const GenSys&

@@ -184,6 +184,24 @@ PPL::GenSys::has_points() const {
 
 
 void
+PPL::GenSys::const_iterator::skip_forward() {
+  Matrix::const_iterator gsp_end = gsp->end();
+  if (i != gsp_end) {
+    Matrix::const_iterator i_next = i;
+    ++i_next;
+    if (i_next != gsp_end) {
+      const Generator& cp = static_cast<const Generator&>(*i);
+      const Generator& p = static_cast<const Generator&>(*i_next);
+      if (cp.is_closure_point()
+	  && p.is_point()
+	  && cp.is_matching_closure_point(p))
+	i = i_next;
+    }
+  }
+}
+
+
+void
 PPL::GenSys::insert(const Generator& g) {
   if (topology() == g.topology())
     Matrix::insert(g);
