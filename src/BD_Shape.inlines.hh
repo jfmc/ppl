@@ -2909,18 +2909,17 @@ BD_Shape<T>::ascii_load(std::istream& s) {
   return true;
 }
 
-
 /*! \relates Parma_Polyhedra_Library::BD_Shape */
 template <typename T>
 inline std::ostream&
 IO_Operators::operator<<(std::ostream& s, const BD_Shape<T>& c) {
   if (c.is_universe())
-    s << "true" << std::endl;
+    s << "true";
   else {
     // We control empty system of bounded differences.
     dimension_type n = c.space_dimension();
     if (c.marked_empty())
-      s << "false" << std::endl;
+      s << "false";
     else {
       bool first = true;
       for (dimension_type i = 0; i <= n; ++i)
