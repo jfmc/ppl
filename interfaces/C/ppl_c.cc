@@ -1699,7 +1699,7 @@ ppl_Polyhedron_remove_dimensions(ppl_Polyhedron_t ph,
 				 size_t n) try {
   Polyhedron& pph = *to_nonconst(ph);
   Variables_Set to_be_removed;
-  for (ppl_dimension_type i = 0; i < n; ++i)
+  for (ppl_dimension_type i = n; i-- > 0; )
     to_be_removed.insert(Variable(ds[i]));
   pph.remove_dimensions(to_be_removed);
   return 0;
@@ -1782,6 +1782,30 @@ ppl_Polyhedron_map_dimensions(ppl_Polyhedron_t ph,
   Polyhedron& pph = *to_nonconst(ph);
   PIFunc pifunc(maps, n);
   pph.map_dimensions(pifunc);
+  return 0;
+}
+CATCH_ALL
+
+int
+ppl_Polyhedron_expand_dimension(ppl_Polyhedron_t ph,
+				ppl_dimension_type d,
+				ppl_dimension_type m) try {
+  Polyhedron& pph = *to_nonconst(ph);
+  pph.expand_dimension(Variable(d), m);
+  return 0;
+}
+CATCH_ALL
+
+int
+ppl_Polyhedron_fold_dimensions(ppl_Polyhedron_t ph,
+			       ppl_dimension_type ds[],
+			       size_t n,
+			       ppl_dimension_type d) try {
+  Polyhedron& pph = *to_nonconst(ph);
+  Variables_Set to_be_folded;
+  for (ppl_dimension_type i = n; i-- > 0; )
+    to_be_folded.insert(Variable(ds[i]));
+  pph.fold_dimensions(to_be_folded, Variable(d));
   return 0;
 }
 CATCH_ALL
