@@ -423,7 +423,7 @@ PowerSet<CS>::remove_higher_dimensions(dimension_type new_dimension) {
 template <typename CS>
 template <typename PartialFunction>
 void
-PowerSet<CS>::rename_dimensions(const PartialFunction& pfunc) {
+PowerSet<CS>::remap_dimensions(const PartialFunction& pfunc) {
   if (is_bottom()) {
     dimension_type n = 0;
     for (dimension_type i = space_dim; i-- > 0; ) {
@@ -436,7 +436,7 @@ PowerSet<CS>::rename_dimensions(const PartialFunction& pfunc) {
   else {
     typename PowerSet<CS>::iterator b = begin();
     for (typename PowerSet<CS>::iterator i = b, xend = end(); i != xend; ++i)
-      i->rename_dimensions(pfunc);
+      i->remap_dimensions(pfunc);
     space_dim = b->space_dimension();
     omega_reduction();
   }

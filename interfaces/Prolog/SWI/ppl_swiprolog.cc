@@ -394,7 +394,7 @@ static PL_extension predicates[] = {
   PL_EXTENSION_ENTRY(ppl_Polyhedron_concatenate_assign, 2)
   PL_EXTENSION_ENTRY(ppl_Polyhedron_remove_dimensions, 2)
   PL_EXTENSION_ENTRY(ppl_Polyhedron_remove_higher_dimensions, 2)
-  PL_EXTENSION_ENTRY(ppl_Polyhedron_rename_dimensions, 2)
+  PL_EXTENSION_ENTRY(ppl_Polyhedron_remap_dimensions, 2)
   { NULL, 0, NULL, 0 }
 };
 

@@ -1292,7 +1292,7 @@ public:
     to the same dimension.
   */
   template <typename PartialInjectiveFunction>
-  void rename_dimensions(const PartialInjectiveFunction& pifunc);
+  void remap_dimensions(const PartialInjectiveFunction& pifunc);
 
   //@} // Member Functions that May Modify the Dimension of the Vector Space
 

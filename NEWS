@@ -70,7 +70,7 @@ o  New methods bool Polyhedron::add_constraint_and_minimize(const
    result at the same time.
 
 o  New method: template <typename PartialFunction>
-   void Polyhedron::rename_dimensions(const PartialFunction&).
+   void Polyhedron::remap_dimensions(const PartialFunction&).
    This allows to rename the dimensions of a polyhedron according
    to a partial function mapping dimensions to dimensions.
 
@@ -350,7 +350,7 @@ o  We now use the integer C++ class of GMP to represent the
 
 o  New methods Polyhedron::convex_difference_assign(const Polyhedron&) and
    Polyhedron::convex_difference_assign_and_minimize(const Polyhedron&).
-   They assigns to `*this' the convex hull of the set-theoretic difference
+   They assign to `*this' the convex hull of the set-theoretic difference
    of `*this' and the argument (possibly non minimized or minimized,
    respectively).
 

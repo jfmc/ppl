@@ -1867,9 +1867,9 @@ ppl_Polyhedron_remove_higher_dimensions __P((ppl_Polyhedron_t ph,
   and <CODE>maps[i] == maps[j]</CODE>).
 */
 int
-ppl_Polyhedron_rename_dimensions __P((ppl_Polyhedron_t ph,
-				      ppl_dimension_type maps[],
-				      size_t n));
+ppl_Polyhedron_remap_dimensions __P((ppl_Polyhedron_t ph,
+				     ppl_dimension_type maps[],
+				     size_t n));
 
 /*@}*/ /* Functions Related to Polyhedra */
 

@@ -168,7 +168,7 @@ public:
   void remove_higher_dimensions(dimension_type new_dimension);
 
   template <typename PartialFunction>
-  void rename_dimensions(const PartialFunction& pfunc);
+  void remap_dimensions(const PartialFunction& pfunc);
 
   //! \brief
   //! Assigns to \p *this the result of computing the

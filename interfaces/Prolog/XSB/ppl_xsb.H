@@ -68,6 +68,6 @@
 	ppl_Polyhedron_concatenate_assign/2,
 	ppl_Polyhedron_remove_dimensions/2,
 	ppl_Polyhedron_remove_higher_dimensions/2,
-	ppl_Polyhedron_rename_dimensions/2.
+	ppl_Polyhedron_remap_dimensions/2.
 
 :- ldoption('-L../../../src/.libs -lppl -L../../../Watchdog/.libs -lpwl -lgmp -lgmpxx').

@@ -443,7 +443,7 @@ Integer_to_integer_term(const PPL::Integer& n) {
 #define ppl_Polyhedron_concatenate_assign xsb_stub_ppl_Polyhedron_concatenate_assign
 #define ppl_Polyhedron_remove_dimensions xsb_stub_ppl_Polyhedron_remove_dimensions
 #define ppl_Polyhedron_remove_higher_dimensions xsb_stub_ppl_Polyhedron_remove_higher_dimensions
-#define ppl_Polyhedron_rename_dimensions xsb_stub_ppl_Polyhedron_rename_dimensions
+#define ppl_Polyhedron_remap_dimensions xsb_stub_ppl_Polyhedron_remap_dimensions
 
 #include "../ppl_prolog.icc"
 
@@ -516,7 +516,7 @@ Integer_to_integer_term(const PPL::Integer& n) {
 #undef ppl_Polyhedron_concatenate_assign
 #undef ppl_Polyhedron_remove_dimensions
 #undef ppl_Polyhedron_remove_higher_dimensions
-#undef ppl_Polyhedron_rename_dimensions
+#undef ppl_Polyhedron_remap_dimensions
 
 #define XSB_ENTRY_0(name) \
 extern "C" Prolog_foreign_return_type \
@@ -638,7 +638,7 @@ XSB_ENTRY_2(ppl_Polyhedron_add_dimensions_and_embed)
 XSB_ENTRY_2(ppl_Polyhedron_concatenate_assign)
 XSB_ENTRY_2(ppl_Polyhedron_remove_dimensions)
 XSB_ENTRY_2(ppl_Polyhedron_remove_higher_dimensions)
-XSB_ENTRY_2(ppl_Polyhedron_rename_dimensions)
+XSB_ENTRY_2(ppl_Polyhedron_remap_dimensions)
 
 extern "C" void
 init() {

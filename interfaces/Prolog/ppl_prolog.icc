@@ -2182,7 +2182,7 @@ public:
 } // namespace
 
 extern "C" Prolog_foreign_return_type
-ppl_Polyhedron_rename_dimensions(Prolog_term_ref t_ph,
+ppl_Polyhedron_remap_dimensions(Prolog_term_ref t_ph,
 				 Prolog_term_ref t_pifunc) {
   try {
     Polyhedron* ph = term_to_polyhedron_handle(t_ph);
@@ -2206,7 +2206,7 @@ ppl_Polyhedron_rename_dimensions(Prolog_term_ref t_ph,
       if (i >= space_dim || !pifunc.insert(i, j))
 	return PROLOG_FAILURE;
     }
-    ph->rename_dimensions(pifunc);
+    ph->remap_dimensions(pifunc);
     return PROLOG_SUCCESS;
   }
   CATCH_ALL;
