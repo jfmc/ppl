@@ -24,7 +24,7 @@
 # Process this file with autoconf to produce a configure script.
 
 # Every other copy of the package version number gets its value from here.
-AC_INIT([the Parma Polyhedra Library], 0.6pre4, ppl-devel@cs.unipr.it, ppl)
+AC_INIT([the Parma Polyhedra Library], 0.6pre5, ppl-devel@cs.unipr.it, ppl)
 
 # Minimum autoconf version required.
 AC_PREREQ(2.57)
@@ -435,11 +435,6 @@ AC_CHECK_HEADER(Yap/c_interface.h,
                 YAP_PROLOG="")
 fi
 AM_CONDITIONAL(HAVE_YAP_PROLOG, test x$YAP_PROLOG = xyap)
-
-# Check for SWIG
-
-AC_CHECK_PROG(SWIG, swig, swig)
-AM_CONDITIONAL(HAVE_SWIG, test x$SWIG = xswig)
 
 # Check for the Mercury compiler
 

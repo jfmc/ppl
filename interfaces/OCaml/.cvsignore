@@ -4,8 +4,3 @@
 .libs
 Makefile
 Makefile.in
-ppl_ocaml_c.ml
-ppl_ocaml_c.mli
-ppl_ocaml_c_wrap.c
-swig.ml
-swig.mli
