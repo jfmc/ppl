@@ -56,7 +56,7 @@ the client code can exploit all the functionalities of the library yet
 avoid directly manipulating the library's data structures.  The advantages
 are that (1) applications do not depend on the internals of the library
 (these may change from release to release), and (2) the interface
-invariants can be thoroughly checked (by means of the access functions).
+invariants can be thoroughly checked (by the access functions).
 
 The PPL's C interface is initialized by means of the
 <CODE>ppl_initialize</CODE> function.  This function must
@@ -83,7 +83,7 @@ be performed by means of the functions <CODE>ppl_version_major</CODE>,
 <CODE>ppl_version_minor</CODE>, <CODE>ppl_version_revision</CODE>, and
 <CODE>ppl_version_beta</CODE>. The PPL's C interface also provides
 functions <CODE>ppl_version</CODE>, returning character string
-containing the full version number, and <CODE>ppl_version</CODE>,
+containing the full version number, and <CODE>ppl_banner</CODE>,
 returning a string that, in addition, provides (pointers to) other
 useful information for the library user.
 
