@@ -2,8 +2,6 @@
 Enhancements for PPL 0.7
 ========================
 
-- Rewrite Linear_System::sort_and_remove_with_sat() and perhaps
-  Linear_System::sort_rows().
 - Look carefully into the methods Polyhedron::obtain_sorted_constraints*()
   and Polyhedron::obtain_sorted_generators*() and into the code that
   uses them directly.
