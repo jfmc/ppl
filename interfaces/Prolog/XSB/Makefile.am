@@ -135,7 +135,7 @@ check-local: ppl_xsb.la xsb_clpq.P ../tests/clpq.pl ../tests/check_script $(EXPE
 	if [ $(abs_srcdir) != `pwd` ]; then \
 	  rm -f xsb_clpq.P; \
 	fi
-	diff -q --ignore-all-space $(EXPECTED) obtained
+	diff -u --ignore-all-space $(EXPECTED) obtained
 	if [ $(abs_srcdir) != `pwd` ]; then \
 	  cp -f $(srcdir)/xsb_clpq2.P . ; \
 	fi
@@ -151,7 +151,7 @@ check-local: ppl_xsb.la xsb_clpq.P ../tests/clpq.pl ../tests/check_script $(EXPE
 	if [ $(abs_srcdir) != `pwd` ]; then \
 	  rm -f xsb_clpq2.P; \
 	fi
-	diff -q --ignore-all-space $(EXPECTED2) obtained2
+	diff -u --ignore-all-space $(EXPECTED2) obtained2
 	if [ $(abs_srcdir) != `pwd` ]; then \
 	  cp -f $(srcdir)/xsb_pl_check.P . ; \
 	fi
@@ -167,7 +167,7 @@ check-local: ppl_xsb.la xsb_clpq.P ../tests/clpq.pl ../tests/check_script $(EXPE
 	if [ $(abs_srcdir) != `pwd` ]; then \
 	  rm -f xsb_pl_check.P; \
 	fi
-	diff -q --ignore-all-space $(EXPECTED3) obtained3
+	diff -u --ignore-all-space $(EXPECTED3) obtained3
 
 MOSTLYCLEANFILES = \
 ppl_xsb.xwam ppl_xsb.so \

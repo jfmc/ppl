@@ -113,12 +113,12 @@ check-local: ppl_sicstus ../tests/check_script $(EXPECTED) ../tests/check_script
 	  ./ppl_sicstus -l $(srcdir)/sp_clpq.pl \
 	    --goal "main('$(top_srcdir)/interfaces/Prolog/tests/clpq')." \
 	      <$(srcdir)/../tests/check_script >obtained
-	diff -q --ignore-all-space $(EXPECTED) obtained
+	diff -u --ignore-all-space $(EXPECTED) obtained
 	$(LIBTOOL) --mode=execute -dlopen ../../../src/libppl.la \
 	  ./ppl_sicstus -l $(srcdir)/sp_clpq.pl \
 	    --goal "main('$(top_srcdir)/interfaces/Prolog/tests/clpq2')." \
 	      <$(srcdir)/../tests/check_script2 >obtained2
-	diff -q --ignore-all-space $(EXPECTED2) obtained2
+	diff -u --ignore-all-space $(EXPECTED2) obtained2
 	if [ $(srcdir) != `pwd` ]; then \
 	  cp -f $(srcdir)/../tests/pl_check.pl . ;\
 	fi
@@ -130,7 +130,7 @@ check-local: ppl_sicstus ../tests/check_script $(EXPECTED) ../tests/check_script
 	if [ $(srcdir) != `pwd` ]; then \
 	  rm -f pl_check.pl ;\
 	fi
-	diff -q --ignore-all-space $(EXPECTED3) obtained3
+	diff -u --ignore-all-space $(EXPECTED3) obtained3
 
 MOSTLYCLEANFILES = \
 ppl_sicstus.s.o ppl_sicstus.so \

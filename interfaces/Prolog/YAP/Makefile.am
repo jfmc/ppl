@@ -96,7 +96,7 @@ check-local: yap_clpq.pl ../tests/check_script $(EXPECTED) yap_clpq2.pl ../tests
 		-dlopen ppl_yap.la \
 		yap -l $(srcdir)/yap_clpq.pl \
 			<check_script >obtained
-	diff -q --ignore-all-space $(EXPECTED) obtained
+	diff -u --ignore-all-space $(EXPECTED) obtained
 	echo "main." >check_script2
 	cat $(srcdir)/../tests/check_script2 >>check_script2
 	$(LIBTOOL) --mode=execute \
@@ -105,7 +105,7 @@ check-local: yap_clpq.pl ../tests/check_script $(EXPECTED) yap_clpq2.pl ../tests
 		-dlopen ppl_yap.la \
 		yap -l $(srcdir)/yap_clpq2.pl \
 			<check_script2 >obtained2
-	diff -q --ignore-all-space $(EXPECTED2) obtained2
+	diff -u --ignore-all-space $(EXPECTED2) obtained2
 	echo "main." >check_script3
 	$(LIBTOOL) --mode=execute \
 		-dlopen ../../../src/libppl.la \
@@ -113,7 +113,7 @@ check-local: yap_clpq.pl ../tests/check_script $(EXPECTED) yap_clpq2.pl ../tests
 		-dlopen ppl_yap.la \
 		yap -l $(srcdir)/yap_pl_check.pl \
 			<check_script3 >obtained3
-	diff -q --ignore-all-space $(EXPECTED3) obtained3
+	diff -u --ignore-all-space $(EXPECTED3) obtained3
 
 MOSTLYCLEANFILES = \
 check_script check_script2 check_script3 \

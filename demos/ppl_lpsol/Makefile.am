@@ -98,7 +98,7 @@ check-local: ppl_lpsol
 	    ./ppl_lpsol -v $$m -oobtained $$path >/dev/null; \
 	  done \
 	done
-	diff -q --ignore-all-space $(srcdir)/$(EXPECTED) obtained
+	diff -u --ignore-all-space $(srcdir)/$(EXPECTED) obtained
 
 MOSTLYCLEANFILES = \
 tough_examples \

@@ -121,7 +121,7 @@ check-local: ppl_lcdd
 	  echo ppl_lcdd $$path; \
 	  ./ppl_lcdd $$path | $(TEXT_MD5SUM) >>obtained; \
 	done
-	diff -q $(srcdir)/$(EXPECTED) obtained
+	diff -u $(srcdir)/$(EXPECTED) obtained
 
 MOSTLYCLEANFILES = \
 tough_examples \

@@ -114,12 +114,12 @@ check-local: pl_clpq ../tests/check_script $(EXPECTED) pl_clpq2 ../tests/check_s
 		-dlopen ../../../src/libppl.la \
 		-dlopen ../../../Watchdog/libpwl.la \
 		./pl_clpq <$(srcdir)/../tests/check_script >obtained
-	diff -q --ignore-all-space $(EXPECTED) obtained
+	diff -u --ignore-all-space $(EXPECTED) obtained
 	$(LIBTOOL) --mode=execute \
 		-dlopen ../../../src/libppl.la \
 		-dlopen ../../../Watchdog/libpwl.la \
 		./pl_clpq2 <$(srcdir)/../tests/check_script2 >obtained2
-	diff -q --ignore-all-space $(EXPECTED2) obtained2
+	diff -u --ignore-all-space $(EXPECTED2) obtained2
 	if [ $(srcdir) != `pwd` ]; then \
 	  cp -f $(srcdir)/../tests/pl_check.pl . ; \
 	fi ;\
@@ -131,7 +131,7 @@ check-local: pl_clpq ../tests/check_script $(EXPECTED) pl_clpq2 ../tests/check_s
 	if [ $(srcdir) != `pwd` ]; then \
 	  rm -f pl_check.pl; \
 	fi
-	diff -q --ignore-all-space $(EXPECTED3) obtained3
+	diff -u --ignore-all-space $(EXPECTED3) obtained3
 
 MOSTLYCLEANFILES = \
 pl_clpq pl_clpq2 \

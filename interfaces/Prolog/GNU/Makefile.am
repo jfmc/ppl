@@ -122,12 +122,12 @@ check-local: gp_clpq ../tests/check_script $(EXPECTED) gp_clpq2 ../tests/check_s
 		-dlopen ../../../src/libppl.la \
 		-dlopen ../../../Watchdog/libpwl.la \
 		./gp_clpq <$(CHECK_SCRIPT) >obtained
-	diff -q --ignore-all-space $(EXPECTED) obtained
+	diff -u --ignore-all-space $(EXPECTED) obtained
 	$(LIBTOOL) --mode=execute \
 		-dlopen ../../../src/libppl.la \
 		-dlopen ../../../Watchdog/libpwl.la \
 		./gp_clpq2 <$(CHECK_SCRIPT2) >obtained2
-	diff -q --ignore-all-space $(EXPECTED2) obtained2
+	diff -u --ignore-all-space $(EXPECTED2) obtained2
 	echo "['$(srcdir)/../tests/pl_check.pl', '$(srcdir)/gnu_pl_check.pl']." \
 		>check_script3
 	echo "main." >>check_script3
@@ -135,7 +135,7 @@ check-local: gp_clpq ../tests/check_script $(EXPECTED) gp_clpq2 ../tests/check_s
 		-dlopen ../../../src/libppl.la \
 		-dlopen ../../../Watchdog/libpwl.la \
 		./ppl_gprolog <check_script3
-	diff -q --ignore-all-space $(EXPECTED3) obtained3
+	diff -u --ignore-all-space $(EXPECTED3) obtained3
 
 MOSTLYCLEANFILES = \
 gp_clpq gp_clpq2 \
