@@ -62,6 +62,25 @@ AskTell_Pair<CS>::tell() {
 }
 
 template <typename CS>
+bool
+AskTell_Pair<CS>::definitely_entails(const AskTell_Pair& y) const {
+  const CS& ax = ask();
+  const CS& tx = tell();
+  const CS& ay = y.ask();
+  const CS& ty = y.tell();
+   if(!ay.definitely_entails(ax))
+    return false;
+  else if (tx.definitely_entails(ty))
+    return true;
+  // The following test can be omitted.
+  else if (tx.definitely_entails(ay))
+    return false;
+  else
+    return (tx*ay).definitely_entails(ty);
+}
+
+
+template <typename CS>
 AskTell<CS>::AskTell(dimension_type num_dimensions, bool universe)
   : space_dim(num_dimensions) {
   if (!universe)
@@ -152,20 +171,6 @@ AskTell<CS>::size() const {
 }
 
 template <typename CS>
-bool
-adefinitely_entails(const CS& ax, const CS& tx, const CS& ay, const CS& ty) {
-  if(!ay.definitely_entails(ax))
-    return false;
-  else if (tx.definitely_entails(ty))
-    return true;
-  // The following test can be omitted.
-  else if (tx.definitely_entails(ay))
-    return false;
-  else
-    return (tx*ay).definitely_entails(ty);
-}
-
-template <typename CS>
 void
 AskTell<CS>::pair_insert_good(const CS& a, const CS& t) {
   sequence.push_back(AskTell_Pair<CS>(a, t));
@@ -237,7 +242,7 @@ AskTell<CS>::add_dimensions_and_project(dimension_type m) {
 template <typename CS>
 void
 AskTell<CS>::remove_dimensions(const Variables_Set& to_be_removed) {
-  // FIXME: set space_dim
+  space_dim -= to_be_removed.size();
   for (typename AskTell<CS>::iterator i = begin(),
 	 send = end(); i != send; ++i) {
     AskTell_Pair<CS>& p = *i;
@@ -428,19 +433,15 @@ bool
 AskTell<CS>::definitely_entails(const AskTell<CS>& y) const {
   const AskTell<CS>& x = *this;
   if (x.size() == 1 && y.size() == 1)
-    return adefinitely_entails(x.begin()->ask(), x.begin()->tell(),
-			       y.begin()->ask(), y.begin()->tell());
-  //    return definitely_entails(*(x.begin()), *(y.begin())) ;
+    return (*x.begin()).definitely_entails(*y.begin());
   else {
-    typename AskTell<CS>::const_iterator xi, yi;
+    const_iterator xi, yi;
     bool found;
     found = true;
     for (yi = y.begin(); found && yi != y.end(); ++yi) {
       found = false;
       for (xi = x.begin(); (!found) && xi != x.end(); ++xi)
-	found = adefinitely_entails(xi->ask(), xi->tell(),
-				    yi->ask(), yi->tell());
-      //	found = *xi.definitely_entails(*yi);
+	found = (*xi).definitely_entails(*yi);
     }
 #if 0
     bool found1 = (x*y == x);
@@ -467,7 +468,7 @@ AskTell<CS>::add_pair(const CS& ask, const CS& tell) {
 template <typename CS>
 inline
 bool operator==(const AskTell<CS>& x, const AskTell<CS>& y) {
-  return (x.size() == y.size() && equal(x.begin(), x.end(), y.begin()));
+  return x.size() == y.size() && equal(x.begin(), x.end(), y.begin());
 }
 
 /*! \relates AskTell */

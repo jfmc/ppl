@@ -74,6 +74,13 @@ public:
 
   //! Non-const accessor to the <EM>tell</EM> component.
   CS& tell();
+
+  //! \brief
+  //! Returns <CODE>true</CODE> if \p *this definitely entails \p y.
+  //! Returns <CODE>false</CODE> if \p *this may not entail \p y
+  //! (i.e., if \p *this does not entail \p y or if entailment could
+  //! not be decided).
+  bool definitely_entails(const AskTell_Pair& y) const;
   
 private:
   //! The <EM>ask</EM> component.
