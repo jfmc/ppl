@@ -3360,11 +3360,13 @@ PPL::Polyhedron::is_BBRZ02_stabilizing(const Polyhedron& x,
 	return false;
   }
 
-  
   // For each i such that 0 <= i < x.space_dim, let x_num_rays[i] be
   // the number of rays in x.gen_sys
   // having exactly `i' coordinates equal to 0.
-  std::vector<dimension_type> x_num_rays(x.space_dimension());
+  // NOTE: the vector `x_num_rays' is built with
+  // `x.gen_sys.num_columns() - 1', because when we consider NNC
+  // polyhedra they also have the ray of direction -epsilon.
+  std::vector<dimension_type> x_num_rays(x.gen_sys.num_columns() - 1);
   for (dimension_type i = x.space_dimension(); i-- > 0; )
     x_num_rays[i] = 0;
   for (dimension_type i = x_gen_sys_num_rows; i-- > 0; )
@@ -3377,7 +3379,7 @@ PPL::Polyhedron::is_BBRZ02_stabilizing(const Polyhedron& x,
       x_num_rays[num_zeroes]++;
     }
   // The same as above, this time for `y'.
-  std::vector<dimension_type> y_num_rays(y.space_dimension());
+  std::vector<dimension_type> y_num_rays(y.gen_sys.num_columns() - 1);
   for (dimension_type i = y.space_dimension(); i-- > 0; )
     y_num_rays[i] = 0;
   for (dimension_type i = y_gen_sys_num_rows; i-- > 0; )
@@ -3884,7 +3886,7 @@ PPL::Polyhedron::BBRZ02_widening_assign(const Polyhedron& y) {
   // We add the new system of generators `valid_modified_rays'
   // to the polyhedron `x'.
   x.add_generators_and_minimize(valid_modified_rays);
-  
+
   // Check for stabilization.
   if (is_BBRZ02_stabilizing(x, y)) {
 #if 0 //#ifndef NDEBUG
