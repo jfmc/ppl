@@ -31,6 +31,7 @@ using namespace Parma_Polyhedra_Library;
 #define NOISY 0
 #endif
 
+#if NOISY
 static void
 print_function(const PFunction& function, const std::string& intro = "",
 	       std::ostream& s = std::cout) {
@@ -38,6 +39,7 @@ print_function(const PFunction& function, const std::string& intro = "",
     s << intro << endl;
   function.print(s);
 }
+#endif
 
 static void
 test1() {
