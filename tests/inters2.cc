@@ -28,10 +28,13 @@ site: http://www.cs.unipr.it/ppl/ . */
 using namespace std;
 using namespace Parma_Polyhedra_Library;
 
-#define NOISY 1
+#define NOISY 0
 
 int
 count_vertices(const Polyhedron& ph) {
+  if (ph.check_empty() || ph.is_zero_dim())
+    return 0;
+
   int count = 0;
   const GenSys& gs = ph.generators();
   for (GenSys::const_iterator i = gs.begin(), gs_end = gs.end();
@@ -51,19 +54,20 @@ main() {
   // This is the height of the pyramid.
   const Integer pyramid_height = 16;
 
-  // We will intersect it with the half-spaces `z <= k'
+  // We will intersect it with the half-spaces `z <= k' and `z >= k'
   // with k = i*(height/4) for i = -1, 0, 1, ..., 5.
   struct {
     Integer plane_height;
-    int num_vertices;
+    int num_vertices_above;
+    int num_vertices_below;
   } ph_nv[]
-      = { {-1*(pyramid_height/4), 0},
-	  { 0*(pyramid_height/4), 4},
-	  { 1*(pyramid_height/4), 8},
-	  { 2*(pyramid_height/4), 8},
-	  { 3*(pyramid_height/4), 8},
-	  { 4*(pyramid_height/4), 1},
-	  { 5*(pyramid_height/4), 0}
+      = { {-1*(pyramid_height/4), 5, 0},
+	  { 0*(pyramid_height/4), 5, 4},
+	  { 1*(pyramid_height/4), 5, 8},
+	  { 2*(pyramid_height/4), 5, 8},
+	  { 3*(pyramid_height/4), 5, 8},
+	  { 4*(pyramid_height/4), 1, 5},
+	  { 5*(pyramid_height/4), 0, 5}
       };
 
   GenSys gs;
@@ -79,21 +83,38 @@ main() {
     print_generators(pyramid, "*** pyramid generators ***");
 #endif
 
-  bool ok = false;
+  bool ok = true;
 
   for (size_t i = 0; i <= 6; ++i) {
-    Polyhedron hyper_space(3);
-    hyper_space.insert(z <= ph_nv[i].plane_height);
+    // Above.
+    Polyhedron hyper_space_above(3);
+    hyper_space_above.insert(z >= ph_nv[i].plane_height);
 
     Polyhedron computed_result = pyramid;
-    computed_result.intersection_assign(hyper_space);
+    computed_result.intersection_assign(hyper_space_above);
 
     if (ok
-	&& count_vertices(computed_result) != ph_nv[i].num_vertices)
+	&& count_vertices(computed_result) != ph_nv[i].num_vertices_above)
       ok = false;
 
 #if NOISY
-    print_constraints(hyper_space, "*** hyper_space ***");
+    print_constraints(hyper_space_above, "*** hyper_space_above ***");
+    print_generators(computed_result, "*** computed_result ***");
+#endif
+
+    // Below.
+    Polyhedron hyper_space_below(3);
+    hyper_space_below.insert(z <= ph_nv[i].plane_height);
+
+    computed_result = pyramid;
+    computed_result.intersection_assign(hyper_space_below);
+
+    if (ok
+	&& count_vertices(computed_result) != ph_nv[i].num_vertices_below)
+      ok = false;
+
+#if NOISY
+    print_constraints(hyper_space_below, "*** hyper_space_below ***");
     print_generators(computed_result, "*** computed_result ***");
 #endif
   }
