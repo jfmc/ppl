@@ -97,6 +97,13 @@ int
 ppl_initialize __P((void));
 
 /*!
+  Finalizes the Parma Polyhedra Library.
+  This function must be called after any other function.
+*/
+int
+ppl_finalize __P((void));
+
+/*!
   Installs the user-defined error handler pointed by \p h.  The error
   handler takes an error code and a textual description that gives
   further information about the actual error.  The C string containing
@@ -133,6 +140,12 @@ int
 ppl_delete_Coefficient __P((ppl_const_Coefficient_t c));
 
 /*!
+  Sets the value of the GMP integer \p z to the value of \p c.
+*/
+int
+ppl_Coefficient_to_mpz_t __P((ppl_Coefficient_t c, mpz_t z));
+
+/*!
   Returns a positive integer if \p c is well formed, i.e., if it
   satisfies all its implementation variant; returns 0 and make some
   noise if \p c is broken.  Useful for debugging purposes.
@@ -159,6 +172,14 @@ ppl_new_LinExpression __P((ppl_LinExpression_t* ple));
 int
 ppl_new_LinExpression_with_dimension __P((ppl_LinExpression_t* ple,
 					  unsigned int d));
+
+/*!
+  Builds a linear expression that is a copy of \p le; writes an handle
+  for the newly created linear expression at address \p ple.
+*/
+int
+ppl_new_LinExpression_from_LinExpression __P((ppl_LinExpression_t* ple,
+					      ppl_const_LinExpression_t le));
 
 /*!
   Invalidates the handle \p le: this makes sure the corresponding
@@ -666,14 +687,16 @@ __P((ppl_GenSys__const_iterator_t dst,
   the generator system \p gs.
 */
 int
-ppl_GenSys_begin __P((ppl_GenSys_t gs, ppl_GenSys__const_iterator_t git));
+ppl_GenSys_begin __P((ppl_const_GenSys_t gs,
+		      ppl_GenSys__const_iterator_t git));
 
 /*!
   Assigns to \p git a const iterator "pointing" past the end of the
   generator system \p gs.
 */
 int
-ppl_GenSys_end __P((ppl_GenSys_t gs, ppl_GenSys__const_iterator_t* pgit));
+ppl_GenSys_end __P((ppl_const_GenSys_t gs,
+		    ppl_GenSys__const_iterator_t pgit));
 
 /*!
   Dereference \p git writing a const handle to the resulting
@@ -860,7 +883,7 @@ ppl_Polyhedron_constraints __P((ppl_const_Polyhedron_t ph,
 */
 int
 ppl_Polyhedron_generators __P((ppl_const_Polyhedron_t ph,
-			       ppl_const_GenSys_t* pcs));
+			       ppl_const_GenSys_t* pgs));
 
 /*!
   Adds a copy of the constraint \p c to the system of constraints of

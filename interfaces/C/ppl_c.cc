@@ -31,6 +31,7 @@ site: http://www.cs.unipr.it/ppl/ . */
 #include "Generator.defs.hh"
 #include "GenSys.defs.hh"
 #include "Polyhedron.defs.hh"
+#include "Init.defs.hh"
 #include "ppl_c.h"
 
 using namespace Parma_Polyhedra_Library;
@@ -99,8 +100,11 @@ unsigned int PPL_POLY_CON_RELATION_SATURATES;
 
 unsigned int PPL_POLY_GEN_RELATION_SUBSUMES;
 
+static Init* init_object_ptr = 0;
 int
 ppl_initialize(void) try {
+  init_object_ptr = new Init();
+
   PPL_POLY_CON_RELATION_IS_DISJOINT
     = Poly_Con_Relation::is_disjoint().get_flags();
   PPL_POLY_CON_RELATION_STRICTLY_INTERSECTS
@@ -116,12 +120,25 @@ ppl_initialize(void) try {
 }
 CATCH_ALL
 
+int
+ppl_finalize(void) try {
+  delete init_object_ptr;
+  return 0;
+}
+CATCH_ALL
 
 DECLARE_CONVERSIONS(Coefficient)
 
 int
-ppl_Coefficient_from_mpz_t(ppl_Coefficient_t* pc, mpz_t z) try {
+ppl_new_Coefficient_from_mpz_t(ppl_Coefficient_t* pc, mpz_t z) try {
   *pc = to_nonconst(new Integer(z));
+  return 0;
+}
+CATCH_ALL
+
+int
+ppl_Coefficient_to_mpz_t(ppl_Coefficient_t c, mpz_t z) try {
+  mpz_set(z, to_const(c)->get_mpz_t());
   return 0;
 }
 CATCH_ALL
@@ -153,6 +170,15 @@ int
 ppl_new_LinExpression_with_dimension(ppl_LinExpression_t* ple,
 				     unsigned int d) try {
   *ple = to_nonconst(new LinExpression(0*Variable(d)));
+  return 0;
+}
+CATCH_ALL
+
+int
+ppl_new_LinExpression_from_LinExpression(ppl_LinExpression_t* ple,
+					 ppl_const_LinExpression_t le) try {
+  const LinExpression& lle = *to_const(le);
+  *ple = to_nonconst(new LinExpression(lle));
   return 0;
 }
 CATCH_ALL
@@ -441,7 +467,7 @@ ppl_assign_ConSys__const_iterator_from_ConSys__const_iterator
 CATCH_ALL
 
 int
-ppl_ConSys_begin(ppl_ConSys_t cs, ppl_ConSys__const_iterator_t cit) try {
+ppl_ConSys_begin(ppl_const_ConSys_t cs, ppl_ConSys__const_iterator_t cit) try {
   const ConSys& ccs = *to_const(cs);
   ConSys::const_iterator& ccit = *to_nonconst(cit);
   ccit = ccs.begin();
@@ -450,7 +476,7 @@ ppl_ConSys_begin(ppl_ConSys_t cs, ppl_ConSys__const_iterator_t cit) try {
 CATCH_ALL
 
 int
-ppl_ConSys_end(ppl_ConSys_t cs, ppl_ConSys__const_iterator_t cit) try {
+ppl_ConSys_end(ppl_const_ConSys_t cs, ppl_ConSys__const_iterator_t cit) try {
   const ConSys& ccs = *to_const(cs);
   ConSys::const_iterator& ccit = *to_nonconst(cit);
   ccit = ccs.end();
@@ -711,7 +737,7 @@ ppl_assign_GenSys__const_iterator_from_GenSys__const_iterator
 CATCH_ALL
 
 int
-ppl_GenSys_begin(ppl_GenSys_t gs, ppl_GenSys__const_iterator_t git) try {
+ppl_GenSys_begin(ppl_const_GenSys_t gs, ppl_GenSys__const_iterator_t git) try {
   const GenSys& ggs = *to_const(gs);
   GenSys::const_iterator& ggit = *to_nonconst(git);
   ggit = ggs.begin();
@@ -720,7 +746,7 @@ ppl_GenSys_begin(ppl_GenSys_t gs, ppl_GenSys__const_iterator_t git) try {
 CATCH_ALL
 
 int
-ppl_GenSys_end(ppl_GenSys_t gs, ppl_GenSys__const_iterator_t git) try {
+ppl_GenSys_end(ppl_const_GenSys_t gs, ppl_GenSys__const_iterator_t git) try {
   const GenSys& ggs = *to_const(gs);
   GenSys::const_iterator& ggit = *to_nonconst(git);
   ggit = ggs.end();
