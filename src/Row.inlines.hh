@@ -553,8 +553,7 @@ swap(Parma_Polyhedra_Library::Row& x, Parma_Polyhedra_Library::Row& y) {
 
 /*!
   \relates Parma_Polyhedra_Library::Row
-  Specializes <CODE>std::iter_swap</CODE>
-  for <CODE>std::vector<Row>::iterator</CODE>.
+  Specializes <CODE>std::iter_swap</CODE>.
 */
 inline void
 iter_swap(std::vector<Parma_Polyhedra_Library::Row>::iterator x,

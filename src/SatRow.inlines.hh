@@ -130,8 +130,7 @@ swap(Parma_Polyhedra_Library::SatRow& x,
 
 /*!
   \relates Parma_Polyhedra_Library::SatRow
-  Specializes <CODE>std::iter_swap</CODE>
-  for <CODE>std::vector<SatRow>::iterator</CODE>.
+  Specializes <CODE>std::iter_swap</CODE>.
 */
 inline void
 iter_swap(std::vector<Parma_Polyhedra_Library::SatRow>::iterator x,
