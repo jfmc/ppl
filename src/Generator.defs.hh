@@ -284,6 +284,9 @@ public:
   //! Assignment operator.
   Generator& operator=(const Generator& g);
 
+  //! Returns the maximum space dimension a Generator can handle.
+  static dimension_type max_space_dimension();
+
   //! Returns the dimension of the vector space enclosing \p *this.
   dimension_type space_dimension() const;
 

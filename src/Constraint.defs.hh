@@ -226,6 +226,9 @@ public:
   //! Assignment operator.
   Constraint& operator=(const Constraint& c);
 
+  //! Returns the maximum space dimension a Constraint can handle.
+  static dimension_type max_space_dimension();
+
   //! Returns the dimension of the vector space enclosing \p *this.
   dimension_type space_dimension() const;
 

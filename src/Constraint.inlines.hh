@@ -58,6 +58,11 @@ Constraint::operator=(const Constraint& c) {
 }
 
 inline dimension_type
+Constraint::max_space_dimension() {
+  return Linear_Row::max_space_dimension();
+}
+
+inline dimension_type
 Constraint::space_dimension() const {
   return Linear_Row::space_dimension();
 }
