@@ -3,7 +3,7 @@
 \RequirePackage{amsmath}
 \RequirePackage{amssymb}
 
-%% Special letters denoting sets and algebras
+%% Special letters denoting sets and algebras.
 \providecommand*{\Nset}{\mathbb{N}}            % Naturals
 \newcommand*{\extNset}{\mathbb{N}_\infty}      % Extended naturals
 \providecommand*{\Oset}{\mathbb{O}}            % Ordinals
@@ -13,7 +13,7 @@
 \providecommand*{\Zset}{\mathbb{Z}}            % Integers
 
 
-%% Set theory
+%% Set theory.
 \renewcommand{\emptyset}{\mathord{\varnothing}}
 \newcommand*{\sseq}{\subseteq}
 \newcommand*{\sseqf}{\mathrel{\subseteq_\mathrm{f}}}
@@ -25,7 +25,7 @@
                                \begin{array}{@{}l@{}}#2\end{array}
                       \right.   \,\right\}}}
 
-%% Logic notation
+%% Logic notation.
 \newcommand*{\entails}{\mathrel{\vdash}}
 \newcommand*{\bigland}{\mathop{\bigwedge}\limits}
 \newcommand*{\biglor}{\mathop{\bigvee}\limits}
@@ -35,15 +35,18 @@
 \newcommand{\st}{\mathrel{.}}
 \newcommand{\itc}{\mathrel{:}}
 
-%% Things that hold by definition
+%% Things that hold by definition.
 \newcommand{\defrel}[1]{\mathrel{\buildrel \mathrm{def} \over {#1}}}
 \newcommand{\defeq}{\defrel{=}}
 \newcommand{\defiff}{\defrel{\Longleftrightarrow}}
 
-% Matrix functions
+% Vectors.
+\newcommand{\vect}[1]{\mathbf{#1}}
+
+% Matrix functions.
 \newcommand*{\transpose}{\mathrm{T}}
 
-% Polyhedron functions
+% Polyhedron functions.
 \newcommand{\prank}{\mathop{\mathrm{rank}}}
 \newcommand{\pdim}{\mathop{\mathrm{dim}}}
 

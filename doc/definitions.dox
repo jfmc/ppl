@@ -35,51 +35,51 @@ The following definitions and results are taken from:
 <B>Combination</B>
 
 Let \f$\lambda_1, \ldots, \lambda_k \in \Rset\f$ and 
-\f$x_1, \ldots, x_k \in \Rset^n\f$. The linear combination 
-\f$\lambda_1 x_1 + \ldots + \lambda_k x_k\f$ is said to be
+\f$\vect{x}_1, \ldots, \vect{x}_k \in \Rset^n\f$. The linear combination
+\f$\lambda_1 \vect{x}_1 + \ldots + \lambda_k \vect{x}_k\f$ is said to be
 
 - a <EM>positive combination</EM>,
-  if \f$\forall j \itc \lambda_j \geq 0\f$;
+  if \f$\forall j \in \{ 1, \ldots, k \} \itc \lambda_j \geq 0\f$;
 - an <EM>affine combination</EM>, if \f$\sum_{j = 1}^k \lambda_j = 1\f$;
 - a <EM>convex combination</EM>, if both the previous conditions hold.
 
 <B>Scalar product</B>
 
-Let \f$x = (x_1, \ldots, x_n)^\transpose\f$,
-\f$y = (y_1, \ldots, y_n)^\transpose \in \Rset^n\f$.
-The <EM>scalar product</EM> of \f$x\f$ and \f$y\f$ 
+Let \f$\vect{x} = (x_1, \ldots, x_n)^\transpose\f$,
+\f$\vect{y} = (y_1, \ldots, y_n)^\transpose \in \Rset^n\f$.
+The <EM>scalar product</EM> of \f$\vect{x}\f$ and \f$\vect{y}\f$ 
 is defined as
 \f[
-   \langle x, y \rangle = \sum_{i=1}^n x_i y_i.
+   \langle \vect{x}, \vect{y} \rangle = \sum_{i=1}^n x_i y_i.
 \f]  
-The vectors \f$x\f$ and \f$y\f$ are <EM>orthogonal</EM> if 
-\f$\langle x, y \rangle = 0\f$.
+The vectors \f$\vect{x}\f$ and \f$\vect{y}\f$ are <EM>orthogonal</EM> if 
+\f$\langle \vect{x}, \vect{y} \rangle = 0\f$.
 
 <B>Convex hull</B>
 
-The <EM>convex hull</EM> of a set \f$K\f$ is the set of all
+The <EM>convex hull</EM> of a set \f$K \sseq \Rset^n\f$ is the set of all
 the convex combinations of the points in \f$K\f$.
 The set \f$K\f$ is convex if it is its own convex hull.
 
 <B>Affine transformation</B>
 
-An <EM>affine transformation</EM> is a function which maps a 
-point \f$x \in \Rset^n\f$ to a point \f$x' \in \Rset^m\f$
+An <EM>affine transformation</EM> is a function mapping a 
+point \f$\vect{x} \in \Rset^n\f$ to a point \f$\vect{x}' \in \Rset^m\f$
 such that
 \f[
-  x' = Ax + b
+  \vect{x}' = A\vect{x} + \vect{b}
 \f]
 where \f$A \in \Rset^m \times \Rset^n\f$ and 
-\f$b \in \Rset^m\f$.
+\f$\vect{b} \in \Rset^m\f$.
 
 <B>Linear independence</B>
 
-A set of points \f$x_1, \ldots, x_k \in \Rset^n\f$ is 
+A set of points \f$\vect{x}_1, \ldots, \vect{x}_k \in \Rset^n\f$ is 
 <EM>linearly independent</EM> if,
 for all \f$\lambda_1, \ldots, \lambda_k \in \Rset\f$,
 the set of equations
 \f[
-  \sum_{i = 1}^k \lambda_i x_i = 0
+  \sum_{i = 1}^k \lambda_i \vect{x}_i = \vect{0}
 \f]
 implies that, for each \f$i = 1\f$, \f$\dots\f$, \f$k\f$,
 \f$\lambda_i = 0\f$.
@@ -102,74 +102,92 @@ matrix \f$A\f$ is the <EM>rank</EM> of \f$A\f$ and is denoted by
 
 <B>Affine independence</B>
 
-A set of points \f$x_1, \ldots, x_k \in \Rset^n\f$ is 
+A set of points \f$\vect{x}_1, \ldots, \vect{x}_k \in \Rset^n\f$ is 
 <EM>affinely independent</EM> if,
 for all \f$\alpha_1, \ldots, \alpha_k \in \Rset\f$,
 the set of equations
 \f[
-  \sum_{i = 1}^k \alpha_i x_i = 0, \quad \sum_{i = 1}^k \alpha_i = 0
+  \sum_{i = 1}^k \alpha_i \vect{x}_i = \vect{0},
+    \quad
+  \sum_{i = 1}^k \alpha_i = 0
 \f]
 implies that, for each \f$i = 1, \ldots, k\f$, \f$\alpha_i = 0\f$.
 
 Note that linear independence implies affine independence, but the 
 converse is not true. Moreover the maximum number of affinely independent
-points in \f$\Rset^n\f$ is \f$n + 1\f$ (e.g. \f$n\f$ linearly 
-independent points and the zero vector).
+points in \f$\Rset^n\f$ is \f$n + 1\f$
+(e.g., \f$n\f$ linearly independent points and the origin \f$\vect{0}\f$.)
 
 
-<B>Polyhedra</B>
+<B>Polyhedron</B>
 
-A subset \f$P\f$ of \f$\Rset^n\f$ is called a <EM>polyhedron</EM> 
+A set \f$P \sseq \Rset^n\f$ is called a <EM>polyhedron</EM> 
 if it is the set of solutions to a finite number of linear equalities 
 and inequalities: 
 \f[
-  P = \{\,x \in \Rset^n \mid Ax = b, Cx \geq d\,\},
+  P = \{\,
+        \vect{x} \in \Rset^n
+      \mid
+        A\vect{x} = \vect{b}, C\vect{x} \geq \vect{d}
+      \,\},
 \f]
 where, if \f$m_1\f$ is the number of equalities and
 \f$m_2\f$ the number of inequalities,
 \f$A \in \Rset^{m_1} \times \Rset^n\f$,
-\f$b \in \Rset^{m_1}\f$, 
+\f$\vect{b} \in \Rset^{m_1}\f$, 
 \f$C \in \Rset^{m_2} \times \Rset^n\f$ and
-\f$d \in \Rset^{m_2}\f$. 
+\f$\vect{d} \in \Rset^{m_2}\f$. 
 
-Note that, if \f$c, x \in \Rset^n\f$ and \f$\lambda \in \Rset\f$
+Note that, if \f$\vect{c}, \vect{x} \in \Rset^n\f$
+and \f$\lambda \in \Rset\f$
 and we have the linear inequalities 
-\f$\langle c, x \rangle \geq \lambda\f$ and
-\f$\langle c, x \rangle \leq \lambda\f$
-(i.e., \f$\langle -c, x \rangle \geq -\lambda\f$),
+\f$\langle \vect{c}, \vect{x} \rangle \geq \lambda\f$ and
+\f$\langle \vect{c}, \vect{x} \rangle \leq \lambda\f$
+(i.e., \f$\langle -\vect{c}, \vect{x} \rangle \geq -\lambda\f$),
 then they can be replaced by the equivalent unique 
 <EM>linear equality</EM>
-\f$\langle c, x \rangle = \lambda\f$.
+\f$\langle \vect{c}, \vect{x} \rangle = \lambda\f$.
 Conversely, if we have a linear equality,
 then we can split it into two linear inequalities (as above).
 
-It follows that a polyhedron \f$P\f$ can be always represented as 
+It follows that a polyhedron \f$P \sseq \Rset^n\f$
+can be always represented as 
 \f[
-  P = \{\,x \in \Rset^n \mid Ax \geq b\,\}
+  P = \{\,
+        \vect{x} \in \Rset^n
+      \mid
+        A\vect{x} \geq \vect{b}
+      \,\}
 \f]
-for some 
-matrix \f$ A \in \Rset^{m} \times \Rset^n\f$ and
-and vector \f$ b \in \Rset^{m}\f$.
+for some matrix \f$ A \in \Rset^{m} \times \Rset^n\f$
+and vector \f$\vect{b} \in \Rset^{m}\f$.
 
-In the sequel we will refer to linear equalities and linear inequalities
-simply as equalities and inequalities respectively and 
-refer to an equality or inequality as a <EM>constraint</EM>.
+In the sequel we will simply write ``equality'' and ``inequality''
+to mean ``linear equality'' and ``linear inequality'', respectively;
+also, we will refer to either an equality or an inequality
+as a <EM>constraint</EM>.
 
-A polyhedron \f$P\f$ is 
-said to be <EM>rational</EM> if there exists a matrix
-\f$ A \in \Rset^{m'} \times \Rset^n\f$
-and vector \f$ b \in \Rset^{m'}\f$ with rational coefficients such that 
+A polyhedron \f$P \sseq \Rset^n\f$ is said to be <EM>rational</EM>
+if there exists a matrix
+\f$A \in \Rset^{m'} \times \Rset^n\f$
+and a vector \f$\vect{b} \in \Rset^{m'}\f$
+with rational coefficients such that 
 \f[
-  P = \{\,x \in \Rset^n \mid A'x \geq b'\,\}.
+  P = \{\,
+        \vect{x} \in \Rset^n
+      \mid
+        A\vect{x} \geq \vect{b}
+      \,\}.
 \f]
 
 In the sequel, we will consider only rational polyhedra and 
-assume that, if \f$P = \{\,x \in \Rset^n \mid Ax \geq b\,\}\f$, then 
-\f$(A, b)\f$ has rational coefficients.
+assume that, if
+\f$P = \{\,\vect{x} \in \Rset^n \mid A\vect{x} \geq \vect{b}\,\}\f$,
+then \f$A\f$ and \f$\vect{b}\f$ both have rational coefficients.
 
 <B>Universe polyhedron</B>
 
-A polyhedron \f$P\f$ of \f$\Rset^n\f$ is called <EM>universe polyhedron</EM>
+A polyhedron \f$P \sseq \Rset^n\f$ is called <EM>universe polyhedron</EM>
 if it is the whole space (i.e. \f$P = \Rset^n\f$).
 
 <B>Polytope</B>
@@ -188,12 +206,12 @@ A bounded polyhedron is called a <EM>polytope</EM>.
 
 <B><EM>Proposition</EM></B>
 
-A polyhedron is a convex set.
+A polyhedron is a closed convex set.
 
 <B>Dimension</B>
 
-A polyhedron \f$P\f$ is of <EM>dimension</EM> \f$k\f$, denoted by 
-\f$\pdim(P) = k\f$, if the maximum number of 
+A polyhedron \f$P \sseq \Rset^n\f$ is of <EM>dimension</EM> \f$k\f$,
+denoted by \f$\pdim(P) = k\f$, if the maximum number of 
 affinely independent points in \f$P\f$ is \f$k + 1\f$.
 
 <B>Vertices</B>
@@ -206,31 +224,45 @@ distinct points in \f$P\f$.
 
 Let \f$P, P_0\f$ be the polyhedra
 \f[
-P= \{\,x \in \Rset^n \mid Ax \geq b\,\} \neq \emptyset \quad \text{and }
-P_0 = \{\,r \in \Rset^n \mid Ar \geq 0\,\}
+  P = \{\,
+        \vect{x} \in \Rset^n
+      \mid
+        A\vect{x} \geq \vect{b}
+      \,\}
+        \neq \emptyset
+\quad \text{and }
+  P_0
+    = \{\,
+        \vect{r} \in \Rset^n
+      \mid
+        A\vect{r} \geq \vect{0}
+      \,\}
 \f]
 where 
-\f$A \in \Rset^m \times \Rset^n\f$, \f$b \in \Rset^m\f$.
+\f$A \in \Rset^m \times \Rset^n\f$, \f$\vect{b} \in \Rset^m\f$.
 Then any point
-\f$r \in P_0 \setminus \{0\}\f$ is called a <EM>ray</EM> of \f$P\f$.
+\f$\vect{r} \in P_0 \setminus \{ \vect{0} \}\f$
+is called a <EM>ray</EM> of \f$P\f$.
 
 A ray indicates a direction in which the polyhedra is infinite (i.e. open).
 
 <B><EM>Proposition</EM></B>
 
-A point \f$r \in \Rset^n\f$ is a ray of \f$P\f$ if and only if for 
-any point \f$x \in P\f$, \f$(x + \mu r) \in P\f$ for all 
-\f$\mu \in \Rset, \mu > 0\f$.
+A point \f$\vect{r} \in \Rset^n\f$ is a ray of \f$P\f$ if and only if for 
+any point \f$\vect{x} \in P\f$, \f$(\vect{x} + \mu \vect{r}) \in P\f$
+for all \f$\mu \in \Rset, \mu > 0\f$.
 
 <B>Extreme rays</B>
 
-A ray \f$r\f$ of \f$P\f$ is an <EM>extreme ray</EM> if there do not exist 
-two rays \f$r_1\f$ and \f$r_2\f$ of \f$P\f$, 
-\f$r_1 \neq \lambda r_2\f$ for any 
+A ray \f$\vect{r}\f$ of \f$P\f$ is an <EM>extreme ray</EM>
+if there do not exist two rays \f$\vect{r}_1\f$ and \f$\vect{r}_2\f$
+of \f$P\f$, 
+\f$\vect{r}_1 \neq \lambda \vect{r}_2\f$ for any 
 \f$\lambda \in \Rset, \lambda > 0\f$, such that 
 \f[
-  r = \mu_1 r_1 + \mu_2 r_2 \quad \text{with } 
-  \mu_1, \mu_2 \in  \Rset, \mu_1, \mu_2 \geq 0.
+  \vect{r} = \mu_1 \vect{r}_1 + \mu_2 \vect{r}_2
+    \quad \text{with } 
+      \mu_1, \mu_2 \in  \Rset, \mu_1, \mu_2 \geq 0.
 \f]
 
 Note that the set of extreme rays forms a basis which describes all 
@@ -239,9 +271,9 @@ directions in which the polyhedron is open.
 <B>Lines</B>
 
 A <EM>line</EM> (or <EM>bidirectional ray</EM>) of a polyhedron
-\f$P\f$ is a vector 
-\f$l\f$, such that, for all \f$x \in P\f$ and all \f$\mu \in \Rset\f$,
-\f$(x + \mu l) \in P\f$.
+\f$P\f$ is a vector \f$\vect{l}\f$, such that,
+for all \f$\vect{x} \in P\f$ and all \f$\mu \in \Rset\f$,
+\f$(\vect{x} + \mu \vect{l}) \in P\f$.
 
 It follows that two rays in exactly opposite directions make a line.
 
@@ -249,30 +281,32 @@ It follows that two rays in exactly opposite directions make a line.
 
 A set \f$C \sseq \Rset^n\f$ is a <EM>cone</EM> if 
 \f[
-  x \in C \Rightarrow \lambda x \in C 
+  \vect{x} \in C \Rightarrow \lambda \vect{x} \in C 
   \text{ for all } \lambda \in \Rset, \lambda \geq 0.
 \f]
 
 <B>Polyhedral cone</B>
 
-The polyhedron \f$P = \{\,x \in \Rset^n \mid Ax \geq 0\,\}\f$ 
+The polyhedron
+\f$P = \{\,\vect{x} \in \Rset^n \mid A\vect{x} \geq \vect{0}\,\}\f$ 
 is a convex cone and it is called <EM>polyhedral cone</EM>. 
 
-Thus, a polyhedral cone is either <EM>pointed</EM>, having just the origin as 
-a vertex, or it has no vertices.
+Thus, a polyhedral cone is either <EM>pointed</EM>,
+having the origin as its only vertex, or it has no vertices at all.
 
 <B>Lineality space</B>
 
-Given a polyhedron \f$P = \{\,x \in \Rset^n \mid Ax \geq b\,\}\f$, 
+Given a polyhedron
+\f$P = \{\,\vect{x} \in \Rset^n \mid A\vect{x} \geq \vect{b}\,\}\f$, 
 the <EM>lineality space</EM> of \f$P\f$ is the set
 \f[
-  \{\,x \in P \mid Ax = 0\,\}
+  \{\, \vect{x} \in P \mid A\vect{x} = \vect{0} \,\}
 \f]
 and it is denoted by \f$\mathop{\mathrm{lin. space}}(P)\f$. 
 
 <B>Minkowski's sum</B>
 
-Let be \f$R\f$ and \f$S\f$ two sets. Then the <EM>Minkowski's sum</EM> of 
+Let \f$R\f$ and \f$S\f$ be two sets. Then the <EM>Minkowski's sum</EM> of 
 of \f$R\f$ and \f$S\f$ is defined as follows:
 \f[
   R + S = \{\,r + s \mid r \in R, s \in S\,\}.
@@ -280,45 +314,53 @@ of \f$R\f$ and \f$S\f$ is defined as follows:
 
 <B>Generators</B>
 
-A polyhedron \f$P\f$ can also be generated from
-a set of vertices \f$V\f$, a set of lines 
-\f$L\f$ and a set of rays \f$R\f$.
-These three sets together form the <EM>generators</EM> of  \f$P\f$.
+A polyhedron \f$P \sseq \Rset^n\f$ can also be generated from
+a set of vertices \f$V\f$,
+a set of rays \f$R\f$ and
+a set of lines \f$L\f$.
+Together, these three sets are the <EM>generators</EM> of \f$P\f$.
 
 The following theorem justifies this terminology and states that
-any polyhedron \f$P\f$ can be <EM>decomposed</EM> as 
+any polyhedron \f$P \sseq \Rset^n\f$ can be <EM>decomposed</EM> as 
 \f[
   P = \mathcal{V} + \mathcal{R} + \mathcal{L}
 \f]
-where the symbol '\f$+\f$' denotes the Minkowski's sum
-and
- \f$\mathcal{V}\f$, \f$\mathcal{R}\f$ and \f$\mathcal{L}\f$ 
-are the sets of points that are convex combination of the points of \f$V\f$, 
-non-negative combination of the points of \f$R\f$ and linear 
-combination of the points of \f$L\f$, respectively.
+where the symbol '\f$+\f$' denotes the Minkowski's sum and
+ - \f$\mathcal{V}\f$ is the set of all the convex combinations
+   of the points in \f$V\f$;
+ - \f$\mathcal{R}\f$ is the set of all the non-negative combinations
+   of the points in \f$R\f$; and
+ - \f$\mathcal{L}\f$ is the set of all the linear combinations
+   of the points in \f$L\f$.
 
-Note that: \f$\mathcal{V}\f$ is a polytope,
+Note that:
+\f$\mathcal{V}\f$ is a polytope,
 \f$\mathcal{R}\f$ is a pointed cone, and
 \f$\mathcal{L}\f$ is \f$\mathop{\mathrm{lin.space}}(P)\f$.
 
 <B>Minkowski's theorem</B>
 
-Let \f$P = \{\,x \in \Rset^n \mid Ax \geq b\,\}\f$ be a nonempty 
-polyhedron where \f$A\f$ is a matrix of rank \f$n\f$.
-Let also \f$\{v_k\}_{k \in K}\f$ be the set of vertices of \f$P\f$ and 
-\f$\{r_j\}_{j \in J}\f$ the set of extreme rays of \f$P\f$.
+Let
+\f$P = \{\, \vect{x} \in \Rset^n \mid A\vect{x} \geq \vect{b} \,\}\f$
+be a non-empty polyhedron where \f$A\f$ is a matrix of rank \f$n\f$.
+Let also
+\f$\{ \vect{v}_k \}_{k \in K}\f$ be the set of vertices of \f$P\f$ and
+\f$\{ \vect{r}_j \}_{j \in J}\f$ be the set of extreme rays of \f$P\f$.
 Then
 \f[
   P = \sset{
-      x \in \Rset^n 
+        \vect{x} \in \Rset^n 
       }{
-    x = \sum_{k \in K} \lambda_k v_k + \sum_{j \in J} \mu_j r_j, 
-         \text{ where, } \\ 
-         \text{ for all } k \in K, j \in J, 
-        \lambda_k, \mu_j \in \Rset, 
-        \lambda_k \geq 0, \mu_j \geq 0, \\
-        \sum_{k \in K} \lambda_k = 1, \\
-     }
+        \vect{x} = \sum_{k \in K} \lambda_k \vect{v}_k
+                     + \sum_{j \in J} \mu_j \vect{r}_j,
+          \text{ where} \\
+        \forall k \in K \itc  
+          \lambda_k \in \Rset, \lambda_k \geq 0,
+          \sum_{k \in K} \lambda_k = 1 \\
+        \text{and }
+        \forall j \in J \itc
+          \mu_j \in \Rset, \mu_j \geq 0
+      }.
 \f]
 
 The conditions that \f$P\f$ is not empty and 
@@ -333,12 +375,17 @@ a rational polyhedron:
 
 <B>Weil's theorem</B>
 
-If \f$A\f$ is a rational \f$m_1 \times n\f$ matrix, \f$B\f$ is a rational 
-\f$m_2 \times n\f$ matrix and 
+If \f$A\f$ is a rational \f$m_1 \times n\f$ matrix,
+\f$B\f$ is a rational \f$m_2 \times n\f$ matrix and 
 \f[
-  Q = \bigl\{\,x \in \Rset^n \mid x = y^\transpose A + z^\transpose B,
-             \sum_{k=1}^{m_1} y_k = 1, y \in \Rset_+^{m_1}, 
-	     z \in \Rset_+^{m_2}\,\bigr\},  
+  Q = \sset{
+        \vect{x} \in \Rset^n
+      }{
+        \vect{x} = \vect{y}^\transpose A + \vect{z}^\transpose B, \\
+        \vect{y} = (y_1, \ldots, y_{m_1})^\transpose \in \Rset_+^{m_1},
+        \sum_{k=1}^{m_1} y_k = 1, \\
+	\vect{z} \in \Rset_+^{m_2}
+      }.
 \f]
 then \f$Q\f$ is a rational polyhedron.
 
