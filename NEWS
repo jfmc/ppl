@@ -41,6 +41,11 @@ o  New methods Polyhedron::maximize() and Polyhedron::minimize()
 o  New output operator in namespace IO_Operators:
    std::ostream& operator<<(std::ostream&, const LinExpression&).
 
+o  The method Polyhedron::map_dimensions(const PartialFunction& pfunc)
+   has been significantly optimized for the case when `pfunc' is a
+   permutation.  A simple "renaming" of the dimensions is now
+   extremely cheap.
+
 o  The type of output functions for the class Variable,
    `Variable::Output_Function_Type', has been renamed
    `Variable::output_function_type' and is now defined as

@@ -616,7 +616,6 @@ Polyhedron::shrink_bounding_box(Box& box, Complexity_Class complexity) const {
 template <typename PartialFunction>
 void
 Polyhedron::map_dimensions(const PartialFunction& pfunc) {
-  // TODO: this implementation is just an executable specification.
   if (space_dim == 0)
     return;
 
@@ -639,6 +638,73 @@ Polyhedron::map_dimensions(const PartialFunction& pfunc) {
   }
 
   dimension_type new_space_dimension = pfunc.max_in_codomain() + 1;
+
+  if (new_space_dimension == space_dim) {
+    // The partial function `pfunc' is indeed total and thus specifies
+    // a permutation, that is, a renaming of the dimensions.  For
+    // maximum efficiency, we will simply permute the columns of the
+    // constraint system and/or the generator system.
+
+    // We first compute suitable permutation cycles for the columns of
+    // the `con_sys' and `gen_sys' matrices.  We will represent them
+    // with a linear array, using 0 as a terminator for each cycle
+    // (notice that the column of `con_sys' and `gen_sys' represent
+    // inhomogeneous terms, and thus are unaffected by the permutation
+    // of dimensions).  Cycles of length 1 will be omitted so that, in
+    // the worst case, we will have `space_dim' elements organized in
+    // `space_dim/2' cycles, which means we will have at most
+    // `space_dim/2' terminators.
+    dimension_type cycles[space_dim + space_dim/2];
+
+    // Used to mark elements as soon as they are inserted into a cycle.
+    bool visited[space_dim];
+    for (dimension_type i = space_dim; i-- > 0; )
+      visited[i] = false;
+
+    // Index into the `cycles' vector.
+    dimension_type n = 0;
+    for (dimension_type i = space_dim; i-- > 0; ) {
+      if (!visited[i]) {
+	dimension_type j = i;
+	do {
+	  visited[j] = true;
+	  dimension_type k;
+	  (void) pfunc.maps(j, k);
+	  if (k == j)
+	    // Cycle of length 1: skip it.
+	    goto skip;
+
+	  cycles[n++] = j+1;
+	  // Go along the cycle.
+	  j = k;
+	} while (!visited[j]);
+	// End of cycle: mark it.
+	cycles[n++] = 0;
+      skip:
+	;
+      }
+    }
+
+    // If `n == 0' then `pfunc' is the identity.
+    if (n == 0)
+      return;
+
+    // Permute all that is up-to-date.  Notice that the contents of
+    // the saturation matrices is unaffected by the permutation of
+    // columns: they remain valid, if they were so.
+    if (constraints_are_up_to_date())
+      con_sys.permute_columns(cycles, n);
+    if (generators_are_up_to_date()) {
+      gen_sys.permute_columns(cycles, n);
+    }
+    assert(OK());
+    return;
+  }
+
+  // If control gets here, then `pfunc' is not a permutation and some
+  // dimensions must be projected away.
+
+  // TODO: the implementation below is just an executable specification.
   // If there are pending constraints, using `generators()' we process them.
   const GenSys& old_gensys = generators();
 
