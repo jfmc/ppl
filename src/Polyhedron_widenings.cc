@@ -386,8 +386,10 @@ PPL::Polyhedron::is_BHRZ03_stabilizing(const Polyhedron& x,
   // It is assumed that `y' is included into `x'.
   assert(x.topology() == y.topology());
   assert(x.space_dim == y.space_dim);
-  assert(!x.marked_empty() && !x.has_something_pending()
-	 && x.constraints_are_minimized() && x.generators_are_minimized());
+  assert(!x.marked_empty());
+  assert(!x.has_something_pending());
+  assert(x.constraints_are_minimized());
+  assert(x.generators_are_minimized());
   assert(!y.marked_empty() && !y.has_something_pending()
 	 && y.constraints_are_minimized() && y.generators_are_minimized());
 
@@ -428,6 +430,89 @@ PPL::Polyhedron::is_BHRZ03_stabilizing(const Polyhedron& x,
   // the lineality space of the two polyhedra must have the same dimension.
   assert (x_num_lines == y_num_lines);
 
+  // If the number of non-facing constraints of `x' is smaller
+  // than the number of non-facing constraints of `y', then the
+  // chain is stabilizing. If it is bigger, the chain is not stabilizing.
+  // If they are equal, further investigation is needed.
+
+  // NOTE: we have to consider inequality constraints only.
+
+  // First compute the number of non-facing constraints for x:
+  // We convert each constraint a ? b where ? is a relation symbol
+  // into the homogeneous equality a = 0 and normalize it.
+  // The number of non-facing constraints for x is the cardinality
+  // of the set of these equalities. 
+  ConSys x_nf_cs;
+  for (ConSys::const_iterator i = x.con_sys.begin(),
+	 cs_end = x.con_sys.end(); i != cs_end; ++i) {
+    const Constraint& ci = *i;
+    // We can ignore equalities.
+    if (!ci.is_equality()) {
+      // If the constraint is an inequality, we must create a copy but
+      // as an equality with the inhomogeneous term 0 and then normalize it.
+      LinExpression e = LinExpression(ci);
+      e -= e.inhomogeneous_term();
+      Constraint ci_with_eq(e);
+      ci_with_eq.set_is_equality();
+      ci_with_eq.strong_normalize();
+      // We then check we have not already created such a constraint.
+      ConSys::const_iterator k,
+             nf_cs_end = x_nf_cs.end();
+      for (k = x_nf_cs.begin(); k != nf_cs_end; ++k) {
+        if (ci_with_eq == *k)
+        	break;
+      } // for loop
+      // If it is new,
+      // we add the equality constraint to the constraint system x_nf_cs.
+      if (k == nf_cs_end)
+        x_nf_cs.insert(ci_with_eq);
+    } // if (!ci.is_equality())
+  } // for loop (x.con_sys)
+  dimension_type x_nf_cs_num_rows = x_nf_cs.num_rows();
+ 
+  // Similarly compute the number of non-facing constraints for y
+
+  ConSys y_nf_cs;
+  for (ConSys::const_iterator i = y.con_sys.begin(),
+	 cs_end = y.con_sys.end(); i != cs_end; ++i) {
+    const Constraint& ci = *i;
+    // We can ignore equalities.
+    if (!ci.is_equality()) {
+      // If the constraint is an inequality, we must create a copy but
+      // as an equality with the inhomogeneous term 0 and then normalize it.
+      LinExpression e = LinExpression(ci);
+      e -= e.inhomogeneous_term();
+      Constraint ci_with_eq(e);
+      ci_with_eq.set_is_equality();
+      ci_with_eq.strong_normalize();
+      // We then check we have not already created such a constraint.
+      ConSys::const_iterator k,
+             nf_cs_end = y_nf_cs.end();
+      for (k = y_nf_cs.begin(); k != nf_cs_end; ++k) {
+        if (ci_with_eq == *k)
+        	break;
+      } // for loop
+      // If it is new,
+      // we add the equality constraint to the constraint system y_nf_cs.
+      if (k == nf_cs_end)
+        y_nf_cs.insert(ci_with_eq);
+    } // if (!ci.is_equality())
+  } // for loop (y.con_sys)
+  dimension_type y_nf_cs_num_rows = y_nf_cs.num_rows();
+
+  if (x_nf_cs_num_rows < y_nf_cs_num_rows) {
+#if 0
+    std::cout << "BHRZ03_stabilizing: number of non-facing constraints" <<
+         std::endl;
+#endif
+#if PPL_STATISTICS
+    statistics->reason.num_constraints++;
+#endif
+    return true;
+  }
+  else if (x_nf_cs_num_rows > y_nf_cs_num_rows)
+    return false;
+
   // If the number of constraints of `x' is smaller than the number
   // of constraints of `y', then the chain is stabilizing. If it is
   // bigger, the chain is not stabilizing. If they are equal, further
@@ -445,9 +530,9 @@ PPL::Polyhedron::is_BHRZ03_stabilizing(const Polyhedron& x,
   if (x_con_sys_num_rows < y_con_sys_num_rows) {
 #if PPL_STATISTICS
     statistics->reason.num_constraints++;
-#endif
+#endif //
     return true;
-  }
+  } 
   else if (x_con_sys_num_rows > y_con_sys_num_rows)
     return false;
 
@@ -662,6 +747,156 @@ PPL::Polyhedron::BHRZ03_combining_constraints(const Polyhedron& y,
 }
 
 bool
+PPL::Polyhedron::BHRZ03_facing_constraints(const Polyhedron& y,
+					const Polyhedron& H79) {
+  Polyhedron& x = *this;
+
+  // It is assumed that `y <= x <= H79'.
+  assert(x.topology() == y.topology()
+	 && x.topology() == H79.topology());
+  assert(x.space_dim == y.space_dim
+	 && x.space_dim == H79.space_dim);
+  assert(!x.marked_empty() && !x.has_something_pending()
+	 && x.constraints_are_minimized() && x.generators_are_minimized());
+  assert(!y.marked_empty() && !y.has_something_pending()
+	 && y.constraints_are_minimized() && y.generators_are_minimized());
+  assert(!H79.marked_empty() && !H79.has_something_pending()
+	 && H79.constraints_are_minimized()
+         && H79.generators_are_minimized());
+
+  const Topology tpl = x.topology();
+  const dimension_type num_columns = x.con_sys.num_columns();
+  ConSys new_cs(tpl, 0, num_columns);
+  bool eps_leq_one = false;
+  const dimension_type eps_index = num_columns - 1;
+
+  // We examine each constraint `c' defining H79; if we can construct a
+  // facing constraint to `c' we add it into the constraint store `new_cs'.
+  for (dimension_type i = H79.con_sys.num_rows(); i-- > 0; ) {
+    const Constraint& c = H79.con_sys[i];
+    // If `c' is an equality, it is self-facing so ignore it.
+    if (c.is_equality())
+      break;
+
+    // If the topology is NNC, then check if `c' is an eps constraint.
+    if (tpl == NOT_NECESSARILY_CLOSED) {
+      const Integer eps_coeff = c[eps_index];
+
+      // First we check for the eps >= 0 constraint
+      // (the only constraint with a positive eps coefficient)
+      if (eps_coeff > 0)
+        break;
+
+      // We check for the eps_leq_one constraint
+      // provided `eps <= 1' has not already been found.
+      if (!eps_leq_one) {
+        eps_leq_one = true;
+        if ((eps_coeff == 0 || c[0] <= 0))
+          eps_leq_one = false;
+        else
+          for (dimension_type i = 1; i < eps_index; ++i)
+	    if (!(c[i] == 0)) {
+              eps_leq_one = false;
+	      break;
+	    } // if (!(c[i] == 0))
+        // If it is the eps <= 1 constraint, then we ignore it.
+        if (eps_leq_one)
+          break;
+      } // if (!eps_leq_one)
+
+    } // if (tpl == NOT_NECESSARILY_CLOSED)
+
+    LinExpression e(0);
+    // the distance of furthest point/closure_point is `max'/`max_divisor'.
+    Integer max = 0;
+    Integer max_divisor = 1;
+    // `max_is_point' is true if the furthest point/closure_point is a point
+    bool max_is_point = true;
+    // This boolean flag indicates if a facing constraint to `c' exists;
+    // it is asssumed there is one unless we find a ray that
+    // does not saturate `c'.
+    bool facing_constraint = true;
+
+    // We examine each generator in `x.gen_sys' in turn
+    for (dimension_type j = x.gen_sys.num_rows(); j-- > 0; ) {
+      // If there is no facing constraint that satisfies y, do nothing.
+      if (!facing_constraint)
+        break;
+      const Generator& g = x.gen_sys[j];
+      Integer g_divisor;
+      Integer scalar_product;
+      switch (g.type()) {
+      case Generator::LINE:
+        // We need only consider rays, points and closure points.
+	break;
+      case Generator::RAY:
+	// For there to be a constraint facing `c' that is satisfied by 
+	// all points in `x', every ray in `x.gen_sys' must saturate `c'.
+        scalar_product = c * g;
+        if (!(scalar_product == 0))
+          facing_constraint = false;
+        break;
+      case Generator::POINT:
+	// If `g' is a point, the facing constraint
+        // must saturate g if it is the furthest point from `c'.
+	if (c.is_strict_inequality())
+	  scalar_product = reduced_scalar_product(c, g);
+	else
+          scalar_product = c * g;
+        g_divisor = g.divisor();
+	// The distance can be unaltered in the case that `max_is_point'
+	// flag is false.
+        if ((scalar_product * max_divisor) - (max * g_divisor) >= 0) {
+          max = scalar_product;
+          max_divisor = g_divisor;
+	  max_is_point = true;
+ 	} // if ((scalar_product * max_divisor) - (max * g_divisor) >= 0)
+        break;
+      case Generator::CLOSURE_POINT:
+	// If `g' is a closure point, the facing constraint
+        // must saturate g if it is the furthest point from `c'
+        // and there is no point with the same coordinates.
+        scalar_product = c * g;
+        g_divisor = g.divisor();
+        if ((scalar_product * max_divisor) - (max * g_divisor) > 0) {
+          max = scalar_product;
+          max_divisor = g_divisor;
+          max_is_point = false;
+ 	} // if ((scalar_product * max_divisor) - (max * g_divisor) > 0)
+        break;
+      } // switch (g.type())
+    } // for loop (x.gen_sys)
+    // If there is a facing constraint to `c' then we add it to the
+    // constraint store.
+    if (facing_constraint) {
+      e += (LinExpression(max) - (max_divisor * LinExpression(c)));
+      e.normalize();
+      if (max_is_point)
+        new_cs.insert(e >= 0);
+      else
+        new_cs.insert(e > 0);
+    } // if (facing_constraint)
+  } // for loop (H79.con_sys)
+  // The resulting polyhedron is obtained by adding the constraints
+  // in `new_cs' to polyhedron `H79'.
+  Polyhedron result = H79;
+  result.add_constraints_and_minimize(new_cs);
+
+  // This widening technique was unsuccessful if the result is not
+  // stabilizing with respect to `y' and an improvement over `H79'.
+  if (result.contains(H79) || !is_BHRZ03_stabilizing(result, y))
+    return false;
+
+  // The technique was successful.
+#if PPL_STATISTICS
+  statistics->technique.facing_constraints++;
+#endif
+  std::swap(x, result);
+  assert(x.OK(true));
+  return true;
+}
+
+bool
 PPL::Polyhedron::BHRZ03_evolving_points(const Polyhedron& y,
 					const Polyhedron& H79) {
   Polyhedron& x = *this;
@@ -715,7 +950,7 @@ PPL::Polyhedron::BHRZ03_evolving_points(const Polyhedron& y,
   result.add_generators_and_minimize(candidate_rays);
   result.intersection_assign_and_minimize(H79);
 
-  // Check for stabilization wrt `y' and improvement over `H79'.
+  // Check for stabilization wrt `y' and an improvement over `H79'.
   if (result.contains(H79) || !is_BHRZ03_stabilizing(result, y))
     return false;
 
@@ -920,8 +1155,28 @@ PPL::Polyhedron::BHRZ03_widening_assign(const Polyhedron& y, unsigned* tp) {
 
   // NOTE: none of the following widening heuristics is intrusive:
   // they will modify `x' only when returning successfully.
+  // In this vesrion, the combining constraints works independently
+  // of the facing constraints technique.
+  //
   if (x.BHRZ03_combining_constraints(y, H79, x_minus_H79_cs))
     return;
+  //
+  // In this version, we try to add facing constraints to the result
+  // of combining constraints instead of the H79 result.
+  //
+#if 0
+  Polyhedron x_copy = x;
+  if (x.BHRZ03_combining_constraints(y, H79, x_minus_H79_cs)) {
+    if (x_copy.BHRZ03_facing_constraints(y, x))
+      std::swap(x, x_copy);
+    return;
+  }
+
+  assert(H79.OK() && x.OK() && y.OK());
+
+  if (x.BHRZ03_facing_constraints(y, H79))
+    return;
+#endif
 
   assert(H79.OK() && x.OK() && y.OK());
 

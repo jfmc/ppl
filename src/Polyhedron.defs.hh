@@ -1728,6 +1728,9 @@ private:
  				    const Polyhedron& H79,
 				    const ConSys& x_minus_H79_con_sys);
 
+  bool BHRZ03_facing_constraints(const Polyhedron& y,
+ 				    const Polyhedron& H79);
+
   bool BHRZ03_evolving_points(const Polyhedron& y, const Polyhedron& H79);
 
   bool BHRZ03_evolving_rays(const Polyhedron& y, const Polyhedron& H79);
