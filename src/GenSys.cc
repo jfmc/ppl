@@ -42,11 +42,15 @@ adjust_topology_and_space_dimension(Topology new_topology,
   assert(space_dimension() <= new_space_dim);
 
   if (num_rows() == 0) {
+    // First adapt topology ...
     if (topology() != new_topology)
       if (is_necessarily_closed())
 	set_not_necessarily_closed();
       else
 	set_necessarily_closed();
+    // ... then adapt space dimension.
+    if (space_dimension() != new_space_dim)
+      resize_no_copy(0, new_space_dim + (is_necessarily_closed() ? 1 : 2));
     assert(OK());
     return true;
   }
