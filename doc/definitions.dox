@@ -550,6 +550,31 @@ will be
   \cQ = \bigl\{ (3, 1)^\transpose \bigr\} \sseq \Rset^2.
 \f]
 
+\anchor remap_dimensions
+<B>Remapping the Dimensions of the Vector Space</B>
+
+The library provides an operator to remap the dimensions of the
+vector space \f$\Rset^n\f$ according to a partial injective function
+\f$\fund{\rho}{\{0, \ldots, n-1\}}{\Nset}\f$.
+Dimensions corresponding to indices that are not mapped by \f$\rho\f$
+are either removed or become completely unconstrained (i.e., the argument
+polyhedron is cylindrificated on these dimensions).
+
+Let \f$M = \rho\bigl(\{0, \ldots, n-1\}\bigr)\f$ be the image of \f$\rho\f$.
+If \f$M = \emptyset\f$, i.e., if the function \f$\rho\f$ is everywhere
+undefined, then the operator projects the argument polyhedron
+\f$\cP \in \Pset_n\f$ onto the zero-dimension space \f$\Rset^0\f$;
+otherwise, letting \f$m = \max(M)\f$, the result will be a polyhedron
+on the vector space \f$\Rset^{m+1}\f$ obtained as follows:
+ - first, the polyhedron is cylindrificated by removing all the constraints
+   on those dimensions that are not remapped, where
+   \f$N = \rho^{-1}(M)\f$ is the set of dimension indices that are remapped;
+ - second, all the dimensions in \f$N\f$ are remapped as dictated by
+   function \f$\rho\f$;
+ - finally, if \f$m \leq n\f$, all space dimensions having indices greater
+   than \f$m\f$ are removed; if otherwise \f$n < m\f$, then other \f$m - n\f$
+   space dimensions are added (through embedding).
+
 \anchor affine_transformation
 <B>Affine Images and Preimages</B>
 
