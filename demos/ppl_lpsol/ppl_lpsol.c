@@ -80,12 +80,13 @@ static const char* usage_string
 "  -VMB, --max-memory=MB   limits memory usage to MB megabytes\n"
 "  -h, --help              prints this help text to stderr\n"
 "  -oPATH, --output=PATH   appends output to PATH\n"
+"  -s, --simplex           use the simplex method\n"
 "  -t, --timings           prints timings to stderr\n"
 "  -v, --verbose           outputs also the constraints "
 "and objective function\n";
 
 
-#define OPTION_LETTERS "bcmMC:V:ho:tv"
+#define OPTION_LETTERS "bcmMC:V:ho:stv"
 
 static const char* program_name = 0;
 
@@ -94,6 +95,7 @@ static unsigned long max_bytes_of_virtual_memory = 0;
 static const char* output_argument = 0;
 FILE* output_file = NULL;
 static int check_optimum = 0;
+static int use_simplex = 0;
 static int print_timings = 0;
 static int verbose = 0;
 static int maximize = 1;
@@ -183,6 +185,10 @@ process_options(int argc, char* argv[]) {
 
     case 'o':
       output_argument = optarg;
+      break;
+
+    case 's':
+      use_simplex = 1;
       break;
 
     case 't':
@@ -430,11 +436,122 @@ add_constraints(ppl_Linear_Expression_t ppl_le,
   }
 }
 
+static int
+solve_with_generators(ppl_const_Constraint_System_t ppl_cs,
+		      ppl_const_Linear_Expression_t ppl_objective_le,
+		      ppl_Coefficient_t optimum_n,
+		      ppl_Coefficient_t optimum_d,
+		      ppl_Generator_t* ppoint) {
+  ppl_Polyhedron_t ppl_ph;  
+  int empty;  
+  int unbounded; 
+  int included;    
+  int ok; 
+  ppl_const_Generator_t p_ph_point; 
+  
+  /* Create the polyhedron and get rid of the constraint system. */
+  ppl_new_C_Polyhedron_from_Constraint_System(&ppl_ph, ppl_cs);
+  ppl_delete_Constraint_System(ppl_cs);
+
+  if (print_timings) {
+    fprintf(stderr, "Time to create a PPL polyhedron: ");
+    print_clock(stderr);
+    fprintf(stderr, " s\n");
+    start_clock();
+  }
+
+  empty = ppl_Polyhedron_is_empty(ppl_ph);
+
+  if (print_timings) {
+    fprintf(stderr, "Time to check for emptiness: ");
+    print_clock(stderr);
+    fprintf(stderr, " s\n");
+    start_clock();
+  }
+
+  if (empty) {
+    fprintf(output_file, "Unfeasible problem.\n");
+    /* FIXME: check!!! */
+    return 0;
+  }
+
+  /* Check whether the problem is unbounded. */
+  unbounded = maximize
+    ? !ppl_Polyhedron_bounds_from_above(ppl_ph, ppl_objective_le)
+    : !ppl_Polyhedron_bounds_from_below(ppl_ph, ppl_objective_le);
+
+  if (print_timings) {
+    fprintf(stderr, "Time to check for unboundedness: ");
+    print_clock(stderr);
+    fprintf(stderr, " s\n");
+    start_clock();
+  }
+
+  if (unbounded) {
+    fprintf(output_file, "Unbounded problem.\n");
+    /* FIXME: check!!! */
+    return 0;
+  }
+
+  ok = maximize
+    ? ppl_Polyhedron_maximize(ppl_ph, ppl_objective_le,
+			      optimum_n, optimum_d, &included,
+			      &p_ph_point)
+    : ppl_Polyhedron_minimize(ppl_ph, ppl_objective_le,
+			      optimum_n, optimum_d, &included,
+			      &p_ph_point);
+
+  if (!ok)
+    fatal("internal error");
+  
+  ppl_new_Generator_from_Generator(ppoint, p_ph_point);
+  ppl_delete_Polyhedron(ppl_ph);
+
+  if (print_timings) {
+    fprintf(stderr, "Time to find the optimum: ");
+    print_clock(stderr);
+    fprintf(stderr, " s\n");
+    start_clock();
+  }
+
+  if (!included)
+    fatal("internal error");
+  
+  return 1;
+}
+
+static int
+solve_with_simplex(ppl_const_Constraint_System_t cs,
+		   ppl_const_Linear_Expression_t objective,
+		   ppl_Coefficient_t optimum_n,
+		   ppl_Coefficient_t optimum_d,
+		   ppl_Generator_t* ppoint) {
+  int ok;
+  ppl_const_Generator_t p_ph_point;
+  
+  ok = maximize
+    ? ppl_Constraint_System_maximize(cs, objective,
+				     optimum_n, optimum_d, &p_ph_point)
+    : ppl_Constraint_System_minimize(cs, objective,
+				     optimum_n, optimum_d, &p_ph_point);
+
+  if (print_timings) {
+    fprintf(stderr, "Time to find the optimum: ");
+    print_clock(stderr);
+    fprintf(stderr, " s\n");
+    start_clock();
+  }
+
+  if (ok)
+    ppl_new_Generator_from_Generator(ppoint, p_ph_point);
+
+  return ok;
+}
+
 static void
 solve(char* file_name) {
-  ppl_Polyhedron_t ppl_ph;
   ppl_Constraint_System_t ppl_cs;
-  ppl_const_Generator_t ppl_const_g;
+  ppl_Generator_t optimum_value;
   ppl_Linear_Expression_t ppl_le;
   int dimension, row, num_rows, column, nz, i, type;
   int* coefficient_index;
@@ -448,10 +565,7 @@ solve(char* file_name) {
   ppl_Coefficient_t optimum_d;
   mpq_t optimum;
   mpz_t den_lcm;
-  int empty;
-  int unbounded;
-  int included;
-  int ok;
+  int optimum_found;
 
   if (print_timings)
     start_clock();
@@ -555,32 +669,6 @@ solve(char* file_name) {
   mpq_clear(rational_ub);
   mpq_clear(rational_lb);
 
-  /* Create the polyhedron and get rid of the constraint system. */
-  ppl_new_C_Polyhedron_recycle_Constraint_System(&ppl_ph, ppl_cs);
-  ppl_delete_Constraint_System(ppl_cs);
-
-  if (print_timings) {
-    fprintf(stderr, "Time to create a PPL polyhedron: ");
-    print_clock(stderr);
-    fprintf(stderr, " s\n");
-    start_clock();
-  }
-
-  empty = ppl_Polyhedron_is_empty(ppl_ph);
-
-  if (print_timings) {
-    fprintf(stderr, "Time to check for emptiness: ");
-    print_clock(stderr);
-    fprintf(stderr, " s\n");
-    start_clock();
-  }
-
-  if (empty) {
-    fprintf(output_file, "Unfeasible problem.\n");
-    /* FIXME: check!!! */
-    goto clean_and_return;
-  }
-
   /* Deal with the objective function. */
   objective = (mpq_t*) malloc((dimension+1)*sizeof(mpq_t));
 
@@ -596,7 +684,7 @@ solve(char* file_name) {
     mpz_lcm(den_lcm, den_lcm, mpq_denref(objective[i]));
   }
 
-  /* Set the Linear_Expression ppl_objective_le to be the objective function. */
+  /* Set the ppl_objective_le to be the objective function. */
   ppl_new_Linear_Expression_with_dimension(&ppl_objective_le, dimension);
   /* The inhomogeneous term is completely useless for our purpose. */
   for (i = 1; i <= dimension; ++i) {
@@ -605,6 +693,7 @@ solve(char* file_name) {
     ppl_assign_Coefficient_from_mpz_t(ppl_coeff, tmp_z);
     ppl_Linear_Expression_add_to_coefficient(ppl_objective_le, i-1, ppl_coeff);
   }
+  
   if (verbose) {
     fprintf(output_file, "Objective function:\n");
     ppl_io_fprint_Linear_Expression(output_file, ppl_objective_le);
@@ -623,40 +712,23 @@ solve(char* file_name) {
 	    (maximize ? "Maximizing." : "Minimizing."));
   }
 
-  /* Check whether the problem is unbounded. */
-  unbounded = maximize
-    ? !ppl_Polyhedron_bounds_from_above(ppl_ph, ppl_objective_le)
-    : !ppl_Polyhedron_bounds_from_below(ppl_ph, ppl_objective_le);
-
-  if (print_timings) {
-    fprintf(stderr, "Time to check for unboundedness: ");
-    print_clock(stderr);
-    fprintf(stderr, " s\n");
-    start_clock();
-  }
-
-  if (unbounded) {
-    fprintf(output_file, "Unbounded problem.\n");
-    /* FIXME: check!!! */
-    ppl_delete_Linear_Expression(ppl_objective_le);
-    goto clean_and_return;
-  }
-
   ppl_new_Coefficient(&optimum_n);
   ppl_new_Coefficient(&optimum_d);
 
-  ok = maximize
-    ? ppl_Polyhedron_maximize(ppl_ph, ppl_objective_le,
-			      optimum_n, optimum_d, &included,
-			      &ppl_const_g)
-    : ppl_Polyhedron_minimize(ppl_ph, ppl_objective_le,
-			      optimum_n, optimum_d, &included,
-			      &ppl_const_g);
-
+  optimum_found = use_simplex
+    ? solve_with_simplex(ppl_cs,
+			 ppl_objective_le,
+			 optimum_n,
+			 optimum_d,
+			 &optimum_value)
+    : solve_with_generators(ppl_cs,
+			    ppl_objective_le,
+			    optimum_n,
+			    optimum_d,
+			    &optimum_value);
+  
+  
   ppl_delete_Linear_Expression(ppl_objective_le);
-
-  if (!ok)
-    fatal("internal error");
 
   if (print_timings) {
     fprintf(stderr, "Time to find the optimum: ");
@@ -664,34 +736,31 @@ solve(char* file_name) {
     fprintf(stderr, " s\n");
     start_clock();
   }
-
-  if (!included)
-    fatal("internal error");
-
-  mpq_init(optimum);
-  ppl_Coefficient_to_mpz_t(optimum_n, tmp_z);
-  mpq_set_num(optimum, tmp_z);
-  ppl_Coefficient_to_mpz_t(optimum_d, tmp_z);
-  mpz_mul(tmp_z, tmp_z, den_lcm);
-  mpq_set_den(optimum, tmp_z);
-  ppl_delete_Coefficient(optimum_d);
-  ppl_delete_Coefficient(optimum_n);
-  fprintf(output_file, "Optimum value:\n%.10g\n", mpq_get_d(optimum));
-  mpq_clear(optimum);
-  fprintf(output_file, "Optimum location:\n");
-  ppl_Generator_divisor(ppl_const_g, ppl_coeff);
-  ppl_Coefficient_to_mpz_t(ppl_coeff, tmp_z);
-  for (i = 0; i < dimension; ++i) {
-    mpz_set(mpq_denref(tmp1_q), tmp_z);
-    ppl_Generator_coefficient(ppl_const_g, i, ppl_coeff);
-    ppl_Coefficient_to_mpz_t(ppl_coeff, mpq_numref(tmp1_q));
-    ppl_io_fprint_variable(output_file, i);
-    fprintf(output_file, " = %.10g\n", mpq_get_d(tmp1_q));
+  
+  if (optimum_found) {
+    mpq_init(optimum);
+    ppl_Coefficient_to_mpz_t(optimum_n, tmp_z);
+    mpq_set_num(optimum, tmp_z);
+    ppl_Coefficient_to_mpz_t(optimum_d, tmp_z);
+    mpz_mul(tmp_z, tmp_z, den_lcm);
+    mpq_set_den(optimum, tmp_z);
+    ppl_delete_Coefficient(optimum_d);
+    ppl_delete_Coefficient(optimum_n);
+    fprintf(output_file, "Optimum value:\n%.10g\n", mpq_get_d(optimum));
+    mpq_clear(optimum);
+    fprintf(output_file, "Optimum location:\n");
+    ppl_Generator_divisor(optimum_value, ppl_coeff);
+    ppl_Coefficient_to_mpz_t(ppl_coeff, tmp_z);
+    for (i = 0; i < dimension; ++i) {
+      mpz_set(mpq_denref(tmp1_q), tmp_z);
+      ppl_Generator_coefficient(optimum_value, i, ppl_coeff);
+      ppl_Coefficient_to_mpz_t(ppl_coeff, mpq_numref(tmp1_q));
+      ppl_io_fprint_variable(output_file, i);
+      fprintf(output_file, " = %.10g\n", mpq_get_d(tmp1_q));
+    }
   }
-
- clean_and_return:
-  ppl_delete_Polyhedron(ppl_ph);
-  mpz_clear(den_lcm);
+  else
+      fprintf(output_file, "Unfeasible problem.\n");
   lpx_delete_prob(lp);
 }
 
