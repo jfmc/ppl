@@ -234,8 +234,7 @@ template <typename T>
 inline
 BD_Shape<T>::BD_Shape(const Polyhedron& ph, Complexity_Class complexity)
   : dbm(), status() {
-  if (ph.marked_empty()
-      || (ph.generators_are_up_to_date() && ph.gen_sys.num_rows() == 0)) {
+  if (ph.marked_empty()) {
     *this = BD_Shape(ph.space_dim, Polyhedron::EMPTY);
     return;
   }
@@ -292,33 +291,7 @@ BD_Shape<T>::BD_Shape(const Polyhedron& ph, Complexity_Class complexity)
   }
 
   // Extract easy-to-find bounds from constraints.
-
-  // We must copy `con_sys' to a temporary matrix,
-  // because we must apply gauss() and back_substitute()
-  // to all the matrix and not only to the non-pending part.
-  Constraint_System cs(ph.con_sys);
-  if (cs.num_pending_rows() > 0) {
-    cs.unset_pending_rows();
-    cs.sort_rows();
-  }
-  else if (!cs.is_sorted())
-    cs.sort_rows();
-
-  if (ph.has_pending_constraints() || !ph.constraints_are_minimized())
-    cs.back_substitute(cs.gauss());
-
-  // After `gauss()' and `back_substitute()' some constraints
-  // may have become inconsistent.
-  for (Constraint_System::const_iterator i = cs.begin(),
-	 cs_end = cs.end(); i != cs_end; ++i) {
-    if (i->is_inconsistent()) {
-      *this = BD_Shape(ph.space_dim, Polyhedron::EMPTY);
-      return;
-    }
-  }
-
-  // Use `cs' to obtain an approximation of `ph'.
-  *this = BD_Shape(cs);
+  *this = BD_Shape(ph.con_sys);
 }
 
 template <typename T>
