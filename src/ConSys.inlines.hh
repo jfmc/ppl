@@ -81,6 +81,12 @@ ConSys::operator[](const dimension_type k) const {
 }
 
 inline dimension_type
+ConSys::max_space_dimension() {
+  // Column zero holds the inhomogeneous term.
+  return Matrix::max_num_columns() - 1;
+}
+
+inline dimension_type
 ConSys::space_dimension() const {
   return Matrix::space_dimension();
 }

@@ -142,6 +142,9 @@ public:
   //! Assignment operator.
   ConSys& operator=(const ConSys& y);
 
+  //! Returns the maximum space dimension a ConSys can handle.
+  static dimension_type max_space_dimension();
+
   //! Returns the dimension of the vector space enclosing \p *this.
   dimension_type space_dimension() const;
 
