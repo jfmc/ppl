@@ -235,10 +235,6 @@ PPL::Polyhedron::throw_invalid_generator(const char* method) const {
   throw std::invalid_argument(s.str());
 }
 
-/*!
-  Updates the constraints as necessary, then returns a constant
-  reference to the system of constraints.
-*/
 const PPL::ConSys&
 PPL::Polyhedron::constraints() const {
   if (is_empty()) {
@@ -274,10 +270,6 @@ PPL::Polyhedron::constraints() const {
   return con_sys;
 }
 
-/*!
-  Returns a constant reference to the systems of constraints,
-  which contains no redundant constraint.
-*/
 const PPL::ConSys&
 PPL::Polyhedron::minimized_constraints() const {
   if (is_necessarily_closed())
@@ -287,10 +279,6 @@ PPL::Polyhedron::minimized_constraints() const {
   return constraints();
 }
 
-/*!
-  Updates the generators as necessary, then returns a constant
-  reference to the system of generators.
-*/
 const PPL::GenSys&
 PPL::Polyhedron::generators() const {
 
@@ -318,10 +306,6 @@ PPL::Polyhedron::generators() const {
   return gen_sys;
 }
 
-/*!
-  Returns a constant reference to the systems of generators,
-  which contains no redundant generator.
-*/
 const PPL::GenSys&
 PPL::Polyhedron::minimized_generators() const {
   if (is_necessarily_closed())
