@@ -31,12 +31,52 @@ using namespace Parma_Polyhedra_Library;
 
 #define NOISY 1
 
-class TestBBox {
+class Interval {
 private:
-  // Nothing for the time being.
+  bool uclosed;
+  Integer uc;
+  Integer ud;
+  bool lclosed;
+  Integer lc;
+  Integer ld;
 
 public:
-  TestBBox() {
+  Interval()
+    : uclosed(true), uc(0), ud(0), lclosed(true), lc(0), ld(0) {
+  }
+
+  void raise_lower_bound(bool raise_closed,
+			 const Integer& n, const Integer& d) {
+    assert(raise_closed == uclosed);
+    if (lc*d < n*ld) {
+      lc = n;
+      ld = d;
+    }
+  }
+
+  void lower_upper_bound(bool lower_closed,
+			 const Integer& n, const Integer& d) {
+    assert(lower_closed == lclosed);
+    if (uc*d > n*ud) {
+      uc = n;
+      ud = d;
+    }
+  }
+
+  void set_empty() {
+    uc = -1;
+    lc = 1;
+    ud = 1;
+    ld = 1;}
+};
+
+class BBox {
+private:
+  std::vector<Interval> box;
+
+public:
+  BBox(unsigned int dimension) {
+    box.resize(dimension);
   }
 
   void raise_lower_bound(unsigned int k, bool closed,
@@ -46,6 +86,7 @@ public:
 	 << (closed ? "true" : "false") << ", "
 	 << n << ", "
 	 << d << ")" << endl;
+    box[k].raise_lower_bound(closed, n, d);
   }
 
   void lower_upper_bound(unsigned int k, bool closed,
@@ -55,11 +96,13 @@ public:
 	 << (closed ? "true" : "false") << ", "
 	 << n << ", "
 	 << d << ")" << endl;
+    box[k].lower_upper_bound(closed, n, d);
   }
 
   void set_empty(unsigned int k) {
     cout << "lower_upper_bound("
 	 << k << ")" << endl;
+    box[k].set_empty();
   }
 };
 
@@ -81,7 +124,7 @@ main() {
   print_generators(ph, "*** ph generators ***");
 #endif
 
-  TestBBox box;
+  BBox box(ph.space_dimension());
   ph.shrink_bounding_box(box);
 
   if (!ph.OK())
