@@ -87,7 +87,7 @@ namespace Parma_Polyhedra_Library {
   Constraint eq_c(3*x + 5*y - z == 0);
   \endcode
   The following code builds the inequality constraint
-  \f$4x \geq 2*y - 13\f$, having space-dimension \f$2\f$:
+  \f$4x \geq 2y - 13\f$, having space-dimension \f$2\f$:
   \code
   Constraint ineq_c(4*x >= 2*y - 13);
   \endcode
