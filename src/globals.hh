@@ -30,6 +30,10 @@ site: http://www.cs.unipr.it/ppl/ . */
 #include <exception>
 #include <limits>
 
+#ifndef PPL_STATISTICS
+#define PPL_STATISTICS 1
+#endif
+
 namespace Parma_Polyhedra_Library {
 
 //! An unsigned integral type for representing space dimensions.
@@ -150,6 +154,29 @@ const Integer& operator*(const Constraint& c, const Generator& g);
 #endif // PPL_DOXYGEN_INCLUDE_IMPLEMENTATION_DETAILS
 const Integer& reduced_scalar_product(const Constraint& c,
 				      const Generator& g);
+
+#if PPL_STATISTICS
+struct bhrz03_statistics {
+  struct bhrz03_reason {
+    int zero_dim_or_empty;
+    int poly_dim;
+    int lin_space_dim;
+    int num_constraints;
+    int num_points;
+    int zero_coord_rays;
+    int equal;
+    } reason;
+  struct bhrz03_technique {
+    int nop;
+    int combining_constraints;
+    int evolving_points;
+    int evolving_rays;
+    int h79;
+    } technique;
+};
+
+extern bhrz03_statistics *statistics;
+#endif //#if PPL_STATISTICS
 
 } // namespace Parma_Polyhedra_Library
 
