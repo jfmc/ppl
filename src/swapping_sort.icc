@@ -54,16 +54,18 @@ template <typename Iter, typename ValueType, typename Compare>
 Iter
 swapping_partition(Iter first, Iter last, const ValueType& pivot,
 		   Compare comp) {
-  while (true) {
+  for ( ; ; ) {
     while (comp(*first, pivot))
       ++first;
     --last;
     while (comp(pivot, *last))
       --last;
-    if (!(first < last))
+    if (first < last) {
+      std::iter_swap(first, last);
+      ++first;
+    }
+    else
       return first;
-    std::iter_swap(first, last);
-    ++first;
   }
 }
 
@@ -72,20 +74,19 @@ void
 swapping_insertion_sort(Iter first, Iter last, Compare comp) {
   if (first == last)
     return;
-  for (Iter i = first + 1; i != last; ++i)
-    if (comp(*i, *first)) {
-      Iter next = i + 1;
-      while (i != first)
-	std::iter_swap(--i, --next);
+  for (Iter i = first + 1; i != last; ++i) {
+    Iter current = i;
+    if (comp(*current, *first)) {
+      Iter next = current + 1;
+      while (current != first)
+	std::iter_swap(--current, --next);
     }
     else {
-      Iter previous = i - 1;
-      while (comp(*i, *previous)) {
-	std::iter_swap(i, previous);
-	i = previous;
-	--previous;
-      }
+      Iter previous = current - 1;
+      while (comp(*current, *previous))
+	std::iter_swap(current--, previous--);
     }
+  }
 }
 
 template <typename Iter, typename Compare>
@@ -95,37 +96,44 @@ swapping_quicksort_loop(Iter first, Iter last, Compare comp) {
   while (last - first > threshold) {
     // The construction of this temporary object is
     // required for the correctness of the algorithm.
+    Iter middle = first + (last - first) / 2;
     typename std::iterator_traits<Iter>::value_type
-      pivot = median(*first,
-		     *(first + (last - first) / 2),
-		     *(last - 1),
-		     comp);
-    Iter cut = swapping_partition(first, last, pivot, comp);
-    swapping_quicksort_loop(cut, last, comp);
-    last = cut;
+      pivot = median(*first, *middle, *(last - 1), comp);
+    Iter part_point = swapping_partition(first, last, pivot, comp);
+    swapping_quicksort_loop(part_point, last, comp);
+    last = part_point;
   }
 }
 
 template <typename Iter, typename Compare>
 inline void
 swapping_sort(Iter first, Iter last, Compare comp) {
-  if (first != last) {
-    swapping_quicksort_loop(first, last, comp);
-    swapping_insertion_sort(first, last, comp);
-  }
+  if (first == last)
+    return;
+  swapping_quicksort_loop(first, last, comp);
+  swapping_insertion_sort(first, last, comp);
 }
 
 template <typename Iter>
 Iter
 swapping_unique(Iter first, Iter last) {
-  Iter current = std::adjacent_find(first, last);
-  if (current == last)
+  if (first == last)
     return last;
+  Iter current = first;
   Iter next = current;
   ++next;
-  while (++next != last)
+  while(next != last && *current != *next) {
+    current = next;
+    ++next;
+  }
+  if (next == last)
+    return last;
+  ++next;
+  while (next != last) {
     if (*current != *next)
       std::iter_swap(++current, next);
+    ++next;
+  }
   return ++current;
 }
 
