@@ -40,13 +40,9 @@ PPL::GenSys::adjust_topology_and_dimension(Topology new_topology,
   assert(space_dimension() <= new_space_dim);
 
   size_t old_space_dim = space_dimension();
+  size_t cols_to_be_added = new_space_dim - old_space_dim;
   Topology old_topology = topology();
 
-  // Dealing first with the most common case.
-  if (old_space_dim == new_space_dim && old_topology == new_topology)
-    return true;
-
-  size_t cols_to_be_added = new_space_dim - old_space_dim;
   if (cols_to_be_added > 0)
     if (old_topology != new_topology)
       if (new_topology == NECESSARILY_CLOSED) {
@@ -82,28 +78,28 @@ PPL::GenSys::adjust_topology_and_dimension(Topology new_topology,
 	swap_columns(old_space_dim + 1, new_space_dim + 1);
     }
   else
-    // Here `cols_to_be_added == 0', so that
-    // `old_space_dim == new_space_dim' and `old_topology != new_topology'.
-    if (new_topology == NECESSARILY_CLOSED) {
-      // A NON_NECESSARILY_CLOSED generator system
-      // can be converted in to a NECESSARILY_CLOSED one
-      // only if it does not contain closure points.
-      if (has_closure_points())
-	return false;
-      // We just remove the column of the \epsilon coefficients.
-      resize_no_copy(num_rows(), old_space_dim + 1);
-      set_necessarily_closed();
-    }
-    else {
-      // Add the column of the \epsilon coefficients
-      // and set the \epsilon coordinate of all points to 1.
-      add_zero_columns(1);
-      GenSys& gs = *this;
-      size_t eps_index = new_space_dim + 1;
-      for (size_t i = num_rows(); i-- > 0; )
-	gs[i][eps_index] = gs[i][0];
-      set_non_necessarily_closed();
-    }
+    // Here `cols_to_be_added == 0'.
+    if (old_topology != new_topology)
+      if (new_topology == NECESSARILY_CLOSED) {
+	// A NON_NECESSARILY_CLOSED generator system
+	// can be converted in to a NECESSARILY_CLOSED one
+	// only if it does not contain closure points.
+	if (has_closure_points())
+	  return false;
+	// We just remove the column of the \epsilon coefficients.
+	resize_no_copy(num_rows(), old_space_dim + 1);
+	set_necessarily_closed();
+      }
+      else {
+	// Add the column of the \epsilon coefficients
+	// and set the \epsilon coordinate of all points to 1.
+	add_zero_columns(1);
+	GenSys& gs = *this;
+	size_t eps_index = new_space_dim + 1;
+	for (size_t i = num_rows(); i-- > 0; )
+	  gs[i][eps_index] = gs[i][0];
+	set_non_necessarily_closed();
+      }
   // We successfully adjusted dimensions and topology.
   assert(OK());
   return true;

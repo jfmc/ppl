@@ -225,8 +225,6 @@ PPL::PolyBase::generators() const {
 
   if (space_dim == 0) {
     assert(gen_sys.num_columns() == 0 && gen_sys.num_rows() == 0);
-    // CHECK ME: do we need to provide a zero_dim_univ polyhedron
-    // of the same topology ?
     return GenSys::zero_dim_univ();
   }
 
@@ -1198,8 +1196,7 @@ PPL::PolyBase::add_dimensions(Matrix& mat1,
 	std::swap(r[old_eps_index], r[old_eps_index + 1]);
       }
     }
-
-    // CHECK ME: since we swapped columns in both `mat1' and `mat2',
+    // NOTE: since we swapped columns in both `mat1' and `mat2',
     // no swapping is required for `sat1' and `sat2'.
   }
 }
@@ -1678,7 +1675,6 @@ PPL::PolyBase::insert(const Constraint& c) {
   generators of the polyhedron \p *this. The new generator
   can be redundant.
 */
-// CHECKME.
 void
 PPL::PolyBase::insert(const Generator& g) {
   // Dimension-compatibility check:
@@ -1715,7 +1711,7 @@ PPL::PolyBase::insert(const Generator& g) {
       // `g' is NOT a closure point.
       // However, by barely invoking `gen_sys.insert(g)' we would
       // cause a change in the topology of `gen_sys', which is wrong.
-      // Thus, we compute a "topology corrected" copy of `g'.
+      // Thus, we insert a "topology corrected" copy of `g'.
       LinExpression nc_expr = LinExpression(g);
       switch (g.type()) {
       case Generator::LINE:
@@ -2995,7 +2991,6 @@ PPL::PolyBase::OK(bool check_not_empty) const {
     }
 
     if (!is_necessarily_closed()) {
-      // CHECK ME !!
       // A non-empty system of constraints describing a NNC polyhedron
       // must also contain a (combination of) the constraint \epsilon >= 0,
       // i.e., a constraint with a positive \epsilon coefficient.
@@ -3072,19 +3067,6 @@ PPL::PolyBase::OK(bool check_not_empty) const {
       }
     }
   }
-
-  // CHECKME: the following condition has already been checked !
-#if 0
-  // If the polyhedron has both the system of constraints and
-  // the system of generators, they must have the same number of columns.
-  if (constraints_are_up_to_date() && generators_are_up_to_date()
-      && con_sys.num_columns() != gen_sys.num_columns()) {
-    cerr << "Constraints and generators are dimension-incompatible:" << endl
-	 << con_sys.num_columns()-1 << " and " << gen_sys.num_columns()-1
-	 << endl;
-    goto bomb;
-  }
-#endif
 
   if (sat_c_is_up_to_date())
     for (size_t i = sat_c.num_rows(); i-- > 0; ) {

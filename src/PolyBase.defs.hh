@@ -511,13 +511,13 @@ protected:
   void update_sat_c() const;
   //! Updates \p sat_g using the updated constraints and generators.
   void update_sat_g() const;
-  //! Sorts the matrix of constraints keeping \p sat_g consistent.
+  //! Sorts the matrix of constraints keeping status consistency.
   void obtain_sorted_constraints() const;
-  //! Sorts the matrix of generators keeping \p sat_c consistent.
+  //! Sorts the matrix of generators keeping status consistency.
   void obtain_sorted_generators() const;
-  //! Sorts the matrix of constraints and makes \p sat_c consistent.
+  //! Sorts the matrix of constraints and updates \p sat_c.
   void obtain_sorted_constraints_with_sat_c() const;
-  //! Sorts the matrix of generators and makes \p sat_g consistent.
+  //! Sorts the matrix of generators and updates \p sat_g.
   void obtain_sorted_generators_with_sat_g() const;
 
 public:

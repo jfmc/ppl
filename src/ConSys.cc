@@ -41,13 +41,9 @@ PPL::ConSys::adjust_topology_and_dimension(Topology new_topology,
   assert(space_dimension() <= new_space_dim);
 
   size_t old_space_dim = space_dimension();
+  size_t cols_to_be_added = new_space_dim - old_space_dim;
   Topology old_topology = topology();
 
-  // Dealing first with the most common case.
-  if (old_space_dim == new_space_dim && old_topology == new_topology)
-    return true;
-
-  size_t cols_to_be_added = new_space_dim - old_space_dim;
   if (cols_to_be_added > 0)
     if (old_topology != new_topology)
       if (new_topology == NECESSARILY_CLOSED) {
@@ -80,28 +76,27 @@ PPL::ConSys::adjust_topology_and_dimension(Topology new_topology,
 	swap_columns(old_space_dim + 1, new_space_dim + 1);
     }
   else
-    // Here `cols_to_be_added == 0', so that
-    // `old_space_dim == new_space_dim' and `old_topology != new_topology'.
-    if (new_topology == NECESSARILY_CLOSED) {
-      // A NON_NECESSARILY_CLOSED constraint system
-      // can be converted to a NECESSARILY_CLOSED one
-      // only if it does not contain strict inequalities.
-      if (has_strict_inequalities())
-	return false;
-      // We just remove the column of the \epsilon coefficients.
-      resize_no_copy(num_rows(), old_space_dim + 1);
-      set_necessarily_closed();
-    }
-    else {
-      // We just add the column of the \epsilon coefficients.
-      add_zero_columns(1);
-      set_non_necessarily_closed();
-    }
+    // Here `cols_to_be_added == 0'.
+    if (old_topology != new_topology)
+      if (new_topology == NECESSARILY_CLOSED) {
+	// A NON_NECESSARILY_CLOSED constraint system
+	// can be converted to a NECESSARILY_CLOSED one
+	// only if it does not contain strict inequalities.
+	if (has_strict_inequalities())
+	  return false;
+	// We just remove the column of the \epsilon coefficients.
+	resize_no_copy(num_rows(), old_space_dim + 1);
+	set_necessarily_closed();
+      }
+      else {
+	// We just add the column of the \epsilon coefficients.
+	add_zero_columns(1);
+	set_non_necessarily_closed();
+      }
   // We successfully adjusted dimensions and topology.
   assert(OK());
   return true;
 }
-
 
 bool
 PPL::ConSys::has_strict_inequalities() const {
@@ -173,7 +168,6 @@ PPL::ConSys::const_iterator::skip_forward() {
   Returns <CODE>true</CODE> if the given generator \p g satisfies
   all the constraints in \p *this system.
 */
-// CHECKME.
 bool
 PPL::ConSys::satisfies_all_constraints(const Generator& g) const {
   assert(g.space_dimension() <= space_dimension());
@@ -183,12 +177,11 @@ PPL::ConSys::satisfies_all_constraints(const Generator& g) const {
   // (which could also cause a mismatch in the number of columns).
   const Integer& (*sp_fp)(const Row&, const Row&);
   if (g.is_necessarily_closed())
-    sp_fp = &(PPL::operator*);
+    sp_fp = PPL::operator*;
   else
-    sp_fp = &(PPL::operator^);
+    sp_fp = PPL::operator^;
 
   const ConSys& cs = *this;
-
   if (cs.is_necessarily_closed())
     for (size_t i = cs.num_rows(); i-- > 0; ) {
       const Constraint& c = cs[i];
