@@ -671,6 +671,9 @@ public:
   //! is a topologically closed subset of the vector space.
   bool is_topologically_closed() const;
 
+  //! Computes the topological closure of \p *this.
+  void topological_closure_assign();
+
   //! Returns <CODE>true</CODE> if and only if
   //! polyhedron \p x is contained in polyhedron \p y.
   //! \exception std::invalid_argument thrown if \p x and \p y

@@ -716,7 +716,7 @@ PPL::Polyhedron::NNC_minimize_constraints() const {
   for (size_t i = gen_sys.num_rows(),
 	 n_lines = gen_sys.num_lines(); i-- > n_lines; ) {
     const Generator& gi = gen_sys[i];
-    if (gi.is_point()) {
+    if (gi.is_point())
       // Since `gen_sys' is ordered, the corresponding closure point,
       // if present, has an index `j' less than `i'.
       for (size_t j = i; j-- > n_lines; ) {
@@ -728,7 +728,6 @@ PPL::Polyhedron::NNC_minimize_constraints() const {
 	  break;
 	}
       }
-    }
   }
 
   // For all the strict inequalities in `con_sys',
@@ -3140,6 +3139,40 @@ PPL::Polyhedron::is_topologically_closed() const {
   // it has no (non-redundant) strict inequalities.
   minimize();
   return is_empty() || !con_sys.has_strict_inequalities();
+}
+
+
+void
+PPL::Polyhedron::topological_closure_assign() {
+  // Necessarily closed polyhedra are trivially closed.
+  if (is_necessarily_closed())
+    return;
+  // Any empty or zero-dim polyhedron is closed.
+  if (is_empty() || space_dimension() == 0)
+    return;
+
+  size_t eps_index = space_dim + 1;
+  bool changed = false;
+
+  if (constraints_are_up_to_date()) {
+    // Transform all strict inequalities into non-strict ones.
+    for (size_t i = cs.num_rows(); i-- > 0; ) {
+      Constraint& c = cs[i];
+      // FIXME : the non-triviality test is just a patch
+      // to avoid considering the inequality constraint \epsilon <= 1.
+      if (c[eps_index] < 0 && !c.is_trivial_true()) {
+	c[eps_index] = 0;
+	changed = true;
+      }
+    }
+    if (changed)
+      clear_generators_up_to_date();
+  }
+  else {
+    assert(generators_are_up_to_date());
+    // Add the corresponding point to each closure point.
+    gen_sys.add_corresponding_points();
+  }
 }
 
 

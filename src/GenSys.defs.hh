@@ -246,6 +246,15 @@ PPL_INTERNAL:
   bool adjust_topology_and_dimension(Topology topol,
 				     size_t num_dimensions);
 
+  //! For each unmatched closure point in \p *this, adds the
+  //! corresponding point. It is assumed that the topology of \p *this
+  //! is <CODE>NOT_NECESSARILY_CLOSED</CODE>.
+  void add_corresponding_points();
+
+  //! Returns <CODE>true</CODE> if and only if \p *this
+  //! contains one or more points.
+  bool has_points() const;
+
   //! For each unmatched point in \p *this, adds the corresponding
   //! closure point. It is assumed that the topology of \p *this
   //! is <CODE>NOT_NECESSARILY_CLOSED</CODE>.
@@ -254,10 +263,6 @@ PPL_INTERNAL:
   //! Returns <CODE>true</CODE> if and only if \p *this
   //! contains one or more closure points.
   bool has_closure_points() const;
-
-  //! Returns <CODE>true</CODE> if and only if \p *this
-  //! contains one or more points.
-  bool has_points() const;
 
   //! Returns the \p k- th generator of the system.
   Generator& operator[](size_t k);
