@@ -38,12 +38,11 @@ If you have installed a binary RPM package, then you have the same set
 of manuals. You can find them with the command `rpm -ql ppl' which
 will print, among other things, something like
 
-  /usr/share/doc/ppl-X.Y.Z
-  /usr/share/doc/ppl-X.Y.Z/README
-  /usr/share/doc/ppl-X.Y.Z/ppl-user-X.Y.Z-browse.pdf
-  /usr/share/doc/ppl-X.Y.Z/ppl-user-X.Y.Z-print.pdf
-  /usr/share/doc/ppl-X.Y.Z/ppl-user-X.Y.Z-print.ps.gz
-
+  $PREFIX/share/doc/ppl
+  $PREFIX/share/doc/ppl/README.doc
+  $PREFIX/share/doc/ppl/ppl-user-X.Y.Z-browse.pdf
+  $PREFIX/share/doc/ppl/ppl-user-X.Y.Z-print.pdf
+  $PREFIX/share/doc/ppl/ppl-user-X.Y.Z-print.ps.gz
 
 The Documentation You May Download
 ==================================
