@@ -315,10 +315,12 @@ public:
   void insert(const Generator& g);
 
   //! Assigns an affine expression to the specified variable.
+  //! \exception invalid_argument \p denominator is zero.
   void assign_variable(const Variable& var, 
 		       const LinExpression& coefficient,
 		       Integer& denominator);
   //! Substitute an affine expression to the specified variable.
+  //! \exception invalid_argument \p denominator is zero.
   void substitute_variable(const Variable& var,
 			   const LinExpression& coefficient,
 			   Integer& denominator);
@@ -351,12 +353,12 @@ private:
   void obtain_sorted_generators_with_sat_g();
 
 public:
-  // Adds new dimensions and embeds the old polyhedron in the new space. 
+  //! Adds new dimensions and embeds the old polyhedron in the new space. 
   void add_dimensions_and_embed(size_t add_dim);
-  // Adds new dimensions to the polyhedron 
-  // and does not embed it in the new space.
+  //! Adds new dimensions to the polyhedron 
+  //! and does not embed it in the new space.
   void add_dimensions_and_project(size_t add_dim);
-  // Removes the specified dimensions.
+  //! Removes the specified dimensions.
   void remove_dimensions(const std::vector<unsigned int>& to_be_removed);
   //! Adds given constraints to the polyhedron and compute a new polyhedron.
   bool add_constraints(ConSys& constraints_to_add);
