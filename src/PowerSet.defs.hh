@@ -89,6 +89,9 @@ public:
 
   friend std::ostream& operator <<<>(std::ostream& s, const PowerSet& x);
 
+  //! Returns the dimension of the vector space enclosing \p *this.
+  size_t space_dimension() const;
+
   //! \brief
   //! Intersects \p *this with (a copy of) constraint \p c.
   /*!
@@ -158,6 +161,14 @@ private:
   typedef std::list<CS> Sequence;
   typedef typename Sequence::const_reference const_reference;
 
+  //! The sequence container holding powerset's elements.
+  Sequence sequence;
+
+  //! The number of dimensions of the enclosing vector space.
+  size_t space_dim;
+
+  void omega_reduction();
+
 public:
   typedef typename Sequence::iterator iterator;
   typedef typename Sequence::const_iterator const_iterator;
@@ -170,11 +181,6 @@ public:
 
   iterator end();
   const_iterator end() const;
-
-
-  Sequence sequence;
-
-  void omega_reduction();
 };
 
 #include "PowerSet.inlines.hh"

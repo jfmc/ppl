@@ -251,6 +251,12 @@ std::ostream& operator<< (std::ostream& s, const PowerSet<CS>& x) {
 }
 
 template <typename CS>
+size_t
+PowerSet<CS>::space_dimension() const {
+  return space_dim;
+}
+
+template <typename CS>
 void
 PowerSet<CS>::add_constraint(const Constraint& c) {
   for (typename PowerSet<CS>::iterator i = begin(),
