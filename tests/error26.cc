@@ -40,10 +40,10 @@ main() {
 
   Polyhedron ph1(3);
   ph1.insert(x - y >= 0);
-  
+
   Polyhedron ph2(2);
-  ph2.insert(x - y == 0); 
-  
+  ph2.insert(x - y == 0);
+
   try {
     // This is an invalid use of operator <=.
     ph1 <= ph2;
@@ -57,7 +57,7 @@ main() {
   catch (...) {
     exit(1);
   }
-  
+
   // Should not get here.
   return 1;
 }

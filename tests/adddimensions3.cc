@@ -34,7 +34,7 @@ using namespace Parma_Polyhedra_Library;
 int
 main() {
   set_handlers();
-  
+
   Variable x(0);
   Variable y(1);
   Variable z(2);
@@ -50,7 +50,7 @@ main() {
 #if NOISY
   print_generators(ph, "*** ph ***");
 #endif
-  ConSys cs = ph.constraints(); 
+  ConSys cs = ph.constraints();
 
   ph.add_dimensions_and_embed(2);
 #if NOISY
@@ -70,7 +70,7 @@ main() {
   known_result.insert(line(u));
   known_result.insert(line(v));
   known_result.insert(line(w));
- 
+
   int retval = (ph == known_result) ? 0 : 1;
 
   return retval;

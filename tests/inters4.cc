@@ -1,5 +1,5 @@
 /* Testing Polyhedron::intersection_assign_and_minimize() and
-   Polyhedron::intersection_assign(): we intersect an empty 
+   Polyhedron::intersection_assign(): we intersect an empty
    polyhedron with one non-empty.
    Copyright (C) 2001, 2002 Roberto Bagnara <bagnara@cs.unipr.it>
 
@@ -35,7 +35,7 @@ using namespace Parma_Polyhedra_Library;
 int
 main() {
   set_handlers();
-  
+
   Variable x(0);
   Variable y(1);
 
@@ -65,7 +65,7 @@ main() {
 #if NOISY
   print_constraints(computed_result2, "*** After intersection_assign ***");
 #endif
-  
+
   Polyhedron known_result(2, Polyhedron::EMPTY);
 
   int retval = (computed_result1 == known_result

@@ -37,7 +37,7 @@ main() {
 
   Variable x(0);
   Variable y(1);
-  
+
   GenSys gs;
   gs.insert(vertex(x + y));
   gs.insert(ray(x + 2*y));
@@ -53,7 +53,7 @@ main() {
 #if NOISY
   print_constraints(ph, "*** After affine_preimage(x, y+1) ***");
 #endif
-  
+
   Polyhedron known_result(2);
   known_result.insert(y >= 1);
 

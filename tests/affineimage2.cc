@@ -1,4 +1,4 @@
-/* Testing Polyhedron::affine_image(): we apply this function to a 
+/* Testing Polyhedron::affine_image(): we apply this function to a
    polyhedron defined by its system of constraints.
    Copyright (C) 2001, 2002 Roberto Bagnara <bagnara@cs.unipr.it>
 
@@ -34,7 +34,7 @@ using namespace Parma_Polyhedra_Library;
 int
 main() {
   set_handlers();
-  
+
   Variable A(0);
   Variable B(1);
 
@@ -57,6 +57,6 @@ main() {
   known_result.insert(A - B <= 4);
 
   int retval = (ph == known_result) ? 0 : 1;
-  
+
   return retval;
 }

@@ -212,29 +212,29 @@ main() {
   fix_point(start, induct, final, recursive_offset, arity);
 
 #if NOISY
-    print_constraints(expect, "*** expected ***");
+  print_constraints(expect, "*** expected ***");
 #endif
 
-    Polyhedron final1;
-    final1 = induct;
-    shift_rename_insert(final, recursive_offset, final1);
+  Polyhedron final1;
+  final1 = induct;
+  shift_rename_insert(final, recursive_offset, final1);
 
 #if NOISY
-    print_constraints(final1, "*** after shift_rename_insert ***");
+  print_constraints(final1, "*** after shift_rename_insert ***");
 #endif
-    Polyhedron final2;
-    final2 = final1;
-    Variable A(0);
-    Variable B(1);
-    Variable K(10);
-    Variable L(11);
-    final2.insert(B - L >= 1);
-    final2.insert(A - K >= 1);
+  Polyhedron final2;
+  final2 = final1;
+  Variable A(0);
+  Variable B(1);
+  Variable K(10);
+  Variable L(11);
+  final2.insert(B - L >= 1);
+  final2.insert(A - K >= 1);
 
 #if NOISY
-    if (final2 == final1)
+  if (final2 == final1)
     print_constraints(final2, "*** termination condition satisfied ***");
-    else
+  else
     print_constraints(final2, "*** termination condition not satisfied ***");
 #endif
 

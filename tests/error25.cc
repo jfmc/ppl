@@ -35,11 +35,11 @@ using namespace Parma_Polyhedra_Library;
 int
 main() {
   set_handlers();
-  
+
   Variable x(0);
   Variable y(1);
   Variable z(2);
-  
+
   Polyhedron ph1(2);
   ph1.insert(x - y >= 0);
   ph1.insert(x >= 0);
@@ -52,7 +52,7 @@ main() {
 
   ConSys cs;
   cs.insert(z <= 5);
-  
+
   try {
     // This is invalid use of widening_assign.
     ph1.limited_widening_assign(ph2, cs);

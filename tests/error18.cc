@@ -49,7 +49,7 @@ main() {
   gs2.insert(ray(x + y));
 
   Polyhedron ph2(gs2);
-  
+
   try {
     // This is an invalid use of convex_hull_assign.
     ph1.convex_hull_assign(ph2);

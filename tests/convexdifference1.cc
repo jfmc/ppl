@@ -31,7 +31,7 @@ using namespace Parma_Polyhedra_Library;
 #define NOISY 0
 
 int
-main() try {
+main() {
   set_handlers();
 
   Variable x(0);
@@ -52,7 +52,7 @@ main() try {
   gs2.insert(vertex(0*x + 3*y));
   gs2.insert(vertex(4*x + 3*y));
   gs2.insert(vertex(2*x + 1*y));
- 
+
   Polyhedron ph2(gs2);
 
 #if NOISY
@@ -60,7 +60,7 @@ main() try {
 #endif
 
   Polyhedron computed_result = ph1;
-  
+
   computed_result.convex_difference_assign(ph2);
 
 #if NOISY
@@ -75,11 +75,5 @@ main() try {
 
   Polyhedron known_result(gs_known_result);
 
-  size_t retval = (computed_result == known_result) ? 0 : 1;
- 
-  return retval;
-}
-catch (std::exception& e) {
-  cout << e.what() << endl;
-  exit(1);
+  return (computed_result == known_result) ? 0 : 1;
 }

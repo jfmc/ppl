@@ -35,13 +35,13 @@ using namespace Parma_Polyhedra_Library;
 int
 main() {
   set_handlers();
-  
+
   Polyhedron ph(3, Polyhedron::EMPTY);
 
 #if NOISY
   cout << "*** ph ***" << endl << ph << endl;
 #endif
-  
+
   Polyhedron computed_result1(ph);
   Polyhedron computed_result2(ph);
 

@@ -33,10 +33,10 @@ using namespace Parma_Polyhedra_Library;
 int
 main() {
   set_handlers();
-  
+
   Variable x(0);
   Variable y(1);
-  
+
   GenSys gs1;
   gs1.insert(vertex(x));
   gs1.insert(vertex(y));
@@ -49,9 +49,9 @@ main() {
 
   GenSys gs2;
   gs2.insert(vertex());
-  
+
   ph1.add_generators_and_minimize(gs2);
-  
+
 #if NOISY
   print_generators(ph1, "*** add_generators_and_minimize ***");
 #endif

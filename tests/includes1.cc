@@ -28,7 +28,7 @@ site: http://www.cs.unipr.it/ppl/ . */
 using namespace std;
 using namespace Parma_Polyhedra_Library;
 
-#define NOISY 0
+#define NOISY 1
 
 int
 main() {
@@ -43,17 +43,23 @@ main() {
   Polyhedron ph(cs);
 
 #if NOISY
-  cout << "--- ph ---" << endl << ph << endl;
+  print_constraints(ph, "*** ph ***");
 #endif
- 
-  bool include = ph.includes(ray(x + y));
+
+  Generator g = ray(x + y);
 
 #if NOISY
-  cout << "--- ph.includes(ray(x + y)) ---"
+  print_generator(g, "*** g ***");
+#endif
+
+  bool include = ph.includes(g);
+
+#if NOISY
+  cout << "*** ph.includes(g)) ***"
        << endl
        << (include ? "true" : "false")
        << endl;
 #endif
 
-  return !include;
+  return include ? 0 : 1;
 }

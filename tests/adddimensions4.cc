@@ -40,7 +40,7 @@ main() {
 #if NOISY
   print_generators(ph1, "*** ph1 ***");
 #endif
-  
+
   ph1.add_dimensions_and_project(3);
 #if NOISY
   print_generators(ph1, "*** After add_dimensions_and_project(3) ***");
@@ -48,11 +48,11 @@ main() {
 
   Polyhedron ph2;
   ConSys cs = ph2.constraints();
-  
+
 #if NOISY
   print_generators(ph2, "*** ph2 ***");
 #endif
-  
+
   ph2.add_dimensions_and_project(3);
 #if NOISY
   print_generators(ph2, "*** After add_dimensions_and_project(3) ***");

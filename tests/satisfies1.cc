@@ -44,7 +44,7 @@ main() {
 #if NOISY
   cout << "--- ph ---" << endl << ph << endl;
 #endif
- 
+
 #if NOISY
   GenSys_Con_Rel rel =
 #endif

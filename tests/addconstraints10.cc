@@ -1,6 +1,6 @@
 /* Testing the function add_dimensions_and_constraints: we add a
    two-dimensional system of constraints to an empty, two-dimensional
-   polyhedron. The result is a empty, four-dimansional polyhedron 
+   polyhedron. The result is a empty, four-dimansional polyhedron
    Copyright (C) 2001, 2002 Roberto Bagnara <bagnara@cs.unipr.it>
 
 This file is part of the Parma Polyhedra Library (PPL).

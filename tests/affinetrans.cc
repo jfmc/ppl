@@ -30,7 +30,7 @@ using namespace Parma_Polyhedra_Library;
 
 #define NOISY 0
 
-int 
+int
 main() {
   set_handlers();
 
@@ -71,7 +71,7 @@ main() {
   Polyhedron p2_known_result(gs2_known_result);
 
   int retval = ((p1 == p1_known_result) && (p2 == p2_known_result)) ? 0 : 1;
-  
+
 #if NOISY
   print_generators(p1 ,"*** p1 ***");
   print_generators(p1_known_result, "*** p1_known_result ***");

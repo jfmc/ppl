@@ -44,7 +44,7 @@ main() {
 #if NOISY
   cout << "*** ph ***" << endl << ph << endl;
 #endif
-  
+
   ConSys cs;
   cs.insert(x >= 0);
   cs.insert(y <= 0);
@@ -56,7 +56,7 @@ main() {
 #if NOISY
   cout << "*** ph ***" << endl << ph << endl;
 #endif
-  
+
   Polyhedron known_result(3, Polyhedron::EMPTY);
 
   int retval = (ph == known_result) ? 0 : 1;

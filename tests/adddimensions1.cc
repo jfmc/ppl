@@ -33,10 +33,10 @@ using namespace Parma_Polyhedra_Library;
 int
 main() {
   set_handlers();
-  
+
   Variable x(0);
   Variable y(1);
-  
+
   GenSys gs;
   gs.insert(vertex());
   gs.insert(vertex(x));
@@ -44,7 +44,7 @@ main() {
   gs.insert(vertex(x + y));
 
   Polyhedron ph(gs);
-  
+
 #if NOISY
   print_generators(ph, "*** ph ***");
 #endif
@@ -61,7 +61,5 @@ main() {
   known_result.insert(vertex(y));
   known_result.insert(vertex(x + y));
 
-  size_t retval = (ph == known_result) ? 0 : 1;
-  
-  return retval;
+  return (ph == known_result) ? 0 : 1;
 }

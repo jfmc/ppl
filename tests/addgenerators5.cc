@@ -65,7 +65,7 @@ main() {
   gs_known_result.insert(ray(x + y));
   Polyhedron known_result(gs_known_result);
 
-  
+
   int retval = (ph == known_result) ? 0 : 1;
 
   return retval;

@@ -42,7 +42,7 @@ main() {
 #if NOISY
   cout << "--- ph ---" << endl << ph << endl;
 #endif
- 
+
   GenSys gs;
   gs.insert(vertex(x));
 

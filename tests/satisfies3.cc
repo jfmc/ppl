@@ -40,7 +40,7 @@ main() {
 #if NOISY
   cout << "--- ph ---" << endl << ph << endl;
 #endif
- 
+
   ConSys cs;
   cs.insert(LinExpression(3) >= 0);
 
@@ -51,9 +51,9 @@ main() {
 #if NOISY
   cout << "ph.satisfies(cs[0]) == " << rel << endl;
 #endif
-  
+
   GenSys_Con_Rel known_rel = SOME_SATISFY;
   int retval = (rel == known_rel) ? 0 : 1;
-  
+
   return retval;
 }

@@ -64,7 +64,7 @@ main() {
   known_result.insert(vertex());
   known_result.insert(ray(x));
   known_result.insert(ray(x + y));
-  
+
   int retval = (ph == known_result) ? 0 : 1;
 
   return retval;

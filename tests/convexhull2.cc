@@ -59,7 +59,7 @@ main() {
   print_generators(computed_result1,
 		   "*** After convex_hull_assign_and_minimize ***");
 #endif
-  
+
   Polyhedron computed_result2(ph1);
   computed_result2.convex_hull_assign(ph2);
 

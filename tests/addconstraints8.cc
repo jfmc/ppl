@@ -54,10 +54,10 @@ main() {
 #if NOISY
   cout << "*** After add_constraints ***" << endl << ph << endl;
 #endif
-  
+
   Polyhedron known_result(0, Polyhedron::EMPTY);
 
   int retval = (known_result == ph) ? 0 : 1;
 
   return retval;
-} 
+}

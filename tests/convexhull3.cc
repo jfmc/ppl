@@ -54,7 +54,7 @@ main() {
   print_constraints(ph1, "*** ph1 ***");
   print_constraints(ph2, "*** ph2 ***");
 #endif
-  
+
   ph1.convex_hull_assign(ph2);
 
 #if NOISY
@@ -71,4 +71,4 @@ main() {
 
   return retval;
 }
-  
+

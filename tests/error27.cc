@@ -37,7 +37,7 @@ main() {
   Variable x(0);
 
   Polyhedron ph(2, Polyhedron::EMPTY);
- 
+
   try {
     // This is invalid generator.
     Generator g(ray(x));

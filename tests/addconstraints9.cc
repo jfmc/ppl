@@ -51,7 +51,7 @@ main() {
 
   ConSys cs;
   cs.insert(x <= 3);
-  
+
 #if NOISY
   cout << "*** cs ***" << endl << cs << endl;
 #endif
@@ -70,6 +70,6 @@ main() {
   int retval = (known_result == ph) ? 0 : 1;
 
   return retval;
-} 
+}
 
-  
+

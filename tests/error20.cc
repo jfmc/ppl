@@ -39,7 +39,7 @@ main() {
   Variable y(1);
 
   Polyhedron ph(1, Polyhedron::EMPTY);
-  
+
   try {
     // This is invalid system of generators.
     GenSys gs;

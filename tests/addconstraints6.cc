@@ -43,7 +43,7 @@ main() {
 #if NOISY
   cout << "*** ph ***" << endl << ph << endl;
 #endif
-  
+
   ConSys cs;
   cs.insert(x >= 4);
   cs.insert(x - y >= 0);
@@ -55,7 +55,7 @@ main() {
 #if NOISY
   cout << "*** ph ***" << endl << ph << endl;
 #endif
-  
+
   Polyhedron known_result(3);
   known_result.insert(x >= 4);
   known_result.insert(x - y >= 0);

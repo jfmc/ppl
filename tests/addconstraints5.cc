@@ -35,7 +35,7 @@ int
 main() {
   set_handlers();
   Variable x(0);
-  
+
   Polyhedron ph(3, Polyhedron::EMPTY);
 
 #if NOISY
@@ -53,7 +53,7 @@ main() {
 #if NOISY
   cout << "*** ph ***" << endl << ph << endl;
 #endif
-  
+
   Polyhedron computed_result(3, Polyhedron::EMPTY);
 
   int retval = (ph == computed_result) ? 0 : 1;

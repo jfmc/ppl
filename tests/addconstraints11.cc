@@ -63,8 +63,8 @@ main() {
   Polyhedron known_result(2);
   known_result.insert(x - y >= 3);
   known_result.insert(y >= 0);
- 
+
   int retval = (ph == known_result) ? 0 : 1;
- 
+
   return retval;
 }

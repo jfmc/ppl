@@ -45,7 +45,7 @@ main() {
   to_be_removed.insert(w);
 
   // A 10-dim space, empty polyhedron.
-  Polyhedron ph(10, Polyhedron::EMPTY);  
+  Polyhedron ph(10, Polyhedron::EMPTY);
   ph.remove_dimensions(to_be_removed);
 
   // A 7-dim space, empty polyhedron.

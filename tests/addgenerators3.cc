@@ -48,7 +48,7 @@ main() {
 #if NOISY
   cout << "*** gs ***" << endl << gs << endl;
 #endif
-  
+
   ph.add_generators_and_minimize(gs);
 
 #if NOISY
@@ -56,7 +56,7 @@ main() {
 #endif
 
   Polyhedron known_result;
-  
+
   int retval = (ph == known_result) ? 0 : 1;
 
   return retval;

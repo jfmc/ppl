@@ -45,7 +45,7 @@ main() {
 #if NOISY
   print_constraints(ph, "*** ph ***");
 #endif
-  
+
   GenSys gs;
   gs.insert(ray(x));
   gs.insert(vertex());
@@ -53,7 +53,7 @@ main() {
 #if NOISY
   cout << "*** gs ***" << endl << gs << endl;
 #endif
-  
+
   ph.add_generators(gs);
 
 #if NOISY
@@ -63,7 +63,7 @@ main() {
   Polyhedron known_result(2);
   known_result.insert(y == 0);
   known_result.insert(x >= 0);
-  
+
   int retval = (ph == known_result) ? 0 : 1;
 
   return retval;

@@ -37,7 +37,7 @@ main() {
 
   Variable x(0);
   Variable y(1);
-  
+
   Polyhedron ph(1);
   ph.insert(x >= 1);
 

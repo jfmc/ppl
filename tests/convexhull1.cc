@@ -41,7 +41,7 @@ main() {
   gs1.insert(vertex());
   gs1.insert(ray(x));
   gs1.insert(ray(y));
-  
+
   Polyhedron ph1(gs1);
 
 #if NOISY
@@ -52,7 +52,7 @@ main() {
   gs2.insert(vertex(-x + y));
   gs2.insert(vertex(x + y));
   gs2.insert(vertex(3*x));
-  
+
   Polyhedron ph2(gs2);
 
 #if NOISY
@@ -60,7 +60,7 @@ main() {
 #endif
 
   Polyhedron computed_result = ph1;
-  
+
   computed_result.convex_hull_assign(ph2);
 
 #if NOISY
@@ -75,7 +75,5 @@ main() {
 
   Polyhedron known_result(gs_known_result);
 
-  size_t retval = (computed_result == known_result) ? 0 : 1;
- 
-  return retval;
+  return (computed_result == known_result) ? 0 : 1;
 }

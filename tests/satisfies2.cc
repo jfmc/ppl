@@ -55,6 +55,6 @@ main() {
 
   GenSys_Con_Rel known_rel = ALL_SATURATE;
   int retval = (rel == known_rel) ? 0 : 1;
-  
+
   return retval;
 }

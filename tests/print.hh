@@ -26,6 +26,15 @@ easy_print(const Polyhedron& ph,
 }
 
 inline void
+print_constraint(const Constraint& c,
+		const string& intro = "",
+		ostream& s = cout) {
+  if (!intro.empty())
+    s << intro << endl;
+  s << c << endl;
+}
+
+inline void
 print_constraints(const ConSys& cs,
 		  const string& intro = "",
 		  ostream& s = cout) {
@@ -47,6 +56,15 @@ print_constraints(const Polyhedron& ph,
 		  ostream& s = cout) {
   if (!easy_print(ph, intro, s))
     print_constraints(ph.constraints(), "", s);
+}
+
+inline void
+print_generator(const Generator& g,
+		const string& intro = "",
+		ostream& s = cout) {
+  if (!intro.empty())
+    s << intro << endl;
+  s << g << endl;
 }
 
 inline void

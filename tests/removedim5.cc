@@ -34,7 +34,7 @@ using namespace Parma_Polyhedra_Library;
 int
 main() {
   set_handlers();
-  
+
   Polyhedron ph(4, Polyhedron::EMPTY);
 
 #if NOISY
@@ -52,4 +52,4 @@ main() {
 
   return retval;
 }
-  
+

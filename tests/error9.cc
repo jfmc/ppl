@@ -1,4 +1,4 @@
-/* An incorrect use of the function affine_preimage: the variable 
+/* An incorrect use of the function affine_preimage: the variable
    is not in the space of the polyhedron.
    Copyright (C) 2001, 2002 Roberto Bagnara <bagnara@cs.unipr.it>
 

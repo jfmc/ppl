@@ -55,11 +55,11 @@ main() {
 #endif
 
   Polyhedron known_result(3);
-  known_result.insert(A + B + C == 0); 
-  known_result.insert(A + 2*B >= 0); 
+  known_result.insert(A + B + C == 0);
+  known_result.insert(A + 2*B >= 0);
   known_result.insert(A + 2*B -1 >= 0);
-  
-  int retval = (ph == known_result) ? 0 : 1; 
+
+  int retval = (ph == known_result) ? 0 : 1;
 
   return retval;
 }

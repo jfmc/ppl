@@ -33,7 +33,7 @@ using namespace Parma_Polyhedra_Library;
 int
 main() {
   set_handlers();
-  
+
   Variable x(0);
   Variable y(1);
 
@@ -44,7 +44,7 @@ main() {
 #if NOISY
   print_constraints(ph1, "*** ph1 ***");
 #endif
-  
+
   Polyhedron ph2(2);
   ph2.insert(x >= 0);
   ph2.insert(y >= 0);
@@ -56,7 +56,7 @@ main() {
 #endif
 
   Polyhedron computed_result = ph1;
-  
+
   computed_result.intersection_assign(ph2);
 
 #if NOISY
@@ -65,10 +65,8 @@ main() {
 
   Polyhedron known_result(2);
   known_result.insert(y >= 0);
-  known_result.insert(x - y >= 0); 
+  known_result.insert(x - y >= 0);
   known_result.insert(x <= 1);
 
-  size_t retval = (computed_result == known_result) ? 0 : 1;
- 
-  return retval;
+  return (computed_result == known_result) ? 0 : 1;
 }

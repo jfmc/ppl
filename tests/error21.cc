@@ -43,7 +43,7 @@ main() {
   gs.insert(ray(x + y));
   gs.insert(vertex());
 
-  Polyhedron ph(gs);  
+  Polyhedron ph(gs);
   try {
     // This is invalid constraint.
     Constraint c(z >= 0);

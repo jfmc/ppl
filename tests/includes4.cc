@@ -44,11 +44,11 @@ main() {
   gs.insert(line(x));
   Polyhedron ph(gs);
 
-  
+
 #if NOISY
   cout << "--- ph ---" << endl << ph << endl;
 #endif
- 
+
   GenSys gs1;
   gs1.insert(vertex(x + y));
 
@@ -61,4 +61,4 @@ main() {
   return !include;
 }
 
-  
+
