@@ -22,7 +22,36 @@ PURPOSE. */
 #endif
 
 #ifdef CHECKED_INTEGERS
+#ifdef NEW_CHECKED_CODE
+namespace Parma_Polyhedra_Library {
+
+template <typename T>
+class Checked_Number;
+
+template <>
+struct Integer_traits_template<Checked_Number<int8_t> > {
+  typedef Checked_Number<int8_t> const_reference;
+};
+
+template <>
+struct Integer_traits_template<Checked_Number<int16_t> > {
+  typedef Checked_Number<int16_t> const_reference;
+};
+
+template <>
+struct Integer_traits_template<Checked_Number<int32_t> > {
+  typedef Checked_Number<int32_t> const_reference;
+};
+
+template <>
+struct Integer_traits_template<Checked_Number<int64_t> > {
+  typedef const Checked_Number<int64_t>& const_reference;
+};
+
+} // namespace Parma_Polyhedra_Library
+#else
 #include "Checked_Integer.types.hh"
+#endif
 #endif
 
 #ifdef GMP_INTEGERS
