@@ -554,42 +554,26 @@ will be
 <B>Remapping the Dimensions of the Vector Space</B>
 
 The library provides an operator to remap the dimensions of the
-vector space \f$\Rset^n\f$ according to an injective function
-\f$\fund{\rho}{R}{\Nset}\f$, where \f$R \sseq \{0, \ldots n-1\}\f$
-is the set of dimension indices that are remapped.
-Dimensions corresponding to indices that are not remapped by \f$\rho\f$
-are either removed or become completely unconstrained (i.e., the argument
-polyhedron is cylindrificated on the unmapped dimensions).
+vector space \f$\Rset^n\f$ according to a partial injective function
+\f$\pard{\rho}{\{0, \ldots, n-1\}}{\Nset}\f$
+such that \f$\rho\bigl(\{0, \ldots, n-1\}\bigr) = \{0, \ldots, m-1\}\f$
+with \f$m \leq n\f$.
+Dimensions corresponding to indices that are not remapped
+by \f$\rho\f$ are removed.
 
-If \f$R = \emptyset\f$, i.e., if the function \f$\rho\f$ is everywhere
-undefined, then the operator projects the argument polyhedron
-\f$\cP \in \Pset_n\f$ onto the zero-dimension space \f$\Rset^0\f$;
-otherwise, letting \f$m = \max\bigl(\rho(R)\bigr) + 1\f$,
-the result will be a polyhedron on the vector space
-\f$\Rset^m\f$ obtained as follows:
- - first, if \f$m > n\f$, the missing \f$m - n\f$ dimensions
-   are added to the vector space, through an embedding operation,
-   so that in all the following steps we can assume \f$m \leq n\f$; 
- - second, all the dimensions in \f$R\f$ are remapped as dictated by
-   function \f$\rho\f$; namely, the polyhedron \f$\cP \in \Pset_n\f$
-   obtained in the previous step is transformed into
-   \f[
-     \cQ
-       = \sset{
-           (w_0, \ldots, w_{n-1})^\transpose \in \Rset^n
-         }{
-           (v_0, \ldots, v_{n-1})^\transpose \in \cP, \\
-           \forall i \in R \itc w_{\rho(i)} = v_i, \\
-           \forall i \in \{0, \ldots, n-1\} \setminus \rho(R)
-             \itc w_i = v_i 
-         }.
-   \f]
- - third, if \f$m < n\f$, all space dimensions having indices greater
-   than or equal to \f$m\f$ are removed;
- - finally, the polyhedron is cylindrificated by removing all the
-   constraints on those dimensions having indices in
-   \f$\{0, \ldots, m-1\} \setminus \rho(R)\f$,
-   i.e., those dimensions that were not the target of the remapping.
+If \f$m = 0\f$, i.e., if the function \f$\rho\f$ is undefined everywhere,
+then the operator projects the argument polyhedron \f$\cP \in \Pset_n\f$
+onto the zero-dimension space \f$\Rset^0\f$;
+otherwise the result is \f$\cQ \in \Pset_m\f$ given by
+\f[
+  \cQ
+    \defeq
+      \Bigl\{\,
+        \bigl(v_{\rho^{-1}(0)}, \ldots, v_{\rho^{-1}(m-1)}\bigr)^\transpose
+      \Bigm|
+        (v_0, \ldots, v_{n-1})^\transpose \in \cP
+      \,\Bigr\}.
+\f]
 
 \anchor affine_transformation
 <B>Affine Images and Preimages</B>
