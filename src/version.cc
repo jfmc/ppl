@@ -54,22 +54,22 @@ const char banner_string[] =
 } // namespace
 
 unsigned
-version_major() {
+PPL::version_major() {
   return PPL_VERSION_MAJOR;
 }
 
 unsigned
-version_minor() {
+PPL::version_minor() {
   return PPL_VERSION_MINOR;
 }
 
 unsigned
-version_revision() {
+PPL::version_revision() {
   return PPL_VERSION_REVISION;
 }
 
 unsigned
-version_beta() {
+PPL::version_beta() {
   return PPL_VERSION_BETA;
 }
 
