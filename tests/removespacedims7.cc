@@ -1,6 +1,5 @@
-/* Test Polyhedron::remove_higher_dimensions(): the dimension
-   of the resulting space is equal to the dimension of the
-   original space.
+/* Test remove_higher_space_dimensions() and remove_space_dimensions()
+   with NNC_Polyhedron.
    Copyright (C) 2001-2004 Roberto Bagnara <bagnara@cs.unipr.it>
 
 This file is part of the Parma Polyhedra Library (PPL).
@@ -36,24 +35,40 @@ int
 main() TRY {
   set_handlers();
 
-  Variable A(0);
+  Variable x(0);
+  Variable y(1);
+  Variable z(2);
 
-  C_Polyhedron ph(2);
-  ph.add_constraint(A >= 3);
+  NNC_Polyhedron ph1(4);
 
-#if NOISY
-  print_constraints(ph, "*** ph ***");
-#endif
-
-  C_Polyhedron known_result(ph);
-
-  ph.remove_higher_dimensions(2);
-
-  int retval = (ph == known_result) ? 0 : 1;
+  ph1.add_constraint(x - y == 3);
+  ph1.add_constraint(z > x + 4);
+  ph1.add_constraint(y < 6);
 
 #if NOISY
-  print_constraints(ph, "*** After ph.remove_higher_dimensions(2) ***");
+  print_constraints(ph1, "*** ph1 ***");
 #endif
+
+  NNC_Polyhedron ph2(ph1);
+
+  ph1.remove_higher_space_dimensions(1);
+
+  // This is the set of the variables that we want to remove.
+  Variables_Set to_be_removed;
+  to_be_removed.insert(y);
+  to_be_removed.insert(z);
+  to_be_removed.insert(Variable(3));
+
+  ph2.remove_space_dimensions(to_be_removed);
+
+  int retval = (ph1 == ph2) ? 0 : 1;
+
+#if NOISY
+  print_constraints(ph1, "*** After remove_higher_space_dimensions(1) ***");
+  print_constraints(ph2,
+		    "*** After remove_space_dimensions(to_be_removed) ***");
+#endif
+
   return retval;
 }
 CATCH

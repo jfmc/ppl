@@ -1,4 +1,5 @@
-/* Remove some variables from the space.
+/* Test Polyhedron::add_space_dimensions_and_embed(): we apply this function
+   to a polyhedron defined by its system of generators.
    Copyright (C) 2001-2004 Roberto Bagnara <bagnara@cs.unipr.it>
 
 This file is part of the Parma Polyhedra Library (PPL).
@@ -37,29 +38,39 @@ main() TRY {
   Variable x(0);
   Variable y(1);
   Variable z(2);
-  Variable w(3);
+  Variable u(3);
+  Variable v(4);
+  Variable w(5);
+
   GenSys gs;
-  gs.insert(point(0*x + y +0*z + 2*w));
+  gs.insert(point());
+  gs.insert(ray(x + y));
+
   C_Polyhedron ph(gs);
 #if NOISY
   print_generators(ph, "*** ph ***");
 #endif
+  ConSys cs = ph.constraints();
 
-  // This is the set of the variables that we want to remove.
-  Variables_Set to_be_removed;
-  to_be_removed.insert(y);
-  to_be_removed.insert(z);
-  ph.remove_dimensions(to_be_removed);
+  ph.add_space_dimensions_and_embed(2);
+#if NOISY
+  print_generators(ph, "*** After add_space_dimensions_and_embed(4) ***");
+#endif
 
-  GenSys known_result_gs;
-  known_result_gs.insert(point(0*x +2*y));
-  C_Polyhedron known_result(known_result_gs);
+  ph.add_space_dimensions_and_embed(2);
 
-  int retval = (known_result == ph) ? 0 : 1;
+  C_Polyhedron known_result(6, C_Polyhedron::EMPTY);
+  known_result.add_generator(point());
+  known_result.add_generator(ray(x + y));
+  known_result.add_generator(line(z));
+  known_result.add_generator(line(u));
+  known_result.add_generator(line(v));
+  known_result.add_generator(line(w));
+
+  int retval = (ph == known_result) ? 0 : 1;
 
 #if NOISY
   print_generators(ph, "*** ph ***");
-  print_generators(known_result, "*** known_result ***");
 #endif
 
   return retval;

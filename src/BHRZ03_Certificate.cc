@@ -33,7 +33,7 @@ site: http://www.cs.unipr.it/ppl/ . */
 namespace PPL = Parma_Polyhedra_Library;
 
 PPL::BHRZ03_Certificate::BHRZ03_Certificate(const Polyhedron& ph)
-  : poly_dim(0), lin_space_dim(0), num_constraints(0), num_points(0),
+  : affine_dim(0), lin_space_dim(0), num_constraints(0), num_points(0),
     num_rays_null_coord(ph.space_dimension(), 0) {
   // FIXME: provide a correct and reasonably efficient
   // implementation for NNC polyhedra.
@@ -51,14 +51,14 @@ PPL::BHRZ03_Certificate::BHRZ03_Certificate(const Polyhedron& ph)
   // to disregard the low-level constraints (i.e., the positivity
   // constraint and epsilon bounds).
   const dimension_type space_dim = ph.space_dimension();
-  poly_dim = space_dim;
+  affine_dim = space_dim;
   assert(num_constraints == 0);
   const ConSys& cs = ph.minimized_constraints();
   for (ConSys::const_iterator i = cs.begin(),
 	 cs_end = cs.end(); i != cs_end; ++i) {
     ++num_constraints;
     if (i->is_equality())
-      --poly_dim;
+      --affine_dim;
   }
 
   assert(lin_space_dim == 0);
@@ -107,8 +107,8 @@ PPL::BHRZ03_Certificate::BHRZ03_Certificate(const Polyhedron& ph)
 int
 PPL::BHRZ03_Certificate::compare(const BHRZ03_Certificate& y) const {
   assert(OK() && y.OK());
-  if (poly_dim != y.poly_dim)
-    return poly_dim > y.poly_dim ? 1 : -1;
+  if (affine_dim != y.affine_dim)
+    return affine_dim > y.affine_dim ? 1 : -1;
   if (lin_space_dim != y.lin_space_dim)
     return lin_space_dim > y.lin_space_dim ? 1 : -1; 
   if (num_constraints != y.num_constraints)
@@ -148,14 +148,14 @@ PPL::BHRZ03_Certificate::compare(const Polyhedron& ph) const {
   // to disregard the low-level constraints (i.e., the positivity
   // constraint and epsilon bounds).
   const dimension_type space_dim = ph.space_dimension();
-  dimension_type ph_poly_dim = space_dim;
+  dimension_type ph_affine_dim = space_dim;
   dimension_type ph_num_constraints = 0;
   const ConSys& cs = ph.minimized_constraints();
   for (ConSys::const_iterator i = cs.begin(),
 	 cs_end = cs.end(); i != cs_end; ++i) {
     ++ph_num_constraints;
     if (i->is_equality())
-      --ph_poly_dim;
+      --ph_affine_dim;
   }
   // FIXME: super-kludge.
   // For NNC polyhedra, constraints might be no longer up-to-date
@@ -168,11 +168,11 @@ PPL::BHRZ03_Certificate::compare(const Polyhedron& ph) const {
     ph.minimize();
 
   // If the dimension of `ph' is increasing, the chain is stabilizing.
-  if (ph_poly_dim > poly_dim)
+  if (ph_affine_dim > affine_dim)
     return 1;
 
   // At this point the two polyhedra must have the same dimension.
-  assert(ph_poly_dim == poly_dim);
+  assert(ph_affine_dim == affine_dim);
 
   // Speculative optimization: in order to better exploit the incrementality
   // of the comparison, we do not compute information about rays here,
@@ -260,37 +260,37 @@ PPL::BHRZ03_Certificate::OK() const {
   // The dimension of the vector space.
   const dimension_type space_dim = num_rays_null_coord.size();
 
-  if (poly_dim > space_dim) {
+  if (affine_dim > space_dim) {
 #ifndef NDEBUG
     cerr << "In the BHRZ03 certificate about a non-empty polyhedron:"
 	 << endl
-	 << "the polyhedron dimension is greater than the space dimension!"
+	 << "the affine dimension is greater than the space dimension!"
 	 << endl;
 #endif
     return false;
   }
 
-  if (lin_space_dim > poly_dim) {
+  if (lin_space_dim > affine_dim) {
 #ifndef NDEBUG
     cerr << "In the BHRZ03 certificate about a non-empty polyhedron:"
 	 << endl
 	 << "the lineality space dimension is greater than "
-	 << "the polyhedron dimension!"
+	 << "the affine dimension!"
 	 << endl;
 #endif
     return false;
   }
 
-  if (num_constraints < space_dim - poly_dim) {
+  if (num_constraints < space_dim - affine_dim) {
 #ifndef NDEBUG
     cerr << "In the BHRZ03 certificate about a non-empty polyhedron:"
 	 << endl
 	 << "in a vector space of dimension `n',"
-	 << "any polyhedron of dimension `k'" << endl
+	 << "any polyhedron of affine dimension `k'" << endl
 	 << "should have `n-k' non-redundant constraints at least."
 	 << endl
 	 << "Here space_dim = " << space_dim << ", "
-	 << "poly_dim = " << poly_dim << ", "
+	 << "affine_dim = " << affine_dim << ", "
 	 << "but num_constraints = " << num_constraints << "!"
 	 << endl;
 #endif

@@ -1,4 +1,4 @@
-/* Test Polyhedron::fold_dimensions().
+/* Test Polyhedron::fold_space_dimensions().
    Copyright (C) 2001-2004 Roberto Bagnara <bagnara@cs.unipr.it>
 
 This file is part of the Parma Polyhedra Library (PPL).
@@ -48,7 +48,7 @@ test1() {
   Variables_Set to_fold;
   to_fold.insert(A);
 
-  ph1.fold_dimensions(to_fold, B);
+  ph1.fold_space_dimensions(to_fold, B);
 
   C_Polyhedron known_result(2);
 
@@ -75,7 +75,7 @@ test2() {
   Variables_Set to_fold;
   to_fold.insert(A);
 
-  ph1.fold_dimensions(to_fold, B);
+  ph1.fold_space_dimensions(to_fold, B);
 
   C_Polyhedron known_result(2, C_Polyhedron::EMPTY);
 
@@ -103,7 +103,7 @@ test3() {
   // This is the set of the variables that we want to fold.
   Variables_Set to_fold;
 
-  ph1.fold_dimensions(to_fold, B);
+  ph1.fold_space_dimensions(to_fold, B);
 
   C_Polyhedron known_result(3);
   known_result.add_constraint(A >= 0);
@@ -137,7 +137,7 @@ test4() {
   Variables_Set to_fold;
   to_fold.insert(A);
 
-  ph1.fold_dimensions(to_fold, B);
+  ph1.fold_space_dimensions(to_fold, B);
 
   C_Polyhedron known_result(1);
   known_result.add_constraint(A >= 1);
@@ -178,7 +178,7 @@ test5() {
   Variables_Set to_fold;
   to_fold.insert(C);
 
-  ph1.fold_dimensions(to_fold, B);
+  ph1.fold_space_dimensions(to_fold, B);
 
   C_Polyhedron known_result(2, C_Polyhedron::EMPTY);
   known_result.add_generator(point(A + 2*B));
@@ -214,7 +214,7 @@ test6() {
   to_fold.insert(A);
   to_fold.insert(B);
 
-  ph1.fold_dimensions(to_fold, C);
+  ph1.fold_space_dimensions(to_fold, C);
 
   C_Polyhedron known_result(1);
   known_result.add_constraint(A >= 1);
@@ -230,7 +230,7 @@ test6() {
     exit(1);
 }
 
-// Test fold_dimensions() when there are rays.
+// Test fold_space_dimensions() when there are rays.
 static void
 test7() {
   C_Polyhedron ph1(3, C_Polyhedron::EMPTY);
@@ -246,7 +246,7 @@ test7() {
   Variables_Set to_fold;
   to_fold.insert(C);
 
-  ph1.fold_dimensions(to_fold, B);
+  ph1.fold_space_dimensions(to_fold, B);
 
   C_Polyhedron known_result(2, C_Polyhedron::EMPTY);
   known_result.add_generator(point(A));
@@ -284,7 +284,7 @@ test8() {
   to_fold.insert(C);
   to_fold.insert(D);
 
-  ph1.fold_dimensions(to_fold, A);
+  ph1.fold_space_dimensions(to_fold, A);
 
   C_Polyhedron known_result(2);
   known_result.add_constraint(A >= 0);
@@ -321,7 +321,7 @@ test9() {
   to_fold.insert(B);
   to_fold.insert(D);
 
-  ph1.fold_dimensions(to_fold, C);
+  ph1.fold_space_dimensions(to_fold, C);
 
   C_Polyhedron known_result(2);
   known_result.add_constraint(A >= 0);

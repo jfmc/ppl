@@ -154,16 +154,16 @@ error5() {
   Variables_Set to_be_removed;
   to_be_removed.insert(z);
 
-  ph.remove_dimensions(to_be_removed);
+  ph.remove_space_dimensions(to_be_removed);
 
   try {
     to_be_removed.insert(x);
     // This is an incorrect use use of function
-    // C_Polyhedron::remove_dimensions(to_be_remove).
+    // C_Polyhedron::remove_space_dimensions(to_be_remove).
     // Here the set `to_be_removed' still contains variable `z'.
     // This variable is now beyond the space dimension,
     // so that a dimension-incompatibility exception is obtained.
-    ph.remove_dimensions(to_be_removed);
+    ph.remove_space_dimensions(to_be_removed);
     exit(1);
   }
   catch (invalid_argument& e) {
@@ -399,9 +399,9 @@ error14() {
 
   try {
     // This is an invalid use of the function
-    // C_Polyhedron::remove_higher_dimensions(n): it is illegal to erase
-    // a variable that is not in the space of the polyhedron.
-    ph.remove_higher_dimensions(7);
+    // C_Polyhedron::remove_higher_space_dimensions(n): it is illegal to
+    // erase a variable that is not in the space of the polyhedron.
+    ph.remove_higher_space_dimensions(7);
     exit(1);
   }
   catch (invalid_argument& e) {

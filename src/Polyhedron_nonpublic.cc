@@ -59,7 +59,7 @@ PPL::Polyhedron::Polyhedron(const Topology topol,
   else
     if (num_dimensions > 0) {
       add_low_level_constraints(con_sys);
-      con_sys.adjust_topology_and_dimension(topol, num_dimensions);
+      con_sys.adjust_topology_and_space_dimension(topol, num_dimensions);
       // CHECK ME.
       // The constraint system is in the minimal form.
       set_constraints_minimized();
@@ -95,7 +95,7 @@ PPL::Polyhedron::Polyhedron(const Topology topol, const ConSys& ccs)
 
   // Try to adapt `cs' to the required topology.
   const dimension_type cs_space_dim = cs.space_dimension();
-  if (!cs.adjust_topology_and_dimension(topol, cs_space_dim))
+  if (!cs.adjust_topology_and_space_dimension(topol, cs_space_dim))
     throw_topology_incompatible((topol == NECESSARILY_CLOSED)
 				? "C_Polyhedron(cs)"
 				: "NNC_Polyhedron(cs)", "cs", cs);
@@ -139,7 +139,7 @@ PPL::Polyhedron::Polyhedron(const Topology topol, ConSys& cs)
     sat_g() {
   // Try to adapt `cs' to the required topology.
   const dimension_type cs_space_dim = cs.space_dimension();
-  if (!cs.adjust_topology_and_dimension(topol, cs_space_dim))
+  if (!cs.adjust_topology_and_space_dimension(topol, cs_space_dim))
     throw_topology_incompatible((topol == NECESSARILY_CLOSED)
 				? "C_Polyhedron(cs)"
 				: "NNC_Polyhedron(cs)", "cs", cs);
@@ -199,7 +199,7 @@ PPL::Polyhedron::Polyhedron(const Topology topol, const GenSys& cgs)
 
   const dimension_type gs_space_dim = gs.space_dimension();
   // Try to adapt `gs' to the required topology.
-  if (!gs.adjust_topology_and_dimension(topol, gs_space_dim))
+  if (!gs.adjust_topology_and_space_dimension(topol, gs_space_dim))
     throw_topology_incompatible((topol == NECESSARILY_CLOSED)
 				? "C_Polyhedron(gs)"
 				: "NNC_Polyhedron(gs)", "gs", gs);
@@ -254,7 +254,7 @@ PPL::Polyhedron::Polyhedron(const Topology topol, GenSys& gs)
 
   const dimension_type gs_space_dim = gs.space_dimension();
   // Try to adapt `gs' to the required topology.
-  if (!gs.adjust_topology_and_dimension(topol, gs_space_dim))
+  if (!gs.adjust_topology_and_space_dimension(topol, gs_space_dim))
     throw_topology_incompatible((topol == NECESSARILY_CLOSED)
 				? "C_Polyhedron(gs)"
 				: "NNC_Polyhedron(gs)", "gs", gs);

@@ -1,4 +1,4 @@
-/* Test Polyhedron::map_dimensions().
+/* Test Polyhedron::map_space_dimensions().
    Copyright (C) 2001-2004 Roberto Bagnara <bagnara@cs.unipr.it>
 
 This file is part of the Parma Polyhedra Library (PPL).
@@ -86,7 +86,7 @@ main() TRY {
 #endif
   for (int i = 1; i <= 3; ++i) {
     rs[i] = rs[i-1];
-    rs[i].map_dimensions(rotate_right);
+    rs[i].map_space_dimensions(rotate_right);
 #if NOISY
     print_constraints(rs[i], "*** rs[i] ***");
 #endif
@@ -101,7 +101,7 @@ main() TRY {
     ls[i] = ls[i+1];
     // Force generators to be up-to-date, for a change.
     (void) ls[i].generators();
-    ls[i].map_dimensions(rotate_left);
+    ls[i].map_space_dimensions(rotate_left);
 #if NOISY
     print_constraints(ls[i], "*** ls[i] ***");
 #endif

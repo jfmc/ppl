@@ -82,14 +82,14 @@ int main() TRY {
 
   // When using Polyhedra_Powerset<C_Polyhedron>, intersection will be
   // empty.  When using Polyhedra_Powerset<NNC_Polyhedron>,
-  // intersection will consist of objects of dimension at most 1.
+  // intersection will consist of objects of affine dimension at most 1.
   for (Polyhedra_Powerset<C_Polyhedron>::const_iterator
 	 i = intersection.begin(), in_end = intersection.end();
        i != in_end; ++i)
-    if (i->element().dimension() > 1) {
+    if (i->element().affine_dimension() > 1) {
 #if NOISY
       cout << "intersection contains " << i->element() << "," << endl
-	   << "which is of dimension greater than 1" << endl;
+	   << "which is of affine dimension greater than 1" << endl;
 #endif
       return 1;
     }

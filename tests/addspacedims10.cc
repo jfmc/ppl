@@ -1,4 +1,5 @@
-/* Test add_dimensions_and_project() for NNC_Polyhedron.
+/* Test Polyhedron::add_space_dimensions_and_embed(): we apply this function
+   to a non-necessarily closed polyhedron.
    Copyright (C) 2001-2004 Roberto Bagnara <bagnara@cs.unipr.it>
 
 This file is part of the Parma Polyhedra Library (PPL).
@@ -34,41 +35,34 @@ int
 main() TRY {
   set_handlers();
 
-  Variable x(0);
-  Variable y(1);
-  Variable z(2);
-  Variable w(3);
+  Variable A(0);
+  Variable B(1);
 
-  ConSys cs;
-  cs.insert(x > 2);
-  cs.insert(y > 2);
-  cs.insert(x < 6);
-  cs.insert(y < 6);
+  GenSys gs1;
+  gs1.insert(point(A));
+  NNC_Polyhedron ph(gs1);
 
-  NNC_Polyhedron ph(cs);
-
-  ph.generators();
+  GenSys gs2;
+  gs2.insert(point(A));
+  gs2.insert(ray(A));
+  ph.add_generators(gs2);
 
 #if NOISY
-  print_constraints(ph, "*** ph ***");
   print_generators(ph, "*** ph ***");
 #endif
 
-  ph.add_dimensions_and_project(2);
+  ph.add_space_dimensions_and_embed(1);
 
-  NNC_Polyhedron known_result(4);
-  known_result.add_constraint(z == 0);
-  known_result.add_constraint(w == 0);
-  known_result.add_constraint(x > 2);
-  known_result.add_constraint(y > 2);
-  known_result.add_constraint(x < 6);
-  known_result.add_constraint(y < 6);
+  GenSys known_gs;
+  known_gs.insert(point(A));
+  known_gs.insert(line(B));
+  known_gs.insert(ray(A));
+  NNC_Polyhedron known_result(known_gs);
 
   int retval = (ph == known_result) ? 0 : 1;
 
 #if NOISY
-  print_constraints(ph, "*** After add_dimensions_and_project ***");
-  print_generators(ph, "*** After add_dimensions_and_project ***");
+  print_generators(ph, "*** ph ***");
 #endif
 
   return retval;

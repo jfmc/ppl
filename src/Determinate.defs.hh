@@ -167,7 +167,7 @@ public:
   friend bool
   operator!=<PH>(const Determinate<PH>& x, const Determinate<PH>& y);
 
-  //! \name Space-Dimension Preserving Member Functions that May Modify the Domain Element
+  //! \name Space Dimension Preserving Member Functions that May Modify the Domain Element
   //@{
 
   //! \brief
@@ -201,7 +201,7 @@ public:
   */
   void add_constraints(ConSys& cs);
 
-  //@} // Space-Dimension Preserving Member Functions that May Modify [...]
+  //@} // Space Dimension Preserving Member Functions that May Modify [...]
 
   //! \name Member Functions that May Modify the Dimension of the Vector Space
   //@{
@@ -213,14 +213,14 @@ public:
   void swap(Determinate& y);
 
   //! \brief
-  //! Adds \p m new dimensions and embeds the old domain element
+  //! Adds \p m new space dimensions and embeds the old domain element
   //! in the new vector space.
-  void add_dimensions_and_embed(dimension_type m);
+  void add_space_dimensions_and_embed(dimension_type m);
 
   //! \brief
-  //! Adds \p m new dimensions to the domain element
+  //! Adds \p m new space dimensions to the domain element
   //! and does not embed it in the new vector space.
-  void add_dimensions_and_project(dimension_type m);
+  void add_space_dimensions_and_project(dimension_type m);
 
   //! \brief
   //! Assigns to \p *this the \ref concatenate "concatenation"
@@ -228,36 +228,36 @@ public:
   void concatenate_assign(const Determinate& y);
 
   //! \brief
-  //! Removes all the specified dimensions.
+  //! Removes all the specified space dimensions.
   /*!
     \param to_be_removed
-    The set of Variable objects corresponding to the dimensions to be
-    removed.
+    The set of Variable objects corresponding to the space dimensions
+    to be removed.
 
     \exception std::invalid_argument
     Thrown if \p *this is dimension-incompatible with one of the
     Variable objects contained in \p to_be_removed.
   */
-  void remove_dimensions(const Variables_Set& to_be_removed);
+  void remove_space_dimensions(const Variables_Set& to_be_removed);
 
   //! \brief
-  //! Removes the higher dimensions so that the resulting space
+  //! Removes the higher space dimensions so that the resulting space
   //! will have dimension \p new_dimension.
   /*!
     \exception std::invalid_argument
     Thrown if \p new_dimensions is greater than the space dimension
     of \p *this.
   */
-  void remove_higher_dimensions(dimension_type new_dimension);
+  void remove_higher_space_dimensions(dimension_type new_dimension);
 
   //! \brief
   //! Remaps the dimensions of the vector space according to
   //! a partial function.
   /*!
-    See Polyhedron::map_dimensions.
+    See Polyhedron::map_space_dimensions.
   */
   template <typename PartialFunction>
-  void map_dimensions(const PartialFunction& pfunc);
+  void map_space_dimensions(const PartialFunction& pfunc);
 
   //@} // Member Functions that May Modify the Dimension of the Vector Space
 

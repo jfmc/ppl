@@ -1,5 +1,4 @@
-/* Test remove_higher_dimensions() and remove_dimensions()
-   with NNC_Polyhedron.
+/* Remove some variables from the space.
    Copyright (C) 2001-2004 Roberto Bagnara <bagnara@cs.unipr.it>
 
 This file is part of the Parma Polyhedra Library (PPL).
@@ -35,37 +34,56 @@ int
 main() TRY {
   set_handlers();
 
-  Variable x(0);
-  Variable y(1);
-  Variable z(2);
+  GenSys gs;
 
-  NNC_Polyhedron ph1(4);
+  // Creating 10 points.
+  for (int i = 0; i < 10; i++) {
+    LinExpression e;
+    for (int j = 0; j < 10; j++)
+      e += (10*i + j) * Variable(j);
+    gs.insert(point(e));
+  }
 
-  ph1.add_constraint(x - y == 3);
-  ph1.add_constraint(z > x + 4);
-  ph1.add_constraint(y < 6);
+  C_Polyhedron ph(gs);
 
 #if NOISY
-  print_constraints(ph1, "*** ph1 ***");
+  print_generators(ph, "*** before ***");
 #endif
-
-  NNC_Polyhedron ph2(ph1);
-
-  ph1.remove_higher_dimensions(1);
 
   // This is the set of the variables that we want to remove.
   Variables_Set to_be_removed;
-  to_be_removed.insert(y);
-  to_be_removed.insert(z);
+  to_be_removed.insert(Variable(0));
+  to_be_removed.insert(Variable(5));
   to_be_removed.insert(Variable(3));
+  to_be_removed.insert(Variable(4));
+  to_be_removed.insert(Variable(8));
 
-  ph2.remove_dimensions(to_be_removed);
+  ph.remove_space_dimensions(to_be_removed);
 
-  int retval = (ph1 == ph2) ? 0 : 1;
+  // Useless, but much clearer.
+  gs.clear();
+
+  Variable a(0);
+  Variable b(1);
+  Variable c(2);
+  Variable d(3);
+  Variable e(4);
+
+  LinExpression expr01 = (1*a + 2*b + 6*c + 7*d + 9*e);
+  LinExpression expr10 = 10 * (a + b + c + d + e);
+
+  for (int i = 0; i < 10; i++) {
+    LinExpression expr = i * expr10 + expr01;
+    gs.insert(point(expr));
+  }
+
+  C_Polyhedron known_result(gs);
+
+  int retval = (ph == known_result ? 0 : 1);
 
 #if NOISY
-  print_constraints(ph1, "*** After remove_higher_dimensions(1) ***");
-  print_constraints(ph2, "*** After remove_dimensions(to_be_removed) ***");
+  print_generators(ph, "*** after ***");
+  print_generators(known_result, "*** known_result ***");
 #endif
 
   return retval;

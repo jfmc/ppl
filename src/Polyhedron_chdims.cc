@@ -33,11 +33,11 @@ site: http://www.cs.unipr.it/ppl/ . */
 namespace PPL = Parma_Polyhedra_Library;
 
 void
-PPL::Polyhedron::add_dimensions(Matrix& mat1,
-				Matrix& mat2,
-				SatMatrix& sat1,
-				SatMatrix& sat2,
-				dimension_type add_dim) {
+PPL::Polyhedron::add_space_dimensions(Matrix& mat1,
+				      Matrix& mat2,
+				      SatMatrix& sat1,
+				      SatMatrix& sat2,
+				      dimension_type add_dim) {
   assert(mat1.topology() == mat2.topology());
   assert(mat1.num_columns() == mat2.num_columns());
   assert(add_dim != 0);
@@ -89,7 +89,7 @@ PPL::Polyhedron::add_dimensions(Matrix& mat1,
 }
 
 void
-PPL::Polyhedron::add_dimensions_and_embed(dimension_type m) {
+PPL::Polyhedron::add_space_dimensions_and_embed(dimension_type m) {
   // Adding no dimensions to any polyhedron is a no-op.
   if (m == 0)
     return;
@@ -120,16 +120,17 @@ PPL::Polyhedron::add_dimensions_and_embed(dimension_type m) {
   // corresponding to the vectors of the canonical basis
   // for the added dimensions. That is, for each new dimension `x[k]'
   // we add the line having that direction. This is done by invoking
-  // the function add_dimensions() giving the matrix of generators
+  // the function add_space_dimensions() giving the matrix of generators
   // as the second argument.
   if (constraints_are_up_to_date())
     if (generators_are_up_to_date()) {
-      // `sat_c' must be up to date for add_dimensions(...).
+      // `sat_c' must be up to date for add_space_dimensions(...).
       if (!sat_c_is_up_to_date())
 	update_sat_c();
       // Adds rows and/or columns to both matrices.
-      // `add_dimensions' correctly handles pending constraints or generators.
-      add_dimensions(con_sys, gen_sys, sat_c, sat_g, m);
+      // `add_space_dimensions' correctly handles pending constraints
+      // or generators.
+      add_space_dimensions(con_sys, gen_sys, sat_c, sat_g, m);
     }
     else {
       // Only constraints are up-to-date: no need to modify the generators.
@@ -176,7 +177,7 @@ PPL::Polyhedron::add_dimensions_and_embed(dimension_type m) {
 }
 
 void
-PPL::Polyhedron::add_dimensions_and_project(dimension_type m) {
+PPL::Polyhedron::add_space_dimensions_and_project(dimension_type m) {
   // Adding no dimensions to any polyhedron is a no-op.
   if (m == 0)
     return;
@@ -199,7 +200,7 @@ PPL::Polyhedron::add_dimensions_and_project(dimension_type m) {
     if (!is_necessarily_closed())
       gen_sys.insert(Generator::zero_dim_closure_point());
     gen_sys.insert(Generator::zero_dim_point());
-    gen_sys.adjust_topology_and_dimension(topology(), m);
+    gen_sys.adjust_topology_and_space_dimension(topology(), m);
     set_generators_minimized();
     space_dim = m;
     assert(OK());
@@ -211,16 +212,17 @@ PPL::Polyhedron::add_dimensions_and_project(dimension_type m) {
   // In contrast, in the matrix of constraints, new rows are needed
   // in order to avoid embedding the old polyhedron in the new space.
   // Thus, for each new dimensions `x[k]', we add the constraint
-  // x[k] = 0; this is done by invoking the function add_dimensions()
+  // x[k] = 0; this is done by invoking the function add_space_dimensions()
   // giving the matrix of constraints as the second argument.
   if (constraints_are_up_to_date())
     if (generators_are_up_to_date()) {
-      // `sat_g' must be up to date for add_dimensions(...).
+      // `sat_g' must be up to date for add_space_dimensions(...).
       if (!sat_g_is_up_to_date())
 	update_sat_g();
       // Adds rows and/or columns to both matrices.
-      // `add_dimensions' correctly handles pending constraints or generators.
-      add_dimensions(gen_sys, con_sys, sat_g, sat_c, m);
+      // `add_space_dimensions' correctly handles pending constraints
+      // or generators.
+      add_space_dimensions(gen_sys, con_sys, sat_g, sat_c, m);
     }
     else {
       // Only constraints are up-to-date: no need to modify the generators.
@@ -387,7 +389,7 @@ PPL::Polyhedron::concatenate_assign(const Polyhedron& y) {
 }
 
 void
-PPL::Polyhedron::remove_dimensions(const Variables_Set& to_be_removed) {
+PPL::Polyhedron::remove_space_dimensions(const Variables_Set& to_be_removed) {
   // The removal of no dimensions from any polyhedron is a no-op.
   // Note that this case also captures the only legal removal of
   // dimensions from a polyhedron in a 0-dim space.
@@ -400,7 +402,7 @@ PPL::Polyhedron::remove_dimensions(const Variables_Set& to_be_removed) {
   // maximum id() is the one occurring last in the set.
   const dimension_type min_space_dim = to_be_removed.rbegin()->id() + 1;
   if (space_dim < min_space_dim)
-    throw_dimension_incompatible("remove_dimensions(vs)", min_space_dim);
+    throw_dimension_incompatible("remove_space_dimensions(vs)", min_space_dim);
 
   const dimension_type new_space_dim = space_dim - to_be_removed.size();
 
@@ -469,10 +471,10 @@ PPL::Polyhedron::remove_dimensions(const Variables_Set& to_be_removed) {
 }
 
 void
-PPL::Polyhedron::remove_higher_dimensions(dimension_type new_dimension) {
+PPL::Polyhedron::remove_higher_space_dimensions(dimension_type new_dimension) {
   // Dimension-compatibility check.
   if (new_dimension > space_dim)
-    throw_dimension_incompatible("remove_higher_dimensions(nd)",
+    throw_dimension_incompatible("remove_higher_space_dimensions(nd)",
 				 new_dimension);
 
   // The removal of no dimensions from any polyhedron is a no-op.
@@ -527,13 +529,13 @@ PPL::Polyhedron::remove_higher_dimensions(dimension_type new_dimension) {
 }
 
 void
-PPL::Polyhedron::expand_dimension(Variable var, dimension_type m) {
+PPL::Polyhedron::expand_space_dimension(Variable var, dimension_type m) {
   // FIXME: this implementation is _really_ an executable specification.
 
   const dimension_type src_d = var.id();
-  // `var' should be one of the dimensions of the polyhedron.
+  // `var' should be one of the dimensions of the vector space.
   if (src_d+1 > space_dim)
-    throw_dimension_incompatible("expand_dimension(v, m)", "v", var);
+    throw_dimension_incompatible("expand_space_dimension(v, m)", "v", var);
 
   // Nothing to do, if no dimensions must be added.
   if (m == 0)
@@ -543,7 +545,7 @@ PPL::Polyhedron::expand_dimension(Variable var, dimension_type m) {
   dimension_type old_dim = space_dim;
 
   // Add the required new dimensions.
-  add_dimensions_and_embed(m);
+  add_space_dimensions_and_embed(m);
 
   const ConSys& cs = constraints();
   ConSys new_constraints;
@@ -575,13 +577,13 @@ PPL::Polyhedron::expand_dimension(Variable var, dimension_type m) {
 }
 
 void
-PPL::Polyhedron::fold_dimensions(const Variables_Set& to_be_folded,
+PPL::Polyhedron::fold_space_dimensions(const Variables_Set& to_be_folded,
 				 Variable var) {
   // FIXME: this implementation is _really_ an executable specification.
 
   // `var' should be one of the dimensions of the polyhedron.
   if (var.id()+1 > space_dim)
-    throw_dimension_incompatible("fold_dimensions(tbf, v)", "v", var);
+    throw_dimension_incompatible("fold_space_dimensions(tbf, v)", "v", var);
 
   // The folding of no dimensions is a no-op.
   if (to_be_folded.empty())
@@ -589,13 +591,13 @@ PPL::Polyhedron::fold_dimensions(const Variables_Set& to_be_folded,
 
   // All variables in `to_be_folded' should be dimensions of the polyhedron.
   if (to_be_folded.rbegin()->id()+1 > space_dim)
-    throw_dimension_incompatible("fold_dimensions(tbf, v)",
+    throw_dimension_incompatible("fold_space_dimensions(tbf, v)",
 				 "*tbf.rbegin()",
 				 *to_be_folded.rbegin());
 
   // Moreover, `var' should not occur in `to_be_folded'.
   if (to_be_folded.find(var) != to_be_folded.end())
-    throw_invalid_argument("fold_dimensions(tbf, v)",
+    throw_invalid_argument("fold_space_dimensions(tbf, v)",
 			   "v should not occur in tbf");
 
   for (Variables_Set::const_iterator i = to_be_folded.begin(),
@@ -604,6 +606,6 @@ PPL::Polyhedron::fold_dimensions(const Variables_Set& to_be_folded,
     copy.affine_image(var, LinExpression(*i));
     poly_hull_assign(copy);
   }
-  remove_dimensions(to_be_folded);
+  remove_space_dimensions(to_be_folded);
   assert(OK());
 }

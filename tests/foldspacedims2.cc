@@ -1,4 +1,4 @@
-/* Test Polyhedron::fold_dimensions() for non-closed polyhedra.
+/* Test Polyhedron::fold_space_dimensions() for non-closed polyhedra.
    Copyright (C) 2001-2004 Roberto Bagnara <bagnara@cs.unipr.it>
 
 This file is part of the Parma Polyhedra Library (PPL).
@@ -48,7 +48,7 @@ test1() {
   Variables_Set to_fold;
   to_fold.insert(A);
 
-  ph1.fold_dimensions(to_fold, B);
+  ph1.fold_space_dimensions(to_fold, B);
 
   NNC_Polyhedron known_result(2, NNC_Polyhedron::EMPTY);
 
@@ -76,7 +76,7 @@ test2() {
   // This is the set of the variables that we want to fold.
   Variables_Set to_fold;
 
-  ph1.fold_dimensions(to_fold, B);
+  ph1.fold_space_dimensions(to_fold, B);
 
   NNC_Polyhedron known_result(3);
   known_result.add_constraint(A >= 0);
@@ -110,7 +110,7 @@ test3() {
   Variables_Set to_fold;
   to_fold.insert(A);
 
-  ph1.fold_dimensions(to_fold, B);
+  ph1.fold_space_dimensions(to_fold, B);
 
   NNC_Polyhedron known_result(1);
   known_result.add_constraint(A > 1);
@@ -146,7 +146,7 @@ test4() {
   to_fold.insert(A);
   to_fold.insert(B);
 
-  ph1.fold_dimensions(to_fold, C);
+  ph1.fold_space_dimensions(to_fold, C);
 
   NNC_Polyhedron known_result(1);
   known_result.add_constraint(A > 1);
@@ -182,7 +182,7 @@ test5() {
   to_fold.insert(C);
   to_fold.insert(D);
 
-  ph1.fold_dimensions(to_fold, A);
+  ph1.fold_space_dimensions(to_fold, A);
 
   NNC_Polyhedron known_result(2);
   known_result.add_constraint(A > 0);
@@ -219,7 +219,7 @@ test6() {
   to_fold.insert(B);
   to_fold.insert(D);
 
-  ph1.fold_dimensions(to_fold, C);
+  ph1.fold_space_dimensions(to_fold, C);
 
   NNC_Polyhedron known_result(2);
   known_result.add_constraint(A >= 0);

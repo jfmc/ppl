@@ -1,4 +1,5 @@
-/* Test Polyhedron::add_dimensions_and_project().
+/* Test Polyhedron::add_space_dimensions_and_embed(): we apply this
+   function to a non-topologically closed polyhedron.
    Copyright (C) 2001-2004 Roberto Bagnara <bagnara@cs.unipr.it>
 
 This file is part of the Parma Polyhedra Library (PPL).
@@ -30,37 +31,33 @@ using namespace Parma_Polyhedra_Library;
 #define NOISY 0
 #endif
 
+
 int
 main() TRY {
   set_handlers();
 
-  Variable x(0);
-  Variable y(1);
+  Variable A(0);
 
-  GenSys gs;
-  gs.insert(point());
-  gs.insert(point(x));
-  gs.insert(point(y));
-  gs.insert(point(x + y));
-
-  C_Polyhedron ph(gs);
+  NNC_Polyhedron ph(1, NNC_Polyhedron::EMPTY);
+  ph.add_generator(point(A));
+  ph.add_generator(closure_point());
+  ph.add_generator(closure_point(3*A));
 
 #if NOISY
   print_generators(ph, "*** ph ***");
 #endif
 
-  ph.add_dimensions_and_project(1);
+  ph.add_space_dimensions_and_embed(1);
 
-  C_Polyhedron known_result(3, C_Polyhedron::EMPTY);
-  known_result.add_generator(point());
-  known_result.add_generator(point(x));
-  known_result.add_generator(point(y));
-  known_result.add_generator(point(x + y));
+  NNC_Polyhedron known_result(2);
+  known_result.add_constraint(A > 0);
+  known_result.add_constraint(A < 3);
 
   int retval = (ph == known_result) ? 0 : 1;
 
 #if NOISY
-  print_generators(ph, "*** After add_dimensions_and_project ***");
+  print_constraints(ph, "*** After ph.add_space_dimensions_and_embed(1) ***");
+  print_generators(ph, "*** After ph.add_space_dimensions_and_embed(1) ***");
 #endif
 
   return retval;

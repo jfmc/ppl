@@ -33,14 +33,14 @@ site: http://www.cs.unipr.it/ppl/ . */
 namespace PPL = Parma_Polyhedra_Library;
 
 PPL::H79_Certificate::H79_Certificate(const Polyhedron& ph)
-  : poly_dim(0), num_constraints(0) {
-  // The dimension of the polyhedron is obtained by subtracting
+  : affine_dim(0), num_constraints(0) {
+  // The affine dimension of the polyhedron is obtained by subtracting
   // the number of equalities from the space dimension.
   // When counting constraints, for a correct reasoning, we have
   // to disregard the low-level constraints (i.e., the positivity
   // constraint and epsilon bounds).
   const dimension_type space_dim = ph.space_dimension();
-  poly_dim = space_dim;
+  affine_dim = space_dim;
   const ConSys& cs = ph.minimized_constraints();
   // It is assumed that `ph' is not an empty polyhedron.
   assert(!ph.marked_empty());
@@ -48,7 +48,7 @@ PPL::H79_Certificate::H79_Certificate(const Polyhedron& ph)
 	 cs_end = cs.end(); i != cs_end; ++i) {
     ++num_constraints;
     if (i->is_equality())
-      --poly_dim;
+      --affine_dim;
   }
 
   // FIXME: super-kludge.
@@ -64,8 +64,8 @@ PPL::H79_Certificate::H79_Certificate(const Polyhedron& ph)
 
 int
 PPL::H79_Certificate::compare(const H79_Certificate& y) const {
-  if (poly_dim != y.poly_dim)
-    return poly_dim > y.poly_dim ? 1 : -1;
+  if (affine_dim != y.affine_dim)
+    return affine_dim > y.affine_dim ? 1 : -1;
   if (num_constraints != y.num_constraints)
     return num_constraints > y.num_constraints ? 1 : -1;
   // All components are equal.
@@ -74,13 +74,13 @@ PPL::H79_Certificate::compare(const H79_Certificate& y) const {
 
 int
 PPL::H79_Certificate::compare(const Polyhedron& ph) const {
-  // The dimension of the polyhedron is obtained by subtracting
+  // The affine dimension of the polyhedron is obtained by subtracting
   // the number of equalities from the space dimension.
   // When counting constraints, for a correct reasoning, we have
   // to disregard the low-level constraints (i.e., the positivity
   // constraint and epsilon bounds).
   const dimension_type space_dim = ph.space_dimension();
-  dimension_type ph_poly_dim = space_dim;
+  dimension_type ph_affine_dim = space_dim;
   dimension_type ph_num_constraints = 0;
   const ConSys& cs = ph.minimized_constraints();
   // It is assumed that `ph' is a polyhedron containing the
@@ -90,7 +90,7 @@ PPL::H79_Certificate::compare(const Polyhedron& ph) const {
 	 cs_end = cs.end(); i != cs_end; ++i) {
     ++ph_num_constraints;
     if (i->is_equality())
-      --ph_poly_dim;
+      --ph_affine_dim;
   }
   // FIXME: super-kludge.
   // For NNC polyhedra, generators might be no longer up-to-date
@@ -102,12 +102,12 @@ PPL::H79_Certificate::compare(const Polyhedron& ph) const {
   if (!ph.is_necessarily_closed())
     ph.minimize();
 
-  // If the dimension of `ph' is increasing, the chain is stabilizing.
-  if (ph_poly_dim > poly_dim)
+  // If the affine dimension of `ph' is increasing, the chain is stabilizing.
+  if (ph_affine_dim > affine_dim)
     return 1;
 
-  // At this point the two polyhedra must have the same dimension.
-  assert(ph_poly_dim == poly_dim);
+  // At this point the two polyhedra must have the same affine dimension.
+  assert(ph_affine_dim == affine_dim);
 
   // If the number of constraints of `ph' is decreasing, then the chain
   // is stabilizing. If it is increasing, the chain is not stabilizing.

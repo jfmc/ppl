@@ -1,4 +1,4 @@
-/* Test Polyhedron::expand_dimension().
+/* Test Polyhedron::expand_space_dimension().
    Copyright (C) 2001-2004 Roberto Bagnara <bagnara@cs.unipr.it>
 
 This file is part of the Parma Polyhedra Library (PPL).
@@ -45,14 +45,14 @@ test1() {
   print_constraints(ph1, "*** ph1 ***");
 #endif
 
-  ph1.expand_dimension(A, 1);
+  ph1.expand_space_dimension(A, 1);
 
   C_Polyhedron known_result(4);
 
   bool ok = (ph1 == known_result);
 
 #if NOISY
-  print_constraints(ph1, "*** After ph1.expand_dimension(A, 1) ***");
+  print_constraints(ph1, "*** After ph1.expand_space_dimension(A, 1) ***");
 #endif
 
   if (!ok)
@@ -68,14 +68,14 @@ test2() {
   print_constraints(ph1, "*** ph1 ***");
 #endif
 
-  ph1.expand_dimension(B, 1);
+  ph1.expand_space_dimension(B, 1);
 
   C_Polyhedron known_result(4, C_Polyhedron::EMPTY);
 
   bool ok = (ph1 == known_result);
 
 #if NOISY
-  print_constraints(ph1, "*** After ph1.expand_dimension(B, 1) ***");
+  print_constraints(ph1, "*** After ph1.expand_space_dimension(B, 1) ***");
 #endif
 
   if (!ok)
@@ -93,7 +93,7 @@ test3() {
   print_constraints(ph1, "*** ph1 ***");
 #endif
 
-  ph1.expand_dimension(A, 0);
+  ph1.expand_space_dimension(A, 0);
 
   C_Polyhedron known_result(2);
   known_result.add_constraint(A >= 0);
@@ -102,7 +102,7 @@ test3() {
   bool ok = (ph1 == known_result);
 
 #if NOISY
-  print_constraints(ph1, "*** After ph1.expand_dimension(A, 0) ***");
+  print_constraints(ph1, "*** After ph1.expand_space_dimension(A, 0) ***");
 #endif
 
   if (!ok)
@@ -121,7 +121,7 @@ test4() {
   print_generators(ph1, "*** ph1 ***");
 #endif
 
-  ph1.expand_dimension(A, 1);
+  ph1.expand_space_dimension(A, 1);
 
   C_Polyhedron known_result(3, C_Polyhedron::EMPTY);
   known_result.add_generator(point(A + C));
@@ -133,7 +133,7 @@ test4() {
   bool ok = (ph1 == known_result);
 
 #if NOISY
-  print_generators(ph1, "***  After ph1.expand_dimension(A, 1) ***");
+  print_generators(ph1, "***  After ph1.expand_space_dimension(A, 1) ***");
 #endif
 
   if (!ok)
@@ -150,7 +150,7 @@ test5() {
   print_constraints(ph1, "*** ph1 ***");
 #endif
 
-  ph1.expand_dimension(A, 1);
+  ph1.expand_space_dimension(A, 1);
 
   C_Polyhedron known_result(3);
   known_result.add_constraint(A >= 0);
@@ -161,7 +161,7 @@ test5() {
   bool ok = (ph1 == known_result);
 
 #if NOISY
-  print_constraints(ph1, "*** After ph1.expand_dimension(A, 1) ***");
+  print_constraints(ph1, "*** After ph1.expand_space_dimension(A, 1) ***");
 #endif
 
   if (!ok)
@@ -178,7 +178,7 @@ test6() {
   print_constraints(ph1, "*** ph1 ***");
 #endif
 
-  ph1.expand_dimension(A, 2);
+  ph1.expand_space_dimension(A, 2);
 
   C_Polyhedron known_result(4);
   known_result.add_constraint(A >= 0);
@@ -191,7 +191,7 @@ test6() {
   bool ok = (ph1 == known_result);
 
 #if NOISY
-  print_constraints(ph1, "*** After ph1.expand_dimension(A, 2) ***");
+  print_constraints(ph1, "*** After ph1.expand_space_dimension(A, 2) ***");
 #endif
 
   if (!ok)
@@ -211,8 +211,8 @@ test7() {
   print_constraints(ph1, "*** ph1 ***");
 #endif
 
-  ph1.expand_dimension(A, 1);
-  ph1.expand_dimension(C, 1);
+  ph1.expand_space_dimension(A, 1);
+  ph1.expand_space_dimension(C, 1);
 
   C_Polyhedron known_result(5);
   known_result.add_constraint(A <= 1);
@@ -226,7 +226,7 @@ test7() {
   bool ok = (ph1 == known_result);
 
 #if NOISY
-  print_constraints(ph1, "***  After ph1.expand_dimension(A, 1); ph1.expand_dimension(C, 1) ***");
+  print_constraints(ph1, "***  After ph1.expand_space_dimension(A, 1); ph1.expand_space_dimension(C, 1) ***");
 #endif
 
   if (!ok)
@@ -245,7 +245,7 @@ test8() {
   print_generators(ph1, "*** ph1 ***");
 #endif
 
-  ph1.expand_dimension(B, 1);
+  ph1.expand_space_dimension(B, 1);
 
   C_Polyhedron known_result(3, C_Polyhedron::EMPTY);
   known_result.add_generator(point(A + 2*B + 2*C));
@@ -261,7 +261,7 @@ test8() {
   bool ok = (ph1 == known_result);
 
 #if NOISY
-  print_generators(ph1, "***  After ph1.expand_dimension(A, 2) ***");
+  print_generators(ph1, "***  After ph1.expand_space_dimension(A, 2) ***");
 #endif
 
   if (!ok)

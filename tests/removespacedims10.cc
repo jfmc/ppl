@@ -1,4 +1,4 @@
-/* Test Polyhedron::remove_higher_dimensions(): the dimension
+/* Test Polyhedron::remove_higher_space_dimensions(): the dimension
    of the resulting space is equal to the dimension of the
    original space.
    Copyright (C) 2001-2004 Roberto Bagnara <bagnara@cs.unipr.it>
@@ -46,7 +46,7 @@ main() TRY {
   print_constraints(ph, "*** ph ***");
 #endif
 
-  ph.remove_higher_dimensions(1);
+  ph.remove_higher_space_dimensions(1);
 
   C_Polyhedron known_result(1, C_Polyhedron::EMPTY);
   known_result.add_generator(point(A, 2));
@@ -54,7 +54,7 @@ main() TRY {
   int retval = (ph == known_result) ? 0 : 1;
 
 #if NOISY
-  print_constraints(ph, "*** After ph.remove_higher_dimensions(1) ***");
+  print_constraints(ph, "*** After ph.remove_higher_space_dimensions(1) ***");
 #endif
   return retval;
 }

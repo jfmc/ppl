@@ -1,4 +1,6 @@
-/* Test Polyhedron::remove_higher_dimensions().
+/* Test Polyhedron::remove_higher_space_dimensions(): the dimension
+   of the resulting space is equal to the dimension of the
+   original space.
    Copyright (C) 2001-2004 Roberto Bagnara <bagnara@cs.unipr.it>
 
 This file is part of the Parma Polyhedra Library (PPL).
@@ -34,31 +36,24 @@ int
 main() TRY {
   set_handlers();
 
-  Variable x(0);
-  Variable y(1);
-  Variable z(2);
-  Variable w(3);
+  Variable A(0);
 
-  GenSys gs;
-  gs.insert(point(x + y + 2*z - w));
+  C_Polyhedron ph(2);
+  ph.add_constraint(A >= 3);
 
-  C_Polyhedron ph(gs);
 #if NOISY
-  print_generators(ph, "*** ph ***");
+  print_constraints(ph, "*** ph ***");
 #endif
 
-  ph.remove_higher_dimensions(2);
+  C_Polyhedron known_result(ph);
 
-  GenSys gs_known_result;
-  gs_known_result.insert(point(x + y));
-  C_Polyhedron known_result(gs_known_result);
+  ph.remove_higher_space_dimensions(2);
 
   int retval = (ph == known_result) ? 0 : 1;
 
 #if NOISY
-  print_generators(ph, "*** After remove_higher_dimensions(2) ***");
+  print_constraints(ph, "*** After ph.remove_higher_space_dimensions(2) ***");
 #endif
-
   return retval;
 }
 CATCH

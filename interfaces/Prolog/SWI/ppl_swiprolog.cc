@@ -383,7 +383,7 @@ static PL_extension predicates[] = {
   PL_EXTENSION_ENTRY(ppl_Polyhedron_swap, 2)
   PL_EXTENSION_ENTRY(ppl_delete_Polyhedron, 1)
   PL_EXTENSION_ENTRY(ppl_Polyhedron_space_dimension, 2)
-  PL_EXTENSION_ENTRY(ppl_Polyhedron_dimension, 2)
+  PL_EXTENSION_ENTRY(ppl_Polyhedron_affine_dimension, 2)
   PL_EXTENSION_ENTRY(ppl_Polyhedron_get_constraints, 2)
   PL_EXTENSION_ENTRY(ppl_Polyhedron_get_minimized_constraints, 2)
   PL_EXTENSION_ENTRY(ppl_Polyhedron_get_generators, 2)
@@ -441,14 +441,14 @@ static PL_extension predicates[] = {
   PL_EXTENSION_ENTRY(
            ppl_Polyhedron_bounded_H79_extrapolation_assign_with_token, 4)
   PL_EXTENSION_ENTRY(ppl_Polyhedron_bounded_H79_extrapolation_assign, 3)
-  PL_EXTENSION_ENTRY(ppl_Polyhedron_add_dimensions_and_project, 2)
-  PL_EXTENSION_ENTRY(ppl_Polyhedron_add_dimensions_and_embed, 2)
+  PL_EXTENSION_ENTRY(ppl_Polyhedron_add_space_dimensions_and_project, 2)
+  PL_EXTENSION_ENTRY(ppl_Polyhedron_add_space_dimensions_and_embed, 2)
   PL_EXTENSION_ENTRY(ppl_Polyhedron_concatenate_assign, 2)
-  PL_EXTENSION_ENTRY(ppl_Polyhedron_remove_dimensions, 2)
-  PL_EXTENSION_ENTRY(ppl_Polyhedron_remove_higher_dimensions, 2)
-  PL_EXTENSION_ENTRY(ppl_Polyhedron_expand_dimension, 3)
-  PL_EXTENSION_ENTRY(ppl_Polyhedron_fold_dimensions, 3)
-  PL_EXTENSION_ENTRY(ppl_Polyhedron_map_dimensions, 2)
+  PL_EXTENSION_ENTRY(ppl_Polyhedron_remove_space_dimensions, 2)
+  PL_EXTENSION_ENTRY(ppl_Polyhedron_remove_higher_space_dimensions, 2)
+  PL_EXTENSION_ENTRY(ppl_Polyhedron_expand_space_dimension, 3)
+  PL_EXTENSION_ENTRY(ppl_Polyhedron_fold_space_dimensions, 3)
+  PL_EXTENSION_ENTRY(ppl_Polyhedron_map_space_dimensions, 2)
   { NULL, 0, NULL, 0 }
 };
 

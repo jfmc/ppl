@@ -28,7 +28,7 @@ namespace Parma_Polyhedra_Library {
 
 inline
 BHRZ03_Certificate::BHRZ03_Certificate()
-  : poly_dim(0), lin_space_dim(0), num_constraints(0), num_points(1),
+  : affine_dim(0), lin_space_dim(0), num_constraints(0), num_points(1),
     num_rays_null_coord() {
   // This is the certificate for a zero-dim universe polyhedron.
   assert(OK());
@@ -36,7 +36,7 @@ BHRZ03_Certificate::BHRZ03_Certificate()
 
 inline
 BHRZ03_Certificate::BHRZ03_Certificate(const BHRZ03_Certificate& y)
-  : poly_dim(y.poly_dim), lin_space_dim(y.lin_space_dim),
+  : affine_dim(y.affine_dim), lin_space_dim(y.lin_space_dim),
     num_constraints(y.num_constraints), num_points(y.num_points),
     num_rays_null_coord(y.num_rays_null_coord) {
 }

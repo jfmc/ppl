@@ -1,4 +1,4 @@
-/* Test add_dimensions_and_project() for NNC_Polyhedron.
+/* Test add_space_dimensions_and_project() for NNC_Polyhedron.
    Copyright (C) 2001-2004 Roberto Bagnara <bagnara@cs.unipr.it>
 
 This file is part of the Parma Polyhedra Library (PPL).
@@ -35,38 +35,42 @@ main() TRY {
   set_handlers();
 
   Variable x(0);
+  Variable y(1);
+  Variable z(2);
+  Variable w(3);
 
-  NNC_Polyhedron ph1(1);
+  ConSys cs;
+  cs.insert(x > 2);
+  cs.insert(y > 2);
+  cs.insert(x < 6);
+  cs.insert(y < 6);
 
-  ph1.add_constraint(x > -3);
-  ph1.add_constraint(x < 3);
+  NNC_Polyhedron ph(cs);
 
-#if NOISY
-  print_constraints(ph1, "*** ph1 ***");
-#endif
-  ph1.add_dimensions_and_project(2);
-
-  GenSys gs;
-  gs.insert(point());
-  gs.insert(closure_point(-3*x));
-  gs.insert(closure_point(3*x));
-
-  NNC_Polyhedron ph2(gs);
+  ph.generators();
 
 #if NOISY
-  print_generators(ph2, "*** ph2 ***");
+  print_constraints(ph, "*** ph ***");
+  print_generators(ph, "*** ph ***");
 #endif
 
-  ph2.add_dimensions_and_project(2);
+  ph.add_space_dimensions_and_project(2);
 
-  int retval = (ph1 == ph2) ? 0 : 1;
+  NNC_Polyhedron known_result(4);
+  known_result.add_constraint(z == 0);
+  known_result.add_constraint(w == 0);
+  known_result.add_constraint(x > 2);
+  known_result.add_constraint(y > 2);
+  known_result.add_constraint(x < 6);
+  known_result.add_constraint(y < 6);
+
+  int retval = (ph == known_result) ? 0 : 1;
 
 #if NOISY
-  print_constraints(ph1, "*** ph1 after add_dimensions_and_embed ***");
-  print_generators(ph2, "*** ph2 after add_dimensions_and_embed ***");
+  print_constraints(ph, "*** After add_space_dimensions_and_project ***");
+  print_generators(ph, "*** After add_space_dimensions_and_project ***");
 #endif
 
   return retval;
 }
 CATCH
-

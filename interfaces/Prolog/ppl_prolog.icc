@@ -1344,11 +1344,11 @@ ppl_Polyhedron_space_dimension(Prolog_term_ref t_ph, Prolog_term_ref t_sd) {
 }
 
 extern "C" Prolog_foreign_return_type
-ppl_Polyhedron_dimension(Prolog_term_ref t_ph, Prolog_term_ref t_sd) {
+ppl_Polyhedron_affine_dimension(Prolog_term_ref t_ph, Prolog_term_ref t_sd) {
   try {
     const Polyhedron* ph = term_to_polyhedron_handle(t_ph);
     CHECK(ph);
-    if (unify_ulong(t_sd, ph->dimension()))
+    if (unify_ulong(t_sd, ph->affine_dimension()))
       return PROLOG_SUCCESS;
   }
   CATCH_ALL;
@@ -2384,24 +2384,24 @@ ppl_Polyhedron_bounded_H79_extrapolation_assign(Prolog_term_ref t_lhs,
 }
 
 extern "C" Prolog_foreign_return_type
-ppl_Polyhedron_add_dimensions_and_project(Prolog_term_ref t_ph,
-					  Prolog_term_ref t_nnd) {
+ppl_Polyhedron_add_space_dimensions_and_project(Prolog_term_ref t_ph,
+						Prolog_term_ref t_nnd) {
   try {
     Polyhedron* ph = term_to_polyhedron_handle(t_ph);
     CHECK(ph);
-    ph->add_dimensions_and_project(term_to_unsigned<dimension_type>(t_nnd));
+    ph->add_space_dimensions_and_project(term_to_unsigned<dimension_type>(t_nnd));
     return PROLOG_SUCCESS;
   }
   CATCH_ALL;
 }
 
 extern "C" Prolog_foreign_return_type
-ppl_Polyhedron_add_dimensions_and_embed(Prolog_term_ref t_ph,
-					Prolog_term_ref t_nnd) {
+ppl_Polyhedron_add_space_dimensions_and_embed(Prolog_term_ref t_ph,
+					      Prolog_term_ref t_nnd) {
   try {
     Polyhedron* ph = term_to_polyhedron_handle(t_ph);
     CHECK(ph);
-    ph->add_dimensions_and_embed(term_to_unsigned<dimension_type>(t_nnd));
+    ph->add_space_dimensions_and_embed(term_to_unsigned<dimension_type>(t_nnd));
     return PROLOG_SUCCESS;
   }
   CATCH_ALL;
@@ -2422,8 +2422,8 @@ ppl_Polyhedron_concatenate_assign(Prolog_term_ref t_lhs,
 }
 
 extern "C" Prolog_foreign_return_type
-ppl_Polyhedron_remove_dimensions(Prolog_term_ref t_ph,
-				 Prolog_term_ref t_vlist) {
+ppl_Polyhedron_remove_space_dimensions(Prolog_term_ref t_ph,
+				       Prolog_term_ref t_vlist) {
   try {
     Polyhedron* ph = term_to_polyhedron_handle(t_ph);
     CHECK(ph);
@@ -2433,42 +2433,42 @@ ppl_Polyhedron_remove_dimensions(Prolog_term_ref t_ph,
       Prolog_get_cons(t_vlist, v, t_vlist);
       dead_variables.insert(term_to_Variable(v));
     }
-    ph->remove_dimensions(dead_variables);
+    ph->remove_space_dimensions(dead_variables);
     return PROLOG_SUCCESS;
   }
   CATCH_ALL;
 }
 
 extern "C" Prolog_foreign_return_type
-ppl_Polyhedron_remove_higher_dimensions(Prolog_term_ref t_ph,
-					Prolog_term_ref t_nd) {
+ppl_Polyhedron_remove_higher_space_dimensions(Prolog_term_ref t_ph,
+					      Prolog_term_ref t_nd) {
   try {
     Polyhedron* ph = term_to_polyhedron_handle(t_ph);
     CHECK(ph);
-    ph->remove_higher_dimensions(term_to_unsigned<dimension_type>(t_nd));
+    ph->remove_higher_space_dimensions(term_to_unsigned<dimension_type>(t_nd));
     return PROLOG_SUCCESS;
   }
   CATCH_ALL;
 }
 
 extern "C" Prolog_foreign_return_type
-ppl_Polyhedron_expand_dimension(Prolog_term_ref t_ph,
-				Prolog_term_ref t_v,
-				Prolog_term_ref t_nd) {
+ppl_Polyhedron_expand_space_dimension(Prolog_term_ref t_ph,
+				      Prolog_term_ref t_v,
+				      Prolog_term_ref t_nd) {
   try {
     Polyhedron* ph = term_to_polyhedron_handle(t_ph);
     CHECK(ph);
-    ph->expand_dimension(term_to_Variable(t_v),
-			 term_to_unsigned<dimension_type>(t_nd));
+    ph->expand_space_dimension(term_to_Variable(t_v),
+			       term_to_unsigned<dimension_type>(t_nd));
     return PROLOG_SUCCESS;
   }
   CATCH_ALL;
 }
 
 extern "C" Prolog_foreign_return_type
-ppl_Polyhedron_fold_dimensions(Prolog_term_ref t_ph,
-				Prolog_term_ref t_vlist,
-				Prolog_term_ref t_v) {
+ppl_Polyhedron_fold_space_dimensions(Prolog_term_ref t_ph,
+				     Prolog_term_ref t_vlist,
+				     Prolog_term_ref t_v) {
   try {
     Polyhedron* ph = term_to_polyhedron_handle(t_ph);
     CHECK(ph);
@@ -2478,7 +2478,7 @@ ppl_Polyhedron_fold_dimensions(Prolog_term_ref t_ph,
       Prolog_get_cons(t_vlist, v, t_vlist);
       fold_variables.insert(term_to_Variable(v));
     }
-    ph->fold_dimensions(fold_variables, term_to_Variable(t_v));
+    ph->fold_space_dimensions(fold_variables, term_to_Variable(t_v));
     return PROLOG_SUCCESS;
   }
   CATCH_ALL;
@@ -2539,8 +2539,8 @@ public:
 } // namespace
 
 extern "C" Prolog_foreign_return_type
-ppl_Polyhedron_map_dimensions(Prolog_term_ref t_ph,
-			      Prolog_term_ref t_pfunc) {
+ppl_Polyhedron_map_space_dimensions(Prolog_term_ref t_ph,
+				    Prolog_term_ref t_pfunc) {
   try {
     Polyhedron* ph = term_to_polyhedron_handle(t_ph);
     dimension_type space_dim = ph->space_dimension();
@@ -2563,7 +2563,7 @@ ppl_Polyhedron_map_dimensions(Prolog_term_ref t_ph,
       if (i >= space_dim || !pfunc.insert(i, j))
 	return PROLOG_FAILURE;
     }
-    ph->map_dimensions(pfunc);
+    ph->map_space_dimensions(pfunc);
     return PROLOG_SUCCESS;
   }
   CATCH_ALL;

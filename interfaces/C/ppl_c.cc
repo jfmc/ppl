@@ -1335,9 +1335,9 @@ ppl_Polyhedron_space_dimension(ppl_const_Polyhedron_t ph,
 CATCH_ALL
 
 int
-ppl_Polyhedron_dimension(ppl_const_Polyhedron_t ph,
-			 ppl_dimension_type* m) try {
-  *m = to_const(ph)->dimension();
+ppl_Polyhedron_affine_dimension(ppl_const_Polyhedron_t ph,
+				ppl_dimension_type* m) try {
+  *m = to_const(ph)->affine_dimension();
   return 0;
 }
 CATCH_ALL
@@ -1697,41 +1697,41 @@ try {
 CATCH_ALL
 
 int
-ppl_Polyhedron_add_dimensions_and_embed(ppl_Polyhedron_t ph,
-					ppl_dimension_type d) try {
+ppl_Polyhedron_add_space_dimensions_and_embed(ppl_Polyhedron_t ph,
+					      ppl_dimension_type d) try {
   Polyhedron& pph = *to_nonconst(ph);
-  pph.add_dimensions_and_embed(d);
+  pph.add_space_dimensions_and_embed(d);
   return 0;
 }
 CATCH_ALL
 
 int
-ppl_Polyhedron_add_dimensions_and_project(ppl_Polyhedron_t ph,
-					  ppl_dimension_type d) try {
+ppl_Polyhedron_add_space_dimensions_and_project(ppl_Polyhedron_t ph,
+						ppl_dimension_type d) try {
   Polyhedron& pph = *to_nonconst(ph);
-  pph.add_dimensions_and_project(d);
+  pph.add_space_dimensions_and_project(d);
   return 0;
 }
 CATCH_ALL
 
 int
-ppl_Polyhedron_remove_dimensions(ppl_Polyhedron_t ph,
-				 ppl_dimension_type ds[],
-				 size_t n) try {
+ppl_Polyhedron_remove_space_dimensions(ppl_Polyhedron_t ph,
+				       ppl_dimension_type ds[],
+				       size_t n) try {
   Polyhedron& pph = *to_nonconst(ph);
   Variables_Set to_be_removed;
   for (ppl_dimension_type i = n; i-- > 0; )
     to_be_removed.insert(Variable(ds[i]));
-  pph.remove_dimensions(to_be_removed);
+  pph.remove_space_dimensions(to_be_removed);
   return 0;
 }
 CATCH_ALL
 
 int
-ppl_Polyhedron_remove_higher_dimensions(ppl_Polyhedron_t ph,
-					ppl_dimension_type d) try {
+ppl_Polyhedron_remove_higher_space_dimensions(ppl_Polyhedron_t ph,
+					      ppl_dimension_type d) try {
   Polyhedron& pph = *to_nonconst(ph);
-  pph.remove_higher_dimensions(d);
+  pph.remove_higher_space_dimensions(d);
   return 0;
 }
 CATCH_ALL
@@ -1797,36 +1797,36 @@ public:
 } // namespace
 
 int
-ppl_Polyhedron_map_dimensions(ppl_Polyhedron_t ph,
-			      ppl_dimension_type maps[],
-			      size_t n) try {
+ppl_Polyhedron_map_space_dimensions(ppl_Polyhedron_t ph,
+				    ppl_dimension_type maps[],
+				    size_t n) try {
   Polyhedron& pph = *to_nonconst(ph);
   PIFunc pifunc(maps, n);
-  pph.map_dimensions(pifunc);
+  pph.map_space_dimensions(pifunc);
   return 0;
 }
 CATCH_ALL
 
 int
-ppl_Polyhedron_expand_dimension(ppl_Polyhedron_t ph,
-				ppl_dimension_type d,
-				ppl_dimension_type m) try {
+ppl_Polyhedron_expand_space_dimension(ppl_Polyhedron_t ph,
+				      ppl_dimension_type d,
+				      ppl_dimension_type m) try {
   Polyhedron& pph = *to_nonconst(ph);
-  pph.expand_dimension(Variable(d), m);
+  pph.expand_space_dimension(Variable(d), m);
   return 0;
 }
 CATCH_ALL
 
 int
-ppl_Polyhedron_fold_dimensions(ppl_Polyhedron_t ph,
-			       ppl_dimension_type ds[],
-			       size_t n,
-			       ppl_dimension_type d) try {
+ppl_Polyhedron_fold_space_dimensions(ppl_Polyhedron_t ph,
+				     ppl_dimension_type ds[],
+				     size_t n,
+				     ppl_dimension_type d) try {
   Polyhedron& pph = *to_nonconst(ph);
   Variables_Set to_be_folded;
   for (ppl_dimension_type i = n; i-- > 0; )
     to_be_folded.insert(Variable(ds[i]));
-  pph.fold_dimensions(to_be_folded, Variable(d));
+  pph.fold_space_dimensions(to_be_folded, Variable(d));
   return 0;
 }
 CATCH_ALL

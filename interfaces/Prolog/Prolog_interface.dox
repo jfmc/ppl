@@ -128,7 +128,7 @@ on the use of the interface.
   or add constraints or generators to a representation of
   a PPL polyhedron,
   the polyhedra referenced and any constraints or generators in the call
-  should follow all the space dimension-compatibility rules stated in
+  should follow all the (space) dimension-compatibility rules stated in
   Section \ref representation.
 
 - As explained above, a polyhedron has a fixed topology C or NNC,
@@ -239,7 +239,7 @@ Here is a list of all the PPL predicates provided by the Prolog interface.
 </CODE>
 
 <CODE>
-  ppl_Polyhedron_dimension(+Handle, ?Integer)
+  ppl_Polyhedron_affine_dimension(+Handle, ?Integer)
 </CODE>
 
 <CODE>
@@ -482,11 +482,11 @@ Here is a list of all the PPL predicates provided by the Prolog interface.
 </CODE>
 
 <CODE>
-  ppl_Polyhedron_add_dimensions_and_embed(+Handle, +Integer)
+  ppl_Polyhedron_add_space_dimensions_and_embed(+Handle, +Integer)
 </CODE>
 
 <CODE>
-  ppl_Polyhedron_add_dimensions_and_project(+Handle, +Integer)
+  ppl_Polyhedron_add_space_dimensions_and_project(+Handle, +Integer)
 </CODE>
 
 <CODE>
@@ -494,23 +494,23 @@ Here is a list of all the PPL predicates provided by the Prolog interface.
 </CODE>
 
 <CODE>
-  ppl_Polyhedron_remove_dimensions(+Handle, +List_of_PPL_Vars)
+  ppl_Polyhedron_remove_space_dimensions(+Handle, +List_of_PPL_Vars)
 </CODE>
 
 <CODE>
-  ppl_Polyhedron_remove_higher_dimensions(+Handle, +Integer))
+  ppl_Polyhedron_remove_higher_space_dimensions(+Handle, +Integer))
 </CODE>
 
 <CODE>
-  ppl_Polyhedron_expand_dimension(+Handle, +PPL_Var, +Integer))
+  ppl_Polyhedron_expand_space_dimension(+Handle, +PPL_Var, +Integer))
 </CODE>
 
 <CODE>
-  ppl_Polyhedron_fold_dimensions(+Handle, +List_of_PPL_Vars, +PPL_Var))
+  ppl_Polyhedron_fold_space_dimensions(+Handle, +List_of_PPL_Vars, +PPL_Var))
 </CODE>
 
 <CODE>
-  ppl_Polyhedron_map_dimensions(+Handle, +P_Func))
+  ppl_Polyhedron_map_space_dimensions(+Handle, +P_Func))
 </CODE>
 
 <H2>PPL Predicate Specifications</H2>
@@ -785,7 +785,7 @@ ppl_new_Polyhedron_from_Polyhedron(+Topology_1, +Handle_1,
    polyhedron referenced by
    <CODE>Handle</CODE> is embedded with <CODE>Integer</CODE>.
 
-<H2><CODE> ppl_Polyhedron_dimension(+Handle, ?Integer) </CODE></H2>
+<H2><CODE> ppl_Polyhedron_affine_dimension(+Handle, ?Integer) </CODE></H2>
 
    Unifies the actual dimension of the polyhedron referenced by
    <CODE>Handle</CODE> with <CODE>Integer</CODE>.
@@ -1325,7 +1325,7 @@ This is the inverse transformation to that for <CODE>ppl_affine_image</CODE>.
    Assigns to the polyhedron referenced by <CODE>Handle</CODE>
    its topological closure.
 
-<H2><CODE> ppl_Polyhedron_add_dimensions_and_embed(+Handle, +Integer)
+<H2><CODE> ppl_Polyhedron_add_space_dimensions_and_embed(+Handle, +Integer)
  </CODE></H2>
 
    Embeds the polyhedron  referenced by <CODE>Handle</CODE>
@@ -1333,7 +1333,7 @@ This is the inverse transformation to that for <CODE>ppl_affine_image</CODE>.
    E.g.,
 \code
    ?- ppl_new_Polyhedron_empty_from_dimension(c, 0, X),
-      ppl_Polyhedron_add_dimensions_and_embed(X, 2),
+      ppl_Polyhedron_add_space_dimensions_and_embed(X, 2),
       ppl_Polyhedron_get_constraints(X, CS),
       ppl_Polyhedron_get_generators(X, GS).
 
@@ -1362,7 +1362,7 @@ This is the inverse transformation to that for <CODE>ppl_affine_image</CODE>.
    CS = [1*C > 1, 1*D >= 0, 1*E >= 0]
 \endcode
 
-<H2><CODE> ppl_Polyhedron_add_dimensions_and_project(+Handle, +Integer)
+<H2><CODE> ppl_Polyhedron_add_space_dimensions_and_project(+Handle, +Integer)
  </CODE></H2>
 
    Projects the polyhedron  referenced by <CODE>Handle</CODE>
@@ -1370,7 +1370,7 @@ This is the inverse transformation to that for <CODE>ppl_affine_image</CODE>.
    E.g.,
 \code
    ?- ppl_new_Polyhedron_empty_from_dimension(c, 0, X),
-      ppl_Polyhedron_add_dimensions_and_project(X, 2),
+      ppl_Polyhedron_add_space_dimensions_and_project(X, 2),
       ppl_Polyhedron_get_constraints(X, CS),
       ppl_Polyhedron_get_generators(X, GS).
 
@@ -1378,7 +1378,7 @@ This is the inverse transformation to that for <CODE>ppl_affine_image</CODE>.
    GS = [point(0)]
 \endcode
 
-<H2><CODE> ppl_Polyhedron_remove_dimensions(+Handle,
+<H2><CODE> ppl_Polyhedron_remove_space_dimensions(+Handle,
                +List_of_PPL_Vars) </CODE></H2>
 
    Removes the space dimensions given by the identifiers of the
@@ -1391,7 +1391,7 @@ This is the inverse transformation to that for <CODE>ppl_affine_image</CODE>.
 \code
    ?- ppl_new_Polyhedron_empty_from_dimension(c, 3, X),
       A='$VAR'(0), B = '$VAR'(1), C = '$VAR'(2),
-      ppl_Polyhedron_remove_dimensions(X, [B]),
+      ppl_Polyhedron_remove_space_dimensions(X, [B]),
       ppl_Polyhedron_space_dimension(X, K),
       ppl_Polyhedron_get_generators(X, GS).
 
@@ -1399,19 +1399,19 @@ This is the inverse transformation to that for <CODE>ppl_affine_image</CODE>.
    GS = [point(0),line(1*A),line(1*B),line(0)]
 \endcode
 
-<H2><CODE> ppl_Polyhedron_remove_higher_dimensions(+Handle, +Integer)) </CODE></H2>
+<H2><CODE> ppl_Polyhedron_remove_higher_space_dimensions(+Handle, +Integer)) </CODE></H2>
 
    Projects the polyhedron  referenced to by <CODE>Handle</CODE>
    onto  the first <CODE>Integer</CODE> dimension.
    E.g.,
 \code
    ?- ppl_new_Polyhedron_empty_from_dimension(c, 5, X),
-      ppl_Polyhedron_remove_higher_dimensions(X, 3),
+      ppl_Polyhedron_remove_higher_space_dimensions(X, 3),
       ppl_Polyhedron_space_dimension(X, K).
 \endcode
 
 <H2><CODE>
-  ppl_Polyhedron_expand_dimension(+Handle, +PPL_Var, +Integer))
+  ppl_Polyhedron_expand_space_dimension(+Handle, +PPL_Var, +Integer))
 </CODE></H2>
 
    <CODE>Integer</CODE> copies of the space dimension referenced by
@@ -1419,7 +1419,7 @@ This is the inverse transformation to that for <CODE>ppl_affine_image</CODE>.
    referenced to by <CODE>Handle</CODE>.
 
 <H2><CODE>
-  ppl_Polyhedron_fold_dimensions(+Handle, +List_of_PPL_Vars, +PPL_Var))
+  ppl_Polyhedron_fold_space_dimensions(+Handle, +List_of_PPL_Vars, +PPL_Var))
 </CODE></H2>
 
    The space dimensions referenced by the PPL variables in list
@@ -1427,16 +1427,16 @@ This is the inverse transformation to that for <CODE>ppl_affine_image</CODE>.
    by <CODE>PPL_Var</CODE> and removed.
    The result is undefined if <CODE>List_of_PPL_Vars</CODE>
    does not have the properties described in the paragraph
-   \ref fold_dimensions "specifying the fold_dimensions operator"
+   \ref fold_space_dimensions "specifying the fold_space_dimensions operator"
    in Section \ref operations.
 
-<H2><CODE> ppl_Polyhedron_map_dimensions(+Handle, +P_Func)) </CODE></H2>
+<H2><CODE> ppl_Polyhedron_map_space_dimensions(+Handle, +P_Func)) </CODE></H2>
 
    Maps the dimensions of the polyhedron referenced by <CODE>Handle</CODE>
    using the partial function defined by <CODE>P_Func</CODE>.
    The result is undefined if \p P_Func does not encode a partial
    function with the properties described in the paragraph
-   \ref map_dimensions "specifying the map_dimensions operator"
+   \ref map_space_dimensions "specifying the map_space_dimensions operator"
    in Section \ref operations.
 
 \anchor PI_Compilation

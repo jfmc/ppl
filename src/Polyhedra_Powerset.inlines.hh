@@ -199,29 +199,30 @@ Polyhedra_Powerset<PH>::add_constraints_and_minimize(const ConSys& cs) {
 
 template <typename PH>
 void
-Polyhedra_Powerset<PH>::add_dimensions_and_embed(dimension_type m) {
+Polyhedra_Powerset<PH>::add_space_dimensions_and_embed(dimension_type m) {
   for (iterator i = Base::begin(), send = Base::end(); i != send; ++i)
-    i->add_dimensions_and_embed(m);
+    i->add_space_dimensions_and_embed(m);
   space_dim += m;
   assert(OK());
 }
 
 template <typename PH>
 void
-Polyhedra_Powerset<PH>::add_dimensions_and_project(dimension_type m) {
+Polyhedra_Powerset<PH>::add_space_dimensions_and_project(dimension_type m) {
   for (iterator i = Base::begin(), send = Base::end(); i != send; ++i)
-    i->add_dimensions_and_project(m);
+    i->add_space_dimensions_and_project(m);
   space_dim += m;
   assert(OK());
 }
 
 template <typename PH>
 void
-Polyhedra_Powerset<PH>::remove_dimensions(const Variables_Set& to_be_removed) {
+Polyhedra_Powerset<PH>::remove_space_dimensions(const Variables_Set&
+						to_be_removed) {
   Variables_Set::size_type num_removed = to_be_removed.size();
   if (num_removed > 0) {
     for (iterator i = Base::begin(), send = Base::end(); i != send; ++i) {
-      i->remove_dimensions(to_be_removed);
+      i->remove_space_dimensions(to_be_removed);
       Base::reduced = false;
     }
     space_dim -= num_removed;
@@ -231,11 +232,11 @@ Polyhedra_Powerset<PH>::remove_dimensions(const Variables_Set& to_be_removed) {
 
 template <typename PH>
 void
-Polyhedra_Powerset<PH>::remove_higher_dimensions(dimension_type
-						 new_dimension) {
+Polyhedra_Powerset<PH>::remove_higher_space_dimensions(dimension_type
+						       new_dimension) {
   if (new_dimension < space_dim) {
     for (iterator i = Base::begin(), send = Base::end(); i != send; ++i) {
-      i->remove_higher_dimensions(new_dimension);
+      i->remove_higher_space_dimensions(new_dimension);
       Base::reduced = false;
     }
     space_dim = new_dimension;
@@ -265,7 +266,7 @@ geometrically_equals(const Polyhedra_Powerset& y) const {
 template <typename PH>
 template <typename PartialFunction>
 void
-Polyhedra_Powerset<PH>::map_dimensions(const PartialFunction& pfunc) {
+Polyhedra_Powerset<PH>::map_space_dimensions(const PartialFunction& pfunc) {
   if (Base::is_bottom()) {
     dimension_type n = 0;
     for (dimension_type i = space_dim; i-- > 0; ) {
@@ -278,7 +279,7 @@ Polyhedra_Powerset<PH>::map_dimensions(const PartialFunction& pfunc) {
   else {
     iterator sbegin = Base::begin();
     for (iterator i = sbegin, send = Base::end(); i != send; ++i)
-      i->map_dimensions(pfunc);
+      i->map_space_dimensions(pfunc);
     space_dim = sbegin->space_dimension();
     Base::reduced = false;
   }
@@ -639,7 +640,7 @@ Polyhedra_Powerset<PH>::OK() const {
 #ifndef NDEBUG
       std::cerr << "Space dimension mismatch: is " << i->space_dimension()
 		<< " in an element of the sequence,\nshould be "
-		<< space_dim << " ."
+		<< space_dim << "."
 		<< std::endl;
 #endif
       return false;

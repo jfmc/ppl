@@ -69,9 +69,9 @@ void swap(Parma_Polyhedra_Library::ConSys& x,
 /*!
     An object of the class ConSys is a system of constraints,
     i.e., a multiset of objects of the class Constraint.
-    When inserting constraints in a system, dimensions are automatically
-    adjusted so that all the constraints in the system are defined
-    on the same vector space.
+    When inserting constraints in a system, space dimensions are
+    automatically adjusted so that all the constraints in the system
+    are defined on the same vector space.
 
     \par
     In all the examples it is assumed that variables
@@ -156,7 +156,7 @@ public:
 
   //! \brief
   //! Inserts in \p *this a copy of the constraint \p c,
-  //! increasing the number of dimensions if needed.
+  //! increasing the number of space dimensions if needed.
   void insert(const Constraint& c);
 
   //! \brief
@@ -319,13 +319,13 @@ private:
 
   //! \brief
   //! Adjusts \p *this so that it matches the topology and
-  //! the number of dimensions given as parameters
+  //! the number of space dimensions given as parameters
   //! (adding or removing columns if needed).
   //! Returns <CODE>false</CODE> if and only if \p topol is
   //! equal to <CODE>NECESSARILY_CLOSED</CODE> and \p *this
   //! contains strict inequalities.
-  bool adjust_topology_and_dimension(Topology topol,
-				     dimension_type num_dimensions);
+  bool adjust_topology_and_space_dimension(Topology topol,
+					   dimension_type num_dimensions);
 
   //! \brief
   //! Returns <CODE>true</CODE> if and only if \p *this
@@ -389,8 +389,8 @@ private:
 
   //! \brief
   //! Inserts in \p *this a copy of the constraint \p c,
-  //! increasing the number of dimensions if needed. It is
-  //! a pending constraint.
+  //! increasing the number of space dimensions if needed.
+  //! It is a pending constraint.
   void insert_pending(const Constraint& c);
 };
 

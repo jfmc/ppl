@@ -60,7 +60,7 @@ solve_query(Goals, VN, PolysOut) :-
   % We want to remove (project away) all other dimensions.
   ppl_Polyhedron_space_dimension(Q, Dims),
   get_unwanted_dims(SortedNumList, Dims, UnwantedPPLVars),
-  ppl_Polyhedron_remove_dimensions(Q, UnwantedPPLVars),
+  ppl_Polyhedron_remove_space_dimensions(Q, UnwantedPPLVars),
 
   % Get the constraints.
   ppl_Polyhedron_get_constraints(Q, CS),
@@ -119,7 +119,7 @@ solve(_, { Constraints }, [Poly|Polys], [Poly|Polys]) :-
   % Change any free variables into PPL variables.
   term2PPLterm(Constraints, Dims, NewDims),
   AddedDims is NewDims - Dims,
-  ppl_Polyhedron_add_dimensions_and_embed(Poly, AddedDims),
+  ppl_Polyhedron_add_space_dimensions_and_embed(Poly, AddedDims),
 
   % Make the sequence of constraints into a list
   % and check we do have constraints.
@@ -165,7 +165,7 @@ solve(Topology, Atom, [Poly|Polys], PolysOut) :-
   % Change any free variables into PPL variables.
   terms2PPLterms(BindingConstraints, Dims, NewDims),
   AddedDims is NewDims - Dims,
-  ppl_Polyhedron_add_dimensions_and_embed(PolyCopy, AddedDims),
+  ppl_Polyhedron_add_space_dimensions_and_embed(PolyCopy, AddedDims),
 
   % First solve the parameter passing equations.
   ppl_Polyhedron_add_constraints_and_minimize(PolyCopy, BindingConstraints),
@@ -187,7 +187,7 @@ solve(Topology, Atom, [Poly|Polys], PolysOut) :-
   cleanup(PolySolnCopy),
 
   % We want to remove (project away) all other dimensions.
-  ppl_Polyhedron_remove_higher_dimensions(PolySolnCopy, UnWanted),
+  ppl_Polyhedron_remove_higher_space_dimensions(PolySolnCopy, UnWanted),
 
   % The list of live polyhedra must be returned.
   PolysOut = [PolySolnCopy|PolysSolnOut].

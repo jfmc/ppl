@@ -1,4 +1,4 @@
-/* Test Polyhedron::add_dimensions_and_project().
+/* Test Polyhedron::add_space_dimensions_and_project().
    Copyright (C) 2001-2004 Roberto Bagnara <bagnara@cs.unipr.it>
 
 This file is part of the Parma Polyhedra Library (PPL).
@@ -42,7 +42,7 @@ main() TRY {
   print_constraints(ph, "*** ph ***");
 #endif
 
-  ph.add_dimensions_and_project(1);
+  ph.add_space_dimensions_and_project(1);
 
   C_Polyhedron known_result(3);
   known_result.add_constraint(C == 0);
@@ -50,7 +50,7 @@ main() TRY {
   int retval = (ph == known_result) ? 0 : 1;
 
 #if NOISY
-  print_constraints(ph, "*** After ph.add_dimensions_and_project(1) ***");
+  print_constraints(ph, "*** After ph.add_space_dimensions_and_project(1) ***");
 #endif
 
   return retval;

@@ -1,5 +1,5 @@
-/* Test Polyhedron::remove_dimensions(): the set of the variables
-   that we want to remove is empty.
+/* Test Polyhedron::remove_higher_space_dimensions(): we remove
+   dimensions from an empty polyhedron.
    Copyright (C) 2001-2004 Roberto Bagnara <bagnara@cs.unipr.it>
 
 This file is part of the Parma Polyhedra Library (PPL).
@@ -35,29 +35,22 @@ int
 main() TRY {
   set_handlers();
 
-  Variable A(0);
-  GenSys gs;
-  gs.insert(point());
-  gs.insert(ray(A));
-  C_Polyhedron ph(gs);
-  ph.add_constraint(A >= 2);
+  C_Polyhedron ph(4, C_Polyhedron::EMPTY);
 
 #if NOISY
-  print_constraints(ph, "*** ph ***");
+  print_constraints(ph, "--- ph ---");
 #endif
+  ph.remove_higher_space_dimensions(0);
 
-  C_Polyhedron known_result(ph);
-
-  // This is the set of the variables that we want to remove.
-  Variables_Set to_be_removed;
-
-  ph.remove_dimensions(to_be_removed);
+  C_Polyhedron known_result(0, C_Polyhedron::EMPTY);
 
   int retval = (ph == known_result) ? 0 : 1;
 
 #if NOISY
-  print_constraints(ph, "*** After ph.remove_dimensions(to_be_removed) ***");
+  print_constraints(ph, "--- ph after remove_higher_space_dimensions(0)---");
 #endif
+
   return retval;
 }
 CATCH
+

@@ -1,4 +1,6 @@
-/* Remove some variables from the space.
+/* Test Polyhedron::remove_higher_space_dimensions() and
+   C_Polyhedron::remove_space_dimensions(): we obtain a zero-dimensional
+   polyhedron removing all the dimensions.
    Copyright (C) 2001-2004 Roberto Bagnara <bagnara@cs.unipr.it>
 
 This file is part of the Parma Polyhedra Library (PPL).
@@ -34,28 +36,36 @@ int
 main() TRY {
   set_handlers();
 
+  Variable x(0);
   Variable y(1);
   Variable z(2);
-  Variable w(6);
+
+  C_Polyhedron ph1(3);
+  ph1.add_constraint(x >= 3);
+  ph1.add_constraint(x - y >= 0);
+#if NOISY
+  print_constraints(ph1, "*** ph1 ***");
+#endif
+
+  C_Polyhedron ph2 = ph1;
+#if NOISY
+  print_constraints(ph2, "*** ph2 ***");
+#endif
 
   // This is the set of the variables that we want to remove.
   Variables_Set to_be_removed;
   to_be_removed.insert(y);
   to_be_removed.insert(z);
-  to_be_removed.insert(w);
+  to_be_removed.insert(x);
 
-  // A 10-dim space, empty polyhedron.
-  C_Polyhedron ph(10, C_Polyhedron::EMPTY);
-  ph.remove_dimensions(to_be_removed);
+  ph1.remove_space_dimensions(to_be_removed);
+  ph2.remove_higher_space_dimensions(0);
 
-  // A 7-dim space, empty polyhedron.
-  C_Polyhedron known_result(7, C_Polyhedron::EMPTY);
-
-  int retval = (known_result == ph) ? 0 : 1;
+  int retval = (ph1 == ph2) ? 0 : 1;
 
 #if NOISY
-  print_constraints(ph, "*** ph ***");
-  print_constraints(known_result, "*** known_result ***");
+  print_generators(ph1, "*** ph1 after remove_space_dimensions ***");
+  print_generators(ph2, "*** ph2 after remove_higher_space_dimensions ***");
 #endif
 
   return retval;

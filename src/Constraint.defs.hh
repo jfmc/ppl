@@ -123,8 +123,8 @@ void swap(Parma_Polyhedra_Library::Constraint& x,
   Available relation symbols are equality (<CODE>==</CODE>),
   non-strict inequalities (<CODE>\>=</CODE> and <CODE>\<=</CODE>) and
   strict inequalities (<CODE>\<</CODE> and <CODE>\></CODE>).
-  The space-dimension of a constraint is defined as the maximum
-  space-dimension of the arguments of its constructor.
+  The space dimension of a constraint is defined as the maximum
+  space dimension of the arguments of its constructor.
 
   \par
   In the following examples it is assumed that variables
@@ -138,12 +138,12 @@ void swap(Parma_Polyhedra_Library::Constraint& x,
 
   \par Example 1
   The following code builds the equality constraint
-  \f$3x + 5y - z = 0\f$, having space-dimension \f$3\f$:
+  \f$3x + 5y - z = 0\f$, having space dimension \f$3\f$:
   \code
   Constraint eq_c(3*x + 5*y - z == 0);
   \endcode
   The following code builds the (non-strict) inequality constraint
-  \f$4x \geq 2y - 13\f$, having space-dimension \f$2\f$:
+  \f$4x \geq 2y - 13\f$, having space dimension \f$2\f$:
   \code
   Constraint ineq_c(4*x >= 2*y - 13);
   \endcode
@@ -164,14 +164,14 @@ void swap(Parma_Polyhedra_Library::Constraint& x,
   Constraint false_c3(LinExpression::zero() > 0);
   \endcode
   In contrast, the following code defines an unsatisfiable constraint
-  having space-dimension \f$3\f$:
+  having space dimension \f$3\f$:
   \code
   Constraint false_c(0*z == 1);
   \endcode
 
   \par How to inspect a constraint
   Several methods are provided to examine a constraint and extract
-  all the encoded information: its space-dimension, its type
+  all the encoded information: its space dimension, its type
   (equality, non-strict inequality, strict inequality) and
   the value of its integer coefficients.
 
@@ -254,7 +254,7 @@ public:
   //! Returns the coefficient of \p v in \p *this.
   /*!
     \exception std::invalid_argument thrown if the index of \p v
-    is greater than or equal to the space-dimension of \p *this.
+    is greater than or equal to the space dimension of \p *this.
   */
   const Integer& coefficient(Variable v) const;
 

@@ -122,7 +122,7 @@ void swap(Parma_Polyhedra_Library::LinExpression& x,
     \f[
       \sum_{i=0}^{n-1} a_i x_i + b
     \f]
-    where \f$n\f$ is the dimension of the space,
+    where \f$n\f$ is the dimension of the vector space,
     each \f$a_i\f$ is the integer coefficient
     of the \p i -th variable \f$x_i\f$
     and \f$b\f$ is the integer for the inhomogeneous term.
@@ -138,15 +138,15 @@ void swap(Parma_Polyhedra_Library::LinExpression& x,
     available operators include unary negation,
     binary addition and subtraction,
     as well as multiplication by an Integer.
-    The space-dimension of a linear expression is defined as the maximum
-    space-dimension of the arguments used to build it:
-    in particular, the space-dimension of a Variable <CODE>x</CODE>
+    The space dimension of a linear expression is defined as the maximum
+    space dimension of the arguments used to build it:
+    in particular, the space dimension of a Variable <CODE>x</CODE>
     is defined as <CODE>x.id()+1</CODE>,
-    whereas all the objects of the class Integer have space-dimension zero.
+    whereas all the objects of the class Integer have space dimension zero.
 
     \par Example
     The following code builds the linear expression \f$4x - 2y - z + 14\f$,
-    having space-dimension \f$3\f$:
+    having space dimension \f$3\f$:
     \code
   LinExpression e = 4*x - 2*y - z + 14;
     \endcode
@@ -158,9 +158,9 @@ void swap(Parma_Polyhedra_Library::LinExpression& x,
   LinExpression e = LinExpression(14);
   e += e1 - e2 - e3;
     \endcode
-    Note that \p e1, \p e2 and \p e3 have space-dimension 1, 2 and 3,
+    Note that \p e1, \p e2 and \p e3 have space dimension 1, 2 and 3,
     respectively; also, in the fourth line of code, \p e is created
-    with space-dimension zero and then extended to space-dimension 3.
+    with space dimension zero and then extended to space dimension 3.
 */
 class Parma_Polyhedra_Library::LinExpression : private Row {
 public:
@@ -238,7 +238,7 @@ private:
   friend void std::swap(Parma_Polyhedra_Library::LinExpression& x,
 		       Parma_Polyhedra_Library::LinExpression& y);
 
-  //! Copy-constructor with a specified dimension.
+  //! Copy-constructor with a specified space dimension.
   LinExpression(const LinExpression& e, dimension_type sz);
 
   //! Implementation sizing constructor.

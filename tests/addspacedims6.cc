@@ -1,6 +1,4 @@
-/* Test Polyhedron::add_dimensions_and_embed() and
-   Polyhedron::add_dimensions_and_project(): the number of dimensions
-   to add is zero.
+/* Test add_space_dimensions_and_embed() for NNC_Polyhedron.
    Copyright (C) 2001-2004 Roberto Bagnara <bagnara@cs.unipr.it>
 
 This file is part of the Parma Polyhedra Library (PPL).
@@ -36,29 +34,40 @@ int
 main() TRY {
   set_handlers();
 
-  Variable A(0);
+  Variable x(0);
 
-  C_Polyhedron ph1(2);
-  ph1.add_constraint(A >= 0);
-  ph1.add_constraint(A <= 2);
+  NNC_Polyhedron ph1(1);
 
-  C_Polyhedron ph2(ph1);
+  ph1.add_constraint(x > 1);
+  ph1.add_constraint(x < 5);
 
 #if NOISY
   print_constraints(ph1, "*** ph1 ***");
-  print_constraints(ph2, "*** ph2 ***");
 #endif
 
-  ph1.add_dimensions_and_embed(0);
-  ph2.add_dimensions_and_project(0);
+  ph1.add_space_dimensions_and_embed(2);
+
+  GenSys gs;
+  gs.insert(point(2*x));
+  gs.insert(closure_point(x));
+  gs.insert(closure_point(5*x));
+
+  NNC_Polyhedron ph2(gs);
+
+#if NOISY
+  print_generators(ph2, "*** ph2 ***");
+#endif
+
+  ph2.add_space_dimensions_and_embed(2);
 
   int retval = (ph1 == ph2) ? 0 : 1;
 
 #if NOISY
-  print_constraints(ph1, "*** After ph1.add_dimensions_and_embed(0) ***");
-  print_constraints(ph2, "*** After ph2.add_dimensions_and_project(0) ***");
+  print_constraints(ph1, "*** ph1 after add_space_dimensions_and_embed ***");
+  print_generators(ph2, "*** ph2 after add_space_dimensions_and_embed ***");
 #endif
 
   return retval;
 }
 CATCH
+

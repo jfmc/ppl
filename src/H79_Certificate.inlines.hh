@@ -28,13 +28,13 @@ namespace Parma_Polyhedra_Library {
 
 inline
 H79_Certificate::H79_Certificate()
-  : poly_dim(0), num_constraints(0) {
+  : affine_dim(0), num_constraints(0) {
   // This is the certificate for a zero-dim universe polyhedron.
 }
 
 inline
 H79_Certificate::H79_Certificate(const H79_Certificate& y)
-  : poly_dim(y.poly_dim), num_constraints(y.num_constraints) {
+  : affine_dim(y.affine_dim), num_constraints(y.num_constraints) {
 }
 
 inline

@@ -1,4 +1,4 @@
-/* Test Polyhedron::expand_dimension().
+/* Test Polyhedron::expand_space_dimension().
    Copyright (C) 2001-2004 Roberto Bagnara <bagnara@cs.unipr.it>
 
 This file is part of the Parma Polyhedra Library (PPL).
@@ -48,7 +48,7 @@ test1() {
   print_constraints(ph1, "*** ph1 ***");
 #endif
 
-  ph1.expand_dimension(B, 2);
+  ph1.expand_space_dimension(B, 2);
 
   NNC_Polyhedron known_result(4);
   known_result.add_constraint(A - B > 2);
@@ -64,7 +64,7 @@ test1() {
   bool ok = (ph1 == known_result);
 
 #if NOISY
-  print_constraints(ph1, "*** After ph1.expand_dimension(B, 2) ***");
+  print_constraints(ph1, "*** After ph1.expand_space_dimension(B, 2) ***");
 #endif
 
   if (!ok)
@@ -83,7 +83,7 @@ test2() {
   print_generators(ph1, "*** ph1 ***");
 #endif
 
-  ph1.expand_dimension(A, 2);
+  ph1.expand_space_dimension(A, 2);
 
   NNC_Polyhedron known_result(4, NNC_Polyhedron::EMPTY);
   known_result.add_generator(point(A + C + D));
@@ -99,7 +99,7 @@ test2() {
   bool ok = (ph1 == known_result);
 
 #if NOISY
-  print_generators(ph1, "***  After ph1.expand_dimension(A, 2) ***");
+  print_generators(ph1, "***  After ph1.expand_space_dimension(A, 2) ***");
 #endif
 
   if (!ok)

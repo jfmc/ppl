@@ -1,6 +1,4 @@
-/* Test Polyhedron::add_dimensions_and_embed(): we apply this
-   function to a polyhedron with minimal system of constraints
-   and generators.
+/* Remove some variables from the space.
    Copyright (C) 2001-2004 Roberto Bagnara <bagnara@cs.unipr.it>
 
 This file is part of the Parma Polyhedra Library (PPL).
@@ -36,34 +34,28 @@ int
 main() TRY {
   set_handlers();
 
-  Variable A(0);
-  Variable B(1);
+  Variable y(1);
+  Variable z(2);
+  Variable w(6);
 
-  GenSys gs1;
-  gs1.insert(point(A + B));
-  gs1.insert(closure_point());
-  gs1.insert(ray(A));
-  gs1.insert(ray(B));
-  NNC_Polyhedron ph1(gs1);
+  // This is the set of the variables that we want to remove.
+  Variables_Set to_be_removed;
+  to_be_removed.insert(y);
+  to_be_removed.insert(z);
+  to_be_removed.insert(w);
 
-  ph1.minimized_constraints();
+  // A 10-dim space, empty polyhedron.
+  C_Polyhedron ph(10, C_Polyhedron::EMPTY);
+  ph.remove_space_dimensions(to_be_removed);
 
-#if NOISY
-  print_constraints(ph1, "*** ph1 ***");
-  print_generators(ph1, "*** ph1 ***");
-#endif
+  // A 7-dim space, empty polyhedron.
+  C_Polyhedron known_result(7, C_Polyhedron::EMPTY);
 
-  ph1.add_dimensions_and_embed(1);
-
-  NNC_Polyhedron known_result(3);
-  known_result.add_constraint(A > 0);
-  known_result.add_constraint(B > 0);
-
-  int retval = (ph1 == known_result) ? 0 : 1;
+  int retval = (known_result == ph) ? 0 : 1;
 
 #if NOISY
-  print_constraints(ph1, "*** After ph1.add_dimensions_and_embed(1) ***");
-  print_generators(ph1, "*** After ph1.add_dimensions_and_embed(1) ***");
+  print_constraints(ph, "*** ph ***");
+  print_constraints(known_result, "*** known_result ***");
 #endif
 
   return retval;

@@ -198,39 +198,39 @@ public:
   void add_constraints(const ConSys& cs);
 
   //! \brief
-  //! Adds \p m new dimensions and embeds the old polyhedron
-  //! in the new space.
-  void add_dimensions_and_embed(dimension_type m);
+  //! Adds \p m new dimensions to the vector space, embedding
+  //! the old polyhedron in the new space.
+  void add_space_dimensions_and_embed(dimension_type m);
 
   //! \brief
-  //! Adds \p m new dimensions to the polyhedron
+  //! Adds \p m new dimensions to the vector space
   //! and does not embed it in the new space.
-  void add_dimensions_and_project(dimension_type m);
+  void add_space_dimensions_and_project(dimension_type m);
 
-  //! Removes all the specified dimensions.
+  //! Removes all the specified dimensions from the vector space.
   /*!
     \param to_be_removed
-    The set of Variable objects corresponding to the dimensions to be
-    removed.
+    The set of Variable objects corresponding to the space dimensions
+    to be removed.
 
     \exception std::invalid_argument
     Thrown if \p *this is dimension-incompatible with one of the
     Variable objects contained in \p to_be_removed.
   */
-  void remove_dimensions(const Variables_Set& to_be_removed);
+  void remove_space_dimensions(const Variables_Set& to_be_removed);
 
   //! \brief
-  //! Removes the higher dimensions so that the resulting space
-  //! will have dimension \p new_dimension.
+  //! Removes the higher dimensions of the vector space so that
+  //! the resulting space will have dimension \p new_dimension.
   /*!
     \exception std::invalid_argument
     Thrown if \p new_dimensions is greater than the space dimension of
     \p *this.
   */
-  void remove_higher_dimensions(dimension_type new_dimension);
+  void remove_higher_space_dimensions(dimension_type new_dimension);
 
   template <typename PartialFunction>
-  void map_dimensions(const PartialFunction& pfunc);
+  void map_space_dimensions(const PartialFunction& pfunc);
 
   void H79_extrapolation_assign(const AskTell& y);
 

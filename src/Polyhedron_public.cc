@@ -35,7 +35,7 @@ site: http://www.cs.unipr.it/ppl/ . */
 namespace PPL = Parma_Polyhedra_Library;
 
 PPL::dimension_type
-PPL::Polyhedron::dimension() const {
+PPL::Polyhedron::affine_dimension() const {
   if (is_empty())
     return 0;
 
@@ -57,7 +57,7 @@ PPL::Polyhedron::constraints() const {
       // The 0-dim unsatisfiable constraint is extended to
       // the appropriate dimension and then stored in `con_sys'.
       ConSys unsat_cs = ConSys::zero_dim_empty();
-      unsat_cs.adjust_topology_and_dimension(topology(), space_dim);
+      unsat_cs.adjust_topology_and_space_dimension(topology(), space_dim);
       const_cast<ConSys&>(con_sys).swap(unsat_cs);
     }
     else {
@@ -980,7 +980,7 @@ PPL::Polyhedron::add_generator(const Generator& g) {
       gen_sys.insert(g);
       // Since `gen_sys' was empty, after inserting `g' we have to resize
       // the system of generators to have the right dimension.
-      gen_sys.adjust_topology_and_dimension(topology(), space_dim);
+      gen_sys.adjust_topology_and_space_dimension(topology(), space_dim);
       if (!is_necessarily_closed()) {
 	// In the NNC topology, each point has to be matched by
 	// a corresponding closure point:
@@ -1003,7 +1003,7 @@ PPL::Polyhedron::add_generator(const Generator& g) {
       gen_sys.insert(Generator::point(nc_expr, g.divisor()));
       // Since `gen_sys' was empty, after inserting `g' we have to resize
       // the system of generators to have the right dimension.
-      gen_sys.adjust_topology_and_dimension(topology(), space_dim);
+      gen_sys.adjust_topology_and_space_dimension(topology(), space_dim);
     }
     // No longer empty, generators up-to-date and minimized.
     clear_empty();
@@ -1126,7 +1126,7 @@ PPL::Polyhedron::add_recycled_constraints(ConSys& cs) {
 
   // Adjust `cs' to the right topology and space dimension.
   // NOTE: we already checked for topology compatibility.
-  cs.adjust_topology_and_dimension(topology(), space_dim);
+  cs.adjust_topology_and_space_dimension(topology(), space_dim);
 
   const bool adding_pending = can_have_something_pending();
 
@@ -1223,7 +1223,7 @@ PPL::Polyhedron::add_recycled_constraints_and_minimize(ConSys& cs) {
     cs.sort_rows();
   // Adjust `cs' to the right topology and space dimension.
   // NOTE: we already checked for topology compatibility.
-  cs.adjust_topology_and_dimension(topology(), space_dim);
+  cs.adjust_topology_and_space_dimension(topology(), space_dim);
 
   const bool empty = add_and_minimize(true, con_sys, gen_sys, sat_c, cs);
 
@@ -1275,7 +1275,7 @@ PPL::Polyhedron::add_recycled_generators(GenSys& gs) {
 
   // Adjust `gs' to the right topology and dimensions.
   // NOTE: we already checked for topology compatibility.
-  gs.adjust_topology_and_dimension(topology(), space_dim);
+  gs.adjust_topology_and_space_dimension(topology(), space_dim);
   // For NNC polyhedra, each point must be matched by
   // the corresponding closure point.
   if (!is_necessarily_closed())
@@ -1380,7 +1380,7 @@ PPL::Polyhedron::add_recycled_generators_and_minimize(GenSys& gs) {
   // NOTE: we already checked for topology compatibility;
   // also, we do NOT adjust dimensions now, so that we will
   // spend less time to sort rows.
-  gs.adjust_topology_and_dimension(topology(), gs_space_dim);
+  gs.adjust_topology_and_space_dimension(topology(), gs_space_dim);
 
   // For NNC polyhedra, each point must be matched by
   // the corresponding closure point.
@@ -1397,7 +1397,7 @@ PPL::Polyhedron::add_recycled_generators_and_minimize(GenSys& gs) {
 
   // Now adjusting dimensions (topology already adjusted).
   // NOTE: sortedness is preserved.
-  gs.adjust_topology_and_dimension(topology(), space_dim);
+  gs.adjust_topology_and_space_dimension(topology(), space_dim);
 
   if (minimize()) {
     obtain_sorted_generators_with_sat_g();
@@ -2095,7 +2095,7 @@ PPL::Polyhedron::generalized_affine_image(const LinExpression& lhs,
     // Some variables in `lhs' also occur in `rhs'.
     // To ease the computation, we add and additional dimension.
     const Variable new_var = Variable(space_dim);
-    add_dimensions_and_embed(1);
+    add_space_dimensions_and_embed(1);
 
     // Constrain the new dimension to be equal to the right hand side.
     // (we force minimization because we will need the generators).
@@ -2133,7 +2133,7 @@ PPL::Polyhedron::generalized_affine_image(const LinExpression& lhs,
     add_recycled_constraints_and_minimize(new_cs2);
 
     // Remove the temporarily added dimension.
-    remove_higher_dimensions(space_dim-1);
+    remove_higher_space_dimensions(space_dim-1);
   }
   else {
     // `lhs' and `rhs' variables are disjoint:

@@ -1,5 +1,6 @@
-/* Test Polyhedron::add_dimensions_and_project(): we apply this
-   function to a zero-dimensional, universal polyhedron.
+/* Test Polyhedron::add_space_dimensions_and_embed(): we apply this
+   function to a polyhedron with minimal system of constraints
+   and generators.
    Copyright (C) 2001-2004 Roberto Bagnara <bagnara@cs.unipr.it>
 
 This file is part of the Parma Polyhedra Library (PPL).
@@ -35,30 +36,35 @@ int
 main() TRY {
   set_handlers();
 
-  C_Polyhedron ph1;
+  Variable A(0);
+  Variable B(1);
+
+  GenSys gs1;
+  gs1.insert(point(A + B));
+  gs1.insert(closure_point());
+  gs1.insert(ray(A));
+  gs1.insert(ray(B));
+  NNC_Polyhedron ph1(gs1);
+
+  ph1.minimized_constraints();
 
 #if NOISY
+  print_constraints(ph1, "*** ph1 ***");
   print_generators(ph1, "*** ph1 ***");
 #endif
 
-  ph1.add_dimensions_and_project(3);
-#if NOISY
-  print_generators(ph1, "*** After add_dimensions_and_project(3) ***");
-#endif
+  ph1.add_space_dimensions_and_embed(1);
 
-  C_Polyhedron ph2;
-  ConSys cs = ph2.constraints();
+  NNC_Polyhedron known_result(3);
+  known_result.add_constraint(A > 0);
+  known_result.add_constraint(B > 0);
 
-#if NOISY
-  print_generators(ph2, "*** ph2 ***");
-#endif
-
-  ph2.add_dimensions_and_project(3);
-
-  int retval = (ph1 == ph2) ? 0: 1;
+  int retval = (ph1 == known_result) ? 0 : 1;
 
 #if NOISY
-  print_generators(ph2, "*** After add_dimensions_and_project(3) ***");
+  print_constraints(ph1,
+		    "*** After ph1.add_space_dimensions_and_embed(1) ***");
+  print_generators(ph1, "*** After ph1.add_space_dimensions_and_embed(1) ***");
 #endif
 
   return retval;

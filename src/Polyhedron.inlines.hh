@@ -616,7 +616,7 @@ Polyhedron::shrink_bounding_box(Box& box, Complexity_Class complexity) const {
 
 template <typename PartialFunction>
 void
-Polyhedron::map_dimensions(const PartialFunction& pfunc) {
+Polyhedron::map_space_dimensions(const PartialFunction& pfunc) {
   if (space_dim == 0)
     return;
 

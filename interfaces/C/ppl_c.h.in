@@ -1126,7 +1126,7 @@ ppl_new_NNC_Polyhedron_from_dimension __P((ppl_Polyhedron_t* pph,
 					   ppl_dimension_type d));
 
 /*! \brief
-  Builds an empty closed polyhedron of dimension \p d and writes an
+  Builds an empty closed polyhedron of space dimension \p d and writes an
   handle to it at address \p pph.
 */
 int
@@ -1134,7 +1134,7 @@ ppl_new_C_Polyhedron_empty_from_dimension __P((ppl_Polyhedron_t* pph,
 					       ppl_dimension_type d));
 
 /*! \brief
-  Builds an empty NNC polyhedron of dimension \p d and writes an
+  Builds an empty NNC polyhedron of space dimension \p d and writes an
   handle to it at address \p pph.
 */
 int
@@ -1310,7 +1310,7 @@ ppl_new_NNC_Polyhedron_recycle_GenSys __P((ppl_Polyhedron_t* pph,
                           ppl_Coefficient_t n, ppl_Coefficient_t d)
     \endcode
     Let \f$I\f$ the interval corresponding to the <CODE>k</CODE>-th
-    dimension.  If \f$I\f$ is not bounded from below, simply return 0.
+    space dimension.  If \f$I\f$ is not bounded from below, simply return 0.
     Otherwise, set <CODE>closed</CODE>, <CODE>n</CODE> and
     <CODE>d</CODE> as follows: <CODE>closed</CODE> is set to 0 if the
     lower boundary of \f$I\f$ is open and is set to a value different
@@ -1325,7 +1325,7 @@ ppl_new_NNC_Polyhedron_recycle_GenSys __P((ppl_Polyhedron_t* pph,
                           ppl_Coefficient_t n, ppl_Coefficient_t d)
     \endcode
     Let \f$I\f$ the interval corresponding to the <CODE>k</CODE>-th
-    dimension.  If \f$I\f$ is not bounded from above, simply return 0.
+    space dimension.  If \f$I\f$ is not bounded from above, simply return 0.
     Otherwise, set <CODE>closed</CODE>, <CODE>n</CODE> and
     <CODE>d</CODE> as follows: <CODE>closed</CODE> is set to 0 if the
     upper boundary of \f$I\f$ is open and is set to a value different
@@ -1369,7 +1369,7 @@ __P((ppl_Polyhedron_t* pph,
                           ppl_Coefficient_t n, ppl_Coefficient_t d)
     \endcode
     Let \f$I\f$ the interval corresponding to the <CODE>k</CODE>-th
-    dimension.  If \f$I\f$ is not bounded from below, simply return 0.
+    space dimension.  If \f$I\f$ is not bounded from below, simply return 0.
     Otherwise, set <CODE>closed</CODE>, <CODE>n</CODE> and
     <CODE>d</CODE> as follows: <CODE>closed</CODE> is set to 0 if the
     lower boundary of \f$I\f$ is open and is set to a value different
@@ -1384,7 +1384,7 @@ __P((ppl_Polyhedron_t* pph,
                           ppl_Coefficient_t n, ppl_Coefficient_t d)
     \endcode
     Let \f$I\f$ the interval corresponding to the <CODE>k</CODE>-th
-    dimension.  If \f$I\f$ is not bounded from above, simply return 0.
+    space dimension.  If \f$I\f$ is not bounded from above, simply return 0.
     Otherwise, set <CODE>closed</CODE>, <CODE>n</CODE> and
     <CODE>d</CODE> as follows: <CODE>closed</CODE> is set to 0 if the
     upper boundary of \f$I\f$ is open and is set to a value different
@@ -1435,11 +1435,11 @@ ppl_Polyhedron_space_dimension __P((ppl_const_Polyhedron_t ph,
 				    ppl_dimension_type* m));
 
 /*! \brief
-  Writes to \p m the dimension of \p ph (not to be confused with the
+  Writes to \p m the affine dimension of \p ph (not to be confused with the
   dimension of its enclosing vector space) or 0, if \p ph is empty.
 */
 int
-ppl_Polyhedron_dimension __P((ppl_const_Polyhedron_t ph));
+ppl_Polyhedron_affine_dimension __P((ppl_const_Polyhedron_t ph));
 
 /*! \brief
   Writes a const handle to the constraint system defining the
@@ -1521,7 +1521,7 @@ ppl_Polyhedron_relation_with_Generator __P((ppl_const_Polyhedron_t ph,
   <CODE>(ppl_dimension_type k, int closed,
          ppl_const_Coefficient_t n, ppl_const_Coefficient_t d)</CODE>
   that intersects the interval corresponding to the <CODE>k</CODE>-th
-  dimension with \f$[n/d, +\infty)\f$ if <CODE>closed</CODE> is non-zero,
+  space dimension with \f$[n/d, +\infty)\f$ if <CODE>closed</CODE> is non-zero,
   with \f$(n/d, +\infty)\f$ if <CODE>closed</CODE> is zero.
   The fraction \f$n/d\f$ is in canonical form, that is, \f$n\f$
   and \f$d\f$ have no common factors and \f$d\f$ is positive, \f$0/1\f$
@@ -1532,7 +1532,7 @@ ppl_Polyhedron_relation_with_Generator __P((ppl_const_Polyhedron_t ph,
   <CODE>(ppl_dimension_type k, int closed,
          ppl_const_Coefficient_t n, ppl_const_Coefficient_t d)</CODE>
   that intersects the interval corresponding to the <CODE>k</CODE>-th
-  dimension with \f$(-\infty, n/d]\f$ if <CODE>closed</CODE> is non-zero,
+  space dimension with \f$(-\infty, n/d]\f$ if <CODE>closed</CODE> is non-zero,
   with \f$(-\infty, n/d)\f$ if <CODE>closed</CODE> is zero.
   The fraction \f$n/d\f$ is in canonical form.
 */
@@ -2149,15 +2149,15 @@ ppl_Polyhedron_topological_closure_assign __P((ppl_Polyhedron_t ph));
   and to \p ph itself.
 */
 int
-ppl_Polyhedron_add_dimensions_and_embed __P((ppl_Polyhedron_t ph,
-					     ppl_dimension_type d));
+ppl_Polyhedron_add_space_dimensions_and_embed __P((ppl_Polyhedron_t ph,
+						   ppl_dimension_type d));
 
 /*! \brief
   Adds \p d new dimensions to the space enclosing the polyhedron \p ph.
 */
 int
-ppl_Polyhedron_add_dimensions_and_project __P((ppl_Polyhedron_t ph,
-					       ppl_dimension_type d));
+ppl_Polyhedron_add_space_dimensions_and_project __P((ppl_Polyhedron_t ph,
+						     ppl_dimension_type d));
 
 /*! \brief
   Seeing a polyhedron as a set of tuples (its points), assigns
@@ -2169,26 +2169,26 @@ ppl_Polyhedron_concatenate_assign __P((ppl_Polyhedron_t x,
 				       ppl_const_Polyhedron_t y));
 
 /*! \brief
-  Removes from \p ph and its containing space the dimensions that are
-  specified in first \p n positions of the array \p ds.  The presence
+  Removes from the vector space enclosing \p ph the space dimensions that
+  are specified in first \p n positions of the array \p ds.  The presence
   of duplicates in \p ds is a waste but an innocuous one.
 */
 int
-ppl_Polyhedron_remove_dimensions __P((ppl_Polyhedron_t ph,
-				      ppl_dimension_type ds[],
-				      size_t n));
+ppl_Polyhedron_remove_space_dimensions __P((ppl_Polyhedron_t ph,
+					    ppl_dimension_type ds[],
+					    size_t n));
 
 /*! \brief
-  Removes the higher dimensions from \p ph and its enclosing space so
-  that, upon successful return, the new space dimension is \p d.
+  Removes the higher dimensions from the vector space enclosing \p ph
+  so that, upon successful return, the new space dimension is \p d.
 */
 int
-ppl_Polyhedron_remove_higher_dimensions __P((ppl_Polyhedron_t ph,
-					     ppl_dimension_type d));
+ppl_Polyhedron_remove_higher_space_dimensions __P((ppl_Polyhedron_t ph,
+						   ppl_dimension_type d));
 
 /*! \brief
   Remaps the dimensions of the vector space according to a
-  \ref map_dimensions "partial function". This function is specified
+  \ref map_space_dimensions "partial function". This function is specified
   by means of the \p maps array, which has \p n entries.
 
   The partial function is defined on dimension <CODE>i</CODE>
@@ -2199,33 +2199,33 @@ ppl_Polyhedron_remove_higher_dimensions __P((ppl_Polyhedron_t ph,
 
   The result is undefined if \p maps does not encode a partial
   function with the properties described in the
-  \ref map_dimensions "specification of the mapping operator".
+  \ref map_space_dimensions "specification of the mapping operator".
 */
 int
-ppl_Polyhedron_map_dimensions __P((ppl_Polyhedron_t ph,
-				   ppl_dimension_type maps[],
-				   size_t n));
+ppl_Polyhedron_map_space_dimensions __P((ppl_Polyhedron_t ph,
+					 ppl_dimension_type maps[],
+					 size_t n));
 
 /*! \brief
-  \ref expand_dimension "Expands" the \f$d\f$-th dimension of
-  \p ph to \p m new dimensions.
+  \ref expand_space_dimension "Expands" the \f$d\f$-th dimension of
+  the vector space enclosing \p ph to \p m new space dimensions.
 */
 int
-ppl_Polyhedron_expand_dimension __P((ppl_Polyhedron_t ph,
-				     ppl_dimension_type d,
-				     ppl_dimension_type m));
+ppl_Polyhedron_expand_space_dimension __P((ppl_Polyhedron_t ph,
+					   ppl_dimension_type d,
+					   ppl_dimension_type m));
 
 /*! \brief
-  Modifies \p ph by \ref fold_dimensions "folding" the dimensions
-  contained in the first \p n positions of the array \p ds into
-  dimension \p d.  The presence of duplicates in \p ds is a waste
+  Modifies \p ph by \ref fold_space_dimensions "folding" the
+  space dimensions contained in the first \p n positions of the array \p ds
+  into dimension \p d.  The presence of duplicates in \p ds is a waste
   but an innocuous one.
 */
 int
-ppl_Polyhedron_fold_dimensions __P((ppl_Polyhedron_t ph,
-				    ppl_dimension_type ds[],
-				    size_t n,
-				    ppl_dimension_type d));
+ppl_Polyhedron_fold_space_dimensions __P((ppl_Polyhedron_t ph,
+					  ppl_dimension_type ds[],
+					  size_t n,
+					  ppl_dimension_type d));
 
 /*@}*/ /* Functions Related to Polyhedra */
 
