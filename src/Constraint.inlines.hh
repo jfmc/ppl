@@ -68,6 +68,22 @@ Parma_Polyhedra_Library::Constraint::set_is_inequality() {
   set_is_ray_or_vertex_or_inequality();
 }
 
+inline Parma_Polyhedra_Library::Variable
+Parma_Polyhedra_Library::Constraint::last_variable() const {
+  assert(Row::size() >= 2);
+  return Variable(size()-2);
+}
+
+inline const Parma_Polyhedra_Library::Integer&
+Parma_Polyhedra_Library::Constraint::coefficient(Variable v) const {
+  return Row::coefficient(v.id());
+}
+
+inline const Parma_Polyhedra_Library::Integer&
+Parma_Polyhedra_Library::Constraint::coefficient() const {
+  return Row::coefficient();
+}
+
 namespace Parma_Polyhedra_Library {
 
 inline Constraint

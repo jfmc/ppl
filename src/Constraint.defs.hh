@@ -26,6 +26,7 @@ site: http://www.cs.unipr.it/ppl/ . */
 
 #include "Constraint.types.hh"
 #include "Row.defs.hh"
+#include "Variable.defs.hh"
 #include "LinExpression.types.hh"
 #include <iosfwd>
 
@@ -155,6 +156,12 @@ public:
   //! Destructor.
   ~Constraint();
 
+  //! Returns the last variable in the space of \p *this.
+  Variable last_variable() const;
+  //! Returns the coefficient of \p v in \p *this.
+  const Integer& coefficient(Variable v) const;
+  //! Returns the inhomogeneous term of \p *this.
+  const Integer& coefficient() const;
   //! Returns <CODE>true</CODE> if and only if
   //! \p *this is an equality constraint.
   bool is_equality() const;
