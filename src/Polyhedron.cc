@@ -659,17 +659,24 @@ PPL::Polyhedron::convex_hull_assign_lazy(const Polyhedron& y) {
     x = y;
     return;
   }
-  if (x.is_zero_dim() && y.is_zero_dim())
-    return;
- 
+  if (x.is_zero_dim() || y.is_zero_dim()) {
+    if (!x.is_zero_dim() || !y.is_zero_dim())
+      throw_different_dimensions("PPL::Polyhedron::convex_hull_assign_lazy(y)",
+				 *this, y);
+    else
+      return;
+  }
+   
   if (!x.generators_are_up_to_date())
     x.update_generators();
   if (!y.generators_are_up_to_date())
     y.update_generators();
   
   // 'x' and `y' must have the same dimension.
-  assert(x.gen_sys.num_columns() == y.gen_sys.num_columns());
-  
+  if (x.gen_sys.num_columns() != y.gen_sys.num_columns())
+    throw_different_dimensions("PPL::Polyhedron::convex_hull_assign_lazy(y)",
+			       *this, y);
+
   // Matrix::merge_rows_assign() requires both matrices to be sorted.
   if (!x.gen_sys.is_sorted())
     x.gen_sys.sort_rows();
@@ -1356,20 +1363,40 @@ PPL::Polyhedron::substitute_variable(const Variable& var,
   }
 }
 
+static void
+throw_different_dimensions(const char* method,
+			   const PPL::Polyhedron& x,
+			   const PPL::Row& y) {
+  std::string what;
+  std::ostringstream s(what);
+  s << method << ":" << std::endl
+    << "this->num_dimensions == " << x.num_dimensions()
+    << ", y->num_dimensions == " << y.size() - 1;
+  throw std::invalid_argument(s.str());
+}
+
+
 /*!
   Returns the relation between \p *this and the constraint \p con.
   (See the function 
-  \p GenSys::satisfy_constraint(const Constraint& con)
+  \p GenSys::satisfy(const Constraint& con)
   for more details).
 */ 
 PPL::GenSys_Con_Rel
-PPL::Polyhedron::poly_satisfies_constraint(const Constraint& con) {
-  if(is_empty())
+PPL::Polyhedron::satisfies(const Constraint& c) {
+  if (is_empty())
     return ALL_SATURATE;
   else {
-    if(!generators_are_up_to_date())
+    if (is_zero_dim())
+      throw_different_dimensions("PPL::Polyhedron::satisfies(c)",
+				 *this, c);
+
+    if (!generators_are_up_to_date()) 
       update_generators();
-    return gen_sys.satisfy_constraint(con);
+    if (gen_sys.num_columns() != c.size())
+      throw_different_dimensions("PPL::Polyhedron::satisfies(c)",
+				 *this, c);
+    return gen_sys.satisfy(c);
   }
 }
 
@@ -1378,14 +1405,23 @@ PPL::Polyhedron::poly_satisfies_constraint(const Constraint& con) {
   the constraints representing \p *this, <CODE>false</CODE> otherwise.
 */
 bool
-PPL::Polyhedron::includes(const Generator& gen) {
+PPL::Polyhedron::includes(const Generator& g) {
   if(is_empty())
     return false;
+  if (is_zero_dim())
+    throw_different_dimensions("PPL::Polyhedron::includes(g)",
+				*this, g);
   else {
     if(!constraints_are_up_to_date())
       update_constraints();
-    return con_sys.satisfies_all_constraints(gen);
+    if (con_sys.num_columns() != g.size())
+      throw_different_dimensions("PPL::Polyhedron::includes(g)",
+				 *this, g);
+
+    return con_sys.satisfies_all_constraints(g);
   }
+  // Just to avoid a gcc warning.
+  abort();
 }
 
 /*!
@@ -1584,7 +1620,7 @@ PPL::Polyhedron::limited_widening_assign(const Polyhedron& y,
       // are points also of `x' (`y' is contained in `x') and 
       // so they verify the chosen constraints, too.
       GenSys_Con_Rel satisfy
-	= x.gen_sys.satisfy_constraint(constraints[i]);
+	= x.gen_sys.satisfy(constraints[i]);
       if (satisfy == ALL_SATURATE || satisfy == ALL_SATISFY)
 	// The chosen constraints are put at the top of the 
 	// matrix \p constraints.

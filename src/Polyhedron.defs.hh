@@ -284,13 +284,19 @@ public:
   void convex_hull_assign(const Polyhedron& y);
   //! Assigns the convex hull of \p *this \f$\cup\f$ \p y to \p *this,
   //! without minimizing the result.
+  //! \exception std::invalid_argument \p *this and \p y 
+  //!                                  does not have the same dimension.  
   void convex_hull_assign_lazy(const Polyhedron& y);
 
   //! Returns the relation between the generators of \p *this 
-  //! and the constraint \p con.
-  GenSys_Con_Rel poly_satisfies_constraint(const Constraint& con);
-  //! Tests the inclusion of the generator \p gen in a polyhedron.
-  bool includes(const Generator& gen);
+  //! and the constraint \p c.
+  //! \exception std::invalid_argument \p *this and constraint \p c 
+  //!                                  does not have the same dimension.  
+  GenSys_Con_Rel satisfies(const Constraint& c);
+  //! Tests the inclusion of the generator \p g in a polyhedron.
+  //! \exception std::invalid_argument \p *this and constraint \p g 
+  //!                                  does not have the same dimension.  
+  bool includes(const Generator& g);
 
   //! Computes the widening between \p *this and \p y and 
   //! assigns the result to \p *this.
