@@ -58,7 +58,7 @@ ppl_sicstus.s.o: ppl_sicstus.pl ppl_sicstus_sd.o
 
 ppl_sicstus.so: ppl_sicstus.pl ppl_sicstus_sd.lo
 	splfr $(srcdir)/ppl_sicstus.pl ppl_sicstus_sd.lo \
-		-lppl @extra_libraries@
+		-L$(top_builddir)/src/.libs -lppl @extra_libraries@
 
 CLPQ_TESTS = \
 ack.clpq \
