@@ -49,10 +49,7 @@ TESTS = addconstraints1 addconstraints2 addconstraints3 addconstraints4 \
 	convexhull1 \
 	convexdifference1 \
         empty1 \
-        error1 error2 error3 error4 error5 error6 error7 error8 error9 \
-	error10 error11 error12 error13 error14 error15 error16 error17 \
-	error18 error19 error20 error21 error22 error23 error24 error25 \
-	error26 error27 error28 error29 \
+	exceptions1 \
 	generators1 \
 	includes1 includes2 includes3 includes4 \
         inters1 inters2 inters3 inters4 inters5 inters6 \
@@ -112,35 +109,7 @@ convexdifference1_SOURCES = convexdifference1.cc
 
 empty1_SOURCES = empty1.cc
 
-error1_SOURCES = error1.cc
-error2_SOURCES = error2.cc
-error3_SOURCES = error3.cc
-error4_SOURCES = error4.cc
-error5_SOURCES = error5.cc
-error6_SOURCES = error6.cc
-error7_SOURCES = error7.cc
-error8_SOURCES = error8.cc
-error9_SOURCES = error9.cc
-error10_SOURCES = error10.cc
-error11_SOURCES = error11.cc
-error12_SOURCES = error12.cc
-error13_SOURCES = error13.cc
-error14_SOURCES = error14.cc
-error15_SOURCES = error15.cc
-error16_SOURCES = error16.cc
-error17_SOURCES = error17.cc
-error18_SOURCES = error18.cc
-error19_SOURCES = error19.cc
-error20_SOURCES = error20.cc
-error21_SOURCES = error21.cc
-error22_SOURCES = error22.cc
-error23_SOURCES = error23.cc
-error24_SOURCES = error24.cc
-error25_SOURCES = error25.cc
-error26_SOURCES = error26.cc
-error27_SOURCES = error27.cc
-error28_SOURCES = error28.cc
-error29_SOURCES = error29.cc
+exceptions1_SOURCES = exceptions1.cc
 
 generators1_SOURCES = generators1.cc
 

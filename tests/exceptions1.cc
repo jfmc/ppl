@@ -1,0 +1,884 @@
+/* Some incorrect uses of the functions of PPL.
+   Copyright (C) 2001, 2002 Roberto Bagnara <bagnara@cs.unipr.it>
+
+This file is part of the Parma Polyhedra Library (PPL).
+
+The PPL is free software; you can redistribute it and/or modify it
+under the terms of the GNU General Public License as published by the
+Free Software Foundation; either version 2 of the License, or (at your
+option) any later version.
+
+The PPL is distributed in the hope that it will be useful, but WITHOUT
+ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or
+FITNESS FOR A PARTICULAR PURPOSE.  See the GNU General Public License
+for more details.
+
+You should have received a copy of the GNU General Public License
+along with this program; if not, write to the Free Software
+Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307,
+USA.
+
+For the most up-to-date information see the Parma Polyhedra Library
+site: http://www.cs.unipr.it/ppl/ . */
+
+#include "ppl_install.hh"
+#include "ehandlers.hh"
+#include <stdexcept>
+
+using namespace std;
+using namespace Parma_Polyhedra_Library;
+
+#define NOISY 0
+
+void
+error1() {
+  set_handlers();
+  
+  Variable x(0);
+  Variable y(1);
+  Variable z(2);
+  
+  GenSys gs;
+  try {
+    // This is an incorrect use of the function Generator::vertex(expr, d):
+    // it is impossible to built a vertex with the denominator
+    // equal to zero.
+    gs.insert(vertex(x + y + z, 0));
+  }
+  
+  catch (invalid_argument& e) {
+#if NOISY
+    cout << "invalid_argument: " << e.what() << endl << endl;
+#endif
+  } 
+  catch (...) {
+    exit(1);
+  }
+}
+
+void
+error2() {
+  set_handlers();
+  
+  Variable x(0);
+  Variable y(1);
+  
+  GenSys gs;
+  gs.insert(vertex(x + y));
+  gs.insert(ray(x + 0*y));
+  gs.insert(ray(0*x + y));
+  Polyhedron ph(gs);
+  LinExpression coeff1 = x + y + 1;
+  try {
+    // This is an incorrect use of function
+    // Polyhedron::affine_image(v, expr,d): it is impossible applying
+    // the function with a linear expression with the denominator equal to
+    // zero.
+    Integer d = 0;
+    ph.affine_image(x, coeff1, d);
+  }
+  catch (invalid_argument& e) {
+#if NOISY
+    cout << "invalid_denominator: " << e.what() << endl << endl;
+#endif
+  }
+ catch (...) {
+    exit(1);
+  }
+}
+
+void
+error3() {
+  set_handlers();
+  
+  Variable x(0);
+  Variable y(1);
+
+  Polyhedron ph1;
+  GenSys gs;
+  gs.insert(vertex(x + y));
+  Polyhedron ph2(gs);
+  try {
+    // This is an incorrect use of function
+    // Polyhedron::convex_hull_assign(p): it is impossible to use
+    // it with two polyhedra of different dimensions.
+    ph1.convex_hull_assign_and_minimize(ph2);
+  }
+  catch (std::invalid_argument& e) {
+#if NOISY
+    cout << "invalid_argument: " << e.what() << endl << endl;
+#endif
+  }
+  catch(...) {
+    exit(1);
+  }
+}
+
+void
+error4() {
+  set_handlers();
+
+  Variable x(0);
+  Variable y(1);
+  Variable z(2);
+
+  GenSys gs;
+  gs.insert(line(x + y + z));
+
+  try {
+    // This is an incorrect use of the function Polyhedron::Polyhedron(gs):
+    // it is impossible to built a polyhedron starting from a system
+    // of generators that does not contain a vertex. 
+    Polyhedron ph(gs);
+  }
+  catch (invalid_argument& e) {
+#if NOISY
+    cout << "invalid_argument: " << e.what() << endl << endl;
+#endif
+  }
+  catch (...) {
+    exit(1);
+  }
+}
+
+void
+error5() {
+  set_handlers();
+
+  Variable x(0);
+  Variable y(1);
+  Variable z(2);
+  
+  GenSys gs;
+  gs.insert(vertex(0*x + 1*y +2*z));
+  Polyhedron ph(gs);
+
+  set<Variable> to_be_removed;
+  to_be_removed.insert(z);
+
+  ph.remove_dimensions(to_be_removed);
+
+  try {
+    to_be_removed.insert(x);
+    // This is an incorrect use use of function
+    // Polyhedron::remove_dimensions(to_be_remove).
+    // Here the set `to_be_removed' still contains variable `z'.
+    // This variable is now beyond the space dimension,
+    // so that a dimension-incompatibility exception is obtained.
+    ph.remove_dimensions(to_be_removed);
+  }
+  catch (invalid_argument& e) {
+#if NOISY
+    cout << "invalid_argument: " << e.what() << endl << endl;
+#endif
+  }
+  catch (...) {
+    exit(1);
+  }
+}
+
+void
+error6() {
+  set_handlers();
+
+  Variable x(0);
+  Variable y(1);
+
+  Polyhedron ph(1);
+  ph.insert(x >= 1);
+
+  try {
+    // This is an invalid used of the function
+    // Polyhedron::affine_image(v, expr, d): it is impossible to
+    // apply this function to a variable that is not in the space of
+    // the polyhedron.
+    ph.affine_image(y, x + 1);
+  }
+  catch (invalid_argument& e) {
+#if NOISY
+    cout << "invalid_variable: " << e.what() << endl << endl;
+#endif
+  }
+  catch (...) {
+    exit(1);
+  }
+}
+
+void
+error7() {
+  set_handlers();
+  
+  Variable x(0);
+  Variable y(1);
+  Variable z(2);
+  
+  Polyhedron ph(2);
+  ph.insert(x >= 1);
+  ph.insert(y >= 1);
+  
+  try {
+    // This is an invalid used of the function
+    // Polyhedron::affine_image(v, expr, d): it is impossible to
+    // use a variable in the expression that does not apper in the
+    // space of the polyhedron.
+    ph.affine_image(y, x + z + 1);
+  }
+  catch (invalid_argument& e) {
+#if NOISY
+    cout << "invalid_expression: " << e.what() << endl << endl;
+#endif
+  }
+  catch (...) {
+    exit(1);
+  }
+}
+
+void
+error8() {
+  set_handlers();
+
+  Variable x(0);
+  Variable y(1);
+
+  Polyhedron ph(2);
+  ph.insert(x >= y);
+  LinExpression coeff = x + y + 1;
+  try {
+    // This is an incorrect use of the function
+    // Polyhedron::affine_preimage(v, expr, d): it is impossible
+    // to apply to a polyhedron an expression with the denominator
+    // equal to zero.
+    Integer d = 0;
+    ph.affine_preimage(x, coeff, d);
+  }
+  catch (invalid_argument& e) {
+#if NOISY
+    cout << "invalid_denominator: " << e.what() << endl << endl;
+#endif
+  }
+  catch (...) {
+    exit(1);
+  }
+}
+
+void
+error9() {
+  set_handlers();
+
+  Variable x(0);
+  Variable y(1);
+  Variable z(2);
+
+  GenSys gs;
+  gs.insert(vertex());
+  gs.insert(ray(x + y));
+  gs.insert(ray(x));
+
+  Polyhedron ph(gs);
+  try {
+    // This is an invalid used of the function
+    // Polyhedron::affine_image(v, expr, d): it is impossible apply
+    // the transformation to a variable that is not in the space
+    // of the polyhedron.
+    ph.affine_preimage(z, x + 1);
+  }
+  catch (invalid_argument& e) {
+#if NOISY
+    cout << "invalid_variable: " << e.what() << endl << endl;
+#endif
+  }
+  catch (...) {
+    exit(1);
+  }
+}
+
+void
+error10() {
+  set_handlers();
+
+  Variable x(0);
+  Variable y(1);
+  Variable z(2);
+
+  GenSys gs;
+  gs.insert(vertex());
+  gs.insert(vertex(x));
+  gs.insert(line(x + y));
+
+  Polyhedron ph(gs);
+  try {
+    // This is an invalid used of the function
+    // Polyhedron::affine_preimage(v, expr, d): it is impossible to
+    // apply to a polyhedron an expression that contains a variable that
+    // is not in the space of the polyhedron.
+    ph.affine_preimage(y, x + z + 1);
+  }
+  catch (invalid_argument& e) {
+#if NOISY
+    cout << "invalid_expression: " << e.what() << endl << endl;
+#endif
+  }
+  catch (...) {
+    exit(1);
+  }
+}
+
+void
+error11() {
+  set_handlers();
+
+  Variable x(0);
+  Variable y(1);
+
+  Polyhedron ph1(2);
+  ph1.insert(x >= y);
+
+  Polyhedron ph2(3);
+
+  try {
+    // This is an invalid use of function
+    // Polyhedron::intersection_assign_and_minimze(ph2): it is impossible
+    // to apply this funcition to two polyhedra of different dimensions.
+    ph1.intersection_assign_and_minimize(ph2);
+  }
+  catch (invalid_argument& e) {
+#if NOISY
+    cout << "invalid_polyhedra: " << e.what() << endl << endl;
+#endif
+  }
+  catch (...) {
+    exit(1);
+  }
+}
+
+void
+error12() {
+  set_handlers();
+
+  Polyhedron ph1(7);
+
+  Polyhedron ph2(15);
+
+  try {
+    // This is an invalid use of the function
+    // Polyhedron::intersection_assign(ph2): it is impossible to apply
+    // this function to two polyhedron of different dimensions.
+    ph1.intersection_assign(ph2);
+  }
+  catch (invalid_argument& e) {
+#if NOISY
+    cout << "invalid_polyhedra: " << e.what() << endl << endl;
+#endif
+  }
+  catch (...) {
+    exit(1);
+  }
+}
+
+void
+error13() {
+  set_handlers();
+
+  Variable w(4);
+
+  Polyhedron ph(2, Polyhedron::EMPTY);
+
+  try {
+    // This is an invalid use of the function
+    // Polyhedron::add_generators_and_minimize(gs): this is impossible
+    // to add a system of generator that is not dimensional compatible
+    // with the polyhedron.
+    GenSys gs;
+    gs.insert(vertex(w));
+    ph.add_generators_and_minimize(gs);
+  }
+  catch (invalid_argument& e) {
+#if NOISY
+    cout << "invalid_system_of_generators: " << e.what() << endl << endl;
+#endif
+  }
+  catch (...) {
+    exit(1);
+  }
+}
+
+void
+error14() {
+  set_handlers();
+
+  Polyhedron ph(5);
+
+  try {
+    // This is an invalid use of the function
+    // Polyhedron::remove_higher_dimensions(n): it is impossible to erase
+    // a variable that is not in the space of the polyhedron.
+    ph.remove_higher_dimensions(7);
+  }
+  catch (invalid_argument& e) {
+#if NOISY
+    cout << "invalid_variable: " << e.what() << endl << endl;
+#endif
+  }
+  catch (...) {
+    exit(1);
+  }
+}
+
+void
+error15() {
+  set_handlers();
+
+  Variable x(0);
+  Variable y(1);
+
+  Polyhedron ph(1);
+
+  try {
+    // This is an invalid use of the function
+    // Polyhedron::add_constraints_and_minimze(cs): it is impossible to
+    // add a system of constraints that is not dimensional incompatible
+    // with the polyhedron.
+    ConSys cs;
+    cs.insert(x - y >= 0);
+    ph.add_constraints_and_minimize(cs);
+  }
+  catch (invalid_argument& e) {
+#if NOISY
+    cout << "invalid_system_of_constraints: " << e.what() << endl << endl;
+#endif
+  }
+  catch (...) {
+    exit(1);
+  }
+}
+
+void
+error16() {
+  set_handlers();
+
+  Variable y(1);
+
+  Polyhedron ph(1);
+
+  try {
+    // This is an invalid use of the function Polyhedron::insert(c):
+    // it is impossible to insert a constraints that contains a variable
+    // that is not in the space of the polyhedron.
+    ph.insert(y >= 0);
+  }
+  catch (invalid_argument& e) {
+#if NOISY
+    cout << "invalid_constraint: " << e.what() << endl << endl;
+#endif
+  }
+  catch (...) {
+    exit(1);
+  }
+}
+
+void
+error17() {
+  set_handlers();
+
+  Variable x(0);
+  Variable y(1);
+  
+  Polyhedron ph(1);
+  
+  try {
+    // This is an invalid use of the function
+    // Polyhedron::add_constraints(cs): it is impossible to add a system
+    // of constraints that is dimensional incompatible with the
+    // polyhedron.
+    ConSys cs;
+    cs.insert(x - y == 0);
+    ph.add_constraints(cs);
+  }
+  catch (invalid_argument& e) {
+#if NOISY
+    cout << "invalid_system_of_constraints: " << e.what() << endl << endl;
+#endif
+  }
+  catch (...) {
+    exit(1);
+  }
+}
+
+void
+error18() {
+  set_handlers();
+
+  Variable x(0);
+  Variable y(1);
+
+  GenSys gs1;
+  gs1.insert(vertex());
+  gs1.insert(ray(x));
+
+  Polyhedron ph1(gs1);
+  
+  GenSys gs2;
+  gs2.insert(vertex(x));
+  gs2.insert(ray(x + y));
+
+  Polyhedron ph2(gs2);
+  
+  try {
+    // This is an invalid use of the function
+    // Polyhedron::convex_hull_assign(ph2): it is impossible to apply
+    // this function to two polyhedra with different dimensions.
+    ph1.convex_hull_assign(ph2);
+  }
+  catch (invalid_argument& e) {
+#if NOISY
+    cout << "invalid_polyhedra: " << e.what() << endl << endl;
+#endif
+  }
+  catch (...) {
+    exit(1);
+  }
+}
+
+void
+error19() {
+  set_handlers();
+
+  Variable x(0);
+  Variable y(1);
+
+  Polyhedron ph(1, Polyhedron::EMPTY);
+
+  try {
+    // This is an invalid use of the function Polyhedron::insert(g):
+    // it is impossible to insert a generator that is dimensional
+    // incompatible with the polyhedron.
+    ph.insert(vertex(x + y));
+  }
+  catch (invalid_argument& e) {
+#if NOISY
+    cout << "invalid_generator: " << e.what() << endl << endl;
+#endif
+  }
+  catch (...) {
+    exit(1);
+  }
+}
+
+void
+error20() {
+  set_handlers();
+
+  Variable x(0);
+  Variable y(1);
+
+  Polyhedron ph(1, Polyhedron::EMPTY);
+
+  try {
+    // This is invalid use of the function Polyhedron::add_generators(gs):
+    // it is impossible to a system of generators that is dimensional
+    // incompatible with the polyhedron.
+    GenSys gs;
+    gs.insert(vertex());
+    gs.insert(line(x + y));
+    ph.add_generators(gs);
+  }
+  catch (invalid_argument& e) {
+#if NOISY
+    cout << "invalid_system_of_generators: " << e.what() << endl << endl;
+#endif
+  }
+  catch (...) {
+    exit(1);
+  }
+}
+
+void
+error21() {
+  set_handlers();
+
+  Variable x(0);
+  Variable y(1);
+  Variable z(2);
+
+  GenSys gs;
+  gs.insert(ray(x + y));
+  gs.insert(vertex());
+
+  Polyhedron ph(gs);
+  try {
+    // This is invalid use of the function Polyhedron::relation_with(c):
+    // it is impossible to use a constraints that is dimensional
+    // incompatible with the polyhedron.
+    Constraint c(z >= 0);
+    ph.relation_with(c);
+  }
+  catch (invalid_argument& e) {
+#if NOISY
+    cout << "invalid_constraint: " << e.what() << endl << endl;
+#endif
+  }
+  catch (...) {
+    exit(1);
+  }
+}
+
+void
+error22() {
+  set_handlers();
+
+  Variable z(2);
+
+  Polyhedron ph(2);
+
+  try {
+    // This is invalid use of the function Polyhedronn::relation_with(g):
+    // it is impossible to apply this function to a generator that is
+    // not dimensional compatible with the polyhedron.
+    Generator g(vertex(z));
+    ph.relation_with(g);
+  }
+  catch (invalid_argument& e) {
+#if NOISY
+    cout << "invalid_generator: " << e.what() << endl << endl;
+#endif
+  }
+  catch (...) {
+    exit(1);
+  }
+}
+
+void
+error23() {
+  set_handlers();
+
+  Polyhedron ph1(5);
+  Polyhedron ph2(10);
+
+  try {
+    // This is invalid use of the function Polyhedron::widening_assign(ph2):
+    // it is impossible to apply this function to two polyhedra that are
+    // not dimensional compatible.
+    ph2.widening_assign(ph1);
+  }
+  catch (invalid_argument& e) {
+#if NOISY
+    cout << "invalid_polyhedra: " << e.what() << endl << endl; 
+#endif
+  }
+  catch (...) {
+    exit(1);
+  }
+}
+
+void
+error24() {
+  set_handlers();
+
+  Variable y(1);
+
+  Polyhedron ph1(1);
+  Polyhedron ph2(2);
+
+  ConSys cs;
+  cs.insert(y <= 9);
+
+  try {
+    // This is invalid use of the function
+    // Polyhedron::limited_widening_assign(ph2, cs): it is impossible to
+    // apply this function to two polyhedra that are not dimensional
+    // compatible.
+    ph2.limited_widening_assign(ph1, cs);
+  }
+  catch (invalid_argument& e) {
+#if NOISY
+    cout << "invalid_polyhedra: " << e.what() << endl << endl;
+#endif
+  }
+  catch (...) {
+    exit(1);
+  }
+}
+
+void
+error25() {
+  set_handlers();
+
+  Variable x(0);
+  Variable y(1);
+  Variable z(2);
+
+  Polyhedron ph1(2);
+  ph1.insert(x - y >= 0);
+  ph1.insert(x >= 0);
+  ph1.insert(x <= 2);
+
+  Polyhedron ph2(2);
+  ph2.insert(x - y >= 0);
+  ph2.insert(x >= 0);
+  ph2.insert(x <= 5);
+
+  ConSys cs;
+  cs.insert(z <= 5);
+
+  try {
+    // This is invalid use of the function
+    // Polyhedron::limited_widening_assign(ph, cs): it is impossible to apply
+    // this function to a system of constraints that is not dimensional
+    // compatible with the two polyhedra.
+    ph2.limited_widening_assign(ph1, cs);
+  }
+  catch (invalid_argument& e) {
+#if NOISY
+    cout << "invalid_system_of_constraints: " << e.what() << endl << endl;
+#endif
+  }
+  catch (...) {
+    exit(1);
+  }
+}
+
+void
+error26() {
+  set_handlers();
+
+  Variable x(0);
+  Variable y(1);
+
+  Polyhedron ph1(3);
+  ph1.insert(x - y >= 0);
+
+  Polyhedron ph2(2);
+  ph2.insert(x - y == 0);
+
+  try {
+    // This is an invalid use of operator <=: it is impossible to apply
+    // this function to two polyhedra that are not dimensional compatible.
+    ph1 <= ph2;
+  }
+  catch (invalid_argument& e) {
+#if NOISY
+    cout << "invalid_polyhedra: " << e.what() << endl << endl;
+#endif
+  }
+  catch (...) {
+    exit(1);
+  }
+}
+
+void
+error27() {
+  set_handlers();
+  Variable x(0);
+
+  Polyhedron ph(2, Polyhedron::EMPTY);
+
+  try {
+    // This is invalid use of function Polyhedro::insert(g): it is
+    // impossible to insert a generator that is not dimensional
+    // comaptible with the polyhedron..
+    Generator g(ray(x));
+    ph.insert(g);
+  }
+  catch (invalid_argument& e) {
+#if NOISY
+    cout << "invalid_generator: " << e.what() << endl << endl;
+#endif
+  }
+  catch (...) {
+    exit(1);
+  }
+}
+
+void
+error28() {
+  set_handlers();
+  Variable x(0);
+  Variable y(1);
+
+  Polyhedron ph(3, Polyhedron::EMPTY);
+
+  try {
+    // This is an invalid use of the function Polyhedron::add_generators(gs):
+    // it is impossible to add a system of generators with no vertics
+    // to an empty polyhedron. 
+    GenSys gs;
+    gs.insert(ray(x + y));
+    gs.insert(ray(x - y));
+    ph.add_generators(gs);
+  }
+  catch (invalid_argument& e) {
+#if NOISY
+    cout << "invalid_system_of_generators: " << e.what() << endl << endl;
+#endif
+  }
+  catch (...) {
+    exit(1);
+  }
+}
+
+void
+error29() {
+  set_handlers();
+  Variable x(0);
+  Variable y(1);
+
+  Polyhedron ph(2, Polyhedron::EMPTY);
+
+  try {
+    // This is an invalid use of the function
+    // Polyhedron::add_generators_and_minimize(gs): it is impossible
+    // to apply this function with a system of generators with no
+    // vertices to an empty polyhedron.
+    GenSys gs;
+    gs.insert(line(x));
+    gs.insert(line(y));
+    ph.add_generators_and_minimize(gs);
+  }
+  catch (invalid_argument& e) {
+#if NOISY
+    cout << "invalid_system_of_generators: " << e.what() << endl << endl;
+#endif
+  }
+  catch (...) {
+    exit(1);
+  }
+}
+
+
+int
+main() {
+  
+  error1();
+  error2();
+  error3();
+  error4();
+  error5();
+  error6();
+  error7();
+  error8();
+  error9();
+  error10();
+  error11();
+  error12();
+  error13();
+  error14();
+  error15();
+  error16();
+  error17();
+  error18();
+  error19();
+  error20();
+  error21();
+  error22();
+  error23();
+  error24();
+  error25();
+  error26();
+  error27();
+  error28();
+  error29();
+
+  return 0;
+}
+
+
