@@ -82,7 +82,12 @@
 \newcommand*{\relops}[1]{\mathrel{\bowtie_{#1}}}
 
 % Vectors.
-\newcommand*{\vect}[1]{\mathbf{#1}}
+\renewcommand*{\vec}[1]{\mathchoice{\mbox{\boldmath$\displaystyle#1$}}
+{\mbox{\boldmath$\textstyle#1$}}
+{\mbox{\boldmath$\scriptstyle#1$}}
+{\mbox{\boldmath$\scriptscriptstyle#1$}}}
+
+\newcommand*{\vect}[1]{\vec{#1}}
 
 % Matrix functions.
 \newcommand*{\transpose}{\mathrm{T}}

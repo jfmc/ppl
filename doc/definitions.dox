@@ -117,9 +117,10 @@ can be defined as the intersection of the two closed affine half-spaces
 \f$\langle \vect{a}, \vect{x} \rangle \geq b\f$ and
 \f$\langle -\vect{a}, \vect{x} \rangle \geq -b\f$.
 Also note that, when \f$\vect{a} = \vect{0}\f$,
-the constraint \f$0 \relop b\f$ is either a tautology (i.e., always true)
+the constraint \f$\langle \vect{0}, \vect{x} \rangle \relop b\f$
+is either a tautology (i.e., always true)
 or inconsistent (i.e., always false), so that it defines
-either the whole vector space \f$\Rset^n\f$ or the empty set.
+either the whole vector space \f$\Rset^n\f$ or the empty set \f$\emptyset\f$.
 
 
 <B>Convex Polyhedra</B>
@@ -151,6 +152,7 @@ In theoretical terms,
 \f$\Pset_n\f$ is a <EM>lattice</EM> under set inclusion and
 \f$\CPset_n\f$ is a <EM>sub-lattice</EM> of \f$\Pset_n\f$.
 
+
 <B>Bounded Polyhedra</B>
 
 An NNC polyhedron \f$\cP \in \Pset_n\f$ is <EM>bounded</EM>
@@ -165,6 +167,7 @@ if there exists a \f$\lambda \in \nonnegRset\f$ such that
       \,\bigr\}.
 \f]
 A bounded polyhedron is also called a <EM>polytope</EM>.
+
 
 <B>Rational Polyhedra</B>
 
@@ -181,8 +184,10 @@ by the operators considered, such as the coefficients defining
 
 \section representation Representations of Convex Polyhedra
 
-In this section we describe the main alternative representations
-that may be used to specify an NNC polyhedron. 
+NNC polyhedra can be specified by using two possible representations,
+the constraints (or implicit) representation and
+the generators (or parametric) representation.
+
 
 <B>Constraints representation</B>
 
@@ -223,17 +228,19 @@ Such a combination is said to be
 - a <EM>positive</EM> (or <EM>conic</EM>) combination,
   if \f$\forall j \in \{ 1, \ldots, k \} \itc \lambda_j \in \nonnegRset\f$;
 - an <EM>affine</EM> combination, if \f$\sum_{j = 1}^k \lambda_j = 1\f$;
-- a <EM>convex</EM> combination, if both the previous conditions hold.
+- a <EM>convex</EM> combination, if it is both positive and affine.
 
 We denote by \f$\linearhull(S)\f$
 (resp., \f$\conichull(S)\f$, \f$\affinehull(S)\f$, \f$\convexhull(S)\f$)
 the set of all the linear (resp., positive, affine, convex)
 combinations of the vectors in \f$S\f$.
 
-Let \f$P, C \sseq \Rset^n\f$ where \f$P \union C = S\f$.
+Let \f$P, C \sseq \Rset^n\f$, where \f$P \union C = S\f$.
 We denote by  \f$\NNChull(P, C)\f$ the set of all convex combinations
 of the vectors in \f$S\f$
-such that \f$\lambda_j > 0\f$ for some \f$\vect{x}_j \in P\f$.
+such that \f$\lambda_j > 0\f$ for some \f$\vect{x}_j \in P\f$
+(informally, we say that there exists a vector of \f$P\f$ that
+plays an active role in the convex combination).
 Note that \f$\NNChull(P, C) = \NNChull(P, P \union C)\f$
 so that, if \f$C \sseq P\f$,
 \f[
@@ -246,7 +253,7 @@ It can be observed that
 \f$\linearhull(S)\f$ is an affine space,
 \f$\conichull(S)\f$ is a topologically closed convex cone,
 \f$\convexhull(S)\f$ is a topologically closed polytope, and
-\f$\NNChull(P, C)\f$ is a NNC polytope.
+\f$\NNChull(P, C)\f$ is an NNC polytope.
 
 
 <B>Points, Closure Points, Rays and Lines</B>
