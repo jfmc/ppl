@@ -140,12 +140,12 @@ get_system :-
 add_to_system :-
    ppl_initialize,
    add_con,
-   add_gen,
    add_con_min,
+   add_gen,
    add_gen_min,
    add_cons,
-   add_gens,
    add_cons_min,
+   add_gens,
    add_gens_min,
    project,
    embed,
@@ -156,8 +156,7 @@ revamp_dim :-
    ppl_initialize,
    remove_dim,
    remove_high_dim,
-   rename_dim_constraints,
-   rename_dim_generators,
+   rename_dim,
    ppl_finalize.
 
 transform_polys :-
@@ -183,8 +182,7 @@ compare_polys :-
    ppl_initialize,
    contains,
    strict_contains,
-   check_disjoint_from_C,
-   check_disjoint_from_NNC,
+   disjoint_from,
    equals,
    ok,
    !,
@@ -192,10 +190,7 @@ compare_polys :-
  
 poly_boxes :-
    ppl_initialize,
-   get_boundingbox_C,
-   get_boundingbox_NNC,
-   get_bounding_box_complexity_C,
-   get_bounding_box_complexity_NNC,
+   get_bounding_box,
    !,
    ppl_finalize.
 
@@ -798,111 +793,136 @@ top_close_assign :-
 
 
 % Tests ppl_Polyhedron_get_constraints
-% (using C Polyhedra).
 get_cons :-
+  get_cons(c), get_cons(nnc).
+
+get_cons(T) :-
   A = '$VAR'(0), B = '$VAR'(1),
-  ppl_new_Polyhedron_from_dimension(c, 2, P),
+  ppl_new_Polyhedron_from_dimension(T, 2, P),
   ppl_Polyhedron_get_constraints(P, []),
   ppl_Polyhedron_add_constraint(P, A - B >= 1),
   ppl_Polyhedron_get_constraints(P, [C]),
-  ppl_new_Polyhedron_from_constraints(c, [C], Q),
+  ppl_new_Polyhedron_from_constraints(T, [C], Q),
   ppl_Polyhedron_equals_Polyhedron(P, Q),
   ppl_delete_Polyhedron(P),
   ppl_delete_Polyhedron(Q).
 
 % Tests ppl_Polyhedron_get_minimized_constraints
-% (using C Polyhedra).
 get_min_cons :-
+  get_min_cons(c), get_min_cons(nnc).
+
+get_min_cons(T) :-
   A = '$VAR'(0), B = '$VAR'(1),
-  ppl_new_Polyhedron_from_dimension(c, 2, P),
+  ppl_new_Polyhedron_from_dimension(T, 2, P),
   ppl_Polyhedron_get_minimized_constraints(P, []),
   ppl_Polyhedron_add_constraints(P, [A - B >= 1, A - B >= 0]),
   ppl_Polyhedron_get_minimized_constraints(P, [C]),
-  ppl_new_Polyhedron_from_constraints(c, [C], Q),
+  ppl_new_Polyhedron_from_constraints(T, [C], Q),
   ppl_Polyhedron_equals_Polyhedron(P, Q),
+  ppl_Polyhedron_add_constraints(P, [A - B =< 0]),
+  \+ppl_Polyhedron_get_minimized_constraints(P, [C]),
   ppl_delete_Polyhedron(P),
   ppl_delete_Polyhedron(Q).
 
 % Tests ppl_Polyhedron_get_generators
 % (using NNC Polyhedra).
 get_gens :-
+  get_gens(c), get_gens(nnc).
+
+get_gens(T) :-
   A = '$VAR'(0), B = '$VAR'(1),
-  ppl_new_Polyhedron_empty_from_dimension(nnc, 2, P),
+  ppl_new_Polyhedron_empty_from_dimension(T, 2, P),
   ppl_Polyhedron_get_generators(P, []),
   ppl_Polyhedron_add_generator(P, point(A+B)),
   ppl_Polyhedron_get_generators(P, [G]),
-  ppl_new_Polyhedron_from_generators(nnc, [G], Q),
+  ppl_new_Polyhedron_from_generators(T, [G], Q),
   ppl_Polyhedron_equals_Polyhedron(P, Q),
   ppl_delete_Polyhedron(P),
   ppl_delete_Polyhedron(Q).
 
 % Tests ppl_Polyhedron_get_minimized_generators
-% (using NNC Polyhedra).
 get_min_gens :-
+  get_min_gens(c), get_min_gens(nnc).
+
+get_min_gens(T) :-
   A = '$VAR'(0), B = '$VAR'(1),
-  ppl_new_Polyhedron_empty_from_dimension(nnc, 2, P),
+  ppl_new_Polyhedron_empty_from_dimension(T, 2, P),
   ppl_Polyhedron_add_generators(P, [point(2*A), point(A+B), point(2*B)]),
   ppl_Polyhedron_get_minimized_generators(P, [G1, G2]),
-  ppl_new_Polyhedron_from_generators(nnc, [G1, G2], Q),
+  ppl_new_Polyhedron_from_generators(T, [G1, G2], Q),
   ppl_Polyhedron_equals_Polyhedron(P, Q),
   ppl_delete_Polyhedron(P),
   ppl_delete_Polyhedron(Q).
 
 % Tests ppl_Polyhedron_add_constraint
-% (using C Polyhedra).
 add_con :-
+  add_con(c), add_con(nnc).
+
+add_con(T) :-
   A = '$VAR'(0), B = '$VAR'(1),
-  ppl_new_Polyhedron_from_dimension(c, 2, P),
+  ppl_new_Polyhedron_from_dimension(T, 2, P),
   ppl_Polyhedron_add_constraint(P, A - B >= 1),
-  ppl_new_Polyhedron_from_constraints(c,
+  ppl_new_Polyhedron_from_constraints(T,
                                       [A - B >= 1],
                                       Pa),
   ppl_Polyhedron_equals_Polyhedron(P, Pa),
   ppl_Polyhedron_add_constraint(P, A = 0),
-  ppl_new_Polyhedron_from_constraints(c,
+  ppl_new_Polyhedron_from_constraints(T,
                                       [A = 0, B =< -1],
                                       Pb),
   ppl_Polyhedron_equals_Polyhedron(P, Pb),
+  ppl_Polyhedron_add_constraint(P, A = 1),
+  ppl_new_Polyhedron_empty_from_dimension(T, 2, Pc),
+  ppl_Polyhedron_equals_Polyhedron(P, Pc),
   ppl_delete_Polyhedron(P),
   ppl_delete_Polyhedron(Pa),
-  ppl_delete_Polyhedron(Pb).
-
-% Tests ppl_Polyhedron_add_generator
-% (using C Polyhedra).
-add_gen :-
-  A = '$VAR'(0), B = '$VAR'(1),
-  ppl_new_Polyhedron_from_dimension(c, 2, P),
-  ppl_Polyhedron_add_generator(P, point(A + B)),
-  ppl_new_Polyhedron_from_generators(c,
-                                     [point(A + B), point(0),
-                                      line(A), line(B)], P1),
-  ppl_Polyhedron_equals_Polyhedron(P, P1),
-  ppl_delete_Polyhedron(P),
-  ppl_delete_Polyhedron(P1).
+  ppl_delete_Polyhedron(Pb),
+  ppl_delete_Polyhedron(Pc).
 
 % Tests ppl_Polyhedron_add_constraint_and_minimize
-% (using C Polyhedra).
 add_con_min :-
+  add_con_min(c), add_con_min(nnc).
+
+add_con_min(T) :-
   A = '$VAR'(0), B = '$VAR'(1),
-  ppl_new_Polyhedron_from_dimension(c, 2, P),
+  ppl_new_Polyhedron_from_dimension(T, 2, P),
   ppl_Polyhedron_add_constraint_and_minimize(P, A - B >= 1),
-  ppl_new_Polyhedron_from_constraints(c,
-                                      [A + -1*B >= 1],
+  ppl_new_Polyhedron_from_constraints(T,
+                                      [A - B >= 1],
                                       P1),
   ppl_Polyhedron_equals_Polyhedron(P, P1),
   \+ppl_Polyhedron_add_constraint_and_minimize(P, A - B =< 0),
   ppl_delete_Polyhedron(P),
   ppl_delete_Polyhedron(P1).
 
-% Tests ppl_Polyhedron_add_generator_and_minimize
-% (using C Polyhedra).
-add_gen_min :-
+% Tests ppl_Polyhedron_add_generator
+add_gen :-
+  add_gen(c), add_gen(nnc).
+
+add_gen(T) :-
   A = '$VAR'(0), B = '$VAR'(1),
-  ppl_new_Polyhedron_from_dimension(c, 2, P),
-  ppl_Polyhedron_add_generator_and_minimize(P, point(A + B, 1)),
-  ppl_new_Polyhedron_from_generators(c,
+  ppl_new_Polyhedron_from_dimension(T, 2, P),
+  ppl_Polyhedron_add_generator(P, point(A + B)),
+  ppl_new_Polyhedron_from_generators(T,
                                      [point(A + B), point(0),
                                       line(A), line(B)], P1),
+  ppl_Polyhedron_equals_Polyhedron(P, P1),
+  ppl_delete_Polyhedron(P),
+  ppl_delete_Polyhedron(P1).
+
+% Tests ppl_Polyhedron_add_generator_and_minimize
+add_gen_min :-
+  add_gen_min(c), add_gen_min(nnc).
+
+add_gen_min(T) :-
+  A = '$VAR'(0), B = '$VAR'(1),
+  ppl_new_Polyhedron_from_generators(T,
+                                     [point(A + B), point(0)], P),
+  ppl_Polyhedron_add_generator_and_minimize(P, point(2*A + 2*B, 1)),
+  ppl_Polyhedron_get_generators(P,[_G1,_G2]),
+  ppl_new_Polyhedron_from_generators(T,
+                                     [point(2*A + 2*B), point(0)],
+                                     P1),
   ppl_Polyhedron_equals_Polyhedron(P, P1),
   ppl_delete_Polyhedron(P),
   ppl_delete_Polyhedron(P1).
@@ -910,43 +930,33 @@ add_gen_min :-
 % Tests ppl_Polyhedron_add_constraints
 % (using C Polyhedra).
 add_cons :-
+  add_cons(c), add_cons(nnc).
+
+add_cons(T) :-
   A = '$VAR'(0), B = '$VAR'(1), C = '$VAR'(2),
-  ppl_new_Polyhedron_from_dimension(c, 3, P),
+  ppl_new_Polyhedron_from_dimension(T, 3, P),
   ppl_Polyhedron_add_constraints(P, [A >= 1, B >= 0,
                                      4*A + B - 2*C >= 5]),
-  ppl_new_Polyhedron_from_constraints(c,
+  ppl_new_Polyhedron_from_constraints(T,
                                       [4*A + B + -2*C >= 5,
                                        A >= 1, B >= 0],
                                       P1),
   ppl_Polyhedron_equals_Polyhedron(P, P1),
-  ppl_delete_Polyhedron(P),
-  ppl_delete_Polyhedron(P1).
-
-% Tests ppl_Polyhedron_add_generators
-% (using C Polyhedra).
-add_gens :-
-  A = '$VAR'(0), B = '$VAR'(1), C = '$VAR'(2),
-  ppl_new_Polyhedron_empty_from_dimension(c, 3, P),
-  ppl_Polyhedron_add_generators(P,
-                                [point(A + B + C),
-                                 ray(A), ray(2*A),
-                                 point(A + B + C, 1),
-                                 point(-100*A - 5*B, 8)]),
-  ppl_new_Polyhedron_from_generators(c,
-                                     [point(A + B + C), ray(A),
-                                      point(-100*A + -5*B, 8)],
-                                     P1),
-  ppl_Polyhedron_equals_Polyhedron(P, P1),
+  ppl_Polyhedron_add_constraints(P, [A =< 0]),
+  ppl_Polyhedron_check_empty(P),
   ppl_delete_Polyhedron(P),
   ppl_delete_Polyhedron(P1).
 
 % Tests ppl_Polyhedron_add_constraints_and_minimize
 % (using C Polyhedra).
 add_cons_min :-
+  add_cons_min(c), add_cons_min(nnc).
+
+add_cons_min(T) :-
   A = '$VAR'(0), B = '$VAR'(1),
-  ppl_new_Polyhedron_from_dimension(c, 2, P),
+  ppl_new_Polyhedron_from_dimension(T, 2, P),
   ppl_Polyhedron_add_constraints_and_minimize(P, [A >= 1, B >= 0]),
-  ppl_new_Polyhedron_from_constraints(c,
+  ppl_new_Polyhedron_from_constraints(T,
                                       [A >= 1, B >= 0],
                                       P1),
   ppl_Polyhedron_equals_Polyhedron(P, P1),
@@ -954,16 +964,38 @@ add_cons_min :-
   ppl_delete_Polyhedron(P),
   ppl_delete_Polyhedron(P1).
 
-% Tests ppl_Polyhedron_add_generators_and_minimize
-% (using C Polyhedra).
-add_gens_min :-
+% Tests ppl_Polyhedron_add_generators
+add_gens :-
+  add_gens(c), add_gens(nnc).
+
+add_gens(T) :-
   A = '$VAR'(0), B = '$VAR'(1), C = '$VAR'(2),
-  ppl_new_Polyhedron_empty_from_dimension(c, 3, P),
+  ppl_new_Polyhedron_empty_from_dimension(T, 3, P),
+  ppl_Polyhedron_add_generators(P,
+                                [point(A + B + C),
+                                 ray(A), ray(2*A),
+                                 point(A + B + C, 1),
+                                 point(-100*A - 5*B, 8)]),
+  ppl_new_Polyhedron_from_generators(T,
+                                     [point(A + B + C), ray(A),
+                                      point(-100*A + -5*B, 8)],
+                                     P1),
+  ppl_Polyhedron_equals_Polyhedron(P, P1),
+  ppl_delete_Polyhedron(P),
+  ppl_delete_Polyhedron(P1).
+
+% Tests ppl_Polyhedron_add_generators_and_minimize
+add_gens_min :-
+  add_gens_min(c), add_gens_min(nnc).
+
+add_gens_min(T) :-
+  A = '$VAR'(0), B = '$VAR'(1), C = '$VAR'(2),
+  ppl_new_Polyhedron_empty_from_dimension(T, 3, P),
   ppl_Polyhedron_add_generators_and_minimize(P,
                                              [point(A + B + C),
                                               ray(A), ray(2*A),
                                               point(A + B + C)]),
-  ppl_new_Polyhedron_from_generators(c,
+  ppl_new_Polyhedron_from_generators(T,
                                      [point(A + B + C), ray(A)],
                                      P1),
   ppl_Polyhedron_equals_Polyhedron(P, P1),
@@ -971,13 +1003,15 @@ add_gens_min :-
   ppl_delete_Polyhedron(P1).
 
 % Tests ppl_Polyhedron_add_dimensions_and_project
-% (using NNC Polyhedra).
 project :-
+  project(c), project(nnc).
+
+project(T) :-
   A = '$VAR'(0), B = '$VAR'(1), C = '$VAR'(2), D = '$VAR'(3),
-  ppl_new_Polyhedron_from_dimension(nnc, 2, P),
+  ppl_new_Polyhedron_from_dimension(T, 2, P),
   ppl_Polyhedron_add_constraints(P, [A >= 1, B >= 0]),
   ppl_Polyhedron_add_dimensions_and_project(P, 2),
-  ppl_new_Polyhedron_from_constraints(nnc,
+  ppl_new_Polyhedron_from_constraints(T,
                                       [A >= 1, B >= 0, C = 0, D = 0],
                                       P1),
   ppl_Polyhedron_equals_Polyhedron(P, P1),
@@ -987,25 +1021,30 @@ project :-
 % Tests ppl_Polyhedron_add_dimensions_and_embed
 % (using NNC Polyhedra).
 embed :-
+  embed(c), embed(nnc).
+
+embed(T) :-
   A = '$VAR'(0), B = '$VAR'(1),
-  ppl_new_Polyhedron_from_dimension(nnc, 2, P),
+  ppl_new_Polyhedron_from_dimension(T, 2, P),
   ppl_Polyhedron_add_constraints(P, [A >= 1, B >= 0]),
   ppl_Polyhedron_add_dimensions_and_embed(P, 2),
-  ppl_new_Polyhedron_from_dimension(nnc, 4, P1),
+  ppl_new_Polyhedron_from_dimension(T, 4, P1),
   ppl_Polyhedron_add_constraints(P1, [A >= 1, B >= 0]),
   ppl_Polyhedron_equals_Polyhedron(P, P1),
   ppl_delete_Polyhedron(P1),
   ppl_delete_Polyhedron(P).
 
 % Tests ppl_Polyhedron_remove_dimensions
-% (using NNC Polyhedra).
 remove_dim :-
+  remove_dim(c), remove_dim(nnc).
+
+remove_dim(T) :-
   A = '$VAR'(0), B = '$VAR'(1), C = '$VAR'(2),
-  ppl_new_Polyhedron_from_dimension(nnc, 3, P),
-  ppl_Polyhedron_add_constraints(P, [A > 1, B >= 0, C >= 0]),
+  ppl_new_Polyhedron_from_dimension(T, 3, P),
+  ppl_Polyhedron_add_constraints(P, [A >= 1, B >= 0, C >= 2]),
   ppl_Polyhedron_remove_dimensions(P,[B]),
-  ppl_new_Polyhedron_from_constraints(nnc,
-                                      [A > 1, B >= 0],
+  ppl_new_Polyhedron_from_constraints(T,
+                                      [A >= 1, B >= 2],
                                       P1),
   ppl_Polyhedron_equals_Polyhedron(P, P1),
   ppl_delete_Polyhedron(P1),
@@ -1015,63 +1054,66 @@ remove_dim :-
   ppl_delete_Polyhedron(P).
 
 % Tests ppl_Polyhedron_remove_higher_dimensions
-% (using NNC Polyhedra).
 remove_high_dim :-
+  remove_high_dim(c), remove_high_dim(nnc).
+
+remove_high_dim(T) :-
   A = '$VAR'(0), B = '$VAR'(1), C = '$VAR'(2),
-  ppl_new_Polyhedron_from_dimension(nnc, 3, P),
-  ppl_Polyhedron_add_constraints(P, [A > 1, B >= 0, C >= 0]),
-  ppl_new_Polyhedron_from_constraints(nnc,
-                                      [A > 1, B >= 0, C >= 0],
+  ppl_new_Polyhedron_from_dimension(T, 3, P),
+  ppl_Polyhedron_add_constraints(P, [A >= 1, B >= 0, C >= 0]),
+  ppl_new_Polyhedron_from_constraints(T,
+                                      [A >= 1, B >= 0, C >= 0],
                                       P1),
   ppl_Polyhedron_equals_Polyhedron(P, P1),
   ppl_Polyhedron_remove_higher_dimensions(P, 1),
-  ppl_new_Polyhedron_from_constraints(nnc,
-                                      [A > 1],
+  ppl_new_Polyhedron_from_constraints(T,
+                                      [A >= 1],
                                       P2),
   ppl_Polyhedron_equals_Polyhedron(P, P2),
+  ppl_Polyhedron_remove_higher_dimensions(P, 1),
   ppl_delete_Polyhedron(P1),
   ppl_delete_Polyhedron(P2),
   ppl_delete_Polyhedron(P).
 
-% Tests ppl_Polyhedron_rename_dimensions with constraints
-% (using C Polyhedra).
-rename_dim_constraints :-
+% Tests ppl_Polyhedron_rename_dimensions using constraints and generators
+rename_dim:-
+  rename_dim(c), rename_dim(nnc).
+
+rename_dim(T) :-
   A = '$VAR'(0), B = '$VAR'(1), C = '$VAR'(2),
-  ppl_new_Polyhedron_from_dimension(c, 3, P),
+  ppl_new_Polyhedron_from_dimension(T, 3, P),
   ppl_Polyhedron_add_constraints(P, [A >= 2, B >= 1, C >= 0]),
   ppl_Polyhedron_rename_dimensions(P, [A-B, B-C, C-A]),
-  ppl_new_Polyhedron_from_dimension(c, 3, Q),
+  ppl_new_Polyhedron_from_dimension(T, 3, Q),
   ppl_Polyhedron_add_constraints(Q, [A >= 0, B >= 2, C >= 1]),
   ppl_Polyhedron_equals_Polyhedron(P, Q),
   ppl_delete_Polyhedron(P),
-  ppl_delete_Polyhedron(Q).
-
-% Tests ppl_Polyhedron_rename_dimensions with generators
-% (using C Polyhedra).
-rename_dim_generators :-
-  A = '$VAR'(0), B = '$VAR'(1), C = '$VAR'(2), D = '$VAR'(3),
-  ppl_new_Polyhedron_empty_from_dimension(c, 4, P),
-  ppl_Polyhedron_add_generators(P, [point(2*C), line(A+B), ray(A+C)]),
-  ppl_Polyhedron_rename_dimensions(P, [A-D, C-A, B-C]),
-  ppl_new_Polyhedron_empty_from_dimension(c, 4, Q),
-  ppl_Polyhedron_add_generators(Q, [point(2*A), ray(A+D), line(C+D)]),
-  ppl_Polyhedron_equals_Polyhedron(P, Q),
-  ppl_delete_Polyhedron(P),
-  ppl_delete_Polyhedron(Q).
+  ppl_delete_Polyhedron(Q),
+  D = '$VAR'(3),
+  ppl_new_Polyhedron_empty_from_dimension(T, 4, P1),
+  ppl_Polyhedron_add_generators(P1, [point(2*C), line(A+B), ray(A+C)]),
+  ppl_Polyhedron_rename_dimensions(P1, [A-D, C-A, B-C]),
+  ppl_new_Polyhedron_empty_from_dimension(T, 4, Q1),
+  ppl_Polyhedron_add_generators(Q1, [point(2*A), ray(A+D), line(C+D)]),
+  ppl_Polyhedron_equals_Polyhedron(P1, Q1),
+  ppl_delete_Polyhedron(P1),
+  ppl_delete_Polyhedron(Q1).
                                
 % Tests ppl_Polyhedron_affine_image
-% (using NNC Polyhedra).
 affine :-
+  affine(c), affine(nnc).
+
+affine(T) :-
   A = '$VAR'(0), B = '$VAR'(1),
-  ppl_new_Polyhedron_from_dimension(nnc, 2, P),
+  ppl_new_Polyhedron_from_dimension(T, 2, P),
   ppl_Polyhedron_add_constraint(P, A - B = 1),
-  ppl_new_Polyhedron_from_constraints(nnc,
-                                      [A + -1*B = 1],
+  ppl_new_Polyhedron_from_constraints(T,
+                                      [A - B = 1],
                                       P1),
   ppl_Polyhedron_equals_Polyhedron(P, P1),
   ppl_Polyhedron_affine_image(P, A, A + 1, 1),
-  ppl_new_Polyhedron_from_constraints(nnc,
-                                      [A + -1*B = 2],
+  ppl_new_Polyhedron_from_constraints(T,
+                                      [A - B = 2],
                                       P2),
   ppl_Polyhedron_equals_Polyhedron(P, P2),
   ppl_delete_Polyhedron(P1),
@@ -1080,15 +1122,18 @@ affine :-
 
 % Tests ppl_Polyhedron_affine_preimage.
 affine_pre :-
+  affine_pre(c), affine_pre(nnc).
+
+affine_pre(T) :-
   A = '$VAR'(0), B = '$VAR'(1),
-  ppl_new_Polyhedron_from_dimension(nnc, 2, P),
+  ppl_new_Polyhedron_from_dimension(T, 2, P),
   ppl_Polyhedron_add_constraint(P, A + B >= 10),
-  ppl_new_Polyhedron_from_constraints(nnc,
+  ppl_new_Polyhedron_from_constraints(T,
                                       [A + B >= 10],
                                       P1),
   ppl_Polyhedron_equals_Polyhedron(P, P1),
   ppl_Polyhedron_affine_preimage(P, A, A + 1, 1),
-  ppl_new_Polyhedron_from_constraints(nnc,
+  ppl_new_Polyhedron_from_constraints(T,
                                       [A + B >= 9],
                                       P2),
   ppl_Polyhedron_equals_Polyhedron(P, P2),
@@ -1099,11 +1144,14 @@ affine_pre :-
 % Tests ppl_Polyhedron_generalized_affine_image
 % (using NNC Polyhedra).
 affine_gen :-
+  affine_gen(c), affine_gen(nnc).
+
+affine_gen(T) :-
   A = '$VAR'(0), B = '$VAR'(1),
-  ppl_new_Polyhedron_from_dimension(nnc, 2, P),
+  ppl_new_Polyhedron_from_dimension(T, 2, P),
   ppl_Polyhedron_add_constraint(P, A - B = 1),
   ppl_Polyhedron_generalized_affine_image(P, A, =<, A + 1, 1),
-  ppl_new_Polyhedron_from_constraints(nnc,
+  ppl_new_Polyhedron_from_constraints(T,
                                       [A - B =< 2],
                                       P1),
   ppl_Polyhedron_equals_Polyhedron(P, P1),
@@ -1113,12 +1161,15 @@ affine_gen :-
 % Tests ppl_Polyhedron_generalized_affine_image_lhs_rhs
 % (using NNC Polyhedra).
 affine_genlr :-
+  affine_genlr(c), affine_genlr(nnc).
+
+affine_genlr(T) :-
   A = '$VAR'(0), B = '$VAR'(1),
-  ppl_new_Polyhedron_from_dimension(nnc, 2, P),
+  ppl_new_Polyhedron_from_dimension(T, 2, P),
   ppl_Polyhedron_add_constraint(P, A - B = 1),
   ppl_Polyhedron_generalized_affine_image_lhs_rhs(P, B - 1, =<, A + 1),
 %  ppl_Polyhedron_get_constraints(P, CS),
-  ppl_new_Polyhedron_from_constraints(nnc,
+  ppl_new_Polyhedron_from_constraints(T,
                                       [B - A =< 2],
                                       P1),
   ppl_Polyhedron_equals_Polyhedron(P, P1),
@@ -1152,13 +1203,12 @@ rel_gens :-
 %       ppl_Polyhedron_check_bounded,
 %       ppl_Polyhedron_check_topologically_closed
 checks :-
-  checks_C,
-  checks_NNC.
+  checks(c), checks(nnc).
 
-checks_C :-
+checks(T) :-
   A = '$VAR'(0), B = '$VAR'(1), C = '$VAR'(2),
-  ppl_new_Polyhedron_from_dimension(c, 3, P),
-  ppl_new_Polyhedron_empty_from_dimension(c, 3, P1),
+  ppl_new_Polyhedron_from_dimension(T, 3, P),
+  ppl_new_Polyhedron_empty_from_dimension(T, 3, P1),
   ppl_Polyhedron_check_universe(P),
   ppl_Polyhedron_check_empty(P1),
   \+ppl_Polyhedron_check_universe(P1),
@@ -1169,35 +1219,21 @@ checks_C :-
   \+ ppl_Polyhedron_check_bounded(P1),
   ppl_Polyhedron_add_constraints(P, [A >= 1, B =< 3, A =< 2]),
   ppl_Polyhedron_check_topologically_closed(P),
-  ppl_delete_Polyhedron(P),
-  ppl_delete_Polyhedron(P1).
-
-checks_NNC :-
-  A = '$VAR'(0), B = '$VAR'(1), C = '$VAR'(2),
-  ppl_new_Polyhedron_from_dimension(nnc, 3, P),
-  ppl_new_Polyhedron_empty_from_dimension(nnc, 3, P1),
-  ppl_Polyhedron_check_universe(P),
-  ppl_Polyhedron_check_empty(P1),
-  \+ppl_Polyhedron_check_universe(P1),
-  \+ppl_Polyhedron_check_empty(P),
-  ppl_Polyhedron_add_generators(P1,
-                                             [point(A + B + C)]),
-  ppl_Polyhedron_check_bounded(P1),
-  ppl_Polyhedron_add_generators(P1, [ray(A + B + C)]),
-  \+ ppl_Polyhedron_check_bounded(P1),
-  ppl_Polyhedron_add_constraints(P, [A > 1, B =< 3, A =< 2]),
-  \+ ppl_Polyhedron_check_topologically_closed(P),
-  ppl_Polyhedron_add_constraints(P, [A > 2]),
-  ppl_Polyhedron_check_topologically_closed(P),
+   (T = nnc ->
+     (ppl_Polyhedron_add_constraints(P, [A > 1, B =< 3, A =< 2]),
+      \+ ppl_Polyhedron_check_topologically_closed(P),
+      ppl_Polyhedron_add_constraints(P, [A > 2]),
+      ppl_Polyhedron_check_topologically_closed(P))
+   ; true
+   ),
   ppl_delete_Polyhedron(P),
   ppl_delete_Polyhedron(P1).
 
 % Tests ppl_Polyhedron_contains_Polyhedron for C and NNC Polyhedron.
 contains :-
-  contains_t(c),
-  contains_t(nnc).
+  contains(c), contains(nnc).
 
-contains_t(T) :-
+contains(T) :-
   ppl_new_Polyhedron_from_dimension(T, 3, P1),
   ppl_new_Polyhedron_empty_from_dimension(T, 3, P2),
   ppl_Polyhedron_contains_Polyhedron(P1, P2),
@@ -1207,10 +1243,10 @@ contains_t(T) :-
 
 % Tests ppl_Polyhedron_strictly_contains_Polyhedron for C and NNC Polyhedron.
 strict_contains :-
-  strict_contains_t(c),
-  strict_contains_t(nnc).
+  strict_contains(c),
+  strict_contains(nnc).
 
-strict_contains_t(T) :-
+strict_contains(T) :-
   ppl_new_Polyhedron_from_dimension(T, 3, P1),
   ppl_new_Polyhedron_empty_from_dimension(T, 3, P2),
   ppl_Polyhedron_strictly_contains_Polyhedron(P1, P2),
@@ -1218,40 +1254,36 @@ strict_contains_t(T) :-
   ppl_delete_Polyhedron(P1),
   ppl_delete_Polyhedron(P2).
 
-% Tests ppl_Polyhedron_check_disjoint_from_Polyhedron for C Polyhedron.
-check_disjoint_from_C :-
+% Tests ppl_Polyhedron_check_disjoint_from_Polyhedron for C and NNC Polyhedron.
+  disjoint_from :-
+  disjoint_from(c), disjoint_from(nnc).
+
+disjoint_from(T) :-
   A = '$VAR'(0), B = '$VAR'(1), C = '$VAR'(2),
-  ppl_new_Polyhedron_from_constraints(c,
+  ppl_new_Polyhedron_from_constraints(T,
                                       [3 >= A, 4*A + B - 2*C >= 5],
                                       P1),
-  ppl_new_Polyhedron_from_constraints(c,
+  ppl_new_Polyhedron_from_constraints(T,
                                       [4 =< A, 4*A + B - 2*C >= 5],
                                       P2),
   ppl_Polyhedron_check_disjoint_from_Polyhedron(P1, P2),
   \+ppl_Polyhedron_check_disjoint_from_Polyhedron(P1, P1),
-  ppl_delete_Polyhedron(P1),
-  ppl_delete_Polyhedron(P2).
-
-% Tests ppl_Polyhedron_check_disjoint_from_Polyhedron for NNC Polyhedron.
-check_disjoint_from_NNC :-
-  A = '$VAR'(0), B = '$VAR'(1), C = '$VAR'(2),
-  ppl_new_Polyhedron_from_constraints(nnc,
-                                      [3 >= A, 4*A + B - 2*C >= 5],
-                                      P1),
-  ppl_new_Polyhedron_from_constraints(nnc,
+  (T = nnc ->
+     (ppl_new_Polyhedron_from_constraints(nnc,
                                       [3 < A, 4*A + B - 2*C >= 5],
-                                      P2),
-  ppl_Polyhedron_check_disjoint_from_Polyhedron(P1, P2),
-  \+ppl_Polyhedron_check_disjoint_from_Polyhedron(P1, P1),
+                                      P2a),
+    ppl_Polyhedron_check_disjoint_from_Polyhedron(P1, P2a),
+    ppl_delete_Polyhedron(P2a))
+  ; true
+  ),
   ppl_delete_Polyhedron(P1),
   ppl_delete_Polyhedron(P2).
 
 % Tests ppl_Polyhedron_equals_Polyhedron for C and NNC Polyhedron.
 equals :-
-  equals_t(c),
-  equals_t(nnc).
+  equals(c), equals(nnc).
 
-equals_t(T) :-
+equals(T) :-
   ppl_new_Polyhedron_from_dimension(T, 3, P1),
   ppl_new_Polyhedron_from_dimension(T, 3, P2),
   ppl_new_Polyhedron_empty_from_dimension(T, 3, P3),
@@ -1265,7 +1297,6 @@ ok :-
   ok(c), ok(nnc).
 
 ok(T) :-
-  A = '$VAR'(0),
   ppl_new_Polyhedron_from_dimension(T, 0, P1),
   ppl_new_Polyhedron_from_dimension(T, 3, P2),
   ppl_new_Polyhedron_empty_from_dimension(T, 0, P3),
@@ -1279,41 +1310,25 @@ ok(T) :-
   ppl_delete_Polyhedron(P3),
   ppl_delete_Polyhedron(P4).
 
-% Tests ppl_Polyhedron_get_bounding_box for C Polyhedron.
-get_boundingbox_C :-
-  A = '$VAR'(0), B = '$VAR'(1),
-  ppl_new_Polyhedron_from_dimension(c, 2, P),
-  ppl_Polyhedron_add_constraints_and_minimize(P, [B >= 0, 4*A =< 2]),
-  ppl_Polyhedron_get_bounding_box(P, any, Box),
-  Box = [i(o(minf), c(1/2)), i(c(0), o(pinf))],
-  ppl_delete_Polyhedron(P).
+% Tests ppl_Polyhedron_get_bounding_box.
 
-% Tests ppl_Polyhedron_get_bounding_box for NNC Polyhedron.
-get_boundingbox_NNC :-
+get_bounding_box:-
   A = '$VAR'(0), B = '$VAR'(1),
-  ppl_new_Polyhedron_from_dimension(nnc, 2, P),
-  ppl_Polyhedron_add_constraints_and_minimize(P, [B >= 0, 4*A < 2]),
-  ppl_Polyhedron_get_bounding_box(P, any, Box),
-  Box = [i(o(minf), o(1/2)), i(c(0), o(pinf))],
-  ppl_delete_Polyhedron(P).
+  get_bounding_box(c, [B >= 0, 4*A =< 2],
+                     [i(o(minf), c(1/2)), i(c(0), o(pinf))]),
+  get_bounding_box(nnc,[B > 0, 4*A =< 2],
+                     [i(o(minf), c(1/2)), i(o(0), o(pinf))]). 
 
-get_bounding_box_complexity_C:-
-  A = '$VAR'(0), B = '$VAR'(1),
-  ppl_new_Polyhedron_from_constraints(nnc, [4*A =< 2, B >= 0], P),
+get_bounding_box(T, CS, Box) :-
+  ppl_new_Polyhedron_from_dimension(T, 2, P),
+  ppl_Polyhedron_add_constraints(P, CS),
   ppl_Polyhedron_get_bounding_box(P, any, Box),
   ppl_Polyhedron_get_bounding_box(P, polynomial, Box),
   ppl_Polyhedron_get_bounding_box(P, simplex, Box),
-  Box = [i(o(minf), c(1/2)), i(c(0), o(pinf))],
-  ppl_delete_Polyhedron(P).
-
-get_bounding_box_complexity_NNC:-
-  A = '$VAR'(0), B = '$VAR'(1),
-  ppl_new_Polyhedron_from_constraints(nnc, [4*A =< 2, B > 0], P),
-  ppl_Polyhedron_get_bounding_box(P, any, Box),
-  ppl_Polyhedron_get_bounding_box(P, polynomial, Box),
-  ppl_Polyhedron_get_bounding_box(P, simplex, Box),
-  Box = [i(o(minf), c(1/2)), i(o(0), o(pinf))],
-  ppl_delete_Polyhedron(P).
+  ppl_new_Polyhedron_from_bounding_box(T, Box, P1),
+  ppl_Polyhedron_equals_Polyhedron(P, P1),
+  ppl_delete_Polyhedron(P),
+  ppl_delete_Polyhedron(P1).
 
 % Tests ppl_Polyhedron_bounds_from_above for an NNC polyhedron.
 bounds_from_above :-
@@ -1413,7 +1428,7 @@ time_watch(Topology, Goal, NoTimeOut, TimeOut) :-
    ppl_delete_Polyhedron(PolyCopy).
 
 % These next 2 tests demonstrate a bug in the bounding box software
-% and are not executed by check_all.
+% and are not executed by run_all.
 
 boundingbox1(Box,CS) :-
   A = '$VAR'(0), B = '$VAR'(1),
