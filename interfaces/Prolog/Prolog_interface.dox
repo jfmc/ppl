@@ -430,9 +430,16 @@ dimensions.
    <CODE>Address_1</CODE> and <CODE>Address_2</CODE> and places
    the result at <CODE>Address_1</CODE>.
 
-<H4><CODE>ppl_convex_hull_assign(+Address_1, +Addressn_2)</CODE></H4>
+<H4><CODE>ppl_convex_hull_assign(+Address_1, +Address_2)</CODE></H4>
 
    Computes the convex hull of the polyhedra referenced by
+   <CODE>Address_1</CODE> and <CODE>Address_2</CODE> and places
+   the result at <CODE>Address_1</CODE>.
+
+<H4><CODE>ppl_convex_difference_assign(+Address_1, +Address_2)</CODE></H4>
+
+   Computes the convex hull of the set-theoretic difference of
+   the polyhedra referenced by
    <CODE>Address_1</CODE> and <CODE>Address_2</CODE> and places
    the result at <CODE>Address_1</CODE>.
 
