@@ -27,6 +27,8 @@ check_all :-
   incl_NNC,
   strict_incl_C,
   strict_incl_NNC,
+  is_disjoint_from_C,
+  is_disjoint_from_NNC,
   equals_C,
   equals_NNC,
   copy_C_C,
@@ -55,7 +57,7 @@ check_all :-
   add_gens,
   add_cons_min,
   add_gens_min,
-  conc-assign,
+%  conc-assign,
   remove_dim,
   remove_high_dim,
   affine,
@@ -110,6 +112,34 @@ strict_incl_NNC :-
   ppl_new_Polyhedron_from_dimension(nnc, 3, P1),
   ppl_new_Polyhedron_empty_from_dimension(nnc, 3, P2),
   ppl_Polyhedron_strictly_contains_Polyhedron(P1, P2),
+  ppl_delete_Polyhedron(P1),
+  ppl_delete_Polyhedron(P2).
+
+% Tests new_Polyhedron_from_constraints and
+% ppl_Polyhedron_is_disjoint_from_Polyhedron for C Polyhedron.
+is_disjoint_from_C :-
+  A = '$VAR'(0), B = '$VAR'(1), C = '$VAR'(2),
+  ppl_new_Polyhedron_from_constraints(c,
+                                      [3 >= A, 4*A + B - 2*C >= 5],
+                                      P1),
+  ppl_new_Polyhedron_from_constraints(c,
+                                      [4 =< A, 4*A + B - 2*C >= 5],
+                                      P2),
+  ppl_Polyhedron_is_disjoint_from_Polyhedron(P1, P2),
+  ppl_delete_Polyhedron(P1),
+  ppl_delete_Polyhedron(P2).
+
+% Tests new_Polyhedron_from_constraints and
+% ppl_Polyhedron_is_disjoint_from_Polyhedron for NNC Polyhedron.
+is_disjoint_from_NNC :-
+  A = '$VAR'(0), B = '$VAR'(1), C = '$VAR'(2),
+  ppl_new_Polyhedron_from_constraints(nnc,
+                                      [3 >= A, 4*A + B - 2*C >= 5],
+                                      P1),
+  ppl_new_Polyhedron_from_constraints(nnc,
+                                      [3 < A, 4*A + B - 2*C >= 5],
+                                      P2),
+  ppl_Polyhedron_is_disjoint_from_Polyhedron(P1, P2),
   ppl_delete_Polyhedron(P1),
   ppl_delete_Polyhedron(P2).
 

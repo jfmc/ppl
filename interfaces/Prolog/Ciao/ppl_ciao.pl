@@ -69,6 +69,7 @@ site: http://www.cs.unipr.it/ppl/ . */
         ppl_Polyhedron_is_topologically_closed/1,
 	ppl_Polyhedron_contains_Polyhedron/2,
 	ppl_Polyhedron_strictly_contains_Polyhedron/2,
+	ppl_Polyhedron_is_disjoint_from_Polyhedron/2,
 	ppl_Polyhedron_equals_Polyhedron/2,
 	ppl_Polyhedron_get_bounding_box/2
 ],

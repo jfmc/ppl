@@ -1616,6 +1616,21 @@ ppl_Polyhedron_strictly_contains_Polyhedron(Prolog_term_ref t_lhs,
 }
 
 extern "C" Prolog_foreign_return_type
+ppl_Polyhedron_is_disjoint_from_Polyhedron(Prolog_term_ref t_lhs,
+				 Prolog_term_ref t_rhs) {
+  try {
+    const PPL::Polyhedron* lhs = term_to_polyhedron_handle(t_lhs);
+    const PPL::Polyhedron* rhs = term_to_polyhedron_handle(t_rhs);
+    CHECK(lhs);
+    CHECK(rhs);
+    if (are_disjoint(*lhs, *rhs))
+      return PROLOG_SUCCESS;
+  }
+  CATCH_ALL;
+  return PROLOG_FAILURE;
+}
+
+extern "C" Prolog_foreign_return_type
 ppl_Polyhedron_equals_Polyhedron(Prolog_term_ref t_lhs,
 				 Prolog_term_ref t_rhs) {
   try {

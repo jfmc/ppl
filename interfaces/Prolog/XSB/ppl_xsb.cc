@@ -420,6 +420,7 @@ Integer_to_integer_term(const PPL::Integer& n) {
 #define ppl_Polyhedron_is_topologically_closed xsb_stub_ppl_Polyhedron_is_topologically_closed
 #define ppl_Polyhedron_contains_Polyhedron xsb_stub_ppl_Polyhedron_contains_Polyhedron
 #define ppl_Polyhedron_strictly_contains_Polyhedron xsb_stub_ppl_Polyhedron_strictly_contains_Polyhedron
+#define ppl_Polyhedron_is_disjoint_from_Polyhedron xsb_stub_ppl_Polyhedron_is_disjoint_from_Polyhedron
 #define ppl_Polyhedron_equals_Polyhedron xsb_stub_ppl_Polyhedron_equals_Polyhedron
 #define ppl_Polyhedron_get_bounding_box xsb_stub_ppl_Polyhedron_get_bounding_box
 
@@ -471,6 +472,7 @@ Integer_to_integer_term(const PPL::Integer& n) {
 #undef ppl_Polyhedron_is_topologically_closed
 #undef ppl_Polyhedron_contains_Polyhedron
 #undef ppl_Polyhedron_strictly_contains_Polyhedron
+#undef ppl_Polyhedron_is_disjoint_from_Polyhedron
 #undef ppl_Polyhedron_equals_Polyhedron
 #undef ppl_Polyhedron_get_bounding_box
 
@@ -560,6 +562,7 @@ XSB_ENTRY_2(ppl_Polyhedron_bounds_from_below)
 XSB_ENTRY_1(ppl_Polyhedron_is_topologically_closed)
 XSB_ENTRY_2(ppl_Polyhedron_contains_Polyhedron)
 XSB_ENTRY_2(ppl_Polyhedron_strictly_contains_Polyhedron)
+XSB_ENTRY_2(ppl_Polyhedron_is_disjoint_from_Polyhedron)
 XSB_ENTRY_2(ppl_Polyhedron_equals_Polyhedron)
 XSB_ENTRY_2(ppl_Polyhedron_get_bounding_box)
 
