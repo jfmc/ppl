@@ -26,6 +26,7 @@ site: http://www.cs.unipr.it/ppl/ . */
 #include "SatMatrix.defs.hh"
 
 #include "maxmin.hh"
+#include "globals.hh"
 #include <iostream>
 #include <algorithm>
 #include <string>
@@ -60,7 +61,24 @@ PPL::SatMatrix::sort_rows() {
 */
 void
 PPL::SatMatrix::add_row(const SatRow& row) {
-  rows.push_back(row);
+  size_t new_rows_size = rows.size() + 1;
+  if (rows.capacity() < new_rows_size) {
+    // Reallocation will take place.
+    std::vector<SatRow> new_rows;
+    new_rows.reserve(compute_capacity(new_rows_size));
+    new_rows.insert(new_rows.end(), new_rows_size, SatRow());
+    // Put the new row in place.
+    size_t i = new_rows_size-1;
+    new_rows[i] = row;
+    // Steal the old rows.
+    while (i-- > 0)
+      new_rows[i].swap(rows[i]);
+    // Put the new rows into place.
+    std::swap(rows, new_rows);
+  }
+  else
+    // Reallocation will NOT take place: append a new empty row.
+    rows.push_back(row);
   assert(OK());
 }
 
@@ -111,15 +129,30 @@ PPL::SatMatrix::clear() {
 */
 void
 PPL::SatMatrix::resize(size_t new_num_rows, size_t new_num_columns) {
-  assert(OK());
-  size_t num_original_rows = min(num_rows(), new_num_rows);
+  size_t old_num_rows = num_rows();
+  size_t num_preserved_rows = min(old_num_rows, new_num_rows);
   if (new_num_columns < row_size) {
     SatMatrix& x = *this;
-    for (size_t i = num_original_rows; i-- > 0; )
+    for (size_t i = num_preserved_rows; i-- > 0; )
       x[i].clear_from(new_num_columns);
   }
-  rows.resize(new_num_rows);
   row_size = new_num_columns;
+  if (new_num_rows > old_num_rows) {
+    if (rows.capacity() < new_num_rows) {
+      // Reallocation will take place.
+      std::vector<SatRow> new_rows;
+      new_rows.reserve(compute_capacity(new_num_rows));
+      new_rows.insert(new_rows.end(), new_num_rows, SatRow());
+      // Steal the old rows.
+      for (size_t i = old_num_rows; i-- > 0; )
+	new_rows[i].swap(rows[i]);
+      // Put the new vector into place.
+      std::swap(rows, new_rows);
+    }
+    else
+      // Reallocation will NOT take place.
+      rows.insert(rows.end(), new_num_rows - old_num_rows, SatRow());
+  }
   assert(OK());
 }
 
