@@ -3254,87 +3254,104 @@ PPL::Polyhedron::time_elapse_assign(const Polyhedron& y) {
   if (x_space_dim != y.space_dim)
     throw_dimension_incompatible("time_elapse_assign(y)", y);
   
-  // If both polyhedra are zero-dimensional, the resulting
-  // polyhedron is equal to `*this'.
-  if (x_space_dim == 0)
+  // Dealing with the zero-dimensional case.
+  if (x_space_dim == 0) {
+    if (y.is_empty())
+      x.set_empty();
     return;
+  }
   
-  // We need to know if `y' is really empty or not. If it is empty
-  // the resulting polyhedron is equal to `x'.
-  if (y.is_empty()
-      || (!y.generators_are_up_to_date() && !y.update_generators()))
+  // If either one of `x' or `y' is empty, the result is empty too.
+  if (x.is_empty() || y.is_empty()
+      || (!x.generators_are_up_to_date() && !x.update_generators())
+      || (!y.generators_are_up_to_date() && !y.update_generators())) {
+    x.set_empty();
     return;
-  
-  // We need to know if `x' is really empty or not. If it is empty
-  // the resulting polyhedron is empty.
-  if (x.is_empty()
-      || (!x.generators_are_up_to_date() && !x.update_generators()))
-    return;
+  }
 
-  // At this point the systems of generators of both polyhedra are
-  // up-to-date.
-  
-  GenSys y_gen_sys = const_cast<GenSys&>(y.gen_sys);
-  size_t y_gen_sys_num_rows = y_gen_sys.num_rows();
+  // At this point the generator systems of both polyhedra are up-to-date.
+  GenSys gs = y.gen_sys;
+  size_t gs_num_rows = gs.num_rows();
 
-  if (!x.is_necessarily_closed()) {
-    // `x' and `y' are not necessarily closed.
-    if (y_gen_sys.has_closure_points()) {
-      // If `y_gen_sys' has closure points, we can use only lines,
-      // rays and closure points to build the new polyhedron.
-      for (size_t i = y_gen_sys_num_rows; i-- > 0; ) {
-	if (y_gen_sys[i].is_point()) {
-	  // We erase the points from `y_gen_sys'.
-	  --y_gen_sys_num_rows;
-	  std::swap(y_gen_sys[i], y_gen_sys[y_gen_sys_num_rows]);
+  if (!x.is_necessarily_closed())
+    // `x' and `y' are NNC polyhedra.
+    for (size_t i = gs_num_rows; i-- > 0; )
+      switch (gs[i].type()) {
+      case Generator::POINT:
+	// The points of `gs' can be erased,
+	// since their role can be played by closure points.
+	--gs_num_rows;
+	std::swap(gs[i], gs[gs_num_rows]);
+	break;
+      case Generator::CLOSURE_POINT:
+	{
+	  Generator& cp = gs[i];
+	  // If it is the origin, erase it.
+	  if (cp.all_homogeneous_terms_are_zero()) {
+	    --gs_num_rows;
+	    std::swap(cp, gs[gs_num_rows]);
+	  }
+	  // Otherwise, transform the closure point into a ray.
+	  else {
+	    cp[0] = 0;
+	    // Enforce normalization.
+	    cp.normalize();
+	  }
 	}
+	break;
+      default:
+	// For rays and lines, nothing to be done.
+	break;
       }
-      // We erase all the points of `y_gen_sys'.
-      y_gen_sys.erase_to_end(y_gen_sys_num_rows);
-    }
-    // All closure points or all points (if `y' is not necessarily closed,
-    // it does not have closure points) become rays.
-    for (size_t i = y_gen_sys_num_rows; i-- > 0; ) {
-      Generator& g = y_gen_sys[i];
-      if (g[0] != 0) {
-	g[0] = 0;
-	g[x_space_dim + 1] = 0;
-	// Enforce normalization.
-	g.normalize();
+  else
+    // `x' and `y' are C polyhedra.
+    for (size_t i = gs_num_rows; i-- > 0; )
+      switch (gs[i].type()) {
+      case Generator::POINT:
+	{
+	  Generator& p = gs[i];
+	  // If it is the origin, erase it.
+	  if (p.all_homogeneous_terms_are_zero()) {
+	    --gs_num_rows;
+	    std::swap(p, gs[gs_num_rows]);
+	  }
+	  // Otherwise, transform the point into a ray.
+	  else {
+	    p[0] = 0;
+	    // Enforce normalization.
+	    p.normalize();
+	  }
+	}
+	break;
+      default:
+	// For rays and lines, nothing to be done.
+	break;
       }
-    }
-  }
-  else {
-    // At this point, `x' and `y_gen_sys' are necessarily closed: we must
-    // only say that all points become rays.
-    for (size_t i = y_gen_sys.num_rows(); i-- > 0; ) {
-      Generator& g = y_gen_sys[i];
-      if (g.is_point()) {
-	g[0] = 0;
-	// Enforce normalization.
-	g.normalize();
-      }
-    }
-  }
-  // Invalid rays can be built during the previous process.
-  y_gen_sys.remove_invalid_lines_and_rays();
+  // If it was present, erase the origin point or closure point,
+  // which cannot be tranformed into a valid ray or line.
+  // For NNC polyhedra, also erase all the points of `gs',
+  // whose role can be payed by the closure points.
+  // These have been previously moved to the end of `gs'.
+  gs.erase_to_end(gs_num_rows);
+  
+  // `gs' may now have no rows.
+  // Namely, this happens when `y' was the singleton polyehdron
+  // having the origin as the one and only point.
+  // In such a case, the resulting polyhedron is equal to `x'.
+  if (gs_num_rows == 0)
+    return;
 
-  // The number of rows of `y_gen_sys' can be equal to zero, because
-  // we can have removed the rows with the function
-  // `remove_invalid_lines_and_rays()'. In this case, the resulting
-  // polyhedron is equal to `x'. Otherwise, the two systems are merged.
-  if (y_gen_sys.num_rows() != 0) {
-    // To apply the function `Matrix::merge_row_assign()', the two matrices
-    // must be ordered.
-    if (!x.gen_sys.is_sorted())
-      x.gen_sys.sort_rows();
-    // We have changed `y_gen_sys': so it must be sorted.
-    y_gen_sys.sort_rows();
-    x.gen_sys.merge_rows_assign(y_gen_sys);
-    // Only the system of generators is up-to-date.
-    x.clear_constraints_up_to_date();
-    x.clear_generators_minimized();
-  }
+  // Otherwise, the two systems are merged.
+  // `Matrix::merge_row_assign()' requires both matrices to be ordered.
+  if (!x.gen_sys.is_sorted())
+    x.gen_sys.sort_rows();
+  // We have changed `gs': it must be sorted.
+  gs.sort_rows();
+  x.gen_sys.merge_rows_assign(gs);
+  // Only the system of generators is up-to-date.
+  x.clear_constraints_up_to_date();
+  x.clear_generators_minimized();
+
   assert(x.OK(true) && y.OK(true));
 }
 

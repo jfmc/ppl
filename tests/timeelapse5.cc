@@ -54,13 +54,14 @@ main() {
   C_Polyhedron ph5(2);
   C_Polyhedron ph6(2, C_Polyhedron::EMPTY);
 #if NOISY
-  print_constraints(ph5, "**** ph3 ****");
-  print_constraints(ph6, "**** ph4 ****");
+  print_constraints(ph5, "**** ph5 ****");
+  print_constraints(ph6, "**** ph6 ****");
 #endif
   ph5.time_elapse_assign(ph6);
 
-  int retval = (ph1.check_empty() && ph3.check_empty()
-		&& ph5.check_universe()) ? 0 : 1;
+  int retval = (ph1.check_empty()
+		&& ph3.check_empty()
+		&& ph5.check_empty()) ? 0 : 1;
 
 #if NOISY
   print_generators(ph1, "**** ph1_time_elapse_assign(ph2) ****");
