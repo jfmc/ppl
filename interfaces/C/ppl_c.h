@@ -65,11 +65,48 @@ Detailed description with examples to be written.
 __BEGIN_DECLS
 
 /*!
+  Defines the error code that any function can return.
+*/
+enum ppl_enum_error_code {
+  /*! \hideinitializer
+    The virtual memory available to the process has been exhausted. */
+  PPL_ERROR_OUT_OF_MEMORY = -2,
+  /*! \hideinitializer
+    A function has been invoked with an invalid argument. */
+  PPL_ERROR_INVALID_ARGUMENT = -3,
+  /*! \hideinitializer
+    An internal error that was diagnosed by the PPL itself.
+    This indicates a bug in the PPL. */
+  PPL_ERROR_INTERNAL_ERROR = -4,
+  /*! \hideinitializer
+    A standard exception has been raised by the C++ run-time environment.
+    This indicates a bug in the PPL. */
+  PPL_ERROR_UNKNOWN_STANDARD_EXCEPTION = -5,
+  /*! \hideinitializer
+    A totally unknown, totally unexpected error happened.
+    This indicates a bug in the PPL. */
+  PPL_ERROR_UNEXPECTED_ERROR = -6,
+};
+
+
+/*!
   Initializes the Parma Polyhedra Library.
   This function must be called before any other function.
 */
 int
 ppl_initialize __P((void));
+
+/*!
+  Installs the user-defined error handler pointed by \p h.  The error
+  handler takes an error code and a textual description that gives
+  further information about the actual error.  The C string containing
+  the textual description is read-only and its existence it not
+  guaranteed after the handler has returned.
+*/
+int
+ppl_set_error_handler __P((void (*h)(enum ppl_enum_error_code code,
+				     const char* description)));
+
 
 #define PPL_TYPE_DECLARATION(Type) \
 /*! Opaque pointer to Type. */ \
@@ -183,20 +220,15 @@ PPL_TYPE_DECLARATION(Constraint);
   Describes the relations represented by a constraint.
 */
 enum ppl_enum_Constraint_Type {
-  /*! \hideinitializer
-    The constraint is of the form \f$e = 0\f$. */
+  /*! The constraint is of the form \f$e = 0\f$. */
   PPL_CONSTRAINT_TYPE_EQUAL,
-  /*! \hideinitializer
-    The constraint is of the form \f$e \geq 0\f$. */
+  /*! The constraint is of the form \f$e \geq 0\f$. */
   PPL_CONSTRAINT_TYPE_GREATER_THAN_OR_EQUAL,
-  /*! \hideinitializer
-    The constraint is of the form \f$e < 0\f$. */
+  /*! The constraint is of the form \f$e < 0\f$. */
   PPL_CONSTRAINT_TYPE_GREATER_THAN,
-  /*! \hideinitializer
-    The constraint is of the form \f$e \leq 0\f$. */
+  /*! The constraint is of the form \f$e \leq 0\f$. */
   PPL_CONSTRAINT_TYPE_LESS_THAN_OR_EQUAL,
-  /*! \hideinitializer
-    The constraint is of the form \f$e < 0\f$. */
+  /*! The constraint is of the form \f$e < 0\f$. */
   PPL_CONSTRAINT_TYPE_LESS_THAN
 };
 
@@ -426,20 +458,16 @@ __P((ppl_const_ConSys__const_iterator_t x,
 PPL_TYPE_DECLARATION(Generator);
 
 /*!
-  Describes the relations represented by a generator.
+  Describes the different kinds of generators.
 */
 enum ppl_enum_Generator_Type {
-  /*! \hideinitializer
-    The generator is of the form \f$e = 0\f$. */
+  /*! The generator is a point. */
   PPL_GENERATOR_TYPE_POINT,
-  /*! \hideinitializer
-    The generator is of the form \f$e \geq 0\f$. */
+  /*! The generator is a closure point. */
   PPL_GENERATOR_TYPE_CLOSURE_POINT,
-  /*! \hideinitializer
-    The generator is of the form \f$e < 0\f$. */
+  /*! The generator is a ray. */
   PPL_GENERATOR_TYPE_RAY,
-  /*! \hideinitializer
-    The generator is of the form \f$e \leq 0\f$. */
+  /*! The generator is a line. */
   PPL_GENERATOR_TYPE_LINE
 };
 

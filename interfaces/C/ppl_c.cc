@@ -59,17 +59,37 @@ to_nonconst(Type* x) { \
 // FIXME: this temporary until we rename Integer to Coefficient.
 typedef Parma_Polyhedra_Library::Integer Coefficient;
 
-static void (*user_error_handler)(int , const char*) = 0;
+static void (*user_error_handler)(enum ppl_enum_error_code code,
+				  const char* description) = 0;
 
 int
-ppl_set_error_handler(void (*h)(int , const char*)) {
+ppl_set_error_handler(void (*h)(enum ppl_enum_error_code code,
+				const char* description)) {
   user_error_handler = h;
   return 0;
 }
 
+static void
+notify_error(enum ppl_enum_error_code code, const char* description) {
+  if (user_error_handler != 0)
+    user_error_handler(code, description);
+}
+
+#define CATCH_STD_EXCEPTION(exception, code) \
+catch(const std::exception& e) { \
+  notify_error(code, e.what()); \
+  return code; \
+}
+
 #define CATCH_ALL \
+CATCH_STD_EXCEPTION(bad_alloc, PPL_ERROR_OUT_OF_MEMORY) \
+CATCH_STD_EXCEPTION(invalid_argument, PPL_ERROR_INVALID_ARGUMENT) \
+CATCH_STD_EXCEPTION(runtime_error, PPL_ERROR_INTERNAL_ERROR) \
+CATCH_STD_EXCEPTION(exception, PPL_ERROR_INTERNAL_ERROR) \
 catch(...) { \
-  return -1; \
+  notify_error(PPL_ERROR_UNEXPECTED_ERROR, \
+	       "completely unexpected error: a bug in the PPL"); \
+  return PPL_ERROR_UNEXPECTED_ERROR; \
 }
 
 unsigned int PPL_POLY_CON_RELATION_IS_DISJOINT;
@@ -224,8 +244,8 @@ ppl_new_Constraint(ppl_Constraint_t* pc,
     break;
 #endif
   default:
-    // FIXME!
-    throw 3;
+    throw std::invalid_argument("ppl_new_Constraint(pc, le, t): "
+				"t invalid");
   }
   *pc = to_nonconst(ppc);
   return 0;
@@ -493,8 +513,8 @@ ppl_new_Generator(ppl_Generator_t* pg,
     ppg = new Generator(line(lle));
     break;
   default:
-    // FIXME!
-    throw 3;
+    throw std::invalid_argument("ppl_new_Generator(pg, le, t, d): "
+				"t invalid");
   }
   *pg = to_nonconst(ppg);
   return 0;
