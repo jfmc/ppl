@@ -63,7 +63,7 @@ check_all :-
   add_gens,
   add_cons_min,
   add_gens_min,
-%  conc-assign,
+  conc-assign,
   remove_dim,
   remove_high_dim,
   affine,
@@ -78,6 +78,8 @@ check_all :-
   boundingbox,
   poly_from_boundingbox_C,
   poly_from_boundingbox_NNC,
+  poly_from_bounding_box_complexity_C,
+  poly_from_bounding_box_complexity_NNC,
   !,
   ppl_finalize.
 check_all :-
@@ -892,6 +894,24 @@ poly_from_boundingbox_NNC1 :-
   Box = [i(c(Max), c(1)), i(c(-1), c(1))],
   ppl_delete_Polyhedron(P).
 
+poly_from_bounding_box_complexity_C:-
+  A = '$VAR'(0), B = '$VAR'(1),
+  ppl_new_Polyhedron_from_constraints(nnc, [4*A =< 2, B >= 0], P),
+  ppl_Polyhedron_get_bounding_box(P, any, Box),
+  ppl_Polyhedron_get_bounding_box(P, polynomial, Box),
+  ppl_Polyhedron_get_bounding_box(P, simplex, Box),
+  Box = [i(o(minf), c(1/2)), i(c(0), o(pinf))],
+  ppl_delete_Polyhedron(P).
+
+poly_from_bounding_box_complexity_NNC:-
+  A = '$VAR'(0), B = '$VAR'(1),
+  ppl_new_Polyhedron_from_constraints(nnc, [4*A =< 2, B > 0], P),
+  ppl_Polyhedron_get_bounding_box(P, any, Box),
+  ppl_Polyhedron_get_bounding_box(P, polynomial, Box),
+  ppl_Polyhedron_get_bounding_box(P, simplex, Box),
+  Box = [i(o(minf), c(1/2)), i(o(0), o(pinf))],
+  ppl_delete_Polyhedron(P).
+
 % Tests ppl_Polyhedron_bounds_from_above for an NNC polyhedron.
 bounds_from_above :-
   A = '$VAR'(0), B = '$VAR'(1),
@@ -923,13 +943,13 @@ boundingbox1(Box,CS) :-
                                       [1*A > 1, 1*B > 1,
                                        -1*B > -1, -1*A > -1],
                                       P),
-  ppl_Polyhedron_get_bounding_box(P, Box, any),
+  ppl_Polyhedron_get_bounding_box(P, any, Box),
   ppl_Polyhedron_get_constraints(P,CS),
   ppl_delete_Polyhedron(P).
 
 boundingbox2(Box,CS) :-
   ppl_new_Polyhedron_from_dimension(nnc, 2, P),
   ppl_Polyhedron_add_constraints(P, [0=1]),
-  ppl_Polyhedron_get_bounding_box(P, Box, any),
+  ppl_Polyhedron_get_bounding_box(P, any, Box),
   ppl_Polyhedron_get_constraints(P,CS),
   ppl_delete_Polyhedron(P).
