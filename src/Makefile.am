@@ -138,9 +138,6 @@ LCompare.inlines.hh \
 Determinate.types.hh \
 Determinate.defs.hh \
 Determinate.inlines.hh \
-AskTell.types.hh \
-AskTell.defs.hh \
-AskTell.inlines.hh \
 PowerSet.types.hh \
 PowerSet.defs.hh \
 PowerSet.inlines.hh \
@@ -202,9 +199,6 @@ globals.hh \
 Determinate.types.hh \
 Determinate.defs.hh \
 Determinate.inlines.hh \
-AskTell.types.hh \
-AskTell.defs.hh \
-AskTell.inlines.hh \
 PowerSet.types.hh \
 PowerSet.defs.hh \
 PowerSet.inlines.hh \
