@@ -2458,7 +2458,7 @@ PPL::Polyhedron::ascii_dump(std::ostream& s) const {
   s << endl
     << "sat_g"
     << endl;
-  sat_c.ascii_dump(s);
+  sat_g.ascii_dump(s);
   s << endl;
 }
 
