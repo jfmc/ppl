@@ -39,7 +39,7 @@ main() {
   Variable z(2);
 
   Polyhedron ph(3, Polyhedron::EMPTY);
-  ph.insert(vertex(-1000*x - 9*y, 16));
+  ph.insert(point(-1000*x - 9*y, 16));
 
 #if NOISY
   print_generators(ph, "*** generators ***");

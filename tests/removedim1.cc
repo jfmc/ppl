@@ -39,7 +39,7 @@ main() {
   Variable z(2);
   Variable w(3);
   GenSys gs;
-  gs.insert(vertex(0*x + y +0*z + 2*w));
+  gs.insert(point(0*x + y +0*z + 2*w));
   Polyhedron ph(gs);
 #if NOISY
   print_generators(ph, "*** ph ***");
@@ -52,7 +52,7 @@ main() {
   ph.remove_dimensions(to_be_removed);
 
   GenSys known_result_gs;
-  known_result_gs.insert(vertex(0*x +2*y));
+  known_result_gs.insert(point(0*x +2*y));
   Polyhedron known_result(known_result_gs);
 
   int retval = (known_result == ph) ? 0 : 1;

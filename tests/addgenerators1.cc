@@ -38,8 +38,8 @@ main() {
   Variable y(1);
 
   GenSys gs1;
-  gs1.insert(vertex(x));
-  gs1.insert(vertex(y));
+  gs1.insert(point(x));
+  gs1.insert(point(y));
   gs1.insert(line(x));
   Polyhedron ph1(gs1);
 
@@ -48,13 +48,13 @@ main() {
 #endif
 
   GenSys gs2;
-  gs2.insert(vertex());
+  gs2.insert(point());
 
   ph1.add_generators_and_minimize(gs2);
 
   Polyhedron known_result(2, Polyhedron::EMPTY);
-  known_result.insert(vertex());
-  known_result.insert(vertex(y));
+  known_result.insert(point());
+  known_result.insert(point(y));
   known_result.insert(line(x));
 
   int retval = (ph1 == known_result) ? 0: 1;

@@ -39,7 +39,7 @@ main() {
   Variable y(1);
 
   GenSys gs;
-  gs.insert(vertex());
+  gs.insert(point());
   gs.insert(ray(y));
   gs.insert(line(x));
   Polyhedron ph(gs);
@@ -49,7 +49,7 @@ main() {
   print_generators(ph, "--- ph ---");
 #endif
 
-  Generator g = vertex(x + y);
+  Generator g = point(x + y);
 
 #if NOISY
   print_generator(g, "--- g ---");

@@ -43,7 +43,7 @@ main() {
   Variable w(5);
 
   GenSys gs;
-  gs.insert(vertex());
+  gs.insert(point());
   gs.insert(ray(x + y));
 
   Polyhedron ph(gs);
@@ -60,7 +60,7 @@ main() {
   ph.add_dimensions_and_embed(2);
 
   Polyhedron known_result(6, Polyhedron::EMPTY);
-  known_result.insert(vertex());
+  known_result.insert(point());
   known_result.insert(ray(x + y));
   known_result.insert(line(z));
   known_result.insert(line(u));

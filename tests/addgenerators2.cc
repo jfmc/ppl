@@ -43,14 +43,14 @@ main() {
 #endif
 
   GenSys gs;
-  gs.insert(vertex());
+  gs.insert(point());
   gs.insert(line(x));
 
 
   ph1.add_generators(gs);
 
   Polyhedron known_result(2, Polyhedron::EMPTY);
-  known_result.insert(vertex());
+  known_result.insert(point());
   known_result.insert(line(x));
 
   int retval = (ph1 == known_result) ? 0 : 1;

@@ -39,17 +39,17 @@ main() {
   Variable y(1);
 
   GenSys gs1;
-  gs1.insert(vertex());
-  gs1.insert(vertex(3*x));
-  gs1.insert(vertex(3*y));
-  gs1.insert(vertex(3*x+ 3*y));
+  gs1.insert(point());
+  gs1.insert(point(3*x));
+  gs1.insert(point(3*y));
+  gs1.insert(point(3*x+ 3*y));
   Polyhedron ph1(gs1);
 
   GenSys gs2;
-  gs2.insert(vertex(x));
-  gs2.insert(vertex(4*x));
-  gs2.insert(vertex(x + 3*y));
-  gs2.insert(vertex(4*x+ 3*y));
+  gs2.insert(point(x));
+  gs2.insert(point(4*x));
+  gs2.insert(point(x + 3*y));
+  gs2.insert(point(4*x+ 3*y));
   Polyhedron ph2(gs2);
 
 #if NOISY
@@ -60,10 +60,10 @@ main() {
   ph1.intersection_assign(ph2);
 
   Polyhedron known_result(2, Polyhedron::EMPTY);
-  known_result.insert(vertex(x));
-  known_result.insert(vertex(3*x));
-  known_result.insert(vertex(x + 3*y));
-  known_result.insert(vertex(3*x + 3*y));
+  known_result.insert(point(x));
+  known_result.insert(point(3*x));
+  known_result.insert(point(x + 3*y));
+  known_result.insert(point(3*x + 3*y));
 
   int retval =(ph1 == known_result) ? 0 : 1;
 

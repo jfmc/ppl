@@ -38,7 +38,7 @@ main() {
   Variable B(1);
 
   GenSys gs;
-  gs.insert(vertex(1*A + 1*B));
+  gs.insert(point(1*A + 1*B));
   Polyhedron ph(gs);
 
 #if NOISY

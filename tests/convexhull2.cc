@@ -42,7 +42,7 @@ main() {
   Polyhedron ph1(2, Polyhedron::EMPTY);
 
   GenSys gs;
-  gs.insert(vertex());
+  gs.insert(point());
   gs.insert(ray(x + y));
   Polyhedron ph2(gs);
 

@@ -48,7 +48,7 @@ main() {
 
   GenSys gs;
   gs.insert(ray(x + y));
-  gs.insert(vertex());
+  gs.insert(point());
 
 #if NOISY
   print_generators(gs, "--- gs ---");
@@ -57,7 +57,7 @@ main() {
   ph.add_generators_and_minimize(gs);
 
   GenSys gs_known_result;
-  gs_known_result.insert(vertex());
+  gs_known_result.insert(point());
   gs_known_result.insert(ray(x + y));
   Polyhedron known_result(gs_known_result);
 

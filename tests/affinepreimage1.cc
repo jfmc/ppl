@@ -39,9 +39,9 @@ main() {
   Variable B(1);
 
   GenSys gs;
-  gs.insert(vertex());
+  gs.insert(point());
   gs.insert(ray(A + B));
-  gs.insert(vertex(A));
+  gs.insert(point(A));
 
   Polyhedron ph(gs);
 
@@ -52,9 +52,9 @@ main() {
   ph.affine_preimage(A, A+2);
 
   GenSys gs_known_result;
-  gs_known_result.insert(vertex(-2*A));
+  gs_known_result.insert(point(-2*A));
   gs_known_result.insert(ray(A + B));
-  gs_known_result.insert(vertex(-A));
+  gs_known_result.insert(point(-A));
 
   Polyhedron known_result(gs_known_result);
 

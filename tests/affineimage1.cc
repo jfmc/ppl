@@ -48,7 +48,7 @@ main() {
   ph.affine_image(B, A+2, 1);
 
   Polyhedron known_result(3, Polyhedron::EMPTY);
-  known_result.insert(vertex(2*B - 2*C));
+  known_result.insert(point(2*B - 2*C));
 
   int retval = (ph == known_result) ? 0 : 1;
 

@@ -39,7 +39,7 @@ main() {
 
   GenSys gs1;
   gs1.insert(ray(x + y));
-  gs1.insert(vertex());
+  gs1.insert(point());
 
   Polyhedron ph(gs1);
 
@@ -49,7 +49,7 @@ main() {
 
   GenSys gs2;
   gs2.insert(ray(x));
-  gs2.insert(vertex());
+  gs2.insert(point());
 
 #if NOISY
   print_generators(gs2, "--- gs2 ---");
@@ -58,7 +58,7 @@ main() {
   ph.add_generators(gs2);
 
   Polyhedron known_result(2, Polyhedron::EMPTY);
-  known_result.insert(vertex());
+  known_result.insert(point());
   known_result.insert(ray(x));
   known_result.insert(ray(x + y));
 

@@ -31,7 +31,7 @@ using namespace Parma_Polyhedra_Library;
 #define NOISY 0
 
 int
-count_vertices(const Polyhedron& ph) {
+count_points(const Polyhedron& ph) {
   if (ph.check_empty() || (ph.space_dimension() == 0))
     return 0;
 
@@ -40,7 +40,7 @@ count_vertices(const Polyhedron& ph) {
   for (GenSys::const_iterator i = gs.begin(), gs_end = gs.end();
        i != gs_end;
        ++i)
-    if (i->type() == Generator::VERTEX)
+    if (i->type() == Generator::POINT)
       ++count;
   return count;
 }
@@ -60,8 +60,8 @@ main() {
   // with k = i*(height/4) for i = -1, 0, 1, ..., 5.
   struct {
     Integer plane_height;
-    int num_vertices_above;
-    int num_vertices_below;
+    int num_points_above;
+    int num_points_below;
   } ph_nv[]
       = { {-1*(pyramid_height/4), 5, 0},
 	  { 0*(pyramid_height/4), 5, 4},
@@ -73,11 +73,11 @@ main() {
       };
 
   GenSys gs;
-  gs.insert(vertex(0*x + 0*y + 0*z));
-  gs.insert(vertex(2*x + 0*y + 0*z));
-  gs.insert(vertex(0*x + 2*y + 0*z));
-  gs.insert(vertex(2*x + 2*y + 0*z));
-  gs.insert(vertex(x + y + pyramid_height*z));
+  gs.insert(point(0*x + 0*y + 0*z));
+  gs.insert(point(2*x + 0*y + 0*z));
+  gs.insert(point(0*x + 2*y + 0*z));
+  gs.insert(point(2*x + 2*y + 0*z));
+  gs.insert(point(x + y + pyramid_height*z));
   Polyhedron pyramid(gs);
 
 #if NOISY
@@ -96,7 +96,7 @@ main() {
     computed_result.intersection_assign_and_minimize(hyper_space_above);
 
     if (ok
-	&& count_vertices(computed_result) != ph_nv[i].num_vertices_above)
+	&& count_points(computed_result) != ph_nv[i].num_points_above)
       ok = false;
 
 #if NOISY
@@ -112,7 +112,7 @@ main() {
     computed_result.intersection_assign_and_minimize(hyper_space_below);
 
     if (ok
-	&& count_vertices(computed_result) != ph_nv[i].num_vertices_below)
+	&& count_points(computed_result) != ph_nv[i].num_points_below)
       ok = false;
 
 #if NOISY

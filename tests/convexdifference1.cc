@@ -38,9 +38,9 @@ main() {
   Variable y(1);
 
   GenSys gs1;
-  gs1.insert(vertex(0*x + 0*y));
-  gs1.insert(vertex(4*x + 0*y));
-  gs1.insert(vertex(2*x + 2*y));
+  gs1.insert(point(0*x + 0*y));
+  gs1.insert(point(4*x + 0*y));
+  gs1.insert(point(2*x + 2*y));
 
   Polyhedron ph1(gs1);
 
@@ -49,9 +49,9 @@ main() {
 #endif
 
   GenSys gs2;
-  gs2.insert(vertex(0*x + 3*y));
-  gs2.insert(vertex(4*x + 3*y));
-  gs2.insert(vertex(2*x + 1*y));
+  gs2.insert(point(0*x + 3*y));
+  gs2.insert(point(4*x + 3*y));
+  gs2.insert(point(2*x + 1*y));
 
   Polyhedron ph2(gs2);
 
@@ -64,10 +64,10 @@ main() {
   computed_result.convex_difference_assign(ph2);
 
   GenSys gs_known_result;
-  gs_known_result.insert(vertex());
-  gs_known_result.insert(vertex(3*x + 3*y, 2));
-  gs_known_result.insert(vertex(4*x));
-  gs_known_result.insert(vertex(5*x + 3*y, 2));
+  gs_known_result.insert(point());
+  gs_known_result.insert(point(3*x + 3*y, 2));
+  gs_known_result.insert(point(4*x));
+  gs_known_result.insert(point(5*x + 3*y, 2));
 
   Polyhedron known_result(gs_known_result);
 

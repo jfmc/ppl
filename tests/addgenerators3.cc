@@ -36,14 +36,14 @@ main() {
   set_handlers();
 
   Polyhedron ph;
-  ph.insert(vertex());
+  ph.insert(point());
 
 #if NOISY
   print_generators(ph, "*** ph ***");
 #endif
 
   GenSys gs;
-  gs.insert(vertex());
+  gs.insert(point());
 
 #if NOISY
   print_generators(gs, "*** gs ***");

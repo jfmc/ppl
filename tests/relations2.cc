@@ -43,7 +43,7 @@ main() {
   print_constraints(ph, "--- ph ---");
 #endif
 
-  Generator g = vertex(x);
+  Generator g = point(x);
 
 #if NOISY
   print_generator(g, "--- g ---");

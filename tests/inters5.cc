@@ -43,7 +43,7 @@ main() {
   ph1.insert(x >= y);
 
   Polyhedron ph2(2, Polyhedron::EMPTY);
-  ph2.insert(vertex());
+  ph2.insert(point());
   ph2.insert(line(x));
   ph2.insert(ray(y));
 

@@ -40,7 +40,7 @@ main() {
   Variable w(3);
 
   GenSys gs;
-  gs.insert(vertex(x + y + 2*z - w));
+  gs.insert(point(x + y + 2*z - w));
 
   Polyhedron ph(gs);
 #if NOISY
@@ -50,7 +50,7 @@ main() {
   ph.remove_higher_dimensions(2);
 
   GenSys gs_known_result;
-  gs_known_result.insert(vertex(x + y));
+  gs_known_result.insert(point(x + y));
   Polyhedron known_result(gs_known_result);
 
   int retval = (ph == known_result) ? 0 : 1;

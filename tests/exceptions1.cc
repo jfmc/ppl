@@ -40,10 +40,10 @@ error1() {
   
   GenSys gs;
   try {
-    // This is an incorrect use of the function Generator::vertex(expr, d):
-    // it is impossible to built a vertex with the denominator
+    // This is an incorrect use of the function Generator::point(expr, d):
+    // it is impossible to built a point with the denominator
     // equal to zero.
-    gs.insert(vertex(x + y + z, 0));
+    gs.insert(point(x + y + z, 0));
   }
   
   catch (invalid_argument& e) {
@@ -64,7 +64,7 @@ error2() {
   Variable y(1);
   
   GenSys gs;
-  gs.insert(vertex(x + y));
+  gs.insert(point(x + y));
   gs.insert(ray(x + 0*y));
   gs.insert(ray(0*x + y));
   Polyhedron ph(gs);
@@ -96,7 +96,7 @@ error3() {
 
   Polyhedron ph1;
   GenSys gs;
-  gs.insert(vertex(x + y));
+  gs.insert(point(x + y));
   Polyhedron ph2(gs);
   try {
     // This is an incorrect use of function
@@ -128,7 +128,7 @@ error4() {
   try {
     // This is an incorrect use of the function Polyhedron::Polyhedron(gs):
     // it is impossible to built a polyhedron starting from a system
-    // of generators that does not contain a vertex. 
+    // of generators that does not contain a point. 
     Polyhedron ph(gs);
   }
   catch (invalid_argument& e) {
@@ -150,7 +150,7 @@ error5() {
   Variable z(2);
   
   GenSys gs;
-  gs.insert(vertex(0*x + 1*y +2*z));
+  gs.insert(point(0*x + 1*y +2*z));
   Polyhedron ph(gs);
 
   set<Variable> to_be_removed;
@@ -270,7 +270,7 @@ error9() {
   Variable z(2);
 
   GenSys gs;
-  gs.insert(vertex());
+  gs.insert(point());
   gs.insert(ray(x + y));
   gs.insert(ray(x));
 
@@ -301,8 +301,8 @@ error10() {
   Variable z(2);
 
   GenSys gs;
-  gs.insert(vertex());
-  gs.insert(vertex(x));
+  gs.insert(point());
+  gs.insert(point(x));
   gs.insert(line(x + y));
 
   Polyhedron ph(gs);
@@ -389,7 +389,7 @@ error13() {
     // to add a system of generator that is not dimensional compatible
     // with the polyhedron.
     GenSys gs;
-    gs.insert(vertex(w));
+    gs.insert(point(w));
     ph.add_generators_and_minimize(gs);
   }
   catch (invalid_argument& e) {
@@ -512,13 +512,13 @@ error18() {
   Variable y(1);
 
   GenSys gs1;
-  gs1.insert(vertex());
+  gs1.insert(point());
   gs1.insert(ray(x));
 
   Polyhedron ph1(gs1);
   
   GenSys gs2;
-  gs2.insert(vertex(x));
+  gs2.insert(point(x));
   gs2.insert(ray(x + y));
 
   Polyhedron ph2(gs2);
@@ -552,7 +552,7 @@ error19() {
     // This is an invalid use of the function Polyhedron::insert(g):
     // it is impossible to insert a generator that is dimensional
     // incompatible with the polyhedron.
-    ph.insert(vertex(x + y));
+    ph.insert(point(x + y));
   }
   catch (invalid_argument& e) {
 #if NOISY
@@ -578,7 +578,7 @@ error20() {
     // it is impossible to a system of generators that is dimensional
     // incompatible with the polyhedron.
     GenSys gs;
-    gs.insert(vertex());
+    gs.insert(point());
     gs.insert(line(x + y));
     ph.add_generators(gs);
   }
@@ -602,7 +602,7 @@ error21() {
 
   GenSys gs;
   gs.insert(ray(x + y));
-  gs.insert(vertex());
+  gs.insert(point());
 
   Polyhedron ph(gs);
   try {
@@ -634,7 +634,7 @@ error22() {
     // This is invalid use of the function Polyhedronn::relation_with(g):
     // it is impossible to apply this function to a generator that is
     // not dimensional compatible with the polyhedron.
-    Generator g(vertex(z));
+    Generator g(point(z));
     ph.relation_with(g);
   }
   catch (invalid_argument& e) {
@@ -799,7 +799,7 @@ error28() {
 
   try {
     // This is an invalid use of the function Polyhedron::add_generators(gs):
-    // it is impossible to add a system of generators with no vertics
+    // it is impossible to add a system of generators with no points
     // to an empty polyhedron. 
     GenSys gs;
     gs.insert(ray(x + y));
@@ -828,7 +828,7 @@ error29() {
     // This is an invalid use of the function
     // Polyhedron::add_generators_and_minimize(gs): it is impossible
     // to apply this function with a system of generators with no
-    // vertices to an empty polyhedron.
+    // points to an empty polyhedron.
     GenSys gs;
     gs.insert(line(x));
     gs.insert(line(y));

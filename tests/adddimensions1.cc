@@ -38,10 +38,10 @@ main() {
   Variable y(1);
 
   GenSys gs;
-  gs.insert(vertex());
-  gs.insert(vertex(x));
-  gs.insert(vertex(y));
-  gs.insert(vertex(x + y));
+  gs.insert(point());
+  gs.insert(point(x));
+  gs.insert(point(y));
+  gs.insert(point(x + y));
 
   Polyhedron ph(gs);
 
@@ -52,10 +52,10 @@ main() {
   ph.add_dimensions_and_project(1);
 
   Polyhedron known_result(3, Polyhedron::EMPTY);
-  known_result.insert(vertex());
-  known_result.insert(vertex(x));
-  known_result.insert(vertex(y));
-  known_result.insert(vertex(x + y));
+  known_result.insert(point());
+  known_result.insert(point(x));
+  known_result.insert(point(y));
+  known_result.insert(point(x + y));
 
   int retval = (ph == known_result) ? 0 : 1;
 

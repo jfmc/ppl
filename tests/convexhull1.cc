@@ -38,7 +38,7 @@ main() {
   Variable y(1);
 
   GenSys gs1;
-  gs1.insert(vertex());
+  gs1.insert(point());
   gs1.insert(ray(x));
   gs1.insert(ray(y));
 
@@ -49,9 +49,9 @@ main() {
 #endif
 
   GenSys gs2;
-  gs2.insert(vertex(-x + y));
-  gs2.insert(vertex(x + y));
-  gs2.insert(vertex(3*x));
+  gs2.insert(point(-x + y));
+  gs2.insert(point(x + y));
+  gs2.insert(point(3*x));
 
   Polyhedron ph2(gs2);
 
@@ -64,8 +64,8 @@ main() {
   computed_result.convex_hull_assign(ph2);
 
   GenSys gs_known_result;
-  gs_known_result.insert(vertex());
-  gs_known_result.insert(vertex(-x + y));
+  gs_known_result.insert(point());
+  gs_known_result.insert(point(-x + y));
   gs_known_result.insert(ray(x));
   gs_known_result.insert(ray(y));
 

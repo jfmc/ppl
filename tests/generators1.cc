@@ -1,4 +1,4 @@
-/* The polyhedron built from the system of generators has a vertex
+/* The polyhedron built from the system of generators has a point
    with a negative denominator.
    Copyright (C) 2001, 2002 Roberto Bagnara <bagnara@cs.unipr.it>
 
@@ -37,7 +37,7 @@ main() try {
   Variable y(1);
 
   GenSys gs;
-  gs.insert(vertex(x + y, -1));
+  gs.insert(point(x + y, -1));
  
   Polyhedron ph(gs);
 

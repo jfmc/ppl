@@ -48,7 +48,7 @@ main() {
 
   GenSys gs;
   gs.insert(ray(x));
-  gs.insert(vertex());
+  gs.insert(point());
 
 #if NOISY
   print_generators(gs, "*** gs ***");

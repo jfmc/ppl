@@ -50,7 +50,7 @@ main() {
   ph.affine_preimage(A, B+1);
 
   Polyhedron known_result(2, Polyhedron::EMPTY);
-  known_result.insert(vertex(B));
+  known_result.insert(point(B));
   known_result.insert(line(A));
   known_result.insert(ray(B));
 

@@ -39,7 +39,7 @@ main() {
   Variable y(1);
 
   GenSys gs;
-  gs.insert(vertex());
+  gs.insert(point());
   gs.insert(ray(x));
   gs.insert(ray(x + y));
 

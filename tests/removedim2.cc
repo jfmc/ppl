@@ -36,12 +36,12 @@ main() {
 
   GenSys gs;
 
-  // Creating 10 vertices.
+  // Creating 10 points.
   for (int i = 0; i < 10; i++) {
     LinExpression e;
     for (int j = 0; j < 10; j++)
       e += (10*i + j) * Variable(j);
-    gs.insert(vertex(e));
+    gs.insert(point(e));
   }
 
   Polyhedron ph(gs);
@@ -74,7 +74,7 @@ main() {
 
   for (int i = 0; i < 10; i++) {
     LinExpression expr = i * expr10 + expr01;
-    gs.insert(vertex(expr));
+    gs.insert(point(expr));
   }
 
   Polyhedron known_result(gs);

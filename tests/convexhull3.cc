@@ -62,10 +62,10 @@ main() {
 #endif
 
   Polyhedron known_result(2, Polyhedron::EMPTY);
-  known_result.insert(vertex());
-  known_result.insert(vertex(2*x));
-  known_result.insert(vertex(4*y));
-  known_result.insert(vertex(2*x + 4*y));
+  known_result.insert(point());
+  known_result.insert(point(2*x));
+  known_result.insert(point(4*y));
+  known_result.insert(point(2*x + 4*y));
 
   int retval = (ph1 == known_result) ? 0 : 1;
 

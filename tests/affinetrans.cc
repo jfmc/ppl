@@ -37,10 +37,10 @@ main() {
   Variable x(0);
   Variable y(1);
   GenSys gs;
-  gs.insert(vertex(0*x + 0*y));
-  gs.insert(vertex(0*x + 3*y));
-  gs.insert(vertex(3*x + 0*y));
-  gs.insert(vertex(3*x + 3*y));
+  gs.insert(point(0*x + 0*y));
+  gs.insert(point(0*x + 3*y));
+  gs.insert(point(3*x + 0*y));
+  gs.insert(point(3*x + 3*y));
   Polyhedron ph(gs);
   LinExpression coeff = x + 4;
 
@@ -57,17 +57,17 @@ main() {
   p2.affine_preimage(x, coeff);
 
   GenSys gs1_known_result;
-  gs1_known_result.insert(vertex(4*x + 0*y));
-  gs1_known_result.insert(vertex(4*x + 3*y));
-  gs1_known_result.insert(vertex(7*x + 0*y));
-  gs1_known_result.insert(vertex(7*x + 3*y));
+  gs1_known_result.insert(point(4*x + 0*y));
+  gs1_known_result.insert(point(4*x + 3*y));
+  gs1_known_result.insert(point(7*x + 0*y));
+  gs1_known_result.insert(point(7*x + 3*y));
   Polyhedron p1_known_result(gs1_known_result);
 
   GenSys gs2_known_result;
-  gs2_known_result.insert(vertex(-4*x + 0*y));
-  gs2_known_result.insert(vertex(-4*x + 3*y));
-  gs2_known_result.insert(vertex(-1*x + 0*y));
-  gs2_known_result.insert(vertex(-1*x + 3*y));
+  gs2_known_result.insert(point(-4*x + 0*y));
+  gs2_known_result.insert(point(-4*x + 3*y));
+  gs2_known_result.insert(point(-1*x + 0*y));
+  gs2_known_result.insert(point(-1*x + 3*y));
   Polyhedron p2_known_result(gs2_known_result);
 
   int retval = ((p1 == p1_known_result) && (p2 == p2_known_result)) ? 0 : 1;

@@ -30,7 +30,7 @@ using namespace Parma_Polyhedra_Library;
 #define NOISY 0
 
 int
-count_vertices(const Polyhedron& ph) {
+count_points(const Polyhedron& ph) {
   if (ph.check_empty() || (ph.space_dimension() == 0))
     return 0;
 
@@ -39,15 +39,15 @@ count_vertices(const Polyhedron& ph) {
   for (GenSys::const_iterator i = gs.begin(), gs_end = gs.end();
        i != gs_end;
        ++i)
-    if (i->type() == Generator::VERTEX)
+    if (i->type() == Generator::POINT)
       ++count;
   return count;
 }
 
 #if NOISY
-#define COUNT(ph) cout << count_vertices(ph) << endl
+#define COUNT(ph) cout << count_points(ph) << endl
 #else
-#define COUNT(ph) (void) count_vertices(ph)
+#define COUNT(ph) (void) count_points(ph)
 #endif
 
 int
@@ -71,9 +71,9 @@ main() {
 
   COUNT(ph);
   for (int n = 1; n <= 200; ++n) {
-    ph.insert(vertex(rg.get_z_range(maxc)*x
-		     + rg.get_z_range(maxc)*y
-		     + rg.get_z_range(maxc)*z));
+    ph.insert(point(rg.get_z_range(maxc)*x
+		    + rg.get_z_range(maxc)*y
+		    + rg.get_z_range(maxc)*z));
     COUNT(ph);
   }
 
