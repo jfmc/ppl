@@ -1726,6 +1726,8 @@ PPL::Polyhedron::assign_variable(const Variable& var,
       }
     }
   }
+  clear_sat_c_up_to_date();
+  clear_sat_g_up_to_date();
 }
 
 
@@ -1838,6 +1840,8 @@ PPL::Polyhedron::substitute_variable(const Variable& var,
     x.clear_generators_up_to_date();
     x.clear_constraints_minimized();
   }
+  clear_sat_c_up_to_date();
+  clear_sat_g_up_to_date();
 }
 
 /*!
