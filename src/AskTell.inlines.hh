@@ -539,7 +539,7 @@ void
 AskTell<CS>::concatenate_assign(const AskTell<CS>& y) {
   dimension_type old_space_dim = space_dim;
   add_dimensions_and_embed(y.space_dimension());
-  for (AskTell<CS>::const_iterator y_end = y.end(),
+  for (typename AskTell<CS>::const_iterator y_end = y.end(),
 	 yi = y.begin(); yi != y_end; ++yi) {
     CS ask(old_space_dim);
     ask.concatenate_assign(yi->ask());
