@@ -398,12 +398,11 @@ build_generator(Prolog_term_ref t) {
       Prolog_term_ref arg2 = Prolog_new_term_ref();
       Prolog_get_arg(1, t, arg1);
       Prolog_get_arg(2, t, arg2);
-      if (functor == a_point) {
-	if (Prolog_is_integer(arg2))
+      if (Prolog_is_integer(arg2)) {
+        if (functor == a_point)
 	  return point(build_lin_expression(arg1),
 		       integer_term_to_Integer(arg2));
-      else if (functor == a_closure_point)
-	if (Prolog_is_integer(arg2))
+        else if (functor == a_closure_point)
 	  return closure_point(build_lin_expression(arg1),
 		       integer_term_to_Integer(arg2));
       }
