@@ -1,7 +1,5 @@
-/* Test Poly_Con_Relation::ascii_dump() and
-   Poly_Gen_Relation::ascii_load():
-   we test these functions in the case that the file does not contain
-   the right thing.
+/* Test operator<<(std::ostream& s, const Poly_Con_Relation& r)
+   and operator<<(std::ostream& s, const Poly_Gen_Relation& r).
    Copyright (C) 2001, 2002 Roberto Bagnara <bagnara@cs.unipr.it>
 
 This file is part of the Parma Polyhedra Library (PPL).
@@ -36,7 +34,7 @@ using namespace Parma_Polyhedra_Library;
 #define NOISY 0
 #endif
 
-const char* my_file = "ascii_dump_1.dat";
+const char* my_file = "writerelation1.dat";
 
 void
 test1() {

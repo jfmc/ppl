@@ -57,7 +57,6 @@ ORIGINAL_TESTS = \
 	affinepreimage5 affinepreimage6 affinepreimage7 affinepreimage8 \
 	affinetrans \
         append1 append2 \
-	ascii_dump1 \
 	ascii_dump_load1 ascii_dump_load2 ascii_dump_load3 ascii_dump_load4 \
 	ascii_dump_load5 \
 	bbrz02widening1 bbrz02widening2 bbrz02widening3 bbrz02widening4 \
@@ -96,6 +95,7 @@ ORIGINAL_TESTS = \
 	minconstraints1 minconstraints2 minconstraints3 \
 	mingenerators1 mingenerators2 mingenerators3 \
 	onepoint \
+	operator1 \
         permute \
 	polydifference1 polydifference2 polydifference3 polydifference4 \
 	polydifference5 polydifference6 polydifference7 \
@@ -118,6 +118,7 @@ ORIGINAL_TESTS = \
 	writeconsys1 \
 	writegensys1 writegensys2 writegensys3 \
 	writepolyhedron1 writepolyhedron2 writepolyhedron3 \
+	writerelation1 \
 	writevariable1
 
 DERIVED_TESTS = \
@@ -272,8 +273,6 @@ affinetrans_SOURCES = affinetrans.cc
 append1_SOURCES = append1.cc
 append2_SOURCES = append2.cc
 
-ascii_dump1_SOURCES = ascii_dump1.cc files.cc
-
 ascii_dump_load1_SOURCES = ascii_dump_load1.cc files.cc
 ascii_dump_load2_SOURCES = ascii_dump_load2.cc files.cc
 ascii_dump_load3_SOURCES = ascii_dump_load3.cc files.cc
@@ -393,6 +392,8 @@ mingenerators3_SOURCES = mingenerators3.cc
 
 onepoint_SOURCES = onepoint.cc
 
+operator1_SOURCES = operator1.cc
+
 permute_SOURCES = permute.cc
 
 polydifference1_SOURCES = polydifference1.cc
@@ -481,6 +482,8 @@ writegensys3_SOURCES = writegensys3.cc files.cc
 writepolyhedron1_SOURCES = writepolyhedron1.cc files.cc
 writepolyhedron2_SOURCES = writepolyhedron2.cc files.cc
 writepolyhedron3_SOURCES = writepolyhedron3.cc files.cc
+
+writerelation1_SOURCES = writerelation1.cc files.cc
 
 writevariable1_SOURCES = writevariable1.cc files.cc
 
@@ -877,7 +880,6 @@ EXTRA_DIST = ehandlers.cc print.cc $(watchdog1_SRCS)
 BUGS =
 
 MOSTLYCLEANFILES = \
-ascii_dump_1.dat \
 ascii_dump_load_1.dat \
 ascii_dump_load_2.dat \
 ascii_dump_load_3.dat \
@@ -890,4 +892,5 @@ writegensys3.dat \
 writepolyhedron1.dat \
 writepolyhedron2.dat \
 writepolyhedron3.dat \
+writerelation1.dat \
 writevariable1.dat
