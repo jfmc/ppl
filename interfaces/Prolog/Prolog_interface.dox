@@ -153,8 +153,9 @@ more information regarding these issues.
 
 <H4><CODE>ppl_copy_polyhedron(+Address1, -Address2)</CODE></H4>
 
-   Creates a copy of the polyhedron referenced by <CODE>Address1</CODE>
-   at reference <CODE>Address2</CODE>.
+   If <CODE>Address1</CODE> is the address of a polyhedron \f$P\f$,
+   then a copy \f$Q\f$ of \f$P\f$ is created and <CODE>Address2</CODE>
+   is unified with the reference to \f$Q\f$.
 
 <H4><CODE>ppl_delete_polyhedron(+Address)</CODE></H4>
 
@@ -169,8 +170,8 @@ more information regarding these issues.
 
 <H4><CODE>ppl_space_dimension(+Address, -Integer)</CODE></H4>
 
-   If \p P is the polyhedron referenced by <CODE>Address</CODE>,
-   it unifies the space dimension of \p P with <CODE>Integer</CODE>.
+   If \f$P\f$ is the polyhedron referenced by <CODE>Address</CODE>,
+   it unifies the space dimension of \f$P\f$ with <CODE>Integer</CODE>.
 
 <H4><CODE>ppl_insert_constraint(+Address, +Constraint)</CODE></H4>
 
@@ -199,8 +200,8 @@ E.g. the following aborts,
 
 <H4><CODE>ppl_insert_generator(+Address, +Generator)</CODE></H4>
 
-   Adds the generator <CODE>Generator</CODE> to the polyhedron \p P referenced 
-   by <CODE>Address</CODE>.
+   Adds the generator <CODE>Generator</CODE> to the polyhedron 
+   \f$P\f$ referenced by <CODE>Address</CODE>.
    Thus after the query
 \code
    | ?- A = '$VAR'(0), B = '$VAR'(1), C = '$VAR'(2), 
@@ -310,7 +311,7 @@ dimensions.
    K = 3,
    X = -33292540 ?
 \endcode
-   The polyhedron \p P at the <CODE>Address</CODE>
+   The polyhedron \f$P\f$ at the <CODE>Address</CODE>
    must have space dimension \f$k\f$ greater that or equal to
    <CODE>Integer</CODE>.
    E.g. The following aborts,
@@ -400,13 +401,35 @@ dimensions.
    <CODE>Address_1</CODE> and <CODE>Address_2</CODE> and places
    the result at <CODE>Address_1</CODE>.
 
+<H4><CODE>ppl_intersection_assign_and_minimize(+Address_1,
+                     +Address_2)</CODE></H4>
+
+   Computes the intersection of the polyhedra referenced by
+   <CODE>Address_1</CODE> and <CODE>Address_2</CODE> and places
+   the result at <CODE>Address_1</CODE>.
+
 <H4><CODE>ppl_convex_hull_assign(+Address_1, +Address_2)</CODE></H4>
 
    Computes the convex hull of the polyhedra referenced by
    <CODE>Address_1</CODE> and <CODE>Address_2</CODE> and places
    the result at <CODE>Address_1</CODE>.
 
+<H4><CODE>ppl_convex_hull_assign_and_minimize(+Address_1,
+               +Address_2)</CODE></H4>
+
+   Computes the convex hull of the polyhedra referenced by
+   <CODE>Address_1</CODE> and <CODE>Address_2</CODE> and places
+   the result at <CODE>Address_1</CODE>.
+
 <H4><CODE>ppl_convex_difference_assign(+Address_1, +Address_2)</CODE></H4>
+
+   Computes the convex hull of the set-theoretic difference of
+   the polyhedra referenced by
+   <CODE>Address_1</CODE> and <CODE>Address_2</CODE> and places
+   the result at <CODE>Address_1</CODE>.
+
+<H4><CODE>ppl_convex_difference_assign_and_minimize(+Address_1,
+               +Address_2)</CODE></H4>
 
    Computes the convex hull of the set-theoretic difference of
    the polyhedra referenced by
