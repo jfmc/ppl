@@ -28,7 +28,7 @@ VPATH = @srcdir@
 
 SUBDIRS =
 
-INCLUDES = -I$(top_builddir)/src @extra_includes@
+AM_CPPFLAGS = -I$(top_builddir)/src -I$(top_builddir)/Watchdog @extra_includes@
 
 LDADD = $(top_builddir)/src/libppl.la @extra_libraries@
 
@@ -199,7 +199,6 @@ if BUILD_WATCHDOG_LIBRARY
 WATCHDOG_TESTS = watchdog1
 
 watchdog1_SOURCES = watchdog1.cc
-watchdog1_INCLUDES = -I$(top_builddir)/src -I$(top_builddir)/Watchdog @extra_includes@
 watchdog1_LDADD = $(top_builddir)/src/libppl.la $(top_builddir)/Watchdog/libpwl.la @extra_libraries@
 
 endif

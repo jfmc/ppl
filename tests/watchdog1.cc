@@ -22,13 +22,13 @@ For the most up-to-date information see the Parma Polyhedra Library
 site: http://www.cs.unipr.it/ppl/ . */
 
 #include "ppl_install.hh"
+#include "pwl_install.hh"
 #include "print.hh"
 #include "ehandlers.hh"
 
-#include "Watchdog.hh"
-
 using namespace std;
 using namespace Parma_Polyhedra_Library;
+using namespace Parma_Watchdog_Library;
 
 #define NOISY 1
 
@@ -43,14 +43,86 @@ compute_open_hypercube_generators(unsigned int dimension) {
   (void) hypercube.generators();
 }
 
+class myTimeout : virtual public std::exception,
+		  public Parma_Watchdog_Library::Flag {
+public:
+  const char* what() const throw() {
+    return "Yes, it's me!";
+  }
+  int priority() const {
+    return 0;
+  }
+  myTimeout() {
+  }
+};
+
+myTimeout t;
+
+bool
+timed_compute_open_hypercube_generators(unsigned int dimension,
+					int hundredth_secs) {
+  try {
+    Watchdog w(hundredth_secs, &abandon_exponential_computations, t);
+    compute_open_hypercube_generators(dimension);
+    abandon_exponential_computations = 0;
+    return true;
+  }
+  catch (const myTimeout&) {
+    abandon_exponential_computations = 0;
+    return false;
+  }
+  catch (const std::exception& e) {
+    abandon_exponential_computations = 0;
+    cout << e.what() << endl;
+    return false;
+  }
+}
+
+#define INIT_TIME 20
+
 int
 main() {
   set_handlers();
+  
+  Watchdog::initialize();
 
-  for (unsigned int dimension = 0; dimension <= 12; ++dimension) {
-    cout << dimension << endl;
-    compute_open_hypercube_generators(dimension);
+  // Find a dimension that cannot be computed with a INIT_TIME timeout.
+  unsigned int dimension = 0;
+  do {
+    ++dimension;
+#if NOISY
+    cout << "Trying dimension " << dimension << endl;
+#endif
   }
+  while (timed_compute_open_hypercube_generators(dimension, INIT_TIME));
+
+  // Now find an upper bound to the time necessary to compute it
+  int upper_bound = INIT_TIME;
+  do {
+    upper_bound *= 2;
+#if NOISY
+    cout << "Trying upper bound " << upper_bound << endl;
+#endif
+  }
+  while (!timed_compute_open_hypercube_generators(dimension, upper_bound));
+
+  // Search the "exact" time.
+  int lower_bound = upper_bound/2;
+  do {
+    int test_time = (lower_bound+upper_bound)/2;
+#if NOISY
+    cout << "Probing " << test_time << endl;
+#endif
+    if (timed_compute_open_hypercube_generators(dimension, test_time))
+      upper_bound = test_time;
+    else
+      lower_bound = test_time;
+  } while (upper_bound-lower_bound > 4);
+
+#if NOISY
+    cout << "Estimated time for dimension " << dimension
+	 << ": " << (lower_bound+upper_bound)/2 << " 100th of sec" << endl;
+#endif
 
   return 0;
 }
