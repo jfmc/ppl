@@ -59,6 +59,9 @@ X36 >= 0
 X37 >= 0
 X38 >= 0
 X39 >= 0
+Objective function:
+-7205759403792794*X02 - 5764607523034235*X14 - 10808639105689190*X23 - 8646911284551352*X36 + 180143985094819840*X39)/18014398509481984
+Minimizing.
 *** ppl_lpsol -v --max -oobtained afiro.mps
 Constraints:
 X01 - X02 - X03 = 0
@@ -120,6 +123,9 @@ X36 >= 0
 X37 >= 0
 X38 >= 0
 X39 >= 0
+Objective function:
+-7205759403792794*X02 - 5764607523034235*X14 - 10808639105689190*X23 - 8646911284551352*X36 + 180143985094819840*X39)/18014398509481984
+Maximizing.
 *** ppl_lpsol -v --min -oobtained bgprtr.mps
 Constraints:
 P1T1 + P2T1 - NDT1 = 130
@@ -176,6 +182,9 @@ B2T1 >= 0
 T2T1 >= 0
 B2T2 >= 0
 T2T2 >= 0
+Objective function:
+29970*P1T1 + 29970*P1T2 + 29910*P2T1 + 29910*P2T2 - 1000*I1T1 - 1000*I1T2 - 1000*I2T1 - 1000*I2T2 - 1200*E1T1 - 1200*E1T2 - 1200*E2T1 - 1200*E2T2 - 20*C1T1 - 20*C1T2 - 20*C2T1 - 20*C2T2 - 3000*NDT1 - 3000*NDT2 - 20*R1T1 - 20*R1T2 - 20*R2T1 - 20*R2T2 - 300*N1T1 - 300*N1T2 - 300*N2T1 - 300*N2T2
+Minimizing.
 Unfeasible problem.
 *** ppl_lpsol -v --max -oobtained bgprtr.mps
 Constraints:
@@ -233,6 +242,9 @@ B2T1 >= 0
 T2T1 >= 0
 B2T2 >= 0
 T2T2 >= 0
+Objective function:
+29970*P1T1 + 29970*P1T2 + 29910*P2T1 + 29910*P2T2 - 1000*I1T1 - 1000*I1T2 - 1000*I2T1 - 1000*I2T2 - 1200*E1T1 - 1200*E1T2 - 1200*E2T1 - 1200*E2T2 - 20*C1T1 - 20*C1T2 - 20*C2T1 - 20*C2T2 - 3000*NDT1 - 3000*NDT2 - 20*R1T1 - 20*R1T2 - 20*R2T1 - 20*R2T2 - 300*N1T1 - 300*N1T2 - 300*N2T1 - 300*N2T2
+Maximizing.
 Unfeasible problem.
 *** ppl_lpsol -v --min -oobtained ex1.mps
 Constraints:

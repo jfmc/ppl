@@ -60,6 +60,9 @@ B2T1 >= 0
 T2T1 >= 0
 B2T2 >= 0
 T2T2 >= 0
+Objective function:
+29970*P1T1 + 29970*P1T2 + 29910*P2T1 + 29910*P2T2 - 1000*I1T1 - 1000*I1T2 - 1000*I2T1 - 1000*I2T2 - 1200*E1T1 - 1200*E1T2 - 1200*E2T1 - 1200*E2T2 - 20*C1T1 - 20*C1T2 - 20*C2T1 - 20*C2T2 - 3000*NDT1 - 3000*NDT2 - 20*R1T1 - 20*R1T2 - 20*R2T1 - 20*R2T2 - 300*N1T1 - 300*N1T2 - 300*N2T1 - 300*N2T2
+Minimizing.
 Unfeasible problem.
 *** ppl_lpsol -v --max -oobtained bgprtr.mps
 Constraints:
@@ -117,6 +120,9 @@ B2T1 >= 0
 T2T1 >= 0
 B2T2 >= 0
 T2T2 >= 0
+Objective function:
+29970*P1T1 + 29970*P1T2 + 29910*P2T1 + 29910*P2T2 - 1000*I1T1 - 1000*I1T2 - 1000*I2T1 - 1000*I2T2 - 1200*E1T1 - 1200*E1T2 - 1200*E2T1 - 1200*E2T2 - 20*C1T1 - 20*C1T2 - 20*C2T1 - 20*C2T2 - 3000*NDT1 - 3000*NDT2 - 20*R1T1 - 20*R1T2 - 20*R2T1 - 20*R2T2 - 300*N1T1 - 300*N1T2 - 300*N2T1 - 300*N2T2
+Maximizing.
 Unfeasible problem.
 *** ppl_lpsol -v --min -oobtained ex1.mps
 Constraints:
