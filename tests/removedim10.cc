@@ -48,13 +48,13 @@ main() TRY {
 
   ph.remove_higher_dimensions(1);
 
-  C_Polyhedron known_result(2, C_Polyhedron::EMPTY);
-  ph.add_generator(point(1*A, 2));
+  C_Polyhedron known_result(1, C_Polyhedron::EMPTY);
+  known_result.add_generator(point(A, 2));
 
   int retval = (ph == known_result) ? 0 : 1;
 
 #if NOISY
-  print_constraints(ph, "*** After ph.remove_higher_dimensions(2) ***");
+  print_constraints(ph, "*** After ph.remove_higher_dimensions(1) ***");
 #endif
   return retval;
 }
