@@ -185,6 +185,8 @@ E_NIT<T>::plus_infinity() {
   return E_NIT(pinf());
 }
 
+#define PLUS_INFINITY plus_infinity<T>()
+
 template <typename T>
 inline E_NIT<T>
 E_NIT<T>::finite_max() {
@@ -506,6 +508,73 @@ div_round_down(E_NIT<T> x, int y) {
   assert(x.is_finite());
   z = div_round_down<E_NIT<T> >(Coefficient(x.number()), Coefficient(y));
   return z;
+}
+
+template <typename T>
+inline bool
+is_plus_infinity(const E_NIT<T>& x) {
+  return x.is_plus_infinity();
+}
+
+template <typename T>
+inline bool
+is_nan(const E_NIT<T>& x) {
+  return x.is_nan();
+}
+
+template <typename T>
+inline bool
+is_negative(const E_NIT<T>& x) {
+  return x.is_negative();
+}
+
+template <typename T>
+inline bool
+is_nonnegative(const E_NIT<T>& x) {
+  return x.is_nonnegative();
+}
+
+template <typename T>
+inline bool
+exact_neg(E_NIT<T>& to, const E_NIT<T>& x) {
+  to = x;
+  return true;
+}
+
+template <typename T>
+inline void
+div_round_up(E_NIT<T>& to,
+	     const Coefficient& x,
+	     const Coefficient& y) {
+  div_round_up(x, y, to);
+}
+
+template <typename T>
+inline void
+add_round_up(E_NIT<T>& to,
+	     const E_NIT<T>& x,
+	     const E_NIT<T>& y) {
+  to = add_round_up(x, y);
+}
+
+template <typename T>
+inline void add_round_down(E_NIT<T>& to,
+			   const E_NIT<T>& x,
+			   const E_NIT<T>& y) {
+  to = add_round_down(x, y);
+}
+
+template <typename T>
+inline void
+negate_round_down(E_NIT<T>& to,
+		  const E_NIT<T>& x) {
+  to = negate_round_down(x);
+}
+
+template <typename T>
+void numer_denom(const E_NIT<T>& from,
+		 Coefficient& num, Coefficient& den) {
+  from.numer_denom(num, den);
 }
 
 namespace IO_Operators {

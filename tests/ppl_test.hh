@@ -35,9 +35,6 @@ namespace Parma_Polyhedra_Library {
 #if 0
 typedef BD_Shape<E_Rational> TBD_Shape;
 #else
-typedef BD_Shape<Checked_Number<mpq_class, Extended_Number_Policy> > TBD_Shape;
-//typedef BD_Shape<Checked_Number<int, Extended_Number_Policy> > TBD_Shape;
-
 template <typename T, typename Policy>
 bool is_plus_infinity(const Checked_Number<T, Policy>& x) {
   return x.classify(false, true, false) == VC_PLUS_INFINITY;
@@ -126,6 +123,9 @@ void numer_denom(const Checked_Number<T, Policy>& from,
   num = q.get_num();
   den = q.get_den();
 }
+
+typedef BD_Shape<Checked_Number<mpq_class, Extended_Number_Policy> > TBD_Shape;
+//typedef BD_Shape<Checked_Number<int, Extended_Number_Policy> > TBD_Shape;
 #endif
 
 }
