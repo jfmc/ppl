@@ -202,7 +202,8 @@ public:
 				  unsigned max_disjuncts);
 
   //! \brief
-  //! Assigns to \p *this the result of computing the BHZ03-widening
+  //! Assigns to \p *this the result of computing the
+  //! \ref pps_certificate_widening "BHZ03-widening"
   //! between \p *this and \p y, using the widening function \p wf
   //! certified by the convergence certificate \p Cert.
   /*!
@@ -220,16 +221,6 @@ public:
     \exception std::invalid_argument
     Thrown if \p *this and \p y are topology-incompatible or
     dimension-incompatible.
-
-    The BHZ03 widening framework is instantiated using two extrapolation
-    heuristics: first, the least upper bound is tried; second, the BGP99
-    extrapolation operator is tried, possibly applying pairwise reduction.
-    If both heuristics fail to converge according to the certificate \p Cert,
-    then an attempt is made to apply the base-level widening \p wf to
-    the poly-hulls of \p *this and \p y, possibly improving the result
-    using Polyhedron::poly_difference_assign. For more details and
-    a justification of the overall approach, see \ref BHZ03b "[BHZ03b]"
-    and \ref BHZ04 "[BHZ04]".
 
     \warning
     In order to obtain a proper widening operator, the template parameter
