@@ -24,6 +24,8 @@ dnl site: http://www.cs.unipr.it/ppl/ .
 dnl
 AC_DEFUN([AC_CXX_SUPPORTS_ATTRIBUTE_WEAK],
 [
+ac_save_CPPFLAGS="$CPPFLAGS"
+ac_save_LIBS="$LIBS"
 AC_LANG_PUSH(C++)
 
 AC_MSG_CHECKING([whether the C++ compiler supports __attribute__ ((weak))])
