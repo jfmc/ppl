@@ -119,7 +119,7 @@ site: http://www.cs.unipr.it/ppl/ . */
   FIXME: the following kludge is due to the fact that XSB versions up
   to and including 2.6 do not seem to support current_prolog_flag/2.
   With this hack we are able to test the Prolog interface exceptions
-  when converting PPL integers to XSB Prolog integer terms.
+  when converting PPL integers to XSB-Prolog integer terms.
 */
 current_prolog_flag(bounded, true).
 
