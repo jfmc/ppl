@@ -182,8 +182,8 @@ PPL::GenSys::satisfy(const Constraint& c) const {
 	    //   the generators checked until here satisfy c.
 	    // - If r saturate c then all the generators
 	    //   checked until here saturate c.
-	    // - If r does not verify c we have only
-	    //   generators that saturate or do not verify c,
+	    // - If r does not satisfy c we have only
+	    //   generators that saturate or do not satisfy c,
 	    //   then none of them satisfy c.
 	    res = (sp_sign > 0) ? ALL_SATISFY :
 	      ((sp_sign == 0) ? ALL_SATURATE : NONE_SATISFIES);
@@ -198,8 +198,8 @@ PPL::GenSys::satisfy(const Constraint& c) const {
 	      // We return SOME_SATISFY in two cases:
 	      // - if r satisfies c and all the previous
 	      //   generators do not;
-	      // - if r does not verify and all the
-	      //   the previous generators verify.
+	      // - if r does not satisfy c and all the
+	      //   the previous generators satisfy it.
 	      return SOME_SATISFY;
 	    if (sp_sign > 0)
 	      // Since we always return if res == SOME_SATISFIES,
