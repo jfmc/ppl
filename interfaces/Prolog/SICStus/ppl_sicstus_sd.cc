@@ -177,6 +177,8 @@ SP_STUB_1(ppl_Polyhedron_is_universe)
 SP_STUB_1(ppl_Polyhedron_is_bounded)
 SP_STUB_2(ppl_Polyhedron_bounds_from_above)
 SP_STUB_2(ppl_Polyhedron_bounds_from_below)
+SP_STUB_5(ppl_Polyhedron_maximize)
+SP_STUB_5(ppl_Polyhedron_minimize)
 SP_STUB_1(ppl_Polyhedron_is_topologically_closed)
 SP_STUB_2(ppl_Polyhedron_contains_Polyhedron)
 SP_STUB_2(ppl_Polyhedron_strictly_contains_Polyhedron)
@@ -186,8 +188,7 @@ SP_STUB_1(ppl_Polyhedron_OK)
 SP_STUB_2(ppl_Polyhedron_add_constraint)
 SP_STUB_2(ppl_Polyhedron_add_constraint_and_minimize)
 SP_STUB_2(ppl_Polyhedron_add_generator)
-SP_STUB_2(ppl_Polyhedron_add_generator_and_minimize)
-SP_STUB_2(ppl_Polyhedron_add_constraints)
+SP_STUB_2(ppl_Polyhedron_add_generator_and_minimize)SP_STUB_2(ppl_Polyhedron_add_constraints)
 SP_STUB_2(ppl_Polyhedron_add_constraints_and_minimize)
 SP_STUB_2(ppl_Polyhedron_add_generators)
 SP_STUB_2(ppl_Polyhedron_add_generators_and_minimize)
@@ -262,6 +263,8 @@ ppl_sicstus_init(int /* when */) {
   SP_DEFINE_C_PREDICATE(ppl_Polyhedron_is_bounded, 1);
   SP_DEFINE_C_PREDICATE(ppl_Polyhedron_bounds_from_above, 2);
   SP_DEFINE_C_PREDICATE(ppl_Polyhedron_bounds_from_below, 2);
+  SP_DEFINE_C_PREDICATE(ppl_Polyhedron_maximize, 5);
+  SP_DEFINE_C_PREDICATE(ppl_Polyhedron_minimize, 5);
   SP_DEFINE_C_PREDICATE(ppl_Polyhedron_is_topologically_closed, 1);
   SP_DEFINE_C_PREDICATE(ppl_Polyhedron_contains_Polyhedron, 2);
   SP_DEFINE_C_PREDICATE(ppl_Polyhedron_strictly_contains_Polyhedron, 2);

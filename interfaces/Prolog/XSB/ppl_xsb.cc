@@ -373,6 +373,8 @@ Integer_to_integer_term(const PPL::Integer& n) {
 #define ppl_Polyhedron_is_bounded xsb_stub_ppl_Polyhedron_is_bounded
 #define ppl_Polyhedron_bounds_from_above xsb_stub_ppl_Polyhedron_bounds_from_above
 #define ppl_Polyhedron_bounds_from_below xsb_stub_ppl_Polyhedron_bounds_from_below
+#define ppl_Polyhedron_maximize xsb_stub_ppl_Polyhedron_maximize
+#define ppl_Polyhedron_minimize xsb_stub_ppl_Polyhedron_minimize
 #define ppl_Polyhedron_is_topologically_closed xsb_stub_ppl_Polyhedron_is_topologically_closed
 #define ppl_Polyhedron_contains_Polyhedron xsb_stub_ppl_Polyhedron_contains_Polyhedron
 #define ppl_Polyhedron_strictly_contains_Polyhedron xsb_stub_ppl_Polyhedron_strictly_contains_Polyhedron
@@ -446,6 +448,8 @@ Integer_to_integer_term(const PPL::Integer& n) {
 #undef ppl_Polyhedron_is_bounded
 #undef ppl_Polyhedron_bounds_from_above
 #undef ppl_Polyhedron_bounds_from_below
+#undef ppl_Polyhedron_maximize
+#undef ppl_Polyhedron_minimize
 #undef ppl_Polyhedron_is_topologically_closed
 #undef ppl_Polyhedron_contains_Polyhedron
 #undef ppl_Polyhedron_strictly_contains_Polyhedron
@@ -568,6 +572,8 @@ XSB_ENTRY_1(ppl_Polyhedron_is_universe)
 XSB_ENTRY_1(ppl_Polyhedron_is_bounded)
 XSB_ENTRY_2(ppl_Polyhedron_bounds_from_above)
 XSB_ENTRY_2(ppl_Polyhedron_bounds_from_below)
+XSB_ENTRY_5(ppl_Polyhedron_maximize)
+XSB_ENTRY_5(ppl_Polyhedron_minimize)
 XSB_ENTRY_1(ppl_Polyhedron_is_topologically_closed)
 XSB_ENTRY_2(ppl_Polyhedron_contains_Polyhedron)
 XSB_ENTRY_2(ppl_Polyhedron_strictly_contains_Polyhedron)

@@ -49,6 +49,8 @@ site: http://www.cs.unipr.it/ppl/ . */
 	ppl_Polyhedron_is_bounded/1,
 	ppl_Polyhedron_bounds_from_above/2,
 	ppl_Polyhedron_bounds_from_below/2,
+	ppl_Polyhedron_maximize/5,
+	ppl_Polyhedron_minimize/5,
         ppl_Polyhedron_is_topologically_closed/1,
 	ppl_Polyhedron_contains_Polyhedron/2,
 	ppl_Polyhedron_strictly_contains_Polyhedron/2,

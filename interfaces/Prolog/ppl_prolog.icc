@@ -328,6 +328,10 @@ Prolog_atom a_time_out;
 // "Out of memory" exception atom;
 Prolog_atom a_out_of_memory;
 
+// "Booleans";
+Prolog_atom a_true;
+Prolog_atom a_false;
+
 struct {
   Prolog_atom* p_atom;
   const char* name;
@@ -375,6 +379,8 @@ struct {
 
   { &a_time_out,            "time_out" },
   { &a_out_of_memory,       "out_of_memory" },
+  { &a_true,                "true" },
+  { &a_false,               "false" },
 };
 
 Prolog_term_ref
@@ -1439,12 +1445,79 @@ ppl_Polyhedron_bounds_from_below(Prolog_term_ref t_ph,
 }
 
 extern "C" Prolog_foreign_return_type
+ppl_Polyhedron_maximize(Prolog_term_ref t_ph,
+			Prolog_term_ref t_le_expr,
+                        Prolog_term_ref t_n,
+                        Prolog_term_ref t_d,
+                        Prolog_term_ref t_max
+                      ) {
+ try {
+    const Polyhedron* ph = term_to_polyhedron_handle(t_ph);
+    CHECK(ph);
+    const LinExpression le = build_lin_expression(t_le_expr);
+    Integer n;
+    Integer d;
+    bool max;
+    if (ph->maximize(le, n, d, max))
+      {
+	Prolog_term_ref t = Prolog_new_term_ref();
+        Prolog_atom a = (max ? a_true : a_false);
+        Prolog_put_atom(t, a);
+        if (Prolog_unify(t_n, Integer_to_integer_term(n))
+	   && Prolog_unify(t_d, Integer_to_integer_term(d))
+           && Prolog_unify(t_max, t))
+           return PROLOG_SUCCESS;
+       }
+ }
+  CATCH_ALL;
+}
+
+extern "C" Prolog_foreign_return_type
+ppl_Polyhedron_minimize(Prolog_term_ref t_ph,
+			Prolog_term_ref t_le_expr,
+                        Prolog_term_ref t_n,
+                        Prolog_term_ref t_d,
+                        Prolog_term_ref t_min
+                      ) {
+ try {
+    const Polyhedron* ph = term_to_polyhedron_handle(t_ph);
+    CHECK(ph);
+    const LinExpression le = build_lin_expression(t_le_expr);
+    Integer n;
+    Integer d;
+    bool min;
+    if (ph->minimize(le, n, d, min))
+      {
+	Prolog_term_ref t = Prolog_new_term_ref();
+        Prolog_atom a = (min ? a_true : a_false);
+        Prolog_put_atom(t, a);
+        if (Prolog_unify(t_n, Integer_to_integer_term(n))
+	   && Prolog_unify(t_d, Integer_to_integer_term(d))
+           && Prolog_unify(t_min, t))
+           return PROLOG_SUCCESS;
+       }
+ }
+  CATCH_ALL;
+}
+
+extern "C" Prolog_foreign_return_type
 ppl_Polyhedron_is_topologically_closed(Prolog_term_ref t_ph) {
   try {
     const Polyhedron* ph = term_to_polyhedron_handle(t_ph);
     CHECK(ph);
     if (ph->is_topologically_closed())
       return PROLOG_SUCCESS;
+  }
+  CATCH_ALL;
+}
+
+extern "C" Prolog_foreign_return_type
+ppl_Polyhedron_topological_closure_assign(Prolog_term_ref t_ph) {
+  try {
+    Polyhedron* ph = term_to_polyhedron_handle(t_ph);
+    CHECK(ph);
+    ph->topological_closure_assign();
+    return PROLOG_SUCCESS;
   }
   CATCH_ALL;
 }
@@ -1813,17 +1886,6 @@ ppl_Polyhedron_generalized_affine_image_lhs_rhs(Prolog_term_ref t_ph,
 				   build_lin_expression(t_rhs));
       return PROLOG_SUCCESS;
     }
-  }
-  CATCH_ALL;
-}
-
-extern "C" Prolog_foreign_return_type
-ppl_Polyhedron_topological_closure_assign(Prolog_term_ref t_ph) {
-  try {
-    Polyhedron* ph = term_to_polyhedron_handle(t_ph);
-    CHECK(ph);
-    ph->topological_closure_assign();
-    return PROLOG_SUCCESS;
   }
   CATCH_ALL;
 }

@@ -48,6 +48,8 @@ site: http://www.cs.unipr.it/ppl/ . */
 :- foreign(ppl_Polyhedron_is_bounded(+term)).
 :- foreign(ppl_Polyhedron_bounds_from_above(+term, +term)).
 :- foreign(ppl_Polyhedron_bounds_from_below(+term, +term)).
+:- foreign(ppl_Polyhedron_maximize(+term, +term, +term, +term, +term)).
+:- foreign(ppl_Polyhedron_minimize(+term, +term, +term, +term, +term)).
 :- foreign(ppl_Polyhedron_is_topologically_closed(+term)).
 :- foreign(ppl_Polyhedron_contains_Polyhedron(+term, +term)).
 :- foreign(ppl_Polyhedron_strictly_contains_Polyhedron(+term, +term)).

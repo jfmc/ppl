@@ -418,6 +418,8 @@ YAP_STUB_1(ppl_Polyhedron_is_universe)
 YAP_STUB_1(ppl_Polyhedron_is_bounded)
 YAP_STUB_2(ppl_Polyhedron_bounds_from_above)
 YAP_STUB_2(ppl_Polyhedron_bounds_from_below)
+YAP_STUB_5(ppl_Polyhedron_maximize)
+YAP_STUB_5(ppl_Polyhedron_minimize)
 YAP_STUB_1(ppl_Polyhedron_is_topologically_closed)
 YAP_STUB_2(ppl_Polyhedron_contains_Polyhedron)
 YAP_STUB_2(ppl_Polyhedron_strictly_contains_Polyhedron)
@@ -495,6 +497,8 @@ init() {
   YAP_USER_C_PREDICATE(ppl_Polyhedron_is_bounded, 1);
   YAP_USER_C_PREDICATE(ppl_Polyhedron_bounds_from_above, 2);
   YAP_USER_C_PREDICATE(ppl_Polyhedron_bounds_from_below, 2);
+  YAP_USER_C_PREDICATE(ppl_Polyhedron_maximize, 5);
+  YAP_USER_C_PREDICATE(ppl_Polyhedron_minimize, 5);
   YAP_USER_C_PREDICATE(ppl_Polyhedron_is_topologically_closed, 1);
   YAP_USER_C_PREDICATE(ppl_Polyhedron_contains_Polyhedron, 2);
   YAP_USER_C_PREDICATE(ppl_Polyhedron_strictly_contains_Polyhedron, 2);

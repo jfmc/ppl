@@ -58,6 +58,8 @@ run_all:-
         error_message(['error in a remove/rename dimension predicate'])),
    (check_polys -> true ;
         error_message(['error in a check predicate'])),
+   (minmax_polys -> true ;
+        error_message(['error in a minimize or maximize predicate'])),
    (compare_polys -> true ;
         error_message(['error in a polyhedra comparison predicate'])),
    (poly_boxes -> true ;
@@ -177,6 +179,13 @@ check_polys :-
    checks,
    bounds_from_above,
    bounds_from_below,
+   !,
+   ppl_finalize.
+
+minmax_polys :-
+   ppl_initialize,
+   maximize,
+   minimize,
    !,
    ppl_finalize.
 
@@ -1416,6 +1425,50 @@ bounds_from_below :-
   ppl_Polyhedron_add_constraint(P, A > 1),
   ppl_Polyhedron_bounds_from_below(P, A),
   ppl_delete_Polyhedron(P).
+
+% Tests ppl_Polyhedron_maximize.
+maximize :-
+  make_vars(2, [A, B]),
+  ppl_new_Polyhedron_from_constraints(c,
+                                      [A >= -1, A =< 1, B >= -1,
+                                       B =< 1],
+                                     P),
+  ppl_Polyhedron_maximize(P, A + B, N, D, Max),
+  N = 2,
+  D = 1,
+  Max = true,
+  ppl_new_Polyhedron_from_constraints(nnc,
+                                      [A > -1, A < 1, B > -1,
+                                       B < 1],
+                                     P1),
+  ppl_Polyhedron_maximize(P1, A + B - 1, N1, D1, Max1),
+  N1 = 1,
+  D1 = 1,
+  Max1 = false,
+  ppl_delete_Polyhedron(P),
+  ppl_delete_Polyhedron(P1).
+
+% Tests ppl_Polyhedron_minimize.
+minimize :-
+  make_vars(2, [A, B]),
+  ppl_new_Polyhedron_from_constraints(c,
+                                      [A >= -1, A =< 1, B >= -1,
+                                       B =< 1],
+                                     P),
+  ppl_Polyhedron_minimize(P, A + B, N, D, Min),
+  N = -2,
+  D = 1,
+  Min = true,
+  ppl_new_Polyhedron_from_constraints(nnc,
+                                      [A > -1, A =< 1, B > -1,
+                                       B =< 1],
+                                     P1),
+  ppl_Polyhedron_minimize(P1, A + B + 1, N1, D1, Min1),
+  N1 = -1,
+  D1 = 1,
+  Min1 = false,
+  ppl_delete_Polyhedron(P),
+  ppl_delete_Polyhedron(P1).
 
 % Tests Watchdog predicates
 % ppl_set_timeout

@@ -50,6 +50,8 @@ site: http://www.cs.unipr.it/ppl/ . */
         ppl_Polyhedron_is_bounded/1,
         ppl_Polyhedron_bounds_from_above/2,
         ppl_Polyhedron_bounds_from_below/2,
+        ppl_Polyhedron_maximize/5,
+        ppl_Polyhedron_minimize/5,
         ppl_Polyhedron_is_topologically_closed/1,
         ppl_Polyhedron_contains_Polyhedron/2,
         ppl_Polyhedron_strictly_contains_Polyhedron/2,
@@ -313,6 +315,30 @@ ppl_Polyhedron_bounds_from_above(Handle, LinearExpression) :-
 
 ppl_Polyhedron_bounds_from_below(Handle, LinearExpression) :-
 	ppl_Polyhedron_bounds_from_below_2(Handle, LinearExpression, 1).
+
+:- true pred ppl_Polyhedron_maximize_5(in(Handle),
+                                       in(LinearExpression),
+                                       in(Num),
+                                       in(Den),
+                                       in(Max),
+                                       go(Success))
+  :: any_term * any_term * any_term * any_term * any_term * int
+  + (returns(Success), foreign(ppl_Polyhedron_maximize)).
+
+ppl_Polyhedron_maximize(Handle, LinearExpression, Num, Den, Max) :-
+	ppl_Polyhedron_minimize_5(Handle, LinearExpression, Num, Den, Max, 1).
+
+:- true pred ppl_Polyhedron_minimize_5(in(Handle),
+                                       in(LinearExpression),
+                                       in(Num),
+                                       in(Den),
+                                       in(Min),
+                                       go(Success))
+  :: any_term * any_term * any_term * any_term * any_term * int
+  + (returns(Success), foreign(ppl_Polyhedron_minimize)).
+
+ppl_Polyhedron_minimize(Handle, LinearExpression, Num, Den, Min) :-
+	ppl_Polyhedron_minimize_5(Handle, LinearExpression, Num, Den, Min, 1).
 
 :- true pred ppl_Polyhedron_is_topologically_closed_2(in(Handle),
                                                          go(Success))
@@ -664,7 +690,9 @@ ppl_Polyhedron_bounded_H79_extrapolation_assign_with_token(Handle1,
         ppl_Polyhedron_bounds_from_above_2/3,
 %       ppl_Polyhedron_bounds_from_below/2,
         ppl_Polyhedron_bounds_from_below_2/3,
-%        ppl_Polyhedron_is_topologically_closed/1,
+%       ppl_Polyhedron_maximize/5,
+        ppl_Polyhedron_maximize_5/6,
+%       ppl_Polyhedron_is_topologically_closed/1,
         ppl_Polyhedron_is_topologically_closed_2/2,
 %       ppl_Polyhedron_contains_Polyhedron/2,
         ppl_Polyhedron_contains_Polyhedron_2/3,
@@ -834,6 +862,20 @@ since the above version of this is temporary.
 
 :- true pred ppl_Polyhedron_bounds_from_below(in(Handle), in(LinearExpression))
              :: any_term * any_term + foreign.
+
+:- true pred ppl_Polyhedron_maximize(in(Handle),
+                                     in(LinearExpression),
+                                     in(Num),
+                                     in(Den),
+                                     in(Max))
+             :: any_term * any_term * any_term * any_term * any_term + foreign.
+
+:- true pred ppl_Polyhedron_minimize(in(Handle),
+                                     in(LinearExpression),
+                                     in(Num),
+                                     in(Den),
+                                     in(Min))
+             :: any_term * any_term * any_term * any_term * any_term + foreign.
 
 :- true pred ppl_Polyhedron_is_topologically_closed(in(Handle))
              :: any_term + foreign.
@@ -1035,6 +1077,8 @@ since the above version of this is temporary.
         ppl_Polyhedron_is_bounded/1,
         ppl_Polyhedron_bounds_from_above/2,
         ppl_Polyhedron_bounds_from_below/2,
+        ppl_Polyhedron_maximize/5,
+        ppl_Polyhedron_minimize/5,
         ppl_Polyhedron_is_topologically_closed/1,
         ppl_Polyhedron_contains_Polyhedron/2,
         ppl_Polyhedron_strictly_contains_Polyhedron/2,

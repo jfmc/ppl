@@ -348,7 +348,10 @@ static PL_extension predicates[] = {
   PL_EXTENSION_ENTRY(ppl_Polyhedron_is_bounded, 1)
   PL_EXTENSION_ENTRY(ppl_Polyhedron_bounds_from_above, 2)
   PL_EXTENSION_ENTRY(ppl_Polyhedron_bounds_from_below, 2)
+  PL_EXTENSION_ENTRY(ppl_Polyhedron_maximize, 5)
+  PL_EXTENSION_ENTRY(ppl_Polyhedron_minimize, 5)
   PL_EXTENSION_ENTRY(ppl_Polyhedron_is_topologically_closed, 1)
+  PL_EXTENSION_ENTRY(ppl_Polyhedron_topological_closure_assign, 1)
   PL_EXTENSION_ENTRY(ppl_Polyhedron_contains_Polyhedron, 2)
   PL_EXTENSION_ENTRY(ppl_Polyhedron_strictly_contains_Polyhedron, 2)
   PL_EXTENSION_ENTRY(ppl_Polyhedron_is_disjoint_from_Polyhedron, 2)
@@ -372,7 +375,6 @@ static PL_extension predicates[] = {
   PL_EXTENSION_ENTRY(ppl_Polyhedron_generalized_affine_image, 5)
   PL_EXTENSION_ENTRY(ppl_Polyhedron_generalized_affine_image_lhs_rhs, 4)
   PL_EXTENSION_ENTRY(ppl_Polyhedron_time_elapse_assign, 2)
-  PL_EXTENSION_ENTRY(ppl_Polyhedron_topological_closure_assign, 1)
   PL_EXTENSION_ENTRY(ppl_Polyhedron_BHRZ03_widening_assign_with_token, 3)
   PL_EXTENSION_ENTRY(ppl_Polyhedron_BHRZ03_widening_assign, 2)
   PL_EXTENSION_ENTRY(
