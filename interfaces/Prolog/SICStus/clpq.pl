@@ -1,5 +1,4 @@
 :- ensure_loaded(ppl_sicstus).
-:- use_module(library(lists)).
 
 /*
   A non-ground meta-interpreter for CLP(Q) for use with the Parma
@@ -20,7 +19,7 @@ Qs: a stack of copies of polyhdron to enable backtracking.
 */
 
 solve(Goal,[Polyhedron,Q|Qs]):-
-    numbervars(Goal,0,Dims),
+    numvars(Goal,0,Dims),
          % Polyhedron: the main polyhedron is initialised with 
          % dimensions = Dims, the number of variables in Goal.
     ppl_new_polyhedron(Polyhedron, Dims), 
@@ -77,7 +76,17 @@ solve({Cs},Polyhedron,InDims,InDims,Q,Qs,Qs):-
     ppl_convex_hull_assign(Polyhedron,Q),
          % The number of extra dimensions is the number of new variables.
          % Solve the constraints using the constraint solver.
-    solve_constraints(Cs,Polyhedron,Q). 
+    solve_constraints(Cs,Polyhedron,Q),
+         % If the Polyhedron is empty, then we fail 
+         % and delete the copy of the polyhedron.
+    (
+     ppl_check_empty(Polyhedron)
+    ->
+     ppl_delete_polyhedron(Q),
+     fail
+    ;
+     true
+    ).
 
 %%% The case when the query is a conjunction.
 solve((A,B),Polyhedron,InDims,OutDims,Q,InQs,[QB|Qs]):-
@@ -93,7 +102,7 @@ solve((A,B),Polyhedron,InDims,OutDims,Q,InQs,[QB|Qs]):-
 solve(Atom,Polyhedron,InDims,OutDims,Q,InQs,[Q1|Q1s]):-
     user_clause(Atom, Body),
          % New variables are frozen for using with the PPL.
-    numbervars(Body,InDims,BOutDims),
+    numvars(Body,InDims,BOutDims),
          % On backtracking, the original state must be restored.
     ppl_remove_higher_dimensions(Polyhedron,InDims),
     ppl_convex_hull_assign(Polyhedron,Q),
@@ -114,18 +123,8 @@ solve_constraints((C,D),Polyhedron,Q):-
     !,
     solve_constraints(C,Polyhedron,Q),
     solve_constraints(D,Polyhedron,Q).
-solve_constraints(C,Polyhedron,Q):- 
-    ppl_insert_constraint(Polyhedron,C),
-         % If the Polyhedron is empty, then we fail 
-         % and delete the copy of the polyhedron.
-    (
-     ppl_check_empty(Polyhedron)
-    ->
-     ppl_delete_polyhedron(Q),
-     fail
-    ;
-     true
-    ).
+solve_constraints(C,Polyhedron,_Q):- 
+    ppl_insert_constraint(Polyhedron,C).
 
 /*
 The two lists are made equal in the polyhedron.
@@ -144,6 +143,20 @@ check_constraints(Polyhedron) :-
     write(D), write(' * '),
     ppl_get_constraints(Polyhedron, CS),
     write(CS), write(' % ').
+
+numvars(A,InN,OutN):-
+    var(A),
+    !,
+    A = '$VAR'(InN),
+    OutN is InN + 1.
+numvars(A,InN,OutN):-
+    A =.. [_|Args],
+    numvars_list(Args,InN,OutN).
+
+numvars_list([],InN,InN).
+numvars_list([Arg|Args],InN,OutN):-
+    numvars(Arg,InN,N),
+    numvars_list(Args,N,OutN).
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 :- dynamic user_clause/2.
@@ -295,7 +308,7 @@ do_command(_) :-
 
 remove_redundant([],_Qs).
 remove_redundant([P|Ps],Qs):-
-  member(P,Qs),
+  member_check(P,Qs),
   !,
   remove_redundant(Ps,Qs).
 remove_redundant([P|Ps],Qs):-
@@ -306,6 +319,11 @@ delete_polyhedra([]).
 delete_polyhedra([Q|Qs]):-
    ppl_delete_polyhedron(Q),
    delete_polyhedra(Qs).
+
+member_check(A,[A|_]):-
+   !.
+member_check(A,[_|Bs]):-
+   member_check(A,Bs).
 
 query_next_solution :-
   write(' more? '),
