@@ -59,6 +59,8 @@ LinExpression& operator-=(LinExpression& e1, const LinExpression& e2);
 LinExpression& operator-=(LinExpression& e, const Variable& v);
 LinExpression& operator-=(LinExpression& e, const Integer& n);
 
+LinExpression& operator*=(LinExpression& e, const Integer& n);
+
 } // namespace Parma_Polyhedra_Library
 
 
@@ -278,6 +280,11 @@ private:
   //! Returns the linear expression \p e - \p n and assigns it to \p e.
   friend LinExpression&
   Parma_Polyhedra_Library::operator-=(LinExpression& e,
+				      const Integer& n);
+
+  //! Returns the linear expression \p n * \p e and assigns it to \p e.
+  friend LinExpression&
+  Parma_Polyhedra_Library::operator*=(LinExpression& e,
 				      const Integer& n);
 };
 
