@@ -526,6 +526,12 @@ solve(char* file_name) {
     ppl_delete_LinExpression(ppl_le);
   }
 
+  free(coefficient_value);
+  for (i = 1; i <= dimension; ++i)
+    mpq_clear(rational_coefficient[i]);
+  free(rational_coefficient);
+  free(coefficient_index);
+
   /*
     FIXME: here we could build the polyhedron and minimize it before
     adding the variable bounds.
@@ -552,6 +558,9 @@ solve(char* file_name) {
 
     ppl_delete_LinExpression(ppl_le);
   }
+
+  mpq_clear(rational_ub);
+  mpq_clear(rational_lb);
 
   /* Create the polyhedron and get rid of the constraint system. */
   ppl_new_C_Polyhedron_recycle_ConSys(&ppl_ph, ppl_cs);
@@ -626,6 +635,10 @@ solve(char* file_name) {
     ppl_LinExpression_add_to_coefficient(ppl_objective_le, i-1, ppl_coeff);
   }
 
+  for (i = 0; i <= dimension; ++i)
+    mpq_clear(objective[i]);
+  free(objective);
+
   if (verbose) {
     if (mpz_cmp_si(den_lcm, 1) != 0) {
       fprintf(output_file, ")/");
@@ -664,6 +677,8 @@ solve(char* file_name) {
 			      optimum_n, optimum_d, &included,
 			      &ppl_const_g);
 
+  ppl_delete_LinExpression(ppl_objective_le);
+
   if (!ok)
     fatal("internal error");
 
@@ -683,7 +698,10 @@ solve(char* file_name) {
   ppl_Coefficient_to_mpz_t(optimum_d, tmp_z);
   mpz_mul(tmp_z, tmp_z, den_lcm);
   mpq_set_den(optimum, tmp_z);
+  ppl_delete_Coefficient(optimum_d);
+  ppl_delete_Coefficient(optimum_n);
   fprintf(output_file, "Optimum value:\n%g\n", mpq_get_d(optimum));
+  mpq_clear(optimum);
   fprintf(output_file, "Optimum location:\n");
   ppl_Generator_divisor(ppl_const_g, ppl_coeff);
   ppl_Coefficient_to_mpz_t(ppl_coeff, tmp_z);
