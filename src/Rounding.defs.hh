@@ -43,9 +43,17 @@ public:
   void set_direction(Direction d);
   Direction direction() const;
   template <typename To>
-  void save(Rounding_State& current);
+  void internal_install() const;
   template <typename To>
-  void restore(const Rounding_State& state);
+  void internal_save(Rounding_State& current) const;
+  template <typename To>
+  void internal_restore(const Rounding_State& state) const;
+  template <typename To>
+  void install() const;
+  template <typename To>
+  void save(Rounding_State& current) const;
+  template <typename To>
+  void restore(const Rounding_State& state) const;
 private:
   Direction dir;
 };
@@ -59,12 +67,6 @@ private:
   Rounding::Direction dir;
   friend class Rounding;
 };
-
-template <typename To>
-inline void save_rounding(const Rounding& mode, Rounding_State& current);
-
-template <typename To>
-inline void restore_rounding(const Rounding_State& state, const Rounding& current);
 
 } // namespace Parma_Polyhedra_Library
 

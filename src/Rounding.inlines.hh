@@ -67,20 +67,47 @@ Rounding_State::~Rounding_State()
 
 template <typename To>
 inline void
-Rounding::save(Rounding_State& current) {
-  assert(dir != Rounding::CURRENT);
+Rounding::internal_install() const {
+  if (use_fpu_rounding(To) && dir != Rounding::IGNORE)
+    fpu_save_rounding_direction(dir);
+}
+
+template <typename To>
+inline void
+Rounding::internal_save(Rounding_State& current) const {
   if (use_fpu_rounding(To) && dir != Rounding::IGNORE)
     current.fpu_dir = fpu_save_rounding_direction(dir);
+}
+
+template <typename To>
+inline void
+Rounding::internal_restore(const Rounding_State& state) const {
+  if (use_fpu_rounding(To))
+    fpu_restore_rounding_direction(state.fpu_dir);
+}
+
+template <typename To>
+inline void
+Rounding::install() const {
+  assert(dir != Rounding::CURRENT);
+  internal_install();
+  current_rounding.dir = dir;
+}
+
+template <typename To>
+inline void
+Rounding::save(Rounding_State& current) const {
+  assert(dir != Rounding::CURRENT);
+  internal_save(current);
   current.dir = current_rounding.dir;
   current_rounding.dir = dir;
 }
 
 template <typename To>
 inline void
-Rounding::restore(const Rounding_State& state) {
+Rounding::restore(const Rounding_State& state) const {
   assert(current_rounding.dir == dir);
-  if (use_fpu_rounding(To))
-    fpu_restore_rounding_direction(state.fpu_dir);
+  internal_restore(state);
   current_rounding.dir = state.dir;
 }
 
