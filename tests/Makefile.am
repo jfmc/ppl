@@ -1093,14 +1093,14 @@ nnc_randphull2
 
 XFAIL_WITH_INT32 = \
 $(XFAIL_WITH_INT64) \
-dualhypercubes
+dualhypercubes \
+equals1 \
+nnc_equals1
 
 XFAIL_WITH_INT16 = \
 $(XFAIL_WITH_INT32) \
 bgp99extrapolation1 \
-equals1 \
-nnc_bgp99extrapolation1 \
-nnc_equals1
+nnc_bgp99extrapolation1
 
 XFAIL_WITH_INT8 = \
 $(XFAIL_WITH_INT16) \
