@@ -27,6 +27,8 @@ site: http://www.cs.unipr.it/ppl/ . */
 
 #include <new>
 #include <iostream>
+#include <cstring>
+#include <cerrno>
 
 #ifdef HAVE_SYS_RESOURCE_H
 # include <sys/resource.h>
@@ -52,14 +54,14 @@ void
 limit_virtual_memory(unsigned int bytes) {
   struct rlimit t;
   int r = getrlimit(RLIMIT_AS, &t);
-  if (r) {
-    cerr << "getrlimit failed" << endl;
+  if (r != 0) {
+    cerr << "getrlimit failed: " << strerror(errno) << endl;
     exit(1);
   }
   t.rlim_cur = bytes;
   r = setrlimit(RLIMIT_AS, &t);
-  if (r) {
-    cerr << "setrlimit failed" << endl;
+  if (r != 0) {
+    cerr << "setrlimit failed: " << strerror(errno) << endl;
     exit(1);
   }
 }
@@ -69,12 +71,7 @@ guarded_compute_open_hypercube_generators(unsigned int dimension,
 					  unsigned int max_memory_in_bytes) {
   try {
     limit_virtual_memory(max_memory_in_bytes);
-#if 1
     compute_open_hypercube_generators(dimension);
-#else
-    char* a = new char[3*1024*1024+512*1024];
-    delete[] a;
-#endif
     return true;
   }
   catch (const std::bad_alloc&) {
