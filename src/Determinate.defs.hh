@@ -104,6 +104,7 @@ public:
   Determinate& hide_assign(dimension_type n);
 
   const PH& polyhedron() const;
+  PH& polyhedron();
 
   inline bool is_top() const;
   inline bool is_bottom() const;
