@@ -38,10 +38,6 @@ expected_int64
 
 if HAVE_GLPK
 
-COEFFICIENT_MNEMONIC = @coefficient_mnemonic@
-
-EXPECTED = expected_$(COEFFICIENT_MNEMONIC)
-
 AM_CPPFLAGS = -I$(top_builddir)/interfaces/C @extra_includes@
 
 noinst_PROGRAMS = ppl_lpsol
@@ -52,20 +48,41 @@ $(top_builddir)/interfaces/C/libppl_c.la \
 $(top_builddir)/src/libppl.la \
 @extra_libraries@
 
+COEFFICIENT_MNEMONIC = @coefficient_mnemonic@
+
+if ASSERTIONS_ENABLED
+
+TOUGH_EXAMPLES_IF_ASSERTIONS_ENABLED = \
+afiro.mps
+
+EXPECTED = expected_$(COEFFICIENT_MNEMONIC)_a
+
+else !ASSERTIONS_ENABLED
+
+EXPECTED = expected_$(COEFFICIENT_MNEMONIC)
+
+endif !ASSERTIONS_ENABLED
+
+TOUGH_EXAMPLES = \
+$(TOUGH_EXAMPLES_IF_ASSERTIONS_ENABLED)
+
 check-local: ppl_lpsol
-	rm -f obtained
-	for k in $(srcdir)/examples/*.mps; \
+	echo $(TOUGH_EXAMPLES) >tough_examples
+	echo -n >obtained
+	for path in $(srcdir)/examples/*.mps; \
 	do \
+	  file=`basename $$path`; \
+	  grep -q $$file tough_examples && continue; \
 	  for m in --min --max; \
 	  do \
-	    echo "*** ppl_lpsol -v $$m -oobtained `basename $$k`" >>obtained; \
-	    $(LIBTOOL) --mode=execute -dlopen ../../src/libppl.la \
-	      -dlopen ../../interfaces/C/libppl_c.la \
-	        ./ppl_lpsol -v $$m -oobtained $$k >/dev/null; \
+	    echo "*** ppl_lpsol -v $$m -oobtained $$file" >>obtained; \
+	    ./ppl_lpsol -v $$m -oobtained $$path >/dev/null; \
 	  done \
 	done
 	diff -q --ignore-all-space $(srcdir)/$(EXPECTED) obtained
 
-MOSTLYCLEANFILES = obtained
+MOSTLYCLEANFILES = \
+tough_examples \
+obtained
 
 endif HAVE_GLPK
