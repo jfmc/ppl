@@ -392,17 +392,22 @@ PPL::PolyBase::PolyBase(Topology topology, GenSys& gs)
 PPL::PolyBase&
 PPL::PolyBase::operator=(const PolyBase& y) {
   assert(topology() == y.topology());
-  space_dim = y.space_dim;
-  status = y.status;
-  if (y.constraints_are_up_to_date())
-    con_sys = y.con_sys;
-  if (y.generators_are_up_to_date())
-    gen_sys = y.gen_sys;
-  if (y.sat_c_is_up_to_date())
-    sat_c = y.sat_c;
-  if (y.sat_g_is_up_to_date())
-    sat_g = y.sat_g;
-
+  if (y.space_dim == 0) {
+    set_zero_dim_univ();
+    status = y.status;
+  }
+  else {
+    space_dim = y.space_dim;
+    status = y.status;
+    if (y.constraints_are_up_to_date())
+      con_sys = y.con_sys;
+    if (y.generators_are_up_to_date())
+      gen_sys = y.gen_sys;
+    if (y.sat_c_is_up_to_date())
+      sat_c = y.sat_c;
+    if (y.sat_g_is_up_to_date())
+      sat_g = y.sat_g;
+  }
   return *this;
 }
 
