@@ -157,10 +157,10 @@ Linear_Row.defs.hh \
 Linear_Row.inlines.hh \
 Matrix.defs.hh \
 Matrix.inlines.hh \
-Linear_System.defs.hh \
-Linear_System.inlines.hh \
 SatRow.defs.hh \
 SatRow.inlines.hh \
+Linear_System.defs.hh \
+Linear_System.inlines.hh \
 SatMatrix.defs.hh \
 SatMatrix.inlines.hh \
 ConSys.defs.hh \
