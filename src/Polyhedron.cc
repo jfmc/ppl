@@ -87,6 +87,8 @@ PPL::Polyhedron::Polyhedron(ConSys& cs)
     gen_sys(),
     sat_c(),
     sat_g() {
+  // A matrix of constraints must have at least two columns:
+  // one for the inhomogeneus term and the other for a variable.
   assert(cs.num_columns() >= 2);
   // Adding the positivity constraint.
   cs.add_row(Row::RAY_OR_VERTEX_OR_INEQUALITY);
@@ -108,6 +110,9 @@ PPL::Polyhedron::Polyhedron(GenSys& gs)
     gen_sys(),
     sat_c(),
     sat_g() {
+  // A matrix of generators must have at least two columns:
+  // one for the inhomogeneus term and the other for a variable.
+  assert(gs.num_columns() >= 2);
   // Note that this swap destroys the given argument `gs' because
   // it is swapped with `gen_sys' that is created empty, i.e., with
   // the default constructor.
@@ -831,6 +836,15 @@ PPL::Polyhedron::remove_dimensions(const BitSet& dims_to_remove) {
   gen_sys.resize(nrows, ncols);
   // Generators are not meaningful anymore.
   clear_constraints_up_to_date();
+  // If only a columns remains, the polyhedron is zero-dimensional.
+  if (gen_sys.num_columns() <= 1) {
+    // The polyhedron is zero-dimensional.
+    set_zero_dim();
+    // A zero-dimensional polyhedron must have `con_sys'
+    // and `gen_sys' with no rows.
+    gen_sys.clear();
+    con_sys.clear();
+  }
 }
 
 /*!
@@ -906,8 +920,11 @@ PPL::Polyhedron::insert(const Constraint& c) {
   assert(!is_empty());
  
   if (is_zero_dim()) {
-    con_sys.clear();
+    // If a polyhedron is zero-dimensional, `con_sys' has no rows.
     con_sys.insert(c);
+    // The positivity constraint must be added. 
+    con_sys.add_row(Row::RAY_OR_VERTEX_OR_INEQUALITY);
+    con_sys[con_sys.num_rows()-1][0] = 1;
     // No longer zero-dimensional and with constraints up-to-date.
     set_constraints_up_to_date();
   }
@@ -947,7 +964,8 @@ PPL::Polyhedron::insert(const Generator& g) {
 #endif
 
   if (is_zero_dim()) {
-    gen_sys.clear();
+    // If a polyhedron is zero-dimensional, `gen_sys' has
+    // no rows.
     gen_sys.insert(g);
     // No longer zero-dimensional and with generators up-to-date.
     set_generators_up_to_date();
@@ -1643,9 +1661,16 @@ PPL::Polyhedron::OK(bool check_satisfiable) const {
   // An empty polyhedron is allowed.
   if (is_empty())
     return true;
-  // A zero-dimensional polyhedron is allowed.
+  // A zero-dimensional polyhedron is allowed if 
+  // the system of constraint `con_sys' and the set of generators 
+  // `gen_sys' have no rows.
   if (is_zero_dim())
-    return true;
+    if (!(gen_sys.num_rows() == 0 && con_sys.num_rows() == 0))
+      cerr << "Polyhedron zeor-dimensional"
+	   << endl
+	   << "and with constraints or generator not clear"
+	   << endl;
+   
   // A polyhedron is defined by a system of constraints or a system 
   // of generators.
   if (!(constraints_are_up_to_date() || generators_are_up_to_date())) {
