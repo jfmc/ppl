@@ -24,10 +24,15 @@ site: http://www.cs.unipr.it/ppl/ . */
 #include <config.h>
 
 #include "Integer.defs.hh"
+
 // YAP 4.3.20 and 4.3.22 miss the `extern "C"' wrapper.
+
 extern "C" {
+
 #include <Yap/c_interface.h>
-}
+
+} // extern "C"
+
 #include <cassert>
 
 typedef Term Prolog_term_ref;

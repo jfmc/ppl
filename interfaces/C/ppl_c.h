@@ -1449,7 +1449,7 @@ int
 ppl_Polyhedron_OK __P((ppl_const_Polyhedron_t ph));
 
 #ifdef __cplusplus
-}
+} /* extern "C" */
 #endif
 
 #undef __P

@@ -24,12 +24,16 @@ site: http://www.cs.unipr.it/ppl/ . */
 #include <config.h>
 
 #include "Integer.defs.hh"
+
 // XSB 2.4 and 2.5 miss the `extern "C"' wrapper.
 extern "C" {
+
 #include <cinterf.h>
 #undef min
 #undef max
-}
+
+} // extern "C"
+
 #include <cassert>
 
 typedef prolog_term Prolog_term_ref;
