@@ -32,7 +32,7 @@
 
 
 % solve(+Goals, +VariableNames)
-%
+% 
 % Tries to solve the query `Goals' and to present the results
 % to the user by referring to the original variable names
 % contained in `VariableNames'.
@@ -42,7 +42,7 @@ solve(Goals, VariableNames) :-
     assertz(original_goal_variables(VariableNames)),
     % The initial polyhedron is initialised with
     % `Dims' dimensions, the number of variables in `Goals'.
-    ppl_new_polyhedron(Polyhedron, Dims),
+    ppl_new_C_Polyhedron_from_dimension(Dims, Polyhedron),
     % Try to reduce `Goals' to the empty continuation.
     (solve(Goals, true, Polyhedron) ->
 	Failed = no
@@ -51,7 +51,7 @@ solve(Goals, VariableNames) :-
     ),
     % On failure, cleanup must occur anyway.
     % The one who creates the polyhedron must delete it.
-    ppl_delete_polyhedron(Polyhedron),
+    ppl_delete_Polyhedron(Polyhedron),
     % Further cleaning.
     retract(original_goal_variables(_)),
     Failed == no.
@@ -61,13 +61,13 @@ solve(true, true, Polyhedron) :-
     !,
     % It is time to print the result and see if the user
     % wants to look for more solutions.
-    ppl_copy_polyhedron(Polyhedron, Q),
+    ppl_new_C_Polyhedron_from_C_Polyhedron(Polyhedron, Q),
     original_goal_variables(VariableNames),
     length(VariableNames, Dims),
     ppl_remove_higher_dimensions(Q, Dims),
     ppl_get_constraints(Q, CS),
     write_constraints(CS, VariableNames),
-    ppl_delete_polyhedron(Q),
+    ppl_delete_Polyhedron(Q),
     % More?
     % If query_next_solution succeeds,
     % then no more solutions are required.
@@ -104,14 +104,13 @@ solve(Atom, Goals, Polyhedron) :-
     % Copy the current polyhedron and work on the copy.
     % NOTE: the copy is under our responsibility, i.e.,
     %       it is our job to delete it, sooner or later.
-    ppl_copy_polyhedron(Polyhedron, PolyCopy),
+    ppl_new_C_Polyhedron_from_C_Polyhedron(Polyhedron, PolyCopy),
 
     % Rename the selected clause apart and extend the polyhedron.
     ppl_space_dimension(PolyCopy, Dims),
     numvars((Head, Body), Dims, NewDims),
     AddedDims is NewDims - Dims,
     ppl_add_dimensions_and_embed(PolyCopy, AddedDims),
-
     % Parameter passing.
     parameter_passing(Atom, Head, PP_Constraints),
 
@@ -122,7 +121,7 @@ solve(Atom, Goals, Polyhedron) :-
 	Failed = yes
     ),
     % Our copy must be thrown anyway.
-    ppl_delete_polyhedron(PolyCopy),
+    ppl_delete_Polyhedron(PolyCopy),
     Failed == no.
 
 
