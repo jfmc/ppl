@@ -54,7 +54,7 @@ main() TRY {
 
   GenSys gs2 = ph1.generators();
 
-  NNC_Polyhedron ph2(2);
+  C_Polyhedron ph2(2);
   ph2.add_constraint(A >= 3);
   ph2.add_constraint(B >= 3);
 
@@ -74,7 +74,7 @@ main() TRY {
   catch (...) {
     exit(1);
   }
-  NNC_Polyhedron known_result(2);
+  C_Polyhedron known_result(2);
   known_result.add_constraint(A >= 0);
   known_result.add_constraint(B >= 0);
 
