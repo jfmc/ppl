@@ -10,6 +10,17 @@ NEWS for version 0.7  (released date to be decided)
 New and Changed Features
 ========================
 
+o  New constructors and assignment operators allowing to obtain a
+   Polyhedra_PowerSet<NNC_Polyhedron> from a Polyhedra_PowerSet<C_Polyhedron>
+   and the other way around.  In the latter case, the topological clusure
+   of the element polyhedra is computed.
+
+o  New method
+
+     Polyhedra_PowerSet::poly_difference_assign(const Polyhedra_PowerSet& y)
+
+   assigns to `*this' the poly-difference of `*this' and `y'.
+
 o  New method dimension_type Polyhedron::dimension() returns the dimension
    of *this (not to be confused with the dimension of its enclosing vector
    space) or 0, if *this is empty.

@@ -65,6 +65,12 @@ public:
   //! Ordinary copy-constructor.
   Polyhedra_PowerSet(const Polyhedra_PowerSet& y);
 
+  //! \brief
+  //! Copy-constructor allowing a source powerset with elements of a
+  //! different polyhedron kind.
+  template <typename QH>
+  Polyhedra_PowerSet(const Polyhedra_PowerSet<QH>& y);
+
   //! Creates a Polyhedra_PowerSet with the same information contents as \p cs.
   Polyhedra_PowerSet(const ConSys& cs);
 
@@ -249,6 +255,13 @@ public:
   //! (\p *this and \p y can be dimension-incompatible).
   Polyhedra_PowerSet& operator=(const Polyhedra_PowerSet& y);
 
+  //! \brief
+  //! Assignment operator allowing a source powerset with elements of a
+  //! different polyhedron kind
+  //! (\p *this and \p y can be dimension-incompatible).
+  template <typename QH>
+  Polyhedra_PowerSet& operator=(const Polyhedra_PowerSet<QH>& y);
+
   //! Swaps \p *this with \p y.
   void swap(Polyhedra_PowerSet& y);
 
@@ -262,11 +275,19 @@ public:
   //! without embedding it in the new space.
   void add_dimensions_and_project(dimension_type m);
 
+  //! Assigns to \p *this the difference of \p *this and \p y.
+  /*!
+    The result is obtained by computing the
+    \ref poly_difference "poly-difference" of each polyhedron in \p *this
+    with each polyhedron in \p y and collecting all these differences.
+  */
+  void poly_difference_assign(const Polyhedra_PowerSet& y);
+ 
   //! Assigns to \p *this the concatenation of \p *this and \p y.
   /*!
-    The result is obtained by computing the pairwise
-    \ref concatenate "concatenation" of each polyhedron in \p *this
-    with each polyhedron in \p y.
+    The result is obtained by computing the pairwise \ref concatenate
+    "concatenation" of each polyhedron in \p *this with each
+    polyhedron in \p y.
   */
   void concatenate_assign(const Polyhedra_PowerSet& y);
 
@@ -355,6 +376,35 @@ private:
                                                    typename Cert::Compare>&
 				    y_cert_ms) const;
 };
+
+
+namespace Parma_Polyhedra_Library {
+
+//! Partitions \p q with respect to \p p.
+/*! \relates Polyhedra_PowerSet
+  Let \p p and \p q be two polyhedra.
+  The function returns an object <CODE>r</CODE> of type
+  <CODE>std::pair\<PH, Polyhedra_PowerSet\<NNC_Polyhedron\> \></CODE>
+  such that
+  - <CODE>r.first</CODE> is the intersection of \p p and \p q;
+  - <CODE>r.second</CODE> has the property that all its elements are
+    not empty, pairwise disjoint, and disjoint from \p p;
+  - the union of <CODE>r.first</CODE> with all the elements of
+    <CODE>r.second</CODE> gives \p q (i.e., <CODE>r</CODE> is the
+    representation of a partition of \p q).
+
+  \if Include_Implementation_Details
+
+  See
+  <A HREF="http://www.cs.unipr.it/ppl/Documentation/bibliography#Srivastava93">
+  this paper</A> for more information about the implementation.
+  \endif
+*/
+template <typename PH>
+std::pair<PH, Polyhedra_PowerSet<NNC_Polyhedron> >
+linear_partition(const PH& p, const PH& q);
+
+} // namespace Parma_Polyhedra_Library
 
 
 namespace std {

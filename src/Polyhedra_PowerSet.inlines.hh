@@ -27,7 +27,6 @@ site: http://www.cs.unipr.it/ppl/ . */
 #include "BHRZ03_Certificate.types.hh"
 #include "ConSys.defs.hh"
 #include "ConSys.inlines.hh"
-#include "algorithms.hh"
 #include "Widening_Function.defs.hh"
 #include <algorithm>
 #include <deque>
@@ -55,6 +54,31 @@ Polyhedra_PowerSet<PH>::Polyhedra_PowerSet(const Polyhedra_PowerSet& y)
   : Base(y), space_dim(y.space_dim) {
 }
 
+template <>
+template <>
+inline
+Polyhedra_PowerSet<NNC_Polyhedron>
+::Polyhedra_PowerSet(const Polyhedra_PowerSet<C_Polyhedron>& y)
+  : space_dim(y.space_dimension()) {
+  for (Polyhedra_PowerSet<C_Polyhedron>::const_iterator i = y.begin(),
+	 y_end = y.end(); i != y_end; ++i)
+    push_back(Determinate<NNC_Polyhedron>(NNC_Polyhedron(i->element())));
+}
+
+template <>
+template <>
+inline
+Polyhedra_PowerSet<C_Polyhedron>
+::Polyhedra_PowerSet(const Polyhedra_PowerSet<NNC_Polyhedron>& y)
+  : space_dim(y.space_dimension()) {
+  for (Polyhedra_PowerSet<NNC_Polyhedron>::const_iterator i = y.begin(),
+	 y_end = y.end(); i != y_end; ++i) {
+    NNC_Polyhedron ph = i->element();
+    ph.topological_closure_assign();
+    push_back(Determinate<C_Polyhedron>(C_Polyhedron(ph)));
+  }
+}
+
 template <typename PH>
 Polyhedra_PowerSet<PH>::Polyhedra_PowerSet(const ConSys& cs)
   : space_dim(cs.space_dimension()) {
@@ -66,6 +90,15 @@ Polyhedra_PowerSet<PH>&
 Polyhedra_PowerSet<PH>::operator=(const Polyhedra_PowerSet& y) {
   Base::operator=(y);
   space_dim = y.space_dim;
+  return *this;
+}
+
+template <typename PH>
+template <typename QH>
+Polyhedra_PowerSet<PH>&
+Polyhedra_PowerSet<PH>::operator=(const Polyhedra_PowerSet<QH>& y) {
+  Polyhedra_PowerSet<PH> pps = y;
+  swap(pps);
   return *this;
 }
 
@@ -615,6 +648,90 @@ Polyhedra_PowerSet<PH>::OK() const {
       return false;
     }
   return Base::OK();
+}
+
+namespace {
+
+#ifdef PPL_DOXYGEN_INCLUDE_IMPLEMENTATION_DETAILS
+//! \brief
+//! Partitions polyhedron \p qq according to constraint \p c.
+/*! \relates Polyhedra_PowerSet
+  On exit, the intersection of \p qq and constraint \p c is stored
+  in \p qq, whereas the intersection of \p qq with the negation of \p c
+  is added as a new disjunct of the powerset \p r.
+*/
+#endif // PPL_DOXYGEN_INCLUDE_IMPLEMENTATION_DETAILS
+template <typename PH>
+void
+linear_partition_aux(const Constraint& c,
+		     PH& qq,
+		     Polyhedra_PowerSet<NNC_Polyhedron>& r) {
+  LinExpression le(c);
+  Constraint neg_c = c.is_strict_inequality() ? (le <= 0) : (le < 0);
+  NNC_Polyhedron qqq(qq);
+  if (qqq.add_constraint_and_minimize(neg_c))
+    r.add_disjunct(qqq);
+  qq.add_constraint(c);
+}
+
+} // namespace
+
+/*! \relates Polyhedra_PowerSet */
+template <typename PH>
+std::pair<PH, Polyhedra_PowerSet<NNC_Polyhedron> >
+linear_partition(const PH& p, const PH& q) {
+  Polyhedra_PowerSet<NNC_Polyhedron> r(p.space_dimension(),
+				       Polyhedron::EMPTY);
+  PH qq = q;
+  const ConSys& pcs = p.constraints();
+  for (ConSys::const_iterator i = pcs.begin(),
+	 pcs_end = pcs.end(); i != pcs_end; ++i) {
+    const Constraint c = *i;
+    if (c.is_equality()) {
+      LinExpression le(c);
+      linear_partition_aux(le <= 0, qq, r);
+      linear_partition_aux(le >= 0, qq, r);
+    }
+    else
+      linear_partition_aux(c, qq, r);
+  }
+  return std::pair<PH, Polyhedra_PowerSet<NNC_Polyhedron> >(qq, r);
+}
+
+template <>
+inline void
+Polyhedra_PowerSet<NNC_Polyhedron>
+::poly_difference_assign(const Polyhedra_PowerSet& y) {
+  // Ensure omega-reduction.
+  Base::omega_reduce();
+  y.Base::omega_reduce();
+  Sequence new_sequence = Base::sequence;
+  for (const_iterator yi = y.begin(), y_end = y.end(); yi != y_end; ++yi) {
+    const NNC_Polyhedron& py = yi->element();
+    Sequence tmp_sequence;
+    for (const_iterator nsi = new_sequence.begin(),
+	   ns_end = new_sequence.end(); nsi != ns_end; ++nsi) {
+      std::pair<NNC_Polyhedron, Polyhedra_PowerSet<NNC_Polyhedron> > partition
+	= linear_partition(py, nsi->element());
+      const Polyhedra_PowerSet<NNC_Polyhedron>& residues = partition.second;
+      // Append the contents of `residues' to `tmp_sequence'.
+      std::copy(residues.begin(), residues.end(), back_inserter(tmp_sequence));
+    }
+    std::swap(tmp_sequence, new_sequence);
+  }
+  std::swap(Base::sequence, new_sequence);
+  Base::reduced = false;
+  assert(OK());
+}
+
+template <>
+inline void
+Polyhedra_PowerSet<C_Polyhedron>
+::poly_difference_assign(const Polyhedra_PowerSet& y) {
+  Polyhedra_PowerSet<NNC_Polyhedron> nnc_this = *this;
+  Polyhedra_PowerSet<NNC_Polyhedron> nnc_y = y;
+  nnc_this.poly_difference_assign(nnc_y);
+  *this = nnc_this;
 }
 
 } // namespace Parma_Polyhedra_Library
