@@ -25,6 +25,8 @@ site: http://www.cs.unipr.it/ppl/ . */
 
 using namespace Parma_Polyhedra_Library::IO_Operators;
 
+#define find_variation find_variation_template<Congruence_System>
+
 int
 main() TRY {
   set_handlers();
@@ -35,7 +37,7 @@ main() TRY {
   Congruence_System cgs;
 
   if (cgs.OK() == false) {
-    nout << "cgs.OK() failed\nASCII dump: ";
+    nout << "cgs.OK() failed" << endl << "ASCII dump: ";
     cgs.ascii_dump(nout);
     return 1;
   }
@@ -44,21 +46,14 @@ main() TRY {
   ss << cgs;
   if (ss.str().compare("true")) {
     nout << "  output: " << ss.str() << endl
-	 << "expected: true\n";
+	 << "expected: true" << endl;
     return 1;
   }
 
-  stringstream dump;
-
-  cgs.ascii_dump(dump);
-  check_dump(dump, "0 x 0\n");
-
   cgs.insert(A - 2*B %= 2);
   cgs.insert(2*A %= 4);
-
-  dump.str("");
-  cgs.ascii_dump(dump);
-  check_dump(dump, "2 x 4\n0 1 -2 m 1\n0 2 0 m 1\n");
+  if (find_variation(cgs))
+    exit(1);
 
 #define OUTPUT "A - 2*B == 0 (mod 1), 2*A == 0 (mod 1)"
 
@@ -66,7 +61,7 @@ main() TRY {
   ss << cgs;
   if (ss.str().compare(OUTPUT)) {
     nout << "  output: " << ss.str() << endl
-	 << "expected: " OUTPUT "\n";
+	 << "expected: " OUTPUT << endl;
     return 1;
   }
 
