@@ -1149,8 +1149,11 @@ powerset domain (defined in Section \ref powerset) over the domain of
 NNC polyhedra \f$\Pset_n\f$.
 
 In addition to the operations described for the generic powerset
-domain in Section \ref ps_operations, we provide some operations
-that are specific to this instantiation.
+domain in Section \ref ps_operations, we provide some operations that
+are specific to this instantiation.  Of these, most correspond to the
+application of the equivalent operation on each of the elements. Here
+we just describe those operations that are particular to the
+polyhedral powerset domain.
 
 \anchor pps_geometric
 <B>Geometric Comparisons</B>
