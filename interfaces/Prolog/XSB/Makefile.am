@@ -81,6 +81,8 @@ check-local: xsb_clpq.O ../check_script ../expected #xsb_clpq2.O ../check_script
 			<check_script2 >obtained2
 	diff -q --ignore-all-space $(srcdir)/../expected2 obtained2
 
-MOSTLYCLEANFILES = check_script check_script2 $(CLPQ_TESTS) obtained obtained2
+MOSTLYCLEANFILES = \
+ppl_xsb.H ppl_xsb.c ppl_xsb.O ppl_xsb.so \
+check_script check_script2 $(CLPQ_TESTS) obtained obtained2
 
 endif
