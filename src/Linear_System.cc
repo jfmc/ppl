@@ -179,25 +179,30 @@ PPL::Linear_System::insert(const Linear_Row& r) {
   assert(num_pending_rows() == 0);
 
   const dimension_type old_num_rows = num_rows();
+  const dimension_type old_num_columns = num_columns();
   const dimension_type r_size = r.size();
 
   // Resize the system, if necessary.
-  if (r_size > row_size) {
-    add_zero_columns(r_size - row_size);
+  if (r_size > old_num_columns) {
+    add_zero_columns(r_size - old_num_columns);
+    if (!is_necessarily_closed() && old_num_rows != 0)
+      // Move the epsilon coefficients to the last column
+      // (note: sorting is preserved).
+      swap_columns(old_num_columns - 1, r_size - 1);
     add_row(r);
   }
-  else if (r_size < row_size)
+  else if (r_size < old_num_columns)
     if (is_necessarily_closed() || old_num_rows == 0)
-      add_row(Linear_Row(r, row_size, row_capacity));
+      add_row(Linear_Row(r, old_num_columns, row_capacity));
     else {
       // Create a resized copy of the row (and move the epsilon
       // coefficient to its last position).
-      Linear_Row tmp_row(r, row_size, row_capacity);
-      std::swap(tmp_row[r_size - 1], tmp_row[row_size - 1]);
+      Linear_Row tmp_row(r, old_num_columns, row_capacity);
+      std::swap(tmp_row[r_size - 1], tmp_row[old_num_columns - 1]);
       add_row(tmp_row);
     }
   else
-    // Here r_size == row_size.
+    // Here r_size == old_num_columns.
     add_row(r);
 
   // The added row was not a pending row.
@@ -215,25 +220,30 @@ PPL::Linear_System::insert_pending(const Linear_Row& r) {
   assert(topology() == r.topology());
 
   const dimension_type old_num_rows = num_rows();
+  const dimension_type old_num_columns = num_columns();
   const dimension_type r_size = r.size();
 
   // Resize the system, if necessary.
-  if (r_size > row_size) {
-    add_zero_columns(r_size - row_size);
+  if (r_size > old_num_columns) {
+    add_zero_columns(r_size - old_num_columns);
+    if (!is_necessarily_closed() && old_num_rows != 0)
+      // Move the epsilon coefficients to the last column
+      // (note: sorting is preserved).
+      swap_columns(old_num_columns - 1, r_size - 1);
     add_pending_row(r);
   }
-  else if (r_size < row_size)
+  else if (r_size < old_num_columns)
     if (is_necessarily_closed() || old_num_rows == 0)
-      add_pending_row(Linear_Row(r, row_size, row_capacity));
+      add_pending_row(Linear_Row(r, old_num_columns, row_capacity));
     else {
       // Create a resized copy of the row (and move the epsilon
       // coefficient to its last position).
-      Linear_Row tmp_row(r, row_size, row_capacity);
-      std::swap(tmp_row[r_size - 1], tmp_row[row_size - 1]);
+      Linear_Row tmp_row(r, old_num_columns, row_capacity);
+      std::swap(tmp_row[r_size - 1], tmp_row[old_num_columns - 1]);
       add_pending_row(tmp_row);
     }
   else
-    // Here r_size == row_size.
+    // Here r_size == old_num_columns.
     add_pending_row(r);
 
   // The added row was a pending row.
