@@ -135,21 +135,25 @@ Generator::zero_dim_closure_point() {
   return zdcp;
 }
 
+/*! \relates Generator */
 inline Generator
 line(const LinExpression& e) {
   return Generator::line(e);
 }
 
+/*! \relates Generator */
 inline Generator
 ray(const LinExpression& e) {
   return Generator::ray(e);
 }
 
+/*! \relates Generator */
 inline Generator
 point(const LinExpression& e, const Integer& d) {
   return Generator::point(e, d);
 }
 
+/*! \relates Generator */
 inline Generator
 closure_point(const LinExpression& e, const Integer& d) {
   return Generator::closure_point(e, d);

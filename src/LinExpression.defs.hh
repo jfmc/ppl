@@ -38,28 +38,63 @@ site: http://www.cs.unipr.it/ppl/ . */
 namespace Parma_Polyhedra_Library {
 
 // Put them in the namespace here to declare them friend later.
+
+//! Returns the linear expression \p e1 + \p e2.
+/*! \relates LinExpression */
 LinExpression operator+(const LinExpression& e1, const LinExpression& e2);
+//! Returns the linear expression \p n + \p e.
+/*! \relates LinExpression */
 LinExpression operator+(const Integer& n, const LinExpression& e);
+//! Returns the linear expression \p e + \p n.
+/*! \relates LinExpression */
 LinExpression operator+(const LinExpression& e, const Integer& n);
 
+//! Returns the linear expression \p e.
+/*! \relates LinExpression */
 LinExpression operator+(const LinExpression& e);
+//! Returns the linear expression - \p e.
+/*! \relates LinExpression */
 LinExpression operator-(const LinExpression& e);
 
+//! Returns the linear expression \p e1 - \p e2.
+/*! \relates LinExpression */
 LinExpression operator-(const LinExpression& e1, const LinExpression& e2);
+//! Returns the linear expression \p n - \p e.
+/*! \relates LinExpression */
 LinExpression operator-(const Integer& n, const LinExpression& e);
+//! Returns the linear expression \p e - \p n.
+/*! \relates LinExpression */
 LinExpression operator-(const LinExpression& e, const Integer& n);
 
+//! Returns the linear expression \p n * \p e.
+/*! \relates LinExpression */
 LinExpression operator*(const Integer& n, const LinExpression& e);
+//! Returns the linear expression \p e * \p n.
+/*! \relates LinExpression */
 LinExpression operator*(const LinExpression& e, const Integer& n);
 
+//! Returns the linear expression \p e1 + \p e2 and assigns it to \p e1.
+/*! \relates LinExpression */
 LinExpression& operator+=(LinExpression& e1, const LinExpression& e2);
+//! Returns the linear expression \p e + \p v and assigns it to \p e.
+/*! \relates LinExpression */
 LinExpression& operator+=(LinExpression& e, const Variable& v);
+//! Returns the linear expression \p e + \p n and assigns it to \p e.
+/*! \relates LinExpression */
 LinExpression& operator+=(LinExpression& e, const Integer& n);
 
+//! Returns the linear expression \p e1 - \p e2 and assigns it to \p e1.
+/*! \relates LinExpression */
 LinExpression& operator-=(LinExpression& e1, const LinExpression& e2);
+//! Returns the linear expression \p e - \p v and assigns it to \p e.
+/*! \relates LinExpression */
 LinExpression& operator-=(LinExpression& e, const Variable& v);
+//! Returns the linear expression \p e - \p n and assigns it to \p e.
+/*! \relates LinExpression */
 LinExpression& operator-=(LinExpression& e, const Integer& n);
 
+//! Returns the linear expression \p n * \p e and assigns it to \p e.
+/*! \relates LinExpression */
 LinExpression& operator*=(LinExpression& e, const Integer& n);
 
 } // namespace Parma_Polyhedra_Library
@@ -209,81 +244,56 @@ private:
   //! Swaps \p *this with \p y.
   void swap(LinExpression& y);
 
-  //! Returns the linear expression \p e1 + \p e2.
   friend LinExpression
   Parma_Polyhedra_Library::operator+(const LinExpression& e1,
 				     const LinExpression& e2);
-
-  //! Returns the linear expression \p n + \p e.
   friend LinExpression
   Parma_Polyhedra_Library::operator+(const Integer& n,
 				     const LinExpression& e);
-
-  //! Returns the linear expression \p e + \p n.
   friend LinExpression
   Parma_Polyhedra_Library::operator+(const LinExpression& e,
 				     const Integer& n);
 
-  //! Returns the linear expression - \p e.
   friend LinExpression
   Parma_Polyhedra_Library::operator-(const LinExpression& e);
 
-  //! Returns the linear expression \p e1 - \p e2.
   friend LinExpression
   Parma_Polyhedra_Library::operator-(const LinExpression& e1,
 				     const LinExpression& e2);
-
-  //! Returns the linear expression \p n - \p e.
   friend LinExpression
   Parma_Polyhedra_Library::operator-(const Integer& n,
 				     const LinExpression& e);
-
-  //! Returns the linear expression \p e - \p n.
   friend LinExpression
   Parma_Polyhedra_Library::operator-(const LinExpression& e,
 				     const Integer& n);
 
-  //! Returns the linear expression \p n * \p e.
   friend LinExpression
   Parma_Polyhedra_Library::operator*(const Integer& n,
 				     const LinExpression& e);
-
-  //! Returns the linear expression \p e * \p n.
   friend LinExpression
   Parma_Polyhedra_Library::operator*(const LinExpression& e,
 				     const Integer& n);
 
-  //! Returns the linear expression \p e1 + \p e2 and assigns it to \p e1.
   friend LinExpression&
   Parma_Polyhedra_Library::operator+=(LinExpression& e1,
 				      const LinExpression& e2);
-
-  //! Returns the linear expression \p e + \p v and assigns it to \p e.
   friend LinExpression&
   Parma_Polyhedra_Library::operator+=(LinExpression& e,
 				      const Variable& v);
-
-  //! Returns the linear expression \p e + \p n and assigns it to \p e.
   friend LinExpression&
   Parma_Polyhedra_Library::operator+=(LinExpression& e,
 				      const Integer& n);
 
-  //! Returns the linear expression \p e1 - \p e2 and assigns it to \p e1.
   friend LinExpression&
   Parma_Polyhedra_Library::operator-=(LinExpression& e1,
 				      const LinExpression& e2);
-
-  //! Returns the linear expression \p e - \p v and assigns it to \p e.
   friend LinExpression&
   Parma_Polyhedra_Library::operator-=(LinExpression& e,
 				      const Variable& v);
-
-  //! Returns the linear expression \p e - \p n and assigns it to \p e.
   friend LinExpression&
   Parma_Polyhedra_Library::operator-=(LinExpression& e,
 				      const Integer& n);
 
-  //! Returns the linear expression \p n * \p e and assigns it to \p e.
   friend LinExpression&
   Parma_Polyhedra_Library::operator*=(LinExpression& e,
 				      const Integer& n);

@@ -2305,6 +2305,7 @@ PPL::Polyhedron::topological_closure_assign() {
   assert(OK());
 }
 
+/*! \relates Parma_Polyhedra_Library::Polyhedron */
 bool
 PPL::operator==(const Polyhedron& x, const Polyhedron& y) {
   dimension_type x_space_dim = x.space_dim;
@@ -2338,6 +2339,7 @@ PPL::operator==(const Polyhedron& x, const Polyhedron& y) {
   }
 }
 
+/*! \relates Parma_Polyhedra_Library::Polyhedron */
 bool
 PPL::operator<=(const Polyhedron& x, const Polyhedron& y) {
   // Topology compatibility check.

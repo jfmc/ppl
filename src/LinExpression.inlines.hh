@@ -88,32 +88,38 @@ LinExpression::zero() {
   return z;
 }
 
+/*! \relates LinExpression */
 inline LinExpression
 operator+(const LinExpression& e) {
   return e;
 }
 
+/*! \relates LinExpression */
 inline LinExpression
 operator+(const LinExpression& e, const Integer& n) {
   return n + e;
 }
 
+/*! \relates LinExpression */
 inline LinExpression
 operator-(const LinExpression& e, const Integer& n) {
   return -n + e;
 }
 
+/*! \relates LinExpression */
 inline LinExpression
 operator*(const LinExpression& e, const Integer& n) {
   return n * e;
 }
 
+/*! \relates LinExpression */
 inline LinExpression&
 operator+=(LinExpression& e, const Integer& n) {
   e[0] += n;
   return e;
 }
 
+/*! \relates LinExpression */
 inline LinExpression&
 operator-=(LinExpression& e, const Integer& n) {
   e[0] -= n;

@@ -71,21 +71,25 @@ Poly_Con_Relation::implies(const Poly_Con_Relation& y) const {
   return implies(flags, y.flags);
 }
 
+/*! \relates Poly_Con_Relation */
 inline bool
 operator==(const Poly_Con_Relation& x, const Poly_Con_Relation& y) {
   return x.flags == y.flags;
 }
 
+/*! \relates Poly_Con_Relation */
 inline bool
 operator!=(const Poly_Con_Relation& x, const Poly_Con_Relation& y) {
   return x.flags != y.flags;
 }
 
+/*! \relates Poly_Con_Relation */
 inline Poly_Con_Relation
 operator&&(const Poly_Con_Relation& x, const Poly_Con_Relation& y) {
   return Poly_Con_Relation(x.flags | y.flags);
 }
 
+/*! \relates Poly_Con_Relation */
 inline Poly_Con_Relation
 operator-(const Poly_Con_Relation& x, const Poly_Con_Relation& y) {
   return Poly_Con_Relation(x.flags & ~y.flags);

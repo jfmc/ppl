@@ -117,6 +117,7 @@ Constraint::inhomogeneous_term() const {
   return Row::inhomogeneous_term();
 }
 
+/*! \relates Constraint */
 inline Constraint
 operator==(const LinExpression& e1, const LinExpression& e2) {
   LinExpression diff = e1 - e2;
@@ -131,6 +132,7 @@ operator==(const LinExpression& e1, const LinExpression& e2) {
   return c;
 }
 
+/*! \relates Constraint */
 inline Constraint
 operator>=(const LinExpression& e1, const LinExpression& e2) {
   LinExpression diff = e1 - e2;
@@ -141,6 +143,7 @@ operator>=(const LinExpression& e1, const LinExpression& e2) {
   return c;
 }
 
+/*! \relates Constraint */
 inline Constraint
 operator>(const LinExpression& e1, const LinExpression& e2) {
   LinExpression diff;
@@ -161,6 +164,7 @@ operator>(const LinExpression& e1, const LinExpression& e2) {
   return c;
 }
 
+/*! \relates Constraint */
 inline Constraint
 operator==(const Integer& n, const LinExpression& e) {
   LinExpression diff = n - e;
@@ -175,6 +179,7 @@ operator==(const Integer& n, const LinExpression& e) {
   return c;
 }
 
+/*! \relates Constraint */
 inline Constraint
 operator>=(const Integer& n, const LinExpression& e) {
   LinExpression diff = n - e;
@@ -185,6 +190,7 @@ operator>=(const Integer& n, const LinExpression& e) {
   return c;
 }
 
+/*! \relates Constraint */
 inline Constraint
 operator>(const Integer& n, const LinExpression& e) {
   LinExpression diff;
@@ -200,6 +206,7 @@ operator>(const Integer& n, const LinExpression& e) {
   return c;
 }
 
+/*! \relates Constraint */
 inline Constraint
 operator==(const LinExpression& e, const Integer& n) {
   LinExpression diff = e - n;
@@ -214,6 +221,7 @@ operator==(const LinExpression& e, const Integer& n) {
   return c;
 }
 
+/*! \relates Constraint */
 inline Constraint
 operator>=(const LinExpression& e, const Integer& n) {
   LinExpression diff = e - n;
@@ -224,6 +232,7 @@ operator>=(const LinExpression& e, const Integer& n) {
   return c;
 }
 
+/*! \relates Constraint */
 inline Constraint
 operator>(const LinExpression& e, const Integer& n) {
   LinExpression diff;
@@ -239,31 +248,37 @@ operator>(const LinExpression& e, const Integer& n) {
   return c;
 }
 
+/*! \relates Constraint */
 inline Constraint
 operator<=(const LinExpression& e1, const LinExpression& e2) {
   return e2 >= e1;
 }
 
+/*! \relates Constraint */
 inline Constraint
 operator<=(const Integer& n, const LinExpression& e) {
   return e >= n;
 }
 
+/*! \relates Constraint */
 inline Constraint
 operator<=(const LinExpression& e, const Integer& n) {
   return n >= e;
 }
 
+/*! \relates Constraint */
 inline Constraint
 operator<(const LinExpression& e1, const LinExpression& e2) {
   return e2 > e1;
 }
 
+/*! \relates Constraint */
 inline Constraint
 operator<(const Integer& n, const LinExpression& e) {
   return e > n;
 }
 
+/*! \relates Constraint */
 inline Constraint
 operator<(const LinExpression& e, const Integer& n) {
   return n > e;

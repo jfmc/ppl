@@ -30,10 +30,24 @@ site: http://www.cs.unipr.it/ppl/ . */
 namespace Parma_Polyhedra_Library {
 
 // Put them in the namespace here to declare them friend later.
+
+//! True if and only if \p x and \p y are logically equivalent.
+/*! \relates Poly_Con_Relation */
 bool operator==(const Poly_Con_Relation& x, const Poly_Con_Relation& y);
+
+//! True if and only if \p x and \p y are not logically equivalent.
+/*! \relates Poly_Con_Relation */
 bool operator!=(const Poly_Con_Relation& x, const Poly_Con_Relation& y);
+
+//! Yields the logical conjunction of \p x and \p y.
+/*! \relates Poly_Con_Relation */
 Poly_Con_Relation operator&&(const Poly_Con_Relation& x,
 			     const Poly_Con_Relation& y);
+
+//! \brief
+//! Yields the assertion with all the conjuncts of \p x
+//! that are not in \p y.
+/*! \relates Poly_Con_Relation */
 Poly_Con_Relation operator-(const Poly_Con_Relation& x,
 			    const Poly_Con_Relation& y);
 
@@ -86,29 +100,22 @@ private:
   //! Pretty printing.
   void ascii_dump(std::ostream& s) const;
 
-  //! True if and only if \p x and \p y are logically equivalent.
   friend bool
   Parma_Polyhedra_Library::operator==(const Poly_Con_Relation& x,
 				      const Poly_Con_Relation& y);
 
-  //! True if and only if \p x and \p y are not logically equivalent.
   friend bool
   Parma_Polyhedra_Library::operator!=(const Poly_Con_Relation& x,
 				      const Poly_Con_Relation& y);
 
-  //! Yields the logical conjunction of \p x and \p y.
   friend Poly_Con_Relation
   Parma_Polyhedra_Library::operator&&(const Poly_Con_Relation& x,
 				      const Poly_Con_Relation& y);
 
-  //! \brief
-  //! Yields the assertion with all the conjuncts of \p x
-  //! that are not in \p y.
   friend Poly_Con_Relation
   Parma_Polyhedra_Library::operator-(const Poly_Con_Relation& x,
 				     const Poly_Con_Relation& y);
 
-  //! Output operator.
   friend std::ostream&
   Parma_Polyhedra_Library::
   IO_Operators::operator<<(std::ostream& s, const Poly_Con_Relation& r);

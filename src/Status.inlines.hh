@@ -36,11 +36,13 @@ Status::Status()
   : flags(ZERO_DIM_UNIV) {
 }
 
+/*! \relates Status */
 inline Status
 operator&(const Status& x, const Status& y) {
   return Status(x.flags & y.flags);
 }
 
+/*! \relates Status */
 inline Status
 operator|(const Status& x, const Status& y) {
   return Status(x.flags | y.flags);

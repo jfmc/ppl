@@ -380,7 +380,6 @@ private:
   friend void std::swap(Parma_Polyhedra_Library::Generator& x,
 			Parma_Polyhedra_Library::Generator& y);
 
-  //! Output operator.
   friend std::ostream&
   Parma_Polyhedra_Library::IO_Operators::operator<<(std::ostream& s,
 						    const Generator& g);
@@ -414,20 +413,24 @@ private:
 namespace Parma_Polyhedra_Library {
 
 //! Shorthand for Generator Generator::line(const LinExpression& e).
+/*! \relates Generator */
 Generator line(const LinExpression& e);
 
 //! Shorthand for Generator Generator::ray(const LinExpression& e).
+/*! \relates Generator */
 Generator ray(const LinExpression& e);
 
 //! \brief
 //! Shorthand for Generator
 //! Generator::point(const LinExpression& e, const Integer& d).
+/*! \relates Generator */
 Generator point(const LinExpression& e = LinExpression::zero(),
 		const Integer& d = Integer_one());
 
 //! \brief
 //! Shorthand for Generator
 //! Generator::closure_point(const LinExpression& e, const Integer& d).
+/*! \relates Generator */
 Generator closure_point(const LinExpression& e = LinExpression::zero(),
 			const Integer& d = Integer_one());
 

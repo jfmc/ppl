@@ -56,21 +56,25 @@ Poly_Gen_Relation::implies(const Poly_Gen_Relation& y) const {
   return implies(flags, y.flags);
 }
 
+/*! \relates Poly_Gen_Relation */
 inline bool
 operator==(const Poly_Gen_Relation& x, const Poly_Gen_Relation& y) {
   return x.flags == y.flags;
 }
 
+/*! \relates Poly_Gen_Relation */
 inline bool
 operator!=(const Poly_Gen_Relation& x, const Poly_Gen_Relation& y) {
   return x.flags != y.flags;
 }
 
+/*! \relates Poly_Gen_Relation */
 inline Poly_Gen_Relation
 operator&&(const Poly_Gen_Relation& x, const Poly_Gen_Relation& y) {
   return Poly_Gen_Relation(x.flags | y.flags);
 }
 
+/*! \relates Poly_Gen_Relation */
 inline Poly_Gen_Relation
 operator-(const Poly_Gen_Relation& x, const Poly_Gen_Relation& y) {
   return Poly_Gen_Relation(x.flags & ~y.flags);

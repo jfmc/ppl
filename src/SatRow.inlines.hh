@@ -87,16 +87,19 @@ SatRow::clear() {
   mpz_set_ui(vec, 0UL);
 }
 
+/*! \relates SatRow */
 inline bool
 operator==(const SatRow& x, const SatRow& y) {
   return mpz_cmp(x.vec, y.vec) == 0;
 }
 
+/*! \relates SatRow */
 inline bool
 operator!=(const SatRow& x, const SatRow& y) {
   return mpz_cmp(x.vec, y.vec) != 0;
 }
 
+/*! \relates SatRow */
 inline void
 set_union(const SatRow& x, const SatRow& y, SatRow& z) {
   mpz_ior(z.vec, x.vec, y.vec);
