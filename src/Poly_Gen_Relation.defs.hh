@@ -51,6 +51,10 @@ private:
   static const flags_t SUBSUMES = 1U << 0;
   //@}
 
+  //! All assertions together.
+  static const flags_t EVERYTHING
+  = SUBSUMES;
+
   //! This holds the current bitset.
   flags_t flags;
 
@@ -91,7 +95,10 @@ public:
   static Poly_Gen_Relation subsumes();
 
   //! True if and only if \p *this implies \p y.
-  bool implies(const Poly_Gen_Relation& y);
+  bool implies(const Poly_Gen_Relation& y) const;
+
+  //! Returns the logical negation of \p *this.
+  Poly_Gen_Relation operator!() const;
 
   //! Checks if all the invariants are satisfied.
   bool OK() const;

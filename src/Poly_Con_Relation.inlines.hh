@@ -59,8 +59,13 @@ Poly_Con_Relation::implies(flags_t x, flags_t y) {
 }
 
 inline bool
-Poly_Con_Relation::implies(const Poly_Con_Relation& y) {
+Poly_Con_Relation::implies(const Poly_Con_Relation& y) const {
   return implies(flags, y.flags);
+}
+
+inline Poly_Con_Relation
+Poly_Con_Relation::operator!() const {
+  return Poly_Con_Relation(EVERYTHING & ~flags);
 }
 
 inline bool

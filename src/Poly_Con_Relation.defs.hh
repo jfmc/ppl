@@ -54,6 +54,13 @@ private:
   static const flags_t SATURATES           = 1U << 3;
   //@}
 
+  //! All assertions together.
+  static const flags_t EVERYTHING
+  = IS_DISJOINT
+  | STRICTLY_INTERSECTS
+  | IS_INCLUDED
+  | SATURATES;
+  
   //! This holds the current bitset.
   flags_t flags;
 
@@ -107,7 +114,10 @@ public:
   static Poly_Con_Relation saturates();
 
   //! True if and only if \p *this implies \p y.
-  bool implies(const Poly_Con_Relation& y);
+  bool implies(const Poly_Con_Relation& y) const;
+
+  //! Returns the logical negation of \p *this.
+  Poly_Con_Relation operator!() const;
 
   //! Checks if all the invariants are satisfied.
   bool OK() const;

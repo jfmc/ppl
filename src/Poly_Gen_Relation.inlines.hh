@@ -44,8 +44,13 @@ Poly_Gen_Relation::implies(flags_t x, flags_t y) {
 }
 
 inline bool
-Poly_Gen_Relation::implies(const Poly_Gen_Relation& y) {
+Poly_Gen_Relation::implies(const Poly_Gen_Relation& y) const {
   return implies(flags, y.flags);
+}
+
+inline Poly_Gen_Relation
+Poly_Gen_Relation::operator!() const {
+  return Poly_Gen_Relation(EVERYTHING & ~flags);
 }
 
 inline bool
