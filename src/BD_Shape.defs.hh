@@ -644,7 +644,7 @@ public:
                                      a strict relation symbol.
   */
   void generalized_affine_image(Variable var,
-				const Relation_Symbol relsym,
+				Relation_Symbol relsym,
 				const Linear_Expression& expr,
 				const Coefficient& denominator
 				= Coefficient_one());
@@ -665,7 +665,7 @@ public:
 				     symbol.
   */
   void generalized_affine_image(const Linear_Expression& lhs,
-				const Relation_Symbol relsym,
+				Relation_Symbol relsym,
 				const Linear_Expression& rhs);
 
   //! \brief

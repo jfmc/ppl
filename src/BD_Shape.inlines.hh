@@ -232,7 +232,7 @@ BD_Shape<T>::BD_Shape(const Generator_System& gs)
 
 template <typename T>
 inline
-BD_Shape<T>::BD_Shape(const Polyhedron& ph, Complexity_Class complexity)
+BD_Shape<T>::BD_Shape(const Polyhedron& ph, const Complexity_Class complexity)
   : dbm(), status() {
   if (ph.marked_empty()) {
     *this = BD_Shape(ph.space_dim, Polyhedron::EMPTY);
@@ -1417,7 +1417,7 @@ BD_Shape<T>::poly_hull_assign_and_minimize(const BD_Shape& y) {
 template <typename T>
 inline void
 BD_Shape<T>::poly_difference_assign(const BD_Shape& y) {
-  dimension_type space_dim = space_dimension();
+  const dimension_type space_dim = space_dimension();
 
   // Dimension-compatibility check.
   if (space_dim != y.space_dimension())
@@ -1698,7 +1698,7 @@ template <typename T>
 template <typename PartialFunction>
 inline void
 BD_Shape<T>::map_space_dimensions(const PartialFunction& pfunc) {
-  dimension_type space_dim = space_dimension();
+  const dimension_type space_dim = space_dimension();
   // TODO: this implementation is just an executable specification.
   if (space_dim == 0)
     return;
@@ -1774,7 +1774,7 @@ BD_Shape<T>::map_space_dimensions(const PartialFunction& pfunc) {
 template <typename T>
 inline void
 BD_Shape<T>::intersection_assign(const BD_Shape& y) {
-  dimension_type space_dim = space_dimension();
+  const dimension_type space_dim = space_dimension();
 
   // Dimension-compatibility check.
   if (space_dim != y.space_dimension())
@@ -2066,7 +2066,7 @@ BD_Shape<T>::limited_CC76_extrapolation_assign(const BD_Shape& y,
 template <typename T>
 inline void
 BD_Shape<T>::CH78_widening_assign(const BD_Shape& y) {
-  dimension_type space_dim = space_dimension();
+  const dimension_type space_dim = space_dimension();
 
   // Dimension-compatibility check.
   if (space_dim != y.space_dimension())
@@ -2118,8 +2118,8 @@ BD_Shape<T>::CH78_widening_assign(const BD_Shape& y) {
 template <typename T>
 inline void
 BD_Shape<T>::limited_CH78_extrapolation_assign(const BD_Shape& y,
-					     const Constraint_System& cs,
-					     unsigned* /*tp*/) {
+					       const Constraint_System& cs,
+					       unsigned* /*tp*/) {
   dimension_type space_dim = space_dimension();
   // Not strict-inequality check.
   Constraint_System::const_iterator iend = cs.end();
@@ -2249,7 +2249,7 @@ BD_Shape<T>::limited_CH78_extrapolation_assign(const BD_Shape& y,
 template <typename T>
 inline void
 BD_Shape<T>::CC76_narrowing_assign(const BD_Shape& y) {
-  dimension_type space_dim = space_dimension();
+  const dimension_type space_dim = space_dimension();
 
   // Dimension-compatibility check.
   if (space_dim != y.space_dimension())
@@ -2767,7 +2767,7 @@ BD_Shape<T>::affine_preimage(const Variable var,
 
 template <typename T>
 inline void
-BD_Shape<T>::generalized_affine_image(Variable var,
+BD_Shape<T>::generalized_affine_image(const Variable var,
 				      const Relation_Symbol relsym,
 				      const Linear_Expression& expr,
 				      const Coefficient& denominator) {
@@ -3687,7 +3687,7 @@ BD_Shape<T>::OK() const {
 template <typename T>
 inline void
 BD_Shape<T>::throw_dimension_incompatible(const char* method,
-				       const BD_Shape& y) const {
+					  const BD_Shape& y) const {
   std::ostringstream s;
   s << "PPL::";
   s << "BD_Shape::" << method << ":" << std::endl
@@ -3699,7 +3699,7 @@ BD_Shape<T>::throw_dimension_incompatible(const char* method,
 template <typename T>
 inline void
 BD_Shape<T>::throw_dimension_incompatible(const char* method,
-				       dimension_type required_dim) const {
+					  dimension_type required_dim) const {
   std::ostringstream s;
   s << "PPL::";
   s << "BD_Shape::" << method << ":" << std::endl
@@ -3711,7 +3711,7 @@ BD_Shape<T>::throw_dimension_incompatible(const char* method,
 template <typename T>
 inline void
 BD_Shape<T>::throw_dimension_incompatible(const char* method,
-				       const Constraint& c) const {
+					  const Constraint& c) const {
   std::ostringstream s;
   s << "PPL::";
   s << "BD_Shape::" << method << ":" << std::endl
@@ -3745,7 +3745,7 @@ BD_Shape<T>::throw_constraint_incompatible(const char* method) const {
 template <typename T>
 inline void
 BD_Shape<T>::throw_expression_too_complex(const char* method,
-					const Linear_Expression& e) const {
+					  const Linear_Expression& e) const {
   using namespace IO_Operators;
   std::ostringstream s;
   s << "PPL::BD_Shape::" << method << ":" << std::endl
@@ -3757,8 +3757,8 @@ BD_Shape<T>::throw_expression_too_complex(const char* method,
 template <typename T>
 inline void
 BD_Shape<T>::throw_dimension_incompatible(const char* method,
-					const char* name_row,
-					const Linear_Expression& y) const {
+					  const char* name_row,
+					  const Linear_Expression& y) const {
   std::ostringstream s;
   s << "PPL::";
   s << "BD_Shape::" << method << ":" << std::endl
@@ -3772,7 +3772,7 @@ BD_Shape<T>::throw_dimension_incompatible(const char* method,
 template <typename T>
 inline void
 BD_Shape<T>::throw_generic(const char* method,
-			 const char* reason) const {
+			   const char* reason) const {
   std::ostringstream s;
   s << "PPL::";
   s << "BD_Shape::" << method << ":" << std::endl
