@@ -98,6 +98,7 @@ PPL::ConSys::adjust_topology_and_dimension(Topology new_topology,
       set_non_necessarily_closed();
     }
   // We successfully adjusted dimensions and topology.
+  assert(OK());
   return true;
 }
 
