@@ -63,16 +63,16 @@ ORIGINAL_TESTS = \
 	addconstraints5 addconstraints6 addconstraints7 addconstraints8 \
 	addconstraints9 addconstraints10 addconstraints11 \
 	addconstraints12 addconstraints13 \
-	addspacedims1 addspacedims2 addspacedims3 addspacedims4 \
-	addspacedims5 addspacedims6 addspacedims7 addspacedims8 \
-	addspacedims9 addspacedims10 addspacedims11 addspacedims12 \
-	addspacedims13 \
 	addgenerator1 addgenerator2 addgenerator3 addgenerator4 \
 	addgenerator5 \
 	addgenerators1 addgenerators2 addgenerators3 addgenerators4 \
 	addgenerators5 addgenerators6 addgenerators7 addgenerators8 \
 	addgenerators9 addgenerators10 addgenerators11 addgenerators12 \
 	addgenerators13 \
+	addspacedims1 addspacedims2 addspacedims3 addspacedims4 \
+	addspacedims5 addspacedims6 addspacedims7 addspacedims8 \
+	addspacedims9 addspacedims10 addspacedims11 addspacedims12 \
+	addspacedims13 \
 	affineimage1 affineimage2 affineimage3 affineimage4 affineimage5 \
 	affineimage6 affineimage7 affineimage8 affineimage9 \
 	affinepreimage1 affinepreimage2 affinepreimage3 affinepreimage4 \
@@ -92,8 +92,8 @@ ORIGINAL_TESTS = \
 	bhz03widening5 bhz03widening6 \
 	bounded1 \
 	boundedh79extrapolation1 \
-	bounds1 bounds2 \
 	boundingbox1 boundingbox2 boundingbox3 boundingbox4 boundingbox5 \
+	bounds1 bounds2 \
 	concatenate1 concatenate2 concatenate3 concatenate4 concatenate5 \
 	concatenate6 \
 	constraints1 constraints2 constraints3 constraints4 \
@@ -124,6 +124,8 @@ ORIGINAL_TESTS = \
 	linearpartition1 linearpartition2 \
 	linearpartition3 linearpartition4 \
 	linexpression1 \
+	mapspacedims1 mapspacedims2 mapspacedims3 \
+	max_min1 max_min2 \
 	mc91 \
 	memory1 \
 	minconstraints1 minconstraints2 minconstraints3 minconstraints4 \
@@ -143,8 +145,6 @@ ORIGINAL_TESTS = \
 	removespacedims1 removespacedims2 removespacedims3 removespacedims4 \
 	removespacedims5 removespacedims6 removespacedims7 removespacedims8 \
 	removespacedims9 removespacedims10 \
-	mapspacedims1 mapspacedims2 mapspacedims3 \
-	max_min1 max_min2 \
 	smm1 \
 	timeelapse1 timeelapse2 timeelapse3 timeelapse4 timeelapse5 \
 	timeelapse6 timeelapse7 timeelapse8 \
@@ -163,13 +163,13 @@ DERIVED_TESTS = \
 	nnc_addconstraints4 nnc_addconstraints5 nnc_addconstraints6 \
 	nnc_addconstraints7 nnc_addconstraints8 nnc_addconstraints9 \
 	nnc_addconstraints10 nnc_addconstraints13 \
-	nnc_addspacedims1 nnc_addspacedims2 nnc_addspacedims3 \
-	nnc_addspacedims4 nnc_addspacedims9 nnc_addspacedims12 \
 	nnc_addgenerator3 nnc_addgenerator5 \
 	nnc_addgenerators1 nnc_addgenerators2 nnc_addgenerators3 \
 	nnc_addgenerators4 nnc_addgenerators5 nnc_addgenerators6 \
 	nnc_addgenerators9 nnc_addgenerators10 nnc_addgenerators12 \
 	nnc_addgenerators13 \
+	nnc_addspacedims1 nnc_addspacedims2 nnc_addspacedims3 \
+	nnc_addspacedims4 nnc_addspacedims9 nnc_addspacedims12 \
 	nnc_affineimage1 nnc_affineimage2 nnc_affineimage3 nnc_affineimage4 \
 	nnc_affineimage5 nnc_affineimage6 nnc_affineimage7 nnc_affineimage8 \
 	nnc_affinepreimage1 nnc_affinepreimage2 nnc_affinepreimage3 \
@@ -216,6 +216,8 @@ DERIVED_TESTS = \
 	nnc_limitedh79extrapolation3 nnc_limitedh79extrapolation4 \
 	nnc_linearpartition1 nnc_linearpartition2 \
 	nnc_linearpartition3 nnc_linearpartition4 \
+	nnc_mapspacedims1 nnc_mapspacedims2 nnc_mapspacedims3 \
+	nnc_max_min1 nnc_max_min2 \
 	nnc_mc91 \
 	nnc_minconstraints1 nnc_minconstraints2 \
 	nnc_mingenerators1 nnc_mingenerators2 \
@@ -234,8 +236,6 @@ DERIVED_TESTS = \
 	nnc_removespacedims1 nnc_removespacedims2 nnc_removespacedims3 \
 	nnc_removespacedims4 nnc_removespacedims5 nnc_removespacedims6 \
 	nnc_removespacedims8 nnc_removespacedims9 nnc_removespacedims10 \
-	nnc_mapspacedims1 nnc_mapspacedims2 nnc_mapspacedims3 \
-	nnc_max_min1 nnc_max_min2 \
 	nnc_smm1 \
 	nnc_timeelapse2 nnc_timeelapse5 nnc_timeelapse6 nnc_timeelapse7 \
 	nnc_timeelapse8 \
@@ -275,20 +275,6 @@ addconstraints11_SOURCES = addconstraints11.cc
 addconstraints12_SOURCES = addconstraints12.cc
 addconstraints13_SOURCES = addconstraints13.cc
 
-addspacedims1_SOURCES = addspacedims1.cc
-addspacedims2_SOURCES = addspacedims2.cc
-addspacedims3_SOURCES = addspacedims3.cc
-addspacedims4_SOURCES = addspacedims4.cc
-addspacedims5_SOURCES = addspacedims5.cc
-addspacedims6_SOURCES = addspacedims6.cc
-addspacedims7_SOURCES = addspacedims7.cc
-addspacedims8_SOURCES = addspacedims8.cc
-addspacedims9_SOURCES = addspacedims9.cc
-addspacedims10_SOURCES = addspacedims10.cc
-addspacedims11_SOURCES = addspacedims11.cc
-addspacedims12_SOURCES = addspacedims12.cc
-addspacedims13_SOURCES = addspacedims13.cc
-
 addgenerator1_SOURCES = addgenerator1.cc
 addgenerator2_SOURCES = addgenerator2.cc
 addgenerator3_SOURCES = addgenerator3.cc
@@ -308,6 +294,20 @@ addgenerators10_SOURCES = addgenerators10.cc
 addgenerators11_SOURCES = addgenerators11.cc
 addgenerators12_SOURCES = addgenerators12.cc
 addgenerators13_SOURCES = addgenerators13.cc
+
+addspacedims1_SOURCES = addspacedims1.cc
+addspacedims2_SOURCES = addspacedims2.cc
+addspacedims3_SOURCES = addspacedims3.cc
+addspacedims4_SOURCES = addspacedims4.cc
+addspacedims5_SOURCES = addspacedims5.cc
+addspacedims6_SOURCES = addspacedims6.cc
+addspacedims7_SOURCES = addspacedims7.cc
+addspacedims8_SOURCES = addspacedims8.cc
+addspacedims9_SOURCES = addspacedims9.cc
+addspacedims10_SOURCES = addspacedims10.cc
+addspacedims11_SOURCES = addspacedims11.cc
+addspacedims12_SOURCES = addspacedims12.cc
+addspacedims13_SOURCES = addspacedims13.cc
 
 affineimage1_SOURCES = affineimage1.cc
 affineimage2_SOURCES = affineimage2.cc
@@ -377,14 +377,14 @@ bounded1_SOURCES = bounded1.cc
 
 boundedh79extrapolation1_SOURCES = boundedh79extrapolation1.cc
 
-bounds1_SOURCES = bounds1.cc
-bounds2_SOURCES = bounds2.cc
-
 boundingbox1_SOURCES = boundingbox1.cc BBox.cc
 boundingbox2_SOURCES = boundingbox2.cc BBox.cc
 boundingbox3_SOURCES = boundingbox3.cc
 boundingbox4_SOURCES = boundingbox4.cc
 boundingbox5_SOURCES = boundingbox5.cc BBox.cc
+
+bounds1_SOURCES = bounds1.cc
+bounds2_SOURCES = bounds2.cc
 
 concatenate1_SOURCES = concatenate1.cc
 concatenate2_SOURCES = concatenate2.cc
@@ -479,9 +479,16 @@ linearpartition4_SOURCES = linearpartition4.cc
 
 linexpression1_SOURCES = linexpression1.cc
 
-memory1_SOURCES = memory1.cc
+mapspacedims1_SOURCES = mapspacedims1.cc
+mapspacedims2_SOURCES = mapspacedims2.cc
+mapspacedims3_SOURCES = mapspacedims3.cc
+
+max_min1_SOURCES = max_min1.cc
+max_min2_SOURCES = max_min2.cc
 
 mc91_SOURCES = mc91.cc
+
+memory1_SOURCES = memory1.cc
 
 minconstraints1_SOURCES = minconstraints1.cc
 minconstraints2_SOURCES = minconstraints2.cc
@@ -518,6 +525,10 @@ polyhull9_SOURCES = polyhull9.cc
 polyhull10_SOURCES = polyhull10.cc
 polyhull11_SOURCES = polyhull11.cc
 
+randphull1_SOURCES = randphull1.cc
+randphull2_SOURCES = randphull2.cc
+randphull2_LDADD = $(LDADD) -lm
+
 relations1_SOURCES = relations1.cc
 relations2_SOURCES = relations2.cc
 relations3_SOURCES = relations3.cc
@@ -538,10 +549,6 @@ relations17_SOURCES = relations17.cc
 relations18_SOURCES = relations18.cc
 relations19_SOURCES = relations19.cc
 
-randphull1_SOURCES = randphull1.cc
-randphull2_SOURCES = randphull2.cc
-randphull2_LDADD = $(LDADD) -lm
-
 removespacedims1_SOURCES = removespacedims1.cc
 removespacedims2_SOURCES = removespacedims2.cc
 removespacedims3_SOURCES = removespacedims3.cc
@@ -552,13 +559,6 @@ removespacedims7_SOURCES = removespacedims7.cc
 removespacedims8_SOURCES = removespacedims8.cc
 removespacedims9_SOURCES = removespacedims9.cc
 removespacedims10_SOURCES = removespacedims10.cc
-
-mapspacedims1_SOURCES = mapspacedims1.cc
-mapspacedims2_SOURCES = mapspacedims2.cc
-mapspacedims3_SOURCES = mapspacedims3.cc
-
-max_min1_SOURCES = max_min1.cc
-max_min2_SOURCES = max_min2.cc
 
 smm1_SOURCES = smm1.cc
 
@@ -635,19 +635,6 @@ nnc_addconstraints10_CXXFLAGS = $(DERIVED_CXXFLAGS)
 nnc_addconstraints13_SOURCES = addconstraints13.cc
 nnc_addconstraints13_CXXFLAGS = $(DERIVED_CXXFLAGS)
 
-nnc_addspacedims1_SOURCES = addspacedims1.cc
-nnc_addspacedims1_CXXFLAGS = $(DERIVED_CXXFLAGS)
-nnc_addspacedims2_SOURCES = addspacedims2.cc
-nnc_addspacedims2_CXXFLAGS = $(DERIVED_CXXFLAGS)
-nnc_addspacedims3_SOURCES = addspacedims3.cc
-nnc_addspacedims3_CXXFLAGS = $(DERIVED_CXXFLAGS)
-nnc_addspacedims4_SOURCES = addspacedims4.cc
-nnc_addspacedims4_CXXFLAGS = $(DERIVED_CXXFLAGS)
-nnc_addspacedims9_SOURCES = addspacedims9.cc
-nnc_addspacedims9_CXXFLAGS = $(DERIVED_CXXFLAGS)
-nnc_addspacedims12_SOURCES = addspacedims12.cc
-nnc_addspacedims12_CXXFLAGS = $(DERIVED_CXXFLAGS)
-
 nnc_addgenerator3_SOURCES = addgenerator3.cc
 nnc_addgenerator3_CXXFLAGS = $(DERIVED_CXXFLAGS)
 nnc_addgenerator5_SOURCES = addgenerator5.cc
@@ -673,6 +660,19 @@ nnc_addgenerators12_SOURCES = addgenerators12.cc
 nnc_addgenerators12_CXXFLAGS = $(DERIVED_CXXFLAGS)
 nnc_addgenerators13_SOURCES = addgenerators13.cc
 nnc_addgenerators13_CXXFLAGS = $(DERIVED_CXXFLAGS)
+
+nnc_addspacedims1_SOURCES = addspacedims1.cc
+nnc_addspacedims1_CXXFLAGS = $(DERIVED_CXXFLAGS)
+nnc_addspacedims2_SOURCES = addspacedims2.cc
+nnc_addspacedims2_CXXFLAGS = $(DERIVED_CXXFLAGS)
+nnc_addspacedims3_SOURCES = addspacedims3.cc
+nnc_addspacedims3_CXXFLAGS = $(DERIVED_CXXFLAGS)
+nnc_addspacedims4_SOURCES = addspacedims4.cc
+nnc_addspacedims4_CXXFLAGS = $(DERIVED_CXXFLAGS)
+nnc_addspacedims9_SOURCES = addspacedims9.cc
+nnc_addspacedims9_CXXFLAGS = $(DERIVED_CXXFLAGS)
+nnc_addspacedims12_SOURCES = addspacedims12.cc
+nnc_addspacedims12_CXXFLAGS = $(DERIVED_CXXFLAGS)
 
 nnc_affineimage1_SOURCES = affineimage1.cc
 nnc_affineimage1_CXXFLAGS = $(DERIVED_CXXFLAGS)
@@ -802,13 +802,13 @@ nnc_contains1_CXXFLAGS = $(DERIVED_CXXFLAGS)
 nnc_contains2_SOURCES = contains2.cc
 nnc_contains2_CXXFLAGS = $(DERIVED_CXXFLAGS)
 
-nnc_empty1_SOURCES = empty1.cc
-nnc_empty1_CXXFLAGS = $(DERIVED_CXXFLAGS)
-
 nnc_disjoint1_SOURCES = disjoint1.cc
 nnc_disjoint1_CXXFLAGS = $(DERIVED_CXXFLAGS)
 nnc_disjoint2_SOURCES = disjoint2.cc
 nnc_disjoint2_CXXFLAGS = $(DERIVED_CXXFLAGS)
+
+nnc_empty1_SOURCES = empty1.cc
+nnc_empty1_CXXFLAGS = $(DERIVED_CXXFLAGS)
 
 nnc_exceptions1_SOURCES = exceptions1.cc
 nnc_exceptions1_CXXFLAGS = $(DERIVED_CXXFLAGS)
@@ -909,6 +909,18 @@ nnc_linearpartition3_CXXFLAGS = $(DERIVED_CXXFLAGS)
 nnc_linearpartition4_SOURCES = linearpartition4.cc
 nnc_linearpartition4_CXXFLAGS = $(DERIVED_CXXFLAGS)
 
+nnc_mapspacedims1_SOURCES = mapspacedims1.cc
+nnc_mapspacedims1_CXXFLAGS = $(DERIVED_CXXFLAGS)
+nnc_mapspacedims2_SOURCES = mapspacedims2.cc
+nnc_mapspacedims2_CXXFLAGS = $(DERIVED_CXXFLAGS)
+nnc_mapspacedims3_SOURCES = mapspacedims3.cc
+nnc_mapspacedims3_CXXFLAGS = $(DERIVED_CXXFLAGS)
+
+nnc_max_min1_SOURCES = max_min1.cc
+nnc_max_min1_CXXFLAGS = $(DERIVED_CXXFLAGS)
+nnc_max_min2_SOURCES = max_min2.cc
+nnc_max_min2_CXXFLAGS = $(DERIVED_CXXFLAGS)
+
 nnc_mc91_SOURCES = mc91.cc
 nnc_mc91_CXXFLAGS = $(DERIVED_CXXFLAGS)
 
@@ -962,6 +974,12 @@ nnc_polyhull9_CXXFLAGS = $(DERIVED_CXXFLAGS)
 nnc_polyhull10_SOURCES = polyhull10.cc
 nnc_polyhull10_CXXFLAGS = $(DERIVED_CXXFLAGS)
 
+nnc_randphull1_SOURCES = randphull1.cc
+nnc_randphull1_CXXFLAGS = $(DERIVED_CXXFLAGS)
+nnc_randphull2_SOURCES = randphull2.cc
+nnc_randphull2_CXXFLAGS = $(DERIVED_CXXFLAGS)
+nnc_randphull2_LDADD = $(LDADD) -lm
+
 nnc_relations1_SOURCES = relations1.cc
 nnc_relations1_CXXFLAGS = $(DERIVED_CXXFLAGS)
 nnc_relations2_SOURCES = relations2.cc
@@ -995,12 +1013,6 @@ nnc_relations16_CXXFLAGS = $(DERIVED_CXXFLAGS)
 nnc_relations19_SOURCES = relations19.cc
 nnc_relations19_CXXFLAGS = $(DERIVED_CXXFLAGS)
 
-nnc_randphull1_SOURCES = randphull1.cc
-nnc_randphull1_CXXFLAGS = $(DERIVED_CXXFLAGS)
-nnc_randphull2_SOURCES = randphull2.cc
-nnc_randphull2_CXXFLAGS = $(DERIVED_CXXFLAGS)
-nnc_randphull2_LDADD = $(LDADD) -lm
-
 nnc_removespacedims1_SOURCES = removespacedims1.cc
 nnc_removespacedims1_CXXFLAGS = $(DERIVED_CXXFLAGS)
 nnc_removespacedims2_SOURCES = removespacedims2.cc
@@ -1019,18 +1031,6 @@ nnc_removespacedims9_SOURCES = removespacedims9.cc
 nnc_removespacedims9_CXXFLAGS = $(DERIVED_CXXFLAGS)
 nnc_removespacedims10_SOURCES = removespacedims10.cc
 nnc_removespacedims10_CXXFLAGS = $(DERIVED_CXXFLAGS)
-
-nnc_mapspacedims1_SOURCES = mapspacedims1.cc
-nnc_mapspacedims1_CXXFLAGS = $(DERIVED_CXXFLAGS)
-nnc_mapspacedims2_SOURCES = mapspacedims2.cc
-nnc_mapspacedims2_CXXFLAGS = $(DERIVED_CXXFLAGS)
-nnc_mapspacedims3_SOURCES = mapspacedims3.cc
-nnc_mapspacedims3_CXXFLAGS = $(DERIVED_CXXFLAGS)
-
-nnc_max_min1_SOURCES = max_min1.cc
-nnc_max_min1_CXXFLAGS = $(DERIVED_CXXFLAGS)
-nnc_max_min2_SOURCES = max_min2.cc
-nnc_max_min2_CXXFLAGS = $(DERIVED_CXXFLAGS)
 
 nnc_smm1_SOURCES = smm1.cc
 nnc_smm1_CXXFLAGS = $(DERIVED_CXXFLAGS)
@@ -1074,8 +1074,7 @@ endif # BUILD_WATCHDOG_LIBRARY
 
 TESTS = $(ORIGINAL_TESTS) $(DERIVED_TESTS) $(WATCHDOG_TESTS)
 
-XFAIL_ALWAYS = \
-addgenerators11
+XFAIL_ALWAYS =
 
 XFAIL_WITH_INT64 = \
 $(XFAIL_ALWAYS) \
@@ -1110,23 +1109,23 @@ generalizedaffineimage3 \
 generalizedaffineimage7 \
 intersection1 \
 intersection2 \
+mapspacedims2 \
+max_min2 \
 onepoint \
 polydifference9 \
 randphull1 \
 removespacedims2 \
-mapspacedims2 \
-max_min2 \
 smm1 \
 nnc_bgp99extrapolation2 \
 nnc_boundedh79extrapolation1 \
 nnc_generalizedaffineimage3 \
 nnc_intersection1 \
 nnc_intersection2 \
+nnc_max_min2 \
 nnc_onepoint \
 nnc_polydifference9 \
 nnc_randphull1 \
 nnc_removespacedims2 \
-nnc_max_min2 \
 nnc_smm1 
 
 

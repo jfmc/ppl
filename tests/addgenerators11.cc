@@ -51,29 +51,19 @@ main() TRY {
 #endif
 
   ph1.topological_closure_assign();
-
-  GenSys gs2 = ph1.generators();
-
-  C_Polyhedron ph2(2);
-  ph2.add_constraint(A >= 3);
-  ph2.add_constraint(B >= 3);
+  GenSys gs2 = ph1.minimized_generators();
 
 #if NOISY
   print_generators(gs2, "*** gs2 ***");
+#endif
+
+  C_Polyhedron ph2(2, C_Polyhedron::EMPTY);
+  ph2.add_generators_and_minimize(gs2);
+
+#if NOISY
   print_constraints(ph2, "*** ph2 ***");
 #endif
 
-  try {
-    ph2.add_generators_and_minimize(gs2);
-  }
-  catch (invalid_argument& e) {
-#if NOISY
-    cout << "invalid_argument: " << e.what() << endl << endl;
-#endif
-  }
-  catch (...) {
-    exit(1);
-  }
   C_Polyhedron known_result(2);
   known_result.add_constraint(A >= 0);
   known_result.add_constraint(B >= 0);
@@ -81,7 +71,6 @@ main() TRY {
   int retval = (ph2 == known_result) ? 0 : 1;
 
 #if NOISY
-  print_generators(ph2, "*** After ph2.add_generators_and_minimize(gs2) ***");
   print_generators(known_result, "*** known_result ***");
 #endif
 

@@ -77,6 +77,10 @@ o  The enumeration values of enum Complexity_Class have been renamed
 Bugfixes
 ========
 
+o  Fixed a bug that was causing an unwanted exception to be thrown
+   when adding to a C_Polyhedron some generators obtained from an
+   NNC_Polyhedron (even though no closure point was being added).
+
 o  Fixed a bug in the handling of empty generator systems having
    a strictly positive space dimension.
 
