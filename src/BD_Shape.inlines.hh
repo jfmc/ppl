@@ -1625,13 +1625,16 @@ BD_Shape<T>::intersection_assign_and_minimize(const BD_Shape& y) {
   return !marked_empty();
 }
 
+
 template <typename T>
 template <typename Iterator>
 inline void
 BD_Shape<T>::CC76_extrapolation_assign(const BD_Shape& y,
-				     Iterator first, Iterator last) {
+				       Iterator first, Iterator last) {
+  dimension_type space_dim = space_dimension();
+
   // Dimension-compatibility check.
-  if (space_dimension() != y.space_dimension())
+  if (space_dim != y.space_dimension())
     throw_dimension_incompatible("CC76_extrapolation_assign(y)", y);
 
 #ifndef NDEBUG
@@ -1643,10 +1646,9 @@ BD_Shape<T>::CC76_extrapolation_assign(const BD_Shape& y,
   }
 #endif
 
-  dimension_type k = space_dimension();
   // If both systems of bounded differences are zero-dimensional,
   // since `*this' contains `y', we simply return `*this'.
-  if (k == 0)
+  if (space_dim == 0)
     return;
 
   closure_assign();
@@ -1694,10 +1696,10 @@ BD_Shape<T>::CC76_extrapolation_assign(const BD_Shape& y,
   // and, if in the container there is a value that is greater than
   // or equal to the value of the constraint, we take this value,
   // otherwise we remove this constraint.
-  for (dimension_type i = 0; i <= k; ++i) {
+  for (dimension_type i = 0; i <= space_dim; ++i) {
     DB_Row<T>& dbm_i = dbm[i];
     const DB_Row<T>& y_dbm_i = y.dbm[i];
-    for (dimension_type j = 0; j <= k; ++j) {
+    for (dimension_type j = 0; j <= space_dim; ++j) {
       T& dbm_ij = dbm_i[j];
       const T& y_dbm_ij = y_dbm_i[j];
       if (y_dbm_ij < dbm_ij) {
