@@ -21,8 +21,8 @@ USA.
 For the most up-to-date information see the Parma Polyhedra Library
 site: http://www.cs.unipr.it/ppl/ . */
 
-#ifndef PPL_globals_hh
-#define PPL_globals_hh 1
+#ifndef PPL_globals_defs_hh
+#define PPL_globals_defs_hh 1
 
 #include "Integer.types.hh"
 #include "Constraint.types.hh"
@@ -198,6 +198,21 @@ maybe_abandon() {
 struct From_Bounding_Box {
 };
 
+#ifdef PPL_DOXYGEN_INCLUDE_IMPLEMENTATION_DETAILS
+//! \brief
+//! If \f$g\f$ is the GCD of \p x and \p y, the values of \p x and \p y
+//! divided by \f$g\f$ are assigned to \p nx and \p ny, respectively.
+/*!
+  \note \p x and \p nx may be the same object and likewise for
+        \p y and \p ny.  Any other aliasing results in undefined
+	behavior.
+*/
+#endif
+void
+normalize2(const Integer& x, const Integer& y, Integer& nx, Integer& ny);
+
 } // namespace Parma_Polyhedra_Library
 
-#endif // !defined(PPL_globals_hh)
+#include "globals.inlines.hh"
+
+#endif // !defined(PPL_globals_defs_hh)

@@ -203,18 +203,14 @@ PPL::Row::linear_combine(const Row& y, const dimension_type k) {
   // Let g be the GCD between `x[k]' and `y[k]'.
   // For each i the following computes
   //   x[i] = x[i]*y[k]/g - y[i]*x[k]/g.
-  TEMP_INTEGER(scale);
-  TEMP_INTEGER(scaled_x_k);
-  TEMP_INTEGER(scaled_y_k);
-  gcd_assign(scale, x[k], y[k]);
-  exact_div_assign(scaled_x_k, x[k], scale);
-  exact_div_assign(scaled_y_k, y[k], scale);
-
+  TEMP_INTEGER(normalized_x_k);
+  TEMP_INTEGER(normalized_y_k);
+  normalize2(x[k], y[k], normalized_x_k, normalized_y_k);
   for (dimension_type i = size(); i-- > 0; )
     if (i != k) {
       Integer& x_i = x[i];
-      x_i *= scaled_y_k;
-      sub_mul_assign(x_i, y[i], scaled_x_k);
+      x_i *= normalized_y_k;
+      sub_mul_assign(x_i, y[i], normalized_x_k);
     }
   x[k] = 0;
   x.strong_normalize();

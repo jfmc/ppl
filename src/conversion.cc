@@ -372,9 +372,8 @@ PPL::Polyhedron::conversion(Matrix& source,
   // constraints seen so far, to be used as a displacement when swapping rows.
   dimension_type source_num_redundant = 0;
 
-  TEMP_INTEGER(scale);
-  TEMP_INTEGER(scaled_sp_i);
-  TEMP_INTEGER(scaled_sp_o);
+  TEMP_INTEGER(normalized_sp_i);
+  TEMP_INTEGER(normalized_sp_o);
 
   // Converting the sub-matrix of `source' having rows with indexes
   // from `start' to the last one (i.e., `source_num_rows' - 1).
@@ -480,28 +479,23 @@ PPL::Polyhedron::conversion(Matrix& source,
 	  //
 	  // Integer scale = scalar_prod[i];
 	  // scale.gcd_assign(scalar_prod[num_lines_or_equalities]);
-	  // Integer scaled_sp_i = scalar_prod[i] / scale;
-	  // Integer scaled_sp_n
+	  // Integer normalized_sp_i = scalar_prod[i] / scale;
+	  // Integer normalized_sp_n
 	  //   = scalar_prod[num_lines_or_equalities] / scale;
 	  // for (dimension_type c = dest_num_columns; c-- > 0; ) {
-	  //   dest[i][c] *= scaled_sp_n;
-	  //   dest[i][c] -= scaled_sp_i * dest[num_lines_or_equalities][c];
+	  //   dest[i][c] *= normalized_sp_n;
+	  //   dest[i][c] -= normalized_sp_i * dest[num_lines_or_equalities][c];
 	  // }
-	  gcd_assign(scale,
-		     scalar_prod[i],
-		     scalar_prod[num_lines_or_equalities]);
-	  exact_div_assign(scaled_sp_i,
-			   scalar_prod[i],
-			   scale);
-	  exact_div_assign(scaled_sp_o,
-			   scalar_prod[num_lines_or_equalities],
-			   scale);
+	  normalize2(scalar_prod[i],
+		     scalar_prod[num_lines_or_equalities],
+		     normalized_sp_i,
+		     normalized_sp_o);
 	  Row& dest_i = dest[i];
 	  for (dimension_type c = dest_num_columns; c-- > 0; ) {
 	    Integer& dest_i_c = dest_i[c];
-	    dest_i_c *= scaled_sp_o;
+	    dest_i_c *= normalized_sp_o;
 	    sub_mul_assign(dest_i_c,
-			   scaled_sp_i, dest[num_lines_or_equalities][c]);
+			   normalized_sp_i, dest[num_lines_or_equalities][c]);
 	  }
 	  dest_i.strong_normalize();
 	  scalar_prod[i] = 0;
@@ -523,28 +517,23 @@ PPL::Polyhedron::conversion(Matrix& source,
 	  //
 	  // Integer scale = scalar_prod[i];
 	  // scale.gcd_assign(scalar_prod[num_lines_or_equalities]);
-	  // Integer scaled_sp_i = scalar_prod[i] / scale;
-	  // Integer scaled_sp_n
+	  // Integer normalized_sp_i = scalar_prod[i] / scale;
+	  // Integer normalized_sp_n
 	  // = scalar_prod[num_lines_or_equalities] / scale;
 	  // for (dimension_type c = dest_num_columns; c-- > 0; ) {
-	  //   dest[i][c] *= scaled_sp_n;
-	  //   dest[i][c] -= scaled_sp_i * dest[num_lines_or_equalities][c];
+	  //   dest[i][c] *= normalized_sp_n;
+	  //   dest[i][c] -= normalized_sp_i * dest[num_lines_or_equalities][c];
 	  // }
-	  gcd_assign(scale,
-		     scalar_prod[i],
-		     scalar_prod[num_lines_or_equalities]);
-	  exact_div_assign(scaled_sp_i,
-			   scalar_prod[i],
-			   scale);
-	  exact_div_assign(scaled_sp_o,
-			   scalar_prod[num_lines_or_equalities],
-			   scale);
+	  normalize2(scalar_prod[i],
+		     scalar_prod[num_lines_or_equalities],
+		     normalized_sp_i,
+		     normalized_sp_o);
 	  Row& dest_i = dest[i];
 	  for (dimension_type c = dest_num_columns; c-- > 0; ) {
 	    Integer& dest_i_c = dest_i[c];
-	    dest_i_c *= scaled_sp_o;
+	    dest_i_c *= normalized_sp_o;
 	    sub_mul_assign(dest_i_c,
-			   scaled_sp_i, dest[num_lines_or_equalities][c]);
+			   normalized_sp_i, dest[num_lines_or_equalities][c]);
 	  }
 	  dest_i.strong_normalize();
 	  scalar_prod[i] = 0;
@@ -738,25 +727,20 @@ PPL::Polyhedron::conversion(Matrix& source,
 		  //
 		  // Integer scale = scalar_prod[i];
 		  // scale.gcd_assign(scalar_prod[j]);
-		  // Integer scaled_sp_i = scalar_prod[i] / scale;
-		  // Integer scaled_sp_j = scalar_prod[j] / scale;
+		  // Integer normalized_sp_i = scalar_prod[i] / scale;
+		  // Integer normalized_sp_j = scalar_prod[j] / scale;
 		  // for (dimension_type c = dest_num_columns; c-- > 0; ) {
-		  //   new_row[c] = scaled_sp_i * dest[j][c];
-		  //   new_row[c] -= scaled_sp_j * dest[i][c];
+		  //   new_row[c] = normalized_sp_i * dest[j][c];
+		  //   new_row[c] -= normalized_sp_j * dest[i][c];
 		  // }
-		  gcd_assign(scale,
-			     scalar_prod[i],
-			     scalar_prod[j]);
-		  exact_div_assign(scaled_sp_i,
-				   scalar_prod[i],
-				   scale);
-		  exact_div_assign(scaled_sp_o,
-				   scalar_prod[j],
-				   scale);
+		  normalize2(scalar_prod[i],
+			     scalar_prod[j],
+			     normalized_sp_i,
+			     normalized_sp_o);
 		  for (dimension_type c = dest_num_columns; c-- > 0; ) {
 		    Integer& new_row_c = new_row[c];
-		    new_row_c = scaled_sp_i * dest[j][c];
-		    sub_mul_assign(new_row_c, scaled_sp_o, dest[i][c]);
+		    new_row_c = normalized_sp_i * dest[j][c];
+		    sub_mul_assign(new_row_c, normalized_sp_o, dest[i][c]);
 		  }
 		  new_row.strong_normalize();
 		  // Since we added a new generator to `dest',

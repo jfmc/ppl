@@ -89,9 +89,10 @@ H79_Certificate.types.hh \
 Polyhedron.types.hh \
 C_Polyhedron.types.hh \
 NNC_Polyhedron.types.hh \
-globals.hh \
 Integer.defs.hh \
 Integer.inlines.hh \
+globals.hh \
+globals.inlines.hh \
 Interval.defs.hh \
 Interval.inlines.hh \
 BoundingBox.defs.hh \
