@@ -25,8 +25,16 @@ solve(Goal,[Polyhedron,Q|Qs]):-
     ppl_new_polyhedron(Polyhedron, Dims), 
          % A copy of Polyhedron is required by solve/7.
     ppl_copy_polyhedron(Polyhedron,Q),
+    solve(Goal,Polyhedron,Dims,Q,Qs).
+  
+solve(Goal,Polyhedron,Dims,Q,Qs):-
     solve(Goal,Polyhedron,Dims,_,Q,[],Qs),
     output_constraints(Polyhedron,Dims).
+solve(_,Polyhedron,_,_,_):-
+    !,
+    ppl_delete_polyhedron(Polyhedron),
+    fail.
+
 
 /*
 output_constraints/2 prints the results.
@@ -71,6 +79,7 @@ solve(A=B,Polyhedron,InDims,OutDims,Q,Qs,Qs):-
 
 %%% The case when the query is a set of constraints.
 solve({Cs},Polyhedron,InDims,InDims,Q,Qs,Qs):-
+    !,
     ppl_remove_higher_dimensions(Polyhedron,InDims),
     ppl_convex_hull_assign(Polyhedron,Q),
          % The number of extra dimensions is the number of new variables.
@@ -80,6 +89,7 @@ solve({Cs},Polyhedron,InDims,InDims,Q,Qs,Qs):-
     (
      ppl_check_empty(Polyhedron)
     ->
+     ppl_delete_polyhedron(Q),
      fail
     ;
      true
@@ -136,7 +146,7 @@ check_constraints(Polyhedron) :-
     ppl_space_dimension(Polyhedron, D),
     write(D), write(' * '),
     ppl_get_constraints(Polyhedron, CS),
-    write(CS), write(' % ').
+    write(CS), nl.
 
 numvars(A,InN,OutN):-
     var(A),
