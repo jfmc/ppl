@@ -44,6 +44,13 @@ class Parma_Polyhedra_Library::Polyhedra_PowerSet
 private:
   typedef Determinate<PH> CS;
   typedef PowerSet<CS> Base;
+  using Base::sequence;
+  using Base::begin;
+  using Base::end;
+  using Base::is_omega_reduced;
+  using Base::omega_reduce;
+  using Base::is_bottom;
+  using Base::size;
 
 public:
   //! Builds a universe (top) or empty (bottom) Polyhedra_PowerSet.
