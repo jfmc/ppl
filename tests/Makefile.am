@@ -92,6 +92,7 @@ ORIGINAL_TESTS = \
 	generators1 generators2 generators3 generators4 generators5 \
 	generators6 \
 	h79widening1 h79widening2 h79widening3 h79widening4 h79widening5 \
+	h79widening6 \
         intersection1 intersection2 intersection3 intersection4 \
 	intersection5 intersection6 intersection7 intersection8 \
 	intersection9 intersection10 intersection11 \
@@ -174,6 +175,7 @@ DERIVED_TESTS = \
 	nnc_generators1 nnc_generators2 nnc_generators3 nnc_generators4 \
 	nnc_generators5 nnc_generators6 \
 	nnc_h79widening1 nnc_h79widening2 nnc_h79widening4 nnc_h79widening5 \
+        nnc_h79widening6 \
 	nnc_intersection1 nnc_intersection2 nnc_intersection3 \
 	nnc_intersection4 nnc_intersection5 nnc_intersection6 \
 	nnc_intersection7 nnc_intersection8 nnc_intersection9 \
@@ -386,6 +388,7 @@ h79widening2_SOURCES = h79widening2.cc
 h79widening3_SOURCES = h79widening3.cc
 h79widening4_SOURCES = h79widening4.cc
 h79widening5_SOURCES = h79widening5.cc
+h79widening6_SOURCES = h79widening6.cc
 
 intersection1_SOURCES = intersection1.cc
 intersection2_SOURCES = intersection2.cc
@@ -760,6 +763,8 @@ nnc_h79widening4_SOURCES = h79widening4.cc
 nnc_h79widening4_CXXFLAGS = $(DERIVED_CXXFLAGS)
 nnc_h79widening5_SOURCES = h79widening5.cc
 nnc_h79widening5_CXXFLAGS = $(DERIVED_CXXFLAGS)
+nnc_h79widening6_SOURCES = h79widening6.cc
+nnc_h79widening6_CXXFLAGS = $(DERIVED_CXXFLAGS)
 
 nnc_intersection1_SOURCES = intersection1.cc
 nnc_intersection1_CXXFLAGS = $(DERIVED_CXXFLAGS)
