@@ -27,7 +27,7 @@ using namespace std;
 using namespace Parma_Polyhedra_Library;
 using namespace Parma_Polyhedra_Library::IO_Operators;
 
-#ifndef NOISY
+#ifndef NOISY 
 #define NOISY 0
 #endif
 
@@ -80,8 +80,8 @@ int main() TRY {
   cout << "(cross - squares) inters squares = " << intersection << endl;
 #endif
 
-  // When using Polyhedra_Powerset<C_Polyhedron>, intersection will be
-  // empty.  When using Polyhedra_Powerset<NNC_Polyhedron>,
+  // When using Polyhedra_Powerset<NNC_Polyhedron>, intersection will be
+  // empty.  When using Polyhedra_Powerset<C_Polyhedron>,
   // intersection will consist of objects of affine dimension at most 1.
   for (Polyhedra_Powerset<C_Polyhedron>::const_iterator
 	 i = intersection.begin(), in_end = intersection.end();
