@@ -1,7 +1,8 @@
-autom4te.cache
+.deps
 Makefile
 Makefile.in
 aclocal.m4
+autom4te.cache
 config.cache
 config.h
 config.log
@@ -10,3 +11,4 @@ configure
 libtool
 stamp-h
 stamp-h.in
+stamp-h1
