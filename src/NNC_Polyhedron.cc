@@ -30,7 +30,6 @@ namespace PPL = Parma_Polyhedra_Library;
 
 PPL::NNC_Polyhedron::NNC_Polyhedron(const C_Polyhedron& y)
   : Polyhedron(NOT_NECESSARILY_CLOSED, y.space_dimension(), UNIVERSE) {
-  ConSys cs = y.constraints();
-  add_constraints(cs);
+  add_constraints(y.constraints());
   assert(OK());
 }

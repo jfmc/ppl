@@ -917,7 +917,7 @@ bool
 PPL::Polyhedron::add_constraint_and_minimize(const Constraint& c) {
   // TODO: this is just an executable specification.
   ConSys cs(c);
-  return add_constraints_and_minimize(cs);
+  return add_recycled_constraints_and_minimize(cs);
 }
 
 void
@@ -1058,7 +1058,7 @@ bool
 PPL::Polyhedron::add_generator_and_minimize(const Generator& g) {
   // TODO: this is just an executable specification.
   GenSys gs(g);
-  return add_generators_and_minimize(gs);
+  return add_recycled_generators_and_minimize(gs);
 }
 
 void
@@ -1070,7 +1070,7 @@ PPL::Polyhedron::add_recycled_constraints(ConSys& cs) {
   // the dimension of `cs' can not be greater than space_dim.
   const dimension_type cs_space_dim = cs.space_dimension();
   if (space_dim < cs_space_dim)
-    throw_dimension_incompatible("add_constraints(cs)", "cs", cs);
+    throw_dimension_incompatible("add_recycled_constraints(cs)", "cs", cs);
 
   // Adding no constraints is a no-op.
   if (cs.num_rows() == 0) {
@@ -1152,12 +1152,14 @@ bool
 PPL::Polyhedron::add_recycled_constraints_and_minimize(ConSys& cs) {
   // Topology-compatibility check.
   if (is_necessarily_closed() && cs.has_strict_inequalities())
-    throw_topology_incompatible("add_constraints_and_minimize(cs)", cs);
+    throw_topology_incompatible("add_recycled_constraints_and_minimize(cs)",
+				cs);
   // Dimension-compatibility check:
   // the dimension of `cs' can not be greater than space_dim.
   const dimension_type cs_space_dim = cs.space_dimension();
   if (space_dim < cs_space_dim)
-    throw_dimension_incompatible("add_constraints_and_minimize(cs)", "cs", cs);
+    throw_dimension_incompatible("add_recycled_constraints_and_minimize(cs)",
+				 "cs", cs);
 
   // Adding no constraints: just minimize.
   if (cs.num_rows() == 0) {
@@ -2060,9 +2062,10 @@ PPL::Polyhedron::generalized_affine_image(const LinExpression& lhs,
 
     // Constrain the new dimension to be equal to the right hand side.
     // (we force minimization because we will need the generators).
-    ConSys new_cs;
-    new_cs.insert(new_var == rhs);
-    add_constraints_and_minimize(new_cs);
+    // FIXME: why not use add_constraint_and_minimize() here?
+    ConSys new_cs1;
+    new_cs1.insert(new_var == rhs);
+    add_recycled_constraints_and_minimize(new_cs1);
 
     // Cylindrificate on all the variables occurring in the left hand side
     // (we force minimization because we will need the constraints).
@@ -2071,25 +2074,26 @@ PPL::Polyhedron::generalized_affine_image(const LinExpression& lhs,
     // Constrain the new dimension so that it is related to
     // the left hand side as dictated by `relsym'
     // (we force minimization because we will need the generators).
-    new_cs.clear();
+    // FIXME: why not use add_constraint_and_minimize() here?
+    ConSys new_cs2;
     switch (relsym) {
     case LESS_THAN:
-      new_cs.insert(lhs < new_var);
+      new_cs2.insert(lhs < new_var);
       break;
     case LESS_THAN_OR_EQUAL:
-      new_cs.insert(lhs <= new_var);
+      new_cs2.insert(lhs <= new_var);
       break;
     case EQUAL:
-      new_cs.insert(lhs == new_var);
+      new_cs2.insert(lhs == new_var);
       break;
     case GREATER_THAN_OR_EQUAL:
-      new_cs.insert(lhs >= new_var);
+      new_cs2.insert(lhs >= new_var);
       break;
     case GREATER_THAN:
-      new_cs.insert(lhs > new_var);
+      new_cs2.insert(lhs > new_var);
       break;
     }
-    add_constraints_and_minimize(new_cs);
+    add_recycled_constraints_and_minimize(new_cs2);
 
     // Remove the temporarily added dimension.
     remove_higher_dimensions(space_dim-1);

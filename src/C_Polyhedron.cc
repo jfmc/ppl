@@ -33,8 +33,7 @@ PPL::C_Polyhedron::C_Polyhedron(const NNC_Polyhedron& y)
   : Polyhedron(NECESSARILY_CLOSED, y.space_dimension(), UNIVERSE) {
   // Topology compatibility check.
   if (y.is_topologically_closed()) {
-    ConSys cs = y.constraints();
-    add_constraints(cs);
+    add_constraints(y.constraints());
     assert(OK());
   }
   else

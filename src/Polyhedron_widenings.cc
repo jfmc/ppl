@@ -192,7 +192,7 @@ PPL::Polyhedron::H79_widening_assign(const Polyhedron& y, unsigned* tp) {
     else if (CH78_cs.num_equalities() == y.con_sys.num_equalities()) {
       // Let `x' be defined by the constraints in `CH78_cs'.
       Polyhedron CH78(tpl, x.space_dim, UNIVERSE);
-      CH78.add_constraints(CH78_cs);
+      CH78.add_recycled_constraints(CH78_cs);
 
       // Check whether we are using the widening-with-tokens technique
       // and there still are tokens available.
@@ -240,7 +240,7 @@ PPL::Polyhedron::H79_widening_assign(const Polyhedron& y, unsigned* tp) {
     // this does not imply that the result strictly includes `x'.
     // Let `H79' be defined by the constraints in `H79_cs'.
     Polyhedron H79(tpl, x.space_dim, UNIVERSE);
-    H79.add_constraints(H79_cs);
+    H79.add_recycled_constraints(H79_cs);
 
     // Check whether we are using the widening-with-tokens technique
     // and there still are tokens available.
@@ -317,17 +317,18 @@ PPL::Polyhedron::limited_H79_extrapolation_assign(const Polyhedron& y,
     // We have just discovered that `x' is empty.
     return;
 
-  ConSys adding_cs;
+  ConSys new_cs;
   // The constraints to be added must be satisfied by all the
   // generators of `x'. We can disregard `y' because `y <= x'.
   const GenSys& x_gs = x.gen_sys;
-  for (dimension_type i = 0,
-	 cs_num_rows = cs.num_rows(); i < cs_num_rows; ++i)
+  // FIXME: why iterating upwards here?
+  // FIXME: why repeating the call to cs[i]?
+  for (dimension_type i = 0, cs_num_rows = cs.num_rows(); i < cs_num_rows; ++i)
     if (x_gs.satisfied_by_all_generators(cs[i]))
-      adding_cs.insert(cs[i]);
+      new_cs.insert(cs[i]);
 
   x.H79_widening_assign(y, tp);
-  x.add_constraints(adding_cs);
+  x.add_constraints(new_cs);
   assert(OK());
 }
 
@@ -376,7 +377,7 @@ PPL::Polyhedron::bounded_H79_extrapolation_assign(const Polyhedron& y,
   BW_Box box(bounding_cs);
   shrink_bounding_box(box, ANY);
   limited_H79_extrapolation_assign(y, cs, tp);
-  add_constraints(bounding_cs);
+  add_recycled_constraints(bounding_cs);
 }
 
 PPL::Polyhedron::BHRZ03_info::BHRZ03_info(const Polyhedron& x)
@@ -809,7 +810,7 @@ PPL::Polyhedron::BHRZ03_combining_constraints(const Polyhedron& y,
   // The resulting polyhedron is obtained by adding the constraints
   // in `new_cs' to polyhedron `H79'.
   Polyhedron result = H79;
-  result.add_constraints_and_minimize(new_cs);
+  result.add_recycled_constraints_and_minimize(new_cs);
 
   // This widening technique was unsuccessful if the result is not
   // stabilizing with respect to `y', or if it is not better than `H79'.
@@ -1079,7 +1080,7 @@ PPL::Polyhedron::BHRZ03_widening_assign(const Polyhedron& y, unsigned* tp) {
   // Be careful to obtain the right space dimension
   // (because `H79_cs' may be empty).
   Polyhedron H79(tpl, x.space_dim, UNIVERSE);
-  H79.add_constraints_and_minimize(H79_cs);
+  H79.add_recycled_constraints_and_minimize(H79_cs);
 
   // NOTE: none of the following widening heuristics is intrusive:
   // they will modify `x' only when returning successfully.
@@ -1172,17 +1173,18 @@ PPL::Polyhedron::limited_BHRZ03_extrapolation_assign(const Polyhedron& y,
     // We have just discovered that `x' is empty.
     return;
 
-  ConSys adding_cs;
+  ConSys new_cs;
   // The constraints to be added must be satisfied by all the
   // generators of `x'. We can disregard `y' because `y <= x'.
   const GenSys& x_gs = x.gen_sys;
-  for (dimension_type i = 0,
-	 cs_num_rows = cs.num_rows(); i < cs_num_rows; ++i)
+  // FIXME: why iterating upwards here?
+  // FIXME: why repeating the call to cs[i]?
+  for (dimension_type i = 0, cs_num_rows = cs.num_rows(); i < cs_num_rows; ++i)
     if (x_gs.satisfied_by_all_generators(cs[i]))
-      adding_cs.insert(cs[i]);
+      new_cs.insert(cs[i]);
 
   x.BHRZ03_widening_assign(y, tp);
-  x.add_constraints(adding_cs);
+  x.add_constraints(new_cs);
   assert(OK());
 }
 
@@ -1194,5 +1196,5 @@ PPL::Polyhedron::bounded_BHRZ03_extrapolation_assign(const Polyhedron& y,
   BW_Box box(bounding_cs);
   shrink_bounding_box(box, ANY);
   limited_BHRZ03_extrapolation_assign(y, cs, tp);
-  add_constraints(bounding_cs);
+  add_recycled_constraints(bounding_cs);
 }
