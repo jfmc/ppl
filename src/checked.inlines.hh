@@ -80,13 +80,13 @@ inline Result
 gcd_common(To& to, const From& x, const From& y, const Rounding& mode) {
   To nx = x;
   To ny = y;
-  To rem;
+  To rm;
   while (ny != 0) {
-    Result r = rem<Policy>(rem, nx, ny, mode);
+    Result r = rem<Policy>(rm, nx, ny, mode);
     if (r != V_EQ)
       assert(r == V_EQ);
     nx = ny;
-    ny = rem;
+    ny = rm;
   }
   to = nx;
   return V_EQ;

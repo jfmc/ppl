@@ -290,7 +290,7 @@ rem_mpz(mpz_class& to, const mpz_class& x, const mpz_class& y, const Rounding&) 
   return V_EQ;
 }
 
-SPECIALIZE_MOD(mpz, mpz_class, mpz_class)
+SPECIALIZE_REM(mpz, mpz_class, mpz_class)
 
 template <typename Policy>
 inline Result

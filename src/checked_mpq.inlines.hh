@@ -227,7 +227,7 @@ rem_mpq(mpq_class& to, const mpq_class& x, const mpq_class& y, const Rounding&) 
   return V_EQ;
 }
 
-SPECIALIZE_MOD(mpq, mpq_class, mpq_class)
+SPECIALIZE_REM(mpq, mpq_class, mpq_class)
 
 template <typename Policy>
 inline Result
