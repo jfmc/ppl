@@ -26,6 +26,7 @@ site: http://www.cs.unipr.it/ppl/ . */
 
 #include "PowerSet.types.hh"
 #include "ConSys.types.hh"
+#include "Constraint.types.hh"
 #include "Variable.defs.hh"
 #include "globals.hh"
 #include <iosfwd>
@@ -68,14 +69,6 @@ template <typename CS>
 bool
 operator!=(const PowerSet<CS>& x, const PowerSet<CS>& y);
 
-//! \brief
-//! Returns \f$-1\f$, \f$0\f$, or \f$+1\f$ if \p x is lexicographically
-//! smaller than, equal to, or greater than \p y, respectively.
-/*! \relates PowerSet */
-template <typename CS>
-int
-lcompare(const PowerSet<CS>& x, const PowerSet<CS>& y);
-
 namespace IO_Operators {
 
 //! Output operator.
@@ -103,11 +96,19 @@ public:
   explicit PowerSet(dimension_type num_dimensions = 0,
 		    bool universe = true);
 
+  //! Ordinary copy-constructor.
+  PowerSet(const PowerSet& y);
+
+  //! \brief
+  //! The assignment operator.
+  //! (\p *this and \p y can be dimension-incompatible.)
+  PowerSet& operator=(const PowerSet& y);
+  
   //! Creates a PowerSet with the same information contents as \p cs.
   PowerSet(const ConSys& cs);
 
-  //! Adds to \p *this the disjunct \p c.
-  PowerSet& add_disjunct(const CS& c);
+  //! Adds to \p *this the disjunct \p d.
+  PowerSet& add_disjunct(const CS& d);
 
   //! Assigns to \p *this an upper bound of \p *this and \p y.
   void upper_bound_assign(const PowerSet& y);
@@ -117,7 +118,7 @@ public:
 
   //! Assigns to \p *this the concatenation of \p *this and \p y.
   /*!
-    Seeing a PowerSet as a set of tuples, this method assigns to
+    Seeing a powerset as a set of tuples, this method assigns to
     \p *this all the tuples that can be obtained by concatenating,
     in the order given, a tuple of \p *this with a tuple of \p y.
   */
@@ -231,7 +232,6 @@ public:
 
   // TO BE REMOVED.
   friend CS project<>(const PowerSet& x);
-  friend int lcompare<>(const PowerSet& x, const PowerSet& y);
 
 private:
   //! A powerset is implemented as a sequence of elements.
@@ -252,13 +252,15 @@ private:
   bool definitely_contains(const CS& y) const;
 
 public:
+  typedef typename Sequence::size_type size_type;
+
+  size_type size() const;
+
   typedef typename Sequence::iterator iterator;
   typedef typename Sequence::const_iterator const_iterator;
   typedef typename Sequence::reverse_iterator reverse_iterator;
   typedef typename Sequence::const_reverse_iterator const_reverse_iterator;
   typedef typename Sequence::value_type value_type;
-
-  dimension_type size() const;
 
   iterator begin();
   const_iterator begin() const;
@@ -273,6 +275,9 @@ public:
   const_reverse_iterator rend() const;
 
   void pop_back();
+  iterator erase(iterator first, iterator last) {
+    return sequence.erase(first, last);
+  }
 };
 
 #include "PowerSet.inlines.hh"
