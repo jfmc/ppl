@@ -372,13 +372,99 @@ void test10() {
   known_nbox.raise_lower_bound(3, true, 5, 1);
 
   BBox known_pbox(4);
-  known_pbox.raise_lower_bound(1, true, 4, 1);
+  known_pbox.lower_upper_bound(1, true, 4, 1);
+  known_pbox.lower_upper_bound(2, true, 4, 1);
+  known_pbox.raise_lower_bound(3, true, 5, 1);
+
 
 #if NOISY
   known_nbox.print(cout, "*** test10 known_nbox ***");
+  known_pbox.print(cout, "*** test10 known_pbox ***");
 #endif
 
-  if (nbox != known_nbox)
+  if (nbox != known_nbox || pbox != known_pbox || !(nbox <= pbox))
+    exit(1);
+}
+
+// This is a bounded closed polyhedron;
+void test11() {
+  Variable x(0);
+  Variable y(1);
+
+  C_Polyhedron ph(2);
+  ph.generators();
+  ph.add_constraint(x >= 1);
+  ph.add_constraint(x <= 3);
+  ph.add_constraint(y <= 3);
+  ph.add_constraint(y >= 1);
+
+#if NOISY
+  print_constraints(ph, "*** test10 ph ***");
+#endif
+
+  BBox pbox(ph.space_dimension());
+  ph.shrink_bounding_box(pbox, POLYNOMIAL);
+
+  BBox nbox(ph.space_dimension());
+  ph.shrink_bounding_box(nbox);
+
+#if NOISY
+  nbox.print(cout, "*** test10 nbox ***");
+  pbox.print(cout, "*** test10 pbox ***");
+#endif
+
+  BBox known_box(2);
+  known_box.raise_lower_bound(0, true, 1, 1);
+  known_box.lower_upper_bound(0, true, 3, 1);
+  known_box.raise_lower_bound(1, true, 1, 1);
+  known_box.lower_upper_bound(1, true, 3, 1);
+
+#if NOISY
+  known_box.print(cout, "*** test10 known_box ***");
+#endif
+
+  if (nbox != known_box || pbox != known_box)
+    exit(1);
+}
+
+// This is a bounded closed polyhedron;
+void test12() {
+  Variable x(0);
+  Variable y(1);
+
+  C_Polyhedron ph(2, C_Polyhedron::EMPTY);
+  ph.add_generator(point());
+  ph.constraints();
+  ph.add_generator(point(x + y));
+  ph.add_generator(point(x));
+  ph.add_generator(point(y));
+
+#if NOISY
+  print_generators(ph, "*** test10 ph ***");
+#endif
+
+  BBox pbox(ph.space_dimension());
+  ph.shrink_bounding_box(pbox, POLYNOMIAL);
+
+  BBox nbox(ph.space_dimension());
+  ph.shrink_bounding_box(nbox);
+
+#if NOISY
+  nbox.print(cout, "*** test10 nbox ***");
+  pbox.print(cout, "*** test10 pbox ***");
+#endif
+
+  BBox known_box(2);
+  known_box.raise_lower_bound(0, true, 0, 1);
+  known_box.lower_upper_bound(0, true, 1, 1);
+  known_box.raise_lower_bound(1, true, 0, 1);
+  known_box.lower_upper_bound(1, true, 1, 1);
+
+#if NOISY
+  known_box.print(cout, "*** test10 known_box ***");
+#endif
+
+  if (nbox != known_box || pbox != known_box)
     exit(1);
 }
 
@@ -396,6 +482,8 @@ main() {
   test8();
   test9();
   test10();
+  test11();
+  test12();
 
   return 0;
 }

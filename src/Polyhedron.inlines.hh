@@ -439,10 +439,11 @@ Polyhedron::shrink_bounding_box(Box& box, Complexity_Class complexity) const {
   if (!polynomial && has_something_pending())
     remove_pending_and_minimize();
 
-  if (polynomial && (!update_generators() || has_pending_constraints())) {
+  if (polynomial &&
+       (!generators_are_up_to_date() || has_pending_constraints())) {
     // Extract easy-to-find bounds from constraints.
     assert(constraints_are_up_to_date());
-
+    
     // This is ia temporary kludge: when we will have the pending
     // constraints in the matrix that contains the system of
     // constraints, we will only read all the matrix.
