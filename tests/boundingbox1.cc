@@ -153,9 +153,9 @@ public:
     box[k].lower_upper_bound(closed, c, d);
   }
 
-  void set_empty(size_t k) {
-    assert(k < box.size());
-    box[k].set_empty();
+  void set_empty() {
+    for (size_t k = box.size(); k-- > 0; )
+      box[k].set_empty();
   }
 };
 
@@ -576,8 +576,7 @@ void test6() {
 #endif
 
   BBox known_box(ph.space_dimension());
-  known_box.set_empty(0);
-  known_box.set_empty(1);
+  known_box.set_empty();
 #if NOISY
   known_box.print_box("*** test6 known ***");
 #endif
@@ -605,8 +604,7 @@ void test6a() {
 #endif
 
   BBox known_box(ph.space_dimension());
-  known_box.set_empty(0);
-  known_box.set_empty(1);
+  known_box.set_empty();
 #if NOISY
   known_box.print_box("*** test6a known ***");
 #endif
