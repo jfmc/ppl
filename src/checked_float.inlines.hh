@@ -110,8 +110,8 @@ check_inexact(Type v) {
       r |= V_LT;
     if (v >= 0)
       r |= V_GT;
-  }
 #endif
+  }
   return static_cast<Result>(r);
 }
 
