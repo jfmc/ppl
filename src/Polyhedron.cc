@@ -178,23 +178,25 @@ PPL::Polyhedron::Polyhedron(ConSys& cs)
     // The following swap destroys the given argument `cs';
     // that is why the formal parameter is not declared const.
     std::swap(con_sys, cs);
-    // Adding the positivity constraint.
+    // Add the positivity constraint.
     con_sys.insert(Constraint::zero_dim_positivity());
     set_constraints_up_to_date();
-    // The first column is not a dimension.
+    // Set the space dimension.
     space_dim = con_sys.num_columns() - 1;
     return;
   }
 
-  // As cs.num_columns <= 1, it is a zero-dim space polyhedron.
+  // As cs.num_columns <= 1, this is a zero-dim space polyhedron.
   space_dim = 0;
   if (cs.num_columns() == 1)
-    // Checking for an inconsistent constraint.
+    // See if an inconsistent constraint has been passed.
     for (size_t i = cs.num_rows(); i-- > 0; ) {
       const Row& r = cs[i];
-      if (r[0] != 0 && (r.is_line_or_equality() || r[0] < 0))
-	// Inconsistent constraint found.
+      if (r[0] != 0 && (r.is_line_or_equality() || r[0] < 0)) {
+	// Inconsistent constraint found: the polyhedron is empty.
 	set_empty();
+	return;
+      }
     }
 }
 
