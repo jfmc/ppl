@@ -48,6 +48,7 @@ check_all :-
   new_gens_NNC,
   new_poly_from_bounding_box_C,
   new_poly_from_bounding_box_NNC,
+  swap,
   space_C,
   space_NNC,
   inters_assign,
@@ -264,6 +265,16 @@ new_poly_from_bounding_box_NNC :-
   ppl_Polyhedron_get_bounding_box(P1, any, Box1),
   Box1 = [i(c(Max), c(1)), i(c(-1), c(1))],
   ppl_delete_Polyhedron(P1).
+
+% Tests ppl_Polyhedron_swap for a C Polyhedron.
+swap :-
+  ppl_new_Polyhedron_from_dimension(c, 3, P),
+  ppl_new_Polyhedron_empty_from_dimension(c, 3, Q),
+  ppl_Polyhedron_swap(P, Q),
+  ppl_Polyhedron_check_empty(P),
+  ppl_Polyhedron_check_universe(Q),
+  ppl_delete_Polyhedron(P),
+  ppl_delete_Polyhedron(Q).
 
 % Tests ppl_Polyhedron_space_dimension for a C Polyhedron.
 space_C :-
@@ -530,7 +541,7 @@ lim_extrapolate_BHRZ03_C :-
   ppl_delete_Polyhedron(Q),
   ppl_delete_Polyhedron(Pa),
   ppl_new_Polyhedron_from_dimension(c, 2, P1),
-%  ppl_Polyhedron_add_constraints_and_minimize(P1, [A >= 1, B >= 0]),
+  ppl_Polyhedron_add_constraints_and_minimize(P1, [A >= 1, B >= 0]),
   ppl_new_Polyhedron_from_dimension(c, 2, Q1),
   ppl_Polyhedron_add_constraints_and_minimize(Q1, [A >= 2, B >= 1]),
   ppl_Polyhedron_limited_BHRZ03_extrapolation_assign(P1, Q1, [A >= 2]),

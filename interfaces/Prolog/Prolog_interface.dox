@@ -145,7 +145,13 @@ The specification uses the following grammar rules:
 
  Box         --> []
             | [Interval]
-            | [Interval | Box]		list of intervals.
+            | [Interval | Box]		list of intervals
+
+ Map         --> PPLVar - PPLVar        map relation
+
+ Shuffle_Map --> []
+            | [Map]
+            | [Map | Shuffle_Map]       list of maps.
 \endcode
 
 
@@ -336,6 +342,11 @@ ppl_new_Polyhedron_from_Polyhedron(+Topology_1, +Handle_1,
    After execution,
    <CODE>Handle</CODE> is no longer a valid handle for a PPL polyhedron.
 
+<H2><CODE>ppl_Polyhedron_swap(+Handle1, +Handle2)</CODE></H2>
+
+   Swaps the polyhedron referenced by <CODE>Handle1</CODE>
+   with the one referenced by <CODE>Handle2</CODE>.
+
 <H2><CODE>ppl_Polyhedron_space_dimension(+Handle, -Integer)</CODE></H2>
 
    Unifies the space dimension of the polyhedron referenced by
@@ -369,14 +380,24 @@ ppl_new_Polyhedron_from_Polyhedron(+Topology_1, +Handle_1,
                +Handle_2,
                +Constraint_System)</CODE></H2>
 
-   Assigns to the polyhedron referenced by <CODE>Handle_1</CODE>
-   its BHRZ03-widening with the polyhedron referenced by <CODE>Handle_2</CODE>,
-   limited by the constraints in <CODE>Constraint_System</CODE>.
+   Assigns to the polyhedron \f$\cP\f$ referenced by <CODE>Handle_1</CODE>
+  the result of its BHRZ03-widening with the polyhedra referenced by
+  <CODE>Handle_2</CODE>, improved by enforcing those constraints in
+  <CODE>Constraint_System</CODE>.
 
 <H2><CODE>ppl_Polyhedron_H79_widening_assign(+Handle_1, +Handle_2)</CODE></H2>
 
    Assigns to the polyhedron referenced by <CODE>Handle_1</CODE>
-   its H79-widening with the polyhedra referenced by <CODE>Handle_2</CODE>,
+   its H79-widening with the polyhedra referenced by <CODE>Handle_2</CODE>.
+
+<H2><CODE>ppl_Polyhedron_limited_H79_extrapolation_assign(+Handle_1,
+               +Handle_2,
+               +Constraint_System)</CODE></H2>
+
+   Assigns to the polyhedron \f$\cP\f$ referenced by <CODE>Handle_1</CODE>
+  the result of its H79-widening with the polyhedra referenced by
+  <CODE>Handle_2</CODE>, improved by enforcing those constraints in
+  <CODE>Constraint_System</CODE>.
 
 <H2><CODE>ppl_Polyhedron_limited_H79_extrapolation_assign(+Handle_1,
                +Handle_2,
@@ -631,11 +652,9 @@ and a query will succeed even when
       ppl_Polyhedron_remove_higher_dimensions(X, 3),
       ppl_Polyhedron_space_dimension(X, K).
 
-   K = 3,
-\endcode
-   The polyhedron \f$\cP\f$ referenced by <CODE>Handle</CODE>
-   must have space dimension \f$k\f$ greater that or equal to
-   <CODE>Integer</CODE>.
+<H2><CODE>ppl_Polyhedron_shuffle_dimensions(+Handle, +Shuffle_Map))</CODE></H2>
+
+   TO BE DONE   
 
 <H2><CODE>ppl_Polyhedron_affine_image(+Handle, +PPL_Var,
                +LinExpr, +Integer)</CODE></H2>
