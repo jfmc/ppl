@@ -37,12 +37,15 @@ AM_CPPFLAGS = -I$(top_builddir)/src @extra_includes@
 bin_PROGRAMS = ppl_gprolog
 ppl_gprolog_SOURCES =
 
-pkglib_LIBRARIES = libppl_gprolog.a
-libppl_gprolog_a_SOURCES = ppl_gprolog_sd.cc
+pkglib_LTLIBRARIES = libppl_gprolog.la
+libppl_gprolog_la_SOURCES = ppl_gprolog_sd.cc
 
-ppl_gprolog$(EXEEXT): libppl_gprolog.a ppl_gprolog.pl $(top_builddir)/src/.libs/libppl.a
-	gplc -o $@ $(srcdir)/ppl_gprolog.pl \
-		-L '-L. -lppl_gprolog -L$(top_builddir)/src/.libs -lppl -lgmp -lgmpxx -lstdc++'
+# Notice: we are linking with libppl_gprolog.a statically.
+# This is a kludge until we understand whether and if libtool
+# and gplc can interoperate.
+ppl_gprolog$(EXEEXT): libppl_gprolog.la ppl_gprolog.pl $(top_builddir)/src/.libs/libppl.a
+	gplc -o $@ $(srcdir)/ppl_gprolog.pl .libs/libppl_gprolog.a \
+		-L '-L$(top_builddir)/src/.libs -lppl -lgmp -lgmpxx -lstdc++'
 
 CLPQ_TESTS = \
 ack.clpq \
