@@ -28,7 +28,6 @@ Enhancements for PPL 0.7
   C_Polyhedron& C_Polyhedron::operator=(const NNC_Polyhedron& y)
   nor
   NNC_Polyhedron& NNC_Polyhedron::operator=(const C_Polyhedron& y).
-- Allow the specification of alternative coefficient implementations.
 - Clearly explain, in the documentation, how (not) to use
   set_GMP_memory_allocation_functions().  More generally, explain how
   to have memory-guarded computations.
