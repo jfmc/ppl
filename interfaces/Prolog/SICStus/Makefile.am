@@ -35,7 +35,9 @@ EXTRA_DIST = $(SICSTUS_CFLI_FILES) ppl_sicstus_sd.cc ppl_sicstus.pl sp_clpq.pl
 if HAVE_SICSTUS_PROLOG
 
 AM_CPPFLAGS = \
--I$(top_srcdir)/src -I$(top_srcdir)/Watchdog \
+-I$(top_srcdir)/src \
+-I$(top_builddir)/src \
+-I$(top_srcdir)/Watchdog \
 @extra_includes@
 
 bin_PROGRAMS = ppl_sicstus

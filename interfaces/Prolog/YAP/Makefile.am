@@ -33,7 +33,9 @@ EXTRA_DIST = ppl_yap.pl yap_clpq.pl yap_clpq2.pl yap_pl_check.pl
 if HAVE_YAP_PROLOG
 
 AM_CPPFLAGS = \
--I$(top_srcdir)/src -I$(top_srcdir)/Watchdog \
+-I$(top_srcdir)/src \
+-I$(top_builddir)/src \
+-I$(top_srcdir)/Watchdog \
 @extra_includes@
 
 pkglib_LTLIBRARIES = ppl_yap.la

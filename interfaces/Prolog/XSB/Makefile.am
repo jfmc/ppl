@@ -34,7 +34,9 @@ EXTRA_DIST = ppl_xsb.cc ppl_xsb.H xsb_clpq.P xsb_clpq2.P expected expected2
 if HAVE_XSB_PROLOG
 
 AM_CPPFLAGS = \
--I$(top_srcdir)/src -I$(top_srcdir)/Watchdog \
+-I$(top_srcdir)/src \
+-I$(top_builddir)/src \
+-I$(top_srcdir)/Watchdog \
 @extra_includes@ \
 @xsb_includes@
 

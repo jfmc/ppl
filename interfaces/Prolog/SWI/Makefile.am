@@ -33,7 +33,9 @@ EXTRA_DIST = ppl_swiprolog.cc ppl_swiprolog.pl pl_clpq.cc pl_clpq.pl
 if HAVE_SWI_PROLOG
 
 AM_CPPFLAGS = \
--I$(top_srcdir)/src -I$(top_srcdir)/Watchdog \
+-I$(top_srcdir)/src \
+-I$(top_builddir)/src \
+-I$(top_srcdir)/Watchdog \
 @extra_includes@
 
 pkglib_LTLIBRARIES = libppl_swiprolog.la

@@ -33,7 +33,9 @@ EXTRA_DIST = ppl_gprolog_sd.cc ppl_gprolog.pl gp_clpq.pl gnu_pl_check.pl
 if HAVE_GNU_PROLOG
 
 AM_CPPFLAGS = \
--I$(top_srcdir)/src -I$(top_srcdir)/Watchdog \
+-I$(top_srcdir)/src \
+-I$(top_builddir)/src \
+-I$(top_srcdir)/Watchdog \
 @extra_includes@
 
 bin_PROGRAMS = ppl_gprolog
