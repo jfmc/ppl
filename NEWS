@@ -4,6 +4,17 @@ Parma Polyhedra Library NEWS -- history of user-visible changes
 
 
 --------------------------------------------------------------------------
+NEWS for version 0.7  (released date to be decided)
+--------------------------------------------------------------------------
+
+New and Changed Features
+========================
+
+o  Now `make check' runs a number of tests with `ppl_lcdd', comparing
+   the results to expected ones.
+
+
+--------------------------------------------------------------------------
 NEWS for version 0.6.1  (released on August 20, 2004)
 --------------------------------------------------------------------------
 
