@@ -49,9 +49,9 @@ main() {
   Polyhedron copy_ph = ph;
 
   ConSys c2;
-  c2.insert(x == 1);
-  c2.insert(y == 1);
-  c2.insert(x - y == 1);
+  c2.insert(x >= 1);
+  c2.insert(y >= 1);
+  c2.insert(x - y >= -1);
 
   ph.add_dimensions_and_constraints_lazy(c2);
 
