@@ -129,9 +129,11 @@ PPL::ConSys::insert(const Constraint& c) {
       Matrix::insert(c);
     }
     else {
-      // Copying the constraint adding the missing dimensions
-      // and the \epsilon coefficient.
-      Constraint tmp_c(c, num_columns());
+      // Here `*this' is NNC and `c' is necessarily closed.
+      // Copying the constraint adding the \epsilon coefficient
+      // and the missing dimensions, if any.
+      size_t sz = num_columns() > c.size() ? num_columns() : c.size() + 1;
+      Constraint tmp_c(c, sz);
       tmp_c.set_not_necessarily_closed();
       Matrix::insert(tmp_c);
     }
