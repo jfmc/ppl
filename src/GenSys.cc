@@ -747,7 +747,7 @@ PPL::GenSys::affine_image(dimension_type v,
   bool not_invertible = (v > expr.space_dimension() || expr[v] == 0);
   if (not_invertible)
     x.remove_invalid_lines_and_rays();
-  // This also resets the sortedness flag.
+  // Strong normalization also resets the sortedness flag.
   x.strong_normalize();
 }
 
