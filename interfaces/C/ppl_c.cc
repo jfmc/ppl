@@ -304,7 +304,8 @@ CATCH_ALL
 
 int
 ppl_new_Coefficient_from_mpz_t(ppl_Coefficient_t* pc, mpz_t z) try {
-  *pc = to_nonconst(new Integer(z));
+  // FIXME: this is a kludge.
+  *pc = to_nonconst(new Integer(mpz_class(z)));
   return 0;
 }
 CATCH_ALL
@@ -320,7 +321,8 @@ CATCH_ALL
 
 int
 ppl_Coefficient_to_mpz_t(ppl_const_Coefficient_t c, mpz_t z) try {
-  mpz_set(z, to_const(c)->get_mpz_t());
+  // FIXME: this is a kludge.
+  mpz_set(z, mpz_class(*to_const(c)).get_mpz_t());
   return 0;
 }
 CATCH_ALL
@@ -335,9 +337,10 @@ CATCH_ALL
 int
 ppl_assign_Coefficient_from_mpz_t(ppl_Coefficient_t dst, mpz_t z) try {
   Coefficient& ddst = *to_nonconst(dst);
-  mpz_set(ddst.get_mpz_t(), z);
+  // FIXME: this is a kludge.
+  ddst = mpz_class(z);
   return 0;
-  }
+}
 CATCH_ALL
 
 int
