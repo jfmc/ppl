@@ -199,7 +199,7 @@ no)
   AC_MSG_RESULT(no)
   ;;
 *)
-  AC_MSG_ERROR([bad value ${enableval} --enable-assertions, needs yes or no])
+  AC_MSG_ERROR([bad value ${enableval} for --enable-assertions, needs yes or no])
   ;;
 esac
 enable_assertions=${enableval}
@@ -218,7 +218,7 @@ no)
   AC_MSG_RESULT(no)
   ;;
 *)
-  AC_MSG_ERROR([bad value ${enableval} --enable-more-assertions, needs yes or no])
+  AC_MSG_ERROR([bad value ${enableval} for --enable-more-assertions, needs yes or no])
   ;;
 esac
 enable_more_assertions=${enableval}
@@ -269,7 +269,7 @@ no)
   AC_MSG_RESULT(no)
   ;;
 *)
-  AC_MSG_ERROR([bad value ${enableval} --enable-optimization, needs sspeed, speed, size, standard, mild, yes or no])
+  AC_MSG_ERROR([bad value ${enableval} for --enable-optimization, needs sspeed, speed, size, standard, mild, yes or no])
   ;;
 esac
 
@@ -330,7 +330,7 @@ no)
   AC_MSG_RESULT(no)
   ;;
 *)
-  AC_MSG_ERROR([bad value ${enableval} --enable-watchdog, needs yes or no])
+  AC_MSG_ERROR([bad value ${enableval} for --enable-watchdog, needs yes or no])
   ;;
 esac
 build_watchdog_library=$enableval
