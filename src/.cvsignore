@@ -1,8 +1,8 @@
+*.la
+*.lo
 .deps
+.libs
 Makefile
 Makefile.in
-.libs
-*.lo
-*.la
 ppl.hh
 ppl_install.hh

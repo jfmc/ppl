@@ -1,4 +1,7 @@
+*.la
+*.lo
 .deps
+.libs
 Makefile
 Makefile.in
 aclocal.m4
@@ -9,6 +12,8 @@ config.log
 config.status
 configure
 libtool
+pwl.hh
+pwl_install.hh
 stamp-h
 stamp-h.in
 stamp-h1
