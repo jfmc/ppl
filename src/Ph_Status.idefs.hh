@@ -21,6 +21,10 @@ USA.
 For the most up-to-date information see the Parma Polyhedra Library
 site: http://www.cs.unipr.it/ppl/ . */
 
+#ifndef PPL_Polyhedron_defs_hh
+#error "Do not include Ph_Status.idefs.hh directly; use Polyhedron.defs.hh instead."
+#endif
+
 #ifndef PPL_Status_defs_hh
 #define PPL_Status_defs_hh 1
 
