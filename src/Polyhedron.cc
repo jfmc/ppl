@@ -45,7 +45,8 @@ PPL::Polyhedron::constraints() const {
     throw std::invalid_argument("PPL::Polyhedron::constraints(): "
 				"*this is empty");
   if (is_zero_dim()) {
-    assert(con_sys.empty());
+    // FIXME: ConSys should provide a `bool empty() const' method.
+    assert(con_sys.begin() == con_sys.end());
     return con_sys;
   }
   if (!constraints_are_up_to_date())
@@ -79,7 +80,8 @@ PPL::Polyhedron::constraints() const {
 const PPL::GenSys&
 PPL::Polyhedron::generators() const {
   if (is_empty()) {
-    assert(gen_sys.empty());
+    // FIXME: GenSys should provide a `bool empty() const' method.
+    assert(gen_sys.begin() == gen_sys.end());
     return gen_sys;
   }
   if (is_zero_dim())
