@@ -1177,6 +1177,52 @@ recursively so that, in the for each pair \f$\cP, \cQ\f$ of distinct
 polyhedra in the result set, we have
 \f$\cP \uplus \cQ \neq \cP \union \cQ\f$.
 
+\anchor pps_certificate_widening
+<B>Certificate-Based Widenings</B>
+
+The PPL library provides support for the specification of proper widening
+operators on the powerset domain of convex polyhedra. In particular,
+this version of the library implements an instance of the
+<EM>certificate-based widening framework</EM> proposed in
+\ref BHZ03b "[BHZ03b]".
+
+A <EM>finite convergence certificate</EM> for an extrapolation operator
+is a formal way of ensuring that such an operator is indeed a widening
+on the considered domain. Given a widening operator on the base-level
+domain, together with the corresponding convergence certificate,
+the BHZ03 framework shows how it is possible to lift this widening
+so as to work on the finite powerset domain, while still ensuring
+convergence in a finite number of iterations.
+
+Being highly parametric, the BHZ03 widening framework can be
+instantiated in many ways. The current implementation provides
+the templatic operator
+<CODE>BHZ03_widening_assign\<Certificate, Widening\></CODE>
+which only exploits a fraction of this generality, by allowing the
+user to specify the base-level widening function and the corresponding
+certificate. The widening strategy is fixed and uses two extrapolation
+heuristics: first, the least upper bound is tried; second, the BGP99
+extrapolation operator is tried, possibly applying
+\ref pps_pairwise_merge "pairwise merging".
+If both heuristics fail to converge according to the convergence
+certificate, then an attempt is made to apply the base-level widening
+to the poly-hulls of the two arguments, possibly improving the result
+obtained by means of the \ref poly_difference "poly-difference" operator.
+For more details and a justification of the overall approach,
+see \ref BHZ03b "[BHZ03b]" and \ref BHZ04 "[BHZ04]".
+
+The library provides two covergence certificates: while
+\ref Parma_Polyhedra_Library::BHRZ03_Certificate "BHRZ03_Certificate"
+is compatible with both the BHRZ03 and the H79 widenings,
+\ref Parma_Polyhedra_Library::H79_Certificate "H79_Certificate"
+is only compatible with the latter.
+Note that using different certificates will change the results obtained,
+even when using the same base-level widening operator.
+It is also worth stressing that it is up to the user's responsibility
+to make sure that the widening operator is actually compatible with
+a given covergence certificate. If such a requirement is not met,
+then an extrapolation operator will be obtained.
+
 \section cplusplus Using the Library
 
 <B>A Note on the Implementation of the Operators</B>
