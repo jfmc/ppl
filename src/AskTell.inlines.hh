@@ -301,7 +301,7 @@ AskTell<CS>::definitely_entails(const AskTell<CS>& y) const {
 
 template <typename CS>
 AskTell<CS>&
-AskTell<CS>::inject(const CS& askv, const CS& tellv) {
+AskTell<CS>::add_pair(const CS& askv, const CS& tellv) {
   if (!askv.definitely_entails(tellv)) {
     pair_insert(askv, tellv);
     engine();

@@ -77,7 +77,7 @@ protected:
   bool probe(const CS& tellv, const CS& askv) const;
 
 public:
-  AskTell& inject(const CS& askv, const CS& tellv);
+  AskTell& add_pair(const CS& askv, const CS& tellv);
 
   AskTell& bottom();
 
