@@ -240,7 +240,7 @@ Row::type() const {
 
 
 /*!
-  Returns <CODE>true</CODE> if \p *this row represent a constraint
+  Returns <CODE>true</CODE> if \p *this represents a constraint
   or generator in a necessarily closed polyhedron.
 */
 inline bool
