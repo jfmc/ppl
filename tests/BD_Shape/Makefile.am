@@ -45,7 +45,7 @@ ORIGINAL_TESTS = \
 	addspacedims1  addspacedims2 addspacedims3 addspacedims4 \
 	addspacedims5 addspacedims6 addspacedims7 \
 	affineimage1 affineimage2 affineimage3 affineimage4 affineimage5 \
-	affineimage6 affineimage7 \
+	affineimage6 affineimage7 affineimage8 affineimage9 \
 	affinepreimage1 affinepreimage2 affinepreimage3 affinepreimage4 \
 	ascii_dump_load1 ascii_dump_load2 \
 	cc76narrowing1 cc76narrowing2 cc76narrowing3 cc76narrowing4 \
@@ -110,6 +110,8 @@ affineimage4_SOURCES = affineimage4.cc
 affineimage5_SOURCES = affineimage5.cc
 affineimage6_SOURCES = affineimage6.cc
 affineimage7_SOURCES = affineimage7.cc
+affineimage8_SOURCES = affineimage8.cc
+affineimage9_SOURCES = affineimage9.cc
 
 affinepreimage1_SOURCES = affinepreimage1.cc
 affinepreimage2_SOURCES = affinepreimage2.cc
