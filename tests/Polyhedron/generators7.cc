@@ -27,7 +27,7 @@ using namespace std;
 using namespace Parma_Polyhedra_Library;
 
 #ifndef NOISY
-#define NOISY 1
+#define NOISY 0
 #endif
 
 int
@@ -37,7 +37,7 @@ main() TRY {
   Variable A(0);
   Variable B(1);
 
-  C_Polyhedron ph(2);
+  C_Polyhedron ph(2, Polyhedron::EMPTY);
   ph.add_generator(point());
   ph.add_generator_and_minimize(ray(A));
   ph.add_generator(ray(B));
@@ -51,13 +51,12 @@ main() TRY {
   gs.insert(point(B));
 
 #if NOISY
-  print_generators(gs, "*** cs ***");
+  print_generators(gs, "*** gs ***");
 #endif
 
   C_Polyhedron known_result(2);
   known_result.add_constraint(A >= 0);
   known_result.add_constraint(B >= 0);
-  known_result.add_constraint(A >= B);
 
   return (C_Polyhedron(gs) == known_result) ? 0 : 1;
 }
