@@ -2,8 +2,6 @@
 #include "ppl_install.hh"
 #include <sicstus/sicstus.h>
 #include <cassert>
-// Temporary: just for abort().
-#include <cstdlib>
 
 #define SICSTUS 1
 #define PARANOID 1
@@ -24,8 +22,8 @@ namespace PPL = Parma_Polyhedra_Library;
 typedef SP_term_ref Prolog_term_ref;
 typedef SP_atom Prolog_atom;
 typedef int Prolog_foreign_return_type;
-#define PROLOG_SUCCESS SP_SUCCESS
-#define PROLOG_FAILURE SP_FAILURE
+static const Prolog_foreign_return_type PROLOG_SUCCESS = SP_SUCCESS;
+static const Prolog_foreign_return_type PROLOG_FAILURE = SP_FAILURE;
 
 #include "../exceptions.hh"
 
@@ -243,6 +241,10 @@ Prolog_get_list(Prolog_term_ref l, Prolog_term_ref h, Prolog_term_ref t) {
   return SP_get_list(l, h, t) != 0;
 }
 
+/*!
+  Unify the terms referenced by \p t and \p u and return true
+  if the unification is successful; return false otherwise.
+*/
 static inline bool
 Prolog_unify(Prolog_term_ref t, Prolog_term_ref u) {
   return SP_unify(t, u) != 0;
