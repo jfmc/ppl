@@ -285,8 +285,8 @@ ppl_Prolog_sysdep_init() {
 
 #define SP_STUB_0(name, arity) \
 extern "C" Prolog_foreign_return_type \
-sp_stub_##name(Prolog_term_ref goal, void*) { \
-  return name; \
+sp_stub_##name(Prolog_term_ref /* goal */, void*) { \
+  return name(); \
 }
 
 #define SP_STUB_1(name, arity) \

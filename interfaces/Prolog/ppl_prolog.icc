@@ -783,7 +783,7 @@ ppl_new_NNC_Polyhedron_from_GenSys(
 */
 
 extern "C" Prolog_foreign_return_type
-ppl_delete_polyhedron(Prolog_term_ref t_ph) {
+ppl_delete_Polyhedron(Prolog_term_ref t_ph) {
   try {
     const PPL::Polyhedron* ph = get_ph_pointer(t_ph);
     if (ph == 0)
@@ -1428,7 +1428,7 @@ public:
 };
 
 extern "C" Prolog_foreign_return_type
-ppl_get_bounding_box(Prolog_term_ref t_ph, Prolog_term_ref t_bb) {
+ppl_get_bounding_box(Prolog_term_ref t_ph, Prolog_term_ref /*t_bb*/) {
   try {
     PPL::Polyhedron* ph = get_ph_pointer(t_ph);
     if (ph == 0)
