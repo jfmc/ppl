@@ -37,11 +37,23 @@ site: http://www.cs.unipr.it/ppl/ . */
 
 check_all :-
    make_quiet,
-   run_all.
+   catch(run_all, Exception, (print_exception_term(Exception), fail)).
 
 check_noisy :-
    make_noisy,
-   run_all.
+   catch(run_all, Exception, (print_exception_term(Exception), fail)).
+
+print_exception_term(ppl_overflow_error(Cause)) :-
+  nl,
+  write('Error: an overflow has been detected by the PPL: '),
+  write(Cause),
+  nl,
+  !.
+
+print_exception_term(Exception) :-
+  nl,
+  writeq(Exception),
+  nl.
 
 run_all:-
    ppl_initialize,
