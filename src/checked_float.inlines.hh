@@ -774,6 +774,8 @@ assign_float_int(To& to, const From from) {
   return check_inexact<Policy>(to);
 }
 
+// This is needed to return stricter result when 
+// rounding mode is set up or down
 template <typename Policy, typename Type>
 inline Result 
 sub_mul_float(Type& to, const Type x, const Type y) {

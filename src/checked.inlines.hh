@@ -87,7 +87,7 @@ add(Result r1, Result r2) {
     return (Result) (ret | V_LGE);
   if ((r1 & r2) & V_EQ)
     ret = (Result) (ret | V_EQ);
-  ret = (Result) (ret | ((r1 | r2) & (V_LT | V_GT)));
+  ret = (Result) (ret | (r1 & (V_LT | V_GT)));
   return ret;
 }
 
@@ -96,55 +96,79 @@ sub(Result r1, Result r2) {
   return add(r1, neg(r2));
 }
 
+template <typename Policy, typename Type>
+inline Result
+sgn(Result xr, const Type& x) {
+  switch (xr) {
+  case V_UNKNOWN:
+  case V_DOMAIN:
+    return V_UNKNOWN;
+  case V_NEG_OVERFLOW:
+    return V_LT;
+  case V_POS_OVERFLOW:
+    return V_GT;
+  default:
+    return sgn<Policy>(x);
+    break;
+  }
+}
+
+
+template <typename Policy, typename To, typename From1, typename From2>
+inline Result add(To& to, Result xr, const From1& x, Result yr, const From2& y) {
+  if (xr == V_DOMAIN || yr == V_DOMAIN)
+    return V_DOMAIN;
+  if (xr == V_UNKNOWN || yr == V_UNKNOWN)
+    return V_UNKNOWN;
+  if (xr == V_NEG_OVERFLOW)
+    return sgn<Policy>(yr, y) == V_GT ? V_UNKNOWN : xr;
+  if (yr == V_NEG_OVERFLOW)
+    return sgn<Policy>(xr, x) == V_GT ? V_UNKNOWN : yr;
+  if (xr == V_POS_OVERFLOW)
+    return sgn<Policy>(yr, y) == V_LT ? V_UNKNOWN : xr;
+  if (yr == V_POS_OVERFLOW)
+    return sgn<Policy>(xr, x) == V_LT ? V_UNKNOWN : yr;
+  Result rr = add<Policy>(to, x, y);
+  if (rr >= V_UNKNOWN)
+    return rr;
+  return add(rr, add(xr, yr));
+}
+
+template <typename Policy, typename To, typename From1, typename From2>
+inline Result sub(To& to, Result xr, const From1& x, Result yr, const From2& y) {
+  if (xr == V_DOMAIN || yr == V_DOMAIN)
+    return V_DOMAIN;
+  if (xr == V_UNKNOWN || yr == V_UNKNOWN)
+    return V_UNKNOWN;
+  if (xr == V_NEG_OVERFLOW)
+    return sgn<Policy>(yr, y) == V_LT ? V_UNKNOWN : xr;
+  if (yr == V_NEG_OVERFLOW)
+    return sgn<Policy>(xr, x) == V_LT ? V_UNKNOWN : yr;
+  if (xr == V_POS_OVERFLOW)
+    return sgn<Policy>(yr, y) == V_GT ? V_UNKNOWN : xr;
+  if (yr == V_POS_OVERFLOW)
+    return sgn<Policy>(xr, x) == V_GT ? V_UNKNOWN : yr;
+  Result rr = sub<Policy>(to, x, y);
+  if (rr >= V_UNKNOWN)
+    return rr;
+  return add(rr, sub(xr, yr));
+}
+
 template <typename Policy, typename To, typename From1, typename From2>
 struct FUNCTION_CLASS(add_mul) {
-  //RB: commented out
-  //static To temp;
   static inline Result function(To& to, const From1& x, const From2& y) {
-    //RB: added
-    static To temp;
-    Result r1 = mul<Policy>(temp, x, y);
-    switch (r1) {
-    case V_UNKNOWN:
-    case V_DOMAIN:
-      return r1;
-    case V_NEG_OVERFLOW:
-      return to < 0 ? r1 : V_UNKNOWN;
-    case V_POS_OVERFLOW:
-      return to > 0 ? r1 : V_UNKNOWN;
-    default:
-      break;
-    }
-    Result r2 = add<Policy>(to, to, temp);
-    if (r2 >= V_UNKNOWN)
-      return r2;
-    return add(r1, r2);
+    To temp;
+    Result r = mul<Policy>(temp, x, y);
+    return add<Policy>(to, V_EQ, to, r, temp);
   }
 };
 
 template <typename Policy, typename To, typename From1, typename From2>
 struct FUNCTION_CLASS(sub_mul) {
-  //RB: commented out
-  //static To temp;
   static inline Result function(To& to, const From1& x, const From2& y) {
-    //RB: added
-    static To temp;
-    Result r1 = mul<Policy>(temp, x, y);
-    switch (r1) {
-    case V_UNKNOWN:
-    case V_DOMAIN:
-      return r1;
-    case V_NEG_OVERFLOW:
-      return to > 0 ? V_POS_OVERFLOW : V_UNKNOWN;
-    case V_POS_OVERFLOW:
-      return to < 0 ? V_NEG_OVERFLOW : V_UNKNOWN;
-    default:
-      break;
-    }
-    Result r2 = sub<Policy>(to, to, temp);
-    if (r2 >= V_UNKNOWN)
-      return r2;
-    return sub(r1, r2);
+    To temp;
+    Result r = mul<Policy>(temp, x, y);
+    return sub<Policy>(to, V_EQ, to, r, temp);
   }
 };
 
