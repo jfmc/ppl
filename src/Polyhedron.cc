@@ -1278,7 +1278,7 @@ PPL::Polyhedron::assign_variable(const Variable& var,
     throw std::invalid_argument("void PPL::Polyhedron::assign_variable"
 				"(v, e, d): d == 0");
   Polyhedron& x = *this;
-  size_t num_columns = x.gen_sys.num_columns();
+  size_t num_columns = x.num_dimensions() + 1;
   size_t num_var = var.id() + 1;
   if (num_columns != expr.size())
     throw std::invalid_argument("PPL::Polyhedron::assign_variable"
@@ -1382,7 +1382,7 @@ PPL::Polyhedron::substitute_variable(const Variable& var,
 				"(v, e, d): d == 0");
 
   Polyhedron& x = *this;
-  size_t num_columns = x.con_sys.num_columns();
+  size_t num_columns = x.num_dimensions() + 1;
   size_t num_var = var.id() + 1;
   if (num_columns != expr.size())
     throw std::invalid_argument("PPL::Polyhedron::substitute_variable"
