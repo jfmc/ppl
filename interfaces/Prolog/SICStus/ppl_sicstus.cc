@@ -372,3 +372,11 @@ ppl_convex_hull_assign(void* pp_lhs, const void* pp_rhs) {
   CATCH_ALL;
 }
 
+extern "C" void
+ppl_widening_assign(void* pp_lhs, const void* pp_rhs) {
+  try {
+    static_cast<PPL::Polyhedron*>(pp_lhs)
+      ->widening_assign(*static_cast<const PPL::Polyhedron*>(pp_rhs));
+  }
+  CATCH_ALL;
+}
