@@ -202,6 +202,7 @@ set_alarm_on_cpu_time(const unsigned seconds, sig_handler_type handler) {
   }
 }
 
+#if HAVE_DECL_RLIMIT_AS
 void
 limit_virtual_memory(const unsigned bytes) {
   struct rlimit t;
@@ -215,6 +216,11 @@ limit_virtual_memory(const unsigned bytes) {
       fatal("setrlimit failed: %s", strerror(errno));
   }
 }
+#else
+void
+limit_virtual_memory(unsigned) {
+}
+#endif // !HAVE_DECL_RLIMIT_AS
 
 extern "C" void
 timeout(int) {
