@@ -658,13 +658,13 @@ These rules are a consequence of the saturation concept.
 
 <B><EM>Proposition</EM></B>
 
-Let \f$C = \{\vect{x} \mid A\vect{x} \geq \vect{0}\}\f$ be a polyhedral cone,
-then any minimal proper face of \f$C\f$ in an 
+Let \f$C = \{\vect{x} \mid A\vect{x} \geq \vect{0}\}\f$ be a polyhedral cone.
+Then any minimal proper face of \f$C\f$ in an 
 \f$n\f$-dimensional space can also be represented as 
-\f(
+\f$
   G = \{\,\vect{x} \mid A'\vect{x} = 0,
   \langle\vect{a}_i\vect{x}\rangle \geq 0\,\}
-\f)
+\f$
 where \f$A'\f$ is a submatrix of \f$A\f$, \f$\vect{a}_i\f$ is a row of \f$A\f$ 
 and the rank of the matrix built starting from \f$A'\f$ and adding the row 
 \f$\vect{a}_i\f$ is \f$n - t\f$
@@ -716,8 +716,8 @@ It is useful to note that:
   the positivity constraint; in fact in the homogeneous form
   the positivity constraint is represented by the vector 
   \f$\vect{a}^\transpose = (0, \ldots, 0, 1)\f$, rays are of the form 
-  \f$\vect{r} = (r_1, \ldots, r_n, 0)^\transpose\f$ and vertices 
-  \f$\vect{v} = (v_1, \ldots, v_n, d)^\transpose\f$ with \f$d \neq 0\f$, 
+  \f$\vect{r} = (r_0, \ldots, r_{n-1}, 0)^\transpose\f$ and vertices 
+  \f$\vect{v} = (v_0, \ldots, v_{n-1}, d)^\transpose\f$ with \f$d \neq 0\f$, 
   thus \f$\langle \vect{a}, \vect{r} \rangle = 0\f$ for each ray 
   \f$\vect{r}\f$ and \f$\langle \vect{a}, \vect{v} \rangle \neq 0\f$ 
   for each vertex \f$\vect{v}\f$.
