@@ -4026,14 +4026,15 @@ PPL::Polyhedron::check_universe() const {
     const Constraint& eps_leq_one = con_sys[0]; 
     const Constraint& eps_geq_zero = con_sys[1]; 
     dimension_type eps_index = con_sys.num_columns() - 1;
-    if (eps_leq_one[0] <= 0
-	|| eps_leq_one[eps_index] >= 0
-	|| eps_geq_zero[0] != 0
-	|| eps_geq_zero[eps_index] <= 0)
-      return false;
+    // If the system of constraints contains two rows that
+    // are not equalities, we are sure that they are
+    // epsilon constraints: in this case we know that
+    // the polyhedron is universe.
+    assert(eps_leq_one[0] > 0 && eps_leq_one[eps_index] < 0
+	   && eps_geq_zero[0] == 0 && eps_geq_zero[eps_index] > 0);
     for (dimension_type i = eps_index; i-- > 1; )
-      if (eps_leq_one[i] != 0 || eps_geq_zero[i] != 0)
-	return false;
+      assert(eps_leq_one[i] == 0 && eps_geq_zero[i] == 0);
+    
     return true;
   }
 }
