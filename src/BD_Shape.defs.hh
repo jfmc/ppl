@@ -406,22 +406,32 @@ public:
                             system of bounded differences has to be built.
   */
   explicit BD_Shape(dimension_type num_dimensions = 0,
-		  Polyhedron::Degenerate_Kind kind = Polyhedron::UNIVERSE);
+		    Polyhedron::Degenerate_Kind kind = Polyhedron::UNIVERSE);
 
   //! Ordinary copy-constructor.
   BD_Shape(const BD_Shape& x);
 
-  //! Builds a system of bounded differences from a system of constraints.
+  //! Builds a BDS from the system of constraints \p cs.
   /*!
-    The system of bounded differences inherits the space dimension 
-    of the system of constraints.
-    \param cs       A system of constraints: constraints that are not
-                    in \ref bounded_difference_form "bounded differences form"
-                    are simply ignored.
+    The system of bounded differences inherits the space dimension of \p cs.
+    \param cs       A system of constraints: constraints that are not in
+                    \ref bounded_difference_form "bounded differences form"
+                    are ignored (even though they may have contributed
+                    to the space dimension).
     \exception std::invalid_argument thrown if the system of constraints \p cs
                                      contains strict inequalities.
   */
   BD_Shape(const Constraint_System& cs);
+
+  //! Builds a BDS from the system of generators \p gs.
+  /*!
+    Builds the smallest BDS containing the polyhedron defined by \p gs.
+    \param gs       A system of generators defining the polyhedron to be
+                    approximated.
+    \exception std::invalid_argument thrown if the system of generators \p gs
+                                     contains closure points.
+  */
+  BD_Shape(const Generator_System& gs);
 
   //! \brief
   //! The assignment operator
