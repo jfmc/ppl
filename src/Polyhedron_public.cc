@@ -83,8 +83,13 @@ PPL::Polyhedron::constraints() const {
   else if (!constraints_are_up_to_date())
     update_constraints();
 
+  // FIXME: reconsider whether to really sort constraint at this stage
+  // when we will have a better implementation of
+  // obtain_sorted_constraints().
+#if 0
   // We insist in returning a sorted system of constraints.
   obtain_sorted_constraints();
+#endif
   return con_sys;
 }
 
@@ -120,6 +125,10 @@ PPL::Polyhedron::generators() const {
     assert(gen_sys.num_columns() == 0 && gen_sys.num_rows() == 0);
     return gen_sys;
   }
+
+  // FIXME: reconsider whether to sort generators also in the case of
+  // closed polyhedra when we will have a better implementation of
+  // obtain_sorted_generators().
 
   // In the case of an NNC polyhedron, we insist in returning a sorted
   // system of generators: this is needed so that the const_iterator
