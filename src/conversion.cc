@@ -59,12 +59,13 @@ namespace PPL = Parma_Polyhedra_Library;
   \p num_lines_or_equalities - 1  and ray/vertex from index
   \p num_lines_or_equalities to the last row.
 
-  \p start parameter is 0 when we have to find generators from a given set of
-  constraints.
+  \p start parameter is 0 when we have to find generators from a given 
+  system of constraints.
   However \p start may not be 0. This happens, for example, when, given
-  a set of constraints and the corresponding set of generators, we add some
-  new constraints to the previous set and we want to find the new
-  corresponding set of generators starting from the previous one.
+  a system of constraints and the corresponding system of generators, 
+  we add some new constraints to the previous system and we want to 
+  find the new corresponding system of generators starting from the 
+  previous one.
 
   Note that here the rows of \p sat are indexed by rows of \p dest
   and its columns are indexed by rows of \p source.
@@ -75,8 +76,8 @@ namespace PPL = Parma_Polyhedra_Library;
   from generators to constraints). This parameter will be
   returned at the end of the conversion.
 
-  We know that polyhedra can be represented by both a set of constraints
-  or a set of generators (vertices, rays and lines)
+  We know that polyhedra can be represented by both a system of 
+  constraints or a system of generators (vertices, rays and lines)
   (see user_definitions.dox).
   When we have both descriptions for a polyhedron \f$P\f$
   we have what is called a <EM>double description</EM>
@@ -259,7 +260,7 @@ namespace PPL = Parma_Polyhedra_Library;
      and \f$r_2\f$ is equal to \f$d - 2\f$, where \f$d\f$ is the rank
      of the matrix of constraints.
 
-  In fact, let \f$F\f$ be the set of generators that saturate the
+  In fact, let \f$F\f$ be the system of generators that saturate the
   constraints saturated by both \f$r_1\f$ and \f$r_2\f$.
   If b) holds, the set \f$F\f$ is 2-dimensional and \f$r_1\f$ and
   \f$r_2\f$ generate this set. So, every generator
@@ -286,7 +287,7 @@ namespace PPL = Parma_Polyhedra_Library;
   at least \p k extreme rays are necessary to generate \f$F\f$.
   So, \f$r_1\f$ and \f$r_2\f$ are not adjacent and a) does not hold.
 
-  Proposition 2: When we build the new set of generators starting a
+  Proposition 2: When we build the new system of generators starting a
   matrix \f$A\f$ of constraints of \f$P\f$, if \f$c\f$ is the constraint
   to add to \f$A\f$ and all lines of \f$P\f$ saturate \f$c\f$,
   the new set of rays is the union of those rays that saturate, of
@@ -517,7 +518,7 @@ PPL::Polyhedron::conversion(Matrix& source,
 	sat[num_lines_or_equalities].set(k);
       // If the k-th constraint is an equality, as we have chosen the
       // `num_lines_or_equalities' generator such above, it does not verify
-      // the constraint, so it has to be removed from the set of generators.
+      // the constraint, so it has to be removed from the system of generators.
       else {
 	--dest_num_rows;
 	std::swap(dest[num_lines_or_equalities],

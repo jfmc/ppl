@@ -41,12 +41,12 @@ namespace Parma_Polyhedra_Library {
     \f$\Rset^0 = \{\cdot\}\f$;
   - <EM>empty</EM>: the polyhedron is the empty set;
   - <EM>constraints up-to-date</EM>: the polyhedron is correctly
-    characterized by the attached set of constraints;
+    characterized by the attached system of constraints;
   - <EM>generators up-to-date</EM>: the polyhedron is correctly
-    characterized by the attached set of generators;
-  - <EM>constraints minimized</EM>: the set of constraints attached
+    characterized by the attached system of generators;
+  - <EM>constraints minimized</EM>: the system of constraints attached
     to the polyhedron is minimized;
-  - <EM>generators minimized</EM>: the set of generators attached
+  - <EM>generators minimized</EM>: the system of generators attached
     to the polyhedron is minimized.
   - <EM>constraints' saturation matrix up-to-date</EM>: the attached
     saturation matrix having rows indexed by generators and columns

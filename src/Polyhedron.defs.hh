@@ -66,14 +66,15 @@ namespace Parma_Polyhedra_Library {
 //! A convex polyhedron.
 /*!
     An object of the class Polyhedron represents a convex polyhedron
-    in the space \f$\Rset^n\f$.
+    in the space \f$\Rset^n\f$. If the polyhedron is the whole space,
+    we say that it is the <EM>universal polyhedron</EM>.
 
     A polyhedron can be specified as either a finite system of constraints
-    or a finite set of generators (see Minkowski's theorem in
+    or a finite system of generators (see Minkowski's theorem in
     the Introduction).
     So, it is possible to obtain one system from the
-    other. That is, if we know the system of constaints, we can obtain
-    from this the set of generators that define the same polyhedron
+    other. That is, if we know the system of constraints, we can obtain
+    from this the system of generators that define the same polyhedron
     and vice versa.
     These systems can contain some redundant members: in this case we say
     that they are not in the minimal form.
@@ -99,7 +100,7 @@ namespace Parma_Polyhedra_Library {
   Polyhedron ph(cs);
     \endcode
     The following code builds the same polyhedron starting from the
-    set of generators:
+    system of generators:
     \code
   GenSys gs;
   gs.insert(0 * x + 0 * y /= 1);
@@ -120,7 +121,7 @@ namespace Parma_Polyhedra_Library {
   Polyhedron ph(cs);
     \endcode
     The following code builds the same polyhedron starting from the
-    set of generators:
+    system of generators:
     \code
   GenSys gs;
   gs.insert(0 * x + 0 * y /= 1);
@@ -276,26 +277,26 @@ public:
   //! Intersects \p *this with polyhedron \p y and
   //! assigns the result to \p *this.
   //! \exception std::invalid_argument thrown if \p *this and \p y
-  //!                                  does not have the same dimension.
+  //!                                  have different dimension.
   void intersection_assign(const Polyhedron& y);
   //! Assigns the convex hull of \p *this \f$\cup\f$ \p y to \p *this.
   //! \exception std::invalid_argument thrown if \p *this and \p y
-  //!                                  does not have the same dimension.
+  //!                                  have different dimension.
   void convex_hull_assign(const Polyhedron& y);
   //! Assigns the convex hull of \p *this \f$\cup\f$ \p y to \p *this,
   //! without minimizing the result.
   //! \exception std::invalid_argument thrown if \p *this and \p y
-  //!                                  does not have the same dimension.
+  //!                                  have different dimension.
   void convex_hull_assign_lazy(const Polyhedron& y);
 
   //! Returns the relation between the generators of \p *this
   //! and the constraint \p c.
   //! \exception std::invalid_argument thrown if\p *this and constraint 
-  //!                                  \p c does not have the same dimension.
+  //!                                  \p c have different dimension.
   GenSys_Con_Rel satisfies(const Constraint& c);
   //! Tests the inclusion of the generator \p g in a polyhedron.
   //! \exception std::invalid_argument thrown if \p *this and constraint 
-  //!                                  \p g does not have the same dimension.
+  //!                                  \p g have different dimension.
   bool includes(const Generator& g);
 
   //! Computes the widening between \p *this and \p y and
@@ -303,7 +304,7 @@ public:
   //! \param y           The polyhedron that <EM>must</EM>
   //!                    be contained in \p *this.
   //! \exception std::invalid_argument thrown if \p *this and \p y 
-  //!                                  do not have the same dimension.
+  //!                                  have different dimension.
   void widening_assign(const Polyhedron& y);
   //! Limits the widening between \p *this and \p y by \p constraints
   //! and assigns the result to \p *this.
@@ -314,8 +315,7 @@ public:
   //! \return       <CODE>true</CODE> if the resulting polyhedron is not
   //!               empty <CODE>false</CODE> otherwise.
   //! \exception std::invalid_argument thrown if \p *this, \p y and 
-  //!                                  \p cs do not have the
-  //!                                  same dimension.
+  //!                                  \p cs have different dimension.
   bool limited_widening_assign(const Polyhedron& y, ConSys& cs);
 
   //! Returns the system of constraints.
@@ -332,7 +332,7 @@ public:
   //! Inserts a new constraint \p c into the system of constraints.
   void insert(const Constraint& c);
 
-  //! Inserts a new generator \p g into the set of generators.
+  //! Inserts a new generator \p g into the system of generators.
   void insert(const Generator& g);
 
   //! Assigns an affine expression to the specified variable.
@@ -408,20 +408,19 @@ public:
   //! \return               <CODE>false</CODE> if the resulting
   //!                       polyhedron is empty.
   //! \exception std::invalid_argument thrown if \p *this and \p cs
-  //!                                  does not have the same dimension.
+  //!                                  have different dimension.
   bool add_constraints(ConSys& cs);
   //! Adds the specified constraints without minimizing.
   //! \param  cs             The constraints that will be added to the
   //!                        current system of constraints.
   //! \exception std::invalid_argument thrown if \p *this and \p cs 
-  //!                                  does not have the same dimension
+  //!                                  have different dimension.
   void add_constraints_lazy(ConSys& cs);
   //! Adds the specified generators.
   //! \param  gs          The generators that will be added to the
   //!                     current system of generators.
   //! \exception std::invalid_argument thrown if \p *this and 
-  //!                                  \p generators_to_add
-  //!                                  does not have the same dimension
+  //!                                  \p gs have different dimension
   void add_generators(GenSys& gs);
   //! Returns <CODE>true</CODE> if and only if the polyhedron is empty.
   bool check_empty() const;

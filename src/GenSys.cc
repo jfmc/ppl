@@ -295,7 +295,7 @@ PPL::GenSys::get(std::istream& s) {
 
 /*!
   Returns <CODE>true</CODE> if and only if \p *this actually represents
-  a set of generators. So, \p *this must satisfy some rule:
+  a system of generators. So, \p *this must satisfy some rule:
   -# it must have a column for the inhomogeneous term and one for
      a variable;
   -# it can have no row; otherwise it must have at least a vertex;

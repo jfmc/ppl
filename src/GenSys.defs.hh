@@ -56,7 +56,7 @@ namespace Parma_Polyhedra_Library {
     An object of the class GenSys is a system of generators,
     i.e. a container of objects of the class Generator
     (lines, rays and vertices).
-    The set of generators must include at least one vertex.
+    The system of generators must include at least one vertex.
     This is needed since a line or ray only specifies a direction
     and a point is needed to indicate its position.
 
@@ -87,7 +87,7 @@ namespace Parma_Polyhedra_Library {
     GenSys gs;
     gs.insert(1 | x + 0 * y);
     \endcode
-    then this set of generators does not represent anything.
+    then this system of generators does not represent anything.
 
     \par Example 2
     The following code builds a ray that corresponds to the positive
@@ -109,7 +109,7 @@ namespace Parma_Polyhedra_Library {
     GenSys gs;
     gs.insert(1 ^ x + 0 * y);
     \endcode
-    then this set of generators does not represent anything.
+    then this system of generators does not represent anything.
 
 
     \par Example 3
@@ -153,7 +153,7 @@ public:
       to each generator contained in an object of GenSys.
 
       \par Example
-      The following code prints the set of generators
+      The following code prints the system of generators
       of the polyhedron <CODE>ph</CODE>:
       \code
       const GenSys gs = ph.generators();
