@@ -25,7 +25,21 @@ site: http://www.cs.unipr.it/ppl/ . */
 #define PPL_Variable_defs_hh 1
 
 #include "Variable.types.hh"
+#include "Init.types.hh"
 #include <iosfwd>
+
+namespace Parma_Polyhedra_Library {
+
+//! Output operator.
+/*! \relates Variable */
+std::ostream&
+operator<<(std::ostream& s, const Variable& v);
+
+//! Defines a total ordering on variables.
+/*! \relates Variable */
+bool operator<(const Variable& v, const Variable& w);
+
+} // namespace Parma_Polyhedra_Library
 
 //! A dimension of the space.
 /*!
@@ -54,32 +68,41 @@ site: http://www.cs.unipr.it/ppl/ . */
   \endcode
 
 */
-
 class Parma_Polyhedra_Library::Variable {
 
 public:
   //! Builds the variable corresponding to the Cartesian axis of index \p i.
   explicit Variable(unsigned int i);
+
   //! Returns the index of the Cartesian axis associated to the variable.
   unsigned int id() const;
+
+public:
+  //! Type of output functions.
+  typedef void Output_Function_Type(std::ostream& s, const Variable& v);
+
+  //! Set the output function to be used for printing Variable objects.
+  static void set_output_function(Output_Function_Type* p);
+
+  //! Returns the pointer to the current output function.
+  static Output_Function_Type* get_output_function();
 
 private:
   //! The index of the Cartesian axis.
   unsigned int varid;
+
+  // The initialization class needs to set the default output function.
+  friend class Init;
+
+  friend std::ostream&
+  Parma_Polyhedra_Library::operator<<(std::ostream& s, const Variable& v);
+
+  //! Pointer to the current output function.
+  static Output_Function_Type* current_output_function;
+
+  //! The default output function.
+  static void default_output_function(std::ostream& s, const Variable& v);
 };
-
-namespace Parma_Polyhedra_Library {
-
-//! Output operator.
-/*! \relates Variable */
-std::ostream&
-operator<<(std::ostream& s, const Variable& v);
-
-//! Defines a total ordering on variables.
-/*! \relates Variable */
-bool operator<(const Variable& v, const Variable& w);
-
-} // namespace Parma_Polyhedra_Library
 
 #include "Variable.inlines.hh"
 

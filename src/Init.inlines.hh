@@ -25,22 +25,26 @@ site: http://www.cs.unipr.it/ppl/ . */
 #define PPL_Init_inlines_hh 1
 
 #include "globals.hh"
+#include "Variable.defs.hh"
 
 namespace Parma_Polyhedra_Library {
 
 inline
 Init::Init() {
-  // When the first Init object is constructed,
-  // memory is allocated for tmp_Integer.
-  if (count++ == 0)
+  // Only when the first Init object is constructed...
+  if (count++ == 0) {
+    // ... memory is allocated for tmp_Integer...
     tmp_Integer = new Integer[6];
+    // ... and the default output function for Variable objects is set.
+    Variable::set_output_function(Variable::default_output_function);
+  }
 }
 
 inline
 Init::~Init() {
-  // When the last Init object is destroyed,
-  // tmp_Integer is also destroyed.
+  // Only when the last Init object is destroyed...
   if (--count == 0)
+    // ... tmp_Integer is also destroyed.
     delete[] tmp_Integer;
 }
 

@@ -96,6 +96,8 @@ Interval.inlines.hh \
 BoundingBox.defs.hh \
 BoundingBox.inlines.hh \
 globals.hh \
+Variable.defs.hh \
+Variable.inlines.hh \
 Init.defs.hh \
 Init.inlines.hh \
 initializer.hh \
@@ -108,8 +110,6 @@ Row.defs.hh \
 Row.inlines.hh \
 Matrix.defs.hh \
 Matrix.inlines.hh \
-Variable.defs.hh \
-Variable.inlines.hh \
 ConSys.defs.hh \
 GenSys.defs.hh \
 LinExpression.defs.hh \
@@ -216,10 +216,10 @@ noinst_HEADERS = ppl.hh ppl_install.hh
 
 BUILT_SOURCES = ppl.hh ppl_install.hh
 
-ppl.hh:	$(DOC_FILES)
+ppl.hh:	$(DOC_FILES) Makefile
 	(cd $(srcdir) ; cat $(DOC_FILES)) >ppl.hh
 
-ppl_install.hh:	ppl_header.top $(top_builddir)/config.h ppl_header.middle $(INCLUDE_FILES) ppl_header.bottom
+ppl_install.hh:	ppl_header.top $(top_builddir)/config.h ppl_header.middle $(INCLUDE_FILES) ppl_header.bottom Makefile
 	mkdir -p tmp
 	(cd $(srcdir) ; cat $(INCLUDE_FILES)) >tmp/concat
 	grep "^#include <" <tmp/concat | sort -u >tmp/includes

@@ -36,6 +36,16 @@ Variable::id() const {
   return varid;
 }
 
+inline void
+Variable::set_output_function(Output_Function_Type* p) {
+  current_output_function = p;
+}
+
+inline Variable::Output_Function_Type*
+Variable::get_output_function() {
+  return current_output_function;
+}
+
 /*! \relates Variable */
 inline bool
 operator<(const Variable& v, const Variable& w) {
