@@ -894,6 +894,163 @@ error31() {
   }
 }
 
+void
+error32() {
+  set_handlers();
+
+  Variable A(0);
+  Variable B(1);
+
+  GenSys gs1;
+  gs1.insert(ray(A));
+  gs1.insert(line(B));
+  
+  const GenSys gs2 = gs1;
+
+#if NOISY
+  print_generators(gs2, "*** gs2 ***");
+#endif
+  
+  try {
+    // This is an incorrect use of the function
+    // `C_Polyhedron::C_Polyhedron(gs)': it is illegal to built a
+    // closed polyhedron starting from a constant system of 
+    // generators that does not contain points.
+    C_Polyhedron ph2(gs2);
+  }
+  catch(invalid_argument& e) {
+#if NOISY
+    cout << "invalid_system_of_generators: " << e.what() << endl << endl;
+#endif
+  }
+  catch (...) {
+    exit(1);
+  }
+}  
+
+void
+error33() {
+  set_handlers();
+
+  Variable A(0);
+
+  C_Polyhedron ph1(2, C_Polyhedron::EMPTY);
+
+#if NOISY
+  print_generators(ph1, "*** ph1 ***");
+#endif
+  
+  try {
+    // This is an incorrect use of the function
+    // `add_generator(g)': it is illegal to add a
+    // ray to an empty polyhedron.
+    ph1.add_generator(ray(A));
+  }
+  catch(invalid_argument& e) {
+#if NOISY
+    cout << "invalid_generator: " << e.what() << endl << endl;
+#endif
+  }
+  catch (...) {
+    exit(1);
+  }
+} 
+
+void
+error34() {
+  set_handlers();
+
+  Variable A(0);
+  Variable B(1);
+
+  C_Polyhedron ph(1);
+  ph.add_constraint(A >= 3);
+  ph.add_constraint(A <= 5);
+
+  try {
+    // This is an invalid used of the function
+    // `C_Polyhedron::bounds_from_above(v, expr, d)': it is illegal to
+    // use a variable in the expression that does not apper in the
+    // space of the polyhedron.
+    ph.bounds_from_above(A + B);
+  }
+  catch (invalid_argument& e) {
+#if NOISY
+    cout << "invalid_expression: " << e.what() << endl << endl;
+#endif
+  }
+  catch (...) {
+    exit(1);
+  }
+}
+
+void
+error35() {
+  set_handlers();
+  
+  Variable A(0);
+  Variable B(1);
+
+  C_Polyhedron ph(2, C_Polyhedron::EMPTY);
+
+#if NOISY
+  print_constraints(ph, "*** ph ***");
+#endif
+
+  GenSys gs;
+  gs.insert(line(A));
+  gs.insert(ray(B));
+
+  try {
+    // This is an invalid used of the function
+    // `add_generators_and_minimize(gs)': it is illegal to
+    // add a system of generators that does not contain points
+    // to an empty polyhedron.
+    ph.add_generators_and_minimize(gs);
+  }
+  catch (invalid_argument& e) {
+#if NOISY
+    cout << "invalid_system_of_generators: " << e.what() << endl << endl;
+#endif
+  }
+  catch (...) {
+    exit(1);
+  }
+}
+
+void
+error36() {
+  set_handlers();
+  
+  Variable A(0);
+  Variable B(1);
+
+  C_Polyhedron ph(2, C_Polyhedron::EMPTY);
+
+#if NOISY
+  print_constraints(ph, "*** ph ***");
+#endif
+
+  GenSys gs;
+  gs.insert(ray(A));
+  gs.insert(ray(B));
+
+  try {
+    // This is an invalid used of the function
+    // `add_generators(gs)': it is illegal to
+    // add a system of generators that does not contain points
+    // to an empty polyhedron.
+    ph.add_generators(gs);
+  }
+  catch (invalid_argument& e) {
+#if NOISY
+    cout << "invalid_system_of_generators: " << e.what() << endl << endl;
+#endif
+  }
+  catch (...) {
+    exit(1);
+  }
+}
 
 int
 main() {
@@ -929,6 +1086,11 @@ main() {
   error29();
   error30();
   error31();
+  error32();
+  error33();
+  error34();
+  error35();
+  error36();
 
   return 0;
 }
