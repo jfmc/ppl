@@ -53,7 +53,7 @@ site: http://www.cs.unipr.it/ppl/ . */
 /*!
   The class Row allows us to build objects of the form
   \f$ [b, a_0, \ldots, a_{d-1}]_k^t \f$,
-  where the superscript \f$t \in \{ c, \mathit{nnc} \}\f$ represents
+  where the superscript \f$t \in \{ \mathrm{c}, \mathrm{nnc} \}\f$ represents
   the <EM>topology</EM> and
   the subscript \f$k \in \{\mathord{=}, \mathord{\geq} \}\f$ represents
   the <EM>kind</EM> of the row object.
@@ -81,29 +81,29 @@ site: http://www.cs.unipr.it/ppl/ . */
       represents the point
       \f$\vect{p} = (\frac{a_0}{b}, \ldots, \frac{a_{d-1}}{b})^\transpose\f$.
 
-  When \f$t = \mathit{nnc}\f$, the last coefficient of the row is
+  When \f$t = \mathrm{nnc}\f$, the last coefficient of the row is
   associated to the slack variable \f$\epsilon\f$, so that we have the
   following cases (\f$d\f$ is again the dimension of the vector space,
   but this time we have \f$d+2\f$ coefficients):
-    - \f$[b, a_0, \ldots, a_{d-1}, 0]_=^\mathit{nnc}\f$
+    - \f$[b, a_0, \ldots, a_{d-1}, 0]_=^\mathrm{nnc}\f$
       represents the equality constraint
       \f$\sum_{i=0}^{d-1} a_i x_i + b = 0\f$.
-    - \f$[b, a_0, \ldots, a_{d-1}, 0]_\geq^\mathit{nnc}\f$
+    - \f$[b, a_0, \ldots, a_{d-1}, 0]_\geq^\mathrm{nnc}\f$
       represents the non-strict inequality constraint
       \f$\sum_{i=0}^{d-1} a_i x_i + b \geq 0\f$.
-    - \f$[b, a_0, \ldots, a_{d-1}, e]_\geq^\mathit{nnc}\f$,
+    - \f$[b, a_0, \ldots, a_{d-1}, e]_\geq^\mathrm{nnc}\f$,
       with \f$e < 0\f$, represents the strict inequality constraint
       \f$\sum_{i=0}^{d-1} a_i x_i + b > 0\f$.
-    - \f$[0, a_0, \ldots, a_{d-1}, 0]_=^\mathit{nnc}\f$
+    - \f$[0, a_0, \ldots, a_{d-1}, 0]_=^\mathrm{nnc}\f$
       represents the line of direction
       \f$\vect{l} = (a_0, \ldots, a_{d-1})^\transpose\f$.
-    - \f$[0, a_0, \ldots, a_{d-1}, 0]_\geq^\mathit{nnc}\f$
+    - \f$[0, a_0, \ldots, a_{d-1}, 0]_\geq^\mathrm{nnc}\f$
       represents the ray of direction
       \f$\vect{r} = (a_0, \ldots, a_{d-1})^\transpose\f$.
-    - \f$[b, a_0, \ldots, a_{d-1}, e]_\geq^\mathit{nnc}\f$,
+    - \f$[b, a_0, \ldots, a_{d-1}, e]_\geq^\mathrm{nnc}\f$,
       with \f$b > 0\f$ and \f$e > 0\f$, represents the point
       \f$\vect{p} = (\frac{a_0}{b}, \ldots, \frac{a_{d-1}}{b})^\transpose\f$.
-    - \f$[b, a_0, \ldots, a_{d-1}, 0]_\geq^\mathit{nnc}\f$,
+    - \f$[b, a_0, \ldots, a_{d-1}, 0]_\geq^\mathrm{nnc}\f$,
       with \f$b > 0\f$, represents the closure point
       \f$\vect{c} = (\frac{a_0}{b}, \ldots, \frac{a_{d-1}}{b})^\transpose\f$.
 
@@ -126,8 +126,8 @@ site: http://www.cs.unipr.it/ppl/ . */
   the other cases.
   Note that the above description corresponds to the end-user, high-level
   view of a Row object. In the implementation, to allow for code reuse,
-  it is sometimes useful to regard an \f$\mathit{nnc}\f$-object on
-  the vector space \f$\Rset^d\f$ as if it was a \f$c\f$-object on the
+  it is sometimes useful to regard an \f$\mathrm{nnc}\f$-object on
+  the vector space \f$\Rset^d\f$ as if it was a \f$\mathrm{c}\f$-object on the
   vector space \f$\Rset^{d+1}\f$, therefore interpreting the slack
   variable \f$\epsilon\f$ as an ordinary dimension of the vector space.
 
