@@ -1,0 +1,4 @@
+usr/lib/libpwl.so.*
+usr/lib/libpwl.a
+usr/lib/libpwl.la
+usr/include/pwl.hh
