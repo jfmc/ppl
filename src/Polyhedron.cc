@@ -623,12 +623,12 @@ throw_different_dimensions(const char* method,
   have the same dimension) is assigned to \p *this.
 */
 void
-PPL::Polyhedron::intersection_assign(const Polyhedron& y) {
+PPL::Polyhedron::intersection_assign_and_minimize(const Polyhedron& y) {
   Polyhedron& x = *this;
  
   // Dimension-compatibility check.
   if (x.space_dimension() != y.space_dimension())
-    throw_different_dimensions("PPL::Polyhedron::intersection_assign(y)",
+    throw_different_dimensions("PPL::Polyhedron::intersection_ass_and_min(y)",
 			       x, y);
 
   // If one of the two polyhedra is empty, the intersection is empty.
@@ -664,11 +664,58 @@ PPL::Polyhedron::intersection_assign(const Polyhedron& y) {
   if (empty)
     x.set_empty();
   else {
-    // On exit of the function intersection_assign() the polyhedron
-    // is up-to-date and sat_c is meaningful.
+    // On exit of the function intersection_assign_and_minimize()
+    // the polyhedron is up-to-date and sat_c is meaningful.
     x.set_sat_c_up_to_date();
     x.clear_sat_g_up_to_date();
   }
+}
+
+/*!
+  The intersection of \p *this with \p y (that are assumed to
+  have the same dimension) is assigned to \p *this.
+  The result is not minimized.
+*/
+void
+PPL::Polyhedron::intersection_assign(const Polyhedron& y) {
+  Polyhedron& x = *this;
+ 
+  // Dimension-compatibility check.
+  if (x.space_dimension() != y.space_dimension())
+    throw_different_dimensions("PPL::Polyhedron::intersection_ass_and_min(y)",
+			       x, y);
+
+  // If one of the two polyhedra is empty, the intersection is empty.
+  if (x.is_empty())
+    return;
+  if (y.is_empty()) {
+    x.set_empty();
+    return;
+  }
+  
+  // If both polyhedra are zero-dimensional,
+  // then at this point they are necessarily non-empty,
+  // so that their intersection is non-empty too.
+  if (x.space_dimension() == 0)
+    return;
+
+  // We need the systemo of contraints of both the polyhedra up-to-date.
+  if(!x.constraints_are_up_to_date())
+    x.update_constraints();
+  if(!y.constraints_are_up_to_date())
+    y.update_constraints();
+
+  // Matrix::merge_rows_assign() requires both matrices to be sorted.
+  if (!x.con_sys.is_sorted())
+    x.con_sys.sort_rows();
+  if (!y.con_sys.is_sorted())
+    const_cast<Polyhedron&>(y).con_sys.sort_rows();
+
+  x.con_sys.merge_rows_assign(y.con_sys);
+  // After adding new constraints, generators are no longer up-to-date.
+  x.clear_generators_up_to_date();
+  // It does not minimize the system of constraints.
+  x.clear_constraints_minimized();
 }
 
 /*!
@@ -1444,7 +1491,6 @@ PPL::Polyhedron::add_dimensions_and_constraints(ConSys& cs) {
 void
 PPL::Polyhedron::add_generators(GenSys& gs) {
   size_t gs_space_dim = gs.space_dimension();
-  //  size_t gs_num_columns = gs.num_columns();
 
   // Dimension-compatibility check:
   // the dimension of `gs' can not be greater than space_dimension().

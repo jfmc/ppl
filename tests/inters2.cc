@@ -93,7 +93,7 @@ main() {
     hyper_space_above.insert(z >= ph_nv[i].plane_height);
 
     Polyhedron computed_result = pyramid;
-    computed_result.intersection_assign(hyper_space_above);
+    computed_result.intersection_assign_and_minimize(hyper_space_above);
 
     if (ok
 	&& count_vertices(computed_result) != ph_nv[i].num_vertices_above)
@@ -109,7 +109,7 @@ main() {
     hyper_space_below.insert(z <= ph_nv[i].plane_height);
 
     computed_result = pyramid;
-    computed_result.intersection_assign(hyper_space_below);
+    computed_result.intersection_assign_and_minimize(hyper_space_below);
 
     if (ok
 	&& count_vertices(computed_result) != ph_nv[i].num_vertices_below)

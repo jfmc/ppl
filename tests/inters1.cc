@@ -67,7 +67,7 @@ main() {
   column.insert(x <= 1);
 
   Polyhedron computed_result = icosahedron;
-  computed_result.intersection_assign(column);
+  computed_result.intersection_assign_and_minimize(column);
 
   Polyhedron known_result(3);
   known_result.insert(-4*x - 2*y + z >= -8);

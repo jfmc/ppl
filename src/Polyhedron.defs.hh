@@ -367,6 +367,11 @@ public:
   //! assigns the result to \p *this.
   //! \exception std::invalid_argument thrown if \p *this and \p y
   //!                                  are dimension-incompatible.
+  void intersection_assign_and_minimize(const Polyhedron& y);
+  //! Intersects \p *this with polyhedron \p y and assigns the result
+  //! to \p *this without minimizing the result.
+  //! \exception std::invalid_argument thrown if \p *this and \p y
+  //!                                  are dimension-incompatible.
   void intersection_assign(const Polyhedron& y);
   //! Assigns the convex hull of \p *this \f$\cup\f$ \p y to \p *this.
   //! \exception std::invalid_argument thrown if \p *this and \p y
