@@ -61,7 +61,6 @@ PPL::Matrix::Matrix(Topology topol,
     rows[i].construct(row_type, n_columns, row_capacity);
 }
 
-
 PPL::Matrix::Matrix(const Matrix& y)
   : rows(y.rows),
     row_topology(y.row_topology),
@@ -69,6 +68,26 @@ PPL::Matrix::Matrix(const Matrix& y)
     row_capacity(compute_capacity(y.row_size)),
     index_first_pending(y.index_first_pending),
     sorted(y.sorted) {
+}
+
+PPL::Matrix::Matrix(Matrix& y, dimension_type first_stolen)
+  : rows(y.num_rows() - first_stolen),
+    row_topology(y.row_topology),
+    row_size(y.row_size),
+    row_capacity(y.row_capacity),
+    index_first_pending(rows.size()),
+    sorted(false) {
+  assert(first_stolen < y.num_rows());
+  // Steal the rows from `y', starting from `first_stolen'.
+  for (dimension_type i = num_rows(); i-- > 0; )
+    std::swap(rows[i], y.rows[first_stolen + i]);
+  assert(OK());
+  // Erase from `y' the rows just swapped in from `*this'.
+  y.erase_to_end(first_stolen);
+  // Adjust the index of the first pending row, if needed.
+  if (y.first_pending_row() > first_stolen)
+    y.set_index_first_pending_row(first_stolen);
+  assert(y.OK());
 }
 
 

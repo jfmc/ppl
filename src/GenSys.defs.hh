@@ -357,6 +357,9 @@ private:
   //! \p topol is <CODE>NOT_NECESSARILY_CLOSED</CODE>).
   GenSys(Topology topol, dimension_type n_rows, dimension_type n_columns);
 
+  //! Split-constructor.
+  GenSys(GenSys& y, dimension_type first_stolen);
+
   //! Swaps \p *this with \p y.
   void swap(GenSys& y);
 

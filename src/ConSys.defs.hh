@@ -296,6 +296,9 @@ private:
   //! \p topol is <CODE>NOT_NECESSARILY_CLOSED</CODE>).
   ConSys(Topology topol, dimension_type n_rows, dimension_type n_columns);
 
+  //! Split-constructor.
+  ConSys(ConSys& y, dimension_type first_stolen);
+
   //! Swaps \p *this with \p y.
   void swap(ConSys& y);
 

@@ -70,6 +70,9 @@ protected:
 
   //! Copy-constructor.
   Matrix(const Matrix& y);
+
+  //! Split-constructor.
+  Matrix(Matrix& y, dimension_type first_stolen);
   
   //! Destructor.
   virtual ~Matrix();
