@@ -66,12 +66,18 @@ using the PPL predicates.
 
 - Argument positions labeled as <CODE>+Address</CODE>
   must be addresses in memory. It is up to the programmer to ensure
-  that these addresses refer to a PPL polyhedron.
-
-- A free variable may be bound to an address of a PPL polyhedron
-  by using either
-  <CODE>ppl_new_polyhedron/2</CODE> or
+  that these addresses are valid addresses of PPL polyhedra.
+  If an argument to a PPL predicate
+  labeled as <CODE>+Address</CODE> is not the address
+  of a valid polyhedron, the predicate has undefined behavior.
+  
+- A free variable can be bound to a <EM>valid address</EM>
+  of a PPL polyhedron by using  
+  <CODE>ppl_new_polyhedron/2</CODE>,
+  <CODE>ppl_new_empty_polyhedron/2</CODE> or
   <CODE>ppl_copy_polyhedron/2</CODE>.
+  An address becomes invalid after it has been used as an argument in 
+  <CODE>ppl_delete_polyhedron/1</CODE>.
 
 - Memory occupied by a PPL polyhedron should be released as soon as it is
   no longer required.
@@ -147,12 +153,9 @@ more information regarding these issues.
 
 <H4><CODE>ppl_copy_polyhedron(+Address1, -Address2)</CODE></H4>
 
-   If <CODE>Address1</CODE> is an address of a polyhedron \p P,
+   If <CODE>Address1</CODE> is the address of a polyhedron \p P,
    then a copy \p Q of \p P is created and <CODE>Address2</CODE>
-   is returned as the reference to \p Q.
-
-   If <CODE>Address1</CODE> is not an address of a polyhedron,
-   execution is aborted.
+   is unified with the reference to \p Q.
 
 <H4><CODE>ppl_delete_polyhedron(+Address)</CODE></H4>
 
@@ -202,12 +205,10 @@ polyhedron referenced by <CODE>Address</CODE> must be dimensional compatible.
 This means that the identifiers for the variables in
 <CODE>Constraint</CODE> must be strictly less than the space
 dimension of the polyhedron. 
-E.g.,
+E.g. the following aborts,
 \code
    | ?- ppl_new_polyhedron(X,3),
         ppl_insert_constraint(X,'$VAR'(3) = -12).
-   {ERROR: 'PPL::Polyhedron::insert(c):
-   this->space_dimension() == 3, y->space_dimension() == 4'}
 \endcode
 
 <H4><CODE>ppl_insert_generator(+Address, +Generator)</CODE></H4>
@@ -232,8 +233,6 @@ by <CODE>Address</CODE>.
 
    Adds the constraints in list <CODE>List_of_Constraints</CODE>
    to the polyhedron referenced by <CODE>Address</CODE>.
-   Constraints are not minimized and a query will succeed even when
-   <CODE>List_of_Constraints</CODE> is unsatisfiable.
    E.g.,
 \code
    | ?- A = '$VAR'(0), B = '$VAR'(1),
@@ -245,22 +244,10 @@ by <CODE>Address</CODE>.
    B = B,
    X = -32975498,
    CS = [4*A+1*B>=3,1*A=1] ?
- 
-   yes
-   | ?- A = '$VAR'(0), B = '$VAR'(1),
-        ppl_new_polyhedron(X, 2),
-        ppl_insert_constraints(X, [4*A + B >= 3, A = 1]),
-        ppl_get_constraints(X,CS).
- 
-   A = A,
-   B = B,
-   X = -32975104,
-   CS = [4*A+1*B>=3,1*A=1],
-   GS = [vertex(1*A+ -1*B),ray(1*B)] ?
- 
-   yes  
 \endcode  
-                                                                         
+Note that constraints are not minimized and a query will succeed even when
+<CODE>List_of_Constraints</CODE> is unsatisfiable.
+                                                                       
 <H4><CODE>ppl_add_constraints_and_minimize(+Address, 
                                    +List_of_Constraints)</CODE></H4>
 
@@ -278,14 +265,13 @@ by <CODE>Address</CODE>.
    B = B,
    X = -33291612,
    CS = [1*B>= -1,1*A=1] ?
- 
-   yes
+\endcode                                                                          This will fail if the resulting polyhedron is empty.
+   E.g., the following will fail,
+\code
    | ?- A = '$VAR'(0), B = '$VAR'(1),
        ppl_new_polyhedron(X, 2),
        ppl_add_constraints_and_minimize(X, [4*A + B >= 3, A = 0, B =< 0]),
        ppl_get_constraints(X,CS).
-   | ?-
-   no
 \endcode                                                                              
 <H4><CODE>ppl_insert_generators(+Address, +List_of_Generators)</CODE></H4>
 
@@ -329,10 +315,7 @@ dimensions.
 
    Projects the polyhedron referenced by address <CODE>Address</CODE>
    onto the first <CODE>Integer</CODE> dimensions.
-   Thus, if the polyhedron \p P at the <CODE>Address</CODE>
-   has space dimension \f$k\f$, <CODE>Integer</CODE>
-   must be less than or equal to \f$k\f$.
-   E.g.,
+   E.g. 
 \code
    | ?- ppl_new_polyhedron(X,5),
         ppl_remove_higher_dimensions(X,3),
@@ -340,13 +323,15 @@ dimensions.
  
    K = 3,
    X = -33292540 ?
-
-   yes
+\endcode
+   The polyhedron \p P at the <CODE>Address</CODE>
+   must have space dimension \f$k\f$ greater that or equal to
+   <CODE>Integer</CODE>.
+   E.g. The following aborts,
+\code
    | ?- ppl_new_polyhedron(X,5),
         ppl_remove_higher_dimensions(X,6),
         ppl_space_dimension(X,K).
-   {ERROR: 'void PPL::Polyhedron::remove_higher_dimensions(nd):
-   this->space_dimension() == 5, requested dimension == 6'}
 \endcode
 
 <H4><CODE>ppl_add_dimensions_and_embed(+Address, +Integer)</CODE></H4>
@@ -363,8 +348,6 @@ dimensions.
    X = -32775690,
    CS = [],
    GS = [vertex(0),line(1*A),line(1*B)] ?
- 
-   yes
 \endcode
     
 <H4><CODE>ppl_add_dimensions_and_project(+Address, +Integer)</CODE></H4>
@@ -382,8 +365,6 @@ dimensions.
    X = -32920674,
    CS = [1*A=0,1*B=0],
    GS = [vertex(0)] ?
- 
-   yes
 \endcode
 
 <H4><CODE>ppl_check_empty(+Address)</CODE></H4>
@@ -400,9 +381,8 @@ dimensions.
    | ?- A = '$VAR'(0), B = '$VAR'(1), C = '$VAR'(2), 
         ppl_new_polyhedron(X, 3),
 	ppl_insert_constraint(X, 4*A+B-2*C >= 5),
-	ppl_get_constraints(X, CS),
-	write(CS).
-   [4*A+1*B+ -2*C>=5]
+	ppl_get_constraints(X, CS).
+
    A = A,
    B = B,
    C = C,
@@ -419,8 +399,8 @@ dimensions.
    | ?- A = '$VAR'(0), B = '$VAR'(1), C = '$VAR'(2), 
         ppl_new_polyhedron(X, 3),
 	ppl_insert_constraint(X, 4*A+B-2*C >= 5),
-	ppl_get_generators(X, GS),
-	write(GS).
+	ppl_get_generators(X, GS).
+
    A = A,
    B = B,
    C = C,
