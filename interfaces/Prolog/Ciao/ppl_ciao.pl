@@ -41,7 +41,7 @@ site: http://www.cs.unipr.it/ppl/ . */
 	ppl_Polyhedron_poly_difference_assign_and_minimize/2,
 	ppl_Polyhedron_H79_widening_assign/2,
 	ppl_Polyhedron_limited_H79_widening_assign/3,
-        ppl_Polyhedron_toplogical_closure_assign/1,
+        ppl_Polyhedron_topological_closure_assign/1,
 	ppl_Polyhedron_get_constraints/2,
 	ppl_Polyhedron_get_minimized_constraints/2,
 	ppl_Polyhedron_get_generators/2,
@@ -66,7 +66,7 @@ site: http://www.cs.unipr.it/ppl/ . */
 	ppl_Polyhedron_is_bounded/1,
 	ppl_Polyhedron_bounds_from_above/2,
 	ppl_Polyhedron_bounds_from_below/2,
-        ppl_Polyhedron_is_toplogically_closed/1,
+        ppl_Polyhedron_is_topologically_closed/1,
 	ppl_Polyhedron_contains_Polyhedron/2,
 	ppl_Polyhedron_strictly_contains_Polyhedron/2,
 	ppl_Polyhedron_equals_Polyhedron/2,
@@ -231,8 +231,9 @@ site: http://www.cs.unipr.it/ppl/ . */
 
 :- true pred ppl_Polyhedron_affine_image(in(Handle), in(Var),
                                          in(LinearExpression), in(Divisor))
-             :: any_term(Handle) * any_term(Dimensions)
-              + foreign.
+             :: any_term(Handle) * any_term(Var)
+	     * any_term(LinearExpression) * any_term(Divisor)
+	     + foreign.
 
 :- true pred ppl_Polyhedron_affine_preimage(in(Handle), in(Var),
                                             in(LinearExpression), in(Divisor))
@@ -298,6 +299,7 @@ site: http://www.cs.unipr.it/ppl/ . */
 	ppl_Polyhedron_poly_difference_assign_and_minimize/2,
 	ppl_Polyhedron_H79_widening_assign/2,
 	ppl_Polyhedron_limited_H79_widening_assign/3,
+        ppl_Polyhedron_topological_closure_assign/1,
 	ppl_Polyhedron_get_constraints/2,
 	ppl_Polyhedron_get_minimized_constraints/2,
 	ppl_Polyhedron_get_generators/2,
@@ -320,6 +322,9 @@ site: http://www.cs.unipr.it/ppl/ . */
 	ppl_Polyhedron_check_empty/1,
 	ppl_Polyhedron_check_universe/1,
 	ppl_Polyhedron_is_bounded/1,
+	ppl_Polyhedron_bounds_from_above/2,
+	ppl_Polyhedron_bounds_from_below/2,
+        ppl_Polyhedron_is_topologically_closed/1,
 	ppl_Polyhedron_contains_Polyhedron/2,
 	ppl_Polyhedron_strictly_contains_Polyhedron/2,
 	ppl_Polyhedron_equals_Polyhedron/2,
