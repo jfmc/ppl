@@ -1,4 +1,4 @@
-%define name	PPL
+%define name	ppl
 %define version @VERSION@
 %define release 1
 %define builddir $RPM_BUILD_DIR/%{name}-%{version}
@@ -8,15 +8,15 @@ Version:	%{version}
 Release:	%{release}
 Vendor:		ppl-devel@cs.unipr.it
 Packager:	ppl-devel@cs.unipr.it
-#URL:		
-Source:         %{name}-%{version}.tar.gz
+URL:		http://www.cs.unipr.it/ppl/
+Source:         ftp://ftp.cs.unipr.it/ppl/%{name}-%{version}.tar.gz
 #Patch:		
-Group:		Application/Generic
+Group:		Libraries/Research
 Copyright:	GPL
 #Icon:		
-#Requires:	
-BuildRoot:	/var/tmp/%{name}-%{version}
-Summary:	A C++ library for convex polyhedra.
+Requires:	gmp >= 3.0.1
+BuildRoot:	%{_tmppath}/%{name}-%{version}
+Summary:	The Parma Polyhedra Library: A C++ library for convex polyhedra.
 %description
 A C++ library for convex polyhedra.
 @configure_input@
@@ -28,22 +28,23 @@ here if appropriate, and to delete these instructions.
 #%patch -p1
 
 %build
-CFLAGS="$RPM_OPT_FLAGS" ./configure --prefix=%{_prefix}
+CXXFLAGS="$RPM_OPT_FLAGS" ./configure --prefix=%{_prefix}
 make
 
 %install
-if [ -d $RPM_BUILD_ROOT ]; then rm -rf $RPM_BUILD_ROOT; fi
+if [ -d $RPM_BUILD_ROOT ]
+then
+	rm -rf $RPM_BUILD_ROOT
+fi
 mkdir -p $RPM_BUILD_ROOT
-make install DESTDIR=$RPM_BUILD_ROOT
-# Build the file-list automagically :)
-cd $RPM_BUILD_ROOT
-find . -type d | sed '1,2d;s,^\.,\%attr(-\,root\,root) \%dir ,' > $RPM_BUILD_DIR/file.list.%{name}
-find . -type f | sed 's,^\.,\%attr(-\,root\,root) ,' >> $RPM_BUILD_DIR/file.list.%{name}
-find . -type l | sed 's,^\.,\%attr(-\,root\,root) ,' >> $RPM_BUILD_DIR/file.list.%{name}
+make install prefix=$RPM_BUILD_ROOT%{_prefix}
+
+%files
+%doc README doc/*.ps* doc/*.pdf*
+
+%{_prefix}/include/ppl.hh
+%{_prefix}/lib/libppl.a
 
 %clean
 rm -rf $RPM_BUILD_ROOT
-rm ../file.list.%{name}
 
-%files -f ../file.list.%{name}
-%doc README
