@@ -46,11 +46,17 @@ solve(Goals, VariableNames) :-
     % `Dims' dimensions, the number of variables in `Goals'.
     ppl_new_polyhedron(Polyhedron, Dims),
     % Try to reduce `Goals' to the empty continuation.
-    solve(Goals, true, Polyhedron),
+    (solve(Goals, true, Polyhedron) ->
+	Failed = no
+    ;
+	Failed = yes
+    ),
+    % On failure, cleanup must occur anyway.
     % The one who creates the polyhedron must delete it.
     ppl_delete_polyhedron(Polyhedron),
     % Further cleaning.
-    retract(original_goal_variables(_)).
+    retract(original_goal_variables(_)),
+    Failed == no.
 
 
 solve(true, true, Polyhedron) :-
@@ -113,13 +119,13 @@ solve(Atom, Goals, Polyhedron) :-
 
     % Try to solve the body augmented with the parameter passing equations.
     (solve(PP_Constraints, (Body, Goals), PolyCopy) ->
-	true
+	Failed = no
     ;
-	ppl_delete_polyhedron(PolyCopy),
-	fail
+	Failed = yes
     ),
     % Our copy must be thrown anyway.
-    ppl_delete_polyhedron(PolyCopy).
+    ppl_delete_polyhedron(PolyCopy),
+    Failed == no.
 
 
 parameter_passing(Atom, Head, PP_Constraints) :-
