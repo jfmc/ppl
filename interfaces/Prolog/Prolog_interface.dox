@@ -223,29 +223,29 @@ We first give some general information about using the interface.
   topological compatibility rules stated in Section \ref representation.
 
 - There are a number of predicates whose name ends with
-  <CODE>_and_minimize</CODE>. These were provided, up to version 0.4,
-  to help the user obtain better performance, since in the previous
-  .<BR>
-  For some of the operations on polyhedra in the PPL,
-  the internal representation of a polyhedra has to be <EM>minimized</EM>:
-  if it is not already minimized,
-  an extra PPL minimization operation is performed first.
-  However this operation may be very costly
-  and, for this reason, the PPL library is lazy and avoids
-  it as much as it can.
-  For this reason, a predicate without <CODE>_and_minimize</CODE> ending
-  should be used
-  unless a minimized representation is needed for the next PPL operation.
-  In that case it is more efficient to use
-  the <CODE>_and_minimize</CODE> predicate.
-  As an example, suppose you have to compute the poly-hull of several
-  polyhedra. Then use the
-  <CODE>ppl_Polyhedron_poly_hull_assign/2</CODE>
-  for each intermediate step and
-  <CODE>ppl_Polyhedron_poly_hull_assign_and_minimize/2</CODE>
-  for the last step.
-  If you just have  to compute the poly-hull of two polyhedra, then use
-  <CODE>ppl_Polyhedron_poly_hull_assign_and_minimize/2</CODE>.
+  <CODE>_and_minimize</CODE>. These were provided in earlier versions
+  of the library to help a knowledgeble user obtain better performance.
+  Basically, by invoking the eager methods, i.e., those also requiring
+  minimization, the user was trading laziness to better exploit the
+  incrementality of the inner library computations.
+  Starting from version 0.5, the lazy computation techniques have been
+  refined to achieve a better integration with the incrementality of the
+  minimization process: as a consequence, the lazy versions of the above
+  predicates are now almost always more efficient than the eager versions.
+  <BR>
+  The only case when an eager computation still makes sense is when
+  the well-known <EM>fail-first</EM> principle comes into play.
+  For instance, if you have to compute the intersection of several
+  polyhedra and you strongly suspect that the result will become empty
+  after a few of these intersections, then you may obtain a better
+  performance by calling
+  <CODE>ppl_Polyhedron_intersection_assign_and_minimize</CODE>,
+  since emptyness will be checked during minimization.
+  Note anyway that the same effect can be obtained by interleaving
+  the calls of the lazy predicate
+  <CODE>ppl_Polyhedron_intersection_assign</CODE>
+  with explicit emptyness checks, as provided by predicate
+  <CODE>ppl_Polyhedron_check_empty</CODE>.
 
 <H2><CODE>
   ppl_new_Polyhedron_from_dimension(+Topology, +Integer, -Handle)
