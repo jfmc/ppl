@@ -41,23 +41,6 @@ o  New method: template <typename PartialFunction>
 Bugfixes
 ========
 
-o  Fixed a bug in Polyhedron::poly_difference_assign(const Polyhedron& y)
-   whereby the equality constraints of `y' were ignored (the bug was
-   affecting both C and NNC computations).
-
-o  Fixed a bug in Polyhedron::operator=(const Polyhedron& y).  This bug,
-   which is triggered in some cases when `y' is empty, should only affect
-   versions of the library obtained with the `--enable-assertions'
-   configuration flag.
-
-o  Fixed a bug in Polyhedron::check_universe(), which was returning
-   the wrong result when called on a zero-dim universe polyhedron.
-
-o  Fixed a bug in NNC_Polyhedron::NNC_Polyhedron(ConSys& cs) whereby
-   an invariant was violated in case `cs' was empty.  This bug
-   should only affect versions of the library obtained with the
-   `--enable-assertions' configuration flag.
-
 o  Fixed a bug in method Polyhedron::add_generator(const Generator&)
    whereby we were not adding the corresponding closure point when adding
    a point to an empty NNC polyhedron.
