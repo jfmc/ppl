@@ -140,9 +140,11 @@ PPL::SatRow::next(int position) const {
 
 int
 PPL::SatRow::last() const {
-  size_t li = mpz_size(vec) - 1;
+  size_t li = mpz_size(vec);
   mp_srcptr p = vec->_mp_d + li;
-  for (; li > 0; --li, --p) {
+  while (li > 0) {
+    --li;
+    --p;
     const mp_limb_t limb = *p;
     if (limb != 0)
       return li * BITS_PER_GMP_LIMB + last_one(limb);
@@ -159,8 +161,9 @@ PPL::SatRow::prev(int position) const {
 
   --position;
 
-  size_t li = position / BITS_PER_GMP_LIMB;
   const size_t vec_size = mpz_size(vec);
+  assert(vec_size > 0);
+  size_t li = position / BITS_PER_GMP_LIMB;
 
   mp_limb_t limb;
   mp_srcptr p = vec->_mp_d;
