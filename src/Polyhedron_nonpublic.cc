@@ -1174,7 +1174,7 @@ PPL::Polyhedron::strongly_minimize_generators() const {
   // (also updating `index_first_pending').
   if (gs_rows < gs.num_rows()) {
     gs.erase_to_end(gs_rows);
-    gs.set_index_first_pending_row(gs_rows);
+    gs.unset_pending_rows();
   }
   
   if (changed) {
