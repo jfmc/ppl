@@ -495,37 +495,37 @@ Row::coefficient(size_t k) const {
   return (*this)[k+1];
 }
 
-/* \relates Row */
+/*! \relates Row */
 inline bool
 operator==(const Row& x, const Row& y) {
   return compare(x, y) == 0;
 }
 
-/* \relates Row */
+/*! \relates Row */
 inline bool
 operator!=(const Row& x, const Row& y) {
   return compare(x, y) != 0;
 }
 
-/* \relates Row */
+/*! \relates Row */
 inline bool
 operator<=(const Row& x, const Row& y) {
   return compare(x, y) <= 0;
 }
 
-/* \relates Row */
+/*! \relates Row */
 inline bool
 operator<(const Row& x, const Row& y) {
   return compare(x, y) < 0;
 }
 
-/* \relates Row */
+/*! \relates Row */
 inline bool
 operator>=(const Row& x, const Row& y) {
   return compare(x, y) >= 0;
 }
 
-/* \relates Row */
+/*! \relates Row */
 inline bool
 operator>(const Row& x, const Row& y) {
   return compare(x, y) > 0;
