@@ -159,10 +159,12 @@ public:
   //! Returns the dimension of the vector space enclosing \p *this.
   size_t space_dimension() const;
 
+  //! \brief
   //! Inserts a copy of the generator \p g into \p *this,
   //! increasing the number of dimensions if needed.
   void insert(const Generator& g);
 
+  //! \brief
   //! Returns the singleton system containing only
   //! Generator::zero_dim_point().
   static const GenSys& zero_dim_univ();
@@ -219,10 +221,12 @@ public:
     //! Postfix increment operator.
     const_iterator operator++(int);
 
+    //! \brief
     //! Returns <CODE>true</CODE> if and only if
     //! \p *this and \p y are identical.
     bool operator==(const const_iterator& y) const;
 
+    //! \brief
     //! Returns <CODE>true</CODE> if and only if
     //! \p *this and \p y are different.
     bool operator!=(const const_iterator& y) const;
@@ -239,11 +243,13 @@ public:
     //! Constructor.
     const_iterator(const Matrix::const_iterator& iter, const GenSys& gsys);
     
+    //! \brief
     //! \p *this skips to the next generator, skipping those
     //! closure points that are immediately followed by a matching point.
     void skip_forward();
   };
 
+  //! \brief
   //! Returns the const_iterator pointing to the first generator,
   //! if \p *this is not empty;
   //! otherwise, returns the past-the-end const_iterator.
@@ -263,11 +269,13 @@ private:
   //! Builds an empty system of generators having the specified topology.
   GenSys(Topology topol);
 
+  //! \brief
   //! Builds a system of \p n_rows rays/points on a \p n_columns - 1
   //! dimensional space (including the \f$\epsilon\f$ dimension, if
   //! \p topol is <CODE>NOT_NECESSARILY_CLOSED</CODE>).
   GenSys(Topology topol, size_t n_rows, size_t n_columns);
 
+  //! \brief
   //! Adjusts \p *this so that it matches the topology and
   //! the number of dimensions given as parameters
   //! (adding or removing columns if needed).
@@ -277,20 +285,30 @@ private:
   bool adjust_topology_and_dimension(Topology topol,
 				     size_t num_dimensions);
 
+  //! \brief
   //! For each unmatched closure point in \p *this, adds the
-  //! corresponding point. It is assumed that the topology of \p *this
-  //! is <CODE>NOT_NECESSARILY_CLOSED</CODE>.
+  //! corresponding point.
+  /*!
+    It is assumed that the topology of \p *this
+    is <CODE>NOT_NECESSARILY_CLOSED</CODE>.
+  */
   void add_corresponding_points();
 
+  //! \brief
   //! Returns <CODE>true</CODE> if and only if \p *this
   //! contains one or more points.
   bool has_points() const;
 
+  //! \brief
   //! For each unmatched point in \p *this, adds the corresponding
-  //! closure point. It is assumed that the topology of \p *this
-  //! is <CODE>NOT_NECESSARILY_CLOSED</CODE>.
+  //! closure point.
+  /*!
+    It is assumed that the topology of \p *this
+    is <CODE>NOT_NECESSARILY_CLOSED</CODE>.
+  */
   void add_corresponding_closure_points();
 
+  //! \brief
   //! Returns <CODE>true</CODE> if and only if \p *this
   //! contains one or more closure points.
   bool has_closure_points() const;
@@ -301,6 +319,7 @@ private:
   //! Returns a constant reference to the \p k- th generator of the system.
   const Generator& operator[](size_t k) const;
 
+  //! \brief
   //! Returns the relations holding between the generator system
   //! and the constraint \p c.
   Parma_Polyhedra_Library::Poly_Con_Relation
@@ -317,8 +336,12 @@ private:
   //! Returns the number of rays of the system.
   size_t num_rays() const;
 
-  //! Removes all the invalid lines and rays (i.e., those with all
-  //! the homogeneous terms set to zero).
+  //! \brief
+  //! Removes all the invalid lines and rays.
+  /*!
+    The invalid lines and rays are those with all
+    the homogeneous terms set to zero.
+  */
   void remove_invalid_lines_and_rays();
 
   //! Input operator.
@@ -331,6 +354,7 @@ private:
 namespace std {
 
 //! Specializes <CODE>std::swap</CODE>.
+/*! \relates Parma_Polyhedra_Library::GenSys */
 void swap(Parma_Polyhedra_Library::GenSys& x,
 	  Parma_Polyhedra_Library::GenSys& y);
 

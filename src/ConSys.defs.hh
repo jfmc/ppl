@@ -109,28 +109,30 @@ public:
   //! Returns the dimension of the vector space enclosing \p *this.
   size_t space_dimension() const;
 
-  //! Inserts a copy of the constraint \p c into \p *this,
+  //! \brief
+  //! Inserts a copy of the constraint \p c into \p *this
   //! increasing the number of dimensions if needed.
   void insert(const Constraint& c);
 
+  //! \brief
   //! Returns the singleton system containing only
   //! Constraint::zero_dim_false().
   static const ConSys& zero_dim_empty();
 
   //! An iterator over a system of constraints
   /*!
-      A const_iterator is used to provide read-only access
-      to each constraint contained in an object of ConSys.
-
-      \par Example
-      The following code prints the system of constraints
-      defining the polyhedron <CODE>ph</CODE>:
-      \code
+    A const_iterator is used to provide read-only access
+    to each constraint contained in an object of ConSys.
+    
+    \par Example
+    The following code prints the system of constraints
+    defining the polyhedron <CODE>ph</CODE>:
+    \code
   const ConSys cs = ph.constraints();
   ConSys::const_iterator iend = cs.end();
   for (ConSys::const_iterator i = cs.begin(); i != iend; ++i)
     cout << *i << endl;
-      \endcode
+    \endcode
   */
   class const_iterator
     : public std::iterator<std::forward_iterator_tag,
@@ -163,10 +165,12 @@ public:
     //! Postfix increment operator.
     const_iterator operator++(int);
     
+    //! \brief
     //! Returns <CODE>true</CODE> if and only if
     //! \p *this and \p y are identical.
     bool operator==(const const_iterator& y) const;
     
+    //! \brief
     //! Returns <CODE>true</CODE> if and only if
     //! \p *this and \p y are different.
     bool operator!=(const const_iterator& y) const;
@@ -187,6 +191,7 @@ public:
     void skip_forward();
   };
 
+  //! \brief
   //! Returns the const_iterator pointing to the first constraint,
   //! if \p *this is not empty;
   //! otherwise, returns the past-the-end const_iterator.
@@ -206,11 +211,13 @@ private:
   //! Builds an empty system of constraints having the specified topology.
   ConSys(Topology topol);
 
+  //! \brief
   //! Builds a system of \p n_rows constraints on a \p n_columns - 1
   //! dimensional space (including the \f$\epsilon\f$ dimension, if
   //! \p topol is <CODE>NOT_NECESSARILY_CLOSED</CODE>).
   ConSys(Topology topol, size_t n_rows, size_t n_columns);
 
+  //! \brief
   //! Adjusts \p *this so that it matches the topology and
   //! the number of dimensions given as parameters
   //! (adding or removing columns if needed).
@@ -220,6 +227,7 @@ private:
   bool adjust_topology_and_dimension(Topology topol,
 				     size_t num_dimensions);
 
+  //! \brief
   //! Returns <CODE>true</CODE> if and only if \p *this
   //! contains one or more strict inequality constraints.
   bool has_strict_inequalities() const;
@@ -254,6 +262,7 @@ private:
 namespace std {
 
 //! Specializes <CODE>std::swap</CODE>.
+/*! \relates Parma_Polyhedra_Library::ConSys */
 void swap(Parma_Polyhedra_Library::ConSys& x,
 	  Parma_Polyhedra_Library::ConSys& y);
 

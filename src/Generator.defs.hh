@@ -231,12 +231,14 @@ private:
   //! \brief
   //! Throw a <CODE>std::invalid_argument</CODE> exception
   //! containing the appropriate error message.
-  //@{
   void
   throw_dimension_incompatible(const char* method, Variable v) const;
+
+  //! \brief
+  //! Throw a <CODE>std::invalid_argument</CODE> exception
+  //! containing the appropriate error message.
   void
   throw_invalid_argument(const char* method, const char* reason) const;
-  //@}
 
   //! Returns the line of direction \p e.
   /*!

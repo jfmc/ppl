@@ -14,6 +14,9 @@ PURPOSE. */
 
 namespace Parma_Polyhedra_Library {
 
+#ifdef PPL_DOXYGEN_INCLUDE_IMPLEMENTATION_DETAILS
+  //! Kinds of polyhedra domains.
+#endif PPL_DOXYGEN_INCLUDE_IMPLEMENTATION_DETAILS
   enum Topology {
     NECESSARILY_CLOSED = 0,
     NOT_NECESSARILY_CLOSED = 1
