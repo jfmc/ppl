@@ -5,7 +5,8 @@ Coding Standards for the Parma Polyhedra Library
 To be written.
 
 
-Coding standards for documenting the project with Doxygen:
+Standards for Documenting the Project with Doxygen
+==================================================
 
 1) All code entities (classes, structs, enums, variables, methods,
    functions, etc.) should be provided with a brief Doxygen comment.
