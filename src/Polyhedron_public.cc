@@ -1719,7 +1719,6 @@ PPL::Polyhedron::poly_difference_assign(const Polyhedron& y) {
     // on C-polyhedra and `c' is a non-strict inequality, c _must_ be
     // skipped for otherwise we would obtain a result that is less
     // precise than the poly-difference.
-    // CHECKME: do we really obtain the poly-difference?
     if (x.relation_with(c).implies(Poly_Con_Relation::is_included()))
       continue;
     Polyhedron z = x;
