@@ -291,6 +291,21 @@ or a generators system.
 Moreover, given one of the representations, there is an algorithm for
 computing the other.
 
+<B>Minimized representations</B>
+
+A constraints system \f$\cC\f$ for an NNC polyhedron
+\f$\cP \in \Pset_n\f$
+is said to be <EM>minimized</EM> if no proper subset of \f$\cC\f$ is
+a constraint system for \f$\cP\f$.
+
+Similarly, a generator system \f$\cG = (L, R, P, C)\f$
+for an NNC polyhedron \f$\cP \in \Pset_n\f$ is said to be <EM>minimized</EM>
+if there does not exist a generator system
+\f$\cG' = (L', R', P', C') \neq \cG\f$ for \f$\cP\f$
+for which \f$L' \sseq L\f$, \f$R' \sseq R\f$, \f$P' \sseq P\f$ and
+\f$C' \sseq C\f$.
+
+
 <B>Space dimension and dimension-compatibility</B>
 
 The <EM>space dimension</EM> of an NNC polyhedron \f$P \in \Pset_n\f$
@@ -403,8 +418,10 @@ What is the dimension of the <EM>empty</EM> polyhedron?
 If the above definition is applied to an empty polyhedron,
 then the answer would be \f$-1\f$.
 
-Be careful not to confuse the dimension \f$k \leq n\f$ of an NNC polyhedron
-\f$P \in \Pset_n\f$ with the <EM>space</EM> dimension \f$n\f$ of \f$P\f$,
+
+The dimension \f$k \leq n\f$ of an NNC polyhedron
+\f$P \in \Pset_n\f$
+must not be confused with the <EM>space</EM> dimension \f$n\f$ of \f$P\f$,
 which is the dimension of the enclosing vector space.
 In particular, we can have \f$\pdim(P) \neq \pdim(Q)\f$ even though
 \f$P\f$ and \f$Q\f$ are dimension-compatible;
