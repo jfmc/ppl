@@ -55,7 +55,6 @@ site: http://www.cs.unipr.it/ppl/ . */
 
 class Parma_Polyhedra_Library::C_Polyhedron : public Polyhedron {
 public:
-
   //! Builds either the universe or the empty polyhedron of dimension
   //! \p num_dimensions. Both parameters are optional:
   //! by default, a 0-dimension space universe polyhedron is built.
@@ -92,7 +91,7 @@ public:
   // FIXME: adapt the documentation of the corresponding constructor
   // of Polyhedron, once it has been peer reviewed.
   template <class Box>
-  C_Polyhedron(const Box& box);
+  C_Polyhedron(From_Bounding_Box, const Box& box);
 
   //! The assignment operator.
   //! (Note that \p *this and \p y can be dimension-incompatible.)

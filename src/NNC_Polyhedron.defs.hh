@@ -44,7 +44,6 @@ site: http://www.cs.unipr.it/ppl/ . */
 */
 class Parma_Polyhedra_Library::NNC_Polyhedron : public Polyhedron {
 public:
-
   //! Builds either the universe or the empty NNC polyhedron of dimension
   //! \p num_dimensions. Both parameters are optional:
   //! by default, a 0-dimension space universe polyhedron is built.
@@ -71,7 +70,7 @@ public:
   // of Polyhedron, once it has been peer reviewed.
   // Notice that a topological clash is impossible here.
   template <class Box>
-  NNC_Polyhedron(const Box& box);
+  NNC_Polyhedron(From_Bounding_Box, const Box& box);
 
   //! Ordinary copy-constructor.
   NNC_Polyhedron(const NNC_Polyhedron& y);

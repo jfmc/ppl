@@ -85,6 +85,9 @@ maybe_abandon() {
     p->throw_me();
 }
 
+struct From_Bounding_Box {
+};
+
 } // namespace Parma_Polyhedra_Library
 
 #endif
