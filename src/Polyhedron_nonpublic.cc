@@ -1035,7 +1035,7 @@ PPL::Polyhedron::minimize() const {
   // both minimize constraints and generators.
   if (constraints_are_up_to_date()) {
     // We may discover here that `*this' is empty.
-    bool ret = update_generators();
+    const bool ret = update_generators();
     assert(OK());
     return ret;
   }

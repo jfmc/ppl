@@ -1245,6 +1245,7 @@ PPL::Polyhedron::add_recycled_constraints_and_minimize(Constraint_System& cs) {
   if (!minimize())
     // We have just discovered that `x' is empty.
     return false;
+  // Fully sort the system of constraints for `x'.
   obtain_sorted_constraints_with_sat_c();
 
   // Fully sort the system of constraints to be added
