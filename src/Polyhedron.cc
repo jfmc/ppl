@@ -3584,9 +3584,6 @@ PPL::Polyhedron::H79_widening_assign(const Polyhedron& y) {
   // widening by using the specification in CousotH78, therefore
   // avoiding converting from generators to constraints.
   if (x.has_pending_generators() || !x.constraints_are_up_to_date()) {
-    // To this end, given that `y' is a subset of `x', it is sufficient
-    // to check whether all the equalities of `y' are satisfied by
-    // all the generators of `x'.
     ConSys CH78_cs(tpl, 0, num_columns);
     x.select_CH78_constraints(y, CH78_cs);
 
@@ -3599,12 +3596,10 @@ PPL::Polyhedron::H79_widening_assign(const Polyhedron& y) {
     // Note that `y.con_sys' is minimized and `CH78_cs' has no redundant
     // constraints, since it is a subset of the former.
     else if (CH78_cs.num_equalities() == y.con_sys.num_equalities()) {
-      // Let `CH78_con_sys' be the new constraint system of `x'
-      // and update the status of `x'.
-      std::swap(x.con_sys, CH78_cs);
-      x.set_constraints_up_to_date();
-      x.clear_constraints_minimized();
-      x.clear_generators_up_to_date();
+      // Let `x' be defined by the constraints in `CH78_cs'.
+      Polyhedron CH78(tpl, x_space_dim, UNIVERSE);
+      CH78.add_constraints(CH78_cs);
+      std::swap(x, CH78);
       assert(x.OK());
       return;
     }
@@ -3642,15 +3637,10 @@ PPL::Polyhedron::H79_widening_assign(const Polyhedron& y) {
   }
   else {
     // We selected a non-empty, strict subset of the constraints of `x'.
-    // Add the low-level constraints (which may have got lost during
-    // selection): topology and space-dimension need not be adjusted.
-    add_low_level_constraints(H79_cs);
-    // Let `H79_con_sys' be the new constraint system of `x'
-    // and update the status of `x'.
-    std::swap(x.con_sys, H79_cs);
-    x.set_constraints_up_to_date();
-    x.clear_constraints_minimized();
-    x.clear_generators_up_to_date();
+    // Let `x' be defined by the constraints in `H79_cs'.
+    Polyhedron H79(tpl, x_space_dim, UNIVERSE);
+    H79.add_constraints(H79_cs);
+    std::swap(x, H79);
   }
   assert(x.OK(true));
 }
@@ -3989,7 +3979,7 @@ PPL::Polyhedron::BHRZ03_averaging_constraints(const Polyhedron& y,
   assert(!H79.is_empty() && !H79.has_something_pending()
 	 && H79.constraints_are_minimized() && H79.generators_are_minimized());
 
-  // We will choice from `x_minus_H79_cs' many subsets of constraints,
+  // We will choose from `x_minus_H79_cs' many subsets of constraints,
   // that will be collected (one at a time) into `averaging_cs'.
   // For each group collected, we compute an average constraint,
   // that will be stored into `new_cs'.

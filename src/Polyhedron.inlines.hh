@@ -195,6 +195,7 @@ Polyhedron::clear_generators_minimized() {
 
 inline void
 Polyhedron::clear_constraints_up_to_date() {
+  clear_pending_constraints();
   clear_constraints_minimized();
   clear_sat_c_up_to_date();
   clear_sat_g_up_to_date();
@@ -204,6 +205,7 @@ Polyhedron::clear_constraints_up_to_date() {
 
 inline void
 Polyhedron::clear_generators_up_to_date() {
+  clear_pending_generators();
   clear_generators_minimized();
   clear_sat_c_up_to_date();
   clear_sat_g_up_to_date();
