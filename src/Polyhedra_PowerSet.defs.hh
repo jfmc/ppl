@@ -95,6 +95,8 @@ public:
   */
   void add_constraint(const Constraint& c);
 
+  bool add_constraint_and_minimize(const Constraint& c);
+
   //! Intersects \p *this with the constraints in \p cs.
   /*!
     \param  cs             The constraints to intersect with.
@@ -103,6 +105,8 @@ public:
                                      or dimension-incompatible.
   */
   void add_constraints(const ConSys& cs);
+
+  bool add_constraints_and_minimize(const ConSys& cs);
 
   //! Assigns to \p *this the concatenation of \p *this and \p y.
   /*!

@@ -114,34 +114,50 @@ Polyhedra_PowerSet<PH>::concatenate_assign(const Polyhedra_PowerSet& y) {
 template <typename PH>
 void
 Polyhedra_PowerSet<PH>::add_constraint(const Constraint& c) {
+  for (iterator xi = begin(), x_end = end(); xi != x_end; ++xi)
+    xi->polyhedron().add_constraint(c);
+  reduced = false;
+}
+
+template <typename PH>
+bool
+Polyhedra_PowerSet<PH>::add_constraint_and_minimize(const Constraint& c) {
   for (iterator xi = begin(), xin = xi, x_end = end(); xi != x_end; xi = xin) {
     ++xin;
-    CS& xv = *xi;
-    xv.add_constraint(c);
-    if (xv.is_bottom()) {
+    if (!xi->polyhedron().add_constraint_and_minimize(c)) {
       erase(xi);
       x_end = end();
     }
     else
       reduced = false;
   }
+  return !empty();
 }
 
 template <typename PH>
 void
 Polyhedra_PowerSet<PH>::add_constraints(const ConSys& cs) {
+  for (iterator xi = begin(), x_end = end(); xi != x_end; ++xi) {
+    ConSys cs_copy = cs;
+    xi->polyhedron().add_constraints(cs_copy);
+  }
+  reduced = false;
+}
+
+template <typename PH>
+bool
+Polyhedra_PowerSet<PH>::add_constraints_and_minimize(const ConSys& cs) {
   for (iterator xi = begin(), xin = xi, x_end = end(); xi != x_end; xi = xin) {
     ++xin;
-    CS& xv = *xi;
     ConSys cs_copy = cs;
-    xv.add_constraints(cs_copy);
-    if (xv.is_bottom()) {
+    if (!xi->polyhedron().add_constraints_and_minimize(cs_copy)) {
       erase(xi);
       x_end = end();
     }
     else
       reduced = false;
   }
+  return !empty();
 }
 
 template <typename PH>
