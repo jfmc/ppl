@@ -1815,6 +1815,11 @@ PPL::PolyBase::add_generators_and_minimize(GenSys& gs) {
   if (space_dim < gs_space_dim)
     throw_different_dimensions("PPL::Polyhedron::add_generators_and_min(g)",
 			       *this, gs);
+  // Topology compatibility check.
+  if (is_necessarily_closed() && gs.has_closure_points())
+    throw std::invalid_argument("PPL::Polyhedron::"
+				"add_generators_and_min(gs): "
+				"gs contains closure points");
 
   // Adding no generators is a no-op.
   if (gs.num_rows() == 0) {
@@ -1823,9 +1828,6 @@ PPL::PolyBase::add_generators_and_minimize(GenSys& gs) {
   }
 
   if (space_dim == 0) {
-    // Since `gs' is 0-dim and non-empty,
-    // it has to contain only points.
-    assert(gs[0].type() == Generator::POINT);
     status.set_zero_dim_univ();
     return;
   }
@@ -1833,9 +1835,9 @@ PPL::PolyBase::add_generators_and_minimize(GenSys& gs) {
   if (!gs.is_sorted())
     gs.sort_rows();
 
-  // If needed, we extend `gs' to the right space dimension.
-  if (space_dim > gs_space_dim)
-    gs.add_zero_columns(space_dim - gs_space_dim);
+  // Adjust `gs' to the right topology and space dimension.
+  // NOTE: we already checked for topology compatibility.
+  gs.adjust_topology_and_dimension(topology(), space_dim);
 
   // We use `check_empty()' because we want the flag EMPTY
   // to precisely represents the status of the polyhedron
@@ -1849,16 +1851,9 @@ PPL::PolyBase::add_generators_and_minimize(GenSys& gs) {
   }
   else {
     // Checking if the system of generators contains a point.
-    size_t i = 0;
-    size_t iend = gs.num_rows();
-    for ( ; i < iend; ++i) {
-      if (gs[i][0] > 0)
-	break;
-    }
-    if (i == iend)
+    if (!gs.has_points())
       throw std::invalid_argument("PPL::Polyhedron::add_generators_and_min"
 				  "(gs): non-empty gs with no points");
-
     // If the system of generators has a point, the polyhedron is no
     // longer empty and generators are up-to-date.
     std::swap(gen_sys, gs);

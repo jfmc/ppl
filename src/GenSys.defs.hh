@@ -250,7 +250,7 @@ PPL_INTERNAL:
   bool has_closure_points() const;
 
   //! Returns <CODE>true</CODE> if and only if \p *this
-  //! does not contain any point.
+  //! contains one or more points.
   bool has_points() const;
 
   //! Returns the \p k- th generator of the system.
