@@ -29,15 +29,15 @@ using namespace std;
 using namespace Parma_Polyhedra_Library;
 
 #ifndef NOISY
-#define NOISY 1
+#define NOISY 0
 #endif
 
 #ifndef VERY_NOISY
-#define VERY_NOISY 1
+#define VERY_NOISY 0
 #endif
 
-#ifndef NNC_EVAL
-#define NNC_EVAL 0
+#ifndef EXP_EVAL
+#define EXP_EVAL 0
 #endif
 
 void
