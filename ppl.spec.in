@@ -16,6 +16,7 @@ Copyright:	GPL
 #Icon:		
 Requires:	gmp >= 3.0.1
 BuildRoot:	%{_tmppath}/%{name}-%{version}
+Prefix:		/usr
 Summary:	The Parma Polyhedra Library: A C++ library for convex polyhedra.
 %description
 A C++ library for convex polyhedra.
