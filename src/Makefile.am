@@ -156,6 +156,12 @@ Checked_Number.inlines.hh \
 $(COEFFICIENT_DEFS_INCLUDE_FILES) \
 Coefficient.defs.hh \
 Coefficient.inlines.hh \
+E_NIT.types.hh \
+E_NIT.defs.hh \
+E_NIT.inlines.hh \
+E_Rational.types.hh \
+E_Rational.defs.hh \
+E_Rational.inlines.hh \
 globals.defs.hh \
 globals.inlines.hh \
 Interval.defs.hh \
