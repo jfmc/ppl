@@ -115,7 +115,7 @@ std::ostream&
 PPL::operator<<(std::ostream& s, const Generator& g) {
   bool needed_divisor = false;
   bool extra_parentheses = false;
-  int num_variables = g.size()-1;
+  int num_variables = g.size() - 1;
   if (g.is_line())
     s << "l(";
   else if (g[0] == 0)
@@ -205,7 +205,7 @@ PPL::Generator::OK() const {
       return false;
     }
     if (!g.is_necessarily_closed())
-      if (g[size()-1] <= 0 || g[size()-1] > g[0]) {
+      if (g[size() - 1] <= 0 || g[size() - 1] > g[0]) {
 	cerr << "In the NNC topology, "
 	     << "points must have 0 < epsilon <= 1"
 	     << endl;
