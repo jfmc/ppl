@@ -396,6 +396,7 @@ Polyhedron::shrink_bounding_box(Box& box, Complexity_Class complexity) const {
     const ConSys::const_iterator cs_end = cs.end();
     
     for (ConSys::const_iterator i = cs_begin; i != cs_end; ++i) {
+      dimension_type varid = space_dim;
       const Constraint& c = *i;
       // After `gauss()' and `back_substitute()' some constraints can
       // be trivially false.
@@ -404,7 +405,6 @@ Polyhedron::shrink_bounding_box(Box& box, Complexity_Class complexity) const {
 	  box.set_empty();
 	  return;
 	}
-	dimension_type varid = space_dim;
 	// We look foe constraints of the form `Variable(j) == k',
 	// `Variable(j) >= k', and `Variable(j) > k'.
 	if (c.coefficient(Variable(j)) != 0)
