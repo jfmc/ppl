@@ -1454,4 +1454,4 @@ ppl_Polyhedron_OK __P((ppl_const_Polyhedron_t ph));
 
 #undef __P
 
-#endif /* !_ppl_c_h */
+#endif /* !defined(_ppl_c_h) */
