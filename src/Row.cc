@@ -199,7 +199,7 @@ PPL::compare(const Row& x, const Row& y) {
 PPL::Integer
 PPL::operator *(const Row& x, const Row& y) {
   // Scalar product is only defined  if `x' and `y' are 
-  // dimension-compatibility.
+  // dimension-compatible.
   assert(x.size() <= y.size());
   Integer result = 0;
   for (size_t i = x.size(); i-- > 0; ) {
