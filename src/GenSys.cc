@@ -695,6 +695,13 @@ PPL::GenSys::print(std::ostream& s) const {
   }
 }
 
+/*! \relates Parma_Polyhedra_Library::GenSys */
+std::ostream&
+PPL::operator<<(std::ostream& s, const GenSys& gs) {
+  gs.print(s);
+  return s;
+}
+
 /*!
   Like <CODE>ConSys::get()</CODE>, this uses <CODE>Matrix::get()</CODE>
   to resize the matrix of generators taking information from \p s,
@@ -741,6 +748,12 @@ PPL::GenSys::get(std::istream& s) {
     throw std::runtime_error("void PPL::GenSys::get(s)");
 }
 
+/*! \relates Parma_Polyhedra_Library::GenSys */
+std::istream&
+PPL::operator>>(std::istream& s, GenSys& gs) {
+  gs.get(s);
+  return s;
+}
 
 void
 PPL::GenSys::remove_invalid_lines_and_rays() {

@@ -35,11 +35,10 @@ site: http://www.cs.unipr.it/ppl/ . */
 #include <vector>
 
 namespace Parma_Polyhedra_Library {
-  // FIXME: this is repeated from Polyhedron.defs.hh
   // Put them in the namespace here to declare them friend later.
   bool operator<=(const Polyhedron& x, const Polyhedron& y);
-  std::ostream& operator<<(std::ostream& s, const Polyhedron& p);
-  std::istream& operator>>(std::istream& s, Polyhedron& p);
+  std::ostream& operator<<(std::ostream& s, const GenSys& gs);
+  std::istream& operator>>(std::istream& s, GenSys& gs);
 }
 
 
@@ -281,12 +280,13 @@ public:
 
 private:
   friend class Parma_Polyhedra_Library::Polyhedron;
-  friend bool Parma_Polyhedra_Library::operator<=(const Polyhedron& x,
-						  const Polyhedron& y);
+  friend bool
+  Parma_Polyhedra_Library::operator<=(const Polyhedron& x,
+				      const Polyhedron& y);
   friend std::ostream&
-  Parma_Polyhedra_Library::operator<<(std::ostream& s, const Polyhedron& p);
+  Parma_Polyhedra_Library::operator<<(std::ostream& s, const GenSys& gs);
   friend std::istream&
-  Parma_Polyhedra_Library::operator>>(std::istream& s, Polyhedron& p);
+  Parma_Polyhedra_Library::operator>>(std::istream& s, GenSys& gs);
 
   //! Builds an empty system of generators having the specified topology.
   GenSys(Topology topol);
