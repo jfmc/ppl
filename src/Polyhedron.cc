@@ -847,12 +847,19 @@ PPL::Polyhedron::strongly_minimize_constraints() const {
     for (size_t k = eps_index; k-- > 1; )
       eps_leq_one[k] = 0;
     cs_rows++;
+    // The constraint system is no longer sorted.
+    cs.set_sorted(false);
+    // If we had not previously removed the eps_leq_one constraint,
+    // then the polyhedron is changed.
+    if (!eps_leq_one_removed)
+      changed = true;
   }
   else
     // The eps_leq_one constraint is not needed:
     // if we previously removed it from the input constraint system,
     // then the constraint system has changed.
-    changed = changed || eps_leq_one_removed;
+    if (eps_leq_one_removed)
+      changed = true;
 
   // Erase the eps-redundant constraints, if there are any.
   if (cs_rows < cs.num_rows())
