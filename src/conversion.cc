@@ -29,10 +29,6 @@ site: http://www.cs.unipr.it/ppl/ . */
 #include "globals.hh"
 #include <cstddef>
 
-#ifndef KEEP_SOURCE_SORTEDNESS
-#define KEEP_SOURCE_SORTEDNESS 0
-#endif
-
 namespace PPL = Parma_Polyhedra_Library;
 
 // True if `abandon_exponential_computations' should be checked often,
@@ -363,40 +359,46 @@ PPL::Polyhedron::conversion(Matrix& source,
   assert(source_num_rows == sat.num_columns());
   assert(dest_num_rows == sat.num_rows());
 
-  bool source_was_sorted = source.is_sorted();
-  // We use it to indicate if we have swapped some rows of `source'. 
+  // If `start > 0', then we are converting the pending constraints.
+  assert(start == 0 || start == source.first_pending_row());
 
-#if KEEP_SOURCE_SORTEDNESS
-  dimension_type source_index_displacement = 0;
-#else
-  bool source_swapped = false;
-#endif
+  // During the iteration on the constraints in `source' we may identify
+  // constraints that are redundant: these have to be removed by swapping
+  // the rows of `source', taking care not to compromise the sortedness
+  // of the constraints that still have to be considered.
+  // To this end, the following counter keeps the number of redundant
+  // constraints seen so far, to be used as a displacement when swapping rows.
+  dimension_type source_num_redundant = 0;
 
   // Converting the sub-matrix of `source' having rows with indexes
   // from `start' to the last one (i.e., `source_num_rows' - 1).
   for (dimension_type k = start; k < source_num_rows; ) {
 
-#if KEEP_SOURCE_SORTEDNESS
-    if (source_index_displacement > 0)
-      std::swap(source[k], source[k+source_index_displacement]);
-#endif
+    // All the `source_num_redundant' redundant constraints identified so far
+    // have consecutive indices starting from `k'.
+    if (source_num_redundant > 0)
+      // Let the next constraint have index `k'.
+      // There is no need to swap the columns of `sat' (all zeroes).
+      std::swap(source[k], source[k+source_num_redundant]);
+
+    Row& source_k = source[k];
 
     // Constraints and generators must have the same dimension,
     // otherwise the scalar product below will bomb.
     assert(source_num_columns == dest_num_columns);
 
     // `scalar_prod[i]' will contain the scalar product
-    // of the constraint `source[k]' and the generator `dest[i]'.
+    // of the constraint `source_k' and the generator `dest[i]'.
     // This product is 0 iff the generator saturates the constraint.
     static std::vector<Integer> scalar_prod;
     int needed_space = dest_num_rows - scalar_prod.size();
     if (needed_space > 0)
       scalar_prod.insert(scalar_prod.end(), needed_space, Integer_zero());
     // `index_non_zero' will indicate the first generator in `dest'
-    // that does not saturate the constraint `source[k]'.
+    // that does not saturate the constraint `source_k'.
     dimension_type index_non_zero = 0;
     for ( ; index_non_zero < dest_num_rows; ++index_non_zero) {
-      scalar_prod[index_non_zero] = source[k] * dest[index_non_zero];
+      scalar_prod[index_non_zero] = source_k * dest[index_non_zero];
       if (scalar_prod[index_non_zero] != 0)
 	// The generator does not saturate the constraint.
 	break;
@@ -408,7 +410,7 @@ PPL::Polyhedron::conversion(Matrix& source,
 #endif
     }
     for (dimension_type i = index_non_zero + 1; i < dest_num_rows; ++i) {
-      scalar_prod[i] = source[k] * dest[i];
+      scalar_prod[i] = source_k * dest[i];
 #if REACTIVE_ABANDONING
       maybe_abandon();
 #endif
@@ -416,14 +418,14 @@ PPL::Polyhedron::conversion(Matrix& source,
 
     // We first treat the case when `index_non_zero' is less than
     // `num_lines_or_equalities', i.e., when the generator that
-    // does not saturate the constraint `source[k]' is a line.
+    // does not saturate the constraint `source_k' is a line.
     // The other case (described later) is when all the lines
     // in `dest' (i.e., all the rows having indexes less than
     // `num_lines_or_equalities') do saturate the constraint.
 
     if (index_non_zero < num_lines_or_equalities) {
       // Since the generator `dest[index_non_zero]' does not saturate
-      // the constraint `source[k]', it can no longer be a line
+      // the constraint `source_k', it can no longer be a line
       // (see saturation rule in Section \ref prelims).
       // Therefore, we first transform it into a ray.
       dest[index_non_zero].set_is_ray_or_point_or_inequality();
@@ -457,7 +459,7 @@ PPL::Polyhedron::conversion(Matrix& source,
 
       // Computing the new lineality space.
       // Since each line must lie on the hyper-plane corresponding to
-      // the constraint `source[k]', the scalar product between
+      // the constraint `source_k', the scalar product between
       // the line and the constraint must be 0.
       // This property already holds for the lines having indexes
       // between 0 and `index_non_zero' - 1.
@@ -509,7 +511,7 @@ PPL::Polyhedron::conversion(Matrix& source,
       // Similarly to what we have done during the computation of
       // the lineality space, we consider all the remaining rays
       // (having indexes strictly greater than `num_lines_or_equalities')
-      // that do not saturate the constraint `source[k]'. These rays are
+      // that do not saturate the constraint `source_k'. These rays are
       // positively combined with the ray `dest[num_lines_or_equalities]'
       // so that the resulting new rays saturate the constraint.
       for (dimension_type
@@ -551,10 +553,10 @@ PPL::Polyhedron::conversion(Matrix& source,
 #endif
       }
       // Since the `scalar_prod[num_lines_or_equalities]' is positive
-      // (by construction), it does not saturate the constraint `source[k]'.
+      // (by construction), it does not saturate the constraint `source_k'.
       // Therefore, if the constraint is an inequality,
       // we set to 1 the corresponding element of `sat' ...
-      if (source[k].is_ray_or_point_or_inequality())
+      if (source_k.is_ray_or_point_or_inequality())
 	sat[num_lines_or_equalities].set(k);
       // ... otherwise, the constraint is an equality which is
       // violated by the generator `dest[num_lines_or_equalities]':
@@ -573,7 +575,7 @@ PPL::Polyhedron::conversion(Matrix& source,
       ++k;
     }
     // Here we have `index_non_zero' >= `num_lines_or_equalities',
-    // so that all the lines in `dest' saturate the constraint `source[k]'.
+    // so that all the lines in `dest' saturate the constraint `source_k'.
     else {
       // First, we reorder the generators in `dest' as follows:
       // -# all the lines should have indexes between 0 and
@@ -625,25 +627,14 @@ PPL::Polyhedron::conversion(Matrix& source,
 	// in Q= and Q+ satisfy the constraint. The constraint is redundant
 	// and it can be safely removed from the constraint system.
 	// This is why the `source' parameter is not declared `const'.
-	if (source[k].is_ray_or_point_or_inequality()) {
+	if (source_k.is_ray_or_point_or_inequality()) {
+	  ++source_num_redundant;
 	  --source_num_rows;
-	  if (k < source_num_rows) {
-	    // Here it is not necessary to swap the columns of `sat',
-	    // because the `sat' columns having indexes greater than
-	    // or equal to `k' are all made of zero coefficients.
-#if KEEP_SOURCE_SORTEDNESS
-	    // Preserve the sortedness of `source'.
-	    ++source_index_displacement;
-#else
-	    std::swap(source[k], source[source_num_rows]);
-	    source_swapped = true;
-#endif
-	  }
 	  // NOTE: we continue with the next cicle of the loop
 	  // without incrementing the index `k', because:
 	  // -# either `k == source_num_rows', and we will exit the loop;
-	  // -# or we have swapped in position `k' a new constraint,
-	  //    that we still have to examine.
+	  // -# or, having increased `source_num_redundant', we will swap
+	  //    in position `k' a constraint that still has to be examined.
 	}
 	else {
 	  // The constraint is an equality, so that all the generators
@@ -656,7 +647,7 @@ PPL::Polyhedron::conversion(Matrix& source,
       }
       else {
 	// The set Q- is not empty, i.e., at least one generator
-	// violates the constraint `source[k]'.
+	// violates the constraint `source_k'.
 	// We have to further distinguish two cases:
 	if (sup_bound == num_lines_or_equalities)
 	  // The set Q+ is empty, so that all generators that satisfy
@@ -666,7 +657,7 @@ PPL::Polyhedron::conversion(Matrix& source,
 	else {
 	  // The sets Q+ and Q- are both non-empty.
 	  // The generators of the new pointed cone are all those satisfying
-	  // the constraint `source[k]' plus a set of new rays enjoying
+	  // the constraint `source_k' plus a set of new rays enjoying
 	  // the following properties:
 	  // -# they lie on the hyper-plane represented by the constraint
 	  // -# they are obtained as a positive combination of two
@@ -766,7 +757,7 @@ PPL::Polyhedron::conversion(Matrix& source,
 		  // Since we added a new generator to `dest',
 		  // we also add a new element to `scalar_prod';
 		  // by construction, the new ray lies on the hyper-plane
-		  // represented by the constraint `source[k]'.
+		  // represented by the constraint `source_k'.
 		  // Thus, the added scalar product is 0.
 		  assert(scalar_prod.size() >= dest_num_rows);
 		  if (scalar_prod.size() <= dest_num_rows)
@@ -785,12 +776,12 @@ PPL::Polyhedron::conversion(Matrix& source,
 	  // Now we substitute the rays in Q- (i.e., the rays violating
 	  // the constraint) with the newly added rays.
 	  dimension_type j;
-	  if (source[k].is_ray_or_point_or_inequality()) {
+	  if (source_k.is_ray_or_point_or_inequality()) {
 	    // The constraint is an inequality:
 	    // the violating generators are those in Q-.
 	    j = sup_bound;
 	    // For all the generators in Q+, set to 1 the corresponding
-	    // entry for the constraint `source[k]' in the saturation matrix.
+	    // entry for the constraint `source_k' in the saturation matrix.
             for (dimension_type l = lines_or_equal_bound; l < sup_bound; ++l)
               sat[l].set(k);
 	  }
@@ -833,59 +824,42 @@ PPL::Polyhedron::conversion(Matrix& source,
 #endif
   }
 
-  // NOTE: We must update `index_first_pending' of `source'.
-  source.set_index_first_pending_row(source_num_rows);
-#if KEEP_SOURCE_SORTEDNESS
-  if (start > 0 && source_was_sorted)
-    source.set_sorted(source[start - 1] <= source[start]);
-#else
-  if (start > 0) {
-    if (source_was_sorted)
-      if (source_swapped) {
-	// If the only rows that we have swapped are pending rows,
-	// and if `source' was sorted at the beginning of this function,
-	// we check if these changes keep the sortedness of `source'.
-	for (dimension_type i = start; i < source_num_rows; ++i)
-	  if (source[i - 1] > source[i]) {
-	    source.set_sorted(false);
-	    break;
-	  }
-      }
-      else
-	// If we have not swapped any rows and if `source' was
-	// sorted at the beginning of this function,
-	// we check if the sortedness of `source' is kept,
-	// verifying if the last row before `start' is smaller
-	// then the row indexed by `start'.
-	source.set_sorted(source[start - 1] <= source[start]);
-  }
-  else
-    // If we have swapped some rows and `start' is equal
-    // to zero, we say that `source' is not sorted.
-    if (source_was_sorted && source_swapped)
-      source.set_sorted(false);
-#endif
-  // Since we may have deleted some redundant constraints from `source'
-  // or some redundant rays from `dest', we have to delete the useless
-  // rows from the corresponding matrices.
-  if (source_num_rows < source.num_rows()) {
+  // We may have identified some redundant constraints in `source',
+  // which have been swapped at the end of the matrix.
+  if (source_num_redundant > 0) {
+    assert(source_num_redundant == source.num_rows() - source_num_rows);
     source.erase_to_end(source_num_rows);
     sat.columns_erase_to_end(source_num_rows);
   }
-  
+  // If `start == 0', then `source' was sorted and remained so.
+  // If otherwise `start > 0', then the two sub-matrix made by the
+  // non-pending rows and the pending rows, respectively, were both sorted.
+  // Thus, the overall matrix is sorted if and only if either
+  // `start == source_num_rows' (i.e., the second sub-matrix is empty)
+  // or the row ordering holds for the two rows at the boundary between
+  // the two sub-matrices.
+  if (start > 0 && start < source_num_rows)
+    source.set_sorted(source[start - 1] <= source[start]);
+  // There are no longer pending constraints in `source'.
+  source.set_index_first_pending_row(source_num_rows);
+
+  // We may have identified some redundant rays in `dest',
+  // which have been swapped at the end of the matrix.
+  if (dest_num_rows < dest.num_rows()) {
+    dest.erase_to_end(dest_num_rows);
+    sat.rows_erase_to_end(dest_num_rows);
+  }
   if (dest.is_sorted())
+    // If the non-pending generators in `dest' are still declared to be
+    // sorted, then we have to also check for the sortedness of the
+    // pending generators.
     for (dimension_type i = dest.first_pending_row(); i < dest_num_rows; ++i)
       if (dest[i - 1] > dest[i]) {
 	dest.set_sorted(false);
 	break;
       }
-  // We must keep `index_first_pending' up-to-date.
+  // There are no pending generators in `dest'.
   dest.set_index_first_pending_row(dest_num_rows);
   
-  if (dest_num_rows < dest.num_rows()) {
-    // NOTE: We have just updated `index_first_pending' of `dest'.
-    dest.erase_to_end(dest_num_rows);
-    sat.rows_erase_to_end(dest_num_rows);
-  }
   return num_lines_or_equalities;
 }
