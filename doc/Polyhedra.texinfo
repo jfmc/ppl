@@ -11,7 +11,7 @@
 @ifinfo
 This file documents the @code{polyhedra} command which A C++ library for convex polyhedra.
 
-Copyright (C) 2000 Roberto Bagnara
+Copyright (C) 2001 Roberto Bagnara
 
 Permission is granted to make and distribute verbatim copies of
 this manual provided the copyright notice and this permission notice
