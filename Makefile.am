@@ -21,6 +21,9 @@
 # For the most up-to-date information see the Parma Polyhedra Library
 # site: http://www.cs.unipr.it/ppl/ .
 
+# Tell aclocal where to find `.m4' files.
+ACLOCAL_AMFLAGS = -I m4
+
 DISTCHECK_CONFIGURE_FLAGS = \
 --enable-shared --enable-watchdog --with-cxxflags=-Wno-deprecated
 
@@ -31,7 +34,6 @@ EXTRA_DIST = \
 configure \
 ppl.lsm.in \
 ppl.spec.in \
-acinclude.m4 \
 BUGS CREDITS STANDARDS
 
 @SET_MAKE@
