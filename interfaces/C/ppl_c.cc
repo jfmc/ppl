@@ -152,8 +152,11 @@ ppl_io_variable_output_function_type* c_variable_output_function;
 
 void
 cxx_Variable_output_function(std::ostream& s, const Variable& v) {
-  // FIXME: what if c_variable_output_function() returns 0?
-  s << c_variable_output_function(v.id());
+  const char* b = c_variable_output_function(v.id());
+  if (b == 0)
+    // FIXME: silently doing nothing is not the right thing to do!
+    return;
+  s << b;
 }
 
 extern "C" typedef const char*
