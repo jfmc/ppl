@@ -56,7 +56,7 @@ modename="$progname"
 PROGRAM=ltmain.sh
 PACKAGE=libtool
 VERSION=1.4e
-TIMESTAMP=" (1.1202 2003/02/28 03:01:32)"
+TIMESTAMP=" (1.1204 2003/03/02 10:13:46)"
 
 default_mode=
 help="Try \`$progname --help' for more information."
@@ -5410,7 +5410,7 @@ relink_command=\"$relink_command\""
 	  # To insure that "foo" is sourced, and not "foo.exe",
 	  # finese the cygwin/MSYS system by explicitly sourcing "foo."
 	  # which disallows the automatic-append-.exe behavior.
-	  case $host in
+	  case $build in
 	  *cygwin* | *mingw*) wrapperdot=${wrapper}. ;;
 	  *) wrapperdot=${wrapper} ;;
 	  esac
@@ -5448,7 +5448,7 @@ relink_command=\"$relink_command\""
 	  # To insure that "foo" is sourced, and not "foo.exe",
 	  # finese the cygwin/MSYS system by explicitly sourcing "foo."
 	  # which disallows the automatic-append-.exe behavior.
-	  case $host in
+	  case $build in
 	  *cygwin* | *mingw*) wrapperdot=${wrapper}. ;;
 	  *) wrapperdot=${wrapper} ;;
 	  esac

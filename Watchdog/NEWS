@@ -2,9 +2,22 @@
 Parma Watchdog Library NEWS -- history of user-visible changes
 ==============================================================
 
+--------------------------------------------------------------------------
+NEWS for version 0.2 (release date to be decided)
+--------------------------------------------------------------------------
+
+New Features
+============
+
+o  Added implicit and automatic initialization and finalization of the
+   library.  Explicit initialization and finalization is no longer
+   necessary nor possible.
+
+o  Portability improvements.
+
 
 --------------------------------------------------------------------------
-NEWS for version 0.1 (released date unknown)
+NEWS for version 0.1 (released on July 1, 2002)
 --------------------------------------------------------------------------
 
 New Features
