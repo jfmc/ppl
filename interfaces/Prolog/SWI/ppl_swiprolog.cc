@@ -88,6 +88,9 @@ Prolog_put_term(Prolog_term_ref t, Prolog_term_ref u) {
 */
 static inline int
 Prolog_put_long(Prolog_term_ref t, long i) {
+  if (i > Prolog_max_integer)
+    // FIXME: why unknown?
+    throw_unknown_interface_error("Prolog_put_long()");
   PL_put_integer(t, i);
   return 1;
 }
@@ -320,7 +323,6 @@ Prolog_unify(Prolog_term_ref t, Prolog_term_ref u) {
 
 static PPL::Integer
 integer_term_to_Integer(Prolog_term_ref t) {
-  // FIXME: does SWI support unlimited precision integer?
   long v;
   Prolog_get_long(t, &v);
   return PPL::Integer(v);
@@ -328,8 +330,8 @@ integer_term_to_Integer(Prolog_term_ref t) {
 
 static Prolog_term_ref
 Integer_to_integer_term(const PPL::Integer& n) {
-  // FIXME: does SWI support unlimited precision integer?
   if (!n.fits_slong_p())
+    // FIXME: why unknown?
     throw_unknown_interface_error("Integer_to_integer_term()");
   Prolog_term_ref t = Prolog_new_term_ref();
   PL_put_integer(t, n.get_si());
