@@ -1148,7 +1148,7 @@ PPL::Polyhedron::insert(const Constraint& c) {
 void
 PPL::Polyhedron::insert(const Generator& g) {
 
-  assert(g.size() != 1);
+  assert(g.size() > 1);
 
   // Dimension-consistency check:
   // the dimension of `g' can not be greater than space_dimension().
@@ -1156,31 +1156,28 @@ PPL::Polyhedron::insert(const Generator& g) {
     throw_different_dimensions("PPL::Polyhedron::insert(g)",
 			       *this, g);
 
-  if (space_dimension() == 0) {
-    // For dimension-compatibility, `g' has no columns.
-    assert(g.size() == 0);
-    set_zero_dim_univ();
-    return;
-  }
+  // If the dimension-compatibility check is passed,
+  // we have space_dimension() > 0.
+  if (generators_are_up_to_date())
+    gen_sys.insert(g);
   else
-    if (is_empty()) {
+    if (check_empty()) {
+      // Polyhedron is empty: we can only insert a vertex.
+      // FIXME: why do we need the following clear() ?
+      // Would not be an assertion sufficient ?
       gen_sys.clear();
-      // FIXME: here I need to resize `g' so that
-      // g.size() == space_dimension() + 1.
       gen_sys.insert(g);
-      // No longer empty and with generators up-to-date.
+      // Resize `gen_sys' to have space_dimension() + 1 columns.
+      if (gen_sys.num_columns() != space_dimension() + 1)
+	gen_sys.add_zero_columns(space_dimension()
+				 - gen_sys.num_columns() + 1);
+      // No longer empty, generators up-to-date and minimized.
       clear_empty();
-      set_generators_up_to_date();
+      set_generators_minimized();
     }
     else {
-      if (!generators_are_up_to_date())
-	update_generators();
-      // FIXME: here I may found that is_empty() has become true.
-      // In such a case, gen_sys would be empty and
-      // I would need to resize `g' so that
-      // g.size() == space_dimension() + 1.
+      // Polyhedron is NOT empty and with generators up-to-date.
       gen_sys.insert(g);
-
       // After adding the new generator, constraints are no longer up-to-date.
       clear_generators_minimized();
       clear_constraints_up_to_date();

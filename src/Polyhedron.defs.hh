@@ -81,21 +81,20 @@ namespace Parma_Polyhedra_Library {
     is a key attribute of the polyhedron:
     - all polyhedra, the empty ones included, are endowed with
       a specific space dimension;
-    - most operations working on a plurality of polyhedra will throw
-      an exception if the argument polyhedra are dimension-incompatible
-      (i.e., they are defined on vector spaces of different dimensions);
+    - most operations working on a polyhedron and another object
+      (i.e., another polyhedron, a constraint or generator,
+      a set of variables, etc.) will throw an exception if
+      the polyhedron and the object are dimension-incompatible;
     - the only ways to change the space dimension of a polyhedron are:
       - <EM>explicit</EM> calls to operators provided for that purpose;
       - standard assignment and swap operators. 
 
-    Polyhedra defined on the zero-dimensional vector space \f$R^0\f$
-    are said to be <EM>degenerate</EM> polyhedra.
-    There are exactly two degenerate polyhedra: the empty polyhedron
-    (in the zero-dimension space) and the universe polyhedron \f$R^0\f$.
+    Polyhedra can even be defined on the zero-dimension space \f$R^0\f$:
+    in particular, the empty polyhedron and the universe polyhedron \f$R^0\f$.
 
     A polyhedron can be specified as either a finite system of constraints
-    or a finite system of generators (see Minkowski's theorem in
-    the Introduction).
+    or a finite system of generators
+    (see Minkowski's theorem in the Introduction).
     So, it is possible to obtain one system from the
     other. That is, if we know the system of constraints, we can obtain
     from this the system of generators that define the same polyhedron
@@ -166,17 +165,21 @@ namespace Parma_Polyhedra_Library {
   ph.insert(y >= 0);
     \endcode
     The following code builds the same polyhedron as above,
-    but starting from a system of generators specifying a vertex,
-    a ray and a line.
+    but starting from the empty polyhedron in the space \f$\Rset^2\f$
+    and inserting the appropriate generators
+    (a vertex, a ray and a line).
     \code
   Polyhedron ph(2, Polyhedron::EMPTY);
   ph.insert(vertex(0*x + 0*y));
   ph.insert(ray(y));
   ph.insert(line(x));
     \endcode
-    In this last case, it is important to note that: even if this
-    polyhedron has no real vertex, we must add one, because otherwise
-    the polyhedron is considered empty.
+    Note that, even if the above polyhedron has no ``proper'' vertex,
+    we must add one, because otherwise the Minkowsky's sum would
+    result in an empty polyhedron.
+    To avoid subtle errors related to the minimization process,
+    it is required that the first generator inserted in an empty
+    polyhedron is a vertex (otherwise, an exception is thrown).
 
     \par Example 4
     The following code shows the use of the function
@@ -422,7 +425,9 @@ public:
   //! Inserts a copy of generator \p g into the system of generators
   //! of \p *this.
   //! \exception std::invalid_argument thrown if \p *this and generator \p g
-  //!                                  are dimension-incompatible.
+  //!                                  are dimension-incompatible
+  //!                                  or if a ray/line is inserted
+  //!                                  in an empty polyhedron.
   void insert(const Generator& g);
 
   //! Assigns an affine expression to the specified variable.

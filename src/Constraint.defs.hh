@@ -91,6 +91,9 @@ namespace Parma_Polyhedra_Library {
 */
 class Parma_Polyhedra_Library::Constraint : PPL_INTERNAL Row {
 private:
+  //! Default constructor: private and not implemented.
+  Constraint();
+
   Constraint(LinExpression& e);
 
   Constraint(Row::Type type, size_t size);
@@ -147,8 +150,6 @@ private:
 				       unsigned int offset);
 
 public:
-  //! Default constructor.
-  Constraint();
   //! Ordinary copy-constructor.
   Constraint(const Constraint& c);
   //! Destructor.

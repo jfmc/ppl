@@ -25,11 +25,6 @@ site: http://www.cs.unipr.it/ppl/ . */
 #include "LinExpression.defs.hh"
 
 inline
-Parma_Polyhedra_Library::Constraint::Constraint()
-  : Row() {
-}
-
-inline
 Parma_Polyhedra_Library::Constraint::Constraint(LinExpression& e) {
   swap(e);
 }
