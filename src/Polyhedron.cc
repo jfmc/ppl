@@ -2936,9 +2936,11 @@ PPL::Polyhedron::generalized_affine_image(const Variable& var,
     // Compute the bound for `evaluation_expr'.
     Integer bound_numerator;
     Integer bound_denominator;
-    const GenSys& gs = gen_sys;
-    dimension_type i =  gs.num_rows();
+    bool bound_nonstrictness = true;
+
     if (is_necessarily_closed()) {
+      const GenSys& gs = gen_sys;
+      dimension_type i =  gs.num_rows();
       // Find the first point in `gs'.
       for ( ; i-- > 0; )
 	if (gs[i].is_point())
@@ -2969,48 +2971,93 @@ PPL::Polyhedron::generalized_affine_image(const Variable& var,
 	    tmp_Integer[0] += tmp_Integer[1];
 	  }
 	  // Compare the new bound with the previoius one.
-	  if (greater_than_relation) {
-	    if (tmp_Integer[0] * bound_denominator < bound_numerator * g[0]) {
-	      bound_numerator = tmp_Integer[0];
-	      bound_denominator = g[0];
-	    }
-	  }
-	  else {
-	    if (tmp_Integer[0] * bound_denominator > bound_numerator * g[0]) {
-	      bound_numerator = tmp_Integer[0];
-	      bound_denominator = g[0];
-	    }
+	  bool better_bound = greater_than_relation
+	    ? tmp_Integer[0] * bound_denominator < bound_numerator * g[0]
+	    : tmp_Integer[0] * bound_denominator > bound_numerator * g[0];
+	  if (better_bound) {
+	    bound_numerator = tmp_Integer[0];
+	    bound_denominator = g[0];
 	  }
 	}
-      }
-      // Adjust the bound computed.
-      if (denominator > 0) {
-	bound_numerator += expr.inhomogeneous_term() * bound_denominator;
-	bound_denominator *= denominator;
-      }
-      else {
-	bound_numerator -= expr.inhomogeneous_term() * bound_denominator;
-	bound_denominator *= -denominator;
       }
     }
     else {
       // The polyhedron is not necessarily closed.
-      throw_generic("generalized_affine_image(v, r, e, d)",
-		    "*this is an NNC_Polyhedron: to be implemented");
-    }
+      const GenSys& gs = gen_sys;
+      dimension_type i =  gs.num_rows();
+      // Find the first point or closure point in `gs'.
+      for ( ; i-- > 0; )
+	if (!gs[i].is_line() && !gs[i].is_ray())
+	  break;
+      const Generator& g = gs[i];
+      // Evaluate `evaluation_expr' at point `g'.
+      tmp_Integer[0] = 0;
+      for (dimension_type j = evaluation_expr.size(); j-- > 0; ) {
+	// The following two lines optimize the computation
+	// of tmp_Integer[0] += g[j] * evaluation_expr[j].
+	tmp_Integer[1] = g[j] * evaluation_expr[j];
+	tmp_Integer[0] += tmp_Integer[1];
+      }
+      // Initialize the bound for `evaluation_expr'
+      bound_numerator = tmp_Integer[0];
+      bound_denominator = g[0];
+      bound_nonstrictness = g.is_point();
 
+      // Start looking for better bounds.
+      for ( ; i-- > 0; ) {
+	const Generator& g = gs[i];
+	switch (g.type()) {
+	case Generator::POINT:
+	// Intentionally fall through.
+	case Generator::CLOSURE_POINT:
+	  // Evaluate `evaluation_expr' at `g'.
+	  tmp_Integer[0] = 0;
+	  for (dimension_type j = evaluation_expr.size(); j-- > 0; ) {
+	    // The following two lines optimize the computation
+	    // of tmp_Integer[0] += g[j] * evaluation_expr[j].
+	    tmp_Integer[1] = g[j] * evaluation_expr[j];
+	    tmp_Integer[0] += tmp_Integer[1];
+	  }
+	  // Compare the new bound with the previoius one.
+	  int sgn = cmp(tmp_Integer[0] * bound_denominator,
+			bound_numerator * g[0]);
+	  bool better_bound =
+	    (sgn == 0 && !bound_nonstrictness && g.is_point())
+	    ||
+	    (greater_than_relation ? sgn < 0 : sgn > 0);
+	  if (better_bound) {
+	    bound_numerator = tmp_Integer[0];
+	    bound_denominator = g[0];
+	    bound_nonstrictness = g.is_point();
+	  }
+	}
+      }
+    }
+    // Adjust the bound computed, so that it is a bound for
+    // the expression `expr / divisor'.
+    if (denominator > 0) {
+      bound_numerator += expr.inhomogeneous_term() * bound_denominator;
+      bound_denominator *= denominator;
+    }
+    else {
+      bound_numerator -= expr.inhomogeneous_term() * bound_denominator;
+      bound_denominator *= -denominator;
+    }
+    
     // Add a line having direction `var'.
     add_generator(line(var));
     // Add the bounding constraint.
     if (greater_than_relation)
-      if (nonstrict_relation)
+      if (nonstrict_relation && bound_nonstrictness)
 	add_constraint(bound_denominator * var >= bound_numerator);
       else
+	// (!nonstrict_relation || !bound_nonstrictness)
 	add_constraint(bound_denominator * var > bound_numerator);
     else
-      if (nonstrict_relation)
+      if (nonstrict_relation && bound_nonstrictness)
 	add_constraint(bound_denominator * var <= bound_numerator);
       else
+	// (!nonstrict_relation || !bound_nonstrictness)
 	add_constraint(bound_denominator * var < bound_numerator);
   }
   else
