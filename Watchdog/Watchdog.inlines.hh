@@ -23,6 +23,39 @@ site: http://www.cs.unipr.it/Software/ . */
 
 namespace Parma_Watchdog_Library {
 
+template <typename Flag_Base, typename Flag>
+inline
+Watchdog::Handler_Flag<Flag_Base,
+		       Flag>::Handler_Flag(const Flag_Base* volatile* h,
+					   Flag& f)
+			 : holder(h), flag(f) {
+}
+
+template <typename Flag_Base, typename Flag>
+inline void
+Watchdog::Handler_Flag<Flag_Base, Flag>::act() const {
+  if (*holder == 0
+      || static_cast<const Flag*>(*holder)->priority() < flag.priority())
+    *holder = &flag;
+}
+
+inline
+Watchdog::Handler_Function::Handler_Function(void (*f)())
+  : function(f) {
+}
+
+inline void
+Watchdog::Handler_Function::act() const {
+  (*function)();
+}
+
+inline
+Watchdog::Pending_Element::Pending_Element(const Time& d,
+					   const Handler* h,
+					   bool* p)
+  : deadline(d), handler(h), p_expired_flag(p) {
+}
+
 inline
 Watchdog::Time::Time()
   : secs(0), microsecs(0) {

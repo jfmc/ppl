@@ -38,9 +38,17 @@ namespace Parma_Watchdog_Library {
 
 //! A watchdog timer.
 class Watchdog {
+public:
+  static void initialize();
+
+  template <typename Flag_Base, typename Flag>
+  Watchdog(int units, const Flag_Base* volatile* holder, Flag& flag);
+
+  Watchdog(int units, void (*function)());
+  ~Watchdog();
+
 
 private:
-
   //! A class for representing and manipulationg positive time intervals.
   class Time {
   private:
@@ -86,27 +94,34 @@ private:
   private:
     const Flag_Base* volatile* holder;
     Flag& flag;
+
   public:
     Handler_Flag(const Flag_Base* volatile* h, Flag& f)
+#if 0
       : holder(h), flag(f)
     { }
-    void act() const {
+#else
+    ;
+#endif
+    void act() const
+#if 0
+    {
       if (*holder == 0
 	  || static_cast<const Flag*>(*holder)->priority() < flag.priority())
 	*holder = &flag;
     }
+#else
+    ;
+#endif
   };
 
   class Handler_Function : virtual public Handler {
+  public:
+    Handler_Function(void (*f)());
+    void act() const;
+
   private:
     void (*function)();
-  public:
-    Handler_Function(void (*f)())
-      : function(f)
-    { }
-    void act() const {
-      (*function)();
-    }
   };
 
   // The pending watchdog events.
@@ -115,9 +130,7 @@ private:
     Time deadline;
     const Handler* handler;
     bool* p_expired_flag;
-    Pending_Element(const Time& d, const Handler* h, bool* p)
-      : deadline(d), handler(h), p_expired_flag(p)
-    { }
+    Pending_Element(const Time& d, const Handler* h, bool* p);
   };
 
   typedef std::list<Pending_Element> Pending;
@@ -125,15 +138,6 @@ private:
   bool expired;
   const Handler* handler;
   Pending::iterator pending_position;
-
-public:
-  static void initialize();
-
-  template <typename Flag_Base, typename Flag>
-  Watchdog(int units, const Flag_Base* volatile* holder, Flag& flag);
-
-  Watchdog(int units, void (*function)());
-  ~Watchdog();
 
 private:
   // Just to prevent their use.
