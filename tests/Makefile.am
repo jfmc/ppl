@@ -55,6 +55,7 @@ libppl_tests.a \
 
 ORIGINAL_TESTS = \
 	CbecomesNNC1 \
+	NNCbecomesC1 \
 	NNCminimize1 NNCminimize2 NNCminimize3 NNCminimize4 NNCminimize5 \
         NNCminimize6 \
 	addconstraint1 addconstraint2 addconstraint3 \
@@ -242,6 +243,8 @@ DERIVED_TESTS = \
 #
 
 CbecomesNNC1_SOURCES = CbecomesNNC1.cc
+
+NNCbecomesC1_SOURCES = NNCbecomesC1.cc
 
 NNCminimize1_SOURCES = NNCminimize1.cc
 NNCminimize2_SOURCES = NNCminimize2.cc

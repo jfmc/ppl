@@ -129,11 +129,9 @@ public:
   */
   C_Polyhedron(GenSys& gs);
 
-  //! Builds a C polyhedron from the NNC polyhedron \p y.
-  /*!
-    \exception std::invalid_argument
-    Thrown if the polyhedron \p y is not topologically closed.
-  */
+  //! \brief
+  //! Builds a C polyhedron representing the topological closure
+  //! of the NNC polyhedron \p y.
   explicit C_Polyhedron(const NNC_Polyhedron& y);
 
   //! Builds a C polyhedron out of a generic, interval-based bounding box.

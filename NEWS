@@ -28,6 +28,11 @@ o  New method dimension_type Polyhedron::dimension() returns the dimension
    of *this (not to be confused with the dimension of its enclosing vector
    space) or 0, if *this is empty.
 
+o  The constructor C_Polyhedron(const NNC_Polyhedron& y) no longer
+   throws an exception if `y' is not topologically closed.  Rather,
+   it constructs a C_Polyhedron representing the topological closure
+   of `y'.
+
 o  Now `make check' runs a number of tests with `ppl_lcdd', comparing
    the results to expected ones.
 
