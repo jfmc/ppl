@@ -33,15 +33,18 @@ namespace PPL = Parma_Polyhedra_Library;
 
 #define BITS_PER_GMP_LIMB (SIZEOF_MP_LIMB_T*CHAR_BIT)
 
+#if !defined(HAS_FFS) || SIZEOF_MP_LIMB_T != SIZEOF_INT
 unsigned int
 PPL::SatRow::first_one(mp_limb_t w) {
   unsigned int r = 0;
   w = w & -w;
-#if SIZEOF_MP_LIMB_T > 4
+#if SIZEOF_MP_LIMB_T == 8
   if ((w & 0xffffffff) == 0) {
     w >>= 32;
     r += 32;
   }
+#elif SIZEOF_MP_LIMB_T != 4
+#error "Size of mp_limb_t not supported by SatRow::first_one(mp_limb_t w)."
 #endif
   if ((w & 0xffff) == 0) {
     w >>= 16;
@@ -59,15 +62,18 @@ PPL::SatRow::first_one(mp_limb_t w) {
     r += 1;
   return r;
 }
+#endif // !defined(HAS_FFS) || SIZEOF_MP_LIMB_T != SIZEOF_INT
 
 unsigned int
 PPL::SatRow::last_one(mp_limb_t w) {
   unsigned int r = 0;
-#if SIZEOF_MP_LIMB_T > 4
+#if SIZEOF_MP_LIMB_T == 8
   if (w & 0xffffffff00000000) {
     w >>= 32;
     r += 32;
   }
+#elif SIZEOF_MP_LIMB_T != 4
+#error "Size of mp_limb_t not supported by SatRow::last_one(mp_limb_t w)."
 #endif
   if (w & 0xffff0000) {
     w >>= 16;
@@ -98,7 +104,7 @@ PPL::SatRow::first() const {
   for (; li < vec_size; ++li, ++p) {
     const mp_limb_t limb = *p;
     if (limb != 0)
-      return li * BITS_PER_GMP_LIMB + first_one(limb);
+      return li*BITS_PER_GMP_LIMB + first_one(limb);
   }
   return -1;
 }
@@ -128,7 +134,7 @@ PPL::SatRow::next(int position) const {
 
   while (true) {
     if (limb != 0)
-      return li * BITS_PER_GMP_LIMB + first_one(limb);
+      return li*BITS_PER_GMP_LIMB + first_one(limb);
     ++li;
     if (li == vec_size)
       break;
@@ -147,7 +153,7 @@ PPL::SatRow::last() const {
     --p;
     const mp_limb_t limb = *p;
     if (limb != 0)
-      return li * BITS_PER_GMP_LIMB + last_one(limb);
+      return li*BITS_PER_GMP_LIMB + last_one(limb);
   }
   return -1;
 }
@@ -184,10 +190,10 @@ PPL::SatRow::prev(int position) const {
 
   while (true) {
     if (limb != 0)
-      return li * BITS_PER_GMP_LIMB + last_one(limb);
-    --li;
+      return li*BITS_PER_GMP_LIMB + last_one(limb);
     if (li == 0)
       break;
+    --li;
     --p;
     limb = *p;
   }
@@ -242,7 +248,9 @@ PPL::subset_or_equal(const SatRow& x, const SatRow& y) {
       ++yp;
       --x_size;
     }
-  } else {
+  }
+  else {
+    // x_size > y_size
     x_size -= y_size;
     while (y_size > 0) {
       if (*xp & ~*yp)
@@ -264,37 +272,57 @@ PPL::subset_or_equal(const SatRow& x, const SatRow& y) {
 /*! \relates Parma_Polyhedra_Library::SatRow */
 bool
 PPL::strict_subset(const SatRow& x, const SatRow& y) {
-  const size_t x_size = mpz_size(x.vec);
-  const size_t y_size = mpz_size(y.vec);
-  bool one_diff = false;
-  size_t x_li = 0;
-  size_t y_li = 0;
-  while (x_li < x_size && y_li < y_size) {
-    const mp_limb_t a = mpz_getlimbn(x.vec, x_li++);
-    const mp_limb_t b = mpz_getlimbn(y.vec, y_li++);
-    const mp_limb_t c = a | b;
-    if (c != b)
-      return false;
-    else if (c != a)
-      one_diff = true;
-  }
-  if (x_size < y_size) {
-    if (one_diff)
+  size_t x_size = mpz_size(x.vec);
+  size_t y_size = mpz_size(y.vec);
+  mp_srcptr xp = x.vec->_mp_d;
+  mp_srcptr yp = y.vec->_mp_d;
+  bool different = false;
+  if (x_size <= y_size) {
+    y_size -= x_size;
+    while (x_size > 0) {
+      mp_limb_t xl = *xp;
+      mp_limb_t yl = *yp;
+      if (xl & ~yl)
+	return false;
+      if (!different && xl != yl)
+	different = true;
+      ++xp;
+      ++yp;
+      --x_size;
+    }
+    if (different)
       return true;
-    while (y_li < y_size)
-      if (mpz_getlimbn(y.vec, y_li++) != 0)
+    while (y_size > 0) {
+      if (*yp)
 	return true;
+      ++yp;
+      --y_size;
+    }
     return false;
   }
-  else if (x_size > y_size) {
-    if (!one_diff)
-      return false;
-    while (x_li < x_size)
-      if (mpz_getlimbn(x.vec, x_li++) != 0)
+  else {
+    x_size -= y_size;
+    while (y_size > 0) {
+      mp_limb_t xl = *xp;
+      mp_limb_t yl = *yp;
+      if (xl & ~yl)
 	return false;
+      if (!different && xl != yl)
+	different = true;
+      ++xp;
+      ++yp;
+      --y_size;
+    }
+    if (!different)
+      return false;
+    while (x_size > 0) {
+      if (*xp)
+	return false;
+      ++xp;
+      --x_size;
+    }
     return true;
   }
-  return one_diff;
 }
 
 bool

@@ -98,16 +98,6 @@ void set_union(const SatRow& x, const SatRow& y, SatRow& z);
 */
 #endif // PPL_DOXYGEN_INCLUDE_IMPLEMENTATION_DETAILS
 class Parma_Polyhedra_Library::SatRow {
-private:
-  //! Bitvector representing the row.
-  mpz_t vec;
-
-  //! Returns the index of the first set bit in \p w or -1 if no bit is set.
-  static unsigned int first_one(mp_limb_t w);
-
-  //! Returns the index of the last set bit in \p w or -1 if no bit is set.
-  static unsigned int last_one(mp_limb_t w);
-
 public:
   //! Default constructor.
   SatRow();
@@ -184,6 +174,16 @@ public:
 
   //! Checks if all the invariants are satisfied
   bool OK() const;
+
+private:
+  //! Bitvector representing the row.
+  mpz_t vec;
+
+  //! Assuming \p w is nonzero, returns the index of the first set bit in \p w.
+  static unsigned int first_one(mp_limb_t w);
+
+  //! Assuming \p w is nonzero, returns the index of the last set bit in \p w.
+  static unsigned int last_one(mp_limb_t w);
 };
 
 namespace std {
