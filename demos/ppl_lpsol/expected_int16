@@ -54,10 +54,10 @@ Objective function:
 -10*x1 - 6*x2 - 4*x3
 Minimizing.
 Optimum value:
--733.333
+-733.3333333
 Optimum location:
-x1 = 33.3333
-x2 = 66.6667
+x1 = 33.33333333
+x2 = 66.66666667
 x3 = 0
 *** ppl_lpsol -v --max -oobtained sample.mps
 Constraints:

@@ -676,7 +676,7 @@ solve(char* file_name) {
   mpq_set_den(optimum, tmp_z);
   ppl_delete_Coefficient(optimum_d);
   ppl_delete_Coefficient(optimum_n);
-  fprintf(output_file, "Optimum value:\n%g\n", mpq_get_d(optimum));
+  fprintf(output_file, "Optimum value:\n%.10g\n", mpq_get_d(optimum));
   mpq_clear(optimum);
   fprintf(output_file, "Optimum location:\n");
   ppl_Generator_divisor(ppl_const_g, ppl_coeff);
@@ -686,7 +686,7 @@ solve(char* file_name) {
     ppl_Generator_coefficient(ppl_const_g, i, ppl_coeff);
     ppl_Coefficient_to_mpz_t(ppl_coeff, mpq_numref(tmp1_q));
     ppl_io_fprint_variable(output_file, i);
-    fprintf(output_file, " = %g\n", mpq_get_d(tmp1_q));
+    fprintf(output_file, " = %.10g\n", mpq_get_d(tmp1_q));
   }
 
  clean_and_return:
