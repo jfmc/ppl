@@ -349,12 +349,12 @@ BD_Shape<T>::concatenate_assign(const BD_Shape<T>& y) {
   assert(OK());
   assert(y.OK());
 
-  dimension_type k = space_dimension();
-  dimension_type h = y.space_dimension();
+  dimension_type space_dim = space_dimension();
+  dimension_type y_space_dim = y.space_dimension();
 
   // If `y' is an empty 0-dim space system of bounded differences,
   // let `*this' become empty.
-  if (h == 0 && y.marked_empty()) {
+  if (y_space_dim == 0 && y.marked_empty()) {
     set_empty();
     return;
   }
@@ -362,8 +362,8 @@ BD_Shape<T>::concatenate_assign(const BD_Shape<T>& y) {
   // If `*this' is an empty 0-dim space
   // system of bounded differences, it is sufficient to adjust
   // the dimension of the space.
-  if (k == 0 && marked_empty()) {
-    dbm.grow(h + 1);
+  if (space_dim == 0 && marked_empty()) {
+    dbm.grow(y_space_dim + 1);
     return;
   }
   // First we increase the space dimension of `*this' by adding
@@ -373,13 +373,13 @@ BD_Shape<T>::concatenate_assign(const BD_Shape<T>& y) {
   // and placing the constraints of `y' in the lower right-hand side,
   // except the constraints as `y(i) >= cost' or `y(i) <= cost', that are
   // placed in the right position on the new matrix.
-  add_space_dimensions_and_embed(h);
-  for (dimension_type i = k + 1; i <= k + h; ++i) {
+  add_space_dimensions_and_embed(y_space_dim);
+  for (dimension_type i = space_dim + 1; i <= space_dim + y_space_dim; ++i) {
     DB_Row<T>& dbm_i = dbm[i];
-    dbm_i[0] = y.dbm[i-k][0];
-    dbm[0][i] = y.dbm[0][i-k];
-    for (dimension_type j = k + 1; j <= k + h; ++j)
-      dbm_i[j] = y.dbm[i-k][j-k];
+    dbm_i[0] = y.dbm[i-space_dim][0];
+    dbm[0][i] = y.dbm[0][i-space_dim];
+    for (dimension_type j = space_dim + 1; j <= space_dim + y_space_dim; ++j)
+      dbm_i[j] = y.dbm[i-space_dim][j-space_dim];
   }
 
   if (marked_transitively_closed())
