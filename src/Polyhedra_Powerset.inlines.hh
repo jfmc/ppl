@@ -54,7 +54,7 @@ Polyhedra_Powerset<PH>::Polyhedra_Powerset(dimension_type num_dimensions,
   : Base(), space_dim(num_dimensions) {
   Polyhedra_Powerset& x = *this;
   if (kind == Polyhedron::UNIVERSE)
-    x.sequence.push_back(Determinate<PH>(num_dimensions, true));
+    x.sequence.push_back(Determinate<PH>(PH(num_dimensions, kind)));
   assert(x.OK());
 }
 
@@ -726,16 +726,18 @@ template <typename PH>
 bool
 Polyhedra_Powerset<PH>::OK() const {
   const Polyhedra_Powerset& x = *this;
-  for (const_iterator xi = x.begin(), x_end = x.end(); xi != x_end; ++xi)
-    if (xi->space_dimension() != x.space_dim) {
+  for (const_iterator xi = x.begin(), x_end = x.end(); xi != x_end; ++xi) {
+    const PH& pi = xi->element();
+    if (pi.space_dimension() != x.space_dim) {
 #ifndef NDEBUG
-      std::cerr << "Space dimension mismatch: is " << xi->space_dimension()
+      std::cerr << "Space dimension mismatch: is " << pi.space_dimension()
 		<< " in an element of the sequence,\nshould be "
 		<< x.space_dim << "."
 		<< std::endl;
 #endif
       return false;
     }
+  }
   return x.Base::OK();
 }
 
