@@ -222,8 +222,11 @@ site: http://www.cs.unipr.it/ppl/ . */
 %:- true pred ppl_Polyhedron_add_constraints_and_minimize(in(Handle), in(CList))
 %             :: any_term * any_term + foreign.
 
-:- true pred ppl_Polyhedron_add_constraints_and_minimize_2(in(Handle), in(CList), go(Success))
-             :: any_term * any_term * int + (returns(Success), foreign(ppl_Polyhedron_add_constraints_and_minimize)).
+:- true pred ppl_Polyhedron_add_constraints_and_minimize_2(in(Handle),
+							   in(CList),
+							   go(Success))
+  :: any_term * any_term * int
+  + (returns(Success), foreign(ppl_Polyhedron_add_constraints_and_minimize)).
 
 ppl_Polyhedron_add_constraints_and_minimize(Handle, CList) :-
 	ppl_Polyhedron_add_constraints_and_minimize_2(Handle, CList, 1).

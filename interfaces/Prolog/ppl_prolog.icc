@@ -259,7 +259,8 @@ handle_exception(const timeout_exception&) {
   } \
   catch (...) { \
     handle_exception(); \
-  }
+  } \
+  return PROLOG_FAILURE
 
 // For Prolog lists.
 Prolog_atom a_nil;
@@ -723,7 +724,6 @@ ppl_initialize() {
     return PROLOG_SUCCESS;
   }
   CATCH_ALL;
-  return PROLOG_FAILURE;
 }
 
 extern "C" Prolog_foreign_return_type
@@ -739,7 +739,6 @@ ppl_finalize() {
     return PROLOG_SUCCESS;
   }
   CATCH_ALL;
-  return PROLOG_FAILURE;
 }
 
 extern "C" Prolog_foreign_return_type
@@ -769,7 +768,6 @@ ppl_set_timeout_exception_atom(Prolog_term_ref t_tea) {
     return PROLOG_FAILURE;
   }
   CATCH_ALL;
-  return PROLOG_FAILURE;
 }
 
 extern "C" Prolog_foreign_return_type
@@ -780,7 +778,6 @@ ppl_timeout_exception_atom(Prolog_term_ref t) {
     return Prolog_unify(t_tea, t) ? PROLOG_SUCCESS : PROLOG_FAILURE;
   }
   CATCH_ALL;
-  return PROLOG_FAILURE;
 }
 
 extern "C" Prolog_foreign_return_type
@@ -798,7 +795,6 @@ ppl_set_timeout(Prolog_term_ref t_time) {
     return PROLOG_SUCCESS;
   }
   CATCH_ALL;
-  return PROLOG_FAILURE;
 }
 
 extern "C" Prolog_foreign_return_type
@@ -808,7 +804,6 @@ ppl_reset_timeout() {
     return PROLOG_SUCCESS;
   }
   CATCH_ALL;
-  return PROLOG_FAILURE;
 }
 
 extern "C" Prolog_foreign_return_type
@@ -832,7 +827,6 @@ ppl_new_Polyhedron_from_dimension(Prolog_term_ref t_tp,
       delete ph;
   }
   CATCH_ALL;
-  return PROLOG_FAILURE;
 }
 
 extern "C" Prolog_foreign_return_type
@@ -858,7 +852,6 @@ ppl_new_Polyhedron_empty_from_dimension(Prolog_term_ref t_tp,
       delete ph;
   }
   CATCH_ALL;
-  return PROLOG_FAILURE;
 }
 
 extern "C" Prolog_foreign_return_type
@@ -901,7 +894,6 @@ ppl_new_Polyhedron_from_Polyhedron(Prolog_term_ref t_tp_source,
       delete ph;
   }
   CATCH_ALL;
-  return PROLOG_FAILURE;
 }
 
 extern "C" Prolog_foreign_return_type
@@ -932,7 +924,6 @@ ppl_new_Polyhedron_from_constraints(Prolog_term_ref t_tp,
       delete ph;
   }
   CATCH_ALL;
-  return PROLOG_FAILURE;
 }
 
 extern "C" Prolog_foreign_return_type
@@ -963,7 +954,6 @@ ppl_new_Polyhedron_from_generators(Prolog_term_ref t_tp,
       delete ph;
   }
   CATCH_ALL;
-  return PROLOG_FAILURE;
 }
 
 enum Boundary_Kind {
@@ -1046,12 +1036,12 @@ ppl_new_Polyhedron_from_bounding_box(Prolog_term_ref t_tp,
       Prolog_get_cons(t_l, t_interval, t_l);
     // Check whether the list is properly terminated.
     if (!Prolog_is_atom(t_l))
-      goto fail;
+      return PROLOG_FAILURE;
     else {
       Prolog_atom a;
       Prolog_get_atom_name(t_l, &a);
       if (a != a_nil)
-        goto fail;
+        return PROLOG_FAILURE;
     }
 
     BoundingBox bbox(dimension);
@@ -1060,12 +1050,12 @@ ppl_new_Polyhedron_from_bounding_box(Prolog_term_ref t_tp,
       Prolog_get_cons(t_bb, t_interval, t_bb);
       // An interval is of the form i(Lower_Bound, Upper_Bound).
       if (!Prolog_is_compound(t_interval))
-	goto fail;
+	return PROLOG_FAILURE;
       Prolog_atom functor;
       int arity;
       Prolog_get_compound_name_arity(t_interval, &functor, &arity);
       if (arity != 2 || functor != a_i)
-	goto fail;
+	return PROLOG_FAILURE;
 
       bool finite;
       bool closed;
@@ -1076,14 +1066,14 @@ ppl_new_Polyhedron_from_bounding_box(Prolog_term_ref t_tp,
       // Get and raise the lower bound.
       Prolog_get_arg(1, t_interval, t_bound);
       if (!term_to_boundary(t_bound, LOWER, finite, closed, n, d))
-	goto fail;
+	return PROLOG_FAILURE;
       if (finite)
 	bbox.raise_lower_bound(i, closed, n, d);
 
       // Get and lower the upper bound.
       Prolog_get_arg(2, t_interval, t_bound);
       if (!term_to_boundary(t_bound, UPPER, finite, closed, n, d))
-	goto fail;
+	return PROLOG_FAILURE;
       if (finite)
 	bbox.lower_upper_bound(i, closed, n, d);
     }
@@ -1104,9 +1094,6 @@ ppl_new_Polyhedron_from_bounding_box(Prolog_term_ref t_tp,
       delete ph;
   }
   CATCH_ALL;
-
- fail:
-  return PROLOG_FAILURE;
 }
 
 extern "C" Prolog_foreign_return_type
@@ -1120,7 +1107,6 @@ ppl_Polyhedron_swap(Prolog_term_ref t_lhs, Prolog_term_ref t_rhs) {
     return PROLOG_SUCCESS;
   }
   CATCH_ALL;
-  return PROLOG_FAILURE;
 }
 
 extern "C" Prolog_foreign_return_type
@@ -1132,7 +1118,6 @@ ppl_delete_Polyhedron(Prolog_term_ref t_ph) {
     return PROLOG_SUCCESS;
   }
   CATCH_ALL;
-  return PROLOG_FAILURE;
 }
 
 extern "C" Prolog_foreign_return_type
@@ -1148,7 +1133,6 @@ ppl_Polyhedron_space_dimension(Prolog_term_ref t_ph, Prolog_term_ref t_sd) {
       return PROLOG_SUCCESS;
   }
   CATCH_ALL;
-  return PROLOG_FAILURE;
 }
 
 extern "C" Prolog_foreign_return_type
@@ -1169,7 +1153,6 @@ ppl_Polyhedron_get_constraints(Prolog_term_ref t_ph,
       return PROLOG_SUCCESS;
   }
   CATCH_ALL;
-  return PROLOG_FAILURE;
 }
 
 extern "C" Prolog_foreign_return_type
@@ -1190,7 +1173,6 @@ ppl_Polyhedron_get_minimized_constraints(Prolog_term_ref t_ph,
       return PROLOG_SUCCESS;
   }
   CATCH_ALL;
-  return PROLOG_FAILURE;
 }
 
 extern "C" Prolog_foreign_return_type
@@ -1211,7 +1193,6 @@ ppl_Polyhedron_get_generators(Prolog_term_ref t_ph,
       return PROLOG_SUCCESS;
   }
   CATCH_ALL;
-  return PROLOG_FAILURE;
 }
 
 extern "C" Prolog_foreign_return_type
@@ -1232,7 +1213,6 @@ ppl_Polyhedron_get_minimized_generators(Prolog_term_ref t_ph,
       return PROLOG_SUCCESS;
   }
   CATCH_ALL;
-  return PROLOG_FAILURE;
 }
 
 extern "C" Prolog_foreign_return_type
@@ -1270,7 +1250,6 @@ ppl_Polyhedron_relation_with_constraint(Prolog_term_ref t_ph,
       return PROLOG_SUCCESS;
   }
   CATCH_ALL;
-  return PROLOG_FAILURE;
 }
 
 extern "C" Prolog_foreign_return_type
@@ -1296,7 +1275,6 @@ ppl_Polyhedron_relation_with_generator(Prolog_term_ref t_ph,
       return PROLOG_SUCCESS;
   }
   CATCH_ALL;
-  return PROLOG_FAILURE;
 }
 
 static Prolog_term_ref
@@ -1370,7 +1348,7 @@ ppl_Polyhedron_get_bounding_box(Prolog_term_ref t_ph,
 
     Prolog_atom p_cc;
     if (!term_to_complexity_class(t_cc, p_cc)) {
-      goto fail;
+      return PROLOG_FAILURE;
     }
     Complexity_Class cc;
     if (p_cc == a_polynomial)
@@ -1391,9 +1369,6 @@ ppl_Polyhedron_get_bounding_box(Prolog_term_ref t_ph,
       return PROLOG_SUCCESS;
   }
   CATCH_ALL;
-
- fail:
-  return PROLOG_FAILURE;
 }
 
 extern "C" Prolog_foreign_return_type
@@ -1405,7 +1380,6 @@ ppl_Polyhedron_check_empty(Prolog_term_ref t_ph) {
       return PROLOG_SUCCESS;
   }
   CATCH_ALL;
-  return PROLOG_FAILURE;
 }
 
 extern "C" Prolog_foreign_return_type
@@ -1417,7 +1391,6 @@ ppl_Polyhedron_check_universe(Prolog_term_ref t_ph) {
       return PROLOG_SUCCESS;
   }
   CATCH_ALL;
-  return PROLOG_FAILURE;
 }
 
 extern "C" Prolog_foreign_return_type
@@ -1429,7 +1402,6 @@ ppl_Polyhedron_check_bounded(Prolog_term_ref t_ph) {
       return PROLOG_SUCCESS;
   }
   CATCH_ALL;
-  return PROLOG_FAILURE;
 }
 
 extern "C" Prolog_foreign_return_type
@@ -1443,7 +1415,6 @@ ppl_Polyhedron_bounds_from_above(Prolog_term_ref t_ph,
       return PROLOG_SUCCESS;
   }
   CATCH_ALL;
-  return PROLOG_FAILURE;
 }
 
 extern "C" Prolog_foreign_return_type
@@ -1457,7 +1428,6 @@ ppl_Polyhedron_bounds_from_below(Prolog_term_ref t_ph,
       return PROLOG_SUCCESS;
   }
   CATCH_ALL;
-  return PROLOG_FAILURE;
 }
 
 extern "C" Prolog_foreign_return_type
@@ -1469,7 +1439,6 @@ ppl_Polyhedron_check_topologically_closed(Prolog_term_ref t_ph) {
       return PROLOG_SUCCESS;
   }
   CATCH_ALL;
-  return PROLOG_FAILURE;
 }
 
 extern "C" Prolog_foreign_return_type
@@ -1484,7 +1453,6 @@ ppl_Polyhedron_contains_Polyhedron(Prolog_term_ref t_lhs,
       return PROLOG_SUCCESS;
   }
   CATCH_ALL;
-  return PROLOG_FAILURE;
 }
 
 extern "C" Prolog_foreign_return_type
@@ -1499,7 +1467,6 @@ ppl_Polyhedron_strictly_contains_Polyhedron(Prolog_term_ref t_lhs,
       return PROLOG_SUCCESS;
   }
   CATCH_ALL;
-  return PROLOG_FAILURE;
 }
 
 extern "C" Prolog_foreign_return_type
@@ -1514,7 +1481,6 @@ ppl_Polyhedron_check_disjoint_from_Polyhedron(Prolog_term_ref t_lhs,
       return PROLOG_SUCCESS;
   }
   CATCH_ALL;
-  return PROLOG_FAILURE;
 }
 
 extern "C" Prolog_foreign_return_type
@@ -1529,7 +1495,6 @@ ppl_Polyhedron_equals_Polyhedron(Prolog_term_ref t_lhs,
       return PROLOG_SUCCESS;
   }
   CATCH_ALL;
-  return PROLOG_FAILURE;
 }
 
 extern "C" Prolog_foreign_return_type
@@ -1541,7 +1506,6 @@ ppl_Polyhedron_OK(Prolog_term_ref t_ph) {
       return PROLOG_SUCCESS;
   }
   CATCH_ALL;
-  return PROLOG_FAILURE;
 }
 
 extern "C" Prolog_foreign_return_type
@@ -1553,7 +1517,6 @@ ppl_Polyhedron_add_constraint(Prolog_term_ref t_ph, Prolog_term_ref t_c) {
     return PROLOG_SUCCESS;
   }
   CATCH_ALL;
-  return PROLOG_FAILURE;
 }
 
 extern "C" Prolog_foreign_return_type
@@ -1566,7 +1529,6 @@ ppl_Polyhedron_add_constraint_and_minimize(Prolog_term_ref t_ph,
       return PROLOG_SUCCESS;
   }
   CATCH_ALL;
-  return PROLOG_FAILURE;
 }
 
 extern "C" Prolog_foreign_return_type
@@ -1578,7 +1540,6 @@ ppl_Polyhedron_add_generator(Prolog_term_ref t_ph, Prolog_term_ref t_g) {
     return PROLOG_SUCCESS;
   }
   CATCH_ALL;
-  return PROLOG_FAILURE;
 }
 
 extern "C" Prolog_foreign_return_type
@@ -1591,7 +1552,6 @@ ppl_Polyhedron_add_generator_and_minimize(Prolog_term_ref t_ph,
       return PROLOG_SUCCESS;
   }
   CATCH_ALL;
-  return PROLOG_FAILURE;
 }
 
 extern "C" Prolog_foreign_return_type
@@ -1612,7 +1572,6 @@ ppl_Polyhedron_add_constraints(Prolog_term_ref t_ph,
     return PROLOG_SUCCESS;
   }
   CATCH_ALL;
-  return PROLOG_FAILURE;
 }
 
 extern "C" Prolog_foreign_return_type
@@ -1633,7 +1592,6 @@ ppl_Polyhedron_add_constraints_and_minimize(Prolog_term_ref t_ph,
       return PROLOG_SUCCESS;
   }
   CATCH_ALL;
-  return PROLOG_FAILURE;
 }
 
 extern "C" Prolog_foreign_return_type
@@ -1654,7 +1612,6 @@ ppl_Polyhedron_add_generators(Prolog_term_ref t_ph,
     return PROLOG_SUCCESS;
   }
   CATCH_ALL;
-  return PROLOG_FAILURE;
 }
 
 extern "C" Prolog_foreign_return_type
@@ -1675,7 +1632,6 @@ ppl_Polyhedron_add_generators_and_minimize(Prolog_term_ref t_ph,
       return PROLOG_SUCCESS;
   }
   CATCH_ALL;
-  return PROLOG_FAILURE;
 }
 
 namespace {
@@ -1693,7 +1649,6 @@ bop_assign(Prolog_term_ref t_lhs,
     return PROLOG_SUCCESS;
   }
   CATCH_ALL;
-  return PROLOG_FAILURE;
 }
 
 Prolog_foreign_return_type
@@ -1710,7 +1665,6 @@ bop_assign_and_minimize(Prolog_term_ref t_lhs,
       return PROLOG_SUCCESS;
   }
   CATCH_ALL;
-  return PROLOG_FAILURE;
 }
 
 } // namespace
@@ -1769,7 +1723,6 @@ ppl_Polyhedron_affine_image(Prolog_term_ref t_ph, Prolog_term_ref t_v,
     return PROLOG_SUCCESS;
   }
   CATCH_ALL;
-  return PROLOG_FAILURE;
 }
 
 extern "C" Prolog_foreign_return_type
@@ -1784,7 +1737,6 @@ ppl_Polyhedron_affine_preimage(Prolog_term_ref t_ph, Prolog_term_ref t_v,
     return PROLOG_SUCCESS;
   }
   CATCH_ALL;
-  return PROLOG_FAILURE;
 }
 
 static bool
@@ -1832,7 +1784,6 @@ ppl_Polyhedron_generalized_affine_image(Prolog_term_ref t_ph,
     }
   }
   CATCH_ALL;
-  return PROLOG_FAILURE;
 }
 
 extern "C" Prolog_foreign_return_type
@@ -1852,7 +1803,6 @@ ppl_Polyhedron_generalized_affine_image_lhs_rhs(Prolog_term_ref t_ph,
     }
   }
   CATCH_ALL;
-  return PROLOG_FAILURE;
 }
 
 extern "C" Prolog_foreign_return_type
@@ -1864,7 +1814,6 @@ ppl_Polyhedron_topological_closure_assign(Prolog_term_ref t_ph) {
     return PROLOG_SUCCESS;
   }
   CATCH_ALL;
-  return PROLOG_FAILURE;
 }
 
 namespace {
@@ -1894,7 +1843,6 @@ widening_assign_with_token(Prolog_term_ref t_lhs,
       return PROLOG_SUCCESS;
   }
   CATCH_ALL;
-  return PROLOG_FAILURE;
 }
 
 Prolog_foreign_return_type
@@ -1911,7 +1859,6 @@ widening_assign(Prolog_term_ref t_lhs,
     return PROLOG_SUCCESS;
   }
   CATCH_ALL;
-  return PROLOG_FAILURE;
 }
 
 Prolog_foreign_return_type
@@ -1942,7 +1889,6 @@ limited_extrapolation_assign_with_token(Prolog_term_ref t_lhs,
       return PROLOG_SUCCESS;
   }
   CATCH_ALL;
-  return PROLOG_FAILURE;
 }
 
 Prolog_foreign_return_type
@@ -1969,7 +1915,6 @@ limited_extrapolation_assign(Prolog_term_ref t_lhs,
     return PROLOG_SUCCESS;
   }
   CATCH_ALL;
-  return PROLOG_FAILURE;
 }
 
 } // namespace
@@ -2112,7 +2057,6 @@ ppl_Polyhedron_add_dimensions_and_project(Prolog_term_ref t_ph,
     return PROLOG_SUCCESS;
   }
   CATCH_ALL;
-  return PROLOG_FAILURE;
 }
 
 extern "C" Prolog_foreign_return_type
@@ -2125,7 +2069,6 @@ ppl_Polyhedron_add_dimensions_and_embed(Prolog_term_ref t_ph,
     return PROLOG_SUCCESS;
   }
   CATCH_ALL;
-  return PROLOG_FAILURE;
 }
 
 extern "C" Prolog_foreign_return_type
@@ -2140,7 +2083,6 @@ ppl_Polyhedron_concatenate_assign(Prolog_term_ref t_lhs,
     return PROLOG_SUCCESS;
   }
   CATCH_ALL;
-  return PROLOG_FAILURE;
 }
 
 extern "C" Prolog_foreign_return_type
@@ -2159,7 +2101,6 @@ ppl_Polyhedron_remove_dimensions(Prolog_term_ref t_ph,
     return PROLOG_SUCCESS;
   }
   CATCH_ALL;
-  return PROLOG_FAILURE;
 }
 
 extern "C" Prolog_foreign_return_type
@@ -2172,7 +2113,6 @@ ppl_Polyhedron_remove_higher_dimensions(Prolog_term_ref t_ph,
     return PROLOG_SUCCESS;
   }
   CATCH_ALL;
-  return PROLOG_FAILURE;
 }
 
 namespace {
@@ -2244,7 +2184,7 @@ ppl_Polyhedron_rename_dimensions(Prolog_term_ref t_ph,
       int arity;
       Prolog_get_compound_name_arity(t_pair, &functor, &arity);
       if (arity != 2 || functor != a_minus)
-	goto fail;
+	return PROLOG_FAILURE;
       Prolog_term_ref t_i = Prolog_new_term_ref();
       Prolog_term_ref t_j = Prolog_new_term_ref();
       Prolog_get_arg(1, t_pair, t_i);
@@ -2252,13 +2192,10 @@ ppl_Polyhedron_rename_dimensions(Prolog_term_ref t_ph,
       dimension_type i = get_variable(t_i).id();
       dimension_type j = get_variable(t_j).id();
       if (i >= space_dim || !pifunc.insert(i, j))
-	goto fail;
+	return PROLOG_FAILURE;
     }
     ph->rename_dimensions(pifunc);
     return PROLOG_SUCCESS;
   }
   CATCH_ALL;
-
- fail:
-  return PROLOG_FAILURE;
 }
