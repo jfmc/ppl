@@ -34,6 +34,90 @@ site: http://www.cs.unipr.it/ppl/ . */
 
 namespace PPL = Parma_Polyhedra_Library;
 
+
+bool
+PPL::ConSys::adjust_topology_and_dimension(Topology new_topology,
+					   size_t new_space_dim) {
+  assert(space_dimension() <= new_space_dim);
+
+  size_t old_space_dim = space_dimension();
+  Topology old_topology = topology();
+
+  // Dealing first with the most common case.
+  if (old_space_dim == new_space_dim && old_topology == new_topology)
+    return true;
+
+  size_t cols_to_be_added = new_space_dim - old_space_dim;
+  if (cols_to_be_added > 0)
+    if (old_topology != new_topology)
+      if (new_topology == NECESSARILY_CLOSED) {
+	// A NON_NECESSARILY_CLOSED constraint system
+	// can be converted in to a NECESSARILY_CLOSED one
+	// only if it does not contain strict inequalities.
+	if (contains_strict_inequalities())
+	  return false;
+	// Since there were no strict inequalities,
+	// all \epsilon coefficients are equal to zero
+	// and we do not need to clear them:
+	// we just decrement the number of columns to be added.
+	if (--cols_to_be_added > 0)
+	  add_zero_columns(cols_to_be_added);
+	set_necessarily_closed();
+      }
+      else {
+	// A NECESSARILY_CLOSED constraint system is converted into
+	// a NON_NECESSARILY_CLOSED one by adding a further column
+	// of zeros for the \epsilon coefficients.
+	add_zero_columns(++cols_to_be_added);
+	set_non_necessarily_closed();
+      }
+    else {
+      // Topologies agree: first add the required zero columns ...
+      add_zero_columns(cols_to_be_added);
+      // ... and, if needed, move the \epsilon coefficients
+      // to the new last column.
+      if (old_topology == NON_NECESSARILY_CLOSED) {
+	ConSys& cs = *this;
+	size_t old_eps_index = old_space_dim + 1;
+	size_t new_eps_index = new_space_dim + 1;
+	for (size_t i = num_rows(); i-- > 0; )
+	  std::swap(cs[i][new_eps_index], cs[i][old_eps_index]);
+      }
+    }
+  else
+    // Here `cols_to_be_added == 0', so that
+    // `old_space_dim == new_space_dim' and `old_topology != new_topology'.
+    if (new_topology == NECESSARILY_CLOSED) {
+      // A NON_NECESSARILY_CLOSED constraint system
+      // can be converted in to a NECESSARILY_CLOSED one
+      // only if it does not contain strict inequalities.
+      if (contains_strict_inequalities())
+	return false;
+      // We just remove the column of the \epsilon coefficients.
+      resize_no_copy(num_rows(), old_space_dim + 1);
+      set_necessarily_closed();
+    }
+    else {
+      // We just add the column of the \epsilon coefficients.
+      add_zero_columns(1);
+      set_non_necessarily_closed();
+    }
+  // We successfully adjusted dimensions and topology.
+  return true;
+}
+
+
+bool
+PPL::ConSys::contains_strict_inequalities() const {
+  assert(!is_necessarily_closed());
+  const ConSys& cs = *this;
+  for (size_t i = num_rows(); i-- > 0; )
+    if (cs[i].is_strict_inequality())
+      return true;
+  return false;
+}
+
+
 void
 PPL::ConSys::insert(const Constraint& c) {
   if (topology() == c.topology())

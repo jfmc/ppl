@@ -183,7 +183,20 @@ PPL_INTERNAL:
   //! on a \p n_columns - 1 dimensional space (including the
   //! \f$\epsilon\f$ dimension, if \p topology is
   //! <CODE>NON_NECESSARILY_CLOSED</CODE>).
-  ConSys(size_t n_rows, size_t n_columns, Topology topology);
+  ConSys(Topology topology, size_t n_rows, size_t n_columns);
+
+  //! Adjusts \p *this so that it matches the topology and
+  //! the number of dimensions given as parameters
+  //! (adding or removing columns if needed).
+  //! Returns <CODE>false</CODE> if and only if \p topology is
+  //! equal to <CODE>NECESSARILY_CLOSED</CODE> and \p *this
+  //! contains strict inequalities.
+  bool adjust_topology_and_dimension(Topology topology,
+				     size_t num_dimensions);
+
+  //! Returns <CODE>true</CODE> if and only if \p *this
+  //! contains one or more strict inequality constraints.
+  bool contains_strict_inequalities() const;
 
   //! Returns the \p k- th constraint of the system.
   Constraint& operator[](size_t k);

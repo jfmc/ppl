@@ -47,7 +47,7 @@ ConSys::ConSys(Topology topology)
 }
 
 inline
-ConSys::ConSys(size_t n_rows, size_t n_columns, Topology topology)
+ConSys::ConSys(Topology topology, size_t n_rows, size_t n_columns)
   : Matrix(topology, n_rows, n_columns) {
 }
 
