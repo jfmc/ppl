@@ -24,8 +24,6 @@ site: http://www.cs.unipr.it/ppl/ . */
 #include <config.h>
 
 #include "SatRow.defs.hh"
-
-#include <iostream>
 #include <cassert>
 #include <climits>
 
@@ -147,15 +145,13 @@ PPL::SatRow::next(int position) const {
 int
 PPL::SatRow::last() const {
   size_t li = mpz_size(vec);
-  mp_srcptr p = vec->_mp_d + li;
-  while (li > 0) {
-    --li;
-    --p;
-    const mp_limb_t limb = *p;
-    if (limb != 0)
-      return li*BITS_PER_GMP_LIMB + last_one(limb);
-  }
-  return -1;
+  if (li == 0)
+    return -1;
+  --li;
+  const mp_srcptr p = vec->_mp_d + li;
+  const mp_limb_t limb = *p;
+  assert(limb != 0);
+  return li*BITS_PER_GMP_LIMB + last_one(limb);
 }
 
 int
@@ -205,32 +201,24 @@ int
 PPL::compare(const SatRow& x, const SatRow& y) {
   const size_t x_size = mpz_size(x.vec);
   const size_t y_size = mpz_size(y.vec);
-  size_t x_li = 0;
-  size_t y_li = 0;
-  while (x_li < x_size && y_li < y_size) {
-    const mp_limb_t a = mpz_getlimbn(x.vec, x_li++);
-    const mp_limb_t b = mpz_getlimbn(y.vec, y_li++);
-    if (a != b) {
+  size_t size = (x_size > y_size ? y_size : x_size);
+  mp_srcptr xp = x.vec->_mp_d;
+  mp_srcptr yp = y.vec->_mp_d;
+  while (size > 0) {
+    const mp_limb_t xl = *xp;
+    const mp_limb_t yl = *yp;
+    if (xl != yl) {
       // Get the one's where they are different.
-      const mp_limb_t diff = (a ^ b);
+      const mp_limb_t diff = xl ^ yl;
       // First bit that is different.
       const mp_limb_t mask = diff & ~(diff-1);
-      return (a & mask) ? 1 : -1;
+      return (xl & mask) ? 1 : -1;
     }
+    ++xp;
+    ++yp;
+    --size;
   }
-  if (x_size < y_size) {
-    while (y_li < y_size)
-      if (mpz_getlimbn(y.vec, y_li++) != 0)
-	return -1;
-    return 0;
-  }
-  else if (x_size > y_size) {
-    while (x_li < x_size)
-      if (mpz_getlimbn(x.vec, x_li++) != 0)
-	return 1;
-    return 0;
-  }
-  return 0;
+  return x_size == y_size ? 0 : (x_size > y_size ? 1 : -1);
 }
 
 /*! \relates Parma_Polyhedra_Library::SatRow */
@@ -238,34 +226,17 @@ bool
 PPL::subset_or_equal(const SatRow& x, const SatRow& y) {
   size_t x_size = mpz_size(x.vec);
   size_t y_size = mpz_size(y.vec);
+  if (x_size > y_size)
+    return false;
   mp_srcptr xp = x.vec->_mp_d;
   mp_srcptr yp = y.vec->_mp_d;
-  if (x_size <= y_size) {
-    while (x_size > 0) {
-      if (*xp & ~*yp)
-	return false;
-      ++xp;
-      ++yp;
-      --x_size;
-    }
+  while (x_size > 0) {
+    if (*xp & ~*yp)
+      return false;
+    ++xp;
+    ++yp;
+    --x_size;
   }
-  else {
-    // x_size > y_size
-    x_size -= y_size;
-    while (y_size > 0) {
-      if (*xp & ~*yp)
-	return false;
-      ++xp;
-      ++yp;
-      --y_size;
-    }
-    while (x_size > 0) {
-      if (*xp)
-	return false;
-      ++xp;
-      --x_size;
-    }
-  }   
   return true;
 }
 
@@ -274,55 +245,23 @@ bool
 PPL::subset_or_equal(const SatRow& x, const SatRow& y, bool& strict_subset) {
   size_t x_size = mpz_size(x.vec);
   size_t y_size = mpz_size(y.vec);
+  if (x_size > y_size)
+    return false;
+  strict_subset = (x_size < y_size);
   mp_srcptr xp = x.vec->_mp_d;
   mp_srcptr yp = y.vec->_mp_d;
-  strict_subset = false;
-  if (x_size <= y_size) {
-    y_size -= x_size;
-    while (x_size > 0) {
-      mp_limb_t xl = *xp;
-      mp_limb_t yl = *yp;
-      if (xl & ~yl)
-	return false;
-      if (!strict_subset && xl != yl)
-	strict_subset = true;
-      ++xp;
-      ++yp;
-      --x_size;
-    }
-    if (strict_subset)
-      return true;
-    while (y_size > 0) {
-      if (*yp) {
-	strict_subset = true;
-	return true;
-      }
-      ++yp;
-      --y_size;
-    }
-    return true;
+  while (x_size > 0) {
+    const mp_limb_t xl = *xp;
+    const mp_limb_t yl = *yp;
+    if (xl & ~yl)
+      return false;
+    if (!strict_subset && xl != yl)
+      strict_subset = true;
+    ++xp;
+    ++yp;
+    --x_size;
   }
-  else {
-    x_size -= y_size;
-    while (y_size > 0) {
-      mp_limb_t xl = *xp;
-      mp_limb_t yl = *yp;
-      if (xl & ~yl)
-	return false;
-      if (!strict_subset && xl != yl)
-	strict_subset = true;
-      ++xp;
-      ++yp;
-      --y_size;
-    }
-    while (x_size > 0) {
-      if (*xp)
-	return false;
-      ++xp;
-      --x_size;
-    }
-    return true;
-  }
+  return true;
 }
 
 /*! \relates Parma_Polyhedra_Library::SatRow */
@@ -330,58 +269,28 @@ bool
 PPL::strict_subset(const SatRow& x, const SatRow& y) {
   size_t x_size = mpz_size(x.vec);
   size_t y_size = mpz_size(y.vec);
+  if (x_size > y_size)
+    return false;
+  bool different = (x_size < y_size);
   mp_srcptr xp = x.vec->_mp_d;
   mp_srcptr yp = y.vec->_mp_d;
-  bool different = false;
-  if (x_size <= y_size) {
-    y_size -= x_size;
-    while (x_size > 0) {
-      mp_limb_t xl = *xp;
-      mp_limb_t yl = *yp;
-      if (xl & ~yl)
-	return false;
-      if (!different && xl != yl)
-	different = true;
-      ++xp;
-      ++yp;
-      --x_size;
-    }
-    if (different)
-      return true;
-    while (y_size > 0) {
-      if (*yp)
-	return true;
-      ++yp;
-      --y_size;
-    }
-    return false;
-  }
-  else {
-    x_size -= y_size;
-    while (y_size > 0) {
-      mp_limb_t xl = *xp;
-      mp_limb_t yl = *yp;
-      if (xl & ~yl)
-	return false;
-      if (!different && xl != yl)
-	different = true;
-      ++xp;
-      ++yp;
-      --y_size;
-    }
-    if (!different)
+  while (x_size > 0) {
+    const mp_limb_t xl = *xp;
+    const mp_limb_t yl = *yp;
+    if (xl & ~yl)
       return false;
-    while (x_size > 0) {
-      if (*xp)
-	return false;
-      ++xp;
-      --x_size;
-    }
-    return true;
+    if (!different && xl != yl)
+      different = true;
+    ++xp;
+    ++yp;
+    --x_size;
   }
+  return different;
 }
 
 bool
 PPL::SatRow::OK() const {
-  return true;
+  // FIXME: this must be completed.
+  const size_t vec_size = mpz_size(vec);
+  return vec_size == 0 || mpz_getlimbn(vec, vec_size-1) != 0;
 }
