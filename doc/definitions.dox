@@ -553,9 +553,9 @@ will be
 \anchor map_dimensions
 <B>Mapping the Dimensions of the Vector Space</B>
 
-The library provides an operator to map the dimensions of the
-vector space \f$\Rset^n\f$ according to a partial injective function
-\f$\pard{\rho}{\{0, \ldots, n-1\}}{\Nset}\f$
+The operator <CODE>map_dimensions</CODE> provided by the library
+maps the dimensions of the vector space \f$\Rset^n\f$ according
+to a partial injective function \f$\pard{\rho}{\{0, \ldots, n-1\}}{\Nset}\f$
 such that \f$\rho\bigl(\{0, \ldots, n-1\}\bigr) = \{0, \ldots, m-1\}\f$
 with \f$m \leq n\f$.
 Dimensions corresponding to indices that are not mapped
