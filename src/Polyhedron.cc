@@ -595,8 +595,7 @@ static void
 throw_different_dimensions(const char* method,
 			   const PPL::Polyhedron& x,
 			   const PPL::Polyhedron& y) {
-  std::string what;
-  std::ostringstream s(what);
+  std::ostringstream s;
   s << method << ":" << std::endl
     << "x->space_dimension() == " << x.space_dimension()
     << ", y->space_dimension() == " << y.space_dimension();
@@ -1044,8 +1043,7 @@ static void
 throw_dimension_incompatible(const char* method,
 			     const PPL::Polyhedron& x,
 			     size_t requested_dimension) {
-  std::string what;
-  std::ostringstream s(what);
+  std::ostringstream s;
   s << method << ":" << std::endl
     << "this->space_dimension() == " << x.space_dimension()
     << ", requested dimension == " << requested_dimension;
@@ -1184,8 +1182,7 @@ static void
 throw_different_dimensions(const char* method,
 			   const PPL::Polyhedron& x,
 			   const PPL::Matrix& y) {
-  std::string what;
-  std::ostringstream s(what);
+  std::ostringstream s;
   s << method << ":" << std::endl
     << "this->space_dimension() == " << x.space_dimension()
     << ", system->space_dimension() == " ;
@@ -1271,8 +1268,7 @@ static void
 throw_different_dimensions(const char* method,
 			   const PPL::Polyhedron& x,
 			   const PPL::Row& y) {
-  std::string what;
-  std::ostringstream s(what);
+  std::ostringstream s;
   s << method << ":" << std::endl
     << "this->space_dimension() == " << x.space_dimension()
     << ", y->space_dimension() == " << y.size() - 1;
