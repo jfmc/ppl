@@ -38,14 +38,14 @@ namespace Parma_Polyhedra_Library {
 
 struct Checked_Number_Default_Policy {
   static const int check_overflow = 1;
-  static const int check_invalid = 0;
+  static const int check_nan_result = 0;
   static const int check_inexact = 0;
   static const int check_divbyzero = 0;
   static const int check_sqrt_neg = 0;
-  static const int check_nan = 0;
-  static const int check_infinity = 0;
-  static const int handle_nan = 0;
-  static const int handle_infinity = 0;
+  static const int check_nan_arg = 0;
+  static const int check_infinity_arg = 0;
+  static const int store_unknown = 0;
+  static const int store_overflows = 0;
 };
 
 template <typename T, typename Policy>
@@ -161,6 +161,12 @@ int cmp(const Checked_Number<T, Policy> REF x, const Checked_Number<T, Policy> R
 
 template <typename T, typename Policy>
 void negate(Checked_Number<T, Policy>& x);
+
+template <typename T, typename Policy>
+void add_assign_mul(Checked_Number<T, Policy>& x, const Checked_Number<T, Policy> REF y, const Checked_Number<T, Policy> REF z);
+
+template <typename T, typename Policy>
+void sub_assign_mul(Checked_Number<T, Policy>& x, const Checked_Number<T, Policy> REF y, const Checked_Number<T, Policy> REF z);
 
 template <typename T, typename Policy>
 void gcd_assign(Checked_Number<T, Policy>& x, const Checked_Number<T, Policy> REF y);

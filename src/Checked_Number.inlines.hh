@@ -34,8 +34,10 @@ bad_result(Result r) {
     throw std::overflow_error("Negative overflow.");
   case V_POS_OVERFLOW:
     throw std::overflow_error("Positive overflow.");
-  case V_NAN:
-    throw std::domain_error("Got Not A Number.");
+  case V_UNKNOWN:
+    throw std::domain_error("Undefined result.");
+  case V_DOMAIN:
+    throw std::domain_error("Result is out of numeric domain.");
   default:
     throw std::logic_error("Unexpected inexact computation.");
   }
@@ -279,35 +281,52 @@ operator-(const Checked_Number<T, Policy> REF x) {
   return r;
 }
 
-#define DEF_ASSIGN_FUN1(f, fun) \
+#define DEF_ASSIGN_FUN2_1(f, fun) \
 template <typename T, typename Policy> \
 inline void \
 f(Checked_Number<T, Policy>& x) { \
   check_result(fun<Policy>(x.value(), x.value())); \
-} \
+}
+
+#define DEF_ASSIGN_FUN2_2(f, fun) \
 template <typename T, typename Policy> \
 inline void \
 f(Checked_Number<T, Policy>& x, const Checked_Number<T, Policy> REF y) { \
   check_result(fun<Policy>(x.value(), y.value())); \
 }
 
-#define DEF_ASSIGN_FUN2(f, fun) \
+#define DEF_ASSIGN_FUN3_2(f, fun) \
 template <typename T, typename Policy> \
 inline void \
 f(Checked_Number<T, Policy>& x, const Checked_Number<T, Policy> REF y) { \
   check_result(fun<Policy>(x.value(), x.value(), y.value())); \
-} \
+}
+
+#define DEF_ASSIGN_FUN3_3(f, fun) \
 template <typename T, typename Policy> \
 inline void \
 f(Checked_Number<T, Policy>& x, const Checked_Number<T, Policy> REF y, const Checked_Number<T, Policy> REF z) { \
   check_result(fun<Policy>(x.value(), y.value(), z.value())); \
 }
 
-DEF_ASSIGN_FUN1(sqrt_assign, sqrt)
-DEF_ASSIGN_FUN1(negate, neg)
-DEF_ASSIGN_FUN2(exact_div_assign, div)
-DEF_ASSIGN_FUN2(gcd_assign, gcd)
-DEF_ASSIGN_FUN2(lcm_assign, lcm)
+DEF_ASSIGN_FUN2_1(sqrt_assign, sqrt)
+DEF_ASSIGN_FUN2_2(sqrt_assign, sqrt)
+
+DEF_ASSIGN_FUN2_1(negate, neg)
+DEF_ASSIGN_FUN2_2(negate, neg)
+
+DEF_ASSIGN_FUN3_2(exact_div_assign, div)
+DEF_ASSIGN_FUN3_3(exact_div_assign, div)
+
+DEF_ASSIGN_FUN3_3(add_assign_mul, add_mul)
+
+DEF_ASSIGN_FUN3_3(sub_assign_mul, sub_mul)
+
+DEF_ASSIGN_FUN3_2(gcd_assign, gcd)
+DEF_ASSIGN_FUN3_3(gcd_assign, gcd)
+
+DEF_ASSIGN_FUN3_2(lcm_assign, lcm)
+DEF_ASSIGN_FUN3_3(lcm_assign, lcm)
 
 
 template <typename T, typename Policy>
