@@ -27,5 +27,6 @@ site: http://www.cs.unipr.it/ppl/ . */
 
 namespace PPL = Parma_Polyhedra_Library;
 
-PPL::Integer*
-PPL::tmp_Integer;
+PPL::Integer* PPL::tmp_Integer;
+
+volatile const std::exception* abandon_exponential_computations = 0;

@@ -175,8 +175,8 @@ Poly_Con_Relation.defs.hh \
 Poly_Gen_Relation.defs.hh \
 Polyhedron.defs.hh \
 C_Polyhedron.defs.hh \
-NNC_Polyhedron.defs.hh
-
+NNC_Polyhedron.defs.hh \
+globals.hh
 libppl_la_LDFLAGS = \
 -version-info $(LIBPPL_LT_CURRENT):$(LIBPPL_LT_REVISION):$(LIBPPL_LT_AGE)
 
