@@ -250,9 +250,9 @@ Prolog_is_cons(Prolog_term_ref t) {
   not a Prolog integer.
 */
 static inline int
-Prolog_get_long(Prolog_term_ref t, long& v) {
+Prolog_get_long(Prolog_term_ref t, long* lp) {
   assert(Prolog_is_integer(t));
-  v = Rd_Integer_Check(t);
+  *lp = Rd_Integer_Check(t);
   return 1;
 }
 
@@ -272,7 +272,7 @@ Prolog_is_address(Prolog_term_ref t) {
     if (!Prolog_is_integer(a[i]))
       return 0;
     long l;
-    if (!Prolog_get_long(a[i], l))
+    if (!Prolog_get_long(a[i], &l))
       return 0;
     if (l < 0 || l > USHRT_MAX)
       return 0;
@@ -286,7 +286,7 @@ Prolog_is_address(Prolog_term_ref t) {
   The behavior is undefined if \p t is not an address.
 */
 static inline int
-Prolog_get_address(Prolog_term_ref t, void*& p) {
+Prolog_get_address(Prolog_term_ref t, void** vpp) {
   assert(Prolog_is_address(t));
   static Prolog_atom dummy_name;
   static int dummy_arity;
@@ -297,7 +297,7 @@ Prolog_get_address(Prolog_term_ref t, void*& p) {
   } u;
   u.s[0] = Rd_Integer_Check(a[0]);
   u.s[1] = Rd_Integer_Check(a[1]);
-  p = reinterpret_cast<void*>(u.l);
+  *vpp = reinterpret_cast<void*>(u.l);
   return 1;
 }
 
@@ -306,9 +306,9 @@ Prolog_get_address(Prolog_term_ref t, void*& p) {
   The behavior is undefined if \p t is not a Prolog atom.
 */
 static inline int
-Prolog_get_atom_name(Prolog_term_ref t, Prolog_atom& name) {
+Prolog_get_atom_name(Prolog_term_ref t, Prolog_atom* ap) {
   assert(Prolog_is_atom(t));
-  name = Rd_Atom_Check(t);
+  *ap = Rd_Atom_Check(t);
   return 1;
 }
 
@@ -318,10 +318,9 @@ Prolog_get_atom_name(Prolog_term_ref t, Prolog_atom& name) {
   The behavior is undefined if \p t is not a Prolog compound term.
 */
 static inline int
-Prolog_get_compound_name_arity(Prolog_term_ref t,
-			       Prolog_atom& name, int& arity) {
+Prolog_get_compound_name_arity(Prolog_term_ref t, Prolog_atom* ap, int* ip) {
   assert(Prolog_is_compound(t));
-  Rd_Compound_Check(t, &name, &arity);
+  Rd_Compound_Check(t, ap, ip);
   return 1;
 }
 
@@ -367,7 +366,7 @@ static PPL::Integer
 integer_term_to_Integer(Prolog_term_ref t) {
   // FIXME: does GNU Prolog support unlimited precision integer?
   long v;
-  Prolog_get_long(t, v);
+  Prolog_get_long(t, &v);
   return PPL::Integer(v);
 }
 

@@ -271,11 +271,11 @@ Prolog_is_cons(Prolog_term_ref t) {
   not a Prolog integer.
 */
 static inline int
-Prolog_get_long(Prolog_term_ref t, long& v) {
+Prolog_get_long(Prolog_term_ref t, long* lp) {
   assert(Prolog_is_integer(t));
   // The following statement is to get around a bug in XSB 2.5.
   t = p2p_deref(t);
-  v = p2c_int(t);
+  *lp = p2c_int(t);
   return 1;
 }
 
@@ -285,11 +285,11 @@ Prolog_get_long(Prolog_term_ref t, long& v) {
   The behavior is undefined if \p t is not an address.
 */
 static inline int
-Prolog_get_address(Prolog_term_ref t, void*& p) {
+Prolog_get_address(Prolog_term_ref t, void** vpp) {
   assert(Prolog_is_address(t));
   // The following statement is to get around a bug in XSB 2.5.
   t = p2p_deref(t);
-  p = reinterpret_cast<void*>(p2c_int(t));
+  *vpp = reinterpret_cast<void*>(p2c_int(t));
   return 1;
 }
 
@@ -298,11 +298,11 @@ Prolog_get_address(Prolog_term_ref t, void*& p) {
   The behavior is undefined if \p t is not a Prolog atom.
 */
 static inline int
-Prolog_get_atom_name(Prolog_term_ref t, Prolog_atom& name) {
+Prolog_get_atom_name(Prolog_term_ref t, Prolog_atom* ap) {
   assert(Prolog_is_atom(t));
   // The following statement is to get around a bug in XSB 2.5.
   t = p2p_deref(t);
-  name = p2c_string(t);
+  *ap = p2c_string(t);
   return 1;
 }
 
@@ -312,13 +312,12 @@ Prolog_get_atom_name(Prolog_term_ref t, Prolog_atom& name) {
   The behavior is undefined if \p t is not a Prolog compound term.
 */
 static inline int
-Prolog_get_compound_name_arity(Prolog_term_ref t,
-			       Prolog_atom& name, int& arity) {
+Prolog_get_compound_name_arity(Prolog_term_ref t, Prolog_atom* ap, int* ip) {
   assert(Prolog_is_compound(t));
   // The following statement is to get around a bug in XSB 2.5.
   t = p2p_deref(t);
-  name = p2c_functor(t);
-  arity = p2c_arity(t);
+  *ap = p2c_functor(t);
+  *ip = p2c_arity(t);
   return 1;
 }
 
@@ -361,7 +360,7 @@ static PPL::Integer
 integer_term_to_Integer(Prolog_term_ref t) {
   // FIXME: does XSB support unlimited precision integers?
   long v;
-  Prolog_get_long(t, v);
+  Prolog_get_long(t, &v);
   return PPL::Integer(v);
 }
 

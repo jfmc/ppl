@@ -343,7 +343,7 @@ static unsigned int
 term_to_unsigned_int(Prolog_term_ref t) {
   if (Prolog_is_integer(t)) {
     long v;
-    if (Prolog_get_long(t, v))
+    if (Prolog_get_long(t, &v))
       return get_unsigned_int(v);
   }
   throw not_unsigned_int(t);
@@ -353,7 +353,7 @@ static Prolog_atom
 term_to_polyhedron_kind(Prolog_term_ref t) {
   if (Prolog_is_atom(t)) {
     Prolog_atom name;
-    if (Prolog_get_atom_name(t, name)
+    if (Prolog_get_atom_name(t, &name)
 	&& (name == a_c || name == a_nnc))
       return name;
   }
@@ -367,7 +367,7 @@ build_lin_expression(Prolog_term_ref t) {
   else if (Prolog_is_compound(t)) {
     Prolog_atom functor;
     int arity;
-    Prolog_get_compound_name_arity(t, functor, arity);
+    Prolog_get_compound_name_arity(t, &functor, &arity);
     switch (arity) {
     case 1:
       {
@@ -425,7 +425,7 @@ build_constraint(Prolog_term_ref t) {
   if (Prolog_is_compound(t)) {
     Prolog_atom functor;
     int arity;
-    Prolog_get_compound_name_arity(t, functor, arity);
+    Prolog_get_compound_name_arity(t, &functor, &arity);
     if (arity == 2) {
       Prolog_term_ref arg1 = Prolog_new_term_ref();
       Prolog_term_ref arg2 = Prolog_new_term_ref();
@@ -482,7 +482,7 @@ build_generator(Prolog_term_ref t) {
   if (Prolog_is_compound(t)) {
     Prolog_atom functor;
     int arity;
-    Prolog_get_compound_name_arity(t, functor, arity);
+    Prolog_get_compound_name_arity(t, &functor, &arity);
     if (arity == 1) {
       Prolog_term_ref arg = Prolog_new_term_ref();
       Prolog_get_arg(1, t, arg);
@@ -625,7 +625,7 @@ get_variable(Prolog_term_ref t) {
   if (Prolog_is_compound(t)) {
     Prolog_atom functor;
     int arity;
-    Prolog_get_compound_name_arity(t, functor, arity);
+    Prolog_get_compound_name_arity(t, &functor, &arity);
     if (functor == a_dollar_VAR && arity == 1) {
       Prolog_term_ref arg = Prolog_new_term_ref();
       Prolog_get_arg(1, t, arg);
@@ -639,7 +639,7 @@ static PPL::Polyhedron*
 term_to_polyhedron_handle(Prolog_term_ref t_ph) {
   if (Prolog_is_address(t_ph)) {
     void* p;
-    if (Prolog_get_address(t_ph, p))
+    if (Prolog_get_address(t_ph, &p))
       return static_cast<PPL::Polyhedron*>(p);
   }
   throw not_a_polyhedron_handle(t_ph);
@@ -849,7 +849,7 @@ term_to_boundary(Prolog_term_ref t_b, Boundary_Kind kind,
   Prolog_atom functor;
   int arity;
 
-  Prolog_get_compound_name_arity(t_b, functor, arity);
+  Prolog_get_compound_name_arity(t_b, &functor, &arity);
   // A boundary term is either of the form c(Limit) or o(Limit).
   if (arity != 1 || (functor != a_c && functor != a_o))
     return false;
@@ -867,7 +867,7 @@ term_to_boundary(Prolog_term_ref t_b, Boundary_Kind kind,
   }
   else if (Prolog_is_atom(t_limit)) {
     Prolog_atom a;
-    Prolog_get_atom_name(t_limit, a);
+    Prolog_get_atom_name(t_limit, &a);
     Prolog_atom allowed_infinity = (kind == LOWER ? a_minf : a_pinf);
     // Only open bounds may be unbounded.
     if (a != allowed_infinity || open_closed_atom != a_o)
@@ -876,7 +876,7 @@ term_to_boundary(Prolog_term_ref t_b, Boundary_Kind kind,
     finite = false;
   }
   else if (Prolog_is_compound(t_limit)) {
-    Prolog_get_compound_name_arity(t_limit, functor, arity);
+    Prolog_get_compound_name_arity(t_limit, &functor, &arity);
     if (arity != 2 || functor != a_slash)
       return false;
 
@@ -917,7 +917,7 @@ ppl_new_Polyhedron_from_bounding_box(Prolog_term_ref t_tp,
       goto fail;
     else {
       Prolog_atom a;
-      Prolog_get_atom_name(t_l, a);
+      Prolog_get_atom_name(t_l, &a);
       if (a != a_nil)
         goto fail;
     }
@@ -931,7 +931,7 @@ ppl_new_Polyhedron_from_bounding_box(Prolog_term_ref t_tp,
 	goto fail;
       Prolog_atom functor;
       int arity;
-      Prolog_get_compound_name_arity(t_interval, functor, arity);
+      Prolog_get_compound_name_arity(t_interval, &functor, &arity);
       if (arity != 2 || functor != a_i)
 	goto fail;
 
@@ -1776,7 +1776,7 @@ static bool
 term_to_complexity_class(Prolog_term_ref t, Prolog_atom& cc) {
   if (Prolog_is_atom(t)) {
     Prolog_atom name;
-    if (Prolog_get_atom_name(t, name)
+    if (Prolog_get_atom_name(t, &name)
 	&& (name == a_polynomial || name == a_simplex || name == a_any)) {
       cc = name;
       return true;

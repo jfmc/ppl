@@ -244,9 +244,9 @@ Prolog_is_cons(Prolog_term_ref t) {
   not a Prolog integer.
 */
 static inline int
-Prolog_get_long(Prolog_term_ref t, long& v) {
+Prolog_get_long(Prolog_term_ref t, long* lp) {
   assert(Prolog_is_integer(t));
-  v = YAP_IntOfTerm(t);
+  *lp = YAP_IntOfTerm(t);
   return 1;
 }
 
@@ -256,9 +256,9 @@ Prolog_get_long(Prolog_term_ref t, long& v) {
   The behavior is undefined if \p t is not an address.
 */
 static inline int
-Prolog_get_address(Prolog_term_ref t, void*& p) {
+Prolog_get_address(Prolog_term_ref t, void** vpp) {
   assert(Prolog_is_address(t));
-  p = reinterpret_cast<void*>(YAP_IntOfTerm(t));
+  *vpp = reinterpret_cast<void*>(YAP_IntOfTerm(t));
   return 1;
 }
 
@@ -267,9 +267,9 @@ Prolog_get_address(Prolog_term_ref t, void*& p) {
   The behavior is undefined if \p t is not a Prolog atom.
 */
 static inline int
-Prolog_get_atom_name(Prolog_term_ref t, Prolog_atom& name) {
+Prolog_get_atom_name(Prolog_term_ref t, Prolog_atom* ap) {
   assert(Prolog_is_atom(t));
-  name = YAP_AtomOfTerm(t);
+  *ap = YAP_AtomOfTerm(t);
   return 1;
 }
 
@@ -279,12 +279,11 @@ Prolog_get_atom_name(Prolog_term_ref t, Prolog_atom& name) {
   The behavior is undefined if \p t is not a Prolog compound term.
 */
 static inline int
-Prolog_get_compound_name_arity(Prolog_term_ref t,
-			       Prolog_atom& name, int& arity) {
+Prolog_get_compound_name_arity(Prolog_term_ref t, Prolog_atom* ap, int* ip) {
   assert(Prolog_is_compound(t));
   YAP_Functor f = YAP_FunctorOfTerm(t);
-  name = YAP_NameOfFunctor(f);
-  arity = YAP_ArityOfFunctor(f);
+  *ap = YAP_NameOfFunctor(f);
+  *ip = YAP_ArityOfFunctor(f);
   return 1;
 }
 
@@ -327,7 +326,7 @@ static PPL::Integer
 integer_term_to_Integer(Prolog_term_ref t) {
   // FIXME: does YAP support unlimited precision integer?
   long v;
-  Prolog_get_long(t, v);
+  Prolog_get_long(t, &v);
   return PPL::Integer(v);
 }
 
