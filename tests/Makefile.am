@@ -125,7 +125,7 @@ ORIGINAL_TESTS = \
 	linearpartition1 linearpartition2 \
 	linearpartition3 linearpartition4 \
 	linexpression1 \
-	mapspacedims1 mapspacedims2 mapspacedims3 \
+	mapspacedims1 mapspacedims2 mapspacedims3  mapspacedims4 \
 	max_min1 max_min2 \
 	maxspacedim1 \
 	mc91 \
@@ -220,6 +220,7 @@ DERIVED_TESTS = \
 	nnc_linearpartition1 nnc_linearpartition2 \
 	nnc_linearpartition3 nnc_linearpartition4 \
 	nnc_mapspacedims1 nnc_mapspacedims2 nnc_mapspacedims3 \
+	nnc_mapspacedims4 \
 	nnc_max_min1 nnc_max_min2 \
 	nnc_mc91 \
 	nnc_minconstraints1 nnc_minconstraints2 \
@@ -487,6 +488,7 @@ linexpression1_SOURCES = linexpression1.cc
 mapspacedims1_SOURCES = mapspacedims1.cc
 mapspacedims2_SOURCES = mapspacedims2.cc
 mapspacedims3_SOURCES = mapspacedims3.cc
+mapspacedims4_SOURCES = mapspacedims4.cc
 
 max_min1_SOURCES = max_min1.cc
 max_min2_SOURCES = max_min2.cc
@@ -925,6 +927,8 @@ nnc_mapspacedims2_SOURCES = mapspacedims2.cc
 nnc_mapspacedims2_CXXFLAGS = $(DERIVED_CXXFLAGS)
 nnc_mapspacedims3_SOURCES = mapspacedims3.cc
 nnc_mapspacedims3_CXXFLAGS = $(DERIVED_CXXFLAGS)
+nnc_mapspacedims4_SOURCES = mapspacedims4.cc
+nnc_mapspacedims4_CXXFLAGS = $(DERIVED_CXXFLAGS)
 
 nnc_max_min1_SOURCES = max_min1.cc
 nnc_max_min1_CXXFLAGS = $(DERIVED_CXXFLAGS)

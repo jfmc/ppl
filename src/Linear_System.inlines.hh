@@ -185,8 +185,9 @@ Linear_System::remove_trailing_columns(const dimension_type n) {
 inline void
 Linear_System::permute_columns(const std::vector<dimension_type>& cycles) {
   Matrix::permute_columns(cycles);
-  // The system may have lost sortedness.
-  set_sorted(false);
+  // The rows with permuted columns are still normalized but may
+  // be not strongly normalized: sign normalization is necessary.
+  sign_normalize();
 }
 
 inline bool
