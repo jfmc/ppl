@@ -590,14 +590,6 @@ then
   CXXFLAGS="-W -Wall $CXXFLAGS"
 fi
 
-case $host in
-*-*-cygwin* | *-*-mingw*)
-  extra_libraries="${extra_libraries} -L/usr/lib/mingw -lmingwex"
-  ;;
-*)
-  ;;
-esac
-
 AC_SUBST(extra_includes)
 AC_SUBST(extra_libraries)
 AC_SUBST(debug_flag)

@@ -27,15 +27,58 @@ site: http://www.cs.unipr.it/ppl/ . */
 #include "float.types.hh"
 #include <cassert>
 #include <cmath>
+
 #ifdef __CYGWIN__
 // Cygwin does not conform to C99.
-// Please do not remove the space separating `#' from `include':
-// this ensures that the directive will not be moved during the
-// procedure that automatically creates the library's include file
-// (see `Makefile.am' in the `src' directory).
-# include <mingw/fenv.h>
+#define FE_INVALID      0x01
+#define FE_DIVBYZERO    0x04
+#define FE_OVERFLOW     0x08
+#define FE_UNDERFLOW    0x10
+#define FE_INEXACT      0x20
+
+#define FE_ALL_EXCEPT \
+        (FE_INEXACT | FE_DIVBYZERO | FE_UNDERFLOW | FE_OVERFLOW | FE_INVALID)
+
+#define FE_TONEAREST    0
+#define FE_DOWNWARD     0x400
+#define FE_UPWARD       0x800
+#define FE_TOWARDZERO   0xc00
+
+inline int
+fegetround() {
+	unsigned short cw;
+	__asm__ ("fnstcw %0" : "=m" (*&cw));
+	return cw & 0xc00;
+}
+inline int
+fesetround(int mode) {
+	unsigned short cw;
+	__asm__ ("fnstcw %0" : "=m" (*&cw));
+	cw &= ~0xc00;
+	cw |= mode;
+	__asm__ ("fldcw %0" : : "m" (*&cw));
+	return 0;
+}
+inline int
+fetestexcept(int excepts) {
+	int temp;
+	__asm__ ("fnstsw %0" : "=a" (temp));
+	return temp & excepts;
+}
 #else
 # include <fenv.h>
+#endif
+
+inline void feclearexcept_all() {
+#ifdef i386
+	__asm__ ("fclex" : /* No outputs.  */);
+#else
+	feclearexcept(FE_ALL_EXCEPT);
+#endif
+}
+
+#ifndef NAN
+#define NAN (HUGE_VAL - HUGE_VAL)
 #endif
 
 #define USE_FPU_ROUNDING_MODE
@@ -70,7 +113,7 @@ fpu_get_rounding_mode() {
 inline void
 fpu_reset_inexact() {
 #ifdef USE_FPU_INEXACT
-  feclearexcept(FE_ALL_EXCEPT);
+  feclearexcept_all();
 #endif
 }
 
@@ -714,6 +757,10 @@ template <typename Policy, typename Type>
 inline Result 
 add_float(Type& to, const Type x, const Type y) {
   prepare_inexact<Policy>();
+  /* 
+     This assume that the result of the operation is the nearest representable
+     number according to current rounding direction.
+   */
   return assign_result_inexact<Policy>(to, x + y);
 }
 
@@ -721,6 +768,10 @@ template <typename Policy, typename Type>
 inline Result 
 sub_float(Type& to, const Type x, const Type y) {
   prepare_inexact<Policy>();
+  /* 
+     This assume that the result of the operation is the nearest representable
+     number according to current rounding direction.
+   */
   return assign_result_inexact<Policy>(to, x - y);
 }
 
@@ -728,6 +779,10 @@ template <typename Policy, typename Type>
 inline Result 
 mul_float(Type& to, const Type x, const Type y) {
   prepare_inexact<Policy>();
+  /* 
+     This assume that the result of the operation is the nearest representable
+     number according to current rounding direction.
+   */
   return assign_result_inexact<Policy>(to, x * y);
 }
 
@@ -735,6 +790,10 @@ template <typename Policy, typename Type>
 inline Result 
 div_float(Type& to, const Type x, const Type y) {
   prepare_inexact<Policy>();
+  /* 
+     This assume that the result of the operation is the nearest representable
+     number according to current rounding direction.
+   */
   return assign_result_inexact<Policy>(to, x / y);
 }
 
@@ -742,6 +801,10 @@ template <typename Policy, typename Type>
 inline Result 
 mod_float(Type& to, const Type x, const Type y) {
   prepare_inexact<Policy>();
+  /* 
+     This assume that the result of the operation is the nearest representable
+     number according to current rounding direction.
+   */
   return assign_result_inexact<Policy>(to, std::fmod(x, y));
 }
 
@@ -755,6 +818,10 @@ template <typename Policy, typename Type>
 inline Result
 sqrt_float(Type& to, const Type from) {
   prepare_inexact<Policy>();
+  /* 
+     This assume that the result of the operation is the nearest representable
+     number according to current rounding direction.
+   */
   return assign_result_inexact<Policy>(to, std::sqrt(from));
 }
 
