@@ -124,15 +124,9 @@ poly_hull_assign_if_exact(PH& p, const PH& q) {
 template <typename PH>
 bool
 check_containment(const PH& ph, const Polyhedra_PowerSet<PH>& ps) {
-  using namespace std;
-  using namespace IO_Operators;
-
   Polyhedra_PowerSet<NNC_Polyhedron> tmp(ph.space_dimension(),
 					 Polyhedron::EMPTY);
   tmp.add_disjunct(NNC_Polyhedron(ph));
-  cout << "ph " << ph << endl;
-  cout << "ps " << ps << endl;
-  cout << "tmp at the beginning " << tmp << endl;
   for (typename Polyhedra_PowerSet<PH>::const_iterator i = ps.begin(),
 	 ps_end = ps.end(); i != ps_end; ++i) {
     const NNC_Polyhedron pi(i->polyhedron());
@@ -140,10 +134,9 @@ check_containment(const PH& ph, const Polyhedra_PowerSet<PH>& ps) {
 	   jn = j; j != tmp.end(); j = jn) {
       ++jn;
       const NNC_Polyhedron& pj = j->polyhedron();
-      if (pj.contains(pi))
+      if (pi.contains(pj))
 	tmp.erase(j);
     }
-    cout << "tmp after filtering " << tmp << endl;
     if (tmp.is_bottom())
       return true;
     else {
@@ -162,7 +155,6 @@ check_containment(const PH& ph, const Polyhedra_PowerSet<PH>& ps) {
 	}
       }
       tmp.upper_bound_assign(new_disjuncts);
-      cout << "tmp after additions " << tmp << endl;
     }
   }
   return false;
