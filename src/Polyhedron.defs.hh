@@ -915,7 +915,7 @@ public:
   bool intersection_assign_and_minimize(const Polyhedron& y);
 
   //! \brief
-  //! Assigns to \p *this the poly-hull \p *this and \p y.
+  //! Assigns to \p *this the poly-hull of \p *this and \p y.
   //! The result is not guaranteed to be minimized.
   /*!
     \exception std::invalid_argument thrown if \p *this and \p y

@@ -487,8 +487,9 @@ operators on the lattices \f$\Pset_n\f$ and \f$\CPset_n\f$.
 
 For any pair of NNC polyhedra \f$\cP_1, \cP_2 \in \Pset_n\f$,
 the <EM>convex polyhedral difference</EM> (or <EM>poly-difference</EM>)
-of \f$\cP_1\f$ and \f$\cP_2\f$ is defined as the poly-hull
-of the set-theoretic difference of \f$\cP_1\f$ and \f$\cP_2\f$.
+of \f$\cP_1\f$ and \f$\cP_2\f$ is defined as the smallest
+convex polyhedron containing the set-theoretic difference
+of \f$\cP_1\f$ and \f$\cP_2\f$.
 
 In general, even though \f$\cP_1, \cP_2 \in \CPset_n\f$
 are topologically closed polyhedra, their poly-difference may be
