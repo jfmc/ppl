@@ -407,11 +407,10 @@ The <EM>space dimension</EM> of an NNC polyhedron \f$P \in \Pset_n\f$
 \f$n \in \Nset\f$ of the corresponding vector space \f$\Rset^n\f$.
 The space dimension of constraints, generators and other objects
 of the library is defined similarly.
-The space dimension of objects is important because most of the
-operations defined on polyhedra are well-defined if and only if
-the various arguments are space dimension compatible.
 
-The following (space) <EM>dimension-compatibility</EM> rules are defined:
+Unless it is otherwise stated,
+all the polyhedra, constraints and/or generators in any library operation
+must obey the following space <EM>dimension-compatibility</EM> rules:
 - the polyhedra are dimension-compatible if and only if they have
   the same space dimension;
 - the constraint
@@ -428,8 +427,8 @@ The following (space) <EM>dimension-compatibility</EM> rules are defined:
   in the system are dimension-compatible with the polyhedron.
 
 While the space dimension of a constraint, a generator or a system thereof
-is automatically adjusted when needed, the space dimension of polyhedra
-can only change due to explicit calls to operators provided for that
+is automatically adjusted when needed, the space dimensions of polyhedra
+can only be changed by explicit calls to operators provided for that
 purpose.
 
 \section operations Operations on Convex Polyhedra
@@ -494,17 +493,17 @@ The library provides operators for checking the relation holding
 between an NNC polyhedron  and
 either a constraint or a generator.
 
-Suppose \f$\cP\f$ is an NNC polyhedron in \f$\Pset_n\f$
+Suppose \f$\cP\f$ is an NNC polyhedron
 and \f$\cC\f$ an arbitrary constraint system representing \f$\cP\f$.
-Let
+Suppose also that
 \f$
   c = \bigl(
         \langle \vect{a}, \vect{x} \rangle \relop b
       \bigr)
-\f$,
-be a constraint in \f$\Rset^n\f$
-where \f$\mathord{\relop} \in \{ =, \geq, > \}\f$,
-and \f$\cQ\f$ the set of points of \f$\Rset^n\f$
+\f$
+is a constraint
+with \f$\mathord{\relop} \in \{ =, \geq, > \}\f$
+and \f$\cQ\f$ the set of points
 that satisfy \f$c\f$.
 The possible relations between \f$\cP\f$ and \f$c\f$ are as follows.
 - \f$\cP\f$ <EM>is disjoint</EM> from \f$c\f$ if
