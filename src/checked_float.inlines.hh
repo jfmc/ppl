@@ -24,6 +24,7 @@ site: http://www.cs.unipr.it/ppl/ . */
 #ifndef PPL_checked_float_inlines_hh
 #define PPL_checked_float_inlines_hh 1
 
+#include <cassert>
 #include <cmath>
 #include <fenv.h>
 
@@ -102,13 +103,13 @@ set_float32_iec559_word(float32_t &v, u_int32_t w) {
   v = u.value;
 }
 
-#define REAL32_SGN_MASK  0x80000000
-#define REAL32_PINF    0x7f800000
-#define REAL32_NINF    0xff800000
-#define REAL32_PZERO    0x00000000
-#define REAL32_NZERO    0x80000000
-#define REAL32_PEPS    0x00000001
-#define REAL32_NEPS    0x80000001
+#define REAL32_SGN_MASK	0x80000000
+#define REAL32_PINF	0x7f800000
+#define REAL32_NINF	0xff800000
+#define REAL32_PZERO	0x00000000
+#define REAL32_NZERO	0x80000000
+#define REAL32_PEPS	0x00000001
+#define REAL32_NEPS	0x80000001
 
 inline Result
 check_normal_parts(u_int32_t w) {
@@ -121,10 +122,28 @@ check_normal_parts(u_int32_t w) {
 }
 
 inline Result
-check_normal_(float32_t v) {
+is_special(float32_t v) {
   u_int32_t w;
   get_float32_iec559_word(v, w);
   return check_normal_parts(w);
+}
+
+inline void
+set_special(float32_t& v, Result r) {
+  switch (r) {
+  case V_NEG_OVERFLOW:
+    v = -HUGE_VAL;
+    break;
+  case V_POS_OVERFLOW:
+    v = HUGE_VAL;
+    break;
+  case V_NAN:
+    v = NAN;
+    break;
+  default:
+    assert(0);
+    break;
+  }
 }
 
 template <typename Policy>
@@ -223,10 +242,28 @@ check_normal_parts(u_int32_t lsp, u_int32_t msp) {
 }
 
 inline Result
-check_normal_(float64_t v) {
+is_special(float64_t v) {
   u_int32_t lsp, msp;
   get_float64_iec559_parts(v, lsp, msp);
   return check_normal_parts(lsp, msp);
+}
+
+inline void
+set_special(float64_t& v, Result r) {
+  switch (r) {
+  case V_NEG_OVERFLOW:
+    v = -HUGE_VAL;
+    break;
+  case V_POS_OVERFLOW:
+    v = HUGE_VAL;
+    break;
+  case V_NAN:
+    v = NAN;
+    break;
+  default:
+    assert(0);
+    break;
+  }
 }
 
 template <typename Policy>
@@ -338,26 +375,46 @@ set_float96_iec559_parts(float96_t &v, u_int64_t lsp, u_int32_t msp) {
 #define REAL96_MSP_NINF    0x0000ffff
 #define REAL96_MSP_NEG    0x00008000
 #define REAL96_MSP_POS    0x00000000
-#define REAL96_LSP_INF    0
+#define REAL96_LSP_NORMAL 0x8000000000000000ULL
+#define REAL96_LSP_INF    0x8000000000000000ULL
 #define REAL96_LSP_EPS    1
-#define REAL96_LSP_MAX    0xffffffffffffffffULL
+#define REAL96_LSP_MAX    0x7fffffffffffffffULL
 
 inline Result
 check_normal_parts(u_int64_t lsp, u_int32_t msp) {
   u_int32_t a = msp & ~REAL96_MSP_SGN_MASK;
-  if (a == REAL96_MSP_PINF && lsp == REAL96_LSP_INF)
-    return (msp & REAL96_MSP_SGN_MASK) ? V_NEG_OVERFLOW : V_POS_OVERFLOW;
-  if (a >= REAL96_MSP_PINF)
+  if (a == REAL96_MSP_PINF) {
+    if (lsp == REAL96_LSP_INF)
+      return (msp & REAL96_MSP_SGN_MASK) ? V_NEG_OVERFLOW : V_POS_OVERFLOW;
     return V_NAN;
+  }
   return V_EQ;
 }
 
 inline Result
-check_normal_(float96_t v) {
+is_special(float96_t v) {
   u_int64_t lsp;
   u_int32_t msp;
   get_float96_iec559_parts(v, lsp, msp);
   return check_normal_parts(lsp, msp);
+}
+
+inline void
+set_special(float96_t& v, Result r) {
+  switch (r) {
+  case V_NEG_OVERFLOW:
+    v = -HUGE_VAL;
+    break;
+  case V_POS_OVERFLOW:
+    v = HUGE_VAL;
+    break;
+  case V_NAN:
+    v = NAN;
+    break;
+  default:
+    assert(0);
+    break;
+  }
 }
 
 template <typename Policy>
@@ -371,6 +428,7 @@ pred(float96_t& to) {
     if (r != V_EQ)
       return r;
   }
+  lsp &= ~REAL96_LSP_NORMAL;
   if (msp & REAL96_MSP_SGN_MASK) {
     if (lsp == REAL96_LSP_MAX) {
       lsp = 0;
@@ -393,6 +451,8 @@ pred(float96_t& to) {
       --lsp;
     }
   }
+  if (msp != 0)
+    lsp |= REAL96_LSP_NORMAL;
   set_float96_iec559_parts(to, lsp, msp);
   return V_EQ;
 }
@@ -408,6 +468,7 @@ succ(float96_t& to) {
     if (r != V_EQ)
       return r;
   }
+  lsp &= ~REAL96_LSP_NORMAL;
   if (!(msp & REAL96_MSP_SGN_MASK)) {
     if (lsp == REAL96_LSP_MAX) {
       lsp = 0;
@@ -430,6 +491,8 @@ succ(float96_t& to) {
       --lsp;
     }
   }
+  if (msp != 0)
+    lsp |= REAL96_LSP_NORMAL;
   set_float96_iec559_parts(to, lsp, msp);
   return V_EQ;
 }
@@ -488,10 +551,28 @@ check_normal_parts(u_int64_t lsp, u_int64_t msp) {
 }
 
 inline Result
-check_normal_(float128_t v) {
+is_special(float128_t v) {
   u_int64_t lsp, msp;
   get_float128_iec559_parts(v, lsp, msp);
   return check_normal_parts(lsp, msp);
+}
+
+inline void
+set_special(float128_t& v, Result r) {
+  switch (r) {
+  case V_NEG_OVERFLOW:
+    v = -HUGE_VAL;
+    break;
+  case V_POS_OVERFLOW:
+    v = HUGE_VAL;
+    break;
+  case V_NAN:
+    v = NAN;
+    break;
+  default:
+    assert(0);
+    break;
+  }
 }
 
 template <typename Policy>
@@ -616,24 +697,14 @@ prepare_inexact() {
     fpu_reset_inexact();
 }
 
-template <typename Policy, typename Type>
-inline Result
-check_normal(const Type v) {
-  return Policy::check_normal ? check_normal_(v) : V_EQ;
-}
-
-template <typename Policy, typename Type>
-inline Result
-check_result(const Type v) {
-  return Policy::check_overflow ? check_normal_(v) : V_EQ;
-}
-    
 template <typename Policy, typename From, typename To>
 inline Result 
 assign_float_float_exact(To& to, const From from) {
-  Result r = check_normal<Policy>(from);
-  if (r != V_EQ)
-    return r;
+  if (Policy::check_assign) {
+    Result r = is_special(from);
+    if (r != V_EQ)
+      return r;
+  }
   to = from;
   return V_EQ;
 }
@@ -643,81 +714,84 @@ inline Result
 assign_float_float(To& to, const From from) {
   prepare_inexact<Policy>();
   Result r = assign_float_float_exact<Policy>();
-  if (r != V_EQ)
-    return r;
-  return check_inexact<Policy>(from);
+  if (r == V_EQ)
+    r = check_inexact<Policy>(from);
+  return r;
 }
 
 template <typename Policy, typename Type>
 inline Result 
-neg_float(Type& to, const Type from) {
-  Result r = check_normal<Policy>(from);
-  if (r != V_EQ)
-    return r;
-  to = -from;
+assign_result_exact(Type& to, const Type from) {
+  if (Policy::check_overflow) {
+    Result r = is_special(from);
+    if (r != V_EQ)
+      return r;
+  }
+  to = from;
   return V_EQ;
 }
 
 template <typename Policy, typename Type>
 inline Result 
-assign_float_float_inexact_(Type& to, const Type from) {
-  Result r = check_result<Policy>(from);
-  if (r != V_EQ)
-    return r;
-  to = from;
-  return check_inexact<Policy>(from);
+assign_result_inexact(Type& to, const Type from) {
+  Result r = assign_result_exact(to, from);
+  if (r == V_EQ)
+    r = check_inexact<Policy>(from);
+  return r;
+}
+
+template <typename Policy, typename Type>
+inline Result 
+neg_float(Type& to, const Type from) {
+  return assign_result_exact(to, -from);
 }
 
 template <typename Policy, typename Type>
 inline Result 
 add_float(Type& to, const Type x, const Type y) {
   prepare_inexact<Policy>();
-  return assign_float_float_inexact_<Policy>(to, x + y);
+  return assign_result_inexact<Policy>(to, x + y);
 }
 
 template <typename Policy, typename Type>
 inline Result 
 sub_float(Type& to, const Type x, const Type y) {
   prepare_inexact<Policy>();
-  return assign_float_float_inexact_<Policy>(to, x - y);
+  return assign_result_inexact<Policy>(to, x - y);
 }
 
 template <typename Policy, typename Type>
 inline Result 
 mul_float(Type& to, const Type x, const Type y) {
   prepare_inexact<Policy>();
-  return assign_float_float_inexact_<Policy>(to, x * y);
+  return assign_result_inexact<Policy>(to, x * y);
 }
 
 template <typename Policy, typename Type>
 inline Result 
 div_float(Type& to, const Type x, const Type y) {
   prepare_inexact<Policy>();
-  return assign_float_float_inexact_<Policy>(to, x / y);
+  return assign_result_inexact<Policy>(to, x / y);
 }
 
 template <typename Policy, typename Type>
 inline Result 
 mod_float(Type& to, const Type x, const Type y) {
   prepare_inexact<Policy>();
-  return assign_float_float_inexact_<Policy>(to, std::fmod(x, y));
+  return assign_result_inexact<Policy>(to, std::fmod(x, y));
 }
 
 template <typename Policy, typename Type>
 inline Result
 abs_float(Type& to, const Type from) {
-  Result r = check_normal<Policy>(from);
-  if (r != V_EQ)
-    return r;
-  to = std::abs(from);
-  return V_EQ;
+  return assign_result_exact(to, std::abs(from));
 }
 
 template <typename Policy, typename Type>
 inline Result
 sqrt_float(Type& to, const Type from) {
   prepare_inexact<Policy>();
-  return assign_float_float_inexact_<Policy>(to, std::sqrt(from));
+  return assign_result_inexact<Policy>(to, std::sqrt(from));
 }
 
 template <typename Policy, typename To, typename From>
