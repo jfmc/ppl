@@ -351,6 +351,7 @@ Integer_to_integer_term(const PPL::Integer& n) {
 #define ppl_version_revision xsb_stub_ppl_version_revision
 #define ppl_version_beta xsb_stub_ppl_version_beta
 #define ppl_version xsb_stub_ppl_version
+#define ppl_banner xsb_stub_ppl_banner
 #define ppl_max_space_dimension xsb_stub_ppl_max_space_dimension
 #define ppl_initialize xsb_stub_ppl_initialize
 #define ppl_finalize xsb_stub_ppl_finalize
@@ -432,6 +433,7 @@ Integer_to_integer_term(const PPL::Integer& n) {
 #undef ppl_version_revision
 #undef ppl_version_beta
 #undef ppl_version
+#undef ppl_banner
 #undef ppl_max_space_dimension
 #undef ppl_initialize
 #undef ppl_finalize
@@ -562,6 +564,7 @@ XSB_ENTRY_1(ppl_version_minor)
 XSB_ENTRY_1(ppl_version_revision)
 XSB_ENTRY_1(ppl_version_beta)
 XSB_ENTRY_1(ppl_version)
+XSB_ENTRY_1(ppl_banner)
 XSB_ENTRY_1(ppl_max_space_dimension)
 XSB_ENTRY_0(ppl_initialize)
 XSB_ENTRY_0(ppl_finalize)

@@ -26,6 +26,7 @@ site: http://www.cs.unipr.it/ppl/ . */
 :- foreign(ppl_version_revision(+term)).
 :- foreign(ppl_version_beta(+term)).
 :- foreign(ppl_version(+term)).
+:- foreign(ppl_banner(+term)).
 :- foreign(ppl_max_space_dimension(+term)).
 :- foreign(ppl_initialize).
 :- foreign(ppl_finalize).

@@ -27,6 +27,7 @@ site: http://www.cs.unipr.it/ppl/ . */
 	ppl_version_revision/1,
 	ppl_version_beta/1,
 	ppl_version/1,
+	ppl_banner/1,
 	ppl_max_space_dimension/1,
 	ppl_initialize/0,
 	ppl_finalize/0,

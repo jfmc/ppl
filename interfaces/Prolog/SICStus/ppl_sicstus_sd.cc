@@ -155,6 +155,7 @@ SP_STUB_1(ppl_version_minor)
 SP_STUB_1(ppl_version_revision)
 SP_STUB_1(ppl_version_beta)
 SP_STUB_1(ppl_version)
+SP_STUB_1(ppl_banner)
 SP_STUB_1(ppl_max_space_dimension)
 SP_STUB_0(ppl_initialize)
 SP_STUB_0(ppl_finalize)
@@ -247,6 +248,7 @@ ppl_sicstus_init(int /* when */) {
   SP_DEFINE_C_PREDICATE(ppl_version_revision, 1);
   SP_DEFINE_C_PREDICATE(ppl_version_beta, 1);
   SP_DEFINE_C_PREDICATE(ppl_version, 1);
+  SP_DEFINE_C_PREDICATE(ppl_banner, 1);
   SP_DEFINE_C_PREDICATE(ppl_max_space_dimension, 1);
   SP_DEFINE_C_PREDICATE(ppl_initialize, 0);
   SP_DEFINE_C_PREDICATE(ppl_finalize, 0);

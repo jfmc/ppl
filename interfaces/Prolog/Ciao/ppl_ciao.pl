@@ -142,10 +142,10 @@ ppl_version_revision(Version) :-
 ppl_version_beta(Version) :-
    ppl_version_beta_2(Version, 1).
 
-:- true pred ppl_version_2(in(Version),
+:- true pred ppl_banner_2(in(Banner),
                                go(Success))
           :: any_term * int
-  + (returns(Success), foreign(ppl_version)).
+  + (returns(Success), foreign(ppl_banner)).
 
 ppl_version(Version) :-
    ppl_version_2(Version, 1).
@@ -154,6 +154,14 @@ ppl_version(Version) :-
                                go(Success))
           :: any_term * int
   + (returns(Success), foreign(ppl_max_space_dimension)).
+
+ppl_banner(Banner) :-
+   ppl_banner_2(Banner, 1).
+
+:- true pred ppl_banner_2(in(Banner),
+                               go(Success))
+          :: any_term * int
+  + (returns(Success), foreign(ppl_banner)).
 
 ppl_max_space_dimension(Dimension) :-
    ppl_max_space_dimension_2(Dimension, 1).
@@ -707,6 +715,8 @@ ppl_Polyhedron_bounded_H79_extrapolation_assign_with_token(Handle1,
 %        ppl_version_beta/1,
         ppl_version_2/2,
 %        ppl_version/1,
+        ppl_banner_2/2,
+%        ppl_banner/1,
         ppl_max_space_dimension_2/2,
 %        ppl_max_space_dimension/1,
         ppl_initialize/0,
@@ -1141,6 +1151,7 @@ since the above version of this is temporary.
         ppl_version_revision/1,
         ppl_version_beta/1,
         ppl_version/1,
+        ppl_banner/1,
         ppl_max_space_dimension/1,
         ppl_initialize/0,
         ppl_finalize/0,
