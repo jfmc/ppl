@@ -758,9 +758,9 @@ inline Result
 add_float(Type& to, const Type x, const Type y) {
   prepare_inexact<Policy>();
   /*
-     This assume that the result of the operation is the nearest representable
-     number according to current rounding direction.
-   */
+    This assume that the result of the operation is the nearest representable
+    number according to current rounding direction.
+  */
   return assign_result_inexact<Policy>(to, x + y);
 }
 
@@ -769,9 +769,9 @@ inline Result
 sub_float(Type& to, const Type x, const Type y) {
   prepare_inexact<Policy>();
   /*
-     This assume that the result of the operation is the nearest representable
-     number according to current rounding direction.
-   */
+    This assume that the result of the operation is the nearest representable
+    number according to current rounding direction.
+  */
   return assign_result_inexact<Policy>(to, x - y);
 }
 
@@ -780,9 +780,9 @@ inline Result
 mul_float(Type& to, const Type x, const Type y) {
   prepare_inexact<Policy>();
   /*
-     This assume that the result of the operation is the nearest representable
-     number according to current rounding direction.
-   */
+    This assume that the result of the operation is the nearest representable
+    number according to current rounding direction.
+  */
   return assign_result_inexact<Policy>(to, x * y);
 }
 
@@ -791,9 +791,9 @@ inline Result
 div_float(Type& to, const Type x, const Type y) {
   prepare_inexact<Policy>();
   /*
-     This assume that the result of the operation is the nearest representable
-     number according to current rounding direction.
-   */
+    This assume that the result of the operation is the nearest representable
+    number according to current rounding direction.
+  */
   return assign_result_inexact<Policy>(to, x / y);
 }
 
@@ -802,9 +802,9 @@ inline Result
 mod_float(Type& to, const Type x, const Type y) {
   prepare_inexact<Policy>();
   /*
-     This assume that the result of the operation is the nearest representable
-     number according to current rounding direction.
-   */
+    This assume that the result of the operation is the nearest representable
+    number according to current rounding direction.
+  */
   return assign_result_inexact<Policy>(to, std::fmod(x, y));
 }
 
@@ -819,9 +819,9 @@ inline Result
 sqrt_float(Type& to, const Type from) {
   prepare_inexact<Policy>();
   /*
-     This assume that the result of the operation is the nearest representable
-     number according to current rounding direction.
-   */
+    This assume that the result of the operation is the nearest representable
+    number according to current rounding direction.
+  */
   return assign_result_inexact<Policy>(to, std::sqrt(from));
 }
 
