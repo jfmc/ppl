@@ -76,11 +76,11 @@ public:
   Status();
 
   //! Intersection: yields the assertions that are in \p x <EM>and</EM> \p y.
-  friend Status Parma_Polyhedra_Library::operator &(const Status& x,
-						    const Status& y);
+  friend Status
+  Parma_Polyhedra_Library::operator&(const Status& x, const Status& y);
   //! Union: yields the assertions that are in \p x <EM>or</EM> \p y.
-  friend Status Parma_Polyhedra_Library::operator |(const Status& x,
-						    const Status& y);
+  friend Status
+  Parma_Polyhedra_Library::operator|(const Status& x, const Status& y);
 
   //! @name Test, remove or add an individual assertion from the conjunction.
   //@{
@@ -122,33 +122,33 @@ public:
 
 private:
   //! Status is implemented by means of a finite bitset.
-  typedef unsigned int status_t;
+  typedef unsigned int flags_t;
 
   //! @name Bitmasks for the individual assertions.
   //@{
-  static const status_t ZERO_DIM_UNIV =         0U;
-  static const status_t EMPTY =            1U << 0;
-  static const status_t C_UP_TO_DATE =     1U << 1;
-  static const status_t G_UP_TO_DATE =     1U << 2;
-  static const status_t C_MINIMIZED  =     1U << 3;
-  static const status_t G_MINIMIZED  =     1U << 4;
-  static const status_t SAT_C_UP_TO_DATE = 1U << 5;
-  static const status_t SAT_G_UP_TO_DATE = 1U << 6;
+  static const flags_t ZERO_DIM_UNIV    = 0U;
+  static const flags_t EMPTY            = 1U << 0;
+  static const flags_t C_UP_TO_DATE     = 1U << 1;
+  static const flags_t G_UP_TO_DATE     = 1U << 2;
+  static const flags_t C_MINIMIZED      = 1U << 3;
+  static const flags_t G_MINIMIZED      = 1U << 4;
+  static const flags_t SAT_C_UP_TO_DATE = 1U << 5;
+  static const flags_t SAT_G_UP_TO_DATE = 1U << 6;
   //@}
 
   //! This holds the current bitset.
-  status_t flags;
+  flags_t flags;
 
   //! Construct from a bitmask.
-  Status(status_t mask);
+  Status(flags_t mask);
   //! Check whether <EM>all</EM> bits in \p mask are set.
-  bool test_all(status_t mask) const;
+  bool test_all(flags_t mask) const;
   //! Check whether <EM>at least one</EM> bit in \p mask is set.
-  bool test_any(status_t mask) const;
+  bool test_any(flags_t mask) const;
   //! Set the bits in \p mask.
-  void set(status_t mask);
+  void set(flags_t mask);
   //! Reset the bits in \p mask.
-  void reset(status_t mask);
+  void reset(flags_t mask);
 };
 
 namespace Parma_Polyhedra_Library {

@@ -24,7 +24,7 @@ site: http://www.cs.unipr.it/ppl/ . */
 namespace Parma_Polyhedra_Library {
 
 inline
-Status::Status(status_t mask)
+Status::Status(flags_t mask)
   : flags(mask) {
 }
 
@@ -44,22 +44,22 @@ operator |(const Status& x, const Status& y) {
 }
 
 inline bool
-Status::test_all(status_t mask) const {
+Status::test_all(flags_t mask) const {
   return (flags & mask) == mask;
 }
 
 inline bool
-Status::test_any(status_t mask) const {
+Status::test_any(flags_t mask) const {
   return flags & mask;
 }
 
 inline void
-Status::set(status_t mask) {
+Status::set(flags_t mask) {
   flags |= mask;
 }
 
 inline void
-Status::reset(status_t mask) {
+Status::reset(flags_t mask) {
   flags &= ~mask;
 }
 
