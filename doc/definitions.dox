@@ -477,9 +477,6 @@ In particular, we can have \f$\pdim(P) \neq \pdim(Q)\f$ even though
 and vice versa, \f$P\f$ and \f$Q\f$ may be dimension-incompatible polyhedra
 even though \f$\pdim(P) = \pdim(Q)\f$.
 
-(The following spurious string of characters in the user manual
- is due to a bug in Doxygen.)
-
 \if Implementation_Info
 
 FIXME: We should find a way to have a decent bibliography
