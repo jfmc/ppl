@@ -30,6 +30,7 @@ site: http://www.cs.unipr.it/ppl/ . */
 #include <algorithm>
 #include <deque>
 #include <string>
+#include <iostream>
 
 namespace Parma_Polyhedra_Library {
 
@@ -77,8 +78,8 @@ template <typename PH>
 void
 Polyhedra_PowerSet<PH>::concatenate_assign(const Polyhedra_PowerSet& y) {
   // Ensure omega-reduction here, since what follows has quadratic complexity.
-  omega_reduce();
-  y.omega_reduce();
+  Base::omega_reduce();
+  y.Base::omega_reduce();
   Sequence new_sequence;
   const Polyhedra_PowerSet<PH>& x = *this;
   for (const_iterator xi = x.begin(), x_end = x.end(),
@@ -100,12 +101,12 @@ Polyhedra_PowerSet<PH>::concatenate_assign(const Polyhedra_PowerSet& y) {
       for (++yi; yi != y_end; ++yi)
 	yph.poly_hull_assign(yi->polyhedron());
       xph.concatenate_assign(yph);
-      std::swap(sequence, new_sequence);
+      std::swap(Base::sequence, new_sequence);
       add_disjunct(xph);
       goto done;
     }
   }
-  std::swap(sequence, new_sequence);
+  std::swap(Base::sequence, new_sequence);
  done:
   space_dim += y.space_dim;
   assert(OK());
@@ -114,56 +115,56 @@ Polyhedra_PowerSet<PH>::concatenate_assign(const Polyhedra_PowerSet& y) {
 template <typename PH>
 void
 Polyhedra_PowerSet<PH>::add_constraint(const Constraint& c) {
-  for (iterator xi = begin(), x_end = end(); xi != x_end; ++xi)
+  for (iterator xi = Base::begin(), x_end = Base::end(); xi != x_end; ++xi)
     xi->polyhedron().add_constraint(c);
-  reduced = false;
+  Base::reduced = false;
 }
 
 template <typename PH>
 bool
 Polyhedra_PowerSet<PH>::add_constraint_and_minimize(const Constraint& c) {
-  for (iterator xi = begin(), xin = xi, x_end = end(); xi != x_end; xi = xin) {
+  for (iterator xi = Base::begin(), xin = xi, x_end = Base::end(); xi != x_end; xi = xin) {
     ++xin;
     if (!xi->polyhedron().add_constraint_and_minimize(c)) {
       erase(xi);
-      x_end = end();
+      x_end = Base::end();
     }
     else
-      reduced = false;
+      Base::reduced = false;
   }
-  return !empty();
+  return !Base::empty();
 }
 
 template <typename PH>
 void
 Polyhedra_PowerSet<PH>::add_constraints(const ConSys& cs) {
-  for (iterator xi = begin(), x_end = end(); xi != x_end; ++xi) {
+  for (iterator xi = Base::begin(), x_end = Base::end(); xi != x_end; ++xi) {
     ConSys cs_copy = cs;
     xi->polyhedron().add_constraints(cs_copy);
   }
-  reduced = false;
+  Base::reduced = false;
 }
 
 template <typename PH>
 bool
 Polyhedra_PowerSet<PH>::add_constraints_and_minimize(const ConSys& cs) {
-  for (iterator xi = begin(), xin = xi, x_end = end(); xi != x_end; xi = xin) {
+  for (iterator xi = Base::begin(), xin = xi, x_end = Base::end(); xi != x_end; xi = xin) {
     ++xin;
     ConSys cs_copy = cs;
     if (!xi->polyhedron().add_constraints_and_minimize(cs_copy)) {
       erase(xi);
-      x_end = end();
+      x_end = Base::end();
     }
     else
-      reduced = false;
+      Base::reduced = false;
   }
-  return !empty();
+  return !Base::empty();
 }
 
 template <typename PH>
 void
 Polyhedra_PowerSet<PH>::add_dimensions_and_embed(dimension_type m) {
-  for (iterator i = begin(), send = end(); i != send; ++i)
+  for (iterator i = Base::begin(), send = Base::end(); i != send; ++i)
     i->add_dimensions_and_embed(m);
   space_dim += m;
   assert(OK());
@@ -172,7 +173,7 @@ Polyhedra_PowerSet<PH>::add_dimensions_and_embed(dimension_type m) {
 template <typename PH>
 void
 Polyhedra_PowerSet<PH>::add_dimensions_and_project(dimension_type m) {
-  for (iterator i = begin(), send = end(); i != send; ++i)
+  for (iterator i = Base::begin(), send = Base::end(); i != send; ++i)
     i->add_dimensions_and_project(m);
   space_dim += m;
   assert(OK());
@@ -183,11 +184,11 @@ void
 Polyhedra_PowerSet<PH>::remove_dimensions(const Variables_Set& to_be_removed) {
   Variables_Set::size_type num_removed = to_be_removed.size();
   if (num_removed > 0) {
-    for (iterator i = begin(), send = end(); i != send; ++i) {
+    for (iterator i = Base::begin(), send = Base::end(); i != send; ++i) {
       i->remove_dimensions(to_be_removed);
-      reduced = false;
+      Base::reduced = false;
     }
-    space_dim -= num_removed.size();
+    space_dim -= num_removed;
     assert(OK());
   }
 }
@@ -197,9 +198,9 @@ void
 Polyhedra_PowerSet<PH>::remove_higher_dimensions(dimension_type
 						 new_dimension) {
   if (new_dimension < space_dim) {
-    for (iterator i = begin(), send = end(); i != send; ++i) {
+    for (iterator i = Base::begin(), send = Base::end(); i != send; ++i) {
       i->remove_higher_dimensions(new_dimension);
-      reduced = false;
+      Base::reduced = false;
     }
     space_dim = new_dimension;
     assert(OK());
@@ -210,7 +211,7 @@ template <typename PH>
 bool
 Polyhedra_PowerSet<PH>::
 semantically_contains(const Polyhedra_PowerSet& y) const {
-  for (const_iterator yi = y.begin(), y_end = y.end(); yi != y_end; ++yi)
+  for (const_iterator yi = y.Base::begin(), y_end = y.Base::end(); yi != y_end; ++yi)
     if (!check_containment(yi->polyhedron(), *this))
       return false;
   return true;
@@ -228,7 +229,7 @@ template <typename PH>
 template <typename PartialFunction>
 void
 Polyhedra_PowerSet<PH>::map_dimensions(const PartialFunction& pfunc) {
-  if (is_bottom()) {
+  if (Base::is_bottom()) {
     dimension_type n = 0;
     for (dimension_type i = space_dim; i-- > 0; ) {
       dimension_type new_i;
@@ -238,11 +239,11 @@ Polyhedra_PowerSet<PH>::map_dimensions(const PartialFunction& pfunc) {
     space_dim = n;
   }
   else {
-    iterator sbegin = begin();
-    for (iterator i = sbegin, send = end(); i != send; ++i)
+    iterator sbegin = Base::begin();
+    for (iterator i = sbegin, send = Base::end(); i != send; ++i)
       i->map_dimensions(pfunc);
     space_dim = sbegin->space_dimension();
-    reduced = false;
+    Base::reduced = false;
   }
   assert(OK());
 }
@@ -251,16 +252,16 @@ template <typename PH>
 void
 Polyhedra_PowerSet<PH>::pairwise_reduce() {
   // It is wise to omega-reduce before pairwise-reducing.
-  omega_reduce();
+  Base::omega_reduce();
 
-  size_type n = size();
+  size_type n = Base::size();
   size_type deleted;
   do {
     Sequence new_sequence;
     std::deque<bool> marked(n, false);
     deleted = 0;
-    iterator sbegin = begin();
-    iterator send = end();
+    iterator sbegin = Base::begin();
+    iterator send = Base::end();
     unsigned i_index = 0;
     for (iterator i = sbegin; i != send; ++i, ++i_index) {
       if (marked[i_index])
@@ -288,7 +289,7 @@ Polyhedra_PowerSet<PH>::pairwise_reduce() {
     for (const_iterator i = sbegin; i != send; ++i, ++i_index)
       if (!marked[i_index])
 	add_non_bottom_disjunct(new_sequence, *i, nsbegin, nsend);
-    std::swap(sequence, new_sequence);
+    std::swap(Base::sequence, new_sequence);
     n -= deleted;
   } while (deleted > 0);
   assert(OK());
@@ -309,14 +310,14 @@ BGP99_heuristics_assign(const Polyhedra_PowerSet& y,
   }
 #endif
 
-  size_type n = size();
+  size_type n = Base::size();
   Sequence new_sequence;
   std::deque<bool> marked(n, false);
-  const_iterator sbegin = begin();
-  const_iterator send = end();
+  const_iterator sbegin = Base::begin();
+  const_iterator send = Base::end();
   unsigned i_index = 0;
   for (const_iterator i = sbegin; i != send; ++i, ++i_index)
-    for (const_iterator j = y.begin(), y_end = y.end(); j != y_end; ++j) {
+    for (const_iterator j = y.Base::begin(), y_end = y.Base::end(); j != y_end; ++j) {
       const PH& pi = i->polyhedron();
       const PH& pj = j->polyhedron();
       if (pi.contains(pj)) {
@@ -332,9 +333,9 @@ BGP99_heuristics_assign(const Polyhedra_PowerSet& y,
   for (const_iterator i = sbegin; i != send; ++i, ++i_index)
     if (!marked[i_index])
       add_non_bottom_disjunct(new_sequence, *i, nsbegin, nsend);
-  std::swap(sequence, new_sequence);
+  std::swap(Base::sequence, new_sequence);
   assert(OK());
-  assert(is_omega_reduced());
+  assert(Base::is_omega_reduced());
 }
 
 template <typename PH>
@@ -345,14 +346,14 @@ limited_BGP99_heuristics_assign(const Polyhedra_PowerSet& y,
 				void (Polyhedron::*lwm)(const Polyhedron&,
 							const ConSys&,
 							unsigned*)) {
-  size_type n = size();
+  size_type n = Base::size();
   Sequence new_sequence;
   std::deque<bool> marked(n, false);
-  iterator sbegin = begin();
-  iterator send = end();
+  iterator sbegin = Base::begin();
+  iterator send = Base::end();
   unsigned i_index = 0;
   for (iterator i = sbegin; i != send; ++i, ++i_index)
-    for (const_iterator j = y.begin(), y_end = y.end(); j != y_end; ++j) {
+    for (const_iterator j = y.Base::begin(), y_end = y.Base::end(); j != y_end; ++j) {
       PH& pi = i->polyhedron();
       const PH& pj = j->polyhedron();
       if (pi.contains(pj)) {
@@ -367,9 +368,9 @@ limited_BGP99_heuristics_assign(const Polyhedra_PowerSet& y,
   for (iterator i = sbegin; i != send; ++i, ++i_index)
     if (!marked[i_index])
       add_non_bottom_disjunct(new_sequence, *i, nsbegin, nsend);
-  std::swap(sequence, new_sequence);
+  std::swap(Base::sequence, new_sequence);
   assert(OK());
-  assert(is_omega_reduced());
+  assert(Base::is_omega_reduced());
 }
 
 template <typename PH>
@@ -429,9 +430,9 @@ template <typename PH>
 void
 Polyhedra_PowerSet<PH>::
 collect_multiset_lgo_info(multiset_lgo_info& info) const {
-  assert(is_omega_reduced());
+  assert(Base::is_omega_reduced());
   assert(info.size() == 0);
-  for (const_iterator i = begin(), iend = end(); i != iend; i++) {
+  for (const_iterator i = Base::begin(), iend = Base::end(); i != iend; i++) {
     base_lgo_info ph_info(i->polyhedron());
     info[ph_info]++;
   }
@@ -722,10 +723,10 @@ Polyhedra_PowerSet<PH>
 template <typename PH>
 void
 Polyhedra_PowerSet<PH>::ascii_dump(std::ostream& s) const {
-  s << "size " << size()
+  s << "size " << Base::size()
     << "\nspace_dim " << space_dim
-    << endl;
-  for (const_iterator i = begin(), send = end(); i != send; ++i)
+    << std::endl;
+  for (const_iterator i = Base::begin(), send = Base::end(); i != send; ++i)
     i->polyhedron().ascii_dump(s);
 }
 
@@ -765,7 +766,7 @@ Polyhedra_PowerSet<PH>::ascii_load(std::istream& s) {
 template <typename PH>
 bool
 Polyhedra_PowerSet<PH>::OK() const {
-  for (const_iterator i = begin(), send = end(); i != send; ++i)
+  for (const_iterator i = Base::begin(), send = Base::end(); i != send; ++i)
     if (i->space_dimension() != space_dim) {
 #ifndef NDEBUG
       std::cerr << "Space dimension mismatch: is " << i->space_dimension()
