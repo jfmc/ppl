@@ -195,9 +195,13 @@ private:
 
   void omega_reduction();
 
+  bool definitely_contains(const CS& y) const;
+
 public:
   typedef typename Sequence::iterator iterator;
   typedef typename Sequence::const_iterator const_iterator;
+  typedef typename Sequence::reverse_iterator reverse_iterator;
+  typedef typename Sequence::const_reverse_iterator const_reverse_iterator;
   typedef typename Sequence::value_type value_type;
 
   size_t size() const;
@@ -207,6 +211,12 @@ public:
 
   iterator end();
   const_iterator end() const;
+
+  reverse_iterator rbegin();
+  const_reverse_iterator rbegin() const;
+
+  reverse_iterator rend();
+  const_reverse_iterator rend() const;
 };
 
 #include "PowerSet.inlines.hh"

@@ -25,6 +25,7 @@ site: http://www.cs.unipr.it/ppl/ . */
 #define PPL_PowerSet_inlines_hh 1
 
 #include <algorithm>
+#include <deque>
 
 namespace Parma_Polyhedra_Library {
 
@@ -53,6 +54,30 @@ PowerSet<CS>::end() const {
 }
 
 template <typename CS>
+typename PowerSet<CS>::reverse_iterator
+PowerSet<CS>::rbegin() {
+  return sequence.rbegin();
+}
+
+template <typename CS>
+typename PowerSet<CS>::const_reverse_iterator
+PowerSet<CS>::rbegin() const {
+  return sequence.rbegin();
+}
+
+template <typename CS>
+typename PowerSet<CS>::reverse_iterator
+PowerSet<CS>::rend() {
+  return sequence.rend();
+}
+
+template <typename CS>
+typename PowerSet<CS>::const_reverse_iterator
+PowerSet<CS>::rend() const {
+  return sequence.rend();
+}
+
+template <typename CS>
 size_t
 PowerSet<CS>::size() const {
   return sequence.size();
@@ -71,7 +96,8 @@ PowerSet<CS>::PowerSet(const ConSys& cs)
 }
 
 template <typename CS>
-void PowerSet<CS>::omega_reduction() {
+void
+PowerSet<CS>::omega_reduction() {
   for (iterator xi = begin(), xin = xi; xi != end(); xi = xin) {
     ++xin;
     const CS& xv = *xi;
@@ -91,6 +117,15 @@ void PowerSet<CS>::omega_reduction() {
       }
     }
   }
+}
+
+template <typename CS>
+bool
+PowerSet<CS>::definitely_contains(const CS& y) const {
+  for (const_iterator xi = begin(), xend = end(); xi != xend; ++xi)
+    if (xi->is_definitely_equivalent_to(y))
+      return true;
+  return false;
 }
 
 template <typename CS>
@@ -382,6 +417,34 @@ template <typename CS>
 void
 PowerSet<CS>::limited_H79_widening_assign(const PowerSet& y,
 					  ConSys& cs) {
+  std::deque<iterator> possibly_new;
+  for (iterator xi = begin(), xend = end(); xi != xend; ++xi)
+    if (!y.definitely_contains(*xi))
+      possibly_new.push_back(xi);
+
+  if (possibly_new.empty())
+    return;
+
+  CS new_upper_bound(space_dim);
+  // Heuristics: less precise elements are later in the sequence.
+  for (typename std::deque<iterator>::const_reverse_iterator
+	 ni = possibly_new.rbegin(),
+	 nend = possibly_new.rend(); ni != nend; ++nend) {
+    const iterator& xi = *ni;
+    assert(xi->OK());
+    new_upper_bound.upper_bound_assign(*xi);
+    sequence.erase(xi);
+  }
+
+  CS old_upper_bound(space_dim);
+  // Heuristics again: less precise elements are later in the sequence.
+  for (const_reverse_iterator xi = rbegin(), xend = rend(); xi != xend; ++xi)
+    old_upper_bound.upper_bound_assign(*xi);
+
+  new_upper_bound.upper_bound_assign(old_upper_bound);
+  new_upper_bound.limited_H79_widening_assign(old_upper_bound, cs);
+
+  sequence.push_back(new_upper_bound);
 }
 
 template <typename CS>
