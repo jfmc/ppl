@@ -28,6 +28,10 @@ VPATH = @srcdir@
 
 SUBDIRS =
 
+EXTRA_DIST = ppl_swiprolog.cc pl_clpq.cc pl_clpq.pl
+
+if HAVE_SWI_PROLOG
+
 # Libtool -version-info for libpplswiprolog.la.
 #
 #  1. Start with version information of `0:0:0' for each libtool library.
@@ -77,9 +81,6 @@ smm.clpq \
 sumto.clpq \
 tak.clpq
 
-EXTRA_DIST = pl_clpq.cc pl_clpq.pl
-
-if HAVE_SWI_PROLOG
 #check_PROGRAMS = pplpl
 #pplpl_SOURCES = pplpl.cc
 #pplpl_LDADD = libpplswiprolog.la $(top_builddir)/src/libppl.la /usr/local/lib/pl-5.0.2/runtime/i686-linux/libpl.a -lreadline -ldl -ltermcap @extra_libraries@
