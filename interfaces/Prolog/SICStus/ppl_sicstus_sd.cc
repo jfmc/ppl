@@ -377,7 +377,9 @@ SP_STUB_2(ppl_Polyhedron_poly_difference_assign_and_minimize, 2)
 SP_STUB_2(ppl_Polyhedron_widening_assign, 2)
 SP_STUB_3(ppl_Polyhedron_limited_widening_assign, 3)
 SP_STUB_2(ppl_Polyhedron_get_constraints, 2)
+SP_STUB_2(ppl_Polyhedron_get_minimized_constraints, 2)
 SP_STUB_2(ppl_Polyhedron_get_generators, 2)
+SP_STUB_2(ppl_Polyhedron_get_minimized_generators, 2)
 SP_STUB_2(ppl_Polyhedron_add_constraint, 2)
 SP_STUB_2(ppl_Polyhedron_add_generator, 2)
 SP_STUB_2(ppl_Polyhedron_add_constraints, 2)
@@ -439,7 +441,9 @@ ppl_sicstus_init(int /* when */) {
   SP_DEFINE_C_PREDICATE(ppl_Polyhedron_widening_assign, 2);
   SP_DEFINE_C_PREDICATE(ppl_Polyhedron_limited_widening_assign, 3);
   SP_DEFINE_C_PREDICATE(ppl_Polyhedron_get_constraints, 2);
+  SP_DEFINE_C_PREDICATE(ppl_Polyhedron_get_minimized_constraints, 2);
   SP_DEFINE_C_PREDICATE(ppl_Polyhedron_get_generators, 2);
+  SP_DEFINE_C_PREDICATE(ppl_Polyhedron_get_minimized_generators, 2);
   SP_DEFINE_C_PREDICATE(ppl_Polyhedron_add_constraint, 2);
   SP_DEFINE_C_PREDICATE(ppl_Polyhedron_add_generator, 2);
   SP_DEFINE_C_PREDICATE(ppl_Polyhedron_add_constraints, 2);

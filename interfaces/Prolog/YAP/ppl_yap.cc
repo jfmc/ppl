@@ -351,7 +351,9 @@ init() {
   YAP_USER_C_PREDICATE(ppl_Polyhedron_widening_assign, 2);
   YAP_USER_C_PREDICATE(ppl_Polyhedron_limited_widening_assign, 3);
   YAP_USER_C_PREDICATE(ppl_Polyhedron_get_constraints, 2);
+  YAP_USER_C_PREDICATE(ppl_Polyhedron_get_minimized_constraints, 2);
   YAP_USER_C_PREDICATE(ppl_Polyhedron_get_generators, 2);
+  YAP_USER_C_PREDICATE(ppl_Polyhedron_get_minimized_generators, 2);
   YAP_USER_C_PREDICATE(ppl_Polyhedron_add_constraint, 2);
   YAP_USER_C_PREDICATE(ppl_Polyhedron_add_generator, 2);
   YAP_USER_C_PREDICATE(ppl_Polyhedron_add_constraints, 2);

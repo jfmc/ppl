@@ -24,7 +24,9 @@
 :- foreign(ppl_Polyhedron_widening_assign(+term, +term)).
 :- foreign(ppl_Polyhedron_limited_widening_assign(+term, +term)).
 :- foreign(ppl_Polyhedron_get_constraints(+term, +term)).
+:- foreign(ppl_Polyhedron_get_minimized_constraints(+term, +term)).
 :- foreign(ppl_Polyhedron_get_generators(+term, +term)).
+:- foreign(ppl_Polyhedron_get_minimized_generators(+term, +term)).
 :- foreign(ppl_Polyhedron_add_constraint(+term, +term)).
 :- foreign(ppl_Polyhedron_add_generator(+term, +term)).
 :- foreign(ppl_Polyhedron_add_constraints(+term, +term)).

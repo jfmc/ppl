@@ -20,7 +20,9 @@
 	ppl_add_dimensions_and_project/2,
 	ppl_check_empty/1,
 	ppl_get_constraints/2,
+	ppl_get_minimized_constraints/2,
 	ppl_get_generators/2,
+	ppl_get_minimized_generators/2,
 	ppl_intersection_assign/2,
 	ppl_poly_hull_assign/2,
 	ppl_widening_assign/2
@@ -63,7 +65,9 @@
 	ppl_add_dimensions_and_project/2,
 	ppl_check_empty/2,
 	ppl_get_constraints/2,
+	ppl_get_minimized_constraints/2,
 	ppl_get_generators/2,
+	ppl_get_minimized_generators/2,
 	ppl_intersection_assign/2,
 	ppl_poly_hull_assign/2,
 	ppl_widening_assign/2
@@ -140,7 +144,17 @@
              :: address * term
              +  (foreign, returns(Constraints)).
 
+:- true pred ppl_get_minimized_constraints(in(Polyhedron), go(Constraints))
+%%FIXME: list of terms ?
+             :: address * term
+             +  (foreign, returns(Constraints)).
+
 :- true pred ppl_get_generators(in(Polyhedron), go(Generators))
+%%FIXME: list of terms ?
+             :: address * term
+             +  (foreign, returns(Generators)).
+
+:- true pred ppl_get_minimized_generators(in(Polyhedron), go(Generators))
 %%FIXME: list of terms ?
              :: address * term
              +  (foreign, returns(Generators)).
