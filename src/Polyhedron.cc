@@ -1899,11 +1899,14 @@ PPL::Polyhedron::add_constraints_and_minimize(ConSys& cs) {
   if (!minimize())
     return false;
 
+  // For NNC polyhedra, each strict inequality must be matched by
+  // the corresponding non-strict inequality.
+  if (!cs.is_necessarily_closed())
+    cs.add_corresponding_nonstrict_inequalities();
   // Polyhedron::add_and_minimize() requires that
   // the matrix of constraints to be added is sorted.
   if (!cs.is_sorted())
     cs.sort_rows();
-
   // Adjust `cs' to the right topology and space dimension.
   // NOTE: we already checked for topology compatibility.
   cs.adjust_topology_and_dimension(topology(), space_dim);
@@ -3197,7 +3200,7 @@ PPL::Polyhedron::bounds(const LinExpression& expr, bool from_above) const {
   return true;
 }
 
-
+// FIXME.
 bool
 PPL::Polyhedron::is_topologically_closed() const {
   // Necessarily closed polyhedra are trivially closed.
@@ -3239,7 +3242,7 @@ PPL::Polyhedron::is_topologically_closed() const {
   return is_empty() || !con_sys.has_strict_inequalities();
 }
 
-
+// FIXME.
 void
 PPL::Polyhedron::topological_closure_assign() {
   // Necessarily closed polyhedra are trivially closed.
