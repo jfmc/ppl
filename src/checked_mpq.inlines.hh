@@ -21,14 +21,28 @@ USA.
 For the most up-to-date information see the Parma Polyhedra Library
 site: http://www.cs.unipr.it/ppl/ . */
 
-#include "checked.defs.hh"
-#include "checked_mpz.defs.hh"
+#ifndef PPL_checked_mpq_inlines_hh
+#define PPL_checked_mpq_inlines_hh 1
+
+#include <gmpxx.h>
+#include "checked_mpz.inlines.hh"
 
 namespace Parma_Polyhedra_Library {
 
-template <typename From>
-inline Result_Info
-checked_assign_mpq_signed_int(mpq_class& to, From from) {
+namespace Checked {
+
+template <typename Policy>
+inline Result 
+assign_mpq_mpz(mpq_class& to, const mpz_class& from) {
+  to = from;
+  return V_EQ;
+}
+
+SPECIALIZE_ASSIGN(mpq_mpz, mpq_class, const mpz_class&)
+
+template <typename Policy, typename From>
+inline Result
+assign_mpq_signed_int(mpq_class& to, From from) {
   if (sizeof(From) <= sizeof(unsigned long))
     to = static_cast<unsigned long>(from);
   else {
@@ -50,9 +64,9 @@ SPECIALIZE_ASSIGN(mpq_signed_int, mpq_class, int16_t)
 SPECIALIZE_ASSIGN(mpq_signed_int, mpq_class, int32_t)
 SPECIALIZE_ASSIGN(mpq_signed_int, mpq_class, int64_t)
 
-template <typename From>
-inline Result_Info
-checked_assign_mpq_unsigned_int(mpq_class& to, From from) {
+template <typename Policy, typename From>
+inline Result
+assign_mpq_unsigned_int(mpq_class& to, From from) {
   if (sizeof(From) <= sizeof(unsigned long))
     to = static_cast<unsigned long>(from);
   else {
@@ -67,51 +81,43 @@ SPECIALIZE_ASSIGN(mpq_unsigned_int, mpq_class, u_int16_t)
 SPECIALIZE_ASSIGN(mpq_unsigned_int, mpq_class, u_int32_t)
 SPECIALIZE_ASSIGN(mpq_unsigned_int, mpq_class, u_int64_t)
 
-template <typename To>
-inline Result_Info
-checked_assign_int_mpq(To& to, const mpq_class& from) {
-  mpz_srcptr n = from.get_num().get_mpz_t();
-  mpz_srcptr d = from.get_den().get_mpz_t();
-  mpz_t q;
-  mpz_init(q);
-  mpz_divexact(q, n, d);
-  return checked_assign(to, q);
-}
-
-template <typename To>
-inline Result_Info
-checked_assign_int_mpq_check_inexact(To& to, const mpq_class& from) {
+template <typename Policy, typename To>
+inline Result
+assign_int_mpq(To& to, const mpq_class& from) {
   mpz_srcptr n = from.get_num().get_mpz_t();
   mpz_srcptr d = from.get_den().get_mpz_t();
   mpz_t q, r;
   mpz_init(q);
-  mpz_init(r);
-  mpz_tdiv_qr(q, r, n, d);
-  Result_Info ret = checked_assign(to, q);
-  if (ret != V_EQ)
-    return ret;
-  switch (mpz_sgn(r)) {
-  case -1:
-    return V_LT;
-  case 1:
-    return V_GT;
-  default:
-    return V_EQ;
+  if (Policy::check_exact) {
+    mpz_init(r);
+    mpz_tdiv_qr(q, r, n, d);
+  } else {
+    mpz_divexact(q, n, d);
   }
+  Result ret = assign<Policy>(to, q);
+  if (Policy::check_exact && ret == V_EQ) {
+    switch (mpz_sgn(r)) {
+    case -1:
+      return V_LT;
+    case 1:
+      return V_GT;
+    }
+  }
+  return ret;
 }
 
-SPECIALIZE_ASSIGN_INEXACT(int_mpq, int8_t, const mpq_class&)
-SPECIALIZE_ASSIGN_INEXACT(int_mpq, int16_t, const mpq_class&)
-SPECIALIZE_ASSIGN_INEXACT(int_mpq, int32_t, const mpq_class&)
-SPECIALIZE_ASSIGN_INEXACT(int_mpq, int64_t, const mpq_class&)
-SPECIALIZE_ASSIGN_INEXACT(int_mpq, u_int8_t, const mpq_class&)
-SPECIALIZE_ASSIGN_INEXACT(int_mpq, u_int16_t, const mpq_class&)
-SPECIALIZE_ASSIGN_INEXACT(int_mpq, u_int32_t, const mpq_class&)
-SPECIALIZE_ASSIGN_INEXACT(int_mpq, u_int64_t, const mpq_class&)
+SPECIALIZE_ASSIGN(int_mpq, int8_t, const mpq_class&)
+SPECIALIZE_ASSIGN(int_mpq, int16_t, const mpq_class&)
+SPECIALIZE_ASSIGN(int_mpq, int32_t, const mpq_class&)
+SPECIALIZE_ASSIGN(int_mpq, int64_t, const mpq_class&)
+SPECIALIZE_ASSIGN(int_mpq, u_int8_t, const mpq_class&)
+SPECIALIZE_ASSIGN(int_mpq, u_int16_t, const mpq_class&)
+SPECIALIZE_ASSIGN(int_mpq, u_int32_t, const mpq_class&)
+SPECIALIZE_ASSIGN(int_mpq, u_int64_t, const mpq_class&)
 
-template <typename From>
-inline Result_Info
-checked_assign_mpq_float(mpq_class& to, From from) {
+template <typename Policy, typename From>
+inline Result
+assign_mpq_float(mpq_class& to, From from) {
   to = from;
   return V_EQ;
 }
@@ -119,65 +125,100 @@ checked_assign_mpq_float(mpq_class& to, From from) {
 SPECIALIZE_ASSIGN(mpq_float, mpq_class, float)
 SPECIALIZE_ASSIGN(mpq_float, mpq_class, double)
 
-inline Result_Info 
-checked_pred(mpq_class&) {
+template <typename Policy>
+inline Result 
+pred_mpq(mpq_class&) {
   throw 0;
 }
 
-inline Result_Info 
-checked_succ(mpq_class&) {
+SPECIALIZE_PRED(mpq, mpq_class)
+
+template <typename Policy>
+inline Result 
+succ_mpq(mpq_class&) {
   throw 0;
 }
 
-inline Result_Info 
-checked_neg(mpq_class& to, const mpq_class& from) {
+SPECIALIZE_SUCC(mpq, mpq_class)
+
+template <typename Policy>
+inline Result 
+neg_mpq(mpq_class& to, const mpq_class& from) {
   mpq_neg(to.get_mpq_t(), from.get_mpq_t());
   return V_EQ;
 }
 
-inline Result_Info 
-checked_add(mpq_class& to, const mpq_class& x, const mpq_class& y) {
+SPECIALIZE_NEG(mpq, mpq_class, const mpq_class&)
+
+template <typename Policy>
+inline Result 
+add_mpq(mpq_class& to, const mpq_class& x, const mpq_class& y) {
   to = x + y;
   return V_EQ;
 }
 
-inline Result_Info 
-checked_sub(mpq_class& to, const mpq_class& x, const mpq_class& y) {
+SPECIALIZE_ADD(mpq, mpq_class, const mpq_class&)
+
+template <typename Policy>
+inline Result 
+sub_mpq(mpq_class& to, const mpq_class& x, const mpq_class& y) {
   to = x - y;
   return V_EQ;
 }
 
-inline Result_Info 
-checked_mul(mpq_class& to, const mpq_class& x, const mpq_class& y) {
+SPECIALIZE_SUB(mpq, mpq_class, const mpq_class&)
+
+template <typename Policy>
+inline Result 
+mul_mpq(mpq_class& to, const mpq_class& x, const mpq_class& y) {
   to = x * y;
   return V_EQ;
 }
 
-inline Result_Info 
-checked_div(mpq_class& to, const mpq_class& x, const mpq_class& y) {
+SPECIALIZE_MUL(mpq, mpq_class, const mpq_class&)
+
+template <typename Policy>
+inline Result 
+div_mpq(mpq_class& to, const mpq_class& x, const mpq_class& y) {
   to = x / y;
   return V_EQ;
 }
 
-inline Result_Info 
-checked_mod(mpq_class& to, const mpq_class& x, const mpq_class& y) {
+SPECIALIZE_DIV(mpq, mpq_class, const mpq_class&)
+
+template <typename Policy>
+inline Result 
+mod_mpq(mpq_class& to, const mpq_class& x, const mpq_class& y) {
   to = x / y;
   to.get_num() %= to.get_den();
   return V_EQ;
 }
 
-template <>
-inline Result_Info
-checked_abs(mpq_class& to, const mpq_class& from)
+SPECIALIZE_MOD(mpq, mpq_class, const mpq_class&)
+
+template <typename Policy>
+inline Result
+abs_mpq(mpq_class& to, const mpq_class& from)
 {
   to = abs(from);
   return V_EQ;
 }
 
+SPECIALIZE_ABS(mpq, mpq_class, const mpq_class&)
+
+} // namespace Checked
+
 } // namespace Parma_Polyhedra_Library
+
+
+namespace std {
 
 inline void
 std::swap(mpq_class& x, mpq_class& y)
 {
   mpq_swap(x.get_mpq_t(), y.get_mpq_t());
 }
+
+} // namespace std
+
+#endif // !defined(PPL_checked_mpq_inlines_hh)

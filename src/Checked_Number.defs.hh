@@ -25,14 +25,22 @@ site: http://www.cs.unipr.it/ppl/ . */
 #define PPL_Checked_Number_defs_hh 1
 
 #include <iostream>
-#include "Result_Info.defs.hh"
 #include "Checked_Number.types.hh"
+#include "checked.defs.hh"
 
 #ifndef REF
 #define REF &
 #endif
 
 namespace Parma_Polyhedra_Library {
+
+struct Checked_Number_Policy {
+  static const int check_overflow = 1;
+  static const int check_exact = 0;
+  static const int check_divbyzero = 0;
+  static const int check_sqrt_neg = 0;
+  static const int check_normal = 0;
+};
 
 template <typename T>
 class Checked_Number {

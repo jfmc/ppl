@@ -21,7 +21,12 @@ USA.
 For the most up-to-date information see the Parma Polyhedra Library
 site: http://www.cs.unipr.it/ppl/ . */
 
+#ifndef PPL_checked_float_inlines_hh
+#define PPL_checked_float_inlines_hh 1
+
 #include <cmath>
+#include <fenv.h>
+#include "float.types.hh"
 
 #define USE_FPU_ROUNDING_MODE
 #define USE_FPU_INEXACT
@@ -69,8 +74,10 @@ fpu_is_inexact() {
 #endif
 }
 
+namespace Checked {
+
 template <typename Type>
-inline Result_Info 
+inline Result 
 check_inexact(Type v) {
   int r;
   switch (fpu_is_inexact()) {
@@ -105,223 +112,198 @@ check_inexact(Type v) {
       r |= V_GT;
   }
 #endif
-  return static_cast<Result_Info>(r);
+  return static_cast<Result>(r);
 }
 
-template <typename From, typename To>
-inline Result_Info 
-checked_assign_float_float_check_normal(To& to, From from) {
-  if (isnan(from))
-    return V_NAN;
-  int i = isinf(from);
-  if (i < 0)
-    return V_NEG_OVERFLOW;
-  if (i > 0)
-    return V_POS_OVERFLOW;
+template <typename Policy>
+inline void
+prepare_inexact()
+{
+  if (Policy::check_inexact)
+    fpu_reset_inexact();
+}
+
+template <typename Policy, typename From, typename To>
+inline Result 
+assign_float_float_exact(To& to, From from) {
+  if (Policy::check_normal) {
+    if (isnan(from))
+      return V_NAN;
+    int i = isinf(from);
+    if (i < 0)
+      return V_NEG_OVERFLOW;
+    if (i > 0)
+      return V_POS_OVERFLOW;
+  }
   to = from;
   return V_EQ;
 }
 
-template <typename Type>
-inline Result_Info 
-checked_assign_float_inexact(Type& to, Type from) {
-  Result_Info r = checked_assign_float_float_check_normal(to, from);
-  return r != V_EQ ? r : check_inexact(from);
+template <typename Policy, typename Type>
+inline Result 
+assign_float_float_inexact(Type& to, Type from) {
+  Result r = assign_float_float_exact(to, from);
+  if (!Policy::check_inexact || r != V_EQ)
+    return r;
+  return check_inexact(from);
 }
 
-template <typename Type>
-inline Result_Info 
-checked_neg_float(Type& to, Type from) {
+template<typename Policy, typename To, typename From>
+inline Result
+assign_float_float(To& to, From from) {
+  prepare_inexact<Policy>();
+  return assign_float_inexact(to, To(from));
+}
+
+template <typename Policy, typename Type>
+inline Result 
+neg_float(Type& to, Type from) {
   to = -from;
   return V_EQ;
 }
 
-template <typename Type>
-inline Result_Info 
-checked_add_float(Type& to, Type x, Type y) {
-  return checked_assign_float_float_check_normal(to, x + y);
+template <typename Policy, typename Type>
+inline Result 
+add_float(Type& to, Type x, Type y) {
+  prepare_inexact<Policy>();
+  return assign_float_inexact(to, x + y);
 }
 
-template <typename Type>
-inline Result_Info 
-checked_sub_float(Type& to, Type x, Type y) {
-  return checked_assign_float_float_check_normal(to, x - y);
+template <typename Policy, typename Type>
+inline Result 
+sub_float(Type& to, Type x, Type y) {
+  prepare_inexact<Policy>();
+  return assign_float_inexact(to, x - y);
 }
 
-template <typename Type>
-inline Result_Info 
-checked_mul_float(Type& to, Type x, Type y) {
-  return checked_assign_float_float_check_normal(to, x * y);
+template <typename Policy, typename Type>
+inline Result 
+mul_float(Type& to, Type x, Type y) {
+  prepare_inexact<Policy>();
+  return assign_float_inexact(to, x * y);
 }
 
-template <typename Type>
-inline Result_Info 
-checked_div_float(Type& to, Type x, Type y) {
-  return checked_assign_float_float_check_normal(to, x / y);
+template <typename Policy, typename Type>
+inline Result 
+div_float(Type& to, Type x, Type y) {
+  prepare_inexact<Policy>();
+  return assign_float_inexact(to, x / y);
 }
 
-template <typename Type>
-inline Result_Info 
-checked_mod_float(Type& to, Type x, Type y) {
-  return checked_assign_float_float_check_normal(to, std::fmod(x, y));
+template <typename Policy, typename Type>
+inline Result 
+mod_float(Type& to, Type x, Type y) {
+  prepare_inexact<Policy>();
+  return assign_float_inexact(to, std::fmod(x, y));
 }
 
-template <typename Type>
-inline Result_Info 
-checked_add_float_check_inexact(Type& to, Type x, Type y) {
-  fpu_reset_inexact();
-  return checked_assign_float_inexact(to, x + y);
-}
-
-template <typename Type>
-inline Result_Info 
-checked_sub_float_check_inexact(Type& to, Type x, Type y) {
-  fpu_reset_inexact();
-  return checked_assign_float_inexact(to, x - y);
-}
-
-template <typename Type>
-inline Result_Info 
-checked_mul_float_check_inexact(Type& to, Type x, Type y) {
-  fpu_reset_inexact();
-  return checked_assign_float_inexact(to, x * y);
-}
-
-template <typename Type>
-inline Result_Info 
-checked_div_float_check_inexact(Type& to, Type x, Type y) {
-  fpu_reset_inexact();
-  return checked_assign_float_inexact(to, x / y);
-}
-
-template <typename Type>
-inline Result_Info 
-checked_mod_float_check_inexact(Type& to, Type x, Type y) {
-  fpu_reset_inexact();
-  return checked_assign_float_inexact(to, std::fmod(x, y));
-}
-
-template <typename Type>
-inline Result_Info
-checked_abs_float(Type& to, Type from)
+template <typename Policy, typename Type>
+inline Result
+abs_float(Type& to, Type from)
 {
   to = std::abs(from);
   return V_EQ;
 }
 
-template <typename Type>
-inline Result_Info
-checked_sqrt_float(Type& to, Type from)
+template <typename Policy, typename Type>
+inline Result
+sqrt_float(Type& to, Type from)
 {
-  return checked_assign_float_float_check_normal(to, std::sqrt(from));
+  prepare_inexact<Policy>();
+  return assign_float_inexact(to, std::sqrt(from));
 }
 
-template <typename Type>
-inline Result_Info
-checked_sqrt_float_check_inexact(Type& to, Type from)
-{
-  fpu_reset_inexact();
-  return checked_assign_float_inexact(to, std::sqrt(from));
-}
-
-template <typename To, typename From>
-inline Result_Info 
-checked_assign_float_int(To& to, From from) {
+template <typename Policy, typename To, typename From>
+inline Result 
+assign_float_int_exact(To& to, From from) {
   to = from;
   return V_EQ;
 }
 
-template<typename To, typename From>
-inline Result_Info
-checked_assign_float_float_check_normal_check_inexact(To& to, From from) {
-  fpu_reset_inexact();
-  return checked_assign_float_inexact(to, To(from));
-}
-
-template<typename To, typename From>
-inline Result_Info
-checked_assign_float_int_check_inexact(To& to, From from) {
-  fpu_reset_inexact();
+template<typename Policy, typename To, typename From>
+inline Result
+assign_float_int(To& to, From from) {
+  prepare_inexact<Policy>();
   to = from;
-  return check_inexact(to);
+  return Policy::check_inexact ? check_inexact(to) : V_EQ;
 }
 
 #define ASSIGN_R2(Smaller, Larger) \
-SPECIALIZE_ASSIGN(float_float_check_normal, Larger, Smaller) \
-SPECIALIZE_ASSIGN_INEXACT(float_float_check_normal, Smaller, Larger)
+SPECIALIZE_ASSIGN(float_float_exact, Larger, Smaller) \
+SPECIALIZE_ASSIGN(float_float, Smaller, Larger)
 
-SPECIALIZE_ASSIGN(float_int, float32_iec559_t, int8_t)
-SPECIALIZE_ASSIGN(float_int, float32_iec559_t, int16_t)
-SPECIALIZE_ASSIGN(float_int, float32_iec559_t, u_int8_t)
-SPECIALIZE_ASSIGN(float_int, float32_iec559_t, u_int16_t)
-SPECIALIZE_ASSIGN_INEXACT(float_int, float32_iec559_t, int32_t)
-SPECIALIZE_ASSIGN_INEXACT(float_int, float32_iec559_t, int64_t)
-SPECIALIZE_ASSIGN_INEXACT(float_int, float32_iec559_t, u_int32_t)
-SPECIALIZE_ASSIGN_INEXACT(float_int, float32_iec559_t, u_int64_t)
-SPECIALIZE_ASSIGN(float_float_check_normal, float32_iec559_t, float32_iec559_t)
+SPECIALIZE_ASSIGN(float_int_exact, float32_iec559_t, int8_t)
+SPECIALIZE_ASSIGN(float_int_exact, float32_iec559_t, int16_t)
+SPECIALIZE_ASSIGN(float_int_exact, float32_iec559_t, u_int8_t)
+SPECIALIZE_ASSIGN(float_int_exact, float32_iec559_t, u_int16_t)
+SPECIALIZE_ASSIGN(float_int, float32_iec559_t, int32_t)
+SPECIALIZE_ASSIGN(float_int, float32_iec559_t, int64_t)
+SPECIALIZE_ASSIGN(float_int, float32_iec559_t, u_int32_t)
+SPECIALIZE_ASSIGN(float_int, float32_iec559_t, u_int64_t)
+SPECIALIZE_ASSIGN(float_float, float32_iec559_t, float32_iec559_t)
 ASSIGN_R2(float32_iec559_t, float64_iec559_t)
 
 SPECIALIZE_NEG(float, float32_iec559_t, float32_iec559_t)
 SPECIALIZE_ABS(float, float32_iec559_t, float32_iec559_t)
-SPECIALIZE_ADD_INEXACT(float, float32_iec559_t, float32_iec559_t)
-SPECIALIZE_SUB_INEXACT(float, float32_iec559_t, float32_iec559_t)
-SPECIALIZE_MUL_INEXACT(float, float32_iec559_t, float32_iec559_t)
-SPECIALIZE_DIV_INEXACT(float, float32_iec559_t, float32_iec559_t)
-SPECIALIZE_MOD_INEXACT(float, float32_iec559_t, float32_iec559_t)
-SPECIALIZE_SQRT_INEXACT(float, float32_iec559_t, float32_iec559_t)
+SPECIALIZE_ADD(float, float32_iec559_t, float32_iec559_t)
+SPECIALIZE_SUB(float, float32_iec559_t, float32_iec559_t)
+SPECIALIZE_MUL(float, float32_iec559_t, float32_iec559_t)
+SPECIALIZE_DIV(float, float32_iec559_t, float32_iec559_t)
+SPECIALIZE_MOD(float, float32_iec559_t, float32_iec559_t)
+SPECIALIZE_SQRT(float, float32_iec559_t, float32_iec559_t)
 
-SPECIALIZE_ASSIGN(float_int, float64_iec559_t, int8_t)
-SPECIALIZE_ASSIGN(float_int, float64_iec559_t, int16_t)
-SPECIALIZE_ASSIGN(float_int, float64_iec559_t, int32_t)
-SPECIALIZE_ASSIGN(float_int, float64_iec559_t, u_int8_t)
-SPECIALIZE_ASSIGN(float_int, float64_iec559_t, u_int16_t)
-SPECIALIZE_ASSIGN(float_int, float64_iec559_t, u_int32_t)
-SPECIALIZE_ASSIGN_INEXACT(float_int, float64_iec559_t, int64_t)
-SPECIALIZE_ASSIGN_INEXACT(float_int, float64_iec559_t, u_int64_t)
-SPECIALIZE_ASSIGN(float_float_check_normal, float64_iec559_t, float64_iec559_t)
+SPECIALIZE_ASSIGN(float_int_exact, float64_iec559_t, int8_t)
+SPECIALIZE_ASSIGN(float_int_exact, float64_iec559_t, int16_t)
+SPECIALIZE_ASSIGN(float_int_exact, float64_iec559_t, int32_t)
+SPECIALIZE_ASSIGN(float_int_exact, float64_iec559_t, u_int8_t)
+SPECIALIZE_ASSIGN(float_int_exact, float64_iec559_t, u_int16_t)
+SPECIALIZE_ASSIGN(float_int_exact, float64_iec559_t, u_int32_t)
+SPECIALIZE_ASSIGN(float_int, float64_iec559_t, int64_t)
+SPECIALIZE_ASSIGN(float_int, float64_iec559_t, u_int64_t)
+SPECIALIZE_ASSIGN(float_float, float64_iec559_t, float64_iec559_t)
 
 SPECIALIZE_NEG(float, float64_iec559_t, float64_iec559_t)
 SPECIALIZE_ABS(float, float64_iec559_t, float64_iec559_t)
-SPECIALIZE_ADD_INEXACT(float, float64_iec559_t, float64_iec559_t)
-SPECIALIZE_SUB_INEXACT(float, float64_iec559_t, float64_iec559_t)
-SPECIALIZE_MUL_INEXACT(float, float64_iec559_t, float64_iec559_t)
-SPECIALIZE_DIV_INEXACT(float, float64_iec559_t, float64_iec559_t)
-SPECIALIZE_MOD_INEXACT(float, float64_iec559_t, float64_iec559_t)
-SPECIALIZE_SQRT_INEXACT(float, float64_iec559_t, float64_iec559_t)
+SPECIALIZE_ADD(float, float64_iec559_t, float64_iec559_t)
+SPECIALIZE_SUB(float, float64_iec559_t, float64_iec559_t)
+SPECIALIZE_MUL(float, float64_iec559_t, float64_iec559_t)
+SPECIALIZE_DIV(float, float64_iec559_t, float64_iec559_t)
+SPECIALIZE_MOD(float, float64_iec559_t, float64_iec559_t)
+SPECIALIZE_SQRT(float, float64_iec559_t, float64_iec559_t)
 
 #ifdef FLOAT96_IEC559_TYPE
-SPECIALIZE_ASSIGN(float_int, float96_iec559_t, int8_t)
-SPECIALIZE_ASSIGN(float_int, float96_iec559_t, int16_t)
-SPECIALIZE_ASSIGN(float_int, float96_iec559_t, int32_t)
-SPECIALIZE_ASSIGN(float_int, float96_iec559_t, int64_t)
-SPECIALIZE_ASSIGN(float_int, float96_iec559_t, u_int8_t)
-SPECIALIZE_ASSIGN(float_int, float96_iec559_t, u_int16_t)
-SPECIALIZE_ASSIGN(float_int, float96_iec559_t, u_int32_t)
-SPECIALIZE_ASSIGN(float_int, float96_iec559_t, u_int64_t)
-SPECIALIZE_ASSIGN(float_float_check_normal, float96_iec559_t, float96_iec559_t)
+SPECIALIZE_ASSIGN(float_int_exact, float96_iec559_t, int8_t)
+SPECIALIZE_ASSIGN(float_int_exact, float96_iec559_t, int16_t)
+SPECIALIZE_ASSIGN(float_int_exact, float96_iec559_t, int32_t)
+SPECIALIZE_ASSIGN(float_int_exact, float96_iec559_t, int64_t)
+SPECIALIZE_ASSIGN(float_int_exact, float96_iec559_t, u_int8_t)
+SPECIALIZE_ASSIGN(float_int_exact, float96_iec559_t, u_int16_t)
+SPECIALIZE_ASSIGN(float_int_exact, float96_iec559_t, u_int32_t)
+SPECIALIZE_ASSIGN(float_int_exact, float96_iec559_t, u_int64_t)
+SPECIALIZE_ASSIGN(float_float, float96_iec559_t, float96_iec559_t)
 ASSIGN_R2(float32_iec559_t, float96_iec559_t)
 ASSIGN_R2(float64_iec559_t, float96_iec559_t)
 
 SPECIALIZE_NEG(float, float96_iec559_t, float96_iec559_t)
 SPECIALIZE_ABS(float, float96_iec559_t, float96_iec559_t)
-SPECIALIZE_ADD_INEXACT(float, float96_iec559_t, float96_iec559_t)
-SPECIALIZE_SUB_INEXACT(float, float96_iec559_t, float96_iec559_t)
-SPECIALIZE_MUL_INEXACT(float, float96_iec559_t, float96_iec559_t)
-SPECIALIZE_DIV_INEXACT(float, float96_iec559_t, float96_iec559_t)
-SPECIALIZE_MOD_INEXACT(float, float96_iec559_t, float96_iec559_t)
-SPECIALIZE_SQRT_INEXACT(float, float96_iec559_t, float96_iec559_t)
+SPECIALIZE_ADD(float, float96_iec559_t, float96_iec559_t)
+SPECIALIZE_SUB(float, float96_iec559_t, float96_iec559_t)
+SPECIALIZE_MUL(float, float96_iec559_t, float96_iec559_t)
+SPECIALIZE_DIV(float, float96_iec559_t, float96_iec559_t)
+SPECIALIZE_MOD(float, float96_iec559_t, float96_iec559_t)
+SPECIALIZE_SQRT(float, float96_iec559_t, float96_iec559_t)
 #endif
 
 #ifdef FLOAT128_IEC559_TYPE
-SPECIALIZE_ASSIGN(float_int, float128_iec559_t, int8_t)
-SPECIALIZE_ASSIGN(float_int, float128_iec559_t, int16_t)
-SPECIALIZE_ASSIGN(float_int, float128_iec559_t, int32_t)
-SPECIALIZE_ASSIGN(float_int, float128_iec559_t, int64_t)
-SPECIALIZE_ASSIGN(float_int, float128_iec559_t, u_int8_t)
-SPECIALIZE_ASSIGN(float_int, float128_iec559_t, u_int16_t)
-SPECIALIZE_ASSIGN(float_int, float127_iec559_t, u_int32_t)
-SPECIALIZE_ASSIGN(float_int, float128_iec559_t, u_int64_t)
-SPECIALIZE_ASSIGN(float_float_check_normal, float128_iec559_t, float128_iec559_t)
+SPECIALIZE_ASSIGN(float_int_exact, float128_iec559_t, int8_t)
+SPECIALIZE_ASSIGN(float_int_exact, float128_iec559_t, int16_t)
+SPECIALIZE_ASSIGN(float_int_exact, float128_iec559_t, int32_t)
+SPECIALIZE_ASSIGN(float_int_exact, float128_iec559_t, int64_t)
+SPECIALIZE_ASSIGN(float_int_exact, float128_iec559_t, u_int8_t)
+SPECIALIZE_ASSIGN(float_int_exact, float128_iec559_t, u_int16_t)
+SPECIALIZE_ASSIGN(float_int_exact, float127_iec559_t, u_int32_t)
+SPECIALIZE_ASSIGN(float_int_exact, float128_iec559_t, u_int64_t)
+SPECIALIZE_ASSIGN(float_float, float128_iec559_t, float128_iec559_t)
 ASSIGN_R2(float32_iec559_t, float128_iec559_t)
 ASSIGN_R2(float64_iec559_t, float128_iec559_t)
 #ifdef FLOAT96_IEC559_TYPE
@@ -331,15 +313,18 @@ specialize_all(float, float128_iec559_t, float128_iec559_t)
 
 SPECIALIZE_NEG(float, float128_iec559_t, float128_iec559_t)
 SPECIALIZE_ABS(float, float128_iec559_t, float128_iec559_t)
-SPECIALIZE_ADD_INEXACT(float, float128_iec559_t, float128_iec559_t)
-SPECIALIZE_SUB_INEXACT(float, float128_iec559_t, float128_iec559_t)
-SPECIALIZE_MUL_INEXACT(float, float128_iec559_t, float128_iec559_t)
-SPECIALIZE_DIV_INEXACT(float, float128_iec559_t, float128_iec559_t)
-SPECIALIZE_MOD_INEXACT(float, float128_iec559_t, float128_iec559_t)
-SPECIALIZE_SQRT_INEXACT(float, float128_iec559_t, float128_iec559_t)
+SPECIALIZE_ADD(float, float128_iec559_t, float128_iec559_t)
+SPECIALIZE_SUB(float, float128_iec559_t, float128_iec559_t)
+SPECIALIZE_MUL(float, float128_iec559_t, float128_iec559_t)
+SPECIALIZE_DIV(float, float128_iec559_t, float128_iec559_t)
+SPECIALIZE_MOD(float, float128_iec559_t, float128_iec559_t)
+SPECIALIZE_SQRT(float, float128_iec559_t, float128_iec559_t)
 #endif
 
 #undef ASSIGN_R2
 
+} // namespace Checked
+
 } // namespace Parma_Polyhedra_Library
 
+#endif // !defined(PPL_checked_int_inlines_hh)

@@ -21,13 +21,14 @@ USA.
 For the most up-to-date information see the Parma Polyhedra Library
 site: http://www.cs.unipr.it/ppl/ . */
 
-#include "checked.defs.hh"
 #include <stdexcept>
 
 namespace Parma_Polyhedra_Library {
 
+using namespace Checked;
+
 static void
-bad_result(Result_Info r)
+bad_result(Result r)
 {
   switch (r) {
   case V_NEG_OVERFLOW:
@@ -42,7 +43,7 @@ bad_result(Result_Info r)
 }
 
 static inline void
-check_result(Result_Info r)
+check_result(Result r)
 {
   if (r != V_EQ)
     bad_result(r);
@@ -64,7 +65,7 @@ template <typename T>
 template <typename T1>
 inline
 Checked_Number<T>::Checked_Number(const T1 REF y) {
-  check_result(checked_assignexact(v, y));
+  check_result(assign<Checked_Number_Policy>(v, y));
 }
 
 template <typename T>
@@ -83,19 +84,19 @@ Checked_Number<T>::value() const {
 template <typename T> \
 inline Checked_Number<T>& \
 Checked_Number<T>::f() { \
-  check_result(fun(v, v, T(1))); \
+  check_result(fun<Checked_Number_Policy>(v, v, T(1))); \
   return *this; \
 }\
 template <typename T> \
 inline Checked_Number<T> \
 Checked_Number<T>::f(int) {\
   T r = v;\
-  check_result(fun(v, v, T(1)));\
+  check_result(fun<Checked_Number_Policy>(v, v, T(1)));\
   return r;\
 }
 
-DEF_INCREMENT(operator ++, checked_addexact)
-DEF_INCREMENT(operator --, checked_subexact)
+DEF_INCREMENT(operator ++, add)
+DEF_INCREMENT(operator --, sub)
 
 template <typename T>
 inline void
@@ -113,46 +114,46 @@ Checked_Number<T>::operator=(const Checked_Number<T> REF y) {
 template <typename T> \
 inline Checked_Number<T>& \
 Checked_Number<T>::f(const Checked_Number<T> REF y) { \
-  check_result(fun(v, v, y.v)); \
+  check_result(fun<Checked_Number_Policy>(v, v, y.v)); \
   return *this; \
 }
 
-DEF_BINARY_ASSIGN(operator +=, checked_addexact)
-DEF_BINARY_ASSIGN(operator -=, checked_subexact)
-DEF_BINARY_ASSIGN(operator *=, checked_mulexact)
-DEF_BINARY_ASSIGN(operator /=, checked_divexact)
-DEF_BINARY_ASSIGN(operator %=, checked_modexact)
+DEF_BINARY_ASSIGN(operator +=, add)
+DEF_BINARY_ASSIGN(operator -=, sub)
+DEF_BINARY_ASSIGN(operator *=, mul)
+DEF_BINARY_ASSIGN(operator /=, div)
+DEF_BINARY_ASSIGN(operator %=, mod)
 
 #define DEF_BINARY(f, fun) \
 template <typename T> \
 inline Checked_Number<T> \
 f(const Checked_Number<T> REF x, const Checked_Number<T> REF y) { \
   T r; \
-  check_result(fun(r, x.value(), y.value())); \
+  check_result(fun<Checked_Number_Policy>(r, x.value(), y.value())); \
   return r; \
 } \
 template <typename T, typename T1> \
 inline Checked_Number<T> \
 f(const T1 x, const Checked_Number<T> REF y) { \
   T r; \
-  check_result(checked_assignexact(r, x)); \
-  check_result(fun(r, r, y.value())); \
+  check_result(assign<Checked_Number_Policy>(r, x)); \
+  check_result(fun<Checked_Number_Policy>(r, r, y.value())); \
   return r; \
 } \
 template <typename T, typename T1> \
 inline Checked_Number<T> \
 f(const Checked_Number<T> REF x, const T1 y) { \
   T r; \
-  check_result(checked_assignexact(r, y)); \
-  check_result(fun(r, x.value(), r)); \
+  check_result(assign<Checked_Number_Policy>(r, y)); \
+  check_result(fun<Checked_Number_Policy>(r, x.value(), r)); \
   return r; \
 }
 
-DEF_BINARY(operator +, checked_addexact)
-DEF_BINARY(operator -, checked_subexact)
-DEF_BINARY(operator *, checked_mulexact)
-DEF_BINARY(operator /, checked_divexact)
-DEF_BINARY(operator %, checked_modexact)
+DEF_BINARY(operator +, add)
+DEF_BINARY(operator -, sub)
+DEF_BINARY(operator *, mul)
+DEF_BINARY(operator /, div)
+DEF_BINARY(operator %, mod)
 
 #define DEF_COMPARE(f, op) \
 template <typename T> \
@@ -164,14 +165,14 @@ template <typename T, typename T1> \
 inline bool \
 f(const T1 x, const Checked_Number<T> REF y) { \
   T r; \
-  check_result(checked_assignexact(r, x)); \
+  check_result(assign<Checked_Number_Policy>(r, x)); \
   return r op y.value(); \
 } \
 template <typename T, typename T1> \
 inline bool \
 f(const Checked_Number<T> REF x, const T1 y) { \
   T r; \
-  check_result(checked_assignexact(r, y)); \
+  check_result(assign<Checked_Number_Policy>(r, y)); \
   return x.value() op r; \
 }
 
@@ -192,7 +193,7 @@ template <typename T>
 inline Checked_Number<T>
 operator-(const Checked_Number<T> REF x) {
   T r;
-  check_result(checked_negexact(r, x.value()));
+  check_result(neg<Checked_Number_Policy>(r, x.value()));
   return r;
 }
 
@@ -200,31 +201,31 @@ operator-(const Checked_Number<T> REF x) {
 template <typename T> \
 inline void \
 f(Checked_Number<T>& x) { \
-  check_result(fun(x.value(), x.value())); \
+  check_result(fun<Checked_Number_Policy>(x.value(), x.value())); \
 } \
 template <typename T> \
 inline void \
 f(Checked_Number<T>& x, const Checked_Number<T> REF y) { \
-  check_result(fun(x.value(), y.value())); \
+  check_result(fun<Checked_Number_Policy>(x.value(), y.value())); \
 }
 
 #define DEF_ASSIGN_FUN2(f, fun) \
 template <typename T> \
 inline void \
 f(Checked_Number<T>& x, const Checked_Number<T> REF y) { \
-  check_result(fun(x.v, x.value(), y.value())); \
+  check_result(fun<Checked_Number_Policy>(x.v, x.value(), y.value())); \
 } \
 template <typename T> \
 inline void \
 f(Checked_Number<T>& x, const Checked_Number<T> REF y, const Checked_Number<T> REF z) { \
-  check_result(fun(x.value(), y.value(), z.value())); \
+  check_result(fun<Checked_Number_Policy>(x.value(), y.value(), z.value())); \
 }
 
-DEF_ASSIGN_FUN1(sqrt_assign, checked_sqrtexact)
-DEF_ASSIGN_FUN1(negate, checked_negexact)
-DEF_ASSIGN_FUN2(exact_div_assign, checked_divexact)
-DEF_ASSIGN_FUN2(gcd_assign, checked_gcd)
-DEF_ASSIGN_FUN2(lcm_assign, checked_lcm)
+DEF_ASSIGN_FUN1(sqrt_assign, sqrt)
+DEF_ASSIGN_FUN1(negate, neg)
+DEF_ASSIGN_FUN2(exact_div_assign, div)
+DEF_ASSIGN_FUN2(gcd_assign, gcd)
+DEF_ASSIGN_FUN2(lcm_assign, lcm)
 
 
 template <typename T>

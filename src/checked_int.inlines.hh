@@ -21,61 +21,68 @@ USA.
 For the most up-to-date information see the Parma Polyhedra Library
 site: http://www.cs.unipr.it/ppl/ . */
 
+#ifndef PPL_checked_int_inlines_hh
+#define PPL_checked_int_inlines_hh 1
+
 #include <limits>
 #include "float.types.hh"
 
 namespace Parma_Polyhedra_Library {
 
-template<typename Type>
-inline Result_Info 
-checked_pred_int(Type& to) {
-  if (to == std::numeric_limits<Type>::min())
+namespace Checked {
+
+template<typename Policy, typename Type>
+inline Result 
+pred_int(Type& to) {
+  if (Policy::check_overflow && to == std::numeric_limits<Type>::min())
     return V_NEG_OVERFLOW;
   --to;
   return V_EQ;
 }
 
-template<typename Type>
-inline Result_Info 
-checked_succ_int(Type& to) {
-  if (to == std::numeric_limits<Type>::max())
+template<typename Policy, typename Type>
+inline Result 
+succ_int(Type& to) {
+  if (Policy::check_overflow && to == std::numeric_limits<Type>::max())
     return V_POS_OVERFLOW;
   ++to;
   return V_EQ;
 }
 
-template<typename To, typename From>
-inline Result_Info
-checked_assign_int_int(To& to, From from) {
+template<typename Policy, typename To, typename From>
+inline Result
+assign_int_int(To& to, From from) {
   to = To(from);
   return V_EQ;
 }
 
-template<typename To, typename From>
-inline Result_Info
-checked_assign_int_int_check_min(To& to, From from) {
-  if (from < static_cast<From>(std::numeric_limits<To>::min()))
+template<typename Policy, typename To, typename From>
+inline Result
+assign_int_int_check_min(To& to, From from) {
+  if (Policy::check_overflow && from < static_cast<From>(std::numeric_limits<To>::min()))
     return V_NEG_OVERFLOW;
   to = To(from);
   return V_EQ;
 }
 
-template<typename To, typename From>
-inline Result_Info
-checked_assign_int_int_check_max(To& to, From from) {
-  if (from > static_cast<From>(std::numeric_limits<To>::max()))
+template<typename Policy, typename To, typename From>
+inline Result
+assign_int_int_check_max(To& to, From from) {
+  if (Policy::check_overflow && from > static_cast<From>(std::numeric_limits<To>::max()))
     return V_POS_OVERFLOW;
   to = To(from);
   return V_EQ;
 }
 
-template<typename To, typename From>
-inline Result_Info
-checked_assign_int_int_check_min_max(To& to, From from) {
-  if (from < static_cast<From>(std::numeric_limits<To>::min()))
-    return V_NEG_OVERFLOW;
-  if (from > static_cast<From>(std::numeric_limits<To>::max()))
-    return V_POS_OVERFLOW;
+template<typename Policy, typename To, typename From>
+inline Result
+assign_int_int_check_min_max(To& to, From from) {
+  if (Policy::check_overflow) {
+    if (from < static_cast<From>(std::numeric_limits<To>::min()))
+      return V_NEG_OVERFLOW;
+    if (from > static_cast<From>(std::numeric_limits<To>::max()))
+      return V_POS_OVERFLOW;
+  }
   to = To(from);
   return V_EQ;
 }
@@ -127,68 +134,63 @@ ASSIGN2_SIGNED_UNSIGNED(int32_t, u_int32_t)
 ASSIGN2_SIGNED_UNSIGNED(int32_t, u_int64_t)
 ASSIGN2_SIGNED_UNSIGNED(int64_t, u_int64_t)
 
-template<typename To, typename From>
-inline Result_Info
-checked_assign_int_float_check_min_max(To& to, From from) {
-  if (from < std::numeric_limits<To>::min())
-    return V_NEG_OVERFLOW;
-  if (from > std::numeric_limits<To>::max())
-    return V_POS_OVERFLOW;
+template<typename Policy, typename To, typename From>
+inline Result
+assign_int_float_check_min_max(To& to, From from) {
+  if (Policy::check_overflow) {
+    if (from < std::numeric_limits<To>::min())
+      return V_NEG_OVERFLOW;
+    if (from > std::numeric_limits<To>::max())
+      return V_POS_OVERFLOW;
+  }
   to = static_cast<To>(from);
+  if (Policy::check_inexact) {
+    if (from < to)
+      return V_LT;
+    if (from > to)
+      return V_GT;
+  }
   return V_EQ;
 }
 
-template<typename To, typename From>
-inline Result_Info
-checked_assign_int_float_check_min_max_check_inexact(To& to, From from) {
-  Result_Info r = checked_assign_int_float_check_min_max(to, from);
-  if (r != V_EQ)
-    return r;
-  if (from < to)
-    return V_LT;
-  if (from > to)
-    return V_GT;
-  return V_EQ;
-}
+SPECIALIZE_ASSIGN(int_float_check_min_max, int8_t, float32_iec559_t)
+SPECIALIZE_ASSIGN(int_float_check_min_max, int16_t, float32_iec559_t)
+SPECIALIZE_ASSIGN(int_float_check_min_max, int32_t, float32_iec559_t)
+SPECIALIZE_ASSIGN(int_float_check_min_max, int64_t, float32_iec559_t)
+SPECIALIZE_ASSIGN(int_float_check_min_max, u_int8_t, float32_iec559_t)
+SPECIALIZE_ASSIGN(int_float_check_min_max, u_int16_t, float32_iec559_t)
+SPECIALIZE_ASSIGN(int_float_check_min_max, u_int32_t, float32_iec559_t)
+SPECIALIZE_ASSIGN(int_float_check_min_max, u_int64_t, float32_iec559_t)
 
-SPECIALIZE_ASSIGN_INEXACT(int_float_check_min_max, int8_t, float32_iec559_t)
-SPECIALIZE_ASSIGN_INEXACT(int_float_check_min_max, int16_t, float32_iec559_t)
-SPECIALIZE_ASSIGN_INEXACT(int_float_check_min_max, int32_t, float32_iec559_t)
-SPECIALIZE_ASSIGN_INEXACT(int_float_check_min_max, int64_t, float32_iec559_t)
-SPECIALIZE_ASSIGN_INEXACT(int_float_check_min_max, u_int8_t, float32_iec559_t)
-SPECIALIZE_ASSIGN_INEXACT(int_float_check_min_max, u_int16_t, float32_iec559_t)
-SPECIALIZE_ASSIGN_INEXACT(int_float_check_min_max, u_int32_t, float32_iec559_t)
-SPECIALIZE_ASSIGN_INEXACT(int_float_check_min_max, u_int64_t, float32_iec559_t)
-
-SPECIALIZE_ASSIGN_INEXACT(int_float_check_min_max, int8_t, float64_iec559_t)
-SPECIALIZE_ASSIGN_INEXACT(int_float_check_min_max, int16_t, float64_iec559_t)
-SPECIALIZE_ASSIGN_INEXACT(int_float_check_min_max, int32_t, float64_iec559_t)
-SPECIALIZE_ASSIGN_INEXACT(int_float_check_min_max, int64_t, float64_iec559_t)
-SPECIALIZE_ASSIGN_INEXACT(int_float_check_min_max, u_int8_t, float64_iec559_t)
-SPECIALIZE_ASSIGN_INEXACT(int_float_check_min_max, u_int16_t, float64_iec559_t)
-SPECIALIZE_ASSIGN_INEXACT(int_float_check_min_max, u_int32_t, float64_iec559_t)
-SPECIALIZE_ASSIGN_INEXACT(int_float_check_min_max, u_int64_t, float64_iec559_t)
+SPECIALIZE_ASSIGN(int_float_check_min_max, int8_t, float64_iec559_t)
+SPECIALIZE_ASSIGN(int_float_check_min_max, int16_t, float64_iec559_t)
+SPECIALIZE_ASSIGN(int_float_check_min_max, int32_t, float64_iec559_t)
+SPECIALIZE_ASSIGN(int_float_check_min_max, int64_t, float64_iec559_t)
+SPECIALIZE_ASSIGN(int_float_check_min_max, u_int8_t, float64_iec559_t)
+SPECIALIZE_ASSIGN(int_float_check_min_max, u_int16_t, float64_iec559_t)
+SPECIALIZE_ASSIGN(int_float_check_min_max, u_int32_t, float64_iec559_t)
+SPECIALIZE_ASSIGN(int_float_check_min_max, u_int64_t, float64_iec559_t)
 
 #ifdef FLOAT96_IEC559_TYPE
-SPECIALIZE_ASSIGN_INEXACT(int_float_check_min_max, int8_t, float96_iec559_t)
-SPECIALIZE_ASSIGN_INEXACT(int_float_check_min_max, int16_t, float96_iec559_t)
-SPECIALIZE_ASSIGN_INEXACT(int_float_check_min_max, int32_t, float96_iec559_t)
-SPECIALIZE_ASSIGN_INEXACT(int_float_check_min_max, int64_t, float96_iec559_t)
-SPECIALIZE_ASSIGN_INEXACT(int_float_check_min_max, u_int8_t, float96_iec559_t)
-SPECIALIZE_ASSIGN_INEXACT(int_float_check_min_max, u_int16_t, float96_iec559_t)
-SPECIALIZE_ASSIGN_INEXACT(int_float_check_min_max, u_int32_t, float96_iec559_t)
-SPECIALIZE_ASSIGN_INEXACT(int_float_check_min_max, u_int64_t, float96_iec559_t)
+SPECIALIZE_ASSIGN(int_float_check_min_max, int8_t, float96_iec559_t)
+SPECIALIZE_ASSIGN(int_float_check_min_max, int16_t, float96_iec559_t)
+SPECIALIZE_ASSIGN(int_float_check_min_max, int32_t, float96_iec559_t)
+SPECIALIZE_ASSIGN(int_float_check_min_max, int64_t, float96_iec559_t)
+SPECIALIZE_ASSIGN(int_float_check_min_max, u_int8_t, float96_iec559_t)
+SPECIALIZE_ASSIGN(int_float_check_min_max, u_int16_t, float96_iec559_t)
+SPECIALIZE_ASSIGN(int_float_check_min_max, u_int32_t, float96_iec559_t)
+SPECIALIZE_ASSIGN(int_float_check_min_max, u_int64_t, float96_iec559_t)
 #endif
 
 #ifdef FLOAT128_IEC559_TYPE
-SPECIALIZE_ASSIGN_INEXACT(int_float_check_min_max, int8_t, float128_iec559_t)
-SPECIALIZE_ASSIGN_INEXACT(int_float_check_min_max, int16_t, float128_iec559_t)
-SPECIALIZE_ASSIGN_INEXACT(int_float_check_min_max, int32_t, float128_iec559_t)
-SPECIALIZE_ASSIGN_INEXACT(int_float_check_min_max, int64_t, float128_iec559_t)
-SPECIALIZE_ASSIGN_INEXACT(int_float_check_min_max, u_int8_t, float128_iec559_t)
-SPECIALIZE_ASSIGN_INEXACT(int_float_check_min_max, u_int16_t, float128_iec559_t)
-SPECIALIZE_ASSIGN_INEXACT(int_float_check_min_max, u_int32_t, float128_iec559_t)
-SPECIALIZE_ASSIGN_INEXACT(int_float_check_min_max, u_int64_t, float128_iec559_t)
+SPECIALIZE_ASSIGN(int_float_check_min_max, int8_t, float128_iec559_t)
+SPECIALIZE_ASSIGN(int_float_check_min_max, int16_t, float128_iec559_t)
+SPECIALIZE_ASSIGN(int_float_check_min_max, int32_t, float128_iec559_t)
+SPECIALIZE_ASSIGN(int_float_check_min_max, int64_t, float128_iec559_t)
+SPECIALIZE_ASSIGN(int_float_check_min_max, u_int8_t, float128_iec559_t)
+SPECIALIZE_ASSIGN(int_float_check_min_max, u_int16_t, float128_iec559_t)
+SPECIALIZE_ASSIGN(int_float_check_min_max, u_int32_t, float128_iec559_t)
+SPECIALIZE_ASSIGN(int_float_check_min_max, u_int64_t, float128_iec559_t)
 #endif
 
 #undef ASSIGN2_SIGNED_SIGNED
@@ -196,10 +198,10 @@ SPECIALIZE_ASSIGN_INEXACT(int_float_check_min_max, u_int64_t, float128_iec559_t)
 #undef ASSIGN2_UNSIGNED_SIGNED
 #undef ASSIGN2_SIGNED_UNSIGNED
 
-template <typename Type>
-inline Result_Info 
-checked_neg_signed_int(Type& to, Type from) {
-  if (from == 0) {
+template <typename Policy, typename Type>
+inline Result 
+neg_signed_int(Type& to, Type from) {
+  if (!Policy::check_overflow || from == 0) {
     to = from;
     return V_EQ;
   }
@@ -213,71 +215,83 @@ checked_neg_signed_int(Type& to, Type from) {
   return V_EQ;
 }
 
-template <typename Type>
-inline Result_Info 
-checked_neg_unsigned_int(Type& to, Type from) {
-  if (to == 0) {
+template <typename Policy, typename Type>
+inline Result 
+neg_unsigned_int(Type& to, Type from) {
+  if (!Policy::check_overflow || to == 0) {
     to = from;
     return V_EQ;
   }
   return V_NEG_OVERFLOW;
 }
 
-template <typename Type>
-inline Result_Info 
-checked_add_signed_int(Type& to, Type x, Type y) {
+template <typename Policy, typename Type>
+inline Result 
+add_signed_int(Type& to, Type x, Type y) {
   Type n = x + y;
-  if (y < 0) {
-    if (n >= x)
-      return V_NEG_OVERFLOW;
-  } else if (n < x)
-    return V_POS_OVERFLOW;
-  to = n;
-  return V_EQ;
-}
-
-template <typename Type>
-inline Result_Info 
-checked_add_unsigned_int(Type& to, Type x, Type y) {
-  Type n = x + y;
-  if (n < x)
-    return V_POS_OVERFLOW;
-  to = n;
-  return V_EQ;
-}
-
-template <typename Type>
-inline Result_Info 
-checked_sub_signed_int(Type& to, Type x, Type y) {
-  Type n = x - y;
-  if (y < 0) {
-    if (n <= x)
+  if (Policy::check_overflow) {
+    if (y < 0) {
+      if (n >= x)
+	return V_NEG_OVERFLOW;
+    } else if (n < x)
       return V_POS_OVERFLOW;
-  } else if (n > x)
-    return V_NEG_OVERFLOW;
+  }
   to = n;
   return V_EQ;
 }
 
-template <typename Type>
-inline Result_Info 
-checked_sub_unsigned_int(Type& to, Type x, Type y) {
+template <typename Policy, typename Type>
+inline Result 
+add_unsigned_int(Type& to, Type x, Type y) {
+  Type n = x + y;
+  if (Policy::check_overflow) {
+    if (n < x)
+      return V_POS_OVERFLOW;
+  }
+  to = n;
+  return V_EQ;
+}
+
+template <typename Policy, typename Type>
+inline Result 
+sub_signed_int(Type& to, Type x, Type y) {
   Type n = x - y;
-  if (n > x)
-    return V_NEG_OVERFLOW;
+  if (Policy::check_overflow) {
+    if (y < 0) {
+      if (n <= x)
+	return V_POS_OVERFLOW;
+    } else if (n > x)
+      return V_NEG_OVERFLOW;
+  }
   to = n;
   return V_EQ;
 }
 
-template <typename Type>
-inline Result_Info 
-checked_mul_signed_int(Type& to, Type x, Type y) {
+template <typename Policy, typename Type>
+inline Result 
+sub_unsigned_int(Type& to, Type x, Type y) {
+  Type n = x - y;
+  if (Policy::check_overflow) {
+    if (n > x)
+      return V_NEG_OVERFLOW;
+  }
+  to = n;
+  return V_EQ;
+}
+
+template <typename Policy, typename Type>
+inline Result 
+mul_signed_int(Type& to, Type x, Type y) {
+  if (!Policy::check_overflow) {
+    to = x * y;
+    return V_EQ;
+  }
   if (y == 0) {
     to = 0;
     return V_EQ;
   }
   if (y == -1)
-    return checked_neg_signed_int(to, x);
+    return neg_signed_int<Policy>(to, x);
   Type n = x * y;
   if (n / y != x) {
     if ((x > 0) ^ (y > 0))
@@ -289,9 +303,13 @@ checked_mul_signed_int(Type& to, Type x, Type y) {
   return V_EQ;
 }
 
-template <typename Type>
-inline Result_Info 
-checked_mul_unsigned_int(Type& to, Type x, Type y) {
+template <typename Policy, typename Type>
+inline Result 
+mul_unsigned_int(Type& to, Type x, Type y) {
+  if (!Policy::check_overflow) {
+    to = x * y;
+    return V_EQ;
+  }
   if (y == 0) {
     to = 0;
     return V_EQ;
@@ -303,61 +321,44 @@ checked_mul_unsigned_int(Type& to, Type x, Type y) {
   return V_EQ;
 }
 
-template <typename Type>
-inline Result_Info 
-checked_div_signed_int(Type& to, Type x, Type y) {
-  if (y == -1)
-    return checked_neg_signed_int(to, x);
-  to = x / y;
-  return V_EQ;
-}
-
-template <typename Type>
-inline Result_Info 
-checked_div_signed_int_check_inexact(Type& to, Type x, Type y) {
-  if (y == 0)
+template <typename Policy, typename Type>
+inline Result 
+div_signed_int(Type& to, Type x, Type y) {
+  if (Policy::check_divbyzero && y == 0)
     return V_NAN;
-  if (y == -1)
-    return checked_neg_signed_int(to, x);
-  Type r = x % y;
-  to = x / y;
-  if (r < 0)
-    return V_LT;
-  if (r > 0)
-    return V_GT;
+  if (Policy::check_overflow && y == -1)
+    return neg_signed_int<Policy>(to, x);
+  if (Policy::check_inexact) {
+    Type r = x % y;
+    to = x / y;
+    if (r < 0)
+      return V_LT;
+    if (r > 0)
+      return V_GT;
+  } else
+    to = x / y;
   return V_EQ;
 }
 
-template <typename Type>
-inline Result_Info 
-checked_div_unsigned_int(Type& to, Type x, Type y) {
-  to = x / y;
-  return V_EQ;
-}
-
-template <typename Type>
-inline Result_Info 
-checked_div_unsigned_int_check_inexact(Type& to, Type x, Type y) {
-  if (y == 0)
+template <typename Policy, typename Type>
+inline Result 
+div_unsigned_int(Type& to, Type x, Type y) {
+  if (Policy::check_divbyzero && y == 0)
     return V_NAN;
-  Type r = x % y;
-  to = x / y;
-  if (r > 0)
-    return V_GT;
+  if (Policy::check_inexact) {
+    Type r = x % y;
+    to = x / y;
+    if (r > 0)
+      return V_GT;
+  } else
+    to = x / y;
   return V_EQ;
 }
 
-template <typename Type>
-inline Result_Info 
-checked_mod_int(Type& to, Type x, Type y) {
-  to = x % y;
-  return V_EQ;
-}
-
-template <typename Type>
-inline Result_Info 
-checked_mod_int_check_inexact(Type& to, Type x, Type y) {
-  if (y == 0)
+template <typename Policy, typename Type>
+inline Result 
+mod_int(Type& to, Type x, Type y) {
+  if (Policy::check_divbyzero && y == 0)
     return V_NAN;
   to = x % y;
   return V_EQ;
@@ -379,36 +380,22 @@ isqrtrem_(Type& q, Type& r, Type from) {
   }
 }
 
-template <typename Type>
-inline Result_Info 
-checked_sqrt_unsigned_int(Type& to, Type from) {
+template <typename Policy, typename Type>
+inline Result 
+sqrt_unsigned_int(Type& to, Type from) {
   Type r;
   isqrtrem_(to, r, from);
-  return V_EQ;
-}
-
-template <typename Type>
-inline Result_Info 
-checked_sqrt_signed_int(Type& to, Type from) {
-  return checked_sqrt_unsigned_int(to, from);
-}
-
-template <typename Type>
-inline Result_Info 
-checked_sqrt_unsigned_int_check_inexact(Type& to, Type from) {
-  Type r;
-  isqrtrem_(to, r, from);
-  if (r > 0)
+  if (Policy::check_inexact && r > 0)
     return V_GT;
   return V_EQ;
 }
 
-template <typename Type>
-inline Result_Info 
-checked_sqrt_signed_int_check_inexact(Type& to, Type from) {
-  if (from < 0)
+template <typename Policy, typename Type>
+inline Result 
+sqrt_signed_int(Type& to, Type from) {
+  if (Policy::check_sqrt_neg && from < 0)
     return V_NAN;
-  return checked_sqrt_unsigned_int_check_inexact(to, from);
+  return sqrt_unsigned_int<Policy>(to, from);
 }
 
 template<typename T>
@@ -463,36 +450,36 @@ struct Larger_Types<u_int32_t> {
 };
 
 
-template <typename Type>
-inline Result_Info 
-checked_int_larger_neg(Type& to, Type x) {
+template <typename Policy, typename Type>
+inline Result 
+int_larger_neg(Type& to, Type x) {
   typename Larger_Types<Type>::Neg l = x;
   l = -l;
-  return checked_assign(to, l);
+  return assign<Policy>(to, l);
 }
 
-template <typename Type>
-inline Result_Info 
-checked_int_larger_add(Type& to, Type x, Type y) {
+template <typename Policy, typename Type>
+inline Result 
+int_larger_add(Type& to, Type x, Type y) {
   typename Larger_Types<Type>::Add l = x;
   l += y;
-  return checked_assign(to, l);
+  return assign<Policy>(to, l);
 }
 
-template <typename Type>
-inline Result_Info 
-checked_int_larger_sub(Type& to, Type x, Type y) {
+template <typename Policy, typename Type>
+inline Result 
+int_larger_sub(Type& to, Type x, Type y) {
   typename Larger_Types<Type>::Sub l = x;
   l -= y;
-  return checked_assign(to, l);
+  return assign<Policy>(to, l);
 }
 
-template <typename Type>
-inline Result_Info 
-checked_int_larger_mul(Type& to, Type x, Type y) {
+template <typename Policy, typename Type>
+inline Result 
+int_larger_mul(Type& to, Type x, Type y) {
   typename Larger_Types<Type>::Mul l = x;
   l *= y;
-  return checked_assign(to, l);
+  return assign<Policy>(to, l);
 }
 
 SPECIALIZE_PRED(int, int8_t)
@@ -501,9 +488,9 @@ SPECIALIZE_NEG(signed_int, int8_t, int8_t)
 SPECIALIZE_ADD(signed_int, int8_t, int8_t)
 SPECIALIZE_SUB(signed_int, int8_t, int8_t)
 SPECIALIZE_MUL(signed_int, int8_t, int8_t)
-SPECIALIZE_DIV_INEXACT(signed_int, int8_t, int8_t)
-SPECIALIZE_MOD_INEXACT(int, int8_t, int8_t)
-SPECIALIZE_SQRT_INEXACT(signed_int, int8_t, int8_t)
+SPECIALIZE_DIV(signed_int, int8_t, int8_t)
+SPECIALIZE_MOD(int, int8_t, int8_t)
+SPECIALIZE_SQRT(signed_int, int8_t, int8_t)
 
 SPECIALIZE_PRED(int, int16_t)
 SPECIALIZE_SUCC(int, int16_t)
@@ -511,9 +498,9 @@ SPECIALIZE_NEG(signed_int, int16_t, int16_t)
 SPECIALIZE_ADD(signed_int, int16_t, int16_t)
 SPECIALIZE_SUB(signed_int, int16_t, int16_t)
 SPECIALIZE_MUL(signed_int, int16_t, int16_t)
-SPECIALIZE_DIV_INEXACT(signed_int, int16_t, int16_t)
-SPECIALIZE_MOD_INEXACT(int, int16_t, int16_t)
-SPECIALIZE_SQRT_INEXACT(signed_int, int16_t, int16_t)
+SPECIALIZE_DIV(signed_int, int16_t, int16_t)
+SPECIALIZE_MOD(int, int16_t, int16_t)
+SPECIALIZE_SQRT(signed_int, int16_t, int16_t)
 
 SPECIALIZE_PRED(int, int32_t)
 SPECIALIZE_SUCC(int, int32_t)
@@ -521,9 +508,9 @@ SPECIALIZE_NEG(signed_int, int32_t, int32_t)
 SPECIALIZE_ADD(signed_int, int32_t, int32_t)
 SPECIALIZE_SUB(signed_int, int32_t, int32_t)
 SPECIALIZE_MUL(signed_int, int32_t, int32_t)
-SPECIALIZE_DIV_INEXACT(signed_int, int32_t, int32_t)
-SPECIALIZE_MOD_INEXACT(int, int32_t, int32_t)
-SPECIALIZE_SQRT_INEXACT(signed_int, int32_t, int32_t)
+SPECIALIZE_DIV(signed_int, int32_t, int32_t)
+SPECIALIZE_MOD(int, int32_t, int32_t)
+SPECIALIZE_SQRT(signed_int, int32_t, int32_t)
 
 SPECIALIZE_PRED(int, int64_t)
 SPECIALIZE_SUCC(int, int64_t)
@@ -531,9 +518,9 @@ SPECIALIZE_NEG(signed_int, int64_t, int64_t)
 SPECIALIZE_ADD(signed_int, int64_t, int64_t)
 SPECIALIZE_SUB(signed_int, int64_t, int64_t)
 SPECIALIZE_MUL(signed_int, int64_t, int64_t)
-SPECIALIZE_DIV_INEXACT(signed_int, int64_t, int64_t)
-SPECIALIZE_MOD_INEXACT(int, int64_t, int64_t)
-SPECIALIZE_SQRT_INEXACT(signed_int, int64_t, int64_t)
+SPECIALIZE_DIV(signed_int, int64_t, int64_t)
+SPECIALIZE_MOD(int, int64_t, int64_t)
+SPECIALIZE_SQRT(signed_int, int64_t, int64_t)
 
 SPECIALIZE_PRED(int, u_int8_t)
 SPECIALIZE_SUCC(int, u_int8_t)
@@ -541,9 +528,9 @@ SPECIALIZE_NEG(unsigned_int, u_int8_t, u_int8_t)
 SPECIALIZE_ADD(unsigned_int, u_int8_t, u_int8_t)
 SPECIALIZE_SUB(unsigned_int, u_int8_t, u_int8_t)
 SPECIALIZE_MUL(unsigned_int, u_int8_t, u_int8_t)
-SPECIALIZE_DIV_INEXACT(unsigned_int, u_int8_t, u_int8_t)
-SPECIALIZE_MOD_INEXACT(int, u_int8_t, u_int8_t)
-SPECIALIZE_SQRT_INEXACT(unsigned_int, u_int8_t, u_int8_t)
+SPECIALIZE_DIV(unsigned_int, u_int8_t, u_int8_t)
+SPECIALIZE_MOD(int, u_int8_t, u_int8_t)
+SPECIALIZE_SQRT(unsigned_int, u_int8_t, u_int8_t)
 
 SPECIALIZE_PRED(int, u_int16_t)
 SPECIALIZE_SUCC(int, u_int16_t)
@@ -551,9 +538,9 @@ SPECIALIZE_NEG(unsigned_int, u_int16_t, u_int16_t)
 SPECIALIZE_ADD(unsigned_int, u_int16_t, u_int16_t)
 SPECIALIZE_SUB(unsigned_int, u_int16_t, u_int16_t)
 SPECIALIZE_MUL(unsigned_int, u_int16_t, u_int16_t)
-SPECIALIZE_DIV_INEXACT(unsigned_int, u_int16_t, u_int16_t)
-SPECIALIZE_MOD_INEXACT(int, u_int16_t, u_int16_t)
-SPECIALIZE_SQRT_INEXACT(unsigned_int, u_int16_t, u_int16_t)
+SPECIALIZE_DIV(unsigned_int, u_int16_t, u_int16_t)
+SPECIALIZE_MOD(int, u_int16_t, u_int16_t)
+SPECIALIZE_SQRT(unsigned_int, u_int16_t, u_int16_t)
 
 SPECIALIZE_PRED(int, u_int32_t)
 SPECIALIZE_SUCC(int, u_int32_t)
@@ -561,9 +548,9 @@ SPECIALIZE_NEG(unsigned_int, u_int32_t, u_int32_t)
 SPECIALIZE_ADD(unsigned_int, u_int32_t, u_int32_t)
 SPECIALIZE_SUB(unsigned_int, u_int32_t, u_int32_t)
 SPECIALIZE_MUL(unsigned_int, u_int32_t, u_int32_t)
-SPECIALIZE_DIV_INEXACT(unsigned_int, u_int32_t, u_int32_t)
-SPECIALIZE_MOD_INEXACT(int, u_int32_t, u_int32_t)
-SPECIALIZE_SQRT_INEXACT(unsigned_int, u_int32_t, u_int32_t)
+SPECIALIZE_DIV(unsigned_int, u_int32_t, u_int32_t)
+SPECIALIZE_MOD(int, u_int32_t, u_int32_t)
+SPECIALIZE_SQRT(unsigned_int, u_int32_t, u_int32_t)
 
 SPECIALIZE_PRED(int, u_int64_t)
 SPECIALIZE_SUCC(int, u_int64_t)
@@ -571,9 +558,12 @@ SPECIALIZE_NEG(unsigned_int, u_int64_t, u_int64_t)
 SPECIALIZE_ADD(unsigned_int, u_int64_t, u_int64_t)
 SPECIALIZE_SUB(unsigned_int, u_int64_t, u_int64_t)
 SPECIALIZE_MUL(unsigned_int, u_int64_t, u_int64_t)
-SPECIALIZE_DIV_INEXACT(unsigned_int, u_int64_t, u_int64_t)
-SPECIALIZE_MOD_INEXACT(int, u_int64_t, u_int64_t)
-SPECIALIZE_SQRT_INEXACT(unsigned_int, u_int64_t, u_int64_t)
+SPECIALIZE_DIV(unsigned_int, u_int64_t, u_int64_t)
+SPECIALIZE_MOD(int, u_int64_t, u_int64_t)
+SPECIALIZE_SQRT(unsigned_int, u_int64_t, u_int64_t)
+
+} // namespace Checked
 
 } // namespace Parma_Polyhedra_Library
 
+#endif // !defined(PPL_checked_int_inlines_hh)

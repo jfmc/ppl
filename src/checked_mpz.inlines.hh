@@ -21,40 +21,43 @@ USA.
 For the most up-to-date information see the Parma Polyhedra Library
 site: http://www.cs.unipr.it/ppl/ . */
 
+#ifndef PPL_checked_mpz_inlines_hh
+#define PPL_checked_mpz_inlines_hh 1
+
 #include <limits>
 #include <cmath>
-#include "checked.defs.hh"
+#include <gmpxx.h>
 
 namespace Parma_Polyhedra_Library {
 
-inline Result_Info
-checked_assign_mpz_mpq(mpz_class& to, const mpq_class& from) {
-  to = from;
+namespace Checked {
+
+template <typename Policy>
+inline Result
+assign_mpz_mpq(mpz_class& to, const mpq_class& from) {
+  if (Policy::check_exact) {
+    mpz_srcptr n = from.get_num().get_mpz_t();
+    mpz_srcptr d = from.get_den().get_mpz_t();
+    mpz_t r;
+    mpz_init(r);
+    mpz_tdiv_qr(to.get_mpz_t(), r, n, d);
+    switch (mpz_sgn(r)) {
+    case -1:
+      return V_LT;
+    case 1:
+      return V_GT;
+    }
+  } else {
+    to = from;
+  }
   return V_EQ;
 }
 
-inline Result_Info
-checked_assign_mpz_mpq_check_inexact(mpz_class& to, const mpq_class& from) {
-  mpz_srcptr n = from.get_num().get_mpz_t();
-  mpz_srcptr d = from.get_den().get_mpz_t();
-  mpz_t r;
-  mpz_init(r);
-  mpz_tdiv_qr(to.get_mpz_t(), r, n, d);
-  switch (mpz_sgn(r)) {
-  case -1:
-    return V_LT;
-  case 1:
-    return V_GT;
-  default:
-    return V_EQ;
-  }
-}
+SPECIALIZE_ASSIGN(mpz_mpq, mpz_class, const mpq_class&)
 
-SPECIALIZE_ASSIGN_INEXACT(mpz_mpq, mpz_class, const mpq_class&)
-
-template <typename From>
-inline Result_Info
-checked_assign_mpz_signed_int(mpz_class& to, From from) {
+template <typename Policy, typename From>
+inline Result
+assign_mpz_signed_int(mpz_class& to, From from) {
   if (sizeof(From) <= sizeof(unsigned long))
     to = static_cast<unsigned long>(from);
   else {
@@ -75,9 +78,9 @@ SPECIALIZE_ASSIGN(mpz_signed_int, mpz_class, int16_t)
 SPECIALIZE_ASSIGN(mpz_signed_int, mpz_class, int32_t)
 SPECIALIZE_ASSIGN(mpz_signed_int, mpz_class, int64_t)
 
-template <typename From>
-inline Result_Info
-checked_assign_mpz_unsigned_int(mpz_class& to, From from) {
+template <typename Policy, typename From>
+inline Result
+assign_mpz_unsigned_int(mpz_class& to, From from) {
   if (sizeof(From) <= sizeof(unsigned long))
     to = static_cast<unsigned long>(from);
   else
@@ -91,125 +94,147 @@ SPECIALIZE_ASSIGN(mpz_unsigned_int, mpz_class, u_int32_t)
 SPECIALIZE_ASSIGN(mpz_unsigned_int, mpz_class, u_int64_t)
 
 
-template <typename From>
-inline Result_Info
-checked_assign_mpz_float(mpz_class& to, From from) {
-  to = from;
+template <typename Policy, typename From>
+inline Result
+assign_mpz_float(mpz_class& to, From from) {
+  if (Policy::check_inexact) {
+    double n = rint(from);
+    to = n;
+    if (from < to)
+      return V_LT;
+    if (from > to)
+      return V_GT;
+  } else {
+    to = from;
+  }
   return V_EQ;
 }
 
-template <typename From>
-inline Result_Info
-checked_assign_mpz_float_check_inexact(mpz_class& to, From from) {
-  double n = rint(from);
-  to = n;
-  if (from < to)
-    return V_LT;
-  if (from > to)
-    return V_GT;
-  return V_EQ;
-}
+SPECIALIZE_ASSIGN(mpz_float, mpz_class, float)
+SPECIALIZE_ASSIGN(mpz_float, mpz_class, double)
 
-SPECIALIZE_ASSIGN_INEXACT(mpz_float, mpz_class, float)
-SPECIALIZE_ASSIGN_INEXACT(mpz_float, mpz_class, double)
-
-inline Result_Info 
-checked_pred(mpz_class& to) {
+template <typename Policy>
+inline Result 
+pred_mpz(mpz_class& to) {
   --to;
   return V_EQ;
 }
 
-inline Result_Info 
-checked_succ(mpz_class& to) {
+SPECIALIZE_PRED(mpz, mpz_class)
+
+template <typename Policy>
+inline Result 
+succ_mpz(mpz_class& to) {
   ++to;
   return V_EQ;
 }
 
-inline Result_Info 
-checked_neg(mpz_class& to, const mpz_class& from) {
+SPECIALIZE_SUCC(mpz, mpz_class)
+
+template <typename Policy>
+inline Result 
+neg_mpz(mpz_class& to, const mpz_class& from) {
   mpz_neg(to.get_mpz_t(), from.get_mpz_t());
   return V_EQ;
 }
 
-inline Result_Info 
-checked_add(mpz_class& to, const mpz_class& x, const mpz_class& y) {
+SPECIALIZE_NEG(mpz, mpz_class, const mpz_class&)
+
+template <typename Policy>
+inline Result 
+add_mpz(mpz_class& to, const mpz_class& x, const mpz_class& y) {
   to = x + y;
   return V_EQ;
 }
 
-inline Result_Info 
-checked_sub(mpz_class& to, const mpz_class& x, const mpz_class& y) {
+SPECIALIZE_ADD(mpz, mpz_class, const mpz_class&)
+
+template <typename Policy>
+inline Result 
+sub_mpz(mpz_class& to, const mpz_class& x, const mpz_class& y) {
   to = x - y;
   return V_EQ;
 }
 
-inline Result_Info 
-checked_mul(mpz_class& to, const mpz_class& x, const mpz_class& y) {
+SPECIALIZE_SUB(mpz, mpz_class, const mpz_class&)
+
+template <typename Policy>
+inline Result 
+mul_mpz(mpz_class& to, const mpz_class& x, const mpz_class& y) {
   to = x * y;
   return V_EQ;
 }
 
-inline Result_Info 
-checked_div_mpz(mpz_class& to, const mpz_class& x, const mpz_class& y) {
-  mpz_divexact(to.get_mpz_t(), x.get_mpz_t(), y.get_mpz_t());
+SPECIALIZE_MUL(mpz, mpz_class, const mpz_class&)
+
+template <typename Policy>
+inline Result 
+div_mpz(mpz_class& to, const mpz_class& x, const mpz_class& y) {
+  if (Policy::check_divbyzero && sgn(y) == 0)
+    return V_NAN;
+  if (Policy::check_inexact) {
+    mpz_t r;
+    mpz_init(r);
+    mpz_tdiv_qr(to.get_mpz_t(), r, x.get_mpz_t(), y.get_mpz_t());
+    switch (mpz_sgn(r)) {
+    case -1:
+      return V_LT;
+    case 1:
+      return V_GT;
+    }
+  } else {
+    mpz_divexact(to.get_mpz_t(), x.get_mpz_t(), y.get_mpz_t());
+  }
   return V_EQ;
 }
 
-inline Result_Info 
-checked_div_mpz_check_inexact(mpz_class& to, const mpz_class& x, const mpz_class& y) {
-  if (sgn(y) == 0)
+SPECIALIZE_DIV(mpz, mpz_class, const mpz_class&)
+
+template <typename Policy>
+inline Result 
+mod_mpz(mpz_class& to, const mpz_class& x, const mpz_class& y) {
+  if (Policy::check_divbyzero && sgn(y) == 0)
     return V_NAN;
-  mpz_t r;
-  mpz_init(r);
-  mpz_tdiv_qr(to.get_mpz_t(), r, x.get_mpz_t(), y.get_mpz_t());
-  switch (mpz_sgn(r)) {
-  case -1:
-    return V_LT;
-  case 0:
-    return V_EQ;
-  case 1:
-    return V_GT;
-  }
-}
-
-SPECIALIZE_DIV_INEXACT(mpz, mpz_class, const mpz_class&)
-
-inline Result_Info 
-checked_mod(mpz_class& to, const mpz_class& x, const mpz_class& y) {
   to = x % y;
   return V_EQ;
 }
 
-inline Result_Info
-checked_assign(mpq_class& to, const mpz_class& from) {
-  to = from;
-  return V_EQ;
-}
+SPECIALIZE_MOD(mpz, mpz_class, const mpz_class&)
 
-inline Result_Info
-checked_assign(long& to, const mpz_class& from)
+template <typename Policy>
+inline Result 
+assign_long_mpz(long& to, const mpz_class& from)
 {
-  if (from.fits_slong_p()) {
+  if (!Policy::check_overflow || from.fits_slong_p()) {
     to = from.get_si();
     return V_EQ;
   }
   return sgn(from) < 0 ? V_NEG_OVERFLOW : V_POS_OVERFLOW;
 }
 
-inline Result_Info
-checked_assign(unsigned long& to, const mpz_class& from)
+SPECIALIZE_ASSIGN(long_mpz, long, const mpz_class&)
+
+template <typename Policy>
+inline Result 
+assign_unsigned_long_mpz(unsigned long& to, const mpz_class& from)
 {
-  if (from.fits_ulong_p()) {
+  if (!Policy::check_overflow || from.fits_ulong_p()) {
     to = from.get_ui();
     return V_EQ;
   }
   return sgn(from) < 0 ? V_NEG_OVERFLOW : V_POS_OVERFLOW;
 }
 
-template <typename To>
-inline Result_Info
-checked_assign_signed_int_mpz(To& to, const mpz_class& from)
+SPECIALIZE_ASSIGN(unsigned_long_mpz, unsigned long, const mpz_class&)
+
+template <typename Policy, typename To>
+inline Result 
+assign_signed_int_mpz(To& to, const mpz_class& from)
 {
+  if (!Policy::check_overflow) {
+    to = from.get_si();
+    return V_EQ;
+  }
   if (from.fits_slong_p()) {
     long v = from.get_si();
     if (v < std::numeric_limits<To>::min())
@@ -226,10 +251,14 @@ SPECIALIZE_ASSIGN(signed_int_mpz, signed char, const mpz_class&)
 SPECIALIZE_ASSIGN(signed_int_mpz, short, const mpz_class&)
 SPECIALIZE_ASSIGN(signed_int_mpz, int, const mpz_class&)
 
-template <typename To>
-inline Result_Info
-checked_assign_unsigned_int_mpz(To& to, const mpz_class& from)
+template <typename Policy, typename To>
+inline Result 
+assign_unsigned_int_mpz(To& to, const mpz_class& from)
 {
+  if (!Policy::check_overflow) {
+    to = from.get_si();
+    return V_EQ;
+  }
   if (from.fits_ulong_p()) {
     unsigned long v = from.get_ui();
     if (v > std::numeric_limits<To>::max())
@@ -244,57 +273,69 @@ SPECIALIZE_ASSIGN(unsigned_int_mpz, unsigned char, const mpz_class&)
 SPECIALIZE_ASSIGN(unsigned_int_mpz, unsigned short, const mpz_class&)
 SPECIALIZE_ASSIGN(unsigned_int_mpz, unsigned int, const mpz_class&)
 
-template <>
-inline Result_Info
-checked_abs(mpz_class& to, const mpz_class& from)
+template <typename Policy>
+inline Result 
+abs_mpz(mpz_class& to, const mpz_class& from)
 {
   to = abs(from);
   return V_EQ;
 }
 
-template <>
-inline Result_Info
-checked_gcd(mpz_class& to, const mpz_class& x, const mpz_class& y)
+SPECIALIZE_ABS(mpz, mpz_class, const mpz_class&)
+
+template <typename Policy>
+inline Result 
+gcd_mpz(mpz_class& to, const mpz_class& x, const mpz_class& y)
 {
   mpz_gcd(to.get_mpz_t(), x.get_mpz_t(), y.get_mpz_t());
   return V_EQ;
 }
 
-template <>
-inline Result_Info
-checked_lcm(mpz_class& to, const mpz_class& x, const mpz_class& y)
+SPECIALIZE_GCD(mpz, mpz_class, const mpz_class&)
+
+template <typename Policy>
+inline Result 
+lcm_mpz(mpz_class& to, const mpz_class& x, const mpz_class& y)
 {
   mpz_lcm(to.get_mpz_t(), x.get_mpz_t(), y.get_mpz_t());
   return V_EQ;
 }
 
-template <>
-inline Result_Info
-checked_sqrt(mpz_class& to, const mpz_class& from)
+SPECIALIZE_LCM(mpz, mpz_class, const mpz_class&)
+
+template <typename Policy>
+inline Result 
+sqrt_mpz(mpz_class& to, const mpz_class& from)
 {
-  if (from < 0)
+  if (Policy::check_sqrt_neg && from < 0)
     return V_NAN;
-  mpz_class r;
-  mpz_sqrtrem(to.get_mpz_t(), r.get_mpz_t(), from.get_mpz_t());
-  if (r > 0)
-    return V_GT;
-  if (r < 0)
-    return V_LT;
+  if (Policy::check_inexact) {
+    mpz_class r;
+    mpz_sqrtrem(to.get_mpz_t(), r.get_mpz_t(), from.get_mpz_t());
+    if (r > 0)
+      return V_GT;
+    if (r < 0)
+      return V_LT;
+  } else {
+    to = sqrt(from);
+  }
   return V_EQ;
 }
 
-template <>
-inline Result_Info
-checked_sqrtexact(mpz_class& to, const mpz_class& from)
-{
-  to = sqrt(from);
-  return V_EQ;
-}
+SPECIALIZE_SQRT(mpz, mpz_class, const mpz_class&)
+
+} // namespace Checked
 
 } // namespace Parma_Polyhedra_Library
+
+namespace std {
 
 inline void
 std::swap(mpz_class& x, mpz_class& y)
 {
   mpz_swap(x.get_mpz_t(), y.get_mpz_t());
 }
+
+} // namespace std
+
+#endif // !defined(PPL_checked_mpz_inlines_hh)
