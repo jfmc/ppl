@@ -62,8 +62,14 @@ operator<<(std::ostream&, const PowerSet<CS>&);
 template <typename CS>
 class Parma_Polyhedra_Library::PowerSet {
 public:
-  //! Creates a universe (top) PowerSet.
-  PowerSet();
+  //! Builds a universe (top) PowerSet.
+  /*!
+    \param num_dimensions   The number of dimensions of the vector
+                            space enclosing the powerset.
+
+    By default, a 0-dimension space powerset is built.
+  */
+  explicit PowerSet(dimension_type num_dimensions = 0);
 
   //! Creates a PowerSet with the same information contents as \p cs.
   PowerSet(const ConSys& cs);
