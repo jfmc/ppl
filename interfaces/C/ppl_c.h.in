@@ -94,8 +94,23 @@ Unix-like systems, this is done by adding <CODE>-lppl_c</CODE>,
 <CODE>-lppl</CODE>, <CODE>-lgmpxx</CODE>, and <CODE>-lgmp</CODE> to
 the compiler's or linker's command line.  For example:
 \verbatim
-gcc myprogram.c -lppl_c -lppl -lgmpxx -lgmp
+gcc myprogram.o -lppl_c -lppl -lgmpxx -lgmp
 \endverbatim
+If this does not work, it means that your compiler/linker is not
+finding the libraries where it expects.  Again, this maybe because you
+forgot to install the library or you installed it in a non-standard
+location.  In the latter case you will need to use the appropriate
+options (usually <CODE>-L</CODE>) and, if you use shared libraries,
+some sort of run-time path selection mechanisms.  Consult your
+compiler's documentation for details.  Notice that the PPL is built
+using <A HREF="http://www.gnu.org/software/libtool/">Libtool</A> and
+an application can exploit this fact to significantly simplify the
+linking phase.  See Libtool's documentation for details.  Those
+working under Linux can find a lot of useful information on how to use
+program libraries (including static, shared, and dynamically loaded
+libraries) in the
+<A HREF="http://www.dwheeler.com/program-library/">Program Library
+HOWTO</A>.
 
 TO BE CONTINUED HERE.
 
