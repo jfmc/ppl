@@ -1,4 +1,4 @@
-/* Test Polyhedron::is_topologically_closed(): a polyhedron
+/* Test Polyhedron::check_topologically_closed(): a polyhedron
    that contains in its minimized system of generators
    non-redundant closure point that are not
    matched by a corresponding point is not topologically closed.
@@ -47,7 +47,7 @@ main() TRY {
   gs1.insert(closure_point(A));
   ph1.add_generators_and_minimize(gs1);
 
-  bool ok = !ph1.is_topologically_closed();
+  bool ok = !ph1.check_topologically_closed();
 
 #if NOISY
   print_generators(ph1, "*** ph1 ***");

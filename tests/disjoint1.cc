@@ -1,4 +1,4 @@
-/* Test are_disjoint(const Polyhedron& x, const Polyhedron& y):
+/* Test check_disjoint(const Polyhedron& x, const Polyhedron& y):
    we apply this function to two disjoint polyhedra.
    Copyright (C) 2001-2003 Roberto Bagnara <bagnara@cs.unipr.it>
 
@@ -48,7 +48,7 @@ main() TRY {
   ph2.add_constraint(B >= 1);
   ph2.add_constraint(B <= 2);
 
-  int retval = are_disjoint(ph1, ph2) ? 0 : 1;
+  int retval = check_disjoint(ph1, ph2) ? 0 : 1;
 
 #if NOISY
   print_constraints(ph1, "*** ph1 ***");

@@ -1,4 +1,4 @@
-/* Test Polyhedron::is_topologically_closed(): every necessarily
+/* Test Polyhedron::check_topologically_closed(): every necessarily
    closed, empty and zero-dimensional polyhedra are topologically closed.
    Copyright (C) 2001-2003 Roberto Bagnara <bagnara@cs.unipr.it>
 
@@ -45,9 +45,9 @@ main() TRY {
   NNC_Polyhedron ph3;
 
   bool ok
-    = ph1.is_topologically_closed()
-    && ph2.is_topologically_closed()
-    &&  ph3.is_topologically_closed();
+    = ph1.check_topologically_closed()
+    && ph2.check_topologically_closed()
+    &&  ph3.check_topologically_closed();
 
 #if NOISY
   print_constraints(ph1, "*** ph1 ***");

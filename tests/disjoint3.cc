@@ -1,4 +1,4 @@
-/* Test are_disjoint(const Polyhedron& x, const Polyhedron& y):
+/* Test check_disjoint(const Polyhedron& x, const Polyhedron& y):
    we apply this function in some particular cases.
    Copyright (C) 2001-2003 Roberto Bagnara <bagnara@cs.unipr.it>
 
@@ -66,7 +66,7 @@ test1() {
   ph2.add_generator(closure_point(4*A + 3*B));
   ph2.add_generator(ray(A - B));
 
-  bool disjoint = are_disjoint(ph1, ph2);
+  bool disjoint = check_disjoint(ph1, ph2);
 
 #if NOISY
   print_generators(ph1, "*** ph1 ***");
@@ -85,7 +85,7 @@ test2() {
   NNC_Polyhedron ph1 = half_strip(point(A + B), B);
   NNC_Polyhedron ph2 = half_strip(closure_point(4*A + B), B, false);
 
-  bool disjoint = are_disjoint(ph1, ph2);
+  bool disjoint = check_disjoint(ph1, ph2);
 
 #if NOISY
   print_generators(ph1, "*** ph1 ***");
@@ -104,7 +104,7 @@ test3() {
   NNC_Polyhedron ph1 = half_strip(point(A + B), B);
   NNC_Polyhedron ph2 = half_strip(closure_point(A + B), -B, false);
 
-  bool disjoint = are_disjoint(ph1, ph2);
+  bool disjoint = check_disjoint(ph1, ph2);
 
 #if NOISY
   print_generators(ph1, "*** ph1 ***");
@@ -128,7 +128,7 @@ test4() {
   ph2.add_generator(closure_point(-2*A + 2*B));
   ph2.add_generator(ray(-A - B));
 
-  bool disjoint = are_disjoint(ph1, ph2);
+  bool disjoint = check_disjoint(ph1, ph2);
 
 #if NOISY
   print_generators(ph1, "*** ph1 ***");
