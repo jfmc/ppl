@@ -88,12 +88,16 @@ extern Integer* tmp_Integer;
 
   Computes a capacity given a requested size.
   Allows for speculative allocation aimed at reducing the number of
-  reallocations.
+  reallocations enough to guarantee amortized constant insertion time
+  for our vector-like data structures.
 */
 #endif
 inline dimension_type
 compute_capacity(dimension_type requested_size) {
+  // Speculation factor 2.
   return 2*(requested_size + 1);
+  // Speculation factor 1.5.
+  //return requested_size += ++requested_size/2;
 }
 
 //! User objects' the PPL can throw.
