@@ -30,9 +30,31 @@ site: http://www.cs.unipr.it/ppl/ . */
 
 namespace Parma_Polyhedra_Library {
 
+//! \brief
+//! Returns <CODE>true</CODE> if and only if
+//! \p x and \p y are the same polyhedron.
+/*!
+  \relates Determinate<PH>
+  \exception std::invalid_argument thrown if \p x and \p y
+  are topology-incompatible
+  or dimension-incompatible.
+*/
 template <typename PH>
-class Determinate;
+bool operator==(const Determinate<PH>& x, const Determinate<PH>& y);
 
+//! \brief
+//! Returns <CODE>true</CODE> if and only if
+//! \p x and \p y are different polyhedra.
+/*!
+  \relates Determinate<PH>
+  \exception std::invalid_argument thrown if \p x and \p y
+  are topology-incompatible
+  or dimension-incompatible.
+*/
+template <typename PH>
+bool operator!=(const Determinate<PH>& x, const Determinate<PH>& y);
+
+#if 0
 template <typename PH>
 bool
 lcompare(const Determinate<PH>& x, const Determinate<PH>& y);
@@ -44,6 +66,7 @@ operator+(const Determinate<PH>& x, const Determinate<PH>& y);
 template <typename PH>
 Determinate<PH>
 operator*(const Determinate<PH>& x, const Determinate<PH>& y);
+#endif
 
 template <typename PH>
 std::ostream&
@@ -55,6 +78,7 @@ operator<<(std::ostream&, const Determinate<PH>&);
 template <typename PH>
 class Parma_Polyhedra_Library::Determinate {
 public:
+  Determinate();
   Determinate(const PH& p);
   Determinate(const Determinate& y);
   ~Determinate();
@@ -75,10 +99,21 @@ public:
   inline bool is_top() const;
   inline bool is_bottom() const;
 
-  friend bool lcompare<>(const Determinate& x, const Determinate& y);
+  friend bool
+  operator==<PH>(const Determinate<PH>& x, const Determinate<PH>& y);
+  friend bool
+  operator!=<PH>(const Determinate<PH>& x, const Determinate<PH>& y);
+
+#if 0
   friend Determinate operator +<>(const Determinate& x, const Determinate& y);
   friend Determinate operator *<>(const Determinate& x, const Determinate& y);
+#endif
+  friend bool lcompare<>(const Determinate& x, const Determinate& y);
+
   friend std::ostream& operator<<<>(std::ostream& s, const Determinate& x);
+
+  //! Returns the dimension of the vector space enclosing \p *this.
+  size_t space_dimension() const;
 
   //! \brief
   //! Intersects \p *this with (a copy of) constraint \p c.
@@ -203,8 +238,6 @@ private:
     else
       return false;
   }
-
-  Determinate();
 };
 
 #include "Determinate.inlines.hh"
