@@ -43,8 +43,8 @@ ppl_xsb_la_LDFLAGS = -no-undefined -module -avoid-version
 pkglib_DATA = ppl_xsb.O
 
 ppl_xsb.O: ppl_xsb.H ppl_xsb.cc
-	cp -f $(srcdir)/ppl_xsb.H .
-	cp -f $(srcdir)/ppl_xsb.cc ppl_xsb.c
+	@cp -f $(srcdir)/ppl_xsb.H . || true
+	@cp -f $(srcdir)/ppl_xsb.cc ppl_xsb.c || true
 	echo "consult(ppl_xsb, [cc('g++'), cc_opts('$(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS)')])." | xsb 
 
 CLPQ_TESTS_NONSTRICT = \
@@ -71,15 +71,15 @@ CLPQ_TESTS = $(CLPQ_TESTS_NONSTRICT) $(CLPQ_TESTS_STRICT)
 
 check-local: xsb_clpq.P ../check_script expected xsb_clpq2.P ../check_script2 expected2
 	for k in $(CLPQ_TESTS); do cp -f $(srcdir)/../$$k .; done
-	cp -f $(srcdir)/xsb_clpq.P .
-	cp -f $(srcdir)/../clpq.pl .
+	@cp -f $(srcdir)/xsb_clpq.P . || true
+	@cp -f $(srcdir)/../clpq.pl . || true
 	$(LIBTOOL) --mode=execute -dlopen ../../../src/libppl.la \
 				-dlopen ppl_xsb.la \
 		xsb xsb_clpq \
 			<$(srcdir)/../check_script >obtained
 	diff -q --ignore-all-space $(srcdir)/expected obtained
-	cp -f $(srcdir)/xsb_clpq2.P .
-	cp -f $(srcdir)/../clpq2.pl .
+	@cp -f $(srcdir)/xsb_clpq2.P . || true
+	@cp -f $(srcdir)/../clpq2.pl . || true
 	$(LIBTOOL) --mode=execute -dlopen ../../../src/libppl.la \
 				-dlopen ppl_xsb.la \
 		xsb xsb_clpq2 \

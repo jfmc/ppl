@@ -1,3 +1,4 @@
+*.O
 *.clpq
 *.la
 *.lo
@@ -7,5 +8,8 @@ Makefile
 Makefile.in
 check_script
 check_script2
+clpq.pl
+clpq2.pl
 obtained
 obtained2
+ppl_xsb.c
