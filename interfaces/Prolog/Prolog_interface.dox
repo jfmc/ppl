@@ -43,36 +43,350 @@ features of the interface for all the supported systems.
 The Prolog interface provides access to the PPL polyhedra.
 A general introduction to convex polyhedra, their representation in the PPL
 and the operations provided by the PPL is given in Sections
-\ref preamble, \ref introduction, \ref representation,
+\ref preamble, \ref introduction, \ref representation
 and \ref operations of this manual.
 Here we just describe those aspects that are specific to the Prolog interface.
 
-For proper operation the Prolog interface must be initialized by calling the
-predicate <CODE>ppl_initialize/0</CODE>
-and finalized by calling the predicate <CODE>ppl_finalize/0</CODE>.
-Both <CODE>ppl_initialize/0</CODE> and <CODE>ppl_finalize/0</CODE>
-are guarded against multiple invocations so that calling
-<CODE>ppl_initialize/0</CODE> several times makes no harm.
-The same holds for <CODE>ppl_finalize/0</CODE>.
-However, the first call to <CODE>ppl_initialize/0</CODE>
-must occur before any other predicate of the interface is called.
-On the other hand, the only interface's predicates callable after
-<CODE>ppl_finalize/0</CODE> are <CODE>ppl_finalize/0</CODE> itself
-(this further call has no effect) and <CODE>ppl_initialize/0</CODE>,
-after which the interface's services are usable again.
-Some Prolog systems allow the specification of initialization
-and deinitialization functions in their foreign language interfaces.
-The corresponding incarnations of the PPL-Prolog interface
-have been written so that <CODE>ppl_initialize/0</CODE> and/or
-<CODE>ppl_finalize/0</CODE> are called automatically.
-Section \ref PI_SD_Features will detail in which cases initialization
-and finalization is automatically performed or is left to the Prolog
-programmer's responsibility.
-However, if you want to write portable applications you may decide
-to invoke <CODE>ppl_initialize/0</CODE> and <CODE>ppl_finalize/0</CODE>
-explicitly: since they can be called multiple times without problems
-this will result in enhanced portability at a cost that is, by all means,
-negligible.
+\subsection PI_SI_Features_Overview Overview
+
+First, here is a list of notes with general information and advice 
+on the use of the interface.
+-  A PPL polyhedron can be accessed by means of an ordinary Prolog term
+   called a <EM>handle</EM>.
+   Note, however, that the data structure of a handle,
+   is implementation-dependent, system-dependent and
+   version-dependent, and, for this reason, deliberately left unspecified.
+   What we do guarantee is that the handle requires very little memory.
+
+-  Only terms bound to <EM>valid</EM> handles may be used to access
+   PPL polyhedra.
+   A handle is made valid by using:
+\code
+   ppl_new_Polyhedron_from_dimension/3,
+   ppl_new_Polyhedron_empty_from_dimension/3,
+   ppl_new_Polyhedron_from_Polyhedron/4,
+   ppl_new_Polyhedron_from_constraints/3,
+   ppl_new_Polyhedron_from_generators/3.
+   ppl_new_Polyhedron_from_bounding_box/3.
+\endcode
+   These predicates will create or copy a PPL polyhedron
+   and construct a valid handle for referencing it.
+   The first argument
+   (in the case of <CODE>ppl_new_Polyhedron_from_Polyhedron/4</CODE>,
+   the first and third arguments) denotes the topology
+   and can be either <CODE>c</CODE> or <CODE>nnc</CODE>
+   indicating a C or NNC polyhedron, respectively.
+   The third argument
+   (in the case of <CODE>ppl_new_Polyhedron_from_Polyhedron/4</CODE>,
+   the fourth argument) is a Prolog term that is
+   unified with a new valid handle for accessing this polyhedron.
+
+- As soon as a PPL polyhedron is no longer required,
+  the memory occupied by it should be released
+  using the PPL predicate <CODE>ppl_delete_Polyhedron/1</CODE>.
+  To understand why this is important,
+  consider a Prolog program and a variable that is bound to
+  a Herbrand term.
+  When the variable dies (goes out of scope) or is uninstantiated
+  (on backtracking) the term it is bound to is amenable to garbage collection.
+  But this only applies for the standard domain of the language:
+  Herbrand terms.
+  In Prolog+PPL, when a variable bound to a handle for a PPL Polyhedron dies
+  or is uninstantiated,
+  the handle can be garbage-collected, but the polyhedra to which
+  the handle refers will not be released.
+  Once a handle has been used as an argument in
+  <CODE>ppl_delete_Polyhedron/1</CODE>,
+  it becomes invalid.
+
+- For a PPL polyhedron with space dimension \p k,
+  the identifiers used for the PPL variables in
+  the constraints and the generators
+  must lie between 0 and \f$k-1\f$.
+  Moreover, when using the predicates that combine PPL polyhedra
+  or add constraints or generators to a representation of
+  a PPL polyhedron,
+  the polyhedra referenced and any constraints or generators in the call
+  should follow all the space dimension-compatibility rules stated in
+  Section \ref representation.
+
+- As explained above, a polyhedron has a fixed topology C or NNC,
+  that is determined at the time of its initialization.
+  All subsequent operations on the polyhedron must respect all the
+  topological compatibility rules stated in Section \ref representation.
+
+- The predicates <CODE>ppl_initialize/0</CODE> and <CODE>ppl_finalize/0</CODE>
+  initialize and finalize, respectively, the Prolog interface.
+  Thus the only interface predicates callable after
+  <CODE>ppl_finalize/0</CODE> are <CODE>ppl_finalize/0</CODE> itself
+  (this further call has no effect) and <CODE>ppl_initialize/0</CODE>,
+  after which the interface's services are usable again.
+%
+  Some Prolog systems allow the specification of initialization
+  and deinitialization functions in their foreign language interfaces.
+  The corresponding incarnations of the PPL-Prolog interface
+  have been written so that <CODE>ppl_initialize/0</CODE> and/or
+  <CODE>ppl_finalize/0</CODE> are called automatically.
+  Section \ref PI_SD_Features will detail in which cases initialization
+  and finalization is automatically performed or is left to the Prolog
+  programmer's responsibility.
+  However, for portable applications, it is best
+  to invoke <CODE>ppl_initialize/0</CODE> and <CODE>ppl_finalize/0</CODE>
+  explicitly: since they can be called multiple times without problems,
+  this will result in enhanced portability at a cost that is, by all means,
+  negligible.
+
+
+\subsection PI_SI_Features_Predicate_List PPL Predicate List
+
+Here is a list of all the PPL predicates provided by the Prolog interface.
+
+<CODE>
+  ppl_initialize
+</CODE>
+
+
+<CODE>
+  ppl_finalize
+</CODE>
+
+
+<CODE>
+  ppl_new_Polyhedron_from_dimension(+Topology, +Integer, -Handle)
+</CODE>
+
+
+<CODE>
+  ppl_new_Polyhedron_empty_from_dimension(+Topology, +Integer, -Handle)
+</CODE>
+
+
+
+<CODE>
+ppl_new_Polyhedron_from_Polyhedron(+Topology_1, +Handle_1,
+                                   +Topology_2, -Handle_2)
+</CODE>
+ 
+
+<CODE>
+   ppl_new_Polyhedron_from_constraints(+Topology,
+                   +Constraint_System, -Handle)
+</CODE>
+
+
+<CODE>
+   ppl_new_Polyhedron_from_generators(+Topology,
+                   +Generator_System, -Handle)
+</CODE>
+
+
+<CODE>
+   ppl_new_Polyhedron_from_bounding_box(+Topology,
+                   +Box, -Handle)
+</CODE>
+
+
+<CODE>
+ppl_delete_Polyhedron(+Handle)</CODE>
+
+
+<CODE>ppl_Polyhedron_swap(+Handle1, +Handle2)</CODE>
+
+
+<CODE>ppl_Polyhedron_space_dimension(+Handle, -Integer)</CODE>
+
+
+<CODE>ppl_Polyhedron_intersection_assign(+Handle_1, +Handle_2)</CODE>
+
+
+<CODE>ppl_Polyhedron_intersection_assign_and_minimize(+Handle_1,
+                +Handle_2)</CODE>
+ 
+
+<CODE>ppl_Polyhedron_poly_hull_assign(+Handle_1, +Handle_2)</CODE>
+
+<CODE>ppl_Polyhedron_poly_hull_assign_and_minimize(+Handle_1,
+               +Handle_2)</CODE>
+
+
+<CODE>ppl_Polyhedron_poly_difference_assign(+Handle_1, +Handle_2)</CODE>
+
+
+<CODE>ppl_Polyhedron_time_elapse_assign(+Handle_1, +Handle_2)</CODE>
+
+
+<CODE>ppl_Polyhedron_BHRZ03_widening_assign(+Handle_1,
+               +Handle_2)</CODE>
+
+
+<CODE>ppl_Polyhedron_limited_BHRZ03_extrapolation_assign(+Handle_1,
+               +Handle_2,
+               +Constraint_System)</CODE>
+
+
+<CODE>ppl_Polyhedron_H79_widening_assign(+Handle_1, +Handle_2)</CODE>
+
+
+<CODE>ppl_Polyhedron_limited_H79_extrapolation_assign(+Handle_1,
+               +Handle_2,
+               +Constraint_System)</CODE>
+
+
+<CODE>ppl_Polyhedron_limited_H79_extrapolation_assign(+Handle_1,
+               +Handle_2,
+               +Constraint_System)</CODE>
+
+
+<CODE>ppl_Polyhedron_topological_closure_assign(+Handle)</CODE>
+
+
+<CODE>ppl_Polyhedron_get_constraints(+Handle, -Constraint_System)
+</CODE>
+
+
+<CODE>ppl_Polyhedron_get_minimized_constraints(+Handle,
+                                                   -Constraint_System)
+</CODE>
+
+
+<CODE>ppl_Polyhedron_get_generators(+Handle, -Generator_System)
+</CODE>
+
+
+<CODE>ppl_Polyhedron_get_minimized_generators(+Handle,
+                                                  -Generator_System)
+</CODE>
+
+
+<CODE>ppl_Polyhedron_add_constraint(+Handle, +Constraint)</CODE>
+
+
+<CODE>ppl_Polyhedron_add_constraint_and_minimize(+Handle, +Constraint)</CODE>
+
+
+<CODE>ppl_Polyhedron_add_generator(+Handle, +Generator)</CODE>
+
+
+<CODE>ppl_Polyhedron_add_generator_and_minimize(+Handle, +Generator)</CODE>
+
+
+<CODE>ppl_Polyhedron_add_constraints(+Handle, +Constraint_System)
+</CODE>
+
+
+<CODE>ppl_Polyhedron_add_constraints_and_minimize(+Handle,
+                                   +Constraint_System)</CODE>
+
+
+<CODE>ppl_Polyhedron_add_generators(+Handle, +Generator_System)
+</CODE>
+
+
+
+<CODE>ppl_Polyhedron_add_generators_and_minimize(+Handle,
+                                   +Generator_System)</CODE>
+
+
+<CODE>ppl_Polyhedron_concatenate_assign(+Handle1, +Handle2)</CODE>
+
+
+<CODE>ppl_Polyhedron_add_dimensions_and_project(+Handle, +Integer)
+</CODE>
+
+
+<CODE>ppl_Polyhedron_add_dimensions_and_embed(+Handle, +Integer)
+</CODE>
+
+
+<CODE>ppl_Polyhedron_remove_dimensions(+Handle,
+               +List_of_PPL_Vars)</CODE>
+
+
+<CODE>ppl_Polyhedron_remove_higher_dimensions(+Handle, +Integer))</CODE>
+
+
+<CODE>ppl_Polyhedron_rename_dimensions(+Handle, +Rename_Map))</CODE>
+
+
+<CODE>ppl_Polyhedron_affine_image(+Handle, +PPL_Var,
+               +LinExpr, +Integer)</CODE>
+
+
+<CODE>ppl_Polyhedron_affine_preimage(+Handle, +PPL_Var,
+               +LinExpr, +Integer)</CODE>
+
+
+<CODE>ppl_Polyhedron_generalized_affine_image(+Handle,
+               +PPL_Var,
+               +Relation_Symbol
+               +LinExpr,
+               +Integer)</CODE>
+
+
+<CODE>ppl_Polyhedron_generalized_affine_image_lhs_rhs(+Handle,
+               +LinExpr1,
+               +Relation_Symbol
+               +LinExpr2)</CODE>
+
+
+<CODE>ppl_Polyhedron_relation_with_constraint(+Handle, +Constraint,
+               -Relation)</CODE>
+
+
+<CODE>ppl_Polyhedron_relation_with_generator(+Handle, +Generator,
+               -Relation)</CODE>
+
+
+<CODE>ppl_Polyhedron_check_empty(+Handle)</CODE>
+
+
+<CODE>ppl_Polyhedron_check_universe(+Handle)</CODE>
+
+
+<CODE>ppl_Polyhedron_is_bounded(+Handle)</CODE>
+
+
+<CODE>ppl_Polyhedron_bounds_from_above(+Handle,
+                                   +LinExpr)</CODE>
+
+
+<CODE>ppl_Polyhedron_bounds_from_below(+Handle,
+                                   +LinExpr)</CODE>
+
+
+<CODE>ppl_Polyhedron_is_topologically_closed(+Handle)</CODE>
+
+
+<CODE>ppl_Polyhedron_contains_Polyhedron(+Handle_1, +Handle_2)</CODE>
+
+
+<CODE>ppl_Polyhedron_strictly_contains_Polyhedron(+Handle_1, +Handle_2)</CODE>
+
+
+<CODE>ppl_Polyhedron_equals_Polyhedron(+Handle_1, +Handle_2)</CODE>
+
+
+<CODE>ppl_Polyhedron_is_disjoint_from_Polyhedron(+Handle_1, +Handle_2)
+    </CODE>
+
+
+<CODE>ppl_timeout_exception_atom(?Atom)</CODE>
+
+
+<CODE>ppl_set_timeout_exception_atom(+Atom)</CODE>
+
+
+<CODE>ppl_set_timeout(+Integer)</CODE>
+
+
+<CODE>ppl_reset_timeout</CODE>
+
+
+<CODE>ppl_Polyhedron_get_bounding_box(+Handle,
+                                          +Complexity,
+            	                          -Box)</CODE>
+
+\subsection PI_SI_Features_Predicate_Spec PPL Predicate Specifications
 
 The PPL predicates provided by the Prolog interface are specified below.
 The specification uses the following grammar rules:
@@ -159,73 +473,26 @@ The specification uses the following grammar rules:
             | [Map | Rename_Map]        list of maps.
 \endcode
 
+Below is a short description of each of the interface predicates.
+For full definitions of terminology used here, see Sections
+\ref preamble, \ref introduction, \ref representation
+and \ref operations of this manual.
 
-We first give some general information about using the interface.
+<H2><CODE>
+  ppl_initialize
+</CODE></H2>
 
--  Access to any PPL polyhedron is provided by means of a Prolog term
-   called a <EM>handle</EM>.
-   The data structure of a handle,
-   is implementation-dependent, system-dependent and
-   version-dependent, and, for this reason, deliberately left unspecified.
-   What we do guarantee is that a handle is an ordinary Prolog term
-   that can be used as such and requiring very little memory.
+  Initializes the PPL interface.
+  Multiple calls to <CODE>ppl_initialize</CODE> does no harm.
 
--  Only terms bound to <EM>valid</EM> handles may be used to access
-   PPL polyhedra.
-   A handle is made valid by using:
-\code
-   ppl_new_Polyhedron_from_dimension/3,
-   ppl_new_Polyhedron_empty_from_dimension/3,
-   ppl_new_Polyhedron_from_Polyhedron/4,
-   ppl_new_Polyhedron_from_constraints/3,
-   ppl_new_Polyhedron_from_generators/3.
-   ppl_new_Polyhedron_from_bounding_box/3.
-\endcode
-   These predicates will create or copy a PPL polyhedron
-   and construct a valid handle for referencing it.
-   The first argument
-   (in the case of <CODE>ppl_new_Polyhedron_from_Polyhedron/4</CODE>,
-   the first and third arguments) denotes the topology
-   and can be either <CODE>c</CODE> or <CODE>nnc</CODE>
-   indicating a C or NNC polyhedron, respectively.
-   The third argument
-   (in the case of <CODE>ppl_new_Polyhedron_from_Polyhedron/4</CODE>,
-   the fourth argument) is a Prolog term that is
-   unified with a new valid handle for accessing this polyhedron.
+<H2><CODE>
+  ppl_finalize
+</CODE></H2>
 
-- As soon as a PPL polyhedron is no longer required,
-  the memory occupied by it should be released
-  using the PPL predicate <CODE>ppl_delete_Polyhedron/1</CODE>.
-  To understand why this is important,
-  consider a Prolog program and a variable that is bound to
-  a Herbrand term.
-  When the variable dies (goes out of scope) or is uninstantiated
-  (on backtracking) the term it is bound to is amenable to garbage collection.
-  But this only applies for the standard domain of the language:
-  Herbrand terms.
-  In Prolog+PPL, when a variable bound to a handle for a PPL Polyhedron dies
-  or is uninstantiated,
-  the handle can be garbage-collected, but the polyhedra to which
-  the handle refers will not be released.
-  Once a handle has been used as an argument in
-  <CODE>ppl_delete_Polyhedron/1</CODE>,
-  it becomes invalid.
-
-- For a PPL polyhedron with space dimension \p k,
-  the identifiers used for the PPL variables in
-  the constraints and the generators
-  must lie between 0 and \f$k-1\f$.
-  Moreover, when using the predicates that combine PPL polyhedra
-  or add constraints or generators to a representation of
-  a PPL polyhedron,
-  the polyhedra referenced and any constraints or generators in the call
-  should follow all the space dimension-compatibility rules stated in
-  Section \ref representation.
-
-- As explained above, a polyhedron has a fixed topology C or NNC,
-  that is determined at the time of its initialization.
-  All subsequent operations on the polyhedron must respect all the
-  topological compatibility rules stated in Section \ref representation.
+  Finalizes the PPL interface.
+  Once this is executed, the next call to an interface predicate must
+  either be to <CODE>ppl_initialize</CODE> or to <CODE>ppl_finalize</CODE>.
+  Multiple calls to <CODE>ppl_finalize</CODE> does no harm.
 
 <H2><CODE>
   ppl_new_Polyhedron_from_dimension(+Topology, +Integer, -Handle)
@@ -644,7 +911,7 @@ and a query will succeed even when
 <H2><CODE>ppl_Polyhedron_rename_dimensions(+Handle, +Rename_Map))</CODE></H2>
 
    Renames the dimensions of the polyhedron referred to by <CODE>Handle</CODE>
-   using the partial injection function defined by <CODE>Shuffle_Map</CODE>.
+   using the partial injection function defined by <CODE>Rename_Map</CODE>.
 
 <H2><CODE>ppl_Polyhedron_affine_image(+Handle, +PPL_Var,
                +LinExpr, +Integer)</CODE></H2>
