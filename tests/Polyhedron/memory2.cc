@@ -36,7 +36,9 @@ using namespace Parma_Polyhedra_Library;
 
 int
 main() TRY {
-  return 0;
+  // Force failure everywhere until the bug is fixed.
+  return 1;
+  //return 0;
 }
 CATCH
 
@@ -106,7 +108,7 @@ main() {
     Matrix* matrix = new Matrix(2, 5);
     delete matrix;
 
-    // We must not get here.
+    // Force failure everywhere until the bug is fixed.
     return 1;
   }
   catch (const std::bad_alloc&) {
