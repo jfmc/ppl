@@ -34,8 +34,6 @@ site: http://www.cs.unipr.it/ppl/ . */
 
 namespace PPL = Parma_Polyhedra_Library;
 
-PPL::ConSys PPL::ConSys::zero_dim_empty(LinExpression(0) == Integer(1));
-
 size_t
 PPL::ConSys::num_inequalities() const {
   int n = 0;

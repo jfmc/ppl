@@ -89,7 +89,7 @@ public:
   void swap(ConSys& y);
 
   //! The singleton system containing the zero-dim false constraint.
-  static ConSys zero_dim_empty;
+  static const ConSys& zero_dim_empty();
 
   /*!
       A const_iterator is used to provide read-only access

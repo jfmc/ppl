@@ -23,142 +23,141 @@ site: http://www.cs.unipr.it/ppl/ . */
 
 #include "Constraint.defs.hh"
 
+namespace Parma_Polyhedra_Library {
+
 inline
-Parma_Polyhedra_Library::ConSys::ConSys()
+ConSys::ConSys()
   : Matrix() {
 }
 
 inline
-Parma_Polyhedra_Library::ConSys::ConSys(const Constraint& c)
+ConSys::ConSys(const Constraint& c)
   : Matrix() {
   Matrix::insert(c);
 }
 
 inline
-Parma_Polyhedra_Library::ConSys::ConSys(const ConSys& cs)
+ConSys::ConSys(const ConSys& cs)
   : Matrix(cs) {
 }
 
 inline
-Parma_Polyhedra_Library::ConSys::ConSys(size_t num_rows, size_t num_columns)
+ConSys::ConSys(size_t num_rows, size_t num_columns)
   : Matrix(num_rows, num_columns) {
 }
 
 inline
-Parma_Polyhedra_Library::ConSys::~ConSys() {
+ConSys::~ConSys() {
 }
 
-inline Parma_Polyhedra_Library::Constraint&
-Parma_Polyhedra_Library::ConSys::operator [](size_t k) {
-  return
-    static_cast<Parma_Polyhedra_Library::Constraint&>
-    (Matrix::operator[](k));
+inline Constraint&
+ConSys::operator [](size_t k) {
+  return static_cast<Constraint&> (Matrix::operator[](k));
 }
 
-inline const Parma_Polyhedra_Library::Constraint&
-Parma_Polyhedra_Library::ConSys::operator [](size_t k) const {
-  return
-    static_cast<const Parma_Polyhedra_Library::Constraint&>
-    (Matrix::operator[](k));
+inline const Constraint&
+ConSys::operator [](size_t k) const {
+  return static_cast<const Constraint&> (Matrix::operator[](k));
 }
 
 inline void
-Parma_Polyhedra_Library::ConSys::insert(const Constraint& c) {
+ConSys::insert(const Constraint& c) {
   Matrix::insert(c);
 }
 
 inline void
-Parma_Polyhedra_Library::ConSys::swap(ConSys& y) {
+ConSys::swap(ConSys& y) {
   Matrix::swap(y);
 }
 
-inline void
-std::swap(Parma_Polyhedra_Library::ConSys& x,
-	  Parma_Polyhedra_Library::ConSys& y) {
-  x.swap(y);
+inline const ConSys&
+ConSys::zero_dim_empty() {
+  static ConSys zdf(Constraint::zero_dim_false());
+  return zdf;
 }
 
 inline
-Parma_Polyhedra_Library::
 ConSys::const_iterator::const_iterator(const Matrix::const_iterator& iter,
 				       const ConSys& csys)
   : i(iter), csp(&csys) {
 }
 
 inline
-Parma_Polyhedra_Library::ConSys::const_iterator::const_iterator()
+ConSys::const_iterator::const_iterator()
   : i(), csp(0) {
 }
 
 inline
-Parma_Polyhedra_Library::
 ConSys::const_iterator::const_iterator(const const_iterator& y)
   : i(y.i), csp(y.csp) {
 }
 
 inline
-Parma_Polyhedra_Library::
 ConSys::const_iterator::~const_iterator() {
 }
 
-inline
-Parma_Polyhedra_Library::ConSys::const_iterator&
-Parma_Polyhedra_Library::
+inline ConSys::const_iterator&
 ConSys::const_iterator::operator =(const const_iterator& y) {
   i = y.i;
   csp = y.csp;
   return *this;
 }
 
-inline const Parma_Polyhedra_Library::Constraint&
-Parma_Polyhedra_Library::ConSys::const_iterator::operator *() const {
+inline const Constraint&
+ConSys::const_iterator::operator *() const {
   return static_cast<const Constraint&>(*i);
 }
 
-inline const Parma_Polyhedra_Library::Constraint*
-Parma_Polyhedra_Library::ConSys::const_iterator::operator ->() const {
+inline const Constraint*
+ConSys::const_iterator::operator ->() const {
   return static_cast<const Constraint*>(i.operator ->());
 }
 
-inline Parma_Polyhedra_Library::ConSys::const_iterator&
-Parma_Polyhedra_Library::ConSys::const_iterator::operator ++() {
+inline ConSys::const_iterator&
+ConSys::const_iterator::operator ++() {
   ++i;
   skip_forward();
   return *this;
 }
 
-inline Parma_Polyhedra_Library::ConSys::const_iterator
-Parma_Polyhedra_Library::ConSys::const_iterator::operator ++(int) {
+inline ConSys::const_iterator
+ConSys::const_iterator::operator ++(int) {
   const_iterator tmp = *this;
   operator ++();
   return tmp;
 }
 
 inline bool
-Parma_Polyhedra_Library::ConSys::
-const_iterator::operator ==(const const_iterator& y) const {
+ConSys::const_iterator::operator ==(const const_iterator& y) const {
   return i == y.i;
 }
 
 inline bool
-Parma_Polyhedra_Library::ConSys::
-const_iterator::operator !=(const const_iterator& y) const {
+ConSys::const_iterator::operator !=(const const_iterator& y) const {
   return i != y.i;
 }
 
-inline Parma_Polyhedra_Library::ConSys::const_iterator
-Parma_Polyhedra_Library::ConSys::begin() const {
+inline ConSys::const_iterator
+ConSys::begin() const {
   const_iterator i(Matrix::begin(), *this);
   i.skip_forward();
   return i;
 }
 
-inline Parma_Polyhedra_Library::ConSys::const_iterator
-Parma_Polyhedra_Library::ConSys::end() const {
+inline ConSys::const_iterator
+ConSys::end() const {
   const_iterator i(Matrix::end(), *this);
   return i;
 }
 
+} // namespace Parma_Polyhedra_Library
+
+
+inline void
+std::swap(Parma_Polyhedra_Library::ConSys& x,
+	  Parma_Polyhedra_Library::ConSys& y) {
+  x.swap(y);
+}
 
 
 

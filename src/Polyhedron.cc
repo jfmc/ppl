@@ -46,7 +46,7 @@ PPL::Polyhedron::constraints() const {
     assert(con_sys.num_columns() == 0 && con_sys.num_rows() == 0);
     // FIXME: does the user want an inconsistent constraint
     // of the actual space dimension ?
-    return ConSys::zero_dim_empty;
+    return ConSys::zero_dim_empty();
   }
 
   if (space_dimension() == 0) {
