@@ -1591,9 +1591,14 @@ public:
     \exception std::invalid_argument
     Thrown if \p *this is dimension-incompatible with \p var or with
     one of the Variable objects contained in \p to_be_folded.
+    Also thrown if \p var is contained in \p to_be_folded.
 
-    FIXME: documentation to be completed.
-    ... dimensions are \ref fold_dimensions "folded" onto...
+    If \p *this is \f$n\f$-dimensional, with \f$n > 0\f$,
+    \f$i < n\f$ is <CODE>var.id()</CODE>, \p to_be_folded
+    is a set of variables whose <CODE>id()</CODE> is also less than
+    \f$n\f$, and \p var is not a member of \p to_be_folded,
+    then the dimensions corresponding to variables in \p to_be_folded
+    are \ref fold_dimensions "folded" into dimension \f$i\f$.
   */
   void fold_dimensions(const Variables_Set& to_be_folded, Variable var);
 
