@@ -1,0 +1,160 @@
+#!/usr/bin/make -f
+# -*- makefile -*-
+# This file was originally written by Joey Hess and Craig Small.
+# As a special exception, when this file is copied by dh-make into a
+# dh-make output file, you may use that output file without restriction.
+# This special exception was added by Craig Small in version 0.37 of dh-make.
+#
+# Modified to make a template file for a multi-binary package with separated
+# build-arch and build-indep targets  by Bill Allombert 2001
+
+# Uncomment this to turn on verbose mode.
+export DH_VERBOSE=1
+
+# This has to be exported to make some magic below work.
+export DH_OPTIONS
+
+# These are used for cross-compiling and for saving the configure script
+# from having to guess our platform (since we know it already)
+DEB_HOST_GNU_TYPE   ?= $(shell dpkg-architecture -qDEB_HOST_GNU_TYPE)
+DEB_BUILD_GNU_TYPE  ?= $(shell dpkg-architecture -qDEB_BUILD_GNU_TYPE)
+
+
+CFLAGS = -Wall -g
+
+ifneq (,$(findstring noopt,$(DEB_BUILD_OPTIONS)))
+	CFLAGS += -O0
+else
+	CFLAGS += -O2
+endif
+
+config.status: configure
+	dh_testdir
+#   Add here commands to configure the package.
+#   FIX are all of these required?
+	aclocal -I m4 && autoheader && automake && autoconf && CFLAGS="$(CFLAGS)" ./configure --host=$(DEB_HOST_GNU_TYPE) --build=$(DEB_BUILD_GNU_TYPE) --prefix=/usr --mandir=\$${prefix}/share/man --infodir=\$${prefix}/share/info
+
+## Architecture
+build: build-arch build-indep
+
+build-arch: build-arch-stamp
+build-arch-stamp:  config.status
+
+# 	Add here commands to compile the arch part of the package.
+	$(MAKE)
+	touch build-arch-stamp
+
+build-indep: build-indep-stamp
+build-indep-stamp:  config.status
+
+#	Add here commands to compile the indep part of the package.
+#   FIX this depends on build-arch to install the doc to debian/tmp
+#	$(MAKE) doc
+	touch build-indep-stamp
+
+clean:
+	dh_testdir
+	dh_testroot
+	rm -f build-arch-stamp build-indep-stamp #CONFIGURE-STAMP#
+
+#	Add here commands to clean up after the build process.
+	-$(MAKE) distclean
+ifneq "$(wildcard /usr/share/misc/config.sub)" ""
+	cp -f /usr/share/misc/config.sub config.sub
+endif
+ifneq "$(wildcard /usr/share/misc/config.guess)" ""
+	cp -f /usr/share/misc/config.guess config.guess
+endif
+	dh_clean
+
+install: install-indep install-arch
+install: install-arch
+
+install-indep:
+# 	dh_testdir
+# 	dh_testroot
+# 	dh_clean -k -i
+# 	dh_installdirs -i
+
+##	Add here commands to install the indep part of the package into
+##	debian/<package>-doc.
+
+# 	dh_install -i
+
+DOC_DIR=debian/libppl/usr/share/doc/libppl
+DEV_DOC_DIR=debian/libppl-dev/usr/share/doc/libppl
+#SRC_DOC_DIR=$(CURDIR)/debian/tmp/usr/share/doc/ppl/
+SRC_DOC_DIR=$(CURDIR)/doc
+install-arch:
+	dh_testdir
+	dh_testroot
+	dh_clean -k -s
+	dh_installdirs -s
+
+#	Add here commands to install the arch part of the package into
+# 	debian/tmp.
+	$(MAKE) install DESTDIR=$(CURDIR)/debian/tmp
+
+#   Build all the documentation, then move it into debian/tmp using
+#   version-free naming.
+	mkdir -p $(DOC_DIR)/html || exit 1
+	mkdir -p $(DEV_DOC_DIR)/html || exit 1
+#FIX better way to the PPL version?
+	export VER=`find $(CURDIR)/debian/tmp/usr/share/doc/ppl/ -name ppl-user-\*-html | sed s,.\*ppl-user-\\\\\(.\*\\\\\)-html.\*,\\\\1,` \
+	&& make -C doc world \
+	&& cp -a $(SRC_DOC_DIR)/ppl-user-$${VER}-html $(DOC_DIR)/html/user-manual/ \
+	&& cp -a $(SRC_DOC_DIR)/ppl-user-$${VER}-browse.pdf $(DOC_DIR)/ppl-user-browse.pdf \
+	&& cp -a $(SRC_DOC_DIR)/ppl-user-$${VER}-print.pdf $(DOC_DIR)/ppl-user-print.pdf \
+	&& cp -a $(SRC_DOC_DIR)/ppl-user-$${VER}-print.ps.gz $(DOC_DIR)/ppl-user-print.ps.gz \
+	&& cp -a $(SRC_DOC_DIR)/ppl-devref-$${VER}-html $(DEV_DOC_DIR)/html/developer-reference/ \
+	&& cp -a $(SRC_DOC_DIR)/ppl-devref-$${VER}-browse.pdf $(DEV_DOC_DIR)/ppl-devref-browse.pdf \
+	&& cp -a $(SRC_DOC_DIR)/ppl-devref-$${VER}-print.pdf $(DEV_DOC_DIR)/ppl-devref-print.pdf \
+	&& cp -a $(SRC_DOC_DIR)/ppl-devref-$${VER}-print.ps.gz $(DEV_DOC_DIR)/ppl-devref-print.ps.gz
+
+#	Only install the Debian changelog for the libppl package.
+	cp -a debian/changelog $(DOC_DIR)/changelog.Debian
+
+	dh_install -s --sourcedir=debian/tmp
+
+# Must not depend on anything. This is to be called by
+# binary-arch/binary-indep
+# in another 'make' thread.
+binary-common:
+	dh_testdir
+	dh_testroot
+#	Only install the Debian changelog for the libppl package.
+#	dh_installchangelogs
+	dh_installdocs
+#   FIX These directories will be symlinks instead.
+	rmdir debian/libppl-*/usr/share/doc/libppl-* || exit 1
+#	dh_installexamples
+#	dh_installmenu
+#	dh_installdebconf
+#	dh_installlogrotate
+#	dh_installinit
+#	dh_installcron
+#	dh_installinfo
+#	dh_installman
+	dh_link
+	dh_strip
+	dh_compress
+	dh_fixperms
+#	dh_perl
+#	dh_python
+	dh_makeshlibs
+	dh_installdeb
+	dh_shlibdeps
+	dh_gencontrol
+	dh_md5sums
+	dh_builddeb
+
+## Build architecture independant packages using the common target.
+binary-indep: build-indep install-indep
+#	$(MAKE) -f debian/rules DH_OPTIONS=-i binary-common
+
+## Build architecture dependant packages using the common target.
+binary-arch: build-arch install-arch
+	$(MAKE) -f debian/rules DH_OPTIONS=-a binary-common
+
+binary: binary-arch binary-indep
+.PHONY: build clean binary-indep binary-arch binary install install-indep install-arch
