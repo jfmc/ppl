@@ -31,20 +31,42 @@ site: http://www.cs.unipr.it/ppl/ . */
 
 namespace PPL = Parma_Polyhedra_Library;
 
+namespace {
+
 // These are the keywords that indicate the individual assertions.
-static const std::string zero_dim_univ = "ZE";
-static const std::string empty = "EM";
-static const std::string consys_min = "CM";
-static const std::string gensys_min = "GM";
-static const std::string consys_upd = "CS";
-static const std::string gensys_upd = "GS";
-static const std::string sat_c = "SC";
-static const std::string sat_g = "SG";
-static const std::string consys_pending = "CP";
-static const std::string gensys_pending = "GP";
-static const char yes = '+';
-static const char no = '-';
-static const char sep = ' ';
+const std::string zero_dim_univ = "ZE";
+const std::string empty = "EM";
+const std::string consys_min = "CM";
+const std::string gensys_min = "GM";
+const std::string consys_upd = "CS";
+const std::string gensys_upd = "GS";
+const std::string sat_c = "SC";
+const std::string sat_g = "SG";
+const std::string consys_pending = "CP";
+const std::string gensys_pending = "GP";
+const char yes = '+';
+const char no = '-';
+const char sep = ' ';
+
+/*! \relates Parma_Polyhedra_Library::Status
+  Reads a keyword and its associated on/off flag from \p s.
+  Returns <CODE>true</CODE> if the operation is successful,
+  returns <CODE>false</CODE> otherwise.
+  When successful, \p positive is set to <CODE>true</CODE> if the flag
+  is on; it is set to <CODE>false</CODE> otherwise.
+*/
+bool
+get_field(std::istream& s, const std::string& keyword, bool& positive) {
+  std::string str;
+  if (!(s >> str)
+      || (str[0] != yes && str[0] != no)
+      || str.substr(1) != keyword)
+    return false;
+  positive = (str[0] == yes);
+  return true;
+}
+
+} // namespace
 
 void
 PPL::Status::ascii_dump(std::ostream& s) const {
@@ -62,24 +84,6 @@ PPL::Status::ascii_dump(std::ostream& s) const {
     << sep
     << (test_sat_c_up_to_date() ? yes : no) << sat_c << sep
     << (test_sat_g_up_to_date() ? yes : no) << sat_g << sep;
-}
-
-/*! \relates Parma_Polyhedra_Library::Status
-  Reads a keyword and its associated on/off flag from \p s.
-  Returns <CODE>true</CODE> if the operation is successful,
-  returns <CODE>false</CODE> otherwise.
-  When successful, \p positive is set to <CODE>true</CODE> if the flag
-  is on; it is set to <CODE>false</CODE> otherwise.
-*/
-static bool
-get_field(std::istream& s, const std::string& keyword, bool& positive) {
-  std::string str;
-  if (!(s >> str)
-      || (str[0] != yes && str[0] != no)
-      || str.substr(1) != keyword)
-    return false;
-  positive = (str[0] == yes);
-  return true;
 }
 
 bool

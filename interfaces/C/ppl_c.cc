@@ -63,20 +63,24 @@ to_nonconst(Type* x) { \
 // FIXME: this temporary until we rename Integer to Coefficient.
 typedef Parma_Polyhedra_Library::Integer Coefficient;
 
-static void (*user_error_handler)(enum ppl_enum_error_code code,
-				  const char* description) = 0;
+namespace {
+
+void (*user_error_handler)(enum ppl_enum_error_code code,
+			   const char* description) = 0;
+
+void
+notify_error(enum ppl_enum_error_code code, const char* description) {
+  if (user_error_handler != 0)
+    user_error_handler(code, description);
+}
+
+} // namespace
 
 int
 ppl_set_error_handler(void (*h)(enum ppl_enum_error_code code,
 				const char* description)) {
   user_error_handler = h;
   return 0;
-}
-
-static void
-notify_error(enum ppl_enum_error_code code, const char* description) {
-  if (user_error_handler != 0)
-    user_error_handler(code, description);
 }
 
 #define CATCH_STD_EXCEPTION(exception, code) \
@@ -107,7 +111,12 @@ unsigned int PPL_COMPLEXITY_CLASS_POLYNOMIAL;
 unsigned int PPL_COMPLEXITY_CLASS_SIMPLEX;
 unsigned int PPL_COMPLEXITY_CLASS_ANY;
 
-static Init* init_object_ptr = 0;
+namespace {
+
+// Holds a pointer to the init object.
+Init* init_object_ptr = 0;
+
+} // namespace
 
 int
 ppl_max_space_dimension(ppl_dimension_type* m) try {

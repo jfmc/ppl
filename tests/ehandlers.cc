@@ -28,17 +28,21 @@ site: http://www.cs.unipr.it/ppl/ . */
 
 using namespace std;
 
-static void
+namespace {
+
+void
 my_unexpected_exception() {
   cerr << "unexpected exception thrown" << endl;
   exit(1);
 }
 
-static void
+void
 my_uncaught_exception() {
   cerr << "uncaught exception" << endl;
   exit(1);
 }
+
+} // namespace
 
 void
 set_handlers() {
