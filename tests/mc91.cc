@@ -35,11 +35,6 @@ typedef Determinate<C_Polyhedron> DCS;
 
 typedef PowerSet<DCS> PCS;
 
-typedef AskTell<DCS> ACS;
-
-//typedef AskTell<AskTell<DCS> > AACS;
-//typedef AskTell<PowerSet<PowerSet<DCS> > > APPCS;
-
 int
 main() {
   set_handlers();
@@ -93,22 +88,10 @@ main() {
   cout << p1 << endl;
 #endif
 
-  ACS a1;
-  a1.inject(d1, d2);
-#if NOISY
-  cout << a1 << endl;
-#endif
-
   C_Polyhedron top(2);
   C_Polyhedron y_91(2);
 #if NOISY
   y_91.add_constraint(y == 91);
-#endif
-
-  ACS a2;
-  a2.inject(top, y_91);
-#if NOISY
-  cout << a2 << endl;
 #endif
 
   return 0;
