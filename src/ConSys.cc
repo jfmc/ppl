@@ -249,10 +249,11 @@ PPL::ConSys::satisfies_all_constraints(const Generator& g) const {
                       \f$\sum_{i = 0}^{n - 1} a_i x_i + b\f$
   \param denominator  The denominator of the affine transformation.
 
-  We want to allow affine transformations (see the Introduction) having
-  any rational coefficients. Since the coefficients of the
-  constraints are integers we must also provide an integer \p denominator
-  that will be used as denominator of the affine transformation.
+  We want to allow affine transformations (see the Section \ref
+  operations) having any rational coefficients. Since the coefficients
+  of the constraints are integers we must also provide an integer
+  \p denominator that will be used as denominator of the affine
+  transformation.
 
   The affine transformation substitutes the matrix of constraints
   by a new matrix whose elements \f${a'}_{ij}\f$ are built from
@@ -267,8 +268,7 @@ PPL::ConSys::satisfies_all_constraints(const Generator& g) const {
     \end{cases}
   \f]
 
-  \p expr is a constant parameter and unaltered by this computation.
-*/
+  \p expr is a constant parameter and unaltered by this computation.  */
 void
 PPL::ConSys::affine_preimage(size_t v,
 			     const LinExpression& expr,

@@ -64,8 +64,8 @@ namespace Parma_Polyhedra_Library {
   and, for points and closure points, \f$d > 0\f$ is the divisor.
 
   \par A note on terminology.
-  As observed in the Introduction, there are cases when, in order to
-  represent a polyhedron \f$\cP\f$ using the generator system
+  As observed in Section \ref representation, there are cases when,
+  in order to represent a polyhedron \f$\cP\f$ using the generator system
   \f$\cG = (L, R, P, C)\f$, we need to include in the finite set
   \f$P\f$ even points of \f$\cP\f$ that are <EM>not</EM> vertices
   of \f$\cP\f$.

@@ -114,7 +114,7 @@ namespace Parma_Polyhedra_Library {
       (i.e., another polyhedron, a constraint or generator,
       a set of variables, etc.) will throw an exception if
       the polyhedron and the object are not both topology-compatible
-      and dimension-incompatible (see the Introduction);
+      and dimension-incompatible (see Section \ref representation);
     - there is no way to change the topology of a polyhedron;
       rather, there are constructors of the two derived classes
       that builds a new polyhedron having a topology when
@@ -209,7 +209,7 @@ namespace Parma_Polyhedra_Library {
   ph.add_generator(ray(y));
   ph.add_generator(line(x));
     \endcode
-    Note that, even if the above polyhedron has no vertices, we must add
+    Note that, although the above polyhedron has no vertices, we must add
     one point, because otherwise the result of the Minkowsky's sum
     would be an empty polyhedron.
     To avoid subtle errors related to the minimization process,
@@ -231,9 +231,9 @@ namespace Parma_Polyhedra_Library {
     After the last line of code, the resulting polyhedron is
     \f[
       \bigl\{\,
-        (2, x_1)^\transpose \in \Rset^2
+        (2, y)^\transpose \in \Rset^2
       \bigm|
-        x_1 \in \Rset
+        y \in \Rset
       \,\bigr\}.
     \f]
 
@@ -546,7 +546,7 @@ public:
   Poly_Gen_Relation relation_with(const Generator& g) const;
 
   //! \brief
-  //! Computes the H79-widening (as described in the Introduction)
+  //! Computes the H79-widening (as described in Section \ref operations)
   //! between \p *this and \p y and assigns the result to \p *this.
   /*!
     \param y           A polyhedron that <EM>must</EM>
@@ -701,7 +701,7 @@ public:
       all the invariants and either \p check_not_empty is
       <CODE>false</CODE> or \p *this is not empty.
 
-    The check is performed in a way that is less intrusive as possible.
+    The check is performed so as to intrude as little as possible.
     In case invariants are violated error messages are written on
     <CODE>std::cerr</CODE>. This is useful for the purpose of debugging
     the library.

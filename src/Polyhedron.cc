@@ -2810,7 +2810,7 @@ PPL::Polyhedron::H79_widening_assign(const Polyhedron& y) {
   //   are common to both polyhedron. The redundant constraints
   //   is `redundant' also in the new polyhedron.
   //   If otherwise a constraint is redundant in the sense that it does not
-  //   satisfy the saturation rule (see in the Introduction), it can not
+  //   satisfy the saturation rule (see Section \ref prelims), it can not
   //   be put into the new system, because of the way that we use to
   //   choose the constraints.
   if (!x.constraints_are_up_to_date())
@@ -2847,7 +2847,7 @@ PPL::Polyhedron::H79_widening_assign(const Polyhedron& y) {
   // (built starting from the given constraint and `y.gen_sys')
   // is a row of the saturation matrix `tmp_sat_g'.
   // Note: if the considered constraint of `x.con_sys' does not
-  // satisfy the saturation rule (see the Introduction), then
+  // satisfy the saturation rule (see Section \ref prelims), then
   // it will not appear in the resulting constraint system,
   // because `tmp_sat_g' is built starting from a minimized polyhedron.
   size_t n_constraints = x.con_sys.num_rows();

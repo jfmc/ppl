@@ -86,7 +86,7 @@ namespace PPL = Parma_Polyhedra_Library;
 
   We know that polyhedra can be represented by both a system of
   constraints or a system of generators (points, rays and lines)
-  (see it in the Introduction).
+  (see Section \ref representation).
   When we have both descriptions for a polyhedron \f$P\f$
   we have what is called a <EM>double description</EM>
   (or <EM>DD pair</EM>) for \f$P\f$.
@@ -115,7 +115,7 @@ namespace PPL = Parma_Polyhedra_Library;
       \text{ for some } \vect{\lambda} \geq \vect{0}\, \}.
   \f]
 
-  Because of the theorem of Minkowski (see it in the Introduction),
+  Because of the theorem of Minkowski (see Section \ref prelims),
   we can say that, given a \f$m \times n\f$ representation matrix
   \f$C\f$ such that \f$\mathop{\mathrm{rank}}(C) = n = dimension of
   the whole space \f$ for a non-empty polyhedron \f$P\f$,
@@ -280,7 +280,7 @@ namespace PPL = Parma_Polyhedra_Library;
   rays of \f$P\f$.
   Then the following statements are equivalent:
   a) \f$\vect{r}_1\f$ and \f$\vect{r}_2\f$ are adjacent extreme rays
-     (see definition in theIntroduction);
+     (see Section \ref prelims);
   b) \f$\vect{r}_1\f$ and \f$\vect{r}_2\f$ are extreme rays and the
      rank of the matrix composed by the constraints saturated by both
      \f$\vect{r}_1\f$ and \f$\vect{r}_2\f$ is equal to
@@ -340,8 +340,8 @@ namespace PPL = Parma_Polyhedra_Library;
   If the rank is less than \f$d - 2\f$, the rank of
   the matrix composed by \f$\vect{c}\f$ (that is saturated by \f$\vect{r}\f$)
   and by the constraints of \f$A\f$ saturated by \f$\vect{r}\f$  is less
-  than \f$d - 1\f$. It means that \f$r\f$ is redundant (see in
-  the Introduction).
+  than \f$d - 1\f$. It means that \f$r\f$ is redundant (see 
+  Section \ref prelims).
   If neither \f$\vect{r}_1\f$ nor \f$\vect{r}_2\f$ are extreme rays,
   they belong to a 2-dimensional face containing exactly two extreme rays
   of \f$P\f$.
@@ -412,7 +412,7 @@ PPL::Polyhedron::conversion(Matrix& source,
     if (index_non_zero < num_lines_or_equalities) {
       // Since the generator `dest[index_non_zero]' does not saturate
       // the constraint `source[k]', it can no longer be a line
-      // (see saturation rule in the Introduction).
+      // (see saturation rule in Section \ref prelims).
       // Therefore, we first transform it into a ray.
       dest[index_non_zero].set_is_ray_or_point_or_inequality();
       // Of the two possible choices, we select the ray satisfying
