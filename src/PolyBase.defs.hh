@@ -491,7 +491,10 @@ public:
 		       const LinExpression& expr,
 		       const Integer& denominator = Integer_one());
 
-  //! Checks if all the invariants are satisfied.
+  //! Checks if all the invariants are satisfied, doing so in
+  //! as non-intrusively as possible.  In case invariants are
+  //! violated error messages are written on <CODE>std::cerr</CODE>.
+  //! This is useful for the purpose of debugging the library.
   //!
   //! \param check_not_empty
   //!   <CODE>true</CODE> if and only if, in addition to checking
