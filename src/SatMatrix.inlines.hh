@@ -33,9 +33,9 @@ SatMatrix::SatMatrix()
 }
 
 inline
-SatMatrix::SatMatrix(size_t num_rows, size_t num_columns)
-  : rows(num_rows),
-    row_size(num_columns) {
+SatMatrix::SatMatrix(size_t n_rows, size_t n_columns)
+  : rows(n_rows),
+    row_size(n_columns) {
 }
 
 inline

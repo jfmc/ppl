@@ -37,8 +37,8 @@ Constraint::Constraint(const Constraint& c)
 }
 
 inline
-Constraint::Constraint(Row::Type type, size_t size)
-  : Row(type, size) {
+Constraint::Constraint(Row::Type t, size_t sz)
+  : Row(t, sz) {
 }
 
 inline

@@ -53,9 +53,9 @@ private:
 public:
   //! Default constructor.
   SatMatrix();
-  //! Construct a saturation matrix with \p num_rows rows
-  //! and \p num_columns columns.
-  SatMatrix(size_t num_rows, size_t num_columns);
+  //! Construct a saturation matrix with \p n_rows rows
+  //! and \p n_columns columns.
+  SatMatrix(size_t n_rows, size_t n_columns);
   //! Copy-constructor.
   SatMatrix(const SatMatrix& y);
   //! Destructor.
@@ -101,7 +101,7 @@ public:
   void columns_erase_to_end(size_t first_to_erase);
 
   //! Resizes the matrix copying the old contents.
-  void resize(size_t new_num_rows, size_t new_num_columns);
+  void resize(size_t new_n_rows, size_t new_n_columns);
 
   //! Checks if all the invariants are satisfied.
   bool OK() const;

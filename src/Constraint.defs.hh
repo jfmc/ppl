@@ -146,7 +146,7 @@ private:
 
   Constraint(LinExpression& e);
 
-  Constraint(Row::Type type, size_t size);
+  Constraint(Row::Type t, size_t sz);
 
   void
   throw_dimension_incompatible(const char* method, Variable v) const;

@@ -24,8 +24,8 @@ site: http://www.cs.unipr.it/ppl/ . */
 namespace Parma_Polyhedra_Library {
 
 inline
-Variable::Variable(unsigned int id)
-  : varid(id) {
+Variable::Variable(unsigned int i)
+  : varid(i) {
 }
 
 inline unsigned int

@@ -34,8 +34,8 @@ LinExpression::LinExpression()
 }
 
 inline
-LinExpression::LinExpression(size_t size, bool)
-  : Row(Row::LINE_OR_EQUALITY, size) {
+LinExpression::LinExpression(size_t sz, bool)
+  : Row(Row::LINE_OR_EQUALITY, sz) {
 }
 
 inline
@@ -54,8 +54,8 @@ LinExpression::~LinExpression() {
 }
 
 inline
-LinExpression::LinExpression(const LinExpression& e, size_t size)
-  : Row(e, size, size) {
+LinExpression::LinExpression(const LinExpression& e, size_t sz)
+  : Row(e, sz, sz) {
 }
 
 inline

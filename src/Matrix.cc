@@ -49,23 +49,23 @@ PPL::Matrix::num_lines_or_equalities() const {
 }
 
 /*!
-  \param num_rows      The number of rows of the matrix that will be created.
-  \param num_columns   The number of columns of the matrix
-                       that will be created.
+  \param n_rows      The number of rows of the matrix that will be created.
+  \param n_columns   The number of columns of the matrix
+                     that will be created.
 
   This constructor creates an unsorted
-  \p num_rows \f$\times\f$ \p num_columns matrix which rows are
+  \p n_rows \f$\times\f$ \p n_columns matrix which rows are
   all initialized to rays or vertices or inequalities.
 */
-PPL::Matrix::Matrix(size_t num_rows, size_t num_columns)
-  : rows(num_rows),
-    row_size(num_columns),
-    row_capacity(compute_capacity(num_columns)),
+PPL::Matrix::Matrix(size_t n_rows, size_t n_columns)
+  : rows(n_rows),
+    row_size(n_columns),
+    row_capacity(compute_capacity(n_columns)),
     sorted(false) {
   // Construct in direct order: will destroy in reverse order.
-  for (size_t i = 0; i < num_rows; ++i)
+  for (size_t i = 0; i < n_rows; ++i)
     rows[i].construct(Row::RAY_OR_VERTEX_OR_INEQUALITY,
-		      num_columns, row_capacity);
+		      n_columns, row_capacity);
 }
 
 
@@ -88,10 +88,10 @@ PPL::Matrix::operator=(const Matrix& y) {
 
 
 /*!
-  \param new_num_rows      The number of rows of the
-                           resized matrix.
-  \param new_num_columns   The number of columns of the
-                           resized matrix.
+  \param new_n_rows      The number of rows of the
+                         resized matrix.
+  \param new_n_columns   The number of columns of the
+                         resized matrix.
 
   Creates a new matrix with the given dimensions and copies the content
   of the old elements to the new ones.
@@ -100,32 +100,32 @@ PPL::Matrix::operator=(const Matrix& y) {
   matrix.
 */
 void
-PPL::Matrix::grow(size_t new_num_rows, size_t new_num_columns) {
-  size_t old_num_rows = rows.size();
+PPL::Matrix::grow(size_t new_n_rows, size_t new_n_columns) {
+  size_t old_n_rows = rows.size();
 
-  assert(new_num_rows >= old_num_rows);
-  assert(new_num_columns >= row_size);
+  assert(new_n_rows >= old_n_rows);
+  assert(new_n_columns >= row_size);
 
-  // Note that, if we have `new_num_rows == old_num_rows', the matrix
+  // Note that, if we have `new_n_rows == old_n_rows', the matrix
   // will keep its sortedness.
-  // This is obvious if `new_num_columns == row_size'.
-  // If `new_num_columns > row_size', then sortedness is maintained
+  // This is obvious if `new_n_columns == row_size'.
+  // If `new_n_columns > row_size', then sortedness is maintained
   // because trailing zeroes will be added to all rows.
   bool was_sorted = is_sorted();
 
-  if (new_num_rows > old_num_rows) {
-    if (new_num_columns <= row_capacity) {
+  if (new_n_rows > old_n_rows) {
+    if (new_n_columns <= row_capacity) {
       // We can recycle the old rows.
-      if (rows.capacity() < new_num_rows) {
+      if (rows.capacity() < new_n_rows) {
 	// Reallocation will take place.
 	std::vector<Row> new_rows;
-	new_rows.reserve(compute_capacity(new_num_rows));
-	new_rows.insert(new_rows.end(), new_num_rows, Row());
+	new_rows.reserve(compute_capacity(new_n_rows));
+	new_rows.insert(new_rows.end(), new_n_rows, Row());
 	// Construct the new rows.
-	size_t i = new_num_rows;
-	while (i-- > old_num_rows)
+	size_t i = new_n_rows;
+	while (i-- > old_n_rows)
 	  new_rows[i].construct(Row::RAY_OR_VERTEX_OR_INEQUALITY,
-				new_num_columns, row_capacity);
+				new_n_columns, row_capacity);
 	// Steal the old rows.
 	++i;
 	while (i-- > 0)
@@ -135,22 +135,22 @@ PPL::Matrix::grow(size_t new_num_rows, size_t new_num_columns) {
       }
       else {
 	// Reallocation will NOT take place.
-	rows.insert(rows.end(), new_num_rows - old_num_rows, Row());
-	for (size_t i = new_num_rows; i-- > old_num_rows; )
+	rows.insert(rows.end(), new_n_rows - old_n_rows, Row());
+	for (size_t i = new_n_rows; i-- > old_n_rows; )
 	  rows[i].construct(Row::RAY_OR_VERTEX_OR_INEQUALITY,
-			    new_num_columns, row_capacity);
+			    new_n_columns, row_capacity);
       }
     }
     else {
       // We cannot even recycle the old rows.
       Matrix new_matrix;
-      new_matrix.rows.reserve(compute_capacity(new_num_rows));
-      new_matrix.rows.insert(new_matrix.rows.end(), new_num_rows, Row());
+      new_matrix.rows.reserve(compute_capacity(new_n_rows));
+      new_matrix.rows.insert(new_matrix.rows.end(), new_n_rows, Row());
       // Construct the new rows.
-      new_matrix.row_size = new_num_columns;
-      new_matrix.row_capacity = compute_capacity(new_num_columns);
-      size_t i = new_num_rows;
-      while (i-- > old_num_rows)
+      new_matrix.row_size = new_n_columns;
+      new_matrix.row_capacity = compute_capacity(new_n_columns);
+      size_t i = new_n_rows;
+      while (i-- > old_n_rows)
 	new_matrix.rows[i].construct(Row::RAY_OR_VERTEX_OR_INEQUALITY,
 				     new_matrix.row_size,
 				     new_matrix.row_capacity);
@@ -164,8 +164,8 @@ PPL::Matrix::grow(size_t new_num_rows, size_t new_num_columns) {
       }
       // Rows have been added: see if the matrix is known to be sorted.
       new_matrix.set_sorted(was_sorted
-			    && (new_matrix[old_num_rows-1]
-				<= new_matrix[old_num_rows]));
+			    && (new_matrix[old_n_rows-1]
+				<= new_matrix[old_n_rows]));
       // Put the new vector into place.
       swap(new_matrix);
       assert(OK());
@@ -173,68 +173,68 @@ PPL::Matrix::grow(size_t new_num_rows, size_t new_num_columns) {
     }
   }
   // Here we have the right number of rows.
-  if (new_num_columns > row_size) {
+  if (new_n_columns > row_size) {
     // We need more columns.
-    if (new_num_columns <= row_capacity)
+    if (new_n_columns <= row_capacity)
       // But we have enough capacity: we resize existing rows.
-      for (size_t i = old_num_rows; i-- > 0; )
-	rows[i].grow_no_copy(new_num_columns);
+      for (size_t i = old_n_rows; i-- > 0; )
+	rows[i].grow_no_copy(new_n_columns);
     else {
       // Capacity exhausted: we must reallocate the rows and
       // make sure all the rows have the same capacity.
-      size_t new_row_capacity = compute_capacity(new_num_columns);
-      for (size_t i = old_num_rows; i-- > 0; ) {
-	Row new_row(rows[i], new_num_columns, new_row_capacity);
+      size_t new_row_capacity = compute_capacity(new_n_columns);
+      for (size_t i = old_n_rows; i-- > 0; ) {
+	Row new_row(rows[i], new_n_columns, new_row_capacity);
 	std::swap(rows[i], new_row);
       }
       row_capacity = new_row_capacity;
     }
     // Rows have grown or shrunk.
-    row_size = new_num_columns;
+    row_size = new_n_columns;
   }
   // If rows have been added, we should check if we are still sorted.
-  if (old_num_rows == 0)
+  if (old_n_rows == 0)
     // The matrix was empty: now it is sorted.
     set_sorted(true);
-  else if (new_num_rows > old_num_rows)
+  else if (new_n_rows > old_n_rows)
     // Rows were added.
     if (was_sorted)
-      set_sorted((*this)[old_num_rows-1] <= (*this)[old_num_rows]);
+      set_sorted((*this)[old_n_rows-1] <= (*this)[old_n_rows]);
   // If no rows was added the matrix keeps its sortedness.
 
   assert(OK());
 }
 
 /*!
-  \param new_num_rows      The number of rows of the
-                           resized matrix.
-  \param new_num_columns   The number of columns of the
-                           resized matrix.
+  \param new_n_rows      The number of rows of the
+                         resized matrix.
+  \param new_n_columns   The number of columns of the
+                         resized matrix.
 		
   Creates a new matrix with the given dimensions without copying
   the content of the old elements to the new ones.
 */
 void
-PPL::Matrix::resize_no_copy(size_t new_num_rows, size_t new_num_columns) {
-  size_t old_num_rows = rows.size();
-  // Note that, if we have `new_num_rows <= old_num_rows' and
-  // `new_num_columns >= row_size', the matrix will keep its sortedness.
-  // This is obvious if `new_num_columns == row_size'.
-  // If `new_num_columns > row_size', then sortedness is maintained
+PPL::Matrix::resize_no_copy(size_t new_n_rows, size_t new_n_columns) {
+  size_t old_n_rows = rows.size();
+  // Note that, if we have `new_n_rows <= old_n_rows' and
+  // `new_n_columns >= row_size', the matrix will keep its sortedness.
+  // This is obvious if `new_n_columns == row_size'.
+  // If `new_n_columns > row_size', then sortedness is maintained
   // because trailing zeroes will be added to all rows.
-  if (new_num_rows > old_num_rows) {
-    if (new_num_columns <= row_capacity) {
+  if (new_n_rows > old_n_rows) {
+    if (new_n_columns <= row_capacity) {
       // We can recycle the old rows.
-      if (rows.capacity() < new_num_rows) {
+      if (rows.capacity() < new_n_rows) {
 	// Reallocation will take place.
 	std::vector<Row> new_rows;
-	new_rows.reserve(compute_capacity(new_num_rows));
-	new_rows.insert(new_rows.end(), new_num_rows, Row());
+	new_rows.reserve(compute_capacity(new_n_rows));
+	new_rows.insert(new_rows.end(), new_n_rows, Row());
 	// Construct the new rows.
-	size_t i = new_num_rows;
-	while (i-- > old_num_rows)
+	size_t i = new_n_rows;
+	while (i-- > old_n_rows)
 	  new_rows[i].construct(Row::LINE_OR_EQUALITY,
-				new_num_columns, row_capacity);
+				new_n_columns, row_capacity);
 	// Steal the old rows.
 	++i;
 	while (i-- > 0)
@@ -244,10 +244,10 @@ PPL::Matrix::resize_no_copy(size_t new_num_rows, size_t new_num_columns) {
       }
       else {
 	// Reallocation will NOT take place.
-	rows.insert(rows.end(), new_num_rows - old_num_rows, Row());
-	for (size_t i = new_num_rows; i-- > old_num_rows; )
+	rows.insert(rows.end(), new_n_rows - old_n_rows, Row());
+	for (size_t i = new_n_rows; i-- > old_n_rows; )
 	  rows[i].construct(Row::LINE_OR_EQUALITY,
-			    new_num_columns, row_capacity);
+			    new_n_columns, row_capacity);
       }
       // Even though `*this' may happen to keep its sortedness,
       // we feel checking that this is the case is not worth the effort.
@@ -257,43 +257,43 @@ PPL::Matrix::resize_no_copy(size_t new_num_rows, size_t new_num_columns) {
     }
     else {
       // We cannot even recycle the old rows: allocate a new matrix and swap.
-      Matrix new_matrix(new_num_rows, new_num_columns);
+      Matrix new_matrix(new_n_rows, new_n_columns);
       swap(new_matrix);
       return;
     }
   }
-  else if (new_num_rows < old_num_rows) {
+  else if (new_n_rows < old_n_rows) {
     // Drop some rows.
-    rows.erase(rows.begin() + new_num_rows, rows.end());
-    old_num_rows = new_num_rows;
+    rows.erase(rows.begin() + new_n_rows, rows.end());
+    old_n_rows = new_n_rows;
   }
   // Here we have the right number of rows.
-  if (new_num_columns != row_size) {
-    if (new_num_columns < row_size) {
+  if (new_n_columns != row_size) {
+    if (new_n_columns < row_size) {
       // Shrink the existing rows.
-      for (size_t i = old_num_rows; i-- > 0; )
-	rows[i].shrink(new_num_columns);
+      for (size_t i = old_n_rows; i-- > 0; )
+	rows[i].shrink(new_n_columns);
       // Ditto.
       set_sorted(false);
     }
     else
       // We need more columns.
-      if (new_num_columns <= row_capacity)
+      if (new_n_columns <= row_capacity)
 	// But we have enough capacity: we resize existing rows.
-	for (size_t i = old_num_rows; i-- > 0; )
-	  rows[i].grow_no_copy(new_num_columns);
+	for (size_t i = old_n_rows; i-- > 0; )
+	  rows[i].grow_no_copy(new_n_columns);
       else {
 	// Capacity exhausted: we must reallocate the rows and
 	// make sure all the rows have the same capacity.
-	size_t new_row_capacity = compute_capacity(new_num_columns);
-	for (size_t i = old_num_rows; i-- > 0; ) {
-	  Row new_row(Row::LINE_OR_EQUALITY, new_num_columns, new_row_capacity);
+	size_t new_row_capacity = compute_capacity(new_n_columns);
+	for (size_t i = old_n_rows; i-- > 0; ) {
+	  Row new_row(Row::LINE_OR_EQUALITY, new_n_columns, new_row_capacity);
 	  std::swap(rows[i], new_row);
 	}
 	row_capacity = new_row_capacity;
       }
     // Rows have grown or shrunk.
-    row_size = new_num_columns;
+    row_size = new_n_columns;
   }
 }
 
@@ -411,9 +411,9 @@ PPL::Matrix::merge_rows_assign(const Matrix& y) {
 void
 PPL::Matrix::sort_rows() {
   Matrix& x = *this;
-  size_t num_rows = x.num_rows();
+  size_t n_rows = x.num_rows();
   Row x_i;
-  for (size_t i = 1; i < num_rows; ) {
+  for (size_t i = 1; i < n_rows; ) {
     x_i.assign(x[i]);
     size_t j;
     int cmp = 1;
@@ -427,8 +427,8 @@ PPL::Matrix::sort_rows() {
       for ( ; j < i; ++j)
 	x[j].assign(x[j+1]);
       x[i].assign(x_i);
-      --num_rows;
-      std::swap(x[i], x[num_rows]);
+      --n_rows;
+      std::swap(x[i], x[n_rows]);
     }
     else {
       x[j].assign(x_i);
@@ -437,7 +437,7 @@ PPL::Matrix::sort_rows() {
   }
   Row null;
   x_i.assign(null);
-  rows.erase(rows.begin()+num_rows, rows.end());
+  rows.erase(rows.begin()+n_rows, rows.end());
   sorted = true;
   assert(OK());
 }
@@ -649,10 +649,10 @@ PPL::Matrix::gauss() {
   size_t rank = 0;
   // Will keep track of the variations on the matrix of equalities.
   bool changed = false;
-  size_t nb_columns =  num_columns();
-  size_t nb_lines_or_equalities = num_lines_or_equalities();
-  for (size_t j = nb_columns; j-- > 0; ) {
-    for (size_t i = rank; i < nb_lines_or_equalities; ++i) {
+  size_t n_columns =  num_columns();
+  size_t n_lines_or_equalities = num_lines_or_equalities();
+  for (size_t j = n_columns; j-- > 0; ) {
+    for (size_t i = rank; i < n_lines_or_equalities; ++i) {
       // Looking for the first non-zero coefficient (the pivot)
       // in the j-th column, starting from the last column.
       if (rows[i][j] != 0) {
@@ -668,7 +668,7 @@ PPL::Matrix::gauss() {
 	// We want the pivot to be greater than zero to
 	// simplify future computing (back-substitution).
 	if (rows[rank][j] < 0) {
-	  for (size_t k = nb_columns; k-- > 0; )
+	  for (size_t k = n_columns; k-- > 0; )
 	    negate(rows[rank][k]);
 	  // Matrix has changed.
 	  changed = true;
@@ -676,7 +676,7 @@ PPL::Matrix::gauss() {
 	// Linear combining the row containing the pivot with
 	// all the ones that follow it such that all the elements
 	// on the j-th column (of these rows) become 0.
-	for (size_t k = i + 1; k < nb_lines_or_equalities; ++k) {
+	for (size_t k = i + 1; k < n_lines_or_equalities; ++k) {
 	  if (rows[k][j] != 0) {
 	    rows[k].linear_combine(rows[rank], j);
 	    changed = true;
@@ -790,14 +790,14 @@ void
 PPL::Matrix::add_rows_and_columns(size_t n) {
   assert(n > 0);
   bool was_sorted = is_sorted();
-  size_t old_num_rows = num_rows();
-  size_t old_num_columns = num_columns();
-  grow(old_num_rows + n, old_num_columns + n);
+  size_t old_n_rows = num_rows();
+  size_t old_n_columns = num_columns();
+  grow(old_n_rows + n, old_n_columns + n);
   Matrix& x = *this;
   // The old matrix is moved to the bottom.
-  for (size_t i = old_num_rows; i-- > 0; )
+  for (size_t i = old_n_rows; i-- > 0; )
     std::swap(x[i], x[i + n]);
-  for (size_t i = n, c = old_num_columns; i-- > 0; ) {
+  for (size_t i = n, c = old_n_columns; i-- > 0; ) {
     // The top right-hand sub-matrix (i.e., the matrix made
     // of new rows and columns) is set to the specular image
     // of the identity matrix.
@@ -807,7 +807,7 @@ PPL::Matrix::add_rows_and_columns(size_t n) {
   }
   // If the old matrix was empty, the last row added is either
   // a positivity constraint or a vertex.
-  if (old_num_columns == 0) {
+  if (old_n_columns == 0) {
     x[n-1].set_is_ray_or_vertex_or_inequality();
     // Since ray, vertices and inequalities come after lines
     // and equalities, this case implies the matrix is sorted.
@@ -847,8 +847,8 @@ PPL::Matrix::OK() const {
 
   const Matrix& x = *this;
   bool is_broken = false;
-  size_t nrows = num_rows();
-  for (size_t i = 0; i < nrows; ++i)
+  size_t n_rows = num_rows();
+  for (size_t i = 0; i < n_rows; ++i)
     is_broken |= !x[i].OK(row_size, row_capacity);
 
   if (sorted && !check_sorted()) {

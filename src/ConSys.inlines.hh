@@ -42,8 +42,8 @@ ConSys::ConSys(const ConSys& cs)
 }
 
 inline
-ConSys::ConSys(size_t num_rows, size_t num_columns)
-  : Matrix(num_rows, num_columns) {
+ConSys::ConSys(size_t n_rows, size_t n_columns)
+  : Matrix(n_rows, n_columns) {
 }
 
 inline

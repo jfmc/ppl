@@ -226,9 +226,9 @@ public:
   const_iterator end() const;
 
 PPL_INTERNAL:
-  //! Constructor: it builds a system of \p num_rows rays/vertices
-  //! on a \p num_columns - 1 dimensional space.
-  GenSys(size_t num_rows, size_t num_columns);
+  //! Constructor: it builds a system of \p n_rows rays/vertices
+  //! on a \p n_columns - 1 dimensional space.
+  GenSys(size_t n_rows, size_t n_columns);
 
   //! Returns the \p k- th generator of the system.
   Generator& operator[](size_t k);

@@ -46,9 +46,9 @@ class Parma_Polyhedra_Library::Matrix {
 protected:
   //! Default constructor: builds a zero-matrix.
   Matrix();
-  //! Constructor: bulids a sorted matrix with \p num_rows rows
-  //! and \p num_columns columns.
-  Matrix(size_t num_rows, size_t num_columns);
+  //! Constructor: bulids a sorted matrix with \p n_rows rows
+  //! and \p n_columns columns.
+  Matrix(size_t n_rows, size_t n_columns);
   //! Copy-constructor.
   Matrix(const Matrix& y);
   //! Destructor.
@@ -142,9 +142,9 @@ public:
   void set_sorted(bool value);
 
   //! Make the matrix grow adding more rows and/or more columns.
-  void grow(size_t new_num_rows, size_t new_num_columns);
+  void grow(size_t new_n_rows, size_t new_n_columns);
   //! Resizes the matrix without worrying about the old contents.
-  void resize_no_copy(size_t new_num_rows, size_t new_num_columns);
+  void resize_no_copy(size_t new_n_rows, size_t new_n_columns);
 
   //! Turn the matrix \f$M\f$ into \f$(M \, 0)\f$.
   void add_zero_columns(size_t n);

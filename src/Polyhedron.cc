@@ -2294,9 +2294,9 @@ PPL::Polyhedron::limited_widening_assign(const Polyhedron& y, ConSys& cs) {
       // of the greater polyhedron `x', because those of `y'
       // are points also of `x' (`y' is contained in `x') and
       // so they satisfy the chosen constraints, too.
-      Poly_Con_Relation status = x.gen_sys.relation_with(cs[i]);
-      if (status == Poly_Con_Relation::saturates()
-	  || status == Poly_Con_Relation::is_included())
+      Poly_Con_Relation relation = x.gen_sys.relation_with(cs[i]);
+      if (relation == Poly_Con_Relation::saturates()
+	  || relation == Poly_Con_Relation::is_included())
 	// The chosen constraints are put at the top of the
 	// matrix \p cs.
 	std::swap(cs[new_cs_num_rows], cs[i]);

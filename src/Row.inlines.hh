@@ -88,8 +88,8 @@ Row::Impl::size() const {
   Sets to \p new_size the actual size of \p *this.
 */
 inline void
-Row::Impl::set_size(size_t new_size) {
-  size_ = new_size;
+Row::Impl::set_size(size_t new_sz) {
+  size_ = new_sz;
 }
 
 
@@ -117,9 +117,9 @@ Row::Impl::resize_no_copy(size_t new_size) {
 
 
 inline
-Row::Impl::Impl(Type type, size_t size)
-  : size_(0), type_(type) {
-  grow_no_copy(size);
+Row::Impl::Impl(Type t, size_t sz)
+  : size_(0), type_(t) {
+  grow_no_copy(sz);
 }
 
 
@@ -130,10 +130,10 @@ Row::Impl::Impl(const Impl& y)
 }
 
 inline
-Row::Impl::Impl(const Impl& y, size_t size)
+Row::Impl::Impl(const Impl& y, size_t sz)
   : size_(0), type_(y.type()) {
   copy_construct(y);
-  grow_no_copy(size);
+  grow_no_copy(sz);
 }
 
 
@@ -191,18 +191,18 @@ Row::Row()
 
 
 /*!
-  \param type       The type of the row that will be constructed.
-  \param size       The size of the row that will be constructed.
+  \param t          The type of the row that will be constructed.
+  \param sz         The size of the row that will be constructed.
   \param capacity   The capacity of the row that will be constructed.
 
   The row that we are constructing has a fixed capacity, i.e., it can
   contain \p capacity elements; furthermore the actual number of elements
-  that has to be considered is \p size.
+  that has to be considered is \p sz.
 */
 inline void
-Row::construct(Type type, size_t size, size_t capacity) {
-  assert(capacity >= size);
-  impl = new (capacity) Impl(type, size);
+Row::construct(Type t, size_t sz, size_t capacity) {
+  assert(capacity >= sz);
+  impl = new (capacity) Impl(t, sz);
 #ifndef NDEBUG
   capacity_ = capacity;
 #endif
@@ -210,21 +210,21 @@ Row::construct(Type type, size_t size, size_t capacity) {
 
 
 /*!
-  Builds a row having the capacity equal to its \p size.
+  Builds a row having the capacity equal to its \p sz.
 */
 inline void
-Row::construct(Type type, size_t size) {
-  construct(type, size, size);
+Row::construct(Type t, size_t sz) {
+  construct(t, sz, sz);
 }
 
 inline
-Row::Row(Type type, size_t size, size_t capacity) {
-  construct(type, size, capacity);
+Row::Row(Type t, size_t sz, size_t capacity) {
+  construct(t, sz, capacity);
 }
 
 inline
-Row::Row(Type type, size_t size) {
-  construct(type, size);
+Row::Row(Type t, size_t sz) {
+  construct(t, sz);
 }
 
 inline
@@ -253,12 +253,12 @@ Row::Row(const Row& y, size_t capacity) {
 /*!
   Allows to specify size and capacity,
   provided they are both greater then or equal to \p y size.
-  Of course, \p size must also be less than or equal to \p capacity.
+  Of course, \p sz must also be less than or equal to \p capacity.
 */
 inline
-Row::Row(const Row& y, size_t size, size_t capacity) {
+Row::Row(const Row& y, size_t sz, size_t capacity) {
   assert(capacity >= y.size());
-  impl = y.impl ? new (capacity) Impl(*y.impl, size) : 0;
+  impl = y.impl ? new (capacity) Impl(*y.impl, sz) : 0;
 #ifndef NDEBUG
   capacity_ = capacity;
 #endif
@@ -270,35 +270,35 @@ Row::~Row() {
 }
 
 /*!
-  Shrinks the row if \p new_size is less than <CODE>size()</CODE> ,
+  Shrinks the row if \p new_sz is less than <CODE>size()</CODE> ,
   otherwise grows the row without copying the old contents.
 */
 inline void
-Row::resize_no_copy(size_t new_size) {
+Row::resize_no_copy(size_t new_sz) {
   assert(impl);
-  assert(new_size <= capacity_);
-  impl->resize_no_copy(new_size);
+  assert(new_sz <= capacity_);
+  impl->resize_no_copy(new_sz);
 }
 
 /*!
   Adds new positions to \p *this row obtaining a new row having
-  size \p new_size.
+  size \p new_sz.
 */
 inline void
-Row::grow_no_copy(size_t new_size) {
+Row::grow_no_copy(size_t new_sz) {
   assert(impl);
-  assert(new_size <= capacity_);
-  impl->grow_no_copy(new_size);
+  assert(new_sz <= capacity_);
+  impl->grow_no_copy(new_sz);
 }
 
 /*!
-  Delete elements of \p *this row from \p new_size-th position to
+  Delete elements of \p *this row from \p new_sz-th position to
   the end.
 */
 inline void
-Row::shrink(size_t new_size) {
+Row::shrink(size_t new_sz) {
   assert(impl);
-  impl->shrink(new_size);
+  impl->shrink(new_sz);
 }
 
 inline void

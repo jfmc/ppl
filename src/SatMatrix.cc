@@ -117,22 +117,22 @@ PPL::SatMatrix::transpose_assign(const SatMatrix& y) {
   Resizes the matrix copying the old contents.
 */
 void
-PPL::SatMatrix::resize(size_t new_num_rows, size_t new_num_columns) {
+PPL::SatMatrix::resize(size_t new_n_rows, size_t new_n_columns) {
   assert(OK());
   size_t old_num_rows = num_rows();
-  if (new_num_columns < row_size) {
-    size_t num_preserved_rows = min(old_num_rows, new_num_rows);
+  if (new_n_columns < row_size) {
+    size_t num_preserved_rows = min(old_num_rows, new_n_rows);
     SatMatrix& x = *this;
     for (size_t i = num_preserved_rows; i-- > 0; )
-      x[i].clear_from(new_num_columns);
+      x[i].clear_from(new_n_columns);
   }
-  row_size = new_num_columns;
-  if (new_num_rows > old_num_rows) {
-    if (rows.capacity() < new_num_rows) {
+  row_size = new_n_columns;
+  if (new_n_rows > old_num_rows) {
+    if (rows.capacity() < new_n_rows) {
       // Reallocation will take place.
       std::vector<SatRow> new_rows;
-      new_rows.reserve(compute_capacity(new_num_rows));
-      new_rows.insert(new_rows.end(), new_num_rows, SatRow());
+      new_rows.reserve(compute_capacity(new_n_rows));
+      new_rows.insert(new_rows.end(), new_n_rows, SatRow());
       // Steal the old rows.
       for (size_t i = old_num_rows; i-- > 0; )
 	new_rows[i].swap(rows[i]);
@@ -141,11 +141,11 @@ PPL::SatMatrix::resize(size_t new_num_rows, size_t new_num_columns) {
     }
     else
       // Reallocation will NOT take place.
-      rows.insert(rows.end(), new_num_rows - old_num_rows, SatRow());
+      rows.insert(rows.end(), new_n_rows - old_num_rows, SatRow());
   }
-  else if (new_num_rows < old_num_rows)
+  else if (new_n_rows < old_num_rows)
     // Drop some rows.
-    rows.erase(rows.begin() + new_num_rows, rows.end());
+    rows.erase(rows.begin() + new_n_rows, rows.end());
 
   assert(OK());
 }

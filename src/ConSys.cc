@@ -67,10 +67,9 @@ PPL::ConSys::const_iterator::skip_forward() {
 */
 bool
 PPL::ConSys::satisfies_all_constraints(const Generator& g) const {
-  size_t n_rows = num_rows();
   assert(g.space_dimension() <= space_dimension());
   bool g_is_ray_or_vertex = g.is_ray_or_vertex();
-  for (size_t i = n_rows; i-- > 0; ) {
+  for (size_t i = num_rows(); i-- > 0; ) {
     const Constraint& c = (*this)[i];
     // Compute the sign of the scalar product.
     int sp_sign =sgn(g * c);
@@ -121,21 +120,21 @@ PPL::ConSys::affine_preimage(size_t v,
 			     const LinExpression& expr,
 			     const Integer& denominator) {
   ConSys& x = *this;
-  size_t num_columns = x.num_columns();
-  size_t num_rows = x.num_rows();
+  size_t n_columns = x.num_columns();
+  size_t n_rows = x.num_rows();
 
   assert(v != 0);
-  assert(num_columns = expr.size());
+  assert(n_columns = expr.size());
   assert(denominator != 0);
-  assert(v < num_columns);
+  assert(v < n_columns);
 
   // Building the new matrix of constraints.
-  for (size_t i = 0; i < num_rows; ++i) {
+  for (size_t i = 0; i < n_rows; ++i) {
     Constraint& row = x[i];
     if (row[v] != 0) {
       Integer tmp = row[v];
       row[v] *= expr[v];
-      for (size_t j = 0; j < num_columns; ++j)
+      for (size_t j = 0; j < n_columns; ++j)
 	if (j != v) {
 	  row[j] *= denominator;
 	  row[j] += tmp * expr[j];

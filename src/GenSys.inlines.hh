@@ -42,8 +42,8 @@ GenSys::GenSys(const GenSys& gs)
 }
 
 inline
-GenSys::GenSys(size_t num_rows, size_t num_columns)
-  : Matrix(num_rows, num_columns) {
+GenSys::GenSys(size_t n_rows, size_t n_columns)
+  : Matrix(n_rows, n_columns) {
 }
 
 inline
@@ -58,7 +58,8 @@ GenSys::operator=(const GenSys& y) {
 
 inline size_t
 GenSys::space_dimension() const {
-  return (num_columns() == 0) ? 0 : num_columns() - 1;
+  size_t n_columns = num_columns();
+  return (n_columns == 0) ? 0 : n_columns-1;
 }
 
 inline void

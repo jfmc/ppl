@@ -264,21 +264,21 @@ PPL::GenSys::affine_image(size_t v,
 			  const LinExpression& expr,
 			  const Integer& denominator) {
   GenSys& x = *this;
-  size_t num_columns = x.num_columns();
-  size_t num_rows = x.num_rows();
+  size_t n_columns = x.num_columns();
+  size_t n_rows = x.num_rows();
 
   // The first coefficient is the inhomogeneous term.
   assert(v != 0);
-  assert(num_columns = expr.size());
+  assert(n_columns = expr.size());
   assert(denominator != 0);
-  assert(v < num_columns);
+  assert(v < n_columns);
 
   // Computing the numerator of the affine transformation and assigning
   // it to the column of `*this' indexed by `v'.
-  for (size_t i = 0; i < num_rows; ++i) {
+  for (size_t i = 0; i < n_rows; ++i) {
     Generator& row = x[i];
     row[v] *= expr[v];
-    for (size_t j = 0; j < num_columns; ++j)
+    for (size_t j = 0; j < n_columns; ++j)
       if (j != v)
 	row[v] += row[j] * expr[j];	
   }
@@ -286,8 +286,8 @@ PPL::GenSys::affine_image(size_t v,
     // Since we want integer elements in the matrix and the
     // `v'-th columns is a multiple of `denominator', we
     // multiply by `denominator' all the other columns of `*this'.
-    for (size_t i = 0; i < num_rows; ++i)
-      for (size_t j = 0; j < num_columns; ++j)
+    for (size_t i = 0; i < n_rows; ++i)
+      for (size_t j = 0; j < n_columns; ++j)
 	if (j != v)
 	  x[i][j] *= denominator;
 
@@ -350,17 +350,17 @@ void
 PPL::GenSys::remove_invalid_lines_and_rays() {
   // The origin of the vector space cannot be a valid line/ray.
   GenSys& gs = *this;
-  size_t num_rows = gs.num_rows();
-  for (size_t i = num_rows; i-- > 0; ) {
+  size_t n_rows = gs.num_rows();
+  for (size_t i = n_rows; i-- > 0; ) {
     Generator& g = gs[i];
     if (g[0] == 0 && g.all_homogeneous_terms_are_zero()) {
       // An invalid line/ray has been found.
-      --num_rows;
-      std::swap(g, gs[num_rows]);
+      --n_rows;
+      std::swap(g, gs[n_rows]);
       gs.set_sorted(false);
     }
   }
-  gs.erase_to_end(num_rows);
+  gs.erase_to_end(n_rows);
 }
 
 /*!

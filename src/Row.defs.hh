@@ -82,14 +82,14 @@ public:
   };
 
   //! Tight constructor: resizing will require reallocation.
-  Row(Type type, size_t size);
+  Row(Type t, size_t sz);
   //! Sizing constructor with type.
-  Row(Type type, size_t size, size_t capacity);
+  Row(Type t, size_t sz, size_t capacity);
 
   //! Post-constructors: to construct properly default-constructed elements.
   //@{
-  void construct(Type type, size_t size);
-  void construct(Type type, size_t size, size_t capacity);
+  void construct(Type t, size_t sz);
+  void construct(Type t, size_t sz, size_t capacity);
   //@}
 
   //! Pre-constructs a row: construction must be completed by construct().
@@ -101,7 +101,7 @@ public:
   //! Copy constructor with specified capacity.
   Row(const Row& y, size_t capacity);
   //! Copy constructor with specified size and capacity.
-  Row(const Row& y, size_t size, size_t capacity);
+  Row(const Row& y, size_t sz, size_t capacity);
 
   //! Destructor.
   ~Row();
@@ -222,11 +222,11 @@ public:
   void operator delete(void* p);
   //@}
   //! Sizing constructor.
-  Impl(Type type, size_t size);
+  Impl(Type t, size_t sz);
   //! Copy constructor.
   Impl(const Impl& y);
   //! Copy constructor with specified size.
-  Impl(const Impl& y, size_t size);
+  Impl(const Impl& y, size_t sz);
   //! Destructor.
   ~Impl();
 
@@ -248,7 +248,7 @@ public:
   Type type() const;
   void set_type(Type t);
   size_t size() const;
-  void set_size(size_t new_size);
+  void set_size(size_t new_sz);
   void bump_size();
   //@}
 

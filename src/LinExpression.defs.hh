@@ -121,13 +121,13 @@ public:
 
 PPL_INTERNAL:
   //! Copy-constructor with a specified dimension.
-  LinExpression(const LinExpression& e, size_t size);
+  LinExpression(const LinExpression& e, size_t sz);
 
 private:
   //! Implementation sizing constructor.
   //! The bool parameter is just to avoid problems with
   //! the constructor LinExpression(const Integer& n).
-  LinExpression(size_t size, bool);
+  LinExpression(size_t sz, bool);
 
   friend class Constraint;
   friend class Generator;

@@ -174,9 +174,9 @@ public:
   const_iterator end() const;
 
 PPL_INTERNAL:
-  //! Constructor: it builds a system of \p num_rows constraints
-  //! on a \p num_columns - 1 dimensional space.
-  ConSys(size_t num_rows, size_t num_columns);
+  //! Constructor: it builds a system of \p n_rows constraints
+  //! on a \p n_columns - 1 dimensional space.
+  ConSys(size_t n_rows, size_t n_columns);
 
   //! Returns the \p k- th constraint of the system.
   Constraint& operator[](size_t k);
