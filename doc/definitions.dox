@@ -1010,16 +1010,16 @@ avoided, as they may result in undefined behavior:
 // Find a reference to the first point of the non-empty polyhedron `ph'.
 const GenSys& gs = ph.generators();
 GenSys::const_iterator i = gs.begin();
-for (GenSys::const_iterator iend = gs.end(); i != iend; ++i)
+for (GenSys::const_iterator gs_end = gs.end(); i != gs_end; ++i)
   if (i->is_point())
     break;
 const Generator& p = *i;
 // Get the constraints of `ph'.
 const ConSys& cs = ph.constraints();
-// The const iterator `i' is no longer valid here.
-++i;
-// The reference `p' is no longer valid here.
-cout << p.divisor() << endl;
+// Both the const iterator `i' and the reference `p'
+// are no longer valid at this point.
+cout << p.divisor() << endl;  // Undefinded behavior!
+++i;                          // Undefinded behavior!
 \endcode
 As a rule of thumb, if a polyhedron plays any role in a computation
 (even as a const parameter), then any previously computed reference

@@ -12,9 +12,6 @@ Enhancements for PPL 0.6
 - Try to remember why all the documentation in the C interface
   is tagged with \brief and see whether this is actually a good idea.
 - Decide once and for all how to format lists of \param documentations.
-- We must explain very well that iterators can be invalidated by several
-  (actually, almost all) operations, and that use of an invalidated
-  iterator causes undefined behavior.
 - Complete the documentation of the Determinate, PowerSet and
   Polyhedra_PowerSet classes.
 - Harmonize all the methods void PPL::Polyhedron::throw_...().
