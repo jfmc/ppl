@@ -57,6 +57,8 @@ namespace Parma_Polyhedra_Library {
   std::ostream&
   operator <<(std::ostream& s, const Parma_Polyhedra_Library::Variable& var);
 
+  //! Defines a total ordering on variables.
+  bool operator <(const Variable& v, const Variable& w);
 }
 
 #if !OUTLINE

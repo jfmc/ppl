@@ -99,10 +99,11 @@ main() {
 #if NOISY
     print_constraints(current, "*** after shift_rename_insert ***");
 #endif
-    vector<unsigned int> dimensions_to_remove;
-    dimensions_to_remove.push_back(D.id());
-    dimensions_to_remove.push_back(E.id());
-    dimensions_to_remove.push_back(F.id());
+    set<Variable> dimensions_to_remove;
+    // Deliberately inserted out of order (!).
+    dimensions_to_remove.insert(D);
+    dimensions_to_remove.insert(F);
+    dimensions_to_remove.insert(E);
     current.remove_dimensions(dimensions_to_remove);
 #if NOISY
     print_constraints(current, "*** after remove_dimensions ***");

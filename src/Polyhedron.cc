@@ -814,7 +814,7 @@ PPL::Polyhedron::add_dimensions_and_project(size_t add_dim) {
   the set \p dims_to_remove.
 */
 void
-PPL::Polyhedron::remove_dimensions(const std::vector<unsigned int>&
+PPL::Polyhedron::remove_dimensions(const std::set<Variable>&
 				   to_be_removed) {
   // Removing dimensions from the empty polyhedron
   // or from the zero-dimensional polyhedron is a no-op.
@@ -829,9 +829,10 @@ PPL::Polyhedron::remove_dimensions(const std::vector<unsigned int>&
   // order is kept.
   size_t nrows = gen_sys.num_rows();
   size_t ncols = gen_sys.num_columns();
-  for (size_t i = 0, tbr_size = to_be_removed.size(); i < tbr_size; ++i) {
+  for (set<Variable>::const_iterator i = to_be_removed.begin(),
+	 tbr_end = to_be_removed.end(); i != tbr_end; ++i) {
     // The (n+1)-th column correspond to the n-th dimension.
-    size_t c = to_be_removed[i] + 1;
+    size_t c = i->id() + 1;
     // We will have one less column.
     --ncols;
     for (size_t r = nrows; r-- > 0; )

@@ -30,3 +30,8 @@ INLINE unsigned int
 Parma_Polyhedra_Library::Variable::id() const {
   return varid;
 }
+
+INLINE bool
+Parma_Polyhedra_Library::operator <(const Variable& v, const Variable& w) {
+  return v.id() < w.id();
+}
