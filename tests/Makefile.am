@@ -22,7 +22,7 @@ LDFLAGS = @gmp_library_option@
 
 CPPFLAGS = @extra_cpp_flags@
 
-TESTS = addconstraints1 \
+TESTS = addconstraints1 addconstraints2 \
 	affinetrans \
         append1 append2 \
         empty1 \
@@ -34,6 +34,7 @@ TESTS = addconstraints1 \
 	removedim1 removedim2 removedim3
 
 addconstraints1_SOURCES = addconstraints1.cc
+addconstraints2_SOURCES = addconstraints2.cc
 
 affinetrans_SOURCES = affinetrans.cc
 
