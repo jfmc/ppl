@@ -1,4 +1,4 @@
-/* Test Polyhedron::shrink_bounding_box().
+/* Test C_Polyhedron::shrink_bounding_box().
    Copyright (C) 2001-2004 Roberto Bagnara <bagnara@cs.unipr.it>
 
 This file is part of the Parma Polyhedra Library (PPL).
@@ -62,7 +62,9 @@ test1() {
      exit(1);
 }
 
-// This is a non-bounded closed polyhedron consisting of the +ve quadrant.
+// This is non-bounded closed polyhedron  in 2D consisting of a wedge bounded
+// by y >= 0 and x >= y. 
+// The resulting bounding box depends on the complexity class.
 static void
 test2() {
   Variable x(0);
@@ -99,7 +101,7 @@ test2() {
     exit(1);
 }
 
-// This is a bounded closed polyhedron.
+// This is a bounded non-rectangular closed polyhedron in 2D.
 static void
 test3() {
   Variable x(0);
@@ -141,7 +143,7 @@ test3() {
     exit(1);
 }
 
-// This is a unbounded closed polyhedron in 4D but bounded in 2D.
+// This is an unbounded closed polyhedron in 4D but bounded in 2D.
 static void
 test4() {
   Variable x(1);
@@ -187,7 +189,7 @@ test4() {
     exit(1);
 }
 
-// This is a universal, 2-dimensional closed polyhedron.
+// This is the universal, 2-dimensional closed polyhedron.
 static void
 test5() {
   C_Polyhedron ph(2);
@@ -210,11 +212,11 @@ test5() {
   known_box.print(cout, "*** test5 known_box ***");
 #endif
 
-  if (nbox != known_box || pbox != known_box || !(nbox <= pbox))
+  if (nbox != known_box || pbox != known_box)
     exit(1);
 }
 
-// This is an zero-dimensional closed polyhedron.
+// This is a zero-dimensional closed polyhedron.
 static void
 test6() {
   C_Polyhedron ph;
@@ -237,11 +239,11 @@ test6() {
   known_box.print(cout, "*** test6 known_box ***");
 #endif
 
-  if (nbox != known_box || pbox != known_box || !(nbox <= pbox))
+  if (nbox != known_box || pbox != known_box)
     exit(1);
 }
 
-// This is an empty closed polyhedron.
+// This is an empty closed polyhedron in 2D.
 static void
 test7() {
   C_Polyhedron ph(2, C_Polyhedron::EMPTY);
@@ -265,11 +267,11 @@ test7() {
   known_box.print(cout, "*** test7 known_box ***");
 #endif
 
-  if (nbox != known_box || pbox != known_box || !(nbox <= pbox))
+  if (nbox != known_box || pbox != known_box)
     exit(1);
 }
 
-// This is a bounded C polyhedron that is a single point.
+// This is a bounded polyhedron that is a single point.
 static void
 test8() {
   Variable x(0);
@@ -301,7 +303,7 @@ test8() {
   known_box.print(cout, "*** test8 known_box ***");
 #endif
 
-  if (nbox != known_box || pbox != known_box || !(nbox <= pbox))
+  if (nbox != known_box || pbox != known_box)
     exit(1);
 }
 
@@ -326,7 +328,7 @@ test9() {
   ph.shrink_bounding_box(nbox);
 
 #if NOISY
-  print_constraints(ph, "*** test9 ph constraints ***");
+  print_constraints(ph, "*** test9 ph ***");
   nbox.print(cout, "*** test9 nbox ***");
   pbox.print(cout, "*** test9 pbox ***");
 #endif
@@ -340,63 +342,13 @@ test9() {
   known_box.print(cout, "*** test9 known_box ***");
 #endif
 
-  if (nbox != known_box || pbox != known_box || !(nbox <= pbox))
+  if (nbox != known_box || pbox != known_box)
     exit(1);
 }
 
-// This is a unbounded closed polyhedron in 4D but bounded in 2D.
+// This is a bounded rectangular closed polyhedron;
 static void
 test10() {
-  Variable x(1);
-  Variable y(2);
-  Variable z(3);
-
-  C_Polyhedron ph(4);
-  ph.add_constraint(3*x + y >= 2);
-  ph.add_constraint(x <= 4);
-  ph.add_constraint(y <= 4);
-  ph.add_constraint(z >= 5);
-
-#if NOISY
-  print_constraints(ph, "*** test10 ph ***");
-#endif
-
-  BBox pbox(ph.space_dimension());
-  ph.shrink_bounding_box(pbox, POLYNOMIAL);
-
-  BBox nbox(ph.space_dimension());
-  ph.shrink_bounding_box(nbox);
-
-#if NOISY
-  nbox.print(cout, "*** test10 nbox ***");
-  pbox.print(cout, "*** test10 pbox ***");
-#endif
-
-  BBox known_nbox(4);
-  known_nbox.raise_lower_bound(1, true, -2, 3);
-  known_nbox.lower_upper_bound(1, true, 4, 1);
-  known_nbox.raise_lower_bound(2, true, -10, 1);
-  known_nbox.lower_upper_bound(2, true, 4, 1);
-  known_nbox.raise_lower_bound(3, true, 5, 1);
-
-  BBox known_pbox(4);
-  known_pbox.lower_upper_bound(1, true, 4, 1);
-  known_pbox.lower_upper_bound(2, true, 4, 1);
-  known_pbox.raise_lower_bound(3, true, 5, 1);
-
-
-#if NOISY
-  known_nbox.print(cout, "*** test10 known_nbox ***");
-  known_pbox.print(cout, "*** test10 known_pbox ***");
-#endif
-
-  if (nbox != known_nbox || pbox != known_pbox || !(nbox <= pbox))
-    exit(1);
-}
-
-// This is a bounded closed polyhedron;
-static void
-test11() {
   Variable x(0);
   Variable y(1);
 
@@ -436,48 +388,6 @@ test11() {
     exit(1);
 }
 
-static void
-test12() {
-  Variable x(0);
-  Variable y(1);
-
-  // Define a bounded closed polyhedron.
-  C_Polyhedron ph(2, C_Polyhedron::EMPTY);
-  ph.add_generator(point());
-  ph.constraints();
-  ph.add_generator(point(x + y));
-  ph.add_generator(point(x));
-  ph.add_generator(point(y));
-
-#if NOISY
-  print_generators(ph, "*** test10 ph ***");
-#endif
-
-  BBox pbox(ph.space_dimension());
-  ph.shrink_bounding_box(pbox, POLYNOMIAL);
-
-  BBox nbox(ph.space_dimension());
-  ph.shrink_bounding_box(nbox);
-
-#if NOISY
-  nbox.print(cout, "*** test10 nbox ***");
-  pbox.print(cout, "*** test10 pbox ***");
-#endif
-
-  BBox known_box(2);
-  known_box.raise_lower_bound(0, true, 0, 1);
-  known_box.lower_upper_bound(0, true, 1, 1);
-  known_box.raise_lower_bound(1, true, 0, 1);
-  known_box.lower_upper_bound(1, true, 1, 1);
-
-#if NOISY
-  known_box.print(cout, "*** test10 known_box ***");
-#endif
-
-  if (nbox != known_box || pbox != known_box)
-    exit(1);
-}
-
 int
 main() TRY {
   set_handlers();
@@ -492,8 +402,6 @@ main() TRY {
   test8();
   test9();
   test10();
-  test11();
-  test12();
 
   return 0;
 }

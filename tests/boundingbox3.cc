@@ -1,4 +1,4 @@
-/* Test Polyhedron::shrink_bounding_box().
+/* Test building a C_Polyhedron from a closed interval-based bounding box.
    Copyright (C) 2001-2004 Roberto Bagnara <bagnara@cs.unipr.it>
 
 This file is part of the Parma Polyhedra Library (PPL).
@@ -30,313 +30,212 @@ using namespace Parma_Polyhedra_Library;
 #define NOISY 0
 #endif
 
-// This is a non-bounded closed polyhedron consisting of the line x = y.
-// The bounding box is the xy plane - the universal polyhedron.
-static void
-test0() {
-  Variable x(0);
-  Variable y(1);
-  C_Polyhedron ph(2);
-  ph.add_constraint(x - y >= 0);
-
-  BoundingBox pbox(2);
-  ph.shrink_bounding_box(pbox, POLYNOMIAL);
-
-  BoundingBox nbox(2);
-  ph.shrink_bounding_box(nbox);
-
-  C_Polyhedron known_nph(nbox, From_Bounding_Box());
-  C_Polyhedron known_pph(pbox, From_Bounding_Box());
-
-  known_nph.intersection_assign_and_minimize(ph);
-  known_pph.intersection_assign_and_minimize(ph);
-
-#if NOISY
-  print_generators(ph, "*** test0 ph ***");
-  print_generators(known_pph, "*** test0 known_pph ***");
-  print_generators(known_nph, "*** test0 known_nph ***");
-#endif
-
-  if (ph != known_nph || ph != known_pph)
-    exit(1);
-}
-
-// This is a non-bounded closed polyhedron consisting of the +ve quadrant.
+// The box is the xy plane.
 static void
 test1() {
-  Variable x(0);
-  Variable y(1);
+  BoundingBox box(2);
 
-  C_Polyhedron ph(2);
-  ph.add_constraint(x >= y);
-  ph.add_constraint(y >= 0);
+  C_Polyhedron ph(box, From_Bounding_Box());
 
-  BoundingBox pbox(2);
-  ph.shrink_bounding_box(pbox, POLYNOMIAL);
-
-  BoundingBox nbox(2);
-  ph.shrink_bounding_box(nbox);
-
-  C_Polyhedron known_pph(pbox, From_Bounding_Box());
-  C_Polyhedron known_nph(nbox, From_Bounding_Box());
-
-  known_pph.intersection_assign_and_minimize(ph);
-  known_nph.intersection_assign_and_minimize(ph);
+  C_Polyhedron known_ph(box.space_dimension());
 
 #if NOISY
   print_generators(ph, "*** test1 ph ***");
-  print_generators(known_pph, "*** test1 known_pph ***");
-  print_generators(known_nph, "*** test1 known_nph ***");
+  print_generators(known_ph, "*** test1 known_ph ***");
 #endif
 
-  if (ph != known_pph || ph != known_nph)
+  if (ph != known_ph)
     exit(1);
 }
 
-// This is a bounded closed polyhedron.
+// This box is the closed +ve quadrant.
 static void
 test2() {
+  BoundingBox box(2);
+  box.raise_lower_bound(0, true, 0, 1);
+  box.raise_lower_bound(1, true, 0, 1);
+
+  C_Polyhedron ph(box, From_Bounding_Box());
+
   Variable x(0);
   Variable y(1);
 
-  C_Polyhedron ph(2);
-  ph.add_constraint(3 * x +y >= 2);
-  ph.add_constraint(x <= 4);
-  ph.add_constraint(y <= 4);
-
-  BoundingBox pbox(2);
-  ph.shrink_bounding_box(pbox, POLYNOMIAL);
-
-  BoundingBox nbox(2);
-  ph.shrink_bounding_box(nbox);
-
-  C_Polyhedron known_pph(pbox, From_Bounding_Box());
-  known_pph.intersection_assign_and_minimize(ph);
-
-  C_Polyhedron known_nph(nbox, From_Bounding_Box());
-  known_nph.intersection_assign_and_minimize(ph);
+  C_Polyhedron known_ph(box.space_dimension());
+  known_ph.add_constraint(x >= 0);
+  known_ph.add_constraint(y >= 0);
 
 #if NOISY
   print_generators(ph, "*** test2 ph ***");
-  print_generators(known_pph, "*** test2 known_pph ***");
-  print_generators(known_nph, "*** test2 known_nph ***");
+  print_generators(known_ph, "*** test2 known_ph ***");
 #endif
 
-  if (ph != known_pph || ph != known_nph)
+  if (ph != known_ph)
     exit(1);
 }
 
-// This is a unbounded closed polyhedron in 4D but bounded in 2D.
+// A bounded box in 2D.
 static void
 test3() {
-  Variable x(1);
-  Variable y(2);
-  Variable z(3);
+  BoundingBox box(2);
+  box.raise_lower_bound(0, true, -2, 3);
+  box.lower_upper_bound(0, true, 4, 1);
+  box.raise_lower_bound(1, true, -10, 1);
+  box.lower_upper_bound(1, true, 12, 3);
 
-  C_Polyhedron ph(4);
-  ph.add_constraint(3 * x + y >= 2);
-  ph.add_constraint(x <= 4);
-  ph.add_constraint(y <= 4);
-  ph.add_constraint(z >= 5);
+  C_Polyhedron ph(box, From_Bounding_Box());
+  
+  Variable x(0);
+  Variable y(1);
 
-  BoundingBox pbox(4);
-  ph.shrink_bounding_box(pbox, POLYNOMIAL);
-
-  BoundingBox nbox(4);
-  ph.shrink_bounding_box(nbox);
-
-  C_Polyhedron known_pph(pbox, From_Bounding_Box());
-  known_pph.intersection_assign_and_minimize(ph);
-
-  C_Polyhedron known_nph(nbox, From_Bounding_Box());
-  known_nph.intersection_assign_and_minimize(ph);
+  C_Polyhedron known_ph(box.space_dimension());
+  known_ph.add_constraint(3*x >= -2);
+  known_ph.add_constraint(x <= 4);
+  known_ph.add_constraint(y <= 4);
+  known_ph.add_constraint(y >= -10);
 
 #if NOISY
   print_generators(ph, "*** test3 ph ***");
-  print_generators(known_pph, "*** test3 known_pph ***");
-  print_generators(known_nph, "*** test3 known_nph ***");
+  print_generators(known_ph, "*** test3 known_ph ***");
 #endif
 
-  if (ph != known_pph || ph != known_nph)
+  if (ph != known_ph)
     exit(1);
 }
 
-// This is a universal, 2-dimensional closed polyhedron.
+// This is a unbounded closed box in 4D but bounded in 2D.
 static void
 test4() {
-  C_Polyhedron ph(2);
+  BoundingBox box(4);
+  box.raise_lower_bound(1, true, -2, 3);
+  box.lower_upper_bound(1, true, 4, 1);
+  box.raise_lower_bound(2, true, -10, 1);
+  box.lower_upper_bound(2, true, 12, 3);
+  box.raise_lower_bound(3, true, 15, 3);
 
-  BoundingBox pbox(2);
-  ph.shrink_bounding_box(pbox, POLYNOMIAL);
-
-  BoundingBox nbox(2);
-  ph.shrink_bounding_box(nbox);
-
-  C_Polyhedron known_pph(pbox, From_Bounding_Box());
-  known_pph.intersection_assign_and_minimize(ph);
-
-  C_Polyhedron known_nph(nbox, From_Bounding_Box());
-  known_nph.intersection_assign_and_minimize(ph);
-
-#if NOISY
-  print_generators(ph, "*** test4 ph ***");
-  print_generators(known_pph, "*** test4 known_pph ***");
-  print_generators(known_nph, "*** test4 known_nph ***");
-#endif
-
-  if (ph != known_pph || ph != known_nph)
-    exit(1);
-}
-
-// This is an zero-dimensional closed polyhedron.
-static void
-test5() {
-  C_Polyhedron ph;
-
-  BoundingBox pbox(0);
-  ph.shrink_bounding_box(pbox, POLYNOMIAL);
-
-  BoundingBox nbox(0);
-  ph.shrink_bounding_box(nbox);
-
-  C_Polyhedron known_pph(pbox, From_Bounding_Box());
-  C_Polyhedron known_nph(nbox, From_Bounding_Box());
-
-#if NOISY
-  print_generators(ph, "*** test5 ph ***");
-  print_generators(known_pph, "*** test5 known_pph ***");
-  print_generators(known_nph, "*** test5 known_nph ***");
-#endif
-
-   if (ph != known_pph || ph != known_nph)
-     exit(1);
-}
-
-// This is an empty closed polyhedron.
-static void
-test6() {
-  C_Polyhedron ph(2, C_Polyhedron::EMPTY);
-
-  BoundingBox pbox(2);
-  ph.shrink_bounding_box(pbox, POLYNOMIAL);
-
-  BoundingBox nbox(2);
-  ph.shrink_bounding_box(nbox);
-
-  C_Polyhedron known_pph(pbox, From_Bounding_Box());
-  C_Polyhedron known_nph(nbox, From_Bounding_Box());
-
-#if NOISY
-  print_constraints(ph, "*** test6 ph ***");
-  print_generators(known_pph, "*** test6 known_pph ***");
-  print_generators(known_nph, "*** test6 known_nph ***");
-#endif
-
-  if (ph != known_pph || ph != known_nph)
-    exit(1);
-}
-
-// This is a bounded closed polyhedron that is a single point.
-static void
-test7() {
-  Variable x(0);
-  Variable y(1);
-
-  C_Polyhedron ph(2);
-  ph.add_constraint(x == 2);
-  ph.add_constraint(y == 4);
-
-  BoundingBox pbox(2);
-  ph.shrink_bounding_box(pbox, POLYNOMIAL);
-
-  BoundingBox nbox(2);
-  ph.shrink_bounding_box(nbox);
-
-  C_Polyhedron known_pph(pbox, From_Bounding_Box());
-  C_Polyhedron known_nph(nbox, From_Bounding_Box());
-
-#if NOISY
-  print_generators(ph, "*** test7 ph ***");
-  print_generators(known_pph, "*** test7 known_pph ***");
-  print_generators(known_nph, "*** test7 known_nph ***");
-#endif
-
-  if (ph != known_pph || ph != known_nph)
-    exit(1);
-}
-
-// This is a unit square closed polyhedron.
-static void
-test8() {
-  Variable x(0);
-  Variable y(1);
-
-  ConSys cs;
-  cs.insert(x >= 0);
-  cs.insert(x <= 1);
-  cs.insert(y >= 0);
-  cs.insert(y <= 1);
-
-  C_Polyhedron ph(cs);
-
-  BoundingBox pbox(2);
-  ph.shrink_bounding_box(pbox, POLYNOMIAL);
-
-  BoundingBox nbox(2);
-  ph.shrink_bounding_box(nbox);
-
-  C_Polyhedron known_pph(pbox, From_Bounding_Box());
-  C_Polyhedron known_nph(nbox, From_Bounding_Box());
-
-#if NOISY
-  print_generators(ph, "*** test8 ph generators ***");
-  print_generators(known_pph, "*** test8 known_pph ***");
-  print_generators(known_nph, "*** test8 known_nph ***");
-#endif
-
-  if (ph != known_pph || ph != known_nph)
-    exit(1);
-}
-
-// This is a unbounded closed polyhedron in 4D but bounded in 2D.
-static void
-test9() {
+  C_Polyhedron ph(box, From_Bounding_Box());
+  
   Variable x(1);
   Variable y(2);
   Variable z(3);
 
-  C_Polyhedron ph(4);
-  ph.add_constraint(3 * x +y >= 2);
-  ph.add_constraint(x <= 4);
-  ph.add_constraint(y <= 4);
-  ph.add_constraint(z >= 5);
-
-  BoundingBox pbox(4);
-  ph.shrink_bounding_box(pbox, POLYNOMIAL);
-
-  BoundingBox nbox(4);
-  ph.shrink_bounding_box(nbox);
-
-  C_Polyhedron known_pph(pbox, From_Bounding_Box());
-  C_Polyhedron known_nph(nbox, From_Bounding_Box());
-
-  known_pph.intersection_assign_and_minimize(ph);
-  known_nph.intersection_assign_and_minimize(ph);
+  C_Polyhedron known_ph(box.space_dimension());
+  known_ph.add_constraint(3*x >= -2);
+  known_ph.add_constraint(x <= 4);
+  known_ph.add_constraint(y <= 4);
+  known_ph.add_constraint(y >= -10);
+  known_ph.add_constraint(z >= 5);
 
 #if NOISY
-  print_generators(ph, "*** test9 ph ***");
-  print_generators(known_pph, "*** test9 known_pph ***");
-  print_generators(known_nph, "*** test9 known_nph ***");
+  print_generators(ph, "*** test4 ph ***");
+  print_generators(known_ph, "*** test4 known_ph ***");
 #endif
 
-  if (ph != known_pph || ph != known_nph)
+  if (ph != known_ph)
+    exit(1);
+}
+
+// This is a zero-dimensional box.
+static void
+test5() {
+  BoundingBox box(0);
+
+  C_Polyhedron ph(box, From_Bounding_Box());
+
+  C_Polyhedron known_ph;
+
+#if NOISY
+  print_generators(ph, "*** test5 ph ***");
+  print_generators(known_ph, "*** test5 known_ph ***");
+#endif
+
+   if (ph != known_ph)
+     exit(1);
+}
+
+// This is an empty closed box in 2D.
+static void
+test6() {
+  BoundingBox box(2);
+  box.set_empty();
+
+  C_Polyhedron ph(box, From_Bounding_Box());
+
+#if NOISY
+  print_constraints(ph, "*** test6 ph ***");
+#endif
+
+  C_Polyhedron known_ph(2, C_Polyhedron::EMPTY);
+
+#if NOISY
+  print_constraints(known_ph, "*** test6 known_ph ***");
+#endif
+
+  if (ph != known_ph)
+    exit(1);
+}
+
+// This box is a single point.
+static void
+test7() {
+  BoundingBox box(2);
+  box.raise_lower_bound(0, true, 2, 1);
+  box.lower_upper_bound(0, true, 2, 1);
+  box.raise_lower_bound(1, true, 4, 1);
+  box.lower_upper_bound(1, true, 4, 1);
+
+  C_Polyhedron ph(box, From_Bounding_Box());
+
+  Variable x(0);
+  Variable y(1);
+
+  C_Polyhedron known_ph(box.space_dimension());
+  known_ph.add_constraint(x == 2);
+  known_ph.add_constraint(y == 4);
+
+#if NOISY
+  print_generators(ph, "*** test7 ph ***");
+  print_generators(known_ph, "*** test7 known_ph ***");
+#endif
+
+  if (ph != known_ph)
+    exit(1);
+}
+
+// This box is a closed unit square.
+static void
+test8() {
+  BoundingBox box(2);
+  box.raise_lower_bound(0, true, 0, 1);
+  box.lower_upper_bound(0, true, 1, 1);
+  box.raise_lower_bound(1, true, 0, 1);
+  box.lower_upper_bound(1, true, 1, 1);
+
+  C_Polyhedron ph(box, From_Bounding_Box());
+
+  Variable x(0);
+  Variable y(1);
+
+  ConSys known_cs;
+  known_cs.insert(x >= 0);
+  known_cs.insert(x <= 1);
+  known_cs.insert(y >= 0);
+  known_cs.insert(y <= 1);
+
+  C_Polyhedron known_ph(known_cs);
+
+#if NOISY
+  print_generators(ph, "*** test8 ph generators ***");
+  print_generators(known_ph, "*** test8 known_ph ***");
+#endif
+
+  if (ph != known_ph)
     exit(1);
 }
 
 // Constructs the polyhedron { x >= 0, x <= 1/2, y >= 0 }
 // from the corresponding box.
 static void
-test10() {
+test9() {
   BoundingBox box(2);
 
   box.raise_lower_bound(0, true, 0, 1);
@@ -346,19 +245,19 @@ test10() {
   C_Polyhedron ph(box, From_Bounding_Box());
 
 #if NOISY
-  print_generators(ph, "*** test12 ph ***");
+  print_generators(ph, "*** test9 ph ***");
 #endif
 
   Variable x(0);
   Variable y(1);
 
-  C_Polyhedron known_ph(2);
+  C_Polyhedron known_ph(box.space_dimension());
   known_ph.add_constraint(x >= 0);
   known_ph.add_constraint(2*x <= 1);
   known_ph.add_constraint(y >= 0);
 
 #if NOISY
-  print_generators(known_ph, "*** test12 known_ph ***");
+  print_generators(known_ph, "*** test9 known_ph ***");
 #endif
 
   if (ph != known_ph)
@@ -369,7 +268,6 @@ int
 main() TRY {
   set_handlers();
 
-  test0();
   test1();
   test2();
   test3();
@@ -379,7 +277,6 @@ main() TRY {
   test7();
   test8();
   test9();
-  test10();
 
   return 0;
 }
