@@ -877,7 +877,7 @@ PPL::Polyhedron::BHRZ03_evolving_points(const Polyhedron& y,
 
   // Be non-intrusive.
   Polyhedron result = x;
-  result.add_generators_and_minimize(candidate_rays);
+  result.add_recycled_generators_and_minimize(candidate_rays);
   result.intersection_assign_and_minimize(H79);
 
   // Check for stabilization wrt `y' and improvement over `H79'.
@@ -964,7 +964,7 @@ PPL::Polyhedron::BHRZ03_evolving_rays(const Polyhedron& y,
   // Be non-intrusive.
   Polyhedron result = x;
   // Add to `result' the rays in `candidate_rays'
-  result.add_generators_and_minimize(candidate_rays);
+  result.add_recycled_generators_and_minimize(candidate_rays);
   // Intersect with `H79'.
   result.intersection_assign_and_minimize(H79);
 

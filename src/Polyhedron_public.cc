@@ -1226,12 +1226,12 @@ void
 PPL::Polyhedron::add_recycled_generators(GenSys& gs) {
   // Topology compatibility check.
   if (is_necessarily_closed() && gs.has_closure_points())
-    throw_topology_incompatible("add_generators(gs)", gs);
+    throw_topology_incompatible("add_recycled_generators(gs)", gs);
   // Dimension-compatibility check:
   // the dimension of `gs' can not be greater than space_dim.
   const dimension_type gs_space_dim = gs.space_dimension();
   if (space_dim < gs_space_dim)
-    throw_dimension_incompatible("add_generators(gs)", "gs", gs);
+    throw_dimension_incompatible("add_recycled_generators(gs)", "gs", gs);
 
   // Adding no generators is a no-op.
   if (gs.num_rows() == 0) {
@@ -1243,7 +1243,7 @@ PPL::Polyhedron::add_recycled_generators(GenSys& gs) {
   // transform it in the zero-dimensional universe polyhedron.
   if (space_dim == 0) {
     if (marked_empty() && !gs.has_points())
-      throw_invalid_generators("add_generators(gs)");
+      throw_invalid_generators("add_recycled_generators(gs)");
     status.set_zero_dim_univ();
     assert(OK(true));
     return;
@@ -1263,7 +1263,7 @@ PPL::Polyhedron::add_recycled_generators(GenSys& gs) {
     // We have just discovered that `*this' is empty.
     // So `gs' must contain at least one point.
     if (!gs.has_points())
-      throw_invalid_generators("add_generators(gs)");
+      throw_invalid_generators("add_recycled_generators(gs)");
     // The polyhedron is no longer empty and generators are up-to-date.
     std::swap(gen_sys, gs);
     if (gen_sys.num_pending_rows() > 0) {
@@ -1326,12 +1326,14 @@ bool
 PPL::Polyhedron::add_recycled_generators_and_minimize(GenSys& gs) {
   // Topology compatibility check.
   if (is_necessarily_closed() && gs.has_closure_points())
-    throw_topology_incompatible("add_generators_and_minimize(gs)", gs);
+    throw_topology_incompatible("add_recycled_generators_and_minimize(gs)",
+				gs);
   // Dimension-compatibility check:
   // the dimension of `gs' can not be greater than space_dim.
   const dimension_type gs_space_dim = gs.space_dimension();
   if (space_dim < gs_space_dim)
-    throw_dimension_incompatible("add_generators_and_minimize(gs)", "gs", gs);
+    throw_dimension_incompatible("add_recycled_generators_and_minimize(gs)",
+				 "gs", gs);
 
   // Adding no generators is equivalent to just requiring minimization.
   if (gs.num_rows() == 0) {
@@ -1343,7 +1345,7 @@ PPL::Polyhedron::add_recycled_generators_and_minimize(GenSys& gs) {
   // transform it in the zero-dimensional universe polyhedron.
   if (space_dim == 0) {
     if (marked_empty() && !gs.has_points())
-      throw_invalid_generators("add_generators_and_minimize(gs)");
+      throw_invalid_generators("add_recycled_generators_and_minimize(gs)");
     status.set_zero_dim_univ();
     assert(OK(true));
     return true;
@@ -1381,7 +1383,7 @@ PPL::Polyhedron::add_recycled_generators_and_minimize(GenSys& gs) {
   else {
     // The polyhedron was empty: check if `gs' contains a point.
     if (!gs.has_points())
-      throw_invalid_generators("add_generators_and_minimize(gs)");
+      throw_invalid_generators("add_recycled_generators_and_minimize(gs)");
     // `gs' has a point: the polyhedron is no longer empty
     // and generators are up-to-date.
     std::swap(gen_sys, gs);
@@ -1953,9 +1955,10 @@ PPL::Polyhedron::generalized_affine_image(const Variable var,
       assert(!is_necessarily_closed());
       // While adding the ray, we minimize the generators
       // in order to avoid adding too many redundant generators later.
+      // FIXME: why not using add_generator_and_minimize() here?
       GenSys gs;
       gs.insert(ray(relsym == GREATER_THAN ? var : -var));
-      add_generators_and_minimize(gs);
+      add_recycled_generators_and_minimize(gs);
       // We split each point of the generator system into two generators:
       // a closure point, having the same coordinates of the given point,
       // and another point, having the same coordinates for all but the
@@ -2069,7 +2072,7 @@ PPL::Polyhedron::generalized_affine_image(const LinExpression& lhs,
 
     // Cylindrificate on all the variables occurring in the left hand side
     // (we force minimization because we will need the constraints).
-    add_generators_and_minimize(new_lines);
+    add_recycled_generators_and_minimize(new_lines);
 
     // Constrain the new dimension so that it is related to
     // the left hand side as dictated by `relsym'
@@ -2104,7 +2107,7 @@ PPL::Polyhedron::generalized_affine_image(const LinExpression& lhs,
 
     // Cylindrificate on all the variables occurring in the left hand side
     // (we force minimization because we will need the constraints).
-    add_generators_and_minimize(new_lines);
+    add_recycled_generators_and_minimize(new_lines);
 
     // Constrain the left hand side expression so that it is related to
     // the right hand side expression as dictated by `relsym'.
