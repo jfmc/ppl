@@ -1,12 +1,9 @@
 :- ensure_loaded(ppl_sicstus).
 ?- use_module(library(clpq)).
-?- use_module(library(lists)).
 
 solve(Goal):-
-    call_residue(Goal,CCs),
-    numbervars((Goal,CCs),0,_),
-    length(CCs,L),
-    ppl_new_polyhedron(P, L),
+    numbervars(Goal,0,M),
+    ppl_new_polyhedron(P, M),
     solve(Goal,P),
     check_constraints(P).
 
