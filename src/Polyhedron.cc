@@ -758,6 +758,7 @@ PPL::Polyhedron::strongly_minimize_constraints() const {
   // These flags are maintained to later decide
   // if we have to add back the eps_leq_one constraint
   // and whether or not the constraint system is changed.
+  SatRow eps_leq_one_saturators;
   bool topologically_closed = true;
   bool strict_inequals_saturate_all_rays = true;
   bool eps_leq_one_removed = false;
@@ -791,9 +792,12 @@ PPL::Polyhedron::strongly_minimize_constraints() const {
 	    all_zeros = false;
 	    break;
 	  }
-	if (all_zeros && (c[0] + c[eps_index] == 0))
+	if (all_zeros && (c[0] + c[eps_index] == 0)) {
 	  // We removed the eps_leq_one constraint.
 	  eps_leq_one_removed = true;
+	  // Remembering it to eventually restore it later.
+	  eps_leq_one_saturators = sat[cs_rows];
+	}
 	else
 	  // We removed another constraint.
 	  changed = true;
@@ -846,13 +850,22 @@ PPL::Polyhedron::strongly_minimize_constraints() const {
     eps_leq_one[eps_index] = -1;
     for (size_t k = eps_index; k-- > 1; )
       eps_leq_one[k] = 0;
+    // If this is the only change performed to the constraint system,
+    // maybe we can keep things consistent.
+    if (!changed) {
+      if (eps_leq_one_removed) {
+	// The constraint system is no longer sorted.
+	cs.set_sorted(false);
+	// Restore the corresponding saturation row.
+	sat[cs_rows] = eps_leq_one_saturators;
+	// `sat_c' is no longer up-to-date.
+	x.clear_sat_c_up_to_date();
+      }
+      else
+	changed = true;
+    }
+    // Bump number of rows.
     cs_rows++;
-    // The constraint system is no longer sorted.
-    cs.set_sorted(false);
-    // If we had not previously removed the eps_leq_one constraint,
-    // then the polyhedron is changed.
-    if (!eps_leq_one_removed)
-      changed = true;
   }
   else
     // The eps_leq_one constraint is not needed:
@@ -861,11 +874,10 @@ PPL::Polyhedron::strongly_minimize_constraints() const {
     if (eps_leq_one_removed)
       changed = true;
 
-  // Erase the eps-redundant constraints, if there are any.
-  if (cs_rows < cs.num_rows())
-    cs.erase_to_end(cs_rows);
-
   if (changed) {
+    // Erase the eps-redundant constraints, if there are any.
+    if (cs_rows < cs.num_rows())
+      cs.erase_to_end(cs_rows);
     // The constraint system is no longer sorted.
     cs.set_sorted(false);
     // The generator system is no longer up-to-date.
