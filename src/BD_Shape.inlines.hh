@@ -2651,8 +2651,8 @@ BD_Shape<T>::affine_image(const Variable var,
 template <typename T>
 inline void
 BD_Shape<T>::affine_preimage(const Variable var,
-			   const Linear_Expression& expr,
-			   const Coefficient& denominator) {
+			     const Linear_Expression& expr,
+			     const Coefficient& denominator) {
 
   // The denominator cannot be zero.
   if (denominator == 0)
@@ -2682,12 +2682,10 @@ BD_Shape<T>::affine_preimage(const Variable var,
   // Number of non-zero components of `expr'.
   dimension_type t = 0;
 
-  // Value of inhomogeneous term of `expr' in the case `expr' is a
-  // unary.
+  // Value of the coefficient of `var' in `expr'.
   Coefficient coeff;
 
   // Compute the number of the non-zero components of `expr'.
-  // The `expr' must not be in two or plus variables.
   for (dimension_type i = expr_space_dim; i-- > 0; )
     if (expr.coefficient(Variable(i)) != 0) {
       if (t++ >= 1)
@@ -2701,8 +2699,9 @@ BD_Shape<T>::affine_preimage(const Variable var,
   // Now we have got a form of `expr':
   // if t == 0, expr = n, with n integer.
   // if t == 1, expr = a*z + n, where z can be `var' or another variable.
-  // Attention: in the second case the coefficient of variable must
-  // equal to denominator.
+  // In the second case the coefficient of `var'is equal to denominator
+  // or -denominator.
+  // If t > 1, `expr' is general.
   Coefficient b = expr.inhomogeneous_term();
   DB_Row<T>& dbm_nv = dbm[num_var];
   if (t == 0) {
