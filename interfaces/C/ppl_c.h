@@ -296,7 +296,7 @@ enum ppl_enum_Constraint_Type {
   PPL_CONSTRAINT_TYPE_EQUAL,
   /*! The constraint is of the form \f$e \geq 0\f$. */
   PPL_CONSTRAINT_TYPE_GREATER_THAN_OR_EQUAL,
-  /*! The constraint is of the form \f$e < 0\f$. */
+  /*! The constraint is of the form \f$e > 0\f$. */
   PPL_CONSTRAINT_TYPE_GREATER_THAN,
   /*! The constraint is of the form \f$e \leq 0\f$. */
   PPL_CONSTRAINT_TYPE_LESS_THAN_OR_EQUAL,
