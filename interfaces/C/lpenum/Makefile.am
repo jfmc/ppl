@@ -26,7 +26,11 @@ VPATH = @srcdir@
 
 @SET_MAKE@
 
-SUBDIRS =
+MPS_FILES = afiro.mps  bgprtr.mps  sample.mps
+
+EXTRA_DIST = lpenum.c $(MPS_FILES)
+
+if HAVE_GLPK
 
 AM_CPPFLAGS = -I$(top_srcdir)/interfaces/C @extra_includes@
 
@@ -38,6 +42,4 @@ lpenum_LDADD = \
 -L$(top_builddir)/src/ -lppl \
 @extra_libraries@
 
-MPS_FILES = afiro.mps  bgprtr.mps  sample.mps
-
-EXTRA_DIST = $(MPS_FILES)
+endif

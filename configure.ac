@@ -377,9 +377,14 @@ AC_CHECK_HEADER(Yap/c_interface.h,
 fi
 AM_CONDITIONAL(HAVE_YAP_PROLOG, test x$YAP_PROLOG = xyap)
 
+# Check for the GLPK library
+
+AC_CHECK_HEADER(glpk.h, HAVE_GLPK_H=yes)
+AM_CONDITIONAL(HAVE_GLPK, test x$HAVE_GLPK_H = xyes)
+
 # Checks for header files.
-AC_CHECK_HEADER(glpk.h,
-                extra_if_C_subdirs="${extra_if_C_subdirs} lpenum")
+
+AC_CHECK_HEADERS([sys/resource.h])
 
 # Checks for typedefs, structures, and compiler characteristics.
 # Nothing for the time being.
@@ -393,7 +398,6 @@ AC_SUBST(extra_includes)
 AC_SUBST(extra_libraries)
 AC_SUBST(extra_cpp_flags)
 AC_SUBST(debug_flag)
-AC_SUBST(extra_if_C_subdirs)
 
 AC_OUTPUT(Makefile
           ppl.lsm ppl.spec
@@ -414,7 +418,7 @@ AC_OUTPUT(Makefile
 
 if test x"$gmp_supports_exceptions" = xno
 then
-  AC_MSG_WARN([CANNOT PROPAGATE EXCEPTIONS BACK FROM GMP:
+  AC_MSG_WARN([*** CANNOT PROPAGATE EXCEPTIONS BACK FROM GMP:
 *** MEMORY EXHAUSTION MAY RESULT IN ABRUPT TERMINATION.
 *** If you are using g++, make sure you use version 4.0.1 or higher
 *** and use a version of GMP compiled with the option -fexceptions.
