@@ -192,6 +192,7 @@ PPL_INTERNAL:
   //! Returns the capacity of the row (only available during debugging).
   size_t capacity() const;
 #endif
+
 };
 
 namespace Parma_Polyhedra_Library {
@@ -200,6 +201,12 @@ namespace Parma_Polyhedra_Library {
   //! Computes the scalar product between \p x and \p y.
 #endif // PPL_DOXYGEN_INCLUDE_IMPLEMENTATION_DETAILS
   const Integer& operator*(const Row& x, const Row& y);
+
+#ifdef PPL_DOXYGEN_INCLUDE_IMPLEMENTATION_DETAILS
+  //! Computes the \e reduced scalar product between \p x and \p y,
+  //! where the \f$\epsilon\f$ coefficient of \p x is ignored.
+#endif // PPL_DOXYGEN_INCLUDE_IMPLEMENTATION_DETAILS
+  const Integer& operator^(const Row& x, const Row& y);
 
 #ifdef PPL_DOXYGEN_INCLUDE_IMPLEMENTATION_DETAILS
   //! The basic comparison function.
