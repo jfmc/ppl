@@ -897,7 +897,7 @@ ppl_new_Polyhedron_from_bounding_box(Prolog_term_ref t_tp,
             if (Prolog_is_atom(t_llimit)) {
               Prolog_atom inf;
 	      Prolog_get_atom_name(t_llimit, inf);
-              if (inf != a_minf || (inf = a_minf && funct_l != a_o))
+              if (inf != a_minf || (inf == a_minf && funct_l != a_o))
                 box_ok = false;
 	    }
             else {
@@ -936,7 +936,7 @@ ppl_new_Polyhedron_from_bounding_box(Prolog_term_ref t_tp,
             if (Prolog_is_atom(t_ulimit)) {
               Prolog_atom inf;
 	      Prolog_get_atom_name(t_ulimit, inf);
-              if (inf != a_pinf || (inf = a_pinf && funct_u != a_o))
+              if (inf != a_pinf || (inf == a_pinf && funct_u != a_o))
                 box_ok = false;
 	    }
             else {
