@@ -53,26 +53,30 @@ bool operator==(const Determinate<PH>& x, const Determinate<PH>& y);
 /*!
   \relates Determinate\<PH\>
   \exception std::invalid_argument thrown if \p x and \p y
-  are topology-incompatible
-  or dimension-incompatible.
+                                          are topology-incompatible
+                                          or dimension-incompatible.
 */
 template <typename PH>
 bool operator!=(const Determinate<PH>& x, const Determinate<PH>& y);
 
+/*! \relates Determinate\<PH\> */
 template <typename PH>
 bool
 lcompare(const Determinate<PH>& x, const Determinate<PH>& y);
 
+/*! \relates Determinate\<PH\> */
 template <typename PH>
 Determinate<PH>
 operator+(const Determinate<PH>& x, const Determinate<PH>& y);
 
+/*! \relates Determinate\<PH\> */
 template <typename PH>
 Determinate<PH>
 operator*(const Determinate<PH>& x, const Determinate<PH>& y);
 
 namespace IO_Operators {
 
+/*! \relates Parma_Polyhedra_Library::Determinate\<PH\> */
 template <typename PH>
 std::ostream&
 operator<<(std::ostream&, const Determinate<PH>&);
