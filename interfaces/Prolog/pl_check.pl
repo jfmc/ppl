@@ -31,13 +31,12 @@ site: http://www.cs.unipr.it/ppl/ . */
 
 :- dynamic(noisy/1).
 
-noisy(0).
-
 % check_all
 % This executes all the test predicates which, together, check all
 % the ppl interface predicates.
 
 check_all :-
+   make_quiet,
    run_all.
 
 run_all:-
@@ -1770,10 +1769,11 @@ make_var_list(I,Dim,['$VAR'(I)|VarList]):-
   make_var_list(I1,Dim,VarList).
 
 make_noisy :-
-  retractall(noisy(_)),
+  (retract(noisy(_)) ; true),
+  !,
   assertz(noisy(1)).
 
 make_quiet :-
-  retractall(noisy(_)),
+  (retract(noisy(_)) ; true),
+  !,
   assertz(noisy(0)).
-
