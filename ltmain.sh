@@ -56,7 +56,7 @@ modename="$progname"
 PROGRAM=ltmain.sh
 PACKAGE=libtool
 VERSION=1.4e
-TIMESTAMP=" (1.1135 2002/10/11 15:52:07)"
+TIMESTAMP=" (1.1147 2002/10/25 03:28:42)"
 
 default_mode=
 help="Try \`$progname --help' for more information."
@@ -269,7 +269,7 @@ if test -z "$show_help"; then
   # Infer the operation mode.
   if test -z "$mode"; then
     case $nonopt in
-    *cc | *++ | gcc* | *-gcc*)
+    *cc | cc* | *++ | gcc* | *-gcc* | g++* | xlc*)
       mode=link
       for arg
       do
@@ -2120,7 +2120,7 @@ EOF
 	    elif test -n "$soname_spec"; then
 	      # bleh windows
 	      case $host in
-	      *cygwin*)
+	      *cygwin* | mingw*)
 		major=`expr $current - $age`
 		versuffix="-$major"
 		;;
@@ -2658,7 +2658,7 @@ EOF
 	  ;;
 
 	irix | nonstopux)
-	  major=`expr $current - $age + 1`
+	  major=`expr $current - $age`
 
 	  case $version_type in
 	    nonstopux) verstring_prefix=nonstopux ;;
@@ -4475,7 +4475,7 @@ fi\
 	  # place dlname in correct position for cygwin
 	  tdlname=$dlname
 	  case $host,$output,$installed,$module,$dlname in
-	    *cygwin*,*lai,yes,no,*.dll) tdlname=../bin/$dlname ;;
+	    *cygwin*,*lai,yes,no,*.dll | *mingw*,*lai,yes,no,*.dll) tdlname=../bin/$dlname ;;
 	  esac
 	  $echo > $output "\
 # $outputname - a libtool library file
