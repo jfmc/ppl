@@ -3707,7 +3707,7 @@ PPL::Polyhedron::is_BHRZ03_stabilizing(const Polyhedron& x,
   dimension_type y_dimension =
     y.space_dimension() - y.con_sys.num_equalities();
   if (x_dimension > y_dimension) {
-#if 0 //#ifndef NDEBUG
+#if 0
     std::cout << "BHRZ03_stabilizing: number of dimensions" << std::endl;
 #endif
 #if PPL_STATISTICS
@@ -3727,7 +3727,7 @@ PPL::Polyhedron::is_BHRZ03_stabilizing(const Polyhedron& x,
   dimension_type x_num_lines = x.gen_sys.num_lines();
   dimension_type y_num_lines = y.gen_sys.num_lines();
   if (x_num_lines > y_num_lines) {
-#if 0 //#ifndef NDEBUG
+#if 0
     std::cout << "BHRZ03_stabilizing: lineality space" << std::endl;
 #endif
 #if PPL_STATISTICS
@@ -3747,7 +3747,7 @@ PPL::Polyhedron::is_BHRZ03_stabilizing(const Polyhedron& x,
   dimension_type x_con_sys_num_rows = x.con_sys.num_rows();
   dimension_type y_con_sys_num_rows = y.con_sys.num_rows();
   if (x_con_sys_num_rows < y_con_sys_num_rows) {
-#if 0 //#ifndef NDEBUG
+#if 0
     std::cout << "BHRZ03_stabilizing: number of constraints" << std::endl;
 #endif
 #if PPL_STATISTICS
@@ -3767,7 +3767,7 @@ PPL::Polyhedron::is_BHRZ03_stabilizing(const Polyhedron& x,
 	   y_cs_end = y.con_sys.end(); i != y_cs_end; ++i)
       y_con_sys_num_rows++;
     if (x_con_sys_num_rows < y_con_sys_num_rows) {
-#if 0 //#ifndef NDEBUG
+#if 0
     std::cout << "BHRZ03_stabilizing: number of constraints" << std::endl;
 #endif
 #if PPL_STATISTICS
@@ -3791,7 +3791,7 @@ PPL::Polyhedron::is_BHRZ03_stabilizing(const Polyhedron& x,
     dimension_type y_num_points = y_gen_sys_num_rows
       - y_num_lines - y.gen_sys.num_rays();
     if (x_num_points < y_num_points) {
-#if 0 //#ifndef NDEBUG
+#if 0
       std::cout << "BHRZ03_stabilizing: number of points" << std::endl;
 #endif
 #if PPL_STATISTICS
@@ -3818,7 +3818,7 @@ PPL::Polyhedron::is_BHRZ03_stabilizing(const Polyhedron& x,
     // If the number of closure points of `x' is smaller than
     // the number of closure points of `y', the chain is stabilizing.
     if (x_num_closure_points < y_num_closure_points) {
-#if 0 //#ifndef NDEBUG
+#if 0
       std::cout << "BHRZ03_stabilizing: number of closure points"
 		<< std::endl;
 #endif
@@ -3870,7 +3870,7 @@ PPL::Polyhedron::is_BHRZ03_stabilizing(const Polyhedron& x,
       // Not stabilizing.
       break;
     if (x_num_rays[i] < y_num_rays[i]) {
-#if 0 //#ifndef NDEBUG
+#if 0
       std::cout << "BHRZ03_stabilizing: zero-coord rays" << std::endl;
 #endif
 #if PPL_STATISTICS
@@ -3882,7 +3882,7 @@ PPL::Polyhedron::is_BHRZ03_stabilizing(const Polyhedron& x,
 
   // Hey, wait a minute! Are they equal?
   if (x == y) {
-#if 0 //#ifndef NDEBUG
+#if 0
     std::cout << "BHRZ03_stabilizing: same polyhedra" << std::endl;
 #endif
 #if PPL_STATISTICS
@@ -4037,7 +4037,7 @@ PPL::Polyhedron::BHRZ03_averaging_constraints(const Polyhedron& y,
 #if PPL_STATISTICS
   statistics->technique.combining_constraints++;
 #endif
-#if 0 //#ifndef NDEBUG
+#if 0
   std::cout << "BHRZ03: averaging_constraints" << std::endl;
 #endif
   std::swap(x, result);
@@ -4174,7 +4174,7 @@ PPL::Polyhedron::BHRZ03_evolving_points(const Polyhedron& y,
 #if PPL_STATISTICS
       statistics->technique.evolving_points++;
 #endif
-#if 0 //#ifndef NDEBUG
+#if 0
   std::cout << "BHRZ03: evolving points" << std::endl;
 #endif
       std::swap(x, result);
@@ -4198,7 +4198,7 @@ PPL::Polyhedron::BHRZ03_evolving_points(const Polyhedron& y,
 #if PPL_STATISTICS
   statistics->technique.evolving_points++;
 #endif
-#if 0 //#ifndef NDEBUG
+#if 0
   std::cout << "BHRZ03: evolving points" << std::endl;
 #endif
   std::swap(x, result);
@@ -4328,7 +4328,7 @@ PPL::Polyhedron::BHRZ03_evolving_rays(const Polyhedron& y,
 #if PPL_STATISTICS
   statistics->technique.evolving_rays++;
 #endif
-#if 0 //#ifndef NDEBUG
+#if 0
   std::cout << "BHRZ03: evolving rays" << std::endl;
 #endif
   std::swap(x, result);
@@ -4445,7 +4445,7 @@ PPL::Polyhedron::BHRZ03_widening_assign(const Polyhedron& y) {
 #if PPL_STATISTICS
   statistics->technique.h79++;
 #endif
-#if 0 //#ifndef NDEBUG
+#if 0
   std::cout << "BHRZ03: H79" << std::endl;
 #endif
   std::swap(x, H79);
