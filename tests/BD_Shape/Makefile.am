@@ -47,6 +47,7 @@ ORIGINAL_TESTS = \
 	affineimage1 affineimage2 affineimage3 affineimage4 affineimage5 \
 	affineimage6 affineimage7 affineimage8 affineimage9 \
 	affinepreimage1 affinepreimage2 affinepreimage3 affinepreimage4 \
+	affinepreimage5 \
 	ascii_dump_load1 ascii_dump_load2 \
 	cc76narrowing1 cc76narrowing2 cc76narrowing3 cc76narrowing4 \
 	cc76narrowing5 \
@@ -117,6 +118,7 @@ affinepreimage1_SOURCES = affinepreimage1.cc
 affinepreimage2_SOURCES = affinepreimage2.cc
 affinepreimage3_SOURCES = affinepreimage3.cc
 affinepreimage4_SOURCES = affinepreimage4.cc
+affinepreimage5_SOURCES = affinepreimage5.cc
 
 ascii_dump_load1_SOURCES = ascii_dump_load1.cc
 ascii_dump_load2_SOURCES = ascii_dump_load2.cc

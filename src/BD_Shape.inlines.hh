@@ -2636,15 +2636,19 @@ BD_Shape<T>::affine_preimage(const Variable var,
   // Number of non-zero components of `expr'.
   dimension_type t = 0;
 
+  // Value of inhomogeneous term of `expr' in the case `expr' is a
+  // unary.
+  Coefficient coeff;
+
   // Compute the number of the non-zero components of `expr'.
   // The `expr' must not be in two or plus variables.
   for (dimension_type i = expr_space_dim; i-- > 0; )
     if (expr.coefficient(Variable(i)) != 0) {
-      if (t >= 1)
-        throw_expression_too_complex("affine_preimage(v, e, d)", expr);
+      if (t++ >= 1)
+	break;
       else {
-	++t;
         j = i;
+	coeff = expr.coefficient(Variable(j));
       }
     }
 
@@ -2669,38 +2673,50 @@ BD_Shape<T>::affine_preimage(const Variable var,
       }
     }
   }
-  else {
+  else if (t == 1 && (coeff == denominator || coeff == -denominator)) {
     // Case 2: expr = a*z + n.
     closure_assign();
     // If `*this' is empty, then its image is empty.
     if (marked_empty())
       return;
     else {
-      Coefficient a = expr.coefficient(Variable(j));
-      if (a != denominator)
-	throw_expression_too_complex("affine_preimage(v, e, d)", expr);
+      // We have got an expression of the following form: var + n.
+      if (j == num_var - 1) 
+	// We recall the affine_image to invert the transformation.
+	affine_image(var, coeff*var - b, denominator);
+      
       else {
-        // We have got an expression of the following form: var + n.
-	if (j == num_var - 1) {
-          // If b = 0, then the image is an identity of `*this'.
-	  if (b == 0)
-	    return;
-	  else
-	    // We recall the affine_image to invert the transformation.
-	    affine_image(var, a*var - b, denominator);
-	}
-	else {
-	  // We have got an expression of the following form:
-	  // var1 + n, with `var1' != `var'.
-	  // We remove all constraints on `var'.
-	  for (dimension_type i = 0; i <= space_dim; ++i) {
-	    dbm_nv[i] = PLUS_INFINITY;
-	    dbm[i][num_var] = PLUS_INFINITY;
-	  }
+	// We have got an expression of the following form:
+	// var1 + n, with `var1' != `var'.
+	// We remove all constraints on `var'.
+	for (dimension_type i = 0; i <= space_dim; ++i) {
+	  dbm_nv[i] = PLUS_INFINITY;
+	  dbm[i][num_var] = PLUS_INFINITY;
 	}
       }
     }
   }
+
+  // General case. We have an expression of the form:
+  // expr = a_1*x_1 + a_2*x_2 + ... + a_n*x_n.
+  else {
+    if (expr.coefficient(Variable(num_var - 1)) != 0) {
+      // The transformation is partially invertible.
+      Coefficient coeff1 = expr.coefficient(Variable(num_var - 1));
+      Linear_Expression expr1(coeff1*var);
+      Linear_Expression expr2(denominator*var);
+      Linear_Expression expr3 = expr1 - expr + expr2;
+      affine_image(var, expr3, coeff1);
+    }
+    else {
+      // The transformation is not invertible: all constraints on `var' are lost.
+      for (dimension_type i = 0; i <= space_dim; ++i) {
+	dbm_nv[i] = PLUS_INFINITY;
+	dbm[i][num_var] = PLUS_INFINITY;
+      }
+    }
+  }
+  
   assert(OK());
 }
 
