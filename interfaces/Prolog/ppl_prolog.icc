@@ -821,6 +821,20 @@ ppl_new_Polyhedron_from_bounding_box(Prolog_term_ref t_tp,
     PPL::BoundingBox bbox(dimension);
     // Set bbox to reflect its Prolog representation.
     // ... catches empty boxes and uses raise_lower and lower_upper ...
+    for (unsigned int i = 0; i != dimension; ++i) {
+      // lower bound
+      Prolog_atom funct_l = a_c;
+      int lnum = 0;
+      unsigned int lden = 1;
+      bool lb = (funct_l == a_c);
+      bbox.raise_lower_bound(i, lb, lnum, lden);
+      // upper bound
+      Prolog_atom funct_u = a_c;
+      int unum = 1;
+      unsigned int uden = 1;
+      bool ub = (funct_u == a_c);
+      bbox.lower_upper_bound(i, ub, unum, uden);
+    }
 
     PPL::Polyhedron* ph;
     Prolog_atom tp = term_to_polyhedron_kind(t_tp);
