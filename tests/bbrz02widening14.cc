@@ -145,8 +145,18 @@ main() {
     std::cout << "*** Result of widening poly-hull with new:" << std::endl;
     std::cout << q_i.generators() << std::endl;
 #endif
-    if (q_i == q_i_minus_1)
-      return 0;
+    if (q_i == q_i_minus_1) {
+      C_Polyhedron known_result(2);
+
+      int retval = (q_i == known_result) ? 0 : 1;
+
+#if NOISY
+      print_constraints(q_i, "*** The constraints of the fix point ***");
+      print_generators(q_i, "*** The generators of the fix point ***");
+#endif
+
+      return retval;
+    }
     q_i_minus_1 = q_i;
   }
   return 1;
