@@ -1,6 +1,12 @@
 
 #include "ppl_install.hh"
+// GNU Prolog 1.2.8 uses the C++ reserved word "template" in gprolog.h.
+// Moreover, it misses the `extern "C"' wrapper.
+#define template templ
+extern "C" {
 #include <gprolog.h>
+}
+#undef template
 #include <cassert>
 
 #define GNU 1
