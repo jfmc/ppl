@@ -212,7 +212,6 @@ revamp_dim :-
    remove_dim,
    remove_high_dim,
    expand_dim,
-%% map_dim fails in Ciao Prolog due to negative tests
    map_dim,
    fold_dims,
    ppl_finalize.
@@ -344,14 +343,12 @@ copy(T1, T2) :-
 
 % Tests ppl_new_Polyhedron_from_constraints/3.
 new_poly_from_cons :-
+  new_poly_from_cons(c, [3 >= '$VAR'(1)]),
   make_vars(4, [A, B, C, D]),
   new_poly_from_cons(c, [3 >= A, 4*A + B - 2*C >= 5, D = 1]),
   new_poly_from_cons(c, [B >= A, 4*A + B - 2*C >= 5, D = 1]),
   new_poly_from_cons(nnc, [3 > A, 4*A + B - 2*C >= 5, D = 1]),
   new_poly_from_cons(nnc, [B > A, 4*A + B - 2*C >= 5, D = 1]).
-%% next test causes exception in Ciao Prolog and GNU Prolog as is
-%% and also using brackets as in (+4)*A
-%  new_poly_from_cons(c, [3 >= A, +4*A + B - -2*C >= 5, D = 1]).
 
 new_poly_from_cons(T, CS) :-
   clean_ppl_new_Polyhedron_from_constraints(T, [], P),
@@ -1556,7 +1553,7 @@ map_dim:-
   map_dim(c), map_dim(nnc).
 
 map_dim(T) :-
-  make_vars(4, [A, B, C, _D]),
+  make_vars(4, [A, B, C, D]),
   clean_ppl_new_Polyhedron_from_dimension(T, 3, P),
   ppl_Polyhedron_add_constraints(P, [A >= 2, B >= 1, C >= 0]),
   ppl_Polyhedron_map_space_dimensions(P, [A-B, B-C, C-A]),
@@ -1568,12 +1565,11 @@ map_dim(T) :-
   ppl_delete_Polyhedron(Q),
   clean_ppl_new_Polyhedron_empty_from_dimension(T, 4, P0),
   ppl_Polyhedron_add_generators(P0, [point(2*C), line(A+B), ray(A+C)]),
-%% tests commented out as they cause make check to fail in Ciao Prolog
-%  \+ppl_Polyhedron_map_space_dimensions(P0, [A+C, C-A, B-B]), % A+C not map
-%  \+ppl_Polyhedron_map_space_dimensions(P0, [A, C-A, B-B]),   % A not map
-%  \+ppl_Polyhedron_map_space_dimensions(P0, [D-A, C-A, B-B]), % D not dimension
-%  \+ppl_Polyhedron_map_space_dimensions(P0, [B-A, C-A, B-B]), % not injective
-%  \+ppl_Polyhedron_map_space_dimensions(P0, [B-A, C-A, B-C]), % not function
+  \+ppl_Polyhedron_map_space_dimensions(P0, [A+C, C-A, B-B]), % A+C not map
+  \+ppl_Polyhedron_map_space_dimensions(P0, [A, C-A, B-B]),   % A not map
+  \+ppl_Polyhedron_map_space_dimensions(P0, [D-A, C-A, B-B]), % D not dimension
+  \+ppl_Polyhedron_map_space_dimensions(P0, [B-A, C-A, B-B]), % not injective
+  \+ppl_Polyhedron_map_space_dimensions(P0, [B-A, C-A, B-C]), % not function
   clean_ppl_new_Polyhedron_empty_from_dimension(T, 4, P1),
   ppl_Polyhedron_add_generators(P1, [point(2*C), line(A+B), ray(A+C)]),
   ppl_Polyhedron_map_space_dimensions(P1, [A-C, C-A, B-B]),

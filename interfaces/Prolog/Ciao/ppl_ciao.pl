@@ -745,14 +745,25 @@ ppl_Polyhedron_bounded_H79_extrapolation_assign_with_token(Handle1,
                                                    in(Dimensions))
   :: any_term * any_term * any_term + foreign.
 
-:- true pred ppl_Polyhedron_fold_space_dimensions(in(Handle),
-                                                  in(VList),
-                                                  in(Var))
-  :: any_term * any_term * any_term + foreign.
+ppl_Polyhedron_fold_space_dimensions(Handle, VList, Var) :-
+	ppl_Polyhedron_fold_space_dimensions_2(Handle, VList, Var, 1).
 
-:- true pred ppl_Polyhedron_map_space_dimensions(in(Handle),
-                                                 in(PIFunc))
-  :: any_term * any_term + foreign.
+:- true pred ppl_Polyhedron_fold_space_dimensions_2(in(Handle),
+                                                 in(VList),
+                                                 in(Var),
+                                                go(Success))
+  :: any_term * any_term * any_term * int
+  + (returns(Success), foreign(ppl_Polyhedron_fold_space_dimensions)).
+
+
+ppl_Polyhedron_map_space_dimensions(Handle, PIFunc) :-
+	ppl_Polyhedron_map_space_dimensions_2(Handle, PIFunc, 1).
+
+:- true pred ppl_Polyhedron_map_space_dimensions_2(in(Handle),
+                                                 in(PIFunc),
+                                                go(Success))
+  :: any_term * any_term * int
+  + (returns(Success), foreign(ppl_Polyhedron_map_space_dimensions)).
 
 :- extra_linker_opts('-L.libs').
 :- use_foreign_library(ppl_ciao).
@@ -893,8 +904,10 @@ ppl_Polyhedron_bounded_H79_extrapolation_assign_with_token(Handle1,
         ppl_Polyhedron_remove_space_dimensions/2,
         ppl_Polyhedron_remove_higher_space_dimensions/2,
         ppl_Polyhedron_expand_space_dimension/3,
-        ppl_Polyhedron_fold_space_dimensions/3,
-        ppl_Polyhedron_map_space_dimensions/2
+%        ppl_Polyhedron_fold_space_dimensions/3,
+        ppl_Polyhedron_fold_space_dimensions_2/4,
+%        ppl_Polyhedron_map_space_dimensions/2
+        ppl_Polyhedron_map_space_dimensions_2/3
 ]).
 
 :- comment(version_maintenance,off).
