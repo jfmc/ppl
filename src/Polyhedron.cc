@@ -833,6 +833,7 @@ PPL::Polyhedron::add_dimensions_and_embed(size_t dim) {
   }
 
   if (space_dimension() == 0) {
+    assert(status.test_zero_dim_univ());
     // The system of constraints describing the universe polyhedron 
     // only has the positivity constraint; it is in minimal form.
     con_sys.resize_no_copy(1, dim + 1);
@@ -897,6 +898,7 @@ PPL::Polyhedron::add_dimensions_and_project(size_t dim) {
   // Adding no dimensions to any polyhedron is a no-op.
   if (dim == 0)
     return;
+
   // Adding dimensions to an empty polyhedron is obtained
   // by merely adjusting `space_dim'.
   if (is_empty()) {
@@ -905,6 +907,8 @@ PPL::Polyhedron::add_dimensions_and_project(size_t dim) {
   }
 
   if (space_dimension() == 0) {
+    assert(status.test_zero_dim_univ());
+#ifndef BE_LAZY
     // We create a specular identity matrix having dim+1 rows.
     // The last row corresponds to the positivity constraint
     // and is immediately erased to achieve minimality.
@@ -913,8 +917,9 @@ PPL::Polyhedron::add_dimensions_and_project(size_t dim) {
     con_sys.add_rows_and_columns(dim + 1);
     con_sys.erase_to_end(con_sys.num_rows() - 1);
     set_constraints_minimized();
+#endif
     // The system of generator for this polyhedron has only
-    // the origin as vertex.
+    // the origin as a vertex.
     gen_sys.resize_no_copy(1, dim + 1);
     gen_sys[0][0] = 1;
     gen_sys[0].set_is_ray_or_vertex();

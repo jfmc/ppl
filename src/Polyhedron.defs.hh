@@ -325,13 +325,6 @@ public:
     EMPTY
   };
 
-  //! Builds a polyhedron in the zero-dimension space.
-  //! It builds the universe polyhedron \f$R^0\f$,
-  //! if \p kind is <CODE>ZERO_DIMENSIONAL</CODE> (the default);
-  //! otherwise (i.e., if \p kind is <CODE>EMPTY</CODE>)
-  //! it builds the empty polyhedron.
-  // Polyhedron(Degenerate_Kind kind = ZERO_DIMENSIONAL);
-
   //! Ordinary copy-constructor.
   Polyhedron(const Polyhedron& y);
   //! Builds either the universe or the empty polyhedron of dimension
