@@ -50,6 +50,10 @@ site: http://www.cs.unipr.it/ppl/ . */
 #define BHRZ03_EP_DELAY_INTERSECTION 0
 #endif
 
+#ifndef BHRZ03_EP_P1_P2
+#define BHRZ03_EP_P1_P2 0
+#endif
+
 #define BE_LAZY
 
 namespace PPL = Parma_Polyhedra_Library;
@@ -4215,6 +4219,7 @@ PPL::Polyhedron::BHRZ03_evolving_points(const Polyhedron& y,
 	}
       }
 #if !BHRZ03_EP_DELAY_INTERSECTION
+#if !BHRZ03_EP_P1_P2
       // Similarly, for each point (resp., closure point) `g2'
       // in `x.gen_sys', where `g1' and `g2' are different,
       // build the ray `g1 - g2' and put it into `candidate_rays'.
@@ -4232,6 +4237,7 @@ PPL::Polyhedron::BHRZ03_evolving_points(const Polyhedron& y,
 	    candidate_rays.insert(ray_from_g2_to_g1);
 	}
       }
+#endif //#if BHRZ03_EP_P1_P2
       if (candidate_rays.num_rows() == 1) {
 	// `candidate_rays' contains one ray only: it is a valid ray
 	// if it satisfies all the constraints of `H79'.
