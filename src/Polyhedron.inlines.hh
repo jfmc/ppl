@@ -339,32 +339,63 @@ Polyhedron::shrink_bounding_box(Box& box) const {
   // and min values of each coefficient divided by its divisor.
   for (GenSys::const_iterator i = gs_begin; i != gs_end; ++i) {
     const Generator& generator = *i;
-    if (generator.is_point()) {
+    if (generator.is_closure_point()) {
       // compare the max and min with the current values
       const Integer& div = generator.divisor();
       for (size_t j = space_dim; j-- > 0; ) {
         Variable v(j);
+        const Integer& coeff = generator.coefficient(v);
         const Generator& jmx_generator = *(mx[j]);
         const Generator& jmn_generator = *(mn[j]);
         // if jmx_generator is a ray or line, then the upper bound
         // remains infinite and we do nothing.
-        if (jmx_generator.is_point() &&
+        if ((jmx_generator.is_point() || jmx_generator.is_closure_point())  &&
 	    // Compare the product of the coefficient of the generator at
 	    // max/min index and the divisor of current generator with the
 	    // product of the coefficient of current generator and the
 	    // divisor of the generator at max/min index.
-	    generator.coefficient(v) * jmx_generator.divisor()
+	    coeff * jmx_generator.divisor()
 	    > jmx_generator.coefficient(v) * div)
 	  mx[j] = i;
         // if jmn_generator is a ray or line, then the lower bound
         // remains infinite and we do nothing.
-        if (jmn_generator.is_point() &&
+        if ((jmn_generator.is_point() || jmn_generator.is_closure_point()) &&
 	    // Compare the product of the coefficient of the generator at
 	    // max/min index and the divisor of current generator with the
 	    // product of the coefficient of current generator and the
 	    // divisor of the generator at max/min index.
-	    generator.coefficient(v) * jmn_generator.divisor()
+	    coeff * jmn_generator.divisor()
 	    < jmn_generator.coefficient(v) * div)
+	  mn[j] = i;
+      }
+    }
+    else if (generator.is_point()) {
+      // compare the max and min with the current values
+      const Integer& div = generator.divisor();
+      for (size_t j = space_dim; j-- > 0; ) {
+        Variable v(j);
+        const Integer& coeff = generator.coefficient(v);
+        const Generator& jmx_generator = *(mx[j]);
+        const Generator& jmn_generator = *(mn[j]);
+        // if jmx_generator is a ray or line, then the upper bound
+        // remains infinite and we do nothing.
+        if ((jmx_generator.is_point() || jmx_generator.is_closure_point()) &&
+	    // Compare the product of the coefficient of the generator at
+	    // max/min index and the divisor of current generator with the
+	    // product of the coefficient of current generator and the
+	    // divisor of the generator at max/min index.
+	    coeff * jmx_generator.divisor()
+	    >= jmx_generator.coefficient(v) * div)
+	  mx[j] = i;
+        // if jmn_generator is a ray or line, then the lower bound
+        // remains infinite and we do nothing.
+        if ((jmn_generator.is_point() || jmn_generator.is_closure_point()) &&
+	    // Compare the product of the coefficient of the generator at
+	    // max/min index and the divisor of current generator with the
+	    // product of the coefficient of current generator and the
+	    // divisor of the generator at max/min index.
+	    coeff * jmn_generator.divisor()
+	    <= jmn_generator.coefficient(v) * div)
 	  mn[j] = i;
       }
     }
@@ -376,9 +407,10 @@ Polyhedron::shrink_bounding_box(Box& box) const {
       // with the current generator.
       for (size_t j = space_dim; j-- > 0; ) {
         Variable v(j);
-        if (generator.coefficient(v) > 0)
+        const Integer& coeff = generator.coefficient(v);
+        if (coeff > 0)
 	  mx[j] = i;
-        else if (generator.coefficient(v) < 0)
+        else if (coeff < 0)
 	  mn[j] = i;
       }
     }
@@ -399,24 +431,34 @@ Polyhedron::shrink_bounding_box(Box& box) const {
   
   // To construct the bounding box.
   // Now adjust the constraints bounding the sides of the box.
-  // FIXME: closed is assumed "true".
-  const bool closed = true;
   for (size_t j  = space_dim; j-- > 0; ) {
     Variable v(j);
     const Generator& jmx_generator = *(mx[j]);
     const Generator& jmn_generator = *(mn[j]);
-    if (jmx_generator.is_point())
-      box.lower_upper_bound(j, closed,
+    if (jmx_generator.is_closure_point()) {
+      box.lower_upper_bound(j, false,
 			    jmx_generator.coefficient(v),
 			    jmx_generator.divisor());
-    if (jmn_generator.is_point())
-      box.raise_lower_bound(j, closed,
+    }
+    else if (jmx_generator.is_point()) {  
+      box.lower_upper_bound(j, true,
+			    jmx_generator.coefficient(v),
+			    jmx_generator.divisor());
+    } 
+    if (jmn_generator.is_closure_point()) {
+      box.raise_lower_bound(j, false,
 			    jmn_generator.coefficient(v),
 			    jmn_generator.divisor());
+    }
+    else if (jmn_generator.is_point()) {
+      box.raise_lower_bound(j, true,
+			    jmn_generator.coefficient(v),
+			    jmn_generator.divisor());
+    }
   }
-}
+}}
 
-} // namespace Parma_Polyhedra_Library
+// namespace Parma_Polyhedra_Library
 
 
 /*!
