@@ -192,6 +192,8 @@ public:
   const_iterator end() const;
 
 PPL_INTERNAL:
+// FIXME: this is a kludge
+public:
   //! Constructor: builds an empty system of constraints
   //! having the specified topology.
   ConSys(Topology topol);
@@ -211,6 +213,8 @@ PPL_INTERNAL:
   bool adjust_topology_and_dimension(Topology topol,
 				     size_t num_dimensions);
 
+// FIXME: this is a kludge
+PPL_INTERNAL:
   //! Returns <CODE>true</CODE> if and only if \p *this
   //! contains one or more strict inequality constraints.
   bool has_strict_inequalities() const;

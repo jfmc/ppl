@@ -46,24 +46,37 @@ public:
     return vec[k];
   }
 
-  bool is_empty() const {
+  bool is_empty(unsigned int k) const {
     return vec[k].is_empty();
   }
 
   bool get_lower_bound(unsigned int k, bool closed,
 		       Integer& n, Integer& d) const {
     const LBoundary& lb = vec[k].lower_bound();
+    const ExtendedRational& lr = lb.bound();
+
+    if (lr.direction_of_infinity() != 0)
+      return false;
+
     closed = lb.is_closed();
-    n = lb.bound.numerator();
-    d = lb.bound.denominator();
+    n = lr.numerator();
+    d = lr.denominator();
+
+    return true;
   }
 
   bool get_upper_bound(unsigned int k, bool closed,
 		       Integer& n, Integer& d) const {
     const UBoundary& ub = vec[k].upper_bound();
+    const ExtendedRational& ur = ub.bound();
+
+    if (ur.direction_of_infinity() != 0)
+      return false;
+
     closed = ub.is_closed();
-    n = ub.bound.numerator();
-    d = ub.bound.denominator();
+    n = ur.numerator();
+    d = ur.denominator();
+    return true;
   }
 
   void set_empty(unsigned int k) {

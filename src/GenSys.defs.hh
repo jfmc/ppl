@@ -228,9 +228,13 @@ public:
   const_iterator end() const;
 
 PPL_INTERNAL:
+// FIXME: this is a kludge
+public:
   //! Constructor: builds an empty system of generators
   //! having the specified topology.
   GenSys(Topology topol);
+// FIXME: this is a kludge
+PPL_INTERNAL:
   //! Constructor: it builds a system of \p n_rows rays/points
   //! on a \p n_columns - 1 dimensional space (including the
   //! \f$\epsilon\f$ dimension, if \p topol is

@@ -326,7 +326,9 @@ PPL_INTERNAL:
   Constraint(const Constraint& c, size_t sz);
 
   static Constraint construct_epsilon_geq_zero();
-  
+
+// FIXME: this is a kludge
+public:
   //! The zero-dimension space constraint \f$\epsilon \geq 0\f$
   //! (used to implement non-necessarily closed polyhedra).
   static const Constraint& epsilon_geq_zero();
@@ -335,6 +337,8 @@ PPL_INTERNAL:
   //! (used to implement non-necessarily closed polyhedra).
   static const Constraint& epsilon_leq_one();
 
+// FIXME: this is a kludge
+PPL_INTERNAL:
   //! Returns <CODE>true</CODE> if and only if
   //! \p *this is the trivially true constraint \f$0 <= n\f$,
   //! where \f$n \geq 0\f$.
@@ -351,7 +355,6 @@ PPL_INTERNAL:
  
   //! Sets the constraint type to <CODE>INEQUALITY</CODE>.
   void set_is_inequality();
-
 };
 
 namespace std {
