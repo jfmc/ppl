@@ -36,7 +36,7 @@ Most of the following definitions and results are taken from:
   Department of Mathematics, University of Parma, Italy, May 2002.
 
 
-<B>Vectors, matrices and scalar products</B>
+<B>Vectors, Matrices and Scalar Products</B>
 
 We denote by \f$\Rset^n\f$ the \f$n\f$-dimensions vector space on the field
 of real numbers \f$\Rset\f$, endowed with the standard topology.
@@ -64,7 +64,8 @@ For any \f$S_1, S_2 \sseq \Rset^n\f$, the <EM>Minkowski's sum</EM> of
 \f$S_1 + S_2 = \{\, \vect{v}_1 + \vect{v}_2 \mid
                 \vect{v}_1 \in S_1, \vect{v}_2 \in S_2 \,\}.\f$
 
-<B>Affine hyperplanes and half-spaces</B>
+
+<B>Affine Hyperplanes and Half-spaces</B>
 
 For each vector \f$\vect{a} \in \Rset^n\f$ and scalar \f$b \in \Rset\f$,
 where \f$\vect{a} \neq \vect{0}\f$,
@@ -89,6 +90,7 @@ the constraint \f$0 \relop b\f$ is either a tautology (i.e., always true)
 or inconsistent (i.e., always false), so that it defines
 either the whole vector space \f$\Rset^n\f$ or the empty set.
 
+
 <B>Convex Polyhedra</B>
 
 The set \f$\cP \sseq \Rset^n\f$ is a
@@ -99,10 +101,6 @@ of (open or closed) affine half-spaces of \f$\Rset^n\f$
 or \f$n = 0\f$ and \f$\cP = \emptyset\f$.
 The set of all NNC polyhedra on the vector space \f$\Rset^n\f$
 is denoted \f$\Pset_n\f$.
-An NNC polyhedron is called <EM>rational</EM>
-if it can be expressed as the intersection
-of a finite number of affine half-spaces with rational coefficients.
-In the sequel, we will consider only rational NNC polyhedra.
 
 The set \f$\cP  \sseq \Pset_n\f$ is a <EM>closed convex polyhedron</EM>
 (<EM>closed polyhedron</EM>, for short) if and only if either
@@ -118,6 +116,7 @@ are, respectively, the smallest and the biggest elements of both \f$\Pset_n\f$
 and \f$\CPset_n\f$.
 The vector space \f$\Rset^n\f$ is also called the <EM>universe</EM> polyhedron.
 
+
 <B>Intersection and Convex Polyhedral Hull</B>
 
 For any pair of NNC polyhedra \f$\cP_1, \cP_2 \in \Pset_n\f$,
@@ -125,16 +124,17 @@ the <EM>intersection</EM> of \f$\cP_1\f$ and \f$\cP_2\f$,
 defined as the set intersection \f$\cP_1 \inters \cP_2\f$,
 is the biggest NNC polyhedron included in both \f$\cP_1\f$ and \f$\cP_2\f$;
 similarly, the <EM>convex polyhedral hull</EM> (or <EM>poly-hull</EM>)
- of \f$\cP_1\f$ and \f$\cP_2\f$ and denoted by \f$\cP_1 \uplus \cP_2\f$
+of \f$\cP_1\f$ and \f$\cP_2\f$, denoted by \f$\cP_1 \uplus \cP_2\f$,
 is the smallest NNC polyhedron that includes both
 \f$\cP_1\f$ and \f$\cP_2\f$.
 
-The intersection and poly-hull of
-any pair of closed polyhedra in \f$\CPset_n\f$
-ia also closed.
+The intersection and poly-hull of any pair of closed polyhedra
+in \f$\CPset_n\f$ is also closed.
 
-In theoretical terms, \f$\Pset_n\f$ is a <EM>lattice</EM> under set inclusion
-and \f$\CPset_n\f$ is a <EM>sub-lattice</EM> of \f$\Pset_n\f$.
+In theoretical terms,
+\f$\Pset_n\f$ is a <EM>lattice</EM> under set inclusion and
+\f$\CPset_n\f$ is a <EM>sub-lattice</EM> of \f$\Pset_n\f$.
+
 
 <B>Bounded Polyhedra</B>
 
@@ -150,6 +150,7 @@ if there exists a \f$\lambda \in \nonnegRset\f$ such that
       \,\bigr\}.
 \f]
 A bounded polyhedron is also called a <EM>polytope</EM>.
+
 
 <B>Constraints representation</B>
 
@@ -178,7 +179,8 @@ the number of non-strict inequalities, and
 the number of strict inequalities,
 respectively.
 
-<B>Combinations and hulls</B>
+
+<B>Combinations and Hulls</B>
 
 Let \f$S = \{ \vect{x}_1, \ldots, \vect{x}_k \} \sseq \Rset^n\f$
 be a set of vectors.
@@ -209,7 +211,8 @@ so that, if \f$C \sseq P\f$,
      = \NNChull(P, C).
 \f]
 
-<B>Points, closure points, rays and lines</B>
+
+<B>Points, Closure Points, Rays and Lines</B>
 
 Let \f$\cP \in \Pset_n\f$ be an NNC polyhedron. Then
 - a vector \f$\vect{p} \in \cP\f$ is called a <EM>point</EM> of \f$\cP\f$;
@@ -238,7 +241,8 @@ where
 \f$\vect{r}_1 \neq \lambda \vect{r}_2\f$
 for all \f$\lambda \in \Rset, \lambda \geq 0\f$.
 
-<B>Generators representation</B>
+
+<B>Generators Representation</B>
 
 Each NNC polyhedron \f$\cP \in \Pset_n\f$ can be represented by
 finite sets of lines \f$L\f$, rays \f$R\f$,
@@ -280,18 +284,9 @@ It is also worth noting that the only ray in \f$R\f$
 is <EM>not</EM> an extreme ray of \f$\cP\f$.
 
 
-<B>Dual representation</B>
+<B>Minimized Representations</B>
 
-A rational NNC polyhedron \f$P\f$ has <EM>dual representations</EM>.
-That is, \f$P\f$ can be represented by a constraints system
-or a generators system.
-Moreover, given one of the representations, there is an algorithm for
-computing the other.
-
-<B>Minimized representations</B>
-
-A constraints system \f$\cC\f$ for an NNC polyhedron
-\f$\cP \in \Pset_n\f$
+A constraints system \f$\cC\f$ for an NNC polyhedron \f$\cP \in \Pset_n\f$
 is said to be <EM>minimized</EM> if no proper subset of \f$\cC\f$ is
 a constraint system for \f$\cP\f$.
 
@@ -299,10 +294,30 @@ Similarly, a generator system \f$\cG = (L, R, P, C)\f$
 for an NNC polyhedron \f$\cP \in \Pset_n\f$ is said to be <EM>minimized</EM>
 if there does not exist a generator system
 \f$\cG' = (L', R', P', C') \neq \cG\f$ for \f$\cP\f$
-for which \f$L' \sseq L\f$, \f$R' \sseq R\f$, \f$P' \sseq P\f$ and
+such that \f$L' \sseq L\f$, \f$R' \sseq R\f$, \f$P' \sseq P\f$ and
 \f$C' \sseq C\f$.
 
-<B>Affine images and preimages</B>
+
+<B>Double Description Method</B>
+
+Any NNC polyhedron \f$\cP\f$ can be described by using
+a constraint system, a generator system, or both.
+The <EM>double description method</EM> is a collection
+of well-known theoretical results showing that,
+given one kind of representation, there is an algorithm
+for computing a representation of the other kind
+and eventually minimize both representation by removing
+redundant constraints/generators.
+
+Such a change of representation happens to be a key step
+in the implementation of many operators on NNC polyhedra:
+this is because some operators are provided with a natural
+and efficient implementation when using one of two kinds
+of representations, while being rather cumbersome when
+using the other one.
+
+
+<B>Affine Images and Preimages</B>
 
 The function mapping \f$\fund{\phi}{\Rset^n}{\Rset^m}\f$
 is an <EM>affine transformation</EM> if there exist
@@ -322,9 +337,9 @@ the application of any space-dimension preserving
 affine image and preimage operators.
 
 
-<B>Topologies and topological compatibility</B>
+<B>Topologies and Topological-compatibility</B>
 
-As indicated above, when an NNC polyhedra \f$\cP\f$ is necessarily closed,
+As indicated above, when an NNC polyhedron \f$\cP\f$ is necessarily closed,
 we can ignore the closure points contained in its generator system
 \f$\cG = (L, R, P, C)\f$ (as every closure point is also a point)
 and represent \f$\cP\f$ by the triple \f$(L, R, P)\f$.
@@ -347,7 +362,7 @@ or combined using, for example, the intersection or poly-hull operations.
 More generally, any operation on a polyhedron must be compatible
 with its given topology.
 
-<B>Space dimension and dimension-compatibility</B>
+<B>Space Dimension and Dimension-compatibility</B>
 
 The <EM>space dimension</EM> of an NNC polyhedron \f$P \in \Pset_n\f$
 is the dimension \f$n \in \Nset\f$ of the corresponding vector space
@@ -408,6 +423,26 @@ the corresponding constraint is defined as
 A <EM>bounding box</EM> of an NNC polyhedron \f$\cP\f$ is
 the smallest \f$n\f$-dimensional box
 containing \f$\cP\f$. 
+
+
+<B>Rational polyhedra</B>
+
+An NNC polyhedron is called <EM>rational</EM>
+if it can be expressed as a constraint system where
+all the constraints have rational coefficients.
+It can be shown that any rational NNC polyhedron can be represented
+by a generator system where all the generators have rational coordinates.
+All the operators on NNC polyhedra defined above,
+when restricted to work on rational arguments,
+will return rational polyhedra.
+The library only supports rational polyhedra.
+
+\note
+The restriction to rational numbers applies not only to polyhedra,
+but also to the other numeric arguments that may be required
+by the operators considered, such as the matrices and vectors
+defining (rational) affine transformations.
+
 
 \if Implementation_Info
 
