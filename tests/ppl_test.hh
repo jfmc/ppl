@@ -54,6 +54,11 @@ bool is_negative(const Checked_Number<T, Policy>& x) {
 }
 
 template <typename T, typename Policy>
+bool is_nonnegative(const Checked_Number<T, Policy>& x) {
+  return x.classify(false, false, true) == V_GE;
+}
+
+template <typename T, typename Policy>
 bool exact_neg(Checked_Number<T, Policy>& to, const Checked_Number<T, Policy>& x) {
   return to.assign_neg(x, Rounding::IGNORE) == V_EQ;
 }
@@ -102,6 +107,7 @@ void add_round_down(Checked_Number<T, Policy>& to,
 template <typename T, typename Policy>
 void numer_denom(const Checked_Number<T, Policy>& from,
 		 Coefficient& num, Coefficient& den) {
+  // FIXME!
   if (from.classify(true, true, false) != VC_NORMAL)
     abort();
   mpq_class q;
