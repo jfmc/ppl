@@ -69,13 +69,7 @@ AC_PROG_CXXCPP
 
 # Compilation flags
 
-if test x"$GXX" = xyes
-then
-  COMP_FLAGS="-W -Wall"
-else
-  COMP_FLAGS=""
-fi
-
+COMP_FLAGS=""
 OPT_FLAGS=""
 
 enableval=yes
@@ -187,7 +181,7 @@ no)
 esac
 
 enableval=$arch
-AC_MSG_CHECKING([for which archtitecture to optimize])
+AC_MSG_CHECKING([for which architecture to optimize])
 AC_ARG_ENABLE(arch,
 [  --enable-arch[=arch]      optimize for architecture arch])
 case "${enableval}" in
@@ -214,7 +208,7 @@ esac
 
 CXXFLAGS="$COMP_FLAGS $OPT_FLAGS"
 
-# Allow the overriding of C and C++ compilation flags
+# Allow additions to C and C++ compilation flags
 
 AC_ARG_WITH(cflags,
 [  --with-cflags=xxx       add XXX to the options for the C compiler],
@@ -261,6 +255,16 @@ AC_DISABLE_SHARED
 AC_LIBTOOL_DLOPEN
 AC_LIBTOOL_WIN32_DLL
 AC_PROG_LIBTOOL
+
+# If we are using GCC we want to compile with warnings enabled.
+if test x"$GCC" = xyes
+then
+  CFLAGS="$CFLAGS -W -Wall"
+fi
+if test x"$GXX" = xyes
+then
+  CXXFLAGS="$CXXFLAGS -W -Wall"
+fi
 
 AC_SUBST(debug_flag)
 

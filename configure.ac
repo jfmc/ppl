@@ -114,13 +114,7 @@ extra_libraries="${extra_libraries} ${gmp_library_option}"
 
 # Compilation flags
 
-if test x"$GXX" = xyes
-then
-  COMP_FLAGS="-W -Wall"
-else
-  COMP_FLAGS=""
-fi
-
+COMP_FLAGS=""
 OPT_FLAGS=""
 
 enableval=yes
@@ -232,7 +226,7 @@ no)
 esac
 
 enableval=$arch
-AC_MSG_CHECKING([for which archtitecture to optimize])
+AC_MSG_CHECKING([for which architecture to optimize])
 AC_ARG_ENABLE(arch,
 [  --enable-arch[=arch]      optimize for architecture arch])
 case "${enableval}" in
@@ -259,7 +253,7 @@ esac
 
 CXXFLAGS="$COMP_FLAGS $OPT_FLAGS"
 
-# Allow the overriding of C and C++ compilation flags
+# Allow additions to C and C++ compilation flags
 
 AC_ARG_WITH(cflags,
 [  --with-cflags=xxx       add XXX to the options for the C compiler],
@@ -286,6 +280,9 @@ no)
 esac
 build_watchdog_library=$enableval
 AM_CONDITIONAL(BUILD_WATCHDOG_LIBRARY, test x"$build_watchdog_library" = xyes)
+
+# Enabled or not, the Watchdog library must be configured.
+AC_CONFIG_SUBDIRS(Watchdog)
 
 # Libtool.
 # Turn off shared libraries during beta-testing, since they
@@ -392,7 +389,15 @@ AC_CHECK_HEADERS([sys/resource.h])
 # Checks for library functions.
 # Nothing for the time being.
 
-AC_CONFIG_SUBDIRS(Watchdog)
+# If we are using GCC we want to compile with warnings enabled.
+if test x"$GCC" = xyes
+then
+  CFLAGS="$CFLAGS -W -Wall"
+fi
+if test x"$GXX" = xyes
+then
+  CXXFLAGS="$CXXFLAGS -W -Wall"
+fi
 
 AC_SUBST(extra_includes)
 AC_SUBST(extra_libraries)
@@ -418,7 +423,7 @@ AC_OUTPUT(Makefile
 
 if test x"$gmp_supports_exceptions" = xno
 then
-  AC_MSG_WARN([*** CANNOT PROPAGATE EXCEPTIONS BACK FROM GMP:
+  AC_MSG_WARN([CANNOT PROPAGATE EXCEPTIONS BACK FROM GMP:
 *** MEMORY EXHAUSTION MAY RESULT IN ABRUPT TERMINATION.
 *** If you are using g++, make sure you use version 4.0.1 or higher
 *** and use a version of GMP compiled with the option -fexceptions.
