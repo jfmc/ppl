@@ -8,23 +8,23 @@
 */
 
 /*
-solve/3 is the top-level predicate.
+solve/2 is the top-level predicate.
 solve(+Goal,-Polyhedron,-Qs).
 Goal: the goal which can be a conjunction of atoms and constraints.
       The atoms can have rationals or variables as arguments.
       Note that repeated variables in an atom are currently not supported.
-Polyhedron: the polyhedron that collects the constraints.
 Qs: a stack of copies of polyhdron to enable backtracking.
     These are to be removed once it is known that
     no more solutions are required.
 */
 
-solve(Goal,Polyhedron,[Q|Qs]):-
+solve(Goal,[Polyhedron,Q|Qs]):-
     numbervars(Goal,0,Dims),
          % Polyhedron: the main polyhedron is initialised with 
          % dimensions = Dims, the number of variables in Goal.
     ppl_new_polyhedron(Polyhedron, Dims), 
-    ppl_copy_polyhedron(Polyhedron,Q), % A copy of Polyhedron is kept.
+         % A copy of Polyhedron is required by solve/7.
+    ppl_copy_polyhedron(Polyhedron,Q),
     solve(Goal,Polyhedron,Dims,_,Q,[],Qs),
     output_constraints(Polyhedron,Dims).
 
@@ -44,15 +44,15 @@ output_constraints(Polyhedron,Dims):-
 /*
 solve/7 is the main meta-interpreter.
 solve(+Goal, +Polyhedron, +Integer1, -Integer2, 
-      +Q:polyhedron, +Qs1:[polyhedron], -Qs2:[polyhedron]).
-Goal: The query to be solved.
+      +Q:polyhedron, +Qs1:[polyhedra], -Qs2:[polyhedra]).
+Goal:       The query to be solved.
 Polyhedron: A reference to a polyhedron which 
             represents the current set of constraints.
-Integer1: The initial number of dimensions of the Polyhedron.
-Integer2: The final number of dimensions of the Polyhedron.
-Q: A copy of Polyhedron.
-Qs1: the current list of temporary polyhedra.
-Qs2: the resulting list of temporary polyhedra.
+Integer1:   The initial number of dimensions of the Polyhedron.
+Integer2:   The final number of dimensions of the Polyhedron.
+Q:          A copy of Polyhedron.
+Qs1:        The current list of temporary polyhedra.
+Qs2:        The resulting list of temporary polyhedra.
 */
 
 %%% The base case.
@@ -70,15 +70,11 @@ solve(A=B,Polyhedron,InDims,OutDims,Q,Qs,Qs):-
     solve({A=B},Polyhedron,InDims,OutDims,Q,Qs,Qs).
 
 %%% The case when the query is a set of constraints.
-solve({Cs},Polyhedron,InDims,OutDims,Q,Qs,Qs):- 
+solve({Cs},Polyhedron,InDims,InDims,Q,Qs,Qs):- 
     !,
     ppl_remove_higher_dimensions(Polyhedron,InDims),
     ppl_convex_hull_assign(Polyhedron,Q),
-         % The variables are now frozen for using with the PPL.
-    numbervars(Cs,InDims,OutDims),
          % The number of extra dimensions is the number of new variables.
-    AddedDims is OutDims-InDims,
-    ppl_add_dimensions_and_embed(Polyhedron, AddedDims),
          % Solve the constraints using the constraint solver.
     solve_constraints(Cs,Polyhedron,Q). 
 
@@ -89,7 +85,7 @@ solve((A,B),Polyhedron,InDims,OutDims,Q,InQs,[QB|Qs]):-
     ppl_convex_hull_assign(Polyhedron,Q),
     solve(A,Polyhedron,InDims,AOutDims,Q,InQs,QAs),
          % In case of backtracking, the previous state must be restored.
-    ppl_remove_higher_dimensions(Polyhedron,AOutDims),
+%    ppl_remove_higher_dimensions(Polyhedron,AOutDims),
          % A current copy of Polyhedron is needed for the call to solve.
     ppl_copy_polyhedron(Polyhedron,QB), 
     solve(B,Polyhedron,AOutDims,OutDims,QB,QAs,Qs).
@@ -98,18 +94,18 @@ solve((A,B),Polyhedron,InDims,OutDims,Q,InQs,[QB|Qs]):-
 solve(Atom,Polyhedron,InDims,OutDims,Q,InQs,[Q1|Q1s]):-
     user_clause(Atom, Body),
          % New variables are frozen for using with the PPL.
-    numbervars(Atom,InDims,OutDims),
+    numbervars(Body,InDims,BOutDims),
          % On backtracking, the original state must be restored.
     ppl_remove_higher_dimensions(Polyhedron,InDims),
     ppl_convex_hull_assign(Polyhedron,Q),
-    AddedDims is OutDims - InDims, 
+    AddedDims is BOutDims - InDims, 
          % OutDims - InDims is the number of new variables in Args.
          % The Polyhedron has the correct number of dimensions added.
     ppl_add_dimensions_and_embed(Polyhedron, AddedDims),
-         % Now we can solve the body.
-    ppl_copy_polyhedron(Polyhedron,Q1), 
          % A copy of Polyhedron is needed for the call to solve.
-    solve(Body,Polyhedron,OutDims,_,Q1,InQs,Q1s).
+    ppl_copy_polyhedron(Polyhedron,Q1), 
+         % Now we can solve the body.
+    solve(Body,Polyhedron,BOutDims,OutDims,Q1,InQs,Q1s).
 
 /*
 The constraints are solved by inserting them into the polyhedron.
@@ -131,7 +127,7 @@ solve_constraints(C,Polyhedron,Q):-
     ;
      true
     ).
-
+check.
 /*
 The two lists are made equal in the polyhedron.
 */
@@ -214,6 +210,7 @@ main_loop :-
   read(Command),
   do_command(Command).
 main_loop :- 
+  nl,
   main_loop.
 
 clear_program :-
@@ -276,9 +273,12 @@ do_command(listing) :-
   list_program,
   main_loop.
 do_command(Query) :-
-  solve(Query,Polyhedron,Qs),
+  solve(Query,Qs),
   query_next_solution,
-  delete_polyhedra([Polyhedron|Qs]),
+      % If query_next_solution succeeds,
+      % then no more solutions are required and stack of
+      % temporary polyhedra can be removed.
+  delete_polyhedra(Qs),
   main_loop.
 
 
