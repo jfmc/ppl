@@ -559,9 +559,9 @@ PPL::PolyBase::minimize() const {
 }
 
 /*!
-  Sorts the matrix of constraints keeping \p sat_g consistent;
-  if \p sat_g is not up-to-date it will be obtained from \p sat_c
-  and then sorted together with \p con_sys.
+  Sorts the matrix of constraints.
+  If saturation matrices \p sat_c and \p sat_g are up-to-date,
+  they are kept consistent with the sorted matrix of constraints.
 */
 void
 PPL::PolyBase::obtain_sorted_constraints() {
@@ -582,16 +582,16 @@ PPL::PolyBase::obtain_sorted_constraints() {
       clear_sat_c_up_to_date();
     }
     else
-      // If neither `sat_g' nor `sat_c' are up-to-date, we just sort
-      // the constraints.
+      // If neither `sat_g' nor `sat_c' are up-to-date,
+      // we just sort the constraints.
       con_sys.sort_rows();
   assert(con_sys.check_sorted());
 }
 
 /*!
-  Sorts the matrix of generators keeping \p sat_c consistent;
-  if \p sat_c is not up-to-date it will be obtained from \p sat_g
-  and then sorted together with \p gen_sys.
+  Sorts the matrix of generators.
+  If saturation matrices \p sat_c and \p sat_g are up-to-date,
+  they are kept consistent with the sorted matrix of generators.
 */
 void
 PPL::PolyBase::obtain_sorted_generators() {
@@ -1054,16 +1054,35 @@ PPL::PolyBase::convex_hull_assign(const PolyBase& y) {
   if (x_space_dim == 0)
     return;
 
-  if (!x.generators_are_up_to_date())
-    x.update_generators();
-  if (!y.generators_are_up_to_date())
-    y.update_generators();
+  if (!y.generators_are_up_to_date() && !y.update_generators())
+    // Discovered `y' empty when updating generators.
+    return;
+  if (!x.generators_are_up_to_date() && !x.update_generators()) {
+    // Discovered `x' empty when updating generators.
+    x = y;
+    return;
+  }
 
   // Matrix::merge_rows_assign() requires both matrices to be sorted.
   if (!x.gen_sys.is_sorted())
     x.gen_sys.sort_rows();
-  if (!y.gen_sys.is_sorted())
-    const_cast<PolyBase&>(y).gen_sys.sort_rows();
+  if (!y.gen_sys.is_sorted()) {
+    // const_cast<PolyBase&>(y).gen_sys.sort_rows();
+    if (y.sat_g_is_up_to_date()) {
+      const_cast<PolyBase&>(y).obtain_sorted_generators_with_sat_g();
+      if (y.sat_c_is_up_to_date())
+	const_cast<SatMatrix&>(y.sat_c).transpose_assign(y.sat_g);
+    }
+    else {
+      const_cast<GenSys&>(y.gen_sys).sort_rows();
+      if (y.sat_c_is_up_to_date()) {
+#ifndef NDEBUG
+	const_cast<PolyBase&>(y).clear_sat_c_up_to_date();
+#endif
+	const_cast<PolyBase&>(y).update_sat_c();
+      }
+    }
+  }
 
   x.gen_sys.merge_rows_assign(y.gen_sys);
 
@@ -1072,7 +1091,8 @@ PPL::PolyBase::convex_hull_assign(const PolyBase& y) {
   // It does not minimize the system of generators.
   x.clear_generators_minimized();
 
-  assert(OK());
+  // At this point both `x' and `y' are not empty.
+  assert(OK() && y.OK());
 }
 
 /*!
@@ -1624,8 +1644,8 @@ PPL::PolyBase::add_constraints_and_minimize(ConSys& cs) {
   if (empty)
     set_empty();
   else {
-    // On exit of the function add_and_minimize() `sat_c' is up-to-date
-    // while `sat_g' is not up-to-date anymore.
+    // On exit of the function add_and_minimize(),
+    // `sat_c' is up-to-date, while `sat_g' is no longer up-to-date.
     set_sat_c_up_to_date();
     clear_sat_g_up_to_date();
   }
