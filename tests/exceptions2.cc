@@ -166,7 +166,7 @@ error6() {
 
   try {
     // This is an invalid use of the function add_constraints(cs):
-    // it is illegal to add a system of constraints that constains
+    // it is illegal to add a system of constraints that contains
     // strict-inequalities to a closed polyhedron.
     ph.add_constraints(cs);
   }
@@ -223,7 +223,7 @@ error8() {
   try {
     // This is an incorrect use of the function
     // add_generators_and_minimize(gs): it is illegal to add a
-    // system of generators that constains closure-points to a closed
+    // system of generators that contains closure-points to a closed
     // polyhedron.
     ph.add_generators_and_minimize(gs);
   }

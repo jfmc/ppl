@@ -206,7 +206,7 @@ error7() {
   try {
     // This is an invalid used of the function
     // C_Polyhedron::affine_image(v, expr, d): it is illegal to
-    // use a variable in the expression that does not apper in the
+    // use a variable in the expression that does not appear in the
     // space of the polyhedron.
     ph.affine_image(y, x + z + 1);
   }
@@ -316,8 +316,8 @@ error11() {
 
   try {
     // This is an invalid use of function
-    // C_Polyhedron::intersection_assign_and_minimze(ph2): it is illegal
-    // to apply this funcition to two polyhedra of different dimensions.
+    // C_Polyhedron::intersection_assign_and_minimize(ph2): it is illegal
+    // to apply this function to two polyhedra of different dimensions.
     ph1.intersection_assign_and_minimize(ph2);
   }
   catch (invalid_argument& e) {
@@ -361,7 +361,7 @@ error13() {
   try {
     // This is an invalid use of the function
     // C_Polyhedron::add_generators_and_minimize(gs): it is illegal
-    // to add a system of generator that is not dimensional compatible
+    // to add a system of generator that is not dimension-compatible
     // with the polyhedron.
     GenSys gs;
     gs.insert(point(w));
@@ -406,7 +406,7 @@ error15() {
 
   try {
     // This is an invalid use of the function
-    // C_Polyhedron::add_constraints_and_minimze(cs): it is illegal to
+    // C_Polyhedron::add_constraints_and_minimize(cs): it is illegal to
     // add a system of constraints that is not dimensional incompatible
     // with the polyhedron.
     ConSys cs;
@@ -591,8 +591,8 @@ error22() {
 
   try {
     // This is an invalid use of the function
-    // C_Polyhedronn::relation_with(g): it is illegal to apply this
-    // function to a generator that is not dimensional compatible with
+    // C_Polyhedron::relation_with(g): it is illegal to apply this
+    // function to a generator that is not dimension-compatible with
     // the polyhedron.
     Generator g(point(z));
     ph.relation_with(g);
@@ -643,7 +643,7 @@ error24() {
     // This is an invalid use of the function
     // C_Polyhedron::limited_H79_extrapolation_assign(ph2, cs): it is
     // illegal to apply this function to two polyhedra that are not
-    // dimensional compatible.
+    // dimension-compatible.
     ph2.limited_H79_extrapolation_assign(ph1, cs);
   }
   catch (invalid_argument& e) {
@@ -679,7 +679,7 @@ error25() {
     // This is an invalid use of the function
     // C_Polyhedron::limited_H79_extrapolation_assign(ph, cs): it is
     // illegal to apply this function to a system of constraints that
-    // is not dimensional compatible with the two polyhedra.
+    // is not dimension-compatible with the two polyhedra.
     ph2.limited_H79_extrapolation_assign(ph1, cs);
   }
   catch (invalid_argument& e) {
@@ -705,7 +705,7 @@ error26() {
 
   try {
     // This is an invalid use of operator <=: it is illegal to apply
-    // this function to two polyhedra that are not dimensional compatible.
+    // this function to two polyhedra that are not dimension-compatible.
     ph1 <= ph2;
   }
   catch (invalid_argument& e) {
@@ -725,9 +725,10 @@ error27() {
   C_Polyhedron ph(2, C_Polyhedron::EMPTY);
 
   try {
-    // This is an invalid use of function C_Polyhedron::add_generator(g):
-    // it is illegal to insert a generator that is not dimensional
-    // comaptible with the polyhedron..
+    // This is an invalid use of method
+    // C_Polyhedron::add_generator(g): it is illegal to insert a
+    // generator that is not dimension-compatible with the
+    // polyhedron.
     Generator g(ray(x));
     ph.add_generator(g);
   }
@@ -802,7 +803,7 @@ error30() {
 
   try {
     // This is an incorrect use of function
-    // C_Polyhedron::poly_difference_assign(ph2): it is impossibile to apply
+    // C_Polyhedron::poly_difference_assign(ph2): it is impossible to apply
     // this function to two polyhedra of different dimensions.
     ph1.poly_difference_assign(ph2);
   }
@@ -907,7 +908,7 @@ error34() {
   try {
     // This is an invalid used of the function
     // `C_Polyhedron::bounds_from_above(v, expr, d)': it is illegal to
-    // use a variable in the expression that does not apper in the
+    // use a variable in the expression that does not appear in the
     // space of the polyhedron.
     ph.bounds_from_above(A + B);
   }
@@ -1044,7 +1045,7 @@ error39() {
   try {
     // This is an incorrect use of function
     // C_Polyhedron::generalized_affine_image(v, r, expr, d): it is illegal to
-    // use a variable in the expression that does not apper in the polyhedron.
+    // use a variable in the expression that does not appear in the polyhedron.
     ph.generalized_affine_image(A, GREATER_THAN_OR_EQUAL, B);
   }
   catch (invalid_argument& e) {
@@ -1095,7 +1096,7 @@ error41() {
     // This is an incorrect use of function
     // C_Polyhedron::generalized_affine_image(lhs, r, rhs):
     // it is illegal to use a variable in the `rhs' expression that
-    // does not apper in the polyhedron.
+    // does not appear in the polyhedron.
     ph.generalized_affine_image(A + B, GREATER_THAN_OR_EQUAL, B + C);
   }
   catch (invalid_argument& e) {
@@ -1121,7 +1122,7 @@ error42() {
     // This is an incorrect use of function
     // C_Polyhedron::generalized_affine_image(lhs, r, rhs):
     // it is illegal to use a variable in the `lhs' expression that
-    // does not apper in the polyhedron.
+    // does not appear in the polyhedron.
     ph.generalized_affine_image(B + C, LESS_THAN_OR_EQUAL, A + 1);
   }
   catch (invalid_argument& e) {
@@ -1206,10 +1207,8 @@ error46() {
 
   Generator g = line(3*A - 2*B);
   try {
-    // This is an incorrect use of function
-    // Generator::divisor():
-    // it is impossible to compute the
-    // diviso of a line.
+    // This is an incorrect use of method Generator::divisor(): it is
+    // illegal to ask for the divisor of a line.
     g.divisor();
   }
   catch (invalid_argument& e) {
