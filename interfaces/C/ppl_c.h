@@ -34,6 +34,11 @@ This file implements the C interface.
 #ifndef PPL_ppl_c_h
 #define PPL_ppl_c_h 1
 
+/*
+  For some reason, GMP up to and including version 4.1.2 requires
+  <stdio.h> to be included before <gmp.h>.
+*/
+#include <stdio.h>
 #include <gmp.h>
 #include <stddef.h>
 
