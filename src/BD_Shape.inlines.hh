@@ -473,7 +473,7 @@ BD_Shape<T>::is_empty() const {
   // Values of the minimum path, from source to all nodes.
   DB_Row<T> z(k + 1);
   for (dimension_type i = 0; i <= k; ++i)
-    z[i] = 0;
+    z[i].assign(0, ROUND_IGNORE);
 
   // The relax-technique: given an arc (j,h), it tries to improve
   // the value of minimum path for h passing by j.
@@ -1022,7 +1022,7 @@ BD_Shape<T>::closure_assign() const {
 
   // Fill the diagonal with zeros.
   for (dimension_type h = 0; h <= n; ++h)
-    x.dbm[h][h] = 0;
+    x.dbm[h][h].assign(0, ROUND_IGNORE);
 
   // Algorithm is described in the following way:
   // indicated with `m' the matrix `dbm' we have
