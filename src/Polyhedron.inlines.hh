@@ -648,12 +648,13 @@ Polyhedron::map_dimensions(const PartialFunction& pfunc) {
     // We first compute suitable permutation cycles for the columns of
     // the `con_sys' and `gen_sys' matrices.  We will represent them
     // with a linear array, using 0 as a terminator for each cycle
-    // (notice that the column of `con_sys' and `gen_sys' represent
-    // inhomogeneous terms, and thus are unaffected by the permutation
-    // of dimensions).  Cycles of length 1 will be omitted so that, in
-    // the worst case, we will have `space_dim' elements organized in
-    // `space_dim/2' cycles, which means we will have at most
-    // `space_dim/2' terminators.
+    // (notice that the columns with index 0 of `con_sys' and
+    // `gen_sys' represent the inhomogeneous terms, and thus are
+    // unaffected by the permutation of dimensions).
+    // Cycles of length 1 will be omitted so that, in the worst case,
+    // we will have `space_dim' elements organized in `space_dim/2'
+    // cycles, which means we will have at most `space_dim/2'
+    // terminators.
     dimension_type cycles[space_dim + space_dim/2];
 
     // Used to mark elements as soon as they are inserted into a cycle.
