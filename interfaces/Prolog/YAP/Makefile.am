@@ -53,8 +53,9 @@ tak.clpq
 #check-local: yap_clpq.pl ../check_script ../expected
 #	for k in $(CLPQ_TESTS); do cp -f $(srcdir)/../$$k .; done
 #	LD_LIBRARY_PATH=$(PWD)/.libs:$(LD_LIBRARY_PATH) \
-#		yap -l $(srcdir)/yap_clpq.pl \
-#			<$(srcdir)/../check_script >obtained
+#		; ( echo "main." ; cat $(srcdir)/../check_script ) \
+#		| yap -l $(srcdir)/yap_clpq.pl \
+#			 >obtained
 #	diff -q --ignore-all-space $(srcdir)/../expected obtained
 
 MOSTLYCLEANFILES = $(CLPQ_TESTS) obtained
