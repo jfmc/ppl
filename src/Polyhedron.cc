@@ -283,7 +283,7 @@ PPL::Polyhedron::minimized_constraints() const {
   if (is_necessarily_closed())
     minimize();
   else
-    NNC_minimize_constraints();
+    strongly_minimize_constraints();
   return constraints();
 }
 
@@ -324,7 +324,7 @@ PPL::Polyhedron::minimized_generators() const {
   if (is_necessarily_closed())
     minimize();
   else
-    NNC_minimize_generators();
+    strongly_minimize_generators();
   return generators();
 }
 
@@ -615,14 +615,19 @@ PPL::Polyhedron::minimize() const {
   Performs strong minimization of generators for an NNC polyhedron.
 */
 void
-PPL::Polyhedron::NNC_minimize_generators() const {
+PPL::Polyhedron::strongly_minimize_generators() const {
   assert(!is_necessarily_closed());
 
-  // We need `gen_sys' (weakly) minimized and
-  // both `con_sys' and `sat_c' up-to-date.
+  // From the user perspective, the polyhedron will not change.
+  Polyhedron& x = const_cast<Polyhedron&>(*this);
+
+  // We need `gen_sys' (weakly) minimized and `con_sys' up-to-date.
   minimize();
-  // Sort generators (to later help in identifying unmatched points).
-  obtain_sorted_generators();
+  // We also need `sat_c' up-to-date.
+  if (!sat_c_is_up_to_date()) {
+    assert(sat_g_is_up_to_date());
+    x.sat_c.transpose_assign(sat_g);
+  }
 
   // This SatRow will have all and only the indexes
   // of strict inequalities are set to 1.
@@ -673,8 +678,6 @@ PPL::Polyhedron::NNC_minimize_generators() const {
   if (gs_rows < gs.num_rows()) {
     gs.erase_to_end(gs_rows);
     gs.set_sorted(false);
-    // From the user perspective, the polyhedron is unchanged.
-    Polyhedron& x = const_cast<Polyhedron&>(*this);
     // `gen_sys' and `con_sys' are no longer the dual of each other:
     // saturation matrices are no longer meaningful.
     x.clear_sat_c_up_to_date();
@@ -694,48 +697,66 @@ PPL::Polyhedron::NNC_minimize_generators() const {
   Performs strong minimization of constraints for an NNC polyhedron.
 */
 void
-PPL::Polyhedron::NNC_minimize_constraints() const {
+PPL::Polyhedron::strongly_minimize_constraints() const {
   assert(!is_necessarily_closed());
 
-  // We need `con_sys' (weakly) minimized and
-  // both `gen_sys' and `sat_g' up-to-date.
-  minimize();
-  // Sort generators (to later help in identifying unmatched points)
-  // while keeping `sat_g' up-to-date.
-  //  obtain_sorted_generators_with_sat_g();
+  // From the user perspective, the polyhedron will not change.
+  Polyhedron& x = const_cast<Polyhedron&>(*this);
 
-  // This SatRow will have all and only the indexes but those
-  // corresponding to lines and closure points set to 1.
-  SatRow sat_lines_and_closure_points;
-  // This SatRow will have all and only the indexes of points set to 1.
+  // We need `con_sys' (weakly) minimized and `gen_sys' up-to-date.
+  minimize();
+  // We also need `sat_g' up-to-date.
+  if (!sat_g_is_up_to_date()) {
+    assert(sat_c_is_up_to_date());
+    x.sat_g.transpose_assign(sat_c);
+  }
+
+  // These SatRow's will be later used as masks in order to check
+  // saturation conditions restricted to particular subsets of
+  // the generator system.
+  SatRow sat_all_but_rays;
   SatRow sat_all_but_points;
+  SatRow sat_all_but_closure_points;
+  SatRow sat_lines_and_rays;
+  SatRow sat_lines_and_closure_points;
+
   size_t gs_rows = gen_sys.num_rows();
   size_t n_lines = gen_sys.num_lines();
   for (size_t i = gs_rows; i-- > n_lines; )
     switch (gen_sys[i].type()) {
+    case Generator::RAY:
+      sat_all_but_rays.set(i);
+      break;
     case Generator::POINT:
-      sat_lines_and_closure_points.set(i);
       sat_all_but_points.set(i);
       break;
-    case Generator::RAY:
-      sat_lines_and_closure_points.set(i);
+    case Generator::CLOSURE_POINT:
+      sat_all_but_closure_points.set(i);
       break;
     default:
-      // Lines and closure points are saturated by both.
-      break;
+      // Found a line with index i >= n_lines.
+      abort();
     }
+  set_union(sat_all_but_rays, sat_all_but_points,
+	    sat_lines_and_closure_points);
+  set_union(sat_all_but_points, sat_all_but_closure_points,
+	    sat_lines_and_rays);
 
-  // For all the strict inequalities in `con_sys',
-  // check for eps-redundancy and eventually move them
-  // to the bottom part of the system.
-  ConSys& cs = const_cast<ConSys&>(con_sys);
-  SatMatrix& sat = const_cast<SatMatrix&>(sat_g);
+  ConSys& cs = x.con_sys;
+  SatMatrix& sat = x.sat_g;
   size_t max_unsat = gs_rows - n_lines;
   size_t cs_rows = cs.num_rows();
   size_t n_equals = cs.num_equalities();
+  // These two flags are maintained to later decide
+  // if we have to add back the eps-upper-bound constraint.
+  bool topologically_closed = true;
+  bool strict_inequals_saturate_all_rays = true;
+  // For all the strict inequalities in `con_sys',
+  // check for eps-redundancy and eventually move them
+  // to the bottom part of the system.
   for (size_t i = n_equals; i < cs_rows; )
     if (cs[i].is_strict_inequality()) {
-      // First check if it is saturated by no closure points.
+      // First, check if it is saturated by no closure points
       SatRow sat_ci;
       set_union(sat[i], sat_lines_and_closure_points, sat_ci);
       if (sat_ci.count_ones() == max_unsat) {
@@ -749,9 +770,10 @@ PPL::Polyhedron::NNC_minimize_constraints() const {
 	// which is already in place due to the swap.
 	continue;
       }
-      // Otherwise, check if there exists another strict inequality
+      // Now we check if there exists another strict inequality
       // constraint having a superset of its saturators,
       // when disregarding points.
+      sat_ci.clear();
       set_union(sat[i], sat_all_but_points, sat_ci);
       bool eps_redundant = false;
       for (size_t j = n_equals; j < cs_rows; ++j)
@@ -765,21 +787,46 @@ PPL::Polyhedron::NNC_minimize_constraints() const {
 	  eps_redundant = true;
 	  break;
 	}
-      // Continue considering next constraint,
-      // which is already in place if we have perfomed the swap.
-      if (!eps_redundant)
+      if (eps_redundant)
+	// If we found an eps-redundant constraint, then we continue
+	// considering the next constraint, which is already in place.
+	continue;
+      else {
+	// Otherwise, the constraint is not eps-redudnant.
+	// Maintain boolean flags to later check
+	// if the eps-upper-bound constraint is needed.
+	topologically_closed = false;
+	if (strict_inequals_saturate_all_rays)
+	  strict_inequals_saturate_all_rays = (sat[i] <= sat_lines_and_rays);
+	// Continue with next constraint.
 	++i;
+      }
     }
     else
       // `cs[i]' is not a strict inequality: consider next constraint.
       ++i;
 
+  bool eps_upper_bound_needed
+    = topologically_closed || !strict_inequals_saturate_all_rays;
+  bool changed = eps_upper_bound_needed || (cs_rows < cs.num_rows());
+
+  // Now insert back the eps-upper-bound constraint, if needed.
+  if (eps_upper_bound_needed) {
+    assert(cs_rows < cs.num_rows());
+    Constraint& eps_leq_one = cs[cs_rows];
+    eps_leq_one[0] = 1;
+    eps_leq_one[cs.num_columns()-1] = -1;
+    for (size_t k = cs.num_columns() - 1; k-- > 1; )
+      eps_leq_one[k] = 0;
+    cs_rows++;
+  }
+
   // If needed, erase the eps-redundant constraints.
-  if (cs_rows < cs.num_rows()) {
+  if (cs_rows < cs.num_rows())
     cs.erase_to_end(cs_rows);
+
+  if (changed) {
     cs.set_sorted(false);
-    // From the user perspective, the polyhedron is unchanged.
-    Polyhedron& x = const_cast<Polyhedron&>(*this);
     // `gen_sys' and `con_sys' are no longer the dual of each other:
     // saturation matrices are no longer meaningful.
     x.clear_sat_c_up_to_date();
@@ -800,11 +847,11 @@ PPL::Polyhedron::NNC_minimize_constraints() const {
   for an NNC polyhedron.
 */
 void
-PPL::Polyhedron::NNC_minimize() const {
+PPL::Polyhedron::strongly_minimize() const {
   assert(!is_necessarily_closed());
   // FIXME : just an executable specification,
   // that still has to be checked for correctness/efficiency.
-  NNC_minimize_generators();
+  strongly_minimize_generators();
   // Recompute the minimized constraints.
   minimize();
   assert(OK());
@@ -3231,7 +3278,7 @@ PPL::Polyhedron::is_topologically_closed() const {
 
   // A polyhedron is closed if, after strong minimization
   // of its constraint system, it has no strict inequalities.
-  NNC_minimize_constraints();
+  strongly_minimize_constraints();
   return is_empty() || !con_sys.has_strict_inequalities();
 }
 
