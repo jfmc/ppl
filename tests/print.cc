@@ -30,9 +30,7 @@ using namespace Parma_Polyhedra_Library;
 using namespace std;
 
 bool
-easy_print(const Polyhedron& ph,
-	   const string& intro = "",
-	   ostream& s = cout) {
+easy_print(const Polyhedron& ph, const string& intro, ostream& s) {
   if (!intro.empty())
     s << intro << endl;
   if (ph.space_dimension() == 0) {
@@ -47,18 +45,14 @@ easy_print(const Polyhedron& ph,
 }
 
 void
-print_constraint(const Constraint& c,
-		const string& intro = "",
-		ostream& s = cout) {
+print_constraint(const Constraint& c, const string& intro, ostream& s) {
   if (!intro.empty())
     s << intro << endl;
   s << c << endl;
 }
 
 void
-print_constraints(const ConSys& cs,
-		  const string& intro = "",
-		  ostream& s = cout) {
+print_constraints(const ConSys& cs, const string& intro, ostream& s) {
   if (!intro.empty())
     s << intro << endl;
   ConSys::const_iterator i = cs.begin();
@@ -72,26 +66,20 @@ print_constraints(const ConSys& cs,
 }
 
 void
-print_constraints(const Polyhedron& ph,
-		  const string& intro = "",
-		  ostream& s = cout) {
+print_constraints(const Polyhedron& ph, const string& intro, ostream& s) {
   if (!easy_print(ph, intro, s))
     print_constraints(ph.constraints(), "", s);
 }
 
 void
-print_generator(const Generator& g,
-		const string& intro = "",
-		ostream& s = cout) {
+print_generator(const Generator& g, const string& intro, ostream& s) {
   if (!intro.empty())
     s << intro << endl;
   s << g << endl;
 }
 
 void
-print_generators(const GenSys& gs,
-		 const string& intro = "",
-		 ostream& s = cout) {
+print_generators(const GenSys& gs, const string& intro, ostream& s) {
   if (!intro.empty())
     s << intro << endl;
   GenSys::const_iterator i = gs.begin();
@@ -105,9 +93,7 @@ print_generators(const GenSys& gs,
 }
 
 void
-print_generators(const Polyhedron& ph,
-		 const string& intro = "",
-		 ostream& s = cout) {
+print_generators(const Polyhedron& ph, const string& intro, ostream& s) {
   if (!easy_print(ph, intro, s))
     print_generators(ph.generators(), "", s);
 }
