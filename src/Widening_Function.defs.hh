@@ -65,7 +65,7 @@ public:
 
   //! Constructor.
   /*!
-    \param lw
+    \param lwm
     The limited widening method.
 
     \param cs
@@ -91,13 +91,26 @@ private:
 namespace Parma_Polyhedra_Library {
 
 //! Wraps a widening method into a function object.
-/*! \relates Polyhedra_PowerSet */
+/*!
+  \relates Polyhedra_PowerSet
+
+  \param wm
+  The widening method.
+*/
 template <typename PH>
 Widening_Function<PH>
 widen_fun(void (PH::* wm)(const PH&, unsigned*));
 
 //! Wraps a limited widening method into a function object.
-/*! \relates Polyhedra_PowerSet */
+/*!
+  \relates Polyhedra_PowerSet
+
+  \param lwm
+  The limited widening method.
+  
+  \param cs
+  The constraint system limiting the widening.
+*/
 template <typename PH>
 Limited_Widening_Function<PH>
 widen_fun(void (PH::* lwm)(const PH&, const ConSys&, unsigned*),
