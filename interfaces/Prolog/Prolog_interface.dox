@@ -1393,6 +1393,24 @@ Notice that, for dynamic linking to work, you should have configured
 the library with the <CODE>--enable-shared</CODE> option.
 
 
+<H2>XSB</H2>
+
+The XSB Prolog interface to the PPL library is available
+as a dynamically linked module.
+Only CVS versions of XSB from August 2002 onward are supported.
+See <A HREF="http://www.cs.unipr.it/pipermail/ppl-devel/2002-July/002201.html">http://www.cs.unipr.it/pipermail/ppl-devel/2002-July/002201.html</A>
+for information about a bug in XSB 2.5 that has bitten several people.
+
+In order to dynamically load the library from XSB you should
+load the <CODE>ppl_xsb<CODE> module and import the predicates
+you need.
+For things to work, you may have to copy the files
+<CODE>prefix/lib/ppl/ppl_xsb.O</CODE>
+and
+<CODE>prefix/lib/ppl/ppl_xsb.so</CODE>
+in your current directory or in one of the XSB library directories.
+
+
 <H2>YAP</H2>
 
 The YAP Prolog interface to the PPL library is available
