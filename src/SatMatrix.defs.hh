@@ -72,11 +72,6 @@ public:
   //! Subscript operator.
   const SatRow& operator [](size_t k) const;
 
-  //! Clears the bit at row \p i, column \p j.
-  void clear(size_t i, size_t j);
-  //! Sets the bit at row \p i, column \p j.
-  void set(size_t i, size_t j);
-
   //! Clears the matrix deallocating all its rows.
   void clear();
 
@@ -158,5 +153,3 @@ namespace Parma_Polyhedra_Library {
 #include "SatMatrix.inlines.hh"
 
 #endif
-
-
