@@ -56,7 +56,7 @@ modename="$progname"
 PROGRAM=ltmain.sh
 PACKAGE=libtool
 VERSION=1.4e
-TIMESTAMP=" (1.1147 2002/10/25 03:28:42)"
+TIMESTAMP=" (1.1151 2002/11/03 17:35:36)"
 
 default_mode=
 help="Try \`$progname --help' for more information."
@@ -113,6 +113,40 @@ show_help=
 execute_dlfiles=
 lo2o="s/\\.lo\$/.${objext}/"
 o2lo="s/\\.${objext}\$/.lo/"
+
+#####################################
+# Shell function definitions:
+# This seems to be the best place for them
+
+# Need a lot of goo to handle *both* DLLs and import libs
+# Has to be a shell function in order to 'eat' the argument 
+# that is supplied when $file_magic_command is called.
+win32_libid () {
+  win32_libid_type="unknown"
+  if eval $OBJDUMP -f $1 2>/dev/null | \
+     grep -E 'file format pei+-i386(.*architecture: i386)?' >/dev/null ; then
+    win32_libid_type="x86 DLL"
+  else
+    if eval $OBJDUMP -f $1 2>/dev/null | \
+      grep -E 'file format pei*-i386(.*architecture: i386)?' >/dev/null ; then
+      win32_libid_type="x86"
+      if eval file $1 2>/dev/null | \
+         grep -E 'ar archive' >/dev/null; then
+        win32_libid_type="$win32_libid_type archive"
+        if eval $NM -f posix -A $1 | awk '{print $3}' | grep "I" >/dev/null ; then
+          win32_libid_type="$win32_libid_type import"
+        else
+          win32_libid_type="$win32_libid_type static"
+        fi
+      fi
+    fi
+  fi
+  echo $win32_libid_type
+}
+
+# End of Shell function definitions
+#####################################
+
 
 # Parse our command line options once, thoroughly.
 while test "$#" -gt 0
@@ -268,6 +302,8 @@ if test -z "$show_help"; then
 
   # Infer the operation mode.
   if test -z "$mode"; then
+    $echo "*** Warning: inferring the mode of operation is deprecated." 1>&2
+    $echo "*** Future versions of Libtool will require -mode=MODE be specified." 1>&2
     case $nonopt in
     *cc | cc* | *++ | gcc* | *-gcc* | g++* | xlc*)
       mode=link
@@ -807,6 +843,7 @@ EOF
     linker_flags=
     dllsearchpath=
     lib_search_path=`pwd`
+    inst_prefix_dir=
 
     avoid_version=no
     dlfiles=
@@ -936,6 +973,11 @@ EOF
 	  ;;
 	expsyms_regex)
 	  export_symbols_regex="$arg"
+	  prev=
+	  continue
+	  ;;
+	inst_prefix)
+	  inst_prefix_dir="$arg"
 	  prev=
 	  continue
 	  ;;
@@ -1089,6 +1131,14 @@ EOF
 	  finalize_command="$finalize_command $wl$qarg"
 	  continue
 	  ;;
+	xcclinker)
+	  linker_flags="$linker_flags $qarg"
+	  compiler_flags="$compiler_flags $qarg"
+	  prev=
+	  compile_command="$compile_command $qarg"
+	  finalize_command="$finalize_command $qarg"
+	  continue
+	  ;;
 	*)
 	  eval "$prev=\"\$arg\""
 	  prev=
@@ -1144,6 +1194,11 @@ EOF
 	else
 	  prev=expsyms_regex
 	fi
+	continue
+	;;
+
+      -inst-prefix-dir)
+	prev=inst_prefix
 	continue
 	;;
 
@@ -1354,6 +1409,11 @@ EOF
 
       -Xlinker)
 	prev=xlinker
+	continue
+	;;
+
+      -XCClinker)
+	prev=xcclinker
 	continue
 	;;
 
@@ -2196,6 +2256,14 @@ EOF
 		add="$dir/$linklib"
 	      elif test "$hardcode_minus_L" = yes; then
 		add_dir="-L$dir"
+		# Try looking first in the location we're being installed to.
+		if test -n "$inst_prefix_dir"; then
+		  case "$libdir" in
+		    [\\/]*)
+		      add_dir="-L$inst_prefix_dir$libdir $add_dir"
+		      ;;
+		  esac
+		fi
 		add="-l$name"
 	      elif test "$hardcode_shlibpath_var" = yes; then
 		add_shlibpath="$dir"
@@ -2254,6 +2322,14 @@ EOF
 	    else
 	      # We cannot seem to hardcode it, guess we'll fake it.
 	      add_dir="-L$libdir"
+	      # Try looking first in the location we're being installed to.
+	      if test -n "$inst_prefix_dir"; then
+		case "$libdir" in
+		  [\\/]*)
+		    add_dir="-L$inst_prefix_dir$libdir $add_dir"
+		    ;;
+		esac
+	      fi
 	      add="-l$name"
 	    fi
 
@@ -4420,7 +4496,7 @@ fi\
 	fi
       done
       # Quote the link command for shipping.
-      relink_command="(cd `pwd`; $SHELL $0 --mode=relink $libtool_args)"
+      relink_command="(cd `pwd`; $SHELL $0 --mode=relink $libtool_args @inst_prefix_dir@)"
       relink_command=`$echo "X$relink_command" | $Xsed -e "$sed_quote_subst"`
 
       # Only create the output if not a dry run.
@@ -4721,12 +4797,33 @@ relink_command=\"$relink_command\""
 	dir="$dir$objdir"
 
 	if test -n "$relink_command"; then
+	  # Determine the prefix the user has applied to our future dir.
+	  inst_prefix_dir=`$echo "$destdir" | sed "s%$libdir\$%%"`
+
+	  # Don't allow the user to place us outside of our expected
+	  # location b/c this prevents finding dependent libraries that
+	  # are installed to the same prefix.
+	  # At present, this check doesn't affect windows .dll's that
+	  # are installed into $libdir/../bin (currently, that works fine)
+	  # but it's something to keep an eye on.
+	  if test "$inst_prefix_dir" = "$destdir"; then
+	    $echo "$modename: error: cannot install \`$file' to a directory not ending in $libdir" 1>&2
+	    exit 1
+	  fi
+
+	  if test -n "$inst_prefix_dir"; then
+	    # Stick the inst_prefix_dir data into the link command.
+	    relink_command=`$echo "$relink_command" | sed "s%@inst_prefix_dir@%-inst-prefix-dir $inst_prefix_dir%"`
+	  else
+	    relink_command=`$echo "$relink_command" | sed "s%@inst_prefix_dir@%%"`
+	  fi
+
 	  $echo "$modename: warning: relinking \`$file'" 1>&2
 	  $show "$relink_command"
 	  if $run eval "$relink_command"; then :
 	  else
 	    $echo "$modename: error: relink \`$file' with the above command before installing it" 1>&2
-	    continue
+	    exit 1 
 	  fi
 	fi
 
