@@ -60,6 +60,7 @@ ORIGINAL_TESTS = \
 	empty1 empty2 empty3 empty4 empty5 \
 	equality1 \
 	exceptions1 exceptions2 exceptions3 \
+	fromgensys1 \
 	generalizedaffineimage1 generalizedaffineimage2 \
 	generalizedaffineimage3 generalizedaffineimage4 \
 	generalizedaffineimage5 generalizedaffineimage6 \
@@ -164,6 +165,8 @@ equality1_SOURCES = equality1.cc
 exceptions1_SOURCES = exceptions1.cc
 exceptions2_SOURCES = exceptions2.cc
 exceptions3_SOURCES = exceptions3.cc
+
+fromgensys1_SOURCES = fromgensys1.cc
 
 generalizedaffineimage1_SOURCES = generalizedaffineimage1.cc 
 generalizedaffineimage2_SOURCES = generalizedaffineimage2.cc
