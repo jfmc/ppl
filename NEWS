@@ -10,6 +10,11 @@ NEWS for version 0.7  (released on December 24, 2004)
 New and Changed Features
 ========================
 
+o  The new configuration option --enable-coefficients allows for the use
+   of alternative (integral) coefficient types. Besides GMP integers,
+   the user can now use checked native integers (8, 16, 32 or 64 bits),
+   that throw an exception if overflow is detected.
+
 o  We now require GMP 4.1.3 or higher.
 
 o  Significant efficiency improvements have been achieved everywhere.
