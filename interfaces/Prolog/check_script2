@@ -34,4 +34,3 @@ schedule([task(S1, D1), task(S2, D2), task(S2, D3)], task(S, D)).
 ;
 ;
 ;
-

@@ -97,4 +97,4 @@ S2 - S >= 0
 -S2 - D2 + S + D >= 0
 -S1 - D1 + S + D >= 0
  more? no
-PPL clpq ?- |:
+PPL clpq ?- 
