@@ -392,6 +392,17 @@ private:
   */
   bool is_trivial_false() const;
 
+  //! \brief
+  //! Returns <CODE>true</CODE> if and only if the strict inequality
+  //! \p *this and the non-strict inequality \p c implicitly define
+  //! the same bounding hyperplane.
+  /*!
+    It is \e assumed that \p *this is a strict inequality,
+    \p c is a non-strict inequality and both topologies
+    and space-dimensions agree.
+  */
+  bool is_matching_strict_inequality(const Constraint& c) const;
+
   //! Sets the constraint type to <CODE>EQUALITY</CODE>.
   void set_is_equality();
  

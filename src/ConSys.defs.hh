@@ -218,8 +218,14 @@ public:
     //! Constructor.
     const_iterator(const Matrix::const_iterator& iter, const ConSys& csys);
     
-    //! \p *this skips to the next non-trivial constraint.
+    //! \brief
+    //! \p *this skips to the next non-trivial constraint,
+    //! also ignoring the next one if it is a non-strict inequality
+    //! subsumed by the current strict inequality.
     void skip_forward();
+
+    //! \p *this skips to the next non-trivial constraint.
+    void skip_trivial_true_constraints();
   };
 
   //! \brief

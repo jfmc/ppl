@@ -134,6 +134,44 @@ PPL::Constraint::is_trivial_false() const {
     }
 }
 
+bool
+PPL::Constraint::is_matching_strict_inequality(const Constraint& c) const {
+  assert(topology() == c.topology()
+	 && space_dimension() == c.space_dimension()
+	 && type() == STRICT_INEQUALITY
+	 && c.type() == NONSTRICT_INEQUALITY);
+  const Constraint& sc = *this;
+  if (sc[0] == c[0]) {
+    // Inhomogeneous terms are equal: we can simply compare coefficients
+    // (disregarding the epsilon coefficient).
+    for (size_t i = sc.size() - 2; i > 0; --i)
+      if (sc[i] != c[i])
+	return false;
+    return true;
+  }
+  else {
+    // Inhomogeneous terms are different: compute their GCD.
+    gcd_assign(tmp_Integer[1], sc[0], c[0]);
+    // Assuming that `c' is matching `sc' ...
+    // since `c' is normalized and has a zero epsilon coefficient,
+    // then the GCD should be equal to `c[0]'.
+    if (tmp_Integer[1] != c[0])
+      return false;
+    // Similarly, if `c' and `c' do match,
+    // it must hold `sc[i] == c[i] * (sc[0] / c[0])',
+    // for each homogeneous (non-epsilon) coefficient.
+    Integer& normalization_factor = tmp_Integer[1];
+    exact_div_assign(normalization_factor, sc[0], c[0]);
+    Integer& normalized_coefficient = tmp_Integer[2];
+    for (size_t i = sc.size() - 2; i > 0; --i) {
+      // CHECK ME: is exact division more efficient than multiplication?
+      normalized_coefficient = c[i] * normalization_factor;
+      if (normalized_coefficient != sc[i])
+	return false;
+    }
+    return true;
+  }
+}
 
 /*!
   \relates Parma_Polyhedra_Library::Constraint
