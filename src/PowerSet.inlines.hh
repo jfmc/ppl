@@ -26,6 +26,7 @@ site: http://www.cs.unipr.it/ppl/ . */
 
 #include <algorithm>
 #include <cassert>
+#include <iostream>
 
 namespace Parma_Polyhedra_Library {
 
@@ -109,27 +110,33 @@ PowerSet<CS>::erase(iterator position) {
 
 template <typename CS>
 PowerSet<CS>::PowerSet(const PowerSet<CS>& y)
-  : sequence(y.sequence) {
+  : sequence(y.sequence), reduced(y.reduced) {
 }
 
 template <typename CS>
 PowerSet<CS>&
 PowerSet<CS>::operator=(const PowerSet<CS>& y) {
   sequence = y.sequence;
+  reduced = y.reduced;
   return *this;
 }
 
 template <typename CS>
-PowerSet<CS>::PowerSet() {
+PowerSet<CS>::PowerSet()
+  : sequence(), reduced(true) {
 }
 
 template <typename CS>
 void
-PowerSet<CS>::omega_reduce() {
-  for (iterator xi = begin(), xin = xi; xi != end(); xi = xin) {
+PowerSet<CS>::omega_reduce() const {
+  if (reduced)
+    return;
+
+  Sequence& s = const_cast<Sequence&>(sequence);
+  for (iterator xi = s.begin(), xin = xi; xi != s.end(); xi = xin) {
     ++xin;
     const CS& xv = *xi;
-    for (iterator yi = begin(), yin = yi; yi != end(); yi = yin) {
+    for (iterator yi = s.begin(), yin = yi; yi != s.end(); yi = yin) {
       ++yin;
       if (xi == yi)
 	continue;
@@ -137,20 +144,21 @@ PowerSet<CS>::omega_reduce() {
       if (yv.definitely_entails(xv)) {
 	if (yi == xin)
 	  ++xin;
-	erase(yi);
+	s.erase(yi);
       }
       else if (xv.definitely_entails(yv)) {
-	erase(xi);
+	s.erase(xi);
 	break;
       }
     }
   }
+  reduced = true;
   assert(OK());
 }
 
 template <typename CS>
 bool
-PowerSet<CS>::is_omega_reduced() const {
+PowerSet<CS>::check_omega_reduced() const {
   for (const_iterator sbegin = begin(), send = end(),
 	 xi = sbegin; xi != send; ++xi) {
     const CS& xv = *xi;
@@ -163,6 +171,14 @@ PowerSet<CS>::is_omega_reduced() const {
     }
   }
   return true;
+}
+
+template <typename CS>
+bool
+PowerSet<CS>::is_omega_reduced() const {
+  if (!reduced && check_omega_reduced())
+    reduced = true;
+  return reduced;
 }
 
 template <typename CS>
@@ -233,8 +249,11 @@ bool operator!=(const PowerSet<CS>& x, const PowerSet<CS>& y) {
 template <typename CS>
 inline bool
 PowerSet<CS>::is_top() const {
-  assert(is_omega_reduced());
-  return size() == 1 && begin()->is_top();
+  // Must perform omega-reduction for correctness.
+  omega_reduce();
+  const_iterator i = begin();
+  const_iterator send = end();
+  return i != send && i->is_top() && ++i == send;
 }
 
 template <typename CS>
@@ -301,6 +320,9 @@ PowerSet<CS>::meet_assign(const PowerSet<CS>& y) {
 template <typename CS>
 void
 PowerSet<CS>::upper_bound_assign(const PowerSet<CS>& y) {
+  // Ensure omega-reduction here, since what follows has quadratic complexity.
+  omega_reduce();
+  y.omega_reduce();
   iterator sbegin = begin();
   iterator send = end();
   for (const_iterator i = y.begin(), y_end = y.end(); i != y_end; ++i)
@@ -339,8 +361,20 @@ PowerSet<CS>::OK() const {
   for (const_iterator i = begin(), send = end(); i != send; ++i) {
     if (!i->OK())
       return false;
-    if (i->is_bottom())
+    if (i->is_bottom()) {
+#ifndef NDEBUG
+      std::cerr << "Bottom element in powerset!"
+		<< std::endl;
+#endif
       return false;
+    }
+  }
+  if (reduced && !check_omega_reduced()) {
+#ifndef NDEBUG
+    std::cerr << "Powerset claims to be reduced, but it is not!"
+	      << std::endl;
+#endif
+    return false;
   }
   return true;
 }

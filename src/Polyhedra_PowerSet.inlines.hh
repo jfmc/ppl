@@ -68,6 +68,9 @@ Polyhedra_PowerSet<PH>::space_dimension() const {
 template <typename PH>
 void
 Polyhedra_PowerSet<PH>::concatenate_assign(const Polyhedra_PowerSet& y) {
+  // Ensure omega-reduction here, since what follows has quadratic complexity.
+  omega_reduce();
+  y.omega_reduce();
   Sequence new_sequence;
   const Polyhedra_PowerSet<PH>& x = *this;
   for (const_iterator xi = x.begin(), x_end = x.end(); xi != x_end; ++xi)
@@ -80,7 +83,6 @@ Polyhedra_PowerSet<PH>::concatenate_assign(const Polyhedra_PowerSet& y) {
   std::swap(sequence, new_sequence);
   space_dim += y.space_dim;
   assert(OK());
-  assert(is_omega_reduced());
 }
 
 template <typename PH>
@@ -94,8 +96,9 @@ Polyhedra_PowerSet<PH>::add_constraint(const Constraint& c) {
       erase(xi);
       x_end = end();
     }
+    else
+      reduced = false;
   }
-  omega_reduce();
 }
 
 template <typename PH>
@@ -110,8 +113,9 @@ Polyhedra_PowerSet<PH>::add_constraints(const ConSys& cs) {
       erase(xi);
       x_end = end();
     }
+    else
+      reduced = false;
   }
-  omega_reduce();
 }
 
 template <typename PH>
@@ -121,7 +125,6 @@ Polyhedra_PowerSet<PH>::add_dimensions_and_embed(dimension_type m) {
     i->add_dimensions_and_embed(m);
   space_dim += m;
   assert(OK());
-  assert(is_omega_reduced());
 }
 
 template <typename PH>
@@ -131,28 +134,34 @@ Polyhedra_PowerSet<PH>::add_dimensions_and_project(dimension_type m) {
     i->add_dimensions_and_project(m);
   space_dim += m;
   assert(OK());
-  assert(is_omega_reduced());
 }
 
 template <typename PH>
 void
 Polyhedra_PowerSet<PH>::remove_dimensions(const Variables_Set& to_be_removed) {
-  for (iterator i = begin(), send = end(); i != send; ++i)
-    i->remove_dimensions(to_be_removed);
-  space_dim -= to_be_removed.size();
-  omega_reduce();
-  assert(OK());
+  Variables_Set::size_type num_removed = to_be_removed.size();
+  if (num_removed > 0) {
+    for (iterator i = begin(), send = end(); i != send; ++i) {
+      i->remove_dimensions(to_be_removed);
+      reduced = false;
+    }
+    space_dim -= num_removed.size();
+    assert(OK());
+  }
 }
 
 template <typename PH>
 void
 Polyhedra_PowerSet<PH>::remove_higher_dimensions(dimension_type
 						 new_dimension) {
-  for (iterator i = begin(), send = end(); i != send; ++i)
-    i->remove_higher_dimensions(new_dimension);
-  space_dim = new_dimension;
-  omega_reduce();
-  assert(OK());
+  if (new_dimension < space_dim) {
+    for (iterator i = begin(), send = end(); i != send; ++i) {
+      i->remove_higher_dimensions(new_dimension);
+      reduced = false;
+    }
+    space_dim = new_dimension;
+    assert(OK());
+  }
 }
 
 template <typename PH>
@@ -173,7 +182,7 @@ Polyhedra_PowerSet<PH>::map_dimensions(const PartialFunction& pfunc) {
     for (iterator i = sbegin, send = end(); i != send; ++i)
       i->map_dimensions(pfunc);
     space_dim = sbegin->space_dimension();
-    omega_reduce();
+    reduced = false;
   }
   assert(OK());
 }
@@ -181,6 +190,9 @@ Polyhedra_PowerSet<PH>::map_dimensions(const PartialFunction& pfunc) {
 template <typename PH>
 void
 Polyhedra_PowerSet<PH>::pairwise_reduce() {
+  // It is wise to omega-reduce before pairwise-reducing.
+  omega_reduce();
+
   size_type n = size();
   size_type deleted;
   do {
@@ -220,7 +232,6 @@ Polyhedra_PowerSet<PH>::pairwise_reduce() {
     n -= deleted;
   } while (deleted > 0);
   assert(OK());
-  assert(is_omega_reduced());
 }
 
 template <typename PH>
@@ -282,6 +293,8 @@ template <typename PH>
 void
 Polyhedra_PowerSet<PH>::collapse(unsigned max_disjuncts) {
   assert(max_disjuncts > 0);
+  // Omega-reduce before counting the number of disjuncts.
+  omega_reduce();
   size_type n = size();
   if (n > max_disjuncts) {
     iterator sbegin = begin();
@@ -358,11 +371,10 @@ is_multiset_lgo_stabilizing(const multiset_lgo_info& y_info) const {
     case 1:
       // xi_info > yi_info: it is not stabilizing.
       return false;
-      break;
+
     case -1:
       // xi_info < yi_info: it is stabilizing.
       return true;
-      break;
     }
   }
   // Here xi == xend or yi == yend.
@@ -578,13 +590,17 @@ limited_BHRZ03_extrapolation_assign(const Polyhedra_PowerSet& y,
 template <typename PH>
 bool
 Polyhedra_PowerSet<PH>::OK() const {
-  for (const_iterator i = begin(), send = end(); i != send; ++i) {
-    if (i->space_dimension() != space_dim)
+  for (const_iterator i = begin(), send = end(); i != send; ++i)
+    if (i->space_dimension() != space_dim) {
+#ifndef NDEBUG
+      std::cerr << "Space dimension mismatch: is " << i->space_dimension()
+		<< " in an element of the sequence,\nshould be "
+		<< space_dim << " ."
+		<< std::endl;
+#endif
       return false;
-    if (!Base::OK())
-      return false;
-  }
-  return true;
+    }
+  return Base::OK();
 }
 
 } // namespace Parma_Polyhedra_Library

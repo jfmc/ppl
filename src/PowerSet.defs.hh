@@ -140,13 +140,22 @@ protected:
   //! The sequence container holding powerset's elements.
   Sequence sequence;
 
+  //! If <CODE>true</CODE>, \p *this is omega-reduced.
+  mutable bool reduced;
+
   //! Erase from \p *this all the non-maximal elements.
-  void omega_reduce();
+  void omega_reduce() const;
 
   //! \brief
   //! Returns <CODE>true</CODE> if and only if \p *this does not contain
   //! non-maximal elements.
   bool is_omega_reduced() const;
+
+private:
+  //! \brief
+  //! Does the hard work of checking whether \p *this contains non-maximal
+  //! elements and returns <CODE>true</CODE> if and only if it does not.
+  bool check_omega_reduced() const;
 
 public:
   typedef typename Sequence::size_type size_type;
