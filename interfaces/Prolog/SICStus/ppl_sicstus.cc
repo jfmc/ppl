@@ -447,6 +447,22 @@ ppl_insert_constraint(void* pp, SP_term_ref t) {
   CATCH_ALL;
 }
 
+extern "C" long
+ppl_add_constraints_and_minimize(void* pp, SP_term_ref constraints_list) {
+  try {
+    PPL::ConSys cs;
+    SP_term_ref c = SP_new_term_ref();
+    while (SP_is_list(constraints_list)) {
+      SP_get_list(constraints_list, c, constraints_list);
+      cs.insert(build_constraint(c));
+    }
+    PPL::Polyhedron& ph = *static_cast<PPL::Polyhedron*>(pp);
+    return ph.add_constraints_and_minimize(cs) ? 1 : 0;
+  }
+  CATCH_ALL;
+  return -1;
+}
+
 static PPL::Generator
 build_generator(SP_term_ref t) {
   if (SP_is_compound(t)) {
@@ -656,6 +672,7 @@ get_variable(SP_term_ref t) {
   }
   throw not_a_variable(t);
 }
+
 
 extern "C" void
 ppl_remove_dimensions(void* pp, SP_term_ref variables_list) {

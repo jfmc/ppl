@@ -9,6 +9,7 @@ foreign_resource(ppl_sicstus,
 	ppl_space_dimension,
 	ppl_insert_constraint,
 	ppl_insert_generator,
+	ppl_add_constraints_and_minimize,
 	ppl_remove_dimensions,
 	ppl_remove_higher_dimensions,
 	ppl_add_dimensions_and_embed,
@@ -39,6 +40,9 @@ foreign(ppl_space_dimension,
 foreign(ppl_insert_constraint,
 	c,
 	ppl_insert_constraint(+address, +term)).
+foreign(ppl_add_constraints_and_minimize,
+	c,
+	ppl_add_constraints_and_minimize(+address, +term, [-integer])).
 foreign(ppl_insert_generator,
 	c,
 	ppl_insert_generator(+address, +term)).
@@ -87,3 +91,7 @@ ppl_insert_generators(_Polyhedron, []).
 ppl_insert_generators(Polyhedron, [G|Generators]) :-
   ppl_insert_generator(Polyhedron, G),
   ppl_insert_generators(Polyhedron, Generators).
+
+ppl_add_constraints_and_minimize(Polyhedron, Constraints) :-
+  ppl_add_constraints_and_minimize(Polyhedron, Constraints, 1).
+
