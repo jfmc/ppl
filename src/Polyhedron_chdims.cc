@@ -269,7 +269,7 @@ PPL::Polyhedron::concatenate_assign(const Polyhedron& y) {
   if (topology() != y.topology())
     throw_topology_incompatible("concatenate_assign(y)", y);
 
-  dimension_type added_columns = y.space_dimension();
+  dimension_type added_columns = y.space_dim;
 
   // If `*this' or `y' are empty polyhedra, it is sufficient to adjust
   // the dimension of the space.

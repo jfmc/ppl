@@ -304,8 +304,8 @@ PPL::Polyhedron::Three_Valued_Boolean
 PPL::Polyhedron::quick_equivalence_test(const Polyhedron& y) const {
   // Private method: the caller must ensure the following.
   assert(topology() == y.topology());
-  assert(space_dimension() == y.space_dimension());
-  assert(!marked_empty() && !y.marked_empty() && space_dimension() > 0);
+  assert(space_dim == y.space_dim);
+  assert(!marked_empty() && !y.marked_empty() && space_dim > 0);
 
   const Polyhedron& x = *this;
 
@@ -365,8 +365,8 @@ bool
 PPL::Polyhedron::is_included_in(const Polyhedron& y) const {
   // Private method: the caller must ensure the following.
   assert(topology() == y.topology());
-  assert(space_dimension() == y.space_dimension());
-  assert(!marked_empty() && !y.marked_empty() && space_dimension() > 0);
+  assert(space_dim == y.space_dim);
+  assert(!marked_empty() && !y.marked_empty() && space_dim > 0);
 
   const Polyhedron& x = *this;
 
@@ -428,7 +428,7 @@ PPL::Polyhedron::is_included_in(const Polyhedron& y) const {
   else {
     // Here we have a NON-necessarily closed polyhedron: using the
     // reduced scalar product, which ignores the epsilon coefficient.
-    dimension_type eps_index = x.space_dimension() + 1;
+    dimension_type eps_index = x.space_dim + 1;
     for (dimension_type i = cs.num_rows(); i-- > 0; ) {
       const Constraint& c = cs[i];
       switch (c.type()) {

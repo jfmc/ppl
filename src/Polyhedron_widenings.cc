@@ -40,7 +40,7 @@ PPL::Polyhedron::select_CH78_constraints(const Polyhedron& y,
   // Private method: the caller must ensure the following conditions.
   assert(topology() == y.topology()
 	 && topology() == cs_selection.topology()
-	 && space_dimension() == y.space_dimension());
+	 && space_dim == y.space_dim);
   assert(!marked_empty()
 	 && !has_pending_constraints()
 	 && generators_are_up_to_date());
@@ -69,7 +69,7 @@ PPL::Polyhedron::select_H79_constraints(const Polyhedron& y,
   assert(topology() == y.topology()
 	 && topology() == cs_selected.topology()
 	 && topology() == cs_not_selected.topology());
-  assert(space_dimension() == y.space_dimension());
+  assert(space_dim == y.space_dim);
   assert(!marked_empty()
 	 && !has_pending_generators()
 	 && constraints_are_up_to_date());
@@ -387,7 +387,7 @@ PPL::Polyhedron::is_BHRZ03_stabilizing(const Polyhedron& x,
 				       const Polyhedron& y) {
   // It is assumed that `y' is included into `x'.
   assert(x.topology() == y.topology());
-  assert(x.space_dimension() == y.space_dimension());
+  assert(x.space_dim == y.space_dim);
   assert(!x.marked_empty() && !x.has_something_pending()
 	 && x.constraints_are_minimized() && x.generators_are_minimized());
   assert(!y.marked_empty() && !y.has_something_pending()
@@ -399,9 +399,9 @@ PPL::Polyhedron::is_BHRZ03_stabilizing(const Polyhedron& x,
   // the polyhedra is obtained by subtracting the number of
   // equalities from the space dimension.
   dimension_type x_dimension =
-    x.space_dimension() - x.con_sys.num_equalities();
+    x.space_dim - x.con_sys.num_equalities();
   dimension_type y_dimension =
-    y.space_dimension() - y.con_sys.num_equalities();
+    y.space_dim - y.con_sys.num_equalities();
   if (x_dimension > y_dimension) {
 #if 0
     std::cout << "BHRZ03_stabilizing: number of dimensions" << std::endl;
@@ -519,34 +519,34 @@ PPL::Polyhedron::is_BHRZ03_stabilizing(const Polyhedron& x,
   // For each i such that 0 <= i < x.space_dim, let x_num_rays[i] be
   // the number of rays in x.gen_sys
   // having exactly `i' coordinates equal to 0.
-  std::vector<dimension_type> x_num_rays(x.space_dimension());
-  for (dimension_type i = x.space_dimension(); i-- > 0; )
+  std::vector<dimension_type> x_num_rays(x.space_dim);
+  for (dimension_type i = x.space_dim; i-- > 0; )
     x_num_rays[i] = 0;
   for (dimension_type i = x_gen_sys_num_rows; i-- > 0; )
     if (x.gen_sys[i].is_ray()) {
       const Generator& r = x.gen_sys[i];
       dimension_type num_zeroes = 0;
-      for (dimension_type j = x.space_dimension(); j >= 1; j--)
+      for (dimension_type j = x.space_dim; j >= 1; j--)
 	if (r[j] == 0)
 	  num_zeroes++;
       x_num_rays[num_zeroes]++;
     }
   // The same as above, this time for `y'.
-  std::vector<dimension_type> y_num_rays(y.space_dimension());
-  for (dimension_type i = y.space_dimension(); i-- > 0; )
+  std::vector<dimension_type> y_num_rays(y.space_dim);
+  for (dimension_type i = y.space_dim; i-- > 0; )
     y_num_rays[i] = 0;
   for (dimension_type i = y_gen_sys_num_rows; i-- > 0; )
     if (y.gen_sys[i].is_ray()) {
       const Generator& r = y.gen_sys[i];
       dimension_type num_zeroes = 0;
-      for (dimension_type j = y.space_dimension(); j >= 1; j--)
+      for (dimension_type j = y.space_dim; j >= 1; j--)
 	if (r[j] == 0)
 	  num_zeroes++;
       y_num_rays[num_zeroes]++;
     }
   // Compare (lexicographically) the two vectors:
   // if x_num_rays < y_num_rays the chain is stabilizing.
-  for (dimension_type i = 0; i < x.space_dimension(); i++) {
+  for (dimension_type i = 0; i < x.space_dim; i++) {
     if (x_num_rays[i] > y_num_rays[i])
       // Not stabilizing.
       break;
@@ -576,9 +576,9 @@ PPL::Polyhedron::BHRZ03_combining_constraints(const Polyhedron& y,
   assert(x.topology() == y.topology()
 	 && x.topology() == H79.topology()
 	 && x.topology() == x_minus_H79_cs.topology());
-  assert(x.space_dimension() == y.space_dimension()
-	 && x.space_dimension() == H79.space_dimension()
-	 && x.space_dimension() == x_minus_H79_cs.space_dimension());
+  assert(x.space_dim == y.space_dim
+	 && x.space_dim == H79.space_dim
+	 && x.space_dim == x_minus_H79_cs.space_dimension());
   assert(!x.marked_empty() && !x.has_something_pending()
 	 && x.constraints_are_minimized() && x.generators_are_minimized());
   assert(!y.marked_empty() && !y.has_something_pending()
@@ -694,8 +694,8 @@ PPL::Polyhedron::BHRZ03_evolving_points(const Polyhedron& y,
   // It is assumed that `y <= x <= H79'.
   assert(x.topology() == y.topology()
 	 && x.topology() == H79.topology());
-  assert(x.space_dimension() == y.space_dimension()
-	 && x.space_dimension() == H79.space_dimension());
+  assert(x.space_dim == y.space_dim
+	 && x.space_dim == H79.space_dim);
   assert(!x.marked_empty() && !x.has_something_pending()
 	 && x.constraints_are_minimized() && x.generators_are_minimized());
   assert(!y.marked_empty() && !y.has_something_pending()
@@ -761,8 +761,8 @@ PPL::Polyhedron::BHRZ03_evolving_rays(const Polyhedron& y,
   // It is assumed that `y <= x <= H79'.
   assert(x.topology() == y.topology()
 	 && x.topology() == H79.topology());
-  assert(x.space_dimension() == y.space_dimension()
-	 && x.space_dimension() == H79.space_dimension());
+  assert(x.space_dim == y.space_dim
+	 && x.space_dim == H79.space_dim);
   assert(!x.marked_empty() && !x.has_something_pending()
 	 && x.constraints_are_minimized() && x.generators_are_minimized());
   assert(!y.marked_empty() && !y.has_something_pending()
@@ -940,7 +940,7 @@ PPL::Polyhedron::BHRZ03_widening_assign(const Polyhedron& y, unsigned* tp) {
   assert(x_minus_H79_cs.num_rows() > 0);
   // Be careful to obtain the right space dimension
   // (because `H79_cs' may be empty).
-  Polyhedron H79(tpl, x.space_dimension(), UNIVERSE);
+  Polyhedron H79(tpl, x.space_dim, UNIVERSE);
   H79.add_constraints_and_minimize(H79_cs);
 
   // NOTE: none of the following widening heuristics is intrusive:

@@ -217,7 +217,7 @@ PPL::Polyhedron::is_universe() const {
   // Try a fast-fail test: the universe polyhedron has `space_dim' lines.
   // If there are too few lines and rays we can return `false'
   // without performing minimization.
-  dimension_type num_rays_required = 2*space_dimension();
+  dimension_type num_rays_required = 2*space_dim;
 
   dimension_type num_lines = 0;
   dimension_type num_rays = 0;
@@ -236,7 +236,7 @@ PPL::Polyhedron::is_universe() const {
 
   if (has_pending_generators()) {
     // The seen part of `gen_sys' was minimized.
-    if (num_rays == 0 && num_lines == space_dimension())
+    if (num_rays == 0 && num_lines == space_dim)
       return true;
     // Now scan the pending generators.
     dimension_type gs_num_rows = gen_sys.num_rows();
@@ -258,7 +258,7 @@ PPL::Polyhedron::is_universe() const {
     // There is nothing pending.
     if (generators_are_minimized())
       // The exact test is possible.
-      return (num_rays == 0 && num_lines == space_dimension());
+      return (num_rays == 0 && num_lines == space_dim);
     else
       if (2*num_lines + num_rays < num_rays_required)
 	return false;
@@ -326,7 +326,7 @@ PPL::Polyhedron::is_topologically_closed() const {
     return true;
   // Any empty or zero-dimensional polyhedron is closed.
   if (marked_empty()
-      || space_dimension() == 0
+      || space_dim == 0
       || (has_something_pending() && !process_pending()))
      return true;
 
@@ -1322,7 +1322,7 @@ PPL::Polyhedron::add_generators_and_minimize(GenSys& gs) {
   if (is_necessarily_closed() && gs.has_closure_points())
     throw_topology_incompatible("add_generators_and_minimize(gs)", gs);
   // Dimension-compatibility check:
-  // the dimension of `gs' can not be greater than space_dimension().
+  // the dimension of `gs' can not be greater than space_dim.
   dimension_type gs_space_dim = gs.space_dimension();
   if (space_dim < gs_space_dim)
     throw_dimension_incompatible("add_generators_and_minimize(gs)", "gs", gs);
@@ -1953,7 +1953,7 @@ PPL::Polyhedron::generalized_affine_image(const Variable& var,
       // and another point, having the same coordinates for all but the
       // `var' dimension, which is displaced along the direction of the
       // newly introduced ray.
-      dimension_type eps_index = space_dimension() + 1;
+      dimension_type eps_index = space_dim + 1;
       for (dimension_type i =  gen_sys.num_rows(); i-- > 0; )
 	if (gen_sys[i].is_point()) {
 	  Generator& g = gen_sys[i];
@@ -2049,7 +2049,7 @@ PPL::Polyhedron::generalized_affine_image(const LinExpression& lhs,
   if (lhs_vars_intersects_rhs_vars) {
     // Some variables in `lhs' also occur in `rhs'.
     // To ease the computation, we add and additional dimension.
-    Variable new_var = Variable(space_dimension());
+    Variable new_var = Variable(space_dim);
     add_dimensions_and_embed(1);
 
     // Constrain the new dimension to be equal to the right hand side.
@@ -2086,7 +2086,7 @@ PPL::Polyhedron::generalized_affine_image(const LinExpression& lhs,
     add_constraints_and_minimize(new_cs);
 
     // Remove the temporarily added dimension.
-    remove_higher_dimensions(space_dimension()-1);
+    remove_higher_dimensions(space_dim-1);
   }
   else {
     // `lhs' and `rhs' variables are disjoint:
@@ -2248,7 +2248,7 @@ PPL::Polyhedron::topological_closure_assign() {
   if (is_necessarily_closed())
     return;
   // Any empty or zero-dimensional polyhedron is closed.
-  if (marked_empty() || space_dimension() == 0)
+  if (marked_empty() || space_dim == 0)
     return;
 
   // The computation can be done using constraints or generators.
@@ -2356,7 +2356,7 @@ PPL::Polyhedron::contains(const Polyhedron& y) const {
     return true;
   else if (x.marked_empty())
     return y.is_empty();
-  else if (y.space_dimension() == 0)
+  else if (y.space_dim == 0)
     return true;
   else if (x.quick_equivalence_test(y) == Polyhedron::TVB_TRUE)
     return true;
@@ -2376,7 +2376,7 @@ PPL::Polyhedron::ascii_dump(std::ostream& s) const {
   using std::endl;
 
   s << "space_dim "
-    << space_dimension()
+    << space_dim
     << endl;
   status.ascii_dump(s);
   s << endl
