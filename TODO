@@ -1,6 +1,9 @@
 Enhancements for PPL 0.6
 ========================
 
+- We must explain very well that iterators can be invalidated by several
+  (actually, almost all) operations, and that use of an invalidated
+  iterator causes undefined behavior.
 - Implement the extrapolation operators defined in HenzingerH95
   and HenzingerPW01.
 - Complete the Determinate and PowerSet classes so as to provide
