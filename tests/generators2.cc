@@ -55,7 +55,7 @@ main() try {
 
   return 0;
 }
-catch (std::invalid_argument& e) {
+catch (invalid_argument& e) {
 #if NOISY
   cout << "invalid_argument: " << e.what() << endl;
 #endif

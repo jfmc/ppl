@@ -86,27 +86,27 @@ main() {
 
   for (unsigned i = 1; i <= 100; ++i) {
 #if NOISY
-    std::cout << "*** Result of the previous iteration:" << std::endl;
-    std::cout << q_i_minus_1.generators() << std::endl;
+    cout << "*** Result of the previous iteration:" << endl;
+    cout << q_i_minus_1.generators() << endl;
 #endif
     C_Polyhedron p_i = p(i);
 #if NOISY
-    std::cout << "*** New stuff:" << std::endl;
-    std::cout << p_i.generators() << std::endl;
+    cout << "*** New stuff:" << endl;
+    cout << p_i.generators() << endl;
 #endif
     C_Polyhedron q_i = q_i_minus_1;
     q_i.poly_hull_assign(p_i);
 
 #if NOISY
-    std::cout << "*** Poly-hull of previous with new:" << std::endl;
-    std::cout << q_i.generators() << std::endl;
+    cout << "*** Poly-hull of previous with new:" << endl;
+    cout << q_i.generators() << endl;
 #endif
    
     q_i.BBRZ02_widening_assign(q_i_minus_1);
 
 #if NOISY
-    std::cout << "*** Result of widening poly-hull with new:" << std::endl;
-    std::cout << q_i.generators() << std::endl;
+    cout << "*** Result of widening poly-hull with new:" << endl;
+    cout << q_i.generators() << endl;
 #endif
     if (q_i == q_i_minus_1) {
 

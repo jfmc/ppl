@@ -43,7 +43,7 @@ compute_open_hypercube_generators(dimension_type dimension) {
   (void) hypercube.generators();
 }
 
-class myTimeout : virtual public std::exception,
+class myTimeout : virtual public exception,
 		  public Parma_Polyhedra_Library::Throwable {
 public:
   const char* what() const throw() {

@@ -52,7 +52,7 @@ test1() {
   close(f);
 
   open(f, my_file, ios_base::in | ios_base::out);
-  std::string str;
+  string str;
   do
     f >> str;
   while (str != "space_dim");
@@ -83,7 +83,7 @@ test2() {
   close(f);
 
   open(f, my_file, ios_base::in | ios_base::out);
-  std::string str;
+  string str;
   do
     f >> str;
   while(str != "-ZE");
@@ -114,7 +114,7 @@ test3() {
   close(f);
 
   open(f, my_file, ios_base::in | ios_base::out);
-  std::string str;
+  string str;
   do
     f >> str;
   while(str != "con_sys");
@@ -145,7 +145,7 @@ test4() {
   close(f);
 
   open(f, my_file, ios_base::in | ios_base::out);
-  std::string str;
+  string str;
   do
     f >> str;
   while (str != "(up-to-date)");
@@ -176,7 +176,7 @@ test5() {
   close(f);
 
   open(f, my_file, ios_base::in | ios_base::out);
-  std::string str;
+  string str;
   do
     f >> str;
   while(str != "gen_sys");
@@ -207,7 +207,7 @@ test6() {
   close(f);
 
   open(f, my_file, ios_base::in | ios_base::out);
-  std::string str;
+  string str;
   do
     f >> str;
   while(str != "(not_up-to-date)" );
@@ -238,7 +238,7 @@ test7() {
   close(f);
 
   open(f, my_file, ios_base::in | ios_base::out);
-  std::string str;
+  string str;
   do
     f >> str;
   while(str != "sat_c");
@@ -269,7 +269,7 @@ test8() {
   close(f);
 
   open(f, my_file, ios_base::in | ios_base::out);
-  std::string str;
+  string str;
   do
     f >> str;
   while(str != "sat_g");
@@ -300,7 +300,7 @@ test9() {
   close(f);
 
   open(f, my_file, ios_base::in | ios_base::out);
-  std::string str;
+  string str;
   do
     f >> str;
   while (str != "(up-to-date)");
@@ -331,7 +331,7 @@ test10() {
   close(f);
 
   open(f, my_file, ios_base::in | ios_base::out);
-  std::string str;
+  string str;
   do
     f >> str;
   while(str != "(not_up-to-date)" );
@@ -362,7 +362,7 @@ test11() {
   close(f);
 
   open(f, my_file, ios_base::in | ios_base::out);
-  std::string str;
+  string str;
   do
     f >> str;
   while(str != "sat_c");
@@ -393,7 +393,7 @@ test12() {
   close(f);
 
   open(f, my_file, ios_base::in | ios_base::out);
-  std::string str;
+  string str;
   do
     f >> str;
   while(str != "sat_g");

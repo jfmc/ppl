@@ -60,7 +60,7 @@ main() try {
 
   return retval;
 }
-catch (std::invalid_argument& e) {
+catch (invalid_argument& e) {
 #if NOISY
   cout << "invalid_argument: " << e.what() << endl;
 #endif

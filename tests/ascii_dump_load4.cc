@@ -75,7 +75,7 @@ test2() {
   close(f);
   
   open(f, my_file, ios_base::in | ios_base::out);
-  std::string str;
+  string str;
   do
     f >> str;
   while(str != "=");
@@ -111,7 +111,7 @@ test3() {
   close(f);
   
   open(f, my_file, ios_base::in | ios_base::out);
-  std::string str;
+  string str;
   do
     f >> str;
   while(str != "=");
@@ -143,7 +143,7 @@ test4() {
   close(f);
 
   open(f, my_file, ios_base::in | ios_base::out);
-  std::string str;
+  string str;
   do
     f >> str;
   while(str != "NECESSARILY_CLOSED");
@@ -175,7 +175,7 @@ test5() {
   close(f);
 
   open(f, my_file, ios_base::in | ios_base::out);
-  std::string str;
+  string str;
   do
     f >> str;
   while(str != "x");
@@ -208,7 +208,7 @@ test6() {
   close(f);
 
   open(f, my_file, ios_base::in | ios_base::out);
-  std::string str;
+  string str;
   do
     f >> str;
   while(str != "(not_sorted)");

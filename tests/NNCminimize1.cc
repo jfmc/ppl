@@ -47,7 +47,7 @@ main() {
   NNC_Polyhedron ph(cs);
 
 #if NOISY
-  std::cout << "Topologically closed square" << std::endl;
+  cout << "Topologically closed square" << endl;
   print_constraints(ph.constraints(), "*** ph constraints ***");
   print_generators(ph.generators(), "*** ph generators ***");
 #endif
@@ -62,7 +62,7 @@ main() {
   ph.add_constraints_and_minimize(cs);
 
 #if NOISY
-  std::cout << "After vertices removal" << std::endl;
+  cout << "After vertices removal" << endl;
   print_constraints(ph.constraints(), "*** ph constraints ***");
   print_generators(ph.generators(), "*** ph generators ***");
 #endif
@@ -84,7 +84,7 @@ main() {
   bool equal = (ph == known_result);
 
 #if NOISY
-  std::cout << "After NNC minimization" << std::endl;
+  cout << "After NNC minimization" << endl;
   print_constraints(ph.constraints(), "*** ph constraints ***");
   print_generators(ph.generators(), "*** ph generators ***");
 #endif

@@ -145,7 +145,7 @@ main() try {
 	}
   return 0;
 }
-catch (std::exception& e) {
+catch (exception& e) {
 #if NOISY
   cout << e.what() << endl;
 #endif

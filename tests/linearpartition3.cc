@@ -36,7 +36,7 @@ using namespace Parma_Polyhedra_Library::IO_Operators;
 bool
 partition_ok(const C_Polyhedron& p,
 	     const C_Polyhedron& q,
-	     const std::pair<C_Polyhedron,
+	     const pair<C_Polyhedron,
 	     PowerSet<Determinate<NNC_Polyhedron> > >& partition) {
   const C_Polyhedron& r = partition.first;
   // `r' must be a subset of or equal to `q'.
@@ -93,7 +93,7 @@ int main() {
   cout << "q = " << q << endl;
 #endif
 
-  std::pair<C_Polyhedron, PowerSet<Determinate<NNC_Polyhedron> > >
+  pair<C_Polyhedron, PowerSet<Determinate<NNC_Polyhedron> > >
     result = linear_partition(p, q);
 
 #if NOISY

@@ -98,7 +98,7 @@ error3() {
     // it with two polyhedra of different dimensions.
     ph1.poly_hull_assign_and_minimize(ph2);
   }
-  catch (std::invalid_argument& e) {
+  catch (invalid_argument& e) {
 #if NOISY
     cout << "invalid_argument: " << e.what() << endl << endl;
 #endif

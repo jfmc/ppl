@@ -112,7 +112,7 @@ guarded_compute_open_hypercube_generators(dimension_type dimension,
     compute_open_hypercube_generators(dimension);
     return true;
   }
-  catch (const std::bad_alloc&) {
+  catch (const bad_alloc&) {
 #if NOISY
     cout << "out of virtual memory" << endl;
 #endif
