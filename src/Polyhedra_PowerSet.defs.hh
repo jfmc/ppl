@@ -150,7 +150,7 @@ private:
 						      unsigned*));
   void limited_BGP99_heuristics_assign(const Polyhedra_PowerSet& y,
 				       const ConSys& cs,
-				       void (Polyhedron::*wm)
+				       void (Polyhedron::*lwm)
 				       (const Polyhedron&,
 					const ConSys&,
 					unsigned*));
@@ -163,15 +163,17 @@ public:
 
   void limited_BGP99_extrapolation_assign(const Polyhedra_PowerSet& y,
 					  const ConSys& cs,
-					  void (Polyhedron::*wm)
+					  void (Polyhedron::*lwm)
 					  (const Polyhedron&,
 					   const ConSys&,
 					   unsigned*),
 					  unsigned max_disjuncts = 0);
 
-  void collapse(unsigned max_disjuncts);
+  void BHZ03_widening_assign(const Polyhedra_PowerSet& y,
+			     void (Polyhedron::*wm)(const Polyhedron&,
+						    unsigned*));
 
-  void new_widening_assign(const Polyhedra_PowerSet& y);
+  void collapse(unsigned max_disjuncts);
 
   //! Checks if all the invariants are satisfied.
   bool OK() const;

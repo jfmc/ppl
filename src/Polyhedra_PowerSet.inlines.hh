@@ -309,9 +309,9 @@ void
 Polyhedra_PowerSet<PH>::
 limited_BGP99_heuristics_assign(const Polyhedra_PowerSet& y,
 				const ConSys& cs,
-				void (Polyhedron::*wm)(const Polyhedron&,
-						       const ConSys&,
-						       unsigned*)) {
+				void (Polyhedron::*lwm)(const Polyhedron&,
+							const ConSys&,
+							unsigned*)) {
   size_type n = size();
   Sequence new_sequence;
   std::deque<bool> marked(n, false);
@@ -323,7 +323,7 @@ limited_BGP99_heuristics_assign(const Polyhedra_PowerSet& y,
       PH& pi = i->polyhedron();
       const PH& pj = j->polyhedron();
       if (pi.contains(pj)) {
-	(pi.*wm)(pj, cs, 0);
+	(pi.*lwm)(pj, cs, 0);
 	add_non_bottom_disjunct(new_sequence, pi);
 	marked[i_index] = true;
       }
@@ -346,19 +346,22 @@ Polyhedra_PowerSet<PH>::BGP99_extrapolation_assign(const Polyhedra_PowerSet& y,
 						   (const Polyhedron&,
 						    unsigned*),
 						   unsigned max_disjuncts) {
+  // `x' is the current iteration value.
+  Polyhedra_PowerSet<PH>& x = *this;
+
 #ifndef NDEBUG
   {
     // We assume that y is entailed by or equal to *this.
-    const Polyhedra_PowerSet<PH> x_copy = *this;
+    const Polyhedra_PowerSet<PH> x_copy = x;
     const Polyhedra_PowerSet<PH> y_copy = y;
     assert(y_copy.definitely_entails(x_copy));
   }
 #endif
 
-  pairwise_reduce();
+  x.pairwise_reduce();
   if (max_disjuncts != 0)
-    collapse(max_disjuncts);
-  BGP99_heuristics_assign(y, wm);
+    x.collapse(max_disjuncts);
+  x.BGP99_heuristics_assign(y, wm);
 }
 
 template <typename PH>
@@ -366,24 +369,27 @@ void
 Polyhedra_PowerSet<PH>::
 limited_BGP99_extrapolation_assign(const Polyhedra_PowerSet& y,
 				   const ConSys& cs,
-				   void (Polyhedron::*wm)
+				   void (Polyhedron::*lwm)
 				   (const Polyhedron&,
 				    const ConSys&,
 				    unsigned*),
 				   unsigned max_disjuncts) {
+  // `x' is the current iteration value.
+  Polyhedra_PowerSet<PH>& x = *this;
+
 #ifndef NDEBUG
   {
     // We assume that y is entailed by or equal to *this.
-    const Polyhedra_PowerSet<PH> x_copy = *this;
+    const Polyhedra_PowerSet<PH> x_copy = x;
     const Polyhedra_PowerSet<PH> y_copy = y;
     assert(y_copy.definitely_entails(x_copy));
   }
 #endif
 
-  pairwise_reduce();
+  x.pairwise_reduce();
   if (max_disjuncts != 0)
-    collapse(max_disjuncts);
-  limited_BGP99_heuristics_assign(y, cs, wm);
+    x.collapse(max_disjuncts);
+  x.limited_BGP99_heuristics_assign(y, cs, lwm);
 }
 
 template <typename PH>
@@ -446,11 +452,21 @@ is_multiset_lgo_stabilizing(const multiset_lgo_info& y_info) const {
 // and an arbitrary lgo relation.
 template <typename PH>
 void
-Polyhedra_PowerSet<PH>::new_widening_assign(const Polyhedra_PowerSet& y) {
-  // FIXME: specify applicability conditions and other assumptions.
-
+Polyhedra_PowerSet<PH>::BHZ03_widening_assign(const Polyhedra_PowerSet& y,
+					      void (Polyhedron::*wm)
+					      (const Polyhedron&,
+					       unsigned*)) {
   // `x' is the current iteration value.
   Polyhedra_PowerSet<PH>& x = *this;
+
+#ifndef NDEBUG
+  {
+    // We assume that y is entailed by or equal to *this.
+    const Polyhedra_PowerSet<PH> x_copy = x;
+    const Polyhedra_PowerSet<PH> y_copy = y;
+    assert(y_copy.definitely_entails(x_copy));
+  }
+#endif
 
   // First widening technique: do nothing.
 
@@ -495,7 +511,7 @@ Polyhedra_PowerSet<PH>::new_widening_assign(const Polyhedra_PowerSet& y) {
 
   // Second widening technique: try the BGP99 powerset heuristics.
   Polyhedra_PowerSet<PH> extrapolated_x = x;
-  extrapolated_x.BGP99_extrapolation_assign(y, &PH::BHRZ03_widening_assign);
+  extrapolated_x.BGP99_extrapolation_assign(y, wm);
 
   // Compute the poly-hull of `extrapolated_x'.
   PH extrapolated_x_hull(x.space_dim, PH::EMPTY);
@@ -538,7 +554,7 @@ Polyhedra_PowerSet<PH>::new_widening_assign(const Polyhedra_PowerSet& y) {
   if (extrapolated_x_hull.strictly_contains(y_hull)) {
     // Compute (y_hull \widen extrapolated_x_hull).
     PH ph = extrapolated_x_hull;
-    ph.BHRZ03_widening_assign(y_hull);
+    (ph.*wm)(y_hull, 0);
     // Compute the poly-difference between `ph' and `extrapolated_x_hull'.
     ph.poly_difference_assign(extrapolated_x_hull);
     x.add_disjunct(ph);
