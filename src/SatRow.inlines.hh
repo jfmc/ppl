@@ -23,87 +23,45 @@ site: http://www.cs.unipr.it/ppl/ . */
 
 INLINE
 Parma_Polyhedra_Library::SatRow::SatRow() {
+  mpz_init(vec);
 }
 
 INLINE
-Parma_Polyhedra_Library::SatRow::SatRow(const SatRow& y)
-  : vec(y.vec) {
+Parma_Polyhedra_Library::SatRow::SatRow(const SatRow& y) {
+  mpz_init_set(vec, y.vec);
 }
 
 INLINE
 Parma_Polyhedra_Library::SatRow::~SatRow() {
+  mpz_clear(vec);
 }
 
 INLINE Parma_Polyhedra_Library::SatRow&
 Parma_Polyhedra_Library::SatRow::operator =(const SatRow& y) {
-  vec = y.vec;
+  mpz_set(vec, y.vec);
   return *this;
 }
 
 INLINE bool
 Parma_Polyhedra_Library::SatRow::operator [](size_t k) const {
-  return vec.test(k);
+  return mpz_tstbit(vec, k);
 }
 
-/*!
-  Sets the bit in position \p i.
-*/
 INLINE void
-Parma_Polyhedra_Library::SatRow::set(size_t i) {
-  vec.set(i);
+Parma_Polyhedra_Library::SatRow::set(size_t k) {
+  mpz_setbit(vec, k);
 }
 
-/*!
-  Clears the bit in position \p i.
-*/
 INLINE void
-Parma_Polyhedra_Library::SatRow::clear(size_t i) {
-  vec.clear(i);
+Parma_Polyhedra_Library::SatRow::clear(size_t k) {
+  mpz_clrbit(vec, k);
 }
 
-/*!
-  Clears bits from position \p i (included) onwards.
-*/
 INLINE void
-Parma_Polyhedra_Library::SatRow::clear_from(size_t i) {
+Parma_Polyhedra_Library::SatRow::clear_from(size_t k) {
   // FIXME: we ought to provide a better implementation.
-  int last_bit = vec.last();
-  if (last_bit >= 0 && unsigned(last_bit) >= i)
-    vec.clear(i, last_bit);
-}
-
-/*!
-  Returns the index of the first set bit and
-  -1 if no bit is set.
-*/
-INLINE int
-Parma_Polyhedra_Library::SatRow::first() const {
-  return vec.first();
-}
-
-/*!
-  Returns the index of the first set bit after \p pos
-  and -1 if no bit after pos is set.
-*/INLINE int
-Parma_Polyhedra_Library::SatRow::next(int pos) const {
-  return vec.next(pos);
-}
-
-/*!
-  Returns the index of the last set bit and -1 if no bit is set.
-*/
-INLINE int
-Parma_Polyhedra_Library::SatRow::last() const {
-  return vec.last();
-}
-
-/*!
-  Returns the index of the first set bit before \p pos
-  and -1 if no bits before pos is set.
-*/
-INLINE int
-Parma_Polyhedra_Library::SatRow::prev(int pos) const {
-  return vec.prev(pos);
+  for (int i = k; i >= 0; i = next(i))
+    clear(i);
 }
 
 /*!
@@ -111,7 +69,7 @@ Parma_Polyhedra_Library::SatRow::prev(int pos) const {
 */
 INLINE size_t
 Parma_Polyhedra_Library::SatRow::count_ones() const {
-  return vec.count();
+  return mpz_popcount(vec);
 }
 
 /*!
@@ -119,26 +77,7 @@ Parma_Polyhedra_Library::SatRow::count_ones() const {
 */
 INLINE bool
 Parma_Polyhedra_Library::SatRow::empty() const {
-  return vec.empty();
-}
-
-#ifdef PPL_DOXYGEN_INCLUDE_IMPLEMENTATION_DETAILS
-/*!
-  Compares \p x with \p y starting from the least significant bits.
-  The ordering is total and has the following property: if \p x and \p y
-  are two rows seen as sets of naturals, if \p x is a strict subset
-  of \p y, then \p x comes before \p y.
-
-  Returns
-  - -1 if \p x comes before \p y in the ordering;
-  -  0 if \p x and \p y are equal;
-  -  1 if \p x comes after \p y in the ordering.
-*/
-#endif // PPL_DOXYGEN_INCLUDE_IMPLEMENTATION_DETAILS
-
-INLINE int
-Parma_Polyhedra_Library::compare(const SatRow& x, const SatRow& y) {
-  return lcompare(x.vec, y.vec);
+  return mpz_sgn(vec) == 0;
 }
 
 /*!
@@ -146,7 +85,7 @@ Parma_Polyhedra_Library::compare(const SatRow& x, const SatRow& y) {
 */
 INLINE void
 Parma_Polyhedra_Library::SatRow::swap(SatRow& y) {
-  std::swap(vec, y.vec);
+  mpz_swap(vec, y.vec);
 }
 
 /*!
@@ -165,42 +104,32 @@ std::swap(Parma_Polyhedra_Library::SatRow& x,
 */
 INLINE void
 Parma_Polyhedra_Library::SatRow::clear() {
-  vec.clear();
+  mpz_set_ui(vec, 0UL);
 }
 
 INLINE bool
 Parma_Polyhedra_Library::operator ==(const SatRow& x, const SatRow& y) {
-  return x.vec == y.vec;
+  return mpz_cmp(x.vec, y.vec) == 0;
 }
 
 INLINE bool
 Parma_Polyhedra_Library::operator !=(const SatRow& x, const SatRow& y) {
-  return x.vec != y.vec;
-}
-
-INLINE bool
-Parma_Polyhedra_Library::operator <(const SatRow& x, const SatRow& y) {
-  return x.vec < y.vec;
+  return mpz_cmp(x.vec, y.vec) != 0;
 }
 
 INLINE bool
 Parma_Polyhedra_Library::operator >(const SatRow& x, const SatRow& y) {
-  return x.vec > y.vec;
-}
-
-INLINE bool
-Parma_Polyhedra_Library::operator <=(const SatRow& x, const SatRow& y) {
-  return x.vec <= y.vec;
+  return y < x;
 }
 
 INLINE bool
 Parma_Polyhedra_Library::operator >=(const SatRow& x, const SatRow& y) {
-  return x.vec >= y.vec;
+  return y <= x;
 }
 
 INLINE void
 Parma_Polyhedra_Library::set_union(const SatRow& x,
 				   const SatRow& y,
 				   SatRow& z) {
-  set_union(x.vec, y.vec, z.vec);
+  mpz_ior(z.vec, x.vec, y.vec);
 }

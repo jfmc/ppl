@@ -44,11 +44,8 @@
 /* Name of package */
 #undef PACKAGE
 
-/* The size of a `int', as computed by sizeof. */
-#undef SIZEOF_INT
-
-/* The size of a `long', as computed by sizeof. */
-#undef SIZEOF_LONG
+/* The size of a `mp_limb_t', as computed by sizeof. */
+#undef SIZEOF_MP_LIMB_T
 
 /* Define if you have the ANSI C header files. */
 #undef STDC_HEADERS

@@ -24,9 +24,9 @@ site: http://www.cs.unipr.it/ppl/ . */
 #ifndef _SatRow_defs_hh
 #define _SatRow_defs_hh 1
 
-#include "BitSet.defs.hh"
-#include <iosfwd>
 #include "SatRow.types.hh"
+#include <iosfwd>
+#include <gmp.h>
 
 namespace Parma_Polyhedra_Library {
   // Put them in the namespace here to declare them friends later.
@@ -42,8 +42,12 @@ namespace Parma_Polyhedra_Library {
 
 class Parma_Polyhedra_Library::SatRow {
 private:
-  //! Set of Bits representing the row.
-  BitSet vec;
+  //! Bitvector representing the row.
+  mpz_t vec;
+
+  static unsigned int last_one(mp_limb_t w);
+  static unsigned int first_one(mp_limb_t w);
+
 public:
   //! Default constructor.
   SatRow();
@@ -58,14 +62,14 @@ public:
   //! Swaps \p *this with \p y.
   void swap(SatRow& y);
 
+  //! Returns the truth value corresponding to the bit in position \p k.
   bool operator [](size_t k) const;
-
-  //! Sets the bit in position \p i.
-  void set(size_t i);
-  //! Clears the bit in position \p i.
-  void clear(size_t i);
-  //! Clears bits from position \p i (included) onwards.
-  void clear_from(size_t i);
+  //! Sets the bit in position \p k.
+  void set(size_t k);
+  //! Clears the bit in position \p k.
+  void clear(size_t k);
+  //! Clears bits from position \p k (included) onwards.
+  void clear_from(size_t k);
 
   //! Clears all the bit of the row.
   void clear();
@@ -100,20 +104,19 @@ public:
   //! Return the size of the row.
   size_t size();
 
-  //! Returns the index of the first set bit and
-  //! -1 if no bit is set.
+  //! Returns the index of the first set bit or -1 if no bit is set.
   int first() const;
 
-  //! Returns the index of the first set bit after \p pos
-  //! and -1 if no bit after \p pos is set.
-  int next(int pos) const;
+  //! Returns the index of the first set bit after \p position
+  //! or -1 if no bit after \p position is set.
+  int next(int position) const;
 
-  //! Returns the index of the last set bit and -1 if no bit is set.
+  //! Returns the index of the last set bit or -1 if no bit is set.
   int last() const;
 
-  //! Returns the index of the first set bit before \p pos
-  //! and -1 if no bits before \p pos is set.
-  int prev(int pos) const;
+  //! Returns the index of the first set bit before \p position
+  //! or -1 if no bits before \p position is set.
+  int prev(int position) const;
 
   //! Returns the number of set bits in the row.
   size_t count_ones() const;

@@ -75,12 +75,6 @@ CXX=$with_cxx)
 AC_LANG_CPLUSPLUS
 AC_PROG_CXX
 
-dnl Check for sizes of builtin integer types
-
-AC_CHECK_SIZEOF(long, 4)
-AC_CHECK_SIZEOF(int,  4)
-
-
 dnl GMP library
 
 AC_ARG_WITH(gmp-includes,
@@ -108,12 +102,15 @@ then
   AC_MSG_ERROR([Cannot find GMP, the GNU Multi-Precision library])
 fi
 
+AC_CHECK_SIZEOF(mp_limb_t, 4, [#include <gmp.h>])
+
 AC_CHECK_GMP_EXCEPTIONS
 
 CPPFLAGS="$ac_save_CPPFLAGS"
 LIBS="$ac_save_LIBS"
 
 extra_includes="${extra_includes} ${gmp_includes_option}"
+
 
 dnl Compilation flags
 
@@ -305,7 +302,7 @@ AC_SUBST(debug_flag)
 
 AC_OUTPUT(Makefile
           src/Makefile
-          src/BitSet/Makefile src/Integer/Makefile
+          src/Integer/Makefile
           tests/Makefile
           m4/Makefile
           doc/Makefile

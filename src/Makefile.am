@@ -13,9 +13,9 @@ VPATH = @srcdir@
 
 @SET_MAKE@
 
-SUBDIRS = BitSet Integer .
+SUBDIRS = Integer .
 
-INCLUDES = -I$(top_builddir) -I$(top_srcdir)/src -I$(top_srcdir)/src/BitSet -I$(top_srcdir)/src/Integer @extra_includes@
+INCLUDES = -I$(top_builddir) -I$(top_srcdir)/src -I$(top_srcdir)/src/Integer @extra_includes@
 
 # See http://www.cs.unipr.it/pipermail/ppl-devel/2001-October/000281.html
 #MYCPP = cpp
@@ -84,7 +84,7 @@ LinExpression.cc \
 Variable.cc \
 $(include_files)
 
-libppl_a_LIBADD = Integer/Integer.o BitSet/BitSet.o
+libppl_a_LIBADD = Integer/Integer.o
 
 noinst_HEADERS = ppl.cc
 
@@ -93,9 +93,6 @@ BUILT_SOURCES = ppl.hh
 include_HEADERS = ppl.hh
 
 MORE_PPL_HH_DEPS = \
-BitSet/BitSet.types.hh \
-BitSet/BitSet.defs.hh \
-BitSet/BitSet.inlines.hh \
 Integer/Integer.types.hh \
 Integer/Integer.defs.hh \
 Integer/Integer.inlines.hh
