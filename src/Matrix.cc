@@ -866,10 +866,10 @@ PPL::Matrix::permute_columns(const dimension_type cycles[],
 	std::swap(rows_k[cycles[i]], rows_k[cycles[i+1]]);
       else {
 	// Longer cycles need a temporary.
-	std::swap(tmp_Integer[0], rows_k[cycles[i]]);
-	for ( ; i < j-1; ++i)
-	  std::swap(rows_k[cycles[i]], rows_k[cycles[i+1]]);
 	std::swap(rows_k[cycles[j-1]], tmp_Integer[0]);
+	for (dimension_type l = j-1; l > i; --l)
+	  std::swap(rows_k[cycles[l-1]], rows_k[cycles[l]]);
+	std::swap(tmp_Integer[0], rows_k[cycles[i]]);
       }
     }
   }
