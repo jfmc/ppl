@@ -560,13 +560,12 @@ Polyhedron::shrink_bounding_box(Box& box, Complexity_Class complexity) const {
     // We have not to copy `gen_sys', because in this case
     // we only read the generators.
     const Generator_System& gs = gen_sys;
-    // Using the iterator, we read also the pending part of the matrix.
-    const Generator_System::const_iterator gs_begin = gs.begin();
-    const Generator_System::const_iterator gs_end = gs.end();
 
-    // We first need to identify those axes that are unbounded
-    // below and/or above.
-    for (Generator_System::const_iterator i = gs_begin; i != gs_end; ++i) {
+    // We first need to identify those axes that are unbounded below
+    // and/or above.
+    for (Generator_System::const_iterator i = gs.begin(),
+	   gs_end = gs.end(); i != gs_end; ++i) {
+      // Note: using an iterator, we read also the pending part of the matrix.
       const Generator& g = *i;
       Generator::Type g_type = g.type();
       switch (g_type) {
