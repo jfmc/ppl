@@ -247,6 +247,9 @@ Polyhedra_PowerSet<PH>::extrapolation_assign(const Polyhedra_PowerSet& y,
     if (!marked[i_index])
       new_sequence.push_back(*i);
   std::swap(sequence, new_sequence);
+  assert(OK());
+  // FIXME: there is a more efficient way to ensure omega reduction here.
+  omega_reduce();
 }
 
 template <typename PH>
@@ -294,6 +297,7 @@ Polyhedra_PowerSet<PH>::collapse(unsigned max_disjuncts) {
     erase(++i, send);
   }
   assert(OK());
+  assert(is_omega_reduced());
 }
 
 template <typename PH>
@@ -349,6 +353,9 @@ limited_extrapolation_assign(const Polyhedra_PowerSet& y,
     if (!marked[i_index])
       new_sequence.push_back(*i);
   std::swap(sequence, new_sequence);
+  assert(OK());
+  // FIXME: there is a more efficient way to ensure omega reduction here.
+  omega_reduce();
 }
 
 template <typename PH>
