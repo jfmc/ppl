@@ -28,6 +28,7 @@ site: http://www.cs.unipr.it/ppl/ . */
 #include "LinExpression.defs.defs.hh"
 #include "ConSys.defs.defs.hh"
 #include <utility>
+#include <cassert>
 
 namespace Parma_Polyhedra_Library {
 
@@ -50,7 +51,7 @@ linear_partition_aux(const Constraint& c,
 /*!
   Let \p p and \p q be two polyhedra.
   The function returns an object <CODE>r</CODE> of type
-  <CODE>std::pair<PH, PowerSet<Determinate<NNC_Polyhedron> > ></CODE>
+  <CODE>std::pair\<PH, PowerSet\<Determinate\<NNC_Polyhedron\> \> \></CODE>
   such that
   - <CODE>r.first</CODE> is the intersection of \p p and \p q;
   - <CODE>r.second</CODE> has the property that all its elements are
@@ -69,7 +70,7 @@ linear_partition_aux(const Constraint& c,
 template <typename PH>
 std::pair<PH, PowerSet<Determinate<NNC_Polyhedron> > >
 linear_partition(const PH& p, const PH& q) {
-  PowerSet<Determinate<NNC_Polyhedron> > r(p.space_dimension());
+  PowerSet<Determinate<NNC_Polyhedron> > r(p.space_dimension(), false);
   PH qq = q;
   const ConSys& pcs = p.constraints();
   for (ConSys::const_iterator i = pcs.begin(),
@@ -112,25 +113,24 @@ complete_reduction(PowerSet<Determinate<PH> >& p) {
   size_t n = p.size();
   size_t deleted;
   do {
-    PowerSet<Determinate<PH> > q;
+    PowerSet<Determinate<PH> > q(p.space_dimension(), false);
     std::deque<bool> marked(n, false);
     deleted = 0;
     typedef typename PowerSet<Determinate<PH> >::iterator iter;
     iter p_begin = p.begin();
     iter p_end = p.end();
     unsigned i_index = 0;
-    for (iter i = p_begin, j = i; i != p_end; ++i, ++i_index) {
+    for (iter i = p_begin, j; i != p_end; ++i, ++i_index) {
       if (marked[i_index])
 	continue;
       PH& pi = i->polyhedron();
       int j_index = 0;
-      for (++j; j != p_end; ++j, ++j_index) {
+      for (j = i, ++j; j != p_end; ++j, ++j_index) {
 	if (marked[j_index])
 	  continue;
 	const PH& pj = j->polyhedron();
 	if (poly_hull_assign_if_exact(pi, pj)) {
-	  // Setting `marked[i_index]' to `false' would be pointless.
-	  marked[j_index] = true;
+	  marked[i_index] = marked[j_index] = true;
 	  q.inject(pi);
 	  ++deleted;
 	  goto next;
@@ -146,6 +146,7 @@ complete_reduction(PowerSet<Determinate<PH> >& p) {
     p = q;
     n -= deleted;
   } while (deleted > 0);
+  assert(p.OK());
 }
 
 template <typename PH>
@@ -156,7 +157,7 @@ widening_assign(PowerSet<Determinate<PH> >& r,
 		void (Polyhedron::* widening_assign)(const Polyhedron&)) {
   complete_reduction(r);
   size_t n = r.size();
-  PowerSet<Determinate<PH> > p;
+  PowerSet<Determinate<PH> > p(q.space_dimension(), false);
   std::deque<bool> marked(n, false);
   typedef typename PowerSet<Determinate<PH> >::const_iterator const_iter;
   typedef typename PowerSet<Determinate<PH> >::iterator iter;
