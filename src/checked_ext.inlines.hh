@@ -40,16 +40,6 @@ assign_ext(To& to, const From& from, const Rounding& mode) {
   return r;
 }
 
-template <typename Policy,
-	  typename Type>
-inline Result
-sgn_ext(const Type& x) {
-  Result r = classify<Policy>(x, true, true, true);
-  if (r == V_UNKNOWN)
-    return r;
-  return sgn<Policy>(r);
-}
-
 template <typename Policy1, typename Policy2,
 	  typename Type1, typename Type2>
 inline Result
