@@ -1700,7 +1700,7 @@ __P((ppl_Polyhedron_t x,
   the constraints of the form \f$\pm v \leq r\f$ and \f$\pm v < r\f$,
   with \f$r \in \Qset\f$, that are satisfied by all the points of \p x.
 */
-int
+inline int
 ppl_Polyhedron_bounded_BHRZ03_extrapolation_assign
 __P((ppl_Polyhedron_t x,
      ppl_const_Polyhedron_t y,
