@@ -656,6 +656,18 @@ public:
 
   //! \brief
   //! Assigns to \p *this the result of computing the
+  //! \ref BBRZ02_widening "BBRZ02-widening" between \p *this and \p y.
+  /*!
+    \param y           A polyhedron that <EM>must</EM>
+                       be contained in \p *this.
+    \exception std::invalid_argument thrown if \p *this and \p y
+                                     are topology-incompatible
+                                     or dimension-incompatible.
+  */
+  void BBRZ02_widening_assign(const Polyhedron& y);
+
+  //! \brief
+  //! Assigns to \p *this the result of computing the
   //! \ref time_elapse "time-elapse" between \p *this and \p y.
   /*!
     \exception std::invalid_argument thrown if \p *this and \p y

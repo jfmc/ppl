@@ -49,6 +49,9 @@ ORIGINAL_TESTS = \
 	affinepreimage1 affinepreimage2 affinepreimage3 affinepreimage4 \
 	affinetrans \
         append1 append2 \
+	bbrz02widening1 bbrz02widening2 bbrz02widening3 bbrz02widening4 \
+	bbrz02widening5 bbrz02widening6 bbrz02widening7 bbrz02widening8 \
+	bbrz02widening9 \
 	bounded1 \
 	boundingbox1 boundingbox2 \
 	concatenate1 concatenate2 concatenate3 \
@@ -89,6 +92,10 @@ DERIVED_TESTS = \
 	nnc_affinepreimage4 \
 	nnc_affinetrans \
 	nnc_append1 nnc_append2 \
+	nnc_bbrz02widening1 nnc_bbrz02widening2 nnc_bbrz02widening3 \
+	nnc_bbrz02widening4 nnc_bbrz02widening5 nnc_bbrz02widening6 \
+	nnc_bbrz02widening7 nnc_bbrz02widening8 \
+	nnc_bbrz02widening9 \
 	nnc_bounded1 \
 	nnc_concatenate1 nnc_concatenate2 nnc_concatenate3 \
 	nnc_empty1 \
@@ -170,6 +177,16 @@ append1_SOURCES = append1.cc
 append2_SOURCES = append2.cc
 
 bounded1_SOURCES = bounded1.cc
+
+bbrz02widening1_SOURCES = bbrz02widening1.cc
+bbrz02widening2_SOURCES = bbrz02widening2.cc
+bbrz02widening3_SOURCES = bbrz02widening3.cc
+bbrz02widening4_SOURCES = bbrz02widening4.cc
+bbrz02widening5_SOURCES = bbrz02widening5.cc
+bbrz02widening6_SOURCES = bbrz02widening6.cc
+bbrz02widening7_SOURCES = bbrz02widening7.cc
+bbrz02widening8_SOURCES = bbrz02widening8.cc
+bbrz02widening9_SOURCES = bbrz02widening9.cc
 
 boundingbox1_SOURCES = boundingbox1.cc
 boundingbox2_SOURCES = boundingbox2.cc
@@ -323,6 +340,25 @@ nnc_append1_SOURCES = append1.cc
 nnc_append1_CXXFLAGS = $(DERIVED_CXXFLAGS)
 nnc_append2_SOURCES = append2.cc
 nnc_append2_CXXFLAGS = $(DERIVED_CXXFLAGS)
+
+nnc_bbrz02widening1_SOURCES = bbrz02widening1.cc
+nnc_bbrz02widening1_CXXFLAGS = $(DERIVED_CXXFLAGS)
+nnc_bbrz02widening2_SOURCES = bbrz02widening2.cc
+nnc_bbrz02widening2_CXXFLAGS = $(DERIVED_CXXFLAGS)
+nnc_bbrz02widening3_SOURCES = bbrz02widening3.cc
+nnc_bbrz02widening3_CXXFLAGS = $(DERIVED_CXXFLAGS)
+nnc_bbrz02widening4_SOURCES = bbrz02widening4.cc
+nnc_bbrz02widening4_CXXFLAGS = $(DERIVED_CXXFLAGS)
+nnc_bbrz02widening5_SOURCES = bbrz02widening5.cc
+nnc_bbrz02widening5_CXXFLAGS = $(DERIVED_CXXFLAGS)
+nnc_bbrz02widening6_SOURCES = bbrz02widening6.cc
+nnc_bbrz02widening6_CXXFLAGS = $(DERIVED_CXXFLAGS)
+nnc_bbrz02widening7_SOURCES = bbrz02widening7.cc
+nnc_bbrz02widening7_CXXFLAGS = $(DERIVED_CXXFLAGS)
+nnc_bbrz02widening8_SOURCES = bbrz02widening8.cc
+nnc_bbrz02widening8_CXXFLAGS = $(DERIVED_CXXFLAGS)
+nnc_bbrz02widening9_SOURCES = bbrz02widening9.cc
+nnc_bbrz02widening9_CXXFLAGS = $(DERIVED_CXXFLAGS)
 
 nnc_bounded1_SOURCES = bounded1.cc
 nnc_bounded1_CXXFLAGS = $(DERIVED_CXXFLAGS)

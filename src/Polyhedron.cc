@@ -3020,7 +3020,6 @@ PPL::Polyhedron::H79_widening_assign(const Polyhedron& y) {
   assert(x.OK(true));
 }
 
-
 void
 PPL::Polyhedron::limited_H79_widening_assign(const Polyhedron& y,
 					     ConSys& cs) {
@@ -3124,6 +3123,360 @@ PPL::Polyhedron::limited_H79_widening_assign(const Polyhedron& y,
   assert(OK());
 }
 
+void
+PPL::Polyhedron::BBRZ02_widening_assign(const Polyhedron& y) {
+  Polyhedron& x = *this;
+  // Topology compatibility check.
+  if (x.topology() != y.topology())
+    throw_topology_incompatible("BBRZ02_widening_assign(y)", y);
+  // Dimension-compatibility check.
+  dimension_type x_space_dim = x.space_dim;
+  if (x_space_dim != y.space_dim)
+    throw_dimension_incompatible("BBRZ02_widening_assign(y)", y);
+
+#ifndef NDEBUG
+  {
+    // We assume that y is contained or equal to x.
+    Polyhedron x_copy = x;
+    Polyhedron y_copy = y;
+    assert(y_copy <= x_copy);
+  }
+#endif
+
+  // If any argument is zero-dimensional or empty,
+  // the BBRZ02-widening behaves as the identity function.
+  if (x_space_dim == 0 || x.is_empty() || y.is_empty())
+    return;
+
+  // `x.con_sys' and `x.gen_sys' should be in minimal form.
+  x.minimize();
+
+  // `x.con_sys' and `y.gen_sys' should be in minimal form.
+  if (y.is_necessarily_closed()) {
+    if (!y.minimize())
+      // `y' is empty: the result is `x'.
+      return;
+  }
+  else {
+    // Dealing with a NNC polyhedron.
+    // To obtain a correct reasoning when comparing
+    // the constraints of `x' with the generators of `y',
+    // we enforce the inclusion relation holding between
+    // the two NNC polyhedra `x' and `y' (i.e., `y <= x')
+    // to also hold for the corresponding eps-representations:
+    // this is obtained by intersecting the two eps-representations.
+    Polyhedron& yy = const_cast<Polyhedron&>(y);
+    if (!yy.intersection_assign_and_minimize(x))
+      // `y' is empty: the result is `x'.
+      return;
+  }
+
+  // If the dimension of `x' is greater than the dimension of `y', the
+  // resulting polyhedron is still `x'. To check this condition, we can
+  // verify if the number of equalities of `y' is greater than the
+  // number of equalities of `x'.
+  dimension_type x_num_equalities = x.con_sys.num_equalities();
+  dimension_type y_num_equalities = y.con_sys.num_equalities();
+  dimension_type x_con_sys_num_rows = x.con_sys.num_rows();
+  dimension_type y_con_sys_num_rows = y.con_sys.num_rows();
+  dimension_type x_gen_sys_num_rows = x.gen_sys.num_rows();
+  dimension_type y_gen_sys_num_rows = y.gen_sys.num_rows();
+  if (x_num_equalities < y_num_equalities)
+    return;
+
+  if (x_num_equalities == y_num_equalities) {
+    // If the two polyhedra have the same dimension and the dimension
+    // of the lineality space of `x' is greater than the dimension of
+    // the lineality space of `y', the resulting polyhedron is still `x'.
+    dimension_type x_num_lines = x.gen_sys.num_lines();
+    dimension_type y_num_lines = y.gen_sys.num_lines();
+    if (x_num_lines > y_num_lines)
+      return;
+
+    if (x_num_lines == y_num_lines) {
+      if (x.is_necessarily_closed()) {
+	// If the number of points of `y' is greater than
+	// the number of points of `x', the resulting polyhedron is still `x'.
+	if (x_gen_sys_num_rows - x_num_lines - x.gen_sys.num_rays() <
+	    y_gen_sys_num_rows - y_num_lines - x.gen_sys.num_rays())
+	  return;
+      }
+      else {
+	dimension_type x_num_closure_points = 0;
+	for (dimension_type i = x_gen_sys_num_rows; i-- > 0; )
+	  if (x.gen_sys[i].is_closure_point())
+	    ++x_num_closure_points;
+	dimension_type y_num_closure_points = 0;
+	for (dimension_type i = y_gen_sys_num_rows; i-- > 0; )
+	  if (y.gen_sys[i].is_closure_point())
+	    ++y_num_closure_points;
+	// If the number of closure points of `y' is greater than
+	// the number of points of `x', the resulting polyhedron is still `x'.
+	if (x_num_closure_points < y_num_closure_points)
+	  return;
+      }
+    }
+  }
+
+  // To implement the different technique's of the widening proposed in
+  // BBRZ02 we must have a copy of `x'.
+  Polyhedron x_copy(x);
+
+  // In this function we need a temporary system of constraints composed
+  // by the constraints that are common to `x' and `y'.
+  ConSys common_con_sys;
+  if (is_necessarily_closed())
+    // Add the positivity constraint.
+    common_con_sys.insert(Constraint::zero_dim_positivity());
+  else {
+    // Add the \epsilon constraints.
+    common_con_sys.insert(Constraint::epsilon_leq_one());
+    common_con_sys.insert(Constraint::epsilon_geq_zero());
+  }
+  common_con_sys.adjust_topology_and_dimension(x.topology(), x_space_dim);
+
+  for (dimension_type i = y_con_sys_num_rows; i-- > 0; ) {
+    Constraint c = y.con_sys[i];
+    Poly_Con_Relation relation = x.relation_with(c);
+    if (relation.implies(Poly_Con_Relation::is_included()))
+      // The constraint `c' of `y' is a constraint of `x', too.
+      // So, we add this constraint to `common_con_sys'.
+      common_con_sys.add_row(c);
+  }
+  common_con_sys.sort_rows();
+
+  // ****************
+  // First technique.
+  // ****************
+
+  // `y.sat_c' should be up-to-date.
+  if (!y.sat_c_is_up_to_date())
+    const_cast<SatMatrix&>(y.sat_c).transpose_assign(y.sat_g);
+
+  // The saturation matrix `y.sat_c' is copied in a temporary one:
+  // in this way, the new saturation matrix can be sorted
+  // without modifying the constant polyhedron `y'.
+  SatMatrix tmp_y_sat_c(y.sat_c);
+  tmp_y_sat_c.sort_rows();
+
+  // We build a temporary saturation matrix in which we put the relations
+  // between the constraints of `x' and the generators of `y'.
+  SatMatrix tmp_sat(y_gen_sys_num_rows, x_con_sys_num_rows);
+  for (dimension_type i = y_gen_sys_num_rows; i-- > 0; )
+    for (dimension_type j = x_con_sys_num_rows; j-- > 0; )
+      if (x.con_sys[j]*y.gen_sys[i] > 0)
+        tmp_sat[i].set(j);
+
+  // We must have also the transpose saturation matrix of `tmp_sat'
+  // and a temporary ordered copy of `y.sat_g'.
+  SatMatrix tmp_transpose;
+  tmp_transpose.transpose_assign(tmp_sat);
+  SatMatrix tmp_y_sat_g(y.sat_c);
+  tmp_y_sat_g.transpose();
+
+  // The system of constraints of the resulting polyhedron
+  // contains the constraints of `common_con_sys'.
+  ConSys new_con_sys(common_con_sys);
+  // We must choose a point (if the polyhedra are necessarily closed)
+  // or a closure point (if the polyhedra are not necessarily closed)
+  // that belong to `x' and `y'.
+  for (dimension_type i = y_gen_sys_num_rows; i-- > 0; ) {
+    Generator g = y.gen_sys[i];
+    if ((g.is_point() && x.is_necessarily_closed())
+	|| (g.is_closure_point() && !x.is_necessarily_closed()))
+      if (tmp_y_sat_c.sorted_contains(tmp_sat[i])) {
+	// We must choose the constraints of `x' that are saturated by `g'
+	// and that "evolve" since the constraints of `y'.
+	ConSys tmp_con(x.topology(), 0, x.con_sys.num_columns());
+	for (dimension_type j = x_con_sys_num_rows; j--; ) {
+	  Constraint c = x.con_sys[j];
+	  // If `c' is an equality, it is also a constraint of `y'
+	  // and so we have just considered it, when we build the
+	  // system of common constraints.
+	  if (!c.is_equality())
+	    if(c*g == 0)
+	      for (dimension_type h = y_con_sys_num_rows; h-- > 0; )
+		if (tmp_y_sat_g[h] < tmp_transpose[j]) {
+		  tmp_con.add_row(c);
+		  break;
+		}
+	}
+	// We build the new constraint that is
+	// obtained adding all the chosen constraint.
+	if (tmp_con.num_rows() != 0) {
+	  if (tmp_con.num_rows() == 1)
+	    new_con_sys.add_row(tmp_con[0]);
+	  else {
+	    LinExpression e(0);
+	    bool strict_inequality = false;
+	    for (dimension_type h = tmp_con.num_rows(); h-- > 0; ) {
+	      tmp_con[h].normalize();
+	      e += LinExpression(tmp_con[h]);
+	      if (tmp_con[h].is_strict_inequality())
+		strict_inequality = true;
+	    }
+	    e.normalize();
+
+	    // If there is a strict inequality in the
+	    // chosen constraints, the new constraint is a
+	    // strict inequality, too. Otherwise it is
+	    // a non-strict inequality.
+	    if (strict_inequality)
+	      new_con_sys.insert(e > 0);
+	    else
+	      new_con_sys.insert(e >= 0);
+	  }
+	}
+      }
+  }
+  std::swap(new_con_sys, x.con_sys);
+
+  // The resulting polyhedron has only
+  // the system of constraints up to date.
+  x.clear_generators_up_to_date();
+  x.clear_constraints_minimized();
+
+  // If `x' has not been modified, we apply the second
+  // technique proposed in BBRZ02.
+  if (x != x_copy) {
+    assert(x.OK(true));
+    return;
+  }
+
+  // x.con_sys has been modified.
+  x_con_sys_num_rows = x.con_sys.num_rows();
+
+  // *****************
+  // Second technique.
+  // *****************
+  for (dimension_type i = x_gen_sys_num_rows; i-- > 0; ) {
+    Generator& x_g = x.gen_sys[i];
+    // We choose a point (if the polyhedra are necessarily closed)
+    // or a closure point (if the polyhedra are not necessarily closed)
+    // that belongs to `x' and not to `y'.
+    if ((x_g.is_point() && x.is_necessarily_closed())
+	|| (x_g.is_closure_point() && !x.is_necessarily_closed())) {
+      GenSys tmp_gen(x.topology(), 0, x.gen_sys.num_columns());
+      Poly_Gen_Relation relation = y.relation_with(x_g);
+      if (relation == Poly_Gen_Relation::nothing()) {
+	for (dimension_type k = y_gen_sys_num_rows; k-- > 0; ) {
+	  Generator y_g = y.gen_sys[k];
+	  // For each point (if the polyhedra are necessarily closed)
+	  // or a closure point (if the polyhedra are not necessarily
+	  // closed)of `y', we built a ray `x_g' - `y_g'.
+	  if ((y_g.is_point() && y.is_necessarily_closed())
+	      || (y_g.is_closure_point() && !y.is_necessarily_closed())) {
+	    Generator tmp_x_g(x_g);
+	    tmp_x_g.linear_combine(y_g, 0);
+	    // If the new ray satisfies all the constraints of
+	    // `common_con_sys', we add it to a temporary matrix.
+	    bool not_satisfies = false;
+	    for (dimension_type h = common_con_sys.num_rows(); h-- > 0; )
+	      if (tmp_x_g * common_con_sys[h] < 0) {
+		not_satisfies = true;
+		break;
+	      }
+	    if (!not_satisfies) {
+	      tmp_gen.add_row(tmp_x_g);
+	      tmp_gen.set_sorted(false);
+	      if (!x.is_necessarily_closed())
+		tmp_gen[tmp_gen.num_rows() - 1][x_space_dim + 1] = 0;
+	    }
+	  }
+	}
+	// If `tmp_gen' contains only a ray, it is added to the
+	// system of generators of `x'.
+	if (tmp_gen.num_rows() != 0) {
+	  if (tmp_gen.num_rows() == 1)
+	    x.gen_sys.add_row(tmp_gen[0]);
+	  else {
+	    // Otherwise, we "average" the directions of the rays
+	    // that belong to `tmp_gen' and we add the new ray to the
+	    // system of generators of `x'.
+	    tmp_gen.sort_rows();
+	    LinExpression e(0);
+	    for (dimension_type j = tmp_gen.num_rows(); j-- > 0; )
+	      e += LinExpression(tmp_gen[j]);
+	    e.normalize();
+	    x.gen_sys.insert(ray(e));
+	  }
+	}
+      }
+    }
+  }
+
+  // The resulting polyhedron has only
+  // the system of generators up to date.
+  x.clear_generators_minimized();
+  x.clear_constraints_up_to_date();
+
+  if (x != x_copy) {
+    assert(x.OK(true));
+    return;
+  }
+
+  // x.gen_sys has been modified.
+  x_gen_sys_num_rows = x.gen_sys.num_rows();
+
+  // ********************************************
+  // We use another technique that modifies the
+  // rays of `x'.
+  // ********************************************
+
+  if (!x.sat_c_is_up_to_date())
+    x.sat_c.transpose_assign(x.sat_g);
+
+  for (dimension_type i = y_gen_sys_num_rows; i-- > 0; )
+    for (dimension_type j = x_con_sys_num_rows; j-- > 0; )
+      if (x.con_sys[j]*y.gen_sys[i] > 0)
+        tmp_sat[i].set(j);
+      else
+	tmp_sat[i].clear(j);
+  for (dimension_type i = x_gen_sys_num_rows; i-- > 0; ) {
+    // We choose a ray of `x' that doesn't belong to `y' and
+    // "evolved" since a ray of `y'.
+    Generator& x_g = x.gen_sys[i];
+    if (x_g.is_ray()) {
+      std::vector<bool> considered(x_space_dim + 1);
+      Poly_Gen_Relation rel = y.relation_with(x_g);
+      for (dimension_type j = y_gen_sys_num_rows; j-- > 0; ) {
+	Generator y_g = y.gen_sys[j];
+	if (y_g.is_ray() && tmp_sat[j] > x.sat_c[i]
+	    && rel == Poly_Gen_Relation::nothing()) {
+	  x.gen_sys.set_sorted(false);
+	  Integer tmp_1;
+	  Integer tmp_2;
+	  // We modify the ray of `x' according to how it
+	  // evolve since the ray of `y'.
+	  for (dimension_type k = 1; k < x.space_dim && !considered[k]; ++k)
+	    for (dimension_type h = k + 1; h <= x.space_dim && !considered[h]; ++h) {
+	      tmp_1 = x_g[k] * y_g[h];
+	      tmp_2 = x_g[h] * y_g[k];
+	      bool minor = false;
+	      int sp_sign = sgn(x_g[h] * y_g[h]);
+	      if (tmp_1 < tmp_2 && sp_sign >= 0
+		  || tmp_1 > tmp_2 && sp_sign < 0)
+		minor = true;
+	      if (tmp_1 != tmp_2)
+		if (minor) {
+		  x_g[k] = 0;
+		  considered[k] = true;
+		}
+		else {
+		  x_g[h] = 0;
+		  considered[h] = true;
+		}
+	    }
+	  x_g.normalize();
+	}
+      }
+    }
+  }
+  clear_generators_minimized();
+  clear_constraints_up_to_date();
+
+  assert(x.OK(true));
+}
 
 void
 PPL::Polyhedron::time_elapse_assign(const Polyhedron& y) {
@@ -3319,11 +3672,11 @@ PPL::Polyhedron::bounds(const LinExpression& expr, bool from_above) const {
 	tmp_Integer[1] = g[j] * expr[j];
 	tmp_Integer[0] += tmp_Integer[1];
       }
-      int sp_sign = sgn(tmp_Integer[0]);
-      if (sp_sign != 0
+      int sign = sgn(tmp_Integer[0]);
+      if (sign != 0
 	  && (g.is_line()
-	      || (from_above && sp_sign > 0)
-	      || (!from_above && sp_sign < 0)))
+	      || (from_above && sign > 0)
+	      || (!from_above && sign < 0)))
 	// `*this' does not bound `expr'.
 	return false;
     }
