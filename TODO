@@ -2,6 +2,11 @@ Urgent Things
 =============
 
 - Document Polyhedron::shuffle_dimensions().
+- Make Polyhedron::shuffle_dimensions() available trough the Prolog
+  interfaces.
+- Document the Prolog interface's predicates
+  ppl_set_timeout_exception_atom/1, ppl_timeout_exception_atom/1,
+  ppl_set_timeout/1, and ppl_reset_timeout/0.
 - In the manual, explain PPL's I/O operators and how
   to deal with the IO_Operators namespace.
 - Extend the documentation of the Prolog interfaces so as to treat
