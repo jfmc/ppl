@@ -13,6 +13,11 @@ New and Changed Features
 o  Now `make check' runs a number of tests with `ppl_lcdd', comparing
    the results to expected ones.
 
+Bugfixes
+========
+
+o  Fixed a bug in the `ppl_lpsol' demo.
+
 
 --------------------------------------------------------------------------
 NEWS for version 0.6.1  (released on August 20, 2004)
