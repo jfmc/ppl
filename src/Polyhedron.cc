@@ -515,9 +515,8 @@ PPL::Polyhedron::update_sat_c() const {
   size_t gsr = gen_sys.num_rows();
   Polyhedron& x = const_cast<Polyhedron&>(*this);
 
-  // Recall that the columns of `sat_c' represent the constraints and
-  // its rows represent the generators: this is because it is resized
-  // as follow.
+  // The columns of `sat_c' represent the constraints and
+  // its rows represent the generators: resize accordingly.
   x.sat_c.resize(gsr, csr);
   for (size_t i = gsr; i-- > 0; )
     for (size_t j = csr; j-- > 0; ) {
@@ -557,8 +556,8 @@ PPL::Polyhedron::update_sat_g() const {
   size_t gsr = gen_sys.num_rows();
   Polyhedron& x = const_cast<Polyhedron&>(*this);
 
-  // Recalling that the columns of `sat_g' represent generators and its
-  // rows represent the constraints, we resize it as follow.
+  // The columns of `sat_g' represent generators and its
+  // rows represent the constraints: resize accordingly.
   x.sat_g.resize(csr, gsr);
   for (size_t i = csr; i-- > 0; )
     for (size_t j = gsr; j-- > 0; ) {
@@ -862,11 +861,9 @@ PPL::Polyhedron::add_dimensions(Matrix& mat1,
   // because the polyhedron has not been embedded in the new space.
   sat1.resize(sat1.num_rows() + add_dim, sat1.num_columns());
   // The old matrix is copied at the end of the new matrix.
-  for (size_t i = sat1.num_rows() - add_dim; i != 0; ) {
-    --i;
+  for (size_t i = sat1.num_rows() - add_dim; i-- > 0; )
     std::swap(sat1[i], sat1[i+add_dim]);
-  }
-  // Computes the sat_c, too.
+  // Computes the "sat_c", too.
   sat2.transpose_assign(sat1);
 }
 
