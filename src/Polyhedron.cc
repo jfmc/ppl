@@ -638,6 +638,9 @@ PPL::Polyhedron::strongly_minimize_generators() const {
     if (con_sys[i].is_strict_inequality())
       sat_all_but_strict_ineq.set(i);
 
+  // Will record whether or not we changed the generator system.
+  bool changed = false;
+
   // For all points in the generator system, check for eps-redundancy
   // and eventually move them to the bottom part of the system.
   GenSys& gs = const_cast<GenSys&>(gen_sys);
@@ -664,14 +667,18 @@ PPL::Polyhedron::strongly_minimize_generators() const {
 	  std::swap(gs[i], gs[gs_rows]);
 	  std::swap(sat[i], sat[gs_rows]);
 	  eps_redundant = true;
+	  changed = true;
 	  break;
 	}
-      if (eps_redundant)
-	// Consider next generator, which is already in place.
-	continue;
-      else {
+      if (!eps_redundant) {
 	// Let all point encodings have epsilon coordinate 1.
-	gs[i][eps_index] = gs[i][0];
+	if (changed)
+	  gs[i][eps_index] = gs[i][0];
+	else
+	  if (gs[i][eps_index] != gs[i][0]) {
+	    gs[i][eps_index] = gs[i][0];
+	    changed = true;
+	  }
 	// Consider next generator.
 	++i;
       }
@@ -684,19 +691,12 @@ PPL::Polyhedron::strongly_minimize_generators() const {
   if (gs_rows < gs.num_rows())
     gs.erase_to_end(gs_rows);
 
-  // Since we changed epsilon coefficients,
-  // the generator system is no longer sorted.
-  gs.set_sorted(false);
-  // `gen_sys' and `con_sys' are no longer the dual of each other:
-  // saturation matrices are no longer meaningful.
-  x.clear_sat_c_up_to_date();
-  x.clear_sat_g_up_to_date();
-  // CHECKME: con_sys describes the same NNC_Polyhedron,
-  // even though it is not the dual system wrt gen_sys.
-  // In a certain sense, it is still (weakly) minimized ...
-  // Temporarily clearing the up-to-date flag to avoid
-  // problems in methods update_sat_X().
-  x.clear_constraints_up_to_date();
+  if (changed) {
+    // The generator system is no longer sorted.
+    x.gen_sys.set_sorted(false);
+    // The constraint system is no longer up-to-date.
+    x.clear_constraints_up_to_date();
+  }
 
   assert(OK());
 }
@@ -742,7 +742,8 @@ PPL::Polyhedron::strongly_minimize_constraints() const {
       break;
     default:
       // Found a line with index i >= n_lines.
-      abort();
+      throw std::runtime_error("PPL internal error: "
+			       "strongly_minimize_constraints.");
     }
   SatRow sat_lines_and_rays;
   set_union(sat_all_but_points, sat_all_but_closure_points,
@@ -754,29 +755,48 @@ PPL::Polyhedron::strongly_minimize_constraints() const {
   set_union(sat_lines_and_rays, sat_lines_and_closure_points,
 	    sat_lines);
 
+  // These flags are maintained to later decide
+  // if we have to add back the eps_leq_one constraint
+  // and whether or not the constraint system is changed.
+  bool topologically_closed = true;
+  bool strict_inequals_saturate_all_rays = true;
+  bool eps_leq_one_removed = false;
+  bool changed = false;
+
+  // For all the strict inequalities in `con_sys',
+  // check for eps-redundancy and eventually move them
+  // to the bottom part of the system.
   ConSys& cs = x.con_sys;
   SatMatrix& sat = x.sat_g;
   size_t cs_rows = cs.num_rows();
   size_t n_equals = cs.num_equalities();
-  // These two flags are maintained to later decide
-  // if we have to add back the eps-upper-bound constraint.
-  bool topologically_closed = true;
-  bool strict_inequals_saturate_all_rays = true;
-  // For all the strict inequalities in `con_sys',
-  // check for eps-redundancy and eventually move them
-  // to the bottom part of the system.
+  size_t eps_index = cs.num_columns() - 1;
   for (size_t i = n_equals; i < cs_rows; )
     if (cs[i].is_strict_inequality()) {
       // First, check if it is saturated by no closure points
       SatRow sat_ci;
       set_union(sat[i], sat_lines_and_closure_points, sat_ci);
       if (sat_ci == sat_lines) {
-	// Constraint `cs[i]' is eps-redundant:
+	// Constraint `cs[i]' is eps-redundant.
 	// move it to the bottom of the constraint system,
 	// while keeping `sat_g' consistent.
 	--cs_rows;
 	std::swap(cs[i], cs[cs_rows]);
 	std::swap(sat[i], sat[cs_rows]);
+	// Check if it was the eps_leq_one constraint.
+	const Constraint& c = cs[cs_rows];
+	bool all_zeros = true;
+	for (size_t k = eps_index; k-- > 1; )
+	  if (c[k] != 0) {
+	    all_zeros = false;
+	    break;
+	  }
+	if (all_zeros && (c[0] + c[eps_index] == 0))
+	  // We removed the eps_leq_one constraint.
+	  eps_leq_one_removed = true;
+	else
+	  // We removed another constraint.
+	  changed = true;
 	// Continue considering next constraint,
 	// which is already in place due to the swap.
 	continue;
@@ -796,16 +816,14 @@ PPL::Polyhedron::strongly_minimize_constraints() const {
 	  std::swap(cs[i], cs[cs_rows]);
 	  std::swap(sat[i], sat[cs_rows]);
 	  eps_redundant = true;
+	  // The constraint system is changed.
+	  changed = true;
 	  break;
 	}
-      if (eps_redundant)
-	// If we found an eps-redundant constraint, then we continue
-	// considering the next constraint, which is already in place.
-	continue;
-      else {
-	// Otherwise, the constraint is not eps-redudnant.
+      if (!eps_redundant) {
+	// The constraint is not eps-redudnant.
 	// Maintain boolean flags to later check
-	// if the eps-upper-bound constraint is needed.
+	// if the eps_leq_one constraint is needed.
 	topologically_closed = false;
 	if (strict_inequals_saturate_all_rays)
 	  strict_inequals_saturate_all_rays = (sat[i] <= sat_lines_and_rays);
@@ -817,38 +835,36 @@ PPL::Polyhedron::strongly_minimize_constraints() const {
       // `cs[i]' is not a strict inequality: consider next constraint.
       ++i;
 
-  bool eps_upper_bound_needed
-    = topologically_closed || !strict_inequals_saturate_all_rays;
-  bool changed = eps_upper_bound_needed || (cs_rows < cs.num_rows());
-
-  // Now insert back the eps-upper-bound constraint, if needed.
-  if (eps_upper_bound_needed) {
+  // Now insert the eps_leq_one constraint, if it is needed.
+  // It is needed if either the polyhedron is topologically closed
+  // or there exists a strict inequality encoding that is not
+  // saturated by one of the rays.
+  if (topologically_closed || !strict_inequals_saturate_all_rays) {
     assert(cs_rows < cs.num_rows());
     Constraint& eps_leq_one = cs[cs_rows];
     eps_leq_one[0] = 1;
-    eps_leq_one[cs.num_columns()-1] = -1;
-    for (size_t k = cs.num_columns() - 1; k-- > 1; )
+    eps_leq_one[eps_index] = -1;
+    for (size_t k = eps_index; k-- > 1; )
       eps_leq_one[k] = 0;
     cs_rows++;
   }
+  else
+    // The eps_leq_one constraint is not needed:
+    // if we previously removed it from the input constraint system,
+    // then the constraint system has changed.
+    changed = changed || eps_leq_one_removed;
 
-  // If needed, erase the eps-redundant constraints.
+  // Erase the eps-redundant constraints, if there are any.
   if (cs_rows < cs.num_rows())
     cs.erase_to_end(cs_rows);
 
   if (changed) {
+    // The constraint system is no longer sorted.
     cs.set_sorted(false);
-    // `gen_sys' and `con_sys' are no longer the dual of each other:
-    // saturation matrices are no longer meaningful.
-    x.clear_sat_c_up_to_date();
-    x.clear_sat_g_up_to_date();
-    // CHECKME: gen_sys describes the same NNC_Polyhedron,
-    // even though it is not the dual system wrt con_sys.
-    // In a certain sense, it is still (weakly) minimized ...
-    // Temporarily clearing the up-to-date flag to avoid
-    // problems in methods update_sat_X().
+    // The generator system is no longer up-to-date.
     x.clear_generators_up_to_date();
   }
+
   assert(OK());
 }
 
@@ -860,11 +876,11 @@ PPL::Polyhedron::strongly_minimize_constraints() const {
 void
 PPL::Polyhedron::strongly_minimize() const {
   assert(!is_necessarily_closed());
-  // Strongly minimize generators and
-  // then recompute the (weakly) minimized constraints,
-  // which will be in strong minimal form too.
+  // Strongly minimize generators.
   strongly_minimize_generators();
-  minimize();
+  // Compute the (weakly) minimized constraints,
+  // which will be in strong minimal form too.
+  update_constraints();
   assert(OK());
 }
 
