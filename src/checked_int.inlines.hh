@@ -201,17 +201,9 @@ SPECIALIZE_ASSIGN(int_float_check_min_max, u_int64_t, float128_iec559_t)
 template <typename Policy, typename Type>
 inline Result 
 neg_signed_int(Type& to, Type from) {
-  if (!Policy::check_overflow || from == 0) {
-    to = from;
-    return V_EQ;
-  }
-  Type n = -from;
-  if (to < 0) {
-    if (n <= 0)
-      return V_POS_OVERFLOW;
-  } else if (n >= 0)
-    return V_NEG_OVERFLOW;
-  to = n;
+  if (Policy::check_overflow && from == std::numeric_limits<Type>::min())
+    return V_POS_OVERFLOW;
+  to = -from;
   return V_EQ;
 }
 
@@ -399,18 +391,18 @@ struct Larger_Types;
 
 template <>
 struct Larger_Types<int8_t> {
-  typedef int16_t Neg;
-  typedef int16_t Add;
-  typedef int16_t Sub;
-  typedef int16_t Mul;
+  typedef int32_t Neg;
+  typedef int32_t Add;
+  typedef int32_t Sub;
+  typedef int32_t Mul;
 };
 
 template <>
 struct Larger_Types<u_int8_t> {
-  typedef int16_t Neg;
-  typedef u_int16_t Add;
-  typedef int16_t Sub;
-  typedef u_int16_t Mul;
+  typedef int32_t Neg;
+  typedef u_int32_t Add;
+  typedef int32_t Sub;
+  typedef u_int32_t Mul;
 };
 
 template <>
@@ -448,7 +440,7 @@ struct Larger_Types<u_int32_t> {
 
 template <typename Policy, typename Type>
 inline Result 
-int_larger_neg(Type& to, Type x) {
+neg_int_larger(Type& to, Type x) {
   typename Larger_Types<Type>::Neg l = x;
   l = -l;
   return assign<Policy>(to, l);
@@ -456,7 +448,7 @@ int_larger_neg(Type& to, Type x) {
 
 template <typename Policy, typename Type>
 inline Result 
-int_larger_add(Type& to, Type x, Type y) {
+add_int_larger(Type& to, Type x, Type y) {
   typename Larger_Types<Type>::Add l = x;
   l += y;
   return assign<Policy>(to, l);
@@ -464,7 +456,7 @@ int_larger_add(Type& to, Type x, Type y) {
 
 template <typename Policy, typename Type>
 inline Result 
-int_larger_sub(Type& to, Type x, Type y) {
+sub_int_larger(Type& to, Type x, Type y) {
   typename Larger_Types<Type>::Sub l = x;
   l -= y;
   return assign<Policy>(to, l);
@@ -472,28 +464,39 @@ int_larger_sub(Type& to, Type x, Type y) {
 
 template <typename Policy, typename Type>
 inline Result 
-int_larger_mul(Type& to, Type x, Type y) {
+mul_int_larger(Type& to, Type x, Type y) {
   typename Larger_Types<Type>::Mul l = x;
   l *= y;
   return assign<Policy>(to, l);
 }
 
+/* 
+   TODO: Optimize architecture dependant use of int_larger or
+   (un)signed_int variants for neg, add, sub, mul.
+
+   The following should be ok of ia32.
+
+   Choosen guidelines:
+   - avoid division where possibile (int_larger variant for mul)
+   - use int_larger variant for types smaller than architecture bit size
+*/
+
 SPECIALIZE_PRED(int, int8_t)
 SPECIALIZE_SUCC(int, int8_t)
-SPECIALIZE_NEG(signed_int, int8_t, int8_t)
-SPECIALIZE_ADD(signed_int, int8_t, int8_t)
-SPECIALIZE_SUB(signed_int, int8_t, int8_t)
-SPECIALIZE_MUL(signed_int, int8_t, int8_t)
+SPECIALIZE_NEG(int_larger, int8_t, int8_t)
+SPECIALIZE_ADD(int_larger, int8_t, int8_t)
+SPECIALIZE_SUB(int_larger, int8_t, int8_t)
+SPECIALIZE_MUL(int_larger, int8_t, int8_t)
 SPECIALIZE_DIV(signed_int, int8_t, int8_t)
 SPECIALIZE_MOD(int, int8_t, int8_t)
 SPECIALIZE_SQRT(signed_int, int8_t, int8_t)
 
 SPECIALIZE_PRED(int, int16_t)
 SPECIALIZE_SUCC(int, int16_t)
-SPECIALIZE_NEG(signed_int, int16_t, int16_t)
-SPECIALIZE_ADD(signed_int, int16_t, int16_t)
-SPECIALIZE_SUB(signed_int, int16_t, int16_t)
-SPECIALIZE_MUL(signed_int, int16_t, int16_t)
+SPECIALIZE_NEG(int_larger, int16_t, int16_t)
+SPECIALIZE_ADD(int_larger, int16_t, int16_t)
+SPECIALIZE_SUB(int_larger, int16_t, int16_t)
+SPECIALIZE_MUL(int_larger, int16_t, int16_t)
 SPECIALIZE_DIV(signed_int, int16_t, int16_t)
 SPECIALIZE_MOD(int, int16_t, int16_t)
 SPECIALIZE_SQRT(signed_int, int16_t, int16_t)
@@ -503,7 +506,7 @@ SPECIALIZE_SUCC(int, int32_t)
 SPECIALIZE_NEG(signed_int, int32_t, int32_t)
 SPECIALIZE_ADD(signed_int, int32_t, int32_t)
 SPECIALIZE_SUB(signed_int, int32_t, int32_t)
-SPECIALIZE_MUL(signed_int, int32_t, int32_t)
+SPECIALIZE_MUL(int_larger, int32_t, int32_t)
 SPECIALIZE_DIV(signed_int, int32_t, int32_t)
 SPECIALIZE_MOD(int, int32_t, int32_t)
 SPECIALIZE_SQRT(signed_int, int32_t, int32_t)
@@ -520,20 +523,20 @@ SPECIALIZE_SQRT(signed_int, int64_t, int64_t)
 
 SPECIALIZE_PRED(int, u_int8_t)
 SPECIALIZE_SUCC(int, u_int8_t)
-SPECIALIZE_NEG(unsigned_int, u_int8_t, u_int8_t)
-SPECIALIZE_ADD(unsigned_int, u_int8_t, u_int8_t)
-SPECIALIZE_SUB(unsigned_int, u_int8_t, u_int8_t)
-SPECIALIZE_MUL(unsigned_int, u_int8_t, u_int8_t)
+SPECIALIZE_NEG(int_larger, u_int8_t, u_int8_t)
+SPECIALIZE_ADD(int_larger, u_int8_t, u_int8_t)
+SPECIALIZE_SUB(int_larger, u_int8_t, u_int8_t)
+SPECIALIZE_MUL(int_larger, u_int8_t, u_int8_t)
 SPECIALIZE_DIV(unsigned_int, u_int8_t, u_int8_t)
 SPECIALIZE_MOD(int, u_int8_t, u_int8_t)
 SPECIALIZE_SQRT(unsigned_int, u_int8_t, u_int8_t)
 
 SPECIALIZE_PRED(int, u_int16_t)
 SPECIALIZE_SUCC(int, u_int16_t)
-SPECIALIZE_NEG(unsigned_int, u_int16_t, u_int16_t)
-SPECIALIZE_ADD(unsigned_int, u_int16_t, u_int16_t)
-SPECIALIZE_SUB(unsigned_int, u_int16_t, u_int16_t)
-SPECIALIZE_MUL(unsigned_int, u_int16_t, u_int16_t)
+SPECIALIZE_NEG(int_larger, u_int16_t, u_int16_t)
+SPECIALIZE_ADD(int_larger, u_int16_t, u_int16_t)
+SPECIALIZE_SUB(int_larger, u_int16_t, u_int16_t)
+SPECIALIZE_MUL(int_larger, u_int16_t, u_int16_t)
 SPECIALIZE_DIV(unsigned_int, u_int16_t, u_int16_t)
 SPECIALIZE_MOD(int, u_int16_t, u_int16_t)
 SPECIALIZE_SQRT(unsigned_int, u_int16_t, u_int16_t)
@@ -543,7 +546,7 @@ SPECIALIZE_SUCC(int, u_int32_t)
 SPECIALIZE_NEG(unsigned_int, u_int32_t, u_int32_t)
 SPECIALIZE_ADD(unsigned_int, u_int32_t, u_int32_t)
 SPECIALIZE_SUB(unsigned_int, u_int32_t, u_int32_t)
-SPECIALIZE_MUL(unsigned_int, u_int32_t, u_int32_t)
+SPECIALIZE_MUL(int_larger, u_int32_t, u_int32_t)
 SPECIALIZE_DIV(unsigned_int, u_int32_t, u_int32_t)
 SPECIALIZE_MOD(int, u_int32_t, u_int32_t)
 SPECIALIZE_SQRT(unsigned_int, u_int32_t, u_int32_t)
