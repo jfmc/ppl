@@ -25,6 +25,13 @@ site: http://www.cs.unipr.it/ppl/ . */
 #include "print.hh"
 #include "ehandlers.hh"
 #include <stdexcept>
+#include <sstream>
+
+using namespace std;
+using namespace Parma_Polyhedra_Library;
+
+/* Turn token S into a string: stringify(x + y) => "x + y"  */
+#define stringify(s) #s
 
 #ifdef DERIVED_TEST
 #define C_Polyhedron NNC_Polyhedron
@@ -148,5 +155,59 @@ numer_denom(const Checked_Number<T, Policy>& from,
 //typedef BD_Shape<Checked_Number<mpq_class, Extended_Number_Policy> > TBD_Shape;
 typedef BD_Shape<Checked_Number<int, Extended_Number_Policy> > TBD_Shape;
 #endif
+
+//! Compare \p dump and \p expected.
+/*
+  If NOISY is true then print both parameters to cout.
+*/
+inline bool
+check_dump(const stringstream& dump, const string& expected) {
+  using namespace Parma_Polyhedra_Library::IO_Operators;
+  if (dump.str().compare(expected)) {
+    nout << "ASCII dump:\n" << dump.str()
+	 << "  expected:\n" << expected;
+    return false;
+  }
+  return true;
+}
+
+//! Look for variation in \p a.
+/*!
+  Return <CODE>true</CODE> if \p a contains variations from
+  consistency, else return <CODE>false</CODE>.  Variation can be found
+  via the OK method, or via a comparison between \p a and an object
+  created from the ASCII dump of \p a.
+
+  \p T must provide:
+    void ascii_dump(std::ostream& s) const;
+    bool ascii_load(std::istream& s);
+  and there must be a:
+    bool operator==(const T& x, const T& y);
+*/
+template <typename T>
+static bool
+find_variation_template(T& a) {
+  using namespace Parma_Polyhedra_Library::IO_Operators;
+
+  if (a.OK() == false) {
+    nout << "OK() failed\nASCII dump:" << endl;
+    a.ascii_dump(nout);
+    return true;
+  }
+
+  T b;
+  stringstream dump;
+  a.ascii_dump(dump);
+  b.ascii_load(dump);
+  if (b == a)
+    return false;
+
+  nout << "b loaded from a's ASCII dump should equal a\n"
+       << "a's ASCII dump:\n" << dump.str()
+       << "b's ASCII dump:\n";
+  b.ascii_dump(nout);
+
+  return true;
+}
 
 }
