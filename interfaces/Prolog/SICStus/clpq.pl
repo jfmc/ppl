@@ -251,6 +251,9 @@ write_error_aux([H|T]) :-
 main_loop :-
   write('PPL clpq ?- '),
   read_term(Command, [variable_names(VN)]),
+  % The above read leaves an EOL character in the input buffer:
+  % get rid of it.
+  get0(_EOL),
   do_command(Command, VN).
 
 clear_program :-
