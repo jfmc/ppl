@@ -263,37 +263,34 @@ void
 PPL::GenSys::affine_image(size_t v,
 			  const LinExpression& expr,
 			  const Integer& denominator) {
-  GenSys& x = *this;
-  size_t n_columns = x.num_columns();
-  size_t n_rows = x.num_rows();
-
-  // The first coefficient is the inhomogeneous term.
-  assert(v != 0);
-  assert(n_columns = expr.size());
+  // The first coefficient is the inhomogeneous term so the `v' cannot be 0.
+  assert(v > 0 && v < num_columns());
+  assert(num_columns() == expr.size());
   assert(denominator != 0);
-  assert(v < n_columns);
 
-  // Computing the numerator of the affine transformation and assigning
-  // it to the column of `*this' indexed by `v'.
-  for (size_t i = 0; i < n_rows; ++i) {
+  size_t n_columns = num_columns();
+  size_t n_rows = num_rows();
+  GenSys& x = *this;
+  // Compute the numerator of the affine transformation and assign it
+  // to the column of `*this' indexed by `v'.
+  for (size_t i = n_rows; i-- > 0; ) {
     Generator& row = x[i];
     row[v] *= expr[v];
-    for (size_t j = 0; j < n_columns; ++j)
+    for (size_t j = n_columns; j-- > 0; )
       if (j != v)
 	row[v] += row[j] * expr[j];	
   }
   if (denominator != 1)
-    // Since we want integer elements in the matrix and the
-    // `v'-th columns is a multiple of `denominator', we
-    // multiply by `denominator' all the other columns of `*this'.
-    for (size_t i = 0; i < n_rows; ++i)
-      for (size_t j = 0; j < n_columns; ++j)
+    // Since we want integer elements in the matrix and the `v'-th
+    // columns is a multiple of `denominator', we multiply by
+    // `denominator' all the other columns of `*this'.
+    for (size_t i = n_rows; i-- > 0; )
+      for (size_t j = n_columns; j-- > 0; )
 	if (j != v)
 	  x[i][j] *= denominator;
 
-  // If the mapping in not invertible,
-  // we may have trasformed valid lines and rays
-  // into the origin of the space.
+  // If the mapping is not invertible we may have trasformed valid
+  // lines and rays into the origin of the space.
   if (expr[v] == 0)
     x.remove_invalid_lines_and_rays();
 

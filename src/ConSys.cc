@@ -119,21 +119,17 @@ void
 PPL::ConSys::affine_preimage(size_t v,
 			     const LinExpression& expr,
 			     const Integer& denominator) {
-  ConSys& x = *this;
-  size_t n_columns = x.num_columns();
-  size_t n_rows = x.num_rows();
-
-  assert(v != 0);
-  assert(n_columns = expr.size());
+  assert(v > 0 && v < num_columns());
+  assert(num_columns() == expr.size());
   assert(denominator != 0);
-  assert(v < n_columns);
 
-  // Building the new matrix of constraints.
-  for (size_t i = 0; i < n_rows; ++i) {
+  ConSys& x = *this;
+  // Build the new matrix of constraints.
+  for (size_t i = num_rows(); i-- > 0; ) {
     Constraint& row = x[i];
     Integer& row_v = row[v];
     if (row_v != 0) {
-      for (size_t j = 0; j < n_columns; ++j)
+      for (size_t j = num_columns(); j-- > 0; )
 	if (j != v) {
 	  row[j] *= denominator;
 	  row[j] += row_v * expr[j];
