@@ -105,7 +105,7 @@ void add_round_down(Checked_Number<T, Policy>& to,
 		    const Checked_Number<T, Policy>& y) {
   Rounding_State old;
   Checked_Number<T, Policy>::internal_save_rounding(ROUND_DOWN, old);
-  to.assign_add(x, y, ROND_DOWN);
+  to.assign_add(x, y, ROUND_DOWN);
   Checked_Number<T, Policy>::internal_restore_rounding(old, ROUND_UP);
 }
 
@@ -113,9 +113,9 @@ template <typename T, typename Policy>
 void negate_round_down(Checked_Number<T, Policy>& to,
 		       const Checked_Number<T, Policy>& x) {
   Rounding_State old;
-  Checked_Number<To, To_Policy>::internal_save_rounding(ROUND_DOWN, old);
-  to.assign_neg(x, mode);
-  Checked_Number<To, To_Policy>::internal_restore_rounding(old, ROUND_UP);
+  Checked_Number<T, Policy>::internal_save_rounding(ROUND_DOWN, old);
+  to.assign_neg(x, ROUND_DOWN);
+  Checked_Number<T, Policy>::internal_restore_rounding(old, ROUND_UP);
 }
 
 template <typename T, typename Policy>
