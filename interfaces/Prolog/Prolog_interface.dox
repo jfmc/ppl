@@ -185,13 +185,11 @@ The specification uses the following grammar rules:
             | nothing			
  
  Numerator   --> number | + number | - number
-                                        number must be non-zero	
 
  Denominator --> number                 number must be non-zero	
 
  Rational    --> number | + number | - number
-            | Numerator/Denominator	rational number in canonical form
-              (That is, if the rational is n/m, the gcd(n,m) = 1.)             
+            | Numerator/Denominator	rational number
 
  Bound       --> c(Rational)		closed rational limit
             | o(Rational)			open rational limit
@@ -766,8 +764,7 @@ referenced by <CODE>Handle</CODE> has with <CODE>Generator</CODE>.
  
    Box = [i(o(minf), c(1/2)), i(o(0), o(pinf))].
 \endcode
-Note that the rational numbers in <CODE>Box</CODE>
-must be in canonical form.
+Note that the rational numbers in <CODE>Box</CODE> are in canonical form.
 E.g. the following will fail:
 \code
    ?- A = '$VAR'(0), B = '$VAR'(1),
