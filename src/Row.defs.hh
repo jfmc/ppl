@@ -27,10 +27,10 @@ site: http://www.cs.unipr.it/ppl/ . */
 #include "Row.types.hh"
 #include "globals.hh"
 #include "Topology.hh"
-#include "Integer.types.hh"
 #include "LinExpression.types.hh"
 #include "Constraint.types.hh"
 #include "Generator.types.hh"
+#include "Integer.defs.hh"
 #include <cstddef>
 #include <vector>
 
