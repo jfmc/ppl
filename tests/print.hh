@@ -24,9 +24,7 @@ site: http://www.cs.unipr.it/ppl/ . */
 #ifndef _print_hh
 #define _print_hh 1
 
-#if NOISY
-
-#include <iosfwd>
+#include <iostream>
 #include <string>
 #include "ppl_install.hh"
 
@@ -38,46 +36,24 @@ easy_print(const Parma_Polyhedra_Library::Polyhedron& ph,
 void
 print_constraint(const Parma_Polyhedra_Library::Constraint& c,
 		 const std::string& intro = "",
-		 std::ostream& s = std::cout) {
-  if (!intro.empty())
-    s << intro << endl;
-  s << c << endl;
-}
+		 std::ostream& s = std::cout);
 
-inline void
+void
 print_constraints(const Parma_Polyhedra_Library::ConSys& cs,
 		  const std::string& intro = "",
-		  std::ostream& s = std::cout) {
-  if (!intro.empty())
-    s << intro << endl;
-  ConSys::const_iterator i = cs.begin();
-  ConSys::const_iterator cs_end = cs.end();
-  while (i != cs_end) {
-    s << *i++;
-    if (i != cs_end)
-      s << "," << endl;
-  }
-  s << "." << endl;
-}
+		  std::ostream& s = std::cout);
 
-inline void
+void
 print_constraints(const Parma_Polyhedra_Library::Polyhedron& ph,
 		  const std::string& intro = "",
-		  std::ostream& s = std::cout) {
-  if (!easy_print(ph, intro, s))
-    print_constraints(ph.constraints(), "", s);
-}
+		  std::ostream& s = std::cout);
 
-inline void
+void
 print_generator(const Parma_Polyhedra_Library::Generator& g,
 		const std::string& intro = "",
-		std::ostream& s = std::cout) {
-  if (!intro.empty())
-    s << intro << endl;
-  s << g << endl;
-}
+		std::ostream& s = std::cout);
 
-inline void
+void
 print_generators(const Parma_Polyhedra_Library::GenSys& gs,
 		 const std::string& intro = "",
 		 std::ostream& s = std::cout);
@@ -86,7 +62,5 @@ void
 print_generators(const Parma_Polyhedra_Library::Polyhedron& ph,
 		 const std::string& intro = "",
 		 std::ostream& s = std::cout);
-
-#endif
 
 #endif
