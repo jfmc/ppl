@@ -1123,7 +1123,7 @@ PPL::Polyhedron::remove_dimensions(const std::set<Variable>& to_be_removed) {
 }
 
 /*!
-  Removes the high dimensions so that the resulting space
+  Removes the higher dimensions so that the resulting space
   is of dimension \p new_dimension.
 */
 void

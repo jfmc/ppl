@@ -496,7 +496,7 @@ private:
   void obtain_sorted_generators_with_sat_g();
 
 public:
-  //! Adds new dimensions and embeds the old polyhedron in the new space.
+  //! Adds new dimensions and embeds the old polyhedron into the new space.
   //! \param dim      The number of dimensions to add.
   void add_dimensions_and_embed(size_t dim);
   //! Adds new dimensions to the polyhedron
@@ -506,7 +506,9 @@ public:
   //! Removes the specified dimensions.
   //! \param to_be_removed The set of variables to remove.
   void remove_dimensions(const std::set<Variable>& to_be_removed);
-  //! FIXME: this must be commented.
+  //! Removes all dimensions higher than a threshold.
+  //! \param new_dimension The dimension of the resulting polyhedron
+  //!                      after all higher dimensions have been removed.
   void remove_higher_dimensions(size_t new_dimension);
   //! Adds the specified constraints and computes a new polyhedron.
   //! \param  cs            The constraints that will be added to the
