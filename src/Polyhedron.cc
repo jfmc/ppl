@@ -944,7 +944,8 @@ PPL::Polyhedron::add_dimensions_and_embed(size_t dim) {
   // Update the space dimension.
   space_dim += dim;
 
-  // CHECKME: is it legal to have `*this' empty here?
+  // Do not check for satisfiability, because the system of constraints
+  // may be unsatisfiable.
   assert(OK(false));
 }
 
@@ -1019,8 +1020,10 @@ PPL::Polyhedron::add_dimensions_and_project(size_t dim) {
 
   // Now we update the space dimension.
   space_dim += dim;
-
-  assert(OK());
+  
+  // Do not check for satisfiability, because the system of constraints
+  // may be unsatisfiable.
+  assert(OK(false));
 }
 
 static void
@@ -1487,6 +1490,10 @@ PPL::Polyhedron::add_dimensions_and_constraints(ConSys& cs) {
   clear_generators_up_to_date();
   clear_sat_g_up_to_date();
   clear_sat_c_up_to_date();
+
+  // The system of constraints may be unsatisfiable.
+  // Do not check for satisfiability.
+  assert(OK(false));
 }
   
 /*!
