@@ -300,6 +300,21 @@ sp_stub_##name(Prolog_term_ref goal, void*) { \
   return name(arg1, arg2); \
 }
 
+#define SP_STUB_3(name, arity) \
+extern "C" Prolog_foreign_return_type \
+sp_stub_##name(Prolog_term_ref goal, void*) { \
+  Prolog_term_ref arg1 = Prolog_new_term_ref(); \
+  if (!Prolog_get_arg(1, goal, arg1)) \
+    return PROLOG_FAILURE; \
+  Prolog_term_ref arg2 = Prolog_new_term_ref(); \
+  if (!Prolog_get_arg(2, goal, arg2)) \
+    return PROLOG_FAILURE; \
+  Prolog_term_ref arg3 = Prolog_new_term_ref(); \
+  if (!Prolog_get_arg(3, goal, arg3)) \
+    return PROLOG_FAILURE; \
+  return name(arg1, arg2, arg3); \
+}
+
 SP_STUB_2(ppl_new_polyhedron, 2)
 SP_STUB_2(ppl_new_empty_polyhedron, 2)
 SP_STUB_2(ppl_copy_polyhedron, 2)
@@ -319,7 +334,7 @@ SP_STUB_2(ppl_convex_hull_assign_and_minimize, 2)
 SP_STUB_2(ppl_convex_difference_assign, 2)
 SP_STUB_2(ppl_convex_difference_assign_and_minimize, 2)
 SP_STUB_2(ppl_widening_assign, 2)
-SP_STUB_2(ppl_limited_widening_assign, 3)
+SP_STUB_3(ppl_limited_widening_assign, 3)
 SP_STUB_2(ppl_get_constraints, 2)
 SP_STUB_2(ppl_get_generators, 2)
 SP_STUB_2(ppl_remove_dimensions, 2)
