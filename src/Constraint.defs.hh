@@ -292,12 +292,15 @@ public:
   //! Returns <CODE>true</CODE> if and only if
   //! \p *this is an equality constraint.
   bool is_equality() const;
+  
   //! Returns <CODE>true</CODE> if and only if
   //! \p *this is an inequality constraint (either strict or non-strict).
   bool is_inequality() const;
+  
   //! Returns <CODE>true</CODE> if and only if
   //! \p *this is a non-strict inequality constraint.
   bool is_nonstrict_inequality() const;
+  
   //! Returns <CODE>true</CODE> if and only if
   //! \p *this is a strict inequality constraint.
   bool is_strict_inequality() const;
@@ -307,6 +310,7 @@ public:
   //! \exception std::invalid_argument thrown if the index of \p v
   //! is greater than or equal to the space-dimension of \p *this.
   const Integer& coefficient(Variable v) const;
+  
   //! Returns the inhomogeneous term of \p *this.
   const Integer& inhomogeneous_term() const;
 
@@ -322,9 +326,11 @@ PPL_INTERNAL:
   Constraint(const Constraint& c, size_t sz);
 
   static Constraint construct_epsilon_geq_zero();
+  
   //! The zero-dimension space constraint \f$\epsilon \geq 0\f$
   //! (used to implement non-necessarily closed polyhedra).
   static const Constraint& epsilon_geq_zero();
+
   //! The zero-dimension space constraint \f$\epsilon \leq 1\f$
   //! (used to implement non-necessarily closed polyhedra).
   static const Constraint& epsilon_leq_one();
@@ -342,6 +348,7 @@ PPL_INTERNAL:
 
   //! Sets the constraint type to <CODE>EQUALITY</CODE>.
   void set_is_equality();
+ 
   //! Sets the constraint type to <CODE>INEQUALITY</CODE>.
   void set_is_inequality();
 

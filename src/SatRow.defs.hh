@@ -52,8 +52,10 @@ private:
 public:
   //! Default constructor.
   SatRow();
+
   //! Copy-constructor.
   SatRow(const SatRow& y);
+
   //! Destructor.
   ~SatRow();
 
@@ -65,10 +67,13 @@ public:
 
   //! Returns the truth value corresponding to the bit in position \p k.
   bool operator[](size_t k) const;
+
   //! Sets the bit in position \p k.
   void set(size_t k);
+
   //! Clears the bit in position \p k.
   void clear(size_t k);
+
   //! Clears bits from position \p k (included) onwards.
   void clear_from(size_t k);
 

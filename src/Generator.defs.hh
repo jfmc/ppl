@@ -239,12 +239,14 @@ private:
   //!                                  of the vector space.
   friend Generator
   Parma_Polyhedra_Library::line(const LinExpression& e);
+
   //! Returns the (unidirectional) ray of direction \p e.
   //! \exception std::invalid_argument thrown if the homogeneous part
   //!                                  of \p e represents the origin
   //!                                  of the vector space.
   friend Generator
   Parma_Polyhedra_Library::ray(const LinExpression& e);
+
   //! Returns the point at \p e / \p d.
   //! Both \p e and \p d are optional arguments, with default values
   //! LinExpression::zero() and Integer_one(), respectively.
@@ -253,6 +255,7 @@ private:
   Parma_Polyhedra_Library::point(const LinExpression& e
 				 = LinExpression::zero(),
 				 const Integer& d = Integer_one());
+
   //! Returns the closure point at \p e / \p d.
   //! Both \p e and \p d are optional arguments, with default values
   //! LinExpression::zero() and Integer_one(), respectively.
@@ -294,12 +297,15 @@ public:
   //! Returns <CODE>true</CODE> if and only if
   //! \p *this is a line.
   bool is_line() const;
+
   //! Returns <CODE>true</CODE> if and only if
   //! \p *this is a ray.
   bool is_ray() const;
+
   //! Returns <CODE>true</CODE> if and only if
   //! \p *this is a point.
   bool is_point() const;
+
   //! Returns <CODE>true</CODE> if and only if
   //! \p *this is a closure point.
   bool is_closure_point() const;
@@ -309,6 +315,7 @@ public:
   //! \exception std::invalid_argument thrown if the index of \p v
   //! is greater than or equal to the space-dimension of \p *this.
   const Integer& coefficient(Variable v) const;
+
   //! If \p *this is either a point or a closure point, returns its divisor.
   //! \exception std::invalid_argument thrown if \p *this is neither a point
   //! nor a closure point.
@@ -316,6 +323,7 @@ public:
 
   //! Returns the origin of the zero-dimensional space \f$\Rset^0\f$.
   static const Generator& zero_dim_point();
+
   //! Returns, as a closure point,
   //! the origin of the zero-dimensional space \f$\Rset^0\f$.
   static const Generator& zero_dim_closure_point();
@@ -330,8 +338,10 @@ PPL_INTERNAL:
   //! Returns <CODE>true</CODE> if and only if
   //! \p *this is not a line.
   bool is_ray_or_point() const;
+
   //! Sets the Row kind to <CODE>LINE_OR_EQUALITY</CODE>.
   void set_is_line();
+
   //! Sets the Row kind to <CODE>RAY_OR_POINT_OR_INEQUALITY</CODE>.
   void set_is_ray_or_point();
 

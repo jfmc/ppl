@@ -78,6 +78,7 @@ public:
   //! Intersection: yields the assertions that are in \p x <EM>and</EM> \p y.
   friend Status
   Parma_Polyhedra_Library::operator&(const Status& x, const Status& y);
+
   //! Union: yields the assertions that are in \p x <EM>or</EM> \p y.
   friend Status
   Parma_Polyhedra_Library::operator|(const Status& x, const Status& y);
@@ -141,12 +142,16 @@ private:
 
   //! Construct from a bitmask.
   Status(flags_t mask);
+
   //! Check whether <EM>all</EM> bits in \p mask are set.
   bool test_all(flags_t mask) const;
+
   //! Check whether <EM>at least one</EM> bit in \p mask is set.
   bool test_any(flags_t mask) const;
+
   //! Set the bits in \p mask.
   void set(flags_t mask);
+
   //! Reset the bits in \p mask.
   void reset(flags_t mask);
 };
@@ -156,6 +161,7 @@ namespace Parma_Polyhedra_Library {
   //! Output operator.
 #endif // PPL_DOXYGEN_INCLUDE_IMPLEMENTATION_DETAILS
   std::ostream& operator<<(std::ostream& s, const Status& u);
+
 #ifdef PPL_DOXYGEN_INCLUDE_IMPLEMENTATION_DETAILS
   //! Input operator.
 #endif // PPL_DOXYGEN_INCLUDE_IMPLEMENTATION_DETAILS

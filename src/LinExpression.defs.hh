@@ -105,14 +105,17 @@ class Parma_Polyhedra_Library::LinExpression : PPL_HIDDEN Row {
 public:
   //! Default constructor: returns a copy of LinExpression::zero().
   LinExpression();
+
   //! Ordinary copy-constructor.
   LinExpression(const LinExpression& e);
+
   //! Destructor.
   virtual ~LinExpression();
 
   //! Constructor: builds the linear expression corresponding
   //! to the inhomogeneous term \p n.
   explicit LinExpression(const Integer& n);
+
   //! Constructor: builds the linear expression corresponding
   //! to the variable \p v.
   LinExpression(const Variable& v);
@@ -130,6 +133,7 @@ PPL_INTERNAL:
   //! Constructor: builds the linear expression corresponding to
   //! the constraint \p c.
   explicit LinExpression(const Constraint& c);
+
   //! Constructor: builds the linear expression corresponding to
   //! the coefficients of generator \p g. Note that,
   //! for points and closure points, the divisor is \e not copied.

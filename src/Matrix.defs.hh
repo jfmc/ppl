@@ -46,11 +46,14 @@ class Parma_Polyhedra_Library::Matrix {
 protected:
   //! Default constructor: builds a zero-matrix.
   Matrix(Topology topol);
+
   //! Constructor: builds a sorted matrix with \p n_rows rows
   //! and \p n_columns columns.
   Matrix(Topology topol, size_t n_rows, size_t n_columns);
+
   //! Copy-constructor.
   Matrix(const Matrix& y);
+  
   //! Destructor.
   virtual ~Matrix();
 
@@ -128,13 +131,17 @@ public:
 private:
   //! Contains the rows of the matrix.
   std::vector<Row> rows;
+
   //! The topological kind of the rows in the matrix.
   Topology row_topology;
+
   //! Size of the initialized part of each row.
   size_t row_size;
+
   //! Capacity allocated for each row, i.e., number of
   //! <CODE>Integer</CODE> objects that each row can contain.
   size_t row_capacity;
+
   //! <CODE>true</CODE> if rows are sorted in the ascending order as
   //! defined by <CODE>bool operator<(const Row& x, const Row& y)</CODE>.
   //! If <CODE>false</CODE> we cannot conclude that rows are not sorted.
@@ -149,18 +156,22 @@ public:
 
   //! Sets \p row_topology to <CODE>NECESSARILY_CLOSED</CODE>.
   void set_necessarily_closed();
+  
   //! Sets \p row_topology to <CODE>NOT_NECESSARILY_CLOSED</CODE>.
   void set_not_necessarily_closed();
+  
   //! Sets the topology of all rows equal to the topology of the matrix.
   void set_rows_topology();
 
   //! Make the matrix grow adding more rows and/or more columns.
   void grow(size_t new_n_rows, size_t new_n_columns);
+  
   //! Resizes the matrix without worrying about the old contents.
   void resize_no_copy(size_t new_n_rows, size_t new_n_columns);
 
   //! Turn the matrix \f$M\f$ into \f$(M \, 0)\f$.
   void add_zero_columns(size_t n);
+  
   //! Turn the matrix \f$M\f$ into \f$\bigl({0 \atop M}{J \atop 0}\bigr)\f$.
   void add_rows_and_columns(size_t n);
 
@@ -189,18 +200,25 @@ public:
   //@}
   //! Normalize the matrix.
   void normalize();
+
   //! Strongly normalize the matrix.
   void strong_normalize();
+
   //! Sorts the rows (in growing order) and eliminates duplicated ones.
   void sort_rows();
+
   //! Merges rows of \p y with rows of \p *this obtaining a sorted matrix.
   void merge_rows_assign(const Matrix& y);
+
   //! Adds a new empty row to the matrix setting its type to \p type.
   void add_row(Row::Type type);
+
   //! Adds a copy of the given row \p row to the matrix.
   void add_row(const Row& row);
+
   //! Adds a copy of the given row \p row to the matrix.
   void insert(const Row& row);
+
   //! Clears the matrix deallocating all its rows.
   void clear();
 
@@ -216,8 +234,10 @@ public:
   //! Sorts the matrix keeping the saturation matrix consistent
   //! and removes duplicates.
   void sort_and_remove_with_sat(SatMatrix& sat);
+
   //! Minimizes a system of equations.
   size_t gauss();
+
   //! Back-substitutes the coefficients to reduce
   //! the complexity of the matrix.
   void back_substitute(size_t rank);
@@ -242,6 +262,7 @@ namespace Parma_Polyhedra_Library {
   //! Returns <CODE>true</CODE> if and only if \p x and \p y are identical.
 #endif // PPL_DOXYGEN_INCLUDE_IMPLEMENTATION_DETAILS
   bool operator==(const Matrix& x, const Matrix& y);
+
 #ifdef PPL_DOXYGEN_INCLUDE_IMPLEMENTATION_DETAILS
   //! Returns <CODE>true</CODE> if and only if \p x and \p y are different.
 #endif // PPL_DOXYGEN_INCLUDE_IMPLEMENTATION_DETAILS
@@ -251,6 +272,7 @@ namespace Parma_Polyhedra_Library {
   //! Input operator.
 #endif // PPL_DOXYGEN_INCLUDE_IMPLEMENTATION_DETAILS
   std::istream& operator>>(std::istream& s, Matrix& m);
+
 #ifdef PPL_DOXYGEN_INCLUDE_IMPLEMENTATION_DETAILS
   //! Output operator.
 #endif // PPL_DOXYGEN_INCLUDE_IMPLEMENTATION_DETAILS

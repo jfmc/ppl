@@ -88,10 +88,13 @@ class Parma_Polyhedra_Library::ConSys : PPL_HIDDEN Matrix {
 public:
   //! Default constructor: builds an empty system of constraints.
   ConSys();
+
   //! Builds the singleton system containing only constraint \p c.
   ConSys(const Constraint& c);
+
   //! Ordinary copy-constructor.
   ConSys(const ConSys& cs);
+
   //! Destructor.
   virtual ~ConSys();
 
@@ -134,11 +137,13 @@ public:
   private:
     //! The const iterator over the matrix of constraints.
     Matrix::const_iterator i;
+  
     //! A const pointer to the matrix of constraints.
     const Matrix* csp;
 
     //! Constructor.
     const_iterator(const Matrix::const_iterator& iter, const ConSys& csys);
+    
     //! \p *this skips to the last non-trivial constraint.
     void skip_forward();
 
@@ -147,23 +152,32 @@ public:
   public:
     //! Default constructor.
     const_iterator();
+    
     //! Ordinary copy-constructor.
     const_iterator(const const_iterator& y);
+    
     //! Destructor.
     virtual ~const_iterator();
+    
     //! Assignment operator.
     const_iterator& operator=(const const_iterator& y);
+    
     //! Dereference operator.
     const Constraint& operator*() const;
+    
     //! Indirect member selector.
     const Constraint* operator->() const;
+    
     //! Prefix increment operator.
     const_iterator& operator++();
+    
     //! Postfix increment operator.
     const_iterator operator++(int);
+    
     //! Returns <CODE>true</CODE> if and only if
     //! \p *this and \p y are identical.
     bool operator==(const const_iterator& y) const;
+    
     //! Returns <CODE>true</CODE> if and only if
     //! \p *this and \p y are different.
     bool operator!=(const const_iterator& y) const;
@@ -173,6 +187,7 @@ public:
   //! if \p *this is not empty;
   //! otherwise, returns the past-the-end const_iterator.
   const_iterator begin() const;
+  
   //! Returns the past-the-end const_iterator.
   const_iterator end() const;
 
@@ -180,6 +195,7 @@ PPL_INTERNAL:
   //! Constructor: builds an empty system of constraints
   //! having the specified topology.
   ConSys(Topology topol);
+  
   //! Constructor: it builds a system of \p n_rows constraints
   //! on a \p n_columns - 1 dimensional space (including the
   //! \f$\epsilon\f$ dimension, if \p topol is
@@ -201,6 +217,7 @@ PPL_INTERNAL:
 
   //! Returns the \p k- th constraint of the system.
   Constraint& operator[](size_t k);
+  
   //! Returns a constant reference to the \p k- th constraint of the system.
   const Constraint& operator[](size_t k) const;
 
@@ -214,6 +231,7 @@ PPL_INTERNAL:
 
   //! Returns the number of the equality constraints.
   size_t num_equalities() const;
+  
   //! Returns the number of the inequality constraints.
   size_t num_inequalities() const;
 
@@ -223,6 +241,7 @@ PPL_INTERNAL:
  private:
   //! Input operator.
   void get(std::istream& s);
+  
   //! Output operator.
   void print(std::ostream& s) const;
 };

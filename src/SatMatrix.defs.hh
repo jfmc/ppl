@@ -43,6 +43,7 @@ class Parma_Polyhedra_Library::SatMatrix {
 private:
   //! Contains the rows of the matrix.
   std::vector<SatRow> rows;
+
   //! Size of the initialized part of each row.
   size_t row_size;
 
@@ -53,11 +54,14 @@ private:
 public:
   //! Default constructor.
   SatMatrix();
+
   //! Construct a saturation matrix with \p n_rows rows
   //! and \p n_columns columns.
   SatMatrix(size_t n_rows, size_t n_columns);
+
   //! Copy-constructor.
   SatMatrix(const SatMatrix& y);
+
   //! Destructor.
   ~SatMatrix();
 
@@ -69,6 +73,7 @@ public:
 
   //! Subscript operator.
   SatRow& operator[](size_t k);
+
   //! Subscript operator.
   const SatRow& operator[](size_t k) const;
 
@@ -83,6 +88,7 @@ public:
 
   //! Returns the number of columns of \p *this.
   size_t num_columns() const;
+
   //! Returns the number of rows of \p *this.
   size_t num_rows() const;
 
@@ -97,6 +103,7 @@ public:
 
   //! Erases the rows from the \p first_to_erase -th to the last one.
   void rows_erase_to_end(size_t first_to_erase);
+
   //! Erases the columns from the \p first_to_erase -th to the last one.
   void columns_erase_to_end(size_t first_to_erase);
 
@@ -105,6 +112,7 @@ public:
 
   //! Checks if all the invariants are satisfied.
   bool OK() const;
+
 #ifndef NDEBUG
   //! Checks whether \p *this is sorted.
   //! It does NOT check for duplicates.
@@ -128,6 +136,7 @@ namespace Parma_Polyhedra_Library {
   //! \p x and \p y are identical.
 #endif // PPL_DOXYGEN_INCLUDE_IMPLEMENTATION_DETAILS
   bool operator==(const SatMatrix& x, const SatMatrix& y);
+
 #ifdef PPL_DOXYGEN_INCLUDE_IMPLEMENTATION_DETAILS
   //! Returns <CODE>true</CODE> if and only if
   //! \p x and \p y are different.
@@ -138,6 +147,7 @@ namespace Parma_Polyhedra_Library {
   //! Input operator.
 #endif // PPL_DOXYGEN_INCLUDE_IMPLEMENTATION_DETAILS
   std::ostream& operator<<(std::ostream& s, const SatMatrix& x);
+
 #ifdef PPL_DOXYGEN_INCLUDE_IMPLEMENTATION_DETAILS
   //! Output operator.
 #endif // PPL_DOXYGEN_INCLUDE_IMPLEMENTATION_DETAILS

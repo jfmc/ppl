@@ -74,6 +74,7 @@ class Parma_Polyhedra_Library::Row {
 public:
   //! Returns the inhomogeneous term.
   const Integer& inhomogeneous_term() const;
+
   //! Returns the coefficient \f$a_n\f$.
   const Integer& coefficient(size_t n) const;
 
@@ -89,6 +90,7 @@ public:
 
   //! Tight constructor: resizing will require reallocation.
   Row(Type t, size_t sz);
+
   //! Sizing constructor with type.
   Row(Type t, size_t sz, size_t capacity);
 
@@ -106,6 +108,7 @@ public:
 
   //! Copy constructor with specified capacity.
   Row(const Row& y, size_t capacity);
+
   //! Copy constructor with specified size and capacity.
   Row(const Row& y, size_t sz, size_t capacity);
 
@@ -123,8 +126,10 @@ public:
 
   //! Resizes the row without copying the old contents.
   void resize_no_copy(size_t new_size);
+
   //! Grows the row without copying the old contents.
   void grow_no_copy(size_t new_size);
+
   //! Shrinks the row by erasing elements at the end.
   void shrink(size_t new_size);
 
@@ -160,6 +165,7 @@ public:
 
   //! Normalizes all the coefficients so that they are mutually prime.
   void normalize();
+
   //! Strong normalization: ensures that different rows represent
   //! different hyperplanes or hyperspaces.
   void strong_normalize();
@@ -274,8 +280,10 @@ private:
 
   //! Check whether <EM>all</EM> bits in \p mask are set.
   bool test_all(flags_t mask) const;
+
   //! Set the bits in \p mask.
   void set(flags_t mask);
+
   //! Reset the bits in \p mask.
   void reset(flags_t mask);
 };
@@ -289,19 +297,25 @@ public:
   void operator delete(void* p, size_t capacity);
   void operator delete(void* p);
   //@}
+
   //! Sizing constructor.
   Impl(Type t, size_t sz);
+
   //! Copy constructor.
   Impl(const Impl& y);
+
   //! Copy constructor with specified size.
   Impl(const Impl& y, size_t sz);
+
   //! Destructor.
   ~Impl();
 
   //! Resizes without copying the old contents.
   void resize_no_copy(size_t new_size);
+
   //! Grows without copying the old contents.
   void grow_no_copy(size_t new_size);
+
   //! Shrinks by erasing elements at the end.
   void shrink(size_t new_size);
 
@@ -321,10 +335,12 @@ public:
 private:
   //! The number of coefficients in the row.
   size_t size_;
+
 public:
   // FIXME: this should become private.
   //! The type of this row.
   Type type;
+
 private:
   //! The vector of coefficients.
   Integer vec_[PPL_FLEXIBLE_ARRAY];
@@ -332,8 +348,10 @@ private:
 private:
   //! Private and unimplemented: default construction is not allowed.
   Impl();
+
   //! Private and unimplemented: assignment is not allowed.
   Impl& operator=(const Impl&);
+
   //! Exception-safe copy construction mechanism.
   void copy_construct(const Impl& y);
 };
