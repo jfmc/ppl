@@ -267,10 +267,10 @@ PPL::Generator::OK() const {
       return false;
     }
     if (!g.is_necessarily_closed())
-      if (g[size() - 1] <= 0 || g[size() - 1] > g[0]) {
+      if (g[size() - 1] <= 0) {
 #ifndef NDEBUG
 	cerr << "In the NNC topology, "
-	     << "points must have 0 < epsilon <= 1"
+	     << "points must have epsilon > 0"
 	     << endl;
 #endif
 	return false;
