@@ -1,13 +1,10 @@
-/*
-A non-ground meta-interpreter for CLP(Q) for use with the 
-Parma Polyhdra Library.
-It is based on the well-known "solve" or "vanilla" interpreter.
-The object program must be be loaded and all object predicates declared as
-dynamic.
-*/
-
 :- ensure_loaded(ppl_sicstus).
-?- use_module(library(clpq)).
+
+/*
+  A non-ground meta-interpreter for CLP(Q) for use with the Parma
+  Polyhedra Library.  It is based on the well-known "solve" or
+  "vanilla" interpreter.
+*/
 
 /*
 solve/1 is the top-level predicate.
@@ -81,7 +78,7 @@ solve({Cs},Polyhedron,InDims,OutDims):-
 solve(Atom,Polyhedron,InDims,OutDims):-
     functor(Atom,Pred,Arity),
     functor(Atom1,Pred,Arity),
-    clause(Atom1,Body1),
+    user_clause(Atom1, Body1),
     Atom =.. [Pred|Args],
     Atom1 =.. [Pred|Args1],
     rename(Args,Args1),
@@ -195,56 +192,142 @@ check_constraints(Polyhedron) :-
     ppl_get_constraints(Polyhedron, CS),
     write(CS), write(' % ').
 
-%%%%%%%%%%% code for debugging %%%%%%%%%%%%%%%%%
-check.
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+:- dynamic user_clause/2.
+
+write_error(Message) :-
+  write('clpq error: '),
+  write_error_aux(Message).
+
+write_error_aux([]) :-
+  nl.
+write_error_aux([H|T]) :-
+  write(H),
+  write_error_aux(T).
+
+read_programs([]).
+read_programs([P|Ps]) :-
+  read_program(P),
+  read_programs(Ps).
+
+read_program(Program) :-
+  (atom(Program) ->
+    true
+  ;
+    write_error(['read_program/1 - arg 1: expected file name, found ',
+                 Program]),
+    fail
+  ),
+  (open(Program, read, Stream) ->
+    FileName = Program
+  ;
+    atom_concat(Program, '.pl', FileName),
+    (open(FileName, read, Stream) ->
+      true
+    ;
+      write_error(['read_program/1 - arg 1: file ',
+                   Program, ' does not exist']),
+      fail
+    )
+  ),
+  (read_clauses(Stream) ->
+    close(Stream)
+  ;
+    write_error(['read_program/1 - arg 1: syntax error reading ', Program]),
+    close(Stream),
+    fail
+  ).
+
+read_clauses(Stream) :-
+  read(Stream, Clause),
+  (Clause \== end_of_file ->
+    (Clause = (Head :- Body) ->
+      assertz(user_clause(Head, Body))
+    ;
+      assertz(user_clause(Head, true))
+    ),
+    read_clauses(Stream)
+  ;
+    true
+  ).
+
+main_loop :-
+  write('PPL clpq ?- '),
+  read(Command),
+  do_command(Command).
+
+clear_program :-
+  retract(user_clause(_, _)),
+  fail.
+clear_program.
+
+list_program :-
+  user_clause(Head, Body),
+  pp(Head, Body),
+  fail.
+list_program.
+
+pp(Head, Body) :-
+  write(Head),
+  (Body == true ->
+    write('.')
+  ;
+    write(' :- '),
+    write(Body)
+  ),
+  nl.
+
+do_command(end_of_file) :-
+  !.
+do_command(halt) :-
+  !.
+do_command(trace) :-
+  !,
+  trace,
+  main_loop.
+do_command([]) :-
+  !,
+  (read_programs([]) ; true),
+  main_loop.
+do_command([H|T]) :-
+  !,
+  (read_programs([H|T]) ; true),
+  main_loop.
+do_command(consult(Program)) :-
+  !,
+  (read_program(Program) ; true),
+  main_loop.
+do_command(reconsult(Program)) :-
+  !,
+  clear_program,
+  do_command(consult(Program)).
+do_command(listing) :-
+  !,
+  list_program,
+  main_loop.
+do_command(Query) :-
+  solve(Query),
+  query_next_solution,
+  main_loop.
+
+query_next_solution :-
+  write(' more? '),
+  repeat,
+  flush_output(user_output),
+  get0(user_input, C),
+  (
+    C == 59, get0(user_input, _EOL)
+  ;
+    C == 10
+  ;
+    get0(user_input, _EOL),
+    write('Action (";" for more choices, otherwise <return>): '),
+    fail
+  ),
+  !,
+  C = 10.
 
 
-%%%%%%%%%%% various tests %%%%%%%%%%%%%%%%%%%%%%%
-% ?- solve({X+Y>=3,Y>=0,X=<2}).
-
-% Some basic checks
-:- dynamic p1/2, p2/3, p3/2, p4/2.
-p1(A,B):- {A>=B}, p2(A,B,_C).
-p2(X,Y,_Z):- {X+Y=<4}.
-p3(X,Y):- {X+Y=4}.
-
-runp1(A,B):- solve(p1(A,B)).
-runp3(A,B):- solve(p3(A,B)).
-
-% fibonacci test (tests shallow backtracking)
-:- dynamic fib/2.
-fib(X, Y) :-
-  { X >= 0, X =< 1, Y = 1 }.
-fib(X, Y) :-
-  { X >= 2, Xm1 = X-1, Xm2 = X-2, Y = Y1+Y2 },
-  fib(Xm1, Y1),
-  fib(Xm2, Y2). 
-
-runfib(A,B):- solve(fib(A,B)).    
-                                                           
-%% test to further check the backtracking
-p4(A,B):- {A +1 =< B}.
-p4(A,B):- {A >= B + 1}.
-p4(A,B):- {A = B}.
-
-runp4(A,B):- solve((p4(A,B),{A=1,B=1})).
-runp4a(A,B):- solve(({A=1}, p4(A,B),{B=1})).
-
-% To run all the tests at once.
-runall:- 
-   runp1(_A,_B),nl, 
-   runp3(_C,_D),nl, 
-   runp4(_E,_F),nl, 
-   runp4a(_E1,_F1),nl, 
-   runfib(4,_X),nl.
-
-/*
-Test results
-| ?- runall.
-2 * [1*A+ -1*B>=0,-1*A+ -1*B>= -4] %
-2 * [1*A+1*B=4] %
-2 * [1*A=1,1*B=1] %
-2 * [1*A=1,1*B=1] %
-1 * [1*A=5] %
-
-*/
+:-
+  nofileerrors,
+  main_loop.
