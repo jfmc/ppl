@@ -38,7 +38,7 @@ namespace Parma_Polyhedra_Library {
 			      const Poly_Con_Relation& y);
 }
 
-//! The relation between a polyhedron and a constraint
+//! The relation between a polyhedron and a constraint.
 /*!
   This class implements conjunctions of assertions on the relation
   between a polyhedron and a constraint.
