@@ -169,26 +169,31 @@ Polyhedron::clear_generators_up_to_date() {
   // Can get rid of gen_sys here.
 }
 
+/*! \relates Polyhedron */
 inline bool
 operator==(const Polyhedron& x, const Polyhedron& y) {
   return x <= y && y <= x;
 }
 
+/*! \relates Polyhedron */
 inline bool
 operator!=(const Polyhedron& x, const Polyhedron& y) {
   return !(x == y);
 }
 
+/*! \relates Polyhedron */
 inline bool
 operator>=(const Polyhedron& x, const Polyhedron& y) {
   return y <= x;
 }
 
+/*! \relates Polyhedron */
 inline bool
 operator<(const Polyhedron& x, const Polyhedron& y) {
   return x <= y && !(x >= y);
 }
 
+/*! \relates Polyhedron */
 inline bool
 operator>(const Polyhedron& x, const Polyhedron& y) {
   return y < x;

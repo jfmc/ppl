@@ -39,44 +39,55 @@ site: http://www.cs.unipr.it/ppl/ . */
 #include <set>
 
 namespace Parma_Polyhedra_Library {
+  //! \brief
   //! Returns <CODE>true</CODE> if and only if
   //! \p x and \p y are the same polyhedron.
-  //! \exception std::invalid_argument thrown if \p x and \p y
-  //!                                  are topology-incompatible
-  //!                                  or dimension-incompatible.
-  /*! \relates Polyhedron */
+  /*!
+    \relates Polyhedron
+    \exception std::invalid_argument thrown if \p x and \p y
+                                     are topology-incompatible
+                                     or dimension-incompatible.
+  */
   bool operator==(const Polyhedron& x, const Polyhedron& y);
 
+  //! \brief
   //! Returns <CODE>true</CODE> if and only if
   //! \p x and \p y are different polyhedra.
-  //! \exception std::invalid_argument thrown if \p x and \p y
-  //!                                  are topology-incompatible
-  //!                                  or dimension-incompatible.
-  /*! \relates Polyhedron */
+  /*!
+    \relates Polyhedron
+    \exception std::invalid_argument thrown if \p x and \p y
+                                     are topology-incompatible
+                                     or dimension-incompatible.
+  */
   bool operator!=(const Polyhedron& x, const Polyhedron& y);
 
+  //! \brief
   //! Returns <CODE>true</CODE> if and only if
   //! \p x is strictly contained in \p y.
-  //! \exception std::invalid_argument thrown if \p x and \p y
-  //!                                  are topology-incompatible
-  //!                                  or dimension-incompatible.
-  /*! \relates Polyhedron */
+  /*!
+    \relates Polyhedron
+    \exception std::invalid_argument thrown if \p x and \p y
+                                     are topology-incompatible
+                                     or dimension-incompatible.
+  */
   bool operator<(const Polyhedron& x, const Polyhedron& y);
 
-  //! Returns <CODE>true</CODE> if and only if
-  //! \p x strictly contains \p y.
-  //! \exception std::invalid_argument thrown if \p x and \p y
-  //!                                  are topology-incompatible
-  //!                                  or dimension-incompatible.
-  /*! \relates Polyhedron */
+  //! Returns <CODE>true</CODE> if and only if \p x strictly contains \p y.
+  /*!
+    \relates Polyhedron
+    \exception std::invalid_argument thrown if \p x and \p y
+                                     are topology-incompatible
+                                     or dimension-incompatible.
+  */
   bool operator>(const Polyhedron& x, const Polyhedron& y);
 
-  //! Returns <CODE>true</CODE> if and only if
-  //! \p x contains \p y.
-  //! \exception std::invalid_argument thrown if \p x and \p y
-  //!                                  are topology-incompatible
-  //!                                  or dimension-incompatible.
-  /*! \relates Polyhedron */
+  //! Returns <CODE>true</CODE> if and only if \p x contains \p y.
+  /*!
+    \relates Polyhedron
+    \exception std::invalid_argument thrown if \p x and \p y
+                                     are topology-incompatible
+                                     or dimension-incompatible.
+  */
   bool operator>=(const Polyhedron& x, const Polyhedron& y);
 
   // Put them in the namespace here to declare them friend later.
@@ -604,7 +615,7 @@ public:
 
   //! \brief
   //! Transforms the polyhedrons \p *this, substituting an affine
-  //! expression for the specified variabl (it is the inverse
+  //! expression for the specified variable (it is the inverse
   //! operation of <CODE>affine_image</CODE>).
   /*!
     \param var           The variable to which the affine expression
