@@ -32,8 +32,18 @@ NNC_Polyhedron::NNC_Polyhedron(size_t num_dimensions, Degenerate_Kind kind)
 }
 
 inline
+NNC_Polyhedron::NNC_Polyhedron(const ConSys& cs)
+  : Polyhedron(NOT_NECESSARILY_CLOSED, cs) {
+}
+
+inline
 NNC_Polyhedron::NNC_Polyhedron(ConSys& cs)
   : Polyhedron(NOT_NECESSARILY_CLOSED, cs) {
+}
+
+inline
+NNC_Polyhedron::NNC_Polyhedron(const GenSys& gs)
+  : Polyhedron(NOT_NECESSARILY_CLOSED, gs) {
 }
 
 inline

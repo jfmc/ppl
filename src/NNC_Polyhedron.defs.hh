@@ -57,27 +57,47 @@ public:
   explicit NNC_Polyhedron(size_t num_dimensions = 0,
 			  Degenerate_Kind kind = UNIVERSE);
 
-  //! Builds a NNC polyhedron from a system of constraints.
+  //! Builds an NNC polyhedron from a system of constraints.
   /*!
     The polyhedron inherits the space dimension of the constraint system.
     \param cs       The system of constraints defining the polyhedron.
-                    It is not declared <CODE>const</CODE>
-                    because it can be modified.
+                    It is not declared <CODE>const</CODE> because its
+                    data-structures will be recycled to build the polyhedron.
+  */
+  NNC_Polyhedron(const ConSys& cs);
+
+  //! Builds an NNC polyhedron recycling a system of constraints.
+  /*!
+    The polyhedron inherits the space dimension of the constraint system.
+    \param cs       The system of constraints defining the polyhedron.
+                    It is not declared <CODE>const</CODE> because its
+                    data-structures will be recycled to build the polyhedron.
   */
   NNC_Polyhedron(ConSys& cs);
 
-  //! Builds a NNC polyhedron from a system of generators.
+  //! Builds an NNC polyhedron from a system of generators.
   /*!
     The polyhedron inherits the space dimension of the generator system.
     \param gs       The system of generators defining the polyhedron.
-                    It is not declared <CODE>const</CODE>
-                    because it can be modified.
+                    It is not declared <CODE>const</CODE> because its
+                    data-structures will be recycled to build the polyhedron.
+    \exception std::invalid_argument thrown if the system of generators
+                                     is not empty but has no points.
+  */
+  NNC_Polyhedron(const GenSys& gs);
+
+  //! Builds an NNC polyhedron recycling a system of generators.
+  /*!
+    The polyhedron inherits the space dimension of the generator system.
+    \param gs       The system of generators defining the polyhedron.
+                    It is not declared <CODE>const</CODE> because its
+                    data-structures will be recycled to build the polyhedron.
     \exception std::invalid_argument thrown if the system of generators
                                      is not empty but has no points.
   */
   NNC_Polyhedron(GenSys& gs);
 
-  //! Builds a NNC polyhedron from the C_Polyhedron \p y.
+  //! Builds an NNC polyhedron from the C polyhedron \p y.
   explicit NNC_Polyhedron(const C_Polyhedron& y);
 
   //! Builds an NNC polyhedron out of a generic, interval-based bounding box.

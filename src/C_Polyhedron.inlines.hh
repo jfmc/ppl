@@ -32,8 +32,18 @@ C_Polyhedron::C_Polyhedron(size_t num_dimensions, Degenerate_Kind kind)
 }
 
 inline
+C_Polyhedron::C_Polyhedron(const ConSys& cs)
+  : Polyhedron(NECESSARILY_CLOSED, cs) {
+}
+
+inline
 C_Polyhedron::C_Polyhedron(ConSys& cs)
   : Polyhedron(NECESSARILY_CLOSED, cs) {
+}
+
+inline
+C_Polyhedron::C_Polyhedron(const GenSys& gs)
+  : Polyhedron(NECESSARILY_CLOSED, gs) {
 }
 
 inline
