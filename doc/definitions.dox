@@ -11,8 +11,8 @@ The following definitions and results are taken from:
 <B>Combination</B>
 
 Let \f$\lambda_1, \ldots, \lambda_k \in \mathbb{R}\f$ and 
-\f$p_1, \ldots, p_k \in \mathbb{R}^n\f$. The linear combination 
-\f$\lambda_1p_1 + \ldots + \lambda_k p_k\f$ is said to be
+\f$x_1, \ldots, x_k \in \mathbb{R}^n\f$. The linear combination 
+\f$\lambda_1 x_1 + \ldots + \lambda_k x_k\f$ is said to be
 
 - a <EM>positive combination</EM>,
   if \f$\forall j \mathrel{:} \lambda_j \geq 0\f$;
@@ -27,7 +27,7 @@ is defined as
 \f[
    \langle x, y \rangle = \sum_{i=1}^n x_i y_i.
 \f]  
-The vector \f$x\f$ and \f$y\f$ are <EM>orthogonal</EM> if 
+The vectors \f$x\f$ and \f$y\f$ are <EM>orthogonal</EM> if 
 \f$\langle x, y \rangle = 0\f$.
 
 <B>Convex hull</B>
@@ -98,32 +98,45 @@ and inequalities:
 \f[
   P = \{\,x \in \mathbb{R}^n \mid Ax = b, Cx \geq d\,\},
 \f]
-where \f$(A, b)\f$ is \f$m_1 \times (n + 1)\f$ matrix and \f$(C, d)\f$ is
-\f$m_2 \times (n + 1)\f$ matrix. 
+where, if \f$m_1\f$ is the number of equalities and
+\f$m_2\f$ the number of inequalities,
+\f$A \in \mathbb{R}^{m_1} \times \mathbb{R}^n\f$,
+\f$b \in \mathbb{R}^{m_1}\f$, 
+\f$C \in \mathbb{R}^{m_2} \times \mathbb{R}^n\f$ and
+\f$d \in \mathbb{R}^{m_2}\f$. 
 
-Note that if we have two linear inequalities \f$\langle c, x \rangle \geq 
-b\f$ and \f$\langle c, x \rangle \leq b\f$ (i.e., \f$\langle -c, x \rangle 
-\geq -b\f$) we can consider, instead of them, a unique 
-<EM>linear equality</EM> \f$\langle c, x \rangle = b\f$, while if we have
-a linear equality we can split it in two linear inequalities (as above).
+Note that, if \f$c, x \in \mathbb{R}^n\f$ and \f$\lambda \in \mathbb{R}\f$
+and we have the linear inequalities 
+\f$\langle c, x \rangle \geq \lambda\f$ and
+\f$\langle c, x \rangle \leq \lambda\f$
+(i.e., \f$\langle -c, x \rangle \geq -\lambda\f$),
+then they can be replaced by the equivalent unique 
+<EM>linear equality</EM>
+\f$\langle c, x \rangle = \lambda\f$.
+Conversely, if we have a linear equality,
+then we can split it into two linear inequalities (as above).
 
-In the sequel we will refer to linear equalities and linear inequalities
-simply by equalities and inequalities respectively and we will use 
-<EM>constraint</EM> to indicate an equality or even an inequality.
-
-Then a polyhedron \f$P\f$ can be always represented as 
+It follows that a polyhedron \f$P\f$ can be always represented as 
 \f[
   P = \{\,x \in \mathbb{R}^n \mid Ax \geq b\,\}.
 \f]
+for some 
+matrix \f$A \in \mathbb{R}^{m} \times \mathbb{R}^n\f$ and
+and vector \f$b \in \mathbb{R}^{m}\f$.
 
-A polyhedron is 
-said to be <EM>rational</EM> if there exists an  \f$m' \times (n + 1)\f$ 
-matrix \f$(A', b')\f$ with rational coefficients such that 
+In the sequel we will refer to linear equalities and linear inequalities
+simply as equalities and inequalities respectively and 
+refer to an equality or inequality as a <EM>constraint</EM>.
+
+A polyhedron \f$P\f$ is 
+said to be <EM>rational</EM> if there exists a matrix
+\f$A \in \mathbb{R}^{m'} \times \mathbb{R}^n\f$
+and vector \f$b \in \mathbb{R}^{m'}\f$ with rational coefficients such that 
 \f[
   P = \{\,x \in \mathbb{R}^n \mid A'x \geq b'\,\}.
 \f]
 
-For the sequel, we will consider only rational polyhedra and 
+In the sequel, we will consider only rational polyhedra and 
 assume that, if \f$P = \{\,x \in \mathbb{R}^n \mid Ax \geq b\,\}\f$, then 
 \f$(A, b)\f$ has rational coefficients.
 
