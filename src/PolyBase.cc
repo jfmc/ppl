@@ -829,45 +829,58 @@ PPL::operator<=(const PolyBase& x, const PolyBase& y) {
     }
   else {
     // Here we have a NON-necessarily closed polyhedron.
+
     // FIXME : can be made more efficient by providing
     // a "strict" scalar-product method,
     // which ignores the \epsilon coefficient.
 
-    // First checking closure(x) <= closure(y):
-    // check scalar products, but ignoring the \epsilon coefficient.
+    // Check scalar products, but ignoring the \epsilon coefficient.
     size_t eps_index = x_space_dim + 1;
     for (size_t i = x.gen_sys.num_rows(); i-- > 0; ) {
       const Generator& gx = x.gen_sys[i];
-      for (size_t j = y.con_sys.num_rows(); j-- > 0; ) {
-	const Constraint& cy = y.con_sys[j];
-	bool do_normal_test = (cy[eps_index] >= 0 || gx[eps_index] == 0);
-	// If `do_normal_test' is true, then we perform the same
-	// test we did for necessarily closed polyhedra.
-	// If otherwise `do_normal_test' is false, then
-	// `cy' is a strict inequality and `gx' is a point;
-	// in such a case, we should ignore the \epsilon coefficient
-	// when computing the scalar product; also, we should check
-	// that the computed scalar product is _strictly_ positive.
-	if (do_normal_test) {
+      if (gx[eps_index] > 0) {
+	// Generator `gx' is a point.
+	for (size_t j = y.con_sys.num_rows(); j-- > 0; ) {
+	  const Constraint& cy = y.con_sys[j];
+	  if (cy[eps_index] < 0) {
+	    // Constraint `cy' is a strict inequality.
+	    // Here we perform the special test:
+	    // if a _point_ violates OR SATURATES a _strict_ inequality
+	    // (when ignoring the \epsilon coefficients)
+	    // then it is NOT included in the polyhedron.
+	    if (gx * cy - gx[eps_index] * cy[eps_index] <= 0)
+	      return false;
+	  }
+	  else {
+	    // Constraint `cy' is an equality or a non-strict inequality:
+	    // performing the normal test.
+	    int sgn_gx_scalar_cy = sgn(gx * cy);
+	    if (cy.is_inequality()) {
+	      if (sgn_gx_scalar_cy < 0)
+		return false;
+	    }
+	    else
+	      // Here `cy' is an equality.
+	      if (sgn_gx_scalar_cy != 0)
+		return false;
+	  }
+	}
+      }
+      else
+	// Generator `gx' is a ray, line or closure point:
+	// performing the normal test.
+	for (size_t j = y.con_sys.num_rows(); j-- > 0; ) {
+	  const Constraint& cy = y.con_sys[j];
 	  int sgn_gx_scalar_cy = sgn(gx * cy);
 	  if (cy.is_inequality()) {
 	    if (sgn_gx_scalar_cy < 0)
 	      return false;
 	  }
 	  else
-	  // Here `cy' is an equality.
+	    // Here `cy' is an equality.
 	    if (sgn_gx_scalar_cy != 0)
 	      return false;
 	}
-	else {
-	  assert(gx.is_point() && cy.is_strict_inequality());
-	  // Here we perform the special test.
-	  int sgn_gx_scalar_cy = sgn(gx * cy
-				     - gx[eps_index] * cy[eps_index]);
-	  if (sgn_gx_scalar_cy <= 0)
-	    return false;
-	}
-      }
     }
   }
   // Inclusion holds.
@@ -1178,6 +1191,7 @@ PPL::PolyBase::add_dimensions(Matrix& mat1,
 			      SatMatrix& sat2,
 			      size_t add_dim) {
   assert(mat1.topology() == mat2.topology());
+  assert(mat1.num_columns() == mat2.num_columns());
   assert(add_dim != 0);
 
   mat1.add_zero_columns(add_dim);
@@ -1199,31 +1213,25 @@ PPL::PolyBase::add_dimensions(Matrix& mat1,
     // Moving the \epsilon coefficients in the last column.
     size_t new_eps_index = mat1.num_columns() - 1;
     size_t old_eps_index = new_eps_index - add_dim;
+    // This swap preserves sortedness of `mat1'.
     mat1.swap_columns(old_eps_index, new_eps_index);
 
-    // FIXME: the following #else branch is as efficient as
-    // the #if branch; it is more involved because it tries
-    // to preserve sortedness. Anyway, it can be coded more clearly.
-#if 0
-    mat2.swap_columns(old_eps_index, new_eps_index);
-    mat2.set_sorted(false);
-#else 
-    if (mat2.is_sorted()) {
-      size_t to_move = mat2.num_columns() - 1;
-      for (size_t i = 0; i < add_dim; ++i) {
+    // Try to preserve sortedness of `mat2'.
+    if (!mat2.is_sorted())
+      mat2.swap_columns(old_eps_index, new_eps_index);
+    else {
+      for (size_t i = mat2.num_rows(); i-- > add_dim; ) {
 	Row& r = mat2[i];
-	std::swap(r[to_move], r[to_move - 1]);
-	--to_move;
+	std::swap(r[old_eps_index], r[new_eps_index]);
       }
-      size_t n_rows = mat2.num_rows();
-      for (size_t i = add_dim; i < n_rows; ++i) {
+      // The upper-right corner of `mat2' contains the J matrix:
+      // swap coefficients to preserve sortedness.
+      for (size_t i = add_dim; i-- > 0; ++old_eps_index) {
 	Row& r = mat2[i];
-	std::swap(r[to_move], r[mat2.num_columns() - 1]);
+	std::swap(r[old_eps_index], r[old_eps_index + 1]);
       }
     }
-    else
-      mat2.swap_columns(old_eps_index, new_eps_index);
-#endif
+
     // CHECK ME: since we swapped columns in both `mat1' and `mat2',
     // no swapping is required for `sat1' and `sat2'.
   }
@@ -1298,34 +1306,27 @@ PPL::PolyBase::add_dimensions_and_embed(size_t dim) {
     // Only generators are up-to-date: we do not need to modify constraints.
     assert(generators_are_up_to_date());
     gen_sys.add_rows_and_columns(dim);
+
     // If the polyhedron is NON-necessarily closed,
     // move the \epsilon coefficients to the last column.
     if (!is_necessarily_closed()) {
-
-      // FIXME: the following #else branch is as efficient as
-      // the #if branch; it is more involved because it tries
-      // to preserve sortedness. Anyway, it can be coded more clearly.
-#if 0
-      gen_sys.swap_columns(space_dim + 1, space_dim + 1 + dim);
-      gen_sys.set_sorted(false);
-#else
-      if (gen_sys.is_sorted()) {
-	size_t to_move = space_dim + 1 + dim;
-	for (size_t i = 0; i < dim; ++i) {
-	  Row& g = gen_sys[i];
-	  std::swap(g[to_move], g[to_move - 1]);
-	  --to_move;
+      // Try to preserve sortedness of `gen_sys'.
+      if (!gen_sys.is_sorted())
+	gen_sys.swap_columns(space_dim + 1, space_dim + 1 + dim);
+      else {
+	size_t old_eps_index = space_dim + 1;
+	size_t new_eps_index = old_eps_index + dim;
+	for (size_t i = gen_sys.num_rows(); i-- > dim; ) {
+	  Row& r = gen_sys[i];
+	  std::swap(r[old_eps_index], r[new_eps_index]);
 	}
-	size_t n_rows = gen_sys.num_rows();
-	for (size_t i = dim; i < n_rows; ++i) {
-	  Row& g = gen_sys[i];
-	  std::swap(g[space_dim + 1], g[space_dim + 1 + dim]);
+	// The upper-right corner of `gen_sys' contains the J matrix:
+	// swap coefficients to preserve sortedness.
+	for (size_t i = dim; i-- > 0; ++old_eps_index) {
+	  Row& r = gen_sys[i];
+	  std::swap(r[old_eps_index], r[old_eps_index + 1]);
 	}
       }
-      else
-	gen_sys.swap_columns(space_dim + 1, space_dim + 1 + dim);
-#endif
-
     }
   }
   // Update the space dimension.
@@ -1402,31 +1403,23 @@ PPL::PolyBase::add_dimensions_and_project(size_t dim) {
     // If the polyhedron is NON-necessarily closed,
     // move the \epsilon coefficients to the last column.
     if (!is_necessarily_closed()) {
-
-      // FIXME: the following #else branch is as efficient as
-      // the #if branch; it is more involved because it tries
-      // to preserve sortedness. Anyway, it can be coded more clearly.
-#if 0
-      con_sys.swap_columns(space_dim + 1, space_dim + 1 + dim);
-      con_sys.set_sorted(false);
-#else
-      if (con_sys.is_sorted()) {
-	size_t to_move = space_dim + 1 + dim;
-	for (size_t i = 0; i < dim; ++i) {
-	  Row& c = con_sys[i];
-	  std::swap(c[to_move], c[to_move - 1]);
-	  --to_move;
+      // Try to preserve sortedness of `con_sys'.
+      if (!con_sys.is_sorted())
+	con_sys.swap_columns(space_dim + 1, space_dim + 1 + dim);
+      else {
+	size_t old_eps_index = space_dim + 1;
+	size_t new_eps_index = old_eps_index + dim;
+	for (size_t i = con_sys.num_rows(); i-- > dim; ) {
+	  Row& r = con_sys[i];
+	  std::swap(r[old_eps_index], r[new_eps_index]);
 	}
-	size_t n_rows = con_sys.num_rows();
-	for (size_t i = dim; i < n_rows; ++i) {
-	  Row& c = con_sys[i];
-	  std::swap(c[space_dim + 1], c[space_dim + 1 + dim]);
+	// The upper-right corner of `con_sys' contains the J matrix:
+	// swap coefficients to preserve sortedness.
+	for (size_t i = dim; i-- > 0; ++old_eps_index) {
+	  Row& r = con_sys[i];
+	  std::swap(r[old_eps_index], r[old_eps_index + 1]);
 	}
       }
-      else
-	con_sys.swap_columns(space_dim + 1, space_dim + 1 + dim);
-#endif
-      
     }
   }
   else {
