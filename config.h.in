@@ -1,28 +1,8 @@
 /* config.h.in.  Generated from configure.ac by autoheader.  */
 
 
-#if OUTLINE
-#define INLINE
-#else
-#define INLINE inline
-#endif
-
-// Neutralize relops for GCC 2.96.
-#ifndef __SGI_STL_INTERNAL_RELOPS
-#define __SGI_STL_INTERNAL_RELOPS
-#endif
-
-#if __GNUC__ >= 3
-// Flexible array members at the end of a struct
-// are defined as in
-//   Type array[];
-#define FLEXIBLE_ARRAY
-#else
-// Flexible array members at the end of a struct
-// are defined as in
-//   Type array[0];
-#define FLEXIBLE_ARRAY 0
-#endif
+#ifndef _config_h
+#define _config_h 1
 
 
 /* Not zero if GMP has been compiled with support for exceptions. */
@@ -69,3 +49,30 @@
 
 /* Version number of package */
 #undef VERSION
+
+
+#if OUTLINE
+#define INLINE
+#else
+#define INLINE inline
+#endif
+
+// Neutralize relops for GCC 2.96.
+#ifndef __SGI_STL_INTERNAL_RELOPS
+#define __SGI_STL_INTERNAL_RELOPS
+#endif
+
+#if __GNUC__ >= 3
+// Flexible array members at the end of a struct
+// are defined as in
+//   Type array[];
+#define FLEXIBLE_ARRAY
+#else
+// Flexible array members at the end of a struct
+// are defined as in
+//   Type array[0];
+#define FLEXIBLE_ARRAY 0
+#endif
+
+#endif
+

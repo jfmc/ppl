@@ -26,6 +26,11 @@ AC_SUBST(ISODATE)
 AC_CANONICAL_HOST
 
 AH_TOP([
+#ifndef _config_h
+#define _config_h 1
+])
+
+AH_BOTTOM([
 #if OUTLINE
 #define INLINE
 #else
@@ -47,6 +52,8 @@ AH_TOP([
 // are defined as in
 //   Type array[0];
 #define FLEXIBLE_ARRAY 0
+#endif
+
 #endif
 ])
 
@@ -115,7 +122,7 @@ OPT_FLAGS=""
 outline=no
 
 enableval=yes
-AC_MSG_CHECKING(whether to compile with debug info)
+AC_MSG_CHECKING([whether to compile with debug info])
 AC_ARG_ENABLE(debugging,
 [  --enable-debugging      compile with debugging information])
 case "${enableval}" in
@@ -128,12 +135,12 @@ no)
   AC_MSG_RESULT(no)
   ;;
 *)
-  AC_MSG_ERROR(bad value ${enableval} for --enable-debugging, needs yes or no)
+  AC_MSG_ERROR([bad value ${enableval} for --enable-debugging, needs yes or no])
   ;;
 esac
 
 enableval=no
-AC_MSG_CHECKING(whether to compile for profiling)
+AC_MSG_CHECKING([whether to compile for profiling])
 AC_ARG_ENABLE(profiling,
 [  --enable-profiling      compile for profiling])
 case "${enableval}" in
@@ -147,12 +154,12 @@ no)
   AC_MSG_RESULT(no)
   ;;
 *)
-  AC_MSG_ERROR(bad value ${enableval} for --enable-profiling, needs yes or no)
+  AC_MSG_ERROR([bad value ${enableval} for --enable-profiling, needs yes or no])
   ;;
 esac
 
 enableval=no
-AC_MSG_CHECKING(whether to compile for test coverage)
+AC_MSG_CHECKING([whether to compile for test coverage])
 AC_ARG_ENABLE(coverage,
 [  --enable-coverage       compile for test coverage])
 case "${enableval}" in
@@ -166,12 +173,12 @@ no)
   AC_MSG_RESULT(no)
   ;;
 *)
-  AC_MSG_ERROR(bad value ${enableval} for --enable-coverage, needs yes or no)
+  AC_MSG_ERROR([bad value ${enableval} for --enable-coverage, needs yes or no])
   ;;
 esac
 
-enableval=yes
-AC_MSG_CHECKING(whether to enable checking of run-time assertions)
+enableval=no
+AC_MSG_CHECKING([whether to enable checking of run-time assertions])
 AC_ARG_ENABLE(assertions,
 [  --enable-assertions     check run-time assertions])
 case "${enableval}" in
@@ -184,13 +191,13 @@ no)
   debug_flag="-DNDEBUG=1"
   ;;
 *)
-  AC_MSG_ERROR(bad value ${enableval} --enable-assertions, needs yes or no)
+  AC_MSG_ERROR([bad value ${enableval} --enable-assertions, needs yes or no])
   ;;
 esac
 
 arch=no
-enableval=no
-AC_MSG_CHECKING(whether to enable optimizations)
+enableval=standard
+AC_MSG_CHECKING([whether to enable optimizations])
 AC_ARG_ENABLE(optimization,
 [  --enable-optimization   enable compiler optimizations])
 case "${enableval}" in
@@ -221,12 +228,12 @@ no)
   AC_MSG_RESULT(no)
   ;;
 *)
-  AC_MSG_ERROR(bad value ${enableval} --enable-optimization, needs sspeed, speed, size, standard, yes or no)
+  AC_MSG_ERROR([bad value ${enableval} --enable-optimization, needs sspeed, speed, size, standard, yes or no])
   ;;
 esac
 
 enableval=$arch
-AC_MSG_CHECKING(for which archtitecture to optimize)
+AC_MSG_CHECKING([for which archtitecture to optimize])
 AC_ARG_ENABLE(arch,
 [  --enable-arch[=arch]      optimize for architecture arch])
 case "${enableval}" in
