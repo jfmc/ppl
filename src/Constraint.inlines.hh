@@ -68,7 +68,7 @@ Constraint::type() const {
 
 inline bool
 Constraint::is_inequality() const {
-  return is_ray_or_vertex_or_inequality();
+  return is_ray_or_point_or_inequality();
 }
 
 inline void
@@ -78,7 +78,7 @@ Constraint::set_is_equality() {
 
 inline void
 Constraint::set_is_inequality() {
-  set_is_ray_or_vertex_or_inequality();
+  set_is_ray_or_point_or_inequality();
 }
 
 inline const Integer&

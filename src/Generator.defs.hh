@@ -39,11 +39,11 @@ namespace Parma_Polyhedra_Library {
   // Put them in the namespace here to declare them friend later.
   Generator line(const LinExpression& e);
   Generator ray(const LinExpression& e);
-  Generator vertex(const LinExpression& e, const Integer& d);
+  Generator point(const LinExpression& e, const Integer& d);
 
 }
 
-//! A line, ray or vertex.
+//! A line, ray or point.
 /*!
   An object of the class Generator is one of the following:
 
@@ -51,8 +51,8 @@ namespace Parma_Polyhedra_Library {
 	
   - a ray \f$\vect{r} = (a_0, \ldots, a_{n-1})^\transpose\f$;
 
-  - a vertex
-    \f$\vect{v} = (\frac{a_0}{d}, \ldots, \frac{a_{n-1}}{d})^\transpose\f$;
+  - a point
+    \f$\vect{p} = (\frac{a_0}{d}, \ldots, \frac{a_{n-1}}{d})^\transpose\f$;
 
   where \f$n\f$ is the dimension of the space.
 
@@ -61,19 +61,16 @@ namespace Parma_Polyhedra_Library {
   represent a polyhedron \f$P\f$ using generators, we need to include
   in the finite set \f$V\f$ even points of \f$P\f$ that are <EM>not</EM>
   vertices of \f$P\f$.
-  Nonetheless, accordingly to what is now an established terminology,
-  we will call <EM>vertex</EM> any element of the set of generators \f$V\f$,
-  even though it is not a ``proper'' vertex of \f$P\f$.
 
   \par How to build a generator.
   Each type of generator is built by applying the corresponding
-  function (<CODE>line</CODE>, <CODE>ray</CODE> or <CODE>vertex</CODE>)
+  function (<CODE>line</CODE>, <CODE>ray</CODE> or <CODE>point</CODE>)
   to a linear expression, representing a direction in the space;
   the space-dimension of the generator is defined as the space-dimension
   of the corresponding linear expression.
   Linear expressions used to define a generator should be homogeneous
   (any constant term will be simply ignored).
-  When defining a vertex, an optional Integer argument can be used
+  When defining a point, an optional Integer argument can be used
   as a common <EM>divisor</EM> for all the coefficients occurring
   in the provided linear expression;
   the default value for this argument is 1.
@@ -116,50 +113,50 @@ namespace Parma_Polyhedra_Library {
   when trying to build a ray from the origin of the space.
 
   \par Example 3
-  The following code builds the vertex
-  \f$\vect{v} = (1, 0, 2)^\transpose \in \Rset^3\f$:
+  The following code builds the point
+  \f$\vect{p} = (1, 0, 2)^\transpose \in \Rset^3\f$:
   \code
-  Generator v = vertex(1*x + 0*y + 2*z);
+  Generator p = point(1*x + 0*y + 2*z);
   \endcode
   The same effect can be obtained by using the following code:
   \code
-  Generator v = vertex(x + 2*z);
+  Generator p = point(x + 2*z);
   \endcode
   Similarly, the origin \f$\vect{0} \in \Rset^3\f$ can be defined
   using either one of the following lines of code:
   \code
-  Generator origin3 = vertex(0*x + 0*y + 0*z);
-  Generator origin3_alt = vertex(0*z);
+  Generator origin3 = point(0*x + 0*y + 0*z);
+  Generator origin3_alt = point(0*z);
   \endcode
   Note however that the following code would have defined
-  a different vertex, namely \f$\vect{0} \in \Rset^2\f$:
+  a different point, namely \f$\vect{0} \in \Rset^2\f$:
   \code
-  Generator origin2 = vertex(0*y);
+  Generator origin2 = point(0*y);
   \endcode
-  The following two lines of code both define the only vertex
+  The following two lines of code both define the only point
   having space-dimension zero, namely \f$\vect{0} \in \Rset^0\f$.
   In the second case we exploit the fact that the first argument
-  of the function <CODE>vertex</CODE> is optional.
+  of the function <CODE>point</CODE> is optional.
   \code
-  Generator origin0 = Generator::zero_dim_vertex();
-  Generator origin0_alt = vertex();
+  Generator origin0 = Generator::zero_dim_point();
+  Generator origin0_alt = point();
   \endcode
 
   \par Example 4
-  The vertex \f$\vect{v}\f$ specified in Example 3 above
+  The point \f$\vect{p}\f$ specified in Example 3 above
   can also be obtained with the following code,
   where we provide a non-default value for the second argument
-  of the function <CODE>vertex</CODE> (the divisor):
+  of the function <CODE>point</CODE> (the divisor):
   \code
-  Generator v = vertex(2*x + 0*y + 4*z, 2);
+  Generator p = point(2*x + 0*y + 4*z, 2);
   \endcode
   Obviously, the divisor can be usefully exploited to specify
-  vertices having some non-integer (but rational) coordinates.
-  For instance, the vertex
-  \f$\vect{w} = (-1.5, 3.2, 2.1)^\transpose \in \Rset^3\f$
+  points having some non-integer (but rational) coordinates.
+  For instance, the point
+  \f$\vect{q} = (-1.5, 3.2, 2.1)^\transpose \in \Rset^3\f$
   can be specified by the following code:
   \code
-  Generator w = vertex(-15*x + 32*y + 21*z, 10);
+  Generator q = point(-15*x + 32*y + 21*z, 10);
   \endcode
   If a zero divisor is provided, an exception is thrown.
 
@@ -171,34 +168,34 @@ namespace Parma_Polyhedra_Library {
   \par Example 5
   The following code shows how it is possible to access each single
   coefficient of a generator.
-  If <CODE>v1</CODE> is a vertex having coordinates
+  If <CODE>g1</CODE> is a point having coordinates
   \f$(a_0, \ldots, a_{n-1})^\transpose\f$,
-  we construct the vertex <CODE>v2</CODE> having coordinates
+  we construct the point <CODE>g2</CODE> having coordinates
   \f$(a_0, 2 a_1, \ldots, (i+1)a_i, \ldots, n a_{n-1})^\transpose\f$.
   \code
-  if (g1.type() == Generator::VERTEX) {
-    cout << "Vertex g1: " << g1 << endl;
+  if (g1.type() == Generator::POINT) {
+    cout << "Point g1: " << g1 << endl;
     LinExpression e;
     for (int i = g1.space_dimension() - 1; i >= 0; i--)
       e += (i + 1) * g1.coefficient(Variable(i)) * Variable(i);
-    Generator g2 = vertex(e, g1.divisor());
-    cout << "Vertex g2: " << g2 << endl;
+    Generator g2 = point(e, g1.divisor());
+    cout << "Point g2: " << g2 << endl;
   }
   else
-    cout << "Generator g1 is not a vertex." << endl;
+    cout << "Generator g1 is not a point." << endl;
   \endcode
-  Therefore, for the vertex
+  Therefore, for the point
   \code
-  Generator g1 = vertex(2*x - y + 3*z, 2);
+  Generator g1 = point(2*x - y + 3*z, 2);
   \endcode
   we would obtain the following output:
   \code
-  Vertex g1: v((2*A - B + 3*C)/2)
-  Vertex g2: v((2*A - 2*B + 9*C)/2)
+  Point g1: p((2*A - B + 3*C)/2)
+  Point g2: p((2*A - 2*B + 9*C)/2)
   \endcode
-  When working with a vertex, be careful not to confuse the notion
+  When working with a point, be careful not to confuse the notion
   of <EM>coefficient</EM> with the notion of <EM>coordinate</EM>:
-  these are equivalent only when the divisor of the vertex is 1.
+  these are equivalent only when the divisor of the point is 1.
 */
 
 class Parma_Polyhedra_Library::Generator : PPL_HIDDEN Row {
@@ -228,14 +225,14 @@ private:
   //!                                  of the vector space.
   friend Generator
   Parma_Polyhedra_Library::ray(const LinExpression& e);
-  //! Returns the vertex at \p e / \p d
+  //! Returns the point at \p e / \p d
   //! Both \p e and \p d are optional arguments, with default values
   //! LinExpression::zero() and Integer_one(), respectively.
   //! \exception std::invalid_argument thrown if \p d is zero.
   friend Generator
-  Parma_Polyhedra_Library::vertex(const LinExpression& e
-				  = LinExpression::zero(),
-				  const Integer& d = Integer_one());
+  Parma_Polyhedra_Library::point(const LinExpression& e
+				 = LinExpression::zero(),
+				 const Integer& d = Integer_one());
 
 public:
   //! Ordinary copy-constructor.
@@ -262,11 +259,11 @@ public:
     /*! \hideinitializer
       The generator is a ray.
     */
-    RAY = Row::RAY_OR_VERTEX_OR_INEQUALITY,
+    RAY = Row::RAY_OR_POINT_OR_INEQUALITY,
     /*! \hideinitializer
-      The generator is a vertex.
+      The generator is a point.
     */
-    VERTEX = RAY+1
+    POINT = RAY+1
   };
 
   //! Returns the generator type of \p *this.
@@ -279,32 +276,32 @@ public:
   //! \p *this is a ray.
   bool is_ray() const;
   //! Returns <CODE>true</CODE> if and only if
-  //! \p *this is a vertex.
-  bool is_vertex() const;
+  //! \p *this is a point.
+  bool is_point() const;
 
   //! If the index of variable \p v is less than the space-dimension
   //! of \p *this, returns the coefficient of \p v in \p *this.
   //! \exception std::invalid_argument thrown if the index of \p v
   //! is greater than or equal to the space-dimension of \p *this.
   const Integer& coefficient(Variable v) const;
-  //! If \p *this is a vertex, returns its divisor.
-  //! \exception std::invalid_argument thrown if \p *this is not a vertex.
+  //! If \p *this is a point, returns its divisor.
+  //! \exception std::invalid_argument thrown if \p *this is not a point.
   const Integer& divisor() const;
 
   //! Returns the origin of the zero-dimensional space \f$\Rset^0\f$.
-  static const Generator& zero_dim_vertex();
+  static const Generator& zero_dim_point();
 
   //! Checks if all the invariants are satisfied.
   bool OK() const;
 
 PPL_INTERNAL:
   //! Returns <CODE>true</CODE> if and only if
-  //! \p *this is either a ray or a vertex.
-  bool is_ray_or_vertex() const;
+  //! \p *this is either a ray or a point.
+  bool is_ray_or_point() const;
   //! Sets the type to <CODE>LINE</CODE>.
   void set_is_line();
   //! Sets the type to <CODE>RAY</CODE>.
-  void set_is_ray_or_vertex();
+  void set_is_ray_or_point();
 
 private:
   //! Default constructor: private and not implemented.

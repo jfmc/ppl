@@ -59,22 +59,22 @@ Generator::is_line() const {
 
 inline Generator::Type
 Generator::type() const {
-  return is_line() ? LINE : (((*this)[0] == 0) ? RAY : VERTEX);
+  return is_line() ? LINE : (((*this)[0] == 0) ? RAY : POINT);
 }
 
 inline bool
 Generator::is_ray() const {
-  return is_ray_or_vertex() && ((*this)[0] == 0);
+  return is_ray_or_point() && ((*this)[0] == 0);
 }
 
 inline bool
-Generator::is_vertex() const {
-  return is_ray_or_vertex() && ((*this)[0] != 0);
+Generator::is_point() const {
+  return is_ray_or_point() && ((*this)[0] != 0);
 }
 
 inline bool
-Generator::is_ray_or_vertex() const {
-  return is_ray_or_vertex_or_inequality();
+Generator::is_ray_or_point() const {
+  return is_ray_or_point_or_inequality();
 }
 
 inline void
@@ -83,8 +83,8 @@ Generator::set_is_line() {
 }
 
 inline void
-Generator::set_is_ray_or_vertex() {
-  set_is_ray_or_vertex_or_inequality();
+Generator::set_is_ray_or_point() {
+  set_is_ray_or_point_or_inequality();
 }
 
 inline const Integer&
@@ -97,17 +97,17 @@ Generator::coefficient(Variable v) const {
 inline const Integer&
 Generator::divisor() const {
   const Integer& d = Row::coefficient();
-  if (!is_ray_or_vertex() || d == 0)
+  if (!is_ray_or_point() || d == 0)
     throw_invalid_argument("PPL::Generator::divisor()",
-			   "*this is is not a vertex");
+			   "*this is is not a point");
   return d;
 }
 
 
 inline const Generator&
-Generator::zero_dim_vertex() {
-  static Generator zdv = vertex();
-  return zdv;
+Generator::zero_dim_point() {
+  static Generator zdp = point();
+  return zdp;
 }
 
 } // namespace Parma_Polyhedra_Library

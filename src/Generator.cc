@@ -52,20 +52,21 @@ PPL::Generator::throw_invalid_argument(const char* method,
 }
 
 PPL::Generator
-PPL::vertex(const LinExpression& e, const Integer& d) {
+PPL::point(const LinExpression& e, const Integer& d) {
   if (d == 0)
-    throw std::invalid_argument("Generator PPL::vertex(e, d): d == 0");
+    throw std::invalid_argument("Generator PPL::point(e, d): d == 0");
   LinExpression ec = e;
   Generator g(ec);
   g[0] = d;
 
-  // If the denominator is negative, we multiply the vertex for
-  // -1, because we want that the denominator is always positive.
+  // If the divisor is negative, we negate it as well as
+  // all the coefficients of the point, because we want to preserve
+  // the invariant: the divisor of a point is strictly positive.
   if (d < 0)
     for (size_t i = g.size(); i-- > 0; )
       negate(g[i]);
 
-  g.set_is_ray_or_vertex();
+  g.set_is_ray_or_point();
   return g;
 }
 
@@ -78,7 +79,7 @@ PPL::ray(const LinExpression& e) {
   LinExpression ec = e;
   Generator g(ec);
   g[0] = 0;
-  g.set_is_ray_or_vertex();
+  g.set_is_ray_or_point();
   return g;
 }
 
@@ -98,7 +99,7 @@ PPL::line(const LinExpression& e) {
 /*! \relates Parma_Polyhedra_Library::Generator */
 std::ostream&
 PPL::operator<<(std::ostream& s, const Generator& g) {
-  bool vertex_with_divisor = false;
+  bool needed_divisor = false;
   bool extra_parentheses = false;
   int num_variables = g.size()-1;
   if (g.is_line())
@@ -106,9 +107,9 @@ PPL::operator<<(std::ostream& s, const Generator& g) {
   else if (g[0] == 0)
     s << "r(";
   else {
-    s << "v(";
+    s << "p(";
     if (g[0] != 1) {
-      vertex_with_divisor = true;
+      needed_divisor = true;
       int num_non_zero_coefficients = 0;
       for (int v = 0; v < num_variables; ++v)
 	if (g[v+1] != 0)
@@ -141,11 +142,11 @@ PPL::operator<<(std::ostream& s, const Generator& g) {
     }
   }
   if (first)
-    // A vertex in the origin.
+    // A point in the origin.
     s << 0;
   if (extra_parentheses)
     s << ")";
-  if (vertex_with_divisor)
+  if (needed_divisor)
     s << "/" << g[0];
   s << ")";
   return s;
@@ -158,12 +159,11 @@ PPL::Generator::OK() const {
 
   const Generator& g = *this;
   bool ray_or_line = false;
-  // Looking for vertices.
-  if (g.is_ray_or_vertex()) {
-    // A vertex is legal only if its inhomogeneous term
-    // is strictly positive.
+  // Looking for points.
+  if (g.is_ray_or_point()) {
+    // A point is legal only if its divisor is strictly positive.
     if (g[0] < 0) {
-      cerr << "Vertices cannot have a negative inhomogeneous term!"
+      cerr << "Points cannot have a negative divisor!"
 	   << endl;
       return false;
     }

@@ -51,18 +51,18 @@ The class Row allows us to build objects like these:
       represents the ray of direction
       \f$\sum_{i=0}^{d-1} a_i \vec{x}_i\f$.
     - \f$[b, a_0, \ldots, a_{d-1}]_\geq\f$, with \f$b \neq 0\f$,
-      represents the vertex
+      represents the point
       \f$\sum_{i=0}^{d-1} \frac{a_i}{b} \vec{x}_i\f$.
 
   So, a row can be both a constraint and a generator: it can be an
-  equality, an inequality, a line, a ray or a vertex.
+  equality, an inequality, a line, a ray or a point.
 
-  A vertex must have the inhomogeneous term positive, a line
+  A point must have the inhomogeneous term positive, a line
   and a ray must have the inhomogeneous term equal to zero.
-  If we introduce a vertex with a negative inhomogeneous term, 
-  it is modified so that it has a positive inhomogeneous term. 
-  The inhomogeneous term of a vertex is always positive, because even if
-  we combine a vertex with another generator, we use positive combinations.
+  If needed, the coefficients of a point are negated at creation
+  time so that it has a positive inhomogeneous term. 
+  This invariant is maintained because, when combining a point
+  with another generator, we only consider positive combinations.
   
   The inhomogeneous term of a constraint can be zero or different from zero.
 */
@@ -80,7 +80,7 @@ public:
   //! The type of the object to which the coefficients refer to.
   enum Type {
     LINE_OR_EQUALITY = 0,
-    RAY_OR_VERTEX_OR_INEQUALITY = 1
+    RAY_OR_POINT_OR_INEQUALITY = 1
   };
 
   //! Tight constructor: resizing will require reallocation.
@@ -133,14 +133,14 @@ public:
   //! @name Type inspection methods.
   //@{
   bool is_line_or_equality() const;
-  bool is_ray_or_vertex_or_inequality() const;
+  bool is_ray_or_point_or_inequality() const;
   Type type() const;
   //@}
 
   //! @name Type coercion methods.
   //@{
   void set_is_line_or_equality();
-  void set_is_ray_or_vertex_or_inequality();
+  void set_is_ray_or_point_or_inequality();
   //@}
 
 public:

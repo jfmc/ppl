@@ -55,7 +55,7 @@ PPL::Matrix::num_lines_or_equalities() const {
 
   This constructor creates an unsorted
   \p n_rows \f$\times\f$ \p n_columns matrix which rows are
-  all initialized to rays or vertices or inequalities.
+  all initialized to rays or points or inequalities.
 */
 PPL::Matrix::Matrix(size_t n_rows, size_t n_columns)
   : rows(n_rows),
@@ -64,7 +64,7 @@ PPL::Matrix::Matrix(size_t n_rows, size_t n_columns)
     sorted(false) {
   // Construct in direct order: will destroy in reverse order.
   for (size_t i = 0; i < n_rows; ++i)
-    rows[i].construct(Row::RAY_OR_VERTEX_OR_INEQUALITY,
+    rows[i].construct(Row::RAY_OR_POINT_OR_INEQUALITY,
 		      n_columns, row_capacity);
 }
 
@@ -124,7 +124,7 @@ PPL::Matrix::grow(size_t new_n_rows, size_t new_n_columns) {
 	// Construct the new rows.
 	size_t i = new_n_rows;
 	while (i-- > old_n_rows)
-	  new_rows[i].construct(Row::RAY_OR_VERTEX_OR_INEQUALITY,
+	  new_rows[i].construct(Row::RAY_OR_POINT_OR_INEQUALITY,
 				new_n_columns, row_capacity);
 	// Steal the old rows.
 	++i;
@@ -137,7 +137,7 @@ PPL::Matrix::grow(size_t new_n_rows, size_t new_n_columns) {
 	// Reallocation will NOT take place.
 	rows.insert(rows.end(), new_n_rows - old_n_rows, Row());
 	for (size_t i = new_n_rows; i-- > old_n_rows; )
-	  rows[i].construct(Row::RAY_OR_VERTEX_OR_INEQUALITY,
+	  rows[i].construct(Row::RAY_OR_POINT_OR_INEQUALITY,
 			    new_n_columns, row_capacity);
       }
     }
@@ -151,7 +151,7 @@ PPL::Matrix::grow(size_t new_n_rows, size_t new_n_columns) {
       new_matrix.row_capacity = compute_capacity(new_n_columns);
       size_t i = new_n_rows;
       while (i-- > old_n_rows)
-	new_matrix.rows[i].construct(Row::RAY_OR_VERTEX_OR_INEQUALITY,
+	new_matrix.rows[i].construct(Row::RAY_OR_POINT_OR_INEQUALITY,
 				     new_matrix.row_size,
 				     new_matrix.row_capacity);
       // Copy the old rows.
@@ -742,12 +742,12 @@ PPL::Matrix::back_substitute(size_t rank) {
 #if EXTRA_NORMALIZATION
 	// An inequality cannot be multiplied by a negative number.
 	// As a consequence, if we combine an equality (or a line)
-	// with an inequality (or ray or vertex) the "pivot" element
+	// with an inequality (or ray or point) the "pivot" element
 	// of the equality must be positive.
 	// That is what happens here: if the pivot `rows[k][j]'
 	// is negative, the row `rows[k]' is negated before the
 	// linear combination takes place.
-	if (rows[i].is_ray_or_vertex_or_inequality())
+	if (rows[i].is_ray_or_point_or_inequality())
 	  if (rows[k][j] < 0)
 	    for (size_t h = num_columns(); h-- > 0; )
 	      rows[k][h].negate();
@@ -809,10 +809,10 @@ PPL::Matrix::add_rows_and_columns(size_t n) {
     r.set_is_line_or_equality();
   }
   // If the old matrix was empty, the last row added is either
-  // a positivity constraint or a vertex.
+  // a positivity constraint or a point.
   if (old_n_columns == 0) {
-    x[n-1].set_is_ray_or_vertex_or_inequality();
-    // Since ray, vertices and inequalities come after lines
+    x[n-1].set_is_ray_or_point_or_inequality();
+    // Since ray, points and inequalities come after lines
     // and equalities, this case implies the matrix is sorted.
     set_sorted(true);
   }

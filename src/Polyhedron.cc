@@ -214,11 +214,11 @@ PPL::Polyhedron::Polyhedron(GenSys& gs)
 
   if (gs.num_columns() > 1) {
     assert(gs.num_rows() > 0);
-    // Checking if the matrix of generators contains a vertex:
+    // Checking if the matrix of generators contains a point:
     // we speculatively use an increasing index (instead of
     // the standard decreasing one) because we hope this way
-    // vertices can be found earlier (we suppose users will
-    // insert vertices first in a system of generators).
+    // points can be found earlier (we suppose users will
+    // insert points first in a system of generators).
     size_t i = 0;
     size_t iend = gs.num_rows();
     for ( ; i < iend; ++i) {
@@ -227,7 +227,7 @@ PPL::Polyhedron::Polyhedron(GenSys& gs)
     }
     if (i == iend)
       throw std::invalid_argument("PPL::Polyhedron::Polyhedron(gs): "
-				  "non-empty gs with no vertices");
+				  "non-empty gs with no points");
 
     // The following swap destroys the given argument `gs';
     // that is why the formal parameter is not declared const.
@@ -243,7 +243,7 @@ PPL::Polyhedron::Polyhedron(GenSys& gs)
   if (gs.num_rows() == 0)
     status.set_empty();
   else
-    // It has to be a vertex.
+    // It has to be a point.
     assert(gs[0][0] > 0);
 }
 
@@ -322,7 +322,7 @@ PPL::Polyhedron::update_constraints() const {
   Updates generators starting from the system of constraints
   and minimizes them. The resulting system of generators will not
   be sorted: we only know that the lines are in the upper part of
-  the matrix and the rays and the vertices are in the lower one.
+  the matrix and the rays and the points are in the lower one.
 */
 bool
 PPL::Polyhedron::update_generators() const {
@@ -1014,7 +1014,7 @@ PPL::Polyhedron::add_dimensions_and_embed(size_t dim) {
     set_constraints_minimized();
 #ifndef BE_LAZY
     // The system of generators describing the universe polyhedron
-    // has the origin of the space as a (non-proper) vertex
+    // has the origin of the space as a point
     // and `dim' rows corresponding to the lines parallel to
     // the Cartesian axes; it is in minimal form.
     // We want a sorted system of generators, thus we create
@@ -1094,10 +1094,10 @@ PPL::Polyhedron::add_dimensions_and_project(size_t dim) {
     set_constraints_minimized();
 #endif
     // The system of generator for this polyhedron has only
-    // the origin as a vertex.
+    // the origin as a point.
     gen_sys.resize_no_copy(1, dim + 1);
     gen_sys[0][0] = 1;
-    gen_sys[0].set_is_ray_or_vertex();
+    gen_sys[0].set_is_ray_or_point();
     set_generators_minimized();
   }
   // To project an n-dimension space polyhedron in a (n+dim)-dimension space,
@@ -1427,7 +1427,7 @@ PPL::Polyhedron::insert(const Generator& g) {
   if (space_dim == 0) {
     // For dimension-compatibility, `g' has 1 column;
     // moreover, it is not possible to create 0-dim rays or lines.
-    assert(g.size() == 1 && g.type() == Generator::VERTEX);
+    assert(g.size() == 1 && g.type() == Generator::POINT);
     status.set_zero_dim_univ();
     return;
   }
@@ -1446,10 +1446,10 @@ PPL::Polyhedron::insert(const Generator& g) {
   // computing the generators at the same time.
   if (check_empty()) {
     // Polyhedron is empty:
-    // the specification says we can only insert a vertex.
-    if (g.type() != Generator::VERTEX)
+    // the specification says we can only insert a point.
+    if (g.type() != Generator::POINT)
       throw std::invalid_argument("void PPL::Polyhedron::insert(g): "
-				  "*this is empty and g is not a vertex");
+				  "*this is empty and g is not a point");
     // `gen_sys' is empty: after inserting `g' we have to resize
     // the system of generators to have the right dimension.
     gen_sys.insert(g);
@@ -1629,8 +1629,8 @@ PPL::Polyhedron::add_generators_and_minimize(GenSys& gs) {
 
   if (space_dim == 0) {
     // Since `gs' is 0-dim and non-empty,
-    // it has to contain only vertices.
-    assert(gs[0].type() == Generator::VERTEX);
+    // it has to contain only points.
+    assert(gs[0].type() == Generator::POINT);
     status.set_zero_dim_univ();
     return;
   }
@@ -1653,7 +1653,7 @@ PPL::Polyhedron::add_generators_and_minimize(GenSys& gs) {
     clear_sat_c_up_to_date();
   }
   else {
-    // Checking if the system of generators contains a vertex.
+    // Checking if the system of generators contains a point.
     size_t i = 0;
     size_t iend = gs.num_rows();
     for ( ; i < iend; ++i) {
@@ -1662,9 +1662,9 @@ PPL::Polyhedron::add_generators_and_minimize(GenSys& gs) {
     }
     if (i == iend)
       throw std::invalid_argument("PPL::Polyhedron::add_generators_and_min"
-				  "(gs): non-empty gs with no vertices");
+				  "(gs): non-empty gs with no points");
 
-    // If the system of generators has a vertex, the polyhedron is no
+    // If the system of generators has a point, the polyhedron is no
     // longer empty and generators are up-to-date.
     std::swap(gen_sys, gs);
     clear_empty();
@@ -1693,8 +1693,8 @@ PPL::Polyhedron::add_generators(GenSys& gs) {
 
   if (space_dim == 0) {
     // Since `gs' is 0-dim and non-empty,
-    // it has to contain only vertices.
-    assert(gs[0].type() == Generator::VERTEX);
+    // it has to contain only points.
+    assert(gs[0].type() == Generator::POINT);
     status.set_zero_dim_univ();
     return;
   }
@@ -1705,7 +1705,7 @@ PPL::Polyhedron::add_generators(GenSys& gs) {
 
 
   if (is_empty()) {
-    // Checking if the system of generators contains a vertex.
+    // Checking if the system of generators contains a point.
     size_t i = 0;
     size_t iend = gs.num_rows();
     for ( ; i < iend; ++i) {
@@ -1714,9 +1714,9 @@ PPL::Polyhedron::add_generators(GenSys& gs) {
     }
     if (i == iend)
       throw std::invalid_argument("PPL::Polyhedron::add_generators(gs): "
-				  "non-empty gs with no vertices");
+				  "non-empty gs with no points");
 
-    // The system of generators contains at least a vertex.
+    // The system of generators contains at least a point.
     // If needed, we extend `gs' to the right space dimension.
     if (space_dim > gs_space_dim)
       gs.add_zero_columns(space_dim - gs_space_dim);
@@ -1850,7 +1850,7 @@ PPL::operator>>(std::istream& s, Polyhedron& p) {
 
   In other words, if \f$R\f$ is a \f$m_1 \times n_1\f$ matrix representing
   the rays of the polyhedron, \f$V\f$ is a \f$m_2 \times n_2\f$
-  matrix representing the vertices of the polyhedron and
+  matrix representing the points of the polyhedron and
   \f[
     P = \bigl\{\,
           \vect{x} = (x_0, \ldots, x_{n-1})^\mathrm{T}
@@ -2080,7 +2080,7 @@ PPL::Polyhedron::relation_with(const Constraint& c) {
 	return Poly_Con_Relation::saturates()
 	  && Poly_Con_Relation::is_included();
       else
-	// The zero-dim vertex does not saturate
+	// The zero-dim point does not saturate
 	// the positivity constraint. 
 	return Poly_Con_Relation::is_included();
 
@@ -2364,7 +2364,7 @@ PPL::Polyhedron::check_universe() const {
 
 /*!
   Returns <CODE>true</CODE> if and only if \p *this is a bounded
-  polyhedron: to be bounded a polyhedron must have only vertices
+  polyhedron: to be bounded a polyhedron must have only points
   in its system of generators.
 */
 bool
@@ -2381,7 +2381,7 @@ PPL::Polyhedron::is_bounded() const {
     if (gen_sys[i][0] == 0)
       // A line or a ray is found: the polyhedron is not bounded.
       return false;
-  // The system of generators is composed only by vertices:
+  // The system of generators is composed only by points:
   // the polyhedron is bounded.
   return true;
 }
@@ -2523,7 +2523,7 @@ PPL::Polyhedron::OK(bool check_not_empty) const {
 
     if (generators_are_minimized()) {
       // If the system of generators is minimized, the number of lines,
-      // rays and vertices of the polyhedron must be the same
+      // rays and points of the polyhedron must be the same
       // of the temporary minimized one. If it does not happen
       // the polyhedron is not ok.
       ConSys new_con_sys;

@@ -37,13 +37,13 @@ site: http://www.cs.unipr.it/ppl/ . */
 /*!
     An object of the class GenSys is a system of generators,
     i.e., a multiset of objects of the class Generator
-    (lines, rays and vertices).
+    (lines, rays and points).
     When inserting generators in a system, dimensions are automatically
     adjusted so that all the generators in the system are defined
     on the same vector space.
     A system of generators which is meant to define a non-empty polyhedron
-    must include at least one vertex, even if the polyhedron has
-    no ``proper'' vertices: the reason is that lines and rays need
+    must include at least one point, even if the polyhedron has
+    no vertices: the reason is that lines and rays need
     a supporting point (they only specify directions).
 
     \par
@@ -66,20 +66,20 @@ site: http://www.cs.unipr.it/ppl/ . */
     an empty polyhedron, because the line has no supporting point.
     To define a system of generators indeed corresponding to
     the \f$x\f$ axis, one can add the following code which
-    inserts the origin of the space as a vertex:
+    inserts the origin of the space as a point:
     \code
-  gs.insert(vertex(0*x + 0*y));
+  gs.insert(point(0*x + 0*y));
     \endcode
     Since dimensions are automatically adjusted, the following
     code obtains the same effect:
     \code
-  gs.insert(vertex(0*x));
+  gs.insert(point(0*x));
     \endcode
     In contrast, if we had added the following code, we would have
     defined a line parallel to the \f$x\f$ axis and including
     the point \f$(0, 1)^\transpose \in \Rset^2\f$.
     \code
-  gs.insert(vertex(0*x + 1*y));
+  gs.insert(point(0*x + 1*y));
     \endcode
 
     \par Example 2
@@ -99,29 +99,29 @@ site: http://www.cs.unipr.it/ppl/ . */
     \f]
     one just has to add the origin:
     \code
-  gs.insert(vertex(0*x + 0*y));
+  gs.insert(point(0*x + 0*y));
     \endcode
 
     \par Example 3
-    The following code builds a system of generators having four vertices
+    The following code builds a system of generators having four points
     and corresponding to a square in \f$\Rset^2\f$
     (the same as Example 1 for the system of constraints):
     \code
   GenSys gs;
-  gs.insert(vertex(0*x + 0*y));
-  gs.insert(vertex(0*x + 3*y));
-  gs.insert(vertex(3*x + 0*y));
-  gs.insert(vertex(3*x + 3*y));
+  gs.insert(point(0*x + 0*y));
+  gs.insert(point(0*x + 3*y));
+  gs.insert(point(3*x + 0*y));
+  gs.insert(point(3*x + 3*y));
     \endcode
 
     \par Example 4
-    The following code builds a system of generators having two vertices
+    The following code builds a system of generators having two points
     and a ray, corresponding to a half-strip in \f$\Rset^2\f$
     (the same as Example 2 for the system of constraints):
     \code
   GenSys gs;
-  gs.insert(vertex(0*x + 0*y));
-  gs.insert(vertex(0*x + 1*y));
+  gs.insert(point(0*x + 0*y));
+  gs.insert(point(0*x + 1*y));
   gs.insert(ray(x - y));
     \endcode
 
@@ -155,7 +155,7 @@ public:
   void insert(const Generator& g);
 
   //! Returns the singleton system containing only
-  //! Generator::zero_dim_vertex().
+  //! Generator::zero_dim_point().
   static const GenSys& zero_dim_univ();
 
   /*!
@@ -227,7 +227,7 @@ public:
   const_iterator end() const;
 
 PPL_INTERNAL:
-  //! Constructor: it builds a system of \p n_rows rays/vertices
+  //! Constructor: it builds a system of \p n_rows rays/points
   //! on a \p n_columns - 1 dimensional space.
   GenSys(size_t n_rows, size_t n_columns);
 

@@ -39,7 +39,7 @@ namespace PPL = Parma_Polyhedra_Library;
 
   \note On enter, it holds that all the rows of \p mat corresponding
   to equalities (resp., lines) are placed before all the rows corresponding
-  to inequalities (resp., rays and vertices). This partial sortedness
+  to inequalities (resp., rays and points). This partial sortedness
   condition will also hold on exit.
 
   \p mat may be modified by swapping some of its rows and by possibly removing
@@ -52,7 +52,7 @@ namespace PPL = Parma_Polyhedra_Library;
 
   Given a matrix of constraints or a matrix of generators, this function
   simplifies it using Gauss' elimination method (to remove redundant
-  equalities/lines), deleting redundant inequalities/rays/vertices and
+  equalities/lines), deleting redundant inequalities/rays/points and
   making back-substitution.
   The explanation that follows assumes that \p mat is a matrix of
   constraints. For the case when \p mat is a matrix of generators,
@@ -175,14 +175,14 @@ PPL::Polyhedron::simplify(Matrix& mat, SatMatrix& sat) {
   // condition for an inequality to be irredundant (i.e., it provides
   // a sufficient condition for identifying redundant inequalities).
   // Let
-  //   num_saturators[i] = num_sat_lines[i] + num_sat_rays_or_vertices[i];
+  //   num_saturators[i] = num_sat_lines[i] + num_sat_rays_or_points[i];
   //   dim_lin_space = num_irred_lines;
   //   dim_ray_space
   //     = dim_vector_space - num_irred_equalities - dim_lin_space
   //     = num_columns - 1 - num_equal_or_line - dim_lin_space;
-  //   min_sat_rays_or_vertices = dim_ray_space.
+  //   min_sat_rays_or_points = dim_ray_space.
   //   
-  // An inequality saturated by less than `dim_ray_space' _rays/vertices_
+  // An inequality saturated by less than `dim_ray_space' _rays/points_
   // is redundant. Thus we have the implication
   //
   //   (num_saturators[i] - num_sat_lines[i] < dim_ray_space)
@@ -281,7 +281,7 @@ PPL::Polyhedron::simplify(Matrix& mat, SatMatrix& sat) {
   // `num_rows' - 1) represent the irredundant inequalities: here we
   // check if the flag is set (that of the equalities is already set).
   for (size_t i = num_equal_or_line; i < num_rows; ++i)
-    assert(mat[i].is_ray_or_vertex_or_inequality());
+    assert(mat[i].is_ray_or_point_or_inequality());
   // Here we are checking if `mat' and `sat' have the same number of rows,
   // i.e., the new number of rows obtained excluding the rows of redundant
   // inequalities.

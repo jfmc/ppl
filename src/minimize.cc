@@ -108,7 +108,7 @@ PPL::Polyhedron::minimize(bool con_to_gen,
   // NOTE: the matrix `dest', as it is now, it is not a _legal_
   //       system of generators, because in the first row we have
   // a line with a non-zero divisor (which should only happen for
-  // vertices). However, this is NOT a problem, because `source'
+  // points). However, this is NOT a problem, because `source'
   // necessarily contains the positivity constraint (or a combination
   // of it with another constraint) which will restore things as they
   // should be.
@@ -139,21 +139,21 @@ PPL::Polyhedron::minimize(bool con_to_gen,
   // (the correctness of simplify() relies on this hypothesis).
 
   // Checking if the generators in `dest' represent an empty polyhedron:
-  // the polyhedron is empty if there are no vertices (because rays
+  // the polyhedron is empty if there are no points (because rays
   // and lines need a supporting point).
-  size_t first_vertex = num_lines_or_equalities;
-  for ( ; first_vertex < dest_num_rows; ++first_vertex)
-    // Vertices have a positive divisor.
-    if (dest[first_vertex][0] > 0)
+  size_t first_point = num_lines_or_equalities;
+  for ( ; first_point < dest_num_rows; ++first_point)
+    // Points have a positive divisor.
+    if (dest[first_point][0] > 0)
       break;
 
-  if (first_vertex == dest_num_rows)
+  if (first_point == dest_num_rows)
     if (con_to_gen)
-      // No vertex has been found: the polyhedron is empty.
+      // No point has been found: the polyhedron is empty.
       return true;
     else
       // Here `con_to_gen' is false: `dest' is a matrix of constraints.
-      // In this case the condition `first_vertex == dest_num_rows'
+      // In this case the condition `first_point == dest_num_rows'
       // actually means that all the constraints in `dest' have their
       // inhomogeneous term equal to 0.
       // This is an ILLEGAL situation, because it implies that
@@ -162,7 +162,7 @@ PPL::Polyhedron::minimize(bool con_to_gen,
       // can reintroduce the positivity constraint.
       throw std::invalid_argument("PPL internal error");
   else {
-    // A vertex has been found: the polyhedron is not empty.
+    // A point has been found: the polyhedron is not empty.
     // Now invoking simplify() to remove all the redundant constraints
     // from the matrix `source'.
     // Since the saturation matrix `tmp_sat' returned by conversion()
@@ -315,21 +315,21 @@ PPL::Polyhedron::add_and_minimize(bool con_to_gen,
   // (the correctness of simplify() relies on this hypothesis).
 
   // Checking if the generators in `dest' represent an empty polyhedron:
-  // the polyhedron is empty if there are no vertices (because rays
+  // the polyhedron is empty if there are no points (because rays
   // and lines need a supporting point).
-  size_t first_vertex = num_lines_or_equalities;
-  for ( ; first_vertex < dest_num_rows; ++first_vertex)
-    // Vertices have a positive divisor.
-    if (dest[first_vertex][0] > 0)
+  size_t first_point = num_lines_or_equalities;
+  for ( ; first_point < dest_num_rows; ++first_point)
+    // Points have a positive divisor.
+    if (dest[first_point][0] > 0)
       break;
 
-  if (first_vertex == dest_num_rows)
+  if (first_point == dest_num_rows)
     if (con_to_gen)
-      // No vertex has been found: the polyhedron is empty.
+      // No point has been found: the polyhedron is empty.
       return true;
     else
       // Here `con_to_gen' is false: `dest' is a matrix of constraints.
-      // In this case the condition `first_vertex == dest_num_rows'
+      // In this case the condition `first_point == dest_num_rows'
       // actually means that all the constraints in `dest' have their
       // inhomogeneous term equal to 0.
       // This is an ILLEGAL situation, because it implies that
@@ -338,7 +338,7 @@ PPL::Polyhedron::add_and_minimize(bool con_to_gen,
       // can reintroduce the positivity constraint.
       throw std::invalid_argument("PPL internal error");
   else {
-    // A vertex has been found: the polyhedron is not empty.
+    // A point has been found: the polyhedron is not empty.
     // Now invoking simplify() to remove all the redundant constraints
     // from the matrix `source1'.
     // Since the saturation matrix `tmp_sat' returned by conversion()

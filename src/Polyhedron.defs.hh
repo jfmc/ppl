@@ -131,10 +131,10 @@ namespace Parma_Polyhedra_Library {
     the four vertices of the square:
     \code
   GenSys gs;
-  gs.insert(vertex(0*x + 0*y));
-  gs.insert(vertex(0*x + 3*y));
-  gs.insert(vertex(3*x + 0*y));
-  gs.insert(vertex(3*x + 3*y));
+  gs.insert(point(0*x + 0*y));
+  gs.insert(point(0*x + 3*y));
+  gs.insert(point(3*x + 0*y));
+  gs.insert(point(3*x + 3*y));
   Polyhedron ph(gs);
     \endcode
 
@@ -154,8 +154,8 @@ namespace Parma_Polyhedra_Library {
     the two vertices of the polyhedron and one ray:
     \code
   GenSys gs;
-  gs.insert(vertex(0*x + 0*y));
-  gs.insert(vertex(0*x + y));
+  gs.insert(point(0*x + 0*y));
+  gs.insert(point(0*x + y));
   gs.insert(ray(x - y));
   Polyhedron ph(gs);
     \endcode
@@ -171,19 +171,19 @@ namespace Parma_Polyhedra_Library {
     The following code builds the same polyhedron as above,
     but starting from the empty polyhedron in the space \f$\Rset^2\f$
     and inserting the appropriate generators
-    (a vertex, a ray and a line).
+    (a point, a ray and a line).
     \code
   Polyhedron ph(2, Polyhedron::EMPTY);
-  ph.insert(vertex(0*x + 0*y));
+  ph.insert(point(0*x + 0*y));
   ph.insert(ray(y));
   ph.insert(line(x));
     \endcode
-    Note that, even if the above polyhedron has no ``proper'' vertex,
-    we must add one, because otherwise the result of the Minkowsky's sum
+    Note that, even if the above polyhedron has no vertices, we must add
+    one point, because otherwise the result of the Minkowsky's sum
     would be an empty polyhedron.
     To avoid subtle errors related to the minimization process,
     it is required that the first generator inserted in an empty
-    polyhedron is a vertex (otherwise, an exception is thrown).
+    polyhedron is a point (otherwise, an exception is thrown).
 
     \par Example 4
     The following code shows the use of the function
@@ -225,10 +225,10 @@ namespace Parma_Polyhedra_Library {
     <CODE>affine_image</CODE>:
     \code
   Polyhedron ph(2, Polyhedron::EMPTY);
-  ph.insert(vertex(0*x + 0*y));
-  ph.insert(vertex(0*x + 3*y));
-  ph.insert(vertex(3*x + 0*y));
-  ph.insert(vertex(3*x + 3*y));
+  ph.insert(point(0*x + 0*y));
+  ph.insert(point(0*x + 3*y));
+  ph.insert(point(3*x + 0*y));
+  ph.insert(point(3*x + 3*y));
   LinExpression coeff = x + 4;
   ph.affine_image(x, coeff);
     \endcode
@@ -290,7 +290,7 @@ namespace Parma_Polyhedra_Library {
     <CODE>remove_dimensions</CODE>:
     \code
   GenSys gs;
-  gs.insert(vertex(3*x + y +0*z + 2*w));
+  gs.insert(point(3*x + y +0*z + 2*w));
   Polyhedron ph(gs);
   set<Variable> to_be_removed;
   to_be_removed.insert(y);
@@ -353,7 +353,7 @@ public:
   //!                 It is not declared <CODE>const</CODE>
   //!                 because it can be modified.
   //! \exception std::invalid_argument thrown if the system of generators
-  //!                                  is not empty but has no vertices.
+  //!                                  is not empty but has no points.
   Polyhedron(GenSys& gs);
   // Destructor
   ~Polyhedron();
@@ -556,7 +556,7 @@ public:
   //!                                  \p gs are dimension-incompatible
   //!                                  or if \p *this is empty and the
   //!                                  the system of generators \p gs
-  //!                                  is not empty, but has no vertices.
+  //!                                  is not empty, but has no points.
   void add_generators_and_minimize(GenSys& gs);
   //! Adds the specified generators without minimizing.
   //! \param  gs             The generators that will be added to the
@@ -567,7 +567,7 @@ public:
   //!                                  are dimension-incompatible or if
   //!                                  \p *this is empty and the system of
   //!                                  generators \p gs is not empty, but
-  //!                                  has no vertices.
+  //!                                  has no points.
   void add_generators(GenSys& gs);
 
   //! Returns <CODE>true</CODE> if and only if \p *this is

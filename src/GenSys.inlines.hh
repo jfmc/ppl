@@ -148,7 +148,7 @@ GenSys::end() const {
 
 inline const GenSys&
 GenSys::zero_dim_univ() {
-  static GenSys zdu(Generator::zero_dim_vertex());
+  static GenSys zdu(Generator::zero_dim_point());
   return zdu;
 }
 

@@ -136,7 +136,7 @@ PPL::Row::strong_normalize() {
   in which case the "missing" coefficients are assumed to be zero.
   The comparison is such that:
   -# equalities are smaller than inequalities;
-  -# lines are smaller than vertices and rays;
+  -# lines are smaller than points and rays;
   -# the ordering is lexicographic;
   -# the positions compared are, in decreasing order of significance,
      1, 2, ..., \p size(), 0;
@@ -161,7 +161,7 @@ PPL::compare(const Row& x, const Row& y) {
   bool x_is_line_or_equality = x.is_line_or_equality();
   bool y_is_line_or_equality = y.is_line_or_equality();
   if (x_is_line_or_equality != y_is_line_or_equality)
-    // Equalities (lines) precede inequalities (ray/vertex).
+    // Equalities (lines) precede inequalities (ray/point).
     return y_is_line_or_equality ? 2 : -2;
 
   // Compare all the coefficients of the row starting from position 1.

@@ -230,7 +230,7 @@ public:
     EQUALITY = Row::LINE_OR_EQUALITY,
     /*! \hideinitializer
       The constraint is an inequality. */
-    INEQUALITY = Row::RAY_OR_VERTEX_OR_INEQUALITY
+    INEQUALITY = Row::RAY_OR_POINT_OR_INEQUALITY
   };
 
   //! Returns the constraint type of \p *this.

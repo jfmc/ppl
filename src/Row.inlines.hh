@@ -346,12 +346,12 @@ Row::is_line_or_equality() const {
 
 
 /*!
-  Returns <CODE>true</CODE> if the row represent a ray, a vertex or an
+  Returns <CODE>true</CODE> if the row represent a ray, a point or an
   inequality; <CODE>false</CODE> otherwise.
 */
 inline bool
-Row::is_ray_or_vertex_or_inequality() const {
-  return type() == RAY_OR_VERTEX_OR_INEQUALITY;
+Row::is_ray_or_point_or_inequality() const {
+  return type() == RAY_OR_POINT_OR_INEQUALITY;
 }
 
 
@@ -365,11 +365,11 @@ Row::set_is_line_or_equality() {
 
 
 /*!
-  Sets to \p RAY_OR_VERTEX_OR_INEQUALITY the type of \p *this row.
+  Sets to \p RAY_OR_POINT_OR_INEQUALITY the type of \p *this row.
 */
 inline void
-Row::set_is_ray_or_vertex_or_inequality() {
-  impl->set_type(RAY_OR_VERTEX_OR_INEQUALITY);
+Row::set_is_ray_or_point_or_inequality() {
+  impl->set_type(RAY_OR_POINT_OR_INEQUALITY);
 }
 
 

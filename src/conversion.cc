@@ -59,7 +59,7 @@ namespace PPL = Parma_Polyhedra_Library;
   This is why the parameter matrix \p source is not declared constant.
 
   \p dest is supposed to have lines from index 0 to index
-  \p num_lines_or_equalities - 1  and rays/vertices from index
+  \p num_lines_or_equalities - 1  and rays/points from index
   \p num_lines_or_equalities to the last row.
 
   \p start parameter is 0 when we have to find generators from a given
@@ -80,7 +80,7 @@ namespace PPL = Parma_Polyhedra_Library;
   returned at the end of the conversion.
 
   We know that polyhedra can be represented by both a system of
-  constraints or a system of generators (vertices, rays and lines)
+  constraints or a system of generators (points, rays and lines)
   (see it in the Introduction).
   When we have both descriptions for a polyhedron \f$P\f$
   we have what is called a <EM>double description</EM>
@@ -399,7 +399,7 @@ PPL::Polyhedron::conversion(Matrix& source,
       // the constraint `source[k]', it can no longer be a line
       // (see saturation rule in the Introduction).
       // Therefore, we first transform it into a ray.
-      dest[index_non_zero].set_is_ray_or_vertex_or_inequality();
+      dest[index_non_zero].set_is_ray_or_point_or_inequality();
       // Of the two possible choices, we select the ray satisfying
       // the constraint (namely, the ray whose scalar product
       // with the constraint gives a positive result).
@@ -522,7 +522,7 @@ PPL::Polyhedron::conversion(Matrix& source,
       // (by construction), it does not saturate the constraint `source[k]'.
       // Therefore, if the constraint is an inequality,
       // we set to 1 the corresponding element of `sat' ...
-      if (source[k].is_ray_or_vertex_or_inequality())
+      if (source[k].is_ray_or_point_or_inequality())
 	sat[num_lines_or_equalities].set(k);
       // ... otherwise, the constraint is an equality which is
       // violated by the generator `dest[num_lines_or_equalities]':
@@ -593,7 +593,7 @@ PPL::Polyhedron::conversion(Matrix& source,
 	// in Q= and Q+ satisfy the constraint. The constraint is redundant
 	// and it can be safely removed from the constraint system.
 	// This is why the `source' parameter is not declared `const'.
-	if (source[k].is_ray_or_vertex_or_inequality()) {
+	if (source[k].is_ray_or_point_or_inequality()) {
 	  --source_num_rows;
 	  if (k < source_num_rows) {
 	    // Here it is not necessary to swap the columns of `sat',
@@ -694,7 +694,7 @@ PPL::Polyhedron::conversion(Matrix& source,
 		  // saturation row to `sat'.
 		  if (dest_num_rows == dest.num_rows()) {
 		    // Make room for one more row.
-		    dest.add_row(Row::RAY_OR_VERTEX_OR_INEQUALITY);
+		    dest.add_row(Row::RAY_OR_POINT_OR_INEQUALITY);
 		    sat.add_row(new_satrow);
 		  }
 		  else
@@ -743,7 +743,7 @@ PPL::Polyhedron::conversion(Matrix& source,
 	  // Now we substitute the rays in Q- (i.e., the rays violating
 	  // the constraint) with the newly added rays.
 	  size_t j;
-	  if (source[k].is_ray_or_vertex_or_inequality()) {
+	  if (source[k].is_ray_or_point_or_inequality()) {
 	    // The constraint is an inequality:
 	    // the violating generators are those in Q-.
 	    j = sup_bound;

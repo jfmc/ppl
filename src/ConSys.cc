@@ -68,19 +68,19 @@ PPL::ConSys::const_iterator::skip_forward() {
 bool
 PPL::ConSys::satisfies_all_constraints(const Generator& g) const {
   assert(g.space_dimension() <= space_dimension());
-  bool g_is_ray_or_vertex = g.is_ray_or_vertex();
+  bool g_is_ray_or_point = g.is_ray_or_point();
   for (size_t i = num_rows(); i-- > 0; ) {
     const Constraint& c = (*this)[i];
     // Compute the sign of the scalar product.
     int sp_sign = sgn(g * c);
-    if (g_is_ray_or_vertex && c.is_inequality()) {
+    if (g_is_ray_or_point && c.is_inequality()) {
       // A ray satisfies an inequality if its scalar product
       // with such a constraint is positive.
       if (sp_sign < 0)
 	return false;
     }
     else if (sp_sign != 0)
-      // Equalities are saturated by all rays/vertices and lines.
+      // Equalities are saturated by all rays/points and lines.
       // Lines saturate all equalities.
       return false;
   }

@@ -55,18 +55,18 @@ size_t
 PPL::GenSys::num_rays() const {
   size_t n = 0;
   // If the Matrix happens to be sorted, take advantage of the fact
-  // that rays and vertices are at the bottom of the system and
+  // that rays and points are at the bottom of the system and
   // rays have the inhomogeneous term equal to zero.
   if (is_sorted()) {
     const GenSys& x = *this;
-    for (size_t i = num_rows(); i != 0 && x[--i].is_ray_or_vertex(); )
+    for (size_t i = num_rows(); i != 0 && x[--i].is_ray_or_point(); )
       if (x[i][0] == 0)
 	++n;
   }
   else
     for (size_t i = num_rows(); i-- > 0 ; ) {
       const Generator& g = (*this)[i];
-      if (g.is_ray_or_vertex() && g[0] == 0)
+      if (g.is_ray_or_point() && g[0] == 0)
 	++n;
     }
   return n;
@@ -95,10 +95,10 @@ PPL::GenSys::relation_with(const Constraint& c) const {
 
   if (c.is_equality()) {
     // The following integer variable will hold the scalar product sign
-    // of either the first vertex or the first non-saturating ray we find.
+    // of either the first point or the first non-saturating ray we find.
     // If it is equal to 2, then it means that we haven't found such
     // a generator yet.
-    int first_vertex_or_nonsaturating_ray_sign = 2;
+    int first_point_or_nonsaturating_ray_sign = 2;
     for (size_t i = n_rows; i-- > 0; ) {
       const Generator& g = gen_sys[i];
       int sp_sign = sgn(c * g);
@@ -110,35 +110,35 @@ PPL::GenSys::relation_with(const Constraint& c) const {
 	  return Poly_Con_Relation::strictly_intersects();
       }
       else {
-	// The generator `g' is a vertex or a ray.
+	// The generator `g' is a point or a ray.
 	if (g[0] == 0) {
 	  // `g' is a ray: if it saturates `c' there is nothing to do.
 	  if (sp_sign != 0) {
-	    if (first_vertex_or_nonsaturating_ray_sign == 2) {
+	    if (first_point_or_nonsaturating_ray_sign == 2) {
 	      // It is the first time that we have a non-saturating ray
-	      // and we have not found any vertex yet.
-	      first_vertex_or_nonsaturating_ray_sign = sp_sign;
+	      // and we have not found any point yet.
+	      first_point_or_nonsaturating_ray_sign = sp_sign;
 	      res = Poly_Con_Relation::is_disjoint();
 	    }
 	    else {
-	      // We already found a vertex or a non-saturating ray.
-	      if (sp_sign != first_vertex_or_nonsaturating_ray_sign)
+	      // We already found a point or a non-saturating ray.
+	      if (sp_sign != first_point_or_nonsaturating_ray_sign)
 		return Poly_Con_Relation::strictly_intersects();
 	    }
 	  }
 	}
 	else {
-	  // The generator `g' is a vertex.
-	  if (first_vertex_or_nonsaturating_ray_sign == 2) {
-	    // It is the first time that we find a vertex and
+	  // The generator `g' is a point.
+	  if (first_point_or_nonsaturating_ray_sign == 2) {
+	    // It is the first time that we find a point and
 	    // we have not found a non-saturating ray yet.
-	    first_vertex_or_nonsaturating_ray_sign = sp_sign;
+	    first_point_or_nonsaturating_ray_sign = sp_sign;
 	    if (sp_sign != 0)
 	      res = Poly_Con_Relation::is_disjoint();
 	  }
 	  else{
-	    // We already found a vertex or a non-saturating ray.
-	    if (sp_sign != first_vertex_or_nonsaturating_ray_sign)
+	    // We already found a point or a non-saturating ray.
+	    if (sp_sign != first_point_or_nonsaturating_ray_sign)
 	      return Poly_Con_Relation::strictly_intersects();
 	  }
 	}
@@ -150,9 +150,9 @@ PPL::GenSys::relation_with(const Constraint& c) const {
   else {
     // Here, the constraint `c' is an inequality.
     // The following boolean variable will be set to `false'
-    // as soon as either we find (any) vertex or we find a
+    // as soon as either we find (any) point or we find a
     // non-saturating ray.
-    bool first_vertex_or_nonsaturating_ray = true;
+    bool first_point_or_nonsaturating_ray = true;
     for (size_t i = n_rows; i-- > 0; ) {
       const Generator& g = gen_sys[i];
       int sp_sign = sgn(c * g);
@@ -164,20 +164,20 @@ PPL::GenSys::relation_with(const Constraint& c) const {
 	  return Poly_Con_Relation::strictly_intersects();
       }
       else {
-	// The generator `g' is a vertex or a ray.
+	// The generator `g' is a point or a ray.
 	if (g[0] == 0) {
 	  // `g' is a ray: if it saturates `c' there is nothing to do.
 	  if (sp_sign != 0) {
-	    if (first_vertex_or_nonsaturating_ray) {
+	    if (first_point_or_nonsaturating_ray) {
 	      // It is the first time that we have a non-saturating ray
-	      // and we have not found any vertex yet.
-	      first_vertex_or_nonsaturating_ray = false;
+	      // and we have not found any point yet.
+	      first_point_or_nonsaturating_ray = false;
 	      res = (sp_sign > 0)
 		? Poly_Con_Relation::is_included()
 		: Poly_Con_Relation::is_disjoint();
 	    }
 	    else {
-	      // We already found a vertex or a non-saturating ray.
+	      // We already found a point or a non-saturating ray.
 	      if ((sp_sign > 0
 		   && res == Poly_Con_Relation::is_disjoint())
 		  || (sp_sign < 0
@@ -197,24 +197,24 @@ PPL::GenSys::relation_with(const Constraint& c) const {
 	  }
 	}
 	else {
-	  // The generator `g' is a vertex.
-	  if (first_vertex_or_nonsaturating_ray) {
-	    // It is the first time that we have a vertex and
+	  // The generator `g' is a point.
+	  if (first_point_or_nonsaturating_ray) {
+	    // It is the first time that we have a point and
 	    // we have not found a non-saturating ray yet.
-	    // - If vertex `g' saturates `c', then all the generators
+	    // - If point `g' saturates `c', then all the generators
 	    //   seen so far saturate `c'.
-	    // - If vertex `g' is included (but does not saturate) `c',
+	    // - If point `g' is included (but does not saturate) `c',
 	    //   then all the generators seen so far are included in `c'.
-	    // - If vertex `g' does not satisfy `c', then all the
+	    // - If point `g' does not satisfy `c', then all the
 	    //   generators seen so far are disjoint from `c'.
-	    first_vertex_or_nonsaturating_ray = false;
+	    first_point_or_nonsaturating_ray = false;
 	    if (sp_sign > 0)
 	      res = Poly_Con_Relation::is_included();
 	    else if (sp_sign < 0)
 	      res = Poly_Con_Relation::is_disjoint();
 	  }
 	  else {
-	    // We already found a vertex or a non-saturating ray before.
+	    // We already found a point or a non-saturating ray before.
 	    if ((sp_sign >= 0
 		 && res == Poly_Con_Relation::is_disjoint())
 		|| (sp_sign < 0
@@ -301,7 +301,7 @@ PPL::GenSys::affine_image(size_t v,
   Like <CODE>ConSys::print()</CODE>, this prints the number of rows,
   the number of columns and value of \p sorted, using the
   <CODE>Matrix::print()</CODE> method, then prints the contents of
-  all the rows, specifying whether a row represent a line or a vertex/ray.
+  all the rows, specifying whether a row represent a line or a point/ray.
 */
 void
 PPL::GenSys::print(std::ostream& s) const {
@@ -312,8 +312,8 @@ PPL::GenSys::print(std::ostream& s) const {
     for (size_t j = 0; j < x.num_columns(); ++j)
       s << x[i][j] << separator;
     s << separator << separator
-      << (x[i].is_ray_or_vertex()
-	  ? (x[i][0] == 0 ? "R" : "V")
+      << (x[i].is_ray_or_point()
+	  ? (x[i][0] == 0 ? "R" : "P")
 	  : "L")
       << std::endl;
   }
@@ -323,7 +323,7 @@ PPL::GenSys::print(std::ostream& s) const {
   Like <CODE>ConSys::get()</CODE>, this uses <CODE>Matrix::get()</CODE>
   to resize the matrix of generators taking information from \p s,
   then initializes the coefficients of each generator and its type
-  (line or ray/vertex).
+  (line or ray/point).
 */
 void
 PPL::GenSys::get(std::istream& s) {
@@ -337,7 +337,7 @@ PPL::GenSys::get(std::istream& s) {
     if (tempstr == "L")
       x[i].set_is_line();
     else if (tempstr == "R" || tempstr == "V")
-      x[i].set_is_ray_or_vertex();
+      x[i].set_is_ray_or_point();
     else
       throw std::runtime_error("void PPL::GenSys::get(s)");
   }
@@ -365,9 +365,9 @@ PPL::GenSys::remove_invalid_lines_and_rays() {
   a system of generators. So, \p *this must satisfy some rule:
   -# it must have a column for the inhomogeneous term and one for
      a variable;
-  -# it can have no row; otherwise it must have at least a vertex;
+  -# it can have no row; otherwise it must have at least a point;
   -# every line and ray must have the inhomogeneous term equal to zero;
-  -# the inhomogeneous term of all vertices must be positive.
+  -# the divisor of all points must be strictly positive.
 */
 bool
 PPL::GenSys::OK() const {
@@ -382,23 +382,23 @@ PPL::GenSys::OK() const {
     // A valid system of generators can be empty.
     return true;
 
-  bool no_vertex = true;
+  bool no_point = true;
   for (size_t i = num_rows(); i-- > 0; ) {
     const Generator& g = (*this)[i];
 
     if (!g.OK())
       return false;
 
-    // Looking for a vertex.
-    if (g.is_ray_or_vertex() && g[0] != 0)
-      // We found a vertex.
-      no_vertex = false;
+    // Looking for a point.
+    if (g.is_ray_or_point() && g[0] != 0)
+      // We found a point.
+      no_point = false;
   }
 
-  if (no_vertex) {
+  if (no_point) {
     // A valid, non-empty system
-    // of generators must have at least one vertex.
-    cerr << "There must be at least one vertex!"
+    // of generators must have at least one point.
+    cerr << "There must be at least one point!"
 	 << endl;
     return false;
   }
