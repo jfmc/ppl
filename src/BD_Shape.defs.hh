@@ -662,11 +662,7 @@ public:
                                      dimension-incompatible with
                                      \p lhs or \p rhs
 				     or if \p relsym is a strict relation
-				     symbol
-                                     or if \p lhs and \p rhs are in two
-                                     or plus variables, or both 
-                                     are constants. 
-                    
+				     symbol.
   */
   void generalized_affine_image(const Linear_Expression& lhs,
 				const Relation_Symbol relsym,
