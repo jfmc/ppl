@@ -29,7 +29,7 @@ VPATH = @srcdir@
 
 SUBDIRS =
 
-EXTRA_DIST = ppl_ciao.pl fake_main.pl ciao_clpq.pl ciao_clpq2.pl ciao_pl_check.pl
+EXTRA_DIST = ppl_ciao.pl ciao_clpq.pl ciao_clpq2.pl ciao_pl_check.pl
 
 if HAVE_CIAO_PROLOG
 
