@@ -426,7 +426,7 @@ inline Result
 from_c_string_float(Type& to, const char* from, Rounding_Dir dir) {
   errno = 0;
   char *end;
-  long v = strtod_<Type>(from, &end, 0);
+  Type v = strtod_<Type>(from, &end);
   if (errno == ERANGE) {
     to = v;
     if (v < 0)
