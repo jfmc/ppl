@@ -112,6 +112,7 @@ ORIGINAL_TESTS = \
 	generalizedaffineimage11 generalizedaffineimage12 \
 	generators1 generators2 generators3 generators4 generators5 \
 	generators6 \
+	geomcovers1 \
 	h79widening1 h79widening2 h79widening3 h79widening4 h79widening5 \
 	h79widening6 h79widening7 h79widening8 \
         intersection1 intersection2 intersection3 intersection4 \
@@ -203,6 +204,7 @@ DERIVED_TESTS = \
 	nnc_generalizedaffineimage11 \
 	nnc_generators1 nnc_generators2 nnc_generators3 nnc_generators4 \
 	nnc_generators5 nnc_generators6 \
+	nnc_geomcovers1 \
 	nnc_h79widening1 nnc_h79widening2 nnc_h79widening4 nnc_h79widening5 \
         nnc_h79widening6 nnc_h79widening7 nnc_h79widening8 \
 	nnc_intersection1 nnc_intersection2 nnc_intersection3 \
@@ -439,6 +441,8 @@ generators3_SOURCES = generators3.cc
 generators4_SOURCES = generators4.cc
 generators5_SOURCES = generators5.cc
 generators6_SOURCES = generators6.cc
+
+geomcovers1_SOURCES = geomcovers1.cc
 
 h79widening1_SOURCES = h79widening1.cc
 h79widening2_SOURCES = h79widening2.cc
@@ -843,6 +847,9 @@ nnc_generators5_CXXFLAGS = $(DERIVED_CXXFLAGS)
 nnc_generators6_SOURCES = generators6.cc
 nnc_generators6_CXXFLAGS = $(DERIVED_CXXFLAGS)
 
+nnc_geomcovers1_SOURCES = geomcovers1.cc
+nnc_geomcovers1_CXXFLAGS = $(DERIVED_CXXFLAGS)
+
 nnc_h79widening1_SOURCES = h79widening1.cc
 nnc_h79widening1_CXXFLAGS = $(DERIVED_CXXFLAGS)
 nnc_h79widening2_SOURCES = h79widening2.cc
@@ -1070,22 +1077,22 @@ TESTS = $(ORIGINAL_TESTS) $(DERIVED_TESTS) $(WATCHDOG_TESTS)
 XFAIL_ALWAYS = \
 addgenerators11
 
-XFAIL_WITH_INT64_T = \
+XFAIL_WITH_INT64 = \
 $(XFAIL_ALWAYS) \
 randphull2 \
 nnc_randphull2
 
-XFAIL_WITH_INT32_T = \
-$(XFAIL_WITH_INT64_T) \
+XFAIL_WITH_INT32 = \
+$(XFAIL_WITH_INT64) \
 dualhypercubes
 
-XFAIL_WITH_INT16_T = \
-$(XFAIL_WITH_INT32_T) \
+XFAIL_WITH_INT16 = \
+$(XFAIL_WITH_INT32) \
 bgp99extrapolation1 \
 nnc_bgp99extrapolation1
 
-XFAIL_WITH_INT8_T = \
-$(XFAIL_WITH_INT16_T) \
+XFAIL_WITH_INT8 = \
+$(XFAIL_WITH_INT16) \
 NNCminimize2 \
 NNCminimize4 \
 bgp99extrapolation2 \
@@ -1123,33 +1130,33 @@ nnc_max_min2 \
 nnc_smm1 
 
 
-if USE_INT64_T
+if USE_INT64
 
-XFAIL_SET = $(XFAIL_WITH_INT64_T)
+XFAIL_SET = $(XFAIL_WITH_INT64)
 
-else !USE_INT64_T
-if USE_INT32_T
+else !USE_INT64
+if USE_INT32
 
-XFAIL_SET = $(XFAIL_WITH_INT32_T)
+XFAIL_SET = $(XFAIL_WITH_INT32)
 
-else !USE_INT32_T
-if USE_INT16_T
+else !USE_INT32
+if USE_INT16
 
-XFAIL_SET = $(XFAIL_WITH_INT16_T)
+XFAIL_SET = $(XFAIL_WITH_INT16)
 
-else !USE_INT16_T
-if USE_INT8_T
+else !USE_INT16
+if USE_INT8
 
-XFAIL_SET = $(XFAIL_WITH_INT8_T)
+XFAIL_SET = $(XFAIL_WITH_INT8)
 
-else !USE_INT8_T
+else !USE_INT8
 
 XFAIL_SET = $(XFAIL_ALWAYS)
 
-endif !USE_INT8_T
-endif !USE_INT16_T
-endif !USE_INT32_T
-endif !USE_INT64_T
+endif !USE_INT8
+endif !USE_INT16
+endif !USE_INT32
+endif !USE_INT64
 
 XFAIL_TESTS = $(XFAIL_SET)
 
