@@ -942,15 +942,22 @@ PPL::Polyhedron::insert(const Generator& g) {
 
   assert(!is_zero_dim());
 
-  if (!generators_are_up_to_date())
-    update_generators();
+  if (is_empty()) {
+    gen_sys.clear();
+    gen_sys.insert(g);
+    // No longer empty and with generators up-to-date.
+    clear_empty();
+    set_generators_up_to_date();
+  }
+  else {
+    if (!generators_are_up_to_date())
+      update_generators();
+    gen_sys.insert(g);
 
-  gen_sys.insert(g);
-
-  // After adding the new generator, constraints are
-  // no more up-to-date.
-  clear_generators_minimized();
-  clear_constraints_up_to_date();
+    // After adding the new generator, constraints are no longer up-to-date.
+    clear_generators_minimized();
+    clear_constraints_up_to_date();
+  }
 
 #if DLEVEL >= 1
   cout << "=== x ===" << endl

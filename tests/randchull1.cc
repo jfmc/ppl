@@ -60,15 +60,9 @@ main() {
 
   // Polyhedra born full.
   Polyhedron ph(3);
-#if 0
   // We need an empty one.
   ph.insert(x <= 0);
   ph.insert(x >= 1);
-#else
-  ph.insert(x == 0);
-  ph.insert(y == 0);
-  ph.insert(z == 0);
-#endif
 
   COUNT(ph);
   for (int n = 1; n <= 500; ++n) {
