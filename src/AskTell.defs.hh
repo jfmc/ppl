@@ -100,6 +100,7 @@ public:
 
 public:
 
+  //! DOCUMENTME
   class iterator : public Base::iterator {
   private:
     typedef typename Base::iterator Base;
@@ -111,6 +112,7 @@ public:
     const CS& tell() const;
   };
 
+  //! DOCUMENTME
   class const_iterator : public Base::const_iterator {
   private:
     typedef typename Base::const_iterator Base;

@@ -34,7 +34,7 @@ namespace Parma_Polyhedra_Library {
 //! Returns <CODE>true</CODE> if and only if
 //! \p x and \p y are the same polyhedron.
 /*!
-  \relates Determinate<PH>
+  \relates Determinate\<PH\>
   \exception std::invalid_argument thrown if \p x and \p y
                                           are topology-incompatible
                                           or dimension-incompatible.
@@ -46,7 +46,7 @@ bool operator==(const Determinate<PH>& x, const Determinate<PH>& y);
 //! Returns <CODE>true</CODE> if and only if
 //! \p x and \p y are different polyhedra.
 /*!
-  \relates Determinate<PH>
+  \relates Determinate\<PH\>
   \exception std::invalid_argument thrown if \p x and \p y
   are topology-incompatible
   or dimension-incompatible.

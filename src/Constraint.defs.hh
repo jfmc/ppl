@@ -112,12 +112,12 @@ void swap(Parma_Polyhedra_Library::Constraint& x,
   The following code builds the (non-strict) inequality constraint
   \f$4x \geq 2y - 13\f$, having space-dimension \f$2\f$:
   \code
-  Constraint ineq_c(4*x >= 2*y - 13);
+  Constraint ineq_c(4*x \>= 2*y - 13);
   \endcode
   The corresponding strict inequality constraint
-  \f$4x > 2y - 13\f$ is obtained as follows:
+  \f$4x \> 2y - 13\f$ is obtained as follows:
   \code
-  Constraint strict_ineq_c(4*x > 2*y - 13);
+  Constraint strict_ineq_c(4*x \> 2*y - 13);
   \endcode
   An unsatisfiable constraint on the zero-dimension space \f$\Rset^0\f$
   can be specified as follows:
@@ -127,8 +127,8 @@ void swap(Parma_Polyhedra_Library::Constraint& x,
   Equivalent, but more involved ways are the following:
   \code
   Constraint false_c1(LinExpression::zero() == 1);
-  Constraint false_c2(LinExpression::zero() >= 1);
-  Constraint false_c3(LinExpression::zero() > 0);
+  Constraint false_c2(LinExpression::zero() \>= 1);
+  Constraint false_c3(LinExpression::zero() \> 0);
   \endcode
   In constrast, the following code defines an unsatisfiable constraint
   having space-dimension \f$3\f$:
@@ -145,27 +145,27 @@ void swap(Parma_Polyhedra_Library::Constraint& x,
   \par Example 2
   The following code shows how it is possible to access each single
   coefficient of a constraint. Given an inequality constraint
-  (in this case \f$x - 5y + 3z <= 4\f$), we construct a new constraint
+  (in this case \f$x - 5y + 3z \<= 4\f$), we construct a new constraint
   corresponding to its complement (thus, in this case we want to obtain
-  the strict inequality constraint \f$x - 5y + 3z > 4\f$).
+  the strict inequality constraint \f$x - 5y + 3z \> 4\f$).
   \code
-  Constraint c1(x - 5*y + 3*z <= 4);
-  cout << "Constraint c1: " << c1 << endl;
+  Constraint c1(x - 5*y + 3*z \<= 4);
+  cout \<\< "Constraint c1: " \<\< c1 \<\< endl;
   if (c1.is_equality())
-    cout << "Constraint c1 is not an inequality." << endl;
+    cout \<\< "Constraint c1 is not an inequality." \<\< endl;
   else {
     LinExpression e;
-    for (int i = c1.space_dimension() - 1; i >= 0; i--)
+    for (int i = c1.space_dimension() - 1; i \>= 0; i--)
       e += c1.coefficient(Variable(i)) * Variable(i);
     e += c1.inhomogeneous_term();
-    Constraint c2 = c1.is_strict_inequality() ? (e <= 0) : (e < 0);
-    cout << "Complement c2: " << c2 << endl;
+    Constraint c2 = c1.is_strict_inequality() ? (e \<= 0) : (e \< 0);
+    cout \<\< "Complement c2: " \<\< c2 \<\< endl;
   }
   \endcode
   The actual output is the following:
   \code
-  Constraint c1: -A + 5*B - 3*C >= -4
-  Complement c2: A - 5*B + 3*C > 4
+  Constraint c1: -A + 5*B - 3*C \>= -4
+  Complement c2: A - 5*B + 3*C \> 4
   \endcode
   Note that, in general, the particular output obtained can be
   syntactically different from the (semantically equivalent)
@@ -291,62 +291,62 @@ private:
   Parma_Polyhedra_Library::operator==(const Integer& n,
 				      const LinExpression& e);
 
-  //! Returns the constraint \p e1 >= \p e2.
+  //! Returns the constraint \p e1 \>= \p e2.
   friend Constraint
   Parma_Polyhedra_Library::operator>=(const LinExpression& e1,
 				      const LinExpression& e2);
 
-  //! Returns the constraint \p e >= \p n.
+  //! Returns the constraint \p e \>= \p n.
   friend Constraint
   Parma_Polyhedra_Library::operator>=(const LinExpression& e,
 				      const Integer& n);
 
-  //! Returns the constraint \p n >= \p e.
+  //! Returns the constraint \p n \>= \p e.
   friend Constraint
   Parma_Polyhedra_Library::operator>=(const Integer& n,
 				      const LinExpression& e);
 
-  //! Returns the constraint \p e1 <= \p e2.
+  //! Returns the constraint \p e1 \<= \p e2.
   friend Constraint
   Parma_Polyhedra_Library::operator<=(const LinExpression& e1,
 				      const LinExpression& e2);
 
-  //! Returns the constraint \p e <= \p n.
+  //! Returns the constraint \p e \<= \p n.
   friend Constraint
   Parma_Polyhedra_Library::operator<=(const LinExpression& e,
 				      const Integer& n);
 
-  //! Returns the constraint \p n <= \p e.
+  //! Returns the constraint \p n \<= \p e.
   friend Constraint
   Parma_Polyhedra_Library::operator<=(const Integer& n,
 				      const LinExpression& e);
 
-  //! Returns the constraint \p e1 > \p e2.
+  //! Returns the constraint \p e1 \> \p e2.
   friend Constraint
   Parma_Polyhedra_Library::operator>(const LinExpression& e1,
 				     const LinExpression& e2);
 
-  //! Returns the constraint \p e > \p n.
+  //! Returns the constraint \p e \> \p n.
   friend Constraint
   Parma_Polyhedra_Library::operator>(const LinExpression& e,
 				     const Integer& n);
 
-  //! Returns the constraint \p n > \p e.
+  //! Returns the constraint \p n \> \p e.
   friend Constraint
   Parma_Polyhedra_Library::operator>(const Integer& n,
 				     const LinExpression& e);
 
-  //! Returns the constraint \p e1 < \p e2.
+  //! Returns the constraint \p e1 \< \p e2.
   friend Constraint
   Parma_Polyhedra_Library::operator<(const LinExpression& e1,
 				     const LinExpression& e2);
 
-  //! Returns the constraint \p e < \p n.
+  //! Returns the constraint \p e \< \p n.
   friend Constraint
   Parma_Polyhedra_Library::operator<(const LinExpression& e,
 				     const Integer& n);
 
-  //! Returns the constraint \p n < \p e.
+  //! Returns the constraint \p n \< \p e.
   friend Constraint
   Parma_Polyhedra_Library::operator<(const Integer& n,
 				     const LinExpression& e);
@@ -382,8 +382,8 @@ private:
     - an equality: \f$\sum_{i=0}^{n-1} 0 x_i + 0 = 0\f$; or
     - a non-strict inequality: \f$\sum_{i=0}^{n-1} 0 x_i + b \geq 0\f$,
       where \f$b \geq 0\f$; or
-    - a strict inequality: \f$\sum_{i=0}^{n-1} 0 x_i + b > 0\f$,
-      where \f$b > 0\f$.
+    - a strict inequality: \f$\sum_{i=0}^{n-1} 0 x_i + b \> 0\f$,
+      where \f$b \> 0\f$.
   */
   bool is_trivial_true() const;
 
@@ -395,8 +395,8 @@ private:
     - an equality: \f$\sum_{i=0}^{n-1} 0 x_i + b = 0\f$,
       where \f$b \neq 0\f$; or
     - a non-strict inequality: \f$\sum_{i=0}^{n-1} 0 x_i + b \geq 0\f$,
-      where \f$b < 0\f$; or
-    - a strict inequality: \f$\sum_{i=0}^{n-1} 0 x_i + b > 0\f$,
+      where \f$b \< 0\f$; or
+    - a strict inequality: \f$\sum_{i=0}^{n-1} 0 x_i + b \> 0\f$,
       where \f$b \leq 0\f$.
   */
   bool is_trivial_false() const;
