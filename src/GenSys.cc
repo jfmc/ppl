@@ -659,6 +659,54 @@ PPL::GenSys::relation_with(const Constraint& c) const {
 }
 
 
+bool
+PPL::GenSys::satisfied_by_all_generators(const Constraint& c) const {
+  assert(c.space_dimension() <= space_dimension());
+
+  // Setting `sp_fp' to the appropriate scalar product operator.
+  // This also avoids problems when having _legal_ topology mismatches
+  // (which could also cause a mismatch in the number of columns).
+  const Integer& (*sp_fp)(const Row&, const Row&);
+  if (c.is_necessarily_closed())
+    sp_fp = PPL::operator*;
+  else
+    sp_fp = PPL::reduced_scalar_product;
+
+  const GenSys& gs = *this;
+  switch (c.type()) {
+  case Constraint::EQUALITY:
+    // Equalities must be saturated by all generators.
+    for (dimension_type i = gs.num_rows(); i-- > 0; )
+      if (sp_fp(c, gs[i]) != 0)
+	return false;
+    break;
+  case Constraint::NONSTRICT_INEQUALITY:
+    // Non-strict inequalities must be satisfied by all generators.
+    for (dimension_type i = gs.num_rows(); i-- > 0; )
+      if (sp_fp(c, gs[i]) < 0)
+	return false;
+    break;
+  case Constraint::STRICT_INEQUALITY:
+    // Strict inequalities must be satisfied by all generators
+    // and must not be saturated by points.
+    for (dimension_type i = gs.num_rows(); i-- > 0; ) {
+      const Generator& g = gs[i];
+      if (g.is_point()) {
+	if (sp_fp(c, g) <= 0)
+	  return false;
+      }
+      else
+	// `g' is a line, ray or closure point.
+	if (sp_fp(c, g) < 0)
+	  return false;
+    }
+    break;
+  }
+  // If we reach this point, `c' is satisfied by all generators.
+  return true;
+}
+
+
 void
 PPL::GenSys::affine_image(dimension_type v,
 			  const LinExpression& expr,

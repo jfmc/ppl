@@ -422,6 +422,9 @@ private:
   Parma_Polyhedra_Library::Poly_Con_Relation
   relation_with(const Constraint& c) const;
 
+  //! Returns <CODE>true</CODE> if all the generators satisfy \p c.
+  bool satisfied_by_all_generators(const Constraint& c) const;
+
   //! Assigns to a given variable an affine expression.
   /*!
     \param v            Index of the column to which the
