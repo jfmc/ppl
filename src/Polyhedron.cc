@@ -3094,7 +3094,7 @@ PPL::Polyhedron::generalized_affine_image(const LinExpression& lhs,
     add_generators_and_minimize(new_lines);
     
     // Constrain the new dimension so that it is related to
-    // the left hand side as dictated by `relation'
+    // the left hand side as dictated by `relop'
     // (we force minimization because we will need the generators).
     new_cs.clear();
     switch (relop) {
