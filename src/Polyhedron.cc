@@ -38,10 +38,6 @@ site: http://www.cs.unipr.it/ppl/ . */
 #define GRAM_SHMIDT 0
 #endif
 
-#ifndef BHRZ03_AC_IS_SUM
-#define BHRZ03_AC_IS_SUM 1
-#endif
-
 #ifndef BHRZ03_AC_CHECKS_H79_BOUNDARY
 #define BHRZ03_AC_CHECKS_H79_BOUNDARY 1
 #endif
@@ -4055,7 +4051,6 @@ PPL::Polyhedron::BHRZ03_averaging_constraints(const Polyhedron& y,
 	  // No average is needed.
 	  new_cs.insert(averaging_cs[0]);
 	else {
-#if BHRZ03_AC_IS_SUM
 	  LinExpression e(0);
 	  bool strict_inequality = false;
 	  for (dimension_type h = averaging_cs_num_rows; h-- > 0; ) {
@@ -4064,59 +4059,6 @@ PPL::Polyhedron::BHRZ03_averaging_constraints(const Polyhedron& y,
 	    e += LinExpression(averaging_cs[h]);
 	  }
 	  e.normalize();
-#else //#ifBHRZ03_AC_IS_SUM
-	  // Compute the norms of the chosen constraints
-	  // (ignore the inhomogeneous term).
-	  // NOTE: Actually, the coefficients of `norms' are the
-	  // truncated integer part of the square roots of the norms
-	  // of the vectors.
-
-	  // CHECK ME: the computation of norms for strict inequality
-	  // constraints should not be biased by the value of
-	  // epsilon coefficients.
-
-	  std::vector<Integer> norms(averaging_cs_num_rows);
-	  for (dimension_type h = averaging_cs_num_rows; h-- > 0; ) {
-	    Constraint& c = averaging_cs[h];
-	    for (dimension_type k = num_columns; k-- > 1; )
-	      norms[h] += c[k] * c[k];
-	    sqrt_assign(norms[h]);
-	  }
-	  
-	  // In `lcm_norm' we put the least common multiple of the
-	  // coefficients of the vector `norms'.
-	  Integer lcm_norm = norms[0];
-	  for (dimension_type h = 1; h < averaging_cs_num_rows; h++)
-	    lcm_assign(lcm_norm, norms[h]);
-	  
-	  // Ideally, the new constraint is equal to `e relop b', where
-	  // `relop' is strict inequality if `averaging_con_sys' contains
-	  // at least one strict inequality constraint (otherwise, `relop'
-	  // is non-strict inequality);
-	  // `e' is the sum of length-normalized versions of the vectors
-	  // corresponding to the homogeneous terms of the constraints
-	  // in `averaging_con_sys';
-	  // the inhomogeneous term `b' is equal to `e * g', so that
-	  // the new constraints saturates the generator `g'.
-	  // NOTE: actually, we compute a rational approximation of
-	  // the vector `e', since we cannot take exact square roots.
-	  LinExpression e(0);
-	  bool strict_inequality = false;
-	  for (dimension_type h = averaging_cs_num_rows; h-- > 0; ) {
-	    if (averaging_cs[h].is_strict_inequality())
-	      strict_inequality = true;
-	    LinExpression tmp(averaging_cs[h]);
-	    tmp -= tmp[0];
-	    for (dimension_type t = tmp.size(); t-- > 1; )
-	      tmp[t] = tmp[t] * lcm_norm / norms[h];
-	    e += tmp;
-	  }
-	  Integer inhomogeneous_term = 0;
-	  for (size_t t = e.size(); t-- > 1; )
-	    inhomogeneous_term += e[t] * g[t];
-	  e -= inhomogeneous_term;
-	  e.normalize();
-#endif //#ifBHRZ03_AC_IS_SUM
 	  
 	  if (!e.all_homogeneous_terms_are_zero())
 	    if (strict_inequality)
