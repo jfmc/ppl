@@ -161,6 +161,7 @@ $(INCLUDE_FILES)
 
 # The ordering of the following list *matters*!
 DOC_FILES = \
+Integer.types.hh \
 Variable.types.hh \
 LinExpression.types.hh \
 Topology.hh \
