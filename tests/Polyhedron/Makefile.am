@@ -123,7 +123,7 @@ ORIGINAL_TESTS = \
 	maxspacedim1 \
 	mc91 \
 	membytes1 membytes2 \
-	memory1 \
+	memory1 memory2 \
 	minconstraints1 minconstraints2 minconstraints3 minconstraints4 \
 	mingenerators1 mingenerators2 mingenerators3 \
 	onepoint \
@@ -497,6 +497,7 @@ membytes1_SOURCES = membytes1.cc
 membytes2_SOURCES = membytes2.cc
 
 memory1_SOURCES = memory1.cc
+memory2_SOURCES = memory2.cc
 
 minconstraints1_SOURCES = minconstraints1.cc
 minconstraints2_SOURCES = minconstraints2.cc
@@ -1098,7 +1099,8 @@ endif BUILD_WATCHDOG_LIBRARY
 
 TESTS = $(ORIGINAL_TESTS) $(DERIVED_TESTS) $(WATCHDOG_TESTS)
 
-XFAIL_ALWAYS =
+XFAIL_ALWAYS = \
+memory2
 
 XFAIL_WITH_INT64 = \
 $(XFAIL_ALWAYS) \
