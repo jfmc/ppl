@@ -88,20 +88,35 @@ Parma_Polyhedra_Library::Generator::divisor() const {
 namespace Parma_Polyhedra_Library {
 
 inline Generator
-line(const LinExpression& e) {
+vertex(const LinExpression& e, const Integer& d) {
+  if (d == 0)
+    Generator::throw_zero_denominator_vertex();
   LinExpression ec = e;
   Generator g(ec);
-  g[0] = 0;
-  g.set_is_line();
+  g[0] = d;
+  g.set_is_ray_or_vertex();
   return g;
 }
 
 inline Generator
 ray(const LinExpression& e) {
+  if (e.size() == 0)
+    Generator::throw_zero_dim_ray();
   LinExpression ec = e;
   Generator g(ec);
   g[0] = 0;
   g.set_is_ray_or_vertex();
+  return g;
+}
+
+inline Generator
+line(const LinExpression& e) {
+  if (e.size() == 0)
+    Generator::throw_zero_dim_line();
+  LinExpression ec = e;
+  Generator g(ec);
+  g[0] = 0;
+  g.set_is_line();
   return g;
 }
 

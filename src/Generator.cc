@@ -31,18 +31,20 @@ site: http://www.cs.unipr.it/ppl/ . */
 
 namespace PPL = Parma_Polyhedra_Library;
 
-PPL::Generator
-PPL::vertex(const LinExpression& e, const Integer& d) {
-  if (d == 0)
-    throw std::invalid_argument("Generator PPL::vertex(e, d) "
-				"with d == 0");
-  LinExpression ec = e;
-  Generator g(ec);
-  g[0] = d;
-  g.set_is_ray_or_vertex();
-  return g;
+void
+PPL::Generator::throw_zero_denominator_vertex() {
+  throw std::invalid_argument("Generator PPL::vertex(e, d): d == 0");
 }
 
+void
+PPL::Generator::throw_zero_dim_ray() {
+  throw std::invalid_argument("Generator PPL::ray(e): dim(e) == 0");
+}
+
+void
+PPL::Generator::throw_zero_dim_line() {
+  throw std::invalid_argument("Generator PPL::line(e): dim(e) == 0");
+}
 
 std::ostream&
 PPL::operator <<(std::ostream& s, const Generator& g) {

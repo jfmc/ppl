@@ -104,6 +104,9 @@ public:
   //! to the variable \p v.
   LinExpression(const Variable& v);
 
+  // Constant.
+  static LinExpression zero;
+
 private:
   //! Implementation sizing constructor.
   //! The bool parameter is just to avoid problems with

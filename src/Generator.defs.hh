@@ -27,7 +27,7 @@ site: http://www.cs.unipr.it/ppl/ . */
 #include "Generator.types.hh"
 #include "Row.defs.hh"
 #include "Variable.defs.hh"
-#include "LinExpression.types.hh"
+#include "LinExpression.defs.hh"
 #include <iosfwd>
 
 namespace Parma_Polyhedra_Library {
@@ -43,6 +43,7 @@ namespace Parma_Polyhedra_Library {
   Generator line(const LinExpression& e);
   Generator ray(const LinExpression& e);
   Generator vertex(const LinExpression& e, const Integer& d);
+
 }
 
 //! A line, ray or vertex.
@@ -98,6 +99,12 @@ namespace Parma_Polyhedra_Library {
     \code
   Generator l = line(x - y - z + 15);
     \endcode
+    By definition, the origin of the space is not a line, so that
+    the following code throws an exception:
+    \code
+  Generator l = line(0*x);
+    \endcode
+ 
 
     \par Example 2
     The following code builds a ray with the same direction as the
@@ -106,7 +113,8 @@ namespace Parma_Polyhedra_Library {
   Generator r = ray(x - y - z);
     \endcode
     As is the case for lines, when specifying a ray the constant term
-    of the linear expression is not relevant.
+    of the linear expression is not relevant; also, an exception is thrown
+    when trying to built a ray from the origin of the space.
 
     \par Example 3
     The following code builds the vertex
@@ -128,6 +136,12 @@ namespace Parma_Polyhedra_Library {
     a different vertex, namely \f$\vect{0} \in \Rset^2\f$:
     \code
   Generator origin3 = vertex(0*y);
+    \endcode
+    Since the first argument is optional, the following line
+    would have defined the only vertex in the 0-dim space,
+    namely \f$\vect{0} \in \Rset^0\f$:
+    \code
+  Generator origin0 = vertex();
     \endcode
     
     \par Example 4
@@ -152,6 +166,10 @@ class Parma_Polyhedra_Library::Generator : PPL_INTERNAL Row {
 private:
   Generator(LinExpression& e);
 
+  static void throw_zero_denominator_vertex();
+  static void throw_zero_dim_ray();
+  static void throw_zero_dim_line();
+
   //! Returns the (bidirectional) line of direction \p e.
   friend Generator
   Parma_Polyhedra_Library::line(const LinExpression& e);
@@ -159,10 +177,11 @@ private:
   friend Generator
   Parma_Polyhedra_Library::ray(const LinExpression& e);
   //! Returns the vertex at \p e / \p d
-  //! (note that \p d is an optional argument with default value 1).
+  //! Both \p e and \p d are optional arguments,
+  //! with default values LinExpression::zero and 1, respectively.
   //! \exception std::invalid_argument thrown if \p d is zero.
   friend Generator
-  Parma_Polyhedra_Library::vertex(const LinExpression& e,
+  Parma_Polyhedra_Library::vertex(const LinExpression& e = LinExpression::zero,
 				  const Integer& d = Integer::one);
 
 public:
