@@ -81,8 +81,8 @@ on the use of the interface.
    version-dependent, and, for this reason, deliberately left unspecified.
    What we do guarantee is that the handle requires very little memory.
 
--  A Prolog term can be bound to a valid handle by using:
-\code
+-  A Prolog term can be bound to a valid handle by using
+\ref predicates
    ppl_new_Polyhedron_from_space_dimension/4,
    ppl_new_Polyhedron_from_Polyhedron/4,
    ppl_new_Polyhedron_from_constraints/3,
@@ -631,6 +631,7 @@ The specification uses the following grammar rules:
             | [Vars_Pair | P_Func].
 \endcode
 
+\anchor predicates
 Below is a short description of each of the interface predicates.
 For full definitions of terminology used here, see Sections
 \ref preamble, \ref convex_polys, \ref representation
@@ -1216,17 +1217,21 @@ This is the inverse transformation to that for <CODE>ppl_affine_image</CODE>.
 <H2><CODE> ppl_Polyhedron_BHRZ03_widening_assign_with_token(+Handle_1,
                +Handle_2, ?C_unsigned) </CODE></H2>
 
-   The polyhedra referenced by <CODE>Handle_1</CODE>
-   and <CODE>Handle_2</CODE> are unaltered.
-   The token <CODE>C_unsigned</CODE> is 0 if
-   a BHRZ03 widening would have changed the polyhedron referenced
-   by <CODE>Handle_1</CODE> and is 1 otherwise.
+   If the polyhedron \f$\cP_1\f$ referenced by <CODE>Handle_1</CODE>
+   contains the polyhedron \f$\cP_2\f$ referenced by <CODE>Handle_2</CODE>,
+   then the token <CODE>C_unsigned</CODE> is bound to 0 or 1 depending on
+   whether or not
+   a BHRZ03-widening of \f$\cP_1\f$ and \f$\cP_2\f$,
+   would change \f$\cP_1\f$.
+   The polyhedra referenced by \f$\cP_1\f$ and \f$\cP_2\f$ are unaltered.
 
 <H2><CODE> ppl_Polyhedron_BHRZ03_widening_assign(+Handle_1,
                +Handle_2) </CODE></H2>
 
-   Assigns to the polyhedron referenced by <CODE>Handle_1</CODE>
-   its BHRZ03-widening with the polyhedron referenced by <CODE>Handle_2</CODE>.
+   If the polyhedron \f$\cP_1\f$ referenced by <CODE>Handle_1</CODE>
+   contains the polyhedron \f$\cP_2\f$ referenced by <CODE>Handle_2</CODE>,
+   then this will assign to \f$\cP_1\f$
+   its BHRZ03-widening with \f$\cP_2\f$.
 
 <H2><CODE> ppl_Polyhedron_limited_BHRZ03_extrapolation_assign_with_token(
                +Handle_1,
@@ -1234,21 +1239,24 @@ This is the inverse transformation to that for <CODE>ppl_affine_image</CODE>.
                +Constraint_System,
                ?C_unsigned) </CODE></H2>
 
-   The polyhedra referenced by <CODE>Handle_1</CODE>
-   and <CODE>Handle_2</CODE> are unaltered.
-   The token <CODE>C_unsigned</CODE> is 0 if
-   a BHRZ03-widening with the polyhedron referenced by
-   <CODE>Handle_2</CODE>, improved by enforcing those constraints in
-   <CODE>Constraint_System</CODE> would have changed the polyhedron referenced
-   by <CODE>Handle_1</CODE> and is 1 otherwise.
+   If the polyhedron \f$\cP_1\f$ referenced by <CODE>Handle_1</CODE>
+   contains the polyhedron \f$\cP_2\f$ referenced by <CODE>Handle_2</CODE>,
+   then the token <CODE>C_unsigned</CODE> is bound to 0 or 1 depending on
+   whether or not
+   a BHRZ03-extrapolation of \f$\cP_1\f$ and \f$\cP_2\f$,
+   improved by enforcing those constraints in
+   <CODE>Constraint_System</CODE>, would change \f$\cP_1\f$.
+   The polyhedra \f$\cP_1\f$ and \f$\cP_2\f$ are unaltered.
 
 <H2><CODE> ppl_Polyhedron_limited_BHRZ03_extrapolation_assign(+Handle_1,
                +Handle_2,
                +Constraint_System) </CODE></H2>
 
-   Assigns to the polyhedron \f$\cP\f$ referenced by <CODE>Handle_1</CODE>
-   the result of its BHRZ03-widening with the polyhedron referenced by
-   <CODE>Handle_2</CODE>, improved by enforcing those constraints in
+   If the polyhedron \f$\cP_1\f$ referenced by <CODE>Handle_1</CODE>
+   contains the polyhedron \f$\cP_2\f$ referenced by <CODE>Handle_2</CODE>,
+   then this will assign to \f$\cP_1\f$
+   the result of its BHRZ03-extrapolation with \f$\cP_2\f$,
+   improved by enforcing those constraints in
    <CODE>Constraint_System</CODE>.
 
 <H2><CODE> ppl_Polyhedron_bounded_BHRZ03_extrapolation_assign_with_token(
@@ -1257,98 +1265,114 @@ This is the inverse transformation to that for <CODE>ppl_affine_image</CODE>.
                +Constraint_System,
                ?C_unsigned) </CODE></H2>
 
-   The polyhedra \f$\cP_1\f$ and \f$\cP_2\f$ referenced by
-   <CODE>Handle_1</CODE> and <CODE>Handle_2</CODE>, respectively are unaltered.
-   The token <CODE>C_unsigned</CODE> is 0 if
-   a BHRZ03-widening with \f$\cP_2\f$ ,
-   improved by enforcing  all the constraints of
+   If the polyhedron \f$\cP_1\f$ referenced by <CODE>Handle_1</CODE>
+   contains the polyhedron \f$\cP_2\f$ referenced by <CODE>Handle_2</CODE>,
+   then the token <CODE>C_unsigned</CODE> is bound to 0 or 1 depending on
+   whether or not
+   a BHRZ03-extrapolation of \f$\cP_1\f$ and \f$\cP_2\f$,
+   improved by enforcing the constraints in
+   <CODE>Constraint_System</CODE> together with all constraints of
    the form \f$\pm x \leq r\f$ and \f$\pm x < r\f$ that are satisfied
-   by all the points of \f$\cP_1\f$ together with the constraints in
-   <CODE>Constraint_System</CODE> would have changed the polyhedron referenced
-   by <CODE>Handle_1</CODE> and is 1 otherwise.
-
+   by every point in \f$\cP_1\f$, would change \f$\cP_1\f$.
+   The polyhedra \f$\cP_1\f$ and \f$\cP_2\f$ are unaltered.
 
 <H2><CODE> ppl_Polyhedron_bounded_BHRZ03_extrapolation_assign(+Handle_1,
                +Handle_2,
                +Constraint_System) </CODE></H2>
 
-   Assigns to the polyhedron \f$\cP\f$ referenced by <CODE>Handle_1</CODE>
-   the result of its BHRZ03-widening with the polyhedron referenced by
-   <CODE>Handle_2</CODE> improved by enforcing all the constraints of
+   If the polyhedron \f$\cP_1\f$ referenced by <CODE>Handle_1</CODE>
+   contains the polyhedron \f$\cP_2\f$ referenced by <CODE>Handle_2</CODE>,
+   then this will assign to \f$\cP_1\f$
+   the result of its BHRZ03-extrapolation with \f$\cP_2\f$
+   improved by enforcing the constraints in
+   <CODE>Constraint_System</CODE> together with all constraints of
    the form \f$\pm x \leq r\f$ and \f$\pm x < r\f$ that are satisfied
-   by all the points of \f$\cP\f$ together with the constraints in
-   <CODE>Constraint_System</CODE>.
+   by every point in \f$\cP_1\f$.
 
 <H2><CODE> ppl_Polyhedron_H79_widening_assign_with_token(+Handle_1,
                +Handle_2, ?C_unsigned) </CODE></H2>
 
-   The polyhedra referenced by <CODE>Handle_1</CODE>
-   and <CODE>Handle_2</CODE> are unaltered.
-   The token <CODE>C_unsigned</CODE> is 0 if
-   an H79 widening would have changed the polyhedron referenced
-   by <CODE>Handle_1</CODE> and is 1 otherwise.
+   If the polyhedron \f$\cP_1\f$ referenced by <CODE>Handle_1</CODE>
+   contains the polyhedron \f$\cP_2\f$ referenced by <CODE>Handle_2</CODE>,
+   then the token <CODE>C_unsigned</CODE> is bound to 0 or 1 depending on
+   whether or not
+   an H79-widening of \f$\cP_1\f$ and \f$\cP_2\f$, would change
+   \f$\cP_1\f$.
+   The polyhedra referenced by \f$\cP_1\f$ and \f$\cP_2\f$ are unaltered.
 
 <H2><CODE> ppl_Polyhedron_H79_widening_assign(+Handle_1,
                +Handle_2) </CODE></H2>
 
-   Assigns to the polyhedron referenced by <CODE>Handle_1</CODE>
-   its H79-widening with the polyhedron referenced by <CODE>Handle_2</CODE>.
+   If the polyhedron \f$\cP_1\f$ referenced by <CODE>Handle_1</CODE>
+   contains the polyhedron \f$\cP_2\f$ referenced by <CODE>Handle_2</CODE>,
+   then this will assigns to \f$\cP_1\f$
+   its H79-widening with \f$\cP_2\f$.
 
-<H2><CODE> ppl_Polyhedron_limited_H79_extrapolation_assign_with_token(+Handle_1,
+<H2><CODE> ppl_Polyhedron_limited_H79_extrapolation_assign_with_token(
+               +Handle_1,
                +Handle_2,
                +Constraint_System,
                ?C_unsigned) </CODE></H2>
 
-   The polyhedra referenced by <CODE>Handle_1</CODE>
-   and <CODE>Handle_2</CODE> are unaltered.
-   The token <CODE>C_unsigned</CODE> is 0 if
-   a H79-widening with the polyhedron referenced by
-  <CODE>Handle_2</CODE>, improved by enforcing those constraints in
-  <CODE>Constraint_System</CODE> would have changed the polyhedron referenced
-   by <CODE>Handle_1</CODE> and is 1 otherwise.
+   If the polyhedron \f$\cP_1\f$ referenced by <CODE>Handle_1</CODE>
+   contains the polyhedron \f$\cP_2\f$ referenced by <CODE>Handle_2</CODE>,
+   then the token <CODE>C_unsigned</CODE> is bound to 0 or 1 depending on
+   whether or not
+   an H79-extrapolation of \f$\cP_1\f$ and \f$\cP_2\f$,
+   improved by enforcing all constraints in
+  <CODE>Constraint_System</CODE>, would change \f$\cP_1\f$.
+   The polyhedra referenced by \f$\cP_1\f$ and \f$\cP_2\f$ are unaltered.
 
 <H2><CODE> ppl_Polyhedron_limited_H79_extrapolation_assign(+Handle_1,
                +Handle_2,
                +Constraint_System) </CODE></H2>
 
-   Assigns to the polyhedron \f$\cP\f$ referenced by <CODE>Handle_1</CODE>
-   its H79-widening with the polyhedron referenced by
-   <CODE>Handle_2</CODE>, improved by enforcing those constraints in
+   If the polyhedron \f$\cP_1\f$ referenced by <CODE>Handle_1</CODE>
+   contains the polyhedron \f$\cP_2\f$ referenced by <CODE>Handle_2</CODE>,
+   then this will assign to \f$\cP_1\f$
+   referenced by <CODE>Handle_1</CODE>
+   its H79-extrapolation with \f$\cP_2\f$,
+   improved by enforcing the constraints in
    <CODE>Constraint_System</CODE>.
 
-<H2><CODE> ppl_Polyhedron_bounded_H79_extrapolation_assign_with_token(+Handle_1,
+<H2><CODE> ppl_Polyhedron_bounded_H79_extrapolation_assign_with_token(
+               +Handle_1,
                +Handle_2,
                +Constraint_System,
                ?C_unsigned) </CODE></H2>
 
-
-   The polyhedra \f$\cP_1\f$ and \f$\cP_2\f$ referenced by
-   <CODE>Handle_1</CODE> and <CODE>Handle_2</CODE>, respectively are unaltered.
-   The token <CODE>C_unsigned</CODE> is 0 if
-   a H79-widening with \f$\cP_2\f$ ,
-   improved by enforcing  all the constraints of
+   If the polyhedron \f$\cP_1\f$ referenced by <CODE>Handle_1</CODE>
+   contains the polyhedron \f$\cP_2\f$ referenced by <CODE>Handle_2</CODE>,
+   then the token <CODE>C_unsigned</CODE> is bound to 0 or 1 depending on
+   whether or not
+   an H79-extrapolation of \f$\cP_1\f$ and \f$\cP_2\f$,
+   improved by enforcing the constraints in
+   <CODE>Constraint_System</CODE> together with all constraints of
    the form \f$\pm x \leq r\f$ and \f$\pm x < r\f$ that are satisfied
-   by all the points of \f$\cP_1\f$ together with the constraints in
-   <CODE>Constraint_System</CODE> would have changed the polyhedron referenced
-   by <CODE>Handle_1</CODE> and is 1 otherwise.
+   by every point in \f$\cP_1\f$, would change \f$\cP_1\f$.
+   The polyhedra referenced by \f$\cP_1\f$ and \f$\cP_2\f$ are unaltered.
 
-<H2><CODE> ppl_Polyhedron_bounded_H79_extrapolation_assign(+Handle_1,
+<H2><CODE> ppl_Polyhedron_bounded_H79_extrapolation_assign(
+               +Handle_1,
                +Handle_2,
                +Constraint_System) </CODE></H2>
 
-   Assigns to the polyhedron \f$\cP\f$ referenced by <CODE>Handle_1</CODE>
-   the result of its H79-widening with the polyhedron referenced by
-   <CODE>Handle_2</CODE> improved by enforcing all the constraints of
+   If the polyhedron \f$\cP_1\f$ referenced by <CODE>Handle_1</CODE>
+   contains the polyhedron \f$\cP_2\f$ referenced by <CODE>Handle_2</CODE>,
+   then this will assign to \f$\cP_1\f$
+   the result of its H79-extrapolation with \f$\cP_2\f$
+   improved by enforcing the constraints in
+   <CODE>Constraint_System</CODE>  together with all constraints of
    the form \f$\pm x \leq r\f$ and \f$\pm x < r\f$ that are satisfied
-   by all the points of \f$\cP\f$ together with the constraints in
-   <CODE>Constraint_System</CODE>.
+   by every point in \f$\cP_1\f$.
 
 <H2><CODE> ppl_Polyhedron_topological_closure_assign(+Handle) </CODE></H2>
 
    Assigns to the polyhedron referenced by <CODE>Handle</CODE>
    its topological closure.
 
-<H2><CODE> ppl_Polyhedron_add_space_dimensions_and_embed(+Handle, +Dimension_Type)
+<H2><CODE> ppl_Polyhedron_add_space_dimensions_and_embed(
+             +Handle, +Dimension_Type)
  </CODE></H2>
 
    Embeds the polyhedron  referenced by <CODE>Handle</CODE>
@@ -1544,7 +1568,7 @@ linked to GNU Prolog programs.
 Only GNU Prolog versions 1.2.18 and later are supported.
 
 So that it can be used with the GNU Prolog PPL interface
-(and, for that matter, with any foreign code) ,
+(and, for that matter, with any foreign code),
 the GNU Prolog installation must be configured with the
 <CODE>--disable-regs</CODE> option.
 
