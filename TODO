@@ -2,7 +2,7 @@ Urgent Things
 =============
 
 - Document the classes: ExtendedRational, Boundary, LBoundary, UBoundary.
-- Finish updating the NEWS file.
+- Finish updating the NEWS file: widening with tokens.
 
 Efficiency Issues
 =================
