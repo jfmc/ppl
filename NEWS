@@ -4,6 +4,29 @@ Parma Polyhedra Library NEWS -- history of user-visible changes
 
 
 --------------------------------------------------------------------------
+NEWS for version 0.4.2 (to be released)
+--------------------------------------------------------------------------
+
+Bugfixes
+========
+
+o  Fixed a bug in method Polyhedron::add_generator(const Generator&)
+   whereby we were not adding the corresponding closure point when adding
+   a point to an empty NNC polyhedron.
+
+o  Fixed a bug in method GenSys::insert(const Generator&) whereby the
+   insertion of a generator into an empty generator system might be
+   mishandled.
+
+o  Fixed a bug in method Polyhedron::operator<=(const Polyehdron&)
+   whereby the lines of the polyhedron were handled improperly.
+
+o  Fixed a bug in a private method used to implement public method
+   Polyhedron::relation_with(const Generator& g),
+   whereby a wrong result was obtained when `g' was a line.
+
+
+--------------------------------------------------------------------------
 NEWS for version 0.4.1 (released on July 30, 2002)
 --------------------------------------------------------------------------
 
