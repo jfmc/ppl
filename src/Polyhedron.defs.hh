@@ -123,8 +123,8 @@ namespace Parma_Polyhedra_Library {
     the two vertices of the polyhedron and one ray:
     \code
   GenSys gs;
-  gs.insert(0 * x + 0 * y /= 1);
-  gs.insert(0 * x + y /= 1);
+  gs.insert(0*x + 0*y /= 1);
+  gs.insert(0*x + y /= 1);
   gs.insert(1 ^ x - y);
   Polyhedron ph(gs);
     \endcode
@@ -142,9 +142,9 @@ namespace Parma_Polyhedra_Library {
     a ray and a line.
     \code
   Polyhedron ph;
-  ph.insert(0 * x + 0 * y /= 1);
-  ph.insert(1 ^ 0 * x + y);
-  ph.insert(1 | x + 0 * y);
+  ph.insert(0*x + 0*y /= 1);
+  ph.insert(1 ^ 0*x + y);
+  ph.insert(1 | x + 0*y);
     \endcode
     In this last case, it is important to note that: even if this
     polyhedron has no real vertex, we must add one, because otherwise
