@@ -2197,7 +2197,7 @@ BD_Shape<T>::limited_CH78_extrapolation_assign(const BD_Shape& y,
     //   a*x       <=/= b, if t == 1;
     //   a*x - a*y <=/= b, if t == 2.
     //
-    // In addition, non_zero_position[0] and (if t >= 1) 
+    // In addition, non_zero_position[0] and (if t >= 1)
     // non_zero_position[1] will contain the indices
     // of the cell(s) of `dbm' to be modified.
     if (right_cons && t != 0) {
@@ -2379,7 +2379,6 @@ inline void
 BD_Shape<T>::affine_image(const Variable var,
 			  const Linear_Expression& expr,
 			  const Coefficient& denominator) {
-
   // The denominator cannot be zero.
   if (denominator == 0)
     throw_generic("affine_image(v, e, d)", "d == 0");
@@ -2408,12 +2407,10 @@ BD_Shape<T>::affine_image(const Variable var,
   // Number of non-zero components of `expr'.
   dimension_type t = 0;
 
-  // Value of inhomogeneous term of `expr' in the case `expr' is a
-  // unary.
+  // Value of the coefficient of `var' in `expr'.
   Coefficient coeff;
 
   // Compute the number of the non-zero components of `expr'.
-  // The `expr' must not be in two or plus variables.
   for (dimension_type i = expr_space_dim; i-- > 0; )
     if (expr.coefficient(Variable(i)) != 0) {
       if (t++ >= 1)
@@ -2427,10 +2424,11 @@ BD_Shape<T>::affine_image(const Variable var,
   // Now we have got a form of `expr':
   // if t == 0, expr = n, with n integer.
   // if t == 1, expr = a*z + n, where z can be `var' or another variable.
-  // Attention: in the second case the coefficient of variable must
-  // equal to denominator.
+  // In the second case the coefficient of `var' is equal to denominator
+  // or -denominator.
+  // If t > 1, `expr' is general.
   Coefficient b = expr.inhomogeneous_term();
-  
+
   closure_assign();
   // If `*this' is empty, then its image is empty.
   if (marked_empty())
@@ -2446,15 +2444,14 @@ BD_Shape<T>::affine_image(const Variable var,
     }
     add_constraint(denominator*var == b);
   }
-  
+
   else if (t == 1 && (coeff == denominator || coeff == -denominator)){
     // Case 2: expr = coeff*z + n, with denominator = +/- coeff .
     if (j == num_var - 1) {
-      
+
       // The `expr' is of the form: -denominator*var + n.
       // First we adjust the matrix, swapping x_i^+ with x_i^-.
       if (coeff != denominator) {
-	//	for (dimension_type i = 0; i <= space_dim; ++i) {
 	T& dbm_v_0 = dbm[num_var][0];
 	T& dbm_0_v = dbm[0][num_var];
 	std::swap(dbm_0_v, dbm_v_0);
@@ -2466,7 +2463,7 @@ BD_Shape<T>::affine_image(const Variable var,
 	// In this case the closure is not preserved.
 	status.reset_transitively_closed();
       }
-      
+
       // If b = 0, then the image is an identity of `*this'.
       if (b == 0)
 	return;
@@ -2495,12 +2492,10 @@ BD_Shape<T>::affine_image(const Variable var,
 	dbm[num_var][i] = PLUS_INFINITY;
 	dbm[i][num_var] = PLUS_INFINITY;
       }
-      if ((expr.coefficient(Variable(j)) > 0 && denominator > 0) 
+      if ((expr.coefficient(Variable(j)) > 0 && denominator > 0)
 	  || (expr.coefficient(Variable(j)) < 0 && denominator < 0))
 	add_constraint(denominator*var - denominator*Variable(j) == b);
-      // Ma questo 'else' e' legittimo????
       else {
-	//	add_constraint(denominator*var - denominator*Variable(j) == -b);
 	T& dbm_v_0 = dbm[num_var][0];
 	T& dbm_0_v = dbm[0][num_var];
 	const T& dbm_j_0 = dbm[j+1][0];
@@ -2537,33 +2532,23 @@ BD_Shape<T>::affine_image(const Variable var,
     Coefficient dnm = 1;
     Coefficient dnm1 = 1;
     // Checks if in the two approximations there are an infinite value.
-    bool up_sum_ninf = true; 
+    bool up_sum_ninf = true;
     bool low_sum_ninf = true;
     for (dimension_type i = expr_space_dim; i-- > 0; ) {
       Coefficient expr_coeff_var = expr.coefficient(Variable(i));
       if (expr_coeff_var != 0) {
 	dimension_type k = i + 1;
 	// Select the cells to be added in the two sums.
-	const T& dbm_0_k = dbm[0][k]; 
-	const T& dbm_k_0 = dbm[k][0]; 
+	const T& dbm_0_k = dbm[0][k];
+	const T& dbm_k_0 = dbm[k][0];
 	if (expr_coeff_var > 0) {
 	  // Upper approximation.
 	  if (up_sum_ninf)
 	    if (!is_plus_infinity(dbm_0_k)) {
-	      Coefficient a; 
+	      Coefficient a;
 	      Coefficient b;
 	      numer_denom(dbm_0_k, a, b);
-	      // Pseudo max_com_div, ma non proprio.
-	      // Controlla se b divide perfettamente `dnm', se si` aggiorna b,
-	      // altrimenti rimette a posto dnm.
-	      // FIXME: dovrebbe trovare i divisori in comune.
-	      // Adesso noi abbiamo: 
-	      // sum/dnm + a*expr_coeff_var/b = 
-	      // (sum*b + a*expr_coeff_var) / (dnm*b).           
 	      if (dnm % b == 0) {
-		// In tal caso:
-		// sum/dnm + a*expr_coeff_var/b =
-		// (sum + a*expr_coeff_var*(dnm/b)) / (dnm).
 		b = dnm/b;
 		up_sum += (a*expr_coeff_var*b);
 	      }
@@ -2578,10 +2563,10 @@ BD_Shape<T>::affine_image(const Variable var,
 	  // Lower approximation.
 	  if (low_sum_ninf)
 	    if (!is_plus_infinity(dbm_k_0)) {
-	      Coefficient a; 
+	      Coefficient a;
 	      Coefficient b;
 	      T c;
-	      negate_round_down(c, dbm_k_0); 
+	      negate_round_down(c, dbm_k_0);
 	      numer_denom(c, a, b);
 	      if (dnm1 % b == 0) {
 		b = dnm1/b;
@@ -2595,17 +2580,16 @@ BD_Shape<T>::affine_image(const Variable var,
 	    }
 	    else
 	      low_sum_ninf = false;
-
 	}
 	// The coefficient is negative, so consider the negative variable
-	// * <= -X <= *. Es.: 
-	// x <-- -a1*x1. 
+	// * <= -X <= *. Es.:
+	// x <-- -a1*x1.
 	else {
 	  expr_coeff_var = -expr_coeff_var;
 	  // Upper approximation.
 	  if (up_sum_ninf)
 	    if (!is_plus_infinity(dbm_k_0)) {
-	      Coefficient a; 
+	      Coefficient a;
 	      Coefficient b;
 	      numer_denom(dbm_k_0, a, b);
 	      if (dnm % b == 0) {
@@ -2618,14 +2602,14 @@ BD_Shape<T>::affine_image(const Variable var,
 		up_sum += (a*expr_coeff_var*dnm);
 	      }
 	    }
-	    else 
+	    else
 	      up_sum_ninf = false;
 	  // Lower approximation.
 	  if (low_sum_ninf)
 	    if (!is_plus_infinity(dbm_0_k)) {
 	      T c1;
 	      negate_round_down(c1, dbm_0_k);
-	      Coefficient a; 
+	      Coefficient a;
 	      Coefficient b;
 	      numer_denom(c1, a, b);
 	      // Lower bound.
@@ -2653,12 +2637,12 @@ BD_Shape<T>::affine_image(const Variable var,
       dbm[num_var][i] = PLUS_INFINITY;
       dbm[i][num_var] = PLUS_INFINITY;
     }
-    
+
     // Added the right constraints, if necessary.
     if (up_sum_ninf)
       add_constraint(denominator*dnm*var <= up_sum);
     if (low_sum_ninf)
-      add_constraint(denominator*dnm1*var >= low_sum); 
+      add_constraint(denominator*dnm1*var >= low_sum);
   }
 
   assert(OK());
@@ -2743,10 +2727,10 @@ BD_Shape<T>::affine_preimage(const Variable var,
       return;
     else {
       // We have got an expression of the following form: var + n.
-      if (j == num_var - 1) 
+      if (j == num_var - 1)
 	// We recall the affine_image to invert the transformation.
 	affine_image(var, coeff*var - b, denominator);
-      
+
       else {
 	// We have got an expression of the following form:
 	// var1 + n, with `var1' != `var'.
@@ -2778,7 +2762,7 @@ BD_Shape<T>::affine_preimage(const Variable var,
       }
     }
   }
-  
+
   assert(OK());
 }
 
@@ -2821,7 +2805,7 @@ BD_Shape<T>::generalized_affine_image(Variable var,
   // Value of inhomogeneous term of `expr' in the case `expr' is a
   // unary.
   Coefficient coeff;
-  
+
   // Compute the number of the non-zero components of `expr'.
   // The `expr' must not be in two or plus variables.
   for (dimension_type i = expr_space_dim; i-- > 0; )
@@ -2918,8 +2902,8 @@ BD_Shape<T>::generalized_affine_image(Variable var,
 	// and we add the new constraint `var - var1 <= n/denominator'.
 	for (dimension_type i = 0; i <= space_dim; ++i)
 	  dbm[i][num_var] = PLUS_INFINITY;
-	if ((expr.coefficient(Variable(j)) > 0 && denominator > 0) 
-	    || (expr.coefficient(Variable(j)) < 0 && denominator < 0)) 
+	if ((expr.coefficient(Variable(j)) > 0 && denominator > 0)
+	    || (expr.coefficient(Variable(j)) < 0 && denominator < 0))
 	  add_constraint(denominator*var - denominator*Variable(j) <= b);
 	
 	else {
@@ -2980,7 +2964,7 @@ BD_Shape<T>::generalized_affine_image(Variable var,
 	// and we add the new constraint `var - var1 >= n/denominator'.
 	for (dimension_type i = 0; i <= space_dim; ++i)
 	  n_v[i] = PLUS_INFINITY;
-	if ((expr.coefficient(Variable(j)) > 0 && denominator > 0) 
+	if ((expr.coefficient(Variable(j)) > 0 && denominator > 0)
 	    || (expr.coefficient(Variable(j)) < 0 && denominator < 0))
 	  add_constraint(denominator*var - denominator*Variable(j) >= b);
 	else {
@@ -2997,7 +2981,7 @@ BD_Shape<T>::generalized_affine_image(Variable var,
 	  dbm[i][num_var] = PLUS_INFINITY;
       }
       break;
-      
+
     default:
       // We already dealt with the case of a strict relation symbol.
       throw std::runtime_error("PPL internal error");
@@ -3016,28 +3000,28 @@ BD_Shape<T>::generalized_affine_image(Variable var,
 	Coefficient dnm = 1;
 	Coefficient dnm1 = 1;
 	// Checks if in the two approximations there are an infinite value.
-	bool up_sum_ninf = true; 
+	bool up_sum_ninf = true;
 	for (dimension_type i = expr_space_dim; i-- > 0; ) {
 	  Coefficient expr_coeff_var = expr.coefficient(Variable(i));
 	  if (expr_coeff_var != 0) {
 	    dimension_type k = i + 1;
 	    // Select the cells to be added in the two sums.
-	    const T& dbm_0_k = dbm[0][k]; 
-	    const T& dbm_k_0 = dbm[k][0]; 
+	    const T& dbm_0_k = dbm[0][k];
+	    const T& dbm_k_0 = dbm[k][0];
 	    if (expr_coeff_var > 0) {
 	      // Upper approximation.
 	      if (up_sum_ninf)
 		if (!is_plus_infinity(dbm_0_k)) {
-		  Coefficient a; 
+		  Coefficient a;
 		  Coefficient b;
 		  numer_denom(dbm_0_k, a, b);
 		  // Pseudo max_com_div, ma non proprio.
 		  // Controlla se b divide perfettamente `dnm', se si` aggiorna b,
 		  // altrimenti rimette a posto dnm.
 		  // FIXME: dovrebbe trovare i divisori in comune.
-		  // Adesso noi abbiamo: 
-		  // sum/dnm + a*expr_coeff_var/b = 
-		  // (sum*b + a*expr_coeff_var) / (dnm*b).           
+		  // Adesso noi abbiamo:
+		  // sum/dnm + a*expr_coeff_var/b =
+		  // (sum*b + a*expr_coeff_var) / (dnm*b).
 		  if (dnm % b == 0) {
 		    // In tal caso:
 		    // sum/dnm + a*expr_coeff_var/b =
@@ -3053,17 +3037,17 @@ BD_Shape<T>::generalized_affine_image(Variable var,
 		}
 		else
 		  up_sum_ninf = false;
-	      
+	
 	    }
 	    // The coefficient is negative, so consider the negative variable
-	    // * <= -X <= *. Es.: 
-	    // x <-- -a1*x1. 
+	    // * <= -X <= *. Es.:
+	    // x <-- -a1*x1.
 	    else {
 	      expr_coeff_var = -expr_coeff_var;
 	      // Upper approximation.
 	      if (up_sum_ninf)
 		if (!is_plus_infinity(dbm_k_0)) {
-		  Coefficient a; 
+		  Coefficient a;
 		  Coefficient b;
 		  numer_denom(dbm_k_0, a, b);
 		  if (dnm % b == 0) {
@@ -3076,9 +3060,9 @@ BD_Shape<T>::generalized_affine_image(Variable var,
 		    up_sum += (a*expr_coeff_var*dnm);
 		  }
 		}
-		else 
+		else
 		  up_sum_ninf = false;
-	    }    
+	    }
 	    // If both approximations are infinite, no constraints is added.
 	    if (!up_sum_ninf)
 	      break;
@@ -3103,7 +3087,7 @@ BD_Shape<T>::generalized_affine_image(Variable var,
       // this is just an affine image computation.
       affine_image(var, expr, denominator);
       break;
-     
+
     case GREATER_THAN_OR_EQUAL:
       {
 	Coefficient low_sum = expr.inhomogeneous_term();
@@ -3117,16 +3101,16 @@ BD_Shape<T>::generalized_affine_image(Variable var,
 	  if (expr_coeff_var != 0) {
 	    dimension_type k = i + 1;
 	    // Select the cells to be added in the two sums.
-	    const T& dbm_0_k = dbm[0][k]; 
-	    const T& dbm_k_0 = dbm[k][0]; 
+	    const T& dbm_0_k = dbm[0][k];
+	    const T& dbm_k_0 = dbm[k][0];
 	    if (expr_coeff_var > 0) {
 	      // Lower approximation.
 	      if (low_sum_ninf)
 		if (!is_plus_infinity(dbm_k_0)) {
-		  Coefficient a; 
+		  Coefficient a;
 		  Coefficient b;
 		  T c;
-		  negate_round_down(c, dbm_k_0); 
+		  negate_round_down(c, dbm_k_0);
 		  numer_denom(c, a, b);
 		  if (dnm1 % b == 0) {
 		    b = dnm1/b;
@@ -3140,11 +3124,11 @@ BD_Shape<T>::generalized_affine_image(Variable var,
 		}
 		else
 		  low_sum_ninf = false;
-	      
+	
 	    }
 	    // The coefficient is negative, so consider the negative variable
-	    // * <= -X <= *. Es.: 
-	    // x <-- -a1*x1. 
+	    // * <= -X <= *. Es.:
+	    // x <-- -a1*x1.
 	    else {
 	      expr_coeff_var = -expr_coeff_var;
 	      // Lower approximation.
@@ -3152,7 +3136,7 @@ BD_Shape<T>::generalized_affine_image(Variable var,
 		if (!is_plus_infinity(dbm_0_k)) {
 		  T c1;
 		  negate_round_down(c1, dbm_0_k);
-		  Coefficient a; 
+		  Coefficient a;
 		  Coefficient b;
 		  numer_denom(c1, a, b);
 		  // Lower bound.
@@ -3183,15 +3167,15 @@ BD_Shape<T>::generalized_affine_image(Variable var,
 	
 	// Added the right constraints, if necessary.
 	if (low_sum_ninf)
-	  add_constraint(denominator*dnm1*var >= low_sum); 
+	  add_constraint(denominator*dnm1*var >= low_sum);
 	break;
-      } 
-    
+      }
+
     default:
       // We already dealt with the case of a strict relation symbol.
       throw std::runtime_error("PPL internal error");
       break;
-      
+
     }
   }
   assert(OK());
@@ -3256,7 +3240,7 @@ BD_Shape<T>::generalized_affine_image(const Linear_Expression& lhs,
 
   // lhs is a constant.
   if (t == 0) {
-    // rhs is a constant.  
+    // rhs is a constant.
     if (t1 == 0) {
       if (relsym ==  LESS_THAN_OR_EQUAL) {
 	if (b > b1)
@@ -3274,24 +3258,24 @@ BD_Shape<T>::generalized_affine_image(const Linear_Expression& lhs,
 	return;
       }
     }
-    
+
     // rhs is the form: d1*var1 + b1.
     else if (t1 == 1) {
       Coefficient d1 = rhs.coefficient(Variable(j1));
       Linear_Expression e = lhs - b1;
-      
+
       if (d1 < 0) {
 	d1 = -d1;
 	generalized_affine_image(Variable(j1), relsym, -e, d1);
       }
       else {
 	if (relsym == LESS_THAN_OR_EQUAL)
-	  generalized_affine_image(Variable(j1), 
+	  generalized_affine_image(Variable(j1),
 				   GREATER_THAN_OR_EQUAL, e, d1);
 	else if (relsym == GREATER_THAN_OR_EQUAL)
-	  generalized_affine_image(Variable(j1), 
+	  generalized_affine_image(Variable(j1),
 				   LESS_THAN_OR_EQUAL, e, d1);
-	else 
+	else
 	  generalized_affine_image(Variable(j1), relsym, e, d1);
       }
     }
@@ -3301,13 +3285,13 @@ BD_Shape<T>::generalized_affine_image(const Linear_Expression& lhs,
       Coefficient d1 = rhs.coefficient(Variable(j1));
       Linear_Expression e1(d1*Variable(j1));
       Linear_Expression e = b - rhs + e1;
-  
+
       if (d1 < 0) {
 	d1 = -d1;
 	generalized_affine_image(Variable(j1), relsym, -e, d1);
       }
       else {
-	if (relsym == LESS_THAN_OR_EQUAL) 
+	if (relsym == LESS_THAN_OR_EQUAL)
 	  generalized_affine_image(Variable(j1),
 				   GREATER_THAN_OR_EQUAL, e, d1);
 	else if (relsym == GREATER_THAN_OR_EQUAL)
@@ -3329,15 +3313,15 @@ BD_Shape<T>::generalized_affine_image(const Linear_Expression& lhs,
       if (d < 0) {
 	d = -d;
 	if (relsym == LESS_THAN_OR_EQUAL)
-	  generalized_affine_image(Variable(j), 
+	  generalized_affine_image(Variable(j),
 				   GREATER_THAN_OR_EQUAL, -e, d);
-	else if (relsym == GREATER_THAN_OR_EQUAL) 
-	  generalized_affine_image(Variable(j), 
+	else if (relsym == GREATER_THAN_OR_EQUAL)
+	  generalized_affine_image(Variable(j),
 				   LESS_THAN_OR_EQUAL, -e, d);
-	else 
+	else
 	  generalized_affine_image(Variable(j), relsym, -e, d);
       }
-      else     
+      else
 	generalized_affine_image(Variable(j), relsym, e, d);
     }
 
@@ -3349,15 +3333,15 @@ BD_Shape<T>::generalized_affine_image(const Linear_Expression& lhs,
       if (d < 0) {
 	d = -d;
 	if (relsym == LESS_THAN_OR_EQUAL)
-	  generalized_affine_image(Variable(j), 
+	  generalized_affine_image(Variable(j),
 				   GREATER_THAN_OR_EQUAL, -e, d);
-	else if (relsym == GREATER_THAN_OR_EQUAL) 
-	  generalized_affine_image(Variable(j), 
+	else if (relsym == GREATER_THAN_OR_EQUAL)
+	  generalized_affine_image(Variable(j),
 				   LESS_THAN_OR_EQUAL, -e, d);
-	else 
+	else
 	  generalized_affine_image(Variable(j), relsym, -e, d);
       }
-      else     
+      else
 	generalized_affine_image(Variable(j), relsym, e, d);
 
     }
@@ -3370,15 +3354,15 @@ BD_Shape<T>::generalized_affine_image(const Linear_Expression& lhs,
       if (d < 0) {
 	d = -d;
 	if (relsym == LESS_THAN_OR_EQUAL)
-	  generalized_affine_image(Variable(j), 
+	  generalized_affine_image(Variable(j),
 				   GREATER_THAN_OR_EQUAL, -e, d);
-	else if (relsym == GREATER_THAN_OR_EQUAL) 
-	  generalized_affine_image(Variable(j), 
+	else if (relsym == GREATER_THAN_OR_EQUAL)
+	  generalized_affine_image(Variable(j),
 				   LESS_THAN_OR_EQUAL, -e, d);
-	else 
+	else
 	  generalized_affine_image(Variable(j), relsym, -e, d);
       }
-      else     
+      else
 	generalized_affine_image(Variable(j), relsym, e, d);
     }
   }
@@ -3395,15 +3379,15 @@ BD_Shape<T>::generalized_affine_image(const Linear_Expression& lhs,
       if (d < 0) {
 	d = -d;
 	if (relsym == LESS_THAN_OR_EQUAL)
-	  generalized_affine_image(Variable(j), 
+	  generalized_affine_image(Variable(j),
 				   GREATER_THAN_OR_EQUAL, -e, d);
-	else if (relsym == GREATER_THAN_OR_EQUAL) 
-	  generalized_affine_image(Variable(j), 
+	else if (relsym == GREATER_THAN_OR_EQUAL)
+	  generalized_affine_image(Variable(j),
 				   LESS_THAN_OR_EQUAL, -e, d);
-	else 
+	else
 	  generalized_affine_image(Variable(j), relsym, -e, d);
       }
-      else     
+      else
 	generalized_affine_image(Variable(j), relsym, e, d);
     }
 
@@ -3417,11 +3401,11 @@ BD_Shape<T>::generalized_affine_image(const Linear_Expression& lhs,
 	generalized_affine_image(Variable(j1), relsym, -e, d1);
       }
       else {
-	if (relsym == LESS_THAN_OR_EQUAL) 
-	  generalized_affine_image(Variable(j1), 
+	if (relsym == LESS_THAN_OR_EQUAL)
+	  generalized_affine_image(Variable(j1),
 				   GREATER_THAN_OR_EQUAL, e, d1);
 	else if (relsym == GREATER_THAN_OR_EQUAL)
-	  generalized_affine_image(Variable(j1), 
+	  generalized_affine_image(Variable(j1),
 				   LESS_THAN_OR_EQUAL, e, d1);
 	else
 	  generalized_affine_image(Variable(j1), relsym, e, d1);
@@ -3437,15 +3421,15 @@ BD_Shape<T>::generalized_affine_image(const Linear_Expression& lhs,
       if (d < 0) {
 	d = -d;
 	if (relsym == LESS_THAN_OR_EQUAL)
-	  generalized_affine_image(Variable(j), 
+	  generalized_affine_image(Variable(j),
 				   GREATER_THAN_OR_EQUAL, -e, d);
 	else if (relsym == GREATER_THAN_OR_EQUAL)
-	  generalized_affine_image(Variable(j), 
+	  generalized_affine_image(Variable(j),
 				   LESS_THAN_OR_EQUAL, -e, d);
 	else
-	  generalized_affine_image(Variable(j), relsym, -e, d); 
+	  generalized_affine_image(Variable(j), relsym, -e, d);
       }
-      else 
+      else
 	generalized_affine_image(Variable(j), relsym, e, d);
     }
   }
