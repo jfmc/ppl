@@ -430,7 +430,9 @@ propositions 4.1 and 4.2 on pages 92 and 93).
 
 Under the same hypotheses of Minkowsky's theorem,
 if \f$P\f$ is a rational polyhedron then
-all the generators in \f$V\f$ and \f$R\f$ have rational coefficients. 
+all the vertices in \f$V\f$ have rational coefficients and
+we can consider a set \f$R\f$ of extreme rays having
+rational coefficients only.
 
 The second theorem, called Weil's theorem, states that any system of
 generators having rational coefficients defines a rational polyhedron:
