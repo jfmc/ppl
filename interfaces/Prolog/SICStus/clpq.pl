@@ -145,17 +145,21 @@ select_clause(Atom, Head, Body) :-
     functor(Head, F, N),
     user_clause(Head, Body).
 
-% The constraints are solved by inserting them into the polyhedron.
+% The constraints are solved by adding them into the polyhedron.
 solve_constraints(Constraints, Polyhedron) :-
-    insert_constraints(Constraints, Polyhedron),
-    \+ ppl_check_empty(Polyhedron).
+    listize_constraints(Constraints, ConstraintsList),
+    % Fails if `Polyhedron' becomes empty.
+    ppl_add_constraints_and_minimize(Polyhedron, ConstraintsList).
 
-insert_constraints((C, D), Polyhedron) :-
+listize_constraints(C, LC) :-
+    listize_constraints(C, [], LC).
+
+listize_constraints((A, B), Rest, LC) :-
     !,
-    solve_constraints(C, Polyhedron),
-    solve_constraints(D, Polyhedron).
-insert_constraints(C, Polyhedron) :-
-    ppl_insert_constraint(Polyhedron, C).
+    listize_constraints(B, Rest, BRest),
+    listize_constraints(A, BRest, LC).
+listize_constraints(C, Rest, [C|Rest]).
+
 
 %%%%%%%%%%%%%%%%%% Query the User for More Solutions %%%%%%%%%%%%%%%%%%%
 
