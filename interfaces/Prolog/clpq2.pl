@@ -35,7 +35,7 @@
 % represents the result of the computation.
 
 solve_query(Goals, VN, PolysOut) :-
-  % Create a table `VarNames' between the ppl names of variables
+  % Create a table `VarNames' between the PPL names of variables
   % and the actual variables.
   % Also, create a copy of the Goals
   % but where the actual variables are replaced by their PPL names.
