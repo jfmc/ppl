@@ -41,6 +41,7 @@ public:
   }
   Poly& operator=(const Poly& y) {
     C_Polyhedron::operator=(y);
+    return *this;
   }
   friend std::ostream& operator<<(std::ostream& s, const Poly& x);
 };

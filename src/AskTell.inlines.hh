@@ -28,22 +28,104 @@ site: http://www.cs.unipr.it/ppl/ . */
 
 namespace Parma_Polyhedra_Library {
 
+template <typename CS>
+bool
+entails(const CS& ax, const CS& tx, const CS& ay, const CS& ty) {
+  if(!entails(ay, ax))
+    return false;
+  // The following test can be omitted.
+  else if (ax == ay)
+    return entails(tx, ty);
+  else if (entails(tx, ty))
+    return true;
+  // The following test can be omitted.
+  else if (entails(tx, ay))
+    return false;
+  else
+    return entails(tx*ay, ty);
+}
+
+template <typename CS>
+AskTell<CS>::iterator::iterator() {
+}
+
+template <typename CS>
+AskTell<CS>::iterator::iterator(const Base& x)
+  : Base(x) {
+}
+
+template <typename CS>
+const CS&
+AskTell<CS>::iterator::ask() const {
+  return Base::operator*().first;
+}
+
+template <typename CS>
+CS&
+AskTell<CS>::iterator::tell() const {
+  return Base::operator*().second;
+}
+
+template <typename CS>
+AskTell<CS>::const_iterator::const_iterator() {
+}
+
+template <typename CS>
+AskTell<CS>::const_iterator::const_iterator(const Base& x)
+  : Base(x) {
+}
+
+template <typename CS>
+const CS&
+AskTell<CS>::const_iterator::ask() const {
+  return Base::operator*().first;
+}
+
+template <typename CS>
+const CS&
+AskTell<CS>::const_iterator::tell() const {
+  return Base::operator*().second;
+}
+
+template <typename CS>
+typename AskTell<CS>::iterator
+AskTell<CS>::begin() {
+  return iterator(Base::begin());
+}
+
+template <typename CS>
+typename AskTell<CS>::iterator
+AskTell<CS>::end() {
+  return iterator(Base::end());
+}
+
+template <typename CS>
+typename AskTell<CS>::const_iterator
+AskTell<CS>::begin() const {
+  return const_iterator(Base::begin());
+}
+
+template <typename CS>
+typename AskTell<CS>::const_iterator
+AskTell<CS>::end() const {
+  return const_iterator(Base::end());
+}
+
 // Map insertions
 
 template <typename CS>
 void AskTell<CS>::pair_insert_good(const CS& a, const CS& t) {
-  std::pair<typename Base::iterator, bool> stat;
-  stat = Base::insert(Base::value_type(a, t));
-  if (!stat.second) {
+  std::pair<typename Base::iterator, bool> stat
+    = Base::insert(Base::value_type(a, t));
+  if (!stat.second)
     (*(stat.first)).second *= t;
-  }
 }
 
 template <typename CS>
 void
 AskTell<CS>::pair_insert(const CS& a, const CS& t) {
   if (!entails(t, a)) {
-    CS newt(t);
+    CS newt = t;
     newt *= a;
     pair_insert_good(a, newt);
   }
@@ -70,7 +152,8 @@ bool AskTell<CS>::reduce() {
     for (yi = xi, ++yi; yi != end(); yi = yin) {
       yin = yi;
       ++yin;
-      if (entails((*yi).first, (*xi).first) && entails((*xi).second, (*yi).second)) {
+      if (entails((*yi).first, (*xi).first)
+	  && entails((*xi).second, (*yi).second)) {
 	erase(yi);
 	map_changed = true;
       }

@@ -32,21 +32,6 @@ site: http://www.cs.unipr.it/ppl/ . */
 namespace Parma_Polyhedra_Library {
 
 template <typename CS>
-bool
-entails(const CS& ax, const CS& tx, const CS& ay, const CS& ty) {
-  if(!entails(ay, ax))
-    return false;
-  else if (ax == ay)
-    return entails(tx, ty);            // Optional
-  else if (entails(tx, ty))
-    return true;
-  else if (entails(tx, ay))
-    return false;               // Optional
-  else
-    return entails(tx*ay, ty);
-}
-
-template <typename CS>
 AskTell<CS>
 operator+(const AskTell<CS>&, const AskTell<CS>&);
 
@@ -136,33 +121,31 @@ public:
 public:
 
   class iterator : public Base::iterator {
+  private:
     typedef typename Base::iterator Base;
+
   public:
-    iterator() { }
-    iterator(const Base& x) : Base(x) { }
-    const CS& ask() const { return Base::operator*().first; }
-    CS& tell() const { return Base::operator*().second; }
+    iterator();
+    iterator(const Base& x);
+    const CS& ask() const;
+    CS& tell() const;
   };
+
   class const_iterator : public Base::const_iterator {
+  private:
     typedef typename Base::const_iterator Base;
+
   public:
-    const_iterator() { }
-    const_iterator(const Base& x) : Base(x) { }
-    const CS& ask() const { return Base::operator*().first; }
-    const CS& tell() const { return Base::operator*().second; }
+    const_iterator();
+    const_iterator(const Base& x);
+    const CS& ask() const;
+    const CS& tell() const;
   };
-  iterator begin() {
-    return iterator(Base::begin());
-  }
-  iterator end() {
-    return iterator(Base::end());
-  }
-  const_iterator begin() const {
-    return const_iterator(Base::begin());
-  }
-  const_iterator end() const {
-    return const_iterator(Base::end());
-  }
+
+  iterator begin();
+  iterator end();
+  const_iterator begin() const;
+  const_iterator end() const;
 };
 
 #include "AskTell.inlines.hh"
