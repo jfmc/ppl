@@ -74,12 +74,10 @@ Matrix::num_rows() const {
   return rows.size();
 }
 
-
 inline dimension_type
 Matrix::first_pending_row() const {
   return index_first_pending;
 }
-
 
 inline dimension_type
 Matrix::num_pending_rows() const {
@@ -87,6 +85,10 @@ Matrix::num_pending_rows() const {
   return num_rows() - first_pending_row();
 }
 
+inline void
+Matrix::unset_pending_rows() {
+  index_first_pending = num_rows();
+}
 
 inline void
 Matrix::set_index_first_pending_row(dimension_type first_pending) {

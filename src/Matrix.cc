@@ -418,61 +418,79 @@ PPL::Matrix::merge_rows_assign(const Matrix& y) {
 }
 
 void
-PPL::Matrix::sort_rows() {
+PPL::Matrix::add_pending_rows(const Matrix& y) {
   Matrix& x = *this;
-  // We can sort only the non-pending rows.
-  // The rows below `index_first_pending' are not
-  // sorted.
-  dimension_type n_rows = x.first_pending_row();
-  Row x_i;
-  for (dimension_type i = 1; i < n_rows; ) {
-    x_i.assign(x[i]);
-    dimension_type j;
-    int cmp = 1;
-    for (j = i; j > 0; --j) {
-      cmp = compare(x[j-1], x_i);
-      if (cmp <= 0)
-	break;
-      x[j].assign(x[j-1]);
-    }
-    if (cmp == 0) {
-      for ( ; j < i; ++j)
-	x[j].assign(x[j+1]);
-      x[i].assign(x_i);
-      --n_rows;
-      std::swap(x[i], x[n_rows]);
-    }
-    else {
-      x[j].assign(x_i);
-      ++i;
-    }
+  assert(x.row_size >= y.row_size);
+
+  // A temporary vector of rows.
+  dimension_type x_n_rows = x.num_rows();
+  dimension_type y_n_rows = y.num_rows();
+  std::vector<Row> tmp(x_n_rows + y_n_rows);
+
+  // Steal the rows of `x'.
+  for (dimension_type i = x_n_rows; i-- > 0; )
+    std::swap(x[i], tmp[i]);
+
+  // Copy the rows of `y', forcing size and capacity.
+  for (dimension_type i = x_n_rows; i-- > 0; ) {
+    Row copy(y[i], x.row_size, x.row_capacity);
+    std::swap(copy, tmp[x_n_rows+i]);
   }
-  Row null;
-  x_i.assign(null);
-  // The rows that we must erase are put before the
-  // pending rows.
-  rows.erase(rows.begin() + n_rows, rows.end() - x.num_pending_rows());
-  set_index_first_pending_row(n_rows);
+
+  std::swap(x.rows, tmp);
+  assert(OK());
+}
+
+void
+PPL::Matrix::add_rows(const Matrix& y) {
+  assert(num_pending_rows() == 0);
+
+  // Adding no rows is a no-op.
+  if (y.num_rows() == 0)
+    return;
+
+  // Check if sortedness is preserved.
+  if (is_sorted())
+    if (y.is_sorted() && y.num_pending_rows() == 0) {
+    dimension_type n_rows = num_rows();
+    if (n_rows > 0)
+      set_sorted((*this)[n_rows-1] <= y[0]);
+  }
+
+  // Add the rows of `y' as if they were pending.
+  add_pending_rows(y);
+  // There are no pending_rows.
+  unset_pending_rows();
+
+  assert(OK());
+}
+
+void
+PPL::Matrix::sort_rows() {
+  dimension_type num_pending = num_pending_rows();
+  // We sort the non-pending rows only.
+  sort_rows(0, first_pending_row());
+  set_index_first_pending_row(num_rows() - num_pending);
   sorted = true;
   assert(OK());
 }
 
 void
-PPL::Matrix::sort_rows(dimension_type first_row, dimension_type last_row) {
-  assert(first_row <= num_rows());
-  assert(last_row <= num_rows());
-  assert(first_row <= last_row);
+PPL::Matrix::sort_rows(dimension_type start, dimension_type end) {
+  assert(start <= num_rows());
+  assert(end <= num_rows());
+  assert(start <= end);
   Matrix& x = *this;
-  // Sorting only a row is a no-op.
-  if (first_row == last_row)
+  // Sorting one or no rows is a no-op.
+  if (start >= end - 1)
     return;
-  dimension_type old_last_row = last_row;
+  dimension_type old_end = end;
   Row x_i;
-  for (dimension_type i = first_row + 1; i < last_row; ) {
+  for (dimension_type i = start + 1; i < end; ) {
     x_i.assign(x[i]);
     dimension_type j;
     int cmp = 1;
-    for (j = i; j > first_row; --j) {
+    for (j = i; j > start; --j) {
       cmp = compare(x[j-1], x_i);
       if (cmp <= 0)
 	break;
@@ -482,8 +500,8 @@ PPL::Matrix::sort_rows(dimension_type first_row, dimension_type last_row) {
       for ( ; j < i; ++j)
 	x[j].assign(x[j+1]);
       x[i].assign(x_i);
-      --last_row;
-      std::swap(x[i], x[last_row]);
+      --end;
+      std::swap(x[i], x[end]);
     }
     else {
       x[j].assign(x_i);
@@ -492,8 +510,8 @@ PPL::Matrix::sort_rows(dimension_type first_row, dimension_type last_row) {
   }
   Row null;
   x_i.assign(null);
-  // The rows that we must erase are put before `old_last_row'.
-  rows.erase(rows.begin() + last_row, rows.begin() + old_last_row);
+  // The rows that we must erase are before `old_end'.
+  rows.erase(rows.begin() + end, rows.begin() + old_end);
   assert(OK());
 }
 
@@ -503,47 +521,51 @@ PPL::Matrix::sort_pending_and_remove_duplicates() {
   assert(is_sorted());
   Matrix& x = *this;
 
-  dimension_type index = x.first_pending_row(); 
-  // We sort the pending part of the matrix..
-  x.sort_rows(index, x.num_rows());
+  // The non-pending part of the matrix is already sorted.
+  // Now sorting the pending part..
+  dimension_type first_pending = x.first_pending_row(); 
+  x.sort_rows(first_pending, x.num_rows());
+  // Recompute the number of rows, because we may have removed
+  // some rows occurring more than once in the pending part.
   dimension_type num_rows = x.num_rows();
   dimension_type k1 = 0;
-  dimension_type k2 = index;
-  std::deque<bool> to_be_removed(num_rows);
-  // Now we erase the pending rows that are also
-  // in the non-pending part.
-  while (k1 < index && k2 < num_rows) {
+  dimension_type k2 = first_pending;
+  dimension_type num_duplicates = 0;
+  // In order to erase them, put at the ned of the matrix those pending rows
+  // that also occur in the non-pending part.
+  while (k1 < first_pending && k2 < num_rows) {
     int cmp = compare(x[k1], x[k2]);
     if (cmp == 0) {
-      // We found the same row: we must erase `x[k2]' from the
-      // pending part of `con_sys'.
-      to_be_removed[k2] = true;
-      ++k2;
+      // We found the same row.
+      ++num_duplicates;
+      --num_rows;
       // By initial sortedness, we can increment index `k1'.
       ++k1;
+      // Do not increment `k2'; instead, swap there the next pending row.
+      if (k2 < num_rows)
+	std::swap(x[k2], x[k2 + num_duplicates]);
     }
     else if (cmp < 0)
       // By initial sortedness, we can increment `k1'.
       ++k1;
     else {
       // Here `cmp > 0'.
-      // We can increment `k2' and we can keep it in the pending part
-      // of the matrix.
+      // Increment `k2' and, if we already found any duplicate,
+      // swap the next pending row in position `k2'.
       ++k2;
+      if (num_duplicates > 0 && k2 < num_rows)
+	std::swap(x[k2], x[k2 + num_duplicates]);
     }
   }
-  // We put the rows to removed in the lower part of the matrix
-  // and then we erase them.
-  dimension_type insert_point = index;
-  for (dimension_type i = index; i < num_rows; ++i)
-    if (!to_be_removed[i]) {
-      if (i != insert_point) {
-	std::swap(x[i], x[insert_point]);
-	std::swap(to_be_removed[i], to_be_removed[insert_point]);
-      }
-      ++insert_point;
-    }
-  x.erase_to_end(insert_point);
+  // If needed, swap any duplicates found past the pending rows
+  // that has not been considered yet; then erase the duplicates.
+  if (num_duplicates > 0) {
+    if (k2 < num_rows)
+      for (++k2; k2 < num_rows; ++k2)
+	std::swap(x[k2], x[k2 + num_duplicates]);
+    x.erase_to_end(num_rows);
+  }
+  assert(OK());
 }
 
 void
@@ -551,9 +573,7 @@ PPL::Matrix::add_row(const Row& row) {
   // The added row must have the same number
   // of elements of the existing rows of the matrix.
   assert(row.size() == row_size);
-  // We are sure that we use this method only when
-  // we do not add a pending row and the matrix
-  // has no pending rows.
+  // This method is only used when the matrix has no pending rows.
   assert(num_pending_rows() == 0);
   bool was_sorted = is_sorted();
   dimension_type new_rows_size = rows.size() + 1;
@@ -598,11 +618,14 @@ PPL::Matrix::add_row(const Row& row) {
       // A matrix having only one row is sorted.
       set_sorted(true);
   }
+  // The added row was not a pending row.
+  assert(num_pending_rows() == 0);
+  assert(OK());
 }
 
 void
 PPL::Matrix::add_pending_row(const Row& row) {
-  // The added pending row must have the same number
+  // The added row must have the same number
   // of elements of the existing rows of the matrix.
   assert(row.size() == row_size);
   dimension_type new_rows_size = rows.size() + 1;
@@ -628,14 +651,16 @@ PPL::Matrix::add_pending_row(const Row& row) {
     Row tmp(row, row_capacity);
     std::swap(*rows.insert(rows.end(), Row()), tmp);
   }
+
+  // The added row was a pending row.
+  assert(num_pending_rows() > 0);
+  assert(OK());
 }
 
 void
 PPL::Matrix::insert(const Row& row) {
   assert(topology() == row.topology());
-  // We are sure that we use this method only when
-  // we do not add a pending row and the matrix
-  // has no pending rows.
+  // This method is only used when the matrix has no pending rows.
   assert(num_pending_rows() == 0);
 
   dimension_type old_num_rows = num_rows();
@@ -667,6 +692,8 @@ PPL::Matrix::insert(const Row& row) {
     // Here row.size() == row_size.
     add_row(row);
 
+  // The added row was not a pending row.
+  assert(num_pending_rows() == 0);
   assert(OK());
 }
 
@@ -703,6 +730,8 @@ PPL::Matrix::insert_pending(const Row& row) {
     // Here row.size() == row_size.
     add_pending_row(row);
 
+  // The added row was a pending row.
+  assert(num_pending_rows() > 0);
   assert(OK());
 }
 
@@ -729,6 +758,9 @@ PPL::Matrix::add_pending_row(Row::Type type) {
     // Insert a new empty row at the end,
     // then construct it assigning it the given type.
     rows.insert(rows.end(), Row())->construct(type, row_size, row_capacity);
+
+  // The added row was a pending row.
+  assert(num_pending_rows() > 0);
 }
 
 void

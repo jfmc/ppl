@@ -219,6 +219,9 @@ public:
   //! Sets the topology of all rows equal to the matrix topology.
   void set_rows_topology();
 
+  //! Sets the index to indicate that the matrix has no pending rows.
+  void unset_pending_rows();
+
   //! Sets the index of the first pending row to \p first_pending.
   void set_index_first_pending_row(dimension_type first_pending);
 
@@ -335,7 +338,9 @@ public:
   //! Strongly normalizes the matrix.
   void strong_normalize();
 
-  //! Sorts the rows (in growing order) and eliminates duplicated ones.
+  //! \brief
+  //! Sorts the non-pending rows (in growing order) and eliminates
+  //! duplicated ones.
   void sort_rows();
 
   //! \brief
@@ -344,27 +349,18 @@ public:
   void sort_rows(dimension_type first_row, dimension_type last_row);
  
   //! \brief
-  //! Sorts the pending part of the matrix and removes the pending
-  //! rows that are also in the upper part of the matrix.
+  //! Sorts the pending rows and eliminates those that also occur
+  //! in the non-pending part of the matrix.
   void sort_pending_and_remove_duplicates();
   
-  //! \brief
-  //! Assigns to \p *this the result of merging its rows with
-  //! those of \p y, obtaining a sorted matrix.
-  /*!
-    Duplicated rows will occur only once in the result.
-    Both matrices are assumed to be sorted on entry.
-  */
-  void merge_rows_assign(const Matrix& y);
-
-  //! Adds a new empty row to the matrix, setting only its type.
-  void add_pending_row(Row::Type type);
-
   //! Adds a copy of the given row to the matrix.
   void add_row(const Row& row);
 
   //! Adds a copy of the given row to the pending part of the matrix.
   void add_pending_row(const Row& row);
+
+  //! Adds a new empty row to the matrix, setting only its type.
+  void add_pending_row(Row::Type type);
 
   //! \brief
   //! Adds a copy of the given row to the matrix,
@@ -375,6 +371,24 @@ public:
   //! Adds a copy of the given row to the pending part of the matrix,
   //! automatically resizing the matrix or the row, if needed.
   void insert_pending(const Row& row);
+
+  //! Adds to \p *this a copy of the rows of `y'.
+  /*!
+    It is assumed that \p *this has no pending rows.
+  */
+  void add_rows(const Matrix& y);
+
+  //! Adds a copy of the rows of `y' to the pending part of `*this'.
+  void add_pending_rows(const Matrix& y);
+
+  //! \brief
+  //! Assigns to \p *this the result of merging its rows with
+  //! those of \p y, obtaining a sorted matrix.
+  /*!
+    Duplicated rows will occur only once in the result.
+    Both matrices are assumed to be sorted on entry.
+  */
+  void merge_rows_assign(const Matrix& y);
 
   //! Clears the matrix deallocating all its rows.
   void clear();
