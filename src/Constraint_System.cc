@@ -202,13 +202,15 @@ PPL::Constraint_System::has_strict_inequalities() const {
   dimension_type eps_index = cs.num_columns() - 1;
   // We verify if the system has strict inequalities
   // also in the pending part.
-  for (dimension_type i = num_rows(); i-- > 0; )
+  for (dimension_type i = cs.num_rows(); i-- > 0; ) {
+    const Constraint& c = cs[i];
     // Optimized type checking: we already know the topology;
     // also, equalities have the epsilon coefficient equal to zero.
     // NOTE: the constraint eps_leq_one should not be considered
     //       a strict inequality.
-    if (cs[i][eps_index] < 0 && !cs[i].is_tautological())
+    if (c[eps_index] < 0 && !c.is_tautological())
       return true;
+  }
   return false;
 }
 
