@@ -345,7 +345,10 @@ INPUT                  = @srcdir@/definitions.dox \
                          @srcdir@/../src/minimize.cc \
                          @srcdir@/../src/simplify.cc \
                          @srcdir@/../interfaces/Prolog/Prolog_interface.dox \
+                         @srcdir@/../interfaces/Prolog/Ciao/ppl_ciao.cc \
+                         @srcdir@/../interfaces/Prolog/GNU/ppl_gprolog.cc \
                          @srcdir@/../interfaces/Prolog/SICStus/ppl_sicstus.cc \
+                         @srcdir@/../interfaces/Prolog/SWI/ppl_swiprolog.cc \
                          @srcdir@/gpl.dox \
                          @srcdir@/fdl.dox
 
