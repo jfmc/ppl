@@ -25,16 +25,6 @@
   \defgroup PPL_Library The Library
   The core implementation of the Parma Polyhedra Library
   is written in C++.
-  The library is mainly a collection of so-called ``concrete data types'':
-  while providing the user with a clean and friendly interface,
-  these types are not meant to --- i.e., they should not --- be used
-  polymorphically (since, e.g., most of the destructors are not declared
-  <CODE>virtual</CODE>). In practice, this restriction means that
-  the library types should not be used as <EM>public base classes</EM>
-  to be derived from. A user willing to extend the library types,
-  adding new functionalities, often can do so by using <EM>containment</EM>
-  instead of inheritance; even when there is the need of overriding a
-  <CODE>protected</CODE> method, non-public inheritance should suffice.
   See Namespace, Hierarchical and Compound indexes
   for additional information about each single data type.
 */
@@ -1053,38 +1043,6 @@ of the limited extrapolation operators described above, by ensuring
 that their results cannot be worse than the smallest
 \ref bounding_boxes "bounding box" enclosing the two argument polyhedra.
 
-<B>A Note on the Implementation of the Operators</B>
-
-When adopting the double description method, the implementation of the
-above operators on polyhedra may require an explicit conversion from
-one of the two representations into the other one, leading to
-algorithms having a worst-case exponential complexity.
-However, thanks to the adoption of lazy and incremental computation
-techniques, the library turns out to be rather efficient in many
-practical cases.
-
-In earlier versions of the library, a number of operators were introduced
-in two flavors: a <EM>lazy</EM> version and an <EM>eager</EM> version,
-the latter having the operator name ending with <CODE>_and_minimize</CODE>.
-In principle, only the lazy versions should be used.
-The eager versions were added to help a knowledgeble user obtain better
-performance in particular cases. Basically, by invoking the eager version
-of an operator, the user is trading laziness to better exploit the
-incrementality of the inner library computations.
-Starting from version 0.5, the lazy and incremental computation techniques
-have been refined to achieve a better integration: as a consequence,
-the lazy versions of the operators are now almost always more efficient
-than the eager versions.
-
-The only case when an eager computation still makes sense is when
-the well-known <EM>fail-first</EM> principle comes into play.
-For instance, if you have to compute the intersection of several
-polyhedra and you strongly suspect that the result will become empty
-after a few of these intersections, then you may obtain a better
-performance by calling the eager version of the intersection operator,
-since the minimization process also enforces an emptyness check.
-Note anyway that the same effect can be obtained by interleaving
-the calls of the lazy operator with explicit emptyness checks.
 
 \section powerset The Powerset Construction
 
@@ -1180,7 +1138,53 @@ singleton powerset consisting of an upper-bound of all the disjuncts.
 
 \section poly_powerset The Polyhedra Powerset Domain
 
-\section cplusplus Using the C++ Library
+\section cplusplus Using the Library
+
+<B>A Note on the Implementation of the Operators</B>
+
+When adopting the double description method for the representation of
+convex polyhedra, the implementation of most of the operators may
+require an explicit conversion from one of the two representations
+into the other one, leading to algorithms having a worst-case
+exponential complexity.  However, thanks to the adoption of lazy and
+incremental computation techniques, the library turns out to be rather
+efficient in many practical cases.
+
+In earlier versions of the library, a number of operators were introduced
+in two flavors: a <EM>lazy</EM> version and an <EM>eager</EM> version,
+the latter having the operator name ending with <CODE>_and_minimize</CODE>.
+In principle, only the lazy versions should be used.
+The eager versions were added to help a knowledgeble user obtain better
+performance in particular cases. Basically, by invoking the eager version
+of an operator, the user is trading laziness to better exploit the
+incrementality of the inner library computations.
+Starting from version 0.5, the lazy and incremental computation techniques
+have been refined to achieve a better integration: as a consequence,
+the lazy versions of the operators are now almost always more efficient
+than the eager versions.
+
+One of the cases when an eager computation still makes sense is when
+the well-known <EM>fail-first</EM> principle comes into play.
+For instance, if you have to compute the intersection of several
+polyhedra and you strongly suspect that the result will become empty
+after a few of these intersections, then you may obtain a better
+performance by calling the eager version of the intersection operator,
+since the minimization process also enforces an emptyness check.
+Note anyway that the same effect can be obtained by interleaving
+the calls of the lazy operator with explicit emptyness checks.
+
+<B>On Object-Orientation and Polymorphism: A Disclaimer</B>
+
+The PPL library is mainly a collection of so-called ``concrete data
+types'': while providing the user with a clean and friendly interface,
+these types are not meant to --- i.e., they should not --- be used
+polymorphically (since, e.g., most of the destructors are not declared
+<CODE>virtual</CODE>). In practice, this restriction means that the
+library types should not be used as <EM>public base classes</EM> to be
+derived from. A user willing to extend the library types, adding new
+functionalities, often can do so by using <EM>containment</EM> instead
+of inheritance; even when there is the need of overriding a
+<CODE>protected</CODE> method, non-public inheritance should suffice.
 
 <B>On Const-Correctness: A Warning about the Use of References
 and Iterators</B>
