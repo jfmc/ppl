@@ -228,3 +228,50 @@ PPL::operator*=(LinExpression& e, const Integer& n) {
     e[i] *= n;
   return e;
 }
+
+/*! \relates Parma_Polyhedra_Library::LinExpression */
+std::ostream&
+PPL::IO_Operators::operator<<(std::ostream& s, const LinExpression& e) {
+  const int num_variables = e.space_dimension();
+  bool first = true;
+  for (int v = 0; v < num_variables; ++v) {
+    Integer ev = e[v+1];
+    if (ev != 0) {
+      if (!first) {
+	if (ev > 0)
+	  s << " + ";
+	else {
+	  s << " - ";
+	  negate(ev);
+	}
+      }
+      else
+	first = false;
+      if (ev == -1)
+	s << "-";
+      else if (ev != 1)
+	s << ev << "*";
+      s << PPL::Variable(v);
+    }
+  }
+  // Inhomogeneous term.
+  Integer it = e[0];
+  if (it != 0) {
+    if (!first) {
+      if (it > 0)
+	s << " + ";
+      else {
+	s << " - ";
+	negate(it);
+      }
+    }
+    else
+      first = false;
+    s << it;
+  }
+
+  if (first)
+    // The null linear expression.
+    s << 0;
+  return s;
+}

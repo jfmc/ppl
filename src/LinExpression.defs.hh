@@ -36,7 +36,6 @@ site: http://www.cs.unipr.it/ppl/ . */
 #include <cstddef>
 
 namespace Parma_Polyhedra_Library {
-
 // Put them in the namespace here to declare them friend later.
 
 //! Returns the linear expression \p e1 + \p e2.
@@ -96,6 +95,14 @@ LinExpression& operator-=(LinExpression& e, const Integer& n);
 //! Returns the linear expression \p n * \p e and assigns it to \p e.
 /*! \relates LinExpression */
 LinExpression& operator*=(LinExpression& e, const Integer& n);
+
+namespace IO_Operators {
+
+//! Output operator.
+/*! \relates Parma_Polyhedra_Library::LinExpression */
+std::ostream& operator<<(std::ostream& s, const LinExpression& e);
+
+} // namespace IO_Operators
 
 } // namespace Parma_Polyhedra_Library
 
@@ -297,6 +304,10 @@ private:
   friend LinExpression&
   Parma_Polyhedra_Library::operator*=(LinExpression& e,
 				      const Integer& n);
+
+  friend std::ostream&
+  Parma_Polyhedra_Library::IO_Operators::operator<<(std::ostream& s,
+						    const LinExpression& e);
 };
 
 #include "LinExpression.inlines.hh"

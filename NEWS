@@ -14,6 +14,9 @@ o  New methods Polyhedron::maximize() and Polyhedron::minimize()
    for maximizing and minimizing a linear expression subject to the
    polyhedron.
 
+o  New output operator in namespace IO_Operators:
+   std::ostream& operator<<(std::ostream&, const LinExpression&).
+
 o  The type of output functions for the class Variable,
    Variable::Output_Function_Type, is now defined as
    void Output_Function_Type(std::ostream& s, const Variable& v).
