@@ -104,7 +104,13 @@ bool operator>(const Polyhedron& x, const Polyhedron& y);
 */
 bool operator>=(const Polyhedron& x, const Polyhedron& y);
 
-// Put it in the namespace here to declare it friend later.
+//! Returns <CODE>true</CODE> if and only if \p x is contained in \p y.
+/*!
+  \relates Polyhedron
+  \exception std::invalid_argument thrown if \p x and \p y
+                                   are topology-incompatible
+                                   or dimension-incompatible.
+*/
 bool operator<=(const Polyhedron& x, const Polyhedron& y);
 
 } // namespace Parma_Polyhedra_Library
@@ -1184,14 +1190,6 @@ public:
   //! Assigns to \p *this its topological closure.
   void topological_closure_assign();
 
-  //! \brief
-  //! Returns <CODE>true</CODE> if and only if
-  //! polyhedron \p x is contained in polyhedron \p y.
-  /*!
-    \exception std::invalid_argument thrown if \p x and \p y
-                                     are topology-incompatible
-                                     or dimension-incompatible.
-  */
   friend bool
   Parma_Polyhedra_Library::operator<=(const Polyhedron& x,
 				      const Polyhedron& y);
