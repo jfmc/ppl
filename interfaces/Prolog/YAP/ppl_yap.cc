@@ -175,13 +175,20 @@ Prolog_construct_cons(Prolog_term_ref& c,
   return true;
 }
 
+static Prolog_atom a_throw;
+
+static void
+ppl_Prolog_sysdep_init() {
+  a_throw = LookupAtom("throw");
+}
+
 /*!
   Raise a Prolog exception with \p t as the exception term.
 */
 static inline void
 Prolog_raise_exception(Prolog_term_ref t) {
-  // ???
-  // (void) PL_raise_exception(t);
+  args[0] = t;
+  YapCallProlog(MkApplTerm(a_throw, 1, args));
 }
 
 /*!
@@ -332,10 +339,6 @@ Integer_to_integer_term(const PPL::Integer& n) {
   if (!n.fits_slong_p())
     throw_unknown_interface_error("Integer_to_integer_term()");
   return MkIntTerm(n.get_si());
-}
-
-static void
-ppl_Prolog_sysdep_init() {
 }
 
 #include "../ppl_prolog.icc"
