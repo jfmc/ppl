@@ -25,8 +25,12 @@ site: http://www.cs.unipr.it/ppl/ . */
 #define PPL_PowerSet_defs_hh
 
 #include "PowerSet.types.hh"
+#include "ConSys.types.hh"
+#include "Variable.defs.hh"
+#include "globals.hh"
 #include <iosfwd>
 #include <list>
+#include <set>
 
 namespace Parma_Polyhedra_Library {
 

@@ -25,8 +25,14 @@ site: http://www.cs.unipr.it/ppl/ . */
 #define PPL_Determinate_defs_hh
 
 #include "Determinate.types.hh"
+#include "ConSys.types.hh"
+#include "GenSys.types.hh"
+#include "Variable.defs.hh"
+#include "Polyhedron.defs.hh"
+#include "globals.hh"
 #include <iosfwd>
 #include <cassert>
+#include <set>
 
 namespace Parma_Polyhedra_Library {
 

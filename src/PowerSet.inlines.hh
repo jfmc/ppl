@@ -24,6 +24,8 @@ site: http://www.cs.unipr.it/ppl/ . */
 #ifndef PPL_PowerSet_inlines_hh
 #define PPL_PowerSet_inlines_hh 1
 
+#include "ConSys.defs.hh"
+#include "ConSys.inlines.hh"
 #include <algorithm>
 #include <deque>
 
@@ -173,8 +175,12 @@ template <typename CS>
 inline bool
 PowerSet<CS>::is_top() const {
   if (size() == 1) {
+#if 0
     value_type tv = *(begin());
     return tv.is_top();
+#else
+    return begin()->is_top();
+#endif
   }
   else
     return false;
@@ -433,7 +439,7 @@ PowerSet<CS>::shuffle_dimensions(const PartialFunction& pfunc) {
 
 template <typename CS>
 void
-PowerSet<CS>::H79_widening_assign(const PowerSet& y) {
+PowerSet<CS>::H79_widening_assign(const PowerSet& /* y */) {
 }
 
 template <typename CS>
