@@ -241,6 +241,7 @@ libppl_la_SOURCES = \
 Bounding_Box.cc \
 Constraint.cc \
 Constraint_System.cc \
+simplex.cc \
 Generator_System.cc \
 Generator.cc \
 Init.cc \

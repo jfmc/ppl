@@ -44,7 +44,7 @@ site: http://www.cs.unipr.it/ppl/ . */
 #endif // PPL_DOXYGEN_INCLUDE_IMPLEMENTATION_DETAILS
 
 class Parma_Polyhedra_Library::Matrix {
-protected:
+public:
   //! Returns the maximum number of rows of a Matrix.
   static dimension_type max_num_rows();
 
@@ -81,7 +81,6 @@ protected:
   //! Assignment operator.
   Matrix& operator=(const Matrix& y);
 
-public:
   //! An iterator over a matrix.
   /*!
     A const_iterator is used to provide read-only access
