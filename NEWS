@@ -10,6 +10,21 @@ NEWS for version 0.7  (released on December 24, 2004)
 New and Changed Features
 ========================
 
+o  Nothing yet.
+
+Bugfixes
+========
+
+o  None yet.
+
+
+--------------------------------------------------------------------------
+NEWS for version 0.7  (released on December 24, 2004)
+--------------------------------------------------------------------------
+
+New and Changed Features
+========================
+
 o  The new configuration option `--enable-coefficients' allows for the
    use of alternative (integral) coefficient types.  Besides GMP
    integers, the user can now use checked native integers (8, 16, 32

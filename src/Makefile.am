@@ -58,8 +58,9 @@ SUBDIRS =
 #	    0.5			    2:0:0
 #	    0.6			    3:0:0
 #	    0.7			    4:0:0
+#	    0.8			    5:0:0
 
-LIBPPL_LT_CURRENT =  4
+LIBPPL_LT_CURRENT =  5
 LIBPPL_LT_REVISION = 0
 LIBPPL_LT_AGE =      0
 
