@@ -1,20 +1,6 @@
 Minor and Not So Minor Things
 =============================
 
-- Make sure all the public methods of Polyhedron are
-  available through the Prolog interfaces.  And properly
-  documented there.  (By the way, the documentation of
-  ppl_copy_polyhedron is wrong.)  It would be nice not
-  to require the user of the Prolog interface to read
-  also all the C++ documentation.  We should really put
-  ourselves in the shoes of a _user_.
-
-- Seriously look at all the warnings issued by Doxygen
-  when it produces the developer's reference manual.
-  All of these should either result in the discovery
-  of bugs (either in Doxygen or in our code) or in
-  misuses of Doxygen on our part.
-
 - There must be a more efficient way to compute convex
   differences.
 
