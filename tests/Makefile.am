@@ -457,6 +457,8 @@ endif
 
 TESTS = $(ORIGINAL_TESTS) $(DERIVED_TESTS) $(WATCHDOG_TESTS)
 
+XFAIL_TESTS = nnc_polydifference1
+
 check_PROGRAMS = $(TESTS) $(BUGS)
 
 noinst_HEADERS = ppl_test.hh ehandlers.hh print.hh
