@@ -681,32 +681,6 @@ in the linear expression is non-zero, the affine transformation is invertible.
 \anchor generalized_image
 <B>Generalized Affine Images</B>
 
-Let \f$\phi \sseq \Rset^n \times \Rset^n\f$ be a (space-dimension preserving)
-relation between vectors of \f$\Rset^n\f$ and vectors of \f$\Rset^m\f$;
-the <EM>image</EM> under \f$\phi\f$ of the set \f$S \sseq \Rset^n\f$
-is defined as
-\f[
-  \phi(S)
-    =
-      \bigl\{\,
-        \vect{w} \in \Rset^m
-      \bigm|
-        \vect{v} \in S, (\vect{v}, \vect{w}) \in \phi
-      \,\bigr\}.
-\f]
-Similarly, we denote by \f$\phi^{-1}(S') \sseq \Rset^n\f$
-the <EM>preimage</EM> under \f$\phi\f$ of \f$S' \sseq \Rset^m\f$,
-which is defined as
-\f[
-  \phi^{-1}(S')
-    =
-      \bigl\{\,
-        \vect{v} \in \Rset^n
-      \bigm|
-        \phi(\vect{v}) \in S'
-      \,\bigr\}.
-\f]
-
 The library provides another operator
 which is a generalization of the affine image operator.
 Given a polyhedron \f$\cP \in \Pset_n\f$,
@@ -847,8 +821,8 @@ if \f$\cP\f$
 is described by a constraint system in \f$\Rset^n\f$ that
 consists of one constraint for each bounded bound (lower and upper)
 in an interval in \f$\cB\f$:
-Letting \f$\vect{e}_i = (0, \ldots, 1, \ldots, 0)\f$ be the vector in
-\f$\Rset^n\f$ with 1 in the \f$i\f$'th position
+Letting \f$\vect{e}_i = (0, \ldots, 1, \ldots, 0)^\transpose\f$
+be the vector in \f$\Rset^n\f$ with 1 in the \f$i\f$'th position
 and zeros in every other position;
 if the lower bound of the \f$i\f$'th interval in \f$\cB\f$
 is bounded, the corresponding constraint is defined as
