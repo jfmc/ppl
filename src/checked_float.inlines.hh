@@ -204,6 +204,28 @@ SPECIALIZE_PRED(float, float128_t)
 SPECIALIZE_SUCC(float, float128_t)
 #endif
 
+template <typename Policy, typename To>
+inline Result
+round_lt_float(To& to, Rounding_Dir dir) {
+  if (rounding_direction(dir) == ROUND_DOWN) {
+    if (pred<Policy>(to) == VC_MINUS_INFINITY)
+      return V_NEG_OVERFLOW;
+    return V_GT;
+  }
+  return V_LT;
+}
+
+template <typename Policy, typename To>
+inline Result
+round_gt_float(To& to, Rounding_Dir dir) {
+  if (rounding_direction(dir) == ROUND_UP) {
+    if (succ<Policy>(to) == VC_PLUS_INFINITY)
+      return V_POS_OVERFLOW;
+    return V_LT;
+  }
+  return V_GT;
+}
+
 template <typename Policy>
 inline void
 prepare_inexact() {
@@ -360,7 +382,6 @@ assign_float_int(To& to, const From from, Rounding_Dir dir) {
   return result_relation<Policy>(dir);
 }
 
-
 template <typename Policy, typename Type>
 inline Result 
 add_mul_float(Type& to, const Type x, const Type y, Rounding_Dir dir) {
@@ -446,6 +467,10 @@ from_c_string_float(Type& to, const char* from, Rounding_Dir dir) {
 template <typename Policy, typename Type>
 inline Result
 to_c_string_float(char* str, size_t size, Type& from, const Numeric_Format&, Rounding_Dir) {
+  if (from == 0) {
+    strncpy(str, "0", size);
+    return V_EQ;
+  }
   dtostr_(str, size, from);
   return V_EQ;
 }
