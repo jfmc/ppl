@@ -28,45 +28,24 @@ VPATH = @srcdir@
 
 SUBDIRS =
 
-# Libtool -version-info for libpplgprolog.la.
-#
-#  1. Start with version information of `0:0:0' for each libtool library.
-#
-#  2. Update the version information only immediately before a public
-#     release of your software.  More frequent updates are unnecessary,
-#     and only guarantee that the current interface number gets larger
-#     faster.
-#
-#  3. If the library source code has changed at all since the last
-#     update, then increment REVISION (`C:R:A' becomes `C:r+1:A').
-#
-#  4. If any interfaces have been added, removed, or changed since the
-#     last update, increment CURRENT, and set REVISION to 0.
-#
-#  5. If any interfaces have been added since the last public release,
-#     then increment AGE.
-#
-#  6. If any interfaces have been removed since the last public release,
-#     then set AGE to 0.
-#
-#	PPL release		-version-info
-#	    0.1			    -----
-#	    0.2			    -----
-#	    0.3			    -----
-#	    0.4			    0:0:0
+EXTRA_DIST = ppl_gprolog_sd.cc ppl_gprolog_sd.pl gp_clpq.pl
 
-LIBPPLGPROLOG_LT_CURRENT =  0
-LIBPPLGPROLOG_LT_REVISION = 0
-LIBPPLGPROLOG_LT_AGE =      0
+if HAVE_GNU_PROLOG
 
 INCLUDES = -I$(top_builddir)/src @extra_includes@
 
-lib_LTLIBRARIES = libpplgprolog.la
+bin_PROGRAMS = ppl_gprolog
+ppl_gprolog_SOURCES =
 
-libpplgprolog_la_SOURCES = ppl_gprolog.cc
+pkglib_LIBRARIES = libppl_gprolog.a
+libppl_gprolog_a_SOURCES = ppl_gprolog_sd.cc
 
-libpplgprolog_la_LDFLAGS = \
--version-info $(LIBPPLGPROLOG_LT_CURRENT):$(LIBPPLGPROLOG_LT_REVISION):$(LIBPPLGPROLOG_LT_AGE)
+ppl_gprolog$(EXEEXT): libppl_gprolog.a ppl_gprolog.pl $(top_builddir)/src/.libs/libppl.a
+	gplc -o $@ ppl_gprolog.pl \
+		-L '-L. -lppl_gprolog -L$(top_builddir)/src/.libs -lppl -lgmp -lgmpxx -lstdc++'
+
+ppl_gprolog.pl: ppl_gprolog_sd.pl ../ppl_prolog.pl
+	cat $^ >$@
 
 CLPQ_TESTS = \
 ack.clpq \
@@ -77,23 +56,16 @@ smm.clpq \
 sumto.clpq \
 tak.clpq
 
-EXTRA_DIST = ppl_gprolog.pl gp_clpq.pl
-
-if HAVE_GNU_PROLOG
-#check_PROGRAMS = pplgprolog
-#pplgprolog_SOURCES = ppl_gprolog.cc
-#pplgprolog_LDADD = libpplgprolog.la $(top_builddir)/src/libppl.la /usr/local/lib/pl-5.0.1/runtime/i686-linux/libpl.a -lreadline -ldl -ltermcap @extra_libraries@
-
-#pplgprolog: ppl_gprolog.o ppl_gprolog.pl
-#	gplc -o $@ $+ -L '-L../../../src/.libs -lppl -lgmp -lgmpxx -lstdc++'
-
-gp_clpq: gp_clpq.pl ppl_gprolog.o ppl_gprolog.pl ../clpq.pl
-	gplc -o $@ $+ -L '-L../../../src/.libs -lppl -lgmp -lgmpxx -lstdc++'
+gp_clpq: libppl_gprolog.a ppl_gprolog.pl gp_clpq.pl ../clpq.pl
+	gplc -o $@ ppl_gprolog.pl $(srcdir)/gp_clpq.pl $(srcdir)/../clpq.pl \
+		-L '-L. -lppl_gprolog -L$(top_builddir)/src/.libs -lppl -lgmp -lgmpxx -lstdc++'
 
 check-local: gp_clpq ../check_script ../expected
 	for k in $(CLPQ_TESTS); do cp -f $(srcdir)/../$$k .; done
 	gp_clpq <$(srcdir)/../check_script >obtained
 	diff -q --ignore-all-space $(srcdir)/../expected obtained
 
-MOSTLYCLEANFILES = pplgprolog gp_clpq $(CLPQ_TESTS) obtained
+MOSTLYCLEANFILES = \
+ppl_gprolog.pl \
+gp_clpq $(CLPQ_TESTS) obtained
 endif
