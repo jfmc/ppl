@@ -303,6 +303,17 @@ normalize(const std::vector<mpq_class>& source,
     dest[i] = denominator*source[i].get_num();
 }
 
+template <typename T>
+bool
+guarded_read(std::istream& in, T& x) {
+  try {
+    return in >> x;
+  }
+  catch (...) {
+    return false;
+  }
+}
+
 enum Number_Type { INTEGER, RATIONAL, REAL };
 
 void
@@ -314,7 +325,7 @@ read_coefficients(std::istream& in,
   switch (number_type) {
   case INTEGER: {
     for (unsigned i = 0; i < num_coefficients; ++i)
-      if (!(in >> coefficients[i]))
+      if (!guarded_read(in, coefficients[i]))
 	error("missing or invalid integer coefficient");
     denominator = 1;
     break;
@@ -322,7 +333,7 @@ read_coefficients(std::istream& in,
   case RATIONAL: {
     std::vector<mpq_class> rational_coefficients(num_coefficients);
     for (unsigned i = 0; i < num_coefficients; ++i)
-      if (!(in >> rational_coefficients[i]))
+      if (!guarded_read(in, rational_coefficients[i]))
 	error("missing or invalid rational coefficient");
     normalize(rational_coefficients, coefficients, denominator);
     break;
@@ -331,7 +342,7 @@ read_coefficients(std::istream& in,
     std::vector<mpq_class> rational_coefficients(num_coefficients);
     for (unsigned i = 0; i < num_coefficients; ++i) {
       double d;
-      if (!(in >> d))
+      if (!guarded_read(in, d))
 	error("missing or invalid real coefficient");
       rational_coefficients[i] = mpq_class(d);
     }
@@ -353,7 +364,7 @@ read_polyhedron(std::istream& in, PPL::C_Polyhedron& ph) {
   std::string s;
   std::set<unsigned> linearity;
   while (true) {
-    if (!(in >> s))
+    if (!guarded_read(in, s))
       error("premature end of file while seeking for `begin'");
 
     if (s == "V-representation")
@@ -362,11 +373,11 @@ read_polyhedron(std::istream& in, PPL::C_Polyhedron& ph) {
       rep = H;
     else if (s == "linearity") {
       unsigned num_linear;
-      if (!(in >> num_linear))
+      if (!guarded_read(in, num_linear))
 	error("missing or invalid number of linearity indexes");
       while (num_linear--) {
 	unsigned i;
-	if (!(in >> i))
+	if (!guarded_read(in, i))
 	  error("missing or invalid linearity index");
 	linearity.insert(i);
       }
@@ -386,14 +397,14 @@ read_polyhedron(std::istream& in, PPL::C_Polyhedron& ph) {
   }
 
   unsigned num_rows;
-  if (!(in >> num_rows))
+  if (!guarded_read(in, num_rows))
     error("illegal or missing number of rows");
 
   unsigned num_columns;
-  if (!(in >> num_columns))
+  if (!guarded_read(in, num_columns))
     error("illegal or missing number of columns");
 
-  if (!(in >> s))
+  if (!guarded_read(in, s))
     error("missing number type");
   Number_Type number_type = INTEGER;
   if (s == "integer")
@@ -419,7 +430,8 @@ read_polyhedron(std::istream& in, PPL::C_Polyhedron& ph) {
     mpz_class denominator;
     for (unsigned i = 0; i < num_rows; ++i) {
       int vertex_marker;
-      if (!(in >> vertex_marker) || vertex_marker < 0 || vertex_marker > 1)
+      if (!guarded_read(in, vertex_marker)
+	  || vertex_marker < 0 || vertex_marker > 1)
 	error("illegal or missing vertex marker");
       read_coefficients(in, number_type, coefficients, denominator);
       PPL::LinExpression e;
@@ -456,7 +468,7 @@ read_polyhedron(std::istream& in, PPL::C_Polyhedron& ph) {
     }
   }
 
-  if (!(in >> s))
+  if (!guarded_read(in, s))
     error("premature end of file while seeking for `end'");
 
   if (s != "end")
