@@ -70,8 +70,7 @@ run_all:-
 run_all:-
    ppl_finalize,
    fail.
-    
- 
+
 new_polys :-
   ppl_initialize,
   new_universe,
@@ -1178,11 +1177,17 @@ affine_genlr(T) :-
 
 % Tests ppl_Polyhedron_relation_with_constraint.
 rel_cons :-
-  A = '$VAR'(0), B = '$VAR'(1),
+  A = '$VAR'(0), B = '$VAR'(1), C = '$VAR'(2),
   ppl_new_Polyhedron_from_dimension(c, 3, P),
-  ppl_Polyhedron_add_constraints(P, [A >= 1, B >= 0]),
-  R = [is_disjoint],
+  ppl_Polyhedron_add_constraints(P, [A >= 1, B >= 0, C = 0]),
   ppl_Polyhedron_relation_with_constraint(P, A = 0, R),
+  R = [is_disjoint],
+  ppl_Polyhedron_relation_with_constraint(P, A = 1, R1),
+  R1 = [strictly_intersects],
+  ppl_Polyhedron_relation_with_constraint(P, A >= 0, R2),
+  R2 = [is_included],
+  ppl_Polyhedron_relation_with_constraint(P, C >= 0, R3),
+  (R3 = [is_included, saturates] ; R3 = [saturates, is_included]),
   ppl_delete_Polyhedron(P).
 
 % Tests ppl_Polyhedron_relation_with_generator.

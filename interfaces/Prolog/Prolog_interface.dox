@@ -499,7 +499,11 @@ The specification uses the following grammar rules:
 	    | is_included		between a constraint and a polyhedron
 	    | saturates			between a constraint and a polyhedron
             | subsumes			between a generator and a polyhedron
-            | nothing
+ 
+ Relation_List				list of relations
+             --> []
+            | [Relation]
+            | [Relation | Relation_List]
 
  Complexity  --> polynomial | simplex | any		
 
@@ -710,28 +714,21 @@ ppl_new_Polyhedron_from_Polyhedron(+Topology_1, +Handle_1,
    representing the polyhedron referenced by <CODE>Handle</CODE>.
 
 <H2><CODE>ppl_Polyhedron_relation_with_constraint(+Handle, +Constraint,
-               -Relation)</CODE></H2>
+               -Relation_List)</CODE></H2>
 
-Unifies <CODE>Relation</CODE> with the relation the polyhedron
+Unifies <CODE>Relation_List</CODE> with the list of relations the polyhedron
 referenced by <CODE>Handle</CODE>
 has with <CODE>Constraint</CODE>.
 The possible relations are listed in the grammar rules above;
 their meaning is given in Section \ref operations.
-The relation  <CODE>nothing</CODE> means that
-nothing is known about  the relation the polyhedron
-referenced by <CODE>Handle</CODE> has with <CODE>Constraint</CODE>.
 
 <H2><CODE>ppl_Polyhedron_relation_with_generator(+Handle, +Generator,
-               -Relation)</CODE></H2>
+               -Relation_List)</CODE></H2>
 
-Unifies <CODE>Relation</CODE> with the relation the polyhedron
+Unifies <CODE>Relation_List</CODE> with the list of relations the polyhedron
 referenced by <CODE>Handle</CODE> has with <CODE>Generator</CODE>.
 The possible relations are listed in the grammar rules above;
-The meaning of the relation <CODE>subsume</CODE>
-is given in Section \ref operations.
-The relation  <CODE>nothing</CODE> means that
-nothing is known about  the relation the polyhedron
-referenced by <CODE>Handle</CODE> has with <CODE>Generator</CODE>.
+their meaning is given in Section \ref operations.
 
 <H2><CODE>ppl_Polyhedron_get_bounding_box(+Handle,
                                           +Complexity,
