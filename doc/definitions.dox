@@ -227,11 +227,38 @@ A bounded polyhedron is called a <EM>polytope</EM>.
 
 A polyhedron is a closed convex set.
 
-<B>Dimension</B>
+<B>Polyhedron dimension</B>
 
-A polyhedron \f$P \sseq \Rset^n\f$ is of <EM>dimension</EM> \f$k\f$,
+A non-empty polyhedron \f$P \sseq \Rset^n\f$
+is of <EM>dimension</EM> \f$k\f$,
 denoted by \f$\pdim(P) = k\f$, if the maximum number of 
 affinely independent points in \f$P\f$ is \f$k + 1\f$.
+
+\note
+What is the dimension of the <EM>empty</EM> polyhedron?
+If the above definition is applied to an empty polyhedron,
+then the answer would be \f$-1\f$.
+
+<B>Space dimension and compatibility</B>
+
+Be careful not to confuse the dimension \f$k\f$ of a polyhedron
+\f$P \sseq \Rset^n\f$ with the dimension \f$n\f$ of the enclosing
+vector space.
+Two polyhedra \f$P \sseq \Rset^n\f$ and \f$Q \sseq \Rset^m\f$ are
+said to be <EM>dimension-compatible</EM> if \f$n = m\f$
+(i.e., if they are defined on the same vector space).
+Note that we can have \f$\pdim(P) = \pdim(Q)\f$ even though
+\f$P\f$ and \f$Q\f$ are dimension-incompatible.
+
+\note
+In the current implementation,
+there is no way to distinguish between two empty polyhedron,
+even though they are meant to be defined over dimension-incompatible
+vector spaces.
+This causes a few inconsistencies in the specification of some of
+the operations requiring dimension-compatibility.
+This issue is under consideration.
+
 
 <B>Vertex</B>
 
@@ -370,7 +397,7 @@ constraint \f$y \geq 0\f$ can be represented by taking the generators
 \f$V = \bigl\{ (0, 0)^\transpose \bigr\}\f$,
 \f$R = \bigl\{ (0, 1)^\transpose \bigr\}\f$ and
 \f$L = \bigl\{ (1, 0)^\transpose \bigr\}\f$.
-Note that the only ray in \f$R\f$ is <EM>not</EM> an extreme ray
+Note also that the only ray in \f$R\f$ is <EM>not</EM> an extreme ray
 of \f$P\f$.
 
 The following theorem states that,
