@@ -56,7 +56,6 @@ Row::Impl::max_size() {
   return size_t(-1)/sizeof(Integer);
 }
 
-
 inline dimension_type
 Row::Impl::size() const {
   return size_;
