@@ -37,6 +37,12 @@ namespace Parma_Polyhedra_Library {
 
 template <typename PH>
 inline dimension_type
+Polyhedra_Powerset<PH>::space_dimension() const {
+  return space_dim;
+}
+
+template <typename PH>
+inline dimension_type
 Polyhedra_Powerset<PH>::max_space_dimension() {
   return PH::max_space_dimension();
 }
@@ -113,12 +119,6 @@ inline void
 Polyhedra_Powerset<PH>::swap(Polyhedra_Powerset& y) {
   Base::swap(y);
   std::swap(space_dim, y.space_dim);
-}
-
-template <typename PH>
-inline dimension_type
-Polyhedra_Powerset<PH>::space_dimension() const {
-  return space_dim;
 }
 
 template <typename PH>
