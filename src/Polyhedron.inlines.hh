@@ -610,12 +610,12 @@ Polyhedron::shrink_bounding_box(Box& box, Complexity_Class complexity) const {
 
 template <typename PartialFunction>
 void
-Polyhedron::shuffle_dimensions(const PartialFunction& pfunc) {
+Polyhedron::shuffle_dimensions(const PartialFunction& pifunc) {
   // FIXME: this implementation is just an executable specification.
   if (space_dim == 0)
     return;
 
-  if (pfunc.has_empty_codomain()) {
+  if (pifunc.has_empty_codomain()) {
     // All dimensions vanish: the polyhedron becomes zero_dimensional.
     if (is_empty()
 	|| (has_pending_constraints()
@@ -633,7 +633,7 @@ Polyhedron::shuffle_dimensions(const PartialFunction& pfunc) {
     return;
   }
 
-  dimension_type new_space_dimension = pfunc.max_in_codomain() + 1;
+  dimension_type new_space_dimension = pifunc.max_in_codomain() + 1;
   // If there is something pending, using `generators()' we erase it.
   const GenSys& old_gensys = generators();
   GenSys new_gensys;
@@ -645,7 +645,7 @@ Polyhedron::shuffle_dimensions(const PartialFunction& pfunc) {
     for (dimension_type index = 0; index < space_dim; ++index) {
       dimension_type new_index;
       if (old_g.coefficient(Variable(index)) != 0
-	  && pfunc.maps(index, new_index)) {
+	  && pifunc.maps(index, new_index)) {
 	e += Variable(new_index)
 	  * old_g.coefficient(Variable(index));
 	all_zeroes = false;

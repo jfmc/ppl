@@ -1,7 +1,6 @@
 Urgent Things
 =============
 
-- Document Polyhedron::shuffle_dimensions().
 - Document the classes ExtendedRational, Boundary, LBoundary, UBoundary,
   and Interval.
 - Make Polyhedron::shuffle_dimensions() available trough the Prolog

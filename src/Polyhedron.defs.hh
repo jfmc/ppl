@@ -1179,14 +1179,15 @@ public:
 
   //! \brief
   //! Shuffles the dimensions of a polyhedron
-  //! according to a partial function.
+  //! according to a partial injective function.
   /*!
-    \param pfunc    The partial function specifyng the destiny
-                    of each dimension.
+    \param pifunc   The partial injective function specifyng
+                    the destiny of each dimension.
 
-    The dimensions for which \p pfunc is undefined are projected away.
+    The dimensions for which \p pifunc is undefined are projected away.
 
-    The template class PartialFunction must provide the following methods.
+    The template class PartialInjectiveFunction must provide the following
+    methods.
     \code
       bool has_empty_codomain() const
     \endcode
@@ -1204,13 +1205,18 @@ public:
     \code
       bool maps(dimension_type i, dimension_type& j) const
     \endcode
-    Let \f$f\f$ be the represented function and \f$n\f$ be the value of \p i.
-    If \f$f\f$ is defined in \f$n\f$, then \f$f(n)\f$ is assigned to \p j
-    and <CODE>true</CODE> is returned.
-    If \f$f\f$ is undefined in \f$n\f$, then <CODE>false</CODE> is returned.
+    Let \f$f\f$ be the represented function and \f$n\f$ be the value
+    of \p i.  If \f$f\f$ is defined in \f$n\f$, then \f$f(n)\f$ is
+    assigned to \p j and <CODE>true</CODE> is returned.
+    If \f$f\f$ is undefined in \f$n\f$, then <CODE>false</CODE> is
+    returned.
+
+    The result is undefined if \p pifunc does not encode a partial
+    <EM>injective</EM> function, that is, if two dimensions are mapped
+    to the same dimension.
   */
-  template <typename PartialFunction>
-  void shuffle_dimensions(const PartialFunction& pfunc);
+  template <typename PartialInjectiveFunction>
+  void shuffle_dimensions(const PartialInjectiveFunction& pifunc);
 
   //! \brief
   //! \brief Adds the constraints in \p cs to the system of constraints
