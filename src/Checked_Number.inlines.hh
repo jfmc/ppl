@@ -101,6 +101,24 @@ Checked_Number<T, Policy>::Checked_Number(const char* y) {
 
 template <typename T, typename Policy>
 inline
+Checked_Number<T, Policy>::Checked_Number(const Minus_Infinity&) {
+  Policy::handle_result(Checked::set_special<Policy>(v, VC_MINUS_INFINITY));
+}
+
+template <typename T, typename Policy>
+inline
+Checked_Number<T, Policy>::Checked_Number(const Plus_Infinity&) {
+  Policy::handle_result(Checked::set_special<Policy>(v, VC_PLUS_INFINITY));
+}
+
+template <typename T, typename Policy>
+inline
+Checked_Number<T, Policy>::Checked_Number(const Not_A_Number&) {
+  Policy::handle_result(Checked::set_special<Policy>(v, VC_NAN));
+}
+
+template <typename T, typename Policy>
+inline
 Checked_Number<T, Policy>::operator T() const {
   if (Policy::convertible)
     return v;
@@ -563,6 +581,24 @@ inline std::istream& operator>>(std::istream& is, Checked_Number<T, Policy>& x) 
   else
     Policy::handle_result(r);
   return is;
+}
+
+template <typename T>
+T
+plus_infinity() {
+  return PLUS_INFINITY;
+}
+
+template <typename T>
+T
+minus_infinity() {
+  return MINUS_INFINITY;
+}
+
+template <typename T>
+T
+not_a_number() {
+  return NOT_A_NUMBER;
 }
 
 template <typename T, typename Policy>

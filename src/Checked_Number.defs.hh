@@ -137,6 +137,10 @@ public:
   //! Direct initialization from a C string value.
   Checked_Number(const char* y);
 
+  Checked_Number(const Minus_Infinity& y);
+  Checked_Number(const Plus_Infinity& y);
+  Checked_Number(const Not_A_Number& y);
+
   //@} // Constructors
 
 
@@ -541,6 +545,18 @@ operator>>(std::istream& is, Checked_Number<T, Policy>& x);
 //@} // Input-Output Operators
 
 void throw_result_exception(Result r);
+
+template <typename T>
+T
+plus_infinity();
+
+template <typename T>
+T
+minus_infinity();
+
+template <typename T>
+T
+not_a_number();
 
 } // namespace Parma_Polyhedra_Library
 
