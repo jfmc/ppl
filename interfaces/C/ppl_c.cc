@@ -129,7 +129,7 @@ namespace {
 
 extern "C" const char*
 c_variable_default_output_function(ppl_dimension_type var) {
-  // On a 64 bits architecture, `var' will not be more than 2^64-1,
+  // On a 64-bits architecture, `var' will not be more than 2^64-1,
   // (2^64-1)/26 is written with 18 decimal digits, plus one letter,
   // plus one terminator makes 20.
 #if defined(ULLONG_MAX) && ULLONG_MAX > 18446744073709551615ULL
@@ -138,7 +138,7 @@ c_variable_default_output_function(ppl_dimension_type var) {
   static char buffer[20];
   buffer[0] = static_cast<char>('A' + var % 26);
   if (ppl_dimension_type i = var / 26) {
-    int r = sprintf(buffer+1, "%d", i);
+    int r = sprintf(buffer+1, "%u", i);
     if (r < 0)
       return 0;
     else if (r >= 19) {
