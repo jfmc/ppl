@@ -72,11 +72,8 @@ Polyhedra_Powerset<C_Polyhedron>
 ::Polyhedra_Powerset(const Polyhedra_Powerset<NNC_Polyhedron>& y)
   : space_dim(y.space_dimension()) {
   for (Polyhedra_Powerset<NNC_Polyhedron>::const_iterator i = y.begin(),
-	 y_end = y.end(); i != y_end; ++i) {
-    NNC_Polyhedron ph = i->element();
-    ph.topological_closure_assign();
-    push_back(Determinate<C_Polyhedron>(C_Polyhedron(ph)));
-  }
+	 y_end = y.end(); i != y_end; ++i)
+    push_back(Determinate<C_Polyhedron>(C_Polyhedron(i->element())));
 }
 
 template <typename PH>
