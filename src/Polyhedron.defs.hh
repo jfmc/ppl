@@ -24,6 +24,8 @@ site: http://www.cs.unipr.it/ppl/ . */
 #ifndef _Polyhedron_defs_hh
 #define _Polyhedron_defs_hh 1
 
+#include "Variable.defs.hh"
+#include "LinExpression.defs.hh"
 #include "ConSys.defs.hh"
 #include "GenSys.defs.hh"
 #include "SatMatrix.defs.hh"
@@ -188,13 +190,10 @@ namespace Parma_Polyhedra_Library {
   gs.insert(0 * x + 3 * y /= 1);
   gs.insert(3 * x + 0 * y /= 1);
   gs.insert(3 * x + 3 * y /= 1);
-  Polyhedron ph(gs);
-  size_t var = 1;
+  Polyhedron ph(gs); 
   Integer d = 1;
-  vector<Integer> coeff(3);
-  coeff[0] = 4;
-  coeff[1] = 1;
-  ph.assign_variable(var, coeff, d);
+  LinExpression coeff = x + 0*y + 4;
+  ph.assign_variable(x, coeff, d);
   \endcode
   In this example the starting polyhedron is a square in \f$\mathbb{R}^2\f$, 
   \p var is the variable \f$x\f$, the affine_expression is \f$x+4\f$,
@@ -202,9 +201,7 @@ namespace Parma_Polyhedra_Library {
   Moreover, if the affine transformation for the same variable is \f$x+y\f$
   \code
   Integer d = 1;
-  vector<Integer> coeff(3);
-  coeff[1] = 1;
-  coeff[2] = 1;
+  LinExpression coeff = x + y;
   \endcode
   the resulting polyhedron is a parallelogram with the height equal to
   the side of the square and the oblique sides parallel to the line 
@@ -213,9 +210,7 @@ namespace Parma_Polyhedra_Library {
   variable, for example \f$y\f$:
   \code
   Integer d = 1;
-  vector<Integer> coeff(3);
-  coeff[2] = 1;
-  \endcode
+  LinExpression coeff = 0*x + y;
   the resulting polyhedron is the diagonal of the square.
   
   \par Example 7
@@ -230,12 +225,9 @@ namespace Parma_Polyhedra_Library {
   cs.insert(y >= 0);
   cs.insert(y <= 3);
   Polyhedron ph(cs);
-  size_t var = 1;
   Integer d = 1;
-  vector<Integer> coeff(3);
-  coeff[0] = 4;
-  coeff[1] = 1;
-  ph.substitute_variable(var, coeff, d);
+  LinExpression coeff = x + 0*y + 4;
+  ph.substitute_variable(x, coeff, d);
   \endcode
   In this example the starting polyhedron, \p var and the affine 
   expression are the same of the previous example, while the resulting
@@ -244,9 +236,7 @@ namespace Parma_Polyhedra_Library {
   Moreover, if the affine transformation for the same variable is \f$x+y\f$
   \code
   Integer d = 1;
-  vector<Integer> coeff(3);
-  coeff[1] = 1;
-  coeff[2] = 1;
+  LinExpression coeff = x + y;
   \endcode
   the resulting polyhedron is a parallelogram with the height equal to
   the side of the square and the oblique sides parallel to the line 
@@ -255,8 +245,7 @@ namespace Parma_Polyhedra_Library {
   variable, for example \f$y\f$:
   \code
   Integer d = 1;
-  vector<Integer> coeff(3);
-  coeff[2] = 1;
+  LinExpression coeff = 0*x + y;
   \endcode
   the resulting polyhedron is a line that corresponds to the axis \f$y\f$.
 */
@@ -326,12 +315,12 @@ public:
   void insert(const Generator& g);
 
   //! Assigns an affine expression to the specified variable.
-  void assign_variable(size_t var,
-		       std::vector<Integer>& coefficient,
+  void assign_variable(const Variable& var, 
+		       const LinExpression& coefficient,
 		       Integer& denominator);
   //! Substitute an affine expression to the specified variable.
-  void substitute_variable(size_t var,
-			   std::vector<Integer>& coefficient,
+  void substitute_variable(const Variable& var,
+			   const LinExpression& coefficient,
 			   Integer& denominator);
 
 #ifndef NDEBUG

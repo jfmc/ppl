@@ -1201,31 +1201,32 @@ PPL::operator >>(std::istream& s, PPL::Polyhedron& p) {
   - symmetries.
 */
 void
-PPL::Polyhedron::assign_variable(size_t var,
-				 std::vector<Integer>& coefficient,
+PPL::Polyhedron::assign_variable(const Variable& var,
+				 const LinExpression& coefficient,
 				 Integer& denominator) {
   Polyhedron& x = *this;
   size_t num_columns = x.gen_sys.num_columns();
-  // The first position in coefficient is the inhomogeneous term.
-  assert(var != 0);
+  size_t num_var = var.id() + 1;
   assert(num_columns == coefficient.size());
   assert(denominator != 0);
   // Index of var must be in the range of the variables of generators.
-  assert(var < num_columns);
+  assert(num_var < num_columns);
   
-  if (coefficient[var] != 0) {
+  if (coefficient[num_var] != 0) {
     // The transformation is invertible.
     if (generators_are_up_to_date())
-      x.gen_sys.assign_variable(var, coefficient, denominator);
+      x.gen_sys.assign_variable(num_var, coefficient, denominator);
     if (constraints_are_up_to_date()) {
+      LinExpression inverse = coefficient;
+      cout << "INVERSE" << endl;
       // For the observation the inverse transformation can be 
       // obtained swapping `denominator' with `a[var]' in the initial 
       // transformation and making the necessary sign changes.
-      std::swap(coefficient[var], denominator);
+      std::swap(inverse[num_var], denominator);
       for (size_t i = 0; i < num_columns; ++i)
-	if (i != var)
-	  coefficient[i].negate();
-      x.con_sys.substitute_variable(var, coefficient, denominator);
+	if (i != num_var)
+	  inverse[i].negate();
+      x.con_sys.substitute_variable(num_var, inverse, denominator);
     }
     x.clear_constraints_minimized();
     x.clear_generators_minimized();
@@ -1234,7 +1235,7 @@ PPL::Polyhedron::assign_variable(size_t var,
   else {
     if (!generators_are_up_to_date())
       x.minimize();
-    x.gen_sys.assign_variable(var, coefficient, denominator);
+    x.gen_sys.assign_variable(num_var, coefficient, denominator);
     x.clear_constraints_up_to_date();
     x.clear_generators_minimized();
   }
@@ -1307,30 +1308,30 @@ PPL::Polyhedron::assign_variable(size_t var,
   \f]
 */
 void
-PPL::Polyhedron::substitute_variable(size_t var,
-				     std::vector<Integer>& coefficient,
+PPL::Polyhedron::substitute_variable(const Variable& var,
+				     const LinExpression& coefficient,
 				     Integer& denominator) {
   Polyhedron& x = *this;
   size_t num_columns = x.con_sys.num_columns();
-  // The first position in coefficient is the inhomogeneous term.
-  assert(var != 0);
+  size_t num_var = var.id() + 1;
   assert(num_columns == coefficient.size());
   assert(denominator != 0);
-  assert(var < num_columns);
+  assert(num_var < num_columns);
 
   // The transformation is invertible.
-  if (coefficient[var] != 0) {
+  if (coefficient[num_var] != 0) {
     if (constraints_are_up_to_date())
-      x.con_sys.substitute_variable(var, coefficient, denominator);
+      x.con_sys.substitute_variable(num_var, coefficient, denominator);
     if (generators_are_up_to_date()) {
+      LinExpression inverse = coefficient;
       // For the observation, the inverse transformation can be 
       // obtained swapping `denominator' with `a[var]' in the initial 
       // transformation and making the necessary sign changes.
-      std::swap(coefficient[var], denominator);
+      std::swap(inverse[num_var], denominator);
       for (size_t i = 0; i < num_columns; ++i)
-	if (i != var)
-	  coefficient[i].negate();
-      x.gen_sys.assign_variable(var, coefficient, denominator);
+	if (i != num_var)
+	  inverse[i].negate();
+      x.gen_sys.assign_variable(num_var, inverse, denominator);
     }
     x.clear_constraints_minimized();
     x.clear_generators_minimized();
@@ -1339,7 +1340,7 @@ PPL::Polyhedron::substitute_variable(size_t var,
   else {
     if (!constraints_are_up_to_date())
       x.minimize();
-    x.con_sys.substitute_variable(var, coefficient, denominator);
+    x.con_sys.substitute_variable(num_var, coefficient, denominator);
     x.clear_generators_up_to_date();
     x.clear_constraints_minimized();
   }
