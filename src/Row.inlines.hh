@@ -203,7 +203,8 @@ Row_Impl_Handler::~Row_Impl_Handler() {
 }
 
 inline
-Row::Row() {
+Row::Row()
+  : Row_Impl_Handler() {
 }
 
 inline void
@@ -261,12 +262,14 @@ Row::construct(const dimension_type sz, const Flags f) {
 inline
 Row::Row(const dimension_type sz,
 	 const dimension_type capacity,
-	 const Flags f) {
+	 const Flags f)
+  : Row_Impl_Handler() {
   construct(sz, capacity, f);
 }
 
 inline
-Row::Row(const dimension_type sz, const Flags f) {
+Row::Row(const dimension_type sz, const Flags f)
+  : Row_Impl_Handler() {
   construct(sz, f);
 }
 
@@ -274,14 +277,15 @@ inline
 Row::Row(const Row& y)
   : Row_Impl_Handler() {
   if (y.impl) {
-    allocate(compute_capacity(y.size(), Row::max_size()), y.flags());
+    allocate(compute_capacity(y.size(), max_size()), y.flags());
     copy_construct_coefficients(y);
   }
 }
 
 inline
 Row::Row(const Row& y,
-	 const dimension_type capacity) {
+	 const dimension_type capacity)
+  : Row_Impl_Handler() {
   assert(y.impl);
   assert(y.size() <= capacity && capacity <= max_size());
   allocate(capacity, y.flags());
@@ -291,7 +295,8 @@ Row::Row(const Row& y,
 inline
 Row::Row(const Row& y,
 	 const dimension_type sz,
-	 const dimension_type capacity) {
+	 const dimension_type capacity)
+  : Row_Impl_Handler() {
   assert(y.impl);
   assert(y.size() <= sz && sz <= capacity && capacity <= max_size());
   allocate(capacity, y.flags());
