@@ -1,3 +1,2243 @@
+2002-07-01 Monday 16:54  Roberto Bagnara <bagnara@cs.unipr.it>
+
+	* config.guess (1.11), config.sub (1.10), ltmain.sh (1.5): Updated.
+
+2002-07-01 Monday 08:02  Roberto Bagnara <bagnara@cs.unipr.it>
+
+	* NEWS (1.27): Updated.
+
+2002-06-30 Sunday 22:39  Roberto Bagnara <bagnara@cs.unipr.it>
+
+	* STANDARDS (1.4): Use the same form of headings.
+
+2002-06-30 Sunday 22:37  Roberto Bagnara <bagnara@cs.unipr.it>
+
+	* README (1.12): Mention the support for NNC polyhedra.  Updated
+	for PPL 0.4.  Organization of source distributions updated.
+
+2002-06-30 Sunday 22:08  Patricia M. Hill <hill@comp.leeds.ac.uk>
+
+	* interfaces/Prolog/GNU/ppl_gprolog.pl (1.16): Bug fixed in
+	limited_H79_widening_assign.
+
+2002-06-30 Sunday 21:15  Roberto Bagnara <bagnara@cs.unipr.it>
+
+	* ppl.spec.in (1.15): Mention not necessarily closed convex
+	polyhedra in the main %description.
+
+2002-06-30 Sunday 20:21  Roberto Bagnara <bagnara@cs.unipr.it>
+
+	* interfaces/Prolog/: check_script (1.3), expected (1.2): Test
+	ack.clpq with the easier query `?- ack(2, 1, Z).'.
+
+2002-06-30 Sunday 20:15  Roberto Bagnara <bagnara@cs.unipr.it>
+
+	* Watchdog/: Watchdog.defs.hh (1.5), Watchdog.inlines.hh (1.4):
+	Implementation of inline functions moved to Watchdog.inlines.hh.
+
+2002-06-30 Sunday 17:08  Roberto Bagnara <bagnara@cs.unipr.it>
+
+	* Watchdog/ChangeLog (1.2): This file will no longer be empty.
+
+2002-06-30 Sunday 15:21  Roberto Bagnara <bagnara@cs.unipr.it>
+
+	* configure.ac (1.51), Watchdog/configure.ac (1.8): Invocations to
+	AC_PROG_* macros repositioned.
+
+2002-06-30 Sunday 15:20  Roberto Bagnara <bagnara@cs.unipr.it>
+
+	* src/Generator.defs.hh (1.69): Friend declaration split
+	differently.
+
+2002-06-30 Sunday 15:17  Roberto Bagnara <bagnara@cs.unipr.it>
+
+	* Watchdog/: Watchdog.defs.hh (1.4), Watchdog.inlines.hh (1.3): Use
+	methods instead of friends for binary operators over Time.
+
+2002-06-30 Sunday 12:40  Roberto Bagnara <bagnara@cs.unipr.it>
+
+	* interfaces/Prolog/: GNU/.cvsignore (1.4), SICStus/.cvsignore
+	(1.4), SWI/.cvsignore (1.4), YAP/.cvsignore (1.4): Added files to
+	be ignored.
+
+2002-06-30 Sunday 12:37  Roberto Bagnara <bagnara@cs.unipr.it>
+
+	* interfaces/: C/lpenum/.cvsignore (1.3), Prolog/Ciao/.cvsignore
+	(1.3), Prolog/GNU/.cvsignore (1.3), Prolog/SICStus/.cvsignore
+	(1.3), Prolog/YAP/.cvsignore (1.3): For those building in the
+	sources' directory.
+
+2002-06-30 Sunday 10:38  Roberto Bagnara <bagnara@cs.unipr.it>
+
+	* configure.ac (1.50): Make building shared libraries the default.
+
+2002-06-30 Sunday 09:39  Roberto Bagnara <bagnara@cs.unipr.it>
+
+	* interfaces/C/lpenum/: Makefile.am (1.9), expected (1.2): Make
+	sure `make check' can succeed: distribute `expected' and produce
+	`obtained' so that it contains only the basenames of the MPS files.
+
+2002-06-30 Sunday 01:19  Roberto Bagnara <bagnara@cs.unipr.it>
+
+	* interfaces/C/lpenum/: Makefile.am (1.8), expected (1.1), lpenum.c
+	(1.11): Enable `make check'.
+
+2002-06-29 Saturday 21:44  Patricia M. Hill <hill@comp.leeds.ac.uk>
+
+	* interfaces/Prolog/: Prolog_interface.dox (1.60), ppl_prolog.icc
+	(1.60), Ciao/ppl_ciao.pl (1.18), GNU/ppl_gprolog.pl (1.15),
+	SICStus/ppl_sicstus_sd.cc (1.22), SWI/ppl_swiprolog.cc (1.46),
+	YAP/ppl_yap.cc (1.38): Added documentation for Prolog interface
+	predicates bounds from above/below and moved definitions to follow
+	that of is_bounded.
+
+2002-06-29 Saturday 19:15  Roberto Bagnara <bagnara@cs.unipr.it>
+
+	* interfaces/C/lpenum/lpenum.c (1.10): Options --max-cpu,
+	--max-memory and --output implemented.	Options --minimize and
+	--maximize renamed --min and --max to match the options of
+	`glpsol'.
+
+2002-06-29 Saturday 19:13  Roberto Bagnara <bagnara@cs.unipr.it>
+
+	* interfaces/C/lpenum/Makefile.am (1.7): Add ex1.mps and
+	unboundedmin.mps to MPS_FILES.
+
+2002-06-29 Saturday 14:38  Patricia M. Hill <hill@comp.leeds.ac.uk>
+
+	* interfaces/Prolog/: pl_check.pl (1.19), ppl_prolog.icc (1.59),
+	Ciao/ppl_ciao.pl (1.17), GNU/ppl_gprolog.pl (1.14),
+	SICStus/ppl_sicstus_sd.cc (1.21), SWI/ppl_swiprolog.cc (1.45),
+	YAP/ppl_yap.cc (1.37): Predicates for bounds_from_above/below added
+	to Prolog interface.
+
+2002-06-29 Saturday 08:24  Roberto Bagnara <bagnara@cs.unipr.it>
+
+	* interfaces/C/lpenum/lpenum.c (1.9): Correctly check whether the
+	given problem is unbounded.
+
+2002-06-29 Saturday 08:23  Roberto Bagnara <bagnara@cs.unipr.it>
+
+	* interfaces/C/: ppl_c.cc (1.41), ppl_c.h (1.37): Added
+	ppl_Polyhedron_bounds_from_above() and
+	ppl_Polyhedron_bounds_from_below().
+
+2002-06-29 Saturday 08:21  Roberto Bagnara <bagnara@cs.unipr.it>
+
+	* src/: Polyhedron.cc (1.192), Polyhedron.defs.hh (1.132),
+	Polyhedron.inlines.hh (1.39): Added bool bounds_from_above(const
+	LinExpression&) const and bool bounds_from_below(const
+	LinExpression&) const: both are implemented in terms of the new
+	bool bounds(const LinExpression& expr, bool from_above) const.
+
+2002-06-29 Saturday 08:19  Roberto Bagnara <bagnara@cs.unipr.it>
+
+	* interfaces/C/lpenum/unboundedmin.mps (1.1): Very simple problem
+	without a minimum.
+
+2002-06-29 Saturday 08:16  Roberto Bagnara <bagnara@cs.unipr.it>
+
+	* interfaces/C/lpenum/ex1.mps (1.1): New example problem.
+
+2002-06-28 Friday 22:07  Roberto Bagnara <bagnara@cs.unipr.it>
+
+	* src/Polyhedron.cc (1.191): Polyhedron::is_bounded() improved.
+
+2002-06-28 Friday 22:05  Roberto Bagnara <bagnara@cs.unipr.it>
+
+	* interfaces/Prolog/: clpq2.pl (1.21), expected2 (1.5): Undo the
+	changes corresponding to the last two commits of clpq2.pl and to
+	the last commit of expected2.
+
+2002-06-28 Friday 17:06  Patricia M. Hill <hill@comp.leeds.ac.uk>
+
+	* interfaces/Prolog/: clpq2.pl (1.20), expected2 (1.4): Updated the
+	expected2 file to match current clpq2.pl clpq2.pl has a minor bug
+	fixed when writing equality bindings that were not included as
+	constraints (this does not affect the results of the
+	check_script2).
+
+2002-06-28 Friday 09:09  Roberto Bagnara <bagnara@cs.unipr.it>
+
+	* tests/: memory1.cc (1.5), timings.cc (1.2): Improved error
+	handling.
+
+2002-06-28 Friday 09:03  Roberto Bagnara <bagnara@cs.unipr.it>
+
+	* tests/memory1.cc (1.4): Cleaned and improved error handling.
+
+2002-06-27 Thursday 09:38  Enea Zaffanella <zaffanella@cs.unipr.it>
+
+	* src/ConSys.defs.hh (1.60), src/ConSys.inlines.hh (1.22),
+	src/GenSys.defs.hh (1.74), src/GenSys.inlines.hh (1.24),
+	tests/NNCminimize1.cc (1.4), tests/NNCminimize2.cc (1.4),
+	tests/NNCminimize3.cc (1.4), tests/NNCminimize4.cc (1.6): Added
+	public method clear() to ConSys and GenSys.  Added a FIXME comment
+	to NNCminimize* tests.
+
+2002-06-27 Thursday 09:22  Roberto Bagnara <bagnara@cs.unipr.it>
+
+	* src/: ConSys.defs.hh (1.59), ConSys.inlines.hh (1.21),
+	Constraint.defs.hh (1.65), Constraint.inlines.hh (1.37),
+	GenSys.defs.hh (1.73), GenSys.inlines.hh (1.23), Generator.defs.hh
+	(1.68), Generator.inlines.hh (1.34), LinExpression.defs.hh (1.47),
+	LinExpression.inlines.hh (1.20): Added several versions of swap()
+	to cope with the private inheritance problems caused by the
+	departure of PPL_HIDDEN.
+
+2002-06-27 Thursday 08:20  Roberto Bagnara <bagnara@cs.unipr.it>
+
+	* src/Generator.inlines.hh (1.33): Avoid redefinition of default
+	arguments.
+
+2002-06-26 Wednesday 19:24  Roberto Bagnara <bagnara@cs.unipr.it>
+
+	* src/: GenSys.cc (1.57), GenSys.defs.hh (1.72): Added
+	std::ostream& operator<<(std::ostream&, const GenSys&) and
+	std::istream& operator>>(std::istream&, GenSys&).
+
+2002-06-26 Wednesday 19:11  Roberto Bagnara <bagnara@cs.unipr.it>
+
+	* src/: ConSys.cc (1.38), ConSys.defs.hh (1.58), Matrix.cc (1.39):
+	Added std::ostream& operator<<(std::ostream&, const ConSys&) and
+	std::istream& operator>>(std::istream&, ConSys&).
+
+2002-06-26 Wednesday 18:55  Roberto Bagnara <bagnara@cs.unipr.it>
+
+	* doc/devref-browse.doxyconf-latex.in (1.20),
+	doc/devref-print.doxyconf-latex.in (1.20),
+	doc/devref.doxyconf-html.in (1.21), interfaces/C/Makefile.am
+	(1.10), interfaces/C/ppl_c.cc (1.40),
+	interfaces/Prolog/Ciao/Makefile.am (1.7),
+	interfaces/Prolog/GNU/Makefile.am (1.23),
+	interfaces/Prolog/SICStus/Makefile.am (1.28),
+	interfaces/Prolog/SWI/Makefile.am (1.25),
+	interfaces/Prolog/YAP/Makefile.am (1.15), src/ConSys.defs.hh
+	(1.57), src/Constraint.defs.hh (1.64), src/GenSys.defs.hh (1.71),
+	src/Generator.defs.hh (1.67), src/LinExpression.defs.hh (1.46),
+	src/Makefile.am (1.44), src/Poly_Con_Relation.defs.hh (1.9),
+	src/Poly_Gen_Relation.defs.hh (1.8), src/ppl_filter_doxygen.sed
+	(1.3), src/ppl_filter_install.sed (1.3): PPL_HIDDEN has gone.
+
+2002-06-26 Wednesday 18:32  Patricia M. Hill <hill@comp.leeds.ac.uk>
+
+	* src/: ConSys.defs.hh (1.56), Constraint.defs.hh (1.63),
+	GenSys.defs.hh (1.70): Minor improvements to comments (just
+	English).
+
+2002-06-26 Wednesday 18:12  Roberto Bagnara <bagnara@cs.unipr.it>
+
+	* src/: Generator.defs.hh (1.66), Generator.inlines.hh (1.32),
+	Makefile.am (1.43): Added new shorthand non-member functions for
+	creting generators: Generator line(const LinExpression&), Generator
+	ray(const LinExpression&), Generator point(const LinExpression&,
+	const Integer&), Generator closure_point(const LinExpression&,
+	const Integer&).
+
+2002-06-26 Wednesday 18:10  Roberto Bagnara <bagnara@cs.unipr.it>
+
+	* interfaces/: C/ppl_c.cc (1.39), Prolog/ppl_prolog.icc (1.58): Use
+	the new static members of Generator to construct generatos.
+
+2002-06-26 Wednesday 15:44  Enea Zaffanella <zaffanella@cs.unipr.it>
+
+	* src/LinExpression.defs.hh (1.45): Removed spurious duplicated
+	declaration (was already commented out).
+
+2002-06-26 Wednesday 15:33  Roberto Bagnara <bagnara@cs.unipr.it>
+
+	* src/: Row.cc (1.40), Row.defs.hh (1.50), globals.cc (1.8),
+	globals.hh (1.19): const Integer& operator*(const Constraint&,
+	const Generator&) and const Integer& reduced_scalar_product(const
+	Constraint&, const Generator&) moved from Row.* to globals.*.
+
+2002-06-26 Wednesday 14:55  Enea Zaffanella <zaffanella@cs.unipr.it>
+
+	* src/: Constraint.defs.hh (1.62), Generator.cc (1.35),
+	Generator.defs.hh (1.65), LinExpression.defs.hh (1.44), Makefile.am
+	(1.42), Polyhedron.cc (1.190), Row.cc (1.39), Row.defs.hh (1.49):
+	Started getting rid of preprocessing flag PPL_HIDDEN (work still in
+	progress - build broken).
+
+2002-06-26 Wednesday 14:51  Enea Zaffanella <zaffanella@cs.unipr.it>
+
+	* src/: ConSys.defs.hh (1.55), GenSys.defs.hh (1.69): Input and
+	output operator for Polyhedron made friends of ConSys and GenSys.
+
+2002-06-26 Wednesday 14:48  Enea Zaffanella <zaffanella@cs.unipr.it>
+
+	* src/ConSys.cc (1.37): Comment alignment fixed.
+
+2002-06-26 Wednesday 08:59  Patricia M. Hill <hill@comp.leeds.ac.uk>
+
+	* doc/definitions.dox (1.87): Improved and corrected affine image
+	paragraph.
+
+2002-06-25 Tuesday 16:35  Patricia M. Hill <hill@comp.leeds.ac.uk>
+
+	* doc/definitions.dox (1.86): More improvements to paragraph on
+	affine image operations.
+
+2002-06-25 Tuesday 16:16  Enea Zaffanella <zaffanella@cs.unipr.it>
+
+	* doc/definitions.dox (1.85): For uniformity, using \cQ instead of
+	\cP' in the section about widening.
+
+2002-06-25 Tuesday 16:11  Enea Zaffanella <zaffanella@cs.unipr.it>
+
+	* doc/definitions.dox (1.84): Improved the section about
+	addition/removal of space dimensions.
+
+2002-06-25 Tuesday 16:10  Enea Zaffanella <zaffanella@cs.unipr.it>
+
+	* src/Polyhedron.defs.hh (1.131): The documentation for the swap
+	function on Polyhedron objects now appears in the user manuals too.
+
+2002-06-25 Tuesday 15:15  Roberto Bagnara <bagnara@cs.unipr.it>
+
+	* src/Polyhedron.types.hh (1.3): Added comments to `namespace std'.
+
+2002-06-25 Tuesday 15:07  Patricia M. Hill <hill@comp.leeds.ac.uk>
+
+	* doc/definitions.dox (1.83): Added more on an affine preimage.
+
+2002-06-25 Tuesday 15:03  Roberto Bagnara <bagnara@cs.unipr.it>
+
+	* Watchdog/.cvsignore (1.3), src/.cvsignore (1.6), tests/.cvsignore
+	(1.5): For those building in the sources' directory.
+
+2002-06-25 Tuesday 15:01  Enea Zaffanella <zaffanella@cs.unipr.it>
+
+	* doc/definitions.dox (1.82): Added formal definition of the
+	time-elapse operator.
+
+2002-06-25 Tuesday 14:16  Patricia M. Hill <hill@comp.leeds.ac.uk>
+
+	* doc/definitions.dox (1.81): Changed rows and columns round in the
+	affine paragraph.
+
+2002-06-25 Tuesday 14:10  Enea Zaffanella <zaffanella@cs.unipr.it>
+
+	* doc/definitions.dox (1.80), src/Polyhedron.defs.hh (1.130):
+	Adding some references to the introduction to the documentation of
+	operators.
+
+2002-06-25 Tuesday 14:09  Enea Zaffanella <zaffanella@cs.unipr.it>
+
+	* doc/: devref-browse.doxyconf-latex.in (1.19),
+	devref-print.doxyconf-latex.in (1.19), devref.doxyconf-html.in
+	(1.20): No longer including the second part of the introduction in
+	the devref's manuals, since it is not up-to-date.
+
+2002-06-25 Tuesday 13:50  Patricia M. Hill <hill@comp.leeds.ac.uk>
+
+	* doc/definitions.dox (1.79): Examples added to explanation of
+	affine image operator.
+
+2002-06-25 Tuesday 13:26  Patricia M. Hill <hill@comp.leeds.ac.uk>
+
+	* doc/definitions.dox (1.78): Started explaining the affine
+	operators.
+
+2002-06-25 Tuesday 12:00  Enea Zaffanella <zaffanella@cs.unipr.it>
+
+	* doc/definitions.dox (1.77), src/Polyhedron.defs.hh (1.129): In
+	the widening and poly-difference comments, using the \anchor
+	doxygen command to link to a specific paragraph of the
+	introduction.
+
+2002-06-25 Tuesday 11:34  Enea Zaffanella <zaffanella@cs.unipr.it>
+
+	* src/Polyhedron.defs.hh (1.128): A few docuemntation errors
+	corrected.  Added a note about methods ending in _and_minimize(),
+	to explain the menaing of their return value. From all of their
+	brief doxygen comments, moved the corresponding sentence on their
+	return value, which is now placed in the detailed doxygen comment,
+	using the \return command.
+
+2002-06-25 Tuesday 11:25  Patricia M. Hill <hill@comp.leeds.ac.uk>
+
+	* doc/definitions.dox (1.76): Renamed variables in example in
+	paragraph wrt adding dimensions.
+
+2002-06-25 Tuesday 11:08  Patricia M. Hill <hill@comp.leeds.ac.uk>
+
+	* interfaces/Prolog/clpq2.pl (1.19): Improved version of clpq2.pl: 
+	    - Code formatting corrected;    - Unused predicate definitions
+	removed;	 - Predicates renamed to match functionality;	 -
+	Much more efficient as it projects unwanted dimensions away;  -
+	Allows input variables to bind to Herbrand terms;     - Allows
+	integer expressions as input (eg fib(2, X+1)).
+
+2002-06-25 Tuesday 10:38  Patricia M. Hill <hill@comp.leeds.ac.uk>
+
+	* doc/definitions.dox (1.75): Added paragraphs on adding and
+	removing dimensions.
+
+2002-06-25 Tuesday 08:57  Patricia M. Hill <hill@comp.leeds.ac.uk>
+
+	* interfaces/Prolog/pl_check.pl (1.18): More tidying of the tests.
+
+2002-06-25 Tuesday 08:48  Roberto Bagnara <bagnara@cs.unipr.it>
+
+	* configure.ac (1.49): Version number bumped.
+
+2002-06-25 Tuesday 08:47  Patricia M. Hill <hill@comp.leeds.ac.uk>
+
+	* src/: ConSys.cc (1.36), Generator.defs.hh (1.64), Polyhedron.cc
+	(1.189), Polyhedron.defs.hh (1.127), conversion.cc (1.29): In all
+	files, changed reference to Introduction to the relevant section. 
+	In Polyhedron.defs.hh:	 - A few minor changes to English
+	expressions.   - An x_1 changed to y.
+
+2002-06-25 Tuesday 08:13  Roberto Bagnara <bagnara@cs.unipr.it>
+
+	* NEWS (1.26), doc/definitions.dox (1.74), interfaces/C/ppl_c.cc
+	(1.38), interfaces/C/ppl_c.h (1.36),
+	interfaces/Prolog/Prolog_interface.dox (1.59),
+	interfaces/Prolog/pl_check.pl (1.17),
+	interfaces/Prolog/ppl_prolog.icc (1.57),
+	interfaces/Prolog/Ciao/ppl_ciao.pl (1.16),
+	interfaces/Prolog/GNU/ppl_gprolog.pl (1.13),
+	interfaces/Prolog/SICStus/ppl_sicstus_sd.cc (1.20),
+	interfaces/Prolog/SWI/ppl_swiprolog.cc (1.44),
+	interfaces/Prolog/YAP/ppl_yap.cc (1.36), src/Polyhedron.cc (1.188),
+	src/Polyhedron.defs.hh (1.126), tests/.cvsignore (1.4),
+	tests/Makefile.am (1.79), tests/exceptions1.cc (1.10),
+	tests/h79widening1.cc (1.1), tests/h79widening2.cc (1.1),
+	tests/h79widening3.cc (1.1), tests/limitedh79widening1.cc (1.1),
+	tests/limitedh79widening2.cc (1.1), tests/limitedwideningcc921.cc
+	(1.2), tests/limitedwideningcc922.cc (1.2), tests/permute.cc
+	(1.18), tests/wideningcc921.cc (1.3), tests/wideningcc922.cc (1.3),
+	tests/wideningcc923.cc (1.2): The widening is now called H79 not to
+	confuse the user.
+
+2002-06-25 Tuesday 06:39  Roberto Bagnara <bagnara@cs.unipr.it>
+
+	* ppl.spec.in (1.14): %files section for gprolog package fixed.
+
+2002-06-24 Monday 23:16  Roberto Bagnara <bagnara@cs.unipr.it>
+
+	* ppl.spec.in (1.13): %files section fixed for the yap package.
+
+2002-06-24 Monday 22:35  Roberto Bagnara <bagnara@cs.unipr.it>
+
+	* interfaces/Prolog/YAP/Makefile.am (1.14): Do not forget
+	yap_clpq2.pl.
+
+2002-06-24 Monday 21:47  Roberto Bagnara <bagnara@cs.unipr.it>
+
+	* interfaces/Prolog/Prolog_interface.dox (1.58): Should now contain
+	all the information need to use the Prolog interface.
+
+2002-06-24 Monday 18:16  Enea Zaffanella <zaffanella@cs.unipr.it>
+
+	* src/: Polyhedron.cc (1.187), Polyhedron.defs.hh (1.125): The
+	detailed comments about class Polyhedron improved.  Better marking
+	the start of detailed doxygen sections in the documentation of
+	Polyhedron methods (using /*! ... */ instead of multi-line //!). 
+	Adjusted a couple of old comments saying that the return value of
+	minimize() was `true' when the polyhedron is found to be empty.
+
+2002-06-24 Monday 17:59  Roberto Bagnara <bagnara@cs.unipr.it>
+
+	* interfaces/Prolog/GNU/Makefile.am (1.22): Added definitions for
+	libppl_gprolog_la_LIBADD and libppl_gprolog_la_LDFLAGS.
+
+2002-06-24 Monday 17:58  Roberto Bagnara <bagnara@cs.unipr.it>
+
+	* ppl.spec.in (1.12): The %files sections of each package are now
+	complete.
+
+2002-06-24 Monday 17:57  Roberto Bagnara <bagnara@cs.unipr.it>
+
+	* interfaces/Prolog/Prolog_interface.dox (1.57): Dealt with the
+	issue of initialization and finalization.
+
+2002-06-24 Monday 17:24  Roberto Bagnara <bagnara@cs.unipr.it>
+
+	* interfaces/Prolog/GNU/Makefile.am (1.21): Install also
+	ppl_gprolog.pl.
+
+2002-06-24 Monday 17:23  Roberto Bagnara <bagnara@cs.unipr.it>
+
+	* interfaces/Prolog/Prolog_interface.dox (1.56): Reorganization
+	started.
+
+2002-06-24 Monday 15:47  Patricia M. Hill <hill@comp.leeds.ac.uk>
+
+	* NEWS (1.25), STANDARDS (1.3): Minor spelling/grammar corrections.
+
+2002-06-24 Monday 15:21  Enea Zaffanella <zaffanella@cs.unipr.it>
+
+	* src/: Polyhedron.defs.hh (1.124), Polyhedron.inlines.hh (1.38):
+	Adding short doxygen comment to Polyhedron related functions.
+
+2002-06-24 Monday 15:20  Roberto Bagnara <bagnara@cs.unipr.it>
+
+	* interfaces/C/lpenum/lpenum.c (1.8): Output improved.
+
+2002-06-24 Monday 14:57  Enea Zaffanella <zaffanella@cs.unipr.it>
+
+	* STANDARDS (1.2): Sketching the first rules to obtain a somewhat
+	standard Doxygen documentation style.
+
+2002-06-24 Monday 14:37  Roberto Bagnara <bagnara@cs.unipr.it>
+
+	* src/Polyhedron.cc (1.186): Polyhedron::remove_dimensions() fixed.
+
+2002-06-24 Monday 14:11  Roberto Bagnara <bagnara@cs.unipr.it>
+
+	* tests/removedim6.cc (1.6): This test was carefully written so as
+	to cover a bug in the library: fixed.
+
+2002-06-24 Monday 13:07  Patricia M. Hill <hill@comp.leeds.ac.uk>
+
+	* interfaces/Prolog/clpq2.pl (1.18): Final delete_Polyhedron for Q
+	now replaced by cleanup call and by adding polyhedron Q to list of
+	used polyhedra in head of solve_query.
+
+2002-06-24 Monday 13:05  Enea Zaffanella <zaffanella@cs.unipr.it>
+
+	* src/: Polyhedron.cc (1.185), Polyhedron.defs.hh (1.123): Going on
+	enforcing new rules on doxygen comments of class Polyhedron.
+
+2002-06-24 Monday 12:51  Patricia M. Hill <hill@comp.leeds.ac.uk>
+
+	* interfaces/Prolog/pl_check.pl (1.16): Improved layout and
+	comments.  Simplified and renamed some tests while adding others.
+
+2002-06-24 Monday 12:25  Roberto Bagnara <bagnara@cs.unipr.it>
+
+	* interfaces/C/lpenum/lpenum.c (1.7): Added the test for
+	unboundedness.	Progress in cleaning and completing this program.
+
+2002-06-24 Monday 12:23  Roberto Bagnara <bagnara@cs.unipr.it>
+
+	* Watchdog/configure.ac (1.7): Fixed typo in a comment.
+
+2002-06-24 Monday 12:23  Roberto Bagnara <bagnara@cs.unipr.it>
+
+	* configure.ac (1.48): Effectively disable the
+	interface/Prolog/Ciao directory.
+
+2002-06-24 Monday 11:07  Enea Zaffanella <zaffanella@cs.unipr.it>
+
+	* src/: ConSys.defs.hh (1.54), GenSys.defs.hh (1.68),
+	Generator.defs.hh (1.63): Added examples to ConSys and GenSys
+	documentation using strict inequalities and closure points.
+	Improved terminology note point/vertex in Generator.
+
+2002-06-24 Monday 11:05  Enea Zaffanella <zaffanella@cs.unipr.it>
+
+	* src/Poly_Con_Relation.defs.hh (1.8): Missing full stop added.
+
+2002-06-24 Monday 08:48  Roberto Bagnara <bagnara@cs.unipr.it>
+
+	* interfaces/Prolog/SWI/Makefile.am (1.24): Distribute also
+	ppl_swiprolog.pl.
+
+2002-06-24 Monday 00:22  Enea Zaffanella <zaffanella@cs.unipr.it>
+
+	* src/: Polyhedron.cc (1.184), Polyhedron.defs.hh (1.122),
+	Polyhedron.inlines.hh (1.37): Started uniformizing doxygen comments
+	of class Polyehdron according to new rules.
+
+2002-06-24 Monday 00:21  Enea Zaffanella <zaffanella@cs.unipr.it>
+
+	* src/: ConSys.inlines.hh (1.20), GenSys.inlines.hh (1.22),
+	LinExpression.inlines.hh (1.19), Row.inlines.hh (1.27),
+	SatMatrix.inlines.hh (1.13), SatRow.inlines.hh (1.16): Relating
+	std::swap functions to the corresponding classes.
+
+2002-06-23 Sunday 22:23  Enea Zaffanella <zaffanella@cs.unipr.it>
+
+	* src/Row.defs.hh (1.48): Surrounding the   #define
+	EXTRA_NORMALIZATION 0 with   #ifndef EXTRA_NORMALIZATION.
+
+2002-06-23 Sunday 22:18  Roberto Bagnara <bagnara@cs.unipr.it>
+
+	* interfaces/Prolog/: Prolog_interface.dox (1.55), ppl_prolog.icc
+	(1.56), Ciao/ppl_ciao.cc (1.11), GNU/ppl_gprolog_sd.cc (1.6),
+	SICStus/ppl_sicstus_sd.cc (1.19), SWI/Makefile.am (1.23),
+	SWI/ppl_swiprolog.cc (1.43), SWI/ppl_swiprolog.pl (1.1),
+	YAP/Makefile.am (1.13), YAP/ppl_yap.cc (1.35): Avoid unnecessary
+	differences in the implementation of the various Prolog interfaces.
+	 Hook ppl_Prolog_sysdep_deinit() added.
+
+2002-06-23 Sunday 22:16  Enea Zaffanella <zaffanella@cs.unipr.it>
+
+	* src/: ConSys.cc (1.35), ConSys.defs.hh (1.53), GenSys.cc (1.56),
+	Matrix.cc (1.38), Matrix.defs.hh (1.28), Matrix.inlines.hh (1.24):
+	Fixed doxygen comments in class Matrix.  Changed raw output methods
+	get() and print() to also read/write information about topology.
+	Changed the corresponding methods of ConSys and GenSys so that they
+	no longer output this information.
+
+2002-06-23 Sunday 18:33  Enea Zaffanella <zaffanella@cs.unipr.it>
+
+	* src/: Constraint.cc (1.28), Generator.cc (1.34): Using flag
+	EXTRA_NORMALIZATION instead of STRONG_NORMALIZATION.
+
+2002-06-23 Sunday 18:31  Enea Zaffanella <zaffanella@cs.unipr.it>
+
+	* src/Init.defs.hh (1.3): Added short doxygen comment to class
+	Init.
+
+2002-06-23 Sunday 18:30  Enea Zaffanella <zaffanella@cs.unipr.it>
+
+	* src/Polyhedron.cc (1.183), tests/timeelapse5.cc (1.2):
+	Implementation of time_elapse corrected and cleaned.  The test
+	timeelapse5 corrected according to the new specification.
+
+2002-06-23 Sunday 15:10  Roberto Bagnara <bagnara@cs.unipr.it>
+
+	* interfaces/Prolog/Makefile.am (1.17): The Ciao-Prolog interface
+	will not be included in PPL 0.4.
+
+2002-06-23 Sunday 15:09  Roberto Bagnara <bagnara@cs.unipr.it>
+
+	* interfaces/Prolog/YAP/: Makefile.am (1.12), ppl_yap.cc (1.34),
+	yap_clpq.pl (1.5), yap_clpq2.pl (1.1): The YAP interface is now
+	complete and running.
+
+2002-06-22 Saturday 11:08  Roberto Bagnara <bagnara@cs.unipr.it>
+
+	* src/Topology.hh (1.5): Nothing (apart comments) should follow
+	#endif.
+
+2002-06-22 Saturday 08:24  Enea Zaffanella <zaffanella@cs.unipr.it>
+
+	* src/globals.hh (1.18): Long comment for class Throwable improved.
+	Function maybe_abandon() related to class Throwable.
+
+2002-06-22 Saturday 08:21  Enea Zaffanella <zaffanella@cs.unipr.it>
+
+	* src/: Poly_Con_Relation.defs.hh (1.7), Poly_Gen_Relation.defs.hh
+	(1.7): Comments of *_Relation classes adapted to new doxygen rules.
+
+2002-06-21 Friday 23:21  Enea Zaffanella <zaffanella@cs.unipr.it>
+
+	* src/: ConSys.defs.hh (1.52), GenSys.defs.hh (1.67),
+	Generator.defs.hh (1.62), Topology.hh (1.4): Adapted doxygen
+	comments of classes ConSys and GenSys to the new style.  Added
+	short description for the enumeration Topology (in the devref
+	manual).
+
+2002-06-21 Friday 22:03  Roberto Bagnara <bagnara@cs.unipr.it>
+
+	* interfaces/C/ppl_c.h (1.35): No longer use __BEGIN_DECLS and
+	__END_DECLS (so as not to provoke pollution).  Use a brief only
+	description for the opaque pointers.  Undefine PPL_TYPE_DECLARATION
+	as soon as we are done with it.  Documentation for all the *_OK()
+	functions improved: they do not always make noise (if the
+	compilation was done with NDEBUG defined, they do not make any
+	noise).
+
+2002-06-21 Friday 21:49  Roberto Bagnara <bagnara@cs.unipr.it>
+
+	* src/C_Polyhedron.defs.hh (1.11): Alignment fixed in a comment.
+
+2002-06-21 Friday 19:40  Enea Zaffanella <zaffanella@cs.unipr.it>
+
+	* src/: Constraint.cc (1.27), Constraint.defs.hh (1.61),
+	Constraint.inlines.hh (1.36), Generator.defs.hh (1.61),
+	LinExpression.defs.hh (1.43): Documentation of classes
+	LinExpression, Constraint and Generator adapted to the new doxygen
+	rules.
+
+2002-06-21 Friday 19:38  Enea Zaffanella <zaffanella@cs.unipr.it>
+
+	* src/: C_Polyhedron.defs.hh (1.10), NNC_Polyhedron.defs.hh (1.14):
+	Avoiding repetitions due to REPEAT_BRIEF = YES.
+
+2002-06-21 Friday 19:36  Enea Zaffanella <zaffanella@cs.unipr.it>
+
+	* doc/: devref-browse.doxyconf-latex.in (1.18),
+	devref-print.doxyconf-latex.in (1.18), devref.doxyconf-html.in
+	(1.19), user-browse.doxyconf-latex.in (1.12),
+	user-print.doxyconf-latex.in (1.12), user.doxyconf-html.in (1.14):
+	Changed doxygen configuration files so that brief comments are
+	always repeated at the beginning of long comments (REPEAT_BRIEF =
+	YES).
+
+2002-06-21 Friday 15:57  Enea Zaffanella <zaffanella@cs.unipr.it>
+
+	* src/: C_Polyhedron.defs.hh (1.9), NNC_Polyhedron.defs.hh (1.13):
+	For classes C_Polyhedron and NNC_Polyhedron, adopting the new
+	doxygen standards about brief/long comments.
+
+2002-06-21 Friday 15:56  Enea Zaffanella <zaffanella@cs.unipr.it>
+
+	* src/: Matrix.defs.hh (1.27), Row.inlines.hh (1.26): Non-friend
+	but related functions should have the \relates special doxygen
+	command.
+
+2002-06-21 Friday 15:54  Enea Zaffanella <zaffanella@cs.unipr.it>
+
+	* src/SatRow.cc (1.9): As things are now, doxygen comments to
+	friend functions should not have the \relates special command.
+
+2002-06-21 Friday 09:12  Roberto Bagnara <bagnara@cs.unipr.it>
+
+	* configure.ac (1.47): Use C to test the presence and usability of
+	<glpk.h>.  Use the new style AC_LANG(LANGUAGE) macro.
+
+2002-06-21 Friday 08:15  Roberto Bagnara <bagnara@cs.unipr.it>
+
+	* interfaces/Prolog/GNU/Makefile.am (1.20): Additions
+	MOSTLYCLEANFILES.
+
+2002-06-20 Thursday 22:51  Roberto Bagnara <bagnara@cs.unipr.it>
+
+	* interfaces/Prolog/: Prolog_interface.dox (1.54),
+	track_allocation.hh (1.6): Prolog allocation tracking properly
+	reimplemented.
+
+2002-06-20 Thursday 22:48  Roberto Bagnara <bagnara@cs.unipr.it>
+
+	* interfaces/Prolog/clpq2.pl (1.17): Singleton variable renamed so
+	as to disable the corresponding warning.
+
+2002-06-20 Thursday 22:47  Roberto Bagnara <bagnara@cs.unipr.it>
+
+	* tests/print.cc (1.2): Do not redefine the default arguments.
+
+2002-06-20 Thursday 21:22  Enea Zaffanella <zaffanella@cs.unipr.it>
+
+	* doc/definitions.dox (1.73): A few improvements in the first
+	paragraph of the introduction.	Better explained what a preimage is
+	and some chnages to the paragraph on the DD method.
+
+2002-06-20 Thursday 21:20  Enea Zaffanella <zaffanella@cs.unipr.it>
+
+	* src/: Row.cc (1.38), Row.defs.hh (1.47), Row.inlines.hh (1.25),
+	SatMatrix.cc (1.17), SatMatrix.defs.hh (1.19), SatMatrix.inlines.hh
+	(1.12), SatRow.cc (1.8), SatRow.defs.hh (1.15), SatRow.inlines.hh
+	(1.15), Status.defs.hh (1.17): Added \relates doxygen commands to
+	match related function declarations and definitions.
+
+2002-06-20 Thursday 13:50  Patricia M. Hill <hill@comp.leeds.ac.uk>
+
+	* doc/definitions.dox (1.72): Reordered the bibliography to be
+	alphabetical.  Changed the syntax in Bounded Polyhedra.  Moved
+	Rational Polyhedra to end of section on representations (it needs
+	the definition of constraint representation).  Comment in
+	Generators Representation wrt this moved to the Rational one. 
+	Small change of wording to Points... paragraph.
+
+2002-06-20 Thursday 13:42  Patricia M. Hill <hill@comp.leeds.ac.uk>
+
+	* interfaces/Prolog/Prolog_interface.dox (1.53): Corrected the
+	grammar rules for Rational and made other changes related to this.
+
+2002-06-20 Thursday 12:31  Roberto Bagnara <bagnara@cs.unipr.it>
+
+	* interfaces/C/ppl_c.cc (1.37): Functions dealing with closure
+	points and strict inequalities were still commented out: fixed.
+
+2002-06-20 Thursday 12:18  Patricia M. Hill <hill@comp.leeds.ac.uk>
+
+	* interfaces/Prolog/Prolog_interface.dox (1.52): Improvements to
+	grammar rules.	List_of_Constraints and List_of_Generators now
+	specified formally as Constraint_System and Generator_System.
+
+2002-06-20 Thursday 12:01  Patricia M. Hill <hill@comp.leeds.ac.uk>
+
+	* interfaces/Prolog/Prolog_interface.dox (1.51): Improved
+	description of "relation with" predicates.
+
+2002-06-20 Thursday 11:46  Patricia M. Hill <hill@comp.leeds.ac.uk>
+
+	* interfaces/Prolog/Prolog_interface.dox (1.50): In the grammar
+	rules Numerator and Denominator are non-terminals and should start
+	with capitals.
+
+2002-06-20 Thursday 11:33  Patricia M. Hill <hill@comp.leeds.ac.uk>
+
+	* interfaces/Prolog/Prolog_interface.dox (1.49): Many improvements,
+	including: Where comments were repeated elswhere (ie compatibility
+	rules) they have been removed.	Where possible, references to
+	relevant sections in the introduction have been made.  Grammar rule
+	for Relation added.
+
+2002-06-20 Thursday 11:28  Patricia M. Hill <hill@comp.leeds.ac.uk>
+
+	* doc/definitions.dox (1.71): Improved the paragraph on topological
+	compatibility.
+
+2002-06-20 Thursday 09:58  Patricia M. Hill <hill@comp.leeds.ac.uk>
+
+	* interfaces/Prolog/clpq2.pl (1.16): Cleaned up previous changes.
+
+2002-06-20 Thursday 08:59  Patricia M. Hill <hill@comp.leeds.ac.uk>
+
+	* interfaces/Prolog/clpq2.pl (1.15): Revised the way unwanted
+	polyhedron are removed.  It has not been checked yet for leaks.
+
+2002-06-20 Thursday 08:43  Roberto Bagnara <bagnara@cs.unipr.it>
+
+	* interfaces/C/lpenum/Makefile.am (1.6): lpenum_LDADD fixed.
+
+2002-06-20 Thursday 08:09  Roberto Bagnara <bagnara@cs.unipr.it>
+
+	* interfaces/Prolog/clpq2.pl (1.14): PPL is the right acronym in
+	normal text.
+
+2002-06-20 Thursday 08:08  Roberto Bagnara <bagnara@cs.unipr.it>
+
+	* interfaces/Prolog/expected2 (1.3): Corrected with the right
+	results.
+
+2002-06-20 Thursday 07:46  Patricia M. Hill <hill@comp.leeds.ac.uk>
+
+	* interfaces/Prolog/clpq2.pl (1.13): Bug fixed and I hope the
+	variable ordering is now stable so that the constraints are
+	presented uniformly in all Prologs.
+
+2002-06-19 Wednesday 23:36  Enea Zaffanella <zaffanella@cs.unipr.it>
+
+	* src/: Constraint.defs.hh (1.60), Generator.defs.hh (1.60),
+	Generator.inlines.hh (1.31), Variable.defs.hh (1.19): Using the
+	\relates doxygen special command to have non-member and non-friend
+	functions listed in the related classes.
+
+2002-06-19 Wednesday 22:48  Roberto Bagnara <bagnara@cs.unipr.it>
+
+	* interfaces/C/lpenum/lpenum.c (1.6): Cleaned up.
+
+2002-06-19 Wednesday 22:38  Roberto Bagnara <bagnara@cs.unipr.it>
+
+	* interfaces/Prolog/: ppl_prolog.icc (1.55), track_allocation.hh
+	(1.5): Leave the responsibility of TRACK_ALLOCATION to
+	track_allocation.hh.
+
+2002-06-19 Wednesday 22:21  Roberto Bagnara <bagnara@cs.unipr.it>
+
+	* interfaces/Prolog/clpq2.pl (1.12): A couple of trivial formatting
+	changes.
+
+2002-06-19 Wednesday 20:40  Roberto Bagnara <bagnara@cs.unipr.it>
+
+	* Makefile.am (1.20), STANDARDS (1.1): The `STANDARDS' file will
+	contain a description of our coding standards.
+
+2002-06-19 Wednesday 20:22  Roberto Bagnara <bagnara@cs.unipr.it>
+
+	* interfaces/Prolog/: clpq.pl (1.12), clpq2.pl (1.11): Use a
+	uniform coding style.
+
+2002-06-19 Wednesday 18:21  Roberto Bagnara <bagnara@cs.unipr.it>
+
+	* interfaces/Prolog/GNU/Makefile.am (1.19): Use the 2nd CLP(Q)
+	interpreter for regression testing.
+
+2002-06-19 Wednesday 18:20  Roberto Bagnara <bagnara@cs.unipr.it>
+
+	* interfaces/Prolog/SWI/Makefile.am (1.22): Fixed the dependencies
+	of the `check-local' target.
+
+2002-06-19 Wednesday 18:19  Roberto Bagnara <bagnara@cs.unipr.it>
+
+	* interfaces/Prolog/clpq2.pl (1.10): Fixed calls meant to be to
+	ppl_delete_Polyhedron/1.
+
+2002-06-19 Wednesday 18:17  Roberto Bagnara <bagnara@cs.unipr.it>
+
+	* interfaces/Prolog/: expected2 (1.2), check_script2 (1.2):
+	Trailing blank line removed.
+
+2002-06-19 Wednesday 17:27  Patricia M. Hill <hill@comp.leeds.ac.uk>
+
+	* interfaces/Prolog/Prolog_interface.dox (1.48): Many ongoing
+	changes.
+
+2002-06-19 Wednesday 16:25  Roberto Bagnara <bagnara@cs.unipr.it>
+
+	* interfaces/Prolog/Makefile.am (1.16): Distributes also
+	check_script2 and expected2.
+
+2002-06-19 Wednesday 16:18  Enea Zaffanella <zaffanella@cs.unipr.it>
+
+	* interfaces/Prolog/Prolog_interface.dox (1.47): Corrected a typo
+	in the first paragraph about the SICStus Prolog interface.
+
+2002-06-19 Wednesday 16:13  Enea Zaffanella <zaffanella@cs.unipr.it>
+
+	* interfaces/C/ppl_c.h (1.34): Corrected a typo in the
+	documentation of PPL_CONSTRAINT_TYPE_GREATER_THAN.
+
+2002-06-19 Wednesday 16:05  Enea Zaffanella <zaffanella@cs.unipr.it>
+
+	* src/Variable.defs.hh (1.18): Adjusted comment about the
+	constructor.
+
+2002-06-19 Wednesday 16:01  Patricia M. Hill <hill@comp.leeds.ac.uk>
+
+	* doc/definitions.dox (1.70): Improvements to the space dimension
+	and the relation with paragraphs.
+
+2002-06-19 Wednesday 15:24  Enea Zaffanella <zaffanella@cs.unipr.it>
+
+	* src/: Polyhedron.defs.hh (1.121), globals.hh (1.17): Added a
+	short description for class Throwable.	Corrected a typo in comment
+	for remove_dimensions.
+
+2002-06-19 Wednesday 15:18  Patricia M. Hill <hill@comp.leeds.ac.uk>
+
+	* doc/definitions.dox (1.69): Bounding box paragraph improved a
+	little.
+
+2002-06-19 Wednesday 14:52  Enea Zaffanella <zaffanella@cs.unipr.it>
+
+	* doc/definitions.dox (1.68): Corrected spurious uses of the macro
+	\mathord.  Some improvements in the paragraph on bounding boxes:
+	the standard notation for the i-th vector of the canonical base is
+	\vect{e}_i.
+
+2002-06-19 Wednesday 14:48  Patricia M. Hill <hill@comp.leeds.ac.uk>
+
+	* doc/definitions.dox (1.67): Changes to relation-wirh and widening
+	paragraphs.
+
+2002-06-19 Wednesday 14:46  Roberto Bagnara <bagnara@cs.unipr.it>
+
+	* interfaces/Prolog/SICStus/sp_clpq.pl (1.7): Import append/3 and
+	member/2 from library(lists).
+
+2002-06-19 Wednesday 14:45  Roberto Bagnara <bagnara@cs.unipr.it>
+
+	* interfaces/Prolog/clpq2.pl (1.9): Avoid defining append/3 and
+	member/2, since they are defined as built-ins or provided as
+	library predicates by any supported Prolog implementation
+	(SWI-Prolog seems to be annoyed if a user program tries to redefine
+	them).
+
+2002-06-19 Wednesday 14:34  Roberto Bagnara <bagnara@cs.unipr.it>
+
+	* ltmain.sh (1.4): Upgraded from the CVS version of libtool.
+
+2002-06-19 Wednesday 14:31  Roberto Bagnara <bagnara@cs.unipr.it>
+
+	* interfaces/Prolog/SICStus/: Makefile.am (1.27), sp_clpq.pl (1.6):
+	Use the 2nd CLP(Q) interpreter for regression testing.
+
+2002-06-19 Wednesday 14:30  Roberto Bagnara <bagnara@cs.unipr.it>
+
+	* interfaces/Prolog/Makefile.am (1.15): Distribute also the tests
+	for strict inequalities.
+
+2002-06-19 Wednesday 14:18  Enea Zaffanella <zaffanella@cs.unipr.it>
+
+	* doc/definitions.dox (1.66): Changes in the paragraph on the
+	relation-with operators.
+
+2002-06-19 Wednesday 13:56  Roberto Bagnara <bagnara@cs.unipr.it>
+
+	* interfaces/Prolog/: GNU/Makefile.am (1.18), SWI/Makefile.am
+	(1.21): Use the configured version of libtool.
+
+2002-06-19 Wednesday 11:43  Patricia M. Hill <hill@comp.leeds.ac.uk>
+
+	* interfaces/Prolog/Prolog_interface.dox (1.46): Changed the
+	description for the assignment predicates.
+
+2002-06-19 Wednesday 11:23  Patricia M. Hill <hill@comp.leeds.ac.uk>
+
+	* doc/definitions.dox (1.65): A first draft for a paragraph on the
+	relation-with operators.
+
+2002-06-19 Wednesday 10:29  Enea Zaffanella <zaffanella@cs.unipr.it>
+
+	* doc/definitions.dox (1.64): Using the macro \nonnegRset in the
+	paragraph defiing extreme rays.
+
+2002-06-19 Wednesday 10:14  Enea Zaffanella <zaffanella@cs.unipr.it>
+
+	* doc/: definitions.dox (1.63), ppl.sty (1.10): Some improvements
+	in the introduction. Redefined the command \vec following
+	llncs.cls.
+
+2002-06-19 Wednesday 08:03  Patricia M. Hill <hill@comp.leeds.ac.uk>
+
+	* interfaces/Prolog/: Prolog_interface.dox (1.45), pl_check.pl
+	(1.15), ppl_prolog.icc (1.54), Ciao/ppl_ciao.pl (1.15),
+	GNU/ppl_gprolog.pl (1.12), SICStus/ppl_sicstus_sd.cc (1.18),
+	SWI/ppl_swiprolog.cc (1.42), YAP/ppl_yap.cc (1.33): Predicates
+	ppl_Polyhedron_topological_closure_assign and
+	ppl_Polyhedron_is_topologically_closed added.
+
+2002-06-19 Wednesday 08:02  Enea Zaffanella <zaffanella@cs.unipr.it>
+
+	* interfaces/C/ppl_c.cc (1.36), interfaces/C/ppl_c.h (1.33),
+	src/Polyhedron.defs.hh (1.120): Added topological closure test and
+	assignment to the C interface.
+
+2002-06-19 Wednesday 07:32  Roberto Bagnara <bagnara@cs.unipr.it>
+
+	* interfaces/Prolog/schedule.clpq (1.3): Use a uniform syntax.
+
+2002-06-19 Wednesday 07:30  Roberto Bagnara <bagnara@cs.unipr.it>
+
+	* interfaces/Prolog/YAP/Makefile.am (1.11): Checking mechanism
+	fixed (but still commented out).
+
+2002-06-19 Wednesday 07:30  Roberto Bagnara <bagnara@cs.unipr.it>
+
+	* interfaces/Prolog/: check_script2 (1.1), expected2 (1.1),
+	SWI/Makefile.am (1.20): Test also with clpq2.pl.
+
+2002-06-19 Wednesday 07:29  Roberto Bagnara <bagnara@cs.unipr.it>
+
+	* interfaces/Prolog/: clpq.pl (1.11), clpq2.pl (1.8): Improved the
+	query for more solutions.
+
+2002-06-18 Tuesday 18:10  Roberto Bagnara <bagnara@cs.unipr.it>
+
+	* interfaces/Prolog/Ciao/ppl_ciao.pl (1.14): Use
+	use_foreign_library/1 instead of use_foreign_source/1.
+
+2002-06-18 Tuesday 17:47  Roberto Bagnara <bagnara@cs.unipr.it>
+
+	* interfaces/Prolog/ppl_prolog.icc (1.53): Indentation fixed.
+
+2002-06-18 Tuesday 17:45  Roberto Bagnara <bagnara@cs.unipr.it>
+
+	* interfaces/Prolog/Ciao/ppl_ciao.pl (1.13): Declarations
+	completed.
+
+2002-06-18 Tuesday 17:00  Enea Zaffanella <zaffanella@cs.unipr.it>
+
+	* doc/definitions.dox (1.62): Corrected a typo in the definition of
+	closed polyhedra.  Improved the paragraph on dimension
+	compatibility to make it independent from th epolyhedra topology.
+
+2002-06-18 Tuesday 15:51  Patricia M. Hill <hill@comp.leeds.ac.uk>
+
+	* interfaces/Prolog/clpq2.pl (1.7): Just a little more robust in
+	that it fails if there are variables in non-integer positions in a
+	query rather than crashing.
+
+2002-06-18 Tuesday 15:42  Patricia M. Hill <hill@comp.leeds.ac.uk>
+
+	* interfaces/Prolog/pl_check.pl (1.14): Tidied the tests on
+	bounding boxes.
+
+2002-06-18 Tuesday 14:27  Roberto Bagnara <bagnara@cs.unipr.it>
+
+	* interfaces/Prolog/: Prolog_interface.dox (1.44), pl_check.pl
+	(1.13), ppl_prolog.icc (1.52), Ciao/ppl_ciao.pl (1.12),
+	GNU/ppl_gprolog.pl (1.11), SICStus/ppl_sicstus_sd.cc (1.17),
+	SWI/ppl_swiprolog.cc (1.41), YAP/ppl_yap.cc (1.32):
+	ppl_new_Polyhedron_from_ConSys and ppl_new_Polyhedron_from_GenSys
+	renamed ppl_new_Polyhedron_from_constraints and
+	ppl_new_Polyhedron_from_generators, respectively.
+
+2002-06-18 Tuesday 12:23  Patricia M. Hill <hill@comp.leeds.ac.uk>
+
+	* doc/definitions.dox (1.61): Added a preamble based on the ppl
+	home web page.
+
+2002-06-18 Tuesday 12:02  Patricia M. Hill <hill@comp.leeds.ac.uk>
+
+	* doc/definitions.dox (1.60): Reorganised the introductory
+	sections.
+
+2002-06-18 Tuesday 11:49  Enea Zaffanella <zaffanella@cs.unipr.it>
+
+	* src/Constraint.inlines.hh (1.35): Corrected a trivial bug just
+	introduced in	Constraint operator>(const LinExpression& e1, const
+	LinExpression& e2).
+
+2002-06-18 Tuesday 10:48  Patricia M. Hill <hill@comp.leeds.ac.uk>
+
+	* interfaces/Prolog/schedule.clpq (1.2): Improved layout.
+
+2002-06-18 Tuesday 10:44  Patricia M. Hill <hill@comp.leeds.ac.uk>
+
+	* interfaces/Prolog/: clpq2.pl (1.6), schedule.clpq (1.1): clpq2.pl
+	now allows Herbrand terms as arguments including lists. 
+	schedule.clpq tests the strict inequalities in clpq2.pl
+
+2002-06-18 Tuesday 10:16  Enea Zaffanella <zaffanella@cs.unipr.it>
+
+	* src/Constraint.inlines.hh (1.34): Avoiding the creation of
+	temporaries in	 Constraint operator>(const LinExpression& e1,
+	const LinExpression& e2)   Constraint operator>(const Integer& n,
+	const LinExpression& e)   Constraint operator>(const LinExpression&
+	e, const Integer& n).
+
+2002-06-18 Tuesday 08:57  Patricia M. Hill <hill@comp.leeds.ac.uk>
+
+	* doc/definitions.dox (1.59): Paragraph for widening improved. 
+	Paragraph for time-elapse added (just a reference to the 1997
+	Halbwachs paper).
+
+2002-06-18 Tuesday 07:35  Roberto Bagnara <bagnara@cs.unipr.it>
+
+	* interfaces/Prolog/YAP/ppl_yap.cc (1.31): Code for testing YAP
+	exceptions temporarily included.
+
+2002-06-18 Tuesday 00:06  Enea Zaffanella <zaffanella@cs.unipr.it>
+
+	* src/: Polyhedron.cc (1.182), Polyhedron.defs.hh (1.119): Private
+	methods strongly_minimize* now return a boolean which is false if
+	the result is an empty polyhedron (this is consistent with the
+	behavior of private method minimize()).  Patched method
+	widening_CC92_assign() to also work for NNC polyhedra.
+
+2002-06-17 Monday 23:28  Roberto Bagnara <bagnara@cs.unipr.it>
+
+	* interfaces/Prolog/YAP/: Makefile.am (1.10), ppl_yap.pl (1.5),
+	yap_clpq.pl (1.4): Some progress in the support for YAP.
+
+2002-06-17 Monday 22:29  Roberto Bagnara <bagnara@cs.unipr.it>
+
+	* src/: Row.cc (1.37), Row.defs.hh (1.46), Row.inlines.hh (1.24):
+	The NDEBUG symbol no longer changes data layout.  Now, to obtain a
+	version of Row where each object remembers its own capacity, the
+	macro EXTRA_ROW_DEBUG must evaluate to true (whether this capacity
+	is tested in run-time assertions or not depends, as usual, on the
+	NDEBUG macro not being or being defined).
+
+2002-06-17 Monday 18:28  Enea Zaffanella <zaffanella@cs.unipr.it>
+
+	* tests/: Makefile.am (1.78), wideningcc921.cc (1.2),
+	wideningcc922.cc (1.2), wideningcc923.cc (1.1): Added a new tests
+	showing a bug in the current implementation of
+	widening_CC92_assign, when the arguments are NNC polyhedra. 
+	Corrected the output of the other widening tests.
+
+2002-06-17 Monday 18:05  Roberto Bagnara <bagnara@cs.unipr.it>
+
+	* src/: Constraint.inlines.hh (1.33), LinExpression.cc (1.12),
+	LinExpression.defs.hh (1.42), LinExpression.inlines.hh (1.18):
+	Added LinExpression& operator-=(LinExpression& e1, const
+	LinExpression& e2), LinExpression& operator-=(LinExpression& e,
+	const Variable& v), and LinExpression& operator-=(LinExpression& e,
+	const Integer& n).  Useless creation of a temporary avoided thanks
+	to the second of those.
+
+2002-06-17 Monday 17:44  Patricia M. Hill <hill@comp.leeds.ac.uk>
+
+	* doc/definitions.dox (1.58),
+	interfaces/Prolog/Prolog_interface.dox (1.43): Added the condition
+	that the CC92-widening requires the polyhedra to have the same
+	topology.
+
+2002-06-17 Monday 17:37  Roberto Bagnara <bagnara@cs.unipr.it>
+
+	* TODO (1.23): We now have complete support for bounding boxes. 
+	List a couple of pending efficiency issues.
+
+2002-06-17 Monday 17:32  Patricia M. Hill <hill@comp.leeds.ac.uk>
+
+	* doc/definitions.dox (1.57), interfaces/C/ppl_c.h (1.32),
+	interfaces/Prolog/Prolog_interface.dox (1.42), src/Polyhedron.cc
+	(1.181), src/Polyhedron.defs.hh (1.118): Added a draft paragraph
+	about widening (and CC92-widening) to definitions.dox.	Replaced
+	"widening" by CC92-widening" in the comments about the widening
+	operators.
+
+2002-06-17 Monday 16:19  Enea Zaffanella <zaffanella@cs.unipr.it>
+
+	* src/: GenSys.cc (1.55), Polyhedron.cc (1.180): All the FIXME's in
+	Polyhedron.cc and GenSys.cc transformed into TODO's, since they
+	were just place-holders for possible performance improvements.
+
+2002-06-17 Monday 16:00  Enea Zaffanella <zaffanella@cs.unipr.it>
+
+	* interfaces/C/: ppl_c.cc (1.35), ppl_c.h (1.31): Added interfaces
+	function for the copy constructors of classes Constraint and
+	Generators and for the constructors of a LinExpression from a
+	Constraint/Generator.
+
+2002-06-17 Monday 15:39  Roberto Bagnara <bagnara@cs.unipr.it>
+
+	* interfaces/Prolog/GNU/ppl_gprolog.pl (1.10): The two widening
+	predicates have been renamed.
+
+2002-06-17 Monday 15:23  Roberto Bagnara <bagnara@cs.unipr.it>
+
+	* NEWS (1.24), interfaces/C/ppl_c.cc (1.34), interfaces/C/ppl_c.h
+	(1.30), interfaces/Prolog/Prolog_interface.dox (1.41),
+	interfaces/Prolog/pl_check.pl (1.12),
+	interfaces/Prolog/ppl_prolog.icc (1.51),
+	interfaces/Prolog/Ciao/ppl_ciao.pl (1.11),
+	interfaces/Prolog/SICStus/ppl_sicstus_sd.cc (1.16),
+	interfaces/Prolog/SWI/ppl_swiprolog.cc (1.40),
+	interfaces/Prolog/YAP/ppl_yap.cc (1.30), src/Polyhedron.cc (1.179),
+	src/Polyhedron.defs.hh (1.117), tests/.cvsignore (1.3),
+	tests/Makefile.am (1.77), tests/exceptions1.cc (1.9),
+	tests/limitedwidening1.cc (1.8), tests/limitedwidening2.cc (1.5),
+	tests/limitedwideningcc921.cc (1.1), tests/limitedwideningcc922.cc
+	(1.1), tests/permute.cc (1.17), tests/widening1.cc (1.5),
+	tests/widening2.cc (1.3), tests/wideningcc921.cc (1.1),
+	tests/wideningcc922.cc (1.1): Widening methods, functions and test
+	programs renamed so as to make clear that (currently) our widenings
+	are extensions of the one proposed in the PLILP'92 paper by Cousot
+	& Cousot.
+
+2002-06-17 Monday 13:57  Enea Zaffanella <zaffanella@cs.unipr.it>
+
+	* interfaces/C/ppl_c.h (1.29): Added comment to functions building
+	polyhedra from bounding boxes.
+
+2002-06-17 Monday 12:47  Patricia M. Hill <hill@comp.leeds.ac.uk>
+
+	* interfaces/Prolog/clpq.pl (1.10): clpq.pl only uses C polyhedron
+	again.
+
+2002-06-17 Monday 12:42  Enea Zaffanella <zaffanella@cs.unipr.it>
+
+	* src/: C_Polyhedron.defs.hh (1.8), NNC_Polyhedron.defs.hh (1.12),
+	Polyhedron.defs.hh (1.116), globals.hh (1.16): Added documentation
+	for constructor of C_ and NNC_ polyhedra out of a bounding box. 
+	The comment on the C_Polyhedron destructor is now a proper doxygen
+	comment.  Added a short description doc for struct FromBoundingBox
+	to avoid cluttering the ``PPL Compound List'' page.
+
+2002-06-17 Monday 11:25  Enea Zaffanella <zaffanella@cs.unipr.it>
+
+	* src/LinExpression.defs.hh (1.41): Corrected typo in documentation
+	of   explicit LinExpression(const Generator& g);
+
+2002-06-17 Monday 10:54  Enea Zaffanella <zaffanella@cs.unipr.it>
+
+	* src/Polyhedron.defs.hh (1.115): Improved documentation of
+	poly_difference_assign* methods, stating that topological closure
+	is enforced when *this is a C_Polyhedron.
+
+2002-06-17 Monday 10:24  Enea Zaffanella <zaffanella@cs.unipr.it>
+
+	* src/LinExpression.defs.hh (1.40): Constructors of a LinExpression
+	out of a Constraint/Generator made public.  Added a more detailed
+	comment about the unicity of the built expression.
+
+2002-06-17 Monday 10:04  Enea Zaffanella <zaffanella@cs.unipr.it>
+
+	* src/Constraint.inlines.hh (1.32): Removed FIXME's about the
+	efficiency of row-type setting methods.
+
+2002-06-17 Monday 08:59  Patricia M. Hill <hill@comp.leeds.ac.uk>
+
+	* interfaces/Prolog/: Prolog_interface.dox (1.40), clpq.pl (1.9):
+	clpq.pl is updated to allow for strict constraints.  Improved
+	comments for new polyhedron predicates from consys, gensys and
+	boxes.
+
+2002-06-17 Monday 08:47  Patricia M. Hill <hill@comp.leeds.ac.uk>
+
+	* doc/definitions.dox (1.56): Paragraphs on intervals and bounding
+	boxes improved.
+
+2002-06-17 Monday 08:07  Roberto Bagnara <bagnara@cs.unipr.it>
+
+	* Watchdog/: Watchdog.cc (1.5), Watchdog.defs.hh (1.3): Use #ifdef
+	to test configuration symbols that may be undefined or defined to
+	1.
+
+2002-06-17 Monday 08:05  Roberto Bagnara <bagnara@cs.unipr.it>
+
+	* src/Matrix.cc (1.37): It is non-standard to omit the second
+	argument of std::vector::iterator std::vector::insert(iterator
+	position, const T& x).
+
+2002-06-17 Monday 07:50  Roberto Bagnara <bagnara@cs.unipr.it>
+
+	* src/: ConSys.inlines.hh (1.19), Constraint.cc (1.26),
+	Constraint.inlines.hh (1.31), GenSys.inlines.hh (1.21),
+	Generator.inlines.hh (1.30), LinExpression.inlines.hh (1.17),
+	Row.defs.hh (1.45): Reduce our dependence on the PPL_HIDDEN trick.
+
+2002-06-16 Sunday 22:42  Roberto Bagnara <bagnara@cs.unipr.it>
+
+	* interfaces/C/ppl_c.h (1.28): Remove non-standard trailing comma.
+
+2002-06-16 Sunday 22:08  Roberto Bagnara <bagnara@cs.unipr.it>
+
+	* src/: Constraint.inlines.hh (1.30), Generator.inlines.hh (1.29),
+	Matrix.inlines.hh (1.23), Polyhedron.inlines.hh (1.36),
+	Row.inlines.hh (1.23): Make sure the first use of each inline
+	function follows its definition.
+
+2002-06-16 Sunday 20:26  Enea Zaffanella <zaffanella@cs.unipr.it>
+
+	* interfaces/Prolog/SICStus/Makefile.am (1.26): Modified SICStus
+	interface makefile to find the ppl library even when this has not
+	been installed yet.
+
+2002-06-16 Sunday 19:58  Roberto Bagnara <bagnara@cs.unipr.it>
+
+	* src/: ConSys.defs.hh (1.51), GenSys.defs.hh (1.66),
+	LinExpression.defs.hh (1.39): Reposition friend declarations. 
+	Always put the public section before the protected one before the
+	private one.
+
+2002-06-16 Sunday 19:20  Roberto Bagnara <bagnara@cs.unipr.it>
+
+	* src/LinExpression.defs.hh (1.38): LinExpression(const
+	Constraint&) and LinExpression(const Generator&) made private
+	again, since they expose the library's internals.
+
+2002-06-16 Sunday 19:02  Roberto Bagnara <bagnara@cs.unipr.it>
+
+	* src/: GenSys.cc (1.54), Polyhedron.cc (1.178), minimize.cc
+	(1.21), simplify.cc (1.16): No space before question mark in
+	comments.
+
+2002-06-16 Sunday 18:55  Roberto Bagnara <bagnara@cs.unipr.it>
+
+	* tests/: generators1.cc (1.6), generators2.cc (1.3): Include
+	<stdexcept>.
+
+2002-06-16 Sunday 17:43  Enea Zaffanella <zaffanella@cs.unipr.it>
+
+	* src/: Constraint.cc (1.25), Constraint.inlines.hh (1.29),
+	Polyhedron.cc (1.177): Removed CHECKME comments from a few methods
+	of classes Constraint and Polyhedron. A few FIXME changed to
+	CHECKME.
+
+2002-06-16 Sunday 17:20  Roberto Bagnara <bagnara@cs.unipr.it>
+
+	* src/Interval.cc (1.2): Replace `and' by `&&'.
+
+2002-06-16 Sunday 17:19  Roberto Bagnara <bagnara@cs.unipr.it>
+
+	* src/: BoundingBox.defs.hh (1.2), BoundingBox.inlines.hh (1.3),
+	C_Polyhedron.defs.hh (1.7), ConSys.defs.hh (1.50),
+	Constraint.defs.hh (1.59), GenSys.defs.hh (1.65), Generator.defs.hh
+	(1.59), Init.defs.hh (1.2), Integer.defs.hh (1.4), Interval.defs.hh
+	(1.4), LinExpression.defs.hh (1.37), Matrix.defs.hh (1.26),
+	NNC_Polyhedron.defs.hh (1.11), Poly_Con_Relation.defs.hh (1.6),
+	Poly_Gen_Relation.defs.hh (1.6), Polyhedron.defs.hh (1.114),
+	Row.defs.hh (1.44), SatMatrix.defs.hh (1.18), SatRow.defs.hh
+	(1.14), Status.defs.hh (1.16), Variable.defs.hh (1.17): Use uniform
+	guards against multiple inclusion.  Include Interval.defs.hh in
+	BoundingBox.defs.hh.
+
+2002-06-16 Sunday 16:51  Roberto Bagnara <bagnara@cs.unipr.it>
+
+	* src/: Row.inlines.hh (1.22), SatRow.inlines.hh (1.14): Fully
+	qualify `vector' as `std::vector'.
+
+2002-06-16 Sunday 16:46  Roberto Bagnara <bagnara@cs.unipr.it>
+
+	* src/C_Polyhedron.cc (1.3), interfaces/C/ppl_c.cc (1.33): Include
+	<stdexcept>.
+
+2002-06-16 Sunday 16:45  Roberto Bagnara <bagnara@cs.unipr.it>
+
+	* src/: Generator.inlines.hh (1.28), Integer.inlines.hh (1.4),
+	LinExpression.defs.hh (1.36), LinExpression.inlines.hh (1.16):
+	Remove unnecessary include files and add some necessary one.
+
+2002-06-16 Sunday 16:39  Roberto Bagnara <bagnara@cs.unipr.it>
+
+	* src/: BoundingBox.inlines.hh (1.2), C_Polyhedron.inlines.hh
+	(1.6), ConSys.inlines.hh (1.18), Constraint.inlines.hh (1.28),
+	GenSys.inlines.hh (1.20), Generator.inlines.hh (1.27),
+	Init.inlines.hh (1.2), Integer.inlines.hh (1.3),
+	LinExpression.inlines.hh (1.15), Matrix.inlines.hh (1.22),
+	NNC_Polyhedron.inlines.hh (1.8), Poly_Con_Relation.inlines.hh
+	(1.6), Poly_Gen_Relation.inlines.hh (1.6), Polyhedron.inlines.hh
+	(1.35), Row.inlines.hh (1.21), SatMatrix.inlines.hh (1.11),
+	SatRow.inlines.hh (1.13), Status.inlines.hh (1.8),
+	Variable.inlines.hh (1.9): Guard against multiple inclusion.
+
+2002-06-16 Sunday 16:17  Roberto Bagnara <bagnara@cs.unipr.it>
+
+	* src/: ConSys.defs.hh (1.49), GenSys.defs.hh (1.64),
+	LinExpression.defs.hh (1.35), Matrix.defs.hh (1.25),
+	Variable.defs.hh (1.16): Avoid being pedantic when commenting
+	constructors.
+
+2002-06-16 Sunday 15:56  Roberto Bagnara <bagnara@cs.unipr.it>
+
+	* src/: ConSys.defs.hh (1.48), GenSys.defs.hh (1.63): All the OK()
+	methods must be public.
+
+2002-06-16 Sunday 15:48  Roberto Bagnara <bagnara@cs.unipr.it>
+
+	* doc/devref-browse.doxyconf-latex.in (1.17),
+	doc/devref-print.doxyconf-latex.in (1.17),
+	doc/devref.doxyconf-html.in (1.18), interfaces/C/Makefile.am (1.9),
+	interfaces/Prolog/Ciao/Makefile.am (1.6),
+	interfaces/Prolog/GNU/Makefile.am (1.17),
+	interfaces/Prolog/SICStus/Makefile.am (1.25),
+	interfaces/Prolog/SWI/Makefile.am (1.19),
+	interfaces/Prolog/YAP/Makefile.am (1.9), src/ConSys.defs.hh (1.47),
+	src/Constraint.defs.hh (1.58), src/GenSys.defs.hh (1.62),
+	src/Generator.defs.hh (1.58), src/LinExpression.defs.hh (1.34),
+	src/Makefile.am (1.41), src/Polyhedron.defs.hh (1.113),
+	src/Row.defs.hh (1.43), src/ppl_filter_doxygen.sed (1.2),
+	src/ppl_filter_install.sed (1.2): PPL_INTERNAL has gone: replaced
+	with `private' everywhere.
+
+2002-06-16 Sunday 15:40  Roberto Bagnara <bagnara@cs.unipr.it>
+
+	* interfaces/Prolog/SICStus/: Makefile.am (1.24), sp_clpq.pl (1.5):
+	Simplify `make check' in the SICStus directory and solve a `make
+	distcheck' problem.
+
+2002-06-16 Sunday 08:44  Roberto Bagnara <bagnara@cs.unipr.it>
+
+	* interfaces/Prolog/GNU/Makefile.am (1.16): Generation of gp_clpq
+	fixed.
+
+2002-06-16 Sunday 00:17  Roberto Bagnara <bagnara@cs.unipr.it>
+
+	* interfaces/Prolog/ppl_prolog.icc (1.50), src/ConSys.cc (1.34),
+	src/ConSys.defs.hh (1.46), src/ConSys.inlines.hh (1.17),
+	src/Constraint.defs.hh (1.57), src/GenSys.cc (1.53),
+	src/GenSys.defs.hh (1.61), src/GenSys.inlines.hh (1.19),
+	src/Generator.defs.hh (1.57), src/LinExpression.defs.hh (1.33),
+	src/Makefile.am (1.40), src/Polyhedron.defs.hh (1.112),
+	src/Polyhedron.inlines.hh (1.34): Phasing out PPL_INTERNAL.
+
+2002-06-15 Saturday 18:50  Roberto Bagnara <bagnara@cs.unipr.it>
+
+	* tests/: memory1.cc (1.3), watchdog1.cc (1.8): Be quiet.
+
+2002-06-15 Saturday 18:42  Roberto Bagnara <bagnara@cs.unipr.it>
+
+	* interfaces/C/ppl_c.cc (1.32), interfaces/Prolog/ppl_prolog.icc
+	(1.49), src/C_Polyhedron.defs.hh (1.6), src/C_Polyhedron.inlines.hh
+	(1.5), src/ConSys.defs.hh (1.45), src/Constraint.defs.hh (1.56),
+	src/GenSys.defs.hh (1.60), src/NNC_Polyhedron.defs.hh (1.10),
+	src/NNC_Polyhedron.inlines.hh (1.7), tests/boundingbox2.cc (1.7):
+	Start replacing our ad hoc protection mechanisms with friendship. 
+	Got around the GCC bug described in
+	http://gcc.gnu.org/bugs.html#known by exchanging the order of
+	arguments in the constructors from bounding boxes of C_Polyhedron
+	and NNC_Polyhedron.  The test program boundingbox2.cc has been
+	cleaned up consequently.
+
+2002-06-15 Saturday 17:23  Roberto Bagnara <bagnara@cs.unipr.it>
+
+	* ltmain.sh (1.3): Revert previous change: the CVS version of
+	libtool causes more problems than it solves.
+
+2002-06-15 Saturday 17:12  Roberto Bagnara <bagnara@cs.unipr.it>
+
+	* tests/Makefile.am (1.76): Always distribute the sources for
+	watchdog1.
+
+2002-06-15 Saturday 16:05  Roberto Bagnara <bagnara@cs.unipr.it>
+
+	* ltmain.sh (1.2), missing (1.4): Updated to the CVS version of
+	libtool.
+
+2002-06-15 Saturday 14:48  Roberto Bagnara <bagnara@cs.unipr.it>
+
+	* .cvsignore (1.6): For those building in the sources' directory.
+
+2002-06-15 Saturday 14:47  Roberto Bagnara <bagnara@cs.unipr.it>
+
+	* Watchdog/Makefile.am (1.5): dist-hook goes into the unconditional
+	section.
+
+2002-06-15 Saturday 14:46  Roberto Bagnara <bagnara@cs.unipr.it>
+
+	* tests/Makefile.am (1.75): Always distribute $(watchdog1_SOURCES).
+
+2002-06-15 Saturday 14:01  Roberto Bagnara <bagnara@cs.unipr.it>
+
+	* interfaces/Prolog/SWI/.cvsignore (1.3), tests/.cvsignore (1.2):
+	For those building in the sources' directory.
+
+2002-06-15 Saturday 13:25  Enea Zaffanella <zaffanella@cs.unipr.it>
+
+	* src/: NNC_Polyhedron.cc (1.9), NNC_Polyhedron.defs.hh (1.9),
+	Polyhedron.cc (1.176): Corrected method
+	Polyhedron::limited_widening_assign to work with NNC polyehdra.
+	Removed the overriding method from NNC_Polyhedron.
+
+2002-06-15 Saturday 13:23  Enea Zaffanella <zaffanella@cs.unipr.it>
+
+	* src/Constraint.defs.hh (1.55): Added comment for
+	construct_eps_geq_zero().
+
+2002-06-15 Saturday 12:40  Roberto Bagnara <bagnara@cs.unipr.it>
+
+	* interfaces/C/lpenum/.cvsignore (1.2): For those building in the
+	sources' directory.
+
+2002-06-15 Saturday 12:39  Roberto Bagnara <bagnara@cs.unipr.it>
+
+	* interfaces/Prolog/: Ciao/.cvsignore (1.2), GNU/.cvsignore (1.2),
+	SWI/.cvsignore (1.2), YAP/.cvsignore (1.2), YAP/ppl_yap.cc (1.29),
+	YAP/yap_clpq.pl (1.3): Minor changes to YAP support.  Changes for
+	those building in the sources' directory.
+
+2002-06-15 Saturday 12:28  Roberto Bagnara <bagnara@cs.unipr.it>
+
+	* interfaces/Prolog/SICStus/Makefile.am (1.23): Removed
+	ppl_sicstus.pl and sp_clpq.pl from MOSTLYCLEANFILES.
+
+2002-06-14 Friday 23:19  Roberto Bagnara <bagnara@cs.unipr.it>
+
+	* interfaces/Prolog/YAP/ppl_yap.cc (1.28): Support for YAP almost
+	completed.
+
+2002-06-14 Friday 23:18  Roberto Bagnara <bagnara@cs.unipr.it>
+
+	* interfaces/Prolog/ppl_prolog.icc (1.48): Include initializer.hh.
+
+2002-06-14 Friday 23:17  Roberto Bagnara <bagnara@cs.unipr.it>
+
+	* src/initializer.hh (1.2): Added the guard against multiple
+	inclusion.  Include Init.defs.hh.
+
+2002-06-14 Friday 20:06  Roberto Bagnara <bagnara@cs.unipr.it>
+
+	* src/: ConSys.defs.hh (1.44), Constraint.defs.hh (1.54),
+	GenSys.defs.hh (1.59): Temporary kludges removed.
+
+2002-06-14 Friday 19:56  Roberto Bagnara <bagnara@cs.unipr.it>
+
+	* interfaces/Prolog/: ppl_prolog.icc (1.47), Ciao/Makefile.am
+	(1.5), Ciao/ppl_ciao.cc (1.10), GNU/Makefile.am (1.15),
+	GNU/ppl_gprolog_sd.cc (1.5), SICStus/Makefile.am (1.22),
+	SICStus/ppl_sicstus_sd.cc (1.15), SWI/Makefile.am (1.18),
+	SWI/ppl_swiprolog.cc (1.39), YAP/Makefile.am (1.8), YAP/ppl_yap.cc
+	(1.27): Include the true sources.
+
+2002-06-14 Friday 19:06  Roberto Bagnara <bagnara@cs.unipr.it>
+
+	* interfaces/Prolog/YAP/ppl_yap.cc (1.26): Prolog_raise_exception()
+	written.
+
+2002-06-14 Friday 18:43  Roberto Bagnara <bagnara@cs.unipr.it>
+
+	* src/: Interval.defs.hh (1.3), Interval.inlines.hh (1.4): Provide
+	a copy constructor and assignment operator for ExtendedRational.
+
+2002-06-14 Friday 18:32  Patricia M. Hill <hill@comp.leeds.ac.uk>
+
+	* tests/boundingbox1.cc (1.16): Made it quiet and corrected a
+	comment.
+
+2002-06-14 Friday 18:24  Patricia M. Hill <hill@comp.leeds.ac.uk>
+
+	* tests/: boundingbox1.cc (1.15), boundingbox2.cc (1.6): Test file
+	boundingbox1.cc tidied.  Small changes to comments in
+	boundingbox2.cc.
+
+2002-06-14 Friday 17:45  Roberto Bagnara <bagnara@cs.unipr.it>
+
+	* src/: BoundingBox.cc (1.2), BoundingBox.defs.hh (1.1),
+	BoundingBox.hh (1.7), BoundingBox.inlines.hh (1.1),
+	BoundingBox.types.hh (1.1), Interval.defs.hh (1.2),
+	Interval.inlines.hh (1.3), Makefile.am (1.39),
+	Polyhedron.inlines.hh (1.33): template <class Box> void
+	Polyhedron::shrink_bounding_box(Box&) redesigned and simplified. 
+	Many other improvements in the code for dealing with bounding
+	boxes.
+
+2002-06-14 Friday 17:32  Patricia M. Hill <hill@comp.leeds.ac.uk>
+
+	* tests/boundingbox2.cc (1.5): Made boundingbox2.cc quiet.
+
+2002-06-14 Friday 16:29  Patricia M. Hill <hill@comp.leeds.ac.uk>
+
+	* tests/boundingbox2.cc (1.4): Some tidying of the tests.
+
+2002-06-14 Friday 14:49  Enea Zaffanella <zaffanella@cs.unipr.it>
+
+	* doc/definitions.dox (1.55), src/Polyhedron.cc (1.175),
+	src/Polyhedron.defs.hh (1.111): Removed strange mixing of short and
+	detailed style doxygen comments, that was causing a warning when
+	building the documentation.  Improved the user introduction, adding
+	definition of poly-differences.
+
+2002-06-14 Friday 12:45  Patricia M. Hill <hill@comp.leeds.ac.uk>
+
+	* interfaces/Prolog/ppl_prolog.icc (1.46): Added to
+	term_to_boundary checks that the input numerator and denominator
+	are integers and that the denominator is positive.
+
+2002-06-14 Friday 10:20  Roberto Bagnara <bagnara@cs.unipr.it>
+
+	* interfaces/Prolog/ppl_prolog.icc (1.45):
+	ppl_new_Polyhedron_from_bounding_box() fixed and simplified.
+
+2002-06-14 Friday 10:15  Patricia M. Hill <hill@comp.leeds.ac.uk>
+
+	* interfaces/Prolog/Prolog_interface.dox (1.39): Added a short
+	description for new_Polyhedron_from_bounding_box.
+
+2002-06-14 Friday 09:52  Patricia M. Hill <hill@comp.leeds.ac.uk>
+
+	* interfaces/Prolog/: pl_check.pl (1.11), ppl_prolog.icc (1.44):
+	Some tidying of the code for ppl_new_Polyhedron_from_bounding_box.
+
+2002-06-14 Friday 08:58  Patricia M. Hill <hill@comp.leeds.ac.uk>
+
+	* tests/boundingbox2.cc (1.3): Some bugs fixed.
+
+2002-06-13 Thursday 22:02  Roberto Bagnara <bagnara@cs.unipr.it>
+
+	* interfaces/Prolog/ppl_prolog.icc (1.43): Fixed two occurrences of
+	assignment where a test for equality was intended.
+
+2002-06-13 Thursday 16:52  Patricia M. Hill <hill@comp.leeds.ac.uk>
+
+	* interfaces/Prolog/ppl_prolog.icc (1.42): In
+	ppl_new_Polyhedron_from_bounding_box it now fails (ie
+	PROLOG_FAILURE is returned) if the list is not properly terminated
+	or it is not a list.  A few comments added to the code.
+
+2002-06-13 Thursday 16:33  Patricia M. Hill <hill@comp.leeds.ac.uk>
+
+	* interfaces/Prolog/: pl_check.pl (1.10), ppl_prolog.icc (1.41),
+	Ciao/ppl_ciao.pl (1.10), GNU/ppl_gprolog.pl (1.9),
+	SICStus/ppl_sicstus_sd.cc (1.14), YAP/ppl_yap.cc (1.25): Completed
+	the code for ppl_new_Polyhedron_from_bounding_box/3.
+
+2002-06-13 Thursday 14:02  Roberto Bagnara <bagnara@cs.unipr.it>
+
+	* interfaces/Prolog/Prolog_interface.dox (1.38): Prepare to explain
+	the not-so-easy situation with GNU Prolog.
+
+2002-06-13 Thursday 13:17  Roberto Bagnara <bagnara@cs.unipr.it>
+
+	* src/: BoundingBox.cc (1.1), BoundingBox.hh (1.6): Start
+	completing the BoundingBox class.
+
+2002-06-13 Thursday 12:42  Patricia M. Hill <hill@comp.leeds.ac.uk>
+
+	* tests/: boundingbox1.cc (1.14), boundingbox2.cc (1.2): More tests
+	added.
+
+2002-06-13 Thursday 11:21  Enea Zaffanella <zaffanella@cs.unipr.it>
+
+	* src/Polyhedron.inlines.hh (1.32), tests/Makefile.am (1.74),
+	tests/boundingbox2.cc (1.1): A bug corrected in the constructor of
+	a Polyhedron from a Box.  Added a new test boundingbox2.
+
+2002-06-13 Thursday 08:59  Roberto Bagnara <bagnara@cs.unipr.it>
+
+	* src/BoundingBox.hh (1.5): Fixed two bugs whereby call-by-value
+	was used instead of call-by-reference.
+
+2002-06-12 Wednesday 19:40  Roberto Bagnara <bagnara@cs.unipr.it>
+
+	* interfaces/Prolog/SWI/ppl_swiprolog.cc (1.38):
+	ppl_new_Polyhedron_from_bounding_box/3 added.
+
+2002-06-12 Wednesday 17:29  Patricia M. Hill <hill@comp.leeds.ac.uk>
+
+	* interfaces/Prolog/ppl_prolog.icc (1.40): A start in completing
+	ppl_new_Polyhedron_from_bounding_box.
+
+2002-06-12 Wednesday 15:39  Roberto Bagnara <bagnara@cs.unipr.it>
+
+	* interfaces/Prolog/SWI/: pl_clpq.cc (1.5), ppl_pl.cc (1.5),
+	ppl_swiprolog.cc (1.37): Also uninstall() "returns" install_t.
+
+2002-06-12 Wednesday 14:44  Roberto Bagnara <bagnara@cs.unipr.it>
+
+	* interfaces/Prolog/SWI/: pl_clpq.cc (1.4), ppl_pl.cc (1.4),
+	ppl_swiprolog.cc (1.36): Make sure the library is always
+	uninstalled.
+
+2002-06-12 Wednesday 10:47  Roberto Bagnara <bagnara@cs.unipr.it>
+
+	* ppl.spec.in (1.11): Added file list for package gprolog.  Updated
+	file list for package swi.
+
+2002-06-12 Wednesday 10:43  Roberto Bagnara <bagnara@cs.unipr.it>
+
+	* interfaces/Prolog/SWI/Makefile.am (1.17): Create dynamic
+	libraries but link statically until we understand whether and if
+	libtool can be made to interoperate with plld.
+
+2002-06-12 Wednesday 10:43  Roberto Bagnara <bagnara@cs.unipr.it>
+
+	* interfaces/Prolog/GNU/Makefile.am (1.14): Create dynamic
+	libraries but link statically until we understand whether and if
+	libtool can be made to interoperate with gplc.
+
+2002-06-12 Wednesday 08:45  Roberto Bagnara <bagnara@cs.unipr.it>
+
+	* interfaces/Prolog/Prolog_interface.dox (1.37): Started writing
+	the documentation for the GNU Prolog interface.
+
+2002-06-12 Wednesday 08:45  Roberto Bagnara <bagnara@cs.unipr.it>
+
+	* src/globals.hh (1.15): Document struct From_Bounding_Box.
+
+2002-06-11 Tuesday 17:28  Enea Zaffanella <zaffanella@cs.unipr.it>
+
+	* doc/definitions.dox (1.54): Added a few words on the double
+	description method.  Adjusted capitalizations.
+
+2002-06-11 Tuesday 15:02  Enea Zaffanella <zaffanella@cs.unipr.it>
+
+	* src/: GenSys.cc (1.52), Polyhedron.cc (1.174): Enforcing
+	normalization of constraints and generators in Polyhedron methods  
+	strongly_minimize_generators(), add_generator(),
+	time_elapse_assign()   and topological_closure_assign(); the same
+	for method GenSys::add_corresponding_closure_points().
+
+2002-06-11 Tuesday 12:40  Enea Zaffanella <zaffanella@cs.unipr.it>
+
+	* src/: Constraint.cc (1.24), Constraint.defs.hh (1.53),
+	Generator.cc (1.33): Added method Constraint::OK() to check for
+	normalization of constraints.  Added the same check to method
+	Generator::OK().
+
+2002-06-11 Tuesday 11:54  Enea Zaffanella <zaffanella@cs.unipr.it>
+
+	* src/: GenSys.cc (1.51), GenSys.defs.hh (1.58), GenSys.inlines.hh
+	(1.18), Polyhedron.cc (1.173): Added method
+	GenSys::const_iterator::skip_forward(): if the generator currently
+	pointed is a closure point and the next generator is the point
+	matching this closure point, then it skips to the next generator.
+	This method is used to skip redundant closure points when iterating
+	through strongly-minimized generator systems.  Added note to
+	Polyhedron::strongly_minimize_generators() stating that the
+	approach is correct if the generator system is sorted.
+
+2002-06-11 Tuesday 11:16  Enea Zaffanella <zaffanella@cs.unipr.it>
+
+	* src/ConSys.defs.hh (1.43): Corrected comment to the method
+	skip_forward().
+
+2002-06-11 Tuesday 11:15  Enea Zaffanella <zaffanella@cs.unipr.it>
+
+	* src/: Constraint.inlines.hh (1.27), Generator.cc (1.32):
+	Enforcing the normalization of constraints and generators.
+
+2002-06-11 Tuesday 09:56  Enea Zaffanella <zaffanella@cs.unipr.it>
+
+	* doc/: definitions.dox (1.53), ppl.sty (1.9): Better explaning
+	affine transformations.
+
+2002-06-11 Tuesday 09:19  Patricia M. Hill <hill@comp.leeds.ac.uk>
+
+	* interfaces/Prolog/: Prolog_interface.dox (1.36), pl_check.pl
+	(1.9): Grammar for boxes and description of
+	ppl_Polyhedron_get_bounding_box improved.
+
+2002-06-11 Tuesday 08:41  Patricia M. Hill <hill@comp.leeds.ac.uk>
+
+	* doc/definitions.dox (1.52): Added a paragraph on topologies and
+	topological compatibility.
+
+2002-06-10 Monday 19:54  Roberto Bagnara <bagnara@cs.unipr.it>
+
+	* interfaces/Prolog/SICStus/Makefile.am (1.21): Fix packaging
+	problem.
+
+2002-06-10 Monday 19:53  Roberto Bagnara <bagnara@cs.unipr.it>
+
+	* tests/boundingbox1.cc (1.13): Updated so as to abide by the new
+	interfaces.
+
+2002-06-10 Monday 18:39  Roberto Bagnara <bagnara@cs.unipr.it>
+
+	* interfaces/C/ppl_c.cc (1.31), interfaces/C/ppl_c.h (1.27),
+	src/BoundingBox.hh (1.4), src/ConSys.defs.hh (1.42),
+	src/Polyhedron.defs.hh (1.110), src/Polyhedron.inlines.hh (1.31):
+	This should be the final version of the interfaces for dealing with
+	bounding boxes.
+
+2002-06-10 Monday 18:05  Patricia M. Hill <hill@comp.leeds.ac.uk>
+
+	* doc/definitions.dox (1.51): Several improvements and a few
+	corrections.
+
+2002-06-10 Monday 17:30  Roberto Bagnara <bagnara@cs.unipr.it>
+
+	* src/: Polyhedron.defs.hh (1.109), Polyhedron.inlines.hh (1.30):
+	Improvements to the documentation of template <class Box>
+	Polyhedron::Polyhedron(Topology topol, const Box& box).
+
+2002-06-10 Monday 17:09  Patricia M. Hill <hill@comp.leeds.ac.uk>
+
+	* doc/definitions.dox (1.50): A first attempt to define intervals,
+	boxes and bounding boxes.
+
+2002-06-10 Monday 16:19  Enea Zaffanella <zaffanella@cs.unipr.it>
+
+	* src/: Polyhedron.defs.hh (1.108), Polyhedron.inlines.hh (1.29):
+	Finished the implementation of constructor   template <class Box>
+	Polyhedron(Topology topol, const Box& box); Changed comments to
+	require that class Box provides a method   bool is_empty();
+
+2002-06-10 Monday 15:37  Patricia M. Hill <hill@comp.leeds.ac.uk>
+
+	* doc/definitions.dox (1.49): Minor improvements and bug fixed in
+	paragraph on the generators representation.
+
+2002-06-10 Monday 14:45  Roberto Bagnara <bagnara@cs.unipr.it>
+
+	* src/Polyhedron.inlines.hh (1.28): Avoid a couple of compiler's
+	warnings.
+
+2002-06-10 Monday 13:45  Patricia M. Hill <hill@comp.leeds.ac.uk>
+
+	* interfaces/Prolog/Prolog_interface.dox (1.35): Added grammar for
+	intervals and description for ppl_Polyhedron_get_bounding_box/2
+
+2002-06-10 Monday 11:45  Patricia M. Hill <hill@comp.leeds.ac.uk>
+
+	* tests/boundingbox1.cc (1.12): Now it exits with return value 1 if
+	the boxes are not as expected.
+
+2002-06-10 Monday 11:07  Roberto Bagnara <bagnara@cs.unipr.it>
+
+	* interfaces/Prolog/ppl_prolog.icc (1.39), src/BoundingBox.hh
+	(1.3), src/ConSys.defs.hh (1.41), src/Constraint.defs.hh (1.52),
+	src/GenSys.defs.hh (1.57): ppl_new_Polyhedron_from_bounding_box/3
+	sketched.  Class Parma_Polyhedra_Library::BoundingBox fixed. 
+	Inserted several temporary kludges related to the interaction of
+	templates, access control, and the way we produce ppl_install.hh.
+
+2002-06-10 Monday 10:31  Patricia M. Hill <hill@comp.leeds.ac.uk>
+
+	* interfaces/Prolog/clpq2.pl (1.5): clpq2.pl now can handle strict
+	constraints.
+
+2002-06-10 Monday 10:13  Roberto Bagnara <bagnara@cs.unipr.it>
+
+	* src/BoundingBox.hh (1.2): Complete this implementation of
+	bounding boxes.
+
+2002-06-10 Monday 10:03  Roberto Bagnara <bagnara@cs.unipr.it>
+
+	* src/Polyhedron.defs.hh (1.107): Fix the comment fix.
+
+2002-06-10 Monday 10:02  Roberto Bagnara <bagnara@cs.unipr.it>
+
+	* src/Polyhedron.defs.hh (1.106): Comment fixed.
+
+2002-06-10 Monday 09:56  Roberto Bagnara <bagnara@cs.unipr.it>
+
+	* tests/boundingbox1.cc (1.11): Added operator==() and operator!=()
+	for BInterval and BBox.
+
+2002-06-10 Monday 09:40  Roberto Bagnara <bagnara@cs.unipr.it>
+
+	* interfaces/Prolog/ppl_prolog.icc (1.38): Formatting changes.
+
+2002-06-10 Monday 09:13  Patricia M. Hill <hill@comp.leeds.ac.uk>
+
+	* tests/boundingbox1.cc (1.10): Further small improvements to test
+	file boundingbox1.cc
+
+2002-06-10 Monday 08:41  Patricia M. Hill <hill@comp.leeds.ac.uk>
+
+	* interfaces/Prolog/clpq2.pl (1.4), tests/boundingbox1.cc (1.9):
+	boundingbox1.cc is improved but needs further testing.	clpq2.pl
+	now works with changed interface predicates.
+
+2002-06-10 Monday 08:32  Roberto Bagnara <bagnara@cs.unipr.it>
+
+	* tests/print.hh (1.9): Only declarations here.
+
+2002-06-09 Sunday 19:43  Roberto Bagnara <bagnara@cs.unipr.it>
+
+	* src/Polyhedron.defs.hh (1.105): Useless `explicit' qualification
+	removed.
+
+2002-06-09 Sunday 19:22  Roberto Bagnara <bagnara@cs.unipr.it>
+
+	* interfaces/Prolog/: Makefile.am (1.14), ppl_prolog.pl (1.4),
+	GNU/Makefile.am (1.13), GNU/ppl_gprolog.pl (1.8),
+	GNU/ppl_gprolog_sd.pl (1.11), SICStus/Makefile.am (1.20),
+	SICStus/ppl_sicstus.pl (1.21), SICStus/ppl_sicstus_sd.pl (1.3):
+	Reorganization due to the fact that ppl_prolog.pl was obsolete.
+
+2002-06-09 Sunday 19:20  Roberto Bagnara <bagnara@cs.unipr.it>
+
+	* interfaces/C/ppl_c.cc (1.30): Use the new bounding box
+	constructors.
+
+2002-06-09 Sunday 19:14  Roberto Bagnara <bagnara@cs.unipr.it>
+
+	* src/: C_Polyhedron.defs.hh (1.5), C_Polyhedron.inlines.hh (1.4),
+	NNC_Polyhedron.defs.hh (1.8), NNC_Polyhedron.inlines.hh (1.6),
+	globals.hh (1.14): Differentiate the bounding box constructors for
+	C_Polyhedron and NNC_Polyhedron from all the other constructors.
+
+2002-06-09 Sunday 18:08  Roberto Bagnara <bagnara@cs.unipr.it>
+
+	* interfaces/Prolog/: Prolog_interface.dox (1.34), exceptions.hh
+	(1.6), pl_check.pl (1.8), track_allocation.hh (1.4),
+	Ciao/ppl_ciao.pl (1.9), GNU/gp_clpq.pl (1.5), GNU/ppl_gprolog_sd.pl
+	(1.10), SICStus/ppl_sicstus_sd.pl (1.2), SICStus/sp_clpq.pl (1.4),
+	SWI/pl_clpq.cc (1.3), SWI/pl_clpq.pl (1.3), SWI/ppl_pl.cc (1.3),
+	YAP/ppl_yap.pl (1.4), YAP/yap_clpq.pl (1.2): Copyright and "no
+	warranty" notices added.
+
+2002-06-09 Sunday 16:55  Roberto Bagnara <bagnara@cs.unipr.it>
+
+	* ppl.lsm.in (1.3): Updated.
+
+2002-06-09 Sunday 16:36  Roberto Bagnara <bagnara@cs.unipr.it>
+
+	* Watchdog/: Makefile.am (1.4), configure.ac (1.6): Consistent
+	spelling for Autoconf and Automake.
+
+2002-06-09 Sunday 16:34  Roberto Bagnara <bagnara@cs.unipr.it>
+
+	* configure.ac (1.46): Set CFLAGS properly.  Quote systematically.
+
+2002-06-09 Sunday 16:33  Roberto Bagnara <bagnara@cs.unipr.it>
+
+	* Watchdog/configure.ac (1.5): Set CFLAGS properly.  Check for
+	header files and library functions only if we are building the
+	library.
+
+2002-06-09 Sunday 16:15  Roberto Bagnara <bagnara@cs.unipr.it>
+
+	* configure.ac (1.45), Watchdog/configure.ac (1.4): Be more
+	friendly to compilers different from GCC.
+
+2002-06-09 Sunday 16:14  Roberto Bagnara <bagnara@cs.unipr.it>
+
+	* interfaces/C/lpenum/lpenum.c (1.5): Include <stdlib.h>.  Fix a
+	couple of warnings.
+
+2002-06-09 Sunday 14:36  Roberto Bagnara <bagnara@cs.unipr.it>
+
+	* interfaces/C/: ppl_c.cc (1.29), ppl_c.h (1.26): Added
+	ppl_new_C_Polyhedron_from_bounding_box() and
+	ppl_new_NNC_Polyhedron_from_bounding_box().
+
+2002-06-09 Sunday 14:33  Roberto Bagnara <bagnara@cs.unipr.it>
+
+	* src/: C_Polyhedron.defs.hh (1.4), C_Polyhedron.inlines.hh (1.3),
+	NNC_Polyhedron.defs.hh (1.7), NNC_Polyhedron.inlines.hh (1.5),
+	Polyhedron.defs.hh (1.104), Polyhedron.inlines.hh (1.27): Added
+	template <class Box> C_Polyhedron::C_Polyhedron(const Box& box) and
+	template <class Box> NNC_Polyhedron::NNC_Polyhedron(const Box&
+	box).  Added the declaration and documentation and sketched the
+	implementation of template <class Box>
+	Polyhedron::Polyhedron(Topology topol, const Box& box): these
+	constructor allow to builds a polyhedron out of a generic,
+	interval-based bounding box.
+	
+	Documentation of Polyhedron::shrink_bounding_box(Box& box) revised:
+	we now promise to communicate rational numbers using fractions in
+	canonical form.  The fraction n/d is in canonical form if and only
+	if n and d have no common factors and d is positive, 0/1 being the
+	unique representation for zero.
+
+2002-06-09 Sunday 12:31  Patricia M. Hill <hill@comp.leeds.ac.uk>
+
+	* doc/definitions.dox (1.48): Added definitions of "minimized"
+	constraints and generators.
+
+2002-06-09 Sunday 11:46  Patricia M. Hill <hill@comp.leeds.ac.uk>
+
+	* doc/definitions.dox (1.47): Further updating of the user manual
+	to allow for NNC polyhedra.  Minkowski's and Weil's theorems and
+	some definitions moved to the developers part.
+
+2002-06-09 Sunday 08:09  Roberto Bagnara <bagnara@cs.unipr.it>
+
+	* src/Interval.inlines.hh (1.2): Removed redundant and erroneous
+	default argument specification.
+
+2002-06-08 Saturday 17:41  Roberto Bagnara <bagnara@cs.unipr.it>
+
+	* interfaces/Prolog/: Interval.hh (1.3), Makefile.am (1.13),
+	ppl_prolog.icc (1.37): Use the new implementation of bounding
+	boxes.
+
+2002-06-08 Saturday 17:40  Roberto Bagnara <bagnara@cs.unipr.it>
+
+	* tests/addconstraints2.cc (1.12): Shut up if not noisy.
+
+2002-06-08 Saturday 17:39  Roberto Bagnara <bagnara@cs.unipr.it>
+
+	* src/: BoundingBox.hh (1.1), Interval.cc (1.1), Interval.defs.hh
+	(1.1), Interval.inlines.hh (1.1), Interval.types.hh (1.1),
+	Makefile.am (1.38): New implementation of bounding boxes.
+
+2002-06-08 Saturday 17:23  Roberto Bagnara <bagnara@cs.unipr.it>
+
+	* tests/: Makefile.am (1.73), addconstraints2.cc (1.11),
+	boundingbox1.cc (1.8), ehandlers.cc (1.1), ehandlers.hh (1.4),
+	memory1.cc (1.2), print.cc (1.1), print.hh (1.8), smm1.cc (1.5),
+	watchdog1.cc (1.7): Better implementation for auxiliary functions. 
+	Some more cleaning.
+
+2002-06-08 Saturday 12:23  Roberto Bagnara <bagnara@cs.unipr.it>
+
+	* interfaces/Prolog/: Interval.hh (1.2), ppl_prolog.icc (1.36),
+	Ciao/ppl_ciao.cc (1.9), Ciao/ppl_ciao.pl (1.8), GNU/gp_clpq.pl
+	(1.4), GNU/ppl_gprolog_sd.pl (1.9), SICStus/ppl_sicstus_sd.cc
+	(1.13), SWI/ppl_swiprolog.cc (1.35), YAP/ppl_yap.cc (1.24): Initial
+	implementation for ppl_Polyhedron_get_bounding_box/2.  ppl_init/0
+	removed (was an inferior duplicate of ppl_initialize/0).
+
+2002-06-07 Friday 17:31  Patricia M. Hill <hill@comp.leeds.ac.uk>
+
+	* doc/definitions.dox (1.46): On-going reorganisation of
+	introduction based on some of the items suggested by Enea.
+
+2002-06-07 Friday 16:40  Roberto Bagnara <bagnara@cs.unipr.it>
+
+	* interfaces/Prolog/: exceptions.hh (1.5), ppl_prolog.icc (1.35):
+	The function term_to_polyhedron_handle() replaces get_ph_pointer().
+	 The new function either return a plausible polyhedron handle or
+	throws the `not_a_polyhedron_handle' exception.  All sites that
+	used to call get_ph_pointer() have been consequently simplified.
+
+2002-06-07 Friday 16:14  Roberto Bagnara <bagnara@cs.unipr.it>
+
+	* interfaces/Prolog/SICStus/ppl_sicstus_sd.cc (1.12): Stub
+	declarations fixed.
+
+2002-06-07 Friday 14:23  Enea Zaffanella <zaffanella@cs.unipr.it>
+
+	* src/Polyhedron.cc (1.172): Corrected a bug in
+	strongly_minimize_constraints() whereby sat_c was declared
+	up-to-date even if it was not the case.
+
+2002-06-07 Friday 13:40  Enea Zaffanella <zaffanella@cs.unipr.it>
+
+	* doc/: definitions.dox (1.45), ppl.sty (1.8): Some further step
+	toward the reorganization of user-manual intro.
+
+2002-06-07 Friday 13:33  Patricia M. Hill <hill@comp.leeds.ac.uk>
+
+	* interfaces/Prolog/Prolog_interface.dox (1.33): Documentation for
+	the Prolog interface updated to allow for the change to more
+	generic predicates.
+
+2002-06-07 Friday 13:23  Enea Zaffanella <zaffanella@cs.unipr.it>
+
+	* tests/exceptions2.cc (1.6): Typos fixed.
+
+2002-06-07 Friday 12:02  Patricia M. Hill <hill@comp.leeds.ac.uk>
+
+	* interfaces/Prolog/: clpq.pl (1.8), pl_check.pl (1.7),
+	ppl_prolog.icc (1.34), Ciao/ppl_ciao.pl (1.7),
+	GNU/ppl_gprolog_sd.pl (1.8), SICStus/ppl_sicstus_sd.cc (1.11),
+	SWI/ppl_swiprolog.cc (1.34), YAP/ppl_yap.cc (1.23): All predicates
+	specific to C or NNC now removed and replaced by generic
+	predicates. Documentation needs to be updated.
+
+2002-06-07 Friday 11:38  Patricia M. Hill <hill@comp.leeds.ac.uk>
+
+	* interfaces/Prolog/: pl_check.pl (1.6), ppl_prolog.icc (1.33),
+	SWI/ppl_swiprolog.cc (1.33): Predicates
+	ppl_new_Polyhedron_from_Polyhedron/4,
+	ppl_new_Polyhedron_from_ConSys/3, and
+	ppl_new_Polyhedron_from_GenSys/3 added - just defined in SWI Prolog
+	in this commit.
+
+2002-06-07 Friday 11:10  Roberto Bagnara <bagnara@cs.unipr.it>
+
+	* interfaces/Prolog/Prolog_interface.dox (1.32): Explain how to
+	enable polyhedra allocation tracking.
+
+2002-06-07 Friday 10:59  Roberto Bagnara <bagnara@cs.unipr.it>
+
+	* interfaces/Prolog/ppl_prolog.icc (1.32): Creation and disposal of
+	polyhedra is enabled only if explicitely requested.
+
+2002-06-07 Friday 10:10  Roberto Bagnara <bagnara@cs.unipr.it>
+
+	* interfaces/Prolog/ppl_prolog.icc (1.31): Remove useless inclusion
+	and using namespace directives.
+
+2002-06-07 Friday 10:08  Roberto Bagnara <bagnara@cs.unipr.it>
+
+	* interfaces/Prolog/ppl_prolog.icc (1.30): Avoid quoting for better
+	output.
+
+2002-06-07 Friday 10:03  Roberto Bagnara <bagnara@cs.unipr.it>
+
+	* interfaces/Prolog/: exceptions.hh (1.4), ppl_prolog.icc (1.29):
+	New internal_exception: not_a_polyhedron_kind.	New function
+	term_to_polyhedron_kind() replaces term_to_atom().
+
+2002-06-07 Friday 08:32  Roberto Bagnara <bagnara@cs.unipr.it>
+
+	* interfaces/Prolog/ppl_prolog.icc (1.28): `a_closed' renamed
+	`a_c'.
+
+2002-06-07 Friday 08:25  Roberto Bagnara <bagnara@cs.unipr.it>
+
+	* interfaces/Prolog/: ppl_prolog.icc (1.27), Ciao/ppl_ciao.cc
+	(1.8), GNU/ppl_gprolog_sd.cc (1.4), SICStus/ppl_sicstus_sd.cc
+	(1.10), SWI/ppl_swiprolog.cc (1.32), YAP/ppl_yap.cc (1.22):
+	Prolog_get_name_arity() renamed Prolog_get_compound_name_arity().
+
+2002-06-07 Friday 08:17  Roberto Bagnara <bagnara@cs.unipr.it>
+
+	* interfaces/Prolog/: ppl_prolog.icc (1.26), Ciao/ppl_ciao.cc
+	(1.7), GNU/ppl_gprolog_sd.cc (1.3), SICStus/ppl_sicstus_sd.cc
+	(1.9), SWI/ppl_swiprolog.cc (1.31), YAP/ppl_yap.cc (1.21):
+	Prolog_get_atom_name() added.
+
+2002-06-07 Friday 07:19  Roberto Bagnara <bagnara@cs.unipr.it>
+
+	* interfaces/Prolog/: Ciao/ppl_ciao.cc (1.6), Ciao/ppl_ciao.pl
+	(1.6), GNU/ppl_gprolog_sd.cc (1.2), SICStus/ppl_sicstus_sd.cc
+	(1.8), SWI/ppl_swiprolog.cc (1.30), YAP/ppl_yap.cc (1.20):
+	Prolog_is_atom() added.
+
+2002-06-06 Thursday 18:30  Patricia M. Hill <hill@comp.leeds.ac.uk>
+
+	* interfaces/Prolog/: pl_check.pl (1.5), ppl_prolog.icc (1.25),
+	SWI/ppl_swiprolog.cc (1.29): Added 2 generic predicates
+	ppl_new_Polyhedron_from_dimension/3 and
+	ppl_new_Polyhedron_empty_from_dimension/3 where the 1st argument
+	must be c or nnc.  The only Prolog system with interface changed is
+	SWI.
+
+2002-06-06 Thursday 17:45  Roberto Bagnara <bagnara@cs.unipr.it>
+
+	* ppl.spec.in (1.10): The `swi' package has now its `%files'
+	section.
+
+2002-06-06 Thursday 17:18  Roberto Bagnara <bagnara@cs.unipr.it>
+
+	* configure.ac (1.44): Version number bumped.
+
+2002-06-06 Thursday 17:17  Roberto Bagnara <bagnara@cs.unipr.it>
+
+	* interfaces/Prolog/: Prolog_interface.dox (1.31), SWI/Makefile.am
+	(1.16), SWI/pl_clpq.cc (1.2), SWI/ppl_pl.cc (1.2),
+	SWI/ppl_swiprolog.cc (1.28): Support for SWI-Prolog completed and
+	documented.
+
+2002-06-06 Thursday 15:13  Enea Zaffanella <zaffanella@cs.unipr.it>
+
+	* doc/definitions.dox (1.44): Slowly progressing.
+
+2002-06-06 Thursday 12:46  Enea Zaffanella <zaffanella@cs.unipr.it>
+
+	* doc/: definitions.dox (1.43), ppl.sty (1.7): Started rewriting
+	the introduction to the user manual.
+
+2002-06-06 Thursday 10:50  Roberto Bagnara <bagnara@cs.unipr.it>
+
+	* interfaces/Prolog/Prolog_interface.dox (1.30): Explained how to
+	use the library from SICStus Prolog.
+
+2002-06-06 Thursday 09:40  Elisa Ricci <ericci@cs.unipr.it>
+
+	* src/: ConSys.defs.hh (1.40), Constraint.defs.hh (1.51),
+	Generator.defs.hh (1.56), LinExpression.defs.hh (1.32),
+	Matrix.defs.hh (1.24), Polyhedron.defs.hh (1.103), Row.defs.hh
+	(1.42), SatMatrix.defs.hh (1.17), SatRow.defs.hh (1.13),
+	Status.defs.hh (1.15): Now, a Doxygen comment is separated by an
+	empty line from the C++ item that precedes it.
+
+2002-06-05 Wednesday 22:34  Roberto Bagnara <bagnara@cs.unipr.it>
+
+	* interfaces/Prolog/SWI/: Makefile.am (1.15), ppl_pl.cc (1.1),
+	pplpl.cc (1.2): Renamed pplpl.cc to ppl_pl.cc.
+
+2002-06-05 Wednesday 22:18  Roberto Bagnara <bagnara@cs.unipr.it>
+
+	* ppl.spec.in (1.9): We will build several RPM packages out of our
+	source tree.
+
+2002-06-05 Wednesday 17:39  Roberto Bagnara <bagnara@cs.unipr.it>
+
+	* NEWS (1.23): Added support for timeout-guarded operations.
+
+2002-06-05 Wednesday 17:28  Roberto Bagnara <bagnara@cs.unipr.it>
+
+	* tests/: Makefile.am (1.72), timings.cc (1.1), timings.hh (1.1),
+	watchdog1.cc (1.6): When NOISY, watchdog1 prints the time after
+	which the timeout exception has been received.
+
+2002-06-05 Wednesday 17:25  Patricia M. Hill <hill@comp.leeds.ac.uk>
+
+	* interfaces/Prolog/Prolog_interface.dox (1.29): Added
+	documentation for the minimized_constraints and
+	minimized_generators predicates.  Removed comments that SWI, GNU,
+	YAP are not yet supported.
+
+2002-06-05 Wednesday 17:12  Enea Zaffanella <zaffanella@cs.unipr.it>
+
+	* interfaces/C/: ppl_c.cc (1.28), ppl_c.h (1.25): Added support for
+	minimized_constraints() and minimized_generators() to the C
+	interface.
+
+2002-06-05 Wednesday 16:49  Enea Zaffanella <zaffanella@cs.unipr.it>
+
+	* interfaces/Prolog/: ppl_prolog.icc (1.24), Ciao/ppl_ciao.pl
+	(1.5), GNU/ppl_gprolog_sd.pl (1.7), SICStus/ppl_sicstus_sd.cc
+	(1.7), SWI/ppl_swiprolog.cc (1.27), YAP/ppl_yap.cc (1.19): All
+	Prolog interfaces now have methods for accessing the minimized
+	constraint and generator systems.
+
+2002-06-05 Wednesday 16:45  Roberto Bagnara <bagnara@cs.unipr.it>
+
+	* src/globals.hh (1.13): Simpler and more efficient implementation
+	of Parma_Polyhedra_Library::maybe_abandon().
+
+2002-06-05 Wednesday 16:43  Roberto Bagnara <bagnara@cs.unipr.it>
+
+	* src/: conversion.cc (1.28), globals.hh (1.12): Documentation of
+	`abandon_exponential_computations' changed: we now provide a quite
+	strong guarantee, which is implemented in Polyhedron::conversion().
+
+2002-06-05 Wednesday 15:55  Enea Zaffanella <zaffanella@cs.unipr.it>
+
+	* src/Polyhedron.defs.hh (1.102), tests/NNCminimize1.cc (1.3),
+	tests/NNCminimize2.cc (1.3), tests/NNCminimize3.cc (1.3),
+	tests/NNCminimize4.cc (1.5), tests/NNCminimize6.cc (1.4): Methods
+	strongly_minimize(), strongly_minimize_constraints() and
+	strongly_minimize_generators() are now private; tests changed to
+	call the public methods minimized_constraints() and
+	minimized_generators(), instead.
+
+2002-06-05 Wednesday 15:37  Roberto Bagnara <bagnara@cs.unipr.it>
+
+	* NEWS (1.22): More news.
+
+2002-06-05 Wednesday 14:42  Roberto Bagnara <bagnara@cs.unipr.it>
+
+	* NEWS (1.21): News items added.  List sorted to match the
+	(subjective) relative importance of the innovations.
+
+2002-06-05 Wednesday 12:51  Roberto Bagnara <bagnara@cs.unipr.it>
+
+	* TODO (1.22): Removed some obsolete entries.
+
+2002-06-05 Wednesday 12:49  Roberto Bagnara <bagnara@cs.unipr.it>
+
+	* NEWS (1.20): Mention the addition of the time-elapse operation.
+
+2002-06-05 Wednesday 08:20  Roberto Bagnara <bagnara@cs.unipr.it>
+
+	* Makefile.am (1.19), configure.ac (1.43), doc/Makefile.am (1.18),
+	interfaces/Makefile.am (1.5), interfaces/C/Makefile.am (1.8),
+	interfaces/C/lpenum/Makefile.am (1.5),
+	interfaces/Prolog/Makefile.am (1.12),
+	interfaces/Prolog/Ciao/Makefile.am (1.4),
+	interfaces/Prolog/GNU/Makefile.am (1.12),
+	interfaces/Prolog/SICStus/Makefile.am (1.19),
+	interfaces/Prolog/SWI/Makefile.am (1.14),
+	interfaces/Prolog/YAP/Makefile.am (1.7), m4/Makefile.am (1.6),
+	src/Makefile.am (1.37), tests/Makefile.am (1.71): File description
+	improved.
+
+2002-06-05 Wednesday 08:13  Roberto Bagnara <bagnara@cs.unipr.it>
+
+	* Makefile.am (1.18): Improved formatting.
+
+2002-06-04 Tuesday 20:48  Roberto Bagnara <bagnara@cs.unipr.it>
+
+	* config.guess (1.10), config.sub (1.9): Updated.
+
+2002-06-04 Tuesday 18:08  Roberto Bagnara <bagnara@cs.unipr.it>
+
+	* INSTALL (1.3), ChangeLog (1.8): Updated.
+
 2002-06-04 Tuesday 17:53  Roberto Bagnara <bagnara@cs.unipr.it>
 
 	* CREDITS (1.3): Updated.
