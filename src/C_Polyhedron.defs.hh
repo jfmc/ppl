@@ -106,7 +106,7 @@ public:
       Polyhedron::Polyhedron(Topology topol, const Box& box);
     \param box    The bounding box representing the polyhedron to be built.
     \param dummy  A dummy tag to syntactically differentiate this one
-                 from the other constructors.
+                  from the other constructors.
     \exception std::invalid_argument thrown if \p box has intervals that
                                      are not topologically closed (i.e.,
                                      having some finite but open bounds).
