@@ -279,9 +279,9 @@ PPL::Polyhedron::add_and_minimize(bool con_to_gen,
 
   size_t new_source1_num_rows = source1.num_rows();
   if (new_source1_num_rows == old_source1_num_rows)
-    // If we appended no rows to `source1', then all the constraints
-    // in `source2' were already in `source1' and there is nothing
-    // left to do ...
+    // No row was appended to `source1', because all the constraints
+    // in `source2' were already in `source1'.
+    // There is nothing left to do ...
     return false;
 
   // FIXME: add_row() already sets correctly the flag `sorted'.
