@@ -680,3 +680,21 @@ ppl_remove_dimensions(void* pp, SP_term_ref variables_list) {
   }
   CATCH_ALL;
 }
+
+extern "C" void
+ppl_add_dimensions_and_project(void* pp, long num_new_dimensions) {
+  try {
+    static_cast<PPL::Polyhedron*>(pp)
+      ->add_dimensions_and_project(get_size_t(num_new_dimensions));
+  }
+  CATCH_ALL;
+}
+
+extern "C" void
+ppl_add_dimensions_and_embed(void* pp, long num_new_dimensions) {
+  try {
+    static_cast<PPL::Polyhedron*>(pp)
+      ->add_dimensions_and_embed(get_size_t(num_new_dimensions));
+  }
+  CATCH_ALL;
+}

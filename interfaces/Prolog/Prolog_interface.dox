@@ -59,6 +59,14 @@ To be written.
 
 To be written.
 
+<H4><CODE>ppl_add_dimensions_and_embed(+Polyhedron, +Unsigned)</CODE></H4>
+
+To be written.
+
+<H4><CODE>ppl_add_dimensions_and_project(+Polyhedron, +Unsigned)</CODE></H4>
+
+To be written.
+
 <H4><CODE>ppl_check_empty(+Polyhedron)</CODE></H4>
 
 To be written.
