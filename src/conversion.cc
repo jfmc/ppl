@@ -784,6 +784,13 @@ PPL::Polyhedron::conversion(Matrix& source,
 	++k;
       }
     }
+    // Check if the client has requested abandoning all exponential
+    // computations.  If so, the exception specified by the client
+    // is thrown now.
+    // This test is executed at time intervals that are polynomial
+    // in the size of the source matrix.
+    // FIXME: explain why it is so.
+    maybe_abandon();
   }
 
   // Since we may have deleted some redundant constraints from `source'
