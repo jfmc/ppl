@@ -156,13 +156,19 @@ Prolog_put_address(Prolog_term_ref& t, void* p) {
   return Prolog_construct_cons(t, Mk_Positive(u.s[0]), Mk_Positive(u.s[1]));
 }
 
+static Prolog_atom a_throw;
+
+static void
+ppl_Prolog_sysdep_init() {
+  a_throw = Find_Atom("throw");
+}
+
 /*!
   Raise a Prolog exception with \p t as the exception term.
 */
 static inline void
 Prolog_raise_exception(Prolog_term_ref t) {
-  // ???
-  // (void) PL_raise_exception(t);
+  Pl_Exec_Continuation(a_throw, 1, &t);
 }
 
 /*!
