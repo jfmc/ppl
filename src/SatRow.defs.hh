@@ -156,21 +156,6 @@ public:
   bool OK() const;
 };
 
-namespace Parma_Polyhedra_Library {
-
-namespace IO_Operators {
-
-#ifdef PPL_DOXYGEN_INCLUDE_IMPLEMENTATION_DETAILS
-//! Output operator.
-/*! \relates SatRow */
-#endif // PPL_DOXYGEN_INCLUDE_IMPLEMENTATION_DETAILS
-std::ostream& operator<<(std::ostream& s, const SatRow& r);
-
-} // namespace IO_Operators
-
-} // namespace Parma_Polyhedra_Library
-
-
 namespace std {
 
 #ifdef PPL_DOXYGEN_INCLUDE_IMPLEMENTATION_DETAILS
