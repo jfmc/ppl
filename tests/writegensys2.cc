@@ -37,11 +37,10 @@ const char* my_file = "writegensys2.dat";
 int
 main() {
   set_handlers();
-  Variable A(0);
-  Variable B(1);
-  Variable C(2);
 
-  GenSys gs;
+  C_Polyhedron ph(3, C_Polyhedron::EMPTY);
+
+  GenSys gs = ph.generators();
  
   fstream f;
   open(f, my_file, ios_base::out);
