@@ -39,7 +39,7 @@ namespace Parma_Polyhedra_Library {
 //! Returns <CODE>true</CODE> if and only if
 //! \p x and \p y are the same polyhedron.
 /*!
-  \relates Determinate\<PH\>
+  \relates Determinate
   \exception std::invalid_argument thrown if \p x and \p y
                                           are topology-incompatible
                                           or dimension-incompatible.
@@ -51,7 +51,7 @@ bool operator==(const Determinate<PH>& x, const Determinate<PH>& y);
 //! Returns <CODE>true</CODE> if and only if
 //! \p x and \p y are different polyhedra.
 /*!
-  \relates Determinate\<PH\>
+  \relates Determinate
   \exception std::invalid_argument thrown if \p x and \p y
                                           are topology-incompatible
                                           or dimension-incompatible.
@@ -59,24 +59,24 @@ bool operator==(const Determinate<PH>& x, const Determinate<PH>& y);
 template <typename PH>
 bool operator!=(const Determinate<PH>& x, const Determinate<PH>& y);
 
-/*! \relates Determinate\<PH\> */
+/*! \relates Determinate */
 template <typename PH>
 bool
 lcompare(const Determinate<PH>& x, const Determinate<PH>& y);
 
-/*! \relates Determinate\<PH\> */
+/*! \relates Determinate */
 template <typename PH>
 Determinate<PH>
 operator+(const Determinate<PH>& x, const Determinate<PH>& y);
 
-/*! \relates Determinate\<PH\> */
+/*! \relates Determinate */
 template <typename PH>
 Determinate<PH>
 operator*(const Determinate<PH>& x, const Determinate<PH>& y);
 
 namespace IO_Operators {
 
-/*! \relates Parma_Polyhedra_Library::Determinate\<PH\> */
+/*! \relates Parma_Polyhedra_Library::Determinate */
 template <typename PH>
 std::ostream&
 operator<<(std::ostream&, const Determinate<PH>&);
@@ -85,7 +85,9 @@ operator<<(std::ostream&, const Determinate<PH>&);
 
 } // namespace Parma_Polyhedra_Library
 
+#ifdef PPL_DOXYGEN_INCLUDE_IMPLEMENTATION_DETAILS
 //! Wrap a polyhedron class into a determinate constraint system interface.
+#endif // PPL_DOXYGEN_INCLUDE_IMPLEMENTATION_DETAILS
 template <typename PH>
 class Parma_Polyhedra_Library::Determinate {
 public:

@@ -34,34 +34,34 @@ site: http://www.cs.unipr.it/ppl/ . */
 
 namespace Parma_Polyhedra_Library {
 
-/*! \relates PowerSet\<CS\> */
+/*! \relates PowerSet */
 template <typename CS>
 PowerSet<CS>
 operator+(const PowerSet<CS>&, const PowerSet<CS>&);
 
-/*! \relates PowerSet\<CS\> */
+/*! \relates PowerSet */
 template <typename CS>
 PowerSet<CS>
 operator*(const PowerSet<CS>&, const PowerSet<CS>&);
 
-/*! \relates PowerSet\<CS\> */
+/*! \relates PowerSet */
 template <typename CS>
 CS
 project(const PowerSet<CS>&);
 
-/*! \relates PowerSet\<CS\> */
+/*! \relates PowerSet */
 template <typename CS>
 bool
 operator==(const PowerSet<CS>& x, const PowerSet<CS>& y);
 
-/*! \relates PowerSet\<CS\> */
+/*! \relates PowerSet */
 template <typename CS>
 int
 lcompare(const PowerSet<CS>&, const PowerSet<CS>&);
 
 namespace IO_Operators {
 
-/*! \relates Parma_Polyhedra_Library::PowerSet\<CS\> */
+/*! \relates Parma_Polyhedra_Library::PowerSet */
 template <typename CS>
 std::ostream&
 operator<<(std::ostream&, const PowerSet<CS>&);
@@ -71,7 +71,9 @@ operator<<(std::ostream&, const PowerSet<CS>&);
 } // namespace Parma_Polyhedra_Library
 
 
+#ifdef PPL_DOXYGEN_INCLUDE_IMPLEMENTATION_DETAILS
 //! The powerset construction on constraint systems.
+#endif // PPL_DOXYGEN_INCLUDE_IMPLEMENTATION_DETAILS
 template <typename CS>
 class Parma_Polyhedra_Library::PowerSet {
 public:
