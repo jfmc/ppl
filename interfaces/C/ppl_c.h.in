@@ -26,6 +26,10 @@ site: http://www.cs.unipr.it/ppl/ . */
 
 /*! \defgroup PPL_C_interface C Language Interface
 
+\brief
+\ref CInterfaceDetails "Some details about the C Interface".
+
+\anchor CInterfaceDetails
 All the declarations needed for using the PPL's C interface
 (preprocessor symbols, data types, variables and
 functions) are collected in the header file <CODE>ppl_c.h</CODE>.
