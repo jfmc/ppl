@@ -293,15 +293,16 @@ Polyhedron::check_empty() const {
 template <class Box>
 void
 Polyhedron::shrink_bounding_box(Box& box) const {
-  size_t sd = space_dimension();
   if (check_universe())
     return;
+
   if (check_empty()) {
-    for (size_t j = sd; j-- > 0; )
+    for (size_t j = space_dim; j-- > 0; )
       box.set_empty(j);
     return;
   }
-  if (sd == 0)
+
+  if (space_dim == 0)
     return;
 
   // If finite, the maximum and minimum values
@@ -315,35 +316,33 @@ Polyhedron::shrink_bounding_box(Box& box) const {
   // unbounded in the positive direction. The vector mn records, for
   // each variable, a generator that has the minimum value for this
   // variable, or is unbounded in the negative direction.
-  std::vector<GenSys::const_iterator> mx(sd);
-  std::vector<GenSys::const_iterator> mn(sd);
+  std::vector<GenSys::const_iterator> mx(space_dim);
+  std::vector<GenSys::const_iterator> mn(space_dim);
 
   // Get the generators for *this
   const GenSys& gs = generators();
-  const GenSys::const_iterator lbegin = gs.begin();
-  const GenSys::const_iterator lend = gs.end();
+  const GenSys::const_iterator gs_begin = gs.begin();
+  const GenSys::const_iterator gs_end = gs.end();
 
   // We first need a point in *this so as to initialize the maximum and
   // minimum to the index of a point.
-  GenSys::const_iterator l = lbegin;
-  for ( ; l != lend; ++l) {
-    if ((*l).is_point() )
+  for (GenSys::const_iterator i = gs_begin; i != gs_end; ++i) {
+    if (i->is_point()) {
+      // Initialize the maximum and minimum vectors to the current point.
+      for (size_t j = space_dim; j-- > 0; )
+	mn[j] = mx[j] = i;
       break;
-  }
-  // Initialize the maximum and minimum vectors to the current point.
-  for (size_t j = sd; j-- > 0; ) {
-     mx[j] = l;
-     mn[j] = l;
+    }
   }
 
   // Now go through all the generators and record those with the max
   // and min values of each coefficient divided by its divisor.
-  for (GenSys::const_iterator l = lbegin; l != lend; ++l) {
-    const Generator& generator = *l;
+  for (GenSys::const_iterator i = gs_begin; i != gs_end; ++i) {
+    const Generator& generator = *i;
     if (generator.is_point()) {
       // compare the max and min with the current values
       const Integer& div = generator.divisor();
-      for (size_t j = sd; j-- > 0; ) {
+      for (size_t j = space_dim; j-- > 0; ) {
         Variable v(j);
         const Generator& jmx_generator = *(mx[j]);
         const Generator& jmn_generator = *(mn[j]);
@@ -356,7 +355,7 @@ Polyhedron::shrink_bounding_box(Box& box) const {
 	    // divisor of the generator at max/min index.
 	    generator.coefficient(v) * jmx_generator.divisor()
 	    > jmx_generator.coefficient(v) * div)
-	  mx[j] = l;
+	  mx[j] = i;
         // if jmn_generator is a ray or line, then the lower bound
         // remains infinite and we do nothing.
         if (jmn_generator.is_point() &&
@@ -366,7 +365,7 @@ Polyhedron::shrink_bounding_box(Box& box) const {
 	    // divisor of the generator at max/min index.
 	    generator.coefficient(v) * jmn_generator.divisor()
 	    < jmn_generator.coefficient(v) * div)
-	  mn[j] = l;
+	  mn[j] = i;
       }
     }
     else if (generator.is_ray()) {
@@ -375,12 +374,12 @@ Polyhedron::shrink_bounding_box(Box& box) const {
       // j'th element of the mx vector is updated and, if it is
       // negative, the j'th element of the mn vector is updated
       // with the current generator.
-      for (size_t j = sd; j-- > 0; ) {
+      for (size_t j = space_dim; j-- > 0; ) {
         Variable v(j);
         if (generator.coefficient(v) > 0)
-	  mx[j] = l;
+	  mx[j] = i;
         else if (generator.coefficient(v) < 0)
-	  mn[j] = l;
+	  mn[j] = i;
       }
     }
     else {
@@ -388,11 +387,11 @@ Polyhedron::shrink_bounding_box(Box& box) const {
       // In this case, we consider any axes j in which the coefficient
       // is non-zero: the j'th element of the mx vector and the
       // mn vector are updated with the current generator.
-      for (size_t j = sd; j-- > 0; ) {
+      for (size_t j = space_dim; j-- > 0; ) {
         Variable v(j);
         if (generator.coefficient(v) != 0) {
-          mx[j] = l;
-          mn[j] = l;
+          mx[j] = i;
+          mn[j] = i;
 	}
       }
     }
@@ -402,7 +401,7 @@ Polyhedron::shrink_bounding_box(Box& box) const {
   // Now adjust the constraints bounding the sides of the box.
   // FIXME: closed is assumed "true".
   const bool closed = true;
-  for (size_t j  = sd; j-- > 0; ) {
+  for (size_t j  = space_dim; j-- > 0; ) {
     Variable v(j);
     const Generator& jmx_generator = *(mx[j]);
     const Generator& jmn_generator = *(mn[j]);
