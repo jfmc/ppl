@@ -199,10 +199,12 @@ universe6_SOURCES = universe6.cc
 widening1_SOURCES = widening1.cc
 widening2_SOURCES = widening2.cc
 
+watchdog1_SRCS = watchdog1.cc timings.cc timings.hh
+
 if BUILD_WATCHDOG_LIBRARY
 WATCHDOG_TESTS = watchdog1
 
-watchdog1_SOURCES = watchdog1.cc timings.cc timings.hh
+watchdog1_SOURCES = $(watchdog1_SRCS)
 watchdog1_LDADD = $(LDADD) $(top_builddir)/Watchdog/libpwl.la
 
 endif
@@ -211,6 +213,6 @@ check_PROGRAMS = $(TESTS) $(BUGS)
 
 noinst_HEADERS = ehandlers.hh print.hh
 
-EXTRA_DIST = ehandlers.cc print.cc $(watchdog1_SOURCES)
+EXTRA_DIST = ehandlers.cc print.cc $(watchdog1_SRCS)
 
 BUGS =
