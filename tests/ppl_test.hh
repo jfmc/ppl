@@ -36,32 +36,38 @@ namespace Parma_Polyhedra_Library {
 typedef BD_Shape<E_Rational> TBD_Shape;
 #else
 template <typename T, typename Policy>
-bool is_plus_infinity(const Checked_Number<T, Policy>& x) {
+inline bool
+is_plus_infinity(const Checked_Number<T, Policy>& x) {
   return x.is_pinf();
 }
 
 template <typename T, typename Policy>
-bool is_nan(const Checked_Number<T, Policy>& x) {
+inline bool
+is_nan(const Checked_Number<T, Policy>& x) {
   return x.is_nan();
 }
 
 template <typename T, typename Policy>
-bool is_negative(const Checked_Number<T, Policy>& x) {
+inline bool
+is_negative(const Checked_Number<T, Policy>& x) {
   return x < 0;
 }
 
 template <typename T, typename Policy>
-bool is_nonnegative(const Checked_Number<T, Policy>& x) {
+inline bool
+is_nonnegative(const Checked_Number<T, Policy>& x) {
   return x >= 0;
 }
 
 template <typename T, typename Policy>
-bool exact_neg(Checked_Number<T, Policy>& to, const Checked_Number<T, Policy>& x) {
+inline bool
+exact_neg(Checked_Number<T, Policy>& to, const Checked_Number<T, Policy>& x) {
   return to.assign_neg(x, ROUND_IGNORE) == V_EQ;
 }
 
 template <typename To, typename To_Policy>
-void div_round_up(Checked_Number<To, To_Policy>& to,
+inline void
+div_round_up(Checked_Number<To, To_Policy>& to,
 		  const Coefficient& x,
 		  const Coefficient& y) {
 #if 0
@@ -90,9 +96,10 @@ void div_round_up(Checked_Number<To, To_Policy>& to,
 }
 
 template <typename T, typename Policy>
-void add_round_up(Checked_Number<T, Policy>& to,
-		  const Checked_Number<T, Policy>& x,
-		  const Checked_Number<T, Policy>& y) {
+inline void
+add_round_up(Checked_Number<T, Policy>& to,
+	     const Checked_Number<T, Policy>& x,
+	     const Checked_Number<T, Policy>& y) {
   Rounding_State old;
   Checked_Number<T, Policy>::internal_save_rounding(ROUND_UP, old);
   to.assign_add(x, y, ROUND_UP);
@@ -100,9 +107,10 @@ void add_round_up(Checked_Number<T, Policy>& to,
 }
 
 template <typename T, typename Policy>
-void add_round_down(Checked_Number<T, Policy>& to,
-		    const Checked_Number<T, Policy>& x,
-		    const Checked_Number<T, Policy>& y) {
+inline void
+add_round_down(Checked_Number<T, Policy>& to,
+	       const Checked_Number<T, Policy>& x,
+	       const Checked_Number<T, Policy>& y) {
   Rounding_State old;
   Checked_Number<T, Policy>::internal_save_rounding(ROUND_DOWN, old);
   to.assign_add(x, y, ROUND_DOWN);
@@ -110,8 +118,9 @@ void add_round_down(Checked_Number<T, Policy>& to,
 }
 
 template <typename T, typename Policy>
-void negate_round_down(Checked_Number<T, Policy>& to,
-		       const Checked_Number<T, Policy>& x) {
+inline void
+negate_round_down(Checked_Number<T, Policy>& to,
+		  const Checked_Number<T, Policy>& x) {
   Rounding_State old;
   Checked_Number<T, Policy>::internal_save_rounding(ROUND_DOWN, old);
   to.assign_neg(x, ROUND_DOWN);
@@ -119,8 +128,9 @@ void negate_round_down(Checked_Number<T, Policy>& to,
 }
 
 template <typename T, typename Policy>
-void numer_denom(const Checked_Number<T, Policy>& from,
-		 Coefficient& num, Coefficient& den) {
+inline void
+numer_denom(const Checked_Number<T, Policy>& from,
+	    Coefficient& num, Coefficient& den) {
   // FIXME!
   if (from.is_nan() || from.is_minf() || from.is_pinf())
     abort();
