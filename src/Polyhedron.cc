@@ -2984,29 +2984,24 @@ PPL::Polyhedron::generalized_affine_image(const Variable& var,
 void
 PPL::Polyhedron::generalized_affine_image(const LinExpression& lhs,
 					  const Relation_Operator relop,
-					  const LinExpression& rhs,
-					  const Integer& denominator) {
-  // The denominator cannot be zero.
-  if (denominator == 0)
-    throw_generic("generalized_affine_image(e1, r, e2, d)", "d == 0");
-
+					  const LinExpression& rhs) {
   // Dimension-compatibility checks.
   // The dimension of `lhs' should not be greater than the dimension
   // of `*this'.
   dimension_type lhs_space_dim = lhs.space_dimension();
   if (space_dim < lhs_space_dim)
-    throw_dimension_incompatible("generalized_affine_image(e1, r, e2, d)",
+    throw_dimension_incompatible("generalized_affine_image(e1, r, e2)",
 				 lhs);
   // The dimension of `rhs' should not be greater than the dimension
   // of `*this'.
   dimension_type rhs_space_dim = rhs.space_dimension();
   if (space_dim < rhs_space_dim)
-    throw_dimension_incompatible("generalized_affine_image(e1, r, e2, d)",
+    throw_dimension_incompatible("generalized_affine_image(e1, r, e2)",
 				 rhs);
 
   // Strict relation operators are only admitted for NNC polyhedra.
   if (is_necessarily_closed() && (relop == PPL_LT || relop == PPL_GT))
-    throw_generic("generalized_affine_image(e1, r, e2, d)",
+    throw_generic("generalized_affine_image(e1, r, e2)",
 		  "r is a strict relation operator and "
 		  "*this is a C_Polyhedron");
 
@@ -3014,51 +3009,29 @@ PPL::Polyhedron::generalized_affine_image(const LinExpression& lhs,
   if (is_empty())
     return;
 
-  // If `denominator' is negative, then we may need to change
-  // the relation operator accordingly.
-  // We do this here once and for all.
-  Relation_Operator new_relop = relop;
-  if (denominator < 0)
-    switch (relop) {
-      case PPL_LT:
-	new_relop = PPL_GT;
-	break;
-      case PPL_LE:
-	new_relop = PPL_GE;
-	break;
-      case PPL_EQ:
-	break;
-      case PPL_GE:
-	new_relop = PPL_LE;
-	break;
-      case PPL_GT:
-	new_relop = PPL_LT;
-	break;
-      }
-
   // Compute the actual space dimension of `lhs',
   // i.e., the highest dimension having a non-zero coefficient in `lhs'.
   for ( ; lhs_space_dim > 0; lhs_space_dim--)
     if (lhs.coefficient(Variable(lhs_space_dim - 1)) != 0)
       break;
   // If all variables have a zero coefficient, then `lhs' is a constant:
-  // we can simply add the constraint `denominator * lhs new_relop rhs'.
+  // we can simply add the constraint `lhs relop rhs'.
   if (lhs_space_dim == 0) {
-    switch (new_relop) {
+    switch (relop) {
     case PPL_LT:
-      add_constraint(denominator * lhs < rhs);
+      add_constraint(lhs < rhs);
       break;
     case PPL_LE:
-      add_constraint(denominator * lhs <= rhs);
+      add_constraint(lhs <= rhs);
       break;
     case PPL_EQ:
-      add_constraint(denominator * lhs == rhs);
+      add_constraint(lhs == rhs);
       break;
     case PPL_GE:
-      add_constraint(denominator * lhs >= rhs);
+      add_constraint(lhs >= rhs);
       break;
     case PPL_GT:
-      add_constraint(denominator * lhs > rhs);
+      add_constraint(lhs > rhs);
       break;
     }
     return;
@@ -3086,7 +3059,7 @@ PPL::Polyhedron::generalized_affine_image(const LinExpression& lhs,
     // Constrain the new dimension to be equal to the right hand side.
     // (we force minimization because we will need the generators).
     ConSys new_cs;
-    new_cs.insert(denominator * new_var == rhs);
+    new_cs.insert(new_var == rhs);
     add_constraints_and_minimize(new_cs);
     
     // Cylindrificate on all the variables occurring in the left hand side
@@ -3129,21 +3102,21 @@ PPL::Polyhedron::generalized_affine_image(const LinExpression& lhs,
 
     // Constrain the left hand side expression so that it is related to
     // the right hand side expression as dictated by `relop'.
-    switch (new_relop) {
+    switch (relop) {
     case PPL_LT:
-      add_constraint(denominator * lhs < rhs);
+      add_constraint(lhs < rhs);
       break;
     case PPL_LE:
-      add_constraint(denominator * lhs <= rhs);
+      add_constraint(lhs <= rhs);
       break;
     case PPL_EQ:
-      add_constraint(denominator * lhs == rhs);
+      add_constraint(lhs == rhs);
       break;
     case PPL_GE:
-      add_constraint(denominator * lhs >= rhs);
+      add_constraint(lhs >= rhs);
       break;
     case PPL_GT:
-      add_constraint(denominator * lhs > rhs);
+      add_constraint(lhs > rhs);
       break;
     }
   }

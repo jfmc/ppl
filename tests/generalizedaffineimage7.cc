@@ -55,7 +55,7 @@ test1() {
 
 #if NOISY
   print_generators(ph, "--- ph after "
-		   "ph.generalized_affine_image(B, PPL_GE, A+2, 1) ---");
+		   "ph.generalized_affine_image(B, PPL_GE, A+2) ---");
 #endif
 
   return retval;
@@ -79,7 +79,7 @@ test2() {
   C_Polyhedron ph2 = ph;
 
   ph.generalized_affine_image(B, PPL_GE, A+2, -2);
-  ph2.generalized_affine_image(-2*B, PPL_LE, -2*(A+2), -2);
+  ph2.generalized_affine_image(-2*B, PPL_LE, A+2);
 
   int retval = (ph == ph2) ? 0 : 1;
 
@@ -108,7 +108,7 @@ test3() {
   C_Polyhedron ph2 = ph;
 
   ph.generalized_affine_image(B, PPL_LE, A-B+2, -3);
-  ph2.generalized_affine_image(-2*B, PPL_GE, -2*(A-B+2), -3);
+  ph2.generalized_affine_image(-3*B, PPL_GE, A-B+2);
 
   int retval = (ph == ph2) ? 0 : 1;
 

@@ -57,7 +57,7 @@ main() {
 
 #if NOISY
   print_generators(ph, "--- ph after "
-		   "ph.generalized_affine_image(B, PPL_GE, A+2, 1) ---");
+		   "ph.generalized_affine_image(B, PPL_GE, A+2) ---");
 #endif
 
   return retval;
