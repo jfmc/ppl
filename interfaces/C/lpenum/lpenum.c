@@ -168,8 +168,14 @@ process_options(int argc, char *argv[]) {
     }
   }
 
-  if (optind >= argc)
-    fatal("no input files");
+  if (optind >= argc) {
+    if (verbose) {
+      fprintf(stderr, "Parma Polyhedra Library version:\n%s\n", ppl_version());
+      fprintf(stderr, "\nParma Polyhedra Library banner:\n%s", ppl_banner());
+    }
+    else
+      fatal("no input files");
+  }
 
   if (argc - optind > 1)
     /* We have multiple input files. */

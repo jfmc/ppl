@@ -1,4 +1,4 @@
-/* Header file for the C interface.
+/* Header file for the C interface.  -*- C -*-
    Copyright (C) 2001-2004 Roberto Bagnara <bagnara@cs.unipr.it>
 
 This file is part of the Parma Polyhedra Library (PPL).
@@ -78,18 +78,25 @@ find examples of how to use several functions provided by that interface.
 
 /*@{*/
 
-//! The major number of the PPL version.
+/*! \brief
+  The major number of the PPL version.
+*/
 #define PPL_VERSION_MAJOR @PPL_VERSION_MAJOR@
 
-//! The minor number of the PPL version.
+/*! \brief
+  The minor number of the PPL version.
+*/
 #define PPL_VERSION_MINOR @PPL_VERSION_MINOR@
 
-//! The revision number of the PPL version.
+/*! \brief
+  The revision number of the PPL version.
+*/
 #define PPL_VERSION_REVISION @PPL_VERSION_REVISION@
 
-//! \brief
-//! The beta number of the PPL version.  This is zero for official
-//! releases and nonzero for development snapshots.
+/*! \brief
+  The beta number of the PPL version.  This is zero for official
+  releases and nonzero for development snapshots.
+*/
 #define PPL_VERSION_BETA @PPL_VERSION_BETA@
 
 /*
@@ -115,6 +122,21 @@ find examples of how to use several functions provided by that interface.
 #ifdef __cplusplus
 extern "C" {
 #endif
+
+/*! \brief
+  Returns a character string containing the PPL version.
+*/
+const char*
+ppl_version __P((void));
+
+/*! \brief
+  Returns a character string containing information about the PPL version,
+  the licensing, the lack of any warranty whatsoever, the C++ compiler
+  used to build the library, where to report bugs and where to look
+  for further information.
+*/
+const char*
+ppl_banner __P((void));
 
 /*! \brief
   Defines the error code that any function can return.

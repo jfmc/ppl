@@ -34,6 +34,7 @@ site: http://www.cs.unipr.it/ppl/ . */
 #include "C_Polyhedron.defs.hh"
 #include "NNC_Polyhedron.defs.hh"
 #include "Init.defs.hh"
+#include "version.hh"
 #include "ppl_c.h"
 #include <stdexcept>
 
@@ -117,6 +118,16 @@ namespace {
 Init* init_object_ptr = 0;
 
 } // namespace
+
+const char*
+ppl_version(void) {
+  return version();
+}
+
+const char*
+ppl_banner(void) {
+  return banner();
+}
 
 int
 ppl_max_space_dimension(ppl_dimension_type* m) try {

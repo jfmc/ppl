@@ -60,7 +60,7 @@ LIBPPL_C_LT_CURRENT =  1
 LIBPPL_C_LT_REVISION = 0
 LIBPPL_C_LT_AGE =      1
 
-AM_CPPFLAGS = -I$(top_srcdir)/src @extra_includes@
+AM_CPPFLAGS = -I$(top_srcdir)/src -I$(top_builddir)/src @extra_includes@
 
 lib_LTLIBRARIES = libppl_c.la
 libppl_c_la_SOURCES = ppl_c.cc

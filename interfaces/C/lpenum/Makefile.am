@@ -32,7 +32,7 @@ EXTRA_DIST = lpenum.c $(MPS_FILES) expected
 
 if HAVE_GLPK
 
-AM_CPPFLAGS = -I$(top_srcdir)/interfaces/C @extra_includes@
+AM_CPPFLAGS = -I$(top_builddir)/interfaces/C @extra_includes@
 
 noinst_PROGRAMS = lpenum
 lpenum_SOURCES = lpenum.c
