@@ -28,7 +28,7 @@ site: http://www.cs.unipr.it/ppl/ . */
 #include "ConSys.defs.hh"
 #include "ConSys.inlines.hh"
 #include "algorithms.hh"
-#include "Widening_Function.types.hh"
+#include "Widening_Function.defs.hh"
 #include <algorithm>
 #include <deque>
 #include <string>
