@@ -51,14 +51,14 @@ TESTS = addconstraints1 addconstraints2 addconstraints3 addconstraints4 \
         empty1 \
 	exceptions1 \
 	generators1 \
-	includes1 includes2 includes3 includes4 \
         inters1 inters2 inters3 inters4 inters5 inters6 \
 	limitedwidening1 limitedwidening2\
 	onepoint \
         permute \
 	randchull1 \
+	relations1 relations2 relations3 relations4 relations5 relations6 \
+	relations7 relations8 \
 	removedim1 removedim2 removedim3 removedim4 removedim5 removedim6 \
-	satisfies1 satisfies2 satisfies3 satisfies4 \
 	smm1 \
 	universe1 universe2 universe3 universe4 universe5
 
@@ -113,11 +113,6 @@ exceptions1_SOURCES = exceptions1.cc
 
 generators1_SOURCES = generators1.cc
 
-includes1_SOURCES = includes1.cc
-includes2_SOURCES = includes2.cc
-includes3_SOURCES = includes3.cc
-includes4_SOURCES = includes4.cc
-
 inters1_SOURCES = inters1.cc
 inters2_SOURCES = inters2.cc
 inters3_SOURCES = inters3.cc
@@ -132,6 +127,15 @@ onepoint_SOURCES = onepoint.cc
 
 permute_SOURCES = permute.cc
 
+relations1_SOURCES = relations1.cc
+relations2_SOURCES = relations2.cc
+relations3_SOURCES = relations3.cc
+relations4_SOURCES = relations4.cc
+relations5_SOURCES = relations5.cc
+relations6_SOURCES = relations6.cc
+relations7_SOURCES = relations7.cc
+relations8_SOURCES = relations8.cc
+
 randchull1_SOURCES = randchull1.cc
 
 removedim1_SOURCES = removedim1.cc
@@ -140,11 +144,6 @@ removedim3_SOURCES = removedim3.cc
 removedim4_SOURCES = removedim4.cc
 removedim5_SOURCES = removedim5.cc
 removedim6_SOURCES = removedim6.cc
-
-satisfies1_SOURCES = satisfies1.cc
-satisfies2_SOURCES = satisfies2.cc
-satisfies3_SOURCES = satisfies3.cc
-satisfies4_SOURCES = satisfies4.cc
 
 smm1_SOURCES = smm1.cc
 
