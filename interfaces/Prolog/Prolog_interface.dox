@@ -11,6 +11,23 @@ In the sequel, <CODE>prefix</CODE> is the prefix under which
 you have installed the library (typically <CODE>/usr</CODE>
 or <CODE>/usr/local</CODE>).
 
+\subsection Compiling the Interfaces
+
+When the Parma Polyhedra Library is configured, it tests for the existence
+of each supported Prolog system.  If a supported Prolog system is
+correctly installed in a standard location, things are arranged
+so that the corresponding interface is built and installed.
+
+As an option, the Prolog interfaces can track the creation and disposal
+of polyhedra.  In fact, differently from native Prolog data, PPL polyhedra
+must be explicitely disposed and forgetting to do so is a very common mistake.
+To enable this option, configure the library adding
+<CODE>-DTRACK_ALLOCATION</CODE> to the options passed to the C++ compiler.
+Your configure command would then look like
+\code
+  path/to/configure --with-cxxflags="-DTRACK_ALLOCATION" ...
+\endcode
+
 \subsection PI_SD_Features System-Dependent Features
 
 <H4>CIAO Prolog</H4>
