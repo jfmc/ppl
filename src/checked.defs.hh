@@ -45,8 +45,6 @@ struct Check_Overflow_Policy {
   static const int fpu_check_inexact = 0;
 };
 
-typedef const char* c_string;
-
 #ifdef PPL_DOXYGEN_INCLUDE_IMPLEMENTATION_DETAILS
 //! Types and functions implementing checked numbers.
 #endif // PPL_DOXYGEN_INCLUDE_IMPLEMENTATION_DETAILS
@@ -100,6 +98,14 @@ inline ret_type name(qual type& arg, after1 a1) { \
   return FUNCTION_CLASS(name)<Policy, type>::function(arg, a1); \
 }
 
+#define DECLARE_FUN1_0_2(name, ret_type, qual, type, after1, after2) \
+template <typename Policy, typename type> \
+struct FUNCTION_CLASS(name); \
+template <typename Policy, typename type> \
+inline ret_type name(qual type& arg, after1 a1, after2 a2) { \
+  return FUNCTION_CLASS(name)<Policy, type>::function(arg, a1, a2); \
+}
+
 #define DECLARE_FUN1_0_3(name, ret_type, qual, type, after1, after2, after3) \
 template <typename Policy, typename type> \
 struct FUNCTION_CLASS(name); \
@@ -122,6 +128,14 @@ struct FUNCTION_CLASS(name); \
 template <typename Policy, typename type> \
 inline ret_type name(before1 b1, qual type& arg, after1 a1, after2 a2) { \
   return FUNCTION_CLASS(name)<Policy, type>::function(b1, arg, a1, a2); \
+}
+
+#define DECLARE_FUN1_2_2(name, ret_type, before1, before2, qual, type, after1, after2) \
+template <typename Policy, typename type> \
+struct FUNCTION_CLASS(name); \
+template <typename Policy, typename type> \
+inline ret_type name(before1 b1, before2 b2, qual type& arg, after1 a1, after2 a2) { \
+  return FUNCTION_CLASS(name)<Policy, type>::function(b1, b2, arg, a1, a2); \
 }
 
 #define DECLARE_FUN2_0_0(name, ret_type, qual1, type1, qual2, type2) \
@@ -164,6 +178,14 @@ struct FUNCTION_CLASS(name)<Policy, type> { \
   } \
 };
 
+#define SPECIALIZE_FUN1_0_2(name, suf, ret_type, qual, type, after1, after2) \
+template <typename Policy> \
+struct FUNCTION_CLASS(name)<Policy, type> { \
+  static inline ret_type function(qual type& arg, after1 a1, after2 a2) { \
+    return name ## _ ## suf<Policy>(arg, a1, a2); \
+  } \
+};
+
 #define SPECIALIZE_FUN1_0_3(name, suf, ret_type, qual, type, after1, after2, after3) \
 template <typename Policy> \
 struct FUNCTION_CLASS(name)<Policy, type> { \
@@ -185,6 +207,14 @@ template <typename Policy> \
 struct FUNCTION_CLASS(name)<Policy, type> { \
   static inline ret_type function(before1 b1, qual type& arg, after1 a1, after2 a2) { \
     return name ## _ ## suf<Policy>(b1, arg, a1, a2); \
+  } \
+};
+
+#define SPECIALIZE_FUN1_2_2(name, suf, ret_type, before1, before2, qual, type, after1, after2) \
+template <typename Policy> \
+struct FUNCTION_CLASS(name)<Policy, type> { \
+  static inline ret_type function(before1 b1, before2 b2, qual type& arg, after1 a1, after2 a2) { \
+    return name ## _ ## suf<Policy>(b1, b2, arg, a1, a2); \
   } \
 };
 
@@ -252,10 +282,10 @@ struct FUNCTION_CLASS(name) <Policy, type1, type2, type3> { \
   SPECIALIZE_FUN3_0_1(gcd, suf, Result, nonconst, To, const, From, const, From, const Rounding&)
 #define SPECIALIZE_LCM(suf, To, From) \
   SPECIALIZE_FUN3_0_1(lcm, suf, Result, nonconst, To, const, From, const, From, const Rounding&)
-#define SPECIALIZE_PRINT(suf, Type) \
-  SPECIALIZE_FUN1_1_2(print, suf, Result, std::ostream&, const, Type, const Numeric_Format&, const Rounding&)
-#define SPECIALIZE_INPUT(suf, Type) \
-  SPECIALIZE_FUN1_1_1(input, suf, Result, std::istream&, nonconst, Type, const Rounding&)
+#define SPECIALIZE_FROM_C_STRING(suf, Type) \
+  SPECIALIZE_FUN1_0_2(from_c_string, suf, Result, nonconst, Type, const char*, const Rounding&)
+#define SPECIALIZE_TO_C_STRING(suf, Type) \
+  SPECIALIZE_FUN1_2_2(to_c_string, suf, Result, char *, size_t, const, Type, const Numeric_Format&, const Rounding&)
 
 
 DECLARE_FUN1_0_0(pred,        Result, nonconst, Type)
@@ -277,8 +307,8 @@ DECLARE_FUN3_0_1(add_mul,     Result, nonconst, To, const, From1, const, From2, 
 DECLARE_FUN3_0_1(sub_mul,     Result, nonconst, To, const, From1, const, From2, const Rounding&)
 DECLARE_FUN3_0_1(gcd,         Result, nonconst, To, const, From1, const, From2, const Rounding&)
 DECLARE_FUN3_0_1(lcm,         Result, nonconst, To, const, From1, const, From2, const Rounding&)
-DECLARE_FUN1_1_2(print,       Result, std::ostream&, const, Type, const Numeric_Format&, const Rounding&)
-DECLARE_FUN1_1_1(input,       Result, std::istream&, nonconst, Type, const Rounding&)
+DECLARE_FUN1_0_2(from_c_string, Result, nonconst, Type, const char*, const Rounding&)
+DECLARE_FUN1_2_2(to_c_string, Result, char*, size_t, const, Type, const Numeric_Format&, const Rounding&)
 
 template <typename Policy, typename To>
 Result round(To& to, Result r, const Rounding& mode);

@@ -447,22 +447,22 @@ ne_ext(const Type1& x, const Type2& y) {
 
 template <typename Policy, typename Type>
 inline Result
-print_ext(std::ostream& os, const Type& x, const Numeric_Format& format, const Rounding& mode) {
+to_c_string_ext(char *str, size_t size, const Type& x, const Numeric_Format& format, const Rounding& mode) {
   if (handle_ext_natively(Type))
-    return print<Policy>(os, x, format, mode);
+    return to_c_string<Policy>(str, size, x, format, mode);
   Result rx = classify<Policy>(x, true, true, false);
   switch (rx) {
   case VC_NORMAL:
-    return print<Policy>(os, x, format, mode);
+    return to_c_string<Policy>(str, size, x, format, mode);
     break;
   case VC_MINUS_INFINITY:
-    os << "-inf";
+    strncpy(str, "-inf", size);
     break;
   case VC_PLUS_INFINITY:
-    os << "+inf";
+    strncpy(str, "+inf", size);
     break;
   default:
-    os << "nan";
+    strncpy(str, "nan", size);
     break;
   }
   return rx;
@@ -470,9 +470,16 @@ print_ext(std::ostream& os, const Type& x, const Numeric_Format& format, const R
 
 template <typename Policy, typename Type>
 inline Result
-input_ext(std::istream& is, Type& x, const Rounding& mode) {
-  // FIXME
-  return input<Policy>(is, x, mode);
+from_c_string_ext(Type& x, const char *str, const Rounding& mode) {
+  if (handle_ext_natively(Type))
+    return from_c_string<Policy>(x, str, mode);
+  if (strcmp(str, "-inf"))
+    return set_special<Policy>(x, VC_MINUS_INFINITY);
+  if (strcmp(str, "+inf"))
+    return set_special<Policy>(x, VC_PLUS_INFINITY);
+  if (strcmp(str, "nan"))
+    return set_special<Policy>(x, VC_NAN);
+  return from_c_string<Policy>(x, str, mode);
 }
 
 } // namespace Checked

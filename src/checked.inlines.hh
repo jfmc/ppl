@@ -150,23 +150,6 @@ cmp_generic(const Type& x, const Type& y) {
   return V_EQ;
 }
 
-template <typename Policy, typename Type>
-inline Result
-print_generic(std::ostream& os, const Type& x, const Numeric_Format& format, const Rounding& mode) {
-  used(format);
-  used(mode);
-  os << x;
-  return V_EQ;
-}
-
-template <typename Policy, typename Type>
-inline Result
-input_generic(std::istream& is, Type& x, const Rounding& mode) {
-  used(mode);
-  is >> x;
-  return V_EQ;
-}
-
 template <typename Policy, typename To>
 inline Result
 round(To& to, Result r, const Rounding& mode) {

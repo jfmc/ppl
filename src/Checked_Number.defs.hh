@@ -135,7 +135,7 @@ public:
   //! Direct initialization from a GMP unbounded integer value.
   Checked_Number(const mpz_class& y);
   //! Direct initialization from a C string value.
-  Checked_Number(const c_string y);
+  Checked_Number(const char* y);
 
   //@} // Constructors
 

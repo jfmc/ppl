@@ -344,6 +344,68 @@ sub_mul_float(Type& to, const Type x, const Type y, const Rounding& mode) {
   return assign_result_inexact<Policy>(to, std::fma(to, x, -y), mode);
 }
 
+template <typename T>
+T strtod_(const char *nptr, char **endptr);
+
+template <>
+inline float
+strtod_(const char *nptr, char **endptr) {
+  return strtof(nptr, endptr);
+}
+
+template <>
+inline double
+strtod_(const char *nptr, char **endptr) {
+  return strtod(nptr, endptr);
+}
+
+template <>
+inline long double
+strtod_(const char *nptr, char **endptr) {
+  return strtold(nptr, endptr);
+}
+
+template <typename T>
+inline int
+dtostr_(char *str, size_t size, T x) {
+  return snprintf(str, size, "%.99g", static_cast<double>(x));
+}
+
+template <>
+inline int
+dtostr_<long double>(char *str, size_t size, long double x) {
+  return snprintf(str, size, "%.99Lg", x);
+}
+
+template <typename Policy, typename Type>
+inline Result
+from_c_string_float(Type& to, const char* from, const Rounding& mode) {
+  errno = 0;
+  char *end;
+  long v = strtod_<Type>(from, &end, 0);
+  if (errno == ERANGE) {
+    to = v;
+    if (v < 0)
+      return V_NEG_OVERFLOW;
+    if (v > 0)
+      return V_POS_OVERFLOW;
+    // FIXME:
+    return V_EQ;
+  }
+  if (errno || *end)
+    return set_special<Policy>(to, V_CVT_STR_UNK);
+  to = v;
+  // FIXME:
+  return assign_float_float_exact<Policy>(to, v, mode);
+}
+
+template <typename Policy, typename Type>
+inline Result
+to_c_string_float(char* str, size_t size, Type& from, const Numeric_Format&, const Rounding&) {
+  dtostr_(str, size, from);
+  return V_EQ;
+}
+
 #define ASSIGN_R2(Smaller, Larger) \
 SPECIALIZE_ASSIGN(float_float_exact, Larger, Smaller) \
 SPECIALIZE_ASSIGN(float_float, Smaller, Larger)
@@ -359,23 +421,6 @@ SPECIALIZE_ASSIGN(float_int, float32_t, uint64_t)
 SPECIALIZE_ASSIGN(float_float, float32_t, float32_t)
 ASSIGN_R2(float32_t, float64_t)
 
-SPECIALIZE_NEG(float, float32_t, float32_t)
-SPECIALIZE_ABS(float, float32_t, float32_t)
-SPECIALIZE_ADD(float, float32_t, float32_t)
-SPECIALIZE_SUB(float, float32_t, float32_t)
-SPECIALIZE_MUL(float, float32_t, float32_t)
-SPECIALIZE_DIV(float, float32_t, float32_t)
-SPECIALIZE_REM(float, float32_t, float32_t)
-SPECIALIZE_SQRT(float, float32_t, float32_t)
-SPECIALIZE_GCD(generic, float32_t, float32_t)
-SPECIALIZE_LCM(generic, float32_t, float32_t)
-SPECIALIZE_SGN(float, float32_t)
-SPECIALIZE_CMP(float, float32_t, float32_t)
-SPECIALIZE_ADD_MUL(float, float32_t, float32_t)
-SPECIALIZE_SUB_MUL(float, float32_t, float32_t)
-SPECIALIZE_PRINT(generic, float32_t)
-SPECIALIZE_INPUT(generic, float32_t)
-
 SPECIALIZE_ASSIGN(float_int_exact, float64_t, int8_t)
 SPECIALIZE_ASSIGN(float_int_exact, float64_t, int16_t)
 SPECIALIZE_ASSIGN(float_int_exact, float64_t, int32_t)
@@ -385,23 +430,6 @@ SPECIALIZE_ASSIGN(float_int_exact, float64_t, uint32_t)
 SPECIALIZE_ASSIGN(float_int, float64_t, int64_t)
 SPECIALIZE_ASSIGN(float_int, float64_t, uint64_t)
 SPECIALIZE_ASSIGN(float_float, float64_t, float64_t)
-
-SPECIALIZE_NEG(float, float64_t, float64_t)
-SPECIALIZE_ABS(float, float64_t, float64_t)
-SPECIALIZE_ADD(float, float64_t, float64_t)
-SPECIALIZE_SUB(float, float64_t, float64_t)
-SPECIALIZE_MUL(float, float64_t, float64_t)
-SPECIALIZE_DIV(float, float64_t, float64_t)
-SPECIALIZE_REM(float, float64_t, float64_t)
-SPECIALIZE_SQRT(float, float64_t, float64_t)
-SPECIALIZE_GCD(generic, float64_t, float64_t)
-SPECIALIZE_LCM(generic, float64_t, float64_t)
-SPECIALIZE_SGN(float, float64_t)
-SPECIALIZE_CMP(float, float64_t, float64_t)
-SPECIALIZE_ADD_MUL(float, float64_t, float64_t)
-SPECIALIZE_SUB_MUL(float, float64_t, float64_t)
-SPECIALIZE_PRINT(generic, float64_t)
-SPECIALIZE_INPUT(generic, float64_t)
 
 #ifdef FLOAT96_TYPE
 SPECIALIZE_ASSIGN(float_int_exact, float96_t, int8_t)
@@ -415,23 +443,6 @@ SPECIALIZE_ASSIGN(float_int_exact, float96_t, uint64_t)
 SPECIALIZE_ASSIGN(float_float, float96_t, float96_t)
 ASSIGN_R2(float32_t, float96_t)
 ASSIGN_R2(float64_t, float96_t)
-
-SPECIALIZE_NEG(float, float96_t, float96_t)
-SPECIALIZE_ABS(float, float96_t, float96_t)
-SPECIALIZE_ADD(float, float96_t, float96_t)
-SPECIALIZE_SUB(float, float96_t, float96_t)
-SPECIALIZE_MUL(float, float96_t, float96_t)
-SPECIALIZE_DIV(float, float96_t, float96_t)
-SPECIALIZE_REM(float, float96_t, float96_t)
-SPECIALIZE_SQRT(float, float96_t, float96_t)
-SPECIALIZE_GCD(generic, float96_t, float96_t)
-SPECIALIZE_LCM(generic, float96_t, float96_t)
-SPECIALIZE_SGN(float, float96_t)
-SPECIALIZE_CMP(float, float96_t, float96_t)
-SPECIALIZE_ADD_MUL(float, float96_t, float96_t)
-SPECIALIZE_SUB_MUL(float, float96_t, float96_t)
-SPECIALIZE_PRINT(generic, float96_t)
-SPECIALIZE_INPUT(generic, float96_t)
 #endif
 
 #ifdef FLOAT128_TYPE
@@ -449,26 +460,60 @@ ASSIGN_R2(float64_t, float128_t)
 #ifdef FLOAT96_TYPE
 ASSIGN_R2(float96_t, float128_t)
 #endif
-
-SPECIALIZE_NEG(float, float128_t, float128_t)
-SPECIALIZE_ABS(float, float128_t, float128_t)
-SPECIALIZE_ADD(float, float128_t, float128_t)
-SPECIALIZE_SUB(float, float128_t, float128_t)
-SPECIALIZE_MUL(float, float128_t, float128_t)
-SPECIALIZE_DIV(float, float128_t, float128_t)
-SPECIALIZE_REM(float, float128_t, float128_t)
-SPECIALIZE_SQRT(float, float128_t, float128_t)
-SPECIALIZE_GCD(generic, float128_t, float128_t)
-SPECIALIZE_LCM(generic, float128_t, float128_t)
-SPECIALIZE_SGN(float, float128_t)
-SPECIALIZE_CMP(float, float128_t, float128_t)
-SPECIALIZE_ADD_MUL(float, float128_t, float128_t)
-SPECIALIZE_SUB_MUL(float, float128_t, float128_t)
-SPECIALIZE_PRINT(generic, float128_t)
-SPECIALIZE_INPUT(generic, float128_t)
 #endif
 
 #undef ASSIGN_R2
+
+SPECIALIZE_NEG(float, float, float)
+SPECIALIZE_ABS(float, float, float)
+SPECIALIZE_ADD(float, float, float)
+SPECIALIZE_SUB(float, float, float)
+SPECIALIZE_MUL(float, float, float)
+SPECIALIZE_DIV(float, float, float)
+SPECIALIZE_REM(float, float, float)
+SPECIALIZE_SQRT(float, float, float)
+SPECIALIZE_GCD(generic, float, float)
+SPECIALIZE_LCM(generic, float, float)
+SPECIALIZE_SGN(float, float)
+SPECIALIZE_CMP(float, float, float)
+SPECIALIZE_ADD_MUL(float, float, float)
+SPECIALIZE_SUB_MUL(float, float, float)
+SPECIALIZE_FROM_C_STRING(float, float)
+SPECIALIZE_TO_C_STRING(float, float)
+
+SPECIALIZE_NEG(float, double, double)
+SPECIALIZE_ABS(float, double, double)
+SPECIALIZE_ADD(float, double, double)
+SPECIALIZE_SUB(float, double, double)
+SPECIALIZE_MUL(float, double, double)
+SPECIALIZE_DIV(float, double, double)
+SPECIALIZE_REM(float, double, double)
+SPECIALIZE_SQRT(float, double, double)
+SPECIALIZE_GCD(generic, double, double)
+SPECIALIZE_LCM(generic, double, double)
+SPECIALIZE_SGN(float, double)
+SPECIALIZE_CMP(float, double, double)
+SPECIALIZE_ADD_MUL(float, double, double)
+SPECIALIZE_SUB_MUL(float, double, double)
+SPECIALIZE_FROM_C_STRING(float, double)
+SPECIALIZE_TO_C_STRING(float, double)
+
+SPECIALIZE_NEG(float, long double, long double)
+SPECIALIZE_ABS(float, long double, long double)
+SPECIALIZE_ADD(float, long double, long double)
+SPECIALIZE_SUB(float, long double, long double)
+SPECIALIZE_MUL(float, long double, long double)
+SPECIALIZE_DIV(float, long double, long double)
+SPECIALIZE_REM(float, long double, long double)
+SPECIALIZE_SQRT(float, long double, long double)
+SPECIALIZE_GCD(generic, long double, long double)
+SPECIALIZE_LCM(generic, long double, long double)
+SPECIALIZE_SGN(float, long double)
+SPECIALIZE_CMP(float, long double, long double)
+SPECIALIZE_ADD_MUL(float, long double, long double)
+SPECIALIZE_SUB_MUL(float, long double, long double)
+SPECIALIZE_FROM_C_STRING(float, long double)
+SPECIALIZE_TO_C_STRING(float, long double)
 
 } // namespace Checked
 

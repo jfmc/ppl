@@ -90,9 +90,14 @@ DEF_CTOR(long double)
 #endif
 DEF_CTOR(mpq_class&)
 DEF_CTOR(mpz_class&)
-DEF_CTOR(c_string)
 
 #undef DEF_CTOR
+
+template <typename T, typename Policy>
+inline
+Checked_Number<T, Policy>::Checked_Number(const char* y) {
+  Policy::handle_result(Checked::from_c_string<Policy>(v, y, Rounding::CURRENT));
+}
 
 template <typename T, typename Policy>
 inline
@@ -541,14 +546,18 @@ cmp(const Checked_Number<T1, Policy1>& x,
 template <typename T, typename Policy>
 inline std::ostream&
 operator<<(std::ostream& os, const Checked_Number<T, Policy>& x) {
-  Policy::handle_result(Checked::print_ext<Policy>(os, x.raw_value(), Numeric_Format(), Rounding::CURRENT));
+  char str[1024];
+  Policy::handle_result(Checked::to_c_string_ext<Policy>(str, sizeof(str), x.raw_value(), Numeric_Format(), Rounding::CURRENT));
+  os << str;
   return os;
 }
 
 /*! \relates Checked_Number */
 template <typename T, typename Policy>
 inline std::istream& operator>>(std::istream& is, Checked_Number<T, Policy>& x) {
-  Policy::handle_result(Checked::input_ext<Policy>(is, x.raw_value(), Rounding::CURRENT));
+  std::string str;
+  is >> str;
+  Policy::handle_result(Checked::from_c_string_ext<Policy>(x.raw_value(), str.c_str(), Rounding::CURRENT));
   return is;
 }
 

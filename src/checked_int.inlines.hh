@@ -408,91 +408,6 @@ SPECIALIZE_ASSIGN(int_float_check_min_max, uint64_t, float128_t)
 
 template <typename Policy, typename To>
 inline Result
-assign_signed_int_c_string(To& to, const c_string from, const Rounding& mode) {
-  errno = 0;
-  char *end;
-  long v = strtol(from, &end, 0);
-  if (errno == ERANGE)
-    return v < 0 ? set_neg_overflow_int<Policy>(to, mode) : set_pos_overflow_int<Policy>(to, mode);
-  if (errno || *end)
-    return set_special<Policy>(to, V_CVT_STR_UNK);
-  return assign<Policy>(to, v, mode);
-}
-
-template <typename Policy, typename To>
-inline Result
-assign_unsigned_int_c_string(To& to, c_string from, const Rounding& mode) {
-  errno = 0;
-  char *end;
-  unsigned long v = strtoul(from, &end, 0);
-  if ((errno && errno != ERANGE) || *end)
-    return set_special<Policy>(to, V_CVT_STR_UNK);
-  char c;
-  do {
-    c = *from++;
-  } while (isspace(c));
-  if (c == '-') {
-    if (errno || v != 0)
-      return set_neg_overflow_int<Policy>(to, mode);
-  }
-  else {
-    if (errno == ERANGE)
-      return set_pos_overflow_int<Policy>(to, mode);
-  }
-  return assign<Policy>(to, v, mode);
-}
-
-template <typename Policy, typename To>
-inline Result
-assign_long_long_c_string(To& to, c_string from, const Rounding& mode) {
-  errno = 0;
-  char *end;
-  long long v = strtoll(from, &end, 0);
-  if (errno == ERANGE)
-    return v < 0 ? set_neg_overflow_int<Policy>(to, mode) : set_pos_overflow_int<Policy>(to, mode);
-  if (errno || *end)
-    return V_CVT_STR_UNK;
-  to = v;
-  return V_EQ;
-}
-
-template <typename Policy, typename To>
-inline Result
-assign_unsigned_long_long_c_string(To& to, c_string from, const Rounding& mode) {
-  errno = 0;
-  char *end;
-  unsigned long long v = strtoull(from, &end, 0);
-  if ((errno && errno != ERANGE) || *end)
-    return V_CVT_STR_UNK;
-  char c;
-  do {
-    c = *from++;
-  } while (isspace(c));
-  if (c == '-') {
-    if (errno || v != 0)
-      return set_neg_overflow_int<Policy>(to, mode);
-  }
-  else {
-    if (errno == ERANGE)
-      return set_pos_overflow_int<Policy>(to, mode);
-  }
-  return assign<Policy>(to, v, mode);
-}
-
-SPECIALIZE_ASSIGN(signed_int_c_string, signed char, c_string)
-SPECIALIZE_ASSIGN(signed_int_c_string, short, c_string)
-SPECIALIZE_ASSIGN(signed_int_c_string, int, c_string)
-SPECIALIZE_ASSIGN(signed_int_c_string, long, c_string)
-SPECIALIZE_ASSIGN(long_long_c_string, long long, c_string)
-
-SPECIALIZE_ASSIGN(unsigned_int_c_string, unsigned char, c_string)
-SPECIALIZE_ASSIGN(unsigned_int_c_string, unsigned short, c_string)
-SPECIALIZE_ASSIGN(unsigned_int_c_string, unsigned int, c_string)
-SPECIALIZE_ASSIGN(unsigned_int_c_string, unsigned long, c_string)
-SPECIALIZE_ASSIGN(unsigned_long_long_c_string, unsigned long long, c_string)
-
-template <typename Policy, typename To>
-inline Result
 assign_signed_int_mpz(To& to, const mpz_class& from, const Rounding& mode) {
   if (!Policy::check_overflow) {
     if (sizeof(To) <= sizeof(long))
@@ -1101,20 +1016,103 @@ sub_mul_int(Type& to, const Type x, const Type y, const Rounding& mode) {
 
 template <typename Policy, typename Type>
 inline Result
-print_char(std::ostream& os, const Type x, const Numeric_Format& format, const Rounding& mode) {
-  used(format);
-  used(mode);
-  os << (int) x;
+from_c_string_signed_int(Type& to, const char* from, const Rounding& mode) {
+  errno = 0;
+  char *end;
+  long v = strtol(from, &end, 0);
+  if (errno == ERANGE)
+    return v < 0 ? set_neg_overflow_int<Policy>(to, mode) : set_pos_overflow_int<Policy>(to, mode);
+  if (errno || *end)
+    return set_special<Policy>(to, V_CVT_STR_UNK);
+  return assign<Policy>(to, v, mode);
+}
+
+template <typename Policy, typename Type>
+inline Result
+from_c_string_unsigned_int(Type& to, const char* from, const Rounding& mode) {
+  errno = 0;
+  char *end;
+  unsigned long v = strtoul(from, &end, 0);
+  if ((errno && errno != ERANGE) || *end)
+    return set_special<Policy>(to, V_CVT_STR_UNK);
+  char c;
+  do {
+    c = *from++;
+  } while (isspace(c));
+  if (c == '-') {
+    if (errno || v != 0)
+      return set_neg_overflow_int<Policy>(to, mode);
+  }
+  else {
+    if (errno == ERANGE)
+      return set_pos_overflow_int<Policy>(to, mode);
+  }
+  return assign<Policy>(to, v, mode);
+}
+
+template <typename Policy, typename Type>
+inline Result
+from_c_string_long_long(Type& to, const char* from, const Rounding& mode) {
+  errno = 0;
+  char *end;
+  long long v = strtoll(from, &end, 0);
+  if (errno == ERANGE)
+    return v < 0 ? set_neg_overflow_int<Policy>(to, mode) : set_pos_overflow_int<Policy>(to, mode);
+  if (errno || *end)
+    return V_CVT_STR_UNK;
+  to = v;
   return V_EQ;
 }
 
 template <typename Policy, typename Type>
 inline Result
-input_char(std::istream& is, Type& x, const Rounding& mode) {
-  used(mode);
-  int i;
-  is >> i;
-  return assign<Policy>(x, i, mode);
+from_c_string_unsigned_long_long(Type& to, const char* from, const Rounding& mode) {
+  errno = 0;
+  char *end;
+  unsigned long long v = strtoull(from, &end, 0);
+  if ((errno && errno != ERANGE) || *end)
+    return V_CVT_STR_UNK;
+  char c;
+  do {
+    c = *from++;
+  } while (isspace(c));
+  if (c == '-') {
+    if (errno || v != 0)
+      return set_neg_overflow_int<Policy>(to, mode);
+  }
+  else {
+    if (errno == ERANGE)
+      return set_pos_overflow_int<Policy>(to, mode);
+  }
+  return assign<Policy>(to, v, mode);
+}
+
+template <typename Policy, typename Type>
+inline Result
+to_c_string_signed_int(char* str, size_t size, Type& from, const Numeric_Format&, const Rounding&) {
+  snprintf(str, size, "%ld", static_cast<long>(from));
+  return V_EQ;
+}
+
+template <typename Policy, typename Type>
+inline Result
+to_c_string_unsigned_int(char* str, size_t size, Type& from, const Numeric_Format&, const Rounding&) {
+  snprintf(str, size, "%lu", static_cast<unsigned long>(from));
+  return V_EQ;
+}
+
+template <typename Policy, typename Type>
+inline Result
+to_c_string_long_long(char* str, size_t size, Type& from, const Numeric_Format&, const Rounding&) {
+  snprintf(str, size, "%lld", from);
+  return V_EQ;
+}
+
+template <typename Policy, typename Type>
+inline Result
+to_c_string_unsigned_long_long(char* str, size_t size, Type& from, const Numeric_Format&, const Rounding&) {
+  snprintf(str, size, "%llu", from);
+  return V_EQ;
 }
 
 SPECIALIZE_PRED(int, signed char)
@@ -1293,27 +1291,27 @@ SPECIALIZE_SUB_MUL(int, unsigned int, unsigned int)
 SPECIALIZE_SUB_MUL(int, unsigned long, unsigned long)
 SPECIALIZE_SUB_MUL(int, unsigned long long, unsigned long long)
 
-SPECIALIZE_PRINT(char, signed char)
-SPECIALIZE_PRINT(generic, short)
-SPECIALIZE_PRINT(generic, int)
-SPECIALIZE_PRINT(generic, long)
-SPECIALIZE_PRINT(generic, long long)
-SPECIALIZE_PRINT(char, unsigned char)
-SPECIALIZE_PRINT(generic, unsigned short)
-SPECIALIZE_PRINT(generic, unsigned int)
-SPECIALIZE_PRINT(generic, unsigned long)
-SPECIALIZE_PRINT(generic, unsigned long long)
+SPECIALIZE_FROM_C_STRING(signed_int, signed char)
+SPECIALIZE_FROM_C_STRING(signed_int, short)
+SPECIALIZE_FROM_C_STRING(signed_int, int)
+SPECIALIZE_FROM_C_STRING(signed_int, long)
+SPECIALIZE_FROM_C_STRING(long_long, long long)
+SPECIALIZE_FROM_C_STRING(unsigned_int, unsigned char)
+SPECIALIZE_FROM_C_STRING(unsigned_int, unsigned short)
+SPECIALIZE_FROM_C_STRING(unsigned_int, unsigned int)
+SPECIALIZE_FROM_C_STRING(unsigned_int, unsigned long)
+SPECIALIZE_FROM_C_STRING(unsigned_long_long, unsigned long long)
 
-SPECIALIZE_INPUT(char, signed char)
-SPECIALIZE_INPUT(generic, short)
-SPECIALIZE_INPUT(generic, int)
-SPECIALIZE_INPUT(generic, long)
-SPECIALIZE_INPUT(generic, long long)
-SPECIALIZE_INPUT(char, unsigned char)
-SPECIALIZE_INPUT(generic, unsigned short)
-SPECIALIZE_INPUT(generic, unsigned int)
-SPECIALIZE_INPUT(generic, unsigned long)
-SPECIALIZE_INPUT(generic, unsigned long long)
+SPECIALIZE_TO_C_STRING(signed_int, signed char)
+SPECIALIZE_TO_C_STRING(signed_int, short)
+SPECIALIZE_TO_C_STRING(signed_int, int)
+SPECIALIZE_TO_C_STRING(signed_int, long)
+SPECIALIZE_TO_C_STRING(long_long, long long)
+SPECIALIZE_TO_C_STRING(unsigned_int, unsigned char)
+SPECIALIZE_TO_C_STRING(unsigned_int, unsigned short)
+SPECIALIZE_TO_C_STRING(unsigned_int, unsigned int)
+SPECIALIZE_TO_C_STRING(unsigned_int, unsigned long)
+SPECIALIZE_TO_C_STRING(unsigned_long_long, unsigned long long)
 
 } // namespace Checked
 

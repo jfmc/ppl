@@ -208,15 +208,6 @@ SPECIALIZE_ASSIGN(mpz_float, mpz_class, double)
 
 template <typename Policy>
 inline Result
-assign_mpz_c_string(mpz_class& to, c_string from, const Rounding& mode) {
-  to = from;
-  return V_EQ;
-}
-
-SPECIALIZE_ASSIGN(mpz_c_string, mpz_class, c_string)
-
-template <typename Policy>
-inline Result
 neg_mpz(mpz_class& to, const mpz_class& from, const Rounding&) {
   mpz_neg(to.get_mpz_t(), from.get_mpz_t());
   return V_EQ;
@@ -377,8 +368,23 @@ cmp_mp(const Type& x, const Type& y) {
 SPECIALIZE_CMP(mp, mpz_class, mpz_class)
 SPECIALIZE_CMP(mp, mpq_class, mpq_class)
 
-SPECIALIZE_PRINT(generic, mpz_class)
-SPECIALIZE_INPUT(generic, mpz_class)
+template <typename Policy>
+inline Result
+from_c_string_mpz(mpz_class& to, const char* from, const Rounding&) {
+  to = from;
+  return V_EQ;
+}
+
+template <typename Policy>
+inline Result
+to_c_string_mpz(char* str, size_t size, const mpz_class& from, const Numeric_Format&, const Rounding&) {
+  std::string s = from.get_str();
+  strncpy(str, s.c_str(), size);
+  return V_EQ;
+}
+
+SPECIALIZE_FROM_C_STRING(mpz, mpz_class)
+SPECIALIZE_TO_C_STRING(mpz, mpz_class)
 
 } // namespace Checked
 

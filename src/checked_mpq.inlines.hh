@@ -151,15 +151,6 @@ SPECIALIZE_ASSIGN(mpq_unsigned_int, mpq_class, unsigned int)
 SPECIALIZE_ASSIGN(mpq_unsigned_int, mpq_class, unsigned long)
 SPECIALIZE_ASSIGN(mpq_unsigned_int, mpq_class, unsigned long long)
 
-template <typename Policy>
-inline Result
-assign_mpq_c_string(mpq_class& to, c_string from, const Rounding&) {
-  to = from;
-  return V_EQ;
-}
-
-SPECIALIZE_ASSIGN(mpq_c_string, mpq_class, c_string)
-
 template <typename Policy, typename From>
 inline Result
 assign_mpq_float(mpq_class& to, const From from, const Rounding&) {
@@ -238,8 +229,23 @@ abs_mpq(mpq_class& to, const mpq_class& from, const Rounding&) {
 
 SPECIALIZE_ABS(mpq, mpq_class, mpq_class)
 
-SPECIALIZE_PRINT(generic, mpq_class)
-SPECIALIZE_INPUT(generic, mpq_class)
+template <typename Policy>
+inline Result
+from_c_string_mpq(mpq_class& to, const char* from, const Rounding&) {
+  to = from;
+  return V_EQ;
+}
+
+template <typename Policy>
+inline Result
+to_c_string_mpq(char* str, size_t size, const mpq_class& from, const Numeric_Format&, const Rounding&) {
+  std::string s = from.get_str();
+  strncpy(str, s.c_str(), size);
+  return V_EQ;
+}
+
+SPECIALIZE_FROM_C_STRING(mpq, mpq_class)
+SPECIALIZE_TO_C_STRING(mpq, mpq_class)
 
 } // namespace Checked
 

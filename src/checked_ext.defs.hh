@@ -78,7 +78,10 @@ template <typename To_Policy, typename From1_Policy, typename From2_Policy, type
 Result lcm_ext(To& to, const From1& x, const From2& y, const Rounding& mode);
 
 template <typename Policy, typename Type>
-Result print_ext(std::ostream& os, const Type& x, const Numeric_Format& format, const Rounding& mode);
+Result to_c_string_ext(char* str, size_t size, const Type& x, const Numeric_Format& format, const Rounding& mode);
+
+template <typename Policy, typename Type>
+Result from_c_string_ext(Type& x, const char* str, const Numeric_Format& format, const Rounding& mode);
 
 } // namespace Checked
 
