@@ -129,6 +129,7 @@ ORIGINAL_TESTS = \
         permute \
 	polydifference1 polydifference2 polydifference3 polydifference4 \
 	polydifference5 polydifference6 polydifference7 polydifference8 \
+	polydifference9 \
 	polyhull1 polyhull2 polyhull3 polyhull4 polyhull5 polyhull6 \
 	polyhull7 polyhull8 polyhull9 polyhull10 \
 	randphull1 randphull2 \
@@ -216,7 +217,7 @@ DERIVED_TESTS = \
 	nnc_onepoint \
 	nnc_permute \
 	nnc_polydifference1 nnc_polydifference3 nnc_polydifference4 \
-	nnc_polydifference6 nnc_polydifference7 \
+	nnc_polydifference6 nnc_polydifference7 nnc_polydifference9 \
 	nnc_polyhull1 nnc_polyhull2 nnc_polyhull3 nnc_polyhull4 \
 	nnc_polyhull5 nnc_polyhull6 nnc_polyhull7 nnc_polyhull8 \
 	nnc_polyhull9 nnc_polyhull10 \
@@ -492,6 +493,7 @@ polydifference5_SOURCES = polydifference5.cc
 polydifference6_SOURCES = polydifference6.cc
 polydifference7_SOURCES = polydifference7.cc
 polydifference8_SOURCES = polydifference8.cc
+polydifference9_SOURCES = polydifference9.cc
 
 polyhull1_SOURCES = polyhull1.cc
 polyhull2_SOURCES = polyhull2.cc
@@ -919,6 +921,8 @@ nnc_polydifference6_SOURCES = polydifference6.cc
 nnc_polydifference6_CXXFLAGS = $(DERIVED_CXXFLAGS)
 nnc_polydifference7_SOURCES = polydifference7.cc
 nnc_polydifference7_CXXFLAGS = $(DERIVED_CXXFLAGS)
+nnc_polydifference9_SOURCES = polydifference9.cc
+nnc_polydifference9_CXXFLAGS = $(DERIVED_CXXFLAGS)
 
 nnc_polyhull1_SOURCES = polyhull1.cc
 nnc_polyhull1_CXXFLAGS = $(DERIVED_CXXFLAGS)
