@@ -59,7 +59,7 @@ Portability
         --prefix=/opt/intel_cc_80
 
     /path/to/ppl/configure --with-cxx=icpc --with-cc=icc \
-	--with-cxxflags="-w2 -wd177,193,279,383,444,981 -Xc" \
+	--with-cxxflags="-w2 -wd177,193,279,383,444,981,1418 -Xc" \
 	--with-libgmpxx-prefix=-I/opt/intel_cc_80/lib --prefix=/opt/intel_cc_80
 
 Constructions on Polyhedra
