@@ -202,7 +202,7 @@ PPL::GenSys::has_points() const {
 
 void
 PPL::GenSys::const_iterator::skip_forward() {
-  Matrix::const_iterator gsp_end = gsp->end();
+  PPL::Matrix::const_iterator gsp_end = gsp->end();
   if (i != gsp_end) {
     Matrix::const_iterator i_next = i;
     ++i_next;

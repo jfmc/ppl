@@ -35,7 +35,6 @@ site: http://www.cs.unipr.it/ppl/ . */
 
 namespace PPL = Parma_Polyhedra_Library;
 
-
 bool
 PPL::ConSys::adjust_topology_and_dimension(Topology new_topology,
 					   dimension_type new_space_dim) {
@@ -194,7 +193,7 @@ PPL::ConSys::num_equalities() const {
 
 void
 PPL::ConSys::const_iterator::skip_forward() {
-  Matrix::const_iterator csp_end = csp->end();
+  PPL::Matrix::const_iterator csp_end = csp->end();
   while (i != csp_end && (*this)->is_trivial_true())
     ++i;
 }

@@ -279,13 +279,14 @@ public:
     friend class GenSys;
 
     //! The const iterator over the matrix of generators.
-    Matrix::const_iterator i;
+    Parma_Polyhedra_Library::Matrix::const_iterator i;
 
     //! A const pointer to the matrix of generators.
-    const Matrix* gsp;
+    const Parma_Polyhedra_Library::Matrix* gsp;
 
     //! Constructor.
-    const_iterator(const Matrix::const_iterator& iter, const GenSys& gsys);
+    const_iterator(const Parma_Polyhedra_Library::Matrix::const_iterator& iter,
+		   const GenSys& gsys);
     
     //! \brief
     //! \p *this skips to the next generator, skipping those
@@ -337,6 +338,7 @@ public:
   bool ascii_load(std::istream& s);
 
 private:
+  friend class const_iterator;
   friend class Parma_Polyhedra_Library::Polyhedron;
 
   friend bool

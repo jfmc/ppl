@@ -77,6 +77,7 @@ protected:
   //! Assignment operator.
   Matrix& operator=(const Matrix& y);
 
+public:
   //! An iterator over a matrix.
   /*!
     A const_iterator is used to provide read-only access
@@ -154,7 +155,6 @@ protected:
     }
   };
 
-public:
   //! \brief
   //! Returns the const_iterator pointing to the first row,
   //! if \p *this is not empty;

@@ -92,8 +92,9 @@ ConSys::zero_dim_empty() {
 }
 
 inline
-ConSys::const_iterator::const_iterator(const Matrix::const_iterator& iter,
-				       const ConSys& csys)
+ConSys::const_iterator::
+const_iterator(const Parma_Polyhedra_Library::Matrix::const_iterator& iter,
+	       const ConSys& csys)
   : i(iter), csp(&csys) {
 }
 
