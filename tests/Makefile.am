@@ -81,7 +81,8 @@ ORIGINAL_TESTS = \
 	constraints1 constraints2 constraints3 constraints4 \
 	contains1 contains2 contains3 contains4 contains5 \
 	disjoint1 disjoint2 disjoint3 \
-        empty1 \
+	dualhypercubes \
+	empty1 \
 	exceptions1 exceptions2 \
 	generalizedaffineimage1 generalizedaffineimage2 \
 	generalizedaffineimage3 generalizedaffineimage4 \
@@ -365,6 +366,8 @@ contains5_SOURCES = contains5.cc
 disjoint1_SOURCES = disjoint1.cc
 disjoint2_SOURCES = disjoint2.cc
 disjoint3_SOURCES = disjoint3.cc
+
+dualhypercubes_SOURCES = dualhypercubes.cc timings.cc
 
 empty1_SOURCES = empty1.cc
 
