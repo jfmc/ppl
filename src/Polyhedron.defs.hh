@@ -40,6 +40,17 @@ site: http://www.cs.unipr.it/ppl/ . */
 
 namespace Parma_Polyhedra_Library {
 
+//! Output operator.
+/*!
+  Writes a textual representation of \p ph on \p s:
+  <CODE>false</CODE> is written if \p ph is an empty polyhedron;
+  <CODE>true</CODE> is written if \p ph is a universe polyhedron;
+  a minimized system of constraints defining \p ph is written otherwise,
+  all constraints in one row separated by ", ".
+*/
+std::ostream&
+Parma_Polyhedra_Library::operator<<(std::ostream& s, const Polyhedron& p);
+
 //! \brief
 //! Returns <CODE>true</CODE> if and only if
 //! \p x and \p y are the same polyhedron.
@@ -91,10 +102,8 @@ bool operator>(const Polyhedron& x, const Polyhedron& y);
 */
 bool operator>=(const Polyhedron& x, const Polyhedron& y);
 
-// Put them in the namespace here to declare them friend later.
+// Put it in the namespace here to declare it friend later.
 bool operator<=(const Polyhedron& x, const Polyhedron& y);
-std::ostream& operator<<(std::ostream& s, const Polyhedron& p);
-std::istream& operator>>(std::istream& s, Polyhedron& p);
 
 } // namespace Parma_Polyhedra_Library
 
@@ -989,13 +998,18 @@ public:
   Parma_Polyhedra_Library::operator<=(const Polyhedron& x,
 				      const Polyhedron& y);
 
-  //! Output operator.
-  friend std::ostream&
-  Parma_Polyhedra_Library::operator<<(std::ostream& s, const Polyhedron& p);
+#ifdef PPL_DOXYGEN_INCLUDE_IMPLEMENTATION_DETAILS
+  //! Writes to \p s an ASCII representation of the internal
+  //! representation of \p *this.
+#endif // PPL_DOXYGEN_INCLUDE_IMPLEMENTATION_DETAILS
+  void ASCII_dump(std::ostream& s) const;
 
-  //! Input operator.
-  friend std::istream&
-  Parma_Polyhedra_Library::operator>>(std::istream& s, Polyhedron& p);
+#ifdef PPL_DOXYGEN_INCLUDE_IMPLEMENTATION_DETAILS
+  //! Loads from \p s the ASCII representation (as produced by \ref
+  //! ASCII_dump) and sets \p *this accordingly.  Returns <CODE>true</CODE>
+  //! if successful, <CODE>false</CODE> otherwise.
+#endif // PPL_DOXYGEN_INCLUDE_IMPLEMENTATION_DETAILS
+  bool ASCII_load(std::istream& s);
 
   //! \brief
   //! Swaps \p *this with polyhedron \p y.

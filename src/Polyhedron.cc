@@ -2512,70 +2512,67 @@ PPL::Polyhedron::add_generators(GenSys& gs) {
   assert(OK(true));
 }
 
-
-std::ostream&
-PPL::operator<<(std::ostream& s, const Polyhedron& p) {
+void
+PPL::Polyhedron::ASCII_dump(std::ostream& s) const {
   using std::endl;
 
   s << "space_dim "
-    << p.space_dimension()
+    << space_dimension()
     << endl
-    << p.status
+    << status
     << endl
     << "con_sys ("
-    << (p.constraints_are_up_to_date() ? "" : "not_")
+    << (constraints_are_up_to_date() ? "" : "not_")
     << "up-to-date)"
     << endl
-    << p.con_sys
+    << con_sys
     << endl
     << "gen_sys ("
-    << (p.generators_are_up_to_date() ? "" : "not_")
+    << (generators_are_up_to_date() ? "" : "not_")
     << "up-to-date)"
     << endl
-    << p.gen_sys
+    << gen_sys
     << endl
     << "sat_c"
     << endl
-    << p.sat_c
+    << sat_c
     << endl
     << "sat_g"
     << endl
-    << p.sat_g
+    << sat_g
     << endl;
-
-  return s;
 }
 
-std::istream&
-PPL::operator>>(std::istream& s, Polyhedron& p) {
+bool
+PPL::Polyhedron::ASCII_load(std::istream& s) {
   std::string str;
 
   s >> str;
   assert(str == "space_dim");
-  s >> p.space_dim;
+  s >> space_dim;
 
-  s >> p.status;
+  s >> status;
 
   s >> str;
   assert(str == "con_sys");
   s >> str;
   assert(str == "(not_up-to-date)" || str == "(up-to-date)");
-  s >> p.con_sys;
+  s >> con_sys;
   s >> str;
   assert(str == "gen_sys");
   s >> str;
   assert(str == "(not_up-to-date)" || str == "(up-to-date)");
-  s >> p.gen_sys;
+  s >> gen_sys;
   s >> str;
   assert(str == "sat_c");
-  s >> p.sat_c;
+  s >> sat_c;
   s >> str;
   assert(str == "sat_g");
-  s >> p.sat_g;
+  s >> sat_g;
 
-  return s;
+  // FIXME: return the proper value.
+  return true;
 }
-
 
 /*!
   When considering the generators of a polyhedron, the
@@ -3836,9 +3833,29 @@ PPL::Polyhedron::OK(bool check_not_empty) const {
  bomb:
 #ifndef NDEBUG
   cerr << "Here is the guilty polyhedron:"
-       << endl
-       << *this
        << endl;
+  ASCII_dump(cerr);
 #endif
   return false;
+}
+
+std::ostream&
+PPL::operator<<(std::ostream& s, const Polyhedron& ph) {
+  if (ph.check_empty())
+    s << "false";
+  else {
+    const ConSys& cs = ph.minimized_constraints();
+    ConSys::const_iterator i = cs.begin();
+    ConSys::const_iterator cs_end = cs.end();
+    if (i == cs_end)
+      s << "true";
+    else {
+      while (i != cs_end) {
+	s << *i++;
+	if (i != cs_end)
+	  s << ", ";
+      }
+    }
+  }
+  return s;
 }
