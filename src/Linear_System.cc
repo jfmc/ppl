@@ -295,7 +295,7 @@ PPL::Linear_System::add_rows(const Linear_System& y) {
       if (n_rows > 0)
 	set_sorted(compare((*this)[n_rows-1], y[0]) <= 0);
     }
-  
+
   // Add the rows of `y' as if they were pending.
   add_pending_rows(y);
   // There are no pending_rows.
@@ -340,7 +340,7 @@ PPL::Linear_System::sort_rows(const dimension_type first_row,
 void
 PPL::Linear_System::add_row(const Linear_Row& r) {
   // The added row must be strongly normalized and have the same
-  // number of elements of the existing rows of the system.
+  // number of elements as the existing rows of the system.
   assert(r.check_strong_normalized());
   assert(r.size() == row_size);
   // This method is only used when the system has no pending rows.

@@ -183,7 +183,7 @@ void swap(Parma_Polyhedra_Library::Generator& x,
   If a zero divisor is provided, an exception is thrown.
 
   \par Example 5
-  Closures points are specified in the same way we defined points,
+  Closure points are specified in the same way we defined points,
   but invoking their specific constructor function.
   For instance, the closure point
   \f$\vect{c} = (1, 0, 2)^\transpose \in \Rset^3\f$ is defined by
