@@ -520,7 +520,7 @@ public:
   void poly_hull_assign(const Polyhedron& y);
 
   //! \brief
-  //! Assigns to \p *this the \ref polydifference "poly-difference" of
+  //! Assigns to \p *this the \ref poly_difference "poly-difference" of
   //! \p *this and \p y, minimizing the result.
   /*!
     \return       <CODE>false</CODE> if and only if the result is empty.
@@ -531,7 +531,7 @@ public:
   bool poly_difference_assign_and_minimize(const Polyhedron& y);
 
   //! \brief
-  //! Assigns to \p *this the \ref polydifference "poly-difference" of
+  //! Assigns to \p *this the \ref poly_difference "poly-difference" of
   //! \p *this and \p y. The result is not guaranteed to be minimized.
   /*!
     \exception std::invalid_argument thrown if \p *this and \p y
@@ -560,7 +560,7 @@ public:
 
   //! \brief
   //! Assigns to \p *this the result of computing the
-  //! \ref h79widening "H79-widening" between \p *this and \p y.
+  //! \ref H79_widening "H79-widening" between \p *this and \p y.
   /*!
     \param y           A polyhedron that <EM>must</EM>
                        be contained in \p *this.
@@ -571,7 +571,7 @@ public:
   void H79_widening_assign(const Polyhedron& y);
 
   //! \brief
-  //! Limits the \ref h79widening "H79-widening" computation
+  //! Limits the \ref H79_widening "H79-widening" computation
   //! between \p *this and \p y by enforcing constraints \p cs
   //! and assigns the result to \p *this.
   /*!
@@ -588,8 +588,8 @@ public:
   void limited_H79_widening_assign(const Polyhedron& y, ConSys& cs);
 
   //! \brief
-  //! Assigns to \p *this the result of computing the time-elapse
-  //! between \p *this and \p y.
+  //! Assigns to \p *this the result of computing the
+  //! \ref time_elapse "time-elapse" between \p *this and \p y.
   /*!
     \exception std::invalid_argument thrown if \p *this and \p y
                                      are topology-incompatible
@@ -633,8 +633,9 @@ public:
   void add_generator(const Generator& g);
 
   //! \brief
-  //! Transforms the polyhedron \p *this, assigning an affine expression
-  //! to the specified variable.
+  //! Assigns to \p *this the \ref affine_transformation "affine image"
+  //! of \p *this under the function mapping variable \p v into the
+  //! affine expression specified by \p expr and \p d.
   /*!
     \param var           The variable to which the affine
                          expression is assigned.
@@ -652,9 +653,9 @@ public:
 		    const Integer& denominator = Integer_one());
 
   //! \brief
-  //! Transforms the polyhedrons \p *this, substituting an affine
-  //! expression for the specified variable (it is the inverse
-  //! operation of <CODE>affine_image</CODE>).
+  //! Assigns to \p *this the \ref affine_transformation "affine preimage"
+  //! of \p *this under the function mapping variable \p v into the
+  //! affine expression specified by \p expr and \p d.
   /*!
     \param var           The variable to which the affine expression
                          is substituted.

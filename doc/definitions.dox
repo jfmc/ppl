@@ -468,7 +468,7 @@ the intersection and poly-hull operators defined above
 are the binary <EM>meet</EM> and the binary <EM>join</EM>
 operators on the lattices \f$\Pset_n\f$ and \f$\CPset_n\f$.
 
-\anchor polydifference
+\anchor poly_difference
 <B>Convex Polyhedral Difference</B>
 
 For any pair of NNC polyhedra \f$\cP_1, \cP_2 \in \Pset_n\f$,
@@ -545,6 +545,7 @@ then after using this operator with \f$2\f$ as the given space dimension,
 then the  resulting polyhedron is the point
 \f$\bigl\{ (3, 1)^\transpose \bigr\} \sseq \Rset^2\f$.
 
+\anchor affine_transformation
 <B>Affine Images and Preimages</B>
 
 The function mapping \f$\fund{\phi}{\Rset^n}{\Rset^m}\f$
@@ -649,7 +650,7 @@ The polyhedron \f$\cP\f$ <EM>subsumes</EM> the generator \f$g\f$ if
 adding \f$g\f$ to any generator system representing \f$\cP\f$
 does not change \f$\cP\f$.
 
-\anchor h79widening
+\anchor H79_widening
 <B>Widening Operators</B>
 
 The library provides widening operators for the domain of
@@ -676,6 +677,7 @@ In particular, the H79-widening of an NNC polyhedron \f$\cP\f$
  - requires as a precondition that \f$\cP' \sseq \cP\f$.
 
 
+\anchor time_elapse
 <B>Time-Elapse Operator</B>
 
 The <EM>time-elapse</EM> operator provided by the library is the time elapse
