@@ -21,11 +21,6 @@ USA.
 For the most up-to-date information see the Parma Polyhedra Library
 site: http://www.cs.unipr.it/ppl/ . */
 
-// Neutralize relops for GCC 2.96.
-#ifndef __SGI_STL_INTERNAL_RELOPS
-#define __SGI_STL_INTERNAL_RELOPS
-#endif
-
 #include "ppl_install.hh"
 #include "print.hh"
 #include "ehandlers.hh"
