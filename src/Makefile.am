@@ -132,15 +132,15 @@ C_Polyhedron.defs.hh \
 C_Polyhedron.inlines.hh \
 NNC_Polyhedron.defs.hh \
 NNC_Polyhedron.inlines.hh \
-LCompare.types.hh \
-LCompare.defs.hh \
-LCompare.inlines.hh \
 Determinate.types.hh \
 Determinate.defs.hh \
 Determinate.inlines.hh \
 PowerSet.types.hh \
 PowerSet.defs.hh \
 PowerSet.inlines.hh \
+AskTell.types.hh \
+AskTell.defs.hh \
+AskTell.inlines.hh \
 algorithms.hh
 
 libppl_la_SOURCES = \
@@ -206,6 +206,9 @@ Determinate.inlines.hh \
 PowerSet.types.hh \
 PowerSet.defs.hh \
 PowerSet.inlines.hh \
+AskTell.types.hh \
+AskTell.defs.hh \
+AskTell.inlines.hh \
 algorithms.hh
 
 libppl_la_LDFLAGS = \
