@@ -399,15 +399,13 @@ public:
   //! and the constraint \p c.
   //! \exception std::invalid_argument thrown if \p *this and constraint
   //!                                  \p c are dimension-incompatible.
-  Poly_Con_Relation
-  relation_with(const Constraint& c);
+  Poly_Con_Relation relation_with(const Constraint& c) const;
 
   //! Returns the relations holding between the polyhedron \p *this
   //! and the generator \p g.
   //! \exception std::invalid_argument thrown if \p *this and generator
   //!                                  \p g are dimension-incompatible.
-  Poly_Gen_Relation
-  relation_with(const Generator& g);
+  Poly_Gen_Relation relation_with(const Generator& g) const;
 
   //! Computes the widening between \p *this and \p y and
   //! assigns the result to \p *this.

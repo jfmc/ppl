@@ -2062,7 +2062,7 @@ PPL::Polyhedron::affine_preimage(const Variable& var,
   the constraint \p c.
 */
 PPL::Poly_Con_Relation
-PPL::Polyhedron::relation_with(const Constraint& c) {
+PPL::Polyhedron::relation_with(const Constraint& c) const {
   // Dimension-compatibility check.
   if (space_dim < c.space_dimension())
     throw_different_dimensions("PPL::Polyhedron::relation_with(c)",
@@ -2099,7 +2099,7 @@ PPL::Polyhedron::relation_with(const Constraint& c) {
   the generator \p g.
 */
 PPL::Poly_Gen_Relation
-PPL::Polyhedron::relation_with(const Generator& g) {
+PPL::Polyhedron::relation_with(const Generator& g) const {
   // Dimension-compatibility check.
   if (space_dim < g.space_dimension())
      throw_different_dimensions("PPL::Polyhedron::relation_with(g)",
