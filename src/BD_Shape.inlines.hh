@@ -234,7 +234,7 @@ BD_Shape<T>::add_constraint(const Constraint& c) {
     throw_constraint_incompatible("add_constraint(c)");
 
   // Store the indices of the non-zero components of `c',
-  dimension_type j[2] = { 0, 0 };
+  dimension_type non_zero_position[2] = { 0, 0 };
 
   // Number of non-zero components of `c'.
   dimension_type t = 0;
@@ -246,7 +246,7 @@ BD_Shape<T>::add_constraint(const Constraint& c) {
 	// Constraints that are not "bounded differences" are ignored.
 	return;
       else
-	j[t++] = i;
+	non_zero_position[t++] = i;
     }
 
   // We will now make sure `c' has one of the following forms:
@@ -255,23 +255,25 @@ BD_Shape<T>::add_constraint(const Constraint& c) {
   //   a*x       <=/= b, if t == 1;
   //   a*x - a*y <=/= b, if t == 2.
   //
-  // In addition, j[0] and (if t >= 1) j[1] will contain the indices
+  // In addition,non_zero_position[0] and (if t >= 1)non_zero_position[1] will contain the indices
   // of the cell(s) of `dbm' to be modified.
   Coefficient a;
   Coefficient b = c.inhomogeneous_term();
   switch (t) {
   case 2:
-    a = c.coefficient(Variable(j[1]));
-    if (a != -c.coefficient(Variable(j[0])))
+    a = c.coefficient(Variable(non_zero_position[1]));
+    if (a != -c.coefficient(Variable(non_zero_position[0])))
       // Constraints that are not "bounded differences" are ignored.
       return;
-    ++j[1];
-    ++j[0];
+    // In DBMs there is a +1 offset on the position of each dimension.
+    ++non_zero_position[1];
+    ++non_zero_position[0];
     break;
 
   case 1:
-    a = -c.coefficient(Variable(j[0]));
-    ++j[0];
+    a = -c.coefficient(Variable(non_zero_position[0]));
+    // In DBMs there is a +1 offset on the position of each dimension.
+    ++non_zero_position[0];
     break;
 
   case 0:
@@ -282,32 +284,28 @@ BD_Shape<T>::add_constraint(const Constraint& c) {
 
   // Select the cell to be modified for the "<=" part of the constraint,
   // and set `a' to the absolute value of itself.
-  T& dbm_j_0_j_1 = dbm[j[0]][j[1]];
-  T& dbm_j_1_j_0 = dbm[j[1]][j[0]];
-  T* dbm_cellp;
-  if (a < 0) {
-    dbm_cellp = &dbm_j_0_j_1;
+  T& dbm_j_0_j_1 = dbm[non_zero_position[0]][non_zero_position[1]];
+  T& dbm_j_1_j_0 = dbm[non_zero_position[1]][non_zero_position[0]];
+  T& x = (a < 0) ? dbm_j_0_j_1 : dbm_j_1_j_0;
+  // The element `y' is the symmetric of `x'.
+  T& y = (a < 0) ? dbm_j_1_j_0 : dbm_j_0_j_1;
+  if (a < 0)
     a = -a;
-  }
-  else
-    dbm_cellp = &dbm_j_1_j_0;
 
   bool check_change = false;
   // Compute b/a into `d', rounding the result towards plus infinity.
   T d;
   div_round_up(d, b, a);
-  if (*dbm_cellp > d) {
-    *dbm_cellp = d;
+  if (x > d) {
+    x = d;
     check_change = true;
   }
 
   if (c.is_equality()) {
-    // The symmetric cell is the one to be possibly modified.
-    dbm_cellp = (dbm_cellp == &dbm_j_0_j_1) ? &dbm_j_1_j_0 : &dbm_j_0_j_1;
     // Compute -b/a into `d', rounding the result towards plus infinity.
     div_round_up(d, -b, a);
-    if (*dbm_cellp > d) {
-      *dbm_cellp = d;
+    if (y > d) {
+      y = d;
       check_change = true;
     }
   }
