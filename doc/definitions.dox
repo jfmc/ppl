@@ -1132,7 +1132,7 @@ reduced set union \f$\nonredmap(\cS_1 \union \cS_2)\f$ respectively.
 Given the powerset element \f$\cS \in D_{\smallP}\f$ and the base-level
 element \f$d \in D\f$, the <EM>add_disjunct</EM> operator provided by
 the library returns the powerset element
-\f$\nonredmap\bigl(\cS_1 \union \{d\}\bigr)\f$.
+\f$\nonredmap\bigl(\cS \union \{d\}\bigr)\f$.
 
 \anchor ps_collapse
 <B>Collapsing a Powerset Element</B>
