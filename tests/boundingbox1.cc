@@ -376,6 +376,40 @@ void test2a() {
 
 #endif //NNC_TESTS
 }
+
+  // This is a bounded C polyhedron that is a single point;
+void test2b() {
+#if C_TESTS
+  Variable x(0);
+  Variable y(1);
+
+  C_Polyhedron ph(2);
+  ph.add_constraint(x == 2);
+  ph.add_constraint(y == 4);
+
+#if NOISY
+  print_generators(ph, "*** test2b ph ***");
+#endif
+  BBox box(ph.space_dimension());
+  ph.shrink_bounding_box(box);
+#if NOISY
+  box.print_box("*** test2b box ***");
+#endif
+  
+  BBox known_box(2);
+  known_box.raise_lower_bound(0, true, 2, 1);
+  known_box.lower_upper_bound(0, true, 2, 1);
+  known_box.raise_lower_bound(1, true, 4, 1);
+  known_box.lower_upper_bound(1, true, 4, 1);
+#if NOISY
+  known_box.print_box("*** test2b known ***");
+#endif
+
+//  if (box != known_box)
+//    exit(1);
+
+#endif //C_TESTS
+}
  
   // This is a unbounded C polyhedron in 4D but bounded in 2D;
 void test3() {
