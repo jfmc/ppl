@@ -60,6 +60,7 @@ operator<<(std::ostream& s, const Powerset<CS>& x);
 /*!
   This class offers a generic implementation of <EM>powerset
   constraint systems</EM> as defined in \ref Bag98 "[Bag98]".
+  See also the description in Section \ref powerset.
 */
 template <typename CS>
 class Parma_Polyhedra_Library::Powerset {
@@ -168,8 +169,7 @@ protected:
   mutable bool reduced;
 
 public:
-  //! \name Sequence manipulation types, accessors and modifiers
-  //@{
+  // Sequence manipulation types, accessors and modifiers
   typedef typename Sequence::size_type size_type;
   typedef typename Sequence::value_type value_type;
   typedef typename Sequence::iterator iterator;
@@ -182,7 +182,9 @@ public:
 
   iterator begin();
   iterator end();
+  //! A const_iterator pointing to the first element in the sequence.
   const_iterator begin() const;
+  //! The past-the-end const_iterator.
   const_iterator end() const;
   reverse_iterator rbegin();
   reverse_iterator rend();
@@ -194,11 +196,9 @@ public:
   iterator erase(iterator first, iterator last);
   iterator erase(iterator position);
   void clear();
-  //@} // Sequence manipulation types, accessors and modifiers
 
-  //protected:
-public:
-  //! Erase from \p *this all the non-maximal elements.
+//protected:
+  //! Erase from the sequence of disjuncts all the non-maximal elements.
   void omega_reduce() const;
 
 protected:
