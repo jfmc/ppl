@@ -248,7 +248,8 @@ Prolog_get_atom_name(Prolog_term_ref t, Prolog_atom& name) {
   The behavior is undefined if \p t is not a Prolog compound term.
 */
 static inline bool
-Prolog_get_name_arity(Prolog_term_ref t, Prolog_atom& name, int& arity) {
+Prolog_get_compound_name_arity(Prolog_term_ref t,
+			       Prolog_atom& name, int& arity) {
   assert(Prolog_is_compound(t));
   return PL_get_name_arity(t, &name, &arity) != 0;
 }

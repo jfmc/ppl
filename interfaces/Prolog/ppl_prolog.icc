@@ -284,7 +284,7 @@ build_lin_expression(Prolog_term_ref t) {
   else if (Prolog_is_compound(t)) {
     Prolog_atom functor;
     int arity;
-    Prolog_get_name_arity(t, functor, arity);
+    Prolog_get_compound_name_arity(t, functor, arity);
     switch (arity) {
     case 1:
       {
@@ -339,7 +339,7 @@ build_constraint(Prolog_term_ref t) {
   if (Prolog_is_compound(t)) {
     Prolog_atom functor;
     int arity;
-    Prolog_get_name_arity(t, functor, arity);
+    Prolog_get_compound_name_arity(t, functor, arity);
     if (arity == 2) {
       Prolog_term_ref arg1 = Prolog_new_term_ref();
       Prolog_term_ref arg2 = Prolog_new_term_ref();
@@ -396,7 +396,7 @@ build_generator(Prolog_term_ref t) {
   if (Prolog_is_compound(t)) {
     Prolog_atom functor;
     int arity;
-    Prolog_get_name_arity(t, functor, arity);
+    Prolog_get_compound_name_arity(t, functor, arity);
     if (arity == 1) {
       Prolog_term_ref arg = Prolog_new_term_ref();
       Prolog_get_arg(1, t, arg);
@@ -539,7 +539,7 @@ get_variable(Prolog_term_ref t) {
   if (Prolog_is_compound(t)) {
     Prolog_atom functor;
     int arity;
-    Prolog_get_name_arity(t, functor, arity);
+    Prolog_get_compound_name_arity(t, functor, arity);
     if (functor == a_dollar_VAR && arity == 1) {
       Prolog_term_ref arg = Prolog_new_term_ref();
       Prolog_get_arg(1, t, arg);
