@@ -10,6 +10,7 @@ foreign_resource(ppl_sicstus,
 	ppl_insert_constraint,
 	ppl_insert_generator,
 	ppl_remove_dimensions,
+	ppl_remove_higher_dimensions,
 	ppl_add_dimensions_and_embed,
 	ppl_add_dimensions_and_project,
 	ppl_check_empty,
@@ -44,6 +45,9 @@ foreign(ppl_insert_generator,
 foreign(ppl_remove_dimensions,
 	c,
 	ppl_remove_dimensions(+address, +term)).
+foreign(ppl_remove_higher_dimensions,
+	c,
+	ppl_remove_higher_dimensions(+address, +integer)).
 foreign(ppl_add_dimensions_and_project,
 	c,
 	ppl_add_dimensions_and_project(+address, +integer)).

@@ -498,8 +498,9 @@ ppl_check_empty(const void* pp) {
 extern "C" void
 ppl_intersection_assign(void* pp_lhs, const void* pp_rhs) {
   try {
-    static_cast<PPL::Polyhedron*>(pp_lhs)
-      ->intersection_assign(*static_cast<const PPL::Polyhedron*>(pp_rhs));
+    PPL::Polyhedron& x = *static_cast<PPL::Polyhedron*>(pp_lhs);
+    const PPL::Polyhedron& y = *static_cast<const PPL::Polyhedron*>(pp_rhs);
+    x.intersection_assign(y);
   }
   CATCH_ALL;
 }
@@ -507,8 +508,9 @@ ppl_intersection_assign(void* pp_lhs, const void* pp_rhs) {
 extern "C" void
 ppl_convex_hull_assign(void* pp_lhs, const void* pp_rhs) {
   try {
-    static_cast<PPL::Polyhedron*>(pp_lhs)
-      ->convex_hull_assign(*static_cast<const PPL::Polyhedron*>(pp_rhs));
+    PPL::Polyhedron& x = *static_cast<PPL::Polyhedron*>(pp_lhs);
+    const PPL::Polyhedron& y = *static_cast<const PPL::Polyhedron*>(pp_rhs);
+    x.convex_hull_assign_and_minimize(y);
   }
   CATCH_ALL;
 }
@@ -668,6 +670,17 @@ ppl_remove_dimensions(void* pp, SP_term_ref variables_list) {
   }
   CATCH_ALL;
 }
+
+
+extern "C" void
+ppl_remove_higher_dimensions(void* pp, long new_dimension) {
+  try {
+    static_cast<PPL::Polyhedron*>(pp)
+      ->remove_higher_dimensions(get_size_t(new_dimension));
+  }
+  CATCH_ALL;
+}
+
 
 extern "C" void
 ppl_add_dimensions_and_project(void* pp, long num_new_dimensions) {
