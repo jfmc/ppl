@@ -27,3 +27,5 @@ VPATH = @srcdir@
 @SET_MAKE@
 
 SUBDIRS = @extra_if_Prolog_subdirs@
+
+noinst_HEADERS = ppl_prolog.outlines.hh
