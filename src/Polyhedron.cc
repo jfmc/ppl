@@ -1326,12 +1326,16 @@ PPL::Polyhedron::concatenate_assign(const Polyhedron& y) {
 
   // For an empty polyhedron, it is sufficient to adjust
   // the dimension of the space.
-  if (is_empty()) {
+  if (is_empty() || y.is_empty()) {
     space_dim += added_columns;
-    con_sys.clear();
+    set_empty();
     return;
   }
 
+  // If `y' is a non-empty 0-dim space polyhedron,
+  // the result is `*this'.
+  if (added_columns == 0)
+    return;
   // For a non-empty 0-dim space polyhedron, the result is `y'.
   if (space_dim == 0) {
     *this = y;
