@@ -95,5 +95,5 @@ main() {
   cout << endl << "=== kr ===" << endl << known_result << endl;
 #endif
 
-  return (ph == known_result && ph.generators().num_rows() == 8) ? 0 : 1;
+  return (ph == known_result && ph.constraints().num_rows() == 5) ? 0 : 1;
 }

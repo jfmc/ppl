@@ -35,7 +35,7 @@ LDADD = $(top_builddir)/src/libppl.la @extra_libraries@
 CPPFLAGS = @extra_cpp_flags@
 
 TESTS = NNCinclusion1 \
-	NNCminimize1 NNCminimize2 NNCminimize3 NNCminimize4 \
+	NNCminimize1 NNCminimize2 NNCminimize3 NNCminimize4 NNCminimize5 \
         addconstraints1 addconstraints2 addconstraints3 addconstraints4 \
 	addconstraints5 addconstraints6 addconstraints7 addconstraints8 \
 	addconstraints9 addconstraints10 addconstraints11 \
@@ -74,6 +74,7 @@ NNCminimize1_SOURCES = NNCminimize1.cc
 NNCminimize2_SOURCES = NNCminimize2.cc
 NNCminimize3_SOURCES = NNCminimize3.cc
 NNCminimize4_SOURCES = NNCminimize4.cc
+NNCminimize5_SOURCES = NNCminimize5.cc
 
 addconstraints1_SOURCES = addconstraints1.cc
 addconstraints2_SOURCES = addconstraints2.cc
