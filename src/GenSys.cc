@@ -725,15 +725,7 @@ PPL::GenSys::affine_image(dimension_type v,
   TEMP_INTEGER(numerator);
   for (dimension_type i = n_rows; i-- > 0; ) {
     Generator& row = x[i];
-#if 0
-    numerator = 0;
-    for (dimension_type j = expr.size(); j-- > 0; )
-      // The following line optimizes the computation of
-      // numerator += row[j] * expr[j].
-      add_mul_assign(numerator, row[j], expr[j]);
-#else
     scalar_product_assign(numerator, expr, row);
-#endif
     std::swap(numerator, row[v]);
   }
 
