@@ -117,7 +117,7 @@ ORIGINAL_TESTS = \
 	relations17 relations18 relations19 \
 	removedim1 removedim2 removedim3 removedim4 removedim5 removedim6 \
 	removedim7 removedim8 removedim9 removedim10 \
-	remapdim1 \
+	mapdim1 \
 	smm1 \
 	timeelapse1 timeelapse2 timeelapse3 timeelapse4 timeelapse5 \
 	timeelapse6 timeelapse7 timeelapse8 \
@@ -200,7 +200,7 @@ DERIVED_TESTS = \
 	nnc_removedim1 nnc_removedim2 nnc_removedim3 nnc_removedim4 \
 	nnc_removedim5 nnc_removedim6 nnc_removedim8 nnc_removedim9 \
 	nnc_removedim10 \
-	nnc_remapdim1 \
+	nnc_mapdim1 \
 	nnc_smm1 \
 	nnc_timeelapse2 nnc_timeelapse5 nnc_timeelapse6 nnc_timeelapse7 \
 	nnc_timeelapse8 \
@@ -483,7 +483,7 @@ removedim8_SOURCES = removedim8.cc
 removedim9_SOURCES = removedim9.cc
 removedim10_SOURCES = removedim10.cc
 
-remapdim1_SOURCES = remapdim1.cc PFunction.cc
+mapdim1_SOURCES = mapdim1.cc PFunction.cc
 
 smm1_SOURCES = smm1.cc
 
@@ -912,8 +912,8 @@ nnc_removedim9_CXXFLAGS = $(DERIVED_CXXFLAGS)
 nnc_removedim10_SOURCES = removedim10.cc
 nnc_removedim10_CXXFLAGS = $(DERIVED_CXXFLAGS)
 
-nnc_remapdim1_SOURCES = remapdim1.cc PFunction.cc
-nnc_remapdim1_CXXFLAGS = $(DERIVED_CXXFLAGS)
+nnc_mapdim1_SOURCES = mapdim1.cc PFunction.cc
+nnc_mapdim1_CXXFLAGS = $(DERIVED_CXXFLAGS)
 
 nnc_smm1_SOURCES = smm1.cc
 nnc_smm1_CXXFLAGS = $(DERIVED_CXXFLAGS)

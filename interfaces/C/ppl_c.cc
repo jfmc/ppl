@@ -1574,12 +1574,12 @@ public:
 } // namespace
 
 int
-ppl_Polyhedron_remap_dimensions(ppl_Polyhedron_t ph,
-				ppl_dimension_type maps[],
-				size_t n) try {
+ppl_Polyhedron_map_dimensions(ppl_Polyhedron_t ph,
+			      ppl_dimension_type maps[],
+			      size_t n) try {
   Polyhedron& pph = *to_nonconst(ph);
   PIFunc pifunc(maps, n);
-  pph.remap_dimensions(pifunc);
+  pph.map_dimensions(pifunc);
   return 0;
 }
 CATCH_ALL

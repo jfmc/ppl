@@ -592,7 +592,7 @@ Polyhedron::shrink_bounding_box(Box& box, Complexity_Class complexity) const {
 
 template <typename PartialFunction>
 void
-Polyhedron::remap_dimensions(const PartialFunction& pfunc) {
+Polyhedron::map_dimensions(const PartialFunction& pfunc) {
   // TODO: this implementation is just an executable specification.
   if (space_dim == 0)
     return;

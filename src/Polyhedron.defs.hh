@@ -1255,7 +1255,7 @@ public:
 
   //! \brief
   //! Remaps the dimensions of the vector space
-  //! according to a \ref remap_dimensions "partial function".
+  //! according to a \ref map_dimensions "partial function".
   /*!
     \param pfunc   The partial function specifying
                    the destiny of each dimension.
@@ -1287,10 +1287,10 @@ public:
 
     The result is undefined if \p pfunc does not encode a partial
     function with the properties described in the
-    \ref remap_dimensions "specification of the remapping operator".
+    \ref map_dimensions "specification of the mapping operator".
   */
   template <typename PartialFunction>
-  void remap_dimensions(const PartialFunction& pfunc);
+  void map_dimensions(const PartialFunction& pfunc);
 
   //@} // Member Functions that May Modify the Dimension of the Vector Space
 

@@ -116,4 +116,4 @@ site: http://www.cs.unipr.it/ppl/ . */
 :- foreign(ppl_Polyhedron_concatenate_assign(+term, +term)).
 :- foreign(ppl_Polyhedron_remove_dimensions(+term, +term)).
 :- foreign(ppl_Polyhedron_remove_higher_dimensions(+term, +term)).
-:- foreign(ppl_Polyhedron_remap_dimensions(+term, +term)).
+:- foreign(ppl_Polyhedron_map_dimensions(+term, +term)).

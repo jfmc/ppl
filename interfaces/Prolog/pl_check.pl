@@ -167,7 +167,7 @@ revamp_dim :-
    conc_assign,
    remove_dim,
    remove_high_dim,
-   remap_dim,
+   map_dim,
    ppl_finalize.
 
 check_polys :-
@@ -1206,15 +1206,15 @@ remove_high_dim(T) :-
   ppl_delete_Polyhedron(P2),
   ppl_delete_Polyhedron(P).
 
-% Tests ppl_Polyhedron_remap_dimensions using constraints and generators
-remap_dim:-
-  remap_dim(c), remap_dim(nnc).
+% Tests ppl_Polyhedron_map_dimensions using constraints and generators
+map_dim:-
+  map_dim(c), map_dim(nnc).
 
-remap_dim(T) :-
+map_dim(T) :-
   make_vars(3, [A, B, C]),
   ppl_new_Polyhedron_from_dimension(T, 3, P),
   ppl_Polyhedron_add_constraints(P, [A >= 2, B >= 1, C >= 0]),
-  ppl_Polyhedron_remap_dimensions(P, [A-B, B-C, C-A]),
+  ppl_Polyhedron_map_dimensions(P, [A-B, B-C, C-A]),
   ppl_new_Polyhedron_from_dimension(T, 3, Q),
   ppl_Polyhedron_add_constraints(Q, [A >= 0, B >= 2, C >= 1]),
   ppl_Polyhedron_equals_Polyhedron(P, Q),
@@ -1222,7 +1222,7 @@ remap_dim(T) :-
   ppl_delete_Polyhedron(Q),
   ppl_new_Polyhedron_empty_from_dimension(T, 4, P1),
   ppl_Polyhedron_add_generators(P1, [point(2*C), line(A+B), ray(A+C)]),
-  ppl_Polyhedron_remap_dimensions(P1, [A-C, C-A, B-B]),
+  ppl_Polyhedron_map_dimensions(P1, [A-C, C-A, B-B]),
   ppl_new_Polyhedron_empty_from_dimension(T, 3, Q1),
   ppl_Polyhedron_add_generators(Q1, [point(2*A), ray(A+C), line(B+C)]),
   ppl_Polyhedron_equals_Polyhedron(P1, Q1),

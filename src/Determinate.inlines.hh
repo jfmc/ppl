@@ -323,9 +323,9 @@ Determinate<PH>::remove_higher_dimensions(dimension_type new_dimension) {
 template <typename PH>
 template <typename PartialFunction>
 void
-Determinate<PH>::remap_dimensions(const PartialFunction& pfunc) {
+Determinate<PH>::map_dimensions(const PartialFunction& pfunc) {
   mutate();
-  prep->ph.remap_dimensions(pfunc);
+  prep->ph.map_dimensions(pfunc);
 }
 
 template <typename PH>

@@ -1850,7 +1850,7 @@ ppl_Polyhedron_remove_higher_dimensions __P((ppl_Polyhedron_t ph,
 
 /*! \brief
   Remaps the dimensions of the vector space according to a
-  \ref remap_dimensions "partial function". This function is specified
+  \ref map_dimensions "partial function". This function is specified
   by means of the \p maps array, which has \p n entries.
 
   The partial function is defined on dimension <CODE>i</CODE>
@@ -1861,12 +1861,12 @@ ppl_Polyhedron_remove_higher_dimensions __P((ppl_Polyhedron_t ph,
 
   The result is undefined if \p maps does not encode a partial
   function with the properties described in the
-  \ref remap_dimensions "specification of the remapping operator".
+  \ref map_dimensions "specification of the mapping operator".
 */
 int
-ppl_Polyhedron_remap_dimensions __P((ppl_Polyhedron_t ph,
-				     ppl_dimension_type maps[],
-				     size_t n));
+ppl_Polyhedron_map_dimensions __P((ppl_Polyhedron_t ph,
+				   ppl_dimension_type maps[],
+				   size_t n));
 
 /*@}*/ /* Functions Related to Polyhedra */
 

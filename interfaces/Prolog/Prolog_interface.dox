@@ -438,7 +438,7 @@ Here is a list of all the PPL predicates provided by the Prolog interface.
 </CODE>
 
 <CODE>
-  ppl_Polyhedron_remap_dimensions(+Handle, +P_Func))
+  ppl_Polyhedron_map_dimensions(+Handle, +P_Func))
 </CODE>
 
 \subsection PI_SI_Features_Predicate_Spec PPL Predicate Specifications
@@ -1237,13 +1237,13 @@ This is the inverse transformation to that for <CODE>ppl_affine_image</CODE>.
       ppl_Polyhedron_space_dimension(X, K).
 \endcode
 
-<H2><CODE>ppl_Polyhedron_remap_dimensions(+Handle, +P_Func))</CODE></H2>
+<H2><CODE>ppl_Polyhedron_map_dimensions(+Handle, +P_Func))</CODE></H2>
 
-   Remaps the dimensions of the polyhedron referenced by <CODE>Handle</CODE>
+   Maps the dimensions of the polyhedron referenced by <CODE>Handle</CODE>
    using the partial function defined by <CODE>P_Func</CODE>.
    The result is undefined if \p P_Func does not encode a partial
    function with the properties described in the
-   \ref remap_dimensions "specification of the remapping operator".
+   \ref map_dimensions "specification of the mapping operator".
 
 \section PI_Compilation Compilation and Installation
 

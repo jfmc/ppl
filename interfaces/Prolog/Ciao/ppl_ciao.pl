@@ -92,7 +92,7 @@ site: http://www.cs.unipr.it/ppl/ . */
         ppl_Polyhedron_concatenate_assign/2,
         ppl_Polyhedron_remove_dimensions/2,
         ppl_Polyhedron_remove_higher_dimensions/2,
-        ppl_Polyhedron_remap_dimensions/2
+        ppl_Polyhedron_map_dimensions/2
 ],
 [
         assertions,
@@ -608,8 +608,8 @@ ppl_Polyhedron_bounded_H79_extrapolation_assign_with_token(Handle1,
                                                      in(Dimensions))
   :: any_term * any_term + foreign.
 
-:- true pred ppl_Polyhedron_remap_dimensions(in(Handle),
-                                              in(PIFunc))
+:- true pred ppl_Polyhedron_map_dimensions(in(Handle),
+                                           in(PIFunc))
   :: any_term * any_term + foreign.
 
 :- extra_linker_opts('-L.libs').
@@ -726,7 +726,7 @@ ppl_Polyhedron_bounded_H79_extrapolation_assign_with_token(Handle1,
         ppl_Polyhedron_concatenate_assign/2,
         ppl_Polyhedron_remove_dimensions/2,
         ppl_Polyhedron_remove_higher_dimensions/2,
-        ppl_Polyhedron_remap_dimensions/2
+        ppl_Polyhedron_map_dimensions/2
 ]).
 
 :- comment(version_maintenance,off).
@@ -999,8 +999,8 @@ since the above version of this is temporary.
                                                      in(Dimensions))
              :: any_term * any_term + foreign.
 
-:- true pred ppl_Polyhedron_remap_dimensions(in(Handle),
-                                              in(PIFunc))
+:- true pred ppl_Polyhedron_map_dimensions(in(Handle),
+                                           in(PIFunc))
              :: any_term * any_term + foreign.
 
 :- extra_linker_opts('-L.libs').
@@ -1077,7 +1077,7 @@ since the above version of this is temporary.
         ppl_Polyhedron_concatenate_assign/2,
         ppl_Polyhedron_remove_dimensions/2,
         ppl_Polyhedron_remove_higher_dimensions/2,
-        ppl_Polyhedron_remap_dimensions/2
+        ppl_Polyhedron_map_dimensions/2
 ]).
 
 :- comment(version_maintenance,off).
