@@ -428,32 +428,6 @@ polydiff_assign :-
   ppl_delete_Polyhedron(P1a),
   ppl_delete_Polyhedron(P1b).
 
-% Tests ppl_Polyhedron_poly_difference_assign_and_minimize
-% (using C Polyhedra).
-polydiff_assign_min :-
-  A = '$VAR'(0), B = '$VAR'(1),
-  ppl_new_Polyhedron_from_generators(c,
-                                     [point(0), point(B),
-                                      point(A), point(A,2)],
-                                     P1),
-  ppl_new_Polyhedron_from_generators(c,
-                                     [point(0), point(A),
-                                      point(A + B)],
-                                     P2),
-  ppl_Polyhedron_poly_difference_assign_and_minimize(P1, P2),
-  ppl_new_Polyhedron_from_generators(c,
-                                     [point(1*A), point(1*B), point(0)],
-                                     P1a),
-  ppl_new_Polyhedron_from_constraints(c,
-                                      [A >= 0, B >= 0, A + B =< 1],
-                                      P1b),
-  ppl_Polyhedron_equals_Polyhedron(P1, P1a),
-  ppl_Polyhedron_equals_Polyhedron(P1, P1b),
-  ppl_delete_Polyhedron(P1),
-  ppl_delete_Polyhedron(P2),
-  ppl_delete_Polyhedron(P1a),
-  ppl_delete_Polyhedron(P1b).
-
 % Tests ppl_Polyhedron_H79_widening_assign for C Polyhedra.
 widen_H79_C :-
   A = '$VAR'(0), B = '$VAR'(1),

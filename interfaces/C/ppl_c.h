@@ -1163,16 +1163,6 @@ ppl_Polyhedron_poly_difference_assign __P((ppl_Polyhedron_t x,
 					   ppl_const_Polyhedron_t y));
 
 /*!
-  Assigns to \p x the poly-hull of the set-theoretic difference of
-  \p x and \p y.  Returns a positive integer if the resulting
-  polyhedron is non-empty; returns 0 if it is empty.  Upon successful
-  return, \p x is also guaranteed to be minimized.
-*/
-int
-ppl_Polyhedron_poly_difference_assign_and_minimize
-__P((ppl_Polyhedron_t x, ppl_const_Polyhedron_t y));
-
-/*!
   If the polyhedron \p y is contained in (or equal to) the polyhedron
   \p x, assigns to \p x the BHRZ03-widening of \p x and \p y.
 */

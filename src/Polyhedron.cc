@@ -1997,16 +1997,6 @@ PPL::Polyhedron::poly_difference_assign(const Polyhedron& y) {
   assert(OK());
 }
 
-bool
-PPL::Polyhedron::poly_difference_assign_and_minimize(const Polyhedron& y) {
-  // Topology and dimensions compatibility check are done
-  // inside poly_difference_assign(y).
-  poly_difference_assign(y);
-  bool not_empty = minimize();
-  assert(OK(not_empty));
-  return not_empty;
-}
-
 void
 PPL::Polyhedron::add_dimensions(Matrix& mat1,
 				Matrix& mat2,

@@ -611,17 +611,6 @@ public:
   void poly_difference_assign(const Polyhedron& y);
 
   //! \brief
-  //! Assigns to \p *this the \ref poly_difference "poly-difference" of
-  //! \p *this and \p y, minimizing the result.
-  /*!
-    \return       <CODE>false</CODE> if and only if the result is empty.
-    \exception std::invalid_argument thrown if \p *this and \p y
-                                     are topology-incompatible
-                                     or dimension-incompatible.
-  */
-  bool poly_difference_assign_and_minimize(const Polyhedron& y);
-
-  //! \brief
   //! Returns the relations holding between the polyhedron \p *this
   //! and the constraint \p c.
   /*!

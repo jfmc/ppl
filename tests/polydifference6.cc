@@ -1,4 +1,4 @@
-/* Test Polyhedron::poly_difference_assign_and_minimize(): in this
+/* Test Polyhedron::poly_difference_assign(): in this
    test the second polyhedron is defined by a system of constraints
    that contains only an equality.
    Copyright (C) 2001-2003 Roberto Bagnara <bagnara@cs.unipr.it>
@@ -50,13 +50,13 @@ main() {
 #endif
   C_Polyhedron known_result(ph1);
 
-  ph1.poly_difference_assign_and_minimize(ph2);
+  ph1.poly_difference_assign(ph2);
 
   int retval = (ph1 == known_result) ? 0 : 1;
 
 #if NOISY
   print_constraints(ph1,
-		    "**After ph1.poly_difference_assign_and_minimize(ph2)**");
+		    "**After ph1.poly_difference_assign(ph2)**");
 #endif
   return retval;
 }

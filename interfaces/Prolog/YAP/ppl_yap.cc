@@ -401,7 +401,6 @@ YAP_STUB_2(ppl_Polyhedron_concatenate_assign)
 YAP_STUB_2(ppl_Polyhedron_poly_hull_assign)
 YAP_STUB_2(ppl_Polyhedron_poly_hull_assign_and_minimize)
 YAP_STUB_2(ppl_Polyhedron_poly_difference_assign)
-YAP_STUB_2(ppl_Polyhedron_poly_difference_assign_and_minimize)
 YAP_STUB_2(ppl_Polyhedron_BHRZ03_widening_assign)
 YAP_STUB_3(ppl_Polyhedron_limited_BHRZ03_extrapolation_assign)
 YAP_STUB_2(ppl_Polyhedron_H79_widening_assign)
@@ -467,7 +466,6 @@ init() {
   YAP_USER_C_PREDICATE(ppl_Polyhedron_poly_hull_assign, 2);
   YAP_USER_C_PREDICATE(ppl_Polyhedron_poly_hull_assign_and_minimize, 2);
   YAP_USER_C_PREDICATE(ppl_Polyhedron_poly_difference_assign, 2);
-  YAP_USER_C_PREDICATE(ppl_Polyhedron_poly_difference_assign_and_minimize, 2);
   YAP_USER_C_PREDICATE(ppl_Polyhedron_BHRZ03_widening_assign, 2);
   YAP_USER_C_PREDICATE(ppl_Polyhedron_limited_BHRZ03_extrapolation_assign, 3);
   YAP_USER_C_PREDICATE(ppl_Polyhedron_H79_widening_assign, 2);

@@ -356,8 +356,6 @@ ppl_new_Polyhedron_from_Polyhedron(+Topology_1, +Handle_1,
    its poly-hull with the polyhedra referenced by <CODE>Handle_2</CODE>.
 
 <H2><CODE>ppl_Polyhedron_poly_difference_assign(+Handle_1, +Handle_2)</CODE></H2>
-<H2><CODE>ppl_Polyhedron_poly_difference_assign_and_minimize(+Handle_1,
-               +Handle_2)</CODE></H2>
 
    Assigns to the polyhedron referenced by <CODE>Handle_1</CODE>
    its poly-difference with the polyhedron referenced by <CODE>Handle_2</CODE>.

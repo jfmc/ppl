@@ -20,7 +20,6 @@
 	ppl_Polyhedron_poly_hull_assign/2,
 	ppl_Polyhedron_poly_hull_assign_and_minimize/2,
 	ppl_Polyhedron_poly_difference_assign/2,
-	ppl_Polyhedron_poly_difference_assign_and_minimize/2,
 	ppl_Polyhedron_BHRZ03_widening_assign/2,
 	ppl_Polyhedron_limited_BHRZ03_extrapolation_assign/3,
 	ppl_Polyhedron_H79_widening_assign/2,
