@@ -301,6 +301,8 @@ static struct {
   { &a_pinf,                "pinf" },
 
   { &a_slash,               "/" },
+
+  { &a_nil,                 "[]" },
 };
 
 static Prolog_term_ref
@@ -847,18 +849,27 @@ ppl_new_Polyhedron_from_bounding_box(Prolog_term_ref t_tp,
     for (dimension = 0; Prolog_is_cons(t_l); ++dimension)
       Prolog_get_cons(t_l, t_dummy, t_l);
     // FIXME: what should we do if the list was not properly terminated?
+    if (!Prolog_is_atom(t_l))
+      box_ok = false;
+    else {
+      Prolog_atom nil;
+      Prolog_get_atom_name(t_l, nil);
+      if (nil != a_nil)
+        box_ok = false;
+    }
 
     PPL::BoundingBox bbox(dimension);
     // Set bbox to reflect its Prolog representation.
     // ... catches empty boxes and uses raise_lower and lower_upper ...
     for (unsigned int i = 0;
                (i != dimension  && !bbox.is_empty() && box_ok); ++i) {
-      // lower bound
       Prolog_term_ref t_interval = Prolog_new_term_ref();
       Prolog_get_cons(t_bb, t_interval, t_bb);
       Prolog_atom funct_interval;
       int ar_interval;
       Prolog_get_compound_name_arity(t_interval, funct_interval, ar_interval);
+      // check the interval has correct syntax and, if so get the upper
+      // and lower limits.
       if (ar_interval == 2 && funct_interval == a_i) {
         Prolog_term_ref t_low = Prolog_new_term_ref();
         Prolog_get_arg(1, t_interval, t_low);
@@ -869,6 +880,7 @@ ppl_new_Polyhedron_from_bounding_box(Prolog_term_ref t_tp,
         int ar_l, ar_u;
         Prolog_get_compound_name_arity(t_low, funct_l, ar_l);
         Prolog_get_compound_name_arity(t_upp, funct_u, ar_u);
+        // check the limits have correct syntax.
         if (ar_l == 1 && (funct_l == a_c || funct_l == a_o)
             && ar_u == 1 && (funct_u == a_c || funct_u == a_o)) {
           // lower bound
@@ -906,6 +918,8 @@ ppl_new_Polyhedron_from_bounding_box(Prolog_term_ref t_tp,
 	    }
 	  }
           bool lb = (funct_l == a_c);
+          // Only raise the lower bound if the box is ok and
+          // the new value is a proper bound.
           if (lden != 0 && box_ok)
              bbox.raise_lower_bound(i, lb, lnum, lden);
           // upper bound
@@ -943,6 +957,8 @@ ppl_new_Polyhedron_from_bounding_box(Prolog_term_ref t_tp,
 	      }
 	    }
 	  }
+          // Only lower the upper bound if the box is ok and
+          // the new value is a proper bound.
           bool ub = (uden != 0 && funct_u == a_c);
           if (uden != 0 && box_ok)
             bbox.lower_upper_bound(i, ub, unum, uden);
