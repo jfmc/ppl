@@ -55,38 +55,6 @@ Z-polyhedra are intersections and other representations for discrete sets.
   PhD thesis, Université de Paris VI, March 1991.
 
 
-Design and Implementation of Strict Weak Orderings
-==================================================
-
-Let S be a set and r be any binary relation over S.
-The relation r=, called "r-equivalence" is defined as follows,
-for each x and y in S:
-
-    r=(x, y) iff  (not r(x, y)) and (not r(y, x)).
-
-The relation r is a "strict weak ordering" (swo)
-if and only if
-
-1) r is irreflexive, i.e., r(x, x) is false for each x in S;
-2) r is antisymmetric, i.e., r(x, y) implies not r(y, x);
-3) r is transitive;
-4) r= is also transitive.
-
-Note that a "total" ordering is a strict weak ordering where
-r-equivalence is equality.
-
-In order to have associative containers of PPL polyhedra (such as sets
-and maps of polyhedra) we need a strict weak ordering over them.
-Actually it would be interesting, if at all possible, to define more
-than one.  That is
-
-- a fast to compute swo with no additional features;
-- a total swo;
-- a (total) swo that extends set-theoretic inclusion, that is,
-  x < y (x is strictly contained in y) implies r(x, y)
-  for each polyhedra x and y.
-
-
 Constructions on Polyhedra
 ==========================
 
