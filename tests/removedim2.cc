@@ -1,4 +1,4 @@
-/* To be written.
+/* Remove some variables from the space.
    Copyright (C) 2001 Roberto Bagnara <bagnara@cs.unipr.it>
 
 This file is part of the Parma Polyhedra Library (PPL).
@@ -23,6 +23,7 @@ site: http://www.cs.unipr.it/ppl/ . */
 
 #include "ppl_install.hh"
 #include "print.hh"
+#include "ehandlers.hh"
 
 using namespace std;
 using namespace Parma_Polyhedra_Library;
@@ -31,6 +32,7 @@ using namespace Parma_Polyhedra_Library;
 
 int
 main() {
+  set_handlers();
 
   GenSys gs;
 

@@ -28,6 +28,7 @@ site: http://www.cs.unipr.it/ppl/ . */
 
 #include "ppl_install.hh"
 #include "print.hh"
+#include "ehandlers.hh"
 
 using namespace std;
 using namespace Parma_Polyhedra_Library;
@@ -204,6 +205,8 @@ permute_init(Polyhedron& base, Polyhedron& inductive, Polyhedron& expected,
 
 int
 main() {
+  set_handlers();
+
   Polyhedron start;
   Polyhedron induct;
   Polyhedron expect;

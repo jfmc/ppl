@@ -1,4 +1,4 @@
-/* To be written.
+/* An incorrect construction of a polyhedron starting from the generators.
    Copyright (C) 2001 Roberto Bagnara <bagnara@cs.unipr.it>
 
 This file is part of the Parma Polyhedra Library (PPL).
@@ -22,6 +22,7 @@ For the most up-to-date information see the Parma Polyhedra Library
 site: http://www.cs.unipr.it/ppl/ . */
 
 #include "ppl_install.hh"
+#include "ehandlers.hh"
 #include <stdexcept>
 
 using namespace std;
@@ -31,6 +32,8 @@ using namespace Parma_Polyhedra_Library;
 
 int
 main() {
+  set_handlers();
+
   Variable x(0);
   Variable y(1);
   Variable z(2);

@@ -28,6 +28,7 @@ site: http://www.cs.unipr.it/ppl/ . */
 
 #include "ppl_install.hh"
 #include "print.hh"
+#include "ehandlers.hh"
 
 using namespace std;
 using namespace Parma_Polyhedra_Library;
@@ -131,6 +132,8 @@ fix_point(Polyhedron& start, Polyhedron& induct, Polyhedron& finish,
 
 int
 main() {
+  set_handlers();
+
   Polyhedron start;
   Polyhedron induct;
   Polyhedron expect;

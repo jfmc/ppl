@@ -1,4 +1,4 @@
-/* Different ways of creating an empty polyhedron.
+/* Use of the functions assign_variable and substitute_variable.
    Copyright (C) 2001 Roberto Bagnara <bagnara@cs.unipr.it>
 
 This file is part of the Parma Polyhedra Library (PPL).
@@ -23,12 +23,17 @@ site: http://www.cs.unipr.it/ppl/ . */
 
 #include "ppl_install.hh"
 #include "print.hh"
+#include "ehandlers.hh"
 
 using namespace std;
 using namespace Parma_Polyhedra_Library;
 
+#define NOISY 0
+
 int 
 main() {
+  set_handlers();
+
   Variable x(0);
   Variable y(1);
   GenSys gs;
@@ -40,9 +45,15 @@ main() {
   LinExpression coeff = x + 0*y + 4;
 
   Polyhedron p1(ph);
+#if NOISY
+  print_generators(p1, "*** p1 ***");
+#endif
   p1.assign_variable(x, coeff);
 
   Polyhedron p2(ph);
+#if NOISY
+  print_generators(p2, "*** p2 ***");
+#endif
   p2.substitute_variable(x, coeff);
 
   GenSys gs1_known_result;
@@ -61,5 +72,12 @@ main() {
 
   int retval = ((p1 == p1_known_result) && (p2 == p2_known_result)) ? 0 : 1;
   
+#if NOISY
+  print_generators(p1 ,"*** p1 ***");
+  print_generators(p1_known_result, "*** p1_known_result ***");
+  print_generators(p2 ,"*** p2 ***");
+  print_generators(p2_known_result, "*** p2_known_result ***");
+#endif
+
   return retval;
 }

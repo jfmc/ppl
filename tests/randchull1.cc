@@ -22,6 +22,7 @@ For the most up-to-date information see the Parma Polyhedra Library
 site: http://www.cs.unipr.it/ppl/ . */
 
 #include "ppl_install.hh"
+#include "ehandlers.hh"
 
 using namespace std;
 using namespace Parma_Polyhedra_Library;
@@ -51,6 +52,8 @@ count_vertices(const Polyhedron& ph) {
 
 int
 main() {
+  set_handlers();
+
   Variable x(0);
   Variable y(1);
   Variable z(2);

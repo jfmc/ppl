@@ -1,4 +1,4 @@
-/* To be written.
+/* Remove some variables from the space.
    Copyright (C) 2001 Roberto Bagnara <bagnara@cs.unipr.it>
 
 This file is part of the Parma Polyhedra Library (PPL).
@@ -22,12 +22,18 @@ For the most up-to-date information see the Parma Polyhedra Library
 site: http://www.cs.unipr.it/ppl/ . */
 
 #include "ppl_install.hh"
+#include "print.hh"
+#include "ehandlers.hh"
 
 using namespace std;
 using namespace Parma_Polyhedra_Library;
 
+#define NOISY 0
+
 int
 main() {
+  set_handlers();
+
   Variable x(0);
   Variable y(1);
   Variable z(2);
@@ -35,6 +41,9 @@ main() {
   GenSys gs;
   gs.insert(vertex(0*x + y +0*z + 2*w));
   Polyhedron ph(gs);
+#if NOISY
+  print_generators(ph, "*** ph ***");
+#endif
 
   // This is the set of the variables that we want to remove.
   set<Variable> to_be_removed;
@@ -47,5 +56,11 @@ main() {
   Polyhedron known_result(known_result_gs);
 
   int retval = (known_result == ph) ? 0 : 1;
+
+#if NOISY
+  print_generators(ph, "*** ph ***");
+  print_generators(known_result, "*** known_result ***");
+#endif
+
   return retval;
 }
