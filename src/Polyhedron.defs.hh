@@ -25,6 +25,7 @@ site: http://www.cs.unipr.it/ppl/ . */
 #define _Polyhedron_defs_hh 1
 
 #include "Polyhedron.types.hh"
+#include "NNC_Polyhedron.types.hh"
 #include "PolyBase.defs.hh"
 
 //! A closed convex polyhedron.
@@ -279,9 +280,6 @@ site: http://www.cs.unipr.it/ppl/ . */
 class Parma_Polyhedra_Library::Polyhedron : public PolyBase {
 public:
 
-  //! Ordinary copy-constructor.
-  Polyhedron(const Polyhedron& y);
-
   //! Builds either the universe or the empty polyhedron of dimension
   //! \p num_dimensions. Both parameters are optional:
   //! by default, a 0-dimension space universe polyhedron is built.
@@ -303,6 +301,15 @@ public:
   //! \exception std::invalid_argument thrown if the system of generators
   //!                                  is not empty but has no points.
   Polyhedron(GenSys& gs);
+
+  //! Ordinary copy-constructor.
+  Polyhedron(const Polyhedron& y);
+
+  //! Builds a necessarily closed polyhedron from a NNC_Polyhedron.
+  //! \param y       The non-necessarily closed polyhedron.
+  //! \exception std::invalid_argument thrown if the polyhedron \p y
+  //!                                  is not topologically closed.
+  explicit Polyhedron(const NNC_Polyhedron& y);
 
   //! The assignment operator.
   //! (Note that \p *this and \p y can be dimension-incompatible.)

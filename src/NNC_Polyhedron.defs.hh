@@ -24,6 +24,7 @@ site: http://www.cs.unipr.it/ppl/ . */
 #ifndef _NNC_Polyhedron_defs_hh
 #define _NNC_Polyhedron_defs_hh 1
 
+#include "Polyhedron.types.hh"
 #include "NNC_Polyhedron.types.hh"
 #include "PolyBase.defs.hh"
 
@@ -56,12 +57,20 @@ public:
   //! Ordinary copy-constructor.
   NNC_Polyhedron(const NNC_Polyhedron& y);
 
+  //! Builds a NNC polyhedron from a Polyhedron.
+  //! \param y       The necessarily closed polyhedron.
+  explicit NNC_Polyhedron(const Polyhedron& y);
+
   //! The assignment operator.
   //! (Note that \p *this and \p y can be dimension-incompatible.)
   NNC_Polyhedron& operator=(const NNC_Polyhedron& y);
 
-  // Destructor
+  //! Destructor
   ~NNC_Polyhedron();
+
+  //! Returns <CODE>true</CODE> if and only if \p *this
+  //! is a topologically closed subset of the vector space.
+  bool is_topologically_closed() const;
 
   void limited_widening_assign(const NNC_Polyhedron& y, ConSys& cs);  
 

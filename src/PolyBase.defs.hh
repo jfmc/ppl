@@ -500,7 +500,7 @@ public:
   //!               <CODE>false</CODE> otherwise.
   bool OK(bool check_not_empty = true) const;
 
-private:
+protected:
   //! Minimizes generators and constraints.
   void minimize() const;
   //! Updates constraints starting from generators and minimizes them.
@@ -619,7 +619,7 @@ public:
   //! (Note that \p *this and \p y can be dimension-incompatible.)
   void swap(PolyBase& y);
 
-private:
+protected:
   //! The system of constraints.
   ConSys con_sys;
   //! The system of generators.
@@ -636,7 +636,7 @@ private:
   //! Tests if the polyhedron is necessarily closed.
   bool is_necessarily_closed() const;
 
-  /*! @name Private Verifiers
+  /*! @name Protected Verifiers
     Verify if individual flags are set.
   */
   //@{
