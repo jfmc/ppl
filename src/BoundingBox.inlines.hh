@@ -93,6 +93,8 @@ BoundingBox::get_upper_bound(const dimension_type k, bool& closed,
 
 inline void
 BoundingBox::set_empty() {
+  for (dimension_type k = vec.size(); k-- > 0; )
+    vec[k].set_empty();
   empty = empty_up_to_date = true;
 }
 
