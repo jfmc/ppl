@@ -492,14 +492,14 @@ __P((ppl_ConSys_const_iterator_t dst,
   the constraint system \p cs.
 */
 int
-ppl_ConSys_begin __P((ppl_ConSys_t cs, ppl_ConSys_const_iterator_t cit));
+ppl_ConSys_begin __P((ppl_const_ConSys_t cs, ppl_ConSys_const_iterator_t cit));
 
 /*!
   Assigns to \p cit a const iterator "pointing" past the end of the
   constraint system \p cs.
 */
 int
-ppl_ConSys_end __P((ppl_ConSys_t cs, ppl_ConSys_const_iterator_t cit));
+ppl_ConSys_end __P((ppl_const_ConSys_t cs, ppl_ConSys_const_iterator_t cit));
 
 /*!
   Dereference \p cit writing a const handle to the resulting
