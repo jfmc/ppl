@@ -28,12 +28,6 @@ site: http://www.cs.unipr.it/ppl/ . */
 #include <cmath>
 #include <fenv.h>
 
-// Please do not remove the space separating `#' from `include':
-// this ensures that the directive will not be moved during the
-// procedure that automatically creates the library's include file
-// (see `Makefile.am' in the `src' directory).
-# include <endian.h>
-
 #include "float.types.hh"
 
 #define USE_FPU_ROUNDING_MODE
@@ -170,13 +164,12 @@ private:
   union {
     float64_t _value;
     struct {
-#if __FLOAT_WORD_ORDER == LITTLE_ENDIAN
-      u_int32_t lsp;
-      u_int32_t msp;
-#endif
-#if __FLOAT_WORD_ORDER == BIG_ENDIAN
+#ifdef WORDS_BIGENDIAN
       u_int32_t msp;
       u_int32_t lsp;
+#else
+      u_int32_t lsp;
+      u_int32_t msp;
 #endif
     } parts;
   } u;
@@ -276,13 +269,12 @@ private:
   union {
     float96_t _value;
     struct {
-#if __FLOAT_WORD_ORDER == LITTLE_ENDIAN
-      u_int64_t lsp;
-      u_int32_t msp;
-#endif
-#if __FLOAT_WORD_ORDER == BIG_ENDIAN
+#ifdef WORDS_BIGENDIAN
       u_int32_t msp;
       u_int64_t lsp;
+#else
+      u_int64_t lsp;
+      u_int32_t msp;
 #endif
     } parts;
   } u;
@@ -387,13 +379,12 @@ private:
   union {
     float128_t _value;
     struct {
-#if __FLOAT_WORD_ORDER == LITTLE_ENDIAN
-      u_int64_t lsp;
-      u_int64_t msp;
-#endif
-#if __FLOAT_WORD_ORDER == BIG_ENDIAN
+#ifdef WORDS_BIGENDIAN
       u_int64_t msp;
       u_int64_t lsp;
+#else
+      u_int64_t lsp;
+      u_int64_t msp;
 #endif
     } parts;
   } u;
