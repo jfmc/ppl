@@ -66,6 +66,30 @@ classify_mpz(const mpz_class& v, bool nan, bool inf, bool sign) {
 SPECIALIZE_CLASSIFY(mpz, mpz_class)
 
 template <typename Policy>
+inline bool
+is_nan_mpz(const mpz_class& v) {
+  return Policy::store_nan && get_mp_size(v) == Limits<mp_size_t>::min + 1;
+}
+
+SPECIALIZE_IS_NAN(mpz, mpz_class)
+
+template <typename Policy>
+inline bool
+is_minf_mpz(const mpz_class& v) {
+  return Policy::store_infinity && get_mp_size(v) == Limits<mp_size_t>::min;
+}
+
+SPECIALIZE_IS_MINF(mpz, mpz_class)
+
+template <typename Policy>
+inline bool
+is_pinf_mpz(const mpz_class& v) {
+  return Policy::store_infinity && get_mp_size(v) == Limits<mp_size_t>::max;
+}
+
+SPECIALIZE_IS_PINF(mpz, mpz_class)
+
+template <typename Policy>
 inline Result
 set_special_mpz(mpz_class& v, Result r) {
   mp_size_t s;

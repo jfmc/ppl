@@ -256,6 +256,12 @@ struct FUNCTION_CLASS(name) <Policy, type1, type2, type3> { \
   SPECIALIZE_FUN1_0_1(set_special, suf, Result, nonconst, Type, Result)
 #define SPECIALIZE_CLASSIFY(suf, Type) \
   SPECIALIZE_FUN1_0_3(classify, suf, Result, const, Type, bool, bool, bool)
+#define SPECIALIZE_IS_NAN(suf, Type) \
+  SPECIALIZE_FUN1_0_0(is_nan, suf, bool, const, Type)
+#define SPECIALIZE_IS_MINF(suf, Type) \
+  SPECIALIZE_FUN1_0_0(is_minf, suf, bool, const, Type)
+#define SPECIALIZE_IS_PINF(suf, Type) \
+  SPECIALIZE_FUN1_0_0(is_pinf, suf, bool, const, Type)
 #define SPECIALIZE_ASSIGN(suf, To, From) \
   SPECIALIZE_FUN2_0_1(assign, suf, Result, nonconst, To, const, From, const Rounding&)
 #define SPECIALIZE_NEG(suf, To, From) \
@@ -294,6 +300,9 @@ DECLARE_FUN1_0_0(sgn,         Result, const, From)
 DECLARE_FUN2_0_0(cmp,         Result, const, Type1, const, Type2)
 DECLARE_FUN1_0_1(set_special, Result, nonconst, Type, Result)
 DECLARE_FUN1_0_3(classify,    Result, const, Type, bool, bool, bool)
+DECLARE_FUN1_0_0(is_nan,      bool, const, Type)
+DECLARE_FUN1_0_0(is_minf,     bool, const, Type)
+DECLARE_FUN1_0_0(is_pinf,     bool, const, Type)
 DECLARE_FUN2_0_1(assign,      Result, nonconst, To, const, From, const Rounding&)
 DECLARE_FUN2_0_1(neg,         Result, nonconst, To, const, From, const Rounding&)
 DECLARE_FUN2_0_1(abs,         Result, nonconst, To, const, From, const Rounding&)

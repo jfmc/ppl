@@ -56,6 +56,30 @@ classify_mpq(const mpq_class& v, bool nan, bool inf, bool sign) {
 SPECIALIZE_CLASSIFY(mpq, mpq_class)
 
 template <typename Policy>
+inline bool
+is_nan_mpq(const mpq_class& v) {
+  return Policy::store_nan && ::sgn(v.get_den()) == 0 && ::sgn(v.get_num()) == 0;
+}
+
+SPECIALIZE_IS_NAN(mpq, mpq_class)
+
+template <typename Policy>
+inline bool
+is_minf_mpq(const mpq_class& v) {
+  return Policy::store_infinity && ::sgn(v.get_den()) == 0 && ::sgn(v.get_num()) < 0;
+}
+
+SPECIALIZE_IS_MINF(mpq, mpq_class)
+
+template <typename Policy>
+inline bool
+is_pinf_mpq(const mpq_class& v) {
+  return Policy::store_infinity && ::sgn(v.get_den()) == 0 && ::sgn(v.get_num()) > 0;
+}
+
+SPECIALIZE_IS_PINF(mpq, mpq_class)
+
+template <typename Policy>
 inline Result
 set_special_mpq(mpq_class& v, Result r) {
   int num;

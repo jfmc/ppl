@@ -151,6 +151,57 @@ SPECIALIZE_CLASSIFY(int, unsigned long)
 SPECIALIZE_CLASSIFY(int, unsigned long long)
 
 template <typename Policy, typename Type>
+inline bool
+is_nan_int(const Type v) {
+  return Policy::store_nan && v == not_a_number_int<Policy, Type>();
+}
+
+SPECIALIZE_IS_NAN(int, signed char)
+SPECIALIZE_IS_NAN(int, short)
+SPECIALIZE_IS_NAN(int, int)
+SPECIALIZE_IS_NAN(int, long)
+SPECIALIZE_IS_NAN(int, long long)
+SPECIALIZE_IS_NAN(int, unsigned char)
+SPECIALIZE_IS_NAN(int, unsigned short)
+SPECIALIZE_IS_NAN(int, unsigned int)
+SPECIALIZE_IS_NAN(int, unsigned long)
+SPECIALIZE_IS_NAN(int, unsigned long long)
+
+template <typename Policy, typename Type>
+inline bool
+is_minf_int(const Type v) {
+  return Policy::store_infinity && v == minus_infinity_int<Policy, Type>();
+}
+
+SPECIALIZE_IS_MINF(int, signed char)
+SPECIALIZE_IS_MINF(int, short)
+SPECIALIZE_IS_MINF(int, int)
+SPECIALIZE_IS_MINF(int, long)
+SPECIALIZE_IS_MINF(int, long long)
+SPECIALIZE_IS_MINF(int, unsigned char)
+SPECIALIZE_IS_MINF(int, unsigned short)
+SPECIALIZE_IS_MINF(int, unsigned int)
+SPECIALIZE_IS_MINF(int, unsigned long)
+SPECIALIZE_IS_MINF(int, unsigned long long)
+
+template <typename Policy, typename Type>
+inline bool
+is_pinf_int(const Type v) {
+  return Policy::store_infinity && v == plus_infinity_int<Policy, Type>();
+}
+
+SPECIALIZE_IS_PINF(int, signed char)
+SPECIALIZE_IS_PINF(int, short)
+SPECIALIZE_IS_PINF(int, int)
+SPECIALIZE_IS_PINF(int, long)
+SPECIALIZE_IS_PINF(int, long long)
+SPECIALIZE_IS_PINF(int, unsigned char)
+SPECIALIZE_IS_PINF(int, unsigned short)
+SPECIALIZE_IS_PINF(int, unsigned int)
+SPECIALIZE_IS_PINF(int, unsigned long)
+SPECIALIZE_IS_PINF(int, unsigned long long)
+
+template <typename Policy, typename Type>
 inline Result
 set_special_int(Type& v, Result r) {
   Result t = classify(r);

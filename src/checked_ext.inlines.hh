@@ -33,10 +33,16 @@ inline Result
 assign_ext(To& to, const From& from, const Rounding& mode) {
   if (handle_ext_natively(To) && handle_ext_natively(From))
     return assign<To_Policy>(to, from, mode);
-  Result r = classify<From_Policy>(from, true, true, false);
-  if (r == VC_NORMAL)
+  switch (classify<From_Policy>(from, true, true, false)) {
+  case VC_NAN:
+    return set_special<To_Policy>(to, VC_NAN);
+  case VC_MINUS_INFINITY:
+    return set_special<To_Policy>(to, VC_MINUS_INFINITY);
+  case VC_PLUS_INFINITY:
+    return set_special<To_Policy>(to, VC_PLUS_INFINITY);
+  default:
     return assign<To_Policy>(to, from, mode);
-  return set_special<To_Policy>(to, r);
+  }
 }
 
 template <typename To_Policy, typename From_Policy,
@@ -45,14 +51,16 @@ inline Result
 neg_ext(To& to, const From& x, const Rounding& mode) {
   if (handle_ext_natively(To) && handle_ext_natively(From))
     return neg<To_Policy>(to, x, mode);
-  Result r = classify<From_Policy>(x, true, true, false);
-  if (r == VC_NORMAL)
+  switch (classify<From_Policy>(x, true, true, false)) {
+  case VC_NAN:
+    return set_special<To_Policy>(to, VC_NAN);
+  case VC_MINUS_INFINITY:
+    return set_special<To_Policy>(to, VC_PLUS_INFINITY);
+  case VC_PLUS_INFINITY:
+    return set_special<To_Policy>(to, VC_MINUS_INFINITY);
+  default:
     return neg<To_Policy>(to, x, mode);
-  else if (r == VC_MINUS_INFINITY)
-    r = VC_PLUS_INFINITY;
-  else if (r == VC_PLUS_INFINITY)
-    r = VC_MINUS_INFINITY;
-  return set_special<To_Policy>(to, r);
+  }
 }
 
 template <typename To_Policy, typename From_Policy,
@@ -61,12 +69,15 @@ inline Result
 abs_ext(To& to, const From& x, const Rounding& mode) {
   if (handle_ext_natively(To) && handle_ext_natively(From))
     return abs<To_Policy>(to, x, mode);
-  Result r = classify<From_Policy>(x, true, true, false);
-  if (r == VC_NORMAL)
+  switch (classify<From_Policy>(x, true, true, false)) {
+  case VC_NAN:
+    return set_special<To_Policy>(to, VC_NAN);
+  case VC_MINUS_INFINITY:
+  case VC_PLUS_INFINITY:
+    return set_special<To_Policy>(to, VC_PLUS_INFINITY);
+  default:
     return abs<To_Policy>(to, x, mode);
-  else if (r == VC_MINUS_INFINITY)
-    r = VC_PLUS_INFINITY;
-  return set_special<To_Policy>(to, r);
+  }
 }
 
 template <typename To_Policy, typename From1_Policy, typename From2_Policy,
@@ -75,21 +86,28 @@ inline Result
 add_ext(To& to, const From1& x, const From2& y, const Rounding& mode) {
   if (handle_ext_natively(To) && handle_ext_natively(From1) && handle_ext_natively(From2))
     return add<To_Policy>(to, x, y, mode);
-  Result rx;
-  Result ry;
-  Result r;
-  if ((rx = classify<From1_Policy>(x, true, true, false)) == VC_NAN
-      || (ry = classify<From2_Policy>(y, true, true, false)) == VC_NAN)
-    r = VC_NAN;
-  else if (rx == VC_NORMAL && ry == VC_NORMAL)
-    return add<To_Policy>(to, x, y, mode);
-  else if (rx == VC_NORMAL)
-    r = ry;
-  else if (ry == VC_NORMAL || rx == ry)
-    r = rx;
-  else
-    r = V_INF_ADD_INF;
-  return set_special<To_Policy>(to, r);
+  if (is_nan<From1_Policy>(x) || is_nan<From2_Policy>(y))
+    return set_special<To_Policy>(to, VC_NAN);
+  else if (is_minf<From1_Policy>(x)) {
+    if (is_pinf<From2_Policy>(y))
+      return set_special<To_Policy>(to, V_INF_ADD_INF);
+    else
+      return set_special<To_Policy>(to, VC_MINUS_INFINITY);
+  }
+  else if (is_pinf<From1_Policy>(x)) {
+    if (is_minf<From2_Policy>(y))
+      return set_special<To_Policy>(to, V_INF_ADD_INF);
+    else
+      return set_special<To_Policy>(to, VC_PLUS_INFINITY);
+  }
+  else {
+    if (is_minf<From2_Policy>(y))
+      return set_special<To_Policy>(to, VC_MINUS_INFINITY);
+    else if (is_pinf<From2_Policy>(y)) 
+      return set_special<To_Policy>(to, VC_PLUS_INFINITY);
+    else
+      return add<To_Policy>(to, x, y, mode);
+  }
 }
     
 template <typename To_Policy, typename From1_Policy, typename From2_Policy,
@@ -98,21 +116,28 @@ inline Result
 sub_ext(To& to, const From1& x, const From2& y, const Rounding& mode) {
   if (handle_ext_natively(To) && handle_ext_natively(From1) && handle_ext_natively(From2))
     return sub<To_Policy>(to, x, y, mode);
-  Result rx;
-  Result ry;
-  Result r;
-  if ((rx = classify<From1_Policy>(x, true, true, false)) == VC_NAN
-      || (ry = classify<From2_Policy>(y, true, true, false)) == VC_NAN)
-    r = VC_NAN;
-  else if (rx == VC_NORMAL && ry == VC_NORMAL)
-    return sub<To_Policy>(to, x, y, mode);
-  else if (rx == VC_NORMAL)
-    r = ry == VC_PLUS_INFINITY ? VC_MINUS_INFINITY : VC_PLUS_INFINITY;
-  else if (ry == VC_NORMAL || rx != ry)
-    r = rx;
-  else
-    r = V_INF_SUB_INF;
-  return set_special<To_Policy>(to, r);
+  if (is_nan<From1_Policy>(x) || is_nan<From2_Policy>(y))
+    return set_special<To_Policy>(to, VC_NAN);
+  else if (is_minf<From1_Policy>(x)) {
+    if (is_minf<From2_Policy>(y))
+      return set_special<To_Policy>(to, V_INF_SUB_INF);
+    else
+      return set_special<To_Policy>(to, VC_MINUS_INFINITY);
+  }
+  else if (is_pinf<From1_Policy>(x)) {
+    if (is_pinf<From2_Policy>(y))
+      return set_special<To_Policy>(to, V_INF_SUB_INF);
+    else
+      return set_special<To_Policy>(to, VC_PLUS_INFINITY);
+  }
+  else {
+    if (is_minf<From2_Policy>(y))
+      return set_special<To_Policy>(to, VC_PLUS_INFINITY);
+    else if (is_pinf<From2_Policy>(y)) 
+      return set_special<To_Policy>(to, VC_MINUS_INFINITY);
+    else
+      return sub<To_Policy>(to, x, y, mode);
+  }
 }
     
 template <typename To_Policy, typename From1_Policy, typename From2_Policy,
@@ -121,25 +146,51 @@ inline Result
 mul_ext(To& to, const From1& x, const From2& y, const Rounding& mode) {
   if (handle_ext_natively(To) && handle_ext_natively(From1) && handle_ext_natively(From2))
     return mul<To_Policy>(to, x, y, mode);
-  Result rx;
-  Result ry;
-  Result r;
-  if ((rx = classify<From1_Policy>(x, true, true, true)) == VC_NAN
-      || (ry = classify<From2_Policy>(y, true, true, true)) == VC_NAN)
-    r = VC_NAN;
-  else if (!(is_special(rx) || is_special(ry)))
-    return mul<To_Policy>(to, x, y, mode);
-  else {
-    rx = sign(rx);
-    ry = sign(ry);
-    if (rx == V_EQ || ry == V_EQ)
-      r = V_INF_MUL_ZERO;
-    else if (rx == ry)
-      r = VC_PLUS_INFINITY;
-    else
-      r = VC_MINUS_INFINITY;
+  if (is_nan<From1_Policy>(x) || is_nan<From2_Policy>(y))
+    return set_special<To_Policy>(to, VC_NAN);
+  if (is_minf<From1_Policy>(x)) {
+    switch (classify<From2_Policy>(y, false, false, true)) {
+    case V_LT:
+      return set_special<To_Policy>(to, VC_PLUS_INFINITY);
+    case V_GT:
+      return set_special<To_Policy>(to, VC_MINUS_INFINITY);
+    default:
+      return set_special<To_Policy>(to, V_INF_MUL_ZERO);
+    }
   }
-  return set_special<To_Policy>(to, r);
+  else if (is_pinf<From1_Policy>(x)) {
+    switch (classify<From2_Policy>(y, false, false, true)) {
+      case V_LT:
+	return set_special<To_Policy>(to, VC_MINUS_INFINITY);
+      case V_GT:
+	return set_special<To_Policy>(to, VC_PLUS_INFINITY);
+      default:
+	return set_special<To_Policy>(to, V_INF_MUL_ZERO);
+    }
+  }
+  else {
+    if (is_minf<From2_Policy>(y)) {
+      switch (sgn<From1_Policy>(x)) {
+      case V_LT:
+	return set_special<To_Policy>(to, VC_PLUS_INFINITY);
+      case V_GT:
+	return set_special<To_Policy>(to, VC_MINUS_INFINITY);
+      default:
+	return set_special<To_Policy>(to, V_INF_MUL_ZERO);
+      }
+    } else if (is_pinf<From2_Policy>(y)) {
+      switch (sgn<From1_Policy>(x)) {
+      case V_LT:
+	return set_special<To_Policy>(to, VC_MINUS_INFINITY);
+      case V_GT:
+	return set_special<To_Policy>(to, VC_PLUS_INFINITY);
+      default:
+	return set_special<To_Policy>(to, V_INF_MUL_ZERO);
+      }
+    }
+    else
+      return mul<To_Policy>(to, x, y, mode);
+  }
 }
     
 template <typename To_Policy, typename From1_Policy, typename From2_Policy,
@@ -153,7 +204,7 @@ add_mul_ext(To& to, const From1& x, const From2& y, const Rounding& mode) {
   if ((rto = classify<To_Policy>(to, true, true, false)) == VC_NAN
       || (rx = classify<From1_Policy>(x, true, true, true)) == VC_NAN
       || (ry = classify<From2_Policy>(y, true, true, true)) == VC_NAN)
-    r = VC_NAN;
+    return set_special<To_Policy>(to, VC_NAN);
   else if (!(is_special(rto) || is_special(rx) || is_special(ry)))
     return add_mul<To_Policy>(to, x, y, mode);
   else if (rx == VC_NORMAL && ry == VC_NORMAL)
@@ -162,7 +213,7 @@ add_mul_ext(To& to, const From1& x, const From2& y, const Rounding& mode) {
     rx = sign(rx);
     ry = sign(ry);
     if (rx == V_EQ || ry == V_EQ)
-      r = V_INF_MUL_ZERO;
+      return set_special<To_Policy>(to, V_INF_MUL_ZERO);
     else if (rx == ry)
       r = rto == VC_MINUS_INFINITY ? V_INF_ADD_INF : VC_PLUS_INFINITY;
     else
@@ -182,7 +233,7 @@ sub_mul_ext(To& to, const From1& x, const From2& y, const Rounding& mode) {
   if ((rto = classify<To_Policy>(to, true, true, false)) == VC_NAN
       || (rx = classify<From1_Policy>(x, true, true, true)) == VC_NAN
       || (ry = classify<From2_Policy>(y, true, true, true)) == VC_NAN)
-    r = VC_NAN;
+    return set_special<To_Policy>(to, VC_NAN);
   else if (!(is_special(rto) || is_special(rx) || is_special(ry)))
     return sub_mul<To_Policy>(to, x, y, mode);
   else if (rx == VC_NORMAL && ry == VC_NORMAL)
@@ -191,7 +242,7 @@ sub_mul_ext(To& to, const From1& x, const From2& y, const Rounding& mode) {
     rx = sign(rx);
     ry = sign(ry);
     if (rx == V_EQ || ry == V_EQ)
-      r = V_INF_MUL_ZERO;
+      return set_special<To_Policy>(to, V_INF_MUL_ZERO);
     else if (rx == ry)
       r = rto == VC_PLUS_INFINITY ? V_INF_SUB_INF : VC_MINUS_INFINITY;
     else
@@ -206,34 +257,44 @@ inline Result
 div_ext(To& to, const From1& x, const From2& y, const Rounding& mode) {
   if (handle_ext_natively(To) && handle_ext_natively(From1) && handle_ext_natively(From2))
     return div<To_Policy>(to, x, y, mode);
-  Result rx;
-  Result ry;
-  Result r;
-  if ((rx = classify<From1_Policy>(x, true, true, true)) == VC_NAN
-      || (ry = classify<From2_Policy>(y, true, true, true)) == VC_NAN)
-    r = VC_NAN;
-  else if (!is_special(rx)) {
-    if (!is_special(ry))
-      return div<To_Policy>(to, x, y, mode);
+  if (is_nan<From1_Policy>(x) || is_nan<From2_Policy>(y))
+    return set_special<To_Policy>(to, VC_NAN);
+  if (is_minf<From1_Policy>(x)) {
+    if (is_minf<From2_Policy>(y) || is_pinf<From2_Policy>(y))
+      return set_special<To_Policy>(to, V_INF_DIV_INF);
     else {
+      switch (sgn<From2_Policy>(y)) {
+      case V_LT:
+	return set_special<To_Policy>(to, VC_PLUS_INFINITY);
+      case V_GT:
+	return set_special<To_Policy>(to, VC_MINUS_INFINITY);
+      default:
+	return set_special<To_Policy>(to, V_DIV_ZERO);
+      }
+    }
+  }
+  else if (is_pinf<From1_Policy>(x)) {
+    if (is_minf<From2_Policy>(y) || is_pinf<From2_Policy>(y))
+      return set_special<To_Policy>(to, V_INF_DIV_INF);
+    else {
+      switch (sgn<From2_Policy>(y)) {
+      case V_LT:
+	return set_special<To_Policy>(to, VC_MINUS_INFINITY);
+      case V_GT:
+	return set_special<To_Policy>(to, VC_PLUS_INFINITY);
+      default:
+	return set_special<To_Policy>(to, V_DIV_ZERO);
+      }
+    }
+  }
+  else {
+    if (is_minf<From2_Policy>(y) || is_pinf<From2_Policy>(y)) {
       to = 0;
-      r = V_EQ;
+      return V_EQ;
     }
+    else
+      return div<To_Policy>(to, x, y, mode);
   }
-  else if (!is_special(ry)) {
-    if (ry == V_EQ)
-      r = V_DIV_ZERO;
-    else {
-      rx = sign(rx);
-      if (rx == ry)
-	r = VC_PLUS_INFINITY;
-      else
-	r = VC_MINUS_INFINITY;
-    }
-  }
-  else
-    r = V_INF_DIV_INF;
-  return set_special<To_Policy>(to, r);
 }
     
 	
@@ -248,17 +309,17 @@ rem_ext(To& to, const From1& x, const From2& y, const Rounding& mode) {
   Result r;
   if ((rx = classify<From1_Policy>(x, true, true, false)) == VC_NAN
       || (ry = classify<From2_Policy>(y, true, true, false)) == VC_NAN)
-    r = VC_NAN;
+    return set_special<To_Policy>(to, VC_NAN);
   else if (rx == VC_NORMAL) {
     if (ry == VC_NORMAL)
       return rem<To_Policy>(to, x, y, mode);
     else {
       to = x;
-      r = V_EQ;
+      return V_EQ;
     }
   }
   else
-    r = V_INF_MOD;
+    return set_special<To_Policy>(to, V_INF_MOD);
   return set_special<To_Policy>(to, r);
 }
     
@@ -272,11 +333,11 @@ sqrt_ext(To& to, const From& x, const Rounding& mode) {
   if (r == VC_NORMAL)
     return sqrt<To_Policy>(to, x, mode);
   else if (r == VC_NAN)
-    r = VC_NAN;
+    return set_special<To_Policy>(to, VC_NAN);
   else if (r == VC_MINUS_INFINITY)
-    r = V_SQRT_NEG;
+    return set_special<To_Policy>(to, V_SQRT_NEG);
   else
-    r = VC_PLUS_INFINITY;
+    return set_special<To_Policy>(to, VC_PLUS_INFINITY);
   return set_special<To_Policy>(to, r);
 }
 
@@ -289,21 +350,21 @@ gcd_ext(To& to, const From1& x, const From2& y, const Rounding& mode) {
   Result r;
   if ((rx = classify<From1_Policy>(x, true, true, false)) == VC_NAN
       || (ry = classify<From2_Policy>(y, true, true, false)) == VC_NAN)
-    r = VC_NAN;
+    return set_special<To_Policy>(to, VC_NAN);
   else if (rx == VC_NORMAL) {
     if (ry == VC_NORMAL)
       return gcd<To_Policy>(to, x, y, mode);
     else {
       to = x;
-      r = V_EQ;
+      return V_EQ;
     }
   }
   else if (ry == VC_NORMAL) {
     to = y;
-    r = V_EQ;
+    return V_EQ;
   }
   else
-    r = VC_PLUS_INFINITY;
+    return set_special<To_Policy>(to, VC_PLUS_INFINITY);
   return set_special<To_Policy>(to, r);
 }
     
@@ -316,11 +377,11 @@ lcm_ext(To& to, const From1& x, const From2& y, const Rounding& mode) {
   Result r;
   if ((rx = classify<From1_Policy>(x, true, true, false)) == VC_NAN
       || (ry = classify<From2_Policy>(y, true, true, false)) == VC_NAN)
-    r = VC_NAN;
+    return set_special<To_Policy>(to, VC_NAN);
   else if (rx == VC_NORMAL && ry == VC_NORMAL)
     return lcm<To_Policy>(to, x, y, mode);
   else
-    r = VC_PLUS_INFINITY;
+    return set_special<To_Policy>(to, VC_PLUS_INFINITY);
   return set_special<To_Policy>(to, r);
 }
 

@@ -133,10 +133,10 @@ lcm_generic(To& to, const From1& x, const From2& y, const Rounding& mode) {
 template <typename Policy, typename Type>
 inline Result
 sgn_generic(const Type& x) {
-  if (x > 0)
-    return V_GT;
   if (x < 0)
     return V_LT;
+  if (x > 0)
+    return V_GT;
   return V_EQ;
 }
 
