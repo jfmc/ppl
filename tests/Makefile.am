@@ -88,9 +88,10 @@ ORIGINAL_TESTS = \
 	removedim7 removedim8 removedim9 \
 	smm1 \
 	timeelapse1 timeelapse2 timeelapse3 timeelapse4 timeelapse5 \
+	timeelapse6 \
 	topclosed1 topclosed2 \
 	topclosure1 \
-	universe1 universe2 universe3 universe4 universe5 universe6
+	universe1 universe2 universe3 universe4 universe5 universe6 
 
 DERIVED_TESTS = \
 	nnc_addconstraints1 nnc_addconstraints2 nnc_addconstraints3 \
@@ -141,7 +142,7 @@ DERIVED_TESTS = \
 	nnc_removedim1 nnc_removedim2 nnc_removedim3 nnc_removedim4 \
 	nnc_removedim5 nnc_removedim6 nnc_removedim8 nnc_removedim9 \
 	nnc_smm1 \
-	nnc_timeelapse2 nnc_timeelapse5 \
+	nnc_timeelapse2 nnc_timeelapse5 nnc_timeelapse6 \
 	nnc_universe1 nnc_universe2 nnc_universe3 nnc_universe4 nnc_universe5
 
 #
@@ -324,6 +325,7 @@ timeelapse2_SOURCES = timeelapse2.cc
 timeelapse3_SOURCES = timeelapse3.cc
 timeelapse4_SOURCES = timeelapse4.cc
 timeelapse5_SOURCES = timeelapse5.cc
+timeelapse6_SOURCES = timeelapse6.cc
 
 topclosed1_SOURCES = topclosed1.cc
 topclosed2_SOURCES = topclosed2.cc
@@ -593,6 +595,8 @@ nnc_timeelapse2_SOURCES = timeelapse2.cc
 nnc_timeelapse2_CXXFLAGS = $(DERIVED_CXXFLAGS)
 nnc_timeelapse5_SOURCES = timeelapse5.cc
 nnc_timeelapse5_CXXFLAGS = $(DERIVED_CXXFLAGS)
+nnc_timeelapse6_SOURCES = timeelapse6.cc
+nnc_timeelapse6_CXXFLAGS = $(DERIVED_CXXFLAGS)
 
 nnc_universe1_SOURCES = universe1.cc
 nnc_universe1_CXXFLAGS = $(DERIVED_CXXFLAGS)
