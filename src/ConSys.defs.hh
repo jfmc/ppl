@@ -261,6 +261,6 @@ void swap(Parma_Polyhedra_Library::ConSys& x,
 
 } // namespace std
 
-//#include "ConSys.inlines.hh"
+// ConSys.inlines.hh is not included here on purpose.
 
-#endif
+#endif // _ConSys_defs_hh

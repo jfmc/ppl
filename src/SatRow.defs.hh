@@ -158,4 +158,4 @@ void swap(Parma_Polyhedra_Library::SatRow& x,
 
 #include "SatRow.inlines.hh"
 
-#endif
+#endif // _SatRow_defs_hh

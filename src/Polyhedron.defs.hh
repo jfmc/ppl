@@ -939,4 +939,4 @@ void swap(Parma_Polyhedra_Library::Polyhedron& x,
 
 #include "Polyhedron.inlines.hh"
 
-#endif
+#endif // _Polyhedron_defs_hh

@@ -368,4 +368,4 @@ void swap(Parma_Polyhedra_Library::Generator& x,
 
 #include "Generator.inlines.hh"
 
-#endif
+#endif // _Generator_defs_hh

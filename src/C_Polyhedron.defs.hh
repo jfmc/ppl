@@ -103,4 +103,4 @@ public:
 
 #include "C_Polyhedron.inlines.hh"
 
-#endif
+#endif // _C_Polyhedron_defs_hh

@@ -227,4 +227,4 @@ private:
 
 #include "Interval.inlines.hh"
 
-#endif
+#endif // _Interval_defs_hh

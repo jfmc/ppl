@@ -170,4 +170,4 @@ namespace Parma_Polyhedra_Library {
 
 #include "Status.inlines.hh"
 
-#endif
+#endif // _Status_defs_hh

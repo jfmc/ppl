@@ -371,4 +371,4 @@ void swap(Parma_Polyhedra_Library::Row& x,
 
 #include "Row.inlines.hh"
 
-#endif
+#endif // _Row_defs_hh

@@ -338,6 +338,6 @@ void swap(Parma_Polyhedra_Library::GenSys& x,
 
 } // namespace std
 
-//#include "GenSys.inlines.hh"
+// ConSys.inlines.hh is not included here on purpose.
 
-#endif
+#endif // _GenSys_defs_hh

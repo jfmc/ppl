@@ -24,10 +24,10 @@ site: http://www.cs.unipr.it/ppl/ . */
 #ifndef _BoundingBox_defs_hh
 #define _BoundingBox_defs_hh 1
 
+#include "Integer.types.hh"
+#include "Interval.defs.hh"
 #include <vector>
 #include <iosfwd>
-#include "Integer.types.hh"
-#include "Interval.types.hh"
 
 namespace Parma_Polyhedra_Library {
 
@@ -121,4 +121,4 @@ std::ostream& operator<<(std::ostream& s, const BoundingBox& bbox);
 
 #include "BoundingBox.inlines.hh"
 
-#endif
+#endif // _BoundingBox_defs_hh

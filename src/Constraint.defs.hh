@@ -366,4 +366,4 @@ void swap(Parma_Polyhedra_Library::Constraint& x,
 
 #include "Constraint.inlines.hh"
 
-#endif
+#endif // _Constraint_defs_hh

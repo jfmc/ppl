@@ -89,4 +89,4 @@ public:
 
 #include "NNC_Polyhedron.inlines.hh"
 
-#endif
+#endif // _NNC_Polyhedron_defs_hh

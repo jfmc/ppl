@@ -24,9 +24,6 @@ site: http://www.cs.unipr.it/ppl/ . */
 #ifndef _BoundingBox_inlines_hh
 #define _BoundingBox_inlines_hh 1
 
-#include <vector>
-#include "Interval.defs.hh"
-
 namespace Parma_Polyhedra_Library {
 
 inline

@@ -281,4 +281,4 @@ namespace Parma_Polyhedra_Library {
 
 #include "Matrix.inlines.hh"
 
-#endif
+#endif // _Matrix_defs_hh

@@ -49,4 +49,4 @@ void swap(Parma_Polyhedra_Library::Integer& x,
 
 #include "Integer.inlines.hh"
 
-#endif
+#endif // _Integer_defs_hh

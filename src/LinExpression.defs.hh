@@ -218,4 +218,4 @@ void swap(Parma_Polyhedra_Library::LinExpression& x,
 
 #include "LinExpression.inlines.hh"
 
-#endif
+#endif // _LinExpression_defs_hh

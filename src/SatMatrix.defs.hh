@@ -156,4 +156,4 @@ namespace Parma_Polyhedra_Library {
 
 #include "SatMatrix.inlines.hh"
 
-#endif
+#endif // _SatMatrix_defs_hh
