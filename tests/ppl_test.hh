@@ -36,6 +36,7 @@ namespace Parma_Polyhedra_Library {
 typedef BD_Shape<E_Rational> TBD_Shape;
 #else
 typedef BD_Shape<Checked_Number<mpq_class, Extended_Number_Policy> > TBD_Shape;
+//typedef BD_Shape<Checked_Number<int, Extended_Number_Policy> > TBD_Shape;
 
 template <typename T, typename Policy>
 bool is_plus_infinity(const Checked_Number<T, Policy>& x) {
@@ -57,11 +58,10 @@ bool exact_neg(Checked_Number<T, Policy>& to, const Checked_Number<T, Policy>& x
   return to.assign_neg(x, Rounding::IGNORE) == V_EQ;
 }
 
-template <typename To, typename To_Policy,
-	  typename From, typename From_Policy>
+template <typename To, typename To_Policy>
 void div_round_up(Checked_Number<To, To_Policy>& to,
-		  const Checked_Number<From, From_Policy>& x,
-		  const Checked_Number<From, From_Policy>& y) {
+		  const Coefficient& x,
+		  const Coefficient& y) {
   Rounding_State old;
   Checked_Number<To, To_Policy> nx;
   Rounding x_r(y < 0 ? Rounding::DOWN : Rounding::UP);
