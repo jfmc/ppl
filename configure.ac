@@ -175,8 +175,6 @@ AC_ARG_ENABLE(more-assertions,
 case "${enableval}" in
 yes)
   AC_MSG_RESULT(yes)
-  AC_DEFINE(EXTRA_ROW_DEBUG, 1, [Enable more assertions when defined.])
-  debug_flag="-DEXTRA_ROW_DEBUG=1"
   ;;
 no)
   AC_MSG_RESULT(no)
@@ -187,14 +185,21 @@ no)
 esac
 enable_more_assertions=${enableval}
 
+if test x"$enable_more_assertions" = xyes
+then
+  enable_assertions=yes
+  AC_DEFINE(EXTRA_ROW_DEBUG, 1, [Enable more assertions when defined.])
+  debug_flag="-DEXTRA_ROW_DEBUG=1"
+fi
+
 if test x"$enable_assertions" = xno
 then
-  if test x"$enable_more_assertions" = xno
-  then
-    AC_DEFINE(NDEBUG, 1, [Assertions are disabled when this is defined.])
-    debug_flag="$debug_flag -DNDEBUG=1"
-  fi
+  AC_DEFINE(NDEBUG, 1, [Assertions are disabled when this is defined.])
+  debug_flag="-DNDEBUG=1"
 fi
+
+AM_CONDITIONAL(ASSERTIONS_ENABLED, test x"$enable_assertions" = xyes)
+
 
 arch=no
 enableval=standard
