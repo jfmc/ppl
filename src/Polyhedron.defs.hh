@@ -823,7 +823,6 @@ public:
   //! then adds to the system of constraints of \p *this
   //! a renamed-apart version of the constraints in \p cs.
   /*!
-  /*!
     \param  cs             Specifies the constraints to be added.
                            This parameter is not declared <CODE>const</CODE>
                            because it can be modified.
