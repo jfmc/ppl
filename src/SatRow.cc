@@ -172,6 +172,7 @@ PPL::SatRow::prev(int position) const {
   return -1;
 }
 
+/*! \relates Parma_Polyhedra_Library::SatRow */
 int
 PPL::compare(const SatRow& x, const SatRow& y) {
   size_t x_size = mpz_size(x.vec);
@@ -204,6 +205,7 @@ PPL::compare(const SatRow& x, const SatRow& y) {
   return 0;
 }
 
+/*! \relates Parma_Polyhedra_Library::SatRow */
 bool
 PPL::subset_or_equal(const SatRow& x, const SatRow& y) {
   size_t x_size = mpz_size(x.vec);
@@ -223,6 +225,7 @@ PPL::subset_or_equal(const SatRow& x, const SatRow& y) {
   return true;
 }
 
+/*! \relates Parma_Polyhedra_Library::SatRow */
 bool
 PPL::strict_subset(const SatRow& x, const SatRow& y) {
   size_t x_size = mpz_size(x.vec);

@@ -2365,6 +2365,7 @@ PPL::operator<=(const Polyhedron& x, const Polyhedron& y) {
   return x.is_included(y);
 }
 
+/*! \relates Parma_Polyhedra_Library::Polyhedron */
 bool
 PPL::check_disjoint(const Polyhedron& x, const Polyhedron& y) {
   Polyhedron z = x;
