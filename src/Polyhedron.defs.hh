@@ -592,9 +592,6 @@ public:
     intersects the interval corresponding to the <CODE>k</CODE>-th dimension
     with \f$[n/d, +\infty)\f$ if <CODE>closed</CODE> is <CODE>true</CODE>,
     with \f$(n/d, +\infty)\f$ if <CODE>closed</CODE> is <CODE>false</CODE>.
-    The fraction \f$n/d\f$ is in canonical form, that is, \f$n\f$
-    and \f$d\f$ have no common factors and \f$d\f$ is positive, \f$0/1\f$
-    being the unique representation for zero.
     \code
       lower_upper_bound(dimension_type k, bool closed,
                         const Integer& n, const Integer& d)
@@ -603,9 +600,12 @@ public:
     with \f$(-\infty, n/d]\f$ if <CODE>closed</CODE> is <CODE>true</CODE>,
     with \f$(-\infty, n/d)\f$ if <CODE>closed</CODE>
     is <CODE>false</CODE>.
-    The fraction \f$n/d\f$ is in canonical form.
+
     The function <CODE>raise_lower_bound(k, closed, n, d)</CODE>
-    will be called at most once for each possible value for <CODE>k</CODE>.
+    will be called at most once for each possible value for <CODE>k</CODE>
+    and for all such calls the fraction \f$n/d\f$ will be in canonical form,
+    that is, \f$n\f$ and \f$d\f$ have no common factors and \f$d\f$
+    is positive, \f$0/1\f$ being the unique representation for zero.
     The same guarantee is offered for the function
     <CODE>lower_upper_bound(k, closed, n, d)</CODE>.
   */
