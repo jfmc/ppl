@@ -225,12 +225,6 @@ ppl_assign_LinExpression_from_LinExpression
 __P((ppl_LinExpression_t dst, ppl_const_LinExpression_t src));
 
 /*!
-  Swaps the linear expressions \p x and \p y.
-*/
-int
-ppl_swap_LinExpression __P((ppl_LinExpression_t x, ppl_LinExpression_t y));
-
-/*!
   Adds \p n to the coefficient of variable \p var in the linear
   expression \p le.  The space dimension is set to be the maximum
   between \p var + 1 and the old space dimension.
@@ -322,12 +316,6 @@ ppl_assign_Constraint_from_Constraint __P((ppl_Constraint_t dst,
 					   ppl_const_Constraint_t src));
 
 /*!
-  Swaps the constraints \p x and \p y.
-*/
-int
-ppl_swap_Constraint __P((ppl_Constraint_t x, ppl_Constraint_t y));
-
-/*!
   Returns the space dimension of \p c.
 */
 int
@@ -410,12 +398,6 @@ int
 ppl_assign_ConSys_from_ConSys __P((ppl_ConSys_t dst, ppl_const_ConSys_t src));
 
 /*!
-  Swaps the constraint systems \p x and \p y.
-*/
-int
-ppl_swap_ConSys __P((ppl_ConSys_t x, ppl_ConSys_t y));
-
-/*!
   Returns the dimension of the vector space enclosing \p *this.
 */
 int
@@ -483,7 +465,7 @@ ppl_ConSys_begin __P((ppl_ConSys_t cs, ppl_ConSys__const_iterator_t cit));
   constraint system \p cs.
 */
 int
-ppl_ConSys_end __P((ppl_ConSys_t cs, ppl_ConSys__const_iterator_t* pcit));
+ppl_ConSys_end __P((ppl_ConSys_t cs, ppl_ConSys__const_iterator_t cit));
 
 /*!
   Dereference \p cit writing a const handle to the resulting
@@ -572,12 +554,6 @@ ppl_assign_Generator_from_Generator __P((ppl_Generator_t dst,
 					 ppl_const_Generator_t src));
 
 /*!
-  Swaps the generators \p x and \p y.
-*/
-int
-ppl_swap_Generator __P((ppl_Generator_t x, ppl_Generator_t y));
-
-/*!
   Returns the space dimension of \p g.
 */
 int
@@ -660,12 +636,6 @@ int
 ppl_assign_GenSys_from_GenSys __P((ppl_GenSys_t dst, ppl_const_GenSys_t src));
 
 /*!
-  Swaps the generator systems \p x and \p y.
-*/
-int
-ppl_swap_GenSys __P((ppl_GenSys_t x, ppl_GenSys_t y));
-
-/*!
   Returns the dimension of the vector space enclosing \p *this.
 */
 int
@@ -735,7 +705,7 @@ ppl_GenSys_begin __P((ppl_const_GenSys_t gs,
 */
 int
 ppl_GenSys_end __P((ppl_const_GenSys_t gs,
-		    ppl_GenSys__const_iterator_t pgit));
+		    ppl_GenSys__const_iterator_t git));
 
 /*!
   Dereference \p git writing a const handle to the resulting
@@ -910,12 +880,6 @@ ppl_assign_C_Polyhedron_from_C_Polyhedron __P((ppl_Polyhedron_t dst,
 int
 ppl_assign_NNC_Polyhedron_from_NNC_Polyhedron
 __P((ppl_Polyhedron_t dst, ppl_const_Polyhedron_t src));
-
-/*!
-  Swaps the polyhedra \p x and \p y.
-*/
-int
-ppl_swap_Polyhedron __P((ppl_Generator_t x, ppl_Generator_t y));
 
 /*!
   Returns the dimension of the vector space enclosing \p ph.

@@ -237,13 +237,6 @@ ppl_assign_LinExpression_from_LinExpression(ppl_LinExpression_t dst,
 CATCH_ALL
 
 int
-ppl_swap_LinExpression(ppl_LinExpression_t x, ppl_LinExpression_t y) try {
-  std::swap(*to_nonconst(x), *to_nonconst(y));
-  return 0;
-}
-CATCH_ALL
-
-int
 ppl_LinExpression_add_to_coefficient(ppl_LinExpression_t le,
 				     unsigned int var,
 				     ppl_const_Coefficient_t n) try {
@@ -346,13 +339,6 @@ ppl_assign_Constraint_from_Constraint(ppl_Constraint_t dst,
 CATCH_ALL
 
 int
-ppl_swap_Constraint(ppl_Constraint_t x, ppl_Constraint_t y) try {
-  std::swap(*to_nonconst(x), *to_nonconst(y));
-  return 0;
-}
-CATCH_ALL
-
-int
 ppl_Constraint_space_dimension(ppl_const_Constraint_t c) try {
   return to_const(c)->space_dimension();
 }
@@ -447,13 +433,6 @@ ppl_assign_ConSys_from_ConSys(ppl_ConSys_t dst, ppl_const_ConSys_t src) try {
   const ConSys& ssrc = *to_const(src);
   ConSys& ddst = *to_nonconst(dst);
   ddst = ssrc;
-  return 0;
-}
-CATCH_ALL
-
-int
-ppl_swap_ConSys(ppl_ConSys_t x, ppl_ConSys_t y) try {
-  std::swap(*to_nonconst(x), *to_nonconst(y));
   return 0;
 }
 CATCH_ALL
@@ -632,13 +611,6 @@ ppl_assign_Generator_from_Generator(ppl_Generator_t dst,
 CATCH_ALL
 
 int
-ppl_swap_Generator(ppl_Generator_t x, ppl_Generator_t y) try {
-  std::swap(*to_nonconst(x), *to_nonconst(y));
-  return 0;
-}
-CATCH_ALL
-
-int
 ppl_Generator_space_dimension(ppl_const_Generator_t g) try {
   return to_const(g)->space_dimension();
 }
@@ -734,13 +706,6 @@ ppl_assign_GenSys_from_GenSys(ppl_GenSys_t dst, ppl_const_GenSys_t src) try {
   const GenSys& ssrc = *to_const(src);
   GenSys& ddst = *to_nonconst(dst);
   ddst = ssrc;
-  return 0;
-}
-CATCH_ALL
-
-int
-ppl_swap_GenSys(ppl_GenSys_t x, ppl_GenSys_t y) try {
-  std::swap(*to_nonconst(x), *to_nonconst(y));
   return 0;
 }
 CATCH_ALL
@@ -981,13 +946,6 @@ ppl_assign_NNC_Polyhedron_from_NNC_Polyhedron(ppl_Polyhedron_t dst,
     = *static_cast<const NNC_Polyhedron*>(to_const(src));
   NNC_Polyhedron& ddst = *static_cast<NNC_Polyhedron*>(to_nonconst(dst));
   ddst = ssrc;
-  return 0;
-}
-CATCH_ALL
-
-int
-ppl_swap_Polyhedron(ppl_Polyhedron_t x, ppl_Polyhedron_t y) try {
-  std::swap(*to_nonconst(x), *to_nonconst(y));
   return 0;
 }
 CATCH_ALL
