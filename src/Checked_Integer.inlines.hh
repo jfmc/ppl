@@ -301,7 +301,7 @@ inline
 Checked_Integer<T>::~Checked_Integer() {
 }
 
-#define PPL_INTEGER_CONSTRUCT_FROM_CHECKED(checked) \
+#define PPL_INTEGER_CONSTRUCT_FROM_CHECKED_SIGNED(checked) \
 template <typename T> \
 inline \
 Checked_Integer<T>::Checked_Integer(checked z) { \
@@ -312,16 +312,26 @@ Checked_Integer<T>::Checked_Integer(checked z) { \
   value_ = z; \
 }
 
-PPL_INTEGER_CONSTRUCT_FROM_CHECKED(signed char)
-PPL_INTEGER_CONSTRUCT_FROM_CHECKED(unsigned char)
-PPL_INTEGER_CONSTRUCT_FROM_CHECKED(short)
-PPL_INTEGER_CONSTRUCT_FROM_CHECKED(unsigned short)
-PPL_INTEGER_CONSTRUCT_FROM_CHECKED(int)
-PPL_INTEGER_CONSTRUCT_FROM_CHECKED(unsigned int)
-PPL_INTEGER_CONSTRUCT_FROM_CHECKED(long)
-PPL_INTEGER_CONSTRUCT_FROM_CHECKED(unsigned long)
-PPL_INTEGER_CONSTRUCT_FROM_CHECKED(long long)
-PPL_INTEGER_CONSTRUCT_FROM_CHECKED(unsigned long long)
+#define PPL_INTEGER_CONSTRUCT_FROM_CHECKED_UNSIGNED(checked) \
+template <typename T> \
+inline \
+Checked_Integer<T>::Checked_Integer(checked z) { \
+  if (z > std::numeric_limits<T>::max()) \
+    throw std::overflow_error("Positive overflow."); \
+  value_ = z; \
+}
+
+PPL_INTEGER_CONSTRUCT_FROM_CHECKED_SIGNED(signed char)
+PPL_INTEGER_CONSTRUCT_FROM_CHECKED_SIGNED(short)
+PPL_INTEGER_CONSTRUCT_FROM_CHECKED_SIGNED(int)
+PPL_INTEGER_CONSTRUCT_FROM_CHECKED_SIGNED(long)
+PPL_INTEGER_CONSTRUCT_FROM_CHECKED_SIGNED(long long)
+
+PPL_INTEGER_CONSTRUCT_FROM_CHECKED_UNSIGNED(unsigned char)
+PPL_INTEGER_CONSTRUCT_FROM_CHECKED_UNSIGNED(unsigned short)
+PPL_INTEGER_CONSTRUCT_FROM_CHECKED_UNSIGNED(unsigned int)
+PPL_INTEGER_CONSTRUCT_FROM_CHECKED_UNSIGNED(unsigned long)
+PPL_INTEGER_CONSTRUCT_FROM_CHECKED_UNSIGNED(unsigned long long)
 
 template <typename T>
 inline
