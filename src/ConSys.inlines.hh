@@ -45,18 +45,18 @@ ConSys::ConSys(const ConSys& cs)
 }
 
 inline
-ConSys::ConSys(Topology topol)
+ConSys::ConSys(const Topology topol)
   : Matrix(topol) {
 }
 
 inline
-ConSys::ConSys(Topology topol,
-	       dimension_type n_rows, dimension_type n_columns)
+ConSys::ConSys(const Topology topol,
+	       const dimension_type n_rows, const dimension_type n_columns)
   : Matrix(topol, n_rows, n_columns) {
 }
 
 inline
-ConSys::ConSys(ConSys& y, dimension_type first_stolen)
+ConSys::ConSys(ConSys& y, const dimension_type first_stolen)
   : Matrix(y, first_stolen) {
 }
 
@@ -71,12 +71,12 @@ ConSys::operator=(const ConSys& y) {
 }
 
 inline Constraint&
-ConSys::operator[](dimension_type k) {
+ConSys::operator[](const dimension_type k) {
   return static_cast<Constraint&> (Matrix::operator[](k));
 }
 
 inline const Constraint&
-ConSys::operator[](dimension_type k) const {
+ConSys::operator[](const dimension_type k) const {
   return static_cast<const Constraint&> (Matrix::operator[](k));
 }
 
@@ -92,7 +92,7 @@ ConSys::clear() {
 
 inline const ConSys&
 ConSys::zero_dim_empty() {
-  static ConSys zdf(Constraint::zero_dim_false());
+  static const ConSys zdf(Constraint::zero_dim_false());
   return zdf;
 }
 
@@ -143,7 +143,7 @@ ConSys::const_iterator::operator++() {
 
 inline ConSys::const_iterator
 ConSys::const_iterator::operator++(int) {
-  const_iterator tmp = *this;
+  const const_iterator tmp = *this;
   operator++();
   return tmp;
 }
@@ -167,7 +167,7 @@ ConSys::begin() const {
 
 inline ConSys::const_iterator
 ConSys::end() const {
-  const_iterator i(Matrix::end(), *this);
+  const const_iterator i(Matrix::end(), *this);
   return i;
 }
 

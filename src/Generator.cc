@@ -34,7 +34,7 @@ namespace PPL = Parma_Polyhedra_Library;
 
 void
 PPL::Generator::throw_dimension_incompatible(const char* method,
-					     Variable v) const {
+					     const Variable v) const {
   std::ostringstream s;
   s << method << ":" << std::endl
     << "this->space_dimension() == " << this->space_dimension()
@@ -75,8 +75,7 @@ PPL::Generator::point(const LinExpression& e, const Integer& d) {
 PPL::Generator
 PPL::Generator::closure_point(const LinExpression& e, const Integer& d) {
   if (d == 0)
-    throw
-      std::invalid_argument("Generator PPL::closure_point(e, d): d == 0");
+    throw std::invalid_argument("Generator PPL::closure_point(e, d): d == 0");
   // Adding the epsilon dimension with coefficient 0.
   LinExpression ec = 0 * Variable(e.space_dimension());
   ec += e;
@@ -124,7 +123,7 @@ std::ostream&
 PPL::IO_Operators::operator<<(std::ostream& s, const Generator& g) {
   bool needed_divisor = false;
   bool extra_parentheses = false;
-  int num_variables = g.space_dimension();
+  const int num_variables = g.space_dimension();
   Generator::Type t = g.type();
   switch (t) {
   case Generator::LINE:
@@ -204,7 +203,7 @@ PPL::Generator::is_matching_closure_point(const Generator& p) const {
     // Divisors are different: divide them by their GCD
     // to simplify the following computation.
     gcd_assign(tmp_Integer[1], cp[0], p[0]);
-    bool rel_prime = (tmp_Integer[1] == 1);
+    const bool rel_prime = (tmp_Integer[1] == 1);
     if (!rel_prime) {
       exact_div_assign(tmp_Integer[2], cp[0], tmp_Integer[1]);
       exact_div_assign(tmp_Integer[3], p[0], tmp_Integer[1]);

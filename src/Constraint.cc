@@ -34,7 +34,7 @@ namespace PPL = Parma_Polyhedra_Library;
 
 void
 PPL::Constraint::throw_dimension_incompatible(const char* method,
-					      Variable v) const {
+					      const Variable v) const {
   std::ostringstream s;
   s << method << ":" << std::endl
     << "this->space_dimension() == " << this->space_dimension()
@@ -67,8 +67,8 @@ PPL::Constraint::is_trivial_true() const {
       return false;
     else {
       // The constraint is NOT necessarily closed.
-      dimension_type eps_index = size() - 1;
-      int eps_sign = sgn(x[eps_index]);
+      const dimension_type eps_index = size() - 1;
+      const int eps_sign = sgn(x[eps_index]);
       if (eps_sign > 0)
 	// We have found the constraint epsilon >= 0.
 	return true;
@@ -92,7 +92,6 @@ PPL::Constraint::is_trivial_true() const {
     }
 }
 
-
 bool
 PPL::Constraint::is_trivial_false() const {
   assert(size() > 0);
@@ -110,7 +109,7 @@ PPL::Constraint::is_trivial_false() const {
       return false;
     else {
       // The constraint is NOT necessarily closed.
-      dimension_type eps_index = size() - 1;
+      const dimension_type eps_index = size() - 1;
       if (x[eps_index] >= 0)
 	// If positive, we have found the constraint epsilon >= 0.
 	// If zero, one of the `true' dimensions has a non-zero coefficient.
@@ -133,11 +132,10 @@ PPL::Constraint::is_trivial_false() const {
     }
 }
 
-
 /*! \relates Parma_Polyhedra_Library::Constraint */
 std::ostream&
 PPL::IO_Operators::operator<<(std::ostream& s, const Constraint& c) {
-  int num_variables = c.space_dimension();
+  const int num_variables = c.space_dimension();
   bool first = true;
   for (int v = 0; v < num_variables; ++v) {
     Integer cv = c.coefficient(Variable(v));
@@ -176,7 +174,6 @@ PPL::IO_Operators::operator<<(std::ostream& s, const Constraint& c) {
   s << relation_symbol << -c.inhomogeneous_term();
   return s;
 }
-
 
 bool
 PPL::Constraint::OK() const {

@@ -37,7 +37,7 @@ BoundingBox::space_dimension() const {
 }
 
 inline const Interval&
-BoundingBox::operator[](dimension_type k) const {
+BoundingBox::operator[](const dimension_type k) const {
   return vec[k];
 }
 
@@ -58,7 +58,7 @@ BoundingBox::is_empty() const {
 }
 
 inline bool
-BoundingBox::get_lower_bound(dimension_type k, bool& closed,
+BoundingBox::get_lower_bound(const dimension_type k, bool& closed,
 			     Integer& n, Integer& d) const {
   const LBoundary& lb = vec[k].lower_bound();
   const ERational& lr = lb.bound();
@@ -74,7 +74,7 @@ BoundingBox::get_lower_bound(dimension_type k, bool& closed,
 }
 
 inline bool
-BoundingBox::get_upper_bound(dimension_type k, bool& closed,
+BoundingBox::get_upper_bound(const dimension_type k, bool& closed,
 			     Integer& n, Integer& d) const {
   const UBoundary& ub = vec[k].upper_bound();
   const ERational& ur = ub.bound();
@@ -94,7 +94,7 @@ BoundingBox::set_empty() {
 }
 
 inline void
-BoundingBox::raise_lower_bound(dimension_type k, bool closed,
+BoundingBox::raise_lower_bound(const dimension_type k, const bool closed,
 			       const Integer& n, const Integer& d) {
   vec[k].raise_lower_bound(LBoundary(ERational(n, d),
 				     (closed
@@ -104,7 +104,7 @@ BoundingBox::raise_lower_bound(dimension_type k, bool closed,
 }
 
 inline void
-BoundingBox::lower_upper_bound(dimension_type k, bool closed,
+BoundingBox::lower_upper_bound(const dimension_type k, const bool closed,
 			       const Integer& n, const Integer& d) {
   vec[k].lower_upper_bound(UBoundary(ERational(n, d),
 				     (closed

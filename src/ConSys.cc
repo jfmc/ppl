@@ -51,9 +51,9 @@ PPL::ConSys::adjust_topology_and_dimension(Topology new_topology,
   }
 
   // Here `num_rows() > 0'.
-  dimension_type old_space_dim = space_dimension();
+  const dimension_type old_space_dim = space_dimension();
+  const Topology old_topology = topology();
   dimension_type cols_to_be_added = new_space_dim - old_space_dim;
-  Topology old_topology = topology();
 
   if (cols_to_be_added > 0)
     if (old_topology != new_topology)
@@ -70,13 +70,12 @@ PPL::ConSys::adjust_topology_and_dimension(Topology new_topology,
 	// epsilon column will only contain zeroes: as a consequence,
 	// we just decrement the number of columns to be added.
 	ConSys& cs = *this;
-	dimension_type eps_index = old_space_dim + 1;
+	const dimension_type eps_index = old_space_dim + 1;
 	dimension_type cs_num_rows = cs.num_rows();
-	bool was_sorted = false;
-	if (cs.is_sorted()) {
-	  was_sorted = true;
+	bool was_sorted = cs.is_sorted();
+	if (was_sorted)
 	  cs.set_sorted(false);
-	}
+
 	// If we have no pending rows, we only check if
 	// we must erase some rows.
 	if (cs.num_pending_rows() == 0) {
@@ -93,14 +92,15 @@ PPL::ConSys::adjust_topology_and_dimension(Topology new_topology,
 	  // into the non-pending part of the matrix.
 	  // Thus, we first work on the non-pending part as if it was
 	  // an independent matrix; then we work on the pending part.
-	  dimension_type old_first_pending = cs.first_pending_row();
+	  const dimension_type old_first_pending = cs.first_pending_row();
 	  dimension_type new_first_pending = old_first_pending;
 	  for (dimension_type i = new_first_pending; i-- > 0; )
 	    if (cs[i][eps_index] != 0) {
 	      --new_first_pending;
 	      std::swap(cs[i], cs[new_first_pending]);
 	    }
-	  dimension_type num_swaps = old_first_pending - new_first_pending;
+	  const dimension_type num_swaps
+	    = old_first_pending - new_first_pending;
           cs.set_index_first_pending_row(new_first_pending);
 	  // Move the swapped rows to the real end of the matrix.
 	  for (dimension_type i = num_swaps; i-- > 0; )
@@ -199,8 +199,8 @@ PPL::ConSys::insert(const Constraint& c) {
       // Here `*this' is NNC and `c' is necessarily closed.
       // Copying the constraint adding the epsilon coefficient
       // and the missing dimensions, if any.
-      dimension_type new_size = 2 + std::max(c.space_dimension(),
-					     space_dimension());
+      const dimension_type new_size = 2 + std::max(c.space_dimension(),
+						   space_dimension());
       Constraint tmp_c(c, new_size);
       tmp_c.set_not_necessarily_closed();
       Matrix::insert(tmp_c);
@@ -224,8 +224,8 @@ PPL::ConSys::insert_pending(const Constraint& c) {
       // Here `*this' is NNC and `c' is necessarily closed.
       // Copying the constraint adding the epsilon coefficient
       // and the missing dimensions, if any.
-      dimension_type new_size = 2 + std::max(c.space_dimension(),
-					     space_dimension());
+      const dimension_type new_size = 2 + std::max(c.space_dimension(),
+						   space_dimension());
       Constraint tmp_c(c, new_size);
       tmp_c.set_not_necessarily_closed();
       Matrix::insert_pending(tmp_c);
@@ -237,16 +237,16 @@ PPL::ConSys::num_inequalities() const {
   // We are sure that we call this method only when
   // the matrix has no pending rows.
   assert(num_pending_rows() == 0);
+  const ConSys& cs = *this;
   int n = 0;
   // If the Matrix happens to be sorted, take advantage of the fact
   // that inequalities are at the bottom of the system.
   if (is_sorted())
-    for (dimension_type i = num_rows();
-	 i != 0 && (*this)[--i].is_inequality(); )
+    for (dimension_type i = num_rows(); i > 0 && cs[--i].is_inequality(); )
       ++n;
   else
     for (dimension_type i = num_rows(); i-- > 0 ; )
-      if ((*this)[i].is_inequality())
+      if (cs[i].is_inequality())
 	++n;
   return n;
 }
@@ -261,7 +261,7 @@ PPL::ConSys::num_equalities() const {
 
 void
 PPL::ConSys::const_iterator::skip_forward() {
-  PPL::Matrix::const_iterator csp_end = csp->end();
+  const Matrix::const_iterator csp_end = csp->end();
   while (i != csp_end && (*this)->is_trivial_true())
     ++i;
 }
@@ -291,7 +291,7 @@ PPL::ConSys::satisfies_all_constraints(const Generator& g) const {
       // `g' is either a ray, a point or a closure point.
       for (dimension_type i = cs.num_rows(); i-- > 0; ) {
 	const Constraint& c = cs[i];
-	int sp_sign = sgn(sp_fp(g, c));
+	const int sp_sign = sgn(sp_fp(g, c));
 	if (c.is_inequality()) {
 	  // As `cs' is necessarily closed,
 	  // `c' is a non-strict inequality.
@@ -320,7 +320,7 @@ PPL::ConSys::satisfies_all_constraints(const Generator& g) const {
       // when dealing with a strict inequality.
       for (dimension_type i = cs.num_rows(); i-- > 0; ) {
 	const Constraint& c = cs[i];
-	int sp_sign = sgn(sp_fp(g, c));
+	const int sp_sign = sgn(sp_fp(g, c));
 	switch (c.type()) {
 	case Constraint::EQUALITY:
 	  if (sp_sign != 0)
@@ -343,7 +343,7 @@ PPL::ConSys::satisfies_all_constraints(const Generator& g) const {
     case Generator::CLOSURE_POINT:
       for (dimension_type i = cs.num_rows(); i-- > 0; ) {
 	const Constraint& c = cs[i];
-	int sp_sign = sgn(sp_fp(g, c));
+	const int sp_sign = sgn(sp_fp(g, c));
 	if (c.is_inequality()) {
 	  // Constraint `c' is either a strict or a non-strict inequality.
 	  if (sp_sign < 0)
@@ -373,10 +373,10 @@ PPL::ConSys::affine_preimage(dimension_type v,
   assert(expr.space_dimension() <= space_dimension());
   assert(denominator > 0);
 
-  dimension_type n_columns = num_columns();
-  dimension_type n_rows = num_rows();
-  dimension_type expr_size = expr.size();
-  bool not_invertible = (v >= expr_size || expr[v] == 0);
+  const dimension_type n_columns = num_columns();
+  const dimension_type n_rows = num_rows();
+  const dimension_type expr_size = expr.size();
+  const bool not_invertible = (v >= expr_size || expr[v] == 0);
   ConSys& x = *this;
 
   if (denominator != 1)
@@ -505,7 +505,7 @@ PPL::ConSys::OK() const {
 std::ostream&
 PPL::IO_Operators::operator<<(std::ostream& s, const ConSys& cs) {
   ConSys::const_iterator i = cs.begin();
-  ConSys::const_iterator cs_end = cs.end();
+  const ConSys::const_iterator cs_end = cs.end();
   if (i == cs_end)
     s << "true";
   else {

@@ -106,10 +106,11 @@ Generator::set_is_ray_or_point() {
 }
 
 inline const Integer&
-Generator::coefficient(Variable v) const {
-  if (v.id() >= space_dimension())
+Generator::coefficient(const Variable v) const {
+  const dimension_type v_id = v.id();
+  if (v_id >= space_dimension())
     throw_dimension_incompatible("PPL::Generator::coefficient(v)", v);
-  return Row::coefficient(v.id());
+  return Row::coefficient(v_id);
 }
 
 inline const Integer&
@@ -125,13 +126,13 @@ Generator::divisor() const {
 
 inline const Generator&
 Generator::zero_dim_point() {
-  static Generator zdp = point();
+  static const Generator zdp = point();
   return zdp;
 }
 
 inline const Generator&
 Generator::zero_dim_closure_point() {
-  static Generator zdcp = closure_point();
+  static const Generator zdcp = closure_point();
   return zdcp;
 }
 

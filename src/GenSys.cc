@@ -51,9 +51,9 @@ PPL::GenSys::adjust_topology_and_dimension(Topology new_topology,
   }
 
   // Here `num_rows() > 0'.
-  dimension_type old_space_dim = space_dimension();
+  const dimension_type old_space_dim = space_dimension();
+  const Topology old_topology = topology();
   dimension_type cols_to_be_added = new_space_dim - old_space_dim;
-  Topology old_topology = topology();
 
   if (cols_to_be_added > 0)
     if (old_topology != new_topology)
@@ -77,7 +77,7 @@ PPL::GenSys::adjust_topology_and_dimension(Topology new_topology,
 	// Note: normalization is preserved.
 	add_zero_columns(++cols_to_be_added);
 	GenSys& gs = *this;
-	dimension_type eps_index = new_space_dim + 1;
+	const dimension_type eps_index = new_space_dim + 1;
 	for (dimension_type i = num_rows(); i-- > 0; )
 	  gs[i][eps_index] = gs[i][0];
 	set_not_necessarily_closed();
@@ -109,7 +109,7 @@ PPL::GenSys::adjust_topology_and_dimension(Topology new_topology,
 	// Note: normalization is preserved.
 	add_zero_columns(1);
 	GenSys& gs = *this;
-	dimension_type eps_index = new_space_dim + 1;
+	const dimension_type eps_index = new_space_dim + 1;
 	for (dimension_type i = num_rows(); i-- > 0; )
 	  gs[i][eps_index] = gs[i][0];
 	set_not_necessarily_closed();
@@ -129,8 +129,8 @@ PPL::GenSys::add_corresponding_closure_points() {
   // NOTE: we always add (pending) rows at the end of the generator system.
   // Updating `index_first_pending', if needed, is done by the caller.
   GenSys& gs = *this;
-  dimension_type n_rows = gs.num_rows();
-  dimension_type eps_index = gs.num_columns() - 1;
+  const dimension_type n_rows = gs.num_rows();
+  const dimension_type eps_index = gs.num_columns() - 1;
   for (dimension_type i = n_rows; i-- > 0; ) {
     const Generator& g = gs[i];
     if (g[eps_index] > 0) {
@@ -155,8 +155,8 @@ PPL::GenSys::add_corresponding_points() {
   // NOTE: we always add (pending) rows at the end of the generator system.
   // Updating `index_first_pending', if needed, is done by the caller.
   GenSys& gs = *this;
-  dimension_type n_rows = gs.num_rows();
-  dimension_type eps_index = gs.num_columns() - 1;
+  const dimension_type n_rows = gs.num_rows();
+  const dimension_type eps_index = gs.num_columns() - 1;
   for (dimension_type i = 0; i < n_rows; i++) {
     const Generator& g = gs[i];
     if (g[0] > 0 && g[eps_index] == 0) {
@@ -175,13 +175,12 @@ PPL::GenSys::has_closure_points() const {
   if (is_necessarily_closed())
     return false;
   const GenSys& gs = *this;
-  dimension_type eps_index = gs.num_columns() - 1;
+  const dimension_type eps_index = gs.num_columns() - 1;
   for (dimension_type i = num_rows(); i-- > 0; )
     if (gs[i][0] != 0 && gs[i][eps_index] == 0)
       return true;
   return false;
 }
-
 
 bool
 PPL::GenSys::has_points() const {
@@ -194,7 +193,7 @@ PPL::GenSys::has_points() const {
     }
   else {
     // is_necessarily_closed() == false.
-    dimension_type eps_index = gs.num_columns() - 1;
+    const dimension_type eps_index = gs.num_columns() - 1;
     for (dimension_type i = num_rows(); i-- > 0; )
     if (gs[i][eps_index] != 0)
       return true;
@@ -202,10 +201,9 @@ PPL::GenSys::has_points() const {
   return false;
 }
 
-
 void
 PPL::GenSys::const_iterator::skip_forward() {
-  PPL::Matrix::const_iterator gsp_end = gsp->end();
+  const Matrix::const_iterator gsp_end = gsp->end();
   if (i != gsp_end) {
     Matrix::const_iterator i_next = i;
     ++i_next;
@@ -219,7 +217,6 @@ PPL::GenSys::const_iterator::skip_forward() {
     }
   }
 }
-
 
 void
 PPL::GenSys::insert(const Generator& g) {
@@ -237,7 +234,7 @@ PPL::GenSys::insert(const Generator& g) {
       // (i.e., the epsilon coefficient is equal to the divisor);
       // rays and lines must have epsilon coefficient equal to 0.
       // Note: normalization is preserved.
-      dimension_type eps_index = num_columns();
+      const dimension_type eps_index = num_columns();
       add_zero_columns(1);
       GenSys& gs = *this;
       for (dimension_type i = num_rows(); i-- > 0; ) {
@@ -253,8 +250,8 @@ PPL::GenSys::insert(const Generator& g) {
       // The generator system is NOT necessarily closed:
       // copy the generator, adding the missing dimensions
       // and the epsilon coefficient.
-      dimension_type new_size = 2 + std::max(g.space_dimension(),
-					     space_dimension());
+      const dimension_type new_size = 2 + std::max(g.space_dimension(),
+						   space_dimension());
       Generator tmp_g(g, new_size);
       // If it was a point, set the epsilon coordinate to 1
       // (i.e., set the coefficient equal to the divisor).
@@ -280,7 +277,7 @@ PPL::GenSys::insert_pending(const Generator& g) {
       // (i.e., the epsilon coefficient is equal to the divisor);
       // rays and lines must have epsilon coefficient equal to 0.
       // Note: normalization is preserved.
-      dimension_type eps_index = num_columns();
+      const dimension_type eps_index = num_columns();
       add_zero_columns(1);
       GenSys& gs = *this;
       for (dimension_type i = num_rows(); i-- > 0; ) {
@@ -296,8 +293,8 @@ PPL::GenSys::insert_pending(const Generator& g) {
       // The generator system is NOT necessarily closed:
       // copy the generator, adding the missing dimensions
       // and the epsilon coefficient.
-      dimension_type new_size = 2 + std::max(g.space_dimension(),
-					     space_dimension());
+      const dimension_type new_size = 2 + std::max(g.space_dimension(),
+						   space_dimension());
       Generator tmp_g(g, new_size);
       // If it was a point, set the epsilon coordinate to 1
       // (i.e., set the coefficient equal to the divisor).
@@ -315,17 +312,18 @@ PPL::GenSys::num_lines() const {
   // We are sure that this method is applied only to a matrix
   // that does not contain pending rows.
   assert(num_pending_rows() == 0);
+  const GenSys& gs = *this;
   dimension_type n = 0;
   // If the Matrix happens to be sorted, take advantage of the fact
   // that lines are at the top of the system.
   if (is_sorted()) {
     dimension_type nrows = num_rows();
-    for (dimension_type i = 0; i < nrows && (*this)[i].is_line(); ++i)
+    for (dimension_type i = 0; i < nrows && gs[i].is_line(); ++i)
       ++n;
   }
   else
     for (dimension_type i = num_rows(); i-- > 0 ; )
-      if ((*this)[i].is_line())
+      if (gs[i].is_line())
 	++n;
   return n;
 }
@@ -335,19 +333,19 @@ PPL::GenSys::num_rays() const {
   // We are sure that this method is applied only to a matrix
   // that does not contain pending rows.
   assert(num_pending_rows() == 0);
+  const GenSys& gs = *this;
   dimension_type n = 0;
   // If the Matrix happens to be sorted, take advantage of the fact
   // that rays and points are at the bottom of the system and
   // rays have the inhomogeneous term equal to zero.
   if (is_sorted()) {
-    const GenSys& x = *this;
-    for (dimension_type i = num_rows(); i != 0 && x[--i].is_ray_or_point(); )
-      if (x[i][0] == 0)
+    for (dimension_type i = num_rows(); i != 0 && gs[--i].is_ray_or_point(); )
+      if (gs[i][0] == 0)
 	++n;
   }
   else
     for (dimension_type i = num_rows(); i-- > 0 ; ) {
-      const Generator& g = (*this)[i];
+      const Generator& g = gs[i];
       if (g.is_ray_or_point() && g[0] == 0)
 	++n;
     }
@@ -362,13 +360,13 @@ PPL::GenSys::relation_with(const Constraint& c) const {
   assert(space_dimension() >= c.space_dimension());
   // Number of generators: the case of an empty polyhedron
   // has already been filtered out by the caller.
-  dimension_type n_rows = num_rows();
+  const dimension_type n_rows = num_rows();
   assert(n_rows > 0);
-  const GenSys& gen_sys = *this;
+  const GenSys& gs = *this;
 
-  // `res' will keep the relation holding between the generators
+  // `result' will keep the relation holding between the generators
   // we have seen so far and the constraint `c'.
-  Poly_Con_Relation res = Poly_Con_Relation::saturates();
+  Poly_Con_Relation result = Poly_Con_Relation::saturates();
 
   switch (c.type()) {
 
@@ -376,7 +374,7 @@ PPL::GenSys::relation_with(const Constraint& c) const {
     {
       // The hyperplane defined by the equality `c' is included
       // in the set of points satisfying `c' (it is the same set!).
-      res = res && Poly_Con_Relation::is_included();
+      result = result && Poly_Con_Relation::is_included();
       // The following integer variable will hold the scalar product sign
       // of either the first point or the first non-saturating ray we find.
       // If it is equal to 2, then it means that we haven't found such
@@ -384,8 +382,8 @@ PPL::GenSys::relation_with(const Constraint& c) const {
       int first_point_or_nonsaturating_ray_sign = 2;
 
       for (dimension_type i = n_rows; i-- > 0; ) {
-	const Generator& g = gen_sys[i];
-	int sp_sign = sgn(c * g);
+	const Generator& g = gs[i];
+	const int sp_sign = sgn(c * g);
 	// Checking whether the generator saturates the equality.
 	// If that is the case, then we have to do something only if
 	// the generator is a point.
@@ -407,7 +405,7 @@ PPL::GenSys::relation_with(const Constraint& c) const {
 	  case Generator::LINE:
 	    // If a line does not saturate `c', then there is a strict
 	    // intersection between the points satisfying `c'
-	    // and the points generated by `gen_sys'.
+	    // and the points generated by `gs'.
 	    return Poly_Con_Relation::strictly_intersects();
 
 	  case Generator::RAY:
@@ -415,7 +413,7 @@ PPL::GenSys::relation_with(const Constraint& c) const {
 	      // It is the first time that we have a non-saturating ray
 	      // and we have not found any point yet.
 	      first_point_or_nonsaturating_ray_sign = sp_sign;
-	      res = Poly_Con_Relation::is_disjoint();
+	      result = Poly_Con_Relation::is_disjoint();
 	    }
 	    else
 	      // We already found a point or a non-saturating ray.
@@ -431,7 +429,7 @@ PPL::GenSys::relation_with(const Constraint& c) const {
 	      // It is the first time that we find a point and
 	      // we have not found a non-saturating ray yet.
 	      first_point_or_nonsaturating_ray_sign = sp_sign;
-	      res = Poly_Con_Relation::is_disjoint();
+	      result = Poly_Con_Relation::is_disjoint();
 	    }
 	    else
 	      // We already found a point or a non-saturating ray.
@@ -447,15 +445,15 @@ PPL::GenSys::relation_with(const Constraint& c) const {
     {
       // The hyperplane implicitly defined by the non-strict inequality `c'
       // is included in the set of points satisfying `c'.
-      res = res && Poly_Con_Relation::is_included();
+      result = result && Poly_Con_Relation::is_included();
       // The following boolean variable will be set to `false'
       // as soon as either we find (any) point or we find a
       // non-saturating ray.
       bool first_point_or_nonsaturating_ray = true;
 
       for (dimension_type i = n_rows; i-- > 0; ) {
-	const Generator& g = gen_sys[i];
-	int sp_sign = sgn(c * g);
+	const Generator& g = gs[i];
+	const int sp_sign = sgn(c * g);
 	// Checking whether the generator saturates the non-strict
 	// inequality. If that is the case, then we have to do something
 	// only if the generator is a point.
@@ -467,7 +465,7 @@ PPL::GenSys::relation_with(const Constraint& c) const {
 	      first_point_or_nonsaturating_ray = false;
 	    else
 	      // We already found a point or a non-saturating ray before.
-	      if (res == Poly_Con_Relation::is_disjoint())
+	      if (result == Poly_Con_Relation::is_disjoint())
 		// Since g saturates c, we have a strict intersection if
 		// none of the generators seen so far are included in `c'.
 		return Poly_Con_Relation::strictly_intersects();
@@ -479,7 +477,7 @@ PPL::GenSys::relation_with(const Constraint& c) const {
 	  case Generator::LINE:
 	    // If a line does not saturate `c', then there is a strict
 	    // intersection between the points satisfying `c' and
-	    // the points generated by `gen_sys'.
+	    // the points generated by `gs'.
 	    return Poly_Con_Relation::strictly_intersects();
 
 	  case Generator::RAY:
@@ -487,16 +485,16 @@ PPL::GenSys::relation_with(const Constraint& c) const {
 	      // It is the first time that we have a non-saturating ray
 	      // and we have not found any point yet.
 	      first_point_or_nonsaturating_ray = false;
-	      res = (sp_sign > 0)
+	      result = (sp_sign > 0)
 		? Poly_Con_Relation::is_included()
 		: Poly_Con_Relation::is_disjoint();
 	    }
 	    else {
 	      // We already found a point or a non-saturating ray.
 	      if ((sp_sign > 0
-		   && res == Poly_Con_Relation::is_disjoint())
+		   && result == Poly_Con_Relation::is_disjoint())
 		  || (sp_sign < 0
-		      && res.implies(Poly_Con_Relation::is_included())))
+		      && result.implies(Poly_Con_Relation::is_included())))
 		// We have a strict intersection if either:
 		// - `g' satisfies `c' but none of the generators seen
 		//    so far are included in `c'; or
@@ -507,7 +505,7 @@ PPL::GenSys::relation_with(const Constraint& c) const {
 		// Here all the generators seen so far either saturate
 		// or are included in `c'.
 		// Since `g' does not saturate `c' ...
-		res = Poly_Con_Relation::is_included();
+		result = Poly_Con_Relation::is_included();
 	    }
 	    break;
 
@@ -526,16 +524,16 @@ PPL::GenSys::relation_with(const Constraint& c) const {
 	      //   generators seen so far are disjoint from `c'.
 	      first_point_or_nonsaturating_ray = false;
 	      if (sp_sign > 0)
-		res = Poly_Con_Relation::is_included();
+		result = Poly_Con_Relation::is_included();
 	      else if (sp_sign < 0)
-		res = Poly_Con_Relation::is_disjoint();
+		result = Poly_Con_Relation::is_disjoint();
 	    }
 	    else {
 	      // We already found a point or a non-saturating ray before.
 	      if ((sp_sign > 0
-		   && res == Poly_Con_Relation::is_disjoint())
+		   && result == Poly_Con_Relation::is_disjoint())
 		  || (sp_sign < 0
-		      && res.implies(Poly_Con_Relation::is_included())))
+		      && result.implies(Poly_Con_Relation::is_included())))
 		// We have a strict intersection if either:
 		// - `g' satisfies or saturates `c' but none of the
 		//    generators seen so far are included in `c'; or
@@ -546,7 +544,7 @@ PPL::GenSys::relation_with(const Constraint& c) const {
 		// Here all the generators seen so far either saturate
 		// or are included in `c'.
 		// Since `g' does not saturate `c' ...
-		res = Poly_Con_Relation::is_included();
+		result = Poly_Con_Relation::is_included();
 	    }
 	    break;
 	  }
@@ -558,16 +556,16 @@ PPL::GenSys::relation_with(const Constraint& c) const {
     {
       // The hyperplane implicitly defined by the strict inequality `c'
       // is disjoint from the set of points satisfying `c'.
-      res = res && Poly_Con_Relation::is_disjoint();
+      result = result && Poly_Con_Relation::is_disjoint();
       // The following boolean variable will be set to `false'
       // as soon as either we find (any) point or we find a
       // non-saturating ray.
       bool first_point_or_nonsaturating_ray = true;
       for (dimension_type i = n_rows; i-- > 0; ) {
-	const Generator& g = gen_sys[i];
+	const Generator& g = gs[i];
 	// Using the reduced scalar product operator to avoid
 	// both topology and num_columns mismatches.
-	int sp_sign = sgn(reduced_scalar_product(c, g));
+	const int sp_sign = sgn(reduced_scalar_product(c, g));
 	// Checking whether the generator saturates the strict inequality.
 	// If that is the case, then we have to do something
 	// only if the generator is a point.
@@ -579,7 +577,7 @@ PPL::GenSys::relation_with(const Constraint& c) const {
 	      first_point_or_nonsaturating_ray = false;
 	    else
 	      // We already found a point or a non-saturating ray before.
-	      if (res == Poly_Con_Relation::is_included())
+	      if (result == Poly_Con_Relation::is_included())
 		return Poly_Con_Relation::strictly_intersects();
 	}
 	else
@@ -589,7 +587,7 @@ PPL::GenSys::relation_with(const Constraint& c) const {
 	  case Generator::LINE:
 	    // If a line does not saturate `c', then there is a strict
 	    // intersection between the points satisfying `c' and the points
-	    // generated by `gen_sys'.
+	    // generated by `gs'.
 	    return Poly_Con_Relation::strictly_intersects();
 
 	  case Generator::RAY:
@@ -597,23 +595,23 @@ PPL::GenSys::relation_with(const Constraint& c) const {
 	      // It is the first time that we have a non-saturating ray
 	      // and we have not found any point yet.
 	      first_point_or_nonsaturating_ray = false;
-	      res = (sp_sign > 0)
+	      result = (sp_sign > 0)
 		? Poly_Con_Relation::is_included()
 		: Poly_Con_Relation::is_disjoint();
 	    }
 	    else {
 	      // We already found a point or a non-saturating ray before.
 	      if ((sp_sign > 0
-		   && res.implies(Poly_Con_Relation::is_disjoint()))
+		   && result.implies(Poly_Con_Relation::is_disjoint()))
 		  ||
 		  (sp_sign <= 0
-		   && res == Poly_Con_Relation::is_included()))
+		   && result == Poly_Con_Relation::is_included()))
 		return Poly_Con_Relation::strictly_intersects();
 	      if (sp_sign < 0)
 		// Here all the generators seen so far either saturate
 		// or are disjoint from `c'.
 		// Since `g' does not saturate `c' ...
-		res = Poly_Con_Relation::is_disjoint();
+		result = Poly_Con_Relation::is_disjoint();
 	    }
 	    break;
 
@@ -630,23 +628,23 @@ PPL::GenSys::relation_with(const Constraint& c) const {
 	      //   generators seen so far are disjoint from `c'.
 	      first_point_or_nonsaturating_ray = false;
 	      if (sp_sign > 0)
-		res = Poly_Con_Relation::is_included();
+		result = Poly_Con_Relation::is_included();
 	      else if (sp_sign < 0)
-		res = Poly_Con_Relation::is_disjoint();
+		result = Poly_Con_Relation::is_disjoint();
 	    }
 	    else {
 	      // We already found a point or a non-saturating ray before.
 	      if ((sp_sign > 0
-		   && res.implies(Poly_Con_Relation::is_disjoint()))
+		   && result.implies(Poly_Con_Relation::is_disjoint()))
 		  ||
 		  (sp_sign <= 0
-		   && res == Poly_Con_Relation::is_included()))
+		   && result == Poly_Con_Relation::is_included()))
 		return Poly_Con_Relation::strictly_intersects();
 	      if (sp_sign < 0)
 		// Here all the generators seen so far either saturate
 		// or are disjoint from `c'.
 		// Since `g' does not saturate `c' ...
-		res = Poly_Con_Relation::is_disjoint();
+		result = Poly_Con_Relation::is_disjoint();
 	    }
 	    break;
 	  }
@@ -655,7 +653,7 @@ PPL::GenSys::relation_with(const Constraint& c) const {
     break;
   }
   // We have seen all generators.
-  return res;
+  return result;
 }
 
 
@@ -718,8 +716,8 @@ PPL::GenSys::affine_image(dimension_type v,
   assert(expr.space_dimension() <= space_dimension());
   assert(denominator > 0);
 
-  dimension_type n_columns = num_columns();
-  dimension_type n_rows = num_rows();
+  const dimension_type n_columns = num_columns();
+  const dimension_type n_rows = num_rows();
   GenSys& x = *this;
 
   // Compute the numerator of the affine transformation and assign it
@@ -744,7 +742,7 @@ PPL::GenSys::affine_image(dimension_type v,
 
   // If the mapping is not invertible we may have transformed
   // valid lines and rays into the origin of the space.
-  bool not_invertible = (v > expr.space_dimension() || expr[v] == 0);
+  const bool not_invertible = (v > expr.space_dimension() || expr[v] == 0);
   if (not_invertible)
     x.remove_invalid_lines_and_rays();
   // Strong normalization also resets the sortedness flag.
@@ -863,7 +861,8 @@ PPL::GenSys::remove_invalid_lines_and_rays() {
 	gs.set_sorted(false);
       }
     }
-    dimension_type num_invalid_rows = first_pending_row() - first_pending;
+    const dimension_type num_invalid_rows
+      = first_pending_row() - first_pending;
     set_index_first_pending_row(first_pending);
     for (dimension_type i = 0; i < num_invalid_rows; ++i)
       std::swap(gs[n_rows - i], gs[first_pending + i]);
@@ -904,7 +903,7 @@ PPL::GenSys::OK() const {
 std::ostream&
 PPL::IO_Operators::operator<<(std::ostream& s, const GenSys& gs) {
   GenSys::const_iterator i = gs.begin();
-  GenSys::const_iterator gs_end = gs.end();
+  const GenSys::const_iterator gs_end = gs.end();
   if (i == gs_end)
     s << "false";
   else {

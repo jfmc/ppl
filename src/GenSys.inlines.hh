@@ -45,18 +45,18 @@ GenSys::GenSys(const GenSys& gs)
 }
 
 inline
-GenSys::GenSys(Topology topol)
+GenSys::GenSys(const Topology topol)
   : Matrix(topol) {
 }
 
 inline
-GenSys::GenSys(Topology topol,
-	       dimension_type n_rows, dimension_type n_columns)
+GenSys::GenSys(const Topology topol,
+	       const dimension_type n_rows, const dimension_type n_columns)
   : Matrix(topol, n_rows, n_columns) {
 }
 
 inline
-GenSys::GenSys(GenSys& y, dimension_type first_stolen)
+GenSys::GenSys(GenSys& y, const dimension_type first_stolen)
   : Matrix(y, first_stolen) {
 }
 
@@ -81,12 +81,12 @@ GenSys::clear() {
 }
 
 inline Generator&
-GenSys::operator[](dimension_type k) {
+GenSys::operator[](const dimension_type k) {
   return static_cast<Generator&>(Matrix::operator[](k));
 }
 
 inline const Generator&
-GenSys::operator[](dimension_type k) const {
+GenSys::operator[](const dimension_type k) const {
   return static_cast<const Generator&>(Matrix::operator[](k));
 }
 
@@ -138,7 +138,7 @@ GenSys::const_iterator::operator++() {
 
 inline GenSys::const_iterator
 GenSys::const_iterator::operator++(int) {
-  const_iterator tmp = *this;
+  const const_iterator tmp = *this;
   operator++();
   return tmp;
 }
@@ -163,13 +163,13 @@ GenSys::begin() const {
 
 inline GenSys::const_iterator
 GenSys::end() const {
-  const_iterator i(Matrix::end(), *this);
+  const const_iterator i(Matrix::end(), *this);
   return i;
 }
 
 inline const GenSys&
 GenSys::zero_dim_univ() {
-  static GenSys zdu(Generator::zero_dim_point());
+  static const GenSys zdu(Generator::zero_dim_point());
   return zdu;
 }
 

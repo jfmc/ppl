@@ -32,7 +32,7 @@ PPL::IO_Operators::operator<<(std::ostream& s, const PPL::BoundingBox& bbox) {
     s << "empty";
     return s;
   }
-  dimension_type dimension = bbox.space_dimension();
+  const dimension_type dimension = bbox.space_dimension();
   for (dimension_type k = 0; k < dimension; ++k) {
     bool closed = false;
     PPL::Integer n;

@@ -39,12 +39,12 @@ Constraint::Constraint(const Constraint& c)
 }
 
 inline
-Constraint::Constraint(const Constraint& c, dimension_type sz)
+Constraint::Constraint(const Constraint& c, const dimension_type sz)
   : Row(c, sz, sz) {
 }
 
 inline
-Constraint::Constraint(Row::Type t, dimension_type sz)
+Constraint::Constraint(Row::Type t, const dimension_type sz)
   : Row(t, sz) {
 }
 
@@ -106,10 +106,11 @@ Constraint::set_is_inequality() {
 }
 
 inline const Integer&
-Constraint::coefficient(Variable v) const {
-  if (v.id() >= space_dimension())
+Constraint::coefficient(const Variable v) const {
+  const dimension_type v_id = v.id();
+  if (v_id >= space_dimension())
     throw_dimension_incompatible("PPL::Constraint::coefficient(v)", v);
-  return Row::coefficient(v.id());
+  return Row::coefficient(v_id);
 }
 
 inline const Integer&
@@ -145,8 +146,8 @@ operator>(const LinExpression& e1, const LinExpression& e2) {
   LinExpression diff;
   // Setting the epsilon coefficient to -1.
   // NOTE: this also enforces normalization.
-  dimension_type e1_dim = e1.space_dimension();
-  dimension_type e2_dim = e2.space_dimension();
+  const dimension_type e1_dim = e1.space_dimension();
+  const dimension_type e2_dim = e2.space_dimension();
   if (e1_dim > e2_dim)
     diff -= Variable(e1_dim);
   else
@@ -274,25 +275,25 @@ operator<(const LinExpression& e, const Integer& n) {
 
 inline const Constraint&
 Constraint::zero_dim_false() {
-  static Constraint zdf(LinExpression::zero() == Integer_one());
+  static const Constraint zdf(LinExpression::zero() == Integer_one());
   return zdf;
 }
 
 inline const Constraint&
 Constraint::zero_dim_positivity() {
-  static Constraint zdp(LinExpression::zero() <= Integer_one());
+  static const Constraint zdp(LinExpression::zero() <= Integer_one());
   return zdp;
 }
 
 inline const Constraint&
 Constraint::epsilon_geq_zero() {
-  static Constraint eps_geq_zero = construct_epsilon_geq_zero();
+  static const Constraint eps_geq_zero = construct_epsilon_geq_zero();
   return eps_geq_zero;
 }
 
 inline const Constraint&
 Constraint::epsilon_leq_one() {
-  static Constraint eps_leq_one(LinExpression::zero() < Integer_one());
+  static const Constraint eps_leq_one(LinExpression::zero() < Integer_one());
   return eps_leq_one;
 }
 
