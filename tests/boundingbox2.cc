@@ -594,7 +594,7 @@ void test_nnc9() {
   Variable z(3);
 
   NNC_Polyhedron ph(4);
-  ph.add_constraint(3 * x +y > 2);
+  ph.add_constraint(3*x + y > 2);
   ph.add_constraint(x <= 4);
   ph.add_constraint(y <= 4);
   ph.add_constraint(z >= 5);
@@ -627,7 +627,7 @@ void test_nnc10() {
   Variable y(1);
 
   NNC_Polyhedron ph(2);
-  ph.add_constraint(3 * x + y >= 2);
+  ph.add_constraint(3*x + y >= 2);
   ph.add_constraint(x < 4);
   ph.add_constraint(y <= 4);
 
