@@ -1,0 +1,139 @@
+@Inproceedings{HymansU04,
+  Author = "C. Hymans and E. Upton",
+  Title = "Static Analysis of Gated Data Dependence Graphs",
+  Booktitle = "Static Analysis:
+               Proceedings of the 11th International Symposium",
+  Address = "Verona, Italy",
+  Editor = "R. Giacobazzi",
+  Publisher = "Springer-Verlag, Berlin",
+  Series = "Lecture Notes in Computer Science",
+  Volume = 3148,
+  Year = 2004,
+  Pages = "197--211",
+  Abstract = "Several authors have advocated the use of the gated data
+              dependence graph as a compiler intermediate
+              representation. If this representation is to gain
+              acceptance, it is important to show that we may
+              construct static analyses which operate directly on
+              it. In this paper we present the first example of such
+              an analysis, developed using the methodology of abstract
+              interpretation.  The analysis is shown to be sound with
+              respect to a concrete semantics for the representation.
+              Experimental results are presented which indicate that
+              the analysis performs well in comparison to conventional
+              techniques."
+}
+
+@Inproceedings{ManevichSRF04,
+  Author = "R. Manevich and M. Sagiv and G. Ramalingam and J. Field",
+  Title = "Partially Disjunctive Heap Abstraction",
+  Booktitle = "Static Analysis:
+               Proceedings of the 11th International Symposium",
+  Address = "Verona, Italy",
+  Editor = "R. Giacobazzi",
+  Publisher = "Springer-Verlag, Berlin",
+  Series = "Lecture Notes in Computer Science",
+  Volume = 3148,
+  Year = 2004,
+  Pages = "265--279",
+  Abstract = "One of the continuing challenges in abstract
+              interpretation is the creation of abstractions that
+              yield analyses that are both tractable and precise
+              enough to prove interesting properties about real-world
+              programs. One source of difficulty is the need to handle
+              programs with different behaviors along different
+              execution paths. Disjunctive (powerset) abstractions
+              capture such distinctions in a natural way. However, in
+              general, powerset abstractions increase the space and
+              time by an exponential factor. Thus, powerset
+              abstractions are generally perceived as being very
+              costly. In this paper we partially address this
+              challenge by presenting and empirically evaluating a new
+              heap abstraction. The new heap abstraction works by
+              merging shape descriptors according to a partial
+              isomorphism similarity criteria, resulting in a
+              partially disjunctive abstraction. We implemented this
+              abstraction in TVLA --- a generic system for
+              implementing program analyses. We conducted an empirical
+              evaluation of the new abstraction and compared it with
+              the powerset heap abstraction. The experiments show that
+              analyses based on the partially disjunctive abstraction
+              are as precise as the ones based on the fully
+              disjunctive abstraction. In terms of performance,
+              analyses based on the partially disjunctive abstraction
+              are often superior to analyses based on the fully
+              disjunctive heap abstraction. The empirical results show
+              considerable speedups, up to 2 orders of magnitude,
+              enabling previously non-terminating analyses, such as
+              verification of the Deutsch-Schorr-Waite marking
+              algorithm, to terminate with no negative effect on the
+              overall precision. Indeed, experience indicates that the
+              partially disjunctive shape abstraction improves
+              performance across all TVLA analyses uniformly, and in
+              many cases is essential for making precise shape
+              analysis feasible."
+}
+
+@Article{MesnardR05TPLP,
+  Author = "F. Mesnard and R. Bagnara",
+  Title = "{cTI}: A Constraint-Based Termination Inference Tool
+           for {ISO-Prolog}",
+  Journal = "Theory and Practice of Logic Programming",
+  Publisher = "Cambridge University Press",
+  Address = "New York",
+  Volume = 5,
+  Number = "1{\&}2",
+  Year = 2005,
+  Abstract = "We present cTI, the first system for universal
+              left-termination inference of logic programs.
+              Termination inference generalizes termination analysis
+              and checking.  Traditionally, a termination analyzer
+              tries to prove that a given class of queries terminates.
+              This class must be provided to the system, for instance
+              by means of user annotations.  Moreover, the analysis
+              must be redone every time the class of queries of
+              interest is updated.  Termination inference, in
+              contrast, requires neither user annotations nor
+              recomputation.  In this approach, terminating classes
+              for all predicates are inferred at once.  We describe
+              the architecture of cTI and report an extensive
+              experimental evaluation of the system covering many
+              classical examples from the logic programming
+              termination literature and several Prolog programs of
+              respectable size and complexity."
+}
+
+@Inproceedings{SankaranarayananSM04,
+  Author = "S. Sankaranarayanan and H. B. Sipma and Z. Manna",
+  Title = "Constraint-Based Linear-Relations Analysis",
+  Booktitle = "Static Analysis:
+               Proceedings of the 11th International Symposium",
+  Address = "Verona, Italy",
+  Editor = "R. Giacobazzi",
+  Publisher = "Springer-Verlag, Berlin",
+  Series = "Lecture Notes in Computer Science",
+  Volume = 3148,
+  Year = 2004,
+  Pages = "53--68",
+  Abstract = "Linear-relations analysis of transition systems
+              discovers linear invariant relationships among the
+              variables of the system. These relationships help
+              establish important safety and liveness
+              properties. Efficient techniques for the analysis of
+              systems using polyhedra have been explored, leading to
+              the development of successful tools like
+              HyTech. However, existing techniques rely on the use of
+              approximations such as widening and extrapolation in
+              order to ensure termination. In an earlier paper, we
+              demonstrated the use of Farkas' Lemma to provide a
+              translation from the linear-relations analysis problem
+              into a system of constraints on the unknown coefficients
+              of a candidate invariant. However, since the constraints
+              in question are non-linear, a naive application of the
+              method does not scale. In this paper, we show that by
+              some efficient simplifications and approximations to the
+              quantifier elimination, not only does the method scale
+              to higher dimensions, but also enjoys performance
+              advantages for some larger examples."
+}
+
