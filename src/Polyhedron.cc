@@ -50,6 +50,7 @@ PPL::Polyhedron::constraints() const {
   }
 
   if (space_dimension() == 0) {
+    // Zero-dim universe.
     assert(con_sys.num_columns() == 0 && con_sys.num_rows() == 0);
     return con_sys;
   }
@@ -161,22 +162,29 @@ PPL::Polyhedron::Polyhedron(ConSys& cs)
     sat_c(),
     sat_g() {
 
-  assert(cs.num_columns() != 1);
-
-  if (cs.num_columns() == 0) {
-    space_dim = 0;
+  if (cs.num_columns() > 1) {
+    // The following swap destroys the given argument `cs';
+    // that is why the formal parameter is not declared const.
+    std::swap(con_sys, cs);
+    // Adding the positivity constraint.
+    con_sys.add_row(Row::RAY_OR_VERTEX_OR_INEQUALITY);
+    con_sys[con_sys.num_rows()-1][0] = 1;
+    set_constraints_up_to_date();
+    // The first column is not a dimension.
+    space_dim = con_sys.num_columns() - 1;
     return;
   }
 
-  // The following swap destroys the given argument `cs';
-  // that is why the formal parameter is not declared const.
-  std::swap(con_sys, cs);
-  // Adding the positivity constraint.
-  con_sys.add_row(Row::RAY_OR_VERTEX_OR_INEQUALITY);
-  con_sys[con_sys.num_rows()-1][0] = 1;
-  set_constraints_up_to_date();
-  // The first column is not a dimension.
-  space_dim = con_sys.num_columns() - 1;
+  // As cs.num_columns <= 1, it is a zero-dim space polyhedron.
+  space_dim = 0;
+  if (cs.num_columns() == 1)
+    // Checking for an inconsistent constraint.
+    for (size_t i = cs.num_rows(); i-- > 0; ) {
+      const Row& r = cs[i];
+      if (r[0] != 0 && (r.is_line_or_equality() || r[0] < 0))
+	// Inconsistent constraint found.
+	set_empty();
+    }
 }
 
 
@@ -189,17 +197,8 @@ PPL::Polyhedron::Polyhedron(GenSys& gs)
     sat_c(),
     sat_g() {
 
-  assert(gs.num_columns() != 1);
-
-  if (gs.num_columns() == 0) {
-    status.set_empty();
-    space_dim = 0;
-    return;
-  }
-    
-  if (gs.num_rows() == 0)
-    status.set_empty();
-  else {
+  if (gs.num_columns() > 1) {
+    assert(gs.num_rows() > 0);
     // Checking if the matrix of generators contains a vertex:
     // we speculatively use an increasing index (instead of
     // the standard decreasing one) because we hope this way
@@ -214,14 +213,24 @@ PPL::Polyhedron::Polyhedron(GenSys& gs)
     if (i == iend)
       throw std::invalid_argument("PPL::Polyhedron::Polyhedron(gs): "
 				  "non-empty gs with no vertices");
+    
     // The following swap destroys the given argument `gs';
     // that is why the formal parameter is not declared const.
     std::swap(gen_sys, gs);
     set_generators_up_to_date();
+    space_dim = gen_sys.num_columns() - 1;
+    return;
   }
-  // The first column is not a dimension.
-  space_dim = gen_sys.num_columns() - 1;
+
+  // Here gs.num_columns() <= 1.
+  space_dim = 0;
+  if (gs.num_rows() == 0)
+    set_empty();
+  else
+    // It has to be a vertex.
+    assert(gs[0][0] != 0);
 }
+
 
 PPL::Polyhedron&
 PPL::Polyhedron::operator =(const Polyhedron& y) {
