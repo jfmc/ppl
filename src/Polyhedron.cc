@@ -1255,7 +1255,7 @@ PPL::Polyhedron::add_constraints_lazy(ConSys& cs) {
       status.set_empty();
     return;
   }
-      
+
   // We only need that the system of constraints is up-to-date.
   if (!constraints_are_up_to_date())
     minimize();
@@ -1283,6 +1283,39 @@ PPL::Polyhedron::add_constraints_lazy(ConSys& cs) {
   assert(OK(false));
 }
 
+void
+PPL::Polyhedron::add_dimensions_and_constraints_lazy(const ConSys& cs) {
+  space_dim = space_dimension() + cs.num_columns() - 1;
+  // If the polyhedron is empty, we only modify the dimension of
+  // the space.
+  if (is_empty())
+    return;
+
+  if (!constraints_are_up_to_date())
+    update_constraints();
+ 
+  size_t old_num_rows = con_sys.num_rows();
+  size_t old_num_columns = con_sys.num_columns();
+
+  // The new system of constraints has the matrix of constraints
+  // of the old polyhedron in the upper left hand side and the
+  // coefficients of the variables of `cs' in the lower right hand side.
+  con_sys.resize(old_num_rows + cs.num_rows(), space_dim + 1);
+  for (size_t i = cs.num_rows(); i-- > 0; ) {
+    Constraint& c = con_sys[old_num_rows + i];
+      c[0] = cs[i][0];
+      if (cs[i].is_equality())
+	c.set_is_equality();
+      for (size_t j = cs.num_columns(); j-- > 1; )
+      c[old_num_columns - 1 + j] = cs[i][j];
+  }
+ 
+  clear_constraints_minimized();
+  clear_generators_up_to_date();
+  clear_sat_g_up_to_date();
+  clear_sat_c_up_to_date();
+}
+  
 /*!
   Adds further generators to a Polyhedron.
 */

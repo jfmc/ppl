@@ -510,6 +510,9 @@ public:
   //! \exception std::invalid_argument thrown if \p *this and \p cs 
   //!                                  are dimension-incompatible.
   void add_constraints_lazy(ConSys& cs);
+ 
+  void add_dimensions_and_constraints_lazy(const ConSys& cs);
+ 
   //! Adds the specified generators.
   //! \param  gs          The generators that will be added to the
   //!                     current system of generators. The parameter is 
