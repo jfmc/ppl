@@ -1917,21 +1917,19 @@ BD_Shape<T>::CC76_extrapolation_assign(const BD_Shape& y,
 }
 
 template <typename T>
-T BD_Shape<T>::default_stop_points[] = { T(-2), T(-1), T(0), T(1), T(2) };
-
-template <typename T>
 inline void
 BD_Shape<T>::CC76_extrapolation_assign(const BD_Shape& y) {
-  assert(OK());
-  assert(y.OK());
-  // Recalled the CC76_extrapolation_assign(const BD_Shape& y,
-  //                                        Iterator first, Iterator last)
-  // where the container is given by default.
-  CC76_extrapolation_assign
-    (y,
-     default_stop_points,
-     default_stop_points
-     + sizeof(default_stop_points)/sizeof(default_stop_points[0]));
+  static T stop_points[] = {
+    T(-2),
+    T(-1),
+    T(0),
+    T(1),
+    T(2)
+  };
+  CC76_extrapolation_assign(y,
+			    stop_points,
+			    stop_points
+			    + sizeof(stop_points)/sizeof(stop_points[0]));
 }
 
 template <typename T>
