@@ -67,16 +67,12 @@ namespace Parma_Polyhedra_Library {
 
   A polyhedron can be specified as either a finite system of constraints
   or a finite set of generators (see Minkowski's theorem in definition.dox).
-  
-  TODO: rewrite the following.
-  
-  These sets can be in the minimal form or not (if they are not minimized,
-  redundant constraints or generators can be in the systems).
-  We can built a polyhedron starting from a system of constraints, or
-  from a set of generators and we can obtain a matrix from the other 
-  (i.e. if we have the system of constraint, we can obtain the set 
-  of generators, and vice versa).
-
+  So, we have the possibility to obtain a system from the 
+  other. In fact, if we have the system of constaints we can obtain 
+  the set of generators from this and vice versa.
+  These systems can contain some redundant members: in this case we say 
+  that they are not in the minimal form.
+ 
   \par Example 1
   The following code builds a square in \f$\mathbb{R}^2\f$ starting from
   the system of constraints:
@@ -176,12 +172,27 @@ namespace Parma_Polyhedra_Library {
   coeff[1] = 1;
   ph.assign_variable(var, coeff, d);
   \endcode
-  In this example 
-  - the starting polyhedron is a square in \f$\mathbb{R}^2\f$; 
-  - \p var is the variable \f$x\f$;
-  - the affine_expression is \f$x+4\f$;
-  - the resulting polyhedron is the same square translated 
-  towards right.
+  In this example the starting polyhedron is a square in \f$\mathbb{R}^2\f$, 
+  \p var is the variable \f$x\f$, the affine_expression is \f$x+4\f$,
+  the resulting polyhedron is the same square translated towards right.
+  Moreover, if the affine transformation for the same variable is \f$x+y\f$
+  \code
+  Integer d = 1;
+  vector<Integer> coeff(3);
+  coeff[1] = 1;
+  coeff[2] = 1;
+  \endcode
+  the resulting polyhedron is a parallelogram with the height equal to
+  the side of the square and the oblique sides parallel to the line 
+  \f$x-y\f$.
+  Instead, if we do not use an invertible transformation for the same
+  variable, for example \f$y\f$:
+  \code
+  Integer d = 1;
+  vector<Integer> coeff(3);
+  coeff[2] = 1;
+  \endcode
+  the resulting polyhedron is the diagonal of the square.
   
   \par Example 6
   The following code shows the use of the function
@@ -206,6 +217,24 @@ namespace Parma_Polyhedra_Library {
   expression are the same of the previous example, while the resulting
   polyhedron is again the same square but it is translated towards
   left.
+  Moreover, if the affine transformation for the same variable is \f$x+y\f$
+  \code
+  Integer d = 1;
+  vector<Integer> coeff(3);
+  coeff[1] = 1;
+  coeff[2] = 1;
+  \endcode
+  the resulting polyhedron is a parallelogram with the height equal to
+  the side of the square and the oblique sides parallel to the line 
+  \f$x+y\f$.
+  Instead, if we do not use an invertible transformation for the same
+  variable, for example \f$y\f$:
+  \code
+  Integer d = 1;
+  vector<Integer> coeff(3);
+  coeff[2] = 1;
+  \endcode
+  the resulting polyhedron is a line that corresponds to the axis \f$y\f$.
 */
 
 class Parma_Polyhedra_Library::Polyhedron {
