@@ -355,6 +355,8 @@ or by a system of generators.
 Moreover, given either one of the representations, there is an algorithm for
 computing the other.
 
+(The following blurb is due to a bug in Doxygen.)
+
 \if Implementation_Info
 
 FIXME: We should find a way to have a decent bibliography
