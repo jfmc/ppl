@@ -105,7 +105,7 @@ ORIGINAL_TESTS = \
 	generalizedaffineimage9 generalizedaffineimage10 \
 	generalizedaffineimage11 generalizedaffineimage12 \
 	generators1 generators2 generators3 generators4 generators5 \
-	generators6 \
+	generators6 generators7 \
 	geomcovers1 \
 	h79widening1 h79widening2 h79widening3 h79widening4 h79widening5 \
 	h79widening6 h79widening7 h79widening8 \
@@ -202,7 +202,7 @@ DERIVED_TESTS = \
 	nnc_generalizedaffineimage5 nnc_generalizedaffineimage6 \
 	nnc_generalizedaffineimage11 \
 	nnc_generators1 nnc_generators2 nnc_generators3 nnc_generators4 \
-	nnc_generators5 nnc_generators6 \
+	nnc_generators5 nnc_generators6 nnc_generators7 \
 	nnc_geomcovers1 \
 	nnc_h79widening1 nnc_h79widening2 nnc_h79widening4 nnc_h79widening5 \
         nnc_h79widening6 nnc_h79widening7 nnc_h79widening8 \
@@ -446,6 +446,7 @@ generators3_SOURCES = generators3.cc
 generators4_SOURCES = generators4.cc
 generators5_SOURCES = generators5.cc
 generators6_SOURCES = generators6.cc
+generators7_SOURCES = generators7.cc
 
 geomcovers1_SOURCES = geomcovers1.cc
 
@@ -867,6 +868,8 @@ nnc_generators5_SOURCES = generators5.cc
 nnc_generators5_CXXFLAGS = $(DERIVED_CXXFLAGS)
 nnc_generators6_SOURCES = generators6.cc
 nnc_generators6_CXXFLAGS = $(DERIVED_CXXFLAGS)
+nnc_generators7_SOURCES = generators7.cc
+nnc_generators7_CXXFLAGS = $(DERIVED_CXXFLAGS)
 
 nnc_geomcovers1_SOURCES = geomcovers1.cc
 nnc_geomcovers1_CXXFLAGS = $(DERIVED_CXXFLAGS)
