@@ -33,13 +33,14 @@ Efficiency Issues
   or not the eps_leq_one constraint is needed to obtain an upper bound
   on the epsilon dimension.
 
+
 Cutting-Plane Methods
 =====================
 
 Suppose we are only interested in integral solutions (as is the
 case, e.g., in most termination analyses).  Then cutting-plane methods
-(Gomory, Chvátal, ...) allow to shrink P still not losing any integral
-solution.
+(Gomory, Chvátal, ...) allow to shrink polyhedra still not losing any
+integral solution.
 See http://www.cs.unipr.it/ppl/Documentation/bibliography#NemhauserW88
 
 
@@ -68,13 +69,7 @@ of the constraint system hierarchy described in
   Available at http://www.cs.unipr.it/~bagnara/Papers/Abstracts/SCP98
 
 A generic implementation (in the form of C++ templates) of the entire
-hierarchy has already been written.  What is missing is:
-
-1) wrapper classes for PPL::C_Polyhedron and PPL::NNC_Polyhedron
-   so that a polyhedron is seen as a "determinate constraint system";
-2) one or more strict weak ordering on polyhedra;
-3) extending the above mentioned templates so as to work also with
-   ordinary swos (the current implementation only supports total swos
-   that extend entailment).  This should be done by extending the
-   functionalities of the templates so that they can still exploit
-   the features of more powerful swos.
+hierarchy has already been written.  The wrapper class for C_Polyhedron
+and NNC_Polyhedron so that a polyhedron is seen as a "determinate
+constraint system" is almost finished, as is the implementation of
+powersets of polyhedra.  Ask-and-tell systems need extensive work.
