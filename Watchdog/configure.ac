@@ -217,7 +217,7 @@ AC_ARG_WITH(cxxflags,
 [  --with-cxxflags=xxx     add XXX to the options for the C++ compiler],
 CXXFLAGS="$CXXFLAGS $with_cxxflags")
 
-enableval=no
+enableval=yes
 AC_MSG_CHECKING([whether to build the Parma Watchdog Library])
 AC_ARG_ENABLE(watchdog,
 [  --enable-watchdog       build also the Parma Watchdog Library])
@@ -229,7 +229,7 @@ no)
   AC_MSG_RESULT(no)
   ;;
 *)
-  AC_MSG_ERROR([bad value ${enableval} --enable-assertions, needs yes or no])
+  AC_MSG_ERROR([bad value ${enableval} --enable-watchdog, needs yes or no])
   ;;
 esac
 build_watchdog_library=$enableval

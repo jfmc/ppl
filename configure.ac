@@ -277,7 +277,7 @@ CXXFLAGS="$CXXFLAGS $with_cxxflags")
 # Check whether the C++ compiler supports flexible arrays.
 AC_CXX_SUPPORTS_FLEXIBLE_ARRAYS
 
-enableval=no
+enableval=yes
 AC_MSG_CHECKING([whether to build the Parma Watchdog Library])
 AC_ARG_ENABLE(watchdog,
 [  --enable-watchdog       build also the Parma Watchdog Library])
@@ -289,7 +289,7 @@ no)
   AC_MSG_RESULT(no)
   ;;
 *)
-  AC_MSG_ERROR([bad value ${enableval} --enable-assertions, needs yes or no])
+  AC_MSG_ERROR([bad value ${enableval} --enable-watchdog, needs yes or no])
   ;;
 esac
 build_watchdog_library=$enableval
