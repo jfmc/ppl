@@ -35,6 +35,10 @@ not_a_dimension() {
   return std::numeric_limits<dimension_type>::max();
 }
 
+inline
+Throwable::~Throwable() {
+}
+
 inline void
 maybe_abandon() {
   if (const Throwable* p = abandon_expensive_computations)
