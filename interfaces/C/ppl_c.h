@@ -93,6 +93,12 @@ int
 ppl_max_space_dimension __P((ppl_dimension_type* m));
 
 /*!
+  Writes to \p m a value that does not designate a valid dimension.
+*/
+int
+ppl_not_a_dimension __P((ppl_dimension_type* m));
+
+/*!
   Initializes the Parma Polyhedra Library.
   This function must be called before any other function.
 */

@@ -126,6 +126,13 @@ ppl_max_space_dimension(ppl_dimension_type* m) try {
 CATCH_ALL
 
 int
+ppl_not_a_dimension(ppl_dimension_type* m) try {
+  *m = not_a_dimension();
+  return 0;
+}
+CATCH_ALL
+
+int
 ppl_initialize(void) try {
   init_object_ptr = new Init();
 
