@@ -346,9 +346,29 @@ ppl_insert_generator(void* pp, SP_term_ref t) {
 }
 
 extern "C" long
-ppl_check_empty(void* pp) {
+ppl_check_empty(const void* pp) {
   try {
-    return static_cast<PPL::Polyhedron*>(pp)->check_empty() ? 1 : 0;
+    return static_cast<const PPL::Polyhedron*>(pp)->check_empty() ? 1 : 0;
+  }
+  CATCH_ALL;
+  abort();  // This is only to avoid a gcc warning.
+}
+
+extern "C" void
+ppl_intersection_assign(void* pp_lhs, const void* pp_rhs) {
+  try {
+    static_cast<PPL::Polyhedron*>(pp_lhs)
+      ->intersection_assign(*static_cast<const PPL::Polyhedron*>(pp_rhs));
   }
   CATCH_ALL;
 }
+
+extern "C" void
+ppl_convex_hull_assign(void* pp_lhs, const void* pp_rhs) {
+  try {
+    static_cast<PPL::Polyhedron*>(pp_lhs)
+      ->convex_hull_assign(*static_cast<const PPL::Polyhedron*>(pp_rhs));
+  }
+  CATCH_ALL;
+}
+
