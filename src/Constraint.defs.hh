@@ -349,6 +349,7 @@ public:
   void swap(Constraint& y);
 
 private:
+  friend class Parma_Polyhedra_Library::Congruence;
   friend class Parma_Polyhedra_Library::Constraint_System;
   friend class Parma_Polyhedra_Library::Constraint_System::const_iterator;
   // FIXME: the following friend declaration is only to grant access to
