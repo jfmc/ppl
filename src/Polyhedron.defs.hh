@@ -373,16 +373,15 @@ protected:
   //!                                  is not empty but has no points.
   Polyhedron(Topology topol, GenSys& gs);
 
-  //! Builds a polyhedron out of a generic, interval-based bounding box.
-  //!
-  //! \param topol    The topology of the polyhedron;
-  //! \param box      The bounding box representing the desired polyhedron.
-  //! \exception std::invalid_argument thrown if \p box has intervals that
-  //!                                  are incompatible with \p topol.
   /*!
+    Builds a polyhedron out of a generic, interval-based bounding box.
+    \param topol    The topology of the polyhedron;
     \param box
     The bounding box representing the polyhedron to be built.
-    This must provide the following methods.
+    \exception std::invalid_argument thrown if \p box has intervals that
+                                     are incompatible with \p topol.
+
+    The templatic class Box must provide the following methods.
     \code
       unsigned int space_dimension() const
     \endcode
@@ -586,11 +585,8 @@ public:
 		       const LinExpression& expr,
 		       const Integer& denominator = Integer_one());
 
-  //! Use \p *this to shrink a generic, interval-based bounding box.
-  //!
-  //! \param box
-  //!   The bounding box to be shrunk.
   /*!
+    Use \p *this to shrink a generic, interval-based bounding box.
     \param box
     The bounding box to be shrunk.  This must provide the following
     methods, whose return value, if any, is simply ignored.

@@ -1232,9 +1232,7 @@ PPL::Polyhedron::update_sat_g() const {
   x.set_sat_g_up_to_date();
 }
 
-/*!
-  Returns <CODE>true</CODE> if and only if \p x is contained in \p y.
-*/
+
 bool
 PPL::operator<=(const Polyhedron& x, const Polyhedron& y) {
   // Topology compatibility check.
