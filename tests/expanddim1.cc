@@ -304,6 +304,41 @@ test9() {
     exit(1);
 }
 
+// Test as given in GopanDRS02 on page 519.
+static void
+test10() {
+  C_Polyhedron ph1(2, C_Polyhedron::EMPTY);
+  ph1.add_generator(point(A + 2*B));
+  ph1.add_generator(point(A + 3*B));
+  ph1.add_generator(point(A + 4*B));
+
+#if NOISY
+  print_generators(ph1, "*** ph1 ***");
+#endif
+
+  ph1.expand_dimension(B, 1);
+
+  C_Polyhedron known_result(3, C_Polyhedron::EMPTY);
+  known_result.add_generator(point(A + 2*B + 2*C));
+  known_result.add_generator(point(A + 2*B + 3*C));
+  known_result.add_generator(point(A + 2*B + 4*C));
+  known_result.add_generator(point(A + 3*B + 2*C));
+  known_result.add_generator(point(A + 3*B + 3*C));
+  known_result.add_generator(point(A + 3*B + 4*C));
+  known_result.add_generator(point(A + 4*B + 2*C));
+  known_result.add_generator(point(A + 4*B + 3*C));
+  known_result.add_generator(point(A + 4*B + 4*C));
+
+  bool ok = (ph1 == known_result);
+
+#if NOISY
+  print_generators(ph1, "***  After ph1.expand_dimension(A, 2) ***");
+#endif
+
+  if (!ok)
+    exit(1);
+}
+
 int
 main() TRY {
   set_handlers();
@@ -317,6 +352,7 @@ main() TRY {
   test7();
   test8();
   test9();
+  test10();
   return 0;
 }
 CATCH
