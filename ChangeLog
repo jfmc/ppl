@@ -1,3 +1,29 @@
+2004-08-20 Friday 18:50  Roberto Bagnara <bagnara@cs.unipr.it>
+
+	* doc/: devref-browse.doxyconf-latex.in (1.41),
+	  devref-print.doxyconf-latex.in (1.41), devref.doxyconf-html.in
+	  (1.41): Include certificates in the developer's reference.
+
+2004-08-20 Friday 18:49  Roberto Bagnara <bagnara@cs.unipr.it>
+
+	* src/H79_Certificate.defs.hh (1.5): Spurious comments removed.
+
+2004-08-20 Friday 18:15  Roberto Bagnara <bagnara@cs.unipr.it>
+
+	* doc/: devref-browse.doxyconf-latex.in,
+	  devref-print.doxyconf-latex.in, devref.doxyconf-html.in
+	  (ppl-0_6-branch.[3,3,4]): Include certificates in the developer's
+	  reference.
+
+2004-08-20 Friday 18:13  Roberto Bagnara <bagnara@cs.unipr.it>
+
+	* src/H79_Certificate.defs.hh (ppl-0_6-branch.2): Spurious comments
+	  removed.
+
+2004-08-20 Friday 17:46  Roberto Bagnara <bagnara@cs.unipr.it>
+
+	* ChangeLog, Watchdog/ChangeLog (ppl-0_6-branch.[2,2]): Updated.
+
 2004-08-20 Friday 17:41  Roberto Bagnara <bagnara@cs.unipr.it>
 
 	* doc/definitions.dox, doc/ppl.sty,
