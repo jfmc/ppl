@@ -1323,6 +1323,12 @@ ppl_Polyhedron_space_dimension(ppl_const_Polyhedron_t ph) try {
 CATCH_ALL
 
 int
+ppl_Polyhedron_dimension(ppl_const_Polyhedron_t ph) try {
+  return to_const(ph)->dimension();
+}
+CATCH_ALL
+
+int
 ppl_Polyhedron_intersection_assign(ppl_Polyhedron_t x,
 				   ppl_const_Polyhedron_t y) try {
   Polyhedron& xx = *to_nonconst(x);

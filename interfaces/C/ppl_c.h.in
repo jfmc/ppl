@@ -1429,6 +1429,13 @@ int
 ppl_Polyhedron_space_dimension __P((ppl_const_Polyhedron_t ph));
 
 /*! \brief
+  Returns the dimension of \p ph (not to be confused with the
+  dimension of its enclosing vector space) or 0, if \p ph is empty.
+*/
+int
+ppl_Polyhedron_dimension __P((ppl_const_Polyhedron_t ph));
+
+/*! \brief
   Writes a const handle to the constraint system defining the
   polyhedron \p ph at address \p pcs.
 */
