@@ -1,6 +1,5 @@
-/* Test Polyhedron::add_constraints_and_minimize()
-   and Polyhedron::add_constraints(): the polyhedron can have
-   something pending.
+/* Test Polyhedron::affine_preimage(): we apply this function to a
+   polyhedron that can have something pendig.
    Copyright (C) 2001, 2002 Roberto Bagnara <bagnara@cs.unipr.it>
 
 This file is part of the Parma Polyhedra Library (PPL).
@@ -40,22 +39,22 @@ test1() {
   C_Polyhedron ph(2);
   ph.generators();
   ph.add_constraint(A >= 0);
+  ph.add_constraint(B >= 0);
   C_Polyhedron copy_ph(ph);
-  
-  ConSys cs1;
-  cs1.insert(A == 0);
-  cs1.insert(B >= 0);
-  ConSys cs2(cs1);
 
-  ph.add_constraints(cs1);
-  copy_ph.add_constraints_and_minimize(cs2);
+#if 0
+  print_constraints(ph, "*** ph ***");
+#endif
+
+  ph.affine_preimage(A, A + 1);
+  copy_ph.affine_preimage(A, -A - 1, -1);
 
   bool ok = (ph == copy_ph);
 
-#if NOISY
-  print_constraints(ph, "*** After ph.add_constraints(cs1) ***");
-  print_constraints(ph,
-		    "*** After copy_ph.add_constraints_and_minimize(cs2) ***");
+#if 0
+  print_generators(ph, "*** After ph.affine_preimage(A, A + 1) ***");
+  print_generators(copy_ph,
+		   "*** After copy_ph.affine_preimage(A, -A - 1, -1) ***");
 #endif
 
   if (!ok)
@@ -67,34 +66,25 @@ test2() {
   Variable A(0);
   Variable B(1);
 
-  C_Polyhedron ph1(2, C_Polyhedron::EMPTY);
-  ph1.add_generator(point());
-  ph1.constraints();
-  ph1.add_generator(line(A + B));
-  C_Polyhedron copy_ph1 = ph1;
+  C_Polyhedron ph(2);
+  ph.generators();
+  ph.add_constraint(A >= 0);
+  ph.add_constraint(B >= 0);
+  C_Polyhedron copy_ph(ph);
 
-  C_Polyhedron ph2(2, C_Polyhedron::EMPTY);
-  ph2.add_generator(point());
-  ph2.constraints();
-  ph2.add_generator(ray(A));
-  ph2.add_generator(ray(B));
-
-#if NOISY
-  print_generators(ph1, "*** ph1 ***");
-  print_generators(ph2, "*** ph2 ***");
+#if 0
+  print_constraints(ph, "*** ph ***");
 #endif
 
-  ConSys cs1 = ph2.constraints();
-  ConSys cs2 = ph2.constraints();
+  ph.affine_preimage(B, A + 1);
+  copy_ph.affine_preimage(B, -A - 1, -1);
 
-  ph1.add_constraints(cs1);
-  copy_ph1.add_constraints_and_minimize(cs2);
+  bool ok = (ph == copy_ph);
 
-  bool ok = (ph1 == copy_ph1);
-#if NOISY
-  print_constraints(ph1, "*** After add_constraints_assign ***");
-  print_constraints(copy_ph1,
-		    "*** After add_constraints_and_minimize ***");
+#if 0
+  print_generators(ph, "*** After ph.affine_preimage(B, A + 1) ***");
+  print_generators(copy_ph,
+		   "*** After copy_ph.affine_preimage(B, -A - 1, -1) ***");
 #endif
 
   if (!ok)
@@ -104,9 +94,9 @@ test2() {
 int
 main() {
   set_handlers();
-
+  
   test1();
   test2();
-
+  
   return 0;
 }

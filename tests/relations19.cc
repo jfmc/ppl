@@ -1,6 +1,5 @@
-/* Test Polyhedron::add_constraints_and_minimize()
-   and Polyhedron::add_constraints(): the polyhedron can have
-   something pending.
+/* Test Polyhedron::relation_with(g) and Polyhedron::relation_with(c):
+   the polyhedron can have something pending.
    Copyright (C) 2001, 2002 Roberto Bagnara <bagnara@cs.unipr.it>
 
 This file is part of the Parma Polyhedra Library (PPL).
@@ -27,6 +26,7 @@ site: http://www.cs.unipr.it/ppl/ . */
 
 using namespace std;
 using namespace Parma_Polyhedra_Library;
+using namespace Parma_Polyhedra_Library::IO_Operators;
 
 #ifndef NOISY
 #define NOISY 0
@@ -39,23 +39,18 @@ test1() {
 
   C_Polyhedron ph(2);
   ph.generators();
-  ph.add_constraint(A >= 0);
-  C_Polyhedron copy_ph(ph);
-  
-  ConSys cs1;
-  cs1.insert(A == 0);
-  cs1.insert(B >= 0);
-  ConSys cs2(cs1);
+  ph.add_constraint(A >= 2);
+  ph.add_constraint(B == 0);
 
-  ph.add_constraints(cs1);
-  copy_ph.add_constraints_and_minimize(cs2);
+  Poly_Gen_Relation rel = ph.relation_with(ray(A + B));
 
-  bool ok = (ph == copy_ph);
+  Poly_Gen_Relation known_rel = Poly_Gen_Relation::nothing();
+
+  bool ok = (rel == known_rel);
 
 #if NOISY
-  print_constraints(ph, "*** After ph.add_constraints(cs1) ***");
-  print_constraints(ph,
-		    "*** After copy_ph.add_constraints_and_minimize(cs2) ***");
+  print_constraints(ph, "*** ph ***");
+  cout << "ph.relation_with(ray(A + B)) == " << rel << endl;
 #endif
 
   if (!ok)
@@ -67,34 +62,21 @@ test2() {
   Variable A(0);
   Variable B(1);
 
-  C_Polyhedron ph1(2, C_Polyhedron::EMPTY);
-  ph1.add_generator(point());
-  ph1.constraints();
-  ph1.add_generator(line(A + B));
-  C_Polyhedron copy_ph1 = ph1;
+  C_Polyhedron ph(2, C_Polyhedron::EMPTY);
+  ph.add_generator(point());
+  ph.constraints();
+  ph.add_generator(ray(A));
+  ph.add_generator(ray(B));
 
-  C_Polyhedron ph2(2, C_Polyhedron::EMPTY);
-  ph2.add_generator(point());
-  ph2.constraints();
-  ph2.add_generator(ray(A));
-  ph2.add_generator(ray(B));
+  Poly_Con_Relation rel = ph.relation_with(A == 0);
+
+  Poly_Con_Relation known_rel = Poly_Con_Relation::strictly_intersects();
+
+  bool ok = (rel == known_rel);
 
 #if NOISY
-  print_generators(ph1, "*** ph1 ***");
-  print_generators(ph2, "*** ph2 ***");
-#endif
-
-  ConSys cs1 = ph2.constraints();
-  ConSys cs2 = ph2.constraints();
-
-  ph1.add_constraints(cs1);
-  copy_ph1.add_constraints_and_minimize(cs2);
-
-  bool ok = (ph1 == copy_ph1);
-#if NOISY
-  print_constraints(ph1, "*** After add_constraints_assign ***");
-  print_constraints(copy_ph1,
-		    "*** After add_constraints_and_minimize ***");
+  print_constraints(ph, "*** ph ***");
+  cout << "ph.relation_with(A == 0) == " << rel << endl;
 #endif
 
   if (!ok)

@@ -1,5 +1,5 @@
-/* Test Polyhedron::add_constraints_and_minimize()
-   and Polyhedron::add_constraints(): the polyhedron can have
+/* Test Polyhedron::add_generators_and_minimize()
+   and Polyhedron::add_generators(): the polyhedron can have
    something pending.
    Copyright (C) 2001, 2002 Roberto Bagnara <bagnara@cs.unipr.it>
 
@@ -35,27 +35,26 @@ using namespace Parma_Polyhedra_Library;
 void
 test1() {
   Variable A(0);
-  Variable B(1);
 
   C_Polyhedron ph(2);
   ph.generators();
   ph.add_constraint(A >= 0);
   C_Polyhedron copy_ph(ph);
   
-  ConSys cs1;
-  cs1.insert(A == 0);
-  cs1.insert(B >= 0);
-  ConSys cs2(cs1);
+  GenSys gs1;
+  gs1.insert(point());
+  gs1.insert(ray(-A));
+  GenSys gs2(gs1);
 
-  ph.add_constraints(cs1);
-  copy_ph.add_constraints_and_minimize(cs2);
+  ph.add_generators(gs1);
+  copy_ph.add_generators_and_minimize(gs2);
 
   bool ok = (ph == copy_ph);
 
 #if NOISY
-  print_constraints(ph, "*** After ph.add_constraints(cs1) ***");
-  print_constraints(ph,
-		    "*** After copy_ph.add_constraints_and_minimize(cs2) ***");
+  print_generators(ph, "*** After ph.add_generators(gs1) ***");
+  print_generators(ph,
+		   "*** After copy_ph.add_generators_and_minimize(gs2) ***");
 #endif
 
   if (!ok)
@@ -84,17 +83,17 @@ test2() {
   print_generators(ph2, "*** ph2 ***");
 #endif
 
-  ConSys cs1 = ph2.constraints();
-  ConSys cs2 = ph2.constraints();
+  GenSys gs1 = ph2.generators();
+  GenSys gs2 = ph2.generators();
 
-  ph1.add_constraints(cs1);
-  copy_ph1.add_constraints_and_minimize(cs2);
+  ph1.add_generators(gs1);
+  copy_ph1.add_generators_and_minimize(gs2);
 
   bool ok = (ph1 == copy_ph1);
 #if NOISY
-  print_constraints(ph1, "*** After add_constraints_assign ***");
-  print_constraints(copy_ph1,
-		    "*** After add_constraints_and_minimize ***");
+  print_generators(ph1, "*** After add_generators_assign ***");
+  print_generators(copy_ph1,
+		    "*** After add_generators_and_minimize ***");
 #endif
 
   if (!ok)
