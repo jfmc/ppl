@@ -56,10 +56,10 @@ site: http://www.cs.unipr.it/ppl/ . */
   The row's type Row::Type is obtained by combining the information about
   the topology \f$t\f$ and the kind \f$k\f$.
   Note that, even though all the four possible combinations of topology
-  and kind values will result in legal Row::Type objects, some of these
+  and kind values will result in a legal Row::Type object, some of these
   types pose additional constraints on the values of the row's coefficients.
 
-  In particular, when \f$t = c\f$, we have the following cases
+  When \f$t = c\f$, we have the following cases
   (\f$d\f$ is the dimension of the vector space):
     - \f$[b, a_0, \ldots, a_{d-1}]_=^c\f$
       represents the equality constraint
@@ -69,13 +69,13 @@ site: http://www.cs.unipr.it/ppl/ . */
       \f$\sum_{i=0}^{d-1} a_i x_i + b \geq 0\f$.
     - \f$[0, a_0, \ldots, a_{d-1}]_=^c\f$
       represents the line of direction
-      \f$\sum_{i=0}^{d-1} a_i x_i\f$.
+      \f$\vect{l} = (a_0, \ldots, a_{d-1})^\transpose\f$.
     - \f$[0, a_0, \ldots, a_{d-1}]_\geq^c\f$
       represents the ray of direction
-      \f$\sum_{i=0}^{d-1} a_i x_i\f$.
+      \f$\vect{r} = (a_0, \ldots, a_{d-1})^\transpose\f$.
     - \f$[b, a_0, \ldots, a_{d-1}]_\geq^c\f$, with \f$b > 0\f$,
       represents the point
-      \f$\sum_{i=0}^{d-1} \frac{a_i}{b} x_i\f$.
+      \f$\vect{p} = (\frac{a_0}{b}, \ldots, \frac{a_{d-1}}{b})^\transpose\f$.
 
   When \f$t = \mathit{nnc}\f$, the last coefficient of the row is
   associated to the slack variable \f$\epsilon\f$, so that we have the
@@ -92,16 +92,16 @@ site: http://www.cs.unipr.it/ppl/ . */
       \f$\sum_{i=0}^{d-1} a_i x_i + b > 0\f$.
     - \f$[0, a_0, \ldots, a_{d-1}, 0]_=^\mathit{nnc}\f$
       represents the line of direction
-      \f$\sum_{i=0}^{d-1} a_i x_i\f$.
+      \f$\vect{l} = (a_0, \ldots, a_{d-1})^\transpose\f$.
     - \f$[0, a_0, \ldots, a_{d-1}, 0]_\geq^\mathit{nnc}\f$
       represents the ray of direction
-      \f$\sum_{i=0}^{d-1} a_i x_i\f$.
+      \f$\vect{r} = (a_0, \ldots, a_{d-1})^\transpose\f$.
     - \f$[b, a_0, \ldots, a_{d-1}, e]_\geq^\mathit{nnc}\f$,
       with \f$b > 0\f$ and \f$e > 0\f$, represents the point
-      \f$\sum_{i=0}^{d-1} \frac{a_i}{b} x_i\f$.
+      \f$\vect{p} = (\frac{a_0}{b}, \ldots, \frac{a_{d-1}}{b})^\transpose\f$.
     - \f$[b, a_0, \ldots, a_{d-1}, 0]_\geq^\mathit{nnc}\f$,
       with \f$b > 0\f$, represents the closure point
-      \f$\sum_{i=0}^{d-1} \frac{a_i}{b} x_i\f$.
+      \f$\vect{c} = (\frac{a_0}{b}, \ldots, \frac{a_{d-1}}{b})^\transpose\f$.
 
   So, a row can be both a constraint and a generator: it can be an
   equality, a strict or non-strict inequality, a line, a ray, a point
@@ -109,7 +109,8 @@ site: http://www.cs.unipr.it/ppl/ . */
 
   The inhomogeneous term of a constraint can be zero or different from zero.
 
-  Points and closure points must have a positive inhomogeneous term,
+  Points and closure points must have a positive inhomogeneous term
+  (which is used as a common divisor for the coefficients),
   lines and rays must have the inhomogeneous term equal to zero.
   If needed, the coefficients of points and closure points are negated
   at creation time so that they satisfy this invariant. 
@@ -126,7 +127,7 @@ site: http://www.cs.unipr.it/ppl/ . */
   vector space \f$\Rset^{d+1}\f$, therefore interpreting the slack
   variable \f$\epsilon\f$ as an ordinary dimension of the vector space.
 
-  A row object implementing a LinExpression is always of the form
+  A Row object implementing a LinExpression is always of the form
   \f$ [0, a_0, \ldots, a_{d-1}]_=^c \f$, which represents the
   linear expression \f$\sum_{i=0}^{d-1} a_i x_i\f$.
 */
@@ -357,11 +358,10 @@ const Integer& reduced_scalar_product(const Row& x, const Row& y);
 #ifdef PPL_DOXYGEN_INCLUDE_IMPLEMENTATION_DETAILS
 //! The basic comparison function.
 /*! \relates Row
-
   \param x    A row of coefficients.
   \param y    Another row.
 
-  \return     The returned absolute value can be \f$0, 1\f$ or \f$2\f$.
+  \return     The returned absolute value can be \f$0\f$, \f$1\f$ or \f$2\f$.
 
   Compares \p x and \p y, where \p x and \p y may be of different size,
   in which case the "missing" coefficients are assumed to be zero.
