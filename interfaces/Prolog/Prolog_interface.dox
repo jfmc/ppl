@@ -136,63 +136,73 @@ Prolog interfaces.
 The PPL predicates provided by the Prolog interfaces are specified below.
 The specification uses the following grammar rules:
 \code
- Topology  --> c | nnc			
+ Topology    --> c | nnc			
 
- VarId     --> non-negative integer	variable identifier
+ VarId       --> non-negative integer	variable identifier
 
- PPL_Var   --> '$VAR'(VarId) 	 	PPL variable
+ PPL_Var     --> '$VAR'(VarId) 	 	PPL variable
 
- LinExpr   --> PPL_Var              	PPL variable
-          | number               	integer
-          | + LinExpr            	unary plus
-          | - LinExpr            	unary minus
-          | LinExpr + LinExpr    	addition
-          | LinExpr - LinExpr    	subtraction
-          | number * LinExpr     	multiplication
-          | LinExpr * number     	multiplication
+ LinExpr     --> PPL_Var              	PPL variable
+            | number               	integer
+            | + LinExpr            	unary plus
+            | - LinExpr            	unary minus
+            | LinExpr + LinExpr    	addition
+            | LinExpr - LinExpr    	subtraction
+            | number * LinExpr     	multiplication
+            | LinExpr * number     	multiplication
 
- Constraint --> LinExpr = LinExpr   	equation
-          | LinExpr =< LinExpr 		nonstrict inequation
-          | LinExpr >= LinExpr 		nonstrict inequation
-          | LinExpr < LinExpr  		strict inequation
-          | LinExpr > LinExpr  		strict inequation
+ Constraint  --> LinExpr = LinExpr   	equation
+            | LinExpr =< LinExpr 	nonstrict inequation
+            | LinExpr >= LinExpr 	nonstrict inequation
+            | LinExpr < LinExpr  	strict inequation
+            | LinExpr > LinExpr  	strict inequation
 
- Generator --> point(LinExpr)        	point
-          | point(LinExpr, number)   	point
-          | closure-point(LinExpr)  	closure point
-          | closure-point(LinExpr, number)
+ Constraint_System			list of constraints	
+             --> []
+            | [Constraint]
+            | [Constraint | Constraint_System]		
+
+ Generator   --> point(LinExpr)        	point
+            | point(LinExpr, number)   	point
+            | closure-point(LinExpr)  	closure point
+            | closure-point(LinExpr, number)
 				 	closure point
               (Int is the denominator so that the point or 
                closure point is defined by Expr/Int.)
-          | ray(LinExpr)         	ray
-          | line(LinExpr)        	line
+            | ray(LinExpr)         	ray
+            | line(LinExpr)        	line
 
- Relation --> is_disjoint 		between a constraint and a polyhedron
-	  | strictly_intersects		between a constraint and a polyhedron
-	  | is_included			between a constraint and a polyhedron
-	  | saturates			between a constraint and a polyhedron
-          | subsumes			between a generator and a polyhedron
-          | nothing			
+ Generator_System			list of generators
+             --> []
+	    | [Generator]
+	    | [Generator | Generator_System]				
+
+ Relation    --> is_disjoint 		between a constraint and a polyhedron
+	    | strictly_intersects	between a constraint and a polyhedron
+	    | is_included		between a constraint and a polyhedron
+	    | saturates			between a constraint and a polyhedron
+            | subsumes			between a generator and a polyhedron
+            | nothing			
  
- Numerator --> number | + number | - number
+ Numerator   --> number | + number | - number
                                         number must be non-zero	
 
  Denominator --> number                 number must be non-zero	
 
- Rational  --> number | + number | - number
-          | Numerator/Denominator	rational number in canonical form
+ Rational    --> number | + number | - number
+            | Numerator/Denominator	rational number in canonical form
               (That is, if the rational is n/m, the gcd(n,m) = 1.)             
 
- Bound     --> c(Rational)		closed rational limit
-          | o(Rational)			open rational limit
-          | o(pinf)			unbounded in the positive direction
-          | o(minf)			unbounded in the negative direction
+ Bound       --> c(Rational)		closed rational limit
+            | o(Rational)			open rational limit
+            | o(pinf)			unbounded in the positive direction
+            | o(minf)			unbounded in the negative direction
 
- Interval  --> i(Bound, Bound)		rational interval
+ Interval    --> i(Bound, Bound)		rational interval
 
- Box       --> []
-          | [Interval]
-          | [Interval | Box]           list of intervals.		
+ Box         --> []
+            | [Interval]
+            | [Interval | Box]           list of intervals.		
 \endcode
 
 
@@ -287,9 +297,6 @@ We first give some general information about using the interfaces.
   If you just have  to compute the poly-hull of two polyhedra, then use
   <CODE>ppl_Polyhedron_poly_hull_assign_and_minimize/2</CODE>.
 
-See the specifications of individual predicates for examples and
-more information regarding these issues.
-
 <H4><CODE>
   ppl_new_Polyhedron_from_dimension(+Topology, +Integer, -Handle)
 </CODE></H4>
@@ -349,21 +356,21 @@ ppl_new_Polyhedron_from_Polyhedron(+Topology_1, +Handle_1,
 
 <H4><CODE>
    ppl_new_Polyhedron_from_constraints(+Topology,
-                   +List_of_Constraints, -Handle)
+                   +Constraint_System, -Handle)
 </CODE></H4>
 
    Creates a polyhedron \f$\cP\f$ represented by
-   <CODE>List_of_Constraints</CODE> with topology C or NNC,
+   <CODE>Constraint_System</CODE> with topology C or NNC,
    depending on the value of <CODE>Topology</CODE>.
    <CODE>Handle</CODE> is unified with the handle for \f$\cP\f$.
 
 <H4><CODE>
    ppl_new_Polyhedron_from_generators(+Topology,
-                   +List_of_Generators, -Handle)
+                   +Generator_System, -Handle)
 </CODE></H4>
 
    Creates a polyhedron \f$\cP\f$ represented by
-   <CODE>List_of_Generators</CODE> with topology C or NNC,
+   <CODE>Generator_System</CODE> with topology C or NNC,
    depending on the value of <CODE>Topology</CODE>.
    <CODE>Handle</CODE> is unified with the handle for \f$\cP\f$.
 
@@ -418,44 +425,44 @@ ppl_new_Polyhedron_from_Polyhedron(+Topology_1, +Handle_1,
    its CC92-widening with the polyhedra referenced by <CODE>Handle_2</CODE>,
 
 <H4><CODE>ppl_Polyhedron_limited_widening_CC92_assign(+Handle_1, +Handle_2,
-               +List_of_Constraints)</CODE></H4>
+               +Constraint_System)</CODE></H4>
 
    Assigns to the polyhedron referenced by <CODE>Handle_1</CODE>
    its CC92-widening with the polyhedron referenced by <CODE>Handle_2</CODE>,
-   limited by the constraints in <CODE>List_of_Constraints</CODE>.
+   limited by the constraints in <CODE>Constraint_System</CODE>.
 
 <H4><CODE>ppl_Polyhedron_topological_closure_assign(+Handle)</CODE></H4>
 
    Assigns to the polyhedron referenced by <CODE>Handle</CODE>
    its topological closure.
 
-<H4><CODE>ppl_Polyhedron_get_constraints(+Handle, -List_of_Constraints)
+<H4><CODE>ppl_Polyhedron_get_constraints(+Handle, -Constraint_System)
 </CODE></H4>
 
-   Unifies <CODE>List_of_Constraints</CODE> with a list of
+   Unifies <CODE>Constraint_System</CODE> with a list of
    the constraints in the constraints system
    representing the polyhedron referenced by <CODE>Handle</CODE>.
 
 <H4><CODE>ppl_Polyhedron_get_minimized_constraints(+Handle,
-                                                   -List_of_Constraints)
+                                                   -Constraint_System)
 </CODE></H4>
 
-   Unifies <CODE>List_of_Constraints</CODE> with a minimized list of
+   Unifies <CODE>Constraint_System</CODE> with a minimized list of
    the constraints in the constraints system
    representing the polyhedron referenced by <CODE>Handle</CODE>.
 
-<H4><CODE>ppl_Polyhedron_get_generators(+Handle, -List_of_Generators)
+<H4><CODE>ppl_Polyhedron_get_generators(+Handle, -Generator_System)
 </CODE></H4>
 
-   Unifies <CODE>List_of_Generators</CODE> with a list of
+   Unifies <CODE>Generator_System</CODE> with a list of
    the generators in the generators system
    representing the polyhedron referenced by <CODE>Handle</CODE>.
 
 <H4><CODE>ppl_Polyhedron_get_minimized_generators(+Handle,
-                                                  -List_of_Generators)
+                                                  -Generator_System)
 </CODE></H4>
 
-   Unifies <CODE>List_of_Generators</CODE> with a minimized list of
+   Unifies <CODE>Generator_System</CODE> with a minimized list of
    the generators in the generators system
    representing the polyhedron referenced by <CODE>Handle</CODE>.
 
@@ -489,12 +496,12 @@ ppl_new_Polyhedron_from_Polyhedron(+Topology_1, +Handle_1,
     will update the polyhedron with handle \p X to be the single point 
     \f$(-12.5, -0.625, 0)^\transpose\f$ in the vector space \f$\Rset^3\f$.
 
-<H4><CODE>ppl_Polyhedron_add_constraints(+Handle, +List_of_Constraints)
+<H4><CODE>ppl_Polyhedron_add_constraints(+Handle, +Constraint_System)
 </CODE></H4>
 
    Updates the polyhedron referenced by <CODE>Handle</CODE> to
    one obtained by adding to its constraint system the constraints in
-   <CODE>List_of_Constraints</CODE>.
+   <CODE>Constraint_System</CODE>.
    E.g.,
 \code
    | ?- ppl_new_Polyhedron_from_dimension(c, 2, X),
@@ -506,14 +513,14 @@ ppl_new_Polyhedron_from_Polyhedron(+Topology_1, +Handle_1,
 \endcode  
 The updated polyhedron referenced by <CODE>Handle</CODE> can be empty
 and a query will succeed even when
-<CODE>List_of_Constraints</CODE> is unsatisfiable.
+<CODE>Constraint_System</CODE> is unsatisfiable.
                                                                        
 <H4><CODE>ppl_Polyhedron_add_constraints_and_minimize(+Handle, 
-                                   +List_of_Constraints)</CODE></H4>
+                                   +Constraint_System)</CODE></H4>
 
    Updates the polyhedron referenced by <CODE>Handle</CODE> to
    one obtained by adding to its constraint system the constraints in
-   <CODE>List_of_Constraints</CODE>.
+   <CODE>Constraint_System</CODE>.
    E.g.,
 \code
    ?- ppl_new_Polyhedron_from_dimension(c, 2, X),
@@ -531,12 +538,12 @@ and a query will succeed even when
         [4*A + B >= 3, A = 0, B =< 0]),
       ppl_Polyhedron_get_constraints(X, CS).
 \endcode                                                                              
-<H4><CODE>ppl_Polyhedron_add_generators(+Handle, +List_of_Generators)
+<H4><CODE>ppl_Polyhedron_add_generators(+Handle, +Generator_System)
 </CODE></H4>
 
    Updates the polyhedron referenced by <CODE>Handle</CODE> to
    one obtained by adding to its generator system the generators in
-   <CODE>List_of_Generators</CODE>.
+   <CODE>Generator_System</CODE>.
 
    If the system of generators representing a polyhedron
    is non-empty, then it must include a point
@@ -544,7 +551,7 @@ and a query will succeed even when
    Section \ref representation).
    Thus care must be taken to ensure that, before calling this
    predicate, either the polyhedron referenced by <CODE>Handle</CODE>
-   is non-empty or that whenever <CODE>List_of_Generators</CODE> is
+   is non-empty or that whenever <CODE>Generator_System</CODE> is
    non-empty the first element defines a point.
    E.g.,
 \code
@@ -558,15 +565,15 @@ and a query will succeed even when
 \endcode
        
 <H4><CODE>ppl_Polyhedron_add_generators_and_minimize(+Handle, 
-                                   +List_of_Generators)</CODE></H4>
+                                   +Generator_System)</CODE></H4>
 
    Updates the polyhedron referenced by <CODE>Handle</CODE> to
    one obtained by adding to its generator system the generators in
-   <CODE>List_of_Generators</CODE>.
+   <CODE>Generator_System</CODE>.
 
    Unlike the predicate <CODE>ppl_add_generators</CODE>,
    the order of the generators in
-   <CODE>List_of_Generators</CODE> is not important.
+   <CODE>Generator_System</CODE> is not important.
    E.g.,
 \code
    ?- ppl_new_Polyhedron_empty_from_dimension(c, 3, X),
@@ -579,15 +586,15 @@ and a query will succeed even when
 \endcode
                                                                        
 <H4><CODE>ppl_Polyhedron_add_dimensions_and_constraints(+Handle, 
-                                   +List_of_Constraints)</CODE></H4>
+                                   +Constraint_System)</CODE></H4>
  
  
    After embedding the polyhedron referred to by <CODE>Handle</CODE>
    in a new space that is enlarged by the space dimensions
-   of the constraint system in <CODE>List_of_Constraints</CODE>,
+   of the constraint system in <CODE>Constraint_System</CODE>,
    it then updates the polyhedron referenced by <CODE>Handle</CODE> to
    one obtained by adding to the new space the constraints in
-   <CODE>List_of_Constraints</CODE>.
+   <CODE>Constraint_System</CODE>.
    E.g.,
 \code
    ?- ppl_new_Polyhedron_from_dimension(nnc, 2, X),
