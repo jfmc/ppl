@@ -74,6 +74,11 @@ CC=$with_cc)
 AC_LANG_C
 AC_PROG_CC
 
+dnl Checks for C compiler characteristics
+
+AC_C_CONST
+AC_C_INLINE
+
 dnl C++ compiler
 
 AC_ARG_WITH(cxx,

@@ -68,6 +68,13 @@
 /* Version number of package */
 #undef VERSION
 
+/* Define to empty if `const' does not conform to ANSI C. */
+#undef const
+
+/* Define as `__inline' if that's what the C compiler calls it, or to nothing
+   if it is not supported. */
+#undef inline
+
 
 
 // Neutralize relops for GCC 2.96.
