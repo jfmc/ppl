@@ -23,7 +23,6 @@ site: http://www.cs.unipr.it/ppl/ . */
 
 
 #include "LinExpression.defs.hh"
-#include <stdexcept>
 
 inline
 Parma_Polyhedra_Library::Generator::Generator()
@@ -85,18 +84,6 @@ ray(const LinExpression& e) {
   LinExpression ec = e;
   Generator g(ec);
   g[0] = 0;
-  g.set_is_ray_or_vertex();
-  return g;
-}
-
-inline Generator
-vertex(const LinExpression& e, const Integer& d) {
-  if (d == 0)
-    throw std::invalid_argument("Generator PPL::vertex(e, d) "
-				"with d == 0");
-  LinExpression ec = e;
-  Generator g(ec);
-  g[0] = d;
   g.set_is_ray_or_vertex();
   return g;
 }

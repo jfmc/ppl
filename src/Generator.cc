@@ -25,10 +25,24 @@ site: http://www.cs.unipr.it/ppl/ . */
 
 #include "Generator.defs.hh"
 
-#include <iostream>
 #include "Variable.defs.hh"
+#include <iostream>
+#include <stdexcept>
 
 namespace PPL = Parma_Polyhedra_Library;
+
+PPL::Generator
+PPL::vertex(const LinExpression& e, const Integer& d) {
+  if (d == 0)
+    throw std::invalid_argument("Generator PPL::vertex(e, d) "
+				"with d == 0");
+  LinExpression ec = e;
+  Generator g(ec);
+  g[0] = d;
+  g.set_is_ray_or_vertex();
+  return g;
+}
+
 
 std::ostream&
 PPL::operator <<(std::ostream& s, const Generator& g) {  bool vertex_with_divisor = false;

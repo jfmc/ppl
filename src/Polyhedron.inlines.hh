@@ -21,11 +21,11 @@ USA.
 For the most up-to-date information see the Parma Polyhedra Library
 site: http://www.cs.unipr.it/ppl/ . */
 
+
 #ifndef _Polyhedron_inlines_hh
 #define _Polyhedron_inlines_hh 1
 
 #include <algorithm>
-#include <stdexcept>
 
 inline void
 Parma_Polyhedra_Library::Polyhedron::swap(Polyhedron& y) {
@@ -285,78 +285,6 @@ Parma_Polyhedra_Library::operator >(const Polyhedron& x,
   return y < x;
 }
 
-
-/*!
-  Updates the constraints as necessary, then returns a constant
-  reference to the system of constraints.
-*/
-inline const Parma_Polyhedra_Library::ConSys&
-Parma_Polyhedra_Library::Polyhedron::constraints() const {
-  if (is_empty())
-    throw std::invalid_argument("PPL::Polyhedron::constraints() "
-				"*this is empty");
-   if (is_zero_dim())
-    throw std::invalid_argument("PPL::Polyhedron::constraints() "
-				"*this is zero-dimensional");
-  if (!constraints_are_up_to_date())
-    update_constraints();
-
-  // We insist in returning a sorted system of constraints.
-  if (!con_sys.is_sorted()) {
-    if (sat_c_is_up_to_date()) {
-      const_cast<Polyhedron&>(*this).obtain_sorted_constraints_with_sat_c();
-      if (sat_g_is_up_to_date())
-	const_cast<SatMatrix&>(sat_g).transpose_assign(sat_c);
-    }
-    else {
-      const_cast<ConSys&>(con_sys).sort_rows();
-      if (sat_g_is_up_to_date()) {
-#ifndef NDEBUG
-	const_cast<Polyhedron&>(*this).clear_sat_g_up_to_date();
-#endif
-	const_cast<Polyhedron&>(*this).update_sat_g();
-      }
-    }
-  }
-  return con_sys;
-}
-
-
-/*!
-  Updates the generators as necessary, then returns a constant
-  reference to the system of generators.
-*/
-inline const Parma_Polyhedra_Library::GenSys&
-Parma_Polyhedra_Library::Polyhedron::generators() const {
-  if (is_empty())
-    throw std::invalid_argument("PPL::Polyhedron::generators() "
-				"*this is empty");
-  if (is_zero_dim())
-    throw std::invalid_argument("PPL::Polyhedron::generators() "
-				"*this is zero-dimensional");
-
-  if (!generators_are_up_to_date())
-    update_generators();
-
-  // We insist in returning a sorted system of generators.
-  if (!gen_sys.is_sorted()) {
-    if (sat_g_is_up_to_date()) {
-      const_cast<Polyhedron&>(*this).obtain_sorted_generators_with_sat_g();
-      if (sat_c_is_up_to_date())
-	const_cast<SatMatrix&>(sat_c).transpose_assign(sat_g);
-    }
-    else {
-      const_cast<GenSys&>(gen_sys).sort_rows();
-      if (sat_c_is_up_to_date()) {
-#ifndef NDEBUG
-	const_cast<Polyhedron&>(*this).clear_sat_c_up_to_date();
-#endif
-	const_cast<Polyhedron&>(*this).update_sat_c();
-      }
-    }
-  }
-  return gen_sys;
-}
 
 inline size_t
 Parma_Polyhedra_Library::Polyhedron::num_dimensions() const {
