@@ -289,6 +289,11 @@ PolyBase::check_empty() const {
   return is_empty();
 }
 
+template <class Box>
+void
+PolyBase::shrink_bounding_box(Box& /* box */) const {
+}
+
 } // namespace Parma_Polyhedra_Library
 
 
