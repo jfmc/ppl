@@ -313,8 +313,8 @@ public:
   //! The assignment operator.
   Polyhedron& operator =(const Polyhedron& y);
 
-  //! Returns the number of dimensions of the space.
-  size_t num_dimensions() const;
+  //! Returns the number of dimensions of the vector space.
+  size_t space_dimension() const;
   //! Intersects \p *this with polyhedron \p y and
   //! assigns the result to \p *this.
   //! \exception std::invalid_argument thrown if \p *this and \p y
@@ -502,6 +502,8 @@ public:
   void swap(Polyhedron& y);
 
 private:
+  //! The number of dimensions of the enclosing vector space.
+  size_t space_dim;
   //! The system of constraints.
   ConSys con_sys;
   //! The system of generators.

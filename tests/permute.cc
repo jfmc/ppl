@@ -112,7 +112,7 @@ fix_point(Polyhedron& start, Polyhedron& induct, Polyhedron& finish,
 
     set<Variable> dimensions_to_remove;
     size_t current_dim;
-    current_dim = current.num_dimensions();
+    current_dim = current.space_dimension();
     for (unsigned int i = current_dim-1 ; i >= arity; --i )
       dimensions_to_remove.insert(Variable(i));
     current.remove_dimensions(dimensions_to_remove);
