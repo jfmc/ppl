@@ -82,15 +82,6 @@ EList<T>::empty() const {
 }
 
 template <typename T>
-inline void
-EList<T>::clear() {
-  while (!empty())
-    begin()->erase();
-  assert(OK());
-  assert(empty());
-}
-
-template <typename T>
 inline typename EList<T>::Iterator
 EList<T>::erase(Iterator position) {
   assert(!empty());
@@ -100,7 +91,11 @@ EList<T>::erase(Iterator position) {
 template <typename T>
 inline
 EList<T>::~EList() {
-  clear();
+  // Erase and deallocate all the elements.
+  for (Iterator i = begin(), lend = end(), next; i != lend; i = next) {
+    next = erase(i);
+    delete &*i;
+  }
 }
 
 template <typename T>

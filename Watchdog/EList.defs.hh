@@ -42,7 +42,7 @@ public:
   //! Constructs an empty list.
   EList();
 
-  //! Destructor.
+  //! Destructs the list and all the elements in it.
   ~EList();
 
   //! Pushes \p obj to the front of the list.
@@ -60,9 +60,6 @@ public:
   //! Removes the element pointed to by \p position, returning
   //! an iterator pointing to the next element, if any, or end(), otherwise.
   Iterator erase(Iterator position);
-
-  //! Erases all the elements from the list (but not the elements themselves).
-  void clear();
 
   //! Returns <CODE>true</CODE> if and only if the list is empty.
   bool empty() const;
