@@ -1413,24 +1413,39 @@ PPL::Polyhedron::add_constraints(ConSys& cs) {
   if (is_empty())
     return;
 
-#if 0
-  //#ifdef BE_LAZY
-  // FIXME: this has to be checked carefully
-  // for correctness and/or efficiency.
+#ifdef BE_LAZY
+  // Here we do not require `con_sys' to be sorted.
+  // also, we _swap_ (instead of copying) the coefficients of `cs'
+  // (which is not a const).
+  // In contrast, in the non-BE_LAZY version, by using the method
+  // Matrix::merge_rows_assign() we force `con_sys' to be sorted
+  // and we _copy_ `cs'.
   size_t old_num_rows = con_sys.num_rows();
-  size_t old_num_columns = con_sys.num_columns();
-  con_sys.grow(old_num_rows + cs.num_rows(), old_num_columns);
-  for (size_t i = cs.num_rows(); i-- > 0; ) {
-    Constraint& c_new = con_sys[old_num_rows + i];
-    Constraint& c_old = cs[i];
-    if (c_old.is_equality())
-      c_new.set_is_equality();
-    c_new[0].swap(c_old[0]);
-    for (size_t j = cs.num_columns(); j-- > 1; )
-      c_new[old_num_columns - 1 + j].swap(c_old[j]);
-  }
+  size_t num_columns = con_sys.num_columns();
+  size_t cs_num_rows = cs.num_rows();
+  size_t cs_num_columns = cs.num_columns();
+  con_sys.grow(old_num_rows + cs_num_rows, num_columns);
+  if (num_columns == cs_num_columns)
+    // Since the numbers of columns match,
+    // we can simply steel the rows of `cs'.
+    for (size_t i = cs_num_rows; i-- > 0; )
+      std::swap(con_sys[old_num_rows + i], cs[i]);
+  else
+    // The numbers of columns do not match:
+    // we have to steel one coefficient at a time.
+    for (size_t i = cs_num_rows; i-- > 0; ) {
+      Constraint& c_new = con_sys[old_num_rows + i];
+      Constraint& c_old = cs[i];
+      if (c_old.is_equality())
+	c_new.set_is_equality();
+      for (size_t j = cs_num_columns; j-- > 0; )
+	std::swap(c_new[j], c_old[j]);
+    }
+  // The new constraints have been simply appended.
   con_sys.set_sorted(false);
+
 #else
+
   // Matrix::merge_rows_assign() requires both matrices to be sorted.
   if (!con_sys.is_sorted())
     con_sys.sort_rows();
@@ -1442,7 +1457,7 @@ PPL::Polyhedron::add_constraints(ConSys& cs) {
   // the system `cs' if the dimension of the space of `cs'
   // is smaller then the dimension of the space of the polyhedron.
   con_sys.merge_rows_assign(cs);
-#endif
+#endif //#ifdef BE_LAZY
 
   // After adding new constraints, generators are no longer up-to-date.
   clear_constraints_minimized();
