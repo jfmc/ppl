@@ -30,4 +30,4 @@ EXTRA_DIST = configure ppl.lsm.in ppl.spec.in acinclude.m4 BUGS CREDITS
 
 @SET_MAKE@
 
-SUBDIRS = src tests interfaces m4 doc Watchdog
+SUBDIRS = src Watchdog tests interfaces doc m4
