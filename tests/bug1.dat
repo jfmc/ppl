@@ -1,0 +1,47 @@
+space_dim 4
+-ZE -EM  -CM -GM  -CS +GS  -SC -SG 
+positive
+con_sys (not_up-to-date)
+0 x 0 (sorted)
+
+gen_sys (up-to-date)
+4 x 5 (not_sorted)
+1 0 0 1 0   V
+0 0 0 0 1   R
+0 0 1 1 0   R
+0 1 0 1 0   R
+
+sat_c
+0 x 0
+
+sat_g
+0 x 0
+
+
+space_dim 4
+-ZE -EM  -CM -GM  -CS +GS  -SC -SG 
+positive
+con_sys (not_up-to-date)
+1 x 7 (not_sorted)
+-2 -1 -1 0 -1 0 1   =
+
+gen_sys (up-to-date)
+5 x 5 (not_sorted)
+1 0 0 0 2   V
+0 0 0 0 1   R
+0 0 0 1 0   R
+0 0 1 0 1   R
+0 1 0 0 1   R
+
+sat_c
+6 x 1
+0 
+0 
+0 
+0 
+0 
+0 
+
+sat_g
+1 x 6
+0 0 0 0 0 0 
