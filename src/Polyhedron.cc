@@ -3845,8 +3845,16 @@ PPL::Polyhedron::is_BHRZ03_stabilizing(const Polyhedron& x,
   // of constraints of `y', then the chain is stabilizing. If it is
   // bigger, the chain is not stabilizing. If they are equal, further
   // investigation is needed.
-  dimension_type x_con_sys_num_rows = x.con_sys.num_rows();
-  dimension_type y_con_sys_num_rows = y.con_sys.num_rows();
+
+  // NOTE: we have to consider high-level constraints only.
+  dimension_type  x_con_sys_num_rows = 0;
+  for (ConSys::const_iterator i = x.con_sys.begin(),
+	 x_cs_end = x.con_sys.end(); i != x_cs_end; ++i)
+    x_con_sys_num_rows++;
+  dimension_type y_con_sys_num_rows = 0;
+  for (ConSys::const_iterator i = y.con_sys.begin(),
+	 y_cs_end = y.con_sys.end(); i != y_cs_end; ++i)
+    y_con_sys_num_rows++;
   if (x_con_sys_num_rows < y_con_sys_num_rows) {
 #if 0
     std::cout << "BHRZ03_stabilizing: number of constraints" << std::endl;
@@ -3856,31 +3864,8 @@ PPL::Polyhedron::is_BHRZ03_stabilizing(const Polyhedron& x,
 #endif
     return true;
   }
-  else if (x_con_sys_num_rows == y_con_sys_num_rows) {
-    // Check if a decreasing number of constraints is obtained
-    // when disregarding the low-level constraints.
-    x_con_sys_num_rows = 0;
-    for (ConSys::const_iterator i = x.con_sys.begin(),
-	   x_cs_end = x.con_sys.end(); i != x_cs_end; ++i)
-      x_con_sys_num_rows++;
-    y_con_sys_num_rows = 0;
-    for (ConSys::const_iterator i = y.con_sys.begin(),
-	   y_cs_end = y.con_sys.end(); i != y_cs_end; ++i)
-      y_con_sys_num_rows++;
-    if (x_con_sys_num_rows < y_con_sys_num_rows) {
-#if 0
-    std::cout << "BHRZ03_stabilizing: number of constraints" << std::endl;
-#endif
-#if PPL_STATISTICS
-      statistics->reason.num_constraints++;
-#endif
-      return true;
-    }
-  }
-  else {
-    assert(x_con_sys_num_rows > y_con_sys_num_rows);
+  else if (x_con_sys_num_rows > y_con_sys_num_rows)
     return false;
-  }
 
   dimension_type x_gen_sys_num_rows = x.gen_sys.num_rows();
   dimension_type y_gen_sys_num_rows = y.gen_sys.num_rows();
@@ -4149,7 +4134,6 @@ PPL::Polyhedron::BHRZ03_evolving_points(const Polyhedron& y,
     // closure points (considering also points will only add redundancy).
     if (((g1.is_point() && closed) || (g1.is_closure_point() && !closed))
 	&& y.relation_with(g1) == Poly_Gen_Relation::nothing()) {
-      candidate_rays.clear();
       // For each point (resp., closure point) `g2' in `y.gen_sys',
       // where `g1' and `g2' are different,
       // build the candidate ray `g1 - g2'.

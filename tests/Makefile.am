@@ -954,7 +954,6 @@ TESTS = $(ORIGINAL_TESTS) $(DERIVED_TESTS) $(WATCHDOG_TESTS)
 
 XFAIL_TESTS = \
 nnc_limitedh79widening3 \
-nnc_bhrz03widening3 \
 nnc_polydifference1 \
 addgenerators11
 
