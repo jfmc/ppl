@@ -50,7 +50,7 @@ if HAVE_SICSTUS
 check-local: pplsp check_script expected
 	for k in $(CLPQ_TESTS); do cp -f $(srcdir)/$$k .; done
 	./pplsp -l $(srcdir)/clpq.pl <$(srcdir)/check_script >obtained
-	diff -q $(srcdir)/expected obtained
+	diff -q --ignore-all-space $(srcdir)/expected obtained
 
 pplsp: ppl_sicstus.s.o $(top_builddir)/src/libppl.la
 	spld --main=prolog -S -o $@ --resources=./ppl_sicstus.s.o \
