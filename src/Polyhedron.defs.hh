@@ -1005,7 +1005,7 @@ public:
   void ASCII_dump(std::ostream& s) const;
 
 #ifdef PPL_DOXYGEN_INCLUDE_IMPLEMENTATION_DETAILS
-  //! Loads from \p s the ASCII representation (as produced by \ref
+  //! Loads from \p s an ASCII representation (as produced by \ref
   //! ASCII_dump) and sets \p *this accordingly.  Returns <CODE>true</CODE>
   //! if successful, <CODE>false</CODE> otherwise.
 #endif // PPL_DOXYGEN_INCLUDE_IMPLEMENTATION_DETAILS
