@@ -1,4 +1,4 @@
-/* Result info
+/* Result supporting functions implementation: inline functions.
    Copyright (C) 2001-2004 Roberto Bagnara <bagnara@cs.unipr.it>
 
 This file is part of the Parma Polyhedra Library (PPL).
@@ -21,23 +21,25 @@ USA.
 For the most up-to-date information see the Parma Polyhedra Library
 site: http://www.cs.unipr.it/ppl/ . */
 
+#ifndef PPL_Result_inlines_hh
+#define PPL_Result_inlines_hh 1
+
+#include <cassert>
+
 namespace Parma_Polyhedra_Library {
 
 inline Result
-type(Result r)
-{
-	return static_cast<Result>(r & V_TYPE_MASK);
+type(Result r) {
+  return static_cast<Result>(r & V_TYPE_MASK);
 }
 
 inline bool
-is_special(Result r)
-{
+is_special(Result r) {
   return type(r) != V_NORMAL;
 }
 
 inline Result
-sign(Result r)
-{
+sign(Result r) {
   switch (r) {
   case V_LT:
   case V_EQ:
@@ -49,11 +51,11 @@ sign(Result r)
   case V_PLUS_INFINITY:
     return V_GT;
   default:
-    assert(0);
+    assert(false);
     return V_UNKNOWN;
   }
 }
 
 } // namespace Parma_Polyhedra_Library
 
-
+#endif // !defined(PPL_Result_inlines_hh)
