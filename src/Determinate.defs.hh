@@ -36,24 +36,14 @@ namespace Parma_Polyhedra_Library {
 //! \brief
 //! Returns <CODE>true</CODE> if and only if
 //! \p x and \p y are the same domain element.
-/*!
-  \relates Determinate
-  \exception std::invalid_argument
-  Thrown if \p x and \p y are topology-incompatible or
-  dimension-incompatible.
-*/
+/*! \relates Determinate */
 template <typename PH>
 bool operator==(const Determinate<PH>& x, const Determinate<PH>& y);
 
 //! \brief
 //! Returns <CODE>true</CODE> if and only if
 //! \p x and \p y are different domain elements.
-/*!
-  \relates Determinate
-  \exception std::invalid_argument
-  Thrown if \p x and \p y are topology-incompatible or
-  dimension-incompatible.
-*/
+/*! \relates Determinate */
 template <typename PH>
 bool operator!=(const Determinate<PH>& x, const Determinate<PH>& y);
 
@@ -77,19 +67,6 @@ public:
   //@{
 
   //! \brief
-  //! Builds either the top or the bottom of the determinate constraint
-  //! system defined on the vector space having \p num_dimensions
-  //! dimensions.
-  /*!
-    The top element, corresponding to the whole vector space,
-    is built if \p universe is \c true; otherwise the bottom element,
-    corresponding to the emptyset, is built. By default,
-    the top of a zero-dimension vector space is built.
-  */
-  explicit
-  Determinate(dimension_type num_dimensions = 0, bool universe = true);
-
-  //! \brief
   //! Injection operator: builds the determinate constraint system element
   //! corresponding to the base-level element \p p.
   Determinate(const PH& p);
@@ -110,27 +87,8 @@ public:
   //! \name Member Functions that Do Not Modify the Domain Element
   //@{
 
-  //! Returns the dimension of the vector space enclosing \p *this.
-  dimension_type space_dimension() const;
-
-  //! Returns the system of constraints.
-  const Constraint_System& constraints() const;
-
-  //! Returns the system of constraints, with no redundant constraint.
-  const Constraint_System& minimized_constraints() const;
-
   //! Returns a const reference to the embedded element.
   const PH& element() const;
-
-  //! Returns a reference to the embedded element.
-  PH& element();
-
-#ifdef PPL_DOXYGEN_INCLUDE_IMPLEMENTATION_DETAILS
-  //! \brief
-  //! On return from this method, the representation of \p *this
-  //! is not shared by different Determinate objects.
-#endif // PPL_DOXYGEN_INCLUDE_IMPLEMENTATION_DETAILS
-  void mutate();
 
   //! \brief
   //! Returns <CODE>true</CODE> if and only if \p *this is the top of the
@@ -167,7 +125,7 @@ public:
   //@} // Member Functions that Do Not Modify the Domain Element
 
 
-  //! \name Space Dimension Preserving Member Functions that May Modify the Domain Element
+  //! \name Member Functions that May Modify the Domain Element
   //@{
 
   //! \brief
@@ -178,33 +136,19 @@ public:
   void meet_assign(const Determinate& y);
 
   //! \brief
-  //! Assigns to \p *this the meet of \p *this and the element
-  //! represented by constraint \p c.
-  /*!
-    \exception std::invalid_argument
-    Thrown if \p *this and constraint \p c are topology-incompatible
-    or dimension-incompatible.
-  */
-  void add_constraint(const Constraint& c);
+  //! Assigns to \p *this the \ref concatenate "concatenation"
+  //! of \p *this and \p y, taken in this order.
+  void concatenate_assign(const Determinate& y);
 
+  //! Returns a reference to the embedded element.
+  PH& element();
+
+#ifdef PPL_DOXYGEN_INCLUDE_IMPLEMENTATION_DETAILS
   //! \brief
-  //! Assigns to \p *this the meet of \p *this and the element
-  //! represented by the constraints in \p cs.
-  /*!
-    \param cs
-    The constraints to intersect with.  This parameter is not declared
-    <CODE>const</CODE> because it can be modified.
-
-    \exception std::invalid_argument
-    Thrown if \p *this and \p cs are topology-incompatible or
-    dimension-incompatible.
-  */
-  void add_constraints(Constraint_System& cs);
-
-  //@} // Space Dimension Preserving Member Functions that May Modify [...]
-
-  //! \name Member Functions that May Modify the Dimension of the Vector Space
-  //@{
+  //! On return from this method, the representation of \p *this
+  //! is not shared by different Determinate objects.
+#endif // PPL_DOXYGEN_INCLUDE_IMPLEMENTATION_DETAILS
+  void mutate();
 
   //! Assignment operator.
   Determinate& operator=(const Determinate& y);
@@ -212,54 +156,7 @@ public:
   //! Swaps \p *this with \p y.
   void swap(Determinate& y);
 
-  //! \brief
-  //! Adds \p m new space dimensions and embeds the old domain element
-  //! in the new vector space.
-  void add_space_dimensions_and_embed(dimension_type m);
-
-  //! \brief
-  //! Adds \p m new space dimensions to the domain element
-  //! and does not embed it in the new vector space.
-  void add_space_dimensions_and_project(dimension_type m);
-
-  //! \brief
-  //! Assigns to \p *this the \ref concatenate "concatenation"
-  //! of \p *this and \p y, taken in this order.
-  void concatenate_assign(const Determinate& y);
-
-  //! \brief
-  //! Removes all the specified space dimensions.
-  /*!
-    \param to_be_removed
-    The set of Variable objects corresponding to the space dimensions
-    to be removed.
-
-    \exception std::invalid_argument
-    Thrown if \p *this is dimension-incompatible with one of the
-    Variable objects contained in \p to_be_removed.
-  */
-  void remove_space_dimensions(const Variables_Set& to_be_removed);
-
-  //! \brief
-  //! Removes the higher space dimensions so that the resulting space
-  //! will have dimension \p new_dimension.
-  /*!
-    \exception std::invalid_argument
-    Thrown if \p new_dimensions is greater than the space dimension
-    of \p *this.
-  */
-  void remove_higher_space_dimensions(dimension_type new_dimension);
-
-  //! \brief
-  //! Remaps the dimensions of the vector space according to
-  //! a partial function.
-  /*!
-    See Polyhedron::map_space_dimensions.
-  */
-  template <typename Partial_Function>
-  void map_space_dimensions(const Partial_Function& pfunc);
-
-  //@} // Member Functions that May Modify the Dimension of the Vector Space
+  //@} // Member Functions that May Modify the Domain Element
 
 #ifdef PPL_DOXYGEN_INCLUDE_IMPLEMENTATION_DETAILS
   //! \brief

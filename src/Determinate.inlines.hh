@@ -80,13 +80,6 @@ Determinate<PH>::Rep::total_memory_in_bytes() const {
 }
 
 template <typename PH>
-Determinate<PH>::Determinate(dimension_type num_dimensions, bool universe)
-  : prep(new Rep(num_dimensions,
-		 universe ? Polyhedron::UNIVERSE : Polyhedron::EMPTY)) {
-  prep->new_reference();
-}
-
-template <typename PH>
 Determinate<PH>::Determinate(const PH& ph)
   : prep(new Rep(ph)) {
   prep->new_reference();
@@ -249,74 +242,6 @@ template <typename PH>
 bool
 operator!=(const Determinate<PH>& x, const Determinate<PH>& y) {
   return x.prep != y.prep && x.prep->ph != y.prep->ph;
-}
-
-template <typename PH>
-dimension_type
-Determinate<PH>::space_dimension() const {
-  return prep->ph.space_dimension();
-}
-
-template <typename PH>
-const Constraint_System&
-Determinate<PH>::constraints() const {
-  return prep->ph.constraints();
-}
-
-template <typename PH>
-const Constraint_System&
-Determinate<PH>::minimized_constraints() const {
-  return prep->ph.minimized_constraints();
-}
-
-template <typename PH>
-void
-Determinate<PH>::add_constraint(const Constraint& c) {
-  mutate();
-  prep->ph.add_constraint(c);
-}
-
-template <typename PH>
-void
-Determinate<PH>::add_constraints(Constraint_System& cs) {
-  mutate();
-  prep->ph.add_constraints(cs);
-}
-
-template <typename PH>
-void
-Determinate<PH>::add_space_dimensions_and_embed(dimension_type m) {
-  mutate();
-  prep->ph.add_space_dimensions_and_embed(m);
-}
-
-template <typename PH>
-void
-Determinate<PH>::add_space_dimensions_and_project(dimension_type m) {
-  mutate();
-  prep->ph.add_space_dimensions_and_project(m);
-}
-
-template <typename PH>
-void
-Determinate<PH>::remove_space_dimensions(const Variables_Set& to_be_removed) {
-  mutate();
-  prep->ph.remove_space_dimensions(to_be_removed);
-}
-
-template <typename PH>
-void
-Determinate<PH>::remove_higher_space_dimensions(dimension_type new_dimension) {
-  mutate();
-  prep->ph.remove_higher_space_dimensions(new_dimension);
-}
-
-template <typename PH>
-template <typename Partial_Function>
-void
-Determinate<PH>::map_space_dimensions(const Partial_Function& pfunc) {
-  mutate();
-  prep->ph.map_space_dimensions(pfunc);
 }
 
 template <typename PH>
