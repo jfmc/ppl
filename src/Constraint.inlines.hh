@@ -69,9 +69,9 @@ Constraint::type() const {
   if (is_necessarily_closed())
     return NONSTRICT_INEQUALITY;
   else
-    return ((*this)[size()-1] == 0)
-      ? NONSTRICT_INEQUALITY
-      : STRICT_INEQUALITY;
+    return ((*this)[size()-1] < 0)
+      ? STRICT_INEQUALITY
+      : NONSTRICT_INEQUALITY;
 }
 
 inline bool
