@@ -274,7 +274,7 @@ public:
   //!                 because it can be modified.
   Polyhedron(ConSys& cs);
   //! Builds a polyhedron from a system of generators.
-  //! \param gs       The system of generators definig the polyhedron. 
+  //! \param gs       The system of generators defining the polyhedron. 
   //!                 It is not declared <CODE>const</CODE>
   //!                 because it can be modified.
   //! \exception std::invalid_argument thrown if the system of generators
