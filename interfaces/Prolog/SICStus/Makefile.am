@@ -80,5 +80,5 @@ check-local: ppl_sicstus ../check_script ../expected
 
 MOSTLYCLEANFILES = \
 ppl_sicstus.s.o ppl_sicstus.so \
-ppl_sicstus.pl clpq.pl sp_clpq.pl $(CLPQ_TESTS) obtained
+clpq.pl $(CLPQ_TESTS) obtained
 endif
