@@ -57,7 +57,7 @@ static const char* usage_string
 "  -CSECS, --max-cpu=SECS  limits CPU usage to SECS seconds\n"
 "  -VMB, --max-memory=MB   limits memory usage to MB megabytes\n"
 "  -h, --help              prints this help text to stderr\n"
-"  -oPATH, --output=PATH   writes output to PATH\n"
+"  -oPATH, --output=PATH   appends output to PATH\n"
 "  -t, --timings           prints timings to stderr\n"
 "  -v, --verbose           outputs also the constraints and objective function\n";
 
@@ -163,7 +163,7 @@ process_options(int argc, char *argv[]) {
     fatal("only one input file is accepted");
 
   if (output_argument) {
-    output_file = fopen(output_argument, "w");
+    output_file = fopen(output_argument, "a");
     if (output_file == NULL)
       fatal("cannot open output file `%s'", output_argument);
   }

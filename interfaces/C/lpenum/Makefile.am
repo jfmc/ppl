@@ -42,4 +42,20 @@ $(top_builddir)/interfaces/C/libppl_c.la \
 $(top_builddir)/src/libppl.la \
 @extra_libraries@
 
+check-local: $(MPS_FILES) lpenum #expected
+	rm -f obtained
+	for k in $(MPS_FILES); \
+	do \
+	  for m in --min --max; \
+	  do \
+	    echo "*** lpenum -v $$m -oobtained $(srcdir)/$$k" >>obtained; \
+	    $(LIBTOOL) --mode=execute -dlopen ../../../src/libppl.la \
+	      -dlopen ../libppl_c.la \
+	        lpenum -v $$m -oobtained $(srcdir)/$$k >/dev/null; \
+	  done \
+	done
+	diff -q --ignore-all-space $(srcdir)/expected obtained
+
+MOSTLYCLEANFILES = obtained
+
 endif
