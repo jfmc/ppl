@@ -40,7 +40,7 @@ using namespace Parma_Polyhedra_Library;
 #define TEST6a 1
 #define TEST10a 1
 
-class Interval {
+class MyInterval {
 private:
   bool uclosed;
   Integer uc;
@@ -50,7 +50,7 @@ private:
   Integer ld;
 
 public:
-  Interval()
+  MyInterval()
     : uclosed(true), uc(1), ud(0), lclosed(true), lc(-1), ld(0) {
   }
 
@@ -124,7 +124,7 @@ public:
 
 class BBox {
 private:
-  std::vector<Interval> box;
+  vector<MyInterval> box;
 
 public:
   BBox(unsigned int dimension) {

@@ -24,6 +24,7 @@ site: http://www.cs.unipr.it/ppl/ . */
 #include "ppl_install.hh"
 #include "print.hh"
 #include "ehandlers.hh"
+#include <iostream>
 
 using namespace std;
 using namespace Parma_Polyhedra_Library;

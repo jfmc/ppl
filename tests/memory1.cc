@@ -26,6 +26,7 @@ site: http://www.cs.unipr.it/ppl/ . */
 #include "ehandlers.hh"
 
 #include <new>
+#include <iostream>
 
 #ifdef HAVE_SYS_RESOURCE_H
 # include <sys/resource.h>

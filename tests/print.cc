@@ -1,4 +1,4 @@
-/* Declaration of simple print functions used in test programs.
+/* Implementation of simple print functions used in test programs.
    Copyright (C) 2001, 2002 Roberto Bagnara <bagnara@cs.unipr.it>
 
 This file is part of the Parma Polyhedra Library (PPL).
@@ -21,33 +21,44 @@ USA.
 For the most up-to-date information see the Parma Polyhedra Library
 site: http://www.cs.unipr.it/ppl/ . */
 
-#ifndef _print_hh
-#define _print_hh 1
-
-#if NOISY
-
-#include <iosfwd>
-#include <string>
+#include "print.hh"
 #include "ppl_install.hh"
+#include <iostream>
+#include <string>
+
+using namespace Parma_Polyhedra_Library;
+using namespace std;
 
 bool
-easy_print(const Parma_Polyhedra_Library::Polyhedron& ph,
-	   const std::string& intro = "",
-	   std::ostream& s = std::cout);
+easy_print(const Polyhedron& ph,
+	   const string& intro = "",
+	   ostream& s = cout) {
+  if (!intro.empty())
+    s << intro << endl;
+  if (ph.space_dimension() == 0) {
+    s << "true" << endl;
+    return true;
+  }
+  else if (ph.check_empty()) {
+    s << "false" << endl;
+    return true;
+  }
+  return false;
+}
 
 void
-print_constraint(const Parma_Polyhedra_Library::Constraint& c,
-		 const std::string& intro = "",
-		 std::ostream& s = std::cout) {
+print_constraint(const Constraint& c,
+		const string& intro = "",
+		ostream& s = cout) {
   if (!intro.empty())
     s << intro << endl;
   s << c << endl;
 }
 
-inline void
-print_constraints(const Parma_Polyhedra_Library::ConSys& cs,
-		  const std::string& intro = "",
-		  std::ostream& s = std::cout) {
+void
+print_constraints(const ConSys& cs,
+		  const string& intro = "",
+		  ostream& s = cout) {
   if (!intro.empty())
     s << intro << endl;
   ConSys::const_iterator i = cs.begin();
@@ -60,33 +71,43 @@ print_constraints(const Parma_Polyhedra_Library::ConSys& cs,
   s << "." << endl;
 }
 
-inline void
-print_constraints(const Parma_Polyhedra_Library::Polyhedron& ph,
-		  const std::string& intro = "",
-		  std::ostream& s = std::cout) {
+void
+print_constraints(const Polyhedron& ph,
+		  const string& intro = "",
+		  ostream& s = cout) {
   if (!easy_print(ph, intro, s))
     print_constraints(ph.constraints(), "", s);
 }
 
-inline void
-print_generator(const Parma_Polyhedra_Library::Generator& g,
-		const std::string& intro = "",
-		std::ostream& s = std::cout) {
+void
+print_generator(const Generator& g,
+		const string& intro = "",
+		ostream& s = cout) {
   if (!intro.empty())
     s << intro << endl;
   s << g << endl;
 }
 
-inline void
-print_generators(const Parma_Polyhedra_Library::GenSys& gs,
-		 const std::string& intro = "",
-		 std::ostream& s = std::cout);
+void
+print_generators(const GenSys& gs,
+		 const string& intro = "",
+		 ostream& s = cout) {
+  if (!intro.empty())
+    s << intro << endl;
+  GenSys::const_iterator i = gs.begin();
+  GenSys::const_iterator gs_end = gs.end();
+  while (i != gs_end) {
+    s << *i++;
+    if (i != gs_end)
+      s << "," << endl;
+  }
+  s << "." << endl;
+}
 
 void
-print_generators(const Parma_Polyhedra_Library::Polyhedron& ph,
-		 const std::string& intro = "",
-		 std::ostream& s = std::cout);
-
-#endif
-
-#endif
+print_generators(const Polyhedron& ph,
+		 const string& intro = "",
+		 ostream& s = cout) {
+  if (!easy_print(ph, intro, s))
+    print_generators(ph.generators(), "", s);
+}

@@ -30,7 +30,7 @@ SUBDIRS =
 
 AM_CPPFLAGS = -I$(top_builddir)/src -I$(top_builddir)/Watchdog @extra_includes@
 
-LDADD = $(top_builddir)/src/libppl.la @extra_libraries@
+LDADD = $(top_builddir)/src/libppl.la ehandlers.o print.o @extra_libraries@
 
 CPPFLAGS = @extra_cpp_flags@
 
@@ -202,12 +202,14 @@ if BUILD_WATCHDOG_LIBRARY
 WATCHDOG_TESTS = watchdog1
 
 watchdog1_SOURCES = watchdog1.cc timings.cc timings.hh
-watchdog1_LDADD = $(top_builddir)/src/libppl.la $(top_builddir)/Watchdog/libpwl.la @extra_libraries@
+watchdog1_LDADD = $(LDADD) $(top_builddir)/Watchdog/libpwl.la
 
 endif
 
 check_PROGRAMS = $(TESTS) $(BUGS)
 
 noinst_HEADERS = ehandlers.hh print.hh
+
+EXTRA_DIST = ehandlers.cc print.cc
 
 BUGS =

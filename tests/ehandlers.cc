@@ -1,4 +1,4 @@
-/* Declare an installer of exception handlers useful for debugging purposes.
+/* Implementation of exception handlers useful for debugging purposes.
    Copyright (C) 2001, 2002 Roberto Bagnara <bagnara@cs.unipr.it>
 
 This file is part of the Parma Polyhedra Library (PPL).
@@ -21,10 +21,26 @@ USA.
 For the most up-to-date information see the Parma Polyhedra Library
 site: http://www.cs.unipr.it/ppl/ . */
 
-#ifndef _ehandlers_hh
-#define _ehandlers_hh 1
+#include <exception>
+#include <iostream>
+#include <cstdlib>
+
+using namespace std;
+
+static void
+my_unexpected_exception() {
+  cerr << "unexpected exception thrown" << endl;
+  exit(1);
+}
+
+static void
+my_uncaught_exception() {
+  cerr << "uncaught exception" << endl;
+  exit(1);
+}
 
 void
-set_handlers();
-
-#endif
+set_handlers() {
+  set_unexpected(my_unexpected_exception);
+  set_terminate(my_uncaught_exception);
+}
