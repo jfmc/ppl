@@ -1156,6 +1156,7 @@ ascii_dump_load4 \
 boundingbox4 \
 intersection1 \
 intersection2 \
+membytes2 \
 nnc_intersection1 \
 nnc_intersection2 \
 nnc_membytes2 \
