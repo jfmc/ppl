@@ -1,15 +1,22 @@
 Enhancements for PPL 0.6
 ========================
 
-- Clearly explain, in the documentation, how (not) to use
-  set_GMP_memory_allocation_functions().  More generally, explain how
-  to have memory-guarded computations.
 - Complete the documentation of the Determinate, PowerSet and
   Polyhedra_PowerSet classes.
 - Turn h79widening6 into a proper test.
 
 
-Enhancements for PPL 0.7 or later versions
+Enhancements for PPL 0.7
+========================
+
+- Allow the specification of alternative coefficient implementations.
+- Clearly explain, in the documentation, how (not) to use
+  set_GMP_memory_allocation_functions().  More generally, explain how
+  to have memory-guarded computations.
+- Completely rewrite the handling of temporary coefficients.
+
+
+Enhancements for PPL 0.8 or later versions
 ==========================================
 
 - Implement void Polyhedron::envelope_assign(const Polyhedron& y).
