@@ -127,6 +127,7 @@ ppl_finalize __P((void));
 int
 ppl_set_error_handler __P((void (*h)(enum ppl_enum_error_code code,
 				     const char* description)));
+
 /*@}*/ /* Initialization, Error Handling and Auxiliary Functions */
 
 #undef PPL_TYPE_DECLARATION
@@ -211,6 +212,7 @@ ppl_Coefficient_to_mpz_t __P((ppl_const_Coefficient_t c, mpz_t z));
 */
 int
 ppl_Coefficient_OK __P((ppl_const_Coefficient_t c));
+
 /*@}*/ /* Functions Related to Coefficients */
 
 /*! \name Functions Related to Linear Expressions */
@@ -340,6 +342,7 @@ ppl_LinExpression_inhomogeneous_term __P((ppl_const_LinExpression_t le,
 */
 int
 ppl_LinExpression_OK __P((ppl_const_LinExpression_t le));
+
 /*@}*/ /* Functions Related to Linear Expressions */
 
 /*! \brief
@@ -444,6 +447,7 @@ ppl_Constraint_inhomogeneous_term __P((ppl_const_Constraint_t c,
 */
 int
 ppl_Constraint_OK __P((ppl_const_Constraint_t c));
+
 /*@}*/ /* Functions Related to Constraints */
 
 /*! \name Functions Related to Constraint Systems */
@@ -591,6 +595,7 @@ int
 ppl_ConSys_const_iterator_equal_test
 __P((ppl_const_ConSys_const_iterator_t x,
      ppl_const_ConSys_const_iterator_t y));
+
 /*@}*/ /* Functions Related to Constraint Systems */
 
 /*! \brief
@@ -697,6 +702,7 @@ ppl_Generator_divisor __P((ppl_const_Generator_t g, ppl_Coefficient_t n));
 */
 int
 ppl_Generator_OK __P((ppl_const_Generator_t g));
+
 /*@}*/ /* Functions Related to Generators */
 
 /*! \name Functions Related to Generator Systems */
@@ -847,6 +853,7 @@ int
 ppl_GenSys_const_iterator_equal_test
 __P((ppl_const_GenSys_const_iterator_t x,
      ppl_const_GenSys_const_iterator_t y));
+
 /*@}*/ /* Functions Related to Generator Systems */
 
 /*! \brief
@@ -1126,7 +1133,6 @@ __P((ppl_Polyhedron_t* pph,
 			    ppl_Coefficient_t n,
 			    ppl_Coefficient_t d)));
 
-
 /*! \brief
   Builds a new C polyhedron corresponding to an interval-based
   bounding box, writing a handle for the newly created polyhedron at
@@ -1187,13 +1193,6 @@ __P((ppl_Polyhedron_t* pph,
 			    ppl_Coefficient_t d)));
 
 /*! \brief
-  Invalidates the handle \p ph: this makes sure the corresponding
-  resources will eventually be released.
-*/
-int
-ppl_delete_Polyhedron __P((ppl_const_Polyhedron_t ph));
-
-/*! \brief
   Assigns a copy of the closed polyhedron \p src to the closed
   polyhedron \p dst.
 */
@@ -1210,10 +1209,287 @@ ppl_assign_NNC_Polyhedron_from_NNC_Polyhedron
 __P((ppl_Polyhedron_t dst, ppl_const_Polyhedron_t src));
 
 /*! \brief
+  Invalidates the handle \p ph: this makes sure the corresponding
+  resources will eventually be released.
+*/
+int
+ppl_delete_Polyhedron __P((ppl_const_Polyhedron_t ph));
+
+/*! \brief
   Returns the dimension of the vector space enclosing \p ph.
 */
 int
 ppl_Polyhedron_space_dimension __P((ppl_const_Polyhedron_t ph));
+
+/*! \brief
+  Writes a const handle to the constraint system defining the
+  polyhedron \p ph at address \p pcs.
+*/
+int
+ppl_Polyhedron_constraints __P((ppl_const_Polyhedron_t ph,
+				ppl_const_ConSys_t* pcs));
+
+/*! \brief
+  Writes a const handle to the minimized constraint system defining the
+  polyhedron \p ph at address \p pcs.
+*/
+int
+ppl_Polyhedron_minimized_constraints __P((ppl_const_Polyhedron_t ph,
+					  ppl_const_ConSys_t* pcs));
+
+/*! \brief
+  Writes a const handle to the generator system defining the
+  polyhedron \p ph at address \p pgs.
+*/
+int
+ppl_Polyhedron_generators __P((ppl_const_Polyhedron_t ph,
+			       ppl_const_GenSys_t* pgs));
+
+/*! \brief
+  Writes a const handle to the minimized generator system defining the
+  polyhedron \p ph at address \p pgs.
+*/
+int
+ppl_Polyhedron_minimized_generators __P((ppl_const_Polyhedron_t ph,
+					 ppl_const_GenSys_t* pgs));
+
+/*! \brief
+  Checks the relation between the polyhedron \p ph with the constraint \p c.
+
+  If successful, returns a non-negative integer that is
+  obtained as the bitwise or of the bits (chosen among
+  PPL_POLY_CON_RELATION_IS_DISJOINT
+  PPL_POLY_CON_RELATION_STRICTLY_INTERSECTS,
+  PPL_POLY_CON_RELATION_IS_INCLUDED, and
+  PPL_POLY_CON_RELATION_SATURATES) that describe the relation between
+  \p ph and \p c.
+*/
+int
+ppl_Polyhedron_relation_with_Constraint __P((ppl_const_Polyhedron_t ph,
+					     ppl_const_Constraint_t c));
+
+/*! \brief
+  Checks the relation between the polyhedron \p ph with the generator \p g.
+
+  If successful, returns a non-negative integer that is
+  obtained as the bitwise or of the bits (only
+  PPL_POLY_GEN_RELATION_SUBSUMES, at present) that describe the
+  relation between \p ph and \p g.
+*/
+int
+ppl_Polyhedron_relation_with_Generator __P((ppl_const_Polyhedron_t ph,
+					    ppl_const_Generator_t g));
+
+/*! \brief
+  Use \p ph to shrink a generic, interval-based bounding box.
+  The bounding box is abstractly provided by means of the parameters,
+
+  \param complexity
+  The code of the complexity class of the algorithm to be used.
+  Must be one of PPL_COMPLEXITY_CLASS_POLYNOMIAL,
+  PPL_COMPLEXITY_CLASS_SIMPLEX, or PPL_COMPLEXITY_CLASS_ANY.
+
+  \param ph
+  The polyhedron that is used to shrink the bounding box.
+
+  \param set_empty
+  a pointer to a void function with no arguments that causes the bounding
+  box to become empty, i.e., to represent the empty set.
+
+  \param raise_lower_bound
+  a pointer to a void function with arguments
+  <CODE>(ppl_dimension_type k, int closed,
+         ppl_const_Coefficient_t n, ppl_const_Coefficient_t d)</CODE>
+  that intersects the interval corresponding to the <CODE>k</CODE>-th
+  dimension with \f$[n/d, +\infty)\f$ if <CODE>closed</CODE> is non-zero,
+  with \f$(n/d, +\infty)\f$ if <CODE>closed</CODE> is zero.
+  The fraction \f$n/d\f$ is in canonical form, that is, \f$n\f$
+  and \f$d\f$ have no common factors and \f$d\f$ is positive, \f$0/1\f$
+  being the unique representation for zero.
+
+  \param lower_upper_bound
+  a pointer to a void function with argument
+  <CODE>(ppl_dimension_type k, int closed,
+         ppl_const_Coefficient_t n, ppl_const_Coefficient_t d)</CODE>
+  that intersects the interval corresponding to the <CODE>k</CODE>-th
+  dimension with \f$(-\infty, n/d]\f$ if <CODE>closed</CODE> is non-zero,
+  with \f$(-\infty, n/d)\f$ if <CODE>closed</CODE> is zero.
+  The fraction \f$n/d\f$ is in canonical form.
+*/
+int
+ppl_Polyhedron_shrink_bounding_box
+__P((ppl_const_Polyhedron_t ph,
+     unsigned int complexity,
+     void (*set_empty)(void),
+     void (*raise_lower_bound)(ppl_dimension_type k, int closed,
+			       ppl_const_Coefficient_t n,
+			       ppl_const_Coefficient_t d),
+     void (*lower_upper_bound)(ppl_dimension_type k, int closed,
+			       ppl_const_Coefficient_t n,
+			       ppl_const_Coefficient_t d)));
+
+/*! \brief
+  Returns a positive integer if \p ph is empty; returns 0 if \p ph is
+  not empty.
+*/
+int
+ppl_Polyhedron_check_empty __P((ppl_const_Polyhedron_t ph));
+
+/*! \brief
+  Returns a positive integer if \p ph is a universe polyhedron;
+  returns 0 if it is not.
+*/
+int
+ppl_Polyhedron_check_universe __P((ppl_const_Polyhedron_t ph));
+
+/*! \brief
+  Returns a positive integer if \p ph is bounded; returns 0 if \p ph is
+  unbounded.
+*/
+int
+ppl_Polyhedron_check_bounded __P((ppl_const_Polyhedron_t ph));
+
+/*! \brief
+  Returns a positive integer if \p le is bounded from above in \p ph;
+  returns 0 otherwise.
+*/
+int
+ppl_Polyhedron_bounds_from_above __P((ppl_const_Polyhedron_t ph,
+				      ppl_const_LinExpression_t le));
+
+/*! \brief
+  Returns a positive integer if \p le is bounded from below in \p ph;
+  returns 0 otherwise.
+*/
+int
+ppl_Polyhedron_bounds_from_below __P((ppl_const_Polyhedron_t ph,
+				      ppl_const_LinExpression_t le));
+
+/*! \brief
+  Returns a positive integer if \p ph is topologically closed;
+  returns 0 if \p ph is not topologically closed.
+*/
+int
+ppl_Polyhedron_check_topologically_closed __P((ppl_const_Polyhedron_t ph));
+
+/*! \brief
+  Returns a positive integer if \p x contains or is equal to \p y;
+  returns 0 if it does not.
+*/
+int
+ppl_Polyhedron_contains_Polyhedron __P((ppl_const_Polyhedron_t x,
+					ppl_const_Polyhedron_t y));
+
+/*! \brief
+  Returns a positive integer if \p x strictly contains \p y; returns 0
+  if it does not.
+*/
+int
+ppl_Polyhedron_strictly_contains_Polyhedron __P((ppl_const_Polyhedron_t x,
+						 ppl_const_Polyhedron_t y));
+
+/*! \brief
+  Returns a positive integer if \p x and \p y are disjoint; returns 0
+  if they are not.
+*/
+int
+ppl_Polyhedron_check_disjoint_from_Polyhedron __P((ppl_const_Polyhedron_t x,
+						   ppl_const_Polyhedron_t y));
+
+/*! \brief
+  Returns a positive integer if \p ph is well formed, i.e., if it
+  satisfies all its implementation variant; returns 0 and perhaps
+  make some noise if \p ph is broken.  Useful for debugging purposes.
+*/
+int
+ppl_Polyhedron_OK __P((ppl_const_Polyhedron_t ph));
+
+/*! \brief
+  Adds a copy of the constraint \p c to the system of constraints of
+  \p ph.
+*/
+int
+ppl_Polyhedron_add_constraint __P((ppl_Polyhedron_t ph,
+				   ppl_const_Constraint_t c));
+
+/*! \brief
+  Adds a copy of the constraint \p c to the system of constraints of
+  \p ph.  Returns a positive integer if the resulting polyhedron is
+  non-empty; returns 0 if it is empty.  Upon successful return, \p ph
+  is guaranteed to be minimized.
+
+*/
+int
+ppl_Polyhedron_add_constraint_and_minimize __P((ppl_Polyhedron_t ph,
+						ppl_const_Constraint_t c));
+
+/*! \brief
+  Adds a copy of the generator \p g to the system of generators of
+  \p ph.
+*/
+int
+ppl_Polyhedron_add_generator __P((ppl_Polyhedron_t ph,
+				  ppl_const_Generator_t g));
+
+/*! \brief
+  Adds a copy of the generator \p g to the system of generators of
+  \p ph.  Returns a positive integer if the resulting polyhedron is
+  non-empty; returns 0 if it is empty.  Upon successful return, \p ph
+  is guaranteed to be minimized.
+*/
+int
+ppl_Polyhedron_add_generator_and_minimize __P((ppl_Polyhedron_t ph,
+					       ppl_const_Generator_t g));
+
+/*! \brief
+  Adds the system of constraints \p cs to the system of constraints of
+  \p ph.
+
+  \warning
+  This function modifies the constraint system referenced by \p cs:
+  upon return, no assumption can be made on its value.
+*/
+int
+ppl_Polyhedron_add_constraints __P((ppl_Polyhedron_t ph, ppl_ConSys_t cs));
+
+/*! \brief
+  Adds the system of constraints \p cs to the system of constraints of
+  \p ph.  Returns a positive integer if the resulting polyhedron is
+  non-empty; returns 0 if it is empty.  Upon successful return, \p ph
+  is guaranteed to be minimized.
+
+  \warning
+  This function modifies the constraint system referenced by \p cs:
+  upon return, no assumption can be made on its value.
+*/
+int
+ppl_Polyhedron_add_constraints_and_minimize __P((ppl_Polyhedron_t ph,
+						 ppl_ConSys_t cs));
+
+/*! \brief
+  Adds the system of generators \p gs to the system of generators of
+  \p ph.
+
+  \warning
+  This function modifies the generator system referenced by \p gs:
+  upon return, no assumption can be made on its value.
+*/
+int
+ppl_Polyhedron_add_generators __P((ppl_Polyhedron_t ph, ppl_GenSys_t gs));
+
+/*! \brief
+  Adds the system of generators \p gs to the system of generators of
+  \p ph.  Returns a positive integer if the resulting polyhedron is
+  non-empty; returns 0 if it is empty.  Upon successful return, \p ph
+  is guaranteed to be minimized.
+
+  \warning
+  This function modifies the generator system referenced by \p gs:
+  upon return, no assumption can be made on its value.
+*/
+int
+ppl_Polyhedron_add_generators_and_minimize __P((ppl_Polyhedron_t ph,
+						ppl_GenSys_t gs));
 
 /*! \brief
   Intersects \p x with polyhedron \p y and assigns the result \p x.
@@ -1231,15 +1507,6 @@ ppl_Polyhedron_intersection_assign __P((ppl_Polyhedron_t x,
 int
 ppl_Polyhedron_intersection_assign_and_minimize
 __P((ppl_Polyhedron_t x, ppl_const_Polyhedron_t y));
-
-/*! \brief
-  Seeing a polyhedron as a set of tuples (its points), assigns
-  to \p x all the tuples that can be obtained by concatenating,
-  in the order given, a tuple of \p x with a tuple of \p y.
-*/
-int
-ppl_Polyhedron_concatenate_assign __P((ppl_Polyhedron_t x,
-				       ppl_const_Polyhedron_t y));
 
 /*! \brief
   Assigns to \p x the poly-hull of the set-theoretic union
@@ -1266,6 +1533,80 @@ ppl_Polyhedron_poly_hull_assign_and_minimize __P((ppl_Polyhedron_t x,
 int
 ppl_Polyhedron_poly_difference_assign __P((ppl_Polyhedron_t x,
 					   ppl_const_Polyhedron_t y));
+
+/*! \brief
+  Transforms the polyhedron \p ph, assigning an affine expression
+  to the specified variable.
+  \param ph  The polyhedron that is transformed.
+  \param var The variable to which the affine expression is assigned.
+  \param le  The numerator of the affine expression.
+  \param d   The denominator of the affine expression.
+*/
+int
+ppl_Polyhedron_affine_image __P((ppl_Polyhedron_t ph,
+				 ppl_dimension_type var,
+				 ppl_const_LinExpression_t le,
+				 ppl_const_Coefficient_t d));
+
+/*! \brief
+  Transforms the polyhedron \p ph, substituting an affine expression
+  to the specified variable.
+  \param ph  The polyhedron that is transformed.
+  \param var The variable to which the affine expression is substituted.
+  \param le  The numerator of the affine expression.
+  \param d   The denominator of the affine expression.
+*/
+int
+ppl_Polyhedron_affine_preimage __P((ppl_Polyhedron_t ph,
+				    ppl_dimension_type var,
+				    ppl_const_LinExpression_t le,
+				    ppl_const_Coefficient_t d));
+
+/*! \brief
+  Assigns to \p ph the image of \p ph with respect to the
+  \ref generalized_image "generalized affine transfer function"
+  \f$\mathrm{var}' \relsym \frac{\mathrm{expr}}{\mathrm{denominator}}\f$,
+  where \f$\mathord{\relsym}\f$ is the relation symbol encoded
+  by \p relsym.
+  \param ph     The polyhedron that is transformed.
+  \param var    The left hand side variable of the generalized
+                affine transfer function.
+  \param relsym The relation symbol.
+  \param le     The numerator of the right hand side affine expression.
+  \param d      The denominator of the right hand side affine expression.
+*/
+int
+ppl_Polyhedron_generalized_affine_image
+__P((ppl_Polyhedron_t ph,
+     ppl_dimension_type var,
+     enum ppl_enum_Constraint_Type relsym,
+     ppl_const_LinExpression_t le,
+     ppl_const_Coefficient_t d));
+
+/*! \brief
+  Assigns to \p ph the image of \p ph with respect to the
+  \ref generalized_image "generalized affine transfer function"
+  \f$\mathrm{lhs}' \relsym \mathrm{rhs}\f$, where
+  \f$\mathord{\relsym}\f$ is the relation symbol encoded by \p relsym.
+  \param ph    The polyhedron that is transformed.
+  \param lhs           The left hand side affine expression.
+  \param relsym        The relation symbol.
+  \param rhs           The right hand side affine expression.
+*/
+int
+ppl_Polyhedron_generalized_affine_image_lhs_rhs
+__P((ppl_Polyhedron_t ph,
+     ppl_const_LinExpression_t lhs,
+     enum ppl_enum_Constraint_Type relsym,
+     ppl_const_LinExpression_t rhs));
+
+/*! \brief
+  Assigns to \p x the \ref time_elapse "time-elapse" between the polyhedra
+  \p x and \p y.
+*/
+int
+ppl_Polyhedron_time_elapse_assign __P((ppl_Polyhedron_t x,
+				       ppl_const_Polyhedron_t y));
 
 /*! \brief
   If the polyhedron \p y is contained in (or equal to) the polyhedron
@@ -1449,132 +1790,10 @@ __P((ppl_Polyhedron_t x,
 }
 
 /*! \brief
-  Assigns to \p x the \ref time_elapse "time-elapse" between the polyhedra
-  \p x and \p y.
+  Assigns to \p ph its topological closure.
 */
 int
-ppl_Polyhedron_time_elapse_assign __P((ppl_Polyhedron_t x,
-				       ppl_const_Polyhedron_t y));
-
-
-/*! \brief
-  Writes a const handle to the constraint system defining the
-  polyhedron \p ph at address \p pcs.
-*/
-int
-ppl_Polyhedron_constraints __P((ppl_const_Polyhedron_t ph,
-				ppl_const_ConSys_t* pcs));
-
-/*! \brief
-  Writes a const handle to the minimized constraint system defining the
-  polyhedron \p ph at address \p pcs.
-*/
-int
-ppl_Polyhedron_minimized_constraints __P((ppl_const_Polyhedron_t ph,
-				ppl_const_ConSys_t* pcs));
-
-/*! \brief
-  Writes a const handle to the generator system defining the
-  polyhedron \p ph at address \p pgs.
-*/
-int
-ppl_Polyhedron_generators __P((ppl_const_Polyhedron_t ph,
-			       ppl_const_GenSys_t* pgs));
-
-/*! \brief
-  Writes a const handle to the minimized generator system defining the
-  polyhedron \p ph at address \p pgs.
-*/
-int
-ppl_Polyhedron_minimized_generators __P((ppl_const_Polyhedron_t ph,
-					 ppl_const_GenSys_t* pgs));
-
-/*! \brief
-  Adds a copy of the constraint \p c to the system of constraints of
-  \p ph.
-*/
-int
-ppl_Polyhedron_add_constraint __P((ppl_Polyhedron_t ph,
-				   ppl_const_Constraint_t c));
-
-/*! \brief
-  Adds a copy of the constraint \p c to the system of constraints of
-  \p ph.  Returns a positive integer if the resulting polyhedron is
-  non-empty; returns 0 if it is empty.  Upon successful return, \p ph
-  is guaranteed to be minimized.
-
-*/
-int
-ppl_Polyhedron_add_constraint_and_minimize __P((ppl_Polyhedron_t ph,
-						ppl_const_Constraint_t c));
-
-/*! \brief
-  Adds a copy of the generator \p g to the system of generators of
-  \p ph.
-*/
-int
-ppl_Polyhedron_add_generator __P((ppl_Polyhedron_t ph,
-				  ppl_const_Generator_t g));
-
-/*! \brief
-  Adds a copy of the generator \p g to the system of generators of
-  \p ph.  Returns a positive integer if the resulting polyhedron is
-  non-empty; returns 0 if it is empty.  Upon successful return, \p ph
-  is guaranteed to be minimized.
-*/
-int
-ppl_Polyhedron_add_generator_and_minimize __P((ppl_Polyhedron_t ph,
-					       ppl_const_Generator_t g));
-
-/*! \brief
-  Adds the system of constraints \p cs to the system of constraints of
-  \p ph.
-
-  \warning
-  This function modifies the constraint system referenced by \p cs:
-  upon return, no assumption can be made on its value.
-*/
-int
-ppl_Polyhedron_add_constraints __P((ppl_Polyhedron_t ph, ppl_ConSys_t cs));
-
-/*! \brief
-  Adds the system of constraints \p cs to the system of constraints of
-  \p ph.  Returns a positive integer if the resulting polyhedron is
-  non-empty; returns 0 if it is empty.  Upon successful return, \p ph
-  is guaranteed to be minimized.
-
-  \warning
-  This function modifies the constraint system referenced by \p cs:
-  upon return, no assumption can be made on its value.
-*/
-int
-ppl_Polyhedron_add_constraints_and_minimize __P((ppl_Polyhedron_t ph,
-						 ppl_ConSys_t cs));
-
-/*! \brief
-  Adds the system of generators \p gs to the system of generators of
-  \p ph.
-
-  \warning
-  This function modifies the generator system referenced by \p gs:
-  upon return, no assumption can be made on its value.
-*/
-int
-ppl_Polyhedron_add_generators __P((ppl_Polyhedron_t ph, ppl_GenSys_t gs));
-
-/*! \brief
-  Adds the system of generators \p gs to the system of generators of
-  \p ph.  Returns a positive integer if the resulting polyhedron is
-  non-empty; returns 0 if it is empty.  Upon successful return, \p ph
-  is guaranteed to be minimized.
-
-  \warning
-  This function modifies the generator system referenced by \p gs:
-  upon return, no assumption can be made on its value.
-*/
-int
-ppl_Polyhedron_add_generators_and_minimize __P((ppl_Polyhedron_t ph,
-						ppl_GenSys_t gs));
+ppl_Polyhedron_topological_closure_assign __P((ppl_Polyhedron_t ph));
 
 /*! \brief
   Adds \p d new dimensions to the space enclosing the polyhedron \p ph
@@ -1590,6 +1809,15 @@ ppl_Polyhedron_add_dimensions_and_embed __P((ppl_Polyhedron_t ph,
 int
 ppl_Polyhedron_add_dimensions_and_project __P((ppl_Polyhedron_t ph,
 					       ppl_dimension_type d));
+
+/*! \brief
+  Seeing a polyhedron as a set of tuples (its points), assigns
+  to \p x all the tuples that can be obtained by concatenating,
+  in the order given, a tuple of \p x with a tuple of \p y.
+*/
+int
+ppl_Polyhedron_concatenate_assign __P((ppl_Polyhedron_t x,
+				       ppl_const_Polyhedron_t y));
 
 /*! \brief
   Removes from \p ph and its containing space the dimensions that are
@@ -1632,228 +1860,6 @@ ppl_Polyhedron_rename_dimensions __P((ppl_Polyhedron_t ph,
 				      ppl_dimension_type maps[],
 				      size_t n));
 
-/*! \brief
-  Transforms the polyhedron \p ph, assigning an affine expression
-  to the specified variable.
-  \param ph  The polyhedron that is transformed.
-  \param var The variable to which the affine expression is assigned.
-  \param le  The numerator of the affine expression.
-  \param d   The denominator of the affine expression.
-*/
-int
-ppl_Polyhedron_affine_image __P((ppl_Polyhedron_t ph,
-				 ppl_dimension_type var,
-				 ppl_const_LinExpression_t le,
-				 ppl_const_Coefficient_t d));
-
-/*! \brief
-  Transforms the polyhedron \p ph, substituting an affine expression
-  to the specified variable.
-  \param ph  The polyhedron that is transformed.
-  \param var The variable to which the affine expression is substituted.
-  \param le  The numerator of the affine expression.
-  \param d   The denominator of the affine expression.
-*/
-int
-ppl_Polyhedron_affine_preimage __P((ppl_Polyhedron_t ph,
-				    ppl_dimension_type var,
-				    ppl_const_LinExpression_t le,
-				    ppl_const_Coefficient_t d));
-
-/*! \brief
-  Assigns to \p ph the image of \p ph with respect to the
-  \ref generalized_image "generalized affine transfer function"
-  \f$\mathrm{var}' \relsym \frac{\mathrm{expr}}{\mathrm{denominator}}\f$,
-  where \f$\mathord{\relsym}\f$ is the relation symbol encoded
-  by \p relsym.
-  \param ph     The polyhedron that is transformed.
-  \param var    The left hand side variable of the generalized
-                affine transfer function.
-  \param relsym The relation symbol.
-  \param le     The numerator of the right hand side affine expression.
-  \param d      The denominator of the right hand side affine expression.
-*/
-int
-ppl_Polyhedron_generalized_affine_image
-__P((ppl_Polyhedron_t ph,
-     ppl_dimension_type var,
-     enum ppl_enum_Constraint_Type relsym,
-     ppl_const_LinExpression_t le,
-     ppl_const_Coefficient_t d));
-
-/*! \brief
-  Assigns to \p ph the image of \p ph with respect to the
-  \ref generalized_image "generalized affine transfer function"
-  \f$\mathrm{lhs}' \relsym \mathrm{rhs}\f$, where
-  \f$\mathord{\relsym}\f$ is the relation symbol encoded by \p relsym.
-  \param ph    The polyhedron that is transformed.
-  \param lhs           The left hand side affine expression.
-  \param relsym        The relation symbol.
-  \param rhs           The right hand side affine expression.
-*/
-int
-ppl_Polyhedron_generalized_affine_image_lhs_rhs
-__P((ppl_Polyhedron_t ph,
-     ppl_const_LinExpression_t lhs,
-     enum ppl_enum_Constraint_Type relsym,
-     ppl_const_LinExpression_t rhs));
-
-/*! \brief
-  Use \p ph to shrink a generic, interval-based bounding box.
-  The bounding box is abstractly provided by means of the parameters,
-
-  \param complexity
-  The code of the complexity class of the algorithm to be used.
-  Must be one of PPL_COMPLEXITY_CLASS_POLYNOMIAL,
-  PPL_COMPLEXITY_CLASS_SIMPLEX, or PPL_COMPLEXITY_CLASS_ANY.
-
-  \param ph
-  The polyhedron that is used to shrink the bounding box.
-
-  \param set_empty
-  a pointer to a void function with no arguments that causes the bounding
-  box to become empty, i.e., to represent the empty set.
-
-  \param raise_lower_bound
-  a pointer to a void function with arguments
-  <CODE>(ppl_dimension_type k, int closed,
-         ppl_const_Coefficient_t n, ppl_const_Coefficient_t d)</CODE>
-  that intersects the interval corresponding to the <CODE>k</CODE>-th
-  dimension with \f$[n/d, +\infty)\f$ if <CODE>closed</CODE> is non-zero,
-  with \f$(n/d, +\infty)\f$ if <CODE>closed</CODE> is zero.
-  The fraction \f$n/d\f$ is in canonical form, that is, \f$n\f$
-  and \f$d\f$ have no common factors and \f$d\f$ is positive, \f$0/1\f$
-  being the unique representation for zero.
-
-  \param lower_upper_bound
-  a pointer to a void function with argument
-  <CODE>(ppl_dimension_type k, int closed,
-         ppl_const_Coefficient_t n, ppl_const_Coefficient_t d)</CODE>
-  that intersects the interval corresponding to the <CODE>k</CODE>-th
-  dimension with \f$(-\infty, n/d]\f$ if <CODE>closed</CODE> is non-zero,
-  with \f$(-\infty, n/d)\f$ if <CODE>closed</CODE> is zero.
-  The fraction \f$n/d\f$ is in canonical form.
-*/
-int
-ppl_Polyhedron_shrink_bounding_box
-__P((ppl_const_Polyhedron_t ph,
-     unsigned int complexity,
-     void (*set_empty)(void),
-     void (*raise_lower_bound)(ppl_dimension_type k, int closed,
-			       ppl_const_Coefficient_t n,
-			       ppl_const_Coefficient_t d),
-     void (*lower_upper_bound)(ppl_dimension_type k, int closed,
-			       ppl_const_Coefficient_t n,
-			       ppl_const_Coefficient_t d)));
-
-/*! \brief
-  Checks the relation between the polyhedron \p ph with the constraint \p c.
-
-  If successful, returns a non-negative integer that is
-  obtained as the bitwise or of the bits (chosen among
-  PPL_POLY_CON_RELATION_IS_DISJOINT
-  PPL_POLY_CON_RELATION_STRICTLY_INTERSECTS,
-  PPL_POLY_CON_RELATION_IS_INCLUDED, and
-  PPL_POLY_CON_RELATION_SATURATES) that describe the relation between
-  \p ph and \p c.
-*/
-int
-ppl_Polyhedron_relation_with_Constraint __P((ppl_const_Polyhedron_t ph,
-					     ppl_const_Constraint_t c));
-
-/*! \brief
-  Checks the relation between the polyhedron \p ph with the generator \p g.
-
-  If successful, returns a non-negative integer that is
-  obtained as the bitwise or of the bits (only
-  PPL_POLY_GEN_RELATION_SUBSUMES, at present) that describe the
-  relation between \p ph and \p g.
-*/
-int
-ppl_Polyhedron_relation_with_Generator __P((ppl_const_Polyhedron_t ph,
-					    ppl_const_Generator_t g));
-
-/*! \brief
-  Returns a positive integer if \p ph is empty; returns 0 if \p ph is
-  not empty.
-*/
-int
-ppl_Polyhedron_check_empty __P((ppl_const_Polyhedron_t ph));
-
-/*! \brief
-  Returns a positive integer if \p ph is a universe polyhedron;
-  returns 0 if it is not.
-*/
-int
-ppl_Polyhedron_check_universe __P((ppl_const_Polyhedron_t ph));
-
-/*! \brief
-  Returns a positive integer if \p ph is bounded; returns 0 if \p ph is
-  unbounded.
-*/
-int
-ppl_Polyhedron_check_bounded __P((ppl_const_Polyhedron_t ph));
-
-/*! \brief
-  Returns a positive integer if \p le is bounded from above in \p ph;
-  returns 0 otherwise.
-*/
-int
-ppl_Polyhedron_bounds_from_above __P((ppl_const_Polyhedron_t ph,
-				      ppl_const_LinExpression_t le));
-
-/*! \brief
-  Returns a positive integer if \p le is bounded from below in \p ph;
-  returns 0 otherwise.
-*/
-int
-ppl_Polyhedron_bounds_from_below __P((ppl_const_Polyhedron_t ph,
-				      ppl_const_LinExpression_t le));
-
-/*! \brief
-  Returns a positive integer if \p ph is topologically closed;
-  returns 0 if \p ph is not topologically closed.
-*/
-int
-ppl_Polyhedron_check_topologically_closed __P((ppl_const_Polyhedron_t ph));
-
-/*! \brief
-  Assigns to \p ph its topological closure.
-*/
-int
-ppl_Polyhedron_topological_closure_assign __P((ppl_Polyhedron_t ph));
-
-/*! \brief
-  Returns a positive integer if \p x contains or is equal to \p y;
-  returns 0 if it does not.
-*/
-int
-ppl_Polyhedron_contains_Polyhedron __P((ppl_const_Polyhedron_t x,
-					ppl_const_Polyhedron_t y));
-
-/*! \brief
-  Returns a positive integer if \p x strictly contains \p y; returns 0
-  if it does not.
-*/
-int
-ppl_Polyhedron_strictly_contains_Polyhedron __P((ppl_const_Polyhedron_t x,
-						 ppl_const_Polyhedron_t y));
-
-/*! \brief
-  Returns a positive integer if \p x and \p y are disjoint; returns 0
-  if they are not.
-*/
-int
-ppl_Polyhedron_check_disjoint_from_Polyhedron __P((ppl_const_Polyhedron_t x,
-						   ppl_const_Polyhedron_t y));
-
-/*! \brief
-  Returns a positive integer if \p ph is well formed, i.e., if it
-  satisfies all its implementation variant; returns 0 and perhaps
-  make some noise if \p ph is broken.  Useful for debugging purposes.
-*/
-int
-ppl_Polyhedron_OK __P((ppl_const_Polyhedron_t ph));
 /*@}*/ /* Functions Related to Polyhedra */
 
 #ifdef __cplusplus

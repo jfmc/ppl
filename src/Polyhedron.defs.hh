@@ -399,9 +399,6 @@ public:
   };
 
 protected:
-  //! Ordinary copy-constructor.
-  Polyhedron(const Polyhedron& y);
-
   //! Builds a polyhedron having the specified properties.
   /*!
     \param topol          The topology of the polyhedron;
@@ -413,6 +410,9 @@ protected:
   Polyhedron(Topology topol,
 	     dimension_type num_dimensions,
 	     Degenerate_Kind kind);
+
+  //! Ordinary copy-constructor.
+  Polyhedron(const Polyhedron& y);
 
   //! Builds a polyhedron from a system of constraints.
   /*!
@@ -1049,68 +1049,8 @@ public:
   */
   void time_elapse_assign(const Polyhedron& y);
 
-  //! \brief
-  //! Assigns to \p *this the result of computing the
-  //! \ref H79_widening "H79-widening" between \p *this and \p y.
-  /*!
-    \param y           A polyhedron that <EM>must</EM>
-                       be contained in \p *this.
-    \param tp          An optional pointer to an unsigned variable storing
-                       the number of available tokens
-		       (to be used when applying the
-		       \ref widening_with_tokens "widening with tokens"
-		       delay technique).
-    \exception std::invalid_argument thrown if \p *this and \p y
-                                     are topology-incompatible
-                                     or dimension-incompatible.
-  */
-  void H79_widening_assign(const Polyhedron& y, unsigned* tp = 0);
-
-  //! \brief
-  //! Improves the result of the \ref H79_widening "H79-widening"
-  //! computation by also enforcing those constraints in \p cs that are
-  //! satisfied by all the points of \p *this.
-  /*!
-    \param y                 A polyhedron that <EM>must</EM>
-                             be contained in \p *this.
-    \param cs                The system of constraints used to improve
-                             the widened polyhedron.
-    \param tp                An optional pointer to an unsigned variable
-                             storing the number of available tokens
-			     (to be used when applying the
-			     \ref widening_with_tokens "widening with tokens"
-			     delay technique).
-    \exception std::invalid_argument thrown if \p *this, \p y and \p cs
-                                     are topology-incompatible
-                                     or dimension-incompatible.
-  */
-  void limited_H79_extrapolation_assign(const Polyhedron& y,
-					const ConSys& cs,
-					unsigned* tp = 0);
-
-  //! \brief
-  //! Improves the result of the \ref H79_widening "H79-widening"
-  //! computation by also enforcing those constraints in \p cs that are
-  //! satisfied by all the points of \p *this, plus all the constraints
-  //! of the form \f$\pm x \leq r\f$ and \f$\pm x < r\f$, with
-  //! \f$r \in \Qset\f$, that are satisfied by all the points of \p *this.
-  /*!
-    \param y                 A polyhedron that <EM>must</EM>
-                             be contained in \p *this.
-    \param cs                The system of constraints used to improve
-                             the widened polyhedron.
-    \param tp                An optional pointer to an unsigned variable
-                             storing the number of available tokens
-			     (to be used when applying the
-			     \ref widening_with_tokens "widening with tokens"
-			     delay technique).
-    \exception std::invalid_argument thrown if \p *this, \p y and \p cs
-                                     are topology-incompatible
-                                     or dimension-incompatible.
-  */
-  void bounded_H79_extrapolation_assign(const Polyhedron& y,
-					const ConSys& cs,
-					unsigned* tp = 0);
+  //! Assigns to \p *this its topological closure.
+  void topological_closure_assign();
 
   //! \brief
   //! Assigns to \p *this the result of computing the
@@ -1175,8 +1115,68 @@ public:
 					   const ConSys& cs,
 					   unsigned* tp = 0);
 
-  //! Assigns to \p *this its topological closure.
-  void topological_closure_assign();
+  //! \brief
+  //! Assigns to \p *this the result of computing the
+  //! \ref H79_widening "H79-widening" between \p *this and \p y.
+  /*!
+    \param y           A polyhedron that <EM>must</EM>
+                       be contained in \p *this.
+    \param tp          An optional pointer to an unsigned variable storing
+                       the number of available tokens
+		       (to be used when applying the
+		       \ref widening_with_tokens "widening with tokens"
+		       delay technique).
+    \exception std::invalid_argument thrown if \p *this and \p y
+                                     are topology-incompatible
+                                     or dimension-incompatible.
+  */
+  void H79_widening_assign(const Polyhedron& y, unsigned* tp = 0);
+
+  //! \brief
+  //! Improves the result of the \ref H79_widening "H79-widening"
+  //! computation by also enforcing those constraints in \p cs that are
+  //! satisfied by all the points of \p *this.
+  /*!
+    \param y                 A polyhedron that <EM>must</EM>
+                             be contained in \p *this.
+    \param cs                The system of constraints used to improve
+                             the widened polyhedron.
+    \param tp                An optional pointer to an unsigned variable
+                             storing the number of available tokens
+			     (to be used when applying the
+			     \ref widening_with_tokens "widening with tokens"
+			     delay technique).
+    \exception std::invalid_argument thrown if \p *this, \p y and \p cs
+                                     are topology-incompatible
+                                     or dimension-incompatible.
+  */
+  void limited_H79_extrapolation_assign(const Polyhedron& y,
+					const ConSys& cs,
+					unsigned* tp = 0);
+
+  //! \brief
+  //! Improves the result of the \ref H79_widening "H79-widening"
+  //! computation by also enforcing those constraints in \p cs that are
+  //! satisfied by all the points of \p *this, plus all the constraints
+  //! of the form \f$\pm x \leq r\f$ and \f$\pm x < r\f$, with
+  //! \f$r \in \Qset\f$, that are satisfied by all the points of \p *this.
+  /*!
+    \param y                 A polyhedron that <EM>must</EM>
+                             be contained in \p *this.
+    \param cs                The system of constraints used to improve
+                             the widened polyhedron.
+    \param tp                An optional pointer to an unsigned variable
+                             storing the number of available tokens
+			     (to be used when applying the
+			     \ref widening_with_tokens "widening with tokens"
+			     delay technique).
+    \exception std::invalid_argument thrown if \p *this, \p y and \p cs
+                                     are topology-incompatible
+                                     or dimension-incompatible.
+  */
+  void bounded_H79_extrapolation_assign(const Polyhedron& y,
+					const ConSys& cs,
+					unsigned* tp = 0);
 
   //@} Space-Dimension Preserving Member Functions that May Modify [...]
 

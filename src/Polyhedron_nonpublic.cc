@@ -36,23 +36,6 @@ site: http://www.cs.unipr.it/ppl/ . */
 
 namespace PPL = Parma_Polyhedra_Library;
 
-PPL::Polyhedron::Polyhedron(const Polyhedron& y)
-  : con_sys(y.topology()),
-    gen_sys(y.topology()),
-    status(y.status),
-    space_dim(y.space_dim) {
-  // Being a protected method, we simply assert that topologies do match.
-  assert(topology() == y.topology());
-  if (y.constraints_are_up_to_date())
-    con_sys = y.con_sys;
-  if (y.generators_are_up_to_date())
-    gen_sys = y.gen_sys;
-  if (y.sat_c_is_up_to_date())
-    sat_c = y.sat_c;
-  if (y.sat_g_is_up_to_date())
-      sat_g = y.sat_g;
-}
-
 PPL::Polyhedron::Polyhedron(Topology topol,
 			    dimension_type num_dimensions,
 			    Degenerate_Kind kind)
@@ -72,6 +55,23 @@ PPL::Polyhedron::Polyhedron(Topology topol,
     }
   space_dim = num_dimensions;
   assert(OK());
+}
+
+PPL::Polyhedron::Polyhedron(const Polyhedron& y)
+  : con_sys(y.topology()),
+    gen_sys(y.topology()),
+    status(y.status),
+    space_dim(y.space_dim) {
+  // Being a protected method, we simply assert that topologies do match.
+  assert(topology() == y.topology());
+  if (y.constraints_are_up_to_date())
+    con_sys = y.con_sys;
+  if (y.generators_are_up_to_date())
+    gen_sys = y.gen_sys;
+  if (y.sat_c_is_up_to_date())
+    sat_c = y.sat_c;
+  if (y.sat_g_is_up_to_date())
+      sat_g = y.sat_g;
 }
 
 PPL::Polyhedron::Polyhedron(Topology topol, const ConSys& ccs)

@@ -30,282 +30,6 @@ site: http://www.cs.unipr.it/ppl/ . */
 
 namespace Parma_Polyhedra_Library {
 
-inline
-Polyhedron::~Polyhedron() {
-}
-
-inline Topology
-Polyhedron::topology() const {
-  // We can check either one of the two matrices.
-  // (`con_sys' is slightly better, since it is placed at offset 0.)
-  return con_sys.topology();
-}
-
-inline void
-Polyhedron::swap(Polyhedron& y) {
-  if (topology() != y.topology())
-    throw_topology_incompatible("swap(y)", y);
-  std::swap(con_sys, y.con_sys);
-  std::swap(gen_sys, y.gen_sys);
-  std::swap(sat_c, y.sat_c);
-  std::swap(sat_g, y.sat_g);
-  std::swap(status, y.status);
-  std::swap(space_dim, y.space_dim);
-}
-
-} // namespace Parma_Polyhedra_Library
-
-/*! \relates Parma_Polyhedra_Library::Polyhedron */
-inline void
-std::swap(Parma_Polyhedra_Library::Polyhedron& x,
-	  Parma_Polyhedra_Library::Polyhedron& y) {
-  x.swap(y);
-}
-
-namespace Parma_Polyhedra_Library {
-
-inline bool
-Polyhedron::is_necessarily_closed() const {
-  // We can check either one of the two matrices.
-  // (`con_sys' is slightly better, since it is placed at offset 0.)
-  return con_sys.is_necessarily_closed();
-}
-
-inline bool
-Polyhedron::is_empty() const {
-  return status.test_empty();
-}
-
-inline bool
-Polyhedron::constraints_are_up_to_date() const {
-  return status.test_c_up_to_date();
-}
-
-inline bool
-Polyhedron::generators_are_up_to_date() const {
-  return status.test_g_up_to_date();
-}
-
-inline bool
-Polyhedron::constraints_are_minimized() const {
-  return status.test_c_minimized();
-}
-
-inline bool
-Polyhedron::generators_are_minimized() const {
-  return status.test_g_minimized();
-}
-
-inline bool
-Polyhedron::has_pending_constraints() const {
-  return status.test_c_pending();
-}
-
-inline bool
-Polyhedron::sat_c_is_up_to_date() const {
-  return status.test_sat_c_up_to_date();
-}
-
-inline bool
-Polyhedron::sat_g_is_up_to_date() const {
-  return status.test_sat_g_up_to_date();
-}
-
-inline bool
-Polyhedron::can_have_something_pending() const {
-  return constraints_are_minimized()
-    && generators_are_minimized()
-    && (sat_c_is_up_to_date() || sat_g_is_up_to_date());
-}
-
-inline bool
-Polyhedron::has_pending_generators() const {
-  return status.test_g_pending();
-}
-
-inline bool
-Polyhedron::has_something_pending() const {
-  return status.test_c_pending() || status.test_g_pending();
-}
-
-inline void
-Polyhedron::set_constraints_up_to_date() {
-  status.set_c_up_to_date();
-}
-
-inline void
-Polyhedron::set_generators_up_to_date() {
-  status.set_g_up_to_date();
-}
-
-inline void
-Polyhedron::set_constraints_minimized() {
-  set_constraints_up_to_date();
-  status.set_c_minimized();
-}
-
-inline void
-Polyhedron::set_generators_minimized() {
-  set_generators_up_to_date();
-  status.set_g_minimized();
-}
-
-inline void
-Polyhedron::set_constraints_pending() {
-  status.set_c_pending();
-}
-
-inline void
-Polyhedron::set_generators_pending() {
-  status.set_g_pending();
-}
-
-inline void
-Polyhedron::set_sat_c_up_to_date() {
-  status.set_sat_c_up_to_date();
-}
-
-inline void
-Polyhedron::set_sat_g_up_to_date() {
-  status.set_sat_g_up_to_date();
-}
-
-inline void
-Polyhedron::clear_empty() {
-  status.reset_empty();
-}
-
-inline void
-Polyhedron::clear_sat_c_up_to_date() {
-  status.reset_sat_c_up_to_date();
-  // Can get rid of sat_c here.
-}
-
-inline void
-Polyhedron::clear_sat_g_up_to_date() {
-  status.reset_sat_g_up_to_date();
-  // Can get rid of sat_g here.
-}
-
-inline void
-Polyhedron::clear_constraints_minimized() {
-  status.reset_c_minimized();
-}
-
-inline void
-Polyhedron::clear_generators_minimized() {
-  status.reset_g_minimized();
-}
-
-inline void
-Polyhedron::clear_pending_constraints() {
-  status.reset_c_pending();
-}
-
-inline void
-Polyhedron::clear_pending_generators() {
-  status.reset_g_pending();
-}
-
-inline void
-Polyhedron::clear_constraints_up_to_date() {
-  clear_pending_constraints();
-  clear_constraints_minimized();
-  clear_sat_c_up_to_date();
-  clear_sat_g_up_to_date();
-  status.reset_c_up_to_date();
-  // Can get rid of con_sys here.
-}
-
-inline void
-Polyhedron::clear_generators_up_to_date() {
-  clear_pending_generators();
-  clear_generators_minimized();
-  clear_sat_c_up_to_date();
-  clear_sat_g_up_to_date();
-  status.reset_g_up_to_date();
-  // Can get rid of gen_sys here.
-}
-
-/*! \relates Polyhedron */
-inline bool
-operator!=(const Polyhedron& x, const Polyhedron& y) {
-  return !(x == y);
-}
-
-/*! \relates Polyhedron */
-inline bool
-operator>=(const Polyhedron& x, const Polyhedron& y) {
-  return y <= x;
-}
-
-/*! \relates Polyhedron */
-inline bool
-operator<(const Polyhedron& x, const Polyhedron& y) {
-  return x <= y && !(x >= y);
-}
-
-/*! \relates Polyhedron */
-inline bool
-operator>(const Polyhedron& x, const Polyhedron& y) {
-  return y < x;
-}
-
-
-inline dimension_type
-Polyhedron::space_dimension() const {
-  return space_dim;
-}
-
-inline bool
-Polyhedron::check_empty() const {
-  if (is_empty())
-    return true;
-  // Try a fast-fail test: if generators are up-to-date and
-  // there are no pending constraints, then the generator system
-  // (since it is well formed) contains a point.
-  if (generators_are_up_to_date() && !has_pending_constraints())
-    return false;
-  return !minimize();
-}
-
-inline bool
-Polyhedron::bounds_from_above(const LinExpression& expr) const {
-  return bounds(expr, true);
-}
-
-inline bool
-Polyhedron::bounds_from_below(const LinExpression& expr) const {
-  return bounds(expr, false);
-}
-
-inline void
-Polyhedron::add_low_level_constraints(ConSys& cs) {
-  if (cs.is_necessarily_closed())
-    // The positivity constraint.
-    cs.insert(Constraint::zero_dim_positivity());
-  else {
-    // Add the epsilon constraints.
-    cs.insert(Constraint::epsilon_leq_one());
-    cs.insert(Constraint::epsilon_geq_zero());
-  }
-}
-
-inline bool
-Polyhedron::process_pending() const {
-  assert(space_dim > 0 && !is_empty());
-  assert(has_something_pending());
-
-  Polyhedron& x = const_cast<Polyhedron&>(*this);
-
-  if (x.has_pending_constraints())
-    return x.process_pending_constraints();
-
-  assert(x.has_pending_generators());
-  x.process_pending_generators();
-  return true;
-}
-
 template <typename Box>
 Polyhedron::Polyhedron(Topology topol, const Box& box)
   : con_sys(topol),
@@ -397,6 +121,33 @@ Polyhedron::Polyhedron(Topology topol, const Box& box)
   // Constraints are up-to-date.
   set_constraints_up_to_date();
   assert(OK());
+}
+
+inline dimension_type
+Polyhedron::space_dimension() const {
+  return space_dim;
+}
+
+inline bool
+Polyhedron::check_empty() const {
+  if (is_empty())
+    return true;
+  // Try a fast-fail test: if generators are up-to-date and
+  // there are no pending constraints, then the generator system
+  // (since it is well formed) contains a point.
+  if (generators_are_up_to_date() && !has_pending_constraints())
+    return false;
+  return !minimize();
+}
+
+inline bool
+Polyhedron::bounds_from_above(const LinExpression& expr) const {
+  return bounds(expr, true);
+}
+
+inline bool
+Polyhedron::bounds_from_below(const LinExpression& expr) const {
+  return bounds(expr, false);
 }
 
 template <typename Box>
@@ -686,6 +437,254 @@ Polyhedron::rename_dimensions(const PartialFunction& pifunc) {
   Polyhedron new_polyhedron(topology(), new_gensys);
   std::swap(*this, new_polyhedron);
   assert(OK(true));
+}
+
+inline
+Polyhedron::~Polyhedron() {
+}
+
+inline void
+Polyhedron::swap(Polyhedron& y) {
+  if (topology() != y.topology())
+    throw_topology_incompatible("swap(y)", y);
+  std::swap(con_sys, y.con_sys);
+  std::swap(gen_sys, y.gen_sys);
+  std::swap(sat_c, y.sat_c);
+  std::swap(sat_g, y.sat_g);
+  std::swap(status, y.status);
+  std::swap(space_dim, y.space_dim);
+}
+
+} // namespace Parma_Polyhedra_Library
+
+/*! \relates Parma_Polyhedra_Library::Polyhedron */
+inline void
+std::swap(Parma_Polyhedra_Library::Polyhedron& x,
+	  Parma_Polyhedra_Library::Polyhedron& y) {
+  x.swap(y);
+}
+
+namespace Parma_Polyhedra_Library {
+
+inline Topology
+Polyhedron::topology() const {
+  // We can check either one of the two matrices.
+  // (`con_sys' is slightly better, since it is placed at offset 0.)
+  return con_sys.topology();
+}
+
+inline bool
+Polyhedron::is_necessarily_closed() const {
+  // We can check either one of the two matrices.
+  // (`con_sys' is slightly better, since it is placed at offset 0.)
+  return con_sys.is_necessarily_closed();
+}
+
+inline bool
+Polyhedron::is_empty() const {
+  return status.test_empty();
+}
+
+inline bool
+Polyhedron::constraints_are_up_to_date() const {
+  return status.test_c_up_to_date();
+}
+
+inline bool
+Polyhedron::generators_are_up_to_date() const {
+  return status.test_g_up_to_date();
+}
+
+inline bool
+Polyhedron::constraints_are_minimized() const {
+  return status.test_c_minimized();
+}
+
+inline bool
+Polyhedron::generators_are_minimized() const {
+  return status.test_g_minimized();
+}
+
+inline bool
+Polyhedron::has_pending_constraints() const {
+  return status.test_c_pending();
+}
+
+inline bool
+Polyhedron::has_pending_generators() const {
+  return status.test_g_pending();
+}
+
+inline bool
+Polyhedron::has_something_pending() const {
+  return status.test_c_pending() || status.test_g_pending();
+}
+
+inline bool
+Polyhedron::can_have_something_pending() const {
+  return constraints_are_minimized()
+    && generators_are_minimized()
+    && (sat_c_is_up_to_date() || sat_g_is_up_to_date());
+}
+
+inline bool
+Polyhedron::sat_c_is_up_to_date() const {
+  return status.test_sat_c_up_to_date();
+}
+
+inline bool
+Polyhedron::sat_g_is_up_to_date() const {
+  return status.test_sat_g_up_to_date();
+}
+
+inline void
+Polyhedron::set_constraints_up_to_date() {
+  status.set_c_up_to_date();
+}
+
+inline void
+Polyhedron::set_generators_up_to_date() {
+  status.set_g_up_to_date();
+}
+
+inline void
+Polyhedron::set_constraints_minimized() {
+  set_constraints_up_to_date();
+  status.set_c_minimized();
+}
+
+inline void
+Polyhedron::set_generators_minimized() {
+  set_generators_up_to_date();
+  status.set_g_minimized();
+}
+
+inline void
+Polyhedron::set_constraints_pending() {
+  status.set_c_pending();
+}
+
+inline void
+Polyhedron::set_generators_pending() {
+  status.set_g_pending();
+}
+
+inline void
+Polyhedron::set_sat_c_up_to_date() {
+  status.set_sat_c_up_to_date();
+}
+
+inline void
+Polyhedron::set_sat_g_up_to_date() {
+  status.set_sat_g_up_to_date();
+}
+
+inline void
+Polyhedron::clear_empty() {
+  status.reset_empty();
+}
+
+inline void
+Polyhedron::clear_constraints_up_to_date() {
+  clear_pending_constraints();
+  clear_constraints_minimized();
+  clear_sat_c_up_to_date();
+  clear_sat_g_up_to_date();
+  status.reset_c_up_to_date();
+  // Can get rid of con_sys here.
+}
+
+inline void
+Polyhedron::clear_generators_up_to_date() {
+  clear_pending_generators();
+  clear_generators_minimized();
+  clear_sat_c_up_to_date();
+  clear_sat_g_up_to_date();
+  status.reset_g_up_to_date();
+  // Can get rid of gen_sys here.
+}
+
+inline void
+Polyhedron::clear_constraints_minimized() {
+  status.reset_c_minimized();
+}
+
+inline void
+Polyhedron::clear_generators_minimized() {
+  status.reset_g_minimized();
+}
+
+inline void
+Polyhedron::clear_pending_constraints() {
+  status.reset_c_pending();
+}
+
+inline void
+Polyhedron::clear_pending_generators() {
+  status.reset_g_pending();
+}
+
+inline void
+Polyhedron::clear_sat_c_up_to_date() {
+  status.reset_sat_c_up_to_date();
+  // Can get rid of sat_c here.
+}
+
+inline void
+Polyhedron::clear_sat_g_up_to_date() {
+  status.reset_sat_g_up_to_date();
+  // Can get rid of sat_g here.
+}
+
+inline bool
+Polyhedron::process_pending() const {
+  assert(space_dim > 0 && !is_empty());
+  assert(has_something_pending());
+
+  Polyhedron& x = const_cast<Polyhedron&>(*this);
+
+  if (x.has_pending_constraints())
+    return x.process_pending_constraints();
+
+  assert(x.has_pending_generators());
+  x.process_pending_generators();
+  return true;
+}
+
+inline void
+Polyhedron::add_low_level_constraints(ConSys& cs) {
+  if (cs.is_necessarily_closed())
+    // The positivity constraint.
+    cs.insert(Constraint::zero_dim_positivity());
+  else {
+    // Add the epsilon constraints.
+    cs.insert(Constraint::epsilon_leq_one());
+    cs.insert(Constraint::epsilon_geq_zero());
+  }
+}
+
+/*! \relates Polyhedron */
+inline bool
+operator!=(const Polyhedron& x, const Polyhedron& y) {
+  return !(x == y);
+}
+
+/*! \relates Polyhedron */
+inline bool
+operator<(const Polyhedron& x, const Polyhedron& y) {
+  return x <= y && !(x >= y);
+}
+
+/*! \relates Polyhedron */
+inline bool
+operator>(const Polyhedron& x, const Polyhedron& y) {
+  return y < x;
+}
+
+/*! \relates Polyhedron */
+inline bool
+operator>=(const Polyhedron& x, const Polyhedron& y) {
+  return y <= x;
 }
 
 } // namespace Parma_Polyhedra_Library
