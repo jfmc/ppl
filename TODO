@@ -6,17 +6,6 @@ Enhancements for PPL 0.7
   using the `--disable-regs' option it is has to work with _any_
   foreign code (not just the PPL).
 
-- The fragment
-
-    C_Polyhedron(500, Polyhedron::empty()).generators().space_dimension()
-
-  may return something unexpected to the user.  This issue
-  must be studied and dealt with in the appropriate way.
-
-  [Enea is in charge: this is already corrected in CVS, but should be
-   rechecked after merging the branch with the new handling of
-   matrices and constraint/generator systems.] 
-
 - Consider performing the following renamings:
 
     Integer -> Coefficient
