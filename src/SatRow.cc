@@ -33,15 +33,18 @@ namespace PPL = Parma_Polyhedra_Library;
 
 #define BITS_PER_GMP_LIMB (SIZEOF_MP_LIMB_T*CHAR_BIT)
 
+#if !defined(HAS_FFS) || SIZEOF_MP_LIMB_T != SIZEOF_INT
 unsigned int
 PPL::SatRow::first_one(mp_limb_t w) {
   unsigned int r = 0;
   w = w & -w;
-#if SIZEOF_MP_LIMB_T > 4
+#if SIZEOF_MP_LIMB_T == 8
   if ((w & 0xffffffff) == 0) {
     w >>= 32;
     r += 32;
   }
+#elif SIZEOF_MP_LIMB_T != 4
+#error "Size of mp_limb_t not supported by SatRow::first_one(mp_limb_t w)."
 #endif
   if ((w & 0xffff) == 0) {
     w >>= 16;
@@ -59,15 +62,18 @@ PPL::SatRow::first_one(mp_limb_t w) {
     r += 1;
   return r;
 }
+#endif // !defined(HAS_FFS) || SIZEOF_MP_LIMB_T != SIZEOF_INT
 
 unsigned int
 PPL::SatRow::last_one(mp_limb_t w) {
   unsigned int r = 0;
-#if SIZEOF_MP_LIMB_T > 4
+#if SIZEOF_MP_LIMB_T == 8
   if (w & 0xffffffff00000000) {
     w >>= 32;
     r += 32;
   }
+#elif SIZEOF_MP_LIMB_T != 4
+#error "Size of mp_limb_t not supported by SatRow::last_one(mp_limb_t w)."
 #endif
   if (w & 0xffff0000) {
     w >>= 16;

@@ -24,6 +24,9 @@ site: http://www.cs.unipr.it/ppl/ . */
 #ifndef PPL_SatRow_inlines_hh
 #define PPL_SatRow_inlines_hh 1
 
+// For the declaration of ffs(3).
+#include <cstring>
+
 namespace Parma_Polyhedra_Library {
 
 inline
@@ -104,6 +107,15 @@ inline void
 set_union(const SatRow& x, const SatRow& y, SatRow& z) {
   mpz_ior(z.vec, x.vec, y.vec);
 }
+
+#if defined(HAS_FFS) && SIZEOF_MP_LIMB_T == SIZEOF_INT
+
+inline unsigned int
+PPL::SatRow::first_one(mp_limb_t w) {
+  return ffs(w)-1;
+}
+
+#endif
 
 } // namespace Parma_Polyhedra_Library
 
