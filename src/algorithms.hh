@@ -61,6 +61,13 @@ linear_partition_aux(const Constraint& c,
   - the union of <CODE>r.first</CODE> with all the elements of
     <CODE>r.second</CODE> gives \p q (i.e., <CODE>r</CODE> is the
     representation of a partition of \p q).
+
+  \if Include_Implementation_Details
+
+  See
+  <A HREF="http://www.cs.unipr.it/ppl/Documentation/bibliography#Srivastava93">
+  this paper</A> for more information about the implementation.
+  \endif
 */
 template <typename PH>
 std::pair<PH, PowerSet<Determinate<NNC_Polyhedron> > >
