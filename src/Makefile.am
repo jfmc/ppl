@@ -15,7 +15,7 @@ VPATH = @srcdir@
 
 SUBDIRS = @extra_src_subdirs@
 
-INCLUDES = -I$(top_srcdir)/src -I$(top_srcdir)/src/sysdep -I$(top_srcdir)/src/BitSet -I$(top_srcdir)/src/Integer @extra_includes@
+INCLUDES = -I$(top_builddir) -I$(top_srcdir)/src -I$(top_srcdir)/src/sysdep -I$(top_srcdir)/src/BitSet -I$(top_srcdir)/src/Integer @extra_includes@
 
 # See http://www.cs.unipr.it/pipermail/ppl-devel/2001-October/000281.html
 #MYCPP = cpp
@@ -83,6 +83,8 @@ simplify.cc \
 LinExpression.cc \
 Variable.cc \
 $(include_files)
+
+libppl_a_LIBADD = Integer/Integer.o BitSet/BitSet.o
 
 noinst_HEADERS = ppl.cc
 
