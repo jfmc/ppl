@@ -184,6 +184,12 @@ PPL_INTERNAL:
   //! \p *this is the trivial constraint 0 <= n, where \f$n \geq 0\f$.
   bool is_trivial() const;
 
+  //! Returns <CODE>true</CODE> if and only if
+  //! \p *this is an unsatisfiable constraint
+  //! (i.e., either <CODE>0 >= n</CODE> where \f$n > 0\f$
+  //! or <CODE>0 == n</CODE>, where \f$n \neq 0\f$.
+  bool is_unsatisfiable() const;
+
   enum Type {
     EQUALITY = Row::LINE_OR_EQUALITY,
     INEQUALITY = Row::RAY_OR_VERTEX_OR_INEQUALITY

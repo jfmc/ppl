@@ -54,6 +54,20 @@ PPL::Constraint::is_trivial() const {
     return (x[0] >= 0);
 }
 
+bool
+PPL::Constraint::is_unsatisfiable() const {
+  assert(size() > 0);
+  const Constraint& x = *this;
+  for (size_t i = size(); --i > 0; )
+    if (x[i] != 0)
+      return false;
+  if (is_equality())
+    return (x[0] != 0);
+  else
+    // Inequality constraint.
+    return (x[0] < 0);
+}
+
 std::ostream&
 PPL::operator <<(std::ostream& s, const Constraint& c) {
   int num_variables = c.size()-1;
