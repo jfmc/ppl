@@ -636,22 +636,15 @@ ppl_get_generators(const void* pp, SP_term_ref generators_list) {
     SP_put_atom(tail, a_nil);
 
     const PPL::Polyhedron& ph = *static_cast<const PPL::Polyhedron*>(pp);
+    const PPL::GenSys& gs = ph.generators();
 
-    if (ph.space_dimension() == 0) {
-      // FIXME: what is the right thing to do?
-      abort();
+    for (PPL::GenSys::const_iterator i = gs.begin(),
+	   gs_end = gs.end(); i != gs_end; ++i) {
+      SP_term_ref new_tail = SP_new_term_ref();
+      SP_cons_list(new_tail, get_generator(*i), tail);
+      tail = new_tail;
     }
-    else {
-      const PPL::GenSys& gs = ph.generators();
-      PPL::GenSys::const_iterator i = gs.begin();
-      PPL::GenSys::const_iterator gs_end = gs.end();
-      while (i != gs_end) {
-	const PPL::Generator& g = *i++;
-	SP_term_ref new_tail = SP_new_term_ref();
-	SP_cons_list(new_tail, get_generator(g), tail);
-	tail = new_tail;
-      }
-    }
+
     SP_put_term(generators_list, tail);
   }
   CATCH_ALL;
