@@ -1040,3 +1040,41 @@ ppl_polyhedron_strictly_included(Prolog_term_ref t_lhs,
   CATCH_ALL;
   return PROLOG_FAILURE;
 }
+
+extern "C" Prolog_foreign_return_type
+ppl_affine_preimage(Prolog_term_ref t_ph, Prolog_term_ref t_v, 
+                 Prolog_term_ref t_le, Prolog_term_ref t_d) {
+  try {
+    PPL::Polyhedron* ph = get_ph_pointer(t_ph);
+    if (ph == 0)
+      return PROLOG_FAILURE;
+    CHECK(ph);
+    Prolog_term_ref v = Prolog_new_term_ref();
+    Prolog_get_arg(1, t_v, v);
+    ph->affine_preimage(PPL::Variable(term_to_unsigned_int(v)), 
+                     build_lin_expression(t_le),
+                     &integer_term_to_Integer(t_d));
+    return PROLOG_SUCCESS;
+  }
+  CATCH_ALL;
+  return PROLOG_FAILURE;
+}
+
+extern "C" Prolog_foreign_return_type
+ppl_affine_image(Prolog_term_ref t_ph, Prolog_term_ref t_v, 
+                 Prolog_term_ref t_le, Prolog_term_ref t_d) {
+  try {
+    PPL::Polyhedron* ph = get_ph_pointer(t_ph);
+    if (ph == 0)
+      return PROLOG_FAILURE;
+    CHECK(ph);
+    Prolog_term_ref v = Prolog_new_term_ref();
+    Prolog_get_arg(1, t_v, v);
+    ph->affine_image(PPL::Variable(term_to_unsigned_int(v)), 
+                     build_lin_expression(t_le),
+                     &integer_term_to_Integer(t_d));
+    return PROLOG_SUCCESS;
+  }
+  CATCH_ALL;
+  return PROLOG_FAILURE;
+}

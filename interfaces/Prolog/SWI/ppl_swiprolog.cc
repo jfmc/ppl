@@ -302,6 +302,8 @@ static PL_extension predicates[] = {
   PL_EXTENSION_ENTRY(ppl_polyhedron_included_or_equal, 2)
   PL_EXTENSION_ENTRY(ppl_polyhedron_equal, 2)
   PL_EXTENSION_ENTRY(ppl_polyhedron_strictly_included, 2)
+  PL_EXTENSION_ENTRY(ppl_affine_image, 4)
+  PL_EXTENSION_ENTRY(ppl_affine_preimage, 4)
   { NULL, 0, NULL, 0 }
 };
 
