@@ -78,12 +78,24 @@ endif
 
 if USE_CHECKED_INTEGERS
 
+if USE_NEW_CHECKED_CODE
+
+COEFFICIENT_TYPES_INCLUDE_FILES = \
+  Checked_Number.types.hh
+
+COEFFICIENT_DEFS_INCLUDE_FILES = \
+  Checked_Number.defs.hh \
+  Checked_Number.inlines.hh
+else
+
 COEFFICIENT_TYPES_INCLUDE_FILES = \
   Checked_Integer.types.hh
 
 COEFFICIENT_DEFS_INCLUDE_FILES = \
   Checked_Integer.defs.hh \
   Checked_Integer.inlines.hh
+
+endif
 
 endif
 
@@ -100,13 +112,13 @@ endif
 
 # The ordering of the following list *matters*!
 INCLUDE_FILES = \
+float.types.hh \
 Integer_traits_template.hh \
 Integer_macros.hh \
 $(COEFFICIENT_TYPES_INCLUDE_FILES) \
 Integer.types.hh \
 Interval.types.hh \
 BoundingBox.types.hh \
-Checked_Number.types.hh \
 Constraint.types.hh \
 Generator.types.hh \
 Init.types.hh \
@@ -127,15 +139,13 @@ NNC_Polyhedron.types.hh \
 float.types.hh \
 globals.hh \
 statistics.hh \
-$(COEFFICIENT_DEFS_INCLUDE_FILES) \
 checked.defs.hh \
-Checked_Number.defs.hh \
-checked_float.inlines.hh \
+$(COEFFICIENT_DEFS_INCLUDE_FILES) \
 checked_int.inlines.hh \
-checked_mpq.inlines.hh \
+checked_float.inlines.hh \
 checked_mpz.inlines.hh \
+checked_mpq.inlines.hh \
 checked.inlines.hh \
-Checked_Integer.inlines.hh \
 Integer.defs.hh \
 Interval.defs.hh \
 Interval.inlines.hh \
@@ -199,7 +209,6 @@ ConSys.cc \
 GenSys.cc \
 Generator.cc \
 Init.cc \
-Checked_Number.cc \
 Integer.cc \
 Interval.cc \
 LinExpression.cc \
