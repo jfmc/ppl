@@ -1,6 +1,9 @@
 *.clpq
+*.itf
 *.la
 *.lo
+*.po
+*_glue.c
 .deps
 .libs
 Makefile
