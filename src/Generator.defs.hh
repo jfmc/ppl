@@ -69,7 +69,7 @@ namespace Parma_Polyhedra_Library {
   Variable x(0);
   Variable y(1);
   Variable z(2);
-  Generator g(1 | x - y - z);
+  Generator line(1 | x - y - z);
   \endcode
   Note that, when specifying a line, the actual value of the first argument
   in the constructor is not significant.
