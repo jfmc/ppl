@@ -1,5 +1,5 @@
 
-This is the release 0.1 of the Parma Watchdog Library:
+This is the release 0.2 of the Parma Watchdog Library:
 a C++ library for software timeouts.
 
 To be continued...
@@ -12,11 +12,39 @@ See the file BUGS for known bugs and how to report new ones.
 See the file CREDITS for a list of people and organizations that
 contributed to the PWL.
 
-Here is the contents of the PWL 0.1 source distributions
-(n directories, m files):
+Here is the contents of the PWL 0.2 source distributions
+(0 directories, 29 files):
 
-...
-
+Watchdog/
+|-- BUGS
+|-- COPYING
+|-- CREDITS
+|-- ChangeLog
+|-- INSTALL
+|-- Makefile.am
+|-- Makefile.in
+|-- NEWS
+|-- README
+|-- Watchdog.cc
+|-- Watchdog.defs.hh
+|-- Watchdog.inlines.hh
+|-- Watchdog.types.hh
+|-- aclocal.m4
+|-- config.guess
+|-- config.h.in
+|-- config.sub
+|-- configure
+|-- configure.ac
+|-- depcomp
+|-- install-sh
+|-- ltmain.sh
+|-- missing
+|-- mkinstalldirs
+|-- pwl_filter_doxygen.sed
+|-- pwl_filter_install.sed
+|-- pwl_header.bottom
+|-- pwl_header.middle
+`-- pwl_header.top
 
 --------
 
