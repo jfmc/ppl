@@ -39,7 +39,10 @@ site: http://www.cs.unipr.it/ppl/ . */
 
 #define FPU_ROUNDING_MASK 0xc00
 #define FPU_CONTROL_DEFAULT 0x37f
+
+#ifndef HIJACK_FPU
 #define HIJACK_FPU 1
+#endif
 
 namespace Parma_Polyhedra_Library {
 
