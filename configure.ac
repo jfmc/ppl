@@ -506,7 +506,6 @@ AC_CONFIG_FILES(Makefile
                 interfaces/C/Makefile
 		interfaces/C/ppl_c.h
                 interfaces/C/lpenum/Makefile
-                interfaces/OCaml/Makefile
                 interfaces/Prolog/Makefile
                 interfaces/Prolog/Ciao/Makefile
                 interfaces/Prolog/GNU/Makefile
