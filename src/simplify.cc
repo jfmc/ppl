@@ -54,7 +54,7 @@ namespace PPL = Parma_Polyhedra_Library;
   explain it assuming that we are given a matrix of constraints,
   since, because of duality, the case for a matrix of generators is similar.
 
-  To do this, we will use the redundancy definition (See definitions.dox).
+  To do this, we will use the redundancy definition (See the Introduction).
 
   First we make some observations that can help the reader
   in understanding the function:
@@ -66,10 +66,12 @@ namespace PPL = Parma_Polyhedra_Library;
   In fact, any vectors obtained combining generators that saturate
   the constraints will also saturate the constraints:
   \f[
-    \langle c, r_1 \rangle = 0 \land \langle c, r_2 \rangle = 0
+    \langle \vect{c}, \vect{r}_1 \rangle = 0 \land 
+    \langle \vect{c}, \vect{r}_2 \rangle = 0
     \Rightarrow
-    \langle c, (\lambda_1 r_1 + \lambda_2 r_2) \rangle =
-    \lambda_1 \langle c, r_1 \rangle + \lambda_2 \langle c, r_2 \rangle
+    \langle \vect{c}, (\lambda_1 \vect{r}_1 + \lambda_2 \vect{r}_2) \rangle =
+    \lambda_1 \langle \vect{c}, \vect{r}_1 \rangle 
+    + \lambda_2 \langle \vect{c}, \vect{r}_2 \rangle
     = 0,
   \f]
   where \f$\lambda_1, \lambda_2\f$ can be any real number.
@@ -171,27 +173,25 @@ PPL::Polyhedron::simplify(Matrix& mat, SatMatrix& sat) {
   for (size_t i = num_equal_or_line; i < num_rows; ) {
     // i runs through the inequalities.
     if (num_saturators[i] < num_columns - num_equal_or_line - 1) {
-      /*!
-	Here we check if the saturation rule holds.
-	To be irredundant, an inequality has to be saturated by at least
-	n rays/vertices, where n is the dimension of the ray space.
-	Because of the dimensionality rule (see definitions.dox),
-	the dimension of the ray space is the dimension of the space
-	minus the number of irredundant lines, minus the number of
-	irredundant equalities. Then an inequality is redundant if
-	    `nb of columns' - 1 - nb of irr. lines - nb of irr. equalities
-	     > nb of rays/vertices saturators.
-	Since every line saturates all inequalities (and equalities), the
-	number of the lines that saturate an inequality is just the
-	number of (irredundant lines). Moreover we can write
-	  `nb of columns' - 1 - nb of irr. equalities
-	   > nb of irr. lines + nb of rays/vertices saturators,
-	where nb of irr. lines + nb of rays/vertices saturators
-	is the total number of generators that saturate the inequality,
-	i.e., `num_saturators[i]'. This is because we use the above
-	condition: if the i-th inequality is satisfied, then it is redundant
-	and we can remove it.
-      */
+      // Here we check if the saturation rule holds.
+      // To be irredundant, an inequality has to be saturated by at least
+      // n rays/vertices, where n is the dimension of the ray space.
+      // Because of the dimensionality rule (see in the Introduction),
+      // the dimension of the ray space is the dimension of the space
+      // minus the number of irredundant lines, minus the number of
+      // irredundant equalities. Then an inequality is redundant if
+      //   `nb of columns' - 1 - nb of irr. lines - nb of irr. equalities
+      // 	     > nb of rays/vertices saturators.
+      // Since every line saturates all inequalities (and equalities), the
+      // number of the lines that saturate an inequality is just the
+      // number of (irredundant lines). Moreover we can write
+      //  `nb of columns' - 1 - nb of irr. equalities
+      //   > nb of irr. lines + nb of rays/vertices saturators,
+      // where nb of irr. lines + nb of rays/vertices saturators
+      // is the total number of generators that saturate the inequality,
+      // i.e., `num_saturators[i]'. This is because we use the above
+      // condition: if the i-th inequality is satisfied, then it is redundant
+      // and we can remove it.
       --num_rows;
       std::swap(mat[i], mat[num_rows]);
       std::swap(sat[i], sat[num_rows]);
@@ -214,7 +214,7 @@ PPL::Polyhedron::simplify(Matrix& mat, SatMatrix& sat) {
 	++j;
       else {
 	// Let us recall that each generator lies on a facet
-	// (see definitions.dox) of the polyhedron.
+	// (see the Introduction) of the polyhedron.
 	// Given two constraints `c_1' and `c_2', if there are
 	// `m' generators lying on the hyper-plane corresponding
 	// to `c_1', the same `m' generators lie on the hyper-plane
@@ -295,6 +295,6 @@ PPL::Polyhedron::simplify(Matrix& mat, SatMatrix& sat) {
   mat.back_substitute(num_equal_or_line);
   // The returned value is the number of irredundant equalities i.e.,
   // the rank of the sub-matrix of `mat' containing only equalities.
-  // (See definitions.dox for definition of lineality space dimension).
+  // (See the Introduction for definition of lineality space dimension).
   return num_equal_or_line;
 }

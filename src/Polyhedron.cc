@@ -1241,7 +1241,7 @@ PPL::operator >>(std::istream& s, PPL::Polyhedron& p) {
 
   Observation:
   -# The affine transformation is invertible if the coefficient of \p var
-     in this transformation (i.e. \p a_{var}) is different from zero.
+     in this transformation (i.e. \f$a_{var}\f$) is different from zero.
   -# If the transformation is invertible, then we can write
      \f[
   	\text{denominator} * {x'}_{var}
@@ -1263,10 +1263,10 @@ PPL::operator >>(std::istream& s, PPL::Polyhedron& p) {
   the rays of the polyhedron, \f$V\f$ is a \f$m_2 \times n_2\f$
   matrix representing the vertices of the polyhedron and
   \f[
-    P = \bigl\{\,x = (x_0, \ldots, x_{n-1})^\mathrm{T} \bigm|
-               x = \lambda R + \mu V,
-               \lambda \in \Rset^{m_1}_+,
-               \mu \in \Rset^{m_2}_+,
+    P = \bigl\{\,\vect{x} = (x_0, \ldots, x_{n-1})^\mathrm{T} \bigm|
+               \vect{x} = \vect{\lambda} R + \vect{\mu} V,
+               \vect{\lambda} \in \Rset^{m_1}_+,
+               \vect{\mu} \in \Rset^{m_2}_+,
 	       \sum_{i = 0}^{m_1 - 1} \lambda_i = 1\,\bigr\}
   \f]
   and \f$T\f$ is the affine transformation to apply to \f$P\f$, then
@@ -1344,7 +1344,7 @@ PPL::Polyhedron::assign_variable(const Variable& var,
 
   Observation:
   -# The affine transformation is invertible if the
-     coefficient of `var' in this transformation (i.e. \p a_{var})
+     coefficient of `var' in this transformation (i.e. \f$a_{var}\f$)
      is different from zero.
   -# If the transformation is invertible, then we can write
      \f[
@@ -1367,13 +1367,13 @@ PPL::Polyhedron::assign_variable(const Variable& var,
   the constraints of the polyhedron, \f$T\f$ is the affine transformation
   to apply to \f$P\f$ and
   \f[
-    P = \bigl\{\,x = (x_0, \ldots, x_{n-1})^\mathrm{T} \bigm|
-                 Ax \geq 0\,\bigr\}.
+    P = \bigl\{\,\vect{x} = (x_0, \ldots, x_{n-1})^\mathrm{T} \bigm|
+                 A\vect{x} \geq \vect{0}\,\bigr\}.
   \f]
   The resulting polyhedron is
   \f[
-    P' = \bigl\{\,x = (x_0, \ldots, x_{n-1}))^\mathrm{T} \bigm|
-                 A'x \geq 0\,\bigr\},
+    P' = \bigl\{\,\vect{x} = (x_0, \ldots, x_{n-1}))^\mathrm{T} \bigm|
+                 A'\vect{x} \geq \vect{0}\,\bigr\},
   \f]
   where \f$A'\f$ is defined as follows:
   \f[
@@ -1556,7 +1556,7 @@ PPL::Polyhedron::widening_assign(const Polyhedron& y) {
   //   polyhedron. The redundant constraints is `redundant' also in
   //   the new polyhedron.
   //   If a constraint is redundant in the sense that it does not
-  //   satisfy the saturation rule (see in definitions.dox), it can not
+  //   satisfy the saturation rule (see in the Introduction), it can not
   //   be put into the new system, because of the way that we use to
   //   choose the constraints.
   if (!x.constraints_are_up_to_date())
@@ -1590,7 +1590,7 @@ PPL::Polyhedron::widening_assign(const Polyhedron& y) {
   // a row of the saturation matrix `sat_g' of `y'(if it happens,
   // the constraint of `x' is also a constraint of `y').
   // In this way a constraint of `x' that does not verify the
-  // saturation rule (see in definitions.dox) can be put into the
+  // saturation rule (see in the Introduction) can be put into the
   // resulting polyhedron, because `sat_g' is built staring from
   // a minimized polyhedron.
   for (size_t i = x.con_sys.num_rows(); i-- > 0; ) {
