@@ -45,7 +45,7 @@ namespace IO_Operators {
 
 //! Output operator.
 /*!
-  \relates Polyhedron
+  \relates Parma_Polyhedra_Library::Polyhedron
   Writes a textual representation of \p ph on \p s:
   <CODE>false</CODE> is written if \p ph is an empty polyhedron;
   <CODE>true</CODE> is written if \p ph is a universe polyhedron;

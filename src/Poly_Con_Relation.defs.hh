@@ -39,6 +39,8 @@ Poly_Con_Relation operator-(const Poly_Con_Relation& x,
 
 namespace IO_Operators {
 
+//! Output operator.
+/*! \relates Parma_Polyhedra_Library::Poly_Con_Relation */
 std::ostream& operator<<(std::ostream& s, const Poly_Con_Relation& r);
 
 } // namespace IO_Operators

@@ -35,14 +35,16 @@ site: http://www.cs.unipr.it/ppl/ . */
 
 namespace Parma_Polyhedra_Library {
 
-// Put it in the namespace here to declare it friend later.
-bool operator<=(const Polyhedron& x, const Polyhedron& y);
-
 namespace IO_Operators {
 
+//! Output operator.
+/*! \relates Parma_Polyhedra_Library::Generator */
 std::ostream& operator<<(std::ostream& s, const Generator& g);
 
 } // namespace IO_Operators
+
+// Put it in the namespace here to declare it friend later.
+bool operator<=(const Polyhedron& x, const Polyhedron& y);
 
 } // namespace Parma_Polyhedra_Library
 

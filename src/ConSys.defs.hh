@@ -41,7 +41,7 @@ namespace IO_Operators {
 
 //! Output operator.
 /*!
-  \relates ConSys
+  \relates Parma_Polyhedra_Library::ConSys
   Writes <CODE>true</CODE> if \p cs is empty.  Otherwise, writes on
   \p s the constraints of \p cs, all in one row and separated by ", ".
 */

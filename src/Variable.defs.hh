@@ -34,7 +34,7 @@ namespace Parma_Polyhedra_Library {
 namespace IO_Operators {
 
 //! Output operator.
-/*! \relates Variable */
+/*! \relates Parma_Polyhedra_Library::Variable */
 std::ostream&
 operator<<(std::ostream& s, const Variable& v);
 

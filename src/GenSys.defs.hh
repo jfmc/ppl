@@ -40,7 +40,7 @@ namespace IO_Operators {
 
 //! Output operator.
 /*!
-  \relates GenSys
+  \relates Parma_Polyhedra_Library::GenSys
   Writes <CODE>false</CODE> if \p gs is empty.  Otherwise, writes on
   \p s the generators of \p gs, all in one row and separated by ", ".
 */

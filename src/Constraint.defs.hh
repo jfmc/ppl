@@ -37,7 +37,7 @@ namespace Parma_Polyhedra_Library {
 namespace IO_Operators {
 
 //! Output operator.
-/*! \relates Constraint */
+/*! \relates Parma_Polyhedra_Library::Constraint */
 std::ostream& operator<<(std::ostream& s, const Constraint& c);
 
 } // namespace IO_Operators
