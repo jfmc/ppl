@@ -130,11 +130,11 @@ NNC_Polyhedron.types.hh \
 float.types.hh \
 Limits.hh \
 checked.defs.hh \
+checked.inlines.hh \
 checked_int.inlines.hh \
 checked_float.inlines.hh \
 checked_mpz.inlines.hh \
 checked_mpq.inlines.hh \
-checked.inlines.hh \
 $(COEFFICIENT_DEFS_INCLUDE_FILES) \
 Integer.defs.hh \
 Integer.inlines.hh \

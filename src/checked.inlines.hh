@@ -36,14 +36,13 @@ struct FUNCTION_CLASS(assign)<Policy, Type, Type> {
 };
 
 template <typename Policy, typename To, typename From>
-struct FUNCTION_CLASS(abs) {
-  static inline Result function(To& to, const From& from) {
-    if (from < 0)
-      return neg<Policy>(to, from);
-    to = from;
-    return V_EQ;
-  }
-};
+inline Result
+abs_generic(To& to, const From& from) {
+  if (from < 0)
+    return neg<Policy>(to, from);
+  to = from;
+  return V_EQ;
+}
 
 inline Result
 neg(Result r) {
@@ -138,22 +137,20 @@ sub(To& to, Result xr, const From1& x, Result yr, const From2& y) {
 }
 
 template <typename Policy, typename To, typename From1, typename From2>
-struct FUNCTION_CLASS(add_mul) {
-  static inline Result function(To& to, const From1& x, const From2& y) {
-    To temp;
-    Result r = mul<Policy>(temp, x, y);
-    return add<Policy>(to, V_EQ, to, r, temp);
-  }
-};
+inline Result
+add_mul_generic(To& to, const From1& x, const From2& y) {
+  To temp;
+  Result r = mul<Policy>(temp, x, y);
+  return add<Policy>(to, V_EQ, to, r, temp);
+}
 
 template <typename Policy, typename To, typename From1, typename From2>
-struct FUNCTION_CLASS(sub_mul) {
-  static inline Result function(To& to, const From1& x, const From2& y) {
-    To temp;
-    Result r = mul<Policy>(temp, x, y);
-    return sub<Policy>(to, V_EQ, to, r, temp);
-  }
-};
+inline Result
+sub_mul_generic(To& to, const From1& x, const From2& y) {
+  To temp;
+  Result r = mul<Policy>(temp, x, y);
+  return sub<Policy>(to, V_EQ, to, r, temp);
+}
 
 template <typename Policy, typename To, typename From>
 inline Result
@@ -173,69 +170,65 @@ gcd_common(To& to, const From& x, const From& y) {
 }
 
 template <typename Policy, typename To, typename From1, typename From2>
-struct FUNCTION_CLASS(gcd) {
-  static inline Result function(To& to, const From1& x, const From2& y) {
-    if (x == 0)
-      return abs<Policy>(to, y);
-    if (y == 0)
-      return abs<Policy>(to, x);
-    To nx, ny;
-    Result r;
-    r = abs<Policy>(nx, x);
-    assert(r == V_EQ);
-    r = abs<Policy>(ny, y);
-    assert(r == V_EQ);
-    return gcd_common<Policy>(to, nx, ny);
-  }
-};
+inline Result
+gcd_generic(To& to, const From1& x, const From2& y) {
+  if (x == 0)
+    return abs<Policy>(to, y);
+  if (y == 0)
+    return abs<Policy>(to, x);
+  To nx, ny;
+  Result r;
+  r = abs<Policy>(nx, x);
+  assert(r == V_EQ);
+  r = abs<Policy>(ny, y);
+  assert(r == V_EQ);
+  return gcd_common<Policy>(to, nx, ny);
+}
 
 template <typename Policy, typename To, typename From1, typename From2>
-struct FUNCTION_CLASS(lcm) {
-  static inline Result function(To& to, const From1& x, const From2& y) {
-    if (x == 0 || y == 0) {
-      to = 0;
-      return V_EQ;
-    }
-    To nx, ny;
-    Result r;
-    r = abs<Policy>(nx, x);
-    assert(r == V_EQ);
-    r = abs<Policy>(ny, y);
-    assert(r == V_EQ);
-    To gcd;
-    r = gcd_common<Policy>(gcd, nx, ny);
-    assert(r == V_EQ);
-    r = div<Policy>(to, nx, gcd);
-    assert(r == V_EQ);
-    return mul<Policy>(to, to, ny);
+inline Result
+lcm_generic(To& to, const From1& x, const From2& y) {
+  if (x == 0 || y == 0) {
+    to = 0;
+    return V_EQ;
   }
-};
+  To nx, ny;
+  Result r;
+  r = abs<Policy>(nx, x);
+  assert(r == V_EQ);
+  r = abs<Policy>(ny, y);
+  assert(r == V_EQ);
+  To gcd;
+  r = gcd_common<Policy>(gcd, nx, ny);
+  assert(r == V_EQ);
+  r = div<Policy>(to, nx, gcd);
+  assert(r == V_EQ);
+  return mul<Policy>(to, to, ny);
+}
 
 template <typename Policy, typename Type>
-struct FUNCTION_CLASS(sgn) {
-  static inline Result function(const Type& x) {
-    if (x > 0)
-      return V_GT;
-    if (x < 0)
-      return V_LT;
-    if (!Policy::check_nan_arg || x == 0)
-      return V_EQ;
-    return V_UNKNOWN;
-  }
-};
+inline Result
+sgn_generic(const Type& x) {
+  if (x > 0)
+    return V_GT;
+  if (x < 0)
+    return V_LT;
+  if (!Policy::check_nan_arg || x == 0)
+    return V_EQ;
+  return V_UNKNOWN;
+}
 
 template <typename Policy, typename Type>
-struct FUNCTION_CLASS(cmp)<Policy, Type, Type> {
-  static inline Result function(const Type& x, const Type& y) {
-    if (x > y)
-      return V_GT;
-    if (x < y)
-      return V_LT;
-    if (!Policy::check_nan_arg || x == y)
-      return V_EQ;
-    return V_UNKNOWN;
-  }
-};
+inline Result
+cmp_generic(const Type& x, const Type& y) {
+  if (x > y)
+    return V_GT;
+  if (x < y)
+    return V_LT;
+  if (!Policy::check_nan_arg || x == y)
+    return V_EQ;
+  return V_UNKNOWN;
+}
 
 template <typename To_Policy, typename From_Policy, typename To, typename From>
 inline Result

@@ -437,8 +437,8 @@ cmp_mp(const Type& x, const Type& y) {
   return i > 0 ? V_GT : i == 0 ? V_EQ : V_LT;
 }
 
-SPECIALIZE_CMP(mp, mpz_class)
-SPECIALIZE_CMP(mp, mpq_class)
+SPECIALIZE_CMP(mp, mpz_class, mpz_class)
+SPECIALIZE_CMP(mp, mpq_class, mpz_class)
 
 } // namespace Checked
 

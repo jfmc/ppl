@@ -189,7 +189,7 @@ struct FUNCTION_CLASS(name) <Policy, type1, type2, type3> { \
 #define SPECIALIZE_GCD(suf, To, From) SPECIALIZE_FUN3(gcd, suf, Result, , To, const, From, const, From)
 #define SPECIALIZE_LCM(suf, To, From) SPECIALIZE_FUN3(lcm, suf, Result, , To, const, From, const, From)
 #define SPECIALIZE_SGN(suf, From) SPECIALIZE_FUN1(sgn, suf, Result, const, From)
-#define SPECIALIZE_CMP(suf, From) SPECIALIZE_FUN2(cmp, suf, Result, const, From, const, From)
+#define SPECIALIZE_CMP(suf, Type1, Type2) SPECIALIZE_FUN2(cmp, suf, Result, const, Type1, const, Type2)
 #define SPECIALIZE_SET_SPECIAL(suf, type) SPECIALIZE_FUN2(set_special, suf, void, , type, const, Result)
 #define SPECIALIZE_VALUE_TYPE(suf, type) SPECIALIZE_FUN1(value_type, suf, Result, const, type)
 
