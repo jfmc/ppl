@@ -33,6 +33,8 @@ site: http://www.cs.unipr.it/ppl/ . */
 #include "Polyhedron.types.hh"
 #include <set>
 
+#define POSITIVE 1
+
 namespace Parma_Polyhedra_Library {
 
   //! Returns <CODE>true</CODE> if and only if
@@ -339,13 +341,14 @@ public:
   //! \p num_dimensions. Both parameters are optional:
   //! by default, a 0-dimension space universe polyhedron is built.
   explicit Polyhedron(size_t num_dimensions = 0,
-		      Degenerate_Kind kind = UNIVERSE);
+		      Degenerate_Kind kind = UNIVERSE,
+		      bool pos = false);
   //! Builds a polyhedron from a system of constraints.
   //! The polyhedron inherits the space dimension of the constraint system.
   //! \param cs       The system of constraints defining the polyhedron.
   //!                 It is not declared <CODE>const</CODE>
   //!                 because it can be modified.
-  Polyhedron(ConSys& cs);
+  Polyhedron(ConSys& cs, bool pos = false);
   //! Builds a polyhedron from a system of generators.
   //! The polyhedron inherits the space dimension of the generator system.
   //! \param gs       The system of generators defining the polyhedron.
@@ -353,7 +356,8 @@ public:
   //!                 because it can be modified.
   //! \exception std::invalid_argument thrown if the system of generators
   //!                                  is not empty but has no vertices.
-  Polyhedron(GenSys& gs);
+  Polyhedron(GenSys& gs, bool pos = false);
+
   // Destructor
   ~Polyhedron();
 
@@ -363,6 +367,10 @@ public:
 
   //! Returns the dimension of the vector space enclosing \p *this.
   size_t space_dimension() const;
+ #if POSITIVE
+  //! Returns if the polyhedron is positive.
+  bool is_positive() const;
+#endif
   //! Intersects \p *this with polyhedron \p y and
   //! assigns the result to \p *this.
   //! \exception std::invalid_argument thrown if \p *this and \p y
@@ -590,6 +598,10 @@ private:
   SatMatrix sat_g;
   //! The status flags to keep track of the polyhedron's internal state.
   Status status;
+#if POSITIVE
+  //! The flag says if the polyhedron is positive.
+  bool positive;
+#endif
 
 public:
   //! Returns <CODE>true</CODE> if and only if
@@ -650,20 +662,31 @@ private:
 			   Matrix& result,
 			   SatMatrix& sat,
 			   size_t num_lines_or_equalities);
-
   //! Uses Gauss' elimination method to simplify the result of
   //! <CODE>conversion()</CODE>.
   static int simplify(Matrix& mat, SatMatrix& sat);
 
+#if POSITIVE
   //! Builds and simplifies constraints from generators (or vice versa).
-  static bool minimize(bool con_to_ray, Matrix& source, Matrix& dest,
+  static bool minimize(bool con_to_gen, Matrix& source, Matrix& dest,
+		       SatMatrix& sat, bool pos);
+  //! Adds given constraints and builds minimized corresponding generators
+  //! or vice versa.
+  static bool add_and_minimize(bool con_to_gen,
+			       Matrix& source1, Matrix& dest, SatMatrix& sat,
+			       const Matrix& source2,
+			       bool pos);
+#else
+  //! Builds and simplifies constraints from generators (or vice versa).
+  static bool minimize(bool con_to_gen, Matrix& source, Matrix& dest,
 		       SatMatrix& sat);
 
   //! Adds given constraints and builds minimized corresponding generators
   //! or vice versa.
-  static bool add_and_minimize(bool con_to_ray,
+  static bool add_and_minimize(bool con_to_gen,
 			       Matrix& source1, Matrix& dest, SatMatrix& sat,
 			       const Matrix& source2);
+#endif
 };
 
 namespace std {

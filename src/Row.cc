@@ -302,6 +302,26 @@ PPL::Row::all_homogeneous_terms_are_zero() const {
   return true;
 }
 
+//#if POSITIVE
+bool
+PPL::Row::only_a_term_is_positive() const {
+  assert(size() > 0);
+  const Row& x = *this;
+  bool first_one = false;
+  for (size_t i = size(); i--> 0;)
+    if (x[i] > 0) {
+      if (!first_one)
+	first_one = false;
+      else
+	return false;
+    }
+    else
+      if (x[i] < 0)
+	return false;
+  return true;
+}
+//#endif
+
 bool
 PPL::Row::OK(size_t row_size,
 	     size_t
