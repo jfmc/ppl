@@ -74,7 +74,7 @@ test2() {
   ph.add_generator(ray(B));
 
 #if NOISY
-  print_generatorss(ph, "*** ph ***");
+  print_generators(ph, "*** ph ***");
 #endif
 
   ph.topological_closure_assign();

@@ -4919,21 +4919,39 @@ PPL::Polyhedron::topological_closure_assign() {
   if (is_necessarily_closed())
     return;
   // Any empty or zero-dimensional polyhedron is closed.
-  if (is_empty()
-      || (has_pending_constraints() && !remove_pending_to_obtain_generators())
-      || space_dimension() == 0)
+  if (is_empty() || space_dimension() == 0)
     return;
 
   dimension_type eps_index = space_dim + 1;
   bool changed = false;
 
-  if (can_have_something_pending()) { 
-    if (!has_something_pending()) {
-      pending_gs.erase_to_end(0);
-      set_generators_pending();
+  if (can_have_something_pending()) {
+    // If the polyhedron has pending constraints,
+    // we obtain the real system of constraints and then
+    // we trasform all strict inequalities into non-strict ones.
+    if (has_pending_constraints()) {
+      remove_pending_to_obtain_constraints();
+      // Transform all strict inequalities into non-strict ones.
+      for (dimension_type i = con_sys.num_rows(); i-- > 0; ) {
+	Constraint& c = con_sys[i];
+	if (c[eps_index] < 0 && !c.is_trivial_true()) {
+	  c[eps_index] = 0;
+	  // Enforce normalization.
+	  c.normalize();
+	  changed = true;
+	}
+      }
+      if (changed)
+	con_sys.insert(Constraint::epsilon_leq_one());
     }
-    const GenSys& gs = gen_sys;
-    pending_gs.add_corresponding_points(gs);
+    else {
+      if (!has_something_pending()) {
+	pending_gs.erase_to_end(0);
+	set_generators_pending();
+      }
+      const GenSys& gs = gen_sys;
+      pending_gs.add_corresponding_points(gs);
+    }
   }
   else {
     if (constraints_are_up_to_date()) {
