@@ -101,7 +101,7 @@ my_setitimer(int which,
 
 void
 my_sigaction(int signum,
-	    const struct sigaction* act, struct sigaction* oldact) {
+	     const struct sigaction* act, struct sigaction* oldact) {
   if (sigaction(signum, act, oldact) != 0)
     throw_syscall_error("sigaction");
 }
