@@ -29,12 +29,56 @@ limitation to the dimension of anything), written in standard C++,
 exception-safe, rather efficient, thoroughly documented, and free
 software.
 
+%package c
+Summary:	The C interface of the Parma Polyhedra Library
+Group:		Development/Libraries
+Requires:	ppl = %{version}-%{release}
+%description c
+This package adds C support to the Parma Polyhedra Library (PPL).
+Install this package if you want to access the PPL via C.
+
+%package gprolog
+Summary:	The GNU Prolog interface of the Parma Polyhedra Library.
+Group:		Development/Libraries
+Requires:	ppl = %{version}-%{release}
+%description gprolog
+This package adds GNU Prolog support to the Parma Polyhedra Library (PPL).
+Install this package if you want to use the library in GNU Prolog programs.
+
+%package sicstus
+Summary:	The SICStus Prolog interface of the Parma Polyhedra Library.
+Group:		Development/Libraries
+Requires:	ppl = %{version}-%{release}
+%description sicstus
+This package adds SICStus Prolog support to the Parma Polyhedra Library (PPL).
+Install this package if you want to use the library in SICStus Prolog programs.
+
+%package swi
+Summary:	The SWI Prolog interface of the Parma Polyhedra Library.
+Group:		Development/Libraries
+Requires:	ppl = %{version}-%{release}
+%description swi
+This package adds SWI Prolog support to the Parma Polyhedra Library (PPL).
+Install this package if you want to use the library in SWI Prolog programs.
+
+%package yap
+Summary:	The YAP Prolog interface of the Parma Polyhedra Library.
+Group:		Development/Libraries
+Requires:	ppl = %{version}-%{release}
+%description yap
+This package adds YAP Prolog support to the Parma Polyhedra Library (PPL).
+Install this package if you want to use the library in YAP Prolog programs.
+
 %prep
 %setup -n %{name}-%{version}
 #%patch -p1
 
 %build
-CXXFLAGS="$RPM_OPT_FLAGS" ./configure --prefix=%{_prefix} --enable-shared
+CXXFLAGS="$RPM_OPT_FLAGS" ./configure --enable-shared \
+    --prefix=%{_prefix} --bindir=%{_bindir} --mandir=%{_mandir} \
+    --localstatedir=%{_localstatedir} --libdir=%{_libdir} \
+    --datadir=%{_datadir} --includedir=%{_includedir} \
+    --sysconfdir=%{_sysconfdir}
 make
 
 %install
@@ -43,16 +87,39 @@ then
 	rm -rf $RPM_BUILD_ROOT
 fi
 mkdir -p $RPM_BUILD_ROOT
-make install prefix=$RPM_BUILD_ROOT%{_prefix}
+make prefix=$RPM_BUILD_ROOT%{_prefix} bindir=$RPM_BUILD_ROOT%{_bindir} \
+    mandir=$RPM_BUILD_ROOT%{_mandir} libdir=$RPM_BUILD_ROOT%{_libdir} \
+    localstatedir=$RPM_BUILD_ROOT%{_localstatedir} \
+    datadir=$RPM_BUILD_ROOT%{_datadir} \
+    includedir=$RPM_BUILD_ROOT%{_includedir} \
+    sysconfdir=$RPM_BUILD_ROOT%{_sysconfdir} install
+
 
 %files
 %defattr(-,root,root)
 %doc README doc/*.ps* doc/*.pdf*
-%{_libdir}/*.so.*
-%{_libdir}/*.so
-%{_libdir}/*.a
-%{_libdir}/*.la
+%{_libdir}/libppl.so.*
+%{_libdir}/libppl.so
+%{_libdir}/libppl.a
+%{_libdir}/libppl.la
 %{_includedir}/ppl.hh
+
+%files c
+%defattr(-,root,root)
+%{_libdir}/libppl_c.so.*
+%{_libdir}/libppl_c.so
+%{_libdir}/libppl_c.a
+%{_libdir}/libppl_c.la
+%{_includedir}/ppl_c.h
+
+%files sicstus
+%defattr(-,root,root)
+# Uncomment the following line if you want to create an RPM containing
+# a version of SICStus statically linked with the PPL.
+#%{_bindir}/ppl_sicstus
+%{_libdir}/ppl/ppl_sicstus.s.o
+%{_libdir}/ppl/ppl_sicstus.so
+%{_libdir}/ppl/ppl_sicstus.pl
 
 %post
 /sbin/ldconfig
@@ -60,5 +127,12 @@ make install prefix=$RPM_BUILD_ROOT%{_prefix}
 %postun
 /sbin/ldconfig
 
+%post c
+/sbin/ldconfig
+
+%postun c
+/sbin/ldconfig
+
 %clean
 rm -rf $RPM_BUILD_ROOT
+
