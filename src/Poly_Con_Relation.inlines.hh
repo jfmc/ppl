@@ -28,6 +28,11 @@ Poly_Con_Relation::Poly_Con_Relation(flags_t mask)
   : flags(mask) {
 }
 
+inline Poly_Con_Relation::flags_t
+Poly_Con_Relation::get_flags() const {
+  return flags;
+}
+
 inline Poly_Con_Relation
 Poly_Con_Relation::nothing() {
   return Poly_Con_Relation(NOTHING);

@@ -100,6 +100,11 @@ private:
   Parma_Polyhedra_Library::operator<<(std::ostream& s,
 				      const Poly_Con_Relation& r);
 
+PPL_HIDDEN:
+  //! Access the internal flags.
+  //! This is needed for some foreign language interfaces.
+  flags_t get_flags() const;
+
 public:
   //! The assertion that says nothing.
   static Poly_Con_Relation nothing();
