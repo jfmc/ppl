@@ -386,8 +386,6 @@ public:
   //! minimizing the result.
   //! Returns <CODE>true</CODE> if and only if the result is not empty.
   //! \exception std::invalid_argument thrown if \p *this and \p y
-  //!                                  are dimension-incompatible.
-  //! \exception std::invalid_argument thrown if \p *this and \p y
   //!                                  are topology-incompatible
   //!                                  or dimension-incompatible.
   bool intersection_assign_and_minimize(const Polyhedron& y);
@@ -692,6 +690,8 @@ public:
 
   //! Swaps \p *this with polyhedron \p y.
   //! (Note that \p *this and \p y can be dimension-incompatible.)
+  //! \exception std::invalid_argument thrown if \p x and \p y
+  //!                                  are topology-incompatible.
   void swap(Polyhedron& y);
 
 private:
@@ -782,6 +782,43 @@ private:
   static bool add_and_minimize(bool con_to_gen,
 			       Matrix& source1, Matrix& dest, SatMatrix& sat,
 			       const Matrix& source2);
+
+
+  /*! @name Exception throwers */
+  //@{
+  void throw_topology_incompatible(const char* method,
+				   const Polyhedron& y) const;
+  void throw_topology_incompatible(const char* method,
+				   const ConSys& ) const;
+  void throw_topology_incompatible(const char* method,
+				   const Constraint& ) const;
+  void throw_topology_incompatible(const char* method,
+				   const GenSys& ) const;
+  void throw_topology_incompatible(const char* method,
+				   const Generator& ) const;
+
+  void throw_dimension_incompatible(const char* method,
+				    const Polyhedron& y) const;
+  void throw_dimension_incompatible(const char* method,
+				    const Matrix& y) const;
+  void throw_dimension_incompatible(const char* method,
+				    const Row& y) const;
+  void throw_dimension_incompatible(const char* method,
+				    size_t needed_dim) const;
+
+  void throw_invalid_generator(const char* method) const;
+  void throw_invalid_generators(const char* method) const;
+
+  void throw_generic(const char* method, const char* reason) const;
+
+  static void throw_topology_incompatible(const char* method,
+					  const Polyhedron& x,
+					  const Polyhedron& y);
+  static void throw_dimension_incompatible(const char* method,
+					   const Polyhedron& x,
+					   const Polyhedron& y);
+  //@}
+
 };
 
 namespace std {

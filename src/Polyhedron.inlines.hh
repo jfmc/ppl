@@ -31,7 +31,8 @@ namespace Parma_Polyhedra_Library {
 
 inline void
 Polyhedron::swap(Polyhedron& y) {
-  assert(topology() == y.topology());
+  if (topology() != y.topology())
+    throw_topology_incompatible("swap(y)", y);
   std::swap(con_sys, y.con_sys);
   std::swap(gen_sys, y.gen_sys);
   std::swap(sat_c, y.sat_c);
