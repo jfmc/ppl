@@ -152,9 +152,8 @@ namespace Parma_Polyhedra_Library {
     The following code shows the use of the function
     <CODE>add_dimensions_and_embed</CODE>:
     \code
-  ConSys cs;
-  cs.insert(x == 2);
-  Polyhedron ph(cs);
+  Polyhedron ph;
+  ph.insert(x == 2);
   ph.add_dimensions_and_embed(1);
     \endcode
     The starting polyhedron is a point whose abscissa is equal to \f$2\f$
@@ -166,9 +165,8 @@ namespace Parma_Polyhedra_Library {
     The following code shows the use of the function
     <CODE>add_dimensions_and_project</CODE>:
     \code
-  ConSys cs;
-  cs.insert(x == 2);
-  Polyhedron ph(cs);
+  Polyhedron ph;
+  ph.insert(x == 2);
   ph.add_dimensions_and_poject(1);
     \endcode
     The starting polyhedron is the same as in Example 4 for
@@ -180,12 +178,11 @@ namespace Parma_Polyhedra_Library {
     The following code shows the use of the function
     <CODE>assign_variable</CODE>:
     \code
-  GenSys gs;
-  gs.insert(0 * x + 0 * y /= 1);
-  gs.insert(0 * x + 3 * y /= 1);
-  gs.insert(3 * x + 0 * y /= 1);
-  gs.insert(3 * x + 3 * y /= 1);
-  Polyhedron ph(gs); 
+  Polyhedron ph; 
+  ph.insert(0 * x + 0 * y /= 1);
+  ph.insert(0 * x + 3 * y /= 1);
+  ph.insert(3 * x + 0 * y /= 1);
+  ph.insert(3 * x + 3 * y /= 1);
   Integer d = 1;
   LinExpression coeff = x + 0*y + 4;
   ph.assign_variable(x, coeff, d);
@@ -214,12 +211,11 @@ namespace Parma_Polyhedra_Library {
     The following code shows the use of the function
     <CODE>substitute_variable</CODE>:
     \code
-  ConSys cs;
-  cs.insert(x >= 0);
-  cs.insert(x <= 3);
-  cs.insert(y >= 0);
-  cs.insert(y <= 3);
-  Polyhedron ph(cs);
+  Polyhedron ph;
+  ph.insert(x >= 0);
+  ph.insert(x <= 3);
+  ph.insert(y >= 0);
+  ph.insert(y <= 3);
   Integer d = 1;
   LinExpression coeff = x + 0*y + 4;
   ph.substitute_variable(x, coeff, d);
