@@ -42,17 +42,18 @@ site: http://www.cs.unipr.it/ppl/ . */
 //! releases and nonzero for development snapshots.
 #define PPL_VERSION_BETA @PPL_VERSION_BETA@
 
-//! \brief
-//! A string containing the PPL version.  Let <CODE>M</CODE> and
-//! <CODE>m</CODE> denote the numbers associated to PPL_VERSION_MAJOR
-//! and PPL_VERSION_MINOR, respectively.  The format of
-//! PPL_VERSION is <CODE>M "." m</CODE> if both
-//! PPL_VERSION_REVISION (<CODE>r</CODE>) and PPL_VERSION_BETA
-//! (<CODE>b</CODE>)are zero, <CODE>M "." m "pre" b</CODE> if
-//! PPL_VERSION_REVISION is zero and PPL_VERSION_BETA is not zero,
-//! <CODE>M "." m "." r</CODE> if PPL_VERSION_REVISION is not zero and
-//! PPL_VERSION_BETA is zero, <CODE>M "." m "." r "pre" b</CODE> if
-//! neither PPL_VERSION_REVISION nor PPL_VERSION_BETA are zero.
+//! A string containing the PPL version.
+/*!
+  Let <CODE>M</CODE> and <CODE>m</CODE> denote the numbers associated
+  to PPL_VERSION_MAJOR and PPL_VERSION_MINOR, respectively.  The
+  format of PPL_VERSION is <CODE>M "." m</CODE> if both
+  PPL_VERSION_REVISION (<CODE>r</CODE>) and PPL_VERSION_BETA
+  (<CODE>b</CODE>)are zero, <CODE>M "." m "pre" b</CODE> if
+  PPL_VERSION_REVISION is zero and PPL_VERSION_BETA is not zero,
+  <CODE>M "." m "." r</CODE> if PPL_VERSION_REVISION is not zero and
+  PPL_VERSION_BETA is zero, <CODE>M "." m "." r "pre" b</CODE> if
+  neither PPL_VERSION_REVISION nor PPL_VERSION_BETA are zero.
+*/
 #define PPL_VERSION "@VERSION@"
 
 //@}
@@ -78,11 +79,13 @@ version_beta();
 //! Returns a character string containing the PPL version.
 const char* version();
 
-//! \brief
-//! Returns a character string containing information about the PPL version,
-//! the licensing, the lack of any warranty whatsoever, the C++ compiler
-//! used to build the library, where to report bugs and where to look
-//! for further information.
+//! Returns a character string containing the PPL banner.
+/*!
+  The banner provides information about the PPL version, the licensing,
+  the lack of any warranty whatsoever, the C++ compiler used to build
+  the library, where to report bugs and where to look for further
+  information.
+*/
 const char* banner();
 
 } // namespace Parma_Polyhedra_Library
