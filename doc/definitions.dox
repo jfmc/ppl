@@ -45,12 +45,12 @@ Let \f$\lambda_1, \ldots, \lambda_k \in \Rset\f$ and
 
 <B>Scalar product</B>
 
-Let \f$\vect{x} = (x_1, \ldots, x_n)^\transpose\f$,
-\f$\vect{y} = (y_1, \ldots, y_n)^\transpose \in \Rset^n\f$.
+Let \f$\vect{x} = (x_0, \ldots, x_{n-1})^\transpose\f$,
+\f$\vect{y} = (y_0, \ldots, y_{n-1})^\transpose \in \Rset^n\f$.
 The <EM>scalar product</EM> of \f$\vect{x}\f$ and \f$\vect{y}\f$ 
 is defined as
 \f[
-   \langle \vect{x}, \vect{y} \rangle = \sum_{i=1}^n x_i y_i.
+   \langle \vect{x}, \vect{y} \rangle = \sum_{i=0}^{n-1} x_i y_i.
 \f]  
 The vectors \f$\vect{x}\f$ and \f$\vect{y}\f$ are <EM>orthogonal</EM> if 
 \f$\langle \vect{x}, \vect{y} \rangle = 0\f$.
@@ -197,9 +197,9 @@ exists a \f$\lambda \in \Rset, \lambda > 0\f$ such that
 \f[
   P \sseq
    \bigl\{\,
-     (x_1, \ldots, x_n)^\transpose \in \Rset^n
+     (x_0, \ldots, x_{n-1})^\transpose \in \Rset^n
    \bigm| 
-     - \lambda \leq x_j \leq \lambda \text{ for } j = 1, \ldots, n
+     - \lambda \leq x_j \leq \lambda \text{ for } j = 0, \ldots, n-1
     \,\bigr\}.
 \f]
 A bounded polyhedron is called a <EM>polytope</EM>.
@@ -244,7 +244,8 @@ Then any point
 \f$\vect{r} \in P_0 \setminus \{ \vect{0} \}\f$
 is called a <EM>ray</EM> of \f$P\f$.
 
-A ray indicates a direction in which the polyhedra is infinite (i.e. open).
+A ray indicates a direction in which the polyhedra is infinite
+(i.e., unbounded).
 
 <B><EM>Proposition</EM></B>
 
@@ -265,8 +266,8 @@ of \f$P\f$,
       \mu_1, \mu_2 \in  \Rset, \mu_1, \mu_2 \geq 0.
 \f]
 
-Note that the set of extreme rays describes all directions in which 
-the polyhedron is open.
+Note that the set of extreme rays describes <EM>all</EM> the directions
+in which the polyhedron is unbounded.
 
 <B>Lines</B>
 
@@ -375,16 +376,16 @@ a rational polyhedron:
 
 <B>Weil's theorem</B>
 
-If \f$A\f$ is a rational \f$m_1 \times n\f$ matrix,
-\f$B\f$ is a rational \f$m_2 \times n\f$ matrix and 
+If \f$A\f$ is a rational \f$m \times n\f$ matrix,
+\f$B\f$ is a rational \f$m' \times n\f$ matrix and 
 \f[
   Q = \sset{
         \vect{x} \in \Rset^n
       }{
         \vect{x}^\transpose = \vect{y}^\transpose A + \vect{z}^\transpose B, \\
-        \vect{y} = (y_1, \ldots, y_{m_1})^\transpose \in \Rset_+^{m_1},
-        \sum_{k=1}^{m_1} y_k = 1, \\
-	\vect{z} \in \Rset_+^{m_2}
+        \vect{y} = (y_0, \ldots, y_{m-1})^\transpose \in \Rset_+^{m},
+        \sum_{k=0}^{m-1} y_k = 1, \\
+	\vect{z} \in \Rset_+^{m'}
       }.
 \f]
 then \f$Q\f$ is a rational polyhedron.
