@@ -1217,14 +1217,17 @@ BD_Shape<T>::poly_hull_assign_and_minimize(const BD_Shape& y) {
   return !marked_empty();
 }
 
+
 template <typename T>
 inline void
 BD_Shape<T>::poly_difference_assign(const BD_Shape& y) {
+  dimension_type space_dim = space_dimension();
+
   // Dimension-compatibility check.
-  if (space_dimension() != y.space_dimension())
+  if (space_dim != y.space_dimension())
     throw_dimension_incompatible("poly_difference_assign(y)", y);
 
-  BD_Shape new_bdiffs(space_dimension(), Polyhedron::EMPTY);
+  BD_Shape new_bdiffs(space_dim, Polyhedron::EMPTY);
 
   BD_Shape& x = *this;
 
@@ -1242,7 +1245,7 @@ BD_Shape<T>::poly_difference_assign(const BD_Shape& y) {
   // If both systems of bounded differences are zero-dimensional,
   // then at this point they are necessarily universe system of bounded differences,
   // so that their difference is empty.
-  if (x.space_dimension() == 0) {
+  if (space_dim == 0) {
     x.set_empty();
     return;
   }
