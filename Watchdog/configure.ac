@@ -39,19 +39,13 @@ AC_SUBST(VERSION)
 # Generate a configuration header file.
 AM_CONFIG_HEADER([config.h])
 
-# Checks for programs.
-AC_PROG_CXX
-AC_PROG_MAKE_SET
-AC_PROG_INSTALL
-
 # C compiler
 
 AC_ARG_WITH(cc,
 [  --with-cc=xxx           use XXX as the C compiler],
 CC=$with_cc)
 
-AC_LANG_C
-AC_PROG_CC
+AC_LANG(C)
 
 # Checks for typedefs, structures, and compiler characteristics.
 AC_C_CONST
@@ -63,9 +57,14 @@ AC_ARG_WITH(cxx,
 [  --with-cxx=xxx          use XXX as the C++ compiler],
 CXX=$with_cxx)
 
-AC_LANG_CPLUSPLUS
+AC_LANG(C++)
+
+# Checks for programs.
+AC_PROG_CC
 AC_PROG_CXX
 AC_PROG_CXXCPP
+AC_PROG_MAKE_SET
+AC_PROG_INSTALL
 
 # Compilation flags
 
@@ -253,7 +252,7 @@ fi
 # Libtool.
 # Turn off shared libraries during beta-testing, since they
 # make debugging harder and the build process takes too long.
-AC_DISABLE_SHARED
+#AC_DISABLE_SHARED
 AC_LIBTOOL_DLOPEN
 AC_LIBTOOL_WIN32_DLL
 AC_PROG_LIBTOOL

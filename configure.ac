@@ -78,7 +78,6 @@ AC_ARG_WITH(cc,
 CC=$with_cc)
 
 AC_LANG(C)
-AC_PROG_CC
 
 # Checks for typedefs, structures, and compiler characteristics.
 AC_C_CONST
@@ -91,8 +90,13 @@ AC_ARG_WITH(cxx,
 CXX=$with_cxx)
 
 AC_LANG(C++)
+
+# Checks for programs.
+AC_PROG_CC
 AC_PROG_CXX
 AC_PROG_CXXCPP
+AC_PROG_MAKE_SET
+AC_PROG_INSTALL
 
 # GMP library
 
@@ -292,10 +296,6 @@ AC_CONFIG_SUBDIRS(Watchdog)
 AC_LIBTOOL_DLOPEN
 AC_LIBTOOL_WIN32_DLL
 AC_PROG_LIBTOOL
-
-# Checks for programs.
-AC_PROG_MAKE_SET
-AC_PROG_INSTALL
 
 # Checks for Prolog systems.
 
