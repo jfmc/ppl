@@ -1711,6 +1711,22 @@ time_watch(Topology, Goal, NoTimeOut, TimeOut) :-
    ),
    ppl_delete_Polyhedron(PolyCopy).
 
+% exceptions/0 tests both Prolog and C++ exceptions using:
+%
+% exception_prolog(+N, +V)
+% exception_cplusplus(+N, +V)
+%
+% N is the number of the test while V is a list of 3 PPL variables
+%
+% In exceptions/0, the calls to these predicates should fail
+% so that all the tests are tried on backtracking.
+% When all the tests have been tried,
+% (and, for the Prolog interface, providing the correct
+% exception message),
+% the call to exceptions/0 succeeds.
+% If one of the tests succeeds or a Prolog interface exception
+% has a wrong exception message, then exceptions/0 will fail.
+
 exceptions :-
    make_vars(3, V),
    (exception_prolog(_, V) ;   exception_cplusplus(_, V)),
@@ -1738,10 +1754,12 @@ exception_prolog(3, _) :-
 
 exception_prolog(4, _) :-
   ppl_new_Polyhedron_from_dimension(c, 0, _P),
-  catch(ppl_Polyhedron_space_dimension(P1, _N),
+  catch(ppl_Polyhedron_space_dimension(_P1, _N),
           M, 
          check_exception(invalid_argument(M))
         ).
+
+% checks the exception message for the Prolog interface exceptions
 
 check_exception(Exception_Goal):-
          (call(Exception_Goal) -> fail ; true).
