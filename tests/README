@@ -12,18 +12,18 @@ Polyhedra Library (PPL).  They have various origins:
 3) some have been written in order to increase the proportion of the
    library's code exercised by test suite.
 
-Independently from their origin, they are used only for regression
+Regardless of their origin, they are only used for the regression
 testing of the library.  For this reason, we do not pay much attention
-to them: we simply keep adding them to the test suite and, once in,
-they stay there forever.  Despite all the defects they may have, they
-serve their purpose very well.
+to them; we simply keep adding new tests to the test suite and, once
+in, they stay there forever.  Despite any defects, they serve this
+purpose well.
 
-Despite all this, several new users of the library have found it
-convenient to take one of these test program, change it a little bit,
-and try to compile it in order to quickly get an idea of how one works
-with the PPL.  If you want to do the same thing, here is some advice
-that may help you getting something working and completely
-self-contained in a matter of minutes:
+On the other hand, in order to get an idea of how to use the PPL,
+several new users have found it convenient to take one of these test
+programs, change it a bit, and then try to compile it.  If you want to
+do something similar, here is some advice that may help you get
+something working and completely self-contained in a matter of
+minutes:
 
 a) Replace the line
 
@@ -53,23 +53,23 @@ c) Either remove the `TRY' and `CATCH' macro invocations from the program
      }
 
 d) If you want to print something make sure the expansion of the `NOISY'
-   macro evaluates to true, add the line
+   macro evaluates to true; add the line
 
      using namespace Parma_Polyhedra_Library::IO_Operators;
 
-   just after the other two using directives of the program, then use
-   the PPL output facilities directly.  For instance, the effect of a
+   just after the other two using directives of the program; and then
+   use the PPL output facilities directly.  For instance, the effect of a
    line like
 
      print_constraints(ph, "*** ph ***");
 
-   can be obtained, more or less, by
+   can be obtained, more or less, by replacing it with
 
      cout << "*** ph ***" << endl << ph.constraints() << endl;
 
    Similarly, a line of the form
 
-     print_constraints(ph, "*** ph ***");
+     print_generators(ph, "*** ph ***");
 
    can be replaced by
 
