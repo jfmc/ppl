@@ -384,6 +384,11 @@ AC_CHECK_HEADER(Yap/c_interface.h,
 fi
 AM_CONDITIONAL(HAVE_YAP_PROLOG, test x$YAP_PROLOG = xyap)
 
+# Check for the Mercury compiler
+
+AC_CHECK_PROG(MERCURY_COMPILER, mmc, mmc)
+AM_CONDITIONAL(HAVE_MERCURY_COMPILER, test x$MERCURY_COMPILER = xmmc)
+
 # Check for the GLPK library
 
 AC_LANG_PUSH(C)
