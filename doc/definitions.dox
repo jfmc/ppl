@@ -619,7 +619,7 @@ affine image and preimage operators.
 The library provides two operators, one computes an affine image and
 the other an affine preimage of a polyhedron \f$\cP \in \Pset_n\f$
 for a given variable \f$x_k\f$ and
-linear expression \f$\mathit{expr} = \sum_{i=0}^{n-1} a_i x_i + b\f$.
+linear expression \f$\mathrm{expr} = \sum_{i=0}^{n-1} a_i x_i + b\f$.
 This variable and expression determine the affine transformation
 \f$\phi\f$ that is to be used by the operator.
 That is, \f$\phi\f$ is the transformation
@@ -711,12 +711,12 @@ in the linear expression is non-zero, the affine transformation is invertible.
 The library provides another operator
 which is a generalization of the affine image operator.
 Given a polyhedron \f$\cP \in \Pset_n\f$,
-an affine expression \f$\mathit{lhs} = \sum_{i=0}^{n-1} a'_i x_i + b'\f$,
+an affine expression \f$\mathrm{lhs} = \sum_{i=0}^{n-1} a'_i x_i + b'\f$,
 a relation symbol \f$\mathord{\relsym} \in \{ <, \leq, =, \geq, > \}\f$,
 and an affine expression
-\f$\mathit{rhs} = \sum_{i=0}^{n-1} a_i x_i + b\f$,
+\f$\mathrm{rhs} = \sum_{i=0}^{n-1} a_i x_i + b\f$,
 the image of \f$\cP\f$ with respect to the transfer function
-\f$\mathit{lhs} \relsym \mathit{rhs}\f$ is defined as
+\f$\mathrm{lhs} \relsym \mathrm{rhs}\f$ is defined as
   \f[
     \sset{
       (w_0, \ldots, w_{n-1})^\transpose \in \Rset^n
@@ -730,11 +730,11 @@ the image of \f$\cP\f$ with respect to the transfer function
       \sum_{i=0}^{n-1} a'_i w_i + b' \relsym \sum_{i=0}^{n-1} a_i v_i + b
     }.
   \f]
-Note that, when \f$\mathit{lhs} = x_k\f$ and
+Note that, when \f$\mathrm{lhs} = x_k\f$ and
 \f$\mathord{\relsym} \in \{ = \}\f$, then the above operator
 is equivalent to the application of the standard affine image
 of \f$\cP\f$ with respect to the variable \f$x_k\f$ and the
-affine expression \f$\mathit{rhs}\f$
+affine expression \f$\mathrm{rhs}\f$
 (hence the name given to this operator).
 
 \anchor time_elapse
@@ -1792,7 +1792,7 @@ with the homogenization, then:
 <B>Ray space</B>
 
 Given the decomposition \f$\mathcal{V} + \mathcal{R} + \mathcal{L}\f$
-of a polyhedron \f$P\f$ the set \f$\mathit{V} + \mathit{R}\f$
+of a polyhedron \f$P\f$ the set \f$\mathcal{V} + \mathcal{R}\f$
 is called the <EM>ray space</EM> of \f$P\f$
 and denoted by \f$\mathop{\mathrm{ray space}}(P)\f$.
 
