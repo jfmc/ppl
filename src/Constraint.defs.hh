@@ -301,6 +301,8 @@ public:
 private:
   friend class Parma_Polyhedra_Library::Constraint_System;
   friend class Parma_Polyhedra_Library::Constraint_System::const_iterator;
+  // FIXME: the following friend declaration is only to grant access to
+  // Polyhedron::add_low_level_constraints().
   friend class Parma_Polyhedra_Library::Polyhedron;
   // FIXME: the following friend declaration is only to grant access to
   // Generator_System::satisfied_by_all_generators().
