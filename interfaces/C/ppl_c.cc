@@ -636,7 +636,7 @@ CATCH_ALL
 
 int
 ppl_ConSys_const_iterator_dereference(ppl_const_ConSys_const_iterator_t cit,
-				       ppl_const_Constraint_t* pc) try {
+				      ppl_const_Constraint_t* pc) try {
   const ConSys::const_iterator& ccit = *to_const(cit);
   const Constraint& c = *ccit;
   *pc = to_const(&c);
