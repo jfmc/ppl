@@ -164,7 +164,7 @@ solve(Topology, Atom, [Poly|Polys], PolysOut, VarNames) :-
   (ppl_Polyhedron_add_constraints_and_minimize(PolyCopy, PP_ConstraintsList) ->
     % If satisfiable, try to solve the body.
     % The input list of used polyhedra is augmented with the new copy.
-    solve(Topology, Body, [PolyCopy,Poly|Polys], PolysOut, VarNames)
+    solve(Topology, Body, [PolyCopy, Poly|Polys], PolysOut, VarNames)
   ;
     % If the parameter passing constraints are unsatisfiable,
     % first throw the empty polyhedron away and then fail.
@@ -473,7 +473,7 @@ write_constraint(Expr = Num, VariableNames) :-
     (integer(Num) ->
       write(Num)
     ;
-      Num = rat(Int,1),
+      Num = rat(Int, 1),
       write(Int)
     )
   ).
@@ -534,7 +534,7 @@ freezevars(X, '$VAR'(NX), InN, OutN, VarNames, VarNamesOut) :-
 freezevars(Term, FrozenTerm, InN, OutN, VarNamesIn, VarNamesOut) :-
   Term =.. [F|Args],
   (F = rat ->
-    Args = [FrozenTerm,_],
+    Args = [FrozenTerm, _],
     OutN = InN,
     VarNamesOut = VarNamesIn
   ;
@@ -595,7 +595,7 @@ list2constraints(CSList, { CS }) :-
 
 list2constraints_aux([A], A) :-
   !.
-list2constraints_aux([A|Bs], (A,BCs)) :-
+list2constraints_aux([A|Bs], (A, BCs)) :-
   list2constraints_aux(Bs, BCs).
 
 residue2constraints([], {}) :-
@@ -605,7 +605,7 @@ residue2constraints(RCS, { CS }) :-
 
 residue2constraints_aux([[_] - {C}], C) :-
   !.
-residue2constraints_aux([[_] - {C}|RCRest], (C,CRest)) :-
+residue2constraints_aux([[_] - {C}|RCRest], (C, CRest)) :-
   residue2constraints_aux(RCRest, CRest).
 
 % numvars(?Term, +InN, ?OutN)
@@ -629,7 +629,7 @@ build_equality_constraints([], []).
 build_equality_constraints([Var = Num|Eqs], AllEqConstrs) :-
   build_equality_constraints(Eqs, EqConstrs),
   (nonvar(Num) ->
-    Num = rat(Int,1),
+    Num = rat(Int, 1),
     AllEqConstrs = [Var = Int|EqConstrs]
   ;
     AllEqConstrs = EqConstrs
