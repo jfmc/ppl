@@ -3525,8 +3525,8 @@ PPL::Polyhedron::BBRZ02_widening_assign(const Polyhedron& y) {
   for (dimension_type i = x3_gen_sys_num_rows; i-- > 0; ) {
     // We choose a ray of `x3' that doesn't belong to `y' and
     // "evolved" since a ray of `y'.
-    Generator x3_g = x3.gen_sys[i];
-    if (x3_g.is_ray()) {
+    if (x3.gen_sys[i].is_ray()) {
+      Generator x3_g = x3.gen_sys[i];
       std::vector<bool> considered(x3.space_dim + 1);
       Poly_Gen_Relation rel = y.relation_with(x3_g);
       for (dimension_type j = y_gen_sys_num_rows; j-- > 0; ) {
@@ -3543,13 +3543,13 @@ PPL::Polyhedron::BBRZ02_widening_assign(const Polyhedron& y) {
 		 h <= x3.space_dim && !considered[h]; ++h) {
 	      tmp_1 = x3_g[k] * y_g[h];
 	      tmp_2 = x3_g[h] * y_g[k];
-	      bool minor = false;
-	      int sp_sign = sgn(x3_g[h] * y_g[h]);
-	      if (tmp_1 < tmp_2 && sp_sign >= 0
-		  || tmp_1 > tmp_2 && sp_sign < 0)
-		minor = true;
+	      int sp_sign = sgn(x3_g[k] * x3_g[h]);
 	      if (tmp_1 != tmp_2)
-		if ((minor && x3_g[k] > 0) || (!minor && x3_g[k] < 0)) {
+		if ((tmp_1 >= 0 && tmp_2 > tmp_1)
+		    || (tmp_2 < tmp_1 && tmp_1 <= 0)
+		    || (tmp_2 > 0 && tmp_1 < 0 && sp_sign > 0)
+		    || (tmp_1 < 0 && tmp_2 > 0 && sp_sign > 0)
+		    || (tmp_2 < 0 && tmp_1 > 0 && sp_sign < 0)) {
 		  x3_g[k] = 0;
 		  considered[k] = true;
 		}

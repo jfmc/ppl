@@ -57,7 +57,7 @@ ORIGINAL_TESTS = \
         append1 append2 \
 	bbrz02widening1 bbrz02widening2 bbrz02widening3 bbrz02widening4 \
 	bbrz02widening5 bbrz02widening6 bbrz02widening7 bbrz02widening8 \
-	bbrz02widening9 bbrz02widening10 bbrz02widening11 \
+	bbrz02widening9 bbrz02widening10 bbrz02widening11 bbrz02widening12 \
 	bounded1 \
 	bounds1 bounds2 \
 	boundingbox1 boundingbox2 \
@@ -114,7 +114,7 @@ DERIVED_TESTS = \
 	nnc_bbrz02widening1 nnc_bbrz02widening2 nnc_bbrz02widening3 \
 	nnc_bbrz02widening4 nnc_bbrz02widening5 nnc_bbrz02widening6 \
 	nnc_bbrz02widening7 nnc_bbrz02widening8 nnc_bbrz02widening9 \
-	nnc_bbrz02widening10 nnc_bbrz02widening11 \
+	nnc_bbrz02widening10 nnc_bbrz02widening11 nnc_bbrz02widening12 \
 	nnc_bounded1 \
 	nnc_bounds1 nnc_bounds2 \
 	nnc_concatenate1 nnc_concatenate2 nnc_concatenate3 nnc_concatenate4 \
@@ -232,6 +232,7 @@ bbrz02widening8_SOURCES = bbrz02widening8.cc
 bbrz02widening9_SOURCES = bbrz02widening9.cc
 bbrz02widening10_SOURCES = bbrz02widening10.cc
 bbrz02widening11_SOURCES = bbrz02widening11.cc
+bbrz02widening12_SOURCES = bbrz02widening12.cc
 
 bounded1_SOURCES = bounded1.cc
 
@@ -471,6 +472,8 @@ nnc_bbrz02widening10_SOURCES = bbrz02widening10.cc
 nnc_bbrz02widening10_CXXFLAGS = $(DERIVED_CXXFLAGS)
 nnc_bbrz02widening11_SOURCES = bbrz02widening11.cc
 nnc_bbrz02widening11_CXXFLAGS = $(DERIVED_CXXFLAGS)
+nnc_bbrz02widening12_SOURCES = bbrz02widening12.cc
+nnc_bbrz02widening12_CXXFLAGS = $(DERIVED_CXXFLAGS)
 
 nnc_bounded1_SOURCES = bounded1.cc
 nnc_bounded1_CXXFLAGS = $(DERIVED_CXXFLAGS)
