@@ -22,6 +22,7 @@ For the most up-to-date information see the Parma Polyhedra Library
 site: http://www.cs.unipr.it/ppl/ . */
 
 #include <config.h>
+#include <sstream>
 
 #include "Integer.defs.hh"
 #include "checked.defs.hh"
@@ -376,9 +377,10 @@ Integer_to_integer_term(const PPL::Integer& n) {
       == PPL::Checked::V_EQ)
     return ciao_integer(v);
   else {
-    std::string s = n.get_str();
+    std::ostringstream s;
+    s << n;
     // FIXME: the following cast is really a bug in Ciao Prolog.
-    return ciao_put_number_chars(const_cast<char*>(s.c_str()));
+    return ciao_put_number_chars(const_cast<char*>(s.str().c_str()));
   }
 }
 
