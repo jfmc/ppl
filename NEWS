@@ -26,6 +26,9 @@ o  New macro PPL_VERSION expands to the version string of the library.
 
 o  The documentation has been improved in various ways.
 
+o  The variable `abandon_exponential_computations' has been renamed
+   `abandon_expensive_computations'.
+
 o  The methods
 
      void Polyhedron::add_constraints(ConSys& cs),

@@ -31,7 +31,7 @@ site: http://www.cs.unipr.it/ppl/ . */
 
 namespace PPL = Parma_Polyhedra_Library;
 
-// True if `abandon_exponential_computations' should be checked often,
+// True if abandon_expensive_computations should be checked often,
 // where the meaning of "often" is as stated in the documentation
 // of that variable.
 #define REACTIVE_ABANDONING 1

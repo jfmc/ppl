@@ -9,9 +9,6 @@ Enhancements for PPL 0.6
 - Before releasing PPL 0.6, modify the documentation and the web site
   so as to describe the new configure options that allow to use
   versions of GMP installed in nonstandard places.
-- The name of the `abandon_exponential_computations' variable
-  is now misleading, as we use it also to abandon polynomial
-  computations in the PowerSet domains.
 - Clearly explain, in the documentation, how (not) to use
   set_GMP_memory_allocation_functions().  More generally, explain how
   to have memory-guarded computations.

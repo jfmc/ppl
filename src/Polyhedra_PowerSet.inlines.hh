@@ -97,7 +97,7 @@ Polyhedra_PowerSet<PH>::concatenate_assign(const Polyhedra_PowerSet& y) {
       new_sequence.push_back(zi);
     }
     ++xi;
-    if (abandon_exponential_computations && xi != x_end && y_begin != y_end) {
+    if (abandon_expensive_computations && xi != x_end && y_begin != y_end) {
       // Hurry up!
       PH xph = xi->polyhedron();
       for (++xi; xi != x_end; ++xi)

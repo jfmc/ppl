@@ -398,7 +398,7 @@ reset_timeout() {
   if (p_timeout_object) {
     delete p_timeout_object;
     p_timeout_object = 0;
-    abandon_exponential_computations = 0;
+    abandon_expensive_computations = 0;
   }
 }
 
@@ -986,7 +986,7 @@ ppl_set_timeout(Prolog_term_ref t_time) {
     unsigned hundredth_secs = term_to_unsigned<unsigned>(t_time);
     p_timeout_object =
       new Parma_Watchdog_Library::Watchdog(hundredth_secs,
-					   abandon_exponential_computations,
+					   abandon_expensive_computations,
 					   e);
     return PROLOG_SUCCESS;
   }

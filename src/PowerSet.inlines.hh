@@ -196,7 +196,7 @@ PowerSet<CS>::omega_reduce() const {
 	break;
       }
     }
-    if (abandon_exponential_computations && xin != ps.end()) {
+    if (abandon_expensive_computations && xin != ps.end()) {
       // Hurry up!
       ps.collapse(xin);
       break;

@@ -104,32 +104,33 @@ public:
 };
 
 //! This pointer, which is initialized to zero, is repeatedly checked
-//! along any exponential computation path in the library.
+//! along any superlinear (i.e., computationally expensive) computation
+//! path in the library.
 //! When it is found nonzero the exception it points to is thrown.
 //! In other words, making this pointer point to an exception (and
 //! leaving it in this state) ensures that the library will return
 //! control to the client application, possibly by throwing the given
-//! exception, within a time that is a linear function of the space
-//! dimension of the object (polyhedron, system of constraints or
-//! generators) of highest dimension on which the library is operating
-//! upon.
+//! exception, within a time that is a linear function of the size
+//! of the representation of the biggest object (powerset of polyhedra,
+//! polyhedron, system of constraints or generators) on which the library
+//! is operating upon.
 //! \note The only sensible way to assign to this pointer is from within
 //!       a signal handler or from a parallel thread.  For this reason,
 //!       the library, apart from ensuring that the pointer is initially
 //!       set to zero, never assigns to it.  In particular, it does not
 //!       zero it again when the exception is thrown: it is the client's
 //!       responsibility to do so.
-extern const Throwable* volatile abandon_exponential_computations;
+extern const Throwable* volatile abandon_expensive_computations;
 
 #ifdef PPL_DOXYGEN_INCLUDE_IMPLEMENTATION_DETAILS
 //! \brief
-//! If the pointer abandon_exponential_computations is found
+//! If the pointer abandon_expensive_computations is found
 //! to be nonzero, the exception it points to is thrown.
 /*! \relates Throwable */
 #endif
 inline void
 maybe_abandon() {
-  if (const Throwable* p = abandon_exponential_computations)
+  if (const Throwable* p = abandon_expensive_computations)
     p->throw_me();
 }
 

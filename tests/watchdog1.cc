@@ -66,16 +66,16 @@ timed_compute_open_hypercube_generators(dimension_type dimension,
 					int hundredth_secs) {
   try {
     Parma_Watchdog_Library::Watchdog
-      w(hundredth_secs, abandon_exponential_computations, t);
+      w(hundredth_secs, abandon_expensive_computations, t);
 #if NOISY
     start_clock();
 #endif
     compute_open_hypercube_generators(dimension);
-    abandon_exponential_computations = 0;
+    abandon_expensive_computations = 0;
     return true;
   }
   catch (const myTimeout& e) {
-    abandon_exponential_computations = 0;
+    abandon_expensive_computations = 0;
 #if NOISY
     cout << e.what() << " after ";
     print_clock(cout);
