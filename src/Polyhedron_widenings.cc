@@ -112,7 +112,7 @@ PPL::Polyhedron::select_H79_constraints(const Polyhedron& y,
     // all the generators of the polyhedron `y'.
     buffer.clear();
     for (dimension_type j = y.gen_sys.num_rows(); j-- > 0; ) {
-      int sp_sgn = sgn(y.gen_sys[j] * ci);
+      const int sp_sgn = sgn(y.gen_sys[j] * ci);
       // We are assuming that `y <= x'.
       assert(sp_sgn >= 0);
       if (sp_sgn > 0)
@@ -131,26 +131,25 @@ void
 PPL::Polyhedron::H79_widening_assign(const Polyhedron& y, unsigned* tp) {
   Polyhedron& x = *this;
   // Topology compatibility check.
-  Topology tpl = x.topology();
+  const Topology tpl = x.topology();
   if (tpl != y.topology())
     throw_topology_incompatible("H79_widening_assign(y)", y);
   // Dimension-compatibility check.
-  dimension_type x_space_dim = x.space_dim;
-  if (x_space_dim != y.space_dim)
+  if (x.space_dim != y.space_dim)
     throw_dimension_incompatible("H79_widening_assign(y)", y);
 
 #ifndef NDEBUG
   {
-    // We assume that y is contained or equal to x.
-    Polyhedron x_copy = x;
-    Polyhedron y_copy = y;
+    // We assume that y is contained in or equal to x.
+    const Polyhedron x_copy = x;
+    const Polyhedron y_copy = y;
     assert(x_copy.contains(y_copy));
   }
 #endif
 
   // If any argument is zero-dimensional or empty,
   // the H79-widening behaves as the identity function.
-  if (x_space_dim == 0 || x.marked_empty() || y.marked_empty())
+  if (x.space_dim == 0 || x.marked_empty() || y.marked_empty())
     return;
 
   // `y.gen_sys' should be in minimal form and
@@ -192,7 +191,7 @@ PPL::Polyhedron::H79_widening_assign(const Polyhedron& y, unsigned* tp) {
     // constraints, since it is a subset of the former.
     else if (CH78_cs.num_equalities() == y.con_sys.num_equalities()) {
       // Let `x' be defined by the constraints in `CH78_cs'.
-      Polyhedron CH78(tpl, x_space_dim, UNIVERSE);
+      Polyhedron CH78(tpl, x.space_dim, UNIVERSE);
       CH78.add_constraints(CH78_cs);
 
       // Check whether we are using the widening-with-tokens technique
@@ -227,7 +226,7 @@ PPL::Polyhedron::H79_widening_assign(const Polyhedron& y, unsigned* tp) {
 
   // Copy into `H79_con_sys' the constraints of `x' that are common to `y',
   // according to the definition of the H79 widening.
-  dimension_type num_columns = x.con_sys.num_columns();
+  const dimension_type num_columns = x.con_sys.num_columns();
   ConSys H79_cs(tpl, 0, num_columns);
   ConSys x_minus_H79_cs(tpl, 0, num_columns);
   x.select_H79_constraints(y, H79_cs, x_minus_H79_cs);
@@ -241,7 +240,7 @@ PPL::Polyhedron::H79_widening_assign(const Polyhedron& y, unsigned* tp) {
     // NOTE: as `x.con_sys' was not necessarily in minimal form,
     // this does not imply that the result strictly includes `x'.
     // Let `H79' be defined by the constraints in `H79_cs'.
-    Polyhedron H79(tpl, x_space_dim, UNIVERSE);
+    Polyhedron H79(tpl, x.space_dim, UNIVERSE);
     H79.add_constraints(H79_cs);
 
     // Check whether we are using the widening-with-tokens technique
@@ -278,21 +277,20 @@ PPL::Polyhedron::limited_H79_extrapolation_assign(const Polyhedron& y,
 				y);
 
   // Dimension-compatibility check.
-  dimension_type x_space_dim = x.space_dim;
-  if (x_space_dim != y.space_dim)
+  if (x.space_dim != y.space_dim)
     throw_dimension_incompatible("limited_H79_extrapolation_assign(y, cs)",
 				 y);
   // `cs' must be dimension-compatible with the two polyhedra.
-  dimension_type cs_space_dim = cs.space_dimension();
-  if (x_space_dim < cs_space_dim)
+  const dimension_type cs_space_dim = cs.space_dimension();
+  if (x.space_dim < cs_space_dim)
     throw_dimension_incompatible("limited_H79_extrapolation_assign(y, cs)",
 				 "cs", cs);
 
 #ifndef NDEBUG
   {
-    // We assume that y is contained or equal to x.
-    Polyhedron x_copy = x;
-    Polyhedron y_copy = y;
+    // We assume that y is contained in or equal to x.
+    const Polyhedron x_copy = x;
+    const Polyhedron y_copy = y;
     assert(x_copy.contains(y_copy));
   }
 #endif
@@ -305,7 +303,7 @@ PPL::Polyhedron::limited_H79_extrapolation_assign(const Polyhedron& y,
   // The limited H79-widening between two polyhedra in a
   // zero-dimensional space is a polyhedron in a zero-dimensional
   // space, too.
-  if (x_space_dim == 0)
+  if (x.space_dim == 0)
     return;
 
   if (!y.minimize())
@@ -352,7 +350,7 @@ public:
     throw std::runtime_error("PPL internal error");
   }
 
-  void raise_lower_bound(dimension_type k, bool closed,
+  void raise_lower_bound(const dimension_type k, const bool closed,
 			 const Integer& n, const Integer& d) {
     if (closed)
       con_sys.insert(d*Variable(k) >= n);
@@ -360,7 +358,7 @@ public:
       con_sys.insert(d*Variable(k) > n);
   }
 
-  void lower_upper_bound(dimension_type k, bool closed,
+  void lower_upper_bound(const dimension_type k, const bool closed,
 			 const Integer& n, const Integer& d) {
     if (closed)
       con_sys.insert(d*Variable(k) <= n);
@@ -398,9 +396,9 @@ PPL::Polyhedron::is_BHRZ03_stabilizing(const Polyhedron& x,
   // Since the constraint systems are minimized, the dimension of
   // the polyhedra is obtained by subtracting the number of
   // equalities from the space dimension.
-  dimension_type x_dimension =
+  const dimension_type x_dimension =
     x.space_dim - x.con_sys.num_equalities();
-  dimension_type y_dimension =
+  const dimension_type y_dimension =
     y.space_dim - y.con_sys.num_equalities();
   if (x_dimension > y_dimension) {
 #if 0
@@ -420,8 +418,8 @@ PPL::Polyhedron::is_BHRZ03_stabilizing(const Polyhedron& x,
   // the dimension of the lineality space of `y', then the chain
   // is stabilizing. Since both generator systems are minimized,
   // the dimension of the lineality space is equal to the number of lines.
-  dimension_type x_num_lines = x.gen_sys.num_lines();
-  dimension_type y_num_lines = y.gen_sys.num_lines();
+  const dimension_type x_num_lines = x.gen_sys.num_lines();
+  const dimension_type y_num_lines = y.gen_sys.num_lines();
   if (x_num_lines > y_num_lines) {
 #if 0
     std::cout << "BHRZ03_stabilizing: lineality space" << std::endl;
@@ -442,7 +440,7 @@ PPL::Polyhedron::is_BHRZ03_stabilizing(const Polyhedron& x,
   // investigation is needed.
 
   // NOTE: we have to consider high-level constraints only.
-  dimension_type  x_con_sys_num_rows = 0;
+  dimension_type x_con_sys_num_rows = 0;
   for (ConSys::const_iterator i = x.con_sys.begin(),
 	 x_cs_end = x.con_sys.end(); i != x_cs_end; ++i)
     x_con_sys_num_rows++;
@@ -462,15 +460,15 @@ PPL::Polyhedron::is_BHRZ03_stabilizing(const Polyhedron& x,
   else if (x_con_sys_num_rows > y_con_sys_num_rows)
     return false;
 
-  dimension_type x_gen_sys_num_rows = x.gen_sys.num_rows();
-  dimension_type y_gen_sys_num_rows = y.gen_sys.num_rows();
+  const dimension_type x_gen_sys_num_rows = x.gen_sys.num_rows();
+  const dimension_type y_gen_sys_num_rows = y.gen_sys.num_rows();
   if (x.is_necessarily_closed()) {
     // If the number of points of `x' is smaller than the number
     // of points of `y', then the chain is stabilizing.
-    dimension_type x_num_points = x_gen_sys_num_rows
-      - x_num_lines - x.gen_sys.num_rays();
-    dimension_type y_num_points = y_gen_sys_num_rows
-      - y_num_lines - y.gen_sys.num_rays();
+    const dimension_type x_num_points
+      = x_gen_sys_num_rows - x_num_lines - x.gen_sys.num_rays();
+    const dimension_type y_num_points
+      = y_gen_sys_num_rows - y_num_lines - y.gen_sys.num_rays();
     if (x_num_points < y_num_points) {
 #if 0
       std::cout << "BHRZ03_stabilizing: number of points" << std::endl;
@@ -514,7 +512,6 @@ PPL::Polyhedron::is_BHRZ03_stabilizing(const Polyhedron& x,
       if (x_num_closure_points > y_num_closure_points)
 	return false;
   }
-
 
   // For each i such that 0 <= i < x.space_dim, let x_num_rays[i] be
   // the number of rays in x.gen_sys
@@ -593,18 +590,18 @@ PPL::Polyhedron::BHRZ03_combining_constraints(const Polyhedron& y,
 
   // There is no point in applying this technique when `x_minus_H79_cs'
   // has one constraint at most (no ``new'' constraint can be computed).
-  dimension_type x_minus_H79_cs_num_rows = x_minus_H79_cs.num_rows();
+  const dimension_type x_minus_H79_cs_num_rows = x_minus_H79_cs.num_rows();
   if (x_minus_H79_cs_num_rows <= 1)
     return false;
 
-  Topology tpl = x.topology();
-  dimension_type num_columns = x.con_sys.num_columns();
+  const Topology tpl = x.topology();
+  const dimension_type num_columns = x.con_sys.num_columns();
   ConSys combining_cs(tpl, 0, num_columns);
   ConSys new_cs(tpl, 0, num_columns);
 
   // Consider the points that belong to both `x.gen_sys' and `y.gen_sys'.
   // For NNC polyhedra, the role of points is played by closure points.
-  bool closed = x.is_necessarily_closed();
+  const bool closed = x.is_necessarily_closed();
   for (dimension_type i = y.gen_sys.num_rows(); i-- > 0; ) {
     const Generator& g = y.gen_sys[i];
     if ((g.is_point() && closed) || (g.is_closure_point() && !closed)) {
@@ -632,7 +629,7 @@ PPL::Polyhedron::BHRZ03_combining_constraints(const Polyhedron& y,
 	  combining_cs.insert(c);
       }
       // Build a new constraint by combining all the chosen constraints.
-      dimension_type combining_cs_num_rows = combining_cs.num_rows();
+      const dimension_type combining_cs_num_rows = combining_cs.num_rows();
       if (combining_cs_num_rows > 0) {
 	if (combining_cs_num_rows == 1)
 	  // No combination is needed.
@@ -709,9 +706,9 @@ PPL::Polyhedron::BHRZ03_evolving_points(const Polyhedron& y,
   //  - when added to `y' will subsume the point.
   GenSys candidate_rays;
 
-  dimension_type x_gen_sys_num_rows = x.gen_sys.num_rows();
-  dimension_type y_gen_sys_num_rows = y.gen_sys.num_rows();
-  bool closed = x.is_necessarily_closed();
+  const dimension_type x_gen_sys_num_rows = x.gen_sys.num_rows();
+  const dimension_type y_gen_sys_num_rows = y.gen_sys.num_rows();
+  const bool closed = x.is_necessarily_closed();
   for (dimension_type i = x_gen_sys_num_rows; i-- > 0; ) {
     Generator& g1 = x.gen_sys[i];
     // For C polyhedra, we choose a point of `x.gen_sys'
@@ -770,8 +767,8 @@ PPL::Polyhedron::BHRZ03_evolving_rays(const Polyhedron& y,
   assert(!H79.marked_empty() && !H79.has_something_pending()
 	 && H79.constraints_are_minimized() && H79.generators_are_minimized());
 
-  dimension_type x_gen_sys_num_rows = x.gen_sys.num_rows();
-  dimension_type y_gen_sys_num_rows = y.gen_sys.num_rows();
+  const dimension_type x_gen_sys_num_rows = x.gen_sys.num_rows();
+  const dimension_type y_gen_sys_num_rows = y.gen_sys.num_rows();
 
   // Candidate rays are kept in a temporary generator system.
   GenSys candidate_rays;
@@ -794,8 +791,10 @@ PPL::Polyhedron::BHRZ03_evolving_rays(const Polyhedron& y,
 		  tmp_1 = x_g[k] * y_g[h];
 		  tmp_2 = x_g[h] * y_g[k];
 		  tmp_1 -= tmp_2;
-		  int clockwise = sgn(tmp_1);
-		  int first_or_third_quadrant = sgn(x_g[k]) * sgn(x_g[h]);
+		  const int clockwise
+		    = sgn(tmp_1);
+		  const int first_or_third_quadrant
+		    = sgn(x_g[k])*sgn(x_g[h]);
 		  switch (clockwise * first_or_third_quadrant) {
 		  case -1:
 		    new_ray[k] = 0;
@@ -847,22 +846,21 @@ PPL::Polyhedron::BHRZ03_widening_assign(const Polyhedron& y, unsigned* tp) {
   if (x.topology() != y.topology())
     throw_topology_incompatible("BHRZ03_widening_assign(y)", y);
   // Dimension-compatibility check.
-  dimension_type x_space_dim = x.space_dim;
-  if (x_space_dim != y.space_dim)
+  if (x.space_dim != y.space_dim)
     throw_dimension_incompatible("BHRZ03_widening_assign(y)", y);
 
 #ifndef NDEBUG
   {
-    // We assume that y is contained or equal to x.
-    Polyhedron x_copy = x;
-    Polyhedron y_copy = y;
+    // We assume that y is contained in or equal to x.
+    const Polyhedron x_copy = x;
+    const Polyhedron y_copy = y;
     assert(x_copy.contains(y_copy));
   }
 #endif
 
   // If any argument is zero-dimensional or empty,
   // the BHRZ03-widening behaves as the identity function.
-  if (x_space_dim == 0 || x.marked_empty() || y.marked_empty()) {
+  if (x.space_dim == 0 || x.marked_empty() || y.marked_empty()) {
 #if PPL_STATISTICS
     statistics->reason.zero_dim_or_empty++;
     statistics->technique.nop++;
@@ -929,8 +927,8 @@ PPL::Polyhedron::BHRZ03_widening_assign(const Polyhedron& y, unsigned* tp) {
   // Copy into `H79_cs' the constraints that are common to `x' and `y',
   // according to the definition of the H79 widening.
   // The other ones are copied into `x_minus_H79_cs'.
-  Topology tpl = x.topology();
-  dimension_type num_columns = x.con_sys.num_columns();
+  const Topology tpl = x.topology();
+  const dimension_type num_columns = x.con_sys.num_columns();
   ConSys H79_cs(tpl, 0, num_columns);
   ConSys x_minus_H79_cs(tpl, 0, num_columns);
   x.select_H79_constraints(y, H79_cs, x_minus_H79_cs);
@@ -967,11 +965,11 @@ PPL::Polyhedron::BHRZ03_widening_assign(const Polyhedron& y, unsigned* tp) {
   std::swap(x, H79);
   assert(x.OK(true));
 
-#if NDEBUG
+#ifndef NDEBUG
   // The H79 widening is always stabilizing.
   x.minimize();
   assert(is_BHRZ03_stabilizing(x, y));
-#endif //#if NDEBUG
+#endif
 }
 
 void
@@ -993,21 +991,20 @@ PPL::Polyhedron::limited_BHRZ03_extrapolation_assign(const Polyhedron& y,
 				y);
 
   // Dimension-compatibility check.
-  dimension_type x_space_dim = x.space_dim;
-  if (x_space_dim != y.space_dim)
+  if (x.space_dim != y.space_dim)
     throw_dimension_incompatible("limited_BHRZ03_extrapolation_assign(y, cs)",
 				 y);
   // `cs' must be dimension-compatible with the two polyhedra.
-  dimension_type cs_space_dim = cs.space_dimension();
-  if (x_space_dim < cs_space_dim)
+  const dimension_type cs_space_dim = cs.space_dimension();
+  if (x.space_dim < cs_space_dim)
     throw_dimension_incompatible("limited_BHRZ03_extrapolation_assign(y, cs)",
 				 "cs", cs);
 
 #ifndef NDEBUG
   {
-    // We assume that y is contained or equal to x.
-    Polyhedron x_copy = x;
-    Polyhedron y_copy = y;
+    // We assume that y is contained in or equal to x.
+    const Polyhedron x_copy = x;
+    const Polyhedron y_copy = y;
     assert(x_copy.contains(y_copy));
   }
 #endif
@@ -1020,7 +1017,7 @@ PPL::Polyhedron::limited_BHRZ03_extrapolation_assign(const Polyhedron& y,
   // The limited BHRZ03-widening between two polyhedra in a
   // zero-dimensional space is a polyhedron in a zero-dimensional
   // space, too.
-  if (x_space_dim == 0)
+  if (x.space_dim == 0)
     return;
 
   if (!y.minimize())
