@@ -207,7 +207,7 @@ bool operator!=(const PowerSet<CS>& x, const PowerSet<CS>& y) {
 template <typename CS>
 inline bool
 PowerSet<CS>::is_top() const {
-  // FIXME: this may fail for top powersets containing redundant elements.
+  assert(is_omega_reduced());
   return size() == 1 && begin()->is_top();
 }
 
