@@ -518,7 +518,7 @@ PPL::PolyBase::minimize() const {
     update_constraints();
   }
 
-  assert(OK());
+  assert(OK(false));
 }
 
 /*!
@@ -906,7 +906,7 @@ PPL::PolyBase::intersection_assign_and_minimize(const PolyBase& y) {
     x.set_sat_c_up_to_date();
     x.clear_sat_g_up_to_date();
   }
-  assert(x.OK());
+  assert(x.OK(false));
 }
 
 /*!
@@ -1606,7 +1606,7 @@ PPL::PolyBase::add_constraints_and_minimize(ConSys& cs) {
     set_sat_c_up_to_date();
     clear_sat_g_up_to_date();
   }
-  assert(OK());
+  assert(OK(false));
 
   return !empty;
 }
@@ -2771,9 +2771,16 @@ PPL::PolyBase::OK(bool check_not_empty) const {
     goto bomb;
   }
 
-  // An empty polyhedron is allowed if the system of constraints
-  // either has no rows or only contains an unsatisfiable constraint.
-  if (is_empty())
+  if (is_empty()) {
+    if (check_not_empty) {
+      // The caller does not want the polyhedron to be empty.
+      cerr << "Empty polyhedron!"
+	   << endl;
+      goto bomb;
+    }
+
+    // An empty polyhedron is allowed if the system of constraints
+    // either has no rows or only contains an unsatisfiable constraint.
     if (con_sys.num_rows() == 0)
       return true;
     else {
@@ -2798,6 +2805,7 @@ PPL::PolyBase::OK(bool check_not_empty) const {
 	  goto bomb;
 	}
     }
+  }
 
   // A zero-dimensional, non-empty polyhedron is legal only if the
   // system of constraint `con_sys' and the system of generators
