@@ -197,12 +197,12 @@ Standards for Documenting the Project with Doxygen
 
 10)
   If the \return or \param special commands are used, then these have to
-  be placed after the detailed doxygen comment, if any.  The \result
-  special command, if present, should come before any \param command.
-  The \exception special command, if present, should come after any
-  \param command. All the parameters of the function should be
-  provided by the corresponding \param command, respecting their textual
-  order, separating them with a blank line.  The documentation of each
+  be placed after the brief doxygen comment.  The \result special
+  command, if present, should come before any \param command.  The
+  \exception special command, if present, should come after any \param
+  command. All the parameters of the function should be provided by the
+  corresponding \param command, respecting their textual order,
+  separating them with a blank line.  The documentation of each
   parameter should start at the line immediately following the \param
   command.  Typically, the list of parameters should be formatted as
   follows, where the \return command is optional.
@@ -230,6 +230,8 @@ Standards for Documenting the Project with Doxygen
 
     \exception exception_type2
     Documentation for the exceptions of type exception_type2.
+
+    Another piece of detailed description, if needed.
   */
   int foo(const bar& p1, const bar& p2, int p3);
   
