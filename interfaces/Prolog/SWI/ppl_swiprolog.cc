@@ -367,7 +367,7 @@ install() {
   PL_register_extensions(predicates);
 }
 
-extern "C" void
+extern "C" install_t
 uninstall() {
   ppl_finalize();
 }

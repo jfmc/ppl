@@ -24,7 +24,7 @@ site: http://www.cs.unipr.it/ppl/ . */
 #include <SWI-Prolog.h>
 
 extern "C" install_t install();
-extern "C" void uninstall();
+extern "C" install_t uninstall();
 
 int
 main(int argc, char **argv) {
