@@ -70,6 +70,10 @@ Bugfixes
 o  Fixed a bug in operator-=(LinExpression&, const LinExpression&)
    whereby we computed a wrong result in some circumstances.
 
+o  Fixed a bug in method Polyhedron::minimized_constraints() that,
+   under some circumstances, could cause a wrong result or a program
+   crash.
+
 
 --------------------------------------------------------------------------
 NEWS for version 0.4.2 (released on October 4, 2002)
