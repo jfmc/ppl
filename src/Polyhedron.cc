@@ -133,8 +133,9 @@ PPL::Polyhedron::Polyhedron(size_t num_dimensions, Degenerate_Kind kind)
       con_sys.resize_no_copy(1, num_dimensions+1);
       con_sys[0][0] = 1;
       con_sys[0].set_is_inequality();
-      set_constraints_up_to_date();
-      // FIXME: why con_sys is not known to be minimized ?
+      // The system of constraints only composed by the positivity
+      // constraint is in the minimal form.
+      set_constraints_minimized();
     }
   space_dim = num_dimensions;
 }
@@ -1156,8 +1157,8 @@ PPL::Polyhedron::insert(const Constraint& c) {
     if (!constraints_are_up_to_date())
       update_constraints();
 
-    // FIXME: are we sure here that the polyhedron is NOT empty ?
-    // Does `con_sys' necessarily has an element ?
+    // Here we know that the system of constraints has at
+    // least a row.
     con_sys.insert(c);
 
     // After adding new constraints, generators are no more up-to-date.
