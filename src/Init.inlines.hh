@@ -1,4 +1,4 @@
-/* Declarations of global objects.
+/* Init class implementation: inline functions.
    Copyright (C) 2001, 2002 Roberto Bagnara <bagnara@cs.unipr.it>
 
 This file is part of the Parma Polyhedra Library (PPL).
@@ -21,31 +21,24 @@ USA.
 For the most up-to-date information see the Parma Polyhedra Library
 site: http://www.cs.unipr.it/ppl/ . */
 
-#ifndef _globals_hh
-#define _globals_hh 1
-
-#include "Integer.types.hh"
+#include "globals.hh"
 
 namespace Parma_Polyhedra_Library {
 
-//! An array of temporaries used to avoid unnecessary memory allocation.
-extern Integer* Parma_Polyhedra_Library::tmp_Integer;
+inline
+Init::Init() {
+  // When the first Init object is constructed,
+  // memory is allocated for tmp_Integer.
+  if (count++ == 0)
+    tmp_Integer = new Integer[6];
+}
 
-//! Speculative allocation function.
-/*!
-  \param requested_size   The number of elements we need.
-
-  \return                 The actual capacity to be allocated.
-
-  Computes a capacity given a requested size.
-  Allows for speculative allocation aimed at reducing the number of
-  reallocations.
-*/
-inline size_t
-compute_capacity(size_t requested_size) {
-  return 2*(requested_size + 1);
+inline
+Init::~Init() {
+  // When the last Init object is destroyed,
+  // tmp_Integer is also destroyed.
+  if (--count == 0)
+    delete[] tmp_Integer;
 }
 
 } // namespace Parma_Polyhedra_Library
-
-#endif

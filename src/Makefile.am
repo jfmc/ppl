@@ -58,6 +58,10 @@ Integer.types.hh \
 Integer.defs.hh \
 Integer.inlines.hh \
 globals.hh \
+Init.types.hh \
+Init.defs.hh \
+Init.inlines.hh \
+initializer.hh \
 maxmin.hh \
 SatRow.types.hh \
 SatMatrix.types.hh \
@@ -101,17 +105,19 @@ Constraint.cc \
 ConSys.cc \
 GenSys.cc \
 Generator.cc \
+Init.cc \
+LinExpression.cc \
 Matrix.cc \
 Polyhedron.cc \
 Row.cc \
 SatMatrix.cc \
 SatRow.cc \
 Status.cc \
+Variable.cc \
 conversion.cc \
 minimize.cc \
 simplify.cc \
-LinExpression.cc \
-Variable.cc \
+globals.cc \
 $(INCLUDE_FILES)
 
 # The ordering of the following list *matters*!

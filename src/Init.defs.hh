@@ -1,4 +1,4 @@
-/* Declarations of global objects.
+/* Init class declaration.
    Copyright (C) 2001, 2002 Roberto Bagnara <bagnara@cs.unipr.it>
 
 This file is part of the Parma Polyhedra Library (PPL).
@@ -21,31 +21,37 @@ USA.
 For the most up-to-date information see the Parma Polyhedra Library
 site: http://www.cs.unipr.it/ppl/ . */
 
-#ifndef _globals_hh
-#define _globals_hh 1
+#ifndef _Init_defs_hh
+#define _Init_defs_hh 1
 
+#include "Init.types.hh"
 #include "Integer.types.hh"
 
-namespace Parma_Polyhedra_Library {
-
-//! An array of temporaries used to avoid unnecessary memory allocation.
-extern Integer* Parma_Polyhedra_Library::tmp_Integer;
-
-//! Speculative allocation function.
+#ifdef PPL_DOXYGEN_INCLUDE_IMPLEMENTATION_DETAILS
 /*!
-  \param requested_size   The number of elements we need.
-
-  \return                 The actual capacity to be allocated.
-
-  Computes a capacity given a requested size.
-  Allows for speculative allocation aimed at reducing the number of
-  reallocations.
+  <EM>Nifty Counter</EM> class to ensure that the library
+  is initialized only once and before its first use.
+  A count of the number of translation units using the library
+  is maintained. A static object of Init type will be declared
+  by each translation unit using the library.  As a result,
+  only one of them will initialize and properly finalize
+  the library.
 */
-inline size_t
-compute_capacity(size_t requested_size) {
-  return 2*(requested_size + 1);
-}
+#endif // PPL_DOXYGEN_INCLUDE_IMPLEMENTATION_DETAILS
 
-} // namespace Parma_Polyhedra_Library
+class Parma_Polyhedra_Library::Init {
+private:
+  //! Count the number of objects created.
+  static unsigned count;
+
+public:
+  //! Initializes the PPL.
+  Init();
+
+  //! Finalizes the PPL.
+  ~Init();
+};
+
+#include "Init.inlines.hh"
 
 #endif

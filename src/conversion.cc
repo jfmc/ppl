@@ -451,20 +451,20 @@ PPL::Polyhedron::conversion(Matrix& source,
 	  //   dest[i][c] *= scaled_sp_n;
 	  //   dest[i][c] -= scaled_sp_i * dest[num_lines_or_equalities][c];
 	  // }
-	  gcd_assign(tmp_Integer(1),
+	  gcd_assign(tmp_Integer[1],
 		     scalar_prod[i],
 		     scalar_prod[num_lines_or_equalities]);
-	  exact_div_assign(tmp_Integer(2),
+	  exact_div_assign(tmp_Integer[2],
 			   scalar_prod[i],
-			   tmp_Integer(1));
-	  exact_div_assign(tmp_Integer(3),
+			   tmp_Integer[1]);
+	  exact_div_assign(tmp_Integer[3],
 			   scalar_prod[num_lines_or_equalities],
-			   tmp_Integer(1));
+			   tmp_Integer[1]);
 	  for (size_t c = dest_num_columns; c-- > 0; ) {
-	    tmp_Integer(4) = tmp_Integer(3) * dest[i][c];
-	    tmp_Integer(5) = tmp_Integer(2)
+	    tmp_Integer[4] = tmp_Integer[3] * dest[i][c];
+	    tmp_Integer[5] = tmp_Integer[2]
 	      * dest[num_lines_or_equalities][c];
-	    dest[i][c] = tmp_Integer(4) - tmp_Integer(5);
+	    dest[i][c] = tmp_Integer[4] - tmp_Integer[5];
 	  }
 
 	  dest[i].strong_normalize();
@@ -513,20 +513,20 @@ PPL::Polyhedron::conversion(Matrix& source,
 	  //   dest[i][c] *= scaled_sp_n;
 	  //   dest[i][c] -= scaled_sp_i * dest[num_lines_or_equalities][c];
 	  // }
-	  gcd_assign(tmp_Integer(1),
+	  gcd_assign(tmp_Integer[1],
 		     scalar_prod[i],
 		     scalar_prod[num_lines_or_equalities]);
-	  exact_div_assign(tmp_Integer(2),
+	  exact_div_assign(tmp_Integer[2],
 			   scalar_prod[i],
-			   tmp_Integer(1));
-	  exact_div_assign(tmp_Integer(3),
+			   tmp_Integer[1]);
+	  exact_div_assign(tmp_Integer[3],
 			   scalar_prod[num_lines_or_equalities],
-			   tmp_Integer(1));
+			   tmp_Integer[1]);
 	  for (size_t c = dest_num_columns; c-- > 0; ) {
-	    tmp_Integer(4) = tmp_Integer(3) * dest[i][c];
-	    tmp_Integer(5) = tmp_Integer(2)
+	    tmp_Integer[4] = tmp_Integer[3] * dest[i][c];
+	    tmp_Integer[5] = tmp_Integer[2]
 	      * dest[num_lines_or_equalities][c];
-	    dest[i][c] = tmp_Integer(4) - tmp_Integer(5);
+	    dest[i][c] = tmp_Integer[4] - tmp_Integer[5];
 	  }
 
 	  dest[i].strong_normalize();
@@ -725,19 +725,19 @@ PPL::Polyhedron::conversion(Matrix& source,
 		  //   new_row[c] = scaled_sp_i * dest[j][c];
 		  //   new_row[c] -= scaled_sp_j * dest[i][c];
 		  // }
-		  gcd_assign(tmp_Integer(1),
+		  gcd_assign(tmp_Integer[1],
 			     scalar_prod[i],
 			     scalar_prod[j]);
-		  exact_div_assign(tmp_Integer(2),
+		  exact_div_assign(tmp_Integer[2],
 				   scalar_prod[i],
-				   tmp_Integer(1));
-		  exact_div_assign(tmp_Integer(3),
+				   tmp_Integer[1]);
+		  exact_div_assign(tmp_Integer[3],
 				   scalar_prod[j],
-				   tmp_Integer(1));
+				   tmp_Integer[1]);
 		  for (size_t c = dest_num_columns; c-- > 0; ) {
-		    tmp_Integer(4) = tmp_Integer(2) * dest[j][c];
-		    tmp_Integer(5) = tmp_Integer(3) * dest[i][c];
-		    new_row[c] = tmp_Integer(4) - tmp_Integer(5);
+		    tmp_Integer[4] = tmp_Integer[2] * dest[j][c];
+		    tmp_Integer[5] = tmp_Integer[3] * dest[i][c];
+		    new_row[c] = tmp_Integer[4] - tmp_Integer[5];
 		  }
 		  new_row.strong_normalize();
 		  // Since we added a new row to `dest', we have to add
