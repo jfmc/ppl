@@ -127,15 +127,7 @@ namespace Parma_Polyhedra_Library {
   for (int i = c1.space_dimension() - 1; i >= 0; i--)
     e += c1.coefficient(Variable(i)) * Variable(i); 
   e += c1.coefficient();
-  Constraint c2;
-  if (c1.is_equality()) {
-    Constraint tmp(e >= 0);
-    c2 = tmp;
-  }
-  else {
-    Constraint tmp(e == 0);
-    c2 = tmp;
-  }
+  Constraint c2 = c1.is_equality() ? (e >= 0) : (e == 0);
   cout << "Constraint c2: " << c2 << endl;
   \endcode
   The actual output is the following:
