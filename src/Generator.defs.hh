@@ -29,6 +29,7 @@ site: http://www.cs.unipr.it/ppl/ . */
 #include "Variable.defs.hh"
 #include "Constraint_System.types.hh"
 #include "Generator_System.defs.hh"
+#include "Congruence_System.types.hh"
 #include "Linear_Expression.defs.hh"
 #include "Polyhedron.types.hh"
 #include <iosfwd>
@@ -387,6 +388,7 @@ private:
   friend class Parma_Polyhedra_Library::Generator_System;
   friend class Parma_Polyhedra_Library::Generator_System::const_iterator;
   friend class Parma_Polyhedra_Library::Polyhedron;
+  friend class Parma_Polyhedra_Library::Grid;
 
   friend
   Parma_Polyhedra_Library::
@@ -395,6 +397,9 @@ private:
   // FIXME: the following friend declaration is only to grant access to
   // Constraint_System::satisfies_all_constraints().
   friend class Parma_Polyhedra_Library::Constraint_System;
+  // FIXME: the following friend declaration is only to grant access to
+  // Congruence_System::saturates_all_constraints().
+  friend class Parma_Polyhedra_Library::Congruence_System;
 
   friend std::ostream&
   Parma_Polyhedra_Library::IO_Operators::operator<<(std::ostream& s,
