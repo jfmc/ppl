@@ -29,25 +29,50 @@ site: http://www.cs.unipr.it/ppl/ . */
 
 namespace Parma_Polyhedra_Library {
 
+//! \name Functions Operating on Unbounded Integer Coefficients
+//@{
+
+//! Assigns to \p x its negation.
 inline void negate(GMP_Integer& x);
+
+//! Assigns to \p x the greatest common divisor of \p x and \p y.
 inline void gcd_assign(GMP_Integer& x, const GMP_Integer& y);
+//! Assigns to \p x the greatest common divisor of \p y and \p z.
 inline void gcd_assign(GMP_Integer& x,
 		       const GMP_Integer& y, const GMP_Integer& z);
+
+//! Assigns to \p x the least common multiple of \p x and \p y.
 inline void lcm_assign(GMP_Integer& x, const GMP_Integer& y);
+//! Assigns to \p x the least common multiple of \p y and \p z.
 inline void lcm_assign(GMP_Integer& x,
 		       const GMP_Integer& y, const GMP_Integer& z);
+
+//! Assigns to \p x the value <CODE>x + y * z</CODE>.
 inline void add_mul_assign(GMP_Integer& x,
 			   const GMP_Integer& y, const GMP_Integer& z);
+//! Assigns to \p x the value <CODE>x - y * z</CODE>.
 inline void sub_mul_assign(GMP_Integer& x,
 			   const GMP_Integer& y, const GMP_Integer& z);
+
+//! Assigns to \p x the quotient of the integer division of \p x by \p y.
 inline void exact_div_assign(GMP_Integer& x, const GMP_Integer& y);
+//! Assigns to \p x the quotient of the integer division of \p y by \p z.
 inline void exact_div_assign(GMP_Integer& x,
 			     const GMP_Integer& y, const GMP_Integer& z);
+
+//! Assigns to \p x its integer square root.
 inline void sqrt_assign(GMP_Integer& x);
+//! Assigns to \p x the integer square root of \p y.
 inline void sqrt_assign(GMP_Integer& x, const GMP_Integer& y);
+
+//! \brief
+//! Returns a negative, zero or positive value depending on whether
+//! \p x is lower than, equal to or greater than \p y, respectively.
 inline int cmp(const GMP_Integer& x, const GMP_Integer& y);
 
+//! Returns a const reference to \p x.
 inline const mpz_class& raw_value(const GMP_Integer& x);
+//! Returns a reference to \p x.
 inline mpz_class& raw_value(GMP_Integer& x);
 
 //! Returns the total size in bytes of the memory occupied by \p x.
@@ -55,6 +80,8 @@ inline size_t total_memory_in_bytes(const GMP_Integer& x);
 
 //! Returns the size in bytes of the memory managed by \p x.
 inline size_t external_memory_in_bytes(const GMP_Integer& x);
+
+//@} // Functions Operating on Unbounded Integer Coefficients
 
 } // namespace Parma_Polyhedra_Library
 

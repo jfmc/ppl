@@ -17,8 +17,10 @@ namespace Parma_Polyhedra_Library {
 template <typename T>
 class Native_Integer;
 
+//! Traits for the unchecked native integer coefficients.
 template <typename T>
 struct Coefficient_traits_template<Native_Integer<T> > {
+  //! The type used for references to const native integers.
   typedef Native_Integer<T> const_reference;
 };
 

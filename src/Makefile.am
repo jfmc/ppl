@@ -242,6 +242,7 @@ swapping_sort.icc
 # The ordering of the following list *matters*!
 DOC_FILES = \
 GMP_Integer.types.hh \
+Checked_Number.types.hh \
 Native_Integer.types.hh \
 Coefficient.types.hh \
 Variable.types.hh \
@@ -257,6 +258,10 @@ H79_Certificate.types.hh \
 Polyhedron.types.hh \
 C_Polyhedron.types.hh \
 NNC_Polyhedron.types.hh \
+GMP_Integer.defs.hh \
+Checked_Number.defs.hh \
+Native_Integer.defs.hh \
+Coefficient.defs.hh \
 Variable.defs.hh \
 Linear_Expression.defs.hh \
 Constraint.defs.hh \
