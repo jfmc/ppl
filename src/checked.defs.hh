@@ -58,7 +58,7 @@ enum Result {
   We use class encapsulated function and partial specialization of containing classes.
 */
 
-#define FUNCTION_CLASS(name) name ## _
+#define FUNCTION_CLASS(name) name ## _function_struct
 
 #define DECLARE_FUN1(name) \
 template <typename Policy, typename Type> \
