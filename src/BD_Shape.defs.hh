@@ -616,19 +616,7 @@ public:
                                      or if \p expr and \p *this
                                      are dimension-incompatible
                                      or if \p var is not a dimension
-                                     of \p *this or if \p expr is in 
-                                     two or plus variables
-				     or if the value of coefficient 
-				     of the single variable in \p expr 
-				     is different from value of 
-				     \p denominator.
-  
-    Note that, only the linear expressions of the form
-    \f[
-      ax_i + c
-    \f]  
-    with  \f$a \in \{0,\f$ denominator \f$ \}\f$ and \f$c\f$ belong to class T 
-    are accepted.
+                                     of \p *this.
   */
   void affine_preimage(Variable var,
 		       const Linear_Expression& expr,
