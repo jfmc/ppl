@@ -304,8 +304,8 @@ bounded1_SOURCES = bounded1.cc
 bounds1_SOURCES = bounds1.cc
 bounds2_SOURCES = bounds2.cc
 
-boundingbox1_SOURCES = boundingbox1.cc
-boundingbox2_SOURCES = boundingbox2.cc
+boundingbox1_SOURCES = boundingbox1.cc BBox.cc
+boundingbox2_SOURCES = boundingbox2.cc BBox.cc
 boundingbox3_SOURCES = boundingbox3.cc
 
 concatenate1_SOURCES = concatenate1.cc
@@ -618,7 +618,7 @@ nnc_bbrz02widening12_CXXFLAGS = $(DERIVED_CXXFLAGS)
 nnc_bounded1_SOURCES = bounded1.cc
 nnc_bounded1_CXXFLAGS = $(DERIVED_CXXFLAGS)
 
-nnc_boundingbox1_SOURCES = boundingbox1.cc
+nnc_boundingbox1_SOURCES = boundingbox1.cc BBox.cc
 nnc_boundingbox1_CXXFLAGS = $(DERIVED_CXXFLAGS)
 
 nnc_bounds1_SOURCES = bounds1.cc
@@ -873,7 +873,7 @@ XFAIL_TESTS = nnc_limitedh79widening3 nnc_polydifference1 addgenerators11
 
 check_PROGRAMS = $(TESTS) $(BUGS)
 
-noinst_HEADERS = ppl_test.hh ehandlers.hh files.hh print.hh
+noinst_HEADERS = ppl_test.hh ehandlers.hh files.hh print.hh BBox.hh
 
 EXTRA_DIST = ehandlers.cc print.cc $(watchdog1_SRCS)
 

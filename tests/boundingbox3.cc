@@ -29,215 +29,564 @@ using namespace Parma_Polyhedra_Library;
 #ifndef NOISY
 #define NOISY 0
 #endif
+#define C_TESTS 1
+#define NNC_TESTS 1
 
-class BInterval {
-private:
-  bool uclosed;
-  Integer uc;
-  Integer ud;
-  bool lclosed;
-  Integer lc;
-  Integer ld;
+// This is a non-bounded C polyhedron consisting of the line x = y.
+// The bounding box is the xy plane - the universal polyhedron.
+void test_c0() {
+#if C_TESTS
+  Variable x(0);
+  Variable y(1);
+  C_Polyhedron ph(2);
+  ph.add_constraint(x - y >= 0);
 
-public:
-  BInterval()
-    : uclosed(true), uc(1), ud(0), lclosed(true), lc(-1), ld(0) {
-  }
+#if NOISY
+  print_generators(ph, "*** test_c0 ph ***");
+#endif
 
-  void raise_lower_bound(bool closed,
-			 const Integer& c, const Integer& d) {
-    assert(d > 0 && ld >= 0);
-    if ((closed && lc*d <= c*ld) || (!closed && lc*d < c*ld))  {
-        lc = c;
-        ld = d;
-        lclosed = closed;
-    }
-  }
+  BoundingBox box(2);
+  ph.shrink_bounding_box(box);
 
-  void lower_upper_bound(bool closed,
-			 const Integer& c, const Integer& d) {
-    assert(d > 0 && ud >= 0);
-    if ((!closed && uc*d >= c*ud) || (closed && uc*d > c*ud))  {
-        uc = c;
-        ud = d;
-        uclosed = closed;
-    }
-  }
+  C_Polyhedron known_ph(box, From_Bounding_Box());
 
-  void set_empty() {
-    uc = -1;
-    lc = 1;
-    ud = 1;
-    ld = 1;}
+#if NOISY
+  print_generators(known_ph, "*** test_c0 known_ph ***");
+#endif
+  known_ph.intersection_assign_and_minimize(ph);
 
-  void print_interval() {
-  cout << "lower bound = ";
-  if (ld != 0) {
-    if (lclosed == true)
-      cout << " true ";
-    else
-      cout << " false";
-    cout << " : " << lc << " / " << ld << "," << endl;
-  }
-  else
-    cout << " none " << endl;
+  if (ph != known_ph)
+    exit(1);
 
-  cout << "         ";
-  cout << "upper bound = ";
-  if (ud != 0) {
-    if (uclosed == true)
-      cout << " true ";
-    else
-      cout << " false";
-    cout << " : " << uc << " / " << ud << "." << endl;
-  }
-  else
-    cout << " none,  " << endl;
-  }
-
-  friend bool operator==(const BInterval& x, const BInterval& y);
-  friend bool operator<=(const BInterval& x, const BInterval& y);
-};
-
-inline bool
-operator==(const BInterval& x, const BInterval& y) {
-  return x.lclosed == y.lclosed
-    && x.uclosed == y.uclosed
-    && x.lc*y.ld == y.lc*x.ld
-    && x.uc*y.ud == y.uc*x.ud;
+#endif // C_TESTS
 }
 
-inline bool
-operator<=(const BInterval& x, const BInterval& y) {
-  int l_sign = sgn(x.ld) * sgn(y.ld);
-  int u_sign = sgn(x.ud) * sgn(y.ud);
-  if (y.lclosed || (!x.lclosed && !y.lclosed)) {
-    if (l_sign > 0 && x.lc * y.ld < y.lc * x.ld)
-      return false;
-    if (l_sign < 0 && x.lc * y.ld > y.lc * x.ld)
-      return false;
-    if (l_sign == 0)
-      if (x.ld == 0 && x.lc < 0 && (y.ld != 0 || (y.ld == 0 && y.ld > 0)))
-	return false;
-  }
-  else {
-    assert(!y.lclosed && x.lclosed);
-    if (l_sign > 0 && x.lc * y.ld <= y.lc * x.ld)
-      return false;
-    if (l_sign < 0 && x.lc * y.ld >= y.lc * x.ld)
-      return false;
-    if (l_sign == 0)
-      if (x.ld == 0 && x.lc < 0)
-	return false;
-  }
-  if (y.uclosed || (!x.uclosed && !y.uclosed)) {
-    if (u_sign > 0 && x.uc * y.ud > y.uc * x.ud)
-      return false;
-    if (u_sign < 0 && x.uc * y.ud < y.uc * x.ud)
-      return false;
-    if (u_sign == 0)
-      if (x.ud == 0 && x.uc > 0 && (y.ud != 0 || (y.ud == 0 && y.ud < 0)))
-	return false;
-  }
-  else {
-    assert(!y.uclosed && x.uclosed);
-    if (u_sign > 0 && x.uc * y.ud >= y.uc * x.ud)
-      return false;
-    if (u_sign < 0 && x.uc * y.ud <= y.uc * x.ud)
-      return false;
-    if (u_sign == 0)
-      if (x.ud == 0 && x.uc > 0)
-	return false;
-  }
-  return true;
+// This is a non-bounded NNC polyhedron consisting of the line x = y.
+// The bounding box is the xy plane - the universal polyhedron.
+void test_nnc0() {
+#if NNC_TESTS
+  Variable x(0);
+  Variable y(1);
+  NNC_Polyhedron ph(2);
+  ph.add_constraint(x - y >= 0);
+
+#if NOISY
+  print_generators(ph, "*** test_nnc0 ph ***");
+#endif
+
+  BoundingBox box(2);
+  ph.shrink_bounding_box(box);
+
+  NNC_Polyhedron known_ph(box, From_Bounding_Box());
+
+#if NOISY
+  print_generators(known_ph, "*** test_nnc0 known_ph ***");
+#endif
+  known_ph.intersection_assign_and_minimize(ph);
+
+  if (ph != known_ph)
+    exit(1);
+
+#endif // NNC_TESTS
 }
 
-inline bool
-operator!=(const BInterval& x, const BInterval& y) {
-  return !(x == y);
+// This is a non-bounded C polyhedron consisting of the +ve quadrant.
+void test_c1() {
+#if C_TESTS
+  Variable x(0);
+  Variable y(1);
+
+  C_Polyhedron ph(2);
+  ph.add_constraint(x >= y);
+  ph.add_constraint(y >= 0);
+
+#if NOISY
+  print_generators(ph, "*** test_c1 ph ***");
+#endif
+
+  BoundingBox box(2);
+  ph.shrink_bounding_box(box);
+
+  C_Polyhedron known_ph(box, From_Bounding_Box());
+
+#if NOISY
+  print_generators(known_ph, "*** test_c1 known_ph ***");
+#endif
+  known_ph.intersection_assign_and_minimize(ph);
+
+  if (ph != known_ph)
+    exit(1);
+
+#endif // C_TESTS
 }
 
-class BBox {
-private:
-  vector<BInterval> box;
+// This is a non-bounded NNC polyhedron consisting of the +ve quadrant.
+void test_nnc1() {
+#if NNC_TESTS
+  Variable x(0);
+  Variable y(1);
 
-public:
-  BBox(dimension_type dimension) {
-    box.resize(dimension);
-  }
+  NNC_Polyhedron ph(2);
+  ph.add_constraint(x >= y);
+  ph.add_constraint(y >= 0);
 
-  dimension_type space_dimension() const {
-    return box.size();
-  }
+#if NOISY
+  print_generators(ph, "*** test_nnc1 ph ***");
+#endif
 
-  const BInterval& operator[](dimension_type k) const {
-    return box[k];
-  }
+  BoundingBox box(2);
+  ph.shrink_bounding_box(box);
 
-  void print_box(const string& intro = "") {
-    if (!intro.empty())
-      cout << intro << endl;
-    dimension_type dim = box.size();
-    for (dimension_type j = 0; j != dim ; j++) {
-      cout << j << " AXES:  ";
-      box[j].print_interval();
-    }
-  }
+  NNC_Polyhedron known_ph(box, From_Bounding_Box());
 
-  void raise_lower_bound(dimension_type k, bool closed,
-			 const Integer& c, const Integer& d) {
-    assert(k < box.size());
-    box[k].raise_lower_bound(closed, c, d);
-  }
+#if NOISY
+  print_generators(known_ph, "*** test_nnc1 known_ph ***");
+#endif
+  known_ph.intersection_assign_and_minimize(ph);
 
-  void lower_upper_bound(dimension_type k, bool closed,
-			 const Integer& c, const Integer& d) {
-    assert(k < box.size());
-    box[k].lower_upper_bound(closed, c, d);
-  }
+  if (ph != known_ph)
+    exit(1);
 
-  void set_empty() {
-    for (dimension_type k = box.size(); k-- > 0; )
-      box[k].set_empty();
-  }
-};
-
-bool
-operator==(const BBox& x, const BBox& y) {
-  dimension_type dimension = x.space_dimension();
-  if (dimension != y.space_dimension())
-    return false;
-
-  for (dimension_type i = dimension; i-- > 0; )
-    if (x[i] != y[i])
-      return false;
-
-  return true;
+#endif // NNC_TESTS
 }
 
+// This is a bounded C polyhedron;
+void test_c2() {
+#if C_TESTS
+  Variable x(0);
+  Variable y(1);
 
-bool
-operator<=(const BBox& x, const BBox& y) {
-  dimension_type dimension = x.space_dimension();
-  if (dimension > y.space_dimension())
-    return false;
+  C_Polyhedron ph(2);
+  ph.add_constraint(3 * x +y >= 2);
+  ph.add_constraint(x <= 4);
+  ph.add_constraint(y <= 4);
 
-  for (dimension_type i = dimension; i-- > 0; )
-    if (!(x[i] <= y[i]))
-      return false;
-  
-  return true;
+#if NOISY
+  print_generators(ph, "*** test_c2 ph ***");
+#endif
+
+  BoundingBox box(2);
+  ph.shrink_bounding_box(box);
+
+  C_Polyhedron known_ph(box, From_Bounding_Box());
+
+#if NOISY
+  print_generators(known_ph, "*** test_c2 known_ph ***");
+#endif
+  known_ph.intersection_assign_and_minimize(ph);
+
+  if (ph != known_ph)
+    exit(1);
+
+#endif // C_TESTS
 }
 
-inline bool
-operator!=(const BBox& x, const BBox& y) {
-  return !(x == y);
+// This is a bounded NNC polyhedron;
+void test_nnc2() {
+#if NNC_TESTS
+  Variable x(0);
+  Variable y(1);
+
+  NNC_Polyhedron ph(2);
+  ph.add_constraint(3 * x +y >= 2);
+  ph.add_constraint(x <= 4);
+  ph.add_constraint(y <= 4);
+
+#if NOISY
+  print_generators(ph, "*** test_nnc2 ph ***");
+#endif
+
+  BoundingBox box(2);
+  ph.shrink_bounding_box(box);
+
+  NNC_Polyhedron known_ph(box, From_Bounding_Box());
+
+#if NOISY
+  print_generators(known_ph, "*** test_nnc2 known_ph ***");
+#endif
+  known_ph.intersection_assign_and_minimize(ph);
+
+  if (ph != known_ph)
+    exit(1);
+
+#endif // NNC_TESTS
 }
 
+// This is a unbounded C polyhedron in 4D but bounded in 2D;
+void test_c3() {
+#if C_TESTS
+  //Variable w(0);
+  Variable x(1);
+  Variable y(2);
+  Variable z(3);
+
+  C_Polyhedron ph(4);
+  ph.add_constraint(3 * x + y >= 2);
+  ph.add_constraint(x <= 4);
+  ph.add_constraint(y <= 4);
+  ph.add_constraint(z >= 5);
+
+#if NOISY
+  print_generators(ph, "*** test_c3 ph ***");
+#endif
+
+  BoundingBox box(4);
+  ph.shrink_bounding_box(box);
+
+  C_Polyhedron known_ph(box, From_Bounding_Box());
+
+#if NOISY
+  print_generators(known_ph, "*** test_c3 known_ph ***");
+#endif
+  known_ph.intersection_assign_and_minimize(ph);
+
+  if (ph != known_ph)
+    exit(1);
+
+#endif // C_TESTS
+}
+
+// This is a unbounded NNC polyhedron in 4D but bounded in 2D;
+void test_nnc3() {
+#if NNC_TESTS
+  //Variable w(0);
+  Variable x(1);
+  Variable y(2);
+  Variable z(3);
+
+  NNC_Polyhedron ph(4);
+  ph.add_constraint(3 * x +y >= 2);
+  ph.add_constraint(x <= 4);
+  ph.add_constraint(y <= 4);
+  ph.add_constraint(z >= 5);
+
+#if NOISY
+  print_generators(ph, "*** test_nnc3 ph ***");
+#endif
+
+  BoundingBox box(4);
+  ph.shrink_bounding_box(box);
+
+  NNC_Polyhedron known_ph(box, From_Bounding_Box());
+
+#if NOISY
+  print_generators(known_ph, "*** test_nnc3 known_ph ***");
+#endif
+   known_ph.intersection_assign_and_minimize(ph);
+
+  if (ph != known_ph)
+    exit(1);
+
+#endif // NNC_TESTS
+}
+
+// This is a universal, 2-dimensional C polyhedron.
+void test_c4() {
+#if C_TESTS
+  C_Polyhedron ph(2);
+
+#if NOISY
+  print_generators(ph, "*** test_c4 ph ***");
+#endif
+
+  BoundingBox box(2);
+  ph.shrink_bounding_box(box);
+
+  C_Polyhedron known_ph(box, From_Bounding_Box());
+
+#if NOISY
+  print_generators(known_ph, "*** test_c4 known_ph ***");
+#endif
+  known_ph.intersection_assign_and_minimize(ph);
+
+  if (ph != known_ph)
+    exit(1);
+
+#endif // C_TESTS
+}
+
+  // This is a universal, 2-dimensional NNC polyhedron.
+void test_nnc4() {
+#if NNC_TESTS
+  NNC_Polyhedron ph(2);
+
+#if NOISY
+  print_generators(ph, "*** test_nnc4 ph ***");
+#endif
+
+  BoundingBox box(2);
+  ph.shrink_bounding_box(box);
+
+  NNC_Polyhedron known_ph(box, From_Bounding_Box());
+
+#if NOISY
+  print_generators(known_ph, "*** test_nnc4 known_ph ***");
+#endif
+
+  if (ph != known_ph)
+    exit(1);
+
+#endif // NNC_TESTS
+}
+
+// This is an zero-dimensional C polyhedron.
+void test_c5() {
+#if C_TESTS
+  C_Polyhedron ph;
+
+#if NOISY
+  print_generators(ph, "*** test_c5 ph ***");
+#endif
+
+  BoundingBox box(0);
+  ph.shrink_bounding_box(box);
+
+  C_Polyhedron known_ph(box, From_Bounding_Box());
+
+#if NOISY
+  print_generators(known_ph, "*** test_c5 known_ph ***");
+#endif
+
+   if (ph != known_ph)
+     exit(1);
+
+#endif // C_TESTS
+}
+
+// This is an zero-dimensional NNC polyhedron.
+void test_nnc5() {
+#if NNC_TESTS
+  NNC_Polyhedron ph;
+
+#if NOISY
+  print_generators(ph, "*** test_nnc5 ph ***");
+#endif
+
+  BoundingBox box(0);
+  ph.shrink_bounding_box(box);
+
+  NNC_Polyhedron known_ph(box, From_Bounding_Box());
+
+#if NOISY
+  print_generators(known_ph, "*** test_nnc5 known_ph ***");
+#endif
+
+  if (ph != known_ph)
+    exit(1);
+
+#endif // NNC_TESTS
+}
+
+// This is an empty C polyhedron.
+void test_c6() {
+#if C_TESTS
+  C_Polyhedron ph(2, C_Polyhedron::EMPTY);
+
+#if NOISY
+  print_constraints(ph, "*** test_c6 ph ***");
+#endif
+
+  BoundingBox box(2);
+  ph.shrink_bounding_box(box);
+
+  C_Polyhedron known_ph(box, From_Bounding_Box());
+
+#if NOISY
+  print_generators(known_ph, "*** test_c6 known_ph ***");
+#endif
+
+  if (ph != known_ph)
+    exit(1);
+
+#endif // C_TESTS
+}
+
+// This is an empty NNC polyhedron.
+void test_nnc6() {
+#if NNC_TESTS
+  NNC_Polyhedron ph(2, C_Polyhedron::EMPTY);
+
+#if NOISY
+  print_generators(ph, "*** test_nnc6 ph ***");
+#endif
+
+  BoundingBox box(2);
+  ph.shrink_bounding_box(box);
+
+  NNC_Polyhedron known_ph(box, From_Bounding_Box());
+
+#if NOISY
+  print_generators(known_ph, "*** test_nnc6 known_ph ***");
+#endif
+
+  if (ph != known_ph)
+    exit(1);
+
+#endif // NNC_TESTS
+}
+
+// This is a bounded C polyhedron that is a single point;
+void test_c7() {
+#if C_TESTS
+  Variable x(0);
+  Variable y(1);
+
+  C_Polyhedron ph(2);
+  ph.add_constraint(x == 2);
+  ph.add_constraint(y == 4);
+
+#if NOISY
+  print_generators(ph, "*** test_c7 ph ***");
+#endif
+
+  BoundingBox box(2);
+  ph.shrink_bounding_box(box);
+
+  C_Polyhedron known_ph(box, From_Bounding_Box());
+
+#if NOISY
+  print_generators(known_ph, "*** test_c7 known_ph ***");
+#endif
+
+  if (ph != known_ph)
+    exit(1);
+
+#endif // C_TESTS
+}
+
+// This is a bounded NNC polyhedron that is a single point;
+void test_nnc7() {
+#if NNC_TESTS
+  Variable x(0);
+  Variable y(1);
+
+  NNC_Polyhedron ph(2);
+  ph.add_constraint(x == 2);
+  ph.add_constraint(y == 4);
+
+#if NOISY
+  print_generators(ph, "*** test_nnc7 ph ***");
+#endif
+
+  BoundingBox box(2);
+  ph.shrink_bounding_box(box);
+
+  NNC_Polyhedron known_ph(box, From_Bounding_Box());
+
+#if NOISY
+  print_generators(known_ph, "*** test_nnc7 known_ph ***");
+#endif
+
+  if (ph != known_ph)
+    exit(1);
+
+#endif // NNC_TESTS
+}
+
+// This is a unit square C polyhedron
+void test_c8() {
+#if C_TESTS
+  Variable x(0);
+  Variable y(1);
+
+  ConSys cs;
+  cs.insert(x >= 0);
+  cs.insert(x <= 1);
+  cs.insert(y >= 0);
+  cs.insert(y <= 1);
+
+  C_Polyhedron ph(cs);
+
+#if NOISY
+  print_generators(ph, "*** test_c8 ph generators ***");
+#endif
+
+  BoundingBox box(2);
+  ph.shrink_bounding_box(box);
+
+  C_Polyhedron known_ph(box, From_Bounding_Box());
+
+#if NOISY
+  print_generators(known_ph, "*** test_c8 known_ph ***");
+#endif
+
+  if (ph != known_ph)
+    exit(1);
+
+#endif // C_TESTS
+}
+
+// This is a unit square NNC polyhedron
+void test_nnc8() {
+#if NNC_TESTS
+  Variable x(0);
+  Variable y(1);
+
+  ConSys cs;
+  cs.insert(x >= 0);
+  cs.insert(x <= 1);
+  cs.insert(y >= 0);
+  cs.insert(y <= 1);
+
+  NNC_Polyhedron ph(cs);
+
+#if NOISY
+  print_generators(ph, "*** test_nnc8 ph generators ***");
+#endif
+
+  BoundingBox box(2);
+  ph.shrink_bounding_box(box);
+
+  NNC_Polyhedron known_ph(box, From_Bounding_Box());
+
+#if NOISY
+  print_generators(known_ph, "*** test_nnc8 known_ph ***");
+#endif
+
+  if (ph != known_ph)
+    exit(1);
+
+#endif // NNC_TESTS
+}
+
+// This is a unbounded C polyhedron in 4D but bounded in 2D
+void test_c9() {
+#if C_TESTS
+  //Variable w(0);
+  Variable x(1);
+  Variable y(2);
+  Variable z(3);
+
+  C_Polyhedron ph(4);
+  ph.add_constraint(3 * x +y >= 2);
+  ph.add_constraint(x <= 4);
+  ph.add_constraint(y <= 4);
+  ph.add_constraint(z >= 5);
+
+#if NOISY
+  print_generators(ph, "*** test_c9 ph ***");
+#endif
+
+  BoundingBox box(4);
+  ph.shrink_bounding_box(box);
+
+  C_Polyhedron known_ph(box, From_Bounding_Box());
+
+#if NOISY
+  print_generators(known_ph, "*** test_c9 known_ph ***");
+#endif
+  known_ph.intersection_assign_and_minimize(ph);
+
+  if (ph != known_ph)
+    exit(1);
+
+#endif // C_TESTS
+}
 
 // This is a unbounded NNC polyhedron in 4D but bounded in 2D
 // with strict inequality and closure points at the lower bound.
-void test1() {
+void test_nnc9() {
+#if NNC_TESTS
   //Variable w(0);
   Variable x(1);
   Variable y(2);
@@ -249,43 +598,30 @@ void test1() {
   ph.add_constraint(y <= 4);
   ph.add_constraint(z >= 5);
 
-  BBox pbox(ph.space_dimension());
-  ph.shrink_bounding_box(pbox, true);
-
-  BBox nbox(ph.space_dimension());
-  ph.shrink_bounding_box(nbox);
-
 #if NOISY
-  print_constraints(ph, "*** test1 ph ***");
-  nbox.print_box("*** test1 nbox ***");
-  pbox.print_box("*** test1 pbox ***");
+  print_generators(ph, "*** test_nnc9 ph ***");
 #endif
 
-  BBox known_nbox(4);
-  known_nbox.raise_lower_bound(1, false, -2, 3);
-  known_nbox.lower_upper_bound(1, true, 4, 1);
-  known_nbox.raise_lower_bound(2, false, -10, 1);
-  known_nbox.lower_upper_bound(2, true, 4, 1);
-  known_nbox.raise_lower_bound(3, true, 5, 1);
+  BoundingBox box(4);
+  ph.shrink_bounding_box(box);
 
-  BBox known_pbox(4);
-  known_pbox.lower_upper_bound(1, true, 4, 1);
-  known_pbox.lower_upper_bound(2, true, 4, 1);
-  known_pbox.raise_lower_bound(3, true, 5, 1);
+  NNC_Polyhedron known_ph(box, From_Bounding_Box());
 
 #if NOISY
-  known_nbox.print_box("*** test_nnc9 known_nbox ***");
-  known_pbox.print_box("*** test_nnc9 known_pbox ***");
+  print_generators(known_ph, "*** test_nnc9 known_ph ***");
 #endif
+  known_ph.intersection_assign_and_minimize(ph);
 
-  if (nbox != known_nbox || pbox != known_pbox || !(nbox <= pbox))
+  if (ph != known_ph)
     exit(1);
-}
 
+#endif // NNC_TESTS
+}
 
 // This is a bounded NNC polyhedron with strict inequalities
 // causing upper and lower bounds of the box to be open.
-void test2() {
+void test_nnc10() {
+#if NNC_TESTS
   Variable x(0);
   Variable y(1);
 
@@ -294,43 +630,113 @@ void test2() {
   ph.add_constraint(x < 4);
   ph.add_constraint(y <= 4);
 
-  BBox pbox(ph.space_dimension());
-  ph.shrink_bounding_box(pbox, true);
-
-  BBox nbox(ph.space_dimension());
-  ph.shrink_bounding_box(nbox);
-
 #if NOISY
-  print_constraints(ph, "*** test1 ph ***");
-  nbox.print_box("*** test1 nbox ***");
-  pbox.print_box("*** test1 pbox ***");
+  print_generators(ph, "*** test_nnc10 ph ***");
 #endif
 
-  BBox known_nbox(2);
-  known_nbox.raise_lower_bound(0, true, -2, 3);
-  known_nbox.lower_upper_bound(0, false, 4, 1);
-  known_nbox.raise_lower_bound(1, false, -10, 1);
-  known_nbox.lower_upper_bound(1, true, 4, 1);
+  BoundingBox box(2);
+  ph.shrink_bounding_box(box);
 
-  BBox known_pbox(2);
-  known_pbox.lower_upper_bound(0, false, 4, 1);
-  known_pbox.lower_upper_bound(1, true, 4, 1);
+  NNC_Polyhedron known_ph(box, From_Bounding_Box());
 
 #if NOISY
-  known_nbox.print_box("*** test_nnc10 known_nbox ***");
-  known_pbox.print_box("*** test_nnc10 known_pbox ***");
+  print_generators(known_ph, "*** test_nnc known_ph ***");
 #endif
+  known_ph.intersection_assign_and_minimize(ph);
 
-  if (nbox != known_nbox || pbox != known_pbox || !(nbox <= pbox))
+  if (ph != known_ph)
     exit(1);
+
+#endif // NNC_TESTS
 }
+
+// An empty polyhedron in 2D defined using strict constraints.
+void test_nnc11() {
+#if NNC_TESTS
+  Variable x(0);
+  Variable y(1);
+  NNC_Polyhedron ph(2);
+  ph.add_constraint(x > 0);
+  ph.add_constraint(x < 0);
+  ph.add_constraint(y > 0);
+  ph.add_constraint(y < 0);
+
+#if NOISY
+  print_generators(ph, "*** test_nnc11 ph ***");
+#endif
+
+  BoundingBox box(2);
+  ph.shrink_bounding_box(box);
+
+  NNC_Polyhedron known_ph(box, From_Bounding_Box());
+
+#if NOISY
+  print_generators(known_ph, "*** test_nnc11 known_ph ***");
+#endif
+
+  if (ph != known_ph)
+    exit(1);
+
+#endif // NNC_TESTS
+}
+
+// Constructs a polyhedron x > 0, x < 1/2, y > 0 from the corresponding box.
+void test_c12() {
+#if C_TESTS
+  BoundingBox box(2);
+
+  box.raise_lower_bound(0, true, 0, 1);
+  box.lower_upper_bound(0, true, 1, 2);
+  box.raise_lower_bound(1, true, 0, 1);
+
+  C_Polyhedron ph(box, From_Bounding_Box());
+
+#if NOISY
+  print_generators(ph, "*** test_c12 ph ***");
+#endif
+
+  Variable x(0);
+  Variable y(1);
+  C_Polyhedron known_ph(2);
+  known_ph.add_constraint(x >= 0);
+  known_ph.add_constraint(2*x <= 1);
+  known_ph.add_constraint(y >= 0);
+
+#if NOISY
+  print_generators(known_ph, "*** test_c12 known_ph ***");
+#endif
+
+  if (ph != known_ph)
+    exit(1);
+
+#endif // C_TESTS
+}
+
 
 int
 main() {
-  set_handlers();
-
-  test1();
-  test2();
-
+  test_c0();
+  test_c1();
+  test_c2();
+  test_c3();
+  test_c4();
+  test_c5();
+  test_c6();
+  test_c7();
+  test_c8();
+  test_c9();
+  test_c12();
+  test_nnc0();
+  test_nnc1();
+  test_nnc2();
+  test_nnc3();
+  test_nnc4();
+  test_nnc5();
+  test_nnc6();
+  test_nnc7();
+  test_nnc8();
+  test_nnc9();
+  test_nnc10();
+  test_nnc11();
   return 0;
 }
