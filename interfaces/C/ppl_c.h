@@ -305,16 +305,16 @@ ppl_LinExpression_OK __P((ppl_const_LinExpression_t le));
   Describes the relations represented by a constraint.
 */
 enum ppl_enum_Constraint_Type {
+  /*! The constraint is of the form \f$e < 0\f$. */
+  PPL_CONSTRAINT_TYPE_LESS_THAN,
+  /*! The constraint is of the form \f$e \leq 0\f$. */
+  PPL_CONSTRAINT_TYPE_LESS_THAN_OR_EQUAL,
   /*! The constraint is of the form \f$e = 0\f$. */
   PPL_CONSTRAINT_TYPE_EQUAL,
   /*! The constraint is of the form \f$e \geq 0\f$. */
   PPL_CONSTRAINT_TYPE_GREATER_THAN_OR_EQUAL,
   /*! The constraint is of the form \f$e > 0\f$. */
-  PPL_CONSTRAINT_TYPE_GREATER_THAN,
-  /*! The constraint is of the form \f$e \leq 0\f$. */
-  PPL_CONSTRAINT_TYPE_LESS_THAN_OR_EQUAL,
-  /*! The constraint is of the form \f$e < 0\f$. */
-  PPL_CONSTRAINT_TYPE_LESS_THAN
+  PPL_CONSTRAINT_TYPE_GREATER_THAN
 };
 
 
@@ -1432,6 +1432,44 @@ ppl_Polyhedron_affine_preimage __P((ppl_Polyhedron_t ph,
 				    ppl_dimension_type var,
 				    ppl_const_LinExpression_t le,
 				    ppl_const_Coefficient_t d));
+
+/*!
+  Assigns to \p *this the image of \p *this with respect to the
+  \ref generalized_image "generalized affine transfer function"
+  \f$\mathrm{var}' \relop \frac{\mathrm{expr}}{\mathrm{denominator}}\f$,
+  where \f$\mathord{\relop}\f$ is the relation operator encoded
+  by \p relop.
+  \param ph    The polyhedron that is transformed.
+  \param var   The left hand side variable of the generalized
+               affine transfer function.
+  \param relop The relation operator.
+  \param le    The numerator of the right hand side affine expression.
+  \param d     The denominator of the right hand side affine expression.
+*/
+int
+ppl_Polyhedron_generalized_affine_image
+__P((ppl_Polyhedron_t ph,
+     ppl_dimension_type var,
+     enum ppl_enum_Constraint_Type relop,
+     ppl_const_LinExpression_t le,
+     ppl_const_Coefficient_t d));
+
+/*!
+  Assigns to \p *this the image of \p *this with respect to the
+  \ref generalized_image "generalized affine transfer function"
+  \f$\mathrm{lhs}' \relop \mathrm{rhs}\f$, where
+  \f$\mathord{\relop}\f$ is the relation operator encoded by \p relop.
+  \param ph    The polyhedron that is transformed.
+  \param lhs           The left hand side affine expression.
+  \param relop         The relation operator.
+  \param rhs           The right hand side affine expression.
+*/
+int
+ppl_Polyhedron_generalized_affine_image_lhs_rhs
+__P((ppl_Polyhedron_t ph,
+     ppl_const_LinExpression_t lhs,
+     enum ppl_enum_Constraint_Type relop,
+     ppl_const_LinExpression_t rhs));
 
 /*!
   Code of the worst-case polynomial complexity class.
