@@ -29,7 +29,7 @@ VPATH = @srcdir@
 
 SUBDIRS =
 
-EXTRA_DIST = ppl_ciao.pl fake_main.pl ciao_clpq.pl ciao_clpq2.pl
+EXTRA_DIST = ppl_ciao.pl fake_main.pl ciao_clpq.pl ciao_clpq2.pl ciao_pl_check.pl
 
 if HAVE_CIAO_PROLOG
 
@@ -76,6 +76,15 @@ ciao_clpq2: libppl_ciao.la ppl_ciao.pl ciao_clpq.pl ../clpq2.pl
 	  rm -f ciao_clpq2.pl ppl_ciao.pl clpq2.pl; \
 	fi
 
+ciao_pl_check: libppl_ciao.la ppl_ciao.pl ciao_pl_check.pl ../pl_check.pl
+	if [ $(abs_srcdir) != `pwd` ]; then \
+	  cp -f $(srcdir)/ciao_pl_check.pl $(srcdir)/ppl_ciao.pl $(srcdir)/../pl_check.pl .; \
+	fi
+	ciaoc -o $@ ciao_pl_check.pl
+	if [ $(abs_srcdir) != `pwd` ]; then \
+	  rm -f ciao_pl_check.pl ppl_ciao.pl pl_check.pl; \
+	fi
+
 
 CLPQ_TESTS_NONSTRICT = \
 ack.clpq \
@@ -91,7 +100,7 @@ schedule.clpq
 
 CLPQ_TESTS = $(CLPQ_TESTS_NONSTRICT) $(CLPQ_TESTS_STRICT)
 
-check-local: ciao_clpq$(EXEEXT) ../check_script ../expected ciao_clpq2$(EXEEXT) ../check_script2 ../expected2
+check-local: ciao_clpq$(EXEEXT) ../check_script ../expected ciao_clpq2$(EXEEXT) ../check_script2 ../expected2 ciao_pl_check$(EXEEXT) ../expected3
 	for k in $(CLPQ_TESTS); do cp -f $(srcdir)/../$$k .; done
 	GLOBALSTKSIZE=1000000 \
 	$(LIBTOOL) --mode=execute \
@@ -108,6 +117,13 @@ check-local: ciao_clpq$(EXEEXT) ../check_script ../expected ciao_clpq2$(EXEEXT) 
 		ciao_clpq2 \
 			<$(srcdir)/../check_script2 >obtained2
 	diff -q --ignore-all-space $(srcdir)/../expected2 obtained2
+	$(LIBTOOL) --mode=execute \
+		-dlopen ../../../src/libppl.la \
+		-dlopen ../../../Watchdog/libpwl.la \
+		-dlopen libppl_ciao.la \
+		ciao_pl_check \
+			 >obtained3
+	diff -q --ignore-all-space $(srcdir)/../expected3 obtained3
 
 MOSTLYCLEANFILES = \
 fake_main \
