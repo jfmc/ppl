@@ -45,10 +45,11 @@ As an option, the Prolog interfaces can track the creation and disposal
 of polyhedra.  In fact, differently from native Prolog data, PPL polyhedra
 must be explicitely disposed and forgetting to do so is a very common mistake.
 To enable this option, configure the library adding
-<CODE>-DTRACK_ALLOCATION</CODE> to the options passed to the C++ compiler.
+<CODE>-DPROLOG_DTRACK_ALLOCATION</CODE> to the options passed to the
+C++ compiler.
 Your configure command would then look like
 \code
-  path/to/configure --with-cxxflags="-DTRACK_ALLOCATION" ...
+  path/to/configure --with-cxxflags="-DPROLOG_TRACK_ALLOCATION" ...
 \endcode
 
 \subsection PI_SD_Features System-Dependent Features

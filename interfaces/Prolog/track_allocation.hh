@@ -24,11 +24,11 @@ site: http://www.cs.unipr.it/ppl/ . */
 #ifndef _track_allocation_hh
 #define _track_allocation_hh
 
-#ifndef TRACK_ALLOCATION
-#define TRACK_ALLOCATION 0
+#ifndef PROLOG_TRACK_ALLOCATION
+#define PROLOG_TRACK_ALLOCATION 0
 #endif
 
-#if TRACK_ALLOCATION
+#if PROLOG_TRACK_ALLOCATION
 
 #include <set>
 #include <iostream>
@@ -38,7 +38,7 @@ namespace Parma_Polyhedra_Library {
 class PolyTracker {
 public:
   void insert(const void* pp);
-  void check(const void* pp);
+  void check(const void* pp) const;
   void remove(const void* pp);
 
   PolyTracker();
@@ -49,41 +49,57 @@ private:
   Set s;
 };
 
+inline
 PolyTracker::PolyTracker() {
 }
 
+inline
 PolyTracker::~PolyTracker() {
   size_t n = s.size();
   if (n > 0) 
-    std::cerr << n << " polyhedra leaked!" << std::endl;
+    std::cerr << "PolyTracker: " << n << " polyhedra leaked!" << std::endl;
 }
 
-void
+inline void
 PolyTracker::insert(const void* pp) {
   std::pair<Set::iterator, bool> stat = s.insert(pp);
-  if (!stat.second)
+  if (!stat.second) {
+    std::cerr << "PolyTracker: two polyhedra at the same address "
+	      << "at the same time?!" << std::endl;
     abort();
+  }
 }
 
-void
-PolyTracker::check(const void* pp) {
-  if (s.find(pp) == s.end())
+inline void
+PolyTracker::check(const void* pp) const {
+  if (s.find(pp) == s.end()) {
+    std::cerr << "PolyTracker: attempt to access an inexistent polyhedron."
+	      << std::endl;
     abort();
+  }
 }
 
 void
 PolyTracker::remove(const void* pp) {
-  if (s.erase(pp) != 1)
+  if (s.erase(pp) != 1) {
+    std::cerr << "PolyTracker: attempt to deallocate an inexistent polyhedron."
+	      << std::endl;
     abort();
+  }
+}
+
+static inline PolyTracker&
+poly_tracker() {
+  static PolyTracker pt;
+  return pt;
 }
 
 } // namespace Parma_Polyhedra_Library
 
-static Parma_Polyhedra_Library::PolyTracker poly_tracker;
 
-#define REGISTER(x) poly_tracker.insert(x)
-#define UNREGISTER(x) poly_tracker.remove(x)
-#define CHECK(x) poly_tracker.check(x)
+#define REGISTER(x) Parma_Polyhedra_Library::poly_tracker().insert(x)
+#define UNREGISTER(x) Parma_Polyhedra_Library::poly_tracker().remove(x)
+#define CHECK(x) Parma_Polyhedra_Library::poly_tracker().check(x)
 
 #else
 
