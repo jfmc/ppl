@@ -966,3 +966,63 @@ ppl_add_generators_and_minimize(Prolog_term_ref t_ph,
   CATCH_ALL;
   return PROLOG_FAILURE;
 }
+
+extern "C" Prolog_foreign_return_type
+ppl_polyhedon_included_or_equal(Prolog_term_ref t_lhs, 
+                                Prolog_term_ref t_rhs) {
+  try {
+    const PPL::Polyhedron* lhs = get_ph_pointer(t_lhs);
+    if (lhs == 0)
+      return PROLOG_FAILURE;
+    const PPL::Polyhedron* rhs = get_ph_pointer(t_rhs);
+    if (rhs == 0)
+      return PROLOG_FAILURE;
+    CHECK(lhs);
+    CHECK(rhs);
+    if (lhs <= rhs) {
+      return PROLOG_SUCCESS;
+    }
+  }
+  CATCH_ALL;
+  return PROLOG_FAILURE;
+}
+
+extern "C" Prolog_foreign_return_type
+ppl_polyhedon_equal(Prolog_term_ref t_lhs, 
+                    Prolog_term_ref t_rhs) {
+  try {
+    const PPL::Polyhedron* lhs = get_ph_pointer(t_lhs);
+    if (lhs == 0)
+      return PROLOG_FAILURE;
+    const PPL::Polyhedron* rhs = get_ph_pointer(t_rhs);
+    if (rhs == 0)
+      return PROLOG_FAILURE;
+    CHECK(lhs);
+    CHECK(rhs);
+    if (lhs == rhs) {
+      return PROLOG_SUCCESS;
+    }
+  }
+  CATCH_ALL;
+  return PROLOG_FAILURE;
+}
+
+extern "C" Prolog_foreign_return_type
+ppl_polyhedron_strictly_included(Prolog_term_ref t_lhs, 
+                                 Prolog_term_ref t_rhs) {
+  try {
+    const PPL::Polyhedron* lhs = get_ph_pointer(t_lhs);
+    if (lhs == 0)
+      return PROLOG_FAILURE;
+    const PPL::Polyhedron* rhs = get_ph_pointer(t_rhs);
+    if (rhs == 0)
+      return PROLOG_FAILURE;
+    CHECK(lhs);
+    CHECK(rhs);
+    if (lhs < rhs) {
+      return PROLOG_SUCCESS;
+    }
+  }
+  CATCH_ALL;
+  return PROLOG_FAILURE;
+}

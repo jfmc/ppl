@@ -326,6 +326,8 @@ SP_STUB_2(ppl_remove_dimensions, 2)
 SP_STUB_2(ppl_remove_higher_dimensions, 2)
 SP_STUB_2(ppl_add_dimensions_and_project, 2)
 SP_STUB_2(ppl_add_dimensions_and_embed, 2)
+SP_STUB_2(ppl_polyhedon_included_or_equal, 2)
+SP_STUB_2(ppl_polyhedon_equal, 2)
 
 #define SP_DEFINE_C_PREDICATE(name, arity) \
   SP_define_c_predicate(#name, arity, "user", sp_stub_##name, NULL)
@@ -350,7 +352,10 @@ ppl_sicstus_init(int /* when */) {
   SP_DEFINE_C_PREDICATE(ppl_insert_constraint, 2);
   SP_DEFINE_C_PREDICATE(ppl_insert_generator, 2);
   SP_DEFINE_C_PREDICATE(ppl_add_constraints_and_minimize, 2);
+  SP_DEFINE_C_PREDICATE(ppl_add_generators_and_minimize, 2)
   SP_DEFINE_C_PREDICATE(ppl_check_empty, 1);
+  SP_DEFINE_C_PREDICATE(ppl_check_universe, 1)
+  SP_DEFINE_C_PREDICATE(ppl_is_bounded, 1)
   SP_DEFINE_C_PREDICATE(ppl_intersection_assign, 2);
   SP_DEFINE_C_PREDICATE(ppl_intersection_assign_and_minimize, 2);
   SP_DEFINE_C_PREDICATE(ppl_convex_hull_assign, 2);
@@ -358,12 +363,15 @@ ppl_sicstus_init(int /* when */) {
   SP_DEFINE_C_PREDICATE(ppl_convex_difference_assign, 2);
   SP_DEFINE_C_PREDICATE(ppl_convex_difference_assign_and_minimize, 2);
   SP_DEFINE_C_PREDICATE(ppl_widening_assign, 2);
+  SP_DEFINE_C_PREDICATE(ppl_limited_widening_assign, 3)
   SP_DEFINE_C_PREDICATE(ppl_get_constraints, 2);
   SP_DEFINE_C_PREDICATE(ppl_get_generators, 2);
   SP_DEFINE_C_PREDICATE(ppl_remove_dimensions, 2);
   SP_DEFINE_C_PREDICATE(ppl_remove_higher_dimensions, 2);
   SP_DEFINE_C_PREDICATE(ppl_add_dimensions_and_project, 2);
   SP_DEFINE_C_PREDICATE(ppl_add_dimensions_and_embed, 2);
+  SP_DEFINE_C_PREDICATE(ppl_polyhedon_included_or_equal, 2)
+  SP_DEFINE_C_PREDICATE(ppl_polyhedon_equal, 2)
 }
 
 extern "C" void
