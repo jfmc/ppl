@@ -1,0 +1,77 @@
+
+Authors
+=======
+
+The Parma Polyhedra Library and its documentation have been designed,
+written, debugged and improved by the following people:
+
+Roberto Bagnara [1]  <bagnara@cs.unipr.it>
+Sara Bonini          <bonini_s@libero.it>
+Patricia M. Hill [2] <hill@comp.leeds.ac.uk>
+Andrea Pescetti      <pescetti@prmat.math.unipr.it>
+Elisa Ricci          <ericci@cs.unipr.it>
+Angela Stazzone      <angela_stazzone@tin.it>
+Enea Zaffanella [3]  <zaffanella@cs.unipr.it>
+Tatiana Zolo         <zolo@cs.unipr.it>
+
+
+Thanks!
+=======
+
+The following people gave help that was fundamental to the project:
+
+  + Herve' Le Verge (r.i.p.) wrote and published an implementation [4]
+    of the Chernikova's algorithm [5] that has set the stage for
+    subsequent implementation work, including our own.
+
+  + Bertrand Jeannet [6] wrote the New Polka library [7] and made
+    it available.
+
+  + Lucia Alessandrini <lucia.alessandrini@unipr.it> provided
+    4 hour-long lectures on convex polyhedra for the Italian authors.
+    This was crucial for us to acquire and/or refresh the notions
+    needed for developing the PPL library.
+
+  + Costantino Medori [8] helped and continues to help us with
+    mathematical aspects of the development.
+
+  + Fred Mesnard [9], the main author of cTI [10], has given us access
+    to a version of cTI's data-flow analyzer.  The cTI system pioneered
+    the concept of termination inference, a new kind of program analysis.
+    When does a logic program terminate? cTI has been the _first_ system
+    to answer this question with a compact formula, called termination
+    condition.  cTI's analyzer performs a linear size relation analysis
+    using a domain of convex polyhedra.
+    The China data-flow analyzer [11] uses the Parma Polyhedra Library
+    to perform the same analysis.  We run the two systems against each
+    other, using them to analyze the same Prolog programs.  Since the
+    systems do not share a single line of code, this is giving us
+    excellent opportunities for our testing and debugging work.
+
+
+This work has been partly supported by the following projects:
+
+  1. University of Parma's FIL scientific research project (ex 60%)
+     ``Pure and Applied Mathematics'';
+
+  2. MURST project ``Automatic Program Certification by Abstract
+     Interpretation'' [12];
+
+  3. MURST project ``Abstract Interpretation, Type Systems and
+     Control-Flow Analysis'' [13].
+
+--------
+
+ [1] http://www.cs.unipr.it/~bagnara/
+ [2] http://www.comp.leeds.ac.uk/hill/
+ [3] http://www.cs.unipr.it/~zaffanella/
+ [4] http://www.cs.unipr.it/ppl/Documentation/chernikova.c
+ [5] http://www.cs.unipr.it/ppl/Documentation/bibliography#LeVerge92
+ [6] http://www-verimag.imag.fr/~bjeannet/
+ [7] http://www-verimag.imag.fr/~bjeannet/newpolka-english.html
+ [8] http://www.math.unipr.it/~medori/
+ [9] http://www.univ-reunion.fr/~fred/
+[10] http://www.complang.tuwien.ac.at/cti/
+[11] http://www.cs.unipr.it/China/
+[12] http://theory.sci.univr.it/projects/p40/
+[13] http://nutella.di.unipi.it/cofin00/
