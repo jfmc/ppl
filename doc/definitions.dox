@@ -913,53 +913,6 @@ The polyhedron \f$\cP\f$ <EM>subsumes</EM> the generator \f$g\f$ if
 adding \f$g\f$ to any generator system representing \f$\cP\f$
 does not change \f$\cP\f$.
 
-\anchor bounding_boxes
-<B>Intervals, boxes and bounding boxes</B>
-
-An <EM>interval</EM> in \f$\Rset\f$ is a pair of <EM>bounds</EM>,
-called <EM>lower</EM> and <EM>upper</EM>.
-Each bound can be either (1) <EM>closed and bounded</EM>,
-(2) <EM>open and bounded</EM>, or
-(3) <EM>open and unbounded</EM>.
-If the bound is <EM>bounded</EM>, then it has a value in \f$\Rset\f$.
-An \f$n\f$-dimensional <EM>box</EM> \f$\cB\f$ in \f$\Rset^n\f$
-is a sequence of \f$n\f$ intervals in \f$\Rset\f$.
-
-The polyhedron \f$\cP\f$ <EM>represents a box \f$\cB\f$</EM> in \f$\Rset^n\f$
-if \f$\cP\f$
-is described by a constraint system in \f$\Rset^n\f$ that
-consists of one constraint for each bounded bound (lower and upper)
-in an interval in \f$\cB\f$:
-Letting \f$\vect{e}_i = (0, \ldots, 1, \ldots, 0)^\transpose\f$
-be the vector in \f$\Rset^n\f$ with 1 in the \f$i\f$'th position
-and zeroes in every other position;
-if the lower bound of the \f$i\f$'th interval in \f$\cB\f$
-is bounded, the corresponding constraint is defined as
-\f$\langle \vect{e}_i, \vect{x} \rangle \relsym b\f$,
-where \f$b\f$ is the value of the bound and
-\f$\mathord{\relsym}\f$ is \f$\mathord{\geq}\f$ if it is a closed bound and
-\f$\mathord{>}\f$ if it is an open bound.
-Similarly,
-if the upper bound of the \f$i\f$'th interval in \f$\cB\f$ is bounded,
-the corresponding constraint is defined as
-\f$\langle\vect{e}_i,\vect{x}\rangle \relsym b\f$,
-where \f$b\f$ is the value of the bound and
-\f$\mathord{\relsym}\f$ is \f$\mathord{\leq}\f$ if it is a closed bound and
-\f$\mathord{<}\f$ if it is an open bound.
-
-If every bound in the intervals
-defining a box \f$\cB\f$ is either closed and bounded
-or open and unbounded, then
-\f$\cB\f$ represents a closed polyhedron.
-
-The <EM>bounding box</EM> of an NNC polyhedron \f$\cP\f$ is
-the smallest \f$n\f$-dimensional box
-containing \f$\cP\f$.
-
-The library provides operations for computing the bounding box
-of an NNC polyhedron and conversely, for obtaining the NNC polyhedron
-representing a given bounding box.
-
 \anchor H79_widening
 <B>Widening Operators</B>
 
@@ -1038,6 +991,53 @@ The <EM>bounded</EM> extrapolation operators further enhance each one
 of the limited extrapolation operators described above, by ensuring
 that their results cannot be worse than the smallest
 \ref bounding_boxes "bounding box" enclosing the two argument polyhedra.
+
+\anchor bounding_boxes
+<B>Intervals, boxes and bounding boxes</B>
+
+An <EM>interval</EM> in \f$\Rset\f$ is a pair of <EM>bounds</EM>,
+called <EM>lower</EM> and <EM>upper</EM>.
+Each bound can be either (1) <EM>closed and bounded</EM>,
+(2) <EM>open and bounded</EM>, or
+(3) <EM>open and unbounded</EM>.
+If the bound is <EM>bounded</EM>, then it has a value in \f$\Rset\f$.
+An \f$n\f$-dimensional <EM>box</EM> \f$\cB\f$ in \f$\Rset^n\f$
+is a sequence of \f$n\f$ intervals in \f$\Rset\f$.
+
+The polyhedron \f$\cP\f$ <EM>represents a box \f$\cB\f$</EM> in \f$\Rset^n\f$
+if \f$\cP\f$
+is described by a constraint system in \f$\Rset^n\f$ that
+consists of one constraint for each bounded bound (lower and upper)
+in an interval in \f$\cB\f$:
+Letting \f$\vect{e}_i = (0, \ldots, 1, \ldots, 0)^\transpose\f$
+be the vector in \f$\Rset^n\f$ with 1 in the \f$i\f$'th position
+and zeroes in every other position;
+if the lower bound of the \f$i\f$'th interval in \f$\cB\f$
+is bounded, the corresponding constraint is defined as
+\f$\langle \vect{e}_i, \vect{x} \rangle \relsym b\f$,
+where \f$b\f$ is the value of the bound and
+\f$\mathord{\relsym}\f$ is \f$\mathord{\geq}\f$ if it is a closed bound and
+\f$\mathord{>}\f$ if it is an open bound.
+Similarly,
+if the upper bound of the \f$i\f$'th interval in \f$\cB\f$ is bounded,
+the corresponding constraint is defined as
+\f$\langle\vect{e}_i,\vect{x}\rangle \relsym b\f$,
+where \f$b\f$ is the value of the bound and
+\f$\mathord{\relsym}\f$ is \f$\mathord{\leq}\f$ if it is a closed bound and
+\f$\mathord{<}\f$ if it is an open bound.
+
+If every bound in the intervals
+defining a box \f$\cB\f$ is either closed and bounded
+or open and unbounded, then
+\f$\cB\f$ represents a closed polyhedron.
+
+The <EM>bounding box</EM> of an NNC polyhedron \f$\cP\f$ is
+the smallest \f$n\f$-dimensional box
+containing \f$\cP\f$.
+
+The library provides operations for computing the bounding box
+of an NNC polyhedron and conversely, for obtaining the NNC polyhedron
+representing a given bounding box.
 
 <B>A Note on the Implementation of the Operators</B>
 
@@ -1122,6 +1122,23 @@ GenSys gs = ph.generators();
 \endcode
 The same observations, modulo syntactic sugar, apply to the operators
 defined in the C interface of the library. 
+
+
+\section domain_constructions Domain Constructions using Polyhedra
+
+Besides the domain of convex polyhedra, the library is providing
+preliminary support for the determinate and finite powerset constructions
+of the constraint system hierarchy described in \ref Bag98 "[Bag98]".
+Work is in progress and future versions of the library will also
+include an implementation of the ask-and-tell construction.
+The implementation consists in a generic implementation (in the form
+of C++ templates) of the hierarchy, plus a specialization of the
+finite powerset construction on the domain of convex polyhedra.
+In particular, for the finite powerset of polyhedra the library
+provides the implementation of an instance of the certificate-based
+widening operators proposed in \ref BHZ03b "[BHZ03b]",
+as well as the extrapolation operator proposed in \ref BGP99 "[BGP99]".
+
 
 \section bibliography Bibliography
 
