@@ -115,7 +115,7 @@ SPECIALIZE_SUCC(mpz, mpz_class)
 template <typename Policy>
 inline Result
 assign_mpz_mpq(mpz_class& to, const mpq_class& from, const Rounding& mode) {
-  if (Policy::round_inexact) {
+  if (Policy::round_inexact && mode.direction() != Rounding::IGNORE) {
     mpz_srcptr n = from.get_num().get_mpz_t();
     mpz_srcptr d = from.get_den().get_mpz_t();
     mpz_t rem;
@@ -185,7 +185,7 @@ SPECIALIZE_ASSIGN(mpz_unsigned_int, mpz_class, unsigned long long)
 template <typename Policy, typename From>
 inline Result
 assign_mpz_float(mpz_class& to, const From from, const Rounding& mode) {
-  if (Policy::round_inexact) {
+  if (Policy::round_inexact && mode.direction() != Rounding::IGNORE) {
     double n = rint(from);
     to = n;
     Result r;
@@ -256,7 +256,7 @@ inline Result
 div_mpz(mpz_class& to, const mpz_class& x, const mpz_class& y, const Rounding& mode) {
   if (Policy::check_divbyzero && ::sgn(y) == 0)
     return set_special<Policy>(to, V_UNKNOWN);
-  if (Policy::round_inexact) {
+  if (Policy::round_inexact && mode.direction() != Rounding::IGNORE) {
     mpz_t rem;
     mpz_init(rem);
     mpz_tdiv_qr(to.get_mpz_t(), rem, x.get_mpz_t(), y.get_mpz_t());
@@ -342,7 +342,7 @@ inline Result
 sqrt_mpz(mpz_class& to, const mpz_class& from, const Rounding& mode) {
   if (Policy::check_sqrt_neg && from < 0)
     return set_special<Policy>(to, V_DOMAIN);
-  if (Policy::round_inexact) {
+  if (Policy::round_inexact && mode.direction() != Rounding::IGNORE) {
     mpz_class r;
     mpz_sqrtrem(to.get_mpz_t(), r.get_mpz_t(), from.get_mpz_t());
     if (r == 0)

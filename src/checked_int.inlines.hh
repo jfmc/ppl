@@ -352,7 +352,7 @@ assign_int_float_check_min_max(To& to, const From from, const Rounding& mode) {
       return set_pos_overflow_int<Policy>(to, mode);
   }
   to = static_cast<To>(from);
-  if (Policy::round_inexact) {
+  if (Policy::round_inexact && mode.direction() != Rounding::IGNORE) {
     Result r;
     if (from < to)
       r = V_LT;
@@ -597,7 +597,8 @@ assign_int_mpq(To& to, const mpq_class& from, const Rounding& mode) {
   mpz_t q;
   mpz_t rem;
   mpz_init(q);
-  if (Policy::round_inexact) {
+  bool use_round = (Policy::round_inexact && mode.direction() != Rounding::IGNORE);
+  if (use_round) {
     mpz_init(rem);
     mpz_tdiv_qr(q, rem, n, d);
   }
@@ -606,7 +607,7 @@ assign_int_mpq(To& to, const mpq_class& from, const Rounding& mode) {
   }
   Result r = assign<Policy>(to, q, mode);
   if (r == V_EQ) {
-    if (Policy::round_inexact) {
+    if (use_round) {
       switch (mpz_sgn(rem)) {
       case -1:
 	r = V_LT;
@@ -981,7 +982,7 @@ div_signed_int(Type& to, const Type x, const Type y, const Rounding& mode) {
   if (Policy::check_overflow && y == -1)
     return neg_signed_int<Policy>(to, x, mode);
   to = x / y;
-  if (Policy::round_inexact) {
+  if (Policy::round_inexact && mode.direction() != Rounding::IGNORE) {
     Type m = x % y;
     Result r;
     if (m < 0)
@@ -1001,7 +1002,7 @@ div_unsigned_int(Type& to, const Type x, const Type y, const Rounding& mode) {
   if (Policy::check_divbyzero && y == 0)
     return set_special<Policy>(to, V_UNKNOWN);
   to = x / y;
-  if (Policy::round_inexact) {
+  if (Policy::round_inexact && mode.direction() != Rounding::IGNORE) {
     Type m = x % y;
     if (m == 0)
       return V_EQ;
@@ -1040,7 +1041,7 @@ inline Result
 sqrt_unsigned_int(Type& to, const Type from, const Rounding& mode) {
   Type rem;
   isqrtrem_(to, rem, from);
-  if (Policy::round_inexact) {
+  if (Policy::round_inexact && mode.direction() != Rounding::IGNORE) {
     if (rem == 0)
       return V_EQ;
     return round<Policy>(to, V_GT, mode);

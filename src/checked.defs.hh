@@ -37,7 +37,7 @@ struct Check_Overflow_Policy {
   static const int check_overflow = 1;
   static const int check_divbyzero = 0;
   static const int check_sqrt_neg = 0;
-  static const int round_inexact = 1;
+  static const int round_inexact = 0;
   static const int store_nan = 0;
   static const int store_infinity = 0;
   static const int convertible = 1;
