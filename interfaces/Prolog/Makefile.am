@@ -37,7 +37,7 @@ smm.clpq \
 sumto.clpq \
 tak.clpq
 
-EXTRA_DIST = ppl_prolog.pl clpq.pl clpq2.pl check_script expected \
+EXTRA_DIST = clpq.pl clpq2.pl check_script expected \
 $(CLPQ_TESTS)
 
 noinst_HEADERS = ppl_prolog.icc exceptions.hh track_allocation.hh

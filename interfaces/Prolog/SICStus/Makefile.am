@@ -28,7 +28,7 @@ VPATH = @srcdir@
 
 SUBDIRS =
 
-EXTRA_DIST = ppl_sicstus_sd.cc ppl_sicstus_sd.pl sp_clpq.pl
+EXTRA_DIST = ppl_sicstus_sd.cc sp_clpq.pl
 
 if HAVE_SICSTUS_PROLOG
 
@@ -52,14 +52,11 @@ ppl_sicstus$(EXEEXT): ppl_sicstus.s.o $(top_builddir)/src/libppl.la
 		@extra_libraries@
 
 ppl_sicstus.s.o: ppl_sicstus.pl ppl_sicstus_sd.o
-	splfr --static ppl_sicstus.pl ppl_sicstus_sd.o
+	splfr --static $(srcdir)/ppl_sicstus.pl ppl_sicstus_sd.o
 
 ppl_sicstus.so: ppl_sicstus.pl ppl_sicstus_sd.lo
-	splfr ppl_sicstus.pl ppl_sicstus_sd.lo \
+	splfr $(srcdir)/ppl_sicstus.pl ppl_sicstus_sd.lo \
 		-lppl @extra_libraries@
-
-ppl_sicstus.pl: ppl_sicstus_sd.pl ../ppl_prolog.pl
-	cat $^ >$@
 
 CLPQ_TESTS = \
 ack.clpq \
@@ -71,6 +68,7 @@ sumto.clpq \
 tak.clpq
 
 check-local: ppl_sicstus ../check_script ../expected
+	cp -f $(srcdir)/ppl_sicstus.pl .
 	cp -f $(srcdir)/../clpq.pl .
 	cp -f $(srcdir)/sp_clpq.pl .
 	for k in $(CLPQ_TESTS); do cp -f $(srcdir)/../$$k .; done
@@ -79,6 +77,6 @@ check-local: ppl_sicstus ../check_script ../expected
 	diff -q --ignore-all-space $(srcdir)/../expected obtained
 
 MOSTLYCLEANFILES = \
-ppl_sicstus.pl ppl_sicstus.s.o ppl_sicstus.so \
-clpq.pl sp_clpq.pl $(CLPQ_TESTS) obtained
+ppl_sicstus.s.o ppl_sicstus.so \
+ppl_sicstus.pl clpq.pl sp_clpq.pl $(CLPQ_TESTS) obtained
 endif

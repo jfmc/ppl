@@ -28,7 +28,7 @@ VPATH = @srcdir@
 
 SUBDIRS =
 
-EXTRA_DIST = ppl_gprolog_sd.cc ppl_gprolog_sd.pl gp_clpq.pl
+EXTRA_DIST = ppl_gprolog_sd.cc ppl_gprolog.pl gp_clpq.pl
 
 if HAVE_GNU_PROLOG
 
@@ -41,11 +41,8 @@ pkglib_LIBRARIES = libppl_gprolog.a
 libppl_gprolog_a_SOURCES = ppl_gprolog_sd.cc
 
 ppl_gprolog$(EXEEXT): libppl_gprolog.a ppl_gprolog.pl $(top_builddir)/src/.libs/libppl.a
-	gplc -o $@ ppl_gprolog.pl \
+	gplc -o $@ $(srcdir)/ppl_gprolog.pl \
 		-L '-L. -lppl_gprolog -L$(top_builddir)/src/.libs -lppl -lgmp -lgmpxx -lstdc++'
-
-ppl_gprolog.pl: ppl_gprolog_sd.pl ../ppl_prolog.pl
-	cat $^ >$@
 
 CLPQ_TESTS = \
 ack.clpq \
@@ -57,8 +54,9 @@ sumto.clpq \
 tak.clpq
 
 gp_clpq: libppl_gprolog.a ppl_gprolog.pl gp_clpq.pl ../clpq.pl
-	gplc -o $@ ppl_gprolog.pl $(srcdir)/gp_clpq.pl $(srcdir)/../clpq.pl \
-		-L '-L. -lppl_gprolog -L$(top_builddir)/src/.libs -lppl -lgmp -lgmpxx -lstdc++'
+	gplc -o $@ $(srcdir)/ppl_gprolog.pl $(srcdir)/gp_clpq.pl \
+		$(srcdir)/../clpq.pl \
+-L '-L. -lppl_gprolog -L$(top_builddir)/src/.libs -lppl -lgmp -lgmpxx -lstdc++'
 
 check-local: gp_clpq ../check_script ../expected
 	for k in $(CLPQ_TESTS); do cp -f $(srcdir)/../$$k .; done
@@ -67,6 +65,5 @@ check-local: gp_clpq ../check_script ../expected
 	diff -q --ignore-all-space $(srcdir)/../expected obtained
 
 MOSTLYCLEANFILES = \
-ppl_gprolog.pl \
 gp_clpq $(CLPQ_TESTS) obtained
 endif
