@@ -1,5 +1,4 @@
-/* Test Polyhedron::H79_widening_assign(): we apply this function
-   to two zero-dimensional polyhedra.
+/* Test Polyhedra_Powerset<PH>::BGP99_extrapolation_assign()
    Copyright (C) 2001-2004 Roberto Bagnara <bagnara@cs.unipr.it>
 
 This file is part of the Parma Polyhedra Library (PPL).
