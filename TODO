@@ -3,11 +3,11 @@ Urgent Things
 
 - In the manual, explain PPL's I/O operators and how
   to deal with the IO_Operators namespace.
-- Modify the Prolog interfaces so as to support the new
-  version of Polyhedron::shrink_bounding_box() method.
-- Several programs in th etest directory switch from input
-  to output on a bidirection file: check whether this is
-  allowed by the standard or not.
+- Extend the documentation of the Prolog interfaces so as to treat
+  ppl_Polyhedron_get_bounding_box/3.
+  The file `interfaces/Prolog/pl_check.pl' should be extended as well
+  and cleaned from bad style (e.g., unifying terms with constraint
+  systems).
 
 
 Efficiency Issues
