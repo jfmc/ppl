@@ -95,7 +95,7 @@ ORIGINAL_TESTS = \
 	linexpression1 \
 	mc91 \
 	memory1 \
-	minconstraints1 minconstraints2 minconstraints3 \
+	minconstraints1 minconstraints2 minconstraints3 minconstraints4 \
 	mingenerators1 mingenerators2 mingenerators3 \
 	onepoint \
 	operator1 \
@@ -410,6 +410,7 @@ mc91_SOURCES = mc91.cc
 minconstraints1_SOURCES = minconstraints1.cc
 minconstraints2_SOURCES = minconstraints2.cc
 minconstraints3_SOURCES = minconstraints3.cc
+minconstraints4_SOURCES = minconstraints4.cc
 
 mingenerators1_SOURCES = mingenerators1.cc
 mingenerators2_SOURCES = mingenerators2.cc
