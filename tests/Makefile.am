@@ -29,7 +29,7 @@ TESTS = inters1 inters2 \
         permute \
         error1 error2 error3 error4 \
 	affinetrans \
-	remuvedim
+	removedim
 
 inters1_SOURCES = inters1.cc
 inters2_SOURCES = inters2.cc
@@ -50,7 +50,7 @@ permute_SOURCES = permute.cc
 
 affinetrans_SOURCES = affinetrans.cc
 
-remuvedim_SOURCES = remuvedim.cc
+removedim_SOURCES = removedim.cc
 
 check_PROGRAMS = $(TESTS)
 
