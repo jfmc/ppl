@@ -2368,8 +2368,7 @@ PPL::Polyhedron::add_generators(GenSys& gs) {
   // Adjust `gs' to the right topology and dimensions.
   // NOTE: we already checked for topology compatibility.
   gs.adjust_topology_and_dimension(topology(), space_dim);
-  // For NNC polyhedra, each point must be matched by
-  // the corresponding closure point.
+  // For NNC polyhedra, the minus_epsilon_ray is needed.
   if (!is_necessarily_closed())
     gs.insert(Generator::zero_dim_minus_epsilon_ray());
 
