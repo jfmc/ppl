@@ -37,7 +37,9 @@ site: http://www.cs.unipr.it/ppl/ . */
 //! The revision number of the PPL version.
 #define PPL_VERSION_REVISION @PPL_VERSION_REVISION@
 
-//! The beta number of the PPL version.
+//! \brief
+//! The beta number of the PPL version.  This is zero for official
+//! releases and nonzero for development snapshots.
 #define PPL_VERSION_BETA @PPL_VERSION_BETA@
 
 //@}
