@@ -43,6 +43,17 @@ print_constraints(const Parma_Polyhedra_Library::Polyhedron& ph,
 		  const std::string& intro = "",
 		  std::ostream& s = std::cout);
 
+template <typename T>
+inline void
+print_constraints(const Parma_Polyhedra_Library::BD_Shape<T>& bd,
+		  const std::string& intro = "",
+		  std::ostream& s = std::cout) {
+  using namespace Parma_Polyhedra_Library::IO_Operators;
+  if (!intro.empty())
+    s << intro << std::endl;
+  s << bd << std::endl;
+}
+
 void
 print_generator(const Parma_Polyhedra_Library::Generator& g,
 		const std::string& intro = "",
