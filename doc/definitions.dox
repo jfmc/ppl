@@ -652,7 +652,7 @@ to the \f$x_1\f$ axes.
 Observe that provided the coefficient \f$a_k\f$ of the considered variable
 in the linear expression is non-zero, the affine transformation is invertible.
 
-\anchor generalized_affine_transformation
+\anchor generalized_image
 <B>Generalized Affine Images</B>
 
 The library provides another operator

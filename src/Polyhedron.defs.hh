@@ -752,9 +752,9 @@ public:
 		       const Integer& denominator = Integer_one());
 
   //! \brief
-  //! Assigns to \p *this the image of \p *this with respect to
-  //! the \ref generalized_affine_transformation generalized affine
-  //! transfer function \f$\mathit{var}' \relop \frac{expr}{d}\f$,
+  //! Assigns to \p *this the image of \p *this with respect to the
+  //! \ref generalized_image "generalized affine transfer function"
+  //! \f$\mathit{var}' \relop \frac{expr}{d}\f$,
   //! where \f$\mathord{\relop}\f$ is the relation operator encoded by
   //! \p relation.
   /*!
