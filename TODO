@@ -1,7 +1,6 @@
 Urgent Things
 =============
 
-- Explain to the users of CVS versions how to build the documentation.
 - Make sure all the functionalities are available in all interfaces.
 - Document the classes ExtendedRational, Boundary, LBoundary, UBoundary,
   and Interval.
