@@ -1,7 +1,7 @@
 /* Test Polyhedron::generalized_affine_image() with a linear expression
    as the left hand side: when the left hand side is a variable,
    check whether or not the same result is obtained.
-   Copyright (C) 2001-2004 Roberto Bagnara <bagnara@cs.unipr.it>
+   Copyright (C) 2001-2005 Roberto Bagnara <bagnara@cs.unipr.it>
 
 This file is part of the Parma Polyhedra Library (PPL).
 

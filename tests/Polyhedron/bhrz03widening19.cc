@@ -1,6 +1,6 @@
 /* Test Polyhedron::BHRZ03_widening_assign(): the number of closure
    points of ph2 is greater of the the number of closure points of ph1.
-   Copyright (C) 2001-2004 Roberto Bagnara <bagnara@cs.unipr.it>
+   Copyright (C) 2001-2005 Roberto Bagnara <bagnara@cs.unipr.it>
 
 This file is part of the Parma Polyhedra Library (PPL).
 

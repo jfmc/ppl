@@ -1,6 +1,6 @@
 /* Test Polyhedron::add_generator(): we add points, lines and rays of
    an NNC polyhedron to a closed polyhedron.
-   Copyright (C) 2001-2004 Roberto Bagnara <bagnara@cs.unipr.it>
+   Copyright (C) 2001-2005 Roberto Bagnara <bagnara@cs.unipr.it>
 
 This file is part of the Parma Polyhedra Library (PPL).
 

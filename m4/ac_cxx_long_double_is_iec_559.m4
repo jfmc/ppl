@@ -1,5 +1,5 @@
 dnl A function to check whether C++ long doubles comply with IEC 559.
-dnl Copyright (C) 2001-2004 Roberto Bagnara <bagnara@cs.unipr.it>
+dnl Copyright (C) 2001-2005 Roberto Bagnara <bagnara@cs.unipr.it>
 dnl
 dnl This file is part of the Parma Polyhedra Library (PPL).
 dnl

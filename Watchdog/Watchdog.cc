@@ -1,5 +1,5 @@
 /* Watchdog and associated classes' implementation (non-inline functions).
-   Copyright (C) 2002-2004 Roberto Bagnara <bagnara@cs.unipr.it>
+   Copyright (C) 2002-2005 Roberto Bagnara <bagnara@cs.unipr.it>
 
 This file is part of the Parma Watchdog Library (PWL).
 

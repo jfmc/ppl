@@ -1,7 +1,7 @@
 /* Test Polyhedron::add_space_dimensions_and_embed(): we apply this
    function to a polyhedron with minimal system of constraints
    and generators.
-   Copyright (C) 2001-2004 Roberto Bagnara <bagnara@cs.unipr.it>
+   Copyright (C) 2001-2005 Roberto Bagnara <bagnara@cs.unipr.it>
 
 This file is part of the Parma Polyhedra Library (PPL).
 

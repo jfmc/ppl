@@ -1,7 +1,7 @@
 /* Test Polyhedron::generalized_affine_image(): if the relation is
    `==' the resulting polyhedron is equal to the polyhedron obtained
    with Polyhedron::affine_image().
-   Copyright (C) 2001-2004 Roberto Bagnara <bagnara@cs.unipr.it>
+   Copyright (C) 2001-2005 Roberto Bagnara <bagnara@cs.unipr.it>
 
 This file is part of the Parma Polyhedra Library (PPL).
 

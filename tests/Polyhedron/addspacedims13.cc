@@ -1,7 +1,7 @@
 /* Test Polyhedron::add_space_dimensions_and_embed(): shows a bug in versions
    up to 0.5pre12 caused by the missing protection against auto-assignments
    in class Matrix.
-   Copyright (C) 2001-2004 Roberto Bagnara <bagnara@cs.unipr.it>
+   Copyright (C) 2001-2005 Roberto Bagnara <bagnara@cs.unipr.it>
 
 This file is part of the Parma Polyhedra Library (PPL).
 

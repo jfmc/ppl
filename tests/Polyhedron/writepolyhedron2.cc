@@ -1,6 +1,6 @@
 /* Test operator<<(std::ostream&, const Polyhedron&): the polyhedron
    is described by its system of constraints but it is empty.
-   Copyright (C) 2001-2004 Roberto Bagnara <bagnara@cs.unipr.it>
+   Copyright (C) 2001-2005 Roberto Bagnara <bagnara@cs.unipr.it>
 
 This file is part of the Parma Polyhedra Library (PPL).
 

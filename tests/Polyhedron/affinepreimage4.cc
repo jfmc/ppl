@@ -1,6 +1,6 @@
 /* Test Polyhedron::affine_preimage(): the transformation is not
    invertible and the polyhedron is defined by its system of generators.
-   Copyright (C) 2001-2004 Roberto Bagnara <bagnara@cs.unipr.it>
+   Copyright (C) 2001-2005 Roberto Bagnara <bagnara@cs.unipr.it>
 
 This file is part of the Parma Polyhedra Library (PPL).
 

@@ -1,7 +1,7 @@
 /* Test Polyhedron::add_constraint(): we add the equalities and
    the non-strict inequalities of a non-necessary closed polyhedron
    to a closed polyhedron.
-   Copyright (C) 2001-2004 Roberto Bagnara <bagnara@cs.unipr.it>
+   Copyright (C) 2001-2005 Roberto Bagnara <bagnara@cs.unipr.it>
 
 This file is part of the Parma Polyhedra Library (PPL).
 

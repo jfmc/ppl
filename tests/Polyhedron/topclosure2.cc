@@ -1,7 +1,7 @@
 /* Test Polyhedron::topological_closure_assign(): we test this
    function in the case of an empty and of a zero-dimensional
    polyhedron.
-   Copyright (C) 2001-2004 Roberto Bagnara <bagnara@cs.unipr.it>
+   Copyright (C) 2001-2005 Roberto Bagnara <bagnara@cs.unipr.it>
 
 This file is part of the Parma Polyhedra Library (PPL).
 

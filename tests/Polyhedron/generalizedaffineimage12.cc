@@ -2,7 +2,7 @@
    as the left hand side: when the set of variables of left hand side
    and the set of the variable of the right hand side are not disjoint
    and the relation is LESS_THAN.
-   Copyright (C) 2001-2004 Roberto Bagnara <bagnara@cs.unipr.it>
+   Copyright (C) 2001-2005 Roberto Bagnara <bagnara@cs.unipr.it>
 
 This file is part of the Parma Polyhedra Library (PPL).
 
