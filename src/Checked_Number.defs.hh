@@ -41,7 +41,7 @@ struct Checked_Number_Default_Policy {
   static const int check_inexact = 0;
   static const int check_divbyzero = 0;
   static const int check_sqrt_neg = 0;
-  static const int check_normal = 0;
+  static const int check_assign = 0;
 };
 
 template <typename T, typename Policy>
@@ -61,14 +61,16 @@ public:
   Checked_Number(const Checked_Number& y);
 #endif
 
-  Checked_Number(const int8_t y);
-  Checked_Number(const int16_t y);
-  Checked_Number(const int32_t y);
-  Checked_Number(const int64_t y);
-  Checked_Number(const u_int8_t y);
-  Checked_Number(const u_int16_t y);
-  Checked_Number(const u_int32_t y);
-  Checked_Number(const u_int64_t y);
+  Checked_Number(const signed char y);
+  Checked_Number(const short y);
+  Checked_Number(const int y);
+  Checked_Number(const long y);
+  Checked_Number(const long long y);
+  Checked_Number(const unsigned char y);
+  Checked_Number(const unsigned short y);
+  Checked_Number(const unsigned int y);
+  Checked_Number(const unsigned long y);
+  Checked_Number(const unsigned long long y);
   Checked_Number(const float32_t y);
   Checked_Number(const float64_t y);
 #ifdef FLOAT96_TYPE

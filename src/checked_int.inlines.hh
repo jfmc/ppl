@@ -24,7 +24,7 @@ site: http://www.cs.unipr.it/ppl/ . */
 #ifndef PPL_checked_int_inlines_hh
 #define PPL_checked_int_inlines_hh 1
 
-#include <limits>
+#include "Limits.hh"
 #include "float.types.hh"
 
 namespace Parma_Polyhedra_Library {
@@ -34,7 +34,7 @@ namespace Checked {
 template<typename Policy, typename Type>
 inline Result 
 pred_int(Type& to) {
-  if (Policy::check_overflow && to == std::numeric_limits<Type>::min())
+  if (Policy::check_overflow && to == Limits<Type>::min)
     return V_NEG_OVERFLOW;
   --to;
   return V_EQ;
@@ -43,7 +43,7 @@ pred_int(Type& to) {
 template<typename Policy, typename Type>
 inline Result 
 succ_int(Type& to) {
-  if (Policy::check_overflow && to == std::numeric_limits<Type>::max())
+  if (Policy::check_overflow && to == Limits<Type>::max)
     return V_POS_OVERFLOW;
   ++to;
   return V_EQ;
@@ -59,7 +59,7 @@ assign_int_int(To& to, const From from) {
 template<typename Policy, typename To, typename From>
 inline Result
 assign_int_int_check_min(To& to, const From from) {
-  if (Policy::check_overflow && from < static_cast<From>(std::numeric_limits<To>::min()))
+  if (Policy::check_overflow && from < static_cast<From>(Limits<To>::min))
     return V_NEG_OVERFLOW;
   to = To(from);
   return V_EQ;
@@ -68,7 +68,7 @@ assign_int_int_check_min(To& to, const From from) {
 template<typename Policy, typename To, typename From>
 inline Result
 assign_int_int_check_max(To& to, const From from) {
-  if (Policy::check_overflow && from > static_cast<From>(std::numeric_limits<To>::max()))
+  if (Policy::check_overflow && from > static_cast<From>(Limits<To>::max))
     return V_POS_OVERFLOW;
   to = To(from);
   return V_EQ;
@@ -78,9 +78,9 @@ template<typename Policy, typename To, typename From>
 inline Result
 assign_int_int_check_min_max(To& to, const From from) {
   if (Policy::check_overflow) {
-    if (from < static_cast<From>(std::numeric_limits<To>::min()))
+    if (from < static_cast<From>(Limits<To>::min))
       return V_NEG_OVERFLOW;
-    if (from > static_cast<From>(std::numeric_limits<To>::max()))
+    if (from > static_cast<From>(Limits<To>::max))
       return V_POS_OVERFLOW;
   }
   to = To(from);
@@ -105,42 +105,59 @@ SPECIALIZE_ASSIGN(int_int_check_min, Larger, Smaller) \
 SPECIALIZE_ASSIGN(int_int_check_max, Smaller, Larger)
 
 
-ASSIGN2_SIGNED_SIGNED(int8_t, int16_t)
-ASSIGN2_SIGNED_SIGNED(int8_t, int32_t)
-ASSIGN2_SIGNED_SIGNED(int8_t, int64_t)
-ASSIGN2_SIGNED_SIGNED(int16_t, int32_t)
-ASSIGN2_SIGNED_SIGNED(int16_t, int64_t)
-ASSIGN2_SIGNED_SIGNED(int32_t, int64_t)
-ASSIGN2_UNSIGNED_UNSIGNED(u_int8_t, u_int16_t)
-ASSIGN2_UNSIGNED_UNSIGNED(u_int8_t, u_int32_t)
-ASSIGN2_UNSIGNED_UNSIGNED(u_int8_t, u_int64_t)
-ASSIGN2_UNSIGNED_UNSIGNED(u_int16_t, u_int32_t)
-ASSIGN2_UNSIGNED_UNSIGNED(u_int16_t, u_int64_t)
-ASSIGN2_UNSIGNED_UNSIGNED(u_int32_t, u_int64_t)
-ASSIGN2_UNSIGNED_SIGNED(u_int8_t, int16_t)
-ASSIGN2_UNSIGNED_SIGNED(u_int8_t, int32_t)
-ASSIGN2_UNSIGNED_SIGNED(u_int8_t, int64_t)
-ASSIGN2_UNSIGNED_SIGNED(u_int16_t, int32_t)
-ASSIGN2_UNSIGNED_SIGNED(u_int16_t, int64_t)
-ASSIGN2_UNSIGNED_SIGNED(u_int32_t, int64_t)
-ASSIGN2_SIGNED_UNSIGNED(int8_t, u_int8_t)
-ASSIGN2_SIGNED_UNSIGNED(int8_t, u_int16_t)
-ASSIGN2_SIGNED_UNSIGNED(int8_t, u_int32_t)
-ASSIGN2_SIGNED_UNSIGNED(int8_t, u_int64_t)
-ASSIGN2_SIGNED_UNSIGNED(int16_t, u_int16_t)
-ASSIGN2_SIGNED_UNSIGNED(int16_t, u_int32_t)
-ASSIGN2_SIGNED_UNSIGNED(int16_t, u_int64_t)
-ASSIGN2_SIGNED_UNSIGNED(int32_t, u_int32_t)
-ASSIGN2_SIGNED_UNSIGNED(int32_t, u_int64_t)
-ASSIGN2_SIGNED_UNSIGNED(int64_t, u_int64_t)
+ASSIGN2_SIGNED_SIGNED(signed char, short)
+ASSIGN2_SIGNED_SIGNED(signed char, int)
+ASSIGN2_SIGNED_SIGNED(signed char, long)
+ASSIGN2_SIGNED_SIGNED(signed char, long long)
+ASSIGN2_SIGNED_SIGNED(short, int)
+ASSIGN2_SIGNED_SIGNED(short, long)
+ASSIGN2_SIGNED_SIGNED(short, long long)
+ASSIGN2_SIGNED_SIGNED(int, long long)
+ASSIGN2_SIGNED_SIGNED(int, long)
+ASSIGN2_SIGNED_SIGNED(long, long long)
+ASSIGN2_UNSIGNED_UNSIGNED(unsigned char, unsigned short)
+ASSIGN2_UNSIGNED_UNSIGNED(unsigned char, unsigned int)
+ASSIGN2_UNSIGNED_UNSIGNED(unsigned char, unsigned long)
+ASSIGN2_UNSIGNED_UNSIGNED(unsigned char, unsigned long long)
+ASSIGN2_UNSIGNED_UNSIGNED(unsigned short, unsigned int)
+ASSIGN2_UNSIGNED_UNSIGNED(unsigned short, unsigned long)
+ASSIGN2_UNSIGNED_UNSIGNED(unsigned short, unsigned long long)
+ASSIGN2_UNSIGNED_UNSIGNED(unsigned int, unsigned long)
+ASSIGN2_UNSIGNED_UNSIGNED(unsigned int, unsigned long long)
+ASSIGN2_UNSIGNED_UNSIGNED(unsigned long, unsigned long long)
+ASSIGN2_UNSIGNED_SIGNED(unsigned char, short)
+ASSIGN2_UNSIGNED_SIGNED(unsigned char, int)
+ASSIGN2_UNSIGNED_SIGNED(unsigned char, long)
+ASSIGN2_UNSIGNED_SIGNED(unsigned char, long long)
+ASSIGN2_UNSIGNED_SIGNED(unsigned short, int)
+ASSIGN2_UNSIGNED_SIGNED(unsigned short, long)
+ASSIGN2_UNSIGNED_SIGNED(unsigned short, long long)
+ASSIGN2_UNSIGNED_SIGNED(unsigned int, long)
+ASSIGN2_UNSIGNED_SIGNED(unsigned int, long long)
+ASSIGN2_UNSIGNED_SIGNED(unsigned long, long long)
+ASSIGN2_SIGNED_UNSIGNED(signed char, unsigned char)
+ASSIGN2_SIGNED_UNSIGNED(signed char, unsigned short)
+ASSIGN2_SIGNED_UNSIGNED(signed char, unsigned int)
+ASSIGN2_SIGNED_UNSIGNED(signed char, unsigned long)
+ASSIGN2_SIGNED_UNSIGNED(signed char, unsigned long long)
+ASSIGN2_SIGNED_UNSIGNED(short, unsigned short)
+ASSIGN2_SIGNED_UNSIGNED(short, unsigned int)
+ASSIGN2_SIGNED_UNSIGNED(short, unsigned long)
+ASSIGN2_SIGNED_UNSIGNED(short, unsigned long long)
+ASSIGN2_SIGNED_UNSIGNED(int, unsigned int)
+ASSIGN2_SIGNED_UNSIGNED(int, unsigned long)
+ASSIGN2_SIGNED_UNSIGNED(int, unsigned long long)
+ASSIGN2_SIGNED_UNSIGNED(long, unsigned long)
+ASSIGN2_SIGNED_UNSIGNED(long, unsigned long long)
+ASSIGN2_SIGNED_UNSIGNED(long long, unsigned long long)
 
 template<typename Policy, typename To, typename From>
 inline Result
 assign_int_float_check_min_max(To& to, const From from) {
   if (Policy::check_overflow) {
-    if (from < std::numeric_limits<To>::min())
+    if (from < Limits<To>::min)
       return V_NEG_OVERFLOW;
-    if (from > std::numeric_limits<To>::max())
+    if (from > Limits<To>::max)
       return V_POS_OVERFLOW;
   }
   to = static_cast<To>(from);
@@ -201,7 +218,7 @@ SPECIALIZE_ASSIGN(int_float_check_min_max, u_int64_t, float128_t)
 template <typename Policy, typename Type>
 inline Result 
 neg_signed_int(Type& to, const Type from) {
-  if (Policy::check_overflow && from == std::numeric_limits<Type>::min())
+  if (Policy::check_overflow && from == Limits<Type>::min)
     return V_POS_OVERFLOW;
   to = -from;
   return V_EQ;
@@ -222,9 +239,9 @@ inline Result
 add_signed_int(Type& to, const Type x, const Type y) {
   if (Policy::check_overflow) {
     if (y >= 0) {
-      if (x > std::numeric_limits<Type>::max() - y)
+      if (x > Limits<Type>::max - y)
 	return V_POS_OVERFLOW;
-    } else if (x < std::numeric_limits<Type>::min() - y)
+    } else if (x < Limits<Type>::min - y)
 	return V_NEG_OVERFLOW;
   }
   to = x + y;
@@ -235,7 +252,7 @@ template <typename Policy, typename Type>
 inline Result 
 add_unsigned_int(Type& to, const Type x, const Type y) {
   if (Policy::check_overflow) {
-    if (x > std::numeric_limits<Type>::max() - y)
+    if (x > Limits<Type>::max - y)
       return V_POS_OVERFLOW;
   }
   to = x + y;
@@ -247,9 +264,9 @@ inline Result
 sub_signed_int(Type& to, const Type x, const Type y) {
   if (Policy::check_overflow) {
     if (y >= 0) {
-      if (x < std::numeric_limits<Type>::min() + y)
+      if (x < Limits<Type>::min + y)
 	return V_NEG_OVERFLOW;
-    } else if (x > std::numeric_limits<Type>::max() + y)
+    } else if (x > Limits<Type>::max + y)
 	return V_POS_OVERFLOW;
   }
   to = x - y;
@@ -260,7 +277,7 @@ template <typename Policy, typename Type>
 inline Result 
 sub_unsigned_int(Type& to, const Type x, const Type y) {
   if (Policy::check_overflow) {
-    if (x < std::numeric_limits<Type>::min() + y)
+    if (x < Limits<Type>::min + y)
       return V_NEG_OVERFLOW;
   }
   to = x - y;

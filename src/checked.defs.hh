@@ -33,7 +33,7 @@ struct Policy_Safe {
   static const int check_inexact = 1;
   static const int check_divbyzero = 1;
   static const int check_sqrt_neg = 1;
-  static const int check_normal = 1;
+  static const int check_assign = 1;
 };
 
 
