@@ -133,9 +133,9 @@ c_variable_default_output_function(ppl_dimension_type var) {
 #if SIZEOF_SIZE_T == SIZEOF_UNSIGNED
 # define FORMAT "%u"
 #elif SIZEOF_SIZE_T == SIZEOF_UNSIGNED_LONG
-# define FORMAT "%ul"
+# define FORMAT "%lu"
 #elif SIZEOF_SIZE_T == SIZEOF_UNSIGNED_LONG_LONG
-# define FORMAT "%ull"
+# define FORMAT "%llu"
 #else
 # error "Unsupported definition for `size_t'."
 #endif
