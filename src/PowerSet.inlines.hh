@@ -117,6 +117,7 @@ PowerSet<CS>::omega_reduction() {
       }
     }
   }
+  assert(OK());
 }
 
 template <typename CS>
@@ -296,7 +297,8 @@ lcompare(const PowerSet<CS>& x, const PowerSet<CS>& y) {
 // Output
 
 template <typename CS>
-std::ostream& operator<< (std::ostream& s, const PowerSet<CS>& x) {
+std::ostream&
+operator<<(std::ostream& s, const PowerSet<CS>& x) {
   if (x.is_bottom())
     s << "false";
   else if ((x.size() == 1) && (*(x.begin())).is_top())
@@ -324,23 +326,40 @@ PowerSet<CS>::space_dimension() const {
 template <typename CS>
 void
 PowerSet<CS>::add_constraint(const Constraint& c) {
-  for (typename PowerSet<CS>::iterator i = begin(),
-	 xend = end(); i != xend; ++i)
-    i->add_constraint(c);
+  for (typename PowerSet<CS>::iterator xi = begin(),
+	 xin = xi, xend = end(); xi != xend; xi = xin) {
+    ++xin;
+    CS& xv = *xi;
+    xv.add_constraint(c);
+    if (xv.is_bottom()) {
+      sequence.erase(xi);
+      xend = end();
+    }	
+  }
   omega_reduction();
 }
 
 template <typename CS>
 void
 PowerSet<CS>::add_constraints(ConSys& cs) {
-  if (size() == 1)
-    begin()->add_constraints(cs);
+  typename PowerSet<CS>::iterator xi = begin();
+  if (size() == 1) {
+    CS& xv = *xi;
+    xv.add_constraints(cs);
+    if (xv.is_bottom())
+      sequence.erase(xi);
+  }
   else
-    for (typename PowerSet<CS>::iterator i = begin(),
-	   xend = end(); i != xend; ++i) {
-      // i->add_constraints(ConSys(cs));
+    for (typename PowerSet<CS>::iterator xin = xi,
+	   xend = end(); xi != xend; xi = xin) {
+      ++xin;
+      CS& xv = *xi;
       ConSys cs_copy = cs;
-      i->add_constraints(cs_copy);
+      xv.add_constraints(cs_copy);
+      if (xv.is_bottom()) {
+	sequence.erase(xi);
+	xend = end();
+      }	
     }
   omega_reduction();
 }
