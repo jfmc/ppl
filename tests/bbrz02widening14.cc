@@ -27,7 +27,7 @@ using namespace std;
 using namespace Parma_Polyhedra_Library;
 
 #ifndef NOISY
-#define NOISY 0
+#define NOISY 1
 #endif
 
 GenSys g_0() {
@@ -121,8 +121,6 @@ main() {
   C_Polyhedron q_i_minus_1 = p(0);
 
   for (unsigned i = 1; i <= 100; ++i) {
-
-    std::cout << "*** iteration i = " << i << std::endl;
 
 #if NOISY
     std::cout << "*** Result of the previous iteration:" << std::endl;

@@ -123,8 +123,6 @@ main() {
 
   for (unsigned i = 1; i <= 100; ++i) {
 
-    std::cout << "*** iteration i = " << i << std::endl;
-
 #if NOISY
     std::cout << "*** Result of the previous iteration:" << std::endl;
     std::cout << q_i_minus_1.generators() << std::endl;
