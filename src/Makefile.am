@@ -13,7 +13,7 @@ VPATH = @srcdir@
 
 @SET_MAKE@
 
-SUBDIRS = .
+SUBDIRS = Integer .
 
 
 # Libtool -version-info for libppl.la and libmp.la.
@@ -54,7 +54,6 @@ lib_LTLIBRARIES = libppl.la
 
 # The ordering of the following list *matters*!
 INCLUDE_FILES = \
-Coefficient.types.hh \
 globals.hh \
 maxmin.hh \
 SatRow.types.hh \
@@ -132,17 +131,17 @@ Polyhedron.defs.hh
 libppl_la_LDFLAGS = \
 -version-info $(LIBPPL_LT_CURRENT):$(LIBPPL_LT_REVISION):$(LIBPPL_LT_AGE)
 
-libppl_la_LIBADD =
-# Integer/Integer.o
+libppl_la_LIBADD = \
+Integer/Integer.o
 
 noinst_HEADERS = ppl.hh ppl_install.hh
 
 BUILT_SOURCES = ppl.hh ppl_install.hh
 
-MORE_INCLUDE_FILES =
-#Integer/Integer.types.hh \
-#Integer/Integer.defs.hh \
-#Integer/Integer.inlines.hh
+MORE_INCLUDE_FILES = \
+Integer/Integer.types.hh \
+Integer/Integer.defs.hh \
+Integer/Integer.inlines.hh
 
 ppl.hh:	$(DOC_FILES)
 	(cd $(srcdir) ; cat $(DOC_FILES)) \
