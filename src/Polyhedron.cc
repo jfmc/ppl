@@ -942,7 +942,7 @@ PPL::Polyhedron::remove_dimensions(const std::set<Variable>&
     return;
 
   // Checking for dimension-compatibility.
-  if (to_be_removed.max().id >= space_dimension())
+  if (to_be_removed.begin()->id() >= space_dimension())
     throw std::invalid_argument("void PPL::Polyhedron::remove_dimensions"
 				"(vs): dimension-incompatible");
 
