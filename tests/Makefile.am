@@ -43,7 +43,11 @@ ppl_test.hh \
 print.hh \
 print.cc
 
-LDADD = $(top_builddir)/src/libppl.la libppl_tests.a @extra_libraries@
+LDADD = \
+$(top_builddir)/src/libppl.la \
+$(top_builddir)/utils/libppl_utils.a \
+libppl_tests.a \
+@extra_libraries@
 
 ORIGINAL_TESTS = \
 	CbecomesNNC1 \
@@ -390,7 +394,7 @@ disjoint1_SOURCES = disjoint1.cc
 disjoint2_SOURCES = disjoint2.cc
 disjoint3_SOURCES = disjoint3.cc
 
-dualhypercubes_SOURCES = dualhypercubes.cc timings.cc
+dualhypercubes_SOURCES = dualhypercubes.cc
 
 empty1_SOURCES = empty1.cc
 
@@ -1030,7 +1034,7 @@ nnc_writepolyhedron2_CXXFLAGS = $(DERIVED_CXXFLAGS)
 nnc_writepolyhedron3_SOURCES = writepolyhedron3.cc
 nnc_writepolyhedron3_CXXFLAGS = $(DERIVED_CXXFLAGS)
 
-watchdog1_SRCS = watchdog1.cc timings.cc timings.hh
+watchdog1_SRCS = watchdog1.cc
 
 if BUILD_WATCHDOG_LIBRARY
 WATCHDOG_TESTS = watchdog1

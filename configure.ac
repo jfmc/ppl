@@ -498,6 +498,7 @@ AC_CONFIG_FILES(Makefile
                 src/Makefile
                 src/version.hh
                 tests/Makefile
+                utils/Makefile
                 m4/Makefile
                 demos/Makefile
 		demos/ppl_lcdd/Makefile
