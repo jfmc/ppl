@@ -1,0 +1,6 @@
+
+#ifdef PPL_SAVE_NDEBUG
+#define NDEBUG PPL_SAVE_NDEBUG
+#undef PPL_SAVE_NDEBUG
+#endif
+#endif

@@ -74,6 +74,7 @@ CXX=$with_cxx)
 
 AC_LANG_CPLUSPLUS
 AC_PROG_CXX
+AC_PROG_CXXCPP
 
 dnl GMP library
 
@@ -132,7 +133,6 @@ case "${enableval}" in
 yes)
   AC_MSG_RESULT(yes)
   OPT_FLAGS="-g"
-  outline=yes
   ;;
 no)
   AC_MSG_RESULT(no)
@@ -286,14 +286,13 @@ AC_PROG_INSTALL
 AC_PROG_RANLIB
 
 dnl Checks for header files.
-AC_HEADER_STDC
-AC_CHECK_HEADERS(unistd.h)
+# Nothing for the time being.
 
 dnl Checks for typedefs, structures, and compiler characteristics.
-
 # Nothing for the time being.
 
 dnl Checks for library functions.
+# Nothing for the time being.
 
 AC_SUBST(extra_includes)
 AC_SUBST(extra_cpp_flags)

@@ -25,6 +25,7 @@ site: http://www.cs.unipr.it/ppl/ . */
 #define _Polyhedron_inlines_hh 1
 
 #include <algorithm>
+#include <stdexcept>
 
 INLINE void
 Parma_Polyhedra_Library::Polyhedron::swap(Polyhedron& y) {

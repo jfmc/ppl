@@ -26,7 +26,7 @@ site: http://www.cs.unipr.it/ppl/ . */
 #define __SGI_STL_INTERNAL_RELOPS
 #endif
 
-#include "ppl.hh"
+#include "ppl_install.hh"
 #include "print.hh"
 #include "ehandlers.hh"
 

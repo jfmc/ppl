@@ -3,7 +3,7 @@
 
 #include <iostream>
 #include <string>
-#include "ppl.hh"
+#include "ppl_install.hh"
 
 using namespace std;
 using namespace Parma_Polyhedra_Library;

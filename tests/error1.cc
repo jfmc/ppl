@@ -1,4 +1,4 @@
-#include "ppl.hh"
+#include "ppl_install.hh"
 #include <stdexcept>
 
 using namespace std;

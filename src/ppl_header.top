@@ -1,4 +1,4 @@
-/* PPL interface implementation.
+/* This is the header file of the Parma Polyhedra Library.
    Copyright (C) 2001 Roberto Bagnara <bagnara@cs.unipr.it>
 
 This file is part of the Parma Polyhedra Library (PPL).
@@ -21,8 +21,11 @@ USA.
 For the most up-to-date information see the Parma Polyhedra Library
 site: http://www.cs.unipr.it/ppl/ . */
 
-#include "config.h"
-#include "Variable.defs.hh"
-#include "Generator.defs.hh"
-#include "LinExpression.defs.hh"
-#include "Polyhedron.defs.hh"
+#ifndef _ppl_hh
+#define _ppl_hh 1
+
+#ifdef NDEBUG
+#define PPL_SAVE_NDEBUG NDEBUG
+#undef NDEBUG
+#endif
+

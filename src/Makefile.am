@@ -17,53 +17,50 @@ SUBDIRS = Integer .
 
 INCLUDES = -I$(top_builddir) -I$(top_srcdir)/src -I$(top_srcdir)/src/Integer @extra_includes@
 
-# See http://www.cs.unipr.it/pipermail/ppl-devel/2001-October/000281.html
-#MYCPP = cpp
-MYCPP = kgcc -E
-
 CPPFLAGS = -DPPL_INTERNAL=public @extra_cpp_flags@
 
 lib_LIBRARIES = libppl.a
 
-include_files = \
-Constraint.types.hh \
-Constraint.defs.hh \
-Constraint.inlines.hh \
-ConSys.types.hh \
-ConSys.defs.hh \
-ConSys.inlines.hh \
-GenSys.types.hh \
-GenSys.defs.hh \
-GenSys.inlines.hh \
-Generator.types.hh \
-Generator.defs.hh \
-Generator.inlines.hh \
-Matrix.types.hh \
-Matrix.defs.hh \
-Matrix.inlines.hh \
-Polyhedron.types.hh \
-Polyhedron.defs.hh \
-Polyhedron.inlines.hh \
-Row.types.hh \
-Row.defs.hh \
-Row.inlines.hh \
-SatMatrix.types.hh \
-SatMatrix.defs.hh \
-SatMatrix.inlines.hh \
+# The ordering of the following list *matters*!
+INCLUDE_FILES = \
 SatRow.types.hh \
+SatMatrix.types.hh \
+Row.types.hh \
+Matrix.types.hh \
+Variable.types.hh \
+LinExpression.types.hh \
+Constraint.types.hh \
+ConSys.types.hh \
+Generator.types.hh \
+GenSys.types.hh \
+Status.types.hh \
+Polyhedron.types.hh \
 SatRow.defs.hh \
 SatRow.inlines.hh \
-Status.types.hh \
+SatMatrix.defs.hh \
+SatMatrix.inlines.hh \
+Row.defs.hh \
+Row.inlines.hh \
+Matrix.defs.hh \
+Matrix.inlines.hh \
+Variable.defs.hh \
+Variable.inlines.hh \
+LinExpression.defs.hh \
+LinExpression.inlines.hh \
+Constraint.defs.hh \
+Constraint.inlines.hh \
+ConSys.defs.hh \
+ConSys.inlines.hh \
+Generator.defs.hh \
+Generator.inlines.hh \
+GenSys.defs.hh \
+GenSys.inlines.hh \
 Status.defs.hh \
 Status.inlines.hh \
 globals.hh \
-LinExpression.types.hh \
-LinExpression.defs.hh \
-LinExpression.inlines.hh \
-Variable.types.hh \
-Variable.defs.hh \
-Variable.inlines.hh \
-maxmin.hh
+maxmin.hh \
+Polyhedron.defs.hh \
+Polyhedron.inlines.hh
 
 libppl_a_SOURCES = \
 Constraint.cc \
@@ -82,44 +79,64 @@ minimize.cc \
 simplify.cc \
 LinExpression.cc \
 Variable.cc \
-$(include_files)
+$(INCLUDE_FILES)
+
+# The ordering of the following list *matters*!
+DOC_FILES = \
+Variable.types.hh \
+LinExpression.types.hh \
+Constraint.types.hh \
+ConSys.types.hh \
+Generator.types.hh \
+GenSys.types.hh \
+Polyhedron.types.hh \
+Variable.defs.hh \
+LinExpression.defs.hh \
+Constraint.defs.hh \
+ConSys.defs.hh \
+Generator.defs.hh \
+GenSys.defs.hh \
+Polyhedron.defs.hh
 
 libppl_a_LIBADD = Integer/Integer.o
 
-noinst_HEADERS = ppl.cc
+noinst_HEADERS = ppl.hh ppl_install.hh
 
-BUILT_SOURCES = ppl.hh
+BUILT_SOURCES = ppl.hh ppl_install.hh
 
-include_HEADERS = ppl.hh
-
-MORE_PPL_HH_DEPS = \
+MORE_INCLUDE_FILES = \
 Integer/Integer.types.hh \
 Integer/Integer.defs.hh \
 Integer/Integer.inlines.hh
 
-ppl.hh:	$(include_files) ppl.cc protect.sed restore.sed $(MORE_PPL_HH_DEPS)
-	cpp -C -P -H $(INCLUDES) \
-		@debug_flag@ -DOUTLINE=0 $(srcdir)/ppl.cc >/dev/null 2>tmp.1
-	sed -e "s/^\.* //g" -e "/^\/usr/d" -e "/Multiple /d" <tmp.1 \
-		| sort -u >tmp.2
+ppl.hh:	$(DOC_FILES)
+	(cd $(srcdir) ; cat $(DOC_FILES)) \
+		| sed -e "s/PPL_INTERNAL/private/g" >ppl.hh
+
+ppl_install.hh:	ppl_header.top $(top_builddir)/config.h $(INCLUDE_FILES) $(MORE_INCLUDE_FILES) ppl_header.bottom
 	mkdir -p tmp
-	for k in `cat tmp.2` ; \
-	do \
-		sed -f $(srcdir)/protect.sed <$$k >tmp/`basename $$k` ;\
-	done
-	$(MYCPP) -C -P -nostdinc -I- -Itmp \
-		@debug_flag@ -DOUTLINE=0 -DINLINE=inline \
-		-DPPL_INTERNAL=private $(srcdir)/ppl.cc >tmp.3
-	echo "#ifndef _ppl_hh" >ppl.hh
-	echo "#define _ppl_hh 1" >>ppl.hh
-	sed -f $(srcdir)/restore.sed <tmp.3 >>ppl.hh
-	echo "#endif" >>ppl.hh
+	(cd $(srcdir) ; cat $(MORE_INCLUDE_FILES) $(INCLUDE_FILES)) >tmp/concat
+	grep -e "^#include <" <tmp/concat | sort -u >tmp/includes
+	sed -e "/^#include/d" -e "s/PPL_INTERNAL/public/g" <tmp/concat >tmp/noincludes.cc
+	grep -e "^#define" <$(top_builddir)/config.h | grep -v -e "^#define NDEBUG" >tmp/defines
+	sed -e "s/^#define *\([^ ]*\) *.*$$/#undef \1/g" <tmp/defines | sort -u >tmp/undefines
+	cat $(srcdir)/ppl_header.top $(top_builddir)/config.h \
+		tmp/includes >ppl_install.hh
+	$(CXXCPP) -P @debug_flag@ tmp/noincludes.cc >>ppl_install.hh
+	cat tmp/undefines $(srcdir)/ppl_header.bottom >>ppl_install.hh
 	rm -rf tmp*
 
-# ppl.hh is not distributed.
+# ppl.hh and ppl_install.hh are not distributed.
 dist-hook:
-	rm -f $(distdir)/ppl.hh
+	rm -f $(distdir)/ppl.hh $(distdir)/ppl_install.hh
 
-EXTRA_DIST = ppl.cc protect.sed restore.sed
+install-data-local: ppl_install.hh
+	$(mkinstalldirs) $(DESTDIR)$(includedir)
+	$(INSTALL_DATA) ppl_install.hh $(DESTDIR)$(includedir)/ppl.hh
+
+uninstall-local:
+	rm -f $(DESTDIR)$(includedir)/ppl.hh
+
+EXTRA_DIST = ppl_header.top ppl_header.bottom
 
 MOSTLYCLEANFILES = $(BUILT_SOURCES)
