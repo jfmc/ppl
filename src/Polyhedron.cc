@@ -1743,6 +1743,9 @@ PPL::operator >>(std::istream& s, Polyhedron& p) {
   s >> p.status;
 
   s >> str;
+  assert(str == "not_positive" || str == "positive");
+  p.positive = (str == "positive");
+  s >> str;
   assert(str == "con_sys");
   s >> str;
   assert(str == "(not_up-to-date)" || str == "(up-to-date)");
