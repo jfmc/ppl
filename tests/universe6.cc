@@ -41,10 +41,14 @@ main() {
   ph2.add_constraint(LinExpression(1) > 0);
   ph3.add_constraint(LinExpression(1) < 0);
 
+  ConSys cs;
+  NNC_Polyhedron ph4(cs);
+
 #if NOISY
   print_constraints(ph1, "--- ph1 ---");
   print_constraints(ph2, "--- ph2 ---");
   print_constraints(ph3, "--- ph3 ---");
+  print_constraints(ph4, "--- ph4 ---");
 #endif
   
   bool universe1 = ph1.check_universe();
@@ -73,5 +77,15 @@ main() {
        << (universe3 ? "true" : "false")
        << endl;
 #endif
-  return (universe1 && universe2 && !universe3) ? 0 : 1;
+
+  bool universe4 = ph4.check_universe();
+
+#if NOISY
+  cout << "*** ph4.check_universe() ***"
+       << endl
+       << (universe4 ? "true" : "false")
+       << endl;
+#endif
+
+  return (universe1 && universe2 && !universe3 && universe4) ? 0 : 1;
 }
