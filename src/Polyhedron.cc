@@ -22,6 +22,7 @@ For the most up-to-date information see the Parma Polyhedra Library
 site: http://www.cs.unipr.it/ppl/ . */
 
 #include <config.h>
+#include <stdexcept>
 
 #include "Polyhedron.defs.hh"
 #if OUTLINE
@@ -1204,11 +1205,14 @@ void
 PPL::Polyhedron::assign_variable(const Variable& var,
 				 const LinExpression& coefficient,
 				 Integer& denominator) {
+  if (denominator == 0)
+    throw invalid_argument("Assign_variable with denominator == 0");
+  
   Polyhedron& x = *this;
   size_t num_columns = x.gen_sys.num_columns();
   size_t num_var = var.id() + 1;
   assert(num_columns == coefficient.size());
-  assert(denominator != 0);
+  
   // Index of var must be in the range of the variables of generators.
   assert(num_var < num_columns);
   
@@ -1310,11 +1314,13 @@ void
 PPL::Polyhedron::substitute_variable(const Variable& var,
 				     const LinExpression& coefficient,
 				     Integer& denominator) {
+  if (denominator == 0)
+    throw invalid_argument("Substitute_variable with denominator == 0");
+  
   Polyhedron& x = *this;
   size_t num_columns = x.con_sys.num_columns();
   size_t num_var = var.id() + 1;
   assert(num_columns == coefficient.size());
-  assert(denominator != 0);
   assert(num_var < num_columns);
 
   // The transformation is invertible.
