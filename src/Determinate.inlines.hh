@@ -40,6 +40,11 @@ Determinate<PH>::Rep::Rep(const PH& p)
 }
 
 template <typename PH>
+Determinate<PH>::Rep::Rep(const ConSys& cs)
+  : references(0), ph(cs) {
+}
+
+template <typename PH>
 Determinate<PH>::Rep::~Rep() {
   assert(references == 0);
 }
@@ -69,8 +74,14 @@ Determinate<PH>::Determinate(size_t num_dimensions,
 }
 
 template <typename PH>
-Determinate<PH>::Determinate(const PH& p)
-  : prep(new Rep(p)) {
+Determinate<PH>::Determinate(const PH& ph)
+  : prep(new Rep(ph)) {
+  prep->new_reference();
+}
+
+template <typename PH>
+Determinate<PH>::Determinate(const ConSys& cs)
+  : prep(new Rep(cs)) {
   prep->new_reference();
 }
 
@@ -243,16 +254,16 @@ Determinate<PH>::add_constraints(ConSys& cs) {
 
 template <typename PH>
 void
-Determinate<PH>::add_dimensions_and_embed(size_t dim) {
+Determinate<PH>::add_dimensions_and_embed(size_t m) {
   mutate();
-  prep->ph.add_dimensions_and_embed(dim);
+  prep->ph.add_dimensions_and_embed(m);
 }
 
 template <typename PH>
 void
-Determinate<PH>::add_dimensions_and_project(size_t dim) {
+Determinate<PH>::add_dimensions_and_project(size_t m) {
   mutate();
-  prep->ph.add_dimensions_and_project(dim);
+  prep->ph.add_dimensions_and_project(m);
 }
 
 template <typename PH>
