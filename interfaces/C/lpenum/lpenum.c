@@ -683,7 +683,7 @@ solve(char* file_name) {
   ppl_Coefficient_to_mpz_t(optimum_d, tmp_z);
   mpz_mul(tmp_z, tmp_z, den_lcm);
   mpq_set_den(optimum, tmp_z);
-  fprintf(output_file, "Optimum value:\n%f\n", mpq_get_d(optimum));
+  fprintf(output_file, "Optimum value:\n%g\n", mpq_get_d(optimum));
   fprintf(output_file, "Optimum location:\n");
   ppl_Generator_divisor(ppl_const_g, ppl_coeff);
   ppl_Coefficient_to_mpz_t(ppl_coeff, tmp_z);
@@ -692,7 +692,7 @@ solve(char* file_name) {
     ppl_Generator_coefficient(ppl_const_g, i, ppl_coeff);
     ppl_Coefficient_to_mpz_t(ppl_coeff, mpq_numref(tmp1_q));
     print_variable(output_file, i);
-    fprintf(output_file, " = %f\n", mpq_get_d(tmp1_q));
+    fprintf(output_file, " = %g\n", mpq_get_d(tmp1_q));
   }
 
   ppl_delete_Polyhedron(ppl_ph);
