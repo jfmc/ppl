@@ -37,30 +37,58 @@ namespace PPL = Parma_Polyhedra_Library;
 
 bool
 PPL::ConSys::
-adjust_topology_and_space_dimension(Topology new_topology,
-				    dimension_type new_space_dim) {
+adjust_topology_and_space_dimension(const Topology new_topology,
+				    const dimension_type new_space_dim) {
   assert(space_dimension() <= new_space_dim);
 
+  const dimension_type old_space_dim = space_dimension();
+  const Topology old_topology = topology();
+  dimension_type cols_to_be_added = new_space_dim - old_space_dim;
+
+  // Dealing with empty constraint systems first.
   if (num_rows() == 0) {
-    // First adapt topology ...
-    if (topology() != new_topology)
-      if (is_necessarily_closed())
-	set_not_necessarily_closed();
-      else
+    if (num_columns() == 0)
+      if (new_topology == NECESSARILY_CLOSED) {
+	add_zero_columns(++cols_to_be_added);
 	set_necessarily_closed();
-    // .. then adapt space dimension.
-    if (space_dimension() != new_space_dim)
-      // FIXME: why not using add_columns() here?
-      resize_no_copy(0, new_space_dim + (is_necessarily_closed() ? 1 : 2));
+      }
+      else {
+	cols_to_be_added += 2;
+	add_zero_columns(cols_to_be_added);
+	set_not_necessarily_closed();
+      }
+    else
+      // Here `num_columns() > 0'.
+      if (old_topology != new_topology)
+	if (new_topology == NECESSARILY_CLOSED) {
+	  switch (cols_to_be_added) {
+	  case 0:
+	    remove_trailing_columns(1);
+	    break;
+	  case 1:
+	    // Nothing to do.
+	    break;
+	  default:
+	    add_zero_columns(--cols_to_be_added);
+	  }
+	  set_necessarily_closed();
+	}
+	else {
+	  // Here old_topology == NECESSARILY_CLOSED
+	  //  and new_topology == NOT_NECESSARILY_CLOSED.
+	  add_zero_columns(++cols_to_be_added);
+	  set_not_necessarily_closed();
+	}
+      else {
+	// Here topologies agree.
+	if (cols_to_be_added > 0)
+	  add_zero_columns(cols_to_be_added);
+      }
     assert(OK());
     return true;
   }
 
   // Here `num_rows() > 0'.
-  const dimension_type old_space_dim = space_dimension();
-  const Topology old_topology = topology();
-  dimension_type cols_to_be_added = new_space_dim - old_space_dim;
-
   if (cols_to_be_added > 0)
     if (old_topology != new_topology)
       if (new_topology == NECESSARILY_CLOSED) {
