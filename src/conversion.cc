@@ -479,13 +479,19 @@ PPL::Polyhedron::conversion(Matrix& source,
       // satisfy the constraint). If it is not the case, we
       // multiply the `num_lines_or_equalities'-th row of `dest' by -1.
       if (scalar_prod[num_lines_or_equalities] < 0) {
-	negate(scalar_prod[num_lines_or_equalities]);
+	// FIXME: the following qualification PPL:: is there only
+	//        to get around a bug of GCC version 2.96 20000731
+	//        (Red Hat Linux 7.1 2.96-98)
+	PPL::negate(scalar_prod[num_lines_or_equalities]);
 	for (size_t j = source_num_columns; j-- > 0; )
 	  // source and dest have the same number of columns:
 	  // we can use j (running through source's columns)
 	  // to change sign to all the elements of the
 	  // `num_lines_or_equalities'-th row of dest.
-	  negate(dest[num_lines_or_equalities][j]);
+	  // FIXME: the following qualification PPL:: is there only
+	  //        to get around a bug of GCC version 2.96 20000731
+	  //        (Red Hat Linux 7.1 2.96-98)
+	  PPL::negate(dest[num_lines_or_equalities][j]);
       }
       // To build the new pointed cone we need the new oriented ray: we
       // have to compute a positive combination of this ray with each of
