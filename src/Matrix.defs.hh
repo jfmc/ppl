@@ -339,6 +339,16 @@ public:
   void sort_rows();
 
   //! \brief
+  //! Sorts the rows (in growing order) form \p first_row to
+  //! \p last_row and eliminates duplicated ones.
+  void sort_rows(dimension_type first_row, dimension_type last_row);
+ 
+  //! \brief
+  //! Sorts the pending part of the matrix and removes the pending
+  //! rows that are also in the upper part of the matrix.
+  void sort_pending_and_remove_duplicates();
+  
+  //! \brief
   //! Assigns to \p *this the result of merging its rows with
   //! those of \p y, obtaining a sorted matrix.
   /*!

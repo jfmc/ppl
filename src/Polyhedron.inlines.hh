@@ -284,6 +284,21 @@ Polyhedron::add_low_level_constraints(ConSys& cs) {
   }
 }
 
+inline bool
+Polyhedron::remove_pending_and_minimize() const {
+  assert(space_dim > 0);
+  assert(!is_empty());
+  assert(has_something_pending());
+
+  Polyhedron& x = const_cast<Polyhedron&>(*this);
+  if (x.has_pending_constraints())
+    return x.remove_pending_constraints_and_minimize();
+
+  assert(x.has_pending_generators());
+  x.remove_pending_generators_and_minimize();
+  return true;
+}
+
 template <typename Box>
 Polyhedron::Polyhedron(Topology topol, const Box& box)
   : con_sys(topol),

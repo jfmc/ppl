@@ -1505,7 +1505,23 @@ private:
     something pending.
   */
   bool remove_pending_and_minimize() const;
-
+  
+  //! Removes pending constraints and obtains a minimized polyhedron.
+  /*!
+    \return       <CODE>false</CODE> if and only if \p *this turns out
+                  to be an empty polyhedron.
+    It is illegal to call this method when the polyhedron
+    has not pending constraints.
+  */
+  bool remove_pending_constraints_and_minimize() const;
+  
+  //! Removes pending generators and obtains a minimized polyhedron.
+  /*!
+    It is illegal to call this method when the polyhedron
+    has not pending generators.
+  */
+  void remove_pending_generators_and_minimize() const;
+  
   //! \brief
   //! Removes pending and obtains the real system of constraints
   //! of the polyhedron.
@@ -1514,7 +1530,7 @@ private:
     has not something pending.
   */
   void remove_pending_to_obtain_constraints() const;
-
+  
   //! \brief
   //! Removes pending and obtains the real system of generators
   //! of the polyhedron.
@@ -1664,6 +1680,13 @@ private:
   static bool add_and_minimize(bool con_to_gen,
 			       Matrix& source1, Matrix& dest, SatMatrix& sat,
 			       const Matrix& source2);
+
+  //! \brief
+  //! Adds given constraints and builds minimized corresponding generators
+  //! or vice versa. The given constraints are in \p source.
+  // Detailed Doxygen comment to be found in file minimize.cc.
+  static bool add_and_minimize(bool con_to_gen,
+			       Matrix& source, Matrix& dest, SatMatrix& sat);
   
   //! \brief
   //! Returns <CODE>true</CODE> if the given polyhedra satisfy

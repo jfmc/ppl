@@ -262,7 +262,10 @@ PPL::Polyhedron::remove_pending_to_obtain_constraints() const {
   }
   else {
     assert(x.has_pending_generators());
-    x.remove_pending_and_minimize();
+    // If we have pending generators, we must erase them
+    // and minimize the system. This work is done in
+    // `Polyhedron::remove_pending_generators_and_minimize()'.
+    x.remove_pending_generators_and_minimize();
   }
 }
 
@@ -292,8 +295,8 @@ PPL::Polyhedron::remove_pending_to_obtain_generators() const {
     assert(x.has_pending_constraints());
     // If we have pending constraints, we must erase them
     // and minimize the system. This work is done in
-    // `Polyhedron::remove_pending_and_minimize()'.
-    return x.remove_pending_and_minimize();
+    // `Polyhedron::remove_pending_constraints_and_minimize()'.
+    return x.remove_pending_constraints_and_minimize();
   }
 }
 
@@ -744,46 +747,51 @@ PPL::Polyhedron::update_generators() const {
 }
 
 bool
-PPL::Polyhedron::remove_pending_and_minimize() const {
+PPL::Polyhedron::remove_pending_constraints_and_minimize() const {
   assert(space_dim > 0);
   assert(!is_empty());
-  assert(has_something_pending());
+  assert(has_pending_constraints());
 
   Polyhedron& x = const_cast<Polyhedron&>(*this);
-  if (x.has_pending_constraints()) {
-    // If the polyhedron has pending constraints, we must
-    // add the pending part of the system of constraints
-    // to `con_sys' and minimize.
-    assert(!x.has_pending_generators());
-    // In this case to use `add_and_minimize()', we must
-    // have `sat_c' up-to-date.
-    if (!x.sat_c_is_up_to_date())
-      x.sat_c.transpose_assign(x.sat_g);
-    // In `cs', we put the pending rows of `con_sys'.
-    ConSys cs(x.con_sys, x.con_sys.first_pending_row());
-    // `add_and_minimize()' requires that `cs' is sorted.
-    cs.sort_rows();
-    // `add_and_minimize()' requires that `con_sys' is sorted:
-    // in this case we also need to order `sat_c' together `con_sys'.
-    if (!x.con_sys.is_sorted())
-      x.obtain_sorted_constraints_with_sat_c();
+  // If the polyhedron has pending constraints, we must
+  // add the pending part of the system of constraints
+  // to `con_sys' and minimize.
+  assert(!x.has_pending_generators());
+  // In this case to use `add_and_minimize()', we must
+  // have `sat_c' up-to-date.
+  if (!x.sat_c_is_up_to_date())
+    x.sat_c.transpose_assign(x.sat_g);
+  // `add_and_minimize()' requires that `con_sys' is sorted:
+  // in this case we also need to order `sat_c' together `con_sys'.
+  if (!x.con_sys.is_sorted())
+    x.obtain_sorted_constraints_with_sat_c();
 
-    bool empty = add_and_minimize(true,
-				  x.con_sys, x.gen_sys, x.sat_c,
-				  cs);
-    assert(x.con_sys.first_pending_row() == x.con_sys.num_rows());
+  // We sort the pending part of `x.con_sys' and we erase
+  // the pending rows that are also in the non-pending part.
+  x.con_sys.sort_pending_and_remove_duplicates();
 
-    if (empty)
-      x.set_empty();
-    else {
-      x.clear_pending_constraints();
-      x.clear_sat_g_up_to_date();
-      x.set_sat_c_up_to_date();
-    }
-    return !empty;
-  }
+  bool empty = add_and_minimize(true,
+				x.con_sys, x.gen_sys, x.sat_c);
   
-  assert(x.has_pending_generators());
+  assert(x.con_sys.first_pending_row() == x.con_sys.num_rows());
+  
+  if (empty)
+    x.set_empty();
+  else {
+    x.clear_pending_constraints();
+    x.clear_sat_g_up_to_date();
+    x.set_sat_c_up_to_date();
+  }
+  return !empty;
+}
+
+void
+PPL::Polyhedron::remove_pending_generators_and_minimize() const {
+  assert(space_dim > 0);
+  assert(!is_empty());
+  assert(has_pending_generators());
+  
+  Polyhedron& x = const_cast<Polyhedron&>(*this); 
   // If the polyhedron has pending generators, we must
   // add the pending part of the system of generators
   // to `gen_sys' and minimize.
@@ -791,25 +799,22 @@ PPL::Polyhedron::remove_pending_and_minimize() const {
   // have `sat_g' up-to-date.
   if (!x.sat_g_is_up_to_date())
     x.sat_g.transpose_assign(x.sat_c);
-  // In `gs', we put the pending row of `gen_sys'.
-  GenSys gs(x.gen_sys, x.gen_sys.first_pending_row());
-  // `add_and_minimize()' requires that `gs' is sorted.
-  gs.sort_rows();
   // `add_and_minimize()' requires that `gen_sys' is sorted:
   // in this case we also need to order `sat_g' together `gen_sys'.
   if (!x.gen_sys.is_sorted())
     x.obtain_sorted_generators_with_sat_g();
+  
+  // We sort the pending part of `x.gen_sys' and we erase
+  // the pending rows that are also in the non-pending part.
+  x.gen_sys.sort_pending_and_remove_duplicates();
 
-  add_and_minimize(false, x.gen_sys, x.con_sys, x.sat_g, gs);
+  add_and_minimize(false, x.gen_sys, x.con_sys, x.sat_g);
   
   assert(x.gen_sys.first_pending_row() == x.gen_sys.num_rows());
   x.clear_pending_generators();
   x.clear_sat_c_up_to_date();
   x.set_sat_g_up_to_date();
-  
-  return true;
 }
-
 
 bool
 PPL::Polyhedron::minimize() const {

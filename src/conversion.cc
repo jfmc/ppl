@@ -363,8 +363,13 @@ PPL::Polyhedron::conversion(Matrix& source,
   assert(source_num_rows == sat.num_columns());
   assert(dest_num_rows == sat.num_rows());
 
+  bool source_was_sorted = source.is_sorted();
+  // We use it to indicate if we have swapped some rows of `source'. 
+
 #if KEEP_SOURCE_SORTEDNESS
   dimension_type source_index_displacement = 0;
+#else
+  bool source_swapped = false;
 #endif
 
   // Converting the sub-matrix of `source' having rows with indexes
@@ -631,7 +636,7 @@ PPL::Polyhedron::conversion(Matrix& source,
 	    ++source_index_displacement;
 #else
 	    std::swap(source[k], source[source_num_rows]);
-	    source.set_sorted(false);
+	    source_swapped = true;
 #endif
 	  }
 	  // NOTE: we continue with the next cicle of the loop
@@ -828,17 +833,45 @@ PPL::Polyhedron::conversion(Matrix& source,
 #endif
   }
 
+  // NOTE: We must update `index_first_pending' of `source'.
+  source.set_index_first_pending_row(source_num_rows);
+#if KEEP_SOURCE_SORTEDNESS
+  if (start > 0 && source_was_sorted)
+    source.set_sorted(source[start - 1] <= source[start]);
+#else
+  if (start > 0) {
+    if (source_was_sorted)
+      if (source_swapped) {
+	// If the only rows that we have swapped are pending rows,
+	// and if `source' was sorted at the beginning of this function,
+	// we check if these changes keep the sortedness of `source'.
+	for (dimension_type i = start; i < source_num_rows; ++i)
+	  if (source[i - 1] > source[i]) {
+	    source.set_sorted(false);
+	    break;
+	  }
+      }
+      else
+	// If we have not swapped any rows and if `source' was
+	// sorted at the beginning of this function,
+	// we check if the sortedness of `source' is kept,
+	// verifying if the last row before `start' is smaller
+	// then the row indexed by `start'.
+	source.set_sorted(source[start - 1] <= source[start]);
+  }
+  else
+    // If we have swapped some rows and `start' is equal
+    // to zero, we say that `source' is not sorted.
+    if (source_was_sorted && source_swapped)
+      source.set_sorted(false);
+#endif
   // Since we may have deleted some redundant constraints from `source'
   // or some redundant rays from `dest', we have to delete the useless
   // rows from the corresponding matrices.
   if (source_num_rows < source.num_rows()) {
-    // NOTE: We must update `index_first_pending' of `source'
-    // before calling `erase_to_end'.
-    source.set_index_first_pending_row(source_num_rows);
     source.erase_to_end(source_num_rows);
     sat.columns_erase_to_end(source_num_rows);
   }
-
   
   if (dest.is_sorted())
     for (dimension_type i = dest.first_pending_row(); i < dest_num_rows; ++i)

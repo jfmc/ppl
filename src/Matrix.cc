@@ -32,6 +32,7 @@ site: http://www.cs.unipr.it/ppl/ . */
 #include <algorithm>
 #include <iostream>
 #include <string>
+#include <deque>
 
 namespace PPL = Parma_Polyhedra_Library;
 
@@ -454,6 +455,95 @@ PPL::Matrix::sort_rows() {
   set_index_first_pending_row(n_rows);
   sorted = true;
   assert(OK());
+}
+
+void
+PPL::Matrix::sort_rows(dimension_type first_row, dimension_type last_row) {
+  assert(first_row <= num_rows());
+  assert(last_row <= num_rows());
+  assert(first_row <= last_row);
+  Matrix& x = *this;
+  // Sorting only a row is a no-op.
+  if (first_row == last_row)
+    return;
+  dimension_type old_last_row = last_row;
+  Row x_i;
+  for (dimension_type i = first_row + 1; i < last_row; ) {
+    x_i.assign(x[i]);
+    dimension_type j;
+    int cmp = 1;
+    for (j = i; j > first_row; --j) {
+      cmp = compare(x[j-1], x_i);
+      if (cmp <= 0)
+	break;
+      x[j].assign(x[j-1]);
+    }
+    if (cmp == 0) {
+      for ( ; j < i; ++j)
+	x[j].assign(x[j+1]);
+      x[i].assign(x_i);
+      --last_row;
+      std::swap(x[i], x[last_row]);
+    }
+    else {
+      x[j].assign(x_i);
+      ++i;
+    }
+  }
+  Row null;
+  x_i.assign(null);
+  // The rows that we must erase are put before `old_last_row'.
+  rows.erase(rows.begin() + last_row, rows.begin() + old_last_row);
+  assert(OK());
+}
+
+void
+PPL::Matrix::sort_pending_and_remove_duplicates() {
+  assert(num_pending_rows() > 0);
+  assert(is_sorted());
+  Matrix& x = *this;
+
+  dimension_type index = x.first_pending_row(); 
+  // We sort the pending part of the matrix..
+  x.sort_rows(index, x.num_rows());
+  dimension_type num_rows = x.num_rows();
+  dimension_type k1 = 0;
+  dimension_type k2 = index;
+  std::deque<bool> to_be_removed(num_rows);
+  // Now we erase the pending rows that are also
+  // in the non-pending part.
+  while (k1 < index && k2 < num_rows) {
+    int cmp = compare(x[k1], x[k2]);
+    if (cmp == 0) {
+      // We found the same row: we must erase `x[k2]' from the
+      // pending part of `con_sys'.
+      to_be_removed[k2] = true;
+      ++k2;
+      // By initial sortedness, we can increment index `k1'.
+      ++k1;
+    }
+    else if (cmp < 0)
+      // By initial sortedness, we can increment `k1'.
+      ++k1;
+    else {
+      // Here `cmp > 0'.
+      // We can increment `k2' and we can keep it in the pending part
+      // of the matrix.
+      ++k2;
+    }
+  }
+  // We put the rows to removed in the lower part of the matrix
+  // and then we erase them.
+  dimension_type insert_point = index;
+  for (dimension_type i = index; i < num_rows; ++i)
+    if (!to_be_removed[i]) {
+      if (i != insert_point) {
+	std::swap(x[i], x[insert_point]);
+	std::swap(to_be_removed[i], to_be_removed[insert_point]);
+      }
+      ++insert_point;
+    }
+  x.erase_to_end(insert_point);
 }
 
 void
