@@ -1068,14 +1068,13 @@ PPL::Polyhedron::add_constraints(ConSys& cs) {
     throw_different_dimensions("PPL::Polyhedron::add_constraints(c)",
 			       *this, cs);
 
-  // Adding a zero-dimension constraint is a no-op.
-  // (By dimension-compatibility, this also capture the case
-  // when the polyhedron space is zero-dim.)
-  if (cs_num_columns == 0)
-    return true;
+  // Adding no constraints is the same as checking for emptyness.
+  if (cs.num_rows() == 0)
+    return !check_empty();
 
-  if (cs_num_columns == 1 && space_dimension() == 0) {
-    // Checking for an inconsistent constraint.
+  // Dealing with zero-dim space polyhedra first.
+  if (space_dimension() == 0) {
+    assert(cs_num_columns == 1);
     // Checking for an inconsistent constraint.
     if (cs.begin() == cs.end())
       return true;
@@ -1131,9 +1130,6 @@ throw_different_dimensions(const char* method,
   throw std::invalid_argument(s.str());
 }
 
-// FIXME: space_dimension() adjusted up to this point (Enea).
-// Leaving the library in an inconsistent state for a while.
-
 /*!
   This function inserts a new constraint \p c into the system of
   constraints of the polyhedron \p *this.
@@ -1152,23 +1148,24 @@ PPL::Polyhedron::insert(const Constraint& c) {
   if (is_empty())
     return;
 
+  // Dealing with a zero-dim space polyhedron first.
   if (space_dimension() == 0) {
-    // For dimension-compatibility, `c' has no columns.
-    assert(c.size() == 0);
+    // For dimension-compatibility, `c' has 1 column.
+    assert(c.size() == 1);
+    if (!c.is_trivial())
+      set_empty();
     return;
   }
-  else {
-    if (!constraints_are_up_to_date())
-      update_constraints();
 
-    // Here we know that the system of constraints has at
-    // least a row.
-    con_sys.insert(c);
+  if (!constraints_are_up_to_date())
+    update_constraints();
 
-    // After adding new constraints, generators are no more up-to-date.
-    clear_constraints_minimized();
-    clear_generators_up_to_date();
-  }
+  // Here we know that the system of constraints has at least a row.
+  con_sys.insert(c);
+  
+  // After adding new constraints, generators are no more up-to-date.
+  clear_constraints_minimized();
+  clear_generators_up_to_date();
 
   // The constraint system may have become unsatisfiable.
   // Do not check for satisfiability.
@@ -1322,6 +1319,7 @@ PPL::Polyhedron::add_dimensions_and_constraints_lazy(const ConSys& cs) {
 void
 PPL::Polyhedron::add_generators(GenSys& gs) {
   size_t gs_num_columns = gs.num_columns();
+
   // Dimension-consistency check:
   // the dimension of `gs' can not be greater than space_dimension().
   if (space_dimension() < gs_num_columns - 1)
