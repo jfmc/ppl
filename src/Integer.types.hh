@@ -23,10 +23,9 @@ PURPOSE. */
 
 #ifdef CHECKED_INTEGERS
 #ifdef NEW_CHECKED_CODE
-namespace Parma_Polyhedra_Library {
+#include "Checked_Number.types.hh"
 
-template <typename T>
-class Checked_Number;
+namespace Parma_Polyhedra_Library {
 
 template <>
 struct Integer_traits_template<Checked_Number<int8_t> > {
@@ -49,8 +48,10 @@ struct Integer_traits_template<Checked_Number<int64_t> > {
 };
 
 } // namespace Parma_Polyhedra_Library
+
 #else
 #include "Checked_Integer.types.hh"
+
 #endif
 #endif
 

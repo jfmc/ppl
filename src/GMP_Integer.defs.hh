@@ -41,8 +41,6 @@ inline void exact_div_assign(GMP_Integer& x,
 inline void sqrt_assign(GMP_Integer& x);
 inline void sqrt_assign(GMP_Integer& x, const GMP_Integer& y);
 inline int cmp(const GMP_Integer& x, const GMP_Integer& y);
-inline const GMP_Integer& Integer_zero();
-inline const GMP_Integer& Integer_one();
 
 } // namespace Parma_Polyhedra_Library
 

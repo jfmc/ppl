@@ -571,18 +571,6 @@ cmp(const Checked_Integer<T> x, const Checked_Integer<T> y) {
   return sgn(x-y);
 }
 
-inline const Integer&
-Integer_zero() {
-  static Integer z(0);
-  return z;
-}
-
-inline const Integer&
-Integer_one() {
-  static Integer o(1);
-  return o;
-}
-
 template <typename T>
 inline bool
 operator==(const Checked_Integer<T> x, const Checked_Integer<T> y) {

@@ -75,9 +75,6 @@ int sgn(const Native_Integer<T> x);
 template <typename T>
 int cmp(const Native_Integer<T> x, const Native_Integer<T> y);
 
-const Integer& Integer_zero();
-const Integer& Integer_one();
-
 template <typename T>
 void negate(Native_Integer<T>& x);
 

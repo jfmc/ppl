@@ -26,56 +26,6 @@ site: http://www.cs.unipr.it/ppl/ . */
 
 namespace Parma_Polyhedra_Library {
 
-inline void
-negate(Integer& x) {
-  mpz_neg(x.get_mpz_t(), x.get_mpz_t());
-}
-
-inline void
-gcd_assign(Integer& x, const Integer& y) {
-  mpz_gcd(x.get_mpz_t(), x.get_mpz_t(), y.get_mpz_t());
-}
-
-inline void
-gcd_assign(Integer& x, const Integer& y, const Integer& z) {
-  mpz_gcd(x.get_mpz_t(), y.get_mpz_t(), z.get_mpz_t());
-}
-
-inline void
-lcm_assign(Integer& x, const Integer& y) {
-  mpz_lcm(x.get_mpz_t(), x.get_mpz_t(), y.get_mpz_t());
-}
-
-inline void
-lcm_assign(Integer& x, const Integer& y, const Integer& z) {
-  mpz_lcm(x.get_mpz_t(), y.get_mpz_t(), z.get_mpz_t());
-}
-
-inline void
-exact_div_assign(Integer& x, const Integer& y) {
-  mpz_divexact(x.get_mpz_t(), x.get_mpz_t(), y.get_mpz_t());
-}
-
-inline void
-exact_div_assign(Integer& x, const Integer& y, const Integer& z) {
-  mpz_divexact(x.get_mpz_t(), y.get_mpz_t(), z.get_mpz_t());
-}
-
-inline void
-sqrt_assign(Integer& x) {
-  mpz_sqrt(x.get_mpz_t(), x.get_mpz_t());
-}
-
-inline void
-sqrt_assign(Integer& x, const Integer& y) {
-  mpz_sqrt(x.get_mpz_t(), y.get_mpz_t());
-}
-
-inline int
-cmp(const Integer& x, const Integer& y) {
-  return mpz_cmp(x.get_mpz_t(), y.get_mpz_t());
-}
-
 inline const Integer&
 Integer_zero() {
   static Integer z(0);
@@ -89,11 +39,5 @@ Integer_one() {
 }
 
 } // namespace Parma_Polyhedra_Library
-
-inline void
-std::swap(Parma_Polyhedra_Library::Integer& x,
-	  Parma_Polyhedra_Library::Integer& y) {
-  mpz_swap(x.get_mpz_t(), y.get_mpz_t());
-}
 
 #endif // !defined(PPL_Integer_inlines_hh)

@@ -75,9 +75,6 @@ int sgn(const Checked_Integer<T> x);
 template <typename T>
 int cmp(const Checked_Integer<T> x, const Checked_Integer<T> y);
 
-const Integer& Integer_zero();
-const Integer& Integer_one();
-
 template <typename T>
 void negate(Checked_Integer<T>& x);
 

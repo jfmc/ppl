@@ -44,4 +44,13 @@ site: http://www.cs.unipr.it/ppl/ . */
 #include "GMP_Integer.defs.hh"
 #endif
 
+namespace Parma_Polyhedra_Library {
+
+const Integer& Integer_zero();
+const Integer& Integer_one();
+
+} // namespace Parma_Polyhedra_Library
+
+#include "Integer.inlines.hh"
+
 #endif // !defined(PPL_Integer_defs_hh)
