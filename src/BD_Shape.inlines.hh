@@ -3199,8 +3199,8 @@ BD_Shape<T>::generalized_affine_image(Variable var,
 template <typename T>
 inline void
 BD_Shape<T>::generalized_affine_image(const Linear_Expression& lhs,
-				     const Relation_Symbol relsym,
-				     const Linear_Expression& rhs) {
+				      const Relation_Symbol relsym,
+				      const Linear_Expression& rhs) {
 
   // Dimension-compatibility checks.
   // The dimension of `lhs' should not be greater than the dimension
@@ -3250,59 +3250,204 @@ BD_Shape<T>::generalized_affine_image(const Linear_Expression& lhs,
 	j1 = i;
     }
 
-  // TODO: we want all the possible linear expressions without
-  // exceptions.
-  if (t == 1) {
-    // Case 1: lhs = var + n.
-    Coefficient d = lhs.coefficient(Variable(j));
-    // We compute a new expression `e = rhs - n', so we recall
-    // BD_Shape<T>::generalized_affine_image(Variable var,
-    //				           const Relation_Symbol relsym,
-    //				           const Linear_Expression& e,
-    //			                   const Coefficient& d).
-    Linear_Expression e = rhs - lhs.inhomogeneous_term();
-    // If `d < 0', then we use inverted relation symbol.
-    if (d < 0) {
-      d = -d;
-      if (relsym == GREATER_THAN_OR_EQUAL)
-	generalized_affine_image(Variable(j), LESS_THAN_OR_EQUAL, -e, d);
-      else if (relsym == LESS_THAN_OR_EQUAL)
-	generalized_affine_image(Variable(j), GREATER_THAN_OR_EQUAL, -e, d);
-      else
-	generalized_affine_image(Variable(j), relsym, -e, d);
-    }
-    else
-      generalized_affine_image(Variable(j), relsym, e, d);
-  }
-  else if (t1 == 1) {
-    // Case 2: rhs = var + n.
-    // We compute a new expression `e = lhs - n', so we recall
-    // BD_Shape<T>::generalized_affine_image(Variable var,
-    //				           const Relation_Symbol relsym,
-    //				           const Linear_Expression& e,
-    //			                   const Coefficient& denominator).
-   Coefficient d = rhs.coefficient(Variable(j1));
-   Linear_Expression e = lhs - rhs.inhomogeneous_term();
-   // If `d > 0', then we use inverted relation symbol.
-   if (d < 0) {
-     d = -d;
-     generalized_affine_image(Variable(j1), relsym, -e, d);
-   }
-   else {
-     if (relsym == GREATER_THAN_OR_EQUAL)
-       generalized_affine_image(Variable(j1), LESS_THAN_OR_EQUAL, e, d);
-     else if (relsym == LESS_THAN_OR_EQUAL)
-       generalized_affine_image(Variable(j1), GREATER_THAN_OR_EQUAL, e, d);
-     else
-       generalized_affine_image(Variable(j1), relsym, e, d);
-   }
-  }
-  else
+  Coefficient b = lhs.inhomogeneous_term();
+  Coefficient b1 = rhs.inhomogeneous_term();
 
-    // `lhs' and `rhs' are not acceptable if they has two or
-    // plus variables or if they are both constants.
-    throw_generic("generalized_affine_image(e1, r, e2)",
-		  "The expressions are not compatible!");
+  // lhs is a constant.
+  if (t == 0) {
+    // rhs is a constant.  
+    if (t1 == 0) {
+      if (relsym ==  LESS_THAN_OR_EQUAL) {
+	if (b > b1)
+	  set_empty();
+	return;
+      }
+      else if (relsym == EQUAL) {
+	if (b != b1)
+	  set_empty();
+	return;
+      }
+      else if (relsym == GREATER_THAN_OR_EQUAL) {
+	if (b < b1)
+	  set_empty();
+	return;
+      }
+    }
+    
+    // rhs is the form: d1*var1 + b1.
+    else if (t1 == 1) {
+      Coefficient d1 = rhs.coefficient(Variable(j1));
+      Linear_Expression e = lhs - b1;
+      
+      if (d1 < 0) {
+	d1 = -d1;
+	generalized_affine_image(Variable(j1), relsym, -e, d1);
+      }
+      else {
+	if (relsym == LESS_THAN_OR_EQUAL)
+	  generalized_affine_image(Variable(j1), 
+				   GREATER_THAN_OR_EQUAL, e, d1);
+	else if (relsym == GREATER_THAN_OR_EQUAL)
+	  generalized_affine_image(Variable(j1), 
+				   LESS_THAN_OR_EQUAL, e, d1);
+	else 
+	  generalized_affine_image(Variable(j1), relsym, e, d1);
+      }
+    }
+
+    // General case for rhs.
+    else {
+      Coefficient d1 = rhs.coefficient(Variable(j1));
+      Linear_Expression e1(d1*Variable(j1));
+      Linear_Expression e = b - rhs + e1;
+  
+      if (d1 < 0) {
+	d1 = -d1;
+	generalized_affine_image(Variable(j1), relsym, -e, d1);
+      }
+      else {
+	if (relsym == LESS_THAN_OR_EQUAL) 
+	  generalized_affine_image(Variable(j1),
+				   GREATER_THAN_OR_EQUAL, e, d1);
+	else if (relsym == GREATER_THAN_OR_EQUAL)
+	  generalized_affine_image(Variable(j1),
+				   LESS_THAN_OR_EQUAL, e, d1);
+	else
+	  generalized_affine_image(Variable(j1), relsym, e, d1);
+      }
+    }
+  }
+
+  // lhs is the form: d*var + b.
+  else if (t == 1) {
+    // rhs is a constant.
+    if (t1 == 0) {
+      Coefficient d = lhs.coefficient(Variable(j));
+      Linear_Expression e = rhs -b;
+
+      if (d < 0) {
+	d = -d;
+	if (relsym == LESS_THAN_OR_EQUAL)
+	  generalized_affine_image(Variable(j), 
+				   GREATER_THAN_OR_EQUAL, -e, d);
+	else if (relsym == GREATER_THAN_OR_EQUAL) 
+	  generalized_affine_image(Variable(j), 
+				   LESS_THAN_OR_EQUAL, -e, d);
+	else 
+	  generalized_affine_image(Variable(j), relsym, -e, d);
+      }
+      else     
+	generalized_affine_image(Variable(j), relsym, e, d);
+    }
+
+    // rhs is the form: d1*var1 + b1.
+    else if (t1 == 1) {
+      Coefficient d = lhs.coefficient(Variable(j));
+      Linear_Expression e = rhs - b;
+
+      if (d < 0) {
+	d = -d;
+	if (relsym == LESS_THAN_OR_EQUAL)
+	  generalized_affine_image(Variable(j), 
+				   GREATER_THAN_OR_EQUAL, -e, d);
+	else if (relsym == GREATER_THAN_OR_EQUAL) 
+	  generalized_affine_image(Variable(j), 
+				   LESS_THAN_OR_EQUAL, -e, d);
+	else 
+	  generalized_affine_image(Variable(j), relsym, -e, d);
+      }
+      else     
+	generalized_affine_image(Variable(j), relsym, e, d);
+
+    }
+
+    // The general case for rhs.
+    else {
+      Coefficient d = lhs.coefficient(Variable(j));
+      Linear_Expression e = rhs - b;
+
+      if (d < 0) {
+	d = -d;
+	if (relsym == LESS_THAN_OR_EQUAL)
+	  generalized_affine_image(Variable(j), 
+				   GREATER_THAN_OR_EQUAL, -e, d);
+	else if (relsym == GREATER_THAN_OR_EQUAL) 
+	  generalized_affine_image(Variable(j), 
+				   LESS_THAN_OR_EQUAL, -e, d);
+	else 
+	  generalized_affine_image(Variable(j), relsym, -e, d);
+      }
+      else     
+	generalized_affine_image(Variable(j), relsym, e, d);
+    }
+  }
+
+  // The general case for lhs.
+  else {
+
+    // rhs is a constant.
+    if (t1 == 0) {
+      Coefficient d = lhs.coefficient(Variable(j));
+      Linear_Expression e1(d*Variable(j));
+      Linear_Expression e = b1 - lhs + e1;
+
+      if (d < 0) {
+	d = -d;
+	if (relsym == LESS_THAN_OR_EQUAL)
+	  generalized_affine_image(Variable(j), 
+				   GREATER_THAN_OR_EQUAL, -e, d);
+	else if (relsym == GREATER_THAN_OR_EQUAL) 
+	  generalized_affine_image(Variable(j), 
+				   LESS_THAN_OR_EQUAL, -e, d);
+	else 
+	  generalized_affine_image(Variable(j), relsym, -e, d);
+      }
+      else     
+	generalized_affine_image(Variable(j), relsym, e, d);
+    }
+
+    // rhs is the form: d1*var1 + b1.
+    else if (t1 == 1) {
+      Coefficient d1 = rhs.coefficient(Variable(j1));
+      Linear_Expression e = lhs - b1;
+
+      if (d1 < 0) {
+	d1 = -d1;
+	generalized_affine_image(Variable(j1), relsym, -e, d1);
+      }
+      else {
+	if (relsym == LESS_THAN_OR_EQUAL) 
+	  generalized_affine_image(Variable(j1), 
+				   GREATER_THAN_OR_EQUAL, e, d1);
+	else if (relsym == GREATER_THAN_OR_EQUAL)
+	  generalized_affine_image(Variable(j1), 
+				   LESS_THAN_OR_EQUAL, e, d1);
+	else
+	  generalized_affine_image(Variable(j1), relsym, e, d1);
+      }
+    }
+
+    // The general case for rhs.
+    else {
+      Coefficient d = lhs.coefficient(Variable(j));
+      Linear_Expression e1(d*Variable(j));
+      Linear_Expression e = rhs - lhs + e1;
+
+      if (d < 0) {
+	d = -d;
+	if (relsym == LESS_THAN_OR_EQUAL)
+	  generalized_affine_image(Variable(j), 
+				   GREATER_THAN_OR_EQUAL, -e, d);
+	else if (relsym == GREATER_THAN_OR_EQUAL)
+	  generalized_affine_image(Variable(j), 
+				   LESS_THAN_OR_EQUAL, -e, d);
+	else
+	  generalized_affine_image(Variable(j), relsym, -e, d); 
+      }
+      else 
+	generalized_affine_image(Variable(j), relsym, e, d);
+    }
+  }
 
   assert(OK());
 }
