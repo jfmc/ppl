@@ -18,16 +18,16 @@ Qs: a stack of copies of polyhdron to enable backtracking.
     no more solutions are required. 
 */
 
-solve(Goal,[Polyhedron,Q|Qs]):-
+solve(Goal,[Polyhedron|Qs]):-
     numvars(Goal,0,Dims),
          % Polyhedron: the main polyhedron is initialised with 
          % dimensions = Dims, the number of variables in Goal.
     ppl_new_polyhedron(Polyhedron, Dims), 
          % A copy of Polyhedron is required by solve/7.
-    ppl_copy_polyhedron(Polyhedron,Q),
-    solve(Goal,Polyhedron,Dims,Q,Qs).
+    solve(Goal,Polyhedron,Dims,Qs).
   
-solve(Goal,Polyhedron,Dims,Q,Qs):-
+solve(Goal,Polyhedron,Dims,Qs):-
+    ppl_copy_polyhedron(Polyhedron,Q),
     solve(Goal,Polyhedron,Dims,_,Q,[],Qs),
     output_constraints(Polyhedron,Dims).
 solve(_,Polyhedron,_,_,_):-
@@ -65,8 +65,9 @@ Qs2:        The resulting list of temporary polyhedra.
 */
 
 %%% The base case.
-solve(true,_Polyhedron,Dims,Dims,_,Qs,Qs):-
-    !.
+solve(true,_Polyhedron,Dims,Dims,Q,Qs,Qs):-
+    !,
+    ppl_delete_polyhedron(Q).
 
 %%% The case when the query is equality.
 %%% A and B must both be linear rational expressions.
@@ -87,17 +88,17 @@ solve({Cs},Polyhedron,InDims,InDims,Q,Qs,Qs):-
          % Solve the constraints using the constraint solver.
     solve_constraints(Cs,Polyhedron),
          % If the Polyhedron is empty, then we fail. 
+     ppl_delete_polyhedron(Q),
     (
      ppl_check_empty(Polyhedron)
     ->
-     ppl_delete_polyhedron(Q),
      fail
     ;
      true
     ).
 
 %%% The case when the query is a conjunction.
-solve((A,B),Polyhedron,InDims,OutDims,Q,InQs,[QB|Qs]):-
+solve((A,B),Polyhedron,InDims,OutDims,Q,InQs,Qs):-
          % On backtracking, the original state must be restored.
     ppl_remove_higher_dimensions(Polyhedron,InDims),
     ppl_convex_hull_assign(Polyhedron,Q),
@@ -107,7 +108,7 @@ solve((A,B),Polyhedron,InDims,OutDims,Q,InQs,[QB|Qs]):-
     solve(B,Polyhedron,AOutDims,OutDims,QB,QAs,Qs).
 
 %%% The remaining case when it is a user-defined atomic goal.
-solve(Atom,Polyhedron,InDims,OutDims,Q,InQs,[Q1|Q1s]):-
+solve(Atom,Polyhedron,InDims,OutDims,Q,InQs,Q1s):-
     user_clause(Atom, Body),
          % New variables are frozen for using with the PPL.
     numvars(Body,InDims,BOutDims),
@@ -121,7 +122,7 @@ solve(Atom,Polyhedron,InDims,OutDims,Q,InQs,[Q1|Q1s]):-
          % A copy of Polyhedron is needed for the call to solve.
     ppl_copy_polyhedron(Polyhedron,Q1), 
          % Now we can solve the body.
-    solve(Body,Polyhedron,BOutDims,OutDims,Q1,InQs,Q1s).
+    solve(Body,Polyhedron,BOutDims,OutDims,Q1,[Q|InQs],Q1s).
 
 solve(Atom,_Polyhedron,_InDims,_OutDims,Q,_InQs,_):-
      Atom \= (_,_),
@@ -138,16 +139,6 @@ solve_constraints((C,D),Polyhedron):-
     solve_constraints(D,Polyhedron).
 solve_constraints(C,Polyhedron):- 
     ppl_insert_constraint(Polyhedron,C).
-
-/*
-Displays the constraints.
-Useful for debugging and also used at the moment for the output.
-*/
-check_constraints(Polyhedron) :-
-    ppl_space_dimension(Polyhedron, D),
-    write(D), write(' * '),
-    ppl_get_constraints(Polyhedron, CS),
-    write(CS), nl.
 
 numvars(A,InN,OutN):-
     var(A),
