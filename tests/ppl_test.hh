@@ -156,21 +156,6 @@ numer_denom(const Checked_Number<T, Policy>& from,
 typedef BD_Shape<Checked_Number<int, Extended_Number_Policy> > TBD_Shape;
 #endif
 
-//! Compare \p dump and \p expected.
-/*
-  If NOISY is true then print both parameters to cout.
-*/
-inline bool
-check_dump(const stringstream& dump, const string& expected) {
-  using namespace Parma_Polyhedra_Library::IO_Operators;
-  if (dump.str().compare(expected)) {
-    nout << "ASCII dump:\n" << dump.str()
-	 << "  expected:\n" << expected;
-    return false;
-  }
-  return true;
-}
-
 //! Look for variation in \p a.
 /*!
   Return <CODE>true</CODE> if \p a contains variations from
@@ -195,7 +180,10 @@ find_variation_template(T& a) {
     return true;
   }
 
-  T b;
+  /* FIX In some PPL classes (e.g. Congruence) the simple constructors
+     are private. */
+  //T b;
+  T b(a);
   stringstream dump;
   a.ascii_dump(dump);
   b.ascii_load(dump);
