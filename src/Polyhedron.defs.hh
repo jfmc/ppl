@@ -1154,10 +1154,11 @@ public:
       all the invariants and either \p check_not_empty is
       <CODE>false</CODE> or \p *this is not empty.
 
-    The check is performed so as to intrude as little as possible.
-    In case invariants are violated error messages are written on
-    <CODE>std::cerr</CODE>. This is useful for the purpose of debugging
-    the library.
+    The check is performed so as to intrude as little as possible.  If
+    the library has been compiled with run-time assertions enabled,
+    error messages are written on <CODE>std::cerr</CODE> in case
+    invariants are violated. This is useful for the purpose of
+    debugging the library.
   */
   bool OK(bool check_not_empty = false) const;
 
