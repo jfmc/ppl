@@ -271,6 +271,8 @@ public:
 
   reverse_iterator rend();
   const_reverse_iterator rend() const;
+
+  void pop_back();
 };
 
 #include "PowerSet.inlines.hh"
