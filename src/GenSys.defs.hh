@@ -56,9 +56,9 @@ namespace Parma_Polyhedra_Library {
     i.e. a container of objects of the class Generator
     (lines, rays and vertices).
 
-    \par Example
+    \par Example 1
     The following code builds a square in \f$\mathbb{R}^2\f$ 
-    (the same of the example for the system of constraints):
+    (the same of the first example for the system of constraints):
     \code
     Variable x(0);
     Variable y(1);
@@ -67,6 +67,18 @@ namespace Parma_Polyhedra_Library {
     gs.insert(0 * x + 3 * y \= 1);
     gs.insert(3 * x + 0 * y \= 1);
     gs.insert(3 * x + 3 * y \= 1);
+    \endcode
+
+    \par Example 2
+    The following code builds an half-strip in \f$\mathbb{R}^2\f$:
+    (the same of the second example for the system of constraints): 
+    \code 
+    Variable x(0);
+    Variable y(1);
+    GenSys gs;
+    gs.insert(0 * x + 0 * y \= 1);
+    gs.insert(0 * x + y \= 1);
+    gs.insert(1 ^ x - y);
     \endcode
 */
 class Parma_Polyhedra_Library::GenSys : public Matrix {
