@@ -447,7 +447,7 @@ ppl_assign_ConSys_from_ConSys __P((ppl_ConSys_t dst,
 				   ppl_const_ConSys_t src));
 
 /*!
-  Returns the dimension of the vector space enclosing \p *this.
+  Returns the dimension of the vector space enclosing \p cs.
 */
 int
 ppl_ConSys_space_dimension __P((ppl_const_ConSys_t cs));
@@ -460,7 +460,7 @@ int
 ppl_ConSys_clear __P((ppl_ConSys_t cs));
 
 /*!
-  Inserts a copy of the constraint \p c into \p *this; the space
+  Inserts a copy of the constraint \p c into \p cs; the space
   dimension is increased, if necessary.
 */
 int
@@ -695,7 +695,7 @@ ppl_assign_GenSys_from_GenSys __P((ppl_GenSys_t dst,
 				   ppl_const_GenSys_t src));
 
 /*!
-  Returns the dimension of the vector space enclosing \p *this.
+  Returns the dimension of the vector space enclosing \p gs.
 */
 int
 ppl_GenSys_space_dimension __P((ppl_const_GenSys_t gs));
@@ -708,7 +708,7 @@ int
 ppl_GenSys_clear __P((ppl_GenSys_t gs));
 
 /*!
-  Inserts a copy of the generator \p g into \p *this; the space
+  Inserts a copy of the generator \p g into \p gs; the space
   dimension is increased, if necessary.
 */
 int
@@ -1448,7 +1448,7 @@ ppl_Polyhedron_affine_preimage __P((ppl_Polyhedron_t ph,
 				    ppl_const_Coefficient_t d));
 
 /*!
-  Assigns to \p *this the image of \p *this with respect to the
+  Assigns to \p ph the image of \p ph with respect to the
   \ref generalized_image "generalized affine transfer function"
   \f$\mathrm{var}' \relop \frac{\mathrm{expr}}{\mathrm{denominator}}\f$,
   where \f$\mathord{\relop}\f$ is the relation operator encoded
@@ -1469,7 +1469,7 @@ __P((ppl_Polyhedron_t ph,
      ppl_const_Coefficient_t d));
 
 /*!
-  Assigns to \p *this the image of \p *this with respect to the
+  Assigns to \p ph the image of \p ph with respect to the
   \ref generalized_image "generalized affine transfer function"
   \f$\mathrm{lhs}' \relop \mathrm{rhs}\f$, where
   \f$\mathord{\relop}\f$ is the relation operator encoded by \p relop.
