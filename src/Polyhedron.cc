@@ -1540,17 +1540,25 @@ PPL::Polyhedron::assign_variable(const Variable& var,
     throw std::invalid_argument("void PPL::Polyhedron::assign_variable"
 				"(v, e, d): d == 0");
   Polyhedron& x = *this;
-  size_t num_columns = x.space_dimension() + 1;
+  size_t x_space_dim = x.space_dimension();
   size_t num_var = var.id() + 1;
-  if (num_columns != expr.size())
-    throw std::invalid_argument("PPL::Polyhedron::assign_variable"
-				"(v, e, d): dim(e) != dim(*this)");
+  size_t expr_space_dim = expr.space_dimension();
+  if (x_space_dim < expr_space_dim)
+    throw std::invalid_argument("PPL::Polyhedron::assign_variable(v, e, d): "
+				"*this and e dimension-incompatible");
 
   // Index of var must be in the range of the variables of generators.
-  if (!(num_var < num_columns))
+  if (!(num_var < x_space_dim + 1))
     throw std::invalid_argument("PPL::Polyhedron::assign_variable(v, e, d): "
 				"*this and v dimension-incompatible");
-
+  if (x.is_empty()) {
+    return;
+  }
+  
+  if (x_space_dim > expr_space_dim) {
+    LinExpression copy(expr, x_space_dim + 1);
+    const_cast<LinExpression&>(expr).swap(copy);
+  }
   if (expr[num_var] != 0) {
     // The transformation is invertible.
     if (generators_are_up_to_date())
@@ -1568,11 +1576,13 @@ PPL::Polyhedron::assign_variable(const Variable& var,
   }
   // The transformation is not invertible.
   else {
-    if (!generators_are_up_to_date())
-      x.minimize();
-    x.gen_sys.assign_variable(num_var, expr, denominator);
-    x.clear_constraints_up_to_date();
-    x.clear_generators_minimized();
+    if (!generators_are_up_to_date()) {
+      if (!check_empty()) {
+	x.gen_sys.assign_variable(num_var, expr, denominator);
+	x.clear_constraints_up_to_date();
+	x.clear_generators_minimized();
+      }
+    }
   }
 }
 
@@ -1644,17 +1654,25 @@ PPL::Polyhedron::substitute_variable(const Variable& var,
 				"(v, e, d): d == 0");
 
   Polyhedron& x = *this;
-  size_t num_columns = x.space_dimension() + 1;
+  size_t x_space_dim = x.space_dimension();
   size_t num_var = var.id() + 1;
-  if (num_columns != expr.size())
-    throw std::invalid_argument("PPL::Polyhedron::substitute_variable"
-				"(v, e, d): dim(e) != dim(*this)");
+  size_t expr_space_dim = expr.space_dimension();
+  if (x_space_dim < expr_space_dim)
+    throw std::invalid_argument("PPL::Polyhedron::substitute_variable(v, e, "
+				"d): *this and e dimensional-incompatible");
 
   // Index of var must be in the range of the variables of generators.
-  if (!(num_var < num_columns))
+  if (!(num_var < x_space_dim + 1))
     throw std::invalid_argument("PPL::Polyhedron::substitute_variable"
 				"(v, e, d): v is not in *this");
-
+  
+  if (x.is_empty())
+    return;
+  
+  if (x_space_dim > expr_space_dim) {
+    LinExpression copy(expr, x_space_dim + 1);
+    const_cast<LinExpression&>(expr).swap(copy);
+  }
   // The transformation is invertible.
   if (expr[num_var] != 0) {
     if (constraints_are_up_to_date())
@@ -1694,7 +1712,7 @@ PPL::Polyhedron::satisfies(const Constraint& c) {
     if (space_dimension() == 0)
       throw_different_dimensions("PPL::Polyhedron::satisfies(c)",
 				 *this, c);
-
+    
     if (!generators_are_up_to_date())
       update_generators();
     if (gen_sys.num_columns() != c.size())

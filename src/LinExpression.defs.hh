@@ -104,6 +104,9 @@ public:
   //! to the variable \p v.
   LinExpression(const Variable& v);
 
+  //! Copy-constructor with a specified dimension.
+  LinExpression(const LinExpression& e, size_t size);
+
   //! Returns the dimension of the space of \p *this.
   size_t space_dimension() const;
 
@@ -115,9 +118,6 @@ private:
   //! The bool parameter is just to avoid problems with
   //! the constructor LinExpression(const Integer& n).
   LinExpression(size_t size, bool);
-
-  //! Copy-constructor with a specified dimension.
-  LinExpression(const LinExpression& e, size_t size);
 
   friend class Constraint;
   friend class Generator;
