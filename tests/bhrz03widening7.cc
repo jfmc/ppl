@@ -62,7 +62,8 @@ main() {
   ph1.BHRZ03_widening_assign(ph2);
 
   NNC_Polyhedron known_result(3);
-  known_result.add_constraint(4*A + 6*B - 5*C > 0);
+  known_result.add_constraint(A > 0);
+  known_result.add_constraint(B >= 0);
   known_result.add_constraint(C >= 0);
 
   int retval = (ph1 == known_result) ? 0 : 1;

@@ -31,11 +31,12 @@ using namespace Parma_Polyhedra_Library::IO_Operators;
 #define NOISY 0
 #endif
 
+static Variable A(0);
+static Variable B(1);
+static Variable C(2);
+
 static GenSys
 g_0() {
-  Variable A(0);
-  Variable B(1);
-  Variable C(2);
   GenSys new_gs;
   new_gs.insert(ray(A + C));
   new_gs.insert(ray(-B + C));
@@ -54,7 +55,6 @@ splitting_facet(const Generator& r1,
   // NOTE: I am not *sure* this dirty kludge of using such
   // a magic number will always succeed.
   expr *= magic_number + 1;
-  Variable C(2);
   expr -= C;
   return ray(expr);
 } 
@@ -153,6 +153,7 @@ main() {
 #endif
     if (q_i == q_i_minus_1) {
       C_Polyhedron known_result(3, C_Polyhedron::UNIVERSE);
+      known_result.add_constraint(-B + C >= 0);
 
       int retval = (q_i == known_result) ? 0 : 1;
 
