@@ -271,7 +271,7 @@ AC_PROG_INSTALL
 AC_PROG_RANLIB
 
 dnl Checks for header files.
-# Nothing for the time being.
+AC_CHECK_HEADERS(gprolog.h SWI-Prolog.h sicstus/sicstus.h)
 
 dnl Checks for typedefs, structures, and compiler characteristics.
 # Nothing for the time being.
@@ -285,6 +285,7 @@ AC_SUBST(gmp_library_option)
 AC_SUBST(debug_flag)
 
 AC_OUTPUT(Makefile
+          ppl.lsm ppl.spec
           src/Makefile
           src/Integer/Makefile
           tests/Makefile
@@ -293,4 +294,15 @@ AC_OUTPUT(Makefile
           doc/user-browse.doxyconf-latex doc/devref-browse.doxyconf-latex
           doc/user-print.doxyconf-latex  doc/devref-print.doxyconf-latex
           doc/user.doxyconf-html         doc/devref.doxyconf-html
-          ppl.lsm ppl.spec)
+          interfaces/Makefile
+          interfaces/Prolog/Makefile
+          interfaces/Prolog/SICStus/Makefile)
+
+if test x"$gmp_supports_exceptions" = xno
+then
+  AC_MSG_WARN([*** CANNOT PROPAGATE EXCEPTIONS BACK FROM GMP:])
+  AC_MSG_WARN([*** MEMORY EXHAUSTION MAY RESULT IN ABRUPT TERMINATION.])
+  AC_MSG_WARN([*** If you are using g++, make sure you use version 3.0.1])
+  AC_MSG_WARN([*** or later and use a version of GMP compiled with])
+  AC_MSG_WARN([*** the option -fexceptions.])
+fi

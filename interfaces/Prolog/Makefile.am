@@ -8,13 +8,9 @@
 # WITHOUT ANY WARRANTY, to the extent permitted by law; without even the
 # implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
 
-AUTOMAKE_OPTIONS = foreign dist-bzip2 dist-zip 1.5
-
 srcdir = @srcdir@
 VPATH = @srcdir@
 
-EXTRA_DIST = configure ppl.lsm.in ppl.spec.in acinclude.m4 BUGS CREDITS
-
 @SET_MAKE@
 
-SUBDIRS = src tests interfaces m4 doc
+SUBDIRS = SICStus
