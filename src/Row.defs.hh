@@ -147,10 +147,6 @@ public:
   //! Linearly combines \p *this with \p y such that \p *this[k] is 0.
   void linear_combine(const Row& y, size_t k);
 
-  //! Computes the scalar product between \p x and \p y if the 
-  //! size of \p x is less then the size of \p y.
-  Integer projected_scalar_prod(const Row& x, const Row& y);
-
   //! @name Serialization functions.
   friend std::ostream&
   Parma_Polyhedra_Library::operator <<(std::ostream& s, const Row& row);
@@ -170,10 +166,16 @@ namespace Parma_Polyhedra_Library {
   Integer operator *(const Row& x, const Row& y);
 
 #ifdef PPL_DOXYGEN_INCLUDE_IMPLEMENTATION_DETAILS
+  //! Computes the scalar product between \p x and \p y if the 
+  //! size of \p x is less then the size of \p y.
+#endif // PPL_DOXYGEN_INCLUDE_IMPLEMENTATION_DETAILS
+  Integer projected_scalar_prod(const Row& x, const Row& y);
+
+#ifdef PPL_DOXYGEN_INCLUDE_IMPLEMENTATION_DETAILS
   //! The basic comparison function.
 #endif // PPL_DOXYGEN_INCLUDE_IMPLEMENTATION_DETAILS
   int compare(const Row& x, const Row& y);
-
+  
   //! @name Classical comparison operators.
   //@{
   bool operator ==(const Row& x, const Row& y);

@@ -1706,20 +1706,23 @@ PPL::Polyhedron::substitute_variable(const Variable& var,
 */
 PPL::GenSys_Con_Rel
 PPL::Polyhedron::satisfies(const Constraint& c) {
+  if (space_dimension() < c.space_dimension())
+    throw_different_dimensions("PPL::Polyhedron::satisfies(c)",
+			       *this, c);
   if (is_empty())
     return ALL_SATURATE;
-  else {
-    if (space_dimension() == 0)
-      throw_different_dimensions("PPL::Polyhedron::satisfies(c)",
-				 *this, c);
-    
-    if (!generators_are_up_to_date())
-      update_generators();
-    if (gen_sys.num_columns() != c.size())
-      throw_different_dimensions("PPL::Polyhedron::satisfies(c)",
-				 *this, c);
-    return gen_sys.satisfy(c);
-  }
+
+  if (space_dimension() == 0)
+    return SOME_SATISFY;
+  
+  if (!generators_are_up_to_date())
+    if (update_generators())
+      return gen_sys.satisfy(c);
+    else
+      return ALL_SATURATE;
+
+  // Just to avoid a gcc warning.
+  abort();   
 }
 
 /*!

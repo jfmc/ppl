@@ -210,7 +210,7 @@ PPL::operator *(const Row& x, const Row& y) {
 }
 
 PPL::Integer
-PPL::Row::projected_scalar_prod(const Row& x, const Row& y) {
+PPL::projected_scalar_prod(const Row& x, const Row& y) {
   // The dimension of `x' must be less then the dimension of `y'.
   assert(x.size() < y.size());
   Integer result = 0;

@@ -86,17 +86,24 @@ PPL::GenSys::num_rays() const {
 */
 PPL::GenSys_Con_Rel
 PPL::GenSys::satisfy(const Constraint& c) const {
+  size_t space_dim = space_dimension();
+  size_t c_space_dim = c.space_dimension();
   // Generators and constraint `c' have to be given in
   // spaces having the same dimension.
-  assert(num_columns() == c.size());
+  assert(space_dim >= c_space_dim);
   const  GenSys& gen_sys = *this;
   // Number of generators.
   size_t n_rows = num_rows();
   if (c.is_equality()) {
     for (size_t i = n_rows; i-- > 0;)
-      if (gen_sys[i] * c != 0)
-	// There is at least one generator that does not satisfy `c'.
-	return SOME_SATISFY;
+      if (c_space_dim < space_dim) {
+	if (projected_scalar_prod(c, gen_sys[i]) != 0)
+	  return SOME_SATISFY;
+      }
+      else
+	if (gen_sys[i] * c != 0)
+	  // There is at least one generator that does not satisfy `c'.
+	  return SOME_SATISFY;
     // All generators satisfy `c' i.e., saturate it because
     // `c' is an equality.
     return ALL_SATURATE;
@@ -108,9 +115,13 @@ PPL::GenSys::satisfy(const Constraint& c) const {
     // last row of the matrix).
     bool first_ray_or_vertex = true;
     GenSys_Con_Rel res = ALL_SATURATE;
-    for (size_t i = n_rows; i-- > 0;) {
+    for (size_t i = n_rows; i-- > 0; ) {
       const Generator& r = gen_sys[i];
-      int sp_sign = sgn(r * c);
+      int sp_sign;
+      if (c_space_dim < space_dim)
+	sp_sign = sgn(projected_scalar_prod(c, r));
+      else
+        sp_sign = sgn(r * c);
       if (r.is_line()) {
 	if (sp_sign != 0)
 	  // Lines must saturate every constraints.
