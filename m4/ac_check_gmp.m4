@@ -23,6 +23,16 @@ dnl site: http://www.cs.unipr.it/ppl/ .
 dnl
 AC_DEFUN([AC_CHECK_GMP],
 [
+dnl Since libgmp and libgmpxx are usually installed in the same location,
+dnl let the prefixes default from each other.
+if test -n "$with_libgmpxx_prefix" && test -z "$with_libgmp_prefix"; then
+  with_libgmp_prefix="$with_libgmpxx_prefix"
+else
+  if test -n "$with_libgmp_prefix" && test -z "$with_libgmpxx_prefix"; then
+    with_libgmpxx_prefix="$with_libgmp_prefix"
+  fi
+fi
+
 dnl Check how to link with libgmp.
 AC_LIB_LINKFLAGS([gmp])
 
