@@ -1,3 +1,16 @@
+Enhancements for PPL 0.6
+========================
+
+- Implement the extrapolation operators defined in HenzingerH95
+  and HenzingerPW01.
+- Complete the Determinate and PowerSet classes so as to provide
+  complete support for sets of polyhedra.
+- See whether, using the techniques described in 
+  ftp://ftp.ifor.math.ethz.ch/pub/fukuda/reports/polyunion001120.ps.gz
+  we can implement bool poly_hull_assign_if_exact(PH& p, const PH& q),
+  tomporarily in algorithms.hh, more efficiently.
+
+
 Constructions on Polyhedra
 ==========================
 
