@@ -2123,18 +2123,6 @@ private:
                              SatMatrix& sat2,
 			     dimension_type add_dim);
 
-  //! \brief
-  //! Returns <CODE>true</CODE> if the given polyhedra satisfy
-  //! the theorem of BHRZ03.
-  /*!
-    \param x
-    The greater polyhedron;
-
-    \param y
-    The smaller polyhedron.
-  */
-  static bool is_BHRZ03_stabilizing(const Polyhedron& x, const Polyhedron& y);
-
   //! \name Minimization-Related Static Member Functions
   //@{
 
