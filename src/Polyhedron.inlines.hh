@@ -259,8 +259,14 @@ Polyhedron::space_dimension() const {
 
 inline bool
 Polyhedron::check_empty() const {
-  minimize();
-  return is_empty();
+  if (is_empty())
+    return true;
+  // Try a fast-fail test: if generators are up-to-date and
+  // there are no pending constraints, then the generator system
+  // (since it is well formed) contains a point.
+  if (generators_are_up_to_date() && !has_pending_constraints())
+    return false;
+  return !minimize();
 }
 
 inline bool
