@@ -110,7 +110,7 @@ PPL::BHRZ03_Certificate::compare(const BHRZ03_Certificate& y) const {
   if (affine_dim != y.affine_dim)
     return affine_dim > y.affine_dim ? 1 : -1;
   if (lin_space_dim != y.lin_space_dim)
-    return lin_space_dim > y.lin_space_dim ? 1 : -1; 
+    return lin_space_dim > y.lin_space_dim ? 1 : -1;
   if (num_constraints != y.num_constraints)
     return num_constraints > y.num_constraints ? 1 : -1;
   if (num_points != y.num_points)
@@ -205,7 +205,7 @@ PPL::BHRZ03_Certificate::compare(const Polyhedron& ph) const {
   // process will solve this problem.
   if (!ph.is_necessarily_closed())
     ph.minimize();
-  
+
   // If the dimension of the lineality space is increasing,
   // then the chain is stabilizing.
   if (ph_lin_space_dim > lin_space_dim)

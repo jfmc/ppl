@@ -126,22 +126,17 @@ public:
   //! a positive integer if \p *this is equal to \f$+\infty\f$.
   int direction_of_infinity() const;
 
-#if 0
-  //! Returns the numerator of the canonical form for \p *this.
+  //! Assigns to \p n the numerator of the canonical form for \p *this.
   /*!
     The result is undefined if \p *this represents an infinity.
   */
-  Coefficient_traits::const_reference numerator() const;
+  void numerator(Coefficient& n) const;
 
-  //! Returns the denominator of the canonical form for \p *this.
+  //! Assigns to \p n the denominator of the canonical form for \p *this.
   /*!
     The result is undefined if \p *this represent an infinity.
   */
-  Coefficient_traits::const_reference denominator() const;
-#else
-  void numerator(Coefficient& n) const;
   void denominator(Coefficient& d) const;
-#endif
 
   friend bool
   Parma_Polyhedra_Library::operator==(const ERational& x, const ERational& y);
@@ -189,7 +184,7 @@ bool operator>(const Boundary& x, const Boundary& y);
 //! An extended rational bound of an interval.
 /*!
   An object of class Boundary represents either an upper or a lower
-  bound of an interval over the set of extended rational numbers. 
+  bound of an interval over the set of extended rational numbers.
 */
 #endif // PPL_DOXYGEN_INCLUDE_IMPLEMENTATION_DETAILS
 class Parma_Polyhedra_Library::Boundary {
@@ -209,7 +204,7 @@ protected:
   //! The kind of the bound.
   Flag flag;
 
-  //! Builds a bound of kind \p f and having value \p v.   
+  //! Builds a bound of kind \p f and having value \p v.
   Boundary(const ERational& v, Flag f);
 
   friend bool
@@ -259,7 +254,7 @@ public:
     CLOSED = Boundary::ZERO
   };
 
-  //! Builds an upper bound of kind \p f and having value \p v.   
+  //! Builds an upper bound of kind \p f and having value \p v.
   UBoundary(const ERational& v, OpenClosed f);
 
   //! Checks if all the invariants are satisfied.

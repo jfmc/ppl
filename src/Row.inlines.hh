@@ -371,7 +371,7 @@ Row::total_memory_in_bytes() const {
   return sizeof(*this) + external_memory_in_bytes();
 }
 
-/*! \relates Row */ 
+/*! \relates Row */
 inline bool
 operator!=(const Row& x, const Row& y) {
   return !(x == y);

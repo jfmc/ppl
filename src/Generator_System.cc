@@ -235,7 +235,8 @@ PPL::Generator_System::has_closure_points() const {
   if (is_necessarily_closed())
     return false;
   // Adopt the point of view of the user.
-  for (Generator_System::const_iterator i = begin(), iend = end(); i != iend; ++i)
+  for (Generator_System::const_iterator i = begin(),
+	 iend = end(); i != iend; ++i)
     if (i->is_closure_point())
       return true;
   return false;

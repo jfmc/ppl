@@ -46,7 +46,8 @@ std::ostream& operator<<(std::ostream& s, const Constraint& c);
 
 //! Returns the constraint \p e1 = \p e2.
 /*! \relates Constraint */
-Constraint operator==(const Linear_Expression& e1, const Linear_Expression& e2);
+Constraint
+operator==(const Linear_Expression& e1, const Linear_Expression& e2);
 //! Returns the constraint \p e = \p n.
 /*! \relates Constraint */
 Constraint
@@ -58,7 +59,8 @@ operator==(Coefficient_traits::const_reference n, const Linear_Expression& e);
 
 //! Returns the constraint \p e1 \<= \p e2.
 /*! \relates Constraint */
-Constraint operator<=(const Linear_Expression& e1, const Linear_Expression& e2);
+Constraint
+operator<=(const Linear_Expression& e1, const Linear_Expression& e2);
 //! Returns the constraint \p e \<= \p n.
 /*! \relates Constraint */
 Constraint
@@ -83,7 +85,8 @@ operator>=(Coefficient_traits::const_reference n, const Linear_Expression& e);
 
 //! Returns the constraint \p e1 \< \p e2.
 /*! \relates Constraint */
-Constraint operator<(const Linear_Expression& e1, const Linear_Expression& e2);
+Constraint
+operator<(const Linear_Expression& e1, const Linear_Expression& e2);
 //! Returns the constraint \p e \< \p n.
 /*! \relates Constraint */
 Constraint
@@ -95,7 +98,8 @@ operator<(Coefficient_traits::const_reference n, const Linear_Expression& e);
 
 //! Returns the constraint \p e1 \> \p e2.
 /*! \relates Constraint */
-Constraint operator>(const Linear_Expression& e1, const Linear_Expression& e2);
+Constraint
+operator>(const Linear_Expression& e1, const Linear_Expression& e2);
 //! Returns the constraint \p e \> \p n.
 /*! \relates Constraint */
 Constraint
@@ -302,8 +306,9 @@ private:
   // Generator_System::satisfied_by_all_generators().
   friend class Parma_Polyhedra_Library::Generator_System;
 
-  friend
-  Parma_Polyhedra_Library::Linear_Expression::Linear_Expression(const Constraint& c);
+  friend Parma_Polyhedra_Library::
+  Linear_Expression::Linear_Expression(const Constraint& c);
+
   friend void std::swap(Parma_Polyhedra_Library::Constraint& x,
 			Parma_Polyhedra_Library::Constraint& y);
 

@@ -792,7 +792,7 @@ read_polyhedron(std::istream& in, POLYHEDRON_TYPE& ph) {
 	// PolyLib stores the constraint kind at index 0 (1 = inequality).
 	value_set_si(mat->p[row][0], 1);
 #endif
-      } 
+      }
     }
 
     if (verbose) {
@@ -1206,7 +1206,7 @@ main(int argc, char* argv[]) try {
 	for (PPL::Constraint_System::const_iterator i = ph_cs.begin(),
 	       ph_cs_end = ph_cs.end(); i != ph_cs_end; ++i)
 	  ++ph_num_constraints;
-      
+
 	// Count the number of constraints of `e_ph'.
 	unsigned e_ph_num_constraints = 0;
 	const PPL::Constraint_System& e_ph_cs = e_ph.constraints();

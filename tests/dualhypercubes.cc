@@ -142,7 +142,7 @@ build_polyhedra(const dimension_type dims,
     if (axis % 2 == 0)
       weight_center += 10*Variable(axis);
     else
-      weight_center += 2*Variable(axis);      
+      weight_center += 2*Variable(axis);
   ph.push_back(NNC_dual_hypercube(dims, weight_center, 5, perc));
 
   // 4th-polyhedron.
@@ -173,7 +173,7 @@ computation(vector<NNC_Polyhedron>& ph, bool enhanced) {
 #if VERY_NOISY
   // Print dimensions of arguments
   // (being careful to override library laziness).
-  cout << "Computing intersection of ph[0] and ph[1]:" << endl; 
+  cout << "Computing intersection of ph[0] and ph[1]:" << endl;
   cout << "===  ph[0] generators ===" << endl;
   ph[0].generators().ascii_dump(cout);
   cout << "===  ph[1] generators ===" << endl;
@@ -200,7 +200,7 @@ computation(vector<NNC_Polyhedron>& ph, bool enhanced) {
 #if VERY_NOISY
   // Print dimensions of arguments
   // (being careful to override library laziness).
-  cout << "Computing intersection of ph[2] and ph[3]:" << endl; 
+  cout << "Computing intersection of ph[2] and ph[3]:" << endl;
   cout << "===  ph[2] generators ===" << endl;
   ph[2].generators().ascii_dump(cout);
   cout << "===  ph[3] generators ===" << endl;
@@ -225,7 +225,7 @@ computation(vector<NNC_Polyhedron>& ph, bool enhanced) {
 
   // Compute the poly-hull of ph[0] and ph[2].
 #if VERY_NOISY
-  cout << "Computing poly-hull of ph[0] and ph[2]:" << endl; 
+  cout << "Computing poly-hull of ph[0] and ph[2]:" << endl;
 #endif
   if (enhanced) {
     ph[0].minimized_generators();

@@ -83,7 +83,7 @@ test3() {
   box.lower_upper_bound(1, true, 12, 3);
 
   C_Polyhedron ph(box, From_Bounding_Box());
-  
+
   Variable x(0);
   Variable y(1);
 
@@ -113,7 +113,7 @@ test4() {
   box.raise_lower_bound(3, true, 15, 3);
 
   C_Polyhedron ph(box, From_Bounding_Box());
-  
+
   Variable x(1);
   Variable y(2);
   Variable z(3);

@@ -66,7 +66,7 @@ The PPL's C interface is initialized by means of the
 <CODE>ppl_initialize</CODE> function.  This function must
 be called <EM>before using any other interface of the library</EM>.
 The application can release the resources allocated by the library by
-calling the <CODE>ppl_finalize</CODE> function. After this function 
+calling the <CODE>ppl_finalize</CODE> function. After this function
 is called <EM>no other interface of the library may be used</EM>
 until the interface is re-initialized using <CODE>ppl_initialize</CODE>.
 
@@ -1612,7 +1612,7 @@ ppl_Polyhedron_bounds_from_below __P((ppl_const_Polyhedron_t ph,
   \param sup_d
   Will be assigned the denominator of the supremum value;
 
-  \param pmaximum 
+  \param pmaximum
   Will store 1 in this location if the supremum is also the maximum,
   will store 0 otherwise;
 
@@ -1884,7 +1884,7 @@ ppl_Polyhedron_poly_difference_assign __P((ppl_Polyhedron_t x,
   Transforms the polyhedron \p ph, assigning an affine expression
   to the specified variable.
 
-  \param ph 
+  \param ph
   The polyhedron that is transformed;
 
   \param var
@@ -1905,7 +1905,7 @@ ppl_Polyhedron_affine_image __P((ppl_Polyhedron_t ph,
 /*! \brief
   Transforms the polyhedron \p ph, substituting an affine expression
   to the specified variable.
-  
+
   \param ph
   The polyhedron that is transformed;
 

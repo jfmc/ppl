@@ -549,7 +549,7 @@ Ask_Tell<CS>::concatenate_assign(const Ask_Tell<CS>& y) {
   }
   assert(OK());
 }
-  
+
 // Join operators
 
 template <typename CS>

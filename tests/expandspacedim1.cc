@@ -226,7 +226,9 @@ test7() {
   bool ok = (ph1 == known_result);
 
 #if NOISY
-  print_constraints(ph1, "***  After ph1.expand_space_dimension(A, 1); ph1.expand_space_dimension(C, 1) ***");
+  print_constraints(ph1,
+		    "***  After ph1.expand_space_dimension(A, 1);"
+		    " ph1.expand_space_dimension(C, 1) ***");
 #endif
 
   if (!ok)

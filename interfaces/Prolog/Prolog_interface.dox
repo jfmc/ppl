@@ -577,7 +577,7 @@ The specification uses the following grammar rules:
  Relation_List				list of relations
 	     --> []
 	    | [Relation | Relation_List]
-           
+
 
  Complexity  --> polynomial | simplex | any		
 
@@ -634,18 +634,18 @@ and \ref operations of this manual.
   where to report bugs and where to look for further information.
 
 <H2><CODE> ppl_max_space_dimension(?Integer) </CODE></H2>
-  
+
   Unifies <CODE>Integer</CODE> with the maximum space dimension
   this library can handle.
 
-<H2><CODE> 
+<H2><CODE>
   ppl_initialize
  </CODE></H2>
 
   Initializes the PPL interface.
   Multiple calls to <CODE>ppl_initialize</CODE> does no harm.
 
-<H2><CODE> 
+<H2><CODE>
   ppl_finalize
  </CODE></H2>
 
@@ -677,7 +677,7 @@ and \ref operations of this manual.
 
    Resets the timeout time so that the computation is not interrupted.
 
-<H2><CODE> 
+<H2><CODE>
   ppl_new_Polyhedron_from_dimension(+Topology, +Integer, -Handle)
  </CODE></H2>
 
@@ -692,7 +692,7 @@ and \ref operations of this manual.
    creates the C polyhedron defining the 3-dimensional vector space
    \f$\Rset^3\f$ with \p X bound to a valid handle for accessing it.
 
-<H2><CODE> 
+<H2><CODE>
   ppl_new_Polyhedron_empty_from_dimension(+Topology, +Integer, -Handle)
 </CODE>
 </H2>
@@ -708,7 +708,7 @@ and \ref operations of this manual.
    creates an empty NNC polyhedron embedded in \f$\Rset^3\f$ with
    \p X bound to a valid handle for accessing it.
 
-<H2><CODE> 
+<H2><CODE>
 ppl_new_Polyhedron_from_Polyhedron(+Topology_1, +Handle_1,
                                    +Topology_2, -Handle_2)
  </CODE></H2>
@@ -734,7 +734,7 @@ ppl_new_Polyhedron_from_Polyhedron(+Topology_1, +Handle_1,
    care must be taken that the source polyhedron referenced by
    <CODE>Handle1</CODE> is topologically closed.
 
-<H2><CODE> 
+<H2><CODE>
    ppl_new_Polyhedron_from_constraints(+Topology,
                    +Constraint_System, -Handle)
  </CODE></H2>
@@ -744,7 +744,7 @@ ppl_new_Polyhedron_from_Polyhedron(+Topology_1, +Handle_1,
    depending on the value of <CODE>Topology</CODE>.
    <CODE>Handle</CODE> is unified with the handle for \f$\cP\f$.
 
-<H2><CODE> 
+<H2><CODE>
    ppl_new_Polyhedron_from_generators(+Topology,
                    +Generator_System, -Handle)
  </CODE></H2>
@@ -754,7 +754,7 @@ ppl_new_Polyhedron_from_Polyhedron(+Topology_1, +Handle_1,
    depending on the value of <CODE>Topology</CODE>.
    <CODE>Handle</CODE> is unified with the handle for \f$\cP\f$.
 
-<H2><CODE> 
+<H2><CODE>
    ppl_new_Polyhedron_from_bounding_box(+Topology,
                    +Box, -Handle)
  </CODE></H2>
@@ -905,7 +905,7 @@ to be used has the following meaning:
    the polyhedron referenced by <CODE>Handle</CODE>.
 
 
-<H3><CODE> 
+<H3><CODE>
   ppl_Polyhedron_maximize(+Handle, +Lin_Expr, ?Integer, ?Integer, ?Bool)
  </CODE></H3>
 
@@ -918,8 +918,8 @@ to be used has the following meaning:
   If the supremum is also the maximum,
   <CODE>Bool</CODE> is unified with the atom <CODE>true</CODE>
   and, otherwise, unified with the atom <CODE>false</CODE>.
-  
-<H2><CODE> 
+
+<H2><CODE>
   ppl_Polyhedron_maximize_with_point(+Handle, +Lin_Expr, ?Integer1, ?Integer2,
                                      ?Bool, ?Point)
  </CODE></H2>
@@ -927,7 +927,7 @@ to be used has the following meaning:
   Succeeds if and only if the polyhedron \f$P\f$ referenced by
   <CODE>Handle</CODE> is not empty
   and <CODE>Lin_Expr</CODE> is bounded from above in \f$P\f$.
-  
+
   <CODE>Integer1</CODE> is unified with the numerator of the supremum value,
   <CODE>Integer2</CODE> with the denominator of the supremum value,
   and <CODE>Point</CODE> with a point or closure point where
@@ -935,7 +935,7 @@ to be used has the following meaning:
   If the supremum is also the maximum,
   <CODE>Bool</CODE> is unified with the atom <CODE>true</CODE>
   and, otherwise, unified with the atom <CODE>false</CODE>.
-  
+
 <H2><CODE>
   ppl_Polyhedron_minimize(+Handle, +Lin_Expr, ?Integer, ?Integer, ?Bool)
 </CODE></H2>

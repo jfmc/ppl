@@ -38,7 +38,8 @@ print_constraint(const Constraint& c, const string& intro, ostream& s) {
 }
 
 void
-print_constraints(const Constraint_System& cs, const string& intro, ostream& s) {
+print_constraints(const Constraint_System& cs,
+		  const string& intro, ostream& s) {
   if (!intro.empty())
     s << intro << endl;
   Constraint_System::const_iterator i = cs.begin();

@@ -394,7 +394,7 @@ operator<<(std::ostream& os, const Checked_Number<T, Policy>& x) {
   check_result(Checked::print<Policy>(os, x.raw_value()));
   return os;
 }
- 
+
 template <typename T, typename Policy>
 inline std::istream& operator>>(std::istream& is, Checked_Number<T, Policy>& x) {
   check_result(Checked::input<Policy>(is, x.raw_value()));

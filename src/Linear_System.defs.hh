@@ -332,10 +332,10 @@ public:
   //! ascii_dump) and sets \p *this accordingly.  Returns <CODE>true</CODE>
   //! if successful, <CODE>false</CODE> otherwise.
   /*!
-    Reads into a Linear_System object the information produced by the output
-    of <CODE>ascii_dump()</CODE>.  The specialized methods provided by
-    Constraint_System and Generator_System take care of properly reading the contents of
-    the system.
+    Reads into a Linear_System object the information produced by the
+    output of <CODE>ascii_dump()</CODE>.  The specialized methods
+    provided by Constraint_System and Generator_System take care of
+    properly reading the contents of the system.
   */
   bool ascii_load(std::istream& s);
 
@@ -409,8 +409,9 @@ bool operator!=(const Linear_System& x, const Linear_System& y);
 //! An iterator keeping a Linear_System consistent with a Saturation_Matrix.
 /*!
   An iterator on the vector of Row objects encoded in a Linear_System
-  extended to maintain a corresponding iterator on a vector of Saturation_Row objects.
-  Access to values is always done on the Row objects, but iterator
+  extended to maintain a corresponding iterator on a vector of
+  Saturation_Row objects.  Access to values is always done on the Row
+  objects, but iterator
   movements and swaps are done on both components.
 */
 #endif // PPL_DOXYGEN_INCLUDE_IMPLEMENTATION_DETAILS
@@ -441,7 +442,8 @@ public:
   ~With_Saturation_Matrix_iterator();
 
   //! Assignment operator.
-  With_Saturation_Matrix_iterator& operator=(const With_Saturation_Matrix_iterator& y);
+  With_Saturation_Matrix_iterator&
+  operator=(const With_Saturation_Matrix_iterator& y);
 
   //! \name Operators Implementing Iterator Movement
   //@{

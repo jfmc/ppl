@@ -81,7 +81,7 @@ public:
   //! (i.e., if \p *this does not entail \p y or if entailment could
   //! not be decided).
   bool definitely_entails(const Ask_Tell_Pair& y) const;
-  
+
 private:
   //! The <EM>ask</EM> component.
   CS a;
@@ -133,7 +133,9 @@ public:
   //! Swaps \p *this with \p y.
   void swap(Ask_Tell& y);
 
-  //! Creates an ask-and-tell constraint system with the same information contents as \p cs.
+  //! \brief
+  //! Creates an ask-and-tell constraint system with the same
+  //! information contents as \p cs.
   Ask_Tell(const Constraint_System& cs);
 
   //! Adds to \p *this the pair constituted by \p ask and \p tell.

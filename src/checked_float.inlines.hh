@@ -645,7 +645,7 @@ SPECIALIZE_SUCC(float, float128_t)
 #endif
 
 template <typename Policy, typename Type>
-inline Result 
+inline Result
 check_inexact(const Type v) {
   if (!Policy::check_inexact)
     return V_EQ;
@@ -693,7 +693,7 @@ prepare_inexact() {
 }
 
 template <typename Policy, typename From, typename To>
-inline Result 
+inline Result
 assign_float_float_exact(To& to, const From from) {
   Float<From> f(from);
   Result r = V_EQ;
@@ -721,7 +721,7 @@ assign_float_float(To& to, const From from) {
 }
 
 template <typename Policy, typename Type>
-inline Result 
+inline Result
 assign_result_exact(Type& to, const Type from) {
   Float<Type> f(from);
   Result r = V_EQ;
@@ -739,7 +739,7 @@ assign_result_exact(Type& to, const Type from) {
 }
 
 template <typename Policy, typename Type>
-inline Result 
+inline Result
 assign_result_inexact(Type& to, const Type from) {
   Result r = assign_result_exact<Policy>(to, from);
   if (r == V_EQ)
@@ -748,16 +748,16 @@ assign_result_inexact(Type& to, const Type from) {
 }
 
 template <typename Policy, typename Type>
-inline Result 
+inline Result
 neg_float(Type& to, const Type from) {
   return assign_result_exact<Policy>(to, -from);
 }
 
 template <typename Policy, typename Type>
-inline Result 
+inline Result
 add_float(Type& to, const Type x, const Type y) {
   prepare_inexact<Policy>();
-  /* 
+  /*
      This assume that the result of the operation is the nearest representable
      number according to current rounding direction.
    */
@@ -765,10 +765,10 @@ add_float(Type& to, const Type x, const Type y) {
 }
 
 template <typename Policy, typename Type>
-inline Result 
+inline Result
 sub_float(Type& to, const Type x, const Type y) {
   prepare_inexact<Policy>();
-  /* 
+  /*
      This assume that the result of the operation is the nearest representable
      number according to current rounding direction.
    */
@@ -776,10 +776,10 @@ sub_float(Type& to, const Type x, const Type y) {
 }
 
 template <typename Policy, typename Type>
-inline Result 
+inline Result
 mul_float(Type& to, const Type x, const Type y) {
   prepare_inexact<Policy>();
-  /* 
+  /*
      This assume that the result of the operation is the nearest representable
      number according to current rounding direction.
    */
@@ -787,10 +787,10 @@ mul_float(Type& to, const Type x, const Type y) {
 }
 
 template <typename Policy, typename Type>
-inline Result 
+inline Result
 div_float(Type& to, const Type x, const Type y) {
   prepare_inexact<Policy>();
-  /* 
+  /*
      This assume that the result of the operation is the nearest representable
      number according to current rounding direction.
    */
@@ -798,10 +798,10 @@ div_float(Type& to, const Type x, const Type y) {
 }
 
 template <typename Policy, typename Type>
-inline Result 
+inline Result
 mod_float(Type& to, const Type x, const Type y) {
   prepare_inexact<Policy>();
-  /* 
+  /*
      This assume that the result of the operation is the nearest representable
      number according to current rounding direction.
    */
@@ -818,7 +818,7 @@ template <typename Policy, typename Type>
 inline Result
 sqrt_float(Type& to, const Type from) {
   prepare_inexact<Policy>();
-  /* 
+  /*
      This assume that the result of the operation is the nearest representable
      number according to current rounding direction.
    */
@@ -826,7 +826,7 @@ sqrt_float(Type& to, const Type from) {
 }
 
 template <typename Policy, typename To, typename From>
-inline Result 
+inline Result
 assign_float_int_exact(To& to, const From from) {
   to = from;
   return V_EQ;
@@ -840,10 +840,10 @@ assign_float_int(To& to, const From from) {
   return check_inexact<Policy>(to);
 }
 
-// This is needed to return stricter result when 
+// This is needed to return stricter result when
 // rounding mode is set up or down
 template <typename Policy, typename Type>
-inline Result 
+inline Result
 sub_mul_float(Type& to, const Type x, const Type y) {
   return add_mul<Policy>(to, x, -y);
 }

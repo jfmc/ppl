@@ -166,7 +166,8 @@ Polyhedra_Powerset<PH>::add_constraint(const Constraint& c) {
 template <typename PH>
 bool
 Polyhedra_Powerset<PH>::add_constraint_and_minimize(const Constraint& c) {
-  for (iterator xi = Base::begin(), xin = xi, x_end = Base::end(); xi != x_end; xi = xin) {
+  for (iterator xi = Base::begin(),
+	 xin = xi, x_end = Base::end(); xi != x_end; xi = xin) {
     ++xin;
     if (!xi->element().add_constraint_and_minimize(c)) {
       erase(xi);
@@ -188,7 +189,8 @@ Polyhedra_Powerset<PH>::add_constraints(const Constraint_System& cs) {
 
 template <typename PH>
 bool
-Polyhedra_Powerset<PH>::add_constraints_and_minimize(const Constraint_System& cs) {
+Polyhedra_Powerset<PH>::
+add_constraints_and_minimize(const Constraint_System& cs) {
   for (iterator xi = Base::begin(),
 	 xin = xi, x_end = Base::end(); xi != x_end; xi = xin) {
     ++xin;
@@ -437,7 +439,7 @@ is_cert_multiset_stabilizing(const std::map<Cert, size_type,
     yi = y_cert_ms.begin(),
     yend = y_cert_ms.end();
   while (xi != xend && yi != yend) {
-    const Cert& xi_cert = xi->first;  
+    const Cert& xi_cert = xi->first;
     const Cert& yi_cert = yi->first;
     switch (xi_cert.compare(yi_cert)) {
     case 0:
@@ -510,7 +512,7 @@ Polyhedra_Powerset<PH>::BHZ03_widening_assign(const Polyhedra_Powerset& y,
   if (hull_stabilization == 1)
     return;
 
-  // Multiset ordering is only useful when `y' is not a singleton. 
+  // Multiset ordering is only useful when `y' is not a singleton.
   const bool y_is_not_a_singleton = y.size() > 1;
 
   // The multiset certificate for `y':
@@ -537,7 +539,7 @@ Polyhedra_Powerset<PH>::BHZ03_widening_assign(const Polyhedra_Powerset& y,
   for (const_iterator i = bgp99_heuristics.begin(),
 	 bh_end = bgp99_heuristics.end(); i != bh_end; ++i)
     bgp99_heuristics_hull.poly_hull_assign(i->element());
-  
+
   // Check for stabilization and, if successful,
   // commit to the result of the extrapolation.
   hull_stabilization = y_hull_cert.compare(bgp99_heuristics_hull);

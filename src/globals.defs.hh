@@ -102,7 +102,8 @@ get_tmp_Coefficient() {
 
 inline void
 release_tmp_Coefficient(Coefficient& i) {
-  Coefficient_free_list_element& e = reinterpret_cast<Coefficient_free_list_element&>(i);
+  Coefficient_free_list_element& e
+    = reinterpret_cast<Coefficient_free_list_element&>(i);
   e.next() = Coefficient_free_list_first;
   Coefficient_free_list_first = &e;
 }
@@ -210,7 +211,8 @@ struct From_Bounding_Box {
 */
 #endif
 void
-normalize2(const Coefficient& x, const Coefficient& y, Coefficient& nx, Coefficient& ny);
+normalize2(const Coefficient& x, const Coefficient& y,
+	   Coefficient& nx, Coefficient& ny);
 
 #ifdef PPL_DOXYGEN_INCLUDE_IMPLEMENTATION_DETAILS
 //! Returns a mask for the lowest \p n bits,

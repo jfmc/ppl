@@ -1345,7 +1345,7 @@ PPL::Polyhedron::add_recycled_generators(Generator_System& gs) {
   const dimension_type gs_num_rows = gs.num_rows();
   const dimension_type gs_num_columns = gs.num_columns();
   gen_sys.add_zero_rows(gs_num_rows,
-			Linear_Row::Flags(topology(), 
+			Linear_Row::Flags(topology(),
 					  Linear_Row::RAY_OR_POINT_OR_INEQUALITY));
   for (dimension_type i = gs_num_rows; i-- > 0; ) {
     // NOTE: we cannot directly swap the rows, since they might have

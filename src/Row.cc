@@ -183,7 +183,7 @@ PPL::Row::OK(const dimension_type row_size,
   return !is_broken;
 }
 
-/*! \relates Parma_Polyhedra_Library::Row */ 
+/*! \relates Parma_Polyhedra_Library::Row */
 bool
 PPL::operator==(const Row& x, const Row& y) {
   const dimension_type x_size = x.size();

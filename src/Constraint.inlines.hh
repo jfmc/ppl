@@ -296,7 +296,8 @@ Constraint::epsilon_geq_zero() {
 
 inline const Constraint&
 Constraint::epsilon_leq_one() {
-  static const Constraint eps_leq_one(Linear_Expression::zero() < Coefficient_one());
+  static const Constraint
+    eps_leq_one(Linear_Expression::zero() < Coefficient_one());
   return eps_leq_one;
 }
 

@@ -50,7 +50,8 @@ main() TRY {
   int retval = (ph == known_result) ? 0 : 1;
 
 #if NOISY
-  print_constraints(ph, "*** After ph.add_space_dimensions_and_project(1) ***");
+  print_constraints(ph,
+		    "*** After ph.add_space_dimensions_and_project(1) ***");
 #endif
 
   return retval;

@@ -47,7 +47,7 @@ median(const ValueType& x, const ValueType& y, const ValueType& z,
        Compare comp) {
   return comp(x, y)
     ? (comp(y, z) ? y : (comp(x, z) ? z : x))
-    : (comp(x, z) ? x : (comp(y, z) ? z : y)); 
+    : (comp(x, z) ? x : (comp(y, z) ? z : y));
 }
 
 template <typename Iter, typename ValueType, typename Compare>

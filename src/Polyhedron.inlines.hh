@@ -441,7 +441,8 @@ Polyhedron::shrink_bounding_box(Box& box, Complexity_Class complexity) const {
       return;
     }
     if (constraints_are_up_to_date()) {
-      for (Constraint_System::const_iterator i = con_sys.begin(); i != con_sys.end(); ++i)
+      for (Constraint_System::const_iterator i
+	     = con_sys.begin(); i != con_sys.end(); ++i)
 	if ((*i).is_trivial_false()){
 	  box.set_empty();
 	  return;

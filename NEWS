@@ -23,7 +23,7 @@ o  The following classes have been renamed as indicated:
      Integer            -> Coefficient
      LinExpression      -> Linear_Expression
      Polyhedra_PowerSet -> Polyhedra_Powerset
-     PowerSet           -> Powerset 
+     PowerSet           -> Powerset
      SatMatrix          -> Saturation_Matrix
      SatRow             -> Saturation_Row
 
@@ -283,7 +283,7 @@ o  Thanks to Bruno Haible, it is now possible to use versions of the
 Bugfixes
 ========
 
-o  Fixed a bug in the C interface function ppl_Polyhedron_map_dimensions() 
+o  Fixed a bug in the C interface function ppl_Polyhedron_map_dimensions()
    whereby a wrong result was computed.
 
 o  Fixed a bug in Polyhedron::poly_difference_assign(const Polyhedron&)

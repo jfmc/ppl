@@ -43,7 +43,7 @@ typedef Polyhedra_Powerset<C_Polyhedron> PSet;
 int
 main() TRY {
   set_handlers();
-  
+
   C_Polyhedron p1(2);
   p1.add_constraint(X >= 0);
   p1.add_constraint(Y >= 0);

@@ -29,7 +29,7 @@ site: http://www.cs.unipr.it/ppl/ . */
 
 namespace Parma_Polyhedra_Library {
 
-inline dimension_type 
+inline dimension_type
 Matrix::max_num_rows() {
   // FIXME: isn't this ridiculous?  Creating a vector only to know what
   // its maximum size is?  Why is vector::max_size() not static?

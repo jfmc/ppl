@@ -140,7 +140,7 @@ template <typename Policy, typename Type1, typename Type2> \
 inline ret_type name(qual1 Type1& arg1, qual2 Type2& arg2) { \
   return FUNCTION_CLASS(name)<Policy, Type1, Type2>::function(arg1, arg2); \
 }
-  
+
 #define DECLARE_FUN3(name, ret_type, qual1, qual2, qual3) \
 template <typename Policy, typename Type1, typename Type2, typename Type3> \
 struct FUNCTION_CLASS(name); \
@@ -148,7 +148,7 @@ template <typename Policy, typename Type1, typename Type2, typename Type3> \
 inline ret_type name(qual1 Type1& arg1, qual2 Type2& arg2, qual3 Type3& arg3) { \
   return FUNCTION_CLASS(name)<Policy, Type1, Type2, Type3>::function(arg1, arg2, arg3); \
 }
-  
+
 #define SPECIALIZE_FUN1(name, suf, ret_type, qual, type) \
 template <typename Policy> \
 struct FUNCTION_CLASS(name)<Policy, type> { \

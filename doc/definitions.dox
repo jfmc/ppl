@@ -77,7 +77,7 @@ The following domains and domain constructors are provided by the PPL:
 - the powerset construction, instantiated for rational convex polyhedra.
 
 In the following sections we describe these domains and domain
-constructors together with their representations and operations 
+constructors together with their representations and operations
 that are available to the PPL user.
 
 In the final section of this chapter (Section \ref use_of_library),
@@ -1203,7 +1203,16 @@ that are provided by the library for any given base-level domain \f$D\f$.
 Given the sets \f$\cS_1\f$ and \f$\cS_2 \in D_{\smallP}\f$, the
 <EM>meet</EM> and <EM>upper bound</EM> operators provided by the
 library returns the set
-\f$\nonredmap\bigl(\{d_1 \meet d_2 \,|\, d_1 \in \cS_1, d_2 \in \cS_2\}\bigr)\f$
+\f$
+  \nonredmap
+    \bigl(
+      \{\,
+        d_1 \meet d_2
+      \mid
+        d_1 \in \cS_1, d_2 \in \cS_2
+      \,\}
+    \bigr)
+\f$
 and reduced set union \f$\nonredmap(\cS_1 \union \cS_2)\f$ respectively.
 
 \anchor ps_add_disjunct
@@ -1413,7 +1422,7 @@ by replacing the second line of code with the following:
 Generator_System gs = ph.generators();
 \endcode
 The same observations, modulo syntactic sugar, apply to the operators
-defined in the C interface of the library. 
+defined in the C interface of the library.
 
 \section bibliography Bibliography
 

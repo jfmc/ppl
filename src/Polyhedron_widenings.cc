@@ -520,7 +520,7 @@ PPL::Polyhedron::BHRZ03_combining_constraints(const Polyhedron& y,
 
 bool
 PPL::Polyhedron::BHRZ03_evolving_points(const Polyhedron& y,
-					const BHRZ03_Certificate& y_cert, 
+					const BHRZ03_Certificate& y_cert,
 					const Polyhedron& H79) {
   Polyhedron& x = *this;
   // It is assumed that `y <= x <= H79'.
@@ -587,7 +587,7 @@ PPL::Polyhedron::BHRZ03_evolving_points(const Polyhedron& y,
 
 bool
 PPL::Polyhedron::BHRZ03_evolving_rays(const Polyhedron& y,
-				      const BHRZ03_Certificate& y_cert, 
+				      const BHRZ03_Certificate& y_cert,
 				      const Polyhedron& H79) {
   Polyhedron& x = *this;
   // It is assumed that `y <= x <= H79'.

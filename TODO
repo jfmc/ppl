@@ -25,7 +25,7 @@ Enhancements for PPL 0.8 or later versions
 - Implement void Polyhedron::envelope_assign(const Polyhedron& y).
 - Implement the extrapolation operators defined in HenzingerH95
   and HenzingerPW01.
-- See whether, using the techniques described in 
+- See whether, using the techniques described in
   ftp://ftp.ifor.math.ethz.ch/pub/fukuda/reports/polyunion001120.ps.gz
   we can implement bool poly_hull_assign_if_exact(PH& p, const PH& q),
   temporarily in algorithms.hh, more efficiently.

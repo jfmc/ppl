@@ -115,9 +115,23 @@ user-browse: ppl-user-@VERSION@-browse.pdf
 
 world: $(ALL_TARGETS)
 
-install-data-local: install-html install-pdf install-ps install-txt
-installdirs-local: installdirs-html installdirs-pdf installdirs-ps installdirs-txt
-uninstall-local: uninstall-html uninstall-pdf uninstall-ps uninstall-txt
+install-data-local: \
+install-html \
+install-pdf \
+install-ps \
+install-txt
+
+installdirs-local: \
+installdirs-html \
+installdirs-pdf \
+installdirs-ps \
+installdirs-txt
+
+uninstall-local: \
+uninstall-html \
+uninstall-pdf \
+uninstall-ps \
+uninstall-txt
 
 # Installation and uninstallation of HTML documentation.
 install-html:

@@ -35,9 +35,10 @@ Saturation_Matrix::Saturation_Matrix()
     row_size(0) {
 }
 
-inline dimension_type 
+inline dimension_type
 Saturation_Matrix::max_num_rows() {
-  static const dimension_type max_nr = std::vector<Saturation_Row>().max_size();
+  static const dimension_type max_nr
+    = std::vector<Saturation_Row>().max_size();
   return max_nr;
 }
 

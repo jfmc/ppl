@@ -41,7 +41,7 @@ test1() {
   box.raise_lower_bound(3, true, 15, 3);
 
   NNC_Polyhedron ph(box, From_Bounding_Box());
-  
+
   Variable x(1);
   Variable y(2);
   Variable z(3);
@@ -73,7 +73,7 @@ test2() {
   box.lower_upper_bound(2, true, 12, 3);
 
   NNC_Polyhedron ph(box, From_Bounding_Box());
-  
+
   Variable x(1);
   Variable y(2);
 

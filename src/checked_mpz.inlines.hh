@@ -159,7 +159,7 @@ SPECIALIZE_ASSIGN(mpz_float, mpz_class, float)
 SPECIALIZE_ASSIGN(mpz_float, mpz_class, double)
 
 template <typename Policy>
-inline Result 
+inline Result
 assign_mpz_c_string(mpz_class& to, c_string from) {
   to = from;
   return V_EQ;
@@ -168,7 +168,7 @@ assign_mpz_c_string(mpz_class& to, c_string from) {
 SPECIALIZE_ASSIGN(mpz_c_string, mpz_class, c_string)
 
 template <typename Policy>
-inline Result 
+inline Result
 pred_mpz(mpz_class& to) {
   if (value_type<Policy>(to) != V_EQ)
     throw(0);
@@ -179,7 +179,7 @@ pred_mpz(mpz_class& to) {
 SPECIALIZE_PRED(mpz, mpz_class)
 
 template <typename Policy>
-inline Result 
+inline Result
 succ_mpz(mpz_class& to) {
   if (value_type<Policy>(to) != V_EQ)
     throw(0);
@@ -190,7 +190,7 @@ succ_mpz(mpz_class& to) {
 SPECIALIZE_SUCC(mpz, mpz_class)
 
 template <typename Policy>
-inline Result 
+inline Result
 neg_mpz(mpz_class& to, const mpz_class& from) {
   mpz_neg(to.get_mpz_t(), from.get_mpz_t());
   return V_EQ;
@@ -199,7 +199,7 @@ neg_mpz(mpz_class& to, const mpz_class& from) {
 SPECIALIZE_NEG(mpz, mpz_class, mpz_class)
 
 template <typename Policy>
-inline Result 
+inline Result
 add_mpz(mpz_class& to, const mpz_class& x, const mpz_class& y) {
   to = x + y;
   return V_EQ;
@@ -208,7 +208,7 @@ add_mpz(mpz_class& to, const mpz_class& x, const mpz_class& y) {
 SPECIALIZE_ADD(mpz, mpz_class, mpz_class)
 
 template <typename Policy>
-inline Result 
+inline Result
 sub_mpz(mpz_class& to, const mpz_class& x, const mpz_class& y) {
   to = x - y;
   return V_EQ;
@@ -217,7 +217,7 @@ sub_mpz(mpz_class& to, const mpz_class& x, const mpz_class& y) {
 SPECIALIZE_SUB(mpz, mpz_class, mpz_class)
 
 template <typename Policy>
-inline Result 
+inline Result
 mul_mpz(mpz_class& to, const mpz_class& x, const mpz_class& y) {
   to = x * y;
   return V_EQ;
@@ -226,7 +226,7 @@ mul_mpz(mpz_class& to, const mpz_class& x, const mpz_class& y) {
 SPECIALIZE_MUL(mpz, mpz_class, mpz_class)
 
 template <typename Policy>
-inline Result 
+inline Result
 div_mpz(mpz_class& to, const mpz_class& x, const mpz_class& y) {
   if (Policy::check_divbyzero && sgn(y) == 0)
     return V_UNKNOWN;
@@ -250,7 +250,7 @@ div_mpz(mpz_class& to, const mpz_class& x, const mpz_class& y) {
 SPECIALIZE_DIV(mpz, mpz_class, mpz_class)
 
 template <typename Policy>
-inline Result 
+inline Result
 mod_mpz(mpz_class& to, const mpz_class& x, const mpz_class& y) {
   if (Policy::check_divbyzero && sgn(y) == 0)
     return V_UNKNOWN;
@@ -261,7 +261,7 @@ mod_mpz(mpz_class& to, const mpz_class& x, const mpz_class& y) {
 SPECIALIZE_MOD(mpz, mpz_class, mpz_class)
 
 template <typename Policy, typename To>
-inline Result 
+inline Result
 assign_signed_int_mpz(To& to, const mpz_class& from) {
   if (!Policy::check_overflow) {
     if (sizeof(To) <= sizeof(long))
@@ -314,12 +314,12 @@ SPECIALIZE_ASSIGN(signed_int_mpz, long, mpz_class)
 SPECIALIZE_ASSIGN(signed_int_mpz, long long, mpz_class)
 
 template <typename Policy, typename To>
-inline Result 
+inline Result
 assign_unsigned_int_mpz(To& to, const mpz_class& from) {
   if (!Policy::check_overflow) {
     if (sizeof(To) <= sizeof(unsigned long))
       to = from.get_ui();
-    else 
+    else
       mpz_export(&to, 0, 1, sizeof(To), 0, 0, from.get_mpz_t());
     return V_EQ;
   }
@@ -355,7 +355,7 @@ SPECIALIZE_ASSIGN(unsigned_int_mpz, unsigned long, mpz_class)
 SPECIALIZE_ASSIGN(unsigned_int_mpz, unsigned long long, mpz_class)
 
 template <typename Policy>
-inline Result 
+inline Result
 abs_mpz(mpz_class& to, const mpz_class& from) {
   to = abs(from);
   return V_EQ;
@@ -364,7 +364,7 @@ abs_mpz(mpz_class& to, const mpz_class& from) {
 SPECIALIZE_ABS(mpz, mpz_class, mpz_class)
 
 template <typename Policy>
-inline Result 
+inline Result
 add_mul_mpz(mpz_class& to, const mpz_class& x, const mpz_class& y) {
   mpz_addmul(to.get_mpz_t(), x.get_mpz_t(), y.get_mpz_t());
   return V_EQ;
@@ -373,7 +373,7 @@ add_mul_mpz(mpz_class& to, const mpz_class& x, const mpz_class& y) {
 SPECIALIZE_ADD_MUL(mpz, mpz_class, mpz_class)
 
 template <typename Policy>
-inline Result 
+inline Result
 sub_mul_mpz(mpz_class& to, const mpz_class& x, const mpz_class& y) {
   mpz_submul(to.get_mpz_t(), x.get_mpz_t(), y.get_mpz_t());
   return V_EQ;
@@ -382,7 +382,7 @@ sub_mul_mpz(mpz_class& to, const mpz_class& x, const mpz_class& y) {
 SPECIALIZE_SUB_MUL(mpz, mpz_class, mpz_class)
 
 template <typename Policy>
-inline Result 
+inline Result
 gcd_mpz(mpz_class& to, const mpz_class& x, const mpz_class& y) {
   mpz_gcd(to.get_mpz_t(), x.get_mpz_t(), y.get_mpz_t());
   return V_EQ;
@@ -391,7 +391,7 @@ gcd_mpz(mpz_class& to, const mpz_class& x, const mpz_class& y) {
 SPECIALIZE_GCD(mpz, mpz_class, mpz_class)
 
 template <typename Policy>
-inline Result 
+inline Result
 lcm_mpz(mpz_class& to, const mpz_class& x, const mpz_class& y) {
   mpz_lcm(to.get_mpz_t(), x.get_mpz_t(), y.get_mpz_t());
   return V_EQ;
@@ -400,7 +400,7 @@ lcm_mpz(mpz_class& to, const mpz_class& x, const mpz_class& y) {
 SPECIALIZE_LCM(mpz, mpz_class, mpz_class)
 
 template <typename Policy>
-inline Result 
+inline Result
 sqrt_mpz(mpz_class& to, const mpz_class& from) {
   if (Policy::check_sqrt_neg && from < 0)
     return V_DOMAIN;
@@ -421,7 +421,7 @@ sqrt_mpz(mpz_class& to, const mpz_class& from) {
 SPECIALIZE_SQRT(mpz, mpz_class, mpz_class)
 
 template <typename Policy, typename Type>
-inline Result 
+inline Result
 sgn_mp(const Type& x) {
   int i = ::sgn(x);
   return i > 0 ? V_GT : i == 0 ? V_EQ : V_LT;

@@ -1157,7 +1157,7 @@ nnc_membytes1 \
 nnc_onepoint \
 nnc_polydifference9 \
 nnc_randphull1 \
-nnc_smm1 
+nnc_smm1
 
 XFAIL_WITH_INT8_A = \
 $(XFAIL_WITH_INT8) \

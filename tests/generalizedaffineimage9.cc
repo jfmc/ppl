@@ -77,7 +77,9 @@ test2() {
   print_constraints(ph, "*** ph ***");
 #endif
 
-  ph.generalized_affine_image(Linear_Expression(2), GREATER_THAN_OR_EQUAL, A + B);
+  ph.generalized_affine_image(Linear_Expression(2),
+			      GREATER_THAN_OR_EQUAL,
+			      A + B);
 
   known_result.add_constraint(2 >= A + B);
 

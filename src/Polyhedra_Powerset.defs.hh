@@ -303,7 +303,7 @@ public:
     with each polyhedron in \p y and collecting all these differences.
   */
   void poly_difference_assign(const Polyhedra_Powerset& y);
- 
+
   //! Assigns to \p *this the concatenation of \p *this and \p y.
   /*!
     The result is obtained by computing the pairwise \ref concatenate

@@ -61,7 +61,7 @@ int main() TRY {
   squares.add_disjunct(rectangle(7, 4, 1, 1));
   squares.add_disjunct(rectangle(4, 1, 1, 1));
   squares.add_disjunct(rectangle(4, 7, 1, 1));
-  
+
 #if NOISY
   cout << "squares = " << squares << endl;
 #endif

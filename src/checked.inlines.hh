@@ -333,7 +333,7 @@ add_ext(To& to, const From1& x, const From2& y) {
   set_special<To_Policy>(to, r);
   return r;
 }
-    
+
 template <typename To_Policy, typename From1_Policy, typename From2_Policy, typename To, typename From1, typename From2>
 inline Result
 sub_ext(To& to, const From1& x, const From2& y) {
@@ -354,7 +354,7 @@ sub_ext(To& to, const From1& x, const From2& y) {
   set_special<To_Policy>(to, r);
   return r;
 }
-    
+
 template <typename To_Policy, typename From1_Policy, typename From2_Policy, typename To, typename From1, typename From2>
 inline Result
 mul_ext(To& to, const From1& x, const From2& y) {
@@ -379,7 +379,7 @@ mul_ext(To& to, const From1& x, const From2& y) {
   set_special<To_Policy>(to, r);
   return r;
 }
-    
+
 	
 template <typename To_Policy, typename From1_Policy, typename From2_Policy, typename To, typename From1, typename From2>
 inline Result
@@ -415,7 +415,7 @@ div_ext(To& to, const From1& x, const From2& y) {
   set_special<To_Policy>(to, r);
   return r;
 }
-    
+
 	
 template <typename To_Policy, typename From1_Policy, typename From2_Policy, typename To, typename From1, typename From2>
 inline Result
@@ -439,7 +439,7 @@ mod_ext(To& to, const From1& x, const From2& y) {
   set_special<To_Policy>(to, r);
   return r;
 }
-    
+
 template <typename To_Policy, typename From_Policy, typename To, typename From>
 inline Result
 sqrt_ext(To& to, const From& x) {
@@ -482,7 +482,7 @@ gcd_ext(To& to, const From1& x, const From2& y) {
   set_special<To_Policy>(to, r);
   return r;
 }
-    
+
 template <typename To_Policy, typename From1_Policy, typename From2_Policy, typename To, typename From1, typename From2>
 inline Result
 lcm_ext(To& to, const From1& x, const From2& y) {

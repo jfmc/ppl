@@ -30,7 +30,7 @@ namespace Parma_Polyhedra_Library {
 
 template <typename PH>
 Widening_Function<PH>::Widening_Function(Widening_Method wm)
-  : w_method(wm) { 
+  : w_method(wm) {
 }
 
 template <typename PH>
@@ -42,8 +42,9 @@ operator()(PH& x, const PH& y, unsigned* tp) const {
 
 template <typename PH>
 Limited_Widening_Function<PH>::
-Limited_Widening_Function(Limited_Widening_Method lwm, const Constraint_System& cs)
-  : lw_method(lwm), limiting_cs(cs) { 
+Limited_Widening_Function(Limited_Widening_Method lwm,
+			  const Constraint_System& cs)
+  : lw_method(lwm), limiting_cs(cs) {
 }
 
 template <typename PH>

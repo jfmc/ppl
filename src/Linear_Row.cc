@@ -134,7 +134,8 @@ PPL::scalar_product_assign(Coefficient& z,
 
 /*! \relates Parma_Polyhedra_Library::Linear_Row */
 void
-PPL::reduced_scalar_product_assign(Coefficient& z, const Linear_Row& x, const Linear_Row& y) {
+PPL::reduced_scalar_product_assign(Coefficient& z,
+				   const Linear_Row& x, const Linear_Row& y) {
   // The reduced scalar product is only defined
   // if the topology of `x' is NNC and `y' has enough coefficients.
   assert(!x.is_necessarily_closed());

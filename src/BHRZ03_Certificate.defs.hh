@@ -34,7 +34,7 @@ site: http://www.cs.unipr.it/ppl/ . */
 /*!
   Convergence certificates are used to instantiate the BHZ03 framework
   so as to define widening operators for the finite powerset domain.
-  
+
   \note
   Each convergence certificate has to be used together with a
   compatible widening operator. In particular, BHRZ03_Certificate
@@ -44,7 +44,7 @@ class Parma_Polyhedra_Library::BHRZ03_Certificate {
 public:
   //! Default constructor.
   BHRZ03_Certificate();
-  
+
   //! Constructor: computes the certificate for \p ph.
   BHRZ03_Certificate(const Polyhedron& ph);
 
@@ -75,7 +75,7 @@ public:
   //! polyhedron \p ph is stricly smaller than \p *this.
 #endif // PPL_DOXYGEN_INCLUDE_IMPLEMENTATION_DETAILS
   bool is_stabilizing(const Polyhedron& ph) const;
-  
+
   //! A total ordering on BHRZ03 certificates.
   /*!
     This binary predicate defines a total ordering on BHRZ03 certificates
@@ -86,12 +86,12 @@ public:
     bool operator()(const BHRZ03_Certificate& x,
 		    const BHRZ03_Certificate& y) const;
   };
-  
+
 #ifdef PPL_DOXYGEN_INCLUDE_IMPLEMENTATION_DETAILS
   //! Check if gathered information is meaningful.
 #endif // PPL_DOXYGEN_INCLUDE_IMPLEMENTATION_DETAILS
   bool OK() const;
-  
+
 private:
   //! Affine dimension of the polyhedron.
   dimension_type affine_dim;

@@ -255,60 +255,6 @@ PPL::Linear_System::insert_pending(const Linear_Row& r) {
   assert(OK(false));
 }
 
-#if 0
-void
-PPL::Linear_System::merge_rows_assign(const Linear_System& y) {
-  assert(row_size >= y.row_size);
-  assert(check_sorted() && y.check_sorted());
-  // We can use this method only when the matrices do not
-  // contain any pending rows.
-  assert(num_pending_rows() == 0 && y.num_pending_rows() == 0);
-
-  Linear_System& x = *this;
-
-  // A temporary vector of rows...
-  std::vector<Row> tmp;
-  // ... with enough capacity not to require any reallocations.
-  tmp.reserve(compute_capacity(x.num_rows() + y.num_rows(), max_num_rows()));
-
-  std::vector<Row>::iterator xi = x.rows.begin();
-  const std::vector<Row>::iterator xend = x.rows.end();
-  std::vector<Row>::const_iterator yi = y.rows.begin();
-  const std::vector<Row>::const_iterator yend = y.rows.end();
-
-  while (xi != xend && yi != yend) {
-    const int comp = compare(*xi, *yi);
-    if (comp <= 0) {
-      // Elements that can be taken from `x' are actually _stolen_ from `x'
-      std::swap(*xi++, *tmp.insert(tmp.end(), Row()));
-      if (comp == 0)
-	// A duplicate element.
-	++yi;
-    }
-    else {
-      // (comp > 0)
-      Row copy(*yi++, row_size, row_capacity);
-      std::swap(copy, *tmp.insert(tmp.end(), Row()));
-    }
-  }
-  // Insert what is left.
-  if (xi != xend)
-    while (xi != xend)
-      std::swap(*xi++, *tmp.insert(tmp.end(), Row()));
-  else
-    while (yi != yend) {
-      Row copy(*yi++, row_size, row_capacity);
-      std::swap(copy, *tmp.insert(tmp.end(), Row()));
-    }
-
-  // We get the result vector and let the old one be destroyed.
-  std::swap(tmp, rows);
-  // There are no pending rows.
-  unset_pending_rows();
-  assert(check_sorted());
-}
-#endif
-
 void
 PPL::Linear_System::add_pending_rows(const Linear_System& y) {
   Linear_System& x = *this;

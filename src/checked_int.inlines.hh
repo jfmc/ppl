@@ -152,7 +152,7 @@ SPECIALIZE_SET_SPECIAL(unsigned_int, unsigned long)
 SPECIALIZE_SET_SPECIAL(unsigned_int, unsigned long long)
 
 template<typename Policy, typename Type>
-inline Result 
+inline Result
 pred_int(Type& to) {
   Result r = value_type<Policy>(to);
   if (r == V_UNKNOWN || r == V_NEG_OVERFLOW)
@@ -171,7 +171,7 @@ pred_int(Type& to) {
 }
 
 template<typename Policy, typename Type>
-inline Result 
+inline Result
 succ_int(Type& to) {
   Result r = value_type<Policy>(to);
   if (r == V_UNKNOWN || r == V_POS_OVERFLOW)
@@ -411,7 +411,7 @@ SPECIALIZE_ASSIGN(int_float_check_min_max, u_int64_t, float128_t)
 #undef ASSIGN2_SIGNED_UNSIGNED
 
 template <typename Policy, typename To>
-inline Result 
+inline Result
 assign_signed_int_c_string(To& to, const c_string from) {
   errno = 0;
   char *end;
@@ -424,7 +424,7 @@ assign_signed_int_c_string(To& to, const c_string from) {
 }
 
 template <typename Policy, typename To>
-inline Result 
+inline Result
 assign_unsigned_int_c_string(To& to, c_string from) {
   errno = 0;
   char *end;
@@ -447,7 +447,7 @@ assign_unsigned_int_c_string(To& to, c_string from) {
 }
 
 template <typename Policy, typename To>
-inline Result 
+inline Result
 assign_long_long_c_string(To& to, c_string from) {
   errno = 0;
   char *end;
@@ -461,7 +461,7 @@ assign_long_long_c_string(To& to, c_string from) {
 }
 
 template <typename Policy, typename To>
-inline Result 
+inline Result
 assign_unsigned_long_long_c_string(To& to, c_string from) {
   errno = 0;
   char *end;
@@ -658,7 +658,7 @@ struct Larger<unsigned long long> {
 };
 
 template <typename Policy, typename Type>
-inline Result 
+inline Result
 neg_int_larger(Type& to, const Type x) {
   typename Larger<Type>::Type_For_Neg l = x;
   l = -l;
@@ -666,7 +666,7 @@ neg_int_larger(Type& to, const Type x) {
 }
 
 template <typename Policy, typename Type>
-inline Result 
+inline Result
 add_int_larger(Type& to, const Type x, const Type y) {
   typename Larger<Type>::Type_For_Add l = x;
   l += y;
@@ -674,7 +674,7 @@ add_int_larger(Type& to, const Type x, const Type y) {
 }
 
 template <typename Policy, typename Type>
-inline Result 
+inline Result
 sub_int_larger(Type& to, const Type x, const Type y) {
   typename Larger<Type>::Type_For_Sub l = x;
   l -= y;
@@ -682,7 +682,7 @@ sub_int_larger(Type& to, const Type x, const Type y) {
 }
 
 template <typename Policy, typename Type>
-inline Result 
+inline Result
 mul_int_larger(Type& to, const Type x, const Type y) {
   typename Larger<Type>::Type_For_Mul l = x;
   l *= y;
@@ -690,7 +690,7 @@ mul_int_larger(Type& to, const Type x, const Type y) {
 }
 
 template <typename Policy, typename Type>
-inline Result 
+inline Result
 neg_signed_int(Type& to, const Type from) {
   Result r;
   if (Policy::check_overflow) {
@@ -708,7 +708,7 @@ neg_signed_int(Type& to, const Type from) {
 }
 
 template <typename Policy, typename Type>
-inline Result 
+inline Result
 neg_unsigned_int(Type& to, const Type from) {
   Result r;
   if (Policy::check_overflow) {
@@ -726,7 +726,7 @@ neg_unsigned_int(Type& to, const Type from) {
 }
 
 template <typename Policy, typename Type>
-inline Result 
+inline Result
 add_signed_int(Type& to, const Type x, const Type y) {
   Result r;
   if (Policy::check_overflow) {
@@ -750,7 +750,7 @@ add_signed_int(Type& to, const Type x, const Type y) {
 }
 
 template <typename Policy, typename Type>
-inline Result 
+inline Result
 add_unsigned_int(Type& to, const Type x, const Type y) {
   Result r;
   if (Policy::check_overflow) {
@@ -768,7 +768,7 @@ add_unsigned_int(Type& to, const Type x, const Type y) {
 }
 
 template <typename Policy, typename Type>
-inline Result 
+inline Result
 sub_signed_int(Type& to, const Type x, const Type y) {
   Result r;
   if (Policy::check_overflow) {
@@ -792,7 +792,7 @@ sub_signed_int(Type& to, const Type x, const Type y) {
 }
 
 template <typename Policy, typename Type>
-inline Result 
+inline Result
 sub_unsigned_int(Type& to, const Type x, const Type y) {
   Result r;
   if (Policy::check_overflow) {
@@ -810,7 +810,7 @@ sub_unsigned_int(Type& to, const Type x, const Type y) {
 }
 
 template <typename Policy, typename Type>
-inline Result 
+inline Result
 mul_signed_int(Type& to, const Type x, const Type y) {
   if (!Policy::check_overflow) {
     to = x * y;
@@ -860,7 +860,7 @@ mul_signed_int(Type& to, const Type x, const Type y) {
 }
 
 template <typename Policy, typename Type>
-inline Result 
+inline Result
 mul_unsigned_int(Type& to, const Type x, const Type y) {
   if (!Policy::check_overflow) {
     to = x * y;
@@ -884,7 +884,7 @@ mul_unsigned_int(Type& to, const Type x, const Type y) {
 }
 
 template <typename Policy, typename Type>
-inline Result 
+inline Result
 div_signed_int(Type& to, const Type x, const Type y) {
   Result r;
   if (Policy::check_divbyzero && y == 0) {
@@ -907,7 +907,7 @@ div_signed_int(Type& to, const Type x, const Type y) {
 }
 
 template <typename Policy, typename Type>
-inline Result 
+inline Result
 div_unsigned_int(Type& to, const Type x, const Type y) {
   Result r;
   if (Policy::check_divbyzero && y == 0) {
@@ -926,7 +926,7 @@ div_unsigned_int(Type& to, const Type x, const Type y) {
 }
 
 template <typename Policy, typename Type>
-inline Result 
+inline Result
 mod_int(Type& to, const Type x, const Type y) {
   Result r;
   if (Policy::check_divbyzero && y == 0) {
@@ -940,7 +940,7 @@ mod_int(Type& to, const Type x, const Type y) {
 }
 
 template <typename Type>
-inline void 
+inline void
 isqrtrem_(Type& q, Type& r, const Type from) {
   q = 0;
   r = from;
@@ -956,7 +956,7 @@ isqrtrem_(Type& q, Type& r, const Type from) {
 }
 
 template <typename Policy, typename Type>
-inline Result 
+inline Result
 sqrt_unsigned_int(Type& to, const Type from) {
   Type rem;
   isqrtrem_(to, rem, from);
@@ -967,7 +967,7 @@ sqrt_unsigned_int(Type& to, const Type from) {
 }
 
 template <typename Policy, typename Type>
-inline Result 
+inline Result
 sqrt_signed_int(Type& to, const Type from) {
   Result r;
   if (Policy::check_sqrt_neg && from < 0) {

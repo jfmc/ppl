@@ -108,7 +108,8 @@ private:
   Parma_Polyhedra_Library::Coefficient n;
 
 public:
-  explicit PPL_integer_out_of_range(const Parma_Polyhedra_Library::Coefficient& i)
+  explicit
+  PPL_integer_out_of_range(const Parma_Polyhedra_Library::Coefficient& i)
     : n(i) {
   }
 

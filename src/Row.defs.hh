@@ -79,7 +79,7 @@ public:
 
     //! Total number of bits that can be stored.
     static const unsigned num_bits = std::numeric_limits<base_type>::digits;
-    
+
     //! Constructs an object with flags set as in \p n.
     explicit Flags(base_type n);
 
@@ -212,7 +212,7 @@ public:
   //! Returns a non-const reference to the flags of \p *this.
   Flags& flags();
 
-  //! Returns the size() of the largest possible Row. 
+  //! Returns the size() of the largest possible Row.
   static dimension_type max_size();
 
   //! Gives the number of coefficients currently in use.
@@ -340,7 +340,7 @@ public:
   */
   void shrink(dimension_type new_size);
 
-  //! Returns the size() of the largest possible Impl. 
+  //! Returns the size() of the largest possible Impl.
   static dimension_type max_size();
 
   //! \name Flags accessors

@@ -294,7 +294,8 @@ private:
   //! Builds a system of \p n_rows constraints on a \p n_columns - 1
   //! dimensional space (including the \f$\epsilon\f$ dimension, if
   //! \p topol is <CODE>NOT_NECESSARILY_CLOSED</CODE>).
-  Constraint_System(Topology topol, dimension_type n_rows, dimension_type n_columns);
+  Constraint_System(Topology topol,
+		    dimension_type n_rows, dimension_type n_columns);
 
   //! Swaps \p *this with \p y.
   void swap(Constraint_System& y);

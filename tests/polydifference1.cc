@@ -73,7 +73,7 @@ main() TRY {
 
   C_Polyhedron ph3(2);
   ph3.add_constraint(2*y >= 3);
-  
+
   known_result.poly_difference_assign(ph3);
 
   int retval = (computed_result == known_result) ? 0 : 1;

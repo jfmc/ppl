@@ -242,7 +242,8 @@ PPL::subset_or_equal(const Saturation_Row& x, const Saturation_Row& y) {
 
 /*! \relates Parma_Polyhedra_Library::Saturation_Row */
 bool
-PPL::subset_or_equal(const Saturation_Row& x, const Saturation_Row& y, bool& strict_subset) {
+PPL::subset_or_equal(const Saturation_Row& x, const Saturation_Row& y,
+		     bool& strict_subset) {
   size_t x_size = mpz_size(x.vec);
   size_t y_size = mpz_size(y.vec);
   if (x_size > y_size)

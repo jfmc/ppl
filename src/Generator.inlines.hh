@@ -172,7 +172,8 @@ point(const Linear_Expression& e, Coefficient_traits::const_reference d) {
 
 /*! \relates Generator */
 inline Generator
-closure_point(const Linear_Expression& e, Coefficient_traits::const_reference d) {
+closure_point(const Linear_Expression& e,
+	      Coefficient_traits::const_reference d) {
   return Generator::closure_point(e, d);
 }
 

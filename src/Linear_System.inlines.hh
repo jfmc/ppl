@@ -290,7 +290,8 @@ Linear_System::With_Saturation_Matrix_iterator::operator+=(difference_type d) {
 }
 
 inline Linear_System::With_Saturation_Matrix_iterator
-Linear_System::With_Saturation_Matrix_iterator::operator+(difference_type d) const {
+Linear_System::With_Saturation_Matrix_iterator::
+operator+(difference_type d) const {
   With_Saturation_Matrix_iterator tmp = *this;
   tmp += d;
   return tmp;
@@ -304,7 +305,8 @@ Linear_System::With_Saturation_Matrix_iterator::operator-=(difference_type d) {
 }
 
 inline Linear_System::With_Saturation_Matrix_iterator
-Linear_System::With_Saturation_Matrix_iterator::operator-(difference_type d) const {
+Linear_System::With_Saturation_Matrix_iterator::
+operator-(difference_type d) const {
   With_Saturation_Matrix_iterator tmp = *this;
   tmp -= d;
   return tmp;

@@ -83,7 +83,8 @@ PPL::operator+(const Linear_Expression& e1, const Linear_Expression& e2) {
 
 /*! \relates Parma_Polyhedra_Library::Linear_Expression */
 PPL::Linear_Expression
-PPL::operator+(Coefficient_traits::const_reference n, const Linear_Expression& e) {
+PPL::operator+(Coefficient_traits::const_reference n,
+	       const Linear_Expression& e) {
   Linear_Expression r(e);
   r[0] += n;
   return r;
@@ -136,7 +137,8 @@ PPL::operator-(const Linear_Expression& e1, const Linear_Expression& e2) {
 
 /*! \relates Parma_Polyhedra_Library::Linear_Expression */
 PPL::Linear_Expression
-PPL::operator-(Coefficient_traits::const_reference n, const Linear_Expression& e) {
+PPL::operator-(Coefficient_traits::const_reference n,
+	       const Linear_Expression& e) {
   Linear_Expression r(e);
   for (dimension_type i = e.size(); i-- > 0; )
     negate(r[i]);
@@ -148,7 +150,8 @@ PPL::operator-(Coefficient_traits::const_reference n, const Linear_Expression& e
 
 /*! \relates Parma_Polyhedra_Library::Linear_Expression */
 PPL::Linear_Expression
-PPL::operator*(Coefficient_traits::const_reference n, const Linear_Expression& e) {
+PPL::operator*(Coefficient_traits::const_reference n,
+	       const Linear_Expression& e) {
   Linear_Expression r(e);
   for (dimension_type i = e.size(); i-- > 0; )
     r[i] *= n;

@@ -108,7 +108,7 @@ widen_fun_ref(void (PH::* wm)(const PH&, unsigned*));
 
   \param lwm
   The limited widening method.
-  
+
   \param cs
   The constraint system limiting the widening.
 */

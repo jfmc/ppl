@@ -123,7 +123,7 @@ S(unsigned n) {
     s.add_disjunct(P(p_base + 2));
     s.add_disjunct(P(p_base + 4));
     break;
-  }    
+  }
   return s;
 }
 

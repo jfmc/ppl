@@ -74,7 +74,8 @@ bool subset_or_equal(const Saturation_Row& x, const Saturation_Row& y);
 //! indicating whether the inclusion is strict or not.
 /*! \relates Saturation_Row */
 #endif // PPL_DOXYGEN_INCLUDE_IMPLEMENTATION_DETAILS
-bool subset_or_equal(const Saturation_Row& x, const Saturation_Row& y, bool& strict_subset);
+bool subset_or_equal(const Saturation_Row& x, const Saturation_Row& y,
+		     bool& strict_subset);
 
 #ifdef PPL_DOXYGEN_INCLUDE_IMPLEMENTATION_DETAILS
 //! Set-theoretic strict inclusion test.
@@ -86,7 +87,9 @@ bool strict_subset(const Saturation_Row& x, const Saturation_Row& y);
 //! Set-theoretic union.
 /*! \relates Saturation_Row */
 #endif // PPL_DOXYGEN_INCLUDE_IMPLEMENTATION_DETAILS
-void set_union(const Saturation_Row& x, const Saturation_Row& y, Saturation_Row& z);
+void set_union(const Saturation_Row& x,
+	       const Saturation_Row& y,
+	       Saturation_Row& z);
 
 } // namespace Parma_Polyhedra_Library
 
@@ -142,20 +145,25 @@ public:
 				   const Saturation_Row& y);
 
   friend bool
-  Parma_Polyhedra_Library::operator==(const Saturation_Row& x,  const Saturation_Row& y);
+  Parma_Polyhedra_Library::operator==(const Saturation_Row& x,
+				      const Saturation_Row& y);
 
   friend bool
-  Parma_Polyhedra_Library::operator!=(const Saturation_Row& x, const Saturation_Row& y);
+  Parma_Polyhedra_Library::operator!=(const Saturation_Row& x,
+				      const Saturation_Row& y);
 
   friend bool
-  Parma_Polyhedra_Library::subset_or_equal(const Saturation_Row& x, const Saturation_Row& y);
+  Parma_Polyhedra_Library::subset_or_equal(const Saturation_Row& x,
+					   const Saturation_Row& y);
 
   friend bool
-  Parma_Polyhedra_Library::subset_or_equal(const Saturation_Row& x, const Saturation_Row& y,
+  Parma_Polyhedra_Library::subset_or_equal(const Saturation_Row& x,
+					   const Saturation_Row& y,
 					   bool& strict_subset);
 
   friend bool
-  Parma_Polyhedra_Library::strict_subset(const Saturation_Row& x, const Saturation_Row& y);
+  Parma_Polyhedra_Library::strict_subset(const Saturation_Row& x,
+					 const Saturation_Row& y);
 
   friend void
   Parma_Polyhedra_Library::set_union(const Saturation_Row& x,

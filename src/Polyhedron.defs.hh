@@ -607,7 +607,7 @@ public:
     \param sup_d
     The denominator of the supremum value;
 
-    \param maximum 
+    \param maximum
     <CODE>true</CODE> if and only if the supremum is also the maximum value.
 
     \exception std::invalid_argument
@@ -1353,7 +1353,7 @@ public:
     An optional pointer to an unsigned variable storing the number of
     available tokens (to be used when applying the
     \ref widening_with_tokens "widening with tokens" delay technique).
-    
+
     \exception std::invalid_argument
     Thrown if \p *this, \p y and \p cs are topology-incompatible or
     dimension-incompatible.

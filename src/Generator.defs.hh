@@ -260,8 +260,10 @@ public:
     \exception std::invalid_argument
     Thrown if \p d is zero.
   */
-  static Generator point(const Linear_Expression& e = Linear_Expression::zero(),
-			 Coefficient_traits::const_reference d = Coefficient_one());
+  static Generator point(const Linear_Expression& e
+			 = Linear_Expression::zero(),
+			 Coefficient_traits::const_reference d
+			 = Coefficient_one());
 
   //! Returns the closure point at \p e / \p d.
   /*!
@@ -379,7 +381,8 @@ private:
   friend class Parma_Polyhedra_Library::Polyhedron;
 
   friend
-  Parma_Polyhedra_Library::Linear_Expression::Linear_Expression(const Generator& g);
+  Parma_Polyhedra_Library::
+  Linear_Expression::Linear_Expression(const Generator& g);
 
   // FIXME: the following friend declaration is only to grant access to
   // Constraint_System::satisfies_all_constraints().

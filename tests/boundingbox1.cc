@@ -63,7 +63,7 @@ test1() {
 }
 
 // This is non-bounded closed polyhedron  in 2D consisting of a wedge bounded
-// by y >= 0 and x >= y. 
+// by y >= 0 and x >= y.
 // The resulting bounding box depends on the complexity class.
 static void
 test2() {

@@ -73,7 +73,7 @@ set_special_mpq(mpq_class& v, const Result r) {
 SPECIALIZE_SET_SPECIAL(mpq, mpq_class)
 
 template <typename Policy>
-inline Result 
+inline Result
 assign_mpq_mpz(mpq_class& to, const mpz_class& from) {
   to = from;
   return V_EQ;
@@ -125,7 +125,7 @@ SPECIALIZE_ASSIGN(mpq_unsigned_int, mpq_class, unsigned long)
 SPECIALIZE_ASSIGN(mpq_unsigned_int, mpq_class, unsigned long long)
 
 template <typename Policy>
-inline Result 
+inline Result
 assign_mpq_c_string(mpq_class& to, c_string from) {
   to = from;
   return V_EQ;
@@ -182,7 +182,7 @@ SPECIALIZE_ASSIGN(mpq_float, mpq_class, float)
 SPECIALIZE_ASSIGN(mpq_float, mpq_class, double)
 
 template <typename Policy>
-inline Result 
+inline Result
 pred_mpq(mpq_class&) {
   throw 0;
 }
@@ -190,7 +190,7 @@ pred_mpq(mpq_class&) {
 SPECIALIZE_PRED(mpq, mpq_class)
 
 template <typename Policy>
-inline Result 
+inline Result
 succ_mpq(mpq_class&) {
   throw 0;
 }
@@ -198,7 +198,7 @@ succ_mpq(mpq_class&) {
 SPECIALIZE_SUCC(mpq, mpq_class)
 
 template <typename Policy>
-inline Result 
+inline Result
 neg_mpq(mpq_class& to, const mpq_class& from) {
   mpq_neg(to.get_mpq_t(), from.get_mpq_t());
   return V_EQ;
@@ -207,7 +207,7 @@ neg_mpq(mpq_class& to, const mpq_class& from) {
 SPECIALIZE_NEG(mpq, mpq_class, mpq_class)
 
 template <typename Policy>
-inline Result 
+inline Result
 add_mpq(mpq_class& to, const mpq_class& x, const mpq_class& y) {
   to = x + y;
   return V_EQ;
@@ -216,7 +216,7 @@ add_mpq(mpq_class& to, const mpq_class& x, const mpq_class& y) {
 SPECIALIZE_ADD(mpq, mpq_class, mpq_class)
 
 template <typename Policy>
-inline Result 
+inline Result
 sub_mpq(mpq_class& to, const mpq_class& x, const mpq_class& y) {
   to = x - y;
   return V_EQ;
@@ -225,7 +225,7 @@ sub_mpq(mpq_class& to, const mpq_class& x, const mpq_class& y) {
 SPECIALIZE_SUB(mpq, mpq_class, mpq_class)
 
 template <typename Policy>
-inline Result 
+inline Result
 mul_mpq(mpq_class& to, const mpq_class& x, const mpq_class& y) {
   to = x * y;
   return V_EQ;
@@ -234,7 +234,7 @@ mul_mpq(mpq_class& to, const mpq_class& x, const mpq_class& y) {
 SPECIALIZE_MUL(mpq, mpq_class, mpq_class)
 
 template <typename Policy>
-inline Result 
+inline Result
 div_mpq(mpq_class& to, const mpq_class& x, const mpq_class& y) {
   if (Policy::check_divbyzero && sgn(y) == 0)
     return V_UNKNOWN;
@@ -245,7 +245,7 @@ div_mpq(mpq_class& to, const mpq_class& x, const mpq_class& y) {
 SPECIALIZE_DIV(mpq, mpq_class, mpq_class)
 
 template <typename Policy>
-inline Result 
+inline Result
 mod_mpq(mpq_class& to, const mpq_class& x, const mpq_class& y) {
   if (Policy::check_divbyzero && sgn(y) == 0)
     return V_UNKNOWN;

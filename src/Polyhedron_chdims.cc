@@ -338,7 +338,7 @@ PPL::Polyhedron::concatenate_assign(const Polyhedron& y) {
   assert(added_rows > 0 && added_columns > 0);
 
   con_sys.add_zero_rows_and_columns(added_rows, added_columns,
-				    Linear_Row::Flags(topology(), 
+				    Linear_Row::Flags(topology(),
 						      Linear_Row::RAY_OR_POINT_OR_INEQUALITY));
   // Move the epsilon coefficient to the last column, if needed.
   if (!is_necessarily_closed())
