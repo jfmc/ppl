@@ -150,6 +150,12 @@ sp_stub_##name(Prolog_term_ref goal, void*) { \
   return name(arg1, arg2, arg3, arg4); \
 }
 
+SP_STUB_1(ppl_version_major)
+SP_STUB_1(ppl_version_minor)
+SP_STUB_1(ppl_version_revision)
+SP_STUB_1(ppl_version_beta)
+SP_STUB_1(ppl_version)
+SP_STUB_1(ppl_max_space_dimension)
 SP_STUB_0(ppl_initialize)
 SP_STUB_0(ppl_finalize)
 SP_STUB_1(ppl_set_timeout_exception_atom)
@@ -236,6 +242,12 @@ ppl_sicstus_init(int /* when */) {
       return;
     }
   }
+  SP_DEFINE_C_PREDICATE(ppl_version_major, 1);
+  SP_DEFINE_C_PREDICATE(ppl_version_minor, 1);
+  SP_DEFINE_C_PREDICATE(ppl_version_revision, 1);
+  SP_DEFINE_C_PREDICATE(ppl_version_beta, 1);
+  SP_DEFINE_C_PREDICATE(ppl_version, 1);
+  SP_DEFINE_C_PREDICATE(ppl_max_space_dimension, 1);
   SP_DEFINE_C_PREDICATE(ppl_initialize, 0);
   SP_DEFINE_C_PREDICATE(ppl_finalize, 0);
   SP_DEFINE_C_PREDICATE(ppl_set_timeout_exception_atom, 1);

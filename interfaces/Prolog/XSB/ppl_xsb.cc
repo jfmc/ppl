@@ -326,7 +326,7 @@ Prolog_get_cons(Prolog_term_ref c, Prolog_term_ref& h, Prolog_term_ref& t) {
 static inline int
 Prolog_unify(Prolog_term_ref t, Prolog_term_ref u) {
   return p2p_unify(t, u) != FALSE;
-}
+ }
 
 static PPL::Integer
 integer_term_to_Integer(Prolog_term_ref t) {
@@ -346,6 +346,12 @@ Integer_to_integer_term(const PPL::Integer& n) {
   return t;
 }
 
+#define ppl_version_major xsb_stub_ppl_version_major
+#define ppl_version_minor xsb_stub_ppl_version_minor
+#define ppl_version_revision xsb_stub_ppl_version_revision
+#define ppl_version_beta xsb_stub_ppl_version_beta
+#define ppl_version xsb_stub_ppl_version
+#define ppl_max_space_dimension xsb_stub_ppl_max_space_dimension
 #define ppl_initialize xsb_stub_ppl_initialize
 #define ppl_finalize xsb_stub_ppl_finalize
 #define ppl_set_timeout_exception_atom xsb_stub_ppl_set_timeout_exception_atom
@@ -421,6 +427,12 @@ Integer_to_integer_term(const PPL::Integer& n) {
 
 #include "../ppl_prolog.icc"
 
+#undef ppl_version_major
+#undef ppl_version_minor
+#undef ppl_version_revision
+#undef ppl_version_beta
+#undef ppl_version
+#undef ppl_max_space_dimension
 #undef ppl_initialize
 #undef ppl_finalize
 #undef ppl_set_timeout_exception_atom
@@ -545,6 +557,12 @@ name() { \
   return xsb_stub_##name(arg1, arg2, arg3, arg4, arg5); \
 }
 
+XSB_ENTRY_1(ppl_version_major)
+XSB_ENTRY_1(ppl_version_minor)
+XSB_ENTRY_1(ppl_version_revision)
+XSB_ENTRY_1(ppl_version_beta)
+XSB_ENTRY_1(ppl_version)
+XSB_ENTRY_1(ppl_max_space_dimension)
 XSB_ENTRY_0(ppl_initialize)
 XSB_ENTRY_0(ppl_finalize)
 XSB_ENTRY_1(ppl_set_timeout_exception_atom)

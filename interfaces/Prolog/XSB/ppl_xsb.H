@@ -22,6 +22,12 @@ For the most up-to-date information see the Parma Polyhedra Library
 site: http://www.cs.unipr.it/ppl/ . */
 
 :- export
+	ppl_version_major/1,
+	ppl_version_minor/1,
+	ppl_version_revision/1,
+	ppl_version_beta/1,
+	ppl_version/1,
+	ppl_max_space_dimension/1,
 	ppl_initialize/0,
 	ppl_finalize/0,
 	ppl_set_timeout_exception_atom/1,

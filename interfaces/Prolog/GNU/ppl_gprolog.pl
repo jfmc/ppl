@@ -21,6 +21,12 @@ USA.
 For the most up-to-date information see the Parma Polyhedra Library
 site: http://www.cs.unipr.it/ppl/ . */
 
+:- foreign(ppl_version_major(+term)).
+:- foreign(ppl_version_minor(+term)).
+:- foreign(ppl_version_revision(+term)).
+:- foreign(ppl_version_beta(+term)).
+:- foreign(ppl_version(+term)).
+:- foreign(ppl_max_space_dimension(+term)).
 :- foreign(ppl_initialize).
 :- foreign(ppl_finalize).
 :- foreign(ppl_set_timeout_exception_atom(+term)).

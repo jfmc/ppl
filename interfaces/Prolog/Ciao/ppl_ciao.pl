@@ -23,6 +23,12 @@ site: http://www.cs.unipr.it/ppl/ . */
 
 :- module(ppl_ciao,
 [
+        ppl_version_major/1,
+        ppl_version_minor/1,
+        ppl_version_revision/1,
+        ppl_version_beta/1,
+        ppl_version/1,
+        ppl_max_space_dimension/1,
         ppl_initialize/0,
         ppl_finalize/0,
         ppl_set_timeout_exception_atom/1,
@@ -103,10 +109,40 @@ site: http://www.cs.unipr.it/ppl/ . */
         foreign_interface
 ]).
 
+:- true pred ppl_version_major_1(in(Version),
+                               go(success))
+          :: any term + int
+  + (returns(Success), foreign(ppl_version_major)).
+.
+
+:- true pred ppl_version_minor_1(in(Version),
+                               go(success))
+          :: any term + int
+  + (returns(Success), foreign(ppl_version_minor)).
+
+:- true pred ppl_version_revision_1(in(Version),
+                               go(success))
+          :: any term + int
+  + (returns(Success), foreign(ppl_version_revision)).
+
+:- true pred ppl_version_beta_1(in(Version),
+                               go(success))
+          :: any term + int
+  + (returns(Success), foreign(ppl_version_beta)).
+
+:- true pred ppl_version_1(in(Version),
+                               go(success))
+          :: any term + int
+  + (returns(Success), foreign(ppl_version)).
+
+:- true pred ppl_max_space_dimension_1(in(Version),
+                               go(success))
+          :: any term + int
+  + (returns(Success), foreign(ppl_max_space_dimension)).
+
 :- true pred ppl_initialize + foreign.
 
 :- true pred ppl_finalize + foreign.
-
 
 :- true pred ppl_set_timeout_exception_atom(in(Atom))
              :: any_term + foreign.
@@ -643,6 +679,18 @@ ppl_Polyhedron_bounded_H79_extrapolation_assign_with_token(Handle1,
 
 :- impl_defined(
 [
+        ppl_version_major_1/2,
+%        ppl_version_major/1,
+        ppl_version_minor_1/2,
+%        ppl_version_minor/1,
+        ppl_version_revision_1/2,
+%        ppl_version_revision/1,
+        ppl_version_beta_1/2,
+%        ppl_version_beta/1,
+        ppl_version_1/2,
+%        ppl_version/1,
+        ppl_max_space_dimension_1/2,
+%        ppl_max_space_dimension/1,
         ppl_initialize/0,
         ppl_finalize/0,
         ppl_set_timeout_exception_atom/1,
@@ -764,6 +812,24 @@ ppl_Polyhedron_bounded_H79_extrapolation_assign_with_token(Handle1,
 This commnted code has been kept for future use
 since the above version of this is temporary.
 ***********************************************
+
+:- true ppl_version_major(in(Version))
+             :: any_term + foreign.
+
+:- true ppl_version_minor
+             :: any_term + foreign.
+
+:- true ppl_version_revision
+             :: any_term + foreign.
+
+:- true ppl_version_beta
+             :: any_term + foreign.
+
+:- true ppl_version
+             :: any_term + foreign.
+
+:- true ppl_max_space_dimension
+             :: any_term + foreign.
 
 :- true pred ppl_initialize + foreign.
 
@@ -1050,6 +1116,12 @@ since the above version of this is temporary.
 
 :- impl_defined(
 [
+        ppl_version_major/1,
+        ppl_version_minor/1,
+        ppl_version_revision/1,
+        ppl_version_beta/1,
+        ppl_version/1,
+        ppl_max_space_dimension/1,
         ppl_initialize/0,
         ppl_finalize/0,
         ppl_set_timeout_exception_atom/1,

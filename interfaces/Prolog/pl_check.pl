@@ -211,6 +211,21 @@ catch_time :-
   !,
   ppl_finalize.
 
+all_versions([Vmajor, Vminor, Vrevision, Vbeta], V) :-
+  ppl_initialize,
+  ppl_version_major(Vmajor),
+  ppl_version_minor(Vminor),
+  ppl_version_revision(Vrevision),
+  ppl_version_beta(Vbeta),
+  ppl_version(V),
+  !,
+  ppl_finalize.
+  
+max_dim(M) :-
+  ppl_initialize,
+  ppl_max_space_dimension(M),  !,
+  ppl_finalize.
+
 % Tests new_Polyhedron_from_dimension
 % and ppl_delete_Polyhedron for C and NNC Polyhedron.
 new_universe :-
