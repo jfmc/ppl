@@ -97,7 +97,9 @@ if test x"$have_gmp" = xno
 then
   AC_MSG_ERROR([Cannot find GMP version 4 or higher.
 GMP is the GNU Multi-Precision library:
-see http://www.swox.com/gmp/ for more information.])
+see http://www.swox.com/gmp/ for more information.
+Do not forget to enable the C++ interface: add --enable-cxx
+to the configuration options.])
 fi
 
 AC_CHECK_SIZEOF(mp_limb_t, 4, [#include <gmp.h>])
