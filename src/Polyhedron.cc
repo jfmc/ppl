@@ -1221,10 +1221,14 @@ PPL::Polyhedron::add_constraints_and_minimize(ConSys& cs) {
 
   // Dealing with zero-dim space polyhedra first.
   if (space_dim == 0) {
-    // Checking for an inconsistent constraint.
+    // In a 0-dimensional space the constraints are trivial (e.g.,
+    // 1 >= 0) or inconsistent (e.g., -1 >= 0 and 1 == 0). In a system
+    // of constraints `begin()' and `end()' are equal if and only if
+    // the system contains trivial constraints only.
     if (cs.begin() == cs.end())
       return true;
-    // Inconsistent constraint found.
+    // There is a constraint, it must be inconsistent, the polyhedron
+    // is empty.
     status.set_empty();
     return false;
   }
@@ -1397,9 +1401,13 @@ PPL::Polyhedron::add_constraints(ConSys& cs) {
     return;
 
   if (space_dim == 0) {
-    // Check for an inconsistent constraint.
+    // In a 0-dimensional space the constraints are trivial (e.g.,
+    // 1 >= 0) or inconsistent (e.g., -1 >= 0 and 1 == 0). In a system
+    // of constraints `begin()' and `end()' are equal if and only if
+    // the system  contains trivial constraints only.
     if (cs.begin() != cs.end())
-      // Inconsistent constraint found.
+      // There is a constraint, it must be inconsistent, the polyhedron
+      // is empty.
       status.set_empty();
     return;
   }
