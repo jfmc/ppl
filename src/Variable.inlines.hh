@@ -48,12 +48,12 @@ Variable::get_output_function() {
 
 /*! \relates Variable */
 inline bool
-less(const Variable& v, const Variable& w) {
+less(const Variable v, const Variable w) {
   return v.id() < w.id();
 }
 
 inline bool
-Variable::Compare::operator()(const Variable& x, const Variable& y) const {
+Variable::Compare::operator()(const Variable x, const Variable y) const {
   return less(x, y);
 }
 

@@ -40,7 +40,7 @@ LinExpression::LinExpression(dimension_type sz, bool)
 }
 
 inline
-LinExpression::LinExpression(const Variable& v)
+LinExpression::LinExpression(const Variable v)
   : Row(Row::Type(), v.id() + 2) {
   (*this)[v.id() + 1] = 1;
 }

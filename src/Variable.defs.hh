@@ -37,13 +37,13 @@ namespace IO_Operators {
 //! Output operator.
 /*! \relates Parma_Polyhedra_Library::Variable */
 std::ostream&
-operator<<(std::ostream& s, const Variable& v);
+operator<<(std::ostream& s, Variable v);
 
 } // namespace IO_Operators
 
 //! Defines a total ordering on variables.
 /*! \relates Variable */
-bool less(const Variable& v, const Variable& w);
+bool less(Variable v, Variable w);
 
 } // namespace Parma_Polyhedra_Library
 
@@ -84,7 +84,7 @@ public:
   dimension_type id() const;
 
   //! Type of output functions.
-  typedef void Output_Function_Type(std::ostream& s, const Variable& v);
+  typedef void Output_Function_Type(std::ostream& s, Variable v);
 
   //! Set the output function to be used for printing Variable objects.
   static void set_output_function(Output_Function_Type* p);
@@ -95,7 +95,7 @@ public:
   //! Binary predicate defining the total ordering on variables.
   struct Compare {
     //! Returns <CODE>true</CODE> if and only if \p x comes before \p y.
-    bool operator()(const Variable& x, const Variable& y) const;
+    bool operator()(Variable x, Variable y) const;
   };
 
 private:
@@ -107,13 +107,13 @@ private:
 
   friend std::ostream&
   Parma_Polyhedra_Library::IO_Operators::operator<<(std::ostream& s,
-						    const Variable& v);
+						    Variable v);
 
   //! Pointer to the current output function.
   static Output_Function_Type* current_output_function;
 
   //! The default output function.
-  static void default_output_function(std::ostream& s, const Variable& v);
+  static void default_output_function(std::ostream& s, Variable v);
 };
 
 #include "Variable.inlines.hh"

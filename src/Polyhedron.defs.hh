@@ -879,7 +879,7 @@ public:
         - symmetries.
     \endif
   */
-  void affine_image(const Variable& var,
+  void affine_image(Variable var,
 		    const LinExpression& expr,
 		    const Integer& denominator = Integer_one());
 
@@ -966,7 +966,7 @@ public:
     \f]
     \endif
   */
-  void affine_preimage(const Variable& var,
+  void affine_preimage(Variable var,
 		       const LinExpression& expr,
 		       const Integer& denominator = Integer_one());
 
@@ -992,7 +992,7 @@ public:
 				     or if \p *this is a C_Polyhedron and
 				     \p relsym is a strict relation symbol.
   */
-  void generalized_affine_image(const Variable& var,
+  void generalized_affine_image(Variable var,
 				const Relation_Symbol relsym,
 				const LinExpression& expr,
 				const Integer& denominator = Integer_one());

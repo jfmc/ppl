@@ -1718,7 +1718,7 @@ PPL::Polyhedron::poly_difference_assign(const Polyhedron& y) {
 }
 
 void
-PPL::Polyhedron::affine_image(const Variable& var,
+PPL::Polyhedron::affine_image(const Variable var,
 			      const LinExpression& expr,
 			      const Integer& denominator) {
   // The denominator cannot be zero.
@@ -1798,7 +1798,7 @@ PPL::Polyhedron::affine_image(const Variable& var,
 
 
 void
-PPL::Polyhedron::affine_preimage(const Variable& var,
+PPL::Polyhedron::affine_preimage(const Variable var,
 				 const LinExpression& expr,
 				 const Integer& denominator) {
   // The denominator cannot be zero.
@@ -1874,7 +1874,7 @@ PPL::Polyhedron::affine_preimage(const Variable& var,
 }
 
 void
-PPL::Polyhedron::generalized_affine_image(const Variable& var,
+PPL::Polyhedron::generalized_affine_image(const Variable var,
 					  const Relation_Symbol relsym,
 					  const LinExpression& expr,
 					  const Integer& denominator) {

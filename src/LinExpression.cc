@@ -177,7 +177,7 @@ PPL::operator+=(LinExpression& e1, const LinExpression& e2) {
 
 /*! \relates Parma_Polyhedra_Library::LinExpression */
 PPL::LinExpression&
-PPL::operator+=(LinExpression& e, const Variable& v) {
+PPL::operator+=(LinExpression& e, const Variable v) {
   dimension_type e_size = e.size();
   dimension_type vpos = v.id() + 1;
   if (e_size <= vpos) {
@@ -209,7 +209,7 @@ PPL::operator-=(LinExpression& e1, const LinExpression& e2) {
 
 /*! \relates Parma_Polyhedra_Library::LinExpression */
 PPL::LinExpression&
-PPL::operator-=(LinExpression& e, const Variable& v) {
+PPL::operator-=(LinExpression& e, const Variable v) {
   dimension_type e_size = e.size();
   dimension_type vpos = v.id() + 1;
   if (e_size <= vpos) {

@@ -33,7 +33,7 @@ PPL::Variable::Output_Function_Type*
 PPL::Variable::current_output_function = 0;
 
 void
-PPL::Variable::default_output_function(std::ostream& s, const Variable& v) {
+PPL::Variable::default_output_function(std::ostream& s, const Variable v) {
   dimension_type varid = v.id();
   s << static_cast<char>('A' + varid % 26);
   if (dimension_type i = varid / 26)
@@ -42,7 +42,7 @@ PPL::Variable::default_output_function(std::ostream& s, const Variable& v) {
 
 /*! \relates Parma_Polyhedra_Library::Variable */
 std::ostream&
-PPL::IO_Operators::operator<<(std::ostream& s, const Variable& v) {
+PPL::IO_Operators::operator<<(std::ostream& s, const Variable v) {
   (*Variable::current_output_function)(s, v);
   return s;
 }
