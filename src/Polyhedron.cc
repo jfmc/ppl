@@ -2546,6 +2546,8 @@ PPL::Polyhedron::OK(bool check_not_empty) const {
 	  || con_sys.num_equalities() != copy_of_con_sys.num_equalities()) {
 	cerr << "Constraints are declared minimized, but they are not!"
 	     << endl
+	     << "(Wrong number of equalities and/or inequalities.)"
+	     << endl
 	     << "Here is the minimized form of the constraints:"
 	     << endl
 	     << copy_of_con_sys
