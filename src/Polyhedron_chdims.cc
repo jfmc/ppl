@@ -583,6 +583,10 @@ PPL::Polyhedron::fold_dimensions(const Variables_Set& to_be_folded,
   if (var.id()+1 > space_dim)
     throw_dimension_incompatible("fold_dimensions(tbf, v)", "v", var);
 
+  // The folding of no dimensions is a no-op.
+  if (to_be_folded.empty())
+    return;
+
   // All variables in `to_be_folded' should be dimensions of the polyhedron.
   if (to_be_folded.rbegin()->id()+1 > space_dim)
     throw_dimension_incompatible("fold_dimensions(tbf, v)",
