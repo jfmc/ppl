@@ -83,27 +83,24 @@ template <typename Policy>
 inline Result
 set_special_mpq(mpq_class& v, Result r) {
   int num;
-  Result t = classify(r);
-  if (Policy::store_nan && t == VC_NAN)
-    num = 0;
-  else if (Policy::store_infinity) {
-    switch (t) {
+  Result c = classify(r);
+  if (Policy::store_nan && c == VC_NAN) {
+    v.get_num() = 0;
+    v.get_den() = 0;
+  } else if (Policy::store_infinity) {
+    switch (c) {
     case VC_MINUS_INFINITY:
-      num = -1;
-      r = V_EQ;
-      break;
+      v.get_num() = -1;
+      v.get_den() = 0;
+      return V_EQ;
     case VC_PLUS_INFINITY:
-      num = 1;
-      r = V_EQ;
-      break;
+      v.get_num() = 1;
+      v.get_den() = 0;
+      return V_EQ;
     default:
-      return r;
+      break;
     }
   }
-  else
-    return r;
-  v.get_num() = num;
-  v.get_den() = 0;
   return r;
 }
 
@@ -121,8 +118,8 @@ SPECIALIZE_ASSIGN(mpq_mpz, mpq_class, mpz_class)
 template <typename Policy, typename From>
 inline Result
 assign_mpq_signed_int(mpq_class& to, const From from, Rounding_Dir) {
-  if (sizeof(From) <= sizeof(long))
-    to = static_cast<long>(from);
+  if (sizeof(From) <= sizeof(signed long))
+    to = static_cast<signed long>(from);
   else {
     mpz_ptr m = to.get_num().get_mpz_t();
     if (from >= 0)
@@ -138,10 +135,10 @@ assign_mpq_signed_int(mpq_class& to, const From from, Rounding_Dir) {
 }
 
 SPECIALIZE_ASSIGN(mpq_signed_int, mpq_class, signed char)
-SPECIALIZE_ASSIGN(mpq_signed_int, mpq_class, short)
-SPECIALIZE_ASSIGN(mpq_signed_int, mpq_class, int)
-SPECIALIZE_ASSIGN(mpq_signed_int, mpq_class, long)
-SPECIALIZE_ASSIGN(mpq_signed_int, mpq_class, long long)
+SPECIALIZE_ASSIGN(mpq_signed_int, mpq_class, signed short)
+SPECIALIZE_ASSIGN(mpq_signed_int, mpq_class, signed int)
+SPECIALIZE_ASSIGN(mpq_signed_int, mpq_class, signed long)
+SPECIALIZE_ASSIGN(mpq_signed_int, mpq_class, signed long long)
 
 template <typename Policy, typename From>
 inline Result

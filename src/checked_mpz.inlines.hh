@@ -112,25 +112,21 @@ SPECIALIZE_IS_PINF(mpz, mpz_class)
 template <typename Policy>
 inline Result
 set_special_mpz(mpz_class& v, Result r) {
-  mp_size_t s;
-  Result t = classify(r);
-  if (Policy::store_nan && t == VC_NAN)
-    s = Limits<mp_size_t>::min + 1;
+  Result c = classify(r);
+  if (Policy::store_nan && c == VC_NAN)
+    set_mp_size(v, Limits<mp_size_t>::min + 1);
   else if (Policy::store_infinity) {
-    switch (t) {
+    switch (c) {
     case VC_MINUS_INFINITY:
-      s = Limits<mp_size_t>::min;
-      break;
+      set_mp_size(v, Limits<mp_size_t>::min);
+      return V_EQ;
     case VC_PLUS_INFINITY:
-      s = Limits<mp_size_t>::max;
-      break;
+      set_mp_size(v, Limits<mp_size_t>::max);
+      return V_EQ;
     default:
-      return r;
+      break;
     }
   }
-  else
-    return r;
-  set_mp_size(v, s);
   return r;
 }
 
@@ -165,8 +161,8 @@ SPECIALIZE_ASSIGN(mpz_mpq, mpz_class, mpq_class)
 template <typename Policy, typename From>
 inline Result
 assign_mpz_signed_int(mpz_class& to, const From from, Rounding_Dir) {
-  if (sizeof(From) <= sizeof(long))
-    to = static_cast<long>(from);
+  if (sizeof(From) <= sizeof(signed long))
+    to = static_cast<signed long>(from);
   else {
     mpz_ptr m = to.get_mpz_t();
     if (from >= 0)
@@ -181,10 +177,10 @@ assign_mpz_signed_int(mpz_class& to, const From from, Rounding_Dir) {
 }
 
 SPECIALIZE_ASSIGN(mpz_signed_int, mpz_class, signed char)
-SPECIALIZE_ASSIGN(mpz_signed_int, mpz_class, short)
-SPECIALIZE_ASSIGN(mpz_signed_int, mpz_class, int)
-SPECIALIZE_ASSIGN(mpz_signed_int, mpz_class, long)
-SPECIALIZE_ASSIGN(mpz_signed_int, mpz_class, long long)
+SPECIALIZE_ASSIGN(mpz_signed_int, mpz_class, signed short)
+SPECIALIZE_ASSIGN(mpz_signed_int, mpz_class, signed int)
+SPECIALIZE_ASSIGN(mpz_signed_int, mpz_class, signed long)
+SPECIALIZE_ASSIGN(mpz_signed_int, mpz_class, signed long long)
 
 template <typename Policy, typename From>
 inline Result

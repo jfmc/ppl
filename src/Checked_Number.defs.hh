@@ -101,13 +101,13 @@ public:
   //! Direct initialization from a signed char value.
   Checked_Number(const signed char y);
   //! Direct initialization from a signed short value.
-  Checked_Number(const short y);
+  Checked_Number(const signed short y);
   //! Direct initialization from a signed int value.
-  Checked_Number(const int y);
+  Checked_Number(const signed int y);
   //! Direct initialization from a signed long value.
-  Checked_Number(const long y);
+  Checked_Number(const signed long y);
   //! Direct initialization from a signed long long value.
-  Checked_Number(const long long y);
+  Checked_Number(const signed long long y);
 
   //! Direct initialization from an unsigned char value.
   Checked_Number(const unsigned char y);

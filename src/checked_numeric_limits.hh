@@ -66,9 +66,9 @@ public: \
 };
 
 SPECIALIZE_LIMITS_INT(signed char)
-SPECIALIZE_LIMITS_INT(short)
-SPECIALIZE_LIMITS_INT(long)
-SPECIALIZE_LIMITS_INT(long long)
+SPECIALIZE_LIMITS_INT(signed short)
+SPECIALIZE_LIMITS_INT(signed long)
+SPECIALIZE_LIMITS_INT(signed long long)
 
 #define SPECIALIZE_LIMITS_FLOAT(T) \
 template <typename Policy> \

@@ -72,10 +72,10 @@ Checked_Number<T, Policy>::Checked_Number(const type y) { \
 }
 
 DEF_CTOR(signed char)
-DEF_CTOR(short)
-DEF_CTOR(int)
-DEF_CTOR(long)
-DEF_CTOR(long long)
+DEF_CTOR(signed short)
+DEF_CTOR(signed int)
+DEF_CTOR(signed long)
+DEF_CTOR(signed long long)
 DEF_CTOR(unsigned char)
 DEF_CTOR(unsigned short)
 DEF_CTOR(unsigned int)
@@ -213,7 +213,7 @@ template <typename To, typename To_Policy>
 template <typename From>
 inline Result
 Checked_Number<To, To_Policy>::assign(const From& x, Rounding_Dir dir) {
-  return Checked::assign<To_Policy>(v, x, dir);
+  return Checked::assign_ext<To_Policy, Checked::Transparent_Policy>(v, x, dir);
 }
 template <typename To, typename To_Policy>
 template <typename From, typename From_Policy>
@@ -402,10 +402,10 @@ f(const Checked_Number<T1, Policy1>& x, const Checked_Number<T2, Policy2>& y) { 
   return r; \
 } \
 DEF_BINARY_OP_TYPE(f, fun, signed char) \
-DEF_BINARY_OP_TYPE(f, fun, short) \
-DEF_BINARY_OP_TYPE(f, fun, int) \
-DEF_BINARY_OP_TYPE(f, fun, long) \
-DEF_BINARY_OP_TYPE(f, fun, long long) \
+DEF_BINARY_OP_TYPE(f, fun, signed short) \
+DEF_BINARY_OP_TYPE(f, fun, signed int) \
+DEF_BINARY_OP_TYPE(f, fun, signed long) \
+DEF_BINARY_OP_TYPE(f, fun, signed long long) \
 DEF_BINARY_OP_TYPE(f, fun, unsigned char) \
 DEF_BINARY_OP_TYPE(f, fun, unsigned short) \
 DEF_BINARY_OP_TYPE(f, fun, unsigned int) \
@@ -446,10 +446,10 @@ f(const Checked_Number<T1, Policy1>& x, const Checked_Number<T2, Policy2>& y) { 
   return Checked::fun<Policy1, Policy2>(x.raw_value(), y.raw_value()); \
 } \
 DEF_COMPARE_TYPE(f, fun, signed char) \
-DEF_COMPARE_TYPE(f, fun, short) \
-DEF_COMPARE_TYPE(f, fun, int) \
-DEF_COMPARE_TYPE(f, fun, long) \
-DEF_COMPARE_TYPE(f, fun, long long) \
+DEF_COMPARE_TYPE(f, fun, signed short) \
+DEF_COMPARE_TYPE(f, fun, signed int) \
+DEF_COMPARE_TYPE(f, fun, signed long) \
+DEF_COMPARE_TYPE(f, fun, signed long long) \
 DEF_COMPARE_TYPE(f, fun, unsigned char) \
 DEF_COMPARE_TYPE(f, fun, unsigned short) \
 DEF_COMPARE_TYPE(f, fun, unsigned int) \

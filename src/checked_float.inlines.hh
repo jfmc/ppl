@@ -407,7 +407,7 @@ assign_float_mpz(Type& to, const mpz_class& _from, Rounding_Dir dir)
     else
       return set_pos_overflow_float<Policy>(to, dir);
   }
-  unsigned long int zeroes = mpn_scan1(from->_mp_d, 0);
+  unsigned long zeroes = mpn_scan1(from->_mp_d, 0);
   size_t significative_bits = exponent - zeroes;
   mpz_t mantissa;
   mpz_init(mantissa);
