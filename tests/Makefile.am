@@ -748,7 +748,7 @@ XFAIL_TESTS = nnc_limitedh79widening3 nnc_polydifference1 addgenerators11
 
 check_PROGRAMS = $(TESTS) $(BUGS)
 
-noinst_HEADERS = ppl_test.hh ehandlers.hh print.hh
+noinst_HEADERS = ppl_test.hh ehandlers.hh files.hh print.hh
 
 EXTRA_DIST = ehandlers.cc print.cc $(watchdog1_SRCS)
 

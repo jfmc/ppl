@@ -30,13 +30,13 @@ void
 open(fstream& s, const char* path, ios_base::openmode mode) {
   s.open(path, mode);
   if (!s) {
-    cerr << "Cannot open `" << path << "' for ";
+    cerr << "Cannot open `" << path << "'";
     if (mode == ios_base::in)
-      cerr << "reading";
+      cerr << " for reading";
     else if (mode == ios_base::out)
-      cerr << "writing";
+      cerr << " for writing";
     else if (mode == ios_base::in | ios_base::out)
-      cerr << "reading/writing";
+      cerr << " for reading/writing";
     cerr << endl;
     exit(1);
   }

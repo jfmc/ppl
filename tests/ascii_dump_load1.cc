@@ -23,6 +23,7 @@ site: http://www.cs.unipr.it/ppl/ . */
 
 #include <fstream>
 #include "ppl_test.hh"
+#include "files.hh"
 
 using namespace std;
 using namespace Parma_Polyhedra_Library;
@@ -30,6 +31,8 @@ using namespace Parma_Polyhedra_Library;
 #ifndef NOISY
 #define NOISY 0
 #endif
+
+const char* my_file = "/tmp/ascii_dump_load_1.dat";
 
 int
 main() {
@@ -43,28 +46,15 @@ main() {
 
   ph1.minimized_generators();
 
-  ofstream outFile("ascii1.dat");
-  if (!outFile) {
-#if NOISY
-    cout << "Connot open the file" << endl;
-#endif
-    exit(1);
-  }
-  
-  ph1.ascii_dump(outFile);
-  outFile.close();
+  fstream f;
+  open(f, my_file, ios_base::out);
+  ph1.ascii_dump(f);
+  close(f);
 
-  ifstream inFile("ascii1.dat");
-  if (!inFile) {
-#if NOISY
-    cout << "Connot open the file" << endl;
-#endif
-    exit(1);
-  }
-
+  open(f, my_file, ios_base::in);
   C_Polyhedron ph2;
-  ph2.ascii_load(inFile);
-  inFile.close();
+  ph2.ascii_load(f);
+  close(f);
 
   int retval = (ph1 == ph2) ? 0 : 1;
 

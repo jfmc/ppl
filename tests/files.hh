@@ -26,12 +26,10 @@ site: http://www.cs.unipr.it/ppl/ . */
 
 #include <iosfwd>
 
-using namespace std;
+void
+open(std::fstream& s, const char* path, std::ios_base::openmode mode);
 
 void
-open(fstream& s, const char* path, ios_base::openmode mode);
-
-void
-close(fstream& s);
+close(std::fstream& s);
 
 #endif // !defined(PPL_files_hh)
