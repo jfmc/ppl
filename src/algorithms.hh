@@ -119,7 +119,7 @@ poly_hull_assign_if_exact(PH& p, const PH& q) {
     // The polyhedral hull is exact if and only if all the elements
     // of the partition of the polyhedral hull of `p' and `q' with
     // respect to `q' are included in `p'
-    if (!(i->polyhedron() <= nnc_p))
+    if (!nnc_p.contains(i->polyhedron()))
       return false;
   p = phull;
   return true;
@@ -171,8 +171,9 @@ template <typename PH>
 void
 extrapolation_assign(PowerSet<Determinate<PH> >& r,
 		     const PowerSet<Determinate<PH> >& q,
-		     //	void (PH::* extrapolation_assign)(const PH&)) {
-		     void (Polyhedron::* extrapolation_assign)(const Polyhedron&)) {
+		     void (Polyhedron::*
+			   extrapolation_assign)(const Polyhedron&,
+						 unsigned*)) {
   complete_reduction(r);
   size_t n = r.size();
   PowerSet<Determinate<PH> > p(q.space_dimension(), false);
@@ -186,8 +187,8 @@ extrapolation_assign(PowerSet<Determinate<PH> >& r,
     for (const_iter j = q.begin(), q_end = q.end(); j != q_end; ++j) {
       PH& ri = i->polyhedron();
       const PH& qj = j->polyhedron();
-      if (qj <= ri) {
-	(ri.*extrapolation_assign)(qj);
+      if (ri.contains(qj)) {
+	(ri.*extrapolation_assign)(qj, 0);
 	p.inject(ri);
 	marked[i_index] = true;
       }
@@ -205,14 +206,14 @@ template <typename PH>
 void
 H79_extrapolation_assign(PowerSet<Determinate<PH> >& r,
 			 const PowerSet<Determinate<PH> >& q) {
-  extrapolation_assign(r, q, &PH::H79_extrapolation_assign);
+  extrapolation_assign(r, q, &PH::H79_widening_assign);
 }
 
 template <typename PH>
 void
 BHRZ03_extrapolation_assign(PowerSet<Determinate<PH> >& r,
 			    const PowerSet<Determinate<PH> >& q) {
-  extrapolation_assign(r, q, &PH::BHRZ03_extrapolation_assign);
+  extrapolation_assign(r, q, &PH::BHRZ03_widening_assign);
 }
 
 } // namespace Parma_Polyhedra_Library
