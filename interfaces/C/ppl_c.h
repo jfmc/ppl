@@ -21,16 +21,16 @@ USA.
 For the most up-to-date information see the Parma Polyhedra Library
 site: http://www.cs.unipr.it/ppl/ . */
 
+#ifndef PPL_ppl_c_h
+#define PPL_ppl_c_h 1
+
 /*! \defgroup PPL_C_interface C Language Interface */
-//@{
+/*@{*/
 
 /*
   FIXME: a detailed description with examples should be added
   to the above Doxygen comment.
 */
-
-#ifndef PPL_ppl_c_h
-#define PPL_ppl_c_h 1
 
 /*
   For some reason, GMP up to and including version 4.1.2 requires
@@ -1680,6 +1680,6 @@ ppl_Polyhedron_OK __P((ppl_const_Polyhedron_t ph));
 
 #undef __P
 
-#endif /* !defined(PPL_ppl_c_h) */
+/*@}*/
 
-//@}
+#endif /* !defined(PPL_ppl_c_h) */
