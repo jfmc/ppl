@@ -1076,24 +1076,24 @@ PPL::Polyhedron::remove_dimensions(const std::set<Variable>& to_be_removed) {
   size_t dst_col = tbr->id() + 1;
   size_t src_col = dst_col + 1;
   size_t nrows = gen_sys.num_rows();
-  for (tbr++; tbr != tbr_end; tbr++) {
+  for (++tbr; tbr != tbr_end; ++tbr) {
     size_t tbr_col = tbr->id() + 1;
     // All columns in between are moved toward left.
     while (src_col < tbr_col) {
       for (size_t r = nrows; r-- > 0; )
 	std::swap(gen_sys[r][dst_col], gen_sys[r][src_col]);
-      dst_col++;
-      src_col++;
+      ++dst_col;
+      ++src_col;
     }
-    src_col++;
+    ++src_col;
   }
   // Moving the remaining columns.
   size_t ncols = gen_sys.num_columns();
   while (src_col < ncols) {
     for (size_t r = nrows; r-- > 0; )
       std::swap(gen_sys[r][dst_col], gen_sys[r][src_col]);
-    src_col++;
-    dst_col++;
+    ++src_col;
+    ++dst_col;
   }
   // The number of remaining columns is dst_col.
   gen_sys.resize_no_copy(nrows, dst_col);
