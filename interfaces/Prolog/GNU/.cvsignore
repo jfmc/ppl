@@ -1,3 +1,4 @@
+*.clpq
 *.la
 *.lo
 .deps
