@@ -662,7 +662,7 @@ a variable \f$x_k\f$ such that \f$0 \leq k < n\f$,
 a relation operator \f$\mathord{\relop} \in \{ <, \leq, =, \geq, > \}\f$,
 and an affine expression
 \f$\mathit{expr} \defeq \sum_{i=0}^{n-1} a_i x_i + b\f$,
-the <EM>generalized affine image</EM> of \f$\cP\f$ with respect to
+the image of \f$\cP\f$ with respect to the transfer function
 \f$x'_k \relop \mathit{expr}\f$ is defined as
   \f[
     \Bigl\{\,

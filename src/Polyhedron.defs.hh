@@ -752,12 +752,14 @@ public:
 		       const Integer& denominator = Integer_one());
 
   //! \brief
-  //! Assigns to \p *this the \ref generalized_affine_transformation
-  //! "generalized affine image" of \p *this with respect to
-  //! the relation \f$v' \relop \frac{expr}{d}\f$.
+  //! Assigns to \p *this the image of \p *this with respect to
+  //! the \ref generalized_affine_transformation generalized affine
+  //! transfer function \f$\mathit{var}' \relop \frac{expr}{d}\f$,
+  //! where \f$\mathord{\relop}\f$ is the relation operator encoded by
+  //! \p relation.
   /*!
-    \param var           The variable with which the affine
-                         expression is compared.
+    \param var           The variable being compared to the result
+                         of the computed affine image.
     \param relation      The relation operator: can be either one of
                          <CODE>"<"</CODE>, <CODE>"<="</CODE>,
 			 <CODE>"=="</CODE>, <CODE>">="</CODE>,
@@ -769,7 +771,10 @@ public:
                                      or if \p expr and \p *this
                                      are dimension-incompatible
                                      or if \p var is not a dimension
-                                     of \p *this.
+                                     of \p *this
+				     or if \p *this is a C_Polyhedron and
+				     \p relation encodes a strict relation
+				     operator.
   */
   void generalized_affine_image(const Variable& var,
 				const char* relation,
