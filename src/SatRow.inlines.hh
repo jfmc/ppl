@@ -48,22 +48,22 @@ SatRow::operator=(const SatRow& y) {
 }
 
 inline bool
-SatRow::operator[](unsigned int k) const {
+SatRow::operator[](const unsigned int k) const {
   return mpz_tstbit(vec, k);
 }
 
 inline void
-SatRow::set(unsigned int k) {
+SatRow::set(const unsigned int k) {
   mpz_setbit(vec, k);
 }
 
 inline void
-SatRow::clear(unsigned int k) {
+SatRow::clear(const unsigned int k) {
   mpz_clrbit(vec, k);
 }
 
 inline void
-SatRow::clear_from(unsigned int k) {
+SatRow::clear_from(const unsigned int k) {
   mpz_tdiv_r_2exp(vec, vec, k);
 }
 

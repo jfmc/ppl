@@ -93,7 +93,7 @@ PPL::SatRow::last_one(mp_limb_t w) {
 int
 PPL::SatRow::first() const {
   for (size_t li = 0, vec_size = mpz_size(vec); li < vec_size; ++li) {
-    mp_limb_t limb = mpz_getlimbn(vec, li);
+    const mp_limb_t limb = mpz_getlimbn(vec, li);
     if (limb != 0)
       return li*BITS_PER_GMP_LIMB + first_one(limb);
   }
@@ -107,7 +107,7 @@ PPL::SatRow::next(int position) const {
   ++position;
 
   size_t li = position / BITS_PER_GMP_LIMB;
-  size_t vec_size = mpz_size(vec);
+  const size_t vec_size = mpz_size(vec);
   if (li >= vec_size)
     return -1;
 
@@ -129,7 +129,7 @@ PPL::SatRow::next(int position) const {
 int
 PPL::SatRow::last() const {
   for (size_t li = mpz_size(vec); li-- > 0; ) {
-    mp_limb_t limb = mpz_getlimbn(vec, li);
+    const mp_limb_t limb = mpz_getlimbn(vec, li);
     if (limb != 0)
       return li*BITS_PER_GMP_LIMB + last_one(limb);
   }
@@ -146,7 +146,7 @@ PPL::SatRow::prev(int position) const {
   --position;
 
   size_t li = position / BITS_PER_GMP_LIMB;
-  size_t vec_size = mpz_size(vec);
+  const size_t vec_size = mpz_size(vec);
 
   mp_limb_t limb;
 
@@ -156,8 +156,8 @@ PPL::SatRow::prev(int position) const {
     limb = mpz_getlimbn(vec, li);
   }
   else {
-    mp_limb_t mask =
-      (-(mp_limb_t) 1)
+    const mp_limb_t mask
+      = (-(mp_limb_t) 1)
 	>> (BITS_PER_GMP_LIMB - ((position + 1) % BITS_PER_GMP_LIMB));
     limb = mpz_getlimbn(vec, li) & mask;
   }
@@ -175,18 +175,18 @@ PPL::SatRow::prev(int position) const {
 /*! \relates Parma_Polyhedra_Library::SatRow */
 int
 PPL::compare(const SatRow& x, const SatRow& y) {
-  size_t x_size = mpz_size(x.vec);
-  size_t y_size = mpz_size(y.vec);
+  const size_t x_size = mpz_size(x.vec);
+  const size_t y_size = mpz_size(y.vec);
   size_t x_li = 0;
   size_t y_li = 0;
   while (x_li < x_size && y_li < y_size) {
-    mp_limb_t a = mpz_getlimbn(x.vec, x_li++);
-    mp_limb_t b = mpz_getlimbn(y.vec, y_li++);
+    const mp_limb_t a = mpz_getlimbn(x.vec, x_li++);
+    const mp_limb_t b = mpz_getlimbn(y.vec, y_li++);
     if (a != b) {
       // Get the one's where they are different.
-      mp_limb_t diff = (a ^ b);
+      const mp_limb_t diff = (a ^ b);
       // First bit that is different.
-      mp_limb_t mask = diff & ~(diff-1);
+      const mp_limb_t mask = diff & ~(diff-1);
       return (a & mask) ? 1 : -1;
     }
   }
@@ -208,13 +208,13 @@ PPL::compare(const SatRow& x, const SatRow& y) {
 /*! \relates Parma_Polyhedra_Library::SatRow */
 bool
 PPL::subset_or_equal(const SatRow& x, const SatRow& y) {
-  size_t x_size = mpz_size(x.vec);
-  size_t y_size = mpz_size(y.vec);
+  const size_t x_size = mpz_size(x.vec);
+  const size_t y_size = mpz_size(y.vec);
   size_t x_li = 0;
   size_t y_li = 0;
   while (x_li < x_size && y_li < y_size) {
-    mp_limb_t a = mpz_getlimbn(x.vec, x_li++);
-    mp_limb_t b = mpz_getlimbn(y.vec, y_li++);
+    const mp_limb_t a = mpz_getlimbn(x.vec, x_li++);
+    const mp_limb_t b = mpz_getlimbn(y.vec, y_li++);
     if ((a | b) != b)
       return false;
   }
@@ -228,15 +228,15 @@ PPL::subset_or_equal(const SatRow& x, const SatRow& y) {
 /*! \relates Parma_Polyhedra_Library::SatRow */
 bool
 PPL::strict_subset(const SatRow& x, const SatRow& y) {
-  size_t x_size = mpz_size(x.vec);
-  size_t y_size = mpz_size(y.vec);
+  const size_t x_size = mpz_size(x.vec);
+  const size_t y_size = mpz_size(y.vec);
   bool one_diff = false;
   size_t x_li = 0;
   size_t y_li = 0;
   while (x_li < x_size && y_li < y_size) {
-    mp_limb_t a = mpz_getlimbn(x.vec, x_li++);
-    mp_limb_t b = mpz_getlimbn(y.vec, y_li++);
-    mp_limb_t c = a | b;
+    const mp_limb_t a = mpz_getlimbn(x.vec, x_li++);
+    const mp_limb_t b = mpz_getlimbn(y.vec, y_li++);
+    const mp_limb_t c = a | b;
     if (c != b)
       return false;
     else if (c != a)
