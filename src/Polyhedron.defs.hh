@@ -347,27 +347,29 @@ public:
   //!                      expression is assigned.
   //! \param expr          The numerator of the affine expression.
   //! \param denominator   The denominator of the affine expression
+  //!                      (optional argument with default value 1.)
   //! \exception std::invalid_argument thrown if \p denominator is zero or
   //!                                  if \p expr and \p *this have 
   //!                                  different dimension or if
   //!                                  \p v is not a variable of the
-  //!                                  polyhedron
+  //!                                  polyhedron.
   void assign_variable(const Variable& v,
 		       const LinExpression& expr,
-		       Integer& denominator);
+		       const Integer& denominator = 1);
   //! Substitutes an affine expression for the specified variable.
   //! \param v             The variable to which the affine expression 
   //!                      is substituted.
   //! \param expr          The numerator of the affine expression.
-  //! \param denominator   The denominator of the affine expression.
+  //! \param denominator   The denominator of the affine expression
+  //!                      (optional argument with default value 1.)
   //! \exception std::invalid_argument thrown if \p denominator is zero or
   //!                                  if \p expr and \p *this have 
   //!                                  different dimension or if
   //!                                  \p v is not a variable of the
-  //!                                  polyhedron
+  //!                                  polyhedron.
   void substitute_variable(const Variable& v,
 			   const LinExpression& expr,
-			   Integer& denominator);
+			   const Integer& denominator = 1);
 
   //! Checks if all the invariants are satisfied.
   //! \param check_not_empty    <CODE>true</CODE> if it must be checked

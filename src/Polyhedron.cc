@@ -1285,7 +1285,7 @@ PPL::operator >>(std::istream& s, PPL::Polyhedron& p) {
 void
 PPL::Polyhedron::assign_variable(const Variable& var,
 				 const LinExpression& expr,
-				 Integer& denominator) {
+				 const Integer& denominator) {
   if (denominator == 0)
     throw std::invalid_argument("void PPL::Polyhedron::assign_variable"
 				"(v, e, d) with d == 0");
@@ -1294,27 +1294,24 @@ PPL::Polyhedron::assign_variable(const Variable& var,
   size_t num_var = var.id() + 1;
   if (num_columns != expr.size())
     throw std::invalid_argument("PPL::Polyhedron::assign_variable"
-				"(v, e, d) with dim(expr) != dim(*this)");
+				"(v, e, d) with dim(e) != dim(*this)");
 
   // Index of var must be in the range of the variables of generators.
   if (!(num_var < num_columns))
     throw std::invalid_argument("PPL::Polyhedron::assign_variable(v, e, d)"
-				" with var not in *this");
+				" with v not in *this");
 
   if (expr[num_var] != 0) {
     // The transformation is invertible.
     if (generators_are_up_to_date())
       x.gen_sys.assign_variable(num_var, expr, denominator);
     if (constraints_are_up_to_date()) {
-      LinExpression inverse = expr;
-      // For the observation the inverse transformation can be
-      // obtained swapping `denominator' with `a[var]' in the initial
-      // transformation and making the necessary sign changes.
-      std::swap(inverse[num_var], denominator);
-      for (size_t i = 0; i < num_columns; ++i)
-	if (i != num_var)
-	  inverse[i].negate();
-      x.con_sys.substitute_variable(num_var, inverse, denominator);
+      // To build the inverse transformation,
+      // after copying and negating `expr',
+      // we exchange the roles of `expr[num_var]' and `denominator'.
+      LinExpression inverse = -expr;
+      inverse[num_var] = denominator;
+      x.con_sys.substitute_variable(num_var, inverse, expr[num_var]);
     }
     x.clear_constraints_minimized();
     x.clear_generators_minimized();
@@ -1391,7 +1388,7 @@ PPL::Polyhedron::assign_variable(const Variable& var,
 void
 PPL::Polyhedron::substitute_variable(const Variable& var,
 				     const LinExpression& expr,
-				     Integer& denominator) {
+				     const Integer& denominator) {
   if (denominator == 0)
     throw std::invalid_argument("void PPL::Polyhedron::substitute_variable"
 				"(v, e, d) with d == 0");
@@ -1401,27 +1398,24 @@ PPL::Polyhedron::substitute_variable(const Variable& var,
   size_t num_var = var.id() + 1;
   if (num_columns != expr.size())
     throw std::invalid_argument("PPL::Polyhedron::substitute_variable"
-				"(v, e, d) with dim(expr) != dim(*this)");
+				"(v, e, d) with dim(e) != dim(*this)");
 
   // Index of var must be in the range of the variables of generators.
   if (!(num_var < num_columns))
     throw std::invalid_argument("PPL::Polyhedron::substitute_variable"
-				"(v, e, d) with var not in *this");
+				"(v, e, d) with v not in *this");
 
   // The transformation is invertible.
   if (expr[num_var] != 0) {
     if (constraints_are_up_to_date())
       x.con_sys.substitute_variable(num_var, expr, denominator);
     if (generators_are_up_to_date()) {
-      LinExpression inverse = expr;
-      // For the observation, the inverse transformation can be
-      // obtained swapping `denominator' with `a[var]' in the initial
-      // transformation and making the necessary sign changes.
-      std::swap(inverse[num_var], denominator);
-      for (size_t i = 0; i < num_columns; ++i)
-	if (i != num_var)
-	  inverse[i].negate();
-      x.gen_sys.assign_variable(num_var, inverse, denominator);
+      // To build the inverse transformation,
+      // after copying and negating `expr',
+      // we exchange the roles of `expr[num_var]' and `denominator'.
+      LinExpression inverse = -expr;
+      inverse[num_var] = denominator;
+      x.gen_sys.assign_variable(num_var, inverse, expr[num_var]);
     }
     x.clear_constraints_minimized();
     x.clear_generators_minimized();
