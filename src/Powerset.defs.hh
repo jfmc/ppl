@@ -159,13 +159,13 @@ protected:
   //! Alias for the low-level iterator on the disjuncts. 
   typedef typename Sequence::iterator Sequence_iterator;
 
-  //! Alias for the low-level const_iterator on the disjuncts. 
+  //! Alias for the low-level %const_iterator on the disjuncts. 
   typedef typename Sequence::const_iterator Sequence_const_iterator;
 
   //! The sequence container holding powerset's elements.
   Sequence sequence;
 
-  //! If <CODE>true</CODE>, \p *this is omega-reduced.
+  //! If <CODE>true</CODE>, \p *this is Omega-reduced.
   mutable bool reduced;
 
 public:
@@ -183,7 +183,7 @@ public:
   //! Erase from the sequence of disjuncts all the non-maximal elements.
   /*!
     This method is declared <CODE>const</CODE> because, even though
-    omega-reduction may change the syntactic representation of \p *this,
+    Omega-reduction may change the syntactic representation of \p *this,
     its semantics will be unchanged.
   */
   void omega_reduce() const;
@@ -276,12 +276,12 @@ protected:
   //! \brief
   //! Adds to \p *this the disjunct \p d,
   //! assuming \p d is not the bottom element and ensuring
-  //! partial omega-reduction.
+  //! partial Omega-reduction.
   /*!
     If \p d is not the bottom element and is not redundant with respect
     to the elements in positions between \p first and \p last,
     adds to \p *this the disjunct \p d, erasing all the elements
-    in the above mentioned positions that are made omega-redundant
+    in the above mentioned positions that are made Omega-redundant
     by the addition of \p d.
   */
   iterator add_non_bottom_disjunct(const CS& d,
@@ -318,7 +318,7 @@ private:
 };
 
 #ifdef PPL_DOXYGEN_INCLUDE_IMPLEMENTATION_DETAILS
-//! A const_iterator on the disjuncts of a Powerset element.
+//! A %const_iterator on the disjuncts of a Powerset element.
 /*!
   This class implements a read-only bidirectional iterator
   on the sequence of disjuncts.
@@ -327,13 +327,13 @@ private:
 template <typename CS>
 class Parma_Polyhedra_Library::Powerset<CS>::const_iterator {
 protected:
-  //! The type of the underlying const_iterator.
+  //! The type of the underlying %const_iterator.
   typedef typename Powerset::Sequence::const_iterator Base;
 
   //! A shorcut for naming traits.
   typedef typename std::iterator_traits<Base> Traits;
 
-  //! A const_iterator on the sequence of elements.
+  //! A %const_iterator on the sequence of elements.
   Base base;
 
   //! Constructs from the lower-level const_iterator.
@@ -364,16 +364,16 @@ public:
   //! indirect member selector.
   pointer operator->() const;
 
-  // Prefix increment operator.
+  //! Prefix increment operator.
   const_iterator& operator++();
 
-  // Postfix increment operator.
+  //! Postfix increment operator.
   const_iterator operator++(int);
 
-  // Prefix decrement operator.
+  //! Prefix decrement operator.
   const_iterator& operator--();
 
-  // Postfix decrement operator.
+  //! Postfix decrement operator.
   const_iterator operator--(int);
 
   //! \brief
