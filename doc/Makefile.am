@@ -14,6 +14,12 @@ VPATH = @srcdir@
 
 @SET_MAKE@
 
+LICENSES = \
+gpl.pdf   \
+gpl.ps.gz \
+fdl.pdf   \
+fdl.ps.gz
+
 HTML_DIRS =     \
 user.html-dir   \
 devref.html-dir
@@ -25,9 +31,11 @@ ppl-user-@VERSION@-print.ps.gz   \
 ppl-devref-@VERSION@-browse.pdf  \
 ppl-devref-@VERSION@-print.pdf   \
 ppl-devref-@VERSION@-print.ps.gz \
-$(HTML_DIRS)
+$(HTML_DIRS)                     \
+$(LICENSES)
 
-# We distribute some user's documentation both for browsing and for printing.
+# We distribute some preprocessed user's documentation,
+# both for browsing and for printing.
 DIST_DOCS = \
 ppl-user-@VERSION@-browse.pdf  \
 ppl-user-@VERSION@-print.pdf   \
