@@ -233,6 +233,8 @@ PowerSet<CS>::check_omega_reduced() const {
   for (const_iterator sbegin = begin(), send = end(),
 	 xi = sbegin; xi != send; ++xi) {
     const CS& xv = *xi;
+    if (xv.is_bottom())
+      return false;
     for (const_iterator yi = sbegin; yi != send; ++yi) {
       if (xi == yi)
 	continue;
