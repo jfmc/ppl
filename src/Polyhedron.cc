@@ -36,8 +36,8 @@ site: http://www.cs.unipr.it/ppl/ . */
 
 #define BE_LAZY
 
-#ifndef NEW_LIMITED_GROWTH_ORDERING
-#define NEW_LIMITED_GROWTH_ORDERING 1
+#ifndef EVOLVING_RAYS_SATURATORS
+#define EVOLVING_RAYS_SATURATORS 1
 #endif
 
 namespace PPL = Parma_Polyhedra_Library;
@@ -3625,13 +3625,6 @@ PPL::Polyhedron::is_BHRZ03_stabilizing(const Polyhedron& x,
   // the lineality space of the two polyhedra must have the same dimension.
   assert (x_num_lines == y_num_lines);
 
-
-#if 1
-  // Just for debugging.
-  bool not_stabilizing_due_to_constraints = false;
-#endif
-
-#if NEW_LIMITED_GROWTH_ORDERING
   // If the number of constraints of `x' is smaller than the number
   // of constraints of `y', then the chain is stabilizing. If it is
   // bigger, the chain is not stabilizing. If they are equal, further
@@ -3664,13 +3657,8 @@ PPL::Polyhedron::is_BHRZ03_stabilizing(const Polyhedron& x,
   }
   else {
     assert(x_con_sys_num_rows > y_con_sys_num_rows);
-#if 1
-    not_stabilizing_due_to_constraints = true;
-#else
     return false;
-#endif
   }
-#endif // #if NEW_LIMITED_GROWTH_ORDERING
 
   dimension_type x_gen_sys_num_rows = x.gen_sys.num_rows();
   dimension_type y_gen_sys_num_rows = y.gen_sys.num_rows();
@@ -3684,12 +3672,6 @@ PPL::Polyhedron::is_BHRZ03_stabilizing(const Polyhedron& x,
     if (x_num_points < y_num_points) {
 #if 0 //#ifndef NDEBUG
       std::cout << "BHRZ03_stabilizing: number of points" << std::endl;
-#endif
-#if 1
-      if (not_stabilizing_due_to_constraints) {
-	std::cerr << "*";
-	return false;
-      }
 #endif
 #if PPL_STATISTICS
       statistics->reason.num_points++;
@@ -3718,12 +3700,6 @@ PPL::Polyhedron::is_BHRZ03_stabilizing(const Polyhedron& x,
 #if 0 //#ifndef NDEBUG
       std::cout << "BHRZ03_stabilizing: number of closure points"
 		<< std::endl;
-#endif
-#if 1
-      if (not_stabilizing_due_to_constraints) {
-	std::cerr << "*";
-	return false;
-      }
 #endif
 #if PPL_STATISTICS
       statistics->reason.num_points++;
@@ -3776,12 +3752,6 @@ PPL::Polyhedron::is_BHRZ03_stabilizing(const Polyhedron& x,
 #if 0 //#ifndef NDEBUG
       std::cout << "BHRZ03_stabilizing: zero-coord rays" << std::endl;
 #endif
-#if 1
-      if (not_stabilizing_due_to_constraints) {
-	std::cerr << "*";
-	return false;
-      }
-#endif
 #if PPL_STATISTICS
       statistics->reason.zero_coord_rays++;
 #endif
@@ -3793,12 +3763,6 @@ PPL::Polyhedron::is_BHRZ03_stabilizing(const Polyhedron& x,
   if (x == y) {
 #if 0 //#ifndef NDEBUG
     std::cout << "BHRZ03_stabilizing: same polyhedra" << std::endl;
-#endif
-#if 1
-    if (not_stabilizing_due_to_constraints) {
-      std::cerr << "*";
-      return false;
-    }
 #endif
 #if PPL_STATISTICS
     statistics->reason.equal++;
@@ -4116,24 +4080,27 @@ bool
 PPL::Polyhedron::BHRZ03_evolving_rays(Polyhedron& x,
 				      const Polyhedron& y,
 				      const ConSys& H79_con_sys) {
-  dimension_type x_con_sys_num_rows = x.con_sys.num_rows();
   dimension_type x_gen_sys_num_rows = x.gen_sys.num_rows();
   dimension_type y_gen_sys_num_rows = y.gen_sys.num_rows();
 
   if (!x.sat_c_is_up_to_date())
     x.sat_c.transpose_assign(x.sat_g);
 
-  // We build a temporary saturation matrix in which we put the relations
-  // between the constraints of `x' and the generators of `y'.
+#if EVOLVING_RAYS_SATURATORS
+  // Build a temporary saturation matrix where the relations
+  // between the constraints of `x' and the rays of `y' are stored.
+  dimension_type x_con_sys_num_rows = x.con_sys.num_rows();
   SatMatrix tmp_sat(y_gen_sys_num_rows, x_con_sys_num_rows);
-  for (dimension_type i = y_gen_sys_num_rows; i-- > 0; )
+  for (dimension_type i = y_gen_sys_num_rows; i-- > 0; ) {
+    const Generator& y_g = y.gen_sys[i];
     for (dimension_type j = x_con_sys_num_rows; j-- > 0; )
-      if (x.con_sys[j] * y.gen_sys[i] > 0)
+      if (x.con_sys[j] * y_g > 0)
         tmp_sat[i].set(j);
+  }
+#endif
 
-  // We built a temporary system of generators in which we put
-  // the new rays.
-  GenSys modified_rays;
+  // Candidate rays are kept in a temporary generator system.
+  GenSys candidate_rays;
   for (dimension_type i = x_gen_sys_num_rows; i-- > 0; ) {
     const Generator& x_g = x.gen_sys[i];
     // We choose a ray of `x' that does not belong to `y' and
@@ -4141,13 +4108,16 @@ PPL::Polyhedron::BHRZ03_evolving_rays(Polyhedron& x,
     if (x_g.is_ray() && y.relation_with(x_g) == Poly_Gen_Relation::nothing()) {
       for (dimension_type j = y_gen_sys_num_rows; j-- > 0; ) {
 	const Generator& y_g = y.gen_sys[j];
-	if (y_g.is_ray() && strict_subset(x.sat_c[i], tmp_sat[j])) {
+	if (y_g.is_ray()
+#if EVOLVING_RAYS_SATURATORS
+	    && strict_subset(x.sat_c[i], tmp_sat[j])
+#endif
+	    ) {
 	  Generator new_ray(x_g);
 	  std::deque<bool> considered(x.space_dim + 1);
 	  Integer tmp_1;
 	  Integer tmp_2;
-	  // We modify the ray `new_ray' according to how `x_g'
-	  // evolve since the ray of `y'.
+	  // Modify `new_ray' according to the evolution of `x_g' wrt `y_g'.
 	  for (dimension_type k = 1; k < x.space_dim; ++k)
 	    if (!considered[k])
 	      for (dimension_type h = k + 1; h <= x.space_dim; ++h)
@@ -4170,46 +4140,61 @@ PPL::Polyhedron::BHRZ03_evolving_rays(Polyhedron& x,
 		    }
 		}
 	  new_ray.normalize();
-	  // In `modified_rays', we put the new ray `new_ray' and `y_g'.
-	  modified_rays.insert(y_g);
-	  modified_rays.insert(new_ray);
+	  // Insert both `new_ray' and `y_g' in `candidate_rays'
+	  // (so that we also generate all the rays in between).
+	  candidate_rays.insert(y_g);
+	  candidate_rays.insert(new_ray);
 	}
       }
     }
   }
-  GenSys valid_modified_rays;
-  // If `modified_rays' has rows, we know that it has more than
-  // one row.
-  if (modified_rays.num_rows() != 0) {
-    // `modified_rays' contains more than one candidate ray.
-    // After adding a point of `x' to `modified_rays',
-    // we build the corresponding polyhedron
-    // (a polyhedral cone having the point as apex).
-    // We compute the intersection of this polyhedron
-    // with the polyhedron generated by `H79_con_sys':
-    // the valid rays are those belonging to this intersection.
-    dimension_type k = x_gen_sys_num_rows - 1;
-    while (!x.gen_sys[k].is_point())
-      --k;
-    // Insert the point.
-    modified_rays.insert(x.gen_sys[k]);
-    Polyhedron ph(x.topology(), modified_rays);
-    // Have to take a copy, because `H79_con_sys'
-    // may be needed later.
-    ConSys H79_con_sys_copy = H79_con_sys;
-    ph.add_constraints_and_minimize(H79_con_sys_copy);
-    const GenSys& ph_gs = ph.generators();
-    // Copy the rays of `ph' into `valid_modified_rays'.
-    for (dimension_type j = ph_gs.num_rows(); j-- > 0; ) {
-      const Generator& g = ph_gs[j];
-      if (g.is_ray() || g.is_line())
-	valid_modified_rays.insert(g);
+
+  // If there are no candidate rays, we cannot obtain stabilization.
+  if (candidate_rays.num_rows() == 0)
+    return false;
+
+  // Here `candidate_rays' contains more than one ray
+  // (because we added rays in pairs).
+  // Of all the candidate rays, we only consider those that do not
+  // violate the constraints of `H79_con_sys': to this end, we add
+  // any point of `x' to `candidate_rays' and build the corresponding
+  // polyhedron (a polyhedral cone having the point as apex), and then
+  // we compute the intersection of this polyhedron with the polyhedron
+  // defined by `H79_con_sys'.
+
+  // Find any point of `x'
+  // (it must have at least one, since it is not empty).
+  dimension_type k = x_gen_sys_num_rows - 1;
+  while (!x.gen_sys[k].is_point())
+    --k;
+  // Insert the point found and build the polyhedral cone.
+  candidate_rays.insert(x.gen_sys[k]);
+  Polyhedron ph(x.topology(), candidate_rays);
+  // Have to take a copy, because `H79_con_sys' is a constant parameter.
+  ConSys H79_con_sys_copy = H79_con_sys;
+  ph.add_constraints_and_minimize(H79_con_sys_copy);
+  // Copy the rays of `ph' into `valid_rays'.
+  const GenSys& ph_gs = ph.generators();
+  GenSys valid_rays;
+  for (dimension_type j = ph_gs.num_rows(); j-- > 0; ) {
+    const Generator& g = ph_gs[j];
+    switch (g.type()) {
+    case Generator::RAY:
+      // Intentionally fall through.
+    case Generator::LINE:
+      valid_rays.insert(g);
+      break;
+    default:
+      break;
     }
   }
 
-  // We add the new system of generators `valid_modified_rays'
-  // to the polyhedron `x'.
-  x.add_generators_and_minimize(valid_modified_rays);
+  // If there are no valid rays, we cannot obtain stabilization.
+  if (valid_rays.num_rows() == 0)
+    return false;
+
+  // Add to `x' the generators in `valid_rays'
+  x.add_generators_and_minimize(valid_rays);
 
   // Check for stabilization.
   bool stabilizing = is_BHRZ03_stabilizing(x, y);
@@ -4327,40 +4312,21 @@ PPL::Polyhedron::BHRZ03_widening_assign(const Polyhedron& y) {
   // Fall back to the H79 widening.
   Polyhedron ph(x.topology(), H79_con_sys);
   std::swap(x, ph);
+
+#if PPL_STATISTICS
+  statistics->technique.h79++;
+#endif
+
+#if NDEBUG
   // Check for stabilization.
   x.minimize();
-  if (is_BHRZ03_stabilizing(x, y)) {
-#if 0 //#ifndef NDEBUG
-    std::cout << "BHRZ03: stabilizing on H79 widening" << std::endl;
+  assert(is_BHRZ03_stabilizing(x, y));
+#if 0
+  std::cout << "BHRZ03: stabilizing on H79 widening" << std::endl;
 #endif
-#if PPL_STATISTICS
-    statistics->technique.h79++;
-#endif
-    assert(x.OK(true));
-    return;
-  }
+#endif //#if NDEBUG
 
-#if 0 //ifndef NDEBUG
-  std::cout << "BHRZ03: NOT stabilizing!" << std::endl;
-#endif
-#if NEW_LIMITED_GROWTH_ORDERING
-  std::cerr << "BHRZ03 is not a widening!" << std::endl;
-  std::cerr << "=== Polyhedron x ===" << std::endl;
-  x.ascii_dump(std::cerr);
-  std::cerr << "=== Polyhedron x_backup ===" << std::endl;
-  x_backup.ascii_dump(std::cerr);
-  std::cerr << "=== Polyhedron y ===" << std::endl;
-  y.ascii_dump(std::cerr);
-  assert(false);
-  abort();
-#else
-  // FIXME: here we should abort the computation, because we have
-  // found a chain that is not stabilizing under the BHRZ03 widening.
-  // Since we are still developing and debugging this operator,
-  // for the moment we simply return the input polyhedron `x'.
-  x = x_backup;
-  assert(OK(true));
-#endif //#if NEW_LIMITED_GROWTH_ORDERING
+  assert(x.OK(true));
 }
 
 void
