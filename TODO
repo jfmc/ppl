@@ -9,7 +9,6 @@ Enhancements for PPL 0.6
 - Decide once and for all how to format lists of \param documentations.
 - Complete the documentation of the Determinate, PowerSet and
   Polyhedra_PowerSet classes.
-- Harmonize all the methods void PPL::Polyhedron::throw_...().
 - Turn h79widening6 into a proper test.
 
 
