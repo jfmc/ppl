@@ -217,10 +217,11 @@ PPL::Polyhedron::simplify(Matrix& mat, SatMatrix& sat) {
   for (dimension_type i = num_lines_or_equalities; i < num_rows; ) {
     bool redundant = false;
     // NOTE: in the inner loop, index `j' runs through _all_ the
-    // inequalities and we do not test `sat[i] < sat[j]'.
-    // Experimentation has shown that this is faster than having
-    // `j' only run through the indexes greater than `i' and
-    // also doing the test `sat[i] < sat[j]'.
+    // inequalities and we do not test if `sat[i]' is strictly
+    // contained into `sat[j]'.  Experimentation has shown that this
+    // is faster than having `j' only run through the indexes greater
+    // than `i' and also doing the test `strict_subset(sat[i],
+    // sat[k])'.
     for (dimension_type j = num_lines_or_equalities; j < num_rows; ) {
       if (i == j)
 	// Want to compare different rows of mat.
@@ -243,7 +244,7 @@ PPL::Polyhedron::simplify(Matrix& mat, SatMatrix& sat) {
 	  redundant = true;
 	  break;
 	}
-	else if (sat[i] == sat[j]) {
+	else if (sat[j] == sat[i]) {
 	  // Inequalities `mat[i]' and `mat[j]' are saturated by
 	  // the same set of generators. Then we can remove either one
 	  // of the two inequalities: we remove `mat[j]'.
@@ -254,9 +255,9 @@ PPL::Polyhedron::simplify(Matrix& mat, SatMatrix& sat) {
 	  mat.set_sorted(false);
 	}
 	else
-	  // If we reach this point, then we know that `sat[i] >= sat[j]'
-	  // does not hold, so that `mat[i]' is not made redundant by
-	  // inequality `mat[j]'.
+	  // If we reach this point then we know that `sat[i]' does
+	  // not contain (and is different from) `sat[j]', so that
+	  // `mat[i]' is not made redundant by inequality `mat[j]'.
 	  ++j;
       }
     }
