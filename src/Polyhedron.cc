@@ -55,7 +55,7 @@ PPL::Polyhedron::constraints() const {
     else {
       assert(con_sys.space_dimension() == space_dimension());
       assert(con_sys.num_rows() == 1);
-      assert(con_sys[0].is_unsatisfiable());
+      assert(con_sys[0].is_trivial_false());
     }
     return con_sys;
   }
@@ -1078,7 +1078,7 @@ PPL::Polyhedron::remove_dimensions(const std::set<Variable>& to_be_removed) {
   size_t nrows = gen_sys.num_rows();
   for (++tbr; tbr != tbr_end; ++tbr) {
     size_t tbr_col = tbr->id() + 1;
-    // All columns in between are moved toward left.
+    // All columns in between are moved to the left.
     while (src_col < tbr_col) {
       for (size_t r = nrows; r-- > 0; )
 	std::swap(gen_sys[r][dst_col], gen_sys[r][src_col]);
@@ -1095,8 +1095,10 @@ PPL::Polyhedron::remove_dimensions(const std::set<Variable>& to_be_removed) {
     ++src_col;
     ++dst_col;
   }
-  // The number of remaining columns is dst_col.
+  // The number of remaining columns is `dst_col'.
   gen_sys.resize_no_copy(nrows, dst_col);
+  // We may have invalid line and rays now.
+  gen_sys.remove_invalid_lines_and_rays();
 
   if (gen_sys.num_columns() > 1) {
     // Update the space dimension.
@@ -1152,6 +1154,8 @@ PPL::Polyhedron::remove_higher_dimensions(size_t new_dimension) {
 
   // The number of remaining columns is `new_dimension+1'.
   gen_sys.resize_no_copy(gen_sys.num_rows(), new_dimension+1);
+  // We may have invalid line and rays now.
+  gen_sys.remove_invalid_lines_and_rays();
 
   if (gen_sys.num_columns() > 1) {
     // Update the space dimension.
@@ -1290,7 +1294,7 @@ PPL::Polyhedron::insert(const Constraint& c) {
   if (space_dimension() == 0) {
     // For dimension-compatibility, `c' has 1 column.
     assert(c.size() == 1);
-    if (!c.is_trivial())
+    if (!c.is_trivial_true())
       set_empty();
     return;
   }
@@ -2192,9 +2196,9 @@ PPL::Polyhedron::OK(bool check_not_empty) const {
 	goto bomb;
       }
       else
-	if (!con_sys[0].is_unsatisfiable()) {
+	if (!con_sys[0].is_trivial_false()) {
 	  cerr << "Empty polyhedron " 
-	       << "with a satisfiable system of constraints" << endl;
+	    "with a satisfiable system of constraints" << endl;
 	  goto bomb;
 	}
     }

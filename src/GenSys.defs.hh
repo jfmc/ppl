@@ -269,6 +269,10 @@ PPL_INTERNAL:
   //! Returns the number of rays of the system.
   size_t num_rays() const;
 
+  //! Removes all the invalid lines and rays (i.e., those with all
+  //! the homogeneous terms set to zero).
+  void remove_invalid_lines_and_rays();
+
   //! Checks if all the invariants are satisfied.
   bool OK() const;
 

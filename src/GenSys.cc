@@ -293,6 +293,10 @@ PPL::GenSys::get(std::istream& s) {
   }
 }
 
+void
+PPL::GenSys::remove_invalid_lines_and_rays() {
+}
+
 /*!
   Returns <CODE>true</CODE> if and only if \p *this actually represents
   a system of generators. So, \p *this must satisfy some rule:
@@ -314,52 +318,18 @@ PPL::GenSys::OK() const {
   if (num_rows() == 0)
     // A valid system of generators can be empty.
     return true;
+
   bool no_vertex = true;
   for (size_t i = num_rows(); i-- > 0; ) {
     const Generator& g = (*this)[i];
-    bool ray_or_line = false;
-    // Looking for vertices.
-    if (g.is_ray_or_vertex()) {
-      // A vertex is legal only if its inhomogeneous term
-      // is strictly positive.
-      if (g[0] > 0)
-	// We found a vertex.
-	no_vertex = false;
-      else if (g[0] < 0) {
-	cerr << "Vertices cannot have a negative inhomogeneous term!"
-	     << endl;
-	return false;
-      }
-      else
-	// Since rays and lines have a zero inhomogeneous term,
-	// we found a ray.
-	ray_or_line = true;
-    }
-    else if (g[0] != 0) {
-      cerr << "Lines must have a zero inhomogeneous term!"
-	   << endl;
-      return false;
-    }
-    else
-      // We found a line.
-      ray_or_line = true;
 
-    if (ray_or_line) {
-      // Looking for a non-zero coefficient in rays and lines.
-      bool all_zeroes = true;
-      for (size_t j = num_columns(); j-- > 1; )
-	if (g[j] != 0) {
-	  all_zeroes = false;
-	  break;
-	}
-      if (all_zeroes) {
-	// Rays and lines must have at least one non-zero homogeneous term.
-	cerr << "Generators must have \
-at least one nonzero homogeneous coefficient!"
-	     << endl;
-	return false;
-      }
-    }
+    if (!g.OK())
+      return false;
+
+    // Looking for a vertex.
+    if (g.is_ray_or_vertex() && g[0] != 0)
+      // We found a vertex.
+      no_vertex = false;
   }
 
   if (no_vertex) {
