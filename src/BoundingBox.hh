@@ -38,8 +38,36 @@ public:
     : vec(dimension) {
   }
 
+  unsigned int space_dimension() const {
+    return vec.size();
+  }
+
   const Interval& operator[](size_t k) const {
     return vec[k];
+  }
+
+  bool is_empty() const {
+    return vec[k].is_empty();
+  }
+
+  bool get_lower_bound(unsigned int k, bool closed,
+		       Integer& n, Integer& d) const {
+    const LBoundary& lb = vec[k].lower_bound();
+    closed = lb.is_closed();
+    n = lb.bound.numerator();
+    d = lb.bound.denominator();
+  }
+
+  bool get_upper_bound(unsigned int k, bool closed,
+		       Integer& n, Integer& d) const {
+    const UBoundary& ub = vec[k].upper_bound();
+    closed = ub.is_closed();
+    n = ub.bound.numerator();
+    d = ub.bound.denominator();
+  }
+
+  void set_empty(unsigned int k) {
+    vec[k].set_empty();
   }
 
   void raise_lower_bound(unsigned int k, bool closed,
@@ -57,10 +85,6 @@ public:
 					? UBoundary::CLOSED
 					: UBoundary::OPEN)));
     }
-
-  void set_empty(unsigned int k) {
-    vec[k].set_empty();
-  }
 };
 
 } // namespace Parma_Polyhedra_Library
