@@ -197,8 +197,9 @@ public:
   //! Returns the generator type of \p *this.
   Type type() const;
 
-  //! Returns the last variable in the space of \p *this.
-  Variable last_variable() const;
+  //! Returns the dimension of the space of \p *this.
+  size_t space_dimension() const;
+
   //! Returns the coefficient of \p v in \p *this.
   const Integer& coefficient(Variable v) const;
   //! If \p *this is a vertex, returns its divisor.

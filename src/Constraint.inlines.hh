@@ -45,6 +45,11 @@ inline
 Constraint::~Constraint() {
 }
 
+inline size_t
+Constraint::space_dimension() const {
+  return size() - 1;
+}
+
 inline bool
 Constraint::is_equality() const {
   return is_line_or_equality();
@@ -68,12 +73,6 @@ Constraint::set_is_equality() {
 inline void
 Constraint::set_is_inequality() {
   set_is_ray_or_vertex_or_inequality();
-}
-
-inline Variable
-Constraint::last_variable() const {
-  assert(Row::size() >= 2);
-  return Variable(size()-2);
 }
 
 inline const Integer&

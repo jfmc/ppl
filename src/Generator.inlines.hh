@@ -41,6 +41,11 @@ inline
 Generator::~Generator() {
 }
 
+inline size_t
+Generator::space_dimension() const {
+  return size() - 1;
+}
+
 inline bool
 Generator::is_line() const {
   return is_line_or_equality();
@@ -64,12 +69,6 @@ Generator::set_is_line() {
 inline void
 Generator::set_is_ray_or_vertex() {
   set_is_ray_or_vertex_or_inequality();
-}
-
-inline Variable
-Generator::last_variable() const {
-  assert(Row::size() >= 2);
-  return Variable(size()-2);
 }
 
 inline const Integer&
