@@ -231,7 +231,7 @@ Prolog_get_address(Prolog_term_ref t, void*& p) {
 */
 static inline bool
 Prolog_get_name_arity(Prolog_term_ref t, Prolog_atom& name, int& arity) {
-  assert(Prolog_is_compound(t));
+  //  assert(Prolog_is_compound(t));
   return PL_get_name_arity(t, &name, &arity) != 0;
 }
 
@@ -298,8 +298,10 @@ ppl_Prolog_sysdep_init() {
 static PL_extension predicates[] = {
   PL_EXTENSION_ENTRY(ppl_initialize, 0)
   PL_EXTENSION_ENTRY(ppl_finalize, 0)
+  PL_EXTENSION_ENTRY(ppl_new_Polyhedron_from_dimension, 3)
   PL_EXTENSION_ENTRY(ppl_new_C_Polyhedron_from_dimension, 2)
   PL_EXTENSION_ENTRY(ppl_new_NNC_Polyhedron_from_dimension, 2)
+  PL_EXTENSION_ENTRY(ppl_new_Polyhedron_empty_from_dimension, 3)
   PL_EXTENSION_ENTRY(ppl_new_C_Polyhedron_empty_from_dimension, 2)
   PL_EXTENSION_ENTRY(ppl_new_NNC_Polyhedron_empty_from_dimension, 2)
   PL_EXTENSION_ENTRY(ppl_new_C_Polyhedron_from_C_Polyhedron, 2)

@@ -201,6 +201,10 @@ static Prolog_atom a_saturates;
 // For the relation between a polyhedron and a generator.
 static Prolog_atom a_subsumes;
 
+// For the topology.
+static Prolog_atom a_closed;
+static Prolog_atom a_nnc;
+
 static struct {
   Prolog_atom* p_atom;
   const char* name;
@@ -230,6 +234,8 @@ static struct {
   { &a_saturates,           "saturates" },
 
   { &a_subsumes,            "subsumes" },
+  { &a_closed,              "c" },
+  { &a_nnc,                 "nnc" },
 };
 
 static Prolog_term_ref
@@ -260,6 +266,18 @@ term_to_unsigned_int(Prolog_term_ref t) {
       return get_unsigned_int(v);
   }
   throw not_unsigned_int(t);
+}
+
+static Prolog_atom
+term_to_atom(Prolog_term_ref t) {
+  Prolog_atom functor;
+  int arity;
+  Prolog_get_name_arity(t, functor, arity);
+  if (arity == 0) {
+    return functor;
+  }
+  // FIXME this is the wrong exception
+  throw non_linear("term_to_atom", t);
 }
 
 static PPL::LinExpression
@@ -578,6 +596,32 @@ ppl_finalize() {
 }
 
 extern "C" Prolog_foreign_return_type
+ppl_new_Polyhedron_from_dimension(Prolog_term_ref t_tp,
+                                    Prolog_term_ref t_nd,
+				    Prolog_term_ref t_ph) {
+  try {
+    PPL::Polyhedron* ph;
+    Prolog_atom tp = term_to_atom(t_tp);
+    if (tp == a_closed || tp == a_nnc) {
+      if (tp == a_closed)
+        ph = new PPL::C_Polyhedron(term_to_unsigned_int(t_nd));
+      else
+        ph = new PPL::NNC_Polyhedron(term_to_unsigned_int(t_nd));
+      Prolog_term_ref tmp = Prolog_new_term_ref();
+      Prolog_put_address(tmp, ph);
+      if (Prolog_unify(t_ph, tmp)) {
+        REGISTER(ph);
+        return PROLOG_SUCCESS;
+      }
+      else
+        delete ph;
+    }
+  }
+  CATCH_ALL;
+  return PROLOG_FAILURE;
+}
+
+extern "C" Prolog_foreign_return_type
 ppl_new_C_Polyhedron_from_dimension(Prolog_term_ref t_nd,
 				    Prolog_term_ref t_ph) {
   try {
@@ -610,6 +654,34 @@ ppl_new_NNC_Polyhedron_from_dimension(Prolog_term_ref t_nd,
     }
     else
       delete ph;
+  }
+  CATCH_ALL;
+  return PROLOG_FAILURE;
+}
+
+extern "C" Prolog_foreign_return_type
+ppl_new_Polyhedron_empty_from_dimension(Prolog_term_ref t_tp,
+                                        Prolog_term_ref t_nd,
+					  Prolog_term_ref t_ph) {
+  try {
+    PPL::Polyhedron* ph;
+    Prolog_atom tp = term_to_atom(t_tp);
+    if (tp == a_closed || tp == a_nnc) {
+      if (tp == a_closed)
+        ph = new PPL::C_Polyhedron(term_to_unsigned_int(t_nd),
+			      PPL::Polyhedron::EMPTY);
+      else
+        ph = new PPL::NNC_Polyhedron(term_to_unsigned_int(t_nd),
+			      PPL::Polyhedron::EMPTY);
+      Prolog_term_ref tmp = Prolog_new_term_ref();
+      Prolog_put_address(tmp, ph);
+      if (Prolog_unify(t_ph, tmp)) {
+        REGISTER(ph);
+        return PROLOG_SUCCESS;
+      }
+      else
+        delete ph;
+    }
   }
   CATCH_ALL;
   return PROLOG_FAILURE;

@@ -44,6 +44,13 @@ bounded_gens,
 project,
 embed.
 
+incl :-
+ppl_new_Polyhedron_from_dimension(c, 3, P1),
+ppl_new_Polyhedron_from_dimension(c, 3, P2),
+ppl_Polyhedron_contains_Polyhedron(P1, P2),
+ppl_delete_Polyhedron(P1),
+ppl_delete_Polyhedron(P2).
+
 incl_C :-
 ppl_new_C_Polyhedron_from_dimension(3, P1),
 ppl_new_C_Polyhedron_from_dimension(3, P2),
@@ -55,6 +62,15 @@ incl_NNC :-
 ppl_new_NNC_Polyhedron_from_dimension(3, P1),
 ppl_new_NNC_Polyhedron_from_dimension(3, P2),
 ppl_Polyhedron_contains_Polyhedron(P1, P2),
+ppl_delete_Polyhedron(P1),
+ppl_delete_Polyhedron(P2).
+
+strict_incl :-
+ppl_new_Polyhedron_from_dimension(c, 3, P1),
+ppl_Polyhedron_check_universe(P1),
+ppl_new_Polyhedron_empty_from_dimension(c, 3, P2),
+ppl_Polyhedron_check_empty(P2),
+ppl_Polyhedron_strictly_contains_Polyhedron(P1, P2),
 ppl_delete_Polyhedron(P1),
 ppl_delete_Polyhedron(P2).
 
