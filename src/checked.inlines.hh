@@ -21,71 +21,9 @@ USA.
 For the most up-to-date information see the Parma Polyhedra Library
 site: http://www.cs.unipr.it/ppl/ . */
 
+#include <cassert>
+
 namespace Parma_Polyhedra_Library {
-
-template <typename To, typename From>
-inline Result_Info
-checked_assignexact(To& to, From from) {
-  return checked_assign(to, from);
-}
-
-template <typename To, typename From>
-inline Result_Info
-checked_negexact(To& to, From from) {
-  return checked_neg(to, from);
-}
-
-template <typename To, typename From>
-inline Result_Info
-checked_addexact(To& to, From x, From y) {
-  return checked_add(to, x, y);
-}
-
-template <typename To, typename From>
-inline Result_Info
-checked_subexact(To& to, From x, From y) {
-  return checked_sub(to, x, y);
-}
-
-template <typename To, typename From>
-inline Result_Info
-checked_mulexact(To& to, From x, From y) {
-  return checked_mul(to, x, y);
-}
-
-template <typename To, typename From>
-inline Result_Info
-checked_divexact(To& to, From x, From y) {
-  return checked_div(to, x, y);
-}
-
-template <typename To, typename From>
-inline Result_Info
-checked_modexact(To& to, From x, From y) {
-  return checked_mod(to, x, y);
-}
-
-template <typename To, typename From>
-inline Result_Info
-checked_sqrtexact(To& to, From from) {
-  return checked_sqrt(to, from);
-}
-
-template <typename Type>
-inline Result_Info
-checked_assign(Type& to, Type from) {
-  to = from;
-  return V_EQ;
-}
-
-template <typename To, typename From>
-inline Result_Info
-checked_abs(To& to, From from) {
-  if (from < 0)
-    return checked_neg(to, from);
-  to = from;
-  return V_EQ;
-}
 
 template <typename From>
 inline int
@@ -99,14 +37,34 @@ cmp(From x, From y) {
   return x > y ? 1 : x == y ? 0 : -1;
 }
 
-template <typename To, typename From>
-Result_Info
-checked_gcd_(To& to, From x, From y) {
+namespace Checked {
+
+template <typename Policy, typename Type>
+struct FUNCTION_CLASS(assign)<Policy, Type, Type> {
+  static inline Result function(Type& to, const Type& from) {
+    to = from;
+    return V_EQ;
+  }
+};
+
+template <typename Policy, typename To, typename From>
+inline Result
+FUNCTION_CLASS(abs)<Policy, To, From>::function(To& to, From from) {
+  if (from < 0)
+    return neg<Policy>(to, from);
+  to = from;
+  return V_EQ;
+}
+
+template <typename Policy, typename To, typename From>
+inline Result
+gcd_common(To& to, From x, From y) {
   To nx = x;
   To ny = y;
   To r;
   while (ny != 0) {
-    checked_modexact(r, nx, ny);
+    Result r = mod<Policy>(r, nx, ny);
+    assert(r == V_EQ);
     nx = ny;
     ny = r;
   }
@@ -114,33 +72,43 @@ checked_gcd_(To& to, From x, From y) {
   return V_EQ;
 }
 
-template <typename To, typename From>
-Result_Info
-checked_gcd(To& to, From x, From y) {
+template <typename Policy, typename To, typename From>
+Result
+FUNCTION_CLASS(gcd)<Policy, To, From>::function(To& to, From x, From y) {
   if (x == 0)
-    return checked_abs(to, y);
+    return abs<Policy>(to, y);
   if (y == 0)
-    return checked_abs(to, x);
+    return abs<Policy>(to, x);
   To nx, ny;
-  checked_abs(nx, x);
-  checked_abs(ny, y);
-  return checked_gcd_(to, nx, ny);
+  Result r;
+  r = abs<Policy>(nx, x);
+  assert(r == V_EQ);
+  r = abs<Policy>(ny, y);
+  assert(r == V_EQ);
+  return gcd_common<Policy>(to, nx, ny);
 }
 
-template <typename To, typename From>
-Result_Info
-checked_lcm(To& to, From x, From y) {
+template <typename Policy, typename To, typename From>
+Result
+FUNCTION_CLASS(lcm)<Policy, To, From>::function(To& to, From x, From y) {
   if (x == 0 || y == 0) {
     to = 0;
     return V_EQ;
   }
   To nx, ny;
-  checked_abs(nx, x);
-  checked_abs(ny, y);
+  Result r;
+  r = abs<Policy>(nx, x);
+  assert(r == V_EQ);
+  r = abs<Policy>(ny, y);
+  assert(r == V_EQ);
   To gcd;
-  checked_gcd_(gcd, nx, ny);
-  checked_divexact(to, nx, gcd);
-  return checked_mul(to, to, ny);
+  r = gcd_common<Policy>(gcd, nx, ny);
+  assert(r == V_EQ);
+  r = div<Policy>(to, nx, gcd);
+  assert(r == V_EQ);
+  return mul<Policy>(to, to, ny);
 }
+
+} // namespace Checked
 
 } // namespace Parma_Polyhedra_Library
