@@ -288,3 +288,57 @@ Standards for Documenting the Project with Doxygen
   */
   int foo(const bar& p1, const bar& p2, int p3);
 
+
+Standards for the Test Programs
+===============================
+
+- Include ppl_test.hh to include the common test code.  This file also
+  sets up the NOISY and VERY_NOISY preprocessor flags, and imports the
+  std and PPL namespaces.  Explicitly import
+  Parma_Polyhedra_Library::IO_Operators if PPL stream input and output
+  is required.
+
+- Place the test code either in the main function or in test functions
+  which are called from main.  Name the test functions test1, test2,
+  etc.
+
+- On failure immediately exit the test program with a return value
+  other than zero.  Do this by calling `exit' in a test function, or
+  `return' in the main function.  Return zero on success.
+
+- Only produce output if either the NOISY or the VERY_NOISY flag has a
+  value other than zero.  Use the nout and vnout streams for output,
+  for example:
+
+  	  nout << "A message when noisy." << endl;
+	  vnout << "A message when very noisy." << endl;
+
+  NOISY and VERY_NOISY are set via ppl_test.hh.
+
+- Wrap function main with TRY and CATCH, as follows.  This adds code
+  to print an error message if an exception reaches the top level.
+
+	int
+	main() TRY {
+
+	 // body of main
+
+	 return 0;
+	}
+	CATCH
+
+Refer to the existing tests for examples.
+
+Many tests use this technique:
+ 1 create a PPL object and perform operations on that object
+ 2 create a second object in a simpler way, so that the second object
+   has the value expected in the first object
+ 3 test that the first and second objects are equal.
+
+The template find_variation_template in ppl_test.hh can be used as a
+further check.  It creates a second object from the ASCII dump of a
+given PPL object, and tests whether the two objects are equal.
+
+The check_dump function in ppl_test.hh may be useful if a test often
+compares an ASCII dump from PPL objects to a value expected of the
+dump.
