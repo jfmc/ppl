@@ -49,23 +49,47 @@ libppl_ciao_la_LDFLAGS = -no-undefined -module -avoid-version
 
 pkglib_DATA = ppl_ciao.po
 
-ppl_ciao.po: ppl_ciao.pl fake_main.pl
+ppl_ciao.po: ppl_ciao.pl
 	if [ $(abs_srcdir) != `pwd` ]; then \
-	  cp -f $(srcdir)/ppl_ciao.pl $(srcdir)/fake_main.pl .; \
+	  cp -f $(srcdir)/ppl_ciao.pl .; \
 	fi
-	ciaoc fake_main.pl
+	ciaoc -c ppl_ciao.pl
 	if [ $(abs_srcdir) != `pwd` ]; then \
-	  rm -f ppl_ciao.pl fake_main.pl; \
+	  rm -f ppl_ciao.pl; \
 	fi
 
 ciao_clpq: libppl_ciao.la ppl_ciao.pl ciao_clpq.pl ../clpq.pl
-	ciaoc -o $@ $(srcdir)/ciao_clpq.pl
+	if [ $(abs_srcdir) != `pwd` ]; then \
+	  cp -f $(srcdir)/../clpq.pl ..; \
+	  cp -f $(srcdir)/ciao_clpq.pl $(srcdir)/ppl_ciao.pl .; \
+	fi
+	ciaoc -o $@ ciao_clpq.pl
+	if [ $(abs_srcdir) != `pwd` ]; then \
+	  rm -f ciao_clpq.pl ppl_ciao.pl clpq.pl; \
+	  rm -f ../clpq.pl; \
+	fi
 
 ciao_clpq2: libppl_ciao.la ppl_ciao.pl ciao_clpq.pl ../clpq2.pl
-	ciaoc -o $@ $(srcdir)/ciao_clpq2.pl
+	if [ $(abs_srcdir) != `pwd` ]; then \
+	  cp -f $(srcdir)/../clpq2.pl ..; \
+	  cp -f $(srcdir)/ciao_clpq2.pl $(srcdir)/ppl_ciao.pl .; \
+	fi
+	ciaoc -o $@ ciao_clpq2.pl
+	if [ $(abs_srcdir) != `pwd` ]; then \
+	  rm -f ciao_clpq2.pl ppl_ciao.pl; \
+	  rm -f ../clpq2.pl; \
+	fi
 
 ciao_pl_check: libppl_ciao.la ppl_ciao.pl ciao_pl_check.pl ../pl_check.pl
-	ciaoc -o $@ $(srcdir)/ciao_pl_check.pl
+	if [ $(abs_srcdir) != `pwd` ]; then \
+	  cp -f $(srcdir)/../pl_check.pl ..; \
+	  cp -f $(srcdir)/ciao_pl_check.pl $(srcdir)/ppl_ciao.pl .; \
+	fi
+	ciaoc -o $@ ciao_pl_check.pl
+	if [ $(abs_srcdir) != `pwd` ]; then \
+	  rm -f ciao_pl_check.pl ppl_ciao.pl; \
+	  rm -f ../pl_check.pl; \
+	fi
 
 CLPQ_TESTS_NONSTRICT = \
 ack.clpq \
@@ -107,7 +131,6 @@ check-local: ciao_clpq$(EXEEXT) ../check_script ../expected ciao_clpq2$(EXEEXT) 
 	diff -q --ignore-all-space $(srcdir)/../expected3 obtained3
 
 MOSTLYCLEANFILES = \
-fake_main \
 *.itf *.po *.c *.so \
 ciao_clpq ciao_clpq2 ciao_pl_check \
 obtained obtained2 obtained3\
