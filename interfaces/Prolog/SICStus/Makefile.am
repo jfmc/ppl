@@ -28,7 +28,9 @@ VPATH = @srcdir@
 
 SUBDIRS =
 
-EXTRA_DIST = ppl_sicstus_sd.cc ppl_sicstus.pl sp_clpq.pl
+SICSTUS_CFLI_FILES = sicstus_cfli.h sicstus_cfli.ic sicstus_cfli.cc
+
+EXTRA_DIST = $(SICSTUS_CFLI_FILES) ppl_sicstus_sd.cc ppl_sicstus.pl sp_clpq.pl
 
 if HAVE_SICSTUS_PROLOG
 
