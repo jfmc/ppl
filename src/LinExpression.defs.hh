@@ -95,14 +95,14 @@ namespace Parma_Polyhedra_Library {
   \code
   Variable x(0);
   Variable y(1);
-  Variable z(5);
+  Variable z(2);
   LinExpression e = 4 * x - 2 * y - z + 14;
   \endcode
   Another way to build the same linear expression is:
   \code
   Variable x(0);
   Variable y(1);
-  Variable z(5);
+  Variable z(2);
   LinExpression e = 4 * x;
   LinExpression e1 = -2 * y;
   LinExpression e2 = -z;
