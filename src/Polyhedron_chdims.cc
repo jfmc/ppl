@@ -527,3 +527,48 @@ PPL::Polyhedron::remove_higher_dimensions(dimension_type new_dimension) {
 
   assert(OK(true));
 }
+
+void
+PPL::Polyhedron::expand_dimension(Variable var, dimension_type m) {
+  // FIXME: this implementation is _really_ an executable specification.
+
+  const dimension_type src_d = var.id();
+  // `var' should be one of the dimensions of the polyhedron.
+  if (src_d+1 > space_dim)
+    throw_dimension_incompatible("expand_dimension(v, m)", src_d+1);
+
+  // Nothing to do, if no dimensions must be added.
+  if (m == 0)
+    return;
+
+  // Add the required new dimensions.
+  add_dimensions_and_embed(m);
+
+  const ConSys& cs = constraints();
+  ConSys new_constraints;
+  for(ConSys::const_iterator i = cs.begin(),
+	cs_end = cs.end(); i != cs_end; ++i) {
+    const Constraint& c = *i;
+
+    // If `c' does not constrain `var', skip it.
+    if(c.coefficient(var) == 0)
+      continue;
+
+    // Each relevant constraint results in `m' new constraints.
+    for (dimension_type dst_d = space_dim; dst_d < space_dim+m; ++dst_d) {
+      LinExpression e;
+      for (dimension_type j = space_dim; j-- > 0; )
+	e +=
+	  c.coefficient(Variable(j))
+	  * (j == src_d ? Variable(dst_d) : Variable(j));
+      e += c.inhomogeneous_term();
+      new_constraints.insert(c.is_equality()
+			     ? (e == 0)
+			     : (c.is_nonstrict_inequality()
+				? (e >= 0)
+				: (e > 0)));
+    }
+  }
+  add_constraints(new_constraints);
+  assert(OK());
+}
