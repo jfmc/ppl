@@ -271,7 +271,7 @@ PPL::Poly_Con_Relation
 PPL::GenSys::relation_with(const Constraint& c) const {
   // Note: this method is not public and it is the responsibility
   // of the caller to actually test for dimension compatibility.
-  // We simply _assert_ it.
+  // We simply assert it.
   assert(space_dimension() >= c.space_dimension());
   // Number of generators: the case of an empty polyhedron
   // has already been filtered out by the caller.
