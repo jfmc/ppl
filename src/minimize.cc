@@ -205,6 +205,10 @@ PPL::Polyhedron::minimize(bool con_to_gen,
       // variables. This constraints are builts during the conversion().
       if (!con_to_gen) {
     	tmp_sat.transpose_assign(sat);
+	// We must simplify also the `dest', because in this case can be
+	// constraints that are redundant with the constraints of positivity
+	// of the variables.
+	simplify(dest, tmp_sat);
 	for (size_t i =  dest.num_lines_or_equalities(); i < dest_num_rows; ) {
 	  if (dest[i].only_a_term_is_positive()) {
 	    --dest_num_rows;

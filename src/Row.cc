@@ -310,7 +310,7 @@ PPL::Row::only_a_term_is_positive() const {
   for (size_t i = size(); i--> 0;)
     if (x[i] > 0) {
       if (!first_one)
-	first_one = false;
+	first_one = true;
       else
 	return false;
     }
