@@ -220,8 +220,9 @@ PPL::subset_or_equal(const SatRow& x, const SatRow& y) {
   mp_srcptr yp = y.vec->_mp_d;
   if (x_size <= y_size) {
     while (x_size > 0) {
-      if (*xp++ & ~*yp)
+      if (*xp & ~*yp)
 	return false;
+      xp++;
       yp++;
       x_size--;
     }
