@@ -244,7 +244,7 @@ PPL::GenSys::affine_image(size_t v,
       for (size_t j = 0; j < num_columns; ++j)
 	if( j != v)
 	  x[i][j] *= denominator;
-  x.normalize();
+  x.strong_normalize();
 }
 
 /*!

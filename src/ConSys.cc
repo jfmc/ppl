@@ -142,7 +142,7 @@ PPL::ConSys::affine_preimage(size_t v,
 	}
     }
   }
-  x.normalize();
+  x.strong_normalize();
 }
 
 /*!

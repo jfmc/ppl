@@ -171,6 +171,8 @@ public:
   //@}
   //! Normalize the matrix.
   void normalize();
+  //! Strongly normalize the matrix.
+  void strong_normalize();
   //! Sorts the rows (in growing order) and eliminates duplicated ones.
   void sort_rows();
   //! Merges rows of \p y with rows of \p *this obtaining a sorted matrix.

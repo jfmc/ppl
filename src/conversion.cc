@@ -467,7 +467,7 @@ PPL::Polyhedron::conversion(Matrix& source,
 	    dest[i][c].sub_assign(tmp_Integer(4), tmp_Integer(5));
 	  }
 
-	  dest[i].normalize();
+	  dest[i].strong_normalize();
 	  scalar_prod[i] = 0;
 	}
       }
@@ -529,7 +529,7 @@ PPL::Polyhedron::conversion(Matrix& source,
 	    dest[i][c].sub_assign(tmp_Integer(4), tmp_Integer(5));
 	  }
 
-	  dest[i].normalize();
+	  dest[i].strong_normalize();
 	  scalar_prod[i] = 0;
 	}
       }
@@ -736,7 +736,7 @@ PPL::Polyhedron::conversion(Matrix& source,
 		    tmp_Integer(5).mul_assign(tmp_Integer(3), dest[i][c]);
 		    new_row[c].sub_assign(tmp_Integer(4), tmp_Integer(5));
 		  }
-		  new_row.normalize();
+		  new_row.strong_normalize();
 		  // Since we added a new row to `dest', we have to add
 		  // a new element to `scalar_prod' too; we add 0 because
 		  // the new ray lies on the hyper-plane represented by

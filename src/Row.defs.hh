@@ -144,8 +144,11 @@ public:
   //! Gives the number of coefficients currently in use.
   size_t size() const;
 
-  //! Normalizes all the coefficients with respect to their GCD.
+  //! Normalizes all the coefficients so that they are mutually prime.
   void normalize();
+  //! Strong normalization: ensures that different rows represent
+  //! different hyperplanes or hyperspaces.
+  void strong_normalize();
 
   //! Linearly combines \p *this with \p y such that \p *this[k] is 0.
   void linear_combine(const Row& y, size_t k);
@@ -274,6 +277,10 @@ void swap(Parma_Polyhedra_Library::Row& x,
 	  Parma_Polyhedra_Library::Row& y);
 
 } // namespace std
+
+// If non-zero, lines and equalities are normalized so that the 
+// first non-zero coefficient is negative.
+#define EXTRA_NORMALIZATION 1
 
 #include "Row.inlines.hh"
 

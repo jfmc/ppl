@@ -562,6 +562,16 @@ PPL::Matrix::normalize() {
 }
 
 /*!
+  Strongly normalizes each row.
+*/
+void
+PPL::Matrix::strong_normalize() {
+  for (size_t i = num_rows(); i-- > 0; )
+    rows[i].strong_normalize();
+  set_sorted(false);
+}
+
+/*!
   Returns <CODE>true</CODE> if and only if \p x and
   \p y are identical.
 */
@@ -727,15 +737,19 @@ PPL::Matrix::back_substitute(size_t rank) {
 	// rows (but these already treated above) with the
 	// k-th one such that they have a zero coefficient
 	// in position j.
-	// If we combine an equality (line), that is `rows[k], with
-	// an inequality (ray or vertex) the j-th coefficient of the
-	// equality must be positive, so we multiply the equality (line)
-	// for -1. It is necessary because otherwise the coefficient
-	// of `rows[i]' of the linear combination is negative.
+#if EXTRA_NORMALIZATION
+	// An inequality cannot be multiplied by a negative number.
+	// As a consequence, if we combine an equality (or a line)
+	// with an inequality (or ray or vertex) the "pivot" element
+	// of the equality must be positive.
+	// That is what happens here: if the pivot `rows[k][j]'
+	// is negative, the row `rows[k]' is negated before the
+	// linear combination takes place.
 	if (rows[i].is_ray_or_vertex_or_inequality())
 	  if (rows[k][j] < 0)
 	    for (size_t h = num_columns(); h-- > 0; )
 	      rows[k][h].negate();
+#endif
 	
 	rows[i].linear_combine(rows[k], j);
 

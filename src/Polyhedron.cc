@@ -2310,10 +2310,10 @@ PPL::Polyhedron::OK(bool check_not_empty) const {
       // are declared minimized, but they are not: the polyhedron is not
       // ok.
       if (copy_num_lines == 0) {
-	copy_of_gen_sys.normalize();
+	copy_of_gen_sys.strong_normalize();
 	copy_of_gen_sys.sort_rows();
 	GenSys tmp_gen = gen_sys;
-	tmp_gen.normalize();
+	tmp_gen.strong_normalize();
 	tmp_gen.sort_rows();
 	if (copy_of_gen_sys != tmp_gen) {
 	  cerr << "Generators are declared minimized, but they are not!"
@@ -2375,12 +2375,12 @@ PPL::Polyhedron::OK(bool check_not_empty) const {
       // is modified using the functions gauss() and back_substitute().
       // If the temporary matrix and `copy_of_con_sys' are different,
       // the polyhedron is not ok.
-      copy_of_con_sys.normalize();
+      copy_of_con_sys.strong_normalize();
       copy_of_con_sys.sort_rows();
       ConSys tmp_con = con_sys;
       tmp_con.sort_rows();
       tmp_con.back_substitute(tmp_con.gauss());
-      tmp_con.normalize();
+      tmp_con.strong_normalize();
       tmp_con.sort_rows();
       if (tmp_con != copy_of_con_sys) {
 	cerr << "Constraints are declared minimized, but they are not!"

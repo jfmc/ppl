@@ -130,9 +130,20 @@ PPL::Row::normalize() {
     // Divide the coefficients by the GCD.
     for (size_t i = sz; i-- > 0; )
       x[i].exact_div_assign(tmp_Integer(1));
+}
+
+
+/*!
+  In addition to the normalization performed by normalize(),
+  this method ensures that the first non-zero coefficient
+  of lines and equalities is negative.
+*/
+void
+PPL::Row::strong_normalize() {
+  Row& x = *this;
+  x.normalize();
   
-  // If `x' is an equality (line), we decide that the first
-  // coefficient of the row different from zero is negative.
+  size_t sz = x.size();
   if (x.is_line_or_equality()) {
     //`first_non_zero' indicates the index of the first
     // coefficient of the row different from zero.
@@ -141,8 +152,8 @@ PPL::Row::normalize() {
       if (x[first_non_zero] != 0)
 	break;
     if (first_non_zero < sz)
-      // If the first coefficient of the row different form zero
-      // is positive, we multiply the row for -1.
+      // If the first non-zero coefficient of the row is
+      // positive, we negate the entire row.
       if (x[first_non_zero] > 0)
 	for (size_t j = first_non_zero; j < sz; ++j)
 	  x[j].negate();
@@ -253,7 +264,12 @@ PPL::Row::linear_combine(const Row& y, size_t k) {
       x[i].sub_assign(tmp_Integer(4), tmp_Integer(5));
     }
   x[k] = 0;
+
+#if EXTRA_NORMALIZATION
+  x.strong_normalize();
+#else
   x.normalize();
+#endif
 }
 
 std::ostream&
