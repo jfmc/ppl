@@ -21,8 +21,8 @@ USA.
 For the most up-to-date information see the Parma Polyhedra Library
 site: http://www.cs.unipr.it/ppl/ . */
 
-#ifndef _Determinate_defs_hh
-#define _Determinate_defs_hh
+#ifndef PPL_Determinate_defs_hh
+#define PPL_Determinate_defs_hh
 
 #include "Determinate.types.hh"
 #include <iosfwd>
@@ -258,4 +258,4 @@ private:
 
 #include "Determinate.inlines.hh"
 
-#endif // !defined(_Determinate_defs_hh)
+#endif // !defined(PPL_Determinate_defs_hh)

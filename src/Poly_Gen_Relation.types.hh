@@ -9,8 +9,8 @@ WITHOUT ANY WARRANTY, to the extent permitted by law; without even the
 implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR
 PURPOSE. */
 
-#ifndef _Poly_Gen_Relation_types_hh
-#define _Poly_Gen_Relation_types_hh 1
+#ifndef PPL_Poly_Gen_Relation_types_hh
+#define PPL_Poly_Gen_Relation_types_hh 1
 
 namespace Parma_Polyhedra_Library {
 
@@ -18,4 +18,4 @@ class Poly_Gen_Relation;
 
 }
 
-#endif // !defined(_Poly_Gen_Relation_types_hh)
+#endif // !defined(PPL_Poly_Gen_Relation_types_hh)

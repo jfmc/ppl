@@ -45,8 +45,8 @@ AC_SUBST(ISODATE)
 AC_CANONICAL_HOST
 
 AH_TOP([
-#ifndef _ppl_config_h
-#define _ppl_config_h 1
+#ifndef PPL_ppl_config_h
+#define PPL_ppl_config_h 1
 ])
 
 AH_BOTTOM([
@@ -68,7 +68,7 @@ AH_BOTTOM([
 #define PPL_FLEXIBLE_ARRAY 0
 #endif
 
-#endif
+#endif // !defined(PPL_ppl_config_h)
 ])
 
 # C compiler

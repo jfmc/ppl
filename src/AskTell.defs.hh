@@ -21,8 +21,8 @@ USA.
 For the most up-to-date information see the Parma Polyhedra Library
 site: http://www.cs.unipr.it/ppl/ . */
 
-#ifndef _AskTell_defs_hh
-#define _AskTell_defs_hh
+#ifndef PPL_AskTell_defs_hh
+#define PPL_AskTell_defs_hh
 
 #include "AskTell.types.hh"
 #include "LCompare.defs.hh"
@@ -129,4 +129,4 @@ public:
 
 #include "AskTell.inlines.hh"
 
-#endif // !defined(_AskTell_defs_hh)
+#endif // !defined(PPL_AskTell_defs_hh)

@@ -28,8 +28,8 @@ This file implements the C interface.
 Detailed description with examples to be written.
 */
 
-#ifndef _ppl_c_h
-#define _ppl_c_h 1
+#ifndef PPL_ppl_c_h
+#define PPL_ppl_c_h 1
 
 #include <gmp.h>
 
@@ -1449,4 +1449,4 @@ ppl_Polyhedron_OK __P((ppl_const_Polyhedron_t ph));
 
 #undef __P
 
-#endif /* !defined(_ppl_c_h) */
+#endif /* !defined(PPL_ppl_c_h) */

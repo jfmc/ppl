@@ -21,8 +21,8 @@ USA.
 For the most up-to-date information see the Parma Polyhedra Library
 site: http://www.cs.unipr.it/ppl/ . */
 
-#ifndef _LCompare_defs_hh
-#define _LCompare_defs_hh
+#ifndef PPL_LCompare_defs_hh
+#define PPL_LCompare_defs_hh
 
 #include "LCompare.types.hh"
 #include <functional>
@@ -36,4 +36,4 @@ public:
 
 #include "LCompare.inlines.hh"
 
-#endif // !defined(_LCompare_defs_hh)
+#endif // !defined(PPL_LCompare_defs_hh)

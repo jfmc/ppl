@@ -9,8 +9,8 @@ WITHOUT ANY WARRANTY, to the extent permitted by law; without even the
 implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR
 PURPOSE. */
 
-#ifndef _Determinate_types_hh
-#define _Determinate_types_hh 1
+#ifndef PPL_Determinate_types_hh
+#define PPL_Determinate_types_hh 1
 
 namespace Parma_Polyhedra_Library {
 
@@ -19,4 +19,4 @@ class Determinate;
 
 }
 
-#endif // !defined(_Determinate_types_hh)
+#endif // !defined(PPL_Determinate_types_hh)

@@ -21,8 +21,8 @@ USA.
 For the most up-to-date information see the Parma Polyhedra Library
 site: http://www.cs.unipr.it/ppl/ . */
 
-#ifndef _track_allocation_hh
-#define _track_allocation_hh
+#ifndef PPL_track_allocation_hh
+#define PPL_track_allocation_hh
 
 #ifndef PROLOG_TRACK_ALLOCATION
 #define PROLOG_TRACK_ALLOCATION 0
@@ -109,4 +109,4 @@ poly_tracker() {
 
 #endif
 
-#endif
+#endif // !defined(PPL_track_allocation_hh)

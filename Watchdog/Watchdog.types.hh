@@ -9,12 +9,12 @@ WITHOUT ANY WARRANTY, to the extent permitted by law; without even the
 implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR
 PURPOSE. */
 
-#ifndef _Watchdog_types_hh
-#define _Watchdog_types_hh 1
+#ifndef PWL_Watchdog_types_hh
+#define PWL_Watchdog_types_hh 1
 
 namespace Parma_Watchdog_Library {
   class Watchdog;
   class Flag;
 }
 
-#endif
+#endif // !defined(PWL_Watchdog_types_hh)

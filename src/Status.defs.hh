@@ -21,8 +21,8 @@ USA.
 For the most up-to-date information see the Parma Polyhedra Library
 site: http://www.cs.unipr.it/ppl/ . */
 
-#ifndef _Status_defs_hh
-#define _Status_defs_hh 1
+#ifndef PPL_Status_defs_hh
+#define PPL_Status_defs_hh 1
 
 #include "Status.types.hh"
 #include <iosfwd>
@@ -177,4 +177,4 @@ std::istream& operator>>(std::istream& s, Status& u);
 
 #include "Status.inlines.hh"
 
-#endif // !defined(_Status_defs_hh)
+#endif // !defined(PPL_Status_defs_hh)

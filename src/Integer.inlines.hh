@@ -21,8 +21,8 @@ USA.
 For the most up-to-date information see the Parma Polyhedra Library
 site: http://www.cs.unipr.it/ppl/ . */
 
-#ifndef _Integer_inlines_hh
-#define _Integer_inlines_hh 1
+#ifndef PPL_Integer_inlines_hh
+#define PPL_Integer_inlines_hh 1
 
 namespace Parma_Polyhedra_Library {
 
@@ -76,4 +76,4 @@ std::swap(Parma_Polyhedra_Library::Integer& x,
   mpz_swap(x.get_mpz_t(), y.get_mpz_t());
 }
 
-#endif // !defined(_Integer_inlines_hh)
+#endif // !defined(PPL_Integer_inlines_hh)

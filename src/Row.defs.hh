@@ -21,8 +21,8 @@ USA.
 For the most up-to-date information see the Parma Polyhedra Library
 site: http://www.cs.unipr.it/ppl/ . */
 
-#ifndef _Row_defs_hh
-#define _Row_defs_hh 1
+#ifndef PPL_Row_defs_hh
+#define PPL_Row_defs_hh 1
 
 #include "Topology.hh"
 #include "Row.types.hh"
@@ -395,4 +395,4 @@ void swap(Parma_Polyhedra_Library::Row& x,
 
 #include "Row.inlines.hh"
 
-#endif // !defined(_Row_defs_hh)
+#endif // !defined(PPL_Row_defs_hh)

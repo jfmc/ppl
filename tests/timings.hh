@@ -21,12 +21,12 @@ USA.
 For the most up-to-date information see the Parma Polyhedra Library
 site: http://www.cs.unipr.it/ppl/ . */
 
-#ifndef _timings_hh
-#define _timings_hh 1
+#ifndef PPL_timings_hh
+#define PPL_timings_hh 1
 
 #include <iosfwd>
 
 void start_clock();
 void print_clock(std::ostream& s);
 
-#endif
+#endif // !defined(PPL_timings_hh)

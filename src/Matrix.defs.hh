@@ -21,8 +21,8 @@ USA.
 For the most up-to-date information see the Parma Polyhedra Library
 site: http://www.cs.unipr.it/ppl/ . */
 
-#ifndef _Matrix_defs_hh
-#define _Matrix_defs_hh 1
+#ifndef PPL_Matrix_defs_hh
+#define PPL_Matrix_defs_hh 1
 
 #include "Matrix.types.hh"
 #include "Row.defs.hh"
@@ -443,4 +443,4 @@ std::ostream& operator<<(std::ostream& s, const Matrix& m);
 
 #include "Matrix.inlines.hh"
 
-#endif // !defined(_Matrix_defs_hh)
+#endif // !defined(PPL_Matrix_defs_hh)

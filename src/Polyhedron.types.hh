@@ -9,8 +9,8 @@ WITHOUT ANY WARRANTY, to the extent permitted by law; without even the
 implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR
 PURPOSE. */
 
-#ifndef _Polyhedron_types_hh
-#define _Polyhedron_types_hh 1
+#ifndef PPL_Polyhedron_types_hh
+#define PPL_Polyhedron_types_hh 1
 
 //! The entire library is confined into this namespace.
 namespace Parma_Polyhedra_Library {
@@ -30,4 +30,4 @@ class Polyhedron;
 namespace std {
 }
 
-#endif // !defined(_Polyhedron_types_hh)
+#endif // !defined(PPL_Polyhedron_types_hh)

@@ -9,8 +9,8 @@ WITHOUT ANY WARRANTY, to the extent permitted by law; without even the
 implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR
 PURPOSE. */
 
-#ifndef _Integer_types_hh
-#define _Integer_types_hh 1
+#ifndef PPL_Integer_types_hh
+#define PPL_Integer_types_hh 1
 
 #include <gmpxx.h>
 
@@ -21,4 +21,4 @@ typedef mpz_class Integer;
 
 }
 
-#endif // !defined(_Integer_types_hh)
+#endif // !defined(PPL_Integer_types_hh)

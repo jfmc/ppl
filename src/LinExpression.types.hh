@@ -9,8 +9,8 @@ WITHOUT ANY WARRANTY, to the extent permitted by law; without even the
 implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR
 PURPOSE. */
 
-#ifndef _LinExpression_types_hh
-#define _LinExpression_types_hh 1
+#ifndef PPL_LinExpression_types_hh
+#define PPL_LinExpression_types_hh 1
 
 namespace Parma_Polyhedra_Library {
 
@@ -18,4 +18,4 @@ class LinExpression;
 
 }
 
-#endif // !defined(_LinExpression_types_hh)
+#endif // !defined(PPL_LinExpression_types_hh)

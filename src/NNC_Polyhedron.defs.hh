@@ -21,8 +21,8 @@ USA.
 For the most up-to-date information see the Parma Polyhedra Library
 site: http://www.cs.unipr.it/ppl/ . */
 
-#ifndef _NNC_Polyhedron_defs_hh
-#define _NNC_Polyhedron_defs_hh 1
+#ifndef PPL_NNC_Polyhedron_defs_hh
+#define PPL_NNC_Polyhedron_defs_hh 1
 
 #include "C_Polyhedron.types.hh"
 #include "NNC_Polyhedron.types.hh"
@@ -108,4 +108,4 @@ public:
 
 #include "NNC_Polyhedron.inlines.hh"
 
-#endif // !defined(_NNC_Polyhedron_defs_hh)
+#endif // !defined(PPL_NNC_Polyhedron_defs_hh)

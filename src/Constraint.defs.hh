@@ -21,8 +21,8 @@ USA.
 For the most up-to-date information see the Parma Polyhedra Library
 site: http://www.cs.unipr.it/ppl/ . */
 
-#ifndef _Constraint_defs_hh
-#define _Constraint_defs_hh 1
+#ifndef PPL_Constraint_defs_hh
+#define PPL_Constraint_defs_hh 1
 
 #include "Constraint.types.hh"
 #include "Row.defs.hh"
@@ -409,4 +409,4 @@ private:
 
 #include "Constraint.inlines.hh"
 
-#endif // !defined(_Constraint_defs_hh)
+#endif // !defined(PPL_Constraint_defs_hh)

@@ -21,8 +21,8 @@ USA.
 For the most up-to-date information see the Parma Polyhedra Library
 site: http://www.cs.unipr.it/ppl/ . */
 
-#ifndef _Init_defs_hh
-#define _Init_defs_hh 1
+#ifndef PPL_Init_defs_hh
+#define PPL_Init_defs_hh 1
 
 #include "Init.types.hh"
 #include "Integer.types.hh"
@@ -56,4 +56,4 @@ public:
 
 #include "Init.inlines.hh"
 
-#endif // !defined(_Init_defs_hh)
+#endif // !defined(PPL_Init_defs_hh)

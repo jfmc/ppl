@@ -21,8 +21,8 @@ USA.
 For the most up-to-date information see the Parma Polyhedra Library
 site: http://www.cs.unipr.it/ppl/ . */
 
-#ifndef _LCompare_inlines_hh
-#define _LCompare_inlines_hh 1
+#ifndef PPL_LCompare_inlines_hh
+#define PPL_LCompare_inlines_hh 1
 
 namespace Parma_Polyhedra_Library {
 
@@ -34,4 +34,4 @@ LCompare<T>::operator()(const T& x, const T& y) const {
 
 } // namespace Parma_Polyhedra_Library
 
-#endif // !defined(_LCompare_inlines_hh)
+#endif // !defined(PPL_LCompare_inlines_hh)

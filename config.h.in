@@ -1,8 +1,8 @@
 /* config.h.in.  Generated from configure.ac by autoheader.  */
 
 
-#ifndef _ppl_config_h
-#define _ppl_config_h 1
+#ifndef PPL_ppl_config_h
+#define PPL_ppl_config_h 1
 
 
 /* Not zero if GMP has been compiled with support for exceptions. */
@@ -97,5 +97,5 @@
 #define PPL_FLEXIBLE_ARRAY 0
 #endif
 
-#endif
+#endif // !defined(PPL_ppl_config_h)
 

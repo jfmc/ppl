@@ -21,8 +21,8 @@ USA.
 For the most up-to-date information see the Parma Polyhedra Library
 site: http://www.cs.unipr.it/ppl/ . */
 
-#ifndef _PowerSet_defs_hh
-#define _PowerSet_defs_hh
+#ifndef PPL_PowerSet_defs_hh
+#define PPL_PowerSet_defs_hh
 
 #include "PowerSet.types.hh"
 #include "LCompare.defs.hh"
@@ -173,4 +173,4 @@ public:
 
 #include "PowerSet.inlines.hh"
 
-#endif // !defined(_PowerSet_defs_hh)
+#endif // !defined(PPL_PowerSet_defs_hh)

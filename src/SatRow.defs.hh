@@ -21,8 +21,8 @@ USA.
 For the most up-to-date information see the Parma Polyhedra Library
 site: http://www.cs.unipr.it/ppl/ . */
 
-#ifndef _SatRow_defs_hh
-#define _SatRow_defs_hh 1
+#ifndef PPL_SatRow_defs_hh
+#define PPL_SatRow_defs_hh 1
 
 #include "SatRow.types.hh"
 #include <iosfwd>
@@ -165,4 +165,4 @@ void swap(Parma_Polyhedra_Library::SatRow& x,
 
 #include "SatRow.inlines.hh"
 
-#endif // !defined(_SatRow_defs_hh)
+#endif // !defined(PPL_SatRow_defs_hh)

@@ -21,8 +21,8 @@ USA.
 For the most up-to-date information see the Parma Polyhedra Library
 site: http://www.cs.unipr.it/ppl/ . */
 
-#ifndef _PowerSet_inlines_hh
-#define _PowerSet_inlines_hh 1
+#ifndef PPL_PowerSet_inlines_hh
+#define PPL_PowerSet_inlines_hh 1
 
 #include <algorithm>
 
@@ -337,4 +337,4 @@ PowerSet<CS>::remove_higher_dimensions(size_t new_dimension) {
   
 } // namespace Parma_Polyhedra_Library
 
-#endif // !defined(_PowerSet_inlines_hh)
+#endif // !defined(PPL_PowerSet_inlines_hh)
