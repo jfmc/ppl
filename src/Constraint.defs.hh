@@ -70,25 +70,30 @@ namespace Parma_Polyhedra_Library {
   Strict inequalities (<CODE><</CODE> and <CODE>></CODE>)
   are not supported.
 
-    \par
-    In the following example it is assumed that variables
-    <CODE>x</CODE>, <CODE>y</CODE> and <CODE>z</CODE>
-    are defined as follows:
-    \code
+  \par
+  In the following example it is assumed that variables
+  <CODE>x</CODE>, <CODE>y</CODE> and <CODE>z</CODE>
+  are defined as follows:
+  \code
   Variable x(0);
   Variable y(1);
   Variable z(2);
-    \endcode
+  \endcode
 
-    \par Example
-    The following code builds the equality \f$3x + 5y - z = 0\f$:
-    \code
+  \par Example
+  The following code builds the equality \f$3x + 5y - z = 0\f$:
+  \code
   Constraint equal(3*x + 5*y - z == 0);
-    \endcode
-    The following code builds the constraint \f$4x - 2y \geq z - 13\f$:
-    \code
+  \endcode
+  The following code builds the constraint \f$4x - 2y \geq z - 13\f$:
+  \code
   Constraint inequal(4*x - 2*y >= z - 13);
-    \endcode
+  \endcode
+  The unsatisfiable constraint on the zero-dimension space \f$\Rset^0\f$
+  can be specified as follows:
+  \code
+  Constraint c_false(LinExpression::zero == 1);
+  \endcode
 */
 class Parma_Polyhedra_Library::Constraint : PPL_INTERNAL Row {
 private:
@@ -169,6 +174,9 @@ public:
   const Integer& coefficient(Variable v) const;
   //! Returns the inhomogeneous term of \p *this.
   const Integer& coefficient() const;
+
+  //! The unsatisfiable zero-dim constraint 0 = 1.
+  static Constraint zero_dim_false;
 
 PPL_INTERNAL:
   //! Returns <CODE>true</CODE> if and only if

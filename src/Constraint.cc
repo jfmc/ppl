@@ -31,6 +31,9 @@ site: http://www.cs.unipr.it/ppl/ . */
 namespace PPL = Parma_Polyhedra_Library;
 
 PPL::Constraint
+PPL::Constraint::zero_dim_false(LinExpression(0) == Integer(1));
+
+PPL::Constraint
 PPL::operator >>(const Constraint& y, unsigned int offset) {
   size_t y_size = y.size();
   Constraint x(y.Row::type(), y_size+offset);
@@ -42,11 +45,16 @@ PPL::operator >>(const Constraint& y, unsigned int offset) {
 
 bool
 PPL::Constraint::is_nontrivial() const {
+  assert(size() > 0);
   const Constraint& x = *this;
   for (size_t i = size(); --i > 0; )
     if (x[i] != 0)
       return true;
-  return false;
+  if (is_equality())
+    return (x[0] == 0);
+  else
+    // Inequality constraint.
+    return (x[0] >= 0);
 }
 
 std::ostream&
@@ -73,6 +81,8 @@ PPL::operator <<(std::ostream& s, const Constraint& c) {
       s << PPL::Variable(v);
     }
   }
+  if (first)
+    s << "0";
   if (c.is_equality())
     s << " = ";
   else
