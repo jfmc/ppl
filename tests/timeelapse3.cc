@@ -1,4 +1,4 @@
-/* Testing time_elapse_assign() with a NECESSARY_CLOSED polyhedron
+/* Test time_elapse_assign() with a NECESSARY_CLOSED polyhedron
    and a NOT_NECESSARY_CLOSED polyhedron.
    Copyright (C) 2001, 2002 Roberto Bagnara <bagnara@cs.unipr.it>
 

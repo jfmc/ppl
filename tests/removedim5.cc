@@ -1,4 +1,4 @@
-/* Testing Polyhedron::remove_higher_dimensions(): we remove
+/* Test Polyhedron::remove_higher_dimensions(): we remove
    dimensions from an empty polyhedron.
    Copyright (C) 2001, 2002 Roberto Bagnara <bagnara@cs.unipr.it>
 

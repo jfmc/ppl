@@ -1,4 +1,4 @@
-/* Testing Polyhedron::intersection_assign_and_minimize(): we
+/* Test Polyhedron::intersection_assign_and_minimize(): we
    intersect a polyhedron defined by its system of constraints with
    one described by its system of generators.
    Copyright (C) 2001, 2002 Roberto Bagnara <bagnara@cs.unipr.it>

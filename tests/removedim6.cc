@@ -1,4 +1,4 @@
-/* Testing Polyhedron::remove_higher_dimensions() and
+/* Test Polyhedron::remove_higher_dimensions() and
    C_Polyhedron::remove_dimensions(): we obtain a zero-dimensional
    polyhedron removing all the dimensions.
    Copyright (C) 2001, 2002 Roberto Bagnara <bagnara@cs.unipr.it>

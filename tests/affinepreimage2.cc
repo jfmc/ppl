@@ -1,4 +1,4 @@
-/* Testing Polyhedron::affine_preimage(): we apply this function to
+/* Test Polyhedron::affine_preimage(): we apply this function to
    a polyhedron defined by its system of constraints.
    Copyright (C) 2001, 2002 Roberto Bagnara <bagnara@cs.unipr.it>
 

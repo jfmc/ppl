@@ -1,4 +1,4 @@
-/* Testing Polyhedron::add_dimensions_and_embed(): we apply this function
+/* Test Polyhedron::add_dimensions_and_embed(): we apply this function
    to a polyhedron defined by its system of generators.
    Copyright (C) 2001, 2002 Roberto Bagnara <bagnara@cs.unipr.it>
 

@@ -1,4 +1,4 @@
-/* Testing Polyhedron::is_bounded(). We apply this function to
+/* Test Polyhedron::is_bounded(). We apply this function to
    five different type of polyhedra: a non-bounded polyhedron,
    a boundend polyhedra, a zero dimensional polyhedron, a zero-dimensional
    and empty polyhedron and a empty polyhedron.

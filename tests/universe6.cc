@@ -1,4 +1,4 @@
-/* Testing the function check_universe() for a NNC_polyhedron.
+/* Test the function check_universe() for a NNC_polyhedron.
    Copyright (C) 2001, 2002 Roberto Bagnara <bagnara@cs.unipr.it>
 
 This file is part of the Parma Polyhedra Library (PPL).

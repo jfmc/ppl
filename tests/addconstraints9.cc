@@ -1,4 +1,4 @@
-/* Testing Polyhedron::add_constraints(): we add a system of constraints
+/* Test Polyhedron::add_constraints(): we add a system of constraints
    to a polyhedron described by its system of generators.
    Copyright (C) 2001, 2002 Roberto Bagnara <bagnara@cs.unipr.it>
 

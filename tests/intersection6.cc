@@ -1,4 +1,4 @@
-/* Testing Polyhedron::intersection_assign(): we intersect two
+/* Test Polyhedron::intersection_assign(): we intersect two
    polyhedra defined by their system of generators.
    Copyright (C) 2001, 2002 Roberto Bagnara <bagnara@cs.unipr.it>
 

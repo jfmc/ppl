@@ -1,4 +1,4 @@
-/* Testing remove_higher_dimensions() and remove_dimensions()
+/* Test remove_higher_dimensions() and remove_dimensions()
    for NN_Polyhedron.
    Copyright (C) 2001, 2002 Roberto Bagnara <bagnara@cs.unipr.it>
 
