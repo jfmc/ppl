@@ -390,6 +390,11 @@ strtod_(const char *nptr, char **endptr) {
   return strtod(nptr, endptr);
 }
 
+#if !HAVE_DECL_STRTOLD
+long double
+strtold(const char *nptr, char **endptr);
+#endif
+
 template <>
 inline long double
 strtod_(const char *nptr, char **endptr) {
