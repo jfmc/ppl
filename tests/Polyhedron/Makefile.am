@@ -89,7 +89,7 @@ ORIGINAL_TESTS = \
 	bounds1 bounds2 \
 	concatenate1 concatenate2 concatenate3 concatenate4 concatenate5 \
 	concatenate6 \
-	constraints1 constraints2 constraints3 constraints4 \
+	constraints1 constraints2 constraints3 constraints4 constraints5 \
 	contains1 contains2 contains3 contains4 contains5 \
 	disjoint1 disjoint2 disjoint3 \
 	dualhypercubes \
@@ -189,6 +189,7 @@ DERIVED_TESTS = \
 	nnc_concatenate1 nnc_concatenate2 nnc_concatenate3 nnc_concatenate4 \
 	nnc_concatenate5 nnc_concatenate6 \
 	nnc_constraints1 nnc_constraints2 nnc_constraints3 nnc_constraints4 \
+	nnc_constraints5 \
 	nnc_contains1 nnc_contains2 \
 	nnc_disjoint1 nnc_disjoint2 \
 	nnc_empty1 \
@@ -398,6 +399,7 @@ constraints1_SOURCES = constraints1.cc
 constraints2_SOURCES = constraints2.cc
 constraints3_SOURCES = constraints3.cc
 constraints4_SOURCES = constraints4.cc
+constraints5_SOURCES = constraints5.cc
 
 contains1_SOURCES = contains1.cc
 contains2_SOURCES = contains2.cc
@@ -810,6 +812,8 @@ nnc_constraints3_SOURCES = constraints3.cc
 nnc_constraints3_CXXFLAGS = $(DERIVED_CXXFLAGS)
 nnc_constraints4_SOURCES = constraints4.cc
 nnc_constraints4_CXXFLAGS = $(DERIVED_CXXFLAGS)
+nnc_constraints5_SOURCES = constraints5.cc
+nnc_constraints5_CXXFLAGS = $(DERIVED_CXXFLAGS)
 
 nnc_contains1_SOURCES = contains1.cc
 nnc_contains1_CXXFLAGS = $(DERIVED_CXXFLAGS)
