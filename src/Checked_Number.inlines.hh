@@ -44,11 +44,24 @@ bad_result(Checked::Result r) {
   }
 }
 
+#if 0
+// The Comeau and Intel C++ compilers do not like this use of `static'.
 static inline void
 check_result(Checked::Result r) {
   if (r != Checked::V_EQ)
     bad_result(r);
 }
+#else
+namespace {
+
+inline void
+check_result(Checked::Result r) {
+  if (r != Checked::V_EQ)
+    bad_result(r);
+}
+
+} // namespace
+#endif
 
 template <typename T, typename Policy>
 inline
