@@ -73,8 +73,7 @@ enum Result {
   V_NEG_OVERFLOW = V_MINUS_INFINITY | V_GT,
 
   //! A positive overflow occurred.
-  V_POS_OVERFLOW = V_PLUS_INFINITY | V_LT,
-
+  V_POS_OVERFLOW = V_PLUS_INFINITY | V_LT
 };
 
 bool is_special(Result r);

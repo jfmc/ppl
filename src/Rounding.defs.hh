@@ -36,7 +36,7 @@ public:
     DOWN = FPU_DOWNWARD,
     UP = FPU_UPWARD,
     IGNORE = -1,
-    CURRENT = -2,
+    CURRENT = -2
   };
   Rounding();
   Rounding(Direction d);
