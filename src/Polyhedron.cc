@@ -51,7 +51,11 @@ site: http://www.cs.unipr.it/ppl/ . */
 #endif
 
 #ifndef BHRZ03_EP_P1_P2
-#define BHRZ03_EP_P1_P2 0
+#define BHRZ03_EP_P1_P2 1
+#endif
+
+#ifndef BHRZ03_ER_CWQ
+#define BHRZ03_ER_CWQ 0
 #endif
 
 #define BE_LAZY
@@ -4372,11 +4376,10 @@ PPL::Polyhedron::BHRZ03_evolving_rays(const Polyhedron& y,
   dimension_type x_gen_sys_num_rows = x.gen_sys.num_rows();
   dimension_type y_gen_sys_num_rows = y.gen_sys.num_rows();
 
-  if (!x.sat_c_is_up_to_date())
-    x.sat_c.transpose_assign(x.sat_g);
-
   // Candidate rays are kept in a temporary generator system.
   GenSys candidate_rays;
+  Integer& tmp_1 = tmp_Integer[0];
+  Integer& tmp_2 = tmp_Integer[1];
   for (dimension_type i = x_gen_sys_num_rows; i-- > 0; ) {
     const Generator& x_g = x.gen_sys[i];
     // We choose a ray of `x' that does not belong to `y'.
@@ -4385,16 +4388,31 @@ PPL::Polyhedron::BHRZ03_evolving_rays(const Polyhedron& y,
 	const Generator& y_g = y.gen_sys[j];
 	if (y_g.is_ray()) {
 	  Generator new_ray(x_g);
-	  std::deque<bool> considered(x.space_dim + 1);
-	  Integer tmp_1;
-	  Integer tmp_2;
 	  // Modify `new_ray' according to the evolution of `x_g' wrt `y_g'.
+	  std::deque<bool> considered(x.space_dim + 1);
 	  for (dimension_type k = 1; k < x.space_dim; ++k)
 	    if (!considered[k])
 	      for (dimension_type h = k + 1; h <= x.space_dim; ++h)
 		if (!considered[h]) {
 		  tmp_1 = x_g[k] * y_g[h];
 		  tmp_2 = x_g[h] * y_g[k];
+#if BHRZ03_ER_CWQ
+		  tmp_1 -= tmp_2;
+		  int clockwise = sgn(tmp_1);
+		  int first_or_third_quadrant = sgn(x_g[k]) * sgn(x_g[h]);
+		  switch (clockwise * first_or_third_quadrant) {
+		  case -1:
+		    new_ray[k] = 0;
+		    considered[k] = true;
+		    break;
+		  case 1:
+		    new_ray[h] = 0;
+		    considered[h] = true;
+		    break;
+		  default:
+		    break;
+		  }
+#else //#if BHRZ03_ER_CWQ
 		  int ratio_sign = sgn(x_g[k]) * sgn(x_g[h]);
 		  if (tmp_1 != tmp_2)
 		    if ((tmp_1 >= 0 && tmp_2 > tmp_1)
@@ -4409,11 +4427,14 @@ PPL::Polyhedron::BHRZ03_evolving_rays(const Polyhedron& y,
 		      new_ray[h] = 0;
 		      considered[h] = true;
 		    }
+#endif //#if BHRZ03_ER_CWQ
 		}
 	  new_ray.normalize();
+#if !BHRZ03_ER_CWQ
 	  // Insert both `new_ray' and `y_g' in `candidate_rays'
 	  // (so that we also generate all the rays in between).
 	  candidate_rays.insert(y_g);
+#endif //#if !BHRZ03_ER_CWQ
 	  candidate_rays.insert(new_ray);
 	}
       }
@@ -4424,6 +4445,14 @@ PPL::Polyhedron::BHRZ03_evolving_rays(const Polyhedron& y,
   if (candidate_rays.num_rows() == 0)
     return false;
 
+  // Be non-intrusive.
+  Polyhedron result = x;
+#if BHRZ03_ER_CWQ
+  // Add to `result' the rays in `candidate_rays'
+  result.add_generators_and_minimize(candidate_rays);
+  // Intersect with `H79'.
+  result.intersection_assign_and_minimize(H79);
+#else
   // Here `candidate_rays' contains more than one ray
   // (because we added rays in pairs).
   // Of all the candidate rays, we only consider those that are
@@ -4460,11 +4489,9 @@ PPL::Polyhedron::BHRZ03_evolving_rays(const Polyhedron& y,
   // If there are no valid rays, the technique is not successful.
   if (valid_rays.num_rows() == 0)
     return false;
-
-  // Be non-intrusive.
-  Polyhedron result = x;
   // Add to `result' the generators in `valid_rays'
   result.add_generators_and_minimize(valid_rays);
+#endif //#if BHRZ03_ER_CWQ
 
   // Check for stabilization wrt `y' and improvement over `H79'.
   if (H79 <= result || !is_BHRZ03_stabilizing(result, y))
