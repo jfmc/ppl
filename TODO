@@ -1,7 +1,20 @@
-Urgent Things
-=============
+Constructions on Polyhedra
+==========================
 
-- Document the classes: ExtendedRational, Boundary, LBoundary, UBoundary.
+We want to extend the PPL so as to implement the constructions
+of the constraint system hierarchy described in
+
+  R. Bagnara.
+  A hierarchy of constraint systems for data-flow analysis
+  of constraint logic-based languages.
+  Science of Computer Programming 30, 1-2 (January 1998), pp. 119-155.
+  Available at http://www.cs.unipr.it/~bagnara/Papers/Abstracts/SCP98
+
+A generic implementation (in the form of C++ templates) of the entire
+hierarchy has already been written.  The wrapper class for C_Polyhedron
+and NNC_Polyhedron so that a polyhedron is seen as a "determinate
+constraint system" is almost finished, as is the implementation of
+powersets of polyhedra.  Ask-and-tell systems need extensive work.
 
 
 Efficiency Issues
@@ -43,22 +56,3 @@ Z-polyhedra are intersections and other representations for discrete sets.
   Génération automatique de codes de transfert pour
   multiprocesseurs à mémoires locales.
   PhD thesis, Université de Paris VI, March 1991.
-
-
-Constructions on Polyhedra
-==========================
-
-We want to extend the PPL so as to implement the constructions
-of the constraint system hierarchy described in
-
-  R. Bagnara.
-  A hierarchy of constraint systems for data-flow analysis
-  of constraint logic-based languages.
-  Science of Computer Programming 30, 1-2 (January 1998), pp. 119-155.
-  Available at http://www.cs.unipr.it/~bagnara/Papers/Abstracts/SCP98
-
-A generic implementation (in the form of C++ templates) of the entire
-hierarchy has already been written.  The wrapper class for C_Polyhedron
-and NNC_Polyhedron so that a polyhedron is seen as a "determinate
-constraint system" is almost finished, as is the implementation of
-powersets of polyhedra.  Ask-and-tell systems need extensive work.
