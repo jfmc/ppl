@@ -103,6 +103,11 @@ operator-=(LinExpression& e, const Integer& n) {
   return e;
 }
 
+inline void
+LinExpression::swap(LinExpression& y) {
+  Row::swap(y);
+}
+
 } // namespace Parma_Polyhedra_Library
 
 
@@ -112,8 +117,7 @@ namespace std {
 inline void
 swap(Parma_Polyhedra_Library::LinExpression& x,
      Parma_Polyhedra_Library::LinExpression& y) {
-  swap(static_cast<Parma_Polyhedra_Library::Row&>(x), 
-       static_cast<Parma_Polyhedra_Library::Row&>(y));
+  x.swap(y);
 }
 
 } // namespace std

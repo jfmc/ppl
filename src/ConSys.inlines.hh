@@ -159,6 +159,11 @@ ConSys::end() const {
   return i;
 }
 
+inline void
+ConSys::swap(ConSys& y) {
+  Matrix::swap(y);
+}
+
 } // namespace Parma_Polyhedra_Library
 
 
@@ -168,8 +173,7 @@ namespace std {
 inline void
 swap(Parma_Polyhedra_Library::ConSys& x,
      Parma_Polyhedra_Library::ConSys& y) {
-  swap(static_cast<Parma_Polyhedra_Library::Matrix&>(x), 
-       static_cast<Parma_Polyhedra_Library::Matrix&>(y));
+  x.swap(y);
 }
 
 } // namespace std

@@ -42,6 +42,15 @@ namespace Parma_Polyhedra_Library {
   std::istream& operator>>(std::istream& s, ConSys& cs);
 }
 
+namespace std {
+
+//! Specializes <CODE>std::swap</CODE>.
+/*! \relates Parma_Polyhedra_Library::ConSys */
+void swap(Parma_Polyhedra_Library::ConSys& x,
+	  Parma_Polyhedra_Library::ConSys& y);
+
+} // namespace std
+
 //! A system of constraints.
 /*!
     An object of the class ConSys is a system of constraints,
@@ -226,6 +235,8 @@ private:
   Parma_Polyhedra_Library::operator<<(std::ostream& s, const ConSys& m);
   friend std::istream&
   Parma_Polyhedra_Library::operator>>(std::istream& s, ConSys& cs);
+  friend void std::swap(Parma_Polyhedra_Library::ConSys& x,
+			Parma_Polyhedra_Library::ConSys& y);
 
   //! Builds an empty system of constraints having the specified topology.
   ConSys(Topology topol);
@@ -235,6 +246,9 @@ private:
   //! dimensional space (including the \f$\epsilon\f$ dimension, if
   //! \p topol is <CODE>NOT_NECESSARILY_CLOSED</CODE>).
   ConSys(Topology topol, size_t n_rows, size_t n_columns);
+
+  //! Swaps \p *this with \p y.
+  void swap(ConSys& y);
 
   //! \brief
   //! Adjusts \p *this so that it matches the topology and
@@ -277,15 +291,6 @@ private:
   //! Output operator.
   void print(std::ostream& s) const;
 };
-
-namespace std {
-
-//! Specializes <CODE>std::swap</CODE>.
-/*! \relates Parma_Polyhedra_Library::ConSys */
-void swap(Parma_Polyhedra_Library::ConSys& x,
-	  Parma_Polyhedra_Library::ConSys& y);
-
-} // namespace std
 
 // ConSys.inlines.hh is not included here on purpose.
 

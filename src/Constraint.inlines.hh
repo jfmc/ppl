@@ -30,7 +30,7 @@ namespace Parma_Polyhedra_Library {
 
 inline
 Constraint::Constraint(LinExpression& e) {
-  swap(e);
+  Row::swap(e);
 }
 
 inline
@@ -293,6 +293,11 @@ Constraint::epsilon_leq_one() {
   return eps_leq_one;
 }
 
+inline void
+Constraint::swap(Constraint& y) {
+  Row::swap(y);
+}
+
 } // namespace Parma_Polyhedra_Library
 
 namespace std {
@@ -303,8 +308,7 @@ namespace std {
 inline void
 swap(Parma_Polyhedra_Library::Constraint& x,
      Parma_Polyhedra_Library::Constraint& y) {
-  swap(static_cast<Parma_Polyhedra_Library::Row&>(x), 
-       static_cast<Parma_Polyhedra_Library::Row&>(y));
+  x.swap(y);
 }
 
 } // namespace std

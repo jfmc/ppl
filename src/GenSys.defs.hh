@@ -42,6 +42,15 @@ namespace Parma_Polyhedra_Library {
 }
 
 
+namespace std {
+
+//! Specializes <CODE>std::swap</CODE>.
+/*! \relates Parma_Polyhedra_Library::GenSys */
+void swap(Parma_Polyhedra_Library::GenSys& x,
+	  Parma_Polyhedra_Library::GenSys& y);
+
+} // namespace std
+
 //! A system of generators.
 /*!
     An object of the class GenSys is a system of generators,
@@ -287,6 +296,8 @@ private:
   Parma_Polyhedra_Library::operator<<(std::ostream& s, const GenSys& gs);
   friend std::istream&
   Parma_Polyhedra_Library::operator>>(std::istream& s, GenSys& gs);
+  friend void std::swap(Parma_Polyhedra_Library::GenSys& x,
+			Parma_Polyhedra_Library::GenSys& y);
 
   //! Builds an empty system of generators having the specified topology.
   GenSys(Topology topol);
@@ -296,6 +307,9 @@ private:
   //! dimensional space (including the \f$\epsilon\f$ dimension, if
   //! \p topol is <CODE>NOT_NECESSARILY_CLOSED</CODE>).
   GenSys(Topology topol, size_t n_rows, size_t n_columns);
+
+  //! Swaps \p *this with \p y.
+  void swap(GenSys& y);
 
   //! \brief
   //! Adjusts \p *this so that it matches the topology and
@@ -372,15 +386,6 @@ private:
   //! Output operator.
   void print(std::ostream& s) const;
 };
-
-namespace std {
-
-//! Specializes <CODE>std::swap</CODE>.
-/*! \relates Parma_Polyhedra_Library::GenSys */
-void swap(Parma_Polyhedra_Library::GenSys& x,
-	  Parma_Polyhedra_Library::GenSys& y);
-
-} // namespace std
 
 // GenSys.inlines.hh is not included here on purpose.
 

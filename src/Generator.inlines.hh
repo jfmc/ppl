@@ -28,7 +28,7 @@ namespace Parma_Polyhedra_Library {
 
 inline
 Generator::Generator(LinExpression& e) {
-  swap(e);
+  Row::swap(e);
 }
 
 inline
@@ -155,6 +155,11 @@ closure_point(const LinExpression& e, const Integer& d) {
   return Generator::closure_point(e, d);
 }
 
+inline void
+Generator::swap(Generator& y) {
+  Row::swap(y);
+}
+
 } // namespace Parma_Polyhedra_Library
 
 namespace std {
@@ -163,8 +168,7 @@ namespace std {
 inline void
 swap(Parma_Polyhedra_Library::Generator& x,
      Parma_Polyhedra_Library::Generator& y) {
-  swap(static_cast<Parma_Polyhedra_Library::Row&>(x), 
-       static_cast<Parma_Polyhedra_Library::Row&>(y));
+  x.swap(y);
 }
 
 } // namespace std

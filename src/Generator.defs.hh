@@ -35,17 +35,21 @@ site: http://www.cs.unipr.it/ppl/ . */
 
 namespace Parma_Polyhedra_Library {
 
-  // FIXME: this is repeated from Polyhedron.defs.hh
-  // and put in the namespace here to declare it friend later.
-  bool operator<=(const Polyhedron& x, const Polyhedron& y);
-}
-
-namespace Parma_Polyhedra_Library {
-
-  // Put it in the namespace here to declare it friend later.
-  std::ostream& operator<<(std::ostream& s, const Generator& g);
+// Put it in the namespace here to declare it friend later.
+bool operator<=(const Polyhedron& x, const Polyhedron& y);
+std::ostream& operator<<(std::ostream& s, const Generator& g);
 
 }
+
+namespace std {
+
+//! Specializes <CODE>std::swap</CODE>.
+/*! \relates Parma_Polyhedra_Library::Generator */
+void swap(Parma_Polyhedra_Library::Generator& x,
+	  Parma_Polyhedra_Library::Generator& y);
+
+} // namespace std
+
 
 //! A line, ray, point or closure point.
 /*!
@@ -227,24 +231,6 @@ namespace Parma_Polyhedra_Library {
 */
 
 class Parma_Polyhedra_Library::Generator : private Row {
-private:
-  //! \brief
-  //! Builds a generator (of unspecified type) stealing
-  //! the coefficients from \p e.
-  Generator(LinExpression& e);
-
-  //! \brief
-  //! Throw a <CODE>std::invalid_argument</CODE> exception
-  //! containing the appropriate error message.
-  void
-  throw_dimension_incompatible(const char* method, Variable v) const;
-
-  //! \brief
-  //! Throw a <CODE>std::invalid_argument</CODE> exception
-  //! containing the appropriate error message.
-  void
-  throw_invalid_argument(const char* method, const char* reason) const;
-
 public:
   //! Returns the line of direction \p e.
   /*!
@@ -281,7 +267,6 @@ public:
   closure_point(const LinExpression& e = LinExpression::zero(),
 		const Integer& d = Integer_one());
 
-public:
   //! Ordinary copy-constructor.
   Generator(const Generator& g);
 
@@ -347,6 +332,26 @@ public:
   bool OK() const;
 
 private:
+  //! \brief
+  //! Builds a generator (of unspecified type) stealing
+  //! the coefficients from \p e.
+  Generator(LinExpression& e);
+
+  //! Swaps \p *this with \p y.
+  void swap(Generator& y);
+
+  //! \brief
+  //! Throw a <CODE>std::invalid_argument</CODE> exception
+  //! containing the appropriate error message.
+  void
+  throw_dimension_incompatible(const char* method, Variable v) const;
+
+  //! \brief
+  //! Throw a <CODE>std::invalid_argument</CODE> exception
+  //! containing the appropriate error message.
+  void
+  throw_invalid_argument(const char* method, const char* reason) const;
+
   friend class Parma_Polyhedra_Library::GenSys;
   friend class Parma_Polyhedra_Library::GenSys::const_iterator;
   friend class Parma_Polyhedra_Library::Polyhedron;
@@ -362,6 +367,8 @@ private:
   ConSys::satisfies_all_constraints(const Generator& g) const;
   friend bool Parma_Polyhedra_Library::operator<=(const Polyhedron& x,
 						  const Polyhedron& y);
+  friend void std::swap(Parma_Polyhedra_Library::Generator& x,
+			Parma_Polyhedra_Library::Generator& y);
 
   //! Output operator.
   friend std::ostream&
@@ -407,15 +414,6 @@ namespace Parma_Polyhedra_Library {
 			  const Integer& d = Integer_one());
 
 } // namespace Parma_Polyhedra_Library
-
-namespace std {
-
-//! Specializes <CODE>std::swap</CODE>.
-/*! \relates Parma_Polyhedra_Library::Generator */
-void swap(Parma_Polyhedra_Library::Generator& x,
-	  Parma_Polyhedra_Library::Generator& y);
-
-} // namespace std
 
 #include "Generator.inlines.hh"
 

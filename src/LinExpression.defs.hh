@@ -59,6 +59,16 @@ namespace Parma_Polyhedra_Library {
   LinExpression& operator-=(LinExpression& e, const Integer& n);
 }
 
+
+namespace std {
+
+//! Specializes <CODE>std::swap</CODE>.
+/*! \relates Parma_Polyhedra_Library::LinExpression */
+void swap(Parma_Polyhedra_Library::LinExpression& x,
+	  Parma_Polyhedra_Library::LinExpression& y);
+
+} // namespace std
+
 //! A linear expression.
 /*!
     An object of the class LinExpression represents the linear expression
@@ -172,6 +182,8 @@ private:
   Parma_Polyhedra_Library::GenSys::affine_image(size_t v,
 						const LinExpression& expr,
 						const Integer& denominator);
+  friend void std::swap(Parma_Polyhedra_Library::LinExpression& x,
+		       Parma_Polyhedra_Library::LinExpression& y);
 
   //! Copy-constructor with a specified dimension.
   LinExpression(const LinExpression& e, size_t sz);
@@ -182,6 +194,9 @@ private:
     the constructor LinExpression(const Integer& n).
   */
   LinExpression(size_t sz, bool);
+
+  //! Swaps \p *this with \p y.
+  void swap(LinExpression& y);
 
   //! Returns the linear expression \p e1 + \p e2.
   friend LinExpression
@@ -257,15 +272,6 @@ private:
   Parma_Polyhedra_Library::operator-=(LinExpression& e,
 				      const Integer& n);
 };
-
-namespace std {
-
-//! Specializes <CODE>std::swap</CODE>.
-/*! \relates Parma_Polyhedra_Library::LinExpression */
-void swap(Parma_Polyhedra_Library::LinExpression& x,
-	  Parma_Polyhedra_Library::LinExpression& y);
-
-} // namespace std
 
 #include "LinExpression.inlines.hh"
 

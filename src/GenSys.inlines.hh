@@ -162,6 +162,11 @@ GenSys::zero_dim_univ() {
   return zdu;
 }
 
+inline void
+GenSys::swap(GenSys& y) {
+  Matrix::swap(y);
+}
+
 } // namespace Parma_Polyhedra_Library
 
 
@@ -171,8 +176,7 @@ namespace std {
 inline void
 swap(Parma_Polyhedra_Library::GenSys& x,
      Parma_Polyhedra_Library::GenSys& y) {
-  swap(static_cast<Parma_Polyhedra_Library::Matrix&>(x), 
-       static_cast<Parma_Polyhedra_Library::Matrix&>(y));
+  x.swap(y);
 }
 
 } // namespace std

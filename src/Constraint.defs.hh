@@ -61,6 +61,15 @@ namespace Parma_Polyhedra_Library {
   Constraint operator>>(const Constraint& c, unsigned int offset);
 }
 
+namespace std {
+
+//! Specializes <CODE>std::swap</CODE>.
+/*! \relates Parma_Polyhedra_Library::Constraint */
+void swap(Parma_Polyhedra_Library::Constraint& x,
+	  Parma_Polyhedra_Library::Constraint& y);
+
+} // namespace std
+
 //! A linear equality or inequality.
 /*!
   An object of the class Constraint is either:
@@ -238,6 +247,8 @@ private:
 						  const Generator& g);
   friend
   Parma_Polyhedra_Library::LinExpression::LinExpression(const Constraint& c);
+  friend void std::swap(Parma_Polyhedra_Library::Constraint& x,
+		       Parma_Polyhedra_Library::Constraint& y);
 
   //! Default constructor: private and not implemented.
   Constraint();
@@ -251,6 +262,9 @@ private:
   //! Builds a constraint, having type \p type, which is able
   //! to store \p sz coefficients, whose values are left unspecified.
   Constraint(Row::Type t, size_t sz);
+
+  //! Swaps \p *this with \p y.
+  void swap(Constraint& y);
 
   //! \brief
   //! Throws a <CODE>std::invalid_argument</CODE> exception
@@ -389,16 +403,6 @@ private:
   //! Sets the constraint type to <CODE>INEQUALITY</CODE>.
   void set_is_inequality();
 };
-
-namespace std {
-
-//! Specializes <CODE>std::swap</CODE>.
-/*! \relates Parma_Polyhedra_Library::Constraint */
-void swap(Parma_Polyhedra_Library::Constraint& x,
-	  Parma_Polyhedra_Library::Constraint& y);
-
-} // namespace std
-
 
 #include "Constraint.inlines.hh"
 
