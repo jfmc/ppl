@@ -1217,7 +1217,7 @@ which only exploits a fraction of this generality, by allowing the
 user to specify the base-level widening function and the corresponding
 certificate. The widening strategy is fixed and uses two extrapolation
 heuristics: first, the least upper bound is tried; second, the
-\ref pps?bgp99_extrapolation "BGP99 extrapolation operator" is tried,
+\ref pps_bgp99_extrapolation "BGP99 extrapolation operator" is tried,
 possibly applying
 \ref pps_pairwise_merge "pairwise merging".
 If both heuristics fail to converge according to the convergence
