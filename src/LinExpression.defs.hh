@@ -27,7 +27,7 @@ site: http://www.cs.unipr.it/ppl/ . */
 #include "LinExpression.types.hh"
 #include "Constraint.types.hh"
 #include "Generator.types.hh"
-#include "Row.defs.hh"
+#include "Linear_Row.defs.hh"
 #include "Integer.types.hh"
 #include "Variable.types.hh"
 #include "ConSys.types.hh"
@@ -82,7 +82,11 @@ operator*(const LinExpression& e, Integer_traits::const_reference n);
 /*! \relates LinExpression */
 LinExpression& operator+=(LinExpression& e1, const LinExpression& e2);
 //! Returns the linear expression \p e + \p v and assigns it to \p e.
-/*! \relates LinExpression */
+/*! \relates LinExpression
+  \exception std::length_error
+  Thrown if the space dimension of \p v exceeds
+  <CODE>LinExpression::max_space_dimension()</CODE>.
+ */
 LinExpression& operator+=(LinExpression& e, const Variable v);
 //! Returns the linear expression \p e + \p n and assigns it to \p e.
 /*! \relates LinExpression */
@@ -92,7 +96,11 @@ LinExpression& operator+=(LinExpression& e, Integer_traits::const_reference n);
 /*! \relates LinExpression */
 LinExpression& operator-=(LinExpression& e1, const LinExpression& e2);
 //! Returns the linear expression \p e - \p v and assigns it to \p e.
-/*! \relates LinExpression */
+/*! \relates LinExpression
+  \exception std::length_error
+  Thrown if the space dimension of \p v exceeds
+  <CODE>LinExpression::max_space_dimension()</CODE>.
+ */
 LinExpression& operator-=(LinExpression& e, const Variable v);
 //! Returns the linear expression \p e - \p n and assigns it to \p e.
 /*! \relates LinExpression */
@@ -168,7 +176,7 @@ void swap(Parma_Polyhedra_Library::LinExpression& x,
     respectively; also, in the fourth line of code, \p e is created
     with space dimension zero and then extended to space dimension 3.
 */
-class Parma_Polyhedra_Library::LinExpression : private Row {
+class Parma_Polyhedra_Library::LinExpression : private Linear_Row {
 public:
   //! Default constructor: returns a copy of LinExpression::zero().
   LinExpression();
@@ -184,9 +192,12 @@ public:
   //! to the inhomogeneous term \p n.
   explicit LinExpression(const Integer_traits::const_reference n);
 
-  //! \brief
-  //! Builds the linear expression corresponding
-  //! to the variable \p v.
+  //! Builds the linear expression corresponding to the variable \p v.
+  /*! \relates LinExpression
+    \exception std::length_error
+    Thrown if the space dimension of \p v exceeds
+    <CODE>LinExpression::max_space_dimension()</CODE>.
+  */
   LinExpression(const Variable v);
 
   //! Builds the linear expression corresponding to constraint \p c.
@@ -215,6 +226,9 @@ public:
     (resp., non-zero) factor.
   */
   explicit LinExpression(const Generator& g);
+
+  //! Returns the maximum space dimension a LinExpression can handle.
+  static dimension_type max_space_dimension();
 
   //! Returns the dimension of the vector space enclosing \p *this.
   dimension_type space_dimension() const;

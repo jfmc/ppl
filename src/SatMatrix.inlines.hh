@@ -34,6 +34,12 @@ SatMatrix::SatMatrix()
     row_size(0) {
 }
 
+inline dimension_type 
+SatMatrix::max_num_rows() {
+  static const dimension_type max_nr = std::vector<SatRow>().max_size();
+  return max_nr;
+}
+
 inline
 SatMatrix::SatMatrix(const dimension_type n_rows,
 		     const dimension_type n_columns)

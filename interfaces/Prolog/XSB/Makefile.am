@@ -32,9 +32,11 @@ SUBDIRS =
 EXTRA_DIST = \
 ppl_xsb.cc \
 ppl_xsb.H \
-xsb_clpq.P expected \
-xsb_clpq2.P expected2 \
-xsb_pl_check.P
+xsb_clpq.P \
+xsb_clpq2.P \
+xsb_pl_check.P \
+expected_mpz expected_int8 expected_int16 expected_int32 expected_int64 \
+expected2_mpz expected2_int8 expected2_int16 expected2_int32 expected2_int64
 
 if HAVE_XSB_PROLOG
 
@@ -91,42 +93,58 @@ CLPQ_TESTS = $(CLPQ_TESTS_NONSTRICT) $(CLPQ_TESTS_STRICT)
 #        and previous versions do not support control escape
 #        sequences.
 
-check-local: ppl_xsb.la xsb_clpq.P ../clpq.pl ../check_script expected xsb_clpq2.P ../clpq2.pl ../check_script2 expected2 xsb_pl_check.P ../pl_check.pl
-	for k in $(CLPQ_TESTS); do cp -f $(srcdir)/../$$k .; done
+COEFFICIENT_MNEMONIC = @coefficient_mnemonic@
+
+if ASSERTIONS_ENABLED
+
+EXPECTED = $(srcdir)/expected_$(COEFFICIENT_MNEMONIC)_a
+EXPECTED2 = $(srcdir)/expected2_$(COEFFICIENT_MNEMONIC)_a
+EXPECTED3 = $(srcdir)/expected3_$(COEFFICIENT_MNEMONIC)_a
+
+else !ASSERTIONS_ENABLED
+
+EXPECTED = $(srcdir)/expected_$(COEFFICIENT_MNEMONIC)
+EXPECTED2 = $(srcdir)/expected2_$(COEFFICIENT_MNEMONIC)
+EXPECTED3 = $(srcdir)/expected3_$(COEFFICIENT_MNEMONIC)
+
+endif !ASSERTIONS_ENABLED
+
+check-local: ppl_xsb.la xsb_clpq.P ../tests/clpq.pl ../tests/check_script $(EXPECTED) xsb_clpq2.P ../tests/clpq2.pl ../tests/check_script2 $(EXPECTED2) xsb_pl_check.P ../tests/pl_check.pl
+	for k in $(CLPQ_TESTS); do cp -f $(srcdir)/../tests/$$k .; done
 	if [ $(abs_srcdir) != `pwd` ]; then \
 	  cp -f $(srcdir)/xsb_clpq.P . ; \
 	fi
-	cp -f $(srcdir)/../clpq.pl .
+	cp -f $(srcdir)/../tests/clpq.pl .
 	$(LIBTOOL) --mode=execute \
 		-dlopen ../../../src/libppl.la \
 		-dlopen ../../../Watchdog/libpwl.la \
 		-dlopen ppl_xsb.la \
 		xsb xsb_clpq \
-			<$(srcdir)/../check_script >obtained
+			<$(srcdir)/../tests/check_script >obtained
 	rm -f clpq.pl
 	if [ $(abs_srcdir) != `pwd` ]; then \
 	  rm -f xsb_clpq.P; \
 	fi
-	diff -q --ignore-all-space $(srcdir)/expected obtained
+	diff -q --ignore-all-space $(EXPECTED) obtained
 	if [ $(abs_srcdir) != `pwd` ]; then \
 	  cp -f $(srcdir)/xsb_clpq2.P . ; \
 	fi
-	cp -f $(srcdir)/../clpq2.pl .
+	cp -f $(srcdir)/../tests/clpq2.pl .
 	$(LIBTOOL) --mode=execute \
 		-dlopen ../../../src/libppl.la \
 		-dlopen ../../../Watchdog/libpwl.la \
 		-dlopen ppl_xsb.la \
 		xsb xsb_clpq2 \
-			<$(srcdir)/../check_script2 >obtained2
+			<$(srcdir)/../tests/check_script2 >obtained2
 	rm -f clpq2.pl
 	if [ $(abs_srcdir) != `pwd` ]; then \
 	  rm -f xsb_clpq2.P; \
 	fi
-	diff -q --ignore-all-space $(srcdir)/expected2 obtained2
+	diff -q --ignore-all-space $(EXPECTED2) obtained2
 	if [ $(abs_srcdir) != `pwd` ]; then \
 	  cp -f $(srcdir)/xsb_pl_check.P . ; \
 	fi
-	cp -f $(srcdir)/../pl_check.pl .
+	cp -f $(srcdir)/../tests/pl_check.pl .
 	$(LIBTOOL) --mode=execute \
 		-dlopen ../../../src/libppl.la \
 		-dlopen ../../../Watchdog/libpwl.la \
@@ -137,7 +155,7 @@ check-local: ppl_xsb.la xsb_clpq.P ../clpq.pl ../check_script expected xsb_clpq2
 	if [ $(abs_srcdir) != `pwd` ]; then \
 	  rm -f xsb_pl_check.P; \
 	fi
-	diff -q --ignore-all-space $(srcdir)/../expected3 obtained3
+	diff -q --ignore-all-space $(EXPECTED3) obtained3
 
 MOSTLYCLEANFILES = \
 ppl_xsb.xwam ppl_xsb.so \

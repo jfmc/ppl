@@ -123,6 +123,7 @@ Prolog_atom a_false;
 
 // To build exception terms.
 Prolog_atom a_ppl_invalid_argument;
+Prolog_atom a_ppl_overflow_error;
 Prolog_atom a_ppl_representation_error;
 Prolog_atom a_expected;
 Prolog_atom a_found;
@@ -180,6 +181,7 @@ struct {
   { &a_false,                    "false" },
 
   { &a_ppl_invalid_argument,     "ppl_invalid_argument" },
+  { &a_ppl_overflow_error,       "ppl_overflow_error" },
   { &a_ppl_representation_error, "ppl_representation_error" },
   { &a_expected,                 "expected" },
   { &a_found,                    "found" },
@@ -358,6 +360,14 @@ handle_exception(const unknown_interface_error& e) {
 }
 
 void
+handle_exception(const std::overflow_error& e) {
+  Prolog_term_ref et = Prolog_new_term_ref();
+  Prolog_construct_compound(et, a_ppl_overflow_error,
+			    Prolog_atom_term_from_string(e.what()));
+  Prolog_raise_exception(et);
+}
+
+void
 handle_exception(const std::bad_alloc&) {
   Prolog_term_ref et = Prolog_new_term_ref();
   Prolog_put_atom(et, out_of_memory_exception_atom);
@@ -441,6 +451,9 @@ handle_exception(const timeout_exception&) {
     handle_exception(e); \
   } \
   catch (const timeout_exception& e) { \
+    handle_exception(e); \
+  } \
+  catch(const std::overflow_error& e) { \
     handle_exception(e); \
   } \
   catch (const std::bad_alloc& e) { \

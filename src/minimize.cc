@@ -22,6 +22,8 @@ For the most up-to-date information see the Parma Polyhedra Library
 site: http://www.cs.unipr.it/ppl/ . */
 
 #include <config.h>
+#include "Linear_Row.defs.hh"
+#include "Linear_System.defs.hh"
 #include "SatMatrix.defs.hh"
 #include "Polyhedron.defs.hh"
 #include <stdexcept>
@@ -38,10 +40,10 @@ namespace PPL = Parma_Polyhedra_Library;
   <CODE>false</CODE> otherwise;
 
   \param source
-  The given matrix, which is not empty;
+  The given system, which is not empty;
 
   \param dest
-  The matrix to build and minimize;
+  The system to build and minimize;
 
   \param sat
   The saturation matrix.
@@ -59,14 +61,16 @@ namespace PPL = Parma_Polyhedra_Library;
   Given \p source, this function builds (by means of
   <CODE>conversion()</CODE>) \p dest and then simplifies (invoking
   <CODE>simplify()</CODE>) \p source, erasing redundant rows.
-  For the sequel we assume that \p source is the matrix of constraints
-  and \p dest is the matrix of generators.
+  For the sequel we assume that \p source is the system of constraints
+  and \p dest is the system of generators.
   This will simplify the description of the function; the dual case is
   similar.
 */
 bool
 PPL::Polyhedron::minimize(const bool con_to_gen,
-			  Matrix& source, Matrix& dest, SatMatrix& sat) {
+			  Linear_System& source,
+			  Linear_System& dest,
+			  SatMatrix& sat) {
   // Topologies have to agree.
   assert(source.topology() == dest.topology());
   // `source' cannot be empty: even if it is an empty constraint system,
@@ -76,11 +80,11 @@ PPL::Polyhedron::minimize(const bool con_to_gen,
   // polyhedron.
   assert(source.num_rows() > 0);
 
-  // Sort the source matrix, if necessary.
+  // Sort the source system, if necessary.
   if (!source.is_sorted())
     source.sort_rows();
 
-  // Initialization of the matrix of generators `dest'.
+  // Initialization of the system of generators `dest'.
   // The algorithm works incrementally and we haven't seen any
   // constraint yet: as a consequence, `dest' should describe
   // the universe polyhedron of the appropriate dimension.
@@ -97,16 +101,16 @@ PPL::Polyhedron::minimize(const bool con_to_gen,
 
   // Initialize `dest' to the identity matrix.
   for (dimension_type i = dest_num_rows; i-- > 0; ) {
-    Row& dest_i = dest[i];
+    Linear_Row& dest_i = dest[i];
     for (dimension_type j = dest_num_rows; j-- > 0; )
       dest_i[j] = (i == j) ? 1 : 0;
     dest_i.set_is_line_or_equality();
   }
   // The identity matrix `dest' is not sorted (see the sorting rules
-  // in Row.cc).
+  // in Linear_Row.cc).
   dest.set_sorted(false);
 
-  // NOTE: the matrix `dest', as it is now, it is not a _legal_
+  // NOTE: the system `dest', as it is now, it is not a _legal_
   //       system of generators, because in the first row we have
   // a line with a non-zero divisor (which should only happen for
   // points). However, this is NOT a problem, because `source'
@@ -157,7 +161,7 @@ PPL::Polyhedron::minimize(const bool con_to_gen,
       // No point has been found: the polyhedron is empty.
       return true;
     else
-      // Here `con_to_gen' is false: `dest' is a matrix of constraints.
+      // Here `con_to_gen' is false: `dest' is a system of constraints.
       // In this case the condition `first_point == dest_num_rows'
       // actually means that all the constraints in `dest' have their
       // inhomogeneous term equal to 0.
@@ -169,7 +173,7 @@ PPL::Polyhedron::minimize(const bool con_to_gen,
   else {
     // A point has been found: the polyhedron is not empty.
     // Now invoking simplify() to remove all the redundant constraints
-    // from the matrix `source'.
+    // from the system `source'.
     // Since the saturation matrix `tmp_sat' returned by conversion()
     // has rows indexed by generators (the rows of `dest') and columns
     // indexed by constraints (the rows of `source'), we have to
@@ -187,7 +191,7 @@ PPL::Polyhedron::minimize(const bool con_to_gen,
   <CODE>false</CODE> otherwise.
 
   \param con_to_gen
-  <CODE>true</CODE> if \p source1 and \p source2 are matrix of
+  <CODE>true</CODE> if \p source1 and \p source2 are system of
   constraints, <CODE>false</CODE> otherwise;
 
   \param source1
@@ -207,20 +211,20 @@ PPL::Polyhedron::minimize(const bool con_to_gen,
   On entry, the rows of \p sat are indexed by the rows of \p dest
   and its columns are indexed by the rows of \p source1.
   On exit, the rows of \p sat are indexed by the rows of \p dest
-  and its columns are indexed by the rows of the matrix obtained
+  and its columns are indexed by the rows of the system obtained
   by merging \p source1 and \p source2.
 
-  Let us suppose we want to add some constraints to a given matrix of
+  Let us suppose we want to add some constraints to a given system of
   constraints \p source1. This method, given a minimized double description
-  pair (\p source1, \p dest) and a matrix of new constraints \p source2,
+  pair (\p source1, \p dest) and a system of new constraints \p source2,
   modifies \p source1 by adding to it the constraints of \p source2 that
   are not in \p source1. Then, by invoking
-  <CODE>add_and_minimize(bool, Matrix&, Matrix&, SatMatrix&)</CODE>,
+  <CODE>add_and_minimize(bool, Linear_System&, Linear_System&, SatMatrix&)</CODE>,
   processes the added constraints obtaining a new DD pair.
 
   This method treats also the dual case, i.e., adding new generators to
-  a previous matrix of generators. In this case \p source1 contains the
-  old generators, \p source2 the new ones and \p dest is the matrix
+  a previous system of generators. In this case \p source1 contains the
+  old generators, \p source2 the new ones and \p dest is the system
   of constraints in the given minimized DD pair.
 
   Since \p source2 contains the constraints (or the generators) that
@@ -228,10 +232,10 @@ PPL::Polyhedron::minimize(const bool con_to_gen,
 */
 bool
 PPL::Polyhedron::add_and_minimize(const bool con_to_gen,
-				  Matrix& source1,
-				  Matrix& dest,
+				  Linear_System& source1,
+				  Linear_System& dest,
 				  SatMatrix& sat,
-				  const Matrix& source2) {
+				  const Linear_System& source2) {
   // `source1' and `source2' cannot be empty.
   assert(source1.num_rows() > 0 && source2.num_rows() > 0);
   // `source1' and `source2' must have the same number of columns
@@ -297,7 +301,7 @@ PPL::Polyhedron::add_and_minimize(const bool con_to_gen,
   <CODE>false</CODE> otherwise.
 
   \param con_to_gen
-  <CODE>true</CODE> if \p source is a matrix of constraints,
+  <CODE>true</CODE> if \p source is a system of constraints,
   <CODE>false</CODE> otherwise;
 
   \param source
@@ -315,22 +319,22 @@ PPL::Polyhedron::add_and_minimize(const bool con_to_gen,
   On exit, the rows of \p sat are indexed by the rows of \p dest
   and its columns are indexed by the rows of \p source.
 
-  Let us suppose that \p source is a matrix of constraints.
+  Let us suppose that \p source is a system of constraints.
   This method assumes that the non-pending part of \p source and
-  matrix \p dest form a double description pair in minimal form and
+  system \p dest form a double description pair in minimal form and
   will build a new DD pair in minimal form by processing the pending
   constraints in \p source. To this end, it will call
   <CODE>conversion()</CODE>) and <CODE>simplify</CODE>.
 
   This method treats also the dual case, i.e., processing pending
   generators. In this case \p source contains generators and \p dest
-  is the matrix of constraints corresponding to the non-pending part
+  is the system of constraints corresponding to the non-pending part
   of \p source.
 */
 bool
 PPL::Polyhedron::add_and_minimize(const bool con_to_gen,
-				  Matrix& source,
-				  Matrix& dest,
+				  Linear_System& source,
+				  Linear_System& dest,
 				  SatMatrix& sat) {
   assert(source.num_pending_rows() > 0);
   assert(source.num_columns() == dest.num_columns());
@@ -340,7 +344,7 @@ PPL::Polyhedron::add_and_minimize(const bool con_to_gen,
   // to accommodate for the pending rows of `source'.
   sat.resize(dest.num_rows(), source.num_rows());
 
-  // Incrementally compute the new matrix of generators.
+  // Incrementally compute the new system of generators.
   // Parameter `start' is set to the index of the first pending constraint.
   const dimension_type num_lines_or_equalities
     = conversion(source, source.first_pending_row(),
@@ -372,7 +376,7 @@ PPL::Polyhedron::add_and_minimize(const bool con_to_gen,
       // No point has been found: the polyhedron is empty.
       return true;
     else
-      // Here `con_to_gen' is false: `dest' is a matrix of constraints.
+      // Here `con_to_gen' is false: `dest' is a system of constraints.
       // In this case the condition `first_point == dest_num_rows'
       // actually means that all the constraints in `dest' have their
       // inhomogeneous term equal to 0.
@@ -384,7 +388,7 @@ PPL::Polyhedron::add_and_minimize(const bool con_to_gen,
   else {
     // A point has been found: the polyhedron is not empty.
     // Now invoking `simplify()' to remove all the redundant constraints
-    // from the matrix `source'.
+    // from the system `source'.
     // Since the saturation matrix `sat' returned by `conversion()'
     // has rows indexed by generators (the rows of `dest') and columns
     // indexed by constraints (the rows of `source'), we have to

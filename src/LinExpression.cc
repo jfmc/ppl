@@ -27,20 +27,19 @@ site: http://www.cs.unipr.it/ppl/ . */
 #include "LinExpression.defs.hh"
 #include "Constraint.defs.hh"
 #include "Generator.defs.hh"
+#include <stdexcept>
 
 namespace PPL = Parma_Polyhedra_Library;
 
-
 PPL::LinExpression::LinExpression(const Constraint& c)
-  : Row(Row::Type(), c.space_dimension() + 1) {
+  : Linear_Row(c.space_dimension() + 1, Linear_Row::Flags()) {
   LinExpression& e = *this;
   for (dimension_type i = size(); i-- > 0; )
     e[i] = c[i];
 }
 
-
 PPL::LinExpression::LinExpression(const Generator& g)
-  : Row(Row::Type(), g.space_dimension() + 1) {
+  : Linear_Row(g.space_dimension() + 1, Linear_Row::Flags()) {
   LinExpression& e = *this;
   // Do not copy the divisor of `g'.
   for (dimension_type i = size(); --i > 0; )
@@ -178,13 +177,16 @@ PPL::operator+=(LinExpression& e1, const LinExpression& e2) {
 /*! \relates Parma_Polyhedra_Library::LinExpression */
 PPL::LinExpression&
 PPL::operator+=(LinExpression& e, const Variable v) {
-  dimension_type e_size = e.size();
-  dimension_type vpos = v.id() + 1;
-  if (e_size <= vpos) {
-    LinExpression new_e(e, vpos+1);
+  const dimension_type v_space_dim = v.space_dimension();
+  if (v_space_dim > LinExpression::max_space_dimension())
+    throw std::length_error("PPL::operator+=(e, v):\n"
+			    "v exceeds the maximum allowed space dimension.");
+  const dimension_type e_size = e.size();
+  if (e_size <= v_space_dim) {
+    LinExpression new_e(e, v_space_dim+1);
     std::swap(e, new_e);
   }
-  ++e[vpos];
+  ++e[v_space_dim];
   return e;
 }
 
@@ -210,13 +212,16 @@ PPL::operator-=(LinExpression& e1, const LinExpression& e2) {
 /*! \relates Parma_Polyhedra_Library::LinExpression */
 PPL::LinExpression&
 PPL::operator-=(LinExpression& e, const Variable v) {
-  dimension_type e_size = e.size();
-  dimension_type vpos = v.id() + 1;
-  if (e_size <= vpos) {
-    LinExpression new_e(e, vpos+1);
+  const dimension_type v_space_dim = v.space_dimension();
+  if (v_space_dim > LinExpression::max_space_dimension())
+    throw std::length_error("PPL::operator-=(e, v):\n"
+			    "v exceeds the maximum allowed space dimension.");
+  const dimension_type e_size = e.size();
+  if (e_size <= v_space_dim) {
+    LinExpression new_e(e, v_space_dim+1);
     std::swap(e, new_e);
   }
-  --e[vpos];
+  --e[v_space_dim];
   return e;
 }
 

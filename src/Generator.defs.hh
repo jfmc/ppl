@@ -234,7 +234,7 @@ void swap(Parma_Polyhedra_Library::Generator& x,
   the notion of <EM>coefficient</EM> with the notion of <EM>coordinate</EM>:
   these are equivalent only when the divisor of the (closure) point is 1.
 */
-class Parma_Polyhedra_Library::Generator : private Row {
+class Parma_Polyhedra_Library::Generator : private Linear_Row {
 public:
   //! Returns the line of direction \p e.
   /*!
@@ -342,9 +342,9 @@ public:
 
 private:
   //! \brief
-  //! Builds a generator (of unspecified type) stealing
-  //! the coefficients from \p e.
-  Generator(LinExpression& e);
+  //! Builds a generatorof type \p type and topology \p topology,
+  //! stealing the coefficients from \p e.
+  Generator(LinExpression& e, Type type, Topology topology);
 
   //! Swaps \p *this with \p y.
   void swap(Generator& y);
@@ -387,10 +387,10 @@ private:
   //! Returns <CODE>true</CODE> if and only if \p *this is not a line.
   bool is_ray_or_point() const;
 
-  //! Sets the Row kind to <CODE>LINE_OR_EQUALITY</CODE>.
+  //! Sets the Linear_Row kind to <CODE>LINE_OR_EQUALITY</CODE>.
   void set_is_line();
 
-  //! Sets the Row kind to <CODE>RAY_OR_POINT_OR_INEQUALITY</CODE>.
+  //! Sets the Linear_Row kind to <CODE>RAY_OR_POINT_OR_INEQUALITY</CODE>.
   void set_is_ray_or_point();
 
   //! \brief

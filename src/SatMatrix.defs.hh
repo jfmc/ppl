@@ -81,6 +81,9 @@ public:
   //! Makes \p *this a transposed copy of \p y.
   void transpose_assign(const SatMatrix& y);
 
+  //! Returns the maximum number of rows of a SatMatrix.
+  static dimension_type max_num_rows();
+
   //! Returns the number of columns of \p *this.
   dimension_type num_columns() const;
 

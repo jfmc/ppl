@@ -32,12 +32,6 @@ site: http://www.cs.unipr.it/ppl/ . */
 
 namespace Parma_Polyhedra_Library {
 
-inline dimension_type
-Polyhedron::max_space_dimension() {
-  return std::min(C_Polyhedron::max_space_dimension(),
-		  NNC_Polyhedron::max_space_dimension());
-}
-
 //! Returns the maximum space dimension this library can handle.
 inline dimension_type
 max_space_dimension() {

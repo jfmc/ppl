@@ -52,11 +52,108 @@ error1() {
   }
 }
 
+static void
+error2() {
+  try {
+    // This is an invalid use of the constructor of a Variable:
+    // it is illegal to (try to) build a variable with a dimension
+    // greater than max_space_dimension().
+    Variable v(Variable::max_space_dimension());
+
+    // It is an error if the exception is not thrown.
+    exit(1);
+  }
+  catch(length_error& e) {
+#if NOISY
+    cout << "length_error: " << e.what() << endl << endl;
+#endif
+  }
+  catch (...) {
+    // It is an error if the wrong exception is thrown.
+    exit(1);
+  }
+}
+
+static void
+error3() {
+  try {
+    Variable v(Variable::max_space_dimension() - 1);
+    // This is an invalid use of the constructor of a LinExpression:
+    // it is illegal to (try to) build a linear expression with a dimensions
+    // greater than max_space_dimension().
+    LinExpression e(v);
+
+    // It is an error if the exception is not thrown.
+    exit(1);
+  }
+  catch(length_error& e) {
+#if NOISY
+    cout << "length_error: " << e.what() << endl << endl;
+#endif
+  }
+  catch (...) {
+    // It is an error if the wrong exception is thrown.
+    exit(1);
+  }
+}
+
+static void
+error4() {
+  try {
+    Variable v(Variable::max_space_dimension() - 1);
+    // This is an invalid use of the constructor of a LinExpression:
+    // it is illegal to (try to) build a linear expression with a dimensions
+    // greater than max_space_dimension().
+    LinExpression e;
+    e += v;
+
+    // It is an error if the exception is not thrown.
+    exit(1);
+  }
+  catch(length_error& e) {
+#if NOISY
+    cout << "length_error: " << e.what() << endl << endl;
+#endif
+  }
+  catch (...) {
+    // It is an error if the wrong exception is thrown.
+    exit(1);
+  }
+}
+
+static void
+error5() {
+  try {
+    Variable v(Variable::max_space_dimension() - 1);
+    // This is an invalid use of the constructor of a LinExpression:
+    // it is illegal to (try to) build a linear expression with a dimensions
+    // greater than max_space_dimension().
+    LinExpression e;
+    e -= v;
+
+    // It is an error if the exception is not thrown.
+    exit(1);
+  }
+  catch(length_error& e) {
+#if NOISY
+    cout << "length_error: " << e.what() << endl << endl;
+#endif
+  }
+  catch (...) {
+    // It is an error if the wrong exception is thrown.
+    exit(1);
+  }
+}
+
 int
 main() TRY {
   set_handlers();
 
   error1();
+  error2();
+  error3();
+  error4();
+  error5();
 
   return 0;
 }

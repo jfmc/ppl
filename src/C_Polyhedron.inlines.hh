@@ -29,52 +29,72 @@ site: http://www.cs.unipr.it/ppl/ . */
 
 namespace Parma_Polyhedra_Library {
 
-inline dimension_type
-C_Polyhedron::max_space_dimension() {
-  using std::min;
-  // One dimension is reserved to have a value of type dimension_type
-  // that does not represent a legal dimension.
-  return min(std::numeric_limits<dimension_type>::max() - 1,
-	     min(ConSys::max_space_dimension(),
-		 GenSys::max_space_dimension()
-		 )
-	     );
-}
-
 inline
 C_Polyhedron::C_Polyhedron(dimension_type num_dimensions,
 			   Degenerate_Kind kind)
   : Polyhedron(NECESSARILY_CLOSED,
-	       num_dimensions > max_space_dimension() ? 0 : num_dimensions,
+	       num_dimensions <= max_space_dimension()
+	       ? num_dimensions
+	       : (throw_space_dimension_overflow("C_Polyhedron(n, k)",
+						 "n exceeds the maximum "
+						 "allowed space dimension"),
+		  num_dimensions),
 	       kind) {
-  if (num_dimensions > max_space_dimension())
-    throw std::length_error("PPL::C_Polyhedron::C_Polyhedron(n, k):\n"
-			    "n exceeds the maximum allowed space dimension.");
 }
 
 inline
 C_Polyhedron::C_Polyhedron(const ConSys& cs)
-  : Polyhedron(NECESSARILY_CLOSED, cs) {
+  : Polyhedron(NECESSARILY_CLOSED,
+	       cs.space_dimension() <= max_space_dimension()
+	       ? cs
+	       : (throw_space_dimension_overflow("C_Polyhedron(cs)",
+						"the space dimension of cs "
+						"exceeds the maximum allowed "
+						 "space dimension"), cs)) {
 }
 
 inline
 C_Polyhedron::C_Polyhedron(ConSys& cs)
-  : Polyhedron(NECESSARILY_CLOSED, cs) {
+  : Polyhedron(NECESSARILY_CLOSED,
+	       cs.space_dimension() <= max_space_dimension()
+	       ? cs
+	       : (throw_space_dimension_overflow("C_Polyhedron(cs)",
+						 "the space dimension of cs "
+						 "exceeds the maximum allowed "
+						 "space dimension"), cs)) {
 }
 
 inline
 C_Polyhedron::C_Polyhedron(const GenSys& gs)
-  : Polyhedron(NECESSARILY_CLOSED, gs) {
+  : Polyhedron(NECESSARILY_CLOSED,
+	       gs.space_dimension() <= max_space_dimension()
+	       ? gs
+	       : (throw_space_dimension_overflow("C_Polyhedron(cs)",
+						 "the space dimension of gs "
+						 "exceeds the maximum allowed "
+						 "space dimension"), gs)){
 }
 
 inline
 C_Polyhedron::C_Polyhedron(GenSys& gs)
-  : Polyhedron(NECESSARILY_CLOSED, gs) {
+  : Polyhedron(NECESSARILY_CLOSED,
+	       gs.space_dimension() <= max_space_dimension()
+	       ? gs
+	       : (throw_space_dimension_overflow("C_Polyhedron(cs)",
+						 "the space dimension of gs "
+						 "exceeds the maximum allowed "
+						 "space dimension"), gs)){
 }
 
 template <typename Box>
 C_Polyhedron::C_Polyhedron(const Box& box, From_Bounding_Box)
-  : Polyhedron(NECESSARILY_CLOSED, box) {
+  : Polyhedron(NECESSARILY_CLOSED,
+	       box.space_dimension() <= max_space_dimension()
+	       ? box
+	       : (throw_space_dimension_overflow("C_Polyhedron(box): ",
+						 "the space dimension of box "
+						 "exceeds the maximum allowed "
+						 "space dimension"), box)) {
 }
 
 inline

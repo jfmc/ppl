@@ -43,15 +43,17 @@ ac_save_LIBS="$LIBS"
 LIBS="$LIBS $LIBGMPXX"
 AC_LANG_PUSH(C++)
 
-AC_MSG_CHECKING([for the GMP library])
+AC_MSG_CHECKING([for the GMP library version 4.1.3 or above])
 AC_RUN_IFELSE([AC_LANG_SOURCE([[
 #include <gmpxx.h>
 
-using namespace std;
+#if __GNU_MP_VERSION < 4 || (__GNU_MP_VERSION == 4 && __GNU_MP_VERSION_MINOR < 1) || (__GNU_MP_VERSION == 4 && __GNU_MP_VERSION_MINOR == 1 && __GNU_MP_VERSION_PATCHLEVEL < 3)
+#error "GMP version 4.1.3 or higher is required"
+#endif
 
 int main() {
   mpz_class n("3141592653589793238462643383279502884");
-  exit(0);
+  return 0;
 }
 ]])],
   AC_MSG_RESULT(yes)
@@ -66,45 +68,22 @@ have_gmp=${ac_cv_have_gmp}
 if test x"$ac_cv_have_gmp" = xyes
 then
 
-AC_MSG_CHECKING([size of GMP mp_limb_t])
-ac_cv_sizeof_mp_limb_t=none
-for size in 2 4 8
-do
-  AC_COMPILE_IFELSE([AC_LANG_SOURCE([[
-#include <gmp.h>
-
-int main() {
-  switch (0) {
-  case 0:
-  case (sizeof(mp_limb_t) == $size):
-    ;
-  }
-  return 0;
-}
-]])],
-    ac_cv_sizeof_mp_limb_t=$size; break)
-done
-AC_MSG_RESULT($size)
-AC_DEFINE_UNQUOTED(SIZEOF_MP_LIMB_T, $size,
-  [Size of GMP's mp_limb_t.])
+AC_CHECK_SIZEOF(mp_limb_t, , [#include <gmp.h>])
 
 AC_MSG_CHECKING([whether GMP has been compiled with support for exceptions])
 AC_RUN_IFELSE([AC_LANG_SOURCE([[
 #include <gmpxx.h>
 #include <new>
 #include <cstddef>
-#include <cstdlib>
-
-using namespace std;
 
 static void*
 x_malloc(size_t) {
-  throw bad_alloc();
+  throw std::bad_alloc();
 }
 
 static void*
 x_realloc(void*, size_t, size_t) {
-  throw bad_alloc();
+  throw std::bad_alloc();
 }
 
 static void
@@ -116,10 +95,10 @@ int main() {
   try {
     mpz_class n("3141592653589793238462643383279502884");
   }
-  catch (bad_alloc) {
-    exit(0);
+  catch (std::bad_alloc&) {
+    return 0;
   }
-  exit(1);
+  return 1;
 }
 ]])],
   AC_MSG_RESULT(yes)

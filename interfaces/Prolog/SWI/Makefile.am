@@ -74,32 +74,48 @@ ppl_pl$(EXEEXT): ppl_swiprolog.o ppl_pl.o
 		-L$(top_builddir)/Watchdog/.libs -lpwl \
 		@extra_libraries@
 
-pl_clpq$(EXEEXT): ppl_swiprolog.o pl_clpq.o pl_clpq.pl ../clpq.pl
+pl_clpq$(EXEEXT): ppl_swiprolog.o pl_clpq.o pl_clpq.pl ../tests/clpq.pl
 	plld -cc $(CC) -c++ $(CXX) -pl-options,-g,main., -o $@ $+ \
 		-L$(top_builddir)/src/.libs -lppl \
 		-L$(top_builddir)/Watchdog/.libs -lpwl \
 		@extra_libraries@
 
-pl_clpq2$(EXEEXT): ppl_swiprolog.o pl_clpq.o pl_clpq.pl ../clpq2.pl
+pl_clpq2$(EXEEXT): ppl_swiprolog.o pl_clpq.o pl_clpq.pl ../tests/clpq2.pl
 	plld -cc $(CC) -c++ $(CXX) -pl-options,-g,main., -o $@ $+ \
 		-L$(top_builddir)/src/.libs -lppl \
 		-L$(top_builddir)/Watchdog/.libs -lpwl \
 		@extra_libraries@
 
-check-local: pl_clpq ../check_script ../expected pl_clpq2 ../check_script2 ../expected2 ../expected3
-	for k in $(CLPQ_TESTS); do cp -f $(srcdir)/../$$k .; done
+COEFFICIENT_MNEMONIC = @coefficient_mnemonic@
+
+if ASSERTIONS_ENABLED
+
+EXPECTED = $(srcdir)/../tests/expected_$(COEFFICIENT_MNEMONIC)_a
+EXPECTED2 = $(srcdir)/../tests/expected2_$(COEFFICIENT_MNEMONIC)_a
+EXPECTED3 = $(srcdir)/../tests/expected3_$(COEFFICIENT_MNEMONIC)_a
+
+else !ASSERTIONS_ENABLED
+
+EXPECTED = $(srcdir)/../tests/expected_$(COEFFICIENT_MNEMONIC)
+EXPECTED2 = $(srcdir)/../tests/expected2_$(COEFFICIENT_MNEMONIC)
+EXPECTED3 = $(srcdir)/../tests/expected3_$(COEFFICIENT_MNEMONIC)
+
+endif !ASSERTIONS_ENABLED
+
+check-local: pl_clpq ../tests/check_script $(EXPECTED) pl_clpq2 ../tests/check_script2 $(EXPECTED2) $(EXPECTED3)
+	for k in $(CLPQ_TESTS); do cp -f $(srcdir)/../tests/$$k .; done
 	$(LIBTOOL) --mode=execute \
 		-dlopen ../../../src/libppl.la \
 		-dlopen ../../../Watchdog/libpwl.la \
-		./pl_clpq <$(srcdir)/../check_script >obtained
-	diff -q --ignore-all-space $(srcdir)/../expected obtained
+		./pl_clpq <$(srcdir)/../tests/check_script >obtained
+	diff -q --ignore-all-space $(EXPECTED) obtained
 	$(LIBTOOL) --mode=execute \
 		-dlopen ../../../src/libppl.la \
 		-dlopen ../../../Watchdog/libpwl.la \
-		./pl_clpq2 <$(srcdir)/../check_script2 >obtained2
-	diff -q --ignore-all-space $(srcdir)/../expected2 obtained2
+		./pl_clpq2 <$(srcdir)/../tests/check_script2 >obtained2
+	diff -q --ignore-all-space $(EXPECTED2) obtained2
 	if [ $(srcdir) != `pwd` ]; then \
-	  cp -f $(srcdir)/../pl_check.pl . ; \
+	  cp -f $(srcdir)/../tests/pl_check.pl . ; \
 	fi ;\
         echo "ensure_loaded('$(srcdir)/swi_pl_check'). main." > check_script3
 	$(LIBTOOL) --mode=execute \
@@ -109,7 +125,7 @@ check-local: pl_clpq ../check_script ../expected pl_clpq2 ../check_script2 ../ex
 	if [ $(srcdir) != `pwd` ]; then \
 	  rm -f pl_check.pl; \
 	fi
-	diff -q --ignore-all-space $(srcdir)/../expected3 obtained3
+	diff -q --ignore-all-space $(EXPECTED3) obtained3
 
 MOSTLYCLEANFILES = \
 pl_clpq pl_clpq2 \

@@ -62,14 +62,14 @@ main() TRY {
   Variable y(1);
   Variable z(2);
 
-  const Integer maxc = 10000;
-
+  const int maxc = 10000;
   C_Polyhedron ph(3, C_Polyhedron::EMPTY);
   COUNT(ph);
   for (int n = 1; n <= 200; ++n) {
-    ph.add_generator(point(rg.get_z_range(maxc)*x
-			   + rg.get_z_range(maxc)*y
-			   + rg.get_z_range(maxc)*z));
+    const Integer cx = mpz_class(rg.get_z_range(maxc));
+    const Integer cy = mpz_class(rg.get_z_range(maxc));
+    const Integer cz = mpz_class(rg.get_z_range(maxc));
+    ph.add_generator(point(cx*x + cy*y + cz*z));
     COUNT(ph);
   }
 

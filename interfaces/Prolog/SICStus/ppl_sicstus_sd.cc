@@ -81,7 +81,8 @@ static Prolog_term_ref
 Integer_to_integer_term(const PPL::Integer& n) {
   Prolog_term_ref t = Prolog_new_term_ref();
   long v;
-  if (PPL::Checked::assign<PPL::Check_Overflow_Policy>(v, PPL::raw_value(n)) != PPL::Checked::V_EQ) {
+  if (PPL::Checked::assign<PPL::Check_Overflow_Policy>(v, PPL::raw_value(n))
+      == PPL::Checked::V_EQ) {
     if (SP_put_integer(t, v) == 0)
       throw unknown_interface_error("Integer_to_integer_term()");
   } else {

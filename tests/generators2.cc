@@ -39,20 +39,31 @@ main() TRY {
   cs.insert(x + y >= 2);
   cs.insert(x + y <= 1);
 
-  C_Polyhedron ph(cs);
+  C_Polyhedron known_result(cs);
 
-  const GenSys& gs = ph.generators();
+  const GenSys& gs = known_result.generators();
 
 #if NOISY
   print_generators(gs, "*** gs ***");
 #endif
 
+  if (gs.space_dimension() != known_result.space_dimension())
+    exit(1);
+
   if (gs.begin() != gs.end())
     exit(1);
+
+  C_Polyhedron ph(gs);
 
   if (!ph.OK())
     exit(1);
 
-  return 0;
+  int result = (ph == known_result ? 0 : 1);
+
+#if NOISY
+  print_generators(ph, "*** ph ***");
+#endif
+
+  return result;
 }
 CATCH

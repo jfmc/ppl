@@ -1442,6 +1442,10 @@ public:
     \param m
     The number of dimensions to add.
 
+    \exception std::length_error
+    Thrown if adding \p m new space dimensions would cause the
+    vector space to exceed dimension <CODE>max_space_dimension()</CODE>.
+
     The new space dimensions will be those having the highest indexes
     in the new polyhedron, which is characterized by a system
     of constraints in which the variables running through
@@ -1465,6 +1469,10 @@ public:
     \param m
     The number of space dimensions to add.
 
+    \exception std::length_error
+    Thrown if adding \p m new space dimensions would cause the
+    vector space to exceed dimension <CODE>max_space_dimension()</CODE>.
+
     The new space dimensions will be those having the highest indexes
     in the new polyhedron, which is characterized by a system
     of constraints in which the variables running through
@@ -1487,6 +1495,10 @@ public:
   /*!
     \exception std::invalid_argument
     Thrown if \p *this and \p y are topology-incompatible.
+
+    \exception std::length_error
+    Thrown if the concatenation would cause the vector space
+    to exceed dimension <CODE>max_space_dimension()</CODE>.
   */
   void concatenate_assign(const Polyhedron& y);
 
@@ -1565,10 +1577,15 @@ public:
     \exception std::invalid_argument
     Thrown if \p var does not correspond to a dimension of the vector space.
 
+    \exception std::length_error
+    Thrown if adding \p m new space dimensions would cause the
+    vector space to exceed dimension <CODE>max_space_dimension()</CODE>.
+
     If \p *this has space dimension \f$n\f$, with \f$n > 0\f$,
-    and \f$i < n\f$ is <CODE>var.id()</CODE>, then the \f$i\f$-th
-    space dimension is \ref expand_space_dimension "expanded" to
-    \p m new space dimensions \f$n\f$, \f$n+1\f$, \f$\dots\f$, \f$n+m-1\f$.
+    and <CODE>var</CODE> has space dimension \f$k \leq n\f$,
+    then the \f$k\f$-th space dimension is
+    \ref expand_space_dimension "expanded" to \p m new space dimensions
+    \f$n\f$, \f$n+1\f$, \f$\dots\f$, \f$n+m-1\f$.
   */
   void expand_space_dimension(Variable var, dimension_type m);
 
@@ -1588,11 +1605,12 @@ public:
     Also thrown if \p var is contained in \p to_be_folded.
 
     If \p *this has space dimension \f$n\f$, with \f$n > 0\f$,
-    \f$i < n\f$ is <CODE>var.id()</CODE>, \p to_be_folded
-    is a set of variables whose <CODE>id()</CODE> is also less than
-    \f$n\f$, and \p var is not a member of \p to_be_folded,
-    then the space dimensions corresponding to variables in \p to_be_folded
-    are \ref fold_space_dimensions "folded" into space dimension \f$i\f$.
+    <CODE>var</CODE> has space dimension \f$k \leq n\f$,
+    \p to_be_folded is a set of variables whose maximum space dimension
+    is also less than or equal to \f$n\f$, and \p var is not a member
+    of \p to_be_folded, then the space dimensions corresponding to
+    variables in \p to_be_folded are \ref fold_space_dimensions "folded"
+    into the \f$k\f$-th space dimension.
   */
   void fold_space_dimensions(const Variables_Set& to_be_folded, Variable var);
 
@@ -2131,8 +2149,8 @@ private:
     constraints and that of generators (and the corresponding saturation
     matrices) in different order (see those methods for details).
   */
-  static void add_space_dimensions(Matrix& mat1,
-				   Matrix& mat2,
+  static void add_space_dimensions(Linear_System& mat1,
+				   Linear_System& mat2,
 				   SatMatrix& sat1,
 				   SatMatrix& sat2,
 				   dimension_type add_dim);
@@ -2143,29 +2161,33 @@ private:
   //! Builds and simplifies constraints from generators (or vice versa).
   // Detailed Doxygen comment to be found in file minimize.cc.
   static bool minimize(bool con_to_gen,
-		       Matrix& source, Matrix& dest, SatMatrix& sat);
+		       Linear_System& source, Linear_System& dest, SatMatrix& sat);
 
   //! \brief
   //! Adds given constraints and builds minimized corresponding generators
   //! or vice versa.
   // Detailed Doxygen comment to be found in file minimize.cc.
   static bool add_and_minimize(bool con_to_gen,
-			       Matrix& source1, Matrix& dest, SatMatrix& sat,
-			       const Matrix& source2);
+			       Linear_System& source1,
+			       Linear_System& dest,
+			       SatMatrix& sat,
+			       const Linear_System& source2);
 
   //! \brief
   //! Adds given constraints and builds minimized corresponding generators
   //! or vice versa. The given constraints are in \p source.
   // Detailed Doxygen comment to be found in file minimize.cc.
   static bool add_and_minimize(bool con_to_gen,
-			       Matrix& source, Matrix& dest, SatMatrix& sat);
+			       Linear_System& source,
+			       Linear_System& dest,
+			       SatMatrix& sat);
 
   //! \brief
   //! Performs the conversion from constraints to generators and vice versa.
   // Detailed Doxygen comment to be found in file conversion.cc.
-  static dimension_type conversion(Matrix& source,
+  static dimension_type conversion(Linear_System& source,
 				   dimension_type start,
-				   Matrix& dest,
+				   Linear_System& dest,
 				   SatMatrix& sat,
 				   dimension_type num_lines_or_equalities);
 
@@ -2173,12 +2195,13 @@ private:
   //! Uses Gauss' elimination method to simplify the result of
   //! <CODE>conversion()</CODE>.
   // Detailed Doxygen comment to be found in file simplify.cc.
-  static int simplify(Matrix& mat, SatMatrix& sat);
+  static int simplify(Linear_System& mat, SatMatrix& sat);
 
   //@} // Minimization-Related Static Member Functions
 
   //! \name Exception Throwers
   //@{
+protected:
   void throw_runtime_error(const char* method) const;
   void throw_invalid_argument(const char* method, const char* reason) const;
 
@@ -2199,25 +2222,39 @@ private:
 				   const GenSys& gs) const;
 
   void throw_dimension_incompatible(const char* method,
+				    const char* other_name,
+				    dimension_type other_dim) const;
+  void throw_dimension_incompatible(const char* method,
 				    const char* ph_name,
 				    const Polyhedron& ph) const;
+  void throw_dimension_incompatible(const char* method,
+				    const char* e_name,
+				    const LinExpression& e) const;
+  void throw_dimension_incompatible(const char* method,
+				    const char* c_name,
+				    const Constraint& c) const;
+  void throw_dimension_incompatible(const char* method,
+				    const char* g_name,
+				    const Generator& g) const;
+  void throw_dimension_incompatible(const char* method,
+				    const char* cs_name,
+				    const ConSys& cs) const;
+  void throw_dimension_incompatible(const char* method,
+				    const char* gs_name,
+				    const GenSys& gs) const;
   void throw_dimension_incompatible(const char* method,
 				    const char* var_name,
 				    const Variable var) const;
   void throw_dimension_incompatible(const char* method,
-				    const char* row_name,
-				    const Row& row) const;
-  void throw_dimension_incompatible(const char* method,
-				    const char* sys_name,
-				    const Matrix& sys) const;
-  void throw_dimension_incompatible(const char* method,
 				    dimension_type required_space_dim) const;
+
+  void throw_space_dimension_overflow(const char* method,
+				      const char* reason) const;
 
   void throw_invalid_generator(const char* method,
 			       const char* g_name) const;
   void throw_invalid_generators(const char* method,
 				const char* gs_name) const;
-
   //@} // Exception Throwers
 
 };

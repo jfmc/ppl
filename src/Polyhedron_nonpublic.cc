@@ -54,14 +54,15 @@ PPL::Polyhedron::Polyhedron(const Topology topol,
     gen_sys(topol),
     sat_c(),
     sat_g() {
+  // Protecting against space dimension overflow is up to the caller.
+  assert(num_dimensions <= max_space_dimension());
+
   if (kind == EMPTY)
     status.set_empty();
   else
     if (num_dimensions > 0) {
       add_low_level_constraints(con_sys);
       con_sys.adjust_topology_and_space_dimension(topol, num_dimensions);
-      // CHECK ME.
-      // The constraint system is in the minimal form.
       set_constraints_minimized();
     }
   space_dim = num_dimensions;
@@ -82,7 +83,7 @@ PPL::Polyhedron::Polyhedron(const Polyhedron& y)
   if (y.sat_c_is_up_to_date())
     sat_c = y.sat_c;
   if (y.sat_g_is_up_to_date())
-      sat_g = y.sat_g;
+    sat_g = y.sat_g;
 }
 
 PPL::Polyhedron::Polyhedron(const Topology topol, const ConSys& ccs)
@@ -90,6 +91,9 @@ PPL::Polyhedron::Polyhedron(const Topology topol, const ConSys& ccs)
     gen_sys(topol),
     sat_c(),
     sat_g() {
+  // Protecting against space dimension overflow is up to the caller.
+  assert(ccs.space_dimension() <= max_space_dimension());
+
   // TODO: this implementation is just an executable specification.
   ConSys cs = ccs;
 
@@ -100,7 +104,10 @@ PPL::Polyhedron::Polyhedron(const Topology topol, const ConSys& ccs)
 				? "C_Polyhedron(cs)"
 				: "NNC_Polyhedron(cs)", "cs", cs);
 
-  if (cs.num_rows() > 0 && cs_space_dim > 0) {
+  // Set the space dimension.
+  space_dim = cs_space_dim;
+
+  if (space_dim > 0) {
     // Stealing the rows from `cs'.
     std::swap(con_sys, cs);
     if (con_sys.num_pending_rows() > 0) {
@@ -113,23 +120,19 @@ PPL::Polyhedron::Polyhedron(const Topology topol, const ConSys& ccs)
     }
     add_low_level_constraints(con_sys);
     set_constraints_up_to_date();
-
-    // Set the space dimension.
-    space_dim = cs_space_dim;
-    assert(OK());
-    return;
   }
-
-  // Here `cs.num_rows == 0' or `cs_space_dim == 0'.
-  space_dim = 0;
-  if (cs.num_columns() > 0)
-    // See if an inconsistent constraint has been passed.
-    for (dimension_type i = cs.num_rows(); i-- > 0; )
-      if (cs[i].is_trivial_false()) {
-	// Inconsistent constraint found: the polyhedron is empty.
-	set_empty();
-	return;
-      }
+  else {
+    // Here `space_dim == 0'.
+    if (cs.num_columns() > 0)
+      // See if an inconsistent constraint has been passed.
+      for (dimension_type i = cs.num_rows(); i-- > 0; )
+	if (cs[i].is_trivial_false()) {
+	  // Inconsistent constraint found: the polyhedron is empty.
+	  set_empty();
+	  break;
+	}
+  }
+  assert(OK());
 }
 
 PPL::Polyhedron::Polyhedron(const Topology topol, ConSys& cs)
@@ -137,6 +140,9 @@ PPL::Polyhedron::Polyhedron(const Topology topol, ConSys& cs)
     gen_sys(topol),
     sat_c(),
     sat_g() {
+  // Protecting against space dimension overflow is up to the caller.
+  assert(cs.space_dimension() <= max_space_dimension());
+
   // Try to adapt `cs' to the required topology.
   const dimension_type cs_space_dim = cs.space_dimension();
   if (!cs.adjust_topology_and_space_dimension(topol, cs_space_dim))
@@ -144,7 +150,10 @@ PPL::Polyhedron::Polyhedron(const Topology topol, ConSys& cs)
 				? "C_Polyhedron(cs)"
 				: "NNC_Polyhedron(cs)", "cs", cs);
 
-  if (cs.num_rows() > 0 && cs_space_dim > 0) {
+  // Set the space dimension.
+  space_dim = cs_space_dim;
+
+  if (space_dim > 0) {
     // Stealing the rows from `cs'.
     std::swap(con_sys, cs);
     if (con_sys.num_pending_rows() > 0) {
@@ -157,23 +166,19 @@ PPL::Polyhedron::Polyhedron(const Topology topol, ConSys& cs)
     }
     add_low_level_constraints(con_sys);
     set_constraints_up_to_date();
-
-    // Set the space dimension.
-    space_dim = cs_space_dim;
-    assert(OK());
-    return;
   }
-
-  // Here `cs.num_rows == 0' or `cs_space_dim == 0'.
-  space_dim = 0;
-  if (cs.num_columns() > 0)
-    // See if an inconsistent constraint has been passed.
-    for (dimension_type i = cs.num_rows(); i-- > 0; )
-      if (cs[i].is_trivial_false()) {
-	// Inconsistent constraint found: the polyhedron is empty.
-	set_empty();
-	return;
-      }
+  else {
+    // Here `space_dim == 0'.
+    if (cs.num_columns() > 0)
+      // See if an inconsistent constraint has been passed.
+      for (dimension_type i = cs.num_rows(); i-- > 0; )
+	if (cs[i].is_trivial_false()) {
+	  // Inconsistent constraint found: the polyhedron is empty.
+	  set_empty();
+	  break;
+	}
+  }
+  assert(OK());
 }
 
 PPL::Polyhedron::Polyhedron(const Topology topol, const GenSys& cgs)
@@ -181,12 +186,15 @@ PPL::Polyhedron::Polyhedron(const Topology topol, const GenSys& cgs)
     gen_sys(topol),
     sat_c(),
     sat_g() {
+  // Protecting against space dimension overflow is up to the caller.
+  assert(cgs.space_dimension() <= max_space_dimension());
+
   // TODO: this implementation is just an executable specification.
   GenSys gs = cgs;
 
   // An empty set of generators defines the empty polyhedron.
   if (gs.num_rows() == 0) {
-    space_dim = 0;
+    space_dim = gs.space_dimension();
     status.set_empty();
     return;
   }
@@ -239,9 +247,12 @@ PPL::Polyhedron::Polyhedron(const Topology topol, GenSys& gs)
     gen_sys(topol),
     sat_c(),
     sat_g() {
+  // Protecting against space dimension overflow is up to the caller.
+  assert(gs.space_dimension() <= max_space_dimension());
+
   // An empty set of generators defines the empty polyhedron.
   if (gs.num_rows() == 0) {
-    space_dim = 0;
+    space_dim = gs.space_dimension();
     status.set_empty();
     return;
   }
@@ -1391,18 +1402,57 @@ PPL::Polyhedron::throw_topology_incompatible(const char* method,
 
 void
 PPL::Polyhedron::throw_dimension_incompatible(const char* method,
+					      const char* other_name,
+					      dimension_type other_dim) const {
+  std::ostringstream s;
+  s << "PPL::"
+    << (is_necessarily_closed() ? "C_" : "NNC_")
+    << "Polyhedron::" << method << ":\n"
+    << "this->space_dimension() == " << space_dimension() << ", "
+    << other_name << ".space_dimension() == " << other_dim << ".";
+  throw std::invalid_argument(s.str());
+}
+
+void
+PPL::Polyhedron::throw_dimension_incompatible(const char* method,
 					      const char* ph_name,
 					      const Polyhedron& ph) const {
-  std::ostringstream s;
-  s << "PPL::";
-  if (is_necessarily_closed())
-    s << "C_";
-  else
-    s << "NNC_";
-  s << "Polyhedron::" << method << ":" << std::endl
-    << "this->space_dimension() == " << space_dimension() << ", "
-    << ph_name << ".space_dimension() == " << ph.space_dimension() << ".";
-  throw std::invalid_argument(s.str());
+  throw_dimension_incompatible(method, ph_name, ph.space_dimension());
+}
+
+void
+PPL::Polyhedron::throw_dimension_incompatible(const char* method,
+					      const char* e_name,
+					      const LinExpression& e) const {
+  throw_dimension_incompatible(method, e_name, e.space_dimension());
+}
+
+void
+PPL::Polyhedron::throw_dimension_incompatible(const char* method,
+					      const char* c_name,
+					      const Constraint& c) const {
+  throw_dimension_incompatible(method, c_name, c.space_dimension());
+}
+
+void
+PPL::Polyhedron::throw_dimension_incompatible(const char* method,
+					      const char* g_name,
+					      const Generator& g) const {
+  throw_dimension_incompatible(method, g_name, g.space_dimension());
+}
+
+void
+PPL::Polyhedron::throw_dimension_incompatible(const char* method,
+					      const char* cs_name,
+					      const ConSys& cs) const {
+  throw_dimension_incompatible(method, cs_name, cs.space_dimension());
+}
+
+void
+PPL::Polyhedron::throw_dimension_incompatible(const char* method,
+					      const char* gs_name,
+					      const GenSys& gs) const {
+  throw_dimension_incompatible(method, gs_name, gs.space_dimension());
 }
 
 void
@@ -1417,39 +1467,7 @@ PPL::Polyhedron::throw_dimension_incompatible(const char* method,
     s << "NNC_";
   s << "Polyhedron::" << method << ":" << std::endl
     << "this->space_dimension() == " << space_dimension() << ", "
-    << var_name << ".id() == " << var.id() << ".";
-  throw std::invalid_argument(s.str());
-}
-
-void
-PPL::Polyhedron::throw_dimension_incompatible(const char* method,
-					      const char* row_name,
-					      const Row& row) const {
-  std::ostringstream s;
-  s << "PPL::";
-  if (is_necessarily_closed())
-    s << "C_";
-  else
-    s << "NNC_";
-  s << "Polyhedron::" << method << ":" << std::endl
-    << "this->space_dimension() == " << space_dimension() << ", "
-    << row_name << ".space_dimension() == " << row.space_dimension() << ".";
-  throw std::invalid_argument(s.str());
-}
-
-void
-PPL::Polyhedron::throw_dimension_incompatible(const char* method,
-					      const char* sys_name,
-					      const Matrix& sys) const {
-  std::ostringstream s;
-  s << "PPL::";
-  if (is_necessarily_closed())
-    s << "C_";
-  else
-    s << "NNC_";
-  s << "Polyhedron::" << method << ":" << std::endl
-    << "this->space_dimension() == " << space_dimension() << ", "
-    << sys_name << ".space_dimension() == " << sys.space_dimension() << ".";
+    << var_name << ".space_dimension() == " << var.space_dimension() << ".";
   throw std::invalid_argument(s.str());
 }
 
@@ -1467,6 +1485,20 @@ throw_dimension_incompatible(const char* method,
     << "this->space_dimension() == " << space_dimension()
     << ", required space dimension == " << required_space_dim << ".";
   throw std::invalid_argument(s.str());
+}
+
+void
+PPL::Polyhedron::throw_space_dimension_overflow(const char* method,
+						const char* reason) const {
+  std::ostringstream s;
+  s << "PPL::";
+  if (is_necessarily_closed())
+    s << "C_";
+  else
+    s << "NNC_";
+  s << "Polyhedron::" << method << ":" << std::endl
+  << reason << ".";
+  throw std::length_error(s.str());
 }
 
 void

@@ -26,7 +26,6 @@ site: http://www.cs.unipr.it/ppl/ . */
 
 #include "Integer.defs.hh"
 #include <exception>
-#include <limits>
 #include <cstddef>
 
 namespace Parma_Polyhedra_Library {
@@ -36,9 +35,7 @@ typedef size_t dimension_type;
 
 //! Returns a value that does not designate a valid dimension.
 inline dimension_type
-not_a_dimension() {
-  return std::numeric_limits<dimension_type>::max();
-}
+not_a_dimension();
 
 //! Relation symbols.
 enum Relation_Symbol {
@@ -137,19 +134,20 @@ Temp_Integer_Holder temp_Integer_holder_ ## id = (id)
   \param requested_size
   The number of elements we need.
 
+  \param maximum_size
+  The maximum number of elements to be allocated. It is assumed
+  to be no less than \p requested_size.
+
   Computes a capacity given a requested size.
   Allows for speculative allocation aimed at reducing the number of
   reallocations enough to guarantee amortized constant insertion time
-  for our vector-like data structures.
+  for our vector-like data structures. In all cases, the speculative
+  allocation will not exceed \p maximum_size.
 */
 #endif
 inline dimension_type
-compute_capacity(dimension_type requested_size) {
-  // Speculation factor 2.
-  return 2*(requested_size + 1);
-  // Speculation factor 1.5.
-  //return requested_size += ++requested_size/2;
-}
+compute_capacity(const dimension_type requested_size,
+		 const dimension_type maximum_size);
 
 //! User objects' the PPL can throw.
 /*!
@@ -189,10 +187,7 @@ extern const Throwable* volatile abandon_expensive_computations;
 /*! \relates Throwable */
 #endif
 inline void
-maybe_abandon() {
-  if (const Throwable* p = abandon_expensive_computations)
-    p->throw_me();
-}
+maybe_abandon();
 
 //! A tag class.
 /*! Tag class to differentiate the C_Polyhedron and NNC_Polyhedron
@@ -213,6 +208,12 @@ struct From_Bounding_Box {
 #endif
 void
 normalize2(const Integer& x, const Integer& y, Integer& nx, Integer& ny);
+
+#ifdef PPL_DOXYGEN_INCLUDE_IMPLEMENTATION_DETAILS
+//! Returns a mask for the lowest \p n bits,
+#endif
+template <typename T>
+T low_bits_mask(unsigned n);
 
 } // namespace Parma_Polyhedra_Library
 

@@ -25,7 +25,6 @@ site: http://www.cs.unipr.it/ppl/ . */
 #include <config.h>
 
 #include "Polyhedron.defs.hh"
-
 #include <cassert>
 
 #define BE_LAZY 1
@@ -33,20 +32,20 @@ site: http://www.cs.unipr.it/ppl/ . */
 namespace PPL = Parma_Polyhedra_Library;
 
 void
-PPL::Polyhedron::add_space_dimensions(Matrix& mat1,
-				      Matrix& mat2,
+PPL::Polyhedron::add_space_dimensions(Linear_System& sys1,
+				      Linear_System& sys2,
 				      SatMatrix& sat1,
 				      SatMatrix& sat2,
 				      dimension_type add_dim) {
-  assert(mat1.topology() == mat2.topology());
-  assert(mat1.num_columns() == mat2.num_columns());
+  assert(sys1.topology() == sys2.topology());
+  assert(sys1.num_columns() == sys2.num_columns());
   assert(add_dim != 0);
 
-  mat1.add_zero_columns(add_dim);
-  dimension_type old_index = mat2.first_pending_row();
-  mat2.add_rows_and_columns(add_dim);
+  sys1.add_zero_columns(add_dim);
+  dimension_type old_index = sys2.first_pending_row();
+  sys2.add_rows_and_columns(add_dim);
   // The added rows are in the non-pending part.
-  mat2.set_index_first_pending_row(old_index + add_dim);
+  sys2.set_index_first_pending_row(old_index + add_dim);
 
   // The resulting saturation matrix will be the follow:
   // from row    0    to      add_dim-1       : only zeroes
@@ -61,35 +60,42 @@ PPL::Polyhedron::add_space_dimensions(Matrix& mat1,
   // Computes the "sat_c", too.
   sat2.transpose_assign(sat1);
 
-  if (!mat1.is_necessarily_closed()) {
+  if (!sys1.is_necessarily_closed()) {
     // Moving the epsilon coefficients in the last column.
-    dimension_type new_eps_index = mat1.num_columns() - 1;
+    dimension_type new_eps_index = sys1.num_columns() - 1;
     dimension_type old_eps_index = new_eps_index - add_dim;
-    // This swap preserves sortedness of `mat1'.
-    mat1.swap_columns(old_eps_index, new_eps_index);
+    // This swap preserves sortedness of `sys1'.
+    sys1.swap_columns(old_eps_index, new_eps_index);
 
-    // Try to preserve sortedness of `mat2'.
-    if (!mat2.is_sorted())
-      mat2.swap_columns(old_eps_index, new_eps_index);
+    // Try to preserve sortedness of `sys2'.
+    if (!sys2.is_sorted())
+      sys2.swap_columns(old_eps_index, new_eps_index);
     else {
-      for (dimension_type i = mat2.num_rows(); i-- > add_dim; ) {
-	Row& r = mat2[i];
+      for (dimension_type i = sys2.num_rows(); i-- > add_dim; ) {
+	Linear_Row& r = sys2[i];
 	std::swap(r[old_eps_index], r[new_eps_index]);
       }
-      // The upper-right corner of `mat2' contains the J matrix:
+      // The upper-right corner of `sys2' contains the J matrix:
       // swap coefficients to preserve sortedness.
       for (dimension_type i = add_dim; i-- > 0; ++old_eps_index) {
-	Row& r = mat2[i];
+	Linear_Row& r = sys2[i];
 	std::swap(r[old_eps_index], r[old_eps_index + 1]);
       }
     }
-    // NOTE: since we swapped columns in both `mat1' and `mat2',
+    // NOTE: since we swapped columns in both `sys1' and `sys2',
     // no swapping is required for `sat1' and `sat2'.
   }
 }
 
 void
 PPL::Polyhedron::add_space_dimensions_and_embed(dimension_type m) {
+  // The space dimension of the resulting polyhedron should not
+  // overflow the maximum allowed space dimension.
+  if (m > max_space_dimension() - space_dimension())
+    throw_space_dimension_overflow("add_space_dimensions_and_embed(m)",
+				   "adding m new space dimensions exceeds "
+				   "the maximum allowed space dimension");
+
   // Adding no dimensions to any polyhedron is a no-op.
   if (m == 0)
     return;
@@ -115,12 +121,12 @@ PPL::Polyhedron::add_space_dimensions_and_embed(dimension_type m) {
   }
 
   // To embed an n-dimension space polyhedron in a (n+m)-dimension space,
-  // we just add `m' zero-columns to the rows in the matrix of constraints;
-  // in contrast, the matrix of generators needs additional rows,
+  // we just add `m' zero-columns to the rows in the system of constraints;
+  // in contrast, the system of generators needs additional rows,
   // corresponding to the vectors of the canonical basis
   // for the added dimensions. That is, for each new dimension `x[k]'
   // we add the line having that direction. This is done by invoking
-  // the function add_space_dimensions() giving the matrix of generators
+  // the function add_space_dimensions() giving the system of generators
   // as the second argument.
   if (constraints_are_up_to_date())
     if (generators_are_up_to_date()) {
@@ -156,13 +162,13 @@ PPL::Polyhedron::add_space_dimensions_and_embed(dimension_type m) {
 	dimension_type old_eps_index = space_dim + 1;
 	dimension_type new_eps_index = old_eps_index + m;
 	for (dimension_type i = gen_sys.num_rows(); i-- > m; ) {
-	  Row& r = gen_sys[i];
+	  Linear_Row& r = gen_sys[i];
 	  std::swap(r[old_eps_index], r[new_eps_index]);
 	}
 	// The upper-right corner of `gen_sys' contains the J matrix:
 	// swap coefficients to preserve sortedness.
 	for (dimension_type i = m; i-- > 0; ++old_eps_index) {
-	  Row& r = gen_sys[i];
+	  Linear_Row& r = gen_sys[i];
 	  std::swap(r[old_eps_index], r[old_eps_index + 1]);
 	}
       }
@@ -178,6 +184,13 @@ PPL::Polyhedron::add_space_dimensions_and_embed(dimension_type m) {
 
 void
 PPL::Polyhedron::add_space_dimensions_and_project(dimension_type m) {
+  // The space dimension of the resulting polyhedron should not
+  // overflow the maximum allowed space dimension.
+  if (m > max_space_dimension() - space_dimension())
+    throw_space_dimension_overflow("add_space_dimensions_and_project(m)",
+				   "adding m new space dimensions exceeds "
+				   "the maximum allowed space dimension");
+
   // Adding no dimensions to any polyhedron is a no-op.
   if (m == 0)
     return;
@@ -194,8 +207,8 @@ PPL::Polyhedron::add_space_dimensions_and_project(dimension_type m) {
     assert(status.test_zero_dim_univ() && gen_sys.num_rows() == 0);
     // The system of generators for this polyhedron has only
     // the origin as a point.
-    // In a non-necessarily closed polyhedron, all points
-    // have to be accompanied by the corresponding closure points
+    // In an NNC polyhedron, all points have to be accompanied
+    // by the corresponding closure points
     // (this time, dimensions are automatically adjusted).
     if (!is_necessarily_closed())
       gen_sys.insert(Generator::zero_dim_closure_point());
@@ -208,12 +221,12 @@ PPL::Polyhedron::add_space_dimensions_and_project(dimension_type m) {
   }
 
   // To project an n-dimension space polyhedron in a (n+m)-dimension space,
-  // we just add to the matrix of generators `m' zero-columns;
-  // In contrast, in the matrix of constraints, new rows are needed
+  // we just add to the system of generators `m' zero-columns;
+  // In contrast, in the system of constraints, new rows are needed
   // in order to avoid embedding the old polyhedron in the new space.
   // Thus, for each new dimensions `x[k]', we add the constraint
   // x[k] = 0; this is done by invoking the function add_space_dimensions()
-  // giving the matrix of constraints as the second argument.
+  // giving the system of constraints as the second argument.
   if (constraints_are_up_to_date())
     if (generators_are_up_to_date()) {
       // `sat_g' must be up to date for add_space_dimensions(...).
@@ -239,13 +252,13 @@ PPL::Polyhedron::add_space_dimensions_and_project(dimension_type m) {
 	  dimension_type old_eps_index = space_dim + 1;
 	  dimension_type new_eps_index = old_eps_index + m;
 	  for (dimension_type i = con_sys.num_rows(); i-- > m; ) {
-	    Row& r = con_sys[i];
+	    Linear_Row& r = con_sys[i];
 	    std::swap(r[old_eps_index], r[new_eps_index]);
 	  }
 	  // The upper-right corner of `con_sys' contains the J matrix:
 	  // swap coefficients to preserve sortedness.
 	  for (dimension_type i = m; i-- > 0; ++old_eps_index) {
-	    Row& r = con_sys[i];
+	    Linear_Row& r = con_sys[i];
 	    std::swap(r[old_eps_index], r[old_eps_index + 1]);
 	  }
 	}
@@ -273,7 +286,14 @@ PPL::Polyhedron::concatenate_assign(const Polyhedron& y) {
   if (topology() != y.topology())
     throw_topology_incompatible("concatenate_assign(y)", "y", y);
 
-  dimension_type added_columns = y.space_dim;
+  // The space dimension of the resulting polyhedron should not
+  // overflow the maximum allowed space dimension.
+  if (y.space_dim > max_space_dimension() - space_dimension())
+    throw_space_dimension_overflow("concatenate_assign(y)",
+				   "concatenation exceeds the maximum "
+				   "allowed space dimension");
+
+  const dimension_type added_columns = y.space_dim;
 
   // If `*this' or `y' are empty polyhedra, it is sufficient to adjust
   // the dimension of the space.
@@ -314,7 +334,9 @@ PPL::Polyhedron::concatenate_assign(const Polyhedron& y) {
   // also, `cs' contains the low-level constraints, at least.
   assert(added_rows > 0 && added_columns > 0);
 
-  con_sys.grow(old_num_rows + added_rows, old_num_columns + added_columns);
+  con_sys.add_zero_rows_and_columns(added_rows, added_columns,
+				    Linear_Row::Flags(topology(), 
+						      Linear_Row::RAY_OR_POINT_OR_INEQUALITY));
   // Move the epsilon coefficient to the last column, if needed.
   if (!is_necessarily_closed())
     con_sys.swap_columns(old_num_columns - 1,
@@ -399,8 +421,9 @@ PPL::Polyhedron::remove_space_dimensions(const Variables_Set& to_be_removed) {
   }
 
   // Dimension-compatibility check: the variable having
-  // maximum id() is the one occurring last in the set.
-  const dimension_type min_space_dim = to_be_removed.rbegin()->id() + 1;
+  // maximum space dimension is the one occurring last in the set.
+  const dimension_type
+    min_space_dim = to_be_removed.rbegin()->space_dimension();
   if (space_dim < min_space_dim)
     throw_dimension_incompatible("remove_space_dimensions(vs)", min_space_dim);
 
@@ -428,35 +451,34 @@ PPL::Polyhedron::remove_space_dimensions(const Variables_Set& to_be_removed) {
     return;
   }
 
+  // FIXME: provide a method in Linear_System that removes a set
+  // of columns and restores strong-normalization only at the end.
+
   // For each variable to be removed, we fill the corresponding column
   // by shifting left those columns that will not be removed.
   Variables_Set::const_iterator tbr = to_be_removed.begin();
   Variables_Set::const_iterator tbr_end = to_be_removed.end();
-  dimension_type dst_col = tbr->id() + 1;
+  dimension_type dst_col = tbr->space_dimension();
   dimension_type src_col = dst_col + 1;
-  dimension_type nrows = gen_sys.num_rows();
   for (++tbr; tbr != tbr_end; ++tbr) {
-    dimension_type tbr_col = tbr->id() + 1;
+    dimension_type tbr_col = tbr->space_dimension();
     // All columns in between are moved to the left.
-    while (src_col < tbr_col) {
-      for (dimension_type r = nrows; r-- > 0; )
-	std::swap(gen_sys[r][dst_col], gen_sys[r][src_col]);
-      ++dst_col;
-      ++src_col;
-    }
+    while (src_col < tbr_col)
+      // FIXME: consider whether Linear_System must have a swap_columns()
+      // method.  If the answer is "no", remove this Matrix:: qualification.
+      gen_sys.Matrix::swap_columns(dst_col++, src_col++);
     ++src_col;
   }
   // Moving the remaining columns.
-  dimension_type ncols = gen_sys.num_columns();
-  while (src_col < ncols) {
-    for (dimension_type r = nrows; r-- > 0; )
-      std::swap(gen_sys[r][dst_col], gen_sys[r][src_col]);
-    ++src_col;
-    ++dst_col;
-  }
+  const dimension_type gen_sys_num_columns = gen_sys.num_columns();
+  while (src_col < gen_sys_num_columns)
+    // FIXME: consider whether Linear_System must have a swap_columns()
+    // method.  If the answer is "no", remove this Matrix:: qualification.
+    gen_sys.Matrix::swap_columns(dst_col++, src_col++);
+
   // The number of remaining columns is `dst_col'.
   // Note that resizing also calls `set_sorted(false)'.
-  gen_sys.remove_columns(dst_col);
+  gen_sys.remove_trailing_columns(gen_sys_num_columns - dst_col);
   // We may have invalid line and rays now.
   gen_sys.remove_invalid_lines_and_rays();
 
@@ -514,7 +536,7 @@ PPL::Polyhedron::remove_higher_space_dimensions(dimension_type new_dimension) {
     ++new_num_cols;
   }
   // Note that resizing also calls `set_sorted(false)'.
-  gen_sys.remove_columns(new_num_cols);
+  gen_sys.remove_trailing_columns(space_dim - new_dimension);
   // We may have invalid line and rays now.
   gen_sys.remove_invalid_lines_and_rays();
 
@@ -532,10 +554,16 @@ void
 PPL::Polyhedron::expand_space_dimension(Variable var, dimension_type m) {
   // FIXME: this implementation is _really_ an executable specification.
 
-  const dimension_type src_d = var.id();
   // `var' should be one of the dimensions of the vector space.
-  if (src_d+1 > space_dim)
+  if (var.space_dimension() > space_dim)
     throw_dimension_incompatible("expand_space_dimension(v, m)", "v", var);
+
+  // The space dimension of the resulting polyhedron should not
+  // overflow the maximum allowed space dimension.
+  if (m > max_space_dimension() - space_dimension())
+    throw_space_dimension_overflow("expand_dimension(v, m)",
+				   "adding m new space dimensions exceeds"
+				   "the maximum allowed space dimension.");
 
   // Nothing to do, if no dimensions must be added.
   if (m == 0)
@@ -547,6 +575,7 @@ PPL::Polyhedron::expand_space_dimension(Variable var, dimension_type m) {
   // Add the required new dimensions.
   add_space_dimensions_and_embed(m);
 
+  const dimension_type src_d = var.id();
   const ConSys& cs = constraints();
   ConSys new_constraints;
   for(ConSys::const_iterator i = cs.begin(),
@@ -578,11 +607,11 @@ PPL::Polyhedron::expand_space_dimension(Variable var, dimension_type m) {
 
 void
 PPL::Polyhedron::fold_space_dimensions(const Variables_Set& to_be_folded,
-				 Variable var) {
+				       Variable var) {
   // FIXME: this implementation is _really_ an executable specification.
 
   // `var' should be one of the dimensions of the polyhedron.
-  if (var.id()+1 > space_dim)
+  if (var.space_dimension() > space_dim)
     throw_dimension_incompatible("fold_space_dimensions(tbf, v)", "v", var);
 
   // The folding of no dimensions is a no-op.
@@ -590,7 +619,7 @@ PPL::Polyhedron::fold_space_dimensions(const Variables_Set& to_be_folded,
     return;
 
   // All variables in `to_be_folded' should be dimensions of the polyhedron.
-  if (to_be_folded.rbegin()->id()+1 > space_dim)
+  if (to_be_folded.rbegin()->space_dimension() > space_dim)
     throw_dimension_incompatible("fold_space_dimensions(tbf, v)",
 				 "*tbf.rbegin()",
 				 *to_be_folded.rbegin());

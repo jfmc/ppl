@@ -44,9 +44,6 @@ site: http://www.cs.unipr.it/ppl/ . */
 */
 class Parma_Polyhedra_Library::NNC_Polyhedron : public Polyhedron {
 public:
-  //! Returns the maximum space dimension a C_Polyhedron can handle.
-  static dimension_type max_space_dimension();
-
   //! Builds either the universe or the empty NNC polyhedron.
   /*!
     \param num_dimensions
@@ -73,7 +70,7 @@ public:
     declared <CODE>const</CODE> because its data-structures will be
     recycled to build the polyhedron.
   */
-  NNC_Polyhedron(const ConSys& cs);
+  explicit NNC_Polyhedron(const ConSys& cs);
 
   //! Builds an NNC polyhedron recycling a system of constraints.
   /*!
@@ -84,7 +81,7 @@ public:
     declared <CODE>const</CODE> because its data-structures will be
     recycled to build the polyhedron.
   */
-  NNC_Polyhedron(ConSys& cs);
+  explicit NNC_Polyhedron(ConSys& cs);
 
   //! Builds an NNC polyhedron from a system of generators.
   /*!
@@ -98,7 +95,7 @@ public:
     \exception std::invalid_argument
     Thrown if the system of generators is not empty but has no points.
   */
-  NNC_Polyhedron(const GenSys& gs);
+  explicit NNC_Polyhedron(const GenSys& gs);
 
   //! Builds an NNC polyhedron recycling a system of generators.
   /*!
@@ -112,7 +109,7 @@ public:
     \exception std::invalid_argument
     Thrown if the system of generators is not empty but has no points.
   */
-  NNC_Polyhedron(GenSys& gs);
+  explicit NNC_Polyhedron(GenSys& gs);
 
   //! Builds an NNC polyhedron from the C polyhedron \p y.
   explicit NNC_Polyhedron(const C_Polyhedron& y);

@@ -37,25 +37,58 @@ namespace PPL = Parma_Polyhedra_Library;
 
 bool
 PPL::ConSys::
-adjust_topology_and_space_dimension(Topology new_topology,
-				    dimension_type new_space_dim) {
+adjust_topology_and_space_dimension(const Topology new_topology,
+				    const dimension_type new_space_dim) {
   assert(space_dimension() <= new_space_dim);
 
+  const dimension_type old_space_dim = space_dimension();
+  const Topology old_topology = topology();
+  dimension_type cols_to_be_added = new_space_dim - old_space_dim;
+
+  // Dealing with empty constraint systems first.
   if (num_rows() == 0) {
-    if (topology() != new_topology)
-      if (is_necessarily_closed())
-	set_not_necessarily_closed();
-      else
+    if (num_columns() == 0)
+      if (new_topology == NECESSARILY_CLOSED) {
+	add_zero_columns(++cols_to_be_added);
 	set_necessarily_closed();
+      }
+      else {
+	cols_to_be_added += 2;
+	add_zero_columns(cols_to_be_added);
+	set_not_necessarily_closed();
+      }
+    else
+      // Here `num_columns() > 0'.
+      if (old_topology != new_topology)
+	if (new_topology == NECESSARILY_CLOSED) {
+	  switch (cols_to_be_added) {
+	  case 0:
+	    remove_trailing_columns(1);
+	    break;
+	  case 1:
+	    // Nothing to do.
+	    break;
+	  default:
+	    add_zero_columns(--cols_to_be_added);
+	  }
+	  set_necessarily_closed();
+	}
+	else {
+	  // Here old_topology == NECESSARILY_CLOSED
+	  //  and new_topology == NOT_NECESSARILY_CLOSED.
+	  add_zero_columns(++cols_to_be_added);
+	  set_not_necessarily_closed();
+	}
+      else {
+	// Here topologies agree.
+	if (cols_to_be_added > 0)
+	  add_zero_columns(cols_to_be_added);
+      }
     assert(OK());
     return true;
   }
 
   // Here `num_rows() > 0'.
-  const dimension_type old_space_dim = space_dimension();
-  const Topology old_topology = topology();
-  dimension_type cols_to_be_added = new_space_dim - old_space_dim;
-
   if (cols_to_be_added > 0)
     if (old_topology != new_topology)
       if (new_topology == NECESSARILY_CLOSED) {
@@ -148,7 +181,7 @@ adjust_topology_and_space_dimension(Topology new_topology,
 	if (has_strict_inequalities())
 	  return false;
 	// We just remove the column of the epsilon coefficients.
-	remove_columns(old_space_dim + 1);
+	remove_trailing_columns(1);
 	set_necessarily_closed();
       }
       else {
@@ -186,7 +219,7 @@ PPL::ConSys::insert(const Constraint& c) {
   // and that the new row is not a pending constraint.
   assert(num_pending_rows() == 0);
   if (topology() == c.topology())
-    Matrix::insert(c);
+    Linear_System::insert(c);
   else
     // `*this' and `c' have different topologies.
     if (is_necessarily_closed()) {
@@ -194,24 +227,26 @@ PPL::ConSys::insert(const Constraint& c) {
       // corresponding to the epsilon coefficients.
       add_zero_columns(1);
       set_not_necessarily_closed();
-      Matrix::insert(c);
+      Linear_System::insert(c);
     }
     else {
       // Here `*this' is NNC and `c' is necessarily closed.
       // Copying the constraint adding the epsilon coefficient
       // and the missing space dimensions, if any.
+      // FIXME: provide a resizing copy-constructor taking
+      // topology and the space dimension.
       const dimension_type new_size = 2 + std::max(c.space_dimension(),
 						   space_dimension());
       Constraint tmp_c(c, new_size);
       tmp_c.set_not_necessarily_closed();
-      Matrix::insert(tmp_c);
+      Linear_System::insert(tmp_c);
     }
 }
 
 void
 PPL::ConSys::insert_pending(const Constraint& c) {
   if (topology() == c.topology())
-    Matrix::insert_pending(c);
+    Linear_System::insert_pending(c);
   else
     // `*this' and `c' have different topologies.
     if (is_necessarily_closed()) {
@@ -219,7 +254,7 @@ PPL::ConSys::insert_pending(const Constraint& c) {
       // corresponding to the epsilon coefficients.
       add_zero_columns(1);
       set_not_necessarily_closed();
-      Matrix::insert_pending(c);
+      Linear_System::insert_pending(c);
     }
     else {
       // Here `*this' is NNC and `c' is necessarily closed.
@@ -229,7 +264,7 @@ PPL::ConSys::insert_pending(const Constraint& c) {
 						   space_dimension());
       Constraint tmp_c(c, new_size);
       tmp_c.set_not_necessarily_closed();
-      Matrix::insert_pending(tmp_c);
+      Linear_System::insert_pending(tmp_c);
     }
 }
 
@@ -240,7 +275,7 @@ PPL::ConSys::num_inequalities() const {
   assert(num_pending_rows() == 0);
   const ConSys& cs = *this;
   int n = 0;
-  // If the Matrix happens to be sorted, take advantage of the fact
+  // If the Linear_System happens to be sorted, take advantage of the fact
   // that inequalities are at the bottom of the system.
   if (is_sorted())
     for (dimension_type i = num_rows(); i > 0 && cs[--i].is_inequality(); )
@@ -262,7 +297,7 @@ PPL::ConSys::num_equalities() const {
 
 void
 PPL::ConSys::const_iterator::skip_forward() {
-  const Matrix::const_iterator csp_end = csp->end();
+  const Linear_System::const_iterator csp_end = csp->end();
   while (i != csp_end && (*this)->is_trivial_true())
     ++i;
 }
@@ -274,7 +309,7 @@ PPL::ConSys::satisfies_all_constraints(const Generator& g) const {
   // Setting `sp_fp' to the appropriate scalar product operator.
   // This also avoids problems when having _legal_ topology mismatches
   // (which could also cause a mismatch in the number of columns).
-  int (*sps_fp)(const Row&, const Row&);
+  int (*sps_fp)(const Linear_Row&, const Linear_Row&);
   if (g.is_necessarily_closed())
     sps_fp = PPL::scalar_product_sign;
   else
@@ -420,14 +455,22 @@ PPL::ConSys::affine_preimage(dimension_type v,
 
 void
 PPL::ConSys::ascii_dump(std::ostream& s) const {
-  Matrix::ascii_dump(s);
-  const char separator = ' ';
   const ConSys& x = *this;
+  dimension_type x_num_rows = x.num_rows();
+  dimension_type x_num_columns = x.num_columns();
+  s << "topology " << (is_necessarily_closed()
+		       ? "NECESSARILY_CLOSED"
+		       : "NOT_NECESSARILY_CLOSED")
+    << std::endl
+    << x_num_rows << " x " << x_num_columns << ' '
+    << (x.is_sorted() ? "(sorted)" : "(not_sorted)")
+    << std::endl
+    << "index_first_pending " << x.first_pending_row()
+    << std::endl;
   for (dimension_type i = 0; i < x.num_rows(); ++i) {
     for (dimension_type j = 0; j < x.num_columns(); ++j)
-      s << x[i][j] << separator;
-    s << separator << separator;
-    switch (static_cast<Constraint>(x[i]).type()) {
+      s << x[i][j] << ' ';
+    switch (x[i].type()) {
     case Constraint::EQUALITY:
       s << "=";
       break;
@@ -444,10 +487,39 @@ PPL::ConSys::ascii_dump(std::ostream& s) const {
 
 bool
 PPL::ConSys::ascii_load(std::istream& s) {
-  if (!Matrix::ascii_load(s))
-    return false;
-
   std::string str;
+  if (!(s >> str) || str != "topology")
+    return false;
+  if (!(s >> str))
+    return false;
+  if (str == "NECESSARILY_CLOSED")
+    set_necessarily_closed();
+  else {
+    if (str != "NOT_NECESSARILY_CLOSED")
+      return false;
+    set_not_necessarily_closed();
+  }
+
+  dimension_type nrows;
+  dimension_type ncols;
+  if (!(s >> nrows))
+    return false;
+  if (!(s >> str))
+    return false;
+  if (!(s >> ncols))
+      return false;
+  resize_no_copy(nrows, ncols);
+
+  if (!(s >> str) || (str != "(sorted)" && str != "(not_sorted)"))
+    return false;
+  set_sorted(str == "(sorted)");
+  dimension_type index;
+  if (!(s >> str) || str != "index_first_pending")
+    return false;
+  if (!(s >> index))
+    return false;
+  set_index_first_pending_row(index);
+
   ConSys& x = *this;
   for (dimension_type i = 0; i < x.num_rows(); ++i) {
     for (dimension_type j = 0; j < x.num_columns(); ++j)
@@ -462,7 +534,7 @@ PPL::ConSys::ascii_load(std::istream& s) {
       x[i].set_is_inequality();
 
     // Checking for equality of actual and declared types.
-    switch (static_cast<Constraint>(x[i]).type()) {
+    switch (x[i].type()) {
     case Constraint::EQUALITY:
       if (str == "=")
 	continue;
@@ -486,15 +558,16 @@ PPL::ConSys::ascii_load(std::istream& s) {
 
 bool
 PPL::ConSys::OK() const {
-  // A ConSys must be a valid Matrix; do not check for
+  // A ConSys must be a valid Linear_System; do not check for
   // strong normalization, since this will be done when
   // checking each individual constraint.
-  if (!Matrix::OK(false))
+  if (!Linear_System::OK(false))
     return false;
 
   // Checking each constraint in the system.
+  const ConSys& x = *this;
   for (dimension_type i = num_rows(); i-- > 0; ) {
-    const Constraint& c = (*this)[i];
+    const Constraint& c = x[i];
     if (!c.OK())
       return false;
   }

@@ -24,16 +24,33 @@ site: http://www.cs.unipr.it/ppl/ . */
 #ifndef PPL_Variable_inlines_hh
 #define PPL_Variable_inlines_hh 1
 
+#include "globals.defs.hh"
+#include <stdexcept>
+
 namespace Parma_Polyhedra_Library {
+
+inline dimension_type
+Variable::max_space_dimension() {
+  return not_a_dimension() - 1;
+}
 
 inline
 Variable::Variable(dimension_type i)
-  : varid(i) {
+  : varid(i < max_space_dimension()
+	  ? i
+	  : (throw std::length_error("PPL::Variable::Variable(i):\n"
+				     "i exceeds the maximum allowed "
+				     "variable identifier."), i)) {
 }
 
 inline dimension_type
 Variable::id() const {
   return varid;
+}
+
+inline dimension_type
+Variable::space_dimension() const {
+  return varid + 1;
 }
 
 inline void

@@ -23,6 +23,9 @@ site: http://www.cs.unipr.it/ppl/ . */
 
 #include <config.h>
 #include "Integer.defs.hh"
+#include "checked.defs.hh"
+#include "checked_int.inlines.hh"
+#include "checked_mpz.inlines.hh"
 #include <cinterf.h>
 
 // In XSB 2.6, <error_xsb.h> does not come with the extern "C" wrapper.

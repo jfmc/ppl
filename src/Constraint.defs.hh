@@ -25,7 +25,7 @@ site: http://www.cs.unipr.it/ppl/ . */
 #define PPL_Constraint_defs_hh 1
 
 #include "Constraint.types.hh"
-#include "Row.defs.hh"
+#include "Linear_Row.defs.hh"
 #include "Variable.defs.hh"
 #include "LinExpression.defs.hh"
 #include "ConSys.defs.hh"
@@ -215,7 +215,7 @@ void swap(Parma_Polyhedra_Library::Constraint& x,
   syntactically different from the (semantically equivalent)
   constraint considered.
 */
-class Parma_Polyhedra_Library::Constraint : private Row {
+class Parma_Polyhedra_Library::Constraint : private Linear_Row {
 public:
   //! Ordinary copy-constructor.
   Constraint(const Constraint& c);
@@ -300,14 +300,9 @@ private:
   Constraint();
 
   //! \brief
-  //! Builds a constraint (of unspecified type) stealing
-  //! the coefficients from \p e.
-  explicit Constraint(LinExpression& e);
-
-  //! \brief
-  //! Builds a constraint, having type \p type, which is able
-  //! to store \p sz coefficients, whose values are left unspecified.
-  Constraint(Row::Type t, dimension_type sz);
+  //! Builds a constraint of type \p type and topology \p topology,
+  //! stealing the coefficients from \p e.
+  explicit Constraint(LinExpression& e, Type type, Topology topology);
 
   //! Swaps \p *this with \p y.
   void swap(Constraint& y);

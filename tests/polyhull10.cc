@@ -35,14 +35,28 @@ main() TRY {
   set_handlers();
 
   Variable B(1), C(2);
+
   C_Polyhedron p(3);
   p.add_constraint(B >= 0);
   p.add_constraint(C >= 0);
+
   C_Polyhedron q(3);
   q.add_constraint(C >= 0);
+
+#if NOISY
+  print_constraints(p, "*** p ***");
+  print_constraints(q, "*** q ***");
+#endif
+
   p.poly_hull_assign_and_minimize(q);
 
-  return 0;
+  int retval = p == q ? 0 : 1;
+
+#if NOISY
+  print_constraints(p, "*** p.poly_hull_assign_and_minimize(q) ***");
+#endif
+
+  return retval;
 }
 CATCH
 

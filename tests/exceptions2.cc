@@ -65,7 +65,7 @@ error2() {
   Variable y(1);
 
   GenSys gs;
-  gs.insert(closure_point(x + y));
+  gs.insert(closure_point(2*x + y));
   gs.insert(point(x + y));
   gs.insert(ray(x));
   gs.insert(ray(y));

@@ -24,4 +24,10 @@ site: http://www.cs.unipr.it/ppl/ . */
 eat_eol.
 
 main :-
-    common_main.
+  % FIXME: clearing the prompt as it is done here is a temporary workaround.
+  % In SWI-Prolog versions up to and including 5.4.1, the prompt is written
+  % to the output stream even if it is not connected to an actual terminal.
+  % See http://www.cs.unipr.it/pipermail/ppl-devel/2004-October/005078.html.
+  prompt(Old_Prompt, ''),
+  common_main,
+  prompt(_, Old_Prompt).

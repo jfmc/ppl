@@ -23,35 +23,38 @@ site: http://www.cs.unipr.it/ppl/ . */
 
 #include <config.h>
 
-#include "Polyhedron.defs.hh"
+#include "Linear_Row.defs.hh"
+#include "Linear_System.defs.hh"
+#include "SatRow.defs.hh"
 #include "SatMatrix.defs.hh"
+#include "Polyhedron.defs.hh"
 
 namespace PPL = Parma_Polyhedra_Library;
 
 /*!
   \return
-  The rank of \p mat.
+  The rank of \p sys.
 
-  \param mat
-  The matrix to simplify: it will be modified;
+  \param sys
+  The system to simplify: it will be modified;
 
   \param sat
-  The saturation matrix corresponding to \p mat.
+  The saturation matrix corresponding to \p sys.
 
-  \p mat may be modified by swapping some of its rows and by possibly
+  \p sys may be modified by swapping some of its rows and by possibly
   removing some of them, if they turn out to be redundant.
 
-  If \p mat is a matrix of constraints, then the rows of \p sat are
+  If \p sys is a system of constraints, then the rows of \p sat are
   indexed by constraints and its columns are indexed by generators;
-  otherwise, if \p mat is a matrix of generators, then the rows of
+  otherwise, if \p sys is a system of generators, then the rows of
   \p sat are indexed by generators and its columns by constraints.
 
-  Given a matrix of constraints or a matrix of generators, this function
+  Given a system of constraints or a system of generators, this function
   simplifies it using Gauss' elimination method (to remove redundant
   equalities/lines), deleting redundant inequalities/rays/points and
   making back-substitution.
-  The explanation that follows assumes that \p mat is a matrix of
-  constraints. For the case when \p mat is a matrix of generators,
+  The explanation that follows assumes that \p sys is a system of
+  constraints. For the case when \p sys is a system of generators,
   a similar explanation can be obtain by applying duality.
 
   The explanation relies on the notion of <EM>redundancy</EM>.
@@ -77,22 +80,22 @@ namespace PPL = Parma_Polyhedra_Library;
   where \f$\lambda_1, \lambda_2\f$ can be any real number.
 */
 int
-PPL::Polyhedron::simplify(Matrix& mat, SatMatrix& sat) {
-  // This method is only applied to a well-formed matrix `mat'.
-  assert(mat.OK(true));
+PPL::Polyhedron::simplify(Linear_System& sys, SatMatrix& sat) {
+  // This method is only applied to a well-formed system `sys'.
+  assert(sys.OK(true));
 
-  dimension_type num_rows = mat.num_rows();
-  const dimension_type num_columns = mat.num_columns();
+  dimension_type num_rows = sys.num_rows();
+  const dimension_type num_columns = sys.num_columns();
   const dimension_type num_cols_sat = sat.num_columns();
 
-  // Looking for the first inequality in `mat'.
+  // Looking for the first inequality in `sys'.
   dimension_type num_lines_or_equalities = 0;
   while (num_lines_or_equalities < num_rows
-	 && mat[num_lines_or_equalities].is_line_or_equality())
+	 && sys[num_lines_or_equalities].is_line_or_equality())
     ++num_lines_or_equalities;
 
   // `num_saturators[i]' will contain the number of generators
-  // that saturate the constraint `mat[i]'.
+  // that saturate the constraint `sys[i]'.
   static std::vector<dimension_type> num_saturators;
   num_saturators.reserve(num_rows);
 
@@ -101,47 +104,47 @@ PPL::Polyhedron::simplify(Matrix& mat, SatMatrix& sat) {
   // equalities (see Proposition above).
   for (dimension_type i = num_lines_or_equalities; i < num_rows; ++i) {
     if (sat[i].empty()) {
-      // The constraint `mat[i]' is saturated by all the generators.
+      // The constraint `sys[i]' is saturated by all the generators.
       // Thus, either it is already an equality or it can be transformed
       // to an equality (see Proposition above).
-      mat[i].set_is_line_or_equality();
+      sys[i].set_is_line_or_equality();
       // Note: simple normalization already holds.
-      mat[i].sign_normalize();
+      sys[i].sign_normalize();
       // We also move it just after all the other equalities,
-      // so that matrix `mat' keeps its partial sortedness.
+      // so that system `sys' keeps its partial sortedness.
       if (i != num_lines_or_equalities) {
-	std::swap(mat[i], mat[num_lines_or_equalities]);
+	std::swap(sys[i], sys[num_lines_or_equalities]);
 	std::swap(sat[i], sat[num_lines_or_equalities]);
 	std::swap(num_saturators[i], num_saturators[num_lines_or_equalities]);
       }
       ++num_lines_or_equalities;
-      // `mat' is no longer sorted.
-      mat.set_sorted(false);
+      // `sys' is no longer sorted.
+      sys.set_sorted(false);
     }
     else
-      // There exists a generator which does not saturate `mat[i]',
-      // so that `mat[i]' is indeed an inequality.
+      // There exists a generator which does not saturate `sys[i]',
+      // so that `sys[i]' is indeed an inequality.
       // We store the number of its saturators.
       num_saturators[i] = num_cols_sat - sat[i].count_ones();
   }
 
-  // At this point, all the equalities of `mat' (included those
+  // At this point, all the equalities of `sys' (included those
   // inequalities that we just transformed to equalities) have
   // indexes between 0 and `num_lines_or_equalities' - 1,
   // which is the property needed by the function gauss().
   // We can simplify the system of equalities, obtaining the rank
-  // of `mat' as result.
-  const dimension_type rank = mat.gauss();
+  // of `sys' as result.
+  const dimension_type rank = sys.gauss();
 
-  // Now the irredundant equalities of `mat' have indexes from 0
+  // Now the irredundant equalities of `sys' have indexes from 0
   // to `rank' - 1, whereas the equalities having indexes from `rank'
   // to `num_lines_or_equalities' - 1 are all redundant.
-  // (The inequalities in `mat' have been left untouched.)
+  // (The inequalities in `sys' have been left untouched.)
   // The rows containing equalities are not sorted.
 
   if (rank < num_lines_or_equalities) {
     // We identified some redundant equalities.
-    // Moving them at the bottom of `mat':
+    // Moving them at the bottom of `sys':
     // - index `redundant' runs through the redundant equalities
     // - index `erasing' identifies the first row that should
     //   be erased after this loop.
@@ -154,15 +157,15 @@ PPL::Polyhedron::simplify(Matrix& mat, SatMatrix& sat) {
 	   && erasing > num_lines_or_equalities;
 	 ) {
       --erasing;
-      std::swap(mat[redundant], mat[erasing]);
+      std::swap(sys[redundant], sys[erasing]);
       std::swap(sat[redundant], sat[erasing]);
       std::swap(num_saturators[redundant], num_saturators[erasing]);
-      mat.set_sorted(false);
+      sys.set_sorted(false);
       ++redundant;
     }
     // Adjusting the value of `num_rows' to the number of meaningful
-    // rows of `mat': `num_lines_or_equalities' - `rank' is the number of
-    // redundant equalities moved to the bottom of `mat', which are
+    // rows of `sys': `num_lines_or_equalities' - `rank' is the number of
+    // redundant equalities moved to the bottom of `sys', which are
     // no longer meaningful.
     num_rows -= num_lines_or_equalities - rank;
     // Adjusting the value of `num_lines_or_equalities'.
@@ -188,7 +191,7 @@ PPL::Polyhedron::simplify(Matrix& mat, SatMatrix& sat) {
   //
   //   (num_saturators[i] - num_sat_lines[i] < dim_ray_space)
   //      ==>
-  //        redundant(mat[i]).
+  //        redundant(sys[i]).
   //
   // Moreover, since every line saturates all inequalities, we also have
   //     dim_lin_space = num_sat_lines[i]
@@ -196,18 +199,18 @@ PPL::Polyhedron::simplify(Matrix& mat, SatMatrix& sat) {
   //
   //   (num_saturators[i] < num_columns - num_lines_or_equalities - 1)
   //      ==>
-  //        redundant(mat[i]).
+  //        redundant(sys[i]).
   //
   const dimension_type min_saturators
     = num_columns - num_lines_or_equalities - 1;
   for (dimension_type i = num_lines_or_equalities; i < num_rows; ) {
     if (num_saturators[i] < min_saturators) {
-      // The inequality `mat[i]' is redundant.
+      // The inequality `sys[i]' is redundant.
       --num_rows;
-      std::swap(mat[i], mat[num_rows]);
+      std::swap(sys[i], sys[num_rows]);
       std::swap(sat[i], sat[num_rows]);
       std::swap(num_saturators[i], num_saturators[num_rows]);
-      mat.set_sorted(false);
+      sys.set_sorted(false);
     }
     else
       ++i;
@@ -224,7 +227,7 @@ PPL::Polyhedron::simplify(Matrix& mat, SatMatrix& sat) {
     // sat[k])'.
     for (dimension_type j = num_lines_or_equalities; j < num_rows; ) {
       if (i == j)
-	// Want to compare different rows of mat.
+	// Want to compare different rows of `sys'.
 	++j;
       else {
 	// Let us recall that each generator lies on a facet of the
@@ -236,67 +239,67 @@ PPL::Polyhedron::simplify(Matrix& mat, SatMatrix& sat) {
 	// on the latter but not on the former, then `c_2' is more
 	// restrictive than `c_1', i.e., `c_1' is redundant.
 	if (strict_subset(sat[j], sat[i])) {
-	  // All the saturators of the inequality `mat[i]' are
-	  // saturators of the inequality `mat[j]' too,
-	  // and there exists at least one saturator of `mat[j]'
-	  // which is not a saturator of `mat[i]'.
-	  // It follows that inequality `mat[i]' is redundant.
+	  // All the saturators of the inequality `sys[i]' are
+	  // saturators of the inequality `sys[j]' too,
+	  // and there exists at least one saturator of `sys[j]'
+	  // which is not a saturator of `sys[i]'.
+	  // It follows that inequality `sys[i]' is redundant.
 	  redundant = true;
 	  break;
 	}
 	else if (sat[j] == sat[i]) {
-	  // Inequalities `mat[i]' and `mat[j]' are saturated by
+	  // Inequalities `sys[i]' and `sys[j]' are saturated by
 	  // the same set of generators. Then we can remove either one
-	  // of the two inequalities: we remove `mat[j]'.
+	  // of the two inequalities: we remove `sys[j]'.
 	  --num_rows;
-	  std::swap(mat[j], mat[num_rows]);
+	  std::swap(sys[j], sys[num_rows]);
 	  std::swap(sat[j], sat[num_rows]);
 	  std::swap(num_saturators[j], num_saturators[num_rows]);
-	  mat.set_sorted(false);
+	  sys.set_sorted(false);
 	}
 	else
 	  // If we reach this point then we know that `sat[i]' does
 	  // not contain (and is different from) `sat[j]', so that
-	  // `mat[i]' is not made redundant by inequality `mat[j]'.
+	  // `sys[i]' is not made redundant by inequality `sys[j]'.
 	  ++j;
       }
     }
     if (redundant) {
-      // The inequality `mat[i]' is redundant.
+      // The inequality `sys[i]' is redundant.
       --num_rows;
-      std::swap(mat[i], mat[num_rows]);
+      std::swap(sys[i], sys[num_rows]);
       std::swap(sat[i], sat[num_rows]);
       std::swap(num_saturators[i], num_saturators[num_rows]);
-      mat.set_sorted(false);
+      sys.set_sorted(false);
     }
     else
-      // The inequality `mat[i]' is not redundant.
+      // The inequality `sys[i]' is not redundant.
       ++i;
   }
 
   // Here we physically remove the redundant inequalities previously
-  // moved to the bottom of `mat' and the corresponding `sat' rows.
-  mat.erase_to_end(num_rows);
-  mat.unset_pending_rows();
+  // moved to the bottom of `sys' and the corresponding `sat' rows.
+  sys.erase_to_end(num_rows);
+  sys.unset_pending_rows();
   sat.rows_erase_to_end(num_rows);
-  // At this point the first `num_lines_or_equalities' rows of 'mat'
+  // At this point the first `num_lines_or_equalities' rows of 'sys'
   // represent the irredundant equalities, while the remaining rows
   // (i.e., those having indexes from `num_lines_or_equalities' to
   // `num_rows' - 1) represent the irredundant inequalities.
 #ifndef NDEBUG
   // Check if the flag is set (that of the equalities is already set).
   for (dimension_type i = num_lines_or_equalities; i < num_rows; ++i)
-    assert(mat[i].is_ray_or_point_or_inequality());
+    assert(sys[i].is_ray_or_point_or_inequality());
 #endif
 
-  // Finally, since now the sub-matrix (of `mat') of the irredundant
+  // Finally, since now the sub-system (of `sys') of the irredundant
   // equalities is in triangular form, we back substitute each
   // variables with the expression obtained considering the equalities
   // starting from the last one.
-  mat.back_substitute(num_lines_or_equalities);
+  sys.back_substitute(num_lines_or_equalities);
 
   // The returned value is the number of irredundant equalities i.e.,
-  // the rank of the sub-matrix of `mat' containing only equalities.
+  // the rank of the sub-system of `sys' containing only equalities.
   // (See the Introduction for definition of lineality space dimension).
   return num_lines_or_equalities;
 }

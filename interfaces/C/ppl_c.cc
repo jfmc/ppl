@@ -372,7 +372,9 @@ CATCH_ALL
 int
 ppl_new_LinExpression_with_dimension(ppl_LinExpression_t* ple,
 				     ppl_dimension_type d) try {
-  *ple = to_nonconst(new LinExpression(0*Variable(d)));
+  *ple = to_nonconst(d == 0
+		     ? new LinExpression(0)
+		     : new LinExpression(0*Variable(d-1)));
   return 0;
 }
 CATCH_ALL
@@ -1227,11 +1229,11 @@ private:
   ppl_dimension_type (*s_d)(void);
   int (*i_e)(void);
   int (*g_l_b)(ppl_dimension_type k, int closed,
-		ppl_Coefficient_t n,
-		ppl_Coefficient_t d);
+	       ppl_Coefficient_t n,
+	       ppl_Coefficient_t d);
   int (*g_u_b)(ppl_dimension_type k, int closed,
-		ppl_Coefficient_t n,
-		ppl_Coefficient_t d);
+	       ppl_Coefficient_t n,
+	       ppl_Coefficient_t d);
 
 public:
   CBuildBox(ppl_dimension_type (*sd)(void),

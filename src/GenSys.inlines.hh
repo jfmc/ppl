@@ -30,34 +30,29 @@ namespace Parma_Polyhedra_Library {
 
 inline
 GenSys::GenSys()
-  : Matrix(NECESSARILY_CLOSED) {
+  : Linear_System(NECESSARILY_CLOSED) {
 }
 
 inline
 GenSys::GenSys(const Generator& g)
-  : Matrix(g.topology()) {
-  Matrix::insert(g);
+  : Linear_System(g.topology()) {
+  Linear_System::insert(g);
 }
 
 inline
 GenSys::GenSys(const GenSys& gs)
-  : Matrix(gs) {
+  : Linear_System(gs) {
 }
 
 inline
 GenSys::GenSys(const Topology topol)
-  : Matrix(topol) {
+  : Linear_System(topol) {
 }
 
 inline
 GenSys::GenSys(const Topology topol,
 	       const dimension_type n_rows, const dimension_type n_columns)
-  : Matrix(topol, n_rows, n_columns) {
-}
-
-inline
-GenSys::GenSys(GenSys& y, const dimension_type first_stolen)
-  : Matrix(y, first_stolen) {
+  : Linear_System(topol, n_rows, n_columns) {
 }
 
 inline
@@ -66,40 +61,33 @@ GenSys::~GenSys() {
 
 inline GenSys&
 GenSys::operator=(const GenSys& y) {
-  Matrix::operator=(y);
+  Linear_System::operator=(y);
   return *this;
 }
 
 inline dimension_type
 GenSys::max_space_dimension() {
-  // Column zero holds the inhomogeneous term.
-  return Matrix::max_num_columns() - 1;
+  return Linear_System::max_space_dimension();
 }
 
 inline dimension_type
 GenSys::space_dimension() const {
-  return Matrix::space_dimension();
+  return Linear_System::space_dimension();
 }
 
 inline void
 GenSys::clear() {
-  Matrix::clear();
+  Linear_System::clear();
 }
 
 inline Generator&
 GenSys::operator[](const dimension_type k) {
-  return static_cast<Generator&>(Matrix::operator[](k));
+  return static_cast<Generator&>(Linear_System::operator[](k));
 }
 
 inline const Generator&
 GenSys::operator[](const dimension_type k) const {
-  return static_cast<const Generator&>(Matrix::operator[](k));
-}
-
-inline
-GenSys::const_iterator::const_iterator(const Matrix::const_iterator& iter,
-				       const GenSys& gsys)
-  : i(iter), gsp(&gsys) {
+  return static_cast<const Generator&>(Linear_System::operator[](k));
 }
 
 inline
@@ -159,9 +147,16 @@ GenSys::const_iterator::operator!=(const const_iterator& y) const {
   return i != y.i;
 }
 
+inline
+GenSys::const_iterator::
+const_iterator(const Linear_System::const_iterator& iter,
+	       const GenSys& gsys)
+  : i(iter), gsp(&gsys) {
+}
+
 inline GenSys::const_iterator
 GenSys::begin() const {
-  const_iterator i(Matrix::begin(), *this);
+  const_iterator i(Linear_System::begin(), *this);
   if (!is_necessarily_closed())
     i.skip_forward();
   return i;
@@ -169,7 +164,7 @@ GenSys::begin() const {
 
 inline GenSys::const_iterator
 GenSys::end() const {
-  const const_iterator i(Matrix::end(), *this);
+  const const_iterator i(Linear_System::end(), *this);
   return i;
 }
 
@@ -181,7 +176,7 @@ GenSys::zero_dim_univ() {
 
 inline void
 GenSys::swap(GenSys& y) {
-  Matrix::swap(y);
+  Linear_System::swap(y);
 }
 
 } // namespace Parma_Polyhedra_Library

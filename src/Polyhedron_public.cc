@@ -107,7 +107,14 @@ PPL::Polyhedron::minimized_constraints() const {
 const PPL::GenSys&
 PPL::Polyhedron::generators() const {
   if (marked_empty()) {
-    assert(gen_sys.num_columns() == 0 && gen_sys.num_rows() == 0);
+    assert(gen_sys.num_rows() == 0);
+    // We want `gen_sys' to have the appropriate space dimension,
+    // even though it is an empty generator system.
+    if (gen_sys.space_dimension() != space_dim) {
+      GenSys gs;
+      gs.adjust_topology_and_space_dimension(topology(), space_dim);
+      const_cast<GenSys&>(gen_sys).swap(gs);
+    }
     return gen_sys;
   }
 
@@ -122,7 +129,14 @@ PPL::Polyhedron::generators() const {
   if ((has_pending_constraints() && !process_pending_constraints())
       || (!generators_are_up_to_date() && !update_generators())) {
     // We have just discovered that `*this' is empty.
-    assert(gen_sys.num_columns() == 0 && gen_sys.num_rows() == 0);
+    assert(gen_sys.num_rows() == 0);
+    // We want `gen_sys' to have the appropriate space dimension,
+    // even though it is an empty generator system.
+    if (gen_sys.space_dimension() != space_dim) {
+      GenSys gs;
+      gs.adjust_topology_and_space_dimension(topology(), space_dim);
+      const_cast<GenSys&>(gen_sys).swap(gs);
+    }
     return gen_sys;
   }
 
@@ -660,9 +674,9 @@ PPL::Polyhedron::OK(bool check_not_empty) const {
       // If the corresponding polyhedral cone is _pointed_, then
       // a minimal system of generators is unique up to positive scaling.
       // We thus verify if the cone is pointed (i.e., there are no lines)
-      // and, after normalizing and sorting a copy of the matrix `gen_sys'
+      // and, after normalizing and sorting a copy of the system `gen_sys'
       // of the polyhedron (we use a copy not to modify the polyhedron's
-      // matrix) and the matrix `copy_of_gen_sys' that has been just
+      // system) and the system `copy_of_gen_sys' that has been just
       // minimized, we check if the two matrices are identical.  If
       // they are different it means that the generators of the
       // polyhedron are declared minimized, but they are not.
@@ -780,13 +794,13 @@ PPL::Polyhedron::OK(bool check_not_empty) const {
 	goto bomb;
       }
 #if !GRAM_SHMIDT
-      // The matrix `copy_of_con_sys' has the form that is obtained
+      // The system `copy_of_con_sys' has the form that is obtained
       // after the functions gauss() and back_substitute().
       // A system of constraints can be minimal even if it does not
       // have this form. So, to verify if the polyhedron is correct,
-      // we copy the matrix `con_sys' in a temporary one that then
+      // we copy the system `con_sys' in a temporary one that then
       // is modified using the functions gauss() and back_substitute().
-      // If the temporary matrix and `copy_of_con_sys' are different,
+      // If the temporary system and `copy_of_con_sys' are different,
       // the polyhedron is not OK.
       copy_of_con_sys.strong_normalize();
       copy_of_con_sys.sort_rows();
@@ -1097,10 +1111,8 @@ PPL::Polyhedron::add_recycled_constraints(ConSys& cs) {
     throw_dimension_incompatible("add_recycled_constraints(cs)", "cs", cs);
 
   // Adding no constraints is a no-op.
-  if (cs.num_rows() == 0) {
-    assert(cs.num_columns() == 0);
+  if (cs.num_rows() == 0)
     return;
-  }
 
   if (space_dim == 0) {
     // In a 0-dimensional space the constraints are
@@ -1136,7 +1148,9 @@ PPL::Polyhedron::add_recycled_constraints(ConSys& cs) {
   const dimension_type old_num_rows = con_sys.num_rows();
   const dimension_type cs_num_rows = cs.num_rows();
   const dimension_type cs_num_columns = cs.num_columns();
-  con_sys.grow(old_num_rows + cs_num_rows, con_sys.num_columns());
+  con_sys.add_zero_rows(cs_num_rows,
+			Linear_Row::Flags(topology(),
+					  Linear_Row::RAY_OR_POINT_OR_INEQUALITY));
   for (dimension_type i = cs_num_rows; i-- > 0; ) {
     // NOTE: we cannot directly swap the rows, since they might have
     // different capacities (besides possibly having different sizes):
@@ -1186,10 +1200,8 @@ PPL::Polyhedron::add_recycled_constraints_and_minimize(ConSys& cs) {
 				 "cs", cs);
 
   // Adding no constraints: just minimize.
-  if (cs.num_rows() == 0) {
-    assert(cs.num_columns() == 0);
+  if (cs.num_rows() == 0)
     return minimize();
-  }
 
   // Dealing with zero-dimensional space polyhedra first.
   if (space_dim == 0) {
@@ -1213,7 +1225,7 @@ PPL::Polyhedron::add_recycled_constraints_and_minimize(ConSys& cs) {
     return false;
   obtain_sorted_constraints_with_sat_c();
 
-  // Fully sort the matrix of constraints to be added
+  // Fully sort the system of constraints to be added
   // (before adjusting dimensions in order to save time).
   if (cs.num_pending_rows() > 0) {
     cs.unset_pending_rows();
@@ -1258,10 +1270,8 @@ PPL::Polyhedron::add_recycled_generators(GenSys& gs) {
     throw_dimension_incompatible("add_recycled_generators(gs)", "gs", gs);
 
   // Adding no generators is a no-op.
-  if (gs.num_rows() == 0) {
-    assert(gs.num_columns() == 0);
+  if (gs.num_rows() == 0)
     return;
-  }
 
   // Adding valid generators to a zero-dimensional polyhedron
   // transform it in the zero-dimensional universe polyhedron.
@@ -1312,7 +1322,9 @@ PPL::Polyhedron::add_recycled_generators(GenSys& gs) {
   const dimension_type old_num_rows = gen_sys.num_rows();
   const dimension_type gs_num_rows = gs.num_rows();
   const dimension_type gs_num_columns = gs.num_columns();
-  gen_sys.grow(old_num_rows + gs_num_rows, gen_sys.num_columns());
+  gen_sys.add_zero_rows(gs_num_rows,
+			Linear_Row::Flags(topology(), 
+					  Linear_Row::RAY_OR_POINT_OR_INEQUALITY));
   for (dimension_type i = gs_num_rows; i-- > 0; ) {
     // NOTE: we cannot directly swap the rows, since they might have
     // different capacities (besides possibly having different sizes):
@@ -1360,10 +1372,8 @@ PPL::Polyhedron::add_recycled_generators_and_minimize(GenSys& gs) {
 				 "gs", gs);
 
   // Adding no generators is equivalent to just requiring minimization.
-  if (gs.num_rows() == 0) {
-    assert(gs.num_columns() == 0);
+  if (gs.num_rows() == 0)
     return minimize();
-  }
 
   // Adding valid generators to a zero-dimensional polyhedron
   // transform it in the zero-dimensional universe polyhedron.
@@ -1796,14 +1806,14 @@ PPL::Polyhedron::affine_image(const Variable var,
   if (space_dim < expr_space_dim)
     throw_dimension_incompatible("affine_image(v, e, d)", "e", expr);
   // `var' should be one of the dimensions of the polyhedron.
-  const dimension_type num_var = var.id() + 1;
-  if (space_dim < num_var)
+  const dimension_type var_space_dim = var.space_dimension();
+  if (space_dim < var_space_dim)
     throw_dimension_incompatible("affine_image(v, e, d)", "v", var);
 
   if (marked_empty())
     return;
 
-  if (num_var <= expr_space_dim && expr[num_var] != 0) {
+  if (var_space_dim <= expr_space_dim && expr[var_space_dim] != 0) {
     // The transformation is invertible:
     // minimality and saturators are preserved, so that
     // pending rows, if present, are correctly handled.
@@ -1811,28 +1821,28 @@ PPL::Polyhedron::affine_image(const Variable var,
       // GenSys::affine_image() requires the third argument
       // to be a positive Integer.
       if (denominator > 0)
-	gen_sys.affine_image(num_var, expr, denominator);
+	gen_sys.affine_image(var_space_dim, expr, denominator);
       else
-	gen_sys.affine_image(num_var, -expr, -denominator);
+	gen_sys.affine_image(var_space_dim, -expr, -denominator);
     }
     if (constraints_are_up_to_date()) {
       // To build the inverse transformation,
       // after copying and negating `expr',
-      // we exchange the roles of `expr[num_var]' and `denominator'.
+      // we exchange the roles of `expr[var_space_dim]' and `denominator'.
       LinExpression inverse;
-      if (expr[num_var] > 0) {
+      if (expr[var_space_dim] > 0) {
 	inverse = -expr;
-	inverse[num_var] = denominator;
-	con_sys.affine_preimage(num_var, inverse, expr[num_var]);
+	inverse[var_space_dim] = denominator;
+	con_sys.affine_preimage(var_space_dim, inverse, expr[var_space_dim]);
       }
       else {
 	// The new denominator is negative:
 	// we negate everything once more, as ConSys::affine_preimage()
 	// requires the third argument to be positive.
 	inverse = expr;
-	inverse[num_var] = denominator;
-	negate(inverse[num_var]);
-	con_sys.affine_preimage(num_var, inverse, -expr[num_var]);
+	inverse[var_space_dim] = denominator;
+	negate(inverse[var_space_dim]);
+	con_sys.affine_preimage(var_space_dim, inverse, -expr[var_space_dim]);
       }
     }
   }
@@ -1847,9 +1857,9 @@ PPL::Polyhedron::affine_image(const Variable var,
       // GenSys::affine_image() requires the third argument
       // to be a positive Integer.
       if (denominator > 0)
-	gen_sys.affine_image(num_var, expr, denominator);
+	gen_sys.affine_image(var_space_dim, expr, denominator);
       else
-	gen_sys.affine_image(num_var, -expr, -denominator);
+	gen_sys.affine_image(var_space_dim, -expr, -denominator);
 
       clear_constraints_up_to_date();
       clear_generators_minimized();
@@ -1877,42 +1887,42 @@ affine_preimage(const Variable var,
   if (space_dim < expr_space_dim)
     throw_dimension_incompatible("affine_preimage(v, e, d)", "e", expr);
   // `var' should be one of the dimensions of the polyhedron.
-  const dimension_type num_var = var.id() + 1;
-  if (space_dim < num_var)
+  const dimension_type var_space_dim = var.space_dimension();
+  if (space_dim < var_space_dim)
     throw_dimension_incompatible("affine_preimage(v, e, d)", "v", var);
 
   if (marked_empty())
     return;
 
-  if (num_var <= expr_space_dim && expr[num_var] != 0) {
+  if (var_space_dim <= expr_space_dim && expr[var_space_dim] != 0) {
     // The transformation is invertible:
     // minimality and saturators are preserved.
     if (constraints_are_up_to_date()) {
       // ConSys::affine_preimage() requires the third argument
       // to be a positive Integer.
       if (denominator > 0)
-	con_sys.affine_preimage(num_var, expr, denominator);
+	con_sys.affine_preimage(var_space_dim, expr, denominator);
       else
-	con_sys.affine_preimage(num_var, -expr, -denominator);
+	con_sys.affine_preimage(var_space_dim, -expr, -denominator);
     }
     if (generators_are_up_to_date()) {
       // To build the inverse transformation,
       // after copying and negating `expr',
-      // we exchange the roles of `expr[num_var]' and `denominator'.
+      // we exchange the roles of `expr[var_space_dim]' and `denominator'.
       LinExpression inverse;
-      if (expr[num_var] > 0) {
+      if (expr[var_space_dim] > 0) {
 	inverse = -expr;
-	inverse[num_var] = denominator;
-	gen_sys.affine_image(num_var, inverse, expr[num_var]);
+	inverse[var_space_dim] = denominator;
+	gen_sys.affine_image(var_space_dim, inverse, expr[var_space_dim]);
       }
       else {
 	// The new denominator is negative:
 	// we negate everything once more, as GenSys::affine_image()
 	// requires the third argument to be positive.
 	inverse = expr;
-	inverse[num_var] = denominator;
-	negate(inverse[num_var]);
-	gen_sys.affine_image(num_var, inverse, -expr[num_var]);
+	inverse[var_space_dim] = denominator;
+	negate(inverse[var_space_dim]);
+	gen_sys.affine_image(var_space_dim, inverse, -expr[var_space_dim]);
       }
     }
   }
@@ -1926,9 +1936,9 @@ affine_preimage(const Variable var,
     // ConSys::affine_preimage() requires the third argument
     // to be a positive Integer.
     if (denominator > 0)
-      con_sys.affine_preimage(num_var, expr, denominator);
+      con_sys.affine_preimage(var_space_dim, expr, denominator);
     else
-      con_sys.affine_preimage(num_var, -expr, -denominator);
+      con_sys.affine_preimage(var_space_dim, -expr, -denominator);
 
     clear_generators_up_to_date();
     clear_constraints_minimized();
@@ -1956,8 +1966,8 @@ generalized_affine_image(const Variable var,
     throw_dimension_incompatible("generalized_affine_image(v, r, e, d)",
 				 "e", expr);
   // `var' should be one of the dimensions of the polyhedron.
-  const dimension_type num_var = var.id() + 1;
-  if (space_dim < num_var)
+  const dimension_type var_space_dim = var.space_dimension();
+  if (space_dim < var_space_dim)
     throw_dimension_incompatible("generalized_affine_image(v, r, e, d)",
 				 "v", var);
 
@@ -2008,9 +2018,9 @@ generalized_affine_image(const Variable var,
 	  // Add a `var'-displaced copy of `g' to the generator system.
 	  gen_sys.add_row(g);
 	  if (relsym == GREATER_THAN)
-	    ++gen_sys[gen_sys.num_rows()-1][num_var];
+	    ++gen_sys[gen_sys.num_rows()-1][var_space_dim];
 	  else
-	    --gen_sys[gen_sys.num_rows()-1][num_var];
+	    --gen_sys[gen_sys.num_rows()-1][var_space_dim];
 	  // Transform `g' into a closure point.
 	  g[eps_index] = 0;
 	}
@@ -2277,7 +2287,7 @@ PPL::Polyhedron::time_elapse_assign(const Polyhedron& y) {
     x.set_generators_pending();
   }
   // Otherwise, the two systems are merged.
-  // `Matrix::merge_row_assign()' requires both matrices to be ordered.
+  // `Linear_System::merge_rows_assign()' requires both systems to be sorted.
   else {
     if (!x.gen_sys.is_sorted())
       x.gen_sys.sort_rows();

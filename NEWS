@@ -10,6 +10,8 @@ NEWS for version 0.7  (released date to be decided)
 New and Changed Features
 ========================
 
+o  We now require GMP 4.1.3 or higher.
+
 o  Significant efficiency improvements have been achieved in the case
    of closed polyhedra.
 
@@ -44,10 +46,24 @@ o  The constructor C_Polyhedron(const NNC_Polyhedron& y) no longer
    it constructs a C_Polyhedron representing the topological closure
    of `y'.
 
+o  The following constructors have been made explicit:
+
+     ConSys::ConSys(const Constraint& c),
+     GenSys::GenSys(const Generator& g),
+     C_Polyhedron::C_Polyhedron(const ConSys& cs),
+     C_Polyhedron::C_Polyhedron(const GenSys& cs),
+     C_Polyhedron::C_Polyhedron(ConSys& cs),
+     C_Polyhedron::C_Polyhedron(GenSys& cs),
+     NNC_Polyhedron::NNC_Polyhedron(const ConSys& cs),
+     NNC_Polyhedron::NNC_Polyhedron(const GenSys& cs),
+     NNC_Polyhedron::NNC_Polyhedron(ConSys& cs),
+     NNC_Polyhedron::NNC_Polyhedron(GenSys& cs).
+
 o  Functions in the C interface that compute (space) dimensions
    no longer return their result.  The caller is now required to pass,
    as an extra argument, a pointer to a memory area where the result
-   will be written.
+   will be written.  All the C interface functions now use the return
+   value to signal the success or failure of the requested operation.
 
 o  Now `make check' runs a number of tests with `ppl_lcdd', comparing
    the results to expected ones.
@@ -63,11 +79,24 @@ o  The enumeration values of enum Complexity_Class have been renamed
 Bugfixes
 ========
 
+o  Fixed a bug that was causing an unwanted exception to be thrown
+   when adding to a C_Polyhedron some generators obtained from an
+   NNC_Polyhedron (even though no closure point was being added).
+
+o  Fixed a bug in the handling of empty generator systems having
+   a strictly positive space dimension.
+
 o  Fixed a bug that was affecting Polyhedra_PowerSet::geometrically_covers()
    and Polyhedra_PowerSet::geometrically_equals().
 
+o  Method C_Polyhedron::H79_widening_assign() now widens the polyhedron
+   itself instead of the homogenized polyhedral cone representing it.
+
 o  Fixed a bug that was affecting Polyhedron::H79_widening_assign()
    as well as all the limited and bounded extrapolation operators.
+
+o  Fixed a bug in the C interface function
+   ppl_new_LinExpression_with_dimension().
 
 o  Fixed a bug in the `ppl_lpsol' demo.
 

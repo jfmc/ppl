@@ -25,8 +25,35 @@ site: http://www.cs.unipr.it/ppl/ . */
 #define PPL_globals_inlines_hh 1
 
 #include "Integer.defs.hh"
+#include <limits>
+#include <cassert>
 
 namespace Parma_Polyhedra_Library {
+
+inline dimension_type
+not_a_dimension() {
+  return std::numeric_limits<dimension_type>::max();
+}
+
+inline void
+maybe_abandon() {
+  if (const Throwable* p = abandon_expensive_computations)
+    p->throw_me();
+}
+
+inline dimension_type
+compute_capacity(const dimension_type requested_size,
+		 const dimension_type maximum_size) {
+  assert(requested_size <= maximum_size);
+  // Speculation factor 2.
+  return (requested_size < maximum_size / 2)
+    ? 2*(requested_size + 1)
+    : maximum_size;
+  // Speculation factor 1.5.
+  // return (maximum_size - requested_size > requested_size/2)
+  //   ? requested_size + requested_size/2 + 1
+  //   : maximum_size;
+}
 
 inline void
 normalize2(const Integer& x, const Integer& y, Integer& nx, Integer& ny) {
@@ -34,6 +61,13 @@ normalize2(const Integer& x, const Integer& y, Integer& nx, Integer& ny) {
   gcd_assign(gcd, x, y);
   exact_div_assign(nx, x, gcd);
   exact_div_assign(ny, y, gcd);
+}
+
+template <typename T>
+inline T
+low_bits_mask(unsigned n) {
+  assert(n < unsigned(std::numeric_limits<T>::digits));
+  return n == 0 ? 0 : ~(~(T(0u)) << n);
 }
 
 } // namespace Parma_Polyhedra_Library

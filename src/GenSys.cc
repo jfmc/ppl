@@ -37,38 +37,98 @@ namespace PPL = Parma_Polyhedra_Library;
 
 bool
 PPL::GenSys::
-adjust_topology_and_space_dimension(Topology new_topology,
-				    dimension_type new_space_dim) {
+adjust_topology_and_space_dimension(const Topology new_topology,
+				    const dimension_type new_space_dim) {
   assert(space_dimension() <= new_space_dim);
 
+  const dimension_type old_space_dim = space_dimension();
+  const Topology old_topology = topology();
+  dimension_type cols_to_be_added = new_space_dim - old_space_dim;
+
+  // Dealing with empty constraint systems first.
   if (num_rows() == 0) {
-    if (topology() != new_topology)
-      if (is_necessarily_closed())
-	set_not_necessarily_closed();
-      else
+    if (num_columns() == 0)
+      if (new_topology == NECESSARILY_CLOSED) {
+	add_zero_columns(++cols_to_be_added);
 	set_necessarily_closed();
+      }
+      else {
+	cols_to_be_added += 2;
+	add_zero_columns(cols_to_be_added);
+	set_not_necessarily_closed();
+      }
+    else
+      // Here `num_columns() > 0'.
+      if (old_topology != new_topology)
+	if (new_topology == NECESSARILY_CLOSED) {
+	  switch (cols_to_be_added) {
+	  case 0:
+	    remove_trailing_columns(1);
+	    break;
+	  case 1:
+	    // Nothing to do.
+	    break;
+	  default:
+	    add_zero_columns(--cols_to_be_added);
+	  }
+	  set_necessarily_closed();
+	}
+	else {
+	  // Here old_topology == NECESSARILY_CLOSED
+	  //  and new_topology == NOT_NECESSARILY_CLOSED.
+	  add_zero_columns(++cols_to_be_added);
+	  set_not_necessarily_closed();
+	}
+      else {
+	// Here topologies agree.
+	if (cols_to_be_added > 0)
+	  add_zero_columns(cols_to_be_added);
+      }
     assert(OK());
     return true;
   }
 
   // Here `num_rows() > 0'.
-  const dimension_type old_space_dim = space_dimension();
-  const Topology old_topology = topology();
-  dimension_type cols_to_be_added = new_space_dim - old_space_dim;
-
   if (cols_to_be_added > 0)
     if (old_topology != new_topology)
       if (new_topology == NECESSARILY_CLOSED) {
 	// A NOT_NECESSARILY_CLOSED generator system
 	// can be converted to a NECESSARILY_CLOSED one
 	// only if it does not contain closure points.
+	// This check has to be performed under the user viewpoint.
 	if (has_closure_points())
 	  return false;
-	// Remove the epsilon column and, after that,
+	// For a correct implementation, we have to remove those
+	// closure points that were matching a point (i.e., those
+	// that are in the generator system, but are invisible to
+	// the user).
+	GenSys& gs = *this;
+	dimension_type num_closure_points = 0;
+	dimension_type gs_end = gs.num_rows();
+	for (dimension_type i = 0; i < gs_end; ) {
+	  // All the closure points seen so far have consecutive
+	  // indices starting from `i'.
+	  if (num_closure_points > 0)
+	    // Let next generator have index `i'.
+	    std::swap(gs[i], gs[i+num_closure_points]);
+	  if (gs[i].is_closure_point()) {
+	    ++num_closure_points;
+	    --gs_end;
+	  }
+	  else
+	    ++i;
+	}
+	// We may have identified some closure points.
+	if (num_closure_points > 0) {
+	  assert(num_closure_points == num_rows() - gs_end);
+	  erase_to_end(gs_end);
+	}
+	// Remove the epsilon column, re-normalize and, after that,
 	// add the missing dimensions. This ensures that
 	// non-zero epsilon coefficients will be cleared.
-	remove_columns(old_space_dim + 1);
+	remove_trailing_columns(1);
 	set_necessarily_closed();
+	normalize();
 	add_zero_columns(cols_to_be_added);
       }
       else {
@@ -101,7 +161,7 @@ adjust_topology_and_space_dimension(Topology new_topology,
 	if (has_closure_points())
 	  return false;
 	// We just remove the column of the epsilon coefficients.
-	remove_columns(old_space_dim + 1);
+	remove_trailing_columns(1);
 	set_necessarily_closed();
       }
       else {
@@ -172,13 +232,11 @@ PPL::GenSys::add_corresponding_points() {
 
 bool
 PPL::GenSys::has_closure_points() const {
-  // Avoiding the repeated tests on topology.
   if (is_necessarily_closed())
     return false;
-  const GenSys& gs = *this;
-  const dimension_type eps_index = gs.num_columns() - 1;
-  for (dimension_type i = num_rows(); i-- > 0; )
-    if (gs[i][0] != 0 && gs[i][eps_index] == 0)
+  // Adopt the point of view of the user.
+  for (GenSys::const_iterator i = begin(), iend = end(); i != iend; ++i)
+    if (i->is_closure_point())
       return true;
   return false;
 }
@@ -204,9 +262,9 @@ PPL::GenSys::has_points() const {
 
 void
 PPL::GenSys::const_iterator::skip_forward() {
-  const Matrix::const_iterator gsp_end = gsp->end();
+  const Linear_System::const_iterator gsp_end = gsp->end();
   if (i != gsp_end) {
-    Matrix::const_iterator i_next = i;
+    Linear_System::const_iterator i_next = i;
     ++i_next;
     if (i_next != gsp_end) {
       const Generator& cp = static_cast<const Generator&>(*i);
@@ -225,7 +283,7 @@ PPL::GenSys::insert(const Generator& g) {
   // and that the new row is not a pending generator.
   assert(num_pending_rows() == 0);
   if (topology() == g.topology())
-    Matrix::insert(g);
+    Linear_System::insert(g);
   else
     // `*this' and `g' have different topologies.
     if (is_necessarily_closed()) {
@@ -245,7 +303,7 @@ PPL::GenSys::insert(const Generator& g) {
       }
       set_not_necessarily_closed();
       // Inserting the new generator.
-      Matrix::insert(g);
+      Linear_System::insert(g);
     }
     else {
       // The generator system is NOT necessarily closed:
@@ -261,14 +319,14 @@ PPL::GenSys::insert(const Generator& g) {
 	tmp_g[new_size - 1] = tmp_g[0];
       tmp_g.set_not_necessarily_closed();
       // Inserting the new generator.
-      Matrix::insert(tmp_g);
+      Linear_System::insert(tmp_g);
     }
 }
 
 void
 PPL::GenSys::insert_pending(const Generator& g) {
   if (topology() == g.topology())
-    Matrix::insert_pending(g);
+    Linear_System::insert_pending(g);
   else
     // `*this' and `g' have different topologies.
     if (is_necessarily_closed()) {
@@ -288,7 +346,7 @@ PPL::GenSys::insert_pending(const Generator& g) {
       }
       set_not_necessarily_closed();
       // Inserting the new generator.
-      Matrix::insert_pending(g);
+      Linear_System::insert_pending(g);
     }
     else {
       // The generator system is NOT necessarily closed:
@@ -304,7 +362,7 @@ PPL::GenSys::insert_pending(const Generator& g) {
 	tmp_g[new_size - 1] = tmp_g[0];
       tmp_g.set_not_necessarily_closed();
       // Inserting the new generator.
-      Matrix::insert_pending(tmp_g);
+      Linear_System::insert_pending(tmp_g);
     }
 }
 
@@ -315,7 +373,7 @@ PPL::GenSys::num_lines() const {
   assert(num_pending_rows() == 0);
   const GenSys& gs = *this;
   dimension_type n = 0;
-  // If the Matrix happens to be sorted, take advantage of the fact
+  // If the Linear_System happens to be sorted, take advantage of the fact
   // that lines are at the top of the system.
   if (is_sorted()) {
     dimension_type nrows = num_rows();
@@ -336,7 +394,7 @@ PPL::GenSys::num_rays() const {
   assert(num_pending_rows() == 0);
   const GenSys& gs = *this;
   dimension_type n = 0;
-  // If the Matrix happens to be sorted, take advantage of the fact
+  // If the Linear_System happens to be sorted, take advantage of the fact
   // that rays and points are at the bottom of the system and
   // rays have the inhomogeneous term equal to zero.
   if (is_sorted()) {
@@ -665,7 +723,7 @@ PPL::GenSys::satisfied_by_all_generators(const Constraint& c) const {
   // Setting `sp_fp' to the appropriate scalar product operator.
   // This also avoids problems when having _legal_ topology mismatches
   // (which could also cause a mismatch in the number of columns).
-  int (*sps_fp)(const Row&, const Row&);
+  int (*sps_fp)(const Linear_Row&, const Linear_Row&);
   if (c.is_necessarily_closed())
     sps_fp = PPL::scalar_product_sign;
   else
@@ -769,14 +827,22 @@ PPL::GenSys::affine_image(dimension_type v,
 
 void
 PPL::GenSys::ascii_dump(std::ostream& s) const {
-  Matrix::ascii_dump(s);
-  const char separator = ' ';
   const GenSys& x = *this;
+  dimension_type x_num_rows = x.num_rows();
+  dimension_type x_num_columns = x.num_columns();
+  s << "topology " << (is_necessarily_closed()
+		       ? "NECESSARILY_CLOSED"
+		       : "NOT_NECESSARILY_CLOSED")
+    << std::endl
+    << x_num_rows << " x " << x_num_columns << ' '
+    << (x.is_sorted() ? "(sorted)" : "(not_sorted)")
+    << std::endl
+    << "index_first_pending " << x.first_pending_row()
+    << std::endl;
   for (dimension_type i = 0; i < x.num_rows(); ++i) {
     for (dimension_type j = 0; j < x.num_columns(); ++j)
-      s << x[i][j] << separator;
-    s << separator << separator;
-    switch (static_cast<Generator>(x[i]).type()) {
+      s << x[i][j] << ' ';
+    switch (x[i].type()) {
     case Generator::LINE:
       s << "L";
       break;
@@ -796,8 +862,38 @@ PPL::GenSys::ascii_dump(std::ostream& s) const {
 
 bool
 PPL::GenSys::ascii_load(std::istream& s) {
-  if (!Matrix::ascii_load(s))
+  std::string str;
+  if (!(s >> str) || str != "topology")
     return false;
+  if (!(s >> str))
+    return false;
+  if (str == "NECESSARILY_CLOSED")
+    set_necessarily_closed();
+  else {
+    if (str != "NOT_NECESSARILY_CLOSED")
+      return false;
+    set_not_necessarily_closed();
+  }
+
+  dimension_type nrows;
+  dimension_type ncols;
+  if (!(s >> nrows))
+    return false;
+  if (!(s >> str))
+    return false;
+  if (!(s >> ncols))
+      return false;
+  resize_no_copy(nrows, ncols);
+
+  if (!(s >> str) || (str != "(sorted)" && str != "(not_sorted)"))
+    return false;
+  set_sorted(str == "(sorted)");
+  dimension_type index;
+  if (!(s >> str) || str != "index_first_pending")
+    return false;
+  if (!(s >> index))
+    return false;
+  set_index_first_pending_row(index);
 
   GenSys& x = *this;
   for (dimension_type i = 0; i < x.num_rows(); ++i) {
@@ -814,7 +910,7 @@ PPL::GenSys::ascii_load(std::istream& s) {
       x[i].set_is_ray_or_point();
 
     // Checking for equality of actual and declared types.
-    switch (static_cast<Generator>(x[i]).type()) {
+    switch (x[i].type()) {
     case Generator::LINE:
       if (str == "L")
 	continue;
@@ -900,10 +996,10 @@ PPL::GenSys::remove_invalid_lines_and_rays() {
 
 bool
 PPL::GenSys::OK() const {
-  // A GenSys must be a valid Matrix; do not check for
+  // A GenSys must be a valid Linear_System; do not check for
   // strong normalization, since this will be done when
   // checking each individual generator.
-  if (!Matrix::OK(false))
+  if (!Linear_System::OK(false))
     return false;
 
   // Checking each generator in the system.

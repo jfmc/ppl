@@ -56,6 +56,20 @@ ppl_gprolog$(EXEEXT): libppl_gprolog.la ppl_gprolog.pl
 		$(srcdir)/ppl_gprolog.pl .libs/libppl_gprolog.a \
 		-L '-L$(top_builddir)/src/.libs -lppl -L$(top_builddir)/Watchdog/.libs -lpwl -lgmpxx -lgmp'
 
+# Notice: we are linking with libppl_gprolog.a statically.
+# This is a kludge until we understand whether and if libtool
+# and gplc can interoperate.
+gp_clpq: libppl_gprolog.la ppl_gprolog.pl gp_clpq.pl ../tests/clpq.pl
+	gplc --c-compiler $(CC) -o $@ \
+		$(srcdir)/ppl_gprolog.pl $(srcdir)/gp_clpq.pl \
+		$(srcdir)/../tests/clpq.pl .libs/libppl_gprolog.a \
+		-L '-L$(top_builddir)/src/.libs -lppl -L$(top_builddir)/Watchdog/.libs -lpwl -lgmpxx -lgmp'
+gp_clpq2: libppl_gprolog.la ppl_gprolog.pl gp_clpq.pl ../tests/clpq2.pl
+	gplc --c-compiler $(CC) -o $@ \
+		$(srcdir)/ppl_gprolog.pl $(srcdir)/gp_clpq.pl \
+		$(srcdir)/../tests/clpq2.pl .libs/libppl_gprolog.a \
+		-L '-L$(top_builddir)/src/.libs -lppl -L$(top_builddir)/Watchdog/.libs -lpwl -lgmpxx -lgmp'
+
 CLPQ_TESTS_NONSTRICT = \
 ack.clpq \
 ackn.clpq \
@@ -70,40 +84,54 @@ schedule.clpq
 
 CLPQ_TESTS = $(CLPQ_TESTS_NONSTRICT) $(CLPQ_TESTS_STRICT)
 
-# Notice: we are linking with libppl_gprolog.a statically.
-# This is a kludge until we understand whether and if libtool
-# and gplc can interoperate.
-gp_clpq: libppl_gprolog.la ppl_gprolog.pl gp_clpq.pl ../clpq.pl
-	gplc --c-compiler $(CC) -o $@ \
-		$(srcdir)/ppl_gprolog.pl $(srcdir)/gp_clpq.pl \
-		$(srcdir)/../clpq.pl .libs/libppl_gprolog.a \
-		-L '-L$(top_builddir)/src/.libs -lppl -L$(top_builddir)/Watchdog/.libs -lpwl -lgmpxx -lgmp'
-gp_clpq2: libppl_gprolog.la ppl_gprolog.pl gp_clpq.pl ../clpq2.pl
-	gplc --c-compiler $(CC) -o $@ \
-		$(srcdir)/ppl_gprolog.pl $(srcdir)/gp_clpq.pl \
-		$(srcdir)/../clpq2.pl .libs/libppl_gprolog.a \
-		-L '-L$(top_builddir)/src/.libs -lppl -L$(top_builddir)/Watchdog/.libs -lpwl -lgmpxx -lgmp'
+CHECK_SCRIPT= $(srcdir)/../tests/check_script
 
-check-local: gp_clpq ../check_script ../expected gp_clpq2 ../check_script2 ../expected2 ../pl_check.pl ../expected3
-	for k in $(CLPQ_TESTS); do cp -f $(srcdir)/../$$k .; done
+if USE_INT8
+
+CHECK_SCRIPT2 = $(srcdir)/../tests/check_script2_int8
+
+else !USE_INT8
+
+CHECK_SCRIPT2 = $(srcdir)/../tests/check_script2
+
+endif !USE_INT8
+
+COEFFICIENT_MNEMONIC = @coefficient_mnemonic@
+
+if ASSERTIONS_ENABLED
+
+EXPECTED = $(srcdir)/../tests/expected_$(COEFFICIENT_MNEMONIC)_a
+EXPECTED2 = $(srcdir)/../tests/expected2_$(COEFFICIENT_MNEMONIC)_a
+EXPECTED3 = $(srcdir)/../tests/expected3_$(COEFFICIENT_MNEMONIC)_a
+
+else !ASSERTIONS_ENABLED
+
+EXPECTED = $(srcdir)/../tests/expected_$(COEFFICIENT_MNEMONIC)
+EXPECTED2 = $(srcdir)/../tests/expected2_$(COEFFICIENT_MNEMONIC)
+EXPECTED3 = $(srcdir)/../tests/expected3_$(COEFFICIENT_MNEMONIC)
+
+endif !ASSERTIONS_ENABLED
+
+check-local: gp_clpq ../tests/check_script $(EXPECTED) gp_clpq2 ../tests/check_script2 $(EXPECTED2) ../tests/pl_check.pl $(EXPECTED3)
+	for k in $(CLPQ_TESTS); do cp -f $(srcdir)/../tests/$$k .; done
 	$(LIBTOOL) --mode=execute \
 		-dlopen ../../../src/libppl.la \
 		-dlopen ../../../Watchdog/libpwl.la \
-		./gp_clpq <$(srcdir)/../check_script >obtained
-	diff -q --ignore-all-space $(srcdir)/../expected obtained
+		./gp_clpq <$(CHECK_SCRIPT) >obtained
+	diff -q --ignore-all-space $(EXPECTED) obtained
 	$(LIBTOOL) --mode=execute \
 		-dlopen ../../../src/libppl.la \
 		-dlopen ../../../Watchdog/libpwl.la \
-		./gp_clpq2 <$(srcdir)/../check_script2 >obtained2
-	diff -q --ignore-all-space $(srcdir)/../expected2 obtained2
-	echo "['$(srcdir)/../pl_check.pl', '$(srcdir)/gnu_pl_check.pl']." \
+		./gp_clpq2 <$(CHECK_SCRIPT2) >obtained2
+	diff -q --ignore-all-space $(EXPECTED2) obtained2
+	echo "['$(srcdir)/../tests/pl_check.pl', '$(srcdir)/gnu_pl_check.pl']." \
 		>check_script3
 	echo "main." >>check_script3
 	$(LIBTOOL) --mode=execute \
 		-dlopen ../../../src/libppl.la \
 		-dlopen ../../../Watchdog/libpwl.la \
 		./ppl_gprolog <check_script3
-	diff -q --ignore-all-space $(srcdir)/../expected3 obtained3
+	diff -q --ignore-all-space $(EXPECTED3) obtained3
 
 MOSTLYCLEANFILES = \
 gp_clpq gp_clpq2 \

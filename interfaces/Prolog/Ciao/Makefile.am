@@ -58,20 +58,20 @@ ppl_ciao.po: ppl_ciao.pl
 	  rm -f ppl_ciao.pl; \
 	fi
 
-ciao_clpq: libppl_ciao.la ppl_ciao.pl ciao_clpq.pl ../clpq.pl
+ciao_clpq: libppl_ciao.la ppl_ciao.pl ciao_clpq.pl ../tests/clpq.pl
 	if [ $(abs_srcdir) != `pwd` ]; then \
-	  cp -f $(srcdir)/../clpq.pl ..; \
+	  cp -f $(srcdir)/../tests/clpq.pl ..; \
 	  cp -f $(srcdir)/ciao_clpq.pl $(srcdir)/ppl_ciao.pl .; \
 	fi
 	ciaoc -o $@ ciao_clpq.pl
 	if [ $(abs_srcdir) != `pwd` ]; then \
-	  rm -f ciao_clpq.pl ppl_ciao.pl clpq.pl; \
-	  rm -f ../clpq.pl; \
+	  rm -f ciao_clpq.pl ppl_ciao.pl; \
+	  rm -f ../tests/clpq.pl; \
 	fi
 
-ciao_clpq2: libppl_ciao.la ppl_ciao.pl ciao_clpq.pl ../clpq2.pl
+ciao_clpq2: libppl_ciao.la ppl_ciao.pl ciao_clpq.pl ../tests/clpq2.pl
 	if [ $(abs_srcdir) != `pwd` ]; then \
-	  cp -f $(srcdir)/../clpq2.pl ..; \
+	  cp -f $(srcdir)/../tests/clpq2.pl ..; \
 	  cp -f $(srcdir)/ciao_clpq2.pl $(srcdir)/ppl_ciao.pl .; \
 	fi
 	ciaoc -o $@ ciao_clpq2.pl
@@ -80,9 +80,9 @@ ciao_clpq2: libppl_ciao.la ppl_ciao.pl ciao_clpq.pl ../clpq2.pl
 	  rm -f ../clpq2.pl; \
 	fi
 
-ciao_pl_check: libppl_ciao.la ppl_ciao.pl ciao_pl_check.pl ../pl_check.pl
+ciao_pl_check: libppl_ciao.la ppl_ciao.pl ciao_pl_check.pl ../tests/pl_check.pl
 	if [ $(abs_srcdir) != `pwd` ]; then \
-	  cp -f $(srcdir)/../pl_check.pl ..; \
+	  cp -f $(srcdir)/../tests/pl_check.pl ..; \
 	  cp -f $(srcdir)/ciao_pl_check.pl $(srcdir)/ppl_ciao.pl .; \
 	fi
 	ciaoc -o $@ ciao_pl_check.pl
@@ -105,30 +105,46 @@ schedule.clpq
 
 CLPQ_TESTS = $(CLPQ_TESTS_NONSTRICT) $(CLPQ_TESTS_STRICT)
 
-check-local: ciao_clpq$(EXEEXT) ../check_script ../expected ciao_clpq2$(EXEEXT) ../check_script2 ../expected2 ciao_pl_check$(EXEEXT) ../expected3
-	for k in $(CLPQ_TESTS); do cp -f $(srcdir)/../$$k .; done
+COEFFICIENT_MNEMONIC = @coefficient_mnemonic@
+
+if ASSERTIONS_ENABLED
+
+EXPECTED = $(srcdir)/../tests/expected_$(COEFFICIENT_MNEMONIC)_a
+EXPECTED2 = $(srcdir)/../tests/expected2_$(COEFFICIENT_MNEMONIC)_a
+EXPECTED3 = $(srcdir)/../tests/expected3_$(COEFFICIENT_MNEMONIC)_a
+
+else !ASSERTIONS_ENABLED
+
+EXPECTED = $(srcdir)/../tests/expected_$(COEFFICIENT_MNEMONIC)
+EXPECTED2 = $(srcdir)/../tests/expected2_$(COEFFICIENT_MNEMONIC)
+EXPECTED3 = $(srcdir)/../tests/expected3_$(COEFFICIENT_MNEMONIC)
+
+endif !ASSERTIONS_ENABLED
+
+check-local: ciao_clpq$(EXEEXT) ../tests/check_script $(EXPECTED) ciao_clpq2$(EXEEXT) ../tests/check_script2 $(EXPECTED2) ciao_pl_check$(EXEEXT) $(EXPECTED3)
+	for k in $(CLPQ_TESTS); do cp -f $(srcdir)/../tests/$$k .; done
 	GLOBALSTKSIZE=1000000 \
 	$(LIBTOOL) --mode=execute \
 		-dlopen ../../../src/libppl.la \
 		-dlopen ../../../Watchdog/libpwl.la \
 		-dlopen libppl_ciao.la \
 		ciao_clpq \
-			<$(srcdir)/../check_script >obtained
-	diff -q --ignore-all-space $(srcdir)/../expected obtained
+			<$(srcdir)/../tests/check_script >obtained
+	diff -q --ignore-all-space $(EXPECTED) obtained
 	$(LIBTOOL) --mode=execute \
 		-dlopen ../../../src/libppl.la \
 		-dlopen ../../../Watchdog/libpwl.la \
 		-dlopen libppl_ciao.la \
 		ciao_clpq2 \
-			<$(srcdir)/../check_script2 >obtained2
-	diff -q --ignore-all-space $(srcdir)/../expected2 obtained2
+			<$(srcdir)/../tests/check_script2 >obtained2
+	diff -q --ignore-all-space $(EXPECTED2) obtained2
 	$(LIBTOOL) --mode=execute \
 		-dlopen ../../../src/libppl.la \
 		-dlopen ../../../Watchdog/libpwl.la \
 		-dlopen libppl_ciao.la \
 		ciao_pl_check \
 			 >obtained3
-	diff -q --ignore-all-space $(srcdir)/../expected3 obtained3
+	diff -q --ignore-all-space $(EXPECTED3) obtained3
 
 MOSTLYCLEANFILES = \
 *.itf *.po *.c *.so \

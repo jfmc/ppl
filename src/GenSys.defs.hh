@@ -26,7 +26,7 @@ site: http://www.cs.unipr.it/ppl/ . */
 
 #include "LinExpression.types.hh"
 #include "GenSys.types.hh"
-#include "Matrix.defs.hh"
+#include "Linear_System.defs.hh"
 #include "Generator.types.hh"
 #include "Constraint.types.hh"
 #include "Polyhedron.types.hh"
@@ -179,13 +179,13 @@ void swap(Parma_Polyhedra_Library::GenSys& x,
     will be available, where original generators may have been
     reordered, removed (if they are duplicate or redundant), etc.
 */
-class Parma_Polyhedra_Library::GenSys : private Matrix {
+class Parma_Polyhedra_Library::GenSys : private Linear_System {
 public:
   //! Default constructor: builds an empty system of generators.
   GenSys();
 
   //! Builds the singleton system containing only generator \p g.
-  GenSys(const Generator& g);
+  explicit GenSys(const Generator& g);
 
   //! Ordinary copy-constructor.
   GenSys(const GenSys& gs);
@@ -282,14 +282,14 @@ public:
   private:
     friend class GenSys;
 
-    //! The const iterator over the matrix of generators.
-    Parma_Polyhedra_Library::Matrix::const_iterator i;
+    //! The const iterator over the Linear_System.
+    Linear_System::const_iterator i;
 
-    //! A const pointer to the matrix of generators.
-    const Parma_Polyhedra_Library::Matrix* gsp;
+    //! A const pointer to the Linear_System.
+    const Linear_System* gsp;
 
     //! Constructor.
-    const_iterator(const Parma_Polyhedra_Library::Matrix::const_iterator& iter,
+    const_iterator(const Linear_System::const_iterator& iter,
 		   const GenSys& gsys);
 
     //! \brief
@@ -309,9 +309,8 @@ public:
 
   //! Checks if all the invariants are satisfied.
   /*!
-    Returns <CODE>true</CODE> if and only if \p *this is a valid system
-    of generators. Namely, \p *this must be a valid Matrix and every
-    row in the matrix must be a valid Generator.
+    Returns <CODE>true</CODE> if and only if \p *this is a valid
+    Linear_System and each row in the system is a valid Generator.
   */
   bool OK() const;
 
@@ -320,11 +319,6 @@ public:
   //! \brief
   //! Writes to \p s an ASCII representation of the internal
   //! representation of \p *this.
-  /*!
-    After invoking the <CODE>Matrix::ascii_dump()</CODE> method,
-    prints the contents of each row, specifying the type
-    of the encoded generator.
-  */
 #endif // PPL_DOXYGEN_INCLUDE_IMPLEMENTATION_DETAILS
   void ascii_dump(std::ostream& s) const;
 
@@ -353,27 +347,13 @@ private:
 			Parma_Polyhedra_Library::GenSys& y);
 
   //! Builds an empty system of generators having the specified topology.
-  GenSys(Topology topol);
+  explicit GenSys(Topology topol);
 
   //! \brief
   //! Builds a system of \p n_rows rays/points on a \p n_columns - 1
   //! dimensional space (including the \f$\epsilon\f$ dimension, if
   //! \p topol is <CODE>NOT_NECESSARILY_CLOSED</CODE>).
   GenSys(Topology topol, dimension_type n_rows, dimension_type n_columns);
-
-  //! \brief
-  //! Split-constructor: builds a system by stealing from \p y
-  //! the generators having index greater or equal to \p first_stolen.
-  /*!
-    \param y
-    The generator system being split. On entry, it is assumed that
-    \p y has \p first_stolen + 1 generators at least. On exit, it will
-    have \p first_stolen generators;
-
-    \param first_stolen
-    The index where \p y is split.
-  */
-  GenSys(GenSys& y, dimension_type first_stolen);
 
   //! Swaps \p *this with \p y.
   void swap(GenSys& y);
@@ -414,6 +394,13 @@ private:
   //! \brief
   //! Returns <CODE>true</CODE> if and only if \p *this
   //! contains one or more closure points.
+  /*!
+    Note: the check for the presence of closure points is
+    done under the point of view of the user. Namely, we scan
+    the generator system using high-level iterators, so that
+    closure points that are matching the corresponding points
+    will be disregarded.
+  */
   bool has_closure_points() const;
 
   //! Returns the \p k- th generator of the system.

@@ -56,6 +56,10 @@ bool less(Variable v, Variable w);
   Each variable is identified by a non-negative integer,
   representing the index of the corresponding Cartesian axis
   (the first axis has index 0).
+  The space dimension of a variable is the dimension of the vector space
+  made by all the Cartesian axes having an index less than or equal to
+  that of the considered variable; thus, if a variable has index \f$i\f$,
+  its space dimension is \f$i+1\f$.
 
   Note that the ``meaning'' of an object of the class Variable
   is completely specified by the integer index provided to its
@@ -78,10 +82,24 @@ class Parma_Polyhedra_Library::Variable {
 
 public:
   //! Builds the variable corresponding to the Cartesian axis of index \p i.
+  /*!
+    \exception std::length_error
+    Thrown if the <CODE>i+1</CODE> exceeds
+    <CODE>Variable::max_space_dimension()</CODE>.
+  */
   explicit Variable(dimension_type i);
 
   //! Returns the index of the Cartesian axis associated to the variable.
   dimension_type id() const;
+
+  //! Returns the maximum space dimension a Variable can handle.
+  static dimension_type max_space_dimension();
+
+  //! Returns the dimension of the vector space enclosing \p *this.
+  /*!
+    The returned value is <CODE>id()+1</CODE>.
+  */
+  dimension_type space_dimension() const;
 
   //! Type of output functions.
   typedef void output_function_type(std::ostream& s, const Variable& v);
