@@ -63,6 +63,8 @@ public:
   // Destructor
   ~NNC_Polyhedron();
 
+  void limited_widening_assign(const NNC_Polyhedron& y, ConSys& cs);  
+
 };
 
 #include "NNC_Polyhedron.inlines.hh"

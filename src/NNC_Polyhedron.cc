@@ -24,5 +24,20 @@ site: http://www.cs.unipr.it/ppl/ . */
 #include <config.h>
 
 #include "NNC_Polyhedron.defs.hh"
+#include "Polyhedron.defs.hh"
 
 namespace PPL = Parma_Polyhedra_Library;
+
+void
+PPL::NNC_Polyhedron::limited_widening_assign(const NNC_Polyhedron& y,
+					     ConSys& cs) {
+  // KLUDGE.
+  NNC_Polyhedron& x = *this;
+  ConSys x_cs = x.constraints();
+  ConSys y_cs = y.constraints();
+  Polyhedron nc_x(x_cs);
+  Polyhedron nc_y(y_cs);
+  nc_x.limited_widening_assign(nc_y, cs);
+  x_cs = nc_x.constraints();
+  x = NNC_Polyhedron(x_cs);
+}
