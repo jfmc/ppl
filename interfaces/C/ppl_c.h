@@ -207,7 +207,7 @@ ppl_Coefficient_to_mpz_t __P((ppl_const_Coefficient_t c, mpz_t z));
 
 /*! \brief
   Returns a positive integer if \p c is well formed, i.e., if it
-  satisfies all its implementation variant; returns 0 and perhaps
+  satisfies all its implementation invariants; returns 0 and perhaps
   make some noise if \p c is broken.  Useful for debugging purposes.
 */
 int
@@ -337,7 +337,7 @@ ppl_LinExpression_inhomogeneous_term __P((ppl_const_LinExpression_t le,
 
 /*! \brief
   Returns a positive integer if \p le is well formed, i.e., if it
-  satisfies all its implementation variant; returns 0 and perhaps
+  satisfies all its implementation invariants; returns 0 and perhaps
   make some noise if \p le is broken.  Useful for debugging purposes.
 */
 int
@@ -442,7 +442,7 @@ ppl_Constraint_inhomogeneous_term __P((ppl_const_Constraint_t c,
 
 /*! \brief
   Returns a positive integer if \p c is well formed, i.e., if it
-  satisfies all its implementation variant; returns 0 and perhaps
+  satisfies all its implementation invariants; returns 0 and perhaps
   make some noise if \p c is broken.  Useful for debugging purposes.
 */
 int
@@ -520,7 +520,7 @@ ppl_ConSys_insert_Constraint __P((ppl_ConSys_t cs,
 
 /*! \brief
   Returns a positive integer if \p cs is well formed, i.e., if it
-  satisfies all its implementation variant; returns 0 and perhaps
+  satisfies all its implementation invariants; returns 0 and perhaps
   make some noise if \p cs is broken.  Useful for debugging purposes.
 */
 int
@@ -697,7 +697,7 @@ ppl_Generator_divisor __P((ppl_const_Generator_t g, ppl_Coefficient_t n));
 
 /*! \brief
   Returns a positive integer if \p g is well formed, i.e., if it
-  satisfies all its implementation variant; returns 0 and perhaps
+  satisfies all its implementation invariants; returns 0 and perhaps
   make some noise if \p g is broken.  Useful for debugging purposes.
 */
 int
@@ -775,7 +775,7 @@ ppl_GenSys_insert_Generator __P((ppl_GenSys_t gs, ppl_const_Generator_t g));
 
 /*! \brief
   Returns a positive integer if \p gs is well formed, i.e., if it
-  satisfies all its implementation variant; returns 0 and perhaps
+  satisfies all its implementation invariants; returns 0 and perhaps
   make some noise if \p gs is broken.  Useful for debugging purposes.
 */
 int
@@ -1409,7 +1409,7 @@ ppl_Polyhedron_equals_Polyhedron __P((ppl_const_Polyhedron_t x,
 
 /*! \brief
   Returns a positive integer if \p ph is well formed, i.e., if it
-  satisfies all its implementation variant; returns 0 and perhaps
+  satisfies all its implementation invariants; returns 0 and perhaps
   make some noise if \p ph is broken.  Useful for debugging purposes.
 */
 int
