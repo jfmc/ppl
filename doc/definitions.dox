@@ -590,7 +590,7 @@ otherwise the result is \f$\cQ \in \Pset_m\f$ given by
 \anchor concatenate
 <B>Concatenating Polyhedra</B>
 
-Seeing a polyhedron as a set of tuples (its points), it is sometimes
+Viewing a polyhedron as a set of tuples (its points), it is sometimes
 useful to consider the set of tuples obtained by concatenating
 an ordered pair of polyhedra.
 Formally, the <EM>concatenation</EM> of the polyhedra
@@ -872,6 +872,7 @@ the above set is also a closed polyhedron.
 In contrast, when \f$\cQ\f$ is not topologically closed,
 the above set might not be an NNC polyhedron.
 
+\anchor relation_with
 <B>Relation-with Operators</B>
 
 The library provides operators for checking the relation holding
