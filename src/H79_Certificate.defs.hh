@@ -30,7 +30,6 @@ site: http://www.cs.unipr.it/ppl/ . */
 #include <cassert>
 #include <vector>
 
-//#ifdef PPL_DOXYGEN_INCLUDE_IMPLEMENTATION_DETAILS
 //! A convergence certificate for the H79 widening operator.
 /*!
   Convergence certificates are used to instantiate the BHZ03 framework
@@ -39,7 +38,6 @@ site: http://www.cs.unipr.it/ppl/ . */
   The convergence of the H79 widening can also be certified by
   BHRZ03_Certificate.
 */
-//#endif // PPL_DOXYGEN_INCLUDE_IMPLEMENTATION_DETAILS
 class Parma_Polyhedra_Library::H79_Certificate {
 public:
   //! Default constructor.
