@@ -85,34 +85,54 @@ devref.tex \
 $(PPL_SOURCE_FILES)
 
 LATEX_DIRS = \
-user-browse.latex-dir \
-user-print.latex-dir \
-devref-browse.latex-dir \
-devref-print.latex-dir
+user-browse.pdf-dir \
+user-print.pdf-dir \
+devref-browse.pdf-dir \
+devref-print.pdf-dir \
+user-print.ps-dir \
+devref-print.ps-dir
 
 TEX_ENV = TEXINPUTS=$(abs_srcdir):$(TEXINPUTS)
 
 .SECONDARY: $(LATEX_DIRS)
 
-user-%.latex-dir: user-%.doxyconf-latex $(USER_STUFF)
+%.doxyconf-pdf: %.doxyconf-latex
+	sed -e "s/^USE_PDFLATEX[ ]*=.*$$/USE_PDFLATEX           = YES/g" \
+	    -e "s/latex-dir$$/pdf-dir/g" \
+		$< >$@
+
+%.doxyconf-ps: %.doxyconf-latex
+	sed -e "s/^USE_PDFLATEX[ ]*=.*$$/USE_PDFLATEX           = NO/g" \
+	    -e "s/latex-dir$$/ps-dir/g" \
+		$< >$@
+
+user-%.pdf-dir: user-%.doxyconf-pdf $(USER_STUFF)
 	rm -rf $@
 	$(TEX_ENV) doxygen $<
 
-devref-%.latex-dir: devref-%.doxyconf-latex $(DEVREF_STUFF)
+devref-%.pdf-dir: devref-%.doxyconf-pdf $(DEVREF_STUFF)
 	rm -rf $@
 	$(TEX_ENV) doxygen $<
 
-ppl-user-@VERSION@-%.pdf: user-%.latex-dir
-	$(TEX_ENV) make -C $< pdf && mv -f $</refman.pdf $@
+user-%.ps-dir: user-%.doxyconf-ps $(USER_STUFF)
+	rm -rf $@
+	$(TEX_ENV) doxygen $<
 
-ppl-devref-@VERSION@-%.pdf: devref-%.latex-dir
-	$(TEX_ENV) make -C $< pdf && mv -f $</refman.pdf $@
+devref-%.ps-dir: devref-%.doxyconf-ps $(DEVREF_STUFF)
+	rm -rf $@
+	$(TEX_ENV) doxygen $<
 
-ppl-user-@VERSION@-%.ps: user-%.latex-dir
-	$(TEX_ENV) make -C $< ps && mv -f $</refman.ps $@
+ppl-user-@VERSION@-%.pdf: user-%.pdf-dir
+	$(TEX_ENV) make -C $< refman.pdf && mv -f $</refman.pdf $@
 
-ppl-devref-@VERSION@-%.ps: devref-%.latex-dir
-	$(TEX_ENV) make -C $< ps && mv -f $</refman.ps $@
+ppl-devref-@VERSION@-%.pdf: devref-%.pdf-dir
+	$(TEX_ENV) make -C $< refman.pdf && mv -f $</refman.pdf $@
+
+ppl-user-@VERSION@-%.ps: user-%.ps-dir
+	$(TEX_ENV) make -C $< refman.ps && mv -f $</refman.ps $@
+
+ppl-devref-@VERSION@-%.ps: devref-%.ps-dir
+	$(TEX_ENV) make -C $< refman.ps && mv -f $</refman.ps $@
 
 ppl-%-@VERSION@-html: %.doxyconf-html $(DEVREF_STUFF)
 	rm -rf html
@@ -149,6 +169,6 @@ fdl.tex \
 ppl.sty
 
 mostlyclean-local:
-	rm -rf $(LATEX_DIRS) $(HTML_DIRS)
+	rm -rf $(ALL_TARGETS) $(LATEX_DIRS) *.aux *.log
 
 CLEANFILES = $(DIST_DOCS)
