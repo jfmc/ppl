@@ -43,12 +43,14 @@ using std::endl;
 
 namespace PPL = Parma_Polyhedra_Library;
 
-PPL::Polyhedron::Polyhedron()
+PPL::Polyhedron::Polyhedron(bool full)
   : con_sys(),
     gen_sys(),
     sat_c(),
     sat_g(),
     status() {
+  if (!full)
+    status.set_empty();
 }
 
 

@@ -239,8 +239,10 @@ namespace Parma_Polyhedra_Library {
 
 class Parma_Polyhedra_Library::Polyhedron {
 public:
-  //! Builds the zero-dimensional, universe polyhedron.
-  Polyhedron();
+  //! Builds the zero-dimensional, universe polyhedron, if \p full is
+  //! <CODE>true</CODE>; otherwise (i.e. \p full is <CODE>false</CODE>)
+  //! builds an empty polyhedron.
+  Polyhedron(bool full = true);
   //! Ordinary copy-constructor.
   Polyhedron(const Polyhedron& y);
   //! Builds the universe polyhedron of dimension \p num_dimensions.
