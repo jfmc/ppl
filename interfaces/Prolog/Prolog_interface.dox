@@ -147,8 +147,12 @@ more information regarding these issues.
 
 <H4><CODE>ppl_copy_polyhedron(+Address1, -Address2)</CODE></H4>
 
-   The polyhedron referenced by <CODE>Address1</CODE> is copied to
-   <CODE>Address2</CODE>.
+   If <CODE>Address1</CODE> is an address of a polyhedron \p P,
+   then a copy \p Q of \p P is created and <CODE>Address2</CODE>
+   is returned as the reference to \p Q.
+
+   If <CODE>Address1</CODE> is not an address of a polyhedron,
+   execution is aborted.
 
 <H4><CODE>ppl_delete_polyhedron(+Address)</CODE></H4>
 
