@@ -96,8 +96,6 @@ int
 main() {
   set_handlers();
   
-  Parma_Watchdog_Library::Watchdog::initialize();
-
   // Find a dimension that cannot be computed with a INIT_TIME timeout.
   dimension_type dimension = 0;
   do {
