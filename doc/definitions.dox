@@ -321,7 +321,8 @@ a set of rays \f$R\f$ and
 a set of lines \f$L\f$.
 Together, these three sets are the <EM>generators</EM> of \f$P\f$.
 
-The following theorem justifies this terminology and states that
+The following two theorems justify this terminology.
+The first, called Minkowski's theorem, states that
 any polyhedron \f$P \sseq \Rset^n\f$ can be <EM>decomposed</EM> as 
 \f[
   P = \mathcal{V} + \mathcal{R} + \mathcal{L}
@@ -370,7 +371,7 @@ equivalent to the condition that \f$P\f$ has a vertex.
 (See Nemhauser and Wolsey - Integer and Combinatorial Optimization -
 propositions 4.1 and 4.2 on pages 92 and 93).
 
-There is another interesting theorem stating that starting from a 
+The second theorem, called Weil's theorem, states that starting from a 
 system of generators (having rational coefficients) we can build 
 a rational polyhedron:
 
@@ -390,10 +391,10 @@ If \f$A\f$ is a rational \f$m \times n\f$ matrix,
 \f]
 then \f$Q\f$ is a rational polyhedron.
 
-In fact, since \f$Q\f$ consists of the sum of positive combinations of 
-the rows of \f$A\f$ with convex combinations of the rows of \f$B\f$, 
-we can think \f$A\f$ as the matrix of rays and \f$B\f$ as
-the matrix of vertices.
+In fact, since \f$Q\f$ consists of the sum of convex combinations of 
+the rows of \f$A\f$ with positive combinations of the rows of \f$B\f$, 
+we can think of \f$A\f$ as the matrix of vertices and \f$B\f$ as
+the matrix of rays.
 
 <B>Dual representation</B>
 
@@ -406,7 +407,7 @@ or a system of generators.
 Moreover, given one of the representations, there is an algorithm for
 computing the other.
 
-(The following blurb is due to a bug in Doxygen.)
+(The following is due to a bug in Doxygen.)
 
 \if Implementation_Info
 
