@@ -1535,11 +1535,11 @@ PPL::Polyhedron::intersection_assign_and_minimize(const Polyhedron& y) {
   Polyhedron& x = *this;
   // Topology compatibility check.
   if (x.topology() != y.topology())
-    throw_topology_incompatible("inters_assign_and_min(y)", y);
+    throw_topology_incompatible("intersection_assign_and_minimize(y)", y);
   dimension_type x_space_dim = x.space_dim;
   // Dimension-compatibility check.
   if (x_space_dim != y.space_dim)
-    throw_dimension_incompatible("inters_assign_and_min(y)", y);
+    throw_dimension_incompatible("intersection_assign_and_minimize(y)", y);
 
   // If one of the two polyhedra is empty, the intersection is empty.
   if (x.is_empty())
@@ -1604,11 +1604,11 @@ PPL::Polyhedron::intersection_assign(const Polyhedron& y) {
   Polyhedron& x = *this;
   // Topology compatibility check.
   if (x.topology() != y.topology())
-    throw_topology_incompatible("inters_assign(y)", y);
+    throw_topology_incompatible("intersection_assign(y)", y);
   dimension_type x_space_dim = x.space_dim;
   // Dimension-compatibility check.
   if (x_space_dim != y.space_dim)
-    throw_dimension_incompatible("inters_assign(y)", y);
+    throw_dimension_incompatible("intersection_assign(y)", y);
 
   // If one of the two polyhedra is empty, the intersection is empty.
   if (x.is_empty())
@@ -1790,11 +1790,11 @@ PPL::Polyhedron::poly_hull_assign_and_minimize(const Polyhedron& y) {
   Polyhedron& x = *this;
   // Topology compatibility check.
   if (x.topology() != y.topology())
-    throw_topology_incompatible("poly_hull_assign_and_min(y)", y);    
+    throw_topology_incompatible("poly_hull_assign_and_minimize(y)", y);    
   dimension_type x_space_dim = x.space_dim;
   // Dimension-compatibility check.
   if (x_space_dim != y.space_dim)
-    throw_dimension_incompatible("poly_hull_assign_and_min(y)", y);
+    throw_dimension_incompatible("poly_hull_assign_and_minimize(y)", y);
 
   // The poly-hull of a polyhedron `p' with an empty polyhedron is `p'.
   if (y.is_empty())
@@ -2376,12 +2376,12 @@ bool
 PPL::Polyhedron::add_constraints_and_minimize(ConSys& cs) {
   // Topology-compatibility check.
   if (is_necessarily_closed() && cs.has_strict_inequalities())
-    throw_topology_incompatible("add_constraints_and_min(cs)", cs);
+    throw_topology_incompatible("add_constraints_and_minimize(cs)", cs);
   // Dimension-compatibility check:
   // the dimension of `cs' can not be greater than space_dim.
   dimension_type cs_space_dim = cs.space_dimension();
   if (space_dim < cs_space_dim)
-    throw_dimension_incompatible("add_constraints_and_min(cs)", "cs", cs);
+    throw_dimension_incompatible("add_constraints_and_minimize(cs)", "cs", cs);
 
   // Adding no constraints: just minimize.
   if (cs.num_rows() == 0) {
@@ -2739,12 +2739,12 @@ bool
 PPL::Polyhedron::add_generators_and_minimize(GenSys& gs) {
   // Topology compatibility check.
   if (is_necessarily_closed() && gs.has_closure_points())
-    throw_topology_incompatible("add_generators_and_min(gs)", gs);
+    throw_topology_incompatible("add_generators_and_minimize(gs)", gs);
   // Dimension-compatibility check:
   // the dimension of `gs' can not be greater than space_dimension().
   dimension_type gs_space_dim = gs.space_dimension();
   if (space_dim < gs_space_dim)
-    throw_dimension_incompatible("add_generators_and_min(gs)", "gs", gs);
+    throw_dimension_incompatible("add_generators_and_minimize(gs)", "gs", gs);
 
   // Adding no generators is equivalent to just requiring minimization.
   if (gs.num_rows() == 0) {
@@ -2756,7 +2756,7 @@ PPL::Polyhedron::add_generators_and_minimize(GenSys& gs) {
   // transform it in the zero-dimensional universe polyhedron.
   if (space_dim == 0) {
     if (is_empty() && !gs.has_points())
-      throw_invalid_generators("add_generators_and_min(gs)");
+      throw_invalid_generators("add_generators_and_minimize(gs)");
     status.set_zero_dim_univ();
     assert(OK(true));
     return true;
@@ -2794,7 +2794,7 @@ PPL::Polyhedron::add_generators_and_minimize(GenSys& gs) {
   else {
     // The polyhedron was empty: check if `gs' contains a point.
     if (!gs.has_points())
-      throw_invalid_generators("add_generators_and_min(gs)");
+      throw_invalid_generators("add_generators_and_minimize(gs)");
     // `gs' has a point: the polyhedron is no longer empty
     // and generators are up-to-date.
     std::swap(gen_sys, gs);
