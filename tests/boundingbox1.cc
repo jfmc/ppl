@@ -397,7 +397,8 @@ test10() {
 }
 
 // This is a bounded closed polyhedron;
-void test11() {
+static void
+test11() {
   Variable x(0);
   Variable y(1);
 
@@ -437,11 +438,12 @@ void test11() {
     exit(1);
 }
 
-// This is a bounded closed polyhedron;
-void test12() {
+static void
+test12() {
   Variable x(0);
   Variable y(1);
 
+  // Define a bounded closed polyhedron.
   C_Polyhedron ph(2, C_Polyhedron::EMPTY);
   ph.add_generator(point());
   ph.constraints();
