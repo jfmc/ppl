@@ -92,19 +92,13 @@ template <typename Policy, typename Type>
 inline Result
 set_neg_overflow_int(Type& to, const Rounding& mode) {
   switch (mode.direction()) {
-  case Rounding::IGNORE:
+  case Rounding::UP:
+    to = min_int<Policy, Type>();
+    return V_LT;
+  default:
     if (Policy::store_infinity)
       to = minus_infinity_int<Policy, Type>();
     return V_NEG_OVERFLOW;
-  case Rounding::DOWN:
-    if (Policy::store_infinity) {
-      to = minus_infinity_int<Policy, Type>();
-      return V_NEG_OVERFLOW;
-    }
-    /* Fall through */
-  default:
-    to = min_int<Policy, Type>();
-    return V_LT;
   }
 }
 
@@ -112,19 +106,13 @@ template <typename Policy, typename Type>
 inline Result
 set_pos_overflow_int(Type& to, const Rounding& mode) {
   switch (mode.direction()) {
-  case Rounding::IGNORE:
+  case Rounding::DOWN:
+    to = max_int<Policy, Type>();
+    return V_GT;
+  default:
     if (Policy::store_infinity)
       to = plus_infinity_int<Policy, Type>();
     return V_POS_OVERFLOW;
-  case Rounding::UP:
-    if (Policy::store_infinity) {
-      to = plus_infinity_int<Policy, Type>();
-      return V_POS_OVERFLOW;
-    }
-    /* Fall through */
-  default:
-    to = max_int<Policy, Type>();
-    return V_GT;
   }
 }
 
