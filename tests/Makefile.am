@@ -39,7 +39,7 @@ ORIGINAL_TESTS = \
 	NNCinclusion1 \
 	NNCminimize1 NNCminimize2 NNCminimize3 NNCminimize4 NNCminimize5 \
         NNCminimize6 \
-	addconstraint1 addconstraint2 \
+	addconstraint1 addconstraint2 addconstraint3 \
         addconstraints1 addconstraints2 addconstraints3 addconstraints4 \
 	addconstraints5 addconstraints6 addconstraints7 addconstraints8 \
 	addconstraints9 addconstraints10 addconstraints11 \
@@ -47,7 +47,7 @@ ORIGINAL_TESTS = \
 	adddimensions1 adddimensions2 adddimensions3 adddimensions4 \
 	adddimensions5 adddimensions6 adddimensions7 adddimensions8 \
 	adddimensions9 adddimensions10 adddimensions11 \
-	addgenerator1 addgenerator2 \
+	addgenerator1 addgenerator2 addgenerator3 \
 	addgenerators1 addgenerators2 addgenerators3 addgenerators4 \
 	addgenerators5 addgenerators6 addgenerators7 addgenerators8 \
 	addgenerators9 addgenerators10 addgenerators11 \
@@ -109,13 +109,14 @@ ORIGINAL_TESTS = \
 	universe1 universe2 universe3 universe4 universe5 universe6 
 
 DERIVED_TESTS = \
-	nnc_addconstraint2 \
+	nnc_addconstraint2 nnc_addconstraint3 \
 	nnc_addconstraints1 nnc_addconstraints2 nnc_addconstraints3 \
 	nnc_addconstraints4 nnc_addconstraints5 nnc_addconstraints6 \
 	nnc_addconstraints7 nnc_addconstraints8 nnc_addconstraints9 \
 	nnc_addconstraints10 \
 	nnc_adddimensions1 nnc_adddimensions2 nnc_adddimensions3 \
 	nnc_adddimensions4 nnc_adddimensions9 \
+	nnc_addgenerator3 \
 	nnc_addgenerators1 nnc_addgenerators2 nnc_addgenerators3 \
 	nnc_addgenerators4 nnc_addgenerators5 nnc_addgenerators6 \
 	nnc_addgenerators9 nnc_addgenerators10 \
@@ -189,6 +190,7 @@ NNCminimize6_SOURCES = NNCminimize6.cc
 
 addconstraint1_SOURCES = addconstraint1.cc
 addconstraint2_SOURCES = addconstraint2.cc
+addconstraint3_SOURCES = addconstraint3.cc
 
 addconstraints1_SOURCES = addconstraints1.cc
 addconstraints2_SOURCES = addconstraints2.cc
@@ -217,6 +219,7 @@ adddimensions11_SOURCES = adddimensions11.cc
 
 addgenerator1_SOURCES = addgenerator1.cc
 addgenerator2_SOURCES = addgenerator2.cc
+addgenerator3_SOURCES = addgenerator3.cc
 
 addgenerators1_SOURCES = addgenerators1.cc
 addgenerators2_SOURCES = addgenerators2.cc
@@ -440,6 +443,8 @@ DERIVED_CXXFLAGS = -DDERIVED_TEST $(AM_CXXFLAGS)
 
 nnc_addconstraint2_SOURCES = addconstraint2.cc
 nnc_addconstraint2_CXXFLAGS = $(DERIVED_CXXFLAGS)
+nnc_addconstraint3_SOURCES = addconstraint3.cc
+nnc_addconstraint3_CXXFLAGS = $(DERIVED_CXXFLAGS)
 
 nnc_addconstraints1_SOURCES = addconstraints1.cc
 nnc_addconstraints1_CXXFLAGS = $(DERIVED_CXXFLAGS)
@@ -472,6 +477,9 @@ nnc_adddimensions4_SOURCES = adddimensions4.cc
 nnc_adddimensions4_CXXFLAGS = $(DERIVED_CXXFLAGS)
 nnc_adddimensions9_SOURCES = adddimensions9.cc
 nnc_adddimensions9_CXXFLAGS = $(DERIVED_CXXFLAGS)
+
+nnc_addgenerator3_SOURCES = addgenerator3.cc
+nnc_addgenerator3_CXXFLAGS = $(DERIVED_CXXFLAGS)
 
 nnc_addgenerators1_SOURCES = addgenerators1.cc
 nnc_addgenerators1_CXXFLAGS = $(DERIVED_CXXFLAGS)
