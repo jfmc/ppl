@@ -27,6 +27,7 @@ site: http://www.cs.unipr.it/ppl/ . */
 #include "Interval.defs.hh"
 #include "Generator.defs.hh"
 #include <algorithm>
+#include <deque>
 
 namespace Parma_Polyhedra_Library {
 
@@ -655,15 +656,12 @@ Polyhedron::map_dimensions(const PartialFunction& pfunc) {
     // we will have `space_dim' elements organized in `space_dim/2'
     // cycles, which means we will have at most `space_dim/2'
     // terminators.
-    dimension_type cycles[space_dim + space_dim/2];
+    std::vector<dimension_type> cycles;
+    cycles.reserve(space_dim + space_dim/2);
 
     // Used to mark elements as soon as they are inserted into a cycle.
-    bool visited[space_dim];
-    for (dimension_type i = space_dim; i-- > 0; )
-      visited[i] = false;
+    std::deque<bool> visited(space_dim);
 
-    // Index into the `cycles' vector.
-    dimension_type n = 0;
     for (dimension_type i = space_dim; i-- > 0; ) {
       if (!visited[i]) {
 	dimension_type j = i;
@@ -675,29 +673,29 @@ Polyhedron::map_dimensions(const PartialFunction& pfunc) {
 	    // Cycle of length 1: skip it.
 	    goto skip;
 
-	  cycles[n++] = j+1;
+	  cycles.push_back(j+1);
 	  // Go along the cycle.
 	  j = k;
 	} while (!visited[j]);
 	// End of cycle: mark it.
-	cycles[n++] = 0;
+	cycles.push_back(0);
       skip:
 	;
       }
     }
 
-    // If `n == 0' then `pfunc' is the identity.
-    if (n == 0)
+    // If `cycles' is empty then `pfunc' is the identity.
+    if (cycles.empty())
       return;
 
     // Permute all that is up-to-date.  Notice that the contents of
     // the saturation matrices is unaffected by the permutation of
     // columns: they remain valid, if they were so.
     if (constraints_are_up_to_date())
-      con_sys.permute_columns(cycles, n);
+      con_sys.permute_columns(cycles);
 
     if (generators_are_up_to_date())
-      gen_sys.permute_columns(cycles, n);
+      gen_sys.permute_columns(cycles);
 
     assert(OK());
     return;

@@ -851,8 +851,8 @@ PPL::Matrix::swap_columns(const dimension_type i,  const dimension_type j) {
 }
 
 void
-PPL::Matrix::permute_columns(const dimension_type cycles[],
-			     const dimension_type n) {
+PPL::Matrix::permute_columns(const std::vector<dimension_type>& cycles) {
+  const dimension_type n = cycles.size();
   for (dimension_type k = num_rows(); k-- > 0; ) {
     Row& rows_k = rows[k];
     for (dimension_type i = 0, j = 0; i < n; i = ++j) {
