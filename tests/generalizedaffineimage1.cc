@@ -46,7 +46,7 @@ main() {
   print_constraints(ph, "--- ph ---");
 #endif
 
-  ph.generalized_affine_image(B, ">=", A+2);
+  ph.generalized_affine_image(B, PPL_GE, A+2);
 
   C_Polyhedron known_result(2, C_Polyhedron::EMPTY);
   known_result.add_generator(point(2*B));
@@ -57,7 +57,7 @@ main() {
 
 #if NOISY
   print_generators(ph, "--- ph after "
-		   "ph.generalized_affine_image(B, \">=\", A+2, 1) ---");
+		   "ph.generalized_affine_image(B, PPL_GE, A+2, 1) ---");
 #endif
 
   return retval;

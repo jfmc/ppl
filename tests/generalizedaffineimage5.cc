@@ -49,7 +49,7 @@ main() {
 
   C_Polyhedron known_result(ph);
   
-  ph.generalized_affine_image(A, "==", A + 2);
+  ph.generalized_affine_image(A, PPL_EQ, A + 2);
   
   known_result.affine_image(A, A + 2);
 
@@ -58,7 +58,7 @@ main() {
 #if NOISY
   print_generators(ph,
 		   "*** After ph.generalized_affine_image"
-		   "(A, \"==\", A + 2) ***");
+		   "(A, PPL_EQ, A + 2) ***");
 #endif
 
   return retval;

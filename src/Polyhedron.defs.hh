@@ -754,16 +754,12 @@ public:
   //! \brief
   //! Assigns to \p *this the image of \p *this with respect to the
   //! \ref generalized_image "generalized affine transfer function"
-  //! \f$\mathit{var}' \relop \frac{expr}{d}\f$,
-  //! where \f$\mathord{\relop}\f$ is the relation operator encoded by
-  //! \p relation.
+  //! \f$\mathit{var}' \relop \frac{expr}{d}\f$, where
+  //! \f$\mathord{\relop}\f$ is the relation operator encoded by \p relop.
   /*!
     \param var           The variable being compared to the result
                          of the computed affine image.
-    \param relation      The relation operator: can be either one of
-                         <CODE>"<"</CODE>, <CODE>"<="</CODE>,
-			 <CODE>"=="</CODE>, <CODE>">="</CODE>,
-			 or <CODE>">"</CODE>.
+    \param relop         The relation operator.
     \param expr          The numerator of the affine expression.
     \param denominator   The denominator of the affine expression
                          (optional argument with default value 1.)
@@ -773,26 +769,21 @@ public:
                                      or if \p var is not a dimension
                                      of \p *this
 				     or if \p *this is a C_Polyhedron and
-				     \p relation encodes a strict relation
-				     operator.
+				     \p relop is a strict relation operator.
   */
   void generalized_affine_image(const Variable& var,
-				const char* relation,
+				const Relation_Operator relop,
 				const LinExpression& expr,
 				const Integer& denominator = Integer_one());
 
   //! \brief
   //! Assigns to \p *this the image of \p *this with respect to the
   //! \ref generalized_image "generalized affine transfer function"
-  //! \f$\mathit{lhs} \relop \frac{rhs}{d}\f$,
-  //! where \f$\mathord{\relop}\f$ is the relation operator encoded by
-  //! \p relation.
+  //! \f$\mathit{lhs} \relop \frac{rhs}{d}\f$, where
+  //! \f$\mathord{\relop}\f$ is the relation operator encoded by \p relop.
   /*!
     \param lhs           The left hand side affine expression.
-    \param relation      The relation operator: can be either one of
-                         <CODE>"<"</CODE>, <CODE>"<="</CODE>,
-			 <CODE>"=="</CODE>, <CODE>">="</CODE>,
-			 or <CODE>">"</CODE>.
+    \param relop         The relation operator.
     \param rhs           The numerator of the right hand side
                          affine expression.
     \param denominator   The denominator of the right hand side affine
@@ -803,11 +794,10 @@ public:
                                      or if \p rhs and \p *this
                                      are dimension-incompatible
 				     or if \p *this is a C_Polyhedron and
-				     \p relation encodes a strict relation
-				     operator.
+				     \p relop is a strict relation operator.
   */
   void generalized_affine_image(const LinExpression& lhs,
-				const char* relation,
+				const Relation_Operator relop,
 				const LinExpression& rhs,
 				const Integer& denominator = Integer_one());
 
