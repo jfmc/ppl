@@ -28,7 +28,7 @@ site: http://www.cs.unipr.it/ppl/ . */
 using namespace std;
 using namespace Parma_Polyhedra_Library;
 
-#define NOISY 1
+#define NOISY 0
 
 int
 main() {
@@ -38,8 +38,8 @@ main() {
   Variable y(1);
 
   ConSys cs;
-  cs.insert(x >= 1);
-  cs.insert(y <= 5);
+  cs.insert(x + y >= 1);
+  cs.insert(y >= 5);
 
   Polyhedron ph(cs);
 #if NOISY
@@ -47,7 +47,7 @@ main() {
 #endif
 
   // An equality constraint non-intersecting the polyhedron.
-  Constraint c(x == 0);
+  Constraint c(x == -1);
 #if NOISY
   print_constraint(c, "--- c ---");
 #endif
