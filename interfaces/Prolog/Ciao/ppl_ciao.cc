@@ -361,7 +361,8 @@ static Prolog_term_ref
 Integer_to_integer_term(const PPL::Integer& n) {
   // FIXME: does Ciao support unlimited precision integer?
   long v;
-  if (PPL::Checked::assign<PPL::Check_Overflow_Policy>(v, PPL::raw_value(n)) != PPL::Checked::V_EQ)
+  if (PPL::Checked::assign<PPL::Check_Overflow_Policy>(v, PPL::raw_value(n))
+      != PPL::Checked::V_EQ)
     throw unknown_interface_error("Integer_to_integer_term()");
   return ciao_integer(v);
 }
