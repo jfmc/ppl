@@ -222,23 +222,24 @@ PPL::subset_or_equal(const SatRow& x, const SatRow& y) {
     while (x_size > 0) {
       if (*xp & ~*yp)
 	return false;
-      xp++;
-      yp++;
-      x_size--;
+      ++xp;
+      ++yp;
+      --x_size;
     }
   } else {
     x_size -= y_size;
     while (y_size > 0) {
-      if (*xp++ & ~*yp)
+      if (*xp & ~*yp)
 	return false;
-      yp++;
-      y_size--;
+      ++xp;
+      ++yp;
+      --y_size;
     }
     while (x_size > 0) {
       if (*xp)
 	return false;
-      xp++;
-      x_size--;
+      ++xp;
+      --x_size;
     }
   }   
   return true;
