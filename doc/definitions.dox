@@ -652,6 +652,32 @@ to the \f$x_1\f$ axes.
 Observe that provided the coefficient \f$a_k\f$ of the considered variable
 in the linear expression is non-zero, the affine transformation is invertible.
 
+\anchor generalized_affine_transformation
+<B>Generalized Affine Images</B>
+
+The library provides another operator
+which is a generalization of the affine image operator.
+Given a polyhedron \f$\cP \in \Pset_n\f$,
+a variable \f$x_k\f$ such that \f$0 \leq k < n\f$,
+a relation operator \f$\mathord{\relop} \in \{ <, \leq, =, \geq, > \}\f$,
+and an affine expression
+\f$\mathit{expr} \defeq \sum_{i=0}^{n-1} a_i x_i + b\f$,
+the <EM>generalized affine image</EM> of \f$\cP\f$ with respect to
+\f$x'_k \relop \mathit{expr}\f$ is defined as
+  \f[
+    \Bigl\{\,
+      (v_0, \ldots, v'_i, \ldots, v_{n-1})^\transpose \in \Rset^n
+    \Bigm|
+      (v_0, \ldots, v_i, \ldots, v_{n-1})^\transpose \in \cP,
+      v'_i \relop \sum_{i=0}^{n-1} a_i v_i + b
+    \,\Bigr\}.
+  \f]
+Note that, when \f$\mathord{\relop} \in \{ = \}\f$, then the above
+operator is equivalent to the computation of the affine image of \f$\cP\f$
+with respect to the mapping \f$x_k \mapsto \mathit{expr}\f$
+(hence the name given to this operator).
+
+
 <B>Relation-with Operators</B>
 
 The library provides operators for checking the relation holding
