@@ -119,7 +119,7 @@ ORIGINAL_TESTS = \
 	relations12 relations13 relations14 relations15 relations16 \
 	relations17 relations18 relations19 \
 	removedim1 removedim2 removedim3 removedim4 removedim5 removedim6 \
-	removedim7 removedim8 removedim9 \
+	removedim7 removedim8 removedim9 removedim10 \
 	renamedim1 \
 	smm1 \
 	timeelapse1 timeelapse2 timeelapse3 timeelapse4 timeelapse5 \
@@ -202,6 +202,7 @@ DERIVED_TESTS = \
 	nnc_relations14 nnc_relations15 nnc_relations16 nnc_relations19 \
 	nnc_removedim1 nnc_removedim2 nnc_removedim3 nnc_removedim4 \
 	nnc_removedim5 nnc_removedim6 nnc_removedim8 nnc_removedim9 \
+	nnc_removedim10 \
 	nnc_renamedim1 \
 	nnc_smm1 \
 	nnc_timeelapse2 nnc_timeelapse5 nnc_timeelapse6 nnc_timeelapse7 \
@@ -486,6 +487,7 @@ removedim6_SOURCES = removedim6.cc
 removedim7_SOURCES = removedim7.cc
 removedim8_SOURCES = removedim8.cc
 removedim9_SOURCES = removedim9.cc
+removedim10_SOURCES = removedim10.cc
 
 renamedim1_SOURCES = renamedim1.cc PFunction.cc
 
@@ -913,6 +915,8 @@ nnc_removedim8_SOURCES = removedim8.cc
 nnc_removedim8_CXXFLAGS = $(DERIVED_CXXFLAGS)
 nnc_removedim9_SOURCES = removedim9.cc
 nnc_removedim9_CXXFLAGS = $(DERIVED_CXXFLAGS)
+nnc_removedim10_SOURCES = removedim10.cc
+nnc_removedim10_CXXFLAGS = $(DERIVED_CXXFLAGS)
 
 nnc_renamedim1_SOURCES = renamedim1.cc PFunction.cc
 nnc_renamedim1_CXXFLAGS = $(DERIVED_CXXFLAGS)
