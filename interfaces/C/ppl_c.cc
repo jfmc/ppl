@@ -163,7 +163,7 @@ extern "C" typedef const char*
 c_variable_output_function_type(ppl_dimension_type var);
 
 // Holds a pointer to the C++ saved output function.
-Variable::Output_Function_Type* saved_cxx_Variable_output_function;
+Variable::output_function_type* saved_cxx_Variable_output_function;
 
 } // namespace
 

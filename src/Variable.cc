@@ -29,7 +29,7 @@ site: http://www.cs.unipr.it/ppl/ . */
 
 namespace PPL = Parma_Polyhedra_Library;
 
-PPL::Variable::Output_Function_Type*
+PPL::Variable::output_function_type*
 PPL::Variable::current_output_function = 0;
 
 void

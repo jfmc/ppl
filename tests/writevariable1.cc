@@ -75,7 +75,7 @@ main() TRY {
 			   "D2 I2 N2 S2 X2 C3 H3 M3 R3 W3 ");
 
   // Save the default output function.
-  Variable::Output_Function_Type* p_default_output_function
+  Variable::output_function_type* p_default_output_function
     = Variable::get_output_function();
 
   // Install an alternate output function.

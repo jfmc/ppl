@@ -84,13 +84,13 @@ public:
   dimension_type id() const;
 
   //! Type of output functions.
-  typedef void Output_Function_Type(std::ostream& s, const Variable& v);
+  typedef void output_function_type(std::ostream& s, const Variable& v);
 
   //! Sets the output function to be used for printing Variable objects.
-  static void set_output_function(Output_Function_Type* p);
+  static void set_output_function(output_function_type* p);
 
   //! Returns the pointer to the current output function.
-  static Output_Function_Type* get_output_function();
+  static output_function_type* get_output_function();
 
   //! Binary predicate defining the total ordering on variables.
   struct Compare {
@@ -110,7 +110,7 @@ private:
 						    const Variable& v);
 
   //! Pointer to the current output function.
-  static Output_Function_Type* current_output_function;
+  static output_function_type* current_output_function;
 
   //! The default output function.
   static void default_output_function(std::ostream& s, const Variable& v);

@@ -18,8 +18,9 @@ o  New output operator in namespace IO_Operators:
    std::ostream& operator<<(std::ostream&, const LinExpression&).
 
 o  The type of output functions for the class Variable,
-   Variable::Output_Function_Type, is now defined as
-   void Output_Function_Type(std::ostream& s, const Variable& v).
+   `Variable::Output_Function_Type', has been renamed
+   `Variable::output_function_type' and is now defined as
+   void output_function_type(std::ostream& s, const Variable& v).
    In other words, `v' is now passed by const reference and not by value.
 
 o  Thanks to Bruno Haible, it is now possible to use versions of the

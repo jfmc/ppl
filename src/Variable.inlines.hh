@@ -37,11 +37,11 @@ Variable::id() const {
 }
 
 inline void
-Variable::set_output_function(Output_Function_Type* p) {
+Variable::set_output_function(output_function_type* p) {
   current_output_function = p;
 }
 
-inline Variable::Output_Function_Type*
+inline Variable::output_function_type*
 Variable::get_output_function() {
   return current_output_function;
 }
