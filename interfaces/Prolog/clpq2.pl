@@ -34,7 +34,7 @@
 % 'Polyhedra' are the live polyhedra; the head of the list
 % represents the result of the computation.
 
-solve_query(Goals, VN, [Q|PolysOut]) :-
+solve_query(Goals, VN, PolysOut) :-
   % The initial polyhedron is initialised with 0 dimensions
   % We use the NNC topology so that we can handle strict constraints.
   Topology = nnc,
@@ -43,11 +43,11 @@ solve_query(Goals, VN, [Q|PolysOut]) :-
   cleanup(Poly),
 
   % Try to reduce `Goals'.
-  solve(Topology, Goals, [Poly], PolysOut),
+  solve(Topology, Goals, [Poly], PolysOut2),
 
   % Use the last polyhedron `PolyOut' that has been added to the list
   % for generating the resulting set of constraints.
-  PolysOut = [PolyOut|_],
+  PolysOut2 = [PolyOut|_],
   ppl_new_Polyhedron_from_Polyhedron(Topology, PolyOut, Topology, Q),
   % On backtracking, clean up the unwanted polyhedron
   cleanup(Q),
@@ -67,7 +67,8 @@ solve_query(Goals, VN, [Q|PolysOut]) :-
 
   % Print the result.
   write_bindings(VN, SortedNumList),
-  write_constraints(CS, SortedNumList, VN).
+  write_constraints(CS, SortedNumList, VN),
+  PolysOut = [Q|PolysOut2].
 
 solve(_, true, Polys, Polys) :-
   % If the goal is true, we can return the input list of
@@ -83,6 +84,7 @@ solve(T, (A, B), PolysIn, PolysOut) :-
   solve(T, B, PolysTmp, PolysOut).
 
 solve(T, (A; B), PolysIn, PolysOut) :-
+  !,
   % Disjunction is dealt with by making a copy of the polyhedron
   % before starting each branch.
   PolysIn = [Poly|_],
@@ -130,18 +132,21 @@ solve(_, { Constraints }, [Poly|Polys], [Poly|Polys]) :-
 
 % read/1
 solve(_, read(N), Polys, Polys) :-
+  !,
   read(N),
   get_code(user_input, _C).
 
 % write/1
 solve(_, write(Message), Polys, Polys) :-
+  !,
   write(Message).
 
 % nl/0
 solve(_, nl, Polys, Polys) :-
+  !,
   nl.
 
-solve(Topology, Atom, [Poly|Polys], [PolyCopy2|PolysOut]) :-
+solve(Topology, Atom, [Poly|Polys], PolysOut) :-
   % Here is a choicepoint: possibly different clauses
   % will be selected on backtracking.
   % NOTE: we may fail to find (another) clause,
@@ -165,7 +170,7 @@ solve(Topology, Atom, [Poly|Polys], [PolyCopy2|PolysOut]) :-
   % First solve the parameter passing equations.
   ppl_Polyhedron_add_constraints_and_minimize(PolyCopy, BindingConstraints),
   % Then solve the body.
-  solve(Topology, Body, [PolyCopy, Poly|Polys], [PolySoln|PolysOut]),
+  solve(Topology, Body, [PolyCopy, Poly|Polys], PolysSolnOut),
 
   % Now remove any dimensions that are higher than
   % previously and higher than any PPL variables in the atom.
@@ -175,12 +180,17 @@ solve(Topology, Atom, [Poly|Polys], [PolyCopy2|PolysOut]) :-
   UnWanted is MaxWanted + 1,
 
   % Copy the current polyhedron and work on the copy.
-  ppl_new_Polyhedron_from_Polyhedron(Topology, PolySoln, Topology, PolyCopy2),
+  PolysSolnOut = [PolySoln|_],
+  ppl_new_Polyhedron_from_Polyhedron(Topology, PolySoln,
+                                        Topology, PolySolnCopy),
   % On backtracking, clean up the unwanted polyhedron
-  cleanup(PolyCopy2),
+  cleanup(PolySolnCopy),
 
   % We want to remove (project away) all other dimensions.
-  ppl_Polyhedron_remove_higher_dimensions(PolyCopy2, UnWanted).
+  ppl_Polyhedron_remove_higher_dimensions(PolySolnCopy, UnWanted),
+
+  % The list of live polyhedra must be returned.
+  PolysOut = [PolySolnCopy|PolysSolnOut].
 
 parameter_passing(Atom, Head, Bindings) :-
   Atom =.. [_|Actuals],
