@@ -225,7 +225,7 @@ PPL::Polyhedron::Polyhedron(GenSys& gs)
   // Here gs.num_columns() <= 1.
   space_dim = 0;
   if (gs.num_rows() == 0)
-    set_empty();
+    status.set_empty();
   else
     // It has to be a vertex.
     assert(gs[0][0] != 0);
@@ -294,7 +294,7 @@ PPL::Polyhedron::update_constraints() const {
 */
 bool
 PPL::Polyhedron::update_generators() const {
-  assert(space_dimension() != 0);
+  assert(space_dimension() > 0);
   assert(!is_empty());
   assert(constraints_are_up_to_date());
 
@@ -319,7 +319,7 @@ PPL::Polyhedron::update_generators() const {
 */
 void
 PPL::Polyhedron::minimize() const {
-  // 0-dimensional and empty polyhedra are already minimized.
+  // 0-dim space or empty polyhedra are already minimized.
   if (space_dimension() == 0
       || is_empty()
       || (constraints_are_minimized() && generators_are_minimized()))
@@ -821,6 +821,7 @@ PPL::Polyhedron::add_dimensions_and_embed(size_t dim) {
   // Adding no dimensions to any polyhedron is a no-op.
   if (dim == 0)
     return;
+
   // Adding dimensions to an empty polyhedron is obtained
   // by merely adjusting `space_dim'.
   if (is_empty()) {
@@ -829,20 +830,22 @@ PPL::Polyhedron::add_dimensions_and_embed(size_t dim) {
   }
 
   if (space_dimension() == 0) {
-    // We create a specular identity matrix having dim+1 rows:
-    // the last row, which has a 1 in correspondence of
-    // the inhomogeneous term, corresponds to the origin of the space;
-    // all the other rows are the lines corresponding to the Cartesian axes.
-    // This system of generators corresponds to the universe polyhedron
-    // and is minimal.
-    gen_sys.add_rows_and_columns(dim + 1);
-    set_generators_minimized();
-    // The system of constraints that describes the universe polyhedron 
-    // is only composed by the positivity constraint and it is minimal.
+    // The system of constraints describing the universe polyhedron 
+    // only has the positivity constraint; it is in minimal form.
     con_sys.resize_no_copy(1, dim + 1);
     con_sys[0][0] = 1;
     con_sys[0].set_is_inequality();
     set_constraints_minimized();
+#ifndef BE_LAZY
+    // The system of generators describing the universe polyhedron 
+    // has the origin of the space as a (non-proper) vertex
+    // and `dim' rows corresponding to the lines parallel to
+    // the Cartesian axes; it is in minimal form.
+    // We want a sorted system of generators, thus we create
+    // the ``specular'' identity matrix having dim+1 rows.
+    gen_sys.add_rows_and_columns(dim + 1);
+    set_generators_minimized();
+#endif
   }
   // To embed an n-dimension space polyhedron in a (n+dim)-dimension space,
   // we just add `dim' zero-columns to the rows in the matrix of constraints;
@@ -867,8 +870,7 @@ PPL::Polyhedron::add_dimensions_and_embed(size_t dim) {
     assert(generators_are_up_to_date());
     gen_sys.add_rows_and_columns(dim);
   }
-
-  // Now we update the space dimension.
+  // Update the space dimension.
   space_dim += dim;
 
   assert(OK());
