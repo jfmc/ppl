@@ -108,7 +108,8 @@ devref.doxyconf-html         \
 user.tex                     \
 devref.tex                   \
 gpl.tex                      \
-fdl.tex
+fdl.tex                      \
+ppl.sty
 
 mostlyclean-local:
 	rm -rf $(LATEX_DIRS) $(HTML_DIRS)
