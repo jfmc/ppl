@@ -436,60 +436,92 @@ ppl_Polyhedron_poly_hull_assign_and_minimize(Handle1, Handle2) :-
 :- true pred ppl_Polyhedron_topological_closure_assign(in(Handle))
              :: any_term + foreign.
 
-:- true pred ppl_Polyhedron_BHRZ03_widening_assign_with_token(in(Handle1),
-							       in(Handle2),
-							       in(Tokens))
-             :: any_term * any_term * any_term + foreign.
+:- true pred ppl_Polyhedron_BHRZ03_widening_assign_with_token_2(
+                 in(Handle1), in(Handle2), in(Tokens), go(Success))
+ :: any_term * any_term * any_term * int
+ + (returns(Success),
+      foreign(ppl_Polyhedron_BHRZ03_widening_assign_with_token)).
+
+ppl_Polyhedron_BHRZ03_widening_assign_with_token(Handle1, Handle2, Tokens) :-
+      ppl_Polyhedron_BHRZ03_widening_assign_with_token_2(
+                  Handle1, Handle2, Tokens, 1).
 
 :- true pred ppl_Polyhedron_BHRZ03_widening_assign(in(Handle1), in(Handle2))
              :: any_term * any_term + foreign.
 
-:- true pred ppl_Polyhedron_limited_BHRZ03_extrapolation_assign_with_token(in(Handle1),
-								in(Handle2),
-                                                               in(CList),
-							       in(Tokens))
-             :: any_term * any_term * any_term * any_term + foreign.
+:- true pred ppl_Polyhedron_limited_BHRZ03_extrapolation_assign_with_token_2(
+                 in(Handle1), in(Handle2), in(CList), in(Tokens), go(Success))
+ :: any_term * any_term * any_term * any_term * int
+ + (returns(Success),
+      foreign(ppl_Polyhedron_limited_BHRZ03_extrapolation_assign_with_token)).
+
+ppl_Polyhedron_limited_BHRZ03_extrapolation_assign_with_token(
+                  Handle1, Handle2, CList, Tokens) :-
+      ppl_Polyhedron_limited_BHRZ03_extrapolation_assign_with_token_2(
+                  Handle1, Handle2, CList, Tokens, 1).
 
 :- true pred ppl_Polyhedron_limited_BHRZ03_extrapolation_assign(in(Handle1),
                                                                in(CList),
 								in(Handle2))
              :: any_term * any_term * any_term + foreign.
 
-:- true pred ppl_Polyhedron_bounded_BHRZ03_extrapolation_assign_with_token(in(Handle1),
-								in(Handle2),
-                                                               in(CList),
-							       in(Tokens))
-             :: any_term * any_term * any_term * any_term + foreign.
+
+:- true pred ppl_Polyhedron_bounded_BHRZ03_extrapolation_assign_with_token_2(
+                 in(Handle1), in(Handle2), in(CList), in(Tokens), go(Success))
+ :: any_term * any_term * any_term * any_term * int
+ + (returns(Success),
+      foreign(ppl_Polyhedron_bounded_BHRZ03_extrapolation_assign_with_token)).
+
+ppl_Polyhedron_bounded_BHRZ03_extrapolation_assign_with_token(
+                  Handle1, Handle2, CList, Tokens) :-
+      ppl_Polyhedron_bounded_BHRZ03_extrapolation_assign_with_token_2(
+                  Handle1, Handle2, CList, Tokens, 1).
 
 :- true pred ppl_Polyhedron_bounded_BHRZ03_extrapolation_assign(in(Handle1),
-								in(Handle2),
-                                                               in(CList))
+                                                               in(CList),
+								in(Handle2))
              :: any_term * any_term * any_term + foreign.
 
-:- true pred ppl_Polyhedron_H79_widening_assign_with_token(in(Handle1),
-							    in(Handle2),
-							    in(Tokens))
-             :: any_term * any_term * any_term + foreign.
+
+:- true pred ppl_Polyhedron_H79_widening_assign_with_token_2(
+                 in(Handle1), in(Handle2), in(Tokens), go(Success))
+ :: any_term * any_term * any_term * int
+ + (returns(Success),
+      foreign(ppl_Polyhedron_H79_widening_assign_with_token)).
+
+ppl_Polyhedron_H79_widening_assign_with_token(Handle1, Handle2, Tokens) :-
+      ppl_Polyhedron_H79_widening_assign_with_token_2(
+                  Handle1, Handle2, Tokens, 1).
 
 :- true pred ppl_Polyhedron_H79_widening_assign(in(Handle1), in(Handle2))
              :: any_term * any_term + foreign.
 
-:- true pred ppl_Polyhedron_limited_H79_extrapolation_assign_with_token(in(Handle1),
-							     in(Handle2),
-                                                               in(CList),
-							    in(Tokens))
-             :: any_term * any_term * any_term * any_term + foreign.
+:- true pred ppl_Polyhedron_limited_H79_extrapolation_assign_with_token_2(
+                 in(Handle1), in(Handle2), in(CList), in(Tokens), go(Success))
+ :: any_term * any_term * any_term * any_term * int
+ + (returns(Success),
+      foreign(ppl_Polyhedron_limited_H79_extrapolation_assign_with_token)).
+
+ppl_Polyhedron_limited_H79_extrapolation_assign_with_token(
+                  Handle1, Handle2, CList, Tokens) :-
+      ppl_Polyhedron_limited_H79_extrapolation_assign_with_token_2(
+                  Handle1, Handle2, CList, Tokens, 1).
 
 :- true pred ppl_Polyhedron_limited_H79_extrapolation_assign(in(Handle1),
 							     in(Handle2),
                                                                in(CList))
              :: any_term * any_term * any_term + foreign.
 
-:- true pred ppl_Polyhedron_bounded_H79_extrapolation_assign_with_token(in(Handle1),
-								in(Handle2),
-                                                               in(CList),
-							    in(Tokens))
-             :: any_term * any_term * any_term * any_term + foreign.
+:- true pred ppl_Polyhedron_bounded_H79_extrapolation_assign_with_token_2(
+                 in(Handle1), in(Handle2), in(CList), in(Tokens), go(Success))
+ :: any_term * any_term * any_term * any_term * int
+ + (returns(Success),
+      foreign(ppl_Polyhedron_bounded_H79_extrapolation_assign_with_token)).
+
+ppl_Polyhedron_bounded_H79_extrapolation_assign_with_token(
+                  Handle1, Handle2, CList, Tokens) :-
+      ppl_Polyhedron_bounded_H79_extrapolation_assign_with_token_2(
+                  Handle1, Handle2, CList, Tokens, 1).
 
 :- true pred ppl_Polyhedron_bounded_H79_extrapolation_assign(in(Handle1),
 								in(Handle2),
@@ -576,10 +608,10 @@ ppl_Polyhedron_poly_hull_assign_and_minimize(Handle1, Handle2) :-
 %	ppl_Polyhedron_OK/1,
 	ppl_Polyhedron_OK_2/2,
 	ppl_Polyhedron_add_constraint/2,
-	ppl_Polyhedron_add_constraint_and_minimize/2,
+%	ppl_Polyhedron_add_constraint_and_minimize/2,
 	ppl_Polyhedron_add_constraint_and_minimize_2/3,
 	ppl_Polyhedron_add_generator/2,
-	ppl_Polyhedron_add_generator_and_minimize/2,
+%	ppl_Polyhedron_add_generator_and_minimize/2,
 	ppl_Polyhedron_add_generator_and_minimize_2/3,
 	ppl_Polyhedron_add_constraints/2,
 %	ppl_Polyhedron_add_constraints_and_minimize/2,
@@ -600,17 +632,23 @@ ppl_Polyhedron_poly_hull_assign_and_minimize(Handle1, Handle2) :-
 	ppl_Polyhedron_generalized_affine_image_lhs_rhs/4,
 	ppl_Polyhedron_time_elapse_assign/2,
         ppl_Polyhedron_topological_closure_assign/1,
-	ppl_Polyhedron_BHRZ03_widening_assign_with_token/3,
+%	ppl_Polyhedron_BHRZ03_widening_assign_with_token/3,
+	ppl_Polyhedron_BHRZ03_widening_assign_with_token_2/4,
 	ppl_Polyhedron_BHRZ03_widening_assign/2,
-	ppl_Polyhedron_limited_BHRZ03_extrapolation_assign_with_token/4,
+%	ppl_Polyhedron_limited_BHRZ03_extrapolation_assign_with_token/4,
+	ppl_Polyhedron_limited_BHRZ03_extrapolation_assign_with_token_2/5,
 	ppl_Polyhedron_limited_BHRZ03_extrapolation_assign/3,
-	ppl_Polyhedron_bounded_BHRZ03_extrapolation_assign_with_token/4,
+%	ppl_Polyhedron_bounded_BHRZ03_extrapolation_assign_with_token/4,
+	ppl_Polyhedron_bounded_BHRZ03_extrapolation_assign_with_token_2/5,
 	ppl_Polyhedron_bounded_BHRZ03_extrapolation_assign/3,
-	ppl_Polyhedron_H79_widening_assign_with_token/3,
+%	ppl_Polyhedron_H79_widening_assign_with_token/3,
+	ppl_Polyhedron_H79_widening_assign_with_token_2/4,
 	ppl_Polyhedron_H79_widening_assign/2,
-	ppl_Polyhedron_limited_H79_extrapolation_assign_with_token/4,
+%	ppl_Polyhedron_limited_H79_extrapolation_assign_with_token/4,
+	ppl_Polyhedron_limited_H79_extrapolation_assign_with_token_2/5,
 	ppl_Polyhedron_limited_H79_extrapolation_assign/3,
-	ppl_Polyhedron_bounded_H79_extrapolation_assign_with_token/4,
+%	ppl_Polyhedron_bounded_H79_extrapolation_assign_with_token/4,
+	ppl_Polyhedron_bounded_H79_extrapolation_assign_with_token_2/5,
 	ppl_Polyhedron_bounded_H79_extrapolation_assign/3,
 	ppl_Polyhedron_add_dimensions_and_project/2,
 	ppl_Polyhedron_add_dimensions_and_embed/2,
