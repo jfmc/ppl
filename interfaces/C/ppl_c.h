@@ -1858,6 +1858,24 @@ int
 ppl_Polyhedron_concatenate_assign __P((ppl_Polyhedron_t x,
 				       ppl_const_Polyhedron_t y));
 
+#ifdef SWIGOCAML
+%typemap(in) (ppl_dimension_type ds[], size_t n) {
+  int i;
+  /* $*1_type */
+  $2 = caml_array_len($input);
+  $1 = ($*1_type*) malloc($2 * sizeof(ppl_dimension_type) );
+  if ($1) {
+    for(i = $2; i-- > 0; ) {
+      $1[i] = caml_uint_val(caml_array_nth($input, i));
+    }
+  }
+}
+
+%typemap(freearg) (ppl_dimension_type ds[], size_t n) {
+  free($1);
+}
+#endif
+
 /*! \brief
   Removes from \p ph and its containing space the dimensions that are
   specified in first \p n positions of the array \p ds.  The presence
@@ -1875,6 +1893,13 @@ ppl_Polyhedron_remove_dimensions __P((ppl_Polyhedron_t ph,
 int
 ppl_Polyhedron_remove_higher_dimensions __P((ppl_Polyhedron_t ph,
 					     ppl_dimension_type d));
+
+#ifdef SWIGOCAML
+  %typemap(in) (ppl_dimension_type maps[], size_t n)
+       = (ppl_dimension_type ds[], size_t n);
+  %typemap(freearg) (ppl_dimension_type maps[], size_t n)
+       = (ppl_dimension_type ds[], size_t n);
+#endif
 
 /*! \brief
   Remaps the dimensions of the vector space according to a
