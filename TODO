@@ -1,8 +1,6 @@
 Enhancements for PPL 0.6
 ========================
 
-- Explain, somewhere in the documentation, that all the PPL classes
-  are concrete classes that are not supposed to be derived from.
 - Before releasing PPL 0.6, modify the documentation and the web site
   so as to describe the new configure options that allow to use
   versions of GMP installed in nonstandard places.

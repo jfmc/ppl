@@ -24,8 +24,19 @@
 /*!
   \defgroup PPL_Library The Library
   The core implementation of the Parma Polyhedra Library
-  is written in C++. See Namespace, Hierarchical and Compound
-  indexes for additional information.
+  is written in C++.
+  The library is mainly a collection of so-called ``concrete data types'':
+  while providing the user with a clean and friendly interface,
+  these types are not meant to --- i.e., they should not --- be used
+  polymorphically (since, e.g., most of the destructors are not declared
+  <CODE>virtual</CODE>). In practice, this restriction means that
+  the library types should not be used as <EM>public base classes</EM>
+  to be derived from. A user willing to extend the library types,
+  adding new functionalities, often can do so by using <EM>containment</EM>
+  instead of inheritance; even when there is the need of overriding a
+  <CODE>protected</CODE> method, non-public inheritance should suffice.
+  See Namespace, Hierarchical and Compound indexes
+  for additional information about each single data type.
 */
 
 /*! \mainpage Convex Polyhedra and the PPL
@@ -1023,7 +1034,7 @@ cout << p.divisor() << endl;  // Undefinded behavior!
 \endcode
 As a rule of thumb, if a polyhedron plays any role in a computation
 (even as a const parameter), then any previously computed reference
-to parts of the polyhedron mayh ave been invalidated.
+to parts of the polyhedron may have been invalidated.
 Note that, in the example above, the computation of the constraint system
 could have been placed after the uses of the iterator <CODE>i</CODE>
 and the reference <CODE>p</CODE>.
