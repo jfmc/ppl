@@ -139,16 +139,16 @@ PWL::Watchdog::handle_timeout(int) {
   else {
     time_so_far += last_time_requested;
     if (!pending.empty()) {
-      Pending::iterator i(pending.begin());
+      Pending::iterator i = pending.begin();
       Pending::iterator in;
       do {
-	(*i).handler->act();
-	*((*i).p_expired_flag) = true;
+	i->handler->act();
+	*(i->p_expired_flag) = true;
 	in = i;
 	++in;
 	pending.erase(i);
 	i = in;
-      } while (i != pending.end() && (*i).deadline <= time_so_far);
+      } while (i != pending.end() && i->deadline <= time_so_far);
       if (pending.empty())
 	alarm_clock_running = false;
       else
@@ -168,9 +168,9 @@ PWL::Watchdog::Pending::iterator
 PWL::Watchdog::insert_pending(const Time& deadline,
 			      const Handler* handler,
 			      bool* p_expired) {
-  Pending::iterator i(pending.begin());
-  Pending::iterator pend(pending.end());
-  while (i != pend && (*i).deadline < deadline)
+  Pending::iterator i = pending.begin();
+  Pending::iterator pend = pending.end();
+  while (i != pend && i->deadline < deadline)
     ++i;
   return pending.insert(i, Pending::value_type(deadline, handler, p_expired));
 }
@@ -210,11 +210,11 @@ void
 PWL::Watchdog::remove_watchdog_event(Pending::iterator position) {
   assert(!pending.empty());
   if (position == pending.begin()) {
-    Pending::iterator next(position);
+    Pending::iterator next = position;
     ++next;
     if (next != pending.end()) {
-      Time first_deadline((*position).deadline);
-      Time next_deadline((*next).deadline);
+      Time first_deadline(position->deadline);
+      Time next_deadline(next->deadline);
       if (first_deadline != next_deadline) {
 	Time time_to_shoot;
 	get_timer(time_to_shoot);
