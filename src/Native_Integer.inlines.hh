@@ -433,6 +433,17 @@ operator<(const Native_Integer<T> x, const Native_Integer<T> y) {
 }
 
 template <typename T>
+inline const T&
+raw_value(const Native_Integer<T>& x) {
+  return value_;
+}
+
+template <typename T>
+inline T& raw_value(Native_Integer<T>& x) {
+  return value_;
+}
+
+template <typename T>
 inline std::ostream&
 operator<<(std::ostream& os, const Native_Integer<T> x) {
   return os << x.value_;

@@ -86,6 +86,16 @@ cmp(const GMP_Integer& x, const GMP_Integer& y) {
   return mpz_cmp(x.get_mpz_t(), y.get_mpz_t());
 }
 
+inline const mpz_class&
+raw_value(const GMP_Integer& x) {
+  return x;
+}
+
+inline mpz_class&
+raw_value(GMP_Integer& x) {
+  return x;
+}
+
 } // namespace Parma_Polyhedra_Library
 
 inline void

@@ -88,14 +88,8 @@ public:
   Checked_Number(const mpz_class& y);
 
   operator T() const;
- 
-  T& value();
-  const T& value() const;
-
-#if 0
-  /* Temporary kludge: needed by ERational */
-  operator mpz_class() const;
-#endif
+  T& raw_value();
+  const T& raw_value() const;
 
   Checked_Number& operator=(const Checked_Number REF y);
   Checked_Number& operator+=(const Checked_Number REF y);

@@ -45,23 +45,6 @@ struct FUNCTION_CLASS(abs) {
   }
 };
 
-template <typename Policy, typename To, typename From>
-inline Result
-gcd_common(To& to, const From& x, const From& y) {
-  To nx = x;
-  To ny = y;
-  To r;
-  while (ny != 0) {
-    Result ret = mod<Policy>(r, nx, ny);
-    if (ret != V_EQ)
-      assert(ret == V_EQ);
-    nx = ny;
-    ny = r;
-  }
-  to = nx;
-  return V_EQ;
-}
-
 inline Result
 neg(Result r) {
   assert(r < V_UNKNOWN);
@@ -112,7 +95,6 @@ sgn(Result xr, const Type& x) {
     break;
   }
 }
-
 
 template <typename Policy, typename To, typename From1, typename From2>
 inline Result add(To& to, Result xr, const From1& x, Result yr, const From2& y) {
@@ -171,6 +153,23 @@ struct FUNCTION_CLASS(sub_mul) {
     return sub<Policy>(to, V_EQ, to, r, temp);
   }
 };
+
+template <typename Policy, typename To, typename From>
+inline Result
+gcd_common(To& to, const From& x, const From& y) {
+  To nx = x;
+  To ny = y;
+  To r;
+  while (ny != 0) {
+    Result ret = mod<Policy>(r, nx, ny);
+    if (ret != V_EQ)
+      assert(ret == V_EQ);
+    nx = ny;
+    ny = r;
+  }
+  to = nx;
+  return V_EQ;
+}
 
 template <typename Policy, typename To, typename From1, typename From2>
 struct FUNCTION_CLASS(gcd) {
@@ -260,9 +259,9 @@ sgn_ext(const Type& x) {
   return r;
 }
 
-template <typename Policy, typename Type>
+template <typename Policy, typename Type1, typename Type2>
 inline Result
-cmp_ext(const Type& x, const Type& y) {
+cmp_ext(const Type1& x, const Type2& y) {
   Result rx, ry;
   Result r;
   if ((rx = value_type<Policy>(x)) == V_UNKNOWN ||
@@ -279,9 +278,9 @@ cmp_ext(const Type& x, const Type& y) {
   return r;
 }
 
-template <typename Policy, typename Type>
+template <typename Policy, typename To, typename From>
 inline Result
-neg_ext(Type& to, const Type& x) {
+neg_ext(To& to, const From& x) {
   Result r = value_type<Policy>(x);
   if (r == V_EQ)
     r = neg<Policy>(to, x);
@@ -293,9 +292,9 @@ neg_ext(Type& to, const Type& x) {
   return r;
 }
 
-template <typename Policy, typename Type>
+template <typename Policy, typename To, typename From>
 inline Result
-abs_ext(Type& to, const Type& x) {
+abs_ext(To& to, const From& x) {
   Result r = value_type<Policy>(x);
   if (r == V_EQ)
     r = abs<Policy>(to, x);
@@ -305,9 +304,9 @@ abs_ext(Type& to, const Type& x) {
   return r;
 }
 
-template <typename Policy, typename Type>
+template <typename Policy, typename To, typename From1, typename From2>
 inline Result
-add_ext(Type& to, const Type& x, const Type& y) {
+add_ext(To& to, const From1& x, const From2& y) {
   Result rx, ry;
   Result r;
   if ((rx = value_type<Policy>(x)) == V_UNKNOWN ||
@@ -325,9 +324,9 @@ add_ext(Type& to, const Type& x, const Type& y) {
   return r;
 }
     
-template <typename Policy, typename Type>
+template <typename Policy, typename To, typename From1, typename From2>
 inline Result
-sub_ext(Type& to, const Type& x, const Type& y) {
+sub_ext(To& to, const From1& x, const From2& y) {
   Result rx, ry;
   Result r;
   if ((rx = value_type<Policy>(x)) == V_UNKNOWN ||
@@ -345,9 +344,9 @@ sub_ext(Type& to, const Type& x, const Type& y) {
   return r;
 }
     
-template <typename Policy, typename Type>
+template <typename Policy, typename To, typename From1, typename From2>
 inline Result
-mul_ext(Type& to, const Type& x, const Type& y) {
+mul_ext(To& to, const From1& x, const From2& y) {
   Result rx, ry;
   Result r;
   if ((rx = value_type<Policy>(x)) == V_UNKNOWN ||
@@ -370,9 +369,9 @@ mul_ext(Type& to, const Type& x, const Type& y) {
 }
     
 	
-template <typename Policy, typename Type>
+template <typename Policy, typename To, typename From1, typename From2>
 inline Result
-div_ext(Type& to, const Type& x, const Type& y) {
+div_ext(To& to, const From1& x, const From2& y) {
   Result rx, ry;
   Result r;
   if ((rx = value_type<Policy>(x)) == V_UNKNOWN ||
@@ -405,9 +404,9 @@ div_ext(Type& to, const Type& x, const Type& y) {
 }
     
 	
-template <typename Policy, typename Type>
+template <typename Policy, typename To, typename From1, typename From2>
 inline Result
-mod_ext(Type& to, const Type& x, const Type& y) {
+mod_ext(To& to, const From1& x, const From2& y) {
   Result rx, ry;
   Result r;
   if ((rx = value_type<Policy>(x)) == V_UNKNOWN ||
@@ -427,9 +426,9 @@ mod_ext(Type& to, const Type& x, const Type& y) {
   return r;
 }
     
-template <typename Policy, typename Type>
+template <typename Policy, typename To, typename From>
 inline Result
-sqrt_ext(Type& to, const Type& x) {
+sqrt_ext(To& to, const From& x) {
   Result r = value_type<Policy>(x);
   if (r == V_EQ)
     r = sqrt<Policy>(to, x);
@@ -443,9 +442,9 @@ sqrt_ext(Type& to, const Type& x) {
   return r;
 }
 
-template <typename Policy, typename Type>
+template <typename Policy, typename To, typename From1, typename From2>
 inline Result
-gcd_ext(Type& to, const Type& x, const Type& y) {
+gcd_ext(To& to, const From1& x, const From2& y) {
   Result rx, ry;
   Result r;
   if ((rx = value_type<Policy>(x)) == V_UNKNOWN ||
@@ -469,9 +468,9 @@ gcd_ext(Type& to, const Type& x, const Type& y) {
   return r;
 }
     
-template <typename Policy, typename Type>
+template <typename Policy, typename To, typename From1, typename From2>
 inline Result
-lcm_ext(Type& to, const Type& x, const Type& y) {
+lcm_ext(To& to, const From1& x, const From2& y) {
   Result rx, ry;
   Result r;
   if ((rx = value_type<Policy>(x)) == V_UNKNOWN ||

@@ -105,6 +105,11 @@ void sqrt_assign(Native_Integer<T>& x);
 template <typename T>
 void sqrt_assign(Native_Integer<T>& x, const Native_Integer<T> y);
 
+template <typename T>
+const T& raw_value(const Native_Integer<T>& x);
+
+template <typename T>
+T& raw_value(const Native_Integer<T>& x);
 
 template <typename T>
 std::ostream& operator<<(std::ostream& os, const Native_Integer<T> x);

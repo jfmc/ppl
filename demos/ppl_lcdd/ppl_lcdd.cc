@@ -614,9 +614,12 @@ write_polyhedron(std::ostream& out,
 	  guarded_write(out, ' ');
 	  if (g.coefficient(PPL::Variable(j)) == 0)
 	    guarded_write(out, '0');
-	  else
-	    guarded_write(out, mpq_class(mpz_class(g.coefficient(PPL::Variable(j))),
-					 mpz_class(divisor)));
+	  else {
+	    mpz_class num, den;
+	    PPL::Checked::assign<PPL::Check_Overflow_Policy>(num, raw_value(g.coefficient(PPL::Variable(j))));
+	    PPL::Checked::assign<PPL::Check_Overflow_Policy>(den, raw_value(divisor));
+	    guarded_write(out, mpq_class(num, den));
+	  }
 	}
       }
       else {

@@ -421,13 +421,181 @@ SPECIALIZE_ASSIGN(int_float_check_min_max, u_int64_t, float128_t)
 #undef ASSIGN2_UNSIGNED_SIGNED
 #undef ASSIGN2_SIGNED_UNSIGNED
 
+template<typename T>
+struct Larger_Types;
+
+/* 
+   The following is architecture dependant.
+   It should be ok of ia32.
+
+   Choosen guidelines:
+   - avoid division where possibile (int_larger variant for mul)
+   - use int_larger variant for types smaller than architecture bit size
+*/
+
+template <>
+struct Larger_Types<char> {
+  static const bool Neg_ = true;
+  static const bool Add_ = true;
+  static const bool Sub_ = true;
+  static const bool Mul_ = true;
+  typedef int Neg;
+  typedef int Add;
+  typedef int Sub;
+  typedef int Mul;
+};
+
+template <>
+struct Larger_Types<unsigned char> {
+  static const bool Neg_ = true;
+  static const bool Add_ = true;
+  static const bool Sub_ = true;
+  static const bool Mul_ = true;
+  typedef int Neg;
+  typedef unsigned int Add;
+  typedef int Sub;
+  typedef unsigned int Mul;
+};
+
+template <>
+struct Larger_Types<short> {
+  static const bool Neg_ = true;
+  static const bool Add_ = true;
+  static const bool Sub_ = true;
+  static const bool Mul_ = true;
+  typedef int Neg;
+  typedef int Add;
+  typedef int Sub;
+  typedef int Mul;
+};
+
+template <>
+struct Larger_Types<unsigned short> {
+  static const bool Neg_ = true;
+  static const bool Add_ = true;
+  static const bool Sub_ = true;
+  static const bool Mul_ = true;
+  typedef int Neg;
+  typedef unsigned int Add;
+  typedef int Sub;
+  typedef unsigned int Mul;
+};
+
+template <>
+struct Larger_Types<int> {
+  static const bool Neg_ = false;
+  static const bool Add_ = false;
+  static const bool Sub_ = false;
+  static const bool Mul_ = false;
+  typedef long long Neg;
+  typedef long long Add;
+  typedef long long Sub;
+  typedef long long Mul;
+};
+
+template <>
+struct Larger_Types<unsigned int> {
+  static const bool Neg_ = false;
+  static const bool Add_ = false;
+  static const bool Sub_ = false;
+  static const bool Mul_ = false;
+  typedef long long Neg;
+  typedef unsigned long long Add;
+  typedef long long Sub;
+  typedef unsigned long long Mul;
+};
+
+template <>
+struct Larger_Types<long> {
+  static const bool Neg_ = false;
+  static const bool Add_ = false;
+  static const bool Sub_ = false;
+  static const bool Mul_ = false;
+  typedef long long Neg;
+  typedef long long Add;
+  typedef long long Sub;
+  typedef long long Mul;
+};
+
+template <>
+struct Larger_Types<unsigned long> {
+  static const bool Neg_ = false;
+  static const bool Add_ = false;
+  static const bool Sub_ = false;
+  static const bool Mul_ = false;
+  typedef long long Neg;
+  typedef unsigned long long Add;
+  typedef long long Sub;
+  typedef unsigned long long Mul;
+};
+
+template <>
+struct Larger_Types<long long> {
+  static const bool Neg_ = false;
+  static const bool Add_ = false;
+  static const bool Sub_ = false;
+  static const bool Mul_ = false;
+  typedef long long Neg;
+  typedef long long Add;
+  typedef long long Sub;
+  typedef long long Mul;
+};
+
+template <>
+struct Larger_Types<unsigned long long> {
+  static const bool Neg_ = false;
+  static const bool Add_ = false;
+  static const bool Sub_ = false;
+  static const bool Mul_ = false;
+  typedef long long Neg;
+  typedef unsigned long long Add;
+  typedef long long Sub;
+  typedef unsigned long long Mul;
+};
+
+template <typename Policy, typename Type>
+inline Result 
+neg_int_larger(Type& to, const Type x) {
+  typename Larger_Types<Type>::Neg l = x;
+  l = -l;
+  return assign<Policy>(to, l);
+}
+
+template <typename Policy, typename Type>
+inline Result 
+add_int_larger(Type& to, const Type x, const Type y) {
+  typename Larger_Types<Type>::Add l = x;
+  l += y;
+  return assign<Policy>(to, l);
+}
+
+template <typename Policy, typename Type>
+inline Result 
+sub_int_larger(Type& to, const Type x, const Type y) {
+  typename Larger_Types<Type>::Sub l = x;
+  l -= y;
+  return assign<Policy>(to, l);
+}
+
+template <typename Policy, typename Type>
+inline Result 
+mul_int_larger(Type& to, const Type x, const Type y) {
+  typename Larger_Types<Type>::Mul l = x;
+  l *= y;
+  return assign<Policy>(to, l);
+}
+
 template <typename Policy, typename Type>
 inline Result 
 neg_signed_int(Type& to, const Type from) {
   Result r;
-  if (Policy::check_overflow && from < -CHECKED_INT_MAX(Type, Policy)) {
-    r = V_POS_OVERFLOW;
-    goto bad;
+  if (Policy::check_overflow) {
+    if (Larger_Types<Type>::Neg_)
+      return neg_int_larger<Policy>(to, from);
+    if (from < -CHECKED_INT_MAX(Type, Policy)) {
+      r = V_POS_OVERFLOW;
+      goto bad;
+    }
   }
   to = -from;
   r = V_EQ;
@@ -439,9 +607,13 @@ template <typename Policy, typename Type>
 inline Result 
 neg_unsigned_int(Type& to, const Type from) {
   Result r;
-  if (!Policy::check_overflow || from != 0) {
-    r = V_NEG_OVERFLOW;
-    goto bad;
+  if (Policy::check_overflow) {
+    if (Larger_Types<Type>::Neg_)
+      return neg_int_larger<Policy>(to, from);
+    if (from != 0) {
+      r = V_NEG_OVERFLOW;
+      goto bad;
+    }
   }
   to = from;
   r = V_EQ;
@@ -454,6 +626,8 @@ inline Result
 add_signed_int(Type& to, const Type x, const Type y) {
   Result r;
   if (Policy::check_overflow) {
+    if (Larger_Types<Type>::Add_)
+      return add_int_larger<Policy>(to, x, y);
     if (y >= 0) {
       if (x > CHECKED_INT_MAX(Type, Policy) - y) {
 	r = V_POS_OVERFLOW;
@@ -476,6 +650,8 @@ inline Result
 add_unsigned_int(Type& to, const Type x, const Type y) {
   Result r;
   if (Policy::check_overflow) {
+    if (Larger_Types<Type>::Add_)
+      return add_int_larger<Policy>(to, x, y);
     if (x > CHECKED_INT_MAX(Type, Policy) - y) {
       r = V_POS_OVERFLOW;
       goto bad;
@@ -492,6 +668,8 @@ inline Result
 sub_signed_int(Type& to, const Type x, const Type y) {
   Result r;
   if (Policy::check_overflow) {
+    if (Larger_Types<Type>::Sub_)
+      return sub_int_larger<Policy>(to, x, y);
     if (y >= 0) {
       if (x < CHECKED_INT_MIN(Type, Policy) + y) {
 	r = V_NEG_OVERFLOW;
@@ -514,6 +692,8 @@ inline Result
 sub_unsigned_int(Type& to, const Type x, const Type y) {
   Result r;
   if (Policy::check_overflow) {
+    if (Larger_Types<Type>::Sub_)
+      return sub_int_larger<Policy>(to, x, y);
     if (x < CHECKED_INT_MIN(Type, Policy) + y) {
       r = V_NEG_OVERFLOW;
       goto bad;
@@ -532,6 +712,8 @@ mul_signed_int(Type& to, const Type x, const Type y) {
     to = x * y;
     return V_EQ;
   }
+  if (Larger_Types<Type>::Mul_)
+    return mul_int_larger<Policy>(to, x, y);
   if (y == 0) {
     to = 0;
     return V_EQ;
@@ -580,6 +762,8 @@ mul_unsigned_int(Type& to, const Type x, const Type y) {
     to = x * y;
     return V_EQ;
   }
+  if (Larger_Types<Type>::Mul_)
+    return mul_int_larger<Policy>(to, x, y);
   if (y == 0) {
     to = 0;
     return V_EQ;
@@ -691,101 +875,6 @@ sqrt_signed_int(Type& to, const Type from) {
   return r;
 }
 
-template<typename T>
-struct Larger_Types;
-
-template <>
-struct Larger_Types<int8_t> {
-  typedef int32_t Neg;
-  typedef int32_t Add;
-  typedef int32_t Sub;
-  typedef int32_t Mul;
-};
-
-template <>
-struct Larger_Types<u_int8_t> {
-  typedef int32_t Neg;
-  typedef u_int32_t Add;
-  typedef int32_t Sub;
-  typedef u_int32_t Mul;
-};
-
-template <>
-struct Larger_Types<int16_t> {
-  typedef int32_t Neg;
-  typedef int32_t Add;
-  typedef int32_t Sub;
-  typedef int32_t Mul;
-};
-
-template <>
-struct Larger_Types<u_int16_t> {
-  typedef int32_t Neg;
-  typedef u_int32_t Add;
-  typedef int32_t Sub;
-  typedef u_int32_t Mul;
-};
-
-template <>
-struct Larger_Types<int32_t> {
-  typedef int64_t Neg;
-  typedef int64_t Add;
-  typedef int64_t Sub;
-  typedef int64_t Mul;
-};
-
-template <>
-struct Larger_Types<u_int32_t> {
-  typedef int64_t Neg;
-  typedef u_int64_t Add;
-  typedef int64_t Sub;
-  typedef u_int64_t Mul;
-};
-
-
-template <typename Policy, typename Type>
-inline Result 
-neg_int_larger(Type& to, const Type x) {
-  typename Larger_Types<Type>::Neg l = x;
-  l = -l;
-  return assign<Policy>(to, l);
-}
-
-template <typename Policy, typename Type>
-inline Result 
-add_int_larger(Type& to, const Type x, const Type y) {
-  typename Larger_Types<Type>::Add l = x;
-  l += y;
-  return assign<Policy>(to, l);
-}
-
-template <typename Policy, typename Type>
-inline Result 
-sub_int_larger(Type& to, const Type x, const Type y) {
-  typename Larger_Types<Type>::Sub l = x;
-  l -= y;
-  return assign<Policy>(to, l);
-}
-
-template <typename Policy, typename Type>
-inline Result 
-mul_int_larger(Type& to, const Type x, const Type y) {
-  typename Larger_Types<Type>::Mul l = x;
-  l *= y;
-  return assign<Policy>(to, l);
-}
-
-/* 
-   TODO: Optimize architecture dependant use of int_larger or
-   (un)signed_int variants for neg, add, sub, mul.
-
-   The following should be ok of ia32.
-
-   Choosen guidelines:
-   - avoid division where possibile (int_larger variant for mul)
-   - use int_larger variant for types smaller than architecture bit size
-*/
-
 SPECIALIZE_PRED(int, signed char)
 SPECIALIZE_PRED(int, short)
 SPECIALIZE_PRED(int, int)
@@ -808,41 +897,49 @@ SPECIALIZE_SUCC(int, unsigned int)
 SPECIALIZE_SUCC(int, unsigned long)
 SPECIALIZE_SUCC(int, unsigned long long)
 
-SPECIALIZE_NEG(int_larger, int8_t, int8_t)
-SPECIALIZE_NEG(int_larger, int16_t, int16_t)
-SPECIALIZE_NEG(signed_int, int32_t, int32_t)
-SPECIALIZE_NEG(signed_int, int64_t, int64_t)
-SPECIALIZE_NEG(int_larger, u_int8_t, u_int8_t)
-SPECIALIZE_NEG(int_larger, u_int16_t, u_int16_t)
-SPECIALIZE_NEG(unsigned_int, u_int32_t, u_int32_t)
-SPECIALIZE_NEG(unsigned_int, u_int64_t, u_int64_t)
+SPECIALIZE_NEG(signed_int, signed char, signed char)
+SPECIALIZE_NEG(signed_int, short, short)
+SPECIALIZE_NEG(signed_int, int, int)
+SPECIALIZE_NEG(signed_int, long, long)
+SPECIALIZE_NEG(signed_int, long long, long long)
+SPECIALIZE_NEG(unsigned_int, unsigned char, unsigned char)
+SPECIALIZE_NEG(unsigned_int, unsigned short, unsigned short)
+SPECIALIZE_NEG(unsigned_int, unsigned int, unsigned int)
+SPECIALIZE_NEG(unsigned_int, unsigned long, unsigned long)
+SPECIALIZE_NEG(unsigned_int, unsigned long long, unsigned long long)
 
-SPECIALIZE_ADD(int_larger, int8_t, int8_t)
-SPECIALIZE_ADD(int_larger, int16_t, int16_t)
-SPECIALIZE_ADD(signed_int, int32_t, int32_t)
-SPECIALIZE_ADD(signed_int, int64_t, int64_t)
-SPECIALIZE_ADD(int_larger, u_int8_t, u_int8_t)
-SPECIALIZE_ADD(int_larger, u_int16_t, u_int16_t)
-SPECIALIZE_ADD(unsigned_int, u_int32_t, u_int32_t)
-SPECIALIZE_ADD(unsigned_int, u_int64_t, u_int64_t)
+SPECIALIZE_ADD(signed_int, signed char, signed char)
+SPECIALIZE_ADD(signed_int, short, short)
+SPECIALIZE_ADD(signed_int, int, int)
+SPECIALIZE_ADD(signed_int, long, long)
+SPECIALIZE_ADD(signed_int, long long, long long)
+SPECIALIZE_ADD(unsigned_int, unsigned char, unsigned char)
+SPECIALIZE_ADD(unsigned_int, unsigned short, unsigned short)
+SPECIALIZE_ADD(unsigned_int, unsigned int, unsigned int)
+SPECIALIZE_ADD(unsigned_int, unsigned long, unsigned long)
+SPECIALIZE_ADD(unsigned_int, unsigned long long, unsigned long long)
 
-SPECIALIZE_SUB(int_larger, int8_t, int8_t)
-SPECIALIZE_SUB(int_larger, int16_t, int16_t)
-SPECIALIZE_SUB(signed_int, int32_t, int32_t)
-SPECIALIZE_SUB(signed_int, int64_t, int64_t)
-SPECIALIZE_SUB(int_larger, u_int8_t, u_int8_t)
-SPECIALIZE_SUB(int_larger, u_int16_t, u_int16_t)
-SPECIALIZE_SUB(unsigned_int, u_int32_t, u_int32_t)
-SPECIALIZE_SUB(unsigned_int, u_int64_t, u_int64_t)
+SPECIALIZE_SUB(signed_int, signed char, signed char)
+SPECIALIZE_SUB(signed_int, short, short)
+SPECIALIZE_SUB(signed_int, int, int)
+SPECIALIZE_SUB(signed_int, long, long)
+SPECIALIZE_SUB(signed_int, long long, long long)
+SPECIALIZE_SUB(unsigned_int, unsigned char, unsigned char)
+SPECIALIZE_SUB(unsigned_int, unsigned short, unsigned short)
+SPECIALIZE_SUB(unsigned_int, unsigned int, unsigned int)
+SPECIALIZE_SUB(unsigned_int, unsigned long, unsigned long)
+SPECIALIZE_SUB(unsigned_int, unsigned long long, unsigned long long)
 
-SPECIALIZE_MUL(int_larger, int8_t, int8_t)
-SPECIALIZE_MUL(int_larger, int16_t, int16_t)
-SPECIALIZE_MUL(int_larger, int32_t, int32_t)
-SPECIALIZE_MUL(signed_int, int64_t, int64_t)
-SPECIALIZE_MUL(int_larger, u_int8_t, u_int8_t)
-SPECIALIZE_MUL(int_larger, u_int16_t, u_int16_t)
-SPECIALIZE_MUL(int_larger, u_int32_t, u_int32_t)
-SPECIALIZE_MUL(unsigned_int, u_int64_t, u_int64_t)
+SPECIALIZE_MUL(signed_int, signed char, signed char)
+SPECIALIZE_MUL(signed_int, short, short)
+SPECIALIZE_MUL(signed_int, int, int)
+SPECIALIZE_MUL(signed_int, long, long)
+SPECIALIZE_MUL(signed_int, long long, long long)
+SPECIALIZE_MUL(unsigned_int, unsigned char, unsigned char)
+SPECIALIZE_MUL(unsigned_int, unsigned short, unsigned short)
+SPECIALIZE_MUL(unsigned_int, unsigned int, unsigned int)
+SPECIALIZE_MUL(unsigned_int, unsigned long, unsigned long)
+SPECIALIZE_MUL(unsigned_int, unsigned long long, unsigned long long)
 
 SPECIALIZE_DIV(signed_int, signed char, signed char)
 SPECIALIZE_DIV(signed_int, short, short)

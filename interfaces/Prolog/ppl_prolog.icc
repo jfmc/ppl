@@ -495,7 +495,7 @@ term_to_unsigned(Prolog_term_ref t) {
     Integer vv = integer_term_to_Integer(t);
     if (vv < 0)
       throw not_unsigned_integer(t);
-    if (Checked::assign<Check_Overflow_Policy>(d, vv) != Checked::V_EQ)
+    if (Checked::assign<Check_Overflow_Policy>(d, raw_value(vv)) != Checked::V_EQ)
       throw Prolog_unsigned_out_of_range(t, std::numeric_limits<U>::max());
   }
   return d;

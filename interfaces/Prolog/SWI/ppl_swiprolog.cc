@@ -353,7 +353,7 @@ integer_term_to_Integer(Prolog_term_ref t) {
 static Prolog_term_ref
 Integer_to_integer_term(const PPL::Integer& n) {
   long v;
-  if (PPL::Checked::assign<PPL::Check_Overflow_Policy>(v, n) != PPL::Checked::V_EQ)
+  if (PPL::Checked::assign<PPL::Check_Overflow_Policy>(v, PPL::raw_value(n)) != PPL::Checked::V_EQ)
     throw PPL_integer_out_of_range(n);
   Prolog_term_ref t = Prolog_new_term_ref();
   Prolog_put_long(t, v);

@@ -192,52 +192,52 @@ DECLARE_FUN1(value_type, Result, const)
 DECLARE_FUN2(set_special, void, , const)
 
 template <typename Policy, typename To, typename From>
-inline Result assign_ext(To& to, const From& from);
+Result assign_ext(To& to, const From& from);
 
 template <typename Policy, typename Type>
-inline Result sgn_ext(const Type& x);
+Result sgn_ext(const Type& x);
+
+template <typename Policy, typename Type1, typename Type2>
+Result cmp_ext(const Type1& x, const Type2& y);
+
+template <typename Policy, typename To, typename From>
+Result neg_ext(To& to, const From& x);
+
+template <typename Policy, typename To, typename From>
+Result abs_ext(To& to, const From& x);
+
+template <typename Policy, typename To, typename From1, typename From2>
+Result add_ext(To& to, const From1& x, const From2& y);
+
+template <typename Policy, typename To, typename From1, typename From2>
+Result sub_ext(To& to, const From1& x, const From2& y);
+
+template <typename Policy, typename To, typename From1, typename From2>
+Result mul_ext(To& to, const From1& x, const From2& y);
+
+template <typename Policy, typename To, typename From1, typename From2>
+Result div_ext(To& to, const From1& x, const From2& y);
+
+template <typename Policy, typename To, typename From1, typename From2>
+Result mod_ext(To& to, const From1& x, const From2& y);
+
+template <typename Policy, typename To, typename From1, typename From2>
+Result add_mul_ext(To& to, const From1& x, const From2& y);
+
+template <typename Policy, typename To, typename From1, typename From2>
+Result sub_mul_ext(To& to, const From1& x, const From2& y);
+
+template <typename Policy, typename To, typename From>
+Result sqrt_ext(To& to, const From& x);
+
+template <typename Policy, typename To, typename From1, typename From2>
+Result gcd_ext(To& to, const From1& x, const From2& y);
+
+template <typename Policy, typename To, typename From1, typename From2>
+Result lcm_ext(To& to, const From1& x, const From2& y);
 
 template <typename Policy, typename Type>
-inline Result cmp_ext(const Type& x, const Type& y);
-
-template <typename Policy, typename Type>
-inline Result neg_ext(Type& to, const Type& x);
-
-template <typename Policy, typename Type>
-inline Result abs_ext(Type& to, const Type& x);
-
-template <typename Policy, typename Type>
-inline Result add_ext(Type& to, const Type& x, const Type& y);
-
-template <typename Policy, typename Type>
-inline Result sub_ext(Type& to, const Type& x, const Type& y);
-
-template <typename Policy, typename Type>
-inline Result mul_ext(Type& to, const Type& x, const Type& y);
-
-template <typename Policy, typename Type>
-inline Result div_ext(Type& to, const Type& x, const Type& y);
-
-template <typename Policy, typename Type>
-inline Result mod_ext(Type& to, const Type& x, const Type& y);
-
-template <typename Policy, typename Type>
-inline Result add_mul_ext(Type& to, const Type& x, const Type& y);
-
-template <typename Policy, typename Type>
-inline Result sub_mul_ext(Type& to, const Type& x, const Type& y);
-
-template <typename Policy, typename Type>
-inline Result sqrt_ext(Type& to, const Type& x);
-
-template <typename Policy, typename Type>
-inline Result gcd_ext(Type& to, const Type& x, const Type& y);
-
-template <typename Policy, typename Type>
-inline Result lcm_ext(Type& to, const Type& x, const Type& y);
-
-template <typename Policy, typename Type>
-inline void print_ext(std::ostream& os, const Type& x);
+void print_ext(std::ostream& os, const Type& x);
 
 } // namespace Checked
 

@@ -46,6 +46,9 @@ inline void sqrt_assign(GMP_Integer& x);
 inline void sqrt_assign(GMP_Integer& x, const GMP_Integer& y);
 inline int cmp(const GMP_Integer& x, const GMP_Integer& y);
 
+inline const mpz_class& raw_value(const GMP_Integer& x);
+inline mpz_class& raw_value(GMP_Integer& x);
+
 } // namespace Parma_Polyhedra_Library
 
 
