@@ -22,7 +22,6 @@
 //  site: http://www.cs.unipr.it/ppl/
 
 /*! \mainpage Convex Polyhedra and the PPL
-\section introduction An Introduction to Convex Polyhedra
 
 Most of the following definitions and results are taken from:
 - G. L. Nemhauser and L. A. Wolsey - Integer and Combinatorial Optimization -
@@ -35,6 +34,13 @@ Most of the following definitions and results are taken from:
   Convex Polyhedra and the Parma Polyhedra Library - Quaderno 286 -
   Department of Mathematics, University of Parma, Italy, May 2002.
 
+\section introduction An Introduction to Convex Polyhedra
+
+Informally, a convex polyhedron is a set of points
+(in some \f$n\f$-dimensional vector space) that satisfies
+a finite number of linear inequalities.
+In this section we introduce such polyhedra,
+as considered by the library, in more detail.
 
 <B>Vectors, Matrices and Scalar Products</B>
 
@@ -116,27 +122,9 @@ are, respectively, the smallest and the biggest elements of both \f$\Pset_n\f$
 and \f$\CPset_n\f$.
 The vector space \f$\Rset^n\f$ is also called the <EM>universe</EM> polyhedron.
 
-
-<B>Intersection and Convex Polyhedral Hull</B>
-
-For any pair of NNC polyhedra \f$\cP_1, \cP_2 \in \Pset_n\f$,
-the <EM>intersection</EM> of \f$\cP_1\f$ and \f$\cP_2\f$,
-defined as the set intersection \f$\cP_1 \inters \cP_2\f$,
-is the biggest NNC polyhedron included in both \f$\cP_1\f$ and \f$\cP_2\f$;
-similarly, the <EM>convex polyhedral hull</EM> (or <EM>poly-hull</EM>)
-of \f$\cP_1\f$ and \f$\cP_2\f$, denoted by \f$\cP_1 \uplus \cP_2\f$,
-is the smallest NNC polyhedron that includes both
-\f$\cP_1\f$ and \f$\cP_2\f$.
-The intersection and poly-hull of any pair of closed polyhedra
-in \f$\CPset_n\f$ is also closed.
-
 In theoretical terms,
 \f$\Pset_n\f$ is a <EM>lattice</EM> under set inclusion and
-\f$\CPset_n\f$ is a <EM>sub-lattice</EM> of \f$\Pset_n\f$;
-the intersection and poly-hull operators defined above
-are the binary <EM>meet</EM> and the binary <EM>join</EM>
-operators on both lattices.
-
+\f$\CPset_n\f$ is a <EM>sub-lattice</EM> of \f$\Pset_n\f$.
 
 <B>Bounded Polyhedra</B>
 
@@ -153,6 +141,23 @@ if there exists a \f$\lambda \in \nonnegRset\f$ such that
 \f]
 A bounded polyhedron is also called a <EM>polytope</EM>.
 
+<B>Rational Polyhedra</B>
+
+An NNC polyhedron is called <EM>rational</EM>
+if it can be expressed as a constraint system where
+all the constraints have rational coefficients.
+
+The library only supports rational polyhedra.
+The restriction to rational numbers applies not only to polyhedra,
+but also to the other numeric arguments that may be required
+by the operators considered, such as the coefficients defining
+(rational) affine transformations and (rational) bounding boxes.
+
+
+\section representation Representations of Convex Polyhedra
+
+In this section we describe the main alternative representations
+that may be used to specify an NNC polyhedron. 
 
 <B>Constraints representation</B>
 
@@ -261,6 +266,8 @@ in the sense that
   \cP = \linearhull(L) + \conichull(R) + \NNChull(P, C),
 \f]
 where the symbol '\f$+\f$' denotes the Minkowski's sum.
+if the NNC polyhedron is rational, then it can be represented
+by a generator system where all the generators have rational coordinates.
 
 When \f$\cP \in \CPset_n\f$ is a closed polyhedron,
 then it can be represented by
@@ -290,7 +297,6 @@ constraint \f$y \geq 0\f$ can be represented by the generator system
 It is also worth noting that the only ray in \f$R\f$
 is <EM>not</EM> an extreme ray of \f$\cP\f$.
 
-
 <B>Minimized Representations</B>
 
 A constraints system \f$\cC\f$ for an NNC polyhedron \f$\cP \in \Pset_n\f$
@@ -305,23 +311,25 @@ such that \f$L' \sseq L\f$, \f$R' \sseq R\f$, \f$P' \sseq P\f$ and
 \f$C' \sseq C\f$.
 
 
-<B>Double Description Method</B>
+<B>Double Description</B>
 
 Any NNC polyhedron \f$\cP\f$ can be described by using
-a constraint system, a generator system, or both.
+a constraint system \f$\cC\f$, a generator system \f$\cC\f$, or
+both by means of the <EM>double description pair (DD pair)</EM>
+\f$(\cC, \cG)\f$.
 The <EM>double description method</EM> is a collection
 of well-known as well as novel theoretical results showing that,
 given one kind of representation, there is an algorithm
 for computing a representation of the other kind
-and eventually minimize both representation by removing
+and eventually minimize both representations by removing
 redundant constraints/generators.
 
-Such a change of representation happens to be a key step
+Such changes of representation form a key step
 in the implementation of many operators on NNC polyhedra:
 this is because some operators, such as intersections and poly-hulls,
 are provided with a natural and efficient implementation
-when using one of two kinds of representations,
-while being rather cumbersome when using the other one.
+when using one of the representations in a DD pair,
+while being rather cumbersome when using the other.
 
 
 <B>Topologies and Topological-compatibility</B>
@@ -350,14 +358,13 @@ to an NNC polyhedron and any attempt to add them to a C polyhedron
 will result in a run-time exception;
 similarly, generators that are closure points can only be added
 to an NNC polyhedron; and
-only polyhedra having the same topology may be compared
-or combined using, for example, the intersection or poly-hull operations.
+only polyhedra having the same topology may be compared or combined.
 More generally, any operation on a polyhedron must be compatible
 with its given topology.
-The library provides methods that, starting from a polyhedron of
+Wherever possible,
+the library provides methods that, starting from a polyhedron of
 a given topology, build the corresponding polyhedron having
-the other topology, if possible.
-
+the other topology.
 
 <B>Space Dimensions and Dimension-compatibility</B>
 
@@ -365,7 +372,7 @@ The <EM>space dimension</EM> of an NNC polyhedron \f$P \in \Pset_n\f$
 is the dimension \f$n \in \Nset\f$ of the corresponding vector space
 \f$\Rset^n\f$.
 The space dimension of constraints, generators and other objects
-of the PPL are defined similarly.
+of the library are defined similarly.
 The space dimension of objects is important because most of the
 operations defined on NNC polyhedra are well-defined if and only if
 the various arguments are space dimension-compatible.
@@ -390,6 +397,45 @@ is automatically adjusted when needed, the space dimension of polyhedra
 can only change due to explicit calls to operators provided for that
 purpose.
 
+\section operations Operations on Convex Polyhedra
+
+In this section we briefly describe operations on NNC polyhedra
+that are provided by the library.
+
+<B>Intersection and Convex Polyhedral Hull</B>
+
+For any pair of NNC polyhedra \f$\cP_1, \cP_2 \in \Pset_n\f$,
+the <EM>intersection</EM> of \f$\cP_1\f$ and \f$\cP_2\f$,
+defined as the set intersection \f$\cP_1 \inters \cP_2\f$,
+is the biggest NNC polyhedron included in both \f$\cP_1\f$ and \f$\cP_2\f$;
+similarly, the <EM>convex polyhedral hull</EM> (or <EM>poly-hull</EM>)
+of \f$\cP_1\f$ and \f$\cP_2\f$, denoted by \f$\cP_1 \uplus \cP_2\f$,
+is the smallest NNC polyhedron that includes both
+\f$\cP_1\f$ and \f$\cP_2\f$.
+The intersection and poly-hull of any pair of closed polyhedra
+in \f$\CPset_n\f$ is also closed.
+
+In theoretical terms,
+the intersection and poly-hull operators defined above
+are the binary <EM>meet</EM> and the binary <EM>join</EM>
+operators on the lattices \f$\Pset_n\f$ and \f$\CPset_n\f$.
+
+
+<B>Convex Polyhedral Difference</B>
+
+For any pair of NNC polyhedra \f$\cP_1, \cP_2 \in \Pset_n\f$,
+the <EM>convex polyhedral difference</EM> (or <EM>poly-difference</EM>)
+of \f$\cP_1\f$ and \f$\cP_2\f$ is defined as the poly-hull
+of the set-theoretic difference of \f$\cP_1\f$ and \f$\cP_2\f$.
+
+In general, even though \f$\cP_1, \cP_2 \in \CPset_n\f$
+are topologically closed polyhedra, their poly-difference may be
+a convex polyhedron that is not topologically closed.
+For this reason, when computing the poly-difference of two
+C polyhedra, the library will enforce the topological closure
+of the result.
+
+
 
 <B>Affine Images and Preimages</B>
 
@@ -410,25 +456,9 @@ Both \f$\Pset_n\f$ and \f$\CPset_n\f$ are closed under
 the application of any space-dimension preserving
 affine image and preimage operators.
 
-
-<B>Convex Polyhedral Difference</B>
-
-For any pair of NNC polyhedra \f$\cP_1, \cP_2 \in \Pset_n\f$,
-the <EM>convex polyhedral difference</EM> (or <EM>poly-difference</EM>)
-of \f$\cP_1\f$ and \f$\cP_2\f$ is defined as the poly-hull
-of the set-theoretic difference of \f$\cP_1\f$ and \f$\cP_2\f$.
-
-In general, even though \f$\cP_1, \cP_2 \in \CPset_n\f$
-are topologically closed polyhedra, their poly-difference may be
-a convex polyhedron that is not topologically closed.
-For this reason, when computing the poly-difference of two
-C polyhedra, the library will enforce the topological closure
-of the result.
-
-
 <B>Widening Operators</B>
 
-We provide widening operators for the domain of
+The library provides widening operators for the domain of
 NNC polyhedra.
 These operators use a widening, we call <EM>CC92-widening</EM>,
 which is based on that described in P. Cousot and R. Cousot,
@@ -445,13 +475,13 @@ In particular, the CC92-widening of an NNC polyhedron \f$P\f$
 
  - allows for equalities in \f$P\f$ and \f$P'\f$
    (the original definition is restricted to inequalities);
- - does not require the polyhedra to be closed;
+ - does not require \f$P\f$ and \f$P'\f$ to be closed;
  - requires as a precondition that \f$P' \sseq P\f$.
 
 
 <B>Time-Elapse Operator</B>
 
-The <EM>time-elapse</EM> operator provided by the PPL is the time elapse
+The <EM>time-elapse</EM> operator provided by the library is the time elapse
 operator defined in
 N. Halbwachs and Y.-E. Proy and P. Roumanoff,
 Verification of Real-Time Systems using Linear Relation Analysis,
@@ -500,22 +530,10 @@ The <EM>bounding box</EM> of an NNC polyhedron \f$\cP\f$ is
 the smallest \f$n\f$-dimensional box
 containing \f$\cP\f$. 
 
-<B>Rational Polyhedra</B>
-
-An NNC polyhedron is called <EM>rational</EM>
-if it can be expressed as a constraint system where
-all the constraints have rational coefficients.
-It can be shown that any rational NNC polyhedron can be represented
-by a generator system where all the generators have rational coordinates.
-All the operators on NNC polyhedra defined above,
-when restricted to work on rational arguments,
-will return rational polyhedra.
-
-The library only supports rational polyhedra.
-The restriction to rational numbers applies not only to polyhedra,
-but also to the other numeric arguments that may be required
-by the operators considered, such as the coefficients defining
-(rational) affine transformations and (rational) bounding boxes.
+The library provides operations for computing the bounding box of an
+NNC polyhedron and conversely,
+for obtaining the NNC polyhedron representing a given bounding
+box.
 
 
 \if Implementation_Info
