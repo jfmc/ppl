@@ -4766,12 +4766,10 @@ PPL::Polyhedron::is_bounded() const {
   // A zero-dimensional or empty polyhedron is bounded.
   if (space_dim == 0
       || is_empty()
+      || (has_pending_constraints() && !remove_pending_to_obtain_generators())
       || (!generators_are_up_to_date() && !update_generators()))
     return true;
-  else if (has_pending_constraints()
-	   && !remove_pending_to_obtain_generators())
-    return true;
-
+  
   for (dimension_type i = gen_sys.num_rows(); i-- > 0; )
     if (gen_sys[i][0] == 0)
       // A line or a ray is found: the polyhedron is not bounded.
@@ -4801,12 +4799,13 @@ PPL::Polyhedron::bounds(const LinExpression& expr, bool from_above) const {
   // A zero-dimensional or empty polyhedron bounds everything.
   if (space_dim == 0
       || is_empty()
+      || (has_pending_constraints() && !remove_pending_to_obtain_generators())
       || (!generators_are_up_to_date() && !update_generators()))
     return true;
-  else if (has_pending_constraints()
-	   && !remove_pending_to_obtain_generators())
-    return true;
   
+  // At this point the polyhedron can only have pending generators.
+  // If the polyhedron has pending generators, we first verify if
+  // `*this' bounds `expr'.
   if (has_pending_generators())
     for (dimension_type i = pending_gs.num_rows(); i-- > 0; ) {
       const Generator& g = pending_gs[i];
@@ -4863,74 +4862,15 @@ PPL::Polyhedron::is_topologically_closed() const {
   if (is_necessarily_closed())
     return true;
   // Any empty or zero-dimensional polyhedron is closed.
-  if (is_empty() || space_dimension() == 0)
+  if (is_empty()
+      || (has_something_pending() && !remove_pending_and_minimize())
+      || space_dimension() == 0)
     return true;
 
-  if (has_pending_generators()) {
-    // A polyhedron is closed iff all of its (non-redundant)
-    // closure points are matched by a corresponding point.
-    dimension_type n_rows = gen_sys.num_rows();
-    dimension_type n_pending_rows = pending_gs.num_rows();
-    dimension_type n_lines = gen_sys.num_lines();
-    dimension_type n_pending_lines = pending_gs.num_lines();
-    for (dimension_type i = n_rows; i-- > n_lines; ) {
-      const Generator& gi = gen_sys[i];
-      if (gi.is_closure_point()) {
-	bool gi_has_no_matching_point = true;
-	for (dimension_type j = n_rows; j-- > n_lines; ) {
-	  const Generator& gj = gen_sys[j];
-	  if (i != j
-	      && gj.is_point()
-	      && gi.is_matching_closure_point(gj)) {
-	    gi_has_no_matching_point = false;
-	    break;
-	  }
-	}
-	for (dimension_type j = n_pending_rows; j-- > n_pending_lines; ) {
-	  const Generator& gj = pending_gs[j];
-	  if (i != j
-	      && gj.is_point()
-	      && gi.is_matching_closure_point(gj)) {
-	    gi_has_no_matching_point = false;
-	    break;
-	  }
-	}
-	if (gi_has_no_matching_point)
-	  return false;
-      }
-    }
-    for (dimension_type i = n_pending_rows; i-- > n_pending_lines; ) {
-      const Generator& gi = pending_gs[i];
-      if (gi.is_closure_point()) {
-	bool gi_has_no_matching_point = true;
-	for (dimension_type j = n_rows; j-- > n_lines; ) {
-	  const Generator& gj = gen_sys[j];
-	  if (i != j
-	      && gj.is_point()
-	      && gi.is_matching_closure_point(gj)) {
-	    gi_has_no_matching_point = false;
-	    break;
-	  }
-	}
-	for (dimension_type j = n_pending_rows; j-- > n_pending_lines; ) {
-	  const Generator& gj = pending_gs[j];
-	  if (i != j
-	      && gj.is_point()
-	      && gi.is_matching_closure_point(gj)) {
-	    gi_has_no_matching_point = false;
-	    break;
-	  }
-	}
-	if (gi_has_no_matching_point)
-	  return false;
-      }
-    }
-    
-    // All closure points are matched.
-    return true;
-  }
-
-  else if (generators_are_minimized() && !has_pending_constraints()) {
+  // At this point, the polyhedron has nothing pending.
+  // If at the beginning, the polyhedron had something pending,
+  // now we have that `gen_sys' is in minimal form.
+  if (generators_are_minimized()) {
     // A polyhedron is closed iff all of its (non-redundant)
     // closure points are matched by a corresponding point.
     dimension_type n_rows = gen_sys.num_rows();
