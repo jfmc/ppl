@@ -121,6 +121,23 @@ public:
   //! to the variable \p v.
   LinExpression(const Variable& v);
 
+  //! Given the constraint
+  //! \f$c = \bigl(\sum_{i=0}^{n-1} a_i x_i + b \relop 0\bigr)\f$,
+  //! where \f$\mathord{\relop} \in \{ =, \geq, > \}\f$,
+  //! builds the linear expression \f$\sum_{i=0}^{n-1} a_i x_i + b\f$.
+  //! If \p c is an inequality (resp., equality) constraint, then
+  //! the built linear expression is unique up to a positive
+  //! (resp., non-zero) factor.
+  explicit LinExpression(const Constraint& c);
+
+  //! Builds the linear expression corresponding to
+  //! the coefficients of generator \p g (for points and closure points,
+  //! the divisor is \e not copied).
+  //! If \p c is a ray, point or closure point (resp., a line), then
+  //! the built linear expression is unique up to a positive
+  //! (resp., non-zero) factor.
+  explicit LinExpression(const Generator& g);
+
   //! Returns the dimension of the vector space enclosing \p *this.
   size_t space_dimension() const;
 
@@ -130,16 +147,6 @@ public:
 private:
   friend class Parma_Polyhedra_Library::Constraint;
   friend class Parma_Polyhedra_Library::Generator;
-  friend class Parma_Polyhedra_Library::Polyhedron;
-
-  //! Builds the linear expression corresponding to
-  //! the constraint \p c.
-  explicit LinExpression(const Constraint& c);
-
-  //! Builds the linear expression corresponding to
-  //! the coefficients of generator \p g. Note that,
-  //! for points and closure points, the divisor is \e not copied.
-  explicit LinExpression(const Generator& g);
 
   //! Copy-constructor with a specified dimension.
   LinExpression(const LinExpression& e, size_t sz);
