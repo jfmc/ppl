@@ -154,6 +154,10 @@ dimension_type
 compute_capacity(const dimension_type requested_size,
 		 const dimension_type maximum_size);
 
+// FIXME!!!
+inline dimension_type
+compute_capacity(const dimension_type requested_size);
+
 //! User objects' the PPL can throw.
 /*!
   This abstract base class should be instantiated by those users

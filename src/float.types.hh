@@ -24,37 +24,11 @@ site: http://www.cs.unipr.it/ppl/ . */
 #ifndef PPL_float_types_hh
 #define PPL_float_types_hh
 
-#if SIZEOF_FLOAT == 4
+#include <stdint.h>
+
 #define FLOAT32_TYPE float
-#elif SIZEOF_DOUBLE == 4
-#define FLOAT32_TYPE double
-#elif SIZEOF_LONG_DOUBLE == 4
-#define FLOAT32_TYPE long double
-#endif
-
-#if SIZEOF_FLOAT == 8
-#define FLOAT64_TYPE float
-#elif SIZEOF_DOUBLE == 8
 #define FLOAT64_TYPE double
-#elif SIZEOF_LONG_DOUBLE == 8
-#define FLOAT64_TYPE long double
-#endif
-
-#if SIZEOF_FLOAT == 12 && CXX_FLOAT_IS_IEC_559
-#define FLOAT96_TYPE float
-#elif SIZEOF_DOUBLE == 12 && CXX_DOUBLE_IS_IEC_559
-#define FLOAT96_TYPE double
-#elif SIZEOF_LONG_DOUBLE == 12 && CXX_LONG_DOUBLE_IS_IEC_559
 #define FLOAT96_TYPE long double
-#endif
-
-#if SIZEOF_FLOAT == 16 && CXX_FLOAT_IS_IEC_559
-#define FLOAT128_TYPE float
-#elif SIZEOF_DOUBLE == 16 && CXX_DOUBLE_IS_IEC_559
-#define FLOAT128_TYPE double
-#elif SIZEOF_LONG_DOUBLE == 16 && CXX_LONG_DOUBLE_IS_IEC_559
-#define FLOAT128_TYPE long double
-#endif
 
 #ifdef FLOAT32_TYPE
 typedef FLOAT32_TYPE float32_t;
@@ -69,7 +43,7 @@ typedef FLOAT96_TYPE float96_t;
 #endif
 
 #ifdef FLOAT128_TYPE
-typedef FLOAT128_TYPE float128_t;
+typedef FLOAT128_TYPE float96_t;
 #endif
 
 #endif // !defined(PPL_float_types_hh)

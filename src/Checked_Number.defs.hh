@@ -30,6 +30,8 @@ site: http://www.cs.unipr.it/ppl/ . */
 #include <gmpxx.h>
 #include <iostream>
 
+namespace Parma_Polyhedra_Library {
+
 //! A wrapper for native numeric types implementing a given policy.
 /*!
   The wrapper and related functions implement an interface which is common
@@ -39,7 +41,7 @@ site: http://www.cs.unipr.it/ppl/ . */
   of overflow errors.
 */
 template <typename T, typename Policy>
-class Parma_Polyhedra_Library::Checked_Number {
+class Checked_Number {
 public:
   //! \name Constructors
   //@{
@@ -95,7 +97,7 @@ public:
   //! Direct initialization from a GMP unbounded integer value.
   Checked_Number(const mpz_class& y);
   //! Direct initialization from a C string value.
-  Checked_Number(const char* y);
+  Checked_Number(const c_string y);
 
   //@} // Constructors
 
@@ -151,12 +153,14 @@ public:
   //! Swaps \p *this with \p y.
   void swap(Checked_Number& y);
 
+  static void bad_result(Result r);
+  static void check_result(Result r);
+
 private:
   //! The underlying native integer value.
   T v;
-};
 
-namespace Parma_Polyhedra_Library {
+};
 
 //! \name Accessor Functions
 //@{
@@ -404,10 +408,6 @@ operator>>(std::istream& is, Checked_Number<T, Policy>& x);
 
 } // namespace Parma_Polyhedra_Library
 
-#include "checked_int.inlines.hh"
-#include "checked_float.inlines.hh"
-#include "checked_mpz.inlines.hh"
-#include "checked_mpq.inlines.hh"
 #include "Checked_Number.inlines.hh"
 
 #endif // !defined(PPL_Checked_Number_defs_hh)

@@ -33,48 +33,75 @@ namespace Checked {
 
 template <typename Policy>
 inline Result
-value_type_mpq(const mpq_class& v) {
-  if (::sgn(v.get_den()) == 0) {
+classify_mpq(const mpq_class& v, bool nan, bool inf, bool sign) {
+  if ((Policy::store_nan || Policy::store_infinity)
+      && ::sgn(v.get_den()) == 0) {
     int s = ::sgn(v.get_num());
-    if (Policy::store_unknown && s == 0)
+    if (Policy::store_nan && (nan || sign) && s == 0)
       return V_UNKNOWN;
-    if (Policy::store_overflows) {
+    if (!inf && !sign)
+      return V_NORMAL;
+    if (Policy::store_infinity) {
       if (s < 0)
-	return V_NEG_OVERFLOW;
+	return inf ? V_MINUS_INFINITY : V_LT;
       if (s > 0)
-	return V_POS_OVERFLOW;
+	return inf ? V_PLUS_INFINITY : V_GT;
     }
   }
-  return V_EQ;
+  if (sign)
+    return sgn<Policy>(v);
+  return V_NORMAL;
 }
 
-SPECIALIZE_VALUE_TYPE(mpq, mpq_class)
+SPECIALIZE_CLASSIFY(mpq, mpq_class)
 
 template <typename Policy>
-inline void
-set_special_mpq(mpq_class& v, const Result r) {
+inline Result
+set_special_mpq(mpq_class& v, Result r) {
   int num;
-  if (Policy::store_unknown && (r == V_UNKNOWN || r == V_DOMAIN))
+  Result t = type(r);
+  if (Policy::store_nan && t == V_UNKNOWN)
     num = 0;
-  else if (Policy::store_overflows) {
-    if (r == V_NEG_OVERFLOW)
+  else if (Policy::store_infinity) {
+    switch (t) {
+    case V_MINUS_INFINITY:
       num = -1;
-    else if (r == V_POS_OVERFLOW)
+      break;
+    case V_PLUS_INFINITY:
       num = 1;
-    else
-      return;
+      break;
+    default:
+      return r;
+    }
   }
   else
-    return;
+    return r;
   v.get_num() = num;
   v.get_den() = 0;
+  return r;
 }
 
 SPECIALIZE_SET_SPECIAL(mpq, mpq_class)
 
 template <typename Policy>
 inline Result
-assign_mpq_mpz(mpq_class& to, const mpz_class& from) {
+pred_mpq(mpq_class&) {
+  throw 0;
+}
+
+SPECIALIZE_PRED(mpq, mpq_class)
+
+template <typename Policy>
+inline Result
+succ_mpq(mpq_class&) {
+  throw 0;
+}
+
+SPECIALIZE_SUCC(mpq, mpq_class)
+
+template <typename Policy>
+inline Result
+assign_mpq_mpz(mpq_class& to, const mpz_class& from, const Rounding&) {
   to = from;
   return V_EQ;
 }
@@ -83,7 +110,7 @@ SPECIALIZE_ASSIGN(mpq_mpz, mpq_class, mpz_class)
 
 template <typename Policy, typename From>
 inline Result
-assign_mpq_signed_int(mpq_class& to, const From from) {
+assign_mpq_signed_int(mpq_class& to, const From from, const Rounding&) {
   if (sizeof(From) <= sizeof(long))
     to = static_cast<long>(from);
   else {
@@ -108,7 +135,7 @@ SPECIALIZE_ASSIGN(mpq_signed_int, mpq_class, long long)
 
 template <typename Policy, typename From>
 inline Result
-assign_mpq_unsigned_int(mpq_class& to, const From from) {
+assign_mpq_unsigned_int(mpq_class& to, const From from, const Rounding&) {
   if (sizeof(From) <= sizeof(unsigned long))
     to = static_cast<unsigned long>(from);
   else {
@@ -126,54 +153,16 @@ SPECIALIZE_ASSIGN(mpq_unsigned_int, mpq_class, unsigned long long)
 
 template <typename Policy>
 inline Result
-assign_mpq_c_string(mpq_class& to, c_string from) {
+assign_mpq_c_string(mpq_class& to, c_string from, const Rounding&) {
   to = from;
   return V_EQ;
 }
 
 SPECIALIZE_ASSIGN(mpq_c_string, mpq_class, c_string)
 
-template <typename Policy, typename To>
-inline Result
-assign_int_mpq(To& to, const mpq_class& from) {
-  mpz_srcptr n = from.get_num().get_mpz_t();
-  mpz_srcptr d = from.get_den().get_mpz_t();
-  mpz_t q;
-  mpz_t r;
-  mpz_init(q);
-  if (Policy::check_inexact) {
-    mpz_init(r);
-    mpz_tdiv_qr(q, r, n, d);
-  }
-  else {
-    mpz_divexact(q, n, d);
-  }
-  Result ret = assign<Policy>(to, q);
-  if (Policy::check_inexact && ret == V_EQ) {
-    switch (mpz_sgn(r)) {
-    case -1:
-      return V_LT;
-    case 1:
-      return V_GT;
-    }
-  }
-  return ret;
-}
-
-SPECIALIZE_ASSIGN(int_mpq, signed char, mpq_class)
-SPECIALIZE_ASSIGN(int_mpq, short, mpq_class)
-SPECIALIZE_ASSIGN(int_mpq, int, mpq_class)
-SPECIALIZE_ASSIGN(int_mpq, long, mpq_class)
-SPECIALIZE_ASSIGN(int_mpq, long long, mpq_class)
-SPECIALIZE_ASSIGN(int_mpq, unsigned char, mpq_class)
-SPECIALIZE_ASSIGN(int_mpq, unsigned short, mpq_class)
-SPECIALIZE_ASSIGN(int_mpq, unsigned int, mpq_class)
-SPECIALIZE_ASSIGN(int_mpq, unsigned long, mpq_class)
-SPECIALIZE_ASSIGN(int_mpq, unsigned long long, mpq_class)
-
 template <typename Policy, typename From>
 inline Result
-assign_mpq_float(mpq_class& to, const From from) {
+assign_mpq_float(mpq_class& to, const From from, const Rounding&) {
   to = from;
   return V_EQ;
 }
@@ -183,23 +172,7 @@ SPECIALIZE_ASSIGN(mpq_float, mpq_class, double)
 
 template <typename Policy>
 inline Result
-pred_mpq(mpq_class&) {
-  throw 0;
-}
-
-SPECIALIZE_PRED(mpq, mpq_class)
-
-template <typename Policy>
-inline Result
-succ_mpq(mpq_class&) {
-  throw 0;
-}
-
-SPECIALIZE_SUCC(mpq, mpq_class)
-
-template <typename Policy>
-inline Result
-neg_mpq(mpq_class& to, const mpq_class& from) {
+neg_mpq(mpq_class& to, const mpq_class& from, const Rounding&) {
   mpq_neg(to.get_mpq_t(), from.get_mpq_t());
   return V_EQ;
 }
@@ -208,7 +181,7 @@ SPECIALIZE_NEG(mpq, mpq_class, mpq_class)
 
 template <typename Policy>
 inline Result
-add_mpq(mpq_class& to, const mpq_class& x, const mpq_class& y) {
+add_mpq(mpq_class& to, const mpq_class& x, const mpq_class& y, const Rounding&) {
   to = x + y;
   return V_EQ;
 }
@@ -217,7 +190,7 @@ SPECIALIZE_ADD(mpq, mpq_class, mpq_class)
 
 template <typename Policy>
 inline Result
-sub_mpq(mpq_class& to, const mpq_class& x, const mpq_class& y) {
+sub_mpq(mpq_class& to, const mpq_class& x, const mpq_class& y, const Rounding&) {
   to = x - y;
   return V_EQ;
 }
@@ -226,7 +199,7 @@ SPECIALIZE_SUB(mpq, mpq_class, mpq_class)
 
 template <typename Policy>
 inline Result
-mul_mpq(mpq_class& to, const mpq_class& x, const mpq_class& y) {
+mul_mpq(mpq_class& to, const mpq_class& x, const mpq_class& y, const Rounding&) {
   to = x * y;
   return V_EQ;
 }
@@ -235,9 +208,9 @@ SPECIALIZE_MUL(mpq, mpq_class, mpq_class)
 
 template <typename Policy>
 inline Result
-div_mpq(mpq_class& to, const mpq_class& x, const mpq_class& y) {
+div_mpq(mpq_class& to, const mpq_class& x, const mpq_class& y, const Rounding&) {
   if (Policy::check_divbyzero && sgn(y) == 0)
-    return V_UNKNOWN;
+    return set_special<Policy>(to, V_UNKNOWN);
   to = x / y;
   return V_EQ;
 }
@@ -246,9 +219,9 @@ SPECIALIZE_DIV(mpq, mpq_class, mpq_class)
 
 template <typename Policy>
 inline Result
-mod_mpq(mpq_class& to, const mpq_class& x, const mpq_class& y) {
+mod_mpq(mpq_class& to, const mpq_class& x, const mpq_class& y, const Rounding&) {
   if (Policy::check_divbyzero && sgn(y) == 0)
-    return V_UNKNOWN;
+    return set_special<Policy>(to, V_UNKNOWN);
   to = x / y;
   to.get_num() %= to.get_den();
   return V_EQ;
@@ -258,7 +231,7 @@ SPECIALIZE_MOD(mpq, mpq_class, mpq_class)
 
 template <typename Policy>
 inline Result
-abs_mpq(mpq_class& to, const mpq_class& from) {
+abs_mpq(mpq_class& to, const mpq_class& from, const Rounding&) {
   to = abs(from);
   return V_EQ;
 }

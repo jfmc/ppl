@@ -29,3 +29,5 @@ site: http://www.cs.unipr.it/ppl/ . */
 #ifdef DERIVED_TEST
 #define C_Polyhedron NNC_Polyhedron
 #endif
+
+typedef Parma_Polyhedra_Library::BD_Shape<Parma_Polyhedra_Library::E_Rational> TBD_Shape;

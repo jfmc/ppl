@@ -28,8 +28,8 @@ namespace Parma_Polyhedra_Library {
 namespace Checked {
 
 template <typename Policy, typename Type>
-struct FUNCTION_CLASS(assign)<Policy, Type, Type> {
-  static inline Result function(Type& to, const Type& from) {
+struct FUNCTION_CLASS(assign)<Policy, Type, Type, Rounding> {
+  static inline Result function(Type& to, const Type& from, const Rounding&) {
     to = from;
     return V_EQ;
   }
@@ -37,40 +37,37 @@ struct FUNCTION_CLASS(assign)<Policy, Type, Type> {
 
 template <typename Policy, typename To, typename From>
 inline Result
-abs_generic(To& to, const From& from) {
+abs_generic(To& to, const From& from, const Rounding& mode) {
   if (from < 0)
-    return neg<Policy>(to, from);
+    return neg<Policy>(to, from, mode);
   to = from;
   return V_EQ;
 }
 
 inline Result
 neg(Result r) {
-  assert(r < V_UNKNOWN);
-  Result ret = (Result) (r & (V_EQ | V_APPROX));
+  assert(!is_special(r));
+  Result ret = static_cast<Result>(r & V_EQ);
   if (r & V_LT)
-    ret = (Result) (ret | V_GT);
+    ret = static_cast<Result>(ret | V_GT);
   if (r & V_GT)
-    ret = (Result) (ret | V_LT);
+    ret = static_cast<Result>(ret | V_LT);
   return ret;
 }
 
 inline Result
 add(Result r1, Result r2) {
-  assert(r1 < V_UNKNOWN);
-  assert(r2 < V_UNKNOWN);
+  assert(!is_special(r1));
+  assert(!is_special(r2));
   if (r1 == V_EQ)
     return r2;
   if (r2 == V_EQ)
     return r1;
-  Result ret = V_APPROX;
   if (((r1 & V_LT) && (r2 & V_GT))
       || ((r1 & V_GT) && (r2 & V_LT)))
-    return (Result) (ret | V_LGE);
-  if ((r1 & r2) & V_EQ)
-    ret = (Result) (ret | V_EQ);
-  ret = (Result) (ret | (r1 & (V_LT | V_GT)));
-  return ret;
+    return V_LGE;
+  return static_cast<Result>((((r1 & r2) & V_EQ) ? V_EQ : 0) |
+			       (r1 & (V_LT | V_GT)));
 }
 
 inline Result
@@ -78,92 +75,18 @@ sub(Result r1, Result r2) {
   return add(r1, neg(r2));
 }
 
-template <typename Policy, typename Type>
-inline Result
-sgn(Result xr, const Type& x) {
-  switch (xr) {
-  case V_UNKNOWN:
-  case V_DOMAIN:
-    return V_UNKNOWN;
-  case V_NEG_OVERFLOW:
-    return V_LT;
-  case V_POS_OVERFLOW:
-    return V_GT;
-  default:
-    return sgn<Policy>(x);
-  }
-}
-
-template <typename Policy, typename To, typename From1, typename From2>
-inline Result
-add(To& to, Result xr, const From1& x, Result yr, const From2& y) {
-  if (xr == V_DOMAIN || yr == V_DOMAIN)
-    return V_DOMAIN;
-  if (xr == V_UNKNOWN || yr == V_UNKNOWN)
-    return V_UNKNOWN;
-  if (xr == V_NEG_OVERFLOW)
-    return sgn<Policy>(yr, y) == V_GT ? V_UNKNOWN : xr;
-  if (yr == V_NEG_OVERFLOW)
-    return sgn<Policy>(xr, x) == V_GT ? V_UNKNOWN : yr;
-  if (xr == V_POS_OVERFLOW)
-    return sgn<Policy>(yr, y) == V_LT ? V_UNKNOWN : xr;
-  if (yr == V_POS_OVERFLOW)
-    return sgn<Policy>(xr, x) == V_LT ? V_UNKNOWN : yr;
-  Result rr = add<Policy>(to, x, y);
-  if (rr >= V_UNKNOWN)
-    return rr;
-  return add(rr, add(xr, yr));
-}
-
-template <typename Policy, typename To, typename From1, typename From2>
-inline Result
-sub(To& to, Result xr, const From1& x, Result yr, const From2& y) {
-  if (xr == V_DOMAIN || yr == V_DOMAIN)
-    return V_DOMAIN;
-  if (xr == V_UNKNOWN || yr == V_UNKNOWN)
-    return V_UNKNOWN;
-  if (xr == V_NEG_OVERFLOW)
-    return sgn<Policy>(yr, y) == V_LT ? V_UNKNOWN : xr;
-  if (yr == V_NEG_OVERFLOW)
-    return sgn<Policy>(xr, x) == V_LT ? V_UNKNOWN : yr;
-  if (xr == V_POS_OVERFLOW)
-    return sgn<Policy>(yr, y) == V_GT ? V_UNKNOWN : xr;
-  if (yr == V_POS_OVERFLOW)
-    return sgn<Policy>(xr, x) == V_GT ? V_UNKNOWN : yr;
-  Result rr = sub<Policy>(to, x, y);
-  if (rr >= V_UNKNOWN)
-    return rr;
-  return add(rr, sub(xr, yr));
-}
-
-template <typename Policy, typename To, typename From1, typename From2>
-inline Result
-add_mul_generic(To& to, const From1& x, const From2& y) {
-  To temp;
-  Result r = mul<Policy>(temp, x, y);
-  return add<Policy>(to, V_EQ, to, r, temp);
-}
-
-template <typename Policy, typename To, typename From1, typename From2>
-inline Result
-sub_mul_generic(To& to, const From1& x, const From2& y) {
-  To temp;
-  Result r = mul<Policy>(temp, x, y);
-  return sub<Policy>(to, V_EQ, to, r, temp);
-}
-
 template <typename Policy, typename To, typename From>
 inline Result
-gcd_common(To& to, const From& x, const From& y) {
+gcd_common(To& to, const From& x, const From& y, const Rounding& mode) {
   To nx = x;
   To ny = y;
-  To r;
+  To rem;
   while (ny != 0) {
-    Result ret = mod<Policy>(r, nx, ny);
-    if (ret != V_EQ)
-      assert(ret == V_EQ);
+    Result r = mod<Policy>(rem, nx, ny, mode);
+    if (r != V_EQ)
+      assert(r == V_EQ);
     nx = ny;
-    ny = r;
+    ny = rem;
   }
   to = nx;
   return V_EQ;
@@ -171,39 +94,40 @@ gcd_common(To& to, const From& x, const From& y) {
 
 template <typename Policy, typename To, typename From1, typename From2>
 inline Result
-gcd_generic(To& to, const From1& x, const From2& y) {
+gcd_generic(To& to, const From1& x, const From2& y, const Rounding& mode) {
   if (x == 0)
-    return abs<Policy>(to, y);
+    return abs<Policy>(to, y, mode);
   if (y == 0)
-    return abs<Policy>(to, x);
+    return abs<Policy>(to, x, mode);
   To nx, ny;
   Result r;
-  r = abs<Policy>(nx, x);
+  used(r);
+  r = abs<Policy>(nx, x, mode);
   assert(r == V_EQ);
-  r = abs<Policy>(ny, y);
+  r = abs<Policy>(ny, y, mode);
   assert(r == V_EQ);
-  return gcd_common<Policy>(to, nx, ny);
+  return gcd_common<Policy>(to, nx, ny, mode);
 }
 
 template <typename Policy, typename To, typename From1, typename From2>
 inline Result
-lcm_generic(To& to, const From1& x, const From2& y) {
+lcm_generic(To& to, const From1& x, const From2& y, const Rounding& mode) {
   if (x == 0 || y == 0) {
     to = 0;
     return V_EQ;
   }
   To nx, ny;
   Result r;
-  r = abs<Policy>(nx, x);
+  r = abs<Policy>(nx, x, mode);
   assert(r == V_EQ);
-  r = abs<Policy>(ny, y);
+  r = abs<Policy>(ny, y, mode);
   assert(r == V_EQ);
   To gcd;
-  r = gcd_common<Policy>(gcd, nx, ny);
+  r = gcd_common<Policy>(gcd, nx, ny, mode);
   assert(r == V_EQ);
-  r = div<Policy>(to, nx, gcd);
+  r = div<Policy>(to, nx, gcd, mode);
   assert(r == V_EQ);
-  return mul<Policy>(to, to, ny);
+  return mul<Policy>(to, to, ny, mode);
 }
 
 template <typename Policy, typename Type>
@@ -213,9 +137,7 @@ sgn_generic(const Type& x) {
     return V_GT;
   if (x < 0)
     return V_LT;
-  if (!Policy::check_nan_arg || x == 0)
-    return V_EQ;
-  return V_UNKNOWN;
+  return V_EQ;
 }
 
 template <typename Policy, typename Type>
@@ -225,293 +147,41 @@ cmp_generic(const Type& x, const Type& y) {
     return V_GT;
   if (x < y)
     return V_LT;
-  if (!Policy::check_nan_arg || x == y)
-    return V_EQ;
-  return V_UNKNOWN;
+  return V_EQ;
 }
 
 template <typename Policy, typename Type>
 inline Result
-print_generic(std::ostream& os, const Type& x) {
+print_generic(std::ostream& os, const Type& x, const Numeric_Format& format, const Rounding& mode) {
+  used(format);
+  used(mode);
   os << x;
   return V_EQ;
 }
 
 template <typename Policy, typename Type>
 inline Result
-input_generic(std::istream& is, Type& x) {
+input_generic(std::istream& is, Type& x, const Rounding& mode) {
+  used(mode);
   is >> x;
   return V_EQ;
 }
 
-template <typename To_Policy, typename From_Policy, typename To, typename From>
+template <typename Policy, typename To>
 inline Result
-assign_ext(To& to, const From& from) {
-  Result r = value_type<From_Policy>(from);
-  if (r == V_EQ)
-    r = assign<To_Policy>(to, from);
-  set_special<To_Policy>(to, r);
-  return r;
-}
-
-template <typename Policy, typename Type>
-inline Result
-sgn_ext(const Type& x) {
-  Result r = value_type<Policy>(x);
-  if (r == V_EQ)
-    r = sgn<Policy>(x);
-  else if (r == V_NEG_OVERFLOW)
-    r = V_LT;
-  else if (r == V_POS_OVERFLOW)
-    r = V_GT;
-  return r;
-}
-
-template <typename Policy1, typename Policy2, typename Type1, typename Type2>
-inline Result
-cmp_ext(const Type1& x, const Type2& y) {
-  Result rx;
-  Result ry;
-  Result r;
-  if ((rx = value_type<Policy1>(x)) == V_UNKNOWN
-      || (ry = value_type<Policy2>(y)) == V_UNKNOWN)
-    r = V_UNKNOWN;
-  else if (rx == V_EQ && ry == V_EQ)
-    r = cmp<Policy1>(x, y);
-  else if (rx == ry)
-    r = V_EQ;
-  else if (rx == V_NEG_OVERFLOW || ry == V_POS_OVERFLOW)
-    r = V_LT;
-  else
-    r = V_GT;
-  return r;
-}
-
-template <typename To_Policy, typename From_Policy, typename To, typename From>
-inline Result
-neg_ext(To& to, const From& x) {
-  Result r = value_type<From_Policy>(x);
-  if (r == V_EQ)
-    r = neg<To_Policy>(to, x);
-  else if (r == V_NEG_OVERFLOW)
-    r = V_POS_OVERFLOW;
-  else if (r == V_POS_OVERFLOW)
-    r = V_NEG_OVERFLOW;
-  set_special<To_Policy>(to, r);
-  return r;
-}
-
-template <typename To_Policy, typename From_Policy, typename To, typename From>
-inline Result
-abs_ext(To& to, const From& x) {
-  Result r = value_type<From_Policy>(x);
-  if (r == V_EQ)
-    r = abs<To_Policy>(to, x);
-  else if (r == V_NEG_OVERFLOW)
-    r = V_POS_OVERFLOW;
-  set_special<To_Policy>(to, r);
-  return r;
-}
-
-template <typename To_Policy, typename From1_Policy, typename From2_Policy, typename To, typename From1, typename From2>
-inline Result
-add_ext(To& to, const From1& x, const From2& y) {
-  Result rx;
-  Result ry;
-  Result r;
-  if ((rx = value_type<From1_Policy>(x)) == V_UNKNOWN
-      || (ry = value_type<From2_Policy>(y)) == V_UNKNOWN)
-    r = V_UNKNOWN;
-  else if (rx == V_EQ && ry == V_EQ)
-    r = add<To_Policy>(to, x, y);
-  else if (rx == V_EQ)
-    r = ry;
-  else if (ry == V_EQ || rx == ry)
-    r = rx;
-  else
-    r = V_UNKNOWN;
-  set_special<To_Policy>(to, r);
-  return r;
-}
-
-template <typename To_Policy, typename From1_Policy, typename From2_Policy, typename To, typename From1, typename From2>
-inline Result
-sub_ext(To& to, const From1& x, const From2& y) {
-  Result rx;
-  Result ry;
-  Result r;
-  if ((rx = value_type<From1_Policy>(x)) == V_UNKNOWN
-      || (ry = value_type<From2_Policy>(y)) == V_UNKNOWN)
-    r = V_UNKNOWN;
-  else if (rx == V_EQ && ry == V_EQ)
-    r = sub<To_Policy>(to, x, y);
-  else if (rx == V_EQ)
-    r = ry == V_POS_OVERFLOW ? V_NEG_OVERFLOW : V_POS_OVERFLOW;
-  else if (ry == V_EQ || rx != ry)
-    r = rx;
-  else
-    r = V_UNKNOWN;
-  set_special<To_Policy>(to, r);
-  return r;
-}
-
-template <typename To_Policy, typename From1_Policy, typename From2_Policy, typename To, typename From1, typename From2>
-inline Result
-mul_ext(To& to, const From1& x, const From2& y) {
-  Result rx;
-  Result ry;
-  Result r;
-  if ((rx = value_type<From1_Policy>(x)) == V_UNKNOWN
-      || (ry = value_type<From2_Policy>(y)) == V_UNKNOWN)
-    r = V_UNKNOWN;
-  else if (rx == V_EQ && ry == V_EQ)
-    r = mul<To_Policy>(to, x, y);
-  else {
-    Result sx = sgn_ext<From1_Policy>(x);
-    Result sy = sgn_ext<From2_Policy>(y);
-    if (sx == V_EQ || sy == V_EQ)
-      r = V_UNKNOWN;
-    else if (sx == sy)
-      r = V_POS_OVERFLOW;
-    else
-      r = V_NEG_OVERFLOW;
+round(To& to, Result r, const Rounding& mode) {
+  switch (mode.direction()) {
+  case Rounding::DOWN:
+    if (r == V_LT)
+      return static_cast<Result>(pred<Policy>(to) | V_GT);
+    return r;
+  case Rounding::UP:
+    if (r == V_GT)
+      return static_cast<Result>(succ<Policy>(to) | V_LT);
+    return r;
+  default:
+    return r;
   }
-  set_special<To_Policy>(to, r);
-  return r;
-}
-
-	
-template <typename To_Policy, typename From1_Policy, typename From2_Policy, typename To, typename From1, typename From2>
-inline Result
-div_ext(To& to, const From1& x, const From2& y) {
-  Result rx;
-  Result ry;
-  Result r;
-  if ((rx = value_type<From1_Policy>(x)) == V_UNKNOWN
-      || (ry = value_type<From2_Policy>(y)) == V_UNKNOWN)
-    r = V_UNKNOWN;
-  else if (rx == V_EQ) {
-    if (ry == V_EQ)
-      r = div<To_Policy>(to, x, y);
-    else {
-      to = 0;
-      r = V_EQ;
-    }
-  }
-  else if (ry == V_EQ) {
-    Result sy = sgn<From2_Policy>(y);
-    if (sy == V_EQ)
-      r = V_UNKNOWN;
-    else {
-      Result sx = rx == V_NEG_OVERFLOW ? V_LT : V_GT;
-      if (sx == sy)
-	r = V_POS_OVERFLOW;
-      else
-	r = V_NEG_OVERFLOW;
-    }
-  }
-  else
-    r = V_UNKNOWN;
-  set_special<To_Policy>(to, r);
-  return r;
-}
-
-	
-template <typename To_Policy, typename From1_Policy, typename From2_Policy, typename To, typename From1, typename From2>
-inline Result
-mod_ext(To& to, const From1& x, const From2& y) {
-  Result rx;
-  Result ry;
-  Result r;
-  if ((rx = value_type<From1_Policy>(x)) == V_UNKNOWN
-      || (ry = value_type<From2_Policy>(y)) == V_UNKNOWN)
-    r = V_UNKNOWN;
-  else if (rx == V_EQ) {
-    if (ry == V_EQ)
-      r = mod<To_Policy>(to, x, y);
-    else {
-      to = x;
-      r = V_EQ;
-    }
-  }
-  else
-    r = V_UNKNOWN;
-  set_special<To_Policy>(to, r);
-  return r;
-}
-
-template <typename To_Policy, typename From_Policy, typename To, typename From>
-inline Result
-sqrt_ext(To& to, const From& x) {
-  Result r = value_type<From_Policy>(x);
-  if (r == V_EQ)
-    r = sqrt<To_Policy>(to, x);
-  else if (r == V_UNKNOWN)
-    r = V_UNKNOWN;
-  else if (r == V_NEG_OVERFLOW)
-    r = V_DOMAIN;
-  else
-    r = V_POS_OVERFLOW;
-  set_special<To_Policy>(to, r);
-  return r;
-}
-
-template <typename To_Policy, typename From1_Policy, typename From2_Policy, typename To, typename From1, typename From2>
-inline Result
-gcd_ext(To& to, const From1& x, const From2& y) {
-  Result rx;
-  Result ry;
-  Result r;
-  if ((rx = value_type<From1_Policy>(x)) == V_UNKNOWN
-      || (ry = value_type<From2_Policy>(y)) == V_UNKNOWN)
-    r = V_UNKNOWN;
-  else if (rx == V_EQ) {
-    if (ry == V_EQ)
-      r = gcd<To_Policy>(to, x, y);
-    else {
-      to = x;
-      r = V_EQ;
-    }
-  }
-  else if (ry == V_EQ) {
-    to = y;
-    r = V_EQ;
-  }
-  else
-    r = V_POS_OVERFLOW;
-  set_special<To_Policy>(to, r);
-  return r;
-}
-
-template <typename To_Policy, typename From1_Policy, typename From2_Policy, typename To, typename From1, typename From2>
-inline Result
-lcm_ext(To& to, const From1& x, const From2& y) {
-  Result rx;
-  Result ry;
-  Result r;
-  if ((rx = value_type<From1_Policy>(x)) == V_UNKNOWN
-      || (ry = value_type<From2_Policy>(y)) == V_UNKNOWN)
-    r = V_UNKNOWN;
-  else if (rx == V_EQ && ry == V_EQ)
-    r = lcm<To_Policy>(to, x, y);
-  else
-    r = V_POS_OVERFLOW;
-  set_special<To_Policy>(to, r);
-  return r;
-}
-
-template <typename Policy, typename Type>
-inline void
-print_ext(std::ostream& os, const Type& x) {
-  Result rx = value_type<Policy>(x);
-  if (rx == V_EQ)
-    print<Policy>(os, x);
-  else if (rx == V_NEG_OVERFLOW)
-    os << "-inf";
-  else if (rx == V_POS_OVERFLOW)
-    os << "inf";
-  else
-    os << "nan";
 }
 
 } // namespace Checked

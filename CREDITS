@@ -19,8 +19,17 @@ Other contributors:
   Giordano Fracasso    (University of Parma) wrote the initial version
                        of the support for native and checked integer
                        coefficients.
+
   Abramo Bagnara       (Opera Unica) rewrote and generalized the support
                        for checked coefficients.
+
+  Elena Mazzi          (University of Parma) Co-wrote the initial version
+                       of our implementation of bounded differences and
+                       octagons.
+
+  Barbara Quartieri    (University of Parma) Co-wrote the initial version
+                       of our implementation of bounded differences and
+                       octagons.
 
 The following people took part in the first phase of the library's
 development:

@@ -103,6 +103,7 @@ endif
 
 # The ordering of the following list *matters*!
 INCLUDE_FILES = \
+compiler.hh \
 float.types.hh \
 Coefficient_traits_template.hh \
 $(COEFFICIENT_TYPES_INCLUDE_FILES) \
@@ -129,8 +130,24 @@ H79_Certificate.types.hh \
 Polyhedron.types.hh \
 C_Polyhedron.types.hh \
 NNC_Polyhedron.types.hh \
+Ptr_Iterator.types.hh \
+E_NIT.types.hh \
+E_Rational.types.hh \
+DB_Row.types.hh \
+DB_Matrix.types.hh \
+BD_Shape.types.hh \
 float.types.hh \
+Float.defs.hh \
+Float.inlines.hh \
 Limits.hh \
+fpu.defs.hh \
+fpu-ia32.inlines.hh \
+Rounding.types.hh \
+Rounding.defs.hh \
+Rounding.inlines.hh \
+Result.defs.hh \
+Result.inlines.hh \
+Numeric_Format.defs.hh \
 checked.defs.hh \
 checked.inlines.hh \
 checked_int.inlines.hh \
@@ -191,6 +208,19 @@ NNC_Polyhedron.inlines.hh \
 Widening_Function.types.hh \
 Widening_Function.defs.hh \
 Widening_Function.inlines.hh \
+Ptr_Iterator.defs.hh \
+Ptr_Iterator.inlines.hh \
+E_NIT.defs.hh \
+E_NIT.inlines.hh \
+E_Rational.defs.hh \
+E_Rational.inlines.hh \
+DB_Row.defs.hh \
+DB_Row.inlines.hh \
+DB_Matrix.defs.hh \
+DB_Matrix.inlines.hh \
+BD_Shape.defs.hh \
+BDS_Status.inlines.hh \
+BD_Shape.inlines.hh \
 Determinate.types.hh \
 Determinate.defs.hh \
 Determinate.inlines.hh \
@@ -202,6 +232,10 @@ Polyhedra_Powerset.defs.hh \
 Polyhedra_Powerset.inlines.hh \
 max_space_dimension.hh \
 algorithms.hh
+
+NESTED_INCLUDE_FILES = \
+Ph_Status.idefs.hh \
+BDS_Status.idefs.hh
 
 libppl_la_SOURCES = \
 Bounding_Box.cc \
@@ -237,7 +271,7 @@ simplify.cc \
 globals.cc \
 version.cc \
 $(INCLUDE_FILES) \
-Ph_Status.idefs.hh \
+$(NESTED_INCLUDE_FILES) \
 swapping_sort.icc
 
 # The ordering of the following list *matters*!
@@ -259,6 +293,7 @@ H79_Certificate.types.hh \
 Polyhedron.types.hh \
 C_Polyhedron.types.hh \
 NNC_Polyhedron.types.hh \
+BD_Shape.types.hh \
 GMP_Integer.defs.hh \
 Checked_Number.defs.hh \
 Native_Integer.defs.hh \
@@ -280,6 +315,8 @@ globals.defs.hh \
 Widening_Function.types.hh \
 Widening_Function.defs.hh \
 Widening_Function.inlines.hh \
+BD_Shape.defs.hh \
+BD_Shape.inlines.hh \
 Determinate.types.hh \
 Determinate.defs.hh \
 Determinate.inlines.hh \
