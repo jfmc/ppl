@@ -72,7 +72,7 @@ main() TRY {
   C_Polyhedron known_result(gs_known_result);
 
 #if NOISY
-  print_generators(computed_result, "*** After poly_hull_assign ***");
+  print_generators(computed_result, "*** ph1.poly_hull_assign(ph2) ***");
 #endif
 
   return (computed_result == known_result) ? 0 : 1;
