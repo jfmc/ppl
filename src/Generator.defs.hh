@@ -26,6 +26,7 @@ site: http://www.cs.unipr.it/ppl/ . */
 
 #include "Generator.types.hh"
 #include "Row.defs.hh"
+#include "Variable.defs.hh"
 #include "LinExpression.types.hh"
 #include <iosfwd>
 
@@ -162,7 +163,7 @@ private:
   //! \exception std::invalid_argument thrown if \p d is zero.
   friend Generator
   Parma_Polyhedra_Library::vertex(const LinExpression& e,
-				  const Integer& d = 1);
+				  const Integer& d = Integer::one);
 
 public:
   //! Ordinary copy-constructor.
@@ -179,6 +180,14 @@ public:
 
   //! Returns the generator type of \p *this.
   Type type() const;
+
+  //! Returns the last variable in the space of \p *this.
+  Variable last_variable() const;
+  //! Returns the coefficient of \p v in \p *this.
+  const Integer& coefficient(Variable v) const;
+  //! If \p *this is a vertex, returns its divisor.
+  //! \exception std::invalid_argument thrown if \p *this is not a vertex.
+  const Integer& divisor() const;
 
 PPL_INTERNAL:
   //! Returns <CODE>true</CODE> if and only if

@@ -23,6 +23,7 @@ site: http://www.cs.unipr.it/ppl/ . */
 
 
 #include "LinExpression.defs.hh"
+#include <stdexcept>
 
 inline
 Parma_Polyhedra_Library::Generator::Generator(LinExpression& e) {
@@ -62,6 +63,27 @@ inline void
 Parma_Polyhedra_Library::Generator::set_is_ray_or_vertex() {
   set_is_ray_or_vertex_or_inequality();
 }
+
+inline Parma_Polyhedra_Library::Variable
+Parma_Polyhedra_Library::Generator::last_variable() const {
+  assert(Row::size() >= 2);
+  return Variable(size()-2);
+}
+
+inline const Parma_Polyhedra_Library::Integer&
+Parma_Polyhedra_Library::Generator::coefficient(Variable v) const {
+  return Row::coefficient(v.id());
+}
+
+inline const Parma_Polyhedra_Library::Integer&
+Parma_Polyhedra_Library::Generator::divisor() const {
+  const Integer& d = Row::coefficient();
+  if (!is_ray_or_vertex() || d == 0)
+    throw std::invalid_argument("PPL::Generator::divisor(): "
+				"*this is not a vertex");
+  return d;
+}
+
 
 namespace Parma_Polyhedra_Library {
 

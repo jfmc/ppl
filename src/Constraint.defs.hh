@@ -156,18 +156,19 @@ public:
   //! Destructor.
   ~Constraint();
 
-  //! Returns the last variable in the space of \p *this.
-  Variable last_variable() const;
-  //! Returns the coefficient of \p v in \p *this.
-  const Integer& coefficient(Variable v) const;
-  //! Returns the inhomogeneous term of \p *this.
-  const Integer& coefficient() const;
   //! Returns <CODE>true</CODE> if and only if
   //! \p *this is an equality constraint.
   bool is_equality() const;
   //! Returns <CODE>true</CODE> if and only if
   //! \p *this is an inequality constraint.
   bool is_inequality() const;
+
+  //! Returns the last variable in the space of \p *this.
+  Variable last_variable() const;
+  //! Returns the coefficient of \p v in \p *this.
+  const Integer& coefficient(Variable v) const;
+  //! Returns the inhomogeneous term of \p *this.
+  const Integer& coefficient() const;
 
 PPL_INTERNAL:
   //! Returns <CODE>true</CODE> if and only if
