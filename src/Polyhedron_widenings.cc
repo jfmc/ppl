@@ -53,7 +53,7 @@ PPL::Polyhedron::select_CH78_constraints(const Polyhedron& y,
 
   // Note: the loop index `i' goes upward to avoid reversing
   // the ordering of the chosen constraints.
-  for (dimension_type i = 0, iend = y.con_sys.num_rows(); i < iend; ++i) {
+  for (dimension_type i = 0, end = y.con_sys.num_rows(); i < end; ++i) {
     const Constraint& c = y.con_sys[i];
     if (gen_sys.satisfied_by_all_generators(c))
       cs_selection.insert(c);
@@ -105,7 +105,7 @@ PPL::Polyhedron::select_H79_constraints(const Polyhedron& y,
   SatRow buffer;
   // Note: the loop index `i' goes upward to avoid reversing
   // the ordering of the chosen constraints.
-  for (dimension_type i = 0, iend = con_sys.num_rows(); i < iend; ++i) {
+  for (dimension_type i = 0, end = con_sys.num_rows(); i < end; ++i) {
     const Constraint& ci = con_sys[i];
     // The saturation row `buffer' is built considering
     // the `i'-th constraint of the polyhedron `x' and

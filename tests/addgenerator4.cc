@@ -51,7 +51,7 @@ main() TRY {
   C_Polyhedron ph(2, C_Polyhedron::EMPTY);
 
   for (GenSys::const_iterator i = gs.begin(),
-	 iend = gs.end(); i != iend; ++i)
+	 gs_end = gs.end(); i != gs_end; ++i)
     if (!(*i).is_closure_point())
       ph.add_generator(*i);
 

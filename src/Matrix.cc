@@ -1269,7 +1269,7 @@ PPL::Matrix::back_substitute(const dimension_type rank) {
   }
 
   // Trying to keep sortedness.
-  for (dimension_type i = 0, iend = nrows-1; still_sorted && i < iend; ++i)
+  for (dimension_type i = 0; still_sorted && i < nrows-1; ++i)
     if (check_for_sortedness[i])
       // Have to check sortedness of `mat[i]' wrt `mat[i+1]'.
       still_sorted = (rows[i] <= rows[i+1]);

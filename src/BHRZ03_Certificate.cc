@@ -55,7 +55,7 @@ PPL::BHRZ03_Certificate::BHRZ03_Certificate(const Polyhedron& ph)
   assert(num_constraints == 0);
   const ConSys& cs = ph.minimized_constraints();
   for (ConSys::const_iterator i = cs.begin(),
-	 iend = cs.end(); i != iend; ++i) {
+	 cs_end = cs.end(); i != cs_end; ++i) {
     ++num_constraints;
     if (i->is_equality())
       --poly_dim;
@@ -65,7 +65,7 @@ PPL::BHRZ03_Certificate::BHRZ03_Certificate(const Polyhedron& ph)
   assert(num_points == 0);
   const GenSys& gs = ph.minimized_generators();
   for (GenSys::const_iterator i = gs.begin(),
-	 iend = gs.end(); i != iend; ++i)
+	 gs_end = gs.end(); i != gs_end; ++i)
     switch (i->type()) {
     case Generator::POINT:
       // Intentionally fall through.
@@ -152,7 +152,7 @@ PPL::BHRZ03_Certificate::compare(const Polyhedron& ph) const {
   dimension_type ph_num_constraints = 0;
   const ConSys& cs = ph.minimized_constraints();
   for (ConSys::const_iterator i = cs.begin(),
-	 iend = cs.end(); i != iend; ++i) {
+	 cs_end = cs.end(); i != cs_end; ++i) {
     ++ph_num_constraints;
     if (i->is_equality())
       --ph_poly_dim;
@@ -181,7 +181,7 @@ PPL::BHRZ03_Certificate::compare(const Polyhedron& ph) const {
   dimension_type ph_num_points = 0;
   const GenSys& gs = ph.minimized_generators();
   for (GenSys::const_iterator i = gs.begin(),
-	 iend = gs.end(); i != iend; ++i)
+	 gs_end = gs.end(); i != gs_end; ++i)
     switch (i->type()) {
     case Generator::POINT:
       // Intentionally fall through.
@@ -231,7 +231,7 @@ PPL::BHRZ03_Certificate::compare(const Polyhedron& ph) const {
   // compute information about rays.
   std::vector<dimension_type> ph_num_rays_null_coord(ph.space_dim, 0);
   for (GenSys::const_iterator i = gs.begin(),
-	 iend = gs.end(); i != iend; ++i)
+	 gs_end = gs.end(); i != gs_end; ++i)
     if (i->is_ray()) {
       const Generator& r = *i;
       dimension_type num_zeroes = 0;

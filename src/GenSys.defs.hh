@@ -225,15 +225,15 @@ public:
       The following code prints the system of generators
       of the polyhedron <CODE>ph</CODE>:
       \code
-  const GenSys gs = ph.generators();
-  GenSys::const_iterator iend = gs.end();
-  for (GenSys::const_iterator i = gs.begin(); i != iend; ++i)
+  const GenSys& gs = ph.generators();
+  for (GenSys::const_iterator i = gs.begin(),
+         gs_end = gs.end(); i != gs_end; ++i)
     cout << *i << endl;
       \endcode
       The same effect can be obtained more concisely by using
       more features of the STL:
       \code
-  const GenSys gs = ph.generators();
+  const GenSys& gs = ph.generators();
   copy(gs.begin(), gs.end(), ostream_iterator<Generator>(cout, "\n"));
       \endcode
   */

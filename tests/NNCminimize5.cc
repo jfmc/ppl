@@ -61,14 +61,14 @@ main() TRY {
 
   int num_constraints = 0;
   for (ConSys::const_iterator i = ph1.constraints().begin(),
-	 iend = ph1.constraints().end(); i != iend; ++i)
+	 cs_end = ph1.constraints().end(); i != cs_end; ++i)
     ++num_constraints;
 
   ph1.minimized_constraints();
 
   int num_minimized_constraints = 0;
   for (ConSys::const_iterator i = ph1.constraints().begin(),
-	 iend = ph1.constraints().end(); i != iend; ++i)
+	 cs_end = ph1.constraints().end(); i != cs_end; ++i)
     ++num_minimized_constraints;
 
 #if NOISY
@@ -80,7 +80,7 @@ main() TRY {
 
   int num_points = 0;
   for (GenSys::const_iterator i = copy_ph1.generators().begin(),
-	 iend = copy_ph1.generators().end(); i != iend; ++i)
+	 gs_end = copy_ph1.generators().end(); i != gs_end; ++i)
     if ((*i).is_point() || (*i).is_closure_point())
       ++num_points;
 
@@ -88,7 +88,7 @@ main() TRY {
 
   int num_minimized_points = 0;
   for (GenSys::const_iterator i = copy_ph1.generators().begin(),
-	 iend = copy_ph1.generators().end(); i != iend; ++i)
+	 gs_end = copy_ph1.generators().end(); i != gs_end; ++i)
     if ((*i).is_point() || (*i).is_closure_point())
       ++num_minimized_points;
 

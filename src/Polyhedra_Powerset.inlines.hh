@@ -412,7 +412,7 @@ collect_certificates(std::map<Cert, size_type,
   assert(Base::is_omega_reduced());
   assert(cert_ms.size() == 0);
   for (const_iterator i = Base::begin(),
-	 iend = Base::end(); i != iend; i++) {
+	 end = Base::end(); i != end; i++) {
     Cert ph_cert(i->element());
     ++cert_ms[ph_cert];
   }
@@ -492,12 +492,12 @@ Polyhedra_Powerset<PH>::BHZ03_widening_assign(const Polyhedra_Powerset& y,
 
   // Compute the poly-hull of `x'.
   PH x_hull(x.space_dim, PH::EMPTY);
-  for (const_iterator i = x.begin(), iend = x.end(); i != iend; ++i)
+  for (const_iterator i = x.begin(), x_end = x.end(); i != x_end; ++i)
     x_hull.poly_hull_assign(i->element());
 
   // Compute the poly-hull of `y'.
   PH y_hull(y.space_dim, PH::EMPTY);
-  for (const_iterator i = y.begin(), iend = y.end(); i != iend; ++i)
+  for (const_iterator i = y.begin(), y_end = y.end(); i != y_end; ++i)
     y_hull.poly_hull_assign(i->element());
   // Compute the certificate for `y_hull'.
   const Cert y_hull_cert(y_hull);
@@ -532,7 +532,7 @@ Polyhedra_Powerset<PH>::BHZ03_widening_assign(const Polyhedra_Powerset& y,
   // Compute the poly-hull of `bgp99_heuristics'.
   PH bgp99_heuristics_hull(x.space_dim, PH::EMPTY);
   for (const_iterator i = bgp99_heuristics.begin(),
-	 iend = bgp99_heuristics.end(); i != iend; ++i)
+	 bh_end = bgp99_heuristics.end(); i != bh_end; ++i)
     bgp99_heuristics_hull.poly_hull_assign(i->element());
   
   // Check for stabilization and, if successful,

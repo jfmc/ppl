@@ -56,7 +56,7 @@ main() TRY {
 #endif
 
   for (GenSys::const_iterator i = ph1.generators().begin(),
-	 iend = ph1.generators().end(); i != iend; ++i)
+	 gs_end = ph1.generators().end(); i != gs_end; ++i)
     ph2.add_generator(*i);
 
   C_Polyhedron known_result(2);
