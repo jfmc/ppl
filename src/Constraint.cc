@@ -33,6 +33,16 @@ site: http://www.cs.unipr.it/ppl/ . */
 
 namespace PPL = Parma_Polyhedra_Library;
 
+PPL::Constraint
+PPL::operator >>(const Constraint& y, unsigned int offset) {
+  size_t y_size = y.size();
+  Constraint x(y.Row::type(), y_size+offset);
+  x[0] = y[0];
+  for (size_t i = 1; i < y_size; ++i)
+    x[i+offset] = y[i];
+  return x;
+}
+
 bool
 PPL::Constraint::is_nontrivial() const {
   const Constraint& x = *this;

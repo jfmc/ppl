@@ -38,7 +38,7 @@ site: http://www.cs.unipr.it/ppl/ . */
 namespace PPL = Parma_Polyhedra_Library;
 
 size_t
-Parma_Polyhedra_Library::GenSys::num_lines() const {
+PPL::GenSys::num_lines() const {
   size_t n = 0;
   // If the Matrix happens to be sorted, take advantage of the fact
   // that lines are at the top of the system.
@@ -55,7 +55,7 @@ Parma_Polyhedra_Library::GenSys::num_lines() const {
 }
 
 size_t
-Parma_Polyhedra_Library::GenSys::num_rays() const {
+PPL::GenSys::num_rays() const {
   size_t n = 0;
   // If the Matrix happens to be sorted, take advantage of the fact
   // that rays and vertices are at the bottom of the system and

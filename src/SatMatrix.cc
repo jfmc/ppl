@@ -113,8 +113,7 @@ PPL::SatMatrix::clear() {
   Resizes the matrix copying the old contents.
 */
 void
-Parma_Polyhedra_Library::SatMatrix::resize(size_t new_num_rows,
-					   size_t new_num_columns) {
+PPL::SatMatrix::resize(size_t new_num_rows, size_t new_num_columns) {
   assert(OK());
   size_t num_original_rows = min(num_rows(), new_num_rows);
   if (new_num_columns < row_size) {

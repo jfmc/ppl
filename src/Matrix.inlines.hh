@@ -155,19 +155,6 @@ Parma_Polyhedra_Library::Matrix::num_rows() const {
 }
 
 
-/*!
-  Returns the number of the rows of the matrix
-  that represent lines or equalities.
-*/
-INLINE size_t
-Parma_Polyhedra_Library::Matrix::num_lines_or_equalities() const {
-  size_t n = 0;
-  for (size_t i = num_rows(); i != 0; )
-    if (rows[--i].is_line_or_equality())
-      ++n;
-  return n;
-}
-
 INLINE bool
 Parma_Polyhedra_Library::operator !=(const Matrix& x, const Matrix& y) {
   return !(x == y);

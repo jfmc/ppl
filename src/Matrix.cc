@@ -38,6 +38,19 @@ site: http://www.cs.unipr.it/ppl/ . */
 namespace PPL = Parma_Polyhedra_Library;
 
 /*!
+  Returns the number of the rows of the matrix
+  that represent lines or equalities.
+*/
+size_t
+PPL::Matrix::num_lines_or_equalities() const {
+  size_t n = 0;
+  for (size_t i = num_rows(); i != 0; )
+    if (rows[--i].is_line_or_equality())
+      ++n;
+  return n;
+}
+
+/*!
   \param num_rows      The number of rows of the matrix that will be created.
   \param num_columns   The number of columns of the matrix
                        that will be created.

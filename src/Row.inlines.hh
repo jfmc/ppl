@@ -100,38 +100,6 @@ Parma_Polyhedra_Library::Row::Impl::bump_size() {
 
 
 /*!
-  Adds new positions to the real implementation of the row
-  obtaining a new row having size \p new_size.
-*/
-INLINE void
-Parma_Polyhedra_Library::Row::Impl::grow_no_copy(size_t new_size) {
-  assert(size() <= new_size);
-  for (size_t i = size(); i < new_size; ++i) {
-    new (&vec_[i]) Integer();
-    bump_size();
-  }
-}
-
-
-/*!
-  Delete elements from the real implementation of the row
-  from \p new_size - th position to the end.
-*/
-INLINE void
-Parma_Polyhedra_Library::Row::Impl::shrink(size_t new_size) {
-  assert(new_size <= size());
-  // We assume construction was done "forward".
-  // We thus perform destruction "backward".
-  for (size_t i = size(); i != new_size; ) {
-    --i;
-    // ~Integer() does not throw exceptions.  So we do.
-    vec_[i].~Integer();
-  }
-  set_size(new_size);
-}
-
-
-/*!
   Shrinks the real implementation of the row if
   \p new_size is less than <CODE>size()</CODE> ,
   otherwise it is grown without copying the old contents.
@@ -151,15 +119,6 @@ Parma_Polyhedra_Library::Row::Impl::Impl(Type type, size_t size)
   grow_no_copy(size);
 }
 
-
-INLINE void
-Parma_Polyhedra_Library::Row::Impl::copy_construct(const Impl& y) {
-  size_t y_size = y.size();
-  for (size_t i = 0; i < y_size; ++i) {
-    new (&vec_[i]) Integer(y.vec_[i]);
-    bump_size();
-  }
-}
 
 INLINE
 Parma_Polyhedra_Library::Row::Impl::Impl(const Impl& y)
@@ -406,40 +365,6 @@ Parma_Polyhedra_Library::Row::operator [](size_t k) {
 INLINE const Parma_Polyhedra_Library::Integer&
 Parma_Polyhedra_Library::Row::operator [](size_t k) const {
   return (*impl)[k];
-}
-
-INLINE int
-Parma_Polyhedra_Library::Row::first() const {
-  for (size_t i = 1, size_ = size(); i < size_; ++i)
-    if ((*this)[i] != 0)
-      return i-1;
-  return -1;
-}
-
-INLINE int
-Parma_Polyhedra_Library::Row::next(int p) const {
-  assert(p >= 0 && unsigned(p) < size()-1);
-  for (size_t i = p+2, size_ = size(); i < size_; ++i)
-    if ((*this)[i] != 0)
-      return i-1;
-  return -1;
-}
-
-INLINE int
-Parma_Polyhedra_Library::Row::last() const {
-  for (size_t i = size()-1; i >= 1; --i)
-    if ((*this)[i] != 0)
-      return i-1;
-  return -1;
-}
-
-INLINE int
-Parma_Polyhedra_Library::Row::prev(int n) const {
-  assert(n >= 0 && unsigned(n) < size()-1);
-  for (size_t i = n; i >= 1; --i)
-    if ((*this)[i] != 0)
-      return i-1;
-  return -1;
 }
 
 INLINE const Parma_Polyhedra_Library::Integer&

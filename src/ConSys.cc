@@ -38,7 +38,7 @@ site: http://www.cs.unipr.it/ppl/ . */
 namespace PPL = Parma_Polyhedra_Library;
 
 size_t
-Parma_Polyhedra_Library::ConSys::num_inequalities() const {
+PPL::ConSys::num_inequalities() const {
   int n = 0;
   // If the Matrix happens to be sorted, take advantage of the fact
   // that inequalities are at the bottom of the system.
@@ -53,12 +53,12 @@ Parma_Polyhedra_Library::ConSys::num_inequalities() const {
 }
 
 size_t
-Parma_Polyhedra_Library::ConSys::num_equalities() const {
+PPL::ConSys::num_equalities() const {
   return num_rows() - num_inequalities();
 }
 
 void
-Parma_Polyhedra_Library::ConSys::const_iterator::skip_forward() {
+PPL::ConSys::const_iterator::skip_forward() {
   Matrix::const_iterator csp_end = csp->end();
   while (i != csp_end && !(*this)->is_nontrivial())
     ++i;
