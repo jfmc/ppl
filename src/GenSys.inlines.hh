@@ -50,6 +50,11 @@ inline
 GenSys::~GenSys() {
 }
 
+inline size_t
+GenSys::space_dimension() const {
+  return (num_columns() == 0) ? 0 : num_columns() - 1;
+}
+
 inline void
 GenSys::insert(const Generator& g) {
   Matrix::insert(g);

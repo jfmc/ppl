@@ -60,6 +60,11 @@ ConSys::operator [](size_t k) const {
   return static_cast<const Constraint&> (Matrix::operator[](k));
 }
 
+inline size_t
+ConSys::space_dimension() const {
+  return (num_columns() == 0) ? 0 : num_columns() - 1;
+}
+
 inline void
 ConSys::insert(const Constraint& c) {
   Matrix::insert(c);

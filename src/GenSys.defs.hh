@@ -157,6 +157,9 @@ public:
   //! Destructor.
   virtual ~GenSys();
 
+  //! Returns the dimension of the space of \p *this.
+  size_t space_dimension() const;
+
   //! Inserts a copy of the generator \p g into \p *this,
   //! increasing the number of dimensions if needed.
   void insert(const Generator& g);
