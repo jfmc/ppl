@@ -68,27 +68,7 @@ have_gmp=${ac_cv_have_gmp}
 if test x"$ac_cv_have_gmp" = xyes
 then
 
-AC_MSG_CHECKING([size of GMP mp_limb_t])
-ac_cv_sizeof_mp_limb_t=none
-for size in 2 4 8
-do
-  AC_COMPILE_IFELSE([AC_LANG_SOURCE([[
-#include <gmp.h>
-
-int main() {
-  switch (0) {
-  case 0:
-  case (sizeof(mp_limb_t) == $size):
-    ;
-  }
-  return 0;
-}
-]])],
-    ac_cv_sizeof_mp_limb_t=$size; break)
-done
-AC_MSG_RESULT($size)
-AC_DEFINE_UNQUOTED(SIZEOF_MP_LIMB_T, $size,
-  [Size of GMP's mp_limb_t.])
+AC_CHECK_SIZEOF(mp_limb_t, , [#include <gmp.h>])
 
 AC_MSG_CHECKING([whether GMP has been compiled with support for exceptions])
 AC_RUN_IFELSE([AC_LANG_SOURCE([[
