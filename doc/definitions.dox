@@ -346,7 +346,7 @@ such that \f$L' \sseq L\f$, \f$R' \sseq R\f$, \f$P' \sseq P\f$ and
 <B>Double Description</B>
 
 Any NNC polyhedron \f$\cP\f$ can be described by using
-a constraint system \f$\cC\f$, a generator system \f$\cC\f$, or
+a constraint system \f$\cC\f$, a generator system \f$\cG\f$, or
 both by means of the <EM>double description pair (DD pair)</EM>
 \f$(\cC, \cG)\f$.
 The <EM>double description method</EM> is a collection
