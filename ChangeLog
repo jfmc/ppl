@@ -1,3 +1,457 @@
+2004-12-24 Friday 15:11  Roberto Bagnara <bagnara@cs.unipr.it>
+
+	* README (1.33), Watchdog/README (1.9): Updated.
+
+2004-12-24 Friday 14:30  Enea Zaffanella <zaffanella@cs.unipr.it>
+
+	* doc/user-browse.doxyconf-latex.in (1.24),
+	  doc/user-print.doxyconf-latex.in (1.24),
+	  doc/user.doxyconf-html.in (1.26), src/Coefficient.types.hh (1.5),
+	  src/GMP_Integer.types.hh (1.6), src/Makefile.am (1.95),
+	  src/Native_Integer.defs.hh (1.8), src/Native_Integer.types.hh
+	  (1.6): On a second thought, the user shouldn't care much about
+	  coefficient traits: the corresponding documentation now occurs in
+	  the devref manual only.
+
+2004-12-24 Friday 12:56  Roberto Bagnara <bagnara@cs.unipr.it>
+
+	* src/checked_float.inlines.hh (1.13): Typo fixed.
+
+2004-12-24 Friday 12:53  Enea Zaffanella <zaffanella@cs.unipr.it>
+
+	* doc/user-browse.doxyconf-latex.in (1.23),
+	  doc/user-print.doxyconf-latex.in (1.23),
+	  doc/user.doxyconf-html.in (1.25), src/Checked_Number.defs.hh
+	  (1.6), src/Coefficient.types.hh (1.4),
+	  src/Coefficient_traits_template.hh (1.2),
+	  src/GMP_Integer.types.hh (1.5), src/Linear_System.inlines.hh
+	  (1.11), src/Makefile.am (1.94), src/Native_Integer.defs.hh (1.7),
+	  src/Native_Integer.types.hh (1.5), src/checked.defs.hh (1.6),
+	  src/globals.defs.hh (1.13): Minor improvements to the
+	  documentation.
+
+2004-12-24 Friday 12:24  Roberto Bagnara <bagnara@cs.unipr.it>
+
+	* interfaces/Prolog/Ciao/: Makefile.am (1.38), ciao_clpq.pl (1.13),
+	  ciao_clpq2.pl (1.9), ciao_pl_check.pl (1.9): Fixed for the case
+	  where the source and the build directories coincide.
+
+2004-12-24 Friday 12:18  Roberto Bagnara <bagnara@cs.unipr.it>
+
+	* tests/.cvsignore (1.10): Updated.
+
+2004-12-24 Friday 12:03  Roberto Bagnara <bagnara@cs.unipr.it>
+
+	* Watchdog/Makefile.am (1.17): No longer mention erased files.
+
+2004-12-24 Friday 11:39  Roberto Bagnara <bagnara@cs.unipr.it>
+
+	* src/ppl_header.bottom (1.6): The preprocessor symbol
+	  PPL_FLEXIBLE_ARRAY is no longer used.
+
+2004-12-24 Friday 11:37  Roberto Bagnara <bagnara@cs.unipr.it>
+
+	* Watchdog/: pwl_header.bottom (1.2), pwl_header.top (1.5):
+	  Handling of NDEBUG improved.
+
+2004-12-24 Friday 11:37  Roberto Bagnara <bagnara@cs.unipr.it>
+
+	* Watchdog/pwl_header.middle (1.3): We no longer support GCC
+	  versions prior to 3.
+
+2004-12-24 Friday 11:32  Roberto Bagnara <bagnara@cs.unipr.it>
+
+	* Watchdog/configure.ac (1.24): Require Autoconf 2.59.
+
+2004-12-24 Friday 11:31  Roberto Bagnara <bagnara@cs.unipr.it>
+
+	* Watchdog/README (1.8): Version number bumped.
+
+2004-12-24 Friday 11:16  Roberto Bagnara <bagnara@cs.unipr.it>
+
+	* Watchdog/: Makefile.am (1.16), pwl_filter_doxygen.sed (1.2),
+	  pwl_filter_install.sed (1.2): Obsolete filters removed.  Shared
+	  library version info updated.
+
+2004-12-24 Friday 10:43  Roberto Bagnara <bagnara@cs.unipr.it>
+
+	* ppl.spec.in (1.24): Sentence fixed.
+
+2004-12-24 Friday 10:42  Roberto Bagnara <bagnara@cs.unipr.it>
+
+	* config.rpath (1.3): Updated.
+
+2004-12-24 Friday 10:41  Roberto Bagnara <bagnara@cs.unipr.it>
+
+	* NEWS (1.146), README.configure (1.11), TODO (1.135): Minor
+	  improvements.
+
+2004-12-24 Friday 10:40  Roberto Bagnara <bagnara@cs.unipr.it>
+
+	* CREDITS (1.15): AIDA project credited.
+
+2004-12-24 Friday 10:14  Enea Zaffanella <zaffanella@cs.unipr.it>
+
+	* src/: Checked_Number.inlines.hh (1.11), Native_Integer.inlines.hh
+	  (1.8), checked.defs.hh (1.5): Added some \relates doxygen
+	  commands.
+
+2004-12-24 Friday 09:00  Roberto Bagnara <bagnara@cs.unipr.it>
+
+	* Watchdog/Makefile.am (1.15), Watchdog/configure.ac (1.23),
+	  interfaces/Prolog/YAP/Makefile.am (1.33): Enable the creation of
+	  DLLs under Cygwin.
+
+2004-12-24 Friday 08:40  Patricia M. Hill <hill@comp.leeds.ac.uk>
+
+	* TODO (1.134): More checking of the documentation should be done.
+
+2004-12-24 Friday 08:34  Patricia M. Hill <hill@comp.leeds.ac.uk>
+
+	* src/: Generator_System.defs.hh (1.4), Linear_Expression.defs.hh
+	  (1.6), Polyhedra_Powerset.defs.hh (1.12), Polyhedron.defs.hh
+	  (1.262), Powerset.defs.hh (1.6): Several small improvements to
+	  the documantation.
+
+2004-12-23 Thursday 22:37  Enea Zaffanella <zaffanella@cs.unipr.it>
+
+	* NEWS (1.145): Added quotes.
+
+2004-12-23 Thursday 22:36  Enea Zaffanella <zaffanella@cs.unipr.it>
+
+	* NEWS (1.144): Mentioned the new configuration option
+	  --enable-coefficients.
+
+2004-12-23 Thursday 21:19  Enea Zaffanella <zaffanella@cs.unipr.it>
+
+	* README (1.32), src/Checked_Number.defs.hh (1.5),
+	  src/Coefficient.types.hh (1.3), src/GMP_Integer.defs.hh (1.4),
+	  src/GMP_Integer.types.hh (1.4), src/Makefile.am (1.93),
+	  src/Native_Integer.defs.hh (1.6), src/Native_Integer.types.hh
+	  (1.4): Drafted the doxygen documentation for Coefficient,
+	  GMP_Integer, Checked_Number and Native_Integer, as well as
+	  corresponding traits.  Corrected a minor error in the README
+	  file.
+
+2004-12-23 Thursday 16:15  Roberto Bagnara <bagnara@cs.unipr.it>
+
+	* doc/Makefile.am (1.31), interfaces/Prolog/SWI/Makefile.am (1.43),
+	  src/globals.defs.hh (1.12): Redundant inline declarations
+	  removed.
+
+2004-12-23 Thursday 14:19  Roberto Bagnara <bagnara@cs.unipr.it>
+
+	* interfaces/Prolog/SWI/Makefile.am (1.42): Let `plld' use the C++
+	  compiler to perform linking.
+
+2004-12-23 Thursday 12:20  Roberto Bagnara <bagnara@cs.unipr.it>
+
+	* ppl.spec.in (1.23), doc/README (1.5), doc/README.doc (1.1): The
+	  file doc/README has been renamed README.doc so as not to conflict
+	  with the library's main README file.
+
+2004-12-23 Thursday 11:50  Roberto Bagnara <bagnara@cs.unipr.it>
+
+	* ppl.spec.in (1.22): Updated.
+
+2004-12-23 Thursday 11:46  Roberto Bagnara <bagnara@cs.unipr.it>
+
+	* configure.ac (1.153), src/Makefile.am (1.92): Allow the creation
+	  of a PPL DLL under Cygwin.
+
+2004-12-23 Thursday 11:28  Patricia M. Hill <hill@comp.leeds.ac.uk>
+
+	* README.configure (1.10): Small improvement.
+
+2004-12-23 Thursday 10:24  Roberto Bagnara <bagnara@cs.unipr.it>
+
+	* README.configure (1.9): Updated.
+
+2004-12-23 Thursday 10:23  Roberto Bagnara <bagnara@cs.unipr.it>
+
+	* src/Polyhedra_Powerset.inlines.hh (1.14): Make sure
+	  Polyhedra_Powerset<PH>::space_dimension() is defined before being
+	  used.
+
+2004-12-23 Thursday 08:45  Roberto Bagnara <bagnara@cs.unipr.it>
+
+	* src/float.types.hh (1.5): Never include <config.h> from a header
+	  file.
+
+2004-12-22 Wednesday 21:53  Roberto Bagnara <bagnara@cs.unipr.it>
+
+	* tests/BBox.cc (1.7): Avoid repeating the inclusion of
+	  "ppl_install.hh".
+
+2004-12-22 Wednesday 21:47  Roberto Bagnara <bagnara@cs.unipr.it>
+
+	* src/initializer.hh (1.9): Multiple inclusion guard fixed.
+
+2004-12-22 Wednesday 19:41  Roberto Bagnara <bagnara@cs.unipr.it>
+
+	* README.configure (1.8): Added a section on enabling the use of
+	  alternative coefficient types.
+
+2004-12-22 Wednesday 19:02  Roberto Bagnara <bagnara@cs.unipr.it>
+
+	* demos/ppl_lpsol/: Makefile.am (1.9), dummy.cc (1.1): Force using
+	  the C++ compiler for linking.
+
+2004-12-22 Wednesday 19:01  Roberto Bagnara <bagnara@cs.unipr.it>
+
+	* interfaces/Prolog/: Ciao/Makefile.am (1.37), GNU/Makefile.am
+	  (1.42), SICStus/Makefile.am (1.49), SWI/Makefile.am (1.41),
+	  XSB/Makefile.am (1.30), YAP/Makefile.am (1.32): Do not use the
+	  `-no-undefined' Libtool option to build the dynamically loadable
+	  modules.
+
+2004-12-22 Wednesday 16:46  Patricia M. Hill <hill@comp.leeds.ac.uk>
+
+	* doc/definitions.dox (1.167):	Changed  "of" to "on"  in:
+
+	   Note that all the documented operators automatically
+	  perform reductions on their arguments, when needed or
+	  appropriate.
+
+2004-12-22 Wednesday 16:35  Enea Zaffanella <zaffanella@cs.unipr.it>
+
+	* TODO (1.133): The remaining item postponed to version 0.8 or
+	  later.
+
+2004-12-22 Wednesday 16:31  Enea Zaffanella <zaffanella@cs.unipr.it>
+
+	* TODO (1.132), doc/definitions.dox (1.166),
+	  src/Determinate.defs.hh (1.51): Added a note about lazy
+	  Omega-reduction in the documentation of the powerset domain.
+	  Avoid underscore when providing the name of operators, unless
+	  inside a <CODE> tag.
+
+2004-12-22 Wednesday 16:27  Enea Zaffanella <zaffanella@cs.unipr.it>
+
+	* src/Powerset.defs.hh (1.5): Added a reference to the description
+	  of the powerset domain in definitions.dox.  Documented the
+	  methods begin() and end() returning a const_iterator.
+
+2004-12-22 Wednesday 14:39  Abramo Bagnara
+
+	* src/float.types.hh (1.4): Added IEC559 conformance conditional
+	  for larger types.
+
+2004-12-22 Wednesday 14:32  Roberto Bagnara <bagnara@cs.unipr.it>
+
+	* interfaces/C/ppl_c.cc (1.123): Better support for different
+	  definitions of `size_t'.
+
+2004-12-22 Wednesday 14:19  Abramo Bagnara
+
+	* src/float.types.hh (1.3): Added support for iec559 types
+	  detection.
+
+2004-12-22 Wednesday 14:19  Enea Zaffanella <zaffanella@cs.unipr.it>
+
+	* src/Powerset.inlines.hh (1.6): Added a couple of inline
+	  declarations.
+
+2004-12-22 Wednesday 13:55  Roberto Bagnara <bagnara@cs.unipr.it>
+
+	* configure.ac (1.152), demos/ppl_lcdd/Makefile.am (1.17): On
+	  Darwin, the `md5sum' program does not support the `-t' option and
+	  compilation is best done with the `-Wno-long-double' option.
+
+2004-12-22 Wednesday 13:08  Patricia M. Hill <hill@comp.leeds.ac.uk>
+
+	* TODO (1.131): Added an item saying that we should reconsider the
+	  "with_token" predicates in the Prolog interface.
+
+2004-12-22 Wednesday 11:27  Roberto Bagnara <bagnara@cs.unipr.it>
+
+	* demos/ppl_lcdd/Makefile.am (1.16): Fixed the way `md5sum' is
+	  invoked.
+
+2004-12-22 Wednesday 11:26  Roberto Bagnara <bagnara@cs.unipr.it>
+
+	* ppl.lsm.in (1.6): Updated with new authors and new size of the
+	  archive.
+
+2004-12-22 Wednesday 11:25  Roberto Bagnara <bagnara@cs.unipr.it>
+
+	* configure.ac (1.151): Version number bumped.
+
+2004-12-22 Wednesday 11:24  Roberto Bagnara <bagnara@cs.unipr.it>
+
+	* TODO (1.130): Updated.
+
+2004-12-22 Wednesday 11:24  Roberto Bagnara <bagnara@cs.unipr.it>
+
+	* STANDARDS (1.18): The requirement of keeping source lines short
+	  has been softened.
+
+2004-12-22 Wednesday 10:08  Patricia M. Hill <hill@comp.leeds.ac.uk>
+
+	* TODO (1.129), interfaces/Prolog/Prolog_interface.dox (1.125),
+	  interfaces/Prolog/exceptions.hh (1.14),
+	  interfaces/Prolog/ppl_prolog.icc (1.150),
+	  interfaces/Prolog/Ciao/ppl_ciao.pl (1.77),
+	  interfaces/Prolog/tests/pl_check.pl (1.6): In the Prolog
+	  interface, exceptions now always thrown if input values (other
+	  than lists) are invalid.
+
+	  Tests for these new exceptions added to the pl_check.pl test
+	  file.
+
+	  Corrected bug in Prolog interface in the case when a list was
+	  expected but a non-list was input.
+
+	  The interface needs to be changed so that it throws an exception
+	  for non-lists (instead of just Prolog failure) when a list is
+	  expected; this job has been added to the TODO file.
+
+2004-12-22 Wednesday 00:13  Enea Zaffanella <zaffanella@cs.unipr.it>
+
+	* tests/: Makefile.am (1.240), timeelapse9.cc (1.1): Added a new
+	  test, experimenting method
+	  Polyhedra_Powerset::time_elapse_assign() as well as the new
+	  (corrected) implementation of the equality test for class
+	  Powerset.
+
+2004-12-22 Wednesday 00:09  Enea Zaffanella <zaffanella@cs.unipr.it>
+
+	* src/: Polyhedra_Powerset.defs.hh (1.11),
+	  Polyhedra_Powerset.inlines.hh (1.13): Added methods
+	  intersection_assign() and time_elapse_assign(), exploiting the
+	  generic function Powerset::pairwise_apply_assign().  A lot of
+	  simple operators declared inline.
+
+2004-12-22 Wednesday 00:06  Enea Zaffanella <zaffanella@cs.unipr.it>
+
+	* src/: Powerset.defs.hh (1.4), Powerset.inlines.hh (1.5): Member
+	  omega_reduce() made (temporarily) publicly available.  Added a
+	  generic method pairwise_apply_assign() to apply a binary operator
+	  to all pairs drawn from two powersets.  A lot of simple operators
+	  declared inline.
+
+2004-12-21 Tuesday 23:39  Roberto Bagnara <bagnara@cs.unipr.it>
+
+	* configure.ac (1.150), m4/ac_cxx_double_is_iec_559.m4 (1.1),
+	  m4/ac_cxx_float_is_iec_559.m4 (1.1),
+	  m4/ac_cxx_long_double_is_iec_559.m4 (1.1): New tests to check
+	  whether C++ floats, doubles and long doubles comply to IEC 559.
+
+2004-12-21 Tuesday 23:02  Roberto Bagnara <bagnara@cs.unipr.it>
+
+	* configure.ac (1.149): Detect the sizes of float, double and long
+	  double.
+
+2004-12-21 Tuesday 22:43  Enea Zaffanella <zaffanella@cs.unipr.it>
+
+	* src/: Determinate.defs.hh (1.50), Determinate.inlines.hh (1.44):
+	  Added a function object adapter to lift any "apply_and_assign"
+	  function object defined on PH so as to obtain the corresponding
+	  function object working on Determinate<PH>.
+
+2004-12-21 Tuesday 22:40  Enea Zaffanella <zaffanella@cs.unipr.it>
+
+	* src/Widening_Function.defs.hh (1.9): Unary constructor made
+	  explicit.
+
+2004-12-21 Tuesday 22:39  Enea Zaffanella <zaffanella@cs.unipr.it>
+
+	* STANDARDS (1.17): std::swap_iter() ===> std::iter_swap().
+
+2004-12-21 Tuesday 08:39  Patricia M. Hill <hill@comp.leeds.ac.uk>
+
+	* doc/definitions.dox (1.165), src/Polyhedron.defs.hh (1.261):
+	  Spelling and similar corrections to the documentation.
+
+2004-12-21 Tuesday 08:18  Patricia M. Hill <hill@comp.leeds.ac.uk>
+
+	* interfaces/C/ppl_c.h.in (1.43): Spelling and similar corrections
+	  to documentation.
+
+2004-12-20 Monday 22:44  Roberto Bagnara <bagnara@cs.unipr.it>
+
+	* src/Linear_Row.cc (1.4): Unused, duplicated code removed.
+
+2004-12-20 Monday 21:19  Roberto Bagnara <bagnara@cs.unipr.it>
+
+	* src/Checked_Number.inlines.hh (1.10): The Comeau and Intel C++
+	  compilers are actually right: if check_result() has internal
+	  linkage (is declared static) then, according to section 14.6.4.2
+	  of the C++ standard (Candidate Functions), it is not a candidate
+	  function and thus it is not found by the name lookup mechanism.
+
+2004-12-20 Monday 14:15  Patricia M. Hill <hill@comp.leeds.ac.uk>
+
+	* tests/polydifference9.cc (1.6): Comment corrected.
+
+2004-12-20 Monday 11:01  Roberto Bagnara <bagnara@cs.unipr.it>
+
+	* interfaces/C/ppl_c.cc (1.122): Previous change corrected again.
+
+2004-12-20 Monday 10:49  Roberto Bagnara <bagnara@cs.unipr.it>
+
+	* interfaces/C/ppl_c.cc (1.121): Previous change completed.
+
+2004-12-20 Monday 10:17  Roberto Bagnara <bagnara@cs.unipr.it>
+
+	* interfaces/C/ppl_c.cc (1.120): Support definitions for `size_t'
+	  different from `unsigned'.
+
+2004-12-20 Monday 10:01  Roberto Bagnara <bagnara@cs.unipr.it>
+
+	* configure.ac (1.148): Detect the size of more C types.
+
+2004-12-20 Monday 07:41  Roberto Bagnara <bagnara@cs.unipr.it>
+
+	* src/checked_int.inlines.hh (1.10): Fixed an instance of LONG_MAX
+	  that should instead be ULONG_MAX.
+
+2004-12-19 Sunday 12:04  Roberto Bagnara <bagnara@cs.unipr.it>
+
+	* Watchdog/configure.ac (1.22), configure.ac (1.147): Version
+	  number bumped.
+
+2004-12-19 Sunday 11:51  Roberto Bagnara <bagnara@cs.unipr.it>
+
+	* README (1.31): Updated.
+
+2004-12-19 Sunday 11:41  Roberto Bagnara <bagnara@cs.unipr.it>
+
+	* NEWS (1.143), Watchdog/NEWS (1.5): The tentative release date for
+	  PPL 0.7 is December 24, 2004.
+
+2004-12-19 Sunday 09:21  Roberto Bagnara <bagnara@cs.unipr.it>
+
+	* src/swapping_sort.icc (1.7): Make sure emacs recognizes this file
+	  as C++.
+
+2004-12-19 Sunday 09:19  Roberto Bagnara <bagnara@cs.unipr.it>
+
+	* STANDARDS (1.16), interfaces/C/ppl_c.cc (1.119),
+	  interfaces/Prolog/track_allocation.hh (1.14),
+	  interfaces/Prolog/Ciao/ppl_ciao.pl (1.76),
+	  interfaces/Prolog/GNU/gnu_pl_check.pl (1.3),
+	  interfaces/Prolog/SWI/swi_pl_check.pl (1.2),
+	  interfaces/Prolog/tests/clpq.pl (1.4),
+	  interfaces/Prolog/tests/clpq2.pl (1.4),
+	  interfaces/Prolog/tests/pl_check.pl (1.5), src/Interval.defs.hh
+	  (1.20), src/Interval.inlines.hh (1.16), src/swapping_sort.icc
+	  (1.6), tests/bhz03widening2.cc (1.10), tests/bhz03widening3.cc
+	  (1.9), tests/bhz03widening5.cc (1.7), tests/bhz03widening6.cc
+	  (1.8), tests/expandspacedim1.cc (1.3), tests/foldspacedims1.cc
+	  (1.2), tests/foldspacedims2.cc (1.2), tests/watchdog1.cc (1.21):
+	  Avoid "baStudlyCaps" identifiers everywhere.
+
+2004-12-19 Sunday 09:18  Roberto Bagnara <bagnara@cs.unipr.it>
+
+	* src/Checked_Number.inlines.hh (1.9): Workaround for the Comeau
+	  and Intel C++ compilers: they do not like the use of `static' in
+	  a particular context.
+
+2004-12-19 Sunday 07:50  Roberto Bagnara <bagnara@cs.unipr.it>
+
+	* ChangeLog (1.19), Watchdog/ChangeLog (1.9): Updated.
+
 2004-12-19 Sunday 07:34  Roberto Bagnara <bagnara@cs.unipr.it>
 
 	* config.guess (1.26), config.sub (1.24), Watchdog/config.guess
