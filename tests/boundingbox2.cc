@@ -29,153 +29,9 @@ site: http://www.cs.unipr.it/ppl/ . */
 using namespace std;
 using namespace Parma_Polyhedra_Library;
 
-#define NOISY 0
+#define NOISY 1
 #define C_TESTS 1
 #define NNC_TESTS 1
-
-class BInterval {
-private:
-  bool uclosed;
-  Integer uc;
-  Integer ud;
-  bool lclosed;
-  Integer lc;
-  Integer ld;
-
-public:
-  BInterval()
-    : uclosed(true), uc(1), ud(0), lclosed(true), lc(-1), ld(0) {
-  }
-
-  void raise_lower_bound(bool closed,
-			 const Integer& c, const Integer& d) {
-    assert(d > 0 && ld >= 0);
-    if ((closed && lc*d <= c*ld) || (!closed && lc*d < c*ld))  {
-        lc = c;
-        ld = d;
-        lclosed = closed;
-    }
-  }
-
-  void lower_upper_bound(bool closed,
-			 const Integer& c, const Integer& d) {
-    assert(d > 0 && ud >= 0);
-    if ((!closed && uc*d >= c*ud) || (closed && uc*d > c*ud))  {
-        uc = c;
-        ud = d;
-        uclosed = closed;
-    }
-  }
-
-  void set_empty() {
-    uc = -1;
-    lc = 1;
-    ud = 1;
-    ld = 1;}
-
-  void print_interval() {
-  cout << "lower bound = ";
-  if (ld != 0) {
-    if (lclosed == true)
-      cout << " true ";
-    else
-      cout << " false";
-    cout << " : " << lc << " / " << ld << "," << endl;
-  }
-  else
-    cout << " none " << endl;
-
-  cout << "         ";
-  cout << "upper bound = ";
-  if (ud != 0) {
-    if (uclosed == true)
-      cout << " true ";
-    else
-      cout << " false";
-    cout << " : " << uc << " / " << ud << "." << endl;
-  }
-  else
-    cout << " none,  " << endl;
-  }
-
-  friend bool operator==(const BInterval& x, const BInterval& y);
-};
-
-inline bool
-operator==(const BInterval& x, const BInterval& y) {
-  return x.lclosed == y.lclosed
-    && x.uclosed == y.uclosed
-    && x.lc*y.ld == y.lc*x.ld
-    && x.uc*y.ud == y.uc*x.ud;
-}
-
-inline bool
-operator!=(const BInterval& x, const BInterval& y) {
-  return !(x == y);
-}
-
-class BBox {
-private:
-  vector<BInterval> box;
-
-public:
-  BBox(unsigned int dimension) {
-    box.resize(dimension);
-  }
-
-  unsigned int space_dimension() const {
-    return box.size();
-  }
-
-  const BInterval& operator[](size_t k) const {
-    return box[k];
-  }
-
-  void print_box(const string& intro = "") {
-    if (!intro.empty())
-      cout << intro << endl;
-    size_t dim = box.size();
-    for (size_t j = 0; j != dim ; j++) {
-      cout << j << " AXES:  ";
-      box[j].print_interval();
-    }
-  }
-
-  void raise_lower_bound(size_t k, bool closed,
-			 const Integer& c, const Integer& d) {
-    assert(k < box.size());
-    box[k].raise_lower_bound(closed, c, d);
-  }
-
-  void lower_upper_bound(size_t k, bool closed,
-			 const Integer& c, const Integer& d) {
-    assert(k < box.size());
-    box[k].lower_upper_bound(closed, c, d);
-  }
-
-  void set_empty() {
-    for (size_t k = box.size(); k-- > 0; )
-      box[k].set_empty();
-  }
-};
-
-bool
-operator==(const BBox& x, const BBox& y) {
-  unsigned int dimension = x.space_dimension();
-  if (dimension != y.space_dimension())
-    return false;
-
-  for (unsigned int i = dimension; i-- > 0; )
-    if (x[i] != y[i])
-      return false;
-
-  return true;
-}
-
-inline bool
-operator!=(const BBox& x, const BBox& y) {
-  return !(x == y);
-}
 
 // This is a non-bounded C polyhedron consisting of the line x = y.
 // The bounding box is the xy plane - the universal polyhedron.
@@ -200,7 +56,8 @@ void test0() {
 #if NOISY
   print_generators(ph1, "*** test0 ph1 ***");
 #endif
-  
+  ph1.intersection_assign_and_minimize(ph);
+
    if ((ph != ph1))
      exit(1);
 
@@ -228,8 +85,9 @@ void test0a() {
   NNC_Polyhedron ph1(dummy, box);
 
 #if NOISY
-  print_generators(ph1, "*** test0 ph1 ***");
+  print_generators(ph1, "*** test0a ph1 ***");
 #endif
+  ph1.intersection_assign_and_minimize(ph);
  
    if ((ph != ph1))
      exit(1);
@@ -256,11 +114,12 @@ void test1() {
 
   From_Bounding_Box dummy;
 
-  C_Polyhedron ph1(dummy, box);
+  NNC_Polyhedron ph1(dummy, box);
 
 #if NOISY
-  print_generators(ph1, "*** test0 ph1 ***");
+  print_generators(ph1, "*** test1 ph1 ***");
 #endif
+  ph1.intersection_assign_and_minimize(ph);
   
    if ((ph != ph1))
      exit(1);
@@ -290,8 +149,9 @@ void test1a() {
   NNC_Polyhedron ph1(dummy, box);
 
 #if NOISY
-  print_generators(ph1, "*** test0 ph1 ***");
+  print_generators(ph1, "*** test1a ph1 ***");
 #endif
+  ph1.intersection_assign_and_minimize(ph);
   
    if ((ph != ph1))
      exit(1);
@@ -322,8 +182,9 @@ void test2() {
   C_Polyhedron ph1(dummy, box);
 
 #if NOISY
-  print_generators(ph1, "*** test0 ph1 ***");
+  print_generators(ph1, "*** test2 ph1 ***");
 #endif
+  ph1.intersection_assign_and_minimize(ph);
   
    if ((ph != ph1))
      exit(1);
@@ -354,9 +215,10 @@ void test2a() {
   NNC_Polyhedron ph1(dummy, box);
 
 #if NOISY
-  print_generators(ph1, "*** test0 ph1 ***");
+  print_generators(ph1, "*** test2a ph1 ***");
 #endif
-  
+  ph1.intersection_assign_and_minimize(ph);
+ 
    if ((ph != ph1))
      exit(1);
 
@@ -385,7 +247,7 @@ void test2b() {
   C_Polyhedron ph1(dummy, box);
 
 #if NOISY
-  print_generators(ph1, "*** test0 ph1 ***");
+  print_generators(ph1, "*** test3b ph1 ***");
 #endif
   
    if ((ph != ph1))
@@ -412,7 +274,7 @@ void test3() {
   print_generators(ph, "*** test3 ph ***");
 #endif
   
-  BoundingBox box(2);
+  BoundingBox box(4);
   ph.shrink_bounding_box(box);
 
   From_Bounding_Box dummy;
@@ -420,9 +282,10 @@ void test3() {
   C_Polyhedron ph1(dummy, box);
 
 #if NOISY
-  print_generators(ph1, "*** test0 ph1 ***");
+  print_generators(ph1, "*** test3 ph1 ***");
 #endif
-  
+  ph1.intersection_assign_and_minimize(ph);
+ 
    if ((ph != ph1))
      exit(1);
 
@@ -447,7 +310,7 @@ void test3a() {
   print_generators(ph, "*** test3a ph ***");
 #endif
   
-  BoundingBox box(2);
+  BoundingBox box(4);
   ph.shrink_bounding_box(box);
 
   From_Bounding_Box dummy;
@@ -455,9 +318,10 @@ void test3a() {
   NNC_Polyhedron ph1(dummy, box);
 
 #if NOISY
-  print_generators(ph1, "*** test0 ph1 ***");
+  print_generators(ph1, "*** test3a ph1 ***");
 #endif
-  
+   ph1.intersection_assign_and_minimize(ph);
+ 
    if ((ph != ph1))
      exit(1);
 
@@ -470,7 +334,7 @@ void test4() {
   C_Polyhedron ph(2);
 
 #if NOISY
-  print_constraints(ph, "*** test4 ph ***");
+  print_generators(ph, "*** test4 ph ***");
 #endif  
   
   BoundingBox box(2);
@@ -481,8 +345,9 @@ void test4() {
   C_Polyhedron ph1(dummy, box);
 
 #if NOISY
-  print_generators(ph1, "*** test0 ph1 ***");
+  print_generators(ph1, "*** test4 ph1 ***");
 #endif
+   ph1.intersection_assign_and_minimize(ph);
   
    if ((ph != ph1))
      exit(1);
@@ -507,7 +372,7 @@ void test4a() {
   NNC_Polyhedron ph1(dummy, box);
 
 #if NOISY
-  print_generators(ph1, "*** test0 ph1 ***");
+  print_generators(ph1, "*** test4a ph1 ***");
 #endif
   
    if ((ph != ph1))
@@ -522,10 +387,10 @@ void test5() {
   C_Polyhedron ph;
 
 #if NOISY
-  print_constraints(ph, "*** test5 ph ***");
+  print_generators(ph, "*** test5 ph ***");
 #endif  
   
-  BoundingBox box(2);
+  BoundingBox box(0);
   ph.shrink_bounding_box(box);
 
   From_Bounding_Box dummy;
@@ -533,7 +398,7 @@ void test5() {
   C_Polyhedron ph1(dummy, box);
 
 #if NOISY
-  print_generators(ph1, "*** test0 ph1 ***");
+  print_generators(ph1, "*** test5 ph1 ***");
 #endif
   
    if ((ph != ph1))
@@ -548,10 +413,10 @@ void test5a() {
   NNC_Polyhedron ph;
 
 #if NOISY
-  print_constraints(ph, "*** test5a ph ***");
+  print_generators(ph, "*** test5a ph ***");
 #endif  
   
-  BoundingBox box(2);
+  BoundingBox box(0);
   ph.shrink_bounding_box(box);
 
   From_Bounding_Box dummy;
@@ -559,7 +424,7 @@ void test5a() {
   NNC_Polyhedron ph1(dummy, box);
 
 #if NOISY
-  print_generators(ph1, "*** test0 ph1 ***");
+  print_generators(ph1, "*** test5a ph1 ***");
 #endif
   
    if ((ph != ph1))
@@ -585,7 +450,7 @@ void test6() {
   C_Polyhedron ph1(dummy, box);
 
 #if NOISY
-  print_generators(ph1, "*** test0 ph1 ***");
+  print_generators(ph1, "*** test6 ph1 ***");
 #endif
   
    if ((ph != ph1))
@@ -600,7 +465,7 @@ void test6a() {
   NNC_Polyhedron ph(2, C_Polyhedron::EMPTY);
 
 #if NOISY
-  print_constraints(ph, "*** test6a ph ***");
+  print_generators(ph, "*** test6a ph ***");
 #endif  
   
   BoundingBox box(2);
@@ -611,7 +476,7 @@ void test6a() {
   NNC_Polyhedron ph1(dummy, box);
 
 #if NOISY
-  print_generators(ph1, "*** test0 ph1 ***");
+  print_generators(ph1, "*** test6a ph1 ***");
 #endif
   
    if ((ph != ph1))
@@ -646,7 +511,7 @@ void test10() {
   C_Polyhedron ph1(dummy, box);
 
 #if NOISY
-  print_generators(ph1, "*** test0 ph1 ***");
+  print_generators(ph1, "*** test10 ph1 ***");
 #endif
   
    if ((ph != ph1))
@@ -681,7 +546,7 @@ void test10a() {
   NNC_Polyhedron ph1(dummy, box);
 
 #if NOISY
-  print_generators(ph1, "*** test0 ph1 ***");
+  print_generators(ph1, "*** test10a ph1 ***");
 #endif
   
    if ((ph != ph1))
@@ -709,7 +574,7 @@ void test11() {
   print_generators(ph, "*** test11 ph ***");
 #endif
   
-  BoundingBox box(2);
+  BoundingBox box(4);
   ph.shrink_bounding_box(box);
 
   From_Bounding_Box dummy;
@@ -717,8 +582,9 @@ void test11() {
   NNC_Polyhedron ph1(dummy, box);
 
 #if NOISY
-  print_generators(ph1, "*** test0 ph1 ***");
+  print_generators(ph1, "*** test11 ph1 ***");
 #endif
+  ph1.intersection_assign_and_minimize(ph);
   
    if ((ph != ph1))
      exit(1);
@@ -751,8 +617,9 @@ void test12() {
   NNC_Polyhedron ph1(dummy, box);
 
 #if NOISY
-  print_generators(ph1, "*** test0 ph1 ***");
+  print_generators(ph1, "*** test12 ph1 ***");
 #endif
+  ph1.intersection_assign_and_minimize(ph);
   
    if ((ph != ph1))
      exit(1);
@@ -776,7 +643,7 @@ void test20() {
   C_Polyhedron ph(dummy, box);
 
 #if NOISY
-  print_generators(ph, "*** test0 ph ***");
+  print_generators(ph, "*** test20 ph ***");
 #endif
   
   Variable x(0);
@@ -787,7 +654,7 @@ void test20() {
   known_ph.add_constraint(y >= 0);
 
 #if NOISY
-  print_generators(known_ph, "*** test0 known_ph ***");
+  print_generators(known_ph, "*** test20 known_ph ***");
 #endif
 
    if ((ph != known_ph))
@@ -805,7 +672,7 @@ void test21() {
   ph.add_constraint(y < 0);
 
 #if NOISY
-  print_generators(ph, "*** test1 ph ***");
+  print_generators(ph, "*** test21 ph ***");
 #endif
   
   BoundingBox box(2);
@@ -816,7 +683,7 @@ void test21() {
   NNC_Polyhedron ph1(dummy, box);
 
 #if NOISY
-  print_generators(ph1, "*** test1 ph1 ***");
+  print_generators(ph1, "*** test21 ph1 ***");
 #endif
   
    if ((ph != ph1))
@@ -827,6 +694,7 @@ void test21() {
 
 int
 main() {
+
 
   test0();
   test1();
@@ -848,6 +716,5 @@ main() {
   test12();
   test20();
   test21();
-
   return 0;
 }
