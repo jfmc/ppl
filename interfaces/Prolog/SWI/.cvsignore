@@ -1,7 +1,10 @@
+*.clpq
 *.la
 *.lo
 .deps
 .libs
 Makefile
 Makefile.in
+obtained
+pl_clpq
 ppl_pl
