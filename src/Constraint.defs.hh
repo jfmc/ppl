@@ -180,8 +180,8 @@ public:
 
 PPL_INTERNAL:
   //! Returns <CODE>true</CODE> if and only if
-  //! \p *this is a non trivial constraint.
-  bool is_nontrivial() const;
+  //! \p *this is the trivial constraint 0 <= n, where \f$n \geq 0\f$.
+  bool is_trivial() const;
 
   enum Type {
     EQUALITY = Row::LINE_OR_EQUALITY,

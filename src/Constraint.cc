@@ -41,17 +41,17 @@ PPL::operator >>(const Constraint& y, unsigned int offset) {
 }
 
 bool
-PPL::Constraint::is_nontrivial() const {
+PPL::Constraint::is_trivial() const {
   assert(size() > 0);
   const Constraint& x = *this;
   for (size_t i = size(); --i > 0; )
     if (x[i] != 0)
-      return true;
+      return false;
   if (is_equality())
     return (x[0] == 0);
   else
     // Inequality constraint.
-    return (x[0] <= 0);
+    return (x[0] >= 0);
 }
 
 std::ostream&

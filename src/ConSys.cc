@@ -57,7 +57,7 @@ PPL::ConSys::num_equalities() const {
 void
 PPL::ConSys::const_iterator::skip_forward() {
   Matrix::const_iterator csp_end = csp->end();
-  while (i != csp_end && !(*this)->is_nontrivial())
+  while (i != csp_end && (*this)->is_trivial())
     ++i;
 }
 
