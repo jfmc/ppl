@@ -44,76 +44,96 @@ static const char yes = '+';
 static const char no = '-';
 static const char sep = ' ';
 
-/*! \relates Parma_Polyhedra_Library::Status */
-std::ostream&
-PPL::operator<<(std::ostream& s, const Status& u) {
-  s << (u.test_zero_dim_univ() ? yes : no) << zero_dim_univ << sep
-    << (u.test_empty() ? yes : no) << empty << sep
+void
+PPL::Status::ASCII_dump(std::ostream& s) {
+  s << (test_zero_dim_univ() ? yes : no) << zero_dim_univ << sep
+    << (test_empty() ? yes : no) << empty << sep
     << sep
-    << (u.test_c_minimized() ? yes : no) << consys_min << sep
-    << (u.test_g_minimized() ? yes : no) << gensys_min << sep
+    << (test_c_minimized() ? yes : no) << consys_min << sep
+    << (test_g_minimized() ? yes : no) << gensys_min << sep
     << sep
-    << (u.test_c_up_to_date() ? yes : no) << consys_upd << sep
-    << (u.test_g_up_to_date() ? yes : no) << gensys_upd << sep
+    << (test_c_up_to_date() ? yes : no) << consys_upd << sep
+    << (test_g_up_to_date() ? yes : no) << gensys_upd << sep
     << sep
-    << (u.test_sat_c_up_to_date() ? yes : no) << sat_c << sep
-    << (u.test_sat_g_up_to_date() ? yes : no) << sat_g << sep;
-  return s;
+    << (test_sat_c_up_to_date() ? yes : no) << sat_c << sep
+    << (test_sat_g_up_to_date() ? yes : no) << sat_g << sep;
 }
 
 /*!
-  Reads a keyword from the input string.
-  Returns <CODE>true</CODE> if the assertion corresponding to the keyword
-  has to be added to the conjunction, <CODE>false</CODE> otherwise.
+  Reads a keyword and its associated on/off flag from \p s.
+  Returns <CODE>true</CODE> if the operation is successful,
+  returns <CODE>false</CODE> otherwise.
+  When successful, \p positive is set to <CODE>true</CODE> if the flag
+  is on; it is set to <CODE>false</CODE> otherwise.
 */
 static bool
-get_field(std::istream& s, const std::string&
-#ifndef NDEBUG
-	  keyword
-#endif
-	  ) {
+get_field(std::istream& s, const std::string& keyword, bool& positive) {
   std::string str;
-  s >> str;
-  assert(str.length() == 1 + keyword.length());
-  assert(str.substr(1) == keyword);
-  assert(str[0] == yes || str[0] == no);
-  return str[0] == yes;
+  if (!(s >> str)
+      || (str[0] != yes && str[0] != no)
+      || str.substr(1) != keyword)
+    return false;
+  positive = (str[0] == yes);
+  return true;
 }
 
-/*! \relates Parma_Polyhedra_Library::Status */
-std::istream&
-PPL::operator>>(std::istream& s, Status& u) {
-  if (get_field(s, zero_dim_univ))
-    u.set_zero_dim_univ();
+bool
+PPL::Status::ASCII_load(std::istream& s) {
+  bool positive;
 
-  if (get_field(s, empty))
-    u.set_empty();
+  if (get_field(s, zero_dim_univ, positive))
+    return false;
+  if (positive)
+    set_zero_dim_univ();
 
- get_field(s, consys_min) ?
-    u.set_c_minimized() :
-    u.reset_c_minimized();
+  if (get_field(s, empty, positive))
+    return false;
+  if (positive)
+    set_empty();
 
- get_field(s, gensys_min) ?
-    u.set_g_minimized() :
-    u.reset_g_minimized();
+  if (get_field(s, consys_min, positive))
+    return false;
+  if (positive)
+    set_c_minimized();
+  else
+    reset_c_minimized();
 
-  get_field(s, consys_upd) ?
-    u.set_c_up_to_date() :
-    u.reset_c_up_to_date();
+  if (get_field(s, gensys_min, positive))
+    return false;
+  if (positive)
+    set_g_minimized();
+  else
+    reset_g_minimized();
 
-  get_field(s, gensys_upd) ?
-    u.set_g_up_to_date() :
-    u.reset_g_up_to_date();
+  if (get_field(s, consys_upd, positive))
+    return false;
+  if (positive)
+    set_c_up_to_date();
+  else
+    reset_c_up_to_date();
 
-  get_field(s, sat_c) ?
-    u.set_sat_c_up_to_date() :
-    u.reset_sat_c_up_to_date();
+  if (get_field(s, gensys_upd, positive))
+    return false;
+  if (positive)
+    set_g_up_to_date();
+  else
+    reset_g_up_to_date();
 
-  get_field(s, sat_g) ?
-    u.set_sat_g_up_to_date() :
-    u.reset_sat_g_up_to_date();
+  if (get_field(s, sat_c, positive))
+    return false;
+  if (positive)
+    set_sat_c_up_to_date();
+  else
+    reset_sat_c_up_to_date();
 
-  return s;
+  if (get_field(s, sat_g, positive))
+    return false;
+  if (positive)
+    set_sat_g_up_to_date();
+  else
+    reset_sat_g_up_to_date();
+
+  return true;
 }
 
 bool

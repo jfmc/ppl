@@ -2518,9 +2518,9 @@ PPL::Polyhedron::ASCII_dump(std::ostream& s) const {
 
   s << "space_dim "
     << space_dimension()
-    << endl
-    << status
-    << endl
+    << endl;
+  status.ASCII_dump(s);
+  s << endl
     << "con_sys ("
     << (constraints_are_up_to_date() ? "" : "not_")
     << "up-to-date)"
@@ -2547,30 +2547,41 @@ bool
 PPL::Polyhedron::ASCII_load(std::istream& s) {
   std::string str;
 
-  s >> str;
-  assert(str == "space_dim");
-  s >> space_dim;
+  if (!(s >> str) || str != "space_dim")
+    return false;
 
-  s >> status;
+  if (!(s >> space_dim))
+    return false;
 
-  s >> str;
-  assert(str == "con_sys");
-  s >> str;
-  assert(str == "(not_up-to-date)" || str == "(up-to-date)");
+  if (!status.ASCII_load(s))
+    return false;
+
+  if (!(s >> str) || str != "con_sys")
+    return false;
+
+  if (!(s >> str) || (str != "(not_up-to-date)" && str != "(up-to-date)"))
+    return false;
+
   s >> con_sys;
-  s >> str;
-  assert(str == "gen_sys");
-  s >> str;
-  assert(str == "(not_up-to-date)" || str == "(up-to-date)");
+
+  if (!(s >> str) || str != "gen_sys")
+    return false;
+
+  if (!(s >> str) || (str != "(not_up-to-date)" && str != "(up-to-date)"))
+    return false;
+
   s >> gen_sys;
-  s >> str;
-  assert(str == "sat_c");
+
+  if (!(s >> str) || str != "sat_c")
+    return false;
+
   s >> sat_c;
-  s >> str;
-  assert(str == "sat_g");
+
+  if (!(s >> str) || str != "sat_g")
+    return false;
+
   s >> sat_g;
 
-  // FIXME: return the proper value.
   return true;
 }
 
