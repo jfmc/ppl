@@ -48,6 +48,14 @@ namespace Parma_Polyhedra_Library {
   Constraint operator>=(const LinExpression& e, const Integer& n);
   Constraint operator>=(const Integer& n, const LinExpression& e);
 
+  Constraint operator<(const LinExpression& e1, const LinExpression& e2);
+  Constraint operator<(const LinExpression& e, const Integer& n);
+  Constraint operator<(const Integer& n, const LinExpression& e);
+
+  Constraint operator>(const LinExpression& e1, const LinExpression& e2);
+  Constraint operator>(const LinExpression& e, const Integer& n);
+  Constraint operator>(const Integer& n, const LinExpression& e);
+
   Constraint operator>>(const Constraint& c, unsigned int offset);
 }
 
@@ -55,7 +63,8 @@ namespace Parma_Polyhedra_Library {
 /*!
   An object of the class Constraint is either:
   - an equality: \f$\sum_{i=0}^{n-1} a_i x_i + b = 0\f$; or
-  - an inequality: \f$\sum_{i=0}^{n-1} a_i x_i + b \geq 0\f$;
+  - a non-strict inequality: \f$\sum_{i=0}^{n-1} a_i x_i + b \geq 0\f$;
+  - a strict inequality: \f$\sum_{i=0}^{n-1} a_i x_i + b > 0\f$;
 
   where \f$n\f$ is the dimension of the space,
   \f$a_i\f$ is the integer coefficient of variable \f$x_i\f$
@@ -64,10 +73,9 @@ namespace Parma_Polyhedra_Library {
   \par How to build a constraint
   Constraints are typically built by applying a relational operator
   to a pair of linear expressions.
-  Available relational operators include equality (<CODE>==</CODE>)
-  and non-strict inequalities (<CODE>>=</CODE> and <CODE><=</CODE>).
-  Strict inequalities (<CODE><</CODE> and <CODE>></CODE>)
-  are not supported.
+  Available relational operators include equality (<CODE>==</CODE>),
+  non-strict inequalities (<CODE>>=</CODE> and <CODE><=</CODE>) and
+  strict inequalities (<CODE><</CODE> and <CODE>></CODE>).
   The space-dimension of a constraint is defined as the maximum
   space-dimension of the arguments of its constructor.
 
@@ -110,7 +118,8 @@ namespace Parma_Polyhedra_Library {
   \par How to inspect a constraint
   Several methods are provided to examine a constraint and extract
   all the encoded information: its space-dimension, its type
-  (equality or inequality) and the value of its integer coefficients.
+  (equality, non-strict inequality, strict inequality) and
+  the value of its integer coefficients.
 
   \par Example 2
   The following code shows how it is possible to access each single
@@ -201,6 +210,36 @@ private:
   Parma_Polyhedra_Library::operator<=(const Integer& n,
 				      const LinExpression& e);
 
+  //! Returns the constraint \p e1 > \p e2.
+  friend Constraint
+  Parma_Polyhedra_Library::operator>(const LinExpression& e1,
+				     const LinExpression& e2);
+
+  //! Returns the constraint \p e > \p n.
+  friend Constraint
+  Parma_Polyhedra_Library::operator>(const LinExpression& e,
+				     const Integer& n);
+
+  //! Returns the constraint \p n > \p e.
+  friend Constraint
+  Parma_Polyhedra_Library::operator>(const Integer& n,
+				     const LinExpression& e);
+
+  //! Returns the constraint \p e1 < \p e2.
+  friend Constraint
+  Parma_Polyhedra_Library::operator<(const LinExpression& e1,
+				     const LinExpression& e2);
+
+  //! Returns the constraint \p e < \p n.
+  friend Constraint
+  Parma_Polyhedra_Library::operator<(const LinExpression& e,
+				     const Integer& n);
+
+  //! Returns the constraint \p n < \p e.
+  friend Constraint
+  Parma_Polyhedra_Library::operator<(const Integer& n,
+				     const LinExpression& e);
+
   //! Returns the constraint \p c with variables renamed
   //! by adding \p offset to their Cartesian axis identifier.
   friend Constraint
@@ -220,17 +259,23 @@ public:
   //! Returns the dimension of the vector space enclosing \p *this.
   size_t space_dimension() const;
 
+  /*
+  //! Returns <CODE>true</CODE> if and only if the constraint
+  //! corresponds to a necessarily closed polyhedron.
+  bool is_necessarily_closed() const;
+  */
+
   //! The constraint type.
   /*! \enum Type
       Describes the type of the constraint.
   */
   enum Type {
-    /*! \hideinitializer
-      The constraint is an equality. */
-    EQUALITY = Row::LINE_OR_EQUALITY,
-    /*! \hideinitializer
-      The constraint is an inequality. */
-    INEQUALITY = Row::RAY_OR_POINT_OR_INEQUALITY
+    /*! The constraint is an equality. */
+    EQUALITY,
+    /*! The constraint is a non-strict inequality. */
+    NONSTRICT_INEQUALITY,
+    /*! The constraint is a strict inequality. */
+    STRICT_INEQUALITY
   };
 
   //! Returns the constraint type of \p *this.
@@ -240,8 +285,14 @@ public:
   //! \p *this is an equality constraint.
   bool is_equality() const;
   //! Returns <CODE>true</CODE> if and only if
-  //! \p *this is an inequality constraint.
+  //! \p *this is an inequality constraint (either strict or non-strict).
   bool is_inequality() const;
+  //! Returns <CODE>true</CODE> if and only if
+  //! \p *this is a non-strict inequality constraint.
+  bool is_nonstrict_inequality() const;
+  //! Returns <CODE>true</CODE> if and only if
+  //! \p *this is a strict inequality constraint.
+  bool is_strict_inequality() const;
 
   //! If the index of variable \p v is less than the space-dimension
   //! of \p *this, returns the coefficient of \p v in \p *this.
@@ -259,6 +310,9 @@ public:
   static const Constraint& zero_dim_positivity();
 
 PPL_INTERNAL:
+  //! Copy-constructor with given size.
+  Constraint(const Constraint& c, size_t sz);
+
   //! Returns <CODE>true</CODE> if and only if
   //! \p *this is the trivially true constraint \f$0 <= n\f$,
   //! where \f$n \geq 0\f$.
@@ -274,6 +328,7 @@ PPL_INTERNAL:
   void set_is_equality();
   //! Sets the constraint type to <CODE>INEQUALITY</CODE>.
   void set_is_inequality();
+
 };
 
 namespace std {

@@ -27,12 +27,12 @@ namespace Parma_Polyhedra_Library {
 
 inline
 GenSys::GenSys()
-  : Matrix() {
+  : Matrix(true) {
 }
 
 inline
 GenSys::GenSys(const Generator& g)
-  : Matrix() {
+  : Matrix(g.is_necessarily_closed()) {
   Matrix::insert(g);
 }
 
@@ -43,7 +43,7 @@ GenSys::GenSys(const GenSys& gs)
 
 inline
 GenSys::GenSys(size_t n_rows, size_t n_columns)
-  : Matrix(n_rows, n_columns) {
+  : Matrix(n_rows, n_columns, true) {
 }
 
 inline
@@ -59,12 +59,9 @@ GenSys::operator=(const GenSys& y) {
 inline size_t
 GenSys::space_dimension() const {
   size_t n_columns = num_columns();
-  return (n_columns == 0) ? 0 : n_columns-1;
-}
-
-inline void
-GenSys::insert(const Generator& g) {
-  Matrix::insert(g);
+  return (n_columns == 0)
+    ? 0
+    : n_columns - (is_necessarily_closed() ? 1 : 2);
 }
 
 inline Generator&

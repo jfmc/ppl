@@ -57,15 +57,19 @@ PPL::Matrix::num_lines_or_equalities() const {
   \p n_rows \f$\times\f$ \p n_columns matrix which rows are
   all initialized to rays or points or inequalities.
 */
-PPL::Matrix::Matrix(size_t n_rows, size_t n_columns)
+PPL::Matrix::Matrix(size_t n_rows, size_t n_columns, bool necessarily_closed)
   : rows(n_rows),
     row_size(n_columns),
     row_capacity(compute_capacity(n_columns)),
     sorted(false) {
+  poly_kind = necessarily_closed
+    ? Row::NECESSARILY_CLOSED
+    : Row::NON_NECESSARILY_CLOSED;
+  // Build the appropriate row type.
+  Row::Type row_type(poly_kind, Row::RAY_OR_POINT_OR_INEQUALITY);
   // Construct in direct order: will destroy in reverse order.
   for (size_t i = 0; i < n_rows; ++i)
-    rows[i].construct(Row::RAY_OR_POINT_OR_INEQUALITY,
-		      n_columns, row_capacity);
+    rows[i].construct(row_type, n_columns, row_capacity);
 }
 
 
@@ -73,7 +77,8 @@ PPL::Matrix::Matrix(const Matrix& y)
   : rows(y.rows),
     row_size(y.row_size),
     row_capacity(compute_capacity(y.row_size)),
-    sorted(y.sorted) {
+    sorted(y.sorted),
+    poly_kind(y.poly_kind) {
 }
 
 
@@ -83,6 +88,7 @@ PPL::Matrix::operator=(const Matrix& y) {
   row_size = y.row_size;
   row_capacity = compute_capacity(row_size);
   sorted = y.sorted;
+  poly_kind = y.poly_kind;
   return *this;
 }
 
@@ -122,10 +128,10 @@ PPL::Matrix::grow(size_t new_n_rows, size_t new_n_columns) {
 	new_rows.reserve(compute_capacity(new_n_rows));
 	new_rows.insert(new_rows.end(), new_n_rows, Row());
 	// Construct the new rows.
+	Row::Type row_type(poly_kind, Row::RAY_OR_POINT_OR_INEQUALITY);
 	size_t i = new_n_rows;
 	while (i-- > old_n_rows)
-	  new_rows[i].construct(Row::RAY_OR_POINT_OR_INEQUALITY,
-				new_n_columns, row_capacity);
+	  new_rows[i].construct(row_type, new_n_columns, row_capacity);
 	// Steal the old rows.
 	++i;
 	while (i-- > 0)
@@ -136,22 +142,23 @@ PPL::Matrix::grow(size_t new_n_rows, size_t new_n_columns) {
       else {
 	// Reallocation will NOT take place.
 	rows.insert(rows.end(), new_n_rows - old_n_rows, Row());
+	Row::Type row_type(poly_kind, Row::RAY_OR_POINT_OR_INEQUALITY);
 	for (size_t i = new_n_rows; i-- > old_n_rows; )
-	  rows[i].construct(Row::RAY_OR_POINT_OR_INEQUALITY,
-			    new_n_columns, row_capacity);
+	  rows[i].construct(row_type, new_n_columns, row_capacity);
       }
     }
     else {
       // We cannot even recycle the old rows.
-      Matrix new_matrix;
+      Matrix new_matrix(is_necessarily_closed());
       new_matrix.rows.reserve(compute_capacity(new_n_rows));
       new_matrix.rows.insert(new_matrix.rows.end(), new_n_rows, Row());
       // Construct the new rows.
       new_matrix.row_size = new_n_columns;
       new_matrix.row_capacity = compute_capacity(new_n_columns);
       size_t i = new_n_rows;
+      Row::Type row_type(poly_kind, Row::RAY_OR_POINT_OR_INEQUALITY);
       while (i-- > old_n_rows)
-	new_matrix.rows[i].construct(Row::RAY_OR_POINT_OR_INEQUALITY,
+	new_matrix.rows[i].construct(row_type,
 				     new_matrix.row_size,
 				     new_matrix.row_capacity);
       // Copy the old rows.
@@ -231,10 +238,10 @@ PPL::Matrix::resize_no_copy(size_t new_n_rows, size_t new_n_columns) {
 	new_rows.reserve(compute_capacity(new_n_rows));
 	new_rows.insert(new_rows.end(), new_n_rows, Row());
 	// Construct the new rows.
+	Row::Type row_type(poly_kind, Row::LINE_OR_EQUALITY);
 	size_t i = new_n_rows;
 	while (i-- > old_n_rows)
-	  new_rows[i].construct(Row::LINE_OR_EQUALITY,
-				new_n_columns, row_capacity);
+	  new_rows[i].construct(row_type, new_n_columns, row_capacity);
 	// Steal the old rows.
 	++i;
 	while (i-- > 0)
@@ -245,9 +252,9 @@ PPL::Matrix::resize_no_copy(size_t new_n_rows, size_t new_n_columns) {
       else {
 	// Reallocation will NOT take place.
 	rows.insert(rows.end(), new_n_rows - old_n_rows, Row());
+	Row::Type row_type(poly_kind, Row::LINE_OR_EQUALITY);
 	for (size_t i = new_n_rows; i-- > old_n_rows; )
-	  rows[i].construct(Row::LINE_OR_EQUALITY,
-			    new_n_columns, row_capacity);
+	  rows[i].construct(row_type, new_n_columns, row_capacity);
       }
       // Even though `*this' may happen to keep its sortedness,
       // we feel checking that this is the case is not worth the effort.
@@ -257,7 +264,7 @@ PPL::Matrix::resize_no_copy(size_t new_n_rows, size_t new_n_columns) {
     }
     else {
       // We cannot even recycle the old rows: allocate a new matrix and swap.
-      Matrix new_matrix(new_n_rows, new_n_columns);
+      Matrix new_matrix(new_n_rows, new_n_columns, is_necessarily_closed());
       swap(new_matrix);
       return;
     }
@@ -286,8 +293,9 @@ PPL::Matrix::resize_no_copy(size_t new_n_rows, size_t new_n_columns) {
 	// Capacity exhausted: we must reallocate the rows and
 	// make sure all the rows have the same capacity.
 	size_t new_row_capacity = compute_capacity(new_n_columns);
+	Row::Type row_type(poly_kind, Row::LINE_OR_EQUALITY);
 	for (size_t i = old_n_rows; i-- > 0; ) {
-	  Row new_row(Row::LINE_OR_EQUALITY, new_n_columns, new_row_capacity);
+	  Row new_row(row_type, new_n_columns, new_row_capacity);
 	  std::swap(rows[i], new_row);
 	}
 	row_capacity = new_row_capacity;

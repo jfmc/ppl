@@ -38,6 +38,11 @@ Generator::Generator(const Generator& g)
 }
 
 inline
+Generator::Generator(const Generator& g, size_t size)
+  : Row(g, size, size) {
+}
+
+inline
 Generator::~Generator() {
 }
 
@@ -49,17 +54,26 @@ Generator::operator=(const Generator& g) {
 
 inline size_t
 Generator::space_dimension() const {
-  return size() - 1;
-}
-
-inline bool
-Generator::is_line() const {
-  return is_line_or_equality();
+  return size() - (is_necessarily_closed() ? 1 : 2);
 }
 
 inline Generator::Type
 Generator::type() const {
-  return is_line() ? LINE : (((*this)[0] == 0) ? RAY : POINT);
+  if (is_line())
+    return LINE;
+  const Generator& g = *this;
+  if (g[0] == 0)
+    return RAY;
+  if (is_necessarily_closed())
+    return POINT;
+  else
+    // Checking the value of the \epsilon coefficient.
+    return (g[size() - 1] == 0) ? CLOSURE_POINT : POINT;
+}
+  
+inline bool
+Generator::is_line() const {
+  return is_line_or_equality();
 }
 
 inline bool
@@ -69,7 +83,12 @@ Generator::is_ray() const {
 
 inline bool
 Generator::is_point() const {
-  return is_ray_or_point() && ((*this)[0] != 0);
+  return type() == POINT;
+}
+
+inline bool
+Generator::is_closure_point() const {
+  return type() == CLOSURE_POINT;
 }
 
 inline bool
@@ -99,7 +118,8 @@ Generator::divisor() const {
   const Integer& d = Row::coefficient();
   if (!is_ray_or_point() || d == 0)
     throw_invalid_argument("PPL::Generator::divisor()",
-			   "*this is is not a point");
+			   "*this is is neither a point "
+			   "nor a closure point");
   return d;
 }
 

@@ -77,11 +77,19 @@ public:
   const Integer& coefficient(size_t n) const;
 
 public:
-  //! The type of the object to which the coefficients refer to.
-  enum Type {
+
+  enum PolyhedronKind {
+    NECESSARILY_CLOSED = 0,
+    NON_NECESSARILY_CLOSED = 1
+  };
+
+  enum RowKind {
     LINE_OR_EQUALITY = 0,
     RAY_OR_POINT_OR_INEQUALITY = 1
   };
+
+  //! The type of the object to which the coefficients refer to.
+  class Type;
 
   //! Tight constructor: resizing will require reallocation.
   Row(Type t, size_t sz);
@@ -132,15 +140,18 @@ public:
 
   //! @name Type inspection methods.
   //@{
+  Type type() const;
   bool is_line_or_equality() const;
   bool is_ray_or_point_or_inequality() const;
-  Type type() const;
+  bool is_necessarily_closed() const;
   //@}
 
   //! @name Type coercion methods.
   //@{
   void set_is_line_or_equality();
   void set_is_ray_or_point_or_inequality();
+  void set_necessarily_closed();
+  void set_non_necessarily_closed();
   //@}
 
 public:
@@ -213,6 +224,76 @@ namespace Parma_Polyhedra_Library {
 } // namespace Parma_Polyhedra_Library
 
 
+#ifdef PPL_DOXYGEN_INCLUDE_IMPLEMENTATION_DETAILS
+//! The type of a Row object.
+#endif // PPL_DOXYGEN_INCLUDE_IMPLEMENTATION_DETAILS
+class Parma_Polyhedra_Library::Row::Type {
+public:
+  //! The default Row::Type is a line/equality of
+  //! a necessarily closed polyhedron.
+  Type();
+
+  //! Builds the Row type by providing the two needed
+  //! pieces of information.
+  Type(PolyhedronKind poly_kind, RowKind row_kind);
+
+  //! @name The four possible types of a Row object.
+  //@{
+  static const Type& necessarily_closed_line_or_equality();
+  static const Type& necessarily_closed_ray_or_point_or_inequality();
+  static const Type& non_necessarily_closed_line_or_equality();
+  static const Type& non_necessarily_closed_ray_or_point_or_inequality();
+  //@}
+
+  //! @name Testing and setting the type.
+  //@{
+  bool is_line_or_equality() const;
+  bool is_ray_or_point_or_inequality() const;
+  bool is_necessarily_closed() const;
+
+  void set_is_line_or_equality();
+  void set_is_ray_or_point_or_inequality();
+  void set_necessarily_closed();
+  void set_non_necessarily_closed();
+  //!@}
+
+private:
+  //! Type is implemented by means of a finite bitset.
+  typedef unsigned int flags_t;
+
+  //! Builds the type from a bitmask.
+  Type(flags_t mask);
+
+  //! This holds the current bitset.
+  flags_t flags;
+
+  //! @name The bits that are currently in use.
+  //@{
+  static const flags_t NNC = 1U << 0;
+  static const flags_t RPI = 1U << 1;
+  //@}
+
+  //! @name The four possible bit configurations for a Row object.
+  //@{
+  static const flags_t
+  NECESSARILY_CLOSED_LINE_OR_EQUALITY               = 0U;
+  static const flags_t
+  NON_NECESSARILY_CLOSED_LINE_OR_EQUALITY           = 1U;
+  static const flags_t
+  NECESSARILY_CLOSED_RAY_OR_POINT_OR_INEQUALITY     = 2U;
+  static const flags_t
+  NON_NECESSARILY_CLOSED_RAY_OR_POINT_OR_INEQUALITY = 3U;
+  //@}
+
+  //! Check whether <EM>all</EM> bits in \p mask are set.
+  bool test_all(flags_t mask) const;
+  //! Set the bits in \p mask.
+  void set(flags_t mask);
+  //! Reset the bits in \p mask.
+  void reset(flags_t mask);
+};
+
+
 class Parma_Polyhedra_Library::Row::Impl {
 public:
   //! @name Custom allocator and deallocator.
@@ -243,10 +324,8 @@ public:
   const Integer& operator[](size_t k) const;
   //@}
 
-  //! @name Type and size accessors.
+  //! @name Size accessors.
   //@{
-  Type type() const;
-  void set_type(Type t);
   size_t size() const;
   void set_size(size_t new_sz);
   void bump_size();
@@ -255,8 +334,11 @@ public:
 private:
   //! The number of coefficients in the row.
   size_t size_;
+public:
+  // FIXME: this should become private.
   //! The type of this row.
-  Type type_;
+  Type type;
+private:
   //! The vector of coefficients.
   Integer vec_[PPL_FLEXIBLE_ARRAY];
 

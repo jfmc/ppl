@@ -42,6 +42,7 @@ PPL::Constraint::throw_dimension_incompatible(const char* method,
   throw std::invalid_argument(s.str());
 }
 
+// CHECK ME.
 PPL::Constraint
 PPL::operator>>(const Constraint& y, unsigned int offset) {
   size_t y_size = y.size();
@@ -52,6 +53,7 @@ PPL::operator>>(const Constraint& y, unsigned int offset) {
   return x;
 }
 
+// CHECK ME.
 bool
 PPL::Constraint::is_trivial_true() const {
   assert(size() > 0);
@@ -65,6 +67,7 @@ PPL::Constraint::is_trivial_true() const {
     return (x[0] >= 0);
 }
 
+// CHECK ME.
 bool
 PPL::Constraint::is_trivial_false() const {
   assert(size() > 0);
@@ -81,7 +84,7 @@ PPL::Constraint::is_trivial_false() const {
 /*! \relates Parma_Polyhedra_Library::Constraint */
 std::ostream&
 PPL::operator<<(std::ostream& s, const Constraint& c) {
-  int num_variables = c.size()-1;
+  int num_variables = c.space_dimension();
   bool first = true;
   for (int v = 0; v < num_variables; ++v) {
     Integer cv = c[v+1];
@@ -105,10 +108,17 @@ PPL::operator<<(std::ostream& s, const Constraint& c) {
   }
   if (first)
     s << "0";
-  if (c.is_equality())
+  switch (c.type()) {
+  case Constraint::EQUALITY:
     s << " = ";
-  else
+    break;
+  case Constraint::NONSTRICT_INEQUALITY:
     s << " >= ";
+    break;
+  case Constraint::STRICT_INEQUALITY:
+    s << " > ";
+    break;
+  }
   s << -c[0];
   return s;
 }

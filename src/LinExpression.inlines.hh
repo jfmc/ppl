@@ -30,17 +30,17 @@ namespace Parma_Polyhedra_Library {
 
 inline
 LinExpression::LinExpression()
-  : Row(Row::LINE_OR_EQUALITY, 1) {
+  : Row(Row::Type(), 1) {
 }
 
 inline
 LinExpression::LinExpression(size_t sz, bool)
-  : Row(Row::LINE_OR_EQUALITY, sz) {
+  : Row(Row::Type(), sz) {
 }
 
 inline
 LinExpression::LinExpression(const Variable& v)
-  : Row(Row::LINE_OR_EQUALITY, v.id() + 2) {
+  : Row(Row::Type(), v.id() + 2) {
   (*this)[v.id() + 1] = 1;
 }
 
@@ -60,7 +60,7 @@ LinExpression::LinExpression(const LinExpression& e, size_t sz)
 
 inline
 LinExpression::LinExpression(const Integer& n)
-  : Row(Row::LINE_OR_EQUALITY, 1) {
+  : Row(Row::Type(), 1) {
   (*this)[0] = n;
 }
 

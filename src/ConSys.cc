@@ -34,6 +34,30 @@ site: http://www.cs.unipr.it/ppl/ . */
 
 namespace PPL = Parma_Polyhedra_Library;
 
+void
+PPL::ConSys::insert(const Constraint& c) {
+  if (is_necessarily_closed()) {
+    if (!c.is_necessarily_closed()) {
+      // Padding the matrix with a columns o zeros
+      // corresponding to the \epsilon coefficients.
+      add_zero_columns(1);
+      set_non_necessarily_closed();
+    }
+    Matrix::insert(c);
+  }
+  else
+    // The constraint system is NOT necessarily closed.
+    if (c.is_necessarily_closed()) {
+      // Copying the constraint adding the \epsilon coefficient.
+      Constraint tmp_c(c, c.size() + 1);
+      tmp_c.set_non_necessarily_closed();
+      Matrix::insert(tmp_c);
+    }
+    else
+      // Both non-necessarily closed.
+      Matrix::insert(c);
+}
+
 size_t
 PPL::ConSys::num_inequalities() const {
   int n = 0;
@@ -65,6 +89,7 @@ PPL::ConSys::const_iterator::skip_forward() {
   Returns <CODE>true</CODE> if the given generator \p g satisfies
   all the constraints in \p *this system.
 */
+// FIXME.
 bool
 PPL::ConSys::satisfies_all_constraints(const Generator& g) const {
   assert(g.space_dimension() <= space_dimension());

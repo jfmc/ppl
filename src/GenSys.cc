@@ -34,6 +34,45 @@ site: http://www.cs.unipr.it/ppl/ . */
 
 namespace PPL = Parma_Polyhedra_Library;
 
+void
+PPL::GenSys::insert(const Generator& g) {
+  if (is_necessarily_closed()) {
+    if (!g.is_necessarily_closed()) {
+      // Padding the matrix with a columns o zeros
+      // corresponding to the \epsilon coefficients.
+      add_zero_columns(1);
+      // All points must have \epsilon coordinate equal to 1
+      // (i.e., the \epsilon coefficient is equal to the divisor).
+      // Rays and lines must have \epsilon coefficient equal to 0.
+      GenSys& gs = *this;
+      size_t eps_index = num_columns() - 1;
+      for (size_t i = num_rows(); i-- > 0; ) {
+	Generator& gen = gs[i];
+	if (gen[0] != 0)
+	  gen[eps_index] = gen[0];
+      }
+      set_non_necessarily_closed();
+    }
+    Matrix::insert(g);
+  }
+  else
+    // The generator system is NOT necessarily closed.
+    if (g.is_necessarily_closed()) {
+      size_t g_size = g.size();
+      // Copying the generator adding the \epsilon coefficient.
+      Generator tmp_g(g, g_size + 1);
+      // If it was a point, set teh \epsilon coordinate to 1
+      // (i.e., set the coefficient equal to the divisor).
+      if (tmp_g[0] != 0)
+	tmp_g[g_size] = tmp_g[0];
+      tmp_g.set_non_necessarily_closed();
+      Matrix::insert(tmp_g);
+    }
+    else
+      // Both non-necessarily closed.
+      Matrix::insert(g);
+}
+
 size_t
 PPL::GenSys::num_lines() const {
   size_t n = 0;

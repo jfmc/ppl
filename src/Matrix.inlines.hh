@@ -35,17 +35,21 @@ Matrix::swap(Matrix& y) {
   std::swap(row_size, y.row_size);
   std::swap(row_capacity, y.row_capacity);
   std::swap(sorted, y.sorted);
+  std::swap(poly_kind, y.poly_kind);
 }
 
 /*!
   The default constructor initializes the rows' size and capacity to \f$0\f$.
 */
 inline
-Matrix::Matrix()
+Matrix::Matrix(bool necessarily_closed)
   : rows(),
     row_size(0),
     row_capacity(0),
     sorted(true) {
+  poly_kind = necessarily_closed
+    ? Row::NECESSARILY_CLOSED
+    : Row::NON_NECESSARILY_CLOSED;
 }
 
 
@@ -73,6 +77,33 @@ Matrix::operator[](size_t k) const {
   return rows[k];
 }
 
+inline void
+Matrix::set_necessarily_closed() {
+  poly_kind = Row::NECESSARILY_CLOSED;
+}
+
+inline void
+Matrix::set_non_necessarily_closed() {
+  poly_kind = Row::NON_NECESSARILY_CLOSED;
+}
+
+/*!
+  Returns <CODE>true</CODE> if and only if the value of \p poly_kind
+  is equal to <CODE>Row::NECESSARILY_CLOSED</CODE>.
+*/
+inline bool
+Matrix::is_necessarily_closed() const {
+  return poly_kind == Row::NECESSARILY_CLOSED;
+}
+
+/*!
+  Returns the value of \p poly_kind.
+*/
+inline Row::PolyhedronKind
+Matrix::polyhedron_kind() const {
+  return poly_kind;
+}
+
 /*!
   Sets the \p sorted flag of the matrix to the given \p value.
 */
@@ -80,7 +111,6 @@ inline void
 Matrix::set_sorted(bool value) {
   sorted = value;
 }
-
 
 /*!
   Returns the value of the flag \p sorted.

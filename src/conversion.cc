@@ -694,7 +694,8 @@ PPL::PolyBase::conversion(Matrix& source,
 		  // saturation row to `sat'.
 		  if (dest_num_rows == dest.num_rows()) {
 		    // Make room for one more row.
-		    dest.add_row(Row::RAY_OR_POINT_OR_INEQUALITY);
+		    dest.add_row(Row::Type(dest.polyhedron_kind(),
+					   Row::RAY_OR_POINT_OR_INEQUALITY));
 		    sat.add_row(new_satrow);
 		  }
 		  else

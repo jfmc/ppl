@@ -27,12 +27,12 @@ namespace Parma_Polyhedra_Library {
 
 inline
 ConSys::ConSys()
-  : Matrix() {
+  : Matrix(true) {
 }
 
 inline
 ConSys::ConSys(const Constraint& c)
-  : Matrix() {
+  : Matrix(c.is_necessarily_closed()) {
   Matrix::insert(c);
 }
 
@@ -43,7 +43,7 @@ ConSys::ConSys(const ConSys& cs)
 
 inline
 ConSys::ConSys(size_t n_rows, size_t n_columns)
-  : Matrix(n_rows, n_columns) {
+  : Matrix(n_rows, n_columns, true) {
 }
 
 inline
@@ -68,12 +68,10 @@ ConSys::operator[](size_t k) const {
 
 inline size_t
 ConSys::space_dimension() const {
-  return (num_columns() == 0) ? 0 : num_columns() - 1;
-}
-
-inline void
-ConSys::insert(const Constraint& c) {
-  Matrix::insert(c);
+  size_t n_columns = num_columns();
+  return (n_columns == 0)
+    ? 0
+    : n_columns - (is_necessarily_closed() ? 1 : 2);
 }
 
 inline const ConSys&

@@ -45,10 +45,10 @@ site: http://www.cs.unipr.it/ppl/ . */
 class Parma_Polyhedra_Library::Matrix {
 protected:
   //! Default constructor: builds a zero-matrix.
-  Matrix();
-  //! Constructor: bulids a sorted matrix with \p n_rows rows
+  Matrix(bool necessarily_closed);
+  //! Constructor: builds a sorted matrix with \p n_rows rows
   //! and \p n_columns columns.
-  Matrix(size_t n_rows, size_t n_columns);
+  Matrix(size_t n_rows, size_t n_columns, bool necessarily_closed);
   //! Copy-constructor.
   Matrix(const Matrix& y);
   //! Destructor.
@@ -137,6 +137,9 @@ private:
   //! defined by <CODE>bool operator<(const Row& x, const Row& y)</CODE>.
   //! If <CODE>false</CODE> we cannot conclude that rows are not sorted.
   bool sorted;
+  //! The kind of polyhedron this matrix is describing
+  //! (either a necessarily closed or a non-necessarily closed polyhedron).
+  Row::PolyhedronKind poly_kind;
 
 public:
   //! Swaps \p *this with \p y.
@@ -144,6 +147,11 @@ public:
 
   //! Sets the \p sorted flag of the matrix to \p value.
   void set_sorted(bool value);
+
+  //! Sets the \p poly_kind flag to <CODE>Row::NECESSARILY_CLOSED</CODE>.
+  void set_necessarily_closed();
+  //! Sets the \p poly_kind flag to <CODE>Row::NON_NECESSARILY_CLOSED</CODE>.
+  void set_non_necessarily_closed();
 
   //! Make the matrix grow adding more rows and/or more columns.
   void grow(size_t new_n_rows, size_t new_n_columns);
@@ -155,8 +163,10 @@ public:
   //! Turn the matrix \f$M\f$ into \f$\bigl({0 \atop M}{J \atop 0}\bigr)\f$.
   void add_rows_and_columns(size_t n);
 
-  //! Accessories
+  //! Accessors
   //@{
+  Row::PolyhedronKind polyhedron_kind() const;
+  bool is_necessarily_closed() const;
   bool is_sorted() const;
   size_t num_columns() const;
   size_t num_rows() const;
