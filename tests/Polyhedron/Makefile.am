@@ -1145,7 +1145,6 @@ bhrz03widening18 \
 bhz03widening1 \
 bhz03widening4 \
 bhz03widening6 \
-boundedh79extrapolation1 \
 boundedbhrz03extrapolation1 \
 foldspacedims1 \
 foldspacedims2 \
@@ -1160,7 +1159,6 @@ randphull1 \
 removespacedims2 \
 smm1 \
 nnc_bgp99extrapolation2 \
-nnc_boundedh79extrapolation1 \
 nnc_boundedbhrz03extrapolation1 \
 nnc_generalizedaffineimage3 \
 nnc_max_min2 \
@@ -1172,10 +1170,12 @@ nnc_smm1
 
 XFAIL_WITH_INT8_A = \
 $(XFAIL_WITH_INT8) \
+boundedh79extrapolation1 \
 boundingbox4 \
 intersection1 \
 intersection2 \
 membytes2 \
+nnc_boundedh79extrapolation1 \
 nnc_intersection1 \
 nnc_intersection2 \
 nnc_membytes2 \
