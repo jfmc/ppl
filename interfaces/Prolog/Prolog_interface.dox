@@ -127,18 +127,13 @@ the library with the <CODE>--enable-shared</CODE> option.
 
 \subsection PI_SI_Features System-Independent Features
 
-The Prolog interface provides access to the PPL polyhedra
-which can have one of two topologies: <EM>closed (C)</EM>,
-in which case all the constraints
-defining the polyhedron must be equalities or non-strict inequalities
-and its generators must be points, rays or lines;
-or <EM>not necessarily closed (NNC)</EM>,
-where the constraints defining the polyhedron may
-include strict inequalities and
-the generators can include closure points.
+The Prolog interfaces provide access to the PPL polyhedra.
+A general introduction to convex polyhedra, their representation in the PPL
+and the operations provided by the PPL is given in Chapter 1 of
+this manual. Here we just describe those aspects that are specific to the
+Prolog interfaces.
 
-The PPL predicates provided  for the Prolog interface are specified below.
-
+The PPL predicates provided by the Prolog interfaces are specified below.
 The specification uses the following grammar rules:
 \code
  Topology  --> c | nnc			
@@ -172,6 +167,12 @@ The specification uses the following grammar rules:
           | ray(LinExpr)         	ray
           | line(LinExpr)        	line
 
+ Relation --> is_disjoint 		between a constraint and a polyhedron
+	  | strictly_intersects		between a constraint and a polyhedron
+	  | is_included			between a constraint and a polyhedron
+	  | saturates			between a constraint and a polyhedron
+          | subsumes			between a generator and a polyhedron
+          | nothing			
  
  numerator --> number | + number | - number
                                         number must be non-zero	
@@ -190,13 +191,12 @@ The specification uses the following grammar rules:
  Interval  --> i(Bound, Bound)		rational interval
 
  Box       --> []
-           | [Interval]
-           | [Interval | Box]           list of intervals.		
+          | [Interval]
+          | [Interval | Box]           list of intervals.		
 \endcode
 
 
-We first give some general information about the Prolog interface
-to the PPL library.
+We first give some general information about using the interfaces.
 
 -  Access to any PPL polyhedron is provided by means of a Prolog term
    called a <EM>handle</EM>.
@@ -255,18 +255,13 @@ to the PPL library.
   or add constraints or generators to a representation of
   a PPL polyhedron,
   the polyhedra referenced and any constraints or generators in the call
-  should follow all the rules stated in the dimension-compatibility
-  paragraph in the Introduction.
+  should follow all the space dimension-compatibility rules stated in
+  Section \ref representation.
 
 - As explained above, a polyhedron has a fixed topology C or NNC,
   that is determined at the time of its initialization.
-  This must be respected in all subsequent operations on the polyhedron.
-  This means that whenever constraints are added to a
-  C Polyhedron, then only constraints that are equalities or non-strict
-  inequalities can be added to a C Polyhedron.
-  Similarly, only generators that are points, rays or lines can be added
-  to a C Polyhedron.
-  In addition, only polyhedra that have the same topology may be compared.
+  All subsequent operations on the polyhedron must respect all the
+  topological compatibility rules stated in Section \ref representation.
 
 - There are a number of predicates whose name ends with
   <CODE>_and_minimize</CODE>.
@@ -350,9 +345,7 @@ ppl_new_Polyhedron_from_Polyhedron(+Topology_1, +Handle_1,
    When using <CODE>ppl_new_Polyhedron_from_Polyhedron/2</CODE>,
    when the source polyhedron is NNC and the copy is C,
    care must be taken that the source polyhedron referenced by
-   <CODE>Handle1</CODE> can be defined by equality and non-strict
-   inequality constraints or (equivalently) its generators are points,
-   rays and lines.
+   <CODE>Handle1</CODE> is topologically closed.
 
 <H4><CODE>
    ppl_new_Polyhedron_from_constraints(+Topology,
@@ -363,8 +356,6 @@ ppl_new_Polyhedron_from_Polyhedron(+Topology_1, +Handle_1,
    <CODE>List_of_Constraints</CODE> with topology C or NNC,
    depending on the value of <CODE>Topology</CODE>.
    <CODE>Handle</CODE> is unified with the handle for \f$\cP\f$.
-   A strict constraint can be included in <CODE>List_of_Constraints</CODE>
-   only if <CODE>Topology</CODE> is <CODE>nnc</CODE>.
 
 <H4><CODE>
    ppl_new_Polyhedron_from_generators(+Topology,
@@ -375,8 +366,6 @@ ppl_new_Polyhedron_from_Polyhedron(+Topology_1, +Handle_1,
    <CODE>List_of_Generators</CODE> with topology C or NNC,
    depending on the value of <CODE>Topology</CODE>.
    <CODE>Handle</CODE> is unified with the handle for \f$\cP\f$.
-   A closure point can be included in <CODE>List_of_Generators</CODE>
-   only if <CODE>Topology</CODE> is <CODE>nnc</CODE>.
 
 <H4><CODE>
    ppl_new_Polyhedron_from_bounding_box(+Topology,
@@ -399,40 +388,28 @@ ppl_new_Polyhedron_from_Polyhedron(+Topology_1, +Handle_1,
 
 <H4><CODE>ppl_Polyhedron_space_dimension(+Handle, -Integer)</CODE></H4>
 
-   If \f$\cP\f$ is the polyhedron referenced by <CODE>Handle</CODE>,
-   it unifies the space dimension of \f$\cP\f$ with <CODE>Integer</CODE>.
+   Unifies the space dimension of the polyhedron referenced by
+   <CODE>Handle</CODE> with <CODE>Integer</CODE>.
 
 <H4><CODE>ppl_Polyhedron_intersection_assign(+Handle_1, +Handle_2)</CODE></H4>
-
-   Assigns to the polyhedron referenced by <CODE>Handle_1</CODE>
-   its intersection with the polyhedra referenced by <CODE>Handle_2</CODE>.
-
 <H4><CODE>ppl_Polyhedron_intersection_assign_and_minimize(+Handle_1,
                      +Handle_2)</CODE></H4>
 
-   Assigns to the polyhedron referenced by <CODE>Handle_1</CODE>
+   Assign to the polyhedron referenced by <CODE>Handle_1</CODE>
    its intersection with the polyhedra referenced by <CODE>Handle_2</CODE>.
 
 <H4><CODE>ppl_Polyhedron_poly_hull_assign(+Handle_1, +Handle_2)</CODE></H4>
-
-   Assigns to the polyhedron referenced by <CODE>Handle_1</CODE>
-   its poly-hull with the polyhedra referenced by <CODE>Handle_2</CODE>.
-
 <H4><CODE>ppl_Polyhedron_poly_hull_assign_and_minimize(+Handle_1,
                +Handle_2)</CODE></H4>
 
-   Assigns to the polyhedron referenced by <CODE>Handle_1</CODE>
+   Assign to the polyhedron referenced by <CODE>Handle_1</CODE>
    its poly-hull with the polyhedra referenced by <CODE>Handle_2</CODE>.
 
 <H4><CODE>ppl_Polyhedron_poly_difference_assign(+Handle_1, +Handle_2)</CODE></H4>
-
-   Assigns to the polyhedron referenced by <CODE>Handle_1</CODE>
-   its poly-difference with the polyhedra referenced by <CODE>Handle_2</CODE>.
-
 <H4><CODE>ppl_Polyhedron_poly_difference_assign_and_minimize(+Handle_1,
                +Handle_2)</CODE></H4>
 
-   Assigns to the polyhedron referenced by <CODE>Handle_1</CODE>
+   Assign to the polyhedron referenced by <CODE>Handle_1</CODE>
    its poly-difference with the polyhedron referenced by <CODE>Handle_2</CODE>.
 
 <H4><CODE>ppl_Polyhedron_widening_CC92_assign(+Handle_1, +Handle_2)</CODE></H4>
@@ -445,7 +422,7 @@ ppl_new_Polyhedron_from_Polyhedron(+Topology_1, +Handle_1,
 
    Assigns to the polyhedron referenced by <CODE>Handle_1</CODE>
    its CC92-widening with the polyhedron referenced by <CODE>Handle_2</CODE>,
-   limited by <CODE>List_of_Constraints</CODE>.
+   limited by the constraints in <CODE>List_of_Constraints</CODE>.
 
 <H4><CODE>ppl_Polyhedron_topological_closure_assign(+Handle)</CODE></H4>
 
@@ -498,12 +475,6 @@ ppl_new_Polyhedron_from_Polyhedron(+Topology_1, +Handle_1,
     in the vector space \f$\Rset^3\f$ satisfying the constraint
     \f$4x + y - 2z >= 5\f$.
 
-The constraint <CODE>Constraint</CODE> and the
-polyhedron referenced by <CODE>Handle</CODE> must be dimension compatible.
-This means that the identifiers for the PPL variables in
-<CODE>Constraint</CODE> must be strictly less than the space
-dimension of the polyhedron. 
-
 <H4><CODE>ppl_Polyhedron_add_generator(+Handle, +Generator)</CODE></H4>
 
    Updates the polyhedron referenced by <CODE>Handle</CODE> to
@@ -517,11 +488,6 @@ dimension of the polyhedron.
 \endcode
     will update the polyhedron with handle \p X to be the single point 
     \f$(-12.5, -0.625, 0)^\transpose\f$ in the vector space \f$\Rset^3\f$.
-
-As for <CODE>ppl_Polyhedron_add_constraint</CODE>, the identifiers for the
-PPL variables in <CODE>Generator</CODE> must be strictly
-less than the space dimension of the polyhedron referenced
-by <CODE>Handle</CODE>. 
 
 <H4><CODE>ppl_Polyhedron_add_constraints(+Handle, +List_of_Constraints)
 </CODE></H4>
@@ -575,7 +541,7 @@ and a query will succeed even when
    If the system of generators representing a polyhedron
    is non-empty, then it must include a point
    (see the paragraph on generator representation in
-   the Introduction).
+   Section \ref representation).
    Thus care must be taken to ensure that, before calling this
    predicate, either the polyhedron referenced by <CODE>Handle</CODE>
    is non-empty or that whenever <CODE>List_of_Generators</CODE> is
@@ -638,7 +604,7 @@ and a query will succeed even when
 </CODE></H4>
 
    Projects the polyhedron referred to by <CODE>Handle</CODE>
-   in a space that is enlarged by <CODE>Integer</CODE> dimensions,
+   onto a space that is enlarged by <CODE>Integer</CODE> dimensions,
    E.g.,
 \code
    ?- ppl_new_Polyhedron_empty_from_dimension(c, 0, X),
@@ -719,39 +685,24 @@ This is the inverse transformation to that for <CODE>ppl_affine_image</CODE>.
 <H4><CODE>ppl_Polyhedron_relation_with_constraint(+Handle, +Constraint,
                -Relation)</CODE></H4>
 
-Computes the relation the polyhedron \f$\cP\f$
+Unifies <CODE>Relation</CODE> with the relation the polyhedron
 referenced by <CODE>Handle</CODE>
 has with <CODE>Constraint</CODE>.
-<CODE>Relation</CODE> is unified to a value as follows:
-
-<CODE>is_disjoint</CODE>, if \f$\cP\f$
-and the set of points satisfying
- <CODE>Constraint</CODE>  are disjoint;
-
-<CODE>strictly_intersects</CODE>, if \f$\cP\f$
-intersects but is not included in the set of points satisfying
- <CODE>Constraint</CODE>;
-
-<CODE>is_included</CODE>, if \f$\cP\f$
-is included in the set of points satisfying
- <CODE>Constraint</CODE>;
-
-<CODE>saturates</CODE>, if \f$\cP\f$
-is included in the set of points saturating
- <CODE>Constraint</CODE>;
-
-<CODE>nothing</CODE>, if nothing is known about the relation.
+The meaning of these relations (listed in the grammar rules above)
+is given in Section \ref operations.
+If nothing is known about the relation with <CODE>Constraint</CODE>,
+then  <CODE>Relation</CODE> is unified with <CODE>nothing</CODE>.
 
 <H4><CODE>ppl_Polyhedron_relation_with_generator(+Handle, +Generator,
                -Relation)</CODE></H4>
 
-Computes the relation the polyhedron \f$\cP\f$
-referenced by <CODE>Handle</CODE>
-has with <CODE>Generator</CODE>.
-<CODE>Relation</CODE>, is unified to a value as follows:
-
-<CODE>subsumes</CODE>, if adding <CODE>Generator</CODE>
-would not change \f$\cP\f$;
+Unifies <CODE>Relation</CODE> with the relation the polyhedron
+referenced by <CODE>Handle</CODE> has with <CODE>Generator</CODE>.
+The meaning of the relations
+is given in Section \ref operations.
+If  nothing is known about the relation with <CODE>Generator</CODE>,
+then <CODE>Relation</CODE>
+is unified with <CODE>nothing</CODE>.
 
 <CODE>nothing</CODE>, if nothing is known about the relation.
 
@@ -778,24 +729,21 @@ would not change \f$\cP\f$;
 
 <H4><CODE>ppl_Polyhedron_contains_Polyhedron(+Handle_1, +Handle_2)</CODE></H4>
 
-   Succeeds if and only if the polyhedron \f$\cP_1\f$ referenced by
+   Succeeds if and only if the polyhedron referenced by
    <CODE>Handle_1</CODE> is included in or
-   equal to the polyhedron \f$\cP_2\f$ referenced by <CODE>Handle_2</CODE>;
-   \f$\cP_1\f$ and \f$\cP_2\f$ must have the same topology.
+   equal to the polyhedron referenced by <CODE>Handle_2</CODE>.
 
 <H4><CODE>ppl_Polyhedron_strictly_contains_Polyhedron(+Handle_1, +Handle_2)</CODE></H4>
 
-   Succeeds if and only if the polyhedron \f$\cP_1\f$ referenced by
+   Succeeds if and only if the polyhedron referenced by
    <CODE>Handle_1</CODE> is included in but not
-   equal to the polyhedron \f$\cP_2\f$ referenced by <CODE>Handle_2</CODE>;
-   \f$\cP_1\f$ and \f$\cP_2\f$ must have the same topology.
+   equal to the polyhedron referenced by <CODE>Handle_2</CODE>.
 
 <H4><CODE>ppl_Polyhedron_equals_Polyhedron, 2(+Handle_1, +Handle_2)</CODE></H4>
 
-   Succeeds if and only if the polyhedron \f$\cP_1\f$ referenced by
+   Succeeds if and only if the polyhedron referenced by
    <CODE>Handle_1</CODE> is
-   equal to the polyhedron \f$\cP_2\f$ referenced by <CODE>Handle_2</CODE>;
-   \f$\cP_1\f$ and \f$\cP_2\f$ must have the same topology.
+   equal to the polyhedron referenced by <CODE>Handle_2</CODE>.
 
 <H4><CODE>ppl_Polyhedron_get_bounding_box(+Handle, 
                                       -Box)</CODE></H4>
