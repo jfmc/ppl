@@ -54,10 +54,11 @@ SUBDIRS = . lpenum
 #	    0.2			    -----
 #	    0.3			    -----
 #	    0.4			    0:0:0
+#	    0.5			    1:0:1
 
-LIBPPL_C_LT_CURRENT =  0
+LIBPPL_C_LT_CURRENT =  1
 LIBPPL_C_LT_REVISION = 0
-LIBPPL_C_LT_AGE =      0
+LIBPPL_C_LT_AGE =      1
 
 AM_CPPFLAGS = -I$(top_srcdir)/src @extra_includes@
 
