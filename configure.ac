@@ -337,6 +337,7 @@ enable_new_checked_code=${enableval}
 
 AM_CONDITIONAL(USE_NATIVE_INTEGERS, test x"$coefficient_kind" = xnative)
 AM_CONDITIONAL(USE_CHECKED_INTEGERS, test x"$coefficient_kind" = xchecked)
+AM_CONDITIONAL(USE_NEW_CHECKED_CODE, test x"$enable_new_checked_code" = xyes)
 AM_CONDITIONAL(USE_GMP_INTEGERS, test x"$coefficient_type" = xgmp)
 
 
