@@ -28,7 +28,7 @@ using namespace std;
 using namespace Parma_Polyhedra_Library;
 
 #ifndef NOISY
-#define NOISY 1
+#define NOISY 0
 #endif
 
 namespace {
@@ -92,7 +92,7 @@ main() TRY {
   cout << "T2.BHZ03(T1, H79)" << " = " << T2 << endl;
 #endif
 
-  return (T2.semantically_contains(oldT2) && T2.semantically_contains(T1))
-    ? 0 : 1;
+  return
+    (T2.semantically_contains(oldT2) && T2.semantically_contains(T1)) ? 0 : 1;
 }
 CATCH
