@@ -84,6 +84,12 @@ PPL::Polyhedron::simplify(Matrix& mat, SatMatrix& sat) {
   size_t num_rows = mat.num_rows();
   size_t num_columns = mat.num_columns();
   size_t num_cols_sat = sat.num_columns();
+#if 0
+  using std::cout;
+  using std::endl;
+  cout << "All'inizio di simplify" << endl;
+  cout << mat << endl << sat << endl;
+#endif
 
   // Looking for the first inequality in `mat'.
   size_t num_equal_or_line;
@@ -112,7 +118,7 @@ PPL::Polyhedron::simplify(Matrix& mat, SatMatrix& sat) {
       // Moving the found equality (and the corresponding row of `sat')
       // after the ones in the top of `mat'.
       std::swap(mat[i], mat[num_equal_or_line]);
-      std::swap(sat[i], sat[num_equal_or_line]);
+      std::swap(sat[i],	sat[num_equal_or_line]);
       std::swap(num_saturators[i], num_saturators[num_equal_or_line]);
       ++num_equal_or_line;
       // After swapping mat is not sorted anymore.
@@ -125,11 +131,23 @@ PPL::Polyhedron::simplify(Matrix& mat, SatMatrix& sat) {
       num_saturators[i] = num_cols_sat - sat[i].count_ones();
     }
   }
+#if 0
+  using std::cout;
+  using std::endl;
+  cout << "Prima di gauss" << endl;
+  cout << mat << endl << sat << endl;
+#endif
   // Now that `mat' is ordered how the function gauss() requires (i.e.,
   // the equalities at the top), we can invoke the elimination method
   // to simplify the system of equalities, obtaining the rank
   // of `mat' as result.
   size_t rank = mat.gauss();
+#if 0
+  using std::cout;
+  using std::endl;
+  cout << "Dopo gauss" << endl;
+  cout << mat << endl << sat << endl;
+#endif
 
   // Since Gauss' elimination works on the equalities system, the
   // order of inequalities in `mat' is unchanged.
@@ -175,6 +193,12 @@ PPL::Polyhedron::simplify(Matrix& mat, SatMatrix& sat) {
   for (size_t i = num_equal_or_line; i < num_rows; ) {
     // i runs through the inequalities.
     if (num_saturators[i] < num_columns - num_equal_or_line - 1) {
+#if 0
+      using std::cout;
+      using std::endl;
+      cout << mat << endl;
+      cout << "Tolgo " << mat[i] << endl;
+#endif
       // Here we check if the saturation rule holds.
       // To be irredundant, an inequality has to be saturated by at least
       // n rays/vertices, where n is the dimension of the ray space.

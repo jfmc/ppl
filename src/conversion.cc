@@ -542,8 +542,7 @@ PPL::Polyhedron::conversion(Matrix& source,
       // corresponding element of `sat'. This is what we do with the
       // following instruction.
       if (source[k].is_ray_or_vertex_or_inequality())
-	sat[num_lines_or_equalities].set(num_cols_positive
-							     + k);
+	sat[num_lines_or_equalities].set(num_cols_positive + k);
       // If the k-th constraint is an equality, as we have chosen the
       // `num_lines_or_equalities' generator such above, it does not verify
       // the constraint, so it has to be removed from the system of generators.
@@ -616,6 +615,14 @@ PPL::Polyhedron::conversion(Matrix& source,
 	// Is not necessary to do the swap on the columns of `sat'
 	// because at this point the elements of `sat' are
 	// all zeroes from the k-th columns to the end.
+#if 0
+	using std::cout;
+	using std::endl;
+	cout << "Tolgo: " << source[k] << endl;
+	cout << "source" << endl << source << endl;
+	cout << "dest" << endl << dest << endl;
+	cout << "sat" << endl << sat << endl;
+#endif
 	std::swap(source[k], source[source_num_rows]);
 	source.set_sorted(false);
       }
@@ -822,20 +829,45 @@ PPL::Polyhedron::conversion(Matrix& source,
     dest.erase_to_end(dest_num_rows);
     sat.rows_erase_to_end(dest_num_rows);
   }
+
   // We erase the columns of saturation matrix that consider the behaviour
   // of the generators with the constraints od positivity of the variables.
   // `num_cols_positive' is different form zero if and only if `dest' is the
   // system of generators and `source' the system of constraints and the
   // polyhedron is positive.
-  if (num_cols_positive != 0) { 
-    SatMatrix tmp_sat(dest_num_rows, source_num_rows);
-    for (size_t i = 0; i < dest_num_rows; ++i)
-      for (size_t j = sat[i].last(); j >= source_num_columns;
-           j = sat[i].prev(j))
-        tmp_sat[i].set(j - source_num_columns);
-    std::swap(tmp_sat, sat);
+  if (num_cols_positive != 0) {
+    sat.transpose_assign(sat);
+    size_t num_equals_or_lines = source.num_lines_or_equalities();
+    for (size_t i = num_cols_positive; i-- > 0; )
+      if (sat[i].last() == -1) {
+	Row tmp(Row::LINE_OR_EQUALITY, source_num_columns);
+	tmp[i] = 1;
+	size_t j;
+	for (j = 0; j < num_equals_or_lines; ++j)
+	  if (tmp == source[j])
+	    break;
+	if (j == num_equals_or_lines) {
+	  sat.add_row(sat[i]);
+	  source.add_row(tmp);
+	  std::swap(source[source_num_rows], source[num_equals_or_lines]);
+	  std::swap(sat[num_cols_positive + source_num_rows],
+		    sat[num_cols_positive + num_equals_or_lines]);
+	  ++source_num_rows;
+	  ++num_equals_or_lines;
+	}
+      }
+    SatMatrix tmp_sat(source_num_rows, dest_num_rows);
+    for (size_t i = 0; i < source_num_rows; ++i)
+      sat[num_cols_positive + i].swap(tmp_sat[i]);
+    sat.transpose_assign(tmp_sat);
   }
-  else 
-    sat.columns_erase_to_end(source_num_rows);
+  else
+    sat.columns_erase_to_end(num_cols_positive + source_num_rows);
+#if 0
+  std::cout << "Fine conversion" << std::endl;
+  std::cout << source << std::endl;
+  std::cout << dest << std::endl;
+  std::cout << sat << std::endl;
+#endif
   return num_lines_or_equalities;
 }

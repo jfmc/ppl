@@ -140,10 +140,26 @@ PPL::Polyhedron::minimize(bool con_to_gen,
   // of `dest' (because of our construction) and also the number
   // of columns of `source'.
 
+#if 0
+  using std::cout;
+  using std::endl;
+  cout << "Prima di conversion" << endl;
+  cout << "source" << endl << source << endl;
+  cout << "dest" << endl << dest << endl;
+  cout << "sat" << endl << tmp_sat << endl;
+#endif
+
   size_t num_lines_or_equalities = conversion(source, 0,
 					      dest, tmp_sat,
 					      dest.num_lines_or_equalities());
-
+#if 0
+  using std::cout;
+  using std::endl;
+  cout << "Dopo conversion" << endl;
+  cout << "source" << endl << source << endl;
+  cout << "dest" << endl << dest << endl;
+  cout << "sat" << endl << tmp_sat << endl;
+#endif
   // `empty_or_illegal' will remain set to `true' if there
   // not exists a ray/vertex or an inequality having a positive
   // inhomogeneous term.
@@ -231,12 +247,21 @@ PPL::Polyhedron::minimize(bool con_to_gen,
 	  }
 	  else
 	    ++i;
+
 	source.erase_to_end(source_num_rows);
 	sat.rows_erase_to_end(source_num_rows);
-	
+
 	source.set_sorted(false);
       }
   }
+#if 0
+  using std::cout;
+  using std::endl;
+  cout << "Alla fine di minimize" << endl;
+  cout << "source" << endl << source << endl;
+  cout << "dest" << endl << dest << endl;
+  cout << "sat" << endl << sat << endl;
+#endif
   return empty_or_illegal;
 }
 
@@ -496,6 +521,7 @@ PPL::Polyhedron::add_and_minimize(bool con_to_gen,
 	  else
 	    ++i;
 	}
+	
 	source1.erase_to_end(source1_num_rows);
 	sat.rows_erase_to_end(source1_num_rows);
 	sat.transpose_assign(sat);
