@@ -234,6 +234,12 @@ PPL::operator*=(LinExpression& e, Integer_traits::const_reference n) {
   return e;
 }
 
+bool
+PPL::LinExpression::OK() const {
+  dimension_type sz = size();
+  return Linear_Row::OK(sz, sz);
+}
+
 /*! \relates Parma_Polyhedra_Library::LinExpression */
 std::ostream&
 PPL::IO_Operators::operator<<(std::ostream& s, const LinExpression& e) {
