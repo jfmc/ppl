@@ -41,7 +41,9 @@ Checked_Number<T, Policy>::bad_result(Result r) {
   case V_DOMAIN:
     throw std::domain_error("Result is out of numeric domain.");
   default:
-    throw std::logic_error("Unexpected inexact computation.");
+    if (Policy::round_inexact)
+      throw std::logic_error("Unexpected inexact computation.");
+    break;
   }
 }
 
