@@ -1225,14 +1225,6 @@ PPL::Matrix::OK() const {
     return false;
   }
 
-  // The check in the following "#else" branch currently
-  // fails after calls to method Matrix::grow().
-  // My opinion (Enea) is that we should enforce such an invariant.
-#if 0
-  // An empty matrix must have num_columns() == 0.
-  if (num_rows() == 0)
-    return true;
-#else
   // An empty matrix must have num_columns() == 0.
   if (num_rows() == 0)
     if (num_columns() == 0)
@@ -1240,12 +1232,11 @@ PPL::Matrix::OK() const {
       return true;
     else {
 #ifndef NDEBUG
-      cerr << "Matrix has no rows but num_columns() is positive!"
+      cerr << "Matrix has no rows but num_columns() is nonzero!"
 	   << endl;
 #endif
       return false;
     }
-#endif
 
   // A non-empty matrix will contain constraints or generators; in
   // both cases it must have at least one column for the inhomogeneous
