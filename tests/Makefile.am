@@ -102,6 +102,7 @@ ORIGINAL_TESTS = \
 	relations1 relations2 relations3 relations4 relations5 relations6 \
 	relations7 relations8 relations9 relations10 relations11 \
 	relations12 relations13 relations14 relations15 relations16 \
+	relations17 \
 	removedim1 removedim2 removedim3 removedim4 removedim5 removedim6 \
 	removedim7 removedim8 removedim9 \
 	smm1 \
@@ -111,6 +112,7 @@ ORIGINAL_TESTS = \
 	topclosed1 topclosed2 topclosed3 \
 	topclosure1 topclosure2 topclosure3 \
 	universe1 universe2 universe3 universe4 universe5 universe6 \
+	writegensys1 writegensys2 \
 	writepolyhedron1 writepolyhedron2
 
 DERIVED_TESTS = \
@@ -134,8 +136,8 @@ DERIVED_TESTS = \
 	nnc_append1 nnc_append2 \
 	nnc_ascii_dump_load1 nnc_ascii_dump_load2 nnc_ascii_dump_load3 \
 	nnc_bbrz02widening1 nnc_bbrz02widening2 nnc_bbrz02widening3 \
-	nnc_bbrz02widening4 nnc_bbrz02widening5 nnc_bbrz02widening6 \
-	nnc_bbrz02widening7 nnc_bbrz02widening8 nnc_bbrz02widening9 \
+	nnc_bbrz02widening5 nnc_bbrz02widening6 \
+	nnc_bbrz02widening8 nnc_bbrz02widening9 \
 	nnc_bbrz02widening10 nnc_bbrz02widening11 nnc_bbrz02widening12 \
 	nnc_bounded1 \
 	nnc_bounds1 nnc_bounds2 \
@@ -414,6 +416,7 @@ relations13_SOURCES = relations13.cc
 relations14_SOURCES = relations14.cc
 relations15_SOURCES = relations15.cc
 relations16_SOURCES = relations16.cc
+relations17_SOURCES = relations17.cc
 
 randphull1_SOURCES = randphull1.cc
 
@@ -455,6 +458,9 @@ universe3_SOURCES = universe3.cc
 universe4_SOURCES = universe4.cc
 universe5_SOURCES = universe5.cc
 universe6_SOURCES = universe6.cc
+
+writegensys1_SOURCES = writegensys1.cc files.cc
+writegensys2_SOURCES = writegensys2.cc files.cc
 
 writepolyhedron1_SOURCES = writepolyhedron1.cc files.cc
 writepolyhedron2_SOURCES = writepolyhedron2.cc files.cc
@@ -575,14 +581,10 @@ nnc_bbrz02widening2_SOURCES = bbrz02widening2.cc
 nnc_bbrz02widening2_CXXFLAGS = $(DERIVED_CXXFLAGS)
 nnc_bbrz02widening3_SOURCES = bbrz02widening3.cc
 nnc_bbrz02widening3_CXXFLAGS = $(DERIVED_CXXFLAGS)
-nnc_bbrz02widening4_SOURCES = bbrz02widening4.cc
-nnc_bbrz02widening4_CXXFLAGS = $(DERIVED_CXXFLAGS)
 nnc_bbrz02widening5_SOURCES = bbrz02widening5.cc
 nnc_bbrz02widening5_CXXFLAGS = $(DERIVED_CXXFLAGS)
 nnc_bbrz02widening6_SOURCES = bbrz02widening6.cc
 nnc_bbrz02widening6_CXXFLAGS = $(DERIVED_CXXFLAGS)
-nnc_bbrz02widening7_SOURCES = bbrz02widening7.cc
-nnc_bbrz02widening7_CXXFLAGS = $(DERIVED_CXXFLAGS)
 nnc_bbrz02widening8_SOURCES = bbrz02widening8.cc
 nnc_bbrz02widening8_CXXFLAGS = $(DERIVED_CXXFLAGS)
 nnc_bbrz02widening9_SOURCES = bbrz02widening9.cc

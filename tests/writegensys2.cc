@@ -1,4 +1,4 @@
-/* Test Polyhedron::limited_BBRZ02_widening_assign().
+/* Test operator<<(std::ostream&, const GenSys&).
    Copyright (C) 2001, 2002 Roberto Bagnara <bagnara@cs.unipr.it>
 
 This file is part of the Parma Polyhedra Library (PPL).
@@ -21,7 +21,9 @@ USA.
 For the most up-to-date information see the Parma Polyhedra Library
 site: http://www.cs.unipr.it/ppl/ . */
 
+#include <fstream>
 #include "ppl_test.hh"
+#include "files.hh"
 
 using namespace std;
 using namespace Parma_Polyhedra_Library;
@@ -30,48 +32,21 @@ using namespace Parma_Polyhedra_Library;
 #define NOISY 0
 #endif
 
+const char* my_file = "writegensys2.dat";
+
 int
 main() {
   set_handlers();
-
   Variable A(0);
   Variable B(1);
+  Variable C(2);
 
-  GenSys gs1;
-  gs1.insert(point());
-  gs1.insert(point(A + B));
-  gs1.insert(point(A));
-  C_Polyhedron ph1(gs1);
+  GenSys gs;
+ 
+  fstream f;
+  open(f, my_file, ios_base::out);
+  f << gs << endl;
+  close(f);
 
-  GenSys gs2;
-  gs2.insert(point());
-  gs2.insert(point(2*A));
-  gs2.insert(point(2*A + 2*B));
-  C_Polyhedron ph2(gs2);
-
-  ConSys cs;
-  cs.insert(A <= 5);
-  cs.insert(B <= 4);
-  
-#if NOISY
-  print_constraints(ph1, "*** ph1 ***");
-  print_constraints(ph2, "*** ph2 ***");
-  print_constraints(cs, "*** cs ***");
-#endif
-
-  ph2.limited_BBRZ02_widening_assign(ph1, cs);
-
-  C_Polyhedron known_result(2);
-  known_result.add_constraint(B >= 0);
-  known_result.add_constraint(A - B >= 0);
-  known_result.add_constraint(B <= 4);
-  known_result.add_constraint(A <= 5);
-
-  int retval = (ph2 == known_result) ? 0 : 1;
-
-#if NOISY
-  print_constraints(ph2, "*** After ph2.limited_BBRZ02_widening(ph1, cs)***");
-#endif
-  
-  return retval;
+  return 0;
 }
