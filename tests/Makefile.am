@@ -50,7 +50,7 @@ TESTS = $(WATCHDOG_TESTS) \
 	affinetrans \
         append1 append2 \
 	bounded1 \
-	boundingbox1 \
+	boundingbox1 boundingbox2 \
         empty1 \
 	exceptions1 exceptions2 \
 	generators1 generators2 \
@@ -125,6 +125,7 @@ append2_SOURCES = append2.cc
 bounded1_SOURCES = bounded1.cc
 
 boundingbox1_SOURCES = boundingbox1.cc
+boundingbox2_SOURCES = boundingbox2.cc
 
 empty1_SOURCES = empty1.cc
 

@@ -314,7 +314,7 @@ Polyhedron::Polyhedron(Topology topol, const Box& box)
   // Insert a dummy constraint of the highest dimension to avoid the
   // need of resizing the matrix of constraints later;
   // this constraint will be removed at the end.
-  con_sys.insert(Variable(space_dim - 1) > 0);
+  con_sys.insert(Variable(space_dim - 1) >= 0);
 
   for (size_t k = space_dim; k-- > 0; ) {
     // See if we have a valid lower bound.
