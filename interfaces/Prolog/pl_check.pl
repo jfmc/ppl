@@ -545,20 +545,20 @@ polyhull_assign_min(T) :-
 % Tests ppl_Polyhedron_poly_difference_assign for C and NNC Polyhedra.
 polydiff_assign :-
   make_vars(2, [A, B]),
-  polydiff_assign(c, [A >= 0, B >= 0, A+ B =< 1],
-            [point(A + B, 2), point(B), point(A), point(0)]),
-  polydiff_assign(nnc,[A >= 0, A - B < 0, A + B =< 1],
+  polydiff_assign(c, [A - B =< 0, A >= 0, A + B =< 1],
+            [point(A + B, 2), point(B), point(0)]).
+  polydiff_assign(nnc,[A - B < 0, A >= 0, A + B =< 1],
             [closure_point(A+B, 2), point(B), closure_point(0)]).
 
 polydiff_assign(T, CS,GS) :-
   make_vars(2, [A, B]),
   ppl_new_Polyhedron_from_generators(T,
                                      [point(0), point(B),
-                                      point(A), point(A,2)],
+                                      point(A)],
                                      P1),
   ppl_new_Polyhedron_from_generators(T,
                                      [point(0), point(A),
-                                      point(A + B), point(A,2)],
+                                      point(A + B)],
                                      P2),
   ppl_Polyhedron_poly_difference_assign(P1, P2),
   ppl_new_Polyhedron_from_generators(T, GS,
