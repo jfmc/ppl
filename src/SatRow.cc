@@ -98,8 +98,11 @@ PPL::SatRow::last_one(mp_limb_t w) {
 
 int
 PPL::SatRow::first() const {
-  for (size_t li = 0, vec_size = mpz_size(vec); li < vec_size; ++li) {
-    const mp_limb_t limb = mpz_getlimbn(vec, li);
+  size_t li = 0;
+  size_t vec_size = mpz_size(vec);
+  mp_srcptr p = vec->_mp_d;
+  for (; li < vec_size; ++li, ++p) {
+    const mp_limb_t limb = *p;
     if (limb != 0)
       return li*BITS_PER_GMP_LIMB + first_one(limb);
   }
@@ -124,18 +127,21 @@ PPL::SatRow::next(int position) const {
     return -1;
 
   // Get the first limb.
-  mp_limb_t limb = mpz_getlimbn(vec, li);
+  mp_srcptr p = vec->_mp_d + li;
 
   // Mask off any bits before `position' in the first limb.
-  limb &= (-(mp_limb_t) 1) << (position % BITS_PER_GMP_LIMB);
+  mp_limb_t limb = *p & (~(mp_limb_t) 0) << (position % BITS_PER_GMP_LIMB);
 
-  while (limb == 0 && ++li < vec_size)
-    limb = mpz_getlimbn(vec, li);
-
-  if (limb != 0)
-    return li*BITS_PER_GMP_LIMB + first_one(limb);
-  else
-    return -1;
+  while (true) {
+    if (limb != 0)
+      return li*BITS_PER_GMP_LIMB + first_one(limb);
+    ++li;
+    if (li == vec_size)
+      break;
+    ++p;
+    limb = *p;
+  }
+  return -1;
 }
 
 int
