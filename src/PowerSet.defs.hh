@@ -40,14 +40,6 @@ PowerSet<CS>
 operator*(const PowerSet<CS>&, const PowerSet<CS>&);
 
 template <class CS>
-PowerSet<CS>
-operator<<(const PowerSet<CS>&, Variable);
-
-template <class CS>
-PowerSet<CS>
-hide(const PowerSet<CS>&, Variable);
-
-template <class CS>
 CS
 project(const PowerSet<CS>&);
 
@@ -86,14 +78,8 @@ public:
   //! Assign to \p *this the meet of \p *this and \p y.
   void meet_assign(const PowerSet& y);
 
-  inline PowerSet& operator <<= (const Variable n);
-  inline PowerSet& hide_assign(const Variable n);
-
   inline bool is_top() const;
   inline bool is_bottom() const;
-
-  friend PowerSet operator <<<>(const PowerSet& x, Variable n);
-  friend PowerSet hide<>(const PowerSet& x, Variable n);
 
   friend CS project<>(const PowerSet& x);
 

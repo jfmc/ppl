@@ -201,43 +201,6 @@ PowerSet<CS>::upper_bound_assign(const PowerSet<CS>& y) {
   omega_reduction();
 }
 
-// Hiding
-
-template <class CS>
-PowerSet<CS> hide(const PowerSet<CS>& x, Variable n) {
-  PowerSet<CS> ret(true);
-  typename PowerSet<CS>::const_iterator xi;
-  for (xi=x.begin(); xi != x.end(); ++xi)
-    ret.insert(hide(*xi, n));
-  ret.omega();
-  return ret;
-}
-
-template <class CS>
-inline
-PowerSet<CS>& PowerSet<CS>::hide_assign(Variable n) {
-  *this = hide(*this, n);
-  return *this;
-}
-
-// Renaming
-
-template <class CS>
-PowerSet<CS> operator << (const PowerSet<CS>& x, Variable n) {
-  PowerSet<CS> ret(true);
-  typename PowerSet<CS>::const_iterator xi, ii;
-  for (ii = xi = x.begin(); xi != x.end(); ++xi)
-    ii = ret.insert(ii, *xi<<n);
-  return ret;
-}
-
-template <class CS>
-inline
-PowerSet<CS>& PowerSet<CS>::operator <<= (Variable n) {
-  *this = *this << n;
-  return *this;
-}
-
 // Lexicographic comparison
 
 template <class CS>

@@ -354,8 +354,8 @@ AskTell<CS> operator * (const AskTell<CS>& x, const AskTell<CS>& y) {
 }
 
 template <typename CS>
-AskTell<CS>&
-AskTell<CS>::operator *= (const AskTell<CS>& y) {
+void
+AskTell<CS>::meet_assign(const AskTell<CS>& y) {
   AskTell<CS>::const_iterator yi;
   for (yi = y.begin(); yi != y.end(); ++yi) 
     pair_insert_good((*yi).first, (*yi).second);
@@ -373,10 +373,10 @@ operator+(const AskTell<CS>& x, const AskTell<CS>& y) {
   for (xi = x.begin(); xi != x.end(); ++xi) {
     for (yi = y.begin(); yi != y.end(); ++yi) {
       CS tellv((*xi).second);
-      tellv += (*yi).second;
+      tellv.upper_bound_assign((*yi).second);
       if (!tellv.is_top()) {
 	CS askv((*xi).first);
-	askv *= (*yi).first;
+	askv.meet_assign((*yi).first);
 	if (!entails(askv, tellv))
 	  ret.pair_insert(askv, tellv);
       }
@@ -387,8 +387,8 @@ operator+(const AskTell<CS>& x, const AskTell<CS>& y) {
 }
 
 template <typename CS>
-AskTell<CS>&
-AskTell<CS>::operator+=(const AskTell<CS>& y) {
+void
+AskTell<CS>::upper_bound_assign(const AskTell<CS>& y) {
   *this = *this + y;
   return *this;
 }
@@ -407,7 +407,7 @@ AskTell<CS>::probe(const CS& tellv, const CS& askv) const {
     tell_changed = false;
     for (yi = begin(); yi != end(); ++yi) {
       if (entails(xtell, (*yi).first) && !entails(xtell, (*yi).second)) {
-	  xtell *= (*yi).second;
+	  xtell.meet_assign((*yi).second);
 	  if (entails(xtell, askv))
 	    return true;
 	  tell_changed = true;
@@ -415,49 +415,6 @@ AskTell<CS>::probe(const CS& tellv, const CS& askv) const {
     }
   }
   return false;
-}
-
-template <typename CS>
-AskTell<CS> hide(const AskTell<CS>& x, Variable n) {
-  AskTell<CS> ret;
-  typename AskTell<CS>::const_iterator xi;
-  for (xi=x.begin(); xi != x.end(); ++xi) {
-    CS hask = hide((*xi).first, n);
-    CS htell = hide((*xi).second, n);
-    if (!entails(hask, htell)) {
-      if (hask == (*xi).first || ((!hask.is_top()) && x.probe(hask, (*xi).first)))
-	ret.pair_insert_good(hask, htell);
-    }
-  }
-  ret.engine();
-  return ret;
-}
-
-template <typename CS>
-AskTell<CS>&
-AskTell<CS>::hide_assign(Variable n) {
-  *this = hide(*this, n);
-  return *this;
-}
-
-
-// Renaming
-
-template <typename CS>
-AskTell<CS> operator << (const AskTell<CS>& x, Variable n) {
-  AskTell<CS> ret;
-  typename AskTell<CS>::const_iterator xi;
-  for (xi = x.begin(); xi != x.end(); ++xi) {
-    ret.pair_insert_good((*xi).first << n, (*xi).second << n);
-  }
-  return ret;
-}
-
-template <typename CS>
-AskTell<CS>&
-AskTell<CS>::operator<<=(Variable n) {
-  *this = *this << n;
-  return *this;
 }
 
 // Lexicographic comparison

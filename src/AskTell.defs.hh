@@ -40,14 +40,6 @@ AskTell<CS>
 operator*(const AskTell<CS>&, const AskTell<CS>&);
 
 template <typename CS>
-AskTell<CS>
-operator<<(const AskTell<CS>&, Variable);
-
-template <typename CS>
-AskTell<CS>
-hide(const AskTell<CS>&, Variable);
-
-template <typename CS>
 CS
 project(const AskTell<CS>&);
 
@@ -92,10 +84,9 @@ public:
 
   AskTell& bottom();
 
-  AskTell& operator += (const AskTell& y);
-  AskTell& operator *= (const AskTell& y);
-  AskTell& operator <<= (const Variable n);
-  AskTell& hide_assign(const Variable n);
+  void upper_bound_assign(const AskTell& y);
+
+  void meet_assign(const AskTell& y);
 
   bool is_top() const;
   bool is_bottom() const;
@@ -103,8 +94,6 @@ public:
   friend AskTell operator +<>(const AskTell<CS>& x,
 			      const AskTell<CS>& y);
   friend AskTell operator *<>(const AskTell& x, const AskTell& y);
-  friend AskTell operator <<<>(const AskTell& x, Variable n);
-  friend AskTell hide<>(const AskTell& x, Variable n);
 
   friend CS project<>(const AskTell& x);
 
