@@ -1282,32 +1282,33 @@ BD_Shape<T>::poly_difference_assign(const BD_Shape& y) {
   assert(OK());
 }
 
-
 template <typename T>
 inline void
 BD_Shape<T>::add_space_dimensions_and_embed(dimension_type m) {
-  // Adding no dimensions to any system of bounded
-  // differences is no-op.
+  // Adding no dimensions to any system of bounded differences is
+  // a no-op.
   if (m == 0)
     return;
 
   bool was_zero_dim_univ = (!marked_empty() && space_dimension() == 0);
 
-  dimension_type h = dbm.num_rows();
+  dimension_type space_dim = space_dimension();
+  dimension_type new_space_dim = space_dim + m;
+
   // To embed an n-dimension space system of bounded differences
   // in a (n+m)-dimension space, we just add `m' infinity-columns
   // and rows in the matrix of constraints.
-  dbm.grow(h + m);
+  dbm.grow(new_space_dim + 1);
   // Fill top-right corner of the matrix with plus infinity.
-  for (dimension_type i = 0; i < h; ++i) {
+  for (dimension_type i = 0; i <= space_dim; ++i) {
     DB_Row<T>& dbm_i = dbm[i];
-    for (dimension_type j = h; j < h + m; ++j)
+    for (dimension_type j = space_dim + 1; j <= new_space_dim; ++j)
       dbm_i[j] = PLUS_INFINITY;
   }
   // Fill bottom of the matrix with plus infinity.
-  for (dimension_type i = h; i < h + m; ++i) {
+  for (dimension_type i = space_dim + 1; i <= new_space_dim; ++i) {
     DB_Row<T>& dbm_i = dbm[i];
-    for (dimension_type j = 0; j < h + m; ++j)
+    for (dimension_type j = 0; j <= new_space_dim; ++j)
       dbm_i[j] = PLUS_INFINITY;
   }
 
