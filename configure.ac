@@ -86,6 +86,7 @@ AC_LANG(C)
 
 # Checks for typedefs, structures, and compiler characteristics.
 AC_C_CONST
+AC_C_INLINE
 
 # C++ compiler
 
