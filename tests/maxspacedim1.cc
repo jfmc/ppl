@@ -37,6 +37,8 @@ dimension_type foo() {
 
 template dimension_type foo<Variable>();
 template dimension_type foo<LinExpression>();
+template dimension_type foo<Constraint>();
+template dimension_type foo<Generator>();
 template dimension_type foo<ConSys>();
 template dimension_type foo<GenSys>();
 template dimension_type foo<C_Polyhedron>();
@@ -54,6 +56,8 @@ main() TRY {
 #if NOISY
   PRINT(Variable);
   PRINT(LinExpression);
+  PRINT(Constraint);
+  PRINT(Generator);
   PRINT(ConSys);
   PRINT(GenSys);
   PRINT(C_Polyhedron);
