@@ -41,7 +41,7 @@ error1() {
   GenSys gs;
   try {
     // This is an incorrect use of the function Generator::point(expr, d):
-    // it is impossible to built a point with the denominator
+    // it is illegal to built a point with the denominator
     // equal to zero.
     gs.insert(point(x + y + z, 0));
   }
@@ -71,7 +71,7 @@ error2() {
   LinExpression coeff1 = x + y + 1;
   try {
     // This is an incorrect use of function
-    // C_Polyhedron::affine_image(v, expr,d): it is impossible applying
+    // C_Polyhedron::affine_image(v, expr,d): it is illegal applying
     // the function with a linear expression with the denominator equal to
     // zero.
     Integer d = 0;
@@ -100,7 +100,7 @@ error3() {
   C_Polyhedron ph2(gs);
   try {
     // This is an incorrect use of function
-    // C_Polyhedron::convex_hull_assign(p): it is impossible to use
+    // C_Polyhedron::convex_hull_assign(p): it is illegal to use
     // it with two polyhedra of different dimensions.
     ph1.convex_hull_assign_and_minimize(ph2);
   }
@@ -127,7 +127,7 @@ error4() {
 
   try {
     // This is an incorrect use of the function C_Polyhedron::C_Polyhedron(gs):
-    // it is impossible to built a polyhedron starting from a system
+    // it is illegal to built a polyhedron starting from a system
     // of generators that does not contain a point. 
     C_Polyhedron ph(gs);
   }
@@ -189,7 +189,7 @@ error6() {
 
   try {
     // This is an invalid used of the function
-    // C_Polyhedron::affine_image(v, expr, d): it is impossible to
+    // C_Polyhedron::affine_image(v, expr, d): it is illegal to
     // apply this function to a variable that is not in the space of
     // the polyhedron.
     ph.affine_image(y, x + 1);
@@ -218,7 +218,7 @@ error7() {
   
   try {
     // This is an invalid used of the function
-    // C_Polyhedron::affine_image(v, expr, d): it is impossible to
+    // C_Polyhedron::affine_image(v, expr, d): it is illegal to
     // use a variable in the expression that does not apper in the
     // space of the polyhedron.
     ph.affine_image(y, x + z + 1);
@@ -245,7 +245,7 @@ error8() {
   LinExpression coeff = x + y + 1;
   try {
     // This is an incorrect use of the function
-    // C_Polyhedron::affine_preimage(v, expr, d): it is impossible
+    // C_Polyhedron::affine_preimage(v, expr, d): it is illegal
     // to apply to a polyhedron an expression with the denominator
     // equal to zero.
     Integer d = 0;
@@ -277,7 +277,7 @@ error9() {
   C_Polyhedron ph(gs);
   try {
     // This is an invalid used of the function
-    // C_Polyhedron::affine_image(v, expr, d): it is impossible apply
+    // C_Polyhedron::affine_image(v, expr, d): it is illegal apply
     // the transformation to a variable that is not in the space
     // of the polyhedron.
     ph.affine_preimage(z, x + 1);
@@ -308,7 +308,7 @@ error10() {
   C_Polyhedron ph(gs);
   try {
     // This is an invalid used of the function
-    // C_Polyhedron::affine_preimage(v, expr, d): it is impossible to
+    // C_Polyhedron::affine_preimage(v, expr, d): it is illegal to
     // apply to a polyhedron an expression that contains a variable that
     // is not in the space of the polyhedron.
     ph.affine_preimage(y, x + z + 1);
@@ -337,7 +337,7 @@ error11() {
 
   try {
     // This is an invalid use of function
-    // C_Polyhedron::intersection_assign_and_minimze(ph2): it is impossible
+    // C_Polyhedron::intersection_assign_and_minimze(ph2): it is illegal
     // to apply this funcition to two polyhedra of different dimensions.
     ph1.intersection_assign_and_minimize(ph2);
   }
@@ -361,7 +361,7 @@ error12() {
 
   try {
     // This is an invalid use of the function
-    // C_Polyhedron::intersection_assign(ph2): it is impossible to apply
+    // C_Polyhedron::intersection_assign(ph2): it is illegal to apply
     // this function to two polyhedron of different dimensions.
     ph1.intersection_assign(ph2);
   }
@@ -385,7 +385,7 @@ error13() {
 
   try {
     // This is an invalid use of the function
-    // C_Polyhedron::add_generators_and_minimize(gs): this is impossible
+    // C_Polyhedron::add_generators_and_minimize(gs): it is illegal
     // to add a system of generator that is not dimensional compatible
     // with the polyhedron.
     GenSys gs;
@@ -410,7 +410,7 @@ error14() {
 
   try {
     // This is an invalid use of the function
-    // C_Polyhedron::remove_higher_dimensions(n): it is impossible to erase
+    // C_Polyhedron::remove_higher_dimensions(n): it is illegal to erase
     // a variable that is not in the space of the polyhedron.
     ph.remove_higher_dimensions(7);
   }
@@ -435,7 +435,7 @@ error15() {
 
   try {
     // This is an invalid use of the function
-    // C_Polyhedron::add_constraints_and_minimze(cs): it is impossible to
+    // C_Polyhedron::add_constraints_and_minimze(cs): it is illegal to
     // add a system of constraints that is not dimensional incompatible
     // with the polyhedron.
     ConSys cs;
@@ -462,7 +462,7 @@ error16() {
 
   try {
     // This is an invalid use of the function C_Polyhedron::add_constraint(c):
-    // it is impossible to insert a constraints that contains a variable
+    // it is illegal to insert a constraints that contains a variable
     // that is not in the space of the polyhedron.
     ph.add_constraint(y >= 0);
   }
@@ -487,7 +487,7 @@ error17() {
   
   try {
     // This is an invalid use of the function
-    // C_Polyhedron::add_constraints(cs): it is impossible to add a system
+    // C_Polyhedron::add_constraints(cs): it is illegal to add a system
     // of constraints that is dimensional incompatible with the
     // polyhedron.
     ConSys cs;
@@ -525,7 +525,7 @@ error18() {
   
   try {
     // This is an invalid use of the function
-    // C_Polyhedron::convex_hull_assign(ph2): it is impossible to apply
+    // C_Polyhedron::convex_hull_assign(ph2): it is illegal to apply
     // this function to two polyhedra with different dimensions.
     ph1.convex_hull_assign(ph2);
   }
@@ -550,7 +550,7 @@ error19() {
 
   try {
     // This is an invalid use of the function C_Polyhedron::add_generator(g):
-    // it is impossible to insert a generator that is dimensional
+    // it is illegal to insert a generator that is dimensional
     // incompatible with the polyhedron.
     ph.add_generator(point(x + y));
   }
@@ -575,7 +575,7 @@ error20() {
 
   try {
     // This is invalid use of the function C_Polyhedron::add_generators(gs):
-    // it is impossible to a system of generators that is dimensional
+    // it is illegal to a system of generators that is dimensional
     // incompatible with the polyhedron.
     GenSys gs;
     gs.insert(point());
@@ -607,7 +607,7 @@ error21() {
   C_Polyhedron ph(gs);
   try {
     // This is invalid use of the function C_Polyhedron::relation_with(c):
-    // it is impossible to use a constraints that is dimensional
+    // it is illegal to use a constraints that is dimensional
     // incompatible with the polyhedron.
     Constraint c(z >= 0);
     ph.relation_with(c);
@@ -632,7 +632,7 @@ error22() {
 
   try {
     // This is invalid use of the function C_Polyhedronn::relation_with(g):
-    // it is impossible to apply this function to a generator that is
+    // it is illegal to apply this function to a generator that is
     // not dimensional compatible with the polyhedron.
     Generator g(point(z));
     ph.relation_with(g);
@@ -656,7 +656,7 @@ error23() {
 
   try {
     // This is invalid use of the function C_Polyhedron::widening_assign(ph2):
-    // it is impossible to apply this function to two polyhedra that are
+    // it is illegal to apply this function to two polyhedra that are
     // not dimensional compatible.
     ph2.widening_assign(ph1);
   }
@@ -684,7 +684,7 @@ error24() {
 
   try {
     // This is invalid use of the function
-    // C_Polyhedron::limited_widening_assign(ph2, cs): it is impossible to
+    // C_Polyhedron::limited_widening_assign(ph2, cs): it is illegal to
     // apply this function to two polyhedra that are not dimensional
     // compatible.
     ph2.limited_widening_assign(ph1, cs);
@@ -722,7 +722,7 @@ error25() {
 
   try {
     // This is invalid use of the function
-    // C_Polyhedron::limited_widening_assign(ph, cs): it is impossible to apply
+    // C_Polyhedron::limited_widening_assign(ph, cs): it is illegal to apply
     // this function to a system of constraints that is not dimensional
     // compatible with the two polyhedra.
     ph2.limited_widening_assign(ph1, cs);
@@ -751,7 +751,7 @@ error26() {
   ph2.add_constraint(x - y == 0);
 
   try {
-    // This is an invalid use of operator <=: it is impossible to apply
+    // This is an invalid use of operator <=: it is illegal to apply
     // this function to two polyhedra that are not dimensional compatible.
     ph1 <= ph2;
   }
@@ -774,7 +774,7 @@ error27() {
 
   try {
     // This is invalid use of function C_Polyhedron::add_generator(g):
-    // it is impossible to insert a generator that is not dimensional
+    // it is illegal to insert a generator that is not dimensional
     // comaptible with the polyhedron..
     Generator g(ray(x));
     ph.add_generator(g);
@@ -799,7 +799,7 @@ error28() {
 
   try {
     // This is an invalid use of the function C_Polyhedron::add_generators(gs):
-    // it is impossible to add a system of generators with no points
+    // it is illegal to add a system of generators with no points
     // to an empty polyhedron. 
     GenSys gs;
     gs.insert(ray(x + y));
@@ -826,7 +826,7 @@ error29() {
 
   try {
     // This is an invalid use of the function
-    // C_Polyhedron::add_generators_and_minimize(gs): it is impossible
+    // C_Polyhedron::add_generators_and_minimize(gs): it is illegal
     // to apply this function with a system of generators with no
     // points to an empty polyhedron.
     GenSys gs;

@@ -43,7 +43,7 @@ error1() {
   
   try {
     // This is an invalid use of the constructor of a polyhedron:
-    // it is impossible to built a closed polyhedron starting from
+    // it is illegal to built a closed polyhedron starting from
     // a system of constraints that contains strict-inequalities.
     C_Polyhedron ph(cs);
   }
@@ -72,7 +72,7 @@ error2() {
   
   try {
     // This is an invalid use of the constructor of a polyhedron:
-    // it is impossible to built a closed polyhedron starting from
+    // it is illegal to built a closed polyhedron starting from
     // a system of generators that contains closure points.
     C_Polyhedron ph(gs);
   }
@@ -97,7 +97,7 @@ error3() {
   
   try {
     // This is an invalid use of the function add_constraint(c): it is
-    // impossible to insert a strict-inequality into a system of
+    // illegal to insert a strict-inequality into a system of
     // constraints of a closed polyhedron.
     ph.add_constraint(x - y > 0);
   }
@@ -119,7 +119,7 @@ error4() {
 
   try {
     // This is an incorrect use of the function add_generator(g): it
-    // is impossible to insert a closure-point into a system of
+    // is illegal to insert a closure-point into a system of
     // generators of a closed polyhedron.
     ph.add_generator(closure_point(LinExpression(2)));
   }
@@ -150,7 +150,7 @@ error5() {
 
   try {
     // This is an incorrect use of the function
-    // add_constraints_and_minimize(cs): it is impossible to add a system of
+    // add_constraints_and_minimize(cs): it is illegal to add a system of
     // constraints that contains strict-inequalities to a closed polyhedron.
     ph.add_constraints_and_minimize(cs);
   }
@@ -178,7 +178,7 @@ error6() {
 
   try {
     // This is an invalid use of the function add_constraints(cs):
-    // it is impossible to add a system of constraints that constains
+    // it is illegal to add a system of constraints that constains
     // strict-inequalities to a closed polyhedron.
     ph.add_constraints(cs);
   }
@@ -207,7 +207,7 @@ error7() {
   
   try {
     // This is an incorrect use of the function
-    // add_dimensions_and_constraints(cs): it is impossible to apply
+    // add_dimensions_and_constraints(cs): it is illegal to apply
     // this function to a closed polyhedron with a system of constraints
     // that contains strict-inequalities.
     ph.add_dimensions_and_constraints(cs);
@@ -238,7 +238,7 @@ error8() {
 
   try {
     // This is an incorrect use of the function
-    // add_generators_and_minimize(gs): it is impossible to add a
+    // add_generators_and_minimize(gs): it is illegal to add a
     // system of generators that constains closure-points to a closed
     // polyhedron.
     ph.add_generators_and_minimize(gs);
@@ -268,7 +268,7 @@ error9() {
 
   try {
     // This is an incorrect use of the function add_generators(gs): it is
-    // impossible to add a system of generators that contains closure-points
+    // illegal to add a system of generators that contains closure-points
     // to a closed polyhedron.
     ph.add_generators(gs);
   }
@@ -294,7 +294,7 @@ error10() {
   ph1.add_constraint(y > x -3);
 
   try {
-    // It is impossible to built a closed polyhedron starting from
+    // It is illegal to built a closed polyhedron starting from
     // the system of constraints of a polyhedron that is not closed.
     C_Polyhedron ph2(ph1);
   }
