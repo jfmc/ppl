@@ -68,8 +68,7 @@ Watchdog.defs.hh
 EXTRA_DIST = \
 $(SOURCE_FILES) \
 configure BUGS CREDITS \
-pwl_header.top pwl_header.middle pwl_header.bottom \
-pwl_filter_doxygen.sed pwl_filter_install.sed
+pwl_header.top pwl_header.middle pwl_header.bottom
 
 # pwl.hh and pwl_install.hh are not distributed.
 dist-hook:
