@@ -2852,7 +2852,14 @@ PPL::Polyhedron::add_generators(GenSys& gs) {
       throw_invalid_generators("add_generators(gs)");
     // The polyhedron is no longer empty and generators are up-to-date.
     std::swap(gen_sys, gs);
-    gen_sys.unset_pending_rows();
+    if (gen_sys.num_pending_rows() > 0) {
+      // Even though `gs' has pending generators, since the constraints
+      // of the polyhedron are not up-to-date, the polyhedron cannot
+      // have pending generators. By integrating the pending part
+      // of `gen_sys' we may loose sortedness.
+      gen_sys.unset_pending_rows();
+      gen_sys.set_sorted(false);
+    }
     set_generators_up_to_date();
     clear_empty();
     assert(OK());
