@@ -814,8 +814,8 @@ PPL::Polyhedron::OK(bool check_not_empty) const {
   if (has_pending_constraints()) {
     if (con_sys.num_pending_rows() == 0) {
 #ifndef NDEBUG
-      cerr << "polyhedron is decleared to have pending constraints, "
-	   << "but it has no pending rows!"
+      cerr << "The polyhedron is declared to have pending constraints, "
+	   << "but con_sys has no pending rows!"
 	   << endl;
 #endif
       goto bomb;
@@ -825,8 +825,8 @@ PPL::Polyhedron::OK(bool check_not_empty) const {
   if (has_pending_generators()) {
     if (gen_sys.num_pending_rows() == 0) {
 #ifndef NDEBUG
-      cerr << "polyhedron is decleared to have pending generators, "
-	   << "but it has no pending rows!"
+      cerr << "The polyhedron is declared to have pending generators, "
+	   << "but gen_sys has no pending rows!"
 	   << endl;
 #endif
       goto bomb;
