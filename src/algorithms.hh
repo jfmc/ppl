@@ -24,9 +24,9 @@ site: http://www.cs.unipr.it/ppl/ . */
 #include "NNC_Polyhedron.defs.hh"
 #include "Determinate.defs.hh"
 #include "PowerSet.defs.hh"
-#include "Constraint.defs.defs.hh"
-#include "LinExpression.defs.defs.hh"
-#include "ConSys.defs.defs.hh"
+#include "Constraint.defs.hh"
+#include "LinExpression.defs.hh"
+#include "ConSys.defs.hh"
 #include <utility>
 #include <cassert>
 
@@ -222,14 +222,20 @@ widening_assign(PowerSet<Determinate<PH> >& r,
 		unsigned max_disjuncts) {
   unsigned r_size = r.size();
   if (r_size > max_disjuncts) {
-    typename PowerSet<Determinate<PH> >::reverse_iterator i = r.rbegin();
-    typename PowerSet<Determinate<PH> >::reverse_iterator j = i;
-    for (unsigned k = r_size-max_disjuncts; k > 0; --k) {
-      ++j;
-      j->polyhedron().poly_hull_assign(i->polyhedron());
+    typename PowerSet<Determinate<PH> >::iterator i = r.begin();
+    unsigned k = 1;
+    // Move to the last polyhedron that will survive.
+    for ( ; k < max_disjuncts; ++k)
       ++i;
-      r.pop_back();
-    }
+    // This polyhedron will be assigned the poly-hull of itself
+    // and of all the polyhedra that follow.
+    PH& ph = i->polyhedron();
+    ++i;
+    typename PowerSet<Determinate<PH> >::const_iterator j = i;
+    for (++k; k < r_size; ++k)
+      ph.poly_hull_assign(j->polyhedron());
+    // Erase the surplus polyhedra.
+    r.erase(i, r.end());
     assert(r.size() == max_disjuncts);
   }
   extrapolation_assign(r, q, wm);
