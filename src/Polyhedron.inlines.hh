@@ -369,15 +369,15 @@ Polyhedron::Polyhedron(Topology topol, const Box& box)
     Coefficient l_n, l_d;
     bool l_bounded = box.get_lower_bound(k, l_closed, l_n, l_d);
     if (l_bounded && topol == NECESSARILY_CLOSED && !l_closed)
-      throw_invalid_argument("C_Polyhedron(const Box& box)",
-			     "box has an open lower bound");
+      throw_invalid_argument("C_Polyhedron(const Box& box):",
+			     " box has an open lower bound");
     // See if we have a valid upper bound.
     bool u_closed = false;
     Coefficient u_n, u_d;
     bool u_bounded = box.get_upper_bound(k, u_closed, u_n, u_d);
     if (u_bounded && topol == NECESSARILY_CLOSED && !u_closed)
-      throw_invalid_argument("C_Polyhedron(const Box& box)",
-			     "box has an open upper bound");
+      throw_invalid_argument("C_Polyhedron(const Box& box):",
+			     " box has an open upper bound");
 
     // See if we have an implicit equality constraint.
     if (l_bounded && u_bounded
