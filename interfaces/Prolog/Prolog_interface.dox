@@ -194,7 +194,7 @@ Here is a list of all the PPL predicates provided by the Prolog interface.
 </CODE>
 
 <CODE>
-  ppl_set_timeout(+Natural_Number)
+  ppl_set_timeout(+C_unsigned)
 </CODE>
 
 <CODE>
@@ -409,7 +409,7 @@ Here is a list of all the PPL predicates provided by the Prolog interface.
 
 <CODE>
   ppl_Polyhedron_BHRZ03_widening_assign_with_token(+Handle_1, +Handle_2,
-						   ?Token_Flag)
+						   ?C_unsigned)
 </CODE>
 
 <CODE>
@@ -420,7 +420,7 @@ Here is a list of all the PPL predicates provided by the Prolog interface.
   ppl_Polyhedron_limited_BHRZ03_extrapolation_assign_with_token(+Handle_1,
                                                      +Handle_2,
 						     +Constraint_System,
-						     ?Token_Flag)
+						     ?C_unsigned)
 </CODE>
 
 <CODE>
@@ -432,7 +432,7 @@ Here is a list of all the PPL predicates provided by the Prolog interface.
   ppl_Polyhedron_bounded_BHRZ03_extrapolation_assign_with_token(+Handle_1,
                                                      +Handle_2,
 						     +Constraint_System,
-						     ?Token_Flag)
+						     ?C_unsigned)
 </CODE>
 
 <CODE>
@@ -442,7 +442,7 @@ Here is a list of all the PPL predicates provided by the Prolog interface.
 
 <CODE>
   ppl_Polyhedron_H79_widening_assign_with_token(+Handle_1, +Handle_2,
-						?Token_Flag)
+						?C_unsigned)
 </CODE>
 
 <CODE>
@@ -465,7 +465,7 @@ Here is a list of all the PPL predicates provided by the Prolog interface.
   ppl_Polyhedron_bounded_H79_extrapolation_assign_with_token(+Handle_1,
                                                   +Handle_2,
 						  +Constraint_System,
-						   ?Token_Flag)
+						   ?C_unsigned)
 </CODE>
 
 <CODE>
@@ -687,13 +687,13 @@ and \ref operations of this manual.
    The atom to be thrown by timeout exceptions
    is unified with <CODE>Atom</CODE>.
 
-<H2><CODE> ppl_set_timeout(+C_int) </CODE></H2>
+<H2><CODE> ppl_set_timeout(+C_unsigned) </CODE></H2>
 
    Computations taking exponential time will be interrupted
    some time after <CODE>C_int</CODE> ms after that call.
    If the computation is interrupted that way, the current timeout
    exception atom will be thrown.
-   <CODE>C_int</CODE> must be strictly greater than zero.
+   <CODE>C_unsigned</CODE> must be strictly greater than zero.
    
 <H2><CODE> ppl_reset_timeout </CODE></H2>
 
@@ -708,7 +708,8 @@ and \ref operations of this manual.
    Creates a C or NNC polyhedron \f$\cP\f$,
    depending on the value of <CODE>Topology</CODE>,
    with <CODE>Dimension_Type</CODE> dimensions; it is empty
-   or universe depending on <CODE>Atom</CODE>.
+   or the universe polyhedron depending on whether <CODE>Atom</CODE>
+   is <CODE>empty</CODE> or <CODE>universe</CODE>, respectively.
    <CODE>Handle</CODE> is unified with the handle for \f$\cP\f$.
    Thus the query
 \code
