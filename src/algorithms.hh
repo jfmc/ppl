@@ -32,6 +32,7 @@ site: http://www.cs.unipr.it/ppl/ . */
 
 namespace Parma_Polyhedra_Library {
 
+#ifdef PPL_DOXYGEN_INCLUDE_IMPLEMENTATION_DETAILS
 //! Partitions \p q with respect to \p p.
 /*!
   Let \p p and \p q be two polyhedra.
@@ -52,6 +53,7 @@ namespace Parma_Polyhedra_Library {
   this paper</A> for more information about the implementation.
   \endif
 */
+#endif // PPL_DOXYGEN_INCLUDE_IMPLEMENTATION_DETAILS
 template <typename PH>
 std::pair<PH, PowerSet<Determinate<NNC_Polyhedron> > >
 linear_partition(const PH& p, const PH& q);
