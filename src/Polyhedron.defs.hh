@@ -615,16 +615,11 @@ private:
   //! The status flags to keep track of the polyhedron's internal state.
   Status status;
 
-public:
-  //! Returns <CODE>true</CODE> if and only if
-  //! \p *this is an empty polyhedron.
-  bool is_empty() const;
-
-private:
   /*! @name Private Verifiers
     Verify if individual flags are set.
   */
   //@{
+  bool is_empty() const;
   bool constraints_are_up_to_date() const;
   bool generators_are_up_to_date() const;
   bool constraints_are_minimized() const;

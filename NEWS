@@ -38,7 +38,7 @@ o  Fixed a bug in Polyhedron::add_constraints(ConSys&) whereby
    we could have created constraint systems having rows with
    different capacities.
 
-o  ...
+o  Several other bugs have been fixed.
 
 
 --------------------------------------------------------------------------
