@@ -148,20 +148,20 @@ CATCH_ALL
 int
 ppl_LinExpression_add_to_coefficient(ppl_LinExpression_t le,
 				     unsigned int var,
-				     ppl_const_Coefficient_t value) try {
+				     ppl_const_Coefficient_t n) try {
   LinExpression& lle = *to_nonconst(le);
-  const Integer& vvalue = *to_const(value);
-  lle += vvalue * Variable(var);
+  const Integer& nn = *to_const(n);
+  lle += nn * Variable(var);
   return 0;
 }
 CATCH_ALL
 
 int
 ppl_LinExpression_add_to_inhomogeneous(ppl_LinExpression_t le,
-				       ppl_const_Coefficient_t value) try {
+				       ppl_const_Coefficient_t n) try {
   LinExpression& lle = *to_nonconst(le);
-  const Integer& vvalue = *to_const(value);
-  lle += vvalue;
+  const Integer& nn = *to_const(n);
+  lle += nn;
   return 0;
 }
 CATCH_ALL
@@ -256,20 +256,20 @@ CATCH_ALL
 int
 ppl_Constraint_coefficient(ppl_const_Constraint_t c,
 			   int var,
-			   ppl_Coefficient_t value) try {
+			   ppl_Coefficient_t n) try {
   const Constraint& cc = *to_const(c);
-  Integer& vvalue = *to_nonconst(value);
-  vvalue = cc.coefficient(Variable(var));
+  Integer& nn = *to_nonconst(n);
+  nn = cc.coefficient(Variable(var));
   return 0;
 }
 CATCH_ALL
 
 int
 ppl_Constraint_inhomogeneous_term(ppl_const_Constraint_t c,
-				  ppl_Coefficient_t value) try {
+				  ppl_Coefficient_t n) try {
   const Constraint& cc = *to_const(c);
-  Integer& vvalue = *to_nonconst(value);
-  vvalue = cc.coefficient();
+  Integer& nn = *to_nonconst(n);
+  nn = cc.coefficient();
   return 0;
 }
 CATCH_ALL
@@ -397,7 +397,7 @@ CATCH_ALL
 
 int
 ppl_ConSys__const_iterator_dereference(ppl_const_ConSys__const_iterator_t cit,
-				      ppl_const_Constraint_t* pc) try {
+				       ppl_const_Constraint_t* pc) try {
   const ConSys::const_iterator& ccit = *to_const(cit);
   const Constraint& c = *ccit;
   *pc = to_const(&c);
@@ -506,20 +506,20 @@ CATCH_ALL
 int
 ppl_Generator_coefficient(ppl_const_Generator_t g,
 			  int var,
-			  ppl_Coefficient_t value) try {
+			  ppl_Coefficient_t n) try {
   const Generator& gg = *to_const(g);
-  Integer& vvalue = *to_nonconst(value);
-  vvalue = gg.coefficient(Variable(var));
+  Integer& nn = *to_nonconst(n);
+  nn = gg.coefficient(Variable(var));
   return 0;
 }
 CATCH_ALL
 
 int
 ppl_Generator_divisor(ppl_const_Generator_t g,
-		      ppl_Coefficient_t value) try {
+		      ppl_Coefficient_t n) try {
   const Generator& gg = *to_const(g);
-  Integer& vvalue = *to_nonconst(value);
-  vvalue = gg.divisor();
+  Integer& nn = *to_nonconst(n);
+  nn = gg.divisor();
   return 0;
 }
 CATCH_ALL
@@ -645,7 +645,7 @@ CATCH_ALL
 
 int
 ppl_GenSys__const_iterator_dereference(ppl_const_GenSys__const_iterator_t git,
-				      ppl_const_Generator_t* pg) try {
+				       ppl_const_Generator_t* pg) try {
   const GenSys::const_iterator& ggit = *to_const(git);
   const Generator& c = *ggit;
   *pg = to_const(&c);
@@ -717,6 +717,16 @@ CATCH_ALL
 int
 ppl_delete_Polyhedron(ppl_const_Polyhedron_t ph) try {
   delete to_const(ph);
+  return 0;
+}
+CATCH_ALL
+
+int
+ppl_assign_Polyhedron_from_Polyhedron(ppl_Polyhedron_t dst,
+				      ppl_const_Polyhedron_t src) try {
+  const Polyhedron& ssrc = *to_const(src);
+  Polyhedron& ddst = *to_nonconst(dst);
+  ddst = ssrc;
   return 0;
 }
 CATCH_ALL
@@ -808,6 +818,73 @@ ppl_Polyhedron_limited_widening_assign(ppl_Polyhedron_t x,
   return 0;
 }
 CATCH_ALL
+
+int
+ppl_Polyhedron_constraints(ppl_const_Polyhedron_t ph,
+			   ppl_const_ConSys_t* pcs) try {
+  const Polyhedron& pph = *to_const(ph);
+  const ConSys& cs = pph.constraints();
+  *pcs = to_const(&cs);
+  return 0;
+}
+CATCH_ALL
+
+int
+ppl_Polyhedron_generators(ppl_const_Polyhedron_t ph,
+			  ppl_const_GenSys_t* pgs) try {
+  const Polyhedron& pph = *to_const(ph);
+  const GenSys& gs = pph.generators();
+  *pgs = to_const(&gs);
+  return 0;
+}
+CATCH_ALL
+
+int
+ppl_Polyhedron_insert_Constraint(ppl_Polyhedron_t ph,
+				 ppl_const_Constraint_t c) try {
+  Polyhedron& pph = *to_nonconst(ph);
+  const Constraint& cc = *to_const(c);
+  pph.insert(cc);
+  return 0;
+}
+CATCH_ALL
+
+int
+ppl_Polyhedron_insert_Generator(ppl_Polyhedron_t ph,
+				ppl_const_Generator_t g) try {
+  Polyhedron& pph = *to_nonconst(ph);
+  const Generator& gg = *to_const(g);
+  pph.insert(gg);
+  return 0;
+}
+CATCH_ALL
+
+int
+ppl_Polyhedron_affine_image(ppl_Polyhedron_t ph,
+			    unsigned int var,
+			    ppl_const_LinExpression_t le,
+			    ppl_const_Coefficient_t d) try {
+  Polyhedron& pph = *to_nonconst(ph);
+  const LinExpression& lle = *to_const(le);
+  const Integer& dd = *to_const(d);
+  pph.affine_image(Variable(var), lle, dd);
+  return 0;
+}
+CATCH_ALL
+
+int
+ppl_Polyhedron_affine_preimage(ppl_Polyhedron_t ph,
+			       unsigned int var,
+			       ppl_const_LinExpression_t le,
+			       ppl_const_Coefficient_t d) try {
+  Polyhedron& pph = *to_nonconst(ph);
+  const LinExpression& lle = *to_const(le);
+  const Integer& dd = *to_const(d);
+  pph.affine_preimage(Variable(var), lle, dd);
+  return 0;
+}
+CATCH_ALL
+
 
 int
 ppl_Polyhedron_relation_with_Constraint(ppl_const_Polyhedron_t ph,

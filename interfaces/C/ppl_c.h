@@ -126,7 +126,7 @@ ppl_delete_LinExpression __P((ppl_const_LinExpression_t le));
   Assigns an exact copy of the linear expression \p src to \p dst.
 */
 int
-ppl_assign_LinExpresson_from_LinExpression
+ppl_assign_LinExpression_from_LinExpression
 __P((ppl_LinExpression_t dst,
      ppl_const_LinExpression_t src));
 
@@ -134,25 +134,25 @@ __P((ppl_LinExpression_t dst,
   Swaps the linear expressions \p a and \p b.
 */
 int
-ppl_swap_LinExpresson __P((ppl_LinExpression_t a, ppl_LinExpression_t b));
+ppl_swap_LinExpression __P((ppl_LinExpression_t a, ppl_LinExpression_t b));
 
 /*!
-  Adds \p value to the coefficient of variable \p var in the linear
+  Adds \p n to the coefficient of variable \p var in the linear
   expression \p le.  The space dimension is set to be the maximum
   between \p var + 1 and the old space dimension.
 */
 int
 ppl_LinExpression_add_to_coefficient __P((ppl_LinExpression_t le,
 					  unsigned int var,
-					  ppl_const_Coefficient_t value));
+					  ppl_const_Coefficient_t n));
 
 /*!
-  Adds \p value to the inhomogeneous term of the linear expression
+  Adds \p n to the inhomogeneous term of the linear expression
   \p le.
 */
 int
 ppl_LinExpression_add_to_inhomogeneous __P((ppl_LinExpression_t le,
-					    ppl_const_Coefficient_t value));
+					    ppl_const_Coefficient_t n));
 
 /*!
   Returns the space dimension of \p le.
@@ -237,20 +237,20 @@ int
 ppl_Constraint_space_dimension __P((ppl_const_Constraint_t c));
 
 /*!
-  Copies into \p value the coefficient of variable \p var in
+  Copies into \p n the coefficient of variable \p var in
   constraint \p c.
 */
 int
 ppl_Constraint_coefficient __P((ppl_const_Constraint_t c,
 				int var,
-				ppl_Coefficient_t value));
+				ppl_Coefficient_t n));
 
 /*!
-  Copies into \p value the inhomogeneous term of constraint \p c.
+  Copies into \p n the inhomogeneous term of constraint \p c.
 */
 int
 ppl_Constraint_inhomogeneous_term __P((ppl_const_Constraint_t c,
-				       ppl_Coefficient_t value));
+				       ppl_Coefficient_t n));
 
 
 PPL_TYPE_DECLARATION(ConSys);
@@ -463,20 +463,20 @@ int
 ppl_Generator_space_dimension __P((ppl_const_Generator_t g));
 
 /*!
-  Copies into \p value the coefficient of variable \p var in
+  Copies into \p n the coefficient of variable \p var in
   generator \p g.
 */
 int
 ppl_Generator_coefficient __P((ppl_const_Generator_t g,
 			       int var,
-			       ppl_Coefficient_t value));
+			       ppl_Coefficient_t n));
 
 /*!
-  If \p g is a point or a closure point assigns its divisor to \p value.
+  If \p g is a point or a closure point assigns its divisor to \p n.
 */
 int
 ppl_Generator_divisor __P((ppl_const_Generator_t g,
-			   ppl_Coefficient_t value));
+			   ppl_Coefficient_t n));
 
 
 PPL_TYPE_DECLARATION(GenSys);
@@ -670,6 +670,13 @@ int
 ppl_delete_Polyhedron __P((ppl_const_Polyhedron_t ph));
 
 /*!
+  Assigns an exact copy of the polyhedron \p src to \p dst.
+*/
+int
+ppl_assign_Polyhedron_from_Polyhedron __P((ppl_Polyhedron_t dst,
+					     ppl_const_Polyhedron_t src));
+
+/*!
   Returns the dimension of the vector space enclosing \p ph.
 */
 int
@@ -744,6 +751,66 @@ int
 ppl_Polyhedron_limited_widening_assign __P((ppl_Polyhedron_t x,
 					    ppl_const_Polyhedron_t y,
 					    ppl_ConSys_t cs));
+
+/*!
+  Writes a const handle to the constraint system defining the
+  polyhedron \p ph at address \p pcs.
+*/
+int
+ppl_Polyhedron_constraints __P((ppl_const_Polyhedron_t ph,
+				ppl_const_ConSys_t* pcs));
+
+/*!
+  Writes a const handle to the generator system defining the
+  polyhedron \p ph at address \p pgs.
+*/
+int
+ppl_Polyhedron_generators __P((ppl_const_Polyhedron_t ph,
+			       ppl_const_GenSys_t* pcs));
+
+/*!
+  Adds a copy of the constraint \p c to the system of constraints of
+  \p ph.
+*/
+int
+ppl_Polyhedron_insert_Constraint __P((ppl_Polyhedron_t ph,
+				      ppl_const_Constraint_t c));
+
+/*!
+  Adds a copy of the generator \p g to the system of generatorss of
+  \p ph.
+*/
+int
+ppl_Polyhedron_insert_Generator __P((ppl_Polyhedron_t ph,
+				     ppl_const_Generator_t g));
+
+/*!
+  Transforms the polyhedron \p ph, assigning an affine expression
+  to the specified variable.
+  \param ph  The polyhedron that is transformed.
+  \param var The variable to which the affine expression is assigned.
+  \param le  The numerator of the affine expression.
+  \param d   The denominator of the affine expression.
+*/
+int
+ppl_Polyhedron_affine_image __P((ppl_Polyhedron_t ph,
+				 unsigned int var,
+				 ppl_const_LinExpression_t le,
+				 ppl_const_Coefficient_t d));
+
+/*!
+  Transforms the polyhedron \p ph, substituting an affine expression
+  to the specified variable.
+  \param ph  The polyhedron that is transformed.
+  \param var The variable to which the affine expression is substituted.
+  \param le  The numerator of the affine expression.
+  \param d   The denominator of the affine expression.
+*/
+int
+ppl_Polyhedron_affine_preimage __P((ppl_Polyhedron_t ph,
+				    unsigned int var,
+				    ppl_const_LinExpression_t le,
+				    ppl_const_Coefficient_t d));
 
 /*!
   Individual bit saying that the polyhedron and the set of points
