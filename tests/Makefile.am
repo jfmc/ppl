@@ -930,7 +930,9 @@ noinst_HEADERS = ppl_test.hh ehandlers.hh files.hh print.hh BBox.hh
 
 EXTRA_DIST = ehandlers.cc print.cc $(watchdog1_SRCS)
 
-BUGS =
+BUGS = bug1
+
+bug1_SOURCES = bug1.cc
 
 MOSTLYCLEANFILES = \
 ascii_dump_load1.dat \
