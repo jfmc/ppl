@@ -134,7 +134,7 @@ ORIGINAL_TESTS = \
 	max_min1 max_min2 \
 	maxspacedim1 \
 	mc91 \
-	membytes1 \
+	membytes1 membytes2 \
 	memory1 \
 	minconstraints1 minconstraints2 minconstraints3 minconstraints4 \
 	mingenerators1 mingenerators2 mingenerators3 \
@@ -229,7 +229,7 @@ DERIVED_TESTS = \
 	nnc_mapspacedims4 \
 	nnc_max_min1 nnc_max_min2 \
 	nnc_mc91 \
-	nnc_membytes1 \
+	nnc_membytes1 nnc_membytes2 \
 	nnc_minconstraints1 nnc_minconstraints2 \
 	nnc_mingenerators1 nnc_mingenerators2 \
 	nnc_onepoint \
@@ -506,6 +506,7 @@ maxspacedim1_SOURCES = maxspacedim1.cc
 mc91_SOURCES = mc91.cc
 
 membytes1_SOURCES = membytes1.cc
+membytes2_SOURCES = membytes2.cc
 
 memory1_SOURCES = memory1.cc
 
@@ -951,6 +952,8 @@ nnc_mc91_CXXFLAGS = $(DERIVED_CXXFLAGS)
 
 nnc_membytes1_SOURCES = membytes1.cc
 nnc_membytes1_CXXFLAGS = $(DERIVED_CXXFLAGS)
+nnc_membytes2_SOURCES = membytes2.cc
+nnc_membytes2_CXXFLAGS = $(DERIVED_CXXFLAGS)
 
 nnc_minconstraints1_SOURCES = minconstraints1.cc
 nnc_minconstraints1_CXXFLAGS = $(DERIVED_CXXFLAGS)

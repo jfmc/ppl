@@ -67,6 +67,18 @@ Determinate<PH>::Rep::is_shared() const {
 }
 
 template <typename PH>
+inline memory_size_type
+Determinate<PH>::Rep::external_memory_in_bytes() const {
+  return ph.external_memory_in_bytes();
+}
+
+template <typename PH>
+inline memory_size_type
+Determinate<PH>::Rep::total_memory_in_bytes() const {
+  return sizeof(*this) + external_memory_in_bytes();
+}
+
+template <typename PH>
 Determinate<PH>::Determinate(dimension_type num_dimensions, bool universe)
   : prep(new Rep(num_dimensions,
 		 universe ? Polyhedron::UNIVERSE : Polyhedron::EMPTY)) {
@@ -180,6 +192,18 @@ template <typename PH>
 inline bool
 Determinate<PH>::is_bottom() const {
   return prep->ph.is_empty();
+}
+
+template <typename PH>
+inline memory_size_type
+Determinate<PH>::external_memory_in_bytes() const {
+  return prep->total_memory_in_bytes();
+}
+
+template <typename PH>
+inline memory_size_type
+Determinate<PH>::total_memory_in_bytes() const {
+  return sizeof(*this) + external_memory_in_bytes();
 }
 
 template <typename PH>
