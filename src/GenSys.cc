@@ -34,6 +34,120 @@ site: http://www.cs.unipr.it/ppl/ . */
 
 namespace PPL = Parma_Polyhedra_Library;
 
+bool
+PPL::GenSys::adjust_topology_and_dimension(Topology new_topology,
+					   size_t new_space_dim) {
+  assert(space_dimension() <= new_space_dim);
+
+  size_t old_space_dim = space_dimension();
+  Topology old_topology = topology();
+
+  // Dealing first with the most common case.
+  if (old_space_dim == new_space_dim && old_topology == new_topology)
+    return true;
+
+  size_t cols_to_be_added = new_space_dim - old_space_dim;
+  if (cols_to_be_added > 0)
+    if (old_topology != new_topology)
+      if (new_topology == NECESSARILY_CLOSED) {
+	// A NON_NECESSARILY_CLOSED generator system
+	// can be converted to a NECESSARILY_CLOSED one
+	// only if it does not contain closure points.
+	if (has_closure_points())
+	  return false;
+	// Remove the \epsilon column and, after that,
+	// add the missing dimensions. This ensures that
+	// non-zero \epsilon coefficients will be cleared.
+	resize_no_copy(num_rows(), old_space_dim + 1);
+	set_necessarily_closed();
+	add_zero_columns(cols_to_be_added);
+      }
+      else {
+	// A NECESSARILY_CLOSED generator system is converted into
+	// a NON_NECESSARILY_CLOSED one by adding a further column
+	// and setting the \epsilon coordinate of all points to 1.
+	add_zero_columns(++cols_to_be_added);
+	GenSys& gs = *this;
+	size_t eps_index = new_space_dim + 1;
+	for (size_t i = num_rows(); i-- > 0; )
+	  gs[i][eps_index] = gs[i][0];
+	set_non_necessarily_closed();
+      }
+    else {
+      // Topologies agree: first add the required zero columns ...
+      add_zero_columns(cols_to_be_added);
+      // ... and, if needed, move the \epsilon coefficients
+      // to the new last column.
+      if (old_topology == NON_NECESSARILY_CLOSED) {
+	GenSys& gs = *this;
+	size_t old_eps_index = old_space_dim + 1;
+	size_t new_eps_index = new_space_dim + 1;
+	for (size_t i = num_rows(); i-- > 0; )
+	  std::swap(gs[i][new_eps_index], gs[i][old_eps_index]);
+      }
+    }
+  else
+    // Here `cols_to_be_added == 0', so that
+    // `old_space_dim == new_space_dim' and `old_topology != new_topology'.
+    if (new_topology == NECESSARILY_CLOSED) {
+      // A NON_NECESSARILY_CLOSED generator system
+      // can be converted in to a NECESSARILY_CLOSED one
+      // only if it does not contain closure points.
+      if (has_closure_points())
+	return false;
+      // We just remove the column of the \epsilon coefficients.
+      resize_no_copy(num_rows(), old_space_dim + 1);
+      set_necessarily_closed();
+    }
+    else {
+      // Add the column of the \epsilon coefficients
+      // and set the \epsilon coordinate of all points to 1.
+      add_zero_columns(1);
+      GenSys& gs = *this;
+      size_t eps_index = new_space_dim + 1;
+      for (size_t i = num_rows(); i-- > 0; )
+	gs[i][eps_index] = gs[i][0];
+      set_non_necessarily_closed();
+    }
+  // We successfully adjusted dimensions and topology.
+  return true;
+}
+
+
+bool
+PPL::GenSys::has_closure_points() const {
+  // Avoiding the repeated tests on topology.
+  if (is_necessarily_closed())
+    return false;
+  const GenSys& gs = *this;
+  size_t eps_index = gs.num_columns() - 1;
+  for (size_t i = num_rows(); i-- > 0; )
+    if (gs[i][0] != 0 && gs[i][eps_index] == 0)
+      return true;
+  return false;
+}
+
+
+bool
+PPL::GenSys::has_points() const {
+  const GenSys& gs = *this;
+  // Avoiding the repeated tests on topology.
+  if (is_necessarily_closed())
+    for (size_t i = num_rows(); i-- > 0; ) {
+      if (gs[i][0] != 0)
+	return true;
+    }
+  else {
+    // is_non_necessarily_closed() == true.
+    size_t eps_index = gs.num_columns() - 1;
+    for (size_t i = num_rows(); i-- > 0; )
+    if (gs[i][eps_index] != 0)
+      return true;
+  }
+  return false;
+}
+
+
 void
 PPL::GenSys::insert(const Generator& g) {
   if (topology() == g.topology())

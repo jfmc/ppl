@@ -236,6 +236,23 @@ PPL_INTERNAL:
   //! <CODE>NON_NECESSARILY_CLOSED</CODE>).
   GenSys(Topology topology, size_t n_rows, size_t n_columns);
 
+  //! Adjusts \p *this so that it matches the topology and
+  //! the number of dimensions given as parameters
+  //! (adding or removing columns if needed).
+  //! Returns <CODE>false</CODE> if and only if \p topology is
+  //! equal to <CODE>NECESSARILY_CLOSED</CODE> and \p *this
+  //! contains closure points.
+  bool adjust_topology_and_dimension(Topology topology,
+				     size_t num_dimensions);
+
+  //! Returns <CODE>true</CODE> if and only if \p *this
+  //! contains one or more closure points.
+  bool has_closure_points() const;
+
+  //! Returns <CODE>true</CODE> if and only if \p *this
+  //! does not contain any point.
+  bool has_points() const;
+
   //! Returns the \p k- th generator of the system.
   Generator& operator[](size_t k);
   //! Returns a constant reference to the \p k- th generator of the system.
