@@ -1,5 +1,5 @@
 
-This is the release 0.4 of the Parma Polyhedra Library:
+This is the release 0.4.1 of the Parma Polyhedra Library:
 a C++ library for (not necessarily closed) convex polyhedra.
 
 To be more precise, the Parma Polyhedra Library (PPL) can handle all
@@ -40,10 +40,10 @@ See the file BUGS for known bugs and how to report new ones.
 See the file CREDITS for a list of people and organizations that
 made the PPL a reality.
 
-Here is the contents of the PPL 0.4 source distributions
-(13 directories, 333 files):
+Here is the contents of the PPL 0.4.1 source distributions
+(13 directories, 334 files):
 
-ppl-0.4
+ppl-0.4.1/
 |-- BUGS
 |-- COPYING
 |-- CREDITS
@@ -101,9 +101,9 @@ ppl-0.4
 |   |-- fdl.tex
 |   |-- gpl.dox
 |   |-- gpl.tex
-|   |-- ppl-user-0.4pre4-browse.pdf
-|   |-- ppl-user-0.4pre4-print.pdf
-|   |-- ppl-user-0.4pre4-print.ps.gz
+|   |-- ppl-user-0.4.1-browse.pdf
+|   |-- ppl-user-0.4.1-print.pdf
+|   |-- ppl-user-0.4.1-print.ps.gz
 |   |-- ppl.sty
 |   |-- user-browse.doxyconf-latex
 |   |-- user-browse.doxyconf-latex.in
@@ -352,6 +352,7 @@ ppl-0.4
     |-- onepoint.cc
     |-- permute.cc
     |-- polydifference1.cc
+    |-- polydifference2.cc
     |-- polyhull1.cc
     |-- polyhull2.cc
     |-- polyhull3.cc
