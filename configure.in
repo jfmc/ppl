@@ -247,6 +247,7 @@ AC_OUTPUT(Makefile
           src/BitSet/Makefile src/Integer/Makefile
           tests/Makefile
           doc/Makefile
-          doc/user.doxyconf-pdf    doc/devref.doxyconf-pdf
-          doc/user.doxyconf-html   doc/devref.doxyconf-html
+          doc/user-browse.doxyconf-latex doc/devref-browse.doxyconf-latex
+          doc/user-print.doxyconf-latex  doc/devref-print.doxyconf-latex
+          doc/user.doxyconf-html         doc/devref.doxyconf-html
           ppl.lsm ppl.spec)

@@ -89,8 +89,16 @@ install_sh = @install_sh@
 srcdir = @srcdir@
 VPATH = @srcdir@
 
-LATEX = latex
-PDFLATEX = pdflatex
+ALL_TARGETS = \
+ppl-user-@VERSION@-browse.pdf    \
+ppl-user-@VERSION@-print.pdf     \
+ppl-user-@VERSION@-print.ps.gz   \
+ppl-devref-@VERSION@-browse.pdf  \
+ppl-devref-@VERSION@-print.pdf   \
+ppl-devref-@VERSION@-print.ps.gz \
+user.html-dir                    \
+devref.html-dir
+
 
 PPL_SOURCE_FILES = $(wildcard $(srcdir)/../src/*.hh $(srcdir)/../src/*.cc)
 
@@ -102,8 +110,11 @@ DEVREF_STUFF = $(COMMON_STUFF) $(srcdir)/devref.tex $(PPL_SOURCE_FILES)
 
 EXTRA_DIST = \
 Makefile \
-user.doxyconf-pdf \
-devref.doxyconf-pdf \
+user-browse.doxyconf-latex \
+devref-browse.doxyconf-latex \
+user-print.doxyconf-latex \
+devref-print.doxyconf-latex \
+user.doxyconf-html \
 devref.doxyconf-html \
 user.tex \
 devref.tex
@@ -111,12 +122,15 @@ devref.tex
 subdir = doc
 mkinstalldirs = $(SHELL) $(top_srcdir)/mkinstalldirs
 CONFIG_HEADER = $(top_builddir)/config.h
-CONFIG_CLEAN_FILES = user.doxyconf-pdf devref.doxyconf-pdf \
-	user.doxyconf-html devref.doxyconf-html
+CONFIG_CLEAN_FILES = user-browse.doxyconf-latex \
+	devref-browse.doxyconf-latex user-print.doxyconf-latex \
+	devref-print.doxyconf-latex user.doxyconf-html \
+	devref.doxyconf-html
 DIST_SOURCES =
-DIST_COMMON = Makefile.am Makefile.in devref.doxyconf-html.in \
-	devref.doxyconf-pdf.in texinfo.tex user.doxyconf-html.in \
-	user.doxyconf-pdf.in
+DIST_COMMON = Makefile.am Makefile.in devref-browse.doxyconf-latex.in \
+	devref-print.doxyconf-latex.in devref.doxyconf-html.in \
+	texinfo.tex user-browse.doxyconf-latex.in \
+	user-print.doxyconf-latex.in user.doxyconf-html.in
 all: all-am
 
 .SUFFIXES:
@@ -127,9 +141,13 @@ Makefile:  $(srcdir)/Makefile.in  $(top_builddir)/config.status
 	cd $(top_builddir) && \
 	  CONFIG_HEADERS= CONFIG_LINKS= \
 	  CONFIG_FILES=$(subdir)/$@ $(SHELL) ./config.status
-user.doxyconf-pdf: $(top_builddir)/config.status user.doxyconf-pdf.in
+user-browse.doxyconf-latex: $(top_builddir)/config.status user-browse.doxyconf-latex.in
 	cd $(top_builddir) && CONFIG_FILES=$(subdir)/$@ CONFIG_HEADERS= CONFIG_LINKS= $(SHELL) ./config.status
-devref.doxyconf-pdf: $(top_builddir)/config.status devref.doxyconf-pdf.in
+devref-browse.doxyconf-latex: $(top_builddir)/config.status devref-browse.doxyconf-latex.in
+	cd $(top_builddir) && CONFIG_FILES=$(subdir)/$@ CONFIG_HEADERS= CONFIG_LINKS= $(SHELL) ./config.status
+user-print.doxyconf-latex: $(top_builddir)/config.status user-print.doxyconf-latex.in
+	cd $(top_builddir) && CONFIG_FILES=$(subdir)/$@ CONFIG_HEADERS= CONFIG_LINKS= $(SHELL) ./config.status
+devref-print.doxyconf-latex: $(top_builddir)/config.status devref-print.doxyconf-latex.in
 	cd $(top_builddir) && CONFIG_FILES=$(subdir)/$@ CONFIG_HEADERS= CONFIG_LINKS= $(SHELL) ./config.status
 user.doxyconf-html: $(top_builddir)/config.status user.doxyconf-html.in
 	cd $(top_builddir) && CONFIG_FILES=$(subdir)/$@ CONFIG_HEADERS= CONFIG_LINKS= $(SHELL) ./config.status
@@ -237,19 +255,32 @@ uninstall-am: uninstall-info-am
 
 @SET_MAKE@
 
-all: ppl-user-@VERSION@.pdf ppl-devref-@VERSION@.pdf user.html-dir devref.html-dir
+all: ppl-user-@VERSION@-browse.pdf
 
-ppl-user-@VERSION@.pdf: user.doxyconf-pdf $(USER_STUFF)
-	rm -rf latex
-	doxygen $<
-	cd latex ; $(PDFLATEX) refman.tex ; makeindex refman.idx ; $(PDFLATEX) refman.tex ; $(PDFLATEX) refman.tex ; mv -f refman.pdf ../$@
-	cd latex ; $(LATEX) refman.tex ; makeindex refman.idx ; $(LATEX) refman.tex ; $(LATEX) refman.tex ; dvips -D600 -f refman.dvi >refman.ps ; mv -f refman.ps ../ppl-user-@VERSION@.ps ; rm -f ../ppl-user-@VERSION@.ps.gz ; gzip -9 ../ppl-user-@VERSION@.ps
+world: $(ALL_TARGETS)
 
-ppl-devref-@VERSION@.pdf: devref.doxyconf-pdf $(DEVREF_STUFF) 
-	rm -rf latex
+user-%.latex-dir: user-%.doxyconf-latex $(USER_STUFF)
+	rm -rf $@
 	doxygen $<
-	cd latex ; $(PDFLATEX) refman.tex ; makeindex refman.idx ; $(PDFLATEX) refman.tex ; $(PDFLATEX) refman.tex ; mv -f refman.pdf ../$@
-	cd latex ; $(LATEX) refman.tex ; makeindex refman.idx ; $(LATEX) refman.tex ; $(LATEX) refman.tex ; dvips -D600 -f refman.dvi >refman.ps ; mv -f refman.ps ../ppl-devref-@VERSION@.ps ; rm -f ../ppl-devref-@VERSION@.ps.gz ; gzip -9 ../ppl-devref-@VERSION@.ps
+
+devref-%.latex-dir: devref-%.doxyconf-latex $(DEVREF_STUFF)
+	rm -rf $@
+	doxygen $<
+
+ppl-user-@VERSION@-%.pdf: user-%.latex-dir
+	make -C $< pdf && mv -f $</refman.pdf $@
+
+ppl-devref-@VERSION@-%.pdf: devref-%.latex-dir
+	make -C $< pdf && mv -f $</refman.pdf $@
+
+ppl-user-@VERSION@-%.ps: user-%.latex-dir
+	make -C $< ps && mv -f $</refman.ps $@
+
+ppl-devref-@VERSION@-%.ps: devref-%.latex-dir
+	make -C $< ps && mv -f $</refman.ps $@
+
+%.gz: %
+	gzip -9 -f $<
 
 %.html-dir: %.doxyconf-html $(DEVREF_STUFF)
 	rm -rf html

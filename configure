@@ -3606,7 +3606,7 @@ fi
 
 done
 
-ac_config_files="$ac_config_files Makefile src/Makefile src/BitSet/Makefile src/Integer/Makefile tests/Makefile doc/Makefile doc/user.doxyconf-pdf doc/devref.doxyconf-pdf doc/user.doxyconf-html doc/devref.doxyconf-html ppl.lsm ppl.spec"
+ac_config_files="$ac_config_files Makefile src/Makefile src/BitSet/Makefile src/Integer/Makefile tests/Makefile doc/Makefile doc/user-browse.doxyconf-latex doc/devref-browse.doxyconf-latex doc/user-print.doxyconf-latex doc/devref-print.doxyconf-latex doc/user.doxyconf-html doc/devref.doxyconf-html ppl.lsm ppl.spec"
 cat >confcache <<\_ACEOF
 # This file is a shell script that caches the results of configure
 # tests run on this system so they can be shared between configure
@@ -3940,15 +3940,17 @@ do
   "src/Integer/Makefile" ) CONFIG_FILES="$CONFIG_FILES src/Integer/Makefile" ;;
   "tests/Makefile" ) CONFIG_FILES="$CONFIG_FILES tests/Makefile" ;;
   "doc/Makefile" ) CONFIG_FILES="$CONFIG_FILES doc/Makefile" ;;
-  "doc/user.doxyconf-pdf" ) CONFIG_FILES="$CONFIG_FILES doc/user.doxyconf-pdf" ;;
-  "doc/devref.doxyconf-pdf" ) CONFIG_FILES="$CONFIG_FILES doc/devref.doxyconf-pdf" ;;
+  "doc/user-browse.doxyconf-latex" ) CONFIG_FILES="$CONFIG_FILES doc/user-browse.doxyconf-latex" ;;
+  "doc/devref-browse.doxyconf-latex" ) CONFIG_FILES="$CONFIG_FILES doc/devref-browse.doxyconf-latex" ;;
+  "doc/user-print.doxyconf-latex" ) CONFIG_FILES="$CONFIG_FILES doc/user-print.doxyconf-latex" ;;
+  "doc/devref-print.doxyconf-latex" ) CONFIG_FILES="$CONFIG_FILES doc/devref-print.doxyconf-latex" ;;
   "doc/user.doxyconf-html" ) CONFIG_FILES="$CONFIG_FILES doc/user.doxyconf-html" ;;
   "doc/devref.doxyconf-html" ) CONFIG_FILES="$CONFIG_FILES doc/devref.doxyconf-html" ;;
   "ppl.lsm" ) CONFIG_FILES="$CONFIG_FILES ppl.lsm" ;;
   "ppl.spec" ) CONFIG_FILES="$CONFIG_FILES ppl.spec" ;;
   "default-1" ) CONFIG_COMMANDS="$CONFIG_COMMANDS default-1" ;;
   "config.h" ) CONFIG_HEADERS="$CONFIG_HEADERS config.h" ;;
-  *) { { echo "$as_me:3951: error: invalid argument: $ac_config_target" >&5
+  *) { { echo "$as_me:3953: error: invalid argument: $ac_config_target" >&5
 echo "$as_me: error: invalid argument: $ac_config_target" >&2;}
    { (exit 1); exit 1; }; };;
   esac
@@ -4164,7 +4166,7 @@ for as_mkdir_dir in `IFS='/\\'; set X $as_dummy; shift; echo "$@"`; do
       as_incr_dir=$as_incr_dir/$as_mkdir_dir
       test -d "$as_incr_dir" ||
         mkdir "$as_incr_dir" ||
-	{ { echo "$as_me:4167: error: cannot create \"$ac_dir\"" >&5
+	{ { echo "$as_me:4169: error: cannot create \"$ac_dir\"" >&5
 echo "$as_me: error: cannot create \"$ac_dir\"" >&2;}
    { (exit 1); exit 1; }; }
     ;;
@@ -4201,7 +4203,7 @@ esac
   esac
 
   if test x"$ac_file" != x-; then
-    { echo "$as_me:4204: creating $ac_file" >&5
+    { echo "$as_me:4206: creating $ac_file" >&5
 echo "$as_me: creating $ac_file" >&6;}
     rm -f "$ac_file"
   fi
@@ -4219,7 +4221,7 @@ echo "$as_me: creating $ac_file" >&6;}
       -) echo $tmp/stdin ;;
       [\\/$]*)
          # Absolute (can't be DOS-style, as IFS=:)
-         test -f "$f" || { { echo "$as_me:4222: error: cannot find input file: $f" >&5
+         test -f "$f" || { { echo "$as_me:4224: error: cannot find input file: $f" >&5
 echo "$as_me: error: cannot find input file: $f" >&2;}
    { (exit 1); exit 1; }; }
          echo $f;;
@@ -4232,7 +4234,7 @@ echo "$as_me: error: cannot find input file: $f" >&2;}
            echo $srcdir/$f
          else
            # /dev/null tree
-           { { echo "$as_me:4235: error: cannot find input file: $f" >&5
+           { { echo "$as_me:4237: error: cannot find input file: $f" >&5
 echo "$as_me: error: cannot find input file: $f" >&2;}
    { (exit 1); exit 1; }; }
          fi;;
@@ -4293,7 +4295,7 @@ for ac_file in : $CONFIG_HEADERS; do test "x$ac_file" = x: && continue
   * )   ac_file_in=$ac_file.in ;;
   esac
 
-  test x"$ac_file" != x- && { echo "$as_me:4296: creating $ac_file" >&5
+  test x"$ac_file" != x- && { echo "$as_me:4298: creating $ac_file" >&5
 echo "$as_me: creating $ac_file" >&6;}
 
   # First look for the input files in the build tree, otherwise in the
@@ -4304,7 +4306,7 @@ echo "$as_me: creating $ac_file" >&6;}
       -) echo $tmp/stdin ;;
       [\\/$]*)
          # Absolute (can't be DOS-style, as IFS=:)
-         test -f "$f" || { { echo "$as_me:4307: error: cannot find input file: $f" >&5
+         test -f "$f" || { { echo "$as_me:4309: error: cannot find input file: $f" >&5
 echo "$as_me: error: cannot find input file: $f" >&2;}
    { (exit 1); exit 1; }; }
          echo $f;;
@@ -4317,7 +4319,7 @@ echo "$as_me: error: cannot find input file: $f" >&2;}
            echo $srcdir/$f
          else
            # /dev/null tree
-           { { echo "$as_me:4320: error: cannot find input file: $f" >&5
+           { { echo "$as_me:4322: error: cannot find input file: $f" >&5
 echo "$as_me: error: cannot find input file: $f" >&2;}
    { (exit 1); exit 1; }; }
          fi;;
@@ -4434,7 +4436,7 @@ cat >>$CONFIG_STATUS <<\_ACEOF
   rm -f $tmp/in
   if test x"$ac_file" != x-; then
     if cmp -s $ac_file $tmp/config.h 2>/dev/null; then
-      { echo "$as_me:4437: $ac_file is unchanged" >&5
+      { echo "$as_me:4439: $ac_file is unchanged" >&5
 echo "$as_me: $ac_file is unchanged" >&6;}
     else
       ac_dir=`$as_expr X"$ac_file" : 'X\(.*[^/]\)//*[^/][^/]*/*$' \| \
@@ -4461,7 +4463,7 @@ for as_mkdir_dir in `IFS='/\\'; set X $as_dummy; shift; echo "$@"`; do
       as_incr_dir=$as_incr_dir/$as_mkdir_dir
       test -d "$as_incr_dir" ||
         mkdir "$as_incr_dir" ||
-	{ { echo "$as_me:4464: error: cannot create \"$ac_dir\"" >&5
+	{ { echo "$as_me:4466: error: cannot create \"$ac_dir\"" >&5
 echo "$as_me: error: cannot create \"$ac_dir\"" >&2;}
    { (exit 1); exit 1; }; }
     ;;
@@ -4526,7 +4528,7 @@ case $srcdir in
     ac_top_srcdir=$ac_top_builddir$srcdir ;;
 esac
 
-  { echo "$as_me:4529: executing $ac_dest commands" >&5
+  { echo "$as_me:4531: executing $ac_dest commands" >&5
 echo "$as_me: executing $ac_dest commands" >&6;}
   case $ac_dest in
     default-1 )
@@ -4642,7 +4644,7 @@ if test "$no_recursion" != yes; then
     # parts of a large source tree are present.
     test -d $srcdir/$ac_dir || continue
 
-    { echo "$as_me:4645: configuring in $ac_dir" >&5
+    { echo "$as_me:4647: configuring in $ac_dir" >&5
 echo "$as_me: configuring in $ac_dir" >&6;}
     { case "$ac_dir" in
   [\\/]* | ?:[\\/]* ) as_incr_dir=;;
@@ -4657,7 +4659,7 @@ for as_mkdir_dir in `IFS='/\\'; set X $as_dummy; shift; echo "$@"`; do
       as_incr_dir=$as_incr_dir/$as_mkdir_dir
       test -d "$as_incr_dir" ||
         mkdir "$as_incr_dir" ||
-	{ { echo "$as_me:4660: error: cannot create \"$ac_dir\"" >&5
+	{ { echo "$as_me:4662: error: cannot create \"$ac_dir\"" >&5
 echo "$as_me: error: cannot create \"$ac_dir\"" >&2;}
    { (exit 1); exit 1; }; }
     ;;
@@ -4698,7 +4700,7 @@ esac
     elif test -f $ac_srcdir/configure.in; then
       ac_sub_configure=$ac_configure
     else
-      { echo "$as_me:4701: WARNING: no configuration information is in $ac_dir" >&5
+      { echo "$as_me:4703: WARNING: no configuration information is in $ac_dir" >&5
 echo "$as_me: WARNING: no configuration information is in $ac_dir" >&2;}
       ac_sub_configure=
     fi
@@ -4712,12 +4714,12 @@ echo "$as_me: WARNING: no configuration information is in $ac_dir" >&2;}
         ac_sub_cache_file=$ac_top_builddir$cache_file ;;
       esac
 
-      { echo "$as_me:4715: running $ac_sub_configure $ac_sub_configure_args --cache-file=$ac_sub_cache_file --srcdir=$ac_srcdir" >&5
+      { echo "$as_me:4717: running $ac_sub_configure $ac_sub_configure_args --cache-file=$ac_sub_cache_file --srcdir=$ac_srcdir" >&5
 echo "$as_me: running $ac_sub_configure $ac_sub_configure_args --cache-file=$ac_sub_cache_file --srcdir=$ac_srcdir" >&6;}
       # The eval makes quoting arguments work.
       eval $ac_sub_configure $ac_sub_configure_args \
            --cache-file=$ac_sub_cache_file --srcdir=$ac_srcdir ||
-        { { echo "$as_me:4720: error: $ac_sub_configure failed for $ac_dir" >&5
+        { { echo "$as_me:4722: error: $ac_sub_configure failed for $ac_dir" >&5
 echo "$as_me: error: $ac_sub_configure failed for $ac_dir" >&2;}
    { (exit 1); exit 1; }; }
     fi

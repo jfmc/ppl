@@ -13,10 +13,20 @@ VPATH = @srcdir@
 
 @SET_MAKE@
 
-LATEX = latex
-PDFLATEX = pdflatex
+ALL_TARGETS = \
+ppl-user-@VERSION@-browse.pdf    \
+ppl-user-@VERSION@-print.pdf     \
+ppl-user-@VERSION@-print.ps.gz   \
+ppl-devref-@VERSION@-browse.pdf  \
+ppl-devref-@VERSION@-print.pdf   \
+ppl-devref-@VERSION@-print.ps.gz \
+user.html-dir                    \
+devref.html-dir
 
-all: ppl-user-@VERSION@.pdf ppl-devref-@VERSION@.pdf user.html-dir devref.html-dir
+# Make sure developers need not make the world every time.
+all: ppl-user-@VERSION@-browse.pdf
+
+world: $(ALL_TARGETS)
 
 PPL_SOURCE_FILES = $(wildcard $(srcdir)/../src/*.hh $(srcdir)/../src/*.cc)
 
@@ -26,26 +36,41 @@ USER_STUFF = $(COMMON_STUFF) $(srcdir)/user.tex $(top_builddir)/src/ppl.hh
 
 DEVREF_STUFF = $(COMMON_STUFF) $(srcdir)/devref.tex $(PPL_SOURCE_FILES)
 
-ppl-user-@VERSION@.pdf: user.doxyconf-pdf $(USER_STUFF)
-	rm -rf latex
+user-%.latex-dir: user-%.doxyconf-latex $(USER_STUFF)
+	rm -rf $@
 	doxygen $<
-	cd latex ; $(PDFLATEX) refman.tex ; makeindex refman.idx ; $(PDFLATEX) refman.tex ; $(PDFLATEX) refman.tex ; mv -f refman.pdf ../$@
-	cd latex ; $(LATEX) refman.tex ; makeindex refman.idx ; $(LATEX) refman.tex ; $(LATEX) refman.tex ; dvips -D600 -f refman.dvi >refman.ps ; mv -f refman.ps ../ppl-user-@VERSION@.ps ; rm -f ../ppl-user-@VERSION@.ps.gz ; gzip -9 ../ppl-user-@VERSION@.ps
 
-ppl-devref-@VERSION@.pdf: devref.doxyconf-pdf $(DEVREF_STUFF) 
-	rm -rf latex
+devref-%.latex-dir: devref-%.doxyconf-latex $(DEVREF_STUFF)
+	rm -rf $@
 	doxygen $<
-	cd latex ; $(PDFLATEX) refman.tex ; makeindex refman.idx ; $(PDFLATEX) refman.tex ; $(PDFLATEX) refman.tex ; mv -f refman.pdf ../$@
-	cd latex ; $(LATEX) refman.tex ; makeindex refman.idx ; $(LATEX) refman.tex ; $(LATEX) refman.tex ; dvips -D600 -f refman.dvi >refman.ps ; mv -f refman.ps ../ppl-devref-@VERSION@.ps ; rm -f ../ppl-devref-@VERSION@.ps.gz ; gzip -9 ../ppl-devref-@VERSION@.ps
+
+ppl-user-@VERSION@-%.pdf: user-%.latex-dir
+	make -C $< pdf && mv -f $</refman.pdf $@
+
+ppl-devref-@VERSION@-%.pdf: devref-%.latex-dir
+	make -C $< pdf && mv -f $</refman.pdf $@
+
+ppl-user-@VERSION@-%.ps: user-%.latex-dir
+	make -C $< ps && mv -f $</refman.ps $@
+
+ppl-devref-@VERSION@-%.ps: devref-%.latex-dir
+	make -C $< ps && mv -f $</refman.ps $@
+
+%.gz: %
+	gzip -9 -f $<
 
 %.html-dir: %.doxyconf-html $(DEVREF_STUFF)
 	rm -rf html
 	doxygen $< && rm -rf $@ && mv -f html $@
 
+
 EXTRA_DIST= \
 Makefile \
-user.doxyconf-pdf \
-devref.doxyconf-pdf \
+user-browse.doxyconf-latex \
+devref-browse.doxyconf-latex \
+user-print.doxyconf-latex \
+devref-print.doxyconf-latex \
+user.doxyconf-html \
 devref.doxyconf-html \
 user.tex \
 devref.tex
