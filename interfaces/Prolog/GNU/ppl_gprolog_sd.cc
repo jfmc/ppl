@@ -41,6 +41,39 @@ static Prolog_atom a_dollar_address;
 static Prolog_atom a_throw;
 
 /*!
+  True if and only if the Prolog engine supports unbounded integers.
+*/
+static bool Prolog_has_unbounded_integers;
+
+/*!
+  If \p Prolog_has_unbounded_integers is false, holds the maximum
+  integer value representable by a Prolog integer.
+  Holds zero otherwise.
+*/
+static long Prolog_max_integer;
+
+#include <iostream>
+using namespace std;
+
+/*!
+  Performs system-dependent initialization.
+*/
+static void
+ppl_Prolog_sysdep_init() {
+  a_dollar_address = Create_Allocate_Atom("$address");
+  a_throw = Find_Atom("throw");
+  Prolog_has_unbounded_integers = false;
+  Prolog_max_integer = INT_GREATEST_VALUE;
+}
+
+/*!
+  Perform system-dependent de-itialization.
+*/
+static void
+ppl_Prolog_sysdep_deinit() {
+}
+
+/*!
   Return a new term reference.
 */
 static inline Prolog_term_ref
@@ -178,16 +211,6 @@ Prolog_put_address(Prolog_term_ref& t, void* p) {
   u.l = reinterpret_cast<unsigned long>(p);
   return Prolog_construct_compound(t, a_dollar_address,
 				   Mk_Positive(u.s[0]), Mk_Positive(u.s[1]));
-}
-
-static void
-ppl_Prolog_sysdep_init() {
-  a_dollar_address = Create_Allocate_Atom("$address");
-  a_throw = Find_Atom("throw");
-}
-
-static void
-ppl_Prolog_sysdep_deinit() {
 }
 
 /*!

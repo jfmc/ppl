@@ -38,6 +38,34 @@ static const Prolog_foreign_return_type PROLOG_FAILURE = FALSE;
 namespace PPL = Parma_Polyhedra_Library;
 
 /*!
+  True if and only if the Prolog engine supports unbounded integers.
+*/
+static bool Prolog_has_unbounded_integers;
+
+/*!
+  If \p Prolog_has_unbounded_integers is false, holds the maximum
+  integer value representable by a Prolog integer.
+  Holds zero otherwise.
+*/
+static long Prolog_max_integer;
+
+/*!
+  Performs system-dependent initialization.
+*/
+static void
+ppl_Prolog_sysdep_init() {
+  Prolog_has_unbounded_integers = false;
+  Prolog_max_integer = PL_query(PL_QUERY_MAX_INTEGER);
+}
+
+/*!
+  Perform system-dependent de-itialization.
+*/
+static void
+ppl_Prolog_sysdep_deinit() {
+}
+
+/*!
   Return a new term reference.
 */
 static inline Prolog_term_ref
@@ -306,14 +334,6 @@ Integer_to_integer_term(const PPL::Integer& n) {
   Prolog_term_ref t = Prolog_new_term_ref();
   PL_put_integer(t, n.get_si());
   return t;
-}
-
-static void
-ppl_Prolog_sysdep_init() {
-}
-
-static void
-ppl_Prolog_sysdep_deinit() {
 }
 
 #include "../ppl_prolog.icc"

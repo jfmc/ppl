@@ -37,6 +37,35 @@ static const Prolog_foreign_return_type PROLOG_FAILURE = FALSE;
 
 namespace PPL = Parma_Polyhedra_Library;
 
+static Prolog_atom a_throw;
+
+/*!
+  True if and only if the Prolog engine supports unbounded integers.
+*/
+static bool Prolog_has_unbounded_integers;
+
+/*!
+  If \p Prolog_has_unbounded_integers is false, holds the maximum
+  integer value representable by a Prolog integer.
+  Holds zero otherwise.
+*/
+static long Prolog_max_integer;
+
+/*!
+  Performs system-dependent initialization.
+*/
+static void
+ppl_Prolog_sysdep_init() {
+  a_throw = YAP_LookupAtom("throw");
+}
+
+/*!
+  Perform system-dependent de-itialization.
+*/
+static void
+ppl_Prolog_sysdep_deinit() {
+}
+
 /*!
   Return a new term reference.
 */
@@ -168,17 +197,6 @@ Prolog_construct_cons(Prolog_term_ref& c,
 		      Prolog_term_ref h, Prolog_term_ref t) {
   c = YAP_MkPairTerm(h, t);
   return 1;
-}
-
-static Prolog_atom a_throw;
-
-static void
-ppl_Prolog_sysdep_init() {
-  a_throw = YAP_LookupAtom("throw");
-}
-
-static void
-ppl_Prolog_sysdep_deinit() {
 }
 
 /*!
