@@ -859,7 +859,54 @@ ppl_new_NNC_Polyhedron_from_GenSys __P((ppl_Polyhedron_t* pph,
 					ppl_GenSys_t gs));
 
 /*!
-  FIXME: adapt the comment of the C++ counterpart.
+  Builds a new C polyhedron corresponding to an interval-based
+  bounding box, writing a handle for the newly created polyhedron at
+  address \p pph.
+  If an interval of the bounding box is provided with any finite
+  but open bound, then the polyhedron is not built and the value
+  <CODE>PPL_ERROR_INVALID_ARGUMENT</CODE> is returned.
+  The bounding box is accessed by using the following functions,
+  passed as arguments:
+    \code
+      unsigned int space_dimension()
+    \endcode
+    returns the dimension of the vector space enclosing the polyhedron
+    represented by the bounding box.
+    \code
+      int is_empty()
+    \endcode
+    returns 0 if and only if the bounding box describes a non-empty set.
+    The function <CODE>is_empty()</CODE> will always be called before the
+    other functions. However, if <CODE>is_empty()</CODE> does not
+    return 0, none of the functions below will be called.
+    \code
+      int get_lower_bound(unsigned int k, int closed,
+                          ppl_Coefficient_t n, ppl_Coefficient_t d)
+    \endcode
+    Let \f$I\f$ the interval corresponding to the <CODE>k</CODE>-th dimension.
+    If \f$I\f$ is not bounded from below, simply return 0.
+    Otherwise, set <CODE>closed</CODE>, <CODE>n</CODE> and <CODE>d</CODE>
+    as follows: <CODE>closed</CODE> is set to 0 if the lower boundary
+    of \f$I\f$ is open and is set to a value different from zero otherwise;
+    <CODE>n</CODE> and <CODE>d</CODE> are assigned the integers
+    \f$n\f$ and \f$d\f$ such that the canonical fraction \f$n/d\f$
+    corresponds to the greatest lower bound of \f$I\f$.
+    The fraction \f$n/d\f$ is in canonical form if and only if \f$n\f$
+    and \f$d\f$ have no common factors and \f$d\f$ is positive, \f$0/1\f$
+    being the unique representation for zero.
+    \code
+      int get_upper_bound(unsigned int k, int closed,
+                          ppl_Coefficient_t n, ppl_Coefficient_t d)
+    \endcode
+    Let \f$I\f$ the interval corresponding to the <CODE>k</CODE>-th dimension.
+    If \f$I\f$ is not bounded from above, simply return 0.
+    Otherwise, set <CODE>closed</CODE>, <CODE>n</CODE> and <CODE>d</CODE>
+    as follows: <CODE>closed</CODE> is set to 0 if the upper boundary
+    of \f$I\f$ is open and is set to a value different from 0 otherwise;
+    <CODE>n</CODE> and <CODE>d</CODE>
+    are assigned the integers
+    \f$n\f$ and \f$d\f$ such that the canonical fraction \f$n/d\f$
+    corresponds to the least upper bound of \f$I\f$.
 */
 int
 ppl_new_C_Polyhedron_from_bounding_box
@@ -873,8 +920,53 @@ __P((ppl_Polyhedron_t* pph,
 			    ppl_Coefficient_t n,
 			    ppl_Coefficient_t d)));
 
+
 /*!
-  FIXME: adapt the comment of the C++ counterpart.
+  Builds a new C polyhedron corresponding to an interval-based
+  bounding box, writing a handle for the newly created polyhedron at
+  address \p pph.
+  The bounding box is accessed by using the following functions,
+  passed as arguments:
+    \code
+      unsigned int space_dimension()
+    \endcode
+    returns the dimension of the vector space enclosing the polyhedron
+    represented by the bounding box.
+    \code
+      int is_empty()
+    \endcode
+    returns 0 if and only if the bounding box describes a non-empty set.
+    The function <CODE>is_empty()</CODE> will always be called before the
+    other functions. However, if <CODE>is_empty()</CODE> does not
+    return 0, none of the functions below will be called.
+    \code
+      int get_lower_bound(unsigned int k, int closed,
+                          ppl_Coefficient_t n, ppl_Coefficient_t d)
+    \endcode
+    Let \f$I\f$ the interval corresponding to the <CODE>k</CODE>-th dimension.
+    If \f$I\f$ is not bounded from below, simply return 0.
+    Otherwise, set <CODE>closed</CODE>, <CODE>n</CODE> and <CODE>d</CODE>
+    as follows: <CODE>closed</CODE> is set to 0 if the lower boundary
+    of \f$I\f$ is open and is set to a value different from zero otherwise;
+    <CODE>n</CODE> and <CODE>d</CODE> are assigned the integers
+    \f$n\f$ and \f$d\f$ such that the canonical fraction \f$n/d\f$
+    corresponds to the greatest lower bound of \f$I\f$.
+    The fraction \f$n/d\f$ is in canonical form if and only if \f$n\f$
+    and \f$d\f$ have no common factors and \f$d\f$ is positive, \f$0/1\f$
+    being the unique representation for zero.
+    \code
+      int get_upper_bound(unsigned int k, int closed,
+                          ppl_Coefficient_t n, ppl_Coefficient_t d)
+    \endcode
+    Let \f$I\f$ the interval corresponding to the <CODE>k</CODE>-th dimension.
+    If \f$I\f$ is not bounded from above, simply return 0.
+    Otherwise, set <CODE>closed</CODE>, <CODE>n</CODE> and <CODE>d</CODE>
+    as follows: <CODE>closed</CODE> is set to 0 if the upper boundary
+    of \f$I\f$ is open and is set to a value different from 0 otherwise;
+    <CODE>n</CODE> and <CODE>d</CODE>
+    are assigned the integers
+    \f$n\f$ and \f$d\f$ such that the canonical fraction \f$n/d\f$
+    corresponds to the least upper bound of \f$I\f$.
 */
 int
 ppl_new_NNC_Polyhedron_from_bounding_box
