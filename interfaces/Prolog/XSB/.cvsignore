@@ -1,0 +1,11 @@
+*.clpq
+*.la
+*.lo
+.deps
+.libs
+Makefile
+Makefile.in
+check_script
+check_script2
+obtained
+obtained2
