@@ -36,7 +36,7 @@ const Integer lb = 0;
 const Integer ub = 5;
 
 void gen_closed_hypercubes() {
-  const size_t mindim = 6;
+  const size_t mindim = 8;
   const size_t maxdim = 11;
 
   cout << "=========================================" << endl
@@ -66,7 +66,7 @@ void gen_closed_hypercubes() {
 
 
 void gen_open_hypercubes() {
-  const size_t mindim = 6;
+  const size_t mindim = 8;
   const size_t maxdim = 11;
 
   cout << "=========================================" << endl
@@ -164,8 +164,8 @@ void gen_nnc_hypercubes() {
     for (size_t axis = dim; axis-- > 0; )
       num_vertices *= 2;
 
-    for (size_t tenths = 1; tenths <= 10; ++tenths) {
-      size_t to_be_removed = (num_vertices * tenths) / 10;
+    for (size_t quarters = 1; quarters <= 4; ++quarters) {
+      size_t to_be_removed = (num_vertices * quarters) / 4;
 
       cout << dim << "-dimensional hypercube with ";
       cout << (num_vertices - to_be_removed) << " vertices: ";
@@ -192,10 +192,177 @@ void gen_nnc_hypercubes() {
 }
 
 
+void con_dual_closed_hypercubes() {
+  const size_t mindim = 8;
+  const size_t maxdim = 11;
+
+  cout << "=========================================" << endl
+       << "Computing constraints for the DUAL of a CLOSED hypercube" << endl
+       << endl;
+
+  for (size_t dim = mindim; dim <= maxdim; dim++) {
+    GenSys gs;
+    for (size_t axis = dim; axis-- > 0; ) {
+      gs.insert(point(-ub * Variable(axis)));
+      gs.insert(point(ub * Variable(axis)));
+    }
+    NNC_Polyhedron ph(gs);
+    cout << dim << "-dimensional DUAL hypercube: ";
+    start_clock();
+    ph.constraints();
+    print_clock(cout);
+    cout << " secs." << endl;
+#if NOISY
+    print_constraints(ph, "--- ph ---");
+    print_generators(ph, "--- ph ---");
+#endif
+  }
+  cout << "=========================================" << endl
+       << endl;
+}
+
+
+void con_dual_open_hypercubes() {
+  const size_t mindim = 8;
+  const size_t maxdim = 11;
+
+  cout << "=========================================" << endl
+       << "Computing constraints for the DUAL of an OPEN hypercube" << endl
+       << endl;
+
+  for (size_t dim = mindim; dim <= maxdim; dim++) {
+    GenSys gs;
+    for (size_t axis = dim; axis-- > 0; ) {
+      gs.insert(closure_point(-ub * Variable(axis)));
+      gs.insert(closure_point(ub * Variable(axis)));
+    }
+    gs.insert(point());
+    NNC_Polyhedron ph(gs);
+    cout << dim << "-dimensional DUAL hypercube: ";
+    start_clock();
+    ph.constraints();
+    print_clock(cout);
+    cout << " secs." << endl;
+#if NOISY
+    print_constraints(ph, "--- ph ---");
+    print_generators(ph, "--- ph ---");
+#endif
+  }
+  cout << "=========================================" << endl
+       << endl;
+}
+
+
+void add_facets(size_t &to_be_added,
+		LinExpression expr,
+		size_t dims,
+		size_t axis,
+		GenSys &gs) {
+  // Return if we have already added all facets.
+  if (to_be_added == 0)
+    return;
+
+  if (axis == 0) {
+    // Adding first a point where the 0-axis has coordinate 1/dims.
+    expr += Variable(axis);
+    gs.insert(point(ub*expr, dims));
+    --to_be_added;
+    if (to_be_added == 0)
+      return;
+    // Restoring previous value of `expr'.
+    expr -= Variable(axis);
+    // Then, add a point where the 0-axis has coordinate -1/dims.
+    expr -= Variable(axis);
+    gs.insert(point(ub*expr, dims));
+    --to_be_added;
+  }
+  else {
+    // axis > 0.
+    // First recursive call with variable with index `axis'
+    // having coordinate 1/dims.
+    expr += Variable(axis);
+    add_facets(to_be_added, expr, dims, axis-1, gs);
+    if (to_be_added == 0)
+      return;
+    // Restoring previous value of `expr'.
+    expr -= Variable(axis);
+    // Second recursive call with variable with index `axis'
+    // having coordinate -1/dims.
+    expr -= Variable(axis);
+    add_facets(to_be_added, expr, dims, axis-1, gs);
+  }
+}
+
+
+void con_dual_nnc_hypercubes() {
+  const size_t mindim = 6;
+  const size_t maxdim = 8;
+
+  cout << "=========================================" << endl
+       << "Computing constraints of duals of NNC hypercubes" << endl
+       << "missing some of the facets" << endl
+       << endl;
+
+  for (size_t dim = mindim; dim <= maxdim; dim++) {
+    // First build the generator system defining
+    // the open dual hypercube.
+    GenSys gs;
+    for (size_t axis = dim; axis-- > 0; ) {
+      gs.insert(closure_point(-ub * Variable(axis)));
+      gs.insert(closure_point(ub * Variable(axis)));
+    }
+    gs.insert(point());
+
+    // Number of facets in the closed dual hypercube.
+    size_t num_facets = 1;
+    for (size_t axis = dim; axis-- > 0; )
+      num_facets *= 2;
+
+    for (size_t quarters = 1; quarters <= 4; ++quarters) {
+      size_t to_be_added = (num_facets * quarters) / 4;
+
+      cout << dim << "-dimensional dual hypercube with ";
+      cout << to_be_added << " facets: ";
+
+      // Now add strict inequality constraints
+      // each one removing one vertex.
+      GenSys gs_copy = gs;
+
+      add_facets(to_be_added, LinExpression(), dim, dim-1, gs_copy);
+      NNC_Polyhedron ph(gs_copy);
+
+#if 0
+      cout << "generators" << endl;
+      ph.generators().ASCII_dump(cout);
+#endif
+
+      start_clock();
+      ph.constraints();
+      print_clock(cout);
+      cout << " secs." << endl;
+
+#if NOISY
+      ph.minimized_constraints();
+      cout << "Constraints" << endl;
+      ph.constraints().ASCII_dump(cout);
+      ph.minimized_generators();
+      cout << "Generators" << endl;
+      ph.generators().ASCII_dump(cout);
+#endif
+    }
+  }
+  cout << "=========================================" << endl
+       << endl;
+}
+
+
 int
 main() {
   gen_closed_hypercubes();
   gen_open_hypercubes();
   gen_nnc_hypercubes();
+  con_dual_closed_hypercubes();
+  con_dual_open_hypercubes();
+  con_dual_nnc_hypercubes();
   return 0;
 }
