@@ -548,7 +548,7 @@ write_constraints([C|CS], VariableNames, VN) :-
 write_bindings([], _VarList).
 write_bindings([(A = Term)|VN], VarList) :-
   (var(Term) ->
-    (write(A = Term),
+    (write(A), write(' = '), write(Term),
     nl)
   ;
     (Term = '$VAR'(_) ->
