@@ -27,6 +27,7 @@ site: http://www.cs.unipr.it/ppl/ . */
 #include "Interval.defs.hh"
 #include "Generator.defs.hh"
 #include <algorithm>
+#include <iostream>
 
 namespace Parma_Polyhedra_Library {
 
@@ -383,7 +384,8 @@ template <typename Box>
 void
 Polyhedron::shrink_bounding_box(Box& box, Complexity_Class complexity) const {
   bool polynomial = (complexity != ANY);
-  if ((polynomial && constraints_are_minimized()) || !polynomial) {
+  if ((polynomial && !has_something_pending()
+       && constraints_are_minimized()) || !polynomial) {
     // If the constraint system is minimized, the check
     // `check_universe()' is not exponential.
     if (check_universe())
@@ -402,7 +404,14 @@ Polyhedron::shrink_bounding_box(Box& box, Complexity_Class complexity) const {
 	if ((*i).is_trivial_false()){
 	  box.set_empty();
 	  return;
-	} 
+	}
+      if (has_pending_constraints())
+	for (ConSys::const_iterator i = pending_cs.begin();
+	   i != pending_cs.end(); ++i)
+	  if ((*i).is_trivial_false()){
+	    box.set_empty();
+	    return;
+	  }
     }
   }
   else
@@ -426,6 +435,24 @@ Polyhedron::shrink_bounding_box(Box& box, Complexity_Class complexity) const {
     // Upper bounds are initialized to (open) minus infinity;
     upper_bound[j] = UBoundary(ExtendedRational('-'), UBoundary::OPEN);
   }
+  
+  // If the flag `polynomial' is `true' and if there is something
+  // pending, we only erase the pending: if there are pending constraints,
+  // we obtain the system of constraints, otherwise if we have
+  // pending generators, we obtain the system of generators.
+  if (polynomial) {
+    if (has_pending_constraints())
+      remove_pending_to_obtain_constraints();
+    else if (has_pending_generators())
+      remove_pending_to_obtain_generators();
+  }
+  else
+    if (has_something_pending())
+      // If the flag `polynomial' is `false', we erase
+      // the pending constraints or the pending generators
+      // and we obtain a minimal system of
+      // constraints and a minimal system of generators.
+      remove_pending_and_minimize();
 
   if (polynomial && !generators_are_up_to_date()) {
     // Extract easy-to-find bounds from constraints.
@@ -585,6 +612,8 @@ Polyhedron::shuffle_dimensions(const PartialFunction& pfunc) {
   if (pfunc.has_empty_codomain()) {
     // All dimensions vanish: the polyhedron becomes zero_dimensional.
     if (is_empty()
+	|| (has_pending_constraints()
+	    && !remove_pending_to_obtain_generators())
 	|| (!generators_are_up_to_date() && !update_generators())) {
       // Removing all dimensions from the empty polyhedron.
       space_dim = 0;
@@ -599,6 +628,7 @@ Polyhedron::shuffle_dimensions(const PartialFunction& pfunc) {
   }
 
   dimension_type new_space_dimension = pfunc.max_in_codomain() + 1;
+  // If there is something pending, using `generators()' we erase it.
   const GenSys& old_gensys = generators();
   GenSys new_gensys;
   for (GenSys::const_iterator i = old_gensys.begin(),
