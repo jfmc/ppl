@@ -52,7 +52,7 @@ TESTS = NNCinclusion1 \
 	convexdifference1 \
         empty1 \
 	exceptions1 exceptions2 \
-	generators1 \
+	generators1 generators2 \
         inters1 inters2 inters3 inters4 inters5 inters6 \
 	limitedwidening1 limitedwidening2\
 	onepoint \
@@ -122,6 +122,7 @@ exceptions1_SOURCES = exceptions1.cc
 exceptions2_SOURCES = exceptions2.cc
 
 generators1_SOURCES = generators1.cc
+generators2_SOURCES = generators2.cc
 
 inters1_SOURCES = inters1.cc
 inters2_SOURCES = inters2.cc
