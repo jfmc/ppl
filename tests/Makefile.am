@@ -45,7 +45,7 @@ TESTS = $(WATCHDOG_TESTS) \
 	adddimensions5 adddimensions6 adddimensions7 \
 	addgenerators1 addgenerators2 addgenerators3 addgenerators4 \
 	addgenerators5 addgenerators6 addgenerators7 \
-	affineimage1 affineimage2 \
+	affineimage1 affineimage2 affineimage4 affineimage5 \
 	affinepreimage1 affinepreimage2 affinepreimage3 affinepreimage4 \
 	affinetrans \
         append1 append2 \
@@ -111,6 +111,8 @@ addgenerators7_SOURCES = addgenerators7.cc
 
 affineimage1_SOURCES = affineimage1.cc
 affineimage2_SOURCES = affineimage2.cc
+affineimage4_SOURCES = affineimage4.cc
+affineimage5_SOURCES = affineimage5.cc
 
 affinepreimage1_SOURCES = affinepreimage1.cc
 affinepreimage2_SOURCES = affinepreimage2.cc

@@ -315,7 +315,7 @@ PPL::ConSys::affine_preimage(size_t v,
   // nor the \epsilon dimension of NNC polyhedra).
   assert(v > 0 && v <= space_dimension());
   assert(expr.space_dimension() <= space_dimension());
-  assert(denominator != 0);
+  assert(denominator > 0);
 
   size_t n_columns = num_columns();
   size_t n_rows = num_rows();
