@@ -5,4 +5,4 @@ if [ $# -ne 1  ]; then
 fi
 bibtex2html -quiet -sort-as-bibtex -nodoc -noabstract -nobibsource -style alpha -named-field SOURCE "Source code" $1
 name=`basename $1 .bib`
-sed -f bib2html2dox.sed <$name.html >$name.dox
+sed -f bib2html1.sed <$name.html | sed -f bib2html2.sed >$name.dox

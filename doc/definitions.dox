@@ -856,9 +856,21 @@ representing a given bounding box.
 
 <DL>
 
-<a name="BagnaraHZ02a"></a>
+<DT> [BGP99] </DT>
+<DD>
+<a name="BultanGP99"></a>
+T. Bultan, R. Gerber, and W. Pugh.
+  Model-checking concurrent systems with unbounded integer variables:
+  Symbolic representations, approximations, and experimental results.
+  <i>ACM Transactions on Programming Languages and Systems</i>,
+  21(4):747-789, 1999.
+
+</DD>
+
+
 <DT> [BHZ02] </DT>
 <DD>
+<a name="BagnaraHZ02a"></a>
 R. Bagnara, P. M. Hill, and E. Zaffanella.
   A new encoding of not necessarily closed convex polyhedra.
   In M. Carro, C. Vacheret, and K.-K. Lau, editors, <i>Proceedings of
@@ -871,9 +883,9 @@ R. Bagnara, P. M. Hill, and E. Zaffanella.
 </DD>
 
 
-<a name="BagnaraRZH02"></a>
 <DT> [BRZH02a] </DT>
 <DD>
+<a name="BagnaraRZH02"></a>
 R. Bagnara, E. Ricci, E. Zaffanella, and P. M. Hill.
   Possibly not closed convex polyhedra and the Parma Polyhedra
   Library.
@@ -885,9 +897,9 @@ R. Bagnara, E. Ricci, E. Zaffanella, and P. M. Hill.
 </DD>
 
 
-<a name="BagnaraRZH02TR"></a>
 <DT> [BRZH02b] </DT>
 <DD>
+<a name="BagnaraRZH02TR"></a>
 R. Bagnara, E. Ricci, E. Zaffanella, and P. M. Hill.
   Possibly not closed convex polyhedra and the Parma Polyhedra
   Library.
@@ -899,9 +911,9 @@ R. Bagnara, E. Ricci, E. Zaffanella, and P. M. Hill.
 </DD>
 
 
-<a name="BagnaraRZH02TRerrata"></a>
 <DT> [BRZH02c] </DT>
 <DD>
+<a name="BagnaraRZH02TRerrata"></a>
 R. Bagnara, E. Ricci, E. Zaffanella, and P. M. Hill.
   Errata for technical report ``Quaderno 286''.
   Available at <A HREF="http://www.cs.unipr.it/Publications/">http://www.cs.unipr.it/Publications/</A>,
@@ -911,9 +923,9 @@ R. Bagnara, E. Ricci, E. Zaffanella, and P. M. Hill.
 </DD>
 
 
-<a name="CousotC92-PLILP"></a>
 <DT> [CC92] </DT>
 <DD>
+<a name="CousotC92-PLILP"></a>
 P. Cousot and R. Cousot.
   Comparing the Galois connection and widening/narrowing approaches
   to abstract interpretation.
@@ -925,9 +937,9 @@ P. Cousot and R. Cousot.
 </DD>
 
 
-<a name="CousotH78"></a>
 <DT> [CH78] </DT>
 <DD>
+<a name="CousotH78"></a>
 P. Cousot and N. Halbwachs.
   Automatic discovery of linear restraints among variables of a
   program.
@@ -938,9 +950,9 @@ P. Cousot and N. Halbwachs.
 </DD>
 
 
-<a name="Chernikova64"></a>
 <DT> [Che64] </DT>
 <DD>
+<a name="Chernikova64"></a>
 N. V. Chernikova.
   Algorithm for finding a general formula for the non-negative
   solutions of system of linear equations.
@@ -950,9 +962,9 @@ N. V. Chernikova.
 </DD>
 
 
-<a name="Chernikova65"></a>
 <DT> [Che65] </DT>
 <DD>
+<a name="Chernikova65"></a>
 N. V. Chernikova.
   Algorithm for finding a general formula for the non-negative
   solutions of system of linear inequalities.
@@ -962,9 +974,9 @@ N. V. Chernikova.
 </DD>
 
 
-<a name="Chernikova68"></a>
 <DT> [Che68] </DT>
 <DD>
+<a name="Chernikova68"></a>
 N. V. Chernikova.
   Algorithm for discovering the set of all solutions of a linear
   programming problem.
@@ -974,9 +986,9 @@ N. V. Chernikova.
 </DD>
 
 
-<a name="Dantzig63"></a>
 <DT> [Dan63] </DT>
 <DD>
+<a name="Dantzig63"></a>
 G. B. Dantzig.
   <i>Linear Programming and Extensions</i>.
   Princeton University Press, Princeton, NJ, 1963.
@@ -984,9 +996,9 @@ G. B. Dantzig.
 </DD>
 
 
-<a name="FukudaP96"></a>
 <DT> [FP96] </DT>
 <DD>
+<a name="FukudaP96"></a>
 K. Fukuda and A. Prodon.
   Double description method revisited.
   In M. Deza, R. Euler, and Y. Manoussakis, editors, <i>Combinatorics
@@ -997,9 +1009,9 @@ K. Fukuda and A. Prodon.
 </DD>
 
 
-<a name="Fukuda98"></a>
 <DT> [Fuk98] </DT>
 <DD>
+<a name="Fukuda98"></a>
 K. Fukuda.
   Polyhedral computation FAQ.
   Swiss Federal Institute of Technology, Lausanne and Zurich,
@@ -1009,9 +1021,9 @@ K. Fukuda.
 </DD>
 
 
-<a name="GawrilowJ00"></a>
 <DT> [GJ00] </DT>
 <DD>
+<a name="GawrilowJ00"></a>
 E. Gawrilow and M. Joswig.
   <tt>polymake</tt>: a framework for analyzing convex polytopes.
   In G. Kalai and G. M. Ziegler, editors, <i>Polytopes -
@@ -1020,9 +1032,9 @@ E. Gawrilow and M. Joswig.
 </DD>
 
 
-<a name="GawrilowJ01"></a>
 <DT> [GJ01] </DT>
 <DD>
+<a name="GawrilowJ01"></a>
 E. Gawrilow and M. Joswig.
   <tt>polymake</tt>: an approach to modular software design in
   computational geometry.
@@ -1033,9 +1045,9 @@ E. Gawrilow and M. Joswig.
 </DD>
 
 
-<a name="Halbwachs79th"></a>
 <DT> [Hal79] </DT>
 <DD>
+<a name="Halbwachs79th"></a>
 N. Halbwachs.
   <i>Détermination Automatique de Relations Linéaires
   Vérifiées par les Variables d'un Programme</i>.
@@ -1046,9 +1058,9 @@ N. Halbwachs.
 </DD>
 
 
-<a name="HalbwachsKP95"></a>
 <DT> [HKP95] </DT>
 <DD>
+<a name="HalbwachsKP95"></a>
 N. Halbwachs, A. Kerbrat, and Y.-E. Proy.
   <i>POLyhedra INtegrated Environment</i>.
   Verimag, France, version 1.0 of POLINE edition, September 1995.
@@ -1057,9 +1069,9 @@ N. Halbwachs, A. Kerbrat, and Y.-E. Proy.
 </DD>
 
 
-<a name="LeVergeVDW94"></a>
 <DT> [HLW94] </DT>
 <DD>
+<a name="LeVergeVDW94"></a>
 V. Van Dongen H. Le Verge and D. K. Wilde.
   Loop nest synthesis using the polyhedral library.
   <em>Publication interne</em> 830, IRISA, Campus de Beaulieu, Rennes,
@@ -1068,9 +1080,9 @@ V. Van Dongen H. Le Verge and D. K. Wilde.
 </DD>
 
 
-<a name="HalbwachsPR94"></a>
 <DT> [HPR94] </DT>
 <DD>
+<a name="HalbwachsPR94"></a>
 N. Halbwachs, Y.-E. Proy, and P. Raymond.
   Verification of linear hybrid systems by means of convex
   approximations.
@@ -1081,9 +1093,9 @@ N. Halbwachs, Y.-E. Proy, and P. Raymond.
 </DD>
 
 
-<a name="HalbwachsPR97"></a>
 <DT> [HPR97] </DT>
 <DD>
+<a name="HalbwachsPR97"></a>
 N. Halbwachs, Y.-E. Proy, and P. Roumanoff.
   Verification of real-time systems using linear relation analysis.
   <i>Formal Methods in System Design</i>, 11(2):157-185, 1997.
@@ -1091,9 +1103,9 @@ N. Halbwachs, Y.-E. Proy, and P. Roumanoff.
 </DD>
 
 
-<a name="NEW-POLKA-1-1-3c"></a>
 <DT> [Jea02] </DT>
 <DD>
+<a name="NEW-POLKA-1-1-3c"></a>
 B. Jeannet.
   <i>Convex Polyhedra Library</i>, release 1.1.3c edition, March 2002.
   Documentation of the ``New Polka'' library available at
@@ -1102,9 +1114,9 @@ B. Jeannet.
 </DD>
 
 
-<a name="Kuhn56"></a>
 <DT> [Kuh56] </DT>
 <DD>
+<a name="Kuhn56"></a>
 H. W. Kuhn.
   Solvability and consistency for linear equations and inequalities.
   <i>American Mathematical Monthly</i>, 63:217-232, 1956.
@@ -1112,9 +1124,9 @@ H. W. Kuhn.
 </DD>
 
 
-<a name="LeVerge92"></a>
 <DT> [Le 92] </DT>
 <DD>
+<a name="LeVerge92"></a>
 H. Le Verge.
   A note on Chernikova's algorithm.
   <em>Publication interne</em> 635, IRISA, Campus de Beaulieu, Rennes,
@@ -1123,9 +1135,9 @@ H. Le Verge.
 </DD>
 
 
-<a name="Loechner99"></a>
 <DT> [Loe99] </DT>
 <DD>
+<a name="Loechner99"></a>
 V. Loechner.
   <i>PolyLib</i>: A library for manipulating parameterized polyhedra.
   Available at <A HREF="http://icps.u-strasbg.fr/~loechner/polylib/">http://icps.u-strasbg.fr/~loechner/polylib/</A>, March
@@ -1135,9 +1147,9 @@ V. Loechner.
 </DD>
 
 
-<a name="LoechnerW97"></a>
 <DT> [LW97] </DT>
 <DD>
+<a name="LoechnerW97"></a>
 V. Loechner and D. K. Wilde.
   Parameterized polyhedra and their vertices.
   <i>International Journal of Parallel Programming</i>, 25(6):525-549,
@@ -1146,9 +1158,9 @@ V. Loechner and D. K. Wilde.
 </DD>
 
 
-<a name="MotzkinRTT53"></a>
 <DT> [MRTT53] </DT>
 <DD>
+<a name="MotzkinRTT53"></a>
 T. S. Motzkin, H. Raiffa, G. L. Thompson, and R. M. Thrall.
   The double description method.
   In H. W. Kuhn and A. W. Tucker, editors, <i>Contributions to the
@@ -1158,9 +1170,9 @@ T. S. Motzkin, H. Raiffa, G. L. Thompson, and R. M. Thrall.
 </DD>
 
 
-<a name="NemhauserW88"></a>
 <DT> [NW88] </DT>
 <DD>
+<a name="NemhauserW88"></a>
 G. L. Nemhauser and L. A. Wolsey.
   <i>Integer and Combinatorial Optimization</i>.
   Wiley Interscience Series in Discrete Mathematics and Optimization.
@@ -1169,9 +1181,9 @@ G. L. Nemhauser and L. A. Wolsey.
 </DD>
 
 
-<a name="Srivastava93"></a>
 <DT> [Sri93] </DT>
 <DD>
+<a name="Srivastava93"></a>
 D. Srivastava.
   Subsumption and indexing in constraint query languages with linear
   arithmetic constraints.
@@ -1181,9 +1193,9 @@ D. Srivastava.
 </DD>
 
 
-<a name="StoerW70"></a>
 <DT> [SW70] </DT>
 <DD>
+<a name="StoerW70"></a>
 J. Stoer and C. Witzgall.
   <i>Convexity and Optimization in Finite Dimensions I</i>.
   Springer-Verlag, Berlin, 1970.
@@ -1191,9 +1203,9 @@ J. Stoer and C. Witzgall.
 </DD>
 
 
-<a name="Weyl35"></a>
 <DT> [Wey35] </DT>
 <DD>
+<a name="Weyl35"></a>
 H. Weyl.
   Elementare theorie der konvexen polyeder.
   <i>Commentarii Mathematici Helvetici</i>, 7:290-306, 1935.
@@ -1202,9 +1214,9 @@ H. Weyl.
 </DD>
 
 
-<a name="Weyl50"></a>
 <DT> [Wey50] </DT>
 <DD>
+<a name="Weyl50"></a>
 H. Weyl.
   The elementary theory of convex polyhedra.
   In H. W. Kuhn, editor, <i>Contributions to the Theory of Games -
@@ -1215,9 +1227,9 @@ H. Weyl.
 </DD>
 
 
-<a name="Wilde93th"></a>
 <DT> [Wil93] </DT>
 <DD>
+<a name="Wilde93th"></a>
 D. K. Wilde.
   A library for doing polyhedral operations.
   Master's thesis, Oregon State University, Corvallis, Oregon,
@@ -1227,6 +1239,7 @@ D. K. Wilde.
 
 </DD>
 </DL>
+
 
 \if Include_Implementation_Details
 
