@@ -443,7 +443,7 @@ public:
   //!                                  of \p *this.
   void assign_variable(const Variable& v,
 		       const LinExpression& expr,
-		       const Integer& denominator = 1);
+		       const Integer& denominator = Integer::one);
   //! Substitutes an affine expression for the specified variable.
   //! \param v             The variable to which the affine expression 
   //!                      is substituted.
@@ -457,7 +457,7 @@ public:
   //!                                  of \p *this.
   void substitute_variable(const Variable& v,
 			   const LinExpression& expr,
-			   const Integer& denominator = 1);
+			   const Integer& denominator = Integer::one);
 
   //! Checks if all the invariants are satisfied.
   //! \param check_not_empty    <CODE>true</CODE> if it must be checked
