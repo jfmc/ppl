@@ -41,15 +41,14 @@ main() {
   cout << "--- ph ---" << endl << ph << endl;
 #endif
 
-  ConSys cs;
-  cs.insert(LinExpression(3) >= 0);
+  Constraint c(LinExpression(3) >= 0);
 
 #if NOISY
-  cout << "--- cs ---" << endl << cs << endl;
+  print_constraint(c, "--- c ---");
 #endif
-  GenSys_Con_Rel rel = ph.satisfies(cs[0]);
+  GenSys_Con_Rel rel = ph.satisfies(c);
 #if NOISY
-  cout << "ph.satisfies(cs[0]) == " << rel << endl;
+  cout << "ph.satisfies(c) == " << rel << endl;
 #endif
 
   GenSys_Con_Rel known_rel = SOME_SATISFY;

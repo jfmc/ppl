@@ -39,19 +39,19 @@ main() {
   Polyhedron ph(3, Polyhedron::EMPTY);
 
 #if NOISY
-  cout << "*** ph ***" << endl << ph << endl;
+  print_constraints(ph, "*** ph ***");
 #endif
 
   ConSys cs;
   cs.insert(x >= 4);
 
 #if NOISY
-  cout << "*** cs ***" << endl << cs << endl;
+  print_constraints(cs, "*** cs ***"); 
 #endif
 
   ph.add_constraints_and_minimize(cs);
 #if NOISY
-  cout << "*** ph ***" << endl << ph << endl;
+  print_constraints(ph, "*** After add_constraints_and_minimize(cs) ***");
 #endif
 
   Polyhedron computed_result(3, Polyhedron::EMPTY);

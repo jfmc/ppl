@@ -43,14 +43,20 @@ main() {
   cout << "--- ph ---" << endl << ph << endl;
 #endif
 
-  GenSys gs;
-  gs.insert(vertex(x));
+  Generator g = vertex(x);
 
 #if NOISY
-  cout << "--- gs ---" << endl << gs << endl;
+  print_generator(g, "--- g ---");
 #endif
 
-  bool include = ph.includes(gs[0]);
+  bool include = ph.includes(g);
 
-  return include;
+#if NOISY
+  cout << "*** ph.includes(g)) ***"
+       << endl
+       << (include ? "true" : "false")
+       << endl;
+#endif
+
+  return !include ? 0 : 1;
 }

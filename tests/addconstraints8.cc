@@ -39,20 +39,20 @@ main() {
   ph.insert(LinExpression(-2) >= 0);
 
 #if NOISY
-  cout << "*** ph ***" << endl << ph << endl;
+  print_constraints(ph, "*** ph ***");
 #endif
 
   ConSys cs;
   cs.insert(LinExpression(-1) >= 0);
 
 #if NOISY
-  cout << "*** cs ***" << endl << cs << endl;
+  print_constraints(cs, "*** cs ***");
 #endif
 
   ph.add_constraints(cs);
 
 #if NOISY
-  cout << "*** After add_constraints ***" << endl << ph << endl;
+  print_constraints(ph, "*** After add_constraints ***");
 #endif
 
   Polyhedron known_result(0, Polyhedron::EMPTY);

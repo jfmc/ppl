@@ -53,13 +53,13 @@ main() {
   cs.insert(x <= 3);
 
 #if NOISY
-  cout << "*** cs ***" << endl << cs << endl;
+  print_constraints(cs, "*** cs ***");
 #endif
 
   ph.add_constraints(cs);
 
 #if NOISY
-  cout << "*** After add_constraints ***" << endl << ph << endl;
+  print_constraints(ph, "*** After add_constraints ***");
 #endif
 
   Polyhedron known_result(2);

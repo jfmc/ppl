@@ -50,7 +50,7 @@ main() {
   cs.insert(x >= 2);
 
 #if NOISY
-  cout << "--- cs ---" << endl << cs << endl;
+  print_constraints(cs, "--- cs ---");
 #endif
 
   ph.add_dimensions_and_constraints(cs);

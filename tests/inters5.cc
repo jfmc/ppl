@@ -55,8 +55,7 @@ main() {
   ph1.intersection_assign_and_minimize(ph2);
 
 #if NOISY
-  print_constraints(computed_result,
-		    "*** After intersection_assign_and_minimize ***");
+  print_constraints(ph1, "*** After intersection_assign_and_minimize ***");
 #endif
 
   Polyhedron known_result(2);

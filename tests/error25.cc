@@ -55,7 +55,7 @@ main() {
 
   try {
     // This is invalid use of widening_assign.
-    ph1.limited_widening_assign(ph2, cs);
+    ph2.limited_widening_assign(ph1, cs);
   }
   catch (invalid_argument& e) {
 #if NOISY

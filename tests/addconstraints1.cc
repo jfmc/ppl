@@ -59,30 +59,11 @@ main() {
 		&& ph3 == univ_result) ? 0 : 1;
 
 #if NOISY
-  cout << "*** ph1 ***"
-       << endl
-       << ph1
-       << endl;
-
-  cout << "*** ph2 ***"
-       << endl
-       << ph2
-       << endl;
-
-  cout << "*** ph3 ***"
-       << endl
-       << ph3
-       << endl;
-
-  cout << "*** empty_result ***"
-       << endl
-       << empty_result
-       << endl;
-
-  cout << "*** univ_result ***"
-       << endl
-       << univ_result
-       << endl;
+  print_constraints(ph1, "*** ph1 ***");
+  print_constraints(ph2, "*** ph2 ***");
+  print_constraints(ph3, "*** ph3 ***");
+  print_constraints(empty_result, "*** empty_result ***");
+  print_constraints(univ_result, "*** univ_result ***");
 #endif
 
   return retval;

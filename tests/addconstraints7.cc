@@ -42,7 +42,7 @@ main() {
   ph.insert(y >= 1);
 
 #if NOISY
-  cout << "*** ph ***" << endl << ph << endl;
+  print_constraints(ph, "*** ph ***");
 #endif
 
   ConSys cs;
@@ -50,11 +50,11 @@ main() {
   cs.insert(y <= 0);
 
 #if NOISY
-  cout << "*** cs ***" << endl << cs << endl;
+  print_constraints(cs, "*** cs ***");
 #endif
   ph.add_constraints_and_minimize(cs);
 #if NOISY
-  cout << "*** ph ***" << endl << ph << endl;
+  print_constraints(ph, "*** After add_constraints_and_minimize(cs) ***");
 #endif
 
   Polyhedron known_result(3, Polyhedron::EMPTY);

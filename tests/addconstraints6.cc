@@ -41,7 +41,7 @@ main() {
   Polyhedron ph(3);
 
 #if NOISY
-  cout << "*** ph ***" << endl << ph << endl;
+  print_constraints(ph, "*** ph ***");
 #endif
 
   ConSys cs;
@@ -49,11 +49,11 @@ main() {
   cs.insert(x - y >= 0);
 
 #if NOISY
-  cout << "*** cs ***" << endl << cs << endl;
+  print_constraints(cs, "*** cs ***");
 #endif
   ph.add_constraints_and_minimize(cs);
 #if NOISY
-  cout << "*** ph ***" << endl << ph << endl;
+  print_constraints(ph, "*** After addconstraints_and_minimize(cs) ***");
 #endif
 
   Polyhedron known_result(3);
