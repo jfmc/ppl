@@ -298,5 +298,16 @@ PPL::Row::OK(size_t row_size,
     is_broken = true;
   }
 #endif
+  // Topology consistency check.
+  size_t min_cols = is_necessarily_closed() ? 1 : 2;
+  if (size() < min_cols) {
+    std::cerr << "Row has fewer coefficeints than the minumum "
+	      << "allowed by its topology:"
+	      << std::endl
+	      << "size is " << size()
+	      << ", minimum is " << min_cols
+	      << std::endl;
+    is_broken = true;
+  }    
   return !is_broken;
 }
