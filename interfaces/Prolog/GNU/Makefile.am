@@ -52,8 +52,9 @@ pkglib_DATA = ppl_gprolog.pl
 # This is a kludge until we understand whether and if libtool
 # and gplc can interoperate.
 ppl_gprolog$(EXEEXT): libppl_gprolog.la ppl_gprolog.pl
-	gplc -o $@ $(srcdir)/ppl_gprolog.pl .libs/libppl_gprolog.a \
-		-L '-L$(top_builddir)/src/.libs -lppl -L$(top_builddir)/Watchdog/.libs -lpwl -lgmpxx -lgmp -lstdc++'
+	gplc --c-compiler $(CXX) -o $@ \
+		$(srcdir)/ppl_gprolog.pl .libs/libppl_gprolog.a \
+		-L '-L$(top_builddir)/src/.libs -lppl -L$(top_builddir)/Watchdog/.libs -lpwl -lgmpxx -lgmp'
 
 CLPQ_TESTS_NONSTRICT = \
 ack.clpq \
@@ -73,13 +74,15 @@ CLPQ_TESTS = $(CLPQ_TESTS_NONSTRICT) $(CLPQ_TESTS_STRICT)
 # This is a kludge until we understand whether and if libtool
 # and gplc can interoperate.
 gp_clpq: libppl_gprolog.la ppl_gprolog.pl gp_clpq.pl ../clpq.pl
-	gplc -o $@ $(srcdir)/ppl_gprolog.pl $(srcdir)/gp_clpq.pl \
+	gplc --c-compiler $(CC) -o $@ \
+		$(srcdir)/ppl_gprolog.pl $(srcdir)/gp_clpq.pl \
 		$(srcdir)/../clpq.pl .libs/libppl_gprolog.a \
-		-L '-L$(top_builddir)/src/.libs -lppl -L$(top_builddir)/Watchdog/.libs -lpwl -lgmpxx -lgmp -lstdc++'
+		-L '-L$(top_builddir)/src/.libs -lppl -L$(top_builddir)/Watchdog/.libs -lpwl -lgmpxx -lgmp'
 gp_clpq2: libppl_gprolog.la ppl_gprolog.pl gp_clpq.pl ../clpq2.pl
-	gplc -o $@ $(srcdir)/ppl_gprolog.pl $(srcdir)/gp_clpq.pl \
+	gplc --c-compiler $(CC) -o $@ \
+		$(srcdir)/ppl_gprolog.pl $(srcdir)/gp_clpq.pl \
 		$(srcdir)/../clpq2.pl .libs/libppl_gprolog.a \
-		-L '-L$(top_builddir)/src/.libs -lppl -L$(top_builddir)/Watchdog/.libs -lpwl -lgmpxx -lgmp -lstdc++'
+		-L '-L$(top_builddir)/src/.libs -lppl -L$(top_builddir)/Watchdog/.libs -lpwl -lgmpxx -lgmp'
 
 check-local: gp_clpq ../check_script ../expected gp_clpq2 ../check_script2 ../expected2 ../pl_check.pl ../expected3
 	for k in $(CLPQ_TESTS); do cp -f $(srcdir)/../$$k .; done
