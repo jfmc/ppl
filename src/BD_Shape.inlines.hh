@@ -455,9 +455,9 @@ BD_Shape<T>::is_empty() const {
   if (marked_transitively_closed())
     return false;
 
-  dimension_type k = space_dimension();
+  dimension_type space_dim = space_dimension();
   // A zero-dim universal polyhedron it is never empty.
-  if (k == 0)
+  if (space_dim == 0)
     return false;
 
   // Remark that the matrix `dbm' can be seen as the adjacent matrix
@@ -470,18 +470,18 @@ BD_Shape<T>::is_empty() const {
   // zero-weight arcs.
 
   // Values of the minimum path, from source to all nodes.
-  DB_Row<T> z(k + 1);
-  for (dimension_type i = 0; i <= k; ++i)
+  DB_Row<T> z(space_dim + 1);
+  for (dimension_type i = 0; i <= space_dim; ++i)
     z[i].assign(0, ROUND_IGNORE);
 
   // The relax-technique: given an arc (j,h), it tries to improve
   // the value of minimum path for h passing by j.
   T sum1;
-  for (dimension_type i = 0; i <= k; ++i)
-    for (dimension_type j = 0; j <= k; ++j) {
+  for (dimension_type i = 0; i <= space_dim; ++i)
+    for (dimension_type j = 0; j <= space_dim; ++j) {
       const DB_Row<T>& dbm_j = dbm[j];
       T& z_j = z[j];
-      for (dimension_type h = 0; h <= k; ++h) {
+      for (dimension_type h = 0; h <= space_dim; ++h) {
 	add_round_up(sum1, dbm_j[h], z_j);
 	min_assign(z[h], sum1);
       }
@@ -492,10 +492,10 @@ BD_Shape<T>::is_empty() const {
   // This happens when vector `z' don't contain really the
   // smaller values of minimum path, from source to all nodes.
   T sum2;
-  for (dimension_type j = 0; j <= k; ++j) {
+  for (dimension_type j = 0; j <= space_dim; ++j) {
     const DB_Row<T>& dbm_j = dbm[j];
     T& z_j = z[j];
-    for (dimension_type h = 0; h <= k; ++h) {
+    for (dimension_type h = 0; h <= space_dim; ++h) {
       add_round_up(sum2, dbm_j[h], z_j);
       if (z[h] > sum2) {
 	Status& nstatus = const_cast<Status&>(status);
