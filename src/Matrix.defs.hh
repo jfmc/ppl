@@ -151,6 +151,8 @@ public:
   void set_necessarily_closed();
   //! Sets \p row_topology to <CODE>NON_NECESSARILY_CLOSED</CODE>.
   void set_non_necessarily_closed();
+  //! Sets the topology of all rows equal to the topology of the matrix.
+  void set_rows_topology();
 
   //! Make the matrix grow adding more rows and/or more columns.
   void grow(size_t new_n_rows, size_t new_n_columns);

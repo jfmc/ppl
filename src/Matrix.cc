@@ -90,6 +90,16 @@ PPL::Matrix::operator=(const Matrix& y) {
   return *this;
 }
 
+void
+PPL::Matrix::set_rows_topology() {
+  if (is_necessarily_closed())
+    for (size_t i = num_rows(); i-- > 0; )
+      rows[i].set_necessarily_closed();
+  else
+    for (size_t i = num_rows(); i-- > 0; )
+      rows[i].set_non_necessarily_closed();
+}
+
 
 /*!
   \param new_n_rows      The number of rows of the
@@ -168,12 +178,12 @@ PPL::Matrix::grow(size_t new_n_rows, size_t new_n_columns) {
 	std::swap(new_matrix.rows[i], new_row);
       }
       // Rows have been added: see if the matrix is known to be sorted.
-      new_matrix.set_sorted(was_sorted
-			    && (new_matrix[old_n_rows-1]
-				<= new_matrix[old_n_rows]));
+      new_matrix.set_sorted(old_n_rows == 0
+			    || (was_sorted
+				&& (new_matrix[old_n_rows-1]
+				    <= new_matrix[old_n_rows])));
       // Put the new vector into place.
       swap(new_matrix);
-      assert(OK());
       return;
     }
   }
@@ -207,7 +217,6 @@ PPL::Matrix::grow(size_t new_n_rows, size_t new_n_columns) {
       set_sorted((*this)[old_n_rows-1] <= (*this)[old_n_rows]);
   // If no rows was added the matrix keeps its sortedness.
 
-  assert(OK());
 }
 
 /*!
@@ -507,37 +516,36 @@ void
 PPL::Matrix::insert(const Row& row) {
   assert(topology() == row.topology());
 
+  size_t old_num_rows = num_rows();
+
   // Resize the matrix, if necessary.
   if (row.size() > row_size) {
-    if (topology() == NECESSARILY_CLOSED)
-      grow(num_rows(), row.size());
+    if (is_necessarily_closed() || old_num_rows == 0)
+      grow(old_num_rows, row.size());
     else {
-      // Move the \epsilon coefficients of the matrix to the last column,
-      // after resizing.
-      size_t n_rows = num_rows();
+      // After resizing, move the \epsilon coefficients to
+      // the last column (note: sorting is preserved).
       size_t old_eps_index = row_size - 1;
-      grow(n_rows, row.size());
-      size_t new_eps_index = row_size - 1;
-      for ( ; n_rows-- > 0; ) {
-	Row& r = rows[n_rows];
-	std::swap(r[new_eps_index], r[old_eps_index]);
-      }
+      grow(old_num_rows, row.size());
+      swap_columns(old_eps_index, row_size - 1);
     }
+    add_row(row);
   }
-
-  if (row.size() < row_size)
-    if (topology() == NECESSARILY_CLOSED)
+  else if (row.size() < row_size)
+    if (is_necessarily_closed() || old_num_rows == 0)
       add_row(Row(row, row_size, row_capacity));
     else {
-      // Move the \epsilon coefficient of the row to
-      // the last position, after resizing.
+      // Create a resized copy of the row (and move the \epsilon
+      // coefficient to its last position).
       Row tmp_row = Row(row, row_size, row_capacity);
-      std::swap(tmp_row[tmp_row.size()-1], tmp_row[row.size()-1]);
+      std::swap(tmp_row[row.size() - 1], tmp_row[row_size - 1]);
       add_row(tmp_row);
     }
   else
     // Here row.size() == row_size.
     add_row(row);
+
+  assert(OK());
 }
 
 /*!
@@ -927,7 +935,7 @@ PPL::Matrix::OK() const {
       return false;
     // Checking for topology mismatches.
     if (x.topology() != x[i].topology()) {
-      std::cerr << "Topology mismatch between the matrix"
+      std::cerr << "Topology mismatch between the matrix "
 		<< "and one of its rows!"
 		<< std::endl;
       return false;

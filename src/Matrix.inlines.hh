@@ -75,14 +75,19 @@ Matrix::operator[](size_t k) const {
   return rows[k];
 }
 
+
 inline void
 Matrix::set_necessarily_closed() {
   row_topology = NECESSARILY_CLOSED;
+  if (num_rows() > 0)
+    set_rows_topology();
 }
 
 inline void
 Matrix::set_non_necessarily_closed() {
   row_topology = NON_NECESSARILY_CLOSED;
+  if (num_rows() > 0)
+    set_rows_topology();
 }
 
 /*!
