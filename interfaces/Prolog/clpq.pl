@@ -42,7 +42,7 @@ solve(Goals, VariableNames) :-
     assertz(original_goal_variables(VariableNames)),
     % The initial polyhedron is initialised with
     % `Dims' dimensions, the number of variables in `Goals'.
-    ppl_new_Polyhedron_from_dimension(c, Dims, Polyhedron),
+    ppl_new_Polyhedron_from_dimension(nnc, Dims, Polyhedron),
     % Try to reduce `Goals' to the empty continuation.
     (solve(Goals, true, Polyhedron) ->
 	Failed = no
@@ -61,7 +61,7 @@ solve(true, true, Polyhedron) :-
     !,
     % It is time to print the result and see if the user
     % wants to look for more solutions.
-    ppl_new_Polyhedron_from_Polyhedron(c, Polyhedron, c, Q),
+    ppl_new_Polyhedron_from_Polyhedron(nnc, Polyhedron, nnc, Q),
     original_goal_variables(VariableNames),
     length(VariableNames, Dims),
     ppl_Polyhedron_remove_higher_dimensions(Q, Dims),
@@ -104,7 +104,7 @@ solve(Atom, Goals, Polyhedron) :-
     % Copy the current polyhedron and work on the copy.
     % NOTE: the copy is under our responsibility, i.e.,
     %       it is our job to delete it, sooner or later.
-    ppl_new_Polyhedron_from_Polyhedron(c, Polyhedron, c, PolyCopy),
+    ppl_new_Polyhedron_from_Polyhedron(nnc, Polyhedron, nnc, PolyCopy),
 
     % Rename the selected clause apart and extend the polyhedron.
     ppl_Polyhedron_space_dimension(PolyCopy, Dims),
@@ -412,6 +412,18 @@ write_constraint(Expr >= Num, VariableNames) :-
     ;
 	write_expr(Expr, VariableNames),
 	write(' >= '),
+	write(Num)
+    ).
+write_constraint(Expr > Num, VariableNames) :-
+    (Num < 0 ->
+	negate_expr(Expr, NegExpr),
+	write_expr(NegExpr, VariableNames),
+	write(' < '),
+	NegNum is -Num,
+        write(NegNum)
+    ;
+	write_expr(Expr, VariableNames),
+	write(' > '),
 	write(Num)
     ).
 

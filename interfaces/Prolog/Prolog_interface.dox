@@ -363,6 +363,8 @@ more information regarding these issues.
    is created with topology C or NNC,
    depending on the value of <CODE>Topology</CODE>,
    and <CODE>Handle</CODE> is unified with the handle for \f$P\f$.
+   A strict constraint can be included in <CODE>List_of_Constraints</CODE>
+   only if <CODE>Topology</CODE> is <CODE>nnc</CODE>.
 
 <H4>
    <CODE>ppl_new_Polyhedron_from_GenSys(+Topology
@@ -373,6 +375,8 @@ more information regarding these issues.
    is created with topology C or NNC,
    depending on the value of <CODE>Topology</CODE>,
    and <CODE>Handle</CODE> is unified with the handle for \f$P\f$.
+   A closure point can be included in <CODE>List_of_Generators</CODE>
+   only if <CODE>Topology</CODE> is <CODE>nnc</CODE>.
 
 <H4>
    <CODE>ppl_new_Polyhedron_from_bounding_box(+Topology
@@ -383,6 +387,9 @@ more information regarding these issues.
    is created with topology C or NNC,
    depending on the value of <CODE>Topology</CODE>,
    and <CODE>Handle</CODE> is unified with the handle for \f$P\f$.
+   A bound of the form <CODE>o(Rational)</CODE>
+   can be included in an interval in <CODE>Box</CODE>
+   only if <CODE>Topology</CODE> is <CODE>nnc</CODE>.
 
 <H4><CODE>ppl_delete_Polyhedron(+Handle)</CODE></H4>
 
