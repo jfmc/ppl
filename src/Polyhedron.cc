@@ -618,87 +618,60 @@ void
 PPL::Polyhedron::NNC_minimize_generators() const {
   assert(!is_necessarily_closed());
 
-  // FIXME : just an executable specification,
-  // that still has to be checked for correctness/efficiency.
-
-  // FIXME: we need `gen_sys' minimized and
+  // We need `gen_sys' (weakly) minimized and
   // both `con_sys' and `sat_c' up-to-date.
   minimize();
   // Sort generators (to later help in identifying unmatched points).
   obtain_sorted_generators();
 
-  // Build a SatRow where all (and only) the indexes corresponding to
-  // strict inequalities are set to 1.
+  // This SatRow will have all and only the indexes
+  // of strict inequalities are set to 1.
   SatRow sat_all_but_strict_ineq;
-  for (size_t i = con_sys.num_rows(); i-- > 0; )
+  size_t cs_rows = con_sys.num_rows();
+  size_t n_equals = con_sys.num_equalities();
+  for (size_t i = cs_rows; i-- > n_equals; )
     if (con_sys[i].is_strict_inequality())
       sat_all_but_strict_ineq.set(i);
 
-  // Scan the generator system looking for points that are
-  // NOT matched by a corresponding closure point:
-  // these are the candidate NNC-redundant generators.
-  size_t n_rows = gen_sys.num_rows();
-  size_t n_lines = gen_sys.num_lines();
-  std::vector<bool> candidates(n_rows);
-  for (size_t i = n_rows; i-- > n_lines; ) {
-    const Generator& gi = gen_sys[i];
-    if (gi.is_point()) {
-      // Since `gs' is ordered, the corresponding closure point,
-      // if present, has an index `j' less than `i'.
-      candidates[i] = true;
-      for (size_t j = i; j-- > 0; ) {
-	const Generator& gj = gen_sys[j];
-	if (gj.is_closure_point()
-	    && gj.is_corresponding_closure_point(gi)) {
-	  candidates[i] = false;
-	  break;
-	}
-      }
-    }
-    else
-      // `gi' is not a point.
-      candidates[i] = false;
-  }
-
-  // For all the candidates, check for NNC-redundancy
+  // For all points in the generator system, check for eps-redundancy
   // and eventually move them to the bottom part of the system.
   GenSys& gs = const_cast<GenSys&>(gen_sys);
   SatMatrix& sat = const_cast<SatMatrix&>(sat_c);
-  for (size_t i = n_lines; i < n_rows; )
-    if (candidates[i]) {
+  size_t gs_rows = gs.num_rows();
+  size_t n_lines = gs.num_lines();
+  for (size_t i = n_lines; i < gs_rows; )
+    if (gs[i].is_point()) {
       // Compute the SatRow corresponding to the candidate point
       // when strict inequality constraints are ignored.
       SatRow sat_gi;
       set_union(sat[i], sat_all_but_strict_ineq, sat_gi);
-      // Check if the candidate point is actually NNC-redundant:
-      // it is redundant if there exists another point that
-      // saturates all the non-strict inequalities saturated
-      // by the candidate.
-      bool redundant = false;
-      for (size_t j = n_lines; j < n_rows; ++j)
+      // Check if the candidate point is actually eps-redundant:
+      // namely, if there exists another point that saturates
+      // all the non-strict inequalities saturated by the candidate.
+      bool eps_redundant = false;
+      for (size_t j = n_lines; j < gs_rows; ++j)
 	if (i != j && gs[j].is_point() && sat[j] <= sat_gi) {
-	  // Generator `gs[i]' is NNC-redundant:
+	  // Point `gs[i]' is eps-redundant:
 	  // move it to the bottom of the generator system,
-	  // while keeping `sat_c' and `candidates' consistent.
-	  redundant = true;
-	  --n_rows;
-	  std::swap(gs[i], gs[n_rows]);
-	  std::swap(sat[i], sat[n_rows]);
-	  std::swap(candidates[i], candidates[n_rows]);
+	  // while keeping `sat_c' consistent.
+	  --gs_rows;
+	  std::swap(gs[i], gs[gs_rows]);
+	  std::swap(sat[i], sat[gs_rows]);
+	  eps_redundant = true;
 	  break;
 	}
       // Consider next generator, which is already in place if
       // we have perfomed the swap.
-      if (!redundant)
+      if (!eps_redundant)
 	++i;
     }
     else
       // Consider next generator.
       ++i;
 
-  // If needed, erase the NNC-redundant generators.
-  if (n_rows < gs.num_rows()) {
-    gs.erase_to_end(n_rows);
+  // If needed, erase the eps-redundant generators.
+  if (gs_rows < gs.num_rows()) {
+    gs.erase_to_end(gs_rows);
     gs.set_sorted(false);
     // From the user perspective, the polyhedron is unchanged.
     Polyhedron& x = const_cast<Polyhedron&>(*this);
@@ -708,7 +681,7 @@ PPL::Polyhedron::NNC_minimize_generators() const {
     x.clear_sat_g_up_to_date();
     // CHECKME: con_sys describes the same NNC_Polyhedron,
     // even though it is not the dual system wrt gen_sys.
-    // In a certain sense, it is still minimized ...
+    // In a certain sense, it is still (weakly) minimized ...
     // Temporarily clearing the up-to-date flag to avoid
     // problems in methods update_sat_X().
     x.clear_constraints_up_to_date();
@@ -724,77 +697,86 @@ void
 PPL::Polyhedron::NNC_minimize_constraints() const {
   assert(!is_necessarily_closed());
 
-  // FIXME : just an executable specification,
-  // that still has to be checked for correctness/efficiency.
-
-  // FIXME: we need `con_sys' minimized and
+  // We need `con_sys' (weakly) minimized and
   // both `gen_sys' and `sat_g' up-to-date.
   minimize();
-
   // Sort generators (to later help in identifying unmatched points)
-  // keeping `sat_g' up-to-date.
-  obtain_sorted_generators_with_sat_g();
+  // while keeping `sat_g' up-to-date.
+  //  obtain_sorted_generators_with_sat_g();
 
-  // Build a SatRow where all (and only) the indexes corresponding to
-  // unmatched points are set to 1.
-  SatRow sat_all_but_unmatched_points;
-  for (size_t i = gen_sys.num_rows(),
-	 n_lines = gen_sys.num_lines(); i-- > n_lines; ) {
-    const Generator& gi = gen_sys[i];
-    if (gi.is_point())
-      // Since `gen_sys' is ordered, the corresponding closure point,
-      // if present, has an index `j' less than `i'.
-      for (size_t j = i; j-- > n_lines; ) {
-	sat_all_but_unmatched_points.set(i);
-	const Generator& gj = gen_sys[j];
-	if (gj.is_closure_point()
-	    && gj.is_corresponding_closure_point(gi)) {
-	  sat_all_but_unmatched_points.clear(i);
-	  break;
-	}
-      }
-  }
+  // This SatRow will have all and only the indexes but those
+  // corresponding to lines and closure points set to 1.
+  SatRow sat_lines_and_closure_points;
+  // This SatRow will have all and only the indexes of points set to 1.
+  SatRow sat_all_but_points;
+  size_t gs_rows = gen_sys.num_rows();
+  size_t n_lines = gen_sys.num_lines();
+  for (size_t i = gs_rows; i-- > n_lines; )
+    switch (gen_sys[i].type()) {
+    case Generator::POINT:
+      sat_lines_and_closure_points.set(i);
+      sat_all_but_points.set(i);
+      break;
+    case Generator::RAY:
+      sat_lines_and_closure_points.set(i);
+      break;
+    default:
+      // Lines and closure points are saturated by both.
+      break;
+    }
 
   // For all the strict inequalities in `con_sys',
-  // check for NNC-redundancy and eventually move them
+  // check for eps-redundancy and eventually move them
   // to the bottom part of the system.
   ConSys& cs = const_cast<ConSys&>(con_sys);
   SatMatrix& sat = const_cast<SatMatrix&>(sat_g);
-  size_t n_rows = con_sys.num_rows();
-  for (size_t i = 0; i < n_rows; )
+  size_t max_unsat = gs_rows - n_lines;
+  size_t cs_rows = cs.num_rows();
+  size_t n_equals = cs.num_equalities();
+  for (size_t i = n_equals; i < cs_rows; )
     if (cs[i].is_strict_inequality()) {
-      // Compute the SatRow corresponding to the strict inequality
-      // when unmatched points are ignored.
+      // First check if it is saturated by no closure points.
       SatRow sat_ci;
-      set_union(sat[i], sat_all_but_unmatched_points, sat_ci);
-      // Check if the candidate strict inequality is actually NNC-redundant:
-      // it is redundant if there exists another constraint that
-      // is saturated by all the generators saturating the candidate,
-      // unmatched points excluded.
-      bool redundant = false;
-      for (size_t j = 0; j < n_rows; ++j)
+      set_union(sat[i], sat_lines_and_closure_points, sat_ci);
+      if (sat_ci.count_ones() == max_unsat) {
+	// Constraint `cs[i]' is eps-redundant:
+	// move it to the bottom of the constraint system,
+	// while keeping `sat_g' consistent.
+	--cs_rows;
+	std::swap(cs[i], cs[cs_rows]);
+	std::swap(sat[i], sat[cs_rows]);
+	// Continue considering next constraint,
+	// which is already in place due to the swap.
+	continue;
+      }
+      // Otherwise, check if there exists another strict inequality
+      // constraint having a superset of its saturators,
+      // when disregarding points.
+      set_union(sat[i], sat_all_but_points, sat_ci);
+      bool eps_redundant = false;
+      for (size_t j = n_equals; j < cs_rows; ++j)
 	if (i != j && cs[j].is_strict_inequality() && sat[j] <= sat_ci) {
-	  // Constraint `cs[i]' is NNC-redundant:
+	  // Constraint `cs[i]' is eps-redundant:
 	  // move it to the bottom of the constraint system,
 	  // while keeping `sat_g' consistent.
-	  redundant = true;
-	  --n_rows;
-	  std::swap(cs[i], cs[n_rows]);
-	  std::swap(sat[i], sat[n_rows]);
+	  --cs_rows;
+	  std::swap(cs[i], cs[cs_rows]);
+	  std::swap(sat[i], sat[cs_rows]);
+	  eps_redundant = true;
 	  break;
 	}
-      // Consider next constraint, which is already in place if
-      // we have perfomed the swap.
-      if (!redundant)
+      // Continue considering next constraint,
+      // which is already in place if we have perfomed the swap.
+      if (!eps_redundant)
 	++i;
     }
     else
-      // Consider next constraint.
+      // `cs[i]' is not a strict inequality: consider next constraint.
       ++i;
 
-  // If needed, erase the NNC-redundant constraints.
-  if (n_rows < cs.num_rows()) {
-    cs.erase_to_end(n_rows);
+  // If needed, erase the eps-redundant constraints.
+  if (cs_rows < cs.num_rows()) {
+    cs.erase_to_end(cs_rows);
     cs.set_sorted(false);
     // From the user perspective, the polyhedron is unchanged.
     Polyhedron& x = const_cast<Polyhedron&>(*this);
@@ -804,7 +786,7 @@ PPL::Polyhedron::NNC_minimize_constraints() const {
     x.clear_sat_g_up_to_date();
     // CHECKME: gen_sys describes the same NNC_Polyhedron,
     // even though it is not the dual system wrt con_sys.
-    // In a certain sense, it is still minimized ...
+    // In a certain sense, it is still (weakly) minimized ...
     // Temporarily clearing the up-to-date flag to avoid
     // problems in methods update_sat_X().
     x.clear_generators_up_to_date();
@@ -3209,7 +3191,7 @@ PPL::Polyhedron::is_bounded() const {
   topologically closed polyhedron.
   Any C_Polyhedron is trivially topologically closed;
   for NNC polyhedra, we have to check that either there are
-  no (non-redundant) strict inequality constraints,
+  no (non-eps-redundant) strict inequality constraints,
   or there are no (non-redundant) unmatched closure points.
 */
 bool
@@ -3221,48 +3203,20 @@ PPL::Polyhedron::is_topologically_closed() const {
   if (is_empty() || space_dimension() == 0)
     return true;
 
-  if (constraints_are_minimized()
-      && generators_are_minimized() && sat_g_is_up_to_date()) {
-    // A polyhedron is closed iff it has no non-redundant
-    // strict inequalities. A strict inequality saturating
-    // no (non-redundant) closure points is redundant.
-    // FIXME : highly inefficient. Have to check for correctness
-    // before even starting to think about optimizations.
-    SatRow sat_none;
-    SatRow sat_closure_points_only;
-    for (size_t i = gen_sys.num_rows(); i-- > 0; ) {
-      sat_none.set(i);
-      if (!gen_sys[i].is_closure_point())
-	sat_closure_points_only.set(i);
-    }
-    for (size_t i = con_sys.num_rows(); i-- > 0; ) {
-      const Constraint& c = con_sys[i];
-      if (c.is_strict_inequality()) {
-	SatRow sat_ci;
-	set_union(sat_g[i], sat_closure_points_only, sat_ci);
-	if (sat_ci != sat_none)
-	  // Found a non-redundant strict inequality.
-	  return false;
-      }
-    }
-    return true;
-  }
-  else if (generators_are_minimized()) {
+  if (generators_are_minimized()) {
     // A polyhedron is closed iff all of its (non-redundant)
     // closure points are matched by a corresponding point.
-    obtain_sorted_generators();
     size_t n_rows = gen_sys.num_rows();
     size_t n_lines = gen_sys.num_lines();
     for (size_t i = n_rows; i-- > n_lines; ) {
       const Generator& gi = gen_sys[i];
       if (gi.is_closure_point()) {
 	bool gi_has_no_matching_point = true;
-	// Since `gen_sys' is sorted, matching point must have
-	// an index `j' greater than `i'.
-	for (size_t j = i + 1; j < n_rows; ++j) {
+	for (size_t j = n_rows; j-- > n_lines; ) {
 	  const Generator& gj = gen_sys[j];
-	  if (gj.is_point()
-	      && gi.is_corresponding_closure_point(gj)) {
+	  if (i != j
+	      && gj.is_point()
+	      && gi.is_matching_closure_point(gj)) {
 	    gi_has_no_matching_point = false;
 	    break;
 	  }
@@ -3275,8 +3229,8 @@ PPL::Polyhedron::is_topologically_closed() const {
     return true;
   }
 
-  // A polyhedron is closed iff
-  // it has no (non-redundant) strict inequalities.
+  // A polyhedron is closed if, after strong minimization
+  // of its constraint system, it has no strict inequalities.
   NNC_minimize_constraints();
   return is_empty() || !con_sys.has_strict_inequalities();
 }
