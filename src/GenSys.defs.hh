@@ -343,15 +343,6 @@ private:
   bool has_points() const;
 
   //! \brief
-  //! For each unmatched point in \p *this, adds the corresponding
-  //! closure point.
-  /*!
-    It is assumed that the topology of \p *this
-    is <CODE>NOT_NECESSARILY_CLOSED</CODE>.
-  */
-  void add_corresponding_closure_points();
-
-  //! \brief
   //! Returns <CODE>true</CODE> if and only if \p *this
   //! contains one or more closure points.
   bool has_closure_points() const;
