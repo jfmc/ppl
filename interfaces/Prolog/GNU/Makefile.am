@@ -28,7 +28,7 @@ VPATH = @srcdir@
 
 SUBDIRS =
 
-EXTRA_DIST = ppl_gprolog_sd.cc ppl_gprolog.pl gp_clpq.pl
+EXTRA_DIST = ppl_gprolog_sd.cc ppl_gprolog.pl gp_clpq.pl gnu_pl_check.pl
 
 if HAVE_GNU_PROLOG
 
