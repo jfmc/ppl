@@ -424,7 +424,7 @@ protected:
     the upper boundary of \f$I\f$ is closed and is set to <CODE>false</CODE>
     otherwise; <CODE>n</CODE> and <CODE>d</CODE> are assigned the integers
     \f$n\f$ and \f$d\f$ such that the canonical fraction $\f$n/d\f$
-    corresponds to the greatest upper bound of \f$I\f$.
+    corresponds to the greatest lower bound of \f$I\f$.
   */
   template <class Box>
   Polyhedron(Topology topol, const Box& box);
