@@ -416,7 +416,19 @@ PPL::ConSys::ascii_load(std::istream& s) {
 
 bool
 PPL::ConSys::OK() const {
-  return Matrix::OK();
+  // A ConSys must be a valid Matrix.
+  if (!Matrix::OK())
+    return false;
+
+  // Checking each constraint in the system.
+  for (dimension_type i = num_rows(); i-- > 0; ) {
+    const Constraint& c = (*this)[i];
+    if (!c.OK())
+      return false;
+  }
+
+  // All checks passed.
+  return true;
 }
 
 /*! \relates Parma_Polyhedra_Library::ConSys */

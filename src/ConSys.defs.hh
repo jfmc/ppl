@@ -240,9 +240,8 @@ public:
   //! Checks if all the invariants are satisfied.
 #ifdef PPL_DOXYGEN_INCLUDE_IMPLEMENTATION_DETAILS
   /*!
-    Returns <CODE>true</CODE> if and only if \p *this is a valid Matrix.
-    No other checks can be performed here, since any valid Row object
-    in the matrix is also a valid Constraint object.
+    Returns <CODE>true</CODE> if and only if \p *this is a valid Matrix
+    and every row in the matrix must be a valid Constraint.
   */
 #endif // PPL_DOXYGEN_INCLUDE_IMPLEMENTATION_DETAILS
   bool OK() const;
