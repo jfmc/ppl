@@ -182,6 +182,7 @@ SP_STUB_2(ppl_Polyhedron_contains_Polyhedron)
 SP_STUB_2(ppl_Polyhedron_strictly_contains_Polyhedron)
 SP_STUB_2(ppl_Polyhedron_check_disjoint_from_Polyhedron)
 SP_STUB_2(ppl_Polyhedron_equals_Polyhedron)
+SP_STUB_1(ppl_Polyhedron_OK)
 SP_STUB_2(ppl_Polyhedron_add_constraint)
 SP_STUB_2(ppl_Polyhedron_add_constraint_and_minimize)
 SP_STUB_2(ppl_Polyhedron_add_generator)
@@ -201,13 +202,17 @@ SP_STUB_5(ppl_Polyhedron_generalized_affine_image)
 SP_STUB_4(ppl_Polyhedron_generalized_affine_image_lhs_rhs)
 SP_STUB_2(ppl_Polyhedron_time_elapse_assign)
 SP_STUB_1(ppl_Polyhedron_topological_closure_assign)
-SP_STUB_2(ppl_Polyhedron_BHRZ03_widening_assign)
 SP_STUB_3(ppl_Polyhedron_BHRZ03_widening_assign_with_token)
+SP_STUB_2(ppl_Polyhedron_BHRZ03_widening_assign)
+SP_STUB_4(ppl_Polyhedron_limited_BHRZ03_extrapolation_assign_with_token)
 SP_STUB_3(ppl_Polyhedron_limited_BHRZ03_extrapolation_assign)
+SP_STUB_4(ppl_Polyhedron_bounded_BHRZ03_extrapolation_assign_with_token)
 SP_STUB_3(ppl_Polyhedron_bounded_BHRZ03_extrapolation_assign)
-SP_STUB_2(ppl_Polyhedron_H79_widening_assign)
 SP_STUB_3(ppl_Polyhedron_H79_widening_assign_with_token)
+SP_STUB_2(ppl_Polyhedron_H79_widening_assign)
+SP_STUB_4(ppl_Polyhedron_limited_H79_extrapolation_assign_with_token)
 SP_STUB_3(ppl_Polyhedron_limited_H79_extrapolation_assign)
+SP_STUB_4(ppl_Polyhedron_bounded_H79_extrapolation_assign_with_token)
 SP_STUB_3(ppl_Polyhedron_bounded_H79_extrapolation_assign)
 SP_STUB_2(ppl_Polyhedron_add_dimensions_and_project)
 SP_STUB_2(ppl_Polyhedron_add_dimensions_and_embed)
@@ -262,6 +267,7 @@ ppl_sicstus_init(int /* when */) {
   SP_DEFINE_C_PREDICATE(ppl_Polyhedron_strictly_contains_Polyhedron, 2);
   SP_DEFINE_C_PREDICATE(ppl_Polyhedron_check_disjoint_from_Polyhedron, 2);
   SP_DEFINE_C_PREDICATE(ppl_Polyhedron_equals_Polyhedron, 2);
+  SP_DEFINE_C_PREDICATE(ppl_Polyhedron_OK, 1);
   SP_DEFINE_C_PREDICATE(ppl_Polyhedron_add_constraint, 2);
   SP_DEFINE_C_PREDICATE(ppl_Polyhedron_add_constraint_and_minimize, 2);
   SP_DEFINE_C_PREDICATE(ppl_Polyhedron_add_generator, 2);
@@ -281,9 +287,13 @@ ppl_sicstus_init(int /* when */) {
   SP_DEFINE_C_PREDICATE(ppl_Polyhedron_generalized_affine_image_lhs_rhs, 4);
   SP_DEFINE_C_PREDICATE(ppl_Polyhedron_time_elapse_assign, 2);
   SP_DEFINE_C_PREDICATE(ppl_Polyhedron_topological_closure_assign, 1);
-  SP_DEFINE_C_PREDICATE(ppl_Polyhedron_BHRZ03_widening_assign, 2);
   SP_DEFINE_C_PREDICATE(ppl_Polyhedron_BHRZ03_widening_assign_with_token, 3);
+  SP_DEFINE_C_PREDICATE(ppl_Polyhedron_BHRZ03_widening_assign, 2);
+  SP_DEFINE_C_PREDICATE(
+             ppl_Polyhedron_limited_BHRZ03_extrapolation_assign_with_token, 4);
   SP_DEFINE_C_PREDICATE(ppl_Polyhedron_limited_BHRZ03_extrapolation_assign, 3);
+  SP_DEFINE_C_PREDICATE(
+             ppl_Polyhedron_bounded_BHRZ03_extrapolation_assign_with_token, 4);
   SP_DEFINE_C_PREDICATE(ppl_Polyhedron_bounded_BHRZ03_extrapolation_assign, 3);
   SP_DEFINE_C_PREDICATE(ppl_Polyhedron_H79_widening_assign, 2);
   SP_DEFINE_C_PREDICATE(ppl_Polyhedron_H79_widening_assign_with_token, 3);

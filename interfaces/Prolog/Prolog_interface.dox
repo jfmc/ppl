@@ -148,6 +148,18 @@ Here is a list of all the PPL predicates provided by the Prolog interface.
 </CODE>
 
 <CODE>
+  ppl_set_timeout_exception_atom(+Atom)
+</CODE>
+
+<CODE>
+  ppl_set_timeout(+Integer)
+</CODE>
+
+<CODE>
+  ppl_reset_timeout
+</CODE>
+
+<CODE>
   ppl_new_Polyhedron_from_dimension(+Topology, +Integer, -Handle)
 </CODE>
 
@@ -245,11 +257,15 @@ Here is a list of all the PPL predicates provided by the Prolog interface.
 </CODE>
 
 <CODE>
+  ppl_Polyhedron_check_disjoint_from_Polyhedron(+Handle_1, +Handle_2)
+</CODE>
+
+<CODE>
   ppl_Polyhedron_equals_Polyhedron(+Handle_1, +Handle_2)
 </CODE>
 
 <CODE>
-  ppl_Polyhedron_check_disjoint_from_Polyhedron(+Handle_1, +Handle_2)
+  ppl_Polyhedron_OK(+Handle)
 </CODE>
 
 <CODE>
@@ -332,7 +348,8 @@ Here is a list of all the PPL predicates provided by the Prolog interface.
 </CODE>
 
 <CODE>
-  ppl_Polyhedron_topological_closure_assign(+Handle)
+  ppl_Polyhedron_BHRZ03_widening_assign_with_token(+Handle_1, +Handle_2,
+						   ?Integer)
 </CODE>
 
 <CODE>
@@ -340,8 +357,10 @@ Here is a list of all the PPL predicates provided by the Prolog interface.
 </CODE>
 
 <CODE>
-  ppl_Polyhedron_BHRZ03_widening_assign_with_token(+Handle_1, +Handle_2,
-						   ?Integer)
+  ppl_Polyhedron_limited_BHRZ03_extrapolation_assign_with_token(+Handle_1,
+                                                     +Handle_2,
+						     +Constraint_System,
+						     ?Integer)
 </CODE>
 
 <CODE>
@@ -350,12 +369,15 @@ Here is a list of all the PPL predicates provided by the Prolog interface.
 </CODE>
 
 <CODE>
-  ppl_Polyhedron_bounded_BHRZ03_extrapolation_assign(+Handle_1, +Handle_2,
-						     +Constraint_System)
+  ppl_Polyhedron_bounded_BHRZ03_extrapolation_assign_with_token(+Handle_1,
+                                                     +Handle_2,
+						     +Constraint_System,
+						     ?Integer)
 </CODE>
 
 <CODE>
-  ppl_Polyhedron_H79_widening_assign(+Handle_1, +Handle_2)
+  ppl_Polyhedron_bounded_BHRZ03_extrapolation_assign(+Handle_1, +Handle_2,
+						     +Constraint_System)
 </CODE>
 
 <CODE>
@@ -364,21 +386,43 @@ Here is a list of all the PPL predicates provided by the Prolog interface.
 </CODE>
 
 <CODE>
+  ppl_Polyhedron_H79_widening_assign(+Handle_1, +Handle_2)
+</CODE>
+
+<CODE>
+  ppl_Polyhedron_limited_H79_extrapolation_assign_with_token(+Handle_1,
+                                                  +Handle_2,
+						  +Constraint_System,
+						   ?Integer)
+</CODE>
+
+<CODE>
   ppl_Polyhedron_limited_H79_extrapolation_assign(+Handle_1, +Handle_2,
 						  +Constraint_System)
 </CODE>
 
 <CODE>
-  ppl_Polyhedron_bounded_H79_extrapolation_assign(+Handle_1, +Handle_2,
+  ppl_Polyhedron_bounded_H79_extrapolation_assign_with_token(+Handle_1,
+                                                  +Handle_2,
 						  +Constraint_System)
 </CODE>
 
 <CODE>
-  ppl_Polyhedron_add_dimensions_and_project(+Handle, +Integer)
+  ppl_Polyhedron_bounded_H79_extrapolation_assign(+Handle_1, +Handle_2,
+						  +Constraint_System,
+						   ?Integer)
+</CODE>
+
+<CODE>
+  ppl_Polyhedron_topological_closure_assign(+Handle)
 </CODE>
 
 <CODE>
   ppl_Polyhedron_add_dimensions_and_embed(+Handle, +Integer)
+</CODE>
+
+<CODE>
+  ppl_Polyhedron_add_dimensions_and_project(+Handle, +Integer)
 </CODE>
 
 <CODE>
@@ -395,22 +439,6 @@ Here is a list of all the PPL predicates provided by the Prolog interface.
 
 <CODE>
   ppl_Polyhedron_rename_dimensions(+Handle, +Rename_Map))
-</CODE>
-
-<CODE>
-  ppl_timeout_exception_atom(?Atom)
-</CODE>
-
-<CODE>
-  ppl_set_timeout_exception_atom(+Atom)
-</CODE>
-
-<CODE>
-  ppl_set_timeout(+Integer)
-</CODE>
-
-<CODE>
-  ppl_reset_timeout
 </CODE>
 
 \subsection PI_SI_Features_Predicate_Spec PPL Predicate Specifications
@@ -521,6 +549,29 @@ and \ref operations of this manual.
   either be to <CODE>ppl_initialize</CODE> or to <CODE>ppl_finalize</CODE>.
   Multiple calls to <CODE>ppl_finalize</CODE> does no harm.
 
+<H2><CODE>ppl_set_timeout_exception_atom(+Atom)</CODE></H2>
+
+   Sets the atom to be thrown by timeout exceptions
+   to <CODE>Atom</CODE>.
+   The default value is <CODE>time_out</CODE>.
+
+<H2><CODE>ppl_timeout_exception_atom(?Atom)</CODE></H2>
+
+   The atom to be thrown by timeout exceptions
+   is unified with <CODE>Atom</CODE>.
+
+<H2><CODE>ppl_set_timeout(+Integer)</CODE></H2>
+
+   Computations taking exponential time will be interrupted
+   some time after <CODE>Integer</CODE> ms after that call.
+   If the computation is interrupted that way, the current timeout
+   exception atom will be thrown.
+   <CODE>Integer</CODE> must be strictly greater than zero.
+
+<H2><CODE>ppl_reset_timeout</CODE></H2>
+
+   Resets the timeout time so that the computation is not interrupted.
+
 <H2><CODE>
   ppl_new_Polyhedron_from_dimension(+Topology, +Integer, -Handle)
 </CODE></H2>
@@ -615,6 +666,7 @@ ppl_new_Polyhedron_from_Polyhedron(+Topology_1, +Handle_1,
 
    Swaps the polyhedron referenced by <CODE>Handle1</CODE>
    with the one referenced by <CODE>Handle2</CODE>.
+   The polyhedra \f$\cP\f$ and \f$\cQ\f$ must have the same topology.
 
 <H2><CODE>ppl_delete_Polyhedron(+Handle)</CODE></H2>
 
@@ -762,18 +814,25 @@ to be used has the following meaning:
    <CODE>Handle_1</CODE> is included in but not
    equal to the polyhedron referenced by <CODE>Handle_2</CODE>.
 
-<H2><CODE>ppl_Polyhedron_equals_Polyhedron(+Handle_1, +Handle_2)</CODE></H2>
-
-   Succeeds if and only if the polyhedron referenced by
-   <CODE>Handle_1</CODE> is
-   equal to the polyhedron referenced by <CODE>Handle_2</CODE>.
-
 <H2><CODE>ppl_Polyhedron_check_disjoint_from_Polyhedron(+Handle_1, +Handle_2)
     </CODE></H2>
 
    Succeeds if and only if the polyhedron referenced by
    <CODE>Handle_1</CODE> is disjoint from
    the polyhedron referenced by <CODE>Handle_2</CODE>.
+
+<H2><CODE>ppl_Polyhedron_equals_Polyhedron(+Handle_1, +Handle_2)</CODE></H2>
+
+   Succeeds if and only if the polyhedron referenced by
+   <CODE>Handle_1</CODE> is
+   equal to the polyhedron referenced by <CODE>Handle_2</CODE>.
+
+<H2><CODE>ppl_Polyhedron_OK(+Handle)</CODE></H2>
+
+   Succeeds only if the polyhedron referenced by
+   <CODE>Handle</CODE is well formed, i.e., if it
+   satisfies all its implementation invariants
+   is broken.  Useful for debugging purposes.
 
 <H2><CODE>ppl_Polyhedron_add_constraint(+Handle, +Constraint)</CODE></H2>
 
@@ -962,17 +1021,6 @@ This is the inverse transformation to that for <CODE>ppl_affine_image</CODE>.
    the time-elapse \f$ (\cP \nearrow \cQ)\f$
    with the polyhedra \f$\cQ\f$ referenced by <CODE>Handle_2</CODE>.
 
-<H2><CODE>ppl_Polyhedron_topological_closure_assign(+Handle)</CODE></H2>
-
-   Assigns to the polyhedron referenced by <CODE>Handle</CODE>
-   its topological closure.
-
-<H2><CODE>ppl_Polyhedron_BHRZ03_widening_assign(+Handle_1,
-               +Handle_2)</CODE></H2>
-
-   Assigns to the polyhedron referenced by <CODE>Handle_1</CODE>
-   its BHRZ03-widening with the polyhedra referenced by <CODE>Handle_2</CODE>.
-
 <H2><CODE>ppl_Polyhedron_BHRZ03_widening_assign_with_token(+Handle_1,
                +Handle_2, ?Integer)</CODE></H2>
 
@@ -980,6 +1028,26 @@ This is the inverse transformation to that for <CODE>ppl_affine_image</CODE>.
    and <CODE>Handle_2</CODE> are unaltered.
    The token <CODE>Integer</CODE> is 0 if
    a BHRZ03 widening would have changed the polyhedron referenced
+   by <CODE>Handle_1</CODE> and is 1 otherwise.
+
+<H2><CODE>ppl_Polyhedron_BHRZ03_widening_assign(+Handle_1,
+               +Handle_2)</CODE></H2>
+
+  Assigns to the polyhedron referenced by <CODE>Handle_1</CODE>
+   its BHRZ03-widening with the polyhedra referenced by <CODE>Handle_2</CODE>.
+
+<H2><CODE>ppl_Polyhedron_limited_BHRZ03_extrapolation_assign_with_token(
+               +Handle_1,
+               +Handle_2,
+               +Constraint_System,
+               ?Integer)</CODE></H2>
+
+   The polyhedra referenced by <CODE>Handle_1</CODE>
+   and <CODE>Handle_2</CODE> are unaltered.
+   The token <CODE>Integer</CODE> is 0 if
+   a BHRZ03-widening with the polyhedra referenced by
+  <CODE>Handle_2</CODE>, improved by enforcing those constraints in
+  <CODE>Constraint_System</CODE> would have changed the polyhedron referenced
    by <CODE>Handle_1</CODE> and is 1 otherwise.
 
 <H2><CODE>ppl_Polyhedron_limited_BHRZ03_extrapolation_assign(+Handle_1,
@@ -990,6 +1058,23 @@ This is the inverse transformation to that for <CODE>ppl_affine_image</CODE>.
   the result of its BHRZ03-widening with the polyhedra referenced by
   <CODE>Handle_2</CODE>, improved by enforcing those constraints in
   <CODE>Constraint_System</CODE>.
+
+<H2><CODE>ppl_Polyhedron_bounded_BHRZ03_extrapolation_assign_with_token(
+               +Handle_1,
+               +Handle_2,
+               +Constraint_System,
+               ?Integer)</CODE></H2>
+
+  The polyhedron \f$\cP_1\f$ and \f$\cP_2\f$ referenced by
+   <CODE>Handle_1</CODE> and <CODE>Handle_2</CODE>, respectively are unaltered.
+   The token <CODE>Integer</CODE> is 0 if
+   a BHRZ03-widening with \f$\cP_2\f$ ,
+   improved by enforcing  all the constraints of
+  the form \f$\pm x \leq r\f$ and \f$\pm x < r\f$ that are satisfied
+  by all the points of \f$\cP_1\f$ together with the constraints in
+  <CODE>Constraint_System</CODE> would have changed the polyhedron referenced
+   by <CODE>Handle_1</CODE> and is 1 otherwise.
+
 
 <H2><CODE>ppl_Polyhedron_bounded_BHRZ03_extrapolation_assign(+Handle_1,
                +Handle_2,
@@ -1002,11 +1087,6 @@ This is the inverse transformation to that for <CODE>ppl_affine_image</CODE>.
   by all the points of \f$\cP\f$ together with the constraints in
   <CODE>Constraint_System</CODE>.
 
-<H2><CODE>ppl_Polyhedron_H79_widening_assign(+Handle_1, +Handle_2)</CODE></H2>
-
-   Assigns to the polyhedron referenced by <CODE>Handle_1</CODE>
-   its H79-widening with the polyhedra referenced by <CODE>Handle_2</CODE>.
-
 <H2><CODE>ppl_Polyhedron_H79_widening_assign_with_token(+Handle_1,
                +Handle_2, ?Integer)</CODE></H2>
 
@@ -1014,6 +1094,25 @@ This is the inverse transformation to that for <CODE>ppl_affine_image</CODE>.
    and <CODE>Handle_2</CODE> are unaltered.
    The token <CODE>Integer</CODE> is 0 if
    an H79 widening would have changed the polyhedron referenced
+   by <CODE>Handle_1</CODE> and is 1 otherwise.
+
+<H2><CODE>ppl_Polyhedron_H79_widening_assign(+Handle_1,
+               +Handle_2)</CODE></H2>
+
+   Assigns to the polyhedron referenced by <CODE>Handle_1</CODE>
+   its H79-widening with the polyhedra referenced by <CODE>Handle_2</CODE>.
+
+<H2><CODE>ppl_Polyhedron_limited_H79_extrapolation_assign_with_token(+Handle_1,
+               +Handle_2,
+               +Constraint_System,
+               ?Integer)</CODE></H2>
+
+   The polyhedra referenced by <CODE>Handle_1</CODE>
+   and <CODE>Handle_2</CODE> are unaltered.
+   The token <CODE>Integer</CODE> is 0 if
+   a H79-widening with the polyhedra referenced by
+  <CODE>Handle_2</CODE>, improved by enforcing those constraints in
+  <CODE>Constraint_System</CODE> would have changed the polyhedron referenced
    by <CODE>Handle_1</CODE> and is 1 otherwise.
 
 <H2><CODE>ppl_Polyhedron_limited_H79_extrapolation_assign(+Handle_1,
@@ -1024,6 +1123,22 @@ This is the inverse transformation to that for <CODE>ppl_affine_image</CODE>.
   its H79-widening with the polyhedra referenced by
   <CODE>Handle_2</CODE>, improved by enforcing those constraints in
   <CODE>Constraint_System</CODE>.
+
+<H2><CODE>ppl_Polyhedron_bounded_H79_extrapolation_assign_with_token(+Handle_1,
+               +Handle_2,
+               +Constraint_System,
+               ?Integer)</CODE></H2>
+
+
+  The polyhedron \f$\cP_1\f$ and \f$\cP_2\f$ referenced by
+   <CODE>Handle_1</CODE> and <CODE>Handle_2</CODE>, respectively are unaltered.
+   The token <CODE>Integer</CODE> is 0 if
+   a H79-widening with \f$\cP_2\f$ ,
+   improved by enforcing  all the constraints of
+  the form \f$\pm x \leq r\f$ and \f$\pm x < r\f$ that are satisfied
+  by all the points of \f$\cP_1\f$ together with the constraints in
+  <CODE>Constraint_System</CODE> would have changed the polyhedron referenced
+   by <CODE>Handle_1</CODE> and is 1 otherwise.
 
 <H2><CODE>ppl_Polyhedron_bounded_H79_extrapolation_assign(+Handle_1,
                +Handle_2,
@@ -1036,26 +1151,15 @@ This is the inverse transformation to that for <CODE>ppl_affine_image</CODE>.
   by all the points of \f$\cP\f$ together with the constraints in
   <CODE>Constraint_System</CODE>.
 
-<H2><CODE>ppl_Polyhedron_add_dimensions_and_project(+Handle, +Integer)
-</CODE></H2>
+<H2><CODE>ppl_Polyhedron_topological_closure_assign(+Handle)</CODE></H2>
 
-   Projects the polyhedron referred to by <CODE>Handle</CODE>
-   onto a space that is enlarged by <CODE>Integer</CODE> dimensions,
-   E.g.,
-\code
-   ?- ppl_new_Polyhedron_empty_from_dimension(c, 0, X),
-      ppl_Polyhedron_add_dimensions_and_project(X, 2),
-      ppl_Polyhedron_get_constraints(X, CS),
-      ppl_Polyhedron_get_generators(X, GS).
-
-   CS = [1*A = 0, 1*B = 0],
-   GS = [point(0)]
-\endcode
+   Assigns to the polyhedron referenced by <CODE>Handle</CODE>
+   its topological closure.
 
 <H2><CODE>ppl_Polyhedron_add_dimensions_and_embed(+Handle, +Integer)
 </CODE></H2>
 
-   Embeds the polyhedron referred to by <CODE>Handle</CODE>
+   Embeds the polyhedron  referenced by <CODE>Handle</CODE>
    in a space that is enlarged by <CODE>Integer</CODE> dimensions,
    E.g.,
 \code
@@ -1068,12 +1172,28 @@ This is the inverse transformation to that for <CODE>ppl_affine_image</CODE>.
    GS = [point(0),line(1*A),line(1*B)]
 \endcode
 
+<H2><CODE>ppl_Polyhedron_add_dimensions_and_project(+Handle, +Integer)
+</CODE></H2>
+
+   Projects the polyhedron  referenced by <CODE>Handle</CODE>
+   onto a space that is enlarged by <CODE>Integer</CODE> dimensions,
+   E.g.,
+\code
+   ?- ppl_new_Polyhedron_empty_from_dimension(c, 0, X),
+      ppl_Polyhedron_add_dimensions_and_project(X, 2),
+      ppl_Polyhedron_get_constraints(X, CS),
+      ppl_Polyhedron_get_generators(X, GS).
+
+   CS = [1*A = 0, 1*B = 0],
+   GS = [point(0)]
+\endcode
+
 <H2><CODE>ppl_Polyhedron_concatenate_assign(+Handle1, +Handle2)</CODE></H2>
 
-   Updates the polyhedron \f$\cP_1\f$ referred to by <CODE>Handle1</CODE>
+   Updates the polyhedron \f$\cP_1\f$ referenced  by <CODE>Handle1</CODE>
    by first embedding \f$\cP_1\f$ in a new space enlarged by
    the space dimensions
-   of the polyhedron \f$\cP_2\f$ referred to by <CODE>Handle2</CODE>,
+   of the polyhedron \f$\cP_2\f$ referenced by <CODE>Handle2</CODE>,
    and then adds to its system of constraints
    a renamed-apart version of the constraints of  \f$\cP_2\f$.
 
@@ -1094,7 +1214,7 @@ This is the inverse transformation to that for <CODE>ppl_affine_image</CODE>.
 
    Removes the dimensions given by the identifiers of the
    PPL variables in list <CODE>List_of_PPL_Vars</CODE>
-   from the polyhedron referred to by <CODE>Handle</CODE>.
+   from the polyhedron  referenced by <CODE>Handle</CODE>.
    The identifiers for the remaining PPL variables are renumbered so that
    they are consecutive and the maximum index is less than the number
    of dimensions.
@@ -1112,7 +1232,7 @@ This is the inverse transformation to that for <CODE>ppl_affine_image</CODE>.
 
 <H2><CODE>ppl_Polyhedron_remove_higher_dimensions(+Handle, +Integer))</CODE></H2>
 
-   Projects the the polyhedron referred to by <CODE>Handle</CODE>
+   Projects the the polyhedron  referenced to by <CODE>Handle</CODE>
    onto  the first <CODE>Integer</CODE> dimension.
    E.g.,
 \code
@@ -1123,31 +1243,8 @@ This is the inverse transformation to that for <CODE>ppl_affine_image</CODE>.
 
 <H2><CODE>ppl_Polyhedron_rename_dimensions(+Handle, +Rename_Map))</CODE></H2>
 
-   Renames the dimensions of the polyhedron referred to by <CODE>Handle</CODE>
+   Renames the dimensions of the polyhedron referenced by <CODE>Handle</CODE>
    using the partial injection function defined by <CODE>Rename_Map</CODE>.
-
-<H2><CODE>ppl_timeout_exception_atom(?Atom)</CODE></H2>
-
-   The atom to be thrown by timeout exceptions
-   is unified with <CODE>Atom</CODE>.
-
-<H2><CODE>ppl_set_timeout_exception_atom(+Atom)</CODE></H2>
-
-   Sets the atom to be thrown by timeout exceptions
-   to <CODE>Atom</CODE>.
-   The default value is <CODE>time_out</CODE>.
-
-<H2><CODE>ppl_set_timeout(+Integer)</CODE></H2>
-
-   Computations taking exponential time will be interrupted
-   some time after <CODE>Integer</CODE> ms after that call.
-   If the computation is interrupted that way, the current timeout
-   exception atom will be thrown.
-   <CODE>Integer</CODE> must be strictly greater than zero.
-
-<H2><CODE>ppl_reset_timeout</CODE></H2>
-
-   Resets the timeout time so that the computation is not interrupted.
 
 \section PI_Compilation Compilation and Installation
 

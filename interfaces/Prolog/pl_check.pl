@@ -114,11 +114,15 @@ extrapolation_operators :-
    lim_extrapolate_H79_C,
    widen_H79_NNC,
    lim_extrapolate_H79_C,
+   limit_extrapolate_H79_with_token_C,
    bound_extrapolate_H79_NNC,
+   bound_extrapolate_H79_with_token_C,
    widen_BHRZ03_C,
    widen_BHRZ03_with_token_C,
    lim_extrapolate_BHRZ03_C,
+   limit_extrapolate_BHRZ03_with_token_C,
    bound_extrapolate_BHRZ03_C,
+   bound_extrapolate_BHRZ03_with_token_C,
    widen_BHRZ03_NNC,
    lim_extrapolate_BHRZ03_NNC,
    !,
@@ -182,6 +186,7 @@ compare_polys :-
    check_disjoint_from_C,
    check_disjoint_from_NNC,
    equals,
+   ok,
    !,
    ppl_finalize.
  
@@ -584,6 +589,20 @@ lim_extrapolate_H79_C :-
   widen_extrapolation_final(P, CS_Pa, Topology),
   ppl_delete_Polyhedron(Q).
 
+% Tests ppl_Polyhedron_H79_widening_assign for C Polyhedra.
+limit_extrapolate_H79_with_token_C :-
+  Topology = c,
+  A = '$VAR'(0), B = '$VAR'(1),
+  CS_P = [A >= 1, B >= 0],
+  CS_Q = [A >= 1, B >= 1],
+  widen_extrapolation_init(P, CS_P, Topology),
+  widen_extrapolation_init(Q, CS_Q, Topology),
+  ppl_Polyhedron_limited_H79_extrapolation_assign_with_token(P, Q, [A >= 1, B >= 0], T),
+  T = 1,
+  CS_Pa = [A >= 1, B >= 0],
+  widen_extrapolation_final(P, CS_Pa, Topology),
+  widen_extrapolation_final(Q, CS_Q, Topology).
+
 % Tests ppl_Polyhedron_H79_widening_assign for NNC Polyhedra.
 widen_H79_NNC :-
   Topology = nnc,
@@ -622,6 +641,20 @@ bound_extrapolate_H79_NNC :-
   CS_Pa = [A > 1, B > 0],
   widen_extrapolation_final(P, CS_Pa, Topology),
   ppl_delete_Polyhedron(Q).
+
+% Tests ppl_Polyhedron_H79_widening_assign for C Polyhedra.
+bound_extrapolate_H79_with_token_C :-
+  Topology = c,
+  A = '$VAR'(0), B = '$VAR'(1),
+  CS_P = [A >= 1, B >= 0],
+  CS_Q = [A >= 1, B >= 1],
+  widen_extrapolation_init(P, CS_P, Topology),
+  widen_extrapolation_init(Q, CS_Q, Topology),
+  ppl_Polyhedron_bounded_H79_extrapolation_assign_with_token(P, Q, [A >= 1, B >= 0], T),
+  T = 1,
+  CS_Pa = [A >= 1, B >= 0],
+  widen_extrapolation_final(P, CS_Pa, Topology),
+  widen_extrapolation_final(Q, CS_Q, Topology).
 
 % Tests ppl_Polyhedron_BHRZ03_widening_assign for C Polyhedra.
 widen_BHRZ03_C :-
@@ -672,6 +705,20 @@ lim_extrapolate_BHRZ03_C :-
   widen_extrapolation_final(P1, [], Topology),
   ppl_delete_Polyhedron(Q1).
 
+% Tests ppl_Polyhedron_H79_widening_assign for C Polyhedra.
+limit_extrapolate_BHRZ03_with_token_C :-
+  Topology = c,
+  A = '$VAR'(0), B = '$VAR'(1),
+  CS_P = [A >= 1, B >= 0],
+  CS_Q = [A >= 1, B >= 1],
+  widen_extrapolation_init(P, CS_P, Topology),
+  widen_extrapolation_init(Q, CS_Q, Topology),
+  ppl_Polyhedron_limited_BHRZ03_extrapolation_assign_with_token(P, Q, [A >= 1, B >= 0], T),
+  T = 1,
+  CS_Pa = [A >= 1, B >= 0],
+  widen_extrapolation_final(P, CS_Pa, Topology),
+  widen_extrapolation_final(Q, CS_Q, Topology).
+
 % Tests ppl_Polyhedron_bounded_BHRZ03_extrapolation_assign for C Polyhedra.
 bound_extrapolate_BHRZ03_C :-
   Topology = c,
@@ -688,6 +735,20 @@ bound_extrapolate_BHRZ03_C :-
   ppl_Polyhedron_bounded_BHRZ03_extrapolation_assign(P1, Q1, [A >= 2]),
   widen_extrapolation_final(P1, [A >= 1, B >= 0], Topology),
   ppl_delete_Polyhedron(Q1).
+
+% Tests ppl_Polyhedron_H79_widening_assign for C Polyhedra.
+bound_extrapolate_BHRZ03_with_token_C :-
+  Topology = c,
+  A = '$VAR'(0), B = '$VAR'(1),
+  CS_P = [A >= 1, B >= 0],
+  CS_Q = [A >= 1, B >= 1],
+  widen_extrapolation_init(P, CS_P, Topology),
+  widen_extrapolation_init(Q, CS_Q, Topology),
+  ppl_Polyhedron_bounded_BHRZ03_extrapolation_assign_with_token(P, Q, [A >= 1, B >= 0], T),
+  T = 1,
+  CS_Pa = [A >= 1, B >= 0],
+  widen_extrapolation_final(P, CS_Pa, Topology),
+  widen_extrapolation_final(Q, CS_Q, Topology).
 
 % Tests ppl_Polyhedron_BHRZ03_widening_assign for NNC Polyhedra.
 widen_BHRZ03_NNC :-
@@ -1199,6 +1260,24 @@ equals_t(T) :-
   ppl_delete_Polyhedron(P1),
   ppl_delete_Polyhedron(P2),
   ppl_delete_Polyhedron(P3).
+
+ok :-
+  ok(c), ok(nnc).
+
+ok(T) :-
+  A = '$VAR'(0),
+  ppl_new_Polyhedron_from_dimension(T, 0, P1),
+  ppl_new_Polyhedron_from_dimension(T, 3, P2),
+  ppl_new_Polyhedron_empty_from_dimension(T, 0, P3),
+  ppl_new_Polyhedron_empty_from_dimension(T, 3, P4),
+  ppl_Polyhedron_OK(P1),
+  ppl_Polyhedron_OK(P2),
+  ppl_Polyhedron_OK(P3),
+  ppl_Polyhedron_OK(P4),
+  ppl_delete_Polyhedron(P1),
+  ppl_delete_Polyhedron(P2),
+  ppl_delete_Polyhedron(P3),
+  ppl_delete_Polyhedron(P4).
 
 % Tests ppl_Polyhedron_get_bounding_box for C Polyhedron.
 get_boundingbox_C :-

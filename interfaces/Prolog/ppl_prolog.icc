@@ -1533,6 +1533,18 @@ ppl_Polyhedron_equals_Polyhedron(Prolog_term_ref t_lhs,
 }
 
 extern "C" Prolog_foreign_return_type
+ppl_Polyhedron_OK(Prolog_term_ref t_ph) {
+  try {
+    const Polyhedron* ph = term_to_polyhedron_handle(t_ph);
+    CHECK(ph);
+    if (ph->OK())
+      return PROLOG_SUCCESS;
+  }
+  CATCH_ALL;
+  return PROLOG_FAILURE;
+}
+
+extern "C" Prolog_foreign_return_type
 ppl_Polyhedron_add_constraint(Prolog_term_ref t_ph, Prolog_term_ref t_c) {
   try {
     Polyhedron* ph = term_to_polyhedron_handle(t_ph);
@@ -1857,39 +1869,6 @@ ppl_Polyhedron_topological_closure_assign(Prolog_term_ref t_ph) {
 
 namespace {
 
-Prolog_foreign_return_type
-widening_assign(Prolog_term_ref t_lhs,
-		Prolog_term_ref t_rhs,
-		void (Polyhedron::* widening_assign)(const Polyhedron&,
-						     unsigned* tp)) {
-  try {
-    Polyhedron* lhs = term_to_polyhedron_handle(t_lhs);
-    const Polyhedron* rhs = term_to_polyhedron_handle(t_rhs);
-    CHECK(lhs);
-    CHECK(rhs);
-    (lhs->*widening_assign)(*rhs, 0);
-    return PROLOG_SUCCESS;
-  }
-  CATCH_ALL;
-  return PROLOG_FAILURE;
-}
-
-} // namespace
-
-extern "C" Prolog_foreign_return_type
-ppl_Polyhedron_BHRZ03_widening_assign(Prolog_term_ref t_lhs,
-				      Prolog_term_ref t_rhs) {
-  return widening_assign(t_lhs, t_rhs, &Polyhedron::BHRZ03_widening_assign);
-}
-
-extern "C" Prolog_foreign_return_type
-ppl_Polyhedron_H79_widening_assign(Prolog_term_ref t_lhs,
-				   Prolog_term_ref t_rhs) {
-  return widening_assign(t_lhs, t_rhs, &Polyhedron::H79_widening_assign);
-}
-
-namespace {
-
 bool
 unify_long(Prolog_term_ref t, long l) {
   Prolog_term_ref t_l = Prolog_new_term_ref();
@@ -1918,25 +1897,53 @@ widening_assign_with_token(Prolog_term_ref t_lhs,
   return PROLOG_FAILURE;
 }
 
-} // namespace
-
-extern "C" Prolog_foreign_return_type
-ppl_Polyhedron_BHRZ03_widening_assign_with_token(Prolog_term_ref t_lhs,
-						 Prolog_term_ref t_rhs,
-						 Prolog_term_ref t_t) {
-  return widening_assign_with_token(t_lhs, t_rhs, t_t,
-				    &Polyhedron::BHRZ03_widening_assign);
+Prolog_foreign_return_type
+widening_assign(Prolog_term_ref t_lhs,
+		Prolog_term_ref t_rhs,
+		void (Polyhedron::* widening_assign)(const Polyhedron&,
+						     unsigned* tp)) {
+  try {
+    Polyhedron* lhs = term_to_polyhedron_handle(t_lhs);
+    const Polyhedron* rhs = term_to_polyhedron_handle(t_rhs);
+    CHECK(lhs);
+    CHECK(rhs);
+    (lhs->*widening_assign)(*rhs, 0);
+    return PROLOG_SUCCESS;
+  }
+  CATCH_ALL;
+  return PROLOG_FAILURE;
 }
 
-extern "C" Prolog_foreign_return_type
-ppl_Polyhedron_H79_widening_assign_with_token(Prolog_term_ref t_lhs,
-					      Prolog_term_ref t_rhs,
-					      Prolog_term_ref t_t) {
-  return widening_assign_with_token(t_lhs, t_rhs, t_t,
-				    &Polyhedron::H79_widening_assign);
-}
+Prolog_foreign_return_type
+limited_extrapolation_assign_with_token(Prolog_term_ref t_lhs,
+			     Prolog_term_ref t_rhs,
+			     Prolog_term_ref t_clist,
+	  		     Prolog_term_ref t_t,
+			     void (Polyhedron::*
+				   limited_extrap_assign)(const Polyhedron&,
+							  const ConSys&,
+							  unsigned* tp)) {
+  try {
+    Polyhedron* lhs = term_to_polyhedron_handle(t_lhs);
+    const Polyhedron* rhs = term_to_polyhedron_handle(t_rhs);
+    CHECK(lhs);
+    CHECK(rhs);
+    ConSys cs;
+    Prolog_term_ref c = Prolog_new_term_ref();
 
-namespace {
+    while (Prolog_is_cons(t_clist)) {
+      Prolog_get_cons(t_clist, c, t_clist);
+      cs.insert(build_constraint(c));
+    }
+
+     unsigned t = 1;
+   (lhs->*limited_extrap_assign)(*rhs, cs, &t);
+    if (unify_long(t_t, 1-t))
+      return PROLOG_SUCCESS;
+  }
+  CATCH_ALL;
+  return PROLOG_FAILURE;
+}
 
 Prolog_foreign_return_type
 limited_extrapolation_assign(Prolog_term_ref t_lhs,
@@ -1968,6 +1975,34 @@ limited_extrapolation_assign(Prolog_term_ref t_lhs,
 } // namespace
 
 extern "C" Prolog_foreign_return_type
+ppl_Polyhedron_BHRZ03_widening_assign_with_token(Prolog_term_ref t_lhs,
+						 Prolog_term_ref t_rhs,
+						 Prolog_term_ref t_t) {
+  return widening_assign_with_token(t_lhs, t_rhs, t_t,
+				    &Polyhedron::BHRZ03_widening_assign);
+}
+
+extern "C" Prolog_foreign_return_type
+ppl_Polyhedron_BHRZ03_widening_assign(Prolog_term_ref t_lhs,
+				      Prolog_term_ref t_rhs) {
+  return widening_assign(t_lhs, t_rhs, &Polyhedron::BHRZ03_widening_assign);
+}
+
+extern "C" Prolog_foreign_return_type
+ppl_Polyhedron_limited_BHRZ03_extrapolation_assign_with_token(
+                                    Prolog_term_ref t_lhs,
+				    Prolog_term_ref t_rhs,
+				    Prolog_term_ref t_clist,
+				    Prolog_term_ref t_t) {
+  return limited_extrapolation_assign_with_token(t_lhs,
+				      t_rhs,
+				      t_clist,
+				      t_t,
+				      &Polyhedron::
+				      limited_BHRZ03_extrapolation_assign);
+}
+
+extern "C" Prolog_foreign_return_type
 ppl_Polyhedron_limited_BHRZ03_extrapolation_assign(Prolog_term_ref t_lhs,
 						   Prolog_term_ref t_rhs,
 						   Prolog_term_ref t_clist) {
@@ -1976,6 +2011,59 @@ ppl_Polyhedron_limited_BHRZ03_extrapolation_assign(Prolog_term_ref t_lhs,
 				      t_clist,
 				      &Polyhedron::
 				      limited_BHRZ03_extrapolation_assign);
+}
+
+extern "C" Prolog_foreign_return_type
+ppl_Polyhedron_bounded_BHRZ03_extrapolation_assign_with_token(
+                                                   Prolog_term_ref t_lhs,
+						   Prolog_term_ref t_rhs,
+						   Prolog_term_ref t_clist,
+				                   Prolog_term_ref t_t) {
+  return limited_extrapolation_assign_with_token(t_lhs,
+				      t_rhs,
+				      t_clist,
+				      t_t,
+				      &Polyhedron::
+				      bounded_BHRZ03_extrapolation_assign);
+}
+
+extern "C" Prolog_foreign_return_type
+ppl_Polyhedron_bounded_BHRZ03_extrapolation_assign(Prolog_term_ref t_lhs,
+						   Prolog_term_ref t_rhs,
+						   Prolog_term_ref t_clist) {
+  return limited_extrapolation_assign(t_lhs,
+				      t_rhs,
+				      t_clist,
+				      &Polyhedron::
+				      bounded_BHRZ03_extrapolation_assign);
+}
+
+extern "C" Prolog_foreign_return_type
+ppl_Polyhedron_H79_widening_assign_with_token(Prolog_term_ref t_lhs,
+					      Prolog_term_ref t_rhs,
+					      Prolog_term_ref t_t) {
+  return widening_assign_with_token(t_lhs, t_rhs, t_t,
+				    &Polyhedron::H79_widening_assign);
+}
+
+extern "C" Prolog_foreign_return_type
+ppl_Polyhedron_H79_widening_assign(Prolog_term_ref t_lhs,
+				   Prolog_term_ref t_rhs) {
+  return widening_assign(t_lhs, t_rhs, &Polyhedron::H79_widening_assign);
+}
+
+extern "C" Prolog_foreign_return_type
+ppl_Polyhedron_limited_H79_extrapolation_assign_with_token(
+                                                Prolog_term_ref t_lhs,
+						Prolog_term_ref t_rhs,
+						Prolog_term_ref t_clist,
+				                Prolog_term_ref t_t) {
+  return limited_extrapolation_assign_with_token(t_lhs,
+				      t_rhs,
+				      t_clist,
+				      t_t,
+				      &Polyhedron::
+				      limited_H79_extrapolation_assign);
 }
 
 extern "C" Prolog_foreign_return_type
@@ -1990,14 +2078,17 @@ ppl_Polyhedron_limited_H79_extrapolation_assign(Prolog_term_ref t_lhs,
 }
 
 extern "C" Prolog_foreign_return_type
-ppl_Polyhedron_bounded_BHRZ03_extrapolation_assign(Prolog_term_ref t_lhs,
+ppl_Polyhedron_bounded_H79_extrapolation_assign_with_token(
+                                                   Prolog_term_ref t_lhs,
 						   Prolog_term_ref t_rhs,
-						   Prolog_term_ref t_clist) {
-  return limited_extrapolation_assign(t_lhs,
+						   Prolog_term_ref t_clist,
+				                   Prolog_term_ref t_t) {
+  return limited_extrapolation_assign_with_token(t_lhs,
 				      t_rhs,
 				      t_clist,
+				      t_t,
 				      &Polyhedron::
-				      bounded_BHRZ03_extrapolation_assign);
+				      bounded_H79_extrapolation_assign);
 }
 
 extern "C" Prolog_foreign_return_type
