@@ -21,16 +21,22 @@
 # For the most up-to-date information see the Parma Polyhedra Library
 # site: http://www.cs.unipr.it/ppl/ .
 
-dnl Process this file with autoconf to produce a configure script.
+# Process this file with autoconf to produce a configure script.
 
-AC_INIT(README)
-dnl Minimum autoconf version required.
+# Every other copy of the package version number gets its value from here.
+AC_INIT([the Parma Polyhedra Library], 0.4pre1, ppl-devel@cs.unipr.it, ppl)
+
+# Minimum autoconf version required.
 AC_PREREQ(2.52g)
 
-dnl Every other copy of the package version number gets its value from here
-AM_INIT_AUTOMAKE(ppl, 0.4pre1)
+# Make sure the sources are there.
+AC_CONFIG_SRCDIR(src/Polyhedron.cc)
+
+# Use Automake.
+AM_INIT_AUTOMAKE([foreign dist-bzip2 dist-zip 1.5])
 AC_SUBST(VERSION)
 
+# Generate a configuration header file.
 AM_CONFIG_HEADER(config.h)
 
 ISODATE=`date +%Y-%m-%d`
@@ -65,7 +71,7 @@ AH_BOTTOM([
 #endif
 ])
 
-dnl C compiler
+# C compiler
 
 AC_ARG_WITH(cc,
 [  --with-cc=xxx           use XXX as the C compiler],
@@ -74,12 +80,11 @@ CC=$with_cc)
 AC_LANG_C
 AC_PROG_CC
 
-dnl Checks for C compiler characteristics
-
+# Checks for typedefs, structures, and compiler characteristics.
 AC_C_CONST
 AC_C_INLINE
 
-dnl C++ compiler
+# C++ compiler
 
 AC_ARG_WITH(cxx,
 [  --with-cxx=xxx          use XXX as the C++ compiler],
@@ -89,7 +94,7 @@ AC_LANG_CPLUSPLUS
 AC_PROG_CXX
 AC_PROG_CXXCPP
 
-dnl GMP library
+# GMP library
 
 AC_CHECK_GMP
 
@@ -107,7 +112,7 @@ AC_CHECK_SIZEOF(mp_limb_t, 4, [#include <gmp.h>])
 extra_includes="${extra_includes} ${gmp_includes_option}"
 extra_libraries="${extra_libraries} ${gmp_library_option}"
 
-dnl Compilation flags
+# Compilation flags
 
 if test x"$GXX" = xyes
 then
@@ -254,7 +259,7 @@ esac
 
 CXXFLAGS="$COMP_FLAGS $OPT_FLAGS"
 
-dnl Allow the overriding of C and C++ compilation flags
+# Allow the overriding of C and C++ compilation flags
 
 AC_ARG_WITH(cflags,
 [  --with-cflags=xxx       add XXX to the options for the C compiler],
@@ -264,7 +269,7 @@ AC_ARG_WITH(cxxflags,
 [  --with-cxxflags=xxx     add XXX to the options for the C++ compiler],
 CXXFLAGS="$CXXFLAGS $with_cxxflags")
 
-dnl Libtool.
+# Libtool.
 # Turn off shared libraries during beta-testing, since they
 # make debugging harder and the build process take too long.
 AC_DISABLE_SHARED
@@ -272,18 +277,40 @@ AC_LIBTOOL_DLOPEN
 AC_LIBTOOL_WIN32_DLL
 AC_PROG_LIBTOOL
 
-dnl Checks for programs.
+# Checks for programs.
 AC_PROG_MAKE_SET
 AC_PROG_INSTALL
 
-dnl Checks for Prolog systems.
+# Checks for Prolog systems.
 
-dnl SICStus
+# Ciao Prolog
+
+AC_CHECK_PROG(CIAO_PROLOG, ciao, ciao)
+if test x$CIAO_PROLOG = xciao
+then
+AC_CHECK_HEADER(ciao_prolog.h,
+                [],
+                CIAO_PROLOG="")
+fi
+AM_CONDITIONAL(HAVE_CIAO_PROLOG, test x$CIAO_PROLOG = xciao)
+
+# GNU Prolog
+
+AC_CHECK_PROG(GNU_PROLOG, gprolog, gprolog)
+if test x$GNU_PROLOG = xgprolog
+then
+AC_CHECK_HEADER(gprolog.h,
+                [],
+                GNU_PROLOG="")
+fi
+AM_CONDITIONAL(HAVE_GNU_PROLOG, test x$GNU_PROLOG = xgprolog)
+
+# SICStus
 
 AC_CHECK_PROG(SICSTUS_PROLOG, sicstus, sicstus)
 if test x$SICSTUS_PROLOG = xsicstus
 then
-dnl We require SICStus Prolog 3.9.0 or later.
+# We require SICStus Prolog 3.9.0 or later.
 AC_CHECK_HEADER(sicstus/sicstus.h,
                 AC_MSG_CHECKING([for SICStus version 3.9.0 or later])
                 AC_EGREP_CPP(yes,
@@ -299,7 +326,7 @@ AC_CHECK_HEADER(sicstus/sicstus.h,
 fi
 AM_CONDITIONAL(HAVE_SICSTUS_PROLOG, test x$SICSTUS_PROLOG = xsicstus)
 
-dnl SWI Prolog
+# SWI Prolog
 
 AC_CHECK_PROG(SWI_PROLOG, pl, pl)
 if test x$SWI_PROLOG = xpl
@@ -310,18 +337,7 @@ AC_CHECK_HEADER(SWI-Prolog.h,
 fi
 AM_CONDITIONAL(HAVE_SWI_PROLOG, test x$SWI_PROLOG = xpl)
 
-dnl GNU Prolog
-
-AC_CHECK_PROG(GNU_PROLOG, gprolog, gprolog)
-if test x$GNU_PROLOG = xgprolog
-then
-AC_CHECK_HEADER(gprolog.h,
-                [],
-                GNU_PROLOG="")
-fi
-AM_CONDITIONAL(HAVE_GNU_PROLOG, test x$GNU_PROLOG = xgprolog)
-
-dnl XSB
+# XSB
 
 AC_CHECK_PROG(XSB_PROLOG, xsb, xsb)
 if test x$XSB_PROLOG = xxsb
@@ -332,7 +348,7 @@ AC_CHECK_HEADER(cinterf.h,
 fi
 AM_CONDITIONAL(HAVE_XSB_PROLOG, test x$XSB_PROLOG = xsb)
 
-dnl YAP
+# YAP
 
 AC_CHECK_PROG(YAP_PROLOG, yap, yap)
 if test x$YAP_PROLOG = xyap
@@ -343,15 +359,17 @@ AC_CHECK_HEADER(Yap/c_interface.h,
 fi
 AM_CONDITIONAL(HAVE_YAP_PROLOG, test x$YAP_PROLOG = xyap)
 
-dnl Checks for header files.
+# Checks for header files.
 AC_CHECK_HEADER(glpk.h,
                 extra_if_C_subdirs="${extra_if_C_subdirs} lpenum")
 
-dnl Checks for typedefs, structures, and compiler characteristics.
+# Checks for typedefs, structures, and compiler characteristics.
 # Nothing for the time being.
 
-dnl Checks for library functions.
+# Checks for library functions.
 # Nothing for the time being.
+
+AC_CONFIG_SUBDIRS(Watchdog)
 
 AC_SUBST(extra_includes)
 AC_SUBST(extra_libraries)
@@ -372,7 +390,7 @@ AC_OUTPUT(Makefile
           interfaces/C/Makefile
           interfaces/C/lpenum/Makefile
           interfaces/Prolog/Makefile
-          interfaces/Prolog/GNU/Makefile
+          interfaces/Prolog/Ciao/Makefile interfaces/Prolog/GNU/Makefile
           interfaces/Prolog/SICStus/Makefile interfaces/Prolog/SWI/Makefile
           interfaces/Prolog/YAP/Makefile)
 

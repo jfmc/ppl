@@ -21,9 +21,7 @@
 # For the most up-to-date information see the Parma Polyhedra Library
 # site: http://www.cs.unipr.it/ppl/ .
 
-AUTOMAKE_OPTIONS = foreign dist-bzip2 dist-zip 1.5
-
-DISTCHECK_CONFIGURE_FLAGS = --enable-shared
+DISTCHECK_CONFIGURE_FLAGS = --enable-shared --enable-watchdog --with-cxxflags=-Wno-deprecated
 
 srcdir = @srcdir@
 VPATH = @srcdir@
@@ -32,4 +30,4 @@ EXTRA_DIST = configure ppl.lsm.in ppl.spec.in acinclude.m4 BUGS CREDITS
 
 @SET_MAKE@
 
-SUBDIRS = src tests interfaces m4 doc
+SUBDIRS = src tests interfaces m4 doc Watchdog
