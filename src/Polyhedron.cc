@@ -1828,19 +1828,19 @@ PPL::operator>>(std::istream& s, Polyhedron& p) {
 
   Observation:
   -# The affine transformation is invertible if the coefficient
-     of \p var in this transformation (i.e., \f$a_\text{var}\f$)
+     of \p var in this transformation (i.e., \f$a_\mathrm{var}\f$)
      is different from zero.
   -# If the transformation is invertible, then we can write
      \f[
-  	\text{denominator} * {x'}_\text{var}
+  	\text{denominator} * {x'}_\mathrm{var}
 	  = \sum_{i = 0}^{n - 1} a_i x_i + b
-	  = a_\text{var} x_\text{var}
+	  = a_\mathrm{var} x_\mathrm{var}
 	      + \sum_{i \neq var} a_i x_i + b,
      \f]
      so that the inverse transformation is
      \f[
-	a_\text{var} x_\text{var}
-          = \text{denominator} * {x'}_\text{var}
+	a_\mathrm{var} x_\mathrm{var}
+          = \text{denominator} * {x'}_\mathrm{var}
               - \sum_{i \neq j} a_i x_i - b.
      \f]
 
@@ -1952,19 +1952,19 @@ PPL::Polyhedron::affine_image(const Variable& var,
 
   Observation:
   -# The affine transformation is invertible if the coefficient
-     of \p var in this transformation (i.e. \f$a_\text{var}\f$)
+     of \p var in this transformation (i.e. \f$a_\mathrm{var}\f$)
      is different from zero.
   -# If the transformation is invertible, then we can write
      \f[
-  	\text{denominator} * {x'}_\text{var}
+  	\text{denominator} * {x'}_\mathrm{var}
 	  = \sum_{i = 0}^{n - 1} a_i x_i + b
-          = a_\text{var} x_\text{var}
+          = a_\mathrm{var} x_\mathrm{var}
               + \sum_{i \neq \text{var}} a_i x_i + b,
      \f],
      the inverse transformation is
      \f[
-	a_\text{var} x_\text{var}
-          = \text{denominator} * {x'}_\text{var}
+	a_\mathrm{var} x_\mathrm{var}
+          = \text{denominator} * {x'}_\mathrm{var}
               - \sum_{i \neq j} a_i x_i - b.
      \f].
 
