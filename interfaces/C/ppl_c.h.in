@@ -69,6 +69,14 @@ by calling the <CODE>ppl_finalize</CODE> function.
 This function must be called <EM>after using any other interface of
 the library</EM>.
 
+Any application using the PPL should make sure that the right version
+of the library is being used.  This can be checked at compile-time
+thanks to the macros PPL_VERSION_MAJOR, PPL_VERSION_MINOR,
+PPL_VERSION_REVISION and PPL_VERSION_BETA, the give, respectively
+major, minor, revision and beta numbers of the PPL version.
+Compile-time checking, however, is normally not enough, especially
+in an environment where dynamic linking is used.
+
 TO BE CONTINUED HERE.
 
 Look into the `interfaces/C/lpenum/' directory.  It contains a toy

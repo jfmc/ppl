@@ -36,6 +36,10 @@ site: http://www.cs.unipr.it/ppl/ . */
 #include <signal.h>
 #include <string.h>
 
+#if PPL_VERSION_MAJOR == 0 && PPL_VERSION_MINOR < 6
+# error "PPL version 0.6 or following is required"
+#endif
+
 #ifdef __GNUC__
 # define ATTRIBUTE_UNUSED __attribute__ ((__unused__))
 #else
