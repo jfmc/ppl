@@ -578,16 +578,16 @@ ppl_new_Generator(ppl_Generator_t* pg,
   const Coefficient& dd = *to_const(d);
   switch(t) {
   case PPL_GENERATOR_TYPE_POINT:
-    ppg = new Generator(point(lle, dd));
+    ppg = new Generator(Generator::point(lle, dd));
     break;
   case PPL_GENERATOR_TYPE_CLOSURE_POINT:
-    ppg = new Generator(closure_point(lle, dd));
+    ppg = new Generator(Generator::closure_point(lle, dd));
     break;
   case PPL_GENERATOR_TYPE_RAY:
-    ppg = new Generator(ray(lle));
+    ppg = new Generator(Generator::ray(lle));
     break;
   case PPL_GENERATOR_TYPE_LINE:
-    ppg = new Generator(line(lle));
+    ppg = new Generator(Generator::line(lle));
     break;
   default:
     throw std::invalid_argument("ppl_new_Generator(pg, le, t, d): "
