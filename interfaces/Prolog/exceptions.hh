@@ -65,6 +65,13 @@ public:
   }
 };
 
+class not_a_polyhedron_handle : public internal_exception {
+public:
+  explicit not_a_polyhedron_handle(Prolog_term_ref t)
+    : internal_exception(t) {
+  }
+};
+
 class unknown_interface_error {
 private:
   const char* w;
