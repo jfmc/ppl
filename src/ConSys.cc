@@ -47,7 +47,7 @@ PPL::ConSys::adjust_topology_and_dimension(Topology new_topology,
   if (cols_to_be_added > 0)
     if (old_topology != new_topology)
       if (new_topology == NECESSARILY_CLOSED) {
-	// A NON_NECESSARILY_CLOSED constraint system
+	// A NOT_NECESSARILY_CLOSED constraint system
 	// can be converted to a NECESSARILY_CLOSED one
 	// only if it does not contain strict inequalities.
 	if (has_strict_inequalities())
@@ -62,24 +62,24 @@ PPL::ConSys::adjust_topology_and_dimension(Topology new_topology,
       }
       else {
 	// A NECESSARILY_CLOSED constraint system is converted to
-	// a NON_NECESSARILY_CLOSED one by adding a further column
+	// a NOT_NECESSARILY_CLOSED one by adding a further column
 	// of zeros for the \epsilon coefficients.
 	add_zero_columns(++cols_to_be_added);
-	set_non_necessarily_closed();
+	set_not_necessarily_closed();
       }
     else {
       // Topologies agree: first add the required zero columns ...
       add_zero_columns(cols_to_be_added);
       // ... and, if needed, move the \epsilon coefficients
       // to the new last column.
-      if (old_topology == NON_NECESSARILY_CLOSED)
+      if (old_topology == NOT_NECESSARILY_CLOSED)
 	swap_columns(old_space_dim + 1, new_space_dim + 1);
     }
   else
     // Here `cols_to_be_added == 0'.
     if (old_topology != new_topology)
       if (new_topology == NECESSARILY_CLOSED) {
-	// A NON_NECESSARILY_CLOSED constraint system
+	// A NOT_NECESSARILY_CLOSED constraint system
 	// can be converted to a NECESSARILY_CLOSED one
 	// only if it does not contain strict inequalities.
 	if (has_strict_inequalities())
@@ -91,7 +91,7 @@ PPL::ConSys::adjust_topology_and_dimension(Topology new_topology,
       else {
 	// We just add the column of the \epsilon coefficients.
 	add_zero_columns(1);
-	set_non_necessarily_closed();
+	set_not_necessarily_closed();
       }
   // We successfully adjusted dimensions and topology.
   assert(OK());
@@ -125,14 +125,14 @@ PPL::ConSys::insert(const Constraint& c) {
       // Padding the matrix with a columns of zeros
       // corresponding to the \epsilon coefficients.
       add_zero_columns(1);
-      set_non_necessarily_closed();
+      set_not_necessarily_closed();
       Matrix::insert(c);
     }
     else {
       // Copying the constraint adding the missing dimensions
       // and the \epsilon coefficient.
       Constraint tmp_c(c, num_columns());
-      tmp_c.set_non_necessarily_closed();
+      tmp_c.set_not_necessarily_closed();
       Matrix::insert(tmp_c);
     }
 }
@@ -332,7 +332,7 @@ PPL::ConSys::print(std::ostream& s) const {
   const ConSys& x = *this;
   s << "topology ";
   if (!x.is_necessarily_closed())
-    s << "NON_";
+    s << "NOT_";
   s << "NECESSARILY_CLOSED"
     << std::endl;
   for (size_t i = 0; i < x.num_rows(); ++i) {
@@ -361,8 +361,8 @@ PPL::ConSys::get(std::istream& s) {
   if (tempstr == "NECESSARILY_CLOSED")
     x.set_necessarily_closed();
   else {
-    assert(tempstr == "NON_NECESSARILY_CLOSED");
-    x.set_non_necessarily_closed();
+    assert(tempstr == "NOT_NECESSARILY_CLOSED");
+    x.set_not_necessarily_closed();
   }
   for (size_t i = 0; i < x.num_rows(); ++i) {
     for (size_t j = 0; j < x.num_columns(); ++j)

@@ -148,7 +148,7 @@ public:
   void set_is_line_or_equality();
   void set_is_ray_or_point_or_inequality();
   void set_necessarily_closed();
-  void set_non_necessarily_closed();
+  void set_not_necessarily_closed();
   //@}
 
 public:
@@ -248,8 +248,8 @@ public:
   //@{
   static const Type& necessarily_closed_line_or_equality();
   static const Type& necessarily_closed_ray_or_point_or_inequality();
-  static const Type& non_necessarily_closed_line_or_equality();
-  static const Type& non_necessarily_closed_ray_or_point_or_inequality();
+  static const Type& not_necessarily_closed_line_or_equality();
+  static const Type& not_necessarily_closed_ray_or_point_or_inequality();
   //@}
 
   //! @name Testing and setting the type.
@@ -262,7 +262,7 @@ public:
   void set_is_line_or_equality();
   void set_is_ray_or_point_or_inequality();
   void set_necessarily_closed();
-  void set_non_necessarily_closed();
+  void set_not_necessarily_closed();
   //!@}
 
 private:
@@ -286,11 +286,11 @@ private:
   static const flags_t
   NECESSARILY_CLOSED_LINE_OR_EQUALITY               = 0U;
   static const flags_t
-  NON_NECESSARILY_CLOSED_LINE_OR_EQUALITY           = 1U;
+  NOT_NECESSARILY_CLOSED_LINE_OR_EQUALITY           = 1U;
   static const flags_t
   NECESSARILY_CLOSED_RAY_OR_POINT_OR_INEQUALITY     = 2U;
   static const flags_t
-  NON_NECESSARILY_CLOSED_RAY_OR_POINT_OR_INEQUALITY = 3U;
+  NOT_NECESSARILY_CLOSED_RAY_OR_POINT_OR_INEQUALITY = 3U;
   //@}
 
   //! Check whether <EM>all</EM> bits in \p mask are set.

@@ -75,7 +75,7 @@ namespace Parma_Polyhedra_Library {
 } // namespace Parma_Polyhedra_Library
 
 
-//! A convex polyhedron.
+//! The base class for convex polyhedra.
 /*!
     An object of the class PolyBase represents a convex polyhedron
     in the vector space \f$\Rset^n\f$.

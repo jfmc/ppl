@@ -109,6 +109,7 @@ public:
   //! Constraint::zero_dim_false().
   static const ConSys& zero_dim_empty();
 
+  //! An iterator over a system of constraints
   /*!
       A const_iterator is used to provide read-only access
       to each constraint contained in an object of ConSys.
@@ -182,7 +183,7 @@ PPL_INTERNAL:
   //! Constructor: it builds a system of \p n_rows constraints
   //! on a \p n_columns - 1 dimensional space (including the
   //! \f$\epsilon\f$ dimension, if \p topology is
-  //! <CODE>NON_NECESSARILY_CLOSED</CODE>).
+  //! <CODE>NOT_NECESSARILY_CLOSED</CODE>).
   ConSys(Topology topology, size_t n_rows, size_t n_columns);
 
   //! Adjusts \p *this so that it matches the topology and

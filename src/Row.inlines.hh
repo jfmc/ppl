@@ -176,14 +176,14 @@ Row::Type::necessarily_closed_ray_or_point_or_inequality() {
 }
 
 inline const Row::Type&
-Row::Type::non_necessarily_closed_line_or_equality() {
-  static Type nncle = Type(NON_NECESSARILY_CLOSED_LINE_OR_EQUALITY);
+Row::Type::not_necessarily_closed_line_or_equality() {
+  static Type nncle = Type(NOT_NECESSARILY_CLOSED_LINE_OR_EQUALITY);
   return nncle;
 }
 
 inline const Row::Type&
-Row::Type::non_necessarily_closed_ray_or_point_or_inequality() {
-  static Type nncrpi = Type(NON_NECESSARILY_CLOSED_RAY_OR_POINT_OR_INEQUALITY);
+Row::Type::not_necessarily_closed_ray_or_point_or_inequality() {
+  static Type nncrpi = Type(NOT_NECESSARILY_CLOSED_RAY_OR_POINT_OR_INEQUALITY);
   return nncrpi;
 }
 
@@ -229,7 +229,7 @@ Row::Type::set_is_ray_or_point_or_inequality() {
 
 inline Topology
 Row::Type::topology() const {
-  return test_all(NNC) ? NON_NECESSARILY_CLOSED : NECESSARILY_CLOSED;
+  return test_all(NNC) ? NOT_NECESSARILY_CLOSED : NECESSARILY_CLOSED;
 }
 
 inline bool
@@ -243,7 +243,7 @@ Row::Type::set_necessarily_closed() {
 }
 
 inline void
-Row::Type::set_non_necessarily_closed() {
+Row::Type::set_not_necessarily_closed() {
   set(NNC);
 }
 
@@ -483,8 +483,8 @@ Row::set_necessarily_closed() {
 }
 
 inline void
-Row::set_non_necessarily_closed() {
-  impl->type.set_non_necessarily_closed();
+Row::set_not_necessarily_closed() {
+  impl->type.set_not_necessarily_closed();
 }
 
 

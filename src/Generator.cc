@@ -80,7 +80,7 @@ PPL::closure_point(const LinExpression& e, const Integer& d) {
   // A closure point is indeed a point in the higher dimension space.
   Generator g = point(ec, d);
   // Setting the topology kind.
-  g.set_non_necessarily_closed();
+  g.set_not_necessarily_closed();
   return g;
 }
 

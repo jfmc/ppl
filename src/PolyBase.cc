@@ -44,7 +44,7 @@ throw_generic(const char* method,
 	      const PPL::PolyBase& x) {
   std::ostringstream s;
   s << "PPL::";
-  if (x.topology() == PPL::NON_NECESSARILY_CLOSED)
+  if (x.topology() == PPL::NOT_NECESSARILY_CLOSED)
     s << "NNC_";
   s << "Polyhedron::" << method << ":" << std::endl
     << reason;
@@ -58,7 +58,7 @@ throw_different_dimensions(const char* method,
 			   const PPL::PolyBase& y) {
   std::ostringstream s;
   s << "PPL::";
-  if (x.topology() == PPL::NON_NECESSARILY_CLOSED)
+  if (x.topology() == PPL::NOT_NECESSARILY_CLOSED)
     s << "NNC_";
   s << "Polyhedron::" << method << ":" << std::endl
     << "x->space_dimension() == " << x.space_dimension()
@@ -73,7 +73,7 @@ throw_different_dimensions(const char* method,
 			   const PPL::Matrix& y) {
   std::ostringstream s;
   s << "PPL::";
-  if (x.topology() == PPL::NON_NECESSARILY_CLOSED)
+  if (x.topology() == PPL::NOT_NECESSARILY_CLOSED)
     s << "NNC_";
   s << "Polyhedron::" << method << ":" << std::endl
     << "this->space_dimension() == " << x.space_dimension()
@@ -88,7 +88,7 @@ throw_different_dimensions(const char* method,
 			   const PPL::Row& y) {
   std::ostringstream s;
   s << "PPL::";
-  if (x.topology() == PPL::NON_NECESSARILY_CLOSED)
+  if (x.topology() == PPL::NOT_NECESSARILY_CLOSED)
     s << "NNC_";
   s << "Polyhedron::" << method << ":" << std::endl
     << "this->space_dimension() == " << x.space_dimension()
@@ -103,7 +103,7 @@ throw_dimension_incompatible(const char* method,
 			     size_t requested_dimension) {
   std::ostringstream s;
   s << "PPL::";
-  if (x.topology() == PPL::NON_NECESSARILY_CLOSED)
+  if (x.topology() == PPL::NOT_NECESSARILY_CLOSED)
     s << "NNC_";
   s << "Polyhedron::" << method << ":" << std::endl
     << "this->space_dimension() == " << x.space_dimension()
@@ -152,7 +152,7 @@ static void
 throw_invalid_generators(const char* method, const PPL::PolyBase& x) {
   std::ostringstream s;
   s << "PPL::";
-  if (x.topology() == PPL::NON_NECESSARILY_CLOSED)
+  if (x.topology() == PPL::NOT_NECESSARILY_CLOSED)
     s << "NNC_";
   s << "Polyhedron::" << method << ":" << std::endl
     << "non-empty generator system contains no points";
@@ -164,7 +164,7 @@ static void
 throw_invalid_generator(const char* method, const PPL::PolyBase& x) {
   std::ostringstream s;
   s << "PPL::";
-  if (x.topology() == PPL::NON_NECESSARILY_CLOSED)
+  if (x.topology() == PPL::NOT_NECESSARILY_CLOSED)
     s << "NNC_";
   s << "Polyhedron::" << method << ":" << std::endl
     << "polyhedron is empty and generator is not a point";
@@ -354,7 +354,7 @@ PPL::PolyBase::PolyBase(Topology topology, GenSys& gs)
   if (gs_space_dim > 0) {
     // Stealing the rows from `gs'.
     std::swap(gen_sys, gs);
-    if (topology == NON_NECESSARILY_CLOSED) {
+    if (topology == NOT_NECESSARILY_CLOSED) {
       // In a generator system describing a NNC polyhedron,
       // for each point we must also have the corresponding closure point.
       size_t n_rows = gen_sys.num_rows();

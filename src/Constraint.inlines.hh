@@ -163,7 +163,7 @@ operator>(const LinExpression& e1, const LinExpression& e2) {
   diff += - Variable(diff.space_dimension());
   Constraint c(diff);
   // FIXME: provide a single istruction for setting both at once.
-  c.set_non_necessarily_closed();
+  c.set_not_necessarily_closed();
   c.set_is_inequality();
   return c;
 }
@@ -190,7 +190,7 @@ operator>(const Integer& n, const LinExpression& e) {
   LinExpression diff = n - e - Variable(e.space_dimension());
   Constraint c(diff);
   // FIXME: provide a single istruction for setting both at once.
-  c.set_non_necessarily_closed();
+  c.set_not_necessarily_closed();
   c.set_is_inequality();
   return c;
 }
@@ -217,7 +217,7 @@ operator>(const LinExpression& e, const Integer& n) {
   LinExpression diff = e - n - Variable(e.space_dimension());
   Constraint c(diff);
   // FIXME: provide a single istruction for setting both at once.
-  c.set_non_necessarily_closed();
+  c.set_not_necessarily_closed();
   c.set_is_inequality();
   return c;
 }

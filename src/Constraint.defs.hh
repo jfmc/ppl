@@ -95,19 +95,26 @@ namespace Parma_Polyhedra_Library {
   \code
   Constraint eq_c(3*x + 5*y - z == 0);
   \endcode
-  The following code builds the inequality constraint
+  The following code builds the (non-strict) inequality constraint
   \f$4x \geq 2y - 13\f$, having space-dimension \f$2\f$:
   \code
   Constraint ineq_c(4*x >= 2*y - 13);
   \endcode
-  The unsatisfiable constraint on the zero-dimension space \f$\Rset^0\f$
+  The corresponding strict inequality constraint
+  \f$4x > 2y - 13\f$ is obtained as follows:
+  \code
+  Constraint strict_ineq_c(4*x > 2*y - 13);
+  \endcode
+  An unsatisfiable constraint on the zero-dimension space \f$\Rset^0\f$
   can be specified as follows:
   \code
   Constraint false_c = Constraint::zero_dim_false();
   \endcode
-  An equivalent, but more involved way is the following:
+  Equivalent, but more involved ways are the following:
   \code
-  Constraint false_c(LinExpression::zero() == 1);
+  Constraint false_c1(LinExpression::zero() == 1);
+  Constraint false_c2(LinExpression::zero() >= 1);
+  Constraint false_c3(LinExpression::zero() > 0);
   \endcode
   In constrast, the following code defines an unsatisfiable constraint
   having space-dimension \f$3\f$:
@@ -123,25 +130,28 @@ namespace Parma_Polyhedra_Library {
 
   \par Example 2
   The following code shows how it is possible to access each single
-  coefficient of a constraint. Given an arbitrary constraint
+  coefficient of a constraint. Given an inequality constraint
   (in this case \f$x - 5y + 3z <= 4\f$), we construct a new constraint
-  having the same coefficients but with a different relational operator
-  (thus, in this case we want to obtain the equality constraint
-  \f$x - 5y + 3z = 4\f$).
+  corresponding to its complement (thus, in this case we want to obtain
+  the strict inequality constraint \f$x - 5y + 3z > 4\f$).
   \code
   Constraint c1(x - 5*y + 3*z <= 4);
   cout << "Constraint c1: " << c1 << endl;
-  LinExpression e;
-  for (int i = c1.space_dimension() - 1; i >= 0; i--)
-    e += c1.coefficient(Variable(i)) * Variable(i);
-  e += c1.coefficient();
-  Constraint c2 = c1.is_equality() ? (e >= 0) : (e == 0);
-  cout << "Constraint c2: " << c2 << endl;
+  if (c1.is_equality())
+    cout << "Constraint c1 is not an inequality." << endl;
+  else { 
+    LinExpression e;
+    for (int i = c1.space_dimension() - 1; i >= 0; i--)
+      e += c1.coefficient(Variable(i)) * Variable(i);
+    e += c1.coefficient();
+    Constraint c2 = c1.is_strict_inequality() ? (e <= 0) : (e < 0);
+    cout << "Complement c2: " << c2 << endl;
+  }
   \endcode
   The actual output is the following:
   \code
   Constraint c1: -A + 5*B - 3*C >= -4
-  Constraint c2: -A + 5*B - 3*C = -4
+  Complement c2: A - 5*B + 3*C > 4
   \endcode
   Note that, in general, the particular output obtained can be
   syntactically different from the (semantically equivalent)

@@ -97,7 +97,7 @@ PPL::Matrix::set_rows_topology() {
       rows[i].set_necessarily_closed();
   else
     for (size_t i = num_rows(); i-- > 0; )
-      rows[i].set_non_necessarily_closed();
+      rows[i].set_not_necessarily_closed();
 }
 
 

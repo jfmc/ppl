@@ -29,17 +29,17 @@ namespace Parma_Polyhedra_Library {
 
 inline
 NNC_Polyhedron::NNC_Polyhedron(size_t num_dimensions, Degenerate_Kind kind)
-  : PolyBase(NON_NECESSARILY_CLOSED, num_dimensions, kind) {
+  : PolyBase(NOT_NECESSARILY_CLOSED, num_dimensions, kind) {
 }
 
 inline
 NNC_Polyhedron::NNC_Polyhedron(ConSys& cs)
-  : PolyBase(NON_NECESSARILY_CLOSED, cs) {
+  : PolyBase(NOT_NECESSARILY_CLOSED, cs) {
 }
 
 inline
 NNC_Polyhedron::NNC_Polyhedron(GenSys& gs)
-  : PolyBase(NON_NECESSARILY_CLOSED, gs) {
+  : PolyBase(NOT_NECESSARILY_CLOSED, gs) {
 }
 
 inline

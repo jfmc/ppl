@@ -84,8 +84,8 @@ Matrix::set_necessarily_closed() {
 }
 
 inline void
-Matrix::set_non_necessarily_closed() {
-  row_topology = NON_NECESSARILY_CLOSED;
+Matrix::set_not_necessarily_closed() {
+  row_topology = NOT_NECESSARILY_CLOSED;
   if (num_rows() > 0)
     set_rows_topology();
 }

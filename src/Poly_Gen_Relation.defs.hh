@@ -38,6 +38,7 @@ namespace Parma_Polyhedra_Library {
 			      const Poly_Gen_Relation& y);
 }
 
+//! The relation between a polyhedron and a generator
 /*!
   This class implements conjunctions of assertions on the relation
   between a polyhedron and a generator.

@@ -68,7 +68,7 @@ namespace Parma_Polyhedra_Library {
 
     Linear expressions are the basic blocks for defining
     both constraints (i.e., linear equalities or inequalities)
-    and generators (i.e., lines, rays and points).
+    and generators (i.e., lines, rays, points and closure points).
     A full set of functions is defined to provide a convenient interface
     for building complex linear expressions starting from simpler ones
     and from objects of the classes Variable and Integer:

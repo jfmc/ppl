@@ -149,8 +149,8 @@ public:
 
   //! Sets \p row_topology to <CODE>NECESSARILY_CLOSED</CODE>.
   void set_necessarily_closed();
-  //! Sets \p row_topology to <CODE>NON_NECESSARILY_CLOSED</CODE>.
-  void set_non_necessarily_closed();
+  //! Sets \p row_topology to <CODE>NOT_NECESSARILY_CLOSED</CODE>.
+  void set_not_necessarily_closed();
   //! Sets the topology of all rows equal to the topology of the matrix.
   void set_rows_topology();
 

@@ -158,6 +158,7 @@ public:
   //! Generator::zero_dim_point().
   static const GenSys& zero_dim_univ();
 
+  //! An iterator over a system of generators
   /*!
       A const_iterator is used to provide read-only access
       to each generator contained in an object of GenSys.
@@ -233,7 +234,7 @@ PPL_INTERNAL:
   //! Constructor: it builds a system of \p n_rows rays/points
   //! on a \p n_columns - 1 dimensional space (including the
   //! \f$\epsilon\f$ dimension, if \p topology is
-  //! <CODE>NON_NECESSARILY_CLOSED</CODE>).
+  //! <CODE>NOT_NECESSARILY_CLOSED</CODE>).
   GenSys(Topology topology, size_t n_rows, size_t n_columns);
 
   //! Adjusts \p *this so that it matches the topology and

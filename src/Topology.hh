@@ -16,7 +16,7 @@ namespace Parma_Polyhedra_Library {
 
   enum Topology {
     NECESSARILY_CLOSED = 0,
-    NON_NECESSARILY_CLOSED = 1
+    NOT_NECESSARILY_CLOSED = 1
   };
 
 }
