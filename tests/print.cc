@@ -49,7 +49,7 @@ print_constraints(const ConSys& cs, const string& intro, ostream& s) {
     if (i != cs_end)
       s << "," << endl;
   }
-  s << (printed_something ? "." : "true") << endl;
+  s << (printed_something ? "." : "true.") << endl;
 }
 
 void
@@ -76,7 +76,7 @@ print_generators(const GenSys& gs, const string& intro, ostream& s) {
     if (i != gs_end)
       s << "," << endl;
   }
-  s << (printed_something ? "." : "false") << endl;
+  s << (printed_something ? "." : "false.") << endl;
 }
 
 void
