@@ -27,9 +27,17 @@ o  New method
 
    assigns to `*this' the poly-difference of `*this' and `y'.
 
-o  New method dimension_type Polyhedron::dimension() returns the dimension
-   of *this (not to be confused with the dimension of its enclosing vector
-   space) or 0, if *this is empty.
+o  New method dimension_type Polyhedron::affine_dimension() returns
+   the affine dimension of *this (not to be confused with the dimension
+   of its enclosing vector space) or 0, if *this is empty.
+
+o  All the methods changing (i.e., adding, removing, mapping, etc.)
+   the dimensions of the vector space have been renamed so as to avoid
+   any possible ambiguity with the affine dimension of the modified object.
+   For instance,
+     Polyhedron::add_dimensions_and_embed(dimension_type m);
+   has been renamed as
+     Polyhedron::add_space_dimensions_and_embed(dimension_type m);
 
 o  The constructor C_Polyhedron(const NNC_Polyhedron& y) no longer
    throws an exception if `y' is not topologically closed.  Rather,

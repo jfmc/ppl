@@ -448,15 +448,30 @@ can only be changed by explicit calls to operators provided for that
 purpose.
 
 \anchor affine_dimension
-<B>Affine Dimension</B>
+<B>Affine Independence and Affine Dimension</B>
+
+A finite set of points
+\f$\{ \vect{x}_1, \ldots, \vect{x}_k \} \sseq \Rset^n\f$ is
+<EM>affinely independent</EM> if,
+for all \f$\lambda_1, \ldots, \lambda_k \in \Rset\f$,
+the system of equations
+\f[
+  \sum_{i = 1}^k \lambda_i \vect{x}_i = \vect{0},
+    \quad
+  \sum_{i = 1}^k \lambda_i = 0
+\f]
+implies that, for each \f$i = 1, \ldots, k\f$, \f$\lambda_i = 0\f$.
+
+The maximum number of affinely independent points in \f$\Rset^n\f$
+is \f$n + 1\f$.
 
 A <EM>non-empty</EM> NNC polyhedron \f$\cP \in \Pset_n\f$ has
 <EM>affine dimension</EM> \f$k \in \Nset\f$, denoted by \f$\pdim(\cP) = k\f$,
 if the maximum number of affinely independent points in \f$\cP\f$ is
 \f$k + 1\f$.
 
-We remark that the above definition only applies to non-empty polyhedra,
-so that \f$0 \leq \pdim(\cP) \leq n\f$.
+We remark that the above definition only applies to polyhedra
+that are not empty, so that \f$0 \leq \pdim(\cP) \leq n\f$.
 By convention, the affine dimension of an empty polyhedron is 0
 (even though the ``natural'' generalization of the definition above
 would imply that the affine dimension of an empty polyhedron is \f$-1\f$).
@@ -1950,6 +1965,36 @@ D.&nbsp;K. Wilde.
 
 \section prelims Further Notation and Terminology
 
+<B>Linear independence</B>
+
+A finite set of points
+\f$\{ \vect{x}_1, \ldots, \vect{x}_k \} \sseq \Rset^n\f$
+is <EM>linearly independent</EM> if,
+for all \f$\lambda_1, \ldots, \lambda_k \in \Rset\f$,
+the set of equations
+\f[
+  \sum_{i = 1}^k \lambda_i \vect{x}_i = \vect{0}
+\f]
+implies that, for each \f$i = 1\f$, \f$\ldots\f$, \f$k\f$,
+\f$\lambda_i = 0\f$.
+
+The maximum number of linearly independent points in \f$\Rset^n\f$ is \f$n\f$.
+Note that linear independence implies affine independence,
+but the converse is not true.
+
+<B><EM>Proposition</EM></B>
+
+If \f$A\f$ is an \f$m \times n\f$ matrix, the maximum number of
+linearly independent rows of \f$A\f$, viewed as vectors of \f$\Rset^n\f$,
+equals the maximum number of linearly independent columns of \f$A\f$,
+viewed as vectors of \f$\Rset^m\f$.
+
+<B>Rank</B>
+
+The maximum number of linearly independent rows (columns) of a
+matrix \f$A\f$ is the <EM>rank</EM> of \f$A\f$ and is denoted by
+\f$\prank(A)\f$.
+
 <B><EM>Proposition</EM></B>
 
 A polyhedron is a convex set.
@@ -2039,54 +2084,6 @@ the <EM>lineality space</EM> of \f$\cP\f$ is the set
   \{\, \vect{x} \in \cP \mid A\vect{x} = \vect{0} \,\}
 \f]
 and it is denoted by \f$\linspace(\cP)\f$.
-
-<B>Linear independence</B>
-
-A finite set of points
-\f$\{ \vect{x}_1, \ldots, \vect{x}_k \} \sseq \Rset^n\f$
-is <EM>linearly independent</EM> if,
-for all \f$\lambda_1, \ldots, \lambda_k \in \Rset\f$,
-the set of equations
-\f[
-  \sum_{i = 1}^k \lambda_i \vect{x}_i = \vect{0}
-\f]
-implies that, for each \f$i = 1\f$, \f$\ldots\f$, \f$k\f$,
-\f$\lambda_i = 0\f$.
-
-Note that the maximum number of linearly independent points in
-\f$\Rset^n\f$ is \f$n\f$.
-
-<B><EM>Proposition</EM></B>
-
-If \f$A\f$ is an \f$m \times n\f$ matrix, the maximum number of
-linearly independent rows of \f$A\f$, viewed as vectors of \f$\Rset^n\f$,
-equals the maximum number of linearly independent columns of \f$A\f$,
-viewed as vectors of \f$\Rset^m\f$.
-
-<B>Rank</B>
-
-The maximum number of linearly independent rows (columns) of a
-matrix \f$A\f$ is the <EM>rank</EM> of \f$A\f$ and is denoted by
-\f$\prank(A)\f$.
-
-<B>Affine independence</B>
-
-A finite set of points
-\f$\{ \vect{x}_1, \ldots, \vect{x}_k \} \sseq \Rset^n\f$ is
-<EM>affinely independent</EM> if,
-for all \f$\lambda_1, \ldots, \lambda_k \in \Rset\f$,
-the set of equations
-\f[
-  \sum_{i = 1}^k \lambda_i \vect{x}_i = \vect{0},
-    \quad
-  \sum_{i = 1}^k \lambda_i = 0
-\f]
-implies that, for each \f$i = 1, \ldots, k\f$, \f$\lambda_i = 0\f$.
-
-Note that linear independence implies affine independence, but the
-converse is not true. Moreover the maximum number of affinely independent
-points in \f$\Rset^n\f$ is \f$n + 1\f$
-(e.g., \f$n\f$ linearly independent points and the origin \f$\vect{0}\f$).
 
 
 \section homogeneous Homogeneous Systems

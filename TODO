@@ -4,8 +4,6 @@ Enhancements for PPL 0.7
 
 - Consider performing the following renamings:
 
-    Polyhedron::dimension() -> Polyhedron::affine_dimension()
-    *dimension* (except for *space_dimension*) -> *space_dimension*
     Integer -> Coefficient
     BoundingBox -> Bounding_Box
     ConSys -> Constraint_System
