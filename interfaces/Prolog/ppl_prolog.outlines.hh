@@ -607,6 +607,28 @@ ppl_add_constraints_and_minimize(Prolog_term_ref t_ph,
 }
 
 extern "C" Prolog_foreign_return_type
+ppl_add_dimensions_and_constraints(Prolog_term_ref t_ph,
+				 Prolog_term_ref t_clist) {
+  try {
+    PPL::Polyhedron* ph = get_ph_pointer(t_ph);
+    if (ph == 0)
+      return PROLOG_FAILURE;
+    CHECK(ph);
+    PPL::ConSys cs;
+    Prolog_term_ref c = Prolog_new_term_ref();
+
+    while (Prolog_is_cons(t_clist)) {
+      Prolog_get_cons(t_clist, c, t_clist);
+      cs.insert(build_constraint(c));
+    }
+    ph->add_dimensions_and_constraints(cs);
+    return PROLOG_SUCCESS;
+  }
+  CATCH_ALL;
+  return PROLOG_FAILURE;
+}
+
+extern "C" Prolog_foreign_return_type
 ppl_check_empty(Prolog_term_ref t_ph) {
   try {
     const PPL::Polyhedron* ph = get_ph_pointer(t_ph);
@@ -1091,7 +1113,7 @@ ppl_affine_preimage(Prolog_term_ref t_ph, Prolog_term_ref t_v,
     Prolog_get_arg(1, t_v, v);
     ph->affine_preimage(PPL::Variable(term_to_unsigned_int(v)), 
                      build_lin_expression(t_le),
-                     &integer_term_to_Integer(t_d));
+                     integer_term_to_Integer(t_d));
     return PROLOG_SUCCESS;
   }
   CATCH_ALL;
@@ -1110,7 +1132,7 @@ ppl_affine_image(Prolog_term_ref t_ph, Prolog_term_ref t_v,
     Prolog_get_arg(1, t_v, v);
     ph->affine_image(PPL::Variable(term_to_unsigned_int(v)), 
                      build_lin_expression(t_le),
-                     &integer_term_to_Integer(t_d));
+                     integer_term_to_Integer(t_d));
     return PROLOG_SUCCESS;
   }
   CATCH_ALL;
