@@ -28,12 +28,13 @@ site: http://www.cs.unipr.it/ppl/ . */
 #include "globals.defs.hh"
 #include <iostream>
 #include <iomanip>
+#include <cassert>
 
 namespace PPL = Parma_Polyhedra_Library;
 
 void
 PPL::Row::Impl::expand_within_capacity(const dimension_type new_size) {
-  assert(new_size >= size());
+  assert(size() <= new_size && new_size <= max_size());
 #if !CXX_SUPPORTS_FLEXIBLE_ARRAYS
   // vec_[0] is already constructed.
   if (size() == 0 && new_size > 0)
@@ -125,6 +126,14 @@ PPL::Row::OK(const dimension_type row_size,
     ;
   else
 # endif
+  if (capacity_ > max_size()) {
+    cerr << "Row capacity exceeds the maximum allowed size:"
+	 << endl
+	 << "is " << capacity_
+	 << ", should be less than or equal to " << max_size() << "."
+	 << endl;
+    is_broken = true;
+  }
   if (capacity_ != row_capacity) {
     cerr << "Row capacity mismatch: is " << capacity_
 	 << ", should be " << row_capacity << "."
@@ -132,6 +141,16 @@ PPL::Row::OK(const dimension_type row_size,
     is_broken = true;
   }
 #endif
+  if (size() > max_size()) {
+#ifndef NDEBUG
+    cerr << "Row size exceeds the maximum allowed size:"
+	 << endl
+	 << "is " << size()
+	 << ", should be less than or equal to " << max_size() << "."
+	 << endl;
+#endif
+    is_broken = true;
+  }
   if (size() != row_size) {
 #ifndef NDEBUG
     cerr << "Row size mismatch: is " << size()

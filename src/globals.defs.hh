@@ -137,18 +137,29 @@ Temp_Integer_Holder temp_Integer_holder_ ## id = (id)
   \param requested_size
   The number of elements we need.
 
+  \param maximum_size
+  The maximum number of elements to be allocated. It is assumed
+  to be no less than \p requested_size.
+
   Computes a capacity given a requested size.
   Allows for speculative allocation aimed at reducing the number of
   reallocations enough to guarantee amortized constant insertion time
-  for our vector-like data structures.
+  for our vector-like data structures. In all cases, the speculative
+  allocation will not exceed \p maximum_size.
 */
 #endif
 inline dimension_type
-compute_capacity(dimension_type requested_size) {
+compute_capacity(const dimension_type requested_size,
+		 const dimension_type maximum_size) {
+  assert(requested_size <= maximum_size);
   // Speculation factor 2.
-  return 2*(requested_size + 1);
+  return (requested_size < maximum_size / 2)
+    ? 2*(requested_size + 1)
+    : maximum_size;
   // Speculation factor 1.5.
-  //return requested_size += ++requested_size/2;
+  // return (maximum_size - requested_size > requested_size/2)
+  //   ? requested_size + requested_size/2 + 1
+  //   : maximum_size;
 }
 
 //! User objects' the PPL can throw.

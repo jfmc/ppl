@@ -58,7 +58,7 @@ PPL::SatMatrix::add_row(const SatRow& row) {
   if (rows.capacity() < new_rows_size) {
     // Reallocation will take place.
     std::vector<SatRow> new_rows;
-    new_rows.reserve(compute_capacity(new_rows_size));
+    new_rows.reserve(compute_capacity(new_rows_size, max_num_rows()));
     new_rows.insert(new_rows.end(), new_rows_size, SatRow());
     // Put the new row in place.
     dimension_type i = new_rows_size-1;
@@ -117,7 +117,7 @@ PPL::SatMatrix::resize(dimension_type new_n_rows,
     if (rows.capacity() < new_n_rows) {
       // Reallocation will take place.
       std::vector<SatRow> new_rows;
-      new_rows.reserve(compute_capacity(new_n_rows));
+      new_rows.reserve(compute_capacity(new_n_rows, max_num_rows()));
       new_rows.insert(new_rows.end(), new_n_rows, SatRow());
       // Steal the old rows.
       for (dimension_type i = old_num_rows; i-- > 0; )

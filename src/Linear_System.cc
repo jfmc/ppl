@@ -59,7 +59,7 @@ PPL::Linear_System::merge_rows_assign(const Linear_System& y) {
   // A temporary vector of rows...
   std::vector<Row> tmp;
   // ... with enough capacity not to require any reallocations.
-  tmp.reserve(compute_capacity(x.num_rows() + y.num_rows()));
+  tmp.reserve(compute_capacity(x.num_rows() + y.num_rows(), max_num_rows()));
 
   dimension_type xi = 0;
   dimension_type x_num_rows = x.num_rows();
@@ -275,7 +275,7 @@ PPL::Linear_System::merge_rows_assign(const Linear_System& y) {
   // A temporary vector of rows...
   std::vector<Row> tmp;
   // ... with enough capacity not to require any reallocations.
-  tmp.reserve(compute_capacity(x.num_rows() + y.num_rows()));
+  tmp.reserve(compute_capacity(x.num_rows() + y.num_rows(), max_num_rows()));
 
   std::vector<Row>::iterator xi = x.rows.begin();
   const std::vector<Row>::iterator xend = x.rows.end();
@@ -467,7 +467,7 @@ PPL::Linear_System::add_row(const Linear_Row& r) {
   if (rows.capacity() < new_rows_size) {
     // Reallocation will take place.
     std::vector<Row> new_rows;
-    new_rows.reserve(compute_capacity(new_rows_size));
+    new_rows.reserve(compute_capacity(new_rows_size, max_num_rows()));
     new_rows.insert(new_rows.end(), new_rows_size, Row());
     // Put the new row in place.
     Row new_row(r, row_capacity);
@@ -523,7 +523,7 @@ PPL::Linear_System::add_pending_row(const Linear_Row& r) {
   if (rows.capacity() < new_rows_size) {
     // Reallocation will take place.
     std::vector<Row> new_rows;
-    new_rows.reserve(compute_capacity(new_rows_size));
+    new_rows.reserve(compute_capacity(new_rows_size, max_num_rows()));
     new_rows.insert(new_rows.end(), new_rows_size, Row());
     // Put the new row in place.
     Row new_row(r, row_capacity);
@@ -556,7 +556,7 @@ PPL::Linear_System::add_pending_row(const Linear_Row::Flags flags) {
   if (rows.capacity() < new_rows_size) {
     // Reallocation will take place.
     std::vector<Row> new_rows;
-    new_rows.reserve(compute_capacity(new_rows_size));
+    new_rows.reserve(compute_capacity(new_rows_size, max_num_rows()));
     new_rows.insert(new_rows.end(), new_rows_size, Row());
     // Put the new row in place.
     Linear_Row new_row(row_size, row_capacity, flags);
@@ -689,7 +689,7 @@ PPL::Linear_System::gram_shmidt() {
 #endif
 
   static std::vector<std::vector<Integer> > mu;
-  mu.reserve(compute_capacity(rank));
+  mu.reserve(compute_capacity(rank, mu.max_size()));
   for (dimension_type i = mu.size(); i < rank; i++) {
     std::vector<Integer> mu_i(i+1);
     mu.push_back(mu_i);
@@ -784,8 +784,8 @@ PPL::Linear_System::gram_shmidt() {
 
   static std::vector<Integer> d;
   static std::vector<Integer> factors;
-  d.reserve(compute_capacity(rank));
-  factors.reserve(compute_capacity(rank));
+  d.reserve(compute_capacity(rank, d.max_size()));
+  factors.reserve(compute_capacity(rank, factors.max_size()));
   if (d.size() < rank) {
     const dimension_type growth = rank - d.size();
     d.insert(d.end(), growth, 0);

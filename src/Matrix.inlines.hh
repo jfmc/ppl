@@ -33,7 +33,8 @@ inline dimension_type
 Matrix::max_num_rows() {
   // FIXME: isn't this ridiculous?  Creating a vector only to know what
   // its maximum size is?  Why is vector::max_size() not static?
-  return std::vector<Row>().max_size();
+  static const dimension_type max_nr = std::vector<Row>().max_size();
+  return max_nr;
 }
 
 inline dimension_type
@@ -121,7 +122,7 @@ inline
 Matrix::Matrix(const Matrix& y)
   : rows(y.rows),
     row_size(y.row_size),
-    row_capacity(compute_capacity(y.row_size)) {
+    row_capacity(compute_capacity(y.row_size, Row::max_size())) {
 }
 
 inline
@@ -140,7 +141,7 @@ Matrix::operator=(const Matrix& y) {
     row_size = y.row_size;
     // ... hence the following assignment must not be done on
     // auto-assignments.
-    row_capacity = compute_capacity(y.row_size);
+    row_capacity = compute_capacity(y.row_size, Row::max_size());
   }
   return *this;
 }

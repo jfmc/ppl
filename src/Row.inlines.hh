@@ -201,7 +201,7 @@ Row::construct(const dimension_type sz,
 #endif
 	       dimension_type capacity,
 	       const Flags f) {
-  assert(capacity >= sz);
+  assert(sz <= capacity && capacity <= max_size());
 #if !CXX_SUPPORTS_FLEXIBLE_ARRAYS
   if (capacity == 0)
     ++capacity;
@@ -231,13 +231,13 @@ Row::Row(const dimension_type sz, const Flags f) {
 inline
 Row::Row(const Row& y)
   : impl(y.impl
-	 ? new (compute_capacity(y.size())) Impl(*y.impl)
+	 ? new (compute_capacity(y.size(), Row::max_size())) Impl(*y.impl)
 	 : 0) {
 #if EXTRA_ROW_DEBUG
 # if CXX_SUPPORTS_FLEXIBLE_ARRAYS
-  capacity_ = y.impl ? compute_capacity(y.size()) : 0;
+  capacity_ = y.impl ? compute_capacity(y.size(), Row::max_size()) : 0;
 # else
-  capacity_ = y.impl ? compute_capacity(y.size()) : 1;
+  capacity_ = y.impl ? compute_capacity(y.size(), Row::max_size()) : 1;
 # endif
 #endif
 }
@@ -248,7 +248,7 @@ Row::Row(const Row& y,
 	 const
 #endif
 	 dimension_type capacity) {
-  assert(capacity >= y.size());
+  assert(y.size() <= capacity && capacity <= max_size());
 #if !CXX_SUPPORTS_FLEXIBLE_ARRAYS
   if (capacity == 0)
     ++capacity;
@@ -266,8 +266,7 @@ Row::Row(const Row& y,
 	 const
 #endif
 	 dimension_type capacity) {
-  assert(capacity >= sz);
-  assert(sz >= y.size());
+  assert(y.size() <= sz && sz <= capacity && capacity <= max_size());
 #if !CXX_SUPPORTS_FLEXIBLE_ARRAYS
   if (capacity == 0)
     ++capacity;
