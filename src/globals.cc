@@ -29,4 +29,4 @@ namespace PPL = Parma_Polyhedra_Library;
 
 PPL::Integer* PPL::tmp_Integer;
 
-volatile const std::exception* abandon_exponential_computations = 0;
+const std::exception* volatile abandon_exponential_computations = 0;
