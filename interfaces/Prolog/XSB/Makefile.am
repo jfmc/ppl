@@ -29,7 +29,12 @@ VPATH = @srcdir@
 
 SUBDIRS =
 
-EXTRA_DIST = ppl_xsb.cc ppl_xsb.H xsb_clpq.P xsb_clpq2.P expected expected2
+EXTRA_DIST = \
+ppl_xsb.cc \
+ppl_xsb.H \
+xsb_clpq.P expected \
+xsb_clpq2.P expected2 \
+xsb_pl_check.P
 
 if HAVE_XSB_PROLOG
 
@@ -86,7 +91,7 @@ CLPQ_TESTS = $(CLPQ_TESTS_NONSTRICT) $(CLPQ_TESTS_STRICT)
 #        and previous versions do not support control escape
 #        sequences.
 
-check-local: ppl_xsb.la xsb_clpq.P ../clpq.pl ../check_script expected xsb_clpq2.P ../clpq2.pl ../check_script2 expected2
+check-local: ppl_xsb.la xsb_clpq.P ../clpq.pl ../check_script expected xsb_clpq2.P ../clpq2.pl ../check_script2 expected2 xsb_pl_check.P ../pl_check.pl
 	for k in $(CLPQ_TESTS); do cp -f $(srcdir)/../$$k .; done
 	if [ $(abs_srcdir) != `pwd` ]; then \
 	  cp -f $(srcdir)/xsb_clpq.P . ; \
@@ -118,6 +123,23 @@ check-local: ppl_xsb.la xsb_clpq.P ../clpq.pl ../check_script expected xsb_clpq2
 	  rm -f xsb_clpq2.P; \
 	fi
 	diff -q --ignore-all-space $(srcdir)/expected2 obtained2
+	if [ $(abs_srcdir) != `pwd` ]; then \
+	  cp -f $(srcdir)/xsb_pl_check.P . ; \
+	fi
+	cp -f $(srcdir)/../pl_check.pl .
+	echo "main." >check_script3
+	$(LIBTOOL) --mode=execute \
+		-dlopen ../../../src/libppl.la \
+		-dlopen ../../../Watchdog/libpwl.la \
+		-dlopen ppl_xsb.la \
+		xsb xsb_pl_check \
+			<check_script3 #>obtained3
+	rm -f pl_check.pl
+	if [ $(abs_srcdir) != `pwd` ]; then \
+	  rm -f xsb_pl_check.P; \
+	fi
+
+#diff -q --ignore-all-space $(srcdir)/expected3 obtained2
 
 MOSTLYCLEANFILES = \
 ppl_xsb.xwam ppl_xsb.so \
