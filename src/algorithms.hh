@@ -174,6 +174,7 @@ widening_assign(PowerSet<Determinate<PH> >& r,
 	marked[i_index] = true;
       }
     }
+  i_index = 0;
   for (iter i = r_begin; i != r_end; ++i, ++i_index)
     if (!marked[i_index])
       p.inject(*i);
