@@ -33,27 +33,28 @@ The predicates provided  for the Prolog interface are specified below.
 
 The specification uses the following grammar rules:
 \code
-   PPL_Var -->  '$VAR'(N)      PPL variable (N a non-negative integer)
+   PPL_Var   -->   '$VAR'(N)      PPL variable (N a non-negative integer)
 
-   Expr   -->   PPL_Variable
-              | number         floating point or integer
-              | + Expr         unary plus
-              | - Expr         unary minus
-              | Expr + Expr    addition
-              | Expr - Expr    subtraction
-              | Expr * Expr    multiplication
-              | Expr / Expr    division
+   LinExpr   -->    PPL_Variable
+                  | number              integer
+                  | + LinExpr           unary plus
+                  | - LinExpr           unary minus
+                  | LinExpr + LinExpr   addition
+                  | LinExpr - LinExpr   subtraction
+                  | number * LinExpr    multiplication
+                  | LinExpr * number    multiplication
+                  | LinExpr / number    division
 
-   Constraint -->   Expr = Expr    equation
-                  | Expr =< Expr   nonstrict inequation
-                  | Expr >= Expr   nonstrict inequation
+   Constraint -->   LinExpr = LinExpr    equation
+                  | LinExpr =< LinExpr   nonstrict inequation
+                  | LinExpr >= LinExpr   nonstrict inequation
 
-   Generator -->   vertex(Expr)      vertex
-                 | vertex(Expr,Int)  vertex 
-                                     (Int is the denominator so that the
-                                     vertex is defined by Expr/Int)
-                 | ray(Expr)         ray
-                 | line(Expr)        line
+   Generator -->    vertex(LinExpr)      vertex
+                  | vertex(LinExpr,Int)  vertex 
+                                        (Int is the denominator so that the
+                                        vertex is defined by Expr/Int)
+                  | ray(LinExpr)         ray
+                  | line(LinExpr)        line
 \endcode
 
 There are a few general rules that need to be followed when
@@ -79,22 +80,22 @@ using these predicates.
   But this only applies for the standard domain of the language:
   Herbrand terms.
   In Prolog+PPL, addresses of PPL polyhedra are just integers.  
-  When variables bound to addresses (i.e. integers) die or are uninstantiated,   these variables will be garbage-collected, but the polyhedra to which
+  When variables bound to addresses (i.e. integers) die or are uninstantiated,
+  these variables will be garbage-collected, but the polyhedra to which
   the addresses refer will not be released.
   
-- For a PPL polyhedron embedded in a vector space of dimension \p k,
+- For a PPL polyhedron with space dimension \p k,
   the variables used for defining the constraints and the generators
   will have the form, <CODE>'$VAR'(0), ..., '$VAR'(k-1).</CODE>
   The (non-negative) integers  used to define the variables must be strictly
   less than the number of space dimensions in which the polyhedron
   is embedded.
 
-- For the predicates that combine two PPL polyhedra
-  (<CODE>ppl_intersection_assign/2</CODE>,
-   <CODE>ppl_convex_hull_assign/2</CODE> and
-   <CODE>ppl_widening_assign/2</CODE>)
-  the dimensions of the vector spaces in which the polyhedra are
-  embedded must be the same.
+- When using the predicates that combine PPL polyhedra
+  or insert constraints or generators into a PPL polyhedron,
+  the polyhedra referenced and any constraints or generators in the call
+  should follow all the rules stated in the dimension-compatibility
+  paragraph in the Introduction.
 
 See the specifications of individual predicates for examples and
 more information regarding these issues. 
@@ -110,7 +111,13 @@ more information regarding these issues.
    creates the polyhedron defining the 3-dimensional vector space
    \f$\Rset^3\f$ with \p X, the reference address.
    
-   The first argument must be a free  variable.
+   The first argument must be a free  variable and
+   if it is already instantiated to an address, it will fail. E.g.
+   the following will fail:
+\code
+   | ?- ppl_new_polyhedron(X,3),
+        ppl_new_polyhedron(X,3).
+\endcode
 
 <H4><CODE>ppl_new_empty_polyhedron(-Address, +Integer)</CODE></H4>
 
@@ -123,13 +130,7 @@ more information regarding these issues.
    creates an empty polyhedron embedded in \f$\Rset^3\f$ with
    \p X the reference address.
    
-   The first argument must be a free  variable and
-   if it is already instantiated to an address, it will fail. e.g.
-   the following will fail:
-\code
-   | ?- ppl_new_polyhedron(X,3),
-        ppl_new_polyhedron(X,3).
-\endcode
+   The first argument must be a free  variable.
     
 <H4><CODE>ppl_delete_polyhedron(+Address)</CODE></H4>
 
@@ -146,8 +147,8 @@ more information regarding these issues.
 <H4><CODE>ppl_space_dimension(+Address, -Integer+)</CODE></H4>
 
    There must be a polyhedron \p P referenced by <CODE>Address</CODE>.
-   Returns in <CODE>Integer</CODE> the dimension of the vector space 
-   containing \p P.
+   Returns in <CODE>Integer</CODE> the dimension of the space 
+   dimension of \p P.
 
    If <CODE>Address</CODE> is not an address of a polyhedron,
    execution succeeds with a large but unspecified dimension.
@@ -172,21 +173,31 @@ more information regarding these issues.
 	  ppl_insert_constraint(X, 4*'$VAR'(0)+'$VAR'(1)-2*'$VAR'(2) >= 5).
 \endcode
     the polyhedron referenced by \p X is defined to be the set of points
-    in the vector space \f$Rset^3\f$ satisfying the constraint
+    in the vector space \f$\Rset^3\f$ satisfying the constraint
     \f$4x + y - 2z >= 5\f$.
+
+The constraint <CODE>Constraint</CODE> and the
+polyhedron referenced by <CODE>Address</CODE> must be dimensional compatible.
+This means that the index of the variables used to define the constraint 
+must be strictly less than the space dimension of the polyhedron. E.g.
+\code
+      | ?- ppl_new_polyhedron(X,3),
+           ppl_insert_constraint(X,'$VAR'(3) = -12).
+      {ERROR: 'PPL::Polyhedron::insert(c):\nthis->space_dimension() == 3, 
+      y->space_dimension() == 4'}
+\endcode
 
 <H4><CODE>ppl_insert_generator(+Address, +Generator)</CODE></H4>
 
    Adds the generator <CODE>Generator</CODE> to the polyhedron \p P referenced 
    by <CODE>Address</CODE>.
-   <CODE>Generator</CODE> is a term accepted by the grammar below.
    Thus after the query
 \code
      |?- ppl_new_polyhedron(X, 3),
 	 ppl_insert_generator(X, vertex(-100*'$VAR'(0) - 5*'$VAR'(1),8)).
 \endcode
     the polyhedron referenced by \p X is defined to be single vertex 
-    \f$(-12.5, -0.625, 0)^\transpose\f$ in the vector space \f$Rset^3\f$.
+    \f$(-12.5, -0.625, 0)^\transpose\f$ in the vector space \f$\Rset^3\f$.
 
 <H4><CODE>ppl_insert_constraints(+Address, +List_of_Constraints)</CODE></H4>
 
@@ -224,7 +235,7 @@ and the maximum index is less than the number of dimensions.
    Projects the polyhedron referenced by address <CODE>Address</CODE>
    onto the first <CODE>Integer</CODE> dimensions.
    Thus, if the polyhedron \p P at the <CODE>Address</CODE>
-   is in the vector space of dimension \f$k\f$, <CODE>Integer</CODE>
+   has space dimension \f$k\f$, <CODE>Integer</CODE>
    must be less than or equal to \f$k\f$. E.g.
 \code
    | ?- ppl_new_polyhedron(X,5),
