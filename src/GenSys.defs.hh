@@ -133,7 +133,7 @@ namespace Parma_Polyhedra_Library {
     gs.insert(1 ^ x - y);
     \endcode
 */
-class Parma_Polyhedra_Library::GenSys : public Matrix {
+class Parma_Polyhedra_Library::GenSys : PPL_INTERNAL Matrix {
 public:
   //! Default constructor: builds an empty system of generators.
   GenSys();

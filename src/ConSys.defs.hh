@@ -65,7 +65,7 @@ site: http://www.cs.unipr.it/ppl/ . */
   cs.insert(x - y + 1 >= 0);
   \endcode
 */
-class Parma_Polyhedra_Library::ConSys : public Matrix {
+class Parma_Polyhedra_Library::ConSys : PPL_INTERNAL Matrix {
 public:
   //! Default constructor: builds an empty system of constraints.
   ConSys();
