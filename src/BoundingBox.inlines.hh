@@ -38,6 +38,7 @@ BoundingBox::space_dimension() const {
 
 inline const Interval&
 BoundingBox::operator[](const dimension_type k) const {
+  assert(k < vec.size());
   return vec[k];
 }
 
@@ -60,6 +61,7 @@ BoundingBox::is_empty() const {
 inline bool
 BoundingBox::get_lower_bound(const dimension_type k, bool& closed,
 			     Integer& n, Integer& d) const {
+  assert(k < vec.size());
   const LBoundary& lb = vec[k].lower_bound();
   const ERational& lr = lb.bound();
 
@@ -76,6 +78,7 @@ BoundingBox::get_lower_bound(const dimension_type k, bool& closed,
 inline bool
 BoundingBox::get_upper_bound(const dimension_type k, bool& closed,
 			     Integer& n, Integer& d) const {
+  assert(k < vec.size());
   const UBoundary& ub = vec[k].upper_bound();
   const ERational& ur = ub.bound();
 
@@ -96,6 +99,8 @@ BoundingBox::set_empty() {
 inline void
 BoundingBox::raise_lower_bound(const dimension_type k, const bool closed,
 			       const Integer& n, const Integer& d) {
+  assert(k < vec.size());
+  assert(d != 0);
   vec[k].raise_lower_bound(LBoundary(ERational(n, d),
 				     (closed
 				      ? LBoundary::CLOSED
@@ -106,6 +111,8 @@ BoundingBox::raise_lower_bound(const dimension_type k, const bool closed,
 inline void
 BoundingBox::lower_upper_bound(const dimension_type k, const bool closed,
 			       const Integer& n, const Integer& d) {
+  assert(k < vec.size());
+  assert(d != 0);
   vec[k].lower_upper_bound(UBoundary(ERational(n, d),
 				     (closed
 				      ? UBoundary::CLOSED

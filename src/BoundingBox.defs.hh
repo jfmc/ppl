@@ -32,6 +32,14 @@ site: http://www.cs.unipr.it/ppl/ . */
 
 namespace Parma_Polyhedra_Library {
 
+#ifdef PPL_DOXYGEN_INCLUDE_IMPLEMENTATION_DETAILS
+//! A not necessarily closed bounding-box.
+/*!
+  A BoundingBox object represents the Cartesian product of \f$n\f$
+  not necessarily closed and possibly unbounded intervals,
+  where \f$n\f$ is the space-dimension of the box.
+*/
+#endif // PPL_DOXYGEN_INCLUDE_IMPLEMENTATION_DETAILS
 class BoundingBox {
 public:
   //! Constructs a universe bounding box of dimension \p num_dimensions.
@@ -66,6 +74,9 @@ public:
     \f$n/d\f$ is in canonical form if and only if \f$n\f$ and \f$d\f$
     have no common factors and \f$d\f$ is positive, \f$0/1\f$ being
     the unique representation for zero.
+
+    An undefined behavior is obtained if \p k is greater than
+    or equal to the space dimension of \p *this.
   */
   bool get_lower_bound(dimension_type k, bool& closed,
 		       Integer& n, Integer& d) const;
@@ -85,6 +96,9 @@ public:
     <CODE>n</CODE> and <CODE>d</CODE> are assigned the integers
     \f$n\f$ and \f$d\f$ such that the canonical fraction \f$n/d\f$
     corresponds to the least upper bound of \f$I\f$.
+
+    An undefined behavior is obtained if \p k is greater than
+    or equal to the space dimension of \p *this.
   */
   bool get_upper_bound(dimension_type k, bool& closed,
 		       Integer& n, Integer& d) const;
@@ -99,7 +113,8 @@ public:
     Intersects the interval corresponding to the <CODE>k</CODE>-th dimension
     with \f$[n/d, +\infty)\f$ if <CODE>closed</CODE> is <CODE>true</CODE>,
     with \f$(n/d, +\infty)\f$ if <CODE>closed</CODE> is <CODE>false</CODE>.
-    The fraction \f$n/d\f$ must be in canonical form;
+    An undefined behavior is obtained if \p k is greater than or equal to
+    the space dimension of \p *this or if \p d is equal to zero.
   */
   void raise_lower_bound(dimension_type k, bool closed,
 			 const Integer& n, const Integer& d);
@@ -112,19 +127,31 @@ public:
     with \f$(-\infty, n/d]\f$ if <CODE>closed</CODE> is <CODE>true</CODE>,
     with \f$(-\infty, n/d)\f$ if <CODE>closed</CODE>
     is <CODE>false</CODE>.
-    The fraction \f$n/d\f$ must be in canonical form.
+    An undefined behavior is obtained if \p k is greater than or equal to
+    the space dimension of \p *this or if \p d is equal to zero.
   */
   void lower_upper_bound(dimension_type k, bool closed,
 			 const Integer& n, const Integer& d);
 
 private:
+  //! \brief
+  //! A vector of rational intervals, one for each dimension
+  //! of the vector space.
   std::vector<Interval> vec;
+  //! \brief
+  //! A boolean flag indicating emptyness of the bounding box.
+  //! Only meaningful when \p empty_up_to_date is <CODE>true</CODE>.
   mutable bool empty;
+  //! Tells whether or not the flag \p empty is meaningful.
   mutable bool empty_up_to_date;
 };
 
 namespace IO_Operators {
 
+#ifdef PPL_DOXYGEN_INCLUDE_IMPLEMENTATION_DETAILS
+//! Output operator.
+/*! \relates Parma_Polyhedra_Library::BoundingBox */
+#endif // PPL_DOXYGEN_INCLUDE_IMPLEMENTATION_DETAILS
 std::ostream& operator<<(std::ostream& s, const BoundingBox& bbox);
 
 } // namespace IO_Operators

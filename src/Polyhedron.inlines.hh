@@ -416,15 +416,12 @@ Polyhedron::shrink_bounding_box(Box& box, Complexity_Class complexity) const {
     return;
 
   // To record the lower and upper bound for each dimension.
-  std::vector<LBoundary> lower_bound(space_dim);
-  std::vector<UBoundary> upper_bound(space_dim);
-
-  for (dimension_type j = space_dim; j-- > 0; ) {
-    // Lower bounds are initialized to (open) plus infinity.
-    lower_bound[j] = LBoundary(ERational('+'), LBoundary::OPEN);
-    // Upper bounds are initialized to (open) minus infinity.
-    upper_bound[j] = UBoundary(ERational('-'), UBoundary::OPEN);
-  }
+  // Lower bounds are initialized to open plus infinity.
+  std::vector<LBoundary>
+    lower_bound(space_dim, LBoundary(ERational('+'), LBoundary::OPEN));
+  // Upper bounds are initialized to open minus infinity.
+  std::vector<UBoundary>
+    upper_bound(space_dim, UBoundary(ERational('-'), UBoundary::OPEN));
 
   if (!polynomial && has_something_pending())
     process_pending();

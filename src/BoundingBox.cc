@@ -26,6 +26,7 @@ site: http://www.cs.unipr.it/ppl/ . */
 
 namespace PPL = Parma_Polyhedra_Library;
 
+/*! \relates Parma_Polyhedra_Library::BoundingBox */
 std::ostream&
 PPL::IO_Operators::operator<<(std::ostream& s, const PPL::BoundingBox& bbox) {
   if (bbox.is_empty()) {
