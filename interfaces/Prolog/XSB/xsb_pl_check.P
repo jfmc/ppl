@@ -115,8 +115,8 @@ site: http://www.cs.unipr.it/ppl/ . */
 #define user_input user
 #include "pl_check.pl"
 
-  // FIXME: the following disables testing the Prolog interface exceptions
-  //        when converting ppl integers to XSB Prolog integer terms. 
+%%% FIXME: the following disables testing the Prolog interface exceptions
+%%%        when converting ppl integers to XSB Prolog integer terms. 
 current_prolog_flag(bounded,false).
 
 main :-
