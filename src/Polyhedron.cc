@@ -3600,7 +3600,7 @@ PPL::Polyhedron::H79_widening_assign(const Polyhedron& y) {
   // widening by using the specification in CousotH78, therefore
   // avoiding converting from generators to constraints.
   if (x.has_pending_generators() || !x.constraints_are_up_to_date()) {
-    ConSys CH78_cs;
+    ConSys CH78_cs(tpl, 0, x.gen_sys.num_columns());
     x.select_CH78_constraints(y, CH78_cs);
 
     if (CH78_cs.num_rows() == y.con_sys.num_rows()) {
@@ -3637,8 +3637,9 @@ PPL::Polyhedron::H79_widening_assign(const Polyhedron& y) {
 
   // Copy into `H79_con_sys' the constraints of `x' that are common to `y',
   // according to the definition of the H79 widening.
-  ConSys H79_cs;
-  ConSys x_minus_H79_cs;
+  dimension_type num_columns = x.con_sys.num_columns();
+  ConSys H79_cs(tpl, 0, num_columns);
+  ConSys x_minus_H79_cs(tpl, 0, num_columns);
   x.select_H79_constraints(y, H79_cs, x_minus_H79_cs);
 
   if (x_minus_H79_cs.num_rows() == 0)
