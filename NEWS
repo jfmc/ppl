@@ -10,11 +10,19 @@ NEWS for version 0.4 (released date unknown)
 New Features
 ============
 
+o The library does not call abort(): an appropriate error message is thrown
+  in this case. 
+
 o  ...
 
 
 Bugfixes
 ========
+
+o A vertex built with a negative denominator is transformed into the
+  corresponding vertex with a positive denominator. Previously, a vertex
+  with a negative denominator was accepted, even if then it was declared
+  illegal.
 
 o  ...
 
