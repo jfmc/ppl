@@ -447,7 +447,7 @@ solve(char* file_name) {
   }
 
 #if 1
-  ppl_new_Polyhedron_from_ConSys(&ppl_ph, ppl_cs);
+  ppl_new_C_Polyhedron_from_ConSys(&ppl_ph, ppl_cs);
   printf("created\n");
   ppl_Polyhedron_generators(ppl_ph, &ppl_const_gs);
   printf("minimized\n");
@@ -483,7 +483,7 @@ solve(char* file_name) {
   }
 
 #if 0
-  ppl_new_Polyhedron_from_ConSys(&ppl_ph, ppl_cs);
+  ppl_new_C_Polyhedron_from_ConSys(&ppl_ph, ppl_cs);
 #else
   ppl_Polyhedron_add_constraints_and_minimize(ppl_ph, ppl_cs);
   printf("added\n");
