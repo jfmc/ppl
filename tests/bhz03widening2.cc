@@ -31,6 +31,8 @@ using namespace Parma_Polyhedra_Library;
 #define NOISY 0
 #endif
 
+namespace {
+
 Variable A(0);
 Variable B(1);
 
@@ -66,7 +68,7 @@ S(unsigned n) {
   return s;
 }
 
-using namespace Parma_Polyhedra_Library::IO_Operators;
+} // namespace
 
 int
 main() TRY {
@@ -98,6 +100,8 @@ main() TRY {
   Q.add_disjunct(s);
 
 #if NOISY
+  using namespace Parma_Polyhedra_Library::IO_Operators;
+
   cout << "P = " << P << endl
        << "Q = " << Q << endl;
 #endif

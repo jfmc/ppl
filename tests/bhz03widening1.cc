@@ -31,6 +31,8 @@ using namespace Parma_Polyhedra_Library;
 #define NOISY 0
 #endif
 
+namespace {
+
 Variable x(0);
 Variable y(1);
 
@@ -129,7 +131,7 @@ my_output_function(ostream& s, const Variable& v) {
   s << char('x' + v.id());
 }
 
-using namespace Parma_Polyhedra_Library::IO_Operators;
+} // namespace
 
 int
 main() TRY {
@@ -140,6 +142,8 @@ main() TRY {
 
   PSet T = S(0);
 #if NOISY
+  using namespace Parma_Polyhedra_Library::IO_Operators;
+
   cout << "T0 = " << T << endl;
 #endif
   bool converged = false;

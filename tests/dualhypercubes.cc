@@ -40,6 +40,8 @@ using namespace Parma_Polyhedra_Library;
 #define EXP_EVAL 0
 #endif
 
+namespace {
+
 void
 closure_points_dual_hypercube(const dimension_type dims,
 			      const LinExpression& weight_center,
@@ -271,8 +273,9 @@ computation(vector<NNC_Polyhedron>& ph, bool enhanced) {
   cout << "===  ph[0] constraints ===" << endl;
   ph[0].constraints().ascii_dump(cout);
 #endif
-
 }
+
+} // namespace
 
 int
 main() {
