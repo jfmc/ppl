@@ -3334,27 +3334,29 @@ PPL::Polyhedron::is_BBRZ02_stabilizing(const Polyhedron& x,
   }
   else {
     // The polyhedra are NNC.
-    dimension_type x_num_closure_points = 0;
+    dimension_type x_num_points_and_closure_points = 0;
     for (dimension_type i = x_gen_sys_num_rows; i-- > 0; )
-      if (x.gen_sys[i].is_closure_point())
-	++x_num_closure_points;
-    dimension_type y_num_closure_points = 0;
+      if (x.gen_sys[i].is_closure_point() || x.gen_sys[i].is_point())
+	++x_num_points_and_closure_points;
+    dimension_type y_num_points_and_closure_points = 0;
     for (dimension_type i = y_gen_sys_num_rows; i-- > 0; )
-      if (y.gen_sys[i].is_closure_point())
-	++y_num_closure_points;
-    // If the number of closure points of `x' is smaller than
-    // the number of closure points of `y', the chain is stabilizing.
-    if (x_num_closure_points < y_num_closure_points) {
+      if (y.gen_sys[i].is_closure_point() || y.gen_sys[i].is_point())
+	++y_num_points_and_closure_points;
+    // If the number of points and closure points of `x' is smaller
+    // than the number of points and closure points of `y', the chain
+    // is stabilizing.
+    if (x_num_points_and_closure_points < y_num_points_and_closure_points) {
 #if 0 //#ifndef NDEBUG
-      std::cout << "BBRZ02_stabilizing: number of closure points"
+      std::cout << "BBRZ02_stabilizing: number of points and closure points"
 		<< std::endl;
 #endif
       return true;
     }
     else
-      // If the number of closure points of `y' is smaller than the
-      // number of closure points of `x', the chain is not stabilizing.
-      if (x_num_closure_points > y_num_closure_points)
+      // If the number of points and closure points of `y' is smaller
+      // than the number of points and closure points of `x', the
+      // chain is not stabilizing.
+      if (x_num_points_and_closure_points > y_num_points_and_closure_points)
 	return false;
   }
 
