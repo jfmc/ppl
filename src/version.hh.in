@@ -25,9 +25,7 @@ site: http://www.cs.unipr.it/ppl/ . */
 #ifndef PPL_version_hh
 #define PPL_version_hh 1
 
-namespace Parma_Polyhedra_Library {
-
-/*! \defgroup PPL_defines Library defines */
+/*! \defgroup PPL_defines Library Defines */
 //@{
 
 //! The major number of the PPL version.
@@ -43,6 +41,8 @@ namespace Parma_Polyhedra_Library {
 #define PPL_VERSION_BETA @PPL_VERSION_BETA@
 
 //@}
+
+namespace Parma_Polyhedra_Library {
 
 //! Returns a character string containing the PPL version.
 const char* version();
