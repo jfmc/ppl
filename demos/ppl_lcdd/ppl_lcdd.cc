@@ -1246,8 +1246,8 @@ catch(const std::bad_alloc&) {
   fatal("out of memory");
   exit(1);
 }
-catch(const std::overflow_error&) {
-  fatal("arithmetic overflow");
+catch(const std::overflow_error& e) {
+  fatal("arithmetic overflow (%s)", e.what());
   exit(1);
 }
 catch(...) {
