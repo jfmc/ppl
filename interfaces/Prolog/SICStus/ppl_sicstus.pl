@@ -25,7 +25,7 @@ foreign_resource(ppl_sicstus,
 
 foreign(ppl_new_polyhedron,
 	c,
-	ppl_new_polyhedron([-address], +integer)).
+	ppl_new_polyhedron(+term, +integer)).
 foreign(ppl_new_empty_polyhedron,
 	c,
 	ppl_new_empty_polyhedron([-address], +integer)).

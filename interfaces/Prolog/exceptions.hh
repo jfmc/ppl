@@ -1,14 +1,3 @@
-#ifdef PARANOID
-
-#define CHECK_STATUS(f) \
-  do { if ((f) == 0) throw_unknown_interface_error(); } while(false)
-
-#else
-
-#define CHECK_STATUS(f) do { f; } while(false)
-
-#endif
-
 
 class internal_exception {
 private:
@@ -70,8 +59,16 @@ public:
 };
 
 class unknown_interface_error {
+private:
+  const char* w;
+
 public:
-  unknown_interface_error() {
+  unknown_interface_error(const char* s)
+    : w(s) {
+  }
+
+  const char* where() const {
+    return w;
   }
 };
 
@@ -81,6 +78,6 @@ throw_integer_out_of_range(Prolog_term_ref t) {
 }
 
 static void
-throw_unknown_interface_error() {
-  throw unknown_interface_error();
+throw_unknown_interface_error(const char* s) {
+  throw unknown_interface_error(s);
 }
