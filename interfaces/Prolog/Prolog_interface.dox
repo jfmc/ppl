@@ -118,6 +118,8 @@ The specification uses the following grammar rules:
 	    | [Generator]
 	    | [Generator | Generator_System]
 
+ Atom        --> Prolog atom
+
  Relation    --> is_disjoint		between a constraint and a polyhedron
 	    | strictly_intersects	between a constraint and a polyhedron
 	    | is_included		between a constraint and a polyhedron
@@ -729,6 +731,29 @@ referenced by <CODE>Handle</CODE> has with <CODE>Generator</CODE>.
    Succeeds if and only if the polyhedron referenced by
    <CODE>Handle_1</CODE> is disjoint from
    the polyhedron referenced by <CODE>Handle_2</CODE>.
+
+<H2><CODE>ppl_timeout_exception_atom(?Atom)</CODE></H2>
+
+   The atom to be thrown by timeout exceptions
+   is unified with <CODE>Atom</CODE>.
+
+<H2><CODE>ppl_set_timeout_exception_atom(+Atom)</CODE></H2>
+
+   Sets the atom to be thrown by timeout exceptions
+   to <CODE>Atom</CODE>.
+   The default value is <CODE>time_out</CODE>.
+
+<H2><CODE>ppl_set_timeout(+Integer)</CODE></H2>
+
+   Computations taking exponential time will be interrupted
+   some time after <CODE>Integer</CODE> ms after that call.
+   If the computation is interrupted that way, the current timeout
+   exception atom will be thrown.
+   <CODE>Integer</CODE> must be strictly greater than zero.
+
+<H2><CODE>ppl_reset_timeout</CODE></H2>
+
+   Resets the timeout time so that the computation is not interrupted.
 
 <H2><CODE>ppl_Polyhedron_get_bounding_box(+Handle,
                                           +Complexity,

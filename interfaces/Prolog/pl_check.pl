@@ -21,6 +21,18 @@ USA.
 For the most up-to-date information see the Parma Polyhedra Library
 site: http://www.cs.unipr.it/ppl/ . */
 
+% noisy(F)
+% When F = 1, a message is displayed if a time out occurs
+% when running the `timeout' predicate.
+% When F = 0, no message is displayed.
+
+noisy(1).
+%noisy(0).
+
+% check_all
+% This executes all the test predicates which, together, check all 
+% the ppl interface predicates.
+
 check_all :-
   ppl_initialize,
   new_universe_C,
@@ -1055,42 +1067,56 @@ time_out(T) :-
   ppl_new_Polyhedron_from_dimension(T, 6, Q),
   ppl_set_timeout_exception_atom(pl_time_out),
   ppl_timeout_exception_atom(pl_time_out),
-  ppl_set_timeout(1),
+  N1 = 1,
+  ppl_set_timeout(N1),
   ppl_new_Polyhedron_from_dimension(T, 6, P),
   time_watch(T, ppl_Polyhedron_add_constraints_and_minimize(P, CS),
-             (ppl_reset_timeout,
-              ppl_Polyhedron_add_constraints_and_minimize(Q, CS)),
-              true),
+             (ppl_Polyhedron_add_constraints_and_minimize(Q, CS)),
+              (true, display_message(
+                 ['polyhedron with topology',T,'timeout after', N1,ms]))),
   ppl_Polyhedron_equals_Polyhedron(P, Q),
   ppl_delete_Polyhedron(P),
   ppl_delete_Polyhedron(Q),
   ppl_new_Polyhedron_from_dimension(T, 6, Q1),
-%  ppl_set_timeout(100),
+  N2 = 10,
+  ppl_set_timeout(N2),
   ppl_new_Polyhedron_from_dimension(T, 6, P1),
   time_watch(T, ppl_Polyhedron_add_constraints_and_minimize(P1, CS),
              (ppl_Polyhedron_add_constraints_and_minimize(Q1, CS)),
-              true),
+              (true, display_message(
+                 ['polyhedron with topology',T,'timeout after',N2,ms]))),
   ppl_Polyhedron_equals_Polyhedron(P1, Q1),
   ppl_set_timeout_exception_atom(time_out),
   ppl_delete_Polyhedron(P1),
   ppl_delete_Polyhedron(Q1),
   ppl_finalize.
 
-time_watch(T, Goal, NoTimeOut, TimeOut) :-
+% time_watch(+Topology, +Goal, +NoTimeOut, +TimeOut).
+% time_watch makes a copy of Goal with a copy of the polyhedron
+% and executes it with the currrent timeout exception settings.
+% If the call exceeds the time allowed, it catches the exception
+% and performs the TimeOut goal.
+% If the call does not exceed the time allowed,
+% then the timeout exception time is reset and
+% then Goal is executed and then the NoTmeOut is executed.
+
+time_watch(Topology, Goal, NoTimeOut, TimeOut) :-
    !,
    Goal =.. [PPLFunct, Poly|Args],
-   ppl_new_Polyhedron_from_Polyhedron(T, Poly, T, PolyCopy),
+   ppl_new_Polyhedron_from_Polyhedron(Topology, Poly, Topology, PolyCopy),
    ppl_timeout_exception_atom(TimeOutAtom),
    GoalCopy =.. [PPLFunct, PolyCopy|Args],
      (catch(GoalCopy, TimeOutAtom, fail) ->
          (ppl_reset_timeout,
-          call(NoTimeOut), Goal)
+          Goal, call(NoTimeOut))
     ; 
       call(TimeOut)
    ),
    ppl_delete_Polyhedron(PolyCopy).
 
-% These next 2 tests demonstrate a bug in the bounding box software.
+% These next 2 tests demonstrate a bug in the bounding box software
+% and are not executed by check_all.
+
 boundingbox1(Box,CS) :-
   A = '$VAR'(0), B = '$VAR'(1),
   ppl_new_Polyhedron_from_constraints(nnc,
@@ -1107,3 +1133,16 @@ boundingbox2(Box,CS) :-
   ppl_Polyhedron_get_bounding_box(P, any, Box),
   ppl_Polyhedron_get_constraints(P,CS),
   ppl_delete_Polyhedron(P).
+
+%%%%%%%%%%%% predicates for output messages %%%%%%%%%%%%%%%
+
+display_message(Message):-
+   noisy(1), !,
+   nl, write_all(Message), nl.
+display_message(_).
+
+write_all([]).
+write_all([Phrase|Phrases]):-
+   write(Phrase),
+   write(' '),
+   write_all(Phrases).
