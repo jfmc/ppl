@@ -2807,7 +2807,7 @@ IO_Operators::operator<<(std::ostream& s, const BD_Shape<T>& c) {
 	    }
 	    else {
 	      // We have got a equality constraint with two Variables.
-	      if (c_i_j.is_nonnegative()) {
+	      if (is_nonnegative(c_i_j)) {
 		s << Variable(j - 1);
 		s << " - ";
 		s << Variable(i - 1);
@@ -2837,7 +2837,7 @@ IO_Operators::operator<<(std::ostream& s, const BD_Shape<T>& c) {
 	      }
 	      else {
 		// We have got a constraint with two Variables.
-		if (c_j_i.is_nonnegative()) {
+		if (is_nonnegative(c_j_i)) {
 		  s << Variable(i - 1);
 		  s << " - ";
 		  s << Variable(j - 1);
@@ -2865,7 +2865,7 @@ IO_Operators::operator<<(std::ostream& s, const BD_Shape<T>& c) {
 	      }
 	      else {
 		// We have got a constraint with two Variables.
-		if (c_i_j.is_nonnegative()) {
+		if (is_nonnegative(c_i_j)) {
 		  s << Variable(j - 1);
 		  s << " - ";
 		  s << Variable(i - 1);
