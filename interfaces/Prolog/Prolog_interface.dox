@@ -11,7 +11,7 @@ manipulating the PPL polyhedra.
 
 <H4>CIAO Prolog</H4>
 
-Support for GNU Prolog is under development and will be available in 
+Support for CIAO Prolog is under development and will be available in 
   a future release. 
 
 <H4>GNU Prolog</H4>
@@ -64,7 +64,7 @@ The specification uses the following grammar rules:
 There are a few general rules that need to be followed when
 using the PPL predicates.
 
-- Argument positions labelled as <CODE>+Address</CODE>
+- Argument positions labeled as <CODE>+Address</CODE>
   must be addresses in memory. It is up to the programmer to ensure
   that these addresses refer to a PPL polyhedron.
 
@@ -202,8 +202,8 @@ E.g.,
 \code
    | ?- ppl_new_polyhedron(X,3),
         ppl_insert_constraint(X,'$VAR'(3) = -12).
-   {ERROR: 'PPL::Polyhedron::insert(c):\nthis->space_dimension() == 3, 
-   y->space_dimension() == 4'}
+   {ERROR: 'PPL::Polyhedron::insert(c):
+   this->space_dimension() == 3, y->space_dimension() == 4'}
 \endcode
 
 <H4><CODE>ppl_insert_generator(+Address, +Generator)</CODE></H4>
@@ -342,7 +342,7 @@ dimensions.
         ppl_remove_higher_dimensions(X,6),
         ppl_space_dimension(X,K).
    {ERROR: 'void PPL::Polyhedron::remove_higher_dimensions(nd):
-    \nthis->space_dimension() == 5, requested dimension == 6'}
+   this->space_dimension() == 5, requested dimension == 6'}
 \endcode
 
 <H4><CODE>ppl_add_dimensions_and_embed(+Address, +Integer)</CODE></H4>
