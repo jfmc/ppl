@@ -228,54 +228,50 @@ neg_unsigned_int(Type& to, Type from) {
 template <typename Policy, typename Type>
 inline Result 
 add_signed_int(Type& to, Type x, Type y) {
-  Type n = x + y;
   if (Policy::check_overflow) {
-    if (y < 0) {
-      if (n >= x)
+    if (y >= 0) {
+      if (x > std::numeric_limits<Type>::max() - y)
+	return V_POS_OVERFLOW;
+    } else if (x < std::numeric_limits<Type>::min() - y)
 	return V_NEG_OVERFLOW;
-    } else if (n < x)
-      return V_POS_OVERFLOW;
   }
-  to = n;
+  to = x + y;
   return V_EQ;
 }
 
 template <typename Policy, typename Type>
 inline Result 
 add_unsigned_int(Type& to, Type x, Type y) {
-  Type n = x + y;
   if (Policy::check_overflow) {
-    if (n < x)
+    if (x > std::numeric_limits<Type>::max() - y)
       return V_POS_OVERFLOW;
   }
-  to = n;
+  to = x + y;
   return V_EQ;
 }
 
 template <typename Policy, typename Type>
 inline Result 
 sub_signed_int(Type& to, Type x, Type y) {
-  Type n = x - y;
   if (Policy::check_overflow) {
-    if (y < 0) {
-      if (n <= x)
+    if (y >= 0) {
+      if (x < std::numeric_limits<Type>::min() + y)
+	return V_NEG_OVERFLOW;
+    } else if (x > std::numeric_limits<Type>::max() + y)
 	return V_POS_OVERFLOW;
-    } else if (n > x)
-      return V_NEG_OVERFLOW;
   }
-  to = n;
+  to = x - y;
   return V_EQ;
 }
 
 template <typename Policy, typename Type>
 inline Result 
 sub_unsigned_int(Type& to, Type x, Type y) {
-  Type n = x - y;
   if (Policy::check_overflow) {
-    if (n > x)
+    if (x < std::numeric_limits<Type>::min() + y)
       return V_NEG_OVERFLOW;
   }
-  to = n;
+  to = x - y;
   return V_EQ;
 }
 
