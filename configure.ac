@@ -282,13 +282,13 @@ esac
 build_watchdog_library=$enableval
 AM_CONDITIONAL(BUILD_WATCHDOG_LIBRARY, test x"$build_watchdog_library" = xyes)
 
-# Enabled or not, the Watchdog library must be configured.
+# Enabled or not, the Watchdog subdirectory must be configured.
 AC_CONFIG_SUBDIRS(Watchdog)
 
 # Libtool.
 # Turn off shared libraries during beta-testing, since they
 # make debugging harder and the build process takes too long.
-AC_DISABLE_SHARED
+#AC_DISABLE_SHARED
 AC_LIBTOOL_DLOPEN
 AC_LIBTOOL_WIN32_DLL
 AC_PROG_LIBTOOL
