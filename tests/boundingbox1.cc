@@ -29,16 +29,9 @@ site: http://www.cs.unipr.it/ppl/ . */
 using namespace std;
 using namespace Parma_Polyhedra_Library;
 
-#define NOISY 1
-
-#define TEST4 0
-#define TEST5 0
-#define TEST6 0
-#define TEST10 0
-#define TEST4a 1
-#define TEST5a 1
-#define TEST6a 1
-#define TEST10a 1
+#define NOISY 0
+#define C_TESTS 0
+#define NNC_TESTS 0
 
 class BInterval {
 private:
@@ -146,13 +139,13 @@ public:
   // This is a non-bounded C polyhedron consisting of the line x = y.
   // The bounding box is the xy plane - the universal polyhedron.
 void test0() {
+#if C_TESTS
   Variable x(0);
   Variable y(1);
   C_Polyhedron ph(2);
   ph.add_constraint(x - y >= 0);
 
 #if NOISY
-  print_constraints(ph, "*** test0 ph ***");
   print_generators(ph, "*** test0 ph ***");
 #endif
   
@@ -171,18 +164,19 @@ void test0() {
   //    exit(1);
   if (!ph.OK())
     exit(1);
+#endif //C_TESTS
 }
 
   // This is a non-bounded NNC polyhedron consisting of the line x = y.
   // The bounding box is the xy plane - the universal polyhedron.
 void test0a() {
+#if NNC_TESTS
   Variable x(0);
   Variable y(1);
   NNC_Polyhedron ph(2);
   ph.add_constraint(x - y >= 0);
 
 #if NOISY
-  print_constraints(ph, "*** test0a ph ***");
   print_generators(ph, "*** test0a ph ***");
 #endif
   
@@ -201,10 +195,12 @@ void test0a() {
   //  exit(1);
   if (!ph.OK())
     exit(1);
+#endif //NNC_TESTS
 }
 
   // This is a non-bounded C polyhedron consisting of the +ve quadrant.
 void test1() {
+#if C_TESTS
   Variable x(0);
   Variable y(1);
 
@@ -213,7 +209,6 @@ void test1() {
   ph.add_constraint(y >= 0);
 
 #if NOISY
-  print_constraints(ph, "*** test1 ph ***");
   print_generators(ph, "*** test1 ph ***");
 #endif
   
@@ -236,10 +231,13 @@ void test1() {
   // exit(1);
   if (!ph.OK())
     exit(1);
+
+#endif //C_TESTS
 }
 
   // This is a non-bounded NNC polyhedron consisting of the +ve quadrant.
 void test1a() {
+#if NNC_TESTS
   Variable x(0);
   Variable y(1);
 
@@ -248,7 +246,6 @@ void test1a() {
   ph.add_constraint(y >= 0);
 
 #if NOISY
-  print_constraints(ph, "*** test1a ph ***");
   print_generators(ph, "*** test1a ph ***");
 #endif
   
@@ -271,10 +268,13 @@ void test1a() {
   // exit(1);
   if (!ph.OK())
     exit(1);
+
+#endif //NNC_TESTS
 }
  
   // This is a bounded C polyhedron;
 void test2() {
+#if C_TESTS
   Variable x(0);
   Variable y(1);
 
@@ -305,10 +305,13 @@ void test2() {
   //   exit(1);
   if (!ph.OK())
     exit(1);
+
+#endif //C_TESTS
 }
  
   // This is a bounded NNC polyhedron;
 void test2a() {
+#if NNC_TESTS
   Variable x(0);
   Variable y(1);
 
@@ -339,10 +342,13 @@ void test2a() {
   //   exit(1);
   if (!ph.OK())
     exit(1);
+
+#endif //NNC_TESTS
 }
  
   // This is a unbounded C polyhedron in 4D but bounded in 2D;
 void test3() {
+#if C_TESTS
   //Variable w(0);
   Variable x(1);
   Variable y(2);
@@ -377,10 +383,13 @@ void test3() {
   //   exit(1);
   if (!ph.OK())
     exit(1);
+
+#endif //C_TESTS
 }
  
   // This is a unbounded NNC polyhedron in 4D but bounded in 2D;
 void test3a() {
+#if NNC_TESTS
   //Variable w(0);
   Variable x(1);
   Variable y(2);
@@ -415,11 +424,13 @@ void test3a() {
   //   exit(1);
   if (!ph.OK())
     exit(1);
+
+#endif //NNC_TESTS
 }
 
   // This is a universal, 2-dimensional C polyhedron. 
 void test4() {
-#if TEST4
+#if C_TESTS
   C_Polyhedron ph(2);
 
 #if NOISY
@@ -441,12 +452,13 @@ void test4() {
   //  exit(1);
   if (!ph.OK())
     exit(1);
-#endif
+
+#endif //C_TESTS
 }
 
   // This is a universal, 2-dimensional NNC polyhedron. 
 void test4a() {
-#if TEST4a
+#if NNC_TESTS
   NNC_Polyhedron ph(2);
 
 #if NOISY
@@ -468,12 +480,13 @@ void test4a() {
   //  exit(1);
   if (!ph.OK())
     exit(1);
-#endif
+
+#endif //NNC_TESTS
 }
 
   // This is an zero-dimensional C polyhedron. 
 void test5() {
-#if TEST5
+#if C_TESTS
   C_Polyhedron ph;
 
 #if NOISY
@@ -495,7 +508,8 @@ void test5() {
   // exit(1);
   if (!ph.OK())
     exit(1);
-#endif
+
+#endif //C_TESTS
 }
 
   // This is an zero-dimensional NNC polyhedron. 
@@ -522,12 +536,13 @@ void test5a() {
   // exit(1);
   if (!ph.OK())
     exit(1);
-#endif
+
+#endif //NNC_TESTS
 }
 
   // This is an empty C polyhedron. 
 void test6() {
-#if TEST6
+#if C_TESTS
   C_Polyhedron ph(2, C_Polyhedron::EMPTY);
 
 #if NOISY
@@ -552,12 +567,13 @@ void test6() {
   //  exit(1);
   if (!ph.OK())
     exit(1);
-#endif
+
+#endif //C_TESTS
 }
 
   // This is an empty NNC polyhedron. 
 void test6a() {
-#if TEST6a
+#if NNC_TESTS
   NNC_Polyhedron ph(2, C_Polyhedron::EMPTY);
 
 #if NOISY
@@ -582,12 +598,13 @@ void test6a() {
   //  exit(1);
   if (!ph.OK())
     exit(1);
-#endif
+
+#endif //NNC_TESTS
 }
 
 // This is a unit square C polyhedron
 void test10() {
-#if TEST10
+#if C_TESTS
   Variable x(0);
   Variable y(1);
 
@@ -620,12 +637,13 @@ void test10() {
 
   if (!ph.OK())
     exit(1);
-#endif
+
+#endif //C_TESTS
 }
 
 // This is a unit square NNC polyhedron
 void test10a() {
-#if TEST10a
+#if NNC_TESTS
   Variable x(0);
   Variable y(1);
 
@@ -658,12 +676,14 @@ void test10a() {
 
   if (!ph.OK())
     exit(1);
-#endif
+
+#endif //NNC_TESTS
 }
  
   // This is a unbounded NNC polyhedron in 4D but bounded in 2D
   // with strict inequality and closure points at the lower bound.
 void test11() {
+#if NNC_TESTS
   //Variable w(0);
   Variable x(1);
   Variable y(2);
@@ -698,12 +718,15 @@ void test11() {
   //   exit(1);
   if (!ph.OK())
     exit(1);
+
+#endif //NNC_TESTS
 }
 
  
   // This is a bounded NNC polyhedron with strict inequalities 
   // causing upper and lower bounds of the box to be open.
 void test12() {
+#if NNC_TESTS
   Variable x(0);
   Variable y(1);
 
@@ -734,6 +757,8 @@ void test12() {
   //   exit(1);
   if (!ph.OK())
     exit(1);
+
+#endif //NNC_TESTS
 }
  
 
