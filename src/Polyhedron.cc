@@ -944,7 +944,7 @@ PPL::Polyhedron::obtain_sorted_constraints_with_sat_c() const {
   Sorts the matrix of generators keeping \p sat_c consistent and then
   obtains \p sat_g from \p sat_c.
   Declared \p const because reordering the generators does not
-  change the polyhedron from a \e logical point of view.
+  change the polyhedron from a logical point of view.
 */
 void
 PPL::Polyhedron::obtain_sorted_generators_with_sat_g() const {
