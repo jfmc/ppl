@@ -67,9 +67,9 @@ public:
 
   void mutate();
 
-  Determinate& operator+=(const Determinate& y);
+  void upper_bound_assign(const Determinate& y);
 
-  Determinate& operator*=(const Determinate& y);
+  void meet_assign(const Determinate& y);
 
   Determinate& operator <<= (unsigned int n);
   Determinate& hide_assign(unsigned int n);

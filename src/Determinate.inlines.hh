@@ -66,19 +66,17 @@ Determinate<PH>::mutate() {
 }
 
 template <typename PH>
-Determinate<PH>& 
-Determinate<PH>::operator+=(const Determinate& y) {
+void
+Determinate<PH>::upper_bound_assign(const Determinate& y) {
   mutate();
   prep->ph.poly_hull_assign(y.prep->ph);
-  return *this;
 }
 
 template <typename PH>
-Determinate<PH>& 
-Determinate<PH>::operator*=(const Determinate& y) {
+void
+Determinate<PH>::meet_assign(const Determinate& y) {
   mutate();
   prep->ph.intersection_assign(y.prep->ph);
-  return *this;
 }
 
 template <typename PH>

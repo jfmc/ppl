@@ -90,7 +90,7 @@ main() try {
   cout << d2 << endl;
 
   DCS d3 = d1;
-  d3 += d2;
+  d3.upper_bound_assign(d2);
   cout << d3 << endl;
 
   PCS p1;
@@ -101,10 +101,10 @@ main() try {
   p2.inject(d2);
   cout << p2 << endl;
 
-  p1 += p2;
+  p1.upper_bound_assign(p2);
   cout << p1 << endl;
 
-  p1 *= p2;
+  p1.meet_assign(p2);
   cout << p1 << endl;
 
   ACS a1;

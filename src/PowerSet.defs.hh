@@ -80,18 +80,18 @@ public:
   //! Injects \p y into \p *this.
   PowerSet& inject(const CS& y);
 
-  //! Assign to \p *this an upper bound of \p y and \p *this itself.
+  //! Assign to \p *this an upper bound of \p *this and \p y.
   void upper_bound_assign(const PowerSet& y);
 
-  inline PowerSet& operator *= (const PowerSet& y);
+  //! Assign to \p *this the meet of \p *this and \p y.
+  void meet_assign(const PowerSet& y);
+
   inline PowerSet& operator <<= (const Variable n);
   inline PowerSet& hide_assign(const Variable n);
 
   inline bool is_top() const;
   inline bool is_bottom() const;
 
-  friend PowerSet operator +<>(const PowerSet& x, const PowerSet& y);
-  friend PowerSet operator *<>(const PowerSet& x, const PowerSet& y);
   friend PowerSet operator <<<>(const PowerSet& x, Variable n);
   friend PowerSet hide<>(const PowerSet& x, Variable n);
 

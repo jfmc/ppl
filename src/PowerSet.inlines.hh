@@ -174,12 +174,22 @@ operator*(const PowerSet<CS>& x, const PowerSet<CS>& y) {
 }
 
 template <class CS>
-PowerSet<CS>&
-PowerSet<CS>::operator*=(const PowerSet<CS>& y) {
-  if (this != &y) {
-    *this = *this * y;
+void
+PowerSet<CS>::meet_assign(const PowerSet<CS>& y) {
+  PowerSet<CS> z;
+  const PowerSet<CS>& x = *this;
+  for (typename PowerSet<CS>::const_iterator xi = x.begin(),
+	 xend = x.end(); xi != xend; ++xi) {
+    for (typename PowerSet<CS>::const_iterator yi = y.begin(),
+	   yend = y.end(); yi != yend; ++yi) {
+      CS zi = *xi;
+      zi.meet_assign(*yi);
+      if (!zi.is_bottom())
+	z.sequence.push_back(zi);
+    }
   }
-  return *this;
+  z.omega_reduction();
+  std::swap(*this, z);
 }
 
 // Join operator

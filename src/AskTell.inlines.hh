@@ -118,7 +118,7 @@ void AskTell<CS>::pair_insert_good(const CS& a, const CS& t) {
   std::pair<typename Base::iterator, bool> stat
     = Base::insert(Base::value_type(a, t));
   if (!stat.second)
-    (*(stat.first)).second *= t;
+    (*(stat.first)).second.meet_assign(t);
 }
 
 template <typename CS>
@@ -126,7 +126,7 @@ void
 AskTell<CS>::pair_insert(const CS& a, const CS& t) {
   if (!entails(t, a)) {
     CS newt = t;
-    newt *= a;
+    newt.meet_assign(a);
     pair_insert_good(a, newt);
   }
   else
@@ -188,7 +188,7 @@ bool AskTell<CS>::deduce() {
       for (yi = begin(); yi != end(); ++yi) {
 	if (yi != xi) {
 	  if (entails(xtell, (*yi).first) && !entails(xtell, (*yi).second)) {
-	    xtell *= (*yi).second;
+	    xtell.meet_assign((*yi).second);
 	    map_changed = tell_changed = true;
 	  }
 	}
@@ -224,7 +224,7 @@ bool AskTell<CS>::absorb() {
 	--yi;
 	if (yi != xi) {
 	  if (entails(xask, (*yi).first) && (!entails(xask, (*yi).second))) {
-	    xask *= (*yi).second;
+	    xask.meet_assign((*yi).second);
 	    ask_did_change = true;
 	    ask_changed = true;
 	  }
