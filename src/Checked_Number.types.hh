@@ -26,9 +26,9 @@ site: http://www.cs.unipr.it/ppl/ . */
 
 namespace Parma_Polyhedra_Library {
 
-struct Checked_Number_Default_Policy;
+struct Check_Overflow_Policy;
 
-template <typename T, typename Policy = Checked_Number_Default_Policy>
+template <typename T, typename Policy = Check_Overflow_Policy>
 class Checked_Number;
 
 } // namespace Parma_Polyhedra_Library
