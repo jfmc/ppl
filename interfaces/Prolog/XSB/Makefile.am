@@ -127,23 +127,21 @@ check-local: ppl_xsb.la xsb_clpq.P ../clpq.pl ../check_script expected xsb_clpq2
 	  cp -f $(srcdir)/xsb_pl_check.P . ; \
 	fi
 	cp -f $(srcdir)/../pl_check.pl .
-	echo "main." >check_script3
 	$(LIBTOOL) --mode=execute \
 		-dlopen ../../../src/libppl.la \
 		-dlopen ../../../Watchdog/libpwl.la \
 		-dlopen ppl_xsb.la \
 		xsb xsb_pl_check \
-			<check_script3 #>obtained3
+			>obtained3
 	rm -f pl_check.pl
 	if [ $(abs_srcdir) != `pwd` ]; then \
 	  rm -f xsb_pl_check.P; \
 	fi
-
-#diff -q --ignore-all-space $(srcdir)/expected3 obtained2
+	diff -q --ignore-all-space $(srcdir)/../expected3 obtained3
 
 MOSTLYCLEANFILES = \
 ppl_xsb.xwam ppl_xsb.so \
-xsb_clpq.xwam xsb_clpq2.xwam \
-$(CLPQ_TESTS) obtained obtained2
+xsb_clpq.xwam xsb_clpq2.xwam xsb_pl_check.xwam \
+$(CLPQ_TESTS) obtained obtained2 obtained3
 
 endif
