@@ -24,212 +24,102 @@ site: http://www.cs.unipr.it/ppl/ . */
 /*! \page Prolog_Interface Prolog Interface
 
 
-\subsection PI_Intro Introduction
+\subsection PI_Introduction Introduction
 
-This Prolog library is an interface to the PPL and
-provides Prolog operations for creating and
-manipulating the PPL polyhedra.
+The Parma Polyhedra Library comes equipped with a Prolog interface.
+Despite the lack of standardization of Prolog's foreign language interfaces,
+the PPL Prolog interface supports several Prolog systems and, to the
+extent this is possible, provides a uniform view of the library from
+each such systems.
 
-In the sequel, <CODE>prefix</CODE> is the prefix under which
-you have installed the library (typically <CODE>/usr</CODE>
-or <CODE>/usr/local</CODE>).
-
-\subsection Compiling the Interfaces
-
-When the Parma Polyhedra Library is configured, it tests for the existence
-of each supported Prolog system.  If a supported Prolog system is
-correctly installed in a standard location, things are arranged
-so that the corresponding interface is built and installed.
-
-As an option, the Prolog interfaces can track the creation and disposal
-of polyhedra.  In fact, differently from native Prolog data, PPL polyhedra
-must be explicitely disposed and forgetting to do so is a very common mistake.
-To enable this option, configure the library adding
-<CODE>-DPROLOG_DTRACK_ALLOCATION</CODE> to the options passed to the
-C++ compiler.
-Your configure command would then look like
-\code
-  path/to/configure --with-cxxflags="-DPROLOG_TRACK_ALLOCATION" ...
-\endcode
-
-\subsection PI_SD_Features System-Dependent Features
-
-<H4>CIAO Prolog</H4>
-
-Support for CIAO Prolog is under development and will be available in 
-a future release. 
-
-<H4>GNU Prolog</H4>
-
-The GNU Prolog interface to the PPL library is available
-both as a statically linked module or as a dynamically linked one.
-Only GNU Prolog version 1.2.12 or later is supported.
-
-Notice that GNU Prolog version 1.2.12 suffers from a serious limitation
-as far as foreign code is concerned.
-In order to be safe you must configure GNU Prolog with the
-<CODE>--disable-ebp</CODE> option (note that this has a negative effect
-on performance).
-See <A HREF="http://www.cs.unipr.it/pipermail/ppl-devel/2002-June/001777.html">http://www.cs.unipr.it/pipermail/ppl-devel/2002-June/001777.html</A>,
-<A HREF="http://www.cs.unipr.it/pipermail/ppl-devel/2002-June/001780.html">http://www.cs.unipr.it/pipermail/ppl-devel/2002-June/001780.html</A>,
-<A HREF="http://www.cs.unipr.it/pipermail/ppl-devel/2002-June/001788.html">http://www.cs.unipr.it/pipermail/ppl-devel/2002-June/001788.html</A>
-and
-<A HREF="http://www.cs.unipr.it/pipermail/ppl-devel/2002-June/001789.html">http://www.cs.unipr.it/pipermail/ppl-devel/2002-June/001789.html</A>
-for more information.
-
-<H5>The Statically Linked <CODE>ppl_gprolog</CODE> Executable</H5>
-
-If an appropriate version of GNU Prolog is installed on the machine
-on which you compiled the library, the command <CODE>make install</CODE>
-will install the executable <CODE>ppl_gprolog</CODE> in the directory
-<CODE>prefix/bin</CODE>.
-The <CODE>ppl_sicstus</CODE> executable is simply the GNU Prolog
-system with the Parma Polyhedra library statically linked.
-The only thing you should do to use the library is to
-call <CODE>ppl_initialize/0</CODE> before any other PPL predicate.
-
-<H4>SICStus Prolog</H4>
-
-The SICStus Prolog interface to the PPL library is available
-both as a statically linked module or as a dynamically linked one.
-Only SICStus Prolog version 3.9.0 or later is supported.
-
-<H5>The Statically Linked <CODE>ppl_sicstus</CODE> Executable</H5>
-
-If an appropriate version of SICStus Prolog is installed on the machine
-on which you compiled the library, the command <CODE>make install</CODE>
-will install the executable <CODE>ppl_sicstus</CODE> in the directory
-<CODE>prefix/bin</CODE>.
-The <CODE>ppl_sicstus</CODE> executable is simply the SICStus Prolog
-system with the Parma Polyhedra library statically linked.
-The only thing you should do to use the library is to
-load <CODE>prefix/lib/ppl/ppl_sicstus.pl</CODE>.
-
-<H5>Dynamic Linking</H5>
-
-In order to dynamically load the library from SICStus Prolog you should
-simply load <CODE>prefix/lib/ppl/ppl_sicstus.pl</CODE>.
-Notice that, for dynamic linking to work, you should have configured
-the library with the <CODE>--enable-shared</CODE> option.
-
-
-<H4>SWI-Prolog</H4>
-
-The SWI-Prolog interface of the library is available
-both as a statically linked module or as a dynamically linked one.
-Only SWI-Prolog version 5.0 or later is supported.
-
-<H5>The Statically Linked <CODE>ppl_pl</CODE> Executable</H5>
-
-If an appropriate version of SWI-Prolog is installed on the machine
-on which you compiled the library, the command <CODE>make install</CODE>
-will install the executable <CODE>ppl_pl</CODE> in the directory
-<CODE>prefix/bin</CODE>.
-The <CODE>ppl_pl</CODE> executable is simply the SWI-Prolog
-system with the Parma Polyhedra library statically linked:
-from within <CODE>ppl_pl</CODE> all the services of the library
-are available without further action.
-
-<H5>Dynamic Linking</H5>
-
-In order to dynamically load the library from SWI-Prolog you should
-simply load <CODE>prefix/lib/ppl/ppl_swiprolog.pl</CODE>.
-Notice that, for dynamic linking to work, you should have configured
-the library with the <CODE>--enable-shared</CODE> option.
-
- 
-<H4>YAP</H4>
-
-The YAP Prolog interface to the PPL library is available
-as a dynamically linked module.
-Only YAP version 4.3.23 or later is supported.
-
-In order to dynamically load the library from YAP you should
-simply load <CODE>prefix/lib/ppl/ppl_yap.pl</CODE>.
-Notice that, for dynamic linking to work, you should have configured
-the library with the <CODE>--enable-shared</CODE> option.
-
+The system-independent features of the library are described in
+Section \ref PI_SI_Features.
+Section \ref PI_Compilation explains how the various incarnations
+of the Prolog interface are compiled and installed.
+Section \ref PI_SD_Features illustrates the system-dependent
+features of the interface for all the supported systems.
 
 \subsection PI_SI_Features System-Independent Features
 
-The Prolog interfaces provide access to the PPL polyhedra.
+The Prolog interface provides access to the PPL polyhedra.
 A general introduction to convex polyhedra, their representation in the PPL
-and the operations provided by the PPL is given in Chapter 1 of
-this manual. Here we just describe those aspects that are specific to the
-Prolog interfaces.
+and the operations provided by the PPL is given in Sections
+\ref preamble, \ref introduction, \ref representation,
+and \ref operations of this manual.
+Here we just describe those aspects that are specific to the Prolog interface.
 
-The PPL predicates provided by the Prolog interfaces are specified below.
+The PPL predicates provided by the Prolog interface are specified below.
 The specification uses the following grammar rules:
 \code
- Topology    --> c | nnc			
+ Topology    --> c | nnc
 
  VarId       --> non-negative integer	variable identifier
 
- PPL_Var     --> '$VAR'(VarId) 	 	PPL variable
+ PPL_Var     --> '$VAR'(VarId)		PPL variable
 
- LinExpr     --> PPL_Var              	PPL variable
-            | number               	integer
-            | + LinExpr            	unary plus
-            | - LinExpr            	unary minus
-            | LinExpr + LinExpr    	addition
-            | LinExpr - LinExpr    	subtraction
-            | number * LinExpr     	multiplication
-            | LinExpr * number     	multiplication
+ LinExpr     --> PPL_Var		PPL variable
+            | number			integer
+            | + LinExpr			unary plus
+            | - LinExpr			unary minus
+            | LinExpr + LinExpr		addition
+            | LinExpr - LinExpr		subtraction
+            | number * LinExpr		multiplication
+            | LinExpr * number		multiplication
 
- Constraint  --> LinExpr = LinExpr   	equation
-            | LinExpr =< LinExpr 	nonstrict inequation
-            | LinExpr >= LinExpr 	nonstrict inequation
-            | LinExpr < LinExpr  	strict inequation
-            | LinExpr > LinExpr  	strict inequation
+ Constraint  --> LinExpr = LinExpr	equation
+            | LinExpr =< LinExpr	nonstrict inequation
+            | LinExpr >= LinExpr	nonstrict inequation
+            | LinExpr < LinExpr		strict inequation
+            | LinExpr > LinExpr		strict inequation
 
- Constraint_System			list of constraints	
+ Constraint_System			list of constraints
              --> []
             | [Constraint]
-            | [Constraint | Constraint_System]		
+            | [Constraint | Constraint_System]
 
- Generator   --> point(LinExpr)        	point
-            | point(LinExpr, number)   	point
-            | closure-point(LinExpr)  	closure point
+ Generator   --> point(LinExpr)		point
+            | point(LinExpr, number)	point
+            | closure-point(LinExpr)	closure point
             | closure-point(LinExpr, number)
-				 	closure point
-              (Int is the denominator so that the point or 
+					closure point
+              (Int is the denominator so that the point or
                closure point is defined by Expr/Int.)
-            | ray(LinExpr)         	ray
-            | line(LinExpr)        	line
+            | ray(LinExpr)		ray
+            | line(LinExpr)		line
 
  Generator_System			list of generators
              --> []
 	    | [Generator]
-	    | [Generator | Generator_System]				
+	    | [Generator | Generator_System]
 
- Relation    --> is_disjoint 		between a constraint and a polyhedron
+ Relation    --> is_disjoint		between a constraint and a polyhedron
 	    | strictly_intersects	between a constraint and a polyhedron
 	    | is_included		between a constraint and a polyhedron
 	    | saturates			between a constraint and a polyhedron
             | subsumes			between a generator and a polyhedron
-            | nothing			
- 
+            | nothing
+
  Numerator   --> number | + number | - number
 
- Denominator --> number                 number must be non-zero	
+ Denominator --> number			number must be non-zero
 
  Rational    --> number | + number | - number
             | Numerator/Denominator	rational number
 
  Bound       --> c(Rational)		closed rational limit
-            | o(Rational)			open rational limit
+            | o(Rational)		open rational limit
             | o(pinf)			unbounded in the positive direction
             | o(minf)			unbounded in the negative direction
 
- Interval    --> i(Bound, Bound)		rational interval
+ Interval    --> i(Bound, Bound)	rational interval
 
  Box         --> []
             | [Interval]
-            | [Interval | Box]           list of intervals.		
+            | [Interval | Box]		list of intervals.
 \endcode
 
 
-We first give some general information about using the interfaces.
+We first give some general information about using the interface.
 
 -  Access to any PPL polyhedron is provided by means of a Prolog term
    called a <EM>handle</EM>.
@@ -242,8 +132,8 @@ We first give some general information about using the interfaces.
 -  Only terms bound to <EM>valid</EM> handles may be used to access
    PPL polyhedra.
    A handle is made valid by using:
-\code  
-   ppl_new_Polyhedron_from_dimension/3, 
+\code
+   ppl_new_Polyhedron_from_dimension/3,
    ppl_new_Polyhedron_empty_from_dimension/3,
    ppl_new_Polyhedron_from_Polyhedron/4,
    ppl_new_Polyhedron_from_constraints/3,
@@ -276,10 +166,10 @@ We first give some general information about using the interfaces.
   or is uninstantiated,
   the handle can be garbage-collected, but the polyhedra to which
   the handle refers will not be released.
-  Once a handle has been used as an argument in 
+  Once a handle has been used as an argument in
   <CODE>ppl_delete_Polyhedron/1</CODE>,
   it becomes invalid.
-  
+
 - For a PPL polyhedron with space dimension \p k,
   the identifiers used for the PPL variables in
   the constraints and the generators
@@ -513,10 +403,10 @@ ppl_new_Polyhedron_from_Polyhedron(+Topology_1, +Handle_1,
    Thus, after the query
 \code
    ?- ppl_new_Polyhedron_from_dimension(c, 3, X),
-      A = '$VAR'(0), B = '$VAR'(1), C = '$VAR'(2), 
+      A = '$VAR'(0), B = '$VAR'(1), C = '$VAR'(2),
       ppl_Polyhedron_add_generator(X, point(-100*A - 5*B, 8)).
 \endcode
-    will update the polyhedron with handle \p X to be the single point 
+    will update the polyhedron with handle \p X to be the single point
     \f$(-12.5, -0.625, 0)^\transpose\f$ in the vector space \f$\Rset^3\f$.
 
 <H4><CODE>ppl_Polyhedron_add_constraints(+Handle, +Constraint_System)
@@ -531,14 +421,14 @@ ppl_new_Polyhedron_from_Polyhedron(+Topology_1, +Handle_1,
         A = '$VAR'(0), B = '$VAR'(1),
         ppl_Polyhedron_add_constraints(X, [4*A + B >= 3, A = 1]),
         ppl_Polyhedron_get_constraints(X, CS).
- 
+
    CS = [4*A+1*B>=3,1*A=1] ?
-\endcode  
+\endcode
 The updated polyhedron referenced by <CODE>Handle</CODE> can be empty
 and a query will succeed even when
 <CODE>Constraint_System</CODE> is unsatisfiable.
-                                                                       
-<H4><CODE>ppl_Polyhedron_add_constraints_and_minimize(+Handle, 
+
+<H4><CODE>ppl_Polyhedron_add_constraints_and_minimize(+Handle,
                                    +Constraint_System)</CODE></H4>
 
    Updates the polyhedron referenced by <CODE>Handle</CODE> to
@@ -560,7 +450,7 @@ and a query will succeed even when
       ppl_Polyhedron_add_constraints_and_minimize(X,
         [4*A + B >= 3, A = 0, B =< 0]),
       ppl_Polyhedron_get_constraints(X, CS).
-\endcode                                                                              
+\endcode
 <H4><CODE>ppl_Polyhedron_add_generators(+Handle, +Generator_System)
 </CODE></H4>
 
@@ -580,14 +470,14 @@ and a query will succeed even when
 \code
    ?- ppl_new_Polyhedron_empty_from_dimension(c, 3, X),
       A='$VAR'(0), B = '$VAR'(1), C = '$VAR'(2),
-      ppl_Polyhedron_add_generators(X, 
+      ppl_Polyhedron_add_generators(X,
         [point(1*A + 1*B + 1*C, 1), ray(1*A), ray(2*A)]),
       ppl_Polyhedron_get_generators(X, GS).
 
    GS = [ray(2*A), point(1*A+1*B+1*C), ray(1*A)]
 \endcode
-       
-<H4><CODE>ppl_Polyhedron_add_generators_and_minimize(+Handle, 
+
+<H4><CODE>ppl_Polyhedron_add_generators_and_minimize(+Handle,
                                    +Generator_System)</CODE></H4>
 
    Updates the polyhedron referenced by <CODE>Handle</CODE> to
@@ -601,17 +491,17 @@ and a query will succeed even when
 \code
    ?- ppl_new_Polyhedron_empty_from_dimension(c, 3, X),
       A='$VAR'(0), B = '$VAR'(1), C = '$VAR'(2),
-      ppl_Polyhedron_add_generators_and_minimize(X, 
+      ppl_Polyhedron_add_generators_and_minimize(X,
         [ray(1*A), ray(2*A), point(1*A + 1*B + 1*C, 1)]),
       ppl_Polyhedron_get_generators(X, GS).
- 
+
    GS = [point(1*A+1*B+1*C), ray(1*A)]
 \endcode
-                                                                       
-<H4><CODE>ppl_Polyhedron_add_dimensions_and_constraints(+Handle, 
+
+<H4><CODE>ppl_Polyhedron_add_dimensions_and_constraints(+Handle,
                                    +Constraint_System)</CODE></H4>
- 
- 
+
+
    After embedding the polyhedron referred to by <CODE>Handle</CODE>
    in a new space that is enlarged by the space dimensions
    of the constraint system in <CODE>Constraint_System</CODE>,
@@ -621,9 +511,9 @@ and a query will succeed even when
    E.g.,
 \code
    ?- ppl_new_Polyhedron_from_dimension(nnc, 2, X),
-      A = '$VAR'(0), B = '$VAR'(1), C = '$VAR'(2), 
-      D = '$VAR'(3), E = '$VAR'(4), 
-      ppl_Polyhedron_add_dimensions_and_constraints(X, 
+      A = '$VAR'(0), B = '$VAR'(1), C = '$VAR'(2),
+      D = '$VAR'(3), E = '$VAR'(4),
+      ppl_Polyhedron_add_dimensions_and_constraints(X,
            [A > 1, B >= 0, C >= 0]),
       ppl_Polyhedron_get_constraints(P, CS).
 
@@ -641,7 +531,7 @@ and a query will succeed even when
       ppl_Polyhedron_add_dimensions_and_project(X, 2),
       ppl_Polyhedron_get_constraints(X, CS),
       ppl_Polyhedron_get_generators(X, GS).
- 
+
    CS = [1*A = 0, 1*B = 0],
    GS = [point(0)]
 \endcode
@@ -657,7 +547,7 @@ and a query will succeed even when
       ppl_Polyhedron_add_dimensions_and_embed(X, 2),
       ppl_Polyhedron_get_constraints(X, CS),
       ppl_Polyhedron_get_generators(X, GS).
- 
+
    CS = [],
    GS = [point(0),line(1*A),line(1*B)]
 \endcode
@@ -677,22 +567,22 @@ and a query will succeed even when
       A='$VAR'(0), B = '$VAR'(1), C = '$VAR'(2),
       ppl_Polyhedron_remove_dimensions(X, [B]),
       ppl_Polyhedron_space_dimension(X, K),
-      ppl_Polyhedron_get_generators(X, GS). 
+      ppl_Polyhedron_get_generators(X, GS).
 
    K = 2,
-   GS = [point(0),line(1*A),line(1*B),line(0)]         
+   GS = [point(0),line(1*A),line(1*B),line(0)]
 \endcode
 
 <H4><CODE>ppl_Polyhedron_remove_higher_dimensions(+Handle, +Integer))</CODE></H4>
 
    Projects the the polyhedron referred to by <CODE>Handle</CODE>
    onto  the first <CODE>Integer</CODE> dimension.
-   E.g. 
+   E.g.,
 \code
    ?- ppl_new_Polyhedron_empty_from_dimension(c, 5, X),
       ppl_Polyhedron_remove_higher_dimensions(X, 3),
       ppl_Polyhedron_space_dimension(X, K).
- 
+
    K = 3,
 \endcode
    The polyhedron \f$\cP\f$ referenced by <CODE>Handle</CODE>
@@ -702,7 +592,7 @@ and a query will succeed even when
 <H4><CODE>ppl_Polyhedron_affine_image(+Handle, +PPL_Var,
                +LinExpr, +Integer)</CODE></H4>
 
-   Transforms the polyhedron referenced by <CODE>Handle</CODE> 
+   Transforms the polyhedron referenced by <CODE>Handle</CODE>
    assigning the affine expression <CODE>LinExpr</CODE>/<CODE>Integer</CODE>
    to <CODE>PPL_Var</CODE>.
 
@@ -774,28 +664,169 @@ referenced by <CODE>Handle</CODE> has with <CODE>Generator</CODE>.
    <CODE>Handle_1</CODE> is
    equal to the polyhedron referenced by <CODE>Handle_2</CODE>.
 
-<H4><CODE>ppl_Polyhedron_get_bounding_box(+Handle, 
+<H4><CODE>ppl_Polyhedron_get_bounding_box(+Handle,
                                       -Box)</CODE></H4>
 
    Succeeds if and only if the bounding box
    of the polyhedron referenced by
    <CODE>Handle</CODE>
    unifies with the box defined by <CODE>Box</CODE>.
-   E.g. 
+   E.g.,
 \code
    ?- A = '$VAR'(0), B = '$VAR'(1),
       ppl_new_Polyhedron_from_constraints(nnc, [B > 0, 4*A =< 2], P),
       ppl_Polyhedron_get_bounding_box(P, Box).
- 
+
    Box = [i(o(minf), c(1/2)), i(o(0), o(pinf))].
 \endcode
 Note that the rational numbers in <CODE>Box</CODE> are in canonical form.
-E.g. the following will fail:
+E.g., the following will fail:
 \code
    ?- A = '$VAR'(0), B = '$VAR'(1),
       ppl_new_Polyhedron_from_constraints(nnc, [B > 0, 4*A =< 2], P),
       ppl_Polyhedron_get_bounding_box(P, Box),
       Box = [i(o(minf), c(2/4)), i(o(0), o(pinf))].
 \endcode
+
+\subsection PI_Compilation Compilation and Installation
+
+When the Parma Polyhedra Library is configured, it tests for the existence
+of each supported Prolog system.  If a supported Prolog system is
+correctly installed in a standard location, things are arranged
+so that the corresponding interface is built and installed.
+
+In the sequel, <CODE>prefix</CODE> is the prefix under which
+you have installed the library (typically <CODE>/usr</CODE>
+or <CODE>/usr/local</CODE>).
+
+As an option, the Prolog interface can track the creation and disposal
+of polyhedra.  In fact, differently from native Prolog data, PPL polyhedra
+must be explicitely disposed and forgetting to do so is a very common mistake.
+To enable this option, configure the library adding
+<CODE>-DPROLOG_DTRACK_ALLOCATION</CODE> to the options passed to the
+C++ compiler.
+Your configure command would then look like
+\code
+  path/to/configure --with-cxxflags="-DPROLOG_TRACK_ALLOCATION" ...
+\endcode
+
+\subsection PI_SD_Features System-Dependent Features
+
+<H4>CIAO Prolog</H4>
+
+Support for CIAO Prolog is under development and will be available in
+a future release.
+
+<H4>GNU Prolog</H4>
+
+The GNU Prolog interface to the PPL library is available
+both as ``PPL enhanced'' GNU Prolog interpreter
+and as a library that can be linked to GNU Prolog programs.
+Only GNU Prolog version 1.2.12 or later is supported.
+
+Notice that GNU Prolog version 1.2.12 suffers from a serious limitation
+as far as foreign code is concerned.
+In order to be safe you must configure GNU Prolog with the
+<CODE>--disable-ebp</CODE> option (note that this has a negative effect
+on performance).
+See <A HREF="http://www.cs.unipr.it/pipermail/ppl-devel/2002-June/001777.html">http://www.cs.unipr.it/pipermail/ppl-devel/2002-June/001777.html</A>,
+<A HREF="http://www.cs.unipr.it/pipermail/ppl-devel/2002-June/001780.html">http://www.cs.unipr.it/pipermail/ppl-devel/2002-June/001780.html</A>,
+<A HREF="http://www.cs.unipr.it/pipermail/ppl-devel/2002-June/001788.html">http://www.cs.unipr.it/pipermail/ppl-devel/2002-June/001788.html</A>
+and
+<A HREF="http://www.cs.unipr.it/pipermail/ppl-devel/2002-June/001789.html">http://www.cs.unipr.it/pipermail/ppl-devel/2002-June/001789.html</A>
+for more information.
+
+<H5>The <CODE>ppl_gprolog</CODE> Executable</H5>
+
+If an appropriate version of GNU Prolog is installed on the machine
+on which you compiled the library, the command <CODE>make install</CODE>
+will install the executable <CODE>ppl_gprolog</CODE> in the directory
+<CODE>prefix/bin</CODE>.
+The <CODE>ppl_gprolog</CODE> executable is simply the GNU Prolog
+intepreter with the Parma Polyhedra library linked in.
+The only thing you should do to use the library is to
+call <CODE>ppl_initialize/0</CODE> before any other PPL predicate
+and to call <CODE>ppl_finalize/0</CODE> when you are done with the
+library.
+
+<H5>Linking the Library To GNU Prolog Programs</H5>
+
+In order to allow linking GNU Prolog programs to the PPL,
+the following files are installed in the directory
+<CODE>prefix/lib/ppl</CODE>:
+<CODE>ppl_gprolog.pl</CODE> contains the required foreign declarations;
+<CODE>libppl_gprolog.*</CODE> contain the executable code for the
+GNU Prolog interface in various formats (static library, shared library,
+libtool library).
+If your GNU Prolog program is constituted by, say, <CODE>source1.pl</CODE>
+and <CODE>source2.pl</CODE> and you want to create the executable
+<CODE>myprog</CODE>, your compilation command may look like
+\code
+gplc -o myprog prefix/lib/ppl/ppl_gprolog.pl source1.pl source2.pl \
+  -L '-Lprefix/lib/ppl -lppl_gprolog -Lprefix/lib -lppl -lgmp -lgmpxx -lstdc++'
+\endcode
+
+<H4>SICStus Prolog</H4>
+
+The SICStus Prolog interface to the PPL library is available
+both as a statically linked module or as a dynamically linked one.
+Only SICStus Prolog version 3.9.0 or later is supported.
+
+<H5>The Statically Linked <CODE>ppl_sicstus</CODE> Executable</H5>
+
+If an appropriate version of SICStus Prolog is installed on the machine
+on which you compiled the library, the command <CODE>make install</CODE>
+will install the executable <CODE>ppl_sicstus</CODE> in the directory
+<CODE>prefix/bin</CODE>.
+The <CODE>ppl_sicstus</CODE> executable is simply the SICStus Prolog
+system with the Parma Polyhedra library statically linked.
+The only thing you should do to use the library is to
+load <CODE>prefix/lib/ppl/ppl_sicstus.pl</CODE>.
+
+<H5>Dynamic Linking</H5>
+
+In order to dynamically load the library from SICStus Prolog you should
+simply load <CODE>prefix/lib/ppl/ppl_sicstus.pl</CODE>.
+Notice that, for dynamic linking to work, you should have configured
+the library with the <CODE>--enable-shared</CODE> option.
+
+
+<H4>SWI-Prolog</H4>
+
+The SWI-Prolog interface of the library is available
+both as a statically linked module or as a dynamically linked one.
+Only SWI-Prolog version 5.0 or later is supported.
+
+<H5>The Statically Linked <CODE>ppl_pl</CODE> Executable</H5>
+
+If an appropriate version of SWI-Prolog is installed on the machine
+on which you compiled the library, the command <CODE>make install</CODE>
+will install the executable <CODE>ppl_pl</CODE> in the directory
+<CODE>prefix/bin</CODE>.
+The <CODE>ppl_pl</CODE> executable is simply the SWI-Prolog
+system with the Parma Polyhedra library statically linked:
+from within <CODE>ppl_pl</CODE> all the services of the library
+are available without further action.
+
+<H5>Dynamic Linking</H5>
+
+In order to dynamically load the library from SWI-Prolog you should
+simply load <CODE>prefix/lib/ppl/ppl_swiprolog.pl</CODE>.
+Notice that, for dynamic linking to work, you should have configured
+the library with the <CODE>--enable-shared</CODE> option.
+
+
+<H4>YAP</H4>
+
+The YAP Prolog interface to the PPL library is available
+as a dynamically linked module.
+Only YAP version 4.3.23 or later is supported.
+
+In order to dynamically load the library from YAP you should
+simply load <CODE>prefix/lib/ppl/ppl_yap.pl</CODE>.
+Notice that, for dynamic linking to work, you should have configured
+the library with the <CODE>--enable-shared</CODE> option.
+
+
 
 */
