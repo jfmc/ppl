@@ -25,7 +25,7 @@ site: http://www.cs.unipr.it/ppl/ . */
 #define PPL_BoundingBox_defs_hh 1
 
 #include "Integer.types.hh"
-#include "globals.hh"
+#include "globals.defs.hh"
 #include "Interval.defs.hh"
 #include <vector>
 #include <iosfwd>

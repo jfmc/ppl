@@ -26,7 +26,7 @@ site: http://www.cs.unipr.it/ppl/ . */
 #include "Matrix.defs.hh"
 #include "SatMatrix.defs.hh"
 #include "Polyhedron.defs.hh"
-#include "globals.hh"
+#include "globals.defs.hh"
 #include <cstddef>
 
 namespace PPL = Parma_Polyhedra_Library;

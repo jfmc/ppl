@@ -25,7 +25,7 @@ site: http://www.cs.unipr.it/ppl/ . */
 
 #include "Integer.defs.hh"
 #include "Row.defs.hh"
-#include "globals.hh"
+#include "globals.defs.hh"
 #include <algorithm>
 #include <iostream>
 

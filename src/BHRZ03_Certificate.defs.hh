@@ -26,7 +26,7 @@ site: http://www.cs.unipr.it/ppl/ . */
 
 #include "BHRZ03_Certificate.types.hh"
 #include "Polyhedron.types.hh"
-#include "globals.hh"
+#include "globals.defs.hh"
 #include <cassert>
 #include <vector>
 

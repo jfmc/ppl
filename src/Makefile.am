@@ -91,7 +91,7 @@ C_Polyhedron.types.hh \
 NNC_Polyhedron.types.hh \
 Integer.defs.hh \
 Integer.inlines.hh \
-globals.hh \
+globals.defs.hh \
 globals.inlines.hh \
 Interval.defs.hh \
 Interval.inlines.hh \
@@ -213,7 +213,7 @@ H79_Certificate.defs.hh \
 Polyhedron.defs.hh \
 C_Polyhedron.defs.hh \
 NNC_Polyhedron.defs.hh \
-globals.hh \
+globals.defs.hh \
 Widening_Function.types.hh \
 Widening_Function.defs.hh \
 Widening_Function.inlines.hh \

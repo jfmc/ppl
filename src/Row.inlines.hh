@@ -24,7 +24,7 @@ site: http://www.cs.unipr.it/ppl/ . */
 #ifndef PPL_Row_inlines_hh
 #define PPL_Row_inlines_hh 1
 
-#include "globals.hh"
+#include "globals.defs.hh"
 #include <cassert>
 #include <algorithm>
 

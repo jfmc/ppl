@@ -25,7 +25,7 @@ site: http://www.cs.unipr.it/ppl/ . */
 #define PPL_Polyhedron_defs_hh 1
 
 #include "Polyhedron.types.hh"
-#include "globals.hh"
+#include "globals.defs.hh"
 #include "Variable.defs.hh"
 #include "LinExpression.defs.hh"
 #include "ConSys.defs.hh"

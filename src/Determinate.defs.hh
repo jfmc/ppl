@@ -27,7 +27,7 @@ site: http://www.cs.unipr.it/ppl/ . */
 #include "Determinate.types.hh"
 #include "ConSys.types.hh"
 #include "Variable.defs.hh"
-#include "globals.hh"
+#include "globals.defs.hh"
 #include <iosfwd>
 #include <cassert>
 

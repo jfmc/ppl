@@ -25,7 +25,7 @@ site: http://www.cs.unipr.it/ppl/ . */
 #define PPL_Row_defs_hh 1
 
 #include "Row.types.hh"
-#include "globals.hh"
+#include "globals.defs.hh"
 #include "Topology.hh"
 #include "LinExpression.types.hh"
 #include "Constraint.types.hh"

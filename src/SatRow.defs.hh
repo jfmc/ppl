@@ -25,7 +25,7 @@ site: http://www.cs.unipr.it/ppl/ . */
 #define PPL_SatRow_defs_hh 1
 
 #include "SatRow.types.hh"
-#include "globals.hh"
+#include "globals.defs.hh"
 #include <iosfwd>
 #include <gmp.h>
 #include <vector>

@@ -24,7 +24,7 @@ site: http://www.cs.unipr.it/ppl/ . */
 #include <config.h>
 
 #include "Init.defs.hh"
-#include "globals.hh"
+#include "globals.defs.hh"
 #include "Variable.defs.hh"
 
 namespace PPL = Parma_Polyhedra_Library;
