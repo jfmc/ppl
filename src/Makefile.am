@@ -104,5 +104,8 @@ ppl.hh:	$(include_files) $(srcdir)/ppl.cc $(srcdir)/protect.sed $(srcdir)/restor
 	$(MYCPP) -C -P -nostdinc -Itmp \
 		@debug_flag@ -DOUTLINE=0 -DINLINE=inline \
 		-DPPL_INTERNAL=private ppl.cc >tmp.3
-	sed -f $(srcdir)/restore.sed <tmp.3 >ppl.hh
+	echo "#ifndef _ppl_hh" >ppl.hh
+	echo "#define _ppl_hh 1" >>ppl.hh
+	sed -f $(srcdir)/restore.sed <tmp.3 >>ppl.hh
+	echo "#endif" >>ppl.hh
 	rm -rf tmp* ppl.cc
