@@ -679,24 +679,42 @@ PPL::GenSys::satisfied_by_all_generators(const Constraint& c) const {
 	return false;
     break;
   case Constraint::NONSTRICT_INEQUALITY:
-    // Non-strict inequalities must be satisfied by all generators.
-    for (dimension_type i = gs.num_rows(); i-- > 0; )
-      if (sps_fp(c, gs[i]) < 0)
-	return false;
-    break;
-  case Constraint::STRICT_INEQUALITY:
-    // Strict inequalities must be satisfied by all generators
-    // and must not be saturated by points.
+    // Non-strict inequalities must be saturated by lines and
+    // satisfied by all the other generators.
     for (dimension_type i = gs.num_rows(); i-- > 0; ) {
       const Generator& g = gs[i];
-      if (g.is_point()) {
-	if (sps_fp(c, g) <= 0)
+      const int sp_sign = sps_fp(c, g);
+      if (g.is_line()) {
+	if (sp_sign != 0)
 	  return false;
       }
       else
-	// `g' is a line, ray or closure point.
-	if (sps_fp(c, g) < 0)
+	// `g' is a ray, point or closure point.
+	if (sp_sign < 0)
 	  return false;
+    }
+    break;
+  case Constraint::STRICT_INEQUALITY:
+    // Strict inequalities must be saturated by lines,
+    // satisfied by all generators, and must not be saturated by points.
+    for (dimension_type i = gs.num_rows(); i-- > 0; ) {
+      const Generator& g = gs[i];
+      const int sp_sign = sps_fp(c, g);
+      switch (g.type()) {
+      case Generator::POINT:
+	if (sp_sign <= 0)
+	  return false;
+	break;
+      case Generator::LINE:
+	if (sp_sign != 0)
+	  return false;
+	break;
+      default:
+	// `g' is a ray or closure point.
+	if (sp_sign < 0)
+	  return false;
+	break;
+      }
     }
     break;
   }
