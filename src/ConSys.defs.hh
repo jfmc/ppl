@@ -179,20 +179,20 @@ public:
 PPL_INTERNAL:
   //! Constructor: builds an empty system of constraints
   //! having the specified topology.
-  ConSys(Topology topology);
+  ConSys(Topology topol);
   //! Constructor: it builds a system of \p n_rows constraints
   //! on a \p n_columns - 1 dimensional space (including the
-  //! \f$\epsilon\f$ dimension, if \p topology is
+  //! \f$\epsilon\f$ dimension, if \p topol is
   //! <CODE>NOT_NECESSARILY_CLOSED</CODE>).
-  ConSys(Topology topology, size_t n_rows, size_t n_columns);
+  ConSys(Topology topol, size_t n_rows, size_t n_columns);
 
   //! Adjusts \p *this so that it matches the topology and
   //! the number of dimensions given as parameters
   //! (adding or removing columns if needed).
-  //! Returns <CODE>false</CODE> if and only if \p topology is
+  //! Returns <CODE>false</CODE> if and only if \p topol is
   //! equal to <CODE>NECESSARILY_CLOSED</CODE> and \p *this
   //! contains strict inequalities.
-  bool adjust_topology_and_dimension(Topology topology,
+  bool adjust_topology_and_dimension(Topology topol,
 				     size_t num_dimensions);
 
   //! Returns <CODE>true</CODE> if and only if \p *this

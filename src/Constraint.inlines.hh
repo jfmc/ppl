@@ -38,8 +38,8 @@ Constraint::Constraint(const Constraint& c)
 }
 
 inline
-Constraint::Constraint(const Constraint& c, size_t size)
-  : Row(c, size, size) {
+Constraint::Constraint(const Constraint& c, size_t sz)
+  : Row(c, sz, sz) {
 }
 
 inline

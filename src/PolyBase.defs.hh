@@ -337,31 +337,34 @@ public:
 protected:
   //! Ordinary copy-constructor.
   PolyBase(const PolyBase& y);
+
   //! Builds either the universe or the empty polyhedron of dimension
   //! \p num_dimensions, either necessarily closed or not.
-  explicit PolyBase(Topology topology,
+  explicit PolyBase(Topology topol,
 		    size_t num_dimensions,
 		    Degenerate_Kind kind);
+
   //! Builds a polyhedron from a system of constraints.
   //! The polyhedron inherits the space dimension of the constraint system.
-  //! \param topology The topology of the polyhedron;
+  //! \param topol    The topology of the polyhedron;
   //! \param cs       The system of constraints defining the polyhedron.
   //!                 It is not declared <CODE>const</CODE>
   //!                 because it can be modified.
   //! \exception std::invalid_argument thrown if the topology of \p cs
   //!                                  is incompatible with \p topology.
-  PolyBase(Topology topology, ConSys& cs);
+  PolyBase(Topology topol, ConSys& cs);
+
   //! Builds a polyhedron from a system of generators.
   //! The polyhedron inherits the space dimension of the generator system.
-  //! \param topology The topology of the polyhedron;
+  //! \param topol    The topology of the polyhedron;
   //! \param gs       The system of generators defining the polyhedron.
   //!                 It is not declared <CODE>const</CODE>
   //!                 because it can be modified.
   //! \exception std::invalid_argument thrown if if the topology of \p gs
-  //!                                  is incompatible with \p topology,
+  //!                                  is incompatible with \p topol,
   //!                                  or if the system of generators
   //!                                  is not empty but has no points.
-  PolyBase(Topology topology, GenSys& gs);
+  PolyBase(Topology topol, GenSys& gs);
   // Destructor
   ~PolyBase();
 

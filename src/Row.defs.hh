@@ -242,7 +242,7 @@ public:
 
   //! Builds the Row type by providing the two needed
   //! pieces of information.
-  Type(Topology topology, Kind kind);
+  Type(Topology topol, Kind kind);
 
   //! @name The four possible types of a Row object.
   //@{

@@ -38,8 +38,8 @@ Generator::Generator(const Generator& g)
 }
 
 inline
-Generator::Generator(const Generator& g, size_t size)
-  : Row(g, size, size) {
+Generator::Generator(const Generator& g, size_t sz)
+  : Row(g, sz, sz) {
 }
 
 inline

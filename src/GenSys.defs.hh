@@ -230,20 +230,20 @@ public:
 PPL_INTERNAL:
   //! Constructor: builds an empty system of generators
   //! having the specified topology.
-  GenSys(Topology topology);
+  GenSys(Topology topol);
   //! Constructor: it builds a system of \p n_rows rays/points
   //! on a \p n_columns - 1 dimensional space (including the
-  //! \f$\epsilon\f$ dimension, if \p topology is
+  //! \f$\epsilon\f$ dimension, if \p topol is
   //! <CODE>NOT_NECESSARILY_CLOSED</CODE>).
-  GenSys(Topology topology, size_t n_rows, size_t n_columns);
+  GenSys(Topology topol, size_t n_rows, size_t n_columns);
 
   //! Adjusts \p *this so that it matches the topology and
   //! the number of dimensions given as parameters
   //! (adding or removing columns if needed).
-  //! Returns <CODE>false</CODE> if and only if \p topology is
+  //! Returns <CODE>false</CODE> if and only if \p topol is
   //! equal to <CODE>NECESSARILY_CLOSED</CODE> and \p *this
   //! contains closure points.
-  bool adjust_topology_and_dimension(Topology topology,
+  bool adjust_topology_and_dimension(Topology topol,
 				     size_t num_dimensions);
 
   //! For each unmatched point in \p *this, adds the corresponding

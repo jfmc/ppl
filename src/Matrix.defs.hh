@@ -45,10 +45,10 @@ site: http://www.cs.unipr.it/ppl/ . */
 class Parma_Polyhedra_Library::Matrix {
 protected:
   //! Default constructor: builds a zero-matrix.
-  Matrix(Topology topology);
+  Matrix(Topology topol);
   //! Constructor: builds a sorted matrix with \p n_rows rows
   //! and \p n_columns columns.
-  Matrix(Topology topology, size_t n_rows, size_t n_columns);
+  Matrix(Topology topol, size_t n_rows, size_t n_columns);
   //! Copy-constructor.
   Matrix(const Matrix& y);
   //! Destructor.

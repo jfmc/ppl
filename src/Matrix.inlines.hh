@@ -42,9 +42,9 @@ Matrix::swap(Matrix& y) {
   The default constructor initializes the rows' size and capacity to \f$0\f$.
 */
 inline
-Matrix::Matrix(Topology topology)
+Matrix::Matrix(Topology topol)
   : rows(),
-    row_topology(topology),
+    row_topology(topol),
     row_size(0),
     row_capacity(0),
     sorted(true) {

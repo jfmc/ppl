@@ -42,13 +42,13 @@ ConSys::ConSys(const ConSys& cs)
 }
 
 inline
-ConSys::ConSys(Topology topology)
-  : Matrix(topology) {
+ConSys::ConSys(Topology topol)
+  : Matrix(topol) {
 }
 
 inline
-ConSys::ConSys(Topology topology, size_t n_rows, size_t n_columns)
-  : Matrix(topology, n_rows, n_columns) {
+ConSys::ConSys(Topology topol, size_t n_rows, size_t n_columns)
+  : Matrix(topol, n_rows, n_columns) {
 }
 
 inline

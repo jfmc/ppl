@@ -42,13 +42,13 @@ GenSys::GenSys(const GenSys& gs)
 }
 
 inline
-GenSys::GenSys(Topology topology)
-  : Matrix(topology) {
+GenSys::GenSys(Topology topol)
+  : Matrix(topol) {
 }
 
 inline
-GenSys::GenSys(Topology topology, size_t n_rows, size_t n_columns)
-  : Matrix(topology, n_rows, n_columns) {
+GenSys::GenSys(Topology topol, size_t n_rows, size_t n_columns)
+  : Matrix(topol, n_rows, n_columns) {
 }
 
 inline

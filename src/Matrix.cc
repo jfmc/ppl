@@ -49,23 +49,23 @@ PPL::Matrix::num_lines_or_equalities() const {
 }
 
 /*!
-  \param topology    The topology of the matrix that will be created.
+  \param topol       The topology of the matrix that will be created.
   \param n_rows      The number of rows of the matrix that will be created.
   \param n_columns   The number of columns of the matrix
                      that will be created.
 
   This constructor creates an unsorted \p n_rows \f$\times\f$ \p n_columns
   matrix whose rows are all initialized to rays or points or inequalities
-  of the given \p topology.
+  of the given topology.
 */
-PPL::Matrix::Matrix(Topology topology, size_t n_rows, size_t n_columns)
+PPL::Matrix::Matrix(Topology topol, size_t n_rows, size_t n_columns)
   : rows(n_rows),
-    row_topology(topology),
+    row_topology(topol),
     row_size(n_columns),
     row_capacity(compute_capacity(n_columns)),
     sorted(false) {
   // Build the appropriate row type.
-  Row::Type row_type(topology, Row::RAY_OR_POINT_OR_INEQUALITY);
+  Row::Type row_type(topol, Row::RAY_OR_POINT_OR_INEQUALITY);
   // Construct in direct order: will destroy in reverse order.
   for (size_t i = 0; i < n_rows; ++i)
     rows[i].construct(row_type, n_columns, row_capacity);

@@ -159,8 +159,8 @@ Row::Type::Type()
 #include <iostream>
 
 inline
-Row::Type::Type(Topology topology, Kind kind)
-  : flags(static_cast<flags_t>(topology | (kind << 1))) {
+Row::Type::Type(Topology topol, Kind kind)
+  : flags(static_cast<flags_t>(topol | (kind << 1))) {
 }
 
 inline const Row::Type&
