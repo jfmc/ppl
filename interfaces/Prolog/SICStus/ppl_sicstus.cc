@@ -478,7 +478,7 @@ build_constraint(SP_term_ref t) {
       SP_get_arg(1, t, arg1);
       SP_get_arg(2, t, arg2);
       if (functor == a_equal)
-	// ==
+	// =
 	if (SP_is_integer(arg1))
 	  return integer_term_to_Integer(arg1) == build_lin_expression(arg2);
 	else if (SP_is_integer(arg2))
