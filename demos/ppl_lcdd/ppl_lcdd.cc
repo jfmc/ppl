@@ -615,8 +615,8 @@ write_polyhedron(std::ostream& out,
 	  if (g.coefficient(PPL::Variable(j)) == 0)
 	    guarded_write(out, '0');
 	  else
-	    guarded_write(out, mpq_class(g.coefficient(PPL::Variable(j)),
-					 divisor));
+	    guarded_write(out, mpq_class(mpz_class(g.coefficient(PPL::Variable(j))),
+					 mpz_class(divisor)));
 	}
       }
       else {
