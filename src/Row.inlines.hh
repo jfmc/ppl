@@ -24,14 +24,15 @@ site: http://www.cs.unipr.it/ppl/ . */
 #include <cassert>
 #include <algorithm>
 
+namespace Parma_Polyhedra_Library {
+
 /*!
   Allocates a chunk of memory able to contain \p capacity Integer objects
   beyond the specified \p fixed_size and returns a pointer to the new
   allocated memory.
 */
 inline void*
-Parma_Polyhedra_Library::Row::Impl::operator
-new(size_t fixed_size, size_t capacity) {
+Row::Impl::operator new(size_t fixed_size, size_t capacity) {
   return ::operator new(fixed_size + capacity*sizeof(Integer));
 }
 
@@ -41,7 +42,7 @@ new(size_t fixed_size, size_t capacity) {
   \p p points to.
 */
 inline void
-Parma_Polyhedra_Library::Row::Impl::operator delete(void* p) {
+Row::Impl::operator delete(void* p) {
   ::operator delete(p);
 }
 
@@ -51,7 +52,7 @@ Parma_Polyhedra_Library::Row::Impl::operator delete(void* p) {
   uses the standard operator delete to free the memory \p p points to.
 */
 inline void
-Parma_Polyhedra_Library::Row::Impl::operator delete(void* p, size_t) {
+Row::Impl::operator delete(void* p, size_t) {
   ::operator delete(p);
 }
 
@@ -59,8 +60,8 @@ Parma_Polyhedra_Library::Row::Impl::operator delete(void* p, size_t) {
 /*!
   Returns the type of the row \p this points to.
 */
-inline Parma_Polyhedra_Library::Row::Type
-Parma_Polyhedra_Library::Row::Impl::type() const {
+inline Row::Type
+Row::Impl::type() const {
   return type_;
 }
 
@@ -68,7 +69,7 @@ Parma_Polyhedra_Library::Row::Impl::type() const {
   Returns the type of the row \p this points to.
 */
 inline void
-Parma_Polyhedra_Library::Row::Impl::set_type(Type t) {
+Row::Impl::set_type(Type t) {
   type_ = t;
 }
 
@@ -76,7 +77,7 @@ Parma_Polyhedra_Library::Row::Impl::set_type(Type t) {
   Returns the actual size of the row \p this points to.
 */
 inline size_t
-Parma_Polyhedra_Library::Row::Impl::size() const {
+Row::Impl::size() const {
   return size_;
 }
 
@@ -85,7 +86,7 @@ Parma_Polyhedra_Library::Row::Impl::size() const {
   Sets to \p new_size the actual size of \p *this.
 */
 inline void
-Parma_Polyhedra_Library::Row::Impl::set_size(size_t new_size) {
+Row::Impl::set_size(size_t new_size) {
   size_ = new_size;
 }
 
@@ -94,7 +95,7 @@ Parma_Polyhedra_Library::Row::Impl::set_size(size_t new_size) {
   Increment the size of \p *this by 1.
 */
 inline void
-Parma_Polyhedra_Library::Row::Impl::bump_size() {
+Row::Impl::bump_size() {
   ++size_;
 }
 
@@ -105,7 +106,7 @@ Parma_Polyhedra_Library::Row::Impl::bump_size() {
   otherwise it is grown without copying the old contents.
 */
 inline void
-Parma_Polyhedra_Library::Row::Impl::resize_no_copy(size_t new_size) {
+Row::Impl::resize_no_copy(size_t new_size) {
   if (new_size < size())
     shrink(new_size);
   else
@@ -114,20 +115,20 @@ Parma_Polyhedra_Library::Row::Impl::resize_no_copy(size_t new_size) {
 
 
 inline
-Parma_Polyhedra_Library::Row::Impl::Impl(Type type, size_t size)
+Row::Impl::Impl(Type type, size_t size)
   : size_(0), type_(type) {
   grow_no_copy(size);
 }
 
 
 inline
-Parma_Polyhedra_Library::Row::Impl::Impl(const Impl& y)
+Row::Impl::Impl(const Impl& y)
   : size_(0), type_(y.type()) {
   copy_construct(y);
 }
 
 inline
-Parma_Polyhedra_Library::Row::Impl::Impl(const Impl& y, size_t size)
+Row::Impl::Impl(const Impl& y, size_t size)
   : size_(0), type_(y.type()) {
   copy_construct(y);
   grow_no_copy(size);
@@ -139,7 +140,7 @@ Parma_Polyhedra_Library::Row::Impl::Impl(const Impl& y, size_t size)
   to delete all the row elements.
 */
 inline
-Parma_Polyhedra_Library::Row::Impl::~Impl() {
+Row::Impl::~Impl() {
   shrink(0);
 }
 
@@ -147,8 +148,8 @@ Parma_Polyhedra_Library::Row::Impl::~Impl() {
 /*!
   Returns a reference to the \p k-th element of \p *this row.
 */
-inline Parma_Polyhedra_Library::Integer&
-Parma_Polyhedra_Library::Row::Impl::operator [](size_t k) {
+inline Integer&
+Row::Impl::operator [](size_t k) {
   assert(k < size());
   return vec_[k];
 }
@@ -157,8 +158,8 @@ Parma_Polyhedra_Library::Row::Impl::operator [](size_t k) {
 /*!
   Returns a constant reference to the \p k-th element of \p *this row.
 */
-inline const Parma_Polyhedra_Library::Integer&
-Parma_Polyhedra_Library::Row::Impl::operator [](size_t k) const {
+inline const Integer&
+Row::Impl::operator [](size_t k) const {
   assert(k < size());
   return vec_[k];
 }
@@ -168,7 +169,7 @@ Parma_Polyhedra_Library::Row::Impl::operator [](size_t k) const {
   All elements of the row are initialized to \f$0\f$.
 */
 inline
-Parma_Polyhedra_Library::Row::Row()
+Row::Row()
   : impl(0) {
 }
 
@@ -183,9 +184,7 @@ Parma_Polyhedra_Library::Row::Row()
   that has to be considered is \p size.
 */
 inline void
-Parma_Polyhedra_Library::Row::construct(Type type,
-					size_t size,
-					size_t capacity) {
+Row::construct(Type type, size_t size, size_t capacity) {
   assert(capacity >= size);
   impl = new (capacity) Impl(type, size);
 }
@@ -195,22 +194,22 @@ Parma_Polyhedra_Library::Row::construct(Type type,
   Builds a row having the capacity equal to its \p size.
 */
 inline void
-Parma_Polyhedra_Library::Row::construct(Type type, size_t size) {
+Row::construct(Type type, size_t size) {
   construct(type, size, size);
 }
 
 inline
-Parma_Polyhedra_Library::Row::Row(Type type, size_t size, size_t capacity) {
+Row::Row(Type type, size_t size, size_t capacity) {
   construct(type, size, capacity);
 }
 
 inline
-Parma_Polyhedra_Library::Row::Row(Type type, size_t size) {
+Row::Row(Type type, size_t size) {
   construct(type, size);
 }
 
 inline
-Parma_Polyhedra_Library::Row::Row(const Row& y)
+Row::Row(const Row& y)
   : impl(y.impl ? new (y.impl->size()) Impl(*y.impl) : 0) {
 }
 
@@ -219,7 +218,7 @@ Parma_Polyhedra_Library::Row::Row(const Row& y)
   Returns the size of \p *this row.
 */
 inline size_t
-Parma_Polyhedra_Library::Row::size() const {
+Row::size() const {
   return impl->size();
 }
 
@@ -229,7 +228,7 @@ Parma_Polyhedra_Library::Row::size() const {
   provided it is greater than or equal to \p y size.
 */
 inline
-Parma_Polyhedra_Library::Row::Row(const Row& y, size_t capacity) {
+Row::Row(const Row& y, size_t capacity) {
   assert(capacity >= y.size());
   impl = y.impl ? new (capacity) Impl(*y.impl) : 0;
 }
@@ -240,13 +239,13 @@ Parma_Polyhedra_Library::Row::Row(const Row& y, size_t capacity) {
   Of course, \p size must also be less than or equal to \p capacity.
 */
 inline
-Parma_Polyhedra_Library::Row::Row(const Row& y, size_t size, size_t capacity) {
+Row::Row(const Row& y, size_t size, size_t capacity) {
   assert(capacity >= y.size());
   impl = y.impl ? new (capacity) Impl(*y.impl, size) : 0;
 }
 
 inline
-Parma_Polyhedra_Library::Row::~Row() {
+Row::~Row() {
   delete impl;
 }
 
@@ -255,7 +254,7 @@ Parma_Polyhedra_Library::Row::~Row() {
   otherwise grows the row without copying the old contents.
 */
 inline void
-Parma_Polyhedra_Library::Row::resize_no_copy(size_t new_size) {
+Row::resize_no_copy(size_t new_size) {
   assert(impl);
   impl->resize_no_copy(new_size);
 }
@@ -265,7 +264,7 @@ Parma_Polyhedra_Library::Row::resize_no_copy(size_t new_size) {
   size \p new_size.
 */
 inline void
-Parma_Polyhedra_Library::Row::grow_no_copy(size_t new_size) {
+Row::grow_no_copy(size_t new_size) {
   assert(impl);
   impl->grow_no_copy(new_size);
 }
@@ -275,28 +274,18 @@ Parma_Polyhedra_Library::Row::grow_no_copy(size_t new_size) {
   the end.
 */
 inline void
-Parma_Polyhedra_Library::Row::shrink(size_t new_size) {
+Row::shrink(size_t new_size) {
   assert(impl);
   impl->shrink(new_size);
 }
 
 inline void
-Parma_Polyhedra_Library::Row::swap(Row& y) {
+Row::swap(Row& y) {
   std::swap(impl, y.impl);
 }
 
-/*!
-  Specialize <CODE>std::swap</CODE> to use the fast swap that is
-  provided as a member function instead of using the default
-  algorithm (which creates a temporary and uses assignment).
-*/
-inline void
-std::swap(Parma_Polyhedra_Library::Row& x, Parma_Polyhedra_Library::Row& y) {
-  x.swap(y);
-}
-
-inline Parma_Polyhedra_Library::Row&
-Parma_Polyhedra_Library::Row::operator =(const Row& y) {
+inline Row&
+Row::operator =(const Row& y) {
   // Copy-construct `tmp' from `y'.
   Row tmp(y);
   // Swap the implementation of `*this' with the one of `tmp'.
@@ -306,8 +295,8 @@ Parma_Polyhedra_Library::Row::operator =(const Row& y) {
 }
 
 
-inline Parma_Polyhedra_Library::Row::Type
-Parma_Polyhedra_Library::Row::type() const {
+inline Row::Type
+Row::type() const {
   return impl->type();
 }
 
@@ -317,7 +306,7 @@ Parma_Polyhedra_Library::Row::type() const {
   an equality; <CODE>false</CODE> otherwise.
 */
 inline bool
-Parma_Polyhedra_Library::Row::is_line_or_equality() const {
+Row::is_line_or_equality() const {
   return type() == LINE_OR_EQUALITY;
 }
 
@@ -327,7 +316,7 @@ Parma_Polyhedra_Library::Row::is_line_or_equality() const {
   inequality; <CODE>false</CODE> otherwise.
 */
 inline bool
-Parma_Polyhedra_Library::Row::is_ray_or_vertex_or_inequality() const {
+Row::is_ray_or_vertex_or_inequality() const {
   return type() == RAY_OR_VERTEX_OR_INEQUALITY;
 }
 
@@ -336,7 +325,7 @@ Parma_Polyhedra_Library::Row::is_ray_or_vertex_or_inequality() const {
   Sets to \p LINE_OR_EQUALITY the type of \p *this row.
 */
 inline void
-Parma_Polyhedra_Library::Row::set_is_line_or_equality() {
+Row::set_is_line_or_equality() {
   impl->set_type(LINE_OR_EQUALITY);
 }
 
@@ -345,7 +334,7 @@ Parma_Polyhedra_Library::Row::set_is_line_or_equality() {
   Sets to \p RAY_OR_VERTEX_OR_INEQUALITY the type of \p *this row.
 */
 inline void
-Parma_Polyhedra_Library::Row::set_is_ray_or_vertex_or_inequality() {
+Row::set_is_ray_or_vertex_or_inequality() {
   impl->set_type(RAY_OR_VERTEX_OR_INEQUALITY);
 }
 
@@ -353,8 +342,8 @@ Parma_Polyhedra_Library::Row::set_is_ray_or_vertex_or_inequality() {
 /*!
   Returns a reference to the element of the row indexed by \p k.
 */
-inline Parma_Polyhedra_Library::Integer&
-Parma_Polyhedra_Library::Row::operator [](size_t k) {
+inline Integer&
+Row::operator [](size_t k) {
   return (*impl)[k];
 }
 
@@ -362,49 +351,62 @@ Parma_Polyhedra_Library::Row::operator [](size_t k) {
 /*!
   Returns a constant reference to the element of the row indexed by \p k.
 */
-inline const Parma_Polyhedra_Library::Integer&
-Parma_Polyhedra_Library::Row::operator [](size_t k) const {
+inline const Integer&
+Row::operator [](size_t k) const {
   return (*impl)[k];
 }
 
-inline const Parma_Polyhedra_Library::Integer&
-Parma_Polyhedra_Library::Row::coefficient() const {
+inline const Integer&
+Row::coefficient() const {
   return (*this)[0];
 }
 
-inline const Parma_Polyhedra_Library::Integer&
-Parma_Polyhedra_Library::Row::coefficient(size_t k) const {
+inline const Integer&
+Row::coefficient(size_t k) const {
   return (*this)[k+1];
 }
 
 
 
 inline bool
-Parma_Polyhedra_Library::operator ==(const Row& x, const Row& y) {
+operator ==(const Row& x, const Row& y) {
   return compare(x, y) == 0;
 }
 
 inline bool
-Parma_Polyhedra_Library::operator !=(const Row& x, const Row& y) {
+operator !=(const Row& x, const Row& y) {
   return compare(x, y) != 0;
 }
 
 inline bool
-Parma_Polyhedra_Library::operator <=(const Row& x, const Row& y) {
+operator <=(const Row& x, const Row& y) {
   return compare(x, y) <= 0;
 }
 
 inline bool
-Parma_Polyhedra_Library::operator <(const Row& x, const Row& y) {
+operator <(const Row& x, const Row& y) {
   return compare(x, y) < 0;
 }
 
 inline bool
-Parma_Polyhedra_Library::operator >=(const Row& x, const Row& y) {
+operator >=(const Row& x, const Row& y) {
   return compare(x, y) >= 0;
 }
 
 inline bool
-Parma_Polyhedra_Library::operator >(const Row& x, const Row& y) {
+operator >(const Row& x, const Row& y) {
   return compare(x, y) > 0;
+}
+
+} // namespace Parma_Polyhedra_Library
+
+
+/*!
+  Specialize <CODE>std::swap</CODE> to use the fast swap that is
+  provided as a member function instead of using the default
+  algorithm (which creates a temporary and uses assignment).
+*/
+inline void
+std::swap(Parma_Polyhedra_Library::Row& x, Parma_Polyhedra_Library::Row& y) {
+  x.swap(y);
 }

@@ -1424,7 +1424,7 @@ PPL::Polyhedron::add_generators(GenSys& gs) {
 }
 
 std::ostream&
-PPL::operator <<(std::ostream& s, const PPL::Polyhedron& p) {
+PPL::operator <<(std::ostream& s, const Polyhedron& p) {
   using std::endl;
 
   s << "space_dim "
@@ -1457,7 +1457,7 @@ PPL::operator <<(std::ostream& s, const PPL::Polyhedron& p) {
 }
 
 std::istream&
-PPL::operator >>(std::istream& s, PPL::Polyhedron& p) {
+PPL::operator >>(std::istream& s, Polyhedron& p) {
   std::string str;
 
   s >> str;

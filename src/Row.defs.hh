@@ -162,21 +162,25 @@ namespace Parma_Polyhedra_Library {
 
 #ifdef PPL_DOXYGEN_INCLUDE_IMPLEMENTATION_DETAILS
   //! Computes the scalar product between \p x and \p y.
+  /*! \relates Row */
 #endif // PPL_DOXYGEN_INCLUDE_IMPLEMENTATION_DETAILS
   Integer operator *(const Row& x, const Row& y);
 
 #ifdef PPL_DOXYGEN_INCLUDE_IMPLEMENTATION_DETAILS
-  //! Computes the scalar product between \p x and \p y if the 
-  //! size of \p x is less then the size of \p y.
+  //! Computes the scalar product between \p x and \p y
+  //! when the size of \p x is less than or equal to the size of \p y.
+  /*! \relates Row */
 #endif // PPL_DOXYGEN_INCLUDE_IMPLEMENTATION_DETAILS
   Integer projected_scalar_prod(const Row& x, const Row& y);
 
 #ifdef PPL_DOXYGEN_INCLUDE_IMPLEMENTATION_DETAILS
   //! The basic comparison function.
+  /*! \relates Row */
 #endif // PPL_DOXYGEN_INCLUDE_IMPLEMENTATION_DETAILS
   int compare(const Row& x, const Row& y);
   
   //! @name Classical comparison operators.
+  /*! \relates Row */
   //@{
   bool operator ==(const Row& x, const Row& y);
   bool operator !=(const Row& x, const Row& y);
@@ -253,7 +257,8 @@ namespace std {
     (which creates a temporary and uses assignment).
   */
 #endif // PPL_DOXYGEN_INCLUDE_IMPLEMENTATION_DETAILS
-  void swap(Parma_Polyhedra_Library::Row& x, Parma_Polyhedra_Library::Row& y);
+  void swap(Parma_Polyhedra_Library::Row& x,
+		 Parma_Polyhedra_Library::Row& y);
 }
 
 #include "Row.inlines.hh"
