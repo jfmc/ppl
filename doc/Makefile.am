@@ -30,17 +30,20 @@ VPATH = @srcdir@
 # All the documentation in docdir.
 docdir = @docdir@
 dvidir = $(docdir)
-psdir = $(docdir)
-pdfdir = $(docdir)
 htmldir = $(docdir)
+pdfdir = $(docdir)
+psdir = $(docdir)
+txtdir = $(docdir)
 
 DOXYGEN = doxygen
 
 LICENSES = \
 gpl.pdf \
 gpl.ps.gz \
+gpl.txt \
 fdl.pdf \
-fdl.ps.gz
+fdl.ps.gz \
+fdl.txt
 
 HTML_DIRS = \
 ppl-user-@VERSION@-html \
@@ -61,6 +64,7 @@ ppl-devref-@VERSION@-html.tar.gz
 # We distribute some preprocessed user's documentation, both for
 # browsing and for printing.
 DIST_DOCS = \
+$(LICENSES) \
 ppl-user-@VERSION@-browse.pdf \
 ppl-user-@VERSION@-print.pdf \
 ppl-user-@VERSION@-print.ps.gz \
@@ -75,12 +79,12 @@ user-browse: ppl-user-@VERSION@-browse.pdf
 
 world: $(ALL_TARGETS)
 
-install-data-local: install-html install-pdf install-ps
-installdirs-local: installdirs-html installdirs-pdf installdirs-ps
-uninstall-local: uninstall-html uninstall-pdf uninstall-ps
+install-data-local: install-html install-pdf install-ps install-txt
+installdirs-local: installdirs-html installdirs-pdf installdirs-ps installdirs-txt
+uninstall-local: uninstall-html uninstall-pdf uninstall-ps uninstall-txt
 
 # Installation and uninstallation of HTML documentation.
-install-html: # ppl-user-@VERSION@-html.tar.gz
+install-html:
 	$(mkinstalldirs) $(DESTDIR)$(htmldir)/ppl-user-@VERSION@-html
 	tar zxf `if test -f ppl-user-@VERSION@-html.tar.gz; then echo .; else echo $(srcdir); fi`/ppl-user-@VERSION@-html.tar.gz
 	for file in ppl-user-@VERSION@-html/*; do \
@@ -94,10 +98,10 @@ uninstall-html:
 	rm -rf $(DESTDIR)$(htmldir)/ppl-user-@VERSION@-html
 
 # Installation and uninstallation of PDF documentation.
-install-pdf: # ppl-user-@VERSION@-browse.pdf ppl-user-@VERSION@-print.pdf
+install-pdf:
 	$(mkinstalldirs) $(DESTDIR)$(pdfdir)
-	for file in `if test -f ppl-user-@VERSION@-*.pdf; then echo .; else echo $(srcdir); fi`/ppl-user-@VERSION@-*.pdf; do \
-	  $(INSTALL_DATA) $$file $(DESTDIR)$(htmldir)/`basename $$file`; \
+	for file in `if test -f ppl-user-@VERSION@-browse.pdf; then echo .; else echo $(srcdir); fi`/*.pdf; do \
+	  $(INSTALL_DATA) $$file $(DESTDIR)$(pdfdir)/`basename $$file`; \
 	done
 
 installdirs-pdf:
@@ -107,15 +111,34 @@ uninstall-pdf:
 	rm -f $(DESTDIR)$(pdfdir)/ppl-user-@VERSION@-*.pdf
 
 # Installation and uninstallation of PostScript documentation.
-install-ps: # ppl-user-@VERSION@-print.ps.gz
+install-ps:
 	$(mkinstalldirs) $(DESTDIR)$(psdir)
-	$(INSTALL_DATA) `if test -f ppl-user-@VERSION@-print.ps.gz; then echo .; else echo $(srcdir); fi`/ppl-user-@VERSION@-print.ps.gz $(DESTDIR)$(psdir)/ppl-user-@VERSION@-print.ps.gz
+	for file in `if test -f ppl-user-@VERSION@-print.ps.gz; then echo .; else echo $(srcdir); fi`/*.ps.gz; do \
+	  $(INSTALL_DATA) $$file $(DESTDIR)$(psdir)/`basename $$file`; \
+	done
 
 installdirs-ps:
 	$(mkinstalldirs) $(DESTDIR)$(psdir)
 
 uninstall-ps:
-	rm -f $(DESTDIR)$(psdir)/ppl-user-@VERSION@-print.ps.gz
+	rm -f $(DESTDIR)$(psdir)/*.ps.gz
+
+# Installation and uninstallation of pure text documentation.
+install-txt:
+	$(mkinstalldirs) $(DESTDIR)$(txtdir)
+	for file in $(srcdir)/*.txt; do \
+	  $(INSTALL_DATA) $$file $(DESTDIR)$(txtdir)/`basename $$file`; \
+	done
+	for file in BUGS COPYING CREDITS ChangeLog NEWS README README.configure ; do \
+	  $(INSTALL_DATA) $(srcdir)/../$$file $(DESTDIR)$(txtdir)/$$file; \
+	done
+	$(INSTALL_DATA) $(srcdir)/README $(DESTDIR)$(txtdir)/README.doc
+
+installdirs-txt:
+	$(mkinstalldirs) $(DESTDIR)$(txtdir)
+
+uninstall-txt:
+	rm -f $(DESTDIR)$(psdir)/*.txt
 
 
 PPL_SOURCE_FILES = $(wildcard $(srcdir)/../src/*.hh $(srcdir)/../src/*.cc)
