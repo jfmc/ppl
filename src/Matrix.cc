@@ -148,10 +148,31 @@ PPL::Matrix::resize_no_copy(size_t new_num_rows, size_t new_num_columns) {
   if (new_num_rows > old_num_rows) {
     if (new_num_columns <= row_capacity) {
       // We can recycle the old rows.
-      rows.insert(rows.end(), new_num_rows - old_num_rows, Row());
-      for (size_t i = old_num_rows; i < new_num_rows; ++i)
-	rows[i].construct(Row::LINE_OR_EQUALITY,
-			  new_num_columns, row_capacity);
+      if (rows.capacity() < new_num_rows) {
+	// Reallocation will take place.
+	std::vector<Row> new_rows;
+	new_rows.reserve(compute_capacity(new_num_rows));
+	new_rows.resize(new_num_rows);
+	// Put the new rows in place.
+	size_t i = new_num_rows;
+	while (i-- > old_num_rows) {
+	  Row new_row(Row::LINE_OR_EQUALITY, new_num_columns, row_capacity);
+	  std::swap(new_rows[i], new_row);
+	}
+	// Steal the old rows.
+	++i;
+	while (i-- > 0)
+	  new_rows[i].swap(rows[i]);
+	// Put the new vector into place.
+	std::swap(rows, new_rows);
+      }
+      else {
+	// Reallocation will NOT take place.
+	rows.insert(rows.end(), new_num_rows - old_num_rows, Row());
+	for (size_t i = new_num_rows; i-- > old_num_rows; )
+	  rows[i].construct(Row::LINE_OR_EQUALITY,
+			    new_num_columns, row_capacity);
+      }
       // Even though `*this' may happen to keep its sortedness,
       // we feel checking that this is the case is not worth the effort.
       // Moreover, it is very likely the matrix will be overwritten
@@ -434,7 +455,7 @@ PPL::Matrix::add_row(Row::Type type) {
     // Steal the old rows.
     while (i-- > 0)
       new_rows[i].swap(rows[i]);
-    // Put the new rows into place.
+    // Put the new vector into place.
     std::swap(rows, new_rows);
   }
   else
