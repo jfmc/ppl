@@ -401,9 +401,6 @@ PPL::Polyhedron::is_BHRZ03_stabilizing(const Polyhedron& x,
   const dimension_type y_dimension =
     y.space_dim - y.con_sys.num_equalities();
   if (x_dimension > y_dimension) {
-#if 0
-    std::cout << "BHRZ03_stabilizing: number of dimensions" << std::endl;
-#endif
 #if PPL_STATISTICS
     statistics->reason.poly_dim++;
 #endif
@@ -421,9 +418,6 @@ PPL::Polyhedron::is_BHRZ03_stabilizing(const Polyhedron& x,
   const dimension_type x_num_lines = x.gen_sys.num_lines();
   const dimension_type y_num_lines = y.gen_sys.num_lines();
   if (x_num_lines > y_num_lines) {
-#if 0
-    std::cout << "BHRZ03_stabilizing: lineality space" << std::endl;
-#endif
 #if PPL_STATISTICS
     statistics->reason.lin_space_dim++;
 #endif
@@ -449,9 +443,6 @@ PPL::Polyhedron::is_BHRZ03_stabilizing(const Polyhedron& x,
 	 y_cs_end = y.con_sys.end(); i != y_cs_end; ++i)
     y_con_sys_num_rows++;
   if (x_con_sys_num_rows < y_con_sys_num_rows) {
-#if 0
-    std::cout << "BHRZ03_stabilizing: number of constraints" << std::endl;
-#endif
 #if PPL_STATISTICS
     statistics->reason.num_constraints++;
 #endif
@@ -470,9 +461,6 @@ PPL::Polyhedron::is_BHRZ03_stabilizing(const Polyhedron& x,
     const dimension_type y_num_points
       = y_gen_sys_num_rows - y_num_lines - y.gen_sys.num_rays();
     if (x_num_points < y_num_points) {
-#if 0
-      std::cout << "BHRZ03_stabilizing: number of points" << std::endl;
-#endif
 #if PPL_STATISTICS
       statistics->reason.num_points++;
 #endif
@@ -497,10 +485,6 @@ PPL::Polyhedron::is_BHRZ03_stabilizing(const Polyhedron& x,
     // If the number of closure points of `x' is smaller than
     // the number of closure points of `y', the chain is stabilizing.
     if (x_num_closure_points < y_num_closure_points) {
-#if 0
-      std::cout << "BHRZ03_stabilizing: number of closure points"
-		<< std::endl;
-#endif
 #if PPL_STATISTICS
       statistics->reason.num_points++;
 #endif
@@ -548,9 +532,6 @@ PPL::Polyhedron::is_BHRZ03_stabilizing(const Polyhedron& x,
       // Not stabilizing.
       break;
     if (x_num_rays[i] < y_num_rays[i]) {
-#if 0
-      std::cout << "BHRZ03_stabilizing: zero-coord rays" << std::endl;
-#endif
 #if PPL_STATISTICS
       statistics->reason.zero_coord_rays++;
 #endif
