@@ -24,7 +24,7 @@
 # Process this file with autoconf to produce a configure script.
 
 # Every other copy of the package version number gets its value from here.
-AC_INIT([the Parma Polyhedra Library],[0.7pre2],[ppl-devel@cs.unipr.it],[ppl])
+AC_INIT([the Parma Polyhedra Library],[0.7pre3],[ppl-devel@cs.unipr.it],[ppl])
 
 # Minimum autoconf version required.
 AC_PREREQ(2.59)
@@ -70,6 +70,7 @@ AC_CONFIG_HEADER(config.h)
 ISODATE=`date +%Y-%m-%d`
 AC_SUBST(ISODATE)
 
+# Check for host type.
 AC_CANONICAL_HOST
 
 AH_TOP([
@@ -588,6 +589,15 @@ if test x"$GXX" = xyes
 then
   CXXFLAGS="-W -Wall $CXXFLAGS"
 fi
+
+case $host in
+*-*-cygwin* | *-*-mingw*)
+  extra_includes="${extra_includes} -I/usr/include/mingw"
+  extra_libraries="${extra_libraries} -L/usr/lib/mingw -lmingwex"
+  ;;
+*)
+  ;;
+esac
 
 AC_SUBST(extra_includes)
 AC_SUBST(extra_libraries)

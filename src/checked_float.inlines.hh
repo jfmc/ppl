@@ -24,20 +24,10 @@ site: http://www.cs.unipr.it/ppl/ . */
 #ifndef PPL_checked_float_inlines_hh
 #define PPL_checked_float_inlines_hh 1
 
+#include "float.types.hh"
 #include <cassert>
 #include <cmath>
-#ifdef __CYGWIN__
-// Not C99 conformant
-// Please do not remove the space separating `#' from `include':
-// this ensures that the directive will not be moved during the
-// procedure that automatically creates the library's include file
-// (see `Makefile.am' in the `src' directory).
-# include <mingw/fenv.h>
-#else
-# include <fenv.h>
-#endif
-
-#include "float.types.hh"
+#include <fenv.h>
 
 #define USE_FPU_ROUNDING_MODE
 #define USE_FPU_INEXACT
