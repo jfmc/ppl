@@ -75,7 +75,7 @@ public:
   //! Clears the bit in position \p k.
   void clear(unsigned int k);
 
-  //! Clears bits from position \p k (included) onwards.
+  //! Clears bits from position \p k (included) onward.
   void clear_from(unsigned int k);
 
   //! Clears all the bit of the row.

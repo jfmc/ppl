@@ -311,7 +311,7 @@ Polyhedron::Polyhedron(Topology topol, const Box& box)
   // Initialize the space dimension as indicated by the box.
   space_dim = box.space_dimension();
 
-  // Check for emptyness.
+  // Check for emptiness.
   if (box.is_empty()) {
     set_empty();
     return;
@@ -507,7 +507,7 @@ Polyhedron::shrink_bounding_box(Box& box, Complexity_Class complexity) const {
 	case Constraint::NONSTRICT_INEQUALITY:
 	case Constraint::STRICT_INEQUALITY:
 	  if (d > 0)
-	  // If `d' is strictly positive, we have a constraint ofthe
+	  // If `d' is strictly positive, we have a constraint of the
 	  // form `Variable(varid) >= k' or `Variable(varid) > k'.
 	    lower_bound[varid]
 	      = LBoundary(r, (c_type == Constraint::NONSTRICT_INEQUALITY 

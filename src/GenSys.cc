@@ -742,7 +742,7 @@ PPL::GenSys::affine_image(dimension_type v,
 	  x[i][j] *= denominator;
   }
 
-  // If the mapping is not invertible we may have trasformed
+  // If the mapping is not invertible we may have transformed
   // valid lines and rays into the origin of the space.
   bool not_invertible = (v > expr.space_dimension() || expr[v] == 0);
   if (not_invertible)

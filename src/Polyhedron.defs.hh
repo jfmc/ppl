@@ -299,7 +299,7 @@ bool are_disjoint(const Polyhedron& x, const Polyhedron& y);
     In this example the starting polyhedron is a square in
     \f$\Rset^2\f$, the considered variable is \f$x\f$ and the affine
     expression is \f$x+4\f$.  The resulting polyhedron is the same
-    square translated towards right.  Moreover, if the affine
+    square translated to the right.  Moreover, if the affine
     transformation for the same variable \p x is \f$x+y\f$:
     \code
   LinExpression coeff = x + y;
@@ -329,7 +329,7 @@ bool are_disjoint(const Polyhedron& x, const Polyhedron& y);
     In this example the starting polyhedron, \p var and the affine
     expression and the denominator are the same as in Example 6,
     while the resulting polyhedron is again the same square,
-    but translated towards left.
+    but translated to the left.
     Moreover, if the affine transformation for \p x is \f$x+y\f$
     \code
   LinExpression coeff = x + y;
@@ -1229,7 +1229,7 @@ public:
   //! Renames the dimensions of a polyhedron
   //! according to a partial injective function.
   /*!
-    \param pifunc   The partial injective function specifyng
+    \param pifunc   The partial injective function specifying
                     the destiny of each dimension.
 
     The dimensions for which \p pifunc is undefined are projected away.

@@ -284,8 +284,8 @@ namespace PPL = Parma_Polyhedra_Library;
   \f[
     \vect{x} = \lambda \vect{r}_1 + \mu \vect{r}_2.
   \f]
-  This combination is non-negative because there exixt at least a
-  constraints \f$c\f$ saturated by \f$\vect{r}_1\f$ and not
+  This combination is non-negative because there exists at least a
+  constraint \f$c\f$ saturated by \f$\vect{r}_1\f$ and not
   \f$\vect{r}_2\f$ (or vice versa) (because they are distinct) for which
   \f[
     \langle \vect{c}, \vect{x} \rangle \geq 0
@@ -619,7 +619,7 @@ PPL::Polyhedron::conversion(Matrix& source,
 	if (source_k.is_ray_or_point_or_inequality()) {
 	  ++source_num_redundant;
 	  --source_num_rows;
-	  // NOTE: we continue with the next cicle of the loop
+	  // NOTE: we continue with the next cycle of the loop
 	  // without incrementing the index `k', because:
 	  // -# either `k == source_num_rows', and we will exit the loop;
 	  // -# or, having increased `source_num_redundant', we will swap

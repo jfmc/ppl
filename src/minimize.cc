@@ -50,7 +50,7 @@ namespace PPL = Parma_Polyhedra_Library;
 
   Given \p source, this function builds (by means of
   <CODE>conversion()</CODE>) \p dest and then simplifies (invoking
-  <CODE>simplify()</CODE>) \p source, erasing reduntant rows.
+  <CODE>simplify()</CODE>) \p source, erasing redundant rows.
   For the sequel we assume that \p source is the matrix of constraints
   and \p dest is the matrix of generators.
   This will simplify the description of the function; the dual case is
@@ -62,7 +62,7 @@ PPL::Polyhedron::minimize(bool con_to_gen,
   // Topologies have to agree.
   assert(source.topology() == dest.topology());
   // `source' cannot be empty: even if it is an empty constraint system,
-  // representing the universe polyhedron, homogeneization has added
+  // representing the universe polyhedron, homogenization has added
   // the positive constraint. It also cannot be an empty generator system,
   // since this function is always called starting from a non-empty
   // polyhedron.
@@ -312,7 +312,7 @@ PPL::Polyhedron::add_and_minimize(bool con_to_gen,
   assert(source.is_sorted());
 
   // First, pad the saturation matrix with new columns (of zeroes)
-  // to accomodate for the pending rows of `source'.
+  // to accommodate for the pending rows of `source'.
   sat.resize(dest.num_rows(), source.num_rows());
 
   // Incrementally compute the new matrix of generators.

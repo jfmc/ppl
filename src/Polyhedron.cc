@@ -3467,7 +3467,7 @@ PPL::Polyhedron::select_H79_constraints(const Polyhedron& y,
 
   // The size of `buffer' will reach sat.num_columns() bit.
   SatRow buffer;
-  // Note: the loop index `i' goes upwards to avoid reversing
+  // Note: the loop index `i' goes upward to avoid reversing
   // the ordering of the chosen constraints.
   for (dimension_type i = 0, iend = con_sys.num_rows(); i < iend; ++i) {
     const Constraint& ci = con_sys[i];
@@ -3509,7 +3509,7 @@ PPL::Polyhedron::select_CH78_constraints(const Polyhedron& y,
   // A constraint in `y.con_sys' is copied into `cs_selection'
   // if it is satisfied by all the generators of `gen_sys'.
 
-  // Note: the loop index `i' goes upwards to avoid reversing
+  // Note: the loop index `i' goes upward to avoid reversing
   // the ordering of the chosen constraints.
   for (dimension_type i = 0, iend = y.con_sys.num_rows(); i < iend; ++i) {
     const Constraint& c = y.con_sys[i];
@@ -4537,7 +4537,7 @@ PPL::Polyhedron::time_elapse_assign(const Polyhedron& y) {
 	break;
       }
   // If it was present, erase the origin point or closure point,
-  // which cannot be tranformed into a valid ray or line.
+  // which cannot be transformed into a valid ray or line.
   // For NNC polyhedra, also erase all the points of `gs',
   // whose role can be payed by the closure points.
   // These have been previously moved to the end of `gs'.
@@ -4807,7 +4807,7 @@ PPL::Polyhedron::topological_closure_assign() {
     return;
 
   // Use constraints only if they are available and
-  // there are no pending genreators.
+  // there are no pending generators.
   if (!has_pending_generators() && constraints_are_up_to_date()) {
     dimension_type eps_index = space_dim + 1;
     bool changed = false;
@@ -5100,7 +5100,7 @@ PPL::Polyhedron::OK(bool check_not_empty) const {
       // If the system of generators is minimized, the number of lines,
       // rays and points of the polyhedron must be the same
       // of the temporary minimized one. If it does not happen
-      // the polyhedron is not ok.
+      // the polyhedron is not OK.
       ConSys new_con_sys(topology());
       GenSys gs_without_pending = gen_sys;
       // NOTE: We can avoid to update `index_first_pending'
@@ -5243,7 +5243,7 @@ PPL::Polyhedron::OK(bool check_not_empty) const {
       // If the constraints are minimized, the number of equalities
       // and of inequalities of the system of the polyhedron must be
       // the same of the temporary minimized one.
-      // If it does not happen, the polyhedron is not ok.
+      // If it does not happen, the polyhedron is not OK.
       if (cs_without_pending.num_rows() != copy_of_con_sys.num_rows()
 	  || cs_without_pending.num_equalities()
 	  != copy_of_con_sys.num_equalities()) {
@@ -5265,7 +5265,7 @@ PPL::Polyhedron::OK(bool check_not_empty) const {
       // we copy the matrix `con_sys' in a temporary one that then
       // is modified using the functions gauss() and back_substitute().
       // If the temporary matrix and `copy_of_con_sys' are different,
-      // the polyhedron is not ok.
+      // the polyhedron is not OK.
       copy_of_con_sys.strong_normalize();
       copy_of_con_sys.sort_rows();
       cs_without_pending.sort_rows();

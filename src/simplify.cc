@@ -100,7 +100,7 @@ PPL::Polyhedron::simplify(Matrix& mat, SatMatrix& sat) {
       mat[i].set_is_line_or_equality();
 #if EXTRA_NORMALIZATION
       // We do not enforce strong normalization here, because
-      // it would be later compromized by `gauss' and `back_substitute'.
+      // it would be later compromised by `gauss' and `back_substitute'.
 #endif
       // We also move it just after all the other equalities,
       // so that matrix `mat' keeps its partial sortedness.
@@ -118,7 +118,7 @@ PPL::Polyhedron::simplify(Matrix& mat, SatMatrix& sat) {
       num_saturators[i] = num_cols_sat - sat[i].count_ones();
 
   // At this point, all the equalities of `mat' (included those
-  // inequalities that we just tranformed into equalities) have
+  // inequalities that we just transformed into equalities) have
   // indexes between 0 and `num_equal_or_line' - 1,
   // which is the property needed by the function gauss().
   // We can simplify the system of equalities, obtaining the rank

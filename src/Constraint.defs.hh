@@ -132,7 +132,7 @@ void swap(Parma_Polyhedra_Library::Constraint& x,
   Constraint false_c2(LinExpression::zero() >= 1);
   Constraint false_c3(LinExpression::zero() > 0);
   \endcode
-  In constrast, the following code defines an unsatisfiable constraint
+  In contrast, the following code defines an unsatisfiable constraint
   having space-dimension \f$3\f$:
   \code
   Constraint false_c(0*z == 1);

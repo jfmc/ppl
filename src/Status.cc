@@ -164,7 +164,7 @@ PPL::Status::ascii_load(std::istream& s) {
 bool
 PPL::Status::OK() const {
   if (test_zero_dim_univ())
-    // Zero-dim universe is ok.
+    // Zero-dim universe is OK.
     return true;
 
   if (test_empty()) {
@@ -203,6 +203,6 @@ PPL::Status::OK() const {
       // a saturation matrix up-to-date.
       return false;
   } 
-  // Any other case is ok.
+  // Any other case is OK.
   return true;
 }
