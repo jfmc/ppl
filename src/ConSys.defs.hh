@@ -253,7 +253,7 @@ public:
   //! representation of \p *this.
   /*!
     After invoking the <CODE>Matrix::ascii_dump()</CODE> method,
-    prints the contents of all the rows, specifying the type
+    prints the contents of each row, specifying the type
     of the encoded constraint.
   */
 #endif // PPL_DOXYGEN_INCLUDE_IMPLEMENTATION_DETAILS

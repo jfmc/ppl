@@ -88,6 +88,7 @@ private:
   Parma_Polyhedra_Library::operator&&(const Poly_Gen_Relation& x,
 				      const Poly_Gen_Relation& y);
 
+  //! \brief
   //! Yields the assertion with all the conjuncts of \p x
   //! that are not in \p y.
   friend Poly_Gen_Relation

@@ -40,6 +40,7 @@ public:
   //! Returns the dimension of the vector space enclosing \p *this.
   dimension_type space_dimension() const;
 
+  //! \brief
   //! Returns a reference the interval that bounds
   //! the box on the <CODE>k</CODE>-th dimension.
   const Interval& operator[](dimension_type k) const;
@@ -47,6 +48,7 @@ public:
   //! Returns <CODE>true</CODE> if and only if \p *this is empty.
   bool is_empty() const;
 
+  //! \brief
   //! If the <CODE>k</CODE>-th dimension is unbounded below,
   //! returns <CODE>false</CODE>.
   //! Otherwise returns <CODE>true</CODE> and set \p closed,
@@ -68,6 +70,7 @@ public:
   bool get_lower_bound(dimension_type k, bool& closed,
 		       Integer& n, Integer& d) const;
 
+  //! \brief
   //! If the <CODE>k</CODE>-th dimension is unbounded above,
   //! returns <CODE>false</CODE>.
   //! Otherwise returns <CODE>true</CODE> and set \p closed,
@@ -89,6 +92,7 @@ public:
   //! Causes the box to become empty, i.e., to represent the empty set.
   void set_empty();
 
+  //! \brief
   //! Raises the lower bound of the interval corresponding
   //! to the <CODE>k</CODE>-th dimension.
   /*!
@@ -100,6 +104,7 @@ public:
   void raise_lower_bound(dimension_type k, bool closed,
 			 const Integer& n, const Integer& d);
 
+  //! \brief
   //! Lowers the upper bound of the interval corresponding
   //! to the <CODE>k</CODE>-th dimension.
   /*!

@@ -36,8 +36,8 @@ namespace Parma_Polyhedra_Library {
 /*!
   \relates Determinate<PH>
   \exception std::invalid_argument thrown if \p x and \p y
-  are topology-incompatible
-  or dimension-incompatible.
+                                          are topology-incompatible
+                                          or dimension-incompatible.
 */
 template <typename PH>
 bool operator==(const Determinate<PH>& x, const Determinate<PH>& y);
@@ -225,6 +225,7 @@ public:
 private:
   class Rep {
   private:
+    //! \brief
     //! Count the number of references:
     //! -   0: leaked, \p pph is non-const;
     //! -   1: one reference, \p pph is non-const;
@@ -252,6 +253,7 @@ private:
     //! Register a new reference.
     void new_reference() const;
 
+    //! \brief
     //! Unregister a reference and return true if the representation
     //! has become unreferenced.
     bool del_reference() const;

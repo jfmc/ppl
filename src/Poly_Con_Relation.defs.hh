@@ -94,6 +94,7 @@ private:
   Parma_Polyhedra_Library::operator&&(const Poly_Con_Relation& x,
 				      const Poly_Con_Relation& y);
 
+  //! \brief
   //! Yields the assertion with all the conjuncts of \p x
   //! that are not in \p y.
   friend Poly_Con_Relation

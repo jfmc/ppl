@@ -419,7 +419,7 @@ PPL::ConSys::OK() const {
   return Matrix::OK();
 }
 
-/*! \relates ConSys */
+/*! \relates Parma_Polyhedra_Library::ConSys */
 std::ostream&
 PPL::operator<<(std::ostream& s, const ConSys& cs) {
   ConSys::const_iterator i = cs.begin();

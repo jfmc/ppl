@@ -252,7 +252,7 @@ private:
   friend
   Parma_Polyhedra_Library::LinExpression::LinExpression(const Constraint& c);
   friend void std::swap(Parma_Polyhedra_Library::Constraint& x,
-		       Parma_Polyhedra_Library::Constraint& y);
+			Parma_Polyhedra_Library::Constraint& y);
 
   //! Default constructor: private and not implemented.
   Constraint();

@@ -299,10 +299,6 @@ PPL::GenSys::num_rays() const {
   return n;
 }
 
-/*!
-  Returns the relations holding between the set of points generated
-  by \p *this and the constraint \p c.
-*/
 PPL::Poly_Con_Relation
 PPL::GenSys::relation_with(const Constraint& c) const {
   // Note: this method is not public and it is the responsibility
@@ -608,28 +604,6 @@ PPL::GenSys::relation_with(const Constraint& c) const {
 }
 
 
-/*!
-  \param v            Index of the column to which the
-                      affine transformation is assigned.
-  \param expr         The numerator of the affine transformation:
-                      \f$\sum_{i = 0}^{n - 1} a_i x_i + b\f$.
-  \param denominator  The denominator of the affine transformation.
-
-  We want to allow affine transformations (see the Introduction) having
-  any rational coefficients. Since the coefficients of the
-  constraints are integers we must also provide an integer \p denominator
-  that will be used as denominator of the affine transformation.
-  The denominator is required to be a positive integer.
-
-  The affine transformation assigns to each element of \p v -th
-  column the follow expression:
-  \f[
-    \frac{\sum_{i = 0}^{n - 1} a_i x_i + b}
-         {\mathrm{denominator}}.
-  \f]
-
-  \p expr is a constant parameter and unaltered by this computation.
-*/
 void
 PPL::GenSys::affine_image(dimension_type v,
 			  const LinExpression& expr,
@@ -674,13 +648,6 @@ PPL::GenSys::affine_image(dimension_type v,
   x.strong_normalize();
 }
 
-/*!
-  Like <CODE>ConSys::ascii_dump()</CODE>, this prints the number of
-  rows, the number of columns and value of \p sorted, using the
-  <CODE>Matrix::ascii_dump()</CODE> method, then prints the contents
-  of all the rows, specifying whether a row represent a line or a
-  point/ray.
-*/
 void
 PPL::GenSys::ascii_dump(std::ostream& s) const {
   Matrix::ascii_dump(s);
@@ -708,12 +675,6 @@ PPL::GenSys::ascii_dump(std::ostream& s) const {
   }
 }
 
-/*!
-  Like <CODE>ConSys::ascii_load()</CODE>, this uses
-  <CODE>Matrix::ascii_load()</CODE> to resize the matrix of generators
-  taking information from \p s, then initializes the coefficients of
-  each generator and its type (line or ray/point).
-*/
 bool
 PPL::GenSys::ascii_load(std::istream& s) {
   if (!Matrix::ascii_load(s))
@@ -777,12 +738,6 @@ PPL::GenSys::remove_invalid_lines_and_rays() {
   gs.erase_to_end(n_rows);
 }
 
-/*!
-  Returns <CODE>true</CODE> if and only if \p *this actually represents
-  a system of generators. So, \p *this must satisfy some rule:
-  -# it must be a valid Matrix;
-  -# every row in the matrix must be a valid generator.
-*/
 bool
 PPL::GenSys::OK() const {
   // A GenSys must be a valid Matrix.
@@ -800,7 +755,7 @@ PPL::GenSys::OK() const {
   return true;
 }
 
-/*! \relates GenSys */
+/*! \relates Parma_Polyhedra_Library::GenSys */
 std::ostream&
 PPL::operator<<(std::ostream& s, const GenSys& gs) {
   GenSys::const_iterator i = gs.begin();

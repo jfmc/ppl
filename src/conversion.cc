@@ -37,13 +37,6 @@ namespace PPL = Parma_Polyhedra_Library;
 #define REACTIVE_ABANDONING 1
 
 /*!
-  \fn static PPL::dimension_type
-    PPL::Polyhedron::conversion(Matrix& source,
-                                dimension_type start,
-                                Matrix& dest,
-                                SatMatrix& sat,
-                                dimension_type num_lines_or_equalities)
-
   \param source  The matrix to use to convert \p dest: it
                  may be modified.
   \param start   The index of \p source row from which conversion begin.

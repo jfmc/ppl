@@ -386,7 +386,6 @@ protected:
   //! Ordinary copy-constructor.
   Polyhedron(const Polyhedron& y);
 
-  //! \brief
   //! Builds a polyhedron having the specified properties.
   /*!
     \param topol          The topology of the polyhedron;
@@ -726,6 +725,74 @@ public:
                                      are dimension-incompatible
                                      or if \p var is not a dimension
                                      of \p *this.
+
+    \if Include_Implementation_Details
+
+    When considering the generators of a polyhedron, the
+    affine transformation
+    \f[
+      \frac{\sum_{i=0}^{n-1} a_i x_i + b}{\mathrm{denominator}}
+      \f]
+      is assigned to \p var where \p expr is
+      \f$\sum_{i=0}^{n-1} a_i x_i + b\f$
+      (\f$b\f$ is the inhomogeneous term).
+
+      If constraints are up-to-date, it uses the specialized function
+      affine_preimage() (for the system of constraints)
+      and inverse transformation to reach the same result.
+      To obtain the inverse transformation we use the following observation.
+      
+      Observation:
+      -# The affine transformation is invertible if the coefficient
+         of \p var in this transformation (i.e., \f$a_\mathrm{var}\f$)
+	 is different from zero.
+      -# If the transformation is invertible, then we can write
+         \f[
+  	   \mathrm{denominator} * {x'}_\mathrm{var}
+	     = \sum_{i = 0}^{n - 1} a_i x_i + b
+	     = a_\mathrm{var} x_\mathrm{var}
+	       + \sum_{i \neq var} a_i x_i + b,
+         \f]
+         so that the inverse transformation is
+         \f[
+	   a_\mathrm{var} x_\mathrm{var}
+             = \mathrm{denominator} * {x'}_\mathrm{var}
+               - \sum_{i \neq j} a_i x_i - b.
+         \f]
+
+      Then, if the transformation is invertible, all the entities that
+      were up-to-date remain up-to-date. Otherwise only generators remain
+      up-to-date.
+
+      In other words, if \f$R\f$ is a \f$m_1 \times n_1\f$ matrix representing
+      the rays of the polyhedron, \f$V\f$ is a \f$m_2 \times n_2\f$
+      matrix representing the points of the polyhedron and
+      \f[
+        P = \bigl\{\,
+              \vect{x} = (x_0, \ldots, x_{n-1})^\mathrm{T}
+            \bigm|
+              \vect{x} = \vect{\lambda} R + \vect{\mu} V,
+	      \vect{\lambda} \in \Rset^{m_1}_+,
+	      \vect{\mu} \in \Rset^{m_2}_+,
+	      \sum_{i = 0}^{m_1 - 1} \lambda_i = 1
+            \,\bigr\}
+      \f]
+      and \f$T\f$ is the affine transformation to apply to \f$P\f$, then
+      the resulting polyhedron is
+      \f[
+        P' = \bigl\{\,
+               (x_0, \ldots, T(x_0, \ldots, x_{n-1}),
+                       \ldots, x_{n-1})^\mathrm{T}
+             \bigm|
+               (x_0, \ldots, x_{n-1})^\mathrm{T} \in P
+             \,\bigr\}.
+      \f]
+
+      Affine transformations are, for example:
+        - translations
+        - rotations
+        - symmetries.
+    \endif
   */
   void affine_image(const Variable& var,
 		    const LinExpression& expr,
@@ -746,6 +813,73 @@ public:
                                      are dimension-incompatible
                                      or if \p var is not a dimension
                                      of \p *this.
+
+    \if Include_Implementation_Details
+
+    When considering constraints of a polyhedron, the affine transformation
+    \f[
+      \frac{\sum_{i=0}^{n-1} a_i x_i + b}{denominator},
+    \f]
+    is assigned to \p var where \p expr is
+    \f$\sum_{i=0}^{n-1} a_i x_i + b\f$
+    (\f$b\f$ is the inhomogeneous term).
+
+    If generators are up-to-date, then the specialized function
+    affine_image() is used (for the system of generators)
+    and inverse transformation to reach the same result.
+    To obtain the inverse transformation, we use the following observation.
+
+    Observation:
+    -# The affine transformation is invertible if the coefficient
+       of \p var in this transformation (i.e. \f$a_\mathrm{var}\f$)
+       is different from zero.
+    -# If the transformation is invertible, then we can write
+       \f[
+  	 \mathrm{denominator} * {x'}_\mathrm{var}
+	   = \sum_{i = 0}^{n - 1} a_i x_i + b
+           = a_\mathrm{var} x_\mathrm{var}
+               + \sum_{i \neq \mathrm{var}} a_i x_i + b,
+       \f],
+       the inverse transformation is
+       \f[
+	 a_\mathrm{var} x_\mathrm{var}
+           = \mathrm{denominator} * {x'}_\mathrm{var}
+               - \sum_{i \neq j} a_i x_i - b.
+       \f].
+
+    Then, if the transformation is invertible, all the entities that
+    were up-to-date remain up-to-date. Otherwise only constraints remain
+    up-to-date.
+
+    In other words, if \f$A\f$ is a \f$m \times n\f$ matrix representing
+    the constraints of the polyhedron, \f$T\f$ is the affine transformation
+    to apply to \f$P\f$ and
+    \f[
+      P = \bigl\{\,
+            \vect{x} = (x_0, \ldots, x_{n-1})^\mathrm{T}
+          \bigm|
+            A\vect{x} \geq \vect{0}
+          \,\bigr\}.
+    \f]
+    The resulting polyhedron is
+    \f[
+      P' = \bigl\{\,
+             \vect{x} = (x_0, \ldots, x_{n-1}))^\mathrm{T}
+           \bigm|
+             A'\vect{x} \geq \vect{0}
+           \,\bigr\},
+    \f]
+    where \f$A'\f$ is defined as follows:
+    \f[
+      {a'}_{ij}
+        = \begin{cases}
+            a_{ij} * \mathrm{denominator} + a_{i\mathrm{var}}*\mathrm{expr}[j]
+              \quad \mathrm{for } j \neq \mathrm{var}; \\
+            \mathrm{expr}[\mathrm{var}] * a_{i\mathrm{var}},
+              \quad \text{for } j = \mathrm{var}.
+          \end{cases}
+    \f]
+    \endif
   */
   void affine_preimage(const Variable& var,
 		       const LinExpression& expr,
@@ -890,7 +1024,6 @@ public:
   */
   void add_dimensions_and_project(dimension_type m);
 
-  //! \brief
   //! Removes all the specified dimensions.
   /*!
     \param to_be_removed  The set of Variable objects corresponding
@@ -911,6 +1044,7 @@ public:
   */
   void remove_higher_dimensions(dimension_type new_dimension);
 
+  //! \brief
   //! Shuffles the dimensions of a polyhedron
   //! according to a partial function.
   /*!
@@ -994,18 +1128,19 @@ public:
   */
   bool add_generators_and_minimize(GenSys& gs);
 
-  //! \brief
   //! Adds the specified generators without minimizing.
-  //! \param  gs             The generators that will be added to the
-  //!                        current system of generators. This parameter
-  //!                        is not declared <CODE>const</CODE> because
-  //!                        it can be modified.
-  //! \exception std::invalid_argument thrown if \p *this and \p gs
-  //!                                  are topology-incompatible
-  //!                                  or dimension-incompatible,
-  //!                                  or if \p *this is empty and
-  //!                                  the system of generators \p gs
-  //!                                  is not empty, but has no points.
+  /*!
+    \param  gs             The generators that will be added to the
+                           current system of generators. This parameter
+                           is not declared <CODE>const</CODE> because
+			   it can be modified.
+    \exception std::invalid_argument thrown if \p *this and \p gs
+                                     are topology-incompatible
+			             or dimension-incompatible,
+				     or if \p *this is empty and
+                                     the system of generators \p gs
+                                     is not empty, but has no points.
+  */
   void add_generators(GenSys& gs);
 
   //! \brief
@@ -1062,12 +1197,14 @@ public:
 				      const Polyhedron& y);
 
 #ifdef PPL_DOXYGEN_INCLUDE_IMPLEMENTATION_DETAILS
+  //! \brief
   //! Writes to \p s an ASCII representation of the internal
   //! representation of \p *this.
 #endif // PPL_DOXYGEN_INCLUDE_IMPLEMENTATION_DETAILS
   void ascii_dump(std::ostream& s) const;
 
 #ifdef PPL_DOXYGEN_INCLUDE_IMPLEMENTATION_DETAILS
+  //! \brief
   //! Loads from \p s an ASCII representation (as produced by \ref
   //! ascii_dump) and sets \p *this accordingly.  Returns <CODE>true</CODE>
   //! if successful, <CODE>false</CODE> otherwise.
@@ -1110,9 +1247,7 @@ private:
   //! is necessarily closed.
   bool is_necessarily_closed() const;
 
-  /*! @name Private Verifiers
-    Verify if individual flags are set.
-  */
+  //! @name Private verifiers: verify if individual flags are set.
   //@{
   //! Returns <CODE>true</CODE> if the polyhedron is known to be empty.
   /*!
@@ -1152,9 +1287,7 @@ private:
   bool sat_g_is_up_to_date() const;
   //@}
 
-  /*! @name State flag setters.
-    Set only the specified flags.
-  */
+  //! @name State flag setters: set only the specified flags.
   //@{
   //! \brief
   //! Sets \p status to express that the polyhedron
@@ -1186,9 +1319,7 @@ private:
   void set_sat_g_up_to_date();
   //@}
 
-  /*! @name State flag cleaners.
-    Clear only the specified flag.
-  */
+  //! @name State flag cleaners: clear only the specified flag.
   //@{
   //! Clears the \p status flag indicating that the polyhedron is empty.
   void clear_empty();
@@ -1352,7 +1483,6 @@ private:
   */
   bool strongly_minimize_generators() const;
 
-  //! \brief
   //! Checks if and how \p expr is bounded in \p *this.
   /*!
     Returns <CODE>true</CODE> if and only if \p from_above is
@@ -1389,13 +1519,14 @@ private:
                              SatMatrix& sat2,
 			     dimension_type add_dim);
 
+  //! \brief
   //! Performs the conversion from constraints to generators and vice versa.
   // Detailed Doxygen comment to be found in file conversion.cc.
   static dimension_type conversion(Matrix& entry,
-			   dimension_type start,
-			   Matrix& result,
-			   SatMatrix& sat,
-			   dimension_type num_lines_or_equalities);
+				   dimension_type start,
+				   Matrix& result,
+				   SatMatrix& sat,
+				   dimension_type num_lines_or_equalities);
 
   //! \brief
   //! Uses Gauss' elimination method to simplify the result of
@@ -1416,6 +1547,7 @@ private:
 			       Matrix& source1, Matrix& dest, SatMatrix& sat,
 			       const Matrix& source2);
   
+  //! \brief
   //! Returns <CODE>true</CODE> if the given polyhedra satisfy
   //! the theorem of BBRZ02.
   /*!
@@ -1424,10 +1556,7 @@ private:
   */
   static bool is_BBRZ02_stabilizing(const Polyhedron& x, const Polyhedron& y);
 
-  /*! @name Exception throwers
-    Throw an exception after having formatted the appropriate
-    error message.
-   */
+  //! @name Exception throwers.
   //@{
   void throw_topology_incompatible(const char* method,
 				   const Polyhedron& y) const;

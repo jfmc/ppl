@@ -2612,72 +2612,6 @@ PPL::Polyhedron::ascii_load(std::istream& s) {
   return true;
 }
 
-/*!
-  When considering the generators of a polyhedron, the
-  affine transformation
-  \f[
-    \frac{\sum_{i=0}^{n-1} a_i x_i + b}{\mathrm{denominator}}
-  \f]
-  is assigned to \p var where \p expr is
-  \f$\sum_{i=0}^{n-1} a_i x_i + b\f$
-  (\f$b\f$ is the inhomogeneous term).
-
-  If constraints are up-to-date, it uses the specialized function
-  affine_preimage() (for the system of constraints)
-  and inverse transformation to reach the same result.
-  To obtain the inverse transformation we use the following observation.
-
-  Observation:
-  -# The affine transformation is invertible if the coefficient
-     of \p var in this transformation (i.e., \f$a_\mathrm{var}\f$)
-     is different from zero.
-  -# If the transformation is invertible, then we can write
-     \f[
-  	\mathrm{denominator} * {x'}_\mathrm{var}
-	  = \sum_{i = 0}^{n - 1} a_i x_i + b
-	  = a_\mathrm{var} x_\mathrm{var}
-	      + \sum_{i \neq var} a_i x_i + b,
-     \f]
-     so that the inverse transformation is
-     \f[
-	a_\mathrm{var} x_\mathrm{var}
-          = \mathrm{denominator} * {x'}_\mathrm{var}
-              - \sum_{i \neq j} a_i x_i - b.
-     \f]
-
-  Then, if the transformation is invertible, all the entities that
-  were up-to-date remain up-to-date. Otherwise only generators remain
-  up-to-date.
-
-  In other words, if \f$R\f$ is a \f$m_1 \times n_1\f$ matrix representing
-  the rays of the polyhedron, \f$V\f$ is a \f$m_2 \times n_2\f$
-  matrix representing the points of the polyhedron and
-  \f[
-    P = \bigl\{\,
-          \vect{x} = (x_0, \ldots, x_{n-1})^\mathrm{T}
-        \bigm|
-          \vect{x} = \vect{\lambda} R + \vect{\mu} V,
-          \vect{\lambda} \in \Rset^{m_1}_+,
-          \vect{\mu} \in \Rset^{m_2}_+,
-	  \sum_{i = 0}^{m_1 - 1} \lambda_i = 1
-        \,\bigr\}
-  \f]
-  and \f$T\f$ is the affine transformation to apply to \f$P\f$, then
-  the resulting polyhedron is
-  \f[
-    P' = \bigl\{\,
-           (x_0, \ldots, T(x_0, \ldots, x_{n-1}),
-                   \ldots, x_{n-1})^\mathrm{T}
-         \bigm|
-           (x_0, \ldots, x_{n-1})^\mathrm{T} \in P
-         \,\bigr\}.
-  \f]
-
-  Affine transformations are, for example:
-  - translations
-  - rotations
-  - symmetries.
-*/
 void
 PPL::Polyhedron::affine_image(const Variable& var,
 			      const LinExpression& expr,
@@ -2756,72 +2690,6 @@ PPL::Polyhedron::affine_image(const Variable& var,
 }
 
 
-
-/*!
-  When considering constraints of a polyhedron, the affine transformation
-  \f[
-  \frac{\sum_{i=0}^{n-1} a_i x_i + b}{denominator},
-  \f]
-  is assigned to \p var where \p expr is
-  \f$\sum_{i=0}^{n-1} a_i x_i + b\f$
-  (\f$b\f$ is the inhomogeneous term).
-
-  If generators are up-to-date, then the specialized function
-  affine_image() is used (for the system of generators)
-  and inverse transformation to reach the same result.
-  To obtain the inverse transformation, we use the following observation.
-
-  Observation:
-  -# The affine transformation is invertible if the coefficient
-     of \p var in this transformation (i.e. \f$a_\mathrm{var}\f$)
-     is different from zero.
-  -# If the transformation is invertible, then we can write
-     \f[
-  	\mathrm{denominator} * {x'}_\mathrm{var}
-	  = \sum_{i = 0}^{n - 1} a_i x_i + b
-          = a_\mathrm{var} x_\mathrm{var}
-              + \sum_{i \neq \mathrm{var}} a_i x_i + b,
-     \f],
-     the inverse transformation is
-     \f[
-	a_\mathrm{var} x_\mathrm{var}
-          = \mathrm{denominator} * {x'}_\mathrm{var}
-              - \sum_{i \neq j} a_i x_i - b.
-     \f].
-
-  Then, if the transformation is invertible, all the entities that
-  were up-to-date remain up-to-date. Otherwise only constraints remain
-  up-to-date.
-
-  In other words, if \f$A\f$ is a \f$m \times n\f$ matrix representing
-  the constraints of the polyhedron, \f$T\f$ is the affine transformation
-  to apply to \f$P\f$ and
-  \f[
-    P = \bigl\{\,
-          \vect{x} = (x_0, \ldots, x_{n-1})^\mathrm{T}
-        \bigm|
-          A\vect{x} \geq \vect{0}
-        \,\bigr\}.
-  \f]
-  The resulting polyhedron is
-  \f[
-    P' = \bigl\{\,
-           \vect{x} = (x_0, \ldots, x_{n-1}))^\mathrm{T}
-         \bigm|
-           A'\vect{x} \geq \vect{0}
-         \,\bigr\},
-  \f]
-  where \f$A'\f$ is defined as follows:
-  \f[
-    {a'}_{ij}
-      = \begin{cases}
-          a_{ij} * \mathrm{denominator} + a_{i\mathrm{var}}*\mathrm{expr}[j]
-            \quad \mathrm{for } j \neq \mathrm{var}; \\
-          \mathrm{expr}[\mathrm{var}] * a_{i\mathrm{var}},
-            \quad \text{for } j = \mathrm{var}.
-        \end{cases}
-  \f]
-*/
 void
 PPL::Polyhedron::affine_preimage(const Variable& var,
 				 const LinExpression& expr,
@@ -4162,18 +4030,6 @@ PPL::Polyhedron::topological_closure_assign() {
 }
 
 
-/*!
-  Checks if \p *this is really a polyhedron, i.e., excludes all the extreme
-  cases.
-
-  For this purpose we check several things and in particular we check
-  whether
-  - the system of constraints and the system of generators satisfy the
-    dimensional rules,
-  - the system of constraints and the system of generators are really
-    minimized, when they are declared minimal.
-*/
-// CHECK ME.
 bool
 PPL::Polyhedron::OK(bool check_not_empty) const {
 #ifndef NDEBUG
@@ -4606,7 +4462,7 @@ PPL::Polyhedron::OK(bool check_not_empty) const {
   return false;
 }
 
-/*! \relates Polyhedron */
+/*! \relates Parma_Polyhedra_Library::Polyhedron */
 std::ostream&
 PPL::operator<<(std::ostream& s, const Polyhedron& ph) {
   if (ph.check_empty())

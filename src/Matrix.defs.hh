@@ -254,7 +254,7 @@ public:
   //! Swaps the columns having indexes \p i and \p j.
   void swap_columns(dimension_type i,  dimension_type j);
 
-  //! Accessors
+  //! @name Accessors.
   //@{
   //! Returns the matrix topology.
   Topology topology() const;
@@ -338,6 +338,7 @@ public:
   //! Clears the matrix deallocating all its rows.
   void clear();
 
+  //! \brief
   //! Writes to \p s an ASCII representation of the internal
   //! representation of \p *this.
   /*!
@@ -348,6 +349,7 @@ public:
   */
   virtual void ascii_dump(std::ostream& s) const;
 
+  //! \brief
   //! Loads from \p s an ASCII representation (as produced by \ref
   //! ascii_dump) and sets \p *this accordingly.  Returns <CODE>true</CODE>
   //! if successful, <CODE>false</CODE> otherwise.

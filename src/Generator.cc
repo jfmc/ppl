@@ -188,12 +188,6 @@ PPL::operator<<(std::ostream& s, const Generator& g) {
   return s;
 }
 
-/*!
-  Returns <CODE>true</CODE> if and only if the closure point
-  \p *this has the same \e coordinates of the point \p p.
-  It is \e assumed that \p *this is a closure point, \p p is a point
-  and both topologies and space-dimensions agree.
-*/
 bool
 PPL::Generator::is_matching_closure_point(const Generator& p) const {
   assert(topology() == p.topology()

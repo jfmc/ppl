@@ -59,7 +59,7 @@ PPL::Status::ascii_dump(std::ostream& s) const {
     << (test_sat_g_up_to_date() ? yes : no) << sat_g << sep;
 }
 
-/*!
+/*! \relates Parma_Polyhedra_Library::Status
   Reads a keyword and its associated on/off flag from \p s.
   Returns <CODE>true</CODE> if the operation is successful,
   returns <CODE>false</CODE> otherwise.
