@@ -171,29 +171,78 @@ PPL::ConSys::const_iterator::skip_forward() {
   Returns <CODE>true</CODE> if the given generator \p g satisfies
   all the constraints in \p *this system.
 */
-// FIXME.
+// CHECKME.
 bool
 PPL::ConSys::satisfies_all_constraints(const Generator& g) const {
   assert(g.space_dimension() <= space_dimension());
-  bool g_is_ray_or_point = g.is_ray_or_point();
-  for (size_t i = num_rows(); i-- > 0; ) {
-    const Constraint& c = (*this)[i];
-    // Compute the sign of the scalar product.
-    int sp_sign = sgn(g * c);
-    if (g_is_ray_or_point && c.is_inequality()) {
-      // A ray satisfies an inequality if its scalar product
-      // with such a constraint is positive.
-      if (sp_sign < 0)
-	return false;
+
+  // Setting `sp_fp' to the appropriate scalar product operator.
+  // This also avoids problems when having _legal_ topology mismatches
+  // (which could also cause a mismatch in the number of columns).
+  const Integer& (*sp_fp)(const Row&, const Row&);
+  if (g.is_necessarily_closed())
+    sp_fp = &(PPL::operator*);
+  else
+    sp_fp = &(PPL::operator^);
+
+  const ConSys& cs = *this;
+
+  if (cs.is_necessarily_closed())
+    for (size_t i = cs.num_rows(); i-- > 0; ) {
+      const Constraint& c = cs[i];
+      int sp_sign = sgn(sp_fp(g, c));
+      if (c.is_inequality()) {
+	// `c' is a non-strict inequality.
+	if (sp_sign < 0)
+	  return false;
+      }
+      else
+	// `c' is an equality.
+	if (sp_sign != 0)
+	  return false;
     }
-    else if (sp_sign != 0)
-      // Equalities are saturated by all rays/points and lines.
-      // Lines saturate all equalities.
-      return false;
-  }
-  // All constraints are saturated by g.
+  else
+    // `cs' is NON-necessarily closed.
+    if (g.is_point())
+      // Generator `g' is a point: have to perform the special test
+      // when dealing with a strict inequality.
+      for (size_t i = cs.num_rows(); i-- > 0; ) {
+	const Constraint& c = cs[i];
+	int sp_sign = sgn(sp_fp(g, c));
+	switch (c.type()) {
+	case Constraint::EQUALITY:
+	  if (sp_sign != 0)
+	    return false;
+	  break;
+	case Constraint::NONSTRICT_INEQUALITY:
+	  if (sp_sign < 0)
+	    return false;
+	  break;
+	case Constraint::STRICT_INEQUALITY:
+	  if (sp_sign <= 0)
+	    return false;
+	  break;
+	}
+      }
+    else
+      // Generator `g' is a line, ray or closure point.
+      for (size_t i = cs.num_rows(); i-- > 0; ) {
+	const Constraint& c = cs[i];
+	int sp_sign = sgn(sp_fp(g, c));
+	if (c.is_inequality()) {
+	  // Constraint `c' is either a strict or a non-strict inequality.
+	  if (sp_sign < 0)
+	    return false;
+	}
+	else
+	  // Constraint `c' is an equality.
+	  if (sp_sign != 0)
+	    return false;
+      }
+  // `g' satisfies all constraints.
   return true;
 }
+
 
 /*!
   \param v            Index of the column to which the
