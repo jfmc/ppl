@@ -42,7 +42,9 @@ Polyhedron::swap(Polyhedron& y) {
   if (topology() != y.topology())
     throw_topology_incompatible("swap(y)", y);
   std::swap(con_sys, y.con_sys);
+  std::swap(pending_cs, y.pending_cs);
   std::swap(gen_sys, y.gen_sys);
+  std::swap(pending_gs, y.pending_gs);
   std::swap(sat_c, y.sat_c);
   std::swap(sat_g, y.sat_g);
   std::swap(status, y.status);
@@ -95,6 +97,12 @@ Polyhedron::generators_are_minimized() const {
 inline bool
 Polyhedron::has_pending_constraints() const {
   return status.test_c_pending();
+}
+
+inline bool
+Polyhedron::can_have_something_pending() const {
+  return (constraints_are_minimized() && generators_are_minimized()
+	  && (sat_c_is_up_to_date() || sat_g_is_up_to_date()));
 }
 
 inline bool
@@ -281,7 +289,9 @@ Polyhedron::add_low_level_constraints(ConSys& cs) {
 template <typename Box>
 Polyhedron::Polyhedron(Topology topol, const Box& box)
   : con_sys(topol),
+    pending_cs(topol),
     gen_sys(topol),
+    pending_gs(topol),
     sat_c(),
     sat_g() {
   // Initialize the space dimension as indicated by the box.

@@ -1349,6 +1349,11 @@ private:
   bool has_something_pending() const;
 
   //! \brief
+  //! Returns <CODE>true</CODE> if the polyhedron can have something
+  //! pending.
+  bool can_have_something_pending() const;
+
+  //! \brief
   //! Returns <CODE>true</CODE> if the saturation matrix \p sat_c
   //! is up-to-date.
   bool sat_c_is_up_to_date() const;
