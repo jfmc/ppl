@@ -184,16 +184,14 @@ public:
   */
   void add_constraint(const Constraint& c);
 
-  //! Intersects \p *this with the constraints in \p cs.
+  //! Intersects \p *this with (a copy of) the constraints in \p cs.
   /*!
-    \param  cs             The constraints to intersect with.
-                           This parameter is not declared
-                           <CODE>const</CODE> because  it can be modified.
+    \param  cs             Contains the constraints to intersect with.
     \exception std::invalid_argument thrown if \p *this and \p cs
                                      are topology-incompatible
                                      or dimension-incompatible.
   */
-  void add_constraints(ConSys& cs);
+  void add_constraints(const ConSys& cs);
 
   //! \brief
   //! Adds \p m new dimensions and embeds the old polyhedron

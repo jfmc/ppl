@@ -210,7 +210,7 @@ AskTell<CS>::add_constraint(const Constraint& c) {
 
 template <typename CS>
 void
-AskTell<CS>::add_constraints(ConSys& cs) {
+AskTell<CS>::add_constraints(const ConSys& cs) {
   CS tell(cs);
   if (!tell.is_top()) {
     CS ask(space_dim);
