@@ -69,34 +69,54 @@ namespace Parma_Polyhedra_Library {
   Variable x(0);
   Variable y(1);
   Variable z(2);
-  Generator gs(1 | x - y -z);
+  Generator g(1 | x - y - z);
+  \endcode
+  Note that, when specifying a line, the actual value of the first argument
+  in the constructor is not significant.
+  Thus, the same effect would have been obtained by replacing the last
+  definition by
+  \code
+  Generator line(0 | x - y - z);
   \endcode
 
   \par Example 2
   The following code builds a ray with the same direction of the
-  previous direction:
+  previous line:
   \code
   Variable x(0);
   Variable y(1);
   Variable z(2);
-  Generator gs(1 ^ x - y -z);
+  Generator ray(1 ^ x - y - z);
   \endcode
+  As was the case for lines, when specifying a ray the actual value
+  of the first argument in the constructor is not significant.
 
   \par Example 3
-  The following code builds the vertex \f$[1,3,2]\f$:
+  The following code builds the vertex \f$(1, 3, 2)^\mathrm{T}\f$:
   \code
   Variable x(0);
   Variable y(1);
   Variable z(2);
-  Generator gs(x + 3 * y + 2 * z \= 1);
+  Generator vertex(x + 3 * y + 2 * z \= 1);
   \endcode
-  The same vertex can be obtain also with the following code:
+  The same vertex as above can be obtain also with the following code:
   \code
   Variable x(0);
   Variable y(1);
   Variable z(2);
-  Generator gs(2x + 6 * y + 4 * z \= 2);
+  Generator vertex(2 * x + 6 * y + 4 * z \= 2);
   \endcode
+  Obviously, the second argument is more useful to specify vertices
+  having some non-integer (rational) coordinates.
+  For instance, the vertex \f$(-1.5, 3.2, 2.1)^\mathrm{T}\f$
+  can be specified by the following code:
+  \code
+  Variable x(0);
+  Variable y(1);
+  Variable z(2);
+  Generator vertex(-15 * x + 32 * y + 21 * z \= 10);
+  \endcode
+
 */
 
 class Parma_Polyhedra_Library::Generator : public Row {
