@@ -39,7 +39,7 @@ ORIGINAL_TESTS = \
 	NNCinclusion1 \
 	NNCminimize1 NNCminimize2 NNCminimize3 NNCminimize4 NNCminimize5 \
         NNCminimize6 \
-	addconstraint1 \
+	addconstraint1 addconstraint2 \
         addconstraints1 addconstraints2 addconstraints3 addconstraints4 \
 	addconstraints5 addconstraints6 addconstraints7 addconstraints8 \
 	addconstraints9 addconstraints10 addconstraints11 \
@@ -65,7 +65,7 @@ ORIGINAL_TESTS = \
 	bounded1 \
 	bounds1 bounds2 \
 	boundingbox1 boundingbox2 \
-	concatenate1 concatenate2 concatenate3 concatenate4 \
+	concatenate1 concatenate2 concatenate3 concatenate4 concatenate5 \
 	constraints1 constraints2 constraints3 \
 	contains1 \
         empty1 \
@@ -80,7 +80,7 @@ ORIGINAL_TESTS = \
 	inclusion1 inclusion2 \
         intersection1 intersection2 intersection3 intersection4 \
 	intersection5 intersection6 intersection7 intersection8 \
-	intersection9 \
+	intersection9 intersection10 \
 	limitedh79widening1 limitedh79widening2 \
 	limitedh79widening3 \
 	linearpartition1 linearpartition2 linearpartition3 \
@@ -91,9 +91,9 @@ ORIGINAL_TESTS = \
 	onepoint \
         permute \
 	polydifference1 polydifference2 polydifference3 polydifference4 \
-	polydifference5 polydifference6 \
+	polydifference5 polydifference6 polydifference7 \
 	polyhull1 polyhull2 polyhull3 polyhull4 polyhull5 polyhull6 \
-	polyhull7 \
+	polyhull7 polyhull8 \
 	randphull1 \
 	relations1 relations2 relations3 relations4 relations5 relations6 \
 	relations7 relations8 relations9 relations10 relations11 \
@@ -108,6 +108,7 @@ ORIGINAL_TESTS = \
 	universe1 universe2 universe3 universe4 universe5 universe6 
 
 DERIVED_TESTS = \
+	nnc_addconstraint2 \
 	nnc_addconstraints1 nnc_addconstraints2 nnc_addconstraints3 \
 	nnc_addconstraints4 nnc_addconstraints5 nnc_addconstraints6 \
 	nnc_addconstraints7 nnc_addconstraints8 nnc_addconstraints9 \
@@ -132,6 +133,7 @@ DERIVED_TESTS = \
 	nnc_bounded1 \
 	nnc_bounds1 nnc_bounds2 \
 	nnc_concatenate1 nnc_concatenate2 nnc_concatenate3 nnc_concatenate4 \
+	nnc_concatenate5 \
 	nnc_constraints1 nnc_constraints2 nnc_constraints3 \
 	nnc_empty1 \
 	nnc_exceptions1 \
@@ -145,6 +147,7 @@ DERIVED_TESTS = \
 	nnc_intersection1 nnc_intersection2 nnc_intersection3 \
 	nnc_intersection4 nnc_intersection5 nnc_intersection6 \
 	nnc_intersection7 nnc_intersection8 nnc_intersection9 \
+	nnc_intersection10 \
 	nnc_limitedh79widening1 nnc_limitedh79widening2 \
 	nnc_limitedh79widening3 \
 	nnc_linearpartition1 nnc_linearpartition2 nnc_linearpartition3 \
@@ -154,9 +157,9 @@ DERIVED_TESTS = \
 	nnc_onepoint \
 	nnc_permute \
 	nnc_polydifference1 nnc_polydifference3 nnc_polydifference4 \
-	nnc_polydifference6 \
+	nnc_polydifference6 nnc_polydifference7 \
 	nnc_polyhull1 nnc_polyhull2 nnc_polyhull3 nnc_polyhull4 \
-	nnc_polyhull5 nnc_polyhull6 nnc_polyhull7 \
+	nnc_polyhull5 nnc_polyhull6 nnc_polyhull7 nnc_polyhull8 \
 	nnc_randphull1 \
 	nnc_relations1 nnc_relations2 nnc_relations3 nnc_relations4 \
 	nnc_relations5 nnc_relations6 nnc_relations7 nnc_relations8 \
@@ -184,6 +187,7 @@ NNCminimize5_SOURCES = NNCminimize5.cc
 NNCminimize6_SOURCES = NNCminimize6.cc
 
 addconstraint1_SOURCES = addconstraint1.cc
+addconstraint2_SOURCES = addconstraint2.cc
 
 addconstraints1_SOURCES = addconstraints1.cc
 addconstraints2_SOURCES = addconstraints2.cc
@@ -279,6 +283,7 @@ concatenate1_SOURCES = concatenate1.cc
 concatenate2_SOURCES = concatenate2.cc
 concatenate3_SOURCES = concatenate3.cc
 concatenate4_SOURCES = concatenate4.cc
+concatenate5_SOURCES = concatenate5.cc
 
 constraints1_SOURCES = constraints1.cc
 constraints2_SOURCES = constraints2.cc
@@ -326,6 +331,7 @@ intersection6_SOURCES = intersection6.cc
 intersection7_SOURCES = intersection7.cc
 intersection8_SOURCES = intersection8.cc
 intersection9_SOURCES = intersection9.cc
+intersection10_SOURCES = intersection10.cc
 
 limitedh79widening1_SOURCES = limitedh79widening1.cc
 limitedh79widening2_SOURCES = limitedh79widening2.cc
@@ -357,6 +363,7 @@ polydifference3_SOURCES = polydifference3.cc
 polydifference4_SOURCES = polydifference4.cc
 polydifference5_SOURCES = polydifference5.cc
 polydifference6_SOURCES = polydifference6.cc
+polydifference7_SOURCES = polydifference7.cc
 
 polyhull1_SOURCES = polyhull1.cc
 polyhull2_SOURCES = polyhull2.cc
@@ -365,6 +372,7 @@ polyhull4_SOURCES = polyhull4.cc
 polyhull5_SOURCES = polyhull5.cc
 polyhull6_SOURCES = polyhull6.cc
 polyhull7_SOURCES = polyhull7.cc
+polyhull8_SOURCES = polyhull8.cc
 
 relations1_SOURCES = relations1.cc
 relations2_SOURCES = relations2.cc
@@ -424,6 +432,9 @@ universe6_SOURCES = universe6.cc
 #
 
 DERIVED_CXXFLAGS = -DDERIVED_TEST $(AM_CXXFLAGS)
+
+nnc_addconstraint2_SOURCES = addconstraint2.cc
+nnc_addconstraint2_CXXFLAGS = $(DERIVED_CXXFLAGS)
 
 nnc_addconstraints1_SOURCES = addconstraints1.cc
 nnc_addconstraints1_CXXFLAGS = $(DERIVED_CXXFLAGS)
@@ -556,6 +567,8 @@ nnc_concatenate3_SOURCES = concatenate3.cc
 nnc_concatenate3_CXXFLAGS = $(DERIVED_CXXFLAGS)
 nnc_concatenate4_SOURCES = concatenate4.cc
 nnc_concatenate4_CXXFLAGS = $(DERIVED_CXXFLAGS)
+nnc_concatenate5_SOURCES = concatenate5.cc
+nnc_concatenate5_CXXFLAGS = $(DERIVED_CXXFLAGS)
 
 nnc_constraints1_SOURCES = constraints1.cc
 nnc_constraints1_CXXFLAGS = $(DERIVED_CXXFLAGS)
@@ -624,6 +637,8 @@ nnc_intersection8_SOURCES = intersection8.cc
 nnc_intersection8_CXXFLAGS = $(DERIVED_CXXFLAGS)
 nnc_intersection9_SOURCES = intersection9.cc
 nnc_intersection9_CXXFLAGS = $(DERIVED_CXXFLAGS)
+nnc_intersection10_SOURCES = intersection10.cc
+nnc_intersection10_CXXFLAGS = $(DERIVED_CXXFLAGS)
 
 nnc_limitedh79widening1_SOURCES = limitedh79widening1.cc
 nnc_limitedh79widening1_CXXFLAGS = $(DERIVED_CXXFLAGS)
@@ -666,6 +681,8 @@ nnc_polydifference4_SOURCES = polydifference4.cc
 nnc_polydifference4_CXXFLAGS = $(DERIVED_CXXFLAGS)
 nnc_polydifference6_SOURCES = polydifference6.cc
 nnc_polydifference6_CXXFLAGS = $(DERIVED_CXXFLAGS)
+nnc_polydifference7_SOURCES = polydifference7.cc
+nnc_polydifference7_CXXFLAGS = $(DERIVED_CXXFLAGS)
 
 nnc_polyhull1_SOURCES = polyhull1.cc
 nnc_polyhull1_CXXFLAGS = $(DERIVED_CXXFLAGS)
@@ -681,6 +698,8 @@ nnc_polyhull6_SOURCES = polyhull6.cc
 nnc_polyhull6_CXXFLAGS = $(DERIVED_CXXFLAGS)
 nnc_polyhull7_SOURCES = polyhull7.cc
 nnc_polyhull7_CXXFLAGS = $(DERIVED_CXXFLAGS)
+nnc_polyhull8_SOURCES = polyhull8.cc
+nnc_polyhull8_CXXFLAGS = $(DERIVED_CXXFLAGS)
 
 nnc_relations1_SOURCES = relations1.cc
 nnc_relations1_CXXFLAGS = $(DERIVED_CXXFLAGS)
