@@ -323,23 +323,11 @@ PowerSet<CS>::is_bottom() const {
   return sequence.empty();
 }
 
-// Projection
-
-/*! \relates PowerSet */
 template <typename CS>
-CS
-project(const PowerSet<CS>& x) {
-  CS ret;
-  typename PowerSet<CS>::const_iterator xi;
-
-  if (x.size() == 0)
-    ret.bottom();
-  else {
-    ret = *(x.begin());
-    for (xi = x.begin(), ++xi; xi != x.end(); ++xi)
-      ret.upper_bound_assign(project(*xi));
-  }
-  return ret;
+inline void
+PowerSet<CS>::collapse() {
+  if (!is_bottom())
+    collapse(begin());
 }
 
 // Meet operators

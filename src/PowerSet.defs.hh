@@ -43,16 +43,6 @@ template <typename CS>
 PowerSet<CS>
 operator*(const PowerSet<CS>& x, const PowerSet<CS>& y);
 
-//! Returns the projection of \p x onto the underlying constraint system.
-/*!
-  \relates PowerSet
-  The result is obtained by computing the <CODE>CS</CODE>-upper-bound
-  (i.e., the poly-hull) of all the elements in \p x.
-*/
-template <typename CS>
-CS
-project(const PowerSet<CS>& x);
-
 //! Returns <CODE>true</CODE> if and only if \p x and \p y are equivalent.
 /*! \relates PowerSet */
 template <typename CS>
@@ -129,8 +119,11 @@ public:
   //! Checks if all the invariants are satisfied.
   bool OK() const;
 
-  // TO BE REMOVED.
-  friend CS project<>(const PowerSet& x);
+  //! \brief
+  //! If \p *this is not empty (i.e., it is not the bottom element),
+  //! it is reduced to a singleton obtained by computing an upper-bound
+  //! of all the disjuncts.
+  void collapse();
 
 protected:
   //! A powerset is implemented as a sequence of elements.
