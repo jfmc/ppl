@@ -14,6 +14,11 @@ To be Done Just After Merging the Strict Branch
 5) Rename Constraint::coefficient(void) to
    Constraint::inhomogeneous_term(void).
 
+6) Rename Polyhedron::insert(const Constraint&)
+   to Polyhedron::add_constraint(const Constraint&).
+   Likewise, rename Polyhedron::insert(const Generator&)
+   to Polyhedron::add_generator(const Generator&).
+
 Minor and Not So Minor Things
 =============================
 
