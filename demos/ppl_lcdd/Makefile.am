@@ -110,11 +110,13 @@ $(TOUGH_EXAMPLES_IF_ASSERTIONS_ENABLED)
 check-local: ppl_lcdd
 	echo $(TOUGH_EXAMPLES) >tough_examples
 	echo -n >obtained
-	for file in $(srcdir)/examples/*.ext $(srcdir)/examples/*.ine; do \
-	  grep -q `basename $$file` tough_examples && continue; \
-	  echo -n `basename $$file` " " >>obtained; \
-	  echo ppl_lcdd $$file; \
-	  ./ppl_lcdd $$file | $(MD5SUM) - >>obtained; \
+	for path in $(srcdir)/examples/*.ext $(srcdir)/examples/*.ine; \
+	do \
+	  file=`basename $$path`; \
+	  grep -q $$file tough_examples && continue; \
+	  echo -n $$file " " >>obtained; \
+	  echo ppl_lcdd $$path; \
+	  ./ppl_lcdd $$path | $(MD5SUM) - >>obtained; \
 	done
 	diff -q $(srcdir)/$(EXPECTED) obtained
 
