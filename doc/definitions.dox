@@ -232,7 +232,7 @@ A <EM>vertex</EM> of a polyhedron \f$P\f$ is any point in \f$P\f$
 which cannot be expressed as a convex combination of any other 
 distinct points in \f$P\f$.
 
-<B>Rays</B>
+<B>Ray</B>
 
 Let \f$P, P_0\f$ be the polyhedra
 \f[
@@ -256,16 +256,17 @@ Then any point
 \f$\vect{r} \in P_0 \setminus \{ \vect{0} \}\f$
 is called a <EM>ray</EM> of \f$P\f$.
 
-A ray indicates a direction in which the polyhedra is infinite
-(i.e., unbounded).
+A ray indicates a direction in which the polyhedra \f$P\f$ and \f$P_0\f$
+is infinite (i.e., unbounded).
 
 <B><EM>Proposition</EM></B>
 
-A point \f$\vect{r} \in \Rset^n\f$ is a ray of \f$P\f$ if and only if for 
+A point \f$\vect{r} \in \Rset^n \setminus \{ \vect{0} \}\f$
+is a ray of \f$P\f$ if and only if, for 
 any point \f$\vect{x} \in P\f$, \f$(\vect{x} + \mu \vect{r}) \in P\f$
 for all \f$\mu \in \Rset, \mu > 0\f$.
 
-<B>Extreme rays</B>
+<B>Extreme ray</B>
 
 A ray \f$\vect{r}\f$ of \f$P\f$ is an <EM>extreme ray</EM>
 if there do not exist two rays \f$\vect{r}_1\f$ and \f$\vect{r}_2\f$
@@ -273,15 +274,13 @@ of \f$P\f$,
 \f$\vect{r}_1 \neq \lambda \vect{r}_2\f$ for any 
 \f$\lambda \in \Rset, \lambda > 0\f$, such that 
 \f[
-  \vect{r} = \mu_1 \vect{r}_1 + \mu_2 \vect{r}_2
-    \quad \text{with } 
-      \mu_1, \mu_2 \in  \Rset, \mu_1, \mu_2 \geq 0.
+  \vect{r} = 0.5 \vect{r}_1 + 0.5 \vect{r}_2.
 \f]
 
 Note that the set of extreme rays describes <EM>all</EM> the directions
 in which the polyhedron is unbounded.
 
-<B>Lines</B>
+<B>Line</B>
 
 A <EM>line</EM> (or <EM>bidirectional ray</EM>) of a polyhedron
 \f$P\f$ is a vector \f$\vect{l}\f$, such that,
@@ -315,7 +314,7 @@ the <EM>lineality space</EM> of \f$P\f$ is the set
 \f[
   \{\, \vect{x} \in P \mid A\vect{x} = \vect{0} \,\}
 \f]
-and it is denoted by \f$\mathop{\mathrm{lin. space}}(P)\f$. 
+and it is denoted by \f$\linspace(P)\f$. 
 
 <B>Minkowski's sum</B>
 
@@ -328,16 +327,13 @@ Then the <EM>Minkowski's sum</EM> of
 
 <B>Generators representation</B>
 
-If \f$P\f$ is a polyhedron with at least one vertex,
+If \f$P\f$ is a polyhedron,
 then it can also be represented by
-a set of vertices \f$V \neq \emptyset\f$,
+a set of points \f$V\f$,
 a set of rays \f$R\f$ and
 a set of lines \f$L\f$.
 Together, these three sets are called the <EM>generators</EM> of \f$P\f$.
-
-The following two theorems justify this terminology.
-The first, called Minkowski's theorem, states that
- \f$P\f$ can be <EM>decomposed</EM> as 
+and generate \f$P\f$ in the sense that
 \f[
   P = \mathcal{V} + \mathcal{R} + \mathcal{L}
 \f]
@@ -350,42 +346,40 @@ where the symbol '\f$+\f$' denotes the Minkowski's sum and
    of the points in \f$L\f$.
 
 Note that:
-\f$\mathcal{V}\f$ is non-empty a polytope,
+\f$\mathcal{V}\f$ is a polytope,
 \f$\mathcal{R}\f$ is a pointed cone, and
 \f$\mathcal{L}\f$ is \f$\mathop{\mathrm{lin.space}}(P)\f$.
+
+Note also that \f$V\f$ must contain all vertices of \f$P\f$.
+However, \f$V\f$ can contain other points,
+particularly if the set of vertices in \f$P\f$ is empty.
+
+In the case that \f$P\f$ contains at least one vertex,
+(in which case, \f$L = \emptyset\f$)
+the following two theorems justify this terminology.
 
 <B>Minkowski's theorem</B>
 
 Let
 \f$P = \{\, \vect{x} \in \Rset^n \mid A\vect{x} \geq \vect{b} \,\}\f$
-be a non-empty polyhedron where \f$A\f$ is a matrix of rank \f$n\f$.
-Let also
-\f$\{ \vect{v}_k \}_{k \in K}\f$ be the set of vertices of \f$P\f$ and
-\f$\{ \vect{r}_j \}_{j \in J}\f$ be the set of extreme rays of \f$P\f$.
+be a non-empty polyhedron where \f$\prank(A) = n\f$.
+Let \f$V\f$ be the set of vertices and
+\f$R\f$ the set of extreme rays of \f$P\f$.
+Let also \f$\mathcal{V}\f$ be the set of convex combinations
+   of \f$V\f$ and \f$\mathcal{R}\f$ the set of positive combinations
+   of \f$R\f$.
 Then
 \f[
-  P = \sset{
-        \vect{x} \in \Rset^n 
-      }{
-        \vect{x} = \sum_{k \in K} \lambda_k \vect{v}_k
-                     + \sum_{j \in J} \mu_j \vect{r}_j,
-          \text{ where} \\
-        \forall k \in K \itc  
-          \lambda_k \in \Rset, \lambda_k \geq 0,
-          \sum_{k \in K} \lambda_k = 1 \\
-        \text{and }
-        \forall j \in J \itc
-          \mu_j \in \Rset, \mu_j \geq 0
-      }.
+  P = \mathcal{V} + \mathcal{R}.
 \f]
 
 The conditions that \f$P\f$ is not empty and 
 \f$\prank(A) = n\f$ required by this theorem are 
 equivalent to the condition that \f$P\f$ has a vertex.
-This condition is needed since, if \f$V = \emptyset\f$,
+This condition is needed since, if the set of vertices \f$V = \emptyset\f$,
 then \f$\mathcal{V} = \emptyset\f$ and hence
-\f$P = \mathcal{V} + \mathcal{R} + \mathcal{L}\f$ is also empty
-even though the set of lines may be non-empty.
+\f$\mathcal{V} + \mathcal{R}\f$ is also empty
+even though \f$P\f$ may contain a line.
 (See also Nemhauser and Wolsey - Integer and Combinatorial Optimization -
 propositions 4.1 and 4.2 on pages 92 and 93).
 
@@ -416,9 +410,7 @@ the matrix of rays.
 
 <B>Dual representation</B>
 
-Thus, under the hypothesis of Minkowski's theorem
-(and hence assuming the polyhedron has at least one vertex),
-a rational polyhedron \f$P\f$ has a <EM>dual representation</EM>.
+Thus a rational polyhedron \f$P\f$ has a <EM>dual representation</EM>.
 That is, \f$P\f$
 can be represented by a system of constraints
 or a system of generators.
@@ -540,7 +532,7 @@ Given a polyhedron \f$P\f$ generated by \f$V\f$ vertices,
 
 -# \f$L\f$ is <EM>irredundant</EM> if
   \f$L\f$ is a set of linearly independent lines; and
--# a ray \f$\vect{r}_1\f \in R$ is <EM>redundant</EM> 
+-# a ray \f$\vect{r}_1\in R\f$ is <EM>redundant</EM> 
   if there exists another ray \f$\vect{r}_2 \in R\f$ and
   there exists \f$\lambda \in \Rset, \lambda > 0\f$
   such that \f$\vect{r}_1 = \lambda \vect{r}_2\f$.
@@ -587,9 +579,9 @@ is called the <EM>ray space</EM> of \f$P\f$
 and denoted by \f$\mathop{\mathrm{ray space}}(P)\f$.
 
 Thus a polyhedron \f$P\f$ can be always decomposed in its 
-\f$\mathop{\mathrm{lin. space}}\f$ and its \f$\mathop{\mathrm{ray space}}\f$.
+\f$\linspace\f$ and its \f$\mathop{\mathrm{ray space}}\f$.
 
-Note that, since \f$\mathop{\mathrm{lin. space}}(P)\f$ and 
+Note that, since \f$\linspace(P)\f$ and 
 \f$\mathop{\mathrm{ray space}}(P)\f$ are special polyhedra, their 
 dimension can be computed using the definition of dimension given for 
 polyhedra.
@@ -600,11 +592,11 @@ The spaces defined are connected by some consistency rules shown below.
 
 In \f$\Rset^n\f$
 
-- The dimension of the \f$\mathop{\mathrm{lin. space}}\f$
+- The dimension of the \f$\linspace\f$
   is the rank of any set of lines that span the space.
 - The dimension of the polyhedron is the dimension of the 
   \f$\mathop{\mathrm{ray space}}\f$ plus the dimension of the 
-  \f$\mathop{\mathrm{lin. space}}\f$.
+  \f$\linspace\f$.
 - The dimension of the \f$\mathop{\mathrm{ray space}}\f$ 
   is \f$n\f$ minus the number of irredundant 
   lines minus the number of irredundant equalities.
@@ -615,32 +607,36 @@ dimension and the decomposition of a polyhedron.
 <B>Saturation</B>
 
 Let us consider a ray \f$\vect{r} \in \Rset^n\f$ and an inequality 
-\f$(\vect{a}, 0)\f$ where \f$\vect{a} \in \Rset^n\f$: 
-- \f$r\f$ is said to <EM>saturate</EM> the inequality
+\f$(\vect{a}, 0)\f$ where \f$\vect{a} \in \Rset^n\f$. 
+Then we say that: 
+- \f$r\f$ <EM>saturates</EM> the inequality
   if \f$\langle \vect{a}, \vect{r} \rangle = 0\f$;
-- \f$r\f$ <EM>verifies</EM> the inequality
+- \f$r\f$ <EM>verifies</EM>  the inequality
   if \f$\langle \vect{a}, \vect{r} \rangle > 0\f$;
-- \f$r\f$ <EM>violates</EM> the inequality
+- \f$r\f$ <EM>violates</EM>  the inequality
   if \f$\langle \vect{a}, \vect{r} \rangle < 0\f$.
 
 Similarly, considering an equality 
-\f$\langle \vect{a}, \vect{x} \rangle = 0\f$,
-\f$\vect{r}\f$ is said to <EM>saturate</EM> the equality
+\f$\langle \vect{a}, \vect{x} \rangle = 0\f$:
+- \f$\vect{r}\f$ <EM>saturates</EM> the equality
 if \f$\langle \vect{a}, \vect{r} \rangle = 0\f$;
-\f$\vect{r}\f$ <EM>does not verify</EM> the equality
+- \f$\vect{r}\f$ <EM>does not verify</EM> the equality
 if \f$\langle \vect{a}, \vect{r} \rangle \neq 0\f$.
 
 A constraint (i.e., an equality or an inequality) is
 <EM>satisfied</EM> by a ray if the ray saturates or verifies the constraint.
 
-In the PPL, for efficiency we will use a <EM>saturation matrix</EM>; it is a 
+<B> Saturation matrix</B>
+
+A <EM>saturation matrix</EM> is a 
 Boolean matrix that represent the connection between constraints and 
-generators of a polyhedron.
-We will use two kinds of saturation matrices: one having rows indexed 
+generators of a polyhedron. 
+There are two kinds of saturation matrix one having rows indexed 
 by constraints and columns indexed by generators (<EM>sat_g</EM>), 
 and one (that is the transposed version of the previous one) having 
 rows indexed by generators and columns indexed by constraints (<EM>sat_c</EM>).
-Let us consider the saturation matrix sat_g: its elements are defined 
+
+For instance, in the saturation matrix sat_g, the elements are defined 
 as follows:
 \f[
 s_{ij} =
@@ -651,6 +647,7 @@ s_{ij} =
   verified by the generator indexed by } j.
 \end{cases}
 \f]
+For efficiency reasons, the PPL uses both the sat_g and sat_c matrices.
 
 <B>Saturation rule</B>
 
@@ -662,27 +659,31 @@ In an \f$n\f$-dimensional \f$\mathop{\mathrm{ray space}}\f$,
 -# Every equality must be saturated by all lines and vertices/rays.
 -# Every line must saturate all equalities and inequalities.
 
-The proofs of these rules can be obtained using the saturation concept.
+These rules are a consequence of the saturation concept.
 
-<EM><B>Proposition</B></EM>	
+<B><EM>Proposition</EM></B>
 
-Let \f$C = \{\vect{x} \mid A\vect{x} \geq \vect{0}\}\f$ be a cone,
-then it can be shown that any minimal proper face of \f$C\f$ in an 
+Let \f$C = \{\vect{x} \mid A\vect{x} \geq \vect{0}\}\f$ be a polyhedral cone,
+then any minimal proper face of \f$C\f$ in an 
 \f$n\f$-dimensional space can also be represented as 
-\f$G = \{\,\vect{x} \mid A'\vect{x} = 0, \vect{a}_i\vect{x} \geq 0\,\}\f$ 
-where \f$A'\f$ is a submatrix of \f$A,\f$ \f$a_i\f$ is a row of \f$A\f$ 
+\f(
+  G = \{\,\vect{x} \mid A'\vect{x} = 0,
+  \langle\vect{a}_i\vect{x}\rangle \geq 0\,\}
+\f)
+where \f$A'\f$ is a submatrix of \f$A\f$, \f$\vect{a}_i\f$ is a row of \f$A\f$ 
 and the rank of the matrix built starting from \f$A'\f$ and adding the row 
-\f$a_i,\f$ is \f$n - t\f$ (where \f$t\f$ is the dimension of the 
-lin. space of \f$C\f$).
+\f$\vect{a}_i\f$ is \f$n - t\f$
+where \f$t = \dim\bigl(\linspace(C)\bigr)\f$.
 
-In fact, a minimal proper face \f$G\f$ generated by the extremal ray 
-\f$\vect{y}\f$ is composed by all the points that are combination of this ray
-and all the lines of the lin. space. This mean that all the constraints
-saturated by \f$\vect{y}\f$ are saturated also by all points of \f$G\f$. Since 
-in a \f$m\f$-ray space an extreme ray must saturate \f$ m - 1\f$. 
+To see this, note that
+a minimal proper face \f$G\f$ generated by the extremal ray 
+\f$\vect{y}\f$ is composed of all the points that are combination of this ray
+and all the lines of \f$\linspace(C)\f$. This mean that all the constraints
+saturated by \f$\vect{y}\f$ are also saturated by all points of \f$G\f$. Since 
+in a \f$m\f$-ray space an extreme ray must saturate \f$ m - 1\f$ constraints. 
 So the matrix composed by \f$A'\f$ (that is composed by the constraints
 saturated by all points of \f$G\f$) and by \f$\vect{a}_i\f$ has rank equal to
-\f$m - 1 + 1\f$ (\f$+1\f$ is for the constraint \f$a_i\f$) and so
+\f$m - 1 + 1\f$ (\f$+1\f$ is for the constraint \f$\vect{a}_i\f$) and so
 the rank is equal to \f$n - t\f$. 
  
 <B>Adjacent rays</B>
@@ -695,7 +696,7 @@ and \f$Q\f$ the set of rays that generate \f$C\f$. Then two rays
 -# and none of the rays of \f$Q\f$, except \f$\vect{r}_1\f$ and 
    \f$\vect{r}_2\f$, saturates all the constraints saturated by both 
    \f$\vect{r}_1\f$ and \f$\vect{r}_2\f$. 
-
+ 
 <B>Independence rule</B>
 
 -# No inequality is a positive combination of any other two inequalities 
