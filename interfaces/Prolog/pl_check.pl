@@ -39,6 +39,10 @@ check_all :-
    make_quiet,
    run_all.
 
+check_noisy :-
+   make_noisy,
+   run_all.
+
 run_all:-
    ppl_initialize,
    (all_versions_and_banner -> true ;
@@ -252,7 +256,7 @@ banner_pp(B) :-
   format_banner(Bcodes).
 
 format_banner([]) :- nl.
-format_banner([_]) :- nl.
+format_banner([C]) :- put_code(C), nl.
 format_banner([C,C1|Chars]):-
   ([C,C1] == "/n" ->
      (nl,
@@ -1318,24 +1322,6 @@ rel_cons :-
   (R3 = [is_included, saturates] ; R3 = [saturates, is_included]),
   ppl_delete_Polyhedron(P).
 
-% Tests ppl_Polyhedron_relation_with_constraint.
-rel_cons1 :-
-  make_vars(3, [A, B, C]),
-  ppl_new_Polyhedron_from_dimension(c, 3, P),
-  ppl_Polyhedron_add_constraints(P, [A >= 1, B >= 0, C = 0]),
-  \+ ppl_Polyhedron_relation_with_constraint(P, A = 0, x),
-  ppl_Polyhedron_relation_with_constraint(P, A = 0, R),
-  R = [is_disjoint],
-  ppl_Polyhedron_relation_with_constraint(P, A = 1, R1),
-  R1 = [strictly_intersects],
-  ppl_Polyhedron_relation_with_constraint(P, A >= 0, R2),
-  R2 = [is_included],
-/*
-% ppl_Polyhedron_relation_with_constraint(P, C >= 0, R3),
-%  (R3 = [is_included, saturates] ; R3 = [saturates, is_included]),
-*/
-  ppl_delete_Polyhedron(P).
-
 % Tests ppl_Polyhedron_relation_with_generator.
 rel_gens :-
   make_vars(3, [A, B, C]),
@@ -1769,11 +1755,14 @@ make_var_list(I,Dim,['$VAR'(I)|VarList]):-
   make_var_list(I1,Dim,VarList).
 
 make_noisy :-
-  (retract(noisy(_)) ; true),
-  !,
-  assertz(noisy(1)).
+  (retract(noisy(_)) ->
+      make_noisy
+  ;
+      assertz(noisy(1))
+  ).
 
 make_quiet :-
-  (retract(noisy(_)) ; true),
-  !,
-  assertz(noisy(0)).
+  (retract(noisy(_)) ->
+      make_quiet
+   ; assertz(noisy(0))
+  ).
