@@ -1620,6 +1620,15 @@ private:
 			      ConSys& cs_selected,
 			      ConSys& cs_not_selected) const;
 
+  enum Three_Valued_Boolean {
+    TVB_TRUE,
+    TVB_FALSE,
+    TVB_DONT_KNOW
+  };
+
+  //! Polynomial but incomplete equivalence test between polyhedra.
+  Three_Valued_Boolean quick_equivalence_test(const Polyhedron& y) const;
+
   //! \brief
   //! Returns <CODE>true</CODE> if and only if \p *this is included in \p y.
   bool is_included(const Polyhedron& y) const;

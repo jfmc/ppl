@@ -1295,52 +1295,23 @@ PPL::operator==(const Polyhedron& x, const Polyhedron& y) {
   else if (x_space_dim == 0)
     return true;
 
-  if (x.is_necessarily_closed()) {
-    if (!x.has_something_pending() && !y.has_something_pending()) {
-
-      bool css_normalized = false;
-      if (x.constraints_are_minimized() && y.constraints_are_minimized()) {
-	// Equivalent minimized constraint systems have:
-	//  - the same number of constraints; ...
-	if (x.con_sys.num_rows() != y.con_sys.num_rows())
-	  return false;
-	//  - the same number of equalities; ...
-	dimension_type x_num_equalities = x.con_sys.num_equalities();
-	if (x_num_equalities != y.con_sys.num_equalities())
-	  return false;
-	//  - if there are no equalities, they have the same constraints.
-	//    Delay this test: try cheaper tests on generators first.
-	css_normalized = (x_num_equalities == 0);
-      }
-
-      if (x.generators_are_minimized() && y.generators_are_minimized()) {
-	// Equivalent minimized generator systems have:
-	//  - the same number of generators; ...
-	if (x.gen_sys.num_rows() != y.gen_sys.num_rows())
-	  return false;
-	//  - the same number of lines; ...
-	dimension_type x_num_lines = x.gen_sys.num_lines();
-	if (x_num_lines != y.gen_sys.num_lines())
-	  return false;
-	//  - if there are no lines, they have the same generators.
-	if (x_num_lines == 0) {
-	  // Sort the two systems and check for syntactic identity.
-	  x.obtain_sorted_generators();
-	  y.obtain_sorted_generators();
-	  return x.gen_sys == y.gen_sys;
-	}
-      }
-      
-      if (css_normalized) {
-	// Sort the two systems and check for identity.
-	x.obtain_sorted_constraints();
-	y.obtain_sorted_constraints();
-	return x.con_sys == y.con_sys;
-      }
-    }
+  switch (x.quick_equivalence_test(y)) {
+  case Polyhedron::TVB_TRUE:
+    return true;
+    break;
+  case Polyhedron::TVB_FALSE:
+    return false;
+    break;
+  default:
+    if (x.is_included(y))
+      if (x.is_empty())
+	return y.check_empty();
+      else
+	return y.is_included(x);
+    else
+      return false;
+    break;
   }
-
-  return x.is_included(y) && y.is_included(x);
 }
 
 bool
@@ -1356,16 +1327,6 @@ PPL::operator<=(const Polyhedron& x, const Polyhedron& y) {
     Polyhedron::throw_dimension_incompatible("operator<=("
 					     "const Polyhedron& x, "
 					     "const Polyhedron& y)", x, y);
-  return x.is_included(y);
-}
-
-bool
-PPL::Polyhedron::is_included(const Polyhedron& y) const {
-  // Private method: the caller must ensure the following.
-  assert(topology() == y.topology());
-  assert(space_dimension() == y.space_dimension());
-
-  const Polyhedron& x = *this;
 
   if (x.is_empty())
     return true;
@@ -1374,13 +1335,91 @@ PPL::Polyhedron::is_included(const Polyhedron& y) const {
   else if (x.space_dimension() == 0)
     return true;
 
+  if (x.quick_equivalence_test(y) == Polyhedron::TVB_TRUE)
+    return true;
+
+  return x.is_included(y);
+}
+
+
+PPL::Polyhedron::Three_Valued_Boolean
+PPL::Polyhedron::quick_equivalence_test(const Polyhedron& y) const {
+  // Private method: the caller must ensure the following.
+  assert(topology() == y.topology());
+  assert(space_dimension() == y.space_dimension());
+  assert(!is_empty() && !y.is_empty() && space_dimension() > 0);
+
+  const Polyhedron& x = *this;
+
+  if (x.is_necessarily_closed()) {
+    if (!x.has_something_pending() && !y.has_something_pending()) {
+      bool css_normalized = false;
+      if (x.constraints_are_minimized() && y.constraints_are_minimized()) {
+	// Equivalent minimized constraint systems have:
+	//  - the same number of constraints; ...
+	if (x.con_sys.num_rows() != y.con_sys.num_rows())
+	  return Polyhedron::TVB_FALSE;
+	//  - the same number of equalities; ...
+	dimension_type x_num_equalities = x.con_sys.num_equalities();
+	if (x_num_equalities != y.con_sys.num_equalities())
+	  return Polyhedron::TVB_FALSE;
+	//  - if there are no equalities, they have the same constraints.
+	//    Delay this test: try cheaper tests on generators first.
+	css_normalized = (x_num_equalities == 0);
+      }
+
+      if (x.generators_are_minimized() && y.generators_are_minimized()) {
+	// Equivalent minimized generator systems have:
+	//  - the same number of generators; ...
+	if (x.gen_sys.num_rows() != y.gen_sys.num_rows())
+	  return Polyhedron::TVB_FALSE;
+	//  - the same number of lines; ...
+	dimension_type x_num_lines = x.gen_sys.num_lines();
+	if (x_num_lines != y.gen_sys.num_lines())
+	  return Polyhedron::TVB_FALSE;
+	//  - if there are no lines, they have the same generators.
+	if (x_num_lines == 0) {
+	  // Sort the two systems and check for syntactic identity.
+	  x.obtain_sorted_generators();
+	  y.obtain_sorted_generators();
+	  if (x.gen_sys == y.gen_sys)
+	    return Polyhedron::TVB_TRUE;
+	  else
+	    return Polyhedron::TVB_FALSE;
+	}
+      }
+      
+      if (css_normalized) {
+	// Sort the two systems and check for identity.
+	x.obtain_sorted_constraints();
+	y.obtain_sorted_constraints();
+	if (x.con_sys == y.con_sys)
+	    return Polyhedron::TVB_TRUE;
+	  else
+	    return Polyhedron::TVB_FALSE;
+      }
+    }
+  }
+  return Polyhedron::TVB_DONT_KNOW;
+}
+
+
+bool
+PPL::Polyhedron::is_included(const Polyhedron& y) const {
+  // Private method: the caller must ensure the following.
+  assert(topology() == y.topology());
+  assert(space_dimension() == y.space_dimension());
+  assert(!is_empty() && !y.is_empty() && space_dimension() > 0);
+
+  const Polyhedron& x = *this;
+
   // `x' cannot have pending constraints, because we need its generators.
   if (x.has_pending_constraints() && !x.process_pending_constraints())
     return true;
   // `y' cannot have pending generators, because we need its constraints.
   if (y.has_pending_generators())
     y.process_pending_generators();
-  
+
 #ifdef BE_LAZY
   if (!x.generators_are_up_to_date() && !x.update_generators())
     return true;
@@ -3495,7 +3534,8 @@ void
 PPL::Polyhedron::H79_widening_assign(const Polyhedron& y) {
   Polyhedron& x = *this;
   // Topology compatibility check.
-  if (x.topology() != y.topology())
+  Topology tpl = x.topology();
+  if (tpl != y.topology())
     throw_topology_incompatible("H79_widening_assign(y)", y);
   // Dimension-compatibility check.
   dimension_type x_space_dim = x.space_dim;
@@ -3537,6 +3577,42 @@ PPL::Polyhedron::H79_widening_assign(const Polyhedron& y) {
       return;
   }
 
+  dimension_type num_columns = x.con_sys.num_columns();
+
+  // If we only have the generators of `x' and the dimensions of
+  // the two polyhedra are the same, we can compute the standard
+  // widening by using the specification in CousotH78, therefore
+  // avoiding converting from generators to constraints.
+  if (x.has_pending_generators() || !x.constraints_are_up_to_date()) {
+    // To this end, given that `y' is a subset of `x', it is sufficient
+    // to check whether all the equalities of `y' are satisfied by
+    // all the generators of `x'.
+    ConSys CH78_cs(tpl, 0, num_columns);
+    x.select_CH78_constraints(y, CH78_cs);
+
+    if (CH78_cs.num_rows() == y.con_sys.num_rows()) {
+      // Having selected all the constraints, the result is `y'.
+      x = y;
+      return;
+    }
+    // Otherwise, check if `x' and `y' have the same dimension.
+    // Note that `y.con_sys' is minimized and `CH78_cs' has no redundant
+    // constraints, since it is a subset of the former.
+    else if (CH78_cs.num_equalities() == y.con_sys.num_equalities()) {
+      // Let `CH78_con_sys' be the new constraint system of `x'
+      // and update the status of `x'.
+      std::swap(x.con_sys, CH78_cs);
+      x.set_constraints_up_to_date();
+      x.clear_constraints_minimized();
+      x.clear_generators_up_to_date();
+      assert(x.OK());
+      return;
+    }
+  }
+
+  // As the dimension of `x' is strictly greater than the dimension of `y',
+  // we have to compute the standard widening by selecting a subset of
+  // the constraints of `x'.
   // `x.con_sys' is just required to be up-to-date, because:
   // - if `x.con_sys' is unsatisfiable, then by assumption
   //   also `y' is empty, so that the resulting polyhedron is `x';
@@ -3550,8 +3626,6 @@ PPL::Polyhedron::H79_widening_assign(const Polyhedron& y) {
 
   // Copy into `H79_con_sys' the constraints of `x' that are common to `y',
   // according to the definition of the H79 widening.
-  Topology tpl = x.topology();
-  dimension_type num_columns = x.con_sys.num_columns();
   ConSys H79_cs(tpl, 0, num_columns);
   ConSys x_minus_H79_cs(tpl, 0, num_columns);
   x.select_H79_constraints(y, H79_cs, x_minus_H79_cs);
