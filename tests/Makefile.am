@@ -86,7 +86,7 @@ ORIGINAL_TESTS = \
 	randphull1 \
 	relations1 relations2 relations3 relations4 relations5 relations6 \
 	relations7 relations8 relations9 relations10 relations11 \
-	relations12 \
+	relations12 relations13 relations14 \
 	removedim1 removedim2 removedim3 removedim4 removedim5 removedim6 \
 	removedim7 removedim8 removedim9 \
 	smm1 \
@@ -142,7 +142,8 @@ DERIVED_TESTS = \
 	nnc_randphull1 \
 	nnc_relations1 nnc_relations2 nnc_relations3 nnc_relations4 \
 	nnc_relations5 nnc_relations6 nnc_relations7 nnc_relations8 \
-	nnc_relations9 nnc_relations10 nnc_relations12 \
+	nnc_relations9 nnc_relations10 nnc_relations12 nnc_relations13 \
+	nnc_relations14 \
 	nnc_removedim1 nnc_removedim2 nnc_removedim3 nnc_removedim4 \
 	nnc_removedim5 nnc_removedim6 nnc_removedim8 nnc_removedim9 \
 	nnc_smm1 \
@@ -325,6 +326,8 @@ relations9_SOURCES = relations9.cc
 relations10_SOURCES = relations10.cc
 relations11_SOURCES = relations11.cc
 relations12_SOURCES = relations12.cc
+relations13_SOURCES = relations13.cc
+relations14_SOURCES = relations14.cc
 
 randphull1_SOURCES = randphull1.cc
 
@@ -611,6 +614,10 @@ nnc_relations10_SOURCES = relations10.cc
 nnc_relations10_CXXFLAGS = $(DERIVED_CXXFLAGS)
 nnc_relations12_SOURCES = relations12.cc
 nnc_relations12_CXXFLAGS = $(DERIVED_CXXFLAGS)
+nnc_relations13_SOURCES = relations13.cc
+nnc_relations13_CXXFLAGS = $(DERIVED_CXXFLAGS)
+nnc_relations14_SOURCES = relations14.cc
+nnc_relations14_CXXFLAGS = $(DERIVED_CXXFLAGS)
 
 nnc_randphull1_SOURCES = randphull1.cc
 nnc_randphull1_CXXFLAGS = $(DERIVED_CXXFLAGS)
