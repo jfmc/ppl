@@ -341,13 +341,13 @@ AM_CONDITIONAL(HAVE_GNU_PROLOG, test x$GNU_PROLOG = xgprolog)
 AC_CHECK_PROG(SICSTUS_PROLOG, sicstus, sicstus)
 if test x"$SICSTUS_PROLOG" = xsicstus
 then
-# We require SICStus Prolog 3.9.0 or later.
+# We require SICStus Prolog 3.9.1 or later.
 AC_CHECK_HEADER(sicstus/sicstus.h,
-                AC_MSG_CHECKING([for SICStus version 3.9.0 or later])
+                AC_MSG_CHECKING([for SICStus version 3.9.1 or later])
                 AC_EGREP_CPP(yes,
                   [
                     #include <sicstus/sicstus.h>
-                    #if SICSTUS_MAJOR_VERSION > 3 || (SICSTUS_MAJOR_VERSION == 3 && SICSTUS_MINOR_VERSION >= 9)
+                    #if SICSTUS_MAJOR_VERSION > 3 || (SICSTUS_MAJOR_VERSION == 3 && SICSTUS_MINOR_VERSION > 9) || (SICSTUS_MAJOR_VERSION == 3 && SICSTUS_MINOR_VERSION == 9 && SICSTUS_REVISION_VERSION >= 1)
                       yes
                     #endif
                   ],
