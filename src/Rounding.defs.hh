@@ -58,10 +58,6 @@ private:
   int fpu_dir;
   Rounding::Direction dir;
   friend class Rounding;
-  template <typename To>
-  friend void save_rounding(const Rounding& mode, Rounding_State& current);
-  template <typename To>
-  friend void restore_rounding(const Rounding_State& state, const Rounding& current);
 };
 
 template <typename To>
