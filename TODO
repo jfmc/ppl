@@ -2,6 +2,11 @@
 Enhancements for PPL 0.7
 ========================
 
+- The check_containment() function is not officially available to
+  the PPL user.  However, someone uses it and, apparently, this
+  comes in handy.  See how to provide the same functionality the
+  right way.
+
 - Explain to the GNU Prolog user that GNU Prolog must be configured
   using the `--disable-regs' option it is has to work with _any_
   foreign code (not just the PPL).
