@@ -215,6 +215,7 @@ to the PPL library.
    ppl_new_Polyhedron_from_Polyhedron/4,
    ppl_new_Polyhedron_from_ConSys/3,
    ppl_new_Polyhedron_from_GenSys/3.
+   ppl_new_Polyhedron_from_bounding_box/3.
 \endcode
    These predicates will create or copy a PPL polyhedron
    and construct a valid handle for referencing it.
@@ -369,6 +370,16 @@ more information regarding these issues.
 </H4>
 
    A polyhedron \f$P\f$ represented by <CODE>List_of_Generators</CODE>
+   is created with topology C or NNC,
+   depending on the value of <CODE>Topology</CODE>,
+   and <CODE>Handle</CODE> is unified with the handle for \f$P\f$.
+
+<H4>
+   <CODE>ppl_new_Polyhedron_from_bounding_box(+Topology
+                   +Box, -Handle)</CODE>
+</H4>
+
+   A polyhedron \f$P\f$ represented by <CODE>Box</CODE>
    is created with topology C or NNC,
    depending on the value of <CODE>Topology</CODE>,
    and <CODE>Handle</CODE> is unified with the handle for \f$P\f$.
