@@ -128,6 +128,103 @@ test3() {
     exit(1);
 }
 
+void
+test4() {
+  Variable A(0);
+  Variable B(1);
+
+  C_Polyhedron ph(2);
+  ph.add_constraint(A >= 0);   
+  ph.add_constraint(B >= 0);   
+  
+  fstream f;
+  open(f, my_file, ios_base::out);
+  ph.ascii_dump(f);
+  close(f);
+
+  open(f, my_file, ios_base::in | ios_base::out);
+  std::string str;
+  do
+    f >> str;
+  while(str != "NECESSARILY_CLOSED");
+  f.seekp(-2, ios_base::cur);
+  f << "A";
+  close(f);
+
+  open(f, my_file, ios_base::in);
+  C_Polyhedron ph2;
+  bool ok = !ph2.ascii_load(f);
+  close(f);
+
+  if (!ok)
+    exit(1);
+}
+
+void
+test5() {
+  Variable A(0);
+  Variable B(1);
+
+  C_Polyhedron ph(2);
+  ph.add_constraint(A >= 0);   
+  ph.add_constraint(B >= 0);   
+  
+  fstream f;
+  open(f, my_file, ios_base::out);
+  ph.ascii_dump(f);
+  close(f);
+
+  open(f, my_file, ios_base::in | ios_base::out);
+  std::string str;
+  do
+    f >> str;
+  while(str != "x");
+  f.seekp(1, ios_base::cur);
+  f << "A";
+  close(f);
+
+  open(f, my_file, ios_base::in);
+  C_Polyhedron ph2;
+  bool ok = !ph2.ascii_load(f);
+  close(f);
+
+  if (!ok)
+    exit(1);
+}
+
+
+void
+test6() {
+  Variable A(0);
+  Variable B(1);
+
+  C_Polyhedron ph(2);
+  ph.add_constraint(A >= 0);   
+  ph.add_constraint(B >= 0);   
+  
+  fstream f;
+  open(f, my_file, ios_base::out);
+  ph.ascii_dump(f);
+  close(f);
+
+  open(f, my_file, ios_base::in | ios_base::out);
+  std::string str;
+  do
+    f >> str;
+  while(str != "(not_sorted)");
+  f.seekp(-2, ios_base::cur);
+  f << "A";
+  close(f);
+
+  open(f, my_file, ios_base::in);
+  C_Polyhedron ph2;
+  bool ok = !ph2.ascii_load(f);
+  close(f);
+
+  if (!ok)
+    exit(1);
+}
+
 int
 main() {
   set_handlers();
@@ -135,6 +232,9 @@ main() {
   test1();
   test2();
   test3();
+  test4();
+  test5();
+  test6();
 
   return 0;
 }
