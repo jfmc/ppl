@@ -136,8 +136,8 @@ Native_Integer<T>::Native_Integer()
 #define PPL_INTEGER_CONSTRUCT_FROM_NATIVE(native) \
 template <typename T> \
 inline \
-Native_Integer<T>::Native_Integer(native z) \
-  : v(z) { \
+Native_Integer<T>::Native_Integer(const native z) \
+  : v(static_cast<T>(z)) { \
 }
 
 PPL_INTEGER_CONSTRUCT_FROM_NATIVE(signed char)
@@ -150,6 +150,14 @@ PPL_INTEGER_CONSTRUCT_FROM_NATIVE(unsigned short)
 PPL_INTEGER_CONSTRUCT_FROM_NATIVE(unsigned int)
 PPL_INTEGER_CONSTRUCT_FROM_NATIVE(unsigned long)
 PPL_INTEGER_CONSTRUCT_FROM_NATIVE(unsigned long long)
+PPL_INTEGER_CONSTRUCT_FROM_NATIVE(float32_t)
+PPL_INTEGER_CONSTRUCT_FROM_NATIVE(float64_t)
+#ifdef FLOAT96_TYPE
+PPL_INTEGER_CONSTRUCT_FROM_NATIVE(float96_t)
+#endif
+#ifdef FLOAT128_TYPE
+PPL_INTEGER_CONSTRUCT_FROM_NATIVE(float128_t)
+#endif
 
 #define PPL_SIGNED_SMALL_NATIVE_CONSTRUCT_FROM_C_STRING(type) \
 template <> \
