@@ -470,7 +470,7 @@ if test x"$gmp_supports_exceptions" = xno
 then
   AC_MSG_WARN([CANNOT PROPAGATE EXCEPTIONS BACK FROM GMP:
 *** MEMORY EXHAUSTION MAY RESULT IN ABRUPT TERMINATION.
-*** If you are using g++, make sure you use version 4.0.1 or higher
+*** If you are using g++, make sure you use version 4.1.2 or higher
 *** and use a version of GMP compiled with the option -fexceptions.
 *** To build such a version, you can configure GMP as follows:
 *** CPPFLAGS=-fexceptions ./configure --enable-cxx --prefix=/usr/local])
