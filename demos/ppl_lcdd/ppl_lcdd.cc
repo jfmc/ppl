@@ -45,8 +45,6 @@ namespace PPL = Parma_Polyhedra_Library;
 
 namespace {
 
-//const char* ppl_source_version = PPL_VERSION;
-
 struct option long_options[] = {
   {"max-cpu",        required_argument, 0, 'C'},
   {"max-memory",     required_argument, 0, 'V'},
@@ -126,7 +124,9 @@ set_output(const char* file_name) {
     delete output_stream_p;
 
   if (file_name) {
-    output_stream_p = new std::ofstream(file_name, std::ios_base::out);
+    output_stream_p = new std::ofstream(file_name,
+					std::ios_base::out
+					| std::ios_base::app);
     if (!*output_stream_p)
       fatal("cannot open output file `%s'", file_name);
     output_file_name = file_name;
