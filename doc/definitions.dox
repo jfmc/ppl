@@ -642,9 +642,10 @@ This operation has been proposed in \ref GDMDRS04 "[GDMDRS04]".
 
 The operator <CODE>fold_dimensions</CODE> provided by the library,
 given a polyhedron \f$\cP \in \Pset_n\f$, with \f$n > 0\f$,
-folds a set of dimensions \f$J = \{ j_0, \ldots, j_{m-1} \}\f$ into
-dimension \f$i\f$, where \f$m-1, i \leq n-1\f$ and \f$i \notin J\f$.
-More formally, the result is given by
+folds a set of dimensions \f$J = \{ j_0, \ldots, j_{m-1} \}\f$,
+with \f$m < n\f$ and \f$j < n\f$ for each \f$j \in J\f$,
+into dimension \f$i < n\f$, where \f$i \notin J\f$.
+The result is given by
 \f[
   \cQ \defeq \biguplus_{d = 0}^m \cQ_d
 \f]
