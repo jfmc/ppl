@@ -252,11 +252,11 @@ Row::Row(const Row& y)
 	 ? new (compute_capacity(y.size())) Impl(*y.impl)
 	 : 0) {
 #if EXTRA_ROW_DEBUG
- #if CXX_SUPPORTS_FLEXIBLE_ARRAYS
+# if CXX_SUPPORTS_FLEXIBLE_ARRAYS
   capacity_ = y.impl ? compute_capacity(y.size()) : 0;
- #else
+# else
   capacity_ = y.impl ? compute_capacity(y.size()) : 1;
- #endif
+# endif
 #endif
 }
 
