@@ -32,12 +32,15 @@ site: http://www.cs.unipr.it/ppl/ . */
 #include <time.h>
 #include <stdarg.h>
 #include <stdlib.h>
+#include <errno.h>
+#include <signal.h>
+#include <string.h>
 
 static struct option long_options[] = {
   {"check",          no_argument,       0, 'c'},
   {"help",           no_argument,       0, 'h'},
-  {"minimize",       no_argument,       0, 'm'},
-  {"maximize",       no_argument,       0, 'M'},
+  {"min",            no_argument,       0, 'm'},
+  {"max",            no_argument,       0, 'M'},
   {"max-cpu",        required_argument, 0, 'C'},
   {"max-memory",     required_argument, 0, 'V'},
   {"output",         required_argument, 0, 'o'},
@@ -48,15 +51,15 @@ static struct option long_options[] = {
 
 static const char* usage_string
 = "Usage: %s [OPTION]... [FILE]...\n\n"
-"  -c, --check             check plausibility of the optimum value found\n"
-"  -m, --minimize          minimize the objective function\n"
-"  -M, --maximize          maximize the objective function (default)\n"
+"  -c, --check             checks plausibility of the optimum value found\n"
+"  -m, --min               minimizes the objective function\n"
+"  -M, --max               maximizes the objective function (default)\n"
 "  -CSECS, --max-cpu=SECS  limits CPU usage to SECS seconds\n"
 "  -VMB, --max-memory=MB   limits memory usage to MB megabytes\n"
-"  -h, --help              prints this help text\n"
-"  -oPATH, --output=PATH   write output to PATH\n"
-"  -t, --timings           print timings on stderr\n"
-"  -v, --verbose           print constraints and other things to stderr\n";
+"  -h, --help              prints this help text to stderr\n"
+"  -oPATH, --output=PATH   writes output to PATH\n"
+"  -t, --timings           prints timings to stderr\n"
+"  -v, --verbose           outputs also the constraints and objective function\n";
 
 
 #define OPTION_LETTERS "bcmMC:V:ho:tv"
@@ -66,6 +69,7 @@ static const char* program_name = 0;
 static unsigned long max_seconds_of_cpu_time = 0;
 static unsigned long max_bytes_of_virtual_memory = 0;
 static const char* output_argument = 0;
+FILE* output_file = NULL;
 static int check_optimum = 0;
 static int print_timings = 0;
 static int verbose = 0;
@@ -101,6 +105,7 @@ process_options(int argc, char *argv[]) {
 
     case 'c':
       check_optimum = 1;
+      fatal("option --check (-c) not implemented yet");
       break;
 
     case 'm':
@@ -156,6 +161,14 @@ process_options(int argc, char *argv[]) {
   if (argc - optind > 1)
     /* We have multiple input files. */
     fatal("only one input file is accepted");
+
+  if (output_argument) {
+    output_file = fopen(output_argument, "w");
+    if (output_file == NULL)
+      fatal("cannot open output file `%s'", output_argument);
+  }
+  else
+    output_file = stdout;
 }
 
 /* To save the time when start_clock is called. */
@@ -164,23 +177,17 @@ static struct timeval saved_ru_utime;
 static void
 start_clock() {
   struct rusage rsg;
-  int r;
-  if ((r = getrusage(RUSAGE_SELF, &rsg)) != 0)
-    fatal("something wrong with `get_rusage': returned %d", r);
+  if (getrusage(RUSAGE_SELF, &rsg) != 0)
+    fatal("getrusage failed: %s", strerror(errno));
   else
     saved_ru_utime = rsg.ru_utime;
 }
 
-#ifndef CLOCKS_PER_SEC
-#define CLOCKS_PER_SEC 1000000
-#endif
-
 static void
 print_clock(FILE* f) {
   struct rusage rsg;
-  int r;
-  if ((r = getrusage(RUSAGE_SELF, &rsg)) != 0)
-    fatal("something wrong with `get_rusage': returned %d", r);
+  if (getrusage(RUSAGE_SELF, &rsg) != 0)
+    fatal("getrusage failed: %s", strerror(errno));
   else {
     time_t current_secs = rsg.ru_utime.tv_sec;
     time_t current_usecs = rsg.ru_utime.tv_usec;
@@ -201,6 +208,53 @@ print_clock(FILE* f) {
   }
 }
 
+void
+set_alarm_on_cpu_time(unsigned int seconds, void (*handler)(int)) {
+  sigset_t mask;
+  struct sigaction s;
+  struct rlimit t;
+
+  sigemptyset(&mask);
+
+  s.sa_handler = handler;
+  s.sa_mask = mask;
+  s.sa_flags = SA_ONESHOT;
+
+  if (sigaction(SIGXCPU, &s, 0) != 0)
+    fatal("sigaction failed: %s", strerror(errno));
+
+  if (getrlimit(RLIMIT_CPU, &t) != 0)
+    fatal("getrlimit failed: %s", strerror(errno));
+
+  if (seconds < t.rlim_cur) {
+    t.rlim_cur = seconds;
+    if (setrlimit(RLIMIT_CPU, &t) != 0)
+      fatal("setrlimit failed: %s", strerror(errno));
+  }
+}
+
+void
+limit_virtual_memory(unsigned int bytes) {
+  struct rlimit t;
+
+  if (getrlimit(RLIMIT_AS, &t) != 0)
+    fatal("getrlimit failed: %s", strerror(errno));
+
+  if (bytes < t.rlim_cur) {
+    t.rlim_cur = bytes;
+    if (setrlimit(RLIMIT_AS, &t) != 0)
+      fatal("setrlimit failed: %s", strerror(errno));
+  }
+}
+
+static void
+my_timeout(int dummy) {
+  fprintf(stderr, "TIMEOUT\n");
+  if (output_argument)
+    fprintf(output_file, "TIMEOUT\n");
+  exit(0);
+}
+
 static mpz_t tmp_z;
 static mpq_t tmp1_q;
 static mpq_t tmp2_q;
@@ -208,7 +262,7 @@ static ppl_Coefficient_t ppl_coeff;
 static LPI* lp;
 
 static void
-print_variable(unsigned int var, FILE* f) {
+print_variable(FILE* f, unsigned int var) {
   const char* name = glp_get_col_name(lp, var+1);
   if (name != NULL)
     fprintf(f, "%s", name);
@@ -217,7 +271,7 @@ print_variable(unsigned int var, FILE* f) {
 }
 
 static void
-print_constraint(ppl_const_Constraint_t c, FILE* f) {
+print_constraint(FILE* f, ppl_const_Constraint_t c) {
   int dimension = ppl_Constraint_space_dimension(c);
   int var;
   int first = 1;
@@ -241,7 +295,7 @@ print_constraint(ppl_const_Constraint_t c, FILE* f) {
 	mpz_out_str(f, 10, tmp_z);
 	fputc('*', f);
       }
-      print_variable(var, f);
+      print_variable(f, var);
     }
   }
   if (first)
@@ -289,8 +343,8 @@ add_constraints(ppl_LinExpression_t ppl_le,
     ppl_new_Constraint(&ppl_c, ppl_le,
 		       PPL_CONSTRAINT_TYPE_GREATER_THAN_OR_EQUAL);
     if (verbose) {
-      print_constraint(ppl_c, stderr);
-      fprintf(stderr, "\n");
+      print_constraint(output_file, ppl_c);
+      fprintf(output_file, "\n");
     }
     ppl_ConSys_insert_Constraint(ppl_cs, ppl_c);
     ppl_delete_Constraint(ppl_c);
@@ -304,8 +358,8 @@ add_constraints(ppl_LinExpression_t ppl_le,
     ppl_new_Constraint(&ppl_c, ppl_le,
 		       PPL_CONSTRAINT_TYPE_LESS_THAN_OR_EQUAL);
     if (verbose) {
-      print_constraint(ppl_c, stderr);
-      fprintf(stderr, "\n");
+      print_constraint(output_file, ppl_c);
+      fprintf(output_file, "\n");
     }
     ppl_ConSys_insert_Constraint(ppl_cs, ppl_c);
     ppl_delete_Constraint(ppl_c);
@@ -321,8 +375,8 @@ add_constraints(ppl_LinExpression_t ppl_le,
     ppl_new_Constraint(&ppl_c, ppl_le,
 		       PPL_CONSTRAINT_TYPE_GREATER_THAN_OR_EQUAL);
     if (verbose) {
-      print_constraint(ppl_c, stderr);
-      fprintf(stderr, "\n");
+      print_constraint(output_file, ppl_c);
+      fprintf(output_file, "\n");
     }
     ppl_ConSys_insert_Constraint(ppl_cs, ppl_c);
     ppl_delete_Constraint(ppl_c);
@@ -335,8 +389,8 @@ add_constraints(ppl_LinExpression_t ppl_le,
 		       PPL_CONSTRAINT_TYPE_LESS_THAN_OR_EQUAL);
     ppl_delete_LinExpression(ppl_le2);
     if (verbose) {
-      print_constraint(ppl_c, stderr);
-      fprintf(stderr, "\n");
+      print_constraint(output_file, ppl_c);
+      fprintf(output_file, "\n");
     }
     ppl_ConSys_insert_Constraint(ppl_cs, ppl_c);
     ppl_delete_Constraint(ppl_c);
@@ -350,8 +404,8 @@ add_constraints(ppl_LinExpression_t ppl_le,
     ppl_new_Constraint(&ppl_c, ppl_le,
 		       PPL_CONSTRAINT_TYPE_EQUAL);
     if (verbose) {
-      print_constraint(ppl_c, stderr);
-      fprintf(stderr, "\n");
+      print_constraint(output_file, ppl_c);
+      fprintf(output_file, "\n");
     }
     ppl_ConSys_insert_Constraint(ppl_cs, ppl_c);
     ppl_delete_Constraint(ppl_c);
@@ -414,7 +468,7 @@ solve(char* file_name) {
   mpz_init(den_lcm);
 
   if (verbose)
-    fprintf(stderr, "Constraints:\n");
+    fprintf(output_file, "Constraints:\n");
 
   /* Set up the row (ordinary) constraints. */
   num_rows = glp_get_num_rows(lp);
@@ -494,7 +548,7 @@ solve(char* file_name) {
   }
 
   if (empty) {
-    printf("Unfeasible problem.\n");
+    fprintf(output_file, "Unfeasible problem.\n");
     // Check!!!
     return;
   }
@@ -517,10 +571,10 @@ solve(char* file_name) {
   /* The inhomogeneous term is completely useless for our purpose. */
   if (verbose) {
     first_printed = 1;
-    fprintf(stderr, "Objective function:\n");
+    fprintf(output_file, "Objective function:\n");
     mpz_mul(tmp_z, den_lcm, mpq_numref(objective[0]));
     if (mpz_sgn(tmp_z) != 0) {
-      mpz_out_str(stderr, 10, tmp_z);
+      mpz_out_str(output_file, 10, tmp_z);
       first_printed = 0;
     }
   }
@@ -532,11 +586,11 @@ solve(char* file_name) {
 	  first_printed = 0;
 	else {
 	  if (mpz_sgn(tmp_z) > 0)
-	    fprintf(stderr, "+");
+	    fprintf(output_file, "+");
 	}
-	mpz_out_str(stderr, 10, tmp_z);
-	fprintf(stderr, "*");
-	print_variable(i-1, stderr);
+	mpz_out_str(output_file, 10, tmp_z);
+	fprintf(output_file, "*");
+	print_variable(output_file, i-1);
       }
 
     if (!maximize)
@@ -546,7 +600,7 @@ solve(char* file_name) {
   }
 
   if (verbose)
-    fprintf(stderr, "\n");
+    fprintf(output_file, "\n%s\n", (maximize ? "Maximizing." : "Minimizing."));
 
   /* Check whether the problem is unbounded. */
   unbounded = !ppl_Polyhedron_bounds_from_above(ppl_ph, ppl_objective_le);
@@ -559,7 +613,7 @@ solve(char* file_name) {
   }
 
   if (unbounded) {
-    printf("Unbounded problem.\n");
+    fprintf(output_file, "Unbounded problem.\n");
     // Check!!!
     return;
   }
@@ -617,8 +671,8 @@ solve(char* file_name) {
 
   assert(!first_candidate);
 
-  printf("Optimum value:\n%f\n", mpq_get_d(optimum));
-  printf("Optimum location:\n");
+  fprintf(output_file, "Optimum value:\n%f\n", mpq_get_d(optimum));
+  fprintf(output_file, "Optimum location:\n");
   ppl_GenSys__const_iterator_dereference(ogit, &ppl_const_g);
   ppl_Generator_divisor(ppl_const_g, ppl_coeff);
   ppl_Coefficient_to_mpz_t(ppl_coeff, tmp_z);
@@ -626,8 +680,8 @@ solve(char* file_name) {
     mpz_set(mpq_denref(tmp1_q), tmp_z);
     ppl_Generator_coefficient(ppl_const_g, i, ppl_coeff);
     ppl_Coefficient_to_mpz_t(ppl_coeff, mpq_numref(tmp1_q));
-    print_variable(i, stdout);
-    printf(" = %f\n", mpq_get_d(tmp1_q));
+    print_variable(output_file, i);
+    fprintf(output_file, " = %f\n", mpq_get_d(tmp1_q));
   }
 
   free(candidate);
@@ -660,6 +714,12 @@ main(int argc, char* argv[]) {
   mpq_init(tmp2_q);
   ppl_new_Coefficient(&ppl_coeff);
 
+  if (max_seconds_of_cpu_time > 0)
+    set_alarm_on_cpu_time(max_seconds_of_cpu_time, my_timeout);
+
+  if (max_bytes_of_virtual_memory > 0)
+    limit_virtual_memory(max_bytes_of_virtual_memory);
+
   while (optind < argc)
     solve(argv[optind++]);
 
@@ -668,6 +728,10 @@ main(int argc, char* argv[]) {
   mpq_clear(tmp2_q);
   mpq_clear(tmp1_q);
   mpz_clear(tmp_z);
+
+  /* Close output file, if any. */
+  if (output_argument)
+    fclose(output_file);
 
   return 0;
 }
