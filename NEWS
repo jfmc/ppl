@@ -69,6 +69,9 @@ o  Fixed a bug in method GenSys::insert(const Generator&) whereby the
 o  Fixed a bug in method Polyhedron::operator<=(const Polyehdron&)
    whereby the lines of the polyhedron were handled improperly.
 
+o  Fixed a bug in a private method used to implement public method
+   Polyhedron::relation_with(const Generator& g),
+   whereby a wrong result was obtained when `g' was a line.
 
 --------------------------------------------------------------------------
 NEWS for version 0.4.1 (released on July 30, 2002)
