@@ -747,7 +747,7 @@ PPL::GenSys::affine_image(dimension_type v,
   bool not_invertible = (v > expr.space_dimension() || expr[v] == 0);
   if (not_invertible)
     x.remove_invalid_lines_and_rays();
-
+  // This also resets the sortedness flag.
   x.strong_normalize();
 }
 
@@ -824,11 +824,12 @@ PPL::GenSys::ascii_load(std::istream& s) {
   return true;
 }
 
-
-// CHECK ME!
 void
 PPL::GenSys::remove_invalid_lines_and_rays() {
   // The origin of the vector space cannot be a valid line/ray.
+  // NOTE: the following swaps will mix generators without even trying
+  // to preserve sortedness: as a matter of fact, it will almost always
+  // be the case that the input generator system is NOT sorted.
   GenSys& gs = *this;
   dimension_type n_rows = gs.num_rows();
   if (num_pending_rows() == 0) {
