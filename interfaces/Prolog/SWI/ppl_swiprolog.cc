@@ -97,7 +97,7 @@ Prolog_put_term(Prolog_term_ref t, Prolog_term_ref u) {
 static inline int
 Prolog_put_long(Prolog_term_ref t, long l) {
   if (l < Prolog_min_integer || l > Prolog_max_integer)
-    throw_PPL_integer_out_of_range(l);
+    throw PPL_integer_out_of_range(l);
   PL_put_integer(t, l);
   return 1;
 }
@@ -108,7 +108,7 @@ Prolog_put_long(Prolog_term_ref t, long l) {
 static inline int
 Prolog_put_ulong(Prolog_term_ref t, unsigned long ul) {
   if (ul > static_cast<unsigned long>(Prolog_max_integer))
-    throw_PPL_integer_out_of_range(ul);
+    throw PPL_integer_out_of_range(ul);
   PL_put_integer(t, ul);
   return 1;
 }
@@ -350,7 +350,7 @@ integer_term_to_Integer(Prolog_term_ref t) {
 static Prolog_term_ref
 Integer_to_integer_term(const PPL::Integer& n) {
   if (!n.fits_slong_p())
-    throw_PPL_integer_out_of_range(n);
+    throw PPL_integer_out_of_range(n);
   Prolog_term_ref t = Prolog_new_term_ref();
   Prolog_put_long(t, n.get_si());
   return t;

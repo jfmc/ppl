@@ -46,6 +46,13 @@ static Prolog_atom a_throw;
 static bool Prolog_has_unbounded_integers;
 
 /*!
+  If \p Prolog_has_unbounded_integers is false, holds the minimum
+  integer value representable by a Prolog integer.
+  Holds zero otherwise.
+*/
+static long Prolog_min_integer;
+
+/*!
   If \p Prolog_has_unbounded_integers is false, holds the maximum
   integer value representable by a Prolog integer.
   Holds zero otherwise.
@@ -57,11 +64,13 @@ static long Prolog_max_integer;
 */
 static void
 ppl_Prolog_sysdep_init() {
-  a_throw = string_find("throw", 1);
   Prolog_has_unbounded_integers = false;
-  // FIXME: this seems to be the maximum value on IA32 but, who knows
+  // FIXME: these seem to be the values on IA32 but, who knows
   //        on other architectures?
+  Prolog_min_integer = -268435456;
   Prolog_max_integer = 268435455;
+
+  a_throw = string_find("throw", 1);
 }
 
 static void
@@ -92,15 +101,19 @@ Prolog_put_term(Prolog_term_ref& t, Prolog_term_ref u) {
 static inline int
 Prolog_put_long(Prolog_term_ref& t, long l) {
   assert(is_var(t) == TRUE);
+  if (l < Prolog_min_integer || l > Prolog_max_integer)
+    throw PPL_integer_out_of_range(l);
   return c2p_int(l, t) != FALSE;
 }
 
 /*!
-  Assign to \p t a Prolog integer with value \p i.
+  Assign to \p t a Prolog integer with value \p ul.
 */
 static inline int
 Prolog_put_ulong(Prolog_term_ref& t, unsigned long ul) {
   assert(is_var(t) == TRUE);
+  if (ul > static_cast<unsigned long>(Prolog_max_integer))
+    throw PPL_integer_out_of_range(ul);
   return c2p_int(ul, t) != FALSE;
 }
 
@@ -370,9 +383,8 @@ integer_term_to_Integer(Prolog_term_ref t) {
 
 static Prolog_term_ref
 Integer_to_integer_term(const PPL::Integer& n) {
-  // FIXME: does XSB support unlimited precision integer?
   if (!n.fits_slong_p())
-    throw_unknown_interface_error("Integer_to_integer_term()");
+    throw PPL_integer_out_of_range(n);
   Prolog_term_ref t = p2p_new();
   c2p_int(n.get_si(), t);
   return t;

@@ -130,13 +130,3 @@ public:
     return w;
   }
 };
-
-static void
-throw_PPL_integer_out_of_range(const Parma_Polyhedra_Library::Integer& n) {
-  throw PPL_integer_out_of_range(n);
-}
-
-static void
-throw_unknown_interface_error(const char* s) {
-  throw unknown_interface_error(s);
-}

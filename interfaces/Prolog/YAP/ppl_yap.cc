@@ -56,6 +56,9 @@ static long Prolog_max_integer;
 */
 static void
 ppl_Prolog_sysdep_init() {
+  Prolog_has_unbounded_integers = true;
+  Prolog_max_integer = 0;
+
   a_throw = YAP_LookupAtom("throw");
 }
 
@@ -362,7 +365,7 @@ static Prolog_term_ref
 Integer_to_integer_term(const PPL::Integer& n) {
   // FIXME: does YAP support unlimited precision integer?
   if (!n.fits_slong_p())
-    throw_unknown_interface_error("Integer_to_integer_term()");
+    throw unknown_interface_error("Integer_to_integer_term()");
   return YAP_MkIntTerm(n.get_si());
 }
 

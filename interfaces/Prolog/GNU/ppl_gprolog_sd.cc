@@ -46,6 +46,13 @@ static Prolog_atom a_throw;
 static bool Prolog_has_unbounded_integers;
 
 /*!
+  If \p Prolog_has_unbounded_integers is false, holds the minimum
+  integer value representable by a Prolog integer.
+  Holds zero otherwise.
+*/
+static long Prolog_min_integer;
+
+/*!
   If \p Prolog_has_unbounded_integers is false, holds the maximum
   integer value representable by a Prolog integer.
   Holds zero otherwise.
@@ -60,10 +67,12 @@ using namespace std;
 */
 static void
 ppl_Prolog_sysdep_init() {
+  Prolog_has_unbounded_integers = false;
+  Prolog_min_integer = INT_LOWEST_VALUE;
+  Prolog_max_integer = INT_GREATEST_VALUE;
+
   a_dollar_address = Create_Allocate_Atom("$address");
   a_throw = Find_Atom("throw");
-  Prolog_has_unbounded_integers = false;
-  Prolog_max_integer = INT_GREATEST_VALUE;
 }
 
 /*!
@@ -96,6 +105,8 @@ Prolog_put_term(Prolog_term_ref& t, Prolog_term_ref u) {
 */
 static inline int
 Prolog_put_long(Prolog_term_ref& t, long l) {
+  if (l < Prolog_min_integer || l > Prolog_max_integer)
+    throw PPL_integer_out_of_range(l);
   t = Mk_Integer(l);
   return 1;
 }
@@ -105,7 +116,8 @@ Prolog_put_long(Prolog_term_ref& t, long l) {
 */
 static inline int
 Prolog_put_ulong(Prolog_term_ref& t, unsigned long ul) {
-  // FIXME!
+  if (ul > static_cast<unsigned long>(Prolog_max_integer))
+    throw PPL_integer_out_of_range(ul);
   t = Mk_Integer(ul);
   return 1;
 }
@@ -397,7 +409,6 @@ Prolog_unify(Prolog_term_ref t, Prolog_term_ref u) {
 
 static PPL::Integer
 integer_term_to_Integer(Prolog_term_ref t) {
-  // FIXME: does GNU Prolog support unlimited precision integer?
   long v;
   Prolog_get_long(t, &v);
   return PPL::Integer(v);
@@ -405,9 +416,8 @@ integer_term_to_Integer(Prolog_term_ref t) {
 
 static Prolog_term_ref
 Integer_to_integer_term(const PPL::Integer& n) {
-  // FIXME: does GNU Prolog support unlimited precision integer?
   if (!n.fits_slong_p())
-    throw_unknown_interface_error("Integer_to_integer_term()");
+    throw PPL_integer_out_of_range(n);
   return Mk_Integer(n.get_si());
 }
 

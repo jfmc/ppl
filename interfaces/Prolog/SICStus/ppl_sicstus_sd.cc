@@ -78,11 +78,11 @@ Integer_to_integer_term(const PPL::Integer& n) {
   Prolog_term_ref t = Prolog_new_term_ref();
   if (n.fits_slong_p())
     if (SP_put_integer(t, n.get_si()) == 0)
-      throw_unknown_interface_error("Integer_to_integer_term()");
+      throw unknown_interface_error("Integer_to_integer_term()");
   else {
     std::string s = n.get_str();
     if (SP_put_number_chars(t, s.c_str()) == 0)
-      throw_unknown_interface_error("Integer_to_integer_term()");
+      throw unknown_interface_error("Integer_to_integer_term()");
   }
   return t;
 }
