@@ -26,6 +26,7 @@ site: http://www.cs.unipr.it/ppl/ . */
 
 #include "Polyhedron.defs.hh"
 
+#include "BHRZ03_Certificate.defs.hh"
 #include "statistics.hh"
 #include <cassert>
 #include <iostream>
@@ -709,6 +710,7 @@ PPL::Polyhedron::is_BHRZ03_stabilizing(const Polyhedron& x,
 
 bool
 PPL::Polyhedron::BHRZ03_combining_constraints(const Polyhedron& y,
+					      const BHRZ03_Certificate& y_cert,
 					      const Polyhedron& H79,
 					      const ConSys& x_minus_H79_cs) {
   Polyhedron& x = *this;
@@ -798,13 +800,16 @@ PPL::Polyhedron::BHRZ03_combining_constraints(const Polyhedron& y,
     }
   }
 
-  // TODO: `H79 <= result' can be tested more efficiently by checking
-  // that all the constraints in `new_cs' include `H79'. This way we
-  // would avoid creating and minimizing `result' when the technique
-  // does not improve over H79.
-
-  // If no constraint was collected, the technique was not successful.
-  if (new_cs.num_rows() == 0)
+  // If none of the collected constraints strictly intersects `H79',
+  // then the technique was unsuccessful.
+  bool improves_upon_H79 = false;
+  const Poly_Con_Relation si = Poly_Con_Relation::strictly_intersects();
+  for (dimension_type i = new_cs.num_rows(); i-- > 0; )
+    if (H79.relation_with(new_cs[i]) == si) {
+      improves_upon_H79 = true;
+      break;
+    }
+  if (!improves_upon_H79)
     return false;
 
   // The resulting polyhedron is obtained by adding the constraints
@@ -812,22 +817,24 @@ PPL::Polyhedron::BHRZ03_combining_constraints(const Polyhedron& y,
   Polyhedron result = H79;
   result.add_recycled_constraints_and_minimize(new_cs);
 
-  // This widening technique was unsuccessful if the result is not
-  // stabilizing with respect to `y', or if it is not better than `H79'.
-  if (result.contains(H79) || !is_BHRZ03_stabilizing(result, y))
-    return false;
-
-  // The technique was successful.
+  // Check for stabilization wrt `y_cert' and improvement over `H79'.
+  if (y_cert.is_stabilizing(result) && !result.contains(H79)) {
+    // The technique was successful.
 #if PPL_STATISTICS
-  statistics->technique.combining_constraints++;
+    statistics->technique.combining_constraints++;
 #endif
-  std::swap(x, result);
-  assert(x.OK(true));
-  return true;
+    std::swap(x, result);
+    assert(x.OK(true));
+    return true;
+  }
+  else
+    // The technique was unsuccessful.
+    return false;
 }
 
 bool
 PPL::Polyhedron::BHRZ03_evolving_points(const Polyhedron& y,
+					const BHRZ03_Certificate& y_cert, 
 					const Polyhedron& H79) {
   Polyhedron& x = *this;
   // It is assumed that `y <= x <= H79'.
@@ -880,21 +887,24 @@ PPL::Polyhedron::BHRZ03_evolving_points(const Polyhedron& y,
   result.add_recycled_generators_and_minimize(candidate_rays);
   result.intersection_assign_and_minimize(H79);
 
-  // Check for stabilization wrt `y' and improvement over `H79'.
-  if (result.contains(H79) || !is_BHRZ03_stabilizing(result, y))
-    return false;
-
-  // The widening technique was successful.
+  // Check for stabilization wrt `y_cert' and improvement over `H79'.
+  if (y_cert.is_stabilizing(result) && !result.contains(H79)) {
+    // The technique was successful.
 #if PPL_STATISTICS
-  statistics->technique.evolving_points++;
+    statistics->technique.evolving_points++;
 #endif
-  std::swap(x, result);
-  assert(x.OK(true));
-  return true;
+    std::swap(x, result);
+    assert(x.OK(true));
+    return true;
+  }
+  else
+    // The technique was unsuccessful.
+    return false;
 }
 
 bool
 PPL::Polyhedron::BHRZ03_evolving_rays(const Polyhedron& y,
+				      const BHRZ03_Certificate& y_cert, 
 				      const Polyhedron& H79) {
   Polyhedron& x = *this;
   // It is assumed that `y <= x <= H79'.
@@ -969,16 +979,18 @@ PPL::Polyhedron::BHRZ03_evolving_rays(const Polyhedron& y,
   result.intersection_assign_and_minimize(H79);
 
   // Check for stabilization wrt `y' and improvement over `H79'.
-  if (result.contains(H79) || !is_BHRZ03_stabilizing(result, y))
-    return false;
-
-  // The technique was successful.
+  if (y_cert.is_stabilizing(result) && !result.contains(H79)) {
+    // The technique was successful.
 #if PPL_STATISTICS
-  statistics->technique.evolving_rays++;
+    statistics->technique.evolving_rays++;
 #endif
-  std::swap(x, result);
-  assert(x.OK(true));
-  return true;
+    std::swap(x, result);
+    assert(x.OK(true));
+    return true;
+  }
+  else
+    // The technique was unsuccessful.
+    return false;
 }
 
 void
@@ -1043,10 +1055,13 @@ PPL::Polyhedron::BHRZ03_widening_assign(const Polyhedron& y, unsigned* tp) {
     }
   }
 
+  // Compute certificate info for polyhedron `y'.
+  BHRZ03_Certificate y_cert(y);
+
   // If the iteration is stabilizing, the resulting polyhedron is `x'.
   // At this point, also check if the two polyhedra are the same
-  // (exploiting the knowledge that `y <= x'.
-  if (is_BHRZ03_stabilizing(x, y) || y.contains(x)) {
+  // (exploiting the knowledge that `y <= x').
+  if (y_cert.is_stabilizing(x) || y.contains(x)) {
 #if PPL_STATISTICS
     statistics->technique.nop++;
 #endif
@@ -1084,17 +1099,17 @@ PPL::Polyhedron::BHRZ03_widening_assign(const Polyhedron& y, unsigned* tp) {
 
   // NOTE: none of the following widening heuristics is intrusive:
   // they will modify `x' only when returning successfully.
-  if (x.BHRZ03_combining_constraints(y, H79, x_minus_H79_cs))
+  if (x.BHRZ03_combining_constraints(y, y_cert, H79, x_minus_H79_cs))
     return;
 
   assert(H79.OK() && x.OK() && y.OK());
 
-  if (x.BHRZ03_evolving_points(y, H79))
+  if (x.BHRZ03_evolving_points(y, y_cert, H79))
     return;
 
   assert(H79.OK() && x.OK() && y.OK());
 
-  if (x.BHRZ03_evolving_rays(y, H79))
+  if (x.BHRZ03_evolving_rays(y, y_cert, H79))
     return;
 
   assert(H79.OK() && x.OK() && y.OK());
@@ -1109,7 +1124,7 @@ PPL::Polyhedron::BHRZ03_widening_assign(const Polyhedron& y, unsigned* tp) {
 #ifndef NDEBUG
   // The H79 widening is always stabilizing.
   x.minimize();
-  assert(is_BHRZ03_stabilizing(x, y));
+  assert(y_cert.is_stabilizing(x));
 #endif
 }
 

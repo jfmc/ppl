@@ -36,6 +36,7 @@ site: http://www.cs.unipr.it/ppl/ . */
 #include "Generator.types.hh"
 #include "Poly_Con_Relation.defs.hh"
 #include "Poly_Gen_Relation.defs.hh"
+#include "BHRZ03_Certificate.types.hh"
 #include <vector>
 #include <iosfwd>
 
@@ -1989,16 +1990,20 @@ private:
 			      ConSys& cs_selected,
 			      ConSys& cs_not_selected) const;
 
-  //int compare_BHRZ03_info(const BHRZ03_info& y_info) const;
-  //bool is_BHRZ03_stabilizing(const BHRZ03_info& y_info) const;
+  friend class Parma_Polyhedra_Library::BHRZ03_Certificate;
 
   bool BHRZ03_combining_constraints(const Polyhedron& y,
+				    const BHRZ03_Certificate& y_cert,
  				    const Polyhedron& H79,
 				    const ConSys& x_minus_H79_con_sys);
 
-  bool BHRZ03_evolving_points(const Polyhedron& y, const Polyhedron& H79);
+  bool BHRZ03_evolving_points(const Polyhedron& y,
+			      const BHRZ03_Certificate& y_cert,
+			      const Polyhedron& H79);
 
-  bool BHRZ03_evolving_rays(const Polyhedron& y, const Polyhedron& H79);
+  bool BHRZ03_evolving_rays(const Polyhedron& y,
+			    const BHRZ03_Certificate& y_cert,
+			    const Polyhedron& H79);
 
   //@} // Widening- and Extrapolation-Related Functions
 
