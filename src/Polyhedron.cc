@@ -1141,7 +1141,7 @@ PPL::Polyhedron::insert(const Constraint& c) {
 
   // Dimension-consistency check:
   // the dimension of `c' can not be greater than space_dimension().
-  if (space_dimension() < c.size() - 1)
+  if (space_dimension() < c.space_dimension())
     throw_different_dimensions("PPL::Polyhedron::insert(c)",
 			       *this, c);
 
@@ -1184,7 +1184,7 @@ PPL::Polyhedron::insert(const Generator& g) {
 
   // Dimension-consistency check:
   // the dimension of `g' can not be greater than space_dimension().
-  if (space_dimension() < g.size() - 1)
+  if (space_dimension() < g.space_dimension())
     throw_different_dimensions("PPL::Polyhedron::insert(g)",
 			       *this, g);
 
