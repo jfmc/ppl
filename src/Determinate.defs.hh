@@ -26,9 +26,7 @@ site: http://www.cs.unipr.it/ppl/ . */
 
 #include "Determinate.types.hh"
 #include "ConSys.types.hh"
-#include "GenSys.types.hh"
 #include "Variable.defs.hh"
-#include "Polyhedron.defs.hh"
 #include "globals.hh"
 #include <iosfwd>
 #include <cassert>
@@ -37,7 +35,7 @@ namespace Parma_Polyhedra_Library {
 
 //! \brief
 //! Returns <CODE>true</CODE> if and only if
-//! \p x and \p y are the same polyhedron.
+//! \p x and \p y are the same domain element.
 /*!
   \relates Determinate
   \exception std::invalid_argument
@@ -49,7 +47,7 @@ bool operator==(const Determinate<PH>& x, const Determinate<PH>& y);
 
 //! \brief
 //! Returns <CODE>true</CODE> if and only if
-//! \p x and \p y are different polyhedra.
+//! \p x and \p y are different domain elements.
 /*!
   \relates Determinate
   \exception std::invalid_argument
@@ -61,6 +59,7 @@ bool operator!=(const Determinate<PH>& x, const Determinate<PH>& y);
 
 namespace IO_Operators {
 
+//! Output operator.
 /*! \relates Parma_Polyhedra_Library::Determinate */
 template <typename PH>
 std::ostream&
@@ -70,7 +69,7 @@ operator<<(std::ostream&, const Determinate<PH>&);
 
 } // namespace Parma_Polyhedra_Library
 
-//! Wraps a polyhedron class into a determinate constraint system interface.
+//! Wraps a PPL class into a determinate constraint system interface.
 template <typename PH>
 class Parma_Polyhedra_Library::Determinate {
 public:
@@ -83,9 +82,9 @@ public:
   //! system defined on the vector space having \p num_dimensions
   //! dimensions.
   /*!
-    The top element, corresponding to the universe polyhedron,
-    is built if \p universe is \c true; otherwise the bottom element
-    (corresponding to the empty polyhedron) is built. By default,
+    The top element, corresponding to the whole vector space,
+    is built if \p universe is \c true; otherwise the bottom element,
+    corresponding to the emptyset, is built. By default,
     the top of a zero-dimension vector space is built.
   */
   explicit
@@ -93,12 +92,12 @@ public:
 
   //! \brief
   //! Injection operator: builds the determinate constraint system element
-  //! corresponding to polyhedron \p p.
+  //! corresponding to the base-level element \p p.
   Determinate(const PH& p);
 
   //! \brief
   //! Injection operator: builds the determinate constraint system element
-  //! corresponding to the polyhedron represented by \p cs.
+  //! corresponding to the base-level element represented by \p cs.
   Determinate(const ConSys& cs);
 
   //! Copy constructor.
@@ -107,7 +106,7 @@ public:
   //! Destructor.
   ~Determinate();
 
-  //@} // Constructors, Assignment and Destructor
+  //@} // Constructors and Destructor
 
   //! \name Member Functions that Do Not Modify the Domain Element
   //@{
@@ -121,17 +120,11 @@ public:
   //! Returns the system of constraints, with no redundant constraint.
   const ConSys& minimized_constraints() const;
 
-  //! Returns the system of generators.
-  const GenSys& generators() const;
+  //! Returns a const reference to the embedded element.
+  const PH& element() const;
 
-  //! Returns the system of generators, with no redundant generator.
-  const GenSys& minimized_generators() const;
-
-  //! Returns a const reference to the embedded polyhedron.
-  const PH& polyhedron() const;
-
-  //! Returns a reference to the embedded polyhedron.
-  PH& polyhedron();
+  //! Returns a reference to the embedded element.
+  PH& element();
 
 #ifdef PPL_DOXYGEN_INCLUDE_IMPLEMENTATION_DETAILS
   //! \brief
@@ -142,17 +135,17 @@ public:
 
   //! \brief
   //! Returns <CODE>true</CODE> if and only if \p *this is the top of the
-  //! determinate constraint system (i.e., the universe polyhedron).
+  //! determinate constraint system (i.e., the whole vector space).
   bool is_top() const;
 
   //! \brief
   //! Returns <CODE>true</CODE> if and only if \p *this is the bottom
-  //! of the determinate constraint system (i.e., the empty polyhedron).
+  //! of the determinate constraint system (i.e., the emptyset).
   bool is_bottom() const;
 
   //! \brief
   //! Returns <CODE>true</CODE> if and only if \p *this entails \p y
-  //! (i.e., \p x is contained into \p y).
+  //! (i.e., \p *this is contained into \p y).
   bool definitely_entails(const Determinate& y) const;
 
   //! \brief
@@ -185,14 +178,15 @@ public:
   //@{
 
   //! \brief
-  //! Assigns to \p *this the upper bound (i.e., poly-hull)
-  //! of \p *this and \p y.
+  //! Assigns to \p *this the upper bound of \p *this and \p y.
   void upper_bound_assign(const Determinate& y);
 
-  //! Assigns to \p *this the meet (i.e., intersection) of \p *this and \p y.
+  //! Assigns to \p *this the meet of \p *this and \p y.
   void meet_assign(const Determinate& y);
 
-  //! Intersects \p *this with (a copy of) constraint \p c.
+  //! \brief
+  //! Assigns to \p *this the meet of \p *this and the element
+  //! represented by constraint \p c.
   /*!
     \exception std::invalid_argument
     Thrown if \p *this and constraint \p c are topology-incompatible
@@ -200,7 +194,9 @@ public:
   */
   void add_constraint(const Constraint& c);
 
-  //! Intersects \p *this with the constraints in \p cs.
+  //! \brief
+  //! Assigns to \p *this the meet of \p *this and the element
+  //! represented by the constraints in \p cs.
   /*!
     \param cs
     The constraints to intersect with.  This parameter is not declared
@@ -211,37 +207,6 @@ public:
     dimension-incompatible.
   */
   void add_constraints(ConSys& cs);
-
-  //! \brief
-  //! Assigns to \p *this the result of computing the
-  //! \ref H79_widening "H79-widening" between \p *this and \p y.
-  /*!
-    \param y
-    A polyhedron that <EM>must</EM> be contained in \p *this.
-
-    \exception std::invalid_argument
-    Thrown if \p *this and \p y are topology-incompatible or
-    dimension-incompatible.
-  */
-  void H79_widening_assign(const Determinate& y);
-
-  //! \brief
-  //! Limits the \ref H79_widening "H79-widening" computation
-  //! between \p *this and \p y by enforcing constraints \p cs
-  //! and assigns the result to \p *this.
-  /*!
-    \param y
-    A polyhedron that <EM>must</EM> be contained in \p *this;
-
-    \param cs
-    The system of constraints that limits the widened polyhedron. It
-    is not declared <CODE>const</CODE> because it can be modified.
-
-    \exception std::invalid_argument
-    Thrown if \p *this, \p y and \p cs are topology-incompatible or
-    dimension-incompatible.
-  */
-  void limited_H79_extrapolation_assign(const Determinate& y, ConSys& cs);
 
   //@} // Space-Dimension Preserving Member Functions that May Modify [...]
 
@@ -255,13 +220,13 @@ public:
   void swap(Determinate& y);
 
   //! \brief
-  //! Adds \p m new dimensions and embeds the old polyhedron
-  //! into the new space.
+  //! Adds \p m new dimensions and embeds the old domain element
+  //! into the new vector space.
   void add_dimensions_and_embed(dimension_type m);
 
   //! \brief
-  //! Adds \p m new dimensions to the polyhedron
-  //! and does not embed it in the new space.
+  //! Adds \p m new dimensions to the domain element
+  //! and does not embed it in the new vector space.
   void add_dimensions_and_project(dimension_type m);
 
   //! \brief
@@ -307,7 +272,7 @@ private:
   //! The possibly shared representation of a Determinate object.
   /*!
     By adopting the <EM>copy-on-write</EM> technique, a single
-    representation of the polyhedron may be shared by more than
+    representation of the base-level object may be shared by more than
     one object of the class Determinate.
   */
   class Rep {
@@ -329,15 +294,15 @@ private:
     Rep();
 
   public:
-    //! A possibly shared polyhedron object.
+    //! A possibly shared base-level domain element.
     PH ph;
 
     //! \brief
-    //! Builds a new representation by creating a polyhedron object
+    //! Builds a new representation by creating a domain element
     //! of the specified kind, in the specified vector space.
     Rep(dimension_type num_dimensions, Polyhedron::Degenerate_Kind kind);
 
-    //! Builds a new representation by copying polyhedron \p p.
+    //! Builds a new representation by copying base-level element \p p.
     Rep(const PH& p);
 
     //! Builds a new representation by copying the constraints in \p cs.
@@ -358,7 +323,9 @@ private:
     bool is_shared() const;
   };
 
-  //! A pointer to the possibly shared representation of the polyhedron.
+  //! \brief
+  //! A pointer to the possibly shared representation of
+  //! the base-level domain element.
   Rep* prep;
 };
 

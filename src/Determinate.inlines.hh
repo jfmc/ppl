@@ -126,13 +126,13 @@ Determinate<PH>::mutate() {
 
 template <typename PH>
 const PH&
-Determinate<PH>::polyhedron() const {
+Determinate<PH>::element() const {
   return prep->ph;
 }
 
 template <typename PH>
 PH&
-Determinate<PH>::polyhedron() {
+Determinate<PH>::element() {
   mutate();
   return prep->ph;
 }
@@ -248,18 +248,6 @@ Determinate<PH>::minimized_constraints() const {
 }
 
 template <typename PH>
-const GenSys&
-Determinate<PH>::generators() const {
-  return prep->ph.generators();
-}
-
-template <typename PH>
-const GenSys&
-Determinate<PH>::minimized_generators() const {
-  return prep->ph.minimized_generators();
-}
-
-template <typename PH>
 void
 Determinate<PH>::add_constraint(const Constraint& c) {
   mutate();
@@ -307,21 +295,6 @@ void
 Determinate<PH>::map_dimensions(const PartialFunction& pfunc) {
   mutate();
   prep->ph.map_dimensions(pfunc);
-}
-
-template <typename PH>
-void
-Determinate<PH>::H79_widening_assign(const Determinate& y) {
-  mutate();
-  prep->ph.H79_widening_assign(y.prep->ph);
-}
-
-template <typename PH>
-void
-Determinate<PH>::limited_H79_extrapolation_assign(const Determinate& y,
-						  ConSys& cs) {
-  mutate();
-  prep->ph.limited_H79_extrapolation_assign(y.prep->ph, cs);
 }
 
 } // namespace Parma_Polyhedra_Library
