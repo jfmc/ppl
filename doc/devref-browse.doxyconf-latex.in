@@ -454,6 +454,14 @@ INPUT                  = @srcdir@/definitions.dox \
                          @srcdir@/../src/Determinate.inlines.hh \
                          @srcdir@/../src/PowerSet.defs.hh \
                          @srcdir@/../src/PowerSet.inlines.hh \
+                         @srcdir@/../src/BHRZ03_Certificate.types.hh \
+                         @srcdir@/../src/BHRZ03_Certificate.defs.hh \
+                         @srcdir@/../src/BHRZ03_Certificate.inlines.hh \
+                         @srcdir@/../src/BHRZ03_Certificate.cc \
+                         @srcdir@/../src/H79_Certificate.types.hh \
+                         @srcdir@/../src/H79_Certificate.defs.hh \
+                         @srcdir@/../src/H79_Certificate.inlines.hh \
+                         @srcdir@/../src/H79_Certificate.cc \
 			 @srcdir@/../src/Polyhedra_PowerSet.types.hh \
 			 @srcdir@/../src/Polyhedra_PowerSet.defs.hh \
 			 @srcdir@/../src/Polyhedra_PowerSet.inlines.hh \
