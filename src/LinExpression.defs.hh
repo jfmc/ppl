@@ -93,31 +93,36 @@ namespace Parma_Polyhedra_Library {
   \par Example
   The following code builds a linear expression \f$4x-2y-z+14\f$ :
   \code
-  Variable x(0);
-  Variable y(1);
-  Variable z(5);
+  Variable x = 0;
+  Variable y = 1;
+  Variable z = 5;
   LinExpression e = 4 * x - 2 * y - z + 14;
   \endcode
   Another way to build the same linear expression is:
   \code
-  Variable x(0);
-  Variable y(1);
-  Variable z(5);
-  LinExpression e1(4 * x);
-  LinExpression e2(- z);
-  LinExpression e3(- 2 * y);
-  e1 += e2;
-  e1 += e3;
-  e1 += 14;
+  Variable x = 0;
+  Variable y = 1;
+  Variable z = 5;
+  LinExpression e = 4 * x;
+  LinExpression e1 = -2 * y;
+  LinExpression e2 = z;
+  e += e1 - e2;
+  e += 14;
   \endcode
-  Another way can be:
+  Note that the ``meaning'' of an object of the class Variable
+  is completely specified by the integer index provided to its
+  constructor:
+  be careful not to be mislead by C++ language variable names.
+  For instance, in the following example the linear expressions
+  <CODE>e1</CODE> and <CODE>e2</CODE> are equivalent,
+  since the two variables <CODE>x</CODE> and <CODE>z</CODE> denote
+  the same Cartesian axis.
   \code
-  Variable x(0);
-  Variable y(1);
-  Variable z(5);
-  LinExpression e(4 * x + 14);
-  e += - 2 * y;
-  e += -z;
+  Variable x = 0;
+  Variable y = 1;
+  Variable z = 0;
+  LinExpression e1 = x + y;
+  LinExpression e2 = y + z;
   \endcode
 */
 
