@@ -1425,15 +1425,16 @@ PPL::Polyhedron::add_constraints(ConSys& cs) {
   // FIXME: this has to be checked carefully
   // for correctness and/or efficiency.
   size_t old_num_rows = con_sys.num_rows();
-  con_sys.resize(old_num_rows + cs.num_rows(), con_sys.num_columns());
+  size_t old_num_columns = con_sys.num_columns();
+  con_sys.grow(old_num_rows + cs.num_rows(), old_num_columns);
   for (size_t i = cs.num_rows(); i-- > 0; ) {
     Constraint& c_new = con_sys[old_num_rows + i];
     Constraint& c_old = cs[i];
     if (c_old.is_equality())
       c_new.set_is_equality();
-    c_new[0] = c_old[0];
+    c_new[0].swap(c_old[0]);
     for (size_t j = cs.num_columns(); j-- > 1; )
-      c_new[old_num_columns - 1 + j] = c_old[j];
+      c_new[old_num_columns - 1 + j].swap(c_old[j]);
   }
   con_sys.set_sorted(false);
 #else
