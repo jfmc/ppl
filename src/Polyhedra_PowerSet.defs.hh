@@ -69,8 +69,8 @@ public:
   Polyhedra_PowerSet(const ConSys& cs);
 
   //! \brief
-  //! The assignment operator.
-  //! (\p *this and \p y can be dimension-incompatible.)
+  //! The assignment operator
+  //! (\p *this and \p y can be dimension-incompatible).
   Polyhedra_PowerSet& operator=(const Polyhedra_PowerSet& y);
 
   //! Swaps \p *this with \p y.
@@ -84,7 +84,7 @@ public:
   //! Returns the dimension of the vector space enclosing \p *this.
   dimension_type space_dimension() const;
 
-  //! Intersects \p *this with (a copy of) constraint \p c.
+  //! Intersects \p *this with constraint \p c.
   /*!
     \exception std::invalid_argument
     Thrown if \p *this and constraint \p c are topology-incompatible
@@ -92,6 +92,15 @@ public:
   */
   void add_constraint(const Constraint& c);
 
+  //! Intersects \p *this with the constraint \p c, minimizing the result.
+  /*!
+    \return
+    <CODE>false</CODE> if and only if the result is empty.
+
+    \exception std::invalid_argument
+    Thrown if \p *this and \p c are topology-incompatible or
+    dimension-incompatible.
+  */
   bool add_constraint_and_minimize(const Constraint& c);
 
   //! Intersects \p *this with the constraints in \p cs.
@@ -105,6 +114,20 @@ public:
   */
   void add_constraints(const ConSys& cs);
 
+  //! \brief
+  //! Intersects \p *this with the constraints in \p cs,
+  //! minimizing the result.
+  /*!
+    \return
+    <CODE>false</CODE> if and only if the result is empty.
+
+    \param cs
+    The constraints to intersect with.
+
+    \exception std::invalid_argument
+    Thrown if \p *this and \p cs are topology-incompatible or
+    dimension-incompatible.
+  */
   bool add_constraints_and_minimize(const ConSys& cs);
 
   //! Assigns to \p *this the concatenation of \p *this and \p y.
@@ -112,6 +135,10 @@ public:
     Seeing a powerset as a set of tuples, this method assigns to
     \p *this all the tuples that can be obtained by concatenating,
     in the order given, a tuple of \p *this with a tuple of \p y.
+
+    Intuitively, the result is obtained by computing the pair-wise
+    \ref concatenate "concatenation" of each polyhedron in \p *this
+    with each polyhedron in \p y.
   */
   void concatenate_assign(const Polyhedra_PowerSet& y);
 
@@ -172,6 +199,12 @@ public:
   */
   bool semantically_equals(const Polyhedra_PowerSet& y) const;
 
+  //! \brief
+  //! Remaps the dimensions of the vector space according to
+  //! a partial function.
+  /*!
+    See also Polyhedron::map_dimensions.
+  */
   template <typename PartialFunction>
   void map_dimensions(const PartialFunction& pfunc);
 
@@ -202,13 +235,73 @@ public:
 					   unsigned*),
 					  unsigned max_disjuncts = 0);
 
+  //! \brief
+  //! Assigns to \p *this the result of computing the BHZ03-widening
+  //! between \p *this and \p y, using the base-level widening \p wm
+  //! certified by the convergence certificate \p Cert.
+  /*!
+    \param y
+    The finite powerset of polyhedra computed in the previous iteration step.
+    It <EM>must</EM> definitely entail \p *this;
+
+    \param wm
+    The widening method to be used on polyhedra objects.
+
+    \exception std::invalid_argument
+    Thrown if \p *this and \p y are topology-incompatible or
+    dimension-incompatible.   
+
+    The BHZ03 widening framework is instantiated using two extrapolation
+    heuristics: first, the least upper bound is tried; second, the BGP99
+    extrapolation operator is tried, possibly applying pairwise reduction.
+    If both heuristics fail to converge according to the certificate \p Cert,
+    then an attempt is made to apply the base-level widening \p wm to
+    the poly-hulls of \p *this and \p y, possibly improving the result
+    using Polyhedron::poly_difference_assign. For more details and
+    a justification of the overall approach, see \ref BHZ03b "[BHZ03b]"
+    and \ref BHZ04 "[BHZ04]".
+
+    \note
+    The template parameter \p Cert should be a finite convergence
+    certificate for the base-level widening operator \p wm.
+    For a description of the methods that should be provided
+    by \p Cert, see BHRZ03_Certificate or H79_Certificate.
+  */
   template <typename Cert>
   void generic_BHZ03_widening_assign(const Polyhedra_PowerSet& y,
 				     void (Polyhedron::*wm)(const Polyhedron&,
 							    unsigned*));
+
+  //! The instance of the BHZ03 framework using BHRZ03_Certificate.
   void BHZ03_widening_assign(const Polyhedra_PowerSet& y,
 			     void (Polyhedron::*wm)(const Polyhedron&,
 						    unsigned*));
+  //! \brief
+  //! FIXME: WHAT?
+  //! Improves the result of the BHZ03 widening by also enforcing
+  //! those constraints in \p cs that are satisfied by all the points
+  //! of \p *this.
+  /*!
+    \param y
+    The finite powerset of polyhedra computed in the previous iteration step.
+    It <EM>must</EM> definitely entail \p *this;
+
+    \param cs
+    The system of constraints used to improve the widened polyhedron;
+
+    \param lwm
+    The limited widening method to be used on polyhedra objects.
+
+    \exception std::invalid_argument
+    Thrown if \p *this, \p y and \p cs are topology-incompatible or
+    dimension-incompatible.
+
+    \note
+    The template parameter \p Cert should be a finite convergence
+    certificate for the base-level limited widening operator \p lwm.
+    For a description of the methods that should be provided
+    by \p Cert, see BHRZ03_Certificate or H79_Certificate.
+  */
   template <typename Cert>
   void generic_limited_BHZ03_widening_assign(const Polyhedra_PowerSet& y,
 					     const ConSys& cs,
@@ -216,6 +309,8 @@ public:
 					     (const Polyhedron&,
 					      const ConSys&,
 					      unsigned*));
+
+
   void limited_BHZ03_widening_assign(const Polyhedra_PowerSet& y,
 				     const ConSys& cs,
 				     void (Polyhedron::*lwm)
@@ -252,7 +347,7 @@ public:
   bool ascii_load(std::istream& s);
 
 private:
-  //! Records into \p cert_ms the certificate for this set of polyhedra.
+  //! Records into \p cert_ms the certificates for this set of polyhedra.
   template <typename Cert>
   void collect_certificates(std::map<Cert, size_type,
 		                     typename Cert::Compare>& cert_ms) const;
@@ -270,7 +365,7 @@ private:
 namespace std {
 
 //! Specializes <CODE>std::swap</CODE>.
-/*! \relates Parma_Polyhedra_Library::PowerSet */
+/*! \relates Parma_Polyhedra_Library::Polyhedra_PowerSet */
 template <typename PH>
 void swap(Parma_Polyhedra_Library::Polyhedra_PowerSet<PH>& x,
 	  Parma_Polyhedra_Library::Polyhedra_PowerSet<PH>& y);
