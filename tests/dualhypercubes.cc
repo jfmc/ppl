@@ -278,8 +278,7 @@ computation(vector<NNC_Polyhedron>& ph, bool enhanced) {
 } // namespace
 
 int
-main() {
-
+main() TRY {
   vector<NNC_Polyhedron> ph;
 
 #if EXP_EVAL
@@ -312,3 +311,4 @@ main() {
 
   return 0;
 }
+CATCH
