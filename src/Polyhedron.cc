@@ -108,7 +108,7 @@ PPL::Polyhedron::Polyhedron(GenSys& gs)
     gen_sys(),
     sat_c(),
     sat_g() {
-  // Note that this swap destroys the given argument `g' because
+  // Note that this swap destroys the given argument `gs' because
   // it is swapped with `gen_sys' that is created empty, i.e., with
   // the default constructor.
   std::swap(gen_sys, gs);
@@ -904,22 +904,28 @@ PPL::Polyhedron::insert(const Constraint& c) {
 #endif
 
   assert(!is_empty());
-  assert(!is_zero_dim());
+ 
+  if (is_zero_dim()) {
+    con_sys.clear();
+    con_sys.insert(c);
+    // No longer zero-dimensional and with constraints up-to-date.
+    set_constraints_up_to_date();
+  }
+  else {
+    if (!constraints_are_up_to_date())
+      update_constraints();
 
-  if (!constraints_are_up_to_date())
-    update_constraints();
+    con_sys.insert(c);
 
-  con_sys.insert(c);
-
-  // After adding new constraints, generators are no more up-to-date.
-  clear_constraints_minimized();
-  clear_generators_up_to_date();
-
+    // After adding new constraints, generators are no more up-to-date.
+    clear_constraints_minimized();
+    clear_generators_up_to_date();
+  }  
 #if DLEVEL >= 1
   cout << "=== x ===" << endl
        << *this << endl;
 #endif
-
+  
   // The constraint system may have become unsatisfiable.
   // Do not check for satisfiability.
   assert(OK(false));
@@ -940,25 +946,30 @@ PPL::Polyhedron::insert(const Generator& g) {
        << g << endl;
 #endif
 
-  assert(!is_zero_dim());
-
-  if (is_empty()) {
+  if (is_zero_dim()) {
     gen_sys.clear();
     gen_sys.insert(g);
-    // No longer empty and with generators up-to-date.
-    clear_empty();
+    // No longer zero-dimensional and with generators up-to-date.
     set_generators_up_to_date();
   }
-  else {
-    if (!generators_are_up_to_date())
-      update_generators();
-    gen_sys.insert(g);
-
-    // After adding the new generator, constraints are no longer up-to-date.
-    clear_generators_minimized();
-    clear_constraints_up_to_date();
-  }
-
+  else
+    if (is_empty()) {
+      gen_sys.clear();
+      gen_sys.insert(g);
+      // No longer empty and with generators up-to-date.
+      clear_empty();
+      set_generators_up_to_date();
+    }
+    else {
+      if (!generators_are_up_to_date())
+	update_generators();
+      gen_sys.insert(g);
+      
+      // After adding the new generator, constraints are no longer up-to-date.
+      clear_generators_minimized();
+      clear_constraints_up_to_date();
+    }
+  
 #if DLEVEL >= 1
   cout << "=== x ===" << endl
        << *this << endl;
