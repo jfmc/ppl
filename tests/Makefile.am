@@ -73,7 +73,7 @@ ORIGINAL_TESTS = \
 	addgenerators9 addgenerators10 addgenerators11 addgenerators12 \
 	addgenerators13 \
 	affineimage1 affineimage2 affineimage3 affineimage4 affineimage5 \
-	affineimage6 affineimage7 affineimage8 \
+	affineimage6 affineimage7 affineimage8 affineimage9 \
 	affinepreimage1 affinepreimage2 affinepreimage3 affinepreimage4 \
 	affinepreimage5 affinepreimage6 affinepreimage7 affinepreimage8 \
 	affinepreimage9 affinepreimage10 \
@@ -313,6 +313,7 @@ affineimage5_SOURCES = affineimage5.cc
 affineimage6_SOURCES = affineimage6.cc
 affineimage7_SOURCES = affineimage7.cc
 affineimage8_SOURCES = affineimage8.cc
+affineimage9_SOURCES = affineimage9.cc
 
 affinepreimage1_SOURCES = affinepreimage1.cc
 affinepreimage2_SOURCES = affinepreimage2.cc
