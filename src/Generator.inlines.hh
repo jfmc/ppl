@@ -41,6 +41,12 @@ inline
 Generator::~Generator() {
 }
 
+inline Generator&
+Generator::operator=(const Generator& g) {
+  Row::operator=(g);
+  return *this;
+}
+
 inline size_t
 Generator::space_dimension() const {
   return size() - 1;

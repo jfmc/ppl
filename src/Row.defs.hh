@@ -102,7 +102,7 @@ public:
   ~Row();
 
   //! Assignment operator.
-  Row& operator =(const Row& row);
+  Row& operator=(const Row& y);
 
   //! Swaps \p *this with \p y.
   void swap(Row& y);

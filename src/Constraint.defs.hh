@@ -201,8 +201,12 @@ private:
 public:
   //! Ordinary copy-constructor.
   Constraint(const Constraint& c);
+
   //! Destructor.
   ~Constraint();
+
+  //! Assignment operator.
+  Constraint& operator =(const Constraint& c);
 
   //! Returns the dimension of the vector space enclosing \p *this.
   size_t space_dimension() const;

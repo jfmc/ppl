@@ -319,7 +319,7 @@ Row::assign(Row& y) {
 
 
 inline Row&
-Row::operator =(const Row& y) {
+Row::operator=(const Row& y) {
   // Copy-construct `tmp' from `y'.
   Row tmp(y);
   // Swap the implementation of `*this' with the one of `tmp'.

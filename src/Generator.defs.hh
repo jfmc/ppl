@@ -223,8 +223,12 @@ private:
 public:
   //! Ordinary copy-constructor.
   Generator(const Generator& g);
+
   //! Destructor.
   ~Generator();
+
+  //! Assignment operator.
+  Generator& operator =(const Generator& g);
 
   //! Returns the dimension of the vector space enclosing \p *this.
   size_t space_dimension() const;

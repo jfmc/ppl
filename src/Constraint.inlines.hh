@@ -45,6 +45,12 @@ inline
 Constraint::~Constraint() {
 }
 
+inline Constraint&
+Constraint::operator=(const Constraint& c) {
+  Row::operator=(c);
+  return *this;
+}
+
 inline size_t
 Constraint::space_dimension() const {
   return size() - 1;
