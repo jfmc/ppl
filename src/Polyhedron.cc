@@ -1324,7 +1324,7 @@ PPL::Polyhedron::concatenate_assign(const Polyhedron& y) {
 
   size_t added_columns = y.space_dimension();
 
-  // For an empty polyhedron, it is sufficient to adjust
+  // If `*this' or `y' are empty polyhedra, it is sufficient to adjust
   // the dimension of the space.
   if (is_empty() || y.is_empty()) {
     space_dim += added_columns;
@@ -1332,11 +1332,11 @@ PPL::Polyhedron::concatenate_assign(const Polyhedron& y) {
     return;
   }
 
-  // If `y' is a non-empty 0-dim space polyhedron,
-  // the result is `*this'.
+  // If `y' is a non-empty 0-dim space polyhedron, the result is `*this'.
   if (added_columns == 0)
     return;
-  // For a non-empty 0-dim space polyhedron, the result is `y'.
+
+  // If `*this' is a non-empty 0-dim space polyhedron, the result is `y'.
   if (space_dim == 0) {
     *this = y;
     return;
