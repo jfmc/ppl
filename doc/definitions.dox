@@ -566,6 +566,29 @@ Both \f$\Pset_n\f$ and \f$\CPset_n\f$ are closed under
 the application of any space-dimension preserving
 affine image and preimage operators.
 
+The library provides two operators, one computes an affine image and
+the other an affine preimage for a given variable \f$x_k\f$ and
+linear expression
+  \f[
+    \sum_{i=0}^{n-1} a_i x_i + b.
+  \f]
+
+The affine image operator computes the affine transformation
+defined by the matrix
+  \f[
+ A = \begin{pmatrix}
+        1 & 0 & \dots & 0 & a_1 & 0 & \dots & 0 \\
+        0 & 1 & \dots & 0 & a_2 & 0 & \dots & 0 \\
+          &   &        &   & \dots &&        &   \\   
+          &   &        &   & \dots &&        &   \\   
+        0 & 0 & \dots & 0 & a_n & 0 & \dots & 1 
+     \end{pmatrix}
+  \f]
+and vector \f$\vect{b} = (0, \ldots, b, \ldots, 0)\f$
+where the \f$a_i\f$ (resp., \f$b\f$) occurs in the \f$k\f$th column
+in \f$A\f$
+(resp., position in \f$\vect{b}\f$).
+
 <B>Relation-with Operators</B>
 
 The library provides operators for checking the relation holding
