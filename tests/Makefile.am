@@ -97,7 +97,7 @@ ORIGINAL_TESTS = \
 	smm1 \
 	timeelapse1 timeelapse2 timeelapse3 timeelapse4 timeelapse5 \
 	timeelapse6 timeelapse7 \
-	topclosed1 topclosed2 \
+	topclosed1 topclosed2 topclosed3 \
 	topclosure1 topclosure2 \
 	universe1 universe2 universe3 universe4 universe5 universe6 
 
@@ -380,6 +380,7 @@ timeelapse7_SOURCES = timeelapse7.cc
 
 topclosed1_SOURCES = topclosed1.cc
 topclosed2_SOURCES = topclosed2.cc
+topclosed3_SOURCES = topclosed3.cc
 
 topclosure1_SOURCES = topclosure1.cc
 topclosure2_SOURCES = topclosure2.cc
