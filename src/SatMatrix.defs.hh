@@ -71,6 +71,9 @@ public:
   //! Clears the matrix deallocating all its rows.
   void clear();
 
+  //! Transposes the matrix.
+  void transpose();
+  
   //! Makes \p *this a transposed copy of \p y.
   void transpose_assign(const SatMatrix& y);
 

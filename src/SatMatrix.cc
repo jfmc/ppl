@@ -76,6 +76,19 @@ PPL::SatMatrix::add_row(const SatRow& row) {
 }
 
 void
+PPL::SatMatrix::transpose() {
+  const SatMatrix& x = *this;
+  dimension_type nrows = num_rows();
+  dimension_type ncols = num_columns();
+  SatMatrix tmp(ncols, nrows);
+  for (dimension_type i = nrows; i-- > 0; )
+    for (int j = x[i].last(); j >= 0; j = x[i].prev(j))
+      tmp[j].set(i);
+  swap(tmp);
+  assert(OK());
+}
+ 
+void
 PPL::SatMatrix::transpose_assign(const SatMatrix& y) {
   dimension_type y_nrows = y.num_rows();
   dimension_type y_ncols = y.num_columns();
