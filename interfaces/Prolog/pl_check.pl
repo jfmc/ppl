@@ -1307,6 +1307,37 @@ expand_dim(T) :-
   ppl_delete_Polyhedron(Ptacas1),
   ppl_delete_Polyhedron(Ptacas).
 
+% Tests ppl_Polyhedron_fold_dimension.
+fold_dims :-
+  fold_dims(c), fold_dims(nnc).
+
+fold_dims(T) :-
+  make_vars(4, [A, B, C, D]),
+  ppl_new_Polyhedron_from_dimension(T, 4, P),
+  ppl_Polyhedron_add_constraints(P, [A >= 1, B >= 0, C >= 2, D >= 0]),
+  ppl_Polyhedron_fold_dimensions(P, [D], B),
+  ppl_Polyhedron_space_dimension(P, 3),
+  ppl_new_Polyhedron_from_dimension(T, 3, P1),
+  ppl_Polyhedron_add_constraints(P1, [A >= 1, B >= 0, C >= 2]),
+  ppl_Polyhedron_equals_Polyhedron(P, P1),
+  ppl_delete_Polyhedron(P1),
+  ppl_Polyhedron_fold_dimensions(P, [A, C], B),
+  ppl_new_Polyhedron_from_dimension(T, 1, P2),
+  ppl_Polyhedron_add_constraints(P2, [A >= 0]),
+  ppl_Polyhedron_equals_Polyhedron(P, P2),
+  ppl_delete_Polyhedron(P2),
+  ppl_Polyhedron_space_dimension(P, 1),
+  ppl_delete_Polyhedron(P),
+  ppl_new_Polyhedron_from_dimension(T, 2, Ptacas),
+  ppl_Polyhedron_add_constraints(Ptacas, [A >= 1, A =< 3, B >= 7, B =< 12]),
+  ppl_Polyhedron_fold_dimensions(Ptacas, [A], B),
+  ppl_Polyhedron_space_dimension(Ptacas, 1),
+  ppl_new_Polyhedron_from_dimension(T, 1, Ptacas1),
+  ppl_Polyhedron_add_constraints(Ptacas1, [A >= 1, A =< 12]),
+  ppl_Polyhedron_equals_Polyhedron(Ptacas, Ptacas1),
+  ppl_delete_Polyhedron(Ptacas1),
+  ppl_delete_Polyhedron(Ptacas).
+
 % Tests ppl_Polyhedron_map_dimensions using constraints and generators.
 map_dim:-
   map_dim(c), map_dim(nnc).

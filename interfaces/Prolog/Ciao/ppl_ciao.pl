@@ -104,6 +104,7 @@ site: http://www.cs.unipr.it/ppl/ . */
         ppl_Polyhedron_remove_dimensions/2,
         ppl_Polyhedron_remove_higher_dimensions/2,
         ppl_Polyhedron_expand_dimension/3,
+        ppl_Polyhedron_fold_dimensions/3,
         ppl_Polyhedron_map_dimensions/2
 ],
 [
@@ -732,6 +733,11 @@ ppl_Polyhedron_bounded_H79_extrapolation_assign_with_token(Handle1,
                                            in(Dimensions))
   :: any_term * any_term * any_term + foreign.
 
+:- true pred ppl_Polyhedron_fold_dimensions(in(Handle),
+                                           in(VList),
+                                           in(Var))
+  :: any_term * any_term * any_term + foreign.
+
 :- true pred ppl_Polyhedron_map_dimensions(in(Handle),
                                            in(PIFunc))
   :: any_term * any_term + foreign.
@@ -873,6 +879,7 @@ ppl_Polyhedron_bounded_H79_extrapolation_assign_with_token(Handle1,
         ppl_Polyhedron_remove_dimensions/2,
         ppl_Polyhedron_remove_higher_dimensions/2,
         ppl_Polyhedron_expand_dimension/3,
+        ppl_Polyhedron_fold_dimensions/3,
         ppl_Polyhedron_map_dimensions/2
 ]).
 
@@ -1199,6 +1206,11 @@ since the above version of this is temporary.
                                            in(Dimensions))
              :: any_term * any_term * any_term + foreign.
 
+:- true pred ppl_Polyhedron_fold_dimensions(in(Handle),
+                                           in(VList),
+                                           in(Var))
+             :: any_term * any_term * any_term + foreign.
+
 :- true pred ppl_Polyhedron_map_dimensions(in(Handle),
                                            in(PIFunc))
              :: any_term * any_term + foreign.
@@ -1289,6 +1301,7 @@ since the above version of this is temporary.
         ppl_Polyhedron_remove_dimensions/2,
         ppl_Polyhedron_remove_higher_dimensions/2,
         ppl_Polyhedron_expand_dimension/3
+        ppl_Polyhedron_fold_dimensions/3
         ppl_Polyhedron_map_dimensions/2
 ]).
 

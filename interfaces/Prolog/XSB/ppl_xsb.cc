@@ -469,8 +469,9 @@ Integer_to_integer_term(const PPL::Integer& n) {
 #define ppl_Polyhedron_add_dimensions_and_embed xsb_stub_ppl_Polyhedron_add_dimensions_and_embed
 #define ppl_Polyhedron_concatenate_assign xsb_stub_ppl_Polyhedron_concatenate_assign
 #define ppl_Polyhedron_remove_dimensions xsb_stub_ppl_Polyhedron_remove_dimensions
-#define ppl_Polyhedron_expand_dimension xsb_stub_ppl_Polyhedron_expand_dimension
 #define ppl_Polyhedron_remove_higher_dimensions xsb_stub_ppl_Polyhedron_remove_higher_dimensions
+#define ppl_Polyhedron_expand_dimension xsb_stub_ppl_Polyhedron_expand_dimension
+#define ppl_Polyhedron_fold_dimensions xsb_stub_ppl_Polyhedron_fold_dimensions
 #define ppl_Polyhedron_map_dimensions xsb_stub_ppl_Polyhedron_map_dimensions
 
 #include "../ppl_prolog.icc"
@@ -556,6 +557,7 @@ Integer_to_integer_term(const PPL::Integer& n) {
 #undef ppl_Polyhedron_remove_dimensions
 #undef ppl_Polyhedron_remove_higher_dimensions
 #undef ppl_Polyhedron_expand_dimension
+#undef ppl_Polyhedron_fold_dimensions
 #undef ppl_Polyhedron_map_dimensions
 
 #define XSB_ENTRY_0(name) \
@@ -702,6 +704,7 @@ XSB_ENTRY_2(ppl_Polyhedron_concatenate_assign)
 XSB_ENTRY_2(ppl_Polyhedron_remove_dimensions)
 XSB_ENTRY_2(ppl_Polyhedron_remove_higher_dimensions)
 XSB_ENTRY_3(ppl_Polyhedron_expand_dimension)
+XSB_ENTRY_3(ppl_Polyhedron_fold_dimensions)
 XSB_ENTRY_2(ppl_Polyhedron_map_dimensions)
 
 extern "C" void
