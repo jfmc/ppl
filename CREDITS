@@ -90,6 +90,9 @@ This work has been partly supported by the following projects:
   5. MURST project ``Constraint Based Verification of Reactive
      Systems'' [17].
 
+  6. MURST project ``AIDA - Abstract Interpretation: Design and
+     Applications'' [18].
+
 --------
 
  [1] http://www.cs.unipr.it/~bagnara/
@@ -109,3 +112,4 @@ This work has been partly supported by the following projects:
 [15] http://strudel.di.unipi.it/cofin00/
 [16] http://www.cs.unipr.it/Projects/COFIN01
 [17] http://www.disi.unige.it/person/DelzannoG/cover/
+[18] http://www.cs.unipr.it/Projects/AIDA/
