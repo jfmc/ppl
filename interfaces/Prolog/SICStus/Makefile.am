@@ -46,21 +46,21 @@ ppl_sicstus_sd_la_SOURCES = ppl_sicstus_sd.cc
 ppl_sicstus_sd_la_LDFLAGS = -no-undefined -module -avoid-version
 
 ppl_sicstus$(EXEEXT): ppl_sicstus.s.o $(top_builddir)/src/libppl.la
-	spld --static --main=prolog \
+	spld --main=prolog \
 		--resources=ppl_sicstus.s.o -o $@ \
 		-LD -lstdc++ \
-		-Wl,-whole-archive $(top_builddir)/src/.libs/libppl.a \
+		-Wl,-whole-archive -L$(top_builddir)/src/.libs -lppl \
 		-Wl,-no-whole-archive \
 		@extra_libraries@
 
 ppl_sicstus.s.o: ppl_sicstus.pl ppl_sicstus_sd.o
 	splfr --static $(srcdir)/ppl_sicstus.pl ppl_sicstus_sd.o
 
-ppl_sicstus.so: ppl_sicstus.pl ppl_sicstus_sd.lo
-	splfr $(srcdir)/ppl_sicstus.pl ppl_sicstus_sd.lo \
+ppl_sicstus.so: ppl_sicstus.pl ppl_sicstus_sd.o
+	splfr $(srcdir)/ppl_sicstus.pl ppl_sicstus_sd.o \
 		-L$(top_builddir)/src/.libs -lppl @extra_libraries@
 
-CLPQ_TESTS = \
+CLPQ_TESTS_NONSTRICT = \
 ack.clpq \
 ackn.clpq \
 fib.clpq \
@@ -69,12 +69,27 @@ smm.clpq \
 sumto.clpq \
 tak.clpq
 
+CLPQ_TESTS_STRICT = \
+schedule.clpq
+
+CLPQ_TESTS = $(CLPQ_TESTS_NONSTRICT) $(CLPQ_TESTS_STRICT) 
+
 check-local: ppl_sicstus ../check_script ../expected
 	for k in $(CLPQ_TESTS); do cp -f $(srcdir)/../$$k .; done
-	./ppl_sicstus -l $(srcdir)/sp_clpq.pl --goal "main." \
-		<$(srcdir)/../check_script >obtained
+	$(LIBTOOL) --mode=execute -dlopen ../../../src/libppl.la \
+	  ./ppl_sicstus -l $(srcdir)/sp_clpq.pl \
+	    --goal "main('$(top_srcdir)/interfaces/Prolog/clpq')." \
+	      <$(srcdir)/../check_script >obtained
 	diff -q --ignore-all-space $(srcdir)/../expected obtained
+	$(LIBTOOL) --mode=execute -dlopen ../../../src/libppl.la \
+	  ./ppl_sicstus -l $(srcdir)/sp_clpq.pl \
+	    --goal "main('$(top_srcdir)/interfaces/Prolog/clpq2')." \
+	      <$(srcdir)/../check_script2 >obtained2
+	diff -q --ignore-all-space $(srcdir)/../expected2 obtained2
 
-MOSTLYCLEANFILES = ppl_sicstus.s.o ppl_sicstus.so $(CLPQ_TESTS) obtained
+MOSTLYCLEANFILES = \
+ppl_sicstus.s.o ppl_sicstus.so \
+$(CLPQ_TESTS) \
+obtained obtained2
 
 endif
