@@ -75,7 +75,7 @@ namespace Parma_Polyhedra_Library {
   Linear expressions used to define a generator should be homogeneous
   (any constant term will be simply ignored).
   When defining a vertex, an optional Integer argument can be used
-  as a common <EM>denominator</EM> for all the coefficients occurring
+  as a common <EM>divisor</EM> for all the coefficients occurring
   in the provided linear expression;
   the default value for this argument is 1.
 
@@ -150,11 +150,11 @@ namespace Parma_Polyhedra_Library {
   The vertex \f$\vect{v}\f$ specified in Example 3 above
   can also be obtained with the following code,
   where we provide a non-default value for the second argument
-  of the function <CODE>vertex</CODE> (the denominator):
+  of the function <CODE>vertex</CODE> (the divisor):
   \code
   Generator v = vertex(2*x + 0*y + 4*z, 2);
   \endcode
-  Obviously, the denominator can be usefully exploited to specify
+  Obviously, the divisor can be usefully exploited to specify
   vertices having some non-integer (but rational) coordinates.
   For instance, the vertex
   \f$\vect{w} = (-1.5, 3.2, 2.1)^\transpose \in \Rset^3\f$
@@ -162,32 +162,44 @@ namespace Parma_Polyhedra_Library {
   \code
   Generator w = vertex(-15*x + 32*y + 21*z, 10);
   \endcode
-  If a zero denominator is provided, an exception is thrown.
+  If a zero divisor is provided, an exception is thrown.
+
+  \par How to inspect a generator
+  Several methods are provided to examine a generator and extract
+  all the encoded information: its space-dimension, its type and
+  the value of its integer coefficients.
 
   \par Example 5
   The following code shows how it is possible to access each single
   coefficient of a generator.
-  Assuming that <CODE>v1</CODE> is the vertex of coordinates
-  \f$(a_0, \ldots, a_{n-1})^T\f$,
+  If <CODE>v1</CODE> is a vertex having coordinates
+  \f$(a_0, \ldots, a_{n-1})^\transpose\f$,
   we construct the vertex <CODE>v2</CODE> having coordinates
-  \f$(a_0, 2 a_1, \ldots, (i+1)a_i, \ldots, n a_{n-1})^T\f$.
+  \f$(a_0, 2 a_1, \ldots, (i+1)a_i, \ldots, n a_{n-1})^\transpose\f$.
   \code
-  cout << "Vertex g1: " << g1 << endl;
-  LinExpression e;
-  for (int i = g1.space_dimension() - 1; i >= 0; i--)
-    e += (i + 1) * g1.coefficient(Variable(i)) * Variable(i);
-  Generator g2 = vertex(e);
-  cout << "Vertex g2: " << g2 << endl;
+  if (g1.type() == Generator::VERTEX) {
+    cout << "Vertex g1: " << g1 << endl;
+    LinExpression e;
+    for (int i = g1.space_dimension() - 1; i >= 0; i--)
+      e += (i + 1) * g1.coefficient(Variable(i)) * Variable(i);
+    Generator g2 = vertex(e, g1.divisor());
+    cout << "Vertex g2: " << g2 << endl;
+  }
+  else
+    cout << "Generator g1 is not a vertex." << endl;
   \endcode
   Therefore, for the vertex
   \code
-  Generator g1 = vertex(2*x - y + 3*z);
+  Generator g1 = vertex(2*x - y + 3*z, 2);
   \endcode
   we would obtain the following output:
   \code
-  Vertex g1: v(2*A - B + 3*C)
-  Vertex g2: v(2*A - 2*B + 9*C)
+  Vertex g1: v((2*A - B + 3*C)/2)
+  Vertex g2: v((2*A - 2*B + 9*C)/2)
   \endcode
+  When working with a vertex, be careful not to confuse the notion
+  of <EM>coefficient</EM> with the notion of <EM>coordinate</EM>:
+  these are equivalent only when the divisor of the vertex is 1.
 */
 
 class Parma_Polyhedra_Library::Generator : PPL_HIDDEN Row {
