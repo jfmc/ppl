@@ -10,6 +10,10 @@ NEWS for version 0.6  (released date to be decided)
 New and Changed Features
 ========================
 
+o  New methods Polyhedron::maximize() and Polyhedron::minimize()
+   for maximizing and minimizing a linear expression subject to the
+   polyhedron.
+
 o  The type of output functions for the class Variable,
    Variable::Output_Function_Type, is now defined as
    void Output_Function_Type(std::ostream& s, const Variable& v).
