@@ -42,6 +42,8 @@ ppl_gprolog_SOURCES =
 pkglib_LTLIBRARIES = libppl_gprolog.la
 libppl_gprolog_la_SOURCES = ppl_gprolog_sd.cc
 
+pkglib_DATA = ppl_gprolog.pl
+
 # Notice: we are linking with libppl_gprolog.a statically.
 # This is a kludge until we understand whether and if libtool
 # and gplc can interoperate.
