@@ -1035,8 +1035,9 @@ public:
     //! Constructor: collects info from polyhedron \p x.
     BHRZ03_info(const Polyhedron& x);
 
-    //! Total comparison function.
     int compare(const BHRZ03_info& y) const;
+    int compare(const Polyhedron& y) const;
+    bool is_stabilizing(const Polyhedron& y) const;
 
     //! \brief
     //! Binary predicate defining a total ordering on BHRZ03_info objects
@@ -1045,6 +1046,9 @@ public:
       //! Returns <CODE>true</CODE> if and only if \p x comes before \p y.
       bool operator()(const BHRZ03_info& x, const BHRZ03_info& y) const;
     };
+
+    //! Check if gathered information is meaningful.
+    bool OK() const;
 
   private:
     friend class Polyhedron;
@@ -1060,14 +1064,21 @@ public:
     //! for the polyhedron.
     dimension_type num_points;
     //! \brief
-    //! Number of non-redundant rays in a generator system of the
+    //! A vector containing, for each index `0 <= i < space_dim',
+    //! the number of non-redundant rays in a generator system of the
     //! polyhedron having exactly `i' null coordinates.
     std::vector<dimension_type> num_zero_ray_coord;
   };
 
+#ifdef PPL_DOXYGEN_INCLUDE_IMPLEMENTATION_DETAILS
   //! \brief
   //! Populates structure \p info with the information needed
   //! to decide BHRZ03 stabilization.
+  /*!
+    It is assumed that the polyhedron is not empty and described
+    by constraint and generator systems in minimal form.
+  */
+#endif // PPL_DOXYGEN_INCLUDE_IMPLEMENTATION_DETAILS
   void collect_BHRZ03_info(BHRZ03_info& info) const;
 
   //! \brief
@@ -1764,6 +1775,9 @@ private:
   void select_H79_constraints(const Polyhedron& y,
 			      ConSys& cs_selected,
 			      ConSys& cs_not_selected) const;
+
+  //int compare_BHRZ03_info(const BHRZ03_info& y_info) const;
+  //bool is_BHRZ03_stabilizing(const BHRZ03_info& y_info) const;
 
   bool BHRZ03_combining_constraints(const Polyhedron& y,
  				    const Polyhedron& H79,

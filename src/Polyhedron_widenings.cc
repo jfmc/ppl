@@ -382,11 +382,94 @@ PPL::Polyhedron::bounded_H79_extrapolation_assign(const Polyhedron& y,
 PPL::Polyhedron::BHRZ03_info::BHRZ03_info(const Polyhedron& x)
   : poly_dim(0), lin_space_dim(0), num_constraints(0), num_points(0),
     num_zero_ray_coord(x.space_dimension(), 0) {
+  x.minimize();
+  // `x' cannot be an empty polyhedron or become empty after minimization.
+  assert(!x.marked_empty());
   x.collect_BHRZ03_info(*this);
+  assert(OK());
+}
+
+bool
+PPL::Polyhedron::BHRZ03_info::OK() const {
+#ifndef NDEBUG
+  using std::endl;
+  using std::cerr;
+#endif
+
+  // The dimension of the vector space.
+  const dimension_type space_dim = num_zero_ray_coord.size();
+
+  if (poly_dim > space_dim) {
+#ifndef NDEBUG
+    cerr << "In the BHRZ03 info about a non-empty polyhedron:" << endl
+	 << "the polyhedron dimension is greater than the space dimension!"
+	 << endl;
+#endif
+    return false;
+  }
+
+  if (lin_space_dim > poly_dim) {
+#ifndef NDEBUG
+    cerr << "In the BHRZ03 info about a non-empty polyhedron:" << endl
+	 << "the lineality space dimension is greater than "
+	 << "the polyhedron dimension!"
+	 << endl;
+#endif
+    return false;
+  }
+
+  if (num_constraints < space_dim - poly_dim) {
+#ifndef NDEBUG
+    cerr << "In the BHRZ03 info about a non-empty polyhedron:" << endl
+	 << "in a vector space of dimension `n',"
+	 << "any polyhedron of dimension `k'" << endl
+	 << "should have `n-k' non-redundant constraints at least."
+	 << endl
+	 << "Here space_dim = " << space_dim << ", "
+	 << "poly_dim = " << poly_dim << ", "
+	 << "but num_constraints = " << num_constraints << "!"
+	 << endl;
+#endif
+    return false;
+  }
+
+  if (num_points == 0) {
+#ifndef NDEBUG
+    cerr << "In the BHRZ03 info about a non-empty polyhedron:" << endl
+	 << "the generator system has no points!"
+	 << endl;
+#endif
+    return false;
+  }
+
+  if (lin_space_dim == space_dim) {
+    // This was a universe polyhedron.
+    if (num_constraints > 0) {
+#ifndef NDEBUG
+      cerr << "In the BHRZ03 info about a non-empty polyhedron:" << endl
+	   << "a universe polyhedron has non-redundant constraints!"
+	   << endl;
+#endif
+      return false;
+    }
+
+    if (num_points != 1) {
+#ifndef NDEBUG
+      cerr << "In the BHRZ03 info about a non-empty polyhedron:" << endl
+	   << "a universe polyhedron has more than one non-redundant point!"
+	   << endl;
+#endif
+      return false;
+    }
+  }
+
+  // All tests passed.
+  return true;
 }
 
 int
 PPL::Polyhedron::BHRZ03_info::compare(const BHRZ03_info& y) const {
+  assert(OK() && y.OK());
   if (poly_dim != y.poly_dim)
     return poly_dim > y.poly_dim ? 1 : -1;
   if (lin_space_dim != y.lin_space_dim)

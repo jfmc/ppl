@@ -672,6 +672,20 @@ Polyhedron::BHRZ03_info::Compare::operator()(const BHRZ03_info& x,
   return (x.compare(y) == 1);
 }
 
+inline int
+Polyhedron::BHRZ03_info::compare(const Polyhedron& y) const {
+  // TODO: implement an incremental test, stopping as soon as possible.
+  BHRZ03_info y_info(y);
+  return compare(y_info);
+}
+
+inline bool
+Polyhedron::BHRZ03_info::is_stabilizing(const Polyhedron& y) const {
+  // TODO: implement an incremental test, stopping as soon as possible.
+  BHRZ03_info y_info(y);
+  return compare(y_info) == 1;
+}
+
 } // namespace Parma_Polyhedra_Library
 
 #endif // !defined(PPL_Polyhedron_inlines_hh)

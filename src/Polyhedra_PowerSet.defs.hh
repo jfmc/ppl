@@ -145,6 +145,9 @@ public:
   void pairwise_reduce();
 
 private:
+  void BHZ03_extrapolation_assign(const Polyhedra_PowerSet& y,
+				  void (Polyhedron::*wm)
+				  (const Polyhedron&, unsigned*));
   void extrapolation_assign(const Polyhedra_PowerSet& y,
 			    void (Polyhedron::*wm)
 			    (const Polyhedron&, unsigned*));
@@ -183,6 +186,8 @@ public:
 					   const ConSys& cs,
 					   unsigned max_disjuncts);
 
+  void new_widening_assign(const Polyhedra_PowerSet& y);
+
   //! Checks if all the invariants are satisfied.
   bool OK() const;
 
@@ -198,9 +203,15 @@ public:
 
 private:
   typedef Polyhedron::BHRZ03_info base_lgo_info;
-  typedef std::map<base_lgo_info, size_type, base_lgo_info::Compare> lgo_info;
-  void collect_lgo_info(lgo_info& y_info) const;
-  bool is_lgo_stabilizing(const lgo_info& info) const;
+  typedef std::map<base_lgo_info,
+		   size_type,
+		   base_lgo_info::Compare> multiset_lgo_info;
+  //! Records into \p info the lgo information of this set of polyhedra.
+  void collect_multiset_lgo_info(multiset_lgo_info& info) const;
+  //! \brief
+  //! Returns <CODE>true</CODE> if and only if the current set of polyhedra
+  //! is satbilizing with respect to the multiset lgo information \p y_info.
+  bool is_multiset_lgo_stabilizing(const multiset_lgo_info& y_info) const;
 };
 
 #include "Polyhedra_PowerSet.inlines.hh"
