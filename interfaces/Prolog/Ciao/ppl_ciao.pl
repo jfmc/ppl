@@ -36,8 +36,8 @@ site: http://www.cs.unipr.it/ppl/ . */
         ppl_timeout_exception_atom/1,
         ppl_set_timeout/1,
         ppl_reset_timeout/0,
-        ppl_new_Polyhedron_from_dimension/3,
-        ppl_new_Polyhedron_empty_from_dimension/3,
+        ppl_new_Polyhedron_universe_from_space_dimension/3,
+        ppl_new_Polyhedron_empty_from_space_dimension/3,
         ppl_new_Polyhedron_from_Polyhedron/4,
         ppl_new_Polyhedron_from_constraints/3,
         ppl_new_Polyhedron_from_generators/3,
@@ -193,26 +193,26 @@ ppl_timeout_exception_atom(Atom) :-
 
 :- true pred ppl_reset_timeout + foreign.
 
-:- true pred ppl_new_Polyhedron_from_dimension_2(in(Kind),
+:- true pred ppl_new_Polyhedron_universe_from_space_dimension_2(in(Kind),
                                                  in(Dimension),
                                                  in(Handle),
                                                  go(Success))
   :: any_term * any_term * any_term * int
-  + (returns(Success), foreign(ppl_new_Polyhedron_from_dimension)).
+  + (returns(Success), foreign(ppl_new_Polyhedron_universe_from_space_dimension)).
 
-ppl_new_Polyhedron_from_dimension(Kind, Dimension, Handle) :-
-   ppl_new_Polyhedron_from_dimension_2(Kind, Dimension, Handle, 1).
+ppl_new_Polyhedron_universe_from_space_dimension(Kind, Dimension, Handle) :-
+   ppl_new_Polyhedron_universe_from_space_dimension_2(Kind, Dimension, Handle, 1).
 
 
-:- true pred ppl_new_Polyhedron_empty_from_dimension_2(in(Kind),
+:- true pred ppl_new_Polyhedron_empty_from_space_dimension_2(in(Kind),
                                                        in(Dimension),
                                                        in(Handle),
                                                        go(Success))
   :: any_term * any_term * any_term * int
-  + (returns(Success), foreign(ppl_new_Polyhedron_empty_from_dimension)).
+  + (returns(Success), foreign(ppl_new_Polyhedron_empty_from_space_dimension)).
 
-ppl_new_Polyhedron_empty_from_dimension(Kind, Dimension, Handle) :-
-   ppl_new_Polyhedron_empty_from_dimension_2(Kind, Dimension, Handle, 1).
+ppl_new_Polyhedron_empty_from_space_dimension(Kind, Dimension, Handle) :-
+   ppl_new_Polyhedron_empty_from_space_dimension_2(Kind, Dimension, Handle, 1).
 
 
 :- true pred ppl_new_Polyhedron_from_Polyhedron_2(in(SrcKind),
@@ -796,10 +796,10 @@ ppl_Polyhedron_map_space_dimensions(Handle, PIFunc) :-
         ppl_timeout_exception_atom_2/2,
         ppl_set_timeout/1,
         ppl_reset_timeout/0,
-%        ppl_new_Polyhedron_from_dimension/3,
-        ppl_new_Polyhedron_from_dimension_2/4,
-%        ppl_new_Polyhedron_empty_from_dimension/3,
-        ppl_new_Polyhedron_empty_from_dimension_2/4,
+%        ppl_new_Polyhedron_universe_from_space_dimension/3,
+        ppl_new_Polyhedron_universe_from_space_dimension_2/4,
+%        ppl_new_Polyhedron_empty_from_space_dimension/3,
+        ppl_new_Polyhedron_empty_from_space_dimension_2/4,
 %        ppl_new_Polyhedron_from_Polyhedron/4,
         ppl_new_Polyhedron_from_Polyhedron_2/5,
 %        ppl_new_Polyhedron_from_constraints/3,
@@ -956,12 +956,12 @@ since the above version of this is temporary.
 
 :- true pred ppl_reset_timeout + foreign.
 
-:- true pred ppl_new_Polyhedron_from_dimension(in(Kind),
+:- true pred ppl_new_Polyhedron_universe_from_space_dimension(in(Kind),
                                                in(Dimension),
                                                in(Handle))
              :: any_term * any_term * any_term + foreign.
 
-:- true pred ppl_new_Polyhedron_empty_from_dimension(in(Kind),
+:- true pred ppl_new_Polyhedron_empty_from_space_dimension(in(Kind),
                                                      in(Dimension),
                                                      in(Handle))
              :: any_term * any_term * any_term + foreign.
@@ -1270,8 +1270,8 @@ since the above version of this is temporary.
         ppl_timeout_exception_atom/1,
         ppl_set_timeout/1,
         ppl_reset_timeout/0,
-        ppl_new_Polyhedron_from_dimension/3,
-        ppl_new_Polyhedron_empty_from_dimension/3,
+        ppl_new_Polyhedron_universe_from_space_dimension/3,
+        ppl_new_Polyhedron_empty_from_space_dimension/3,
         ppl_new_Polyhedron_from_Polyhedron/4,
         ppl_new_Polyhedron_from_constraints/3,
         ppl_new_Polyhedron_from_generators/3,
