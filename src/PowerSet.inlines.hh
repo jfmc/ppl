@@ -150,8 +150,7 @@ PowerSet<CS>::collapse(const iterator sink) {
   erase(++j, send);
 
   // Ensure omega-reduction.
-  send = end();
-  for (iterator k = begin(), kn = k; k != send; k = kn) {
+  for (iterator k = begin(), kn = k; k != sink; k = kn) {
     ++kn;
     if (k->definitely_entails(d))
       erase(k);
