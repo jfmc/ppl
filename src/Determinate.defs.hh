@@ -138,11 +138,11 @@ public:
 
   //! \brief
   //! Assigns to \p *this the \ref concatenate "concatenation"
-  //! of \p *this with \p y, taken in this order.
+  //! of \p *this and \p y, taken in this order.
   void concatenate_assign(const Determinate& y);
 
   //! \brief
-  //! Returns <CODE>true</CODE> if and only if \p *this entails \p y.
+  //! Returns <CODE>true</CODE> if and only if \p *this entails \p y
   //! (i.e., \p x is contained into \p y).
   bool definitely_entails(const Determinate& y) const;
 
