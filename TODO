@@ -1,6 +1,7 @@
 Urgent Things
 =============
 
+- Make sure all the functionalities are available in all interfaces.
 - Document the classes ExtendedRational, Boundary, LBoundary, UBoundary,
   and Interval.
 - Make Polyhedron::shuffle_dimensions() available trough the Prolog
