@@ -370,83 +370,68 @@ main_loop_yes :-
 %%%%%%%%%%%%%%%%% Writing Computed Answer Constraints %%%%%%%%%%%%%%%%%%
 
 write_var(Var, VariableNames) :-
-    list_member(Name=Var, VariableNames),
-    !,
-    write(Name).
+  member(Name=Var, VariableNames),
+  !,
+  write(Name).
 
 negate_expr(Num*Var, NegExpr) :-
-    (Num < 0 ->
-	NegNum is -Num,
-	NegExpr = NegNum*Var
-    ;
-	NegExpr = Num*Var
-    ).
+  (Num < 0 ->
+    NegNum is -Num,
+    NegExpr = NegNum*Var
+  ;
+    NegExpr = Num*Var
+  ).
 negate_expr(Expr1 + Expr2, NegExpr1 + NegExpr2) :-
-    negate_expr(Expr1, NegExpr1),
-    negate_expr(Expr2, NegExpr2).
+  negate_expr(Expr1, NegExpr1),
+  negate_expr(Expr2, NegExpr2).
 
 write_expr(Num*Var, VariableNames) :-
-    (Num =:= 1 ->
-	true
+  (Num =:= 1 ->
+    true
+  ;
+    (Num =:= -1 ->
+      write('-')
     ;
-	(Num =:= -1 ->
-	    write('-')
-	;
-	    write(Num),
-	    write('*')
-	)
-    ),
-    write_var(Var, VariableNames).
+      write(Num),
+      write('*')
+    )
+  ),
+  write_var(Var, VariableNames).
 write_expr(E + Num*Var, VariableNames) :-
-    write_expr(E, VariableNames),
-    (Num < 0 ->
-	write(' - '),
-	NegNum is -Num,
-        write_expr(NegNum*Var, VariableNames)
-    ;
-	write(' + '),
-        write_expr(Num*Var, VariableNames)
-    ).
+  write_expr(E, VariableNames),
+  (Num < 0 ->
+    write(' - '),
+    NegNum is -Num,
+    write_expr(NegNum*Var, VariableNames)
+  ;
+    write(' + '),
+    write_expr(Num*Var, VariableNames)
+  ).
 
 write_constraint(Expr = Num, VariableNames) :-
-    write_expr(Expr, VariableNames),
-    write(' = '),
-    write(Num).
+  write_expr(Expr, VariableNames),
+  write(' = '),
+  write(Num).
 write_constraint(Expr >= Num, VariableNames) :-
-    (Num < 0 ->
-	negate_expr(Expr, NegExpr),
-	write_expr(NegExpr, VariableNames),
-	write(' =< '),
-	NegNum is -Num,
-        write(NegNum)
-    ;
-	write_expr(Expr, VariableNames),
-	write(' >= '),
-	write(Num)
-    ).
+  (Num < 0 ->
+    negate_expr(Expr, NegExpr),
+    write_expr(NegExpr, VariableNames),
+    write(' =< '),
+    NegNum is -Num,
+    write(NegNum)
+  ;
+    write_expr(Expr, VariableNames),
+    write(' >= '),
+    write(Num)
+  ).
 
 write_constraints([], _VariableNames).
 write_constraints([C|CS], VariableNames) :-
-    write_constraint(C, VariableNames),
-    nl,
-    write_constraints(CS, VariableNames).
+  write_constraint(C, VariableNames),
+  nl,
+  write_constraints(CS, VariableNames).
 
 %%%%%%%%%%%%%%%%%%%%%%%%%% Utility Predicates %%%%%%%%%%%%%%%%%%%%%%%%%%
-
-% list_member(?Element, +List)
-%
-% Suceeds when Element is a member of List.  It may be used to test
-% for membership in a list, but it can also be used to enumerate all
-% the elements in List.
-
-list_member(Element, [Head|Tail]) :-
-	list_member_(Tail, Head, Element).
-
-% Auxiliary to avoid the creation of a choicepoint for the last element,
-list_member_(_, Element, Element).
-list_member_([Head|Tail], _, Element) :-
-	list_member_(Tail, Head, Element).
-
 
 % numvars(?Term, +InN, ?OutN)
 %
@@ -454,35 +439,35 @@ list_member_([Head|Tail], _, Element) :-
 % '$VAR'(k), where k ranges from InN to OutN-1.
 
 numvars('$VAR'(InN), InN, OutN) :-
-    !,
-    OutN is InN + 1.
+  !,
+  OutN is InN + 1.
 numvars(Term, InN, OutN) :-
-    Term =.. [_|Args],
-    numvars_list(Args, InN, OutN).
+  Term =.. [_|Args],
+  numvars_list(Args, InN, OutN).
 
 numvars_list([], InN, InN).
 numvars_list([Arg|Args], InN, OutN) :-
-    numvars(Arg, InN, TmpN),
-    numvars_list(Args, TmpN, OutN).
+  numvars(Arg, InN, TmpN),
+  numvars_list(Args, TmpN, OutN).
 
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%% Legalese %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
 next_or_quit :-
-    write('---Type <return> to continue, or q <return> to quit---'),
-    flush_output(user_output),
-    get_code(user_input, C),
-    (
-	C == 10
-    ;
-	eat_eol
-    ),
-    !,
-    C \== 113.
+  write('---Type <return> to continue, or q <return> to quit---'),
+  flush_output(user_output),
+  get_code(user_input, C),
+  (
+    C == 10
+  ;
+    eat_eol
+  ),
+  !,
+  C \== 113.
 
 show_copying :-
-    eat_eol,
-    write('\
+  eat_eol,
+  write('\
                     GNU GENERAL PUBLIC LICENSE\n\
                        Version 2, June 1991\n\
 \n\
@@ -506,8 +491,8 @@ your programs, too.\n\
   When we speak of free software, we are referring to freedom, not\n\
 price.  Our General Public Licenses are designed to make sure that you\n\
 have the freedom to distribute copies of free software (and charge for\n'),
-    next_or_quit,
-    write('\
+  next_or_quit,
+  write('\
 this service if you wish), that you receive source code or can get it\n\
 if you want it, that you can change the software or use pieces of it\n\
 in new free programs; and that you know you can do these things.\n\
@@ -531,8 +516,8 @@ distribute and/or modify the software.\n\
 that everyone understands that there is no warranty for this free\n\
 software.  If the software is modified by someone else and passed on, we\n\
 want its recipients to know that what they have is not the original, so\n'),
-    next_or_quit,
-    write('\
+  next_or_quit,
+  write('\
 that any problems introduced by others will not reflect on the original\n\
 authors'' reputations.\n\
 \n\
@@ -556,8 +541,8 @@ means either the Program or any derivative work under copyright law:\n\
 that is to say, a work containing the Program or a portion of it,\n\
 either verbatim or with modifications and/or translated into another\n\
 language.  (Hereinafter, translation is included without limitation in\n'),
-    next_or_quit,
-    write('\
+  next_or_quit,
+  write('\
 the term "modification".)  Each licensee is addressed as "you".\n\
 \n\
 Activities other than copying, distribution and modification are not\n\
@@ -581,8 +566,8 @@ you may at your option offer warranty protection in exchange for a fee.\n\
   2. You may modify your copy or copies of the Program or any portion\n\
 of it, thus forming a work based on the Program, and copy and\n\
 distribute such modifications or work under the terms of Section 1\n'),
-    next_or_quit,
-    write('\
+  next_or_quit,
+  write('\
 above, provided that you also meet all of these conditions:\n\
 \n\
     a) You must cause the modified files to carry prominent notices\n\
@@ -606,8 +591,8 @@ above, provided that you also meet all of these conditions:\n\
 \n\
 These requirements apply to the modified work as a whole.  If\n\
 identifiable sections of that work are not derived from the Program,\n'),
-    next_or_quit,
-    write('\
+  next_or_quit,
+  write('\
 and can be reasonably considered independent and separate works in\n\
 themselves, then this License, and its terms, do not apply to those\n\
 sections when you distribute them as separate works.  But when you\n\
@@ -631,8 +616,8 @@ under Section 2) in object code or executable form under the terms of\n\
 Sections 1 and 2 above provided that you also do one of the following:\n\
 \n\
     a) Accompany it with the complete corresponding machine-readable\n'),
-    next_or_quit,
-    write('\
+  next_or_quit,
+  write('\
     source code, which must be distributed under the terms of Sections\n\
     1 and 2 above on a medium customarily used for software interchange; or,\n\
 \n\
@@ -656,8 +641,8 @@ associated interface definition files, plus the scripts used to\n\
 control compilation and installation of the executable.  However, as a\n\
 special exception, the source code distributed need not include\n\
 anything that is normally distributed (in either source or binary\n'),
-    next_or_quit,
-    write('\
+  next_or_quit,
+  write('\
 form) with the major components (compiler, kernel, and so on) of the\n\
 operating system on which the executable runs, unless that component\n\
 itself accompanies the executable.\n\
@@ -681,8 +666,8 @@ signed it.  However, nothing else grants you permission to modify or\n\
 distribute the Program or its derivative works.  These actions are\n\
 prohibited by law if you do not accept this License.  Therefore, by\n\
 modifying or distributing the Program (or any work based on the\n'),
-    next_or_quit,
-    write('\
+  next_or_quit,
+  write('\
 Program), you indicate your acceptance of this License to do so, and\n\
 all its terms and conditions for copying, distributing or modifying\n\
 the Program or works based on it.\n\
@@ -706,8 +691,8 @@ may not distribute the Program at all.  For example, if a patent\n\
 license would not permit royalty-free redistribution of the Program by\n\
 all those who receive copies directly or indirectly through you, then\n\
 the only way you could satisfy both it and this License would be to\n'),
-    next_or_quit,
-    write('\
+  next_or_quit,
+  write('\
 refrain entirely from distribution of the Program.\n\
 \n\
 If any portion of this section is held invalid or unenforceable under\n\
@@ -731,8 +716,8 @@ be a consequence of the rest of this License.\n\
 \n\
   8. If the distribution and/or use of the Program is restricted in\n\
 certain countries either by patents or by copyrighted interfaces, the\n'),
-    next_or_quit,
-    write('\
+  next_or_quit,
+  write('\
 original copyright holder who places the Program under this License\n\
 may add an explicit geographical distribution limitation excluding\n\
 those countries, so that distribution is permitted only in or among\n\
@@ -756,8 +741,8 @@ Foundation.\n\
 programs whose distribution conditions are different, write to the author\n\
 to ask for permission.  For software which is copyrighted by the Free\n\
 Software Foundation, write to the Free Software Foundation; we sometimes\n'),
-    next_or_quit,
-    write('\
+  next_or_quit,
+  write('\
 make exceptions for this.  Our decision will be guided by the two goals\n\
 of preserving the free status of all derivatives of our free software and\n\
 of promoting the sharing and reuse of software generally.\n'),
@@ -765,7 +750,7 @@ of promoting the sharing and reuse of software generally.\n'),
 show_copying.
 
 show_warranty :-
-    write('\
+  write('\
                             NO WARRANTY\n\
 \n\
   11. BECAUSE THE PROGRAM IS LICENSED FREE OF CHARGE, THERE IS NO WARRANTY\n\
@@ -792,7 +777,7 @@ POSSIBILITY OF SUCH DAMAGES.\n').
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%% Startup %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
 common_main :-
-    write('\
+  write('\
 Copyright (C) 2001, 2002 Roberto Bagnara <bagnara@cs.unipr.it>\n\
 this program is free software, covered by the GNU General Public License,\n\
 and you are welcome to change it and/or distribute copies of it\n\
