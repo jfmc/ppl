@@ -67,8 +67,8 @@ inters4
 inters5
 inters6
 inters7
-limitedwidening1
-limitedwidening2
+limitedwideningcc921
+limitedwideningcc922
 memory1
 onepoint
 permute
@@ -108,5 +108,5 @@ universe4
 universe5
 universe6
 watchdog1
-widening1
-widening2
+wideningcc921
+wideningcc922

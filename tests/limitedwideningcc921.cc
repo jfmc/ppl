@@ -1,4 +1,4 @@
-/* Testing C_Polyhedron::limited_widening().
+/* Testing C_Polyhedron::limited_widening_CC92_assign().
    Copyright (C) 2001, 2002 Roberto Bagnara <bagnara@cs.unipr.it>
 
 This file is part of the Parma Polyhedra Library (PPL).
@@ -71,7 +71,7 @@ main() {
 #endif
 
   C_Polyhedron computed_result = ph2;
-  computed_result.limited_widening_assign(ph1, cs);
+  computed_result.limited_widening_CC92_assign(ph1, cs);
 
   C_Polyhedron known_result(2);
   known_result.add_constraint(x - y >= 0);
@@ -79,7 +79,8 @@ main() {
   known_result.add_constraint(x <= 5);
 
 #if NOISY
-  print_constraints(computed_result, "*** After limited_widening_assign ****");
+  print_constraints(computed_result,
+		    "*** After limited_widening_CC92_assign ****");
 #endif
 
   return (computed_result == known_result) ? 0 : 1;

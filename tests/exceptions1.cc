@@ -574,7 +574,7 @@ error20() {
   C_Polyhedron ph(1, C_Polyhedron::EMPTY);
 
   try {
-    // This is invalid use of the function C_Polyhedron::add_generators(gs):
+    // This is an invalid use of the function C_Polyhedron::add_generators(gs):
     // it is illegal to a system of generators that is dimensional
     // incompatible with the polyhedron.
     GenSys gs;
@@ -606,7 +606,7 @@ error21() {
 
   C_Polyhedron ph(gs);
   try {
-    // This is invalid use of the function C_Polyhedron::relation_with(c):
+    // This is an invalid use of the function C_Polyhedron::relation_with(c):
     // it is illegal to use a constraints that is dimensional
     // incompatible with the polyhedron.
     Constraint c(z >= 0);
@@ -631,7 +631,7 @@ error22() {
   C_Polyhedron ph(2);
 
   try {
-    // This is invalid use of the function C_Polyhedronn::relation_with(g):
+    // This is an invalid use of the function C_Polyhedronn::relation_with(g):
     // it is illegal to apply this function to a generator that is
     // not dimensional compatible with the polyhedron.
     Generator g(point(z));
@@ -655,10 +655,11 @@ error23() {
   C_Polyhedron ph2(10);
 
   try {
-    // This is invalid use of the function C_Polyhedron::widening_assign(ph2):
-    // it is illegal to apply this function to two polyhedra that are
-    // not dimensional compatible.
-    ph2.widening_assign(ph1);
+    // This is an invalid use of the function
+    // C_Polyhedron::widening_CC92_assign(ph2): it is illegal to apply
+    // this function to two polyhedra that are not dimensional
+    // compatible.
+    ph2.widening_CC92_assign(ph1);
   }
   catch (invalid_argument& e) {
 #if NOISY
@@ -683,11 +684,11 @@ error24() {
   cs.insert(y <= 9);
 
   try {
-    // This is invalid use of the function
-    // C_Polyhedron::limited_widening_assign(ph2, cs): it is illegal to
-    // apply this function to two polyhedra that are not dimensional
-    // compatible.
-    ph2.limited_widening_assign(ph1, cs);
+    // This is an invalid use of the function
+    // C_Polyhedron::limited_widening_CC92_assign(ph2, cs): it is
+    // illegal to apply this function to two polyhedra that are not
+    // dimensional compatible.
+    ph2.limited_widening_CC92_assign(ph1, cs);
   }
   catch (invalid_argument& e) {
 #if NOISY
@@ -721,11 +722,11 @@ error25() {
   cs.insert(z <= 5);
 
   try {
-    // This is invalid use of the function
-    // C_Polyhedron::limited_widening_assign(ph, cs): it is illegal to apply
-    // this function to a system of constraints that is not dimensional
-    // compatible with the two polyhedra.
-    ph2.limited_widening_assign(ph1, cs);
+    // This is an invalid use of the function
+    // C_Polyhedron::limited_widening_CC92_assign(ph, cs): it is
+    // illegal to apply this function to a system of constraints that
+    // is not dimensional compatible with the two polyhedra.
+    ph2.limited_widening_CC92_assign(ph1, cs);
   }
   catch (invalid_argument& e) {
 #if NOISY
@@ -773,7 +774,7 @@ error27() {
   C_Polyhedron ph(2, C_Polyhedron::EMPTY);
 
   try {
-    // This is invalid use of function C_Polyhedron::add_generator(g):
+    // This is an invalid use of function C_Polyhedron::add_generator(g):
     // it is illegal to insert a generator that is not dimensional
     // comaptible with the polyhedron..
     Generator g(ray(x));

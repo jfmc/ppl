@@ -509,7 +509,7 @@ public:
   //! \exception std::invalid_argument thrown if \p *this and \p y
   //!                                  are topology-incompatible
   //!                                  or dimension-incompatible.
-  void widening_assign(const Polyhedron& y);
+  void widening_CC92_assign(const Polyhedron& y);
 
   //! Limits the widening between \p *this and \p y by \p cs
   //! and assigns the result to \p *this.
@@ -522,7 +522,7 @@ public:
   //! \exception std::invalid_argument thrown if \p *this, \p y and \p cs
   //!                                  are topology-incompatible
   //!                                  or dimension-incompatible.
-  void limited_widening_assign(const Polyhedron& y, ConSys& cs);
+  void limited_widening_CC92_assign(const Polyhedron& y, ConSys& cs);
 
   //! Computes the time-elapse between \p *this and \p y and
   //! assigns the result to \p *this.

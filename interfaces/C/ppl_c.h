@@ -1066,8 +1066,8 @@ __P((ppl_Polyhedron_t x, ppl_const_Polyhedron_t y));
   \p x, assigns to \p x the widening of \p x and \p y.
 */
 int
-ppl_Polyhedron_widening_assign __P((ppl_Polyhedron_t x,
-				    ppl_const_Polyhedron_t y));
+ppl_Polyhedron_widening_CC92_assign __P((ppl_Polyhedron_t x,
+					 ppl_const_Polyhedron_t y));
 
 /*!
   If the polyhedron \p y is contained in (or equal to) the polyhedron
@@ -1079,9 +1079,9 @@ ppl_Polyhedron_widening_assign __P((ppl_Polyhedron_t x,
   upon return, no assumption can be made on its value.
 */
 int
-ppl_Polyhedron_limited_widening_assign __P((ppl_Polyhedron_t x,
-					    ppl_const_Polyhedron_t y,
-					    ppl_ConSys_t cs));
+ppl_Polyhedron_limited_widening_CC92_assign __P((ppl_Polyhedron_t x,
+						 ppl_const_Polyhedron_t y,
+						 ppl_ConSys_t cs));
 
 /*!
   Writes a const handle to the constraint system defining the

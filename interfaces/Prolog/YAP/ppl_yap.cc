@@ -401,8 +401,8 @@ YAP_STUB_2(ppl_Polyhedron_poly_hull_assign, 2)
 YAP_STUB_2(ppl_Polyhedron_poly_hull_assign_and_minimize, 2)
 YAP_STUB_2(ppl_Polyhedron_poly_difference_assign, 2)
 YAP_STUB_2(ppl_Polyhedron_poly_difference_assign_and_minimize, 2)
-YAP_STUB_2(ppl_Polyhedron_widening_assign, 2)
-YAP_STUB_3(ppl_Polyhedron_limited_widening_assign, 3)
+YAP_STUB_2(ppl_Polyhedron_widening_CC92_assign, 2)
+YAP_STUB_3(ppl_Polyhedron_limited_widening_CC92_assign, 3)
 YAP_STUB_2(ppl_Polyhedron_get_constraints, 2)
 YAP_STUB_2(ppl_Polyhedron_get_minimized_constraints, 2)
 YAP_STUB_2(ppl_Polyhedron_get_generators, 2)
@@ -452,8 +452,8 @@ init() {
   YAP_USER_C_PREDICATE(ppl_Polyhedron_poly_hull_assign_and_minimize, 2);
   YAP_USER_C_PREDICATE(ppl_Polyhedron_poly_difference_assign, 2);
   YAP_USER_C_PREDICATE(ppl_Polyhedron_poly_difference_assign_and_minimize, 2);
-  YAP_USER_C_PREDICATE(ppl_Polyhedron_widening_assign, 2);
-  YAP_USER_C_PREDICATE(ppl_Polyhedron_limited_widening_assign, 3);
+  YAP_USER_C_PREDICATE(ppl_Polyhedron_widening_CC92_assign, 2);
+  YAP_USER_C_PREDICATE(ppl_Polyhedron_limited_widening_CC92_assign, 3);
   YAP_USER_C_PREDICATE(ppl_Polyhedron_get_constraints, 2);
   YAP_USER_C_PREDICATE(ppl_Polyhedron_get_minimized_constraints, 2);
   YAP_USER_C_PREDICATE(ppl_Polyhedron_get_generators, 2);

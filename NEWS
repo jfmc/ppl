@@ -82,6 +82,21 @@ o  The methods Polyhedron::includes(const Generator&) and
 o  The method Constraint::coefficient(void) has been renamed
    to Constraint::inhomogeneous_term(void).
 
+o  The methods Polyhedron::widening_assign() and
+   Polyhedron::limited_widening_assign() have been renamed
+   Polyhedron::widening_CC92_assign() and
+   Polyhedron::limited_widening_CC92_assign(), respectively.
+   This emphasizes the fact that they implement extensions
+   of the widenings introduced in 
+
+     P. Cousot and R. Cousot.
+     Comparing the Galois connection and widening/narrowing
+     approaches to abstract interpretation.
+     In M. Bruynooghe and M. Wirsing, editors, Proceedings of the 4th
+     International Symposium on Programming Language Implementation and
+     Logic Programming, volume 631 of Lecture Notes in Computer Science,
+     pages 269-295, Leuven, Belgium, 1992. Springer-Verlag, Berlin.
+
 
 Bugfixes
 ========

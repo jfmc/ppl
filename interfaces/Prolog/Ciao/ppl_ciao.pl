@@ -39,8 +39,8 @@ site: http://www.cs.unipr.it/ppl/ . */
 	ppl_Polyhedron_poly_hull_assign_and_minimize/2,
 	ppl_Polyhedron_poly_difference_assign/2,
 	ppl_Polyhedron_poly_difference_assign_and_minimize/2,
-	ppl_Polyhedron_widening_assign/2,
-	ppl_Polyhedron_limited_widening_assign/3,
+	ppl_Polyhedron_widening_CC92_assign/2,
+	ppl_Polyhedron_limited_widening_CC92_assign/3,
 	ppl_Polyhedron_get_constraints/2,
 	ppl_Polyhedron_get_minimized_constraints/2,
 	ppl_Polyhedron_get_generators/2,
@@ -96,8 +96,8 @@ site: http://www.cs.unipr.it/ppl/ . */
 :- true pred ppl_Polyhedron_poly_hull_assign_and_minimize/2,
 :- true pred ppl_Polyhedron_poly_difference_assign/2,
 :- true pred ppl_Polyhedron_poly_difference_assign_and_minimize/2,
-:- true pred ppl_Polyhedron_widening_assign/2,
-:- true pred ppl_Polyhedron_limited_widening_assign/3,
+:- true pred ppl_Polyhedron_widening_CC92_assign/2,
+:- true pred ppl_Polyhedron_limited_widening_CC92_assign/3,
 :- true pred ppl_Polyhedron_get_constraints/2,
 :- true pred ppl_Polyhedron_get_minimized_constraints/2,
 :- true pred ppl_Polyhedron_get_generators/2,
@@ -144,8 +144,8 @@ site: http://www.cs.unipr.it/ppl/ . */
 	ppl_Polyhedron_poly_hull_assign_and_minimize/2,
 	ppl_Polyhedron_poly_difference_assign/2,
 	ppl_Polyhedron_poly_difference_assign_and_minimize/2,
-	ppl_Polyhedron_widening_assign/2,
-	ppl_Polyhedron_limited_widening_assign/3,
+	ppl_Polyhedron_widening_CC92_assign/2,
+	ppl_Polyhedron_limited_widening_CC92_assign/3,
 	ppl_Polyhedron_get_constraints/2,
 	ppl_Polyhedron_get_minimized_constraints/2,
 	ppl_Polyhedron_get_generators/2,
@@ -211,7 +211,7 @@ site: http://www.cs.unipr.it/ppl/ . */
 	ppl_get_minimized_generators/2,
 	ppl_intersection_assign/2,
 	ppl_poly_hull_assign/2,
-	ppl_widening_assign/2
+	ppl_widening_CC92_assign/2
 ]).
 
 :- true pred ppl_new_polyhedron(go(Polyhedron), in(NumDims))
@@ -308,7 +308,7 @@ site: http://www.cs.unipr.it/ppl/ . */
              :: address * address
              +  (foreign).
 
-:- true pred ppl_widening_assign(in(Polyhedron1), in(Polyhedron2))
+:- true pred ppl_widening_CC92_assign(in(Polyhedron1), in(Polyhedron2))
              :: address * address
              +  (foreign).
 

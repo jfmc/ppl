@@ -2984,15 +2984,15 @@ PPL::Polyhedron::relation_with(const Generator& g) const {
 */
 // CHECK ME : what if the polyhedra contain strict inequalities?
 void
-PPL::Polyhedron::widening_assign(const Polyhedron& y) {
+PPL::Polyhedron::widening_CC92_assign(const Polyhedron& y) {
   Polyhedron& x = *this;
   // Topology compatibility check.
   if (x.topology() != y.topology())
-    throw_topology_incompatible("widening_assign(y)", y);
+    throw_topology_incompatible("widening_CC92_assign(y)", y);
   // Dimension-compatibility check.
   size_t x_space_dim = x.space_dim;
   if (x_space_dim != y.space_dim)
-    throw_dimension_incompatible("widening_assign(y)", y);
+    throw_dimension_incompatible("widening_CC92_assign(y)", y);
 
 #ifndef NDEBUG
   {
@@ -3118,26 +3118,27 @@ PPL::Polyhedron::widening_assign(const Polyhedron& y) {
   not empty.
 */
 void
-PPL::Polyhedron::limited_widening_assign(const Polyhedron& y, ConSys& cs) {
+PPL::Polyhedron::limited_widening_CC92_assign(const Polyhedron& y,
+					      ConSys& cs) {
   Polyhedron& x = *this;
   // Topology compatibility check.
   if (x.is_necessarily_closed()) {
     if (!y.is_necessarily_closed())
-      throw_topology_incompatible("limited_widening_assign(y, cs)", y);
+      throw_topology_incompatible("limited_widening_CC92_assign(y, cs)", y);
     if (cs.has_strict_inequalities())
-      throw_topology_incompatible("limited_widening_assign(y, cs)", cs);
+      throw_topology_incompatible("limited_widening_CC92_assign(y, cs)", cs);
   }
   else if (y.is_necessarily_closed())
-    throw_topology_incompatible("limited_widening_assign(y, cs)", y);
+    throw_topology_incompatible("limited_widening_CC92_assign(y, cs)", y);
 
   // Dimension-compatibility check.
   size_t x_space_dim = x.space_dim;
   if (x_space_dim != y.space_dim)
-    throw_dimension_incompatible("limited_widening_assign(y, cs)", y);
+    throw_dimension_incompatible("limited_widening_CC92_assign(y, cs)", y);
   // `cs' must be dimension-compatible with the two polyhedra.
   size_t cs_space_dim = cs.space_dimension();
   if (x_space_dim < cs_space_dim)
-    throw_dimension_incompatible("limited_widening_assign(y, cs)", cs);
+    throw_dimension_incompatible("limited_widening_CC92_assign(y, cs)", cs);
 
 #ifndef NDEBUG
   {
@@ -3153,7 +3154,7 @@ PPL::Polyhedron::limited_widening_assign(const Polyhedron& y, ConSys& cs) {
   if (x.is_empty())
     return;
 
-  // The limited_widening between two polyhedra in a zero-dimensional space
+  // The limited widening between two polyhedra in a zero-dimensional space
   // is a polyhedron in a zero-dimensional space, too.
   if (x_space_dim == 0)
     return;
@@ -3187,7 +3188,7 @@ PPL::Polyhedron::limited_widening_assign(const Polyhedron& y, ConSys& cs) {
   // the end of the matrix \p cs.
   cs.erase_to_end(new_cs_num_rows);
 
-  x.widening_assign(y);
+  x.widening_CC92_assign(y);
 #if 1
   // FIXME : merge_rows_assign (in the #else branch below)
   // does not automatically adjust the topology of cs.

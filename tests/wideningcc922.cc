@@ -1,4 +1,4 @@
-/* Test C_Polyhedron::widening_assign() with empty polyhedra.
+/* Test C_Polyhedron::widening_CC92_assign().
    Copyright (C) 2001, 2002 Roberto Bagnara <bagnara@cs.unipr.it>
 
 This file is part of the Parma Polyhedra Library (PPL).
@@ -30,58 +30,32 @@ using namespace Parma_Polyhedra_Library;
 
 #define NOISY 0
 
-static bool
-try_widening_assign(C_Polyhedron& ph1, const C_Polyhedron& ph2,
-		    // Note intentional call-by-value!
-		    C_Polyhedron known_result) {
+int
+main() {
+  set_handlers();
+
+  Variable A(0);
+  Variable B(1);
+
+  C_Polyhedron ph1(2);
+  ph1.add_constraint(A >= 2);
+  ph1.add_constraint(B >= 0);
+
+  C_Polyhedron ph2(2);
+  ph2.add_constraint(A >= 0);
+  ph2.add_constraint(B >= 0);
+  ph2.add_constraint(A-B >= 2);
+
 #if NOISY
   print_constraints(ph1, "*** ph1 ***");
   print_constraints(ph2, "*** ph2 ***");
 #endif
 
-  ph1.widening_assign(ph2);
+  ph1.widening_CC92_assign(ph2);
 
 #if NOISY
-  print_generators(ph1, "*** After poly_hull_assign ***");
+  print_constraints(ph1, "*** After poly_hull_assign ***");
 #endif
-
-  return ph1 == known_result;
-}
-
-int
-main() {
-  set_handlers();
-
-  Variable x(0);
-  Variable y(1);
-
-  C_Polyhedron ph1_1(2);
-  ph1_1.add_constraint(x >= 0);
-  ph1_1.add_constraint(y >= 0);
-  ph1_1.add_constraint(x <= 2);
-  ph1_1.add_constraint(y <= 2);
-  C_Polyhedron ph1_2(ph1_1);
-
-  C_Polyhedron ph2_1(2);
-  ph2_1.add_constraint(x+y <= 0);
-  ph2_1.add_constraint(x+y >= 2);
-  C_Polyhedron ph2_2(ph2_1);
-  C_Polyhedron ph2_3(ph2_1);
-  C_Polyhedron ph2_4(ph2_1);
-
-  if (!try_widening_assign(ph1_1, ph2_1, ph1_1))
-    return 1;
-
-
-  // FIXME: this must be reactivated (in some form) when we will
-  //        have a decent error policy for widening_assign().
-#if 0
-  if (!try_widening_assign(ph2_2, ph1_2, ph1_2))
-    return 1;
-#endif
-
-  if (!try_widening_assign(ph2_3, ph2_4, ph2_3))
-    return 1;
 
   return 0;
 }

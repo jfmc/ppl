@@ -56,7 +56,7 @@ TESTS = $(WATCHDOG_TESTS) \
 	generators1 generators2 \
 	inclusion1 \
         inters1 inters2 inters3 inters4 inters5 inters6 inters7 \
-	limitedwidening1 limitedwidening2\
+	limitedwideningcc921 limitedwideningcc922\
 	memory1 \
 	onepoint \
         permute \
@@ -70,7 +70,7 @@ TESTS = $(WATCHDOG_TESTS) \
 	smm1 \
 	timeelapse1 timeelapse2 timeelapse3 timeelapse4 timeelapse5 \
 	universe1 universe2 universe3 universe4 universe5 universe6 \
-	widening1 widening2
+	wideningcc921 wideningcc922
 
 NNCinclusion1_SOURCES = NNCinclusion1.cc
 
@@ -145,8 +145,8 @@ inters5_SOURCES = inters5.cc
 inters6_SOURCES = inters6.cc
 inters7_SOURCES = inters7.cc
 
-limitedwidening1_SOURCES = limitedwidening1.cc
-limitedwidening2_SOURCES = limitedwidening2.cc
+limitedwideningcc921_SOURCES = limitedwideningcc921.cc
+limitedwideningcc922_SOURCES = limitedwideningcc922.cc
 
 memory1_SOURCES = memory1.cc
 
@@ -196,8 +196,8 @@ universe4_SOURCES = universe4.cc
 universe5_SOURCES = universe5.cc
 universe6_SOURCES = universe6.cc
 
-widening1_SOURCES = widening1.cc
-widening2_SOURCES = widening2.cc
+wideningcc921_SOURCES = wideningcc921.cc
+wideningcc922_SOURCES = wideningcc922.cc
 
 watchdog1_SRCS = watchdog1.cc timings.cc timings.hh
 

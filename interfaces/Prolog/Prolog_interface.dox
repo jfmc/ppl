@@ -444,13 +444,13 @@ more information regarding these issues.
    <CODE>Handle_1</CODE> and <CODE>Handle_2</CODE>.
    After execution, <CODE>Handle_1</CODE> refers to \f$P\f$.
 
-<H4><CODE>ppl_Polyhedron_widening_assign(+Handle_1, +Handle_2)</CODE></H4>
+<H4><CODE>ppl_Polyhedron_widening_CC92_assign(+Handle_1, +Handle_2)</CODE></H4>
 
    Computes the widening \f$P\f$ between the polyhedra referenced by
    <CODE>Handle_1</CODE> and <CODE>Handle_2</CODE>.
    After execution, <CODE>Handle_1</CODE> refers to \f$P\f$.
 
-<H4><CODE>ppl_Polyhedron_limited_widening_assign(+Handle_1, +Handle_2,
+<H4><CODE>ppl_Polyhedron_limited_widening_CC92_assign(+Handle_1, +Handle_2,
                +List_of_Constraints)</CODE></H4>
 
    Computes the widening \f$P\f$ between the polyhedra referenced by
