@@ -562,6 +562,8 @@ public:
   //! Applies strong minimization to generators and constraints
   //! of an NNC polyhedron.
   void NNC_minimize() const;
+  void NNC_minimize_constraints() const;
+  void NNC_minimize_generators() const;
 
 public:
   //! Adds new dimensions and embeds the old polyhedron into the new space.

@@ -517,24 +517,22 @@ PPL::PolyBase::minimize() const {
     assert(generators_are_up_to_date());
     update_constraints();
   }
-
   assert(OK());
 }
 
 
 /*!
-  Performs strong minimization of generators and constraints
-  for an NNC polyhedron.
+  Performs strong minimization of generators for an NNC polyhedron.
 */
 void
-PPL::PolyBase::NNC_minimize() const {
+PPL::PolyBase::NNC_minimize_generators() const {
   assert(!is_necessarily_closed());
 
   // FIXME : just an executable specification,
   // that still has to be checked for correctness/efficiency.
 
-  // Start from minimized constraint and generator systems,
-  // with saturation matrices up-to-date.
+  // FIXME: we need `gen_sys' minimized and
+  // both `con_sys' and `sat_c' up-to-date.
   minimize();
   // Sort generators (to later help in identifying unmatched points).
   obtain_sorted_generators();
@@ -545,12 +543,6 @@ PPL::PolyBase::NNC_minimize() const {
   for (size_t i = con_sys.num_rows(); i-- > 0; )
     if (con_sys[i].is_strict_inequality())
       sat_all_but_strict_ineq.set(i);
-
-#if 0
-  std::cerr << "sat_all_but_strict_ineq: "
-	    << sat_all_but_strict_ineq
-	    << std::endl;
-#endif
 
   // Scan the generator system looking for points that are
   // NOT matched by a corresponding closure point:
@@ -578,14 +570,6 @@ PPL::PolyBase::NNC_minimize() const {
       candidates[i] = false;
   }
 
-#if 0
-  std::cerr << "candidates: ";
-  for (size_t i = 0; i < n_rows; ++i)
-    if (candidates[i])
-      std::cerr << i << " ";
-  std::cerr << std::endl;
-#endif
-
   // For all the candidates, check for NNC-redundancy
   // and eventually move them to the bottom part of the system.
   GenSys& gs = const_cast<GenSys&>(gen_sys);
@@ -601,17 +585,11 @@ PPL::PolyBase::NNC_minimize() const {
       // saturates all the non-strict inequalities saturated
       // by the candidate.
       bool redundant = false;
-      for (size_t j = 0; j < n_rows; ++j)
+      for (size_t j = n_lines; j < n_rows; ++j)
 	if (i != j && gs[j].is_point() && sat[j] <= sat_gi) {
 	  // Generator `gs[i]' is NNC-redundant:
 	  // move it to the bottom of the generator system,
 	  // while keeping `sat_c' and `candidates' consistent.
-
-#if 0
-	  std::cerr << "Generator " << i
-		    << " is NNC-redundant." << std::endl;
-#endif
-
 	  redundant = true;
 	  --n_rows;
 	  std::swap(gs[i], gs[n_rows]);
@@ -634,12 +612,132 @@ PPL::PolyBase::NNC_minimize() const {
     gs.set_sorted(false);
     // From the user perspective, the polyhedron is unchanged.
     PolyBase& x = const_cast<PolyBase&>(*this);
-    x.clear_constraints_up_to_date();
+    // `gen_sys' and `con_sys' are no longer the dual of each other:
+    // saturation matrices are no longer meaningful.
     x.clear_sat_c_up_to_date();
     x.clear_sat_g_up_to_date();
-    // Recompute the minimized constraints.
-    x.minimize();
+    // CHECKME: con_sys describes the same NNC_Polyhedron,
+    // even though it is not the dual system wrt gen_sys.
+    // In a certain sense, it is still minimized ...
+    // Temporarily clearing the up-to-date flag to avoid
+    // problems in methods update_sat_X().
+    x.clear_constraints_up_to_date();
   }
+  assert(OK());
+}
+
+
+/*!
+  Performs strong minimization of constraints for an NNC polyhedron.
+*/
+void
+PPL::PolyBase::NNC_minimize_constraints() const {
+  assert(!is_necessarily_closed());
+
+  // FIXME : just an executable specification,
+  // that still has to be checked for correctness/efficiency.
+
+  // FIXME: we need `con_sys' minimized and
+  // both `gen_sys' and `sat_g' up-to-date.
+  minimize();
+
+  // Sort generators (to later help in identifying unmatched points)
+  // keeping `sat_g' up-to-date.
+  obtain_sorted_generators_with_sat_g();
+
+  // Build a SatRow where all (and only) the indexes corresponding to
+  // unmatched points are set to 1.
+  SatRow sat_all_but_unmatched_points;
+  for (size_t i = gen_sys.num_rows(),
+	 n_lines = gen_sys.num_lines(); i-- > n_lines; ) {
+    const Generator& gi = gen_sys[i];
+    if (gi.is_point()) {
+      // Since `gen_sys' is ordered, the corresponding closure point,
+      // if present, has an index `j' less than `i'.
+      for (size_t j = i; j-- > n_lines; ) {
+	sat_all_but_unmatched_points.set(i);
+	const Generator& gj = gen_sys[j];
+	if (gj.is_closure_point()
+	    && gj.is_corresponding_closure_point(gi)) {
+	  sat_all_but_unmatched_points.clear(i);
+	  break;
+	}
+      }
+    }
+  }
+
+  // For all the strict inequalities in `con_sys',
+  // check for NNC-redundancy and eventually move them
+  // to the bottom part of the system.
+  ConSys& cs = const_cast<ConSys&>(con_sys);
+  SatMatrix& sat = const_cast<SatMatrix&>(sat_g);
+  size_t n_rows = con_sys.num_rows();
+  for (size_t i = 0; i < n_rows; )
+    // FIXME : the test for a non trivial inequality is just a patch
+    // to avoid considering the inequality \epsilon <= 1 redundant.
+    if (cs[i].is_strict_inequality() && !cs[i].is_trivial_true()) {
+      // Compute the SatRow corresponding to the strict inequality
+      // when unmatched points are ignored.
+      SatRow sat_ci;
+      set_union(sat[i], sat_all_but_unmatched_points, sat_ci);
+      // Check if the candidate strict inequality is actually NNC-redundant:
+      // it is redundant if there exists another constraint that
+      // is saturated by all the generators saturating the candidate,
+      // unmatched points excluded.
+      bool redundant = false;
+      for (size_t j = 0; j < n_rows; ++j)
+	if (i != j && cs[j].is_strict_inequality() && sat[j] <= sat_ci) {
+	  // Constraint `cs[i]' is NNC-redundant:
+	  // move it to the bottom of the constraint system,
+	  // while keeping `sat_g' consistent.
+	  redundant = true;
+	  --n_rows;
+	  std::swap(cs[i], cs[n_rows]);
+	  std::swap(sat[i], sat[n_rows]);
+	  break;
+	}
+      // Consider next constraint, which is already in place if
+      // we have perfomed the swap.
+      if (!redundant)
+	++i;
+    }
+    else
+      // Consider next constraint.
+      ++i;
+
+  // If needed, erase the NNC-redundant constraints.
+  if (n_rows < cs.num_rows()) {
+    cs.erase_to_end(n_rows);
+    cs.set_sorted(false);
+    // From the user perspective, the polyhedron is unchanged.
+    PolyBase& x = const_cast<PolyBase&>(*this);
+    // `gen_sys' and `con_sys' are no longer the dual of each other:
+    // saturation matrices are no longer meaningful.
+    x.clear_sat_c_up_to_date();
+    x.clear_sat_g_up_to_date();
+    // CHECKME: gen_sys describes the same NNC_Polyhedron,
+    // even though it is not the dual system wrt con_sys.
+    // In a certain sense, it is still minimized ...
+    // Temporarily clearing the up-to-date flag to avoid
+    // problems in methods update_sat_X().
+    x.clear_generators_up_to_date();
+  }
+  assert(OK());
+}
+
+
+/*!
+  Performs strong minimization of generators and constraints
+  for an NNC polyhedron.
+*/
+void
+PPL::PolyBase::NNC_minimize() const {
+  assert(!is_necessarily_closed());
+  // FIXME : just an executable specification,
+  // that still has to be checked for correctness/efficiency.
+  NNC_minimize_generators();
+  // Recompute the minimized constraints.
+  minimize();
   assert(OK());
 }
 

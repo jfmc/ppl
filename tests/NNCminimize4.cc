@@ -28,7 +28,7 @@ site: http://www.cs.unipr.it/ppl/ . */
 using namespace std;
 using namespace Parma_Polyhedra_Library;
 
-#define NOISY 1
+#define NOISY 0
 
 int
 main() {
@@ -66,13 +66,34 @@ main() {
   print_generators(ph.generators(), "*** ph generators ***");
 #endif
 
-  ph.NNC_minimize();
+  // ph.NNC_minimize();
+  ph.NNC_minimize_constraints();
 
 #if NOISY
   cout << endl << "After NNC minimization" << endl;
   print_constraints(ph.constraints(), "*** ph constraints ***");
+
+  cout << endl << "=== ph ===" << endl << ph << endl;
+
   print_generators(ph.generators(), "*** ph generators ***");
+
+  cout << endl << "=== ph ===" << endl << ph << endl;
+
 #endif
 
- return 0;
+  gs.clear();
+  gs.insert(closure_point());
+  gs.insert(closure_point(15*x));
+  gs.insert(closure_point(15*y));
+  gs.insert(closure_point(15*x + 15*y));
+  gs.insert(point(x + y));
+
+  NNC_Polyhedron known_result(gs);
+
+#if NOISY
+  cout << endl << "=== ph ===" << endl << ph << endl;
+  cout << endl << "=== kr ===" << endl << known_result << endl;
+#endif
+
+  return (ph == known_result && ph.generators().num_rows() == 8) ? 0 : 1;
 }
