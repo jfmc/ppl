@@ -143,7 +143,7 @@ namespace Parma_Polyhedra_Library {
     LinExpression e;
     for (int i = c1.space_dimension() - 1; i >= 0; i--)
       e += c1.coefficient(Variable(i)) * Variable(i);
-    e += c1.coefficient();
+    e += c1.inhomogeneous_term();
     Constraint c2 = c1.is_strict_inequality() ? (e <= 0) : (e < 0);
     cout << "Complement c2: " << c2 << endl;
   }
@@ -308,7 +308,7 @@ public:
   //! is greater than or equal to the space-dimension of \p *this.
   const Integer& coefficient(Variable v) const;
   //! Returns the inhomogeneous term of \p *this.
-  const Integer& coefficient() const;
+  const Integer& inhomogeneous_term() const;
 
   //! The unsatisfiable (zero-dimension space) constraint \f$0 = 1\f$.
   static const Constraint& zero_dim_false();

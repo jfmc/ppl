@@ -406,7 +406,7 @@ constraint_term(const PPL::Constraint& c) {
   Prolog_term_ref t = Prolog_new_term_ref();
   Prolog_construct_compound(t, relation,
 			    get_lin_expression(c),
-			    Integer_to_integer_term(-c.coefficient()));
+			    Integer_to_integer_term(-c.inhomogeneous_term()));
   return t;
 }
 

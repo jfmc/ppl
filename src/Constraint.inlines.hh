@@ -112,8 +112,8 @@ Constraint::coefficient(Variable v) const {
 }
 
 inline const Integer&
-Constraint::coefficient() const {
-  return Row::coefficient();
+Constraint::inhomogeneous_term() const {
+  return Row::inhomogeneous_term();
 }
 
 inline const Constraint&

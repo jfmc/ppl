@@ -73,7 +73,7 @@ class Parma_Polyhedra_Library::Row {
 
 public:
   //! Returns the inhomogeneous term.
-  const Integer& coefficient() const;
+  const Integer& inhomogeneous_term() const;
   //! Returns the coefficient \f$a_n\f$.
   const Integer& coefficient(size_t n) const;
 

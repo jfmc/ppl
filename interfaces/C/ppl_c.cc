@@ -312,7 +312,7 @@ ppl_Constraint_inhomogeneous_term(ppl_const_Constraint_t c,
 				  ppl_Coefficient_t n) try {
   const Constraint& cc = *to_const(c);
   Integer& nn = *to_nonconst(n);
-  nn = cc.coefficient();
+  nn = cc.inhomogeneous_term();
   return 0;
 }
 CATCH_ALL

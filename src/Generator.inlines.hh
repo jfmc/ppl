@@ -115,7 +115,7 @@ Generator::coefficient(Variable v) const {
 
 inline const Integer&
 Generator::divisor() const {
-  const Integer& d = Row::coefficient();
+  const Integer& d = Row::inhomogeneous_term();
   if (!is_ray_or_point() || d == 0)
     throw_invalid_argument("PPL::Generator::divisor()",
 			   "*this is is neither a point "

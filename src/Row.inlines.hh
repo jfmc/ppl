@@ -505,7 +505,7 @@ Row::operator[](size_t k) const {
 }
 
 inline const Integer&
-Row::coefficient() const {
+Row::inhomogeneous_term() const {
   return (*this)[0];
 }
 
