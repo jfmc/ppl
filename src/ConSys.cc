@@ -65,7 +65,7 @@ PPL::ConSys::adjust_topology_and_dimension(Topology new_topology,
 	if (has_strict_inequalities())
 	  return false;
 	// Since there were no strict inequalities,
-	// all \epsilon coefficients are equal to zero
+	// all epsilon coefficients are equal to zero
 	// and we do not need to clear them:
 	// we just decrement the number of columns to be added.
 	if (--cols_to_be_added > 0)
@@ -75,14 +75,14 @@ PPL::ConSys::adjust_topology_and_dimension(Topology new_topology,
       else {
 	// A NECESSARILY_CLOSED constraint system is converted to
 	// a NOT_NECESSARILY_CLOSED one by adding a further column
-	// of zeros for the \epsilon coefficients.
+	// of zeros for the epsilon coefficients.
 	add_zero_columns(++cols_to_be_added);
 	set_not_necessarily_closed();
       }
     else {
       // Topologies agree: first add the required zero columns ...
       add_zero_columns(cols_to_be_added);
-      // ... and, if needed, move the \epsilon coefficients
+      // ... and, if needed, move the epsilon coefficients
       // to the new last column.
       if (old_topology == NOT_NECESSARILY_CLOSED)
 	swap_columns(old_space_dim + 1, new_space_dim + 1);
@@ -96,12 +96,12 @@ PPL::ConSys::adjust_topology_and_dimension(Topology new_topology,
 	// only if it does not contain strict inequalities.
 	if (has_strict_inequalities())
 	  return false;
-	// We just remove the column of the \epsilon coefficients.
+	// We just remove the column of the epsilon coefficients.
 	resize_no_copy(num_rows(), old_space_dim + 1);
 	set_necessarily_closed();
       }
       else {
-	// We just add the column of the \epsilon coefficients.
+	// We just add the column of the epsilon coefficients.
 	add_zero_columns(1);
 	set_not_necessarily_closed();
       }
@@ -118,7 +118,7 @@ PPL::ConSys::has_strict_inequalities() const {
   size_t eps_index = cs.num_columns() - 1;
   for (size_t i = num_rows(); i-- > 0; )
     // Optimized type checking: we already know the topology;
-    // also, equalities have the \epsilon coefficient equal to zero.
+    // also, equalities have the epsilon coefficient equal to zero.
     // NOTE: the constraint eps_leq_one should not be considered
     //       a strict inequality.
     if (cs[i][eps_index] < 0 && !cs[i].is_trivial_true())
@@ -135,14 +135,14 @@ PPL::ConSys::insert(const Constraint& c) {
     // `*this' and `c' have different topologies.
     if (is_necessarily_closed()) {
       // Padding the matrix with a columns of zeros
-      // corresponding to the \epsilon coefficients.
+      // corresponding to the epsilon coefficients.
       add_zero_columns(1);
       set_not_necessarily_closed();
       Matrix::insert(c);
     }
     else {
       // Here `*this' is NNC and `c' is necessarily closed.
-      // Copying the constraint adding the \epsilon coefficient
+      // Copying the constraint adding the epsilon coefficient
       // and the missing dimensions, if any.
       size_t sz = num_columns() > c.size() ? num_columns() : c.size() + 1;
       Constraint tmp_c(c, sz);
@@ -287,7 +287,7 @@ PPL::ConSys::affine_preimage(size_t v,
 			     const Integer& denominator) {
   // `v' is the index of a column corresponding to
   // a "user" variable (i.e., it cannot be the inhomogeneous term,
-  // nor the \epsilon dimension of NNC polyhedra).
+  // nor the epsilon dimension of NNC polyhedra).
   assert(v > 0 && v <= space_dimension());
   assert(expr.space_dimension() <= space_dimension());
   assert(denominator != 0);

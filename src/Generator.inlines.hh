@@ -81,7 +81,7 @@ Generator::type() const {
   if (is_necessarily_closed())
     return POINT;
   else
-    // Checking the value of the \epsilon coefficient.
+    // Checking the value of the epsilon coefficient.
     return (g[size() - 1] == 0) ? CLOSURE_POINT : POINT;
 }
 

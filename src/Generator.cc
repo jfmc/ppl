@@ -76,7 +76,7 @@ PPL::Generator
 PPL::Generator::closure_point(const LinExpression& e, const Integer& d) {
   if (d == 0)
     throw std::invalid_argument("Generator PPL::closure_point(e, d): d == 0");
-  // Adding the \epsilon dimension with coefficient 0.
+  // Adding the epsilon dimension with coefficient 0.
   LinExpression ec = 0 * Variable(e.space_dimension());
   ec += e;
   // A closure point is indeed a point in the higher dimension space.
@@ -202,7 +202,7 @@ PPL::Generator::is_matching_closure_point(const Generator& p) const {
   const Generator& cp = *this;
   if (cp[0] == p[0]) {
     // Divisors are equal: we can simply compare coefficients
-    // (disregarding the \epsilon coefficient).
+    // (disregarding the epsilon coefficient).
     for (size_t i = cp.size() - 2; i > 0; --i)
       if (cp[i] != p[i])
 	return false;
@@ -278,7 +278,7 @@ PPL::Generator::OK() const {
       return false;
     }
     // The following test is correct, since we already checked
-    // that the \epsilon coordinate is zero.
+    // that the epsilon coordinate is zero.
     if (g.all_homogeneous_terms_are_zero()) {
 #ifndef NDEBUG
       cerr << "The origin of the vector space cannot be "

@@ -335,7 +335,7 @@ PPL::Polyhedron::Polyhedron(Topology topol,
 	con_sys.insert(Constraint::zero_dim_positivity());
       else {
 	// Polyhedron NON-necessarily closed: the only constraints
-	// are the ones regarding the \epsilon dimension.
+	// are the ones regarding the epsilon dimension.
 	con_sys.insert(Constraint::epsilon_leq_one());
 	con_sys.insert(Constraint::epsilon_geq_zero());
       }
@@ -384,7 +384,7 @@ PPL::Polyhedron::Polyhedron(Topology topol, ConSys& cs)
       // Add the positivity constraint.
       con_sys.insert(Constraint::zero_dim_positivity());
     else {
-      // Add the \epsilon constraints.
+      // Add the epsilon constraints.
       con_sys.insert(Constraint::epsilon_leq_one());
       con_sys.insert(Constraint::epsilon_geq_zero());
     }
@@ -1189,7 +1189,7 @@ PPL::operator<=(const Polyhedron& x, const Polyhedron& y) {
     }
   else {
     // Here we have a NON-necessarily closed polyhedron: using the
-    // reduced scalar product, which ignores the \epsilon coefficient.
+    // reduced scalar product, which ignores the epsilon coefficient.
     size_t eps_index = x_space_dim + 1;
     for (size_t i = cs.num_rows(); i-- > 0; ) {
       const Constraint& c = cs[i];
@@ -1541,7 +1541,7 @@ PPL::Polyhedron::add_dimensions(Matrix& mat1,
   sat2.transpose_assign(sat1);
 
   if (!mat1.is_necessarily_closed()) {
-    // Moving the \epsilon coefficients in the last column.
+    // Moving the epsilon coefficients in the last column.
     size_t new_eps_index = mat1.num_columns() - 1;
     size_t old_eps_index = new_eps_index - add_dim;
     // This swap preserves sortedness of `mat1'.
@@ -1614,7 +1614,7 @@ PPL::Polyhedron::add_dimensions_and_embed(size_t dim) {
     // Only constraints are up-to-date: we do not need to modify generators.
     con_sys.add_zero_columns(dim);
     // If the polyhedron is NON-necessarily closed,
-    // move the \epsilon coefficients to the last column.
+    // move the epsilon coefficients to the last column.
     if (!is_necessarily_closed())
       con_sys.swap_columns(space_dim + 1, space_dim + 1 + dim);
   }
@@ -1624,7 +1624,7 @@ PPL::Polyhedron::add_dimensions_and_embed(size_t dim) {
     gen_sys.add_rows_and_columns(dim);
 
     // If the polyhedron is NON-necessarily closed,
-    // move the \epsilon coefficients to the last column.
+    // move the epsilon coefficients to the last column.
     if (!is_necessarily_closed()) {
       // Try to preserve sortedness of `gen_sys'.
       if (!gen_sys.is_sorted())
@@ -1702,7 +1702,7 @@ PPL::Polyhedron::add_dimensions_and_project(size_t dim) {
     // Only constraints are up-to-date: no need to modify the generators.
     con_sys.add_rows_and_columns(dim);
     // If the polyhedron is NON-necessarily closed,
-    // move the \epsilon coefficients to the last column.
+    // move the epsilon coefficients to the last column.
     if (!is_necessarily_closed()) {
       // Try to preserve sortedness of `con_sys'.
       if (!con_sys.is_sorted())
@@ -1855,7 +1855,7 @@ PPL::Polyhedron::remove_higher_dimensions(size_t new_dimension) {
   size_t new_num_cols = new_dimension + 1;
   if (!is_necessarily_closed()) {
     // The polyhedron is NOT necessarily closed: move the column
-    // of the \epsilon coefficients to its new place.
+    // of the epsilon coefficients to its new place.
     gen_sys.swap_columns(gen_sys.num_columns() - 1, new_num_cols);
     // The number of remaining columns is `new_dimension + 2'.
     ++new_num_cols;
@@ -2234,7 +2234,7 @@ PPL::Polyhedron::add_dimensions_and_constraints(ConSys& cs) {
 
   con_sys.grow(old_num_rows + added_rows, old_num_columns + added_columns);
 
-  // Move the \epsilon coefficient to the last column, if needed.
+  // Move the epsilon coefficient to the last column, if needed.
   if (!is_necessarily_closed() && added_columns > 0)
     con_sys.swap_columns(old_num_columns - 1,
 			 old_num_columns - 1 + added_columns);
@@ -2249,7 +2249,7 @@ PPL::Polyhedron::add_dimensions_and_constraints(ConSys& cs) {
       c_new.set_is_equality();
     // The inhomogeneous term is not displaced.
     std::swap(c_new[0], c_old[0]);
-    // All homogeneous terms (included the \epsilon coefficient,
+    // All homogeneous terms (included the epsilon coefficient,
     // if present) are displaced by `space_dim' columns.
     for (size_t j = 1; j < cs_num_columns; ++j)
       std::swap(c_old[j], c_new[space_dim + j]);
@@ -2849,7 +2849,7 @@ PPL::Polyhedron::H79_widening_assign(const Polyhedron& y) {
     // Add the positivity constraint.
     new_con_sys.insert(Constraint::zero_dim_positivity());
   else {
-    // Add the \epsilon constraints.
+    // Add the epsilon constraints.
     new_con_sys.insert(Constraint::epsilon_leq_one());
     new_con_sys.insert(Constraint::epsilon_geq_zero());
   }
@@ -3598,7 +3598,7 @@ PPL::Polyhedron::OK(bool check_not_empty) const {
     // such a constraint corresponds to (a combination of other
     // constraints with):
     // -* the positivity constraint, for necessarily closed polyhedra;
-    // -* the \epsilon \leq 1 constraint, for NNC polyhedra.
+    // -* the epsilon <= 1 constraint, for NNC polyhedra.
     bool no_positivity_constraint = true;
     for (size_t i = con_sys.num_rows(); i-- > 0; )
       if (con_sys[i][0] != 0) {
@@ -3615,8 +3615,8 @@ PPL::Polyhedron::OK(bool check_not_empty) const {
 
     if (!is_necessarily_closed()) {
       // A non-empty system of constraints describing a NNC polyhedron
-      // must also contain a (combination of) the constraint \epsilon >= 0,
-      // i.e., a constraint with a positive \epsilon coefficient.
+      // must also contain a (combination of) the constraint epsilon >= 0,
+      // i.e., a constraint with a positive epsilon coefficient.
       bool no_epsilon_geq_zero = true;
       size_t eps_index = con_sys.num_columns() - 1;
       for (size_t i = con_sys.num_rows(); i-- > 0; )

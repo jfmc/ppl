@@ -140,8 +140,8 @@ PPL::Polyhedron::minimize(bool con_to_gen,
   // the polyhedron is empty if there are no points
   // (because rays, lines and closure points need a supporting point).
   // Points can be detected by looking at:
-  //  * the divisor, for necessarily closed polyhedra;
-  //  * the \epsilon coordinate, for NNC polyhedra.
+  // - the divisor, for necessarily closed polyhedra;
+  // - the epsilon coordinate, for NNC polyhedra.
   size_t checking_index = dest.is_necessarily_closed()
     ? 0
     : dest.num_columns() - 1;
@@ -321,8 +321,8 @@ PPL::Polyhedron::add_and_minimize(bool con_to_gen,
   // the polyhedron is empty if there are no points
   // (because rays, lines and closure points need a supporting point).
   // Points can be detected by looking at:
-  //  * the divisor, for necessarily closed polyhedra;
-  //  * the \epsilon coordinate, for NNC polyhedra.
+  // - the divisor, for necessarily closed polyhedra;
+  // - the epsilon coordinate, for NNC polyhedra.
   size_t checking_index = dest.is_necessarily_closed()
     ? 0
     : dest.num_columns() - 1;

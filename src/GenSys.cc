@@ -63,9 +63,9 @@ PPL::GenSys::adjust_topology_and_dimension(Topology new_topology,
 	// only if it does not contain closure points.
 	if (has_closure_points())
 	  return false;
-	// Remove the \epsilon column and, after that,
+	// Remove the epsilon column and, after that,
 	// add the missing dimensions. This ensures that
-	// non-zero \epsilon coefficients will be cleared.
+	// non-zero epsilon coefficients will be cleared.
 	resize_no_copy(num_rows(), old_space_dim + 1);
 	set_necessarily_closed();
 	add_zero_columns(cols_to_be_added);
@@ -73,7 +73,7 @@ PPL::GenSys::adjust_topology_and_dimension(Topology new_topology,
       else {
 	// A NECESSARILY_CLOSED generator system is converted into
 	// a NOT_NECESSARILY_CLOSED one by adding a further column
-	// and setting the \epsilon coordinate of all points to 1.
+	// and setting the epsilon coordinate of all points to 1.
 	// Note: normalization is preserved.
 	add_zero_columns(++cols_to_be_added);
 	GenSys& gs = *this;
@@ -85,7 +85,7 @@ PPL::GenSys::adjust_topology_and_dimension(Topology new_topology,
     else {
       // Topologies agree: first add the required zero columns ...
       add_zero_columns(cols_to_be_added);
-      // ... and, if needed, move the \epsilon coefficients
+      // ... and, if needed, move the epsilon coefficients
       // to the new last column.
       if (old_topology == NOT_NECESSARILY_CLOSED)
 	swap_columns(old_space_dim + 1, new_space_dim + 1);
@@ -99,13 +99,13 @@ PPL::GenSys::adjust_topology_and_dimension(Topology new_topology,
 	// only if it does not contain closure points.
 	if (has_closure_points())
 	  return false;
-	// We just remove the column of the \epsilon coefficients.
+	// We just remove the column of the epsilon coefficients.
 	resize_no_copy(num_rows(), old_space_dim + 1);
 	set_necessarily_closed();
       }
       else {
-	// Add the column of the \epsilon coefficients
-	// and set the \epsilon coordinate of all points to 1.
+	// Add the column of the epsilon coefficients
+	// and set the epsilon coordinate of all points to 1.
 	// Note: normalization is preserved.
 	add_zero_columns(1);
 	GenSys& gs = *this;
@@ -226,10 +226,10 @@ PPL::GenSys::insert(const Generator& g) {
     // `*this' and `g' have different topologies.
     if (is_necessarily_closed()) {
       // Padding the matrix with the column
-      // corresponding to the \epsilon coefficients:
-      // all points must have \epsilon coordinate equal to 1
-      // (i.e., the \epsilon coefficient is equal to the divisor);
-      // rays and lines must have \epsilon coefficient equal to 0.
+      // corresponding to the epsilon coefficients:
+      // all points must have epsilon coordinate equal to 1
+      // (i.e., the epsilon coefficient is equal to the divisor);
+      // rays and lines must have epsilon coefficient equal to 0.
       // Note: normalization is preserved.
       size_t eps_index = num_columns();
       add_zero_columns(1);
@@ -246,12 +246,12 @@ PPL::GenSys::insert(const Generator& g) {
     else {
       // The generator system is NOT necessarily closed:
       // copy the generator, adding the missing dimensions
-      // and the \epsilon coefficient.
+      // and the epsilon coefficient.
       // NOTE: computing `gs_size = num_columns()' would provide
       //       a wrong result if the matrix has no rows.
       size_t gs_size = space_dimension() + 2;
       Generator tmp_g(g, gs_size);
-      // If it was a point, set the \epsilon coordinate to 1
+      // If it was a point, set the epsilon coordinate to 1
       // (i.e., set the coefficient equal to the divisor).
       // Note: normalization is preserved.
       if (tmp_g[0] != 0)
@@ -636,7 +636,7 @@ PPL::GenSys::affine_image(size_t v,
 			  const Integer& denominator) {
   // `v' is the index of a column corresponding to
   // a "user" variable (i.e., it cannot be the inhomogeneous term,
-  // nor the \epsilon dimension of NNC polyhedra).
+  // nor the epsilon dimension of NNC polyhedra).
   assert(v > 0 && v <= space_dimension());
   assert(expr.space_dimension() <= space_dimension());
   assert(denominator != 0);

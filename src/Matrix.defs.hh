@@ -272,7 +272,7 @@ public:
     the column encoding the inhomogeneous terms of constraint
     (resp., the divisors of generators);
     if the matrix topology is <CODE>NOT_NECESSARILY_CLOSED</CODE>,
-    also the column of the $\epsilon$-dimension coefficients
+    also the column of the \f$\epsilon\f$-dimension coefficients
     will be ignored.
   */
   size_t space_dimension() const;

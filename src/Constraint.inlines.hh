@@ -144,7 +144,7 @@ operator>=(const LinExpression& e1, const LinExpression& e2) {
 inline Constraint
 operator>(const LinExpression& e1, const LinExpression& e2) {
   LinExpression diff;
-  // Setting the \epsilon coefficient to -1.
+  // Setting the epsilon coefficient to -1.
   // NOTE: this also enforces normalization.
   size_t e1_dim = e1.space_dimension();
   size_t e2_dim = e2.space_dimension();
@@ -188,7 +188,7 @@ operator>=(const Integer& n, const LinExpression& e) {
 inline Constraint
 operator>(const Integer& n, const LinExpression& e) {
   LinExpression diff;
-  // Setting the \epsilon coefficient to -1.
+  // Setting the epsilon coefficient to -1.
   // NOTE: this also enforces normalization.
   diff -= Variable(e.space_dimension());
   diff += n;
@@ -227,7 +227,7 @@ operator>=(const LinExpression& e, const Integer& n) {
 inline Constraint
 operator>(const LinExpression& e, const Integer& n) {
   LinExpression diff;
-  // Setting the \epsilon coefficient to -1.
+  // Setting the epsilon coefficient to -1.
   // NOTE: this also enforces normalization.
   diff -= Variable(e.space_dimension());
   diff += e;

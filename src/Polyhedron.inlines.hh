@@ -297,7 +297,7 @@ Polyhedron::Polyhedron(Topology topol, const Box& box)
     con_sys.insert(Constraint::zero_dim_positivity());
   else {
     // Polyhedron NOT-necessarily closed:
-    // adding the \epsilon dimension constraints.
+    // adding the epsilon dimension constraints.
     con_sys.insert(Constraint::epsilon_leq_one());
     con_sys.insert(Constraint::epsilon_geq_zero());
   }

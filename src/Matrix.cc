@@ -471,7 +471,7 @@ PPL::Matrix::insert(const Row& row) {
     if (is_necessarily_closed() || old_num_rows == 0)
       grow(old_num_rows, row.size());
     else {
-      // After resizing, move the \epsilon coefficients to
+      // After resizing, move the epsilon coefficients to
       // the last column (note: sorting is preserved).
       size_t old_eps_index = row_size - 1;
       grow(old_num_rows, row.size());
@@ -483,7 +483,7 @@ PPL::Matrix::insert(const Row& row) {
     if (is_necessarily_closed() || old_num_rows == 0)
       add_row(Row(row, row_size, row_capacity));
     else {
-      // Create a resized copy of the row (and move the \epsilon
+      // Create a resized copy of the row (and move the epsilon
       // coefficient to its last position).
       Row tmp_row = Row(row, row_size, row_capacity);
       std::swap(tmp_row[row.size() - 1], tmp_row[row_size - 1]);
@@ -813,7 +813,7 @@ PPL::Matrix::OK() const {
   // A non-empty matrix will contain constraints or generators; in
   // both cases it must have at least one column for the inhomogeneous
   // term and, if it is non-necessarily closed, another one
-  // for the \epsilon coefficient.
+  // for the epsilon coefficient.
   size_t min_cols = is_necessarily_closed() ? 1 : 2;
   if (num_columns() < min_cols) {
 #ifndef NDEBUG

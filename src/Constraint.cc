@@ -80,13 +80,13 @@ PPL::Constraint::is_trivial_true() const {
       size_t eps_index = size() - 1;
       int eps_sign = sgn(x[eps_index]);
       if (eps_sign > 0)
-	// We have found the constraint \epsilon \geq 0.
+	// We have found the constraint epsilon >= 0.
 	return true;
       if (eps_sign == 0)
 	// One of the `true' dimensions has a non-zero coefficient.
 	return false;
       else {
-	// Here the \epsilon coefficient is negative: strict inequality.
+	// Here the epsilon coefficient is negative: strict inequality.
 	if (x[0] <= 0)
 	  // A strict inequality such as `lhs - k > 0',
 	  // where k is a non negative integer, cannot be trivially true.
@@ -122,12 +122,12 @@ PPL::Constraint::is_trivial_false() const {
       // The constraint is NOT necessarily closed.
       size_t eps_index = size() - 1;
       if (x[eps_index] >= 0)
-	// If positive, we have found the constraint \epsilon \geq 0.
+	// If positive, we have found the constraint epsilon >= 0.
 	// If zero, one of the `true' dimensions has a non-zero coefficient.
 	// In both cases, it is not trivially false.
 	return false;
       else {
-	// Here the \epsilon coefficient is negative: strict inequality.
+	// Here the epsilon coefficient is negative: strict inequality.
 	if (x[0] > 0)
 	  // A strict inequality such as `lhs + k > 0',
 	  // where k is a positive integer, cannot be trivially false.
