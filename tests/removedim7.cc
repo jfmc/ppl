@@ -54,7 +54,7 @@ main() {
   ph1.remove_higher_dimensions(1);
 
   // This is the set of the variables that we want to remove.
-  set<Variable> to_be_removed;
+  Variables_Set to_be_removed;
   to_be_removed.insert(y);
   to_be_removed.insert(z);
   to_be_removed.insert(Variable(3));

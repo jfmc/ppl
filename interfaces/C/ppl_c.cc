@@ -1375,7 +1375,7 @@ ppl_Polyhedron_remove_dimensions(ppl_Polyhedron_t ph,
 				 size_t ds[],
 				 unsigned int n) try {
   Polyhedron& pph = *to_nonconst(ph);
-  std::set<Variable> to_be_removed;
+  Variables_Set to_be_removed;
   for (ppl_dimension_type i = 0; i < n; ++i)
     to_be_removed.insert(Variable(ds[i]));
   pph.remove_dimensions(to_be_removed);

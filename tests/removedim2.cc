@@ -51,7 +51,7 @@ main() {
 #endif
 
   // This is the set of the variables that we want to remove.
-  set<Variable> to_be_removed;
+  Variables_Set to_be_removed;
   to_be_removed.insert(Variable(0));
   to_be_removed.insert(Variable(5));
   to_be_removed.insert(Variable(3));

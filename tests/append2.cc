@@ -112,7 +112,7 @@ fix_point(C_Polyhedron& start, C_Polyhedron& induct, C_Polyhedron& finish,
     print_constraints(current, "*** after shift_rename_add ***");
 #endif
 
-    set<Variable> dimensions_to_remove;
+    Variables_Set dimensions_to_remove;
     for (unsigned int i = num_vars-1 ; i >= arity; --i )
       dimensions_to_remove.insert(Variable(i));
     current.remove_dimensions(dimensions_to_remove);

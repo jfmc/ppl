@@ -144,7 +144,7 @@ error5() {
   gs.insert(point(0*x + 1*y +2*z));
   C_Polyhedron ph(gs);
 
-  set<Variable> to_be_removed;
+  Variables_Set to_be_removed;
   to_be_removed.insert(z);
 
   ph.remove_dimensions(to_be_removed);

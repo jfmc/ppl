@@ -99,7 +99,7 @@ main() {
 #if NOISY
     print_constraints(current, "*** after shift_rename_add ***");
 #endif
-    set<Variable> dimensions_to_remove;
+    Variables_Set dimensions_to_remove;
     // Deliberately inserted out of order (!).
     dimensions_to_remove.insert(D);
     dimensions_to_remove.insert(F);

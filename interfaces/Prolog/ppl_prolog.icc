@@ -29,6 +29,7 @@ site: http://www.cs.unipr.it/ppl/ . */
 #include "Generator.defs.hh"
 #include "GenSys.defs.hh"
 #include "GenSys.inlines.hh"
+#include "Variable.defs.hh"
 #include "LinExpression.defs.hh"
 #include "Polyhedron.defs.hh"
 #include "C_Polyhedron.defs.hh"
@@ -1467,7 +1468,7 @@ ppl_Polyhedron_remove_dimensions(Prolog_term_ref t_ph,
   try {
     PPL::Polyhedron* ph = term_to_polyhedron_handle(t_ph);
     CHECK(ph);
-    std::set<PPL::Variable> dead_variables;
+    PPL::Variables_Set dead_variables;
     Prolog_term_ref v = Prolog_new_term_ref();
     while (Prolog_is_cons(t_vlist)) {
       Prolog_get_cons(t_vlist, v, t_vlist);
