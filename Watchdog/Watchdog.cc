@@ -1,14 +1,14 @@
 /* Watchdog and associated classes' implementation (non-inline functions).
-   Copyright (C) 2001, 2002 Roberto Bagnara <bagnara@cs.unipr.it>
+   Copyright (C) 2002 Roberto Bagnara <bagnara@cs.unipr.it>
 
-This file is part of the Parma Watchdog Library (PPL).
+This file is part of the Parma Watchdog Library (PWL).
 
-The PPL is free software; you can redistribute it and/or modify it
+The PWL is free software; you can redistribute it and/or modify it
 under the terms of the GNU General Public License as published by the
 Free Software Foundation; either version 2 of the License, or (at your
 option) any later version.
 
-The PPL is distributed in the hope that it will be useful, but WITHOUT
+The PWL is distributed in the hope that it will be useful, but WITHOUT
 ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or
 FITNESS FOR A PARTICULAR PURPOSE.  See the GNU General Public License
 for more details.
@@ -19,11 +19,11 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307,
 USA.
 
 For the most up-to-date information see the CS@Parma software
-site http://www.cs.unipr.it/Software/ . */
+site: http://www.cs.unipr.it/Software/ . */
 
 #include <config.h>
 
-#include "Watchdog.hh"
+#include "Watchdog.defs.hh"
 
 #include <csignal>
 #include <iostream>
@@ -69,17 +69,17 @@ volatile bool PWL::Watchdog::in_critical_section = false;
 void
 PWL::Watchdog::get_timer(Time& time) {
   getitimer(ITIMER_PROF, &current_timer_status);
-  time.seconds = current_timer_status.it_value.tv_sec;
-  time.microseconds = current_timer_status.it_value.tv_usec;
+  time.set(current_timer_status.it_value.tv_sec,
+	   current_timer_status.it_value.tv_usec);
 }
 
 void
 PWL::Watchdog::set_timer(const Time& time) {
-  if (time.seconds == 0 && time.microseconds == 0)
+  if (time.seconds() == 0 && time.microseconds() == 0)
     abort();
   last_time_requested = time;
-  signal_once.it_value.tv_sec = time.seconds;
-  signal_once.it_value.tv_usec = time.microseconds;
+  signal_once.it_value.tv_sec = time.seconds();
+  signal_once.it_value.tv_usec = time.microseconds();
   setitimer(ITIMER_PROF, &signal_once, 0);
 }
 
@@ -97,7 +97,6 @@ PWL::Watchdog::handle_timeout(int) {
   else {
     time_so_far += last_time_requested;
     if (!pending.empty()) {
-      // Why the hell these cannot be a const_iterators?
       Pending::iterator i(pending.begin());
       Pending::iterator in;
       do {
@@ -120,8 +119,8 @@ PWL::Watchdog::handle_timeout(int) {
 
 PWL::Watchdog::Pending::iterator
 PWL::Watchdog::insert_pending(const Time& deadline,
-			 const Handler* handler,
-			 bool* p_expired) {
+			      const Handler* handler,
+			      bool* p_expired) {
   Pending::iterator i(pending.begin());
   Pending::iterator pend(pending.end());
   while (i != pend && (*i).deadline < deadline)
@@ -131,8 +130,8 @@ PWL::Watchdog::insert_pending(const Time& deadline,
 
 PWL::Watchdog::Pending::iterator
 PWL::Watchdog::new_watchdog_event(int units,
-			     const Handler* handler,
-			     bool* p_expired) {
+				  const Handler* handler,
+				  bool* p_expired) {
   assert(units > 0);
   Pending::iterator position;
   Time deadline(units);
@@ -189,9 +188,11 @@ PWL::Watchdog::remove_watchdog_event(Pending::iterator position) {
 }
 
 PWL::Watchdog::Watchdog(int units,
-		   Timeout& exception,
-		   volatile Timeout** flag)
-  : expired(false), handler(new Handler_Flag(exception, flag)) {
+			volatile void* holder,
+			Flag& flag)
+  : expired(false),
+    handler(new Handler_Flag(reinterpret_cast<const void* volatile*>(holder),
+			     flag)) {
   in_critical_section = true;
   pending_position = new_watchdog_event(units, handler, &expired);
   in_critical_section = false;

@@ -19,20 +19,99 @@
 # USA.
 #
 # For the most up-to-date information see the CS@Parma software
-# site http://www.cs.unipr.it/Software/ . */
+# site: http://www.cs.unipr.it/Software/ . */
 
 srcdir = @srcdir@
 VPATH = @srcdir@
 
-EXTRA_DIST = Watchdog.hh Watchdog.cc configure BUGS CREDITS
-
 @SET_MAKE@
+
+# The ordering of the following list *matters*!
+INCLUDE_FILES = \
+Watchdog.types.hh \
+Watchdog.defs.hh \
+Watchdog.inlines.hh
+
+SOURCE_FILES = \
+$(INCLUDE_FILES) \
+Watchdog.cc
+
+# The ordering of the following list *matters*!
+DOC_FILES = \
+Watchdog.types.hh \
+Watchdog.defs.hh
+
+EXTRA_DIST = \
+$(SOURCE_FILES) \
+configure BUGS CREDITS \
+pwl_header.top pwl_header.middle pwl_header.bottom \
+pwl_filter_doxygen.sed pwl_filter_install.sed
 
 if BUILD_WATCHDOG_LIBRARY
 
-lib_LTLIBRARIES = libpwl.la
-libpwl_la_SOURCES = Watchdog.cc
+# Libtool -version-info for libpwl.la.
+#
+#  1. Start with version information of `0:0:0' for each libtool library.
+#
+#  2. Update the version information only immediately before a public
+#     release of your software.  More frequent updates are unnecessary,
+#     and only guarantee that the current interface number gets larger
+#     faster.
+#
+#  3. If the library source code has changed at all since the last
+#     update, then increment REVISION (`C:R:A' becomes `C:r+1:A').
+#
+#  4. If any interfaces have been added, removed, or changed since the
+#     last update, increment CURRENT, and set REVISION to 0.
+#
+#  5. If any interfaces have been added since the last public release,
+#     then increment AGE.
+#
+#  6. If any interfaces have been removed since the last public release,
+#     then set AGE to 0.
+#
+#	PWL release		-version-info
+#	    0.1			    0:0:0
 
-include_HEADERS = Watchdog.hh
+LIBPWL_LT_CURRENT =  0
+LIBPWL_LT_REVISION = 0
+LIBPWL_LT_AGE =      0
+
+lib_LTLIBRARIES = libpwl.la
+libpwl_la_SOURCES = $(SOURCE_FILES)
+libpwl_la_LDFLAGS = \
+-version-info $(LIBPWL_LT_CURRENT):$(LIBPWL_LT_REVISION):$(LIBPWL_LT_AGE)
+
+noinst_HEADERS = pwl.hh pwl_install.hh
+
+BUILT_SOURCES = pwl.hh pwl_install.hh
+
+pwl.hh:	$(DOC_FILES)
+	(cd $(srcdir) ; cat $(DOC_FILES)) \
+		| sed -f $(srcdir)/pwl_filter_doxygen.sed >pwl.hh
+
+pwl_install.hh:	pwl_header.top $(top_builddir)/config.h pwl_header.middle $(INCLUDE_FILES) pwl_header.bottom
+	mkdir -p tmp
+	(cd $(srcdir) ; cat $(INCLUDE_FILES)) >tmp/concat
+	grep "^#include <" <tmp/concat | sort -u >tmp/includes
+	sed -e "/^#include/d" -f $(srcdir)/pwl_filter_install.sed <tmp/concat >tmp/noincludes.cc
+	cat $(srcdir)/pwl_header.top $(top_builddir)/config.h \
+		$(srcdir)/pwl_header.middle tmp/includes >pwl_install.hh
+	$(CXXCPP) -P @debug_flag@ tmp/noincludes.cc >>pwl_install.hh
+	cat $(srcdir)/pwl_header.bottom >>pwl_install.hh
+	rm -rf tmp*
+
+# pwl.hh and pwl_install.hh are not distributed.
+dist-hook:
+	rm -f $(distdir)/pwl.hh $(distdir)/pwl_install.hh
+
+install-data-local: pwl_install.hh
+	$(mkinstalldirs) $(DESTDIR)$(includedir)
+	$(INSTALL_DATA) pwl_install.hh $(DESTDIR)$(includedir)/pwl.hh
+
+uninstall-local:
+	rm -f $(DESTDIR)$(includedir)/pwl.hh
+
+MOSTLYCLEANFILES = $(BUILT_SOURCES)
 
 endif

@@ -1,5 +1,5 @@
 /* Watchdog and associated classes' declaration and inline functions.
-   Copyright (C) 2001, 2002 Roberto Bagnara <bagnara@cs.unipr.it>
+   Copyright (C) 2002 Roberto Bagnara <bagnara@cs.unipr.it>
 
 This file is part of the Parma Watchdog Library (PWL).
 
@@ -19,105 +19,74 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307,
 USA.
 
 For the most up-to-date information see the CS@Parma software
-site http://www.cs.unipr.it/Software/ . */
+site: http://www.cs.unipr.it/Software/ . */
 
 #ifndef _Watchdog_defs_hh
 #define _Watchdog_defs_hh 1
 
-namespace Parma_Watchdog_Library {
-  class Watchdog;
-  class Timeout;
-}
-
+#include "Watchdog.types.hh"
 #include <list>
 #include <cassert>
+
+// FIXME
 #include <sys/time.h>
+#if HAVE_SYS_TIME_H
+# include <sys/time.h>
+#endif
+
+namespace Parma_Watchdog_Library {
 
 //! A base class for timeout exceptions.
-class Parma_Watchdog_Library::Timeout {
+class Flag {
 public:
   virtual int priority() const = 0;
 };
 
 //! A watchdog timer.
-class Parma_Watchdog_Library::Watchdog {
+class Watchdog {
+
 private:
-  // Positive times only here!
+
+  //! A class for representing and manipulationg positive time intervals.
   class Time {
+  private:
+    int secs;
+    int microsecs;
+
   public:
-    int seconds;
-    int microseconds;
+    //! Zero seconds.
+    Time();
 
-    Time()
-      : seconds(0), microseconds(0) {
-    }
+    explicit Time(unsigned int units);
 
-    explicit Time(int units)
-      : seconds(units / 100), microseconds((units * 10000) % 1000000) {
-      assert(units >= 0);
-    }
+    void set(int s, int m);
 
-    void reset() {
-      seconds = microseconds = 0;
-    }
+    void reset();
 
-    Time& operator +=(const Time& y) {
-      int secs = seconds + y.seconds;
-      int usecs = microseconds + y.microseconds;
-      if (usecs >= 1000000) {
-	++secs;
-	usecs %= 1000000;
-      }
-      seconds = secs;
-      microseconds = usecs;
-      return *this;
-    }
+    int seconds() const;
 
-    Time& operator -=(const Time& y) {
-      int secs = seconds - y.seconds;
-      int usecs = microseconds - y.microseconds;
-      if (usecs < 0) {
-	--secs;
-	usecs += 1000000;
-      }
-      if (secs < 0)
-	secs = usecs = 0;
-      seconds = secs;
-      microseconds = usecs;
-      return *this;
-    }
+    int microseconds() const;
 
-    friend Time operator -(const Time& x, const Time& y) {
-      Time z(x);
-      z -= y;
-      return z;
-    }
+    Time& operator +=(const Time& y);
 
-    friend bool operator ==(const Time& x, const Time& y) {
-      return x.seconds == y.seconds && x.microseconds == y.microseconds;
-    }
-
-    friend bool operator !=(const Time& x, const Time& y) {
-      return !(x == y);
-    }
-
-    friend bool operator <(const Time& x, const Time& y) {
-      return x.seconds < y.seconds
-	|| (x.seconds == y.seconds && x.microseconds < y.microseconds);
-    }
-
-    friend bool operator <=(const Time& x, const Time& y) {
-      return x < y || x == y;
-    }
-
-    friend bool operator >(const Time& x, const Time& y) {
-      return y < x;
-    }
-
-    friend bool operator >=(const Time& x, const Time& y) {
-      return y <= x;
-    }
+    Time& operator -=(const Time& y);
   };
+
+  friend Time Parma_Watchdog_Library::operator+(const Time& x, const Time& y);
+
+  friend Time Parma_Watchdog_Library::operator-(const Time& x, const Time& y);
+
+  friend bool Parma_Watchdog_Library::operator==(const Time& x, const Time& y);
+
+  friend bool Parma_Watchdog_Library::operator!=(const Time& x, const Time& y);
+
+  friend bool Parma_Watchdog_Library::operator<(const Time& x, const Time& y);
+
+  friend bool Parma_Watchdog_Library::operator<=(const Time& x, const Time& y);
+
+  friend bool Parma_Watchdog_Library::operator>(const Time& x, const Time& y);
+
+  friend bool Parma_Watchdog_Library::operator>=(const Time& x, const Time& y);
 
   // Different kinds of handler for the watchdog events.
   class Handler {
@@ -127,15 +96,17 @@ private:
 
   class Handler_Flag : virtual public Handler {
   private:
-    Timeout& exception;
-    volatile Timeout** flag;
+    const void* volatile* holder;
+    Flag& flag;
   public:
-    Handler_Flag(Timeout& e,
-		 volatile Timeout** f)
-      : exception(e), flag(f)
+    Handler_Flag(const void* volatile* h, Flag& f)
+      : holder(h), flag(f)
     { }
     void act() const {
-      *flag = &exception;
+      if (*holder == 0
+	  || (*reinterpret_cast<const Flag* volatile*>(holder))->priority()
+	  < flag.priority())
+	  *holder = &flag;
     }
   };
 
@@ -171,17 +142,14 @@ private:
 public:
   static void initialize();
 
-  Watchdog(int units,
-	   Timeout& exception,
-	   volatile Timeout** flag);
-  Watchdog(int units,
-	   void (*function)());
+  Watchdog(int units, volatile void* holder, Flag& flag);
+  Watchdog(int units, void (*function)());
   ~Watchdog();
 
 private:
   // Just to prevent their use.
   Watchdog(const Watchdog&);
-  Watchdog& operator = (const Watchdog&);
+  Watchdog& operator=(const Watchdog&);
 
   // Pass this to getitimer.
   static itimerval current_timer_status;
@@ -221,13 +189,8 @@ private:
   static volatile bool in_critical_section;
 };
 
-namespace Parma_Watchdog_Library {
-
-inline void
-Watchdog::reschedule() {
-  set_timer(reschedule_time);
-}
-
 } // namespace Parma_Watchdog_Library
+
+#include "Watchdog.inlines.hh"
 
 #endif

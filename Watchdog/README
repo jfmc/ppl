@@ -10,7 +10,7 @@ See the file INSTALL for build and installation instructions.
 See the file NEWS for recent project news.
 See the file BUGS for known bugs and how to report new ones.
 See the file CREDITS for a list of people and organizations that
-made the PPL a reality.
+contributed to the PWL.
 
 Here is the contents of the PWL 0.1 source distributions
 (n directories, m files):
@@ -20,7 +20,7 @@ Here is the contents of the PWL 0.1 source distributions
 
 --------
 
-Copyright (C) 2001, 2002 Roberto Bagnara
+Copyright (C) 2002 Roberto Bagnara
 
 The Parma Watchdog Library is free software; you can redistribute it
 and/or modify it under the terms of the GNU General Public License as

@@ -19,7 +19,7 @@
 # USA.
 #
 # For the most up-to-date information see the CS@Parma software
-# site http://www.cs.unipr.it/Software/ . */
+# site: http://www.cs.unipr.it/Software/ . */
 
 # Process this file with autoconf to produce a configure script.
 
@@ -261,6 +261,8 @@ AC_DISABLE_SHARED
 AC_LIBTOOL_DLOPEN
 AC_LIBTOOL_WIN32_DLL
 AC_PROG_LIBTOOL
+
+AC_SUBST(debug_flag)
 
 #AC_CONFIG_FILES([])
 AC_OUTPUT(Makefile)

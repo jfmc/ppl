@@ -1,0 +1,15 @@
+
+#ifdef PWL_SAVE_NDEBUG
+#define NDEBUG 1
+#undef PWL_SAVE_NDEBUG
+#endif
+
+#undef PACKAGE
+#undef PACKAGE_BUGREPORT
+#undef PACKAGE_NAME
+#undef PACKAGE_STRING
+#undef PACKAGE_TARNAME
+#undef PACKAGE_VERSION
+#undef VERSION
+
+#endif
