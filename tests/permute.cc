@@ -55,10 +55,9 @@ shift_rename_insert(const Polyhedron& p, size_t offset, Polyhedron& q) {
 
 void
 append_init(Polyhedron& base, Polyhedron& inductive, Polyhedron& expected,
-            size_t& offset, unsigned int& arity, unsigned int& num_vars) {
+            size_t& offset, unsigned int& arity) {
   offset = 3;
   arity = 3;
-  num_vars = 6;
   Variable A(0);
   Variable B(1);
   Variable C(2);
@@ -94,7 +93,7 @@ append_init(Polyhedron& base, Polyhedron& inductive, Polyhedron& expected,
 
 void
 fix_point(Polyhedron& start, Polyhedron& induct, Polyhedron& finish,
-          size_t offset, unsigned int arity, unsigned int num_vars) {
+          size_t offset, unsigned int arity) {
   // Initialize the fixpoint iteration.
   Polyhedron current = start;
 #if NOISY
@@ -110,9 +109,11 @@ fix_point(Polyhedron& start, Polyhedron& induct, Polyhedron& finish,
 #if NOISY
     print_constraints(current, "*** after shift_rename_insert ***");
 #endif
-
+    
     set<Variable> dimensions_to_remove;
-    for (unsigned int i = num_vars-1 ; i >= arity; --i )
+    size_t current_dim;
+    current_dim = current.num_dimensions();
+    for (unsigned int i = current_dim-1 ; i >= arity; --i )
       dimensions_to_remove.insert(Variable(i));
     current.remove_dimensions(dimensions_to_remove);                           
 
@@ -139,17 +140,15 @@ append_size_rel(Polyhedron& ph) {
   Polyhedron expect;
   size_t recursive_offset;
   unsigned int arity;
-  unsigned int num_vars;
-  append_init(start, induct, expect, recursive_offset, arity, num_vars);
-  fix_point(start, induct, ph, recursive_offset, arity, num_vars);
+  append_init(start, induct, expect, recursive_offset, arity);
+  fix_point(start, induct, ph, recursive_offset, arity);
 }
 
 void
 permute_init(Polyhedron& base, Polyhedron& inductive, Polyhedron& expected,
-             size_t& offset, unsigned int& arity, unsigned int& num_vars) {
+             size_t& offset, unsigned int& arity) {
   arity = 2;
   offset = 10;
-  num_vars = 12;
   Variable A(0);
   Variable B(1);
   Variable C(2);
@@ -205,10 +204,9 @@ main() {
   Polyhedron expect;
   size_t recursive_offset;
   unsigned int arity;
-  unsigned int num_vars;
-  permute_init(start, induct, expect, recursive_offset, arity, num_vars);
+  permute_init(start, induct, expect, recursive_offset, arity);
   Polyhedron final;
-  fix_point(start, induct, final, recursive_offset, arity, num_vars);
+  fix_point(start, induct, final, recursive_offset, arity);
 
 #if NOISY
     print_constraints(expect, "*** expected ***");
