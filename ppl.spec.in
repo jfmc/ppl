@@ -76,7 +76,7 @@ Requires:	gcc-c++ == 3.4.1
 %description pwl
 This package contains the Parma Watchdog Library (PWL).
 The library provides support for multiple, concurrent watchdog timers
-on systems providing the setitimer(2).
+on systems providing setitimer(2).
 The PWL is currently distributed with the Parma Polyhedra Library (PPL),
 but is totally independent from it.
 
