@@ -132,10 +132,13 @@ extern "C" const char*
 c_variable_default_output_function(ppl_dimension_type var) {
 #if SIZEOF_SIZE_T == SIZEOF_UNSIGNED
 # define FORMAT "%u"
+# define CONVERSION (unsigned)
 #elif SIZEOF_SIZE_T == SIZEOF_UNSIGNED_LONG
 # define FORMAT "%lu"
+# define CONVERSION (unsigned long)
 #elif SIZEOF_SIZE_T == SIZEOF_UNSIGNED_LONG_LONG
 # define FORMAT "%llu"
+# define CONVERSION (unsigned long long)
 #else
 # error "Unsupported definition for `size_t'."
 #endif
@@ -148,7 +151,7 @@ c_variable_default_output_function(ppl_dimension_type var) {
   static char buffer[20];
   buffer[0] = static_cast<char>('A' + var % 26);
   if (ppl_dimension_type i = var / 26) {
-    int r = sprintf(buffer+1, FORMAT, i);
+    int r = sprintf(buffer+1, FORMAT, CONVERSION i);
     if (r < 0)
       return 0;
     else if (r >= 19) {
