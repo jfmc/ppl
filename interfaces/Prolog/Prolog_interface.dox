@@ -21,8 +21,10 @@ Support for GNU Prolog is under development and will be available in
 
 <H4>SICStus Prolog</H4>
 
-In order to use the library you should
-load <CODE>ppl_sicstus.pl</CODE>.
+Assume <CODE>prefix</CODE> is the prefix under which you have installed
+the library (typically <CODE>/usr</CODE> or <CODE>/usr/local</CODE>).
+In order to use the library from SICStus Prolog you should simply
+load <CODE>prefix/lib/ppl/ppl_sicstus.pl</CODE>.
 
 <H4>SWI Prolog</H4>
 
