@@ -34,7 +34,7 @@ site: http://www.cs.unipr.it/ppl/ . */
   Variables are used as base blocks in order to build
   more complex linear expressions.
   Each variable is identified by a non-negative integer,
-  representing the index of the corresponding Catesian axis
+  representing the index of the corresponding Cartesian axis
   (the first axis has index 0).
 
   Note that the ``meaning'' of an object of the class Variable

@@ -171,7 +171,7 @@ namespace Parma_Polyhedra_Library {
   Polyhedron ph(cs);
   ph.add_dimensions_and_poject(1);
     \endcode
-    The starting polyhedron is the same of the example for the function
+    The starting polyhedron is the same as in Example 4 for
     <CODE>add_dimensions_and_embed</CODE>. The resulting polyhedron
     is a point with the abscissa equal to \f$2\f$ and the ordinate
     equal to \f$0\f$.
@@ -192,8 +192,10 @@ namespace Parma_Polyhedra_Library {
     \endcode
     In this example the starting polyhedron is a square in \f$\Rset^2\f$, 
     \p var is the variable \f$x\f$, the affine_expression is \f$x+4\f$,
-    the resulting polyhedron is the same square translated towards right.
-    Moreover, if the affine transformation for the same variable is \f$x+y\f$
+    and the denominator \p d is 1.
+    The resulting polyhedron is the same square translated towards right.
+    Moreover, if the affine transformation for the same variable \p x
+    is \f$x+y\f$:
     \code
   Integer d = 1;
   LinExpression coeff = x + y;
@@ -202,16 +204,15 @@ namespace Parma_Polyhedra_Library {
     the side of the square and the oblique sides parallel to the line 
     \f$x-y\f$.
     Instead, if we do not use an invertible transformation for the same
-    variable, for example \f$y\f$:
+    variable; for example, the affine expression \f$y\f$:
     \code
-  Integer d = 1;
   LinExpression coeff = 0*x + y;
     \endcode
-    the resulting polyhedron is the diagonal of the square.
+    the resulting polyhedron is a diagonal of the square.
   
     \par Example 7
     The following code shows the use of the function
-    <CODE>substitue_variable</CODE>:
+    <CODE>substitute_variable</CODE>:
     \code
   ConSys cs;
   cs.insert(x >= 0);
@@ -224,10 +225,11 @@ namespace Parma_Polyhedra_Library {
   ph.substitute_variable(x, coeff, d);
     \endcode
     In this example the starting polyhedron, \p var and the affine 
-    expression are the same of the previous example, while the resulting
-    polyhedron is again the same square but it is translated towards
+    expression and the denominator are the same as in Example 6,
+    while the resulting
+    polyhedron is again the same square but translated towards
     left.
-    Moreover, if the affine transformation for the same variable is \f$x+y\f$
+    Moreover, if the affine transformation for \p x is \f$x+y\f$
     \code
   Integer d = 1;
   LinExpression coeff = x + y;
@@ -236,12 +238,12 @@ namespace Parma_Polyhedra_Library {
     the side of the square and the oblique sides parallel to the line 
     \f$x+y\f$.
     Instead, if we do not use an invertible transformation for the same
-    variable, for example \f$y\f$:
+    variable \p x, for example, the affine expression \f$y\f$:
     \code
   Integer d = 1;
   LinExpression coeff = 0*x + y;
     \endcode
-    the resulting polyhedron is a line that corresponds to the axis \f$y\f$.
+    the resulting polyhedron is a line that corresponds to the \f$y\f$ axis.
 */
 
 class Parma_Polyhedra_Library::Polyhedron {
