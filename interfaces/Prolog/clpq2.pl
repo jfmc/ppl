@@ -48,6 +48,7 @@ solve_query(Goals, VN, PolysOut) :-
   % We use the NNC topology so that we can handle strict constraints.
   Topology = nnc,
   ppl_new_Polyhedron_from_dimension(Topology, Dims, Poly),
+  cleanup(Poly),
   % Try to reduce `Goals'.
   solve(Topology, FrozeGoals, [Poly], PolysOut, VarNames),
   % Use the last polyhedron `PolyOut' that has been added to the list
@@ -81,9 +82,11 @@ solve(T, (A; B), PolysIn, PolysOut, VarNames) :-
   PolysIn = [Poly|_],
   (
     (ppl_new_Polyhedron_from_Polyhedron(T, Poly, T, Q),
+     cleanup(Q),
       solve(T, A, [Q|PolysIn], PolysOut, VarNames))
   ;
     (ppl_new_Polyhedron_from_Polyhedron(T, Poly, T, Q),
+     cleanup(Q),
       solve(T, B, [Q|PolysIn], PolysOut, VarNames))
   ).
 
@@ -98,14 +101,7 @@ solve(_, { Constraints }, [Poly|Polys], [Poly|Polys], _VarNames) :-
   % Solve the constraints using the constraint solver.
   constraints2list(Constraints, ConstraintsList),
   % Fails if `Poly' becomes empty.
-  (ppl_Polyhedron_add_constraints_and_minimize(Poly, ConstraintsList) ->
-    true
-  ;
-    % If the constraints are unsatisfiable,
-    % first throw the empty polyhedron away and then fail.
-    ppl_delete_Polyhedron(Poly),
-    fail
-  ).
+  ppl_Polyhedron_add_constraints_and_minimize(Poly, ConstraintsList).
 
 % Built-ins may be added here.
 
@@ -118,7 +114,7 @@ solve(_, read(N), Polys, Polys, VarNames) :-
   (integer(MeltN) ->
     true
   ;
-    ppl_delete_Polyhedron(Poly),
+%    ppl_delete_Polyhedron(Poly),
     fail
   ),
 
@@ -128,7 +124,7 @@ solve(_, read(N), Polys, Polys, VarNames) :-
   ;
     % If the new value makes the constraints unsatisfiable,
     % first throw the empty polyhedron away and then fail.
-    ppl_delete_Polyhedron(Poly),
+%    ppl_delete_Polyhedron(Poly),
     fail
   ).
 
@@ -149,6 +145,7 @@ solve(Topology, Atom, [Poly|Polys], PolysOut, VarNames) :-
 
   % Copy the current polyhedron and work on the copy.
   ppl_new_Polyhedron_from_Polyhedron(Topology, Poly, Topology, PolyCopy),
+  cleanup(PolyCopy),
 
   % Rename the selected clause apart and extend the polyhedron.
   ppl_Polyhedron_space_dimension(PolyCopy, Dims),
@@ -168,7 +165,7 @@ solve(Topology, Atom, [Poly|Polys], PolysOut, VarNames) :-
   ;
     % If the parameter passing constraints are unsatisfiable,
     % first throw the empty polyhedron away and then fail.
-    ppl_delete_Polyhedron(PolyCopy),
+%    ppl_delete_Polyhedron(PolyCopy),
     fail
   ).
 
@@ -212,6 +209,11 @@ delete_all_polyhedra([]).
 delete_all_polyhedra([Polyhedron|Polyhedra]):-
   ppl_delete_Polyhedron(Polyhedron),
   delete_all_polyhedra(Polyhedra).
+
+cleanup(Polyhedron).
+cleanup(Polyhedron) :-
+  ppl_delete_Polyhedron(Polyhedron),
+  fail.
 
 %%%%%%%%%%%%%%%%%% Query the User for More Solutions %%%%%%%%%%%%%%%%%%%
 
