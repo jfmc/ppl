@@ -78,29 +78,32 @@ enum Result {
   //! +/-inf + -/+inf.
   V_INF_ADD_INF = 51,
 
+  //! +/-inf / -/+inf.
+  V_INF_DIV_INF = 52,
+
   //! +/-inf mod x.
-  V_INF_MOD = 52,
+  V_INF_MOD = 53,
 
   //! +/-inf * 0.
-  V_INF_MUL_ZERO = 53,
+  V_INF_MUL_ZERO = 54,
 
   //! +/-inf - +/-inf.
-  V_INF_SUB_INF = 54,
+  V_INF_SUB_INF = 55,
 
   //! x mod 0.
-  V_MOD_ZERO = 55,
+  V_MOD_ZERO = 56,
 
   //! sqrt(-x).
-  V_SQRT_NEG = 56,
+  V_SQRT_NEG = 57,
 
   //! Unknown result due to intermediate negative overflow.
-  V_UNKNOWN_NEG_OVERFLOW = 57,
+  V_UNKNOWN_NEG_OVERFLOW = 58,
 
   //! Unknown result due to intermediate positive overflow.
-  V_UNKNOWN_POS_OVERFLOW = 58,
+  V_UNKNOWN_POS_OVERFLOW = 59,
 
   //! Unordered comparison
-  V_UNORD_COMP = 59
+  V_UNORD_COMP = 60
 };
 
 bool is_special(Result r);
