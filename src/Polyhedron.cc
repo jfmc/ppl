@@ -622,20 +622,25 @@ PPL::operator <=(const Polyhedron& x, const Polyhedron& y) {
     x.minimize();
   if (!y.constraints_are_minimized())
     y.minimize();
-  // `x' is contained in `y' if and only if all the generators of `x'
-  // satisfy or saturate all the inequalities and saturate all the
-  // equalities of `y'; this comes from
-  // the definition of a polyhedron as the set of vector that satisfy
-  // a given system of constraints and the fact that all vectors in `x'
+  // We have that `x' is contained in `y' if and only if all the
+  // generators of `x' satisfy or saturate all the inequalities and
+  // saturate all the equalities of `y'.  This comes from the
+  // definition of a polyhedron as the set of vectors that satisfy a
+  // given system of constraints and the fact that all vectors in `x'
   // can be obtained as a combination of its generators.
-  for (size_t i = x.gen_sys.num_rows(); i-- > 0; )
-    for (size_t j = y.con_sys.num_rows(); j-- > 0; )
-      if (y.con_sys[j].is_inequality()) {
-	if (y.con_sys[j] * x.gen_sys[i] < 0)
+  for (size_t i = x.gen_sys.num_rows(); i-- > 0; ) {
+    const Generator& gx = x.gen_sys[i];
+    for (size_t j = y.con_sys.num_rows(); j-- > 0; ) {
+      const Constraint& cy = y.con_sys[j];
+      int sgn_gx_scalar_cy = sgn(gx*cy);
+      if (cy.is_inequality()) {
+	if (sgn_gx_scalar_cy < 0)
 	  return false;
       }
-      else if (y.con_sys[j] * x.gen_sys[i] != 0)
+      else if (sgn_gx_scalar_cy != 0)
 	return false;
+    }
+  }
   return true;
 }
 
