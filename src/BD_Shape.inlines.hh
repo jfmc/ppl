@@ -2801,8 +2801,7 @@ BD_Shape<T>::generalized_affine_image(Variable var,
   // Number of non-zero components of `expr'.
   dimension_type t = 0;
 
-  // Value of inhomogeneous term of `expr' in the case `expr' is a
-  // unary.
+  // Value of the coefficient of  `var' in `expr'.
   Coefficient coeff;
 
   // Compute the number of the non-zero components of `expr'.
@@ -2826,8 +2825,9 @@ BD_Shape<T>::generalized_affine_image(Variable var,
   // Now we have got a form of `expr':
   // if t == 0, expr = n, with n integer.
   // if t == 1, expr = a*z + n, where z can be `var' or another variable.
-  // Attention: in the second case the coefficient of variable must
-  // equal to denominator.
+  // In the second case the coefficient of `var'is equal to denominator
+  // or -denominator.
+  // If t > 1, `expr' is general.
   DB_Row<T>& n_v = dbm[num_var];
   Coefficient b = expr.inhomogeneous_term();
   if (t == 0) {
@@ -2998,13 +2998,13 @@ BD_Shape<T>::generalized_affine_image(Variable var,
 
 	Coefficient dnm = 1;
 	Coefficient dnm1 = 1;
-	// Checks if in the two approximations there are an infinite value.
+	// Checks if in the approximation there is an infinite value.
 	bool up_sum_ninf = true;
 	for (dimension_type i = expr_space_dim; i-- > 0; ) {
 	  Coefficient expr_coeff_var = expr.coefficient(Variable(i));
 	  if (expr_coeff_var != 0) {
 	    dimension_type k = i + 1;
-	    // Select the cells to be added in the two sums.
+	    // Select the cells to be added in the sum.
 	    const T& dbm_0_k = dbm[0][k];
 	    const T& dbm_k_0 = dbm[k][0];
 	    if (expr_coeff_var > 0) {
@@ -3014,17 +3014,7 @@ BD_Shape<T>::generalized_affine_image(Variable var,
 		  Coefficient a;
 		  Coefficient b;
 		  numer_denom(dbm_0_k, a, b);
-		  // Pseudo max_com_div, ma non proprio.
-		  // Controlla se b divide perfettamente `dnm', se si` aggiorna b,
-		  // altrimenti rimette a posto dnm.
-		  // FIXME: dovrebbe trovare i divisori in comune.
-		  // Adesso noi abbiamo:
-		  // sum/dnm + a*expr_coeff_var/b =
-		  // (sum*b + a*expr_coeff_var) / (dnm*b).
 		  if (dnm % b == 0) {
-		    // In tal caso:
-		    // sum/dnm + a*expr_coeff_var/b =
-		    // (sum + a*expr_coeff_var*(dnm/b)) / (dnm).
 		    b = dnm/b;
 		    up_sum += (a*expr_coeff_var*b);
 		  }
@@ -3062,7 +3052,7 @@ BD_Shape<T>::generalized_affine_image(Variable var,
 		else
 		  up_sum_ninf = false;
 	    }
-	    // If both approximations are infinite, no constraints is added.
+	    // If the approximation is infinite, no constraint is added.
 	    if (!up_sum_ninf)
 	      break;
 	  }
@@ -3074,7 +3064,7 @@ BD_Shape<T>::generalized_affine_image(Variable var,
 	  dbm[i][num_var] = PLUS_INFINITY;
 	}
 	
-	// Added the right constraints, if necessary.
+	// Added the right constraint, if necessary.
 	if (up_sum_ninf)
 	  add_constraint(denominator*dnm*var <= up_sum);
 
@@ -3093,13 +3083,13 @@ BD_Shape<T>::generalized_affine_image(Variable var,
 
 	Coefficient dnm = 1;
 	Coefficient dnm1 = 1;
-	// Checks if in the two approximations there are an infinite value.
+	// Checks if in the approximation there is an infinite value.
 	bool low_sum_ninf = true;
 	for (dimension_type i = expr_space_dim; i-- > 0; ) {
 	  Coefficient expr_coeff_var = expr.coefficient(Variable(i));
 	  if (expr_coeff_var != 0) {
 	    dimension_type k = i + 1;
-	    // Select the cells to be added in the two sums.
+	    // Select the cells to be added in the sum.
 	    const T& dbm_0_k = dbm[0][k];
 	    const T& dbm_k_0 = dbm[k][0];
 	    if (expr_coeff_var > 0) {
@@ -3152,7 +3142,7 @@ BD_Shape<T>::generalized_affine_image(Variable var,
 		else
 		  low_sum_ninf = false;
 	    }
-	    // If both approximations are infinite, no constraints is added.
+	    // If the approximation is infinite, no constraint is added.
 	    if (!low_sum_ninf)
 	      break;
 	  }
@@ -3164,7 +3154,7 @@ BD_Shape<T>::generalized_affine_image(Variable var,
 	  dbm[i][num_var] = PLUS_INFINITY;
 	}
 	
-	// Added the right constraints, if necessary.
+	// Added the right constraint, if necessary.
 	if (low_sum_ninf)
 	  add_constraint(denominator*dnm1*var >= low_sum);
 	break;
@@ -3174,7 +3164,6 @@ BD_Shape<T>::generalized_affine_image(Variable var,
       // We already dealt with the case of a strict relation symbol.
       throw std::runtime_error("PPL internal error");
       break;
-
     }
   }
   assert(OK());
