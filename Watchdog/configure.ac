@@ -206,6 +206,7 @@ no)
   ;;
 esac
 
+CFLAGS="$COMP_FLAGS $OPT_FLAGS"
 CXXFLAGS="$COMP_FLAGS $OPT_FLAGS"
 
 # Allow additions to C and C++ compilation flags
@@ -236,17 +237,18 @@ esac
 build_watchdog_library=$enableval
 AM_CONDITIONAL(BUILD_WATCHDOG_LIBRARY, test x"$build_watchdog_library" = xyes)
 
-# Checks for libraries.
+if x"$build_watchdog_library" = xyes
+then
+  # Checks for header files.
+  AC_HEADER_TIME
+  AC_CHECK_HEADERS([sys/time.h])
 
-# Checks for header files.
-AC_HEADER_TIME
-AC_CHECK_HEADERS([sys/time.h])
-
-# Checks for library fuctions.
-AC_CHECK_FUNCS([setitimer],
-               [],
-               AC_MSG_ERROR([CANNOT BUILD THE WATCHDOG LIBRARY
+  # Checks for library fuctions.
+  AC_CHECK_FUNCS([setitimer],
+                 [],
+                 AC_MSG_ERROR([CANNOT BUILD THE WATCHDOG LIBRARY
 *** THE SYSTEM DOES NOT PROVIDE THE SETITIMER FUNCTION.]))
+fi
 
 # Libtool.
 # Turn off shared libraries during beta-testing, since they
