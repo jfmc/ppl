@@ -625,7 +625,7 @@ solve(char* file_name) {
       mpz_divexact(tmp_z, tmp_z, mpq_denref(rational_coefficient[i]));
       ppl_assign_Coefficient_from_mpz_t(ppl_coeff, tmp_z);
       ppl_Linear_Expression_add_to_coefficient(ppl_le, coefficient_index[i]-1,
-					   ppl_coeff);
+					       ppl_coeff);
     }
 
     add_constraints(ppl_le, type, rational_lb, rational_ub, den_lcm, ppl_cs);
@@ -759,8 +759,7 @@ solve(char* file_name) {
       fprintf(output_file, " = %.10g\n", mpq_get_d(tmp1_q));
     }
   }
-  else
-      fprintf(output_file, "Unfeasible problem.\n");
+
   lpx_delete_prob(lp);
 }
 
