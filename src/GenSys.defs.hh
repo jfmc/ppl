@@ -357,7 +357,16 @@ private:
   //! \p topol is <CODE>NOT_NECESSARILY_CLOSED</CODE>).
   GenSys(Topology topol, dimension_type n_rows, dimension_type n_columns);
 
-  //! Split-constructor.
+  //! \brief
+  //! Split-constructor: builds a system by stealing from \p y
+  //! the generators having index greater or equal to \p first_stolen.
+  /*!
+    \param y              The generator system being split. On entry,
+                          it is assumed that \p y has \p first_stolen + 1
+                          generators at least. On exit, it will have
+                          \p first_stolen generators.
+    \param first_stolen   The index where \p y is split.
+  */
   GenSys(GenSys& y, dimension_type first_stolen);
 
   //! Swaps \p *this with \p y.

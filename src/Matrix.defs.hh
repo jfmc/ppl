@@ -71,7 +71,15 @@ protected:
   //! Copy-constructor.
   Matrix(const Matrix& y);
 
-  //! Split-constructor.
+  //! \brief
+  //! Split-constructor: builds a matrix by stealing from \p y
+  //! the rows having index greater or equal to \p first_stolen.
+  /*!
+    \param y              The matrix being split. On entry, it is assumed
+                          that \p y has \p first_stolen + 1 rows at least.
+                          On exit, it will have \p first_stolen rows.
+    \param first_stolen   The index where \p y is split.
+  */
   Matrix(Matrix& y, dimension_type first_stolen);
   
   //! Destructor.
