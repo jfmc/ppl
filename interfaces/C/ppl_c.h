@@ -156,14 +156,14 @@ PPL_TYPE_DECLARATION(Polyhedron);
 /*!@{*/
 
 /*! \brief
-  Creates a new coefficent with value 0 and writes an handle for the
+  Creates a new coefficient with value 0 and writes an handle for the
   newly created coefficient at address \p pc.
 */
 int
 ppl_new_Coefficient __P((ppl_Coefficient_t* pc));
 
 /*! \brief
-  Creates a new coefficent with the value given by the GMP integer
+  Creates a new coefficient with the value given by the GMP integer
   \p z and writes an handle for the newly created coefficient
   at address \p pc.
 */
@@ -732,7 +732,7 @@ int
 ppl_GenSys_space_dimension __P((ppl_const_GenSys_t gs));
 
 /*! \brief
-  Removes all the generatorss from the generator system \p gs
+  Removes all the generators from the generator system \p gs
   and sets its space dimension to 0.
 */
 int
@@ -1372,7 +1372,7 @@ ppl_Polyhedron_add_constraint_and_minimize __P((ppl_Polyhedron_t ph,
 						ppl_const_Constraint_t c));
 
 /*! \brief
-  Adds a copy of the generator \p g to the system of generatorss of
+  Adds a copy of the generator \p g to the system of generators of
   \p ph.
 */
 int
@@ -1380,7 +1380,7 @@ ppl_Polyhedron_add_generator __P((ppl_Polyhedron_t ph,
 				  ppl_const_Generator_t g));
 
 /*! \brief
-  Adds a copy of the generator \p g to the system of generatorss of
+  Adds a copy of the generator \p g to the system of generators of
   \p ph.  Returns a positive integer if the resulting polyhedron is
   non-empty; returns 0 if it is empty.  Upon successful return, \p ph
   is guaranteed to be minimized.

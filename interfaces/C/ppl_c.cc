@@ -1485,7 +1485,7 @@ private:
   //! Cache for computing the maximum dimension in the codomain.
   mutable dimension_type max_in_codomain_;
 
-  //! Cache for computing emptyness:
+  //! Cache for computing emptiness:
   //! -1 if we still don't know, 0 if not empty, 1 if empty.
   mutable int empty;
 
