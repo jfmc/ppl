@@ -70,7 +70,7 @@ TESTS = $(WATCHDOG_TESTS) \
 	smm1 \
 	timeelapse1 timeelapse2 timeelapse3 timeelapse4 timeelapse5 \
 	universe1 universe2 universe3 universe4 universe5 universe6 \
-	wideningcc921 wideningcc922
+	wideningcc921 wideningcc922 wideningcc923
 
 NNCinclusion1_SOURCES = NNCinclusion1.cc
 
@@ -198,6 +198,7 @@ universe6_SOURCES = universe6.cc
 
 wideningcc921_SOURCES = wideningcc921.cc
 wideningcc922_SOURCES = wideningcc922.cc
+wideningcc923_SOURCES = wideningcc923.cc
 
 watchdog1_SRCS = watchdog1.cc timings.cc timings.hh
 

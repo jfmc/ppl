@@ -42,7 +42,7 @@ try_widening_CC92_assign(C_Polyhedron& ph1, const C_Polyhedron& ph2,
   ph1.widening_CC92_assign(ph2);
 
 #if NOISY
-  print_generators(ph1, "*** After poly_hull_assign ***");
+  print_generators(ph1, "*** After widening_CC92_assign ***");
 #endif
 
   return ph1 == known_result;

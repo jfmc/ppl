@@ -34,27 +34,31 @@ int
 main() {
   set_handlers();
 
+  // This is the example of Figure 3 in [BagnaraRZH02TR].
   Variable A(0);
-  Variable B(1);
 
-  C_Polyhedron ph1(2);
-  ph1.add_constraint(A >= 2);
-  ph1.add_constraint(B >= 0);
+  NNC_Polyhedron ph1(1);
+  ph1.add_constraint(A > 0);
+  ph1.add_constraint(A < 2);
 
-  C_Polyhedron ph2(2);
-  ph2.add_constraint(A >= 0);
-  ph2.add_constraint(B >= 0);
-  ph2.add_constraint(A-B >= 2);
+  NNC_Polyhedron ph4(1);
+  ph4.add_constraint(4*A >= 1);
+  ph4.add_constraint(4*A <= 3);
+
+  NNC_Polyhedron ph = ph4;
+  ph.intersection_assign_and_minimize(ph1);
+  // At this point, ph and ph4 are two different representations
+  // of the same NNC polyhedron.
 
 #if NOISY
-  print_constraints(ph1, "*** ph1 ***");
-  print_constraints(ph2, "*** ph2 ***");
+  print_constraints(ph4, "*** ph4 ***");
+  print_constraints(ph, "*** ph ***");
 #endif
 
-  ph1.widening_CC92_assign(ph2);
+  ph.widening_CC92_assign(ph4);
 
 #if NOISY
-  print_constraints(ph1, "*** After widening_CC92_assign ***");
+  print_constraints(ph, "*** After widening_CC92_assign ***");
 #endif
 
   return 0;
