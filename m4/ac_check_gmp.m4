@@ -67,8 +67,18 @@ AC_MSG_CHECKING([size of GMP mp_limb_t])
 ac_cv_sizeof_mp_limb_t=none
 for size in 2 4 8
 do
-  AC_COMPILE_IFELSE([AC_LANG_SOURCE([[#include <gmp.h>]],
-    [[switch (0) case 0: case (sizeof(mp_limb_t) == $size):;]])],
+  AC_COMPILE_IFELSE([AC_LANG_SOURCE([[
+#include <gmp.h>
+
+int main() {
+  switch (0) {
+  case 0:
+  case (sizeof(mp_limb_t) == $size):
+    ;
+  }
+  return 0;
+}
+]])],
     ac_cv_sizeof_mp_limb_t=$size; break)
 done
 AC_MSG_RESULT($size)
