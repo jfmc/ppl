@@ -55,23 +55,27 @@ The following people gave help that was fundamental to the project:
   + Alessandro Zaccagnini [12] is always a very valuable source of
     mathematical advice.
 
+  + Bruno Haible [13] made it possible (by writing the AC_LIB_LINKFLAGS
+    macro and explaining how to use it) to allow the use of versions of
+    the GMP library installed into nonstandard places.
+
 This work has been partly supported by the following projects:
 
   1. University of Parma's FIL scientific research project (ex 60%)
      ``Pure and Applied Mathematics'';
 
   2. MURST project ``Automatic Program Certification by Abstract
-     Interpretation'' [13];
+     Interpretation'' [14];
 
   3. MURST project ``Abstract Interpretation, Type Systems and
-     Control-Flow Analysis'' [14].
+     Control-Flow Analysis'' [15].
 
   4. MURST project ``Automatic Aggregate- and Number-Reasoning for
      Computing: from Decision Algorithms to Constraint Programming
-     with Multisets, Sets, and Maps'' [15].
+     with Multisets, Sets, and Maps'' [16].
 
   5. MURST project ``Constraint Based Verification of Reactive
-     Systems'' [16].
+     Systems'' [17].
 
 --------
 
@@ -87,7 +91,8 @@ This work has been partly supported by the following projects:
 [10] http://www.cs.unipr.it/cTI/
 [11] http://www.cs.unipr.it/China/
 [12] http://www.math.unipr.it/~zaccagni/
-[13] http://theory.sci.univr.it/projects/p40/
-[14] http://strudel.di.unipi.it/cofin00/
-[15] http://www.cs.unipr.it/Projects/COFIN01
-[16] http://www.disi.unige.it/person/DelzannoG/cover/
+[13] http://www.haible.de/bruno/
+[14] http://theory.sci.univr.it/projects/p40/
+[15] http://strudel.di.unipi.it/cofin00/
+[16] http://www.cs.unipr.it/Projects/COFIN01
+[17] http://www.disi.unige.it/person/DelzannoG/cover/

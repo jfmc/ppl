@@ -22,6 +22,12 @@ o  The type of output functions for the class Variable,
    void Output_Function_Type(std::ostream& s, const Variable& v).
    In other words, `v' is now passed by const reference and not by value.
 
+o  Thanks to Bruno Haible, it is now possible to use versions of the
+   GMP library installed into nonstandard places.  The new configure
+   options --with-libgmp-prefix[=DIR] and --with-libgmpxx-prefix[=DIR]
+   substitute the old (and not really working) options
+   --with-gmp-includes=DIR and --with-gmp-dir=DIR.
+
 
 Bugfixes
 ========

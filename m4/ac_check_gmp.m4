@@ -23,31 +23,25 @@ dnl site: http://www.cs.unipr.it/ppl/ .
 dnl
 AC_DEFUN([AC_CHECK_GMP],
 [
-AC_ARG_WITH(gmp-includes,
-            [  --with-gmp-includes=DIR GMP include files are in DIR],
-            gmp_includes=${with_gmp_includes}
-            gmp_includes_option="-I${gmp_includes}")
+dnl Check how to link with libgmp.
+AC_LIB_LINKFLAGS([gmp])
 
-gmp_library_option="-lgmpxx -lgmp"
-AC_ARG_WITH(gmp-dir,
-            [  --with-gmp-dir=DIR      GMP library files are in DIR],
-            gmp_dir=${with_gmp_dir}
-            gmp_library_option="-L${gmp_dir} ${gmp_library_option}")
+dnl Check how to link with libgmpxx.
+AC_LIB_LINKFLAGS([gmpxx], [gmp])
 
 ac_save_LIBS="$LIBS"
-LIBS="${gmp_library_option} $LIBS"
-ac_save_CPPFLAGS="$CPPFLAGS"
-CPPFLAGS="${gmp_includes_option} $CPPFLAGS"
-
+LIBS="$LIBS $LIBGMPXX"
 AC_LANG_PUSH(C++)
 
 AC_MSG_CHECKING([for the GMP library])
 AC_RUN_IFELSE([AC_LANG_SOURCE([[
-#include <gmp.h>
+#include <gmpxx.h>
+
+using namespace std;
 
 int main() {
-  mpz_t pie;
-  return 0;
+  mpz_class n("3141592653589793238462643383279502884");
+  exit(0);
 }
 ]])],
   AC_MSG_RESULT(yes)
@@ -60,29 +54,6 @@ int main() {
 have_gmp=${ac_cv_have_gmp}
 
 if test x"$ac_cv_have_gmp" = xyes
-then
-
-AC_MSG_CHECKING([whether GMP has been compiled with support for C++])
-AC_RUN_IFELSE([AC_LANG_SOURCE([[
-#include <gmpxx.h>
-
-using namespace std;
-
-int main() {
-  mpz_class pie("3141592653589793238462643383279502884");
-  exit(0);
-}
-]])],
-  AC_MSG_RESULT(yes)
-  ac_cv_have_gmpxx=yes,
-  AC_MSG_RESULT(no)
-  ac_cv_have_gmpxx=no,
-  AC_MSG_RESULT(no)
-  ac_cv_have_gmpxx=no)
-
-have_gmpxx=${ac_cv_have_gmpxx}
-
-if test x"$ac_cv_have_gmpxx" = xyes
 then
 
 AC_MSG_CHECKING([size of GMP mp_limb_t])
@@ -133,7 +104,7 @@ x_free(void*, size_t) {
 int main() {
   mp_set_memory_functions(x_malloc, x_realloc, x_free);
   try {
-    mpz_class pie("3141592653589793238462643383279502884");
+    mpz_class n("3141592653589793238462643383279502884");
   }
   catch (bad_alloc) {
     exit(0);
@@ -160,9 +131,9 @@ AC_DEFINE_UNQUOTED(GMP_SUPPORTS_EXCEPTIONS, $value,
 
 fi
 
-fi
-
 AC_LANG_POP(C++)
-CPPFLAGS="$ac_save_CPPFLAGS"
 LIBS="$ac_save_LIBS"
+
+dnl We use libtool, therefore we take $LTLIBGMPXX, not $LIBGMPXX.
+gmp_library_option="$LTLIBGMPXX"
 ])
