@@ -24,13 +24,30 @@ site: http://www.cs.unipr.it/ppl/ . */
 #ifndef PPL_ppl_c_h
 #define PPL_ppl_c_h 1
 
-/*! \defgroup PPL_C_interface C Language Interface */
-/*@{*/
+/*! \defgroup PPL_C_interface C Language Interface
 
-/*
-  FIXME: a detailed description with examples should be added
-  to the above Doxygen comment.
+All the declarations needed to use the C interface of the Parma Polyhedra
+Library (preprocessor symbols, data types, variables and functions) are
+collected in the header file <CODE>ppl_c.h</CODE>.
+This file, that is designed to work with pre-ANSI and ANSI C compilers
+as well as C99 and C++ compilers, should be included, either directly
+or through some other header file, with the directive
+\code
+#include <ppl_c.h>
+\endcode
+
+The name space of the PPL's C interface is <CODE>PPL_*</CODE> for
+preprocessor symbols, enumeration values and variables,
+and <CODE>ppl_*</CODE> for data types and function names,
+
+TO BE CONTINUED HERE.
+
+Look into the `interfaces/C/lpenum/' directory.  It contains a toy
+LP solver written in C and using the PPL's C interface.  There you can
+find examples of how to use several functions provided by that interface.
 */
+
+/*@{*/
 
 /*
   For some reason, GMP up to and including version 4.1.2 requires
@@ -1864,7 +1881,7 @@ ppl_Polyhedron_concatenate_assign __P((ppl_Polyhedron_t x,
   $1 = ($*1_type*) malloc($2 * sizeof(ppl_dimension_type) );
   if ($1) {
     for(i = $2; i-- > 0; ) {
-      $1[i] = caml_uint_val(caml_array_nth($input, i));
+      $1[i] = caml_val_uint(caml_array_nth($input, i));
     }
   }
 }
