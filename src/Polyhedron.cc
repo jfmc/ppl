@@ -1729,11 +1729,11 @@ PPL::Polyhedron::poly_hull_assign_and_minimize(const Polyhedron& y) {
       assert(OK(true) && y.OK());
       return true;
     }
-    add_and_minimize(true, x.gen_sys, x.con_sys, x.sat_g);
+    add_and_minimize(false, x.gen_sys, x.con_sys, x.sat_g);
   }
   else {
     y.obtain_sorted_generators();
-    add_and_minimize(true, x.gen_sys, x.con_sys, x.sat_g, y.gen_sys);
+    add_and_minimize(false, x.gen_sys, x.con_sys, x.sat_g, y.gen_sys);
   }
   x.clear_sat_c_up_to_date();
 
@@ -3912,8 +3912,7 @@ PPL::Polyhedron::BHRZ03_averaging_constraints(Polyhedron& x,
 #endif
 
 #if 0 //#ifndef NDEBUG
-    std::cout << "BHRZ03: stabilizing on averaging constraints"
-	      << std::endl;
+    std::cout << "BHRZ03: averaging constraints" << std::endl;
 #endif
 #if PPL_STATISTICS
     statistics->technique.combining_constraints++;
@@ -4054,8 +4053,7 @@ PPL::Polyhedron::BHRZ03_evolving_points(Polyhedron& x,
 #endif
 
 #if 0 //#ifndef NDEBUG
-      std::cout << "BHRZ03: stabilizing on evolving points"
-		<< std::endl;
+      std::cout << "BHRZ03: evolving points" << std::endl;
 #endif
 #if PPL_STATISTICS
       statistics->technique.evolving_points++;
@@ -4075,8 +4073,7 @@ PPL::Polyhedron::BHRZ03_evolving_points(Polyhedron& x,
 
   if (stabilizing) {
 #if 0 //#ifndef NDEBUG
-    std::cout << "BHRZ03: stabilizing on evolving points"
-	      << std::endl;
+    std::cout << "BHRZ03: evolving points" << std::endl;
 #endif
 #if PPL_STATISTICS
     statistics->technique.evolving_points++;
@@ -4219,8 +4216,7 @@ PPL::Polyhedron::BHRZ03_evolving_rays(Polyhedron& x,
 #endif
 
 #if 0 //#ifndef NDEBUG
-    std::cout << "BHRZ03: stabilizing on evolving rays"
-	      << std::endl;
+    std::cout << "BHRZ03: evolving rays" << std::endl;
 #endif
 #if PPL_STATISTICS
     statistics->technique.evolving_rays++;
@@ -4335,14 +4331,14 @@ PPL::Polyhedron::BHRZ03_widening_assign(const Polyhedron& y) {
 #if PPL_STATISTICS
   statistics->technique.h79++;
 #endif
+#if 0
+  std::cout << "BHRZ03: H79" << std::endl;
+#endif
 
 #if NDEBUG
   // Check for stabilization.
   x.minimize();
   assert(is_BHRZ03_stabilizing(x, y));
-#if 0
-  std::cout << "BHRZ03: stabilizing on H79 widening" << std::endl;
-#endif
 #endif //#if NDEBUG
 
   assert(x.OK(true));
