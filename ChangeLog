@@ -1,3 +1,527 @@
+2004-08-19 Thursday 15:55  Patricia M. Hill <hill@comp.leeds.ac.uk>
+
+	* doc/definitions.dox (1.142): This is a start in revising the
+	  introductory sections to the manual so as to allow for the
+	  inclusion of domains other than that of convex polyhedra.
+
+2004-08-19 Thursday 14:34  Roberto Bagnara <bagnara@cs.unipr.it>
+
+	* doc/: devref-browse.doxyconf-latex.in,
+	  devref-print.doxyconf-latex.in, devref.doxyconf-html.in
+	  (ppl-0_6-branch.[2,2,3]), devref-browse.doxyconf-latex.in (1.40),
+	  devref-print.doxyconf-latex.in (1.40), devref.doxyconf-html.in
+	  (1.40): AskTell should not appear in the develper's reference.
+
+2004-08-19 Thursday 14:13  Enea Zaffanella <zaffanella@cs.unipr.it>
+
+	* src/Widening_Function.defs.hh (ppl-0_6-branch.1): Avoided a
+	  warning in the devref documentation.
+
+2004-08-19 Thursday 14:09  Enea Zaffanella <zaffanella@cs.unipr.it>
+
+	* src/Widening_Function.defs.hh (1.4): Avoided a warning in the
+	  devref documentation.
+
+2004-08-19 Thursday 13:43  Roberto Bagnara <bagnara@cs.unipr.it>
+
+	* src/: AskTell.defs.hh (ppl-0_6-branch.2), AskTell.defs.hh (1.24):
+	  Previous change reverted.
+
+2004-08-19 Thursday 12:42  Enea Zaffanella <zaffanella@cs.unipr.it>
+
+	* doc/: devref-browse.doxyconf-latex.in (1.39),
+	  devref-print.doxyconf-latex.in (1.39), devref.doxyconf-html.in
+	  (1.39): Widening_Function and Polyhedra_PowerSet should appear in
+	  all the devref manuals.
+
+2004-08-19 Thursday 12:40  Enea Zaffanella <zaffanella@cs.unipr.it>
+
+	* src/AskTell.defs.hh (1.23): AskTell should not appear in the user
+	  documentation until working.
+
+2004-08-19 Thursday 12:34  Enea Zaffanella <zaffanella@cs.unipr.it>
+
+	* doc/: devref-browse.doxyconf-latex.in,
+	  devref-print.doxyconf-latex.in, devref.doxyconf-html.in
+	  (ppl-0_6-branch.[1,1,2]): Widening_Function should appear in the
+	  devref manuals.
+
+2004-08-19 Thursday 12:28  Enea Zaffanella <zaffanella@cs.unipr.it>
+
+	* doc/devref.doxyconf-html.in (ppl-0_6-branch.1):
+	  Polyhedra_PowerSet has to also appear in the developers manual.
+
+2004-08-19 Thursday 12:27  Enea Zaffanella <zaffanella@cs.unipr.it>
+
+	* src/AskTell.defs.hh (ppl-0_6-branch.1): AskTell construction
+	  should not appear in the user manuals.
+
+2004-08-18 Wednesday 23:06  Roberto Bagnara <bagnara@cs.unipr.it>
+
+	* src/: Makefile.am (ppl-0_6-branch.1), Makefile.am (1.76): AskTell
+	  is unfinished and not working: it should not be distributed.
+
+2004-08-18 Wednesday 22:58  Roberto Bagnara <bagnara@cs.unipr.it>
+
+	* Watchdog/: configure.ac (ppl-0_6-branch.1), ChangeLog (1.8),
+	  configure.ac (1.20): Version number bumped.
+
+2004-08-18 Wednesday 18:32  Roberto Bagnara <bagnara@cs.unipr.it>
+
+	* configure.ac (ppl-0_6-branch.1): Update version.
+
+2004-08-18 Wednesday 18:31  Roberto Bagnara <bagnara@cs.unipr.it>
+
+	* Watchdog/ChangeLog, ChangeLog (ppl-0_6-branch.[1,1]): Mark
+	  ChangeLog.
+
+2004-08-18 Wednesday 15:08  Roberto Bagnara <bagnara@cs.unipr.it>
+
+	* ppl.spec.in (1.21): Distribute more documentation.
+
+2004-08-18 Wednesday 14:54  Enea Zaffanella <zaffanella@cs.unipr.it>
+
+	* doc/: devref-browse.doxyconf-latex.in (1.38),
+	  devref-print.doxyconf-latex.in (1.38): The Polyhedra_PowerSet
+	  documentation has to appear in the devref manual too.
+
+2004-08-18 Wednesday 14:53  Enea Zaffanella <zaffanella@cs.unipr.it>
+
+	* src/: Widening_Function.defs.hh (1.3), algorithms.hh (1.29):
+	  Applied the Doxygen \relates command in a couple of places.
+
+2004-08-18 Wednesday 14:52  Enea Zaffanella <zaffanella@cs.unipr.it>
+
+	* tests/: bgp99extrapolation1.cc (1.4), bgp99extrapolation2.cc
+	  (1.5), bhz03widening1.cc (1.5), bhz03widening2.cc (1.6),
+	  bhz03widening3.cc (1.4), bhz03widening6.cc (1.4): Modified to
+	  comply with the new interface.
+
+2004-08-18 Wednesday 14:51  Enea Zaffanella <zaffanella@cs.unipr.it>
+
+	* src/: Polyhedra_PowerSet.defs.hh (1.28),
+	  Polyhedra_PowerSet.inlines.hh (1.39): Added doxygen
+	  documentation.  Removed some methods that are now subsumed by the
+	  generic ones.
+
+2004-08-18 Wednesday 13:24  Roberto Bagnara <bagnara@cs.unipr.it>
+
+	* doc/README (1.3): Last change reverted.
+
+2004-08-18 Wednesday 13:09  Roberto Bagnara <bagnara@cs.unipr.it>
+
+	* README (1.23): Ready for the release.
+
+2004-08-18 Wednesday 13:05  Patricia M. Hill <hill@comp.leeds.ac.uk>
+
+	* doc/README (1.2): Revised.
+
+2004-08-18 Wednesday 11:51  Roberto Bagnara <bagnara@cs.unipr.it>
+
+	* doc/Makefile.am (1.29): Installation of the documentation now
+	  works both for distribution archives and for CVS versions.
+
+2004-08-18 Wednesday 11:48  Roberto Bagnara <bagnara@cs.unipr.it>
+
+	* src/Polyhedra_PowerSet.inlines.hh (1.38): Include
+	  "Widening_Function.defs.hh" instead of
+	  "Widening_Function.types.hh".
+
+2004-08-18 Wednesday 10:06  Roberto Bagnara <bagnara@cs.unipr.it>
+
+	* TODO (1.84): Ready for the release.
+
+2004-08-18 Wednesday 09:52  Enea Zaffanella <zaffanella@cs.unipr.it>
+
+	* tests/: bhz03widening4.cc (1.3), bhz03widening5.cc (1.3):
+	  Exploiting helper functions widen_fun().
+
+2004-08-18 Wednesday 09:50  Enea Zaffanella <zaffanella@cs.unipr.it>
+
+	* src/Polyhedra_PowerSet.inlines.hh (1.37): Exploiting helper
+	  function widen_fun().
+
+2004-08-18 Wednesday 09:48  Patricia M. Hill <hill@comp.leeds.ac.uk>
+
+	* src/: GenSys.cc (1.86), Polyhedron.types.hh (1.12),
+	  Polyhedron_widenings.cc (1.22), conversion.cc (1.54), simplify.cc
+	  (1.36): Comments improved.
+
+2004-08-18 Wednesday 09:48  Roberto Bagnara <bagnara@cs.unipr.it>
+
+	* interfaces/C/ppl_c.cc (1.106), interfaces/C/ppl_c.h.in (1.32),
+	  src/C_Polyhedron.defs.hh (1.23), src/C_Polyhedron.inlines.hh
+	  (1.17), src/NNC_Polyhedron.defs.hh (1.26),
+	  src/NNC_Polyhedron.inlines.hh (1.18), tests/Makefile.am (1.206),
+	  tests/exceptions3.cc (1.2): Start dealing with requests to build
+	  "over-sized" objects.
+
+2004-08-18 Wednesday 09:47  Enea Zaffanella <zaffanella@cs.unipr.it>
+
+	* src/: Widening_Function.defs.hh (1.2),
+	  Widening_Function.inlines.hh (1.3): Added helper function
+	  widen_fun() to simplify the creation of widening function
+	  objects. Added brief documentation.
+
+2004-08-18 Wednesday 09:25  Roberto Bagnara <bagnara@cs.unipr.it>
+
+	* tests/: linearpartition2.cc (1.14), linearpartition3.cc (1.14):
+	  Fixed.
+
+2004-08-18 Wednesday 09:16  Patricia M. Hill <hill@comp.leeds.ac.uk>
+
+	* src/: AskTell.defs.hh (1.22), ConSys.defs.hh (1.84),
+	  Determinate.defs.hh (1.42), GenSys.defs.hh (1.97),
+	  Polyhedra_PowerSet.defs.hh (1.27), Polyhedron.defs.hh (1.241),
+	  Polyhedron.inlines.hh (1.94): Comments improved.
+
+2004-08-18 Wednesday 08:48  Roberto Bagnara <bagnara@cs.unipr.it>
+
+	* tests/linearpartition1.cc (1.14): Fixed.
+
+2004-08-17 Tuesday 23:58  Roberto Bagnara <bagnara@cs.unipr.it>
+
+	* src/Widening_Function.inlines.hh (1.2):
+	  Limited_Widening_Function::operator() fixed.
+
+2004-08-17 Tuesday 23:26  Roberto Bagnara <bagnara@cs.unipr.it>
+
+	* doc/Makefile.am (1.28): Install documentation in text format.
+
+2004-08-17 Tuesday 21:48  Enea Zaffanella <zaffanella@cs.unipr.it>
+
+	* tests/: bhz03widening4.cc (1.2), bhz03widening5.cc (1.2):
+	  Corrected to work with the new implementation.
+
+2004-08-17 Tuesday 21:47  Enea Zaffanella <zaffanella@cs.unipr.it>
+
+	* src/: Makefile.am (1.75), Polyhedra_PowerSet.defs.hh (1.26),
+	  Polyhedra_PowerSet.inlines.hh (1.36), Widening_Function.defs.hh
+	  (1.1), Widening_Function.inlines.hh (1.1),
+	  Widening_Function.types.hh (1.1): Factorized a lot of code
+	  related to widenings of powersets by using function objects
+	  instead of method pointers.
+
+2004-08-17 Tuesday 21:43  Enea Zaffanella <zaffanella@cs.unipr.it>
+
+	* src/: Determinate.defs.hh (1.41), Determinate.inlines.hh (1.39),
+	  algorithms.hh (1.28): Improved a little bit the docuemntation for
+	  the Determinate construction.  Removed a few seemingly useless
+	  methods. The polyhedron() methods renamed as element().
+
+2004-08-17 Tuesday 19:43  Abramo Bagnara
+
+	* src/checked_mpq.inlines.hh (altnum.8): Fixed unhandled native
+	  integer type behaviour.
+
+2004-08-17 Tuesday 19:39  Abramo Bagnara
+
+	* src/checked_mpz.inlines.hh (altnum.9): Fixed unhandled native
+	  integer type behaviour.
+
+2004-08-17 Tuesday 19:33  Abramo Bagnara
+
+	* src/Makefile.am (altnum.6): Added Limits.hh
+
+2004-08-17 Tuesday 19:33  Abramo Bagnara
+
+	* src/checked_float.inlines.hh (altnum.6): Fixed float96_t format
+	  oddities. Cleaned code.
+
+2004-08-17 Tuesday 19:31  Abramo Bagnara
+
+	* src/: Checked_Number.defs.hh, Checked_Number.inlines.hh,
+	  Limits.hh, checked.defs.hh, checked_int.inlines.hh
+	  (altnum.[4,5,1,7,6]): Fixed unhandled native integer type
+	  behaviour.
+
+2004-08-17 Tuesday 17:05  Roberto Bagnara <bagnara@cs.unipr.it>
+
+	* doc/gpl.txt (1.2): Spacing fixed.
+
+2004-08-17 Tuesday 17:04  Roberto Bagnara <bagnara@cs.unipr.it>
+
+	* Makefile.am (1.25): Distribute also README.configure.
+
+2004-08-17 Tuesday 16:45  Roberto Bagnara <bagnara@cs.unipr.it>
+
+	* TODO (1.83): One less thing to do.
+
+2004-08-17 Tuesday 14:12  Roberto Bagnara <bagnara@cs.unipr.it>
+
+	* BUGS (1.4), CREDITS (1.13): Formatted.
+
+2004-08-17 Tuesday 14:12  Patricia M. Hill <hill@comp.leeds.ac.uk>
+
+	* README.configure (1.5): Corrected a typo and improved the
+	  English.
+
+2004-08-17 Tuesday 13:20  Patricia M. Hill <hill@comp.leeds.ac.uk>
+
+	* BUGS (1.3), CREDITS (1.12), STANDARDS (1.14): English
+	  improvements made.
+
+2004-08-17 Tuesday 12:43  Roberto Bagnara <bagnara@cs.unipr.it>
+
+	* src/: Determinate.defs.hh (1.40), Determinate.inlines.hh (1.38),
+	  PowerSet.defs.hh (1.47), PowerSet.inlines.hh (1.57):
+	  Determinate::operator+(), Determinate::operator*(),
+	  PowerSet::operator+() and PowerSet::operator*() removed.
+
+2004-08-17 Tuesday 12:40  Roberto Bagnara <bagnara@cs.unipr.it>
+
+	* CREDITS (1.11): Small English improvement.
+
+2004-08-17 Tuesday 11:05  Patricia M. Hill <hill@comp.leeds.ac.uk>
+
+	* tests/bhz03widening2.cc (1.5): Redundant code removed.
+
+2004-08-17 Tuesday 11:01  Enea Zaffanella <zaffanella@cs.unipr.it>
+
+	* src/: Determinate.defs.hh (1.39), Determinate.inlines.hh (1.37):
+	  The methods grouped according to constness and space-dim
+	  preservation, as done for the class Polyhedron.  Two inline
+	  directives moved from *.defs.hh into *.inlines.hh.
+
+2004-08-17 Tuesday 10:56  Patricia M. Hill <hill@comp.leeds.ac.uk>
+
+	* interfaces/Prolog/pl_check.pl (1.94): Tests for adding and
+	  removing dimensions now include cases where no dimensions are
+	  added or removed and also when all the dimensions are removed.
+
+2004-08-17 Tuesday 10:38  Patricia M. Hill <hill@comp.leeds.ac.uk>
+
+	* doc/definitions.dox (1.141): The descriptions of the add and
+	  remove dimensions operators improved.  The description of the
+	  concatenate operation moved to just before the description of the
+	  add dimensions operators.
+
+2004-08-17 Tuesday 10:30  Roberto Bagnara <bagnara@cs.unipr.it>
+
+	* NEWS (1.98), configure.ac (1.118), doc/Makefile.am (1.27): The
+	  documentation for users, in PostScript, PDF and HTML formats, is
+	  now installed in a standard place by `make install'.
+
+2004-08-17 Tuesday 09:49  Enea Zaffanella <zaffanella@cs.unipr.it>
+
+	* src/Determinate.defs.hh (1.38): Small improvements.
+
+2004-08-17 Tuesday 09:48  Enea Zaffanella <zaffanella@cs.unipr.it>
+
+	* doc/definitions.dox (1.140): Added a section on constructions on
+	  polyhedra.
+
+2004-08-17 Tuesday 09:48  Enea Zaffanella <zaffanella@cs.unipr.it>
+
+	* src/Polyhedra_PowerSet.defs.hh (1.25): Started documenting the
+	  widening operators.
+
+2004-08-17 Tuesday 09:46  Enea Zaffanella <zaffanella@cs.unipr.it>
+
+	* src/: BHRZ03_Certificate.defs.hh (1.4),
+	  BHRZ03_Certificate.inlines.hh (1.2), H79_Certificate.cc (1.2),
+	  H79_Certificate.defs.hh (1.3), H79_Certificate.inlines.hh (1.2):
+	  H79_Certificate simplified by removing useless methods. The
+	  documentation of BHRZ03_Certificate method is_stabilizing() now
+	  only appears in the developers manual. Both classes now appear in
+	  the user manual, as they provide documentation of the method
+	  needed by any new certificate.
+
+2004-08-17 Tuesday 09:39  Patricia M. Hill <hill@comp.leeds.ac.uk>
+
+	* interfaces/Prolog/Prolog_interface.dox (1.111): Several minor
+	  "English" corrections and some cross references improved or
+	  added.
+
+2004-08-17 Tuesday 09:37  Patricia M. Hill <hill@comp.leeds.ac.uk>
+
+	* doc/definitions.dox (1.139): An anchor has been added and minor
+	  English improvement.
+
+2004-08-17 Tuesday 08:05  Patricia M. Hill <hill@comp.leeds.ac.uk>
+
+	* tests/: bhz03widening3.cc (1.3), bhz03widening6.cc (1.3),
+	  boundingbox2.cc (1.21), boundingbox4.cc (1.10): Comments revised
+	  in boundinbox2.cc and boundingbox4.cc.  Known result in
+	  bhz03widening3.cc added and checked.	New test added to
+	  bhz03widening6.cc for the case when the multiset ordering wrt the
+	  lgo is converging.
+
+2004-08-17 Tuesday 00:29  Roberto Bagnara <bagnara@cs.unipr.it>
+
+	* tests/bgp99extrapolation2.cc (1.4): Be quiet.
+
+2004-08-17 Tuesday 00:29  Roberto Bagnara <bagnara@cs.unipr.it>
+
+	* tests/folddims2.cc (1.2): Removed test that was already made in
+	  folddims1.cc.  Comment revised.
+
+2004-08-17 Tuesday 00:27  Roberto Bagnara <bagnara@cs.unipr.it>
+
+	* tests/Makefile.am (1.205): Spurious backslash removed.
+
+2004-08-17 Tuesday 00:27  Roberto Bagnara <bagnara@cs.unipr.it>
+
+	* tests/bgp99extrapolation2.cc (1.3): Completed (and made more
+	  interesting).
+
+2004-08-16 Monday 21:42  Patricia M. Hill <hill@comp.leeds.ac.uk>
+
+	* tests/: Makefile.am (1.204), folddims2.cc (1.1): Tests for NNC
+	  polyhedra added.
+
+2004-08-16 Monday 21:07  Patricia M. Hill <hill@comp.leeds.ac.uk>
+
+	* tests/bgp99extrapolation2.cc (1.2): Comment corrected.
+
+2004-08-16 Monday 20:07  Roberto Bagnara <bagnara@cs.unipr.it>
+
+	* tests/h79widening6.cc (1.7): An example taken from CH78.
+
+2004-08-16 Monday 19:40  Roberto Bagnara <bagnara@cs.unipr.it>
+
+	* tests/: Makefile.am (1.203), bgp99extrapolation2.cc (1.1),
+	  h79widening6.cc (1.6): Test program h79widening6.cc renamed
+	  bgp99extrapolation2.cc.
+
+2004-08-16 Monday 19:27  Roberto Bagnara <bagnara@cs.unipr.it>
+
+	* ppl.spec.in (1.20): Added the `ppl_lcdd' program to the main
+	  package.  Require gcc-c++ to be exactly version 3.4.1.
+
+2004-08-16 Monday 19:27  Roberto Bagnara <bagnara@cs.unipr.it>
+
+	* demos/ppl_lcdd/Makefile.am (1.3): The `ppl_lcdd' program will be
+	  installed in `bindir'.
+
+2004-08-16 Monday 18:53  Roberto Bagnara <bagnara@cs.unipr.it>
+
+	* ppl.lsm.in (1.5), ppl.spec.in (1.19): Updated.
+
+2004-08-16 Monday 18:52  Roberto Bagnara <bagnara@cs.unipr.it>
+
+	* doc/definitions.dox (1.138): Definition of the folding operation
+	  improved.
+
+2004-08-16 Monday 18:50  Roberto Bagnara <bagnara@cs.unipr.it>
+
+	* TODO (1.82): Some items postponed.  Main points of PPL 0.7
+	  drafted.
+
+2004-08-16 Monday 18:41  Roberto Bagnara <bagnara@cs.unipr.it>
+
+	* README (1.22): Typo fixed.
+
+2004-08-16 Monday 18:30  Roberto Bagnara <bagnara@cs.unipr.it>
+
+	* Watchdog/README (1.7): Updated.
+
+2004-08-16 Monday 18:20  Enea Zaffanella <zaffanella@cs.unipr.it>
+
+	* src/: BHRZ03_Certificate.defs.hh (1.3), H79_Certificate.defs.hh
+	  (1.2): Fixed the documentation of the certificates (for now, this
+	  will only appear in the developer manual).
+
+2004-08-16 Monday 18:19  Enea Zaffanella <zaffanella@cs.unipr.it>
+
+	* src/: Polyhedra_PowerSet.defs.hh (1.24),
+	  Polyhedra_PowerSet.inlines.hh (1.35): Fixed header inclusions.
+
+2004-08-16 Monday 18:15  Enea Zaffanella <zaffanella@cs.unipr.it>
+
+	* src/Determinate.defs.hh (1.37), src/Polyhedron.defs.hh (1.240),
+	  doc/definitions.dox (1.137): Added a section about concatenation
+	  of polyhedra to the introduction of the user manual. Now the
+	  documentation of concatenate_assign() refers to it.
+
+2004-08-16 Monday 18:01  Roberto Bagnara <bagnara@cs.unipr.it>
+
+	* interfaces/Prolog/XSB/ppl_xsb.cc (1.54): Prolog_raise_exception()
+	  implemented.
+
+2004-08-16 Monday 17:15  Roberto Bagnara <bagnara@cs.unipr.it>
+
+	* CREDITS (1.10): Specify that Andrea is with the University of
+	  Parma.  Email address omitted.
+
+2004-08-16 Monday 17:13  Roberto Bagnara <bagnara@cs.unipr.it>
+
+	* README (1.21): Formatting changes.
+
+2004-08-16 Monday 17:13  Patricia M. Hill <hill@comp.leeds.ac.uk>
+
+	* interfaces/Prolog/pl_check.pl (1.93): This test file now checks
+	  correctly that the exceptions do work ok.
+
+2004-08-16 Monday 17:11  Roberto Bagnara <bagnara@cs.unipr.it>
+
+	* README (1.20): Updated.
+
+2004-08-16 Monday 16:51  Roberto Bagnara <bagnara@cs.unipr.it>
+
+	* README.configure (1.4): Added instructions about the use of
+	  Comeau C/C++ 4.3.3.
+
+2004-08-16 Monday 16:23  Roberto Bagnara <bagnara@cs.unipr.it>
+
+	* NEWS (1.97): Announce the new README.configure file.
+
+2004-08-16 Monday 16:11  Roberto Bagnara <bagnara@cs.unipr.it>
+
+	* NEWS (1.96): Drafted an announcement for the new Determinate,
+	  PowerSet and Polyhedra_PowerSet classes.
+
+2004-08-16 Monday 16:00  Roberto Bagnara <bagnara@cs.unipr.it>
+
+	* src/ConSys.inlines.hh (1.33): Fixed
+	  ConSys::max_space_dimension().
+
+2004-08-16 Monday 14:15  Patricia M. Hill <hill@comp.leeds.ac.uk>
+
+	* tests/bhz03widening6.cc (1.2): Comments added.
+
+2004-08-16 Monday 14:04  Patricia M. Hill <hill@comp.leeds.ac.uk>
+
+	* tests/: Makefile.am (1.202), bhz03widening6.cc (1.1): dded more
+	  tests.
+
+2004-08-16 Monday 12:50  Roberto Bagnara <bagnara@cs.unipr.it>
+
+	* TODO (1.81): Some items postponed.  Main points of PPL 0.7
+	  drafted.
+
+2004-08-16 Monday 12:38  Roberto Bagnara <bagnara@cs.unipr.it>
+
+	* NEWS (1.95): Announce the new "expand" and "fold" operations.
+
+2004-08-16 Monday 12:10  Enea Zaffanella <zaffanella@cs.unipr.it>
+
+	* tests/: Makefile.am (1.201), bhz03widening4.cc (1.1),
+	  bhz03widening5.cc (1.1): New tests are the same as
+	  bhz03widening1.cc and bhz03widening2.cc, but use the
+	  H79_Certificate instead of BHRZ03_Certificate.
+
+2004-08-16 Monday 12:08  Enea Zaffanella <zaffanella@cs.unipr.it>
+
+	* src/: H79_Certificate.cc (1.1), H79_Certificate.defs.hh (1.1),
+	  H79_Certificate.inlines.hh (1.1), H79_Certificate.types.hh (1.1),
+	  Makefile.am (1.74), Polyhedra_PowerSet.defs.hh (1.23),
+	  Polyhedra_PowerSet.inlines.hh (1.34), Polyhedron.defs.hh (1.239):
+	  Added the H79 widening certificate.  The certificate-based
+	  widening methods for the Polyhedra_Powerset domain made generic
+	  by parameterizing the certificate used. The instance using the
+	  BHRZ03_Certificate still have the old name (so as old code still
+	  works).
+
+2004-08-16 Monday 09:50  Roberto Bagnara <bagnara@cs.unipr.it>
+
+	* NEWS (1.94), Watchdog/NEWS (1.4): Our tentative release date is
+	  August 18, 2004.
+
+2004-08-16 Monday 08:36  Roberto Bagnara <bagnara@cs.unipr.it>
+
+	* ChangeLog (1.17), Watchdog/ChangeLog (1.7): Updated.
+
 2004-08-16 Monday 08:03  Roberto Bagnara <bagnara@cs.unipr.it>
 
 	* src/Polyhedron_chdims.cc (1.14): In
