@@ -147,7 +147,7 @@ public:
   //! Returns the past-the-end const_iterator.
   const_iterator end() const;
 
-  //private:
+  // FIXME: the following section must become private.
 protected:
   //! Contains the rows of the matrix.
   std::vector<Row> rows;
