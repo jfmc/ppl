@@ -35,18 +35,19 @@ The following definitions and results are taken from:
 <B>Combination</B>
 
 Let \f$\lambda_1, \ldots, \lambda_k \in \mathbb{R}\f$ and 
-\f$x_1, \ldots, x_k \in \mathbb{R}^n\f$. The linear combination 
+\f$x_1, \ldots, x_k \in \Rset^n\f$. The linear combination 
 \f$\lambda_1 x_1 + \ldots + \lambda_k x_k\f$ is said to be
 
 - a <EM>positive combination</EM>,
-  if \f$\forall j \mathrel{:} \lambda_j \geq 0\f$;
+  if \f$\forall j \itc \lambda_j \geq 0\f$;
 - an <EM>affine combination</EM>, if \f$\sum_{j = 1}^k \lambda_j = 1\f$;
 - a <EM>convex combination</EM>, if both the previous conditions hold.
 
 <B>Scalar product</B>
 
-Let \f$x = (x_1, \ldots, x_n)^\mathrm{T}, y = (y_1, \ldots, y_n)^\mathrm{T} 
-\in \mathbb{R}^n\f$. The <EM>scalar product</EM> of \f$x\f$ and \f$y\f$ 
+Let \f$x = (x_1, \ldots, x_n)^\mathrm{T}\f$,
+\f$y = (y_1, \ldots, y_n)^\mathrm{T} \in \Rset^n\f$.
+The <EM>scalar product</EM> of \f$x\f$ and \f$y\f$ 
 is defined as
 \f[
    \langle x, y \rangle = \sum_{i=1}^n x_i y_i.
@@ -63,33 +64,33 @@ The set \f$K\f$ is convex if it is its own convex hull.
 <B>Affine transformation</B>
 
 An <EM>affine transformation</EM> is a function \f$T\f$ which maps a 
-point \f$x \in \mathbb{R}^n\f$ to a point \f$x' \in \mathbb{R}^m\f$
+point \f$x \in \Rset^n\f$ to a point \f$x' \in \Rset^m\f$
 such that
 \f[
   x' = Ax + b
 \f]
-where \f$A \in \mathbb{R}^m \times \mathbb{R}^n\f$ and 
-\f$b \in \mathbb{R}^m\f$.
+where \f$A \in \Rset^m \times \Rset^n\f$ and 
+\f$b \in \Rset^m\f$.
 
 <B>Linear independence</B>
 
-A set of points \f$x_1, \ldots, x_k \in \mathbb{R}^n\f$ is 
+A set of points \f$x_1, \ldots, x_k \in \Rset^n\f$ is 
 <EM>linearly independent</EM> if the unique solution of 
 \f[
   \sum_{i = 1}^k \lambda_i x_i = 0 \quad 
-  \text{where } \lambda_i \in \mathbb{R} \text{ for } i = 1, \ldots, k
+  \text{where } \lambda_i \in \Rset \text{ for } i = 1, \ldots, k
 \f]
 is \f$\lambda_i = 0\f$ for \f$i = 1, \ldots, k\f$.
 
 Note that the maximum number of linearly independent points in 
-\f$\mathbb{R}^n\f$ is \f$n\f$.
+\f$\Rset^n\f$ is \f$n\f$.
 
 <B><EM>Proposition</EM></B>
 
 If \f$A\f$ is an \f$m \times n\f$ matrix, the maximum number of 
-linearly independent rows of \f$A\f$, viewed as vectors of \f$\mathbb{R}^n\f$, 
+linearly independent rows of \f$A\f$, viewed as vectors of \f$\Rset^n\f$, 
 equals the maximum number of linearly independent columns of \f$A\f$, 
-viewed as vectors of \f$\mathbb{R}^m\f$.
+viewed as vectors of \f$\Rset^m\f$.
 
 <B>Rank</B>
 
@@ -99,37 +100,37 @@ matrix \f$A\f$ is the <EM>rank</EM> of \f$A\f$ and is denoted by
 
 <B>Affine independence</B>
 
-A set of points \f$x_1, \ldots, x_k \in \mathbb{R}^n\f$ is 
+A set of points \f$x_1, \ldots, x_k \in \Rset^n\f$ is 
 <EM>affinely independent</EM> if the unique solution of 
 \f[
   \sum_{i = 1}^k \alpha_i x_i = 0, \quad \sum_{i = 1}^k \alpha_i = 0,
-   \quad \text{where } \alpha_i \in \mathbb{R} \text{ for } 
+   \quad \text{where } \alpha_i \in \Rset \text{ for } 
      i = 1, \ldots, k
 \f]
 is \f$\alpha_i = 0\f$ for \f$i = 1, \ldots, k\f$.
 
 Note that linear independence implies affine independence, but the 
 converse is not true. Moreover the maximum number of affinely independent
-points in \f$\mathbb{R}^n\f$ is \f$n + 1\f$ (e.g. \f$n\f$ linearly 
+points in \f$\Rset^n\f$ is \f$n + 1\f$ (e.g. \f$n\f$ linearly 
 independent points and the zero vector).
 
 
 <B>Polyhedra</B>
 
-A subset \f$P\f$ of \f$\mathbb{R}^n\f$ is called a <EM>polyhedron</EM> 
+A subset \f$P\f$ of \f$\Rset^n\f$ is called a <EM>polyhedron</EM> 
 if it is the set of solutions to a finite number of linear equalities 
 and inequalities: 
 \f[
-  P = \{\,x \in \mathbb{R}^n \mid Ax = b, Cx \geq d\,\},
+  P = \{\,x \in \Rset^n \mid Ax = b, Cx \geq d\,\},
 \f]
 where, if \f$m_1\f$ is the number of equalities and
 \f$m_2\f$ the number of inequalities,
-\f$A \in \mathbb{R}^{m_1} \times \mathbb{R}^n\f$,
-\f$b \in \mathbb{R}^{m_1}\f$, 
-\f$C \in \mathbb{R}^{m_2} \times \mathbb{R}^n\f$ and
-\f$d \in \mathbb{R}^{m_2}\f$. 
+\f$A \in \Rset^{m_1} \times \Rset^n\f$,
+\f$b \in \Rset^{m_1}\f$, 
+\f$C \in \Rset^{m_2} \times \Rset^n\f$ and
+\f$d \in \Rset^{m_2}\f$. 
 
-Note that, if \f$c, x \in \mathbb{R}^n\f$ and \f$\lambda \in \mathbb{R}\f$
+Note that, if \f$c, x \in \Rset^n\f$ and \f$\lambda \in \Rset\f$
 and we have the linear inequalities 
 \f$\langle c, x \rangle \geq \lambda\f$ and
 \f$\langle c, x \rangle \leq \lambda\f$
@@ -142,11 +143,11 @@ then we can split it into two linear inequalities (as above).
 
 It follows that a polyhedron \f$P\f$ can be always represented as 
 \f[
-  P = \{\,x \in \mathbb{R}^n \mid Ax \geq b\,\}
+  P = \{\,x \in \Rset^n \mid Ax \geq b\,\}
 \f]
 for some 
-matrix \f$ A \in \mathbb{R}^{m} \times \mathbb{R}^n\f$ and
-and vector \f$ b \in \mathbb{R}^{m}\f$.
+matrix \f$ A \in \Rset^{m} \times \Rset^n\f$ and
+and vector \f$ b \in \Rset^{m}\f$.
 
 In the sequel we will refer to linear equalities and linear inequalities
 simply as equalities and inequalities respectively and 
@@ -154,22 +155,22 @@ refer to an equality or inequality as a <EM>constraint</EM>.
 
 A polyhedron \f$P\f$ is 
 said to be <EM>rational</EM> if there exists a matrix
-\f$ A \in \mathbb{R}^{m'} \times \mathbb{R}^n\f$
-and vector \f$ b \in \mathbb{R}^{m'}\f$ with rational coefficients such that 
+\f$ A \in \Rset^{m'} \times \Rset^n\f$
+and vector \f$ b \in \Rset^{m'}\f$ with rational coefficients such that 
 \f[
-  P = \{\,x \in \mathbb{R}^n \mid A'x \geq b'\,\}.
+  P = \{\,x \in \Rset^n \mid A'x \geq b'\,\}.
 \f]
 
 In the sequel, we will consider only rational polyhedra and 
-assume that, if \f$P = \{\,x \in \mathbb{R}^n \mid Ax \geq b\,\}\f$, then 
+assume that, if \f$P = \{\,x \in \Rset^n \mid Ax \geq b\,\}\f$, then 
 \f$(A, b)\f$ has rational coefficients.
 
 <B>Polytope</B>
 
-A polyhedron \f$P \subset \mathbb{R}^n\f$ is <EM>bounded</EM> if there 
-exists a \f$\lambda \in \mathbb{R}, \lambda > 0\f$ such that 
+A polyhedron \f$P \subset \Rset^n\f$ is <EM>bounded</EM> if there 
+exists a \f$\lambda \in \Rset, \lambda > 0\f$ such that 
 \f[
-  P \subseteq \{\,(x_1, \ldots, x_n)^\mathrm{T} \in \mathbb{R}^n \mid 
+  P \subseteq \{\,(x_1, \ldots, x_n)^\mathrm{T} \in \Rset^n \mid 
   - \lambda \leq x_j \leq \lambda \text{ for } j = 1, \ldots, n\,\}.
 \f]
 A bounded polyhedron is called a <EM>polytope</EM>.
@@ -194,11 +195,11 @@ distinct points in \f$P\f$.
 
 Let \f$P, P_0\f$ be the polyhedra
 \f[
-P= \{\,x \in \mathbb{R}^n \mid Ax \geq b\,\} \neq \emptyset \quad \text{and }
-P_0 = \{\,r \in \mathbb{R}^n \mid Ar \geq 0\,\}
+P= \{\,x \in \Rset^n \mid Ax \geq b\,\} \neq \emptyset \quad \text{and }
+P_0 = \{\,r \in \Rset^n \mid Ar \geq 0\,\}
 \f]
 where 
-\f$A \in \mathbb{R}^m \times \mathbb{R}^n\f$, \f$b \in \mathbb{R}^m\f$.
+\f$A \in \Rset^m \times \Rset^n\f$, \f$b \in \Rset^m\f$.
 Then any point
 \f$r \in P_0 \setminus \{0\}\f$ is called a <EM>ray</EM> of \f$P\f$.
 
@@ -206,19 +207,19 @@ A ray indicates a direction in which the polyhedra is infinite (i.e. open).
 
 <B><EM>Proposition</EM></B>
 
-A point \f$r \in \mathbb{R}^n\f$ is a ray of \f$P\f$ if and only if for 
+A point \f$r \in \Rset^n\f$ is a ray of \f$P\f$ if and only if for 
 any point \f$x \in P\f$, \f$(x + \mu r) \in P\f$ for all 
-\f$\mu \in \mathbb{R}, \mu > 0\f$.
+\f$\mu \in \Rset, \mu > 0\f$.
 
 <B>Extreme rays</B>
 
 A ray \f$r\f$ of \f$P\f$ is an <EM>extreme ray</EM> if there do not exist 
 two rays \f$r_1\f$ and \f$r_2\f$ of \f$P\f$, 
 \f$r_1 \neq \lambda r_2\f$ for any 
-\f$\lambda \in \mathbb{R}, \lambda > 0\f$, such that 
+\f$\lambda \in \Rset, \lambda > 0\f$, such that 
 \f[
   r = \mu_1 r_1 + \mu_2 r_2 \quad \text{with } 
-  \mu_1, \mu_2 \in  \mathbb{R}, \mu_1, \mu_2 \geq 0.
+  \mu_1, \mu_2 \in  \Rset, \mu_1, \mu_2 \geq 0.
 \f]
 
 Note that the set of extreme rays forms a basis which describes all 
@@ -228,22 +229,22 @@ directions in which the polyhedron is open.
 
 A <EM>line</EM> (or <EM>bidirectional ray</EM>) of a polyhedron
 \f$P\f$ is a vector 
-\f$l\f$, such that, for all \f$x \in P\f$ and all \f$\mu \in \mathbb{R}\f$,
+\f$l\f$, such that, for all \f$x \in P\f$ and all \f$\mu \in \Rset\f$,
 \f$(x + \mu l) \in P\f$.
 
 It follows that two rays in exactly opposite directions make a line.
 
 <B>Cone</B>
 
-A set \f$C \subseteq \mathbb{R}^n\f$ is a <EM>cone</EM> if 
+A set \f$C \subseteq \Rset^n\f$ is a <EM>cone</EM> if 
 \f[
   x \in C \Rightarrow \lambda x \in C 
-  \text{ for all } \lambda \in \mathbb{R}, \lambda \geq 0.
+  \text{ for all } \lambda \in \Rset, \lambda \geq 0.
 \f]
 
 <B>Polyhedral cone</B>
 
-The polyhedron \f$P = \{\,x \in \mathbb{R}^n \mid Ax \geq 0\,\}\f$ 
+The polyhedron \f$P = \{\,x \in \Rset^n \mid Ax \geq 0\,\}\f$ 
 is a convex cone and it is called <EM>polyhedral cone</EM>. 
 
 Thus, a polyhedral cone is either <EM>pointed</EM>, having just the origin as 
@@ -251,13 +252,13 @@ a vertex, or it has no vertices.
 
 <B>Minkowski's theorem</B>
 
-Let \f$P = \{\,x \in \mathbb{R}^n \mid Ax \geq b\,\}\f$ is a nonempty 
+Let \f$P = \{\,x \in \Rset^n \mid Ax \geq b\,\}\f$ is a nonempty 
 polyhedron where \f$A\f$ is a matrix of rank \f$n\f$. 
 Then
 \f[
-  P = \bigl\{\,x \in \mathbb{R}^n \mid 
+  P = \bigl\{\,x \in \Rset^n \mid 
     x = \sum_{k \in K} \lambda_k v_k + \sum_{j \in J} \mu_j r_j, 
-        \lambda_k, \mu_j \in \mathbb{R}, 
+        \lambda_k, \mu_j \in \Rset, 
         \sum_{k \in K} \lambda_k = 1,
         \lambda_k \geq 0 \text{ for } k \in K,
         \mu_j \geq 0 \text{ for } j \in J\,\bigr\},
@@ -298,9 +299,9 @@ a rational polyhedron:
 If \f$A\f$ is a rational \f$m_1 \times n\f$ matrix, \f$B\f$ is a rational 
 \f$m_2 \times n\f$ matrix and 
 \f[
-  Q = \bigl\{\,x \in \mathbb{R}^n \mid x = y^\mathrm{T}A + z^\mathrm{T}B,
-             \sum_{k=1}^{m_1} y_k = 1, y \in \mathbb{R}_+^{m_1}, 
-	     z \in \mathbb{R}_+^{m_2}\,\bigr\},  
+  Q = \bigl\{\,x \in \Rset^n \mid x = y^\mathrm{T}A + z^\mathrm{T}B,
+             \sum_{k=1}^{m_1} y_k = 1, y \in \Rset_+^{m_1}, 
+	     z \in \Rset_+^{m_2}\,\bigr\},  
 \f]
 then \f$Q\f$ is a rational polyhedron.
 
@@ -324,8 +325,8 @@ to the references mentioned before, from:
 
 To simplify both representations of a polyhedron,
 it is useful to transform it to a polyhedral cone.
-To do this, each point \f$x \in \mathbb{R}^n\f$ is mapped 
-to a point \f$x' = (\xi x, \xi) ^\mathrm{T} \in \mathbb{R}^{n + 1}\f$ 
+To do this, each point \f$x \in \Rset^n\f$ is mapped 
+to a point \f$x' = (\xi x, \xi) ^\mathrm{T} \in \Rset^{n + 1}\f$ 
 where \f$\xi \geq 0\f$.
 
 The transformation changes an inhomogeneous system of inequalities 
@@ -340,10 +341,10 @@ polyhedral cone \f$C\f$, as shown below:
   C = \{\,(\xi x, \xi)^\mathrm{T} \mid \xi Ax - \xi b \geq 0, \xi \geq 0\,\} 
     = \{\,x' \mid A'x' \geq 0\,\} 
 \f]
-where \f$x' = (\xi x, \xi) \in \mathbb{R}^{n + 1}\f$ 
+where \f$x' = (\xi x, \xi) \in \Rset^{n + 1}\f$ 
 and \f$A'\f$ is the matrix having for its first rows the submatrix 
-\f$(A, b) \in \mathbb{R}^m \times \mathbb{R}^{n + 1}\f$ 
-and for the last row the vector \f$(0, \ldots, 0, 1) \in \mathbb{R}^{n + 1}\f$.
+\f$(A, b) \in \Rset^m \times \Rset^{n + 1}\f$ 
+and for the last row the vector \f$(0, \ldots, 0, 1) \in \Rset^{n + 1}\f$.
 The cone \f$C\f$, which has a homogeneous representation, we call the
 <EM>corresponding polyhedral cone for \f$P\f$</EM>
 
@@ -387,7 +388,7 @@ In all other ways, vertices and rays are the same.
 <B>Valid linear inequalities</B>
 
 Let \f$P\f$ be a convex polyhedron (or polytope) in 
-\f$\mathbb{R}^n\f$. For a real \f$n\f$-vector \f$c\f$ and a real number 
+\f$\Rset^n\f$. For a real \f$n\f$-vector \f$c\f$ and a real number 
 \f$b\f$, a linear inequality \f$\langle c, x \rangle \geq b\f$ (briefly 
 denoted by \f$(c,b)\f$) is called <EM>valid</EM> for \f$P\f$ if it 
 is satisfied by all points \f$x \in P\f$. 
@@ -409,7 +410,7 @@ Moreover, in the PPL implementation,
 
 - we will say that an extremal ray \f$r_1\f$ is <EM>redundant</EM> 
   if there exists another extremal ray \f$r_2\f$ and
-  \f$\lambda \in \mathbb{R}, \lambda > 0\f$
+  \f$\lambda \in \Rset, \lambda > 0\f$
   such that \f$r_1 = \lambda r_2\f$.
 
 Note that, as we are referring to the PPL representation, 
@@ -433,7 +434,7 @@ A face \f$F\f$ of \f$P\f$ is a <EM>facet</EM> of \f$P\f$ if
 
 <B>Lineality space</B>
 
-Given a polyhedron \f$P = \{\,x \in \mathbb{R}^n \mid Ax \geq b\,\}\f$, 
+Given a polyhedron \f$P = \{\,x \in \Rset^n \mid Ax \geq b\,\}\f$, 
 the <EM>lineality space</EM> of \f$P\f$ is the set
 \f[
   \{\,x \in P \mid Ax = 0\,\}
@@ -504,7 +505,7 @@ The spaces defined are connected by some consistency rules shown below.
 
 <B>Dimensionality rules</B>
 
-In \f$\mathbb{R}^n\f$
+In \f$\Rset^n\f$
 
 - The dimension of the \f$\mathop{\mathrm{lin. space}}\f$
   is the rank of any set of lines that span the space.
@@ -521,8 +522,8 @@ dimension and the decomposition of a polyhedron.
 %\section saturation Saturation
 <B>Saturation</B>
 
-Let us consider a ray \f$r \in \mathbb{R}^n\f$ and an inequality 
-\f$(a, 0)\f$ where \f$a \in \mathbb{R}^n\f$: 
+Let us consider a ray \f$r \in \Rset^n\f$ and an inequality 
+\f$(a, 0)\f$ where \f$a \in \Rset^n\f$: 
 - \f$r\f$ is said to <EM>saturate</EM> the inequality
   if \f$\langle a, r \rangle = 0\f$;
 - \f$r\f$ <EM>verifies</EM> the inequality
