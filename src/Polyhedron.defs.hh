@@ -2190,6 +2190,7 @@ private:
 
   //! \name Exception Throwers
   //@{
+protected:
   void throw_runtime_error(const char* method) const;
   void throw_invalid_argument(const char* method, const char* reason) const;
 
@@ -2231,7 +2232,6 @@ private:
 			       const char* g_name) const;
   void throw_invalid_generators(const char* method,
 				const char* gs_name) const;
-
   //@} // Exception Throwers
 
 };

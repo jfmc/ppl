@@ -54,6 +54,9 @@ PPL::Polyhedron::Polyhedron(const Topology topol,
     gen_sys(topol),
     sat_c(),
     sat_g() {
+  // Protecting against space dimension overflow is up to the caller.
+  assert(num_dimensions <= max_space_dimension());
+
   if (kind == EMPTY)
     status.set_empty();
   else
@@ -88,6 +91,9 @@ PPL::Polyhedron::Polyhedron(const Topology topol, const ConSys& ccs)
     gen_sys(topol),
     sat_c(),
     sat_g() {
+  // Protecting against space dimension overflow is up to the caller.
+  assert(ccs.space_dimension() <= max_space_dimension());
+
   // TODO: this implementation is just an executable specification.
   ConSys cs = ccs;
 
@@ -134,6 +140,9 @@ PPL::Polyhedron::Polyhedron(const Topology topol, ConSys& cs)
     gen_sys(topol),
     sat_c(),
     sat_g() {
+  // Protecting against space dimension overflow is up to the caller.
+  assert(cs.space_dimension() <= max_space_dimension());
+
   // Try to adapt `cs' to the required topology.
   const dimension_type cs_space_dim = cs.space_dimension();
   if (!cs.adjust_topology_and_space_dimension(topol, cs_space_dim))
@@ -177,6 +186,9 @@ PPL::Polyhedron::Polyhedron(const Topology topol, const GenSys& cgs)
     gen_sys(topol),
     sat_c(),
     sat_g() {
+  // Protecting against space dimension overflow is up to the caller.
+  assert(cgs.space_dimension() <= max_space_dimension());
+
   // TODO: this implementation is just an executable specification.
   GenSys gs = cgs;
 
@@ -235,6 +247,9 @@ PPL::Polyhedron::Polyhedron(const Topology topol, GenSys& gs)
     gen_sys(topol),
     sat_c(),
     sat_g() {
+  // Protecting against space dimension overflow is up to the caller.
+  assert(gs.space_dimension() <= max_space_dimension());
+
   // An empty set of generators defines the empty polyhedron.
   if (gs.num_rows() == 0) {
     space_dim = gs.space_dimension();

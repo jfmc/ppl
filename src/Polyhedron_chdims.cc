@@ -25,7 +25,6 @@ site: http://www.cs.unipr.it/ppl/ . */
 #include <config.h>
 
 #include "Polyhedron.defs.hh"
-#include "max_space_dimension.hh"
 
 #include <cassert>
 

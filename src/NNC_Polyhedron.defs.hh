@@ -44,9 +44,6 @@ site: http://www.cs.unipr.it/ppl/ . */
 */
 class Parma_Polyhedra_Library::NNC_Polyhedron : public Polyhedron {
 public:
-  //! Returns the maximum space dimension a C_Polyhedron can handle.
-  static dimension_type max_space_dimension();
-
   //! Builds either the universe or the empty NNC polyhedron.
   /*!
     \param num_dimensions

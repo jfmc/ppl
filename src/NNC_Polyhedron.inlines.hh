@@ -28,12 +28,6 @@ site: http://www.cs.unipr.it/ppl/ . */
 
 namespace Parma_Polyhedra_Library {
 
-inline dimension_type
-NNC_Polyhedron::max_space_dimension() {
-  // We reserve one dimension for the epsilon dimension.
-  return C_Polyhedron::max_space_dimension() - 1;
-}
-
 inline
 NNC_Polyhedron::NNC_Polyhedron(dimension_type num_dimensions,
 			       Degenerate_Kind kind)
@@ -41,33 +35,59 @@ NNC_Polyhedron::NNC_Polyhedron(dimension_type num_dimensions,
 	       num_dimensions > max_space_dimension() ? 0 : num_dimensions,
 	       kind) {
   if (num_dimensions > max_space_dimension())
-    throw std::length_error("PPL::NNC_Polyhedron::NNC_Polyhedron(n, k):\n"
-			    "n exceeds the maximum allowed space dimension.");
+    throw_space_dimension_overflow("NNC_Polyhedron(n, k)",
+				   "n exceeds the maximum allowed "
+				   "space dimension");
 }
 
 inline
 NNC_Polyhedron::NNC_Polyhedron(const ConSys& cs)
-  : Polyhedron(NOT_NECESSARILY_CLOSED, cs) {
+  : Polyhedron(NOT_NECESSARILY_CLOSED,
+	       cs.space_dimension() > max_space_dimension() ? ConSys() : cs) {
+  if (cs.space_dimension() > max_space_dimension())
+    throw_space_dimension_overflow("NNC_Polyhedron(cs)",
+				   "the space dimension of cs exceeds "
+				   "the maximum allowed space dimension");
 }
 
 inline
 NNC_Polyhedron::NNC_Polyhedron(ConSys& cs)
-  : Polyhedron(NOT_NECESSARILY_CLOSED, cs) {
+  : Polyhedron(NOT_NECESSARILY_CLOSED,
+	       cs.space_dimension() > max_space_dimension() ? ConSys() : cs) {
+  if (cs.space_dimension() > max_space_dimension())
+    throw_space_dimension_overflow("NNC_Polyhedron(cs)",
+				   "the space dimension of cs exceeds "
+				   "the maximum allowed space dimension");
 }
 
 inline
 NNC_Polyhedron::NNC_Polyhedron(const GenSys& gs)
-  : Polyhedron(NOT_NECESSARILY_CLOSED, gs) {
+  : Polyhedron(NOT_NECESSARILY_CLOSED,
+	       gs.space_dimension() > max_space_dimension() ? GenSys() : gs) {
+  if (gs.space_dimension() > max_space_dimension())
+    throw_space_dimension_overflow("NNC_Polyhedron(gs)",
+				   "the space dimension of gs exceeds "
+				   "the maximum allowed space dimension");
 }
 
 inline
 NNC_Polyhedron::NNC_Polyhedron(GenSys& gs)
-  : Polyhedron(NOT_NECESSARILY_CLOSED, gs) {
+  : Polyhedron(NOT_NECESSARILY_CLOSED,
+	       gs.space_dimension() > max_space_dimension() ? GenSys() : gs) {
+  if (gs.space_dimension() > max_space_dimension())
+    throw_space_dimension_overflow("NNC_Polyhedron(gs)",
+				   "the space dimension of gs exceeds "
+				   "the maximum allowed space dimension");
 }
 
 template <typename Box>
 NNC_Polyhedron::NNC_Polyhedron(const Box& box, From_Bounding_Box)
-  : Polyhedron(NOT_NECESSARILY_CLOSED, box) {
+  : Polyhedron(NOT_NECESSARILY_CLOSED,
+	       box.space_dimension() > max_space_dimension() ? Box() : box) {
+  if (box.space_dimension() > max_space_dimension())
+    throw_space_dimension_overflow("NNC_Polyhedron(box)",
+				   "the space dimension of box exceeds "
+				   "the maximum allowed space dimension");
 }
 
 inline
