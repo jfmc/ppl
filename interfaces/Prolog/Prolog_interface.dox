@@ -157,13 +157,23 @@ The specification uses the following grammar rules:
           | LinExpr > LinExpr  		strict inequation
 
  Generator --> point(LinExpr)        	point
-          | point(LinExpr,Int)   	point
+          | point(LinExpr, number)   	point
           | closure-point(LinExpr)  	closure point
-          | closure-point(LinExpr,Int) 	closure point
+          | closure-point(LinExpr, number)
+				 	closure point
               (Int is the denominator so that the point or 
                closure point is defined by Expr/Int.)
           | ray(LinExpr)         	ray
           | line(LinExpr)        	line
+
+ Interval  --> i(Bound, Bound)		rational interval
+
+ Bound     --> c(Rational)		closed rational limit
+          | o(Rational)			open rational limit
+          | o(pinf)			unbounded in the positive direction
+          | o(minf)			unbounded in the negative direction
+
+ Rational  --> number | number/number	rational number
 \endcode
 
 
@@ -783,5 +793,21 @@ would not change \f$P\f$;
    <CODE>Handle_1</CODE> is
    equal to the polyhedron \f$P2\f$ referenced by <CODE>Handle_2</CODE>;
    \f$P1\f$ and \f$P2\f$ must have the same topology.
+
+<H4><CODE>ppl_Polyhedron_get_bounding_box(+Handle, 
+                                      -List_of_Intervals)</CODE></H4>
+
+   Succeeds if and only if the bounding box
+   of the polyhedron referenced by
+   <CODE>Handle</CODE>
+   unifies with the box defined by <CODE>List_of_Intervals</CODE>.
+   E.g. 
+\code
+   ?- A = '$VAR'(0), B = '$VAR'(1),
+      ppl_new_Polyhedron_from_ConSys(nnc, [B > 0, 2*A =< 1], P),
+      ppl_Polyhedron_get_bounding_box(P, Box).
+ 
+   Box = [i(o(minf), c(1/2)), i(o(0), o(pinf))].
+\endcode
 
 */
