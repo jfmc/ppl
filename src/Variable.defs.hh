@@ -86,7 +86,7 @@ public:
   //! Type of output functions.
   typedef void Output_Function_Type(std::ostream& s, const Variable& v);
 
-  //! Set the output function to be used for printing Variable objects.
+  //! Sets the output function to be used for printing Variable objects.
   static void set_output_function(Output_Function_Type* p);
 
   //! Returns the pointer to the current output function.
