@@ -195,12 +195,14 @@ PPL::Polyhedron::minimize(bool con_to_gen,
     size_t source_num_rows = source.num_rows();
     if (pos)
       // If the polyhedron is positive and we are computing the system of
-      // constraints we erase the constraints of positivity of all the
-      // variables and those that are a linear combination of a constraints
-      // of positivity of variables and an equalities. This constraints are
-      // builts during the conversion().
+      // constraints we erase the redundant constraints, the constraints of
+      // positivity of all the variables and those that are a linear
+      // combination of a constraints of positivity of variables and an
+      // equalities.
       if (!con_to_gen) {
     	tmp_sat.transpose_assign(sat);
+	simplify(dest, tmp_sat);
+	dest_num_rows = dest.num_rows();
 	for (size_t i = dest_num_rows; i-- > num_lines_or_equalities; )
 	  if (dest[i].only_a_term_is_positive()) {
 	    --dest_num_rows;
@@ -210,18 +212,22 @@ PPL::Polyhedron::minimize(bool con_to_gen,
 	  else
 	    if (tmp_sat[i].last() == tmp_sat[i].first()
 		&& tmp_sat[i].last() != -1) {
-	      size_t only = tmp_sat[i].last();
-	      for (size_t j = 0; j < num_lines_or_equalities; ++j)
-		if (dest[j][only] != 0 && dest[i][only] != 0) {
+	      for (size_t j = 0; j < num_lines_or_equalities; ++j) {
+		size_t h;
+		for (h = 0; h < source_num_columns; ++h)
+		  if (dest[i][h] != 0 && dest[j][h] != 0)
+		    break;
+		if (h < source_num_columns) { 
 		  Row tmp(dest[i]);
-		  tmp.linear_combine(dest[j], only);
+		  tmp.linear_combine(dest[j], h);
 		  if (tmp.only_a_term_is_positive()) {
 		    --dest_num_rows;
 		    std::swap(dest[i], dest[dest_num_rows]);
 		    std::swap(tmp_sat[i], tmp_sat[dest_num_rows]);
 		    break;
 		  }
-		} 
+		}
+	      }
 	    }
 	dest.erase_to_end(dest_num_rows);
 	tmp_sat.rows_erase_to_end(dest_num_rows);
@@ -341,11 +347,11 @@ PPL::Polyhedron::add_and_minimize(bool con_to_gen,
       dest_num_rows += num_columns;
       dest.set_sorted(false);
     }
-      
+  
   while (k1 < old_source1_num_rows && k2 < source2_num_rows) {
     // Add to `source1' the non-redundant constraints from `source2'
     // without sort.
-	  int cmp = compare(source1[k1], source2[k2]);
+    int cmp = compare(source1[k1], source2[k2]);
     if (cmp == 0) {
       // If the compared rows are equal, we choose another couple of rows.
       ++k1;
@@ -354,7 +360,7 @@ PPL::Polyhedron::add_and_minimize(bool con_to_gen,
     else if (cmp < 0)
       // If `source1[k1]' is less than `source2[k2]', we compare
       // `source2[k2]' with another rows of `source1'.
-    	++k1;
+      ++k1;
     else {
       // If `source1[k1]' is greater than `source2[k2]' it means that
       // in `source1' there is not the row `source2[k2]' then we add it
@@ -376,13 +382,13 @@ PPL::Polyhedron::add_and_minimize(bool con_to_gen,
     ++k2;
   }
   size_t source1_num_rows = source1.num_rows();
-
+  
   // At this point `source1' has the old rows of `source1' from the
   // one indexed by 0 and the one indexed by `old_source1_num_rows' - 1.
   // The remaining rows (from the `old_source1_num_rows'-th one to the
   // end) are the ones added from `source2', i.e., the rows of `source2'
   // that are different from those in the old 'source1'.
-
+  
   // source1 is not sorted any more.
   source1.set_sorted(false);
 
@@ -474,9 +480,10 @@ PPL::Polyhedron::add_and_minimize(bool con_to_gen,
 	    tmp[i].set(j);
       std::swap(tmp,sat);
     }
-    // If the polyhedron is positive, we erase the constraints of positivity
-    // of the variables and those that are a linear combination of constraints
-    // of positivity of variable and equalities. Then we re-obtain the `sat_c'.
+    // If the polyhedron is positive, we erase the redundant constraints,
+    // the constraints of positivity of the variables and those that are a
+    // linear combination of constraints of positivity of variable and
+    // equalities. Then we re-obtain the `sat_c'.
     if (pos) {
       if (!con_to_gen) {
 	sat.transpose_assign(sat);
@@ -490,18 +497,22 @@ PPL::Polyhedron::add_and_minimize(bool con_to_gen,
 	  }
 	  else
 	    if (sat[i].last() == sat[i].first() && sat[i].last() != -1) {
-	      size_t only = sat[i].last();
-	      for (size_t j = 0; j < num_lines_or_equalities; ++j)
-		if (dest[j][only] != 0 && dest[i][only] != 0) {
+	      for (size_t j = 0; j < num_lines_or_equalities; ++j) {
+		size_t h;
+		for (h = 0; h < num_columns; ++h)
+		  if (dest[j][h] != 0 && dest[i][h] != 0)
+		    break;
+		if (h < num_columns) {
 		  Row tmp(dest[i]);
-		  tmp.linear_combine(dest[j], only);
+		  tmp.linear_combine(dest[j], h);
 		  if (tmp.only_a_term_is_positive()) {
 		    --dest_num_rows;
 		    std::swap(dest[i], dest[dest_num_rows]);
 		    std::swap(sat[i], sat[dest_num_rows]);
 		    break;
 		  }
-		}
+		}		
+	      }
 	    }
 	dest.erase_to_end(dest_num_rows);
 	sat.rows_erase_to_end(dest_num_rows);
