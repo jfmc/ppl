@@ -309,6 +309,7 @@ INPUT                  = @srcdir@/definitions.dox \
                          @srcdir@/../src/initializer.hh \
                          @srcdir@/../src/globals.hh \
                          @srcdir@/../src/globals.cc \
+                         @srcdir@/../src/Topology.hh \
                          @srcdir@/../src/Row.types.hh \
                          @srcdir@/../src/Row.defs.hh \
                          @srcdir@/../src/Row.inlines.hh \
@@ -353,10 +354,10 @@ INPUT                  = @srcdir@/definitions.dox \
                          @srcdir@/../src/Status.defs.hh \
                          @srcdir@/../src/Status.inlines.hh \
                          @srcdir@/../src/Status.cc \
-                         @srcdir@/../src/Polyhedron.types.hh \
-                         @srcdir@/../src/Polyhedron.defs.hh \
-                         @srcdir@/../src/Polyhedron.inlines.hh \
-                         @srcdir@/../src/Polyhedron.cc \
+                         @srcdir@/../src/PolyBase.types.hh \
+                         @srcdir@/../src/PolyBase.defs.hh \
+                         @srcdir@/../src/PolyBase.inlines.hh \
+                         @srcdir@/../src/PolyBase.cc \
                          @srcdir@/../src/conversion.cc \
                          @srcdir@/../src/minimize.cc \
                          @srcdir@/../src/simplify.cc \
@@ -368,6 +369,14 @@ INPUT                  = @srcdir@/definitions.dox \
                          @srcdir@/../src/Poly_Gen_Relation.defs.hh \
                          @srcdir@/../src/Poly_Gen_Relation.inlines.hh \
                          @srcdir@/../src/Poly_Gen_Relation.cc \
+                         @srcdir@/../src/Polyhedron.types.hh \
+                         @srcdir@/../src/Polyhedron.defs.hh \
+                         @srcdir@/../src/Polyhedron.inlines.hh \
+                         @srcdir@/../src/Polyhedron.cc \
+                         @srcdir@/../src/NNC_Polyhedron.types.hh \
+                         @srcdir@/../src/NNC_Polyhedron.defs.hh \
+                         @srcdir@/../src/NNC_Polyhedron.inlines.hh \
+                         @srcdir@/../src/NNC_Polyhedron.cc \
                          @srcdir@/../interfaces/Prolog/Prolog_interface.dox \
                          @srcdir@/../interfaces/Prolog/Ciao/ppl_ciao.cc \
                          @srcdir@/../interfaces/Prolog/GNU/ppl_gprolog.cc \

@@ -93,6 +93,7 @@ Poly_Con_Relation.types.hh \
 Poly_Gen_Relation.types.hh \
 PolyBase.types.hh \
 Polyhedron.types.hh \
+NNC_Polyhedron.types.hh \
 SatRow.defs.hh \
 SatRow.inlines.hh \
 SatMatrix.defs.hh \
@@ -122,7 +123,9 @@ Status.inlines.hh \
 PolyBase.defs.hh \
 PolyBase.inlines.hh \
 Polyhedron.defs.hh \
-Polyhedron.inlines.hh
+Polyhedron.inlines.hh \
+NNC_Polyhedron.defs.hh \
+NNC_Polyhedron.inlines.hh
 
 libppl_la_SOURCES = \
 Constraint.cc \
@@ -136,6 +139,7 @@ Poly_Con_Relation.cc \
 Poly_Gen_Relation.cc \
 PolyBase.cc \
 Polyhedron.cc \
+NNC_Polyhedron.cc \
 Row.cc \
 SatMatrix.cc \
 SatRow.cc \
@@ -160,6 +164,7 @@ Poly_Con_Relation.types.hh \
 Poly_Gen_Relation.types.hh \
 PolyBase.types.hh \
 Polyhedron.types.hh \
+NNC_Polyhedron.types.hh \
 Variable.defs.hh \
 LinExpression.defs.hh \
 Constraint.defs.hh \
@@ -169,7 +174,8 @@ GenSys.defs.hh \
 Poly_Con_Relation.defs.hh \
 Poly_Gen_Relation.defs.hh \
 PolyBase.defs.hh \
-Polyhedron.defs.hh
+Polyhedron.defs.hh \
+NNC_Polyhedron.defs.hh
 
 libppl_la_LDFLAGS = \
 -version-info $(LIBPPL_LT_CURRENT):$(LIBPPL_LT_REVISION):$(LIBPPL_LT_AGE)
