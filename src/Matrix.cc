@@ -252,7 +252,7 @@ PPL::operator >>(std::istream& s, PPL::Matrix& m) {
 */
 void
 PPL::Matrix::merge_rows_assign(const Matrix& y) {
-  assert(row_size == y.row_size);
+  assert(row_size >= y.row_size);
   assert(check_sorted() && y.check_sorted());
 
   Matrix& x = *this;
@@ -276,22 +276,32 @@ PPL::Matrix::merge_rows_assign(const Matrix& y) {
 	// A duplicate element.
 	++yi;
     }
-    else
+    else {
       // (comp > 0)
+      if (row_size > y.row_size) {
+	Row copy(*yi, row_size, row_size);
+	const_cast<Row&>(*yi).swap(copy);
+      }
       // We cannot touch `y', so we copy its row.
       tmp.insert(tmp.end(), *yi++);
+    }
   }
   // Insert what is left.
   if (xi != xend)
     while (xi != xend)
       std::swap(*xi++, *tmp.insert(tmp.end()));
   else
-    while (yi != yend)
+    while (yi != yend) {
+      if (row_size > y.row_size) {
+	Row copy(*yi, row_size, row_size);
+	const_cast<Row&>(*yi).swap(copy);
+      }
       tmp.insert(tmp.end(), *yi++);
-
+    }
+  
   // We get the result vector and let the old one be destroyed.
   std::swap(tmp, rows);
-
+ 
   assert(check_sorted());
 }
 

@@ -1303,13 +1303,9 @@ PPL::Polyhedron::add_constraints_lazy(ConSys& cs) {
   if (!cs.is_sorted())
     cs.sort_rows();
 
-  // FIXME : why don't we allow `merge_rows_assign'
-  // to automatically adjust the numebr of columns ?
-
-  // If needed, we extend `cs' to the right space dimension.
-  if (space_dimension() > cs_space_dim)
-    cs.add_zero_columns(space_dimension() - cs_space_dim);
- 
+  // The function `merge_row_assign' automatically resizes
+  // the system `cs' if the dimension of the space of `cs'
+  // is smaller then the dimension of the space of the polyhedron.
   con_sys.merge_rows_assign(cs);
 #endif
 
@@ -1975,13 +1971,14 @@ PPL::Polyhedron::limited_widening_assign(const Polyhedron& y,
     cs.erase_to_end(nbrows);
     
     cs.sort_rows();
-    if (cs.space_dimension() < space_dimension())
-      cs.add_zero_columns(space_dimension() - cs.space_dimension());
-    
+       
     x.con_sys.sort_rows();
     // The system of constraints of the resulting polyhedron is
     // composed by the constraints of the widened polyhedron `x'
     // and by those of the new `cs'.
+    // The function `merge_row_assign' automatically resizes
+    // the system `cs' if the dimension of the space of `cs'
+    // is smaller then the dimension of the space of the polyhedron.
     x.con_sys.merge_rows_assign(cs);
     // Only the system of constraints is up-to-date.
     x.set_constraints_up_to_date();
@@ -2044,29 +2041,33 @@ PPL::Polyhedron::OK(bool check_not_empty) const {
     cerr << "Wrong status!" << endl;
     goto bomb;
   }
-  // An empty polyhedron is allowed if the system of conatraints has
+  // An empty polyhedron is allowed if the system of constraints has
   // no rows or if the system of constraints contains only an 
   // unsatisfiable constraint.
   if (is_empty()) 
-    if (con_sys.num_rows() != 0) {
+    if (con_sys.num_rows() == 0) 
+      return true;
+    else {
       if (con_sys.space_dimension() != space_dimension()) {
-	cerr << "Incompatible size of an empty polyhedron!" << endl;
+	cerr << "The polyhedron is in a space of dimension " 
+	     << space_dimension() 
+	     << " while the system of constraints is in a space of dimension " 
+	     << con_sys.space_dimension()
+	     << endl;
 	goto bomb;
       }
-      if (con_sys.num_columns() != 0) { 
-	if (con_sys.num_rows() != 1)
-	  return false;
-	else
-	  if (!con_sys[0].is_unsatisfiable()) {
-	    cerr << "Empty polyhedron" 
-		 << "with a satisfiable system of constraints" << endl;
-	    goto bomb;
-	  }
+      if (con_sys.num_rows() != 1) {
+	cerr << "The system of constraints has more then one row " << endl;
+	goto bomb;
       }
+      else
+	if (!con_sys[0].is_unsatisfiable()) {
+	  cerr << "Empty polyhedron " 
+	       << "with a satisfiable system of constraints" << endl;
+	  goto bomb;
+	}
     }
-    else
-      return true;
- 
+  
   // A zero-dimensional, non-empty polyhedron is allowed if
   // the system of constraint `con_sys' and the system of generators
   // `gen_sys' have no rows.
