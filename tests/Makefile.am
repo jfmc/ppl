@@ -47,8 +47,7 @@ TESTS = NNCinclusion1 \
 	affinetrans \
         append1 append2 \
 	bounded1 \
-	convexhull1 convexhull2 convexhull3 \
-	convexhull1 \
+	convexhull1 convexhull2 convexhull3 convexhull4 \
 	convexdifference1 \
         empty1 \
 	exceptions1 exceptions2 \
@@ -113,6 +112,7 @@ bounded1_SOURCES = bounded1.cc
 convexhull1_SOURCES = convexhull1.cc
 convexhull2_SOURCES = convexhull2.cc
 convexhull3_SOURCES = convexhull3.cc
+convexhull4_SOURCES = convexhull4.cc
 
 convexdifference1_SOURCES = convexdifference1.cc
 
