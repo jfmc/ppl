@@ -299,8 +299,9 @@ static PL_extension predicates[] = {
   PL_EXTENSION_ENTRY(ppl_remove_higher_dimensions, 2)
   PL_EXTENSION_ENTRY(ppl_add_dimensions_and_project, 2)
   PL_EXTENSION_ENTRY(ppl_add_dimensions_and_embed, 2)
-  PL_EXTENSION_ENTRY(ppl_polyhedon_included_or_equal, 2)
-  PL_EXTENSION_ENTRY(ppl_polyhedon_equal, 2)
+  PL_EXTENSION_ENTRY(ppl_polyhedron_included_or_equal, 2)
+  PL_EXTENSION_ENTRY(ppl_polyhedron_equal, 2)
+  PL_EXTENSION_ENTRY(ppl_polyhedron_strictly_included, 2)
   { NULL, 0, NULL, 0 }
 };
 
