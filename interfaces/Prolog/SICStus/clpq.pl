@@ -328,10 +328,10 @@ do_command(consult(Program), _VN) :-
   !,
   (read_program(Program) ; true),
   main_loop_yes.
-do_command(reconsult(Program), _VN) :-
+do_command(reconsult(Program), VN) :-
   !,
   clear_program,
-  do_command(consult(Program)).
+  do_command(consult(Program), VN).
 do_command(listing, _VN) :-
   !,
   list_program,
