@@ -26,7 +26,7 @@ Support for CIAO Prolog is under development and will be available in
 
 The SICStus Prolog interface of the library provides is available
 both as a statically linked module or as a dynamically linked one.
-Only SICStus Prolog version 3.9.0 or later are supported.
+Only SICStus Prolog version 3.9.0 or later is supported.
 
 <H5>The Statically Linked <CODE>ppl_sicstus</CODE> Executable</H5>
 
@@ -47,8 +47,32 @@ Notice that, for dynamic linking to work, you should have configured
 the library with the <CODE>--enable-shared</CODE> option.
 
 
-<H4>SWI Prolog</H4>
+<H4>SWI-Prolog</H4>
 
+The SWI-Prolog interface of the library provides is available
+both as a statically linked module or as a dynamically linked one.
+Only SWI-Prolog version 5.0 or later is supported.
+
+<H5>The Statically Linked <CODE>ppl_pl</CODE> Executable</H5>
+
+If an appropriate version of SWI-Prolog is installed on the machine
+on which you compiled the library, the command <CODE>make install</CODE>
+will install the executable <CODE>ppl_pl</CODE> in the directory
+<CODE>prefix/bin</CODE>.
+The <CODE>ppl_pl</CODE> executable is simply the SWI-Prolog
+system with the Parma Polyhedra library statically linked:
+from within <CODE>ppl_pl</CODE> all the services of the library
+are available without further action.
+
+<H5>Dynamic Linking</H5>
+
+In order to dynamically load the library from SWI-Prolog you should
+simply execute
+\code
+  load_foreign_library('prefix/lib/ppl/libppl_swiprolog').
+\endcode
+Notice that, for dynamic linking to work, you should have configured
+the library with the <CODE>--enable-shared</CODE> option.
 
  
 <H4>YAP</H4>

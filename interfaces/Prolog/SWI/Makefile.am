@@ -32,45 +32,12 @@ EXTRA_DIST = ppl_swiprolog.cc pl_clpq.cc pl_clpq.pl
 
 if HAVE_SWI_PROLOG
 
-# Libtool -version-info for libpplswiprolog.la.
-#
-#  1. Start with version information of `0:0:0' for each libtool library.
-#
-#  2. Update the version information only immediately before a public
-#     release of your software.  More frequent updates are unnecessary,
-#     and only guarantee that the current interface number gets larger
-#     faster.
-#
-#  3. If the library source code has changed at all since the last
-#     update, then increment REVISION (`C:R:A' becomes `C:r+1:A').
-#
-#  4. If any interfaces have been added, removed, or changed since the
-#     last update, increment CURRENT, and set REVISION to 0.
-#
-#  5. If any interfaces have been added since the last public release,
-#     then increment AGE.
-#
-#  6. If any interfaces have been removed since the last public release,
-#     then set AGE to 0.
-#
-#	PPL release		-version-info
-#	    0.1			    -----
-#	    0.2			    -----
-#	    0.3			    -----
-#	    0.4			    0:0:0
-
-LIBPPLSWIPROLOG_LT_CURRENT =  0
-LIBPPLSWIPROLOG_LT_REVISION = 0
-LIBPPLSWIPROLOG_LT_AGE =      0
-
 AM_CPPFLAGS = -I$(top_builddir)/src @extra_includes@
 
-lib_LTLIBRARIES = libpplswiprolog.la
-
-libpplswiprolog_la_SOURCES = ppl_swiprolog.cc
-
-libpplswiprolog_la_LDFLAGS = \
--version-info $(LIBPPLSWIPROLOG_LT_CURRENT):$(LIBPPLSWIPROLOG_LT_REVISION):$(LIBPPLSWIPROLOG_LT_AGE)
+pkglib_LTLIBRARIES = libppl_swiprolog.la
+libppl_swiprolog_la_SOURCES = ppl_swiprolog.cc
+libppl_swiprolog_la_LIBADD = $(top_builddir)/src/libppl.la @extra_libraries@
+libppl_swiprolog_la_LDFLAGS = -no-undefined -avoid-version
 
 CLPQ_TESTS = \
 ack.clpq \

@@ -348,7 +348,7 @@ static PL_extension predicates[] = {
   { NULL, 0, NULL, 0 }
 };
 
-install_t
+extern "C" install_t
 install() {
   ppl_init();
   PL_register_extensions(predicates);

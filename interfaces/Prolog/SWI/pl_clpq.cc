@@ -1,8 +1,7 @@
 
 #include <SWI-Prolog.h>
 
-extern install_t
-install();
+extern "C" install_t install();
 
 int
 main(int, char** argv) {
