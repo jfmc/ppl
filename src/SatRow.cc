@@ -172,17 +172,15 @@ PPL::SatRow::prev(int position) const {
   return -1;
 }
 
-
 int
 PPL::compare(const SatRow& x, const SatRow& y) {
   size_t x_size = mpz_size(x.vec);
   size_t y_size = mpz_size(y.vec);
-
-  for (size_t x_li = 0, y_li = 0;
-       x_li < x_size && y_li < y_size;
-       ++x_li, ++y_li) {
-    mp_limb_t a = mpz_getlimbn(x.vec, x_li);
-    mp_limb_t b = mpz_getlimbn(y.vec, y_li);
+  size_t x_li = 0;
+  size_t y_li = 0;
+  while (x_li < x_size && y_li < y_size) {
+    mp_limb_t a = mpz_getlimbn(x.vec, x_li++);
+    mp_limb_t b = mpz_getlimbn(y.vec, y_li++);
     if (a != b) {
       // Get the one's where they are different.
       mp_limb_t diff = (a ^ b);
@@ -192,14 +190,14 @@ PPL::compare(const SatRow& x, const SatRow& y) {
     }
   }
   if (x_size < y_size) {
-    for (size_t y_li = 0; y_li < y_size; ++y_li)
-      if (mpz_getlimbn(y.vec, y_li) != 0)
+    while (y_li < y_size)
+      if (mpz_getlimbn(y.vec, y_li++) != 0)
 	return -1;
     return 0;
   }
   else if (x_size > y_size) {
-    for (size_t x_li = 0; x_li < x_size; ++x_li)
-      if (mpz_getlimbn(x.vec, x_li) != 0)
+    while (x_li < x_size)
+      if (mpz_getlimbn(x.vec, x_li++) != 0)
 	return 1;
     return 0;
   }
@@ -210,35 +208,31 @@ bool
 PPL::operator<=(const SatRow& x, const SatRow& y) {
   size_t x_size = mpz_size(x.vec);
   size_t y_size = mpz_size(y.vec);
-
-  for (size_t x_li = 0, y_li = 0;
-       x_li < x_size && y_li < y_size;
-       ++x_li, ++y_li) {
-    mp_limb_t a = mpz_getlimbn(x.vec, x_li);
-    mp_limb_t b = mpz_getlimbn(y.vec, y_li);
+  size_t x_li = 0;
+  size_t y_li = 0; 
+  while (x_li < x_size && y_li < y_size) {
+    mp_limb_t a = mpz_getlimbn(x.vec, x_li++);
+    mp_limb_t b = mpz_getlimbn(y.vec, y_li++);
     if ((a | b) != b)
       return false;
   }
-  if (x_size > y_size) {
-    for (size_t x_li = 0; x_li < x_size; ++x_li)
-      if (mpz_getlimbn(x.vec, x_li) != 0)
+  if (x_size > y_size)
+    while (x_li < x_size)
+      if (mpz_getlimbn(x.vec, x_li++) != 0)
 	return false;
-  }
   return true;
 }
-
 
 bool
 PPL::operator<(const SatRow& x, const SatRow& y) {
   size_t x_size = mpz_size(x.vec);
   size_t y_size = mpz_size(y.vec);
   bool one_diff = false;
-
-  for (size_t x_li = 0, y_li = 0;
-       x_li < x_size && y_li < y_size;
-       ++x_li, ++y_li) {
-    mp_limb_t a = mpz_getlimbn(x.vec, x_li);
-    mp_limb_t b = mpz_getlimbn(y.vec, y_li);
+  size_t x_li = 0;
+  size_t y_li = 0;
+  while (x_li < x_size && y_li < y_size) {
+    mp_limb_t a = mpz_getlimbn(x.vec, x_li++);
+    mp_limb_t b = mpz_getlimbn(y.vec, y_li++);
     mp_limb_t c = a | b;
     if (c != b)
       return false;
@@ -248,16 +242,16 @@ PPL::operator<(const SatRow& x, const SatRow& y) {
   if (x_size < y_size) {
     if (one_diff)
       return true;
-    for (size_t y_li = 0; y_li < y_size; ++y_li)
-      if (mpz_getlimbn(y.vec, y_li) != 0)
+    while (y_li < y_size)
+      if (mpz_getlimbn(y.vec, y_li++) != 0)
 	return true;
     return false;
   }
   else if (x_size > y_size) {
     if (!one_diff)
       return false;
-    for (size_t x_li = 0; x_li < x_size; ++x_li)
-      if (mpz_getlimbn(x.vec, x_li) != 0)
+    while (x_li < x_size)
+      if (mpz_getlimbn(x.vec, x_li++) != 0)
 	return false;
     return true;
   }
