@@ -1371,6 +1371,14 @@ private:
   static bool add_and_minimize(bool con_to_gen,
 			       Matrix& source1, Matrix& dest, SatMatrix& sat,
 			       const Matrix& source2);
+  
+  //! Returns <CODE>true</CODE> if the given polyhedra satisfy
+  //! the theorem of BBRZ02.
+  /*!
+    \param x        The greater polyhedron.
+    \param y        The smaller polyhedron.
+  */
+  static bool is_BBRZ02_stabilizing(const Polyhedron& x, const Polyhedron& y);
 
   /*! @name Exception throwers
     Throw an exception after having formatted the appropriate
