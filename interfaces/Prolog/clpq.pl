@@ -262,7 +262,21 @@ main_loop :-
   % The above read leaves an EOL character in the input buffer:
   % get rid of it.
   eat_eol,
-  do_command(Command, VN).
+  catch(do_command(Command, VN),
+	Exception,
+	(print_exception_term(Exception), main_loop_no)).
+
+print_exception_term(ppl_overflow_error(Cause)) :-
+  nl,
+  write('Error: an overflow has been detected by the PPL: '),
+  write(Cause),
+  nl,
+  !.
+
+print_exception_term(Exception) :-
+  nl,
+  writeq(Exception),
+  nl.
 
 clear_program :-
   retract(user_clause(_, _)),
