@@ -692,8 +692,11 @@ Polyhedron::map_space_dimensions(const Partial_Function& pfunc) {
 	dimension_type j = i;
 	do {
 	  visited[j] = true;
-	  dimension_type k;
-	  (void) pfunc.maps(j, k);
+	  // The following initialization is only to make the compiler happy.
+	  dimension_type k = 0;
+	  if (!pfunc.maps(j, k))
+	    throw_invalid_argument("map_space_dimensions(pfunc)",
+				   " pfunc is inconsistent");
 	  if (k == j)
 	    // Cycle of length 1: skip it.
 	    goto skip;
