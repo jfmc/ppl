@@ -105,6 +105,20 @@ fatal(const char* format, ...) {
   my_exit(1);
 }
 
+static const char*
+get_ppl_version() {
+  const char* p;
+  (void) ppl_version(&p);
+  return p;
+}
+
+static const char*
+get_ppl_banner() {
+  const char* p;
+  (void) ppl_banner(&p);
+  return p;
+}
+
 static void
 process_options(int argc, char *argv[]) {
   int option_index;
@@ -175,10 +189,12 @@ process_options(int argc, char *argv[]) {
   }
 
   if (optind >= argc) {
-    if (verbose) {
-      fprintf(stderr, "Parma Polyhedra Library version:\n%s\n", ppl_version());
-      fprintf(stderr, "\nParma Polyhedra Library banner:\n%s", ppl_banner());
-    }
+    if (verbose)
+      fprintf(stderr,
+	      "Parma Polyhedra Library version:\n%s\n\n"
+	      "Parma Polyhedra Library banner:\n%s",
+	      get_ppl_version(),
+	      get_ppl_banner());
     else
       fatal("no input files");
   }
@@ -668,9 +684,9 @@ main(int argc, char* argv[]) {
   if (ppl_set_error_handler(error_handler) < 0)
     fatal("cannot install the custom error handler");
 
-  if (strcmp(ppl_source_version, ppl_version()) != 0)
+  if (strcmp(ppl_source_version, get_ppl_version()) != 0)
     fatal("was compiled with PPL version %s, but linked with version %s",
-	  ppl_source_version, ppl_version());
+	  ppl_source_version, get_ppl_version());
 
   if (ppl_io_set_variable_output_function(variable_output_function) < 0)
     fatal("cannot install the custom variable output function");

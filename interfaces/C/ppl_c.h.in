@@ -226,41 +226,42 @@ enum ppl_enum_error_code {
 /*! \brief
   Returns the major number of the PPL version.
 */
-unsigned
+int
 ppl_version_major __P((void));
 
 /*! \brief
   Returns the minor number of the PPL version.
 */
-unsigned
+int
 ppl_version_minor __P((void));
 
 /*! \brief
   Returns the revision number of the PPL version.
 */
-unsigned
+int
 ppl_version_revision __P((void));
 
 /*! \brief
   Returns the beta number of the PPL version.
 */
-unsigned
+int
 ppl_version_beta __P((void));
 
 /*! \brief
-  Returns a character string containing the PPL version.
+  Writes to \p m a pointer to a character string containing the
+  PPL version.
 */
-const char*
-ppl_version __P((void));
+int
+ppl_version __P((const char** p));
 
 /*! \brief
-  Returns a character string containing information about the PPL version,
-  the licensing, the lack of any warranty whatsoever, the C++ compiler
-  used to build the library, where to report bugs and where to look
-  for further information.
+  Writes to \p m a pointer to a character string containing
+  information about the PPL version, the licensing, the lack of any
+  warranty whatsoever, the C++ compiler used to build the library,
+  where to report bugs and where to look for further information.
 */
-const char*
-ppl_banner __P((void));
+int
+ppl_banner __P((const char** p));
 
 /*@}*/ /* Version Checking */
 

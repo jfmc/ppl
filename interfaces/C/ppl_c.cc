@@ -220,35 +220,43 @@ ppl_finalize(void) try {
 }
 CATCH_ALL
 
-unsigned
-ppl_version_major(void) {
+int
+ppl_version_major(void) try {
   return version_major();
 }
+CATCH_ALL
 
-unsigned
-ppl_version_minor(void) {
+int
+ppl_version_minor(void) try {
   return version_minor();
 }
+CATCH_ALL
 
-unsigned
-ppl_version_revision(void) {
+int
+ppl_version_revision(void) try {
   return version_revision();
 }
+CATCH_ALL
 
-unsigned
-ppl_version_beta(void) {
+int
+ppl_version_beta(void) try {
   return version_beta();
 }
+CATCH_ALL
 
-const char*
-ppl_version(void) {
-  return version();
+int
+ppl_version(const char** p) try {
+  *p = version();
+  return 0;
 }
+CATCH_ALL
 
-const char*
-ppl_banner(void) {
-  return banner();
+int
+ppl_banner(const char** p) try {
+  *p = banner();
+  return 0;
 }
+CATCH_ALL
 
 int
 ppl_max_space_dimension(ppl_dimension_type* m) try {
