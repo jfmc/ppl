@@ -34,6 +34,14 @@ site: http://www.cs.unipr.it/ppl/ . */
 #include <stdexcept>
 #include <deque>
 
+#ifndef BHRZ03_AC_IS_SUM
+#define BHRZ03_AC_IS_SUM 1
+#endif
+
+#ifndef BHRZ03_AC_CHECKS_H79_BOUNDARY
+#define BHRZ03_AC_CHECKS_H79_BOUNDARY 1
+#endif
+
 #define BE_LAZY
 
 namespace PPL = Parma_Polyhedra_Library;
@@ -3988,6 +3996,22 @@ PPL::Polyhedron::BHRZ03_averaging_constraints(const Polyhedron& y,
   for (dimension_type i = y.gen_sys.num_rows(); i-- > 0; ) {
     const Generator& g = y.gen_sys[i];
     if ((g.is_point() && closed) || (g.is_closure_point() && !closed)) {
+#if BHRZ03_AC_CHECKS_H79_BOUNDARY
+      // If in `H79.con_sys' there is already an inequality constraint
+      // saturating this point, then there is no need to produce another
+      // constraint.
+      bool lies_on_the_boundary_of_H79 = false;
+      const ConSys& H79_cs = H79.con_sys; 
+      for (dimension_type j = H79_cs.num_rows(); j-- > 0; ) {
+	const Constraint& c = H79_cs[j];
+	if (c.is_inequality() && c * g == 0) {
+	  lies_on_the_boundary_of_H79 = true;
+	  break;
+	}
+      }
+      if (lies_on_the_boundary_of_H79)
+	continue;
+#endif //#if BHRZ03_AC_CHECKS_H79_BOUNDARY
       // Consider all the constraints in `x_minus_H79_con_sys'
       // that are saturated by the point `g'.
       averaging_cs.clear();
@@ -4003,6 +4027,16 @@ PPL::Polyhedron::BHRZ03_averaging_constraints(const Polyhedron& y,
 	  // No average is needed.
 	  new_cs.insert(averaging_cs[0]);
 	else {
+#if BHRZ03_AC_IS_SUM
+	  LinExpression e(0);
+	  bool strict_inequality = false;
+	  for (dimension_type h = averaging_cs_num_rows; h-- > 0; ) {
+	    if (averaging_cs[h].is_strict_inequality())
+	      strict_inequality = true;
+	    e += LinExpression(averaging_cs[h]);
+	  }
+	  e.normalize();
+#else //#ifBHRZ03_AC_IS_SUM
 	  // Compute the norms of the chosen constraints
 	  // (ignore the inhomogeneous term).
 	  // NOTE: Actually, the coefficients of `norms' are the
@@ -4054,6 +4088,7 @@ PPL::Polyhedron::BHRZ03_averaging_constraints(const Polyhedron& y,
 	    inhomogeneous_term += e[t] * g[t];
 	  e -= inhomogeneous_term;
 	  e.normalize();
+#endif //#ifBHRZ03_AC_IS_SUM
 	  
 	  if (!e.all_homogeneous_terms_are_zero())
 	    if (strict_inequality)
