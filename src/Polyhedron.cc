@@ -2986,8 +2986,11 @@ PPL::Polyhedron::select_H79_constraints(const Polyhedron& y,
 	 && y.constraints_are_minimized()
 	 && y.generators_are_minimized());
 
+  // First adjust topology only.
+  cs_selection.adjust_topology_and_dimension(topology(), space_dimension());
   // Add low-level constraints.
   add_low_level_constraints(cs_selection);
+  // Now adjust dimensions, if needed.
   cs_selection.adjust_topology_and_dimension(topology(), space_dimension());
 
   // Obtain a sorted copy of `y.sat_g'.
