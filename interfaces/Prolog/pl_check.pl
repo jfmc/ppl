@@ -26,8 +26,8 @@ site: http://www.cs.unipr.it/ppl/ . */
 % when running the `timeout' predicate.
 % When F = 0, no message is displayed.
 
-noisy(1).
-%noisy(0).
+%noisy(1).
+noisy(0).
 
 % check_all
 % This executes all the test predicates which, together, check all 
@@ -1181,13 +1181,12 @@ time_watch(Topology, Goal, NoTimeOut, TimeOut) :-
    !,
    Goal =.. [PPLFunct, Poly|Args],
    ppl_new_Polyhedron_from_Polyhedron(Topology, Poly, Topology, PolyCopy),
-   ppl_timeout_exception_atom(TimeOutAtom),
    GoalCopy =.. [PPLFunct, PolyCopy|Args],
+   ppl_timeout_exception_atom(TimeOutAtom),
      (catch(GoalCopy, TimeOutAtom, fail) ->
-         (ppl_reset_timeout,
-          Goal, call(NoTimeOut))
-    ; 
-      call(TimeOut)
+       (ppl_reset_timeout,ppl_Polyhedron_swap(Poly, PolyCopy), call(NoTimeOut))
+     ; 
+       call(TimeOut)
    ),
    ppl_delete_Polyhedron(PolyCopy).
 
