@@ -95,7 +95,7 @@ PPL::SatRow::first() const {
   size_t li = 0;
   size_t vec_size = mpz_size(vec);
   mp_srcptr p = vec->_mp_d;
-  for (; li < vec_size; ++li) {
+  for (; li < vec_size; ++li, ++p) {
     const mp_limb_t limb = *p;
     if (limb != 0)
       return li * BITS_PER_GMP_LIMB + first_one(limb);
@@ -140,9 +140,9 @@ PPL::SatRow::next(int position) const {
 
 int
 PPL::SatRow::last() const {
-  size_t li = mpz_size(vec);
+  size_t li = mpz_size(vec) - 1;
   mp_srcptr p = vec->_mp_d + li;
-  for (; li-- > 0; --p) {
+  for (; li > 0; --li, --p) {
     const mp_limb_t limb = *p;
     if (limb != 0)
       return li * BITS_PER_GMP_LIMB + last_one(limb);
