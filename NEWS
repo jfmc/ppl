@@ -118,14 +118,14 @@ o  The enumeration values of enum Complexity_Class have been renamed
 
 o  In the Prolog interface, the predicates
    ppl_new_polyhedron_from_dimension/3 and
-   ppl_new_polyhedron_empty_from_dimension/3 have been replaced by
-   a single predicate
-   ppl_new_polyhedron_from_space_dimension/4 where the (extra) third
-   argument indicates whether the polyhedron to be created should be
-   the universe or the empty polyhedron.
+   ppl_new_polyhedron_empty_from_dimension/3 have been replaced by a
+   single predicate ppl_new_polyhedron_from_space_dimension/4 where
+   the (extra) third argument indicates whether the polyhedron to be
+   created should be the universe or the empty polyhedron.
 
-o  As unary "+" is not in standard Prolog, the unary "+" in linear
-   expressions is not supported in the Prolog interface.
+o  As the unary plus operator is not in standard Prolog, '+'/1 in linear
+   expressions is no longer supported by the Prolog interface.
+
 
 Bugfixes
 ========
