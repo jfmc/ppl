@@ -1685,7 +1685,7 @@ PPL::Polyhedron::poly_difference_assign(const Polyhedron& y) {
   // TODO: This is just an executable specification.
   //       Have to find a more efficient method.
 
-  if (x <= y) {
+  if (y.contains(x)) {
     x.set_empty();
     return;
   }
@@ -2341,30 +2341,27 @@ PPL::operator==(const Polyhedron& x, const Polyhedron& y) {
 
 /*! \relates Parma_Polyhedra_Library::Polyhedron */
 bool
-PPL::operator<=(const Polyhedron& x, const Polyhedron& y) {
+PPL::Polyhedron::contains(const Polyhedron& y) const {
+  const Polyhedron& x = *this;
+
   // Topology compatibility check.
   if (x.topology() != y.topology())
-    Polyhedron::throw_topology_incompatible("operator<=("
-					    "const Polyhedron& x, "
-					    "const Polyhedron& y)", x, y);
-  dimension_type x_space_dim = x.space_dim;
+    Polyhedron::throw_topology_incompatible("contains(y)", y);
+
   // Dimension-compatibility check.
-  if (x_space_dim != y.space_dim)
-    Polyhedron::throw_dimension_incompatible("operator<=("
-					     "const Polyhedron& x, "
-					     "const Polyhedron& y)", x, y);
+  if (x.space_dim != y.space_dim)
+    Polyhedron::throw_topology_incompatible("contains(y)", y);
 
-  if (x.is_empty())
+  if (y.is_empty())
     return true;
-  else if (y.is_empty())
-    return x.check_empty();
-  else if (x.space_dimension() == 0)
+  else if (x.is_empty())
+    return y.check_empty();
+  else if (y.space_dimension() == 0)
     return true;
-
-  if (x.quick_equivalence_test(y) == Polyhedron::TVB_TRUE)
+  else if (x.quick_equivalence_test(y) == Polyhedron::TVB_TRUE)
     return true;
-
-  return x.is_included_in(y);
+  else
+    return y.is_included_in(x);
 }
 
 /*! \relates Parma_Polyhedra_Library::Polyhedron */

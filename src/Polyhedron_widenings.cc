@@ -144,7 +144,7 @@ PPL::Polyhedron::H79_widening_assign(const Polyhedron& y, unsigned* tp) {
     // We assume that y is contained or equal to x.
     Polyhedron x_copy = x;
     Polyhedron y_copy = y;
-    assert(y_copy <= x_copy);
+    assert(x_copy.contains(y_copy));
   }
 #endif
 
@@ -200,7 +200,7 @@ PPL::Polyhedron::H79_widening_assign(const Polyhedron& y, unsigned* tp) {
       if (tp != 0 && *tp > 0) {
 	// There are tokens available. If `CH78' is not a subset of `x',
 	// then it is less precise and we use one of the available tokens.
-	if (!(CH78 <= x))
+	if (!x.contains(CH78))
 	  --(*tp);
       }
       else
@@ -249,7 +249,7 @@ PPL::Polyhedron::H79_widening_assign(const Polyhedron& y, unsigned* tp) {
     if (tp != 0 && *tp > 0) {
       // There are tokens available. If `H79' is not a subset of `x',
       // then it is less precise and we use one of the available tokens.
-      if (!(H79 <= x))
+      if (!x.contains(H79))
 	--(*tp);
     }
     else
@@ -293,7 +293,7 @@ PPL::Polyhedron::limited_H79_extrapolation_assign(const Polyhedron& y,
     // We assume that y is contained or equal to x.
     Polyhedron x_copy = x;
     Polyhedron y_copy = y;
-    assert(y_copy <= x_copy);
+    assert(x_copy.contains(y_copy));
   }
 #endif
 
@@ -675,7 +675,7 @@ PPL::Polyhedron::BHRZ03_combining_constraints(const Polyhedron& y,
 
   // This widening technique was unsuccessful if the result is not
   // stabilizing with respect to `y', or if it is not better than `H79'.
-  if (H79 <= result || !is_BHRZ03_stabilizing(result, y))
+  if (result.contains(H79) || !is_BHRZ03_stabilizing(result, y))
     return false;
 
   // The technique was successful.
@@ -742,7 +742,7 @@ PPL::Polyhedron::BHRZ03_evolving_points(const Polyhedron& y,
   result.intersection_assign_and_minimize(H79);
 
   // Check for stabilization wrt `y' and improvement over `H79'.
-  if (H79 <= result || !is_BHRZ03_stabilizing(result, y))
+  if (result.contains(H79) || !is_BHRZ03_stabilizing(result, y))
     return false;
 
   // The widening technique was successful.
@@ -828,7 +828,7 @@ PPL::Polyhedron::BHRZ03_evolving_rays(const Polyhedron& y,
   result.intersection_assign_and_minimize(H79);
 
   // Check for stabilization wrt `y' and improvement over `H79'.
-  if (H79 <= result || !is_BHRZ03_stabilizing(result, y))
+  if (result.contains(H79) || !is_BHRZ03_stabilizing(result, y))
     return false;
 
   // The technique was successful.
@@ -856,7 +856,7 @@ PPL::Polyhedron::BHRZ03_widening_assign(const Polyhedron& y, unsigned* tp) {
     // We assume that y is contained or equal to x.
     Polyhedron x_copy = x;
     Polyhedron y_copy = y;
-    assert(y_copy <= x_copy);
+    assert(x_copy.contains(y_copy));
   }
 #endif
 
@@ -906,7 +906,7 @@ PPL::Polyhedron::BHRZ03_widening_assign(const Polyhedron& y, unsigned* tp) {
   // If the iteration is stabilizing, the resulting polyhedron is `x'.
   // At this point, also check if the two polyhedra are the same
   // (exploiting the knowledge that `y <= x'.
-  if (is_BHRZ03_stabilizing(x, y) || x <= y) {
+  if (is_BHRZ03_stabilizing(x, y) || y.contains(x)) {
 #if PPL_STATISTICS
     statistics->technique.nop++;
 #endif
@@ -1008,7 +1008,7 @@ PPL::Polyhedron::limited_BHRZ03_extrapolation_assign(const Polyhedron& y,
     // We assume that y is contained or equal to x.
     Polyhedron x_copy = x;
     Polyhedron y_copy = y;
-    assert(y_copy <= x_copy);
+    assert(x_copy.contains(y_copy));
   }
 #endif
 

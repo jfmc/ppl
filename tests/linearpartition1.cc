@@ -38,7 +38,7 @@ partition_ok(const C_Polyhedron& p,
 	     PowerSet<Determinate<NNC_Polyhedron> > >& partition) {
   const C_Polyhedron& r = partition.first;
   // `r' must be a subset of or equal to `q'.
-  if (!(r <= q))
+  if (!q.contains(r))
     return false;
   const PowerSet<Determinate<NNC_Polyhedron> >& s = partition.second;
   NNC_Polyhedron the_union(r);

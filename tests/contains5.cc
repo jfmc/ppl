@@ -1,7 +1,6 @@
-/* Test operator>=(const Polyhedron& x, const Polyhedron& y),
-   operator>(const Polyhedron& x, const Polyhedron& y),
-   operator!=(const Polyhedron& x, const Polyhedron& y) and
-   operator<(const Polyhedron& x, const Polyhedron& y).
+/* Test Polyhedron::contains(const Polyhedron&),
+   Polyhedron::strictly_contains(const Polyhedron&),
+   and operator!=(const Polyhedron&, const Polyhedron&).
    Copyright (C) 2001-2003 Roberto Bagnara <bagnara@cs.unipr.it>
 
 This file is part of the Parma Polyhedra Library (PPL).
@@ -45,7 +44,7 @@ test1() {
   C_Polyhedron ph2(ph1);
   ph2.add_constraint(A == B);
 
-  bool ok = (ph1 >= ph2);
+  bool ok = ph1.contains(ph2);
 
 #if NOISY
   print_constraints(ph1, "*** ph1 ***");
@@ -68,7 +67,7 @@ test2() {
   NNC_Polyhedron ph2(ph1);
   ph2.add_constraint(A > B);
 
-  bool ok = (ph1 > ph2);
+  bool ok = ph1.strictly_contains(ph2);
 
 #if NOISY
   print_constraints(ph1, "*** ph1 ***");
@@ -116,7 +115,7 @@ test4() {
   NNC_Polyhedron ph2(ph1);
   ph2.add_constraint(A > 0);
 
-  bool ok = (ph2 < ph1);
+  bool ok = ph1.strictly_contains(ph2);
 
 #if NOISY
   print_constraints(ph1, "*** ph1 ***");

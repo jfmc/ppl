@@ -1,4 +1,4 @@
-/* Test Polyhedron::operator<=().
+/* Test Polyhedron::contains(const Polyhedron&).
    Copyright (C) 2001-2003 Roberto Bagnara <bagnara@cs.unipr.it>
 
 This file is part of the Parma Polyhedra Library (PPL).
@@ -56,7 +56,7 @@ main() TRY {
   print_generators(p_line, "*** p_line generators ***");
 #endif
 
-  bool p_half_space_includes_p_line = (p_half_space >= p_line);
+  bool p_half_space_includes_p_line = p_half_space.contains(p_line);
 
 #if NOISY
   cout << "p_half_space ";
@@ -67,7 +67,7 @@ main() TRY {
   cout << "or is equal to p_line" << endl;
 #endif
 
-  bool p_line_includes_p_half_space = (p_line >= p_half_space);
+  bool p_line_includes_p_half_space = p_line.contains(p_half_space);
 
 #if NOISY
   cout << "p_line ";

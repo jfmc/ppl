@@ -638,10 +638,10 @@ error20() {
 #endif
 
   try {
-    // This is an invalid use of the `operator<=':
-    // it is illegal to apply this function to a
-    // closed polyhedron and a non-closed polyhedron.
-    ph1 <= ph2;
+    // This is an invalid use of the Polyhedron::contains(): it is
+    // illegal to apply this method to a closed polyhedron and a
+    // non-closed polyhedron.
+    ph1.contains(ph2);
   }
   catch(invalid_argument& e) {
 #if NOISY
@@ -807,10 +807,10 @@ error26() {
 #endif
 
   try {
-    // This is an invalid use of the `operator<=':
-    // it is illegal to apply this function to a
+    // This is an invalid use of Polyhedron::contains():
+    // it is illegal to apply this method to a
     // closed polyhedron and a non-closed polyhedron.
-    ph1 <= ph2;
+    ph2.contains(ph1);
   }
   catch(invalid_argument& e) {
 #if NOISY

@@ -1802,7 +1802,7 @@ ppl_Polyhedron_contains_Polyhedron(ppl_const_Polyhedron_t x,
 				   ppl_const_Polyhedron_t y) try {
   const Polyhedron& xx = *to_const(x);
   const Polyhedron& yy = *to_const(y);
-  return (xx >= yy) ? 1 : 0;
+  return xx.contains(yy) ? 1 : 0;
 }
 CATCH_ALL
 
@@ -1811,7 +1811,7 @@ ppl_Polyhedron_strictly_contains_Polyhedron(ppl_const_Polyhedron_t x,
 					    ppl_const_Polyhedron_t y) try {
   const Polyhedron& xx = *to_const(x);
   const Polyhedron& yy = *to_const(y);
-  return (xx > yy) ? 1 : 0;
+  return xx.strictly_contains(yy) ? 1 : 0;
 }
 CATCH_ALL
 

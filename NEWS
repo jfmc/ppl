@@ -10,6 +10,16 @@ NEWS for version 0.5 (release date to be decided)
 New and Changed Features
 ========================
 
+o  The functions
+   Polyhedron::operator<=(const Polyhedron&, const Polyhedron&),
+   Polyhedron::operator>=(const Polyhedron&, const Polyhedron&),
+   Polyhedron::operator<(const Polyhedron&, const Polyhedron&), and
+   Polyhedron::operator>(const Polyhedron&, const Polyhedron&)
+   have been removed.
+   The methods Polyhedron::contains(const Polyhedron&) and
+   Polyhedron::strictly_contains(const Polyhedron&) provide
+   the same functionality.
+
 o  The method Polyhedron::limited_H79_widening_assign() has been renamed
    Polyhedron::limited_H79_extrapolation_assign().  From now on, the name
    `widening' is reserved for operators that come with a convergence
@@ -159,7 +169,7 @@ o  Fixed a bug in method GenSys::insert(const Generator&) whereby the
    insertion of a generator into an empty generator system might be
    mishandled.
 
-o  Fixed a bug in method Polyhedron::operator<=(const Polyehdron&)
+o  Fixed a bug in method Polyhedron::operator<=(const Polyhedron&)
    whereby the lines of the polyhedron were handled improperly.
 
 o  Fixed a bug in a private method used to implement public method

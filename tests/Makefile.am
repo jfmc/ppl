@@ -43,7 +43,6 @@ CPPFLAGS = @extra_cpp_flags@
 
 ORIGINAL_TESTS = \
 	CbecomesNNC1 \
-	NNCinclusion1 \
 	NNCminimize1 NNCminimize2 NNCminimize3 NNCminimize4 NNCminimize5 \
         NNCminimize6 \
 	addconstraint1 addconstraint2 addconstraint3 \
@@ -80,7 +79,7 @@ ORIGINAL_TESTS = \
 	concatenate1 concatenate2 concatenate3 concatenate4 concatenate5 \
 	concatenate6 \
 	constraints1 constraints2 constraints3 constraints4 \
-	contains1 \
+	contains1 contains2 contains3 contains4 contains5 \
 	disjoint1 disjoint2 disjoint3 \
         empty1 \
 	exceptions1 exceptions2 \
@@ -93,7 +92,6 @@ ORIGINAL_TESTS = \
 	generators1 generators2 generators3 generators4 generators5 \
 	generators6 \
 	h79widening1 h79widening2 h79widening3 h79widening4 h79widening5 \
-	inclusion1 inclusion2 \
         intersection1 intersection2 intersection3 intersection4 \
 	intersection5 intersection6 intersection7 intersection8 \
 	intersection9 intersection10 intersection11 \
@@ -107,7 +105,6 @@ ORIGINAL_TESTS = \
 	minconstraints1 minconstraints2 minconstraints3 minconstraints4 \
 	mingenerators1 mingenerators2 mingenerators3 \
 	onepoint \
-	operator1 \
         permute \
 	polydifference1 polydifference2 polydifference3 polydifference4 \
 	polydifference5 polydifference6 polydifference7 \
@@ -166,6 +163,7 @@ DERIVED_TESTS = \
 	nnc_concatenate1 nnc_concatenate2 nnc_concatenate3 nnc_concatenate4 \
 	nnc_concatenate5 nnc_concatenate6 \
 	nnc_constraints1 nnc_constraints2 nnc_constraints3 nnc_constraints4 \
+	nnc_contains1 nnc_contains2 \
 	nnc_disjoint1 nnc_disjoint2 \
 	nnc_empty1 \
 	nnc_exceptions1 \
@@ -176,7 +174,6 @@ DERIVED_TESTS = \
 	nnc_generators1 nnc_generators2 nnc_generators3 nnc_generators4 \
 	nnc_generators5 nnc_generators6 \
 	nnc_h79widening1 nnc_h79widening2 nnc_h79widening4 nnc_h79widening5 \
-	nnc_inclusion1 nnc_inclusion2 \
 	nnc_intersection1 nnc_intersection2 nnc_intersection3 \
 	nnc_intersection4 nnc_intersection5 nnc_intersection6 \
 	nnc_intersection7 nnc_intersection8 nnc_intersection9 \
@@ -215,8 +212,6 @@ DERIVED_TESTS = \
 #
 
 CbecomesNNC1_SOURCES = CbecomesNNC1.cc
-
-NNCinclusion1_SOURCES = NNCinclusion1.cc
 
 NNCminimize1_SOURCES = NNCminimize1.cc
 NNCminimize2_SOURCES = NNCminimize2.cc
@@ -352,6 +347,10 @@ constraints3_SOURCES = constraints3.cc
 constraints4_SOURCES = constraints4.cc
 
 contains1_SOURCES = contains1.cc
+contains2_SOURCES = contains2.cc
+contains3_SOURCES = contains3.cc
+contains4_SOURCES = contains4.cc
+contains5_SOURCES = contains5.cc
 
 disjoint1_SOURCES = disjoint1.cc
 disjoint2_SOURCES = disjoint2.cc
@@ -387,9 +386,6 @@ h79widening2_SOURCES = h79widening2.cc
 h79widening3_SOURCES = h79widening3.cc
 h79widening4_SOURCES = h79widening4.cc
 h79widening5_SOURCES = h79widening5.cc
-
-inclusion1_SOURCES = inclusion1.cc
-inclusion2_SOURCES = inclusion2.cc
 
 intersection1_SOURCES = intersection1.cc
 intersection2_SOURCES = intersection2.cc
@@ -430,8 +426,6 @@ mingenerators2_SOURCES = mingenerators2.cc
 mingenerators3_SOURCES = mingenerators3.cc
 
 onepoint_SOURCES = onepoint.cc
-
-operator1_SOURCES = operator1.cc
 
 permute_SOURCES = permute.cc
 
@@ -716,6 +710,11 @@ nnc_constraints3_CXXFLAGS = $(DERIVED_CXXFLAGS)
 nnc_constraints4_SOURCES = constraints4.cc
 nnc_constraints4_CXXFLAGS = $(DERIVED_CXXFLAGS)
 
+nnc_contains1_SOURCES = contains1.cc
+nnc_contains1_CXXFLAGS = $(DERIVED_CXXFLAGS)
+nnc_contains2_SOURCES = contains2.cc
+nnc_contains2_CXXFLAGS = $(DERIVED_CXXFLAGS)
+
 nnc_empty1_SOURCES = empty1.cc
 nnc_empty1_CXXFLAGS = $(DERIVED_CXXFLAGS)
 
@@ -761,11 +760,6 @@ nnc_h79widening4_SOURCES = h79widening4.cc
 nnc_h79widening4_CXXFLAGS = $(DERIVED_CXXFLAGS)
 nnc_h79widening5_SOURCES = h79widening5.cc
 nnc_h79widening5_CXXFLAGS = $(DERIVED_CXXFLAGS)
-
-nnc_inclusion1_SOURCES = inclusion1.cc
-nnc_inclusion1_CXXFLAGS = $(DERIVED_CXXFLAGS)
-nnc_inclusion2_SOURCES = inclusion2.cc
-nnc_inclusion2_CXXFLAGS = $(DERIVED_CXXFLAGS)
 
 nnc_intersection1_SOURCES = intersection1.cc
 nnc_intersection1_CXXFLAGS = $(DERIVED_CXXFLAGS)

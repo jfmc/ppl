@@ -1449,7 +1449,7 @@ ppl_Polyhedron_contains_Polyhedron(Prolog_term_ref t_lhs,
     const Polyhedron* rhs = term_to_polyhedron_handle(t_rhs);
     CHECK(lhs);
     CHECK(rhs);
-    if (*lhs >= *rhs)
+    if (lhs->contains(*rhs))
       return PROLOG_SUCCESS;
   }
   CATCH_ALL;
@@ -1463,7 +1463,7 @@ ppl_Polyhedron_strictly_contains_Polyhedron(Prolog_term_ref t_lhs,
     const Polyhedron* rhs = term_to_polyhedron_handle(t_rhs);
     CHECK(lhs);
     CHECK(rhs);
-    if (*lhs > *rhs)
+    if (lhs->strictly_contains(*rhs))
       return PROLOG_SUCCESS;
   }
   CATCH_ALL;

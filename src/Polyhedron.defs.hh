@@ -76,44 +76,6 @@ bool operator==(const Polyhedron& x, const Polyhedron& y);
 */
 bool operator!=(const Polyhedron& x, const Polyhedron& y);
 
-//! \brief
-//! Returns <CODE>true</CODE> if and only if
-//! \p x is strictly contained in \p y.
-/*!
-  \relates Polyhedron
-  \exception std::invalid_argument thrown if \p x and \p y
-                                   are topology-incompatible
-                                   or dimension-incompatible.
-*/
-bool operator<(const Polyhedron& x, const Polyhedron& y);
-
-//! Returns <CODE>true</CODE> if and only if \p x strictly contains \p y.
-/*!
-  \relates Polyhedron
-  \exception std::invalid_argument thrown if \p x and \p y
-                                   are topology-incompatible
-                                   or dimension-incompatible.
-*/
-bool operator>(const Polyhedron& x, const Polyhedron& y);
-
-//! Returns <CODE>true</CODE> if and only if \p x is contained in \p y.
-/*!
-  \relates Polyhedron
-  \exception std::invalid_argument thrown if \p x and \p y
-                                   are topology-incompatible
-                                   or dimension-incompatible.
-*/
-bool operator<=(const Polyhedron& x, const Polyhedron& y);
-
-//! Returns <CODE>true</CODE> if and only if \p x contains \p y.
-/*!
-  \relates Polyhedron
-  \exception std::invalid_argument thrown if \p x and \p y
-                                   are topology-incompatible
-                                   or dimension-incompatible.
-*/
-bool operator>=(const Polyhedron& x, const Polyhedron& y);
-
 //! Returns <CODE>true</CODE> if and only if \p x and \p y are disjoint.
 /*!
   \relates Polyhedron
@@ -596,6 +558,22 @@ public:
   //! Returns <CODE>true</CODE> if and only if \p *this
   //! is a topologically closed subset of the vector space.
   bool check_topologically_closed() const;
+
+  //! Returns <CODE>true</CODE> if and only if \p *this contains \p y.
+  /*!
+    \exception std::invalid_argument thrown if \p *this and \p y
+                                     are topology-incompatible
+                                     or dimension-incompatible.
+  */
+  bool contains(const Polyhedron& y) const;
+
+  //! Returns <CODE>true</CODE> if and only if \p *this strictly contains \p y.
+  /*!
+    \exception std::invalid_argument thrown if \p *this and \p y
+                                     are topology-incompatible
+                                     or dimension-incompatible.
+  */
+  bool strictly_contains(const Polyhedron& y) const;
 
   //! Uses \p *this to shrink a generic, interval-based bounding box.
   /*!
@@ -1320,8 +1298,6 @@ public:
   //@} // Member Functions that May Modify the Dimension of the Vector Space
 
   friend bool Parma_Polyhedra_Library::operator==(const Polyhedron& x,
-						  const Polyhedron& y);
-  friend bool Parma_Polyhedra_Library::operator<=(const Polyhedron& x,
 						  const Polyhedron& y);
   friend bool Parma_Polyhedra_Library::check_disjoint(const Polyhedron& x,
 						      const Polyhedron& y);

@@ -1,4 +1,4 @@
-/* Inclusion test for NNC_Polyhedron.
+/* Test NNC_Polyhedron::contains(const Polyhedron&).
    Copyright (C) 2001-2003 Roberto Bagnara <bagnara@cs.unipr.it>
 
 This file is part of the Parma Polyhedra Library (PPL).
@@ -49,7 +49,6 @@ main() TRY {
   cs.insert(x - y > -1);
 
   NNC_Polyhedron ph1(cs);
-  //ph1.NNC_minimize();
 
   // Building an equivalent square.
   GenSys gs;
@@ -64,7 +63,7 @@ main() TRY {
 
   NNC_Polyhedron ph2(gs);
 
-  int retval = (ph1 >= ph2) ? 0 : 1;
+  int retval = ph1.contains(ph2) ? 0 : 1;
 
   return retval;
 }

@@ -704,9 +704,10 @@ error26() {
   ph2.add_constraint(x - y == 0);
 
   try {
-    // This is an invalid use of operator <=: it is illegal to apply
-    // this function to two polyhedra that are not dimension-compatible.
-    ph1 <= ph2;
+    // This is an invalid use of Polyhedron::contains(): it is
+    // illegal to apply this method to two polyhedra that are not
+    // dimension-compatible.
+    ph1.contains(ph2);
   }
   catch (invalid_argument& e) {
 #if NOISY

@@ -287,22 +287,10 @@ operator!=(const Polyhedron& x, const Polyhedron& y) {
   return !(x == y);
 }
 
-/*! \relates Polyhedron */
 inline bool
-operator>=(const Polyhedron& x, const Polyhedron& y) {
-  return y <= x;
-}
-
-/*! \relates Polyhedron */
-inline bool
-operator<(const Polyhedron& x, const Polyhedron& y) {
-  return x <= y && !(x >= y);
-}
-
-/*! \relates Polyhedron */
-inline bool
-operator>(const Polyhedron& x, const Polyhedron& y) {
-  return y < x;
+Polyhedron::strictly_contains(const Polyhedron& y) const {
+  const Polyhedron& x = *this;
+  return x.contains(y) && !y.contains(x);
 }
 
 template <typename Box>
