@@ -33,9 +33,6 @@ using namespace Parma_Polyhedra_Library;
 #define NOISY 0
 #endif
 
-#undef NOISY
-#define NOISY 1
-
 int
 main() {
   set_handlers();

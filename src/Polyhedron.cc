@@ -4529,6 +4529,7 @@ PPL::Polyhedron::topological_closure_assign() {
     }
     if (changed) {
       con_sys.insert(Constraint::epsilon_leq_one());
+      con_sys.set_sorted(false);
       // After changing the system of constraints, the generators
       // are no longer up-to-date and the constraints are no longer
       // minimized.
@@ -4544,11 +4545,13 @@ PPL::Polyhedron::topological_closure_assign() {
     if (can_have_something_pending())
       set_generators_pending();
     else {
-      // We cannot have pending generators.
+      // We cannot have pending generators; this also implies
+      // that generators may have lost their sortedness.
       gen_sys.unset_pending_rows();
+      gen_sys.set_sorted(false);
       // Constraints are not up-to-date and generators are not minimized.
-      clear_generators_minimized();
       clear_constraints_up_to_date();
+      clear_generators_minimized();
     }
   }
   assert(OK());
