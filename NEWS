@@ -112,6 +112,8 @@ o  The method
    Polyhedron::poly_difference_assign_and_minimize(const Polyhedron&)
    has been removed.
 
+o  The Prolog interface now supports also Ciao Prolog and XSB.
+
 o  The C and Prolog interfaces have been extended so as to make more of
    the library's functionality available to Prolog and C users.
 
