@@ -546,8 +546,6 @@ PPL::Matrix::gauss() {
 	    rows[k].linear_combine(rows[rank], j);
 	    changed = true;
 	  }
-	  // The 'sorted' flag is set to false in linear_combine(),
-	  // so we have not to set 'changed' to true.
 	}
 	// Have to consider the rows following the rank-th one
 	// because until that one are already triangularized.
