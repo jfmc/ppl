@@ -1065,7 +1065,8 @@ throw_different_dimensions(const char* method,
 */
 void
 PPL::Polyhedron::insert(const Constraint& c) {
-  // FIXME: why can't we add the "always false" constraint 1 = 0 ?
+  // FIXME: why can't we insert the "always false" 0-dim constraint 0 = 1,
+  // resulting in a 0-dim but empty polyhedron ?
   assert(c.size() > 1);
 
   // Dimension-consistency check:
@@ -1088,6 +1089,8 @@ PPL::Polyhedron::insert(const Constraint& c) {
     if (!constraints_are_up_to_date())
       update_constraints();
 
+    // FIXME: are we sure here that the polyhedron is NOT empty ?
+    // Does `con_sys' necessarily has an element ?
     con_sys.insert(c);
 
     // After adding new constraints, generators are no more up-to-date.
@@ -1115,16 +1118,17 @@ PPL::Polyhedron::insert(const Generator& g) {
     throw_different_dimensions("PPL::Polyhedron::insert(g)",
 			       *this, g);
 
-  if (is_zero_dim()) {
-    // If a polyhedron is zero-dimensional, `gen_sys' has
-    // no rows.
-    gen_sys.insert(g);
-    // No longer zero-dimensional and with generators up-to-date.
-    set_generators_up_to_date();
+  if (space_dimension() == 0) {
+    // For dimension-compatibility, `g' has no columns.
+    assert(g.size() == 0);
+    clear_empty();
+    return;
   }
   else
     if (is_empty()) {
       gen_sys.clear();
+      // FIXME: here I need to resize `g' so that
+      // g.size() == space_dimension() + 1.
       gen_sys.insert(g);
       // No longer empty and with generators up-to-date.
       clear_empty();
@@ -1133,6 +1137,10 @@ PPL::Polyhedron::insert(const Generator& g) {
     else {
       if (!generators_are_up_to_date())
 	update_generators();
+      // FIXME: here I may found that is_empty() has become true.
+      // In such a case, gen_sys would be empty and
+      // I would need to resize `g' so that
+      // g.size() == space_dimension() + 1.
       gen_sys.insert(g);
 
       // After adding the new generator, constraints are no longer up-to-date.
@@ -1822,7 +1830,7 @@ PPL::Polyhedron::OK(bool check_not_empty) const {
   // A zero-dimensional polyhedron is allowed if
   // the system of constraint `con_sys' and the system of generators
   // `gen_sys' have no rows.
-  if (is_zero_dim())
+  if (space_dimension() == 0)
     if (!(gen_sys.num_rows() == 0 && con_sys.num_rows() == 0))
       cerr << "Polyhedron zeor-dimensional"
 	   << endl
@@ -1845,6 +1853,10 @@ PPL::Polyhedron::OK(bool check_not_empty) const {
   // `sat_c'   : number of generators  x number of constraints
   // `sat_g'   : number of constraints x number of generators
   if (constraints_are_up_to_date()) {
+    if (con_sys.num_columns() != space_dimension() + 1) {
+      cerr << "Incompatible size! (con_sys and space_dim)";
+      goto bomb;
+    }
     if (sat_c_is_up_to_date())
       if (con_sys.num_rows() != sat_c.num_columns()) {
 	cerr << "Incompatible size! (con_sys and sat_c)";
@@ -1863,14 +1875,18 @@ PPL::Polyhedron::OK(bool check_not_empty) const {
   }
 
   if (generators_are_up_to_date()) {
+    if (gen_sys.num_columns() != space_dimension() + 1) {
+      cerr << "Incompatible size! (gen_sys and space_dim)";
+      goto bomb;
+    }
     if (sat_c_is_up_to_date())
       if (gen_sys.num_rows() != sat_c.num_rows()) {
-	cerr << "Incompatible size! (con_sys and sat_c)";
+	cerr << "Incompatible size! (gen_sys and sat_c)";
 	goto bomb;
       }
     if (sat_g_is_up_to_date())
       if (gen_sys.num_rows() != sat_g.num_columns()) {
-	cerr << "Incompatible size! (con_sys and sat_c)";
+	cerr << "Incompatible size! (gen_sys and sat_g)";
 	goto bomb;
       }
   }

@@ -37,7 +37,7 @@ using namespace Parma_Polyhedra_Library;
 
 void
 shift_rename_insert(const Polyhedron& p, size_t offset, Polyhedron& q) {
-  if (p.is_zero_dim())
+  if (p.space_dimension() == 0)
     exit(1);
 
   if (p.check_empty())
@@ -66,7 +66,7 @@ main() {
 
   // This is the base case:
   // append(A,B,C) :- A = [], B = C.
-  Polyhedron base;
+  Polyhedron base(3);
   base.insert(A == 0);
   base.insert(B >= 0);
   base.insert(C == B);
@@ -76,7 +76,7 @@ main() {
 
   // This is the inductive case:
   // append(A,B,C) :- A = [X|D], B = E, C = [X|F], append(D,E,F).
-  Polyhedron inductive;
+  Polyhedron inductive(6);
   inductive.insert(A + F == C + D);
   inductive.insert(B == E);
   inductive.insert(C + D >= A);
@@ -117,7 +117,7 @@ main() {
 #endif
   } while (current != previous);
 
-  Polyhedron expected;
+  Polyhedron expected(3);
   expected.insert(A + B == C);
   expected.insert(B >= 0);
   expected.insert(C >= B);
