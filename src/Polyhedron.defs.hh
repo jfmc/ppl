@@ -781,6 +781,36 @@ public:
 				const LinExpression& expr,
 				const Integer& denominator = Integer_one());
 
+  //! \brief
+  //! Assigns to \p *this the image of \p *this with respect to the
+  //! \ref generalized_image "generalized affine transfer function"
+  //! \f$\mathit{lhs} \relop \frac{rhs}{d}\f$,
+  //! where \f$\mathord{\relop}\f$ is the relation operator encoded by
+  //! \p relation.
+  /*!
+    \param lhs           The left hand side affine expression.
+    \param relation      The relation operator: can be either one of
+                         <CODE>"<"</CODE>, <CODE>"<="</CODE>,
+			 <CODE>"=="</CODE>, <CODE>">="</CODE>,
+			 or <CODE>">"</CODE>.
+    \param rhs           The numerator of the right hand side
+                         affine expression.
+    \param denominator   The denominator of the right hand side affine
+                         expression (optional argument with default value 1.)
+    \exception std::invalid_argument thrown if \p denominator is zero
+                                     or if \p lhs and \p *this
+                                     are dimension-incompatible
+                                     or if \p rhs and \p *this
+                                     are dimension-incompatible
+				     or if \p *this is a C_Polyhedron and
+				     \p relation encodes a strict relation
+				     operator.
+  */
+  void generalized_affine_image(const LinExpression& lhs,
+				const char* relation,
+				const LinExpression& rhs,
+				const Integer& denominator = Integer_one());
+
   //! Use \p *this to shrink a generic, interval-based bounding box.
   /*!
     \param box    The bounding box to be shrunk.

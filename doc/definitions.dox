@@ -658,21 +658,27 @@ in the linear expression is non-zero, the affine transformation is invertible.
 The library provides another operator
 which is a generalization of the affine image operator.
 Given a polyhedron \f$\cP \in \Pset_n\f$,
-a variable \f$x_k\f$ such that \f$0 \leq k < n\f$,
+an affine expression \f$\mathit{lhs} \defeq \sum_{i=0}^{n-1} a'_i x_i + b'\f$,
 a relation operator \f$\mathord{\relop} \in \{ <, \leq, =, \geq, > \}\f$,
 and an affine expression
-\f$\mathit{expr} \defeq \sum_{i=0}^{n-1} a_i x_i + b\f$,
+\f$\mathit{rhs} \defeq \sum_{i=0}^{n-1} a_i x_i + b\f$,
 the image of \f$\cP\f$ with respect to the transfer function
-\f$x'_k \relop \mathit{expr}\f$ is defined as
+\f$\mathit{lhs} \relop \mathit{rhs}\f$ is defined as
   \f[
-    \Bigl\{\,
-      (v_0, \ldots, v'_i, \ldots, v_{n-1})^\transpose \in \Rset^n
-    \Bigm|
-      (v_0, \ldots, v_i, \ldots, v_{n-1})^\transpose \in \cP,
-      v'_i \relop \sum_{i=0}^{n-1} a_i v_i + b
-    \,\Bigr\}.
+    \sset{
+      (w_0, \ldots, w_{n-1})^\transpose \in \Rset^n
+    }{
+      (v_0, \ldots, v_{n-1})^\transpose \in \cP, \\
+      \bigl(
+        i \in \{0, \ldots, n-1\} \land a'_i = 0
+          \implies
+            w_i = v_i
+      \bigr), \\
+      \sum_{i=0}^{n-1} a'_i w_i + b' \relop \sum_{i=0}^{n-1} a_i v_i + b
+    }.
   \f]
-Note that, when \f$\mathord{\relop} \in \{ = \}\f$, then the above
+Note that, when \f$\mathit{lhs} = x_k\f$ and
+\f$\mathord{\relop} \in \{ = \}\f$, then the above
 operator is equivalent to the computation of the affine image of \f$\cP\f$
 with respect to the mapping \f$x_k \mapsto \mathit{expr}\f$
 (hence the name given to this operator).

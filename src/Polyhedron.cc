@@ -3020,6 +3020,150 @@ PPL::Polyhedron::generalized_affine_image(const Variable& var,
   assert(OK());
 }
 
+void
+PPL::Polyhedron::generalized_affine_image(const LinExpression& lhs,
+					  const char* relation,
+					  const LinExpression& rhs,
+					  const Integer& denominator) {
+  // The denominator cannot be zero.
+  if (denominator == 0)
+    throw_generic("generalized_affine_image(e1, r, e2, d)", "d == 0");
+
+  // Dimension-compatibility checks.
+  // The dimension of `lhs' should not be greater than the dimension
+  // of `*this'; also, `lhs' should have a non-zero coefficient for
+  // at least one dimension.
+  dimension_type lhs_space_dim = lhs.space_dimension();
+  for ( ; lhs_space_dim > 0; lhs_space_dim--)
+    if (lhs.coefficient(Variable(lhs_space_dim-1)) != 0)
+      break;
+  if (lhs_space_dim == 0 || space_dim < lhs_space_dim)
+    throw_dimension_incompatible("generalized_affine_image(e1, r, e2, d)",
+				 lhs);
+  // The dimension of `rhs' should not be greater than the dimension
+  // of `*this'.
+  dimension_type rhs_space_dim = rhs.space_dimension();
+  if (space_dim < rhs_space_dim)
+    throw_dimension_incompatible("generalized_affine_image(e1, r, e2, d)",
+				 rhs);
+
+  // Checking validity of the relation operator encoding.
+  bool greater_than_relation = false;
+  bool nonstrict_relation = false;
+  bool valid_relation = relation && relation[0] != 0;
+  if (valid_relation) {
+    switch (relation[0]) {
+    case '<':
+      switch (relation[1]) {
+      case '=':
+	// The relation operator is "<=".
+	greater_than_relation = false;
+	nonstrict_relation = true;
+	break;
+      case 0:
+	// The relation operator is "<".
+	greater_than_relation = false;
+	nonstrict_relation = false;
+	break;
+      default:
+	// Invalid relation operator.
+	valid_relation = false;
+	break;
+      }
+      break;
+    case '=':
+      if (relation[1] == '=') {
+	// The relation operator is "==":
+	// this is just an affine image computation.
+	// affine_image(var, expr, denominator);
+	throw_generic("generalized_affine_image(e1, \"==\", e2, d)",
+		      "to be implemented");
+	return;
+      }
+      else
+	// Invalid relation operator.
+	valid_relation = false;
+      break;
+    case '>':
+      switch (relation[1]) {
+      case '=':
+	// The relation operator is ">=".
+	greater_than_relation = true;
+	nonstrict_relation = true;
+	break;
+      case 0:
+	// The relation operator is ">".
+	greater_than_relation = true;
+	nonstrict_relation = false;
+	break;
+      default:
+	// Invalid relation operator.
+	valid_relation = false;
+	break;
+      }
+      break;
+    default:
+      // Invalid relation operator.
+      valid_relation = false;
+      break;
+    }
+  }
+  if (!valid_relation)
+    throw_generic("generalized_affine_image(e1, r, e2, d)",
+		  "r is not a valid relation operator");
+
+  // Strict relation operators are only admitted for NNC polyhedra.
+  if (!nonstrict_relation && is_necessarily_closed())
+    throw_generic("generalized_affine_image(e1, r, e2, d)",
+		  "r is a strict relation operator and "
+		  "*this is a C_Polyhedron");
+
+  if (is_empty())
+    return;
+
+  // First compute the affine image.
+  throw_generic("generalized_affine_image(e1, r, e2, d)",
+		"to be implemented");
+  /*
+  affine_image(var, expr, denominator);
+  if (nonstrict_relation)
+    add_generator(ray(greater_than_relation ? var : -var));
+  else {
+    // The relation operator is strict.
+    assert(!is_necessarily_closed());
+    // While adding the ray, we minimize the generators
+    // in order to avoid adding too many redundant generator later.
+    GenSys gs;
+    gs.insert(ray(greater_than_relation ? var : -var));
+    add_generators_and_minimize(gs);
+    // We split each point of the generator system into two generators:
+    // a closure point, having the same coordinates of the given point,
+    // and another point, having the same coordinates for all but the
+    // `var' dimension, which is displaced along the direction of the
+    // newly introduced ray.
+    dimension_type eps_index = space_dimension() + 1;
+    for (dimension_type i =  gen_sys.num_rows(); i-- > 0; )
+      if (gen_sys[i].is_point()) {
+	Generator& g = gen_sys[i];
+	// Add a `var'-displaced copy of `g' to the generator system.
+	gen_sys.add_row(g);
+	if (greater_than_relation)
+	  gen_sys[gen_sys.num_rows()-1][num_var]++;
+	else
+	  gen_sys[gen_sys.num_rows()-1][num_var]--;
+	// Transform `g' into a closure point.
+	g[eps_index] = 0;
+      }
+    clear_constraints_up_to_date();
+    clear_generators_minimized();
+    gen_sys.set_sorted(false);
+    clear_sat_c_up_to_date();
+    clear_sat_g_up_to_date();
+  }
+  */
+  assert(OK());
+}
+
 PPL::Poly_Con_Relation
 PPL::Polyhedron::relation_with(const Constraint& c) const {
   // Dimension-compatibility check.
