@@ -43,8 +43,11 @@ ppl_gprolog_SOURCES =
 
 pkglib_LTLIBRARIES = libppl_gprolog.la
 libppl_gprolog_la_SOURCES = ppl_gprolog_sd.cc
-libppl_gprolog_la_LIBADD = $(top_builddir)/src/libppl.la @extra_libraries@
-libppl_gprolog_la_LDFLAGS = -no-undefined -avoid-version
+libppl_gprolog_la_LIBADD = \
+$(top_builddir)/src/libppl.la \
+$(top_builddir)/Watchdog/libpwl.la \
+@extra_libraries@
+libppl_gprolog_la_LDFLAGS = -module -avoid-version
 
 pkglib_DATA = ppl_gprolog.pl
 

@@ -61,7 +61,7 @@ ppl_xsb_la_LIBADD = \
 $(top_builddir)/src/libppl.la \
 $(top_builddir)/Watchdog/libpwl.la \
 @extra_libraries@
-ppl_xsb_la_LDFLAGS = -no-undefined -module -avoid-version
+ppl_xsb_la_LDFLAGS = -module -avoid-version
 
 pkglib_DATA = ppl_xsb.xwam
 

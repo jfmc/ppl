@@ -46,7 +46,7 @@ AM_CPPFLAGS = \
 pkglib_LTLIBRARIES = libppl_swiprolog.la
 libppl_swiprolog_la_SOURCES = ppl_swiprolog.cc
 libppl_swiprolog_la_LIBADD = $(top_builddir)/src/libppl.la @extra_libraries@
-libppl_swiprolog_la_LDFLAGS = -no-undefined -avoid-version
+libppl_swiprolog_la_LDFLAGS = -module -avoid-version
 
 bin_PROGRAMS = ppl_pl
 ppl_pl_SOURCES = ppl_pl.cc
