@@ -28,7 +28,7 @@ using namespace std;
 using namespace Parma_Polyhedra_Library;
 
 #ifndef NOISY
-#define NOISY 1
+#define NOISY 0
 #endif
 
 int
