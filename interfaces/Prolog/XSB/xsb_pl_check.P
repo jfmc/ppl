@@ -115,9 +115,20 @@ site: http://www.cs.unipr.it/ppl/ . */
 #define user_input user
 #include "pl_check.pl"
 
-%%% FIXME: the following disables testing the Prolog interface exceptions
-%%%        when converting ppl integers to XSB Prolog integer terms. 
-current_prolog_flag(bounded,false).
+/*
+  FIXME: the following kludge is due to the fact that XSB versions up
+  to and including 2.6 do not seem to support current_prolog_flag/2.
+  With this hack we are able to test the Prolog interface exceptions
+  when converting PPL integers to XSB Prolog integer terms.
+*/
+current_prolog_flag(bounded, true).
+
+/*
+  FIXME: these seem to be the values on IA32 but, who knows on other
+  architectures?
+*/
+current_prolog_flag(min_integer, -268435456).
+current_prolog_flag(max_integer, 268435455).
 
 main :-
     (check_all ->
