@@ -1,0 +1,335 @@
+/* BHRZ03_Certificate class implementation
+   (non-inline member functions).
+   Copyright (C) 2001-2004 Roberto Bagnara <bagnara@cs.unipr.it>
+
+This file is part of the Parma Polyhedra Library (PPL).
+
+The PPL is free software; you can redistribute it and/or modify it
+under the terms of the GNU General Public License as published by the
+Free Software Foundation; either version 2 of the License, or (at your
+option) any later version.
+
+The PPL is distributed in the hope that it will be useful, but WITHOUT
+ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or
+FITNESS FOR A PARTICULAR PURPOSE.  See the GNU General Public License
+for more details.
+
+You should have received a copy of the GNU General Public License
+along with this program; if not, write to the Free Software
+Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307,
+USA.
+
+For the most up-to-date information see the Parma Polyhedra Library
+site: http://www.cs.unipr.it/ppl/ . */
+
+#include <config.h>
+
+#include "BHRZ03_Certificate.defs.hh"
+
+#include "Polyhedron.defs.hh"
+#include <cassert>
+#include <iostream>
+
+namespace PPL = Parma_Polyhedra_Library;
+
+PPL::BHRZ03_Certificate::BHRZ03_Certificate(const Polyhedron& ph)
+  : poly_dim(0), lin_space_dim(0), num_constraints(0), num_points(0),
+    num_rays_null_coord(ph.space_dimension(), 0) {
+  // FIXME: provide a correct and reasonably efficient
+  // implementation for NNC polyhedra.
+  //assert(ph.is_necessarily_closed());
+
+  // The computation of the certificate requires both the
+  // constraint and the generator systems in minimal form.
+  ph.minimize();
+  // It is assumed that `ph' is not an empty polyhedron.
+  assert(!ph.marked_empty());
+
+  // The dimension of the polyhedron is obtained by subtracting
+  // the number of equalities from the space dimension.
+  // When counting constraints, for a correct reasoning, we have
+  // to disregard the low-level constraints (i.e., the positivity
+  // constraint and epsilon bounds).
+  const dimension_type space_dim = ph.space_dimension();
+  poly_dim = space_dim;
+  assert(num_constraints == 0);
+  const ConSys& cs = ph.minimized_constraints();
+  for (ConSys::const_iterator i = cs.begin(),
+	 iend = cs.end(); i != iend; ++i) {
+    ++num_constraints;
+    if (i->is_equality())
+      --poly_dim;
+  }
+
+  assert(lin_space_dim == 0);
+  assert(num_points == 0);
+  const GenSys& gs = ph.minimized_generators();
+  for (GenSys::const_iterator i = gs.begin(),
+	 iend = gs.end(); i != iend; ++i)
+    switch (i->type()) {
+    case Generator::POINT:
+      // Intentionally fall through.
+    case Generator::CLOSURE_POINT:
+      ++num_points;
+      break;
+    case Generator::RAY:
+      // For each i such that 0 <= j < space_dim,
+      // `num_rays_null_coord[j]' will be the number of rays
+      // having exactly `j' coordinates equal to 0.
+      {
+	const Generator& r = *i;
+	dimension_type num_zeroes = 0;
+	for (dimension_type j = space_dim; j-- > 0; )
+	  if (r.coefficient(Variable(j)) == 0)
+	    ++num_zeroes;
+	++num_rays_null_coord[num_zeroes];
+      }
+      break;
+    case Generator::LINE:
+      // Since the generator systems is minimized, the dimension of
+      // the lineality space is equal to the number of lines.
+      ++lin_space_dim;
+      break;
+    }
+  assert(OK());
+
+  // FIXME: super-kludge.
+  // For NNC polyhedra, constraints might be no longer up-to-date
+  // (and hence, neither minimized) due to the strong minimization
+  // process applied to generators when constructing the certificate.
+  // We have to reinforce the (normal) minimization of the constraint
+  // system. The future, lazy implementation of the strong minimization
+  // process will solve this problem.
+  if (!ph.is_necessarily_closed())
+    ph.minimize();
+}
+
+int
+PPL::BHRZ03_Certificate::compare(const BHRZ03_Certificate& y) const {
+  assert(OK() && y.OK());
+  if (poly_dim != y.poly_dim)
+    return poly_dim > y.poly_dim ? 1 : -1;
+  if (lin_space_dim != y.lin_space_dim)
+    return lin_space_dim > y.lin_space_dim ? 1 : -1; 
+  if (num_constraints != y.num_constraints)
+    return num_constraints > y.num_constraints ? 1 : -1;
+  if (num_points != y.num_points)
+    return num_points > y.num_points ? 1 : -1;
+
+  const dimension_type space_dim = num_rays_null_coord.size();
+  assert(num_rays_null_coord.size() == y.num_rays_null_coord.size());
+  // Note: iterating upwards, because we have to check first
+  // the number of rays having more NON-zero coordinates.
+  for (dimension_type i = 0; i < space_dim; i++)
+    if (num_rays_null_coord[i] != y.num_rays_null_coord[i])
+      return num_rays_null_coord[i] > y.num_rays_null_coord[i] ? 1 : -1;
+  // All components are equal.
+  return 0;
+}
+
+int
+PPL::BHRZ03_Certificate::compare(const Polyhedron& ph) const {
+  assert(ph.space_dimension() == num_rays_null_coord.size());
+
+  // FIXME: provide a correct and reasonably efficient
+  // implementation for NNC polyhedra.
+  //assert(ph.is_necessarily_closed());
+
+  // The computation of the certificate requires both the
+  // constraint and the generator systems in minimal form.
+  ph.minimize();
+  // It is assumed that `ph' is a polyhedron containing the
+  // polyhedron described by `*this': hence, it cannot be empty.
+  assert(!ph.marked_empty());
+
+  // The dimension of the polyhedron is obtained by subtracting
+  // the number of equalities from the space dimension.
+  // When counting constraints, for a correct reasoning, we have
+  // to disregard the low-level constraints (i.e., the positivity
+  // constraint and epsilon bounds).
+  const dimension_type space_dim = ph.space_dimension();
+  dimension_type ph_poly_dim = space_dim;
+  dimension_type ph_num_constraints = 0;
+  const ConSys& cs = ph.minimized_constraints();
+  for (ConSys::const_iterator i = cs.begin(),
+	 iend = cs.end(); i != iend; ++i) {
+    ++ph_num_constraints;
+    if (i->is_equality())
+      --ph_poly_dim;
+  }
+  // FIXME: super-kludge.
+  // For NNC polyhedra, constraints might be no longer up-to-date
+  // (and hence, neither minimized) due to the strong minimization
+  // process applied to generators when constructing the certificate.
+  // We have to reinforce the (normal) minimization of the constraint
+  // system. The future, lazy implementation of the strong minimization
+  // process will solve this problem.
+  if (!ph.is_necessarily_closed())
+    ph.minimize();
+
+  // If the dimension of `ph' is increasing, the chain is stabilizing.
+  if (ph_poly_dim > poly_dim)
+    return 1;
+
+  // At this point the two polyhedra must have the same dimension.
+  assert(ph_poly_dim == poly_dim);
+
+  // Speculative optimization: in order to better exploit the incrementality
+  // of the comparison, we do not compute information about rays here,
+  // hoping that the other components will be enough.
+  dimension_type ph_lin_space_dim = 0;
+  dimension_type ph_num_points = 0;
+  const GenSys& gs = ph.minimized_generators();
+  for (GenSys::const_iterator i = gs.begin(),
+	 iend = gs.end(); i != iend; ++i)
+    switch (i->type()) {
+    case Generator::POINT:
+      // Intentionally fall through.
+    case Generator::CLOSURE_POINT:
+      ++ph_num_points;
+      break;
+    case Generator::RAY:
+      break;
+    case Generator::LINE:
+      // Since the generator systems is minimized, the dimension of
+      // the lineality space is equal to the number of lines.
+      ++ph_lin_space_dim;
+      break;
+    }
+  // FIXME: super-kludge.
+  // For NNC polyhedra, constraints might be no longer up-to-date
+  // (and hence, neither minimized) due to the strong minimization
+  // process applied to generators when constructing the certificate.
+  // We have to reinforce the (normal) minimization of the constraint
+  // system. The future, lazy implementation of the strong minimization
+  // process will solve this problem.
+  if (!ph.is_necessarily_closed())
+    ph.minimize();
+  
+  // If the dimension of the lineality space is increasing,
+  // then the chain is stabilizing.
+  if (ph_lin_space_dim > lin_space_dim)
+    return 1;
+
+  // At this point the lineality space of the two polyhedra must have
+  // the same dimension.
+  assert(ph_lin_space_dim == lin_space_dim);
+
+  // If the number of constraints of `ph' is decreasing, then the chain
+  // is stabilizing. If it is increasing, the chain is not stabilizing.
+  // If they are equal, further investigation is needed.
+  if (ph_num_constraints != num_constraints)
+    return ph_num_constraints < num_constraints ? 1 : -1;
+
+  // If the number of points of `ph' is decreasing, then the chain
+  // is stabilizing. If it is increasing, the chain is not stabilizing.
+  // If they are equal, further investigation is needed.
+  if (ph_num_points != num_points)
+    return ph_num_points < num_points ? 1 : -1;
+
+  // The speculative optimization was not worth:
+  // compute information about rays.
+  std::vector<dimension_type> ph_num_rays_null_coord(ph.space_dim, 0);
+  for (GenSys::const_iterator i = gs.begin(),
+	 iend = gs.end(); i != iend; ++i)
+    if (i->is_ray()) {
+      const Generator& r = *i;
+      dimension_type num_zeroes = 0;
+      for (dimension_type j = space_dim; j-- > 0; )
+	if (r.coefficient(Variable(j)) == 0)
+	  ++num_zeroes;
+      ++ph_num_rays_null_coord[num_zeroes];
+    }
+  // Compare (lexicographically) the two vectors:
+  // if ph_num_rays_null_coord < num_rays_null_coord the chain is stabilizing.
+  for (dimension_type i = 0; i < space_dim; i++)
+    if (ph_num_rays_null_coord[i] != num_rays_null_coord[i])
+      return ph_num_rays_null_coord[i] < num_rays_null_coord[i] ? 1 : -1;
+
+  // All components are equal.
+  return 0;
+}
+
+bool
+PPL::BHRZ03_Certificate::OK() const {
+#ifndef NDEBUG
+  using std::endl;
+  using std::cerr;
+#endif
+
+  // The dimension of the vector space.
+  const dimension_type space_dim = num_rays_null_coord.size();
+
+  if (poly_dim > space_dim) {
+#ifndef NDEBUG
+    cerr << "In the BHRZ03 certificate about a non-empty polyhedron:"
+	 << endl
+	 << "the polyhedron dimension is greater than the space dimension!"
+	 << endl;
+#endif
+    return false;
+  }
+
+  if (lin_space_dim > poly_dim) {
+#ifndef NDEBUG
+    cerr << "In the BHRZ03 certificate about a non-empty polyhedron:"
+	 << endl
+	 << "the lineality space dimension is greater than "
+	 << "the polyhedron dimension!"
+	 << endl;
+#endif
+    return false;
+  }
+
+  if (num_constraints < space_dim - poly_dim) {
+#ifndef NDEBUG
+    cerr << "In the BHRZ03 certificate about a non-empty polyhedron:"
+	 << endl
+	 << "in a vector space of dimension `n',"
+	 << "any polyhedron of dimension `k'" << endl
+	 << "should have `n-k' non-redundant constraints at least."
+	 << endl
+	 << "Here space_dim = " << space_dim << ", "
+	 << "poly_dim = " << poly_dim << ", "
+	 << "but num_constraints = " << num_constraints << "!"
+	 << endl;
+#endif
+    return false;
+  }
+
+  if (num_points == 0) {
+#ifndef NDEBUG
+    cerr << "In the BHRZ03 certificate about a non-empty polyhedron:"
+	 << endl
+	 << "the generator system has no points!"
+	 << endl;
+#endif
+    return false;
+  }
+
+  if (lin_space_dim == space_dim) {
+    // This was a universe polyhedron.
+    if (num_constraints > 0) {
+#ifndef NDEBUG
+      cerr << "In the BHRZ03 certificate about a non-empty polyhedron:"
+	   << endl
+	   << "a universe polyhedron has non-redundant constraints!"
+	   << endl;
+#endif
+      return false;
+    }
+
+    if (num_points != 1) {
+#ifndef NDEBUG
+      cerr << "In the BHRZ03 certificate about a non-empty polyhedron:"
+	   << endl
+	   << "a universe polyhedron has more than one non-redundant point!"
+	   << endl;
+#endif
+      return false;
+    }
+  }
+
+  // All tests passed.
+  return true;
+}
