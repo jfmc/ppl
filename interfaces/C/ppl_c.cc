@@ -40,6 +40,7 @@ site: http://www.cs.unipr.it/ppl/ . */
 #include <sstream>
 #include <cstdio>
 #include <cerrno>
+#include <climits>
 
 using namespace Parma_Polyhedra_Library;
 
@@ -131,10 +132,13 @@ c_variable_default_output_function(ppl_dimension_type var) {
   // On a 64 bits architecture, `var' will not be more than 2^64-1,
   // (2^64-1)/26 is written with 18 decimal digits, plus one letter,
   // plus one terminator makes 20.
+#if defined(ULLONG_MAX) && ULLONG_MAX > 18446744073709551615ULL
+# error "Please enlarge the buffer in the following line."
+#endif
   static char buffer[20];
   buffer[0] = static_cast<char>('A' + var % 26);
   if (ppl_dimension_type i = var / 26) {
-    int r = snprintf(buffer+1, 19, "%d", i);
+    int r = sprintf(buffer+1, "%d", i);
     if (r < 0)
       return 0;
     else if (r >= 19) {
