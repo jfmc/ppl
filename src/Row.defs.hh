@@ -47,35 +47,88 @@ site: http://www.cs.unipr.it/ppl/ . */
 #ifdef PPL_DOXYGEN_INCLUDE_IMPLEMENTATION_DETAILS
 //! The base class for linear expressions, constraints and generators.
 /*!
-  The class Row allows us to build objects like these:
+  The class Row allows us to build objects of the form
+  \f$ [b, a_0, \ldots, a_{d-1}]_k^t \f$,
+  where the superscript \f$t \in \{ c, \mathit{nnc} \}\f$ represents
+  the <EM>topology</EM> and
+  the subscript \f$k \in \{\mathord{=}, \mathord{\geq} \}\f$ represents
+  the <EM>kind</EM> of the row object.
+  The row's type Row::Type is obtained by combining the information about
+  the topology \f$t\f$ and the kind \f$k\f$.
+  Note that, even though all the four possible combinations of topology
+  and kind values will result in legal Row::Type objects, some of these
+  types pose additional constraints on the values of the row's coefficients.
 
-    - \f$[b, a_0, \ldots, a_{d-1}]_=\f$
+  In particular, when \f$t = c\f$, we have the following cases
+  (\f$d\f$ is the dimension of the vector space):
+    - \f$[b, a_0, \ldots, a_{d-1}]_=^c\f$
       represents the equality constraint
       \f$\sum_{i=0}^{d-1} a_i x_i + b = 0\f$.
-    - \f$[0, a_0, \ldots, a_{d-1}]_=\f$
+    - \f$[b, a_0, \ldots, a_{d-1}]_\geq^c\f$
+      represents the non-strict inequality constraint
+      \f$\sum_{i=0}^{d-1} a_i x_i + b \geq 0\f$.
+    - \f$[0, a_0, \ldots, a_{d-1}]_=^c\f$
       represents the line of direction
       \f$\sum_{i=0}^{d-1} a_i x_i\f$.
-    - \f$[b, a_0, \ldots, a_{d-1}]_\geq\f$
-      represents the inequality constraint
-      \f$\sum_{i=0}^{d-1} a_i x_i + b \geq 0\f$.
-    - \f$[0, a_0, \ldots, a_{d-1}]_\geq\f$
+    - \f$[0, a_0, \ldots, a_{d-1}]_\geq^c\f$
       represents the ray of direction
       \f$\sum_{i=0}^{d-1} a_i x_i\f$.
-    - \f$[b, a_0, \ldots, a_{d-1}]_\geq\f$, with \f$b \neq 0\f$,
+    - \f$[b, a_0, \ldots, a_{d-1}]_\geq^c\f$, with \f$b > 0\f$,
       represents the point
       \f$\sum_{i=0}^{d-1} \frac{a_i}{b} x_i\f$.
 
-  So, a row can be both a constraint and a generator: it can be an
-  equality, an inequality, a line, a ray or a point.
+  When \f$t = \mathit{nnc}\f$, the last coefficient of the row is
+  associated to the slack variable \f$\epsilon\f$, so that we have the
+  following cases (\f$d\f$ is again the dimension of the vector space,
+  but this time we have \f$d+2\f$ coefficients):
+    - \f$[b, a_0, \ldots, a_{d-1}, 0]_=^\mathit{nnc}\f$
+      represents the equality constraint
+      \f$\sum_{i=0}^{d-1} a_i x_i + b = 0\f$.
+    - \f$[b, a_0, \ldots, a_{d-1}, 0]_\geq^\mathit{nnc}\f$
+      represents the non-strict inequality constraint
+      \f$\sum_{i=0}^{d-1} a_i x_i + b \geq 0\f$.
+    - \f$[b, a_0, \ldots, a_{d-1}, e]_\geq^\mathit{nnc}\f$,
+      with \f$e < 0\f$, represents the strict inequality constraint
+      \f$\sum_{i=0}^{d-1} a_i x_i + b > 0\f$.
+    - \f$[0, a_0, \ldots, a_{d-1}, 0]_=^\mathit{nnc}\f$
+      represents the line of direction
+      \f$\sum_{i=0}^{d-1} a_i x_i\f$.
+    - \f$[0, a_0, \ldots, a_{d-1}, 0]_\geq^\mathit{nnc}\f$
+      represents the ray of direction
+      \f$\sum_{i=0}^{d-1} a_i x_i\f$.
+    - \f$[b, a_0, \ldots, a_{d-1}, e]_\geq^\mathit{nnc}\f$,
+      with \f$b > 0\f$ and \f$e > 0\f$, represents the point
+      \f$\sum_{i=0}^{d-1} \frac{a_i}{b} x_i\f$.
+    - \f$[b, a_0, \ldots, a_{d-1}, 0]_\geq^\mathit{nnc}\f$,
+      with \f$b > 0\f$, represents the closure point
+      \f$\sum_{i=0}^{d-1} \frac{a_i}{b} x_i\f$.
 
-  A point must have the inhomogeneous term positive, a line
-  and a ray must have the inhomogeneous term equal to zero.
-  If needed, the coefficients of a point are negated at creation
-  time so that it has a positive inhomogeneous term. 
-  This invariant is maintained because, when combining a point
-  with another generator, we only consider positive combinations.
-  
+  So, a row can be both a constraint and a generator: it can be an
+  equality, a strict or non-strict inequality, a line, a ray, a point
+  or a closure point.
+
   The inhomogeneous term of a constraint can be zero or different from zero.
+
+  Points and closure points must have a positive inhomogeneous term,
+  lines and rays must have the inhomogeneous term equal to zero.
+  If needed, the coefficients of points and closure points are negated
+  at creation time so that they satisfy this invariant. 
+  The invariant is maintained because, when combining a point or closure
+  point with another generator, we only consider positive combinations.
+  
+  The \f$\epsilon\f$ coefficient, when present, is negative for strict
+  inequality constraints, positive for points and equal to zero in all
+  the other cases.
+  Note that the above description corresponds to the end-user, high-level
+  view of a Row object. In the implementation, to allow for code reuse,
+  it is sometimes useful to regard an \f$\mathit{nnc}\f$-object on
+  the vector space \f$\Rset^d\f$ as if it was a \f$c\f$-object on the
+  vector space \f$\Rset^{d+1}\f$, therefore interpreting the slack
+  variable \f$\epsilon\f$ as an ordinary dimension of the vector space.
+
+  A row object implementing a LinExpression is always of the form
+  \f$ [0, a_0, \ldots, a_{d-1}]_=^c \f$, which represents the
+  linear expression \f$\sum_{i=0}^{d-1} a_i x_i\f$.
 */
 #endif // PPL_DOXYGEN_INCLUDE_IMPLEMENTATION_DETAILS
 
@@ -173,6 +226,7 @@ public:
 
   //! \name Type inspection methods.
   //@{
+  //! Returns the type (topological and row kind) of \p *this.
   Type type() const;
 
   //! Returns the topological kind of \p *this.
@@ -193,14 +247,17 @@ public:
 
   //! \name Type coercion methods.
   //@{
-  //! Sets to \p LINE_OR_EQUALITY the type of \p *this row.
+  //! Sets to \p NECESSARILY_CLOSED the topological kind of \p *this row.
+  void set_necessarily_closed();
+
+  //! Sets to \p NOT_NECESSARILY_CLOSED the topological kind of \p *this row.
+  void set_not_necessarily_closed();
+
+  //! Sets to \p LINE_OR_EQUALITY the kind of \p *this row.
   void set_is_line_or_equality();
 
-  //! Sets to \p RAY_OR_POINT_OR_INEQUALITY the type of \p *this row.
+  //! Sets to \p RAY_OR_POINT_OR_INEQUALITY the kind of \p *this row.
   void set_is_ray_or_point_or_inequality();
-
-  void set_necessarily_closed();
-  void set_not_necessarily_closed();
   //@}
 
   //! Gives the number of coefficients currently in use.
@@ -241,20 +298,20 @@ public:
   */
   void strong_normalize();
 
-  //! Linearly combines \p *this with \p y so that \p *this[k] is 0.
+  //! Linearly combines \p *this with \p y so that <CODE>*this[k]</CODE> is 0.
   /*!
     \param y   The row that will be combined with \p *this object.
     \param k   The position of \p *this that have to be \f$0\f$.
 
-    Computes a linear combination between \p *this and \p y such
-    that the k-th element of \p *this become \f$0\f$. Then it assigns the
-    resulting row to \p *this and normalizes it.
+    Computes a linear combination of \p *this and \p y having
+    the element of index \p k equal to \f$0\f$. Then it assigns
+    the resulting row to \p *this and normalizes it.
   */
   void linear_combine(const Row& y, dimension_type k);
 
   //! \brief
   //! Returns <CODE>true</CODE> if and only if all the homogeneous
-  //! terms of \p *this are zero.
+  //! terms of \p *this are \f$0\f$.
   bool all_homogeneous_terms_are_zero() const;
 
   //! Checks if all the invariants are satisfied.
