@@ -11,6 +11,13 @@ Enhancements for PPL 0.7
 - Make sure ppl_lcdd is able to parse problems produced by lrs, i.e.,
   where the number of rows of the matrix is omitted and replaced by
   "*****".
+- Add a README to the `tests' subdirectory.  There, explain how a
+  test program in that directory can be turned into a program that
+  can be used elsewhere.
+- Better explain the tradeoff in the choice between C_ and NNC_Polyhedron.
+- Investigate again all XFAILS.
+- Explain the ordering of the arguments in the widening methods.
+- Implement overflow detection when manipulating space dimensions.
 
 
 Enhancements for PPL 0.8 or later versions
