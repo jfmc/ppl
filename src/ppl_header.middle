@@ -1,1 +1,4 @@
-// This file intentionally contains only this comment line.
+// In order for the definition of `int64_t' to be seen by Comeau C/C++,
+// we must make sure <stdint.h> is included before <sys/types.hh> is
+// (even indirectly) included.
+#include <stdint.h>
