@@ -55,7 +55,7 @@ try_clause(Args,Args1,B1,M,NewDims,P):-
     solve(B1,Q,M3,_),
     (ppl_check_empty(Q)
      ->
-     (ppl_delete_polyhedron(Q),
+     (ppl_renew_polyhedron(Q,M3),
      fail)
      ;
      M1 is M + NewDims,
@@ -86,8 +86,19 @@ solve_equal_list([A|As],[B|Bs],P):-
     solve_equal_list(As,Bs,P).
 
 ppl_renew_polyhedron(P,M):-
+    ppl_space_dimension(P,D),
+    MaxCode is D,
+    MinCode is M,
+    make_var_list(MaxCode,MinCode,VarList),
+    ppl_remove_dimensions(P, VarList),
+    ppl_new_polyhedron(Q,M),
+    ppl_convex_hull_assign(P,Q).
+
+/*
+ppl_renew_polyhedron(P,M):-
     ppl_delete_polyhedron(P),
     ppl_new_polyhedron(P,M).
+*/
     
 
 ppl_project_dimensions(P,M):-
