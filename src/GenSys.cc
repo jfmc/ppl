@@ -67,13 +67,40 @@ adjust_topology_and_space_dimension(Topology new_topology,
 	// A NOT_NECESSARILY_CLOSED generator system
 	// can be converted to a NECESSARILY_CLOSED one
 	// only if it does not contain closure points.
+	// This check has to be performed under the user viewpoint.
 	if (has_closure_points())
 	  return false;
-	// Remove the epsilon column and, after that,
+	// For a correct implementation, we have to remove those
+	// closure points that were matching a point (i.e., those
+	// that are in the generator system, but are invisible to
+	// the user).
+	GenSys& gs = *this;
+	dimension_type num_closure_points = 0;
+	dimension_type gs_end = gs.num_rows();
+	for (dimension_type i = 0; i < gs_end; ) {
+	  // All the closure points seen so far have consecutive
+	  // indices starting from `i'.
+	  if (num_closure_points > 0)
+	    // Let next generator have index `i'.
+	    std::swap(gs[i], gs[i+num_closure_points]);
+	  if (gs[i].is_closure_point()) {
+	    ++num_closure_points;
+	    --gs_end;
+	  }
+	  else
+	    ++i;
+	}
+	// We may have identified some closure points.
+	if (num_closure_points > 0) {
+	  assert(num_closure_points == num_rows() - gs_end);
+	  erase_to_end(gs_end);
+	}
+	// Remove the epsilon column, re-normalize and, after that,
 	// add the missing dimensions. This ensures that
 	// non-zero epsilon coefficients will be cleared.
 	remove_trailing_columns(1);
 	set_necessarily_closed();
+	normalize();
 	add_zero_columns(cols_to_be_added);
       }
       else {
@@ -177,13 +204,11 @@ PPL::GenSys::add_corresponding_points() {
 
 bool
 PPL::GenSys::has_closure_points() const {
-  // Avoiding the repeated tests on topology.
   if (is_necessarily_closed())
     return false;
-  const GenSys& gs = *this;
-  const dimension_type eps_index = gs.num_columns() - 1;
-  for (dimension_type i = num_rows(); i-- > 0; )
-    if (gs[i][0] != 0 && gs[i][eps_index] == 0)
+  // Adopt the point of view of the user.
+  for (GenSys::const_iterator i = begin(), iend = end(); i != iend; ++i)
+    if (i->is_closure_point())
       return true;
   return false;
 }

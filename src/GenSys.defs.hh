@@ -394,6 +394,13 @@ private:
   //! \brief
   //! Returns <CODE>true</CODE> if and only if \p *this
   //! contains one or more closure points.
+  /*!
+    Note: the check for the presence of closure points is
+    done under the point of view of the user. Namely, we scan
+    the generator system using high-level iterators, so that
+    closure points that are matching the corresponding points
+    will be disregarded.
+  */
   bool has_closure_points() const;
 
   //! Returns the \p k- th generator of the system.
