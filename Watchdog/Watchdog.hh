@@ -18,8 +18,8 @@ along with this program; if not, write to the Free Software
 Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307,
 USA.
 
-For the most up-to-date information see the Parma Watchdog Library
-site: http://www.cs.unipr.it/ppl/ . */
+For the most up-to-date information see the CS@Parma software
+site http://www.cs.unipr.it/Software/ . */
 
 #ifndef _Watchdog_defs_hh
 #define _Watchdog_defs_hh 1

@@ -18,8 +18,8 @@
 # Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307,
 # USA.
 #
-# For the most up-to-date information see
-# http://www.cs.unipr.it/~bagnara/ .
+# For the most up-to-date information see the CS@Parma software
+# site http://www.cs.unipr.it/Software/ . */
 
 # Process this file with autoconf to produce a configure script.
 
@@ -44,11 +44,6 @@ AC_PROG_CXX
 AC_PROG_MAKE_SET
 AC_PROG_INSTALL
 
-# Checks for libraries.
-
-# Checks for header files.
-AC_CHECK_HEADERS([sys/time.h])
-
 # C compiler
 
 AC_ARG_WITH(cc,
@@ -71,8 +66,6 @@ CXX=$with_cxx)
 AC_LANG_CPLUSPLUS
 AC_PROG_CXX
 AC_PROG_CXXCPP
-
-# Checks for library functions.
 
 # Compilation flags
 
@@ -248,6 +241,18 @@ no)
 esac
 build_watchdog_library=$enableval
 AM_CONDITIONAL(BUILD_WATCHDOG_LIBRARY, test x"$build_watchdog_library" = xyes)
+
+# Checks for libraries.
+
+# Checks for header files.
+AC_HEADER_TIME
+AC_CHECK_HEADERS([sys/time.h])
+
+# Checks for library fuctions.
+AC_CHECK_FUNCS([setitimer],
+               [],
+               AC_MSG_ERROR([CANNOT BUILD THE WATCHDOG LIBRARY
+*** THE SYSTEM DOES NOT PROVIDE THE SETITIMER FUNCTION.]))
 
 # Libtool.
 # Turn off shared libraries during beta-testing, since they

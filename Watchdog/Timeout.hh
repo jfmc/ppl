@@ -1,7 +1,7 @@
 /* Timeout class declaration.
    Copyright (C) 2001, 2002 Roberto Bagnara <bagnara@cs.unipr.it>
 
-This file is part of the Parma Polyhedra Library (PPL).
+This file is part of the Parma Watchdog Library (PPL).
 
 The PPL is free software; you can redistribute it and/or modify it
 under the terms of the GNU General Public License as published by the
@@ -18,14 +18,14 @@ along with this program; if not, write to the Free Software
 Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307,
 USA.
 
-For the most up-to-date information see the Parma Polyhedra Library
-site: http://www.cs.unipr.it/ppl/ . */
+For the most up-to-date information see the CS@Parma software
+site http://www.cs.unipr.it/Software/ . */
 
 #ifndef _Timeout_defs_hh
 #define _Timeout_defs_hh 1
 
 //! A base class for timeout exceptions.
-class Parma_Polyhedra_Library::Timeout {
+class Parma_Watchdog_Library::Timeout {
 public:
   //! Returns the priority of this timeout exception.
   virtual int priority() const = 0;

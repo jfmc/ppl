@@ -18,8 +18,8 @@
 # Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307,
 # USA.
 #
-# For the most up-to-date information see
-# http://www.cs.unipr.it/~bagnara/ .
+# For the most up-to-date information see the CS@Parma software
+# site http://www.cs.unipr.it/Software/ . */
 
 srcdir = @srcdir@
 VPATH = @srcdir@
@@ -30,8 +30,8 @@ EXTRA_DIST = Watchdog.hh Watchdog.cc configure BUGS CREDITS
 
 if BUILD_WATCHDOG_LIBRARY
 
-lib_LTLIBRARIES = libwatchdog.la
-libwatchdog_la_SOURCES = Watchdog.cc
+lib_LTLIBRARIES = libpwl.la
+libpwl_la_SOURCES = Watchdog.cc
 
 include_HEADERS = Watchdog.hh
 
