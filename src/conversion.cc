@@ -576,6 +576,10 @@ PPL::Polyhedron::conversion(Matrix& source,
     //    `dest_num_rows' - 1-th one we put the rays that do not verify
     //	  the k-th constraint.
     else {
+#if 0
+      std::cout << "source" << std::endl << source << std::endl;
+      std::cout << "dest" << std::endl << dest << std::endl;
+#endif
       size_t lines_or_equal_bound = num_lines_or_equalities;
       size_t sup_bound = num_lines_or_equalities;
       size_t inf_bound = dest_num_rows;
@@ -818,6 +822,13 @@ PPL::Polyhedron::conversion(Matrix& source,
 	++k;
       }
     }
+#if 0
+    std::cout << "DOPO" << std::endl;
+    std::cout << "source" << std::endl << source << std::endl;
+    std::cout << "source_num_rows: " << source_num_rows << std::endl; 
+    std::cout << "dest" << std::endl << dest << std::endl;
+    std::cout << "dest_num_rows: " << dest_num_rows << std::endl; 
+#endif
   }
   // Since we may have deleted some redundant constraint from `source' or
   // some redundant extremal ray from `dest', we have to delete the
