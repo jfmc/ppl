@@ -30,21 +30,6 @@ using namespace Parma_Polyhedra_Library;
 using namespace Parma_Polyhedra_Library::IO_Operators;
 using namespace std;
 
-bool
-easy_print(const Polyhedron& ph, const string& intro, ostream& s) {
-  if (!intro.empty())
-    s << intro << endl;
-  if (ph.check_universe()) {
-    s << "true" << endl;
-    return true;
-  }
-  else if (ph.check_empty()) {
-    s << "false" << endl;
-    return true;
-  }
-  return false;
-}
-
 void
 print_constraint(const Constraint& c, const string& intro, ostream& s) {
   if (!intro.empty())
@@ -68,8 +53,7 @@ print_constraints(const ConSys& cs, const string& intro, ostream& s) {
 
 void
 print_constraints(const Polyhedron& ph, const string& intro, ostream& s) {
-  if (!easy_print(ph, intro, s))
-    print_constraints(ph.constraints(), "", s);
+  print_constraints(ph.constraints(), "", s);
 }
 
 void
@@ -95,6 +79,5 @@ print_generators(const GenSys& gs, const string& intro, ostream& s) {
 
 void
 print_generators(const Polyhedron& ph, const string& intro, ostream& s) {
-  if (!easy_print(ph, intro, s))
-    print_generators(ph.generators(), "", s);
+  print_generators(ph.generators(), "", s);
 }
