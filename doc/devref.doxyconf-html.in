@@ -447,6 +447,9 @@ INPUT                  = @srcdir@/definitions.dox \
                          @srcdir@/../src/NNC_Polyhedron.defs.hh \
                          @srcdir@/../src/NNC_Polyhedron.inlines.hh \
                          @srcdir@/../src/NNC_Polyhedron.cc \
+			 @srcdir@/../src/Widening_Function.types.hh \
+			 @srcdir@/../src/Widening_Function.defs.hh \
+			 @srcdir@/../src/Widening_Function.inlines.hh \
                          @srcdir@/../src/Determinate.defs.hh \
                          @srcdir@/../src/Determinate.inlines.hh \
                          @srcdir@/../src/PowerSet.defs.hh \
