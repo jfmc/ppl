@@ -36,6 +36,8 @@ site: http://www.cs.unipr.it/ppl/ . */
 #include "NNC_Polyhedron.defs.hh"
 #include "track_allocation.hh"
 #include "Watchdog.defs.hh"
+#include <set>
+#include <vector>
 #include <exception>
 #include <stdexcept>
 #include <sstream>
@@ -1619,20 +1621,21 @@ namespace {
 
 class PIFunc {
 private:
-  PPL::dimension_type max_in_codomain_;
+  std::set<PPL::dimension_type> codomain;
   std::vector<PPL::dimension_type> vec;
 
 public:
-  PIFunc()
-    : max_in_codomain_(PPL::not_a_dimension()) {
+  PIFunc() {
   }
 
   bool has_empty_codomain() const {
-    return vec.empty();
+    return codomain.empty();
   }
 
   PPL::dimension_type max_in_codomain() const {
-    return max_in_codomain_;
+    if (codomain.empty())
+      throw unknown_interface_error("PIFunc::max_in_codomain()");
+    return *codomain.end();
   }
 
   bool maps(PPL::dimension_type i, PPL::dimension_type& j) const {
@@ -1646,8 +1649,11 @@ public:
   }
 
   bool insert(PPL::dimension_type i, PPL::dimension_type j) {
-    if (max_in_codomain_ == PPL::not_a_dimension() || j > max_in_codomain_)
-      max_in_codomain_ = j;
+    std::pair<std::set<PPL::dimension_type>::iterator, bool> s
+      = codomain.insert(j);
+    if (!s.second)
+      // *this is not injective!
+      return false;
     if (i > vec.size())
       vec.insert(vec.end(), i - vec.size(), PPL::not_a_dimension());
     if (i == vec.size()) {
@@ -1656,6 +1662,7 @@ public:
     }
     PPL::dimension_type& vec_i = vec[i];
     if (vec_i != PPL::not_a_dimension())
+      // Already mapped: *this is not a function!
       return false;
     vec_i = j;
     return true;
