@@ -2125,16 +2125,14 @@ PPL::Polyhedron::widening_assign(const Polyhedron& y) {
   not empty.
 */
 bool
-PPL::Polyhedron::limited_widening_assign(const Polyhedron& y,
-					 ConSys& cs) {
+PPL::Polyhedron::limited_widening_assign(const Polyhedron& y, ConSys& cs) {
   Polyhedron& x = *this;
 
 #ifndef NDEBUG
   {
+    // We assume that y is contained or equal to x.
     Polyhedron x_copy = x;
     Polyhedron y_copy = y;
-    // We assume that y <= x.
-    // This assertion is right (will never be violated).
     assert(y_copy <= x_copy);
   }
 #endif
@@ -2145,7 +2143,7 @@ PPL::Polyhedron::limited_widening_assign(const Polyhedron& y,
   if (x_space_dim != y_space_dim)
     throw_different_dimensions("PPL::Polyhedron::limited_widening_assign(y,c)",
 			       *this, y);
-  // `cs' must be dimension-compatible with the two polyhedrons.
+  // `cs' must be dimension-compatible with the two polyhedra.
   size_t cs_space_dim = cs.space_dimension();
   if (x_space_dim < cs_space_dim)
     throw_different_dimensions("PPL::Polyhedron::limited_widening_assign(y,c)",
@@ -2164,53 +2162,48 @@ PPL::Polyhedron::limited_widening_assign(const Polyhedron& y,
   y.minimize();
   // This function needs that the generators of `x' are up-to-date,
   // because we use these to choose which constraints of the matrix
-  // \p cs must be added to the resulting polyhedron.
+  // `cs' must be added to the resulting polyhedron.
   if (!x.generators_are_up_to_date())
     x.update_generators();
   // After the minimize, a polyhedron can become empty if the system
   // of constraints is unsatisfiable.
   if (!y.is_empty()) {
-    size_t con_nbrows = cs.num_rows();
-    size_t nbrows = 0;
-    for (size_t i = 0; i < con_nbrows; ++i) {
+    size_t new_cs_num_rows = 0;
+    for (size_t i = 0, cs_num_rows = cs.num_rows(); i < cs_num_rows; ++i) {
       // The constraints to add must be saturated by both the
       // polyhedrons. To choose them, we only use the generators
       // of the greater polyhedron `x', because those of `y'
       // are points also of `x' (`y' is contained in `x') and
       // so they verify the chosen constraints, too.
-      GenSys_Con_Rel satisfy
-	= x.gen_sys.satisfy(cs[i]);
-      if (satisfy == ALL_SATURATE || satisfy == ALL_SATISFY)
+      GenSys_Con_Rel status = x.gen_sys.satisfy(cs[i]);
+      if (status == ALL_SATURATE || status == ALL_SATISFY)
 	// The chosen constraints are put at the top of the
 	// matrix \p cs.
-	std::swap(cs[nbrows], cs[i]);
-      ++nbrows;
+	std::swap(cs[new_cs_num_rows], cs[i]);
+      ++new_cs_num_rows;
     }
     x.widening_assign(y);
     // We erase the constraints that are not saturated or satisfied
     // by the generators of `x' and `y' and that are put at the end
     // of the matrix \p cs.
-    cs.erase_to_end(nbrows);
+    cs.erase_to_end(new_cs_num_rows);
 
-    cs.sort_rows();
-
-    x.con_sys.sort_rows();
     // The system of constraints of the resulting polyhedron is
     // composed by the constraints of the widened polyhedron `x'
     // and by those of the new `cs'.
     // The function `merge_row_assign' automatically resizes
     // the system `cs' if the dimension of the space of `cs'
     // is smaller then the dimension of the space of the polyhedron.
+    cs.sort_rows();
+    x.con_sys.sort_rows();
     x.con_sys.merge_rows_assign(cs);
+
     // Only the system of constraints is up-to-date.
     x.set_constraints_up_to_date();
     x.clear_constraints_minimized();
     x.clear_generators_up_to_date();
   }
-  if (x.is_empty())
-    return false;
-  else
-    return true;
+  return !x.is_empty();
 }
 
 /*!
