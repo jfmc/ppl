@@ -211,6 +211,6 @@ check_PROGRAMS = $(TESTS) $(BUGS)
 
 noinst_HEADERS = ehandlers.hh print.hh
 
-EXTRA_DIST = ehandlers.cc print.cc
+EXTRA_DIST = ehandlers.cc print.cc $(watchdog1_SOURCES)
 
 BUGS =
