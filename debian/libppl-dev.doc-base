@@ -1,0 +1,19 @@
+Document: libppl-dev
+Title: The Parma Polyhedra Library Developer Reference Manual
+Author: PPL developers <ppl-devel@cs.unipr.it>
+
+Abstract: This manual contains a general introduction to the Parma
+Polyhedra Library (PPL) and full documentation of the PPL C++
+interface, including implementation details.
+
+Section: Apps/Programming
+
+Format: postscript
+Files: /usr/share/doc/libppl/ppl-devref-browse.ps.gz
+
+Format: pdf
+Files: /usr/share/doc/libppl/ppl-devref-browse.pdf
+
+Format: HTML
+Index: /usr/share/doc/libppl/html/devref-manual/index.html
+Files: /usr/share/doc/libppl/html/devref-manual/*.html
