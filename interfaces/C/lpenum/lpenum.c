@@ -600,6 +600,8 @@ solve(char* file_name) {
   if (verbose) {
     first_printed = 1;
     fprintf(output_file, "Objective function:\n");
+    if (mpz_cmp_si(den_lcm, 1) != 0)
+      fprintf(output_file, "(");
     mpz_mul(tmp_z, den_lcm, mpq_numref(objective[0]));
     if (mpz_sgn(tmp_z) != 0) {
       mpz_out_str(output_file, 10, tmp_z);
@@ -624,9 +626,14 @@ solve(char* file_name) {
     ppl_LinExpression_add_to_coefficient(ppl_objective_le, i-1, ppl_coeff);
   }
 
-  if (verbose)
+  if (verbose) {
+    if (mpz_cmp_si(den_lcm, 1) != 0) {
+      fprintf(output_file, ")/");
+      mpz_out_str(output_file, 10, den_lcm);
+    }
     fprintf(output_file, "\n%s\n",
 	    (maximize ? "Maximizing." : "Minimizing."));
+  }
 
   /* Check whether the problem is unbounded. */
   unbounded = maximize
@@ -674,6 +681,7 @@ solve(char* file_name) {
   ppl_Coefficient_to_mpz_t(optimum_n, tmp_z);
   mpq_set_num(optimum, tmp_z);
   ppl_Coefficient_to_mpz_t(optimum_d, tmp_z);
+  mpz_mul(tmp_z, tmp_z, den_lcm);
   mpq_set_den(optimum, tmp_z);
   fprintf(output_file, "Optimum value:\n%f\n", mpq_get_d(optimum));
   fprintf(output_file, "Optimum location:\n");
