@@ -55,40 +55,42 @@ user-print.latex-dir    \
 devref-browse.latex-dir \
 devref-print.latex-dir
 
+TEX_ENV = TEXINPUTS=$(srcdir):$(TEXINPUTS)
+
 .SECONDARY: $(LATEX_DIRS)
 
 user-%.latex-dir: user-%.doxyconf-latex $(USER_STUFF)
 	rm -rf $@
-	doxygen $<
+	$(TEX_ENV) doxygen $<
 
 devref-%.latex-dir: devref-%.doxyconf-latex $(DEVREF_STUFF)
 	rm -rf $@
-	doxygen $<
+	$(TEX_ENV) doxygen $<
 
 ppl-user-@VERSION@-%.pdf: user-%.latex-dir
-	make -C $< pdf && mv -f $</refman.pdf $@
+	$(TEX_ENV) make -C $< pdf && mv -f $</refman.pdf $@
 
 ppl-devref-@VERSION@-%.pdf: devref-%.latex-dir
-	make -C $< pdf && mv -f $</refman.pdf $@
+	$(TEX_ENV) make -C $< pdf && mv -f $</refman.pdf $@
 
 ppl-user-@VERSION@-%.ps: user-%.latex-dir
-	make -C $< ps && mv -f $</refman.ps $@
+	$(TEX_ENV) make -C $< ps && mv -f $</refman.ps $@
 
 ppl-devref-@VERSION@-%.ps: devref-%.latex-dir
-	make -C $< ps && mv -f $</refman.ps $@
+	$(TEX_ENV) make -C $< ps && mv -f $</refman.ps $@
 
 %.html-dir: %.doxyconf-html $(DEVREF_STUFF)
 	rm -rf html
-	doxygen $< && rm -rf $@ && mv -f html $@
+	$(TEX_ENV) doxygen $< && rm -rf $@ && mv -f html $@
 
 %.gz: %
 	gzip --best --force $<
 
 %.pdf: %.tex
-	pdflatex $<
+	$(TEX_ENV) pdflatex $<
 
 %.dvi: %.tex
-	latex $<
+	$(TEX_ENV) latex $<
 
 %.ps:	%.dvi
 	dvips -o $@ $<
