@@ -34,7 +34,8 @@ LDADD = $(top_builddir)/src/libppl.la @extra_libraries@
 
 CPPFLAGS = @extra_cpp_flags@
 
-TESTS = NNCinclusion1 \
+TESTS = $(WATCHDOG_TESTS) \
+	NNCinclusion1 \
 	NNCminimize1 NNCminimize2 NNCminimize3 NNCminimize4 NNCminimize5 \
         NNCminimize6 \
         addconstraints1 addconstraints2 addconstraints3 addconstraints4 \
@@ -193,6 +194,15 @@ universe6_SOURCES = universe6.cc
 
 widening1_SOURCES = widening1.cc
 widening2_SOURCES = widening2.cc
+
+if BUILD_WATCHDOG_LIBRARY
+WATCHDOG_TESTS = watchdog1
+
+watchdog1_SOURCES = watchdog1.cc
+watchdog1_INCLUDES = -I$(top_builddir)/src -I$(top_builddir)/Watchdog @extra_includes@
+watchdog1_LDADD = $(top_builddir)/src/libppl.la $(top_builddir)/Watchdog/libpwl.la @extra_libraries@
+
+endif
 
 check_PROGRAMS = $(TESTS) $(BUGS)
 

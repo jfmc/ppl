@@ -269,6 +269,24 @@ AC_ARG_WITH(cxxflags,
 [  --with-cxxflags=xxx     add XXX to the options for the C++ compiler],
 CXXFLAGS="$CXXFLAGS $with_cxxflags")
 
+enableval=no
+AC_MSG_CHECKING([whether to build the Parma Watchdog Library])
+AC_ARG_ENABLE(watchdog,
+[  --enable-watchdog       build also the Parma Watchdog Library])
+case "${enableval}" in
+yes)
+  AC_MSG_RESULT(yes)
+  ;;
+no)
+  AC_MSG_RESULT(no)
+  ;;
+*)
+  AC_MSG_ERROR([bad value ${enableval} --enable-assertions, needs yes or no])
+  ;;
+esac
+build_watchdog_library=$enableval
+AM_CONDITIONAL(BUILD_WATCHDOG_LIBRARY, test x"$build_watchdog_library" = xyes)
+
 # Libtool.
 # Turn off shared libraries during beta-testing, since they
 # make debugging harder and the build process take too long.
