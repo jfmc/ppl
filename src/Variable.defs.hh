@@ -82,6 +82,11 @@ class Parma_Polyhedra_Library::Variable {
 
 public:
   //! Builds the variable corresponding to the Cartesian axis of index \p i.
+  /*!
+    \exception std::length_error
+    Thrown if the <CODE>i+1</CODE> exceeds
+    <CODE>Variable::max_space_dimension()</CODE>.
+  */
   explicit Variable(dimension_type i);
 
   //! Returns the index of the Cartesian axis associated to the variable.

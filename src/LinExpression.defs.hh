@@ -82,7 +82,11 @@ operator*(const LinExpression& e, Integer_traits::const_reference n);
 /*! \relates LinExpression */
 LinExpression& operator+=(LinExpression& e1, const LinExpression& e2);
 //! Returns the linear expression \p e + \p v and assigns it to \p e.
-/*! \relates LinExpression */
+/*! \relates LinExpression
+  \exception std::length_error
+  Thrown if the space dimension of \p v exceeds
+  <CODE>LinExpression::max_space_dimension()</CODE>.
+ */
 LinExpression& operator+=(LinExpression& e, const Variable v);
 //! Returns the linear expression \p e + \p n and assigns it to \p e.
 /*! \relates LinExpression */
@@ -92,7 +96,11 @@ LinExpression& operator+=(LinExpression& e, Integer_traits::const_reference n);
 /*! \relates LinExpression */
 LinExpression& operator-=(LinExpression& e1, const LinExpression& e2);
 //! Returns the linear expression \p e - \p v and assigns it to \p e.
-/*! \relates LinExpression */
+/*! \relates LinExpression
+  \exception std::length_error
+  Thrown if the space dimension of \p v exceeds
+  <CODE>LinExpression::max_space_dimension()</CODE>.
+ */
 LinExpression& operator-=(LinExpression& e, const Variable v);
 //! Returns the linear expression \p e - \p n and assigns it to \p e.
 /*! \relates LinExpression */
@@ -184,9 +192,12 @@ public:
   //! to the inhomogeneous term \p n.
   explicit LinExpression(const Integer_traits::const_reference n);
 
-  //! \brief
-  //! Builds the linear expression corresponding
-  //! to the variable \p v.
+  //! Builds the linear expression corresponding to the variable \p v.
+  /*! \relates LinExpression
+    \exception std::length_error
+    Thrown if the space dimension of \p v exceeds
+    <CODE>LinExpression::max_space_dimension()</CODE>.
+  */
   LinExpression(const Variable v);
 
   //! Builds the linear expression corresponding to constraint \p c.
