@@ -492,13 +492,16 @@ public:
 		       const Integer& denominator = Integer_one());
 
   //! Checks if all the invariants are satisfied.
-  //! \param check_not_empty    <CODE>true</CODE> if it must be checked
-  //!                           whether the system of constraint is
-  //!                           satisfiable.
-  //! \return       <CODE>true</CODE> if the polyhedron satisfies
-  //!               all the invariants stated in the PPL,
-  //!               <CODE>false</CODE> otherwise.
-  bool OK(bool check_not_empty = true) const;
+  //!
+  //! \param check_not_empty
+  //!   <CODE>true</CODE> if and only if, in addition to checking
+  //!   the invariants, \p *this must be checked to be not empty.
+  //!
+  //! \return
+  //!   <CODE>true</CODE> if and only if \p *this satisfies
+  //!   all the invariants and either \p check_not_empty is
+  //!   <CODE>false</CODE> or \p *this is not empty.
+  bool OK(bool check_not_empty = false) const;
 
 protected:
   //! Minimizes generators and constraints.

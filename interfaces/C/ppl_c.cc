@@ -1124,6 +1124,6 @@ CATCH_ALL
 
 int
 ppl_Polyhedron_OK(ppl_const_Polyhedron_t ph) try {
-  return to_const(ph)->OK(false) ? 1 : 0;
+  return to_const(ph)->OK() ? 1 : 0;
 }
 CATCH_ALL

@@ -263,7 +263,7 @@ PPL::PolyBase::PolyBase(Topology topology,
       set_constraints_minimized();
     }
   space_dim = num_dimensions;
-  assert(OK(false));
+  assert(OK());
 }
 
 
@@ -310,7 +310,7 @@ PPL::PolyBase::PolyBase(Topology topology, ConSys& cs)
     set_constraints_up_to_date();
     // Set the space dimension.
     space_dim = cs_space_dim;
-    assert(OK(false));
+    assert(OK());
     return;
   }
 
@@ -376,7 +376,7 @@ PPL::PolyBase::PolyBase(Topology topology, GenSys& gs)
     set_generators_up_to_date();
     // Set the space dimension.
     space_dim = gs_space_dim;
-    assert(OK(false));
+    assert(OK());
     return;
   }
 
@@ -518,7 +518,7 @@ PPL::PolyBase::minimize() const {
     update_constraints();
   }
 
-  assert(OK(false));
+  assert(OK());
 }
 
 /*!
@@ -784,8 +784,8 @@ PPL::operator<=(const PolyBase& x, const PolyBase& y) {
     y.minimize();
 #endif
 
-  assert(x.OK(false));
-  assert(y.OK(false));
+  assert(x.OK());
+  assert(y.OK());
 
   const GenSys& gs = x.gen_sys;
   const ConSys& cs = y.con_sys;
@@ -906,7 +906,7 @@ PPL::PolyBase::intersection_assign_and_minimize(const PolyBase& y) {
     x.set_sat_c_up_to_date();
     x.clear_sat_g_up_to_date();
   }
-  assert(x.OK(false));
+  assert(x.OK());
 }
 
 /*!
@@ -953,7 +953,7 @@ PPL::PolyBase::intersection_assign(const PolyBase& y) {
   // It does not minimize the system of constraints.
   x.clear_constraints_minimized();
 
-  assert(OK(false) && y.OK(false));
+  assert(x.OK() && y.OK());
 }
 
 /*!
@@ -1000,7 +1000,7 @@ PPL::PolyBase::convex_hull_assign_and_minimize(const PolyBase& y) {
   x.set_sat_g_up_to_date();
   x.clear_sat_c_up_to_date();
 
-  assert(OK() && y.OK(false));
+  assert(x.OK(true) && y.OK());
 }
 
 /*!
@@ -1052,7 +1052,7 @@ PPL::PolyBase::convex_hull_assign(const PolyBase& y) {
   x.clear_generators_minimized();
 
   // At this point both `x' and `y' are not empty.
-  assert(OK() && y.OK());
+  assert(x.OK(true) && y.OK(true));
 }
 
 /*!
@@ -1113,7 +1113,7 @@ PPL::PolyBase::convex_difference_assign(const PolyBase& y) {
   }
   *this = new_polyhedron;
 
-  assert(OK(false));
+  assert(OK());
 }
 
 /*!
@@ -1126,7 +1126,7 @@ PPL::PolyBase::convex_difference_assign_and_minimize(const PolyBase& y) {
   assert(topology() == y.topology());
   convex_difference_assign(y);
   minimize();
-  assert(OK());
+  assert(OK(true));
 }
 
 /*!
@@ -1296,9 +1296,9 @@ PPL::PolyBase::add_dimensions_and_embed(size_t dim) {
   // Update the space dimension.
   space_dim += dim;
 
-  // Do not check for satisfiability, because the system of constraints
-  // may be unsatisfiable.
-  assert(OK(false));
+  // Note: we do not check for satisfiability, because the system of
+  // constraints may be unsatisfiable.
+  assert(OK());
 }
 
 /*!
@@ -1341,7 +1341,7 @@ PPL::PolyBase::add_dimensions_and_project(size_t dim) {
     gen_sys.adjust_topology_and_dimension(topology(), dim);
     set_generators_minimized();
     space_dim = dim;
-    assert(OK(false));
+    assert(OK());
     return;
   }
 
@@ -1394,9 +1394,9 @@ PPL::PolyBase::add_dimensions_and_project(size_t dim) {
   // Now we update the space dimension.
   space_dim += dim;
 
-  // Do not check for satisfiability, because the system of constraints
-  // may be unsatisfiable.
-  assert(OK(false));
+  // Note: we do not check for satisfiability, because the system of
+  // constraints may be unsatisfiable.
+  assert(OK());
 }
 
 /*!
@@ -1409,7 +1409,7 @@ PPL::PolyBase::remove_dimensions(const std::set<Variable>& to_be_removed) {
   // Note that this case also captures the only legal removal of
   // dimensions from a polyhedron in a 0-dim space.
   if (to_be_removed.empty()) {
-    assert(OK(false));
+    assert(OK());
     return;
   }
 
@@ -1429,7 +1429,7 @@ PPL::PolyBase::remove_dimensions(const std::set<Variable>& to_be_removed) {
     // we clear `con_sys' since it could have contained the
     // unsatisfiable constraint of the wrong dimension.
     con_sys.clear();
-    assert(OK(false));
+    assert(OK());
     return;
   }
 
@@ -1477,7 +1477,7 @@ PPL::PolyBase::remove_dimensions(const std::set<Variable>& to_be_removed) {
   // Generators are no longer guaranteed to be minimized.
   clear_generators_minimized();
 
-  assert(OK());
+  assert(OK(true));
 }
 
 /*!
@@ -1496,7 +1496,7 @@ PPL::PolyBase::remove_higher_dimensions(size_t new_dimension) {
   // Note that this case also captures the only legal removal of
   // dimensions from a polyhedron in a 0-dim space.
   if (new_dimension == space_dim) {
-    assert(OK(false));
+    assert(OK());
     return;
   }
 
@@ -1506,7 +1506,7 @@ PPL::PolyBase::remove_higher_dimensions(size_t new_dimension) {
     // just updates the space dimension.
     space_dim = new_dimension;
     con_sys.clear();
-    assert(OK(false));
+    assert(OK());
     return;
   }
 
@@ -1536,7 +1536,7 @@ PPL::PolyBase::remove_higher_dimensions(size_t new_dimension) {
   // Update the space dimension.
   space_dim = new_dimension;
 
-  assert(OK());
+  assert(OK(true));
 }
 
 
@@ -1606,7 +1606,7 @@ PPL::PolyBase::add_constraints_and_minimize(ConSys& cs) {
     set_sat_c_up_to_date();
     clear_sat_g_up_to_date();
   }
-  assert(OK(false));
+  assert(OK());
 
   return !empty;
 }
@@ -1663,9 +1663,9 @@ PPL::PolyBase::insert(const Constraint& c) {
   clear_constraints_minimized();
   clear_generators_up_to_date();
 
-  // The constraint system may have become unsatisfiable.
-  // Do not check for satisfiability.
-  assert(OK(false));
+  // Note: the constraint system may have become unsatisfiable, thus
+  // we do not check for satisfiability.
+  assert(OK());
 }
 
 /*!
@@ -1694,7 +1694,7 @@ PPL::PolyBase::insert(const Generator& g) {
 	throw_invalid_generator("insert(g)", *this);
       else
 	status.set_zero_dim_univ();
-    assert(OK(false));
+    assert(OK());
     return;
   }
 
@@ -1764,7 +1764,7 @@ PPL::PolyBase::insert(const Generator& g) {
     clear_empty();
     set_generators_minimized();
   }
-  assert(OK(false));
+  assert(OK());
 }
 
 
@@ -1859,9 +1859,9 @@ PPL::PolyBase::add_constraints(ConSys& cs) {
   clear_constraints_minimized();
   clear_generators_up_to_date();
 
-  // The constraint system may have become unsatisfiable.
-  // Do not check for satisfiability.
-  assert(OK(false));
+  // Note: the constraint system may have become unsatisfiable, thus
+  // we do not check for satisfiability.
+  assert(OK());
 }
 
 
@@ -1934,9 +1934,9 @@ PPL::PolyBase::add_dimensions_and_constraints(ConSys& cs) {
   clear_sat_g_up_to_date();
   clear_sat_c_up_to_date();
 
-  // The system of constraints may be unsatisfiable.
-  // Do not check for satisfiability.
-  assert(OK(false));
+  // Note: the system of constraints may be unsatisfiable, thus we do
+  // not check for satisfiability.
+  assert(OK());
 }
 
 /*!
@@ -1992,7 +1992,7 @@ PPL::PolyBase::add_generators_and_minimize(GenSys& gs) {
     set_generators_up_to_date();
     minimize();
   }
-  assert(OK());
+  assert(OK(true));
 }
 
 
@@ -2023,7 +2023,7 @@ PPL::PolyBase::add_generators(GenSys& gs) {
     // Adding valid generators to a zero-dim polyhedron
     // transform it in the zero-dim universe polyhedron.
     status.set_zero_dim_univ();
-    assert(OK());
+    assert(OK(true));
     return;
   }
 
@@ -2045,7 +2045,7 @@ PPL::PolyBase::add_generators(GenSys& gs) {
     std::swap(gen_sys, gs);
     set_generators_up_to_date();
     clear_empty();
-    assert(OK(false));
+    assert(OK());
     return;
   }
 
@@ -2065,7 +2065,7 @@ PPL::PolyBase::add_generators(GenSys& gs) {
   clear_generators_minimized();
   clear_constraints_up_to_date();
 
-  assert(OK());
+  assert(OK(true));
 }
 
 std::ostream&
@@ -2246,7 +2246,7 @@ PPL::PolyBase::affine_image(const Variable& var,
       clear_sat_g_up_to_date();
     }
   }
-  assert(OK(false));
+  assert(OK());
 }
 
 
@@ -2363,7 +2363,7 @@ PPL::PolyBase::affine_preimage(const Variable& var,
     clear_sat_c_up_to_date();
     clear_sat_g_up_to_date();
   }
-  assert(OK(false));
+  assert(OK());
 }
 
 /*!
@@ -2567,7 +2567,7 @@ PPL::PolyBase::widening_assign(const PolyBase& y) {
   x.clear_constraints_minimized();
   x.clear_generators_up_to_date();
 
-  assert(OK());
+  assert(x.OK(true));
 }
 
 
@@ -2667,7 +2667,7 @@ PPL::PolyBase::limited_widening_assign(const PolyBase& y, ConSys& cs) {
     x.clear_generators_up_to_date();
   }
 
-  assert(OK(false));
+  assert(OK());
 }
 
 /*!

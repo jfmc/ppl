@@ -34,7 +34,7 @@ PPL::Polyhedron::Polyhedron(const NNC_Polyhedron& y)
   if (y.is_topologically_closed()) {
     ConSys cs = y.constraints();
     add_constraints(cs);
-    assert(OK(false));
+    assert(OK());
   }
   else
     throw std::invalid_argument("PPL::Polyhedron::Polyhedron(nnc_ph): "

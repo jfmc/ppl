@@ -32,13 +32,13 @@ PPL::NNC_Polyhedron::NNC_Polyhedron(const Polyhedron& y)
   : PolyBase(NOT_NECESSARILY_CLOSED, y.space_dimension(), UNIVERSE) {
   ConSys cs = y.constraints();
   add_constraints(cs);
-  assert(OK(false));
+  assert(OK());
 }
 
 void
 PPL::NNC_Polyhedron::limited_widening_assign(const NNC_Polyhedron& y,
 					     ConSys& cs) {
-  assert(OK(false));
+  assert(OK());
   NNC_Polyhedron& x = *this;
   // KLUDGE.
   // Converting x and y to Polyhedron. 
