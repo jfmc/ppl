@@ -208,7 +208,7 @@ namespace Parma_Polyhedra_Library {
     \code
   Polyhedron ph(1);
   ph.insert(x == 2);
-  ph.add_dimensions_and_poject(1);
+  ph.add_dimensions_and_project(1);
     \endcode
     The first two lines of code are the same as in Example 4 for
     <CODE>add_dimensions_and_embed</CODE>.
