@@ -1955,14 +1955,17 @@ PPL::PolyBase::add_dimensions_and_constraints(ConSys& cs) {
   // using the right displacement for coefficients.
   size_t cs_num_columns = cs.num_columns();
   for (size_t i = added_rows; i-- > 0; ) {
-    Constraint& c_new = con_sys[old_num_rows + i];
     Constraint& c_old = cs[i];
-    // Method `grow', by defaults, adds inequalities.
+    Constraint& c_new = con_sys[old_num_rows + i];
+    // Method `grow', by default, added inequalities.
     if (c_old.is_equality())
       c_new.set_is_equality();
+    // The inhomogeneous term is not displaced.
     std::swap(c_new[0], c_old[0]);
+    // All homogeneous terms (included the \epsilon coefficient,
+    // if present) are displaced by `space_dim' columns.
     for (size_t j = 1; j < cs_num_columns; ++j)
-      std::swap(c_old[j], c_new[space_dim - 1 + j]);
+      std::swap(c_old[j], c_new[space_dim + j]);
   }
   // Update space dimension.
   space_dim += added_columns;
@@ -2493,7 +2496,7 @@ PPL::PolyBase::relation_with(const Generator& g) {
   to both the polyhedra.
   It is assumed that the polyhedron \p y is contained in \p *this.
 */
-// FIXME.
+// FIXME : what if the polyhedra contain strict inequalities ?
 void
 PPL::PolyBase::widening_assign(const PolyBase& y) {
   assert(topology() == y.topology());
@@ -2510,8 +2513,7 @@ PPL::PolyBase::widening_assign(const PolyBase& y) {
 
   // Dimension-compatibility check.
   size_t x_space_dim = x.space_dim;
-  size_t y_space_dim = y.space_dim;
-  if (x_space_dim != y_space_dim)
+  if (x_space_dim != y.space_dim)
     throw_different_dimensions("widening_assign(y)", *this, y);
 
   // The widening between two polyhedra in a zero-dimensional space
@@ -2530,7 +2532,7 @@ PPL::PolyBase::widening_assign(const PolyBase& y) {
   // the minimal system of generators are necessary.
   y.minimize();
   // After the minimize, a polyhedron can become empty if the system
-  // of constraints is unsatisfiable.
+  // of constraints was unsatisfiable.
   // If the polyhedron `y' is empty, the widened polyhedron is `x'.
   if (y.is_empty())
     return;
@@ -2561,15 +2563,20 @@ PPL::PolyBase::widening_assign(const PolyBase& y) {
   // without modifying the constant polyhedron `y'.
   SatMatrix tmp_sat_g = y.sat_g;
   tmp_sat_g.sort_rows();
-  // Now, we start to build the system of constraints of the
-  // widened polyhedron. The first constraint is the positivity
-  // one: its presence is necessary to have a correct polyhedron.
-  ConSys new_con_sys(topology(), 1, x.con_sys.num_columns());
-  // Hand-made positivity constraint.
-  new_con_sys[0][0] = 1;
-  new_con_sys[0].set_is_inequality();
-  // A one-row ConSys is sorted.
-  new_con_sys.set_sorted(true);
+
+  // Now, we start bulding the system of constraints of the
+  // widened polyhedron.
+  ConSys new_con_sys;
+  if (is_necessarily_closed())
+    // Add the positivity constraint.
+    new_con_sys.insert(Constraint::zero_dim_positivity());
+  else {
+    // Add the \epsilon constraints.
+    new_con_sys.insert(Constraint::epsilon_leq_one());
+    new_con_sys.insert(Constraint::epsilon_geq_zero());
+  }
+  new_con_sys.adjust_topology_and_dimension(topology(), x_space_dim);
+
   // The size of `buffer' will reach sat.num_columns() bit.
   SatRow buffer;
   // We choose a constraint of `x' if its behavior with the
@@ -2621,7 +2628,7 @@ PPL::PolyBase::widening_assign(const PolyBase& y) {
   Returns <CODE>true</CODE> if the widened polyhedron \p *this is
   not empty.
 */
-// FIXME.
+// FIXME : what if the polyhedra contains strict inequalities ?
 void
 PPL::PolyBase::limited_widening_assign(const PolyBase& y, ConSys& cs) {
   assert(topology() == y.topology());
@@ -2638,8 +2645,7 @@ PPL::PolyBase::limited_widening_assign(const PolyBase& y, ConSys& cs) {
 
   // Dimension-compatibility check.
   size_t x_space_dim = x.space_dim;
-  size_t y_space_dim = y.space_dim;
-  if (x_space_dim != y_space_dim)
+  if (x_space_dim != y.space_dim)
     throw_different_dimensions("limited_widening_assign(y,cs)", *this, y);
   // `cs' must be dimension-compatible with the two polyhedra.
   size_t cs_space_dim = cs.space_dimension();
@@ -2657,21 +2663,21 @@ PPL::PolyBase::limited_widening_assign(const PolyBase& y, ConSys& cs) {
     return;
 
   y.minimize();
-  // This function needs that the generators of `x' are up-to-date,
-  // because we use these to choose which constraints of the matrix
-  // `cs' must be added to the resulting polyhedron.
-  if (!x.generators_are_up_to_date())
-    x.update_generators();
   // After the minimize, a polyhedron can become empty if the system
   // of constraints is unsatisfiable.
   if (!y.is_empty()) {
+    // Update the generators of `x': these are used to select,
+    // from the constraints in `cs', those that must be added
+    // to the resulting polyhedron.
+    if (!x.generators_are_up_to_date())
+      x.update_generators();
+
     size_t new_cs_num_rows = 0;
     for (size_t i = 0, cs_num_rows = cs.num_rows(); i < cs_num_rows; ++i) {
-      // The constraints to add must be saturated by both the
-      // polyhedrons. To choose them, we only use the generators
-      // of the greater polyhedron `x', because those of `y'
-      // are points also of `x' (`y' is contained in `x') and
-      // so they satisfy the chosen constraints, too.
+      // The constraints to be added must be saturated by both `x' and `y'.
+      // We only consider the generators of the greater polyhedron `x',
+      // because the generators of `y' can be obtained by combining
+      // those of `x' (since `y' is contained in `x').
       Poly_Con_Relation relation = x.gen_sys.relation_with(cs[i]);
       if (relation == Poly_Con_Relation::saturates()
 	  || relation == Poly_Con_Relation::is_included())
@@ -2682,13 +2688,15 @@ PPL::PolyBase::limited_widening_assign(const PolyBase& y, ConSys& cs) {
     }
     x.widening_assign(y);
     // We erase the constraints that are not saturated or satisfied
-    // by the generators of `x' and `y' and that are put at the end
-    // of the matrix \p cs.
+    // by the generators of `x' and `y' and that have been put to
+    // the end of the matrix \p cs.
     cs.erase_to_end(new_cs_num_rows);
 
 #if 1
     // FIXME : merge_rows_assign (in the #else branch below)
     // does not automatically adjust the topology of cs !!!
+    // However, by simply calling add_constraints() we will
+    // likely duplicate a big number of constraints.
     x.add_constraints(cs);
 #else
     // The system of constraints of the resulting polyhedron is
@@ -2707,7 +2715,7 @@ PPL::PolyBase::limited_widening_assign(const PolyBase& y, ConSys& cs) {
     x.clear_constraints_minimized();
     x.clear_generators_up_to_date();
   }
-  assert(OK());
+  assert(OK(false));
 }
 
 /*!
