@@ -386,9 +386,10 @@ PPL::ConSys::affine_preimage(dimension_type v,
       if (row_v != 0) {
 	for (dimension_type j = n_columns; j-- > 0; )
 	  if (j != v) {
-	    row[j] *= denominator;
+	    Integer& row_j = row[j];
+	    row_j *= denominator;
 	    if (j < expr_size)
-	      row[j] += row_v * expr[j];
+	      add_mul_assign(row_j, row_v, expr[j]);
 	  }
 	if (not_invertible)
 	  row_v = 0;
@@ -405,7 +406,7 @@ PPL::ConSys::affine_preimage(dimension_type v,
       if (row_v != 0) {
 	for (dimension_type j = expr_size; j-- > 0; )
 	  if (j != v)
-	    row[j] += row_v * expr[j];
+	    add_mul_assign(row[j], row_v, expr[j]);
 	if (not_invertible)
 	  row_v = 0;
 	else

@@ -1107,7 +1107,7 @@ PPL::Matrix::gram_shmidt() {
     for (dimension_type j = rank; j-- > 0; ) {
       const Row& v_j = rows[j];
       for (dimension_type k = n_columns; k-- > 0; )
-        w[k] -= factors[j] * v_j[k];
+        sub_mul_assign(w[k], factors[j], v_j[k]);
     }
     assert(w.is_ray_or_point_or_inequality());
     w.normalize();
