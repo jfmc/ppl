@@ -1,4 +1,4 @@
-/* Abstract checked arithmetic with exception throwing
+/* Checked_Number class implementation: inline functions.
    Copyright (C) 2001-2004 Roberto Bagnara <bagnara@cs.unipr.it>
 
 This file is part of the Parma Polyhedra Library (PPL).
@@ -20,6 +20,9 @@ USA.
 
 For the most up-to-date information see the Parma Polyhedra Library
 site: http://www.cs.unipr.it/ppl/ . */
+
+#ifndef PPL_Checked_Number_inlines_hh
+#define PPL_Checked_Number_inlines_hh 1
 
 #include <stdexcept>
 
@@ -318,7 +321,8 @@ f(Checked_Number<T, Policy>& x, const Checked_Number<T, Policy>& y) { \
 #define DEF_ASSIGN_FUN3_3(f, fun) \
 template <typename T, typename Policy> \
 inline void \
-f(Checked_Number<T, Policy>& x, const Checked_Number<T, Policy>& y, const Checked_Number<T, Policy>& z) { \
+f(Checked_Number<T, Policy>& x, \
+  const Checked_Number<T, Policy>& y, const Checked_Number<T, Policy>& z) { \
   check_result(fun<Policy>(x.raw_value(), y.raw_value(), z.raw_value())); \
 }
 
@@ -348,13 +352,13 @@ sgn(const Checked_Number<T, Policy>& x) {
   Result r = Checked::sgn<Policy>(x.raw_value());
   switch (r) {
   case V_LT:
-	  return -1;
+    return -1;
   case V_EQ:
-	  return 0;
+    return 0;
   case V_GT:
-	  return 1;
+    return 1;
   default:
-	  throw(0);
+    throw(0);
   }
 }
 
@@ -364,27 +368,27 @@ cmp(const Checked_Number<T, Policy>& x, const Checked_Number<T, Policy>& y) {
   Result r = Checked::cmp<Policy>(x.raw_value(), y.raw_value());
   switch (r) {
   case V_LT:
-	  return -1;
+    return -1;
   case V_EQ:
-	  return 0;
+    return 0;
   case V_GT:
-	  return 1;
+    return 1;
   default:
-	  throw(0);
+    throw(0);
   }
 }
 
 template <typename T>
 inline std::ostream&
-operator<<(std::ostream& os, const Checked_Number<T>& x)
-{
+operator<<(std::ostream& os, const Checked_Number<T>& x) {
   return os << x.raw_value();
 }
  
 template <typename T>
-inline std::istream& operator>>(std::istream& is, Checked_Number<T>& x)
-{
+inline std::istream& operator>>(std::istream& is, Checked_Number<T>& x) {
   return is >> x.raw_value();
 }
 
 } // namespace Parma_Polyhedra_Library
+
+#endif // !defined(PPL_Checked_Number_inlines_hh)
