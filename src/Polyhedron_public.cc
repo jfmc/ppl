@@ -28,8 +28,8 @@ site: http://www.cs.unipr.it/ppl/ . */
 #include <cassert>
 #include <iostream>
 
-#ifndef GRAM_SHMIDT
-#define GRAM_SHMIDT 0
+#ifndef ENSURE_SORTEDNESS
+#define ENSURE_SORTEDNESS 0
 #endif
 
 namespace PPL = Parma_Polyhedra_Library;
@@ -83,12 +83,12 @@ PPL::Polyhedron::constraints() const {
   else if (!constraints_are_up_to_date())
     update_constraints();
 
-  // FIXME: reconsider whether to really sort constraint at this stage
-  // when we will have a better implementation of
-  // obtain_sorted_constraints().
-#if 0
-  // We insist in returning a sorted system of constraints.
-  obtain_sorted_constraints();
+  // FIXME: reconsider whether to really sort constraints at this stage.
+#if ENSURE_SORTEDNESS
+  // We insist in returning a sorted system of constraints,
+  // but sorting is useless if there are pending constraints.
+  if (!has_pending_constraints())
+    obtain_sorted_constraints();
 #endif
   return con_sys;
 }
@@ -140,16 +140,21 @@ PPL::Polyhedron::generators() const {
     return gen_sys;
   }
 
-  // FIXME: reconsider whether to sort generators also in the case of
-  // closed polyhedra when we will have a better implementation of
-  // obtain_sorted_generators().
-
-  // In the case of an NNC polyhedron, we insist in returning a sorted
-  // system of generators: this is needed so that the const_iterator
-  // on Generator_System could correctly filter out the matched closure points
-  // in the case of a NNC polyhedron.
-  if (!is_necessarily_closed())
+  // FIXME: reconsider whether to really sort generators at this stage.
+#if ENSURE_SORTEDNESS
+  // We insist in returning a sorted system of generators,
+  // but sorting is useless if there are pending generators.
+  if (!has_pending_generators())
     obtain_sorted_generators();
+#else
+  // In the case of an NNC polyhedron, if the generator system is fully
+  // minimized (i.e., minimized and with no pending generator), then
+  // return a sorted system of generators: this is needed so that the
+  // const_iterator could correctly filter out the matched closure points.
+  if (!is_necessarily_closed()
+      && generators_are_minimized() && !has_pending_generators())
+    obtain_sorted_generators();
+#endif
   return gen_sys;
 }
 
@@ -161,9 +166,9 @@ PPL::Polyhedron::minimized_generators() const {
     minimize();
   else
     strongly_minimize_generators();
-  // Note: calling generators() also ensure sortedness,
-  // which is required to correctly filter the output
-  // of an NNC generator system.
+  // Note: calling generators() on a strongly minimized NNC generator
+  // system will also ensure sortedness, which is required to correctly
+  // filter away the matched closure points.
   return generators();
 }
 
@@ -815,7 +820,6 @@ PPL::Polyhedron::OK(bool check_not_empty) const {
 #endif
 	goto bomb;
       }
-#if !GRAM_SHMIDT
       // The system `copy_of_con_sys' has the form that is obtained
       // after the functions gauss() and back_substitute().
       // A system of constraints can be minimal even if it does not
@@ -839,7 +843,6 @@ PPL::Polyhedron::OK(bool check_not_empty) const {
 #endif
 	goto bomb;
       }
-#endif // !GRAM_SHMIDT
     }
   }
 
@@ -1511,14 +1514,13 @@ PPL::Polyhedron::intersection_assign(const Polyhedron& y) {
   }
   else {
     // `x' cannot support pending constraints.
-    if (y.has_pending_constraints())
-      x.con_sys.add_rows(y.con_sys);
-    else {
-      // Neither `x' nor `y' have pending constraints.
-      x.obtain_sorted_constraints();
-      y.obtain_sorted_constraints();
+    // If both constraint systems are (fully) sorted, then we can merge
+    // them; otherwise we simply adds the second to the first.
+    if (x.con_sys.is_sorted()
+	&& y.con_sys.is_sorted() && !y.has_pending_constraints())
       x.con_sys.merge_rows_assign(y.con_sys);
-    }
+    else
+      x.con_sys.add_rows(y.con_sys);
     // Generators are no longer up-to-date
     // and constraints are no longer minimized.
     x.clear_generators_up_to_date();
@@ -1647,14 +1649,13 @@ PPL::Polyhedron::poly_hull_assign(const Polyhedron& y) {
   }
   else {
     // `x' cannot support pending generators.
-    if (y.has_pending_generators())
-      x.gen_sys.add_rows(y.gen_sys);
-    else {
-      // Neither `x' nor `y' have pending generators.
-      x.obtain_sorted_generators();
-      y.obtain_sorted_generators();
+    // If both generator systems are (fully) sorted, then we can merge
+    // them; otherwise we simply adds the second to the first.
+    if (x.gen_sys.is_sorted()
+	&& y.gen_sys.is_sorted() && !y.has_pending_generators())
       x.gen_sys.merge_rows_assign(y.gen_sys);
-    }
+    else
+      x.gen_sys.add_rows(y.gen_sys);
     // Constraints are no longer up-to-date
     // and generators are no longer minimized.
     x.clear_constraints_up_to_date();
