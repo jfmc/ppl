@@ -28,9 +28,11 @@ site: http://www.cs.unipr.it/ppl/ . */
 #include "Integer.types.hh"
 
 #ifdef PPL_DOXYGEN_INCLUDE_IMPLEMENTATION_DETAILS
+//! Class for initialization and finalization.
 /*!
-  <EM>Nifty Counter</EM> class to ensure that the library
-  is initialized only once and before its first use.
+  <EM>Nifty Counter</EM> initialization class,
+  ensuring that the library is initialized only once
+  and before its first use.
   A count of the number of translation units using the library
   is maintained. A static object of Init type will be declared
   by each translation unit using the library.  As a result,
