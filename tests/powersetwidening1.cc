@@ -1,5 +1,4 @@
-/* Test Polyhedron::new_widening_assign(): we apply this function
-   to two zero-dimensional polyhedra.
+/* Test Polyhedra_Powerset<PH>::H79_widening_assign().
    Copyright (C) 2001-2003 Roberto Bagnara <bagnara@cs.unipr.it>
 
 This file is part of the Parma Polyhedra Library (PPL).
@@ -23,6 +22,7 @@ For the most up-to-date information see the Parma Polyhedra Library
 site: http://www.cs.unipr.it/ppl/ . */
 
 #include "ppl_test.hh"
+#include <vector>
 
 using namespace std;
 using namespace Parma_Polyhedra_Library;
@@ -31,110 +31,118 @@ using namespace Parma_Polyhedra_Library;
 #define NOISY 0
 #endif
 
+Variable x(0);
+Variable y(1);
+
+typedef Polyhedra_PowerSet<C_Polyhedron> PSet;
+
+const C_Polyhedron&
+P(unsigned n) {
+  static std::vector<C_Polyhedron> p;
+  if (p.size() < 5) {
+    p.resize(5, C_Polyhedron(2));
+    p[2].add_constraint(0 <= x);
+    p[2].add_constraint(x <= 4);
+    p[2].add_constraint(0 <= y);
+    p[2].add_constraint(y <= 4);
+    p[1] = p[2];
+    p[1].add_constraint(x-y <= 3);
+    p[0] = p[1];
+    p[0].add_constraint(x+y >= 1);
+
+    p[3].add_constraint(0 <= x);
+    p[3].add_constraint(x <= 8);
+    p[3].add_constraint(0 <= y);
+    p[3].add_constraint(y <= 8);
+    p[3].add_constraint(x-y >= -6);
+    p[4] = p[3];
+    p[3].add_constraint(5*x-y >= -2);
+    p[3].add_constraint(x+3*y >= 3);
+    p[4].add_constraint(4*x-y >= -3);
+    p[4].add_constraint(x+2*y >= 2);
+  }
+
+  if (n >= p.size()) {
+    unsigned new_size = p.size();
+    while (n >= new_size)
+      new_size *= 2;
+    p.resize(p.size()*2);
+  }
+
+  if (p[n].is_universe()) {
+    p[n] = P(n-5);
+    p[n].affine_image(x, 2*x);
+    p[n].affine_image(y, (Integer(1) << (n/5 + 2)) - 2*y);
+  }
+
+  return p[n];
+}
+
+PSet
+S(unsigned n) {
+  PSet s(2, Polyhedron::EMPTY);
+  switch (n % 4) {
+  case 0:
+#if NOISY
+    cout << "S" << n << " = { " << "P" << n + n/4 << " }" << endl;
+#endif
+    s.add_disjunct(P(n + n/4));
+    break;
+  case 1:
+#if NOISY
+    cout << "S" << n << " = { "
+	 << "P" << n + n/4 << ", "
+	 << "P" << n + 2 + n/4 << " }" << endl;
+#endif
+    s.add_disjunct(P(n + n/4));
+    s.add_disjunct(P(n + 2 + n/4));
+    break;
+  case 2:
+#if NOISY
+    cout << "S" << n << " = { "
+	 << "P" << n + n/4 << ", "
+	 << "P" << n + 1 + n/4 << " }" << endl;
+#endif
+    s.add_disjunct(P(n + n/4));
+    s.add_disjunct(P(n + 1 + n/4));
+    break;
+  case 3:
+#if NOISY
+    cout << "S" << n << " = { "
+	 << "P" << n - 1 + n/4 << ", "
+	 << "P" << n + 1 + n/4 << " }" << endl;
+#endif
+    s.add_disjunct(P(n - 1 + n/4));
+    s.add_disjunct(P(n + 1 + n/4));
+    break;
+  }    
+  return s;
+}
+
+using namespace Parma_Polyhedra_Library::IO_Operators;
+
 int
 main() TRY {
   set_handlers();
 
-  typedef Polyhedra_PowerSet<C_Polyhedron> PSet;
-
-  Variable A(0);
-  Variable B(1);
-
-  C_Polyhedron ps1_1(2);
-  ps1_1.add_constraint(-A + B >= 5);
-  ps1_1.add_constraint(A - B >= -13);
-  ps1_1.add_constraint(A >= 3);
-  C_Polyhedron ps1_2(2);
-  ps1_2.add_constraint(-A + B >= 6);
-  ps1_2.add_constraint(A - B >= -16);
-  ps1_2.add_constraint(A >= 3);
-  C_Polyhedron ps1_3(2);
-  ps1_3.add_constraint(-A + B >= 7);
-  ps1_3.add_constraint(A - B >= -20);
-  ps1_3.add_constraint(A >= 4);
-  C_Polyhedron ps1_4(2);
-  ps1_4.add_constraint(-A + B >= 8);
-  ps1_4.add_constraint(A - B >= -24);
-  ps1_4.add_constraint(A >= 5);
-  C_Polyhedron ps1_5(2);
-  ps1_5.add_constraint(-A + B >= 10);
-  ps1_5.add_constraint(A - B >= -28);
-  ps1_5.add_constraint(A >= 6);
-  C_Polyhedron ps1_6(2);
-  ps1_6.add_constraint(-A + B >= 12);
-  ps1_6.add_constraint(A - B >= -32);
-  ps1_6.add_constraint(A >= 7);
-  C_Polyhedron ps1_7(2);
-  ps1_7.add_constraint(-A + B >= 2);
-  ps1_7.add_constraint(A - B >= -4);
-  ps1_7.add_constraint(A >= 0);
-  C_Polyhedron ps1_8(2);
-  ps1_8.add_constraint(-A + B >= 3);
-  ps1_8.add_constraint(A - B >= -8);
-  ps1_8.add_constraint(A >= 1);
-  C_Polyhedron ps1_9(2);
-  ps1_9.add_constraint(-A + B >= 4);
-  ps1_9.add_constraint(A - B >= -12);
-  ps1_9.add_constraint(A >= 2);
-
-  PSet ps1(2, Polyhedron::EMPTY);
-  ps1.add_disjunct(ps1_1);
-  ps1.add_disjunct(ps1_2);
-  ps1.add_disjunct(ps1_3);
-  ps1.add_disjunct(ps1_4);
-  ps1.add_disjunct(ps1_5);
-  ps1.add_disjunct(ps1_6);
-  ps1.add_disjunct(ps1_7);
-  ps1.add_disjunct(ps1_8);
-  ps1.add_disjunct(ps1_9);
-
-  C_Polyhedron ps2_1(2);
-  ps2_1.add_constraint(-A + B >= 2);
-  ps2_1.add_constraint(A - B >= -4);
-  ps2_1.add_constraint(A >= 0);
-  C_Polyhedron ps2_2(2);
-  ps2_2.add_constraint(-A + B >= 3);
-  ps2_2.add_constraint(A - B >= -8);
-  ps2_2.add_constraint(A >= 1);
-  C_Polyhedron ps2_3(2);
-  ps2_3.add_constraint(-A + B >= 4);
-  ps2_3.add_constraint(A - B >= -12);
-  ps2_3.add_constraint(A >= 2);
-  C_Polyhedron ps2_4(2);
-  ps2_4.add_constraint(-A + B >= 6);
-  ps2_4.add_constraint(A - B >= -16);
-  ps2_4.add_constraint(A >= 3);
-
-  PSet ps2(2, Polyhedron::EMPTY);
-  ps2.add_disjunct(ps2_1);
-  ps2.add_disjunct(ps2_2);
-  ps2.add_disjunct(ps2_3);
-  ps2.add_disjunct(ps2_4);
-
+  PSet T = S(0);
 #if NOISY
-  using namespace Parma_Polyhedra_Library::IO_Operators;
-  cout << "*** ps1 ***" << endl
-       << ps1 << endl;
-  cout << "*** ps2 ***" << endl
-       << ps2 << endl;
+  cout << "T0 = " << T << endl;
 #endif
-
-  ps1.new_widening_assign(ps2);
-
-#if 0
-  C_Polyhedron known_result;
-  known_result = ph1;
-
-  int retval = (ph1 == known_result) ? 0 : 1;
-#else
-  int retval = 0;
-#endif
-
+  bool converged = false;
+  for (unsigned n = 1; !converged && n <= 100; ++n) {
+    PSet U = T;
 #if NOISY
-  cout << "*** ps1 ***" << endl
-       << ps1 << endl;
+    cout << "S" << n << " = " << S(1) << endl;
 #endif
+    T.H79_widening_assign(S(n), 3);
+#if NOISY
+    cout << "T" << n << " = " << T << endl;
+#endif
+    if (T.definitely_entails(U))
+      converged = true;
+  }
 
-  return retval;
+  return !converged ? 0 : 1;
 }
 CATCH
