@@ -346,13 +346,17 @@ public:
   //! \param cs       The system of constraints defining the polyhedron.
   //!                 It is not declared <CODE>const</CODE>
   //!                 because it can be modified.
+  //! \exception std::invalid_argument thrown if the topology of \p cs
+  //!                                  is incompatible with \p topology.
   PolyBase(Topology topology, ConSys& cs);
   //! Builds a polyhedron from a system of generators.
   //! The polyhedron inherits the space dimension of the generator system.
   //! \param gs       The system of generators defining the polyhedron.
   //!                 It is not declared <CODE>const</CODE>
   //!                 because it can be modified.
-  //! \exception std::invalid_argument thrown if the system of generators
+  //! \exception std::invalid_argument thrown if if the topology of \p gs
+  //!                                  is incompatible with \p topology,
+  //!                                  or if the system of generators
   //!                                  is not empty but has no points.
   PolyBase(Topology topology, GenSys& gs);
   // Destructor
@@ -426,7 +430,8 @@ public:
   //!                          declared <CODE>const</CODE>
   //!                          because it can be modified.
   //! \exception std::invalid_argument thrown if \p *this, \p y and
-  //!                                  \p cs are dimension-incompatible.
+  //!                                  \p cs are dimension-incompatible
+  //!                                  or topology-incompatible.
   void limited_widening_assign(const PolyBase& y, ConSys& cs);
 
   //! Returns the system of constraints.
@@ -437,15 +442,17 @@ public:
   //! Inserts a copy of constraint \p c into the system of constraints
   //! of \p *this.
   //! \exception std::invalid_argument thrown if \p *this and constraint \p c
-  //!                                  are dimension-incompatible.
+  //!                                  are dimension-incompatible
+  //!                                  or topology-incompatible.
   void insert(const Constraint& c);
 
   //! Inserts a copy of generator \p g into the system of generators
   //! of \p *this.
   //! \exception std::invalid_argument thrown if \p *this and generator \p g
   //!                                  are dimension-incompatible
-  //!                                  or if a ray/line is inserted
-  //!                                  in an empty polyhedron.
+  //!                                  or topology-incompatible,
+  //!                                  or if \p *this is an empty polyhedron
+  //!                                  and \p g is not a point.
   void insert(const Generator& g);
 
   //! Transforms the polyhedron \p *this, assigning an affine expression
@@ -532,7 +539,8 @@ public:
   //! \return               <CODE>false</CODE> if the resulting
   //!                       polyhedron is empty.
   //! \exception std::invalid_argument thrown if \p *this and \p cs
-  //!                                  are dimension-incompatible.
+  //!                                  are dimension-incompatible or
+  //!                                  topology-incompatible.
   bool add_constraints_and_minimize(ConSys& cs);
   //! Adds the specified constraints without minimizing.
   //! \param  cs             The constraints that will be added to the
@@ -540,21 +548,25 @@ public:
   //!                        is not declared <CODE>const</CODE> because
   //!                        it can be modified.
   //! \exception std::invalid_argument thrown if \p *this and \p cs
-  //!                                  are dimension-incompatible.
+  //!                                  are dimension-incompatible or
+  //!                                  topology-incompatible.
   void add_constraints(ConSys& cs);
 
   //! First increases the space dimension of \p *this by adding
   //! \p cs.space_dimension() new dimensions;
   //! then adds to the system of constraints of \p *this
   //! a renamed-apart version of the constraints in \p cs.
+  //! \exception std::invalid_argument thrown if \p *this and \p cs
+  //!                                  are topology-incompatible.
   void add_dimensions_and_constraints(ConSys& cs);
   //! Adds the specified generators.
   //! \param  gs          The generators that will be added to the
   //!                     current system of generators. The parameter is
   //!                     not declared <CODE>const</CODE> because it
   //!                     can be modified.
-  //! \exception std::invalid_argument thrown if \p *this and
-  //!                                  \p gs are dimension-incompatible
+  //! \exception std::invalid_argument thrown if \p *this and \p gs
+  //!                                  are dimension-incompatible or
+  //!                                  topology-incompatible,
   //!                                  or if \p *this is empty and the
   //!                                  the system of generators \p gs
   //!                                  is not empty, but has no points.
@@ -565,7 +577,8 @@ public:
   //!                        is not declared <CODE>const</CODE> because
   //!                        it can be modified.
   //! \exception std::invalid_argument thrown if \p *this and \p gs
-  //!                                  are dimension-incompatible or if
+  //!                                  are dimension-incompatible or
+  //!                                  topoly-incompatible, or if
   //!                                  \p *this is empty and the system of
   //!                                  generators \p gs is not empty, but
   //!                                  has no points.
