@@ -27,7 +27,7 @@ TESTS = inters1 inters2 \
         empty1 \
         append1 append2 \
         permute \
-        error1 error2 error3
+        error1 error2 error3 error4
 
 inters1_SOURCES = inters1.cc
 inters2_SOURCES = inters2.cc
@@ -39,6 +39,7 @@ empty1_SOURCES = empty1.cc
 error1_SOURCES = error1.cc
 error2_SOURCES = error2.cc
 error3_SOURCES = error3.cc
+error4_SOURCES = error4.cc
 
 append1_SOURCES = append1.cc
 append2_SOURCES = append2.cc
