@@ -99,6 +99,8 @@ main() TRY {
 #endif
   for (int i = 2; i >= 0; --i) {
     ls[i] = ls[i+1];
+    // Force generators to be up-to-date, for a change.
+    (void) ls[i].generators();
     ls[i].map_dimensions(rotate_left);
 #if NOISY
     print_constraints(ls[i], "*** ls[i] ***");
