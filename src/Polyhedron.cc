@@ -3955,6 +3955,13 @@ PPL::Polyhedron::BBRZ02_widening_assign(const Polyhedron& y) {
 }
 
 void
+PPL::Polyhedron::limited_BBRZ02_widening_assign(const Polyhedron& y,
+						ConSys& cs) {
+  BBRZ02_widening_assign(y);
+  add_constraints(cs);
+}
+
+void
 PPL::Polyhedron::time_elapse_assign(const Polyhedron& y) {
   Polyhedron& x = *this;
   // Topology compatibility check.

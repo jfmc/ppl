@@ -681,6 +681,23 @@ public:
   void BBRZ02_widening_assign(const Polyhedron& y);
 
   //! \brief
+  //! Limits the \ref BBRZ02_widening "BBRZ02-widening" computation
+  //! between \p *this and \p y by enforcing constraints \p cs
+  //! and assigns the result to \p *this.
+  /*!
+    \param y                 A polyhedron that <EM>must</EM>
+                             be contained in \p *this.
+    \param cs                The system of constraints that limits
+                             the widened polyhedron. It is not
+                             declared <CODE>const</CODE>
+                             because it can be modified.
+    \exception std::invalid_argument thrown if \p *this, \p y and \p cs
+                                     are topology-incompatible
+                                     or dimension-incompatible.
+  */
+  void limited_BBRZ02_widening_assign(const Polyhedron& y, ConSys& cs);
+
+  //! \brief
   //! Assigns to \p *this the result of computing the
   //! \ref time_elapse "time-elapse" between \p *this and \p y.
   /*!

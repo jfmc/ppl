@@ -1183,6 +1183,28 @@ ppl_Polyhedron_poly_difference_assign_and_minimize
 CATCH_ALL
 
 int
+ppl_Polyhedron_BBRZ02_widening_assign(ppl_Polyhedron_t x,
+				      ppl_const_Polyhedron_t y) try {
+  Polyhedron& xx = *to_nonconst(x);
+  const Polyhedron& yy = *to_const(y);
+  xx.BBRZ02_widening_assign(yy);
+  return 0;
+}
+CATCH_ALL
+
+int
+ppl_Polyhedron_limited_BBRZ02_widening_assign(ppl_Polyhedron_t x,
+					      ppl_const_Polyhedron_t y,
+					      ppl_ConSys_t cs) try {
+  Polyhedron& xx = *to_nonconst(x);
+  const Polyhedron& yy = *to_const(y);
+  ConSys& ccs = *to_nonconst(cs);
+  xx.limited_BBRZ02_widening_assign(yy, ccs);
+  return 0;
+}
+CATCH_ALL
+
+int
 ppl_Polyhedron_H79_widening_assign(ppl_Polyhedron_t x,
 				   ppl_const_Polyhedron_t y) try {
   Polyhedron& xx = *to_nonconst(x);

@@ -358,6 +358,18 @@ ppl_new_Polyhedron_from_Polyhedron(+Topology_1, +Handle_1,
    Assign to the polyhedron referenced by <CODE>Handle_1</CODE>
    its poly-difference with the polyhedron referenced by <CODE>Handle_2</CODE>.
 
+<H2><CODE>ppl_Polyhedron_BBRZ02_widening_assign(+Handle_1, +Handle_2)</CODE></H2>
+
+   Assigns to the polyhedron referenced by <CODE>Handle_1</CODE>
+   its BBRZ02-widening with the polyhedra referenced by <CODE>Handle_2</CODE>,
+
+<H2><CODE>ppl_Polyhedron_limited_BBRZ02_widening_assign(+Handle_1, +Handle_2,
+               +Constraint_System)</CODE></H2>
+
+   Assigns to the polyhedron referenced by <CODE>Handle_1</CODE>
+   its BBRZ02-widening with the polyhedron referenced by <CODE>Handle_2</CODE>,
+   limited by the constraints in <CODE>Constraint_System</CODE>.
+
 <H2><CODE>ppl_Polyhedron_H79_widening_assign(+Handle_1, +Handle_2)</CODE></H2>
 
    Assigns to the polyhedron referenced by <CODE>Handle_1</CODE>
