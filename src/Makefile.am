@@ -88,7 +88,6 @@ Polyhedron.types.hh \
 C_Polyhedron.types.hh \
 NNC_Polyhedron.types.hh \
 globals.hh \
-statistics.hh \
 Integer.defs.hh \
 Integer.inlines.hh \
 Interval.defs.hh \

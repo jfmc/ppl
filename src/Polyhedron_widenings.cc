@@ -27,7 +27,6 @@ site: http://www.cs.unipr.it/ppl/ . */
 #include "Polyhedron.defs.hh"
 
 #include "BHRZ03_Certificate.defs.hh"
-#include "statistics.hh"
 #include <cassert>
 #include <iostream>
 #include <stdexcept>
@@ -569,12 +568,8 @@ PPL::Polyhedron::is_BHRZ03_stabilizing(const Polyhedron& x,
     x.space_dim - x.con_sys.num_equalities();
   const dimension_type y_dimension =
     y.space_dim - y.con_sys.num_equalities();
-  if (x_dimension > y_dimension) {
-#if PPL_STATISTICS
-    ++statistics->reason.poly_dim;
-#endif
+  if (x_dimension > y_dimension)
     return true;
-  }
 
   // Since `y' is assumed to be included into `x',
   // at this point the two polyhedra must have the same dimension.
@@ -586,12 +581,8 @@ PPL::Polyhedron::is_BHRZ03_stabilizing(const Polyhedron& x,
   // the dimension of the lineality space is equal to the number of lines.
   const dimension_type x_num_lines = x.gen_sys.num_lines();
   const dimension_type y_num_lines = y.gen_sys.num_lines();
-  if (x_num_lines > y_num_lines) {
-#if PPL_STATISTICS
-    ++statistics->reason.lin_space_dim;
-#endif
+  if (x_num_lines > y_num_lines)
     return true;
-  }
 
   // Since `y' is assumed to be included into `x', at this point
   // the lineality space of the two polyhedra must have the same dimension.
@@ -611,12 +602,8 @@ PPL::Polyhedron::is_BHRZ03_stabilizing(const Polyhedron& x,
   for (ConSys::const_iterator i = y.con_sys.begin(),
 	 y_cs_end = y.con_sys.end(); i != y_cs_end; ++i)
     ++y_con_sys_num_rows;
-  if (x_con_sys_num_rows < y_con_sys_num_rows) {
-#if PPL_STATISTICS
-    ++statistics->reason.num_constraints;
-#endif
+  if (x_con_sys_num_rows < y_con_sys_num_rows)
     return true;
-  }
   else if (x_con_sys_num_rows > y_con_sys_num_rows)
     return false;
 
@@ -629,12 +616,8 @@ PPL::Polyhedron::is_BHRZ03_stabilizing(const Polyhedron& x,
       = x_gen_sys_num_rows - x_num_lines - x.gen_sys.num_rays();
     const dimension_type y_num_points
       = y_gen_sys_num_rows - y_num_lines - y.gen_sys.num_rays();
-    if (x_num_points < y_num_points) {
-#if PPL_STATISTICS
-      ++statistics->reason.num_points;
-#endif
+    if (x_num_points < y_num_points)
       return true;
-    }
     else
       // If the number of points of `y' is smaller than the number of
       // points of `x', then the chain is not stabilizing.
@@ -653,12 +636,8 @@ PPL::Polyhedron::is_BHRZ03_stabilizing(const Polyhedron& x,
 	++y_num_closure_points;
     // If the number of closure points of `x' is smaller than
     // the number of closure points of `y', the chain is stabilizing.
-    if (x_num_closure_points < y_num_closure_points) {
-#if PPL_STATISTICS
-      ++statistics->reason.num_points;
-#endif
+    if (x_num_closure_points < y_num_closure_points)
       return true;
-    }
     else
       // If the number of closure points of `y' is smaller than the
       // number of closure points of `x', the chain is not stabilizing.
@@ -696,12 +675,8 @@ PPL::Polyhedron::is_BHRZ03_stabilizing(const Polyhedron& x,
     if (x_num_rays[i] > y_num_rays[i])
       // Not stabilizing.
       break;
-    if (x_num_rays[i] < y_num_rays[i]) {
-#if PPL_STATISTICS
-      ++statistics->reason.zero_coord_rays;
-#endif
+    if (x_num_rays[i] < y_num_rays[i])
       return true;
-    }
   }
 
   // The chain is not stabilizing.
@@ -822,9 +797,6 @@ PPL::Polyhedron::BHRZ03_combining_constraints(const Polyhedron& y,
   // Check for stabilization wrt `y_cert' and improvement over `H79'.
   if (y_cert.is_stabilizing(result) && !result.contains(H79)) {
     // The technique was successful.
-#if PPL_STATISTICS
-    ++statistics->technique.combining_constraints;
-#endif
     std::swap(x, result);
     assert(x.OK(true));
     return true;
@@ -892,9 +864,6 @@ PPL::Polyhedron::BHRZ03_evolving_points(const Polyhedron& y,
   // Check for stabilization wrt `y_cert' and improvement over `H79'.
   if (y_cert.is_stabilizing(result) && !result.contains(H79)) {
     // The technique was successful.
-#if PPL_STATISTICS
-    ++statistics->technique.evolving_points;
-#endif
     std::swap(x, result);
     assert(x.OK(true));
     return true;
@@ -983,9 +952,6 @@ PPL::Polyhedron::BHRZ03_evolving_rays(const Polyhedron& y,
   // Check for stabilization wrt `y' and improvement over `H79'.
   if (y_cert.is_stabilizing(result) && !result.contains(H79)) {
     // The technique was successful.
-#if PPL_STATISTICS
-    ++statistics->technique.evolving_rays;
-#endif
     std::swap(x, result);
     assert(x.OK(true));
     return true;
@@ -1016,27 +982,17 @@ PPL::Polyhedron::BHRZ03_widening_assign(const Polyhedron& y, unsigned* tp) {
 
   // If any argument is zero-dimensional or empty,
   // the BHRZ03-widening behaves as the identity function.
-  if (x.space_dim == 0 || x.marked_empty() || y.marked_empty()) {
-#if PPL_STATISTICS
-    ++statistics->reason.zero_dim_or_empty;
-    ++statistics->technique.nop;
-#endif
+  if (x.space_dim == 0 || x.marked_empty() || y.marked_empty())
     return;
-  }
 
   // `x.con_sys' and `x.gen_sys' should be in minimal form.
   x.minimize();
 
   // `y.con_sys' and `y.gen_sys' should be in minimal form.
   if (y.is_necessarily_closed()) {
-    if (!y.minimize()) {
+    if (!y.minimize())
       // `y' is empty: the result is `x'.
-#if PPL_STATISTICS
-      ++statistics->reason.zero_dim_or_empty;
-      ++statistics->technique.nop;
-#endif
       return;
-    }
   }
   else {
     // Dealing with a NNC polyhedron.
@@ -1047,14 +1003,9 @@ PPL::Polyhedron::BHRZ03_widening_assign(const Polyhedron& y, unsigned* tp) {
     // to also hold for the corresponding eps-representations:
     // this is obtained by intersecting the two eps-representations.
     Polyhedron& yy = const_cast<Polyhedron&>(y);
-    if (!yy.intersection_assign_and_minimize(x)) {
+    if (!yy.intersection_assign_and_minimize(x))
       // `y' is empty: the result is `x'.
-#if PPL_STATISTICS
-      ++statistics->reason.zero_dim_or_empty;
-      ++statistics->technique.nop;
-#endif
       return;
-    }
   }
 
   // Compute certificate info for polyhedron `y'.
@@ -1064,9 +1015,6 @@ PPL::Polyhedron::BHRZ03_widening_assign(const Polyhedron& y, unsigned* tp) {
   // At this point, also check if the two polyhedra are the same
   // (exploiting the knowledge that `y <= x').
   if (y_cert.is_stabilizing(x) || y.contains(x)) {
-#if PPL_STATISTICS
-    ++statistics->technique.nop;
-#endif
     assert(OK());
     return;
   }
@@ -1075,9 +1023,6 @@ PPL::Polyhedron::BHRZ03_widening_assign(const Polyhedron& y, unsigned* tp) {
   // If we are using the widening-with-tokens technique and
   // there are tokens available, use one of them and return `x'.
   if (tp != 0 && *tp > 0) {
-#if PPL_STATISTICS
-    ++statistics->technique.delay;
-#endif
     --(*tp);
     assert(OK());
     return;
@@ -1117,9 +1062,6 @@ PPL::Polyhedron::BHRZ03_widening_assign(const Polyhedron& y, unsigned* tp) {
   assert(H79.OK() && x.OK() && y.OK());
 
   // No previous technique was successful: fall back to the H79 widening.
-#if PPL_STATISTICS
-  ++statistics->technique.h79;
-#endif
   std::swap(x, H79);
   assert(x.OK(true));
 
