@@ -126,6 +126,7 @@ Determinate<PH>::polyhedron() const {
 template <typename PH>
 PH&
 Determinate<PH>::polyhedron() {
+  mutate();
   return prep->ph;
 }
 
