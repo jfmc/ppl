@@ -256,6 +256,8 @@ Polyhedron::Polyhedron(Topology topol, const Box& box)
   // this constraint will be removed at the end.
   con_sys.insert(Variable(space_dim - 1) >= 0);
 
+  // Note: when adding a strict inequality constraint,
+  //       we also add the matching non-strict constraint.
   for (size_t k = space_dim; k-- > 0; ) {
     // See if we have a valid lower bound.
     bool l_closed = false;
@@ -282,21 +284,19 @@ Polyhedron::Polyhedron(Topology topol, const Box& box)
     else {
       // Check if a lower bound constraint is required.
       if (l_bounded) {
-       if (l_closed)
-	 // Add the constraint `l_d*v_k >= l_n'.
-	 con_sys.insert(l_d * Variable(k) >= l_n);
-       else
+       if (!l_closed)
 	 // Add the constraint `l_d*v_k > l_n'.
 	 con_sys.insert(l_d * Variable(k) > l_n);
+       // Add the constraint `l_d*v_k >= l_n'.
+       con_sys.insert(l_d * Variable(k) >= l_n);
       }
       // Check if an upper bound constraint is required.
       if (u_bounded) {
-       if (u_closed)
-	 // Add the constraint `u_d*v_k <= u_n'.
-	 con_sys.insert(u_d * Variable(k) <= u_n);
-       else
+       if (!u_closed)
 	 // Add the constraint `u_d*v_k < u_n'.
 	 con_sys.insert(u_d * Variable(k) < u_n);
+       // Add the constraint `u_d*v_k <= u_n'.
+       con_sys.insert(u_d * Variable(k) <= u_n);
       }
     }
   }
