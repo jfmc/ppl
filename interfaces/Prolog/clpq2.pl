@@ -509,21 +509,6 @@ write_constraints([C|CS], VariableNames) :-
 
 %%%%%%%%%%%%%%%%%%%%%%%%%% Utility Predicates %%%%%%%%%%%%%%%%%%%%%%%%%%
 
-% member(?Element, +List)
-%
-% Suceeds when Element is a member of List.  It may be used to test
-% for membership in a list, but it can also be used to enumerate all
-% the elements in List.
-
-member(Element, [Head|Tail]) :-
-	member_(Tail, Head, Element).
-
-% Auxiliary to avoid the creation of a choicepoint for the last element,
-member_(_, Element, Element).
-member_([Head|Tail], _, Element) :-
-	member_(Tail, Head, Element).
-
-
 % freezevars(?Term, -Term, +InN, ?OutN, ?List)
 %
 % Pairs each of the variables in Term with the special terms
@@ -566,11 +551,6 @@ var_member(FX = X, [FX = Var|_VarNames]) :-
     !.
 var_member(VarPair, [_|VarNames]) :-
     var_member(VarPair, VarNames).
-
-append([],Bs,Bs).
-append([A|As],Bs,[A|Cs]) :-
-    append(As,Bs,Cs).
-
 
 meltvars('$VAR'(N), Var, VarNames) :-
    !,
