@@ -348,7 +348,7 @@ public:
   void merge_rows_assign(const Matrix& y);
 
   //! Adds a new empty row to the matrix, setting only its type.
-  void add_row(Row::Type type);
+  void add_pending_row(Row::Type type);
 
   //! Adds a copy of the given row to the matrix.
   void add_row(const Row& row);

@@ -708,8 +708,8 @@ PPL::Polyhedron::conversion(Matrix& source,
 		  // saturation row to `sat'.
 		  if (dest_num_rows == dest.num_rows()) {
 		    // Make room for one more row.
-		    dest.add_row(Row::Type(dest.topology(),
-					   Row::RAY_OR_POINT_OR_INEQUALITY));
+		    dest.add_pending_row(Row::Type(dest.topology(),
+						   Row::RAY_OR_POINT_OR_INEQUALITY));
 		    sat.add_row(new_satrow);
 		  }
 		  else
@@ -820,9 +820,21 @@ PPL::Polyhedron::conversion(Matrix& source,
     source.erase_to_end(source_num_rows);
     sat.columns_erase_to_end(source_num_rows);
   }
+  // If `dest' is sorted before `index_first_pending' and we have
+  // added some pending rows, we check if the lower part of `dest'
+  // keeps the sortedness.
+  // We also update `index_first_pending'.
+  if (dest.is_sorted() && dest.first_pending_row() < dest_num_rows) {
+    for (dimension_type i = dest.first_pending_row(); i < dest_num_rows; ++i)
+      if (dest[i - 1] > dest[i]) {
+	dest.set_sorted(false);
+	break;
+      }
+    dest.set_index_first_pending_row(dest_num_rows);
+  }
   if (dest_num_rows < dest.num_rows()) {
     // NOTE: We must update `index_first_pending' of `dest'
-    // before calling `erase_to_end'.
+    // before calling `erase_to_end'. It could be not up-to-date.
     dest.set_index_first_pending_row(dest_num_rows);
     dest.erase_to_end(dest_num_rows);
     sat.rows_erase_to_end(dest_num_rows);

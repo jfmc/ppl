@@ -617,13 +617,7 @@ PPL::Matrix::insert_pending(const Row& row) {
 }
 
 void
-PPL::Matrix::add_row(Row::Type type) {
-  // We are sure that we use this method only when
-  // we do not add a pending row and the matrix
-  // has no pending rows.
-  assert(num_pending_rows() == 0);
-  bool was_sorted = is_sorted();
-  dimension_type old_num_pending = num_pending_rows();
+PPL::Matrix::add_pending_row(Row::Type type) {
   dimension_type new_rows_size = rows.size() + 1;
   if (rows.capacity() < new_rows_size) {
     // Reallocation will take place.
@@ -645,29 +639,6 @@ PPL::Matrix::add_row(Row::Type type) {
     // Insert a new empty row at the end,
     // then construct it assigning it the given type.
     rows.insert(rows.end(), Row())->construct(type, row_size, row_capacity);
-
-  // We update `index_first_pending' only if at the begining
-  // of this method the matrix has no pending rows.
-  if (old_num_pending == 0)
-    ++index_first_pending;
-
-  // FIXME: If the added row must become the first pending row
-  // in this way we lose the property of sortedness of the matrix.
-  // Check whether the modified Matrix happens to be sorted.
-  if (was_sorted) {
-    dimension_type nrows = num_rows();
-    // The added row may have caused the matrix to be not sorted anymore.
-    if (nrows > 1) {
-      // If the matrix is not empty and the inserted row
-      // is the greatest one, the matrix is set to be sorted.
-      // If it is not the greatest one then the matrix is no longer sorted.
-      Matrix& x = *this;
-      set_sorted(x[nrows-2] <= x[nrows-1]);
-    }
-    else
-      // A matrix having only one row is sorted.
-      set_sorted(true);
-  }
 }
 
 void
