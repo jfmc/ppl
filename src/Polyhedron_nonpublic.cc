@@ -556,10 +556,12 @@ PPL::Polyhedron::max_min(const LinExpression& expr,
   bool first_candidate = true;
 
   // To store the position of the current candidate extremum.
-  dimension_type ext_position;
+  // Initialized only to avoid a compiler warning.
+  dimension_type ext_position = 0;
 
   // Whether the current candidate extremum is included or not.
-  bool ext_included;
+  // Initialized only to avoid a compiler warning.
+  bool ext_included = false;
 
   for (dimension_type i = gen_sys.num_rows(); i-- > 0; ) {
     const Generator& g = gen_sys[i];
