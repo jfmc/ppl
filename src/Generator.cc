@@ -123,6 +123,7 @@ PPL::Generator::line(const LinExpression& e) {
   return g;
 }
 
+/*! \relates Parma_Polyhedra_Library::Generator */
 std::ostream&
 PPL::IO_Operators::operator<<(std::ostream& s, const Generator& g) {
   bool needed_divisor = false;

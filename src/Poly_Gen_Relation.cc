@@ -51,6 +51,7 @@ PPL::Poly_Gen_Relation::ascii_dump(std::ostream& s) const {
   }
 }
 
+/*! \relates Parma_Polyhedra_Library::Poly_Gen_Relation */
 std::ostream&
 PPL::IO_Operators::operator<<(std::ostream& s, const Poly_Gen_Relation& r) {
   r.ascii_dump(s);
