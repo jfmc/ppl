@@ -622,11 +622,27 @@ then
   CXXFLAGS="-W -Wall $CXXFLAGS"
 fi
 
+# System-dependent adjustments.
+case "${host_os}" in
+darwin*)
+  if test x"$GCC" = xyes
+  then
+    CFLAGS="$CFLAGS -Wno-long-double"
+    CXXFLAGS="$CXXFLAGS -Wno-long-double"
+  fi
+  text_md5sum="$MD5SUM"
+  ;;
+*)
+  text_md5sum="$MD5SUM -t"
+  ;;
+esac
+
 AC_SUBST(extra_includes)
 AC_SUBST(extra_libraries)
 AC_SUBST(debug_flag)
 AC_SUBST(xsb_includes)
 AC_SUBST(coefficient_mnemonic)
+AC_SUBST(text_md5sum)
 
 AC_CONFIG_FILES(Makefile
                 ppl.lsm ppl.spec
