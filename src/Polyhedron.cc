@@ -45,10 +45,19 @@ const PPL::ConSys&
 PPL::Polyhedron::constraints() const {
 
   if (is_empty()) {
-    assert(con_sys.num_columns() == 0 && con_sys.num_rows() == 0);
-    // FIXME: does the user want an inconsistent constraint
-    // of the actual space dimension ?
-    return ConSys::zero_dim_empty();
+    if (con_sys.num_rows() == 0) {
+      // Storing in con_sys the 0-dim unsatisfiable constraint
+      // and then adjusting constraint system dimension.
+      ConSys unsat_cs = ConSys::zero_dim_empty();
+      unsat_cs.add_zero_columns(space_dimension());
+      const_cast<ConSys&>(con_sys).swap(unsat_cs);
+    }
+    else {
+      assert(con_sys.space_dimension() == space_dimension());
+      assert(con_sys.num_rows() == 1);
+      assert(con_sys[0].is_unsatisfiable());
+    }
+    return con_sys;
   }
 
   if (space_dimension() == 0) {
@@ -826,9 +835,12 @@ PPL::Polyhedron::add_dimensions_and_embed(size_t dim) {
     return;
 
   // Adding dimensions to an empty polyhedron is obtained
-  // by merely adjusting `space_dim'.
+  // by adjusting `space_dim' and clearing con_sys
+  // (since it can contain the unsatisfiable constraint system
+  //  of the wrong dimension).
   if (is_empty()) {
     space_dim += dim;
+    con_sys.clear();
     return;
   }
 
@@ -903,6 +915,7 @@ PPL::Polyhedron::add_dimensions_and_project(size_t dim) {
   // by merely adjusting `space_dim'.
   if (is_empty()) {
     space_dim += dim;
+    con_sys.clear();
     return;
   }
 
@@ -976,6 +989,7 @@ PPL::Polyhedron::remove_dimensions(const std::set<Variable>& to_be_removed) {
   // just updates the space_dim member.
   if (is_empty()) {
     space_dim -= to_be_removed.size();
+    con_sys.clear();
     return;
   }
 
@@ -985,6 +999,7 @@ PPL::Polyhedron::remove_dimensions(const std::set<Variable>& to_be_removed) {
   // Emptyness could have been just detected.
   if (is_empty()) {
     space_dim -= to_be_removed.size();
+    con_sys.clear();
     return;
   }
 
@@ -1314,6 +1329,7 @@ PPL::Polyhedron::add_dimensions_and_constraints(ConSys& cs) {
   // the dimension of the space.
   if (is_empty()) {
     space_dim += cs.space_dimension();
+    con_sys.clear();
     return;
   }
 
