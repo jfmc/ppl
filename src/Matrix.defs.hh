@@ -306,7 +306,7 @@ public:
   //! Returns the number of rows in the matrix.
   dimension_type num_rows() const;
 
-  //! Returns the number of rows that built the system.
+  //! Returns the index of the first pending row.
   dimension_type first_pending_row() const;
 
   //! Returns the number of rows that are in the pending part of the matrix.
