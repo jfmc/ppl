@@ -645,3 +645,120 @@ ppl_GenSys__const_iterator_equal_test
   return (xx == yy) ? 1 : 0;
 }
 CATCH_ALL
+
+
+DECLARE_CONVERSIONS(Polyhedron)
+
+int
+ppl_new_Polyhedron_from_dimension(ppl_Polyhedron_t* pph, unsigned int d) try {
+  *pph = to_nonconst(new Polyhedron(d, Polyhedron::UNIVERSE));
+  return 0;
+}
+CATCH_ALL
+
+int
+ppl_new_Polyhedron_empty_from_dimension(ppl_Polyhedron_t* pph,
+					unsigned int d) try {
+  *pph = to_nonconst(new Polyhedron(d, Polyhedron::EMPTY));
+  return 0;
+}
+CATCH_ALL
+
+int
+ppl_new_Polyhedron_from_Polyhedron(ppl_Polyhedron_t* pph,
+				   ppl_const_Polyhedron_t ph) try {
+  const Polyhedron& phh = *to_const(ph);
+  *pph = to_nonconst(new Polyhedron(phh));
+  return 0;
+}
+CATCH_ALL
+
+int
+ppl_new_Polyhedron_from_ConSys(ppl_Polyhedron_t* pph, ppl_ConSys_t cs) try {
+  ConSys& ccs = *to_nonconst(cs);
+  *pph = to_nonconst(new Polyhedron(ccs));
+  return 0;
+}
+CATCH_ALL
+
+int
+ppl_new_Polyhedron_from_GenSys(ppl_Polyhedron_t* pph, ppl_GenSys_t gs) try {
+  GenSys& ggs = *to_nonconst(gs);
+  *pph = to_nonconst(new Polyhedron(ggs));
+  return 0;
+}
+CATCH_ALL
+
+int
+ppl_delete_Polyhedron(ppl_const_Polyhedron_t ph) try {
+  delete to_const(ph);
+  return 0;
+}
+CATCH_ALL
+
+int
+ppl_Polyhedron_space_dimension(ppl_const_Polyhedron_t ph) try {
+  return to_const(ph)->space_dimension();
+}
+CATCH_ALL
+
+int
+ppl_Polyhedron_intersection_assign(ppl_Polyhedron_t x,
+				   ppl_const_Polyhedron_t y) try {
+  Polyhedron& xx = *to_nonconst(x);
+  const Polyhedron& yy = *to_const(y);
+  xx.intersection_assign(yy);
+  return 0;
+}
+CATCH_ALL
+
+int
+ppl_Polyhedron_intersection_assign_and_minimize(ppl_Polyhedron_t x,
+						ppl_const_Polyhedron_t y) try {
+  Polyhedron& xx = *to_nonconst(x);
+  const Polyhedron& yy = *to_const(y);
+  xx.intersection_assign_and_minimize(yy);
+  return 0;
+}
+CATCH_ALL
+
+int
+ppl_Polyhedron_convex_hull_assign(ppl_Polyhedron_t x,
+				  ppl_const_Polyhedron_t y) try {
+  Polyhedron& xx = *to_nonconst(x);
+  const Polyhedron& yy = *to_const(y);
+  xx.convex_hull_assign(yy);
+  return 0;
+}
+CATCH_ALL
+
+int
+ppl_Polyhedron_convex_hull_assign_and_minimize(ppl_Polyhedron_t x,
+					       ppl_const_Polyhedron_t y) try {
+  Polyhedron& xx = *to_nonconst(x);
+  const Polyhedron& yy = *to_const(y);
+  xx.convex_hull_assign_and_minimize(yy);
+  return 0;
+}
+CATCH_ALL
+
+int
+ppl_Polyhedron_convex_difference_assign(ppl_Polyhedron_t x,
+					ppl_const_Polyhedron_t y) try {
+  Polyhedron& xx = *to_nonconst(x);
+  const Polyhedron& yy = *to_const(y);
+  xx.convex_difference_assign(yy);
+  return 0;
+}
+CATCH_ALL
+
+int
+ppl_Polyhedron_convex_difference_assign_and_minimize
+(ppl_Polyhedron_t x, ppl_const_Polyhedron_t y) try {
+  Polyhedron& xx = *to_nonconst(x);
+  const Polyhedron& yy = *to_const(y);
+  xx.convex_difference_assign_and_minimize(yy);
+  return 0;
+}
+CATCH_ALL
+
