@@ -124,6 +124,29 @@ namespace Parma_Polyhedra_Library {
   \endcode
 
   \par Example 3
+  The following code builds the half-plane in \f$\mathbb{R}^2\f$
+  starting from the constraints:
+  \code
+  Variable x(0);
+  Variable y(1);
+  Polyhedron ph;
+  ph.insert(y >= 0);
+  \endcode
+  The following code builds the same polyhedron starting from 
+  the generators:
+  \code
+  Variable x(0);
+  Variable y(1);
+  Polyhedron ph;
+  ph.insert(0 * x + 0 * y /= 1);
+  ph.insert(1 ^ 0 * x + y);
+  ph.insert(1 | x + 0 * y);
+  \endcode
+  In this last case, we can note an important thing: even if this 
+  polyhedron has no real vertex, we must add one, because otherwise
+  the polyhedron is considered empty.
+
+  \par Example 4
   The following code shows the use of the function
   <CODE>add_dimensions_and_embed</CODE>:
   \code
@@ -138,7 +161,7 @@ namespace Parma_Polyhedra_Library {
   is a line parallel to the axis \f$y\f$ and its intersection with the
   axis \f$x\f$ is the point with the abscissa equal to \f$2\f$.
   
-  \par Example 4
+  \par Example 5
   The following code shows the use of the function
   <CODE>add_dimensions_and_project</CODE>:
   \code
@@ -153,7 +176,7 @@ namespace Parma_Polyhedra_Library {
   is a point with the abscissa equal to \f$2\f$ and the ordinate
   equal to \f$0\f$.
 
-  \par Example 5
+  \par Example 6
   The following code shows the use of the function
   <CODE>assign_variable</CODE>:
   \code
@@ -194,7 +217,7 @@ namespace Parma_Polyhedra_Library {
   \endcode
   the resulting polyhedron is the diagonal of the square.
   
-  \par Example 6
+  \par Example 7
   The following code shows the use of the function
   <CODE>substitue_variable</CODE>:
   \code
