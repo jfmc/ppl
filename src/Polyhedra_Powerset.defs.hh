@@ -43,6 +43,10 @@ template <typename PH>
 class Parma_Polyhedra_Library::Polyhedra_Powerset
   : public Parma_Polyhedra_Library::Powerset
 <Parma_Polyhedra_Library::Determinate<PH> > {
+private:
+  typedef Determinate<PH> CS;
+  typedef Powerset<CS> Base;
+
 public:
   //! Returns the maximum space dimension a Polyhedra_Powerset<PH> can handle.
   static dimension_type max_space_dimension();
@@ -173,6 +177,8 @@ public:
     in \p *this, we have \f$\cP \uplus \cQ \neq \cP \union \cQ\f$.
   */
   void pairwise_reduce();
+
+  using Base::omega_reduce;
 
   //! \brief
   //! Assigns to \p *this the result of applying the BGP99 extrapolation
@@ -323,10 +329,6 @@ public:
   void map_space_dimensions(const Partial_Function& pfunc);
 
   //@} // Member Functions that May Modify the Dimension of the Vector Space
-
-private:
-  typedef Determinate<PH> CS;
-  typedef Powerset<CS> Base;
 
 public:
   typedef typename Base::Sequence Sequence;
