@@ -630,7 +630,7 @@ PPL::Polyhedron::strongly_minimize_generators() const {
   }
 
   // This SatRow will have all and only the indexes
-  // of strict inequalities are set to 1.
+  // of strict inequalities set to 1.
   SatRow sat_all_but_strict_ineq;
   size_t cs_rows = con_sys.num_rows();
   size_t n_equals = con_sys.num_equalities();
@@ -644,6 +644,7 @@ PPL::Polyhedron::strongly_minimize_generators() const {
   SatMatrix& sat = const_cast<SatMatrix&>(sat_c);
   size_t gs_rows = gs.num_rows();
   size_t n_lines = gs.num_lines();
+  size_t eps_index = gs.num_columns() - 1;
   for (size_t i = n_lines; i < gs_rows; )
     if (gs[i].is_point()) {
       // Compute the SatRow corresponding to the candidate point
@@ -665,30 +666,38 @@ PPL::Polyhedron::strongly_minimize_generators() const {
 	  eps_redundant = true;
 	  break;
 	}
-      // Consider next generator, which is already in place if
-      // we have perfomed the swap.
-      if (!eps_redundant)
+      if (eps_redundant)
+	// Consider next generator, which is already in place.
+	continue;
+      else {
+	// Let all point encodings have epsilon coordinate 1.
+	gs[i][eps_index] = gs[i][0];
+	// Consider next generator.
 	++i;
+      }
     }
     else
       // Consider next generator.
       ++i;
 
   // If needed, erase the eps-redundant generators.
-  if (gs_rows < gs.num_rows()) {
+  if (gs_rows < gs.num_rows())
     gs.erase_to_end(gs_rows);
-    gs.set_sorted(false);
-    // `gen_sys' and `con_sys' are no longer the dual of each other:
-    // saturation matrices are no longer meaningful.
-    x.clear_sat_c_up_to_date();
-    x.clear_sat_g_up_to_date();
-    // CHECKME: con_sys describes the same NNC_Polyhedron,
-    // even though it is not the dual system wrt gen_sys.
-    // In a certain sense, it is still (weakly) minimized ...
-    // Temporarily clearing the up-to-date flag to avoid
-    // problems in methods update_sat_X().
-    x.clear_constraints_up_to_date();
-  }
+
+  // Since we changed epsilon coefficients,
+  // the generator system is no longer sorted.
+  gs.set_sorted(false);
+  // `gen_sys' and `con_sys' are no longer the dual of each other:
+  // saturation matrices are no longer meaningful.
+  x.clear_sat_c_up_to_date();
+  x.clear_sat_g_up_to_date();
+  // CHECKME: con_sys describes the same NNC_Polyhedron,
+  // even though it is not the dual system wrt gen_sys.
+  // In a certain sense, it is still (weakly) minimized ...
+  // Temporarily clearing the up-to-date flag to avoid
+  // problems in methods update_sat_X().
+  x.clear_constraints_up_to_date();
+
   assert(OK());
 }
 
@@ -717,8 +726,6 @@ PPL::Polyhedron::strongly_minimize_constraints() const {
   SatRow sat_all_but_rays;
   SatRow sat_all_but_points;
   SatRow sat_all_but_closure_points;
-  SatRow sat_lines_and_rays;
-  SatRow sat_lines_and_closure_points;
 
   size_t gs_rows = gen_sys.num_rows();
   size_t n_lines = gen_sys.num_lines();
@@ -737,14 +744,18 @@ PPL::Polyhedron::strongly_minimize_constraints() const {
       // Found a line with index i >= n_lines.
       abort();
     }
-  set_union(sat_all_but_rays, sat_all_but_points,
-	    sat_lines_and_closure_points);
+  SatRow sat_lines_and_rays;
   set_union(sat_all_but_points, sat_all_but_closure_points,
 	    sat_lines_and_rays);
+  SatRow sat_lines_and_closure_points;
+  set_union(sat_all_but_rays, sat_all_but_points,
+	    sat_lines_and_closure_points);
+  SatRow sat_lines;
+  set_union(sat_lines_and_rays, sat_lines_and_closure_points,
+	    sat_lines);
 
   ConSys& cs = x.con_sys;
   SatMatrix& sat = x.sat_g;
-  size_t max_unsat = gs_rows - n_lines;
   size_t cs_rows = cs.num_rows();
   size_t n_equals = cs.num_equalities();
   // These two flags are maintained to later decide
@@ -759,7 +770,7 @@ PPL::Polyhedron::strongly_minimize_constraints() const {
       // First, check if it is saturated by no closure points
       SatRow sat_ci;
       set_union(sat[i], sat_lines_and_closure_points, sat_ci);
-      if (sat_ci.count_ones() == max_unsat) {
+      if (sat_ci == sat_lines) {
 	// Constraint `cs[i]' is eps-redundant:
 	// move it to the bottom of the constraint system,
 	// while keeping `sat_g' consistent.
@@ -849,10 +860,10 @@ PPL::Polyhedron::strongly_minimize_constraints() const {
 void
 PPL::Polyhedron::strongly_minimize() const {
   assert(!is_necessarily_closed());
-  // FIXME : just an executable specification,
-  // that still has to be checked for correctness/efficiency.
+  // Strongly minimize generators and
+  // then recompute the (weakly) minimized constraints,
+  // which will be in strong minimal form too.
   strongly_minimize_generators();
-  // Recompute the minimized constraints.
   minimize();
   assert(OK());
 }
