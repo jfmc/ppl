@@ -3259,12 +3259,12 @@ PPL::Polyhedron::BBRZ02_widening_assign(const Polyhedron& y) {
 
   dimension_type y_con_sys_num_rows = y.con_sys.num_rows();
   for (dimension_type i = y_con_sys_num_rows; i-- > 0; ) {
-    Constraint c = y.con_sys[i];
+    const Constraint& c = y.con_sys[i];
     Poly_Con_Relation relation = x.relation_with(c);
     if (relation.implies(Poly_Con_Relation::is_included()))
       // The constraint `c' of `y' is a constraint of `x', too.
       // So, we add this constraint to `common_con_sys'.
-      common_con_sys.add_row(c);
+      common_con_sys.insert(c);
   }
   common_con_sys.sort_rows();
 
@@ -3288,13 +3288,13 @@ PPL::Polyhedron::BBRZ02_widening_assign(const Polyhedron& y) {
 
   dimension_type x1_con_sys_num_rows = x1.con_sys.num_rows();
   dimension_type y_gen_sys_num_rows = y.gen_sys.num_rows();
-
+  
   // We build a temporary saturation matrix in which we put the relations
   // between the constraints of `x1' and the generators of `y'.
   SatMatrix tmp_sat(y_gen_sys_num_rows, x1_con_sys_num_rows);
   for (dimension_type i = y_gen_sys_num_rows; i-- > 0; )
     for (dimension_type j = x1_con_sys_num_rows; j-- > 0; )
-      if (x1.con_sys[j]*y.gen_sys[i] > 0)
+      if (x1.con_sys[j] * y.gen_sys[i] > 0)
         tmp_sat[i].set(j);
 
   // We must have also the transpose saturation matrix of `tmp_sat'
@@ -3309,48 +3309,50 @@ PPL::Polyhedron::BBRZ02_widening_assign(const Polyhedron& y) {
   ConSys new_con_sys(common_con_sys);
   // We must choose a point (if the polyhedra are necessarily closed)
   // or a closure point (if the polyhedra are not necessarily closed)
-  // that belong to `x' and `y'.
+  // that belong to `x' and `y'.  In the case of not necessarily
+  // closed polyhedra, we can consider only the closure points,
+  // because the role of the points can be played by the closure
+  // points.
   for (dimension_type i = y_gen_sys_num_rows; i-- > 0; ) {
-    Generator g = y.gen_sys[i];
+    const Generator& g = y.gen_sys[i];
     if ((g.is_point() && x1.is_necessarily_closed())
 	|| (g.is_closure_point() && !x1.is_necessarily_closed()))
       if (tmp_y_sat_c.sorted_contains(tmp_sat[i])) {
-	// We must choose the constraints of `x' that are saturated by `g'
-	// and that "evolve" since the constraints of `y'.
-	ConSys tmp_con(x1.topology(), 0, x1.con_sys.num_columns());
+	// We must choose the constraints of `x' that are saturated by
+	// `g' and that "evolve" since the constraints of `y'.
+	ConSys tmp_con_sys(x1.topology(), 0, x1.con_sys.num_columns());
 	for (dimension_type j = x1_con_sys_num_rows; j--; ) {
-	  Constraint c = x1.con_sys[j];
-	  // If `c' is an equality, it is also a constraint of `y'
-	  // and so we have just considered it, when we build the
-	  // system of common constraints.
+	  Constraint& c = x1.con_sys[j];
+	  // If `c' is an equality, it is also a constraint of `y' and
+	  // so we have just considered it, when we build the system
+	  // of common constraints.
 	  if (!c.is_equality())
-	    if(c*g == 0)
+	    if(c * g == 0)
 	      for (dimension_type h = y_con_sys_num_rows; h-- > 0; )
 		if (tmp_y_sat_g[h] < tmp_transpose[j]) {
-		  tmp_con.add_row(c);
+		  tmp_con_sys.insert(c);
 		  break;
 		}
 	}
 	// We build the new constraint that is
 	// obtained adding all the chosen constraint.
-	if (tmp_con.num_rows() != 0) {
-	  if (tmp_con.num_rows() == 1)
-	    new_con_sys.add_row(tmp_con[0]);
+	if (tmp_con_sys.num_rows() != 0) {
+	  if (tmp_con_sys.num_rows() == 1)
+	    new_con_sys.insert(tmp_con_sys[0]);
 	  else {
 	    LinExpression e(0);
 	    bool strict_inequality = false;
-	    for (dimension_type h = tmp_con.num_rows(); h-- > 0; ) {
-	      tmp_con[h].normalize();
-	      e += LinExpression(tmp_con[h]);
-	      if (tmp_con[h].is_strict_inequality())
+	    for (dimension_type h = tmp_con_sys.num_rows(); h-- > 0; ) {
+	      tmp_con_sys[h].normalize();
+	      e += LinExpression(tmp_con_sys[h]);
+	      if (tmp_con_sys[h].is_strict_inequality())
 		strict_inequality = true;
 	    }
 	    e.normalize();
 
-	    // If there is a strict inequality in the
-	    // chosen constraints, the new constraint is a
-	    // strict inequality, too. Otherwise it is
-	    // a non-strict inequality.
+	    // If there is a strict inequality in the chosen
+	    // constraints, the new constraint is a strict inequality,
+	    // too. Otherwise it is a non-strict inequality.
 	    if (strict_inequality)
 	      new_con_sys.insert(e > 0);
 	    else
@@ -3385,19 +3387,25 @@ PPL::Polyhedron::BBRZ02_widening_assign(const Polyhedron& y) {
   
   for (dimension_type i = x2_gen_sys_num_rows; i-- > 0; ) {
     Generator& x2_g = x2.gen_sys[i];
-    // We choose a point (if the polyhedra are necessarily closed)
-    // or a closure point (if the polyhedra are not necessarily closed)
-    // that belongs to `x2' and not to `y'.
+    // We choose a point (if the polyhedra are necessarily closed) or
+    // a closure point (if the polyhedra are not necessarily closed)
+    // that belongs to `x2' and not to `y'.  In the case of not
+    // necessarily closed polyhedra, we can consider only the closure
+    // points, because if we use also the points we obtain redundant
+    // rays.
     if ((x2_g.is_point() && x2.is_necessarily_closed())
 	|| (x2_g.is_closure_point() && !x2.is_necessarily_closed())) {
-      GenSys tmp_gen(x2.topology(), 0, x2.gen_sys.num_columns());
+      GenSys tmp_gen_sys(x2.topology(), 0, x2.gen_sys.num_columns());
       Poly_Gen_Relation relation = y.relation_with(x2_g);
       if (relation == Poly_Gen_Relation::nothing()) {
 	for (dimension_type k = y_gen_sys_num_rows; k-- > 0; ) {
-	  Generator y_g = y.gen_sys[k];
+	  const Generator& y_g = y.gen_sys[k];
 	  // For each point (if the polyhedra are necessarily closed)
 	  // or a closure point (if the polyhedra are not necessarily
-	  // closed)of `y', we built a ray `x_g' - `y_g'.
+	  // closed) of `y', we built a ray `x_g' - `y_g'.  In the
+	  // case of not necessarily closed polyhedra, we choose only
+	  // the closure points of `y', because using also the points
+	  // we will have redundant rays.
 	  if ((y_g.is_point() && y.is_necessarily_closed())
 	      || (y_g.is_closure_point() && !y.is_necessarily_closed())) {
 	    Generator tmp_x2_g(x2_g);
@@ -3411,26 +3419,26 @@ PPL::Polyhedron::BBRZ02_widening_assign(const Polyhedron& y) {
 		break;
 	      }
 	    if (!not_satisfies) {
-	      tmp_gen.add_row(tmp_x2_g);
-	      tmp_gen.set_sorted(false);
+	      tmp_gen_sys.insert(tmp_x2_g);
+	      tmp_gen_sys.set_sorted(false);
 	      if (!x2.is_necessarily_closed())
-		tmp_gen[tmp_gen.num_rows() - 1][x_space_dim + 1] = 0;
+		tmp_gen_sys[tmp_gen_sys.num_rows() - 1][x_space_dim + 1] = 0;
 	    }
 	  }
 	}
-	// If `tmp_gen' contains only a ray, it is added to the
+	// If `tmp_gen_sys' contains only a ray, it is added to the
 	// system of generators of `x'.
-	if (tmp_gen.num_rows() != 0) {
-	  if (tmp_gen.num_rows() == 1)
-	    x2.gen_sys.add_row(tmp_gen[0]);
+	if (tmp_gen_sys.num_rows() != 0) {
+	  if (tmp_gen_sys.num_rows() == 1)
+	    x2.gen_sys.insert(tmp_gen_sys[0]);
 	  else {
-	    // Otherwise, we "average" the directions of the rays
-	    // that belong to `tmp_gen' and we add the new ray to the
+	    // Otherwise, we "average" the directions of the rays that
+	    // belong to `tmp_gen_sys' and we add the new ray to the
 	    // system of generators of `x'.
-	    tmp_gen.sort_rows();
+	    tmp_gen_sys.sort_rows();
 	    LinExpression e(0);
-	    for (dimension_type j = tmp_gen.num_rows(); j-- > 0; )
-	      e += LinExpression(tmp_gen[j]);
+	    for (dimension_type j = tmp_gen_sys.num_rows(); j-- > 0; )
+	      e += LinExpression(tmp_gen_sys[j]);
 	    e.normalize();
 	    x2.gen_sys.insert(ray(e));
 	  }
@@ -3470,7 +3478,7 @@ PPL::Polyhedron::BBRZ02_widening_assign(const Polyhedron& y) {
   assert(tmp_sat.num_columns() >= x3_con_sys_num_rows);
   for (dimension_type i = y_gen_sys_num_rows; i-- > 0; )
     for (dimension_type j = x3_con_sys_num_rows; j-- > 0; )
-      if (x3.con_sys[j]*y.gen_sys[i] > 0)
+      if (x3.con_sys[j] * y.gen_sys[i] > 0)
         tmp_sat[i].set(j);
       else
 	tmp_sat[i].clear(j);
@@ -3482,7 +3490,7 @@ PPL::Polyhedron::BBRZ02_widening_assign(const Polyhedron& y) {
       std::vector<bool> considered(x3.space_dim + 1);
       Poly_Gen_Relation rel = y.relation_with(x3_g);
       for (dimension_type j = y_gen_sys_num_rows; j-- > 0; ) {
-	Generator y_g = y.gen_sys[j];
+	const Generator& y_g = y.gen_sys[j];
 	if (y_g.is_ray() && tmp_sat[j] > x3.sat_c[i]
 	    && rel == Poly_Gen_Relation::nothing()) {
 	  x3.gen_sys.set_sorted(false);
