@@ -10,28 +10,6 @@ NEWS for version 0.5  (released on April 28, 2003)
 New and Changed Features
 ========================
 
-o  The functions
-   Polyhedron::operator<=(const Polyhedron&, const Polyhedron&),
-   Polyhedron::operator>=(const Polyhedron&, const Polyhedron&),
-   Polyhedron::operator<(const Polyhedron&, const Polyhedron&), and
-   Polyhedron::operator>(const Polyhedron&, const Polyhedron&)
-   have been removed.
-   The methods Polyhedron::contains(const Polyhedron&) and
-   Polyhedron::strictly_contains(const Polyhedron&) provide
-   the same functionality.
-
-o  The method Polyhedron::limited_H79_widening_assign() has been renamed
-   Polyhedron::limited_H79_extrapolation_assign().  From now on, the name
-   `widening' is reserved for operators that come with a convergence
-   guarantee (i.e., with the ability of turning infinite chains to finite
-   ones).  Upper bound operators without such a guarantee contain the word
-   `extrapolation' in their name.
-
-o  The renamed method Polyhedron::limited_H79_extrapolation_assign()
-   takes the constraint system argument by const reference (in the
-   old Polyhedron::limited_H79_widening_assign() that argument was
-   passed by non-const reference).
-
 o  New methods Polyhedron::BHRZ03_widening_assign() and
    Polyhedron::BHRZ03_limited_extrapolation_assign().  The BHRZ03 widening
    is a novel widening that is always more precise than the one, by now
@@ -112,6 +90,45 @@ o  New function const char* banner() returns a character string
    to build the library, where to report bugs and where to look
    for further information.
 
+o  The Prolog interface now supports also Ciao Prolog and XSB.
+
+o  The C and Prolog interfaces have been extended so as to make more of
+   the library's functionality available to Prolog and C users.
+
+o  Timeout computation facilities have been added to the Prolog interfaces:
+   new predicates ppl_set_timeout_exception_atom/1,
+   ppl_timeout_exception_atom/1, ppl_set_timeout/1, ppl_reset_timeout/0.
+
+o  Many efficiency improvements have been achieved.  Part of these have
+   been obtained by increasing the degree of "lazyness" of the library.
+
+o  Many portability and standard-conformance improvements: the library
+   can now be compiled with GNU g++, Intel C++ Compiler 7.0 for Linux,
+   and Comeau C/C++ 4.3.0.1 Compiler Front-End; the library has also
+   been tested on a variety of platforms.
+
+o  The functions
+   Polyhedron::operator<=(const Polyhedron&, const Polyhedron&),
+   Polyhedron::operator>=(const Polyhedron&, const Polyhedron&),
+   Polyhedron::operator<(const Polyhedron&, const Polyhedron&), and
+   Polyhedron::operator>(const Polyhedron&, const Polyhedron&)
+   have been removed.
+   The methods Polyhedron::contains(const Polyhedron&) and
+   Polyhedron::strictly_contains(const Polyhedron&) provide
+   the same functionality.
+
+o  The method Polyhedron::limited_H79_widening_assign() has been renamed
+   Polyhedron::limited_H79_extrapolation_assign().  From now on, the name
+   `widening' is reserved for operators that come with a convergence
+   guarantee (i.e., with the ability of turning infinite chains to finite
+   ones).  Upper bound operators without such a guarantee contain the word
+   `extrapolation' in their name.
+
+o  The renamed method Polyhedron::limited_H79_extrapolation_assign()
+   takes the constraint system argument by const reference (in the
+   old Polyhedron::limited_H79_widening_assign() that argument was
+   passed by non-const reference).
+
 o  We now require GMP 4.1.2 or higher.
 
 o  In conformance with the C++ standard [17.4.3.1.2], in all the
@@ -132,22 +149,6 @@ o  The method
    Polyhedron::poly_difference_assign_and_minimize(const Polyhedron&)
    has been removed.
 
-o  The Prolog interface now supports also Ciao Prolog and XSB.
-
-o  The C and Prolog interfaces have been extended so as to make more of
-   the library's functionality available to Prolog and C users.
-
-o  Timeout computation facilities have been added to the Prolog interfaces:
-   new predicates ppl_set_timeout_exception_atom/1,
-   ppl_timeout_exception_atom/1, ppl_set_timeout/1, ppl_reset_timeout/0.
-
-o  Many efficiency improvements have been achieved.  Part of these have
-   been obtained by increasing the degree of "lazyness" of the library.
-
-o  Many portability and standard-conformance improvements: the library
-   can now be compiled with GNU g++, Intel C++ Compiler 7.0 for Linux,
-   and Comeau C/C++ 4.3.0.1 Compiler Front-End; the library has also
-   been tested on a variety of platforms.
 
 
 Bugfixes
