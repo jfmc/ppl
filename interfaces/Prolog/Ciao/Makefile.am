@@ -66,6 +66,15 @@ ciao_clpq: libppl_ciao.la ppl_ciao.pl ciao_clpq.pl ../clpq.pl
 	  rm -f ciao_clpq.pl ppl_ciao.pl clpq.pl; \
 	fi
 
+ciao_clpq2: libppl_ciao.la ppl_ciao.pl ciao_clpq.pl ../clpq2.pl
+	if [ $(abs_srcdir) != `pwd` ]; then \
+	  cp -f $(srcdir)/ciao_clpq2.pl $(srcdir)/ppl_ciao.pl $(srcdir)/../clpq2.pl .; \
+	fi
+	ciaoc -o $@ ciao_clpq2.pl
+	if [ $(abs_srcdir) != `pwd` ]; then \
+	  rm -f ciao_clpq2.pl ppl_ciao.pl clpq2.pl; \
+	fi
+
 CLPQ_TESTS = \
 ack.clpq \
 ackn.clpq \
@@ -75,17 +84,28 @@ smm.clpq \
 sumto.clpq \
 tak.clpq
 
-#check-local: ciao_clpq$(EXEEXT) ../check_script ../expected
-#	for k in $(CLPQ_TESTS); do cp -f $(srcdir)/../$$k .; done
-#	$(LIBTOOL) --mode=execute
-#		-dlopen ../../../src/libppl.la \
-#		-dlopen ../../../Watchdog/libpwl.la \
-#		-dlopen ppl_ciao.la \
-#		ciao_clpq \
-#			<$(srcdir)/../check_script >obtained
-#	diff -q --ignore-all-space $(srcdir)/../expected obtained
+check-local: ciao_clpq$(EXEEXT) ../check_script ../expected ciao_clpq2$(EXEEXT) ../check_script2 ../expected2
+	for k in $(CLPQ_TESTS); do cp -f $(srcdir)/../$$k .; done
+	GLOBALSTKSIZE=1000000 \
+	$(LIBTOOL) --mode=execute \
+		-dlopen ../../../src/libppl.la \
+		-dlopen ../../../Watchdog/libpwl.la \
+		-dlopen libppl_ciao.la \
+		ciao_clpq \
+			<$(srcdir)/../check_script >obtained
+	diff -q --ignore-all-space $(srcdir)/../expected obtained
+	GLOBALSTKSIZE=1000000 \
+	$(LIBTOOL) --mode=execute \
+		-dlopen ../../../src/libppl.la \
+		-dlopen ../../../Watchdog/libpwl.la \
+		-dlopen libppl_ciao.la \
+		ciao_clpq2 \
+			<$(srcdir)/../check_script2 >obtained2
+	diff -q --ignore-all-space $(srcdir)/../expected2 obtained2
 
-#pplpl $(CLPQ_TESTS) obtained
-
-MOSTLYCLEANFILES = fake_main *.itf *.po *.c *.so
+MOSTLYCLEANFILES = \
+fake_main \
+*.itf *.po *.c *.so \
+$(CLPQ_TESTS) \
+obtained obtained2
 endif

@@ -216,8 +216,14 @@ site: http://www.cs.unipr.it/ppl/ . */
 :- true pred ppl_Polyhedron_add_constraints(in(Handle), in(CList))
              :: any_term * any_term + foreign.
 
-:- true pred ppl_Polyhedron_add_constraints_and_minimize(in(Handle), in(CList))
-             :: any_term * any_term + foreign.
+%:- true pred ppl_Polyhedron_add_constraints_and_minimize(in(Handle), in(CList))
+%             :: any_term * any_term + foreign.
+
+:- true pred ppl_Polyhedron_add_constraints_and_minimize_2(in(Handle), in(CList), go(Success))
+             :: any_term * any_term * int + (returns(Success), foreign(ppl_Polyhedron_add_constraints_and_minimize)).
+
+ppl_Polyhedron_add_constraints_and_minimize(Handle, CList) :-
+	ppl_Polyhedron_add_constraints_and_minimize_2(Handle, CList, 1).
 
 :- true pred ppl_Polyhedron_add_generators(in(Handle), in(GList))
              :: any_term * any_term + foreign.
@@ -348,7 +354,8 @@ site: http://www.cs.unipr.it/ppl/ . */
 	ppl_Polyhedron_add_generator/2,
 	ppl_Polyhedron_add_generator_and_minimize/2,
 	ppl_Polyhedron_add_constraints/2,
-	ppl_Polyhedron_add_constraints_and_minimize/2,
+%	ppl_Polyhedron_add_constraints_and_minimize/2,
+	ppl_Polyhedron_add_constraints_and_minimize_2/3,
 	ppl_Polyhedron_add_generators/2,
 	ppl_Polyhedron_add_generators_and_minimize/2,
 	ppl_Polyhedron_add_dimensions_and_project/2,
@@ -374,3 +381,6 @@ site: http://www.cs.unipr.it/ppl/ . */
 	ppl_Polyhedron_equals_Polyhedron/2,
 	ppl_Polyhedron_get_bounding_box/3
 ]).
+
+:- comment(version_maintenance,off).
+

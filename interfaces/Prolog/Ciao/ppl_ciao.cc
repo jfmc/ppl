@@ -88,7 +88,7 @@ Prolog_put_atom(Prolog_term_ref& t, Prolog_atom a) {
 */
 static inline int
 Prolog_put_address(Prolog_term_ref& t, void* p) {
-  t = ciao_integer(reinterpret_cast<long>(p));
+  t = ciao_pointer_to_address(ciao_implicit_state, p);
   return 1;
 }
 
@@ -205,8 +205,7 @@ Prolog_is_integer(Prolog_term_ref t) {
 */
 static inline int
 Prolog_is_address(Prolog_term_ref t) {
-  // FIXME!
-  return ciao_is_integer(t);
+  return ciao_is_address(ciao_implicit_state, t);
 }
 
 /*!
@@ -246,7 +245,7 @@ Prolog_get_long(Prolog_term_ref t, long* lp) {
 static inline int
 Prolog_get_address(Prolog_term_ref t, void** vpp) {
   assert(Prolog_is_address(t));
-  *vpp = reinterpret_cast<void*>(ciao_to_integer(t));
+  *vpp = ciao_address_to_pointer(ciao_implicit_state, t);
   return 1;
 }
 
@@ -283,7 +282,7 @@ Prolog_get_compound_name_arity(Prolog_term_ref t, Prolog_atom* ap, int* ip) {
 static inline int
 Prolog_get_arg(int i, Prolog_term_ref t, Prolog_term_ref& a) {
   assert(Prolog_is_compound(t));
-  a = ciao_structure_arg(i, t);
+  a = ciao_structure_arg(t, i);
   return 1;
 }
 
