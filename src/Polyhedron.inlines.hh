@@ -223,12 +223,6 @@ Polyhedron::clear_pending_generators() {
 
 /*! \relates Polyhedron */
 inline bool
-operator==(const Polyhedron& x, const Polyhedron& y) {
-  return x <= y && y <= x;
-}
-
-/*! \relates Polyhedron */
-inline bool
 operator!=(const Polyhedron& x, const Polyhedron& y) {
   return !(x == y);
 }

@@ -1278,6 +1278,75 @@ PPL::Polyhedron::update_sat_g() const {
 }
 
 bool
+PPL::operator==(const Polyhedron& x, const Polyhedron& y) {
+  // Topology compatibility check.
+  if (x.topology() != y.topology())
+    Polyhedron::throw_topology_incompatible("operator==("
+					    "const Polyhedron& x, "
+					    "const Polyhedron& y)", x, y);
+  dimension_type x_space_dim = x.space_dim;
+  // Dimension-compatibility check.
+  if (x_space_dim != y.space_dim)
+    Polyhedron::throw_dimension_incompatible("operator==("
+					     "const Polyhedron& x, "
+					     "const Polyhedron& y)", x, y);
+
+  if (x.is_empty())
+    return y.check_empty();
+  else if (y.is_empty())
+    return x.check_empty();
+  else if (x_space_dim == 0)
+    return true;
+
+  if (x.is_necessarily_closed()) {
+    if (!x.has_something_pending() && !y.has_something_pending()) {
+
+      bool css_normalized = false;
+      if (x.constraints_are_minimized() && y.constraints_are_minimized()) {
+	// Equivalent minimized constraint systems have:
+	//  - the same number of constraints; ...
+	if (x.con_sys.num_rows() != y.con_sys.num_rows())
+	  return false;
+	//  - the same number of equalities; ...
+	dimension_type x_num_equalities = x.con_sys.num_equalities();
+	if (x_num_equalities != y.con_sys.num_equalities())
+	  return false;
+	//  - if there are no equalities, they have the same constraints.
+	//    Delay this test: try cheaper tests on generators first.
+	css_normalized = (x_num_equalities == 0);
+      }
+
+      if (x.generators_are_minimized() && y.generators_are_minimized()) {
+	// Equivalent minimized generator systems have:
+	//  - the same number of generators; ...
+	if (x.gen_sys.num_rows() != y.gen_sys.num_rows())
+	  return false;
+	//  - the same number of lines; ...
+	dimension_type x_num_lines = x.gen_sys.num_lines();
+	if (x_num_lines != y.gen_sys.num_lines())
+	  return false;
+	//  - if there are no lines, they have the same generators.
+	if (x_num_lines == 0) {
+	  // Sort the two systems and check for syntactic identity.
+	  x.obtain_sorted_generators();
+	  y.obtain_sorted_generators();
+	  return x.gen_sys == y.gen_sys;
+	}
+      }
+      
+      if (css_normalized) {
+	// Sort the two systems and check for identity.
+	x.obtain_sorted_constraints();
+	y.obtain_sorted_constraints();
+	return x.con_sys == y.con_sys;
+      }
+    }
+  }
+
+  return x.is_included(y) && y.is_included(x);
+}
+
+bool
 PPL::operator<=(const Polyhedron& x, const Polyhedron& y) {
   // Topology compatibility check.
   if (x.topology() != y.topology())
@@ -1290,12 +1359,22 @@ PPL::operator<=(const Polyhedron& x, const Polyhedron& y) {
     Polyhedron::throw_dimension_incompatible("operator<=("
 					     "const Polyhedron& x, "
 					     "const Polyhedron& y)", x, y);
+  return x.is_included(y);
+}
+
+bool
+PPL::Polyhedron::is_included(const Polyhedron& y) const {
+  // Private method: the caller must ensure the following.
+  assert(topology() == y.topology());
+  assert(space_dimension() == y.space_dimension());
+
+  const Polyhedron& x = *this;
 
   if (x.is_empty())
     return true;
   else if (y.is_empty())
     return x.check_empty();
-  else if (x_space_dim == 0)
+  else if (x.space_dimension() == 0)
     return true;
 
   // `x' cannot have pending constraints, because we need its generators.
@@ -1356,7 +1435,7 @@ PPL::operator<=(const Polyhedron& x, const Polyhedron& y) {
   else {
     // Here we have a NON-necessarily closed polyhedron: using the
     // reduced scalar product, which ignores the epsilon coefficient.
-    dimension_type eps_index = x_space_dim + 1;
+    dimension_type eps_index = x.space_dimension() + 1;
     for (dimension_type i = cs.num_rows(); i-- > 0; ) {
       const Constraint& c = cs[i];
       switch (c.type()) {

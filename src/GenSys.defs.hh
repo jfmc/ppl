@@ -49,6 +49,7 @@ std::ostream& operator<<(std::ostream& s, const GenSys& gs);
 } // namespace IO_Operators
 
 // Put it in the namespace here to declare it friend later.
+bool operator==(const Polyhedron& x, const Polyhedron& y);
 bool operator<=(const Polyhedron& x, const Polyhedron& y);
 
 } // namespace Parma_Polyhedra_Library
@@ -341,6 +342,9 @@ private:
   friend class const_iterator;
   friend class Parma_Polyhedra_Library::Polyhedron;
 
+  friend bool
+  Parma_Polyhedra_Library::operator==(const Polyhedron& x,
+				      const Polyhedron& y);
   friend bool
   Parma_Polyhedra_Library::operator<=(const Polyhedron& x,
 				      const Polyhedron& y);

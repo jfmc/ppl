@@ -1245,6 +1245,8 @@ public:
   //! Assigns to \p *this its topological closure.
   void topological_closure_assign();
 
+  friend bool Parma_Polyhedra_Library::operator==(const Polyhedron& x,
+						  const Polyhedron& y);
   friend bool Parma_Polyhedra_Library::operator<=(const Polyhedron& x,
 						  const Polyhedron& y);
   friend bool Parma_Polyhedra_Library::are_disjoint(const Polyhedron& x,
@@ -1617,6 +1619,10 @@ private:
   void select_H79_constraints(const Polyhedron& y,
 			      ConSys& cs_selected,
 			      ConSys& cs_not_selected) const;
+
+  //! \brief
+  //! Returns <CODE>true</CODE> if and only if \p *this is included in \p y.
+  bool is_included(const Polyhedron& y) const;
 
   //! Checks if and how \p expr is bounded in \p *this.
   /*!
