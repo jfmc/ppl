@@ -4,6 +4,23 @@ Parma Polyhedra Library NEWS -- history of user-visible changes
 
 
 --------------------------------------------------------------------------
+NEWS for version 0.4.1 (released on July 30, 2002)
+--------------------------------------------------------------------------
+
+Bugfixes
+========
+
+o  Fixed a bug in Polyhedron::poly_difference_assign(const Polyhedron& y)
+   whereby the equality constraints of `y' were ignored (the bug was
+   affecting both C and NNC computations).
+
+o  Fixed a bug in Polyhedron::operator=(const Polyhedron& y).  This bug,
+   which is triggered in some cases when `y' is empty, should only affect
+   versions of the library obtained with the `--enable-assertions'
+   configuration flag.
+
+
+--------------------------------------------------------------------------
 NEWS for version 0.4 (released on July 1, 2002)
 --------------------------------------------------------------------------
 
