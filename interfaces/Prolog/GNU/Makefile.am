@@ -45,7 +45,7 @@ libppl_gprolog_la_SOURCES = ppl_gprolog_sd.cc
 # Notice: we are linking with libppl_gprolog.a statically.
 # This is a kludge until we understand whether and if libtool
 # and gplc can interoperate.
-ppl_gprolog$(EXEEXT): libppl_gprolog.la ppl_gprolog.pl $(top_builddir)/src/.libs/libppl.a
+ppl_gprolog$(EXEEXT): libppl_gprolog.la ppl_gprolog.pl
 	gplc -o $@ $(srcdir)/ppl_gprolog.pl .libs/libppl_gprolog.a \
 		-L '-L$(top_builddir)/src/.libs -lppl -lgmp -lgmpxx -lstdc++'
 
@@ -58,10 +58,13 @@ smm.clpq \
 sumto.clpq \
 tak.clpq
 
-gp_clpq: libppl_gprolog.a ppl_gprolog.pl gp_clpq.pl ../clpq.pl
+# Notice: we are linking with libppl_gprolog.a statically.
+# This is a kludge until we understand whether and if libtool
+# and gplc can interoperate.
+gp_clpq: libppl_gprolog.la ppl_gprolog.pl gp_clpq.pl ../clpq.pl
 	gplc -o $@ $(srcdir)/ppl_gprolog.pl $(srcdir)/gp_clpq.pl \
-		$(srcdir)/../clpq.pl \
--L '-L. -lppl_gprolog -L$(top_builddir)/src/.libs -lppl -lgmp -lgmpxx -lstdc++'
+		$(srcdir)/../clpq.pl .libs/libppl_gprolog.a \
+		-L '-L$(top_builddir)/src/.libs -lppl -lgmp -lgmpxx -lstdc++'
 
 check-local: gp_clpq ../check_script ../expected
 	for k in $(CLPQ_TESTS); do cp -f $(srcdir)/../$$k .; done
