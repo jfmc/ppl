@@ -287,7 +287,7 @@ AC_CONFIG_SUBDIRS(Watchdog)
 
 # Libtool.
 # Turn off shared libraries during beta-testing, since they
-# make debugging harder and the build process take too long.
+# make debugging harder and the build process takes too long.
 AC_DISABLE_SHARED
 AC_LIBTOOL_DLOPEN
 AC_LIBTOOL_WIN32_DLL
@@ -300,15 +300,15 @@ AC_PROG_INSTALL
 # Checks for Prolog systems.
 
 # Ciao Prolog
-
-AC_CHECK_PROG(CIAO_PROLOG, ciao, ciao)
-if test x"$CIAO_PROLOG" = xciao
-then
-AC_CHECK_HEADER(ciao_prolog.h,
-                [],
-                CIAO_PROLOG="")
-fi
-AM_CONDITIONAL(HAVE_CIAO_PROLOG, test x$CIAO_PROLOG = xciao)
+#
+# AC_CHECK_PROG(CIAO_PROLOG, ciao, ciao)
+# if test x"$CIAO_PROLOG" = xciao
+# then
+# AC_CHECK_HEADER(ciao_prolog.h,
+#                 [],
+#                 CIAO_PROLOG="")
+# fi
+# AM_CONDITIONAL(HAVE_CIAO_PROLOG, test x$CIAO_PROLOG = xciao)
 
 # GNU Prolog
 
@@ -420,8 +420,9 @@ AC_OUTPUT(Makefile
           interfaces/C/Makefile
           interfaces/C/lpenum/Makefile
           interfaces/Prolog/Makefile
-          interfaces/Prolog/Ciao/Makefile interfaces/Prolog/GNU/Makefile
-          interfaces/Prolog/SICStus/Makefile interfaces/Prolog/SWI/Makefile
+          interfaces/Prolog/GNU/Makefile
+          interfaces/Prolog/SICStus/Makefile
+          interfaces/Prolog/SWI/Makefile
           interfaces/Prolog/YAP/Makefile)
 
 if test x"$gmp_supports_exceptions" = xno
