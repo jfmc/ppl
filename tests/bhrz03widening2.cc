@@ -59,6 +59,7 @@ main() {
   NNC_Polyhedron known_result(2);
   known_result.add_constraint(B >= 0);
   known_result.add_constraint(B < 1);
+  known_result.add_constraint(A - 2*B <= 2);
 
   int retval = (ph2 == known_result) ? 0 : 1;
 
