@@ -39,6 +39,7 @@ namespace Parma_Polyhedra_Library {
   //! Returns the (unidirectional) ray of direction \p e.
   Generator operator ^(int, const LinExpression& e);
   //! Returns the vertex at \p e / \p n.
+  //! \exception invalid_argument \p n is zero.
   Generator operator /=(const LinExpression& e, const Integer& n);
   //@}
 }
