@@ -38,17 +38,17 @@ Poly_Con_Relation::is_disjoint() {
   return Poly_Con_Relation(IS_DISJOINT);
 }
 
-Poly_Con_Relation
+inline Poly_Con_Relation
 Poly_Con_Relation::strictly_intersects() {
   return Poly_Con_Relation(STRICTLY_INTERSECTS);
 }
 
-Poly_Con_Relation
+inline Poly_Con_Relation
 Poly_Con_Relation::is_included() {
   return Poly_Con_Relation(IS_INCLUDED);
 }
 
-Poly_Con_Relation
+inline Poly_Con_Relation
 Poly_Con_Relation::saturates() {
   return Poly_Con_Relation(SATURATES);
 }
@@ -63,17 +63,17 @@ Poly_Con_Relation::implies(const Poly_Con_Relation& y) {
   return implies(flags, y.flags);
 }
 
-bool
+inline bool
 operator==(const Poly_Con_Relation& x, const Poly_Con_Relation& y) {
   return x.flags == y.flags;
 }
 
-bool
+inline bool
 operator!=(const Poly_Con_Relation& x, const Poly_Con_Relation& y) {
   return x.flags != y.flags;
 }
 
-Poly_Con_Relation
+inline Poly_Con_Relation
 operator&&(const Poly_Con_Relation& x, const Poly_Con_Relation& y) {
   return Poly_Con_Relation(x.flags | y.flags);
 }
