@@ -52,8 +52,8 @@ main() TRY {
   int retval = (ph == known_result) ? 0 : 1;
 
 #if NOISY
-    print_constraints(ph, "*** After ph.remove_higher_dimensions(2) ***");
+  print_constraints(ph, "*** After ph.remove_higher_dimensions(2) ***");
 #endif
-    return retval;
+  return retval;
 }
 CATCH
