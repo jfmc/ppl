@@ -29,6 +29,13 @@ site: http://www.cs.unipr.it/ppl/ . */
 namespace Parma_Polyhedra_Library {
 
 template <typename PH>
+Determinate<PH>::Determinate(size_t num_dimensions,
+			     Polyhedron::Degenerate_Kind kind)
+  : prep(new Rep(num_dimensions, kind)) {
+  new_reference();
+}
+
+template <typename PH>
 Determinate<PH>::Determinate(const PH& p)
   : prep(new Rep(p)) {
   new_reference();
@@ -59,6 +66,7 @@ Determinate<PH>::operator=(const Determinate& y) {
 template <typename PH>
 void
 Determinate<PH>::mutate() {
+  assert(prep);
   if (prep->is_shared()) {
     prep = new Rep(prep->ph);
     new_reference();
@@ -68,6 +76,8 @@ Determinate<PH>::mutate() {
 template <typename PH>
 void
 Determinate<PH>::upper_bound_assign(const Determinate& y) {
+  assert(prep);
+  assert(y.prep);
   mutate();
   prep->ph.poly_hull_assign(y.prep->ph);
 }
@@ -75,13 +85,27 @@ Determinate<PH>::upper_bound_assign(const Determinate& y) {
 template <typename PH>
 void
 Determinate<PH>::meet_assign(const Determinate& y) {
+  assert(prep);
+  assert(y.prep);
   mutate();
   prep->ph.intersection_assign(y.prep->ph);
 }
 
 template <typename PH>
+void
+Determinate<PH>::concatenate_assign(const Determinate& y) {
+  assert(prep);
+  assert(y.prep);
+  mutate();
+  ConSys cs = y.prep->ph.constraints();
+  prep->ph.add_dimensions_and_constraints(cs);
+}
+
+template <typename PH>
 bool
 Determinate<PH>::definitely_entails(const Determinate<PH>& y) const {
+  assert(prep);
+  assert(y.prep);
   return prep->ph <= y.prep->ph;
 }
 

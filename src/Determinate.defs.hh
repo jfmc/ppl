@@ -78,7 +78,9 @@ operator<<(std::ostream&, const Determinate<PH>&);
 template <typename PH>
 class Parma_Polyhedra_Library::Determinate {
 public:
-  Determinate();
+  explicit
+  Determinate(size_t num_dimensions = 0,
+	      Polyhedron::Degenerate_Kind kind = Polyhedron::UNIVERSE);
   Determinate(const PH& p);
   Determinate(const Determinate& y);
   ~Determinate();
@@ -90,6 +92,8 @@ public:
   void upper_bound_assign(const Determinate& y);
 
   void meet_assign(const Determinate& y);
+
+  void concatenate_assign(const Determinate& y);
 
   bool definitely_entails(const Determinate& y) const;
 
@@ -212,6 +216,10 @@ private:
     //! has become unreferenced.
     bool del_reference() const {
       return --references == 0;
+    }
+
+    Rep(size_t num_dimensions, Polyhedron::Degenerate_Kind kind)
+      : references(0), ph(num_dimensions, kind) {
     }
 
     Rep(const PH& p)
