@@ -1898,7 +1898,8 @@ PPL::Polyhedron::affine_image(const Variable& var,
     const_cast<LinExpression&>(expr).swap(copy);
   }
   if (expr[num_var] != 0) {
-    // The transformation is invertible.
+    // The transformation is invertible:
+    // minimality and saturators are preserved.
     if (generators_are_up_to_date())
       x.gen_sys.affine_image(num_var, expr, denominator);
     if (constraints_are_up_to_date()) {
@@ -1909,8 +1910,6 @@ PPL::Polyhedron::affine_image(const Variable& var,
       inverse[num_var] = denominator;
       x.con_sys.affine_preimage(num_var, inverse, expr[num_var]);
     }
-    x.clear_constraints_minimized();
-    x.clear_generators_minimized();
   }
   // The transformation is not invertible.
   else {
@@ -1921,10 +1920,10 @@ PPL::Polyhedron::affine_image(const Variable& var,
       x.gen_sys.affine_image(num_var, expr, denominator);
       x.clear_constraints_up_to_date();
       x.clear_generators_minimized();
+      clear_sat_c_up_to_date();
+      clear_sat_g_up_to_date();
     }
   }
-  clear_sat_c_up_to_date();
-  clear_sat_g_up_to_date();
 }
 
 
@@ -1988,8 +1987,8 @@ PPL::Polyhedron::affine_image(const Variable& var,
 */
 void
 PPL::Polyhedron::affine_preimage(const Variable& var,
-				     const LinExpression& expr,
-				     const Integer& denominator) {
+				 const LinExpression& expr,
+				 const Integer& denominator) {
   if (denominator == 0)
     throw std::invalid_argument("void PPL::Polyhedron::affine_preimage"
 				"(v, e, d): d == 0");
@@ -2015,8 +2014,10 @@ PPL::Polyhedron::affine_preimage(const Variable& var,
     LinExpression copy(expr, x_space_dim + 1);
     const_cast<LinExpression&>(expr).swap(copy);
   }
-  // The transformation is invertible.
+
   if (expr[num_var] != 0) {
+    // The transformation is invertible:
+    // minimality and saturators are preserved.
     if (constraints_are_up_to_date())
       x.con_sys.affine_preimage(num_var, expr, denominator);
     if (generators_are_up_to_date()) {
@@ -2027,19 +2028,17 @@ PPL::Polyhedron::affine_preimage(const Variable& var,
       inverse[num_var] = denominator;
       x.gen_sys.affine_image(num_var, inverse, expr[num_var]);
     }
-    x.clear_constraints_minimized();
-    x.clear_generators_minimized();
   }
-  // The transformation is not invertible.
   else {
+    // The transformation is not invertible.
     if (!constraints_are_up_to_date())
       x.minimize();
     x.con_sys.affine_preimage(num_var, expr, denominator);
     x.clear_generators_up_to_date();
     x.clear_constraints_minimized();
+    clear_sat_c_up_to_date();
+    clear_sat_g_up_to_date();
   }
-  clear_sat_c_up_to_date();
-  clear_sat_g_up_to_date();
 }
 
 /*!
