@@ -78,7 +78,6 @@ public:
   //! Returns the index of the Cartesian axis associated to the variable.
   dimension_type id() const;
 
-public:
   //! Type of output functions.
   typedef void Output_Function_Type(std::ostream& s, const Variable& v);
 
