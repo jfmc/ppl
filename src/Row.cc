@@ -33,7 +33,8 @@ site: http://www.cs.unipr.it/ppl/ . */
 namespace PPL = Parma_Polyhedra_Library;
 
 void
-PPL::Row::Impl::expand_within_capacity(const dimension_type new_size) {
+PPL::Row_Impl_Handler::
+Impl::expand_within_capacity(const dimension_type new_size) {
   assert(size() <= new_size && new_size <= max_size());
 #if !CXX_SUPPORTS_FLEXIBLE_ARRAYS
   // vec_[0] is already constructed.
@@ -47,8 +48,8 @@ PPL::Row::Impl::expand_within_capacity(const dimension_type new_size) {
 }
 
 void
-PPL::Row::Impl::shrink(dimension_type new_size) {
-  dimension_type old_size = size();
+PPL::Row_Impl_Handler::Impl::shrink(dimension_type new_size) {
+  const dimension_type old_size = size();
   assert(new_size <= old_size);
   // Since ~Coefficient() does not throw exceptions, nothing here does.
   set_size(new_size);
@@ -64,7 +65,7 @@ PPL::Row::Impl::shrink(dimension_type new_size) {
 }
 
 void
-PPL::Row::Impl::copy_construct_coefficients(const Impl& y) {
+PPL::Row_Impl_Handler::Impl::copy_construct_coefficients(const Impl& y) {
   const dimension_type y_size = y.size();
 #if CXX_SUPPORTS_FLEXIBLE_ARRAYS
   for (dimension_type i = 0; i < y_size; ++i) {
@@ -96,7 +97,7 @@ PPL::Row::Flags::ascii_dump(std::ostream& s) const {
 void
 PPL::Row::ascii_dump(std::ostream& s) const {
   const Row& x = *this;
-  dimension_type x_size = x.size();
+  const dimension_type x_size = x.size();
   for (dimension_type i = 0; i < x_size; ++i)
     s << x[i] << ' ';
   s << "f ";

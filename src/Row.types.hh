@@ -14,6 +14,7 @@ PURPOSE. */
 
 namespace Parma_Polyhedra_Library {
 
+class Row_Impl_Handler;
 class Row;
 
 }

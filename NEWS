@@ -33,8 +33,17 @@ o  Added swap methods to classes Linear_Expression, Constraint, Generator,
 Bugfixes
 ========
 
-o  None yet.
-
+o Fixed a bug affecting the specialized constructors
+    Polyhedra_Powerset<NNC_Polyhedron>::
+    Polyhedra_Powerset(const Polyhedra_Powerset<C_Polyhedron>& y);
+  and
+    Polyhedra_Powerset<C_Polyhedron>::
+    Polyhedra_Powerset(const Polyhedra_Powerset<C_Polyhedron>& y);
+  whereby the newly built Polyhedra_Powerset object could have been
+  flagged as non-redundant even though it was containing redundant
+  disjuncts. Fixed a similar bug in generic constructor
+    Polyhedra_Powerset(const Constraint_System& cs);
+  that manifests when `cs' is denoting an empty polyhedron.
 
 --------------------------------------------------------------------------
 NEWS for version 0.7  (released on December 24, 2004)

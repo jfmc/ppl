@@ -45,9 +45,42 @@ site: http://www.cs.unipr.it/ppl/ . */
 #endif
 
 #ifdef PPL_DOXYGEN_INCLUDE_IMPLEMENTATION_DETAILS
+//! The handler of the actual Row implementation.
+/*!
+  Exception-safety is the only responsibility of this class: it has
+  to ensure that its \p impl method is correctly deallocated.
+*/
+#endif // PPL_DOXYGEN_INCLUDE_IMPLEMENTATION_DETAILS
+class Parma_Polyhedra_Library::Row_Impl_Handler {
+public:
+  //! Default constructor.
+  Row_Impl_Handler();
+
+  //! Destructor.
+  ~Row_Impl_Handler();
+
+  class Impl;
+
+  //! A pointer to the actual implementation.
+  Impl* impl;
+
+#if EXTRA_ROW_DEBUG
+  //! The capacity of \p impl (only available during debugging).
+  dimension_type capacity_;
+#endif // EXTRA_ROW_DEBUG
+
+private:
+  //! Private and unimplemented: copy construction is not allowed.
+  Row_Impl_Handler(const Row_Impl_Handler&);
+
+  //! Private and unimplemented: copy assignment is not allowed.
+  Row_Impl_Handler& operator=(const Row_Impl_Handler&);
+};
+
+#ifdef PPL_DOXYGEN_INCLUDE_IMPLEMENTATION_DETAILS
 //! A finite sequence of coefficients.
 #endif // PPL_DOXYGEN_INCLUDE_IMPLEMENTATION_DETAILS
-class Parma_Polyhedra_Library::Row {
+class Parma_Polyhedra_Library::Row : private Row_Impl_Handler {
 public:
   //! \brief
   //! Wrapper class to represent a set of flags with bits in a native
@@ -189,6 +222,16 @@ public:
   */
   void assign(Row& y);
 
+  //! \brief.
+  //! Allocates memory for a default constructed Row object, setting
+  //! flags to \p f and allowing for \p capacity coefficients at most.
+  /*!
+    It is assumed that no allocation has been performed before
+    (otherwise, a memory leak will occur).
+    After execution, the size of the Row object is zero.
+  */
+  void allocate(dimension_type capacity, Flags f);
+
   //! Expands the row to size \p new_size.
   /*!
     Adds new positions to the implementation of the row
@@ -256,47 +299,10 @@ public:
   bool OK(dimension_type row_size, dimension_type row_capacity) const;
 
 private:
-  class Impl;
-  typedef Impl* Impl_Pointer;
-
-  //! The handler of the actual Row implementation.
-  /*!
-    Exception-safety is the only responsibility of this class: it has
-    to ensure that its \p impl_ method is correctly deallocated.
-  */
-  class Impl_Handler {
-  public:
-    //! Default constructor.
-    Impl_Handler();
-
-    //! Destructor.
-    ~Impl_Handler();
-
-    //! A pointer to the actual implementation.
-    Impl_Pointer impl_;
-
-  private:
-    //! Private and unimplemented: copy construction is not allowed.
-    Impl_Handler(const Impl_Handler&);
-
-    //! Private and unimplemented: copy assignment is not allowed.
-    Impl_Handler& operator=(const Impl_Handler&);
-  };
-
-  //! \name Access points for the actual implementation.
-  //@{
-  Impl_Handler handler;
-  Impl_Pointer& impl();
-  const Impl_Pointer& impl() const;
-  //@}
-
   //! Exception-safe copy construction mechanism for coefficients.
   void copy_construct_coefficients(const Row& y);
 
 #if EXTRA_ROW_DEBUG
-  //! The capacity of the row (only available during debugging).
-  dimension_type capacity_;
-
   //! Returns the capacity of the row (only available during debugging).
   dimension_type capacity() const;
 #endif // EXTRA_ROW_DEBUG
@@ -315,14 +321,34 @@ bool operator!=(const Row& x, const Row& y);
 } // namespace Parma_Polyhedra_Library
 
 
+namespace std {
+
 #ifdef PPL_DOXYGEN_INCLUDE_IMPLEMENTATION_DETAILS
-//! The real implementation of a Row object.
+//! Specializes <CODE>std::swap</CODE>.
+/*! \relates Parma_Polyhedra_Library::Row */
+#endif // PPL_DOXYGEN_INCLUDE_IMPLEMENTATION_DETAILS
+void swap(Parma_Polyhedra_Library::Row& x,
+	  Parma_Polyhedra_Library::Row& y);
+
+#ifdef PPL_DOXYGEN_INCLUDE_IMPLEMENTATION_DETAILS
+//! Specializes <CODE>std::iter_swap</CODE>.
+/*! \relates Parma_Polyhedra_Library::Row */
+#endif // PPL_DOXYGEN_INCLUDE_IMPLEMENTATION_DETAILS
+void iter_swap(std::vector<Parma_Polyhedra_Library::Row>::iterator x,
+	       std::vector<Parma_Polyhedra_Library::Row>::iterator y);
+
+} // namespace std
+
+
+#ifdef PPL_DOXYGEN_INCLUDE_IMPLEMENTATION_DETAILS
+//! The actual implementation of a Row object.
 /*!
-  The class Row::Impl provides the implementation of Row objects and,
-  in particular, of the corresponding memory allocation functions.
+  The class Row_Impl_Handler::Impl provides the implementation of Row
+  objects and, in particular, of the corresponding memory allocation
+  functions.
 */
 #endif // PPL_DOXYGEN_INCLUDE_IMPLEMENTATION_DETAILS
-class Parma_Polyhedra_Library::Row::Impl {
+class Parma_Polyhedra_Library::Row_Impl_Handler::Impl {
 public:
   //! \name Custom allocator and deallocator
   //@{
@@ -332,18 +358,18 @@ public:
     beyond the specified \p fixed_size and returns a pointer to the new
     allocated memory.
   */
-  void* operator new(size_t fixed_size, dimension_type capacity);
+  static void* operator new(size_t fixed_size, dimension_type capacity);
 
   //! Uses the standard delete operator to free the memory \p p points to.
-  void operator delete(void* p);
+  static void operator delete(void* p);
 
   //! \brief Placement version:
   //! uses the standard operator delete to free the memory \p p points to.
-  void operator delete(void* p, dimension_type capacity);
+  static void operator delete(void* p, dimension_type capacity);
   //@} // Custom allocator and deallocator
 
   //! Constructor.
-  Impl(Flags f);
+  Impl(Row::Flags f);
 
   //! Destructor.
   /*!
@@ -373,10 +399,10 @@ public:
   //! \name Flags accessors
   //@{
   //! Returns a const reference to the flags of \p *this.
-  const Flags& flags() const;
+  const Row::Flags& flags() const;
 
   //! Returns a non-const reference to the flags of \p *this.
-  Flags& flags();
+  Row::Flags& flags();
   //@} // Flags accessors
 
   //! \name Size accessors
@@ -416,7 +442,7 @@ private:
   dimension_type size_;
 
   //! The flags of this row.
-  Flags flags_;
+  Row::Flags flags_;
 
   //! The vector of coefficients.
   Coefficient vec_[
@@ -434,24 +460,6 @@ private:
   //! Private and unimplemented: assignment is not allowed.
   Impl& operator=(const Impl&);
 };
-
-namespace std {
-
-#ifdef PPL_DOXYGEN_INCLUDE_IMPLEMENTATION_DETAILS
-//! Specializes <CODE>std::swap</CODE>.
-/*! \relates Parma_Polyhedra_Library::Row */
-#endif // PPL_DOXYGEN_INCLUDE_IMPLEMENTATION_DETAILS
-void swap(Parma_Polyhedra_Library::Row& x,
-	  Parma_Polyhedra_Library::Row& y);
-
-#ifdef PPL_DOXYGEN_INCLUDE_IMPLEMENTATION_DETAILS
-//! Specializes <CODE>std::iter_swap</CODE>.
-/*! \relates Parma_Polyhedra_Library::Row */
-#endif // PPL_DOXYGEN_INCLUDE_IMPLEMENTATION_DETAILS
-void iter_swap(std::vector<Parma_Polyhedra_Library::Row>::iterator x,
-	       std::vector<Parma_Polyhedra_Library::Row>::iterator y);
-
-} // namespace std
 
 #include "Row.inlines.hh"
 
