@@ -103,6 +103,7 @@ check-local: gp_clpq ../check_script ../expected gp_clpq2 ../check_script2 ../ex
 MOSTLYCLEANFILES = \
 gp_clpq gp_clpq2 \
 obtained obtained2 obtained3 \
-$(CLPQ_TESTS)
+$(CLPQ_TESTS) \
+check_script3
 
 endif
