@@ -101,12 +101,10 @@ PPL::Row::normalize() {
 }
 
 void
-PPL::Row::strong_normalize() {
-  Row& x = *this;
-  x.normalize();
-
-  dimension_type sz = x.size();
-  if (x.is_line_or_equality()) {
+PPL::Row::sign_normalize() {
+  if (is_line_or_equality()) {
+    Row& x = *this;
+    dimension_type sz = x.size();
     // `first_non_zero' indicates the index of the first
     // coefficient of the row different from zero, disregarding
     // the very first coefficient (inhomogeneous term / divisor).

@@ -286,7 +286,7 @@ public:
   const Integer& operator[](dimension_type k) const;
   //@}
 
-  //! Normalizes all the coefficients so that they are mutually prime.
+  //! Normalizes the modulo of coefficients so that they are mutually prime.
   /*!
     Computes the Greatest Common Divisor (GCD) among the elements of
     the row and normalizes them by the GCD itself.
@@ -294,12 +294,15 @@ public:
   void normalize();
 
   //! \brief
+  //! Normalizes the sign of the coefficients so that the first non-zero
+  //! (homogeneous) coefficient of a line-or-equality is positive.
+  void sign_normalize();
+
+  //! \brief
   //! Strong normalization: ensures that different rows represent
   //! different hyperplanes or hyperspaces.
   /*!
-    In addition to the normalization performed by Row::normalize(), this
-    method ensures that the first non-zero (homogeneous) coefficient
-    of lines and equalities is positive.
+    Applies both Row::normalize() and Row::sign_normalize().
   */
   void strong_normalize();
 

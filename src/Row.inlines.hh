@@ -397,6 +397,12 @@ Row::coefficient(dimension_type k) const {
   return (*this)[k+1];
 }
 
+inline void
+Row::strong_normalize() {
+  normalize();
+  sign_normalize();
+}
+
 /*! \relates Row */
 inline bool
 operator==(const Row& x, const Row& y) {
