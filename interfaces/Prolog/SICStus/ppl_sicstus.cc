@@ -315,6 +315,24 @@ sp_stub_##name(Prolog_term_ref goal, void*) { \
   return name(arg1, arg2, arg3); \
 }
 
+#define SP_STUB_4(name, arity) \
+extern "C" Prolog_foreign_return_type \
+sp_stub_##name(Prolog_term_ref goal, void*) { \
+  Prolog_term_ref arg1 = Prolog_new_term_ref(); \
+  if (!Prolog_get_arg(1, goal, arg1)) \
+    return PROLOG_FAILURE; \
+  Prolog_term_ref arg2 = Prolog_new_term_ref(); \
+  if (!Prolog_get_arg(2, goal, arg2)) \
+    return PROLOG_FAILURE; \
+  Prolog_term_ref arg3 = Prolog_new_term_ref(); \
+  if (!Prolog_get_arg(3, goal, arg3)) \
+    return PROLOG_FAILURE; \
+  Prolog_term_ref arg4 = Prolog_new_term_ref(); \
+  if (!Prolog_get_arg(4, goal, arg4)) \
+    return PROLOG_FAILURE; \
+  return name(arg1, arg2, arg3, arg4); \
+}
+
 SP_STUB_2(ppl_new_polyhedron, 2)
 SP_STUB_2(ppl_new_empty_polyhedron, 2)
 SP_STUB_2(ppl_copy_polyhedron, 2)
@@ -344,6 +362,10 @@ SP_STUB_2(ppl_add_dimensions_and_embed, 2)
 SP_STUB_2(ppl_polyhedron_included_or_equal, 2)
 SP_STUB_2(ppl_polyhedron_equal, 2)
 SP_STUB_2(ppl_polyhedron_strictly_included, 2)
+SP_STUB_3(ppl_relation_with_constraint, 3)
+SP_STUB_3(ppl_relation_with_generator, 3)
+SP_STUB_4(ppl_affine_image, 4)
+SP_STUB_4(ppl_affine_preimage, 4)
 
 #define SP_DEFINE_C_PREDICATE(name, arity) \
   SP_define_c_predicate(#name, arity, "user", sp_stub_##name, NULL)
@@ -389,6 +411,10 @@ ppl_sicstus_init(int /* when */) {
   SP_DEFINE_C_PREDICATE(ppl_polyhedron_included_or_equal, 2);
   SP_DEFINE_C_PREDICATE(ppl_polyhedron_equal, 2);
   SP_DEFINE_C_PREDICATE(ppl_polyhedron_strictly_included, 2);
+  SP_DEFINE_C_PREDICATE(ppl_relation_with_constraint, 3);
+  SP_DEFINE_C_PREDICATE(ppl_relation_with_generator, 3);
+  SP_DEFINE_C_PREDICATE(ppl_affine_image, 4);
+  SP_DEFINE_C_PREDICATE(ppl_affine_preimage, 4);
 }
 
 extern "C" void

@@ -55,17 +55,12 @@ Poly_Con_Relation::saturates() {
 
 inline bool
 Poly_Con_Relation::implies(flags_t x, flags_t y) {
-  return x & y == y;
+  return (x & y) == y;
 }
 
 inline bool
 Poly_Con_Relation::implies(const Poly_Con_Relation& y) const {
   return implies(flags, y.flags);
-}
-
-inline Poly_Con_Relation
-Poly_Con_Relation::operator!() const {
-  return Poly_Con_Relation(EVERYTHING & ~flags);
 }
 
 inline bool
@@ -81,6 +76,11 @@ operator!=(const Poly_Con_Relation& x, const Poly_Con_Relation& y) {
 inline Poly_Con_Relation
 operator&&(const Poly_Con_Relation& x, const Poly_Con_Relation& y) {
   return Poly_Con_Relation(x.flags | y.flags);
+}
+
+inline Poly_Con_Relation
+operator-(const Poly_Con_Relation& x, const Poly_Con_Relation& y) {
+  return Poly_Con_Relation(x.flags & ~y.flags);
 }
 
 } // namespace Parma_Polyhedra_Library

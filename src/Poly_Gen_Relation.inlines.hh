@@ -40,17 +40,12 @@ Poly_Gen_Relation::subsumes() {
 
 inline bool
 Poly_Gen_Relation::implies(flags_t x, flags_t y) {
-  return x & y == y;
+  return (x & y) == y;
 }
 
 inline bool
 Poly_Gen_Relation::implies(const Poly_Gen_Relation& y) const {
   return implies(flags, y.flags);
-}
-
-inline Poly_Gen_Relation
-Poly_Gen_Relation::operator!() const {
-  return Poly_Gen_Relation(EVERYTHING & ~flags);
 }
 
 inline bool
@@ -66,6 +61,11 @@ operator!=(const Poly_Gen_Relation& x, const Poly_Gen_Relation& y) {
 inline Poly_Gen_Relation
 operator&&(const Poly_Gen_Relation& x, const Poly_Gen_Relation& y) {
   return Poly_Gen_Relation(x.flags | y.flags);
+}
+
+inline Poly_Gen_Relation
+operator-(const Poly_Gen_Relation& x, const Poly_Gen_Relation& y) {
+  return Poly_Gen_Relation(x.flags & ~y.flags);
 }
 
 } // namespace Parma_Polyhedra_Library

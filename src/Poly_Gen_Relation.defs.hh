@@ -34,6 +34,8 @@ namespace Parma_Polyhedra_Library {
   bool operator!=(const Poly_Gen_Relation& x, const Poly_Gen_Relation& y);
   Poly_Gen_Relation operator&&(const Poly_Gen_Relation& x,
 			       const Poly_Gen_Relation& y);
+  Poly_Gen_Relation operator-(const Poly_Gen_Relation& x,
+			      const Poly_Gen_Relation& y);
 }
 
 /*!
@@ -82,6 +84,11 @@ private:
   Parma_Polyhedra_Library::operator&&(const Poly_Gen_Relation& x,
 				      const Poly_Gen_Relation& y);
 
+  //! Yields the assertion with all the conjuncts of \p x that are not in \p y.
+  friend Poly_Gen_Relation
+  Parma_Polyhedra_Library::operator-(const Poly_Gen_Relation& x,
+				     const Poly_Gen_Relation& y);
+
   //! Output operator.
   friend std::ostream&
   Parma_Polyhedra_Library::operator<<(std::ostream& s,
@@ -96,9 +103,6 @@ public:
 
   //! True if and only if \p *this implies \p y.
   bool implies(const Poly_Gen_Relation& y) const;
-
-  //! Returns the logical negation of \p *this.
-  Poly_Gen_Relation operator!() const;
 
   //! Checks if all the invariants are satisfied.
   bool OK() const;

@@ -21,3 +21,10 @@
 :- foreign(ppl_remove_higher_dimensions(+term, +term)).
 :- foreign(ppl_add_dimensions_and_project(+term, +term)).
 :- foreign(ppl_add_dimensions_and_embed(+term, +term)).
+:- foreign(ppl_polyhedron_included_or_equal(+term, +term)).
+:- foreign(ppl_polyhedron_equal(+term, +term)).
+:- foreign(ppl_polyhedron_strictly_included(+term, +term)).
+:- foreign(ppl_relation_with_constraint(+term, +term, +term)).
+:- foreign(ppl_relation_with_generator(+term, +term, +term)).
+:- foreign(ppl_affine_image(+term, +term, +term, +term)).
+:- foreign(ppl_affine_preimage(+term, +term, +term, +term)).

@@ -971,19 +971,19 @@ ppl_relation_with_constraint(Prolog_term_ref t_ph, Prolog_term_ref t_c,
     while (r != PPL::Poly_Con_Relation::nothing()) {
       if (r.implies(PPL::Poly_Con_Relation::is_disjoint())) {
 	Prolog_put_atom(t_a, a_is_disjoint);
-	r = r && !PPL::Poly_Con_Relation::is_disjoint();
+	r = r - PPL::Poly_Con_Relation::is_disjoint();
       }
       else if (r.implies(PPL::Poly_Con_Relation::strictly_intersects())) {
 	Prolog_put_atom(t_a, a_strictly_intersects);
-	r = r && !PPL::Poly_Con_Relation::strictly_intersects();
+	r = r - PPL::Poly_Con_Relation::strictly_intersects();
       }
       else if (r.implies(PPL::Poly_Con_Relation::is_included())) {
 	Prolog_put_atom(t_a, a_is_included);
-	r = r && !PPL::Poly_Con_Relation::is_included();
+	r = r - PPL::Poly_Con_Relation::is_included();
       }
       else if (r.implies(PPL::Poly_Con_Relation::saturates())) {
 	Prolog_put_atom(t_a, a_saturates);
-	r = r && !PPL::Poly_Con_Relation::saturates();
+	r = r - PPL::Poly_Con_Relation::saturates();
       }
       Prolog_construct_cons(tail, t_a, tail);
     }
@@ -1010,7 +1010,7 @@ ppl_relation_with_generator(Prolog_term_ref t_ph, Prolog_term_ref t_g,
     while (r != PPL::Poly_Gen_Relation::nothing()) {
       if (r.implies(PPL::Poly_Gen_Relation::subsumes())) {
 	Prolog_put_atom(t_a, a_subsumes);
-	r = r && !PPL::Poly_Gen_Relation::subsumes();
+	r = r - PPL::Poly_Gen_Relation::subsumes();
       }
       Prolog_construct_cons(tail, t_a, tail);
     }
