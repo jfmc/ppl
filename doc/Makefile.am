@@ -27,6 +27,8 @@ VPATH = @srcdir@
 
 @SET_MAKE@
 
+DOXYGEN = doxygen -d Validate
+
 LICENSES = \
 gpl.pdf \
 gpl.ps.gz \
@@ -108,19 +110,19 @@ TEX_ENV = TEXINPUTS=$(abs_srcdir):$(TEXINPUTS)
 
 user-%.pdf-dir: user-%.doxyconf-pdf $(USER_STUFF)
 	rm -rf $@
-	$(TEX_ENV) doxygen $<
+	$(TEX_ENV) $(DOXYGEN) $<
 
 devref-%.pdf-dir: devref-%.doxyconf-pdf $(DEVREF_STUFF)
 	rm -rf $@
-	$(TEX_ENV) doxygen $<
+	$(TEX_ENV) $(DOXYGEN) $<
 
 user-%.ps-dir: user-%.doxyconf-ps $(USER_STUFF)
 	rm -rf $@
-	$(TEX_ENV) doxygen $<
+	$(TEX_ENV) $(DOXYGEN) $<
 
 devref-%.ps-dir: devref-%.doxyconf-ps $(DEVREF_STUFF)
 	rm -rf $@
-	$(TEX_ENV) doxygen $<
+	$(TEX_ENV) $(DOXYGEN) $<
 
 ppl-user-@VERSION@-%.pdf: user-%.pdf-dir
 	$(TEX_ENV) make -C $< refman.pdf && mv -f $</refman.pdf $@
@@ -136,7 +138,7 @@ ppl-devref-@VERSION@-%.ps: devref-%.ps-dir
 
 ppl-%-@VERSION@-html: %.doxyconf-html $(DEVREF_STUFF)
 	rm -rf html
-	$(TEX_ENV) doxygen $< && rm -rf $@ && mv -f html $@
+	$(TEX_ENV) $(DOXYGEN) $< && rm -rf $@ && mv -f html $@
 
 %.tar: %
 	tar cf $@ $<
