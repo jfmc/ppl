@@ -36,9 +36,6 @@ site: http://www.cs.unipr.it/ppl/ . */
 
 #define BE_LAZY
 
-#ifndef COMPARE_H79
-#define COMPARE_H79 0
-#endif
 namespace PPL = Parma_Polyhedra_Library;
 
 void
