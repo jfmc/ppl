@@ -2314,12 +2314,12 @@ PPL::Polyhedron::add_generators_and_minimize(GenSys& gs) {
     std::swap(gen_sys, gs);
     clear_empty();
     set_generators_up_to_date();
-    // This call to `minimize()' cannot return `true'.
+    // This call to `minimize()' cannot return `false'.
     minimize();
   }
   else {
     obtain_sorted_generators_with_sat_g();
-    // This call to `add_and_minimize(...)' cannot return `true'.
+    // This call to `add_and_minimize(...)' cannot return `false'.
     add_and_minimize(false, gen_sys, con_sys, sat_g, gs);
     clear_sat_c_up_to_date();
   }

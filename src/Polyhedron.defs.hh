@@ -103,25 +103,33 @@ namespace Parma_Polyhedra_Library {
     An object of the class Polyhedron represents a convex polyhedron
     in the vector space \f$\Rset^n\f$.
 
-    The dimension \f$n \in \Nset\f$ of the enclosing vector space
-    is a key attribute of the polyhedron:
+    Two key attributes of any polyhedron are its topological kind
+    (recording whether it is a C_Polyhedron or an NNC_Polyhedron object)
+    and its space dimension (the dimension \f$n \in \Nset\f$ of
+    the enclosing vector space).
+
     - all polyhedra, the empty ones included, are endowed with
-      a specific space dimension;
+      a specific topology and space dimension;
     - most operations working on a polyhedron and another object
       (i.e., another polyhedron, a constraint or generator,
       a set of variables, etc.) will throw an exception if
-      the polyhedron and the object are dimension-incompatible
-      (see the dimension-compatibility rules in the Introduction);
+      the polyhedron and the object are not both topology-compatible
+      and dimension-incompatible (see the Introduction);
+    - there is no way to change the topology of a polyhedron;
+      rather, there are constructors of the two derived classes
+      that builds a new polyhedron having a topology when
+      provided with the corresponding polyhedron of the other topology;
     - the only ways to change the space dimension of a polyhedron are:
       - <EM>explicit</EM> calls to operators provided for that purpose;
       - standard copy, assignment and swap operators.
 
-    Note that two polyhedra can be defined on the zero-dimension space:
-    the empty polyhedron and the universe polyhedron \f$R^0\f$.
+    Note that four different polyhedra can be defined on
+    the zero-dimension space:
+    the empty polyhedron, either closed or NNC,
+    and the universe polyhedron \f$R^0\f$, again either closed or NNC.
 
     A polyhedron can be specified as either a finite system of constraints
-    or a finite system of generators
-    (see Minkowski's theorem in the Introduction)
+    or a finite system of generators (see the Introduction)
     and it is always possible to obtain either representation.
     That is, if we know the system of constraints, we can obtain
     from this the system of generators that define the same polyhedron
@@ -362,8 +370,14 @@ protected:
   Polyhedron(const Polyhedron& y);
 
   //! \brief
-  //! Builds either the universe or the empty polyhedron, of dimension
-  //! \p num_dimensions, either necessarily closed or not.
+  //! Builds a polyhedron having the specified properties.
+  /*!
+    \param topol          The topology of the polyhedron;
+    \param num_dimensions The number of dimensions of the vector space
+                          enclosing the polyhedron;
+    \param kind           Specifies whether the universe or the empty
+                          polyhedron has to be built.
+  */
   Polyhedron(Topology topol, size_t num_dimensions, Degenerate_Kind kind);
 
   //! Builds a polyhedron from a system of constraints.
@@ -516,15 +530,19 @@ public:
   //! \brief
   //! Returns the relations holding between the polyhedron \p *this
   //! and the constraint \p c.
-  //! \exception std::invalid_argument thrown if \p *this and constraint
-  //!                                  \p c are dimension-incompatible.
+  /*!
+    \exception std::invalid_argument thrown if \p *this and constraint
+                                     \p c are dimension-incompatible.
+  */
   Poly_Con_Relation relation_with(const Constraint& c) const;
 
   //! \brief
   //! Returns the relations holding between the polyhedron \p *this
   //! and the generator \p g.
-  //! \exception std::invalid_argument thrown if \p *this and generator
-  //!                                  \p g are dimension-incompatible.
+  /*!
+    \exception std::invalid_argument thrown if \p *this and generator
+                                     \p g are dimension-incompatible.
+  */
   Poly_Gen_Relation relation_with(const Generator& g) const;
 
   //! \brief
@@ -558,9 +576,11 @@ public:
   //! \brief
   //! Computes the time-elapse between \p *this and \p y and
   //! assigns the result to \p *this.
-  //! \exception std::invalid_argument thrown if \p *this and \p y
-  //!                                  are topology-incompatible
-  //!                                  or dimension-incompatible.
+  /*!
+    \exception std::invalid_argument thrown if \p *this and \p y
+                                     are topology-incompatible
+                                     or dimension-incompatible.
+  */
   void time_elapse_assign(const Polyhedron& y);
 
 
@@ -579,19 +599,23 @@ public:
   //! \brief
   //! Adds a copy of constraint \p c to the system of constraints
   //! of \p *this.
-  //! \exception std::invalid_argument thrown if \p *this and constraint \p c
-  //!                                  are topology-incompatible
-  //!                                  or dimension-incompatible.
+  /*!
+    \exception std::invalid_argument thrown if \p *this and constraint \p c
+                                     are topology-incompatible
+                                     or dimension-incompatible.
+  */
   void add_constraint(const Constraint& c);
 
   //! \brief
   //! Adds a copy of generator \p g to the system of generators
   //! of \p *this.
-  //! \exception std::invalid_argument thrown if \p *this and generator \p g
-  //!                                  are topology-incompatible
-  //!                                  or dimension-incompatible,
-  //!                                  or if \p *this is an empty polyhedron
-  //!                                  and \p g is not a point.
+  /*!
+    \exception std::invalid_argument thrown if \p *this and generator \p g
+                                     are topology-incompatible
+                                     or dimension-incompatible,
+                                     or if \p *this is an empty polyhedron
+                                     and \p g is not a point.
+  */
   void add_generator(const Generator& g);
 
   //! \brief
@@ -668,11 +692,6 @@ public:
 
   //! Checks if all the invariants are satisfied.
   /*!
-    Such a check is performed in a way that is less intrusive as possible.
-    In case invariants are violated error messages are written on
-    <CODE>std::cerr</CODE>. This is useful for the purpose of debugging
-    the library.
-
     \param check_not_empty
       <CODE>true</CODE> if and only if, in addition to checking
       the invariants, \p *this must be checked to be not empty.
@@ -681,6 +700,11 @@ public:
       <CODE>true</CODE> if and only if \p *this satisfies
       all the invariants and either \p check_not_empty is
       <CODE>false</CODE> or \p *this is not empty.
+
+    The check is performed in a way that is less intrusive as possible.
+    In case invariants are violated error messages are written on
+    <CODE>std::cerr</CODE>. This is useful for the purpose of debugging
+    the library.
   */
   bool OK(bool check_not_empty = false) const;
 
@@ -855,40 +879,50 @@ public:
 
   //! \brief
   //! Removes all the specified dimensions.
-  //! \param to_be_removed  The set of Variable objects corresponding
-  //!                       to the dimensions to be removed.
-  //! \exception std::invalid_argument thrown if \p to_be_removed and
-  //!                                  \p *this are dimension-incompatible.
+  /*!
+    \param to_be_removed  The set of Variable objects corresponding
+                          to the dimensions to be removed.
+    \exception std::invalid_argument thrown if \p *this is
+                                     dimension-incompatible with one
+				     of the Variable objects contained
+				     in \p to_be_removed.
+  */
   void remove_dimensions(const std::set<Variable>& to_be_removed);
 
   //! \brief
   //! Removes the higher dimensions so that the resulting space
   //! will have dimension \p new_dimension.
-  //! \exception std::invalid_argument thrown if \p new_dimensions is greater
-  //!                                  than the space dimension of \p *this.
+  /*!
+    \exception std::invalid_argument thrown if \p new_dimensions is greater
+                                     than the space dimension of \p *this.
+  */
   void remove_higher_dimensions(size_t new_dimension);
 
   //! \brief
-  //! Adds the specified constraints and computes a new polyhedron,
-  //! returning <CODE>true</CODE> if the result is an empty polyhedron.
-  //! \param  cs            The constraints that will be added to the
-  //!                       current system of constraints. This parameter
-  //!                       is not declared <CODE>const</CODE> because
-  //!                       it can be modified.
-  //! \exception std::invalid_argument thrown if \p *this and \p cs
-  //!                                  are topology-incompatible
-  //!                                  or dimension-incompatible.
+  //! Adds the specified constraints and minimizes the result,
+  //! which is assigned to \p *this.
+  //! Returns <CODE>true</CODE> if and only if the result is not empty.
+  /*!
+    \param  cs            The constraints that will be added to the
+                          current system of constraints. This parameter
+                          is not declared <CODE>const</CODE> because
+                          it can be modified.
+    \exception std::invalid_argument thrown if \p *this and \p cs
+                                     are topology-incompatible
+                                     or dimension-incompatible.
+  */
   bool add_constraints_and_minimize(ConSys& cs);
 
-  //! \brief
   //! Adds the specified constraints without minimizing.
-  //! \param  cs             The constraints that will be added to the
-  //!                        current system of constraints. This parameter
-  //!                        is not declared <CODE>const</CODE> because
-  //!                        it can be modified.
-  //! \exception std::invalid_argument thrown if \p *this and \p cs
-  //!                                  are topology-incompatible
-  //!                                  or dimension-incompatible.
+  /*!
+    \param  cs             The constraints that will be added to the
+                           current system of constraints. This parameter
+                           is not declared <CODE>const</CODE> because
+                           it can be modified.
+    \exception std::invalid_argument thrown if \p *this and \p cs
+                                     are topology-incompatible
+                                     or dimension-incompatible.
+  */
   void add_constraints(ConSys& cs);
 
   //! \brief
@@ -896,24 +930,30 @@ public:
   //! \p cs.space_dimension() new dimensions;
   //! then adds to the system of constraints of \p *this
   //! a renamed-apart version of the constraints in \p cs.
-  //! \exception std::invalid_argument thrown if \p *this and \p cs
-  //!                                  are topology-incompatible.
+  /*!
+    \exception std::invalid_argument thrown if \p *this and \p cs
+                                     are topology-incompatible.
+  */
   void add_dimensions_and_constraints(ConSys& cs);
 
   //! \brief
-  //! Adds the specified generators.
-  //! \param  gs          The generators that will be added to the
-  //!                     current system of generators. The parameter is
-  //!                     not declared <CODE>const</CODE> because it
-  //!                     can be modified.
-  //! \return             <CODE>false</CODE> if the resulting
-  //!                     polyhedron is empty.
-  //! \exception std::invalid_argument thrown if \p *this and \p gs
-  //!                                  are topology-incompatible
-  //!                                  or dimension-incompatible,
-  //!                                  or if \p *this is empty and the
-  //!                                  the system of generators \p gs
-  //!                                  is not empty, but has no points.
+  //! Adds the specified generators and minimizes the result,
+  //! which is assigned to \p *this.
+  //! Returns <CODE>true</CODE> if and only if the result is not empty.
+  /*!
+    \param  gs          The generators that will be added to the
+                        current system of generators. The parameter is
+                        not declared <CODE>const</CODE> because it
+                        can be modified.
+    \return             <CODE>false</CODE> if the resulting
+                        polyhedron is empty.
+    \exception std::invalid_argument thrown if \p *this and \p gs
+                                     are topology-incompatible
+                                     or dimension-incompatible,
+                                     or if \p *this is empty and the
+                                     the system of generators \p gs
+                                     is not empty, but has no points.
+  */
   bool add_generators_and_minimize(GenSys& gs);
 
   //! \brief
@@ -956,9 +996,11 @@ public:
   //! \brief
   //! Returns <CODE>true</CODE> if and only if
   //! polyhedron \p x is contained in polyhedron \p y.
-  //! \exception std::invalid_argument thrown if \p x and \p y
-  //!                                  are topology-incompatible
-  //!                                  or dimension-incompatible.
+  /*!
+    \exception std::invalid_argument thrown if \p x and \p y
+                                     are topology-incompatible
+                                     or dimension-incompatible.
+  */
   friend bool
   Parma_Polyhedra_Library::operator<=(const Polyhedron& x,
 				      const Polyhedron& y);
@@ -972,10 +1014,12 @@ public:
   Parma_Polyhedra_Library::operator>>(std::istream& s, Polyhedron& p);
 
   //! \brief
-  //! Swaps \p *this with polyhedron \p y
+  //! Swaps \p *this with polyhedron \p y.
   //! (\p *this and \p y can be dimension-incompatible.)
-  //! \exception std::invalid_argument thrown if \p x and \p y
-  //!                                  are topology-incompatible.
+  /*!
+    \exception std::invalid_argument thrown if \p x and \p y
+                                     are topology-incompatible.
+  */
   void swap(Polyhedron& y);
 
 private:
