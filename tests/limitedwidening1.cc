@@ -71,12 +71,9 @@ main() {
 #endif
 
   Polyhedron computed_result = ph2;
-  bool retval = computed_result.limited_widening_assign(ph1, cs);
+  computed_result.limited_widening_assign(ph1, cs);
 
 #if NOISY
-  cout << "limited_widening_assign returned "
-       << (retval ? "true" : "false")
-       << endl;
   print_constraints(computed_result, "*** After limited_widening_assign ****");
 #endif
 
@@ -85,6 +82,5 @@ main() {
   known_result.insert(y >= 0);
   known_result.insert(x <= 5);
 
-  // Must have returned `true'.
-  return (retval && (computed_result == known_result)) ? 0 : 1;
+  return (computed_result == known_result) ? 0 : 1;
 }

@@ -409,11 +409,9 @@ public:
   //!                          the widened polyhedron. It is not
   //!                          declared <CODE>const</CODE>
   //!                          because it can be modified.
-  //! \return       <CODE>true</CODE> if the resulting polyhedron is not
-  //!               empty <CODE>false</CODE> otherwise.
   //! \exception std::invalid_argument thrown if \p *this, \p y and
   //!                                  \p cs are dimension-incompatible.
-  bool limited_widening_assign(const Polyhedron& y, ConSys& cs);
+  void limited_widening_assign(const Polyhedron& y, ConSys& cs);
 
   //! Returns the system of constraints.
   const ConSys& constraints() const;

@@ -29,7 +29,7 @@ site: http://www.cs.unipr.it/ppl/ . */
 using namespace std;
 using namespace Parma_Polyhedra_Library;
 
-#define NOISY 1
+#define NOISY 0
 
 int
 main() {
@@ -66,15 +66,12 @@ main() {
 #endif
 
   Polyhedron computed_result = ph2;
-  bool retval = computed_result.limited_widening_assign(ph1, cs);
+  computed_result.limited_widening_assign(ph1, cs);
 
 #if NOISY
-  cout << "limited_widening_assign returned "
-       << (retval ? "true" : "false")
-       << endl;
   print_constraints(computed_result, "*** After limited_widening_assign ****");
 #endif
 
-  // Must have returned `false' and the result must be empty.
-  return (!retval && computed_result.check_empty()) ? 0 : 1;
+  // The result must be empty.
+  return computed_result.check_empty() ? 0 : 1;
 }

@@ -34,6 +34,10 @@ Bugfixes
 o  Fixed Polyhedron::satisfies(const Constraints&) and
    Polyhedron::affine_image().
 
+o  Polyhedron::limited_widening_assign(const Polyhedron&, ConSys&)
+   was erroneously returning a (random) boolean: it is now a void
+   method.
+
 
 --------------------------------------------------------------------------
 NEWS for version 0.2 (released on November 14, 2001)

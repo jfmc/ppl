@@ -2124,7 +2124,7 @@ PPL::Polyhedron::widening_assign(const Polyhedron& y) {
   Returns <CODE>true</CODE> if the widened polyhedron \p *this is
   not empty.
 */
-bool
+void
 PPL::Polyhedron::limited_widening_assign(const Polyhedron& y, ConSys& cs) {
   Polyhedron& x = *this;
 
@@ -2150,14 +2150,14 @@ PPL::Polyhedron::limited_widening_assign(const Polyhedron& y, ConSys& cs) {
 			       *this, cs);
 
   if (y.is_empty())
-    return !x.is_empty();
+    return;
   if (x.is_empty())
-    return false;
+    return;
 
   // The limited_widening between two polyhedra in a zero-dimensional space
-  // is a polyhedron iin a zero-dimensional space, too.
+  // is a polyhedron in a zero-dimensional space, too.
   if (x_space_dim == 0)
-    return true;
+    return;
 
   y.minimize();
   // This function needs that the generators of `x' are up-to-date,
@@ -2203,7 +2203,6 @@ PPL::Polyhedron::limited_widening_assign(const Polyhedron& y, ConSys& cs) {
     x.clear_constraints_minimized();
     x.clear_generators_up_to_date();
   }
-  return !x.is_empty();
 }
 
 /*!
