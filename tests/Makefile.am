@@ -90,7 +90,7 @@ ORIGINAL_TESTS = \
 	disjoint1 disjoint2 disjoint3 \
 	dualhypercubes \
 	empty1 \
-	exceptions1 exceptions2 \
+	exceptions1 exceptions2  exceptions3 \
 	generalizedaffineimage1 generalizedaffineimage2 \
 	generalizedaffineimage3 generalizedaffineimage4 \
 	generalizedaffineimage5 generalizedaffineimage6 \
@@ -178,7 +178,7 @@ DERIVED_TESTS = \
 	nnc_contains1 nnc_contains2 \
 	nnc_disjoint1 nnc_disjoint2 \
 	nnc_empty1 \
-	nnc_exceptions1 \
+	nnc_exceptions1 nnc_exceptions3 \
 	nnc_generalizedaffineimage1 nnc_generalizedaffineimage2 \
 	nnc_generalizedaffineimage3 \
 	nnc_generalizedaffineimage5 nnc_generalizedaffineimage6 \
@@ -383,6 +383,7 @@ empty1_SOURCES = empty1.cc
 
 exceptions1_SOURCES = exceptions1.cc
 exceptions2_SOURCES = exceptions2.cc
+exceptions3_SOURCES = exceptions3.cc
 
 generalizedaffineimage1_SOURCES = generalizedaffineimage1.cc
 generalizedaffineimage2_SOURCES = generalizedaffineimage2.cc
@@ -761,6 +762,8 @@ nnc_disjoint2_CXXFLAGS = $(DERIVED_CXXFLAGS)
 
 nnc_exceptions1_SOURCES = exceptions1.cc
 nnc_exceptions1_CXXFLAGS = $(DERIVED_CXXFLAGS)
+nnc_exceptions3_SOURCES = exceptions3.cc
+nnc_exceptions3_CXXFLAGS = $(DERIVED_CXXFLAGS)
 
 nnc_generalizedaffineimage1_SOURCES = generalizedaffineimage1.cc
 nnc_generalizedaffineimage1_CXXFLAGS = $(DERIVED_CXXFLAGS)
@@ -1009,7 +1012,9 @@ TESTS = $(ORIGINAL_TESTS) $(DERIVED_TESTS) $(WATCHDOG_TESTS)
 XFAIL_TESTS = \
 nnc_limitedh79extrapolation3 \
 nnc_polydifference1 \
-addgenerators11
+addgenerators11 \
+exceptions3 \
+nnc_exceptions3
 
 check_PROGRAMS = $(TESTS) $(BUGS)
 
