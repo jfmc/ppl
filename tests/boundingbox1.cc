@@ -106,7 +106,7 @@ test3() {
   Variable y(1);
 
   C_Polyhedron ph(2);
-  ph.add_constraint(3 * x +y >= 2);
+  ph.add_constraint(3*x + y >= 2);
   ph.add_constraint(x <= 4);
   ph.add_constraint(y <= 4);
 
@@ -144,13 +144,12 @@ test3() {
 // This is a unbounded closed polyhedron in 4D but bounded in 2D.
 static void
 test4() {
-  //Variable w(0);
   Variable x(1);
   Variable y(2);
   Variable z(3);
 
   C_Polyhedron ph(4);
-  ph.add_constraint(3 * x + y >= 2);
+  ph.add_constraint(3*x + y >= 2);
   ph.add_constraint(x <= 4);
   ph.add_constraint(y <= 4);
   ph.add_constraint(z >= 5);
@@ -348,13 +347,12 @@ test9() {
 // This is a unbounded closed polyhedron in 4D but bounded in 2D.
 static void
 test10() {
-  //Variable w(0);
   Variable x(1);
   Variable y(2);
   Variable z(3);
 
   C_Polyhedron ph(4);
-  ph.add_constraint(3 * x +y >= 2);
+  ph.add_constraint(3*x + y >= 2);
   ph.add_constraint(x <= 4);
   ph.add_constraint(y <= 4);
   ph.add_constraint(z >= 5);
