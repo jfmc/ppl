@@ -1,4 +1,5 @@
-/*! \mainpage An Introduction to Convex Polyhedra
+/*! \mainpage Convex Polyhedra and the PPL
+\section introduction An Introduction to Convex Polyhedra
 
 The following definitions and results are taken from:
 - G. L. Nemhauser and L. A. Wolsey - Integer and Combinatorial Optimization - 
@@ -296,7 +297,7 @@ to the references mentioned before, from:
   Press, New Jersey 1963.
 
 
-\section homogeneous Homogeneous systems
+\section homogeneous Homogeneous Systems
 
 To simplify both representations of a polyhedron,
 it is useful to transform it to a polyhedral cone.
@@ -354,6 +355,12 @@ representing \f$P\f$ will always contain the positivity constraint
 while a system of generators for \f$P\f$ will always contain the 
 origin as a vertex.
 
+In addition, in the PPL representation of a polyhedron,
+vertices differ from rays only in that, for a vertex,
+the \f$n+1\f$'th term of its vector is different from zero and,
+for a ray, it is zero.
+In all other ways, vertices and rays are the same.
+
 <B>Valid linear inequalities</B>
 
 Let \f$P\f$ be a convex polyhedron (or polytope) in 
@@ -372,19 +379,18 @@ is satisfied by all points \f$x \in P\f$.
    if it can be eliminated from the system obtaining a system 
    equivalent to the previous one, i.e., having the same solutions.
 
-Moreover, in the implementation, 
+Moreover, in the PPL implementation, 
 
 - we will talk about <EM>irredundant</EM> set \f$Q\f$ of lines meaning that 
   \f$Q\f$ is a set of linearly independent lines;
 
 - we will say that an extremal ray \f$r_1\f$ is <EM>redundant</EM> 
-  if exist another extremal ray \f$r_2\f$ and a positive real number 
-  \f$\lambda\f$ such that \f$r_1 = \lambda r_2\f$.
+  if there exists another extremal ray \f$r_2\f$ and
+  \f$\lambda \in \mathbb{R}, \lambda > 0\f$
+  such that \f$r_1 = \lambda r_2\f$.
 
-\note
-Since we treat only polyhedra having homogeneous representation, 
-vertices behave as rays (for redundancy, too) and differ from 
-rays only for having inhomogeneous term not zero.
+Note that, as we are referring to the PPL representation, 
+this concept of a redundant ray also applies to vertices.
 
 
 <B>Face</B>
@@ -431,7 +437,8 @@ of \f$R\f$ and \f$S\f$ is defined as follows:
   R + S = \{\,r + s \mid r \in R, s \in S\,\}.
 \f]
 
-\section decomposition Decomposition
+%\section decomposition Decomposition
+<B>Decomposition</B>
 
 Because of the PPL choice to consider only polyhedral cones, we can 
 assume that every polyhedron we work on has a vertex, then we can 
@@ -444,7 +451,7 @@ Let us denote by \f$\mathcal{V}\f$, \f$\mathcal{R}\f$ and \f$\mathcal{L}\f$
 the set of points that are convex combination of the points of \f$V\f$, 
 non-negative combination of the points of \f$R\f$ and linear 
 combination of the points of \f$L\f$, respectively.
-Then any polyhedron \f$P\f$ can be decomposed as 
+Then any polyhedron \f$P\f$ can be <EM>decomposed</EM> as 
 \f[
   P = \mathcal{V} + \mathcal{R} + \mathcal{L}
 \f]
@@ -488,7 +495,8 @@ In \f$\mathbb{R}^n\f$
 The proofs of these properties can be obtained considering the definitions of 
 dimension and the decomposition of a polyhedron.
 
-\section saturation Saturation
+%\section saturation Saturation
+<B>Saturation</B>
 
 Let us consider a ray \f$r \in \mathbb{R}^n\f$ and an inequality 
 \f$(a, 0)\f$ where \f$a \in \mathbb{R}^n\f$: 
@@ -581,7 +589,7 @@ and \f$Q\f$ the set of rays that generate \f$C\f$. Then two rays
 To remove redundant constraints/generators we will use the following 
 characterization:
 
-<B>Redundance rule</B>
+<B>Redundancy rules</B>
 
 - An inequality is not redundant if it 
   satisfies both point (1) of the saturation rule and point (1) 
