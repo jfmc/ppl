@@ -3305,13 +3305,19 @@ PPL::Polyhedron::topological_closure_assign() {
     }
     if (changed) {
       con_sys.insert(Constraint::epsilon_leq_one());
+      // After changing the system of constraints, the generators
+      // are no longer up-to-date and the constraints are no longer
+      // minimized.
       clear_generators_up_to_date();
-    }
+      clear_constraints_minimized();
+   }
   }
   else {
     assert(generators_are_up_to_date());
     // Add the corresponding point to each closure point.
     gen_sys.add_corresponding_points();
+    // The system of generators is no longer minimized.
+    clear_generators_minimized();
   }
 }
 
