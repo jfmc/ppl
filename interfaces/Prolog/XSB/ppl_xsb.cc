@@ -386,7 +386,7 @@ Integer_to_integer_term(const PPL::Integer& n) {
   if (!n.fits_slong_p())
     throw PPL_integer_out_of_range(n);
   Prolog_term_ref t = p2p_new();
-  c2p_int(n.get_si(), t);
+  Prolog_put_long(t, n.get_si());
   return t;
 }
 
