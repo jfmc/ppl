@@ -57,6 +57,15 @@ namespace Parma_Polyhedra_Library {
 
   where \f$n\f$ is the dimension of the space.
 
+  \par A note on terminology.
+  As observed in the Introduction, there are cases when, in order to
+  represent a polyhedron \f$P\f$ using generators, we need to include
+  in the finite set \f$V\f$ even points of \f$P\f$ that are <EM>not</EM>
+  vertices of \f$P\f$.
+  Nonetheless, accordingly to what is now an established terminology,
+  we will call <EM>vertex</EM> any element of the set of generators \f$V\f$,
+  even though it is not a ``proper'' vertex of \f$P\f$.
+
   \par How to build a generator.
   Each type of generator is built by applying the corresponding
   function (<CODE>line</CODE>, <CODE>ray</CODE> or <CODE>vertex</CODE>)
