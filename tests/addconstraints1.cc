@@ -39,8 +39,6 @@ main() {
   Polyhedron ph1;
   ph1.add_constraints_and_minimize(cs1);
 
-  Polyhedron known_result(0, Polyhedron::EMPTY);
-
   ConSys cs2;
   cs2.insert(LinExpression::zero() >= 7);
   Polyhedron ph2;
