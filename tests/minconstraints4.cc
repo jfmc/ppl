@@ -39,7 +39,7 @@ main() {
   ConSys cs;
   cs.insert(x >= 0);
   cs.insert(x < 1);
-  cs.insert(y > x);
+  cs.insert(y > 0);
 
   NNC_Polyhedron ph(cs);
   ph.minimized_constraints();
