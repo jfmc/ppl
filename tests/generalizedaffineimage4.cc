@@ -37,27 +37,29 @@ main() {
   Variable A(0);
   Variable B(1);
 
-  C_Polyhedron ph(2);
-  ph.add_constraint(A >= 0);
-  ph.add_constraint(A <= 4);
-  ph.add_constraint(B <= 5);
-  ph.add_constraint(A <= B);
+  NNC_Polyhedron ph(2, NNC_Polyhedron::EMPTY);
+  ph.add_generator(point(A + B));
+  ph.add_generator(closure_point(2*A));
+  ph.add_generator(closure_point(2*A + 2*B));
+  ph.add_generator(closure_point(3*A + B));
 #if NOISY
   print_constraints(ph, "--- ph ---");
 #endif
 
-  ph.generalized_affine_image(B, ">=", A+2, -2);
+  ph.generalized_affine_image(B, "<", B+2);
 
-  C_Polyhedron known_result(2, C_Polyhedron::EMPTY);
-  known_result.add_generator(point(-B));
-  known_result.add_generator(point(4*A - 3*B));
-  known_result.add_generator(ray(B));
+  NNC_Polyhedron known_result(2, NNC_Polyhedron::EMPTY);
+  known_result.add_generator(point(A));
+  known_result.add_generator(closure_point(A + 3*B));
+  known_result.add_generator(closure_point(2*A + 4*B));
+  known_result.add_generator(closure_point(3*A + 3*B));
+  known_result.add_generator(ray(-B));
 
   int retval = (ph == known_result) ? 0 : 1;
 
 #if NOISY
   print_generators(ph, "--- ph after "
-		   "ph.generalized_affine_image(B, \">=\", A+2, -2) ---");
+		   "ph.generalized_affine_image(B, \"<\", B+2) ---");
 #endif
 
   return retval;

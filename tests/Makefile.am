@@ -50,7 +50,7 @@ ORIGINAL_TESTS = \
 	addgenerators1 addgenerators2 addgenerators3 addgenerators4 \
 	addgenerators5 addgenerators6 addgenerators7 addgenerators8 \
 	addgenerators9 addgenerators10 \
-	affineimage1 affineimage2 affineimage3 affineimage4 \
+	affineimage1 affineimage2 affineimage3 affineimage4 affineimage5 \
 	affinepreimage1 affinepreimage2 affinepreimage3 affinepreimage4 \
 	affinepreimage5 affinepreimage6 \
 	affinetrans \
@@ -67,7 +67,7 @@ ORIGINAL_TESTS = \
         empty1 \
 	exceptions1 exceptions2 \
 	generalizedaffineimage1 generalizedaffineimage2 \
-	generalizedaffineimage3 \
+	generalizedaffineimage3 generalizedaffineimage4 \
 	generators1 generators2 generators3 generators4 generators5 \
 	h79widening1 h79widening2 h79widening3 h79widening4 h79widening5 \
 	inclusion1 inclusion2 \
@@ -109,6 +109,7 @@ DERIVED_TESTS = \
 	nnc_addgenerators4 nnc_addgenerators5 nnc_addgenerators6 \
 	nnc_addgenerators9 nnc_addgenerators10 \
 	nnc_affineimage1 nnc_affineimage2 nnc_affineimage3 nnc_affineimage4 \
+	nnc_affineimage5 \
 	nnc_affinepreimage1 nnc_affinepreimage2 nnc_affinepreimage3 \
 	nnc_affinepreimage4 nnc_affinepreimage5 nnc_affinepreimage6 \
 	nnc_affinetrans \
@@ -123,6 +124,8 @@ DERIVED_TESTS = \
 	nnc_constraints1 nnc_constraints2 nnc_constraints3 \
 	nnc_empty1 \
 	nnc_exceptions1 \
+	nnc_generalizedaffineimage1 nnc_generalizedaffineimage2 \
+	nnc_generalizedaffineimage3 \
 	nnc_generators1 nnc_generators2 nnc_generators3 nnc_generators4 \
 	nnc_generators5 \
 	nnc_h79widening1 nnc_h79widening2 nnc_h79widening4 nnc_h79widening5 \
@@ -211,6 +214,7 @@ affineimage1_SOURCES = affineimage1.cc
 affineimage2_SOURCES = affineimage2.cc
 affineimage3_SOURCES = affineimage3.cc
 affineimage4_SOURCES = affineimage4.cc
+affineimage5_SOURCES = affineimage5.cc
 
 affinepreimage1_SOURCES = affinepreimage1.cc
 affinepreimage2_SOURCES = affinepreimage2.cc
@@ -264,6 +268,7 @@ exceptions2_SOURCES = exceptions2.cc
 generalizedaffineimage1_SOURCES = generalizedaffineimage1.cc
 generalizedaffineimage2_SOURCES = generalizedaffineimage2.cc
 generalizedaffineimage3_SOURCES = generalizedaffineimage3.cc
+generalizedaffineimage4_SOURCES = generalizedaffineimage4.cc
 
 generators1_SOURCES = generators1.cc
 generators2_SOURCES = generators2.cc
@@ -437,6 +442,8 @@ nnc_affineimage3_SOURCES = affineimage3.cc
 nnc_affineimage3_CXXFLAGS = $(DERIVED_CXXFLAGS)
 nnc_affineimage4_SOURCES = affineimage4.cc
 nnc_affineimage4_CXXFLAGS = $(DERIVED_CXXFLAGS)
+nnc_affineimage5_SOURCES = affineimage5.cc
+nnc_affineimage5_CXXFLAGS = $(DERIVED_CXXFLAGS)
 
 nnc_affinepreimage1_SOURCES = affinepreimage1.cc
 nnc_affinepreimage1_CXXFLAGS = $(DERIVED_CXXFLAGS)
@@ -513,6 +520,13 @@ nnc_empty1_CXXFLAGS = $(DERIVED_CXXFLAGS)
 
 nnc_exceptions1_SOURCES = exceptions1.cc
 nnc_exceptions1_CXXFLAGS = $(DERIVED_CXXFLAGS)
+
+nnc_generalizedaffineimage1_SOURCES = generalizedaffineimage1.cc
+nnc_generalizedaffineimage1_CXXFLAGS = $(DERIVED_CXXFLAGS)
+nnc_generalizedaffineimage2_SOURCES = generalizedaffineimage2.cc
+nnc_generalizedaffineimage2_CXXFLAGS = $(DERIVED_CXXFLAGS)
+nnc_generalizedaffineimage3_SOURCES = generalizedaffineimage3.cc
+nnc_generalizedaffineimage3_CXXFLAGS = $(DERIVED_CXXFLAGS)
 
 nnc_generators1_SOURCES = generators1.cc
 nnc_generators1_CXXFLAGS = $(DERIVED_CXXFLAGS)

@@ -50,7 +50,7 @@ main() {
 
   C_Polyhedron known_result(2, C_Polyhedron::EMPTY);
   known_result.add_generator(point(2*B));
-  known_result.add_generator(point(4*A + 2*B));
+  known_result.add_generator(point(4*A + 6*B));
   known_result.add_generator(ray(B));
 
   int retval = (ph == known_result) ? 0 : 1;

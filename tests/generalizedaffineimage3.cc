@@ -32,15 +32,15 @@ using namespace Parma_Polyhedra_Library;
 
 int
 main() {
-  set_handlers();
+  //set_handlers();
 
   Variable A(0);
   Variable B(1);
 
   C_Polyhedron ph(2);
-  ph.add_constraint(2*A >= 3);
-  ph.add_constraint(7*A <= 40);
-  ph.add_constraint(3*B >= 19);
+  ph.add_constraint(2*A <= 3);
+  ph.add_constraint(7*A >= 2);
+  ph.add_constraint(3*B >= 1);
   ph.add_constraint(2*A >= B);
 #if NOISY
   print_generators(ph, "--- ph ---");
@@ -49,8 +49,8 @@ main() {
   ph.generalized_affine_image(B, "<=", A-B+2, -3);
 
   C_Polyhedron known_result(2, C_Polyhedron::EMPTY);
-  known_result.add_generator(point(240*A + 52*B, 42));
-  known_result.add_generator(point(133*A + 52*B, 42));
+  known_result.add_generator(point(9*A - B, 6));
+  known_result.add_generator(point(2*A - 4*B, 7));
   known_result.add_generator(ray(-B));
 
   int retval = (ph == known_result) ? 0 : 1;
