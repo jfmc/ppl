@@ -37,7 +37,7 @@ typedef size_t dimension_type;
 typedef size_t memory_size_type;
 
 //! Returns a value that does not designate a valid dimension.
-inline dimension_type
+dimension_type
 not_a_dimension();
 
 //! Relation symbols.
@@ -149,7 +149,7 @@ Temp_Coefficient_Holder temp_Coefficient_holder_ ## id = (id)
   allocation will not exceed \p maximum_size.
 */
 #endif
-inline dimension_type
+dimension_type
 compute_capacity(const dimension_type requested_size,
 		 const dimension_type maximum_size);
 
@@ -190,7 +190,7 @@ extern const Throwable* volatile abandon_expensive_computations;
 //! to be nonzero, the exception it points to is thrown.
 /*! \relates Throwable */
 #endif
-inline void
+void
 maybe_abandon();
 
 //! A tag class.
