@@ -51,7 +51,7 @@ check-local: $(MPS_FILES) lpenum #expected
 	    echo "*** lpenum -v $$m -oobtained $$k" >>obtained; \
 	    $(LIBTOOL) --mode=execute -dlopen ../../../src/libppl.la \
 	      -dlopen ../libppl_c.la \
-	        lpenum -v $$m -oobtained $(srcdir)/$$k >/dev/null; \
+	        ./lpenum -v $$m -oobtained $(srcdir)/$$k >/dev/null; \
 	  done \
 	done
 	diff -q --ignore-all-space $(srcdir)/expected obtained
