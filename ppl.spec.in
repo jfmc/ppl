@@ -9,7 +9,7 @@ Release:	%{release}
 Vendor:		ppl-devel@cs.unipr.it
 Packager:	%{packager}
 URL:		http://www.cs.unipr.it/ppl/
-Source:         ftp://ftp.cs.unipr.it/ppl/%{name}-%{version}.tar.gz
+Source:         ftp://ftp.cs.unipr.it/pub/ppl/releases/%{version}/%{name}-%{version}.tar.gz
 #Patch:		
 Group:		Development/Libraries
 Copyright:	GPL
