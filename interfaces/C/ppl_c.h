@@ -32,22 +32,6 @@ Detailed description with examples to be written.
 #define _ppl_c_h 1
 
 #include <gmp.h>
-#include <stdio.h>
-
-/*
-  __BEGIN_DECLS should be used at the beginning of the C declarations,
-  so that C++ compilers don't mangle their names.  __END_DECLS is used
-  at the end of C declarations.
-*/
-#undef __BEGIN_DECLS
-#undef __END_DECLS
-#ifdef __cplusplus
-# define __BEGIN_DECLS extern "C" {
-# define __END_DECLS }
-#else
-# define __BEGIN_DECLS /* empty */
-# define __END_DECLS /* empty */
-#endif
 
 /*
   __P is a macro used to wrap function prototypes, so that compilers
@@ -63,7 +47,9 @@ Detailed description with examples to be written.
 # define __P(protos) ()
 #endif
 
-__BEGIN_DECLS
+#ifdef __cplusplus
+extern "C" {
+#endif
 
 /*!
   Defines the error code that any function can return.
@@ -116,10 +102,11 @@ ppl_set_error_handler __P((void (*h)(enum ppl_enum_error_code code,
 				     const char* description)));
 
 
+#undef PPL_TYPE_DECLARATION
 #define PPL_TYPE_DECLARATION(Type) \
-/*! Opaque pointer to Type. */ \
+/*! \brief Opaque pointer to Type. */ \
 typedef struct ppl_ ## Type ## _tag* ppl_ ## Type ## _t; \
-/*! Opaque pointer to const Type. */ \
+/*! \brief Opaque pointer to const Type. */ \
 typedef struct ppl_ ## Type ## _tag const* ppl_const_ ## Type ## _t
 
 
@@ -141,6 +128,7 @@ PPL_TYPE_DECLARATION(GenSys__const_iterator);
 
 PPL_TYPE_DECLARATION(Polyhedron);
 
+#undef PPL_TYPE_DECLARATION
 
 /*!
   Creates a new coefficent with value 0 and writes an handle for the
@@ -193,8 +181,8 @@ ppl_Coefficient_to_mpz_t __P((ppl_const_Coefficient_t c, mpz_t z));
 
 /*!
   Returns a positive integer if \p c is well formed, i.e., if it
-  satisfies all its implementation variant; returns 0 and make some
-  noise if \p c is broken.  Useful for debugging purposes.
+  satisfies all its implementation variant; returns 0 and perhaps
+  make some noise if \p c is broken.  Useful for debugging purposes.
 */
 int
 ppl_Coefficient_OK __P((ppl_const_Coefficient_t c));
@@ -281,8 +269,8 @@ ppl_LinExpression_space_dimension __P((ppl_const_LinExpression_t le));
 
 /*!
   Returns a positive integer if \p le is well formed, i.e., if it
-  satisfies all its implementation variant; returns 0 and make some
-  noise if \p le is broken.  Useful for debugging purposes.
+  satisfies all its implementation variant; returns 0 and perhaps
+  make some noise if \p le is broken.  Useful for debugging purposes.
 */
 int
 ppl_LinExpression_OK __P((ppl_const_LinExpression_t le));
@@ -382,8 +370,8 @@ ppl_Constraint_inhomogeneous_term __P((ppl_const_Constraint_t c,
 
 /*!
   Returns a positive integer if \p c is well formed, i.e., if it
-  satisfies all its implementation variant; returns 0 and make some
-  noise if \p c is broken.  Useful for debugging purposes.
+  satisfies all its implementation variant; returns 0 and perhaps
+  make some noise if \p c is broken.  Useful for debugging purposes.
 */
 int
 ppl_Constraint_OK __P((ppl_const_Constraint_t c));
@@ -447,8 +435,8 @@ ppl_ConSys_insert_Constraint __P((ppl_ConSys_t cs, ppl_const_Constraint_t c));
 
 /*!
   Returns a positive integer if \p cs is well formed, i.e., if it
-  satisfies all its implementation variant; returns 0 and make some
-  noise if \p cs is broken.  Useful for debugging purposes.
+  satisfies all its implementation variant; returns 0 and perhaps
+  make some noise if \p cs is broken.  Useful for debugging purposes.
 */
 int
 ppl_ConSys_OK __P((ppl_const_ConSys_t c));
@@ -621,8 +609,8 @@ ppl_Generator_divisor __P((ppl_const_Generator_t g, ppl_Coefficient_t n));
 
 /*!
   Returns a positive integer if \p g is well formed, i.e., if it
-  satisfies all its implementation variant; returns 0 and make some
-  noise if \p g is broken.  Useful for debugging purposes.
+  satisfies all its implementation variant; returns 0 and perhaps
+  make some noise if \p g is broken.  Useful for debugging purposes.
 */
 int
 ppl_Generator_OK __P((ppl_const_Generator_t g));
@@ -687,8 +675,8 @@ ppl_GenSys_insert_Generator __P((ppl_GenSys_t gs, ppl_const_Generator_t g));
 
 /*!
   Returns a positive integer if \p gs is well formed, i.e., if it
-  satisfies all its implementation variant; returns 0 and make some
-  noise if \p gs is broken.  Useful for debugging purposes.
+  satisfies all its implementation variant; returns 0 and perhaps
+  make some noise if \p gs is broken.  Useful for debugging purposes.
 */
 int
 ppl_GenSys_OK __P((ppl_const_GenSys_t c));
@@ -1438,14 +1426,16 @@ ppl_Polyhedron_strictly_contains_Polyhedron __P((ppl_const_Polyhedron_t x,
 
 /*!
   Returns a positive integer if \p ph is well formed, i.e., if it
-  satisfies all its implementation variant; returns 0 and make some
-  noise if \p ph is broken.  Useful for debugging purposes.
+  satisfies all its implementation variant; returns 0 and perhaps
+  make some noise if \p ph is broken.  Useful for debugging purposes.
 */
 int
 ppl_Polyhedron_OK __P((ppl_const_Polyhedron_t ph));
 
+#ifdef __cplusplus
+}
+#endif
 
-__END_DECLS
 #undef __P
 
 #endif /* !_ppl_c_h */
