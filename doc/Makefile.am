@@ -51,8 +51,7 @@ fdl.txt
 
 LICENSES = \
 $(PDF_LICENSES) \
-$(PS_LICENSES) \
-$(TXT_LICENSES)
+$(PS_LICENSES)
 
 HTML_MANUALS = \
 ppl-user-@VERSION@-html.tar.gz \
@@ -108,8 +107,6 @@ $(MANUALS)
 
 # Do nothing by default.
 all:
-
-dist-hook: $(DIST_DOCS)
 
 user-browse: ppl-user-@VERSION@-browse.pdf
 
@@ -307,12 +304,10 @@ user.tex \
 devref.tex \
 gpl.tex \
 fdl.tex \
-gpl.txt \
-fdl.txt \
 ppl.sty \
 README.doc
 
 mostlyclean-local:
 	rm -rf $(ALL_TARGETS) $(LATEX_DIRS) *.aux *.log
 
-CLEANFILES = $(DIST_DOCS)
+CLEANFILES = $(DIST_HTML_DOCS) $(DIST_PDF_DOCS) $(DIST_PS_DOCS)

@@ -36,6 +36,8 @@ manuals:
   ppl-user-X.Y.Z-print.pdf
   ppl-user-X.Y.Z-print.ps.gz
 
+FIX debian
+
 If you have installed a binary RPM package, then you have the same set
 of manuals. You can find them with the command `rpm -ql ppl' which
 will print, among other things, something like
