@@ -210,7 +210,9 @@ By definition, each polyhedron \f$\cP \in \Pset_n\f$ is the set of solutions
 to a <EM>constraint system</EM>, i.e., a finite number of constraints.
 By using matrix notation, we have
 \f[
-  P = \{\,
+  \cP
+    \defeq
+      \{\,
         \vect{x} \in \Rset^n
       \mid
         A_1 \vect{x} =    \vect{b}_1,
@@ -413,8 +415,8 @@ the other topology.
 
 <B>Space Dimensions and Dimension-compatibility</B>
 
-The <EM>space dimension</EM> of an NNC polyhedron \f$P \in \Pset_n\f$
-(resp., a C polyhedron \f$P \in \CPset_n\f$) is the dimension
+The <EM>space dimension</EM> of an NNC polyhedron \f$\cP \in \Pset_n\f$
+(resp., a C polyhedron \f$\cP \in \CPset_n\f$) is the dimension
 \f$n \in \Nset\f$ of the corresponding vector space \f$\Rset^n\f$.
 The space dimension of constraints, generators and other objects
 of the library is defined similarly.
@@ -698,7 +700,7 @@ we denote by \f$\phi(S) \sseq \Rset^m\f$ the <EM>image</EM>
 under \f$\phi\f$ of the set \f$S \sseq \Rset^n\f$; formally,
 \f[
   \phi(S)
-    =
+    \defeq
       \bigl\{\,
         \phi(\vect{v}) \in \Rset^m
       \bigm|
@@ -711,7 +713,7 @@ that is the largest set \f$S \sseq \Rset^n\f$ such that
 \f$\phi(S) \sseq S'\f$; formally,
 \f[
   \phi^{-1}(S')
-    =
+    \defeq
       \bigl\{\,
         \vect{v} \in \Rset^n
       \bigm|
@@ -1048,16 +1050,16 @@ that their results cannot be worse than the smallest
 
 The PPL provides the finite powerset construction; this takes a
 pre-existing domain and upgrades it to one that can represent
-disjunctive information. The construction follows the approach
-described in \ref Bag98 "[Bag98]", also summarised in
-\ref BHZ04 "[BHZ04]" where there is an account of generic widenings for the
-powerset domain (some of which are supported in the instantiation of
-this construction by the domain of NNC polyhedra and described in
-Section \ref poly_powerset).
+disjunctive information (by using a <EM>finite</EM> number of
+disjucts).  The construction follows the approach described in
+\ref Bag98 "[Bag98]", also summarised in \ref BHZ04 "[BHZ04]" where there
+is an account of generic widenings for the powerset domain (some of
+which are supported in the instantiation of this construction by the
+domain of convex polyhedra and described in Section \ref poly_powerset).
 
 The construction is built from a pre-existing base-level domain
-\f$D\f$ which must include an entailment relation '\f$\mathord{\entails}\f$',
-a top element '\f$\true\f$' and bottom element '\f$\false\f$'.
+\f$D\f$ which must include an entailment relation `\f$\mathord{\entails}\f$',
+a top element `\f$\true\f$' and bottom element `\f$\false\f$'.
 
 As the intended semantics of an element of the powerset of the
 base-level domain is that of disjunction, elements of the powerset are
