@@ -107,7 +107,14 @@ PPL::Polyhedron::minimized_constraints() const {
 const PPL::GenSys&
 PPL::Polyhedron::generators() const {
   if (marked_empty()) {
-    assert(gen_sys.num_columns() == 0 && gen_sys.num_rows() == 0);
+    assert(gen_sys.num_rows() == 0);
+    // We want `gen_sys' to have the appropriate space dimension,
+    // even though it is an empty generator system.
+    if (gen_sys.space_dimension() != space_dim) {
+      GenSys gs;
+      gs.adjust_topology_and_space_dimension(topology(), space_dim);
+      const_cast<GenSys&>(gen_sys).swap(gs);
+    }
     return gen_sys;
   }
 
@@ -122,7 +129,14 @@ PPL::Polyhedron::generators() const {
   if ((has_pending_constraints() && !process_pending_constraints())
       || (!generators_are_up_to_date() && !update_generators())) {
     // We have just discovered that `*this' is empty.
-    assert(gen_sys.num_columns() == 0 && gen_sys.num_rows() == 0);
+    assert(gen_sys.num_rows() == 0);
+    // We want `gen_sys' to have the appropriate space dimension,
+    // even though it is an empty generator system.
+    if (gen_sys.space_dimension() != space_dim) {
+      GenSys gs;
+      gs.adjust_topology_and_space_dimension(topology(), space_dim);
+      const_cast<GenSys&>(gen_sys).swap(gs);
+    }
     return gen_sys;
   }
 
@@ -1097,10 +1111,8 @@ PPL::Polyhedron::add_recycled_constraints(ConSys& cs) {
     throw_dimension_incompatible("add_recycled_constraints(cs)", "cs", cs);
 
   // Adding no constraints is a no-op.
-  if (cs.num_rows() == 0) {
-    assert(cs.num_columns() == 0);
+  if (cs.num_rows() == 0)
     return;
-  }
 
   if (space_dim == 0) {
     // In a 0-dimensional space the constraints are
@@ -1258,10 +1270,8 @@ PPL::Polyhedron::add_recycled_generators(GenSys& gs) {
     throw_dimension_incompatible("add_recycled_generators(gs)", "gs", gs);
 
   // Adding no generators is a no-op.
-  if (gs.num_rows() == 0) {
-    assert(gs.num_columns() == 0);
+  if (gs.num_rows() == 0)
     return;
-  }
 
   // Adding valid generators to a zero-dimensional polyhedron
   // transform it in the zero-dimensional universe polyhedron.
