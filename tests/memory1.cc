@@ -49,7 +49,10 @@ using namespace Parma_Polyhedra_Library;
 #define NOISY 0
 #endif
 
-#if !(HAVE_DECL_RLIMIT_DATA || HAVE_DECL_RLIMIT_RSS || HAVE_DECL_RLIMIT_VMEM || HAVE_DECL_RLIMIT_AS)
+// Cygwin has an almost dummy definition of setrlimit().
+#if defined(__CYGWIN__) \
+|| !(HAVE_DECL_RLIMIT_DATA || HAVE_DECL_RLIMIT_RSS \
+     || HAVE_DECL_RLIMIT_VMEM || HAVE_DECL_RLIMIT_AS)
 
 int
 main() {
@@ -199,4 +202,4 @@ main() {
   return 0;
 }
 
-#endif // HAVE_DECL_RLIMIT_DATA || HAVE_DECL_RLIMIT_RSS || ...
+#endif // !defined(__CYGWIN__) && (HAVE_DECL_RLIMIT_DATA || ...)
