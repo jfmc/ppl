@@ -296,7 +296,6 @@ PPL::Matrix::print(std::ostream& s) const {
 }
 
 /*! \relates Parma_Polyhedra_Library::Matrix */
-// A placeholder for print().
 std::ostream&
 PPL::operator<<(std::ostream& s, const Matrix& m) {
   m.print(s);
@@ -327,7 +326,6 @@ PPL::Matrix::get(std::istream& s) {
 }
 
 /*! \relates Parma_Polyhedra_Library::Matrix */
-// A placeholder for get().
 std::istream&
 PPL::operator>>(std::istream& s, Matrix& m) {
   m.get(s);

@@ -33,10 +33,13 @@ site: http://www.cs.unipr.it/ppl/ . */
 #include <cstddef>
 #include <vector>
 #include <iterator>
+#include <iosfwd>
 
 namespace Parma_Polyhedra_Library {
   // Put them in the namespace here to declare them friend later.
   bool operator<=(const Polyhedron& x, const Polyhedron& y);
+  std::ostream& operator<<(std::ostream& s, const ConSys& cs);
+  std::istream& operator>>(std::istream& s, ConSys& cs);
 }
 
 //! A system of constraints.
@@ -216,8 +219,13 @@ public:
 
 private:
   friend class Parma_Polyhedra_Library::Polyhedron;
-  friend bool Parma_Polyhedra_Library::operator<=(const Polyhedron& x,
-						  const Polyhedron& y);
+  friend bool
+  Parma_Polyhedra_Library::operator<=(const Polyhedron& x,
+				      const Polyhedron& y);
+  friend std::ostream&
+  Parma_Polyhedra_Library::operator<<(std::ostream& s, const ConSys& m);
+  friend std::istream&
+  Parma_Polyhedra_Library::operator>>(std::istream& s, ConSys& cs);
 
   //! Builds an empty system of constraints having the specified topology.
   ConSys(Topology topol);

@@ -353,6 +353,13 @@ PPL::ConSys::print(std::ostream& s) const {
   }
 }
 
+/*! \relates Parma_Polyhedra_Library::ConSys */
+std::ostream&
+PPL::operator<<(std::ostream& s, const ConSys& cs) {
+  cs.print(s);
+  return s;
+}
+
 /*!
   Raw read function: resizes the matrix of constraints using number of
   rows and number of columns read from \p s, then initializes the
@@ -393,6 +400,13 @@ PPL::ConSys::get(std::istream& s) {
   // Checking for well-formedness.
   if (!x.OK())
     throw std::runtime_error("void PPL::ConSys::get(s)");
+}
+
+/*! \relates Parma_Polyhedra_Library::ConSys */
+std::istream&
+PPL::operator>>(std::istream& s, ConSys& cs) {
+  cs.get(s);
+  return s;
 }
 
 /*!
