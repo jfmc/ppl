@@ -1048,20 +1048,10 @@ PPL::Polyhedron::remove_dimensions(const std::set<Variable>& to_be_removed) {
     throw_dimension_incompatible("void PPL::Polyhedron::remove_dimensions(vs)",
 				 *this, max_dim_to_be_removed);
 
-  // Removing dimensions from the empty polyhedron
-  // just updates the space_dim member.
-  if (is_empty()) {
-    space_dim -= to_be_removed.size();
-    con_sys.clear();
-    assert(OK(false));
-    return;
-  }
-
-  if (!generators_are_up_to_date())
-    update_generators();
-
-  // Emptyness could have been just detected.
-  if (is_empty()) {
+  if (is_empty()
+      || (!generators_are_up_to_date() && !update_generators())) {
+    // Removing dimensions from the empty polyhedron:
+    // just updates the space dimension.
     space_dim -= to_be_removed.size();
     con_sys.clear();
     assert(OK(false));
@@ -1097,15 +1087,14 @@ PPL::Polyhedron::remove_dimensions(const std::set<Variable>& to_be_removed) {
   // The number of remaining columns is dst_col.
   gen_sys.resize_no_copy(nrows, dst_col);
 
-  // Constraints are no longer up-to-date.
-  clear_constraints_up_to_date();
-
-  // FIXME: put this at the right place.
-  clear_generators_minimized();
-
-  // Updating the space dimension.
-  if (gen_sys.num_columns() > 1)
+  if (gen_sys.num_columns() > 1) {
+    // Update the space dimension.
     space_dim = gen_sys.num_columns() - 1;
+    // Constraints are not up-to-date.
+    clear_constraints_up_to_date();
+    // Generators are no longer guaranteed to be minimized.
+    clear_generators_minimized();
+  }
   else {
     // If less than 2 columns are left,
     // the resulting polyhedron is the zero-dimension universe.
@@ -1120,7 +1109,8 @@ PPL::Polyhedron::remove_dimensions(const std::set<Variable>& to_be_removed) {
 }
 
 /*!
-  FIXME: a long description must also be provided.
+  Removes the high dimensions so that the resulting space
+  is of dimension \p new_dimension.
 */
 void
 PPL::Polyhedron::remove_higher_dimensions(size_t new_dimension) {
@@ -1139,35 +1129,27 @@ PPL::Polyhedron::remove_higher_dimensions(size_t new_dimension) {
 				 "remove_higher_dimensions(nd)",
 				 *this, new_dimension);
 
-  // Removing dimensions from the empty polyhedron
-  // just updates the space_dim member.
-  if (is_empty()) {
+  if (is_empty()
+      || (!generators_are_up_to_date() && !update_generators())) {
+    // Removing dimensions from the empty polyhedron:
+    // just updates the space dimension.
     space_dim = new_dimension;
     con_sys.clear();
     assert(OK(false));
     return;
   }
 
-  if (!generators_are_up_to_date())
-    update_generators();
-
-  // Emptyness could have been just detected.
-  if (is_empty()) {
-    space_dim = new_dimension;
-    con_sys.clear();
-    assert(OK(false));
-    return;
-  }
-
-  // The number of remaining columns is new_dimension+1.
+  // The number of remaining columns is `new_dimension+1'.
   gen_sys.resize_no_copy(gen_sys.num_rows(), new_dimension+1);
 
-  // Constraints are no longer up-to-date.
-  clear_constraints_up_to_date();
-
-  // Updating the space dimension.
-  if (gen_sys.num_columns() > 1)
+  if (gen_sys.num_columns() > 1) {
+    // Update the space dimension.
     space_dim = gen_sys.num_columns() - 1;
+    // Constraints are not up-to-date.
+    clear_constraints_up_to_date();
+    // Generators are no longer guaranteed to be minimized.
+    clear_generators_minimized();
+  }
   else {
     // If less than 2 columns are left,
     // the resulting polyhedron is the zero-dimension universe.
