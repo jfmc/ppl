@@ -54,6 +54,8 @@ ppl_pl_SOURCES = ppl_pl.cc
 check_PROGRAMS = pl_clpq
 pl_clpq_SOURCES = pl_clpq.cc
 
+# Notice: we are linking statically until we understand whether
+# and if libtool and plld can interoperate.
 ppl_pl$(EXEEXT): ppl_swiprolog.o ppl_pl.o
 	plld -pl-options,-g,main., -o $@ $+ -L$(top_builddir)/src/.libs -lppl @extra_libraries@
 
