@@ -674,6 +674,15 @@ static bool Prolog_interface_initialized = false;
 
 static Parma_Watchdog_Library::Watchdog* p_timeout_object = 0;
 
+static void
+reset_timeout() {
+  if (p_timeout_object) {
+    delete p_timeout_object;
+    p_timeout_object = 0;
+    PPL::abandon_exponential_computations = 0;
+  }
+}
+
 extern "C" Prolog_foreign_return_type
 ppl_initialize() {
   try {
@@ -700,6 +709,8 @@ ppl_finalize() {
       return PROLOG_SUCCESS;
 
     Prolog_interface_initialized = false;
+    // Release the pending timeout object, if any.
+    reset_timeout();
     ppl_Prolog_sysdep_deinit();
     return PROLOG_SUCCESS;
   }
@@ -745,6 +756,8 @@ ppl_timeout_exception_atom(Prolog_term_ref t) {
 
 extern "C" Prolog_foreign_return_type
 ppl_set_timeout(Prolog_term_ref t_time) {
+  // In case a timeout was already set.
+  reset_timeout();
   static timeout_exception e;
   unsigned hundredth_secs = term_to_unsigned_int(t_time);
   p_timeout_object =
@@ -757,11 +770,7 @@ ppl_set_timeout(Prolog_term_ref t_time) {
 
 extern "C" Prolog_foreign_return_type
 ppl_reset_timeout() {
-  if (p_timeout_object) {
-    delete p_timeout_object;
-    p_timeout_object = 0;
-    PPL::abandon_exponential_computations = 0;
-  }
+  reset_timeout();
   return PROLOG_SUCCESS;
 }
 
