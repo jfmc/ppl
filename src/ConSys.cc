@@ -52,7 +52,7 @@ PPL::ConSys::adjust_topology_and_dimension(Topology new_topology,
     if (old_topology != new_topology)
       if (new_topology == NECESSARILY_CLOSED) {
 	// A NON_NECESSARILY_CLOSED constraint system
-	// can be converted in to a NECESSARILY_CLOSED one
+	// can be converted to a NECESSARILY_CLOSED one
 	// only if it does not contain strict inequalities.
 	if (contains_strict_inequalities())
 	  return false;
@@ -65,7 +65,7 @@ PPL::ConSys::adjust_topology_and_dimension(Topology new_topology,
 	set_necessarily_closed();
       }
       else {
-	// A NECESSARILY_CLOSED constraint system is converted into
+	// A NECESSARILY_CLOSED constraint system is converted to
 	// a NON_NECESSARILY_CLOSED one by adding a further column
 	// of zeros for the \epsilon coefficients.
 	add_zero_columns(++cols_to_be_added);
@@ -89,7 +89,7 @@ PPL::ConSys::adjust_topology_and_dimension(Topology new_topology,
     // `old_space_dim == new_space_dim' and `old_topology != new_topology'.
     if (new_topology == NECESSARILY_CLOSED) {
       // A NON_NECESSARILY_CLOSED constraint system
-      // can be converted in to a NECESSARILY_CLOSED one
+      // can be converted to a NECESSARILY_CLOSED one
       // only if it does not contain strict inequalities.
       if (contains_strict_inequalities())
 	return false;
@@ -109,10 +109,14 @@ PPL::ConSys::adjust_topology_and_dimension(Topology new_topology,
 
 bool
 PPL::ConSys::contains_strict_inequalities() const {
-  assert(!is_necessarily_closed());
+  if (is_necessarily_closed())
+    return false;
   const ConSys& cs = *this;
+  size_t eps_index = cs.num_columns() - 1;
   for (size_t i = num_rows(); i-- > 0; )
-    if (cs[i].is_strict_inequality())
+    // Optimized type checking: we already know the topology;
+    // also, equalities have the \epsilon coefficient equal to zero.
+    if (cs[i][eps_index] != 0)
       return true;
   return false;
 }
