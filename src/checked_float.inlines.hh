@@ -378,11 +378,19 @@ sub_mul_float(Type& to, const Type x, const Type y, Rounding_Dir dir) {
 template <typename T>
 T strtod_(const char *nptr, char **endptr);
 
+#if !HAVE_DECL_STRTOF
+float strtof(const char *nptr, char **endptr);
+#endif
+
 template <>
 inline float
 strtod_(const char *nptr, char **endptr) {
   return strtof(nptr, endptr);
 }
+
+#if !HAVE_DECL_STRTOD
+double strtod(const char *nptr, char **endptr);
+#endif
 
 template <>
 inline double
