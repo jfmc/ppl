@@ -136,7 +136,9 @@ public:
   //! Assigns to \p *this the meet (i.e., intersection) of \p *this and \p y.
   void meet_assign(const Determinate& y);
 
-  //! Assigns to \p *this the concatenation of \p *this with \p y.
+  //! \brief
+  //! Assigns to \p *this the \ref concatenate "concatenation"
+  //! of \p *this with \p y, taken in this order.
   void concatenate_assign(const Determinate& y);
 
   //! \brief
@@ -159,7 +161,7 @@ public:
   PH& polyhedron();
 
   //! \brief
-  //! Returns \c true if and only if \p *this is the top of the
+  //! Returns <CODE>true</CODE> if and only if \p *this is the top of the
   //! determinate constraint system (i.e., the universe polyhedron).
   inline bool is_top() const;
 

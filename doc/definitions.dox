@@ -587,6 +587,30 @@ otherwise the result is \f$\cQ \in \Pset_m\f$ given by
       \,\Bigr\}.
 \f]
 
+\anchor concatenate
+<B>Concatenating Polyhedra</B>
+
+Seeing a polyhedron as a set of tuples (its points), it is sometimes
+useful to consider the set of tuples obtained by concatenating
+an ordered pair of polyhedra.
+Formally, the <EM>concatenation</EM> of the polyhedra
+\f$\cP \in \Pset_n\f$ and \f$\cQ \in \Pset_m\f$ (taken in this order)
+is the polyhedron \f$\cR \in \Pset_{n+m}\f$ such that
+\f[
+  \cR
+    \defeq
+      \Bigl\{\,
+        (x_0, \ldots, x_{n-1}, y_0, \ldots, y_{m-1})^\transpose
+          \in \Rset^{n+m}
+      \Bigm|
+        (x_0, \ldots, x_{n-1})^\transpose \in \cP,
+        (y_0, \ldots, y_{m-1})^\transpose \in \cQ
+      \,\Bigl\}.
+\f]
+Another way of seeing it is as follows: first embed polyhedron \f$\cP\f$
+into a vector space of dimension \f$n+m\f$ and then add a suitably
+renamed-apart version of the constraints defining \f$\cQ\f$.
+
 \anchor expand_dimension
 <B>Expanding One Dimension of the Vector Space to Multiple Dimensions</B>
 
