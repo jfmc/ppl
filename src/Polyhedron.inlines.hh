@@ -397,62 +397,54 @@ Polyhedron::shrink_bounding_box(Box& box, Complexity_Class complexity) const {
     
     for (ConSys::const_iterator i = cs_begin; i != cs_end; ++i) {
       const Constraint& c = *i;
-      dimension_type index_limited_variable = space_dim;
-      // After using `gauss()' and `back_substitute()' some
-      // constraints can be trivial false.
+      // After `gauss()' and `back_substitute()' some constraints can
+      // be trivially false.
       for (dimension_type j = space_dim; j-- > 0; ) {
 	if (c.is_trivial_false()) {
 	  box.set_empty();
 	  return;
 	}
-	// We find the constraints like `Variable(j) == k',
-	// `Variable(j) >= k' `and Variable(j) > k'
+	dimension_type varid = space_dim;
+	// We look foe constraints of the form `Variable(j) == k',
+	// `Variable(j) >= k', and `Variable(j) > k'.
 	if (c.coefficient(Variable(j)) != 0)
-	  if (index_limited_variable != space_dim) {
-	    index_limited_variable = space_dim;
+	  if (varid != space_dim) {
+	    varid = space_dim;
 	    break;
 	  }
 	  else
-	    index_limited_variable = j;
+	    varid = j;
       }
-      if (index_limited_variable != space_dim) {
-	const Integer& d = c.coefficient(Variable(index_limited_variable));
+      if (varid != space_dim) {
+	const Integer& d = c.coefficient(Variable(varid));
 	const Integer& n = c.inhomogeneous_term();
-	// The constraint `c' is like
-	// `Variable(index_limited_variable) + n / d rel 0', where
-	// `rel' is the symbol `==' or `>=' or `>'.
-	// When we built the upper or the lower bound for a variable,
-	// we have that this variable is greater than a value: this
-	// means that `Variable(index_limited_variable) rel_1 k', where
-	// `rel_1' is the symbol `>=' or `>' and `k' is equal
-	// to `-n / d'. For this reason we built the ExtendedRational
-	// `r' that has `-n' as numerator an `d' as denominator.
+	// The constraint `c' is of the form
+	// `Variable(varid) + n / d rel 0', where
+	// `rel' is either the relation `==', `>=', or `>'.
+	// For the purpose of shrinking intervals, this is
+	// (morally) turned into `Variable(varid) rel  -n/d'.
 	ExtendedRational r(-n, d);
 	Constraint::Type c_type = c.type();
 	switch (c_type) {
 	case Constraint::EQUALITY:
-	  lower_bound[index_limited_variable]
-	    = LBoundary(r, LBoundary::CLOSED);
-	  upper_bound[index_limited_variable]
-	    = UBoundary(r, UBoundary::CLOSED);
+	  lower_bound[varid] = LBoundary(r, LBoundary::CLOSED);
+	  upper_bound[varid] = UBoundary(r, UBoundary::CLOSED);
 	  break;
 	case Constraint::NONSTRICT_INEQUALITY:
 	case Constraint::STRICT_INEQUALITY:
 	  if (d > 0)
-	  // If `d' is strictly positive, we have a
-	  // constraint like `Variable(index_limited_variable) >= k'
-	  // or `Variable(index_limited_variable) > k'.
-	    lower_bound[index_limited_variable]
+	  // If `d' is strictly positive, we have a constraint ofthe
+	  // form `Variable(varid) >= k' or `Variable(varid) > k'.
+	    lower_bound[varid]
 	      = LBoundary(r, (c_type == Constraint::NONSTRICT_INEQUALITY 
 			      ? LBoundary::CLOSED
 			      : LBoundary::OPEN));
 	  else {
 	    // Otherwise, we are sure that `d' is strictly negative
-	    // and in this case  we have a constraint like
-	    // `Variable(index_limited_variable) <= k'
-	    // or `Variable(index_limited_variable) < k'.
+	    // and, in this case, we have a constraint of the form
+	    // `Variable(varid) <= k' or `Variable(varid) < k'.
 	    assert(d < 0);
-	    upper_bound[index_limited_variable]
+	    upper_bound[varid]
 	      = UBoundary(r, (c_type == Constraint::NONSTRICT_INEQUALITY 
 			      ? UBoundary::CLOSED
 			      : UBoundary::OPEN));
