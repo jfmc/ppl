@@ -732,7 +732,7 @@ ppl_set_timeout_exception_atom(Prolog_term_ref t_tea) {
     Prolog_term_ref arg_no = Prolog_new_term_ref();
     Prolog_term_ref expected_domain = Prolog_new_term_ref();
     Prolog_term_ref et = Prolog_new_term_ref();
-
+ 
     Prolog_put_term(culprit, t_tea);
     Prolog_put_long(arg_no, 1);
     Prolog_put_atom_chars(expected_domain, "atom");

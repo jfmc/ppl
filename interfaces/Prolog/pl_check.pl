@@ -90,11 +90,13 @@ check_all :-
   get_boundingbox_NNC,
   get_bounding_box_complexity_C,
   get_bounding_box_complexity_NNC,
+  time_out,
   !,
   ppl_finalize.
 check_all :-
   ppl_finalize,
   fail.
+
 
 % Tests new_Polyhedron_from_dimension
 % and ppl_delete_Polyhedron for C Polyhedron.
@@ -1026,12 +1028,75 @@ bounds_from_below :-
   ppl_Polyhedron_bounds_from_below(P, A),
   ppl_delete_Polyhedron(P).
 
+% Tests Watchdog predicates
+% ppl_set_timeout
+% ppl_set_timeout_exception_atom
+% ppl_timeout_exception_atom
+% ppl_reset_timeout
+%
+
+time_out :- 
+  time_out(c), time_out(nnc).
+
+time_out(T) :-
+  ppl_initialize,
+  A = '$VAR'(0), B = '$VAR'(1), C = '$VAR'(2), D = '$VAR'(3), E = '$VAR'(4), F = '$VAR'(5),
+  CS = [8*A - 7*B + 4*D - E - 8*F >= -3,
+        6*A + 8*B + 4*C - 6*D + 6*E + 6*F >= 5,
+        6*A + 7*B - 6*C + 3*D + 3*E + 5*F >= 4,
+        6*A + C + 8*D - 2*E - 3*F >= -6,
+        4*A - 3*B + 3*D - 3*E + 4*F >= 0,
+        3*A - 3*B - 7*C - 4*D - 7*E + 8*F >= 8,
+        -2*A + 5*B + C + 2*D - 2*E + 6*F >= -7,
+        -4*A + 7*B - 7*C + 2*D - 2*E - 7*F >= 1,
+        -5*A + 7*B + 5*C + 6*D - 5*E - 2*F >= -7,
+        -5*A + 6*B - 6*C - 2*D + 4*E - 2*F >= -5,
+        -5*A + 5*B + 8*C + D + E - 6*F >= -6],
+  ppl_new_Polyhedron_from_dimension(T, 6, Q),
+  ppl_set_timeout_exception_atom(pl_time_out),
+  ppl_timeout_exception_atom(pl_time_out),
+  ppl_set_timeout(1),
+  ppl_new_Polyhedron_from_dimension(T, 6, P),
+  time_watch(T, ppl_Polyhedron_add_constraints_and_minimize(P, CS),
+             (ppl_reset_timeout,
+              ppl_Polyhedron_add_constraints_and_minimize(Q, CS)),
+              true),
+  ppl_Polyhedron_equals_Polyhedron(P, Q),
+  ppl_reset_timeout,
+  ppl_delete_Polyhedron(P),
+  ppl_delete_Polyhedron(Q),
+  ppl_new_Polyhedron_from_dimension(T, 6, Q1),
+  ppl_set_timeout(100),
+  ppl_new_Polyhedron_from_dimension(T, 6, P1),
+  time_watch(T, ppl_Polyhedron_add_constraints_and_minimize(P1, CS),
+             (ppl_reset_timeout,
+              ppl_Polyhedron_add_constraints_and_minimize(Q1, CS)),
+              true),
+  ppl_Polyhedron_equals_Polyhedron(P1, Q1),
+  ppl_set_timeout_exception_atom(time_out),
+  ppl_reset_timeout,
+  ppl_finalize.
+
+time_watch(T, Goal, NoTimeOut, TimeOut) :-
+   !,
+   Goal =.. [PPLFunct, Poly|Args],
+   ppl_new_Polyhedron_from_Polyhedron(T, Poly, T, PolyCopy),
+   ppl_timeout_exception_atom(TimeOutAtom),
+   GoalCopy =.. [PPLFunct, PolyCopy|Args],
+     (catch(GoalCopy, TimeOutAtom, fail) ->
+         (ppl_reset_timeout,
+          call(NoTimeOut), Goal)
+    ; 
+      call(TimeOut)
+   ),
+   ppl_delete_Polyhedron(PolyCopy).
+
 % These next 2 tests demonstrate a bug in the bounding box software.
 boundingbox1(Box,CS) :-
   A = '$VAR'(0), B = '$VAR'(1),
   ppl_new_Polyhedron_from_constraints(nnc,
-                                      [1*A > 1, 1*B > 1,
-                                       -1*B > -1, -1*A > -1],
+                                      [A > 1, B > 1,
+                                       B < 1, A < 1],
                                       P),
   ppl_Polyhedron_get_bounding_box(P, any, Box),
   ppl_Polyhedron_get_constraints(P,CS),
