@@ -202,7 +202,7 @@ static Prolog_atom a_saturates;
 static Prolog_atom a_subsumes;
 
 // For the topology.
-static Prolog_atom a_closed;
+static Prolog_atom a_c;
 static Prolog_atom a_nnc;
 
 static struct {
@@ -234,7 +234,7 @@ static struct {
   { &a_saturates,           "saturates" },
 
   { &a_subsumes,            "subsumes" },
-  { &a_closed,              "c" },
+  { &a_c,                   "c" },
   { &a_nnc,                 "nnc" },
 };
 
@@ -599,8 +599,8 @@ ppl_new_Polyhedron_from_dimension(Prolog_term_ref t_tp,
   try {
     PPL::Polyhedron* ph;
     Prolog_atom tp = term_to_atom(t_tp);
-    if (tp == a_closed || tp == a_nnc) {
-      if (tp == a_closed)
+    if (tp == a_c || tp == a_nnc) {
+      if (tp == a_c)
         ph = new PPL::C_Polyhedron(term_to_unsigned_int(t_nd));
       else
         ph = new PPL::NNC_Polyhedron(term_to_unsigned_int(t_nd));
@@ -663,8 +663,8 @@ ppl_new_Polyhedron_empty_from_dimension(Prolog_term_ref t_tp,
   try {
     PPL::Polyhedron* ph;
     Prolog_atom tp = term_to_atom(t_tp);
-    if (tp == a_closed || tp == a_nnc) {
-      if (tp == a_closed)
+    if (tp == a_c || tp == a_nnc) {
+      if (tp == a_c)
         ph = new PPL::C_Polyhedron(term_to_unsigned_int(t_nd),
 			      PPL::Polyhedron::EMPTY);
       else
