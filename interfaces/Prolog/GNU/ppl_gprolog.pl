@@ -54,6 +54,9 @@ site: http://www.cs.unipr.it/ppl/ . */
 							      +term,
 							      +term)).
 :- foreign(ppl_Polyhedron_H79_widening_assign(+term, +term)).
+:- foreign(ppl_Polyhedron_H79_widening_assign_with_tokens(+term,
+							     +term,
+							     +term)).
 :- foreign(ppl_Polyhedron_limited_H79_extrapolation_assign(+term,
 							   +term,
 							   +term)).

@@ -50,6 +50,7 @@ site: http://www.cs.unipr.it/ppl/ . */
 	ppl_Polyhedron_limited_BHRZ03_extrapolation_assign/3,
 	ppl_Polyhedron_bounded_BHRZ03_extrapolation_assign/3,
 	ppl_Polyhedron_H79_widening_assign/2,
+	ppl_Polyhedron_H79_widening_assign_with_tokens/3,
 	ppl_Polyhedron_limited_H79_extrapolation_assign/3,
         ppl_Polyhedron_topological_closure_assign/1,
 	ppl_Polyhedron_get_constraints/2,

@@ -177,6 +177,7 @@ SP_STUB_3(ppl_Polyhedron_BHRZ03_widening_assign_with_tokens)
 SP_STUB_3(ppl_Polyhedron_limited_BHRZ03_extrapolation_assign)
 SP_STUB_3(ppl_Polyhedron_bounded_BHRZ03_extrapolation_assign)
 SP_STUB_2(ppl_Polyhedron_H79_widening_assign)
+SP_STUB_3(ppl_Polyhedron_H79_widening_assign_with_tokens)
 SP_STUB_3(ppl_Polyhedron_limited_H79_extrapolation_assign)
 SP_STUB_1(ppl_Polyhedron_topological_closure_assign)
 SP_STUB_2(ppl_Polyhedron_get_constraints)
@@ -255,6 +256,7 @@ ppl_sicstus_init(int /* when */) {
   SP_DEFINE_C_PREDICATE(ppl_Polyhedron_limited_BHRZ03_extrapolation_assign, 3);
   SP_DEFINE_C_PREDICATE(ppl_Polyhedron_bounded_BHRZ03_extrapolation_assign, 3);
   SP_DEFINE_C_PREDICATE(ppl_Polyhedron_H79_widening_assign, 2);
+  SP_DEFINE_C_PREDICATE(ppl_Polyhedron_H79_widening_assign_with_tokens, 3);
   SP_DEFINE_C_PREDICATE(ppl_Polyhedron_limited_H79_extrapolation_assign, 3);
   SP_DEFINE_C_PREDICATE(ppl_Polyhedron_topological_closure_assign, 1);
   SP_DEFINE_C_PREDICATE(ppl_Polyhedron_get_constraints, 2);

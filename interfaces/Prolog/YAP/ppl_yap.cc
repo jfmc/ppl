@@ -418,6 +418,7 @@ YAP_STUB_3(ppl_Polyhedron_BHRZ03_widening_assign_with_tokens)
 YAP_STUB_3(ppl_Polyhedron_limited_BHRZ03_extrapolation_assign)
 YAP_STUB_3(ppl_Polyhedron_bounded_BHRZ03_extrapolation_assign)
 YAP_STUB_2(ppl_Polyhedron_H79_widening_assign)
+YAP_STUB_3(ppl_Polyhedron_H79_widening_assign_with_tokens)
 YAP_STUB_3(ppl_Polyhedron_limited_H79_extrapolation_assign)
 YAP_STUB_1(ppl_Polyhedron_topological_closure_assign)
 YAP_STUB_2(ppl_Polyhedron_get_constraints)
@@ -488,6 +489,7 @@ init() {
   YAP_USER_C_PREDICATE(ppl_Polyhedron_limited_BHRZ03_extrapolation_assign, 3);
   YAP_USER_C_PREDICATE(ppl_Polyhedron_bounded_BHRZ03_extrapolation_assign, 3);
   YAP_USER_C_PREDICATE(ppl_Polyhedron_H79_widening_assign, 2);
+  YAP_USER_C_PREDICATE(ppl_Polyhedron_H79_widening_assign_with_tokens, 3);
   YAP_USER_C_PREDICATE(ppl_Polyhedron_limited_H79_extrapolation_assign, 3);
   YAP_USER_C_PREDICATE(ppl_Polyhedron_topological_closure_assign, 1);
   YAP_USER_C_PREDICATE(ppl_Polyhedron_get_constraints, 2);
