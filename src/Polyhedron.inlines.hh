@@ -49,6 +49,16 @@ Polyhedron::swap(Polyhedron& y) {
   std::swap(space_dim, y.space_dim);
 }
 
+} // namespace Parma_Polyhedra_Library
+
+/*! \relates Parma_Polyhedra_Library::Polyhedron */
+inline void
+std::swap(Parma_Polyhedra_Library::Polyhedron& x,
+	  Parma_Polyhedra_Library::Polyhedron& y) {
+  x.swap(y);
+}
+
+namespace Parma_Polyhedra_Library {
 
 inline bool
 Polyhedron::is_necessarily_closed() const {
@@ -473,13 +483,5 @@ Polyhedron::shuffle_dimensions(const PartialFunction& pfunc) {
 }
 
 } // namespace Parma_Polyhedra_Library
-
-
-/*! \relates Parma_Polyhedra_Library::Polyhedron */
-inline void
-std::swap(Parma_Polyhedra_Library::Polyhedron& x,
-	  Parma_Polyhedra_Library::Polyhedron& y) {
-  x.swap(y);
-}
 
 #endif // !defined(PPL_Polyhedron_inlines_hh)
