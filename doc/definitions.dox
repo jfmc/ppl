@@ -314,10 +314,28 @@ for which \f$L' \sseq L\f$, \f$R' \sseq R\f$, \f$P' \sseq P\f$ and
 
 <B>Topologies and topological compatibility</B>
 
-FIXME:
-Here we should say that, in our library, the
-topological kind of polyhedra should be declared when building them and
-that topological compatibility tests are performed systematically.
+As indicated above, when an NNC polyhedra \f$\cP\f$ is necessarily closed,
+we can ignore the closure points contained in its generator system
+\f$\cG = (L, R, P, C)\f$ (as every closure point is also a point)
+and represent \f$\cP\f$ by the triple \f$(L, R, P)\f$.
+Similarly, \f$\cP\f$ can be represented by a constraint system
+that has no strict inequalities.
+Thus a necessarily closed polyhedron can have a smaller
+and more efficient implementation than one that is not necessarily closed.
+
+For this reason the library provides two alternative topologies 
+for a polyhedron, <EM>NNC</EM> and <EM>C</EM>.
+This topology is fixed at the time of the initialization of a new polyhedron
+and must be respected when performing operations on the polyhedron.
+In particular,
+this means that only constraints that are equalities or non-strict
+inequalities can be added to a C Polyhedron;
+only generators that are points, rays or lines can be added
+to a C Polyhedron; and
+only polyhedra that have the same topology may be compared
+or combined using, for example, the intersection or poly-hull operations.
+More generally, any operation on a polyhedron must be compatible
+with its given topology.
 
 <B>Space dimension and dimension-compatibility</B>
 
@@ -367,7 +385,7 @@ if the lower bound of the \f$i\f$'th interval in \f$I\f$
  is bounded, the corresponding constraint is defined as 
 \f$\langle\vect{i},\vect{x}\rangle \mathord{\relop} b\f$ where
 \f$b\f$ is the value of the bound and \f$\mathord{\relop}\f$ is
-\f$\geq\f$ if it is a lower closed bound, 
+\f$\geq\f$ if it is a lower closed bound and
 \f$>\f$ if it is a lower open bound.
 Similarly,
 if the upper bound of the \f$i\f$'th interval in \f$I\f$ is bounded,
