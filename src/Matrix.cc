@@ -518,7 +518,7 @@ PPL::Matrix::sort_rows(const dimension_type first_row,
   // In the following loop, the method `Row::assign()' will be preferred
   // to `Row::swap()' for efficiency reasons whenever the old contents
   // of the target row are no longer needed. Care has to be taken:
-  // `assign' will cause the implemntation of rows to be shared,
+  // `assign' will cause the implementation of rows to be shared,
   // since it does not make a copy of the coefficients.
 
   // A temporary Row object: it will share the implementation of `x[i]'.
