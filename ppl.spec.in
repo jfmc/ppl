@@ -72,7 +72,7 @@ Install this package if you want to use the library in YAP Prolog programs.
 %package pwl
 Summary:	The Parma Watchdog Library: a C++ library for watchdog timers.
 Group:		Development/Libraries
-Requires:	gcc-c++ == 3.4.1
+Requires:	gcc-c++ == 3.4.2
 %description pwl
 This package contains the Parma Watchdog Library (PWL).
 The library provides support for multiple, concurrent watchdog timers
