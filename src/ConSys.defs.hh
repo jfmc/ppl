@@ -36,15 +36,15 @@ site: http://www.cs.unipr.it/ppl/ . */
 //! A system of constraints.
 /*!
     An object of the class ConSys is a system of constraints,
-    i.e. a container of objects of the class Constraint.
+    i.e. a multiset of objects of the class Constraint.
 
     \par
     In all the examples it is assumed that variables
     <CODE>x</CODE> and <CODE>y</CODE> are defined as follows:
-    \code
+  \code
   Variable x(0);
   Variable y(1);
-    \endcode
+  \endcode
 
     \par Example 1
     The following code builds a system of constraints corresponding to
@@ -162,7 +162,7 @@ PPL_INTERNAL:
   //! Substitutes a given column of coefficients by a given affine expression.
   void substitute_variable(size_t v,
 			   const LinExpression& expr,
-			   Integer& denominator);
+			   const Integer& denominator);
 
   //! Returns the number of the equality constraints.
   size_t num_equalities() const;

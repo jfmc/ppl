@@ -72,7 +72,7 @@ Parma_Polyhedra_Library::Generator::set_is_ray_or_vertex() {
 namespace Parma_Polyhedra_Library {
 
 INLINE Generator
-operator |(int, const LinExpression& e) {
+line(const LinExpression& e) {
   LinExpression ec = e;
   Generator g(ec);
   g[0] = 0;
@@ -81,7 +81,7 @@ operator |(int, const LinExpression& e) {
 }
 
 INLINE Generator
-operator ^(int, const LinExpression& e) {
+ray(const LinExpression& e) {
   LinExpression ec = e;
   Generator g(ec);
   g[0] = 0;
@@ -90,11 +90,10 @@ operator ^(int, const LinExpression& e) {
 }
 
 INLINE Generator
-operator /=(const LinExpression& e, const Integer& d) {
+vertex(const LinExpression& e, const Integer& d) {
   if (d == 0)
-    throw std::invalid_argument("Generator PPL::operator /=(e, d) "
+    throw std::invalid_argument("Generator PPL::vertex(e, d) "
 				"with d == 0");
-
   LinExpression ec = e;
   Generator g(ec);
   g[0] = d;

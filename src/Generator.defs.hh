@@ -39,31 +39,34 @@ namespace Parma_Polyhedra_Library {
   //@}
 
   // Put them in the namespace here to declare them friend later.
-  Generator operator |(int, const LinExpression& e);
-  Generator operator ^(int, const LinExpression& e);
-  Generator operator /=(const LinExpression& e, const Integer& d);
+  Generator line(const LinExpression& e);
+  Generator ray(const LinExpression& e);
+  Generator vertex(const LinExpression& e, const Integer& d);
 }
 
 //! A line, ray or vertex.
 /*!
   An object of the class Generator is one of the following:
 
-  - a line: \f$\vect{l} = (a_0, \ldots, a_{n-1})^\transpose\f$;
+  - a line \f$\vect{l} = (a_0, \ldots, a_{n-1})^\transpose\f$;
 	
-  - a ray: \f$\vect{r} = (a_0, \ldots, a_{n-1})^\transpose\f$;
+  - a ray \f$\vect{r} = (a_0, \ldots, a_{n-1})^\transpose\f$;
 
-  - a vertex:
+  - a vertex
     \f$\vect{v} = (\frac{a_0}{d}, \ldots, \frac{a_{n-1}}{d})^\transpose\f$;
 
   where \f$n\f$ is the dimension of the space.
 
   \par How to build a generator.
-  Each type of generator is built by applying a particular operator
-  (<CODE>|</CODE> for a line, <CODE>^</CODE> for a ray
-  and <CODE>/=</CODE> for a vertex) to a linear expression.
-  The linear expression represents a direction in the space.
+  Each type of generator is built by applying the corresponding
+  function (<CODE>line</CODE>, <CODE>ray</CODE> and <CODE>vertex</CODE>)
+  to a linear expression, representing a direction in the space.
   This means that a linear expression used to define a vertex, ray or line
   should be homogeneous and any constant term will be ignored.
+  When defining vertices, an optional Integer argument can be used
+  as a common <EM>denominator</EM> for all the coefficients occurring
+  in the provided linear expression;
+  the default value for this argument is 1.
 
     \par
     In all the examples it is assumed that variables
@@ -78,46 +81,40 @@ namespace Parma_Polyhedra_Library {
     \par Example 1
     The following code builds a line with direction \f$x-y-z\f$:
     \code
-  Generator line(1 | x - y - z);
+  Generator l = line(x - y - z);
     \endcode
-    When specifying a line, the actual value of the first argument
-    of the operator is not significant.
-    Also, as mentioned above, the constant term of the linear expression
-    is not relevant.
-    Thus, the following code has the same effect:
+    As mentioned above, the constant term of the linear expression
+    is not relevant. Thus, the following code has the same effect:
     \code
-  Generator line(18 | x - y - z + 15);
+  Generator l = line(x - y - z + 15);
     \endcode
 
     \par Example 2
     The following code builds a ray with the same direction as the
     line in Example 1:
     \code
-  Generator ray(1 ^ x - y - z);
+  Generator r = ray(x - y - z);
     \endcode
-    As is the case for lines, when specifying a ray, the actual value
-    of the first argument is not significant.
+    As is the case for lines, when specifying a ray the constant term
+    of the linear expression is not relevant.
 
     \par Example 3
     The following code builds the vertex
     \f$(1, 3, 2)^\transpose \in \Rset^3\f$:
     \code
-  Generator vertex(x + 3*y + 2*z /= 1);
+  Generator v = vertex(x + 3*y + 2*z);
     \endcode
-    Note that the second argument of the operator is
-    the <EM>denominator</EM> for the coefficients
-    of the linear expression.
-    Therefore, the same vertex as above can also be obtained with the code:
+    The same vertex as above can also be obtained with the following code,
+    where we also provide a non-default value for the denominator argument:
     \code
-  Generator vertex(2*x + 6*y + 4*z /= 2);
+  Generator v = vertex(2*x + 6*y + 4*z, 2);
     \endcode
-    Obviously, the denominator can be usefully exploited
-    for specifying vertices that have some non-integer
-    (but rational) coordinates.
+    Obviously, the denominator can be usefully exploited for specifying
+    vertices having some non-integer (but rational) coordinates.
     For instance, the vertex \f$(-1.5, 3.2, 2.1)^\transpose \in \Rset^3\f$
     can be specified by the following code:
     \code
-  Generator vertex(-15*x + 32*y + 21*z /= 10);
+  Generator v = vertex(-15*x + 32*y + 21*z, 10);
     \endcode
     If a zero denominator is provided, an exception is thrown.
 */
@@ -128,15 +125,16 @@ private:
 
   //! Returns the (bidirectional) line of direction \p e.
   friend Generator
-  Parma_Polyhedra_Library::operator |(int, const LinExpression& e);
+  Parma_Polyhedra_Library::line(const LinExpression& e);
   //! Returns the (unidirectional) ray of direction \p e.
   friend Generator
-  Parma_Polyhedra_Library::operator ^(int, const LinExpression& e);
-  //! Returns the vertex at \p e / \p d.
+  Parma_Polyhedra_Library::ray(const LinExpression& e);
+  //! Returns the vertex at \p e / \p d
+  //! (note that \p d is an optional argument with default value 1).
   //! \exception std::invalid_argument thrown if \p d is zero.
   friend Generator
-  Parma_Polyhedra_Library::operator /=(const LinExpression& e,
-				       const Integer& d);
+  Parma_Polyhedra_Library::vertex(const LinExpression& e,
+				  const Integer& d = 1);
 
 public:
   //! Default constructor.

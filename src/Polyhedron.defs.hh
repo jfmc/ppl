@@ -100,10 +100,10 @@ namespace Parma_Polyhedra_Library {
     the four vertices of the square:
     \code
   GenSys gs;
-  gs.insert(0*x + 0*y /= 1);
-  gs.insert(0*x + 3*y /= 1);
-  gs.insert(3*x + 0*y /= 1);
-  gs.insert(3*x + 3*y /= 1);
+  gs.insert(vertex(0*x + 0*y));
+  gs.insert(vertex(0*x + 3*y));
+  gs.insert(vertex(3*x + 0*y));
+  gs.insert(vertex(3*x + 3*y));
   Polyhedron ph(gs);
     \endcode
 
@@ -123,9 +123,9 @@ namespace Parma_Polyhedra_Library {
     the two vertices of the polyhedron and one ray:
     \code
   GenSys gs;
-  gs.insert(0*x + 0*y /= 1);
-  gs.insert(0*x + y /= 1);
-  gs.insert(1 ^ x - y);
+  gs.insert(vertex(0*x + 0*y));
+  gs.insert(vertex(0*x + y));
+  gs.insert(ray(x - y));
   Polyhedron ph(gs);
     \endcode
 
@@ -142,9 +142,9 @@ namespace Parma_Polyhedra_Library {
     a ray and a line.
     \code
   Polyhedron ph;
-  ph.insert(0*x + 0*y /= 1);
-  ph.insert(1 ^ 0*x + y);
-  ph.insert(1 | x + 0*y);
+  ph.insert(vertex(0*x + 0*y));
+  ph.insert(ray(0*x + y));
+  ph.insert(line(x + 0*y));
     \endcode
     In this last case, it is important to note that: even if this
     polyhedron has no real vertex, we must add one, because otherwise
@@ -190,22 +190,19 @@ namespace Parma_Polyhedra_Library {
     <CODE>assign_variable</CODE>:
     \code
   Polyhedron ph;
-  ph.insert(0*x + 0*y /= 1);
-  ph.insert(0*x + 3*y /= 1);
-  ph.insert(3*x + 0*y /= 1);
-  ph.insert(3*x + 3*y /= 1);
-  Integer d = 1;
+  ph.insert(vertex(0*x + 0*y));
+  ph.insert(vertex(0*x + 3*y));
+  ph.insert(vertex(3*x + 0*y));
+  ph.insert(vertex(3*x + 3*y));
   LinExpression coeff = x + 0*y + 4;
-  ph.assign_variable(x, coeff, d);
+  ph.assign_variable(x, coeff);
     \endcode
     In this example the starting polyhedron is a square in \f$\Rset^2\f$,
-    \p var is the variable \f$x\f$, the affine_expression is \f$x+4\f$,
-    and the denominator \p d is 1.
+    the considered variable is \f$x\f$ and the affine expression is \f$x+4\f$.
     The resulting polyhedron is the same square translated towards right.
     Moreover, if the affine transformation for the same variable \p x
     is \f$x+y\f$:
     \code
-  Integer d = 1;
   LinExpression coeff = x + y;
     \endcode
     the resulting polyhedron is a parallelogram with the height equal to
@@ -227,9 +224,8 @@ namespace Parma_Polyhedra_Library {
   ph.insert(x <= 3);
   ph.insert(y >= 0);
   ph.insert(y <= 3);
-  Integer d = 1;
   LinExpression coeff = x + 0*y + 4;
-  ph.substitute_variable(x, coeff, d);
+  ph.substitute_variable(x, coeff);
     \endcode
     In this example the starting polyhedron, \p var and the affine
     expression and the denominator are the same as in Example 6,
@@ -238,7 +234,6 @@ namespace Parma_Polyhedra_Library {
     left.
     Moreover, if the affine transformation for \p x is \f$x+y\f$
     \code
-  Integer d = 1;
   LinExpression coeff = x + y;
     \endcode
     the resulting polyhedron is a parallelogram with the height equal to
@@ -247,7 +242,6 @@ namespace Parma_Polyhedra_Library {
     Instead, if we do not use an invertible transformation for the same
     variable \p x, for example, the affine expression \f$y\f$:
     \code
-  Integer d = 1;
   LinExpression coeff = 0*x + y;
     \endcode
     the resulting polyhedron is a line that corresponds to the \f$y\f$ axis.
@@ -352,7 +346,7 @@ public:
   //! \param v             The variable to which the affine
   //!                      expression is assigned.
   //! \param expr          The numerator of the affine expression.
-  //! \param denominator   The denominator of the affine expression.
+  //! \param denominator   The denominator of the affine expression
   //! \exception std::invalid_argument thrown if \p denominator is zero or
   //!                                  if \p expr and \p *this have 
   //!                                  different dimension or if
@@ -413,7 +407,7 @@ public:
   //! \param dim      The number of dimensions to add.
   void add_dimensions_and_project(size_t dim);
   //! Removes the specified dimensions.
-  //! \param to_be_remove The set of variable to remove.
+  //! \param to_be_removed The set of variables to remove.
   void remove_dimensions(const std::set<Variable>& to_be_removed);
   //! Adds the specified constraints and computes a new polyhedron.
   //! \param  cs            The constraints that will be added to the

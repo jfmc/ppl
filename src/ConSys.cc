@@ -121,7 +121,7 @@ PPL::ConSys::satisfies_all_constraints(const Generator& g) const {
 void
 PPL::ConSys::substitute_variable(size_t v,
 				 const LinExpression& expr,
-				 Integer& denominator) {
+				 const Integer& denominator) {
   ConSys& x = *this;
   size_t num_columns = x.num_columns();
   size_t num_rows = x.num_rows();

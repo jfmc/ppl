@@ -216,7 +216,7 @@ PPL::GenSys::satisfy(const Constraint& c) const {
 void
 PPL::GenSys::assign_variable(size_t v,
 			     const LinExpression& expr,
-			     Integer& denominator) {
+			     const Integer& denominator) {
   GenSys& x = *this;
   size_t num_columns = x.num_columns();
   size_t num_rows = x.num_rows();

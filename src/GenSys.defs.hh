@@ -54,7 +54,7 @@ namespace Parma_Polyhedra_Library {
 //! A system of generators.
 /*!
     An object of the class GenSys is a system of generators,
-    i.e. a container of objects of the class Generator
+    i.e. a multiset of objects of the class Generator
     (lines, rays and vertices).
     Note that a system of generators which is meant to define a polyhedron
     must include at least one vertex, the reason being that lines and
@@ -74,7 +74,7 @@ namespace Parma_Polyhedra_Library {
     (i.e., the 0-th indexed Cartesian axis) in \f$\Rset^2\f$:
     \code
     GenSys gs;
-    gs.insert(1 | x + 0*y);
+    gs.insert(line(x + 0*y));
     \endcode
     As said above, this system of generators does not correspond
     to a polyhedron, because the line has no supporting vertices.
@@ -82,13 +82,13 @@ namespace Parma_Polyhedra_Library {
     the \f$x\f$ axis, one can add the following code which
     inserts the origin of the space as a vertex:
     \code
-    gs.insert(0*x + 0*y /= 1);
+    gs.insert(vertex(0*x + 0*y));
     \endcode
     In contrast, if we had added the following code, we would have
     defined a line parallel to the \f$x\f$ axis and including
     the point \f$(0, 1)^\transpose \in \Rset^2\f$.
     \code
-    gs.insert(0*x + y /= 1);
+    gs.insert(vertex(0*x + y));
     \endcode
 
     \par Example 2
@@ -96,13 +96,13 @@ namespace Parma_Polyhedra_Library {
     the positive part of the \f$x\f$ axis in \f$\Rset^2\f$:
     \code
     GenSys gs;
-    gs.insert(1 ^ x + 0*y);
+    gs.insert(ray(x + 0*y));
     \endcode
     To define a system of generators indeed corresponding to
     the positive part of the \f$x\f$ axis,
     one just need to add the origin of the space as a vertex:
     \code
-    gs.insert(0*x + 0*y /= 1);
+    gs.insert(vertex(0*x + 0*y));
     \endcode
 
     \par Example 3
@@ -111,10 +111,10 @@ namespace Parma_Polyhedra_Library {
     (the same as Example 1 for the system of constraints):
     \code
     GenSys gs;
-    gs.insert(0*x + 0*y /= 1);
-    gs.insert(0*x + 3*y /= 1);
-    gs.insert(3*x + 0*y /= 1);
-    gs.insert(3*x + 3*y /= 1);
+    gs.insert(vertex(0*x + 0*y));
+    gs.insert(vertex(0*x + 3*y));
+    gs.insert(vertex(3*x + 0*y));
+    gs.insert(vertex(3*x + 3*y));
     \endcode
 
     \par Example 4
@@ -123,9 +123,9 @@ namespace Parma_Polyhedra_Library {
     (the same as Example 2 for the system of constraints):
     \code
     GenSys gs;
-    gs.insert(0*x + 0*y /= 1);
-    gs.insert(0*x + y /= 1);
-    gs.insert(1 ^ x - y);
+    gs.insert(vertex(0*x + 0*y));
+    gs.insert(vertex(0*x + y));
+    gs.insert(ray(x - y));
     \endcode
 */
 class Parma_Polyhedra_Library::GenSys : PPL_INTERNAL Matrix {
@@ -221,7 +221,7 @@ PPL_INTERNAL:
   //! Assigns to a given variable an affine expression.
   void assign_variable(size_t v,
 		       const LinExpression& expr,
-		       Integer& denominator);
+		       const Integer& denominator);
   //! Returns the number of lines of the system.
   size_t num_lines() const;
   //! Returns the number of rays of the system.
