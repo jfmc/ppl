@@ -1331,13 +1331,10 @@ PPL::Polyhedron::intersection_assign(const Polyhedron& y) {
 
 void
 PPL::Polyhedron::concatenate_assign(const Polyhedron& y) {
-  // FIXME: this implementation is just an executable specification.
-  ConSys cs = y.constraints();
-
-  size_t added_columns = cs.space_dimension();
-  // Topology compatibility check: we do NOT adjust dimensions.
-  if (!cs.adjust_topology_and_dimension(topology(), added_columns))
+  if (topology() != y.topology())
     throw_topology_incompatible("concatenate_assign(y)", y);
+
+  size_t added_columns = y.space_dimension();
 
   // For an empty polyhedron, it is sufficient to adjust
   // the dimension of the space.
@@ -1347,13 +1344,14 @@ PPL::Polyhedron::concatenate_assign(const Polyhedron& y) {
     return;
   }
 
-  // For a non-empty 0-dim space polyhedron,
-  // the result is the polyhedron defined by `cs'.
+  // For a non-empty 0-dim space polyhedron, the result is `y'.
   if (space_dim == 0) {
-    Polyhedron y(topology(), cs);
-    swap(y);
+    *this = y;
     return;
   }
+
+  // FIXME: this implementation is just an executable specification.
+  ConSys cs = y.constraints();
 
   if (!constraints_are_up_to_date())
     update_constraints();
