@@ -41,7 +41,7 @@ ppl_yap_la_SOURCES = ppl_yap.cc
 ppl_yap_la_LIBADD = $(top_builddir)/src/libppl.la @extra_libraries@
 ppl_yap_la_LDFLAGS = -no-undefined -module -avoid-version
 
-CLPQ_TESTS = \
+CLPQ_TESTS_NONSTRICT = \
 ack.clpq \
 ackn.clpq \
 fib.clpq \
@@ -50,13 +50,27 @@ smm.clpq \
 sumto.clpq \
 tak.clpq
 
-#check-local: yap_clpq.pl ../check_script ../expected
-#	for k in $(CLPQ_TESTS); do cp -f $(srcdir)/../$$k .; done
-#	LD_LIBRARY_PATH=$(PWD)/.libs:$(LD_LIBRARY_PATH) \
-#		; ( echo "main." ; cat $(srcdir)/../check_script ) \
-#		| yap -l $(srcdir)/yap_clpq.pl \
-#			 >obtained
-#	diff -q --ignore-all-space $(srcdir)/../expected obtained
+CLPQ_TESTS_STRICT = \
+schedule.clpq
 
-MOSTLYCLEANFILES = $(CLPQ_TESTS) obtained
+CLPQ_TESTS = $(CLPQ_TESTS_NONSTRICT) $(CLPQ_TESTS_STRICT) 
+
+check-local: yap_clpq.pl ../check_script ../expected ../check_script2 ../expected2
+	for k in $(CLPQ_TESTS); do cp -f $(srcdir)/../$$k .; done
+	echo "main." >check_script
+	cat $(srcdir)/../check_script >>check_script
+	$(LIBTOOL) --mode=execute -dlopen ../../../src/libppl.la \
+				-dlopen ppl_yap.la \
+		yap -l $(srcdir)/yap_clpq.pl \
+			<check_script >obtained
+	diff -q --ignore-all-space $(srcdir)/../expected obtained
+	echo "main." >check_script2
+	cat $(srcdir)/../check_script2 >>check_script2
+	$(LIBTOOL) --mode=execute -dlopen ../../../src/libppl.la \
+				-dlopen ppl_yap.la \
+		yap -l $(srcdir)/yap_clpq2.pl \
+			<check_script2 >obtained2
+	diff -q --ignore-all-space $(srcdir)/../expected2 obtained2
+
+MOSTLYCLEANFILES = check_script check_script2 $(CLPQ_TESTS) obtained obtained2
 endif

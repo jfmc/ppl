@@ -114,7 +114,7 @@ static inline bool
 Prolog_construct_compound(Prolog_term_ref& t, Prolog_atom f,
 			  Prolog_term_ref a1) {
   args[0] = a1;
-  t = MkApplTerm(f, 1, args);
+  t = MkApplTerm(MkFunctor(f, 1), 1, args);
   return true;
 }
 
@@ -127,7 +127,7 @@ Prolog_construct_compound(Prolog_term_ref& t, Prolog_atom f,
 			  Prolog_term_ref a1, Prolog_term_ref a2) {
   args[0] = a1;
   args[1] = a2;
-  t = MkApplTerm(f, 2, args);
+  t = MkApplTerm(MkFunctor(f, 2), 2, args);
   return true;
 }
 
@@ -142,7 +142,7 @@ Prolog_construct_compound(Prolog_term_ref& t, Prolog_atom f,
   args[0] = a1;
   args[1] = a2;
   args[2] = a3;
-  t = MkApplTerm(f, 3, args);
+  t = MkApplTerm(MkFunctor(f, 3), 3, args);
   return true;
 }
 
@@ -158,7 +158,7 @@ Prolog_construct_compound(Prolog_term_ref& t, Prolog_atom f,
   args[1] = a2;
   args[2] = a3;
   args[3] = a4;
-  t = MkApplTerm(f, 4, args);
+  t = MkApplTerm(MkFunctor(f, 4), 4, args);
   return true;
 }
 
@@ -186,7 +186,7 @@ static inline void
 Prolog_raise_exception(Prolog_term_ref t) {
 #if 0
   args[0] = t;
-  YapCallProlog(MkApplTerm(a_throw, 1, args));
+  YapCallProlog(MkApplTerm(MkFunctor(a_throw, 1), 1, args));
 #else
   YapThrow(t);
 #endif
@@ -384,133 +384,6 @@ yap_stub_##name() { \
   return name(arg1, arg2, arg3, arg4); \
 }
 
-#if 1
-
-/* Throw a simple exception
-
-?- x(a).
-
- */
-static int
-p_x(void)
-{
-  Term tf = YapMkAtomTerm(YapLookupAtom("hello"));
-  YapThrow(tf);
-  return(TRUE);
-}
-
-/* Throw a complex exception
-
-?- x2(a).
-
- */
-static int
-p_x2(void)
-{
-  Term tf, t[3];
-  Functor f = YapMkFunctor(YapLookupAtom("f"),3);
-
-  t[0] = YapMkAtomTerm(YapLookupAtom("hello"));
-  t[1] = YapMkVarTerm();
-  t[2] = ARG1;
-  tf = YapMkApplTerm(f,3,t);
-  YapThrow(tf);
-  return(TRUE);
-}
-
-/* Run a throw goal: exception is not thrown outside caller
-
-?- ux(a).
-
- */
-static int
-p_ux(void)
-{
-  Term tf, t[3];
-  Functor f1 = YapMkFunctor(YapLookupAtom("throw"),1);
-  Functor f2 = YapMkFunctor(YapLookupAtom("f"),3);
-
-  t[0] = YapMkAtomTerm(YapLookupAtom("hello"));
-  t[1] = YapMkVarTerm();
-  t[2] = ARG1;
-  tf = YapMkApplTerm(f2,3,t);
-  t[0] = tf;
-  tf = YapMkApplTerm(f1,1,t);
-  return(YapCallProlog(tf));
-}
-
-/* Run goal as argument
-
-?- g(X=2).
-;
-?- g(fail).
-?- g(throw(a)).
-
- */
-static int
-p_g(void)
-{
-  return(YapCallProlog(ARG1));
-}
-
-/* Run goal as argument and check for exceptions. Do a throw if so.
-?- g2(X=2).
-;
-?- g2(fail).
-?- g2(throw(a)).
-
-*/
-static int
-p_g2(void)
-{
-  Term ex;
-  int out = YapCallProlog(ARG1);
-  if (YapGoalHasException(&ex)) {
-    YapThrow(ex);
-    return(FALSE);
-  }
-  return(out);
-}
-
-/*
-  Use YapRunGoal, as it keeps the choice-point stack. Notice that we need
-   to do prunegoal before we exit
- */
-static int
-p_h(void)
-{
-  int out = YapRunGoal(ARG1);
-  if (out) {
-    YapPruneGoal();
-  }
-  return(out);
-}
-
-/*
-  same and also check for exceptions.
-
-?- h2(X=2).
-;
-?- h2(fail).
-?- h2(throw(a)).
-
- */
-static int
-p_h2(void)
-{
-  Term ex;
-  int out = YapRunGoal(ARG1);
-  if (out) {
-    YapPruneGoal();
-  }
-  if (YapGoalHasException(&ex)) {
-    YapThrow(ex);
-    return(FALSE);
-  }
-  return(out);
-}
-#endif
-
 YAP_STUB_0(ppl_initialize, 0)
 YAP_STUB_0(ppl_finalize, 0)
 YAP_STUB_3(ppl_new_Polyhedron_from_dimension, 3)
@@ -610,14 +483,4 @@ init() {
   YAP_USER_C_PREDICATE(ppl_Polyhedron_strictly_contains_Polyhedron, 2);
   YAP_USER_C_PREDICATE(ppl_Polyhedron_equals_Polyhedron, 2);
   YAP_USER_C_PREDICATE(ppl_Polyhedron_get_bounding_box, 2);
-
-#if 1
-  UserCPredicate("x", p_x, 0);
-  UserCPredicate("x", p_x2, 1);
-  UserCPredicate("ux", p_ux, 1);
-  UserCPredicate("g", p_g, 1);
-  UserCPredicate("g2", p_g2, 1);
-  UserCPredicate("h", p_h, 1);
-  UserCPredicate("h2", p_h2, 1);
-#endif
 }

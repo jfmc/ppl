@@ -1,4 +1,4 @@
-/* Prolog main program for the toy PPL/YAP-Prolog CLP(Q) interpreter.
+/* Prolog main program for the 2nd toy PPL/YAP-Prolog CLP(Q) interpreter.
    Copyright (C) 2001, 2002 Roberto Bagnara <bagnara@cs.unipr.it>
 
 This file is part of the Parma Polyhedra Library (PPL).
@@ -22,7 +22,7 @@ For the most up-to-date information see the Parma Polyhedra Library
 site: http://www.cs.unipr.it/ppl/ . */
 
 :- ensure_loaded('ppl_yap.pl').
-:- ensure_loaded('../clpq.pl').
+:- ensure_loaded('../clpq2.pl').
 :- use_module(library(lists), [append/3, member/2]).
 
 eat_eol.
