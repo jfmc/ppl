@@ -139,6 +139,7 @@ NNC_Polyhedron.types.hh \
 float.types.hh \
 globals.hh \
 statistics.hh \
+Limits.hh \
 checked.defs.hh \
 $(COEFFICIENT_DEFS_INCLUDE_FILES) \
 checked_int.inlines.hh \
