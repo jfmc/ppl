@@ -200,7 +200,8 @@ ppl_Prolog_sysdep_deinit() {
   Raise a Prolog exception with \p t as the exception term.
 */
 static inline void
-Prolog_raise_exception(Prolog_term_ref t) {
+Prolog_raise_exception(Prolog_term_ref /* t */) {
+  // FIXME: to be written!
 }
 
 /*!
