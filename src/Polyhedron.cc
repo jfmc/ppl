@@ -944,7 +944,8 @@ PPL::Polyhedron::add_dimensions_and_embed(size_t dim) {
   // Update the space dimension.
   space_dim += dim;
 
-  assert(OK());
+  // CHECKME: is it legal to have `*this' empty here?
+  assert(OK(false));
 }
 
 /*!
