@@ -51,7 +51,7 @@ main :-
     common_main.
 
 
-% XSB (up to version 2.5) does not offer read_term/2.
+% XSB (up to version 2.6) does not offer read_term/2.
 % We just provide the functionality we need.
 
 :- import file_read/3 from xsb_read.
