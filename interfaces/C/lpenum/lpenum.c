@@ -34,9 +34,12 @@ site: http://www.cs.unipr.it/ppl/ . */
 
 static struct option long_options[] = {
   {"bounds",         no_argument,       0, 'b'},
+  {"check",          no_argument,       0, 'c'},
   {"help",           no_argument,       0, 'h'},
+  {"minimize",       no_argument,       0, 'm'},
+  {"maximize",       no_argument,       0, 'M'},
   {"max-cpu",        required_argument, 0, 'C'},
-  {"max-memory",     required_argument, 0, 'M'},
+  {"max-memory",     required_argument, 0, 'V'},
   {"output",         required_argument, 0, 'o'},
   {"timings",        no_argument,       0, 't'},
   {0, 0, 0, 0}
@@ -46,14 +49,16 @@ static const char* usage_string
 = "Usage: %s [OPTION]... [FILE]...\n\n"
 "  -b, --bounds            treat variable bounds as ordinary constraints\n"
 "  -c, --check             check plausibility of the optimum value found\n"
+"  -m, --minimize          minimize the objective function (default)\n"
+"  -M, --maximize          maximize the objective function (default)\n"
 "  -CSECS, --max-cpu=SECS  limits CPU usage to SECS seconds\n"
+"  -VMB, --max-memory=MB   limits memory usage to MB megabytes\n"
 "  -h, --help              prints this help text\n"
-"  -MMB, --max-memory=MB   limits memory usage to MB megabytes\n"
 "  -oPATH, --output=PATH   write output to PATH\n"
 "  -t, --timings           print timings on stderr\n";
 
 
-#define OPTION_LETTERS "bc:hm:o:t"
+#define OPTION_LETTERS "bcmMC:V:ho:t"
 
 static const char* program_name = 0;
 
@@ -63,6 +68,7 @@ static const char* output_argument = 0;
 static int add_bounds = 0;
 static int check_optimum = 0;
 static int print_timings = 0;
+static int maximize = 0;
 
 static void
 fatal(const char* format, ...) {
@@ -100,6 +106,14 @@ process_options(int argc, char *argv[]) {
       check_optimum = 1;
       break;
 
+    case 'm':
+      maximize = 0;
+      break;
+
+    case 'M':
+      maximize = 1;
+      break;
+
     case '?':
     case 'h':
       fprintf(stderr, usage_string, argv[0]);
@@ -114,7 +128,7 @@ process_options(int argc, char *argv[]) {
 	max_seconds_of_cpu_time = l;
       break;
 
-    case 'M':
+    case 'V':
       l = strtol(optarg, &endptr, 10);
       if (*endptr || l < 0)
 	fatal("a non-negative integer must follow `-m'");
@@ -187,7 +201,8 @@ print_clock(FILE* f) {
 }
 
 static mpz_t tmp_z;
-static mpq_t tmp_q;
+static mpq_t tmp1_q;
+static mpq_t tmp2_q;
 static ppl_Coefficient_t ppl_coeff;
 static LPI* lp;
 
@@ -344,7 +359,7 @@ solve(char* file_name) {
   ppl_Polyhedron_t ppl_ph;
   ppl_ConSys_t ppl_cs;
   ppl_const_GenSys_t ppl_const_gs;
-  ppl_GenSys__const_iterator_t git1, git2;
+  ppl_GenSys__const_iterator_t git1, git2, ogit;
   ppl_const_Generator_t ppl_const_g;
   ppl_LinExpression_t ppl_le;
   int dimension, row, num_rows, column, nz, i, type;
@@ -353,7 +368,10 @@ solve(char* file_name) {
   double* coefficient_value;
   mpq_t rational_lb, rational_ub;
   mpq_t* rational_coefficient;
+  mpq_t* objective;
   mpq_t* candidate;
+  int first_candidate;
+  mpq_t optimum;
   mpz_t den_lcm;
   struct bounds* variable_bounds;
 
@@ -428,6 +446,13 @@ solve(char* file_name) {
     }
   }
 
+#if 1
+  ppl_new_Polyhedron_from_ConSys(&ppl_ph, ppl_cs);
+  printf("created\n");
+  ppl_Polyhedron_generators(ppl_ph, &ppl_const_gs);
+  printf("minimized\n");
+#endif
+
   /* Set up the columns constraints, i.e., variable bounds. */
   for (column = 1; column <= dimension; ++column) {
 
@@ -457,7 +482,12 @@ solve(char* file_name) {
     }
   }
 
+#if 0
   ppl_new_Polyhedron_from_ConSys(&ppl_ph, ppl_cs);
+#else
+  ppl_Polyhedron_add_constraints_and_minimize(ppl_ph, ppl_cs);
+  printf("added\n");
+#endif
   ppl_delete_ConSys(ppl_cs);
 
   if (print_timings) {
@@ -476,9 +506,19 @@ solve(char* file_name) {
     start_clock();
   }
 
+  objective = (mpq_t*) malloc((dimension+1)*sizeof(mpq_t));
+  for (i = 0; i <= dimension; ++i) {
+    mpq_init(objective[i]);
+    mpq_set_d(objective[i], glp_get_obj_coef(lp, i));
+  }
+
   candidate = (mpq_t*) malloc((dimension)*sizeof(mpq_t));
   for (i = 0; i < dimension; ++i)
     mpq_init(candidate[i]);
+
+  mpq_init(optimum);
+  ppl_new_GenSys__const_iterator(&ogit);
+  first_candidate = 1;
 
   ppl_new_GenSys__const_iterator(&git1);
   ppl_new_GenSys__const_iterator(&git2);
@@ -493,19 +533,30 @@ solve(char* file_name) {
 	mpz_set(mpq_denref(candidate[i]), tmp_z);
 	ppl_Generator_coefficient(ppl_const_g, i, ppl_coeff);
 	ppl_Coefficient_to_mpz_t(ppl_coeff, mpq_numref(candidate[i]));
+#if 0
 	if (!add_bounds) {
 	  switch (variable_bounds[i].type) {
 	  case 'F':
 	    break;
 
 	  case 'L':
-	    if (mpq_cmp(variable_bounds[i].lower, candidate[i]) > 0)
+	    if (mpq_cmp(variable_bounds[i].lower, candidate[i]) > 0) {
+	      mpq_out_str(stdout, 10, variable_bounds[i].lower);
+	      printf(" > ");
+	      mpq_out_str(stdout, 10, candidate[i]);
+	      printf("\n");
 	      goto next;
+	    }
 	    break;
 
 	  case 'U':
-	    if (mpq_cmp(variable_bounds[i].upper, candidate[i]) < 0)
+	    if (mpq_cmp(variable_bounds[i].upper, candidate[i]) < 0) {
+	      mpq_out_str(stdout, 10, variable_bounds[i].upper);
+	      printf(" < ");
+	      mpq_out_str(stdout, 10, candidate[i]);
+	      printf("\n");
 	      goto next;
+	    }
 	    break;
 
 	  case 'D':
@@ -518,19 +569,56 @@ solve(char* file_name) {
 	    if (mpq_cmp(variable_bounds[i].lower, candidate[i]) != 0)
 	      goto next;
 	    break;
+	  default:
+	    abort();
+	    break;
 	  }
 	}
+#endif
       }
-      /* Here we have a candidate. */
-      for (i = 0; i < dimension; ++i) {
-	printf("%f ", mpq_get_d(candidate[i]));
-      }
+      /* Here we have a candidate.  Evaluate objective function. */
+      mpq_set(tmp1_q, objective[0]);
+      printf("***************\n");
+      mpq_out_str(stdout, 10, tmp1_q);
       printf("\n");
+      for (i = 0; i < dimension; ++i) {
+	mpq_mul(tmp2_q, candidate[i], objective[i+1]);
+	mpq_add(tmp1_q, tmp1_q, tmp2_q);
+      }
+      mpq_out_str(stdout, 10, tmp1_q);
+      printf("\n");
+
+      if (first_candidate
+	  || (maximize && (mpq_cmp(tmp1_q, optimum) > 0))
+	  || (!maximize && (mpq_cmp(tmp1_q, optimum) < 0))) {
+	first_candidate = 0;
+	mpq_set(optimum, tmp1_q);
+	printf("op = ");
+	mpq_out_str(stdout, 10, optimum);
+	printf("\n");
+	ppl_assign_GenSys__const_iterator_from_GenSys__const_iterator(ogit,
+								      git1);
+      }
     }
-    else
-      printf("NOT A POINT %d\n", ppl_Generator_type(ppl_const_g));
   next:
     ppl_GenSys__const_iterator_increment(git1);
+  }
+
+  if (first_candidate)
+    printf("unfeasible!!!\n");
+  else {
+    printf("optimum = %f\n", mpq_get_d(optimum));
+    ppl_GenSys__const_iterator_dereference(ogit, &ppl_const_g);
+    ppl_Generator_divisor(ppl_const_g, ppl_coeff);
+    ppl_Coefficient_to_mpz_t(ppl_coeff, tmp_z);
+    for (i = 0; i < dimension; ++i) {
+      mpz_set(mpq_denref(tmp1_q), tmp_z);
+      ppl_Generator_coefficient(ppl_const_g, i, ppl_coeff);
+      ppl_Coefficient_to_mpz_t(ppl_coeff, mpq_numref(tmp1_q));
+      print_variable(i, stdout);
+      printf(" = %f  ", mpq_get_d(tmp1_q));
+    }
+    printf("\n");
   }
 
   free(candidate);
@@ -562,7 +650,8 @@ main(int argc, char* argv[]) {
 
   /* Initialize globals. */
   mpz_init(tmp_z);
-  mpq_init(tmp_q);
+  mpq_init(tmp1_q);
+  mpq_init(tmp2_q);
   ppl_new_Coefficient(&ppl_coeff);
 
   while (optind < argc)
@@ -570,7 +659,8 @@ main(int argc, char* argv[]) {
 
   /* Finalize globals. */
   ppl_delete_Coefficient(ppl_coeff);
-  mpq_clear(tmp_q);
+  mpq_clear(tmp2_q);
+  mpq_clear(tmp1_q);
   mpz_clear(tmp_z);
 
   return 0;
