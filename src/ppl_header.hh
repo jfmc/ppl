@@ -30,7 +30,7 @@ site: http://www.cs.unipr.it/ppl/ . */
 #endif
 
 #include "config.h"
-
+#include "version.hh"
 #include "ppl_include_files.hh"
 
 #ifdef PPL_SAVE_NDEBUG
