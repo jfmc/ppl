@@ -32,11 +32,9 @@ site: http://www.cs.unipr.it/ppl/ . */
 
 namespace Parma_Polyhedra_Library {
 
-  //! @name Non-friend operators on objects of the class Constraint.
-  //@{
   //! Output operator.
+  /*! \relates Constraint */
   std::ostream& operator <<(std::ostream& s, const Constraint& c);
-  //@}
 
   // Put them in the namespace here to declare them friend later.
   Constraint operator ==(const LinExpression& e1, const LinExpression& e2);

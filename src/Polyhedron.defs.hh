@@ -35,34 +35,36 @@ site: http://www.cs.unipr.it/ppl/ . */
 
 namespace Parma_Polyhedra_Library {
 
-  //! @name Non-friend operators on objects of the class Polyhedron.
-  //@{
   //! Returns <CODE>true</CODE> if and only if
   //! \p x and \p y are the same polyhedron.
   //! \exception std::invalid_argument thrown if \p x and \p y
   //!                                  are dimension-incompatible.
+  /*! \relates Polyhedron */
   bool operator ==(const Polyhedron& x, const Polyhedron& y);
   //! Returns <CODE>true</CODE> if and only if
   //! \p x and \p y are different polyhedra.
   //! \exception std::invalid_argument thrown if \p x and \p y
   //!                                  are dimension-incompatible.
+  /*! \relates Polyhedron */
   bool operator !=(const Polyhedron& x, const Polyhedron& y);
   //! Returns <CODE>true</CODE> if and only if
   //! \p x is strictly contained in \p y.
   //! \exception std::invalid_argument thrown if \p x and \p y
   //!                                  are dimension-incompatible.
+  /*! \relates Polyhedron */
   bool operator <(const Polyhedron& x, const Polyhedron& y);
   //! Returns <CODE>true</CODE> if and only if
   //! \p x strictly contains \p y.
   //! \exception std::invalid_argument thrown if \p x and \p y
   //!                                  are dimension-incompatible.
+  /*! \relates Polyhedron */
   bool operator >(const Polyhedron& x, const Polyhedron& y);
   //! Returns <CODE>true</CODE> if and only if
   //! \p x contains \p y.
   //! \exception std::invalid_argument thrown if \p x and \p y
   //!                                  are dimension-incompatible.
+  /*! \relates Polyhedron */
   bool operator >=(const Polyhedron& x, const Polyhedron& y);
-  //@}
 
   // Put them in the namespace here to declare them friend later.
   bool operator <=(const Polyhedron& x, const Polyhedron& y);

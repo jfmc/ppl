@@ -32,12 +32,10 @@ site: http://www.cs.unipr.it/ppl/ . */
 
 namespace Parma_Polyhedra_Library {
 
-  //! @name Non-friend operators on objects of the class Generator.
-  //@{
   //! Output operator.
+  /*! \relates Generator */
   std::ostream&
   operator <<(std::ostream& s, const Generator& g);
-  //@}
 
   // Put them in the namespace here to declare them friend later.
   Generator line(const LinExpression& e);
