@@ -247,7 +247,6 @@ compare_polys :-
 poly_boxes :-
    ppl_initialize,
    get_bounding_box,
-   (noisy(1) -> boundingbox_test; true),
    !,
    ppl_finalize.
 
@@ -1501,7 +1500,7 @@ ok(T) :-
   ppl_delete_Polyhedron(P3),
   ppl_delete_Polyhedron(P4).
 
-%%%%%%%%%%%%%%%%%%%%%%%%% Find Bounds %%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%%%%%%%%%%%%%%%%%%%% Polyhedron Bounding Values %%%%%%%%%%%%%%%%%%%%%%%
 
 % Tests ppl_Polyhedron_get_bounding_box/3.
 
@@ -1511,9 +1510,13 @@ get_bounding_box:-
                      [i(o(minf), c(1/2)), i(c(0), o(pinf))]),
   get_bounding_box(c, [], [i(o(minf), o(pinf)), i(o(minf), o(pinf))]),
   get_bounding_box(c, [1=0], [empty, empty]),
-  get_bounding_box(nnc,[B > 0, 4*A =< 2],
-                     [i(o(minf), c(1/2)), i(o(0), o(pinf))]).
-  get_bounding_box(nnc,[A > 1, B > 1, A < 1, B < 1], [empty, empty]).
+  get_bounding_box(c, [A =< 4, B =< 4, 3*A + B >= 2],
+                     [i(c(-2/3), c(4)), i(c(-10), c(4))]),
+  get_bounding_box(nnc, [B > 0, 4*A =< 2],
+                     [i(o(minf), c(1/2)), i(o(0), o(pinf))]),
+  get_bounding_box(nnc,[A > 1, B > 1, A < 1, B < 1], [empty, empty]),
+  get_bounding_box(nnc, [A =< 4, B =< 4, 3*A + B > 2],
+                     [i(o(-2/3), c(4)), i(o(-10), c(4))]).
 
 get_bounding_box(T, CS, Box) :-
   ppl_new_Polyhedron_from_dimension(T, 2, P),
@@ -1521,12 +1524,18 @@ get_bounding_box(T, CS, Box) :-
   \+ppl_Polyhedron_get_bounding_box(P, a, Box),
   \+ppl_Polyhedron_get_bounding_box(P, any, box),
   ppl_Polyhedron_get_bounding_box(P, any, Box),
-  ppl_Polyhedron_get_bounding_box(P, polynomial, Box),
-  ppl_Polyhedron_get_bounding_box(P, simplex, Box),
+  ppl_Polyhedron_get_bounding_box(P, polynomial, Box1),
+  ppl_Polyhedron_get_bounding_box(P, simplex, Box2),
   ppl_new_Polyhedron_from_bounding_box(T, Box, P1),
-  ppl_Polyhedron_equals_Polyhedron(P, P1),
+  ppl_new_Polyhedron_from_bounding_box(T, Box1, P2),
+  ppl_new_Polyhedron_from_bounding_box(T, Box2, P3),
+  ppl_Polyhedron_contains_Polyhedron(P1, P),
+  ppl_Polyhedron_contains_Polyhedron(P2, P1),
+  ppl_Polyhedron_contains_Polyhedron(P3, P1),
   ppl_delete_Polyhedron(P),
-  ppl_delete_Polyhedron(P1).
+  ppl_delete_Polyhedron(P1),
+  ppl_delete_Polyhedron(P2),
+  ppl_delete_Polyhedron(P3).
 
 % Tests ppl_Polyhedron_bounds_from_above/2.
 bounds_from_above :-
