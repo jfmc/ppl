@@ -84,6 +84,9 @@ public:
   //! Swaps \p *this with \p y.
   void swap(Linear_System& y);
 
+  //! Returns the maximum space dimension a Linear_System can handle.
+  static dimension_type max_space_dimension();
+
   //! Returns the space dimension of the rows in the system.
   /*!
     The computation of the space dimension correctly ignores

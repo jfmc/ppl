@@ -77,10 +77,7 @@ ConSys::operator[](const dimension_type k) const {
 
 inline dimension_type
 ConSys::max_space_dimension() {
-  // Column zero holds the inhomogeneous term.
-  // In NNC constraint systems, the last column holds the coefficient
-  // of the epsilon dimension.
-  return Linear_System::max_num_columns() - 2;
+  return Linear_System::max_space_dimension();
 }
 
 inline dimension_type

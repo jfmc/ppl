@@ -159,6 +159,14 @@ Linear_System::is_sorted() const {
 }
 
 inline dimension_type
+Linear_System::max_space_dimension() {
+  // Column zero holds the inhomogeneous term or the divisor.
+  // In NNC linear systems, the last column holds the coefficient
+  // of the epsilon dimension.
+  return max_num_columns() - 2;
+}
+
+inline dimension_type
 Linear_System::space_dimension() const {
   const dimension_type n_columns = num_columns();
   return (n_columns == 0)
