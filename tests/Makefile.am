@@ -40,6 +40,7 @@ TESTS = NNCinclusion1 \
 	addconstraints5 addconstraints6 addconstraints7 addconstraints8 \
 	addconstraints9 addconstraints10 addconstraints11 \
 	adddimensions1 adddimensions2 adddimensions3 adddimensions4 \
+	adddimensions5 adddimensions6 adddimensions7 \
 	addgenerators1 addgenerators2 addgenerators3 addgenerators4 \
 	addgenerators5 addgenerators6 addgenerators7 \
 	affineimage1 affineimage2 \
@@ -87,6 +88,9 @@ adddimensions1_SOURCES = adddimensions1.cc
 adddimensions2_SOURCES = adddimensions2.cc
 adddimensions3_SOURCES = adddimensions3.cc
 adddimensions4_SOURCES = adddimensions4.cc
+adddimensions5_SOURCES = adddimensions5.cc
+adddimensions6_SOURCES = adddimensions6.cc
+adddimensions7_SOURCES = adddimensions7.cc
 
 addgenerators1_SOURCES = addgenerators1.cc
 addgenerators2_SOURCES = addgenerators2.cc
