@@ -312,7 +312,7 @@ normalize(const std::vector<mpq_class>& source,
 	    denominator.get_mpz_t(),
 	    source[i].get_den().get_mpz_t());
   for (unsigned i = 0; i < n; ++i)
-    dest[i] = denominator*source[i].get_num();
+    dest[i] = denominator*source[i];
 }
 
 template <typename T>
