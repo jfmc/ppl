@@ -10,10 +10,6 @@ Enhancements for PPL 0.7
   comes in handy.  See how to provide the same functionality the
   right way.
 
-- Explain to the GNU Prolog user that GNU Prolog must be configured
-  using the `--disable-regs' option it is has to work with _any_
-  foreign code (not just the PPL).
-
 - Consider performing the following renamings:
 
     Integer -> Coefficient

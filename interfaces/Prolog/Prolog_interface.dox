@@ -1473,13 +1473,14 @@ Only Ciao Prolog 1.10 #5 or later is supported.
 
 <H2>GNU Prolog</H2>
 
-The GNU Prolog interface to the PPL is available
-both as ``PPL enhanced'' GNU Prolog interpreter
-and as a library that can be linked to GNU Prolog programs.
+The GNU Prolog interface to the PPL is available both as ``PPL
+enhanced'' GNU Prolog interpreter and as a library that can be
+linked to GNU Prolog programs.
 Only GNU Prolog versions 1.2.18 and later are supported.
 
-So that it can be used with the GNU Prolog PPL interface, the
-GNU Prolog installation must be configured with the
+So that it can be used with the GNU Prolog PPL interface
+(and, for that matter, with any foreign code) ,
+the GNU Prolog installation must be configured with the
 <CODE>--disable-regs</CODE> option.
 
 <H3>The <CODE>ppl_gprolog</CODE> Executable</H3>
