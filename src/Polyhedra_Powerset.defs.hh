@@ -35,7 +35,6 @@ site: http://www.cs.unipr.it/ppl/ . */
 #include "globals.defs.hh"
 #include <iosfwd>
 #include <list>
-#include <set>
 #include <map>
 
 //! The powerset construction instantiated on PPL polyhedra.
@@ -196,8 +195,9 @@ public:
   using Base::omega_reduce;
 
   //! \brief
-  //! Assigns to \p *this the result of applying the BGP99 extrapolation
-  //! operator to \p *this and \p y, using the widening function \p wf
+  //! Assigns to \p *this the result of applying the
+  //! \ref pps_bgp99_extrapolation "BGP99 extrapolation operator"
+  //! to \p *this and \p y, using the widening function \p wf
   //! and the cardinality threshold \p max_disjuncts.
   /*!
     \param y
@@ -296,6 +296,13 @@ public:
   //! without embedding the polyhedra in \p *this in the new space.
   void add_space_dimensions_and_project(dimension_type m);
 
+  //! Assigns to \p *this the intersection of \p *this and \p y.
+  /*!
+    The result is obtained by intersecting each polyhedron in \p *this
+    with each polyhedron in \p y and collecting all these intersections.
+  */
+  void intersection_assign(const Polyhedra_Powerset& y);
+
   //! Assigns to \p *this the difference of \p *this and \p y.
   /*!
     The result is obtained by computing the
@@ -311,6 +318,16 @@ public:
     polyhedron in \p y.
   */
   void concatenate_assign(const Polyhedra_Powerset& y);
+
+  //! \brief
+  //! Assigns to \p *this the result of computing the
+  //! \ref time_elapse "time-elapse" between \p *this and \p y.
+  /*!
+    The result is obtained by computing the pairwise \ref time_elapse
+    "time elapse" of each polyhedron in \p *this with each
+    polyhedron in \p y.
+  */
+  void time_elapse_assign(const Polyhedra_Powerset& y);
 
   //! Removes all the specified space dimensions.
   /*!

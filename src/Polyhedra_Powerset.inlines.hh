@@ -36,12 +36,13 @@ site: http://www.cs.unipr.it/ppl/ . */
 namespace Parma_Polyhedra_Library {
 
 template <typename PH>
-dimension_type
+inline dimension_type
 Polyhedra_Powerset<PH>::max_space_dimension() {
   return PH::max_space_dimension();
 }
 
 template <typename PH>
+inline
 Polyhedra_Powerset<PH>::Polyhedra_Powerset(dimension_type num_dimensions,
 					   Polyhedron::Degenerate_Kind kind)
   : space_dim(num_dimensions) {
@@ -50,11 +51,13 @@ Polyhedra_Powerset<PH>::Polyhedra_Powerset(dimension_type num_dimensions,
 }
 
 template <typename PH>
+inline
 Polyhedra_Powerset<PH>::Polyhedra_Powerset(const Polyhedra_Powerset& y)
   : Base(y), space_dim(y.space_dim) {
 }
 
 template <typename PH>
+inline
 Polyhedra_Powerset<PH>::Polyhedra_Powerset(const PH& ph)
   : Base(ph), space_dim(ph.space_dimension()) {
 }
@@ -82,13 +85,14 @@ Polyhedra_Powerset<C_Polyhedron>
 }
 
 template <typename PH>
+inline
 Polyhedra_Powerset<PH>::Polyhedra_Powerset(const Constraint_System& cs)
   : space_dim(cs.space_dimension()) {
   push_back(Determinate<PH>(cs));
 }
 
 template <typename PH>
-Polyhedra_Powerset<PH>&
+inline Polyhedra_Powerset<PH>&
 Polyhedra_Powerset<PH>::operator=(const Polyhedra_Powerset& y) {
   Base::operator=(y);
   space_dim = y.space_dim;
@@ -97,7 +101,7 @@ Polyhedra_Powerset<PH>::operator=(const Polyhedra_Powerset& y) {
 
 template <typename PH>
 template <typename QH>
-Polyhedra_Powerset<PH>&
+inline Polyhedra_Powerset<PH>&
 Polyhedra_Powerset<PH>::operator=(const Polyhedra_Powerset<QH>& y) {
   Polyhedra_Powerset<PH> pps(y);
   swap(pps);
@@ -112,9 +116,23 @@ Polyhedra_Powerset<PH>::swap(Polyhedra_Powerset& y) {
 }
 
 template <typename PH>
-dimension_type
+inline dimension_type
 Polyhedra_Powerset<PH>::space_dimension() const {
   return space_dim;
+}
+
+template <typename PH>
+inline void
+Polyhedra_Powerset<PH>::intersection_assign(const Polyhedra_Powerset& y) {
+  Base::pairwise_apply_assign
+    (y, CS::lift_op_assign(std::mem_fun_ref(&PH::intersection_assign)));
+}
+
+template <typename PH>
+inline void
+Polyhedra_Powerset<PH>::time_elapse_assign(const Polyhedra_Powerset& y) {
+  Base::pairwise_apply_assign
+    (y, CS::lift_op_assign(std::mem_fun_ref(&PH::time_elapse_assign)));
 }
 
 template <typename PH>
@@ -640,13 +658,13 @@ Polyhedra_Powerset<PH>::ascii_load(std::istream& s) {
 }
 
 template <typename PH>
-memory_size_type
+inline memory_size_type
 Polyhedra_Powerset<PH>::external_memory_in_bytes() const {
   return Base::external_memory_in_bytes();
 }
 
 template <typename PH>
-memory_size_type
+inline memory_size_type
 Polyhedra_Powerset<PH>::total_memory_in_bytes() const {
   return sizeof(*this) + external_memory_in_bytes();
 }
