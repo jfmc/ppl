@@ -383,7 +383,7 @@ If \f$A\f$ is a rational \f$m \times n\f$ matrix,
         \vect{x} \in \Rset^n
       }{
         \vect{x}^\transpose = \vect{y}^\transpose A + \vect{z}^\transpose B, \\
-        \vect{y} = (y_0, \ldots, y_{m-1})^\transpose \in \Rset_+^{m},
+        \vect{y} = (y_0, \ldots, y_{m-1}) \in \Rset_+^{m},
         \sum_{k=0}^{m-1} y_k = 1, \\
 	\vect{z} \in \Rset_+^{m'}
       }.
@@ -395,12 +395,15 @@ the rows of \f$A\f$ with convex combinations of the rows of \f$B\f$,
 we can think \f$A\f$ as the matrix of rays and \f$B\f$ as
 the matrix of vertices.
 
+<B>Dual representation</B>
+
 Thus, under the hypothesis of Minkowski's theorem
 (and hence assuming the polyhedron has at least one vertex),
-a rational polyhedron \f$P\f$ 
-can be represented either by a system of constraints
-or by a system of generators.
-Moreover, given either one of the representations, there is an algorithm for
+a rational polyhedron \f$P\f$ has a <EM>dual representation</EM>.
+That is, \f$P\f$
+can be represented by a system of constraints
+or a system of generators.
+Moreover, given one of the representations, there is an algorithm for
 computing the other.
 
 (The following blurb is due to a bug in Doxygen.)
