@@ -49,11 +49,9 @@ Matrix::Matrix(Topology topol)
     sorted(true) {
 }
 
-
 inline
 Matrix::~Matrix() {
 }
-
 
 inline Row&
 Matrix::operator[](dimension_type k) {
@@ -61,13 +59,11 @@ Matrix::operator[](dimension_type k) {
   return rows[k];
 }
 
-
 inline const Row&
 Matrix::operator[](dimension_type k) const {
   assert(k < rows.size());
   return rows[k];
 }
-
 
 inline dimension_type
 Matrix::num_rows() const {
@@ -94,7 +90,6 @@ inline void
 Matrix::set_index_first_pending_row(dimension_type first_pending) {
   index_first_pending = first_pending;
 }
-
 
 inline void
 Matrix::set_necessarily_closed() {
@@ -147,7 +142,6 @@ Matrix::space_dimension() const {
     ? 0
     : n_columns - (is_necessarily_closed() ? 1 : 2);
 }
-
 
 /*! \relates Matrix */
 inline bool
