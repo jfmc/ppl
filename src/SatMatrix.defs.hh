@@ -107,7 +107,7 @@ public:
   bool OK() const;
 #ifndef NDEBUG
   //! Checks whether \p *this is sorted.
-  //! It does NOT remove duplicates.
+  //! It does NOT check for duplicates.
   bool check_sorted() const;
 #endif
 };

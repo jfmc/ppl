@@ -263,10 +263,6 @@ PPL::SatMatrix::OK() const {
 }
 
 #ifndef NDEBUG
-/*!
-  Checks whether the matrix is sorted.
-  It does NOT remove duplicates.
-*/
 bool
 PPL::SatMatrix::check_sorted() const {
   const SatMatrix& x = *this;
