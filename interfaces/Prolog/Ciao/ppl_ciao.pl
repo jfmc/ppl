@@ -272,7 +272,7 @@ site: http://www.cs.unipr.it/ppl/ . */
              :: any_term(Handle1) * any_term(Handle2)
               + foreign.
 
-:- use_foreign_source('ppl_ciao.cc').
+:- use_foreign_library(ppl_ciao).
 
 :- impl_defined(
 [
