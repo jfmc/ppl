@@ -1,5 +1,5 @@
 /* Test Polyhedron::add_dimensions_and_embed(): shows a bug in versions
-   up to 0.5pre11 caused by the missing protection against auto-assignments
+   up to 0.5pre12 caused by the missing protection against auto-assignments
    in class Matrix.
    Copyright (C) 2001-2003 Roberto Bagnara <bagnara@cs.unipr.it>
 
@@ -45,9 +45,9 @@ main() TRY {
   // This will change the size of the rows, but not their capacity.
   ph1.add_dimensions_and_embed(1);
 
-  // Assing the polyhedron to itself:
-  // this re-computes the row capacity based on row size,
-  // but it will not actually increase the capacity of the rows,
+  // Assigning the polyhedron to itself:
+  // this used to recompute the row capacity based on row size,
+  // without actually increasing the capacity of the rows,
   // leading to an inconsistent state.
   ph1 = ph1;
 
