@@ -5,66 +5,10 @@
 #include <sstream>
 #include <climits>
 
+#define TRACK_ALLOCATION 1
+#include "track_allocation.hh"
+
 namespace PPL = Parma_Polyhedra_Library;
-
-#ifndef NDEBUG
-#include <set>
-#include <iostream>
-
-class PolyTracker {
-public:
-  void insert(const void* pp);
-  void check(const void* pp);
-  void remove(const void* pp);
-
-  PolyTracker();
-  ~PolyTracker();
-
-private:
-  typedef std::set<const void*, std::less<const void*> > Set;
-  Set s;
-};
-
-PolyTracker::PolyTracker() {
-}
-
-PolyTracker::~PolyTracker() {
-  int n = s.size();
-  std::cerr << n << " polyhedra leaked!" << std::endl;
-}
-
-void
-PolyTracker::insert(const void* pp) {
-  std::pair<Set::iterator, bool> stat = s.insert(pp);
-  if (!stat.second)
-    abort();
-}
-
-void
-PolyTracker::check(const void* pp) {
-  if (s.find(pp) == s.end())
-    abort();
-}
-
-void
-PolyTracker::remove(const void* pp) {
-  if (s.erase(pp) != 1)
-    abort();
-}
-
-static PolyTracker poly_tracker;
-
-#define REGISTER(x) poly_tracker.insert(x)
-#define UNREGISTER(x) poly_tracker.remove(x)
-#define CHECK(x) poly_tracker.check(x)
-
-#else
-
-#define REGISTER(x)
-#define UNREGISTER(x)
-#define CHECK(x)
-
-#endif
 
 static void
 handle_exception(const integer_out_of_range& e) {
@@ -496,3 +440,418 @@ get_variable(Prolog_term_ref t) {
   }
   throw not_a_variable(t);
 }
+
+#ifndef SICSTUS
+
+extern "C" Prolog_foreign_return_type
+ppl_new_polyhedron(Prolog_term_ref t_ph, Prolog_term_ref t_nd) {
+  try {
+    PPL::Polyhedron* ph
+      = new PPL::Polyhedron(term_to_unsigned_int(t_nd));
+    Prolog_term_ref tmp = Prolog_new_term_ref();
+    Prolog_put_address(tmp, ph);
+    if (Prolog_unify(t_ph, tmp)) {
+      REGISTER(ph);
+      return PROLOG_SUCCESS;
+    }
+    else
+      delete ph;
+  }
+  CATCH_ALL;
+  return PROLOG_FAILURE;
+}
+
+extern "C" Prolog_foreign_return_type
+ppl_new_empty_polyhedron(Prolog_term_ref t_ph, Prolog_term_ref t_nd) {
+  try {
+    PPL::Polyhedron* ph
+      = new PPL::Polyhedron(term_to_unsigned_int(t_nd),
+			    PPL::Polyhedron::EMPTY);
+    Prolog_term_ref tmp = Prolog_new_term_ref();
+    Prolog_put_address(tmp, ph);
+    if (Prolog_unify(t_ph, tmp)) {
+      REGISTER(ph);
+      return PROLOG_SUCCESS;
+    }
+    else
+      delete ph;
+  }
+  CATCH_ALL;
+  return PROLOG_FAILURE;
+}
+
+extern "C" Prolog_foreign_return_type
+ppl_copy_polyhedron(Prolog_term_ref t_ph, Prolog_term_ref t_source) {
+  try {
+    void* source;
+    if (!Prolog_get_address(t_source, source))
+      return PROLOG_FAILURE;
+    CHECK(source);
+    PPL::Polyhedron* ph
+      = new PPL::Polyhedron(*static_cast<const PPL::Polyhedron*>(source));
+    Prolog_term_ref tmp = Prolog_new_term_ref();
+    Prolog_put_address(tmp, ph);
+    if (Prolog_unify(t_ph, tmp)) {
+      REGISTER(ph);
+      return PROLOG_SUCCESS;
+    }
+    else
+      delete ph;
+  }
+  CATCH_ALL;
+  return PROLOG_FAILURE;
+}
+
+extern "C" Prolog_foreign_return_type
+ppl_delete_polyhedron(Prolog_term_ref t_ph) {
+  try {
+    void* ph;
+    if (!Prolog_get_address(t_ph, ph))
+      return PROLOG_FAILURE;
+    UNREGISTER(ph);
+    delete static_cast<PPL::Polyhedron*>(ph);
+    return PROLOG_SUCCESS;
+  }
+  CATCH_ALL;
+  return PROLOG_FAILURE;
+}
+
+extern "C" Prolog_foreign_return_type
+ppl_space_dimension(Prolog_term_ref t_ph, Prolog_term_ref t_sd) {
+  try {
+    void* ph;
+    if (!Prolog_get_address(t_ph, ph))
+      return PROLOG_FAILURE;
+    CHECK(ph);
+    size_t sd = static_cast<const PPL::Polyhedron*>(ph)->space_dimension();
+    Prolog_term_ref tmp = Prolog_new_term_ref();
+    if (sd <= LONG_MAX
+	&& Prolog_put_long(tmp, long(sd)) 
+	&& Prolog_unify(t_sd, tmp))
+      return PROLOG_SUCCESS;
+  }
+  CATCH_ALL;
+  return PROLOG_FAILURE;
+}
+
+extern "C" Prolog_foreign_return_type
+ppl_insert_constraint(Prolog_term_ref t_ph, Prolog_term_ref t_c) {
+  try {
+    void* ph;
+    if (!Prolog_get_address(t_ph, ph))
+      return PROLOG_FAILURE;
+    CHECK(ph);
+    static_cast<PPL::Polyhedron*>(ph)->insert(build_constraint(t_c));
+    return PROLOG_SUCCESS;
+  }
+  CATCH_ALL;
+  return PROLOG_FAILURE;
+}
+
+extern "C" Prolog_foreign_return_type
+ppl_insert_generator(Prolog_term_ref t_ph, Prolog_term_ref t_g) {
+  try {
+    void* ph;
+    if (!Prolog_get_address(t_ph, ph))
+      return PROLOG_FAILURE;
+    CHECK(ph);
+    static_cast<PPL::Polyhedron*>(ph)->insert(build_generator(t_g));
+    return PROLOG_SUCCESS;
+  }
+  CATCH_ALL;
+  return PROLOG_FAILURE;
+}
+
+extern "C" Prolog_foreign_return_type
+ppl_add_constraints_and_minimize(Prolog_term_ref t_ph,
+				 Prolog_term_ref t_clist) {
+  try {
+    void* ph;
+    if (!Prolog_get_address(t_ph, ph))
+      return PROLOG_FAILURE;
+    CHECK(ph);
+    PPL::ConSys cs;
+    Prolog_term_ref c = Prolog_new_term_ref();
+    while (Prolog_is_list(t_clist)) {
+      Prolog_get_list(t_clist, c, t_clist);
+      cs.insert(build_constraint(c));
+    }
+    if (static_cast<PPL::Polyhedron*>(ph)->add_constraints_and_minimize(cs))
+      return PROLOG_SUCCESS;
+  }
+  CATCH_ALL;
+  return PROLOG_FAILURE;
+}
+
+extern "C" Prolog_foreign_return_type
+ppl_check_empty(Prolog_term_ref t_ph) {
+  try {
+    void* ph;
+    if (!Prolog_get_address(t_ph, ph))
+      return PROLOG_FAILURE;
+    CHECK(ph);
+    if (static_cast<PPL::Polyhedron*>(ph)->check_empty())
+      return PROLOG_SUCCESS;
+  }
+  CATCH_ALL;
+  return PROLOG_FAILURE;
+}
+
+extern "C" Prolog_foreign_return_type
+ppl_intersection_assign(Prolog_term_ref t_lhs, Prolog_term_ref t_rhs) {
+  try {
+    void* lhs;
+    void* rhs;
+    if (!Prolog_get_address(t_lhs, lhs) || !Prolog_get_address(t_rhs, rhs))
+      return PROLOG_FAILURE;
+    CHECK(lhs);
+    CHECK(rhs);
+    PPL::Polyhedron& x = *static_cast<PPL::Polyhedron*>(lhs);
+    const PPL::Polyhedron& y = *static_cast<const PPL::Polyhedron*>(rhs);
+    x.intersection_assign(y);
+    return PROLOG_SUCCESS;
+  }
+  CATCH_ALL;
+  return PROLOG_FAILURE;
+}
+
+extern "C" Prolog_foreign_return_type
+ppl_intersection_assign_and_minimize(Prolog_term_ref t_lhs,
+				     Prolog_term_ref t_rhs) {
+  try {
+    void* lhs;
+    void* rhs;
+    if (!Prolog_get_address(t_lhs, lhs) || !Prolog_get_address(t_rhs, rhs))
+      return PROLOG_FAILURE;
+    CHECK(lhs);
+    CHECK(rhs);
+    PPL::Polyhedron& x = *static_cast<PPL::Polyhedron*>(lhs);
+    const PPL::Polyhedron& y = *static_cast<const PPL::Polyhedron*>(rhs);
+    x.intersection_assign_and_minimize(y);
+    return PROLOG_SUCCESS;
+  }
+  CATCH_ALL;
+  return PROLOG_FAILURE;
+}
+
+extern "C" Prolog_foreign_return_type
+ppl_convex_hull_assign(Prolog_term_ref t_lhs, Prolog_term_ref t_rhs) {
+  try {
+    void* lhs;
+    void* rhs;
+    if (!Prolog_get_address(t_lhs, lhs) || !Prolog_get_address(t_rhs, rhs))
+      return PROLOG_FAILURE;
+    CHECK(lhs);
+    CHECK(rhs);
+    PPL::Polyhedron& x = *static_cast<PPL::Polyhedron*>(lhs);
+    const PPL::Polyhedron& y = *static_cast<const PPL::Polyhedron*>(rhs);
+    x.convex_hull_assign(y);
+    return PROLOG_SUCCESS;
+  }
+  CATCH_ALL;
+  return PROLOG_FAILURE;
+}
+
+extern "C" Prolog_foreign_return_type
+ppl_convex_hull_assign_and_minimize(Prolog_term_ref t_lhs,
+				    Prolog_term_ref t_rhs) {
+  try {
+    void* lhs;
+    void* rhs;
+    if (!Prolog_get_address(t_lhs, lhs) || !Prolog_get_address(t_rhs, rhs))
+      return PROLOG_FAILURE;
+    CHECK(lhs);
+    CHECK(rhs);
+    PPL::Polyhedron& x = *static_cast<PPL::Polyhedron*>(lhs);
+    const PPL::Polyhedron& y = *static_cast<const PPL::Polyhedron*>(rhs);
+    x.convex_hull_assign_and_minimize(y);
+    return PROLOG_SUCCESS;
+  }
+  CATCH_ALL;
+  return PROLOG_FAILURE;
+}
+
+extern "C" Prolog_foreign_return_type
+ppl_convex_difference_assign(Prolog_term_ref t_lhs, Prolog_term_ref t_rhs) {
+  try {
+    void* lhs;
+    void* rhs;
+    if (!Prolog_get_address(t_lhs, lhs) || !Prolog_get_address(t_rhs, rhs))
+      return PROLOG_FAILURE;
+    CHECK(lhs);
+    CHECK(rhs);
+    PPL::Polyhedron& x = *static_cast<PPL::Polyhedron*>(lhs);
+    const PPL::Polyhedron& y = *static_cast<const PPL::Polyhedron*>(rhs);
+    x.convex_difference_assign(y);
+    return PROLOG_SUCCESS;
+  }
+  CATCH_ALL;
+  return PROLOG_FAILURE;
+}
+
+extern "C" Prolog_foreign_return_type
+ppl_convex_difference_assign_and_minimize(Prolog_term_ref t_lhs,
+					  Prolog_term_ref t_rhs) {
+  try {
+    void* lhs;
+    void* rhs;
+    if (!Prolog_get_address(t_lhs, lhs) || !Prolog_get_address(t_rhs, rhs))
+      return PROLOG_FAILURE;
+    CHECK(lhs);
+    CHECK(rhs);
+    PPL::Polyhedron& x = *static_cast<PPL::Polyhedron*>(lhs);
+    const PPL::Polyhedron& y = *static_cast<const PPL::Polyhedron*>(rhs);
+    x.convex_difference_assign_and_minimize(y);
+    return PROLOG_SUCCESS;
+  }
+  CATCH_ALL;
+  return PROLOG_FAILURE;
+}
+
+extern "C" Prolog_foreign_return_type
+ppl_widening_assign(Prolog_term_ref t_lhs, Prolog_term_ref t_rhs) {
+  try {
+    void* lhs;
+    void* rhs;
+    if (!Prolog_get_address(t_lhs, lhs) || !Prolog_get_address(t_rhs, rhs))
+      return PROLOG_FAILURE;
+    CHECK(lhs);
+    CHECK(rhs);
+    PPL::Polyhedron& x = *static_cast<PPL::Polyhedron*>(lhs);
+    const PPL::Polyhedron& y = *static_cast<const PPL::Polyhedron*>(rhs);
+    x.widening_assign(y);
+    return PROLOG_SUCCESS;
+  }
+  CATCH_ALL;
+  return PROLOG_FAILURE;
+}
+
+extern "C" Prolog_foreign_return_type
+ppl_get_constraints(Prolog_term_ref t_ph, Prolog_term_ref t_clist) {
+  try {
+    void* ph;
+    if (!Prolog_get_address(t_ph, ph))
+      return PROLOG_FAILURE;
+    CHECK(ph);
+    Prolog_term_ref tail = Prolog_new_term_ref();
+    Prolog_put_atom(tail, a_nil);
+
+    const PPL::ConSys& cs
+      = static_cast<const PPL::Polyhedron*>(ph)->constraints();
+
+    for (PPL::ConSys::const_iterator i = cs.begin(),
+	   cs_end = cs.end(); i != cs_end; ++i) {
+      Prolog_term_ref new_tail = Prolog_new_term_ref();
+      Prolog_construct_list(new_tail, constraint_term(*i), tail);
+      tail = new_tail;
+    }
+
+    if (Prolog_unify(t_clist, tail))
+      return PROLOG_SUCCESS;
+  }
+  CATCH_ALL;
+  return PROLOG_FAILURE;
+}
+
+extern "C" Prolog_foreign_return_type
+ppl_get_generators(Prolog_term_ref t_ph, Prolog_term_ref t_glist) {
+  try {
+    void* ph;
+    if (!Prolog_get_address(t_ph, ph))
+      return PROLOG_FAILURE;
+    CHECK(ph);
+    Prolog_term_ref tail = Prolog_new_term_ref();
+    Prolog_put_atom(tail, a_nil);
+
+    const PPL::GenSys& gs
+      = static_cast<const PPL::Polyhedron*>(ph)->generators();
+
+    for (PPL::GenSys::const_iterator i = gs.begin(),
+	   gs_end = gs.end(); i != gs_end; ++i) {
+      Prolog_term_ref new_tail = Prolog_new_term_ref();
+      Prolog_construct_list(new_tail, generator_term(*i), tail);
+      tail = new_tail;
+    }
+
+    if (Prolog_unify(t_glist, tail))
+      return PROLOG_SUCCESS;
+  }
+  CATCH_ALL;
+  return PROLOG_FAILURE;
+}
+
+extern "C" Prolog_foreign_return_type
+ppl_remove_dimensions(Prolog_term_ref t_ph, Prolog_term_ref t_vlist) {
+  try {
+    void* ph;
+    if (!Prolog_get_address(t_ph, ph))
+      return PROLOG_FAILURE;
+    CHECK(ph);
+    std::set<PPL::Variable> dead_variables;
+    Prolog_term_ref v = Prolog_new_term_ref();
+    while (Prolog_is_list(t_vlist)) {
+      Prolog_get_list(t_vlist, v, t_vlist);
+      dead_variables.insert(get_variable(v));
+    }
+    static_cast<PPL::Polyhedron*>(ph)->remove_dimensions(dead_variables);
+    return PROLOG_SUCCESS;
+  }
+  CATCH_ALL;
+  return PROLOG_FAILURE;
+}
+
+extern "C" Prolog_foreign_return_type
+ppl_remove_higher_dimensions(Prolog_term_ref t_ph, Prolog_term_ref t_nd) {
+  try {
+    void* ph;
+    if (!Prolog_get_address(t_ph, ph))
+      return PROLOG_FAILURE;
+    CHECK(ph);
+    static_cast<PPL::Polyhedron*>(ph)
+      ->remove_higher_dimensions(term_to_unsigned_int(t_nd));
+    return PROLOG_SUCCESS;
+  }
+  CATCH_ALL;
+  return PROLOG_FAILURE;
+}
+
+extern "C" Prolog_foreign_return_type
+ppl_add_dimensions_and_project(Prolog_term_ref t_ph, Prolog_term_ref t_nnd) {
+  try {
+    void* ph;
+    if (!Prolog_get_address(t_ph, ph))
+      return PROLOG_FAILURE;
+    CHECK(ph);
+    static_cast<PPL::Polyhedron*>(ph)
+      ->add_dimensions_and_project(term_to_unsigned_int(t_nnd));
+    return PROLOG_SUCCESS;
+  }
+  CATCH_ALL;
+  return PROLOG_FAILURE;
+}
+
+extern "C" Prolog_foreign_return_type
+ppl_add_dimensions_and_embed(Prolog_term_ref t_ph, Prolog_term_ref t_nnd) {
+  try {
+    void* ph;
+    if (!Prolog_get_address(t_ph, ph))
+      return PROLOG_FAILURE;
+    CHECK(ph);
+    static_cast<PPL::Polyhedron*>(ph)
+      ->add_dimensions_and_embed(term_to_unsigned_int(t_nnd));
+    return PROLOG_SUCCESS;
+  }
+  CATCH_ALL;
+  return PROLOG_FAILURE;
+}
+
+extern "C" Prolog_foreign_return_type
+ppl_init() {
+  for (size_t i = 0; i < sizeof(prolog_atoms)/sizeof(prolog_atoms[0]); ++i) {
+    Prolog_atom a = Prolog_atom_from_string(prolog_atoms[i].name);
+    *prolog_atoms[i].p_atom = a;
+  }
+  return PROLOG_SUCCESS;
+}
+
+#endif

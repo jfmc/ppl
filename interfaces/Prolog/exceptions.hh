@@ -72,10 +72,12 @@ public:
   }
 };
 
+#if 0
 static void
 throw_integer_out_of_range(Prolog_term_ref t) {
   throw integer_out_of_range(t);
 }
+#endif
 
 static void
 throw_unknown_interface_error(const char* s) {
