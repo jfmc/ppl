@@ -483,67 +483,69 @@ For this reason, when computing the poly-difference of two
 C polyhedra, the library will enforce the topological closure
 of the result.
 
-<B>Adding New Dimensions</B>
+<B>Adding New Dimensions to the Vector Space</B>
 
 The library provides two operators for increasing the
-dimensions of a polyhedron \f$\cP\f$.
-In both cases, the added dimensions have the highest indices
-in the new polyhedron and
-the system of constraints representing the new polyhedron
-includes the original system of constraints.
+space dimension of an NNC polyhedron \f$\cP \in \Pset_n\f$,
+therefore transforming it into a new NNC polyhedron
+\f$\cQ \in \Pset_m\f$, where \f$m > n\f$.
+In both cases, the added dimensions of the vector space
+are those having the highest indices.
 
-If the operator embeds the polyhedron
-\f$\cP\f$ in the new polyhedron,
-then these are all the constraints and the new variables
-corresponding to the added dimensions are unconstrained.
+The operator \e embedding the polyhedron \f$\cP\f$
+into the new vector space will return the polyhedron \f$\cQ\f$
+defined by all and only the constraints defining \f$\cP\f$
+(the variables corresponding to the added dimensions are unconstrained).
 For instance, when starting from a polyhedron \f$\cP \sseq \Rset^2\f$
-    and adding a third dimension, the result will be the polyhedron
-    \f[
-      \bigl\{\,
-        (x_0, x_1, x_2)^\transpose \in \Rset^3
-      \bigm|
-        (x_0, x_1)^\transpose \in \cP
-      \,\bigr\}.
-    \f]
+and adding a third dimension, the result will be the polyhedron
+\f[
+ \cQ = \bigl\{\,
+         (x_0, x_1, x_2)^\transpose \in \Rset^3
+       \bigm|
+         (x_0, x_1)^\transpose \in \cP
+       \,\bigr\}.
+\f]
 
-If the operator projects the polyhedron
-\f$\cP\f$ into the new polyhedron,
-then the variables corresponding to the added dimensions
-are all constrained to be equal to 0.
+In contrast, the operator \e projecting the polyhedron \f$\cP\f$
+into the new vector space will return the polyhedron \f$\cQ\f$
+whose constraint system, besides the constraints defining \f$\cP\f$,
+will include additional constraints on the added dimensions.
+Namely, the corresponding variables are all constrained to be equal to 0.
 For instance, when starting from a polyhedron \f$\cP \sseq \Rset^2\f$
-    and adding a third dimension, the result will be the polyhedron
-    \f[
-      \bigl\{\,
-        (x_0, x_1, 0)^\transpose \in \Rset^3
-      \bigm|
-        (x_0, x_1)^\transpose \in \cP
-      \,\bigr\}.
-    \f]
+and adding a third dimension, the result will be the polyhedron
+\f[
+  \cQ = \bigl\{\,
+          (x_0, x_1, 0)^\transpose \in \Rset^3
+        \bigm|
+          (x_0, x_1)^\transpose \in \cP
+        \,\bigr\}.
+\f]
 
-<B>Removing Dimensions</B>
+<B>Removing Dimensions from the Vector Space</B>
 
-The library provides two operators for removing
-dimensions from a polyhedron \f$\cP\f$.
+The library provides two operators for decreasing the
+space dimension of an NNC polyhedron \f$\cP \in \Pset_n\f$,
+therefore transforming it into a new NNC polyhedron
+\f$\cQ \in \Pset_m\f$, where \f$m < n\f$.
 
-Given a set of variables corresponding to
-some of the dimensions of \f$\cP\f$, there is an operator that will
-remove the dimensions corresponding to this set.
-For instance,
-letting \f$\cP\f$ be the singleton set
-\f$\bigl\{ (3, 1, 0, 2)^\transpose \bigr\} \sseq \Rset^4\f$, 
-then after using this operator with  \f$\{x_1, x_2\}\f$ as the given set of
-variables, then the resulting polyhedron is the point
-\f$\bigl\{ (3, 2)^\transpose \bigr\} \sseq \Rset^2\f$.
+Given a set of variables, there is an operator that will remove
+all the space dimensions corresponding to the variables in this set.
+For instance, letting \f$\cP \in \Pset_4\f$ be the singleton set
+\f$\bigl\{ (3, 1, 0, 2)^\transpose \bigr\} \sseq \Rset^4\f$,
+then after invoking this operator with the set of variables
+\f$\{x_1, x_2\}\f$ the resulting polyhedron is
+\f[
+  \cQ = \bigl\{ (3, 2)^\transpose \bigr\} \sseq \Rset^2.
+\f]
 
-Given a space dimension that is no more than the space dimension of \f$\cP\f$,
-the other operator removes the higher dimensions from \f$\cP\f$ so that
-the new polyhedron has this dimension.
-For instance,
-letting \f$\cP\f$ be the singleton set
-\f$\bigl\{ (3, 1, 0, 2)^\transpose \bigr\} \sseq \Rset^4\f$ as before, 
-then after using this operator with \f$2\f$ as the given space dimension,
-then the  resulting polyhedron is the point
-\f$\bigl\{ (3, 1)^\transpose \bigr\} \sseq \Rset^2\f$.
+Another operator removes from the vector space all the dimensions
+having an index greater than or equal to \f$m\f$.
+For instance, letting \f$\cP \in \Pset_4\f$ defined as before,
+by invoking this operator with \f$m = 2\f$ the resulting polyhedron
+will be
+\f[
+  \cQ = \bigl\{ (3, 1)^\transpose \bigr\} \sseq \Rset^2.
+\f]
 
 \anchor affine_transformation
 <B>Affine Images and Preimages</B>
