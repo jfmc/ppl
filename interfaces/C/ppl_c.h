@@ -55,11 +55,20 @@ site: http://www.cs.unipr.it/ppl/ . */
 
 __BEGIN_DECLS
 
+typedef struct ppl_Coefficient_tag *ppl_Coefficient_t;
+
+ppl_Coefficient_t ppl_Coefficient_from_long __P((long n));
+ppl_Coefficient_t ppl_Coefficient_from_string __P((const char* s));
+void ppl_Coefficient_delete __P((ppl_Coefficient_t c));
+
+
 typedef struct ppl_Polyhedron_tag *ppl_Polyhedron_t;
 
 ppl_Polyhedron_t pplPolyhedronNew __P((unsigned int dimension));
 void pplPolyhedronDelete __P((ppl_Polyhedron_t ph));
 
+
 __END_DECLS
+#undef __P
 
 #endif /* !_ppl_c_h */

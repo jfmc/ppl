@@ -60,12 +60,12 @@ LIBPPLC_LT_CURRENT =  0
 LIBPPLC_LT_REVISION = 0
 LIBPPLC_LT_AGE =      0
 
-INCLUDES = -I$(top_builddir) -I$(top_srcdir)/src @extra_includes@
+INCLUDES = -I$(top_builddir)/src @extra_includes@
 
 CPPFLAGS = -DPPL_INTERNAL=public -DPPL_HIDDEN=public @extra_cpp_flags@
 
 lib_LTLIBRARIES = libpplc.la
-libpplc_la_SOURCES = ppl_c.c
+libpplc_la_SOURCES = ppl_c.cc
 libpplc_la_LDFLAGS = \
 -version-info $(LIBPPLC_LT_CURRENT):$(LIBPPLC_LT_REVISION):$(LIBPPLC_LT_AGE)
 

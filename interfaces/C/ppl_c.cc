@@ -21,4 +21,24 @@ USA.
 For the most up-to-date information see the Parma Polyhedra Library
 site: http://www.cs.unipr.it/ppl/ . */
 
+#include "ppl_install.hh"
 #include "ppl_c.h"
+
+using namespace Parma_Polyhedra_Library;
+
+ppl_Coefficient_t
+ppl_Coefficient_from_long(long n) try {
+  return reinterpret_cast<ppl_Coefficient_t>(new Integer(n));
+}
+catch(...) {
+  return 0;
+}
+
+ppl_Coefficient_t
+ppl_Coefficient_from_string(const char* s) try {
+  return reinterpret_cast<ppl_Coefficient_t>(new Integer(s));
+}
+catch(...) {
+  return 0;
+}
+
