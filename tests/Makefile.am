@@ -21,7 +21,7 @@ LDADD = -L$(top_builddir)/src -lppl @gmp_library_option@
 
 CPPFLAGS = @extra_cpp_flags@
 
-TESTS = inters1 inters2 randchull1 empty1
+TESTS = inters1 inters2 randchull1 empty1 append
 
 inters1_SOURCES = inters1.cc
 inters2_SOURCES = inters2.cc
@@ -29,6 +29,8 @@ inters2_SOURCES = inters2.cc
 randchull1_SOURCES = randchull1.cc
 
 empty1_SOURCES = empty1.cc
+
+append_SOURCES = append.cc
 
 check_PROGRAMS = $(TESTS)
 
