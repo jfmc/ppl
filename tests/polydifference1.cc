@@ -71,10 +71,16 @@ main() TRY {
 
   C_Polyhedron known_result(gs_known_result);
 
+  C_Polyhedron ph3(2);
+  ph3.add_constraint(2*y >= 3);
+  
+  known_result.poly_difference_assign(ph3);
+
   int retval = (computed_result == known_result) ? 0 : 1;
 
 #if NOISY
   print_generators(computed_result, "*** After poly_difference_assign ***");
+  print_generators(known_result, "*** known_result ***");
 #endif
 
   return retval;

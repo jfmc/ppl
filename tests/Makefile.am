@@ -1063,8 +1063,6 @@ TESTS = $(ORIGINAL_TESTS) $(DERIVED_TESTS) $(WATCHDOG_TESTS)
 
 XFAIL_TESTS = \
 nnc_limitedh79extrapolation3 \
-nnc_polydifference1 \
-addgenerators11
 
 check_PROGRAMS = $(TESTS) $(BUGS)
 
