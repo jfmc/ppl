@@ -1048,14 +1048,9 @@ ppl_Polyhedron_intersection_assign_and_minimize
 __P((ppl_Polyhedron_t x, ppl_const_Polyhedron_t y));
 
 /*!
-  First increases the space dimension of \p ph by adding as many
-  dimensions as is the space dimension of \p cs; then adds to the
-  system of constraints of \p ph a renamed-apart version of the
-  constraints in \p cs.
-
-  \warning
-  This function modifies the constraint system referenced by \p cs:
-  upon return, no assumption can be made on its value.
+  Seeing a polyhedron as a set of tuples (its points), assigns
+  to \p x all the tuples that can be obtained by concatenating,
+  in the order given, a tuple of \p x with a tuple of \p y.
 */
 int
 ppl_Polyhedron_concatenate_assign __P((ppl_Polyhedron_t x,
