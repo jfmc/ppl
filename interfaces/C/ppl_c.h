@@ -1223,6 +1223,15 @@ __P((ppl_Polyhedron_t x,
      ppl_const_ConSys_t cs));
 
 /*!
+  Assigns to \p x the \ref time_elapse "time-elapse" between the polyhedra
+  \p x and \p y.
+*/
+int
+ppl_Polyhedron_time_elapse_assign __P((ppl_Polyhedron_t x,
+				       ppl_const_Polyhedron_t y));
+
+
+/*!
   Writes a const handle to the constraint system defining the
   polyhedron \p ph at address \p pcs.
 */

@@ -1281,6 +1281,16 @@ ppl_Polyhedron_bounded_H79_extrapolation_assign(ppl_Polyhedron_t x,
 CATCH_ALL
 
 int
+ppl_Polyhedron_time_elapse_assign(ppl_Polyhedron_t x,
+				  ppl_const_Polyhedron_t y) try {
+  Polyhedron& xx = *to_nonconst(x);
+  const Polyhedron& yy = *to_const(y);
+  xx.time_elapse_assign(yy);
+  return 0;
+}
+CATCH_ALL
+
+int
 ppl_Polyhedron_constraints(ppl_const_Polyhedron_t ph,
 			   ppl_const_ConSys_t* pcs) try {
   const Polyhedron& pph = *to_const(ph);
