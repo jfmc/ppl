@@ -53,10 +53,13 @@ compute_capacity(size_t requested_size) {
 
 //! User objects' the PPL can throw.
 /*!
-  Abstract base class for the user objects' the PPL can throw.
+  This abstract base class should be instantiated by those users
+  willing to provide a polynomial upper bound to the time spent
+  by any invocation of a library operator.
 */
 class Throwable {
 public:
+  //! Throws the user defined exception object.
   virtual void throw_me() const = 0;
 };
 
@@ -79,8 +82,10 @@ public:
 extern const Throwable* volatile abandon_exponential_computations;
 
 #ifdef PPL_DOXYGEN_INCLUDE_IMPLEMENTATION_DETAILS
+//! \brief
 //! If the pointer abandon_exponential_computations is found
 //! to be nonzero, the exception it points to is thrown.
+/*! \relates Throwable */
 #endif
 inline void
 maybe_abandon() {
