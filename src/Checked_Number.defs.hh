@@ -130,7 +130,7 @@ public:
   Checked_Number& operator*=(const Checked_Number& y);
   //! Divide and assign operator.
   Checked_Number& operator/=(const Checked_Number& y);
-  //! Compute modulus and assign operator.
+  //! Compute remainder and assign operator.
   Checked_Number& operator%=(const Checked_Number& y);
 
   //@} // Assignment Operators

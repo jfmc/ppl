@@ -130,7 +130,7 @@ Extended_Number<T, Policy>::name(const Extended_Number<From1, From1_Policy>& x, 
   FUNC2(assign_sub, sub_ext)
   FUNC2(assign_mul, mul_ext)
   FUNC2(assign_div, div_ext)
-  FUNC2(assign_mod, mod_ext)
+  FUNC2(assign_rem, rem_ext)
 
 #undef FUNC2
 
@@ -177,6 +177,8 @@ Extended_Number<T, Policy>::f(int) {\
 DEF_INCREMENT(operator ++, assign_add)
 DEF_INCREMENT(operator --, sssign_add)
 
+#undef DEF_INCREMENT
+
 template <typename T, typename Policy>
 inline void
 Extended_Number<T, Policy>::swap(Extended_Number<T, Policy>& y) {
@@ -197,7 +199,9 @@ DEF_BINARY_ASSIGN(operator +=, assign_add)
 DEF_BINARY_ASSIGN(operator -=, assign_sub)
 DEF_BINARY_ASSIGN(operator *=, assign_mul)
 DEF_BINARY_ASSIGN(operator /=, assign_div)
-DEF_BINARY_ASSIGN(operator %=, assign_mod)
+DEF_BINARY_ASSIGN(operator %=, assign_rem)
+
+#undef DEF_BINARY_ASSIGN
 
 #define DEF_BINARY(f, fun) \
 template <typename T, typename Policy> \
@@ -226,7 +230,9 @@ DEF_BINARY(operator +, assign_add)
 DEF_BINARY(operator -, assign_sub)
 DEF_BINARY(operator *, assign_mul)
 DEF_BINARY(operator /, assign_div)
-DEF_BINARY(operator %, assign_mod)
+DEF_BINARY(operator %, assign_rem)
+
+#undef DEF_BINARY
 
 #define DEF_COMPARE(f, fun) \
 template <typename From1, typename From1_Policy, \
@@ -254,6 +260,8 @@ DEF_COMPARE(operator >=, ge_ext)
 DEF_COMPARE(operator >, gt_ext)
 DEF_COMPARE(operator <=, le_ext)
 DEF_COMPARE(operator <, lt_ext)
+
+#undef DEF_COMPARE
 
 /*! \relates Extended_Number */
 template <typename T, typename Policy>

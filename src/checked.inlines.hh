@@ -82,7 +82,7 @@ gcd_common(To& to, const From& x, const From& y, const Rounding& mode) {
   To ny = y;
   To rem;
   while (ny != 0) {
-    Result r = mod<Policy>(rem, nx, ny, mode);
+    Result r = rem<Policy>(rem, nx, ny, mode);
     if (r != V_EQ)
       assert(r == V_EQ);
     nx = ny;

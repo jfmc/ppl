@@ -283,7 +283,7 @@ SPECIALIZE_DIV(mpz, mpz_class, mpz_class)
 
 template <typename Policy>
 inline Result
-mod_mpz(mpz_class& to, const mpz_class& x, const mpz_class& y, const Rounding&) {
+rem_mpz(mpz_class& to, const mpz_class& x, const mpz_class& y, const Rounding&) {
   if (Policy::check_divbyzero && ::sgn(y) == 0)
     return set_special<Policy>(to, V_MOD_ZERO);
   to = x % y;

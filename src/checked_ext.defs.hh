@@ -60,7 +60,7 @@ template <typename To_Policy, typename From1_Policy, typename From2_Policy, type
 Result div_ext(To& to, const From1& x, const From2& y, const Rounding& mode);
 
 template <typename To_Policy, typename From1_Policy, typename From2_Policy, typename To, typename From1, typename From2>
-Result mod_ext(To& to, const From1& x, const From2& y, const Rounding& mode);
+Result rem_ext(To& to, const From1& x, const From2& y, const Rounding& mode);
 
 template <typename To_Policy, typename From1_Policy, typename From2_Policy, typename To, typename From1, typename From2>
 Result add_mul_ext(To& to, const From1& x, const From2& y, const Rounding& mode);

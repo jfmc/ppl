@@ -258,7 +258,7 @@ div_float(Type& to, const Type x, const Type y, const Rounding& mode) {
 
 template <typename Policy, typename Type>
 inline Result 
-mod_float(Type& to, const Type x, const Type y, const Rounding& mode) {
+rem_float(Type& to, const Type x, const Type y, const Rounding& mode) {
   if (Policy::check_divbyzero && y == 0) {
     to = NAN;
     return V_MOD_ZERO;

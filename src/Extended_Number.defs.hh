@@ -96,7 +96,7 @@ public:
   FUNC2(assign_sub)
   FUNC2(assign_mul)
   FUNC2(assign_div)
-  FUNC2(assign_mod)
+  FUNC2(assign_rem)
 
 #undef FUNC2
 

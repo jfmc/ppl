@@ -219,7 +219,7 @@ SPECIALIZE_DIV(mpq, mpq_class, mpq_class)
 
 template <typename Policy>
 inline Result
-mod_mpq(mpq_class& to, const mpq_class& x, const mpq_class& y, const Rounding&) {
+rem_mpq(mpq_class& to, const mpq_class& x, const mpq_class& y, const Rounding&) {
   if (Policy::check_divbyzero && sgn(y) == 0)
     return set_special<Policy>(to, V_MOD_ZERO);
   to = x / y;

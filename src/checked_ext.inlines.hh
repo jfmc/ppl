@@ -183,9 +183,9 @@ div_ext(To& to, const From1& x, const From2& y, const Rounding& mode) {
 template <typename To_Policy, typename From1_Policy, typename From2_Policy,
 	  typename To, typename From1, typename From2>
 inline Result
-mod_ext(To& to, const From1& x, const From2& y, const Rounding& mode) {
+rem_ext(To& to, const From1& x, const From2& y, const Rounding& mode) {
   if (handle_ext(To) && handle_ext(From1) && handle_ext(From2))
-    return mod<To_Policy>(to, x, y, mode);
+    return rem<To_Policy>(to, x, y, mode);
   Result rx;
   Result ry;
   Result r;
@@ -194,7 +194,7 @@ mod_ext(To& to, const From1& x, const From2& y, const Rounding& mode) {
     r = VC_NAN;
   else if (rx == VC_NORMAL) {
     if (ry == VC_NORMAL)
-      return mod<To_Policy>(to, x, y, mode);
+      return rem<To_Policy>(to, x, y, mode);
     else {
       to = x;
       r = V_EQ;

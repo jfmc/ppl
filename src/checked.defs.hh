@@ -178,8 +178,8 @@ struct FUNCTION_CLASS(name) <Policy, type1, type2, type3, type4> { \
   SPECIALIZE_FUN4(mul, suf, Result, nonconst, To, const, From, const, From, const, Rounding)
 #define SPECIALIZE_DIV(suf, To, From) \
   SPECIALIZE_FUN4(div, suf, Result, nonconst, To, const, From, const, From, const, Rounding)
-#define SPECIALIZE_MOD(suf, To, From) \
-  SPECIALIZE_FUN4(mod, suf, Result, nonconst, To, const, From, const, From, const, Rounding)
+#define SPECIALIZE_REM(suf, To, From) \
+  SPECIALIZE_FUN4(rem, suf, Result, nonconst, To, const, From, const, From, const, Rounding)
 #define SPECIALIZE_ADD_MUL(suf, To, From) \
   SPECIALIZE_FUN4(add_mul, suf, Result, nonconst, To, const, From, const, From, const, Rounding)
 #define SPECIALIZE_SUB_MUL(suf, To, From) \
@@ -204,7 +204,7 @@ DECLARE_FUN4(add,         Result, nonconst, const,    const,  const)
 DECLARE_FUN4(sub,         Result, nonconst, const,    const,  const)
 DECLARE_FUN4(mul,         Result, nonconst, const,    const,  const)
 DECLARE_FUN4(div,         Result, nonconst, const,    const,  const)
-DECLARE_FUN4(mod,         Result, nonconst, const,    const,  const)
+DECLARE_FUN4(rem,         Result, nonconst, const,    const,  const)
 DECLARE_FUN4(add_mul,     Result, nonconst, const,    const,  const)
 DECLARE_FUN4(sub_mul,     Result, nonconst, const,    const,  const)
 DECLARE_FUN4(gcd,         Result, nonconst, const,    const,  const)

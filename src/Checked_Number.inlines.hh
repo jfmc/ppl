@@ -104,6 +104,8 @@ DEF_CTOR(mpq_class&)
 DEF_CTOR(mpz_class&)
 DEF_CTOR(c_string)
 
+#undef DEF_CTOR
+
 template <typename T, typename Policy>
 inline
 Checked_Number<T, Policy>::operator T() const {
@@ -169,6 +171,8 @@ Checked_Number<T, Policy>::f(int) {\
 DEF_INCREMENT(operator ++, add)
 DEF_INCREMENT(operator --, sub)
 
+#undef DEF_INCREMENT
+
 template <typename T, typename Policy>
 inline void
 Checked_Number<T, Policy>::swap(Checked_Number<T, Policy>& y) {
@@ -194,7 +198,9 @@ DEF_BINARY_ASSIGN(operator +=, add)
 DEF_BINARY_ASSIGN(operator -=, sub)
 DEF_BINARY_ASSIGN(operator *=, mul)
 DEF_BINARY_ASSIGN(operator /=, div)
-DEF_BINARY_ASSIGN(operator %=, mod)
+DEF_BINARY_ASSIGN(operator %=, rem)
+
+#undef DEF_BINARY_ASSIGN
 
 #define DEF_BINARY(f, fun) \
 template <typename T, typename Policy> \
@@ -209,7 +215,9 @@ DEF_BINARY(operator +, add)
 DEF_BINARY(operator -, sub)
 DEF_BINARY(operator *, mul)
 DEF_BINARY(operator /, div)
-DEF_BINARY(operator %, mod)
+DEF_BINARY(operator %, rem)
+
+#undef DEF_BINARY
 
 #define DEF_BINARY_OTHER(f, fun, type) \
 template <typename T, typename Policy> \
@@ -234,7 +242,7 @@ DEF_BINARY_OTHER(operator +, add, type) \
 DEF_BINARY_OTHER(operator -, sub, type) \
 DEF_BINARY_OTHER(operator *, mul, type) \
 DEF_BINARY_OTHER(operator /, div, type) \
-DEF_BINARY_OTHER(operator %, mod, type)
+DEF_BINARY_OTHER(operator %, rem, type)
 
 DEF_BINARIES_OTHER(signed char)
 DEF_BINARIES_OTHER(short)
@@ -257,6 +265,9 @@ DEF_BINARIES_OTHER(float128_t)
 DEF_BINARIES_OTHER(mpz_class&)
 DEF_BINARIES_OTHER(mpq_class&)
 
+#undef DEF_BINARY_OTHER
+#undef DEF_BINARIES_OTHER
+
 #define DEF_COMPARE(f, op) \
 template <typename T, typename Policy> \
 inline bool \
@@ -270,6 +281,8 @@ DEF_COMPARE(operator >=, >=)
 DEF_COMPARE(operator >, >)
 DEF_COMPARE(operator <=, <=)
 DEF_COMPARE(operator <, <)
+
+#undef DEF_COMPARE
 
 #define DEF_COMPARE_OTHER(f, op, type) \
 template <typename T, typename Policy> \
@@ -315,6 +328,9 @@ DEF_COMPARES_OTHER(float128_t)
 #endif
 DEF_COMPARES_OTHER(mpz_class&)
 DEF_COMPARES_OTHER(mpq_class&)
+
+#undef DEF_COMPARE_OTHER
+#undef DEF_COMPARES_OTHER
 
 /*! \relates Checked_Number */
 template <typename T, typename Policy>
@@ -380,6 +396,10 @@ DEF_ASSIGN_FUN3_3(gcd_assign, gcd)
 DEF_ASSIGN_FUN3_2(lcm_assign, lcm)
 DEF_ASSIGN_FUN3_3(lcm_assign, lcm)
 
+#undef DEF_ASSIGN_FUN2_1
+#undef DEF_ASSIGN_FUN2_2
+#undef DEF_ASSIGN_FUN3_2
+#undef DEF_ASSIGN_FUN3_3
 
 /*! \relates Checked_Number */
 template <typename T, typename Policy>

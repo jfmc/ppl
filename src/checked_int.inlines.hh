@@ -1009,7 +1009,7 @@ div_unsigned_int(Type& to, const Type x, const Type y, const Rounding& mode) {
 
 template <typename Policy, typename Type>
 inline Result
-mod_int(Type& to, const Type x, const Type y, const Rounding&) {
+rem_int(Type& to, const Type x, const Type y, const Rounding&) {
   if (Policy::check_divbyzero && y == 0)
     return set_special<Policy>(to, V_MOD_ZERO);
   to = x % y;
