@@ -62,10 +62,6 @@ main() {
 
   computed_result.poly_difference_assign(ph2);
 
-#if NOISY
-  print_generators(computed_result, "*** After poly_difference_assign ***");
-#endif
-
   GenSys gs_known_result;
   gs_known_result.insert(closure_point(0*x + 0*y));
   gs_known_result.insert(closure_point(0*x + 3*y));
@@ -78,6 +74,7 @@ main() {
 
 #if NOISY
   print_generators(computed_result, "*** After poly_difference_assign ***");
+  print_generators(known_result, "*** known_result ***");
 #endif
 
   return retval;
