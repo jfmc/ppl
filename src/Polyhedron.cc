@@ -643,7 +643,7 @@ PPL::operator<=(const Polyhedron& x, const Polyhedron& y) {
     const Generator& gx = x.gen_sys[i];
     for (size_t j = y.con_sys.num_rows(); j-- > 0; ) {
       const Constraint& cy = y.con_sys[j];
-      int sgn_gx_scalar_cy = sgn(gx*cy);
+      int sgn_gx_scalar_cy = sgn(gx * cy);
       if (cy.is_inequality()) {
 	if (sgn_gx_scalar_cy < 0)
 	  return false;
@@ -2636,7 +2636,7 @@ PPL::Polyhedron::OK(bool check_not_empty) const {
       Generator tmp_gen = gen_sys[i];
       SatRow tmp_sat = sat_c[i];
       for (size_t j = sat_c.num_columns(); j-- > 0; )
-	if (sgn(tmp_gen * con_sys[j]) != tmp_sat[j] ) {
+	if (sgn(tmp_gen * con_sys[j]) != tmp_sat[j]) {
 	  cerr << "sat_c is declared up-to-date, but it is not!"
 	       << endl;
 	  goto bomb;
@@ -2648,7 +2648,7 @@ PPL::Polyhedron::OK(bool check_not_empty) const {
       Constraint tmp_con = con_sys[i];
       SatRow tmp_sat = sat_g[i];
       for (size_t j = sat_g.num_columns(); j-- > 0; )
-	if (sgn(tmp_con * gen_sys[j]) != tmp_sat[j] ) {
+	if (sgn(tmp_con * gen_sys[j]) != tmp_sat[j]) {
 	  cerr << "sat_g is declared up-to-date, but it is not!"
 	       << endl;
 	  goto bomb;
