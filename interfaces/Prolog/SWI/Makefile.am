@@ -98,7 +98,8 @@ pl_clpq$(EXEEXT): ppl_swiprolog.o pl_clpq.o pl_clpq.pl ../clpq.pl
 
 check-local: pl_clpq ../check_script ../expected
 	for k in $(CLPQ_TESTS); do cp -f $(srcdir)/../$$k .; done
-	./pl_clpq -l $(srcdir)/clpq.pl <$(srcdir)/../check_script >obtained
+	libtool --mode=execute -dlopen ../../../src/libppl.la \
+		./pl_clpq -l $(srcdir)/clpq.pl <$(srcdir)/../check_script >obtained
 	diff -q --ignore-all-space $(srcdir)/../expected obtained
 
 MOSTLYCLEANFILES = pplpl pl_clpq $(CLPQ_TESTS) obtained
