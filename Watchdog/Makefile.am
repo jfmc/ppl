@@ -102,9 +102,9 @@ if BUILD_WATCHDOG_LIBRARY
 #	    0.1			0.4		    0:0:0
 #	    0.2			0.5		    1:0:0
 #	    0.3			0.6		    2:0:0
-#	    0.3			0.7		    2:0:0
+#	    0.4			0.7		    3:0:0
 
-LIBPWL_LT_CURRENT =  2
+LIBPWL_LT_CURRENT =  3
 LIBPWL_LT_REVISION = 0
 LIBPWL_LT_AGE =      0
 
@@ -126,15 +126,13 @@ noinst_HEADERS = pwl.hh pwl_install.hh
 BUILT_SOURCES = pwl.hh pwl_install.hh
 
 pwl.hh:	$(DOC_FILES)
-	(cd $(srcdir) ; cat $(DOC_FILES)) \
-		| sed -f $(srcdir)/pwl_filter_doxygen.sed >pwl.hh
+	(cd $(srcdir) ; cat $(DOC_FILES)) >pwl.hh
 
 pwl_install.hh:	pwl_header.top $(top_builddir)/config.h pwl_header.middle $(INCLUDE_FILES) pwl_header.bottom Makefile
 	mkdir -p tmp
 	(cd $(srcdir) ; cat $(INCLUDE_FILES)) >tmp/concat
 	grep "^#include <" <tmp/concat | sort -u >tmp/includes
-	sed -e "/^#include/d" -f $(srcdir)/pwl_filter_install.sed \
-		<tmp/concat >tmp/noincludes.cc
+	sed -e "/^#include/d" <tmp/concat >tmp/noincludes.cc
 	cat $(srcdir)/pwl_header.top $(top_builddir)/config.h \
 		$(srcdir)/pwl_header.middle tmp/includes >pwl_install.hh
 	$(CXXCPP) -P @debug_flag@ tmp/noincludes.cc >>pwl_install.hh
