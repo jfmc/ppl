@@ -31,6 +31,7 @@ site: http://www.cs.unipr.it/ppl/ . */
 #include "Constraint.defs.hh"
 #include <cstddef>
 #include <vector>
+#include <iterator>
 
 
 //! A system of constraints.
