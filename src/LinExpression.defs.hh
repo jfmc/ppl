@@ -172,18 +172,6 @@ private:
   Parma_Polyhedra_Library::GenSys::affine_image(size_t v,
 						const LinExpression& expr,
 						const Integer& denominator);
-  /*
-  friend void
-  Parma_Polyhedra_Library::
-  Polyhedron::affine_image(size_t v,
-			   const LinExpression& expr,
-			   const Integer& denominator);
-  friend void
-  Parma_Polyhedra_Library::
-  Polyhedron::affine_preimage(size_t v,
-			      const LinExpression& expr,
-			      const Integer& denominator);
-  */
 
   //! Copy-constructor with a specified dimension.
   LinExpression(const LinExpression& e, size_t sz);
