@@ -322,10 +322,11 @@ PPL_INTERNAL:
   //! Copy-constructor with given size.
   Constraint(const Constraint& c, size_t sz);
 
+  //! Builds a new copy of the zero-dimension space constraint
+  //! \f$\epsilon \geq 0\f$ (used to implement NNC polyhedra).
   static Constraint construct_epsilon_geq_zero();
 
-  //! The zero-dimension space constraint \f$\epsilon \geq 0\f$
-  //! (used to implement non-necessarily closed polyhedra).
+  //! Returns the zero-dimension space constraint \f$\epsilon \geq 0\f$.
   static const Constraint& epsilon_geq_zero();
 
   //! The zero-dimension space constraint \f$\epsilon \leq 1\f$
