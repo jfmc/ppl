@@ -15,7 +15,7 @@ VPATH = @srcdir@
 
 SUBDIRS =
 
-INCLUDES = -I$(top_builddir)/src
+INCLUDES = -I$(top_builddir)/src @extra_includes@
 
 LDADD = $(top_builddir)/src/libppl.a
 LDFLAGS = @gmp_library_option@
