@@ -74,10 +74,10 @@ PPL::Row::Impl::copy_construct(const Impl& y) {
   if (y_size > 0) {
     vec_[0] = y.vec_[0];
     bump_size();
-  }
-  for (dimension_type i = 1; i < y_size; ++i) {
-    new (&vec_[i]) Integer(y.vec_[i]);
-    bump_size();
+    for (dimension_type i = 1; i < y_size; ++i) {
+      new (&vec_[i]) Integer(y.vec_[i]);
+      bump_size();
+    }
   }
 #endif
 }
