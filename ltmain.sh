@@ -1,7 +1,7 @@
 # ltmain.sh - Provide generalized library-building support services.
 # NOTE: Changing this file will not affect anything until you rerun configure.
 #
-# Copyright (C) 1996, 1997, 1998, 1999, 2000, 2001
+# Copyright (C) 1996, 1997, 1998, 1999, 2000, 2001, 2003
 # Free Software Foundation, Inc.
 # Originally by Gordon Matzigkeit <gord@gnu.ai.mit.edu>, 1996
 #
@@ -56,7 +56,7 @@ modename="$progname"
 PROGRAM=ltmain.sh
 PACKAGE=libtool
 VERSION=1.4e
-TIMESTAMP=" (1.1194 2003/02/19 23:29:40)"
+TIMESTAMP=" (1.1202 2003/02/28 03:01:32)"
 
 default_mode=
 help="Try \`$progname --help' for more information."
@@ -221,8 +221,7 @@ do
   --version)
     echo "$PROGRAM (GNU $PACKAGE) $VERSION$TIMESTAMP"
     echo
-    echo "Copyright 1996, 1997, 1998, 1999, 2000, 2001"
-    echo "Free Software Foundation, Inc."
+    echo "Copyright (C) 2003  Free Software Foundation, Inc."
     echo "This is free software; see the source for copying conditions.  There is NO"
     echo "warranty; not even for MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE."
     exit 0
@@ -2490,6 +2489,7 @@ EOF
 	  if test "$link_all_deplibs" != no; then
 	    # Add the search paths of all dependency libraries
 	    for deplib in $dependency_libs; do
+	      depdepl=
 	      case $deplib in
 	      -L*) path="$deplib" ;;
 	      *.la)
@@ -2507,7 +2507,7 @@ EOF
 		  ;;
 		esac
 		if grep "^installed=no" $deplib > /dev/null; then
-		  path="-L$absdir/$objdir"
+		  path="$absdir/$objdir"
 		else
 		  eval libdir=`${SED} -n -e 's/^libdir=\(.*\)$/\1/p' $deplib`
 		  if test -z "$libdir"; then
@@ -2517,11 +2517,32 @@ EOF
 		  if test "$absdir" != "$libdir"; then
 		    $echo "$modename: warning: \`$deplib' seems to be moved" 1>&2
 		  fi
-		  path="-L$absdir"
+		  path="$absdir"
 		fi
+		depdepl=
+		case $host in
+		*-*-darwin*)
+		  depdepl=`$echo "X$deplib" | ${SED} -e 's,.*/,,' -e 's,^lib,,' -e 's,\.la$,,'`
+		  depdepl="-l$depdepl"
+		  newlib_search_path="$newlib_search_path $path"
+		  ;;
+		esac 
+		path="-L$path"
+		;;
+		  -l*)
+		case $host in
+		*-*-darwin*)
+           depdepl=$deplib
+		  ;;
+		*) continue ;;
+		esac  		  
 		;;
 	      *) continue ;;
 	      esac
+	      case " $deplibs " in
+	      *" $depdepl "*) ;;
+	      *) deplibs="$deplibs $depdepl" ;;
+	      esac	      
 	      case " $deplibs " in
 	      *" $path "*) ;;
 	      *) deplibs="$deplibs $path" ;;
@@ -3903,8 +3924,10 @@ EOF
       case $host in
       *darwin*)
         # Don't allow lazy linking, it breaks C++ global constructors
+        if test "$tagname" = CXX ; then
         compile_command="$compile_command ${wl}-bind_at_load"
         finalize_command="$finalize_command ${wl}-bind_at_load"
+        fi
         ;;
       esac
 
@@ -4857,6 +4880,11 @@ fi\
 	    $echo "$modename: warning: to ensure that POSIX-compatible ar will work" 1>&2
 	    AR_FLAGS=cq
 	  fi
+	  # Is there a better way of finding the last object in the list?
+	  for obj in $save_oldobjs
+	  do
+	    last_oldobj=$obj
+	  done  
 	  for obj in $save_oldobjs
 	  do
 	    oldobjs="$objlist $obj"
@@ -4868,6 +4896,9 @@ fi\
 	    else
 	      # the above command should be used before it gets too long
 	      oldobjs=$objlist
+	      if test "$obj" = "$last_oldobj" ; then
+	        RANLIB=$save_RANLIB
+	      fi  
 	      test -z "$concat_cmds" || concat_cmds=$concat_cmds~
 	      eval concat_cmds=\"\${concat_cmds}$old_archive_cmds\"
 	      objlist=
@@ -5960,7 +5991,9 @@ MODE must be one of the following:
       uninstall       remove libraries from an installed directory
 
 MODE-ARGS vary depending on the MODE.  Try \`$modename --help --mode=MODE' for
-a more detailed description of MODE."
+a more detailed description of MODE.
+
+Report bugs to <bug-libtool@gnu.org>."
   exit 0
   ;;
 
