@@ -186,15 +186,17 @@ build_pp_constraints([A|Actuals], [F|Formals], NewEquations) :-
     (A = F ->
       NewEquations = Equations
     ;
-      ((integer(A) ; A = '$VAR'(_)) ->
+      ((integer(A) ; integer(F) ; A = '$VAR'(_) ; F = '$VAR'(_)) ->
         NewEquations = [(A = F)|Equations]
       ;
         (A =.. [AFunct|Aargs],
         F =.. [FFunct|Fargs],
         (AFunct == FFunct ->
+          % functors agree so we process the arguments.
           (build_pp_constraints(Aargs, Fargs, Equations1),
           append(Equations1, Equations, NewEquations))
 	;
+          % unification fails so we force the constraints to fail
           NewEquations = [0 = 1]
         ))        
       )
@@ -585,7 +587,13 @@ constraints2list((A, B), Rest, LC) :-
     !,
     constraints2list(B, Rest, BRest),
     constraints2list(A, BRest, LC).
-constraints2list(C, Rest, [C|Rest]).
+constraints2list(C, Rest, Rest1) :-
+    (check_constraint(C)
+     -> 
+     Rest1 = [C|Rest]
+     ;
+     Rest1 = [0 = 1]
+    ).
 
 
 list2constraints([], {}) :-
@@ -634,6 +642,35 @@ build_equality_constraints([Var = Num|Eqs], AllEqConstrs) :-
     ;
      AllEqConstrs = EqConstrs
     ).
+
+check_expr('$VAR'(_)).
+check_expr(Num) :-
+    integer(Num).
+check_expr(Num*Var) :-
+    integer(Num),
+    check_expr(Var).
+check_expr(E + F) :-
+    check_expr(E),
+    check_expr(F).
+check_expr(E - F) :-
+    check_expr(E),
+    check_expr(F).
+
+check_constraint(Expr = Expr1) :-
+    check_expr(Expr),
+    check_expr(Expr1).
+check_constraint(Expr >= Expr1) :-
+    check_expr(Expr),
+    check_expr(Expr1).
+check_constraint(Expr > Expr1) :-
+    check_expr(Expr),
+    check_expr(Expr1).
+check_constraint(Expr =< Expr1) :-
+    check_expr(Expr),
+    check_expr(Expr1).
+check_constraint(Expr < Expr1) :-
+    check_expr(Expr),
+    check_expr(Expr1).
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%% Startup %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
