@@ -23,6 +23,8 @@
 
 AUTOMAKE_OPTIONS = foreign dist-bzip2 dist-zip 1.5
 
+DISTCHECK_CONFIGURE_FLAGS = --enable-shared
+
 srcdir = @srcdir@
 VPATH = @srcdir@
 

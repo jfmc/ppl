@@ -277,22 +277,12 @@ AC_PROG_MAKE_SET
 AC_PROG_INSTALL
 
 dnl Checks for Prolog systems.
-AC_CHECK_PROG(SICSTUS_PROLOG, sicstus, sicstus)
-AM_CONDITIONAL(HAVE_SICSTUS_PROLOG, test x$SICSTUS_PROLOG = xsicstus)
-AC_CHECK_PROG(SWI_PROLOG, pl, swi)
-AM_CONDITIONAL(HAVE_SWI_PROLOG, test x$SWI_PROLOG = xswi)
-AC_CHECK_PROG(GNU_PROLOG, gprolog, gnu)
-AM_CONDITIONAL(HAVE_GNU_PROLOG, test x$GNU_PROLOG = xgnu)
-AC_CHECK_PROG(XSB_PROLOG, xsb, xsb)
-AM_CONDITIONAL(HAVE_XSB_PROLOG, test x$XSB_PROLOG = xsb)
-AC_CHECK_PROG(YAP_PROLOG, yap, yap)
-AM_CONDITIONAL(HAVE_YAP_PROLOG, test x$YAP_PROLOG = xyap)
 
-dnl Checks for header files.
-AC_CHECK_HEADER(gprolog.h,
-                extra_if_Prolog_subdirs="${extra_if_Prolog_subdirs} GNU")
-AC_CHECK_HEADER(SWI-Prolog.h,
-                extra_if_Prolog_subdirs="${extra_if_Prolog_subdirs} SWI")
+dnl SICStus
+
+AC_CHECK_PROG(SICSTUS_PROLOG, sicstus, sicstus)
+if test x$SICSTUS_PROLOG = xsicstus
+then
 dnl We require SICStus Prolog 3.9.0 or later.
 AC_CHECK_HEADER(sicstus/sicstus.h,
                 AC_MSG_CHECKING([for SICStus version 3.9.0 or later])
@@ -303,13 +293,57 @@ AC_CHECK_HEADER(sicstus/sicstus.h,
                       yes
                     #endif
                   ],
-                  AC_MSG_RESULT(yes)
-                  extra_if_Prolog_subdirs="${extra_if_Prolog_subdirs} SICStus",
+                  AC_MSG_RESULT(yes),
+                  SICSTUS_PROLOG=""
                   AC_MSG_RESULT(no)))
-AC_CHECK_HEADER(Yap/c_interface.h,
-                extra_if_Prolog_subdirs="${extra_if_Prolog_subdirs} YAP")
+fi
+AM_CONDITIONAL(HAVE_SICSTUS_PROLOG, test x$SICSTUS_PROLOG = xsicstus)
+
+dnl SWI Prolog
+
+AC_CHECK_PROG(SWI_PROLOG, pl, pl)
+if test x$SWI_PROLOG = xpl
+then
+AC_CHECK_HEADER(SWI-Prolog.h,
+                [],
+                SWI_PROLOG="")
+fi
+AM_CONDITIONAL(HAVE_SWI_PROLOG, test x$SWI_PROLOG = xpl)
+
+dnl GNU Prolog
+
+AC_CHECK_PROG(GNU_PROLOG, gprolog, gprolog)
+if test x$GNU_PROLOG = xgprolog
+then
+AC_CHECK_HEADER(gprolog.h,
+                [],
+                GNU_PROLOG="")
+fi
+AM_CONDITIONAL(HAVE_GNU_PROLOG, test x$GNU_PROLOG = xgprolog)
+
+dnl XSB
+
+AC_CHECK_PROG(XSB_PROLOG, xsb, xsb)
+if test x$XSB_PROLOG = xxsb
+then
 AC_CHECK_HEADER(cinterf.h,
-                extra_if_Prolog_subdirs="${extra_if_Prolog_subdirs} XSB")
+                [],
+                XSB_PROLOG="")
+fi
+AM_CONDITIONAL(HAVE_XSB_PROLOG, test x$XSB_PROLOG = xsb)
+
+dnl YAP
+
+AC_CHECK_PROG(YAP_PROLOG, yap, yap)
+if test x$YAP_PROLOG = xyap
+then
+AC_CHECK_HEADER(Yap/c_interface.h,
+                [],
+                YAP_PROLOG="")
+fi
+AM_CONDITIONAL(HAVE_YAP_PROLOG, test x$YAP_PROLOG = xyap)
+
+dnl Checks for header files.
 AC_CHECK_HEADER(glpk.h,
                 extra_if_C_subdirs="${extra_if_C_subdirs} lpenum")
 
@@ -324,7 +358,6 @@ AC_SUBST(extra_libraries)
 AC_SUBST(extra_cpp_flags)
 AC_SUBST(debug_flag)
 AC_SUBST(extra_if_C_subdirs)
-AC_SUBST(extra_if_Prolog_subdirs)
 
 AC_OUTPUT(Makefile
           ppl.lsm ppl.spec
