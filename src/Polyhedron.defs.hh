@@ -71,6 +71,58 @@ namespace Parma_Polyhedra_Library {
   from a set of generators and we can obtain a matrix from the other 
   (i.e. if we have the system of constraint, we can obtain the set 
   of generators, and vice versa).
+
+  \par Example 1
+  The following code builds a square in \f$\mathbb{R}^2\f$ starting from
+  the system of constraints:
+  \code 
+  Variable x(0);
+  Variable y(1);
+  ConSys cs;
+  cs.insert(x >= 0);
+  cs.insert(x <= 3);
+  cs.insert(y >= 0);
+  cs.insert(y <= 3);
+  Polyhedron ph(cs);
+  \endcode
+
+  The following code builds the same polyhedron starting from the
+  set of generators:
+  \code
+  Variable x(0);
+  Variable y(1);
+  GenSys gs;
+  gs.insert(0 * x + 0 * y \= 1);
+  gs.insert(0 * x + 3 * y \= 1);
+  gs.insert(3 * x + 0 * y \= 1);
+  gs.insert(3 * x + 3 * y \= 1);
+  Polyhedron ph(gs);
+  \endcode
+
+  \par Example 2
+  The following code builds an half-strip in \f$mathbb{R}^2\f$ 
+  starting from the system of constraints:
+  \code
+  Variable x(0);
+  Variable y(1);
+  ConSys cs;
+  cs.insert(x >= 0);
+  cs.insert(x - y <= 0);
+  cs.insert(x - y + 1 >= 0);
+  Polyhedron ph(cs);
+  \endcode
+
+  The following code builds the same polyhedron starting from the
+  set of generators:
+  \code 
+  Variable x(0);
+  Variable y(1);
+  GenSys gs;
+  gs.insert(0 * x + 0 * y \= 1);
+  gs.insert(0 * x + y \= 1);
+  gs.insert(1 ^ x - y);
+  Polyhedron ph(gs);
+  \endcode
 */
 
 class Parma_Polyhedra_Library::Polyhedron {
