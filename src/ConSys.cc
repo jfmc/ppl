@@ -364,13 +364,13 @@ PPL::ConSys::affine_preimage(dimension_type v,
 
 /*!
   Prints the number of rows, the number of columns and the value of \p
-  sorted invoking the <CODE>Matrix::ASCII_dump()</CODE> method, then
+  sorted invoking the <CODE>Matrix::ascii_dump()</CODE> method, then
   prints the contents of all the rows, specifying whether a row is an
   equality or an inequality.
 */
 void
-PPL::ConSys::ASCII_dump(std::ostream& s) const {
-  Matrix::ASCII_dump(s);
+PPL::ConSys::ascii_dump(std::ostream& s) const {
+  Matrix::ascii_dump(s);
   const char separator = ' ';
   const ConSys& x = *this;
   for (dimension_type i = 0; i < x.num_rows(); ++i) {
@@ -399,8 +399,8 @@ PPL::ConSys::ASCII_dump(std::ostream& s) const {
   contents from \p s.
 */
 bool
-PPL::ConSys::ASCII_load(std::istream& s) {
-  if (!Matrix::ASCII_load(s))
+PPL::ConSys::ascii_load(std::istream& s) {
+  if (!Matrix::ascii_load(s))
     return false;
 
   std::string str;

@@ -105,12 +105,12 @@ public:
 
   //! Writes to \p s an ASCII representation of the internal
   //! representation of \p *this.
-  void ASCII_dump(std::ostream& s) const;
+  void ascii_dump(std::ostream& s) const;
 
   //! Loads from \p s an ASCII representation (as produced by \ref
-  //! ASCII_dump) and sets \p *this accordingly.  Returns <CODE>true</CODE>
+  //! ascii_dump) and sets \p *this accordingly.  Returns <CODE>true</CODE>
   //! if successful, <CODE>false</CODE> otherwise.
-  bool ASCII_load(std::istream& s);
+  bool ascii_load(std::istream& s);
 
 #ifndef NDEBUG
   //! Checks whether \p *this is sorted.

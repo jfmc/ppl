@@ -191,7 +191,7 @@ PPL::SatMatrix::sorted_contains(const SatRow& row) const {
 }
 
 void
-PPL::SatMatrix::ASCII_dump(std::ostream& s) const {
+PPL::SatMatrix::ascii_dump(std::ostream& s) const {
   using std::endl;
 
   const SatMatrix& x = *this;
@@ -206,7 +206,7 @@ PPL::SatMatrix::ASCII_dump(std::ostream& s) const {
 }
 
 bool
-PPL::SatMatrix::ASCII_load(std::istream& s) {
+PPL::SatMatrix::ascii_load(std::istream& s) {
   SatMatrix& x = *this;
   dimension_type nrows;
   dimension_type ncols;

@@ -45,7 +45,7 @@ static const char no = '-';
 static const char sep = ' ';
 
 void
-PPL::Status::ASCII_dump(std::ostream& s) const {
+PPL::Status::ascii_dump(std::ostream& s) const {
   s << (test_zero_dim_univ() ? yes : no) << zero_dim_univ << sep
     << (test_empty() ? yes : no) << empty << sep
     << sep
@@ -78,7 +78,7 @@ get_field(std::istream& s, const std::string& keyword, bool& positive) {
 }
 
 bool
-PPL::Status::ASCII_load(std::istream& s) {
+PPL::Status::ascii_load(std::istream& s) {
   bool positive;
 
   if (!get_field(s, zero_dim_univ, positive))

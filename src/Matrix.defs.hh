@@ -346,18 +346,18 @@ public:
     The specialized methods provided by ConSys and GenSys
     take care of properly printing the contents of the matrix.
   */
-  virtual void ASCII_dump(std::ostream& s) const;
+  virtual void ascii_dump(std::ostream& s) const;
 
   //! Loads from \p s an ASCII representation (as produced by \ref
-  //! ASCII_dump) and sets \p *this accordingly.  Returns <CODE>true</CODE>
+  //! ascii_dump) and sets \p *this accordingly.  Returns <CODE>true</CODE>
   //! if successful, <CODE>false</CODE> otherwise.
   /*!
     This virtual method is meant to read into a Matrix object
-    the information produced by the output of <CODE>ASCII_dump()</CODE>.
+    the information produced by the output of <CODE>ascii_dump()</CODE>.
     The specialized methods provided by ConSys and GenSys
     take care of properly reading the contents of the matrix.
   */
-  virtual bool ASCII_load(std::istream& s);
+  virtual bool ascii_load(std::istream& s);
 
   //! \brief
   //! Erases from the matrix all the rows but those having

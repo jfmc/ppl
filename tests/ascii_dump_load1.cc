@@ -1,4 +1,4 @@
-/* Test Polyhedron::ASCII_dump() e Polyhedron::ASCII_load().
+/* Test Polyhedron::ascii_dump() e Polyhedron::ascii_load().
    Copyright (C) 2001, 2002 Roberto Bagnara <bagnara@cs.unipr.it>
 
 This file is part of the Parma Polyhedra Library (PPL).
@@ -51,7 +51,7 @@ main() {
     exit(1);
   }
   
-  ph1.ASCII_dump(outFile);
+  ph1.ascii_dump(outFile);
   outFile.close();
 
   ifstream inFile("ascii1.dat");
@@ -63,7 +63,7 @@ main() {
   }
 
   C_Polyhedron ph2;
-  ph2.ASCII_load(inFile);
+  ph2.ascii_load(inFile);
   inFile.close();
 
   int retval = (ph1 == ph2) ? 0 : 1;

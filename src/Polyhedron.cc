@@ -2524,38 +2524,38 @@ PPL::Polyhedron::add_generators(GenSys& gs) {
 }
 
 void
-PPL::Polyhedron::ASCII_dump(std::ostream& s) const {
+PPL::Polyhedron::ascii_dump(std::ostream& s) const {
   using std::endl;
 
   s << "space_dim "
     << space_dimension()
     << endl;
-  status.ASCII_dump(s);
+  status.ascii_dump(s);
   s << endl
     << "con_sys ("
     << (constraints_are_up_to_date() ? "" : "not_")
     << "up-to-date)"
     << endl;
-  con_sys.ASCII_dump(s);
+  con_sys.ascii_dump(s);
   s << endl
     << "gen_sys ("
     << (generators_are_up_to_date() ? "" : "not_")
     << "up-to-date)"
     << endl;
-  gen_sys.ASCII_dump(s);
+  gen_sys.ascii_dump(s);
   s << endl
     << "sat_c"
     << endl;
-  sat_c.ASCII_dump(s);
+  sat_c.ascii_dump(s);
   s << endl
     << "sat_g"
     << endl;
-  sat_c.ASCII_dump(s);
+  sat_c.ascii_dump(s);
   s << endl;
 }
 
 bool
-PPL::Polyhedron::ASCII_load(std::istream& s) {
+PPL::Polyhedron::ascii_load(std::istream& s) {
   std::string str;
 
   if (!(s >> str) || str != "space_dim")
@@ -2564,7 +2564,7 @@ PPL::Polyhedron::ASCII_load(std::istream& s) {
   if (!(s >> space_dim))
     return false;
 
-  if (!status.ASCII_load(s))
+  if (!status.ascii_load(s))
     return false;
 
   if (!(s >> str) || str != "con_sys")
@@ -2573,7 +2573,7 @@ PPL::Polyhedron::ASCII_load(std::istream& s) {
   if (!(s >> str) || (str != "(not_up-to-date)" && str != "(up-to-date)"))
     return false;
 
-  if (!con_sys.ASCII_load(s))
+  if (!con_sys.ascii_load(s))
     return false;
 
   if (!(s >> str) || str != "gen_sys")
@@ -2582,19 +2582,19 @@ PPL::Polyhedron::ASCII_load(std::istream& s) {
   if (!(s >> str) || (str != "(not_up-to-date)" && str != "(up-to-date)"))
     return false;
 
-  if (!gen_sys.ASCII_load(s))
+  if (!gen_sys.ascii_load(s))
     return false;
 
   if (!(s >> str) || str != "sat_c")
     return false;
 
-  if (!sat_c.ASCII_load(s))
+  if (!sat_c.ascii_load(s))
     return false;
 
   if (!(s >> str) || str != "sat_g")
     return false;
 
-  if (!sat_g.ASCII_load(s))
+  if (!sat_g.ascii_load(s))
     return false;
 
   // Check for well-formedness.
@@ -4295,7 +4295,7 @@ PPL::Polyhedron::OK(bool check_not_empty) const {
 	     << endl
 	     << "Here is the minimized form of the generators:"
 	     << endl;
-	copy_of_gen_sys.ASCII_dump(cerr);
+	copy_of_gen_sys.ascii_dump(cerr);
 	cerr << endl;
 #endif
 	goto bomb;
@@ -4330,7 +4330,7 @@ PPL::Polyhedron::OK(bool check_not_empty) const {
 	       << endl
 	       << "Here is the minimized form of the generators:"
 	       << endl;
-	  copy_of_gen_sys.ASCII_dump(cerr);
+	  copy_of_gen_sys.ascii_dump(cerr);
 	  cerr << endl;
 #endif
 	    goto bomb;
@@ -4416,7 +4416,7 @@ PPL::Polyhedron::OK(bool check_not_empty) const {
 	     << endl
 	     << "Here is the minimized form of the constraints:"
 	     << endl;
-	copy_of_con_sys.ASCII_dump(cerr);
+	copy_of_con_sys.ascii_dump(cerr);
 	cerr << endl;
 #endif
 	goto bomb;
@@ -4442,7 +4442,7 @@ PPL::Polyhedron::OK(bool check_not_empty) const {
 	     << endl
 	     << "Here is the minimized form of the constraints:"
 	     << endl;
-	copy_of_con_sys.ASCII_dump(cerr);
+	copy_of_con_sys.ascii_dump(cerr);
 	cerr << endl;
 #endif
 	goto bomb;
@@ -4484,7 +4484,7 @@ PPL::Polyhedron::OK(bool check_not_empty) const {
 #ifndef NDEBUG
   cerr << "Here is the guilty polyhedron:"
        << endl;
-  ASCII_dump(cerr);
+  ascii_dump(cerr);
 #endif
   return false;
 }

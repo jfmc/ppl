@@ -675,15 +675,15 @@ PPL::GenSys::affine_image(dimension_type v,
 }
 
 /*!
-  Like <CODE>ConSys::ASCII_dump()</CODE>, this prints the number of
+  Like <CODE>ConSys::ascii_dump()</CODE>, this prints the number of
   rows, the number of columns and value of \p sorted, using the
-  <CODE>Matrix::ASCII_dump()</CODE> method, then prints the contents
+  <CODE>Matrix::ascii_dump()</CODE> method, then prints the contents
   of all the rows, specifying whether a row represent a line or a
   point/ray.
 */
 void
-PPL::GenSys::ASCII_dump(std::ostream& s) const {
-  Matrix::ASCII_dump(s);
+PPL::GenSys::ascii_dump(std::ostream& s) const {
+  Matrix::ascii_dump(s);
   const char separator = ' ';
   const GenSys& x = *this;
   for (dimension_type i = 0; i < x.num_rows(); ++i) {
@@ -709,14 +709,14 @@ PPL::GenSys::ASCII_dump(std::ostream& s) const {
 }
 
 /*!
-  Like <CODE>ConSys::ASCII_load()</CODE>, this uses
-  <CODE>Matrix::ASCII_load()</CODE> to resize the matrix of generators
+  Like <CODE>ConSys::ascii_load()</CODE>, this uses
+  <CODE>Matrix::ascii_load()</CODE> to resize the matrix of generators
   taking information from \p s, then initializes the coefficients of
   each generator and its type (line or ray/point).
 */
 bool
-PPL::GenSys::ASCII_load(std::istream& s) {
-  if (!Matrix::ASCII_load(s))
+PPL::GenSys::ascii_load(std::istream& s) {
+  if (!Matrix::ascii_load(s))
     return false;
 
   GenSys& x = *this;

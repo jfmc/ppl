@@ -128,14 +128,14 @@ public:
   //! Writes to \p s an ASCII representation of the internal
   //! representation of \p *this.
 #endif // PPL_DOXYGEN_INCLUDE_IMPLEMENTATION_DETAILS
-  void ASCII_dump(std::ostream& s) const;
+  void ascii_dump(std::ostream& s) const;
 
 #ifdef PPL_DOXYGEN_INCLUDE_IMPLEMENTATION_DETAILS
   //! Loads from \p s an ASCII representation (as produced by \ref
-  //! ASCII_dump) and sets \p *this accordingly.  Returns <CODE>true</CODE>
+  //! ascii_dump) and sets \p *this accordingly.  Returns <CODE>true</CODE>
   //! if successful, <CODE>false</CODE> otherwise.
 #endif // PPL_DOXYGEN_INCLUDE_IMPLEMENTATION_DETAILS
-  bool ASCII_load(std::istream& s);
+  bool ascii_load(std::istream& s);
 
 private:
   //! Status is implemented by means of a finite bitset.
