@@ -177,11 +177,13 @@ closure_point(const Linear_Expression& e,
   return Generator::closure_point(e, d);
 }
 
+/*! \relates Generator */
 inline bool
 operator==(const Generator& x, const Generator& y) {
   return x.is_equivalent_to(y);
 }
 
+/*! \relates Generator */
 inline bool
 operator!=(const Generator& x, const Generator& y) {
   return !x.is_equivalent_to(y);
