@@ -34,6 +34,10 @@ using namespace Parma_Polyhedra_Library::IO_Operators;
 #define NOISY 0
 #endif
 
+#ifndef M_PI
+# define M_PI           3.14159265358979323846  /* pi */
+#endif
+
 // Please note: the following function picks up random point on the
 // n-dimensional sphere, but they are not uniformly distributed.
 // See the following paper on how to obtain a uniform distribution:
