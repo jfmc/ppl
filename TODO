@@ -1,6 +1,14 @@
 Urgent Things
 =============
 
+- Check why we have Matrix::set_sorted(bool value) and
+  Matrix::set_necessarily_closed() and set_not_necessarily_closed().
+
+- Fix the comments of the following methods of Matrix:
+  void grow(dimension_type new_n_rows, dimension_type new_n_columns);
+  void resize_no_copy(dimension_type new_n_rows,
+  void add_rows_and_columns(dimension_type n).
+
 - Make sure all the functionalities are available in all interfaces.
 - Check the documentation for Polyhedron::rename_dimensions() and
   its wrappers for all the interfaces.
