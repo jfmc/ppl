@@ -60,7 +60,9 @@ Support for CIAO Prolog is under development and will be available in
 
 <H4>GNU Prolog</H4>
 
-
+Only GNU Prolog version 1.2.12 or later is supported.
+See <A HREF="http://www.cs.unipr.it/pipermail/ppl-devel/2002-June/001777.html">http://www.cs.unipr.it/pipermail/ppl-devel/2002-June/001777.html</A>
+for more information.
 
 <H4>SICStus Prolog</H4>
 
