@@ -190,7 +190,7 @@ Row::capacity() const {
 #endif
 
 inline
-Row::Row_Impl_Handler::Row_Impl_Handler()
+Row_Impl_Handler::Row_Impl_Handler()
   : impl(0) {
 #if EXTRA_ROW_DEBUG
   capacity_ = 0;
@@ -198,7 +198,7 @@ Row::Row_Impl_Handler::Row_Impl_Handler()
 }
 
 inline
-Row::Row_Impl_Handler::~Row_Impl_Handler() {
+Row_Impl_Handler::~Row_Impl_Handler() {
   delete impl;
 }
 

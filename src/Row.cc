@@ -106,7 +106,7 @@ PPL::Row::ascii_dump(std::ostream& s) const {
 }
 
 PPL::memory_size_type
-PPL::Row::Impl::external_memory_in_bytes() const {
+PPL::Row_Impl_Handler::Impl::external_memory_in_bytes() const {
   memory_size_type n = 0;
   for (dimension_type i = size(); i-- > 0; )
     n += PPL::external_memory_in_bytes(vec_[i]);
