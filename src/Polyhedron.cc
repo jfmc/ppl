@@ -2683,28 +2683,23 @@ PPL::Polyhedron::add_generators_and_minimize(GenSys& gs) {
   // NOTE: sortedness is preserved.
   gs.adjust_topology_and_dimension(topology(), space_dim);
 
-  // We use `check_empty()' because we want the flag EMPTY
-  // to precisely represents the status of the polyhedron
-  // (i.e., if it is false the polyhedron is really NOT empty)
-  // and because, for a non-empty polyhedron, we need both
-  // the system of generators and constraints minimal.
-  if (check_empty()) {
-    // Checking if the system of generators contains a point.
+  if (minimize()) {
+    obtain_sorted_generators_with_sat_g();
+    // This call to `add_and_minimize(...)' cannot return `false'.
+    add_and_minimize(false, gen_sys, con_sys, sat_g, gs);
+    clear_sat_c_up_to_date();
+  }
+  else {
+    // The polyhedron was empty: check if `gs' contains a point.
     if (!gs.has_points())
       throw_invalid_generators("add_generators_and_min(gs)");
-    // If the system of generators has a point, the polyhedron is no
-    // longer empty and generators are up-to-date.
+    // `gs' has a point: the polyhedron is no longer empty
+    // and generators are up-to-date.
     std::swap(gen_sys, gs);
     clear_empty();
     set_generators_up_to_date();
     // This call to `minimize()' cannot return `false'.
     minimize();
-  }
-  else {
-    obtain_sorted_generators_with_sat_g();
-    // This call to `add_and_minimize(...)' cannot return `false'.
-    add_and_minimize(false, gen_sys, con_sys, sat_g, gs);
-    clear_sat_c_up_to_date();
   }
   assert(OK(true));
   return true;
