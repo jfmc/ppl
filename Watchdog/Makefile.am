@@ -47,6 +47,10 @@ configure BUGS CREDITS \
 pwl_header.top pwl_header.middle pwl_header.bottom \
 pwl_filter_doxygen.sed pwl_filter_install.sed
 
+# pwl.hh and pwl_install.hh are not distributed.
+dist-hook:
+	rm -f $(distdir)/pwl.hh $(distdir)/pwl_install.hh
+
 if BUILD_WATCHDOG_LIBRARY
 
 # Libtool -version-info for libpwl.la.
@@ -100,10 +104,6 @@ pwl_install.hh:	pwl_header.top $(top_builddir)/config.h pwl_header.middle $(INCL
 	$(CXXCPP) -P @debug_flag@ tmp/noincludes.cc >>pwl_install.hh
 	cat $(srcdir)/pwl_header.bottom >>pwl_install.hh
 	rm -rf tmp*
-
-# pwl.hh and pwl_install.hh are not distributed.
-dist-hook:
-	rm -f $(distdir)/pwl.hh $(distdir)/pwl_install.hh
 
 install-data-local: pwl_install.hh
 	$(mkinstalldirs) $(DESTDIR)$(includedir)
