@@ -373,7 +373,7 @@ integer_term_to_Coefficient(Prolog_term_ref t) {
 static Prolog_term_ref
 Coefficient_to_integer_term(const PPL::Coefficient& n) {
   long v;
-  if (PPL::Checked::assign<PPL::Check_Overflow_Policy>(v, PPL::raw_value(n), PPL:Rounding(PPL:Rounding::IGNORE))
+  if (PPL::Checked::assign<PPL::Check_Overflow_Policy>(v, PPL::raw_value(n), PPL::Rounding(PPL::Rounding::IGNORE))
       == PPL::V_EQ)
     return ciao_integer(v);
   else {
