@@ -473,7 +473,7 @@ public:
   bool poly_hull_assign_and_minimize(const Polyhedron& y);
 
   //! \brief
-  //! Assigns to \p *this the polyehdral hull of the set-theoretic union
+  //! Assigns to \p *this the poly-hull of the set-theoretic union
   //! \p *this and \p y.  The result is not guaranteed to be minimized.
   //! \exception std::invalid_argument thrown if \p *this and \p y
   //!                                  are topology-incompatible
@@ -519,25 +519,29 @@ public:
   //! \brief
   //! Computes a CC92-widening (as described in the Introduction)
   //! between \p *this and \p y and assigns the result to \p *this.
-  //! \param y           The polyhedron that <EM>must</EM>
-  //!                    be contained in \p *this.
-  //! \exception std::invalid_argument thrown if \p *this and \p y
-  //!                                  are topology-incompatible
-  //!                                  or dimension-incompatible.
+  /*!
+    \param y           A polyhedron that <EM>must</EM>
+                       be contained in \p *this.
+    \exception std::invalid_argument thrown if \p *this and \p y
+                                     are topology-incompatible
+                                     or dimension-incompatible.
+  */
   void widening_CC92_assign(const Polyhedron& y);
 
   //! \brief
   //! Limits the CC92-widening between \p *this and \p y by \p cs
   //! CC92 and assigns the result to \p *this.
-  //! \param y                 The polyhedron that <EM>must</EM>
-  //!                          be contained in \p *this.
-  //! \param cs                The system of constraints that limits
-  //!                          the widened polyhedron. It is not
-  //!                          declared <CODE>const</CODE>
-  //!                          because it can be modified.
-  //! \exception std::invalid_argument thrown if \p *this, \p y and \p cs
-  //!                                  are topology-incompatible
-  //!                                  or dimension-incompatible.
+  /*!
+    \param y                 A polyhedron that <EM>must</EM>
+                             be contained in \p *this.
+    \param cs                The system of constraints that limits
+                             the widened polyhedron. It is not
+                             declared <CODE>const</CODE>
+                             because it can be modified.
+    \exception std::invalid_argument thrown if \p *this, \p y and \p cs
+                                     are topology-incompatible
+                                     or dimension-incompatible.
+  */
   void limited_widening_CC92_assign(const Polyhedron& y, ConSys& cs);
 
   //! \brief
@@ -671,34 +675,110 @@ public:
 
 private:
   //! Updates constraints starting from generators and minimizes them.
+  /*!
+    The resulting system of constraints is only partially sorted:
+    the equalities are in the upper part of the matrix,
+    while the inequalities in the lower part.
+  */
   void update_constraints() const;
 
   //! \brief
   //! Updates generators starting from constraints and minimizes them.
   //! Returns <CODE>false</CODE> if and only if \p *this turns out to be empty.
+  /*!
+    The resulting system of generators is only partially sorted:
+    the lines are in the upper part of the matrix,
+    while rays and points are in the lower part.
+    It is illegal to call this method when the Status field
+    already declares the polyhedron to be empty.
+  */
   bool update_generators() const;
 
   //! Updates \p sat_c using the updated constraints and generators.
+  /*!
+    It is assumed that constraints and generators are up-to-date
+    and minimized and that the Status field does not already flag
+    \p sat_c to be up-to-date.
+    The values of the saturation matrix are computed as follows:
+    \f[
+      \begin{cases}
+        sat\_c[i][j] = 0,
+          \quad \text{if } G[i] \cdot C^\mathrm{T}[j] = 0; \\
+        sat\_c[i][j] = 1,
+          \quad \text{if } G[i] \cdot C^\mathrm{T}[j] > 0.
+      \end{cases}
+    \f]
+  */
   void update_sat_c() const;
 
   //! Updates \p sat_g using the updated constraints and generators.
+  /*!
+    It is assumed that constraints and generators are up-to-date
+    and minimized and that the Status field does not already flag
+    \p sat_g to be up-to-date.
+    The values of the saturation matrix are computed as follows:
+    \f[
+      \begin{cases}
+        sat\_g[i][j] = 0,
+          \quad \text{if } C[i] \cdot G^\mathrm{T}[j] = 0; \\
+        sat\_g[i][j] = 1,
+          \quad \text{if } C[i] \cdot G^\mathrm{T}[j] > 0.
+      \end{cases}
+    \f]
+  */
   void update_sat_g() const;
 
   //! Sorts the matrix of constraints keeping status consistency.
+  /*!
+    It is assumed that constraints are up-to-date.
+    If at least one of the saturation matrices is up-to-date,
+    then \p sat_g is kept consistent with the sorted matrix
+    of constraints.
+    The method is declared \p const because reordering
+    the constraints does not modify the polyhedron
+    from a \e logical point of view.
+  */
   void obtain_sorted_constraints() const;
 
   //! Sorts the matrix of generators keeping status consistency.
+  /*!
+    It is assumed that generators are up-to-date.
+    If at least one of the saturation matrices is up-to-date,
+    then \p sat_c is kept consistent with the sorted matrix
+    of generators.
+    The method is declared \p const because reordering
+    the generators does not modify the polyhedron
+    from a \e logical point of view.
+  */
   void obtain_sorted_generators() const;
 
   //! Sorts the matrix of constraints and updates \p sat_c.
+  /*!
+    It is assumed that both constraints and generators
+    are up-to-date and minimized.
+    The method is declared \p const because reordering
+    the constraints does not modify the polyhedron
+    from a \e logical point of view.
+  */
   void obtain_sorted_constraints_with_sat_c() const;
 
   //! Sorts the matrix of generators and updates \p sat_g.
+  /*!
+    It is assumed that both constraints and generators
+    are up-to-date and minimized.
+    The method is declared \p const because reordering
+    the generators does not modify the polyhedron
+    from a \e logical point of view.
+  */
   void obtain_sorted_generators_with_sat_g() const;
 
   //! \brief
   //! Applies (weak) minimization to both the constraints and generators.
   //! Returns <CODE>false</CODE> if and only if \p *this turns out to be empty.
+  /*!
+    Minimization is not attempted if the Status field already declares
+    both systems to be minimized.
+  */
   bool minimize() const;
 
   //! \brief
@@ -719,35 +799,71 @@ private:
 
 public:
   //! \brief
-  //! Adds new dimensions and embeds the old polyhedron into the new space.
-  //! \param dim      The number of dimensions to add.
+  //! Adds \p dim new dimensions and embeds the old polyhedron
+  //! into the new space.
+  /*!
+    \param dim      The number of dimensions to add.
+
+    The new dimensions will be those having the highest indexes
+    in the new polyhedron, which is characterized by a system
+    of constraints in which the variables running through
+    the new dimensions are not constrained.
+    For instance, when starting from the polyhedron \f$\cP \sseq \Rset^2\f$
+    and adding a third dimension, the result will be the polyhedron
+    \f[
+      \bigl\{\,
+        (x, y, z)^\transpose \in \Rset^3
+      \bigm|
+        (x, y)^\transpose \in \cP
+      \,\bigr\}.
+    \f]
+  */
   void add_dimensions_and_embed(size_t dim);
 
   //! \brief
-  //! Adds new dimensions to the polyhedron
+  //! Adds \p dim new dimensions to the polyhedron
   //! and does not embed it in the new space.
-  //! \param dim      The number of dimensions to add.
+  /*!
+    \param dim      The number of dimensions to add.
+
+    The new dimensions will be those having the highest indexes
+    in the new polyhedron, which is characterized by a system
+    of constraints in which the variables running through
+    the new dimensions are all constrained to be equal to 0.
+    For instance, when starting from the polyhedron \f$\cP \sseq \Rset^2\f$
+    and adding a third dimension, the result will be the polyhedron
+    \f[
+      \bigl\{\,
+        (x, y, 0)^\transpose \in \Rset^3
+      \bigm|
+        (x, y)^\transpose \in \cP
+      \,\bigr\}.
+    \f]
+*/
   void add_dimensions_and_project(size_t dim);
 
   //! \brief
-  //! Removes the specified dimensions.
-  //! \param to_be_removed    The set of variables to remove.
+  //! Removes all the specified dimensions.
+  //! \param to_be_removed  The set of Variable objects corresponding
+  //!                       to the dimensions to be removed.
+  //! \exception std::invalid_argument thrown if \p to_be_removed and
+  //!                                  \p *this are dimension-incompatible.
   void remove_dimensions(const std::set<Variable>& to_be_removed);
 
   //! \brief
-  //! Removes all dimensions higher than a threshold.
-  //! \param new_dimension The dimension of the resulting polyhedron
-  //!                      after all higher dimensions have been removed.
+  //! Removes the higher dimensions so that the resulting space
+  //! will have dimension \p new_dimension.
+  //! \exception std::invalid_argument thrown if \p new_dimensions is greater
+  //!                                  than the space dimension of \p *this.
   void remove_higher_dimensions(size_t new_dimension);
 
   //! \brief
-  //! Adds the specified constraints and computes a new polyhedron.
+  //! Adds the specified constraints and computes a new polyhedron,
+  //! returning <CODE>true</CODE> if the result is an empty polyhedron.
   //! \param  cs            The constraints that will be added to the
   //!                       current system of constraints. This parameter
   //!                       is not declared <CODE>const</CODE> because
   //!                       it can be modified.
-  //! \return               <CODE>false</CODE> if the resulting
-  //!                       polyhedron is empty.
   //! \exception std::invalid_argument thrown if \p *this and \p cs
   //!                                  are topology-incompatible
   //!                                  or dimension-incompatible.
@@ -927,10 +1043,13 @@ private:
   //@{
   //! \brief
   //! Sets \p status to express that the polyhedron
-  //! is the universe 0-dimension vector space.
+  //! is the universe 0-dimension vector space,
+  //! clearing all corresponding matrices.
   void set_zero_dim_univ();
 
-  //! Sets \p status to express that the polyhedron is empty.
+  //! \brief
+  //! Sets \p status to express that the polyhedron is empty,
+  //! clearing all corresponding matrices.
   void set_empty();
 
   //! Sets \p status to express that constraints are up-to-date.
@@ -987,6 +1106,21 @@ private:
 //@}
 
   //! Adds new dimensions to the given matrices.
+  /*!
+    \param mat1      The matrix to which columns are added.
+    \param mat2      The matrix to which rows and columns are added.
+    \param sat1      The saturation matrix whose columns are indexed by
+                     the rows of matrix \p mat1. On entry it is up-to-date.
+    \param sat2      The saturation matrix whose columns are indexed by
+                     the rows of \p mat2.
+    \param add_dim   The number of dimensions to add.
+
+    Adds new dimensions to the polyhedron modifying the matrices.
+    This function is invoked only by <CODE>add_dimensions_and_embed()</CODE>
+    and <CODE>add_dimensions_and_project()</CODE>, passing the matrix of
+    constraints and that of generators (and the corresponding saturation
+    matrices) in different order (see those methods for details).
+  */
   static void add_dimensions(Matrix& mat1,
                              Matrix& mat2,
                              SatMatrix& sat1,
