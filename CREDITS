@@ -16,8 +16,11 @@ December 2002, was
 
 Other contributors:
 
-  Giordano Fracasso    wrote the initial version of the support
-                       for native integer coefficients.
+  Giordano Fracasso    (University of Parma) wrote the initial version
+                       of the support for native and checked integer
+                       coefficients.
+  Abramo Bagnara       (Opera Unica) rewrote and generalized the support
+                       for checked coefficients.
 
 The following people took part in the first phase of the library's
 development:

@@ -321,27 +321,8 @@ gmp)
   ;;
 esac
 
-enableval=no
-AC_MSG_CHECKING([whether to enable the new checked code])
-AC_ARG_ENABLE(new-checked-code,
-[  --enable-new-checked-code     use the new checked code])
-case "${enableval}" in
-yes)
-  AC_MSG_RESULT(yes)
-  ;;
-no)
-  AC_MSG_RESULT(no)
-  ;;
-*)
-  AC_MSG_ERROR([bad value ${enableval} for --enable-new-checked-code, needs yes or no])
-  ;;
-esac
-enable_new_checked_code=${enableval}
-
-
 AM_CONDITIONAL(USE_NATIVE_INTEGERS, test x"$coefficient_kind" = xnative)
 AM_CONDITIONAL(USE_CHECKED_INTEGERS, test x"$coefficient_kind" = xchecked)
-AM_CONDITIONAL(USE_NEW_CHECKED_CODE, test x"$enable_new_checked_code" = xyes)
 AM_CONDITIONAL(USE_GMP_INTEGERS, test x"$coefficient_type" = xgmp)
 
 
@@ -352,13 +333,7 @@ then
   AC_DEFINE(NATIVE_INTEGERS, 1, [Defined if the integral type to be used for coefficients is a native one.])
 elif test x"$coefficient_kind" = xchecked
 then
-  if test x"$enable_new_checked_code" = xyes
-  then
-    AC_DEFINE_UNQUOTED(COEFFICIENT_TYPE, Parma_Polyhedra_Library::Checked_Number<$coefficient_type>)
-    AC_DEFINE_UNQUOTED(NEW_CHECKED_CODE, 1, [Defined if the new checked code has to be used.])
-  else
-    AC_DEFINE_UNQUOTED(COEFFICIENT_TYPE, Parma_Polyhedra_Library::Checked_Integer<$coefficient_type>)
-  fi
+  AC_DEFINE_UNQUOTED(COEFFICIENT_TYPE, Parma_Polyhedra_Library::Checked_Number<$coefficient_type>)
   AC_DEFINE(CHECKED_INTEGERS, 1, [Defined if the integral type to be used for coefficients is a checked one.])
 elif test x"$coefficient_type" = xgmp
 then

@@ -80,24 +80,12 @@ endif
 
 if USE_CHECKED_INTEGERS
 
-if USE_NEW_CHECKED_CODE
-
 COEFFICIENT_TYPES_INCLUDE_FILES = \
   Checked_Number.types.hh
 
 COEFFICIENT_DEFS_INCLUDE_FILES = \
   Checked_Number.defs.hh \
   Checked_Number.inlines.hh
-else
-
-COEFFICIENT_TYPES_INCLUDE_FILES = \
-  Checked_Integer.types.hh
-
-COEFFICIENT_DEFS_INCLUDE_FILES = \
-  Checked_Integer.defs.hh \
-  Checked_Integer.inlines.hh
-
-endif
 
 endif
 

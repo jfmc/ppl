@@ -22,7 +22,6 @@ PURPOSE. */
 #endif
 
 #ifdef CHECKED_INTEGERS
-#ifdef NEW_CHECKED_CODE
 #include "Checked_Number.types.hh"
 
 namespace Parma_Polyhedra_Library {
@@ -48,11 +47,6 @@ struct Integer_traits_template<Checked_Number<int64_t> > {
 };
 
 } // namespace Parma_Polyhedra_Library
-
-#else
-#include "Checked_Integer.types.hh"
-
-#endif
 #endif
 
 #ifdef GMP_INTEGERS

@@ -32,12 +32,8 @@ site: http://www.cs.unipr.it/ppl/ . */
 #endif
 
 #ifdef CHECKED_INTEGERS
-#ifdef NEW_CHECKED_CODE
 #include "Checked_Number.defs.hh"
 #include "checked_int.inlines.hh"
-#else
-#include "Checked_Integer.defs.hh"
-#endif
 #endif
 
 #ifdef GMP_INTEGERS
