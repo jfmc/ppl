@@ -3137,7 +3137,7 @@ PPL::Polyhedron::time_elapse_assign(const Polyhedron& y) {
     x.clear_constraints_up_to_date();
     x.clear_generators_minimized();
   }
-  assert(x.OK(true) & y.OK(true));
+  assert(x.OK(true) && y.OK(true));
 }
 
 
