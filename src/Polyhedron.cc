@@ -34,6 +34,10 @@ site: http://www.cs.unipr.it/ppl/ . */
 #include <stdexcept>
 #include <deque>
 
+#ifndef GRAM_SHMIDT
+#define GRAM_SHMIDT 0
+#endif
+
 #ifndef BHRZ03_AC_IS_SUM
 #define BHRZ03_AC_IS_SUM 0
 #endif
@@ -3700,58 +3704,29 @@ PPL::Polyhedron::limited_H79_widening_assign(const Polyhedron& y,
   // Update the generators of `x': these are used to select,
   // from the constraints in `cs', those that must be added
   // to the resulting polyhedron.
-  if ((x.has_something_pending() && !x.remove_pending_to_obtain_generators())
+  if ((x.has_pending_constraints() && !x.process_pending_constraints())
       || (!x.generators_are_up_to_date() && !x.update_generators()))
     // We have just discovered that `x' is empty.
     return;
 
-  dimension_type new_cs_num_rows = 0;
-  for (dimension_type
-	 i = 0, cs_num_rows = cs.num_rows(); i < cs_num_rows; ++i) {
-    // The constraints to be added must be saturated by both `x' and `y'.
-    // We only consider the generators of the greater polyhedron `x',
-    // because the generators of `y' can be obtained by combining
-    // those of `x' (since `y' is contained in `x').
-    Poly_Con_Relation relation = x.gen_sys.relation_with(cs[i]);
-    if (relation.implies(Poly_Con_Relation::is_included()))
-      // The chosen constraints are put at the top of the
-      // matrix \p cs.
-      std::swap(cs[new_cs_num_rows], cs[i]);
-    ++new_cs_num_rows;
-  }
-  // We erase the constraints that are not saturated or satisfied
-  // by the generators of `x' and `y' and that have been put to
-  // the end of the matrix \p cs.
+  const GenSys& x_gs = x.gen_sys;
+  dimension_type cs_num_rows = cs.num_rows();
+  for (dimension_type i = 0; i < cs_num_rows; )
+    // The constraints to be added must be satisfied by all the
+    // generators of `x'. We can disregard `y' because `y <= x'.
+    if (x_gs.satisfied_by_all_generators(cs[i]))
+      ++i;
+    else {
+      --cs_num_rows;
+      std::swap(cs[cs_num_rows], cs[i]);
+    }
+  // Erase the constraints that are not satisfied by the generators of `x'.
   // NOTE: here `cs' has no pending constraints.
-  cs.erase_to_end(new_cs_num_rows);
+  cs.erase_to_end(cs_num_rows);
   cs.unset_pending_rows();
 
   x.H79_widening_assign(y);
-#if 1
-  // TODO : merge_rows_assign (in the #else branch below)
-  // does not automatically adjust the topology of cs,
-  // so that the #else branch, as it is, is not correct.
-  // However, by simply calling add_constraints() we are going
-  // to duplicate a big number of constraints.
-  // Would it be worth to provide a topology-adjusting
-  // merge_rows_assign method?
   x.add_constraints(cs);
-#else
-  // The system of constraints of the resulting polyhedron is
-  // composed by the constraints of the widened polyhedron `x'
-  // and by those of the new `cs'.
-  // The function `merge_row_assign' automatically resizes
-  // the system `cs' if the dimension of the space of `cs'
-  // is smaller then the dimension of the space of the polyhedron.
-  cs.sort_rows();
-  x.con_sys.sort_rows();
-  x.con_sys.merge_rows_assign(cs);
-  // Only the system of constraints is up-to-date.
-  x.set_constraints_up_to_date();
-  x.clear_constraints_minimized();
-  x.clear_generators_up_to_date();
-#endif
-
   assert(OK());
 }
 
@@ -4632,8 +4607,78 @@ PPL::Polyhedron::BHRZ03_widening_assign(const Polyhedron& y) {
 void
 PPL::Polyhedron::limited_BHRZ03_widening_assign(const Polyhedron& y,
 						ConSys& cs) {
-  BHRZ03_widening_assign(y);
-  add_constraints(cs);
+  Polyhedron& x = *this;
+  // Topology compatibility check.
+  if (x.is_necessarily_closed()) {
+    if (!y.is_necessarily_closed())
+      throw_topology_incompatible("limited_BHRZ03_widening_assign(y, cs)", y);
+    if (cs.has_strict_inequalities())
+      throw_topology_incompatible("limited_BHRZ03_widening_assign(y, cs)", cs);
+  }
+  else if (y.is_necessarily_closed())
+    throw_topology_incompatible("limited_BHRZ03_widening_assign(y, cs)", y);
+
+  // Dimension-compatibility check.
+  dimension_type x_space_dim = x.space_dim;
+  if (x_space_dim != y.space_dim)
+    throw_dimension_incompatible("limited_BHRZ03_widening_assign(y, cs)", y);
+  // `cs' must be dimension-compatible with the two polyhedra.
+  dimension_type cs_space_dim = cs.space_dimension();
+  if (x_space_dim < cs_space_dim)
+    throw_dimension_incompatible("limited_BHRZ03_widening_assign(y, cs)",
+				 "cs", cs);
+
+#ifndef NDEBUG
+  {
+    // We assume that y is contained or equal to x.
+    Polyhedron x_copy = x;
+    Polyhedron y_copy = y;
+    assert(y_copy <= x_copy);
+  }
+#endif
+
+  if (y.is_empty())
+    return;
+  if (x.is_empty())
+    return;
+
+  // The limited BHRZ03-widening between two polyhedra in a
+  // zero-dimensional space is a polyhedron in a zero-dimensional
+  // space, too.
+  if (x_space_dim == 0)
+    return;
+
+  if (!y.minimize())
+    // We have just discovered that `y' is empty.
+    return;
+
+  // Update the generators of `x': these are used to select,
+  // from the constraints in `cs', those that must be added
+  // to the resulting polyhedron.
+  if ((x.has_pending_constraints() && !x.process_pending_constraints())
+      || (!x.generators_are_up_to_date() && !x.update_generators()))
+    // We have just discovered that `x' is empty.
+    return;
+
+  const GenSys& x_gs = x.gen_sys;
+  dimension_type cs_num_rows = cs.num_rows();
+  for (dimension_type i = 0; i < cs_num_rows; )
+    // The constraints to be added must be satisfied by all the
+    // generators of `x'. We can disregard `y' because `y <= x'.
+    if (x_gs.satisfied_by_all_generators(cs[i]))
+      ++i;
+    else {
+      --cs_num_rows;
+      std::swap(cs[cs_num_rows], cs[i]);
+    }
+  // Erase the constraints that are not satisfied by the generators of `x'.
+  // NOTE: here `cs' has no pending constraints.
+  cs.erase_to_end(cs_num_rows);
+  cs.unset_pending_rows();
+
+  x.BHRZ03_widening_assign(y);
+  x.add_constraints(cs);
+  assert(OK());
 }
 
 void
@@ -5452,6 +5497,7 @@ PPL::Polyhedron::OK(bool check_not_empty) const {
 #endif
 	goto bomb;
       }
+#if !GRAM_SHMIDT
       // The matrix `copy_of_con_sys' has the form that is obtained
       // after the functions gauss() and back_substitute().
       // A system of constraints can be minimal even if it does not
@@ -5477,6 +5523,7 @@ PPL::Polyhedron::OK(bool check_not_empty) const {
 #endif
 	goto bomb;
       }
+#endif //#if !GRAM_SHMIDT
     }
   }
 

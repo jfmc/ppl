@@ -57,8 +57,9 @@ main() {
   print_constraints(ph2, "*** ph2 ****");
 #endif
 
-  // Note: this is inconsistent with both `ph1' and `ph2'.
-  ConSys cs(y <= -1);
+  ConSys cs;
+  cs.insert(y <= -1);
+  cs.insert(x <= 5);
 
 #if NOISY
   print_constraints(cs, "*** cs ****");
@@ -67,11 +68,14 @@ main() {
   C_Polyhedron computed_result = ph2;
   computed_result.limited_H79_widening_assign(ph1, cs);
 
+  C_Polyhedron known_result = ph2;
+  known_result.add_generator(point(5*x));
+  known_result.add_generator(point(5*x + 5*y));
+
 #if NOISY
   print_constraints(computed_result,
 		    "*** After limited_H79_widening_assign ****");
 #endif
 
-  // The result must be empty.
-  return computed_result.check_empty() ? 0 : 1;
+  return computed_result == known_result ? 0 : 1;
 }
