@@ -34,7 +34,7 @@ namespace PPL = Parma_Polyhedra_Library;
 
 void
 PPL::Constraint::throw_dimension_incompatible(const char* method,
-					      PPL::Variable v) const {
+					      Variable v) const {
   std::ostringstream s;
   s << method << ":" << std::endl
     << "this->space_dimension() == " << this->space_dimension()
