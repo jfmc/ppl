@@ -112,6 +112,13 @@ make prefix=$RPM_BUILD_ROOT%{_prefix} bindir=$RPM_BUILD_ROOT%{_bindir} \
 %{_libdir}/libppl_c.la
 %{_includedir}/ppl_c.h
 
+%files gprolog
+%defattr(-,root,root)
+%{_bindir}/ppl_gprolog
+%{_libdir}/ppl/libppl_gprolog.a
+%{_libdir}/ppl/libppl_gprolog.la
+%{_libdir}/ppl/libppl_gprolog.so*
+
 %files sicstus
 %defattr(-,root,root)
 # Uncomment the following line if you want to create an RPM containing
@@ -124,6 +131,8 @@ make prefix=$RPM_BUILD_ROOT%{_prefix} bindir=$RPM_BUILD_ROOT%{_bindir} \
 %files swi
 %defattr(-,root,root)
 %{_bindir}/ppl_pl
+%{_libdir}/ppl/libppl_swiprolog.a
+%{_libdir}/ppl/libppl_swiprolog.la
 %{_libdir}/ppl/libppl_swiprolog.so*
 
 %post
