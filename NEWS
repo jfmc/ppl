@@ -10,13 +10,24 @@ NEWS for version 0.6  (released on August 18, 2004)
 New and Changed Features
 ========================
 
+o  New templatic classes Determinate, PowerSet, and Polyhedra_PowerSet.
+   The first two classes realize, in a completely generic way, the
+   determinate and powerset constructions described by Roberto Bagnara
+   in his 1998, Science of Computer Programming paper.  The third class
+   is a specialization of the powerset construction on polyhedra.
+   The powerset construction comes with the generic widening technique
+   proposed by Roberto Bagnara, Patricia Hill and Enea Zaffanella
+   in their VMCAI 2004 paper.  Actually, the Polyhedra_PowerSet class
+   provides the first genuine, non-trivial widening ever proposed
+   (let alone made available) on a domain of sets of convex polyhedra.
+
 o  New methods
 
      void Polyhedron::expand_dimension(Variable, dimension_type) and
      void Polyhedron::fold_dimensions(const Variables_Set&, Variable)
 
    allow the easy realization of summary dimensions as proposed
-   by Gopan and colleagues in their TACAS 2004 paper.
+   by Denis Gopan and colleagues in their TACAS 2004 paper.
 
 o  A new `demos' directory has been added.  In the `ppl_lcdd'
    subdirectory, this contains a sort of clone of the cddlib test
