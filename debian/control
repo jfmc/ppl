@@ -4,133 +4,150 @@ Priority: optional
 Maintainer: PPL developers <ppl-devel@cs.unipr.it>
 Standards-Version: 3.6.1
 Build-Depends: debhelper (>= 4), binutils, g++-3.4, libgmp3-dev (>= 4.1.3), autoconf, automake1.9, libtool, doxygen, graphviz
+Build-Conflicts: automake1.4
 
 Package: libppl
 Architecture: any
 Depends: libgmp3 (>=4.1.3)
-Description: The Parma Polyhedra Library (base package)
+Description: Parma Polyhedra Library: base package
  The Parma Polyhedra Library (PPL) is a C++ library for the
  manipulation of (not necessarily closed) convex polyhedra and other
  numerical abstractions.  The applications of convex polyhedra include
  program analysis, optimized compilation, integer and combinatorial
  optimization and statistical data-editing.  The Parma Polyhedra
- Library is user friendly (you write `x + 2*y + 5*z <= 7' when you mean
- it), fully dynamic (available virtual memory is the only limitation to
- the dimension of anything), written in standard C++, exception-safe,
- rather efficient, thoroughly documented, and free software.
+ Library is user friendly (you write `x + 2*y + 5*z <= 7' when you
+ mean it), fully dynamic (available virtual memory is the only
+ limitation to the dimension of anything), written in standard C++,
+ exception-safe, rather efficient and thoroughly documented.
+ .
+ Homepage: http://www.cs.unipr.it/ppl/
 
 Package: libppl-dev
 Architecture: any
 Section: libdevel
 Depends: g++-3.4, libppl, graphviz
 Recommends: libgmp3-dev
-Description: The Parma Polyhedra Library (C++ interface)
+Description: Parma Polyhedra Library: C++ interface
  The Parma Polyhedra Library (PPL) is a C++ library for the
  manipulation of (not necessarily closed) convex polyhedra and other
  numerical abstractions.  The applications of convex polyhedra include
  program analysis, optimized compilation, integer and combinatorial
  optimization and statistical data-editing.  The Parma Polyhedra
- Library is user friendly (you write `x + 2*y + 5*z <= 7' when you mean
- it), fully dynamic (available virtual memory is the only limitation to
- the dimension of anything), written in standard C++, exception-safe,
- rather efficient, thoroughly documented, and free software.
+ Library is user friendly (you write `x + 2*y + 5*z <= 7' when you
+ mean it), fully dynamic (available virtual memory is the only
+ limitation to the dimension of anything), written in standard C++,
+ exception-safe, rather efficient and thoroughly documented.
  .
- This package provides C++ header files, the static library and
- documentation in various formats.
+ This package provides C++ header files, the static library and, in
+ various formats, the developer documentation.
+ .
+ Homepage: http://www.cs.unipr.it/ppl/
 
 Package: libppl-c
 Architecture: any
 Depends: libppl, libc6
-Description: The Parma Polyhedra Library (base package)
+Description: Parma Polyhedra Library: C interface
  The Parma Polyhedra Library (PPL) is a C++ library for the
  manipulation of (not necessarily closed) convex polyhedra and other
  numerical abstractions.  The applications of convex polyhedra include
  program analysis, optimized compilation, integer and combinatorial
  optimization and statistical data-editing.  The Parma Polyhedra
- Library is user friendly (you write `x + 2*y + 5*z <= 7' when you mean
- it), fully dynamic (available virtual memory is the only limitation to
- the dimension of anything), written in standard C++, exception-safe,
- rather efficient, thoroughly documented, and free software.
+ Library is user friendly (you write `x + 2*y + 5*z <= 7' when you
+ mean it), fully dynamic (available virtual memory is the only
+ limitation to the dimension of anything), written in standard C++,
+ exception-safe, rather efficient and thoroughly documented.
  .
  This package provides the C interface.
+ .
+ Homepage: http://www.cs.unipr.it/ppl/
 
 Package: libppl-gprolog
 Architecture: any
 Depends: libppl, gprolog
-Description: The Parma Polyhedra Library (base package)
+Description: Parma Polyhedra Library: GNU Prolog interface
  The Parma Polyhedra Library (PPL) is a C++ library for the
  manipulation of (not necessarily closed) convex polyhedra and other
  numerical abstractions.  The applications of convex polyhedra include
  program analysis, optimized compilation, integer and combinatorial
  optimization and statistical data-editing.  The Parma Polyhedra
- Library is user friendly (you write `x + 2*y + 5*z <= 7' when you mean
- it), fully dynamic (available virtual memory is the only limitation to
- the dimension of anything), written in standard C++, exception-safe,
- rather efficient, thoroughly documented, and free software.
+ Library is user friendly (you write `x + 2*y + 5*z <= 7' when you
+ mean it), fully dynamic (available virtual memory is the only
+ limitation to the dimension of anything), written in standard C++,
+ exception-safe, rather efficient and thoroughly documented.
  .
  This package provides the GNU Prolog interface.
+ .
+ Homepage: http://www.cs.unipr.it/ppl/
 
 Package: libppl-swi
 Architecture: any
 Depends: libppl, swi-prolog
-Description: The Parma Polyhedra Library (base package)
+Description: Parma Polyhedra Library: SWI Prolog interface
  The Parma Polyhedra Library (PPL) is a C++ library for the
  manipulation of (not necessarily closed) convex polyhedra and other
  numerical abstractions.  The applications of convex polyhedra include
  program analysis, optimized compilation, integer and combinatorial
  optimization and statistical data-editing.  The Parma Polyhedra
- Library is user friendly (you write `x + 2*y + 5*z <= 7' when you mean
- it), fully dynamic (available virtual memory is the only limitation to
- the dimension of anything), written in standard C++, exception-safe,
- rather efficient, thoroughly documented, and free software.
+ Library is user friendly (you write `x + 2*y + 5*z <= 7' when you
+ mean it), fully dynamic (available virtual memory is the only
+ limitation to the dimension of anything), written in standard C++,
+ exception-safe, rather efficient and thoroughly documented.
  .
- This package provides the SWI prolog interface.
+ This package provides the SWI Prolog interface.
+ .
+ Homepage: http://www.cs.unipr.it/ppl/
 
 Package: libppl-sicstus
 Architecture: any
 Depends: libppl
-Description: The Parma Polyhedra Library (base package)
+Description: Parma Polyhedra Library: SICStus Prolog interface
  The Parma Polyhedra Library (PPL) is a C++ library for the
  manipulation of (not necessarily closed) convex polyhedra and other
  numerical abstractions.  The applications of convex polyhedra include
  program analysis, optimized compilation, integer and combinatorial
  optimization and statistical data-editing.  The Parma Polyhedra
- Library is user friendly (you write `x + 2*y + 5*z <= 7' when you mean
- it), fully dynamic (available virtual memory is the only limitation to
- the dimension of anything), written in standard C++, exception-safe,
- rather efficient, thoroughly documented, and free software.
+ Library is user friendly (you write `x + 2*y + 5*z <= 7' when you
+ mean it), fully dynamic (available virtual memory is the only
+ limitation to the dimension of anything), written in standard C++,
+ exception-safe, rather efficient and thoroughly documented.
  .
- This package provides the Sicstus Prolog interface.
+ This package provides the SICStus Prolog interface.
+ .
+ Homepage: http://www.cs.unipr.it/ppl/
 
 Package: libppl-yap
 Architecture: any
 Depends: libppl
-Description: The Parma Polyhedra Library (base package)
+Description: Parma Polyhedra Library: YAP interface
  The Parma Polyhedra Library (PPL) is a C++ library for the
  manipulation of (not necessarily closed) convex polyhedra and other
  numerical abstractions.  The applications of convex polyhedra include
  program analysis, optimized compilation, integer and combinatorial
  optimization and statistical data-editing.  The Parma Polyhedra
- Library is user friendly (you write `x + 2*y + 5*z <= 7' when you mean
- it), fully dynamic (available virtual memory is the only limitation to
- the dimension of anything), written in standard C++, exception-safe,
- rather efficient, thoroughly documented, and free software.
+ Library is user friendly (you write `x + 2*y + 5*z <= 7' when you
+ mean it), fully dynamic (available virtual memory is the only
+ limitation to the dimension of anything), written in standard C++,
+ exception-safe, rather efficient and thoroughly documented.
  .
- This package provides the YAP Prolog interface.
+ This package provides the YAP interface.
+ .
+ Homepage: http://www.cs.unipr.it/ppl/
 
 Package: libppl-pwl
 Architecture: any
 Section: libs
 Depends: libppl
-Description: The Parma Polyhedra Library (base package)
+Description: Parma Polyhedra Library: PWL Prolog interface
  The Parma Polyhedra Library (PPL) is a C++ library for the
  manipulation of (not necessarily closed) convex polyhedra and other
  numerical abstractions.  The applications of convex polyhedra include
  program analysis, optimized compilation, integer and combinatorial
  optimization and statistical data-editing.  The Parma Polyhedra
- Library is user friendly (you write `x + 2*y + 5*z <= 7' when you mean
- it), fully dynamic (available virtual memory is the only limitation to
- the dimension of anything), written in standard C++, exception-safe,
- rather efficient, thoroughly documented, and free software.
+ Library is user friendly (you write `x + 2*y + 5*z <= 7' when you
+ mean it), fully dynamic (available virtual memory is the only
+ limitation to the dimension of anything), written in standard C++,
+ exception-safe, rather efficient and thoroughly documented.
  .
  This package provides the PWL Prolog interface.
+ .
+ Homepage: http://www.cs.unipr.it/ppl/
