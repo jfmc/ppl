@@ -66,7 +66,8 @@ bounded_cons,
 bounded_gens,
 project,
 embed,
-boundingbox.
+boundingbox,
+poly_from_boundingbox.
 
 incl_C :-
 ppl_new_Polyhedron_from_dimension(c, 3, P1),
@@ -181,7 +182,7 @@ ppl_new_Polyhedron_from_GenSys(nnc, [
             closure_point(1*A + 1*B + 1*C, 1)
                                    ], P),
 ppl_Polyhedron_get_generators(P, GS),
-GS = [point(1*A + 1*B + 1*C), closure_point(1*A + 1*B + 1*C)],
+GS = [point(1*A + 1*B + 1*C)],
 ppl_delete_Polyhedron(P).
 
 space_C :-
@@ -206,8 +207,7 @@ ppl_Polyhedron_intersection_assign(P1, P2),
 ppl_Polyhedron_get_generators(P1, GS),
 ppl_Polyhedron_get_constraints(P1, CS),
 CS = [1*A+ -1*B >= 0, 1*B >= 0, -1*A + -1*B >= -1],
-GS = [point(1*A + 1*B, 2), closure_point(1*A + 1*B, 2), point(1*A),
-      closure_point(1*A), point(0), closure_point(0)],
+GS = [point(1*A+1*B, 2), point(1*A), point(0)],
 ppl_delete_Polyhedron(P1),
 ppl_delete_Polyhedron(P2).
 
@@ -220,8 +220,7 @@ ppl_Polyhedron_intersection_assign_and_minimize(P1, P2),
 ppl_Polyhedron_get_generators(P1, GS),
 ppl_Polyhedron_get_constraints(P1, CS),
 CS = [1*A + -1*B >=0, 1*B >= 0, -1*A + -1*B >= -1],
-GS = [point(1*A + 1*B, 2), closure_point(1*A + 1*B, 2), 
-      point(1*A), closure_point(1*A), point(0), closure_point(0)],
+GS = [point(1*A+1*B, 2), point(1*A), point(0)],
 ppl_delete_Polyhedron(P1),
 ppl_delete_Polyhedron(P2).
 
@@ -364,7 +363,7 @@ ppl_Polyhedron_add_generators(P,
       point(1*A + 1*B + 1*C, 1),
       point(-100*A - 5*B, 8)]),
 ppl_Polyhedron_get_generators(P, GS), 
-GS = [ray(2*A), point(1*A + 1*B + 1 *C), ray(1*A), point(-100*A + -5*B, 8)],
+GS = [point(1*A + 1*B + 1*C), ray(1*A), point(-100*A + -5*B, 8)],
 ppl_delete_Polyhedron(P).
 
 add_cons_min :-
@@ -517,6 +516,16 @@ ppl_Polyhedron_get_bounding_box(P, Box),
 Box = [i(o(minf), c(+1/2)), i(c(0), o(pinf))],
 ppl_delete_Polyhedron(P).
 
+poly_from_boundingbox :-
+A = '$VAR'(0), B = '$VAR'(1), 
+ppl_new_Polyhedron_from_bounding_box(nnc,
+    [i(o(0), o(pinf)), i(o(minf), o(1/2))] , P),
+ppl_Polyhedron_get_constraints(P,CS), 
+%ppl_Polyhedron_get_bounding_box(P, Box),
+CS = [1*A>0, -2*B> -1],
+ppl_delete_Polyhedron(P).
+
+% These next 2 tests demonstrate a bug in the bounding box software.
 boundingbox1(Box,CS) :-
 A = '$VAR'(0), B = '$VAR'(1), 
 ppl_new_Polyhedron_from_ConSys(nnc, [1*A>1, 1*B>1, -1*B> -1, -1*A> -1], P),
@@ -532,9 +541,11 @@ ppl_Polyhedron_get_bounding_box(P, Box),
 ppl_Polyhedron_get_constraints(P,CS), 
 ppl_delete_Polyhedron(P).
 
-poly_from_boundingbox(Box,CS) :-
+poly_from_boundingbox(Box, CS) :-
+%A = '$VAR'(0), B = '$VAR'(1), 
 ppl_new_Polyhedron_from_bounding_box(nnc,
     [i(o(0), o(pinf)), i(o(minf), o(1/2))] , P),
 ppl_Polyhedron_get_constraints(P,CS), 
 ppl_Polyhedron_get_bounding_box(P, Box),
+%CS = [1*A>0, -2*B> -1],
 ppl_delete_Polyhedron(P).
