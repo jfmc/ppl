@@ -72,7 +72,7 @@ namespace Parma_Polyhedra_Library {
 
   //! Output operator.
   std::ostream&
-  operator<<(std::ostream& s, const Parma_Polyhedra_Library::Variable& v);
+  operator<<(std::ostream& s, const Variable& v);
 
   //! Defines a total ordering on variables.
   bool operator<(const Variable& v, const Variable& w);
