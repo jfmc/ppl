@@ -972,8 +972,8 @@ PPL::Polyhedron::remove_dimensions(const std::set<Variable>& to_be_removed) {
     throw std::invalid_argument("void PPL::Polyhedron::remove_dimensions"
 				"(vs): dimension-incompatible");
 
-  // Removing dimensions from the empty polyhedron just updates
-  // the space_dim member.
+  // Removing dimensions from the empty polyhedron
+  // just updates the space_dim member.
   if (is_empty()) {
     space_dim -= to_be_removed.size();
     return;
@@ -1026,8 +1026,8 @@ PPL::Polyhedron::remove_dimensions(const std::set<Variable>& to_be_removed) {
   else {
     // If less than 2 columns are left,
     // then polyhedron is the zero-dimension universe.
-    set_zero_dim_univ();
     space_dim = 0;
+    set_zero_dim_univ();
     // A zero-dimension universe polyhedron must have
     // both `con_sys' and `gen_sys' with no rows.
     gen_sys.clear();
@@ -1076,15 +1076,12 @@ PPL::Polyhedron::add_constraints(ConSys& cs) {
 
   if (cs_num_columns == 1 && space_dimension() == 0) {
     // Checking for an inconsistent constraint.
-    for (size_t i = cs.num_rows(); i-- > 0; ) {
-      const Row& r = cs[i];
-      if (r[0] != 0 && (r.is_line_or_equality() || r[0] < 0)) {
-	// Inconsistent constraint found.
-	status.set_empty();
-	return false;
-      }
-    }
-    return true;
+    // Checking for an inconsistent constraint.
+    if (cs.begin() == cs.end())
+      return true;
+    // Inconsistent constraint found.
+    status.set_empty();
+    return false;
   }
 
   // We use `check_empty()' because we want the flag EMPTY
@@ -1253,14 +1250,9 @@ PPL::Polyhedron::add_constraints_lazy(ConSys& cs) {
 
   if (cs_num_columns == 1 && space_dimension() == 0) {
     // Checking for an inconsistent constraint.
-    for (size_t i = cs.num_rows(); i-- > 0; ) {
-      const Row& r = cs[i];
-      if (r[0] != 0 && (r.is_line_or_equality() || r[0] < 0)) {
-	// Inconsistent constraint found.
-	status.set_empty();
-	return;
-      }
-    }
+    if (cs.begin() != cs.end())
+      // Inconsistent constraint found.
+      status.set_empty();
     return;
   }
       
