@@ -937,8 +937,8 @@ compute_generator(const Matrix& tableau,
 		  const dimension_type original_space_dim) {
   // We will store in num[] and in den[] the numerators and
   // the denominators of every variable of the original problem.
-  Coefficient num[original_space_dim];
-  Coefficient den[original_space_dim];
+  std::vector<Coefficient> num(original_space_dim);
+  std::vector<Coefficient> den(original_space_dim);
   dimension_type row = 0;
 
   // We start to compute num[] and den[].
@@ -1020,7 +1020,7 @@ compute_generator(const Matrix& tableau,
   Linear_Expression my_generator;
   for (dimension_type i = original_space_dim; i-- > 0; )
     my_generator += Variable(i)*num[i];
-  
+
   // We proceed returning g.
   Generator g = point(my_generator, lcm);
   return g;
