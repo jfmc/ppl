@@ -86,7 +86,7 @@ public:
   friend Status
   Parma_Polyhedra_Library::operator|(const Status& x, const Status& y);
 
-  //! @name Test, remove or add an individual assertion from the conjunction.
+  //! \name Test, remove or add an individual assertion from the conjunction.
   //@{
   bool test_zero_dim_univ() const;
   void reset_zero_dim_univ();
@@ -151,7 +151,7 @@ private:
   //! Status is implemented by means of a finite bitset.
   typedef unsigned int flags_t;
 
-  //! @name Bitmasks for the individual assertions.
+  //! \name Bitmasks for the individual assertions.
   //@{
   static const flags_t ZERO_DIM_UNIV    = 0U;
   static const flags_t EMPTY            = 1U << 0;

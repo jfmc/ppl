@@ -96,7 +96,7 @@ public:
   //! Sizing constructor with type.
   Row(Type t, dimension_type sz, dimension_type capacity);
 
-  //! @name Post-constructors.
+  //! \name Post-constructors.
   //@{
   //! Constructs properly a default-constructed element.
   void construct(Type t, dimension_type sz);
@@ -145,13 +145,13 @@ public:
   */
   void shrink(dimension_type new_size);
 
-  //! @name Subscript operators.
+  //! \name Subscript operators.
   //@{
   Integer& operator[](dimension_type k);
   const Integer& operator[](dimension_type k) const;
   //@}
 
-  //! @name Type inspection methods.
+  //! \name Type inspection methods.
   //@{
   Type type() const;
   Topology topology() const;
@@ -160,7 +160,7 @@ public:
   bool is_necessarily_closed() const;
   //@}
 
-  //! @name Type coercion methods.
+  //! \name Type coercion methods.
   //@{
   void set_is_line_or_equality();
   void set_is_ray_or_point_or_inequality();
@@ -284,7 +284,7 @@ const Integer& reduced_scalar_product(const Row& x, const Row& y);
 int compare(const Row& x, const Row& y);
 
 #ifdef PPL_DOXYGEN_INCLUDE_IMPLEMENTATION_DETAILS
-//! @name Classical comparison operators.
+//! \name Classical comparison operators.
 //@{
 #endif // PPL_DOXYGEN_INCLUDE_IMPLEMENTATION_DETAILS
 /*! \relates Row */
@@ -319,7 +319,7 @@ public:
   //! pieces of information.
   Type(Topology topol, Kind kind);
 
-  //! @name Testing and setting the type.
+  //! \name Testing and setting the type.
   //@{
   Topology topology() const;
   bool is_line_or_equality() const;
@@ -342,7 +342,7 @@ private:
   //! This holds the current bitset.
   flags_t flags;
 
-  //! @name The bits that are currently in use.
+  //! \name The bits that are currently in use.
   //@{
   static const flags_t NNC = NOT_NECESSARILY_CLOSED << 0;
   static const flags_t RPI = RAY_OR_POINT_OR_INEQUALITY << 1;
@@ -361,7 +361,7 @@ private:
 
 class Parma_Polyhedra_Library::Row::Impl {
 public:
-  //! @name Custom allocator and deallocator.
+  //! \name Custom allocator and deallocator.
   //@{
   void* operator new(size_t fixed_size, dimension_type capacity);
   void operator delete(void* p, dimension_type capacity);
@@ -389,13 +389,13 @@ public:
   //! Shrinks by erasing elements at the end.
   void shrink(dimension_type new_size);
 
-  //! @name Subscript operators.
+  //! \name Subscript operators.
   //@{
   Integer& operator[](dimension_type k);
   const Integer& operator[](dimension_type k) const;
   //@}
 
-  //! @name Size accessors.
+  //! \name Size accessors.
   //@{
   dimension_type size() const;
   void set_size(dimension_type new_sz);

@@ -97,7 +97,7 @@ public:
   Parma_Polyhedra_Library::compare(const SatRow& x,
 				   const SatRow& y);
 
-  //! @name Set-theoretic comparisons.
+  //! \name Set-theoretic comparisons.
   //@{
   friend bool
   Parma_Polyhedra_Library::operator==(const SatRow& x,  const SatRow& y);

@@ -274,7 +274,7 @@ public:
   //! Swaps the columns having indexes \p i and \p j.
   void swap_columns(dimension_type i,  dimension_type j);
 
-  //! @name Accessors.
+  //! \name Accessors.
   //@{
   //! Returns the matrix topology.
   Topology topology() const;
@@ -323,7 +323,7 @@ public:
   //! without checking for duplicates.
   bool check_sorted() const;
 
-  //! @name Subscript operators.
+  //! \name Subscript operators.
   //@{
   //! Returns a reference to the \p k-th row of the matrix.
   Row& operator[](dimension_type k);

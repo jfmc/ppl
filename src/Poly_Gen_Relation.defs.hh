@@ -58,7 +58,7 @@ private:
   //! Poly_Gen_Relation is implemented by means of a finite bitset.
   typedef unsigned int flags_t;
 
-  //! @name Bitmasks for the individual assertions.
+  //! \name Bitmasks for the individual assertions.
   //@{
   static const flags_t NOTHING  = 0U;
   static const flags_t SUBSUMES = 1U << 0;
