@@ -209,8 +209,9 @@ void
 maybe_abandon();
 
 //! A tag class.
-/*! Tag class to differentiate the C_Polyhedron and NNC_Polyhedron
-    constructors that build a polyhedron out of a bounding box.
+/*!
+  Tag class to differentiate the C_Polyhedron and NNC_Polyhedron
+  constructors that build a polyhedron out of a bounding box.
 */
 struct From_Bounding_Box {
 };
