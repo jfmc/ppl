@@ -94,15 +94,16 @@ PPL::Matrix::Matrix(Matrix& y, dimension_type first_stolen)
 PPL::Matrix&
 PPL::Matrix::operator=(const Matrix& y) {
   // Without the following guard against auto-assignments we would
-  // recompute the row capacity based on row size, without actually
-  // increasing the capacity of the rows.  This would lead to an
-  // inconsistent state.
+  // recompute the row capacity based on row size, possibly without
+  // actually increasing the capacity of the rows.  This would lead to
+  // an inconsistent state.
   if (this != &y) {
-    // The following assignment does nothing on auto-assignments...
+    // The following assignment may do nothing on auto-assignments...
     rows = y.rows;
     row_topology = y.row_topology;
     row_size = y.row_size;
-    // ... hence the following assignment must not be done on auto-assignments.
+    // ... hence the following assignment must not be done on
+    // auto-assignments.
     row_capacity = compute_capacity(y.row_size);
     index_first_pending = y.index_first_pending;
     sorted = y.sorted;
