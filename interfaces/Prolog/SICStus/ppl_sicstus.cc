@@ -345,10 +345,10 @@ ppl_insert_generator(void* pp, SP_term_ref t) {
   CATCH_ALL;
 }
 
-extern "C" void
-ppl_check_empty(void* pp, SP_term_ref t) {
+extern "C" long
+ppl_check_empty(void* pp) {
   try {
-    static_cast<PPL::Polyhedron*>(pp)->insert(build_generator(t));
+    return static_cast<PPL::Polyhedron*>(pp)->check_empty() ? 1 : 0;
   }
   CATCH_ALL;
 }
