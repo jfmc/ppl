@@ -61,6 +61,9 @@ removedim1_SOURCES = removedim1.cc
 removedim2_SOURCES = removedim2.cc
 removedim3_SOURCES = removedim3.cc
 
-check_PROGRAMS = $(TESTS)
+check_PROGRAMS = $(TESTS) $(BUGS)
 
 noinst_HEADERS = ehandlers.hh print.hh
+
+BUGS = bug1
+bug1_SOURCES = bug1.cc
