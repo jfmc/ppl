@@ -117,6 +117,11 @@ PWL::Watchdog::handle_timeout(int) {
   }
 }
 
+void
+PWL::PWL_handle_timeout(int signum) {
+  PWL::Watchdog::handle_timeout(signum);
+}
+
 PWL::Watchdog::Pending::iterator
 PWL::Watchdog::insert_pending(const Time& deadline,
 			      const Handler* handler,
@@ -205,7 +210,7 @@ PWL::Watchdog::initialize() {
   sigemptyset(&mask);
 
   struct sigaction s;
-  s.sa_handler = handle_timeout;
+  s.sa_handler = PWL_handle_timeout;
   s.sa_mask = mask;
   s.sa_flags = 0;  // Was SA_ONESHOT: why?
 

@@ -34,6 +34,9 @@ site: http://www.cs.unipr.it/Software/ . */
 
 namespace Parma_Watchdog_Library {
 
+// Set linkage now to declare it friend later.
+extern "C" void PWL_handle_timeout(int signum);
+
 //! A watchdog timer.
 class Watchdog {
 public:
@@ -80,6 +83,13 @@ private:
     bool operator>(const Time& y) const;
     bool operator>=(const Time& y) const;
   };
+
+  class Pending_Element;
+  friend class Pending_Element;
+  friend Time& Time::operator+=(const Time& y);
+  friend Time& Time::operator-=(const Time& y);
+  friend Time Time::operator+(const Time& y) const;
+  friend Time Time::operator-(const Time& y) const;
 
   // Different kinds of handler for the watchdog events.
   class Handler {
@@ -129,40 +139,57 @@ private:
 
   // Pass this to getitimer.
   static itimerval current_timer_status;
+
   // Get the timer value.
   static void get_timer(Time& time);
+
   // Pass this to setitimer.
   static itimerval signal_once;
+
   // Last time value we set the timer to.
   static Time last_time_requested;
+
   // Set the timer value.
   static void set_timer(const Time& time);
+
   // Stops the timer.
   static void stop_timer();
+
   // Quick reschedule to avoid race conditions.
   static void reschedule();
+
   // Used by the above.
   static Time reschedule_time;
+
   // Records the time elapsed since last fresh start.
   static Time time_so_far;
+
   // The ordered queue of pending watchdog events.
   static Pending pending;
+
   // The actual signal handler.
   static void handle_timeout(int);
+
   // Inserts a new watchdog even at the right place in pending.
   static Pending::iterator insert_pending(const Time& deadline,
 					  const Handler* handler,
 					  bool* p_expired);
+
   // Handle the addition of a new watchdog event.
   static Pending::iterator new_watchdog_event(int units,
 					      const Handler* handler,
 					      bool* p_expired);
+
   // Handle the removal of a watchdog event.
   void remove_watchdog_event(Pending::iterator position);
+
   // Whether the alarm clock is running.
   static volatile bool alarm_clock_running;
+
   // Whether we are changing data which is also changed by the signal handler.
   static volatile bool in_critical_section;
+
+  friend void Parma_Watchdog_Library::PWL_handle_timeout(int signum);
 };
 
 } // namespace Parma_Watchdog_Library
