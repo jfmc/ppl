@@ -108,10 +108,10 @@ PPL::GenSys::adjust_topology_and_dimension(Topology new_topology,
   return true;
 }
 
-// FIXME: would be worth to avoid adding closure points
+// TODO: would be worth to avoid adding closure points
 // that already are in the system of generators?
 // To do this efficiently we could sort the system and
-// performing insertions keeping its sortedness.
+// perform insertions keeping its sortedness.
 void
 PPL::GenSys::add_corresponding_closure_points() {
   assert(!is_necessarily_closed());
@@ -132,10 +132,10 @@ PPL::GenSys::add_corresponding_closure_points() {
 }
 
 
-// FIXME: would be worth to avoid adding points
+// TODO: would be worth to avoid adding points
 // that already are in the system of generators?
 // To do this efficiently we could sort the system and
-// performing insertions keeping its sortedness.
+// perform insertions keeping its sortedness.
 void
 PPL::GenSys::add_corresponding_points() {
   assert(!is_necessarily_closed());

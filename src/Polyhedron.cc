@@ -1587,7 +1587,8 @@ PPL::Polyhedron::poly_difference_assign(const Polyhedron& y) {
     return;
   }
 
-  // FIXME: This is just an executable specification.
+  // TODO: This is just an executable specification.
+  //       Have to find a more efficient method.
   if (x <= y) {
     x.set_empty();
     return;
@@ -2327,13 +2328,14 @@ PPL::Polyhedron::add_constraints(ConSys& cs) {
     // constraints to an empty polyhedron is a no-op.
     return;
 
-  // FIXME: the following instruction breaks all the
+  // TODO: the following instruction breaks all the
   // performance-keeping effort of the rows include in #ifdef BE_LAZY.
+  // If it is worth, do perform this topology adjustement inside the
+  // loop of the #ifdef BE_LAZY branch.
 
   // Adjust `cs' to the right topology and space dimension.
   // NOTE: we already checked for topology compatibility.
   cs.adjust_topology_and_dimension(topology(), space_dim);
-
 
 #ifdef BE_LAZY
   // Here we do not require `con_sys' to be sorted.
@@ -3190,10 +3192,13 @@ PPL::Polyhedron::limited_widening_CC92_assign(const Polyhedron& y,
 
   x.widening_CC92_assign(y);
 #if 1
-  // FIXME : merge_rows_assign (in the #else branch below)
-  // does not automatically adjust the topology of cs.
-  // However, by simply calling add_constraints() we will
-  // likely duplicate a big number of constraints.
+  // TODO : merge_rows_assign (in the #else branch below)
+  // does not automatically adjust the topology of cs,
+  // so that the #else branch, as it is, is not correct.
+  // However, by simply calling add_constraints() we are going
+  // to duplicate a big number of constraints.
+  // Would it be worth to provide a topology-adjusting
+  // merge_rows_assign method?
   x.add_constraints(cs);
 #else
   // The system of constraints of the resulting polyhedron is
@@ -3672,8 +3677,13 @@ PPL::Polyhedron::OK(bool check_not_empty) const {
 
 #if 0
     //=================================================
-    // FIXME : this test is wrong. However, such an invariant will
-    // hold when we will perform full-minimization of NNC polyhedra.
+    // TODO: this test is wrong in the general case.
+    // However, such an invariant does hold for a
+    // strongly-minimized GenSys.
+    // We will activate this test as soon as the Status
+    // flags will be able to remember if a system is
+    // strongly minimized.
+
     // Checking that the number of closure points is always
     // grater than the number of points.
     if (!is_necessarily_closed()) {
