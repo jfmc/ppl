@@ -44,45 +44,59 @@ site: http://www.cs.unipr.it/ppl/ . */
 */
 class Parma_Polyhedra_Library::NNC_Polyhedron : public Polyhedron {
 public:
-  //! Builds either the universe or the empty NNC polyhedron of dimension
-  //! \p num_dimensions. Both parameters are optional:
-  //! by default, a 0-dimension space universe polyhedron is built.
+  //! Builds either the universe or the empty NNC polyhedron.
+  /*!
+    Depending on the value of \p kind, builds either the universe
+    or the empty NNC polyhedron in the vector space of dimension
+    \p num_dimensions. Both parameters are optional:
+    by default, a 0-dimension space universe polyhedron is built.
+  */
   explicit NNC_Polyhedron(size_t num_dimensions = 0,
 			  Degenerate_Kind kind = UNIVERSE);
 
   //! Builds a NNC polyhedron from a system of constraints.
-  //! The polyhedron inherits the space dimension of the constraint system.
-  //! \param cs       The system of constraints defining the polyhedron.
-  //!                 It is not declared <CODE>const</CODE>
-  //!                 because it can be modified.
+  /*!
+    Builds a NNC polyhedron from a system of constraints.
+    The polyhedron inherits the space dimension of the constraint system.
+    \param cs       The system of constraints defining the polyhedron.
+                    It is not declared <CODE>const</CODE>
+                    because it can be modified.
+  */
   NNC_Polyhedron(ConSys& cs);
 
   //! Builds a NNC polyhedron from a system of generators.
-  //! The polyhedron inherits the space dimension of the generator system.
-  //! \param gs       The system of generators defining the polyhedron.
-  //!                 It is not declared <CODE>const</CODE>
-  //!                 because it can be modified.
-  //! \exception std::invalid_argument thrown if the system of generators
-  //!                                  is not empty but has no points.
+  /*!
+    Builds a NNC polyhedron from a system of generators.
+    The polyhedron inherits the space dimension of the generator system.
+    \param gs       The system of generators defining the polyhedron.
+                    It is not declared <CODE>const</CODE>
+                    because it can be modified.
+    \exception std::invalid_argument thrown if the system of generators
+                                     is not empty but has no points.
+  */
   NNC_Polyhedron(GenSys& gs);
 
   //! Builds a NNC polyhedron from the C_Polyhedron \p y.
   explicit NNC_Polyhedron(const C_Polyhedron& y);
 
-  //! Builds an NNC_Polyhedron out of a generic, interval-based bounding box.
-  //! For a description of the methods that should be provided by
-  //! the template class Box, see the documentation of the protected method:
-  //!   template <class Box>
-  //!   Polyhedron::Polyhedron(Topology topol, const Box& box);
-  //! \param box    The bounding box representing the polyhedron to be built.
-  //! \param dummy  A dummy tag to syntactically differentiate this one
-  //!               from the other constructors.
+  //! Builds an NNC polyhedron out of a generic, interval-based bounding box.
+  /*!
+    Builds an NNC polyhedron out of a generic, interval-based bounding box.
+    For a description of the methods that should be provided by
+    the template class Box, see the documentation of the protected method:
+      template <class Box>
+      Polyhedron::Polyhedron(Topology topol, const Box& box);
+    \param box    The bounding box representing the polyhedron to be built.
+    \param dummy  A dummy tag to syntactically differentiate this one
+                  from the other constructors.
+  */
   template <class Box>
   NNC_Polyhedron(const Box& box, From_Bounding_Box dummy);
 
   //! Ordinary copy-constructor.
   NNC_Polyhedron(const NNC_Polyhedron& y);
 
+  //! \brief
   //! The assignment operator.
   //! (Note that \p *this and \p y can be dimension-incompatible.)
   NNC_Polyhedron& operator=(const NNC_Polyhedron& y);

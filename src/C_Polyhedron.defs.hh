@@ -55,53 +55,71 @@ site: http://www.cs.unipr.it/ppl/ . */
 
 class Parma_Polyhedra_Library::C_Polyhedron : public Polyhedron {
 public:
-  //! Builds either the universe or the empty polyhedron of dimension
-  //! \p num_dimensions. Both parameters are optional:
-  //! by default, a 0-dimension space universe polyhedron is built.
+  //! Builds either the universe or the empty C polyhedron.
+  /*!
+    Depending on the value of \p kind, builds either the universe
+    or the empty C polyhedron in the vector space of dimension
+    \p num_dimensions. Both parameters are optional:
+    by default, a 0-dimension space universe polyhedron is built.
+  */
   explicit C_Polyhedron(size_t num_dimensions = 0,
 			Degenerate_Kind kind = UNIVERSE);
 
-  //! Builds a polyhedron from a system of constraints.
-  //! The polyhedron inherits the space dimension of the constraint system.
-  //! \param cs       The system of constraints defining the polyhedron.
-  //!                 It is not declared <CODE>const</CODE>
-  //!                 because it can be modified.
-  //! \exception std::invalid_argument thrown if the system of constraints
-  //!                                  contains strict inequalities.
+  //! Builds a C polyhedron from a system of constraints.
+  /*!
+    Builds a C polyhedron from a system of constraints.
+    The polyhedron inherits the space dimension of the constraint system.
+    \param cs       The system of constraints defining the polyhedron.
+                    It is not declared <CODE>const</CODE>
+                    because it can be modified.
+    \exception std::invalid_argument thrown if the system of constraints
+                                     contains strict inequalities.
+  */
   C_Polyhedron(ConSys& cs);
 
-  //! Builds a polyhedron from a system of generators.
-  //! The polyhedron inherits the space dimension of the generator system.
-  //! \param gs       The system of generators defining the polyhedron.
-  //!                 It is not declared <CODE>const</CODE>
-  //!                 because it can be modified.
-  //! \exception std::invalid_argument thrown if the system of generators
-  //!                                  is not empty but has no points,
-  //!                                  or if it contains closure points.
+  //! Builds a C polyhedron from a system of generators.
+  /*!
+    Builds a C polyhedron from a system of generators.
+    The polyhedron inherits the space dimension of the generator system.
+    \param gs       The system of generators defining the polyhedron.
+                    It is not declared <CODE>const</CODE>
+                    because it can be modified.
+    \exception std::invalid_argument thrown if the system of generators
+                                     is not empty but has no points,
+                                     or if it contains closure points.
+  */
   C_Polyhedron(GenSys& gs);
 
-  //! Builds a necessarily closed polyhedron from the NNC_Polyhedron \p y.
-  //! \exception std::invalid_argument thrown if the polyhedron \p y
-  //!                                  is not topologically closed.
+  //! Builds a C polyhedron from the NNC_Polyhedron \p y.
+  /*!
+    Builds a necessarily closed polyhedron from the NNC_Polyhedron \p y.
+    \exception std::invalid_argument thrown if the polyhedron \p y
+                                     is not topologically closed.
+  */
   explicit C_Polyhedron(const NNC_Polyhedron& y);
 
-  //! Builds a C_Polyhedron out of a generic, interval-based bounding box. 
-  //! For a description of the methods that should be provided by
-  //! the template class Box, see the documentation of the protected method:
-  //!   template <class Box>
-  //!   Polyhedron::Polyhedron(Topology topol, const Box& box);
-  //! \param box    The bounding box representing the polyhedron to be built.
-  //! \param dummy  A dummy tag to syntactically differentiate this one
-  //!               from the other constructors.
-  //! \exception std::invalid_argument thrown if \p box has intervals that
-  //!                                  are not topologically closed (i.e.,
-  //!                                  having some finite but open bounds).
+  //! Builds a C polyhedron out of a generic, interval-based bounding box.
+  /*!
+    Builds a necessarily closed polyhedron out of a generic,
+    interval-based bounding box.
+    For a description of the methods that should be provided by
+    the template class Box, see the documentation of the protected method:
+      template <class Box>
+      Polyhedron::Polyhedron(Topology topol, const Box& box);
+    \param box    The bounding box representing the polyhedron to be built.
+    \param dummy  A dummy tag to syntactically differentiate this one
+                 from the other constructors.
+    \exception std::invalid_argument thrown if \p box has intervals that
+                                     are not topologically closed (i.e.,
+                                     having some finite but open bounds).
+  */
   template <class Box>
   C_Polyhedron(const Box& box, From_Bounding_Box dummy);
 
   //! Ordinary copy-constructor.
   C_Polyhedron(const C_Polyhedron& y);
 
+  //! \brief
   //! The assignment operator.
   //! (Note that \p *this and \p y can be dimension-incompatible.)
   C_Polyhedron& operator=(const C_Polyhedron& y);
