@@ -46,7 +46,7 @@ namespace Parma_Polyhedra_Library {
     //! the constraint).  
     ALL_SATURATE,
     //! Some generators satisfy the given constraint (i.e. one or 
-    //! more generatordo not satisfy).  
+    //! more generators do not satisfy it).  
     SOME_SATISFY
   };
 }
