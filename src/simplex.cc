@@ -526,7 +526,7 @@ void erase_slacks(Matrix& tableau,
   // Now we can fill the new matrices, without the redundant constraints.
   for (dimension_type i = 0; i < tableau_n_rows; ++i)
     // We will insert the constraint if and if only is not redundant.
-    if (find(redundant_rows.begin(), redundant_rows.end(), i) ==
+    if (std::find(redundant_rows.begin(), redundant_rows.end(), i) ==
 	redundant_rows.end()){
 
       // We will create a new row: this will be inserted in the matrix.
