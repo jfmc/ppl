@@ -248,19 +248,19 @@ print_constraint(ppl_const_Constraint_t c, FILE* f) {
     fputc('0', f);
   switch (ppl_Constraint_type(c)) {
   case PPL_CONSTRAINT_TYPE_EQUAL:
-    printf(" = ");
+    fprintf(f, " = ");
     break;
   case PPL_CONSTRAINT_TYPE_GREATER_THAN_OR_EQUAL:
-    printf(" >= ");
+    fprintf(f, " >= ");
     break;
   case PPL_CONSTRAINT_TYPE_GREATER_THAN:
-    printf(" > ");
+    fprintf(f, " > ");
     break;
   case PPL_CONSTRAINT_TYPE_LESS_THAN_OR_EQUAL:
-    printf(" <= ");
+    fprintf(f, " <= ");
     break;
   case PPL_CONSTRAINT_TYPE_LESS_THAN:
-    printf(" < ");
+    fprintf(f, " < ");
     break;
   }
   ppl_Constraint_inhomogeneous_term(c, ppl_coeff);
@@ -290,7 +290,7 @@ add_constraints(ppl_LinExpression_t ppl_le,
 		       PPL_CONSTRAINT_TYPE_GREATER_THAN_OR_EQUAL);
     if (verbose) {
       print_constraint(ppl_c, stderr);
-      printf("\n");
+      fprintf(stderr, "\n");
     }
     ppl_ConSys_insert_Constraint(ppl_cs, ppl_c);
     ppl_delete_Constraint(ppl_c);
@@ -305,7 +305,7 @@ add_constraints(ppl_LinExpression_t ppl_le,
 		       PPL_CONSTRAINT_TYPE_LESS_THAN_OR_EQUAL);
     if (verbose) {
       print_constraint(ppl_c, stderr);
-      printf("\n");
+      fprintf(stderr, "\n");
     }
     ppl_ConSys_insert_Constraint(ppl_cs, ppl_c);
     ppl_delete_Constraint(ppl_c);
@@ -322,7 +322,7 @@ add_constraints(ppl_LinExpression_t ppl_le,
 		       PPL_CONSTRAINT_TYPE_GREATER_THAN_OR_EQUAL);
     if (verbose) {
       print_constraint(ppl_c, stderr);
-      printf("\n");
+      fprintf(stderr, "\n");
     }
     ppl_ConSys_insert_Constraint(ppl_cs, ppl_c);
     ppl_delete_Constraint(ppl_c);
@@ -336,7 +336,7 @@ add_constraints(ppl_LinExpression_t ppl_le,
     ppl_delete_LinExpression(ppl_le2);
     if (verbose) {
       print_constraint(ppl_c, stderr);
-      printf("\n");
+      fprintf(stderr, "\n");
     }
     ppl_ConSys_insert_Constraint(ppl_cs, ppl_c);
     ppl_delete_Constraint(ppl_c);
@@ -351,7 +351,7 @@ add_constraints(ppl_LinExpression_t ppl_le,
 		       PPL_CONSTRAINT_TYPE_EQUAL);
     if (verbose) {
       print_constraint(ppl_c, stderr);
-      printf("\n");
+      fprintf(stderr, "\n");
     }
     ppl_ConSys_insert_Constraint(ppl_cs, ppl_c);
     ppl_delete_Constraint(ppl_c);
@@ -382,6 +382,7 @@ solve(char* file_name) {
   mpz_t den_lcm;
   int empty;
   int unbounded;
+  int first_printed;
 
   if (print_timings)
     start_clock();
@@ -393,7 +394,7 @@ solve(char* file_name) {
   if (print_timings) {
     fprintf(stderr, "Time to read the input file: ");
     print_clock(stderr);
-    printf(" s\n");
+    fprintf(stderr, " s\n");
     start_clock();
   }
 
@@ -516,17 +517,37 @@ solve(char* file_name) {
   ppl_new_LinExpression_with_dimension(&ppl_objective_le, dimension);
   /* The inhomogeneous term is completely useless for our purpose. */
   if (verbose) {
+    first_printed = 1;
     fprintf(stderr, "Objective function:\n");
     mpz_mul(tmp_z, den_lcm, mpq_numref(objective[0]));
-    mpz_out_str(stderr, 10, tmp_z);
+    if (mpz_sgn(tmp_z) != 0) {
+      mpz_out_str(stderr, 10, tmp_z);
+      first_printed = 0;
+    }
   }
   for (i = 1; i <= dimension; ++i) {
     mpz_mul(tmp_z, den_lcm, mpq_numref(objective[i]));
+    if (verbose)
+      if (mpz_sgn(tmp_z) != 0) {
+	if (first_printed)
+	  first_printed = 0;
+	else {
+	  if (mpz_sgn(tmp_z) > 0)
+	    fprintf(stderr, "+");
+	}
+	mpz_out_str(stderr, 10, tmp_z);
+	fprintf(stderr, "*");
+	print_variable(i-1, stderr);
+      }
+
     if (!maximize)
       mpz_neg(tmp_z, tmp_z);
     ppl_assign_Coefficient_from_mpz_t(ppl_coeff, tmp_z);
     ppl_LinExpression_add_to_coefficient(ppl_objective_le, i-1, ppl_coeff);
   }
+
+  if (verbose)
+    fprintf(stderr, "\n");
 
   /* Create a ray out of the LinExpression: this points to the optimal
      direction. */
@@ -608,7 +629,8 @@ solve(char* file_name) {
 
   assert(!first_candidate);
 
-  printf("optimum = %f\n", mpq_get_d(optimum));
+  printf("Optimum value:\n%f\n", mpq_get_d(optimum));
+  printf("Optimum location:\n");
   ppl_GenSys__const_iterator_dereference(ogit, &ppl_const_g);
   ppl_Generator_divisor(ppl_const_g, ppl_coeff);
   ppl_Coefficient_to_mpz_t(ppl_coeff, tmp_z);
@@ -617,9 +639,8 @@ solve(char* file_name) {
     ppl_Generator_coefficient(ppl_const_g, i, ppl_coeff);
     ppl_Coefficient_to_mpz_t(ppl_coeff, mpq_numref(tmp1_q));
     print_variable(i, stdout);
-    printf(" = %f  ", mpq_get_d(tmp1_q));
+    printf(" = %f\n", mpq_get_d(tmp1_q));
   }
-  printf("\n");
 
   free(candidate);
 
