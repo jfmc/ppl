@@ -154,15 +154,14 @@ Determinate<PH>::concatenate_assign(const Determinate& y) {
 
 template <typename PH>
 bool
-Determinate<PH>::definitely_entails(const Determinate<PH>& y) const {
-  return y.prep->ph.contains(prep->ph);
+Determinate<PH>::definitely_entails(const Determinate& y) const {
+  return prep == y.prep || y.prep->ph.contains(prep->ph);
 }
 
 template <typename PH>
 bool
-Determinate<PH>::is_definitely_equivalent_to(const Determinate<PH>& y)
-  const {
-  return prep->ph == y.prep->ph;
+Determinate<PH>::is_definitely_equivalent_to(const Determinate& y) const {
+  return prep == y.prep || prep->ph == y.prep->ph;
 }
 
 /*! \relates Determinate */
@@ -232,14 +231,14 @@ operator<<(std::ostream& s, const Determinate<PH>& x) {
 template <typename PH>
 bool
 operator==(const Determinate<PH>& x, const Determinate<PH>& y) {
-  return x.prep->ph == y.prep->ph;
+  return prep == y.prep || x.prep->ph == y.prep->ph;
 }
 
 /*! \relates Determinate */
 template <typename PH>
 bool
 operator!=(const Determinate<PH>& x, const Determinate<PH>& y) {
-  return x.prep->ph != y.prep->ph;
+  return prep != y.prep && x.prep->ph != y.prep->ph;
 }
 
 template <typename PH>
