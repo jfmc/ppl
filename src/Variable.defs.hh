@@ -84,7 +84,7 @@ public:
   dimension_type id() const;
 
   //! Type of output functions.
-  typedef void Output_Function_Type(std::ostream& s, Variable v);
+  typedef void Output_Function_Type(std::ostream& s, const Variable& v);
 
   //! Set the output function to be used for printing Variable objects.
   static void set_output_function(Output_Function_Type* p);
@@ -113,7 +113,7 @@ private:
   static Output_Function_Type* current_output_function;
 
   //! The default output function.
-  static void default_output_function(std::ostream& s, Variable v);
+  static void default_output_function(std::ostream& s, const Variable& v);
 };
 
 #include "Variable.inlines.hh"

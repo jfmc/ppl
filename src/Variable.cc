@@ -33,7 +33,7 @@ PPL::Variable::Output_Function_Type*
 PPL::Variable::current_output_function = 0;
 
 void
-PPL::Variable::default_output_function(std::ostream& s, const Variable v) {
+PPL::Variable::default_output_function(std::ostream& s, const Variable& v) {
   dimension_type varid = v.id();
   s << static_cast<char>('A' + varid % 26);
   if (dimension_type i = varid / 26)
