@@ -28,16 +28,18 @@ site: http://www.cs.unipr.it/ppl/ . */
 #include "Constraint.defs.hh"
 #include "Generator.defs.hh"
 
-namespace Parma_Polyhedra_Library {
+namespace PPL = Parma_Polyhedra_Library;
 
-LinExpression::LinExpression(const Constraint& c)
+
+PPL::LinExpression::LinExpression(const Constraint& c)
   : Row(Row::Type(), c.space_dimension() + 1) {
   LinExpression& e = *this;
   for (size_t i = size(); i-- > 0; )
     e[i] = c[i];
 }
 
-LinExpression::LinExpression(const Generator& g)
+
+PPL::LinExpression::LinExpression(const Generator& g)
   : Row(Row::Type(), g.space_dimension() + 1) {
   LinExpression& e = *this;
   // Do not copy the divisor of `g'.
@@ -45,8 +47,9 @@ LinExpression::LinExpression(const Generator& g)
     e[i] = g[i];
 }
 
-LinExpression
-operator+(const LinExpression& e1, const LinExpression& e2) {
+
+PPL::LinExpression
+PPL::operator+(const LinExpression& e1, const LinExpression& e2) {
   size_t e1_size = e1.size();
   size_t e2_size = e2.size();
   size_t min_size;
@@ -77,16 +80,17 @@ operator+(const LinExpression& e1, const LinExpression& e2) {
   return r;
 }
 
-LinExpression
-operator+(const Integer& n, const LinExpression& e) {
+
+PPL::LinExpression
+PPL::operator+(const Integer& n, const LinExpression& e) {
   LinExpression r(e);
   r[0] += n;
   return r;
 }
 
 
-LinExpression
-operator-(const LinExpression& e) {
+PPL::LinExpression
+PPL::operator-(const LinExpression& e) {
   LinExpression r(e);
   for (size_t i = e.size(); i-- > 0; )
     negate(r[i]);
@@ -94,8 +98,8 @@ operator-(const LinExpression& e) {
 }
 
 
-LinExpression
-operator-(const LinExpression& e1, const LinExpression& e2) {
+PPL::LinExpression
+PPL::operator-(const LinExpression& e1, const LinExpression& e2) {
   size_t e1_size = e1.size();
   size_t e2_size = e2.size();
   if (e1_size > e2_size) {
@@ -127,8 +131,8 @@ operator-(const LinExpression& e1, const LinExpression& e2) {
 }
 
 
-LinExpression
-operator-(const Integer& n, const LinExpression& e) {
+PPL::LinExpression
+PPL::operator-(const Integer& n, const LinExpression& e) {
   LinExpression r(e);
   for (size_t i = e.size(); i-- > 0; )
     negate(r[i]);
@@ -138,8 +142,8 @@ operator-(const Integer& n, const LinExpression& e) {
 }
 
 
-LinExpression
-operator*(const Integer& n, const LinExpression& e) {
+PPL::LinExpression
+PPL::operator*(const Integer& n, const LinExpression& e) {
   LinExpression r(e);
   for (size_t i = e.size(); i-- > 0; )
     r[i] *= n;
@@ -147,8 +151,8 @@ operator*(const Integer& n, const LinExpression& e) {
 }
 
 
-LinExpression&
-operator+=(LinExpression& e1, const LinExpression& e2) {
+PPL::LinExpression&
+PPL::operator+=(LinExpression& e1, const LinExpression& e2) {
   size_t e1_size = e1.size();
   size_t e2_size = e2.size();
   if (e1_size >= e2_size)
@@ -164,8 +168,8 @@ operator+=(LinExpression& e1, const LinExpression& e2) {
 }
 
 
-LinExpression&
-operator+=(LinExpression& e, const Variable& v) {
+PPL::LinExpression&
+PPL::operator+=(LinExpression& e, const Variable& v) {
   size_t e_size = e.size();
   size_t vpos = v.id() + 1;
   if (e_size <= vpos) {
@@ -176,4 +180,32 @@ operator+=(LinExpression& e, const Variable& v) {
   return e;
 }
 
-} // namespace Parma_Polyhedra_Library
+
+PPL::LinExpression&
+PPL::operator-=(LinExpression& e1, const LinExpression& e2) {
+  size_t e1_size = e1.size();
+  size_t e2_size = e2.size();
+  if (e1_size >= e2_size)
+    for (size_t i = e2_size; i-- > 0; )
+      e1[i] -= e2[i];
+  else {
+    LinExpression e(e2);
+    for (size_t i = e1_size; i-- > 0; )
+      e[i] -= e1[i];
+    std::swap(e1, e);
+  }
+  return e1;
+}
+
+
+PPL::LinExpression&
+PPL::operator-=(LinExpression& e, const Variable& v) {
+  size_t e_size = e.size();
+  size_t vpos = v.id() + 1;
+  if (e_size <= vpos) {
+    LinExpression new_e(e, vpos+1);
+    std::swap(e, new_e);
+  }
+  --e[vpos];
+  return e;
+}

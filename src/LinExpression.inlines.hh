@@ -97,6 +97,12 @@ operator+=(LinExpression& e, const Integer& n) {
   return e;
 }
 
+inline LinExpression&
+operator-=(LinExpression& e, const Integer& n) {
+  e[0] -= n;
+  return e;
+}
+
 } // namespace Parma_Polyhedra_Library
 
 
