@@ -470,16 +470,21 @@ public:
   //!                                  or dimension-incompatible.
   void poly_hull_assign(const Polyhedron& y);
 
-  //! Assigns to \p *this the poly-hull of the set-theoretic difference
-  //! \p *this and \p y, minimizing the result.
+  //! Computes the poly-hull of the set-theoretic difference of
+  //! \p *this and \p y; then, if \p *this is a C_Polyhedron,
+  //! computes the topological closure of the poly-hull.
+  //! The result is minimized and assigned to \p *this.
   //! Returns <CODE>true</CODE> if and only if the result is not empty.
   //! \exception std::invalid_argument thrown if \p *this and \p y
   //!                                  are topology-incompatible
   //!                                  or dimension-incompatible.
   bool poly_difference_assign_and_minimize(const Polyhedron& y);
 
-  //! Assigns to \p *this the poly-hull of the set-theoretic difference
-  //! \p *this and \p y.  The result is not guaranteed to be minimized.
+  //! Computes the poly-hull of the set-theoretic difference of
+  //! \p *this and \p y; then, if \p *this is a C_Polyhedron,
+  //! computes the topological closure of the poly-hull.
+  //! The result, which is not guaranteed to be minimized,
+  //! is assigned to \p *this.
   //! \exception std::invalid_argument thrown if \p *this and \p y
   //!                                  are topology-incompatible
   //!                                  or dimension-incompatible.
