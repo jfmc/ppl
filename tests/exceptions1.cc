@@ -1092,7 +1092,7 @@ error38() {
     // applying the function with a linear expression with the denominator
     // equal to zero.
     Integer d = 0;
-    ph.generalized_affine_image(B, ">=", B + 2, d);
+    ph.generalized_affine_image(B, PPL_GE, B + 2, d);
   }
   catch (invalid_argument& e) {
 #if NOISY
@@ -1118,7 +1118,7 @@ error39() {
     // This is an incorrect use of function
     // C_Polyhedron::generalized_affine_image(v, expr,d): it is illegal to
     // use a variable in the expression that does not apper in the
-    ph.generalized_affine_image(A, ">=", B);
+    ph.generalized_affine_image(A, PPL_GE, B);
   }
   catch (invalid_argument& e) {
 #if NOISY
@@ -1145,86 +1145,11 @@ error40() {
     // C_Polyhedron::generalized_affine_image(v, expr, d): it is illegal to
     // apply this function to a variable that is not in the space of
     // the polyhedron.
-    ph.generalized_affine_image(B, "<=", A + 1);
+    ph.generalized_affine_image(B, PPL_LE, A + 1);
   }
   catch (invalid_argument& e) {
 #if NOISY
     cout << "invalid_variable: " << e.what() << endl << endl;
-#endif
-  }
-  catch (...) {
-    exit(1);
-  }
-}
-
-void
-error41() {
-  set_handlers();
-
-  Variable A(0);
-
-  C_Polyhedron ph(1);
-  ph.add_constraint(A >= 1);
-
-  try {
-    // This is an invalid used of the function
-    // C_Polyhedron::generalized_affine_image(v, expr, d):
-    // `>>' is an illegal relation.
-    ph.generalized_affine_image(A, ">>", A + 1);
-  }
-  catch (invalid_argument& e) {
-#if NOISY
-    cout << "invalid_relation: " << e.what() << endl << endl;
-#endif
-  }
-  catch (...) {
-    exit(1);
-  }
-}
-
-void
-error42() {
-  set_handlers();
-
-  Variable A(0);
-  
-  C_Polyhedron ph(1);
-  ph.add_constraint(A >= 1);
-
-  try {
-    // This is an invalid used of the function
-    // C_Polyhedron::generalized_affine_image(v, expr, d):
-    // `=' is an illegal relation.
-    ph.generalized_affine_image(A, "=", A + 1);
-  }
-  catch (invalid_argument& e) {
-#if NOISY
-    cout << "invalid_relation: " << e.what() << endl << endl;
-#endif
-  }
-  catch (...) {
-    exit(1);
-  }
-}
-
-void
-error43() {
-  set_handlers();
-
-  Variable A(0);
-
-  C_Polyhedron ph(1);
-  ph.add_constraint(A >= 1);
-
-  try {
-    // This is an invalid used of the function
-    // C_Polyhedron::generalized_affine_image(v, expr, d):
-    // `<<' is an illegal relation.
-    ph.generalized_affine_image(A, "<<", A + 1);
-  }
-  catch (invalid_argument& e) {
-#if NOISY
-    cout << "invalid_relation: " << e.what() << endl << endl;
 #endif
   }
   catch (...) {
@@ -1275,9 +1200,6 @@ main() {
   error38();
   error39();
   error40();
-  error41();
-  error42();
-  error43();
 
   return 0;
 }

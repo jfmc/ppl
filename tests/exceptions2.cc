@@ -1021,10 +1021,10 @@ error31() {
   ph.add_constraint(A >= 1);
 
   try {
-    // This is an invalid used of the function
+    // This is an invalid use of the function
     // C_Polyhedron::generalized_affine_image(v, expr, d):
-    // `>' is an illegal relation for necessarily closed polyhedron.
-    ph.generalized_affine_image(A, ">", A + 1);
+    // `PPL_GT' is an illegal relation for necessarily closed polyhedron.
+    ph.generalized_affine_image(A, PPL_GT, A + 1);
   }
   catch (invalid_argument& e) {
 #if NOISY
