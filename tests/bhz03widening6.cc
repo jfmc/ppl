@@ -111,6 +111,8 @@ test1() {
     exit(1);
 }
 
+// This tests the first case of the widening definition when the widening
+// does nothing as the lgo for the polyhull is decreasing.
 static void
 test2() {
   C_Polyhedron p1(2);
@@ -184,6 +186,9 @@ test2() {
     exit(1);
 }
 
+// This tests the first case of the widening definition when the widening
+// does nothing; the polyhull is stable with respect to the certificate
+// and the multiset ordering for this certificate is decreasing.
 static void
 test3() {
   C_Polyhedron p1(2);
