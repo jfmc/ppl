@@ -589,7 +589,7 @@ ppl_new_NNC_Polyhedron_empty_from_dimension(Prolog_term_ref t_ph, Prolog_term_re
 
 extern "C" Prolog_foreign_return_type
 ppl_new_C_Polyhedron_from_C_Polyhedron(
-          Prolog_term_ref t_source, Prolog_term_ref t_ph) {
+          Prolog_term_ref t_ph, Prolog_term_ref t_source) {
   try {
     const PPL::C_Polyhedron* source_ph
       = static_cast<const PPL::C_Polyhedron*>(get_ph_pointer(t_source));
@@ -613,7 +613,7 @@ ppl_new_C_Polyhedron_from_C_Polyhedron(
 
 extern "C" Prolog_foreign_return_type
 ppl_new_C_Polyhedron_from_NNC_Polyhedron(
-          Prolog_term_ref t_source, Prolog_term_ref t_ph) {
+          Prolog_term_ref t_ph, Prolog_term_ref t_source) {
   try {
     const PPL::C_Polyhedron* source_ph
       = static_cast<const PPL::C_Polyhedron*>(get_ph_pointer(t_source));
@@ -636,7 +636,7 @@ ppl_new_C_Polyhedron_from_NNC_Polyhedron(
 
 extern "C" Prolog_foreign_return_type
 ppl_new_NNC_Polyhedron_from_C_Polyhedron(
-          Prolog_term_ref t_source, Prolog_term_ref t_ph) {
+          Prolog_term_ref t_ph, Prolog_term_ref t_source) {
   try {
     const PPL::C_Polyhedron* source_ph
       = static_cast<const PPL::C_Polyhedron*>(get_ph_pointer(t_source));
@@ -659,7 +659,7 @@ ppl_new_NNC_Polyhedron_from_C_Polyhedron(
 
 extern "C" Prolog_foreign_return_type
 ppl_new_NNC_Polyhedron_from_NNC_Polyhedron(
-          Prolog_term_ref t_source, Prolog_term_ref t_ph) {
+          Prolog_term_ref t_ph, Prolog_term_ref t_source) {
   try {
     const PPL::NNC_Polyhedron* source_ph
       = static_cast<const PPL::NNC_Polyhedron*>(get_ph_pointer(t_source));
