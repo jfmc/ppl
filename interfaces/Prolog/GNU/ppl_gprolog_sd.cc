@@ -21,10 +21,11 @@ USA.
 For the most up-to-date information see the Parma Polyhedra Library
 site: http://www.cs.unipr.it/ppl/ . */
 
-#include "ppl_install.hh"
+#include <config.h>
+
+#include "Integer.defs.hh"
 #include <gprolog.h>
 #include <cassert>
-#include <climits>
 
 typedef PlTerm Prolog_term_ref;
 typedef int Prolog_atom;
@@ -42,7 +43,6 @@ namespace PPL = Parma_Polyhedra_Library;
 static inline Prolog_term_ref
 Prolog_new_term_ref() {
   return 0;
-  //return Mk_Variable();
 }
 
 /*!

@@ -32,7 +32,9 @@ EXTRA_DIST = ppl_swiprolog.cc pl_clpq.cc pl_clpq.pl
 
 if HAVE_SWI_PROLOG
 
-AM_CPPFLAGS = -I$(top_builddir)/src @extra_includes@
+AM_CPPFLAGS = \
+-I$(top_srcdir)/src @extra_includes@ \
+-DPPL_INTERNAL=public -DPPL_HIDDEN=public @extra_cpp_flags@
 
 pkglib_LTLIBRARIES = libppl_swiprolog.la
 libppl_swiprolog_la_SOURCES = ppl_swiprolog.cc

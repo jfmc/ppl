@@ -21,11 +21,11 @@ USA.
 For the most up-to-date information see the Parma Polyhedra Library
 site: http://www.cs.unipr.it/ppl/ . */
 
-#include "ppl_install.hh"
+#include <config.h>
+
+#include "Integer.defs.hh"
 #include <sicstus/sicstus.h>
 #include <cassert>
-
-namespace PPL = Parma_Polyhedra_Library;
 
 typedef SP_term_ref Prolog_term_ref;
 typedef SP_atom Prolog_atom;
@@ -34,6 +34,8 @@ static const Prolog_foreign_return_type PROLOG_SUCCESS = SP_SUCCESS;
 static const Prolog_foreign_return_type PROLOG_FAILURE = SP_FAILURE;
 
 #include "../exceptions.hh"
+
+namespace PPL = Parma_Polyhedra_Library;
 
 /*!
   Return a new term reference.

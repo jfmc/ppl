@@ -21,17 +21,14 @@ USA.
 For the most up-to-date information see the Parma Polyhedra Library
 site: http://www.cs.unipr.it/ppl/ . */
 
-#include "ppl_install.hh"
-// YAP 4.3.20 misses the `extern "C"' wrapper.
-#define template templ
+#include <config.h>
+
+#include "Integer.defs.hh"
+// YAP 4.3.20 and 4.3.22 miss the `extern "C"' wrapper.
 extern "C" {
 #include <Yap/c_interface.h>
 }
-#undef template
 #include <cassert>
-
-#define GNU 1
-#define PARANOID 1
 
 typedef Term Prolog_term_ref;
 typedef Atom Prolog_atom;

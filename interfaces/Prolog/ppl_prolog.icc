@@ -21,7 +21,13 @@ USA.
 For the most up-to-date information see the Parma Polyhedra Library
 site: http://www.cs.unipr.it/ppl/ . */
 
-#include "ppl_install.hh"
+#include "BoundingBox.defs.hh"
+#include "Constraint.defs.hh"
+#include "Generator.defs.hh"
+#include "LinExpression.defs.hh"
+#include "Polyhedron.defs.hh"
+#include "C_Polyhedron.defs.hh"
+#include "NNC_Polyhedron.defs.hh"
 #include <exception>
 #include <stdexcept>
 #include <sstream>

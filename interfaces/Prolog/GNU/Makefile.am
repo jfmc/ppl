@@ -32,7 +32,9 @@ EXTRA_DIST = ppl_gprolog_sd.cc ppl_gprolog.pl gp_clpq.pl
 
 if HAVE_GNU_PROLOG
 
-AM_CPPFLAGS = -I$(top_builddir)/src @extra_includes@
+AM_CPPFLAGS = \
+-I$(top_srcdir)/src @extra_includes@ \
+-DPPL_INTERNAL=public -DPPL_HIDDEN=public @extra_cpp_flags@
 
 bin_PROGRAMS = ppl_gprolog
 ppl_gprolog_SOURCES =

@@ -32,7 +32,9 @@ EXTRA_DIST = ppl_yap.pl yap_clpq.pl
 
 if HAVE_YAP_PROLOG
 
-AM_CPPFLAGS = -I$(top_builddir)/src @extra_includes@
+AM_CPPFLAGS = \
+-I$(top_srcdir)/src @extra_includes@ \
+-DPPL_INTERNAL=public -DPPL_HIDDEN=public @extra_cpp_flags@
 
 pkglib_LTLIBRARIES = ppl_yap.la
 ppl_yap_la_SOURCES = ppl_yap.cc

@@ -32,7 +32,9 @@ EXTRA_DIST = ppl_sicstus_sd.cc ppl_sicstus.pl sp_clpq.pl
 
 if HAVE_SICSTUS_PROLOG
 
-AM_CPPFLAGS = -I$(top_builddir)/src @extra_includes@
+AM_CPPFLAGS = \
+-I$(top_srcdir)/src @extra_includes@ \
+-DPPL_INTERNAL=public -DPPL_HIDDEN=public @extra_cpp_flags@
 
 bin_PROGRAMS = ppl_sicstus
 ppl_sicstus_SOURCES =
