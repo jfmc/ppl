@@ -3754,7 +3754,7 @@ PPL::Polyhedron::BBRZ02_widening_assign(const Polyhedron& y) {
       }
     }
   }
-  
+
   // We "average" the directions of all the rays that belong to
   // `valid_rays' and then we add the new ray to the system of
   // generators of `x'.
@@ -3770,7 +3770,7 @@ PPL::Polyhedron::BBRZ02_widening_assign(const Polyhedron& y) {
     GenSys avg_ray;
     avg_ray.insert(ray(e));
     x.add_generators_and_minimize(avg_ray);
-
+  
     // Check for stabilization.
     if (is_BBRZ02_stabilizing(x, y)) {
 #ifndef NDEBUG
@@ -3781,19 +3781,21 @@ PPL::Polyhedron::BBRZ02_widening_assign(const Polyhedron& y) {
       return;
     }
   }
-  else {
-    // If there is not stabilization adding only a ray,
-    // we add all the valid rays to `x' and
-    // check for stabilization (which requires minimization).
-    x.add_generators_and_minimize(valid_rays);
-    if (is_BBRZ02_stabilizing(x, y)) {
+
+  // At this point there is not stabilization adding only a ray
+  // or the ray that we have obtained has all homogeneous terms
+  // equal to zero, we add all the valid rays to `x' and
+  // check for stabilization (which requires minimization).
+  x.add_generators_and_minimize(valid_rays);
+
+  // Check for stabilization.
+  if (is_BBRZ02_stabilizing(x, y)) {
 #ifndef NDEBUG
-      std::cout << "BBRZ02: stabilizing on the second case of 2nd technique"
-		<< std::endl;
+    std::cout << "BBRZ02: stabilizing on the second case of 2nd technique"
+	      << std::endl;
 #endif
-      assert(OK(true));
-      return;
-    }
+    assert(OK(true));
+    return;
   }
 
   // ****************
