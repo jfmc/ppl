@@ -27,7 +27,7 @@ site: http://www.cs.unipr.it/ppl/ . */
 #include "PowerSet.types.hh"
 #include "LCompare.defs.hh"
 #include <iosfwd>
-#include <set>
+#include <list>
 
 namespace Parma_Polyhedra_Library {
 
@@ -74,13 +74,15 @@ operator<<(std::ostream&, const PowerSet<CS>&);
 template <class CS>
 class Parma_Polyhedra_Library::PowerSet {
 public:
-  inline PowerSet();
+  //! Creates an empty (bottom) PowerSet.
+  PowerSet();
 
-  PowerSet& inject(const CS& x);
+  //! Injects \p y into \p *this.
+  PowerSet& inject(const CS& y);
 
-  inline PowerSet& bottom();
+  //! Assign to \p *this an upper bound of \p y and \p *this itself.
+  void upper_bound_assign(const PowerSet& y);
 
-  inline PowerSet& operator += (const PowerSet& y);
   inline PowerSet& operator *= (const PowerSet& y);
   inline PowerSet& operator <<= (const Variable n);
   inline PowerSet& hide_assign(const Variable n);
@@ -104,19 +106,24 @@ public:
   friend std::ostream& operator <<<>(std::ostream& s, const PowerSet& x);
 
 private:
-  typedef LCompare<CS> Less;
-  typedef std::set<CS, Less> Container;
+  typedef std::list<CS> Sequence;
+  typedef typename Sequence::const_reference const_reference;
 
 public:
-  typedef typename Container::const_iterator const_iterator;
-  typedef typename Container::value_type value_type;
+  typedef typename Sequence::iterator iterator;
+  typedef typename Sequence::const_iterator const_iterator;
+  typedef typename Sequence::value_type value_type;
 
   size_t size() const;
+
+  iterator begin();
   const_iterator begin() const;
+
+  iterator end();
   const_iterator end() const;
 
 
-  Container container;
+  Sequence sequence;
 
   void omega_reduction();
 };

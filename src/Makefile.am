@@ -197,7 +197,16 @@ Poly_Gen_Relation.defs.hh \
 Polyhedron.defs.hh \
 C_Polyhedron.defs.hh \
 NNC_Polyhedron.defs.hh \
-globals.hh
+globals.hh \
+Determinate.types.hh \
+Determinate.defs.hh \
+Determinate.inlines.hh \
+AskTell.types.hh \
+AskTell.defs.hh \
+AskTell.inlines.hh \
+PowerSet.types.hh \
+PowerSet.defs.hh \
+PowerSet.inlines.hh
 
 libppl_la_LDFLAGS = \
 -version-info $(LIBPPL_LT_CURRENT):$(LIBPPL_LT_REVISION):$(LIBPPL_LT_AGE)

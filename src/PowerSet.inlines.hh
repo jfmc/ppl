@@ -29,21 +29,33 @@ site: http://www.cs.unipr.it/ppl/ . */
 namespace Parma_Polyhedra_Library {
 
 template <class CS>
+typename PowerSet<CS>::iterator
+PowerSet<CS>::begin() {
+  return sequence.begin();
+}
+
+template <class CS>
 typename PowerSet<CS>::const_iterator
 PowerSet<CS>::begin() const {
-  return container.begin();
+  return sequence.begin();
+}
+
+template <class CS>
+typename PowerSet<CS>::iterator
+PowerSet<CS>::end() {
+  return sequence.end();
 }
 
 template <class CS>
 typename PowerSet<CS>::const_iterator
 PowerSet<CS>::end() const {
-  return container.end();
+  return sequence.end();
 }
 
 template <class CS>
 size_t
 PowerSet<CS>::size() const {
-  return container.size();
+  return sequence.size();
 }
 
 template <class CS>
@@ -52,59 +64,47 @@ PowerSet<CS>::PowerSet() {
 
 template <class CS>
 void PowerSet<CS>::omega_reduction() {
-  const_iterator xi, yi, yin;
-  for (xi = begin(); xi != end(); ++xi) {
-    value_type xv = *xi;
-    for (yi = xi, ++yi; yi != end(); yi = yin) {
-      yin = yi;
+  iterator xi, xin, yi, yin;
+  for (xi = xin = begin(); xi != end(); xi = xin) {
+    ++xin;
+    const CS& xv = *xi;
+    for (yi = yin = begin(); yi != end(); yi = yin) {
       ++yin;
-      if (entails(*yi, xv))
-	container.erase(yi);
+      if (xi == yi)
+	continue;
+      const CS& yv = *yi;
+      if (entails(yv, xv))
+	sequence.erase(yi);
+      else if (entails(xv, yv)) {
+	sequence.erase(xi);
+	break;
+      }
     }
   }
 }
 
-// Injection
-
 template <class CS>
 PowerSet<CS>& PowerSet<CS>::inject(const CS& x) {
   if (!x.is_bottom()) {
-    container.insert(x);
+    sequence.push_back(x);
     omega_reduction();
   }
   return *this;
 }
 
-// Bottom
-
 template <class CS>
-inline
-PowerSet<CS>& PowerSet<CS>::bottom() {
-  erase(begin(), end());
-  return *this;
-}
-
-// Entailment
-
-template <class CS>
-bool entails(const PowerSet<CS>& x, const PowerSet<CS>& y) {
-  if (x.size() == 1 && y.size() == 1)
-    return entails(*(x.begin()), *(y.begin())) ;
-  else {
-    typename PowerSet<CS>::const_iterator xi, yi;
-    bool found;
-    found = true;
-    for (xi = x.begin(); found && xi != x.end(); ++xi) {
-      found = false;
-      for (yi = y.begin(); (!found) && yi != y.end(); ++yi) {
-	found = entails(*xi, *yi);
-      }
-    }
-    return found;
+bool
+entails(const PowerSet<CS>& x, const PowerSet<CS>& y) {
+  bool found = true;
+  for (typename PowerSet<CS>::const_iterator xi = x.begin(),
+	 xend = x.end(); found && xi != xend; ++xi) {
+    found = false;
+    for (typename PowerSet<CS>::const_iterator yi = y.begin(),
+	   yend = y.end(); !found && yi != yend; ++yi)
+      found = entails(*xi, *yi);
   }
+  return found;
 }
-
-// Equality
 
 template <class CS>
 inline
@@ -134,7 +134,7 @@ PowerSet<CS>::is_top() const {
 template <class CS>
 inline bool
 PowerSet<CS>::is_bottom() const {
-  return container.empty();
+  return sequence.empty();
 }
 
 // Projection
@@ -166,7 +166,7 @@ operator*(const PowerSet<CS>& x, const PowerSet<CS>& y) {
     for (yi = y.begin(); yi != y.end(); ++yi) {
       CS zi = *xi * *yi;
       if (!zi.is_bottom())
-	z.container.insert(zi);
+	z.sequence.push_back(zi);
     }
   }
   z.omega_reduction();
@@ -185,28 +185,10 @@ PowerSet<CS>::operator*=(const PowerSet<CS>& y) {
 // Join operator
 
 template <class CS>
-inline
-PowerSet<CS>&
-PowerSet<CS>::operator+=(const PowerSet<CS>& y) {
-  if (this != &y) {
-    const_iterator xi, yi;
-    xi = begin();
-    yi = y.begin();
-    while (xi != end() && yi != y.end()) {
-      if (lcompare(*xi, *yi))
-	xi++;
-      else if (lcompare(*yi, *xi))
-	container.insert(xi, *yi++);
-      else {
-	xi++;
-	yi++;
-      }
-    }
-    while (yi != y.end())
-      container.insert(end(), *yi++);
-  }
+void
+PowerSet<CS>::upper_bound_assign(const PowerSet<CS>& y) {
+  std::copy(y.begin(), y.end(), back_inserter(sequence));
   omega_reduction();
-  return *this;
 }
 
 // Hiding
