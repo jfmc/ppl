@@ -62,16 +62,16 @@ ERational::direction_of_infinity() const {
   return e;
 }
 
-inline Integer
+inline Integer_traits::const_reference
 ERational::numerator() const {
   assert(e == 0);
-  return Integer(v.get_num());
+  return v.get_num();
 }
 
-inline Integer
+inline Integer_traits::const_reference
 ERational::denominator() const {
   assert(e == 0);
-  return Integer(v.get_den());
+  return v.get_den();
 }
 
 /*! \relates ERational */

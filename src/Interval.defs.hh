@@ -132,13 +132,13 @@ public:
   /*!
     The result is undefined if \p *this represents an infinity.
   */
-  Integer numerator() const;
+  Integer_traits::const_reference numerator() const;
 
   //! Returns the denominator of the canonical form for \p *this.
   /*!
     The result is undefined if \p *this represent an infinity.
   */
-  Integer denominator() const;
+  Integer_traits::const_reference denominator() const;
 
   friend bool
   Parma_Polyhedra_Library::operator==(const ERational& x, const ERational& y);
