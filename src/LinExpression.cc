@@ -26,8 +26,6 @@ site: http://www.cs.unipr.it/ppl/ . */
 
 #include "LinExpression.defs.hh"
 
-namespace PPL = Parma_Polyhedra_Library;
-
 namespace Parma_Polyhedra_Library {
 
 LinExpression
@@ -161,7 +159,5 @@ operator +=(LinExpression& e, const Variable& v) {
   ++e[vpos];
   return e;
 }
-
-LinExpression LinExpression::zero = LinExpression();
 
 } // namespace Parma_Polyhedra_Library

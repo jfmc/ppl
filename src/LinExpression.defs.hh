@@ -105,7 +105,7 @@ public:
   LinExpression(const Variable& v);
 
   // Constant.
-  static LinExpression zero;
+  static const LinExpression& zero();
 
 private:
   //! Implementation sizing constructor.
