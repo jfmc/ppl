@@ -150,6 +150,25 @@ PPL::SatMatrix::resize(size_t new_num_rows, size_t new_num_columns) {
   assert(OK());
 }
 
+
+/*!
+  Erases the columns from the \p first_to_erase -th to the last one.
+*/
+void
+PPL::SatMatrix::columns_erase_to_end(size_t first_to_erase) {
+  // The first column to be erased cannot be greater
+  // than the actual number of the columns of the matrix.
+  assert(first_to_erase <= row_size);
+  if (first_to_erase < row_size) {
+    SatMatrix& x = *this;
+    for (size_t i = x.num_rows(); i-- > 0; )
+      x[i].clear_from(first_to_erase);
+    row_size = first_to_erase;
+  }
+  assert(OK());
+}
+
+
 /*!
   Returns <CODE>true</CODE> if and only if \p x is identical
   to \p y.

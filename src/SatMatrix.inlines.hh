@@ -62,18 +62,6 @@ SatMatrix::rows_erase_to_end(size_t first_to_erase) {
 }
 
 /*!
-  Erases the columns from the \p first_to_erase -th to the last one.
-*/
-inline void
-SatMatrix::columns_erase_to_end(size_t first_to_erase) {
-  // The first column to be erased cannot be greater
-  // than the actual number of the columns of the matrix.
-  assert(first_to_erase <= row_size);
-  row_size = first_to_erase;
-  assert(OK());
-}
-
-/*!
   Swaps \p *this with \p y.
 */
 inline void
