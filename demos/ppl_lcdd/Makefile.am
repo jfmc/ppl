@@ -36,6 +36,8 @@ ppl_lcdd_LDADD = \
 $(top_builddir)/src/libppl.la \
 @extra_libraries@
 
+EXTRA_DIST = expected
+
 if HAVE_MD5SUM
 
 TOUGH_EXAMPLES = \
