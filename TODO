@@ -36,6 +36,16 @@ Enhancements for PPL 0.6
 - Turn h79widening6 into a proper test.
 
 
+Portability
+===========
+
+- Explain how to compile with Comeau C/C++ compiler: first compile
+  configuring it with a command like
+
+    CXX=como /usr/local/distrib/gmp-4.1.2/configure --enable-cxx \
+        --disable-shared --prefix=/usr/local/lib/como433/local 
+
+
 Constructions on Polyhedra
 ==========================
 
