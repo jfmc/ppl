@@ -79,7 +79,7 @@ Standards for Documenting the Project with Doxygen
        ...
      };
 
-   If the comment is multi-line, then either one of the following
+   If the comment is multi-line, then either of the following
    syntax can be adopted:
 
      //! \brief
@@ -149,7 +149,7 @@ Standards for Documenting the Project with Doxygen
    If more than two lines are required, then the comment should be
    split into a brief part and a detailed part.
 
-7) Code entities or details that should not be visible by the end-user
+7) Code entities or details that should not be visible to the end-user
    (but that are useful for the developers) should be surrounded by
 
      #ifdef PPL_DOXYGEN_INCLUDE_IMPLEMENTATION_DETAILS
@@ -193,7 +193,7 @@ Standards for Documenting the Project with Doxygen
    If <classname> is a templatic class, the arguments of the template
    (as well as the angle brackets) should be omitted.
    The namespace qualification of the class can be omitted, provided
-   the comment block is included into the namespace scope.
+   the comment block is included in the namespace scope.
 
 10)
   If the \return or \param special commands are used, then these have to
