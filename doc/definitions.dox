@@ -1199,7 +1199,7 @@ represented by a potentially redundant sequence of disjuncts.
 Redundancies can be eliminated by explicitly invoking the operator
 <CODE>omega_reduce()</CODE>, e.g., before performing the output of a
 powerset element. Note that all the documented operators automatically
-perform reductions of their arguments, when needed or appropriate.
+perform reductions on their arguments, when needed or appropriate.
 
 \section ps_operations Operations on the Powerset Construction
 
