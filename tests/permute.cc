@@ -123,6 +123,11 @@ fix_point(Polyhedron& start, Polyhedron& induct, Polyhedron& finish,
 #if NOISY
     print_constraints(current, "*** after convex_hull_assign ***");
 #endif
+    current.widening_assign(previous);
+#if NOISY
+    print_constraints(current, "*** after widening_assign ***");
+#endif
+
   } while (current != previous);
   finish = current;
 }
@@ -170,8 +175,8 @@ permute_init(Polyhedron& base, Polyhedron& inductive, Polyhedron& expected,
   //                 E = [X|G], F = A, append(D,E,F),
   //                 D = H, I = G, append(H,I,J),
   //                 K = J, L = C, permute(K,L).
-  inductive.insert(B >= C + 1);
-  inductive.insert(E >= G + 1);
+  inductive.insert(B == C + 1);
+  inductive.insert(E == G + 1);
   inductive.insert(F == A);
   Polyhedron ph_append;
   append_size_rel(ph_append);
@@ -188,7 +193,7 @@ permute_init(Polyhedron& base, Polyhedron& inductive, Polyhedron& expected,
   print_constraints(inductive, "*** inductive ***");
 #endif
 
-  // expected.insert(A == B);
+  expected.insert(A == B);
   expected.insert(A >= 0);
   expected.insert(B >= 0);
 }
