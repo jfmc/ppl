@@ -31,9 +31,7 @@ using namespace Parma_Polyhedra_Library::IO_Operators;
 #define NOISY 0
 #endif
 
-typedef Determinate<C_Polyhedron> DCS;
-
-typedef PowerSet<DCS> PCS;
+typedef Polyhedra_PowerSet<C_Polyhedron> PCS;
 
 int
 main() TRY {
@@ -50,30 +48,14 @@ main() TRY {
   ph2.add_constraint(x >= 102);
   ph2.add_constraint(y == x-10);
 
-  DCS d1(ph1);
-#if NOISY
-  cout << d1 << endl;
-#endif
-
-  DCS d2(ph2);
-#if NOISY
-  cout << d2 << endl;
-#endif
-
-  DCS d3 = d1;
-  d3.upper_bound_assign(d2);
-#if NOISY
-  cout << d3 << endl;
-#endif
-
-  PCS p1(2);
-  p1.add_disjunct(d1);
+  PCS p1(2, Polyhedron::EMPTY);
+  p1.add_disjunct(ph1);
 #if NOISY
   cout << p1 << endl;
 #endif
 
-  PCS p2(2);
-  p2.add_disjunct(d2);
+  PCS p2(2, Polyhedron::EMPTY);
+  p2.add_disjunct(ph2);
 #if NOISY
   cout << p2 << endl;
 #endif

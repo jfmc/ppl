@@ -35,7 +35,7 @@ int
 main() TRY {
   set_handlers();
 
-  typedef PowerSet<Determinate<C_Polyhedron> > PSet;
+  typedef Polyhedra_PowerSet<C_Polyhedron> PSet;
 
   Variable A(0);
   Variable B(1);
@@ -77,7 +77,7 @@ main() TRY {
   ps1_9.add_constraint(A - B >= -12);
   ps1_9.add_constraint(A >= 2);
 
-  PSet ps1(2, false);
+  PSet ps1(2, Polyhedron::EMPTY);
   ps1.add_disjunct(ps1_1);
   ps1.add_disjunct(ps1_2);
   ps1.add_disjunct(ps1_3);
@@ -105,7 +105,7 @@ main() TRY {
   ps2_4.add_constraint(A - B >= -16);
   ps2_4.add_constraint(A >= 3);
 
-  PSet ps2(2, false);
+  PSet ps2(2, Polyhedron::EMPTY);
   ps2.add_disjunct(ps2_1);
   ps2.add_disjunct(ps2_2);
   ps2.add_disjunct(ps2_3);
@@ -119,7 +119,7 @@ main() TRY {
        << ps2 << endl;
 #endif
 
-  H79_widening_assign(ps1, ps2, 5);
+  ps1.H79_widening_assign(ps2, 5);
 
 #if 0
   C_Polyhedron known_result;
