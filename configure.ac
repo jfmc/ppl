@@ -12,7 +12,7 @@ dnl Process this file with autoconf to produce a configure script.
 
 AC_INIT(README)
 dnl Minimum autoconf version required.
-AC_PREREQ(2.12)
+AC_PREREQ(2.52e)
 
 dnl Every other copy of the package version number gets its value from here
 AM_INIT_AUTOMAKE(ppl, 0.2-pre1)
