@@ -209,10 +209,11 @@ new_universe :-
   new_universe(c, A >= 0), new_universe(nnc, A > 0).
 
 new_universe(T, Con) :-
+  \+ ppl_new_Polyhedron_from_dimension(T, 3, 0),
   ppl_new_Polyhedron_from_dimension(T, 3, P),
   ppl_Polyhedron_check_universe(P),
   ppl_Polyhedron_add_constraint(P, Con),
-  \+ppl_Polyhedron_check_universe(P),
+  \+ ppl_Polyhedron_check_universe(P),
   ppl_delete_Polyhedron(P).
 
 % Tests new_Polyhedron_empty_from_dimension for C and NNC Polyhedron.
@@ -220,10 +221,11 @@ new_empty :-
   new_empty(c), new_empty(nnc).
 
 new_empty(T) :-
+  \+  ppl_new_Polyhedron_empty_from_dimension(T, 3, 0),
   ppl_new_Polyhedron_empty_from_dimension(T, 3, P),
   ppl_Polyhedron_check_empty(P),
   ppl_Polyhedron_add_generator(P,point(0)),
-  \+ppl_Polyhedron_check_empty(P),
+  \+ ppl_Polyhedron_check_empty(P),
   ppl_delete_Polyhedron(P).
 
 % Tests ppl_Polyhedron_from_Polyhedron for C and NNC polyhedra.
@@ -235,6 +237,7 @@ copy :-
 % This also uses ppl_new_Polyhedron_from_constraints.
 copy(T1, T2) :-
   ppl_new_Polyhedron_from_dimension(T1, 3, P1),
+  \+ ppl_new_Polyhedron_from_Polyhedron(T1, P1, T2, 0),
   ppl_new_Polyhedron_from_Polyhedron(T1, P1, T2, P2),
   ppl_new_Polyhedron_from_Polyhedron(T2, P2, T1, P1a),
   ppl_Polyhedron_equals_Polyhedron(P1, P1a),
@@ -268,9 +271,10 @@ new_poly_from_cons :-
 
 new_poly_from_cons(T, CS) :-
   ppl_new_Polyhedron_from_constraints(T, [], P),
+  \+ ppl_new_Polyhedron_from_constraints(T, [], 0),
   ppl_Polyhedron_check_universe(P),
   ppl_new_Polyhedron_from_constraints(T, CS, Pa),
-  \+ppl_Polyhedron_check_universe(Pa),
+  \+ ppl_Polyhedron_check_universe(Pa),
   ppl_delete_Polyhedron(P),
   ppl_delete_Polyhedron(Pa).
 
@@ -281,10 +285,11 @@ new_poly_from_gens :-
   new_poly_from_gens(nnc,  [point(A + B + C), closure_point(A + B + C)]).
 
 new_poly_from_gens(T, GS) :-
+  \+ ppl_new_Polyhedron_from_generators(T, [], 0),
   ppl_new_Polyhedron_from_generators(T, [], P),
   ppl_Polyhedron_check_empty(P),
   ppl_new_Polyhedron_from_generators(T, GS, Pa),
-  \+ppl_Polyhedron_check_empty(Pa),
+  \+ ppl_Polyhedron_check_empty(Pa),
   ppl_delete_Polyhedron(P),
   ppl_delete_Polyhedron(Pa).
 
@@ -297,6 +302,7 @@ new_poly_from_bounding_box :-
   new_poly_from_bounding_box(nnc, [i(c(Max), c(1)), i(c(-1), c(1))]).
 
 new_poly_from_bounding_box(T, Box) :-
+  \+ ppl_new_Polyhedron_from_bounding_box(T, Box, 0),
   ppl_new_Polyhedron_from_bounding_box(T, Box, P),
   ppl_Polyhedron_get_bounding_box(P, any, Box1),
   ppl_new_Polyhedron_from_bounding_box(T, Box1, P1),
@@ -1436,6 +1442,7 @@ time_out(T) :-
         -5*A + 5*B + 8*C + D + E - 6*F >= -6],
   ppl_new_Polyhedron_from_dimension(T, 6, Q),
   ppl_set_timeout_exception_atom(pl_time_out),
+  \+  ppl_timeout_exception_atom(pl_x),
   ppl_timeout_exception_atom(pl_time_out),
   N1 = 1,
   ppl_set_timeout(N1),

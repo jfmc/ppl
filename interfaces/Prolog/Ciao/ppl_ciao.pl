@@ -105,47 +105,87 @@ site: http://www.cs.unipr.it/ppl/ . */
 
 :- true pred ppl_finalize + foreign.
 
-:- true pred ppl_set_timeout_exception_atom(in(Atom))
-  :: any_term + foreign.
 
-:- true pred ppl_timeout_exception_atom(in(Term))
-  :: any_term + foreign.
+:- true pred ppl_set_timeout_exception_atom(in(Atom))
+             :: any_term + foreign.
+
+:- true pred ppl_timeout_exception_atom_2(in(Atom),
+                                     go(Success))
+  :: any_term * int
+  + (returns(Success), foreign(ppl_timeout_exception_atom)).
+
+ppl_timeout_exception_atom(Atom) :-
+   ppl_timeout_exception_atom_2(Atom, 1).
 
 :- true pred ppl_set_timeout(in(Time))
-  :: any_term + foreign.
+             :: any_term + foreign.
 
 :- true pred ppl_reset_timeout + foreign.
 
-:- true pred ppl_new_Polyhedron_from_dimension(in(Kind),
+:- true pred ppl_new_Polyhedron_from_dimension_2(in(Kind),
                                                in(Dimension),
-                                               in(Handle))
-  :: any_term * any_term * any_term + foreign.
+                                               in(Handle),
+                                               go(Success))
+  :: any_term * any_term * any_term * int
+  + (returns(Success), foreign(ppl_new_Polyhedron_from_dimension)).
 
-:- true pred ppl_new_Polyhedron_empty_from_dimension(in(Kind),
-                                                     in(Dimension),
-                                                     in(Handle))
-  :: any_term * any_term * any_term + foreign.
+ppl_new_Polyhedron_from_dimension(Kind, Dimension, Handle) :-
+   ppl_new_Polyhedron_from_dimension_2(Kind, Dimension, Handle, 1).
 
-:- true pred ppl_new_Polyhedron_from_Polyhedron(in(SrcKind),
+
+:- true pred ppl_new_Polyhedron_empty_from_dimension_2(in(Kind),
+                                               in(Dimension),
+                                               in(Handle),
+                                               go(Success))
+  :: any_term * any_term * any_term * int
+  + (returns(Success), foreign(ppl_new_Polyhedron_empty_from_dimension)).
+
+ppl_new_Polyhedron_empty_from_dimension(Kind, Dimension, Handle) :-
+   ppl_new_Polyhedron_empty_from_dimension_2(Kind, Dimension, Handle, 1).
+
+
+:- true pred ppl_new_Polyhedron_from_Polyhedron_2(in(SrcKind),
                                                 in(SrcHandle),
                                                 in(DstKind),
-                                                in(DstHandle))
-  :: any_term * any_term * any_term * any_term + foreign.
+                                                in(DstHandle),
+                                               go(Success))
+  :: any_term * any_term * any_term * any_term * int
+  + (returns(Success), foreign(ppl_new_Polyhedron_from_Polyhedron)).
 
-:- true pred ppl_new_Polyhedron_from_constraints(in(Kind),
-                                                 in(CList),
-                                                 in(Handle))
-  :: any_term * any_term * any_term + foreign.
+ppl_new_Polyhedron_from_Polyhedron(SrcKind, SrcHandle, DstKind, DstHandle) :-
+   ppl_new_Polyhedron_from_Polyhedron_2(
+               SrcKind, SrcHandle, DstKind, DstHandle, 1).
 
-:- true pred ppl_new_Polyhedron_from_generators(in(Kind),
-                                                in(GList),
-                                                in(Handle))
-  :: any_term * any_term * any_term + foreign.
+:- true pred ppl_new_Polyhedron_from_constraints_2(in(Kind),
+                                               in(CList),
+                                               in(Handle),
+                                               go(Success))
+  :: any_term * any_term * any_term * int
+  + (returns(Success), foreign(ppl_new_Polyhedron_from_constraints)).
 
-:- true pred ppl_new_Polyhedron_from_bounding_box(in(Kind),
-                                                  in(BBox),
-                                                  in(Handle))
-  :: any_term * any_term * any_term + foreign.
+ppl_new_Polyhedron_from_constraints(Kind, CList, Handle) :-
+   ppl_new_Polyhedron_from_constraints_2(Kind, CList, Handle, 1).
+
+:- true pred ppl_new_Polyhedron_from_generators_2(in(Kind),
+                                               in(GList),
+                                               in(Handle),
+                                               go(Success))
+  :: any_term * any_term * any_term * int
+  + (returns(Success), foreign(ppl_new_Polyhedron_from_generators)).
+
+ppl_new_Polyhedron_from_generators(Kind, GList, Handle) :-
+   ppl_new_Polyhedron_from_generators_2(Kind, GList, Handle, 1).
+
+
+:- true pred ppl_new_Polyhedron_from_bounding_box_2(in(Kind),
+                                               in(BBox),
+                                               in(Handle),
+                                               go(Success))
+  :: any_term * any_term * any_term * int
+  + (returns(Success), foreign(ppl_new_Polyhedron_from_bounding_box)).
+
+ppl_new_Polyhedron_from_bounding_box(Kind, BBox, Handle) :-
+   ppl_new_Polyhedron_from_bounding_box_2(Kind, BBox, Handle, 1).
 
 :- true pred ppl_Polyhedron_swap(in(Handle1),
                                  in(Handle2))
@@ -573,15 +613,22 @@ ppl_Polyhedron_bounded_H79_extrapolation_assign_with_token(Handle1,
         ppl_initialize/0,
         ppl_finalize/0,
         ppl_set_timeout_exception_atom/1,
-        ppl_timeout_exception_atom/1,
+ %       ppl_timeout_exception_atom/1,
+        ppl_timeout_exception_atom_2/2,
         ppl_set_timeout/1,
         ppl_reset_timeout/0,
-        ppl_new_Polyhedron_from_dimension/3,
-        ppl_new_Polyhedron_empty_from_dimension/3,
-        ppl_new_Polyhedron_from_Polyhedron/4,
-        ppl_new_Polyhedron_from_constraints/3,
-        ppl_new_Polyhedron_from_generators/3,
-        ppl_new_Polyhedron_from_bounding_box/3,
+%        ppl_new_Polyhedron_from_dimension/3,
+        ppl_new_Polyhedron_from_dimension_2/4,
+%        ppl_new_Polyhedron_empty_from_dimension/3,
+        ppl_new_Polyhedron_empty_from_dimension_2/4,
+%        ppl_new_Polyhedron_from_Polyhedron/4,
+        ppl_new_Polyhedron_from_Polyhedron_2/5,
+%        ppl_new_Polyhedron_from_constraints/3,
+        ppl_new_Polyhedron_from_constraints_2/4,
+%        ppl_new_Polyhedron_from_generators/3,
+        ppl_new_Polyhedron_from_generators_2/4,
+%        ppl_new_Polyhedron_from_bounding_box/3,
+        ppl_new_Polyhedron_from_bounding_box_2/4,
         ppl_Polyhedron_swap/2,
         ppl_delete_Polyhedron/1,
 %       ppl_Polyhedron_space_dimension/2,
