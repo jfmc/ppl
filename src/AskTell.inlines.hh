@@ -30,19 +30,16 @@ namespace Parma_Polyhedra_Library {
 
 template <typename CS>
 bool
-entails(const CS& ax, const CS& tx, const CS& ay, const CS& ty) {
-  if(!entails(ay, ax))
+adefinitely_entails(const CS& ax, const CS& tx, const CS& ay, const CS& ty) {
+  if(!ay.definitely_entails(ax))
     return false;
-  // The following test can be omitted.
-  else if (ax == ay)
-    return entails(tx, ty);
-  else if (entails(tx, ty))
+  else if (tx.definitely_entails(ty))
     return true;
   // The following test can be omitted.
-  else if (entails(tx, ay))
+  else if (tx.definitely_entails(ay))
     return false;
   else
-    return entails(tx*ay, ty);
+    return (tx*ay).definitely_entails(ty);
 }
 
 template <typename CS>
@@ -61,7 +58,7 @@ AskTell<CS>::iterator::ask() const {
 }
 
 template <typename CS>
-CS&
+const CS&
 AskTell<CS>::iterator::tell() const {
   return Base::operator*().second;
 }
@@ -124,7 +121,7 @@ void AskTell<CS>::pair_insert_good(const CS& a, const CS& t) {
 template <typename CS>
 void
 AskTell<CS>::pair_insert(const CS& a, const CS& t) {
-  if (!entails(t, a)) {
+  if (!t.definitely_entails(a)) {
     CS newt = t;
     newt.meet_assign(a);
     pair_insert_good(a, newt);
@@ -142,7 +139,7 @@ AskTell<CS>::pair_insert(const CS& a, const CS& t) {
 // Postconditions:
 //
 //     the map is well formed and there are no two pairs x and y such that
-//     entails(x.ASK, y.ASK) && entails(y.TELL, x.TELL).
+//     x.ASK.definitely_entails(y.ASK) && y.TELL.definitely_entails(x.TELL).
 
 template <typename CS>
 bool AskTell<CS>::reduce() {
@@ -152,8 +149,8 @@ bool AskTell<CS>::reduce() {
     for (yi = xi, ++yi; yi != end(); yi = yin) {
       yin = yi;
       ++yin;
-      if (entails((*yi).first, (*xi).first)
-	  && entails((*xi).second, (*yi).second)) {
+      if ((*yi).first.definitely_entails((*xi).first)
+	  && (*xi).second.definitely_entails((*yi).second)) {
 	erase(yi);
 	map_changed = true;
       }
@@ -187,7 +184,8 @@ bool AskTell<CS>::deduce() {
       tell_changed = false;
       for (yi = begin(); yi != end(); ++yi) {
 	if (yi != xi) {
-	  if (entails(xtell, (*yi).first) && !entails(xtell, (*yi).second)) {
+	  if (xtell.definitely_entails((*yi).first)
+	      && !xtell.definitely_entails((*yi).second)) {
 	    xtell.meet_assign((*yi).second);
 	    map_changed = tell_changed = true;
 	  }
@@ -223,7 +221,9 @@ bool AskTell<CS>::absorb() {
 	yi = yip;
 	--yi;
 	if (yi != xi) {
-	  if (entails(xask, (*yi).first) && (!entails(xask, (*yi).second))) {
+	  //if (xask.definitely_entails((*yi).first)
+	  if (xask.definitely_entails(yi.ask())
+	      && !xask.definitely_entails(yi.tell())) {
 	    xask.meet_assign((*yi).second);
 	    ask_did_change = true;
 	    ask_changed = true;
@@ -235,7 +235,7 @@ bool AskTell<CS>::absorb() {
     }
     if (ask_did_change) {
       erase(xi);
-      if (!entails(xask, xtell))
+      if (!xask.definitely_entails(xtell))
 	pair_insert(xask, xtell);
       map_changed = true;
     }
@@ -272,11 +272,12 @@ AskTell<CS>::bottom() {
 
 template <typename CS>
 bool
-entails(const AskTell<CS>& x, const AskTell<CS>& y) {
+AskTell<CS>::definitely_entails(const AskTell<CS>& y) const {
+  const AskTell<CS>& x = *this;
   if (x.size() == 1 && y.size() == 1)
-    return entails((*x.begin()).first, (*x.begin()).second,
-		   (*y.begin()).first, (*y.begin()).second);
-//    return entails(*(x.begin()), *(y.begin())) ;
+    return adefinitely_entails((*x.begin()).first, (*x.begin()).second,
+			      (*y.begin()).first, (*y.begin()).second);
+  //    return definitely_entails(*(x.begin()), *(y.begin())) ;
   else {
     typename AskTell<CS>::const_iterator xi, yi;
     bool found;
@@ -284,17 +285,21 @@ entails(const AskTell<CS>& x, const AskTell<CS>& y) {
     for (yi = y.begin(); found && yi != y.end(); ++yi) {
       found = false;
       for (xi = x.begin(); (!found) && xi != x.end(); ++xi)
-	found = entails((*xi).first, (*xi).second, (*yi).first, (*yi).second);
-//	found = entails(*xi, *yi);
+	found = adefinitely_entails((*xi).first, (*xi).second,
+				    (*yi).first, (*yi).second);
+      //	found = *xi.definitely_entails(*yi);
     }
+#if 0
     bool found1 = (x*y == x);
     if (found != found1)
       cerr << "Disagreement on " << x << ", " << y << " sim: " << found <<
       " diff: " << found1 << endl;
+#endif
     return found;
   }
 }
 
+#if 0
 // Equality
 
 template <typename CS>
@@ -302,11 +307,12 @@ bool
 operator==(const AskTell<CS>& x, const AskTell<CS>& y) {
   return (x.size() == y.size() && equal(x.begin(), x.end(), y.begin()));
 }
+#endif
 
 template <typename CS>
 AskTell<CS>&
 AskTell<CS>::inject(const CS& askv, const CS& tellv) {
-  if (!entails(askv, tellv)) {
+  if (!askv.definitely_entails(tellv)) {
     pair_insert(askv, tellv);
     engine();
   }
@@ -360,7 +366,6 @@ AskTell<CS>::meet_assign(const AskTell<CS>& y) {
   for (yi = y.begin(); yi != y.end(); ++yi) 
     pair_insert_good((*yi).first, (*yi).second);
   engine();
-  return *this;
 }
 
 // Join operators
@@ -377,7 +382,7 @@ operator+(const AskTell<CS>& x, const AskTell<CS>& y) {
       if (!tellv.is_top()) {
 	CS askv((*xi).first);
 	askv.meet_assign((*yi).first);
-	if (!entails(askv, tellv))
+	if (!askv.definitely_entails(tellv))
 	  ret.pair_insert(askv, tellv);
       }
     }
@@ -390,7 +395,6 @@ template <typename CS>
 void
 AskTell<CS>::upper_bound_assign(const AskTell<CS>& y) {
   *this = *this + y;
-  return *this;
 }
 
 // Hiding
@@ -406,9 +410,10 @@ AskTell<CS>::probe(const CS& tellv, const CS& askv) const {
   while (tell_changed) {
     tell_changed = false;
     for (yi = begin(); yi != end(); ++yi) {
-      if (entails(xtell, (*yi).first) && !entails(xtell, (*yi).second)) {
+      if (definitely_entails(xtell, (*yi).first)
+	  && !definitely_entails(xtell, (*yi).second)) {
 	  xtell.meet_assign((*yi).second);
-	  if (entails(xtell, askv))
+	  if (xtell.definitely_entails(askv))
 	    return true;
 	  tell_changed = true;
       }

@@ -48,10 +48,6 @@ bool
 operator==(const PowerSet<CS>&, const PowerSet<CS>&);
 
 template <class CS>
-bool
-entails(const PowerSet<CS>&, const PowerSet<CS>&);
-
-template <class CS>
 int
 lcompare(const PowerSet<CS>&, const PowerSet<CS>&);
 
@@ -72,20 +68,22 @@ public:
   //! Injects \p y into \p *this.
   PowerSet& inject(const CS& y);
 
-  //! Assign to \p *this an upper bound of \p *this and \p y.
+  //! Assigns to \p *this an upper bound of \p *this and \p y.
   void upper_bound_assign(const PowerSet& y);
 
-  //! Assign to \p *this the meet of \p *this and \p y.
+  //! Assigns to \p *this the meet of \p *this and \p y.
   void meet_assign(const PowerSet& y);
+
+  //! Returns <CODE>true</CODE> if \p *this definitely entails \p y.
+  //! Returns <CODE>false</CODE> if \p *this may not entail \p y
+  //! (i.e., if \p *this does not entail \p y or if entailment could
+  //! not be decided).
+  bool definitely_entails(const PowerSet& y) const;
 
   inline bool is_top() const;
   inline bool is_bottom() const;
 
   friend CS project<>(const PowerSet& x);
-
-  friend bool operator ==<>(const PowerSet& x, const PowerSet& y);
-
-  friend bool entails<>(const PowerSet& x, const PowerSet& y);
 
   friend int lcompare<>(const PowerSet& x, const PowerSet& y);
 

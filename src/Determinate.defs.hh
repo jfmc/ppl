@@ -35,10 +35,6 @@ class Determinate;
 
 template <typename PH>
 bool
-entails(const Determinate<PH>& x, const Determinate<PH>& y);
-
-template <typename PH>
-bool
 lcompare(const Determinate<PH>& x, const Determinate<PH>& y);
 
 template <typename PH>
@@ -71,13 +67,14 @@ public:
 
   void meet_assign(const Determinate& y);
 
+  bool definitely_entails(const Determinate& y) const;
+
   Determinate& operator <<= (unsigned int n);
   Determinate& hide_assign(unsigned int n);
 
   inline bool is_top() const;
   inline bool is_bottom() const;
 
-  friend bool entails<>(const Determinate& x, const Determinate& y);
   friend bool lcompare<>(const Determinate& x, const Determinate& y);
   friend Determinate operator +<>(const Determinate& x, const Determinate& y);
   friend Determinate operator *<>(const Determinate& x, const Determinate& y);

@@ -81,8 +81,8 @@ Determinate<PH>::meet_assign(const Determinate& y) {
 
 template <typename PH>
 bool
-entails(const Determinate<PH>& x, const Determinate<PH>& y) {
-  return x.prep->ph <= y.prep->ph;
+Determinate<PH>::definitely_entails(const Determinate<PH>& y) const {
+  return prep->ph <= y.prep->ph;
 }
 
 template <typename PH>
@@ -95,7 +95,7 @@ template <typename PH>
 Determinate<PH>
 operator*(const Determinate<PH>& x, const Determinate<PH>& y) {
   Determinate<PH> z = x;
-  z *= y;
+  z.meet_assign(y);
   return z;
 }
 

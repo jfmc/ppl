@@ -43,13 +43,11 @@ template <typename CS>
 CS
 project(const AskTell<CS>&);
 
+#if 0
 template <typename CS>
 bool
 operator==(const AskTell<CS>&, const AskTell<CS>&);
-
-template <typename CS>
-bool
-entails(const AskTell<CS>&, const AskTell<CS>&);
+#endif
 
 template <typename CS>
 int
@@ -88,6 +86,8 @@ public:
 
   void meet_assign(const AskTell& y);
 
+  bool definitely_entails(const AskTell& y) const;
+
   bool is_top() const;
   bool is_bottom() const;
 
@@ -97,9 +97,7 @@ public:
 
   friend CS project<>(const AskTell& x);
 
-  friend bool operator ==<>(const AskTell& x, const AskTell& y);
-
-  friend bool entails<>(const AskTell& x, const AskTell& y);
+  //friend bool operator ==<>(const AskTell& x, const AskTell& y);
 
   friend int lcompare<>(const AskTell& x, const AskTell& y);
 
@@ -117,7 +115,7 @@ public:
     iterator();
     iterator(const Base& x);
     const CS& ask() const;
-    CS& tell() const;
+    const CS& tell() const;
   };
 
   class const_iterator : public Base::const_iterator {

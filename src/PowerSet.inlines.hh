@@ -73,9 +73,9 @@ void PowerSet<CS>::omega_reduction() {
       if (xi == yi)
 	continue;
       const CS& yv = *yi;
-      if (entails(yv, xv))
+      if (yv.definitely_entails(xv))
 	sequence.erase(yi);
-      else if (entails(xv, yv)) {
+      else if (xv.definitely_entails(yv)) {
 	sequence.erase(xi);
 	break;
       }
@@ -84,7 +84,8 @@ void PowerSet<CS>::omega_reduction() {
 }
 
 template <class CS>
-PowerSet<CS>& PowerSet<CS>::inject(const CS& x) {
+PowerSet<CS>&
+PowerSet<CS>::inject(const CS& x) {
   if (!x.is_bottom()) {
     sequence.push_back(x);
     omega_reduction();
@@ -94,14 +95,15 @@ PowerSet<CS>& PowerSet<CS>::inject(const CS& x) {
 
 template <class CS>
 bool
-entails(const PowerSet<CS>& x, const PowerSet<CS>& y) {
+PowerSet<CS>::definitely_entails(const PowerSet<CS>& y) const {
+  const PowerSet<CS>& x = *this;
   bool found = true;
   for (typename PowerSet<CS>::const_iterator xi = x.begin(),
 	 xend = x.end(); found && xi != xend; ++xi) {
     found = false;
     for (typename PowerSet<CS>::const_iterator yi = y.begin(),
 	   yend = y.end(); !found && yi != yend; ++yi)
-      found = entails(*xi, *yi);
+      found = (*xi).definitely_entails(*yi);
   }
   return found;
 }
