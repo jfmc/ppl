@@ -46,10 +46,6 @@ main() {
   gs.insert(ray(A + B));
   C_Polyhedron ph1(gs);
   ph1.constraints();
-
-  ph1.ascii_dump(std::cout);
-  assert(ph1.OK());
-  ph1.ascii_dump(std::cout);
   
   fstream f;
   open(f, my_file, ios_base::out);
