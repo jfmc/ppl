@@ -1759,7 +1759,8 @@ PPL::Polyhedron::affine_image(const Variable& var,
   
   if (num_var <= expr_space_dim && expr[num_var] != 0) {
     // The transformation is invertible:
-    // minimality and saturators are preserved.
+    // minimality and saturators are preserved, so that
+    // pending rows, if present, are correctly handled.
     if (generators_are_up_to_date()) {
       // GenSys::affine_image() requires the third argument
       // to be a positive Integer.
@@ -2209,7 +2210,7 @@ PPL::Polyhedron::time_elapse_assign(const Polyhedron& y) {
   // If it was present, erase the origin point or closure point,
   // which cannot be transformed into a valid ray or line.
   // For NNC polyhedra, also erase all the points of `gs',
-  // whose role can be payed by the closure points.
+  // whose role can be played by the closure points.
   // These have been previously moved to the end of `gs'.
   gs.erase_to_end(gs_num_rows);
   gs.unset_pending_rows();
