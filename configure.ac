@@ -393,7 +393,12 @@ AC_C_BIGENDIAN
 
 # Checks for C type sizes.
 AC_CHECK_SIZEOF(int)
+AC_CHECK_SIZEOF(long)
 AC_CHECK_SIZEOF(long long)
+AC_CHECK_SIZEOF(unsigned)
+AC_CHECK_SIZEOF(unsigned long)
+AC_CHECK_SIZEOF(unsigned long long)
+AC_CHECK_SIZEOF(size_t)
 
 
 # Use C++ for the remaining checks.
