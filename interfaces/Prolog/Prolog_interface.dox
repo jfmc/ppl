@@ -145,97 +145,84 @@ Here is a list of all the PPL predicates provided by the Prolog interface.
   ppl_initialize
 </CODE>
 
-
 <CODE>
   ppl_finalize
 </CODE>
-
 
 <CODE>
   ppl_new_Polyhedron_from_dimension(+Topology, +Integer, -Handle)
 </CODE>
 
-
 <CODE>
   ppl_new_Polyhedron_empty_from_dimension(+Topology, +Integer, -Handle)
 </CODE>
-
-
 
 <CODE>
 ppl_new_Polyhedron_from_Polyhedron(+Topology_1, +Handle_1,
                                    +Topology_2, -Handle_2)
 </CODE>
- 
 
 <CODE>
    ppl_new_Polyhedron_from_constraints(+Topology,
                    +Constraint_System, -Handle)
 </CODE>
 
-
 <CODE>
    ppl_new_Polyhedron_from_generators(+Topology,
                    +Generator_System, -Handle)
 </CODE>
-
 
 <CODE>
    ppl_new_Polyhedron_from_bounding_box(+Topology,
                    +Box, -Handle)
 </CODE>
 
-
-<CODE>
-ppl_delete_Polyhedron(+Handle)</CODE>
-
+<CODE>ppl_delete_Polyhedron(+Handle)</CODE>
 
 <CODE>ppl_Polyhedron_swap(+Handle1, +Handle2)</CODE>
 
-
 <CODE>ppl_Polyhedron_space_dimension(+Handle, -Integer)</CODE>
 
-
 <CODE>ppl_Polyhedron_intersection_assign(+Handle_1, +Handle_2)</CODE>
-
 
 <CODE>ppl_Polyhedron_intersection_assign_and_minimize(+Handle_1,
                 +Handle_2)</CODE>
  
-
 <CODE>ppl_Polyhedron_poly_hull_assign(+Handle_1, +Handle_2)</CODE>
 
 <CODE>ppl_Polyhedron_poly_hull_assign_and_minimize(+Handle_1,
                +Handle_2)</CODE>
 
-
 <CODE>ppl_Polyhedron_poly_difference_assign(+Handle_1, +Handle_2)</CODE>
 
-
 <CODE>ppl_Polyhedron_time_elapse_assign(+Handle_1, +Handle_2)</CODE>
-
 
 <CODE>ppl_Polyhedron_BHRZ03_widening_assign(+Handle_1,
                +Handle_2)</CODE>
 
+<CODE>ppl_Polyhedron_BHRZ03_widening_assign_with_token(+Handle_1,
+               +Handle_2, ?Integer)</CODE>
 
 <CODE>ppl_Polyhedron_limited_BHRZ03_extrapolation_assign(+Handle_1,
                +Handle_2,
                +Constraint_System)</CODE>
 
+<CODE>ppl_Polyhedron_bounded_BHRZ03_extrapolation_assign(+Handle_1,
+               +Handle_2,
+               +Constraint_System)</CODE>
 
 <CODE>ppl_Polyhedron_H79_widening_assign(+Handle_1, +Handle_2)</CODE>
 
+<CODE>ppl_Polyhedron_H79_widening_assign_with_token(+Handle_1,
+               +Handle_2, ?Integer)</CODE>
 
 <CODE>ppl_Polyhedron_limited_H79_extrapolation_assign(+Handle_1,
                +Handle_2,
                +Constraint_System)</CODE>
 
-
-<CODE>ppl_Polyhedron_limited_H79_extrapolation_assign(+Handle_1,
+<CODE>ppl_Polyhedron_bounded_H79_extrapolation_assign(+Handle_1,
                +Handle_2,
                +Constraint_System)</CODE>
-
 
 <CODE>ppl_Polyhedron_topological_closure_assign(+Handle)</CODE>
 
@@ -243,78 +230,57 @@ ppl_delete_Polyhedron(+Handle)</CODE>
 <CODE>ppl_Polyhedron_get_constraints(+Handle, -Constraint_System)
 </CODE>
 
-
 <CODE>ppl_Polyhedron_get_minimized_constraints(+Handle,
                                                    -Constraint_System)
 </CODE>
 
-
 <CODE>ppl_Polyhedron_get_generators(+Handle, -Generator_System)
 </CODE>
-
 
 <CODE>ppl_Polyhedron_get_minimized_generators(+Handle,
                                                   -Generator_System)
 </CODE>
 
-
 <CODE>ppl_Polyhedron_add_constraint(+Handle, +Constraint)</CODE>
-
 
 <CODE>ppl_Polyhedron_add_constraint_and_minimize(+Handle, +Constraint)</CODE>
 
-
 <CODE>ppl_Polyhedron_add_generator(+Handle, +Generator)</CODE>
 
-
 <CODE>ppl_Polyhedron_add_generator_and_minimize(+Handle, +Generator)</CODE>
-
 
 <CODE>ppl_Polyhedron_add_constraints(+Handle, +Constraint_System)
 </CODE>
 
-
 <CODE>ppl_Polyhedron_add_constraints_and_minimize(+Handle,
                                    +Constraint_System)</CODE>
-
 
 <CODE>ppl_Polyhedron_add_generators(+Handle, +Generator_System)
 </CODE>
 
-
-
 <CODE>ppl_Polyhedron_add_generators_and_minimize(+Handle,
                                    +Generator_System)</CODE>
 
-
 <CODE>ppl_Polyhedron_concatenate_assign(+Handle1, +Handle2)</CODE>
-
 
 <CODE>ppl_Polyhedron_add_dimensions_and_project(+Handle, +Integer)
 </CODE>
 
-
 <CODE>ppl_Polyhedron_add_dimensions_and_embed(+Handle, +Integer)
 </CODE>
-
 
 <CODE>ppl_Polyhedron_remove_dimensions(+Handle,
                +List_of_PPL_Vars)</CODE>
 
-
 <CODE>ppl_Polyhedron_remove_higher_dimensions(+Handle, +Integer))</CODE>
 
-
 <CODE>ppl_Polyhedron_rename_dimensions(+Handle, +Rename_Map))</CODE>
-
 
 <CODE>ppl_Polyhedron_affine_image(+Handle, +PPL_Var,
                +LinExpr, +Integer)</CODE>
 
-
 <CODE>ppl_Polyhedron_affine_preimage(+Handle, +PPL_Var,
                +LinExpr, +Integer)</CODE>
-
 
 <CODE>ppl_Polyhedron_generalized_affine_image(+Handle,
                +PPL_Var,
@@ -322,65 +288,46 @@ ppl_delete_Polyhedron(+Handle)</CODE>
                +LinExpr,
                +Integer)</CODE>
 
-
 <CODE>ppl_Polyhedron_generalized_affine_image_lhs_rhs(+Handle,
                +LinExpr1,
                +Relation_Symbol
                +LinExpr2)</CODE>
 
-
 <CODE>ppl_Polyhedron_relation_with_constraint(+Handle, +Constraint,
                -Relation)</CODE>
-
 
 <CODE>ppl_Polyhedron_relation_with_generator(+Handle, +Generator,
                -Relation)</CODE>
 
-
 <CODE>ppl_Polyhedron_check_empty(+Handle)</CODE>
-
 
 <CODE>ppl_Polyhedron_check_universe(+Handle)</CODE>
 
-
 <CODE>ppl_Polyhedron_is_bounded(+Handle)</CODE>
-
 
 <CODE>ppl_Polyhedron_bounds_from_above(+Handle,
                                    +LinExpr)</CODE>
 
-
 <CODE>ppl_Polyhedron_bounds_from_below(+Handle,
                                    +LinExpr)</CODE>
 
-
 <CODE>ppl_Polyhedron_is_topologically_closed(+Handle)</CODE>
 
-
 <CODE>ppl_Polyhedron_contains_Polyhedron(+Handle_1, +Handle_2)</CODE>
-
-
 <CODE>ppl_Polyhedron_strictly_contains_Polyhedron(+Handle_1, +Handle_2)</CODE>
 
-
 <CODE>ppl_Polyhedron_equals_Polyhedron(+Handle_1, +Handle_2)</CODE>
-
 
 <CODE>ppl_Polyhedron_is_disjoint_from_Polyhedron(+Handle_1, +Handle_2)
     </CODE>
 
-
 <CODE>ppl_timeout_exception_atom(?Atom)</CODE>
-
 
 <CODE>ppl_set_timeout_exception_atom(+Atom)</CODE>
 
-
 <CODE>ppl_set_timeout(+Integer)</CODE>
 
-
 <CODE>ppl_reset_timeout</CODE>
-
 
 <CODE>ppl_Polyhedron_get_bounding_box(+Handle,
                                           +Complexity,
@@ -627,9 +574,16 @@ ppl_new_Polyhedron_from_Polyhedron(+Topology_1, +Handle_1,
 
 <H2><CODE>ppl_Polyhedron_BHRZ03_widening_assign(+Handle_1,
                +Handle_2)</CODE></H2>
+<H2><CODE>ppl_Polyhedron_BHRZ03_widening_assign_with_token(+Handle_1,
+               +Handle_2, ?Integer)</CODE></H2>
 
    Assigns to the polyhedron referenced by <CODE>Handle_1</CODE>
    its BHRZ03-widening with the polyhedra referenced by <CODE>Handle_2</CODE>.
+   For the <CODE>_with_token</CODE> version,
+   <CODE>Integer</CODE> is bound to 0 if
+   the polyhedron referenced by <CODE>Handle_1</CODE> has changed
+   (i.e., a widening has taken place)
+   and is bound to 1 otherwise.
 
 <H2><CODE>ppl_Polyhedron_limited_BHRZ03_extrapolation_assign(+Handle_1,
                +Handle_2,
@@ -640,12 +594,40 @@ ppl_new_Polyhedron_from_Polyhedron(+Topology_1, +Handle_1,
   <CODE>Handle_2</CODE>, improved by enforcing those constraints in
   <CODE>Constraint_System</CODE>.
 
+<H2><CODE>ppl_Polyhedron_bounded_BHRZ03_extrapolation_assign(+Handle_1,
+               +Handle_2,
+               +Constraint_System)</CODE></H2>
+
+   Assigns to the polyhedron \f$\cP\f$ referenced by <CODE>Handle_1</CODE>
+  the result of its BHRZ03-widening with the polyhedra referenced by
+  <CODE>Handle_2</CODE>, improved by enforcing those constraints in
+  <CODE>Constraint_System</CODE>.
+  <CODE>Constraint_System</CODE> must be a list of constraints of the form
+  <CODE>Var =< LinExpr</CODE> or <CODE>Var < LinExpr</CODE>.
+
 <H2><CODE>ppl_Polyhedron_H79_widening_assign(+Handle_1, +Handle_2)</CODE></H2>
+
+<H2><CODE>ppl_Polyhedron_H79_widening_assign_with_token(+Handle_1,
+               +Handle_2, ?Integer)</CODE></H2>
 
    Assigns to the polyhedron referenced by <CODE>Handle_1</CODE>
    its H79-widening with the polyhedra referenced by <CODE>Handle_2</CODE>.
+   For the <CODE>_with_token</CODE> version,
+   <CODE>Integer</CODE> is bound to 0 if
+   the polyhedron referenced by <CODE>Handle_1</CODE> has changed
+   (i.e., a widening has taken place)
+   and is bound to 1 otherwise.
 
 <H2><CODE>ppl_Polyhedron_limited_H79_extrapolation_assign(+Handle_1,
+               +Handle_2,
+               +Constraint_System)</CODE></H2>
+
+   Assigns to the polyhedron \f$\cP\f$ referenced by <CODE>Handle_1</CODE>
+  its H79-widening with the polyhedra referenced by
+  <CODE>Handle_2</CODE>, improved by enforcing those constraints in
+  <CODE>Constraint_System</CODE>.
+
+<H2><CODE>ppl_Polyhedron_bounded_H79_extrapolation_assign(+Handle_1,
                +Handle_2,
                +Constraint_System)</CODE></H2>
 
@@ -653,14 +635,8 @@ ppl_new_Polyhedron_from_Polyhedron(+Topology_1, +Handle_1,
   the result of its H79-widening with the polyhedra referenced by
   <CODE>Handle_2</CODE>, improved by enforcing those constraints in
   <CODE>Constraint_System</CODE>.
-
-<H2><CODE>ppl_Polyhedron_limited_H79_extrapolation_assign(+Handle_1,
-               +Handle_2,
-               +Constraint_System)</CODE></H2>
-
-   Assigns to the polyhedron referenced by <CODE>Handle_1</CODE>
-   its H79-widening with the polyhedron referenced by <CODE>Handle_2</CODE>,
-   limited by the constraints in <CODE>Constraint_System</CODE>.
+  <CODE>Constraint_System</CODE> must be a list of constraints of the form
+  <CODE>Var =< LinExpr</CODE> or <CODE>Var < LinExpr</CODE>.
 
 <H2><CODE>ppl_Polyhedron_topological_closure_assign(+Handle)</CODE></H2>
 
