@@ -195,6 +195,9 @@ public:
   //! Assignment operator.
   GenSys& operator=(const GenSys& y);
 
+  //! Returns the maximum space dimension a GenSys can handle.
+  static dimension_type max_space_dimension();
+
   //! Returns the dimension of the vector space enclosing \p *this.
   dimension_type space_dimension() const;
 

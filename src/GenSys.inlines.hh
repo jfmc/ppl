@@ -71,6 +71,12 @@ GenSys::operator=(const GenSys& y) {
 }
 
 inline dimension_type
+GenSys::max_space_dimension() {
+  // Column zero holds the inhomogeneous term.
+  return Matrix::max_num_columns() - 1;
+}
+
+inline dimension_type
 GenSys::space_dimension() const {
   return Matrix::space_dimension();
 }
