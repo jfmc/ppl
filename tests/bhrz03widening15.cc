@@ -152,8 +152,7 @@ main() {
     cout << q_i.generators() << endl;
 #endif
     if (q_i == q_i_minus_1) {
-      C_Polyhedron known_result(3);
-      known_result.add_constraint(-Variable(1) + Variable(2) >= 0);
+      C_Polyhedron known_result(3, C_Polyhedron::UNIVERSE);
 
       int retval = (q_i == known_result) ? 0 : 1;
 
