@@ -162,6 +162,9 @@ public:
   //! Turn the matrix \f$M\f$ into \f$\bigl({0 \atop M}{J \atop 0}\bigr)\f$.
   void add_rows_and_columns(size_t n);
 
+  //! Swaps the columns having indexes \p i and \p j.
+  void swap_columns(size_t i,  size_t j);
+
   //! Accessors
   //@{
   Topology topology() const;

@@ -586,6 +586,17 @@ PPL::Matrix::add_row(Row::Type type) {
   }
 }
 
+
+/*!
+  Swaps each coefficient of the two columns of indexes \p i and \p j.
+*/
+void
+PPL::Matrix::swap_columns(size_t i,  size_t j) {
+  assert(i != j && i < num_columns() && j < num_columns());
+  for (size_t k = num_rows(); k-- > 0; )
+    std::swap(rows[k][i], rows[k][j]);
+}
+
 /*!
   Normalize the matrix.
 */
