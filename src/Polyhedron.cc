@@ -578,6 +578,18 @@ PPL::Polyhedron::update_sat_g() const {
   x.set_sat_g_up_to_date();
 }
 
+static void
+throw_different_dimensions(const char* method,
+			   const PPL::Polyhedron& x,
+			   const PPL::Polyhedron& y) {
+  std::string what;
+  std::ostringstream s(what);
+  s << method << ":" << std::endl
+    << "x->space_dimension() == " << x.space_dimension()
+    << ", y->space_dimension() == " << y.space_dimension();
+  throw std::invalid_argument(s.str());
+}
+
 /*!
   Returns <CODE>true</CODE> if and only if
   \p x is contained in \p y.
@@ -585,8 +597,8 @@ PPL::Polyhedron::update_sat_g() const {
 bool
 PPL::operator <=(const Polyhedron& x, const Polyhedron& y) {
   if (x.space_dimension() != y.space_dimension())
-    throw std::invalid_argument("PPL::operator <=(ph1, ph2): "
-				"ph1 and ph2 are dimension-incompatible");
+    throw_different_dimensions("PPL::operator <=(x, y)",
+				x, y);
   if (x.is_empty())
     return true;
   else if (y.is_empty())
@@ -614,17 +626,6 @@ PPL::operator <=(const Polyhedron& x, const Polyhedron& y) {
   return true;
 }
 
-static void
-throw_different_dimensions(const char* method,
-			   const PPL::Polyhedron& x,
-			   const PPL::Polyhedron& y) {
-  std::string what;
-  std::ostringstream s(what);
-  s << method << ":" << std::endl
-    << "this->space_dimension() == " << x.space_dimension()
-    << ", y->space_dimension() == " << y.space_dimension();
-  throw std::invalid_argument(s.str());
-}
 
 /*!
   The intersection of \p *this with \p y (that are assumed to
@@ -1687,13 +1688,13 @@ PPL::Polyhedron::affine_image(const Variable& var,
   size_t num_var = var.id() + 1;
   size_t expr_space_dim = expr.space_dimension();
   if (x_space_dim < expr_space_dim)
-    throw std::invalid_argument("PPL::Polyhedron::affine_image(v, e, d): "
-				"*this and e dimension-incompatible");
+    throw_different_dimensions("PPL::Polyhedron::affine_image(v, e, d)",
+			       x, expr);
 
   // Index of var must be in the range of the variables of generators.
   if (!(num_var < x_space_dim + 1))
-    throw std::invalid_argument("PPL::Polyhedron::affine_image(v, e, d): "
-				"*this and v dimension-incompatible");
+    throw_dimension_incompatible("PPL::Polyhedron::affine_image(v, e, d)",
+				 x, var.id());
   if (x.is_empty()) {
     return;
   }
@@ -1804,13 +1805,13 @@ PPL::Polyhedron::affine_preimage(const Variable& var,
   size_t num_var = var.id() + 1;
   size_t expr_space_dim = expr.space_dimension();
   if (x_space_dim < expr_space_dim)
-    throw std::invalid_argument("PPL::Polyhedron::affine_preimage(v, e, "
-				"d): *this and e dimensional-incompatible");
+    throw_different_dimensions("PPL::Polyhedron::affine_preimage(v, e, d)",
+			       x, expr);
 
   // Index of var must be in the range of the variables of generators.
   if (!(num_var < x_space_dim + 1))
-    throw std::invalid_argument("PPL::Polyhedron::affine_preimage"
-				"(v, e, d): v is not in *this");
+    throw_dimension_incompatible("PPL::Polyhedron::affine_preimage(v, e, d)",
+				 x, var.id());
   
   if (x.is_empty())
     return;
