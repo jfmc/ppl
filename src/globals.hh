@@ -66,8 +66,6 @@ enum Complexity_Class {
   ANY
 };
 
- enum NewLineDisposition { sendNewLine, noNewLine };
-
 #ifdef PPL_DOXYGEN_INCLUDE_IMPLEMENTATION_DETAILS
 //! An array of temporaries used to avoid unnecessary memory allocation.
 #endif
