@@ -343,7 +343,7 @@ Linear_System::With_Saturation_Matrix_iterator::operator*() const {
 
 inline Linear_System::With_Saturation_Matrix_iterator::pointer
 Linear_System::With_Saturation_Matrix_iterator::operator->() const {
-  return i1.operator->();
+  return &*i1;
 }
 
 inline void
