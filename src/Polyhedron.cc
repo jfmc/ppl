@@ -4388,7 +4388,7 @@ PPL::Polyhedron::BHRZ03_evolving_rays(const Polyhedron& y,
 }
 
 void
-PPL::Polyhedron::BHRZ03_widening_assign(const Polyhedron& y, long* tp) {
+PPL::Polyhedron::BHRZ03_widening_assign(const Polyhedron& y, unsigned* tp) {
   Polyhedron& x = *this;
   // Topology compatibility check.
   if (x.topology() != y.topology())

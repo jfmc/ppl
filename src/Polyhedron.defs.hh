@@ -693,7 +693,7 @@ public:
   /*!
     \param y           A polyhedron that <EM>must</EM>
                        be contained in \p *this.
-    \param tp          An optional pointer to a long variable storing
+    \param tp          An optional pointer to an unsigned variable storing
                        the number of available tokens (to be used when
                        applying the <EM>widening with tokens</EM> delay
                        technique).
@@ -701,7 +701,7 @@ public:
                                      are topology-incompatible
                                      or dimension-incompatible.
   */
-  void BHRZ03_widening_assign(const Polyhedron& y, long* tp = 0);
+  void BHRZ03_widening_assign(const Polyhedron& y, unsigned* tp = 0);
 
   //! \brief
   //! Improves the result of the \ref BHRZ03_widening "BHRZ03-widening"
