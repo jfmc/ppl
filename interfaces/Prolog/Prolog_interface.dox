@@ -48,6 +48,33 @@ and the operations provided by the PPL is given in Sections
 and \ref operations of this manual.
 Here we just describe those aspects that are specific to the Prolog interface.
 
+For proper operation the Prolog interface must be initialized by calling the
+predicate <CODE>ppl_initialize/0</CODE>
+and finalized by calling the predicate <CODE>ppl_finalize/0</CODE>.
+Both <CODE>ppl_initialize/0</CODE> and <CODE>ppl_finalize/0</CODE>
+are guarded against multiple invocations so that calling
+<CODE>ppl_initialize/0</CODE> several times makes no harm.
+The same holds for <CODE>ppl_finalize/0</CODE>.
+However, the first call to <CODE>ppl_initialize/0</CODE>
+must occur before any other predicate of the interface is called.
+On the other hand, the only interface's predicates callable after
+<CODE>ppl_finalize/0</CODE> are <CODE>ppl_finalize/0</CODE> itself
+(this further call has no effect) and <CODE>ppl_initialize/0</CODE>,
+after which the interface's services are usable again.
+Some Prolog systems allow the specification of initialization
+and deinitialization functions in their foreign language interfaces.
+The corresponding incarnations of the PPL-Prolog interface
+have been written so that <CODE>ppl_initialize/0</CODE> and/or
+<CODE>ppl_finalize/0</CODE> are called automatically.
+Section \ref PI_SD_Features will detail in which cases initialization
+and finalization is automatically performed or is left to the Prolog
+programmer's responsibility.
+However, if you want to write portable applications you may decide
+to invoke <CODE>ppl_initialize/0</CODE> and <CODE>ppl_finalize/0</CODE>
+explicitly: since they can be called multiple times without problems
+this will result in enhanced portability at a cost that is, by all means,
+negligible.
+
 The PPL predicates provided by the Prolog interface are specified below.
 The specification uses the following grammar rules:
 \code
