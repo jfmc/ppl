@@ -26,24 +26,24 @@ site: http://www.cs.unipr.it/ppl/ . */
 
 #include <sys/types.h>
 
-#define FLOAT32_IEC559_TYPE float
-#define FLOAT64_IEC559_TYPE double
-#define FLOAT96_IEC559_TYPE long double
+#define FLOAT32_TYPE float
+#define FLOAT64_TYPE double
+#define FLOAT96_TYPE long double
 
-#ifdef FLOAT32_IEC559_TYPE
-typedef FLOAT32_IEC559_TYPE float32_iec559_t;
+#ifdef FLOAT32_TYPE
+typedef FLOAT32_TYPE float32_t;
 #endif
 
-#ifdef FLOAT64_IEC559_TYPE
-typedef FLOAT64_IEC559_TYPE float64_iec559_t;
+#ifdef FLOAT64_TYPE
+typedef FLOAT64_TYPE float64_t;
 #endif
 
-#ifdef FLOAT96_IEC559_TYPE
-typedef FLOAT96_IEC559_TYPE float96_iec559_t;
+#ifdef FLOAT96_TYPE
+typedef FLOAT96_TYPE float96_t;
 #endif
 
-#ifdef FLOAT128_IEC559_TYPE
-typedef FLOAT128_IEC559_TYPE float96_iec559_t;
+#ifdef FLOAT128_TYPE
+typedef FLOAT128_TYPE float96_t;
 #endif
 
 #endif // !defined(PPL_float_types_hh)
