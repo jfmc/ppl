@@ -2116,11 +2116,11 @@ ppl_Polyhedron_map_dimensions __P((ppl_Polyhedron_t ph,
 #undef PPL_DECLARE_PRINT_FUNCTIONS
 
 #define PPL_DECLARE_PRINT_FUNCTIONS(Type) \
-/*! Prints \p x to <CODE>stdout</CODE>. */ \
+/*! \brief Prints \p x to <CODE>stdout</CODE>. */ \
 int \
 ppl_io_print_ ## Type __P((ppl_const_ ## Type ## _t x)); \
  \
-/*! Prints \p x to the given output \p stream. */ \
+/*! \brief Prints \p x to the given output \p stream. */ \
 int \
 ppl_io_fprint_ ## Type __P((FILE* stream, ppl_const_ ## Type ## _t x));
 
