@@ -276,6 +276,8 @@ AC_CHECK_PROG(SWI_PROLOG, pl, swi)
 AM_CONDITIONAL(HAVE_SWI_PROLOG, test x$SWI_PROLOG = xswi)
 AC_CHECK_PROG(GNU_PROLOG, gprolog, gnu)
 AM_CONDITIONAL(HAVE_GNU_PROLOG, test x$GNU_PROLOG = xgnu)
+AC_CHECK_PROG(YAP_PROLOG, yap, yap)
+AM_CONDITIONAL(HAVE_YAP_PROLOG, test x$YAP_PROLOG = yap)
 
 dnl Checks for header files.
 AC_CHECK_HEADER(gprolog.h,
@@ -284,6 +286,8 @@ AC_CHECK_HEADER(SWI-Prolog.h,
                 extra_if_Prolog_subdirs="${extra_if_Prolog_subdirs} SWI")
 AC_CHECK_HEADER(sicstus/sicstus.h,
                 extra_if_Prolog_subdirs="${extra_if_Prolog_subdirs} SICStus")
+AC_CHECK_HEADER(Yap/c_interface.h,
+                extra_if_Prolog_subdirs="${extra_if_Prolog_subdirs} YAP")
 
 dnl Checks for typedefs, structures, and compiler characteristics.
 # Nothing for the time being.
@@ -309,7 +313,8 @@ AC_OUTPUT(Makefile
           interfaces/Makefile
           interfaces/Prolog/Makefile
           interfaces/Prolog/GNU/Makefile
-          interfaces/Prolog/SICStus/Makefile interfaces/Prolog/SWI/Makefile)
+          interfaces/Prolog/SICStus/Makefile interfaces/Prolog/SWI/Makefile
+          interfaces/Prolog/YAP/Makefile)
 
 if test x"$gmp_supports_exceptions" = xno
 then
