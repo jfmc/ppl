@@ -81,52 +81,52 @@ bool
 PPL::Status::ASCII_load(std::istream& s) {
   bool positive;
 
-  if (get_field(s, zero_dim_univ, positive))
+  if (!get_field(s, zero_dim_univ, positive))
     return false;
   if (positive)
     set_zero_dim_univ();
 
-  if (get_field(s, empty, positive))
+  if (!get_field(s, empty, positive))
     return false;
   if (positive)
     set_empty();
 
-  if (get_field(s, consys_min, positive))
+  if (!get_field(s, consys_min, positive))
     return false;
   if (positive)
     set_c_minimized();
   else
     reset_c_minimized();
 
-  if (get_field(s, gensys_min, positive))
+  if (!get_field(s, gensys_min, positive))
     return false;
   if (positive)
     set_g_minimized();
   else
     reset_g_minimized();
 
-  if (get_field(s, consys_upd, positive))
+  if (!get_field(s, consys_upd, positive))
     return false;
   if (positive)
     set_c_up_to_date();
   else
     reset_c_up_to_date();
 
-  if (get_field(s, gensys_upd, positive))
+  if (!get_field(s, gensys_upd, positive))
     return false;
   if (positive)
     set_g_up_to_date();
   else
     reset_g_up_to_date();
 
-  if (get_field(s, sat_c, positive))
+  if (!get_field(s, sat_c, positive))
     return false;
   if (positive)
     set_sat_c_up_to_date();
   else
     reset_sat_c_up_to_date();
 
-  if (get_field(s, sat_g, positive))
+  if (!get_field(s, sat_g, positive))
     return false;
   if (positive)
     set_sat_g_up_to_date();
