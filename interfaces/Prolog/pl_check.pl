@@ -26,8 +26,8 @@ site: http://www.cs.unipr.it/ppl/ . */
 % when running the `timeout' predicate.
 % When F = 0, no message is displayed.
 
-%noisy(1).
-noisy(0).
+noisy(1).
+%noisy(0).
 
 % check_all
 % This executes all the test predicates which, together, check all 
@@ -57,6 +57,8 @@ check_all :-
   polyhull_assign,
   polyhull_assign_min,
   polydiff_assign,
+  time_elapse_C,
+  time_elapse_NNC,
   widen_H79_C,
   lim_extrapolate_H79_C,
   widen_H79_NNC,
@@ -438,6 +440,45 @@ polydiff_assign :-
   ppl_delete_Polyhedron(P1a),
   ppl_delete_Polyhedron(P1b).
 
+% Tests ppl_Polyhedron_time_elapse for C Polyhedra.
+time_elapse_C :-
+  A = '$VAR'(0), B = '$VAR'(1),
+  ppl_new_Polyhedron_from_dimension(c, 2, P),
+  ppl_Polyhedron_add_constraints_and_minimize(P,
+                          [A >= 1, A =< 3, B >= 1, B =< 3]),
+  ppl_new_Polyhedron_from_dimension(c, 2, Q),
+  ppl_Polyhedron_add_constraints_and_minimize(Q, [B = 5]),
+  ppl_Polyhedron_time_elapse_assign(P, Q),
+  ppl_new_Polyhedron_from_dimension(c, 2, Pa),
+  ppl_Polyhedron_add_constraints_and_minimize(Pa, [B >= 1]),
+  ppl_new_Polyhedron_from_constraints(c, [B = 5], Qa),
+  ppl_Polyhedron_equals_Polyhedron(Q, Qa),
+  ppl_Polyhedron_equals_Polyhedron(P, Pa),
+  ppl_delete_Polyhedron(P),
+  ppl_delete_Polyhedron(Q),
+  ppl_delete_Polyhedron(Pa),
+  ppl_delete_Polyhedron(Qa).
+
+% Tests ppl_Polyhedron_time_elapse for NNC Polyhedra.
+time_elapse_NNC :-
+  A = '$VAR'(0), B = '$VAR'(1),
+  ppl_new_Polyhedron_from_dimension(nnc, 2, P),
+  ppl_Polyhedron_add_constraints_and_minimize(P,
+                     [A >= 0, B >= 0, A + B - 2 =< 0]),
+  ppl_new_Polyhedron_from_dimension(nnc, 2, Q),
+  ppl_Polyhedron_add_constraints_and_minimize(Q, [A > 2, A < 4, B = 3]),
+  ppl_Polyhedron_time_elapse_assign(P, Q),
+  ppl_new_Polyhedron_from_dimension(nnc, 2, Pa),
+  ppl_Polyhedron_add_constraints_and_minimize(Pa,
+                     [3*A - 2*B >= -4, A >= 0, B >= 0, 3*A - 4*B =< 6]),
+  ppl_new_Polyhedron_from_constraints(nnc, [A > 2, A < 4, B = 3], Qa),
+  ppl_Polyhedron_equals_Polyhedron(P, Pa),
+  ppl_Polyhedron_equals_Polyhedron(Q, Qa),
+  ppl_delete_Polyhedron(P),
+  ppl_delete_Polyhedron(Q),
+  ppl_delete_Polyhedron(Pa),
+  ppl_delete_Polyhedron(Qa).
+
 % Tests ppl_Polyhedron_H79_widening_assign for C Polyhedra.
 widen_H79_C :-
   A = '$VAR'(0), B = '$VAR'(1),
@@ -451,7 +492,6 @@ widen_H79_C :-
   ppl_new_Polyhedron_from_constraints(c, [A >= 1, B >= 1], Qa),
   ppl_Polyhedron_equals_Polyhedron(P, Pa),
   ppl_Polyhedron_equals_Polyhedron(Q, Qa),
-  ppl_Polyhedron_equals_Polyhedron(P, Pa),
   ppl_delete_Polyhedron(P),
   ppl_delete_Polyhedron(Q),
   ppl_delete_Polyhedron(Pa),
