@@ -1744,35 +1744,43 @@ time_watch(Topology, Goal, NoTimeOut, TimeOut) :-
 exceptions :-
    current_prolog_flag(bounded, Y),
    make_vars(3, V),
-   (  exception_prolog(_, V) ;
-      (Y == true -> exception_sys_prolog(_, V) ; fail) ;
-      exception_cplusplus(_, V)
-   ),
-   !,
-   fail.
-exceptions :- !.
+   exception_prolog(V),
+   (Y == true -> exception_sys_prolog(V) ; true),
+   exception_cplusplus(V),
+   !.
 
 % exception_prolog(+N, +V) checks exceptions thrown by the Prolog interface.
 % It does not check those that are dependent on a specific Prolog system.
 
+exception_prolog(V) :-
+   exception_prolog1(8, V).
+
+exception_prolog1(0, _) :- !.
+exception_prolog1(N, V) :-
+   exception_prolog(N, V),
+   N1 is N - 1,
+   exception_prolog1(N1, V).
+
 %% TEST: Prolog_unsigned_out_of_range
 exception_prolog(1, _) :-
-   current_prolog_flag(bounded,false),
-   I = 21474836470,
-   catch(ppl_new_Polyhedron_from_generators(_, [point('$VAR'(I))], P),
+   (current_prolog_flag(bounded, false)
+    ->
+     (I = 21474836470,
+     catch(ppl_new_Polyhedron_from_generators(_, [point('$VAR'(I))], _),
           M, 
          check_exception(M)
-         ),
-  !,
-  ppl_delete_Polyhedron(P).
+         )
+      )
+    ;
+   true
+   ).
 
 %% TEST: not_unsigned_integer
 exception_prolog(2, _) :-
-  catch(ppl_new_Polyhedron_from_dimension(c, n, P),
+  catch(ppl_new_Polyhedron_from_dimension(c, n, _),
           M, 
           check_exception(M)
-        ),
-  ppl_delete_Polyhedron(P).
+        ).
 
 %% TEST: not_unsigned_integer
 exception_prolog(3, _) :-
@@ -1783,12 +1791,10 @@ exception_prolog(3, _) :-
 
 %% TEST: non_linear
 exception_prolog(4, [A,B,C]) :-
-  catch(ppl_new_Polyhedron_from_generators(c, [point(B + A*C)], P),
+  catch(ppl_new_Polyhedron_from_generators(c, [point(B + A*C)], _),
           M, 
          check_exception(M)
-        ),
-  !,
-  ppl_delete_Polyhedron(P).
+        ).
 
 %% TEST: not_a_variable
 exception_prolog(5, [A,_,_]) :-
@@ -1814,15 +1820,14 @@ exception_prolog(6, [A,B,_]) :-
   ppl_delete_Polyhedron(P).
 
 %% TEST: not_a_polyhedron_kind
-exception_prolog(1, [A,B,C]) :-
-   catch(ppl_new_Polyhedron_from_generators(_, [point(A + B + C, 1)], P),
+exception_prolog(7, [A,B,C]) :-
+   catch(ppl_new_Polyhedron_from_generators(_, [point(A + B + C, 1)], _),
           M, 
          check_exception(M)
-         ),
-  ppl_delete_Polyhedron(P).
+        ).
 
 %% TEST: not_a_polyhedron_handle
-exception_prolog(4, _) :-
+exception_prolog(8, _) :-
   catch(ppl_Polyhedron_space_dimension(_, _N),
           M, 
           check_exception(M)
@@ -1831,6 +1836,15 @@ exception_prolog(4, _) :-
 % exception_sys_prolog(+N, +V) checks exceptions thrown by Prolog interfaces
 % that are dependent on a specific Prolog system.
 % These are only checked if current_prolog_flag(bounded, false) holds. 
+
+exception_sys_prolog(V) :-
+   exception_sys_prolog1(4, V).
+
+exception_sys_prolog1(0, _) :- !.
+exception_sys_prolog1(N, V) :-
+   exception_sys_prolog(N, V),
+   N1 is N - 1,
+   exception_sys_prolog1(N1, V).
 
 exception_sys_prolog(1, [A,B,_]) :-
   current_prolog_flag(max_integer, MaxInt),
@@ -1871,25 +1885,31 @@ exception_sys_prolog(4, [A,B,_]) :-
   ppl_new_Polyhedron_from_generators(c, 
                [point(MinInt * A + B)], P),
   ppl_Polyhedron_affine_image(P, A, A - 1, 1),
-  catch(ppl_Polyhedron_get_generators(P, GS),
+  catch(ppl_Polyhedron_get_generators(P, _GS),
           M, 
          (cleanup_ppl_Polyhedron(P),
           check_exception(M))
         ),
-  write(GS),
   !,
   ppl_delete_Polyhedron(P).
 
 % exception_cplusplus(+N, +V) checks exceptions thrown by the C++
 % interface for the PPL.
 
+exception_cplusplus(V) :-
+   exception_cplusplus1(10, V).
+
+exception_cplusplus1(0, _) :- !.
+exception_cplusplus1(N, V) :-
+   exception_cplusplus(N, V),
+   N1 is N - 1,
+   exception_cplusplus1(N1, V).
+
 exception_cplusplus(1, [A,B,C]) :-
-  catch(ppl_new_Polyhedron_from_generators(C, [point(A + B + C, 0)], P),
+  catch(ppl_new_Polyhedron_from_generators(C, [point(A + B + C, 0)], _),
           M, 
          (check_exception([M]))
-         ),
-  !,
-  ppl_delete_Polyhedron(P).
+         ).
 
 exception_cplusplus(2, [A,B,_]) :-
   ppl_new_Polyhedron_from_generators(c, 
@@ -1916,11 +1936,10 @@ exception_cplusplus(3, [A, B, _]) :-
   ppl_delete_Polyhedron(P2).
 
 exception_cplusplus(4, [A,B,C]) :-
-   catch(ppl_new_Polyhedron_from_generators(c, [line(A + B + C)], P),
+   catch(ppl_new_Polyhedron_from_generators(c, [line(A + B + C)], _),
           M, 
          (check_exception([M]))
-        ),
-  ppl_delete_Polyhedron(P).
+        ).
 
 exception_cplusplus(5, [A,B,C]) :-
   ppl_new_Polyhedron_from_generators(c, [point(B + 2*C)], P),
@@ -1992,7 +2011,8 @@ exception_cplusplus(10, [A, B, C]) :-
 % otherwise it just succeeds.
 
 check_exception(Exception):-
-         (call(format_exception_message(Exception)) -> fail ; true).
+         (call(format_exception_message(Exception)) ->
+                true ; fail).
 
 %%%%%%%%%%%% predicate for making list of ppl variables %%%%%%
 
