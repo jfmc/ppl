@@ -265,8 +265,8 @@ of \f$P\f$,
       \mu_1, \mu_2 \in  \Rset, \mu_1, \mu_2 \geq 0.
 \f]
 
-Note that the set of extreme rays forms a basis which describes all 
-directions in which the polyhedron is open.
+Note that the set of extreme rays describes all directions in which 
+the polyhedron is open.
 
 <B>Lines</B>
 
@@ -381,7 +381,7 @@ If \f$A\f$ is a rational \f$m_1 \times n\f$ matrix,
   Q = \sset{
         \vect{x} \in \Rset^n
       }{
-        \vect{x} = \vect{y}^\transpose A + \vect{z}^\transpose B, \\
+        \vect{x}^\transpose = \vect{y}^\transpose A + \vect{z}^\transpose B, \\
         \vect{y} = (y_1, \ldots, y_{m_1})^\transpose \in \Rset_+^{m_1},
         \sum_{k=1}^{m_1} y_k = 1, \\
 	\vect{z} \in \Rset_+^{m_2}
@@ -419,8 +419,8 @@ to the references mentioned before, from:
 
 To simplify both representations of a polyhedron,
 it is useful to transform it to a polyhedral cone.
-To do this, each point \f$x \in \Rset^n\f$ is mapped 
-to a point \f$x' = (\xi x, \xi)^\transpose \in \Rset^{n + 1}\f$ 
+To do this, each point \f$\vect{x} \in \Rset^n\f$ is mapped 
+to a point \f$\vect{x}' = (\xi \vect{x}, \xi)^\transpose \in \Rset^{n + 1}\f$ 
 where \f$\xi \geq 0\f$.
 
 The transformation changes an inhomogeneous system of inequalities 
@@ -428,16 +428,17 @@ in \f$n\f$ variables, representing a polyhedron \f$P\f$, into a
 homogeneous system in \f$n + 1\f$ variables, representing a 
 polyhedral cone \f$C\f$, as shown below:
 \f[
-  P = \{\,x \mid Ax \geq b\,\} 
-    = \{\,x \mid Ax - b \geq 0\,\} 
+  P = \{\,\vect{x} \mid A\vect{x} \geq \vect{b}\,\} 
+    = \{\,\vect{x} \mid A\vect{x} - \vect{b} \geq \vect{0}\,\} 
 \f]
 \f[
-  C = \{\,(\xi x, \xi)^\transpose \mid \xi Ax - \xi b \geq 0, \xi \geq 0\,\} 
-    = \{\,x' \mid A'x' \geq 0\,\} 
+  C = \{\,(\xi \vect{x}, \xi)^\transpose \mid \xi A\vect{x} - \xi \vect{b} 
+	\geq \vect{0}, \xi \geq 0\,\} 
+    = \{\,\vect{x}' \mid A'\vect{x}' \geq \vect{0}\,\} 
 \f]
-where \f$x' = (\xi x, \xi) \in \Rset^{n + 1}\f$ 
-and \f$A'\f$ is the matrix having for its first rows the submatrix 
-\f$(A, b) \in \Rset^m \times \Rset^{n + 1}\f$ 
+where \f$\vect{x}' = (\xi \vect{x}, \xi) \in \Rset^{n + 1}\f$ 
+and \f$A'\f$ is the \f$(m+1) \times (n+1)\f$ matrix having for its first 
+rows the submatrix \f$(A, b) \in \Rset^m \times \Rset^{n + 1}\f$ 
 and for the last row the vector \f$(0, \ldots, 0, 1) \in \Rset^{n + 1}\f$.
 The cone \f$C\f$, which has a homogeneous representation, we call the
 <EM>corresponding polyhedral cone for \f$P\f$</EM>
@@ -482,10 +483,10 @@ In all other ways, vertices and rays are the same.
 <B>Valid linear inequalities</B>
 
 Let \f$P\f$ be a convex polyhedron (or polytope) in 
-\f$\Rset^n\f$. For a real \f$n\f$-vector \f$c\f$ and a real number 
-\f$b\f$, a linear inequality \f$\langle c, x \rangle \geq b\f$ (briefly 
-denoted by \f$(c,b)\f$) is called <EM>valid</EM> for \f$P\f$ if it 
-is satisfied by all points \f$x \in P\f$. 
+\f$\Rset^n\f$. For a real \f$n\f$-vector \f$\vect{c}\f$ and a real number 
+\f$b\f$, a linear inequality \f$\langle \vect{c}, \vect{x} \rangle \geq b\f$ 
+(briefly denoted by \f$(\vect{c},b)\f$) is called <EM>valid</EM> 
+for \f$P\f$ if it is satisfied by all points \f$\vect{x} \in P\f$. 
 
 <B>Redundancy</B>
 
@@ -502,10 +503,10 @@ Moreover, in the PPL implementation,
 - we will talk about <EM>irredundant</EM> set \f$Q\f$ of lines meaning that 
   \f$Q\f$ is a set of linearly independent lines;
 
-- we will say that an extremal ray \f$r_1\f$ is <EM>redundant</EM> 
-  if there exists another extremal ray \f$r_2\f$ and
+- we will say that an extremal ray \f$\vect{r}_1\f$ is <EM>redundant</EM> 
+  if there exists another extremal ray \f$\vect{r}_2\f$ and
   \f$\lambda \in \Rset, \lambda > 0\f$
-  such that \f$r_1 = \lambda r_2\f$.
+  such that \f$\vect{r}_1 = \lambda \vect{r}_2\f$.
 
 Note that, as we are referring to the PPL representation, 
 this concept of a redundant ray also applies to vertices.
@@ -513,13 +514,15 @@ this concept of a redundant ray also applies to vertices.
 
 <B>Face</B>
 
-If \f$(c,b)\f$ is a valid inequality for \f$P\f$, and 
-\f$F = \{\,x \in P \mid \langle c, x \rangle = b\,\}\f$, \f$F\f$ is called 
-a <EM>face</EM> of \f$P\f$ and we say that the inequality represents \f$F\f$. 
+If \f$(\vect{c},b)\f$ is a valid inequality for \f$P\f$, and 
+\f$F = \{\,\vect{x} \in P \mid \langle \vect{c}, \vect{x} \rangle = b\,\}\f$,
+ \f$F\f$ is called a <EM>face</EM> of \f$P\f$ and we say that the inequality 
+represents \f$F\f$. 
 A face \f$F\f$ is said to be <EM>proper</EM> if \f$F \neq \emptyset\f$ and
 \f$F \neq P\f$.
 
-When \f$F\f$ is nonempty, we say that \f$(c,b)\f$ <EM>supports</EM> \f$P\f$.
+When \f$F\f$ is nonempty, we say that \f$(\vect{c},b)\f$ <EM>supports</EM>
+ \f$P\f$.
 
 <B>Facet</B>
 
@@ -528,14 +531,14 @@ A face \f$F\f$ of \f$P\f$ is a <EM>facet</EM> of \f$P\f$ if
 
 <EM><B>Propositions</B></EM>
 
-Let \f$C = \{x \mid Ax \geq 0\}\f$ be a cone, then:
+Let \f$C = \{\vect{x} \mid A\vect{x} \geq \vect{0}\}\f$ be a cone, then:
   
 -# the set of all faces of \f$C\f$  is a lattice under inclusion;
 -# the only <EM>minimal face</EM> (relative to inclusion) of \f$C\f$
    is its <EM>lineality space</EM> (i.e., the set of vectors \f$x\f$ 
    such that \f$Ax = 0\f$);
--# if the set \f$G = \textit{cone}\{y\} + \textit{lin.space } C\f$ is 
-   a face of \f$C,\f$ then \f$y\f$ is called an <EM>extremal ray</EM> 
+-# if the set \f$G = \textit{cone}\{\vect{y}\} + \textit{lin.space } C\f$ is 
+   a face of \f$C,\f$ then \f$\vect{y}\f$ is called an <EM>extremal ray</EM> 
    of \f$C\f$ and \f$G\f$ a <EM>minimal proper face</EM> of \f$C.\f$
 
 <B>Minkowski's sum</B>
@@ -546,7 +549,7 @@ of \f$R\f$ and \f$S\f$ is defined as follows:
   R + S = \{\,r + s \mid r \in R, s \in S\,\}.
 \f]
 
-%\section decomposition Decomposition
+\section decomposition Decomposition
 <B>Decomposition</B>
 
 Because of the PPL choice to consider only polyhedral cones, we can 
@@ -604,23 +607,24 @@ In \f$\Rset^n\f$
 The proofs of these properties can be obtained considering the definitions of 
 dimension and the decomposition of a polyhedron.
 
-%\section saturation Saturation
+\section saturation Saturation
 <B>Saturation</B>
 
-Let us consider a ray \f$r \in \Rset^n\f$ and an inequality 
-\f$(a, 0)\f$ where \f$a \in \Rset^n\f$: 
+Let us consider a ray \f$\vect{r} \in \Rset^n\f$ and an inequality 
+\f$(\vect{a}, 0)\f$ where \f$\vect{a} \in \Rset^n\f$: 
 - \f$r\f$ is said to <EM>saturate</EM> the inequality
-  if \f$\langle a, r \rangle = 0\f$;
+  if \f$\langle \vect{a}, \vect{r} \rangle = 0\f$;
 - \f$r\f$ <EM>verifies</EM> the inequality
-  if \f$\langle a, r \rangle > 0\f$;
+  if \f$\langle \vect{a}, \vect{r} \rangle > 0\f$;
 - \f$r\f$ <EM>violates</EM> the inequality
-  if \f$\langle a, r \rangle < 0\f$.
+  if \f$\langle \vect{a}, \vect{r} \rangle < 0\f$.
 
-Similarly, considering an equality \f$\langle a, x \rangle = 0\f$,
-\f$r\f$ is said to <EM>saturate</EM> the equality
-if \f$\langle a, r \rangle = 0\f$;
-\f$r\f$ <EM>does not verify</EM> the equality
-if \f$\langle a, r \rangle \neq 0\f$.
+Similarly, considering an equality 
+\f$\langle \vect{a}, \vect{x} \rangle = 0\f$,
+\f$\vect{r}\f$ is said to <EM>saturate</EM> the equality
+if \f$\langle \vect{a}, \vect{r} \rangle = 0\f$;
+\f$\vect{r}\f$ <EM>does not verify</EM> the equality
+if \f$\langle \vect{a}, \vect{r} \rangle \neq 0\f$.
 
 A constraint (i.e., an equality or an inequality) is
 <EM>satisfied</EM> by a ray if the ray saturates or verifies the constraint.
@@ -658,21 +662,22 @@ The proofs of these rules can be obtained using the saturation concept.
 
 <EM><B>Proposition</B></EM>	
 
-Let \f$C = \{x \mid Ax \geq 0\}\f$ be a cone, then it can be shown 
-that any minimal proper face of \f$C\f$ in an \f$n\f$-dimensional space 
-can also be represented as \f$G = \{\,x \mid A'x = 0, a_ix \geq 0\,\}\f$ 
+Let \f$C = \{\vect{x} \mid A\vect{x} \geq \vect{0}\}\f$ be a cone,
+then it can be shown that any minimal proper face of \f$C\f$ in an 
+\f$n\f$-dimensional space can also be represented as 
+\f$G = \{\,\vect{x} \mid A'\vect{x} = 0, \vect{a}_i\vect{x} \geq 0\,\}\f$ 
 where \f$A'\f$ is a submatrix of \f$A,\f$ \f$a_i\f$ is a row of \f$A\f$ 
 and the rank of the matrix built starting from \f$A'\f$ and adding the row 
 \f$a_i,\f$ is \f$n - t\f$ (where \f$t\f$ is the dimension of the 
 lin. space of \f$C\f$).
 
 In fact, a minimal proper face \f$G\f$ generated by the extremal ray 
-\f$y\f$ is composed by all the points that are combination of this ray
+\f$\vect{y}\f$ is composed by all the points that are combination of this ray
 and all the lines of the lin. space. This mean that all the constraints
-saturated by \f$y\f$ are saturated also by all points of \f$G\f$. Since 
+saturated by \f$\vect{y}\f$ are saturated also by all points of \f$G\f$. Since 
 in a \f$m\f$-ray space an extreme ray must saturate \f$ m - 1\f$. 
 So the matrix composed by \f$A'\f$ (that is composed by the constraints
-saturated by all points of \f$G\f$) and by \f$a_i\f$ has rank equal to
+saturated by all points of \f$G\f$) and by \f$\vect{a}_i\f$ has rank equal to
 \f$m - 1 + 1\f$ (\f$+1\f$ is for the constraint \f$a_i\f$) and so
 the rank is equal to \f$n - t\f$. 
  
@@ -680,12 +685,12 @@ the rank is equal to \f$n - t\f$.
 	
 Let \f$A\f$ be representing matrix of constraints of a cone \f$C\f$
 and \f$Q\f$ the set of rays that generate \f$C\f$. Then two rays 
-\f$r_1\f$ and \f$r_2\f$ are <EM>adjacent rays</EM> if
+\f$\vect{r}_1\f$ and \f$\vect{r}_2\f$ are <EM>adjacent rays</EM> if
 -# there exist at least one row of \f$A\f$ (i.e. a constraint) that 
-   is saturated by both \f$r_1\f$ and \f$r_2\f$
--# and none of the rays of \f$Q\f$, except \f$r_1\f$ and \f$r_2\f$, 
-   saturates all the constraints saturated by both \f$r_1\f$ and 
-   \f$r_2\f$. 
+   is saturated by both \f$\vect{r}_1\f$ and \f$\vect{r}_2\f$
+-# and none of the rays of \f$Q\f$, except \f$\vect{r}_1\f$ and 
+   \f$\vect{r}_2\f$, saturates all the constraints saturated by both 
+   \f$\vect{r}_1\f$ and \f$\vect{r}_2\f$. 
 
 <B>Independence rule</B>
 
@@ -710,10 +715,12 @@ It is useful to note that:
 - All rays saturate the positivity constraint and no vertex saturates 
   the positivity constraint; in fact in the homogeneous form
   the positivity constraint is represented by the vector 
-  \f$a = (0, \ldots, 0, 1)\f$, rays are of the form 
-  \f$r = (r_1, \ldots, r_n, 0)\f$ and vertices \f$v = (v_1, \ldots, v_n, d)\f$ 
-  with \f$d \neq 0\f$, thus \f$\langle a, r \rangle = 0\f$ for each ray 
-  \f$r\f$ and \f$\langle a, v \rangle \neq 0\f$ for each vertex \f$v\f$.
+  \f$\vect{a}^\transpose = (0, \ldots, 0, 1)\f$, rays are of the form 
+  \f$\vect{r} = (r_1, \ldots, r_n, 0)^\transpose\f$ and vertices 
+  \f$\vect{v} = (v_1, \ldots, v_n, d)^\transpose\f$ with \f$d \neq 0\f$, 
+  thus \f$\langle \vect{a}, \vect{r} \rangle = 0\f$ for each ray 
+  \f$\vect{r}\f$ and \f$\langle \vect{a}, \vect{v} \rangle \neq 0\f$ 
+  for each vertex \f$\vect{v}\f$.
 - The positivity constraint will be irredundant if and only if 
   the size of the set
   of rays is \f$\geq n\f$, where \f$n\f$ is the dimension of the ray space, 
