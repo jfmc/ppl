@@ -240,6 +240,16 @@ private:
   Generator();
 };
 
+namespace std {
+
+#ifdef PPL_DOXYGEN_INCLUDE_IMPLEMENTATION_DETAILS
+//! Specialize <CODE>std::swap</CODE>.
+#endif // PPL_DOXYGEN_INCLUDE_IMPLEMENTATION_DETAILS
+void swap(Parma_Polyhedra_Library::Generator& x,
+	  Parma_Polyhedra_Library::Generator& y);
+
+} // namespace std
+
 #include "Generator.inlines.hh"
 
 #endif

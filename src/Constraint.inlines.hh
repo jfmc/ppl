@@ -161,3 +161,18 @@ operator <=(const LinExpression& e, const Integer& n) {
 }
 
 } // namespace Parma_Polyhedra_Library
+
+namespace std {
+
+/*!
+  Specialize <CODE>std::swap</CODE> to use the fast swap that is
+  provided as a member function instead of using the default
+  algorithm (which creates a temporary and uses assignment).
+*/
+inline void
+swap(Parma_Polyhedra_Library::Constraint& x,
+     Parma_Polyhedra_Library::Constraint& y) {
+  x.swap(y);
+}
+
+} // namespace std

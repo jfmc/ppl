@@ -266,16 +266,14 @@ private:
 };
 
 namespace std {
+
 #ifdef PPL_DOXYGEN_INCLUDE_IMPLEMENTATION_DETAILS
-  /*!
-    Specialize std::swap to use the fast swap that is provided
-    as a member function instead of using the default algorithm
-    (which creates a temporary and uses assignment).
-  */
+//! Specialize <CODE>std::swap</CODE>.
 #endif // PPL_DOXYGEN_INCLUDE_IMPLEMENTATION_DETAILS
-  void swap(Parma_Polyhedra_Library::Row& x,
-		 Parma_Polyhedra_Library::Row& y);
-}
+void swap(Parma_Polyhedra_Library::Row& x,
+	  Parma_Polyhedra_Library::Row& y);
+
+} // namespace std
 
 #include "Row.inlines.hh"
 

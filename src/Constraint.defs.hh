@@ -220,6 +220,17 @@ PPL_INTERNAL:
   void set_is_inequality();
 };
 
+namespace std {
+
+#ifdef PPL_DOXYGEN_INCLUDE_IMPLEMENTATION_DETAILS
+//! Specialize <CODE>std::swap</CODE>.
+#endif // PPL_DOXYGEN_INCLUDE_IMPLEMENTATION_DETAILS
+void swap(Parma_Polyhedra_Library::Constraint& x,
+	  Parma_Polyhedra_Library::Constraint& y);
+
+} // namespace std
+
+
 #include "Constraint.inlines.hh"
 
 #endif
