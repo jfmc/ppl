@@ -349,9 +349,7 @@ protected:
 
   //! Builds either the universe or the empty polyhedron of dimension
   //! \p num_dimensions, either necessarily closed or not.
-  explicit Polyhedron(Topology topol,
-		      size_t num_dimensions,
-		      Degenerate_Kind kind);
+  Polyhedron(Topology topol, size_t num_dimensions, Degenerate_Kind kind);
 
   //! Builds a polyhedron from a system of constraints.
   //! The polyhedron inherits the space dimension of the constraint system.
