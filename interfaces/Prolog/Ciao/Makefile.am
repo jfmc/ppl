@@ -80,5 +80,5 @@ tak.clpq
 
 #pplpl $(CLPQ_TESTS) obtained
 
-MOSTLYCLEANFILES = *.itf *.po
+MOSTLYCLEANFILES = fake_main *.itf *.po *.c *.so
 endif
