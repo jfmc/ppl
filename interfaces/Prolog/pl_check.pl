@@ -545,33 +545,29 @@ polyhull_assign_min(T) :-
 % Tests ppl_Polyhedron_poly_difference_assign for C and NNC Polyhedra.
 polydiff_assign :-
   make_vars(2, [A, B]),
-  polydiff_assign(c, [A - B =< 0, A >= 0, A + B =< 1],
-            [point(A + B, 2), point(B), point(0)]).
-  polydiff_assign(nnc,[A - B < 0, A >= 0, A + B =< 1],
-            [closure_point(A+B, 2), point(B), closure_point(0)]).
+  polydiff_assign(c, [point(0), point(2*A)],
+                     [point(0), point(A)],
+                     [point(A), point(2*A)]).
+  polydiff_assign(nnc, [point(0), point(2*A)],
+                       [point(0), point(A)],
+                       [closure_point(A), point(2*A)]).
+  polydiff_assign(c, [point(0), point(B), point(A)],
+                     [point(0), point(A), point(A + B)],
+                     [point(A + B, 2), point(B), point(0)]).
+  polydiff_assign(nnc,[point(0), point(B), point(A)],
+                      [point(0), point(A), point(A + B)],
+                      [closure_point(A + B, 2), point(B), closure_point(0)]).
 
-polydiff_assign(T, CS,GS) :-
+polydiff_assign(T, GS1, GS2, GS3) :-
   make_vars(2, [A, B]),
-  ppl_new_Polyhedron_from_generators(T,
-                                     [point(0), point(B),
-                                      point(A)],
-                                     P1),
-  ppl_new_Polyhedron_from_generators(T,
-                                     [point(0), point(A),
-                                      point(A + B)],
-                                     P2),
+  ppl_new_Polyhedron_from_generators(T, GS1, P1),
+  ppl_new_Polyhedron_from_generators(T, GS2, P2),
   ppl_Polyhedron_poly_difference_assign(P1, P2),
-  ppl_new_Polyhedron_from_generators(T, GS,
-                                     P1a),
-  ppl_new_Polyhedron_from_constraints(T,
-                                      CS,
-                                      P1b),
+  ppl_new_Polyhedron_from_generators(T, GS3, P1a),
   ppl_Polyhedron_equals_Polyhedron(P1, P1a),
-  ppl_Polyhedron_equals_Polyhedron(P1, P1b),
   ppl_delete_Polyhedron(P1),
   ppl_delete_Polyhedron(P2),
-  ppl_delete_Polyhedron(P1a),
-  ppl_delete_Polyhedron(P1b).
+  ppl_delete_Polyhedron(P1a).
 
 % Tests ppl_Polyhedron_time_elapse for C and NNC Polyhedra.
 time_elapse :-
@@ -1295,7 +1291,21 @@ expand_dim(T) :-
   ppl_Polyhedron_equals_Polyhedron(P, P2),
   ppl_delete_Polyhedron(P2),
   ppl_Polyhedron_space_dimension(P, 4),
-  ppl_delete_Polyhedron(P).
+  ppl_delete_Polyhedron(P),
+% Example taken from Tacas04 paper
+  ppl_new_Polyhedron_empty_from_dimension(T, 2, Ptacas),
+  ppl_Polyhedron_add_generators(Ptacas,
+       [point(A + 2*B), point(A + 3*B), point(A + 4*B)]),
+  ppl_Polyhedron_expand_dimension(Ptacas, B, 1),
+  ppl_Polyhedron_space_dimension(Ptacas, 3),
+  ppl_new_Polyhedron_from_generators(T,
+       [point(A + 2*B + 2*C), point(A + 2*B + 3*C), point(A + 2*B + 4*C),
+        point(A + 3*B + 2*C), point(A + 3*B + 3*C), point(A + 3*B + 4*C),
+        point(A + 4*B + 2*C), point(A + 4*B + 3*C), point(A + 4*B + 4*C)],
+                                      Ptacas1),
+  ppl_Polyhedron_equals_Polyhedron(Ptacas, Ptacas1),
+  ppl_delete_Polyhedron(Ptacas1),
+  ppl_delete_Polyhedron(Ptacas).
 
 % Tests ppl_Polyhedron_map_dimensions using constraints and generators
 map_dim:-
