@@ -27,8 +27,9 @@ using namespace std;
 using namespace Parma_Polyhedra_Library;
 
 #ifndef NOISY
-#define NOISY 0
+#define NOISY 1
 #endif
+
 #include "files.hh"
 #include <fstream>
 
@@ -53,6 +54,11 @@ main() TRY {
   TBD_Shape bd2;
   bd2.ascii_load(f);
   close(f);
+
+#if NOISY
+  print_constraints(bd1, "*** bd1 ***");
+  print_constraints(bd2, "*** bd2 ***");
+#endif
 
   int retval = (bd1 == bd2) ? 0 : 1;
 
