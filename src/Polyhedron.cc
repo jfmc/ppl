@@ -678,13 +678,13 @@ PPL::Polyhedron::strongly_minimize_generators() const {
 	}
       if (!eps_redundant) {
 	// Let all point encodings have epsilon coordinate 1.
-	if (changed)
-	  gs[i][eps_index] = gs[i][0];
-	else
-	  if (gs[i][eps_index] != gs[i][0]) {
-	    gs[i][eps_index] = gs[i][0];
-	    changed = true;
-	  }
+	Generator& gi = gs[i];
+	if (gi[eps_index] != gi[0]) {
+	  gi[eps_index] = gi[0];
+	  // Enforce normalization.
+	  gi.normalize();
+	  changed = true;
+	}
 	// Consider next generator.
 	++i;
       }
@@ -851,6 +851,7 @@ PPL::Polyhedron::strongly_minimize_constraints() const {
   // saturated by one of the rays.
   if (topologically_closed || !strict_inequals_saturate_all_rays) {
     assert(cs_rows < cs.num_rows());
+    // Note: `eps_leq_one' is already normalized.
     Constraint& eps_leq_one = cs[cs_rows];
     eps_leq_one[0] = 1;
     eps_leq_one[eps_index] = -1;
@@ -977,11 +978,12 @@ PPL::Polyhedron::strongly_minimize() const {
       if (sat_ci == sat_lines) {
 	// Replace it by the eps_leq_one constraint
 	// (`gen_sys' and `sat_g' are not affected by this change).
-	Constraint& c = const_cast<Constraint&>(ci);
-	c[0] = 1;
-	c[eps_index] = -1;
+	// Note: `eps_leq_one' is already normalized.
+	Constraint& eps_leq_one = const_cast<Constraint&>(ci);
+	eps_leq_one[0] = 1;
+	eps_leq_one[eps_index] = -1;
 	for (size_t k = eps_index; k-- > 1; )
-	  c[k] = 0;
+	  eps_leq_one[k] = 0;
 	// `con_sys' is no longer sorted.
 	ConSys& cs = const_cast<ConSys&>(con_sys);
 	cs.set_sorted(false);
@@ -2211,8 +2213,11 @@ PPL::Polyhedron::add_generator(const Generator& g) {
 	// In the NNC topology, each point has to be matched by
 	// a corresponding closure point:
 	// turn the just inserted point into the corresponding
-	// closure point; then re-insert the point.
-	gen_sys[gen_sys.num_rows() - 1][space_dim + 1] = 0;
+	// (normalized) closure point.
+	Generator& cp = gen_sys[gen_sys.num_rows() - 1];
+	cp[space_dim + 1] = 0;
+	cp.normalize();
+	// Re-insert the point (which is already normalized).
 	gen_sys.insert(g);
       }
     }
@@ -3268,12 +3273,14 @@ PPL::Polyhedron::time_elapse_assign(const Polyhedron& y) {
       y_gen_sys.erase_to_end(y_gen_sys_num_rows);
     }
     // All closure points or all points (if `y' is not necessarily closed,
-    // it does not have closure points) becames rays.
+    // it does not have closure points) become rays.
     for (size_t i = y_gen_sys_num_rows; i-- > 0; ) {
       Generator& g = y_gen_sys[i];
       if (g[0] != 0) {
 	g[0] = 0;
 	g[x_space_dim + 1] = 0;
+	// Enforce normalization.
+	g.normalize();
       }
     }
   }
@@ -3282,8 +3289,11 @@ PPL::Polyhedron::time_elapse_assign(const Polyhedron& y) {
     // only say that all points become rays.
     for (size_t i = y_gen_sys.num_rows(); i-- > 0; ) {
       Generator& g = y_gen_sys[i];
-      if (g.is_point())
+      if (g.is_point()) {
 	g[0] = 0;
+	// Enforce normalization.
+	g.normalize();
+      }
     }
   }
   // Invalid rays can be built during the previous process.
@@ -3440,6 +3450,8 @@ PPL::Polyhedron::topological_closure_assign() {
       Constraint& c = con_sys[i];
       if (c[eps_index] < 0 && !c.is_trivial_true()) {
 	c[eps_index] = 0;
+	// Enforce normalization.
+	c.normalize();
 	changed = true;
       }
     }

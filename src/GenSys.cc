@@ -62,6 +62,7 @@ PPL::GenSys::adjust_topology_and_dimension(Topology new_topology,
 	// A NECESSARILY_CLOSED generator system is converted into
 	// a NOT_NECESSARILY_CLOSED one by adding a further column
 	// and setting the \epsilon coordinate of all points to 1.
+	// Note: normalization is preserved.
 	add_zero_columns(++cols_to_be_added);
 	GenSys& gs = *this;
 	size_t eps_index = new_space_dim + 1;
@@ -93,6 +94,7 @@ PPL::GenSys::adjust_topology_and_dimension(Topology new_topology,
       else {
 	// Add the column of the \epsilon coefficients
 	// and set the \epsilon coordinate of all points to 1.
+	// Note: normalization is preserved.
 	add_zero_columns(1);
 	GenSys& gs = *this;
 	size_t eps_index = new_space_dim + 1;
@@ -121,6 +123,8 @@ PPL::GenSys::add_corresponding_closure_points() {
       // `g' is a point: adding the closure point.
       Generator cp = g;
       cp[eps_index] = 0;
+      // Enforcing normalization.
+      cp.normalize();
       gs.add_row(cp);
     }
   }
@@ -141,9 +145,10 @@ PPL::GenSys::add_corresponding_points() {
     const Generator& g = gs[i];
     if (g[0] > 0 && g[eps_index] == 0) {
       // `g' is a closure point: adding the point.
-      Generator cp = g;
-      cp[eps_index] = cp[0];
-      gs.add_row(cp);
+      // Note: normalization is preserved.
+      Generator p = g;
+      p[eps_index] = p[0];
+      gs.add_row(p);
     }
   }
 }
@@ -213,6 +218,7 @@ PPL::GenSys::insert(const Generator& g) {
       // all points must have \epsilon coordinate equal to 1
       // (i.e., the \epsilon coefficient is equal to the divisor);
       // rays and lines must have \epsilon coefficient equal to 0.
+      // Note: normalization is preserved.
       size_t eps_index = num_columns();
       add_zero_columns(1);
       GenSys& gs = *this;
@@ -235,6 +241,7 @@ PPL::GenSys::insert(const Generator& g) {
       Generator tmp_g(g, gs_size);
       // If it was a point, set the \epsilon coordinate to 1
       // (i.e., set the coefficient equal to the divisor).
+      // Note: normalization is preserved.
       if (tmp_g[0] != 0)
 	tmp_g[gs_size - 1] = tmp_g[0];
       tmp_g.set_not_necessarily_closed();
