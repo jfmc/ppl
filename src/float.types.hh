@@ -42,19 +42,19 @@ site: http://www.cs.unipr.it/ppl/ . */
 #define FLOAT64_TYPE long double
 #endif
 
-#if SIZEOF_FLOAT == 12
+#if SIZEOF_FLOAT == 12 && CXX_FLOAT_IS_IEC_559
 #define FLOAT96_TYPE float
-#elif SIZEOF_DOUBLE == 12
+#elif SIZEOF_DOUBLE == 12 && CXX_DOUBLE_IS_IEC_559
 #define FLOAT96_TYPE double
-#elif SIZEOF_LONG_DOUBLE == 12
+#elif SIZEOF_LONG_DOUBLE == 12 && CXX_LONG_DOUBLE_IS_IEC_559
 #define FLOAT96_TYPE long double
 #endif
 
-#if SIZEOF_FLOAT == 16
+#if SIZEOF_FLOAT == 16 && CXX_FLOAT_IS_IEC_559
 #define FLOAT128_TYPE float
-#elif SIZEOF_DOUBLE == 16
+#elif SIZEOF_DOUBLE == 16 && CXX_DOUBLE_IS_IEC_559
 #define FLOAT128_TYPE double
-#elif SIZEOF_LONG_DOUBLE == 16
+#elif SIZEOF_LONG_DOUBLE == 16 && CXX_LONG_DOUBLE_IS_IEC_559
 #define FLOAT128_TYPE long double
 #endif
 
