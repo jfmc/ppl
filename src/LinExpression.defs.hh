@@ -32,7 +32,7 @@ site: http://www.cs.unipr.it/ppl/ . */
 namespace Parma_Polyhedra_Library {
   // Put them in the namespace here to declare them friend later.
 
-  /*! \defgroup LinExpression Linear Expressions
+  /*! \addtogroup LinExpression Linear Expressions
 
     Linear expressions are the blocks used for building both
     constraints (i.e., linear equalities or inequalities)
@@ -93,21 +93,20 @@ namespace Parma_Polyhedra_Library {
   \par Example
   The following code builds a linear expression \f$4x-2y-z+14\f$ :
   \code
-  Variable x = 0;
-  Variable y = 1;
-  Variable z = 5;
+  Variable x(0);
+  Variable y(1);
+  Variable z(5);
   LinExpression e = 4 * x - 2 * y - z + 14;
   \endcode
   Another way to build the same linear expression is:
   \code
-  Variable x = 0;
-  Variable y = 1;
-  Variable z = 5;
+  Variable x(0);
+  Variable y(1);
+  Variable z(5);
   LinExpression e = 4 * x;
   LinExpression e1 = -2 * y;
-  LinExpression e2 = z;
-  e += e1 - e2;
-  e += 14;
+  LinExpression e2 = -z;
+  e += e1 + e2 + 14;
   \endcode
   Note that the ``meaning'' of an object of the class Variable
   is completely specified by the integer index provided to its
@@ -118,9 +117,9 @@ namespace Parma_Polyhedra_Library {
   since the two variables <CODE>x</CODE> and <CODE>z</CODE> denote
   the same Cartesian axis.
   \code
-  Variable x = 0;
-  Variable y = 1;
-  Variable z = 0;
+  Variable x(0);
+  Variable y(1);
+  Variable z(0);
   LinExpression e1 = x + y;
   LinExpression e2 = y + z;
   \endcode
@@ -128,7 +127,7 @@ namespace Parma_Polyhedra_Library {
 
 class Parma_Polyhedra_Library::LinExpression : private Row {
 /*!
-  \addtogroup LinExpression
+  \addtogroup LinExpression Linear Expressions
   @{
 */
 public:
