@@ -1,5 +1,3 @@
-:- ensure_loaded(ppl_sicstus).
-
 % A toy, non-ground meta-interpreter for CLP(Q)
 % for testing the Parma Polyhedra Library and its Prolog interface.
 %
@@ -25,15 +23,13 @@
 % For the most up-to-date information see the Parma Polyhedra Library
 % site: http://www.cs.unipr.it/ppl/ .
 
-:- ensure_loaded(ppl_sicstus).
-
 % Object-level clauses are stored as user_clause(Head, Body) facts.
-:- dynamic user_clause/2.
+:- dynamic(user_clause/2).
 
 % solve_query(+Goals, +Variable_Name_Table, -Polyhedra)
 %
-% Tries to solve the query `Goals'.
-% `Variable_Name_Table' is a list of input variable names and
+% Tries to solve the query 'Goals'.
+% 'Variable_Name_Table' is a list of input variable names and
 % the corresponding variable.
 % 'Polyhedra' are the live polyhedra; the head of the list
 % represents the result of the computation.
@@ -49,7 +45,7 @@ solve_query(Goals, VN, PolysOut) :-
     freezevars(Goals, FrozeGoals, Dims, _, VarNames, _),
     % The initial polyhedron is initialised with
     % "Dims" dimensions, the number of variables in "Goals".
-    ppl_new_polyhedron(Poly, Dims),
+    ppl_new_Polyhedron_from_dimension(c, Dims, Poly),
     % Try to reduce "Goals".
     solve(FrozeGoals, [Poly], PolysOut, VarNames),
     % Use the last polyhedron PolyOut that has been added to the list
@@ -57,12 +53,12 @@ solve_query(Goals, VN, PolysOut) :-
     PolysOut = [PolyOut|_],
     % First project onto the variables of interest
     % before getting the constraints.
-    ppl_copy_polyhedron(PolyOut, Q),
-    ppl_remove_higher_dimensions(Q, Dims),
-    ppl_get_constraints(Q, CS),
+    ppl_new_Polyhedron_from_Polyhedron(c, PolyOut, c, Q),
+    ppl_Polyhedron_remove_higher_dimensions(Q, Dims),
+    ppl_Polyhedron_get_constraints(Q, CS),
     % Print the result.
     write_constraints(CS, FrozeVN),
-    ppl_delete_polyhedron(Q).
+    ppl_delete_Polyhedron(Q).
 
 solve(true, Polys, Polys, _VarNames) :-
     % If the goal is true, we can return the input list of
@@ -96,14 +92,14 @@ solve({ Constraints }, [Poly|Polys], [Poly|Polys], _VarNames) :-
     !,
     % Solve the constraints using the constraint solver.
     constraints2list(Constraints, ConstraintsList),
-    % Fails if `Poly' becomes empty.
-    (ppl_add_constraints_and_minimize(Poly, ConstraintsList)
+    % Fails if 'Poly' becomes empty.
+    (ppl_Polyhedron_add_constraints_and_minimize(Poly, ConstraintsList)
     ->
     true
     ;
     % if the constraints are unsatisfiable,
     % first throw the empty polyhedron away and then fail.
-     ppl_delete_polyhedron(Poly),
+     ppl_delete_Polyhedron(Poly),
      fail
     ).
 
@@ -123,7 +119,7 @@ solve(read(N), Polys, Polys, VarNames) :-
     ),
 
     % add the new binding to the polyhedron.
-    (ppl_add_constraints_and_minimize(Poly, [N = MeltN])
+    (ppl_Polyhedron_add_constraints_and_minimize(Poly, [N = MeltN])
     ->
        true
     ;
@@ -148,20 +144,20 @@ solve(Atom, [Poly|Polys], PolysOut, VarNames) :-
     select_clause(Atom, Head, Body),
 
     % Copy the current polyhedron and work on the copy.
-    ppl_copy_polyhedron(Poly, PolyCopy),
+    ppl_new_Polyhedron_from_Polyhedron(c, Poly, c, PolyCopy),
 
     % Rename the selected clause apart and extend the polyhedron.
-    ppl_space_dimension(PolyCopy, Dims),
+    ppl_Polyhedron_space_dimension(PolyCopy, Dims),
 
     % Parameter passing.
     parameter_passing(Atom, Head, PP_ConstraintsList),
 
     numvars(Body, Dims, NewDims),
     AddedDims is NewDims - Dims,
-    ppl_add_dimensions_and_embed(PolyCopy, AddedDims),
+    ppl_Polyhedron_add_dimensions_and_embed(PolyCopy, AddedDims),
 
     % First solve the parameter passing equations.
-    (ppl_add_constraints_and_minimize(PolyCopy, PP_ConstraintsList)
+    (ppl_Polyhedron_add_constraints_and_minimize(PolyCopy, PP_ConstraintsList)
     ->
     % If satisfiable, try to solve the body.
     % The input list of used polyhedra is augmented with the new copy.
@@ -169,7 +165,7 @@ solve(Atom, [Poly|Polys], PolysOut, VarNames) :-
     ;
     % if the parameter passing constraints are unsatisfiable,
     % first throw the empty polyhedron away and then fail.
-     ppl_delete_polyhedron(PolyCopy),
+     ppl_delete_Polyhedron(PolyCopy),
      fail
     ).
 
@@ -199,7 +195,7 @@ select_clause(Atom, Head, Body) :-
 
 delete_all_polyhedra([]).
 delete_all_polyhedra([Polyhedron|Polyhedra]):-
-    ppl_delete_polyhedron(Polyhedron),
+    ppl_delete_Polyhedron(Polyhedron),
     delete_all_polyhedra(Polyhedra).
 
 %%%%%%%%%%%%%%%%%% Query the User for More Solutions %%%%%%%%%%%%%%%%%%%
@@ -210,7 +206,7 @@ query_next_solution :-
   flush_output(user_output),
   get_code(user_input, C),
   (
-    C == 59, get_code(user_input, _EOL)
+    C == 59, eat_eol
   ;
     C == 10
   ;
@@ -291,7 +287,7 @@ write_error_aux([H|T]) :-
 main_loop :-
   write('PPL clpq ?- '),
   read_term(Command, [variable_names(VN)]),
-  get_code(_EOL),
+  eat_eol,
   do_command(Command, VN).
 
 clear_program :-
@@ -617,6 +613,13 @@ build_equality_constraints([Var = Num|Eqs], AllEqConstrs) :-
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%% Startup %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
-:-  set_prolog_flag(language, iso),  % FIXME: this is not ISO Prolog
-    nofileerrors,                    % FIXME: this is not ISO Prolog
-    main_loop.
+common_main :-
+    write('\
+Copyright (C) 2001, 2002 Roberto Bagnara <bagnara@cs.unipr.it>\n\
+this program is free software, covered by the GNU General Public License,\n\
+and you are welcome to change it and/or distribute copies of it\n\
+under certain conditions.\n\
+Type "copying" to see the conditions.\n\
+There is ABSOLUTELY NO WARRANTY for this program.\n\
+Type "warranty" for details.\n'),
+  main_loop.

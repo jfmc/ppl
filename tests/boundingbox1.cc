@@ -29,7 +29,7 @@ site: http://www.cs.unipr.it/ppl/ . */
 using namespace std;
 using namespace Parma_Polyhedra_Library;
 
-#define NOISY 0
+#define NOISY 1
 
 #define TEST4 0
 #define TEST5 0
@@ -40,7 +40,7 @@ using namespace Parma_Polyhedra_Library;
 #define TEST6a 1
 #define TEST10a 1
 
-class MyInterval {
+class BInterval {
 private:
   bool uclosed;
   Integer uc;
@@ -50,40 +50,24 @@ private:
   Integer ld;
 
 public:
-  MyInterval()
+  BInterval()
     : uclosed(true), uc(1), ud(0), lclosed(true), lc(-1), ld(0) {
   }
 
   void raise_lower_bound(bool closed,
 			 const Integer& c, const Integer& d) {
     assert(d > 0 && ld >= 0);
-    if (closed == false)
-      if (lc*d <= c*ld)  {
+    if ((closed && lc*d <= c*ld) || (!closed && lc*d < c*ld))  {
         lc = c;
         ld = d;
         lclosed = closed;
-      }
-    else 
-      assert(closed == true);
-      if (lc*d < c*ld)  {
-        lc = c;
-        ld = d;
-        lclosed = closed;
-      }
+    }
   }
 
   void lower_upper_bound(bool closed,
 			 const Integer& c, const Integer& d) {
     assert(d > 0 && ud >= 0);
-    if (closed == false)
-      if (uc*d >= c*ud)  {
-        uc = c;
-        ud = d;
-        uclosed = closed;
-      }
-    else 
-      assert(closed == true);
-      if (uc*d > c*ud)  {
+    if ((!closed && uc*d >= c*ud) || (closed && uc*d > c*ud))  {
         uc = c;
         ud = d;
         uclosed = closed;
@@ -124,7 +108,7 @@ public:
 
 class BBox {
 private:
-  vector<MyInterval> box;
+  vector<BInterval> box;
 
 public:
   BBox(unsigned int dimension) {
@@ -143,61 +127,49 @@ public:
 
   void raise_lower_bound(size_t k, bool closed,
 			 const Integer& c, const Integer& d) {
-      //cout << "raise_lower_bound("
-      // << k << ", "
-      //<< (closed ? "true" : "false") << ", "
-      //<< c << ", "
-      //<< d << ")" << endl;
     assert(k < box.size());
     box[k].raise_lower_bound(closed, c, d);
   }
 
   void lower_upper_bound(size_t k, bool closed,
 			 const Integer& c, const Integer& d) {
-      //cout << "lower_upper_bound("
-      //<< k << ", "
-      //<< (closed ? "true" : "false") << ", "
-      //<< c << ", "
-      //<< d << ")" << endl;
     assert(k < box.size());
     box[k].lower_upper_bound(closed, c, d);
   }
 
   void set_empty(size_t k) {
-    //cout << "lower_upper_bound("
-    // << k << ")" << endl;
     assert(k < box.size());
     box[k].set_empty();
   }
 };
 
-  // This is a non-bounded polyhedron consisting of the line x = y.
+  // This is a non-bounded C polyhedron consisting of the line x = y.
   // The bounding box is the xy plane - the universal polyhedron.
 void test0() {
   Variable x(0);
   Variable y(1);
-  C_Polyhedron ph0(2);
-  ph0.add_constraint(x - y >= 0);
+  C_Polyhedron ph(2);
+  ph.add_constraint(x - y >= 0);
 
 #if NOISY
-  print_constraints(ph0, "*** ph0 ***");
-  print_generators(ph0, "*** ph0 ***");
+  print_constraints(ph, "*** test0 ph ***");
+  print_generators(ph, "*** test0 ph ***");
 #endif
   
-  BBox box0(2);
-  ph0.shrink_bounding_box(box0);
+  BBox box(2);
+  ph.shrink_bounding_box(box);
 #if NOISY
-  box0.print_box("*** box0 ***");
+  box.print_box("*** test0 box ***");
 #endif
   
-  BBox known_box0(2);
+  BBox known_box(2);
 #if NOISY
-  known_box0.print_box("*** known0 ***");
+  known_box.print_box("*** test0 known ***");
 #endif
 
-  //if (box0 != known_box0)
-  //  exit(1);
-  if (!ph0.OK())
+  //  if (box != known_box)
+  //    exit(1);
+  if (!ph.OK())
     exit(1);
 }
 
@@ -206,28 +178,28 @@ void test0() {
 void test0a() {
   Variable x(0);
   Variable y(1);
-  NNC_Polyhedron ph0a(2);
-  ph0a.add_constraint(x - y >= 0);
+  NNC_Polyhedron ph(2);
+  ph.add_constraint(x - y >= 0);
 
 #if NOISY
-  print_constraints(ph0a, "*** ph0a ***");
-  print_generators(ph0a, "*** ph0a ***");
+  print_constraints(ph, "*** test0a ph ***");
+  print_generators(ph, "*** test0a ph ***");
 #endif
   
-  BBox box0a(2);
-  ph0a.shrink_bounding_box(box0a);
+  BBox box(2);
+  ph.shrink_bounding_box(box);
 #if NOISY
-  box0a.print_box("*** box0a ***");
+  box.print_box("*** test0a box ***");
 #endif
   
-  BBox known_box0a(2);
+  BBox known_box(2);
 #if NOISY
-  known_box0a.print_box("*** known0a ***");
+  known_box.print_box("*** test0a known ***");
 #endif
 
-  //if (box0a != known_box0a)
+  //if (box != known_box)
   //  exit(1);
-  if (!ph0a.OK())
+  if (!ph.OK())
     exit(1);
 }
 
@@ -236,33 +208,33 @@ void test1() {
   Variable x(0);
   Variable y(1);
 
-  NNC_Polyhedron ph1(2);
-  ph1.add_constraint(x >= y);
-  ph1.add_constraint(y >= 0);
+  NNC_Polyhedron ph(2);
+  ph.add_constraint(x >= y);
+  ph.add_constraint(y >= 0);
 
 #if NOISY
-  print_constraints(ph1, "*** ph1 ***");
-  print_generators(ph1, "*** ph1 ***");
+  print_constraints(ph, "*** test1 ph ***");
+  print_generators(ph, "*** test1 ph ***");
 #endif
   
-  BBox box1(ph1.space_dimension());
-  ph1.shrink_bounding_box(box1);
+  BBox box(ph.space_dimension());
+  ph.shrink_bounding_box(box);
 
 #if NOISY
-    box1.print_box("*** box1 ***");
+    box.print_box("*** test1 box ***");
 #endif
    
   
-  BBox known_box1(2);
-  known_box1.raise_lower_bound(0, true, 0, 1);
-  known_box1.raise_lower_bound(1, true, 0, 1);
+  BBox known_box(2);
+  known_box.raise_lower_bound(0, true, 0, 1);
+  known_box.raise_lower_bound(1, true, 0, 1);
 #if NOISY
-  known_box1.print_box("*** known1 ***");
+  known_box.print_box("*** test1 known ***");
 #endif
 
-  //if (ph1 != known_result1)
+  //if (ph != known_box)
   // exit(1);
-  if (!ph1.OK())
+  if (!ph.OK())
     exit(1);
 }
 
@@ -271,348 +243,349 @@ void test1a() {
   Variable x(0);
   Variable y(1);
 
-  NNC_Polyhedron ph1a(2);
-  ph1a.add_constraint(x >= y);
-  ph1a.add_constraint(y >= 0);
+  NNC_Polyhedron ph(2);
+  ph.add_constraint(x >= y);
+  ph.add_constraint(y >= 0);
 
 #if NOISY
-  print_constraints(ph1a, "*** ph1a ***");
-  print_generators(ph1a, "*** ph1a ***");
+  print_constraints(ph, "*** test1a ph ***");
+  print_generators(ph, "*** test1a ph ***");
 #endif
   
-  BBox box1a(ph1a.space_dimension());
-  ph1a.shrink_bounding_box(box1a);
+  BBox box(ph.space_dimension());
+  ph.shrink_bounding_box(box);
 
 #if NOISY
-    box1a.print_box("*** box1a ***");
+    box.print_box("*** test1a box ***");
 #endif
    
   
-  BBox known_box1a(2);
-  known_box1a.raise_lower_bound(0, true, 0, 1);
-  known_box1a.raise_lower_bound(1, true, 0, 1);
+  BBox known_box(2);
+  known_box.raise_lower_bound(0, true, 0, 1);
+  known_box.raise_lower_bound(1, true, 0, 1);
 #if NOISY
-  known_box1a.print_box("*** known1a ***");
+  known_box.print_box("*** test1a known ***");
 #endif
 
-  //if (ph1a != known_result1a)
+  //if (ph != known_box)
   // exit(1);
-  if (!ph1a.OK())
+  if (!ph.OK())
     exit(1);
 }
  
-  // This is a bounded polyhedron;
+  // This is a bounded C polyhedron;
 void test2() {
   Variable x(0);
   Variable y(1);
 
-  C_Polyhedron ph2(2);
-  ph2.add_constraint(3 * x +y >= 2);
-  ph2.add_constraint(x <= 4);
-  ph2.add_constraint(y <= 4);
+  C_Polyhedron ph(2);
+  ph.add_constraint(3 * x +y >= 2);
+  ph.add_constraint(x <= 4);
+  ph.add_constraint(y <= 4);
 
 #if NOISY
-  print_generators(ph2, "*** ph2 ***");
+  print_generators(ph, "*** test2 ph ***");
 #endif
-  BBox box2(ph2.space_dimension());
-  ph2.shrink_bounding_box(box2);
+  BBox box(ph.space_dimension());
+  ph.shrink_bounding_box(box);
 #if NOISY
-  box2.print_box("*** box2 ***");
+  box.print_box("*** test2 box ***");
 #endif
   
-  BBox known_box2(2);
-  known_box2.raise_lower_bound(0, true, -2, 3);
-  known_box2.lower_upper_bound(0, true, 4, 1);
-  known_box2.raise_lower_bound(1, true, -10, 1);
-  known_box2.lower_upper_bound(1, true, 12, 3);
+  BBox known_box(2);
+  known_box.raise_lower_bound(0, true, -2, 3);
+  known_box.lower_upper_bound(0, true, 4, 1);
+  known_box.raise_lower_bound(1, true, -10, 1);
+  known_box.lower_upper_bound(1, true, 12, 3);
 #if NOISY
-  known_box2.print_box("*** known2 ***");
+  known_box.print_box("*** test2 known ***");
 #endif
 
-  // if (ph2 != known_result2)
+  // if (ph != known_box)
   //   exit(1);
-  if (!ph2.OK())
+  if (!ph.OK())
     exit(1);
 }
  
-  // This is a bounded polyhedron;
+  // This is a bounded NNC polyhedron;
 void test2a() {
   Variable x(0);
   Variable y(1);
 
-  NNC_Polyhedron ph2a(2);
-  ph2a.add_constraint(3 * x +y >= 2);
-  ph2a.add_constraint(x <= 4);
-  ph2a.add_constraint(y <= 4);
+  NNC_Polyhedron ph(2);
+  ph.add_constraint(3 * x +y >= 2);
+  ph.add_constraint(x <= 4);
+  ph.add_constraint(y <= 4);
 
 #if NOISY
-  print_generators(ph2a, "*** ph2a ***");
+  print_generators(ph, "*** test2a ph ***");
 #endif
-  BBox box2a(ph2a.space_dimension());
-  ph2a.shrink_bounding_box(box2a);
+  BBox box(ph.space_dimension());
+  ph.shrink_bounding_box(box);
 #if NOISY
-  box2a.print_box("*** box2a ***");
+  box.print_box("*** test2a box ***");
 #endif
   
-  BBox known_box2a(2);
-  known_box2a.raise_lower_bound(0, true, -2, 3);
-  known_box2a.lower_upper_bound(0, true, 4, 1);
-  known_box2a.raise_lower_bound(1, true, -10, 1);
-  known_box2a.lower_upper_bound(1, true, 4, 1);
+  BBox known_box(2);
+  known_box.raise_lower_bound(0, true, -2, 3);
+  known_box.lower_upper_bound(0, true, 4, 1);
+  known_box.raise_lower_bound(1, true, -10, 1);
+  known_box.lower_upper_bound(1, true, 4, 1);
 #if NOISY
-  known_box2a.print_box("*** known2a ***");
+  known_box.print_box("*** test2a known ***");
 #endif
 
-  // if (ph2a != known_result2a)
+  // if (ph != known_box)
   //   exit(1);
-  if (!ph2a.OK())
+  if (!ph.OK())
     exit(1);
 }
  
-  // This is a unbounded polyhedron in 4D but bounded in 2D;
+  // This is a unbounded C polyhedron in 4D but bounded in 2D;
 void test3() {
   //Variable w(0);
   Variable x(1);
   Variable y(2);
   Variable z(3);
 
-  C_Polyhedron ph3(4);
-  ph3.add_constraint(3 * x +y >= 2);
-  ph3.add_constraint(x <= 4);
-  ph3.add_constraint(y <= 4);
-  ph3.add_constraint(z >= 5);
+  C_Polyhedron ph(4);
+  ph.add_constraint(3 * x + y >= 2);
+  ph.add_constraint(x <= 4);
+  ph.add_constraint(y <= 4);
+  ph.add_constraint(z >= 5);
 
 #if NOISY
-  print_generators(ph3, "*** ph3 ***");
+  print_generators(ph, "*** test3 ph ***");
 #endif
-  BBox box3(ph3.space_dimension());
-  ph3.shrink_bounding_box(box3);
+  BBox box(ph.space_dimension());
+  ph.shrink_bounding_box(box);
 #if NOISY
-  box3.print_box("*** box3 ***");
+  box.print_box("*** test3 box ***");
 #endif
   
-  BBox known_box3(4);
-  known_box3.raise_lower_bound(1, true, -2, 3);
-  known_box3.lower_upper_bound(1, true, 4, 1);
-  known_box3.raise_lower_bound(2, true, -10, 1);
-  known_box3.lower_upper_bound(2, true, 12, 3);
-  known_box3.raise_lower_bound(3, true, 15, 3);
+  BBox known_box(4);
+  known_box.raise_lower_bound(1, true, -2, 3);
+  known_box.lower_upper_bound(1, true, 4, 1);
+  known_box.raise_lower_bound(2, true, -10, 1);
+  known_box.lower_upper_bound(2, true, 12, 3);
+  known_box.raise_lower_bound(3, true, 15, 3);
 #if NOISY
-  known_box3.print_box("*** known3 ***");
+  known_box.print_box("*** test3 known ***");
 #endif
   
-  // if (ph3 != known_result3)
+  // if (ph != known_box)
   //   exit(1);
-  if (!ph3.OK())
+  if (!ph.OK())
     exit(1);
 }
  
-  // This is a unbounded polyhedron in 4D but bounded in 2D;
+  // This is a unbounded NNC polyhedron in 4D but bounded in 2D;
 void test3a() {
   //Variable w(0);
   Variable x(1);
   Variable y(2);
   Variable z(3);
 
-  NNC_Polyhedron ph3a(4);
-  ph3a.add_constraint(3 * x +y >= 2);
-  ph3a.add_constraint(x <= 4);
-  ph3a.add_constraint(y <= 4);
-  ph3a.add_constraint(z >= 5);
+  NNC_Polyhedron ph(4);
+  ph.add_constraint(3 * x +y >= 2);
+  ph.add_constraint(x <= 4);
+  ph.add_constraint(y <= 4);
+  ph.add_constraint(z >= 5);
 
 #if NOISY
-  print_generators(ph3a, "*** ph3a ***");
+  print_generators(ph, "*** test3a ph ***");
 #endif
-  BBox box3a(ph3a.space_dimension());
-  ph3a.shrink_bounding_box(box3a);
+  BBox box(ph.space_dimension());
+  ph.shrink_bounding_box(box);
 #if NOISY
-  box3a.print_box("*** box3a ***");
+  box.print_box("*** test3a box ***");
 #endif
   
-  BBox known_box3a(4);
-  known_box3a.raise_lower_bound(1, true, -2, 3);
-  known_box3a.lower_upper_bound(1, true, 4, 1);
-  known_box3a.raise_lower_bound(2, true, -10, 1);
-  known_box3a.lower_upper_bound(2, true, 4, 1);
-  known_box3a.raise_lower_bound(3, true, 5, 1);
+  BBox known_box(4);
+  known_box.raise_lower_bound(1, true, -2, 3);
+  known_box.lower_upper_bound(1, true, 4, 1);
+  known_box.raise_lower_bound(2, true, -10, 1);
+  known_box.lower_upper_bound(2, true, 4, 1);
+  known_box.raise_lower_bound(3, true, 5, 1);
 #if NOISY
-  known_box3a.print_box("*** known3a ***");
+  known_box.print_box("*** test3a known ***");
 #endif
   
-  // if (ph3a != known_result3a)
+  // if (ph != known_box)
   //   exit(1);
-  if (!ph3a.OK())
+  if (!ph.OK())
     exit(1);
 }
 
-  // This is a universal, 2-dimensional polyhedron. 
+  // This is a universal, 2-dimensional C polyhedron. 
 void test4() {
 #if TEST4
-  C_Polyhedron ph4(2);
+  C_Polyhedron ph(2);
 
 #if NOISY
-  print_constraints(ph4, "*** ph4 ***");
+  print_constraints(ph, "*** test4 ph ***");
 #endif  
  
-  BBox box4(ph4.space_dimension());
-  ph4.shrink_bounding_box(box4);
+  BBox box(ph.space_dimension());
+  ph.shrink_bounding_box(box);
 #if NOISY
-  box4.print_box("*** box4 ***");
+  box.print_box("*** test4 box ***");
 #endif
   
-  BBox known_box4(2);
+  BBox known_box(2);
 #if NOISY
-  known_box4.print_box("*** known4 ***");
+  known_box.print_box("*** test4 known ***");
 #endif
 
-  //if (ph4 != known_result4)
+  //if (ph != known_result)
   //  exit(1);
-  if (!ph4.OK())
+  if (!ph.OK())
     exit(1);
 #endif
 }
 
-  // This is a universal, 2-dimensional polyhedron. 
+  // This is a universal, 2-dimensional NNC polyhedron. 
 void test4a() {
 #if TEST4a
-  NNC_Polyhedron ph4a(2);
+  NNC_Polyhedron ph(2);
 
 #if NOISY
-  print_constraints(ph4a, "*** ph4a ***");
+  print_constraints(ph, "*** test4a ph ***");
 #endif  
  
-  BBox box4a(ph4a.space_dimension());
-  ph4a.shrink_bounding_box(box4a);
+  BBox box(ph.space_dimension());
+  ph.shrink_bounding_box(box);
 #if NOISY
-  box4a.print_box("*** box4a ***");
+  box.print_box("*** test4a box ***");
 #endif
   
-  BBox known_box4a(2);
+  BBox known_box(2);
 #if NOISY
-  known_box4a.print_box("*** known4a ***");
+  known_box.print_box("*** test4a known ***");
 #endif
 
-  //if (ph4a != known_result4a)
+  //if (ph != known_box)
   //  exit(1);
-  if (!ph4a.OK())
+  if (!ph.OK())
     exit(1);
 #endif
 }
 
-  // This is an zero-dimensional polyhedron. 
+  // This is an zero-dimensional C polyhedron. 
 void test5() {
 #if TEST5
-  C_Polyhedron ph5;
+  C_Polyhedron ph;
 
 #if NOISY
-  print_constraints(ph5, "*** ph5 ***");
+  print_constraints(ph, "*** test5 ph ***");
 #endif  
  
-  BBox box5(ph5.space_dimension());
-  ph5.shrink_bounding_box(box5);
+  BBox box(ph.space_dimension());
+  ph.shrink_bounding_box(box);
 #if NOISY
-  box5.print_box("*** box5 ***");
+  box.print_box("*** test5 box ***");
 #endif
   
-  BBox known_box5(0);
+  BBox known_box(0);
 #if NOISY
-  known_box5.print_box("*** known5 ***");
+  known_box.print_box("*** test5 known ***");
 #endif
 
-  //if (ph5 != known_result5)
+  //if (ph != known_box)
   // exit(1);
-  if (!ph5.OK())
+  if (!ph.OK())
     exit(1);
 #endif
 }
 
-  // This is an zero-dimensional polyhedron. 
+  // This is an zero-dimensional NNC polyhedron. 
 void test5a() {
 #if TEST5a
-  NNC_Polyhedron ph5a;
+  NNC_Polyhedron ph;
 
 #if NOISY
-  print_constraints(ph5a, "*** ph5a ***");
+  print_constraints(ph, "*** test5a ph ***");
 #endif  
  
-  BBox box5a(ph5a.space_dimension());
-  ph5a.shrink_bounding_box(box5a);
+  BBox box(ph.space_dimension());
+  ph.shrink_bounding_box(box);
 #if NOISY
-  box5a.print_box("*** box5a ***");
+  box.print_box("*** test5a box ***");
 #endif
   
-  BBox known_box5a(0);
+  BBox known_box(0);
 #if NOISY
-  known_box5a.print_box("*** known5a ***");
+  known_box.print_box("*** test5a known ***");
 #endif
 
-  //if (ph5a != known_result5a)
+  //if (ph != known_box)
   // exit(1);
-  if (!ph5a.OK())
+  if (!ph.OK())
     exit(1);
 #endif
 }
 
-  // This is an empty polyhedron. 
+  // This is an empty C polyhedron. 
 void test6() {
 #if TEST6
-  C_Polyhedron ph6(2, C_Polyhedron::EMPTY);
+  C_Polyhedron ph(2, C_Polyhedron::EMPTY);
 
 #if NOISY
-  print_constraints(ph6, "*** ph6 ***");
+  print_constraints(ph, "*** test6 ph ***");
 #endif  
  
   
-  BBox box6(ph6.space_dimension());
-  ph6.shrink_bounding_box(box6);
+  BBox box(ph.space_dimension());
+  ph.shrink_bounding_box(box);
 #if NOISY
-  box6.print_box("*** box6 ***");
+  box.print_box("*** test6 box ***");
 #endif
 
-  BBox known_box6(ph6.space_dimension());
-  known_box6.set_empty(0);
-  known_box6.set_empty(1);
+  BBox known_box(ph.space_dimension());
+  known_box.set_empty(0);
+  known_box.set_empty(1);
 #if NOISY
-  known_box6.print_box("*** known6 ***");
+  known_box.print_box("*** test6 known ***");
 #endif
 
-  //if (ph6 != known_result6)
+  //if (ph != known_box)
   //  exit(1);
-  if (!ph6.OK())
+  if (!ph.OK())
     exit(1);
 #endif
 }
 
-  // This is an empty polyhedron. 
+  // This is an empty NNC polyhedron. 
 void test6a() {
 #if TEST6a
-  NNC_Polyhedron ph6a(2, C_Polyhedron::EMPTY);
+  NNC_Polyhedron ph(2, C_Polyhedron::EMPTY);
 
 #if NOISY
-  print_constraints(ph6a, "*** ph6a ***");
+  print_constraints(ph, "*** test6a ph ***");
 #endif  
  
   
-  BBox box6a(ph6a.space_dimension());
-  ph6a.shrink_bounding_box(box6a);
+  BBox box(ph.space_dimension());
+  ph.shrink_bounding_box(box);
 #if NOISY
-  box6a.print_box("*** box6a ***");
+  box.print_box("*** test6a box ***");
 #endif
 
-  BBox known_box6a(ph6a.space_dimension());
-  known_box6a.set_empty(0);
-  known_box6a.set_empty(1);
+  BBox known_box(ph.space_dimension());
+  known_box.set_empty(0);
+  known_box.set_empty(1);
 #if NOISY
-  known_box6a.print_box("*** known6a ***");
+  known_box.print_box("*** test6a known ***");
 #endif
 
-  //if (ph6a != known_result6a)
+  //if (ph != known_box)
   //  exit(1);
-  if (!ph6a.OK())
+  if (!ph.OK())
     exit(1);
 #endif
 }
 
+// This is a unit square C polyhedron
 void test10() {
 #if TEST10
   Variable x(0);
@@ -624,32 +597,33 @@ void test10() {
   cs.insert(y >= 0);
   cs.insert(y <= 1);
  
-  C_Polyhedron ph10(cs);
+  C_Polyhedron ph(cs);
 
 #if NOISY
-  print_constraints(ph10, "*** ph10 constraints ***");
-  print_generators(ph10, "*** ph10 generators ***");
+  print_constraints(ph, "*** test10 ph constraints ***");
+  print_generators(ph, "*** test10 ph generators ***");
 #endif
 
-  BBox box10(ph10.space_dimension());
-  ph10.shrink_bounding_box(box10);
+  BBox box(ph.space_dimension());
+  ph.shrink_bounding_box(box);
 #if NOISY
-  box10.print_box("*** box10 ***");
+  box.print_box("*** test10 box ***");
 #endif
-  BBox known_box10(2);
-  known_box10.raise_lower_bound(0, true, 0, 1);
-  known_box10.lower_upper_bound(0, true, 1, 1);
-  known_box10.raise_lower_bound(1, true, 0, 1);
-  known_box10.lower_upper_bound(1, true, 1, 1);
+  BBox known_box(2);
+  known_box.raise_lower_bound(0, true, 0, 1);
+  known_box.lower_upper_bound(0, true, 1, 1);
+  known_box.raise_lower_bound(1, true, 0, 1);
+  known_box.lower_upper_bound(1, true, 1, 1);
 #if NOISY
-  known_box10.print_box("*** known10 ***");
+  known_box.print_box("*** test10 known ***");
 #endif
 
-  if (!ph10.OK())
+  if (!ph.OK())
     exit(1);
 #endif
 }
 
+// This is a unit square NNC polyhedron
 void test10a() {
 #if TEST10a
   Variable x(0);
@@ -661,104 +635,104 @@ void test10a() {
   cs.insert(y >= 0);
   cs.insert(y <= 1);
  
-  NNC_Polyhedron ph10a(cs);
+  NNC_Polyhedron ph(cs);
 
 #if NOISY
-  print_constraints(ph10a, "*** ph10a constraints ***");
-  print_generators(ph10a, "*** ph10a generators ***");
+  print_constraints(ph, "*** test10a ph constraints ***");
+  print_generators(ph, "*** test10a ph generators ***");
 #endif
 
-  BBox box10a(ph10a.space_dimension());
-  ph10a.shrink_bounding_box(box10a);
+  BBox box(ph.space_dimension());
+  ph.shrink_bounding_box(box);
 #if NOISY
-  box10a.print_box("*** box10a ***");
+  box.print_box("*** test10a box ***");
 #endif
-  BBox known_box10a(2);
-  known_box10a.raise_lower_bound(0, true, 0, 1);
-  known_box10a.lower_upper_bound(0, true, 1, 1);
-  known_box10a.raise_lower_bound(1, true, 0, 1);
-  known_box10a.lower_upper_bound(1, true, 1, 1);
+  BBox known_box(2);
+  known_box.raise_lower_bound(0, true, 0, 1);
+  known_box.lower_upper_bound(0, true, 1, 1);
+  known_box.raise_lower_bound(1, true, 0, 1);
+  known_box.lower_upper_bound(1, true, 1, 1);
 #if NOISY
-  known_box10a.print_box("*** known10a ***");
+  known_box.print_box("*** test10a known ***");
 #endif
 
-  if (!ph10a.OK())
+  if (!ph.OK())
     exit(1);
 #endif
 }
  
   // This is a unbounded NNC polyhedron in 4D but bounded in 2D
-  // with strict inequality and closure points at the lower bound ;
+  // with strict inequality and closure points at the lower bound.
 void test11() {
   //Variable w(0);
   Variable x(1);
   Variable y(2);
   Variable z(3);
 
-  NNC_Polyhedron ph11(4);
-  ph11.add_constraint(3 * x +y > 2);
-  ph11.add_constraint(x <= 4);
-  ph11.add_constraint(y <= 4);
-  ph11.add_constraint(z >= 5);
+  NNC_Polyhedron ph(4);
+  ph.add_constraint(3 * x +y > 2);
+  ph.add_constraint(x <= 4);
+  ph.add_constraint(y <= 4);
+  ph.add_constraint(z >= 5);
 
 #if NOISY
-  print_generators(ph11, "*** ph11 ***");
+  print_generators(ph, "*** test11 ph ***");
 #endif
-  BBox box11(ph11.space_dimension());
-  ph11.shrink_bounding_box(box11);
+  BBox box(ph.space_dimension());
+  ph.shrink_bounding_box(box);
 #if NOISY
-  box11.print_box("*** box11 ***");
+  box.print_box("*** test11 box ***");
 #endif
   
-  BBox known_box11(4);
-  known_box11.raise_lower_bound(1, false, -2, 3);
-  known_box11.lower_upper_bound(1, true, 4, 1);
-  known_box11.raise_lower_bound(2, false, -10, 1);
-  known_box11.lower_upper_bound(2, true, 4, 1);
-  known_box11.raise_lower_bound(3, true, 5, 1);
+  BBox known_box(4);
+  known_box.raise_lower_bound(1, false, -2, 3);
+  known_box.lower_upper_bound(1, true, 4, 1);
+  known_box.raise_lower_bound(2, false, -10, 1);
+  known_box.lower_upper_bound(2, true, 4, 1);
+  known_box.raise_lower_bound(3, true, 5, 1);
 #if NOISY
-  known_box11.print_box("*** known11 ***");
+  known_box.print_box("*** test11 known ***");
 #endif
   
-  // if (ph11 != known_result11)
+  // if (ph != known_box)
   //   exit(1);
-  if (!ph11.OK())
+  if (!ph.OK())
     exit(1);
 }
 
  
   // This is a bounded NNC polyhedron with strict inequalities 
-  // causing upper and lower bounds of the box to be open;
+  // causing upper and lower bounds of the box to be open.
 void test12() {
   Variable x(0);
   Variable y(1);
 
-  NNC_Polyhedron ph12(2);
-  ph12.add_constraint(3 * x +y >= 2);
-  ph12.add_constraint(x < 4);
-  ph12.add_constraint(y <= 4);
+  NNC_Polyhedron ph(2);
+  ph.add_constraint(3 * x + y >= 2);
+  ph.add_constraint(x < 4);
+  ph.add_constraint(y <= 4);
 
 #if NOISY
-  print_generators(ph12, "*** ph12 ***");
+  print_generators(ph, "*** test12 ph ***");
 #endif
-  BBox box12(ph12.space_dimension());
-  ph12.shrink_bounding_box(box12);
+  BBox box(ph.space_dimension());
+  ph.shrink_bounding_box(box);
 #if NOISY
-  box12.print_box("*** box12 ***");
+  box.print_box("*** test12 box ***");
 #endif
   
-  BBox known_box12(2);
-  known_box12.raise_lower_bound(0, true, -2, 3);
-  known_box12.lower_upper_bound(0, false, 4, 1);
-  known_box12.raise_lower_bound(1, false, -10, 1);
-  known_box12.lower_upper_bound(1, true, 4, 1);
+  BBox known_box(2);
+  known_box.raise_lower_bound(0, true, -2, 3);
+  known_box.lower_upper_bound(0, false, 4, 1);
+  known_box.raise_lower_bound(1, false, -10, 1);
+  known_box.lower_upper_bound(1, true, 4, 1);
 #if NOISY
-  known_box12.print_box("*** known12 ***");
+  known_box.print_box("*** test12 known ***");
 #endif
 
-  // if (ph12 != known_result12)
+  // if (ph != known_box)
   //   exit(1);
-  if (!ph12.OK())
+  if (!ph.OK())
     exit(1);
 }
  
