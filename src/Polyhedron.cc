@@ -33,13 +33,6 @@ site: http://www.cs.unipr.it/ppl/ . */
 #include <sstream>
 #include <stdexcept>
 
-#define DLEVEL 0
-
-#if DLEVEL >= 1
-using std::cout;
-using std::endl;
-#endif
-
 namespace PPL = Parma_Polyhedra_Library;
 
 PPL::Polyhedron::Polyhedron(Degenerate_Kind kind)
@@ -456,13 +449,6 @@ PPL::Polyhedron::update_sat_g() const {
 */
 bool
 PPL::operator <=(const Polyhedron& x, const Polyhedron& y) {
-#if DLEVEL >= 1
-  cout << "x <= y ?" << endl
-       << "x" << endl
-       << x << endl
-       << "y" << endl
-       << y << endl;
-#endif
   if (x.is_empty())
     return true;
   else if (y.is_empty())
@@ -484,24 +470,11 @@ PPL::operator <=(const Polyhedron& x, const Polyhedron& y) {
   for (size_t i = x.gen_sys.num_rows(); i-- > 0; )
     for (size_t j = y.con_sys.num_rows(); j-- > 0; )
       if (y.con_sys[j].is_inequality()) {
-	if (y.con_sys[j] * x.gen_sys[i] < 0) {
-#if DLEVEL >= 1
-	  cout << endl << "NO" << endl;
-#endif
+	if (y.con_sys[j] * x.gen_sys[i] < 0)
 	  return false;
-	}
       }
-      else
-	if (y.con_sys[j] * x.gen_sys[i] != 0) {
-#if DLEVEL >= 1
-	  cout << endl << "NO" << endl;
-#endif
-	  return false;
-	}
-
-#if DLEVEL >= 1
-  cout << endl << "YES" << endl;
-#endif
+      else if (y.con_sys[j] * x.gen_sys[i] != 0)
+	return false;
   return true;
 }
 
@@ -582,12 +555,6 @@ void
 PPL::Polyhedron::convex_hull_assign(const Polyhedron& y) {
   Polyhedron& x = *this;
 
-#if DLEVEL >= 1
-  cout << endl << "On entry to x.convex_hull_assign(y)" << endl
-       << "=== x ===" << endl << x << endl
-       << "=== y ===" << endl << y << endl;
-#endif
-
   // Convex hull between a polyhedron 'p' and an empty polyhedron is `p'.
   if (y.is_empty())
     return;
@@ -627,11 +594,6 @@ PPL::Polyhedron::convex_hull_assign(const Polyhedron& y) {
   x.set_sat_g_up_to_date();
   x.clear_sat_c_up_to_date();
 
-#if DLEVEL >= 1
-  cout << endl << "On exit from x.convex_hull_assign(y)" << endl
-       << "--- x ---" << endl << x << endl;
-#endif
-
   assert(OK());
 }
 
@@ -643,11 +605,6 @@ PPL::Polyhedron::convex_hull_assign(const Polyhedron& y) {
 void
 PPL::Polyhedron::convex_hull_assign_lazy(const Polyhedron& y) {
   Polyhedron& x = *this;
-#if DLEVEL >= 1
-  cout << endl << "On entry to x.convex_hull_assign_(y)" << endl
-       << "=== x ===" << endl << x << endl
-       << "=== y ===" << endl << y << endl;
-#endif
 
   // Convex hull lazy between a polyhedron `p' and
   // an empty polyhedron is `p'.
@@ -687,11 +644,6 @@ PPL::Polyhedron::convex_hull_assign_lazy(const Polyhedron& y) {
   x.clear_constraints_up_to_date();
   // It is lazy, do not minimize.
   x.clear_generators_minimized();
-
-#if DLEVEL >= 1
-  cout << endl << "On exit from x.convex_hull_assign_lazy(y)" << endl
-       << "--- x ---" << endl << x << endl;
-#endif
 }
 
 /*!
@@ -915,14 +867,6 @@ throw_different_dimensions(const char* method,
 */
 bool
 PPL::Polyhedron::add_constraints(ConSys& cs) {
-#if DLEVEL >= 1
-  cout << "x.add_constraints(y)" << endl
-       << "+++ x +++" << endl
-       << *this << endl
-       << "+++ y +++" << endl
-       << cs << endl;
-#endif
-
   // If the polyhedrn is zero-dimensional and `cs' has
   // zero columns, the resulting polyhedron is zero-dimensional too.
   // It is illegal for the polyhedron to be zero-dimensional and
@@ -962,11 +906,6 @@ PPL::Polyhedron::add_constraints(ConSys& cs) {
     set_sat_c_up_to_date();
     clear_sat_g_up_to_date();
   }
-
-#if DLEVEL >= 1
-  cout << "=== x ===" << endl
-       << *this << endl;
-#endif
   assert(OK());
 
   return !empty;
@@ -978,14 +917,6 @@ PPL::Polyhedron::add_constraints(ConSys& cs) {
 */
 void
 PPL::Polyhedron::insert(const Constraint& c) {
-#if DLEVEL >= 1
-  cout << "x.insert(c)" << endl
-       << "+++ x +++" << endl
-       << *this << endl
-       << "+++ c +++" << endl
-       << c << endl;
-#endif
-
   assert(!is_empty());
 
   if (is_zero_dim()) {
@@ -1007,10 +938,6 @@ PPL::Polyhedron::insert(const Constraint& c) {
     clear_constraints_minimized();
     clear_generators_up_to_date();
   }
-#if DLEVEL >= 1
-  cout << "=== x ===" << endl
-       << *this << endl;
-#endif
 
   // The constraint system may have become unsatisfiable.
   // Do not check for satisfiability.
@@ -1024,14 +951,6 @@ PPL::Polyhedron::insert(const Constraint& c) {
 */
 void
 PPL::Polyhedron::insert(const Generator& g) {
-#if DLEVEL >= 1
-  cout << "x.insert(g)" << endl
-       << "+++ x +++" << endl
-       << *this << endl
-       << "+++ g +++" << endl
-       << g << endl;
-#endif
-
   if (is_zero_dim()) {
     // If a polyhedron is zero-dimensional, `gen_sys' has
     // no rows.
@@ -1056,11 +975,6 @@ PPL::Polyhedron::insert(const Generator& g) {
       clear_generators_minimized();
       clear_constraints_up_to_date();
     }
-
-#if DLEVEL >= 1
-  cout << "=== x ===" << endl
-       << *this << endl;
-#endif
 }
 
 
@@ -1069,14 +983,6 @@ PPL::Polyhedron::insert(const Generator& g) {
 */
 void
 PPL::Polyhedron::add_constraints_lazy(ConSys& cs) {
-#if DLEVEL >= 1
-  cout << "x.add_constraints_lazy(y)" << endl
-       << "+++ x +++" << endl
-       << *this << endl
-       << "+++ y +++" << endl
-       << cs << endl;
-#endif
-
   if (is_empty())
     return;
 
@@ -1111,11 +1017,6 @@ PPL::Polyhedron::add_constraints_lazy(ConSys& cs) {
   // After adding new constraints, generators are no more up-to-date.
   clear_constraints_minimized();
   clear_generators_up_to_date();
-
-#if DLEVEL >= 1
-  cout << "=== x ===" << endl
-       << *this << endl;
-#endif
 
   // The constraint system may have become unsatisfiable.
   // Do not check for satisfiability.
@@ -1509,11 +1410,6 @@ PPL::Polyhedron::widening_assign(const Polyhedron& y) {
     assert(y_copy <= x_copy);
   }
 #endif
-#if DLEVEL >= 1
-  cout << endl << "On entry to x.widening_assign(y)" << endl
-       << "=== x ===" << endl << x << endl
-       << "=== y ===" << endl << y << endl;
-#endif
 
   // For each x, x.widening_assign(z) = z.widening_assign(x) = z,
   // if z is a zero-dimensional polyhedron.
@@ -1617,11 +1513,6 @@ PPL::Polyhedron::widening_assign(const Polyhedron& y) {
   x.clear_constraints_minimized();
   x.clear_generators_up_to_date();
 
-#if DLEVEL >= 1
-  cout << endl << "On exit from x.widening_assign(y)" << endl
-       << "--- x ---" << endl << x << endl;
-#endif
-
   assert(OK());
 }
 
@@ -1649,11 +1540,6 @@ PPL::Polyhedron::limited_widening_assign(const Polyhedron& y,
   }
 #endif
 
-#if DLEVEL >= 1
-  cout << endl << "On entry to x.limited_widening_assign(y)" << endl
-       << "=== x ===" << endl << x << endl
-       << "=== y ===" << endl << y << endl;
-#endif
   if (y.is_empty())
     return !(x.is_empty());
   if (x.is_empty())
