@@ -27,15 +27,122 @@ site: http://www.cs.unipr.it/ppl/ . */
 #include "Limits.hh"
 #include "float.types.hh"
 
+#define CHECKED_INT_PINF(Type) (Limits<Type>::max)
+#define CHECKED_INT_NINF(Type) (Limits<Type>::min >= 0 ? Limits<Type>::max - 1 : Limits<Type>::min)
+#define CHECKED_INT_NAN(Type) (Limits<Type>::min >= 0 ? Limits<Type>::max - 2 : Limits<Type>::min + 1)
+#define CHECKED_INT_MIN(Type, Policy) (Limits<Type>::min + (Limits<Type>::min >= 0 ? 0 : (Policy::handle_infinity + Policy::handle_nan)))
+#define CHECKED_INT_MAX(Type, Policy) (Limits<Type>::max - (Limits<Type>::min >= 0 ? 2 : 1) * Policy::handle_infinity - Policy::handle_nan)
+
+
 namespace Parma_Polyhedra_Library {
 
 namespace Checked {
 
+template <typename Policy, typename Type>
+inline Result
+value_type_signed_int(const Type v) {
+  if (Policy::handle_nan && v == CHECKED_INT_NAN(Type))
+    return V_NAN;
+  if (Policy::handle_infinity) {
+    if (v == CHECKED_INT_NINF(Type))
+      return V_NEG_OVERFLOW;
+    if (v == CHECKED_INT_PINF(Type))
+      return V_POS_OVERFLOW;
+  }
+  return V_EQ;
+}
+
+SPECIALIZE_VALUE_TYPE(signed_int, signed char)
+SPECIALIZE_VALUE_TYPE(signed_int, short)
+SPECIALIZE_VALUE_TYPE(signed_int, int)
+SPECIALIZE_VALUE_TYPE(signed_int, long)
+SPECIALIZE_VALUE_TYPE(signed_int, long long)
+
+template <typename Policy, typename Type>
+inline void
+set_special_signed_int(Type& v, const Result r) {
+  if (Policy::handle_nan && r == V_NAN) {
+    v = CHECKED_INT_NAN(Type);
+    return;
+  }
+  if (Policy::handle_infinity) {
+    if (r == V_NEG_OVERFLOW) {
+      v = CHECKED_INT_NINF(Type);
+      return;
+    }
+    if (r == V_POS_OVERFLOW) {
+      v = CHECKED_INT_PINF(Type);
+      return;
+    }
+  }
+}
+
+SPECIALIZE_SET_SPECIAL(signed_int, signed char)
+SPECIALIZE_SET_SPECIAL(signed_int, short)
+SPECIALIZE_SET_SPECIAL(signed_int, int)
+SPECIALIZE_SET_SPECIAL(signed_int, long)
+SPECIALIZE_SET_SPECIAL(signed_int, long long)
+
+template <typename Policy, typename Type>
+inline Result
+value_type_unsigned_int(const Type v) {
+  if (Policy::handle_nan && v == CHECKED_INT_NAN(Type))
+    return V_NAN;
+  if (Policy::handle_infinity) {
+    if (v == CHECKED_INT_NINF(Type))
+      return V_NEG_OVERFLOW;
+    if (v == CHECKED_INT_PINF(Type))
+      return V_POS_OVERFLOW;
+  }
+  return V_EQ;
+}
+
+SPECIALIZE_VALUE_TYPE(unsigned_int, unsigned char)
+SPECIALIZE_VALUE_TYPE(unsigned_int, unsigned short)
+SPECIALIZE_VALUE_TYPE(unsigned_int, unsigned int)
+SPECIALIZE_VALUE_TYPE(unsigned_int, unsigned long)
+SPECIALIZE_VALUE_TYPE(unsigned_int, unsigned long long)
+
+template <typename Policy, typename Type>
+inline void
+set_special_unsigned_int(Type& v, const Result r) {
+  if (Policy::handle_nan && r == V_NAN) {
+      v = CHECKED_INT_NAN(Type);
+      return;
+  }
+  if (Policy::handle_infinity) {
+    if (r == V_NEG_OVERFLOW) {
+      v = CHECKED_INT_NINF(Type);
+      return;
+    }
+    if (r == V_POS_OVERFLOW) {
+      v = CHECKED_INT_PINF(Type);
+      return;
+    }
+  }
+}
+
+SPECIALIZE_SET_SPECIAL(unsigned_int, unsigned char)
+SPECIALIZE_SET_SPECIAL(unsigned_int, unsigned short)
+SPECIALIZE_SET_SPECIAL(unsigned_int, unsigned int)
+SPECIALIZE_SET_SPECIAL(unsigned_int, unsigned long)
+SPECIALIZE_SET_SPECIAL(unsigned_int, unsigned long long)
+
 template<typename Policy, typename Type>
 inline Result 
 pred_int(Type& to) {
-  if (Policy::check_overflow && to == Limits<Type>::min)
-    return V_NEG_OVERFLOW;
+  Result r = value_type<Policy>(to);
+  if (r == V_NAN || r == V_NEG_OVERFLOW)
+    return r;
+  if (r == V_POS_OVERFLOW) {
+    to = CHECKED_INT_MAX(Type, Policy);
+    return V_EQ;
+  }
+  if (Policy::check_overflow && to == CHECKED_INT_MIN(Type, Policy)) {
+    r = V_NEG_OVERFLOW;
+    to = CHECKED_INT_NINF(Type);
+    return r;
+  }
   --to;
   return V_EQ;
 }
@@ -43,8 +150,18 @@ pred_int(Type& to) {
 template<typename Policy, typename Type>
 inline Result 
 succ_int(Type& to) {
-  if (Policy::check_overflow && to == Limits<Type>::max)
-    return V_POS_OVERFLOW;
+  Result r = value_type<Policy>(to);
+  if (r == V_NAN || r == V_POS_OVERFLOW)
+    return r;
+  if (r == V_NEG_OVERFLOW) {
+    to = CHECKED_INT_MIN(Type, Policy);
+    return V_EQ;
+  }
+  if (Policy::check_overflow && to == CHECKED_INT_MAX(Type, Policy)) {
+    r = V_POS_OVERFLOW;
+    to = CHECKED_INT_PINF(Type);
+    return r;
+  }
   ++to;
   return V_EQ;
 }
@@ -59,51 +176,133 @@ assign_int_int(To& to, const From from) {
 template<typename Policy, typename To, typename From>
 inline Result
 assign_int_int_check_min(To& to, const From from) {
-  if (Policy::check_overflow && from < static_cast<From>(Limits<To>::min))
-    return V_NEG_OVERFLOW;
+  Result r;
+  if (Policy::check_overflow && from < static_cast<From>(CHECKED_INT_MIN(To, Policy))) {
+    r = V_NEG_OVERFLOW;
+    goto bad;
+  }
   to = To(from);
-  return V_EQ;
+  r = V_EQ;
+ bad:
+  return r;
 }
 
 template<typename Policy, typename To, typename From>
 inline Result
 assign_int_int_check_max(To& to, const From from) {
-  if (Policy::check_overflow && from > static_cast<From>(Limits<To>::max))
-    return V_POS_OVERFLOW;
+  Result r;
+  if (Policy::check_overflow && from > static_cast<From>(CHECKED_INT_MAX(To, Policy))) {
+    r = V_POS_OVERFLOW;
+    goto bad;
+  }
   to = To(from);
-  return V_EQ;
+  r = V_EQ;
+ bad:
+  return r;
 }
 
 template<typename Policy, typename To, typename From>
 inline Result
-assign_int_int_check_min_max(To& to, const From from) {
-  if (Policy::check_overflow) {
-    if (from < static_cast<From>(Limits<To>::min))
-      return V_NEG_OVERFLOW;
-    if (from > static_cast<From>(Limits<To>::max))
-      return V_POS_OVERFLOW;
+assign_signed_int_signed_int(To& to, const From from) {
+  Result r;
+  if (Policy::check_overflow && sizeof(To) <= sizeof(From)) {
+    if (from < static_cast<From>(CHECKED_INT_MIN(To, Policy))) {
+      r = V_NEG_OVERFLOW;
+      goto bad;
+    }
+    if (from > static_cast<From>(CHECKED_INT_MAX(To, Policy))) {
+      r = V_POS_OVERFLOW;
+      goto bad;
+    }
   }
   to = To(from);
-  return V_EQ;
+  r = V_EQ;
+ bad:
+  return r;
+}
+
+template<typename Policy, typename To, typename From>
+inline Result
+assign_signed_int_unsigned_int(To& to, const From from) {
+  Result r;
+  if (Policy::check_overflow && sizeof(To) <= sizeof(From)) {
+    if (from > static_cast<From>(CHECKED_INT_MAX(To, Policy))) {
+      r = V_POS_OVERFLOW;
+      goto bad;
+    }
+  }
+  to = To(from);
+  r = V_EQ;
+ bad:
+  return r;
+}
+
+template<typename Policy, typename To, typename From>
+inline Result
+assign_unsigned_int_signed_int(To& to, const From from) {
+  Result r;
+  if (Policy::check_overflow) {
+    if (from < 0) {
+      r = V_NEG_OVERFLOW;
+      goto bad;
+    }
+    if (sizeof(To) < sizeof(From) && from > static_cast<From>(CHECKED_INT_MAX(To, Policy))) {
+      r = V_POS_OVERFLOW;
+      goto bad;
+    }
+  }
+  to = To(from);
+  r = V_EQ;
+ bad:
+  return r;
+}
+
+template<typename Policy, typename To, typename From>
+inline Result
+assign_unsigned_int_unsigned_int(To& to, const From from) {
+  Result r;
+  if (Policy::check_overflow && sizeof(To) <= sizeof(From)) {
+    if (from > static_cast<From>(CHECKED_INT_MAX(To, Policy))) {
+      r = V_POS_OVERFLOW;
+      goto bad;
+    }
+  }
+  to = To(from);
+  r = V_EQ;
+ bad:
+  return r;
 }
 
 
 #define ASSIGN2_SIGNED_SIGNED(Smaller, Larger) \
-SPECIALIZE_ASSIGN(int_int, Larger, Smaller) \
-SPECIALIZE_ASSIGN(int_int_check_min_max, Smaller, Larger)
+SPECIALIZE_ASSIGN(signed_int_signed_int, Smaller, Larger) \
+SPECIALIZE_ASSIGN(signed_int_signed_int, Larger, Smaller)
 
 #define ASSIGN2_UNSIGNED_UNSIGNED(Smaller, Larger) \
-SPECIALIZE_ASSIGN(int_int, Larger, Smaller) \
-SPECIALIZE_ASSIGN(int_int_check_max, Smaller, Larger)
+SPECIALIZE_ASSIGN(unsigned_int_unsigned_int, Smaller, Larger) \
+SPECIALIZE_ASSIGN(unsigned_int_unsigned_int, Larger, Smaller)
 
 #define ASSIGN2_UNSIGNED_SIGNED(Smaller, Larger) \
-SPECIALIZE_ASSIGN(int_int, Larger, Smaller) \
-SPECIALIZE_ASSIGN(int_int_check_min_max, Smaller, Larger)
+SPECIALIZE_ASSIGN(unsigned_int_signed_int, Smaller, Larger) \
+SPECIALIZE_ASSIGN(signed_int_unsigned_int, Larger, Smaller)
 
 #define ASSIGN2_SIGNED_UNSIGNED(Smaller, Larger) \
-SPECIALIZE_ASSIGN(int_int_check_min, Larger, Smaller) \
-SPECIALIZE_ASSIGN(int_int_check_max, Smaller, Larger)
+SPECIALIZE_ASSIGN(signed_int_unsigned_int, Smaller, Larger) \
+SPECIALIZE_ASSIGN(unsigned_int_signed_int, Larger, Smaller)
 
+#define ASSIGN_SIGNED(Type) SPECIALIZE_ASSIGN(signed_int_signed_int, Type, Type)
+#define ASSIGN_UNSIGNED(Type) SPECIALIZE_ASSIGN(unsigned_int_unsigned_int, Type, Type)
+
+ASSIGN_SIGNED(signed char)
+ASSIGN_SIGNED(short)
+ASSIGN_SIGNED(int)
+ASSIGN_SIGNED(long)
+ASSIGN_SIGNED(long long)
+ASSIGN_UNSIGNED(unsigned char)
+ASSIGN_UNSIGNED(unsigned short)
+ASSIGN_UNSIGNED(unsigned int)
+ASSIGN_UNSIGNED(unsigned long)
+ASSIGN_UNSIGNED(unsigned long long)
 
 ASSIGN2_SIGNED_SIGNED(signed char, short)
 ASSIGN2_SIGNED_SIGNED(signed char, int)
@@ -112,8 +311,8 @@ ASSIGN2_SIGNED_SIGNED(signed char, long long)
 ASSIGN2_SIGNED_SIGNED(short, int)
 ASSIGN2_SIGNED_SIGNED(short, long)
 ASSIGN2_SIGNED_SIGNED(short, long long)
-ASSIGN2_SIGNED_SIGNED(int, long long)
 ASSIGN2_SIGNED_SIGNED(int, long)
+ASSIGN2_SIGNED_SIGNED(int, long long)
 ASSIGN2_SIGNED_SIGNED(long, long long)
 ASSIGN2_UNSIGNED_UNSIGNED(unsigned char, unsigned short)
 ASSIGN2_UNSIGNED_UNSIGNED(unsigned char, unsigned int)
@@ -154,20 +353,27 @@ ASSIGN2_SIGNED_UNSIGNED(long long, unsigned long long)
 template<typename Policy, typename To, typename From>
 inline Result
 assign_int_float_check_min_max(To& to, const From from) {
+  Result r;
   if (Policy::check_overflow) {
-    if (from < Limits<To>::min)
-      return V_NEG_OVERFLOW;
-    if (from > Limits<To>::max)
-      return V_POS_OVERFLOW;
+    if (from < CHECKED_INT_MIN(To, Policy)) {
+      r = V_NEG_OVERFLOW;
+      goto bad;
+    }
+    if (from > CHECKED_INT_MAX(To, Policy)) {
+      r = V_POS_OVERFLOW;
+      goto bad;
+    }
   }
   to = static_cast<To>(from);
+  r = V_EQ;
   if (Policy::check_inexact) {
     if (from < to)
-      return V_LT;
-    if (from > to)
-      return V_GT;
+      r = V_LT;
+    else if (from > to)
+      r = V_GT;
   }
-  return V_EQ;
+ bad:
+  return r;
 }
 
 SPECIALIZE_ASSIGN(int_float_check_min_max, int8_t, float32_t)
@@ -218,70 +424,105 @@ SPECIALIZE_ASSIGN(int_float_check_min_max, u_int64_t, float128_t)
 template <typename Policy, typename Type>
 inline Result 
 neg_signed_int(Type& to, const Type from) {
-  if (Policy::check_overflow && from == Limits<Type>::min)
-    return V_POS_OVERFLOW;
+  Result r;
+  if (Policy::check_overflow && from < -CHECKED_INT_MAX(Type, Policy)) {
+    r = V_POS_OVERFLOW;
+    goto bad;
+  }
   to = -from;
-  return V_EQ;
+  r = V_EQ;
+ bad:
+  return r;
 }
 
 template <typename Policy, typename Type>
 inline Result 
 neg_unsigned_int(Type& to, const Type from) {
-  if (!Policy::check_overflow || to == 0) {
-    to = from;
-    return V_EQ;
+  Result r;
+  if (!Policy::check_overflow || from != 0) {
+    r = V_NEG_OVERFLOW;
+    goto bad;
   }
-  return V_NEG_OVERFLOW;
+  to = from;
+  r = V_EQ;
+ bad:
+  return r;
 }
 
 template <typename Policy, typename Type>
 inline Result 
 add_signed_int(Type& to, const Type x, const Type y) {
+  Result r;
   if (Policy::check_overflow) {
     if (y >= 0) {
-      if (x > Limits<Type>::max - y)
-	return V_POS_OVERFLOW;
-    } else if (x < Limits<Type>::min - y)
-	return V_NEG_OVERFLOW;
+      if (x > CHECKED_INT_MAX(Type, Policy) - y) {
+	r = V_POS_OVERFLOW;
+	goto bad;
+      }
+    }
+    else if (x < CHECKED_INT_MIN(Type, Policy) - y) {
+	r = V_NEG_OVERFLOW;
+	goto bad;
+    }
   }
   to = x + y;
-  return V_EQ;
+  r = V_EQ;
+ bad:
+  return r;
 }
 
 template <typename Policy, typename Type>
 inline Result 
 add_unsigned_int(Type& to, const Type x, const Type y) {
+  Result r;
   if (Policy::check_overflow) {
-    if (x > Limits<Type>::max - y)
-      return V_POS_OVERFLOW;
+    if (x > CHECKED_INT_MAX(Type, Policy) - y) {
+      r = V_POS_OVERFLOW;
+      goto bad;
+    }
   }
   to = x + y;
-  return V_EQ;
+  r = V_EQ;
+ bad:
+  return r;
 }
 
 template <typename Policy, typename Type>
 inline Result 
 sub_signed_int(Type& to, const Type x, const Type y) {
+  Result r;
   if (Policy::check_overflow) {
     if (y >= 0) {
-      if (x < Limits<Type>::min + y)
-	return V_NEG_OVERFLOW;
-    } else if (x > Limits<Type>::max + y)
-	return V_POS_OVERFLOW;
+      if (x < CHECKED_INT_MIN(Type, Policy) + y) {
+	r = V_NEG_OVERFLOW;
+	goto bad;
+      }
+    }
+    else if (x > CHECKED_INT_MAX(Type, Policy) + y) {
+	r = V_POS_OVERFLOW;
+	goto bad;
+    }
   }
   to = x - y;
-  return V_EQ;
+  r = V_EQ;
+ bad:
+  return r;
 }
 
 template <typename Policy, typename Type>
 inline Result 
 sub_unsigned_int(Type& to, const Type x, const Type y) {
+  Result r;
   if (Policy::check_overflow) {
-    if (x < Limits<Type>::min + y)
-      return V_NEG_OVERFLOW;
+    if (x < CHECKED_INT_MIN(Type, Policy) + y) {
+      r = V_NEG_OVERFLOW;
+      goto bad;
+    }
   }
   to = x - y;
-  return V_EQ;
+  r = V_EQ;
+ bad:
+  return r;
 }
 
 template <typename Policy, typename Type>
@@ -297,15 +538,39 @@ mul_signed_int(Type& to, const Type x, const Type y) {
   }
   if (y == -1)
     return neg_signed_int<Policy>(to, x);
-  Type n = x * y;
-  if (n / y != x) {
-    if ((x > 0) ^ (y > 0))
-      return V_NEG_OVERFLOW;
-    else
-      return V_POS_OVERFLOW;
+  Result r;
+  if (x >= 0) {
+    if (y > 0) {
+      if (x > CHECKED_INT_MAX(Type, Policy) / y) {
+	r = V_POS_OVERFLOW;
+	goto bad;
+      }
+    }
+    else {
+      if (x > CHECKED_INT_MIN(Type, Policy) / y) {
+	r = V_NEG_OVERFLOW;
+	goto bad;
+      }
+    }
   }
-  to = n;
-  return V_EQ;
+  else {
+    if (y < 0) {
+      if (x < CHECKED_INT_MAX(Type, Policy) / y) {
+	r = V_POS_OVERFLOW;
+	goto bad;
+      }
+    }
+    else {
+      if (x < CHECKED_INT_MIN(Type, Policy) / y) {
+	r = V_NEG_OVERFLOW;
+	goto bad;
+      }
+    }
+  }
+  to = x * y;
+  r = V_EQ;
+ bad:
+  return r;
 }
 
 template <typename Policy, typename Type>
@@ -319,54 +584,71 @@ mul_unsigned_int(Type& to, const Type x, const Type y) {
     to = 0;
     return V_EQ;
   }
-  Type n = x * y;
-  if (n / y != x)
-    return V_POS_OVERFLOW;
-  to = n;
-  return V_EQ;
+  Result r;
+  if (x > CHECKED_INT_MAX(Type, Policy) / y) {
+    r = V_POS_OVERFLOW;
+    goto bad;
+  }
+  to = x * y;
+  r = V_EQ;
+ bad:
+  return r;
 }
 
 template <typename Policy, typename Type>
 inline Result 
 div_signed_int(Type& to, const Type x, const Type y) {
-  if (Policy::check_divbyzero && y == 0)
-    return V_NAN;
+  Result r;
+  if (Policy::check_divbyzero && y == 0) {
+    r = V_NAN;
+    goto bad;
+  }
   if (Policy::check_overflow && y == -1)
     return neg_signed_int<Policy>(to, x);
+  r = V_EQ;
   if (Policy::check_inexact) {
-    Type r = x % y;
-    to = x / y;
-    if (r < 0)
-      return V_LT;
-    if (r > 0)
-      return V_GT;
-  } else
-    to = x / y;
-  return V_EQ;
+    Type m = x % y;
+    if (m < 0)
+      r = V_LT;
+    if (m > 0)
+      r = V_GT;
+  }
+  to = x / y;
+ bad:
+  return r;
 }
 
 template <typename Policy, typename Type>
 inline Result 
 div_unsigned_int(Type& to, const Type x, const Type y) {
-  if (Policy::check_divbyzero && y == 0)
-    return V_NAN;
+  Result r;
+  if (Policy::check_divbyzero && y == 0) {
+    r = V_NAN;
+    goto bad;
+  }
+  r = V_EQ;
   if (Policy::check_inexact) {
-    Type r = x % y;
-    to = x / y;
-    if (r > 0)
-      return V_GT;
-  } else
-    to = x / y;
-  return V_EQ;
+    Type m = x % y;
+    if (m > 0)
+      r = V_GT;
+  }
+  to = x / y;
+ bad:
+  return r;
 }
 
 template <typename Policy, typename Type>
 inline Result 
 mod_int(Type& to, const Type x, const Type y) {
-  if (Policy::check_divbyzero && y == 0)
-    return V_NAN;
+  Result r;
+  if (Policy::check_divbyzero && y == 0) {
+    r = V_NAN;
+    goto bad;
+  }
   to = x % y;
-  return V_EQ;
+  r = V_EQ;
+ bad:
+  return r;
 }
 
 template <typename Type>
@@ -388,19 +670,25 @@ isqrtrem_(Type& q, Type& r, const Type from) {
 template <typename Policy, typename Type>
 inline Result 
 sqrt_unsigned_int(Type& to, const Type from) {
-  Type r;
-  isqrtrem_(to, r, from);
-  if (Policy::check_inexact && r > 0)
-    return V_GT;
-  return V_EQ;
+  Type rem;
+  isqrtrem_(to, rem, from);
+  Result r = V_EQ;
+  if (Policy::check_inexact && rem > 0)
+    r = V_GT;
+  return r;
 }
 
 template <typename Policy, typename Type>
 inline Result 
 sqrt_signed_int(Type& to, const Type from) {
-  if (Policy::check_sqrt_neg && from < 0)
-    return V_NAN;
-  return sqrt_unsigned_int<Policy>(to, from);
+  Result r;
+  if (Policy::check_sqrt_neg && from < 0) {
+    r = V_NAN;
+    goto bad;
+  }
+  r = sqrt_unsigned_int<Policy>(to, from);
+ bad:
+  return r;
 }
 
 template<typename T>
