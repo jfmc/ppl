@@ -57,6 +57,7 @@ TESTS = $(WATCHDOG_TESTS) \
 	inclusion1 \
         inters1 inters2 inters3 inters4 inters5 inters6 inters7 \
 	limitedwidening1 limitedwidening2\
+	memory1 \
 	onepoint \
         permute \
 	polydifference1 \
@@ -145,6 +146,8 @@ inters7_SOURCES = inters7.cc
 
 limitedwidening1_SOURCES = limitedwidening1.cc
 limitedwidening2_SOURCES = limitedwidening2.cc
+
+memory1_SOURCES = memory1.cc
 
 onepoint_SOURCES = onepoint.cc
 
