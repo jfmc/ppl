@@ -1308,11 +1308,11 @@ unify_long(Prolog_term_ref t, long l) {
 
 Prolog_foreign_return_type
 widening_assign_with_token(Prolog_term_ref t_lhs,
-			    Prolog_term_ref t_rhs,
-			    Prolog_term_ref t_t,
-			    void (Polyhedron::*
-				  widening_assign)(const Polyhedron&,
-						   unsigned* tp = 0)) {
+			   Prolog_term_ref t_rhs,
+			   Prolog_term_ref t_t,
+			   void (Polyhedron::*
+				 widening_assign)(const Polyhedron&,
+						  unsigned* tp = 0)) {
   try {
     Polyhedron* lhs = term_to_polyhedron_handle(t_lhs);
     const Polyhedron* rhs = term_to_polyhedron_handle(t_rhs);
@@ -1333,18 +1333,18 @@ widening_assign_with_token(Prolog_term_ref t_lhs,
 
 extern "C" Prolog_foreign_return_type
 ppl_Polyhedron_BHRZ03_widening_assign_with_token(Prolog_term_ref t_lhs,
-						  Prolog_term_ref t_rhs,
-						  Prolog_term_ref t_t) {
+						 Prolog_term_ref t_rhs,
+						 Prolog_term_ref t_t) {
   return widening_assign_with_token(t_lhs, t_rhs, t_t,
-				     &Polyhedron::BHRZ03_widening_assign);
+				    &Polyhedron::BHRZ03_widening_assign);
 }
 
 extern "C" Prolog_foreign_return_type
 ppl_Polyhedron_H79_widening_assign_with_token(Prolog_term_ref t_lhs,
-					       Prolog_term_ref t_rhs,
-					       Prolog_term_ref t_t) {
+					      Prolog_term_ref t_rhs,
+					      Prolog_term_ref t_t) {
   return widening_assign_with_token(t_lhs, t_rhs, t_t,
-				     &Polyhedron::H79_widening_assign);
+				    &Polyhedron::H79_widening_assign);
 }
 
 namespace {
