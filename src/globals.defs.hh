@@ -121,9 +121,13 @@ public:
   }
 };
 
+#if 1
 #define TEMP_INTEGER(id) \
 Integer& id = get_tmp_Integer(); \
 Temp_Integer_Holder temp_Integer_holder_ ## id = (id)
+#else
+#define TEMP_INTEGER(id) static Integer id
+#endif
 
 #ifdef PPL_DOXYGEN_INCLUDE_IMPLEMENTATION_DETAILS
 //! Speculative allocation function.
