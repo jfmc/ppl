@@ -1601,6 +1601,86 @@ ppl_Polyhedron_remove_higher_dimensions(Prolog_term_ref t_ph,
   return PROLOG_FAILURE;
 }
 
+namespace {
+
+class PIFunc {
+private:
+  PPL::dimension_type max_in_codomain_;
+  std::vector<PPL::dimension_type> vec;
+
+public:
+  PIFunc()
+    : max_in_codomain_(PPL::not_a_dimension()) {
+  }
+
+  bool has_empty_codomain() const {
+    return vec.empty();
+  }
+
+  PPL::dimension_type max_in_codomain() const {
+    return max_in_codomain_;
+  }
+
+  bool maps(PPL::dimension_type i, PPL::dimension_type& j) const {
+    if (i >= vec.size())
+      return false;
+    PPL::dimension_type vec_i = vec[i];
+    if (vec_i == PPL::not_a_dimension())
+      return false;
+    j = vec_i;
+    return true;
+  }
+
+  bool insert(PPL::dimension_type i, PPL::dimension_type j) {
+    if (max_in_codomain_ == PPL::not_a_dimension() || j > max_in_codomain_)
+      max_in_codomain_ = j;
+    if (i > vec.size())
+      vec.insert(vec.end(), i - vec.size(), PPL::not_a_dimension());
+    if (i == vec.size()) {
+      vec.insert(vec.end(), j);
+      return true;
+    }
+    PPL::dimension_type& vec_i = vec[i];
+    if (vec_i != PPL::not_a_dimension())
+      return false;
+    vec_i = j;
+    return true;
+  }
+};
+
+} // namespace
+
+extern "C" Prolog_foreign_return_type
+ppl_Polyhedron_shuffle_dimensions(Prolog_term_ref t_ph,
+				  Prolog_term_ref t_pifunc) {
+  try {
+    PPL::Polyhedron* ph = term_to_polyhedron_handle(t_ph);
+    CHECK(ph);
+    PIFunc pifunc;
+    Prolog_term_ref t_pair = Prolog_new_term_ref();
+    while (Prolog_is_cons(t_pifunc)) {
+      Prolog_get_cons(t_pifunc, t_pair, t_pifunc);
+      Prolog_atom functor;
+      int arity;
+      Prolog_get_compound_name_arity(t_pair, &functor, &arity);
+      if (arity != 2 || functor != a_minus)
+	goto fail;
+      Prolog_term_ref t_i = Prolog_new_term_ref();
+      Prolog_term_ref t_j = Prolog_new_term_ref();
+      Prolog_get_arg(1, t_pair, t_i);
+      Prolog_get_arg(2, t_pair, t_j);
+      if (!pifunc.insert(get_variable(t_i).id(), get_variable(t_j).id()))
+	goto fail;
+    }
+    ph->shuffle_dimensions(pifunc);
+    return PROLOG_SUCCESS;
+  }
+  CATCH_ALL;
+
+ fail:
+  return PROLOG_FAILURE;
+}
+
 extern "C" Prolog_foreign_return_type
 ppl_Polyhedron_affine_image(Prolog_term_ref t_ph, Prolog_term_ref t_v,
 			    Prolog_term_ref t_le, Prolog_term_ref t_d) {

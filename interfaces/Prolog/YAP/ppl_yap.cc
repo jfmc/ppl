@@ -422,6 +422,7 @@ YAP_STUB_2(ppl_Polyhedron_add_dimensions_and_project)
 YAP_STUB_2(ppl_Polyhedron_add_dimensions_and_embed)
 YAP_STUB_2(ppl_Polyhedron_remove_dimensions)
 YAP_STUB_2(ppl_Polyhedron_remove_higher_dimensions)
+YAP_STUB_2(ppl_Polyhedron_shuffle_dimensions)
 YAP_STUB_4(ppl_Polyhedron_affine_image)
 YAP_STUB_4(ppl_Polyhedron_affine_preimage)
 YAP_STUB_3(ppl_Polyhedron_relation_with_constraint)
@@ -486,6 +487,7 @@ init() {
   YAP_USER_C_PREDICATE(ppl_Polyhedron_add_dimensions_and_embed, 2);
   YAP_USER_C_PREDICATE(ppl_Polyhedron_remove_dimensions, 2);
   YAP_USER_C_PREDICATE(ppl_Polyhedron_remove_higher_dimensions, 2);
+  YAP_USER_C_PREDICATE(ppl_Polyhedron_shuffle_dimensions, 2);
   YAP_USER_C_PREDICATE(ppl_Polyhedron_affine_image, 4);
   YAP_USER_C_PREDICATE(ppl_Polyhedron_affine_preimage, 4);
   YAP_USER_C_PREDICATE(ppl_Polyhedron_relation_with_constraint, 3);

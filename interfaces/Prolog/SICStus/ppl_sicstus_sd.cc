@@ -172,6 +172,7 @@ SP_STUB_2(ppl_Polyhedron_add_dimensions_and_project)
 SP_STUB_2(ppl_Polyhedron_add_dimensions_and_embed)
 SP_STUB_2(ppl_Polyhedron_remove_dimensions)
 SP_STUB_2(ppl_Polyhedron_remove_higher_dimensions)
+SP_STUB_2(ppl_Polyhedron_shuffle_dimensions)
 SP_STUB_4(ppl_Polyhedron_affine_image)
 SP_STUB_4(ppl_Polyhedron_affine_preimage)
 SP_STUB_3(ppl_Polyhedron_relation_with_constraint)
@@ -244,6 +245,7 @@ ppl_sicstus_init(int /* when */) {
   SP_DEFINE_C_PREDICATE(ppl_Polyhedron_add_dimensions_and_embed, 2);
   SP_DEFINE_C_PREDICATE(ppl_Polyhedron_remove_dimensions, 2);
   SP_DEFINE_C_PREDICATE(ppl_Polyhedron_remove_higher_dimensions, 2);
+  SP_DEFINE_C_PREDICATE(ppl_Polyhedron_shuffle_dimensions, 2);
   SP_DEFINE_C_PREDICATE(ppl_Polyhedron_affine_image, 4);
   SP_DEFINE_C_PREDICATE(ppl_Polyhedron_affine_preimage, 4);
   SP_DEFINE_C_PREDICATE(ppl_Polyhedron_relation_with_constraint, 3);

@@ -416,6 +416,7 @@ Integer_to_integer_term(const PPL::Integer& n) {
 #define ppl_Polyhedron_add_dimensions_and_embed xsb_stub_ppl_Polyhedron_add_dimensions_and_embed
 #define ppl_Polyhedron_remove_dimensions xsb_stub_ppl_Polyhedron_remove_dimensions
 #define ppl_Polyhedron_remove_higher_dimensions xsb_stub_ppl_Polyhedron_remove_higher_dimensions
+#define ppl_Polyhedron_shuffle_dimensions xsb_stub_ppl_Polyhedron_shuffle_dimensions
 #define ppl_Polyhedron_affine_image xsb_stub_ppl_Polyhedron_affine_image
 #define ppl_Polyhedron_affine_preimage xsb_stub_ppl_Polyhedron_affine_preimage
 #define ppl_Polyhedron_relation_with_constraint xsb_stub_ppl_Polyhedron_relation_with_constraint
@@ -476,6 +477,7 @@ Integer_to_integer_term(const PPL::Integer& n) {
 #undef ppl_Polyhedron_add_dimensions_and_embed
 #undef ppl_Polyhedron_remove_dimensions
 #undef ppl_Polyhedron_remove_higher_dimensions
+#undef ppl_Polyhedron_shuffle_dimensions
 #undef ppl_Polyhedron_affine_image
 #undef ppl_Polyhedron_affine_preimage
 #undef ppl_Polyhedron_relation_with_constraint
@@ -574,6 +576,7 @@ XSB_ENTRY_2(ppl_Polyhedron_add_dimensions_and_project)
 XSB_ENTRY_2(ppl_Polyhedron_add_dimensions_and_embed)
 XSB_ENTRY_2(ppl_Polyhedron_remove_dimensions)
 XSB_ENTRY_2(ppl_Polyhedron_remove_higher_dimensions)
+XSB_ENTRY_2(ppl_Polyhedron_shuffle_dimensions)
 XSB_ENTRY_4(ppl_Polyhedron_affine_image)
 XSB_ENTRY_4(ppl_Polyhedron_affine_preimage)
 XSB_ENTRY_3(ppl_Polyhedron_relation_with_constraint)
