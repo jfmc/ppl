@@ -1,4 +1,5 @@
-/* Computing the set of generators of an empty polyhedron.
+/* Test Polyhedron::add_generator(): we add a generator to an
+   empty generator system having a different space dimension.
    Copyright (C) 2001-2004 Roberto Bagnara <bagnara@cs.unipr.it>
 
 This file is part of the Parma Polyhedra Library (PPL).
@@ -32,38 +33,50 @@ using namespace Parma_Polyhedra_Library;
 
 int
 main() TRY {
-  Variable x(0);
-  Variable y(1);
+  set_handlers();
 
-  ConSys cs;
-  cs.insert(x + y >= 2);
-  cs.insert(x + y <= 1);
+  Variable A(0);
+  Variable B(1);
+  Variable C(2);
 
-  C_Polyhedron known_result(cs);
+  C_Polyhedron ph_empty(2, C_Polyhedron::EMPTY);
+  GenSys gs1 = ph_empty.generators();
+  assert(gs1.space_dimension() == ph_empty.space_dimension());
 
-  const GenSys& gs = known_result.generators();
-
-#if NOISY
-  print_generators(gs, "*** gs ***");
-#endif
-
-  if (gs.space_dimension() != known_result.space_dimension())
-    exit(1);
-
-  if (gs.begin() != gs.end())
-    exit(1);
-
-  C_Polyhedron ph(gs);
-
-  if (!ph.OK())
-    exit(1);
-
-  int result = (ph == known_result ? 0 : 1);
+  gs1.insert(point());
+  gs1.insert(ray(A));
+  C_Polyhedron ph1(gs1);
 
 #if NOISY
-  print_generators(ph, "*** ph ***");
+  print_generators(ph1, "*** ph1 ***");
 #endif
 
-  return result;
+  C_Polyhedron known_result1(2);
+  known_result1.add_constraint(A >= 0);
+  known_result1.add_constraint(B == 0);
+
+  if (ph1 != known_result1)
+    return 1;
+
+  GenSys gs2 = ph_empty.generators();
+  assert(gs2.space_dimension() == ph_empty.space_dimension());
+
+  gs2.insert(point(C));
+  gs2.insert(line(C));
+  gs2.insert(ray(A));
+  C_Polyhedron ph2(gs2);
+
+#if NOISY
+  print_generators(ph2, "*** ph2 ***");
+#endif
+
+  C_Polyhedron known_result2(3);
+  known_result2.add_constraint(A >= 0);
+  known_result2.add_constraint(B == 0);
+
+  if (ph2 != known_result2)
+    return 1;
+
+  return 0;
 }
 CATCH
