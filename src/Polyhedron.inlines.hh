@@ -592,12 +592,12 @@ Polyhedron::shrink_bounding_box(Box& box, Complexity_Class complexity) const {
 
 template <typename PartialFunction>
 void
-Polyhedron::remap_dimensions(const PartialFunction& pifunc) {
+Polyhedron::remap_dimensions(const PartialFunction& pfunc) {
   // TODO: this implementation is just an executable specification.
   if (space_dim == 0)
     return;
 
-  if (pifunc.has_empty_codomain()) {
+  if (pfunc.has_empty_codomain()) {
     // All dimensions vanish: the polyhedron becomes zero_dimensional.
     if (marked_empty()
 	|| (has_pending_constraints()
@@ -615,7 +615,7 @@ Polyhedron::remap_dimensions(const PartialFunction& pifunc) {
     return;
   }
 
-  dimension_type new_space_dimension = pifunc.max_in_codomain() + 1;
+  dimension_type new_space_dimension = pfunc.max_in_codomain() + 1;
   // If there are pending constraints, using `generators()' we process them.
   const GenSys& old_gensys = generators();
 
@@ -636,7 +636,7 @@ Polyhedron::remap_dimensions(const PartialFunction& pifunc) {
     for (dimension_type index = 0; index < space_dim; ++index) {
       dimension_type new_index;
       if (old_g.coefficient(Variable(index)) != 0
-	  && pifunc.maps(index, new_index)) {
+	  && pfunc.maps(index, new_index)) {
 	e += Variable(new_index)
 	  * old_g.coefficient(Variable(index));
 	all_zeroes = false;

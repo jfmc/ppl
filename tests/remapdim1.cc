@@ -96,12 +96,11 @@ test3() {
   Variable A(0);
   Variable B(1);
   Variable C(2);
-  Variable D(3);
 
   PFunction function;
-  function.insert(0, 3);
+  function.insert(0, 2);
   function.insert(2, 0);
-  function.insert(1, 2);
+  function.insert(1, 1);
 
   GenSys gs;
   gs.insert(point(2*C));
@@ -119,8 +118,8 @@ test3() {
 
   GenSys known_gs;
   known_gs.insert(point(2*A));
-  known_gs.insert(line(D + C));
-  known_gs.insert(ray(D + A));
+  known_gs.insert(line(C + B));
+  known_gs.insert(ray(C + A));
   C_Polyhedron known_result(known_gs);
 
   bool ok = (ph1 == known_result);
@@ -180,7 +179,7 @@ test5() {
 
   PFunction function;
   function.insert(2, 0);
-  function.insert(3, 4);
+  function.insert(3, 2);
   function.insert(4, 1);
 
   GenSys gs;
@@ -197,7 +196,7 @@ test5() {
 
   ph1.remap_dimensions(function);
 
-  C_Polyhedron known_result(5, C_Polyhedron::EMPTY);
+  C_Polyhedron known_result(3, C_Polyhedron::EMPTY);
   known_result.add_generator(point());
 
   bool ok = (ph1 == known_result);
@@ -293,9 +292,9 @@ test8() {
   Variable B(1);
 
   PFunction function;
-  function.insert(0, 1);
-  function.insert(2, 2);
-  function.insert(3, 3);
+  function.insert(0, 0);
+  function.insert(2, 1);
+  function.insert(3, 2);
 
   GenSys gs;
   gs.insert(point());
@@ -312,9 +311,9 @@ test8() {
 
   ph1.remap_dimensions(function);
 
-  C_Polyhedron known_result(4, C_Polyhedron::EMPTY);
+  C_Polyhedron known_result(3, C_Polyhedron::EMPTY);
   known_result.add_generator(point());
-  known_result.add_generator(ray(B));
+  known_result.add_generator(ray(A));
 
   bool ok = (ph1 == known_result);
 
@@ -330,32 +329,7 @@ static void
 test9() {
   PFunction function;
   function.insert(0, 1);
-
-  C_Polyhedron ph1;
-
-#if NOISY
-  print_function(function, "*** function ***");
-  print_generators(ph1, "*** ph1 ***");
-#endif
-
-  ph1.remap_dimensions(function);
-
-  C_Polyhedron known_result;
-
-  bool ok = (ph1 == known_result);
-
-#if NOISY
-  print_generators(ph1, "*** After ph1.remap_dimensions(function) ***");
-#endif
-
-  if (!ok)
-    exit(1);
-}
-
-static void
-test10() {
-  PFunction function;
-  function.insert(0, 1);
+  function.insert(1, 0);
 
   C_Polyhedron ph1(3, C_Polyhedron::EMPTY);
 
@@ -391,7 +365,6 @@ main() TRY {
   test7();
   test8();
   test9();
-  test10();
   return 0;
 }
 CATCH

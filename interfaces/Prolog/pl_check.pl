@@ -1222,9 +1222,9 @@ remap_dim(T) :-
   ppl_delete_Polyhedron(Q),
   ppl_new_Polyhedron_empty_from_dimension(T, 4, P1),
   ppl_Polyhedron_add_generators(P1, [point(2*C), line(A+B), ray(A+C)]),
-  ppl_Polyhedron_remap_dimensions(P1, [A-D, C-A, B-C]),
-  ppl_new_Polyhedron_empty_from_dimension(T, 4, Q1),
-  ppl_Polyhedron_add_generators(Q1, [point(2*A), ray(A+D), line(C+D)]),
+  ppl_Polyhedron_remap_dimensions(P1, [A-C, C-A, B-B]),
+  ppl_new_Polyhedron_empty_from_dimension(T, 3, Q1),
+  ppl_Polyhedron_add_generators(Q1, [point(2*A), ray(A+C), line(B+C)]),
   ppl_Polyhedron_equals_Polyhedron(P1, Q1),
   ppl_delete_Polyhedron(P1),
   ppl_delete_Polyhedron(Q1).

@@ -1849,22 +1849,19 @@ ppl_Polyhedron_remove_higher_dimensions __P((ppl_Polyhedron_t ph,
 					     ppl_dimension_type d));
 
 /*! \brief
-  Renames the dimensions of a polyhedron according to a partial
-  injective function.  This function is specified by means of the
-  \p maps array, which has \p n entries.
+  Remaps the dimensions of the vector space according to a
+  \ref remap_dimensions "partial function". This function is specified
+  by means of the \p maps array, which has \p n entries.
 
-  The partial injective function is defined on dimension <CODE>i</CODE>
+  The partial function is defined on dimension <CODE>i</CODE>
   if <CODE>i < n</CODE> and <CODE>maps[i] != ppl_not_a_dimension</CODE>;
-  otherwise it is undefined on dimension <CODE>i</CODE>. The dimensions
-  for which the partial injective function is undefined are projected away.
+  otherwise it is undefined on dimension <CODE>i</CODE>.
   If the function is defined on dimension <CODE>i</CODE>, then dimension
   <CODE>i</CODE> is mapped onto dimension <CODE>maps[i]</CODE>.
-  If \p maps does not encode a partial <EM>injective</EM> function,
-  i.e., if two dimensions are mapped to the same dimension, then the
-  result of the renaming is undefined (this happens when there exist
-  two dimensions <CODE>i != j</CODE> such that <CODE>i < n</CODE>,
-  <CODE>j < n</CODE>, <CODE>maps[i] != ppl_not_a_dimension</CODE>,
-  and <CODE>maps[i] == maps[j]</CODE>).
+
+  The result is undefined if \p maps does not encode a partial
+  function with the properties described in the
+  \ref remap_dimensions "specification of the remapping operator".
 */
 int
 ppl_Polyhedron_remap_dimensions __P((ppl_Polyhedron_t ph,
