@@ -93,7 +93,7 @@ PPL::Polyhedron::generators() const {
 
   if (space_dimension() == 0) {
     assert(gen_sys.num_columns() == 0 && gen_sys.num_rows() == 0);
-    return GenSys::zero_dim_univ;
+    return GenSys::zero_dim_univ();
   }
 
   if (!generators_are_up_to_date())

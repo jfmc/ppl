@@ -165,7 +165,7 @@ public:
   void swap(GenSys& y);
 
   //! The singleton systems containing the zero-dim vertex.
-  static GenSys zero_dim_univ;
+  static const GenSys& zero_dim_univ();
 
   /*!
       A const_iterator is used to provide read-only access

@@ -23,128 +23,133 @@ site: http://www.cs.unipr.it/ppl/ . */
 
 #include "Generator.defs.hh"
 
+namespace Parma_Polyhedra_Library {
+
 inline
-Parma_Polyhedra_Library::GenSys::GenSys()
+GenSys::GenSys()
   : Matrix() {
 }
 
 inline
-Parma_Polyhedra_Library::GenSys::GenSys(const Generator& g)
+GenSys::GenSys(const Generator& g)
   : Matrix() {
   Matrix::insert(g);
 }
 
 inline
-Parma_Polyhedra_Library::GenSys::GenSys(const GenSys& gs)
+GenSys::GenSys(const GenSys& gs)
   : Matrix(gs) {
 }
 
 inline
-Parma_Polyhedra_Library::GenSys::GenSys(size_t num_rows, size_t num_columns)
+GenSys::GenSys(size_t num_rows, size_t num_columns)
   : Matrix(num_rows, num_columns) {
 }
 
 inline
-Parma_Polyhedra_Library::GenSys::~GenSys() {
+GenSys::~GenSys() {
 }
 
 inline void
-Parma_Polyhedra_Library::GenSys::insert(const Generator& g) {
+GenSys::insert(const Generator& g) {
   Matrix::insert(g);
 }
 
 inline void
-Parma_Polyhedra_Library::GenSys::swap(GenSys& y) {
+GenSys::swap(GenSys& y) {
   Matrix::swap(y);
 }
 
-inline void
-std::swap(Parma_Polyhedra_Library::GenSys& x,
-	  Parma_Polyhedra_Library::GenSys& y) {
-  x.swap(y);
-}
-
-inline Parma_Polyhedra_Library::Generator&
-Parma_Polyhedra_Library::GenSys::operator [](size_t k) {
+inline Generator&
+GenSys::operator [](size_t k) {
   return static_cast<Generator&>(Matrix::operator[](k));
 }
 
-inline const Parma_Polyhedra_Library::Generator&
-Parma_Polyhedra_Library::GenSys::operator [](size_t k) const {
+inline const Generator&
+GenSys::operator [](size_t k) const {
   return static_cast<const Generator&>(Matrix::operator[](k));
 }
 
 inline
-Parma_Polyhedra_Library::
 GenSys::const_iterator::const_iterator(const Matrix::const_iterator& iter)
   : i(iter) {
 }
 
 inline
-Parma_Polyhedra_Library::GenSys::const_iterator::const_iterator()
+GenSys::const_iterator::const_iterator()
   : i() {
 }
 
 inline
-Parma_Polyhedra_Library::
 GenSys::const_iterator::const_iterator(const const_iterator& y)
   : i(y.i) {
 }
 
 inline
-Parma_Polyhedra_Library::
 GenSys::const_iterator::~const_iterator() {
 }
 
 inline
-Parma_Polyhedra_Library::GenSys::const_iterator&
-Parma_Polyhedra_Library::
+GenSys::const_iterator&
 GenSys::const_iterator::operator =(const const_iterator& y) {
   i = y.i;
   return *this;
 }
 
-inline const Parma_Polyhedra_Library::Generator&
-Parma_Polyhedra_Library::GenSys::const_iterator::operator *() const {
+inline const Generator&
+GenSys::const_iterator::operator *() const {
   return static_cast<const Generator&>(*i);
 }
 
-inline const Parma_Polyhedra_Library::Generator*
-Parma_Polyhedra_Library::GenSys::const_iterator::operator ->() const {
+inline const Generator*
+GenSys::const_iterator::operator ->() const {
   return static_cast<const Generator*>(i.operator ->());
 }
 
-inline Parma_Polyhedra_Library::GenSys::const_iterator&
-Parma_Polyhedra_Library::GenSys::const_iterator::operator ++() {
+inline GenSys::const_iterator&
+GenSys::const_iterator::operator ++() {
   ++i;
   return *this;
 }
 
-inline Parma_Polyhedra_Library::GenSys::const_iterator
-Parma_Polyhedra_Library::GenSys::const_iterator::operator ++(int) {
+inline GenSys::const_iterator
+GenSys::const_iterator::operator ++(int) {
   const_iterator tmp = *this;
   operator ++();
   return tmp;
 }
 
 inline bool
-Parma_Polyhedra_Library::GenSys::
-const_iterator::operator ==(const const_iterator& y) const {
+GenSys::const_iterator::operator ==(const const_iterator& y) const {
   return i == y.i;
 }
 
 inline bool
-Parma_Polyhedra_Library::GenSys::
-const_iterator::operator !=(const const_iterator& y) const {
+GenSys::const_iterator::operator !=(const const_iterator& y) const {
   return i != y.i;
 }
 
-inline Parma_Polyhedra_Library::GenSys::const_iterator
-Parma_Polyhedra_Library::GenSys::begin() const {
+inline GenSys::const_iterator
+GenSys::begin() const {
   return const_iterator(Matrix::begin());
 }
 
-inline Parma_Polyhedra_Library::GenSys::const_iterator
-Parma_Polyhedra_Library::GenSys::end() const {
+inline GenSys::const_iterator
+GenSys::end() const {
   return const_iterator(Matrix::end());
+}
+
+inline const GenSys&
+GenSys::zero_dim_univ() {
+  static GenSys zdu(Generator::zero_dim_vertex());
+  return zdu;
+}
+
+} // namespace Parma_Polyhedra_Library
+
+
+inline void
+std::swap(Parma_Polyhedra_Library::GenSys& x,
+	  Parma_Polyhedra_Library::GenSys& y) {
+  x.swap(y);
 }

@@ -34,9 +34,6 @@ site: http://www.cs.unipr.it/ppl/ . */
 
 namespace PPL = Parma_Polyhedra_Library;
 
-PPL::GenSys
-PPL::GenSys::zero_dim_univ = PPL::GenSys(vertex(LinExpression(0)));
-
 size_t
 PPL::GenSys::num_lines() const {
   size_t n = 0;
