@@ -688,24 +688,23 @@ This is the inverse transformation to that for <CODE>ppl_affine_image</CODE>.
 Unifies <CODE>Relation</CODE> with the relation the polyhedron
 referenced by <CODE>Handle</CODE>
 has with <CODE>Constraint</CODE>.
-The meaning of these relations (listed in the grammar rules above)
-is given in Section \ref operations.
-If nothing is known about the relation with <CODE>Constraint</CODE>,
-then  <CODE>Relation</CODE> is unified with <CODE>nothing</CODE>.
+The possible relations are listed in the grammar rules above;
+their meaning is given in Section \ref operations.
+The relation  <CODE>nothing</CODE> means that
+nothing is known about  the relation the polyhedron
+referenced by <CODE>Handle</CODE> has with <CODE>Constraint</CODE>.
 
 <H4><CODE>ppl_Polyhedron_relation_with_generator(+Handle, +Generator,
                -Relation)</CODE></H4>
 
 Unifies <CODE>Relation</CODE> with the relation the polyhedron
 referenced by <CODE>Handle</CODE> has with <CODE>Generator</CODE>.
-The meaning of the relations
+The possible relations are listed in the grammar rules above;
+The meaning of the relation <CODE>subsume</CODE>
 is given in Section \ref operations.
-If  nothing is known about the relation with <CODE>Generator</CODE>,
-then <CODE>Relation</CODE>
-is unified with <CODE>nothing</CODE>.
-
-<CODE>nothing</CODE>, if nothing is known about the relation.
-
+The relation  <CODE>nothing</CODE> means that
+nothing is known about  the relation the polyhedron
+referenced by <CODE>Handle</CODE> has with <CODE>Generator</CODE>.
 
 <H4><CODE>ppl_Polyhedron_check_empty(+Handle)</CODE></H4>
 
