@@ -146,6 +146,12 @@ Determinate<PH>::definitely_entails(const Determinate<PH>& y) const {
 
 template <typename PH>
 bool
+Determinate<PH>::is_definitely_equivalent_to(const Determinate<PH>& y) const {
+  return prep->ph == y.prep->ph;
+}
+
+template <typename PH>
+bool
 lcompare(const Determinate<PH>& x, const Determinate<PH>& y) {
   return x.prep < y.prep;
 }

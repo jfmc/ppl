@@ -98,6 +98,8 @@ public:
 
   bool definitely_entails(const Determinate& y) const;
 
+  bool is_definitely_equivalent_to(const Determinate& y) const;
+
   Determinate& operator <<= (unsigned int n);
   Determinate& hide_assign(unsigned int n);
 
