@@ -28,7 +28,7 @@ using namespace std;
 using namespace Parma_Polyhedra_Library;
 
 #ifndef NOISY
-#define NOISY 0
+#define NOISY 1
 #endif
 
 #if NOISY
@@ -44,7 +44,7 @@ print_function(const PFunction& function, const std::string& intro = "",
 static void
 test1() {
   PFunction function;
-  
+
   C_Polyhedron ph1(3);
 
 #if NOISY
@@ -61,7 +61,7 @@ test1() {
 #if NOISY
   print_constraints(ph1, "*** After ph1.shuffle_dimensions(function) ***");
 #endif
-  
+
   if(!ok)
     exit(1);
 }
@@ -69,7 +69,7 @@ test1() {
 static void
 test2() {
   PFunction function;
-  
+
   C_Polyhedron ph1(3, C_Polyhedron::EMPTY);
 
 #if NOISY
@@ -86,7 +86,7 @@ test2() {
 #if NOISY
   print_constraints(ph1, "*** After ph1.shuffle_dimensions(function) ***");
 #endif
-  
+
   if(!ok)
     exit(1);
 }
@@ -97,7 +97,7 @@ test3() {
   Variable B(1);
   Variable C(2);
   Variable D(3);
-  
+
   PFunction function;
   function.insert(0, 3);
   function.insert(2, 0);
@@ -116,7 +116,7 @@ test3() {
 #endif
 
   ph1.shuffle_dimensions(function);
-  
+
   GenSys known_gs;
   known_gs.insert(point(2*A));
   known_gs.insert(line(D + C));
@@ -128,7 +128,7 @@ test3() {
 #if NOISY
   print_generators(ph1, "*** After ph1.shuffle_dimensions(function) ***");
 #endif
-  
+
   if(!ok)
     exit(1);
 }
@@ -138,7 +138,7 @@ test4() {
   Variable A(0);
   Variable B(1);
   Variable C(2);
-  
+
   PFunction function;
   function.insert(0, 1);
   function.insert(2, 0);
@@ -156,7 +156,7 @@ test4() {
 #endif
 
   ph1.shuffle_dimensions(function);
-  
+
   GenSys known_gs;
   known_gs.insert(point());
   known_gs.insert(ray(B));
@@ -168,7 +168,7 @@ test4() {
 #if NOISY
   print_generators(ph1, "*** After ph1.shuffle_dimensions(function) ***");
 #endif
-  
+
   if(!ok)
     exit(1);
 }
@@ -177,7 +177,7 @@ static void
 test5() {
   Variable A(0);
   Variable B(1);
-  
+
   PFunction function;
   function.insert(2, 0);
   function.insert(3, 4);
@@ -205,7 +205,7 @@ test5() {
 #if NOISY
   print_generators(ph1, "*** After ph1.shuffle_dimensions(function) ***");
 #endif
-  
+
   if(!ok)
     exit(1);
 }
@@ -214,7 +214,7 @@ static void
 test6() {
   Variable A(0);
   Variable B(1);
-  
+
   PFunction function;
   function.insert(0, 0);
   function.insert(1, 1);
@@ -240,7 +240,7 @@ test6() {
 #if NOISY
   print_generators(ph1, "*** After ph1.shuffle_dimensions(function) ***");
 #endif
-  
+
   if(!ok)
     exit(1);
 }
@@ -249,7 +249,7 @@ static void
 test7() {
   Variable A(0);
   Variable B(1);
-  
+
   PFunction function;
   function.insert(0, 1);
   function.insert(1, 0);
@@ -282,7 +282,7 @@ test7() {
 #if NOISY
   print_generators(ph1, "*** After ph1.shuffle_dimensions(function) ***");
 #endif
-  
+
   if(!ok)
     exit(1);
 }
@@ -291,7 +291,7 @@ static void
 test8() {
   Variable A(0);
   Variable B(1);
-  
+
   PFunction function;
   function.insert(0, 1);
   function.insert(2, 2);
@@ -321,7 +321,7 @@ test8() {
 #if NOISY
   print_generators(ph1, "*** After ph1.shuffle_dimensions(function) ***");
 #endif
-  
+
   if(!ok)
     exit(1);
 }
@@ -347,13 +347,39 @@ test9() {
 #if NOISY
   print_generators(ph1, "*** After ph1.shuffle_dimensions(function) ***");
 #endif
-  
+
+  if(!ok)
+    exit(1);
+}
+
+static void
+test10() {
+  PFunction function;
+  function.insert(0, 1);
+
+  C_Polyhedron ph1(3, C_Polyhedron::EMPTY);
+
+#if NOISY
+  print_function(function, "*** function ***");
+  print_constraints(ph1, "*** ph1 ***");
+#endif
+
+  ph1.shuffle_dimensions(function);
+
+  C_Polyhedron known_result(1, C_Polyhedron::EMPTY);
+
+  bool ok = (ph1 == known_result);
+
+#if NOISY
+  print_constraints(ph1, "*** After ph1.shuffle_dimensions(function) ***");
+#endif
+
   if(!ok)
     exit(1);
 }
 
 int
-main() {
+main() try {
   set_handlers();
 
   test1();
@@ -365,6 +391,12 @@ main() {
   test7();
   test8();
   test9();
+  test10();
 
   return 0;
+}
+catch (const std::exception& e) {
+  cerr << "std::exception caught: "
+       << e.what() << " (type == " << typeid(e).name() << ")"
+       << endl;
 }
