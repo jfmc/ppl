@@ -192,11 +192,6 @@ polyhedron referenced by <CODE>Address</CODE> must be dimensional compatible.
 This means that the identifiers for the variables in
 <CODE>Constraint</CODE> must be strictly less than the space
 dimension of the polyhedron. 
-E.g. the following aborts,
-\code
-   | ?- ppl_new_polyhedron(X,3),
-        ppl_insert_constraint(X,'$VAR'(3) = -12).
-\endcode
 
 <H4><CODE>ppl_insert_generator(+Address, +Generator)</CODE></H4>
 
@@ -240,7 +235,6 @@ Note that constraints are not minimized and a query will succeed even when
 
    Adds the constraints in list <CODE>List_of_Constraints</CODE>
    to the polyhedron referenced by <CODE>Address</CODE>.
-   This will fail if the resulting polyhedron is empty.
    E.g.,
 \code
    | ?- A = '$VAR'(0), B = '$VAR'(1),
@@ -273,6 +267,13 @@ Note that constraints are not minimized and a query will succeed even when
    predicate that either the polyhedron referenced by <CODE>Address</CODE>
    is non-empty or that whenever <CODE>List_of_Generators</CODE> is
    non-empty the first element defines a vertex.
+                                                                       
+<H4><CODE>ppl_add_generators_and_minimize(+Address, 
+                                   +List_of_Generators)</CODE></H4>
+
+   Adds the generators in list <CODE>List_of_Generators</CODE>
+   to the polyhedron referenced by <CODE>Address</CODE>.
+
 
 <H4><CODE>ppl_remove_dimensions(+Address, +List_of_PPL_Vars)</CODE></H4>
 
@@ -314,12 +315,6 @@ dimensions.
    The polyhedron \f$P\f$ at the <CODE>Address</CODE>
    must have space dimension \f$k\f$ greater that or equal to
    <CODE>Integer</CODE>.
-   E.g. The following aborts,
-\code
-   | ?- ppl_new_polyhedron(X,5),
-        ppl_remove_higher_dimensions(X,6),
-        ppl_space_dimension(X,K).
-\endcode
 
 <H4><CODE>ppl_add_dimensions_and_embed(+Address, +Integer)</CODE></H4>
 
@@ -358,6 +353,16 @@ dimensions.
 
    Succeeds if and only if the polyhedron referenced by
    <CODE>Address</CODE> is empty.
+
+<H4><CODE>ppl_check_universe(+Address)</CODE></H4>
+
+   Succeeds if and only if the polyhedron referenced by
+   <CODE>Address</CODE> is the universe.
+
+<H4><CODE>ppl_is_bounded(+Address)</CODE></H4>
+
+   Succeeds if and only if the polyhedron referenced by
+   <CODE>Address</CODE> is bounded.
 
 <H4><CODE>ppl_get_constraints(+Address, -List_of_Constraints)</CODE></H4>
 
@@ -441,6 +446,88 @@ dimensions.
    Computes the widening between the polyhedra referenced by
    <CODE>Address_1</CODE> and <CODE>Address_2</CODE> and places
    the result at <CODE>Address_1</CODE>.
+
+<H4><CODE>ppl_limited_widening_assign(+Address_1, +Address_2,
+               +List_of_Constraints)</CODE></H4>
+
+   Limits the widening between the polyhedra referenced by
+   <CODE>Address_1</CODE> and <CODE>Address_2</CODE>
+   by <CODE>List_of_Constraints</CODE> and places
+   the result at <CODE>Address_1</CODE>.
+
+<H4><CODE>ppl_polyhedron_included_or_equal(+Address_1, +Address_2)</CODE></H4>
+
+   Succeeds if and only if the polyhedron referenced by
+   <CODE>Address_1</CODE> is included in or
+   equal to the polyhedron referenced by <CODE>Address_2</CODE>.
+
+<H4><CODE>ppl_polyhedron_equal(+Address_1, +Address_2)</CODE></H4>
+
+   Succeeds if and only if the polyhedron referenced by
+   <CODE>Address_1</CODE> is
+   equal to the polyhedron referenced by <CODE>Address_2</CODE>.
+
+<H4><CODE>ppl_polyhedron_strictly_included(+Address_1, +Address_2)</CODE></H4>
+
+   Succeeds if and only if the polyhedron referenced by
+   <CODE>Address_1</CODE> is included in but not
+   equal to the polyhedron referenced by <CODE>Address_2</CODE>.
+
+<H4><CODE>ppl_affine_image(+Address, +PPL_Var,
+               +LinExpr, +Integer)</CODE></H4>
+
+Transforms the polyhedron referenced by <CODE>Address</CODE> 
+   assigning the affine expression <CODE>LinExpr</CODE>/<CODE>Integer</CODE>
+   to <CODE>PPL_Var</CODE>.
+
+<H4><CODE>ppl_affine_preimage(+Address, +PPL_Var,
+               +LinExpr, +Integer)</CODE></H4>
+
+This is the inverse transformation to that for <CODE>ppl_affine_image</CODE>.
+
+
+<H4><CODE>ppl_relation_with_constraint(+Address, +Constraint,
+               -Relation)</CODE></H4>
+
+Computes the relation the polyhedron \f$P\f$
+referenced by <CODE>Address</CODE>
+has with <CODE>Constraint</CODE>.
+<CODE>Relation</CODE> is unified to a value as follows:
+
+<CODE>is_disjoint</CODE>, if \f$P\f$
+and the set of points satisfying
+ <CODE>Constraint</CODE>  are disjoint;
+
+<CODE>strictly_intersects</CODE>, if \f$P\f$
+intersects but is not included in the set of points satisfying
+ <CODE>Constraint</CODE>;
+
+<CODE>is_included</CODE>, if \f$P\f$
+is included in the set of points satisfying
+ <CODE>Constraint</CODE>;
+
+<CODE>is_included</CODE>, if \f$P\f$
+is included in the set of points saturating
+ <CODE>Constraint</CODE>;
+
+<CODE>nothing</CODE>, if nothing is known about the relation.
+
+
+<H4><CODE>ppl_relation_with_generator(+Address, +Generator,
+               -Relation)</CODE></H4>
+
+Computes the relation the polyhedron \f$P\f$
+referenced by <CODE>Address</CODE>
+has with <CODE>Generator</CODE>.
+<CODE>Relation</CODE>, is unified to a value as follows:
+
+<CODE>subsumes</CODE>, if adding <CODE>Generator</CODE>
+would not change \f$P\f$;
+
+<CODE>implies</CODE>, if \f$P\f$ implies <CODE>Generator</CODE>;
+
+<CODE>nothing</CODE>, if nothing is known about the relation.
+
 
 */
 
