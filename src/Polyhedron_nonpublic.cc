@@ -98,7 +98,10 @@ PPL::Polyhedron::Polyhedron(const Topology topol, const ConSys& ccs)
 				? "C_Polyhedron(cs)"
 				: "NNC_Polyhedron(cs)", "cs", cs);
 
-  if (cs.num_rows() > 0 && cs_space_dim > 0) {
+  // Set the space dimension.
+  space_dim = cs_space_dim;
+
+  if (space_dim > 0) {
     // Stealing the rows from `cs'.
     std::swap(con_sys, cs);
     if (con_sys.num_pending_rows() > 0) {
@@ -111,23 +114,19 @@ PPL::Polyhedron::Polyhedron(const Topology topol, const ConSys& ccs)
     }
     add_low_level_constraints(con_sys);
     set_constraints_up_to_date();
-
-    // Set the space dimension.
-    space_dim = cs_space_dim;
-    assert(OK());
-    return;
   }
-
-  // Here `cs.num_rows == 0' or `cs_space_dim == 0'.
-  space_dim = 0;
-  if (cs.num_columns() > 0)
-    // See if an inconsistent constraint has been passed.
-    for (dimension_type i = cs.num_rows(); i-- > 0; )
-      if (cs[i].is_trivial_false()) {
-	// Inconsistent constraint found: the polyhedron is empty.
-	set_empty();
-	return;
-      }
+  else {
+    // Here `space_dim == 0'.
+    if (cs.num_columns() > 0)
+      // See if an inconsistent constraint has been passed.
+      for (dimension_type i = cs.num_rows(); i-- > 0; )
+	if (cs[i].is_trivial_false()) {
+	  // Inconsistent constraint found: the polyhedron is empty.
+	  set_empty();
+	  break;
+	}
+  }
+  assert(OK());
 }
 
 PPL::Polyhedron::Polyhedron(const Topology topol, ConSys& cs)
@@ -142,7 +141,10 @@ PPL::Polyhedron::Polyhedron(const Topology topol, ConSys& cs)
 				? "C_Polyhedron(cs)"
 				: "NNC_Polyhedron(cs)", "cs", cs);
 
-  if (cs.num_rows() > 0 && cs_space_dim > 0) {
+  // Set the space dimension.
+  space_dim = cs_space_dim;
+
+  if (space_dim > 0) {
     // Stealing the rows from `cs'.
     std::swap(con_sys, cs);
     if (con_sys.num_pending_rows() > 0) {
@@ -155,23 +157,19 @@ PPL::Polyhedron::Polyhedron(const Topology topol, ConSys& cs)
     }
     add_low_level_constraints(con_sys);
     set_constraints_up_to_date();
-
-    // Set the space dimension.
-    space_dim = cs_space_dim;
-    assert(OK());
-    return;
   }
-
-  // Here `cs.num_rows == 0' or `cs_space_dim == 0'.
-  space_dim = 0;
-  if (cs.num_columns() > 0)
-    // See if an inconsistent constraint has been passed.
-    for (dimension_type i = cs.num_rows(); i-- > 0; )
-      if (cs[i].is_trivial_false()) {
-	// Inconsistent constraint found: the polyhedron is empty.
-	set_empty();
-	return;
-      }
+  else {
+    // Here `space_dim == 0'.
+    if (cs.num_columns() > 0)
+      // See if an inconsistent constraint has been passed.
+      for (dimension_type i = cs.num_rows(); i-- > 0; )
+	if (cs[i].is_trivial_false()) {
+	  // Inconsistent constraint found: the polyhedron is empty.
+	  set_empty();
+	  break;
+	}
+  }
+  assert(OK());
 }
 
 PPL::Polyhedron::Polyhedron(const Topology topol, const GenSys& cgs)
@@ -184,7 +182,7 @@ PPL::Polyhedron::Polyhedron(const Topology topol, const GenSys& cgs)
 
   // An empty set of generators defines the empty polyhedron.
   if (gs.num_rows() == 0) {
-    space_dim = 0;
+    space_dim = gs.space_dimension();
     status.set_empty();
     return;
   }
@@ -239,7 +237,7 @@ PPL::Polyhedron::Polyhedron(const Topology topol, GenSys& gs)
     sat_g() {
   // An empty set of generators defines the empty polyhedron.
   if (gs.num_rows() == 0) {
-    space_dim = 0;
+    space_dim = gs.space_dimension();
     status.set_empty();
     return;
   }
