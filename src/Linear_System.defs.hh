@@ -426,11 +426,11 @@ private:
 
 public:
   // Same traits as Iter1.
-  typedef Iter1::iterator_category iterator_category;
-  typedef Iter1::value_type value_type;
-  typedef Iter1::difference_type difference_type;
-  typedef Iter1::pointer pointer;
-  typedef Iter1::reference reference;
+  typedef std::iterator_traits<Iter1>::iterator_category iterator_category;
+  typedef std::iterator_traits<Iter1>::value_type value_type;
+  typedef std::iterator_traits<Iter1>::difference_type difference_type;
+  typedef std::iterator_traits<Iter1>::pointer pointer;
+  typedef std::iterator_traits<Iter1>::reference reference;
 
   //! Constructor.
   With_Saturation_Matrix_iterator(Iter1 iter1, Iter2 iter2);
