@@ -176,7 +176,7 @@ public:
   const Integer& coefficient() const;
 
   //! The unsatisfiable zero-dim constraint 0 = 1.
-  static Constraint zero_dim_false;
+  static const Constraint& zero_dim_false();
 
 PPL_INTERNAL:
   //! Returns <CODE>true</CODE> if and only if

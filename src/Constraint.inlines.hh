@@ -24,67 +24,73 @@ site: http://www.cs.unipr.it/ppl/ . */
 
 #include "LinExpression.defs.hh"
 
+namespace Parma_Polyhedra_Library {
+
 inline
-Parma_Polyhedra_Library::Constraint::Constraint(LinExpression& e) {
+Constraint::Constraint(LinExpression& e) {
   swap(e);
 }
 
 inline
-Parma_Polyhedra_Library::Constraint::Constraint(const Constraint& c)
+Constraint::Constraint(const Constraint& c)
   : Row(c) {
 }
 
 inline
-Parma_Polyhedra_Library::Constraint::Constraint(Row::Type type, size_t size)
+Constraint::Constraint(Row::Type type, size_t size)
   : Row(type, size) {
 }
 
 inline
-Parma_Polyhedra_Library::Constraint::~Constraint() {
+Constraint::~Constraint() {
 }
 
 inline bool
-Parma_Polyhedra_Library::Constraint::is_equality() const {
+Constraint::is_equality() const {
   return is_line_or_equality();
 }
 
-inline Parma_Polyhedra_Library::Constraint::Type
-Parma_Polyhedra_Library::Constraint::type() const {
+inline Constraint::Type
+Constraint::type() const {
   return is_equality() ? EQUALITY : INEQUALITY;
 }
 
 inline bool
-Parma_Polyhedra_Library::Constraint::is_inequality() const {
+Constraint::is_inequality() const {
   return is_ray_or_vertex_or_inequality();
 }
 
 inline void
-Parma_Polyhedra_Library::Constraint::set_is_equality() {
+Constraint::set_is_equality() {
   set_is_line_or_equality();
 }
 
 inline void
-Parma_Polyhedra_Library::Constraint::set_is_inequality() {
+Constraint::set_is_inequality() {
   set_is_ray_or_vertex_or_inequality();
 }
 
-inline Parma_Polyhedra_Library::Variable
-Parma_Polyhedra_Library::Constraint::last_variable() const {
+inline Variable
+Constraint::last_variable() const {
   assert(Row::size() >= 2);
   return Variable(size()-2);
 }
 
-inline const Parma_Polyhedra_Library::Integer&
-Parma_Polyhedra_Library::Constraint::coefficient(Variable v) const {
+inline const Integer&
+Constraint::coefficient(Variable v) const {
   return Row::coefficient(v.id());
 }
 
-inline const Parma_Polyhedra_Library::Integer&
-Parma_Polyhedra_Library::Constraint::coefficient() const {
+inline const Integer&
+Constraint::coefficient() const {
   return Row::coefficient();
 }
 
-namespace Parma_Polyhedra_Library {
+inline const Constraint&
+Constraint::zero_dim_false() {
+  static Constraint zdf(LinExpression::zero() == Integer::one());
+  return zdf;
+}
 
 inline Constraint
 operator ==(const LinExpression& e1, const LinExpression& e2) {

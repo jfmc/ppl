@@ -31,9 +31,6 @@ site: http://www.cs.unipr.it/ppl/ . */
 namespace PPL = Parma_Polyhedra_Library;
 
 PPL::Constraint
-PPL::Constraint::zero_dim_false(LinExpression(0) == Integer(1));
-
-PPL::Constraint
 PPL::operator >>(const Constraint& y, unsigned int offset) {
   size_t y_size = y.size();
   Constraint x(y.Row::type(), y_size+offset);
