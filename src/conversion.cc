@@ -56,7 +56,7 @@ namespace PPL = Parma_Polyhedra_Library;
   to convert \p dest could be modified and then it is not constant.
 
   \p dest is supposed to have lines from index 0 to index
-  \p num_lines_or_equalities - 1  and ray/vertex from index
+  \p num_lines_or_equalities - 1  and rays/vertices from index
   \p num_lines_or_equalities to the last row.
 
   \p start parameter is 0 when we have to find generators from a given
@@ -316,8 +316,8 @@ namespace PPL = Parma_Polyhedra_Library;
   each of them
   -# lies on the hyper-plane represented by the k-th constraint,
   -# is a positive combination of two adjacent rays \f$\vect{r}_1\f$ and
-     \f$\vect{r}_2\f$ such that the first one verifies the constraint and
-     the other does not verify it.
+     \f$\vect{r}_2\f$ such that the first one satisfies the constraint and
+     the other does not satisfy it.
   If the adjacency property is not taken in account, the new set of
   rays is not irredundant, in general.
 
@@ -351,14 +351,14 @@ PPL::Polyhedron::conversion(Matrix& source,
   size_t dest_num_rows = dest.num_rows();
   size_t dest_num_columns = dest.num_columns();
 
-  // `sat' have the same number of columns of `source' rows and
-  // the same number of rows of `dest' rows (because of the choice
-  // made for the definition of `sat').
+  // By construction, the number of columns of `sat' is the same as
+  // the number of rows of `source'; also, the number of rows of `sat'
+  // is the same as the number of rows of `dest'.
   assert(source_num_rows == sat.num_columns());
   assert(dest_num_rows == sat.num_rows());
 
-  // Making conversion for the sub-matrix whose rows are those
-  // of `source' from the one indexed by `start' to the last one.
+  // Converting the sub-matrix of `source' having rows with indexes
+  // from `start' to the last one (i.e., `source_num_rows' - 1).
   for (size_t k = start; k < source_num_rows; ) {
 
     // Constraints and generators must have the same dimension,
@@ -366,43 +366,37 @@ PPL::Polyhedron::conversion(Matrix& source,
     assert(source_num_columns == dest_num_columns);
 
     // The i-th element of `scalar_prod' will contain the scalar product
-    // of the k-th row of 'source' and the i-th row of `dest'. If this
-    // product is 0 it means that the i-th generator saturates the k-th
-    // constraint.
+    // of the k-th constraint in 'source' and the i-th generator in `dest'.
+    // This product is 0 iff the generator saturates the constraint.
     static std::vector<Integer> scalar_prod;
     int needed_space = dest_num_rows - scalar_prod.size();
     if (needed_space > 0)
       scalar_prod.insert(scalar_prod.end(), needed_space, Integer_zero());
-    // `index_non_zero' will indicate the first row of `dest' that does
-    // not saturate the k-th constraint: we initialize it to
-    // `dest_num_rows' and we will change it if we will find a
-    // previous row that does not saturate the constraint.
-    size_t index_non_zero = dest_num_rows;
-    for (size_t i = 0; i < dest_num_rows; ++i) {
-      scalar_prod[i] = source[k] * dest[i];
-      if (index_non_zero == dest_num_rows && scalar_prod[i] != 0)
-	// We have not already changed the initial value of
-	// `index_non_zero' and we found a row that does not saturate
-	// the k-th constraint, with index i that is less than dest_num_rows.
-	index_non_zero = i;
+    // `index_non_zero' will indicate the first generator in `dest'
+    // that does not saturate the k-th constraint.
+    size_t index_non_zero = 0;
+    for ( ; index_non_zero < dest_num_rows; ++index_non_zero) {
+      scalar_prod[index_non_zero] = source[k] * dest[index_non_zero];
+      if (scalar_prod[index_non_zero] != 0)
+	// The generator does not saturate the constraint.
+	break;
     }
-    // The case treated below is the one when `index_non_zero' is
-    // less than `num_lines_or_equalities', i.e., there exists a
-    // bidirectional ray (`dest row') that does not saturate the
-    // k-th constraint.
-    // The other case (described later) that may arise is that all
-    // the bidirectional rays represented by `dest' first
-    // `num_or_equalities' rows saturate the k-th constraint.
+    for (size_t i = index_non_zero + 1; i < dest_num_rows; ++i)
+      scalar_prod[i] = source[k] * dest[i];
 
-    // Since the `index_non_zero'-th row of `dest' does not
-    // saturate the k-th constraint it can not to be a line (see
-    // saturation rule in the Introduction); so, if it is placed
-    // among the lines we have to move it below, except if it
-    // is already placed after all the lines.
-    // Note that now the number of `dest' rows that saturate the k-th
-    // constraint is one less.
-
+    // We first treat the case when `index_non_zero' is less than
+    // `num_lines_or_equalities', i.e., when the generator that
+    // does not saturate the k-th constraint is a line.
+    // The other case (described later) is when all the lines
+    // in `dest' (i.e., all the rows having indexes less than
+    // `num_lines_or_equalities') do saturate the k-th constraint.
     if (index_non_zero < num_lines_or_equalities) {
+      // Since the `index_non_zero'-th generator of `dest' does not
+      // saturate the k-th constraint, it can no longer be a line
+      // (see saturation rule in the Introduction).
+      // Therefore, we decrement the number of lines of `dest'
+      // and we move this generator below all the lines
+      // (unless it already was the last line in `dest').
       --num_lines_or_equalities;
       if (index_non_zero != num_lines_or_equalities) {
 	std::swap(dest[index_non_zero],
@@ -410,34 +404,25 @@ PPL::Polyhedron::conversion(Matrix& source,
 	std::swap(scalar_prod[index_non_zero],
 		  scalar_prod[num_lines_or_equalities]);
       }
-      // The fact that a generator does not saturate the constraint means that
-      // that the generator does not lie on the hyper-plane represented by
-      // the constraints: it belongs to one of the two half-spaces generated
-      // by the hyper-plane. For this reason the generator cannot be a line
-      // of the polyhedron.
-      // On the other hand, we know (see saturation rule in the Introduction)
-      // that every line of a polyhedron must saturate all equalities
-      // and inequalities, then the found generator (now swapped with the
-      // `num_lines_or_equalities'-th one) can not to be a line and
-      // we set it to ray/vertex.
-      dest[num_lines_or_equalities].set_is_ray_or_vertex_or_inequality();
 
-      // We have modified dest so it is no longer sorted.
+      // Anyway, since the found line will later become a ray,
+      // it may happen that `dest' is no longer sorted.
       dest.set_sorted(false);
 
-      // The new lineality space is obtained considering a set of new
-      // lines that must lie on the hyper-plane represented by
-      // the k-th constraint, i.e., the scalar product between the k-th
-      // constraint and the i-th generator must be 0. So we have to consider
-      // the lines (they are placed in `dest' from the `index_non_zero'-th
-      // row and the `num_lines_or_equalities' - 1-th one) that do
-      // not saturate the k-th constraint and
-      // combine them (in a linear combination) with the
-      // `num_lines_or_equalities'-th one such that the new generators
-      // saturate the constraint. So, for the observation 1,
-      // the new lines saturate the costraints that the old corresponding
-      // ones saturate and also the `k'-th constraint.
-
+      // Computing the new lineality space.
+      // Since each line must lie on the hyper-plane corresponding to
+      // the k-th constraint, the scalar product between the line and
+      // the k-th constraint must be 0.
+      // This property already holds for the lines having indexes
+      // between 0 and `index_non_zero' - 1. So we have to consider
+      // the remaining lines, having indexes between `index_non_zero'
+      // and `num_lines_or_equalities' - 1. Those that do not saturate
+      // the k-th constraint have to be linearly combined with
+      // the `num_lines_or_equalities'-th generator so that
+      // the resulting new lines saturate the k-th constraint.
+      // Note that, by Observation 1 above, the resulting new lines
+      // will still saturate all the constraints that were saturated by
+      // the old corresponding lines.
       for (size_t i = index_non_zero; i < num_lines_or_equalities; ++i) {
 	if (scalar_prod[i] != 0) {
 	  // The following fragment optimizes the computation of
@@ -471,41 +456,38 @@ PPL::Polyhedron::conversion(Matrix& source,
 	  scalar_prod[i] = 0;
 	}
       }
-      // Since the `num_lines_or_equalities'-th generator does not lie on
-      // the hyper-plane correspondent to the k-th constraint, we have
-      // to choose the half-line that belongs to the half-space we
-      // are considering. The right one is the one that multiplied by the
-      // k-th constraint give a positive result (i.e., the one that
-      // satisfy the constraint). If it is not the case, we
-      // multiply the `num_lines_or_equalities'-th row of `dest' by -1.
+      // Since the `num_lines_or_equalities'-th generator does not
+      // saturate the k-th constraint (i.e., it does not lie on
+      // the hyper-plane corresponding to the constraint),
+      // we have to transform it into a ray (or vertex).
+      // Of the two possible choices, we select the ray satisfying
+      // the k-th constraint, i.e., that one belonging to
+      // the half-space generated by the constraint (namely,
+      // the ray whose scalar product with the k-th constraint
+      // gives a positive result).
+      dest[num_lines_or_equalities].set_is_ray_or_vertex_or_inequality();
       if (scalar_prod[num_lines_or_equalities] < 0) {
+	// The `num_lines_or_equalities'-th ray lies on the wrong
+	// half-space: we change it to have the opposite direction.
+
 	// FIXME: the following qualification PPL:: is there only
 	//        to get around a bug of GCC version 2.96 20000731
 	//        (Red Hat Linux 7.1 2.96-98)
 	PPL::negate(scalar_prod[num_lines_or_equalities]);
-	for (size_t j = source_num_columns; j-- > 0; )
-	  // source and dest have the same number of columns:
-	  // we can use j (running through source's columns)
-	  // to change sign to all the elements of the
-	  // `num_lines_or_equalities'-th row of dest.
+	for (size_t j = dest_num_columns; j-- > 0; )
 	  // FIXME: the following qualification PPL:: is there only
 	  //        to get around a bug of GCC version 2.96 20000731
 	  //        (Red Hat Linux 7.1 2.96-98)
 	  PPL::negate(dest[num_lines_or_equalities][j]);
       }
-      // To build the new pointed cone we need the new oriented ray: we
-      // have to compute a positive combination of this ray with each of
-      // the old extremal ray (they are placed in `dest' from the
-      // `num_lines_or_equalities' row to the last one).
-      // As we seen for the lineality space, we have to consider the rays
-      // that do not lie on the hyper-plane represented by the k-th
-      // constraint.
 
-      // In both cases (the new lineality space computation and the
-      // new pointed cone computation), for every new generator built, we
-      // set to 0 the element of `scalar_prod' that correspond to the
-      // scalar product between the generator itself and the k-th constraint
-      // because it is what we wanted to happen building the new generators.
+      // Computing the new pointed cone.
+      // Similarly to what we have done during the computation of
+      // the lineality space, we consider all the remaining rays
+      // (having indexes strictly greater that `num_lines_or_equalities')
+      // that do not saturate the k-th constraint. These rays are
+      // positively combined with the `num_lines_or_equalities'-th ray,
+      // so that the resulting new rays saturate the k-th constraint.
       for (size_t i = num_lines_or_equalities + 1; i < dest_num_rows; ++i) {
 	if (scalar_prod[i] != 0) {
 	  // The following fragment optimizes the computation of
@@ -539,18 +521,16 @@ PPL::Polyhedron::conversion(Matrix& source,
 	  scalar_prod[i] = 0;
 	}
       }
-      // Since the `num_lines_or_equalities' generator is such that its
-      // scalar product with the k-th constraint is positive (we have
-      // chosen it this way) and it does not saturate the constraint, if
-      // the k-th constraint is an inequality we are sure that the
-      // generator only verifies the constraint, so we set to 1 the
-      // corresponding element of `sat'. This is what we do with the
-      // following instruction.
+      // Since the scalar product between the k-th constraint and the ray
+      // of index `num_lines_or_equalities' is positive (by construction),
+      // it satisfies but it does not saturate the k-th constraint.
+      // Therefore, if the k-th constraint is an inequality,
+      // we set to 1 the corresponding element of `sat' ...
       if (source[k].is_ray_or_vertex_or_inequality())
 	sat[num_lines_or_equalities].set(k);
-      // If the k-th constraint is an equality, as we have chosen the
-      // `num_lines_or_equalities' generator such above, it does not verify
-      // the constraint, so it has to be removed from the system of generators.
+      // ... otherwise, the k-th constraint is an equality which is
+      // not satisfied by the `num_lines_or_equalities'-th generator:
+      // the generator has to be removed from `dest'.
       else {
 	--dest_num_rows;
 	std::swap(dest[num_lines_or_equalities],
@@ -559,31 +539,31 @@ PPL::Polyhedron::conversion(Matrix& source,
 		  scalar_prod[num_lines_or_equalities]);
 	std::swap(sat[num_lines_or_equalities],
 		  sat[dest_num_rows]);
-	dest.set_sorted(false);
       }
       ++k;
     }
-    // Now we treat the case in which all the lines between
-    // `start' and `num_lines_or_equalities' `dest' positions
-    // saturate the k-th constraint, i.e., `index_non_zero' is not less than
-    // `num_lines_or_equalities'.
-
-    // In this case we want `dest' to be like this:
-    // -# from the 0-th row to the `num_lines_or_equalities' - 1-th one
-    //    we put the lines of the polyhedron;
-    // -# from the `num_lines_or_equalities'-th to the
-    //    `lines_or_equal_bound' - 1-th one we put the rays that saturate
-    //	  the k-th constraint;
-    // -# from the `lines_or_equal_bound'-th to the
-    //    `sup_bound' - 1-th one we put the rays that verify
-    //    the k-th constraint;
-    // -# from the `sup_bound'-th to the
-    //    `dest_num_rows' - 1-th one we put the rays that do not verify
-    //	  the k-th constraint.
+    // Here we have `index_non_zero' >= `num_lines_or_equalities',
+    // so that all the lines in `dest' do saturate the k-th constraint.
     else {
+      // First, we reorder the generators in `dest' as follows:
+      // -# all the lines should have indexes between 0 and
+      //    `num_lines_or_equalities' - 1;
+      // -# all the rays that saturate the k-th constraint should have
+      //    indexes between `num_lines_or_equalities' and
+      //    `lines_or_equal_bound' - 1;
+      // -# all the rays that satisfy (but do not saturate) the k-th
+      //    constraint should have indexes between `lines_or_equal_bound'
+      //    and `sup_bound' - 1;
+      // -# all the rays that do not satisfy the k-th constraint should
+      //    have indexes between `sup_bound' and `dest_num_rows' - 1.
       size_t lines_or_equal_bound = num_lines_or_equalities;
-      size_t sup_bound = num_lines_or_equalities;
       size_t inf_bound = dest_num_rows;
+      // While we find saturating generators, we simply increment
+      // `lines_or_equal_bound'.
+      while (inf_bound > lines_or_equal_bound
+	     && scalar_prod[lines_or_equal_bound] == 0)
+	++lines_or_equal_bound;
+      size_t sup_bound = lines_or_equal_bound;
       while (inf_bound > sup_bound) {
 	int sp_sign = sgn(scalar_prod[sup_bound]);
 	if (sp_sign == 0) {
@@ -602,26 +582,25 @@ PPL::Polyhedron::conversion(Matrix& source,
 	  dest.set_sorted(false);
 	}
 	else
+	  // sp_sign > 0.
 	  ++sup_bound;
       }
 
-      // When the k-th constraint is an inequality and
-      // `sup_bound' is equal to `dest_num_rows', it means that
-      // none of the considered generators do not verify the constraint;
-      // then we have not decremented `inf_bound' and the while
-      // loop terminates when `inf_bound' and `sup_bound' are both equal to
-      // `dest_num_rows'.
-      // Thus all the generators verify the k-th constraint and it can be
-      // removed from the constraint since it is redundant. We thus
-      // modify `source': this explains why it is not a constant parameter.
+      // If `sup_bound' is equal to `dest_num_rows', then all the
+      // considered generators satisfy the k-th constraint.
+      // Thus, if the k-th constraint is an inequality, it is redundant
+      // and it can be safely removed from the constraint system.
+      // This is why the `source' parameter is not declared to be `const'.
       if (source[k].is_ray_or_vertex_or_inequality()
 	  && sup_bound == dest_num_rows) {
 	--source_num_rows;
-	// Is not necessary to do the swap on the columns of `sat'
-	// because at this point the elements of `sat' are
-	// all zeroes from the k-th columns to the end.
-	std::swap(source[k], source[source_num_rows]);
-	source.set_sorted(false);
+	if (k != source_num_rows) {
+	  std::swap(source[k], source[source_num_rows]);
+	  // Here it is not necessary to swap the columns of `sat',
+	  // because the `sat' columns having indexes greater than
+	  // or equal to `k' are all made of zero coeffiencients.
+	  source.set_sorted(false);
+	}
       }
       else {
 	// Now we have to distinguish two cases:
@@ -810,16 +789,17 @@ PPL::Polyhedron::conversion(Matrix& source,
       }
     }
   }
-  // Since we may have deleted some redundant constraint from `source' or
-  // some redundant extremal ray from `dest', we have to delete the
-  // useless rows of both the matrices.
 
-  if (source_num_rows < source.num_rows())
+  // Since we may have deleted some redundant constraints from `source'
+  // or some redundant rays from `dest', we have to delete the useless
+  // rows from the corresponding matrices.
+  if (source_num_rows < source.num_rows()) {
     source.erase_to_end(source_num_rows);
+    sat.columns_erase_to_end(source_num_rows);
+  }
   if (dest_num_rows < dest.num_rows()) {
     dest.erase_to_end(dest_num_rows);
     sat.rows_erase_to_end(dest_num_rows);
   }
-  sat.columns_erase_to_end(source_num_rows);
   return num_lines_or_equalities;
 }
