@@ -1,4 +1,4 @@
-/* Use of the functions assign_variable and substitute_variable.
+/* Use of the functions affine_image and affine_preimage.
    Copyright (C) 2001 Roberto Bagnara <bagnara@cs.unipr.it>
 
 This file is part of the Parma Polyhedra Library (PPL).
@@ -48,13 +48,13 @@ main() {
 #if NOISY
   print_generators(p1, "*** p1 ***");
 #endif
-  p1.assign_variable(x, coeff);
+  p1.affine_image(x, coeff);
 
   Polyhedron p2(ph);
 #if NOISY
   print_generators(p2, "*** p2 ***");
 #endif
-  p2.substitute_variable(x, coeff);
+  p2.affine_preimage(x, coeff);
 
   GenSys gs1_known_result;
   gs1_known_result.insert(vertex(4*x + 0*y));

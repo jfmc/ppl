@@ -221,7 +221,7 @@ namespace Parma_Polyhedra_Library {
 
     \par Example 6
     The following code shows the use of the function
-    <CODE>assign_variable</CODE>:
+    <CODE>affine_image</CODE>:
     \code
   Polyhedron ph(2, Polyhedron::EMPTY);
   ph.insert(vertex(0*x + 0*y));
@@ -229,7 +229,7 @@ namespace Parma_Polyhedra_Library {
   ph.insert(vertex(3*x + 0*y));
   ph.insert(vertex(3*x + 3*y));
   LinExpression coeff = x + 4;
-  ph.assign_variable(x, coeff);
+  ph.affine_image(x, coeff);
     \endcode
     In this example the starting polyhedron is a square in \f$\Rset^2\f$,
     the considered variable is \f$x\f$ and the affine expression is \f$x+4\f$.
@@ -251,7 +251,7 @@ namespace Parma_Polyhedra_Library {
 
     \par Example 7
     The following code shows the use of the function
-    <CODE>substitute_variable</CODE>:
+    <CODE>affine_preimage</CODE>:
     \code
   Polyhedron ph(2);
   ph.insert(x >= 0);
@@ -259,7 +259,7 @@ namespace Parma_Polyhedra_Library {
   ph.insert(y >= 0);
   ph.insert(y <= 3);
   LinExpression coeff = x + 4;
-  ph.substitute_variable(x, coeff);
+  ph.affine_preimage(x, coeff);
     \endcode
     In this example the starting polyhedron, \p var and the affine
     expression and the denominator are the same as in Example 6,
@@ -434,7 +434,8 @@ public:
   //!                                  in an empty polyhedron.
   void insert(const Generator& g);
 
-  //! Assigns an affine expression to the specified variable.
+  //! Transforms the polyhedron \p *this, assigning an affine expression
+  //! to the specified variable.
   //! \param v             The variable to which the affine
   //!                      expression is assigned.
   //! \param expr          The numerator of the affine expression.
@@ -445,10 +446,12 @@ public:
   //!                                  are dimension-incompatible
   //!                                  or if \p v is not a dimension
   //!                                  of \p *this.
-  void assign_variable(const Variable& v,
-		       const LinExpression& expr,
-		       const Integer& denominator = Integer::one());
-  //! Substitutes an affine expression for the specified variable.
+  void affine_image(const Variable& v,
+		    const LinExpression& expr,
+		    const Integer& denominator = Integer::one());
+  //! Transforms the polyhedrons \p *this, substituting an affine
+  //! expression for the specified variable. (It is the inverse 
+  //! operation of <CODE>affine_image</CODE>.)
   //! \param v             The variable to which the affine expression 
   //!                      is substituted.
   //! \param expr          The numerator of the affine expression.
@@ -459,9 +462,9 @@ public:
   //!                                  are dimension-incompatible
   //!                                  or if \p v is not a dimension
   //!                                  of \p *this.
-  void substitute_variable(const Variable& v,
-			   const LinExpression& expr,
-			   const Integer& denominator = Integer::one());
+  void affine_preimage(const Variable& v,
+		       const LinExpression& expr,
+		       const Integer& denominator = Integer::one());
 
   //! Checks if all the invariants are satisfied.
   //! \param check_not_empty    <CODE>true</CODE> if it must be checked

@@ -1,4 +1,4 @@
-/* An incorrect use of the function assign_variable.
+/* An incorrect use of the function affine_image.
    Copyright (C) 2001 Roberto Bagnara <bagnara@cs.unipr.it>
 
 This file is part of the Parma Polyhedra Library (PPL).
@@ -46,7 +46,7 @@ main() {
   try {
     // This is an invalid denominator.
     Integer d = 0;
-    ph.assign_variable(x, coeff, d);
+    ph.affine_image(x, coeff, d);
   }
   catch (invalid_argument& e) {
 #if NOISY

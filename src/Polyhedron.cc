@@ -1624,7 +1624,7 @@ PPL::operator >>(std::istream& s, Polyhedron& p) {
   (\f$b\f$ is the inhomogeneous term).
 
   If constraints are up-to-date, it uses the specialized function
-  substitute_variable() (for the system of constraints)
+  affine_preimage() (for the system of constraints)
   and inverse transformation to reach the same result.
   To obtain the inverse transformation, , we use the following observation.
 
@@ -1672,23 +1672,23 @@ PPL::operator >>(std::istream& s, Polyhedron& p) {
   - symmetries.
 */
 void
-PPL::Polyhedron::assign_variable(const Variable& var,
+PPL::Polyhedron::affine_image(const Variable& var,
 				 const LinExpression& expr,
 				 const Integer& denominator) {
   if (denominator == 0)
-    throw std::invalid_argument("void PPL::Polyhedron::assign_variable"
+    throw std::invalid_argument("void PPL::Polyhedron::affine_image"
 				"(v, e, d): d == 0");
   Polyhedron& x = *this;
   size_t x_space_dim = x.space_dimension();
   size_t num_var = var.id() + 1;
   size_t expr_space_dim = expr.space_dimension();
   if (x_space_dim < expr_space_dim)
-    throw std::invalid_argument("PPL::Polyhedron::assign_variable(v, e, d): "
+    throw std::invalid_argument("PPL::Polyhedron::affine_image(v, e, d): "
 				"*this and e dimension-incompatible");
 
   // Index of var must be in the range of the variables of generators.
   if (!(num_var < x_space_dim + 1))
-    throw std::invalid_argument("PPL::Polyhedron::assign_variable(v, e, d): "
+    throw std::invalid_argument("PPL::Polyhedron::affine_image(v, e, d): "
 				"*this and v dimension-incompatible");
   if (x.is_empty()) {
     return;
@@ -1701,14 +1701,14 @@ PPL::Polyhedron::assign_variable(const Variable& var,
   if (expr[num_var] != 0) {
     // The transformation is invertible.
     if (generators_are_up_to_date())
-      x.gen_sys.assign_variable(num_var, expr, denominator);
+      x.gen_sys.affine_image(num_var, expr, denominator);
     if (constraints_are_up_to_date()) {
       // To build the inverse transformation,
       // after copying and negating `expr',
       // we exchange the roles of `expr[num_var]' and `denominator'.
       LinExpression inverse = -expr;
       inverse[num_var] = denominator;
-      x.con_sys.substitute_variable(num_var, inverse, expr[num_var]);
+      x.con_sys.affine_preimage(num_var, inverse, expr[num_var]);
     }
     x.clear_constraints_minimized();
     x.clear_generators_minimized();
@@ -1719,7 +1719,7 @@ PPL::Polyhedron::assign_variable(const Variable& var,
     if (!generators_are_up_to_date())
       x.minimize();
     if (!is_empty()) {
-      x.gen_sys.assign_variable(num_var, expr, denominator);
+      x.gen_sys.affine_image(num_var, expr, denominator);
       x.clear_constraints_up_to_date();
       x.clear_generators_minimized();
     }
@@ -1740,7 +1740,7 @@ PPL::Polyhedron::assign_variable(const Variable& var,
   (\f$b\f$ is the inhomogeneous term).
 
   If generators are up-to-date, then the specialized function
-  assign_variable() is used (for the system of generators)
+  affine_image() is used (for the system of generators)
   and inverse transformation to reach the same result.
   To obtain the inverse transformation, we use the following observation.
 
@@ -1788,11 +1788,11 @@ PPL::Polyhedron::assign_variable(const Variable& var,
   \f]
 */
 void
-PPL::Polyhedron::substitute_variable(const Variable& var,
+PPL::Polyhedron::affine_preimage(const Variable& var,
 				     const LinExpression& expr,
 				     const Integer& denominator) {
   if (denominator == 0)
-    throw std::invalid_argument("void PPL::Polyhedron::substitute_variable"
+    throw std::invalid_argument("void PPL::Polyhedron::affine_preimage"
 				"(v, e, d): d == 0");
 
   Polyhedron& x = *this;
@@ -1800,12 +1800,12 @@ PPL::Polyhedron::substitute_variable(const Variable& var,
   size_t num_var = var.id() + 1;
   size_t expr_space_dim = expr.space_dimension();
   if (x_space_dim < expr_space_dim)
-    throw std::invalid_argument("PPL::Polyhedron::substitute_variable(v, e, "
+    throw std::invalid_argument("PPL::Polyhedron::affine_preimage(v, e, "
 				"d): *this and e dimensional-incompatible");
 
   // Index of var must be in the range of the variables of generators.
   if (!(num_var < x_space_dim + 1))
-    throw std::invalid_argument("PPL::Polyhedron::substitute_variable"
+    throw std::invalid_argument("PPL::Polyhedron::affine_preimage"
 				"(v, e, d): v is not in *this");
   
   if (x.is_empty())
@@ -1818,14 +1818,14 @@ PPL::Polyhedron::substitute_variable(const Variable& var,
   // The transformation is invertible.
   if (expr[num_var] != 0) {
     if (constraints_are_up_to_date())
-      x.con_sys.substitute_variable(num_var, expr, denominator);
+      x.con_sys.affine_preimage(num_var, expr, denominator);
     if (generators_are_up_to_date()) {
       // To build the inverse transformation,
       // after copying and negating `expr',
       // we exchange the roles of `expr[num_var]' and `denominator'.
       LinExpression inverse = -expr;
       inverse[num_var] = denominator;
-      x.gen_sys.assign_variable(num_var, inverse, expr[num_var]);
+      x.gen_sys.affine_image(num_var, inverse, expr[num_var]);
     }
     x.clear_constraints_minimized();
     x.clear_generators_minimized();
@@ -1834,7 +1834,7 @@ PPL::Polyhedron::substitute_variable(const Variable& var,
   else {
     if (!constraints_are_up_to_date())
       x.minimize();
-    x.con_sys.substitute_variable(num_var, expr, denominator);
+    x.con_sys.affine_preimage(num_var, expr, denominator);
     x.clear_generators_up_to_date();
     x.clear_constraints_minimized();
   }

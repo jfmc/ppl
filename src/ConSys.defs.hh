@@ -187,9 +187,9 @@ PPL_INTERNAL:
   bool satisfies_all_constraints(const Generator& g) const;
 
   //! Substitutes a given column of coefficients by a given affine expression.
-  void substitute_variable(size_t v,
-			   const LinExpression& expr,
-			   const Integer& denominator);
+  void affine_preimage(size_t v,
+		       const LinExpression& expr,
+		       const Integer& denominator);
 
   //! Returns the number of the equality constraints.
   size_t num_equalities() const;

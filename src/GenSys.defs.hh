@@ -261,9 +261,9 @@ PPL_INTERNAL:
   GenSys_Con_Rel satisfy(const Constraint& c) const;
 
   //! Assigns to a given variable an affine expression.
-  void assign_variable(size_t v,
-		       const LinExpression& expr,
-		       const Integer& denominator);
+  void affine_image(size_t v,
+		    const LinExpression& expr,
+		    const Integer& denominator);
   //! Returns the number of lines of the system.
   size_t num_lines() const;
   //! Returns the number of rays of the system.

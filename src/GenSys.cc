@@ -214,9 +214,9 @@ PPL::GenSys::satisfy(const Constraint& c) const {
   \p expr is a constant parameter and unaltered by this computation
 */
 void
-PPL::GenSys::assign_variable(size_t v,
-			     const LinExpression& expr,
-			     const Integer& denominator) {
+PPL::GenSys::affine_image(size_t v,
+			  const LinExpression& expr,
+			  const Integer& denominator) {
   GenSys& x = *this;
   size_t num_columns = x.num_columns();
   size_t num_rows = x.num_rows();
