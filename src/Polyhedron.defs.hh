@@ -1369,7 +1369,7 @@ private:
     The return value <CODE>false</CODE> does not necessarily
     implies that \p *this is non-empty.
   */
-  bool is_empty() const;
+  bool marked_empty() const;
 
   //! Returns <CODE>true</CODE> if the system of constraints is up-to-date.
   bool constraints_are_up_to_date() const;

@@ -97,7 +97,7 @@ PPL::Polyhedron::add_dimensions_and_embed(dimension_type m) {
   // Adding dimensions to an empty polyhedron is obtained by adjusting
   // `space_dim' and clearing `con_sys' (since it can contain the
   // unsatisfiable constraint system of the wrong dimension).
-  if (is_empty()) {
+  if (marked_empty()) {
     space_dim += m;
     con_sys.clear();
     return;
@@ -182,7 +182,7 @@ PPL::Polyhedron::add_dimensions_and_project(dimension_type m) {
 
   // Adding dimensions to an empty polyhedron is obtained
   // by merely adjusting `space_dim'.
-  if (is_empty()) {
+  if (marked_empty()) {
     space_dim += m;
     con_sys.clear();
     return;
@@ -273,7 +273,7 @@ PPL::Polyhedron::concatenate_assign(const Polyhedron& y) {
 
   // If `*this' or `y' are empty polyhedra, it is sufficient to adjust
   // the dimension of the space.
-  if (is_empty() || y.is_empty()) {
+  if (marked_empty() || y.marked_empty()) {
     space_dim += added_columns;
     set_empty();
     return;
@@ -405,7 +405,7 @@ PPL::Polyhedron::remove_dimensions(const Variables_Set& to_be_removed) {
 
   // We need updated generators; note that keeping pending generators
   // is useless because constraints will be dropped anyway.
-  if (is_empty()
+  if (marked_empty()
       || (has_something_pending() && !remove_pending_to_obtain_generators())
       || (!generators_are_up_to_date() && !update_generators())) {
     // Removing dimensions from the empty polyhedron:
@@ -485,7 +485,7 @@ PPL::Polyhedron::remove_higher_dimensions(dimension_type new_dimension) {
 
   // We need updated generators; note that keeping pending generators
   // is useless because constraints will be dropped anyway.
-  if (is_empty()
+  if (marked_empty()
       || (has_something_pending() && !remove_pending_to_obtain_generators())
       || (!generators_are_up_to_date() && !update_generators())) {
     // Removing dimensions from the empty polyhedron:

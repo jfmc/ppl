@@ -36,7 +36,7 @@ namespace PPL = Parma_Polyhedra_Library;
 
 const PPL::ConSys&
 PPL::Polyhedron::constraints() const {
-  if (is_empty()) {
+  if (marked_empty()) {
     // We want `con_sys' to only contain the unsatisfiable constraint
     // of the appropriate dimension.
     if (con_sys.num_rows() == 0) {
@@ -88,7 +88,7 @@ PPL::Polyhedron::minimized_constraints() const {
 const PPL::GenSys&
 PPL::Polyhedron::generators() const {
 
-  if (is_empty()) {
+  if (marked_empty()) {
     assert(gen_sys.num_columns() == 0 && gen_sys.num_rows() == 0);
     return gen_sys;
   }
@@ -136,7 +136,7 @@ PPL::Polyhedron::relation_with(const Constraint& c) const {
   if (space_dim < c.space_dimension())
     throw_dimension_incompatible("relation_with(c)", "c", c);
 
-  if (is_empty())
+  if (marked_empty())
     return Poly_Con_Relation::saturates()
       && Poly_Con_Relation::is_included()
       && Poly_Con_Relation::is_disjoint();
@@ -177,7 +177,7 @@ PPL::Polyhedron::relation_with(const Generator& g) const {
     throw_dimension_incompatible("relation_with(g)", "g", g);
 
   // The empty polyhedron cannot subsume a generator.
-  if (is_empty())
+  if (marked_empty())
     return Poly_Gen_Relation::nothing();
 
   // A universe polyhedron in a zero-dimensional space subsumes
@@ -198,7 +198,7 @@ PPL::Polyhedron::relation_with(const Generator& g) const {
 
 bool
 PPL::Polyhedron::check_universe() const {
-  if (is_empty())
+  if (marked_empty())
     return false;
 
   if (space_dim == 0)
@@ -304,7 +304,7 @@ bool
 PPL::Polyhedron::check_bounded() const {
   // A zero-dimensional or empty polyhedron is bounded.
   if (space_dim == 0
-      || is_empty()
+      || marked_empty()
       || (has_pending_constraints() && !process_pending_constraints())
       || (!generators_are_up_to_date() && !update_generators()))
     return true;
@@ -325,7 +325,7 @@ PPL::Polyhedron::check_topologically_closed() const {
   if (is_necessarily_closed())
     return true;
   // Any empty or zero-dimensional polyhedron is closed.
-  if (is_empty()
+  if (marked_empty()
       || space_dimension() == 0
       || (has_something_pending() && !process_pending()))
      return true;
@@ -362,7 +362,7 @@ PPL::Polyhedron::check_topologically_closed() const {
   // A polyhedron is closed if, after strong minimization
   // of its constraint system, it has no strict inequalities.
   strongly_minimize_constraints();
-  return is_empty() || !con_sys.has_strict_inequalities();
+  return marked_empty() || !con_sys.has_strict_inequalities();
 }
 
 bool
@@ -400,7 +400,7 @@ PPL::Polyhedron::OK(bool check_not_empty) const {
     goto bomb;
   }
   
-  if (is_empty()) {
+  if (marked_empty()) {
     if (check_not_empty) {
       // The caller does not want the polyhedron to be empty.
 #ifndef NDEBUG
@@ -873,7 +873,7 @@ PPL::Polyhedron::add_constraint(const Constraint& c) {
 
   // Adding a new constraint to an empty polyhedron
   // results in an empty polyhedron.
-  if (is_empty())
+  if (marked_empty())
     return;
 
   // Dealing with a zero-dimensional space polyhedron first.
@@ -953,7 +953,7 @@ PPL::Polyhedron::add_generator(const Generator& g) {
     // It is not possible to create 0-dim rays or lines.
     assert(g.is_point() || g.is_closure_point());
     // Closure points can only be inserted in non-empty polyhedra.
-    if (is_empty())
+    if (marked_empty())
       if (g.type() != Generator::POINT)
 	throw_invalid_generator("add_generator(g)");
       else
@@ -962,7 +962,7 @@ PPL::Polyhedron::add_generator(const Generator& g) {
     return;
   }
 
-  if (is_empty()
+  if (marked_empty()
       || (has_pending_constraints() && !process_pending_constraints())
       || (!generators_are_up_to_date() && !update_generators())) {
     // Here the polyhedron is empty:
@@ -1108,7 +1108,7 @@ PPL::Polyhedron::add_constraints(ConSys& cs) {
     return;
   }
   
-  if (is_empty())
+  if (marked_empty())
     return;
 
   // The constraints (possibly with pending rows) are required.
@@ -1243,7 +1243,7 @@ PPL::Polyhedron::add_generators(GenSys& gs) {
   // Adding valid generators to a zero-dimensional polyhedron
   // transform it in the zero-dimensional universe polyhedron.
   if (space_dim == 0) {
-    if (is_empty() && !gs.has_points())
+    if (marked_empty() && !gs.has_points())
       throw_invalid_generators("add_generators(gs)");
     status.set_zero_dim_univ();
     assert(OK(true));
@@ -1336,7 +1336,7 @@ PPL::Polyhedron::add_generators_and_minimize(GenSys& gs) {
   // Adding valid generators to a zero-dimensional polyhedron
   // transform it in the zero-dimensional universe polyhedron.
   if (space_dim == 0) {
-    if (is_empty() && !gs.has_points())
+    if (marked_empty() && !gs.has_points())
       throw_invalid_generators("add_generators_and_minimize(gs)");
     status.set_zero_dim_univ();
     assert(OK(true));
@@ -1400,9 +1400,9 @@ PPL::Polyhedron::intersection_assign(const Polyhedron& y) {
     throw_dimension_incompatible("intersection_assign(y)", y);
 
   // If one of the two polyhedra is empty, the intersection is empty.
-  if (x.is_empty())
+  if (x.marked_empty())
     return;
-  if (y.is_empty()) {
+  if (y.marked_empty()) {
     x.set_empty();
     return;
   }
@@ -1466,9 +1466,9 @@ PPL::Polyhedron::intersection_assign_and_minimize(const Polyhedron& y) {
     throw_dimension_incompatible("intersection_assign_and_minimize(y)", y);
 
   // If one of the two polyhedra is empty, the intersection is empty.
-  if (x.is_empty())
+  if (x.marked_empty())
     return false;
-  if (y.is_empty()) {
+  if (y.marked_empty()) {
     x.set_empty();
     return false;
   }
@@ -1535,9 +1535,9 @@ PPL::Polyhedron::poly_hull_assign(const Polyhedron& y) {
     throw_dimension_incompatible("poly_hull_assign(y)", y);
 
   // The poly-hull of a polyhedron `p' with an empty polyhedron is `p'.
-  if (y.is_empty())
+  if (y.marked_empty())
     return;
-  if (x.is_empty()) {
+  if (x.marked_empty()) {
     x = y;
     return;
   }
@@ -1603,9 +1603,9 @@ PPL::Polyhedron::poly_hull_assign_and_minimize(const Polyhedron& y) {
     throw_dimension_incompatible("poly_hull_assign_and_minimize(y)", y);
 
   // The poly-hull of a polyhedron `p' with an empty polyhedron is `p'.
-  if (y.is_empty())
+  if (y.marked_empty())
     return minimize();
-  if (x.is_empty()) {
+  if (x.marked_empty()) {
     x = y;
     return minimize();
   }
@@ -1668,10 +1668,10 @@ PPL::Polyhedron::poly_difference_assign(const Polyhedron& y) {
     throw_dimension_incompatible("poly_difference_assign(y)", y);
 
   // The difference of a polyhedron `p' and an empty polyhedron is `p'.
-  if (y.is_empty())
+  if (y.marked_empty())
     return;
   // The difference of an empty polyhedron and of a polyhedron `p' is empty.
-  if (x.is_empty())
+  if (x.marked_empty())
     return;
 
   // If both polyhedra are zero-dimensional,
@@ -1754,7 +1754,7 @@ PPL::Polyhedron::affine_image(const Variable& var,
   if (num_var > space_dim)
     throw_dimension_incompatible("affine_image(v, e, d)", var.id());
   
-  if (is_empty())
+  if (marked_empty())
     return;
   
   if (num_var <= expr_space_dim && expr[num_var] != 0) {
@@ -1797,7 +1797,7 @@ PPL::Polyhedron::affine_image(const Variable& var,
       remove_pending_to_obtain_generators();
     else if (!generators_are_up_to_date())
       minimize();
-    if (!is_empty()) {
+    if (!marked_empty()) {
       // GenSys::affine_image() requires the third argument
       // to be a positive Integer.
       if (denominator > 0)
@@ -1834,7 +1834,7 @@ PPL::Polyhedron::affine_preimage(const Variable& var,
   if (num_var > space_dim)
     throw_dimension_incompatible("affine_preimage(v, e, d)", var.id());
 
-  if (is_empty())
+  if (marked_empty())
     return;
 
   if (num_var <= expr_space_dim && expr[num_var] != 0) {
@@ -1921,7 +1921,7 @@ PPL::Polyhedron::generalized_affine_image(const Variable& var,
 			   "*this is a C_Polyhedron");
 
   // Any image of an empty polyhedron is empty.
-  if (is_empty())
+  if (marked_empty())
     return;
 
   // First compute the affine image.
@@ -2002,7 +2002,7 @@ PPL::Polyhedron::generalized_affine_image(const LinExpression& lhs,
 			   "*this is a C_Polyhedron");
 
   // Any image of an empty polyhedron is empty.
-  if (is_empty())
+  if (marked_empty())
     return;
 
   // Compute the actual space dimension of `lhs',
@@ -2133,13 +2133,13 @@ PPL::Polyhedron::time_elapse_assign(const Polyhedron& y) {
   
   // Dealing with the zero-dimensional case.
   if (x_space_dim == 0) {
-    if (y.is_empty())
+    if (y.marked_empty())
       x.set_empty();
     return;
   }
   
   // If either one of `x' or `y' is empty, the result is empty too.
-  if (x.is_empty() || y.is_empty()
+  if (x.marked_empty() || y.marked_empty()
       || (x.has_pending_constraints() && !x.process_pending_constraints())
       || (!x.generators_are_up_to_date() && !x.update_generators())
       || (y.has_pending_constraints() && !y.process_pending_constraints())
@@ -2248,7 +2248,7 @@ PPL::Polyhedron::topological_closure_assign() {
   if (is_necessarily_closed())
     return;
   // Any empty or zero-dimensional polyhedron is closed.
-  if (is_empty() || space_dimension() == 0)
+  if (marked_empty() || space_dimension() == 0)
     return;
 
   // The computation can be done using constraints or generators.
@@ -2314,9 +2314,9 @@ PPL::operator==(const Polyhedron& x, const Polyhedron& y) {
   if (x.topology() != y.topology() || x_space_dim != y.space_dim)
     return false;
 
-  if (x.is_empty())
+  if (x.marked_empty())
     return y.check_empty();
-  else if (y.is_empty())
+  else if (y.marked_empty())
     return x.check_empty();
   else if (x_space_dim == 0)
     return true;
@@ -2330,7 +2330,7 @@ PPL::operator==(const Polyhedron& x, const Polyhedron& y) {
 
   default:
     if (x.is_included_in(y))
-      if (x.is_empty())
+      if (x.marked_empty())
 	return y.check_empty();
       else
 	return y.is_included_in(x);
@@ -2352,9 +2352,9 @@ PPL::Polyhedron::contains(const Polyhedron& y) const {
   if (x.space_dim != y.space_dim)
     Polyhedron::throw_topology_incompatible("contains(y)", y);
 
-  if (y.is_empty())
+  if (y.marked_empty())
     return true;
-  else if (x.is_empty())
+  else if (x.marked_empty())
     return y.check_empty();
   else if (y.space_dimension() == 0)
     return true;

@@ -41,10 +41,10 @@ PPL::Polyhedron::select_CH78_constraints(const Polyhedron& y,
   assert(topology() == y.topology()
 	 && topology() == cs_selection.topology()
 	 && space_dimension() == y.space_dimension());
-  assert(!is_empty()
+  assert(!marked_empty()
 	 && !has_pending_constraints()
 	 && generators_are_up_to_date());
-  assert(!y.is_empty()
+  assert(!y.marked_empty()
 	 && !y.has_something_pending()
 	 && y.constraints_are_minimized());
   
@@ -70,10 +70,10 @@ PPL::Polyhedron::select_H79_constraints(const Polyhedron& y,
 	 && topology() == cs_selected.topology()
 	 && topology() == cs_not_selected.topology());
   assert(space_dimension() == y.space_dimension());
-  assert(!is_empty()
+  assert(!marked_empty()
 	 && !has_pending_generators()
 	 && constraints_are_up_to_date());
-  assert(!y.is_empty()
+  assert(!y.marked_empty()
 	 && !y.has_something_pending()
 	 && y.constraints_are_minimized()
 	 && y.generators_are_up_to_date());
@@ -150,7 +150,7 @@ PPL::Polyhedron::H79_widening_assign(const Polyhedron& y, unsigned* tp) {
 
   // If any argument is zero-dimensional or empty,
   // the H79-widening behaves as the identity function.
-  if (x_space_dim == 0 || x.is_empty() || y.is_empty())
+  if (x_space_dim == 0 || x.marked_empty() || y.marked_empty())
     return;
 
   // `y.gen_sys' should be in minimal form and
@@ -297,9 +297,9 @@ PPL::Polyhedron::limited_H79_extrapolation_assign(const Polyhedron& y,
   }
 #endif
 
-  if (y.is_empty())
+  if (y.marked_empty())
     return;
-  if (x.is_empty())
+  if (x.marked_empty())
     return;
 
   // The limited H79-widening between two polyhedra in a
@@ -388,9 +388,9 @@ PPL::Polyhedron::is_BHRZ03_stabilizing(const Polyhedron& x,
   // It is assumed that `y' is included into `x'.
   assert(x.topology() == y.topology());
   assert(x.space_dimension() == y.space_dimension());
-  assert(!x.is_empty() && !x.has_something_pending()
+  assert(!x.marked_empty() && !x.has_something_pending()
 	 && x.constraints_are_minimized() && x.generators_are_minimized());
-  assert(!y.is_empty() && !y.has_something_pending()
+  assert(!y.marked_empty() && !y.has_something_pending()
 	 && y.constraints_are_minimized() && y.generators_are_minimized());
 
   // If the dimension of `x' is greater than the dimension of `y',
@@ -579,11 +579,11 @@ PPL::Polyhedron::BHRZ03_combining_constraints(const Polyhedron& y,
   assert(x.space_dimension() == y.space_dimension()
 	 && x.space_dimension() == H79.space_dimension()
 	 && x.space_dimension() == x_minus_H79_cs.space_dimension());
-  assert(!x.is_empty() && !x.has_something_pending()
+  assert(!x.marked_empty() && !x.has_something_pending()
 	 && x.constraints_are_minimized() && x.generators_are_minimized());
-  assert(!y.is_empty() && !y.has_something_pending()
+  assert(!y.marked_empty() && !y.has_something_pending()
 	 && y.constraints_are_minimized() && y.generators_are_minimized());
-  assert(!H79.is_empty() && !H79.has_something_pending()
+  assert(!H79.marked_empty() && !H79.has_something_pending()
 	 && H79.constraints_are_minimized() && H79.generators_are_minimized());
 
   // We will choose from `x_minus_H79_cs' many subsets of constraints,
@@ -696,11 +696,11 @@ PPL::Polyhedron::BHRZ03_evolving_points(const Polyhedron& y,
 	 && x.topology() == H79.topology());
   assert(x.space_dimension() == y.space_dimension()
 	 && x.space_dimension() == H79.space_dimension());
-  assert(!x.is_empty() && !x.has_something_pending()
+  assert(!x.marked_empty() && !x.has_something_pending()
 	 && x.constraints_are_minimized() && x.generators_are_minimized());
-  assert(!y.is_empty() && !y.has_something_pending()
+  assert(!y.marked_empty() && !y.has_something_pending()
 	 && y.constraints_are_minimized() && y.generators_are_minimized());
-  assert(!H79.is_empty() && !H79.has_something_pending()
+  assert(!H79.marked_empty() && !H79.has_something_pending()
 	 && H79.constraints_are_minimized() && H79.generators_are_minimized());
 
   // For each point in `x.gen_sys' that is not in `y',
@@ -763,11 +763,11 @@ PPL::Polyhedron::BHRZ03_evolving_rays(const Polyhedron& y,
 	 && x.topology() == H79.topology());
   assert(x.space_dimension() == y.space_dimension()
 	 && x.space_dimension() == H79.space_dimension());
-  assert(!x.is_empty() && !x.has_something_pending()
+  assert(!x.marked_empty() && !x.has_something_pending()
 	 && x.constraints_are_minimized() && x.generators_are_minimized());
-  assert(!y.is_empty() && !y.has_something_pending()
+  assert(!y.marked_empty() && !y.has_something_pending()
 	 && y.constraints_are_minimized() && y.generators_are_minimized());
-  assert(!H79.is_empty() && !H79.has_something_pending()
+  assert(!H79.marked_empty() && !H79.has_something_pending()
 	 && H79.constraints_are_minimized() && H79.generators_are_minimized());
 
   dimension_type x_gen_sys_num_rows = x.gen_sys.num_rows();
@@ -862,7 +862,7 @@ PPL::Polyhedron::BHRZ03_widening_assign(const Polyhedron& y, unsigned* tp) {
 
   // If any argument is zero-dimensional or empty,
   // the BHRZ03-widening behaves as the identity function.
-  if (x_space_dim == 0 || x.is_empty() || y.is_empty()) {
+  if (x_space_dim == 0 || x.marked_empty() || y.marked_empty()) {
 #if PPL_STATISTICS
     statistics->reason.zero_dim_or_empty++;
     statistics->technique.nop++;
@@ -1012,9 +1012,9 @@ PPL::Polyhedron::limited_BHRZ03_extrapolation_assign(const Polyhedron& y,
   }
 #endif
 
-  if (y.is_empty())
+  if (y.marked_empty())
     return;
-  if (x.is_empty())
+  if (x.marked_empty())
     return;
 
   // The limited BHRZ03-widening between two polyhedra in a

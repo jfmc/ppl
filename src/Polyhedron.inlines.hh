@@ -77,7 +77,7 @@ std::swap(Parma_Polyhedra_Library::Polyhedron& x,
 namespace Parma_Polyhedra_Library {
 
 inline bool
-Polyhedron::is_empty() const {
+Polyhedron::marked_empty() const {
   return status.test_empty();
 }
 
@@ -234,7 +234,7 @@ Polyhedron::clear_generators_up_to_date() {
 
 inline bool
 Polyhedron::process_pending() const {
-  assert(space_dim > 0 && !is_empty());
+  assert(space_dim > 0 && !marked_empty());
   assert(has_something_pending());
 
   Polyhedron& x = const_cast<Polyhedron&>(*this);
@@ -261,7 +261,7 @@ Polyhedron::add_low_level_constraints(ConSys& cs) {
 
 inline bool
 Polyhedron::check_empty() const {
-  if (is_empty())
+  if (marked_empty())
     return true;
   // Try a fast-fail test: if generators are up-to-date and
   // there are no pending constraints, then the generator system
@@ -392,7 +392,7 @@ Polyhedron::shrink_bounding_box(Box& box, Complexity_Class complexity) const {
 
   }
   if (polynomial) {
-    if (is_empty() ||
+    if (marked_empty() ||
 	(generators_are_up_to_date() && gen_sys.num_rows() == 0)) {
       box.set_empty();
       return;
@@ -601,7 +601,7 @@ Polyhedron::rename_dimensions(const PartialFunction& pifunc) {
 
   if (pifunc.has_empty_codomain()) {
     // All dimensions vanish: the polyhedron becomes zero_dimensional.
-    if (is_empty()
+    if (marked_empty()
 	|| (has_pending_constraints()
 	    && !remove_pending_to_obtain_generators())
 	|| (!generators_are_up_to_date() && !update_generators())) {

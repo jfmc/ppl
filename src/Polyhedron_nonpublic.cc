@@ -282,7 +282,7 @@ PPL::Polyhedron::operator=(const Polyhedron& y) {
   // Being a protected method, we simply assert that topologies do match.
   assert(topology() == y.topology());
   space_dim = y.space_dim;
-  if (y.is_empty())
+  if (y.marked_empty())
     set_empty();
   else if (space_dim == 0)
     set_zero_dim_univ();
@@ -305,7 +305,7 @@ PPL::Polyhedron::quick_equivalence_test(const Polyhedron& y) const {
   // Private method: the caller must ensure the following.
   assert(topology() == y.topology());
   assert(space_dimension() == y.space_dimension());
-  assert(!is_empty() && !y.is_empty() && space_dimension() > 0);
+  assert(!marked_empty() && !y.marked_empty() && space_dimension() > 0);
 
   const Polyhedron& x = *this;
 
@@ -366,7 +366,7 @@ PPL::Polyhedron::is_included_in(const Polyhedron& y) const {
   // Private method: the caller must ensure the following.
   assert(topology() == y.topology());
   assert(space_dimension() == y.space_dimension());
-  assert(!is_empty() && !y.is_empty() && space_dimension() > 0);
+  assert(!marked_empty() && !y.marked_empty() && space_dimension() > 0);
 
   const Polyhedron& x = *this;
 
@@ -494,7 +494,7 @@ PPL::Polyhedron::bounds(const LinExpression& expr, bool from_above) const {
 
   // A zero-dimensional or empty polyhedron bounds everything.
   if (space_dim == 0
-      || is_empty()
+      || marked_empty()
       || (has_pending_constraints() && !process_pending_constraints())
       || (!generators_are_up_to_date() && !update_generators()))
     return true;
@@ -546,7 +546,7 @@ PPL::Polyhedron::set_empty() {
 
 bool
 PPL::Polyhedron::process_pending_constraints() const {
-  assert(space_dim > 0 && !is_empty());
+  assert(space_dim > 0 && !marked_empty());
   assert(has_pending_constraints() && !has_pending_generators());
 
   Polyhedron& x = const_cast<Polyhedron&>(*this);
@@ -583,7 +583,7 @@ PPL::Polyhedron::process_pending_constraints() const {
 
 void
 PPL::Polyhedron::process_pending_generators() const {
-  assert(space_dim > 0 && !is_empty());
+  assert(space_dim > 0 && !marked_empty());
   assert(has_pending_generators() && !has_pending_constraints());
 
   Polyhedron& x = const_cast<Polyhedron&>(*this);
@@ -664,7 +664,7 @@ PPL::Polyhedron::remove_pending_to_obtain_generators() const {
 void
 PPL::Polyhedron::update_constraints() const {
   assert(space_dim > 0);
-  assert(!is_empty());
+  assert(!marked_empty());
   assert(generators_are_up_to_date());
   // We assume the polyhedron has no pending constraints or generators.
   assert(!has_something_pending());
@@ -683,7 +683,7 @@ PPL::Polyhedron::update_constraints() const {
 bool
 PPL::Polyhedron::update_generators() const {
   assert(space_dim > 0);
-  assert(!is_empty());
+  assert(!marked_empty());
   assert(constraints_are_up_to_date());
   // We assume the polyhedron has no pending constraints or generators.
   assert(!has_something_pending());
@@ -896,7 +896,7 @@ PPL::Polyhedron::obtain_sorted_generators_with_sat_g() const {
 bool
 PPL::Polyhedron::minimize() const {
   // 0-dim space or empty polyhedra are already minimized.
-  if (is_empty())
+  if (marked_empty())
     return false;
   if (space_dim == 0)
     return true;
