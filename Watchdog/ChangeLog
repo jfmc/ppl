@@ -1,6 +1,44 @@
-2004-08-18  Release Manager
+2004-08-20 Friday 15:08  Roberto Bagnara <bagnara@cs.unipr.it>
 
-	* PPL 0.6 Released.
+	* NEWS (ppl-0_6-branch.1): Updated for the release of PPL 0.6.1.
+
+2004-08-19 Thursday 17:43  Roberto Bagnara <bagnara@cs.unipr.it>
+
+	* ChangeLog, Doubly_Linked_Object.defs.hh,
+	  Doubly_Linked_Object.inlines.hh, Doubly_Linked_Object.types.hh,
+	  EList.defs.hh, EList.inlines.hh, EList.types.hh,
+	  EList_Iterator.defs.hh, EList_Iterator.inlines.hh,
+	  EList_Iterator.types.hh, Handler.defs.hh, Handler.inlines.hh,
+	  Handler.types.hh, Makefile.am, NEWS, Pending_Element.cc,
+	  Pending_Element.defs.hh, Pending_Element.inlines.hh,
+	  Pending_Element.types.hh, Pending_List.cc, Pending_List.defs.hh,
+	  Pending_List.inlines.hh, Pending_List.types.hh, README, Time.cc,
+	  Time.defs.hh, Time.inlines.hh, Time.types.hh, Watchdog.cc,
+	  Watchdog.defs.hh, Watchdog.inlines.hh, config.guess, config.sub,
+	  configure.ac, depcomp, install-sh, ltmain.sh
+	  (altnum.[1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1]):
+	  First merge from main trunk.
+
+2004-08-18 Wednesday 22:58  Roberto Bagnara <bagnara@cs.unipr.it>
+
+	* configure.ac (ppl-0_6-branch.1), ChangeLog (1.8), configure.ac
+	  (1.20): Version number bumped.
+
+2004-08-18 Wednesday 18:31  Roberto Bagnara <bagnara@cs.unipr.it>
+
+	* ChangeLog (ppl-0_6-branch.1): Mark ChangeLog.
+
+2004-08-16 Monday 18:30  Roberto Bagnara <bagnara@cs.unipr.it>
+
+	* README (1.7): Updated.
+
+2004-08-16 Monday 09:50  Roberto Bagnara <bagnara@cs.unipr.it>
+
+	* NEWS (1.4): Our tentative release date is August 18, 2004.
+
+2004-08-16 Monday 08:36  Roberto Bagnara <bagnara@cs.unipr.it>
+
+	* ChangeLog (1.7): Updated.
 
 2004-08-13 Friday 18:02  Roberto Bagnara <bagnara@cs.unipr.it>
 
