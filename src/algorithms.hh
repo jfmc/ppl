@@ -86,4 +86,111 @@ linear_partition(const PH& p, const PH& q) {
   return std::pair<PH, PowerSet<Determinate<NNC_Polyhedron> > >(qq, r);
 }
 
+template <typename PH>
+bool
+poly_hull_assign_if_exact(PH& p, const PH& q) {
+  PH phull = p;
+  NNC_Polyhedron nnc_p(p);
+  phull.poly_hull_assign(q);
+  std::pair<PH, PowerSet<Determinate<NNC_Polyhedron> > >
+    partition = linear_partition(q, phull);
+  const PowerSet<Determinate<NNC_Polyhedron> >& s = partition.second;
+  typedef PowerSet<Determinate<NNC_Polyhedron> >::const_iterator iter;
+  for (iter i = s.begin(), s_end = s.end(); i != s_end; ++i)
+    // The polyhedral hull is exact if and only if all the elements
+    // of the partition of the polyhedral hull of `p' and `q' with
+    // respect to `q' are included in `p'
+    if (!(i->polyhedron() <= nnc_p))
+      return false;
+  p = phull;
+  return false;
+}
+
+template <typename PH>
+void
+complete_reduction(PowerSet<Determinate<PH> >& p) {
+  size_t n = p.size();
+  size_t deleted;
+  do {
+    PowerSet<Determinate<PH> > q;
+    std::deque<bool> marked(n, false);
+    deleted = 0;
+    typedef typename PowerSet<Determinate<PH> >::iterator iter;
+    iter p_begin = p.begin();
+    iter p_end = p.end();
+    unsigned i_index = 0;
+    for (iter i = p_begin, j = i; i != p_end; ++i, ++i_index) {
+      if (marked[i_index])
+	continue;
+      PH& pi = i->polyhedron();
+      int j_index = 0;
+      for (++j; j != p_end; ++j, ++j_index) {
+	if (marked[j_index])
+	  continue;
+	const PH& pj = j->polyhedron();
+	if (poly_hull_assign_if_exact(pi, pj)) {
+	  // Setting `marked[i_index]' to `false' would be pointless.
+	  marked[j_index] = true;
+	  q.inject(pi);
+	  ++deleted;
+	  goto next;
+	}
+      }
+    next:
+      ;
+    }
+    i_index = 0;
+    for (iter i = p_begin; i != p_end; ++i, ++i_index)
+      if (!marked[i_index])
+	q.inject(*i);
+    p = q;
+    n -= deleted;
+  } while (deleted > 0);
+}
+
+template <typename PH>
+void
+widening_assign(PowerSet<Determinate<PH> >& r,
+		const PowerSet<Determinate<PH> >& q,
+		//		void (PH::* widening_assign)(const PH&)) {
+		void (Polyhedron::* widening_assign)(const Polyhedron&)) {
+  complete_reduction(r);
+  size_t n = r.size();
+  PowerSet<Determinate<PH> > p;
+  std::deque<bool> marked(n, false);
+  typedef typename PowerSet<Determinate<PH> >::const_iterator const_iter;
+  typedef typename PowerSet<Determinate<PH> >::iterator iter;
+  iter r_begin = r.begin();
+  iter r_end = r.end();
+  unsigned i_index = 0;
+  for (iter i = r_begin; i != r_end; ++i, ++i_index)
+    for (const_iter j = q.begin(), q_end = q.end(); j != q_end; ++j) {
+      PH& ri = i->polyhedron();
+      const PH& qj = j->polyhedron();
+      if (qj <= ri) {
+	(ri.*widening_assign)(qj);
+	p.inject(ri);
+	marked[i_index] = true;
+      }
+    }
+  for (iter i = r_begin; i != r_end; ++i, ++i_index)
+    if (!marked[i_index])
+      p.inject(*i);
+  r = p;
+}
+
+template <typename PH>
+void
+H79_widening_assign(PowerSet<Determinate<PH> >& r,
+		    const PowerSet<Determinate<PH> >& q) {
+  widening_assign(r, q, &PH::H79_widening_assign);
+}
+
+template <typename PH>
+void
+BBRZ02_widening_assign(PowerSet<Determinate<PH> >& r,
+		       const PowerSet<Determinate<PH> >& q) {
+  widening_assign(r, q, &PH::BBRZ02_widening_assign);
+}
+
 } // namespace Parma_Polyhedra_Library
