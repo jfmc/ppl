@@ -883,11 +883,11 @@ EXTRA_DIST = ehandlers.cc print.cc $(watchdog1_SRCS)
 BUGS =
 
 MOSTLYCLEANFILES = \
-ascii_dump_load_1.dat \
-ascii_dump_load_2.dat \
-ascii_dump_load_3.dat \
-ascii_dump_load_4.dat \
-ascii_dump_load_5.dat \
+ascii_dump_load1.dat \
+ascii_dump_load2.dat \
+ascii_dump_load3.dat \
+ascii_dump_load4.dat \
+ascii_dump_load5.dat \
 writeconsys1.dat \
 writegensys1.dat \
 writegensys2.dat \

@@ -35,7 +35,7 @@ using namespace Parma_Polyhedra_Library;
 #define NOISY 0
 #endif
 
-const char* my_file = "ascii_dump_load_5.dat";
+const char* my_file = "ascii_dump_load5.dat";
 
 void
 test1() {
