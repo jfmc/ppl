@@ -30,7 +30,7 @@ namespace PPL = Parma_Polyhedra_Library;
 
 PPL::C_Polyhedron::C_Polyhedron(const NNC_Polyhedron& y)
   : Polyhedron(NECESSARILY_CLOSED, y.space_dimension(), UNIVERSE) {
-  ConSys cs = y.constraints();
+  const ConSys& cs = y.constraints();
   for (ConSys::const_iterator i = cs.begin(),
 	 cs_end = cs.end(); i != cs_end; ++i) {
     const Constraint& c = *i;
