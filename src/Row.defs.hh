@@ -224,7 +224,7 @@ public:
   Integer& operator[](dimension_type k);
 
   //! Returns a constant reference to the element of the row indexed by \p k.
-  const Integer& operator[](dimension_type k) const;
+  Integer_traits::const_reference operator[](dimension_type k) const;
   //@} // Subscript operators
 
   //! \brief
@@ -350,7 +350,7 @@ public:
   Integer& operator[](dimension_type k);
 
   //! Returns a constant reference to the element of \p *this indexed by \p k.
-  const Integer& operator[](dimension_type k) const;
+  Integer_traits::const_reference operator[](dimension_type k) const;
   //@} // Subscript operators
 
 private:

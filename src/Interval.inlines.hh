@@ -25,13 +25,18 @@ site: http://www.cs.unipr.it/ppl/ . */
 #define PPL_Interval_inlines_hh 1
 
 #include <cassert>
+#include "Checked_Number.defs.hh"
+#include "checked_mpz.inlines.hh"
 
 namespace Parma_Polyhedra_Library {
 
 inline
-ERational::ERational(const Integer& num, const Integer& den)
-  : e(0), v(num, den) {
+ERational::ERational(Integer_traits::const_reference num,
+		     Integer_traits::const_reference den)
+  : e(0) {
   assert(den != 0);
+  Checked::assign<Check_Overflow_Policy>(v.get_num(), raw_value(num));
+  Checked::assign<Check_Overflow_Policy>(v.get_den(), raw_value(den));
   v.canonicalize();
 }
 
@@ -61,17 +66,31 @@ ERational::direction_of_infinity() const {
   return e;
 }
 
-inline const Integer&
+#if 0
+inline Integer_traits::const_reference
 ERational::numerator() const {
   assert(e == 0);
   return v.get_num();
 }
 
-inline const Integer&
+inline Integer_traits::const_reference
 ERational::denominator() const {
   assert(e == 0);
   return v.get_den();
 }
+#else
+inline void
+ERational::numerator(Integer& n) const {
+  assert(e == 0);
+  n = v.get_num();
+}
+
+inline void
+ERational::denominator(Integer& d) const {
+  assert(e == 0);
+  d = v.get_den();
+}
+#endif
 
 /*! \relates ERational */
 inline bool

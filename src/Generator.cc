@@ -53,7 +53,8 @@ PPL::Generator::throw_invalid_argument(const char* method,
 }
 
 PPL::Generator
-PPL::Generator::point(const LinExpression& e, const Integer& d) {
+PPL::Generator::point(const LinExpression& e,
+		      Integer_traits::const_reference d) {
   if (d == 0)
     throw std::invalid_argument("PPL::point(e, d):\n"
 				"d == 0.");
@@ -74,7 +75,8 @@ PPL::Generator::point(const LinExpression& e, const Integer& d) {
 }
 
 PPL::Generator
-PPL::Generator::closure_point(const LinExpression& e, const Integer& d) {
+PPL::Generator::closure_point(const LinExpression& e,
+			      Integer_traits::const_reference d) {
   if (d == 0)
     throw std::invalid_argument("PPL::closure_point(e, d):\n"
 				"d == 0.");

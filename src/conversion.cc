@@ -476,6 +476,13 @@ PPL::Polyhedron::conversion(Linear_System& source,
       // Note that, by Observation 1 above, the resulting new line
       // will still saturate all the constraints that were saturated by
       // the old line.
+#if 0
+      // FIXME: this fragment was to avoid code duplication
+      // and should be carefully reinstated.
+      Integer_traits::const_reference
+	scalar_prod_nle = scalar_prod[num_lines_or_equalities];
+      const Row& dest_nle = dest[num_lines_or_equalities];
+#endif
       for (dimension_type
 	     i = index_non_zero; i < num_lines_or_equalities; ++i) {
 	if (scalar_prod[i] != 0) {

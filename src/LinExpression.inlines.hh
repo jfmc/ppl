@@ -60,7 +60,7 @@ LinExpression::LinExpression(const LinExpression& e, dimension_type sz)
 }
 
 inline
-LinExpression::LinExpression(const Integer& n)
+LinExpression::LinExpression(Integer_traits::const_reference n)
   : Linear_Row(1, Linear_Row::Flags()) {
   (*this)[0] = n;
 }
@@ -70,14 +70,14 @@ LinExpression::space_dimension() const {
   return size() - 1;
 }
 
-inline const Integer&
+inline Integer_traits::const_reference
 LinExpression::coefficient(Variable v) const {
   if (v.id() >= space_dimension())
     return Integer_zero();
   return Linear_Row::coefficient(v.id());
 }
 
-inline const Integer&
+inline Integer_traits::const_reference
 LinExpression::inhomogeneous_term() const {
   return Linear_Row::inhomogeneous_term();
 }
@@ -96,32 +96,32 @@ operator+(const LinExpression& e) {
 
 /*! \relates LinExpression */
 inline LinExpression
-operator+(const LinExpression& e, const Integer& n) {
+operator+(const LinExpression& e, Integer_traits::const_reference n) {
   return n + e;
 }
 
 /*! \relates LinExpression */
 inline LinExpression
-operator-(const LinExpression& e, const Integer& n) {
+operator-(const LinExpression& e, Integer_traits::const_reference n) {
   return -n + e;
 }
 
 /*! \relates LinExpression */
 inline LinExpression
-operator*(const LinExpression& e, const Integer& n) {
+operator*(const LinExpression& e, Integer_traits::const_reference n) {
   return n * e;
 }
 
 /*! \relates LinExpression */
 inline LinExpression&
-operator+=(LinExpression& e, const Integer& n) {
+operator+=(LinExpression& e, Integer_traits::const_reference n) {
   e[0] += n;
   return e;
 }
 
 /*! \relates LinExpression */
 inline LinExpression&
-operator-=(LinExpression& e, const Integer& n) {
+operator-=(LinExpression& e, Integer_traits::const_reference n) {
   e[0] -= n;
   return e;
 }

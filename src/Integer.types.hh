@@ -12,13 +12,53 @@ PURPOSE. */
 #ifndef PPL_Integer_types_hh
 #define PPL_Integer_types_hh 1
 
-#include <gmpxx.h>
+#include "Integer_traits_template.hh"
+
+// Kludge
+#include <stdint.h>
+
+#ifdef NATIVE_INTEGERS
+#include "Native_Integer.types.hh"
+#endif
+
+#ifdef CHECKED_INTEGERS
+#include "Checked_Number.types.hh"
 
 namespace Parma_Polyhedra_Library {
 
-//! See the GMP's manual available at http://swox.com/gmp/ .
-typedef mpz_class Integer;
+template <>
+struct Integer_traits_template<Checked_Number<int8_t> > {
+  typedef Checked_Number<int8_t> const_reference;
+};
 
-}
+template <>
+struct Integer_traits_template<Checked_Number<int16_t> > {
+  typedef Checked_Number<int16_t> const_reference;
+};
+
+template <>
+struct Integer_traits_template<Checked_Number<int32_t> > {
+  typedef Checked_Number<int32_t> const_reference;
+};
+
+template <>
+struct Integer_traits_template<Checked_Number<int64_t> > {
+  typedef const Checked_Number<int64_t>& const_reference;
+};
+
+} // namespace Parma_Polyhedra_Library
+#endif
+
+#ifdef GMP_INTEGERS
+#include "GMP_Integer.types.hh"
+#endif
+
+namespace Parma_Polyhedra_Library {
+
+typedef COEFFICIENT_TYPE Integer;
+
+typedef Integer_traits_template<Integer> Integer_traits;
+
+} // namespace Parma_Polyhedra_Library
 
 #endif // !defined(PPL_Integer_types_hh)

@@ -14,6 +14,14 @@ December 2002, was
 
   Elisa Ricci          (former student of the University of Parma)
 
+Other contributors:
+
+  Giordano Fracasso    (University of Parma) wrote the initial version
+                       of the support for native and checked integer
+                       coefficients.
+  Abramo Bagnara       (Opera Unica) rewrote and generalized the support
+                       for checked coefficients.
+
 The following people took part in the first phase of the library's
 development:
 

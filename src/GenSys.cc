@@ -732,7 +732,7 @@ PPL::GenSys::satisfied_by_all_generators(const Constraint& c) const {
 void
 PPL::GenSys::affine_image(dimension_type v,
 			  const LinExpression& expr,
-			  const Integer& denominator) {
+			  Integer_traits::const_reference denominator) {
   // `v' is the index of a column corresponding to
   // a "user" variable (i.e., it cannot be the inhomogeneous term,
   // nor the epsilon dimension of NNC polyhedra).

@@ -596,7 +596,9 @@ PPL::Polyhedron::max_min(const LinExpression& expr,
       assert(g.is_point() || g.is_closure_point());
       // Notice that we are ignoring the constant term in `expr' here.
       // We will add it to the extremum as soon as we find it.
-      mpq_class candidate(sp, g[0]);
+      mpq_class candidate;
+      Checked::assign<Check_Overflow_Policy>(candidate.get_num(), raw_value(sp));
+      Checked::assign<Check_Overflow_Policy>(candidate.get_den(), raw_value(g[0]));
       candidate.canonicalize();
       const bool g_is_point = g.is_point();
       if (first_candidate
@@ -620,13 +622,15 @@ PPL::Polyhedron::max_min(const LinExpression& expr,
   }
 
   // Add in the constant term in `expr'.
-  extremum += expr[0];
-
+  mpz_class n;
+  Checked::assign<Check_Overflow_Policy>(n, raw_value(expr[0]));
+  extremum += n;;
+  
   // The polyhedron is bounded in the right direction and we have
   // computed the extremum: write the result into the caller's structures.
   assert(!first_candidate);
-  ext_n = extremum.get_num();
-  ext_d = extremum.get_den();
+  ext_n = Integer(extremum.get_num());
+  ext_d = Integer(extremum.get_den());
   included = ext_included;
   if (pppoint != 0)
     *pppoint = &gen_sys[ext_position];

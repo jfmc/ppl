@@ -303,10 +303,10 @@ public:
   dimension_type space_dimension() const;
 
   //! Returns the inhomogeneous term.
-  const Integer& inhomogeneous_term() const;
+  Integer_traits::const_reference inhomogeneous_term() const;
 
   //! Returns the coefficient \f$a_n\f$.
-  const Integer& coefficient(dimension_type n) const;
+  Integer_traits::const_reference coefficient(dimension_type n) const;
 
   //! Normalizes the modulo of coefficients so that they are mutually prime.
   /*!

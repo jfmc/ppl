@@ -745,7 +745,8 @@ public:
     causes the box to become empty, i.e., to represent the empty set.
     \code
       raise_lower_bound(dimension_type k, bool closed,
-                        const Integer& n, const Integer& d)
+                        Integer_traits::const_reference n,
+                        Integer_traits::const_reference d)
     \endcode
     intersects the interval corresponding to the <CODE>k</CODE>-th
     space dimension
@@ -753,7 +754,8 @@ public:
     with \f$(n/d, +\infty)\f$ if <CODE>closed</CODE> is <CODE>false</CODE>.
     \code
       lower_upper_bound(dimension_type k, bool closed,
-                        const Integer& n, const Integer& d)
+                        Integer_traits::const_reference n,
+                        Integer_traits::const_reference d)
     \endcode
     intersects the interval corresponding to the <CODE>k</CODE>-th
     space dimension
@@ -1129,7 +1131,8 @@ public:
   */
   void affine_image(Variable var,
 		    const LinExpression& expr,
-		    const Integer& denominator = Integer_one());
+		    Integer_traits::const_reference denominator
+		      = Integer_one());
 
   //! \brief
   //! Assigns to \p *this the \ref affine_transformation "affine preimage"
@@ -1219,7 +1222,8 @@ public:
   */
   void affine_preimage(Variable var,
 		       const LinExpression& expr,
-		       const Integer& denominator = Integer_one());
+		       Integer_traits::const_reference denominator
+		         = Integer_one());
 
   //! \brief
   //! Assigns to \p *this the image of \p *this with respect to the
@@ -1250,7 +1254,8 @@ public:
   void generalized_affine_image(Variable var,
 				const Relation_Symbol relsym,
 				const LinExpression& expr,
-				const Integer& denominator = Integer_one());
+				Integer_traits::const_reference denominator
+				  = Integer_one());
 
   //! \brief
   //! Assigns to \p *this the image of \p *this with respect to the

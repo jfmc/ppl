@@ -1,4 +1,4 @@
-/* Integer class implementation: inline functions.
+/* Limits for native integer types.
    Copyright (C) 2001-2004 Roberto Bagnara <bagnara@cs.unipr.it>
 
 This file is part of the Parma Polyhedra Library (PPL).
@@ -21,23 +21,47 @@ USA.
 For the most up-to-date information see the Parma Polyhedra Library
 site: http://www.cs.unipr.it/ppl/ . */
 
-#ifndef PPL_Integer_inlines_hh
-#define PPL_Integer_inlines_hh 1
+#ifndef PPL_Limits_hh
+#define PPL_Limits_hh 1
+
+#include <limits.h>
 
 namespace Parma_Polyhedra_Library {
 
-inline const Integer&
-Integer_zero() {
-  static Integer z(0);
-  return z;
+/*
+  The only reason to use these definitions instead of std::numeric_limits
+  is a missing optimization in gcc 3.4.1.
+ */
+
+template <typename T>
+struct Limits;
+
+#define signed_limits(type, prefix) \
+template <> \
+struct Limits<type> { \
+	static const type min = prefix ## _MIN; \
+	static const type max = prefix ## _MAX; \
 }
 
-inline const Integer&
-Integer_one() {
-  static Integer o(1);
-  return o;
+#define unsigned_limits(type, prefix) \
+template <> \
+struct Limits<type> { \
+	static const type min = 0; \
+	static const type max = prefix ## _MAX; \
 }
+
+signed_limits(signed char, SCHAR);
+signed_limits(short, SHRT);
+signed_limits(int, INT);
+signed_limits(long, LONG);
+signed_limits(long long, LONG_LONG);
+
+unsigned_limits(unsigned char, UCHAR);
+unsigned_limits(unsigned short, USHRT);
+unsigned_limits(unsigned int, UINT);
+unsigned_limits(unsigned long, ULONG);
+unsigned_limits(unsigned long long, ULONG_LONG);
 
 } // namespace Parma_Polyhedra_Library
 
-#endif // !defined(PPL_Integer_inlines_hh)
+#endif // !defined(PPL_Limits_hh)

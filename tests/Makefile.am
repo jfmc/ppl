@@ -224,7 +224,6 @@ DERIVED_TESTS = \
 	nnc_polyhull1 nnc_polyhull2 nnc_polyhull3 nnc_polyhull4 \
 	nnc_polyhull5 nnc_polyhull6 nnc_polyhull7 nnc_polyhull8 \
 	nnc_polyhull9 nnc_polyhull10 \
-	nnc_randphull1 nnc_randphull2 \
 	nnc_relations1 nnc_relations2 nnc_relations3 nnc_relations4 \
 	nnc_relations5 nnc_relations6 nnc_relations7 nnc_relations8 \
 	nnc_relations9 nnc_relations10 nnc_relations12 nnc_relations13 \

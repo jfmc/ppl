@@ -1794,7 +1794,7 @@ PPL::Polyhedron::poly_difference_assign(const Polyhedron& y) {
 void
 PPL::Polyhedron::affine_image(const Variable var,
 			      const LinExpression& expr,
-			      const Integer& denominator) {
+			      Integer_traits::const_reference denominator) {
   // The denominator cannot be zero.
   if (denominator == 0)
     throw_invalid_argument("affine_image(v, e, d)", "d == 0");
@@ -1872,9 +1872,10 @@ PPL::Polyhedron::affine_image(const Variable var,
 
 
 void
-PPL::Polyhedron::affine_preimage(const Variable var,
-				 const LinExpression& expr,
-				 const Integer& denominator) {
+PPL::Polyhedron::
+affine_preimage(const Variable var,
+		const LinExpression& expr,
+		Integer_traits::const_reference denominator) {
   // The denominator cannot be zero.
   if (denominator == 0)
     throw_invalid_argument("affine_preimage(v, e, d)", "d == 0");
@@ -1948,10 +1949,11 @@ PPL::Polyhedron::affine_preimage(const Variable var,
 }
 
 void
-PPL::Polyhedron::generalized_affine_image(const Variable var,
-					  const Relation_Symbol relsym,
-					  const LinExpression& expr,
-					  const Integer& denominator) {
+PPL::Polyhedron::
+generalized_affine_image(const Variable var,
+			 const Relation_Symbol relsym,
+			 const LinExpression& expr,
+			 Integer_traits::const_reference denominator) {
   // The denominator cannot be zero.
   if (denominator == 0)
     throw_invalid_argument("generalized_affine_image(v, r, e, d)", "d == 0");

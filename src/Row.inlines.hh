@@ -156,7 +156,7 @@ Row::Impl::operator[](const dimension_type k) {
   return vec_[k];
 }
 
-inline const Integer&
+inline Integer_traits::const_reference
 Row::Impl::operator[](const dimension_type k) const {
   assert(k < size());
   return vec_[k];
@@ -329,7 +329,7 @@ Row::operator[](const dimension_type k) {
   return (*impl)[k];
 }
 
-inline const Integer&
+inline Integer_traits::const_reference
 Row::operator[](const dimension_type k) const {
   return (*impl)[k];
 }

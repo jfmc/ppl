@@ -509,8 +509,8 @@ Polyhedron::shrink_bounding_box(Box& box, Complexity_Class complexity) const {
 	    varid = j;
       }
       if (varid != space_dim) {
-	const Integer& d = c.coefficient(Variable(varid));
-	const Integer& n = c.inhomogeneous_term();
+	Integer_traits::const_reference d = c.coefficient(Variable(varid));
+	Integer_traits::const_reference n = c.inhomogeneous_term();
 	// The constraint `c' is of the form
 	// `Variable(varid) + n / d rel 0', where
 	// `rel' is either the relation `==', `>=', or `>'.
@@ -588,9 +588,9 @@ Polyhedron::shrink_bounding_box(Box& box, Complexity_Class complexity) const {
       case Generator::POINT:
       case Generator::CLOSURE_POINT:
 	{
-	  const Integer& d = g.divisor();
+	  Integer_traits::const_reference d = g.divisor();
 	  for (dimension_type j = space_dim; j-- > 0; ) {
-	    const Integer& n = g.coefficient(Variable(j));
+	    Integer_traits::const_reference n = g.coefficient(Variable(j));
 	    ERational r(n, d);
 	    LBoundary lb(r,(g_type == Generator::CLOSURE_POINT
 			    ? LBoundary::OPEN
@@ -609,21 +609,28 @@ Polyhedron::shrink_bounding_box(Box& box, Complexity_Class complexity) const {
     }
   }
 
+  TEMP_INTEGER(n);
+  TEMP_INTEGER(d);
+
   // Now shrink the bounded axes.
   for (dimension_type j = space_dim; j-- > 0; ) {
     // Lower bound.
     const LBoundary& lb = lower_bound[j];
     const ERational& lr = lb.bound();
-    if (lr.direction_of_infinity() == 0)
-      box.raise_lower_bound(j, lb.is_closed(),
-			    lr.numerator(), lr.denominator());
+    if (lr.direction_of_infinity() == 0) {
+      lr.numerator(n);
+      lr.denominator(d);
+      box.raise_lower_bound(j, lb.is_closed(), n, d);
+    }
 
     // Upper bound.
     const UBoundary& ub = upper_bound[j];
     const ERational& ur = ub.bound();
-    if (ur.direction_of_infinity() == 0)
-      box.lower_upper_bound(j, ub.is_closed(),
-			    ur.numerator(), ur.denominator());
+    if (ur.direction_of_infinity() == 0) {
+      ur.numerator(n);
+      ur.denominator(d);
+      box.lower_upper_bound(j, ub.is_closed(), n, d);
+    }
   }
 }
 

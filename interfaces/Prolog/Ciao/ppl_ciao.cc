@@ -24,6 +24,9 @@ site: http://www.cs.unipr.it/ppl/ . */
 #include <config.h>
 
 #include "Integer.defs.hh"
+#include "checked.defs.hh"
+#include "checked_int.inlines.hh"
+#include "checked_mpz.inlines.hh"
 #include <ciao_prolog.h>
 #include <cassert>
 
@@ -368,8 +371,10 @@ integer_term_to_Integer(Prolog_term_ref t) {
 
 static Prolog_term_ref
 Integer_to_integer_term(const PPL::Integer& n) {
-  if (n.fits_slong_p())
-    return ciao_integer(n.get_si());
+  long v;
+  if (PPL::Checked::assign<PPL::Check_Overflow_Policy>(v, PPL::raw_value(n))
+      == PPL::Checked::V_EQ)
+    return ciao_integer(v);
   else {
     std::string s = n.get_str();
     // FIXME: the following cast is really a bug in Ciao Prolog.

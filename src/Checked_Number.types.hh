@@ -1,4 +1,4 @@
-/* Integer class implementation: inline functions.
+/* Abstract checked arithmetic with exception throwing
    Copyright (C) 2001-2004 Roberto Bagnara <bagnara@cs.unipr.it>
 
 This file is part of the Parma Polyhedra Library (PPL).
@@ -21,23 +21,17 @@ USA.
 For the most up-to-date information see the Parma Polyhedra Library
 site: http://www.cs.unipr.it/ppl/ . */
 
-#ifndef PPL_Integer_inlines_hh
-#define PPL_Integer_inlines_hh 1
+#ifndef PPL_Checked_Number_types_hh
+#define PPL_Checked_Number_types_hh 1
 
 namespace Parma_Polyhedra_Library {
 
-inline const Integer&
-Integer_zero() {
-  static Integer z(0);
-  return z;
-}
+struct Check_Overflow_Policy;
 
-inline const Integer&
-Integer_one() {
-  static Integer o(1);
-  return o;
-}
+template <typename T, typename Policy = Check_Overflow_Policy>
+class Checked_Number;
 
 } // namespace Parma_Polyhedra_Library
 
-#endif // !defined(PPL_Integer_inlines_hh)
+
+#endif // !defined(PPL_Checked_Number_types_hh)

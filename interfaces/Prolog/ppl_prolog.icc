@@ -342,9 +342,10 @@ handle_exception(const PPL_integer_out_of_range& e) {
 			    Prolog_atom_term_from_string("Integer_to_integer_term"));
 
   Prolog_term_ref exception_term = Prolog_new_term_ref();
-  std::string s = e.i().get_str();
+  std::ostringstream s;
+  s << e.i();
   Prolog_construct_compound(exception_term, a_ppl_representation_error,
-			    Prolog_atom_term_from_string(s.c_str()),
+			    Prolog_atom_term_from_string(s.str().c_str()),
 			    where);
   Prolog_raise_exception(exception_term);
 }
@@ -494,10 +495,8 @@ term_to_unsigned(Prolog_term_ref t) {
     Integer vv = integer_term_to_Integer(t);
     if (vv < 0)
       throw not_unsigned_integer(t);
-    else if (!vv.fits_ulong_p())
+    if (Checked::assign<Check_Overflow_Policy>(d, raw_value(vv)) != Checked::V_EQ)
       throw Prolog_unsigned_out_of_range(t, std::numeric_limits<U>::max());
-    else
-      d = vv.get_ui();
   }
   return d;
 }
@@ -1513,8 +1512,10 @@ extended_rational_term(const ERational& e) {
   else if (d < 0)
     Prolog_put_atom(t, a_minf);
   else {
-    const Integer& numerator = e.numerator();
-    const Integer& denominator = e.denominator();
+    Integer numerator;
+    Integer denominator;
+    e.numerator(numerator);
+    e.denominator(denominator);
     if (denominator == 1)
       Prolog_put_term(t, Integer_to_integer_term(numerator));
     else

@@ -22,8 +22,12 @@ For the most up-to-date information see the Parma Polyhedra Library
 site: http://www.cs.unipr.it/ppl/ . */
 
 #include <config.h>
+#include <sstream>
 
 #include "Integer.defs.hh"
+#include "checked.defs.hh"
+#include "checked_int.inlines.hh"
+#include "checked_mpz.inlines.hh"
 #include "sicstus_cfli.h"
 #include "../exceptions.hh"
 #include <cassert>
@@ -76,12 +80,14 @@ integer_term_to_Integer(Prolog_term_ref t) {
 static Prolog_term_ref
 Integer_to_integer_term(const PPL::Integer& n) {
   Prolog_term_ref t = Prolog_new_term_ref();
-  if (n.fits_slong_p())
-    if (SP_put_integer(t, n.get_si()) == 0)
+  long v;
+  if (PPL::Checked::assign<PPL::Check_Overflow_Policy>(v, PPL::raw_value(n)) != PPL::Checked::V_EQ) {
+    if (SP_put_integer(t, v) == 0)
       throw unknown_interface_error("Integer_to_integer_term()");
-  else {
-    std::string s = n.get_str();
-    if (SP_put_number_chars(t, s.c_str()) == 0)
+  } else {
+    std::ostringstream s;
+    s << n;
+    if (SP_put_number_chars(t, s.str().c_str()) == 0)
       throw unknown_interface_error("Integer_to_integer_term()");
   }
   return t;

@@ -67,8 +67,45 @@ AM_CPPFLAGS = -I$(top_builddir) -I$(top_srcdir)/src @extra_includes@
 
 lib_LTLIBRARIES = libppl.la
 
+if USE_NATIVE_INTEGERS
+
+COEFFICIENT_TYPES_INCLUDE_FILES = \
+  Native_Integer.types.hh
+
+COEFFICIENT_DEFS_INCLUDE_FILES = \
+  Native_Integer.defs.hh \
+  Native_Integer.inlines.hh
+
+endif
+
+if USE_CHECKED_INTEGERS
+
+COEFFICIENT_TYPES_INCLUDE_FILES = \
+  Checked_Number.types.hh
+
+COEFFICIENT_DEFS_INCLUDE_FILES = \
+  Checked_Number.defs.hh \
+  Checked_Number.inlines.hh
+
+endif
+
+if USE_GMP_INTEGERS
+
+COEFFICIENT_TYPES_INCLUDE_FILES = \
+  GMP_Integer.types.hh
+
+COEFFICIENT_DEFS_INCLUDE_FILES = \
+  GMP_Integer.defs.hh \
+  GMP_Integer.inlines.hh
+
+endif
+
 # The ordering of the following list *matters*!
 INCLUDE_FILES = \
+float.types.hh \
+Integer_traits_template.hh \
+Integer_macros.hh \
+$(COEFFICIENT_TYPES_INCLUDE_FILES) \
 Integer.types.hh \
 Interval.types.hh \
 BoundingBox.types.hh \
@@ -92,6 +129,15 @@ H79_Certificate.types.hh \
 Polyhedron.types.hh \
 C_Polyhedron.types.hh \
 NNC_Polyhedron.types.hh \
+float.types.hh \
+Limits.hh \
+checked.defs.hh \
+checked.inlines.hh \
+checked_int.inlines.hh \
+checked_float.inlines.hh \
+checked_mpz.inlines.hh \
+checked_mpq.inlines.hh \
+$(COEFFICIENT_DEFS_INCLUDE_FILES) \
 Integer.defs.hh \
 Integer.inlines.hh \
 globals.defs.hh \
@@ -195,6 +241,8 @@ Ph_Status.idefs.hh
 
 # The ordering of the following list *matters*!
 DOC_FILES = \
+GMP_Integer.types.hh \
+Native_Integer.types.hh \
 Integer.types.hh \
 Variable.types.hh \
 LinExpression.types.hh \

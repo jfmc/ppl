@@ -266,6 +266,81 @@ esac
 CFLAGS="$COMP_FLAGS $OPT_FLAGS"
 CXXFLAGS="$COMP_FLAGS $OPT_FLAGS"
 
+enableval=gmp
+AC_MSG_CHECKING([the type of integral values to use as coefficients])
+AC_ARG_ENABLE(coefficients,
+[  --enable-coefficients   select the type of the coefficients])
+case "${enableval}" in
+native-int8)
+  AC_MSG_RESULT([native 8 bits integers])
+  coefficient_kind=native
+  coefficient_type=int8_t
+  ;;
+native-int16)
+  AC_MSG_RESULT([native 16 bits integers])
+  coefficient_kind=native
+  coefficient_type=int16_t
+  ;;
+native-int32)
+  AC_MSG_RESULT([native 32 bits integers])
+  coefficient_kind=native
+  coefficient_type=int32_t
+  ;;
+native-int64)
+  AC_MSG_RESULT([native 64 bits integers])
+  coefficient_kind=native
+  coefficient_type="int64_t"
+  ;;
+checked-int8)
+  AC_MSG_RESULT([checked 8 bits integers])
+  coefficient_kind=checked
+  coefficient_type=int8_t
+  ;;
+checked-int16)
+  AC_MSG_RESULT([checked 16 bits integers])
+  coefficient_kind=checked
+  coefficient_type=int16_t
+  ;;
+checked-int32)
+  AC_MSG_RESULT([checked 32 bits integers])
+  coefficient_kind=checked
+  coefficient_type=int32_t
+  ;;
+checked-int64)
+  AC_MSG_RESULT([checked 64 bits integers])
+  coefficient_kind=checked
+  coefficient_type="int64_t"
+  ;;
+gmp)
+  AC_MSG_RESULT([GMP])
+  coefficient_kind=unbounded
+  coefficient_type=gmp
+  ;;
+*)
+  AC_MSG_ERROR([bad value ${enableval} for --enable-coefficients, checked-int32, checked-int64, checked-int16, checked-int8, gmp, native-int32, native-int64, native-int16 or native-int8])
+  ;;
+esac
+
+AM_CONDITIONAL(USE_NATIVE_INTEGERS, test x"$coefficient_kind" = xnative)
+AM_CONDITIONAL(USE_CHECKED_INTEGERS, test x"$coefficient_kind" = xchecked)
+AM_CONDITIONAL(USE_GMP_INTEGERS, test x"$coefficient_type" = xgmp)
+
+
+
+if test x"$coefficient_kind" = xnative
+then
+  AC_DEFINE_UNQUOTED(COEFFICIENT_TYPE, Parma_Polyhedra_Library::Native_Integer<$coefficient_type>, [The integral type used to represent coefficients.])
+  AC_DEFINE(NATIVE_INTEGERS, 1, [Defined if the integral type to be used for coefficients is a native one.])
+elif test x"$coefficient_kind" = xchecked
+then
+  AC_DEFINE_UNQUOTED(COEFFICIENT_TYPE, Parma_Polyhedra_Library::Checked_Number<$coefficient_type>)
+  AC_DEFINE(CHECKED_INTEGERS, 1, [Defined if the integral type to be used for coefficients is a checked one.])
+elif test x"$coefficient_type" = xgmp
+then
+  AC_DEFINE(COEFFICIENT_TYPE, mpz_class)
+  AC_DEFINE(GMP_INTEGERS, 1, [Defined if the integral type to be used for coefficients is GMP's one.])
+fi
+
 # Allow additions to C and C++ compilation flags
 
 AC_ARG_WITH(cflags,
@@ -482,11 +557,11 @@ AC_CHECK_DECLS([RLIMIT_DATA, RLIMIT_RSS, RLIMIT_VMEM, RLIMIT_AS],
 # If we are using GCC we want to compile with warnings enabled.
 if test x"$GCC" = xyes
 then
-  CFLAGS="$CFLAGS -W -Wall"
+  CFLAGS="-W -Wall $CFLAGS"
 fi
 if test x"$GXX" = xyes
 then
-  CXXFLAGS="$CXXFLAGS -W -Wall"
+  CXXFLAGS="-W -Wall $CXXFLAGS"
 fi
 
 AC_SUBST(extra_includes)
@@ -533,4 +608,27 @@ then
 *** and use a version of GMP compiled with the option -fexceptions.
 *** To build such a version, you can configure GMP as follows:
 *** CPPFLAGS=-fexceptions ./configure --enable-cxx --prefix=/usr/local])
+fi
+
+if test x"$coefficient_kind" = xnative
+then
+  AC_MSG_WARN([USING NATIVE INTEGERS IS EXTREMELY DANGEROUS:
+*** CONSIDER ANY RESULT YOU WILL GET FROM THE LIBRARY AS PSEUDO-RANDOM!!!
+*** You have requested to use a native integral type to represent
+*** coefficients.  This means that arithmetic overflows will be possible
+*** and will not be detected.  The consequence of that is that nothing
+*** can be said about the behavior of the library:  whatever the
+*** documentation says, it does not apply to the version of the library
+*** you are about to build.  Just one arithmetic overflow is enough
+*** to invalidate any possible significance of the results.
+*** Please, do not assume that your computation will not overflow because
+*** only small coefficients are involved.  Do not do it because
+*** (1) coefficients may grow very rapidly depending on the polyhedra
+***     computations being performed;
+*** (2) the library may do internal polyhedra computations that you
+***     cannot easily anticipate;
+*** (3) the library has never had, among its design goals, the one of
+***     trying to keep the coefficients small.
+***
+*** Please, consider using a _checked_ native integral type instead.])
 fi

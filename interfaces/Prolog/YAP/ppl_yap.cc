@@ -24,6 +24,9 @@ site: http://www.cs.unipr.it/ppl/ . */
 #include <config.h>
 
 #include "Integer.defs.hh"
+#include "checked.defs.hh"
+#include "checked_int.inlines.hh"
+#include "checked_mpz.inlines.hh"
 #include <Yap/YapInterface.h>
 #include <cassert>
 
@@ -364,9 +367,11 @@ integer_term_to_Integer(Prolog_term_ref t) {
 static Prolog_term_ref
 Integer_to_integer_term(const PPL::Integer& n) {
   // FIXME: does YAP support unlimited precision integer?
-  if (!n.fits_slong_p())
+  long v;
+  if (PPL::Checked::assign<PPL::Check_Overflow_Policy>(v, PPL::raw_value(n))
+      != PPL::Checked::V_EQ)
     throw unknown_interface_error("Integer_to_integer_term()");
-  return YAP_MkIntTerm(n.get_si());
+  return YAP_MkIntTerm(v);
 }
 
 #include "../ppl_prolog.icc"

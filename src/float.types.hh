@@ -1,4 +1,4 @@
-/* Integer class implementation: inline functions.
+/* Architecture-dependent, floating-point number types.
    Copyright (C) 2001-2004 Roberto Bagnara <bagnara@cs.unipr.it>
 
 This file is part of the Parma Polyhedra Library (PPL).
@@ -21,23 +21,29 @@ USA.
 For the most up-to-date information see the Parma Polyhedra Library
 site: http://www.cs.unipr.it/ppl/ . */
 
-#ifndef PPL_Integer_inlines_hh
-#define PPL_Integer_inlines_hh 1
+#ifndef PPL_float_types_hh
+#define PPL_float_types_hh
 
-namespace Parma_Polyhedra_Library {
+#include <sys/types.h>
 
-inline const Integer&
-Integer_zero() {
-  static Integer z(0);
-  return z;
-}
+#define FLOAT32_TYPE float
+#define FLOAT64_TYPE double
+#define FLOAT96_TYPE long double
 
-inline const Integer&
-Integer_one() {
-  static Integer o(1);
-  return o;
-}
+#ifdef FLOAT32_TYPE
+typedef FLOAT32_TYPE float32_t;
+#endif
 
-} // namespace Parma_Polyhedra_Library
+#ifdef FLOAT64_TYPE
+typedef FLOAT64_TYPE float64_t;
+#endif
 
-#endif // !defined(PPL_Integer_inlines_hh)
+#ifdef FLOAT96_TYPE
+typedef FLOAT96_TYPE float96_t;
+#endif
+
+#ifdef FLOAT128_TYPE
+typedef FLOAT128_TYPE float96_t;
+#endif
+
+#endif // !defined(PPL_float_types_hh)
