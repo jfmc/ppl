@@ -818,6 +818,39 @@ public:
   */
   void remove_higher_dimensions(size_t new_dimension);
 
+  //! Shuffles the dimensions of a polyhedron according to a partial function.
+  /*!
+    \param pfunc    The partial function specifyng the destiny
+                    of each dimension.
+
+    The dimensions for which \p pfunc is undefined are projected away.
+
+    The template class PartialFunction must provide the following methods.
+    \code
+      bool has_empty_codomain() const
+    \endcode
+    returns <CODE>true</CODE> if and only if the represented partial
+    function has an empty codomain (i.e., it is always undefined).
+    The <CODE>has_empty_codomain()</CODE> method will always be called
+    before the methods below.  However, if
+    <CODE>has_empty_codomain()</CODE> returns <CODE>true</CODE>, none
+    of the functions below will be called.
+    \code
+      unsigned int max_in_codomain() const
+    \endcode
+    returns the maximum unsigned integer that belongs to the codomain
+    of the partial function.
+    \code
+      bool maps(unsigned int i, unsigned int& j) const
+    \endcode
+    Let \f$f\f$ be the represented function and \f$n\f$ be the value of \p i.
+    If \f$f\f$ is defined in \f$n\f$, then \f$f(n)\f$ is assigned to \p j
+    and <CODE>true</CODE> is returned.
+    If \f$f\f$ is undefined in \f$n\f$, then <CODE>false</CODE> is returned.
+  */
+  template <typename PartialFunction>
+  void shuffle_dimensions(const PartialFunction& pfunc);
+
   //! \brief
   //! Adds the specified constraints and minimizes the result,
   //! which is assigned to \p *this.

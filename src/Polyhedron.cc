@@ -1953,7 +1953,6 @@ PPL::Polyhedron::remove_higher_dimensions(size_t new_dimension) {
   assert(OK(true));
 }
 
-
 bool
 PPL::Polyhedron::add_constraints_and_minimize(ConSys& cs) {
   // Topology-compatibility check.

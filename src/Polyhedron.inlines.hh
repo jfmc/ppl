@@ -409,6 +409,69 @@ Polyhedron::shrink_bounding_box(Box& box) const {
   }
 }
 
+template <typename PartialFunction>
+void
+Polyhedron::shuffle_dimensions(const PartialFunction& pfunc) {
+  // FIXME: this implementation is just an executable specification.
+  if (space_dim == 0)
+    return;
+
+  if (pfunc.has_empty_codomain()) {
+    // All dimensions vanish: the polyhedron becomes zero_dimensional.
+    if (is_empty()
+	|| (!generators_are_up_to_date() && !update_generators())) {
+      // Removing all dimensions from the empty polyhedron.
+      space_dim = 0;
+      con_sys.clear();
+    }
+    else
+      // Removing all dimensions from a non-empty polyhedron.
+      set_zero_dim_univ();
+
+    assert(OK());
+    return;
+  }
+
+  unsigned int new_space_dimension = pfunc.max_in_codomain() + 1;
+  const GenSys& old_gensys = generators();
+  GenSys new_gensys;
+  for (GenSys::const_iterator i = old_gensys.begin(),
+	 old_gensys_end = old_gensys.end(); i != old_gensys_end; ++i) {
+    const Generator& old_g = *i;
+    LinExpression e(0 * Variable(new_space_dimension-1));
+    bool all_zeroes = true;
+    for (unsigned int index = 0; index < space_dim; ++index) {
+      unsigned int new_index;
+      if (old_g.coefficient(Variable(index)) != 0
+	  && pfunc.maps(index, new_index)) {
+	e += Variable(new_index)
+	  * old_g.coefficient(Variable(index));
+	all_zeroes = false;
+      }
+    }
+    switch (old_g.type()) {
+    case Generator::LINE:
+      if (!all_zeroes)
+	new_gensys.insert(line(e));
+      break;
+    case Generator::RAY:
+      if (!all_zeroes)
+	new_gensys.insert(ray(e));
+      break;
+    case Generator::POINT:
+      // Note: a point in the origin has all zero homogeneous coefficients.
+      new_gensys.insert(point(e, old_g.divisor()));
+      break;
+    case Generator::CLOSURE_POINT:
+      // Note: a point in the origin has all zero homogeneous coefficients.
+      new_gensys.insert(point(e, old_g.divisor()));
+      break;
+    }
+  }
+  Polyhedron new_polyhedron(topology(), new_gensys);
+  std::swap(*this, new_polyhedron);
+}
+
 } // namespace Parma_Polyhedra_Library
 
 
