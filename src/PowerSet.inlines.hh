@@ -425,36 +425,62 @@ PowerSet<CS>::limited_H79_widening_assign(const PowerSet& y,
   if (possibly_new.empty())
     return;
 
-  CS new_upper_bound(space_dim);
   // Heuristics: less precise elements are later in the sequence.
-  for (typename std::deque<iterator>::const_reverse_iterator
-	 ni = possibly_new.rbegin(),
-	 nend = possibly_new.rend(); ni != nend; ++nend) {
+  typename std::deque<iterator>::const_reverse_iterator ni
+    = possibly_new.rbegin();
+  typename std::deque<iterator>::const_reverse_iterator nend
+    = possibly_new.rend();
+  const iterator& zi = *ni;
+  CS new_upper_bound(*zi);
+  sequence.erase(zi);
+  for (++ni; ni != nend; ++ni) {
     const iterator& xi = *ni;
     assert(xi->OK());
     new_upper_bound.upper_bound_assign(*xi);
     sequence.erase(xi);
   }
 
-  CS old_upper_bound(space_dim);
-  // Heuristics again: less precise elements are later in the sequence.
-  for (const_reverse_iterator xi = rbegin(), xend = rend(); xi != xend; ++xi)
-    old_upper_bound.upper_bound_assign(*xi);
+  if (sequence.empty()) {
+    // Heuristics again: less precise elements are later in the sequence.
+    const_reverse_iterator yi = y.rbegin();
+    const_reverse_iterator yend = y.rend();
+    CS old_upper_bound(*yi);
+    for (++yi; yi != yend; ++yi)
+      old_upper_bound.upper_bound_assign(*yi);
 
-  new_upper_bound.upper_bound_assign(old_upper_bound);
-  new_upper_bound.limited_H79_widening_assign(old_upper_bound, cs);
+    assert(old_upper_bound.definitely_entails(new_upper_bound));
+
+    new_upper_bound.limited_H79_widening_assign(old_upper_bound, cs);
+  }
+  else{
+    // Heuristics again: less precise elements are later in the sequence.
+    const_reverse_iterator xi = rbegin();
+    const_reverse_iterator xend = rend();
+    CS old_upper_bound(*xi);
+    for (++xi; xi != xend; ++xi)
+      old_upper_bound.upper_bound_assign(*xi);
+
+    new_upper_bound.upper_bound_assign(old_upper_bound);
+
+    new_upper_bound.limited_H79_widening_assign(old_upper_bound, cs);
+  }
 
   sequence.push_back(new_upper_bound);
+
+  omega_reduction();
 }
 
 template <typename CS>
 bool
 PowerSet<CS>::OK() const {
   for (typename PowerSet<CS>::const_iterator i = begin(),
-	 xend = end(); i != xend; ++i)
+	 xend = end(); i != xend; ++i) {
     if (!i->OK()
 	|| i->space_dimension() != space_dim)
       return false;
+    if (i->is_bottom())
+      return false;
+  }
   return true;
 }
  
