@@ -865,7 +865,7 @@ int
 ppl_new_C_Polyhedron_from_bounding_box
 __P((ppl_Polyhedron_t* pph,
      unsigned int (*space_dimension)(void),
-     int (*is_empty)(unsigned int k),
+     int (*is_empty)(void),
      int (*get_lower_bound)(unsigned int k, int closed,
 			    ppl_Coefficient_t n,
 			    ppl_Coefficient_t d),
@@ -880,7 +880,7 @@ int
 ppl_new_NNC_Polyhedron_from_bounding_box
 __P((ppl_Polyhedron_t* pph,
      unsigned int (*space_dimension)(void),
-     int (*is_empty)(unsigned int k),
+     int (*is_empty)(void),
      int (*get_lower_bound)(unsigned int k, int closed,
 			    ppl_Coefficient_t n,
 			    ppl_Coefficient_t d),
@@ -1172,9 +1172,8 @@ ppl_Polyhedron_affine_preimage __P((ppl_Polyhedron_t ph,
   The polyhedron that is used to shrink the bounding box.
 
   \param set_empty
-  a pointer to a void function with arguments <CODE>(unsigned int k)</CODE>
-  that intersects the interval corresponding to the <CODE>k</CODE>-th
-  dimension with \f$\emptyset\f$.
+  a pointer to a void function with no arguments that causes the bounding
+  box to become empty, i.e., to represent the empty set.
 
   \param raise_lower_bound
   a pointer to a void function with arguments
@@ -1199,7 +1198,7 @@ ppl_Polyhedron_affine_preimage __P((ppl_Polyhedron_t ph,
 int
 ppl_Polyhedron_shrink_bounding_box
 __P((ppl_const_Polyhedron_t ph,
-     void (*set_empty)(unsigned int k),
+     void (*set_empty)(void),
      void (*raise_lower_bound)(unsigned int k, int closed,
 			       ppl_const_Coefficient_t n,
 			       ppl_const_Coefficient_t d),

@@ -388,8 +388,7 @@ Polyhedron::shrink_bounding_box(Box& box) const {
     return;
 
   if (check_empty()) {
-    for (size_t j = space_dim; j-- > 0; )
-      box.set_empty(j);
+    box.set_empty();
     return;
   }
 

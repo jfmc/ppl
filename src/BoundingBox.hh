@@ -32,10 +32,12 @@ namespace Parma_Polyhedra_Library {
 class BoundingBox {
 private:
   std::vector<Interval> vec;
+  mutable bool empty;
+  mutable bool empty_up_to_date;
 
 public:
   BoundingBox(unsigned int dimension)
-    : vec(dimension) {
+    : vec(dimension), empty(false), empty_up_to_date(true) {
   }
 
   unsigned int space_dimension() const {
@@ -46,8 +48,19 @@ public:
     return vec[k];
   }
 
-  bool is_empty(unsigned int k) const {
-    return vec[k].is_empty();
+  bool is_empty() const {
+    if (empty_up_to_date)
+      return empty;
+    else {
+      empty_up_to_date = true;
+      for (size_t k = vec.size(); k-- > 0; )
+	if (vec[k].is_empty()) {
+	  empty = true;
+	  return true;
+	}
+      empty = false;
+      return false;
+    }
   }
 
   bool get_lower_bound(unsigned int k, bool closed,
@@ -79,8 +92,8 @@ public:
     return true;
   }
 
-  void set_empty(unsigned int k) {
-    vec[k].set_empty();
+  void set_empty() {
+    empty = empty_up_to_date = true;
   }
 
   void raise_lower_bound(unsigned int k, bool closed,
@@ -89,6 +102,7 @@ public:
 				       (closed
 					? LBoundary::CLOSED
 					: LBoundary::OPEN)));
+    empty_up_to_date = false;
   }
 
   void lower_upper_bound(unsigned int k, bool closed,
@@ -97,6 +111,7 @@ public:
 				       (closed
 					? UBoundary::CLOSED
 					: UBoundary::OPEN)));
+    empty_up_to_date = false;
     }
 };
 

@@ -213,8 +213,6 @@ public:
   bool adjust_topology_and_dimension(Topology topol,
 				     size_t num_dimensions);
 
-// FIXME: this is a kludge
-PPL_INTERNAL:
   //! Returns <CODE>true</CODE> if and only if \p *this
   //! contains one or more strict inequality constraints.
   bool has_strict_inequalities() const;
@@ -222,6 +220,8 @@ PPL_INTERNAL:
   //! Returns the \p k- th constraint of the system.
   Constraint& operator[](size_t k);
   
+// FIXME: this is a kludge
+PPL_INTERNAL:
   //! Returns a constant reference to the \p k- th constraint of the system.
   const Constraint& operator[](size_t k) const;
 

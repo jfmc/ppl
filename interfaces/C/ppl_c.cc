@@ -925,7 +925,7 @@ CATCH_ALL
 class CBuildBox {
 private:
   unsigned int (*s_d)(void);
-  int (*i_e)(unsigned int k);
+  int (*i_e)(void);
   int (*g_l_b)(unsigned int k, int closed,
 		ppl_Coefficient_t n,
 		ppl_Coefficient_t d);
@@ -935,7 +935,7 @@ private:
 
 public:
   CBuildBox(unsigned int (*sd)(void),
-	    int (*ie)(unsigned int k),
+	    int (*ie)(void),
 	    int (*glb)(unsigned int k, int closed,
 		       ppl_Coefficient_t n,
 		       ppl_Coefficient_t d),
@@ -949,8 +949,8 @@ public:
     return s_d();
   }
 
-  bool is_empty(unsigned int k) const {
-    return i_e(k) != 0;
+  bool is_empty(void) const {
+    return i_e() != 0;
   }
 
   bool get_lower_bound(unsigned int k, bool closed,
@@ -968,7 +968,7 @@ int
 ppl_new_C_Polyhedron_from_bounding_box
 (ppl_Polyhedron_t* pph,
  unsigned int (*space_dimension)(void),
- int (*is_empty)(unsigned int k),
+ int (*is_empty)(void),
  int (*get_lower_bound)(unsigned int k, int closed,
 			ppl_Coefficient_t n,
 			ppl_Coefficient_t d),
@@ -985,7 +985,7 @@ int
 ppl_new_NNC_Polyhedron_from_bounding_box
 (ppl_Polyhedron_t* pph,
  unsigned int (*space_dimension)(void),
- int (*is_empty)(unsigned int k),
+ int (*is_empty)(void),
  int (*get_lower_bound)(unsigned int k, int closed,
 			ppl_Coefficient_t n,
 			ppl_Coefficient_t d),
@@ -1285,7 +1285,7 @@ CATCH_ALL
 
 class CShrinkBox {
 private:
-  void (*s_e)(unsigned int k);
+  void (*s_e)(void);
   void (*r_l_b)(unsigned int k, int closed,
 		ppl_const_Coefficient_t n,
 		ppl_const_Coefficient_t d);
@@ -1294,7 +1294,7 @@ private:
 		ppl_const_Coefficient_t d);
 
 public:
-  CShrinkBox(void (*se)(unsigned int k),
+  CShrinkBox(void (*se)(void),
 	     void (*rlb)(unsigned int k, int closed,
 			 ppl_const_Coefficient_t n,
 			 ppl_const_Coefficient_t d),
@@ -1304,8 +1304,8 @@ public:
     : s_e(se), r_l_b(rlb), l_u_b(lub) {
   }
 
-  void set_empty(unsigned int k) {
-    s_e(k);
+  void set_empty() {
+    s_e();
   }
 
   void raise_lower_bound(unsigned int k, bool closed,
@@ -1322,7 +1322,7 @@ public:
 int
 ppl_Polyhedron_shrink_bounding_box
 (ppl_const_Polyhedron_t ph,
- void (*set_empty)(unsigned int k),
+ void (*set_empty)(void),
  void (*raise_lower_bound)(unsigned int k, int closed,
 			   ppl_const_Coefficient_t n,
 			   ppl_const_Coefficient_t d),

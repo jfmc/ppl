@@ -391,8 +391,8 @@ protected:
     \code
       bool is_empty() const
     \endcode
-    returns <CODE>true</CODE> if and only if
-    the bounding box describes the empty set \f$\emptyset\f$.
+    returns <CODE>true</CODE> if and only if the bounding box
+    describes the empty set.
     The <CODE>is_empty()</CODE> method will always be called before the
     methods below.  However, if <CODE>is_empty()</CODE> returns
     <CODE>true</CODE>, none of the functions below will be called.
@@ -595,10 +595,9 @@ public:
     The bounding box to be shrunk.  This must provide the following
     methods, whose return value, if any, is simply ignored.
     \code
-      set_empty(unsigned int k)
+      set_empty()
     \endcode
-    intersects the interval corresponding to the <CODE>k</CODE>-th dimension
-    with \f$\emptyset\f$.
+    causes the box to become empty, i.e., to represent the empty set.
     \code
       raise_lower_bound(unsigned int k, bool closed,
                         const Integer& n, const Integer& d)
