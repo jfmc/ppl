@@ -223,10 +223,10 @@ A point of an NNC polyhedron \f$\cP \in \Pset_n\f$ is a
 <EM>vertex</EM> if and only if
 it cannot be expressed as a convex combination of any other pair of
 distinct points in \f$\cP\f$.
-A ray \f$\vect{r}\f$ of a polyhedron \f$P\f$ is an <EM>extreme ray</EM>
+A ray \f$\vect{r}\f$ of a polyhedron \f$\cP\f$ is an <EM>extreme ray</EM>
 if and only if it cannot be expressed as
 a positive combination of any other pair
-\f$\vect{r}_1\f$ and \f$\vect{r}_2\f$ of rays of \f$P\f$,
+\f$\vect{r}_1\f$ and \f$\vect{r}_2\f$ of rays of \f$\cP\f$,
 where
 \f$\vect{r} \neq \lambda \vect{r}_1\f$,
 \f$\vect{r} \neq \lambda \vect{r}_2\f$ and
@@ -332,6 +332,42 @@ The following (space) <EM>dimension-compatibility</EM> rules are defined:
 - a system of constraints (resp., generators) is dimension-compatible with
   an NNC polyhedron if and only if all the constraints (resp., generators)
   in the system are dimension-compatible with the NNC polyhedron.
+
+<B>Intervals, boxes and bounding boxes</B>
+
+An <EM>interval</EM> is a pair of <EM>bounds</EM>
+where each bound can be <EM>closed</EM> and <EM>bounded</EM>,
+<EM>open</EM> and <EM>bounded</EM>
+or  <EM>open</EM> and <EM>unbounded</EM>.
+If it is <EM>bounded</EM>, then it has a value in \f$\Rset\f$.
+
+An \f$n\f$-dimensional <EM>box</EM> in \f$\Rset^n\f$
+is an NNC polyhedron \f$\cP\f$ described by
+a sequence \f$I\f$ of \f$n\f$ intervals in \f$\Rset\f$.
+The NNC polyhedron \f$\cP\f$
+is described by a constraint system in \f$\Rset^n\f$ that
+consists of one constraint for each  lower or upper bound
+in an interval in \f$I\f$ that is bounded:
+Letting \f$\vect{i} = (0, \ldots, 1, \ldots, 0)\f$ be the vector in
+\f$\Rset^n\f$ with 1 in the \f$i\f$'th position
+and zeros in every other position;
+if the lower bound of the \f$i\f$'th interval in \f$I\f$
+ is bounded, the corresponding constraint is defined as 
+\f$\langle\vect{i},\vect{x}\rangle \mathord{\relop} b\f$ where
+\f$b\f$ is the value of the bound and \f$\mathord{\relop}\f$ is
+\f$\geq\f$ if it is a lower closed bound, 
+\f$>\f$ if it is a lower open bound.
+Similarly,
+if the upper bound of the \f$i\f$'th interval in \f$I\f$ is bounded,
+the corresponding constraint is defined as 
+\f$\langle\vect{i},\vect{x}\rangle \mathord{\relop} b\f$ where
+\f$b\f$ is the value of the bound and \f$\mathord{\relop}\f$ is
+\f$\leq\f$ if it is an upper closed bound and
+\f$<\f$ if it is an upper open bound. 
+
+A <EM>bounding box</EM> of an NNC polyhedron \f$\cP\f$ is
+the smallest \f$n\f$-dimensional box
+containing \f$\cP\f$. 
 
 \if Implementation_Info
 
