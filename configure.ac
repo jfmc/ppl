@@ -56,7 +56,7 @@ dnl C compiler
 
 AC_ARG_WITH(cc,
 [  --with-cc=xxx           use XXX as the C compiler],
-CXX=$with_cc)
+CC=$with_cc)
 
 AC_LANG_C
 AC_PROG_CC
