@@ -121,9 +121,7 @@ public:
   //! Returns <CODE>true</CODE> if no bit is set in the row.
   bool empty() const;
 
-#ifndef NDEBUG
   bool OK() const;
-#endif
 };
 
 namespace Parma_Polyhedra_Library {

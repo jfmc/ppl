@@ -113,7 +113,6 @@ PPL::operator >>(std::istream& s, PPL::Status& u) {
   return s;
 }
 
-#ifndef NDEBUG
 bool
 PPL::Status::OK() const {
   if (test_zero_dim())
@@ -144,4 +143,3 @@ PPL::Status::OK() const {
   // Any other case is ok.
   return true;
 }
-#endif

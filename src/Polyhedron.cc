@@ -1633,7 +1633,6 @@ PPL::Polyhedron::check_universe() const {
 }
 
 
-#ifndef NDEBUG
 
 /*!
   \param check_satisfiable   <CODE>true</CODE> if it must be checked
@@ -1882,4 +1881,3 @@ PPL::Polyhedron::OK(bool check_satisfiable) const {
        << endl;
   return false;
 }
-#endif

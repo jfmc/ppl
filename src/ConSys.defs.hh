@@ -158,11 +158,9 @@ PPL_INTERNAL:
   //! Returns the number of the inequality constraints.
   size_t num_inequalities() const;
 
-#ifndef NDEBUG
   //! Checks if the system of constraints is consistent with 
   //! respect to the rules fixed for the PPL.
   bool OK() const;
-#endif
 
  private:
   //! Input operator.

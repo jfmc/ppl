@@ -295,7 +295,6 @@ PPL::GenSys::get(std::istream& s) {
   }
 }
 
-#ifndef NDEBUG
 /*!
   Returns <CODE>true</CODE> if and only if \p *this actually represents
   a set of generators. So, \p *this must satisfy some rule:
@@ -378,4 +377,3 @@ at least one nonzero homogeneous coefficient!"
 
   return true;
 }
-#endif

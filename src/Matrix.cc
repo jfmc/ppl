@@ -644,6 +644,7 @@ PPL::Matrix::check_sorted() const {
       return false;
   return true;
 }
+#endif
 
 
 bool
@@ -656,4 +657,3 @@ PPL::Matrix::OK() const {
     return false;
   return true;
 }
-#endif

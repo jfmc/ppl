@@ -193,7 +193,6 @@ PPL::ConSys::get(std::istream& s) {
   }
 }
 
-#ifndef NDEBUG
 /*!
   Returns <CODE>true</CODE> if and only if \p *this actually represents
   a system of constraints. So \p *this must have:
@@ -226,4 +225,3 @@ PPL::ConSys::OK() const {
 
   return true;
 }
-#endif

@@ -42,7 +42,6 @@ PPL::operator <<(std::ostream& s, const SatRow& r) {
 }
 
 
-#ifndef NDEBUG
 bool
 PPL::SatRow::OK() const {
   using std::endl;
@@ -55,4 +54,3 @@ PPL::SatRow::OK() const {
   }
   return true;
 }
-#endif

@@ -108,9 +108,9 @@ public:
   //! Resizes the matrix copying the old contents.
   void resize(size_t new_num_rows, size_t new_num_columns);
 
-#ifndef NDEBUG
   //! Checks if \p *this satisfies the stated invariants of the PPL.
   bool OK() const;
+#ifndef NDEBUG
   //! Checks whether \p *this is sorted.
   //! It does NOT remove duplicates.
   bool check_sorted() const;

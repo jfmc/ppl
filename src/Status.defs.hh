@@ -117,10 +117,8 @@ public:
   void set_sat_g_up_to_date();
   //@}
 
-#ifndef NDEBUG
   //! Check whether \p *this is a legal status.
   bool OK() const;
-#endif
 
 private:
   //! Status is implemented by means of a finite bitset.

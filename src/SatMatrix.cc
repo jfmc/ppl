@@ -213,7 +213,6 @@ PPL::operator >>(std::istream& s, SatMatrix& x) {
   return s;
 }
 
-#ifndef NDEBUG
 /*!
   Checks if \p *this satisfies the stated invariants of the PPL.
 */
@@ -236,6 +235,7 @@ PPL::SatMatrix::OK() const {
   return true;
 }
 
+#ifndef NDEBUG
 /*!
   Checks whether the matrix is sorted.
   It does NOT remove duplicates.
