@@ -202,11 +202,6 @@ PPL::Polyhedron::simplify(Matrix& mat, SatMatrix& sat) {
       i++;
   }
 
-#if 0
-  cout << "After trivial reduction: mat " << endl << mat << endl;
-  cout << "After trivial reduction: sat " << endl << sat << endl;
-  cout << "num_rows " << num_rows << endl;
-#endif
   // Now we check if the independence rule holds comparing each couple 
   // of inequalities.
   for (size_t i = num_equal_or_line; i < num_rows; ) {
@@ -274,11 +269,6 @@ PPL::Polyhedron::simplify(Matrix& mat, SatMatrix& sat) {
       // one with all the other inequalities.
       ++i;
   }
-
-#if 0
-  cout << "After saturator reduction: " << mat << endl;
-  cout << "num_rows: " << num_rows << endl;
-#endif
 
   // Here we physically remove the redundant inequalities previously 
   // moved to the bottom of `mat' and the corresponding `sat' rows.

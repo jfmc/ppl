@@ -523,10 +523,6 @@ PPL::Matrix::back_substitute(size_t rank) {
     while (j != 0 && rows[k][j] == 0)
       --j;
 
-#if 0
-    std::cout << "rows[k][j]=" << rows[k][j] << " in riga " << k << std::endl;
-#endif
-
     for (size_t i = 0; i < nrows; ++i)
       // i runs through all the rows of the matrix.
       if (i > k && i < rank)
@@ -551,10 +547,6 @@ PPL::Matrix::back_substitute(size_t rank) {
 	// k-th one such that they have a zero coefficient
 	// in position j.
 	rows[i].linear_combine(rows[k], j);
-
-#if 0       
-	std::cout << "linear_combine= " << rows[i] << std::endl;
-#endif	
 
 	// Sort checking.
 	if (was_sorted) {

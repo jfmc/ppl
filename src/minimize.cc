@@ -67,15 +67,6 @@ namespace PPL = Parma_Polyhedra_Library;
 bool
 PPL::Polyhedron::minimize(bool con_to_ray,
 			  Matrix& source, Matrix& dest, SatMatrix& sat) {
-
-#if 0
-  cout << endl << "On entry to minimize(con_to_ray, source, dest, sat)" << endl
-       << "con_to_ray = " << (con_to_ray ? "true" : "false") << endl
-       << "*** source ***" << endl << source << endl
-       << "*** dest ***" << endl << dest << endl
-       << "*** sat ***" << endl << sat << endl;
-#endif
-
   // Sort the source matrix, if necessary.
   if (!source.is_sorted())
     source.sort_rows();
@@ -222,22 +213,9 @@ PPL::Polyhedron::add_and_minimize(bool con_to_ray,
 				  const Matrix& source2) {
   // `source1' and `source2' must have the same number of dimensions
   // to be merged.
- 
   assert(source1.num_columns() == source2.num_columns());
   assert(source1.is_sorted());
   assert(source2.is_sorted());
-
-#if 0
-  cout << endl
-       << "On entry to add_and_minimize(con_to_ray,\
- source1, dest, sat, source2)"
-       << endl
-       << "con_to_ray = " << (con_to_ray ? "true" : "false") << endl
-       << "*** source1 ***" << endl << source1 << endl
-       << "*** dest ***" << endl << dest << endl
-       << "*** sat ***" << endl << sat << endl
-       << "*** source2 ***" << endl << source2 << endl;
-#endif
 
   size_t old_source1_num_rows = source1.num_rows();
   size_t index = source1.num_rows();

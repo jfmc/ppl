@@ -327,20 +327,6 @@ PPL::Polyhedron::conversion(Matrix& source,
   size_t dest_num_rows = dest.num_rows();
   size_t dest_num_columns = dest.num_columns();
 
-#if 0
-  cout << "# conversion()" << endl;
-  cout << "num_lines_or_equalities = " << num_lines_or_equalities << endl;
-  cout << "source_num_rows = " << source_num_rows << endl;
-  cout << "source_num_columns = " << source_num_columns << endl;
-  cout << "dest_num_rows = " << dest_num_rows << endl;
-  cout << "sat.num_rows() = " << sat.num_rows() << endl;
-
-  cout << endl;
-  cout << "source" << endl << source << endl;
-  cout << "dest" << endl << dest << endl;
-  cout << "sat" << endl << sat << endl;
-#endif
-
   // `sat' have the same number of columns of `source' rows and
   // the same number of rows of `dest' rows (because of the choice
   // made for the definition of `sat').
