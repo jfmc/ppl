@@ -2,6 +2,11 @@
 Enhancements for PPL 0.7
 ========================
 
+- Rewrite Matrix::sort_and_remove_with_sat() and perhaps
+  Matrix::sort_rows().
+- Look carefully into the methods Polyhedron::obtain_sorted_constraints*()
+  and Polyhedron::obtain_sorted_generators*() and into the code that
+  uses them directly.
 - The Powerset class implementation is poorly documented.
 - See for what reason we have neither
   C_Polyhedron& C_Polyhedron::operator=(const NNC_Polyhedron& y)
