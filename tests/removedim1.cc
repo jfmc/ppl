@@ -1,4 +1,4 @@
-/* Different ways of creating an empty polyhedron.
+/* To be written.
    Copyright (C) 2001 Roberto Bagnara <bagnara@cs.unipr.it>
 
 This file is part of the Parma Polyhedra Library (PPL).
