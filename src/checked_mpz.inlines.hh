@@ -164,12 +164,12 @@ SPECIALIZE_ASSIGN(mpz_float, mpz_class, double)
 
 template <typename Policy>
 inline Result 
-assign_mpz_charp(mpz_class& to, const char* from) {
+assign_mpz_c_string(mpz_class& to, c_string from) {
   to = from;
   return V_EQ;
 }
 
-SPECIALIZE_ASSIGN(mpz_charp, mpz_class, char*);
+SPECIALIZE_ASSIGN(mpz_c_string, mpz_class, c_string);
 
 template <typename Policy>
 inline Result 

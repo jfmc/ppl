@@ -41,6 +41,8 @@ struct Check_Overflow_Policy {
   static const int convertible = 1;
 };
 
+typedef const char* c_string;
+
 namespace Checked {
 
 struct Policy_Safe {
