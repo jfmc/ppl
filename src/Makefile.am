@@ -74,7 +74,6 @@ SatMatrix.cc \
 SatRow.cc \
 Status.cc \
 conversion.cc \
-globals.cc \
 minimize.cc \
 simplify.cc \
 LinExpression.cc \

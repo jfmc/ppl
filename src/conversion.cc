@@ -346,7 +346,6 @@ PPL::Polyhedron::conversion(Matrix& source,
 			    Matrix& dest,
 			    SatMatrix& sat,
 			    size_t num_lines_or_equalities) {
-
   size_t source_num_rows = source.num_rows();
   size_t source_num_columns = source.num_columns();
   size_t dest_num_rows = dest.num_rows();
@@ -421,8 +420,10 @@ PPL::Polyhedron::conversion(Matrix& source,
       // `num_lines_or_equalities'-th one) can not to be a line and
       // we set it to ray/vertex.
       dest[num_lines_or_equalities].set_is_ray_or_vertex_or_inequality();
+
       // We have modified dest so it is no more sorted.
       dest.set_sorted(false);
+
       // The new lineality space is obtained considering a set of new
       // lines that must lie on the hyper-plane represented by
       // the k-th constraint, i.e., the scalar product between the k-th
@@ -449,20 +450,20 @@ PPL::Polyhedron::conversion(Matrix& source,
 	  //   dest[i][c] *= scaled_sp_n;
 	  //   dest[i][c] -= scaled_sp_i * dest[num_lines_or_equalities][c];
 	  // }
-	  tmp_Integer_1.gcd_assign(scalar_prod[i],
+	  tmp_Integer(1).gcd_assign(scalar_prod[i],
 				   scalar_prod[num_lines_or_equalities]);
-	  tmp_Integer_2
+	  tmp_Integer(2)
 	    .exact_div_assign(scalar_prod[i],
-			      tmp_Integer_1);
-	  tmp_Integer_3
+			      tmp_Integer(1));
+	  tmp_Integer(3)
 	    .exact_div_assign(scalar_prod[num_lines_or_equalities],
-			      tmp_Integer_1);
+			      tmp_Integer(1));
 	  for (size_t c = dest_num_columns; c-- > 0; ) {
-	    tmp_Integer_4.mul_assign(tmp_Integer_3,
+	    tmp_Integer(4).mul_assign(tmp_Integer(3),
 				     dest[i][c]);
-	    tmp_Integer_5.mul_assign(tmp_Integer_2,
+	    tmp_Integer(5).mul_assign(tmp_Integer(2),
 				     dest[num_lines_or_equalities][c]);
-	    dest[i][c].sub_assign(tmp_Integer_4, tmp_Integer_5);
+	    dest[i][c].sub_assign(tmp_Integer(4), tmp_Integer(5));
 	  }
 
 	  dest[i].normalize();
@@ -511,20 +512,20 @@ PPL::Polyhedron::conversion(Matrix& source,
 	  //   dest[i][c] *= scaled_sp_n;
 	  //   dest[i][c] -= scaled_sp_i * dest[num_lines_or_equalities][c];
 	  // }
-	  tmp_Integer_1.gcd_assign(scalar_prod[i],
+	  tmp_Integer(1).gcd_assign(scalar_prod[i],
 				   scalar_prod[num_lines_or_equalities]);
-	  tmp_Integer_2
+	  tmp_Integer(2)
 	    .exact_div_assign(scalar_prod[i],
-			      tmp_Integer_1);
-	  tmp_Integer_3
+			      tmp_Integer(1));
+	  tmp_Integer(3)
 	    .exact_div_assign(scalar_prod[num_lines_or_equalities],
-			      tmp_Integer_1);
+			      tmp_Integer(1));
 	  for (size_t c = dest_num_columns; c-- > 0; ) {
-	    tmp_Integer_4.mul_assign(tmp_Integer_3,
+	    tmp_Integer(4).mul_assign(tmp_Integer(3),
 				     dest[i][c]);
-	    tmp_Integer_5.mul_assign(tmp_Integer_2,
+	    tmp_Integer(5).mul_assign(tmp_Integer(2),
 				     dest[num_lines_or_equalities][c]);
-	    dest[i][c].sub_assign(tmp_Integer_4, tmp_Integer_5);
+	    dest[i][c].sub_assign(tmp_Integer(4), tmp_Integer(5));
 	  }
 
 	  dest[i].normalize();
@@ -723,16 +724,16 @@ PPL::Polyhedron::conversion(Matrix& source,
 		  //   new_row[c] = scaled_sp_i * dest[j][c];
 		  //   new_row[c] -= scaled_sp_j * dest[i][c];
 		  // }
-		  tmp_Integer_1.gcd_assign(scalar_prod[i],
+		  tmp_Integer(1).gcd_assign(scalar_prod[i],
 					   scalar_prod[j]);
-		  tmp_Integer_2.exact_div_assign(scalar_prod[i],
-						 tmp_Integer_1);
-		  tmp_Integer_3.exact_div_assign(scalar_prod[j],
-						 tmp_Integer_1);
+		  tmp_Integer(2).exact_div_assign(scalar_prod[i],
+						 tmp_Integer(1));
+		  tmp_Integer(3).exact_div_assign(scalar_prod[j],
+						 tmp_Integer(1));
 		  for (size_t c = dest_num_columns; c-- > 0; ) {
-		    tmp_Integer_4.mul_assign(tmp_Integer_2, dest[j][c]);
-		    tmp_Integer_5.mul_assign(tmp_Integer_3, dest[i][c]);
-		    new_row[c].sub_assign(tmp_Integer_4, tmp_Integer_5);
+		    tmp_Integer(4).mul_assign(tmp_Integer(2), dest[j][c]);
+		    tmp_Integer(5).mul_assign(tmp_Integer(3), dest[i][c]);
+		    new_row[c].sub_assign(tmp_Integer(4), tmp_Integer(5));
 		  }
 		  new_row.normalize();
 		  // Since we added a new row to `dest', we have to add
@@ -810,6 +811,5 @@ PPL::Polyhedron::conversion(Matrix& source,
     sat.rows_erase_to_end(dest_num_rows);
   }
   sat.columns_erase_to_end(source_num_rows);
-
   return num_lines_or_equalities;
 }

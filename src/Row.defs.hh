@@ -111,6 +111,9 @@ public:
   //! Swaps \p *this with \p y.
   void swap(Row& y);
 
+  //! Assigns the implementation of \p y to \p *this.
+  void assign(Row& y);
+
   //! Resizes the row without copying the old contents.
   void resize_no_copy(size_t new_size);
   //! Grows the row without copying the old contents.
@@ -151,11 +154,28 @@ public:
   friend std::ostream&
   Parma_Polyhedra_Library::operator <<(std::ostream& s, const Row& row);
 
+  //! Allows the capacity of the rows to be computed depending on
+  //! the required number of columns.
+  static size_t compute_capacity(size_t row_size);
+
+
+  //! Checks if all the invariants are satisfied.
+  bool OK(size_t capacity) const;
+
 private:
   class Impl;
 
   //! The real implementation, as far as memory allocation is concerned.
   Impl* impl;
+
+#ifndef NDEBUG
+  // For debugging only: the capacity of the row.
+  size_t capacity_;
+
+PPL_INTERNAL:
+  // Its accessor.
+  size_t capacity() const;
+#endif
 };
 
 namespace Parma_Polyhedra_Library {

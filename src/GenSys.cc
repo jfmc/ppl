@@ -307,13 +307,10 @@ PPL::GenSys::OK() const {
   using std::endl;
   using std::cerr;
 
-  // GenSys must have at least two columns: one for the inhomogeneous
-  // terms and one for the coefficients of at least one variable.
-  if (!Matrix::OK()) {
-    cerr << "A GenSys must have at least two columns!"
-	 << endl;
+  // A GenSys must be a valid Matrix.
+  if (!Matrix::OK())
     return false;
-  }
+
   if (num_rows() == 0)
     // A valid system of generators can be empty.
     return true;

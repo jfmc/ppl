@@ -85,6 +85,7 @@ PPL::Polyhedron::minimize(bool con_to_ray,
 
   size_t source_num_columns = source.num_columns();
   dest.resize_no_copy(source_num_columns, source_num_columns);
+
   // `dest' is now a square matrix.
   size_t dest_num_rows = source_num_columns;
   for(size_t i = dest_num_rows; i-- > 0; ) {
@@ -162,6 +163,7 @@ PPL::Polyhedron::minimize(bool con_to_ray,
     // Deleting the redundant rows of `source'.
     simplify(source, sat);
   }
+
   return empty_or_illegal;
 }
 

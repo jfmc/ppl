@@ -25,9 +25,8 @@ site: http://www.cs.unipr.it/ppl/ . */
 #include "Integer.defs.hh"
 
 namespace Parma_Polyhedra_Library {
-  extern Integer tmp_Integer_1;
-  extern Integer tmp_Integer_2;
-  extern Integer tmp_Integer_3;
-  extern Integer tmp_Integer_4;
-  extern Integer tmp_Integer_5;
+  inline Integer& tmp_Integer(size_t n) {
+    static Integer tmp[6];
+    return tmp[n];
+  }
 }

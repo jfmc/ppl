@@ -200,13 +200,9 @@ PPL::ConSys::OK() const {
   using std::endl;
   using std::cerr;
 
-  // ConSys must have at least two columns: one for the inhomogeneous
-  // terms and one for the coefficients of at least one variable.
-  if (!Matrix::OK()) {
-    cerr << "A ConSys must have at least two columns!"
-	 << endl;
+  // A ConSys must be a valid Matrix.
+  if (!Matrix::OK())
     return false;
-  }
 
   if (num_rows() == 0) {
     // A valid constraint system must have at least one constraint.

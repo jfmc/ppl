@@ -39,30 +39,6 @@ Matrix::swap(Matrix& y) {
 }
 
 /*!
-  This is the comparator used for sorting the matrices.
-*/
-inline bool
-Matrix::RowCompare::operator ()(const Row& x, const Row& y) const {
-  return compare(x, y) < 0;
-}
-
-
-/*!
-  \param num_columns   The number of elements we want the rows to contain.
-
-  \return              The actual capacity of the rows.
-
-  Computes the row capacity given the required number of columns.
-  Allows speculative allocation aimed at reducing the number of
-  reallocations.
-*/
-inline size_t
-Matrix::compute_row_capacity(size_t num_columns) {
-  return num_columns;
-}
-
-
-/*!
   The default constructor initializes the rows' size and capacity to \f$0\f$.
   FIXME: This "zero-matrix" is temporarily set to be not sorted
          because, when we add some rows, they may not be

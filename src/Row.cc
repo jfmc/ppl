@@ -53,11 +53,9 @@ PPL::Row::Impl::shrink(size_t new_size) {
   assert(new_size <= size());
   // We assume construction was done "forward".
   // We thus perform destruction "backward".
-  for (size_t i = size(); i != new_size; ) {
-    --i;
+  for (size_t i = size(); i-- > new_size; )
     // ~Integer() does not throw exceptions.  So we do.
     vec_[i].~Integer();
-  }
   set_size(new_size);
 }
 
@@ -120,18 +118,18 @@ void
 PPL::Row::normalize() {
   Row& x = *this;
   // Compute the GCD of all the coefficients.
-  // The GCD goes into tmp_Integer_1.
-  tmp_Integer_1 = 0;
+  // The GCD goes into tmp_Integer(1).
+  tmp_Integer(1) = 0;
   size_t sz = size();
   for (size_t i = sz; i-- > 0; ) {
     const Integer& x_i = x[i];
     if (x_i != 0)
-      tmp_Integer_1.gcd_assign(x_i);
+      tmp_Integer(1).gcd_assign(x_i);
   }
-  if (tmp_Integer_1 > 1)
+  if (tmp_Integer(1) > 1)
     // Divide the coefficients by the GCD.
     for (size_t i = sz; i-- > 0; )
-      x[i].exact_div_assign(tmp_Integer_1);
+      x[i].exact_div_assign(tmp_Integer(1));
 }
 
 #ifdef PPL_DOXYGEN_INCLUDE_IMPLEMENTATION_DETAILS
@@ -204,8 +202,8 @@ PPL::operator *(const Row& x, const Row& y) {
   Integer result = 0;
   for (size_t i = x.size(); i-- > 0; ) {
     // The following lines optimize the computation of result += x[i] * y[i].
-    tmp_Integer_1.mul_assign(x[i], y[i]);
-    result += tmp_Integer_1;
+    tmp_Integer(1).mul_assign(x[i], y[i]);
+    result += tmp_Integer(1);
   }
   return result;
 }
@@ -227,14 +225,14 @@ PPL::Row::linear_combine(const Row& y, size_t k) {
   // Let g be the GCD between `x[k]' and `y[k]'.
   // For each i the following computes
   //   x[i] = x[i]*y[k]/g - y[i]*x[k]/g.
-  tmp_Integer_1.gcd_assign(x[k], y[k]);
-  tmp_Integer_2.exact_div_assign(x[k], tmp_Integer_1);
-  tmp_Integer_3.exact_div_assign(y[k], tmp_Integer_1);
+  tmp_Integer(1).gcd_assign(x[k], y[k]);
+  tmp_Integer(2).exact_div_assign(x[k], tmp_Integer(1));
+  tmp_Integer(3).exact_div_assign(y[k], tmp_Integer(1));
   for (size_t i = size(); i-- > 0; )
     if (i != k) {
-      tmp_Integer_4.mul_assign(x[i], tmp_Integer_3);
-      tmp_Integer_5.mul_assign(y[i], tmp_Integer_2);
-      x[i].sub_assign(tmp_Integer_4, tmp_Integer_5);
+      tmp_Integer(4).mul_assign(x[i], tmp_Integer(3));
+      tmp_Integer(5).mul_assign(y[i], tmp_Integer(2));
+      x[i].sub_assign(tmp_Integer(4), tmp_Integer(5));
     }
   x[k] = 0;
   x.normalize();
@@ -249,4 +247,25 @@ PPL::operator <<(std::ostream& s, const Row& row) {
   for (++i ; i < size; ++i)
     s << " " << row[i];
   return s;
+}
+
+bool
+PPL::Row::OK(size_t capacity) const {
+#ifndef NDEBUG
+  bool is_broken = false;
+  if (capacity_ != capacity) {
+    std::cerr << "Row capacity mismatch: is " << capacity_
+	      << ", should be " << capacity
+	      << std::endl;
+    is_broken = true;
+  }
+  if (capacity_ < size()) {
+    std::cerr << "Row is completely broken: calacity is " << capacity_
+	      << ", size is " << size()
+	      << std::endl;
+    is_broken = true;
+  }
+  return !is_broken;
+#endif
+  return true;
 }

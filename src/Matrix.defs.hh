@@ -133,13 +133,6 @@ private:
   //! defined by <CODE>bool operator <(const Row& x, const Row& y)</CODE>.
   //! If <CODE>false</CODE> we cannot conclude that rows are not sorted.
   bool sorted;
-  //! Allows the capacity of the rows to be computed depending on
-  //! the required number of columns.
-  static size_t compute_row_capacity(size_t num_columns);
-
-  struct RowCompare {
-    bool operator ()(const Row& x, const Row& y) const;
-  };
 
 public:
   //! Swaps \p *this with \p y.

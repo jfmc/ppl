@@ -21,6 +21,8 @@ USA.
 For the most up-to-date information see the Parma Polyhedra Library
 site: http://www.cs.unipr.it/ppl/ . */
 
+#include <vector>
+
 namespace Parma_Polyhedra_Library {
 
 inline
@@ -126,14 +128,27 @@ set_union(const SatRow& x, const SatRow& y, SatRow& z) {
 } // namespace Parma_Polyhedra_Library
 
 
+namespace std {
+
 /*!
   Specialize <CODE>std::swap </CODE> to use the fast swap that is
   provided as a member function instead of using the default
   algorithm (which creates a temporary and uses assignment).
 */
 inline void
-std::swap(Parma_Polyhedra_Library::SatRow& x,
+swap(Parma_Polyhedra_Library::SatRow& x,
 	  Parma_Polyhedra_Library::SatRow& y) {
   x.swap(y);
 }
 
+/*!
+  Specialize <CODE>std::iter_swap</CODE>
+  for <CODE>vector<SatRow>::iterator</CODE>.
+*/
+inline void
+iter_swap(vector<Parma_Polyhedra_Library::SatRow>::iterator x,
+	  vector<Parma_Polyhedra_Library::SatRow>::iterator y) {
+  swap(*x, *y);
+}
+
+} // namespace std

@@ -331,6 +331,7 @@ PPL::Polyhedron::update_generators() const {
 */
 void
 PPL::Polyhedron::minimize() const {
+
   // 0-dim space or empty polyhedra are already minimized.
   if (space_dimension() == 0
       || is_empty()
@@ -1035,8 +1036,10 @@ PPL::Polyhedron::remove_dimensions(const std::set<Variable>& to_be_removed) {
   // The removal of no dimensions from any polyhedron is a no-op.
   // Note that this case also captures the only legal removal of
   // dimensions from a polyhedron in a 0-dim space.
-  if (to_be_removed.empty())
+  if (to_be_removed.empty()) {
+    assert(OK(false));
     return;
+  }
 
   // Dimension-compatibility check: the variable having
   // maximum cardinality is the one occurring last in the set.
@@ -1050,6 +1053,7 @@ PPL::Polyhedron::remove_dimensions(const std::set<Variable>& to_be_removed) {
   if (is_empty()) {
     space_dim -= to_be_removed.size();
     con_sys.clear();
+    assert(OK(false));
     return;
   }
 
@@ -1060,6 +1064,7 @@ PPL::Polyhedron::remove_dimensions(const std::set<Variable>& to_be_removed) {
   if (is_empty()) {
     space_dim -= to_be_removed.size();
     con_sys.clear();
+    assert(OK(false));
     return;
   }
 
@@ -1090,10 +1095,13 @@ PPL::Polyhedron::remove_dimensions(const std::set<Variable>& to_be_removed) {
     dst_col++;
   }
   // The number of remaining columns is dst_col.
-  gen_sys.resize(nrows, dst_col);
+  gen_sys.resize_no_copy(nrows, dst_col);
 
   // Constraints are no longer up-to-date.
   clear_constraints_up_to_date();
+
+  // FIXME: put this at the right place.
+  clear_generators_minimized();
 
   // Updating the space dimension.
   if (gen_sys.num_columns() > 1)
@@ -1108,6 +1116,7 @@ PPL::Polyhedron::remove_dimensions(const std::set<Variable>& to_be_removed) {
     gen_sys.clear();
     con_sys.clear();
   }
+  assert(OK());
 }
 
 /*!
@@ -1118,8 +1127,10 @@ PPL::Polyhedron::remove_higher_dimensions(size_t new_dimension) {
   // The removal of no dimensions from any polyhedron is a no-op.
   // Note that this case also captures the only legal removal of
   // dimensions from a polyhedron in a 0-dim space.
-  if (new_dimension == space_dimension())
+  if (new_dimension == space_dimension()) {
+    assert(OK(false));
     return;
+  }
 
   // Dimension-compatibility check: the variable having
   // maximum cardinality is the one occurring last in the set.
@@ -1133,6 +1144,7 @@ PPL::Polyhedron::remove_higher_dimensions(size_t new_dimension) {
   if (is_empty()) {
     space_dim = new_dimension;
     con_sys.clear();
+    assert(OK(false));
     return;
   }
 
@@ -1143,11 +1155,12 @@ PPL::Polyhedron::remove_higher_dimensions(size_t new_dimension) {
   if (is_empty()) {
     space_dim = new_dimension;
     con_sys.clear();
+    assert(OK(false));
     return;
   }
 
   // The number of remaining columns is new_dimension+1.
-  gen_sys.resize(gen_sys.num_rows(), new_dimension+1);
+  gen_sys.resize_no_copy(gen_sys.num_rows(), new_dimension+1);
 
   // Constraints are no longer up-to-date.
   clear_constraints_up_to_date();
@@ -1165,6 +1178,7 @@ PPL::Polyhedron::remove_higher_dimensions(size_t new_dimension) {
     gen_sys.clear();
     con_sys.clear();
   }
+  assert(OK());
 }
 
 static void

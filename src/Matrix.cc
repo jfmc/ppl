@@ -59,7 +59,7 @@ PPL::Matrix::num_lines_or_equalities() const {
 PPL::Matrix::Matrix(size_t num_rows, size_t num_columns)
   : rows(num_rows),
     row_size(num_columns),
-    row_capacity(compute_row_capacity(num_columns)),
+    row_capacity(Row::compute_capacity(num_columns)),
     sorted(false) {
   // Construct in direct order: will destroy in reverse order.
   for (size_t i = 0; i < num_rows; ++i)
@@ -80,7 +80,7 @@ PPL::Matrix&
 PPL::Matrix::operator =(const Matrix& y) {
   rows = y.rows;
   row_size = y.row_size;
-  row_capacity = y.row_capacity;
+  row_capacity = Row::compute_capacity(row_size);
   sorted = y.sorted;
   return *this;
 }
@@ -187,7 +187,7 @@ PPL::Matrix::resize_no_copy(size_t new_num_rows, size_t new_num_columns) {
       else {
 	// Capacity exhausted: we must reallocate the rows and
 	// make sure all the rows have the same capacity.
-	row_capacity = compute_row_capacity(new_num_columns);
+	row_capacity = Row::compute_capacity(new_num_columns);
 	for (size_t i = old_num_rows; i-- > 0; ) {
 	  Row new_row(Row::LINE_OR_EQUALITY, new_num_columns, row_capacity);
 	  std::swap(rows[i], new_row);
@@ -314,20 +314,40 @@ PPL::Matrix::merge_rows_assign(const Matrix& y) {
   assert(check_sorted());
 }
 
-
 /*!
   Sorts the rows (in growing order) and eliminates duplicated ones.
 */
 void
 PPL::Matrix::sort_rows() {
-  // Sort without removing duplicates.
-  std::sort(rows.begin(), rows.end(), RowCompare());
+  Matrix& x = *this;
+  size_t num_rows = x.num_rows();
+  Row x_i;
+  for (size_t i = 1; i < num_rows; ) {
+    x_i.assign(x[i]);
+    size_t j;
+    int cmp = 1;
+    for (j = i; j > 0; --j) {
+      cmp = compare(x[j-1], x_i);
+      if (cmp <= 0)
+	break;
+      x[j].assign(x[j-1]);
+    }
+    if (cmp == 0) {
+      for ( ; j < i; ++j)
+	x[j].assign(x[j+1]);
+      x[i].assign(x_i);
+      --num_rows;
+      std::swap(x[i], x[num_rows]);
+    }
+    else {
+      x[j].assign(x_i);
+      ++i;
+    }
+  }
+  Row null;
+  x_i.assign(null);
+  rows.erase(rows.begin()+num_rows, rows.end());
   sorted = true;
-  // Move all the duplicate elements at the end of the vector.
-  std::vector<Row>::iterator first_duplicate
-    = std::unique(rows.begin(), rows.end());
-  // Remove the duplicates.
-  rows.erase(first_duplicate, rows.end());
   assert(OK());
 }
 
@@ -373,6 +393,7 @@ PPL::Matrix::insert(const Row& row) {
   else
     add_row(row);
 }
+
 /*!
   Adds a new empty row to the matrix setting its type to the given
   \p type.
@@ -382,7 +403,11 @@ PPL::Matrix::add_row(Row::Type type) {
   bool was_sorted = is_sorted();
   // Inserts a new empty row at the end,
   // then constructs it assigning it the given type \p type.
+  // BEGIN KLUDGE
+  if (rows.capacity() == rows.size())
+    row_capacity = row_size;
   rows.insert(rows.end(), Row())->construct(type, row_size, row_capacity);
+  // END KLUDGE
   // Check whether the modified Matrix happens to be sorted.
   if (was_sorted) {
     size_t nrows = num_rows();
@@ -399,6 +424,7 @@ PPL::Matrix::add_row(Row::Type type) {
       set_sorted(true);
   }
 }
+
 /*!
   Normalize the matrix.
 */
@@ -660,7 +686,7 @@ PPL::Matrix::add_rows_and_columns(size_t n) {
 bool
 PPL::Matrix::check_sorted() const {
   const Matrix& x = *this;
-  for (size_t i = num_rows(); i-- > 1;)
+  for (size_t i = num_rows(); i-- > 1; )
     if (x[i] < x[i-1])
       return false;
   return true;
@@ -670,11 +696,20 @@ PPL::Matrix::check_sorted() const {
 
 bool
 PPL::Matrix::OK() const {
-  if (num_columns() < 2)
-    // A matrix will contain constraints or generators; in
-    // both cases it must have at least two columns: one for the
-    // inhomogeneous term and one for the coefficient of
-    // (at least) a variable.
+  // A non-empty matrix will contain constraints or generators; in
+  // both cases it must have at least one column for the inhomogeneous
+  // term.
+  if (num_rows() > 0 && num_columns() < 1) {
+    std::cerr << "A Matrix must have at least two columns!"
+	      << std::endl;
     return false;
-  return true;
+  }
+
+  const Matrix& x = *this;
+  bool is_broken = false;
+  size_t nrows = num_rows();
+  for (size_t i = 0; i < nrows; ++i)
+    is_broken |= !x[i].OK(row_capacity);
+
+  return !is_broken;
 }

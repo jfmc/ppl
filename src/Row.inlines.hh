@@ -23,8 +23,24 @@ site: http://www.cs.unipr.it/ppl/ . */
 
 #include <cassert>
 #include <algorithm>
+#include <vector>
 
 namespace Parma_Polyhedra_Library {
+
+/*!
+  \param row_size   The number of elements we want the rows to contain.
+
+  \return           The actual capacity of the rows.
+
+  Computes the row capacity given its required size.
+  Allows speculative allocation aimed at reducing the number of
+  reallocations.
+*/
+inline size_t
+Row::compute_capacity(size_t row_size) {
+  return row_size;
+}
+
 
 /*!
   Allocates a chunk of memory able to contain \p capacity Integer objects
@@ -187,6 +203,9 @@ inline void
 Row::construct(Type type, size_t size, size_t capacity) {
   assert(capacity >= size);
   impl = new (capacity) Impl(type, size);
+#ifndef NDEBUG
+  capacity_ = capacity;
+#endif
 }
 
 
@@ -210,9 +229,13 @@ Row::Row(Type type, size_t size) {
 
 inline
 Row::Row(const Row& y)
-  : impl(y.impl ? new (y.impl->size()) Impl(*y.impl) : 0) {
+  : impl(y.impl
+	 ? new (compute_capacity(y.impl->size())) Impl(*y.impl)
+	 : 0) {
+#ifndef NDEBUG
+  capacity_ = y.impl ? compute_capacity(y.impl->size()) : 0;
+#endif
 }
-
 
 /*!
   Returns the size of \p *this row.
@@ -222,6 +245,12 @@ Row::size() const {
   return impl->size();
 }
 
+#ifndef NDEBUG
+inline size_t
+Row::capacity() const {
+  return capacity_;
+}
+#endif
 
 /*!
   Allows to specify a capacity,
@@ -231,6 +260,9 @@ inline
 Row::Row(const Row& y, size_t capacity) {
   assert(capacity >= y.size());
   impl = y.impl ? new (capacity) Impl(*y.impl) : 0;
+#ifndef NDEBUG
+  capacity_ = capacity;
+#endif
 }
 
 /*!
@@ -242,6 +274,9 @@ inline
 Row::Row(const Row& y, size_t size, size_t capacity) {
   assert(capacity >= y.size());
   impl = y.impl ? new (capacity) Impl(*y.impl, size) : 0;
+#ifndef NDEBUG
+  capacity_ = capacity;
+#endif
 }
 
 inline
@@ -256,6 +291,7 @@ Row::~Row() {
 inline void
 Row::resize_no_copy(size_t new_size) {
   assert(impl);
+  assert(new_size <= capacity_);
   impl->resize_no_copy(new_size);
 }
 
@@ -266,6 +302,7 @@ Row::resize_no_copy(size_t new_size) {
 inline void
 Row::grow_no_copy(size_t new_size) {
   assert(impl);
+  assert(new_size <= capacity_);
   impl->grow_no_copy(new_size);
 }
 
@@ -282,7 +319,19 @@ Row::shrink(size_t new_size) {
 inline void
 Row::swap(Row& y) {
   std::swap(impl, y.impl);
+#ifndef NDEBUG
+  std::swap(capacity_, y.capacity_);
+#endif
 }
+
+inline void
+Row::assign(Row& y) {
+  impl = y.impl;
+#ifndef NDEBUG
+  capacity_ = y.capacity_;
+#endif
+}
+
 
 inline Row&
 Row::operator =(const Row& y) {
@@ -401,12 +450,26 @@ operator >(const Row& x, const Row& y) {
 } // namespace Parma_Polyhedra_Library
 
 
+namespace std {
+
 /*!
   Specialize <CODE>std::swap</CODE> to use the fast swap that is
   provided as a member function instead of using the default
   algorithm (which creates a temporary and uses assignment).
 */
 inline void
-std::swap(Parma_Polyhedra_Library::Row& x, Parma_Polyhedra_Library::Row& y) {
+swap(Parma_Polyhedra_Library::Row& x, Parma_Polyhedra_Library::Row& y) {
   x.swap(y);
 }
+
+/*!
+  Specialize <CODE>std::iter_swap</CODE>
+  for <CODE>vector<Row>::iterator</CODE>.
+*/
+inline void
+iter_swap(vector<Parma_Polyhedra_Library::Row>::iterator x,
+	  vector<Parma_Polyhedra_Library::Row>::iterator y) {
+  swap(*x, *y);
+}
+
+} // namespace std
