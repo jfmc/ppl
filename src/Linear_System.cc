@@ -312,7 +312,7 @@ PPL::Linear_System::merge_rows_assign(const Linear_System& y) {
 void
 PPL::Linear_System::add_pending_rows(const Linear_System& y) {
   Linear_System& x = *this;
-  assert(x.row_size >= y.row_size);
+  assert(x.row_size == y.row_size);
 
   const dimension_type x_n_rows = x.num_rows();
   const dimension_type y_n_rows = y.num_rows();
