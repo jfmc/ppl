@@ -31,14 +31,14 @@ site: http://www.cs.unipr.it/ppl/ . */
 namespace Parma_Polyhedra_Library {
 
 LinExpression::LinExpression(const Constraint& c)
-  : Row(Row::Type(), c.space_dimension()) {
+  : Row(Row::Type(), c.space_dimension() + 1) {
   LinExpression& e = *this;
   for (size_t i = size(); i-- > 0; )
     e[i] = c[i];
 }
 
 LinExpression::LinExpression(const Generator& g)
-  : Row(Row::Type(), g.space_dimension()) {
+  : Row(Row::Type(), g.space_dimension() + 1) {
   LinExpression& e = *this;
   // Do not copy the divisor of `g'.
   for (size_t i = size(); --i > 0; )
