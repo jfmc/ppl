@@ -191,6 +191,10 @@ public:
   //! The unsatisfiable (zero-dimension space) constraint \f$0 = 1\f$.
   static const Constraint& zero_dim_false();
 
+  //! The true (zero-dimension space) constraint \f$0 \leq 1\f$,
+  //! also known as <EM>positivity constraint</EM>.
+  static const Constraint& zero_dim_positivity();
+
 PPL_INTERNAL:
   //! Returns <CODE>true</CODE> if and only if
   //! \p *this is the trivial constraint \f$0 <= n\f$,

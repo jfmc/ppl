@@ -179,8 +179,7 @@ PPL::Polyhedron::Polyhedron(ConSys& cs)
     // that is why the formal parameter is not declared const.
     std::swap(con_sys, cs);
     // Adding the positivity constraint.
-    con_sys.add_row(Row::RAY_OR_VERTEX_OR_INEQUALITY);
-    con_sys[con_sys.num_rows()-1][0] = 1;
+    con_sys.insert(Constraint::zero_dim_positivity());
     set_constraints_up_to_date();
     // The first column is not a dimension.
     space_dim = con_sys.num_columns() - 1;

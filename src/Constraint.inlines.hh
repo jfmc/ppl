@@ -91,6 +91,12 @@ Constraint::zero_dim_false() {
   return zdf;
 }
 
+inline const Constraint&
+Constraint::zero_dim_positivity() {
+  static Constraint zdp(LinExpression::zero() <= Integer::one());
+  return zdp;
+}
+
 inline Constraint
 operator ==(const LinExpression& e1, const LinExpression& e2) {
   LinExpression diff = e1 - e2;
