@@ -1,4 +1,5 @@
 #include "ppl.hh"
+#include <iostream>
 #include <stdexcept>
 
 using namespace std;
@@ -16,7 +17,9 @@ int main() {
     p2.convex_hull_assign(p1);
   }
   catch (std::invalid_argument& e) {
+#if NOISY
     cout << "invalid_argument: " << e.what() << endl;
+#endif
     exit(0);
   }
   catch (...) {
