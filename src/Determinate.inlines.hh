@@ -189,13 +189,13 @@ operator+(const Determinate<PH>& x, const Determinate<PH>& y) {
 }
 
 template <typename PH>
-bool
+inline bool
 Determinate<PH>::is_top() const {
   return prep->ph.is_universe();
 }
 
 template <typename PH>
-bool
+inline bool
 Determinate<PH>::is_bottom() const {
   return prep->ph.is_empty();
 }
