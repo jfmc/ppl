@@ -3027,6 +3027,7 @@ PPL::Polyhedron::select_H79_constraints(const Polyhedron& y,
 
   // Add low-level constraints.
   add_low_level_constraints(cs_selection);
+  // Now adjust dimensions, if needed.
   cs_selection.adjust_topology_and_dimension(topology(), space_dimension());
 
   // Obtain a sorted copy of `y.sat_g'.
@@ -3051,12 +3052,13 @@ PPL::Polyhedron::select_H79_constraints(const Polyhedron& y,
   // Note: the loop index `i' goes upwards to avoid reversing
   // the ordering of the chosen constraints.
   for (dimension_type i = 0, iend = con_sys.num_rows(); i < iend; ++i) {
+    const Constraint& c = con_sys[i];
     buffer.clear();
     // The saturation row `buffer' is built considering
     // the `i'-th constraint of the polyhedron `x' and
     // all the generators of the polyhedron `y'.
     for (dimension_type j = y.gen_sys.num_rows(); j-- > 0; ) {
-      int sp_sgn = sgn(y.gen_sys[j] * con_sys[i]);
+      int sp_sgn = sgn(c * y.gen_sys[j]);
       // We are assuming that `y <= x'.
       assert(sp_sgn >= 0);
       if (sp_sgn > 0)
@@ -3065,8 +3067,12 @@ PPL::Polyhedron::select_H79_constraints(const Polyhedron& y,
     // We check whether `buffer' is a row of `tmp_sat_g',
     // exploiting its sortedness in order to have faster comparisons.
     if (tmp_sat_g.sorted_contains(buffer))
-      cs_selection.add_row(con_sys[i]);
+      cs_selection.add_row(c);
   }
+  // For NNC polyhedra, each strict inequality must be matched by
+  // the corresponding non-strict inequality.
+  if (!is_necessarily_closed())
+    cs_selection.add_corresponding_nonstrict_inequalities();
 }
 
 
@@ -3135,7 +3141,7 @@ PPL::Polyhedron::H79_widening_assign(const Polyhedron& y) {
 
   // Copy into `H79_con_sys' the constraints that are common
   // to `x' and `y', according to the definition of the H79 widening.
-  ConSys H79_con_sys;
+  ConSys H79_con_sys(x.topology());
   x.select_H79_constraints(y, H79_con_sys);
 
   // Let `H79_con_sys' be the constraint system of `x'
@@ -3458,7 +3464,7 @@ PPL::Polyhedron::BBRZ02_widening_assign(const Polyhedron& y) {
 
   // Copy into `H79_con_sys' the constraints that are common
   // to `x' and `y', according to the definition of the H79 widening.
-  ConSys H79_con_sys;
+  ConSys H79_con_sys(x.topology());
   x.select_H79_constraints(y, H79_con_sys);
   // CHECK ME: why should it be sorted?
   H79_con_sys.sort_rows();
@@ -3524,10 +3530,18 @@ PPL::Polyhedron::BBRZ02_widening_assign(const Polyhedron& y) {
       // We build the new constraint that is
       // obtained adding all the chosen normalized constraint.
       if (tmp_con_sys.num_rows() != 0) {
-	if (tmp_con_sys.num_rows() == 1)
-	  // If we have chosen only a constraint, we add it to the
-	  // new system.
-	  new_con_sys.insert(tmp_con_sys[0]);
+	if (tmp_con_sys.num_rows() == 1) {
+	  // If we have only one constraint, we add it to the new system.
+	  const Constraint& c = tmp_con_sys[0];
+	  if (!is_necessarily_closed() && c.is_strict_inequality()) {
+	    // Adding the corresponding non-strict inequality.
+	    new_con_sys.insert(c);
+	    Constraint& ns_cs = new_con_sys[new_con_sys.num_rows() - 1];
+	    ns_cs[space_dimension() + 1] = 0;
+	    ns_cs.normalize();
+	  }
+	  new_con_sys.insert(c);
+	}
 	else {
 	  // The number of the chosen constraints is greather than 1.
 	  dimension_type tmp_con_sys_num_rows = tmp_con_sys.num_rows();
@@ -3583,11 +3597,14 @@ PPL::Polyhedron::BBRZ02_widening_assign(const Polyhedron& y) {
 	  // constraints, the new constraint is a strict inequality,
 	  // too. Otherwise it is a non-strict inequality.
 	  if (!e.all_homogeneous_terms_are_zero())
-	    if (strict_inequality)
+	    if (strict_inequality) {
+	      if (!is_necessarily_closed())
+		// Adding the corresponding non-strict inequality.
+		new_con_sys.insert(e >= 0);		
 	      new_con_sys.insert(e > 0);
+	    }
 	    else
 	      new_con_sys.insert(e >= 0);
-	  
 	}
       }
     }
