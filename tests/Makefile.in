@@ -97,17 +97,19 @@ LDADD = $(top_builddir)/src/libppl.a $(top_builddir)/src/Integer/libInteger.a $(
 
 CPPFLAGS = -DPPL_INTERNAL=private @extra_cpp_flags@
 
-TESTS = inters1 inters2
+TESTS = inters1 inters2 randchull1
 
 inters1_SOURCES = inters1.cc
 inters2_SOURCES = inters2.cc
+
+randchull1_SOURCES = randchull1.cc
 
 check_PROGRAMS = $(TESTS)
 subdir = tests
 mkinstalldirs = $(SHELL) $(top_srcdir)/mkinstalldirs
 CONFIG_HEADER = $(top_builddir)/config.h
 CONFIG_CLEAN_FILES =
-check_PROGRAMS = inters1$(EXEEXT) inters2$(EXEEXT)
+check_PROGRAMS = inters1$(EXEEXT) inters2$(EXEEXT) randchull1$(EXEEXT)
 am_inters1_OBJECTS = inters1.$(OBJEXT)
 inters1_OBJECTS = $(am_inters1_OBJECTS)
 inters1_LDADD = $(LDADD)
@@ -122,20 +124,29 @@ inters2_DEPENDENCIES = $(top_builddir)/src/libppl.a \
 	$(top_builddir)/src/Integer/libInteger.a \
 	$(top_builddir)/src/BitSet/libBitSet.a
 inters2_LDFLAGS =
+am_randchull1_OBJECTS = randchull1.$(OBJEXT)
+randchull1_OBJECTS = $(am_randchull1_OBJECTS)
+randchull1_LDADD = $(LDADD)
+randchull1_DEPENDENCIES = $(top_builddir)/src/libppl.a \
+	$(top_builddir)/src/Integer/libInteger.a \
+	$(top_builddir)/src/BitSet/libBitSet.a
+randchull1_LDFLAGS =
 
 DEFS = @DEFS@
 DEFAULT_INCLUDES =  -I. -I$(srcdir) -I$(top_builddir)
 LDFLAGS = @LDFLAGS@
 LIBS = @LIBS@
 depcomp = $(SHELL) $(top_srcdir)/depcomp
-@AMDEP_TRUE@DEP_FILES = $(DEPDIR)/inters1.Po $(DEPDIR)/inters2.Po
+@AMDEP_TRUE@DEP_FILES = $(DEPDIR)/inters1.Po $(DEPDIR)/inters2.Po \
+@AMDEP_TRUE@	$(DEPDIR)/randchull1.Po
 CXXCOMPILE = $(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) \
 	$(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS)
 CXXLD = $(CXX)
 CXXLINK = $(CXXLD) $(AM_CXXFLAGS) $(CXXFLAGS) $(AM_LDFLAGS) $(LDFLAGS) \
 	-o $@
 CXXFLAGS = @CXXFLAGS@
-DIST_SOURCES = $(inters1_SOURCES) $(inters2_SOURCES)
+DIST_SOURCES = $(inters1_SOURCES) $(inters2_SOURCES) \
+	$(randchull1_SOURCES)
 
 RECURSIVE_TARGETS = info-recursive dvi-recursive install-info-recursive \
 	uninstall-info-recursive all-recursive install-data-recursive \
@@ -143,7 +154,7 @@ RECURSIVE_TARGETS = info-recursive dvi-recursive install-info-recursive \
 	uninstall-recursive check-recursive installcheck-recursive
 DIST_COMMON = Makefile.am Makefile.in
 DIST_SUBDIRS = $(SUBDIRS)
-SOURCES = $(inters1_SOURCES) $(inters2_SOURCES)
+SOURCES = $(inters1_SOURCES) $(inters2_SOURCES) $(randchull1_SOURCES)
 
 all: all-recursive
 
@@ -165,6 +176,9 @@ inters1$(EXEEXT): $(inters1_OBJECTS) $(inters1_DEPENDENCIES)
 inters2$(EXEEXT): $(inters2_OBJECTS) $(inters2_DEPENDENCIES) 
 	@rm -f inters2$(EXEEXT)
 	$(CXXLINK) $(inters2_LDFLAGS) $(inters2_OBJECTS) $(inters2_LDADD) $(LIBS)
+randchull1$(EXEEXT): $(randchull1_OBJECTS) $(randchull1_DEPENDENCIES) 
+	@rm -f randchull1$(EXEEXT)
+	$(CXXLINK) $(randchull1_LDFLAGS) $(randchull1_OBJECTS) $(randchull1_LDADD) $(LIBS)
 
 mostlyclean-compile:
 	-rm -f *.$(OBJEXT) core *.core
@@ -174,6 +188,7 @@ distclean-compile:
 
 @AMDEP_TRUE@@am__include@ @am__quote@$(DEPDIR)/inters1.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@$(DEPDIR)/inters2.Po@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@$(DEPDIR)/randchull1.Po@am__quote@
 
 distclean-depend:
 	-rm -rf $(DEPDIR)

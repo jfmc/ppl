@@ -21,9 +21,11 @@ LDADD = $(top_builddir)/src/libppl.a $(top_builddir)/src/Integer/libInteger.a $(
 
 CPPFLAGS = -DPPL_INTERNAL=private @extra_cpp_flags@
 
-TESTS = inters1 inters2
+TESTS = inters1 inters2 randchull1
 
 inters1_SOURCES = inters1.cc
 inters2_SOURCES = inters2.cc
+
+randchull1_SOURCES = randchull1.cc
 
 check_PROGRAMS = $(TESTS)
