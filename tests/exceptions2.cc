@@ -41,7 +41,7 @@ error1() {
 
   try {
     // This is an invalid use of the constructor of a polyhedron:
-    // it is illegal to built a closed polyhedron starting from
+    // it is illegal to build a closed polyhedron starting from
     // a system of constraints that contains strict-inequalities.
     C_Polyhedron ph(cs);
 
@@ -72,7 +72,7 @@ error2() {
 
   try {
     // This is an invalid use of the constructor of a polyhedron:
-    // it is illegal to built a closed polyhedron starting from
+    // it is illegal to build a closed polyhedron starting from
     // a system of generators that contains closure points.
     C_Polyhedron ph(gs);
     exit(1);
@@ -694,7 +694,7 @@ error21() {
 
   try {
     // This is an incorrect use of the function
-    // C_Polyhedron::C_Polyhedron(cs): it is illegal to built a
+    // C_Polyhedron::C_Polyhedron(cs): it is illegal to build a
     // closed polyhedron starting from a system of constraints
     // that contains strict inequalities.
     C_Polyhedron ph2(cs);
@@ -725,7 +725,7 @@ error22() {
 
   try {
     // This is an incorrect use of the function
-    // `C_Polyhedron(const GenSys)': it is illegal to built
+    // `C_Polyhedron(const GenSys)': it is illegal to build
     // a closed polyhedron starting from a constant non-closed
     // system of generators.
     C_Polyhedron ph2(gs2);

@@ -1,6 +1,4 @@
-/* Test NNC_Polyhedron::NNC_Polyhedron(const C_Polyhedron): we
-   built a non necessary closed polyhedron starting from a
-   closed polyhedron.
+/* Test NNC_Polyhedron::NNC_Polyhedron(const C_Polyhedron& y).
    Copyright (C) 2001-2004 Roberto Bagnara <bagnara@cs.unipr.it>
 
 This file is part of the Parma Polyhedra Library (PPL).

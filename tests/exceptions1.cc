@@ -39,7 +39,7 @@ error1() {
   GenSys gs;
   try {
     // This is an incorrect use of the function Generator::point(expr, d):
-    // it is illegal to built a point with the denominator
+    // it is illegal to build a point with the denominator
     // equal to zero.
     gs.insert(point(x + y + z, 0));
 
@@ -125,7 +125,7 @@ error4() {
 
   try {
     // This is an incorrect use of the function
-    // C_Polyhedron::C_Polyhedron(gs): it is illegal to built a
+    // C_Polyhedron::C_Polyhedron(gs): it is illegal to build a
     // polyhedron starting from a system of generators that does not
     // contain a point.
     C_Polyhedron ph(gs);
@@ -890,7 +890,7 @@ error32() {
 
   try {
     // This is an incorrect use of the function
-    // `C_Polyhedron::C_Polyhedron(gs)': it is illegal to built a
+    // `C_Polyhedron::C_Polyhedron(gs)': it is illegal to build a
     // closed polyhedron starting from a constant system of
     // generators that does not contain points.
     C_Polyhedron ph2(gs2);

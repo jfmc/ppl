@@ -1,4 +1,4 @@
-/* Test Polyhedron::Polyhedron(const GenSys&): we built a polyhedron
+/* Test Polyhedron::Polyhedron(const GenSys&): we build a polyhedron
    starting from an empty system of generators.
    Copyright (C) 2001-2004 Roberto Bagnara <bagnara@cs.unipr.it>
 
