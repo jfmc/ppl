@@ -59,6 +59,7 @@ ORIGINAL_TESTS = \
 	addgenerators1 addgenerators2 addgenerators3 addgenerators4 \
 	addgenerators5 addgenerators6 addgenerators7 addgenerators8 \
 	addgenerators9 addgenerators10 addgenerators11 addgenerators12 \
+	addgenerators13 \
 	affineimage1 affineimage2 affineimage3 affineimage4 affineimage5 \
 	affineimage6 affineimage7 affineimage8 \
 	affinepreimage1 affinepreimage2 affinepreimage3 affinepreimage4 \
@@ -144,6 +145,7 @@ DERIVED_TESTS = \
 	nnc_addgenerators1 nnc_addgenerators2 nnc_addgenerators3 \
 	nnc_addgenerators4 nnc_addgenerators5 nnc_addgenerators6 \
 	nnc_addgenerators9 nnc_addgenerators10 nnc_addgenerators12 \
+	 nnc_addgenerators13 \
 	nnc_affineimage1 nnc_affineimage2 nnc_affineimage3 nnc_affineimage4 \
 	nnc_affineimage5 nnc_affineimage6 nnc_affineimage7 nnc_affineimage8 \
 	nnc_affinepreimage1 nnc_affinepreimage2 nnc_affinepreimage3 \
@@ -271,6 +273,7 @@ addgenerators9_SOURCES = addgenerators9.cc
 addgenerators10_SOURCES = addgenerators10.cc
 addgenerators11_SOURCES = addgenerators11.cc
 addgenerators12_SOURCES = addgenerators12.cc
+addgenerators13_SOURCES = addgenerators13.cc
 
 affineimage1_SOURCES = affineimage1.cc
 affineimage2_SOURCES = affineimage2.cc
@@ -595,6 +598,8 @@ nnc_addgenerators10_SOURCES = addgenerators10.cc
 nnc_addgenerators10_CXXFLAGS = $(DERIVED_CXXFLAGS)
 nnc_addgenerators12_SOURCES = addgenerators12.cc
 nnc_addgenerators12_CXXFLAGS = $(DERIVED_CXXFLAGS)
+nnc_addgenerators13_SOURCES = addgenerators13.cc
+nnc_addgenerators13_CXXFLAGS = $(DERIVED_CXXFLAGS)
 
 nnc_affineimage1_SOURCES = affineimage1.cc
 nnc_affineimage1_CXXFLAGS = $(DERIVED_CXXFLAGS)
