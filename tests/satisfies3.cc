@@ -35,25 +35,83 @@ int
 main() {
   set_handlers();
 
-  Polyhedron ph;
+  GenSys_Con_Rel rel;
 
+  Polyhedron ph;
 #if NOISY
   print_generators(ph, "--- ph ---");
 #endif
 
-  Constraint c(LinExpression(3) >= 0);
-
+  // A false inequality constraint.
+  Constraint c_false1(LinExpression(-1) >= 0);
 #if NOISY
-  print_constraint(c, "--- c ---");
-#endif
-  GenSys_Con_Rel rel = ph.satisfies(c);
-
-  GenSys_Con_Rel known_rel = SOME_SATISFY;
-  int retval = (rel == known_rel) ? 0 : 1;
-
-#if NOISY
-  cout << "ph.satisfies(c) == " << rel << endl;
+  print_constraint(c_false1, "--- c_false1 ---");
 #endif
 
-  return retval;
+  rel = ph.satisfies(c_false1);
+#if NOISY
+  cout << "ph.satisfies(c_false1) == " << rel << endl;
+#endif
+
+  if (rel != NONE_SATISFIES)
+    return 1;
+
+  // A false equality constraint.
+  Constraint c_false2(LinExpression(5) == -2);
+#if NOISY
+  print_constraint(c_false2, "--- c_false2 ---");
+#endif
+
+  rel = ph.satisfies(c_false2);
+#if NOISY
+  cout << "ph.satisfies(c_false2) == " << rel << endl;
+#endif
+
+  if (rel != NONE_SATISFIES)
+    return 1;
+
+  // A saturated inequality.
+  Constraint c_saturated1(LinExpression(3) >= 3);
+#if NOISY
+  print_constraint(c_saturated1, "--- c_saturated1 ---");
+#endif
+
+  rel = ph.satisfies(c_saturated1);
+#if NOISY
+  cout << "ph.satisfies(c_saturated1) == " << rel << endl;
+#endif
+
+  if (rel != ALL_SATURATE)
+    return 1;
+
+  // A saturated equality.
+  Constraint c_saturated2(LinExpression(1) == 1);
+#if NOISY
+  print_constraint(c_saturated2, "--- c_saturated2 ---");
+#endif
+
+  rel = ph.satisfies(c_saturated2);
+#if NOISY
+  cout << "ph.satisfies(c_saturated2) == " << rel << endl;
+#endif
+
+  if (rel != ALL_SATURATE)
+    return 1;
+
+  // A satisfied inequality which is not saturated.
+  Constraint c_satisfied(LinExpression(7) >= 5);
+#if NOISY
+  print_constraint(c_satisfied, "--- c_satisfied ---");
+#endif
+
+  rel = ph.satisfies(c_satisfied);
+#if NOISY
+  cout << "ph.satisfies(c_satisfied) == " << rel << endl;
+#endif
+
+  if (rel != ALL_SATISFY)
+    return 1;
+
+  // All test passed.
+  return 0;
 }
