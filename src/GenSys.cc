@@ -247,11 +247,7 @@ PPL::GenSys::insert(const Generator& g) {
       // The generator system is NOT necessarily closed:
       // copy the generator, adding the missing dimensions
       // and the epsilon coefficient.
-      // NOTE: computing `gs_size = num_columns()' would provide
-      //       a wrong result if the matrix has no rows.
-      size_t new_size = (g.space_dimension() > space_dimension())
-			 ? g.space_dimension() + 2
-			 : space_dimension() + 2;
+      size_t new_size = 2 + std::max(g.space_dimension(), space_dimension());
       Generator tmp_g(g, new_size);
       // If it was a point, set the epsilon coordinate to 1
       // (i.e., set the coefficient equal to the divisor).
