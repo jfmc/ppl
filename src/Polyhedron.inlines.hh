@@ -456,9 +456,9 @@ Polyhedron::shrink_bounding_box(Box& box) const {
 			    jmn_generator.divisor());
     }
   }
-}}
+}
 
-// namespace Parma_Polyhedra_Library
+} // namespace Parma_Polyhedra_Library
 
 
 /*!
