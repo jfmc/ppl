@@ -85,7 +85,7 @@ namespace Parma_Polyhedra_Library {
   Constraint inequal(4 * x - 2 * y >= z - 13);
     \endcode
 */
-class Parma_Polyhedra_Library::Constraint : public Row {
+class Parma_Polyhedra_Library::Constraint : PPL_INTERNAL Row {
 private:
   Constraint(LinExpression& e);
 

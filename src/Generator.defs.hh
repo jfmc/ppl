@@ -113,7 +113,7 @@ namespace Parma_Polyhedra_Library {
     If a zero denominator is provided, an exception is thrown.
 */
 
-class Parma_Polyhedra_Library::Generator : public Row {
+class Parma_Polyhedra_Library::Generator : PPL_INTERNAL Row {
 private:
   Generator(LinExpression& e);
 
