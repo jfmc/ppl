@@ -135,12 +135,6 @@ Generator::zero_dim_closure_point() {
   return zdcp;
 }
 
-inline const Generator&
-Generator::zero_dim_minus_epsilon_ray() {
-  static Generator zdmer = construct_zero_dim_minus_epsilon_ray();
-  return zdmer;
-}
-
 inline Generator
 line(const LinExpression& e) {
   return Generator::line(e);

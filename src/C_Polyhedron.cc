@@ -30,11 +30,11 @@ site: http://www.cs.unipr.it/ppl/ . */
 namespace PPL = Parma_Polyhedra_Library;
 
 PPL::C_Polyhedron::C_Polyhedron(const NNC_Polyhedron& y)
-  : Polyhedron(NECESSARILY_CLOSED, y.space_dimension(), EMPTY) {
+  : Polyhedron(NECESSARILY_CLOSED, y.space_dimension(), UNIVERSE) {
   // Topology compatibility check.
   if (y.is_topologically_closed()) {
-    GenSys gs = y.generators();
-    add_generators(gs);
+    ConSys cs = y.constraints();
+    add_constraints(cs);
     assert(OK());
   }
   else

@@ -59,6 +59,8 @@ LinExpression& operator-=(LinExpression& e1, const LinExpression& e2);
 LinExpression& operator-=(LinExpression& e, const Variable& v);
 LinExpression& operator-=(LinExpression& e, const Integer& n);
 
+LinExpression& operator*=(LinExpression& e, const Integer& n);
+
 } // namespace Parma_Polyhedra_Library
 
 
@@ -168,6 +170,12 @@ public:
   //! Returns the dimension of the vector space enclosing \p *this.
   dimension_type space_dimension() const;
 
+  //! Returns the coefficient of \p v in \p *this.
+  const Integer& coefficient(Variable v) const;
+
+  //! Returns the inhomogeneous term of \p *this.
+  const Integer& inhomogeneous_term() const;
+
   //! Returns the (zero-dimension space) constant 0.
   static const LinExpression& zero();
 
@@ -272,6 +280,11 @@ private:
   //! Returns the linear expression \p e - \p n and assigns it to \p e.
   friend LinExpression&
   Parma_Polyhedra_Library::operator-=(LinExpression& e,
+				      const Integer& n);
+
+  //! Returns the linear expression \p n * \p e and assigns it to \p e.
+  friend LinExpression&
+  Parma_Polyhedra_Library::operator*=(LinExpression& e,
 				      const Integer& n);
 };
 

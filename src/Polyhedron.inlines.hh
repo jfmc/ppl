@@ -231,15 +231,6 @@ Polyhedron::bounds_from_below(const LinExpression& expr) const {
   return bounds(expr, false);
 }
 
-inline void
-Polyhedron::add_low_level_constraints(ConSys& cs) {
-  if (!cs.is_necessarily_closed())
-    // The epsilon-upper-bound constraint.
-    cs.insert(Constraint::epsilon_leq_one());
-  // The positivity constraint.
-  cs.insert(Constraint::zero_dim_positivity());
-}
-
 template <typename Box>
 Polyhedron::Polyhedron(Topology topol, const Box& box)
   : con_sys(topol),
@@ -266,8 +257,6 @@ Polyhedron::Polyhedron(Topology topol, const Box& box)
   // this constraint will be removed at the end.
   con_sys.insert(Variable(space_dim - 1) >= 0);
 
-  // Note: when adding a strict inequality constraint,
-  //       we also add the matching non-strict constraint.
   for (dimension_type k = space_dim; k-- > 0; ) {
     // See if we have a valid lower bound.
     bool l_closed = false;
@@ -294,24 +283,35 @@ Polyhedron::Polyhedron(Topology topol, const Box& box)
     else {
       // Check if a lower bound constraint is required.
       if (l_bounded) {
-       if (!l_closed)
+       if (l_closed)
+	 // Add the constraint `l_d*v_k >= l_n'.
+	 con_sys.insert(l_d * Variable(k) >= l_n);
+       else
 	 // Add the constraint `l_d*v_k > l_n'.
 	 con_sys.insert(l_d * Variable(k) > l_n);
-       // Add the constraint `l_d*v_k >= l_n'.
-       con_sys.insert(l_d * Variable(k) >= l_n);
       }
       // Check if an upper bound constraint is required.
       if (u_bounded) {
-       if (!u_closed)
+       if (u_closed)
+	 // Add the constraint `u_d*v_k <= u_n'.
+	 con_sys.insert(u_d * Variable(k) <= u_n);
+       else
 	 // Add the constraint `u_d*v_k < u_n'.
 	 con_sys.insert(u_d * Variable(k) < u_n);
-       // Add the constraint `u_d*v_k <= u_n'.
-       con_sys.insert(u_d * Variable(k) <= u_n);
       }
     }
   }
 
-  add_low_level_constraints(con_sys);  
+  if (topol == NECESSARILY_CLOSED)
+    // Adding the positivity constraint.
+    con_sys.insert(Constraint::zero_dim_positivity());
+  else {
+    // Polyhedron NOT-necessarily closed:
+    // adding the epsilon dimension constraints.
+    con_sys.insert(Constraint::epsilon_leq_one());
+    con_sys.insert(Constraint::epsilon_geq_zero());
+  }
+  
   // Now removing the dummy constraint inserted before.
   dimension_type n_rows = con_sys.num_rows() - 1;
   con_sys[0].swap(con_sys[n_rows]);

@@ -143,7 +143,8 @@ AskTell.defs.hh \
 AskTell.inlines.hh \
 PowerSet.types.hh \
 PowerSet.defs.hh \
-PowerSet.inlines.hh
+PowerSet.inlines.hh \
+algorithms.hh
 
 libppl_la_SOURCES = \
 BoundingBox.cc \
@@ -207,7 +208,8 @@ AskTell.defs.hh \
 AskTell.inlines.hh \
 PowerSet.types.hh \
 PowerSet.defs.hh \
-PowerSet.inlines.hh
+PowerSet.inlines.hh \
+algorithms.hh
 
 libppl_la_LDFLAGS = \
 -version-info $(LIBPPL_LT_CURRENT):$(LIBPPL_LT_REVISION):$(LIBPPL_LT_AGE)
@@ -221,7 +223,8 @@ ppl.hh:	$(DOC_FILES) Makefile
 
 ppl_install.hh:	ppl_header.top $(top_builddir)/config.h ppl_header.middle $(INCLUDE_FILES) ppl_header.bottom Makefile
 	mkdir -p tmp
-	(cd $(srcdir) ; cat $(INCLUDE_FILES)) >tmp/concat
+	cat $(top_builddir)/config.h >tmp/concat
+	(cd $(srcdir) ; cat $(INCLUDE_FILES)) >>tmp/concat
 	grep "^#include <" <tmp/concat | sort -u >tmp/includes
 	sed -e "/^#include/d" <tmp/concat >tmp/noincludes.cc
 	cat $(srcdir)/ppl_header.top $(top_builddir)/config.h \
@@ -229,6 +232,17 @@ ppl_install.hh:	ppl_header.top $(top_builddir)/config.h ppl_header.middle $(INCL
 	$(CXXCPP) -P @debug_flag@ tmp/noincludes.cc >>ppl_install.hh
 	cat $(srcdir)/ppl_header.bottom >>ppl_install.hh
 	rm -rf tmp*
+
+# ppl_install.hh:	ppl_header.top $(top_builddir)/config.h ppl_header.middle $(INCLUDE_FILES) ppl_header.bottom Makefile
+# 	mkdir -p tmp
+# 	(cd $(srcdir) ; cat $(INCLUDE_FILES)) >tmp/concat
+# 	grep "^#include <" <tmp/concat | sort -u >tmp/includes
+# 	sed -e "/^#include/d" <tmp/concat >tmp/noincludes.cc
+# 	cat $(srcdir)/ppl_header.top $(top_builddir)/config.h \
+# 		$(srcdir)/ppl_header.middle tmp/includes >ppl_install.hh
+# 	$(CXXCPP) -P @debug_flag@ tmp/noincludes.cc >>ppl_install.hh
+# 	cat $(srcdir)/ppl_header.bottom >>ppl_install.hh
+# 	rm -rf tmp*
 
 # ppl.hh and ppl_install.hh are not distributed.
 dist-hook:

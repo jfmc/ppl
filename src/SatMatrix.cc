@@ -40,9 +40,6 @@ PPL::SatMatrix::operator=(const SatMatrix& y){
   return *this;
 }
 
-/*!
-  Sorts the rows and removes duplicates.
-*/
 void
 PPL::SatMatrix::sort_rows() {
   // Sorting without removing duplicates.
@@ -55,9 +52,6 @@ PPL::SatMatrix::sort_rows() {
   assert(OK());
 }
 
-/*!
-  Adds the given row.
-*/
 void
 PPL::SatMatrix::add_row(const SatRow& row) {
   dimension_type new_rows_size = rows.size() + 1;
@@ -81,9 +75,6 @@ PPL::SatMatrix::add_row(const SatRow& row) {
   assert(OK());
 }
 
-/*!
-  Transpose the matrix.
-*/
 void
 PPL::SatMatrix::transpose() {
   const SatMatrix& x = *this;
@@ -97,9 +88,6 @@ PPL::SatMatrix::transpose() {
   assert(OK());
 }
 
-/*!
-  Make \p *this a transposed copy of \p y.
-*/
 void
 PPL::SatMatrix::transpose_assign(const SatMatrix& y) {
   dimension_type y_nrows = y.num_rows();
@@ -112,9 +100,6 @@ PPL::SatMatrix::transpose_assign(const SatMatrix& y) {
   assert(OK());
 }
 
-/*!
-  Resizes the matrix copying the old contents.
-*/
 void
 PPL::SatMatrix::resize(dimension_type new_n_rows,
 		       dimension_type new_n_columns) {
@@ -167,15 +152,6 @@ PPL::operator==(const SatMatrix& x, const SatMatrix& y) {
 }
 
 
-/*!
-  \param row   The row that will be searched in the matrix.
-
-  \return      <CODE>true</CODE> if \p row belongs
-               to \p *this, false otherwise.
-
-  Given a sorted saturation matrix (this ensures better efficiency), tells
-  whether it contains a given row.
-*/
 bool
 PPL::SatMatrix::sorted_contains(const SatRow& row) const {
   assert(check_sorted());
@@ -191,7 +167,7 @@ PPL::SatMatrix::sorted_contains(const SatRow& row) const {
 }
 
 void
-PPL::SatMatrix::ASCII_dump(std::ostream& s) const {
+PPL::SatMatrix::ascii_dump(std::ostream& s) const {
   using std::endl;
 
   const SatMatrix& x = *this;
@@ -206,7 +182,7 @@ PPL::SatMatrix::ASCII_dump(std::ostream& s) const {
 }
 
 bool
-PPL::SatMatrix::ASCII_load(std::istream& s) {
+PPL::SatMatrix::ascii_load(std::istream& s) {
   SatMatrix& x = *this;
   dimension_type nrows;
   dimension_type ncols;
@@ -234,10 +210,6 @@ PPL::SatMatrix::ASCII_load(std::istream& s) {
   return true;
 }
 
-/*!
-  Returns <CODE>true</CODE> if and only if \p *this actually represents
-  a saturation matrix.
-*/
 bool
 PPL::SatMatrix::OK() const {
 #ifndef NDEBUG

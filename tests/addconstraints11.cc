@@ -1,4 +1,6 @@
-/* Test Polyhedron::BBRZ02_widening_assign().
+/* Test Polyhedron::add_constraints_and_minimize(): the space dimension
+   of the system of constraints that we want to add to the polyhedron
+   is smaller than the space dimension of the polyhedron.
    Copyright (C) 2001, 2002 Roberto Bagnara <bagnara@cs.unipr.it>
 
 This file is part of the Parma Polyhedra Library (PPL).
@@ -36,37 +38,31 @@ main() {
 
   Variable A(0);
   Variable B(1);
-  Variable C(2);
 
-  GenSys gs1;
-  gs1.insert(point());
-  gs1.insert(ray(A));
-  gs1.insert(ray(B));
-  gs1.insert(ray(A + 4*B + 2*C));
-  C_Polyhedron ph1(gs1);
-
-  GenSys gs2;
-  gs2.insert(point());
-  gs2.insert(ray(A));
-  gs2.insert(ray(B));
-  gs2.insert(ray(A + 2*B + 4*C));
-  C_Polyhedron ph2(gs2);
+  C_Polyhedron ph1(2);
+  ph1.add_constraint(A - B >= 0);
+  ph1.add_constraint(B >= 0);
+  
+  NNC_Polyhedron ph2(1);
+  ph2.add_constraint(A == 0);
+  
+  ConSys cs = ph2.constraints();
 
 #if NOISY
   print_constraints(ph1, "*** ph1 ***");
-  print_constraints(ph2, "*** ph2 ***");
+  print_constraints(cs, "*** cs ***");
 #endif
 
-  ph2.BBRZ02_widening_assign(ph1);
+  ph1.add_constraints_and_minimize(cs);
 
-  C_Polyhedron known_result(3);
-  known_result.add_constraint(4*A + 4*B - 3*C >= 0);
-  known_result.add_constraint(C >= 0);
+  C_Polyhedron known_result(2);
+  known_result.add_constraint(A == 0);
+  known_result.add_constraint(B == 0);
 
-  int retval = (ph2 == known_result) ? 0 : 1;
+  int retval = (ph1 == known_result) ? 0 : 1;
 
 #if NOISY
-  print_constraints(ph2, "*** After BBRZ02_widening_assign ***");
+  print_constraints(ph1, "*** After ph1.add_constraints_and_minimize(cs) ***");
 #endif
 
   return retval;

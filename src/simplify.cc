@@ -29,8 +29,6 @@ site: http://www.cs.unipr.it/ppl/ . */
 namespace PPL = Parma_Polyhedra_Library;
 
 /*!
-  \fn static int PPL::Polyhedron::simplify(Matrix& mat, SatMatrix& sat)
-				
   \param mat          The matrix to simplify: it will be modified.
   \param sat          The saturation matrix corresponding to \p mat.
 
@@ -78,9 +76,7 @@ namespace PPL = Parma_Polyhedra_Library;
     = 0,
   \f]
   where \f$\lambda_1, \lambda_2\f$ can be any real number.
-
 */
-
 int
 PPL::Polyhedron::simplify(Matrix& mat, SatMatrix& sat) {
   dimension_type num_rows = mat.num_rows();

@@ -45,7 +45,7 @@ static const char no = '-';
 static const char sep = ' ';
 
 void
-PPL::Status::ASCII_dump(std::ostream& s) const {
+PPL::Status::ascii_dump(std::ostream& s) const {
   s << (test_zero_dim_univ() ? yes : no) << zero_dim_univ << sep
     << (test_empty() ? yes : no) << empty << sep
     << sep
@@ -59,7 +59,7 @@ PPL::Status::ASCII_dump(std::ostream& s) const {
     << (test_sat_g_up_to_date() ? yes : no) << sat_g << sep;
 }
 
-/*!
+/*! \relates Parma_Polyhedra_Library::Status
   Reads a keyword and its associated on/off flag from \p s.
   Returns <CODE>true</CODE> if the operation is successful,
   returns <CODE>false</CODE> otherwise.
@@ -78,55 +78,55 @@ get_field(std::istream& s, const std::string& keyword, bool& positive) {
 }
 
 bool
-PPL::Status::ASCII_load(std::istream& s) {
+PPL::Status::ascii_load(std::istream& s) {
   bool positive;
 
-  if (get_field(s, zero_dim_univ, positive))
+  if (!get_field(s, zero_dim_univ, positive))
     return false;
   if (positive)
     set_zero_dim_univ();
 
-  if (get_field(s, empty, positive))
+  if (!get_field(s, empty, positive))
     return false;
   if (positive)
     set_empty();
 
-  if (get_field(s, consys_min, positive))
+  if (!get_field(s, consys_min, positive))
     return false;
   if (positive)
     set_c_minimized();
   else
     reset_c_minimized();
 
-  if (get_field(s, gensys_min, positive))
+  if (!get_field(s, gensys_min, positive))
     return false;
   if (positive)
     set_g_minimized();
   else
     reset_g_minimized();
 
-  if (get_field(s, consys_upd, positive))
+  if (!get_field(s, consys_upd, positive))
     return false;
   if (positive)
     set_c_up_to_date();
   else
     reset_c_up_to_date();
 
-  if (get_field(s, gensys_upd, positive))
+  if (!get_field(s, gensys_upd, positive))
     return false;
   if (positive)
     set_g_up_to_date();
   else
     reset_g_up_to_date();
 
-  if (get_field(s, sat_c, positive))
+  if (!get_field(s, sat_c, positive))
     return false;
   if (positive)
     set_sat_c_up_to_date();
   else
     reset_sat_c_up_to_date();
 
-  if (get_field(s, sat_g, positive))
+  if (!get_field(s, sat_g, positive))
     return false;
   if (positive)
     set_sat_g_up_to_date();

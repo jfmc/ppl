@@ -14,6 +14,22 @@
 /* Not zero if GMP has been compiled with support for exceptions. */
 #undef GMP_SUPPORTS_EXCEPTIONS
 
+/* Define to 1 if you have the declaration of `RLIMIT_AS', and to 0 if you
+   don't. */
+#undef HAVE_DECL_RLIMIT_AS
+
+/* Define to 1 if you have the declaration of `RLIMIT_DATA', and to 0 if you
+   don't. */
+#undef HAVE_DECL_RLIMIT_DATA
+
+/* Define to 1 if you have the declaration of `RLIMIT_RSS', and to 0 if you
+   don't. */
+#undef HAVE_DECL_RLIMIT_RSS
+
+/* Define to 1 if you have the declaration of `RLIMIT_VMEM', and to 0 if you
+   don't. */
+#undef HAVE_DECL_RLIMIT_VMEM
+
 /* Define to 1 if you have the <dlfcn.h> header file. */
 #undef HAVE_DLFCN_H
 
