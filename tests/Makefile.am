@@ -68,7 +68,7 @@ TESTS = NNCinclusion1 \
 	smm1 \
 	timeelapse1 timeelapse2 timeelapse3 timeelapse4 timeelapse5 \
 	universe1 universe2 universe3 universe4 universe5 universe6 \
-	widening1
+	widening1 widening2
 
 NNCinclusion1_SOURCES = NNCinclusion1.cc
 
@@ -192,6 +192,7 @@ universe5_SOURCES = universe5.cc
 universe6_SOURCES = universe6.cc
 
 widening1_SOURCES = widening1.cc
+widening2_SOURCES = widening2.cc
 
 check_PROGRAMS = $(TESTS) $(BUGS)
 
