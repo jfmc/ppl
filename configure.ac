@@ -387,6 +387,8 @@ AC_CHECK_FUNCS(ffs)
 
 # Checks for C type sizes.
 AC_CHECK_SIZEOF(int)
+AC_CHECK_SIZEOF(long long)
+
 
 # Use C++ for the remaining checks.
 AC_LANG(C++)
@@ -397,12 +399,13 @@ AC_CXX_SUPPORTS_FLEXIBLE_ARRAYS
 # Check whether the C++ compiler supports __attribute__ ((weak)).
 AC_CXX_SUPPORTS_ATTRIBUTE_WEAK
 
-# Check whether the C++ compiler supports long double floating point numbers.
-AC_CXX_SUPPORTS_LONG_DOUBLE
-
 # Check whether the C++ compiler provides long double numbers that
 # have bigger range or precision than double.
+AC_CXX_SUPPORTS_LONG_DOUBLE
+
+# Check whether the C++ compiler supports long long integers.
 AC_CXX_SUPPORTS_LONG_LONG
+
 
 # GMP library
 
