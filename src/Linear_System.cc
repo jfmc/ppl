@@ -34,6 +34,8 @@ site: http://www.cs.unipr.it/ppl/ . */
 #include <string>
 #include <deque>
 
+#include "swapping_sort.icc"
+
 namespace PPL = Parma_Polyhedra_Library;
 
 PPL::dimension_type
@@ -373,75 +375,15 @@ PPL::Linear_System::sort_rows(const dimension_type first_row,
   assert(first_row <= last_row && last_row <= num_rows());
   // We cannot mix pending and non-pending rows.
   assert(first_row >= first_pending_row() || last_row <= first_pending_row());
-  Linear_System& x = *this;
 
-  // Sorting one or no rows is a no-op.
-  if (first_row >= last_row - 1)
-    return;
-
-  // CHECK ME.
-  // It will be often the case that we sort an almost sorted system.
-  // In such a context, insertion-sort may be more efficient than other,
-  // more sophisticated, sorting algorithms. We implement a variant of
-  // insertion-sort, in that we will remove duplicate rows.
-
-  // Duplicate rows will be first placed at the end of the sorted portion
-  // of the system and then erased. Duplicate rows will have indexes
-  // ranging from `new_last_row' to `last_row - 1' (included).
-  dimension_type new_last_row = last_row;
-
-  // In the following loop, the method `Row::assign()' will be preferred
-  // to `Row::swap()' for efficiency reasons whenever the old contents
-  // of the target row are no longer needed. Care has to be taken:
-  // `assign' will cause the implementation of rows to be shared,
-  // since it does not make a copy of the coefficients.
-
-  // A temporary Row object: it will share the implementation of `x[i]'.
-  Linear_Row x_i;
-  for (dimension_type i = first_row + 1; i < new_last_row; ) {
-    // Let `x_i' share the implementation of `x[i]',
-    // i.e., create the ``hole'' at index `i'.
-    x_i.assign(x[i]);
-    // `j' indicates the current position of the hole.
-    dimension_type j = i;
-    int cmp = 1;
-    while (j > first_row) {
-      cmp = compare(x[j-1], x_i);
-      if (cmp <= 0)
-	break;
-      // Move the hole one position down.
-      x[j].assign(x[j-1]);
-      --j;
-    }
-    if (cmp == 0) {
-      // Row `x_i' is a duplicate of `x[j-1]'.
-      // Move the hole back to position `i',
-      // preserving the sortedness of rows from `j+1' to `i'.
-      for ( ; j < i; ++j)
-	x[j].assign(x[j+1]);
-      // Fill the ``hole'' with `x_i'.
-      x[i].assign(x_i);
-      // Move the duplicate past the end of the portion to be sorted.
-      --new_last_row;
-      std::swap(x[i], x[new_last_row]);
-      // Do not increment `i', because the next row to be
-      // insertion-sorted is already positioned at index `i'.
-    }
-    else {
-      // Fill the ``hole'' with `x_i'.
-      x[j].assign(x_i);
-      ++i;
-    }
-  }
-  // `x_i' is going out of scope and so it will be destroyed.
-  // But `x_i' is sharing the implementation of a row in the system,
-  // so that its destruction will make the system inconsistent.
-  // To avoid this problem, assign a new and empty row to `x_i'.
-  Linear_Row null;
-  x_i.assign(null);
-  // Duplicate rows, that we have to erase, are those in between of
-  // indexes `new_last_row' and `last_row -1' (included).
-  rows.erase(rows.begin() + new_last_row, rows.begin() + last_row);
+  // First sort without removing duplicates.
+  std::vector<Row>::iterator first = rows.begin() + first_row;
+  std::vector<Row>::iterator last = rows.begin() + last_row;
+  swapping_sort(first, last, RowLessThan());
+  // Second, move duplicates to the end.
+  std::vector<Row>::iterator new_last = swapping_unique(first, last);
+  // Finally, remove duplicates.
+  rows.erase(new_last, last);
   // NOTE: we cannot check for well-formedness of the system here,
   // because the caller still has to update `index_first_pending'.
 }
@@ -621,52 +563,39 @@ PPL::operator==(const Linear_System& x, const Linear_System& y) {
 
 void
 PPL::Linear_System::sort_and_remove_with_sat(SatMatrix& sat) {
-  Linear_System& x = *this;
+  Linear_System& sys = *this;
   // We can only sort the non-pending part of the system.
-  dimension_type num_kept_rows = x.first_pending_row();
-  assert(num_kept_rows == sat.num_rows());
-  if (num_kept_rows <= 1) {
-    set_sorted(true);
+  assert(sys.first_pending_row() == sat.num_rows());
+  if (sys.first_pending_row() <= 1) {
+    sys.set_sorted(true);
     return;
   }
-  for (dimension_type i = 0; i < num_kept_rows - 1; ++i) {
-    for (dimension_type j = num_kept_rows - 1 ; j > i ; --j) {
-      const int cmp = compare(x[j], x[j - 1]);
-      if (cmp == 0) {
-	// If the compared rows are equals, we move the one with
-	// the greatest index (and the corresponding row of
-	// the saturation matrix) to the bottom of the system.
-	// Now the number of row is one less.
-	--num_kept_rows;
-	std::swap(x[j], x[num_kept_rows]);
-	std::swap(sat[j], sat[num_kept_rows]);
-      }
-      else if (cmp < 0) {
-	// If `x[j]' is less than `x[j-1]' we swap the two rows
-	// and the corresponding rows of the saturation matrix.
-	std::swap(x[j], x[j - 1]);
-	std::swap(sat[j], sat[j - 1]);
-      }
-    }
-  }
 
-  if (num_pending_rows() > 0) {
-    // In this case, we must put the rows to erase after the
-    // pending rows.
-    const dimension_type num_rows_to_erase
-      = x.first_pending_row() - num_kept_rows;
-    const dimension_type n_rows = num_rows() - 1;
-    for (dimension_type i = 0; i < num_rows_to_erase; ++i)
-      std::swap(x[num_kept_rows + i], x[n_rows - i]);
+  // First, sort `sys' (keeping `sat' consistent) without removing duplicates.
+  With_SatMatrix_iterator first(sys.rows.begin(), sat.rows.begin());
+  With_SatMatrix_iterator last = first + sat.num_rows();
+  swapping_sort(first, last, RowLessThan());
+  // Second, move duplicates in `sys' to the end (keeping `sat' consistent).
+  With_SatMatrix_iterator new_last = swapping_unique(first, last);
+
+  const dimension_type num_duplicates = last - new_last;
+  const dimension_type new_first_pending_row
+    = sys.first_pending_row() - num_duplicates;
+
+  if (sys.num_pending_rows() > 0) {
+    // In this case, we must put the duplicates after the pending rows.
+    const dimension_type n_rows = sys.num_rows() - 1;
+    for (dimension_type i = 0; i < num_duplicates; ++i)
+      std::swap(sys[new_first_pending_row + i], sys[n_rows - i]);
   }
   // Erasing the duplicated rows...
-  x.erase_to_end(num_kept_rows + num_pending_rows());
-  x.set_index_first_pending_row(num_kept_rows);
+  sys.erase_to_end(sys.num_rows() - num_duplicates);
+  sys.set_index_first_pending_row(new_first_pending_row);
   // ... and the corresponding rows of the saturation matrix.
-  sat.rows_erase_to_end(num_kept_rows);
-  assert(check_sorted());
+  sat.rows_erase_to_end(sat.num_rows() - num_duplicates);
+  assert(sys.check_sorted());
   // Now the system is sorted.
-  x.set_sorted(true);
+  sys.set_sorted(true);
 }
 
 void

@@ -112,14 +112,14 @@ BoundingBox.types.hh \
 Constraint.types.hh \
 Generator.types.hh \
 Init.types.hh \
-SatRow.types.hh \
-SatMatrix.types.hh \
 Row.types.hh \
 Linear_Row.types.hh \
 Matrix.types.hh \
 Variable.types.hh \
 LinExpression.types.hh \
 Linear_System.types.hh \
+SatRow.types.hh \
+SatMatrix.types.hh \
 ConSys.types.hh \
 GenSys.types.hh \
 Poly_Con_Relation.types.hh \
@@ -151,10 +151,6 @@ Variable.inlines.hh \
 Init.defs.hh \
 initializer.hh \
 Topology.hh \
-SatRow.defs.hh \
-SatRow.inlines.hh \
-SatMatrix.defs.hh \
-SatMatrix.inlines.hh \
 Row.defs.hh \
 Row.inlines.hh \
 Linear_Row.defs.hh \
@@ -163,6 +159,10 @@ Matrix.defs.hh \
 Matrix.inlines.hh \
 Linear_System.defs.hh \
 Linear_System.inlines.hh \
+SatRow.defs.hh \
+SatRow.inlines.hh \
+SatMatrix.defs.hh \
+SatMatrix.inlines.hh \
 ConSys.defs.hh \
 GenSys.defs.hh \
 LinExpression.defs.hh \
@@ -237,7 +237,8 @@ simplify.cc \
 globals.cc \
 version.cc \
 $(INCLUDE_FILES) \
-Ph_Status.idefs.hh
+Ph_Status.idefs.hh \
+swapping_sort.icc
 
 # The ordering of the following list *matters*!
 DOC_FILES = \

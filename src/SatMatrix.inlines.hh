@@ -112,7 +112,7 @@ SatMatrix::clear() {
 }
 
 inline bool
-SatMatrix::RowCompare::
+SatMatrix::SatRowLessThan::
 operator()(const SatRow& x, const SatRow& y) const {
   return compare(x, y) < 0;
 }

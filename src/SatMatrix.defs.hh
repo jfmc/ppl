@@ -25,6 +25,7 @@ site: http://www.cs.unipr.it/ppl/ . */
 #define PPL_SatMatrix_defs_hh 1
 
 #include "SatMatrix.types.hh"
+#include "Linear_System.defs.hh"
 #include "SatRow.defs.hh"
 #include <vector>
 #include <iosfwd>
@@ -144,9 +145,15 @@ private:
   //! Size of the initialized part of each row.
   dimension_type row_size;
 
-  struct RowCompare {
+  //! Ordering predicate (used when implementing the sort algorithm).
+  struct SatRowLessThan {
     bool operator()(const SatRow& x, const SatRow& y) const;
   };
+
+  friend
+  void Parma_Polyhedra_Library::
+  Linear_System::sort_and_remove_with_sat(SatMatrix& sat);
+
 };
 
 namespace std {

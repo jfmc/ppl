@@ -27,8 +27,9 @@ site: http://www.cs.unipr.it/ppl/ . */
 
 #include "globals.defs.hh"
 #include <iostream>
-#include <algorithm>
 #include <string>
+
+#include "swapping_sort.icc"
 
 namespace PPL = Parma_Polyhedra_Library;
 
@@ -42,13 +43,15 @@ PPL::SatMatrix::operator=(const SatMatrix& y){
 
 void
 PPL::SatMatrix::sort_rows() {
+  typedef std::vector<SatRow>::iterator Iter;
   // Sorting without removing duplicates.
-  std::sort(rows.begin(), rows.end(), RowCompare());
+  Iter first = rows.begin();
+  Iter last = rows.end();
+  swapping_sort(first, last, SatRowLessThan());
   // Moving all the duplicate elements at the end of the vector.
-  std::vector<SatRow>::iterator first_duplicate
-    = std::unique(rows.begin(), rows.end());
+  Iter new_last = swapping_unique(first, last);
   // Removing duplicates.
-  rows.erase(first_duplicate, rows.end());
+  rows.erase(new_last, last);
   assert(OK());
 }
 

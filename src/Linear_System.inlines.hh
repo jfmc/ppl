@@ -24,6 +24,8 @@ site: http://www.cs.unipr.it/ppl/ . */
 #ifndef PPL_Linear_System_inlines_hh
 #define PPL_Linear_System_inlines_hh 1
 
+#include "SatRow.defs.hh"
+
 namespace Parma_Polyhedra_Library {
 
 inline bool
@@ -195,6 +197,12 @@ operator!=(const Linear_System& x, const Linear_System& y) {
   return !(x == y);
 }
 
+inline bool
+Linear_System::RowLessThan::operator()(const Row& x, const Row& y) const {
+  return compare(static_cast<const Linear_Row&>(x),
+		 static_cast<const Linear_Row&>(y)) < 0;
+}
+
 } // namespace Parma_Polyhedra_Library
 
 namespace std {
@@ -204,6 +212,146 @@ inline void
 swap(Parma_Polyhedra_Library::Linear_System& x,
      Parma_Polyhedra_Library::Linear_System& y) {
   x.swap(y);
+}
+
+} // namespace std
+
+
+namespace Parma_Polyhedra_Library {
+
+inline
+Linear_System::With_SatMatrix_iterator::
+With_SatMatrix_iterator(Iter1 iter1, Iter2 iter2)
+  : i1(iter1), i2(iter2) {
+}
+
+inline
+Linear_System::With_SatMatrix_iterator::
+With_SatMatrix_iterator(const With_SatMatrix_iterator& y)
+  : i1(y.i1), i2(y.i2) {
+}
+
+inline
+Linear_System::With_SatMatrix_iterator::
+~With_SatMatrix_iterator() {
+}
+
+inline Linear_System::With_SatMatrix_iterator&
+Linear_System::With_SatMatrix_iterator::
+operator=(const With_SatMatrix_iterator& y) {
+  i1 = y.i1;
+  i2 = y.i2;
+  return *this;
+}
+
+inline Linear_System::With_SatMatrix_iterator&
+Linear_System::With_SatMatrix_iterator::operator++() {
+  ++i1;
+  ++i2;
+  return *this;
+}
+
+inline Linear_System::With_SatMatrix_iterator
+Linear_System::With_SatMatrix_iterator::operator++(int) {
+  With_SatMatrix_iterator tmp = *this;
+  operator++();
+  return tmp;
+}
+
+inline Linear_System::With_SatMatrix_iterator&
+Linear_System::With_SatMatrix_iterator::operator--() {
+  --i1;
+  --i2;
+  return *this;
+}
+
+inline Linear_System::With_SatMatrix_iterator
+Linear_System::With_SatMatrix_iterator::operator--(int) {
+  With_SatMatrix_iterator tmp = *this;
+  operator--();
+  return tmp;
+}
+
+inline Linear_System::With_SatMatrix_iterator&
+Linear_System::With_SatMatrix_iterator::operator+=(difference_type d) {
+  i1 += d;
+  i2 += d;
+  return *this;
+}
+
+inline Linear_System::With_SatMatrix_iterator
+Linear_System::With_SatMatrix_iterator::operator+(difference_type d) const {
+  With_SatMatrix_iterator tmp = *this;
+  tmp += d;
+  return tmp;
+}
+
+inline Linear_System::With_SatMatrix_iterator&
+Linear_System::With_SatMatrix_iterator::operator-=(difference_type d) {
+  i1 -= d;
+  i2 -= d;
+  return *this;
+}
+
+inline Linear_System::With_SatMatrix_iterator
+Linear_System::With_SatMatrix_iterator::operator-(difference_type d) const {
+  With_SatMatrix_iterator tmp = *this;
+  tmp -= d;
+  return tmp;
+}
+
+inline Linear_System::With_SatMatrix_iterator::difference_type
+Linear_System::With_SatMatrix_iterator::
+operator-(const With_SatMatrix_iterator& y) const {
+  return i1 - y.i1;
+}
+
+inline bool
+Linear_System::With_SatMatrix_iterator::
+operator==(const With_SatMatrix_iterator& y) const {
+  return i1 == y.i1;
+}
+
+inline bool
+Linear_System::With_SatMatrix_iterator::
+operator!=(const With_SatMatrix_iterator& y) const {
+  return i1 != y.i1;
+}
+
+inline bool
+Linear_System::With_SatMatrix_iterator::
+operator<(const With_SatMatrix_iterator& y) const {
+  return i1 < y.i1;
+}
+
+inline Linear_System::With_SatMatrix_iterator::reference
+Linear_System::With_SatMatrix_iterator::operator*() const {
+  return *i1;
+}
+
+inline Linear_System::With_SatMatrix_iterator::pointer
+Linear_System::With_SatMatrix_iterator::operator->() const {
+  return i1.operator->();
+}
+
+inline void
+Linear_System::With_SatMatrix_iterator::
+iter_swap(const With_SatMatrix_iterator& y) const {
+  std::iter_swap(i1, y.i1);
+  std::iter_swap(i2, y.i2);
+}
+
+} // namespace Parma_Polyhedra_Library
+
+namespace std {
+
+#ifdef PPL_DOXYGEN_INCLUDE_IMPLEMENTATION_DETAILS
+/*! \relates Parma_Polyhedra_Library::Linear_System::With_SatMatrix_iterator */
+#endif // PPL_DOXYGEN_INCLUDE_IMPLEMENTATION_DETAILS
+inline void
+iter_swap(Parma_Polyhedra_Library::Linear_System::With_SatMatrix_iterator x,
+	  Parma_Polyhedra_Library::Linear_System::With_SatMatrix_iterator y) {
+  x.iter_swap(y);
 }
 
 } // namespace std

@@ -1,0 +1,183 @@
+/* A STL-like sorting algorithm preferring swaps to object copies.
+   Copyright (C) 2001-2004 Roberto Bagnara <bagnara@cs.unipr.it>
+
+This file is part of the Parma Polyhedra Library (PPL).
+
+The PPL is free software; you can redistribute it and/or modify it
+under the terms of the GNU General Public License as published by the
+Free Software Foundation; either version 2 of the License, or (at your
+option) any later version.
+
+The PPL is distributed in the hope that it will be useful, but WITHOUT
+ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or
+FITNESS FOR A PARTICULAR PURPOSE.  See the GNU General Public License
+for more details.
+
+You should have received a copy of the GNU General Public License
+along with this program; if not, write to the Free Software
+Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307,
+USA.
+
+For the most up-to-date information see the Parma Polyhedra Library
+site: http://www.cs.unipr.it/ppl/ . */
+
+#ifndef PPL_swapping_sort_icc
+#define PPL_swapping_sort_icc 1
+
+#include <iterator>
+#include <algorithm>
+
+namespace {
+/*
+  A (simplified) variant of the STL sorting algorithm that avoids
+  (almost all) copies of objects by performing more swaps.
+
+  Note: do use std:iter_swap() instead of std::swap() so as to behave
+  as expected when instantiated on Linear_System_with_Sat_iterator.
+*/
+
+template <typename ValueType, typename Compare>
+inline const ValueType&
+median(const ValueType& a, const ValueType& b, const ValueType& c,
+       Compare comp) {
+  if (comp(a, b))
+    if (comp(b, c))
+      return b;
+    else if (comp(a, c))
+      return c;
+    else
+      return a;
+  else if (comp(a, c))
+    return a;
+  else if (comp(b, c))
+    return c;
+  else
+    return b;
+}
+
+template <typename RandomAccessIterator, typename ValueType, typename Compare>
+RandomAccessIterator
+swapping_unguarded_partition(RandomAccessIterator first,
+			     RandomAccessIterator last,
+			     const ValueType& pivot,
+			     Compare comp) {
+  while (true) {
+    while (comp(*first, pivot))
+      ++first;
+    --last;
+    while (comp(pivot, *last))
+      --last;
+    if (!(first < last))
+      return first;
+    std::iter_swap(first, last);
+    ++first;
+  }
+}
+
+template <typename RandomAccessIterator, typename Compare>
+void
+swapping_unguarded_linear_insert(RandomAccessIterator last, Compare comp) {
+  RandomAccessIterator next = last - 1;
+  while (comp(*last, *next)) {
+    std::iter_swap(last, next);
+    last = next;
+    --next;
+  }
+}
+
+template <typename RandomAccessIterator, typename Compare>
+void
+swapping_insertion_sort(RandomAccessIterator first,
+			RandomAccessIterator last,
+			Compare comp) {
+  if (first == last)
+    return;
+  for (RandomAccessIterator i = first + 1; i != last; ++i) {
+    if (comp(*i, *first)) {
+      RandomAccessIterator next = i + 1;
+      for (typename std::iterator_traits<RandomAccessIterator>::difference_type
+	     n = i - first; n > 0; --n)
+	std::iter_swap(--i, --next);
+    }
+    else
+      swapping_unguarded_linear_insert(i, comp);
+  }
+}
+
+template <typename RandomAccessIterator, typename Compare>
+inline void
+swapping_unguarded_insertion_sort(RandomAccessIterator first,
+				  RandomAccessIterator last,
+				  Compare comp) {
+  for (RandomAccessIterator i = first; i != last; ++i)
+    swapping_unguarded_linear_insert(i, comp);
+}
+
+enum { threshold = 16 };
+
+template <typename RandomAccessIterator, typename Compare>
+inline void
+swapping_final_insertion_sort(RandomAccessIterator first,
+			      RandomAccessIterator last,
+			      Compare comp) {
+  if (last - first > threshold) {
+    swapping_insertion_sort(first, first + threshold, comp);
+    swapping_unguarded_insertion_sort(first + threshold, last, comp);
+  }
+  else
+    swapping_insertion_sort(first, last, comp);
+}
+
+template <typename RandomAccessIterator, typename Compare>
+void
+swapping_introsort_loop(RandomAccessIterator first,
+			RandomAccessIterator last,
+			Compare comp) {
+  typedef typename std::iterator_traits<RandomAccessIterator>::value_type
+    ValueType;
+
+  while (last - first > threshold) {
+    // The construction of this temporary object is
+    // required for the correctness of the algorithm.
+    ValueType pivot = median(*first,
+			     *(first + (last - first) / 2),
+			     *(last - 1),
+			     comp);
+    RandomAccessIterator cut =
+      swapping_unguarded_partition(first, last, pivot, comp);
+    swapping_introsort_loop(cut, last, comp);
+    last = cut;
+  }
+}
+
+template <typename RandomAccessIterator, typename Compare>
+inline void
+swapping_sort(RandomAccessIterator first,
+	      RandomAccessIterator last,
+	      Compare comp) {
+  if (first != last) {
+    swapping_introsort_loop(first, last, comp);
+    swapping_final_insertion_sort(first, last, comp);
+  }
+}
+
+template <typename ForwardIterator>
+ForwardIterator
+swapping_unique(ForwardIterator first, ForwardIterator last) {
+  // Skip the beginning, if already unique.
+  first = std::adjacent_find(first, last);
+  if (first == last)
+    return last;
+
+  // Do the real swap work.
+  ForwardIterator dest = first;
+  ++first;
+  while (++first != last)
+    if (!(*dest == *first))
+      std::iter_swap(++dest, first);
+  return ++dest;
+}
+
+} // anonymous namespace
+
+#endif // !defined(PPL_swapping_sort_icc)

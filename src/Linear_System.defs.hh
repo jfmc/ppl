@@ -25,6 +25,9 @@ site: http://www.cs.unipr.it/ppl/ . */
 #define PPL_Linear_System_defs_hh 1
 
 #include "Linear_System.types.hh"
+#include "Row.types.hh"
+#include "SatRow.types.hh"
+#include "SatMatrix.types.hh"
 #include "Matrix.defs.hh"
 #include "Topology.hh"
 #include "Linear_Row.defs.hh"
@@ -263,6 +266,8 @@ public:
   //! in the non-pending part of the system.
   void sort_pending_and_remove_duplicates();
 
+  class With_SatMatrix_iterator;
+
   //! \brief
   //! Sorts the system, removing duplicates,
   //! keeping the saturation matrix consistent.
@@ -360,6 +365,12 @@ private:
   //! <CODE>bool compare(const Linear_Row&, const Linear_Row&)</CODE>.
   //! If <CODE>false</CODE> may not be sorted.
   bool sorted;
+
+  //! Ordering predicate (used when implementing the sort algorithm).
+  struct RowLessThan {
+    bool operator()(const Row& x, const Row& y) const;
+  };
+
 };
 
 namespace std {
@@ -388,6 +399,92 @@ bool operator==(const Linear_System& x, const Linear_System& y);
 bool operator!=(const Linear_System& x, const Linear_System& y);
 
 } // namespace Parma_Polyhedra_Library
+
+#ifdef PPL_DOXYGEN_INCLUDE_IMPLEMENTATION_DETAILS
+//! An iterator keeping a Linear_System consistent with a SatMatrix.
+/*!
+  An iterator on the vector of Row objects encoded in a Linear_System
+  extended to maintain a corresponding iterator on a vector of SatRow objects.
+  Access to values is always done on the Row objects, but iterator
+  movements and swaps are done on both components.
+*/
+#endif // PPL_DOXYGEN_INCLUDE_IMPLEMENTATION_DETAILS
+class Parma_Polyhedra_Library::Linear_System::With_SatMatrix_iterator {
+public:
+  typedef std::vector<Row>::iterator Iter1;
+  typedef std::vector<SatRow>::iterator Iter2;
+
+private:
+  Iter1 i1;
+  Iter2 i2;
+
+public:
+  // Same traits as Iter1.
+  typedef Iter1::iterator_category iterator_category;
+  typedef Iter1::value_type value_type;
+  typedef Iter1::difference_type difference_type;
+  typedef Iter1::pointer pointer;
+  typedef Iter1::reference reference;
+
+  //! Constructor.
+  With_SatMatrix_iterator(Iter1 iter1, Iter2 iter2);
+
+  //! Copy-constructor.
+  With_SatMatrix_iterator(const With_SatMatrix_iterator& y);
+
+  //! Destructor.
+  ~With_SatMatrix_iterator();
+
+  //! Assignment operator.
+  With_SatMatrix_iterator& operator=(const With_SatMatrix_iterator& y);
+
+  //! \name Operators Implementing Iterator Movement
+  //@{
+  With_SatMatrix_iterator& operator++();
+  With_SatMatrix_iterator operator++(int);
+
+  With_SatMatrix_iterator& operator--();
+  With_SatMatrix_iterator operator--(int);
+
+  With_SatMatrix_iterator& operator+=(difference_type d);
+  With_SatMatrix_iterator operator+(difference_type d) const;
+
+  With_SatMatrix_iterator& operator-=(difference_type d);
+  With_SatMatrix_iterator operator-(difference_type d) const;
+  //@}
+
+  //! Distance operator.
+  difference_type operator-(const With_SatMatrix_iterator& y) const;
+
+  //! \name Comparisons between Iterators
+  //@{
+  bool operator==(const With_SatMatrix_iterator& y) const;
+  bool operator!=(const With_SatMatrix_iterator& y) const;
+  bool operator<(const With_SatMatrix_iterator& y) const;
+  //@}
+
+  //! Dereferencing operator.
+  reference operator*() const;
+
+  //! Access-through operator.
+  pointer operator->() const;
+
+  //! Swaps the pointed Row objects while keeping SatMatrix consistent.
+  void iter_swap(const With_SatMatrix_iterator& y) const;
+
+};
+
+namespace std {
+
+#ifdef PPL_DOXYGEN_INCLUDE_IMPLEMENTATION_DETAILS
+//! Specializes <CODE>std::iter_swap</CODE>.
+/*! \relates Parma_Polyhedra_Library::Linear_System::With_SatMatrix_iterator */
+#endif // PPL_DOXYGEN_INCLUDE_IMPLEMENTATION_DETAILS
+inline void
+iter_swap(Parma_Polyhedra_Library::Linear_System::With_SatMatrix_iterator x,
+	  Parma_Polyhedra_Library::Linear_System::With_SatMatrix_iterator y);
+
+} // namespace std
 
 #include "Linear_System.inlines.hh"
 
