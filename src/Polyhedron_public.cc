@@ -1062,7 +1062,7 @@ PPL::Polyhedron::add_generator_and_minimize(const Generator& g) {
 }
 
 void
-PPL::Polyhedron::add_constraints(ConSys& cs) {
+PPL::Polyhedron::add_recycled_constraints(ConSys& cs) {
   // Topology compatibility check.
   if (is_necessarily_closed() && cs.has_strict_inequalities())
     throw_topology_incompatible("add_constraints(cs)", cs);
@@ -1141,8 +1141,15 @@ PPL::Polyhedron::add_constraints(ConSys& cs) {
   assert(OK());
 }
 
+void
+PPL::Polyhedron::add_constraints(const ConSys& cs) {
+  // TODO: this is just an executable specification.
+  ConSys cs_copy = cs;
+  add_recycled_constraints(cs_copy);
+}
+
 bool
-PPL::Polyhedron::add_constraints_and_minimize(ConSys& cs) {
+PPL::Polyhedron::add_recycled_constraints_and_minimize(ConSys& cs) {
   // Topology-compatibility check.
   if (is_necessarily_closed() && cs.has_strict_inequalities())
     throw_topology_incompatible("add_constraints_and_minimize(cs)", cs);
@@ -1206,8 +1213,15 @@ PPL::Polyhedron::add_constraints_and_minimize(ConSys& cs) {
   return !empty;
 }
 
+bool
+PPL::Polyhedron::add_constraints_and_minimize(const ConSys& cs) {
+  // TODO: this is just an executable specification.
+  ConSys cs_copy = cs;
+  return add_recycled_constraints_and_minimize(cs_copy);
+}
+
 void
-PPL::Polyhedron::add_generators(GenSys& gs) {
+PPL::Polyhedron::add_recycled_generators(GenSys& gs) {
   // Topology compatibility check.
   if (is_necessarily_closed() && gs.has_closure_points())
     throw_topology_incompatible("add_generators(gs)", gs);
@@ -1299,8 +1313,15 @@ PPL::Polyhedron::add_generators(GenSys& gs) {
   assert(OK(true));
 }
 
+void
+PPL::Polyhedron::add_generators(const GenSys& gs) {
+  // TODO: this is just an executable specification.
+  GenSys gs_copy = gs;
+  add_recycled_generators(gs_copy);
+}
+
 bool
-PPL::Polyhedron::add_generators_and_minimize(GenSys& gs) {
+PPL::Polyhedron::add_recycled_generators_and_minimize(GenSys& gs) {
   // Topology compatibility check.
   if (is_necessarily_closed() && gs.has_closure_points())
     throw_topology_incompatible("add_generators_and_minimize(gs)", gs);
@@ -1369,6 +1390,13 @@ PPL::Polyhedron::add_generators_and_minimize(GenSys& gs) {
   }
   assert(OK(true));
   return true;
+}
+
+bool
+PPL::Polyhedron::add_generators_and_minimize(const GenSys& gs) {
+  // TODO: this is just an executable specification.
+  GenSys gs_copy = gs;
+  return add_recycled_generators_and_minimize(gs_copy);
 }
 
 void

@@ -771,41 +771,65 @@ public:
   */
   bool add_generator_and_minimize(const Generator& g);
 
-  //! \brief Adds the constraints in \p cs to the system of constraints
-  //! of \p *this, minimizing the result.
+  //! \brief Adds a copy of the constraints in \p cs to the system
+  //! of constraints of \p *this (without minimizing the result).
   /*!
-    \param  cs             The constraints that will be added to the
-                           current system of constraints. This parameter
-                           is not declared <CODE>const</CODE> because
-                           it can be modified.
+    \param  cs             Contains the constraints that will be added
+                           to the system of constraints of \p *this.
     \exception std::invalid_argument thrown if \p *this and \p cs
                                      are topology-incompatible
                                      or dimension-incompatible.
   */
-  void add_constraints(ConSys& cs);
+  void add_constraints(const ConSys& cs);
+
+  //! \brief Adds the constraints in \p cs to the system of constraints
+  //! of \p *this (without minimizing the result).
+  /*!
+    \param  cs             The constraint system that will be recycled,
+                           adding its constraints to the system of
+                           constraints of \p *this.
+    \exception std::invalid_argument thrown if \p *this and \p cs
+                                     are topology-incompatible
+                                     or dimension-incompatible.
+    \warning The only assumption that can be made on \p cs upon successful
+             or exceptional return is that it can be safely destroyed.
+  */
+  void add_recycled_constraints(ConSys& cs);
+
+  //! \brief
+  //! \brief Adds a copy of the constraints in \p cs to the system
+  //! of constraints of \p *this, minimizing the result.
+  /*!
+    \return <CODE>false</CODE> if and only if the result is empty.
+    \param  cs                 Contains the constraints that will be added
+                               to the system of constraints of \p *this.
+    \exception std::invalid_argument thrown if \p *this and \p cs
+                                     are topology-incompatible
+                                     or dimension-incompatible.
+  */
+  bool add_constraints_and_minimize(const ConSys& cs);
 
   //! \brief
   //! \brief Adds the constraints in \p cs to the system of constraints
-  //! of \p *this (without minimizing the result).
+  //! of \p *this, minimizing the result.
   /*!
-    \return    <CODE>false</CODE> if and only if the result is empty.
-    \param     cs         The constraints that will be added to the
-                          current system of constraints. This parameter
-                          is not declared <CODE>const</CODE> because
-                          it can be modified.
+    \return <CODE>false</CODE> if and only if the result is empty.
+    \param  cs                 The constraint system that will be recycled,
+                               adding its constraints to the system of
+                               constraints of \p *this.
     \exception std::invalid_argument thrown if \p *this and \p cs
                                      are topology-incompatible
                                      or dimension-incompatible.
+    \warning The only assumption that can be made on \p cs upon successful
+             or exceptional return is that it can be safely destroyed.
   */
-  bool add_constraints_and_minimize(ConSys& cs);
+  bool add_recycled_constraints_and_minimize(ConSys& cs);
 
-  //! \brief Adds the generators in \p gs to the system of generators
-  //! of \p *this (without minimizing the result).
+  //! \brief Adds a copy of the generators in \p gs to the system
+  //! of generators of \p *this (without minimizing the result).
   /*!
-    \param  gs             The generators that will be added to the
-                           current system of generators. This parameter
-                           is not declared <CODE>const</CODE> because
-			   it can be modified.
+    \param  gs             Contains the generators that will be added
+                           to the system of generators of \p *this.
     \exception std::invalid_argument thrown if \p *this and \p gs
                                      are topology-incompatible
 			             or dimension-incompatible,
@@ -813,16 +837,31 @@ public:
                                      the system of generators \p gs
                                      is not empty, but has no points.
   */
-  void add_generators(GenSys& gs);
+  void add_generators(const GenSys& gs);
 
   //! \brief Adds the generators in \p gs to the system of generators
-  //! of \p *this, minimizing the result.
+  //! of \p *this (without minimizing the result).
   /*!
-    \return    <CODE>false</CODE> if and only if the result is empty.
-    \param     gs       The generators that will be added to the
-                        current system of generators. The parameter is
-                        not declared <CODE>const</CODE> because it
-                        can be modified.
+    \param  gs             The generator system that will be recycled,
+                           adding its generators to the system of
+                           generators of \p *this.
+    \exception std::invalid_argument thrown if \p *this and \p gs
+                                     are topology-incompatible
+			             or dimension-incompatible,
+				     or if \p *this is empty and
+                                     the system of generators \p gs
+                                     is not empty, but has no points.
+    \warning The only assumption that can be made on \p gs upon successful
+             or exceptional return is that it can be safely destroyed.
+  */
+  void add_recycled_generators(GenSys& gs);
+
+  //! \brief Adds a copy of the generators in \p gs to the system
+  //! of generators of \p *this, minimizing the result.
+  /*!
+    \return <CODE>false</CODE> if and only if the result is empty.
+    \param  gs                 Contains the generators that will be added
+                               to the system of generators of \p *this.
     \exception std::invalid_argument thrown if \p *this and \p gs
                                      are topology-incompatible
                                      or dimension-incompatible,
@@ -830,7 +869,25 @@ public:
                                      the system of generators \p gs
                                      is not empty, but has no points.
   */
-  bool add_generators_and_minimize(GenSys& gs);
+  bool add_generators_and_minimize(const GenSys& gs);
+
+  //! \brief Adds the generators in \p gs to the system of generators
+  //! of \p *this, minimizing the result.
+  /*!
+    \return <CODE>false</CODE> if and only if the result is empty.
+    \param  gs                 The generator system that will be recycled,
+                               adding its generators to the system of
+                               generators of \p *this.
+    \exception std::invalid_argument thrown if \p *this and \p gs
+                                     are topology-incompatible
+                                     or dimension-incompatible,
+                                     or if \p *this is empty and the
+                                     the system of generators \p gs
+                                     is not empty, but has no points.
+    \warning The only assumption that can be made on \p gs upon successful
+             or exceptional return is that it can be safely destroyed.
+  */
+  bool add_recycled_generators_and_minimize(GenSys& gs);
 
   //! \brief
   //! Assigns to \p *this the intersection of \p *this and \p y.

@@ -1584,9 +1584,10 @@ ppl_Polyhedron_add_generator_and_minimize(ppl_Polyhedron_t ph,
 CATCH_ALL
 
 int
-ppl_Polyhedron_add_constraints(ppl_Polyhedron_t ph, ppl_ConSys_t cs) try {
+ppl_Polyhedron_add_constraints(ppl_Polyhedron_t ph,
+			       ppl_const_ConSys_t cs) try {
   Polyhedron& pph = *to_nonconst(ph);
-  ConSys& ccs = *to_nonconst(cs);
+  const ConSys& ccs = *to_const(cs);
   pph.add_constraints(ccs);
   return 0;
 }
@@ -1594,17 +1595,18 @@ CATCH_ALL
 
 int
 ppl_Polyhedron_add_constraints_and_minimize(ppl_Polyhedron_t ph,
-					    ppl_ConSys_t cs) try {
+					    ppl_const_ConSys_t cs) try {
   Polyhedron& pph = *to_nonconst(ph);
-  ConSys& ccs = *to_nonconst(cs);
+  const ConSys& ccs = *to_const(cs);
   return pph.add_constraints_and_minimize(ccs) ? 1 : 0;
 }
 CATCH_ALL
 
 int
-ppl_Polyhedron_add_generators(ppl_Polyhedron_t ph, ppl_GenSys_t gs) try {
+ppl_Polyhedron_add_generators(ppl_Polyhedron_t ph,
+			      ppl_const_GenSys_t gs) try {
   Polyhedron& pph = *to_nonconst(ph);
-  GenSys& ggs = *to_nonconst(gs);
+  const GenSys& ggs = *to_const(gs);
   pph.add_generators(ggs);
   return 0;
 }
@@ -1612,10 +1614,50 @@ CATCH_ALL
 
 int
 ppl_Polyhedron_add_generators_and_minimize(ppl_Polyhedron_t ph,
-					    ppl_GenSys_t gs) try {
+					   ppl_const_GenSys_t gs) try {
+  Polyhedron& pph = *to_nonconst(ph);
+  const GenSys& ggs = *to_const(gs);
+  return pph.add_generators_and_minimize(ggs) ? 1 : 0;
+}
+CATCH_ALL
+
+int
+ppl_Polyhedron_add_recycled_constraints(ppl_Polyhedron_t ph,
+					ppl_ConSys_t cs) try {
+  Polyhedron& pph = *to_nonconst(ph);
+  ConSys& ccs = *to_nonconst(cs);
+  pph.add_recycled_constraints(ccs);
+  return 0;
+}
+CATCH_ALL
+
+int
+ppl_Polyhedron_add_recycled_constraints_and_minimize(ppl_Polyhedron_t ph,
+						     ppl_ConSys_t cs)
+try {
+  Polyhedron& pph = *to_nonconst(ph);
+  ConSys& ccs = *to_nonconst(cs);
+  return pph.add_recycled_constraints_and_minimize(ccs) ? 1 : 0;
+}
+CATCH_ALL
+
+int
+ppl_Polyhedron_add_recycled_generators(ppl_Polyhedron_t ph,
+				       ppl_GenSys_t gs) try {
   Polyhedron& pph = *to_nonconst(ph);
   GenSys& ggs = *to_nonconst(gs);
-  return pph.add_generators_and_minimize(ggs) ? 1 : 0;
+  pph.add_recycled_generators(ggs);
+  return 0;
+}
+CATCH_ALL
+
+int
+ppl_Polyhedron_add_recycled_generators_and_minimize(ppl_Polyhedron_t ph,
+						    ppl_GenSys_t gs)
+try {
+  Polyhedron& pph = *to_nonconst(ph);
+  GenSys& ggs = *to_nonconst(gs);
+  return pph.add_recycled_generators_and_minimize(ggs) ? 1 : 0;
 }
 CATCH_ALL
 

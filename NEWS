@@ -10,6 +10,30 @@ NEWS for version 0.6  (released date to be decided)
 New and Changed Features
 ========================
 
+o  The methods
+
+     void Polyhedron::add_constraints(ConSys& cs),
+     void Polyhedron::add_generators(GenSys& gs),
+     bool Polyhedron::add_constraints_and_minimize(ConSys& cs), and
+     bool Polyhedron::add_generators_and_minimize(GenSys& gs)
+
+   have been renamed
+
+     void Polyhedron::add_recycled_constraints(ConSys& cs),
+     void Polyhedron::add_recycled_generators(GenSys& gs),
+     bool Polyhedron::add_recycled_constraints_and_minimize(ConSys& cs), and
+     bool Polyhedron::add_recycled_generators_and_minimize(GenSys& gs),
+
+   respectively.  At the same time, the methods
+
+     void Polyhedron::add_constraints(const ConSys& cs),
+     void Polyhedron::add_generators(const GenSys& gs),
+     bool Polyhedron::add_constraints_and_minimize(const ConSys& cs), and
+     bool Polyhedron::add_generators_and_minimize(const GenSys& gs)
+
+   have been added.  Corresponding changes have been made to the C and
+   Prolog interfaces.
+
 o  New methods Polyhedron::maximize() and Polyhedron::minimize()
    for maximizing and minimizing a linear expression subject to the
    polyhedron.
