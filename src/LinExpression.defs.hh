@@ -98,11 +98,9 @@ namespace Parma_Polyhedra_Library {
   LinExpression e1 = 4 * x;
   LinExpression e2 = 2 * y;
   LinExpression e3 = z;
-  LinExpression e = LinExpression(Integer(14));
+  LinExpression e = LinExpression(14);
   e += e1 - e2 - e3;
     \endcode
-    Note that, in the second definition of linear expression <CODE>e</CODE>,
-    the double type-coercion is necessary.
 */
 
 class Parma_Polyhedra_Library::LinExpression : PPL_INTERNAL Row {
