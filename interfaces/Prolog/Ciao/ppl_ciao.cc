@@ -271,8 +271,13 @@ Prolog_is_cons(Prolog_term_ref t) {
 static inline int
 Prolog_get_long(Prolog_term_ref t, long* lp) {
   assert(Prolog_is_integer(t));
-  *lp = ciao_to_integer(t);
-  return 1;
+  if (ciao_fits_in_int(t)) {
+    *lp = ciao_to_integer(t);
+    return 1;
+  }
+  else
+    // FIXME: what if the value does not fit in an int but fits in a long?
+    return 0;
 }
 
 /*!
@@ -348,18 +353,28 @@ Prolog_unify(Prolog_term_ref t, Prolog_term_ref u) {
 
 static PPL::Integer
 integer_term_to_Integer(Prolog_term_ref t) {
-  // FIXME: does Ciao support unlimited precision integer?
+  assert(ciao_is_integer(t));
   long v;
-  Prolog_get_long(t, &v);
-  return PPL::Integer(v);
+  if (Prolog_get_long(t, &v))
+    return PPL::Integer(v);
+  else {
+    char* s;
+    s = ciao_get_number_chars(t);
+    PPL::Integer n(s);
+    ciao_free(s);
+    return n;
+  }
 }
 
 static Prolog_term_ref
 Integer_to_integer_term(const PPL::Integer& n) {
-  // FIXME: does Ciao support unlimited precision integer?
-  if (!n.fits_slong_p())
-    throw unknown_interface_error("Integer_to_integer_term()");
-  return ciao_integer(n.get_si());
+  if (n.fits_slong_p())
+    return ciao_integer(n.get_si());
+  else {
+    std::string s = n.get_str();
+    // FIXME: the following cast is really a bug in Ciao Prolog.
+    return ciao_put_number_chars(const_cast<char*>(s.c_str()));
+  }
 }
 
 #include "../ppl_prolog.icc"
