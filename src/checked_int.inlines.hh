@@ -32,6 +32,7 @@ site: http://www.cs.unipr.it/ppl/ . */
 
 #include <stdint.h>
 #include <cerrno>
+#include <cstdlib>
 #include "Limits.hh"
 #include "float.types.hh"
 
