@@ -2386,14 +2386,21 @@ PPL::PolyBase::relation_with(const Constraint& c) {
 
   if (space_dim == 0)
     if (c.is_trivial_false())
-      return Poly_Con_Relation::is_disjoint();
+      if (c.is_strict_inequality() && c[0] == 0)
+	// The constraint 0 > 0 implicitly defines the hyperplane 0 = 0;
+	// thus, the zero-dim-point also saturates it.
+	return Poly_Con_Relation::saturates()
+	  && Poly_Con_Relation::is_disjoint();
+      else
+	return Poly_Con_Relation::is_disjoint();
     else
       if (c.is_equality() || c[0] == 0)
 	return Poly_Con_Relation::saturates()
 	  && Poly_Con_Relation::is_included();
       else
-	// The zero-dim point does not saturate
-	// the positivity constraint. 
+	// The zero-dim point saturates
+	// neither the positivity constraint 1 >= 0,
+	// nor the strict positivity constraint 1 > 0. 
 	return Poly_Con_Relation::is_included();
 
   if (!generators_are_up_to_date() && !update_generators())
