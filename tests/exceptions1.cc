@@ -1222,10 +1222,35 @@ error46() {
   }
 }
 
+void
+error47() {
+  Variable A(0);
+  Variable B(1);
+  Variable C(2);
+
+  Constraint c(2*A - 3*B <= 2);
+  try {
+    // This is an incorrect use of function
+    // Constraint::coefficient(v):
+    // it is impossible to compute the coefficient
+    // of a variable that is not in the space of the
+    // constraint.
+    c.coefficient(C);
+  }
+  catch (invalid_argument& e) {
+#if NOISY
+    cout << "invalid_variable: " << e.what() << endl << endl;
+#endif
+  }
+  catch (...) {
+    exit(1);
+  }
+}
+
 int
 main() {
   set_handlers();
-
+  
   error1();
   error2();
   error3();
@@ -1272,6 +1297,7 @@ main() {
   error44();
   error45();
   error46();
+  error47();
 
   return 0;
 }

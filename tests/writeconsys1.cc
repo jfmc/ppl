@@ -1,4 +1,4 @@
-/* Test Polyhedron::ascii_dump() e Polyhedron::ascii_load().
+/* Test operator<<(std::ostream&, const ConSys&).
    Copyright (C) 2001, 2002 Roberto Bagnara <bagnara@cs.unipr.it>
 
 This file is part of the Parma Polyhedra Library (PPL).
@@ -32,31 +32,24 @@ using namespace Parma_Polyhedra_Library;
 #define NOISY 0
 #endif
 
-const char* my_file = "ascii_dump_load_1.dat";
+const char* my_file = "writeconsys1.dat";
 
 int
 main() {
   set_handlers();
+
   Variable A(0);
   Variable B(1);
 
-  C_Polyhedron ph1(3);
-  ph1.add_constraint(A - B >= 2);
-  ph1.add_constraint(B >= 0);
-
-  ph1.minimized_generators();
+  NNC_Polyhedron ph(2);
+  ph.add_constraint(A - 2*B > 2);
+  ph.add_constraint(LinExpression(0) <= -1);
+  ph.add_constraint(A == 2);
 
   fstream f;
   open(f, my_file, ios_base::out);
-  ph1.ascii_dump(f);
+  f << ph.constraints() << endl;
   close(f);
-
-  open(f, my_file, ios_base::in);
-  C_Polyhedron ph2;
-  ph2.ascii_load(f);
-  close(f);
-
-  int retval = (ph1 == ph2) ? 0 : 1;
-
-  return retval;
+  
+  return 0;
 }
