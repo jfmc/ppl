@@ -1,0 +1,606 @@
+/* Test Polyhedron::ascii_dump() e Polyhedron::ascii_load():
+   we test these functions in the case that the file does not contain
+   the right thing.
+   Copyright (C) 2001, 2002 Roberto Bagnara <bagnara@cs.unipr.it>
+
+This file is part of the Parma Polyhedra Library (PPL).
+
+The PPL is free software; you can redistribute it and/or modify it
+under the terms of the GNU General Public License as published by the
+Free Software Foundation; either version 2 of the License, or (at your
+option) any later version.
+
+The PPL is distributed in the hope that it will be useful, but WITHOUT
+ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or
+FITNESS FOR A PARTICULAR PURPOSE.  See the GNU General Public License
+for more details.
+
+You should have received a copy of the GNU General Public License
+along with this program; if not, write to the Free Software
+Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307,
+USA.
+
+For the most up-to-date information see the Parma Polyhedra Library
+site: http://www.cs.unipr.it/ppl/ . */
+
+#include <string>
+#include <fstream>
+#include "ppl_test.hh"
+
+using namespace std;
+using namespace Parma_Polyhedra_Library;
+
+#ifndef NOISY
+#define NOISY 0
+#endif
+
+void
+test1() {
+  set_handlers();
+
+  Variable A(0);
+  Variable B(1);
+
+  C_Polyhedron ph(2);
+  ph.add_constraint(A >= 0);   
+  ph.add_constraint(B >= 0);   
+  
+  fstream ioFile;
+  ioFile.open("ascii_test1.dat", ios_base::out);
+  if (!ioFile) {
+#if NOISY
+    cout << "Connot open the file" << endl;
+#endif
+    exit(1);
+  }
+  ph.ascii_dump(ioFile);
+  ioFile.close();
+
+  ioFile.open("ascii_test1.dat", ios_base::in | ios_base::out);
+  std::string str;
+  do
+    ioFile >> str;
+  while(str != "space_dim");
+  ioFile << " A";
+  ioFile.close();
+
+  ifstream inFile("ascii_test1.dat");
+  if (!inFile) {
+#if NOISY
+    cout << "Connot open the file" << endl;
+#endif
+    exit(1);
+  }
+
+  C_Polyhedron ph2;
+  bool ok = !ph2.ascii_load(inFile);
+  inFile.close();
+
+  if (!ok)
+    exit(1);
+}
+
+void
+test2() {
+  set_handlers();
+
+  Variable A(0);
+  Variable B(1);
+
+  C_Polyhedron ph(2);
+  ph.add_constraint(A >= 0);   
+  ph.add_constraint(B >= 0);   
+  
+  fstream ioFile;
+  ioFile.open("ascii_test2.dat", ios_base::out);
+  if (!ioFile) {
+#if NOISY
+    cout << "Connot open the file" << endl;
+#endif
+    exit(1);
+  }
+  ph.ascii_dump(ioFile);
+  ioFile.close();
+
+  ioFile.open("ascii_test2.dat", ios_base::in | ios_base::out);
+  std::string str;
+  do
+    ioFile >> str;
+  while(str != "-ZE");
+  ioFile << "A";
+  ioFile.close();
+
+  ifstream inFile("ascii_test2.dat");
+  if (!inFile) {
+#if NOISY
+    cout << "Connot open the file" << endl;
+#endif
+    exit(1);
+  }
+
+  C_Polyhedron ph2;
+  bool ok = !ph2.ascii_load(inFile);
+  inFile.close();
+
+  if (!ok)
+    exit(1);
+}
+
+void
+test3() {
+  set_handlers();
+
+  Variable A(0);
+  Variable B(1);
+
+  C_Polyhedron ph(2);
+  ph.add_constraint(A >= 0);   
+  ph.add_constraint(B >= 0);   
+  
+  fstream ioFile;
+  ioFile.open("ascii_test3.dat", ios_base::out);
+  if (!ioFile) {
+#if NOISY
+    cout << "Connot open the file" << endl;
+#endif
+    exit(1);
+  }
+  ph.ascii_dump(ioFile);
+  ioFile.close();
+
+  ioFile.open("ascii_test3.dat", ios_base::in | ios_base::out);
+  std::string str;
+  do
+    ioFile >> str;
+  while(str != "con_sys");
+  ioFile << "A";
+  ioFile.close();
+
+  ifstream inFile("ascii_test3.dat");
+  if (!inFile) {
+#if NOISY
+    cout << "Connot open the file" << endl;
+#endif
+    exit(1);
+  }
+
+  C_Polyhedron ph2;
+  bool ok = !ph2.ascii_load(inFile);
+  inFile.close();
+
+  if (!ok)
+    exit(1);
+}
+
+void
+test4() {
+  set_handlers();
+
+  Variable A(0);
+  Variable B(1);
+
+  C_Polyhedron ph(2);
+  ph.add_constraint(A >= 0);   
+  ph.add_constraint(B >= 0);   
+  
+  fstream ioFile;
+  ioFile.open("ascii_test4.dat", ios_base::out);
+  if (!ioFile) {
+#if NOISY
+    cout << "Connot open the file" << endl;
+#endif
+    exit(1);
+  }
+  ph.ascii_dump(ioFile);
+  ioFile.close();
+
+  ioFile.open("ascii_test4.dat", ios_base::in | ios_base::out);
+  std::string str;
+  do
+    ioFile >> str;
+  while (str != "(up-to-date)");
+  ioFile << "A\n";
+  ioFile.close();
+
+  ifstream inFile("ascii_test4.dat");
+  if (!inFile) {
+#if NOISY
+    cout << "Connot open the file" << endl;
+#endif
+    exit(1);
+  }
+
+  C_Polyhedron ph2;
+  bool ok = !ph2.ascii_load(inFile);
+  inFile.close();
+
+  if (!ok)
+    exit(1);
+}
+
+void
+test5() {
+  set_handlers();
+
+  Variable A(0);
+  Variable B(1);
+
+  C_Polyhedron ph(2);
+  ph.add_constraint(A >= 0);   
+  ph.add_constraint(B >= 0);   
+  
+  fstream ioFile;
+  ioFile.open("ascii_test5.dat", ios_base::out);
+  if (!ioFile) {
+#if NOISY
+    cout << "Connot open the file" << endl;
+#endif
+    exit(1);
+  }
+  ph.ascii_dump(ioFile);
+  ioFile.close();
+
+  ioFile.open("ascii_test5.dat", ios_base::in | ios_base::out);
+  std::string str;
+  do
+    ioFile >> str;
+  while(str != "gen_sys");
+  ioFile << "A";
+  ioFile.close();
+
+  ifstream inFile("ascii_test5.dat");
+  if (!inFile) {
+#if NOISY
+    cout << "Connot open the file" << endl;
+#endif
+    exit(1);
+  }
+
+  C_Polyhedron ph2;
+  bool ok = !ph2.ascii_load(inFile);
+  inFile.close();
+
+  if (!ok)
+    exit(1);
+}
+
+void
+test6() {
+  set_handlers();
+
+  Variable A(0);
+  Variable B(1);
+
+  C_Polyhedron ph(2);
+  ph.add_constraint(A >= 0);   
+  ph.add_constraint(B >= 0);   
+  
+  fstream ioFile;
+  ioFile.open("ascii_test6.dat", ios_base::out);
+  if (!ioFile) {
+#if NOISY
+    cout << "Connot open the file" << endl;
+#endif
+    exit(1);
+  }
+  ph.ascii_dump(ioFile);
+  ioFile.close();
+
+  ioFile.open("ascii_test6.dat", ios_base::in | ios_base::out);
+  std::string str;
+  do
+    ioFile >> str;
+  while(str != "(not_up-to-date)" );
+  ioFile << "A\n";
+  ioFile.close();
+
+  ifstream inFile("ascii_test6.dat");
+  if (!inFile) {
+#if NOISY
+    cout << "Connot open the file" << endl;
+#endif
+    exit(1);
+  }
+
+  C_Polyhedron ph2;
+  bool ok = !ph2.ascii_load(inFile);
+  inFile.close();
+
+  if (!ok)
+    exit(1);
+}
+
+void
+test7() {
+  set_handlers();
+
+  Variable A(0);
+  Variable B(1);
+
+  C_Polyhedron ph(2);
+  ph.add_constraint(A >= 0);   
+  ph.add_constraint(B >= 0);   
+  
+  fstream ioFile;
+  ioFile.open("ascii_test7.dat", ios_base::out);
+  if (!ioFile) {
+#if NOISY
+    cout << "Connot open the file" << endl;
+#endif
+    exit(1);
+  }
+  ph.ascii_dump(ioFile);
+  ioFile.close();
+
+  ioFile.open("ascii_test7.dat", ios_base::in | ios_base::out);
+  std::string str;
+  do
+    ioFile >> str;
+  while(str != "sat_c");
+  ioFile << "A";
+  ioFile.close();
+
+  ifstream inFile("ascii_test7.dat");
+  if (!inFile) {
+#if NOISY
+    cout << "Connot open the file" << endl;
+#endif
+    exit(1);
+  }
+
+  C_Polyhedron ph2;
+  bool ok = !ph2.ascii_load(inFile);
+  inFile.close();
+
+  if (!ok)
+    exit(1);
+}
+
+void
+test8() {
+  set_handlers();
+
+  Variable A(0);
+  Variable B(1);
+
+  C_Polyhedron ph(2);
+  ph.add_constraint(A >= 0);   
+  ph.add_constraint(B >= 0);   
+  
+  fstream ioFile;
+  ioFile.open("ascii_test8.dat", ios_base::out);
+  if (!ioFile) {
+#if NOISY
+    cout << "Connot open the file" << endl;
+#endif
+    exit(1);
+  }
+  ph.ascii_dump(ioFile);
+  ioFile.close();
+
+  ioFile.open("ascii_test8.dat", ios_base::in | ios_base::out);
+  std::string str;
+  do
+    ioFile >> str;
+  while(str != "sat_g");
+  ioFile << "A";
+  ioFile.close();
+
+  ifstream inFile("ascii_test8.dat");
+  if (!inFile) {
+#if NOISY
+    cout << "Connot open the file" << endl;
+#endif
+    exit(1);
+  }
+
+  C_Polyhedron ph2;
+  bool ok = !ph2.ascii_load(inFile);
+  inFile.close();
+
+  if (!ok)
+    exit(1);
+}
+
+void
+test9() {
+  set_handlers();
+
+  Variable A(0);
+  Variable B(1);
+
+  C_Polyhedron ph(2);
+  ph.add_constraint(A >= 0);   
+  ph.add_constraint(B >= 0);   
+  
+  fstream ioFile;
+  ioFile.open("ascii_test9.dat", ios_base::out);
+  if (!ioFile) {
+#if NOISY
+    cout << "Connot open the file" << endl;
+#endif
+    exit(1);
+  }
+  ph.ascii_dump(ioFile);
+  ioFile.close();
+
+  ioFile.open("ascii_test9.dat", ios_base::in | ios_base::out);
+  std::string str;
+  do
+    ioFile >> str;
+  while (str != "(up-to-date)");
+  ioFile << "\nA";
+  ioFile.close();
+
+  ifstream inFile("ascii_test9.dat");
+  if (!inFile) {
+#if NOISY
+    cout << "Connot open the file" << endl;
+#endif
+    exit(1);
+  }
+
+  C_Polyhedron ph2;
+  bool ok = !ph2.ascii_load(inFile);
+  inFile.close();
+
+  if (!ok)
+    exit(1);
+}
+
+void
+test10() {
+  set_handlers();
+
+  Variable A(0);
+  Variable B(1);
+
+  C_Polyhedron ph(2);
+  ph.add_constraint(A >= 0);   
+  ph.add_constraint(B >= 0);   
+  
+  fstream ioFile;
+  ioFile.open("ascii_test10.dat", ios_base::out);
+  if (!ioFile) {
+#if NOISY
+    cout << "Connot open the file" << endl;
+#endif
+    exit(1);
+  }
+  ph.ascii_dump(ioFile);
+  ioFile.close();
+
+  ioFile.open("ascii_test10.dat", ios_base::in | ios_base::out);
+  std::string str;
+  do
+    ioFile >> str;
+  while(str != "(not_up-to-date)" );
+  ioFile << "\nA";
+  ioFile.close();
+
+  ifstream inFile("ascii_test10.dat");
+  if (!inFile) {
+#if NOISY
+    cout << "Connot open the file" << endl;
+#endif
+    exit(1);
+  }
+
+  C_Polyhedron ph2;
+  bool ok = !ph2.ascii_load(inFile);
+  inFile.close();
+
+  if (!ok)
+    exit(1);
+}
+
+void
+test11() {
+  set_handlers();
+
+  Variable A(0);
+  Variable B(1);
+
+  C_Polyhedron ph(2);
+  ph.add_constraint(A >= 0);   
+  ph.add_constraint(B >= 0);   
+  
+  fstream ioFile;
+  ioFile.open("ascii_test11.dat", ios_base::out);
+  if (!ioFile) {
+#if NOISY
+    cout << "Connot open the file" << endl;
+#endif
+    exit(1);
+  }
+  ph.ascii_dump(ioFile);
+  ioFile.close();
+
+  ioFile.open("ascii_test11.dat", ios_base::in | ios_base::out);
+  std::string str;
+  do
+    ioFile >> str;
+  while(str != "sat_c");
+  ioFile << "\nA";
+  ioFile.close();
+
+  ifstream inFile("ascii_test11.dat");
+  if (!inFile) {
+#if NOISY
+    cout << "Connot open the file" << endl;
+#endif
+    exit(1);
+  }
+
+  C_Polyhedron ph2;
+  bool ok = !ph2.ascii_load(inFile);
+  inFile.close();
+
+  if (!ok)
+    exit(1);
+}
+
+void
+test12() {
+  set_handlers();
+
+  Variable A(0);
+  Variable B(1);
+
+  C_Polyhedron ph(2);
+  ph.add_constraint(A >= 0);   
+  ph.add_constraint(B >= 0);   
+  
+  fstream ioFile;
+  ioFile.open("ascii_test12.dat", ios_base::out);
+  if (!ioFile) {
+#if NOISY
+    cout << "Connot open the file" << endl;
+#endif
+    exit(1);
+  }
+  ph.ascii_dump(ioFile);
+  ioFile.close();
+
+  ioFile.open("ascii_test12.dat", ios_base::in | ios_base::out);
+  std::string str;
+  do
+    ioFile >> str;
+  while(str != "sat_g");
+  ioFile << "\nA";
+  ioFile.close();
+
+  ifstream inFile("ascii_test12.dat");
+  if (!inFile) {
+#if NOISY
+    cout << "Connot open the file" << endl;
+#endif
+    exit(1);
+  }
+
+  C_Polyhedron ph2;
+  bool ok = !ph2.ascii_load(inFile);
+  inFile.close();
+
+  if (!ok)
+    exit(1);
+}
+
+int
+main() {
+
+  test1();
+  test2();
+  test3();
+  test4();
+  test5();
+  test6();
+  test7();
+  test8();
+  test9();
+  test10();
+  test11();
+  test12();
+
+  return 0;
+}
