@@ -648,9 +648,10 @@ public:
     \param y           A polyhedron that <EM>must</EM>
                        be contained in \p *this.
     \param tp          An optional pointer to an unsigned variable storing
-                       the number of available tokens (to be used when
-                       applying the <EM>widening with tokens</EM> delay
-                       technique).
+                       the number of available tokens
+		       (to be used when applying the
+		       \ref Widening_with_tokens "widening with tokens"
+		       delay technique).
     \exception std::invalid_argument thrown if \p *this and \p y
                                      are topology-incompatible
                                      or dimension-incompatible.
@@ -670,7 +671,8 @@ public:
     \param tp                An optional pointer to an unsigned variable
                              storing the number of available tokens
 			     (to be used when applying the
-			     <EM>widening with tokens</EM> delay technique).
+			     \ref Widening_with_tokens "widening with tokens"
+			     delay technique).
     \exception std::invalid_argument thrown if \p *this, \p y and \p cs
                                      are topology-incompatible
                                      or dimension-incompatible.
@@ -693,7 +695,8 @@ public:
     \param tp                An optional pointer to an unsigned variable
                              storing the number of available tokens
 			     (to be used when applying the
-			     <EM>widening with tokens</EM> delay technique).
+			     \ref Widening_with_tokens "widening with tokens"
+			     delay technique).
     \exception std::invalid_argument thrown if \p *this, \p y and \p cs
                                      are topology-incompatible
                                      or dimension-incompatible.
@@ -709,8 +712,9 @@ public:
                        be contained in \p *this.
     \param tp          An optional pointer to an unsigned variable storing
                        the number of available tokens (to be used when
-                       applying the <EM>widening with tokens</EM> delay
-                       technique).
+                       applying the
+		       \ref Widening_with_tokens "widening with tokens"
+		       delay technique).
     \exception std::invalid_argument thrown if \p *this and \p y
                                      are topology-incompatible
                                      or dimension-incompatible.
@@ -730,7 +734,8 @@ public:
     \param tp                An optional pointer to an unsigned variable
                              storing the number of available tokens
                              (to be used when applying the
-                             <EM>widening with tokens</EM> delay technique).
+			     \ref Widening_with_tokens "widening with tokens"
+			     delay technique).
     \exception std::invalid_argument thrown if \p *this, \p y and \p cs
                                      are topology-incompatible
                                      or dimension-incompatible.
@@ -753,7 +758,8 @@ public:
     \param tp                An optional pointer to an unsigned variable
                              storing the number of available tokens
 			     (to be used when applying the
-			     <EM>widening with tokens</EM> delay technique).
+			     \ref Widening_with_tokens "widening with tokens"
+			     delay technique).
     \exception std::invalid_argument thrown if \p *this, \p y and \p cs
                                      are topology-incompatible
                                      or dimension-incompatible.

@@ -62,16 +62,11 @@ The main features of the library are the following:
 In the following sections we describe the polyhedra and
 the different representations and operations
 supported by the PPL in more detail.
-For more information about the definitions and results stated here see:
-- R. Bagnara, E. Ricci, E. Zaffanella and P. M. Hill - Possibly Not Closed
-  Convex Polyhedra and the Parma Polyhedra Library - Quaderno 286 -
-  Department of Mathematics, University of Parma, Italy, May 2002.
-- K. Fukuda - Polyhedral Computation FAQ - Swiss Federal Institute of
-  Technology, Lausanne and Zurich, Switzerland, October 2000.
-- G. L. Nemhauser and L. A. Wolsey - Integer and Combinatorial Optimization -
-  Wiley Interscience Series in Discrete Mathematics and Optimization, 1988.
-- D. K. Wilde - A library for doing polyhedral operations - IRISA Publication
-  interne n. 785, December 1993.
+For more information about the definitions and results stated here see
+\ref BagnaraRZH02TR "[BRZH02b]",
+\ref Fukuda98 "[Fuk98]",
+\ref NemhauserW88 "[NW88]", and
+\ref Wilde93th "[Wil93]".
 
 \section introduction An Introduction to Convex Polyhedra
 
@@ -752,25 +747,16 @@ adding \f$g\f$ to any generator system representing \f$\cP\f$
 does not change \f$\cP\f$.
 
 \anchor H79_widening
-\anchor BHRZ03_widening
 <B>Widening Operators</B>
 
-The library provides widening operators for the domain of
-NNC polyhedra.
-These operators use a widening, we call <EM>H79-widening</EM>,
-which is based on that introduced in
-N. Halbwachs,
-<EM>Détermination automatique de relations linéaires vérifiées
-par les variables d'un programme</EM>,
-Thèse de 3ème cicle d'informatique,
-Université scientifique et médicale de Grenoble, Grenoble, France, March 1979.
-This widening is also described in
-N. Halbwachs, Y.-E. Proy, and P. Roumanoff,
-Verification of real-time systems using linear relation analysis,
-<EM>Formal Methods in System Design</EM>, 11(2):157-185, 1997.
-
+The library provides several widening operators for the domain of
+NNC polyhedra, based on two different proposals.
+The first of these, that we call <EM>H79-widening</EM>,
+mainly follows the specification provided in the PhD thesis
+of N. Halbwachs \ref Halbwachs79th "[Hal79]", also described in
+\ref HalbwachsPR97 "[HPR97]".
 There are a few differences between the H79-widening
-and the widenings described in the cited paper.
+and the widening described in the cited paper.
 In particular, the H79-widening of an NNC polyhedron \f$\cP \in \Pset_n\f$
 using the NNC polyhedron \f$\cQ \in \Pset_n\f$:
  - allows for equalities in \f$\cP\f$ and \f$\cQ\f$
@@ -778,15 +764,41 @@ using the NNC polyhedron \f$\cQ \in \Pset_n\f$:
  - does not require \f$\cP\f$ and \f$\cQ\f$ to be topologically closed;
  - requires as a precondition that \f$\cQ \sseq \cP\f$.
 
+\anchor BHRZ03_widening
+The second widening operator, that we call <EM>BHRZ03-widening</EM>,
+is an instance of the specification provided in
+\ref BagnaraHRZ03TR "[BHRZ03]".
+This operator also requires as a precondition that \f$\cQ \sseq \cP\f$
+and it is guaranteed to provide a result which is at least as precise as
+the H79-widening.
+
+\anchor Widening_with_tokens
+<B>Widening with Tokens</B>
+
+When approximating a fixpoint computation using widening operators,
+a common tactic to improve the precision of the final result is to delay
+the application of widening operators. The usual approach is to fix
+a parameter \f$k\f$ and only apply widenings starting from the
+\f$k\f$-th iteration.
+
+The library also supports an improved widening delay strategy,
+that we call <EM>widening with tokens</EM> \ref BagnaraHRZ03TR "[BHRZ03]".
+A token is a sort of wildcard allowing for the replacement of the widening
+application by the exact upper bound computation: the token is used
+(and thus consumed) only when the widening would have resulted in an
+actual precision loss (as opposed to the <EM>potential</EM> precision loss
+of the classical delay strategy).
+Thus, all widening operators can be supplied with an optional argument,
+recording the number of available tokens, which is decremented when
+tokens are used. The approximated fixpoint computation will start with
+a fixed number \f$k\f$ of tokens, which will be used if and when needed.
+When there are no tokens left, the widening is always applied.
 
 \anchor time_elapse
 <B>Time-Elapse Operator</B>
 
 The <EM>time-elapse</EM> operator has been defined in
-N. Halbwachs and Y.-E. Proy and P. Roumanoff,
-Verification of Real-Time Systems using Linear Relation Analysis,
-in <EM>Formal Methods in System Design</EM> 11(2):157--185, 1997.
-
+\ref HalbwachsPR97 "[HPR97]".
 Actually, the time-elapse operator provided by the library
 is a slight generalization of that one,
 since it also works on NNC polyhedra.
@@ -859,7 +871,7 @@ representing a given bounding box.
 
 <DT> [BGP99] </DT>
 <DD>
-<a name="BultanGP99"></a>
+\anchor BultanGP99
 T. Bultan, R. Gerber, and W. Pugh.
   Model-checking concurrent systems with unbounded integer variables:
   Symbolic representations, approximations, and experimental results.
@@ -869,9 +881,19 @@ T. Bultan, R. Gerber, and W. Pugh.
 </DD>
 
 
+<DT> [BHRZ03] </DT>
+<DD>
+\anchor BagnaraHRZ03TR
+R. Bagnara, P. M. Hill, E. Ricci, and E. Zaffanella.
+  Precise Widening Operators for Convex Polyhedra.
+  Quaderno, Dipartimento di Matematica, Università di Parma, Italy, 2003.
+
+</DD>
+
+
 <DT> [BHZ02] </DT>
 <DD>
-<a name="BagnaraHZ02a"></a>
+\anchor BagnaraHZ02a
 R. Bagnara, P. M. Hill, and E. Zaffanella.
   A new encoding of not necessarily closed convex polyhedra.
   In M. Carro, C. Vacheret, and K.-K. Lau, editors, <i>Proceedings of
@@ -886,7 +908,7 @@ R. Bagnara, P. M. Hill, and E. Zaffanella.
 
 <DT> [BRZH02a] </DT>
 <DD>
-<a name="BagnaraRZH02"></a>
+\anchor BagnaraRZH02
 R. Bagnara, E. Ricci, E. Zaffanella, and P. M. Hill.
   Possibly not closed convex polyhedra and the Parma Polyhedra
   Library.
@@ -900,13 +922,13 @@ R. Bagnara, E. Ricci, E. Zaffanella, and P. M. Hill.
 
 <DT> [BRZH02b] </DT>
 <DD>
-<a name="BagnaraRZH02TR"></a>
+\anchor BagnaraRZH02TR
 R. Bagnara, E. Ricci, E. Zaffanella, and P. M. Hill.
   Possibly not closed convex polyhedra and the Parma Polyhedra
   Library.
   Quaderno 286, Dipartimento di Matematica, Università di Parma,
   Italy, 2002.
-  See also <A HREF="#BagnaraRZH02TRerrata">[BRZH02c]</A>. Available at
+  See also \ref BagnaraRZH02TRerrata "[BRZH02c]". Available at
   <A HREF="http://www.cs.unipr.it/Publications/">http://www.cs.unipr.it/Publications/</A>.
 
 </DD>
@@ -914,19 +936,19 @@ R. Bagnara, E. Ricci, E. Zaffanella, and P. M. Hill.
 
 <DT> [BRZH02c] </DT>
 <DD>
-<a name="BagnaraRZH02TRerrata"></a>
+\anchor BagnaraRZH02TRerrata
 R. Bagnara, E. Ricci, E. Zaffanella, and P. M. Hill.
   Errata for technical report ``Quaderno 286''.
   Available at <A HREF="http://www.cs.unipr.it/Publications/">http://www.cs.unipr.it/Publications/</A>,
   2002.
-  See <A HREF="#BagnaraRZH02TR">[BRZH02b]</A>.
+  See \ref BagnaraRZH02TR "[BRZH02b]".
 
 </DD>
 
 
 <DT> [CC92] </DT>
 <DD>
-<a name="CousotC92-PLILP"></a>
+\anchor CousotC92-PLILP
 P. Cousot and R. Cousot.
   Comparing the Galois connection and widening/narrowing approaches
   to abstract interpretation.
@@ -940,7 +962,7 @@ P. Cousot and R. Cousot.
 
 <DT> [CH78] </DT>
 <DD>
-<a name="CousotH78"></a>
+\anchor CousotH78
 P. Cousot and N. Halbwachs.
   Automatic discovery of linear restraints among variables of a
   program.
@@ -953,7 +975,7 @@ P. Cousot and N. Halbwachs.
 
 <DT> [Che64] </DT>
 <DD>
-<a name="Chernikova64"></a>
+\anchor Chernikova64
 N. V. Chernikova.
   Algorithm for finding a general formula for the non-negative
   solutions of system of linear equations.
@@ -965,7 +987,7 @@ N. V. Chernikova.
 
 <DT> [Che65] </DT>
 <DD>
-<a name="Chernikova65"></a>
+\anchor Chernikova65
 N. V. Chernikova.
   Algorithm for finding a general formula for the non-negative
   solutions of system of linear inequalities.
@@ -977,7 +999,7 @@ N. V. Chernikova.
 
 <DT> [Che68] </DT>
 <DD>
-<a name="Chernikova68"></a>
+\anchor Chernikova68
 N. V. Chernikova.
   Algorithm for discovering the set of all solutions of a linear
   programming problem.
@@ -989,7 +1011,7 @@ N. V. Chernikova.
 
 <DT> [Dan63] </DT>
 <DD>
-<a name="Dantzig63"></a>
+\anchor Dantzig63
 G. B. Dantzig.
   <i>Linear Programming and Extensions</i>.
   Princeton University Press, Princeton, NJ, 1963.
@@ -999,7 +1021,7 @@ G. B. Dantzig.
 
 <DT> [FP96] </DT>
 <DD>
-<a name="FukudaP96"></a>
+\anchor FukudaP96
 K. Fukuda and A. Prodon.
   Double description method revisited.
   In M. Deza, R. Euler, and Y. Manoussakis, editors, <i>Combinatorics
@@ -1012,7 +1034,7 @@ K. Fukuda and A. Prodon.
 
 <DT> [Fuk98] </DT>
 <DD>
-<a name="Fukuda98"></a>
+\anchor Fukuda98
 K. Fukuda.
   Polyhedral computation FAQ.
   Swiss Federal Institute of Technology, Lausanne and Zurich,
@@ -1024,7 +1046,7 @@ K. Fukuda.
 
 <DT> [GJ00] </DT>
 <DD>
-<a name="GawrilowJ00"></a>
+\anchor GawrilowJ00
 E. Gawrilow and M. Joswig.
   <tt>polymake</tt>: a framework for analyzing convex polytopes.
   In G. Kalai and G. M. Ziegler, editors, <i>Polytopes -
@@ -1035,7 +1057,7 @@ E. Gawrilow and M. Joswig.
 
 <DT> [GJ01] </DT>
 <DD>
-<a name="GawrilowJ01"></a>
+\anchor GawrilowJ01
 E. Gawrilow and M. Joswig.
   <tt>polymake</tt>: an approach to modular software design in
   computational geometry.
@@ -1048,7 +1070,7 @@ E. Gawrilow and M. Joswig.
 
 <DT> [Hal79] </DT>
 <DD>
-<a name="Halbwachs79th"></a>
+\anchor Halbwachs79th
 N. Halbwachs.
   <i>Détermination Automatique de Relations Linéaires
   Vérifiées par les Variables d'un Programme</i>.
@@ -1061,7 +1083,7 @@ N. Halbwachs.
 
 <DT> [HKP95] </DT>
 <DD>
-<a name="HalbwachsKP95"></a>
+\anchor HalbwachsKP95
 N. Halbwachs, A. Kerbrat, and Y.-E. Proy.
   <i>POLyhedra INtegrated Environment</i>.
   Verimag, France, version 1.0 of POLINE edition, September 1995.
@@ -1072,7 +1094,7 @@ N. Halbwachs, A. Kerbrat, and Y.-E. Proy.
 
 <DT> [HLW94] </DT>
 <DD>
-<a name="LeVergeVDW94"></a>
+\anchor LeVergeVDW94
 V. Van Dongen H. Le Verge and D. K. Wilde.
   Loop nest synthesis using the polyhedral library.
   <em>Publication interne</em> 830, IRISA, Campus de Beaulieu, Rennes,
@@ -1083,7 +1105,7 @@ V. Van Dongen H. Le Verge and D. K. Wilde.
 
 <DT> [HPR94] </DT>
 <DD>
-<a name="HalbwachsPR94"></a>
+\anchor HalbwachsPR94
 N. Halbwachs, Y.-E. Proy, and P. Raymond.
   Verification of linear hybrid systems by means of convex
   approximations.
@@ -1096,7 +1118,7 @@ N. Halbwachs, Y.-E. Proy, and P. Raymond.
 
 <DT> [HPR97] </DT>
 <DD>
-<a name="HalbwachsPR97"></a>
+\anchor HalbwachsPR97
 N. Halbwachs, Y.-E. Proy, and P. Roumanoff.
   Verification of real-time systems using linear relation analysis.
   <i>Formal Methods in System Design</i>, 11(2):157-185, 1997.
@@ -1106,7 +1128,7 @@ N. Halbwachs, Y.-E. Proy, and P. Roumanoff.
 
 <DT> [Jea02] </DT>
 <DD>
-<a name="NEW-POLKA-1-1-3c"></a>
+\anchor NEW-POLKA-1-1-3c
 B. Jeannet.
   <i>Convex Polyhedra Library</i>, release 1.1.3c edition, March 2002.
   Documentation of the ``New Polka'' library available at
@@ -1117,7 +1139,7 @@ B. Jeannet.
 
 <DT> [Kuh56] </DT>
 <DD>
-<a name="Kuhn56"></a>
+\anchor Kuhn56
 H. W. Kuhn.
   Solvability and consistency for linear equations and inequalities.
   <i>American Mathematical Monthly</i>, 63:217-232, 1956.
@@ -1127,7 +1149,7 @@ H. W. Kuhn.
 
 <DT> [Le 92] </DT>
 <DD>
-<a name="LeVerge92"></a>
+\anchor LeVerge92
 H. Le Verge.
   A note on Chernikova's algorithm.
   <em>Publication interne</em> 635, IRISA, Campus de Beaulieu, Rennes,
@@ -1138,19 +1160,19 @@ H. Le Verge.
 
 <DT> [Loe99] </DT>
 <DD>
-<a name="Loechner99"></a>
+\anchor Loechner99
 V. Loechner.
   <i>PolyLib</i>: A library for manipulating parameterized polyhedra.
   Available at <A HREF="http://icps.u-strasbg.fr/~loechner/polylib/">http://icps.u-strasbg.fr/~loechner/polylib/</A>, March
   1999.
-  Declares itself to be a continuation of <A HREF="#Wilde93th">[Wil93]</A>.
+  Declares itself to be a continuation of \ref Wilde93th "[Wil93]".
 
 </DD>
 
 
 <DT> [LW97] </DT>
 <DD>
-<a name="LoechnerW97"></a>
+\anchor LoechnerW97
 V. Loechner and D. K. Wilde.
   Parameterized polyhedra and their vertices.
   <i>International Journal of Parallel Programming</i>, 25(6):525-549,
@@ -1161,7 +1183,7 @@ V. Loechner and D. K. Wilde.
 
 <DT> [MRTT53] </DT>
 <DD>
-<a name="MotzkinRTT53"></a>
+\anchor MotzkinRTT53
 T. S. Motzkin, H. Raiffa, G. L. Thompson, and R. M. Thrall.
   The double description method.
   In H. W. Kuhn and A. W. Tucker, editors, <i>Contributions to the
@@ -1173,7 +1195,7 @@ T. S. Motzkin, H. Raiffa, G. L. Thompson, and R. M. Thrall.
 
 <DT> [NW88] </DT>
 <DD>
-<a name="NemhauserW88"></a>
+\anchor NemhauserW88
 G. L. Nemhauser and L. A. Wolsey.
   <i>Integer and Combinatorial Optimization</i>.
   Wiley Interscience Series in Discrete Mathematics and Optimization.
@@ -1184,7 +1206,7 @@ G. L. Nemhauser and L. A. Wolsey.
 
 <DT> [Sri93] </DT>
 <DD>
-<a name="Srivastava93"></a>
+\anchor Srivastava93
 D. Srivastava.
   Subsumption and indexing in constraint query languages with linear
   arithmetic constraints.
@@ -1196,7 +1218,7 @@ D. Srivastava.
 
 <DT> [SW70] </DT>
 <DD>
-<a name="StoerW70"></a>
+\anchor StoerW70
 J. Stoer and C. Witzgall.
   <i>Convexity and Optimization in Finite Dimensions I</i>.
   Springer-Verlag, Berlin, 1970.
@@ -1206,31 +1228,31 @@ J. Stoer and C. Witzgall.
 
 <DT> [Wey35] </DT>
 <DD>
-<a name="Weyl35"></a>
+\anchor Weyl35
 H. Weyl.
   Elementare theorie der konvexen polyeder.
   <i>Commentarii Mathematici Helvetici</i>, 7:290-306, 1935.
-  English translation in <A HREF="#Weyl50">[Wey50]</A>.
+  English translation in \ref Weyl50 "[Wey50]".
 
 </DD>
 
 
 <DT> [Wey50] </DT>
 <DD>
-<a name="Weyl50"></a>
+\anchor Weyl50
 H. Weyl.
   The elementary theory of convex polyhedra.
   In H. W. Kuhn, editor, <i>Contributions to the Theory of Games -
   Volume I</i>, number 24 in Annals of Mathematics Studies, pages 3-18. Princeton
   University Press, Princeton, New Jersey, 1950.
-  Translated from <A HREF="#Weyl35">[Wey35]</A> by H. W. Kuhn.
+  Translated from \ref Weyl35 "[Wey35]" by H. W. Kuhn.
 
 </DD>
 
 
 <DT> [Wil93] </DT>
 <DD>
-<a name="Wilde93th"></a>
+\anchor Wilde93th
 D. K. Wilde.
   A library for doing polyhedral operations.
   Master's thesis, Oregon State University, Corvallis, Oregon,
@@ -1245,8 +1267,7 @@ D. K. Wilde.
 \if Include_Implementation_Details
 
 The following definitions and results are taken, in addition
-to the references mentioned before, from
-<A HREF="#Dantzig63">[Dan63]</A>.
+to the references mentioned before, from \ref Dantzig63 "[Dan63]".
 
 
 \section prelims Further notation and terminology
