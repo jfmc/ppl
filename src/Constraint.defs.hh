@@ -28,6 +28,7 @@ site: http://www.cs.unipr.it/ppl/ . */
 #include "Row.defs.hh"
 #include "Variable.defs.hh"
 #include "LinExpression.types.hh"
+#include "ConSys.defs.hh"
 #include "Polyhedron.types.hh"
 #include <iosfwd>
 
@@ -221,6 +222,8 @@ public:
   bool OK() const;
 
 private:
+  friend class Parma_Polyhedra_Library::ConSys;
+  friend class Parma_Polyhedra_Library::ConSys::const_iterator;
   friend class Parma_Polyhedra_Library::Polyhedron;
 
   //! Default constructor: private and not implemented.

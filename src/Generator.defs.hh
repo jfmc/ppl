@@ -27,6 +27,7 @@ site: http://www.cs.unipr.it/ppl/ . */
 #include "Generator.types.hh"
 #include "Row.defs.hh"
 #include "Variable.defs.hh"
+#include "GenSys.defs.hh"
 #include "LinExpression.defs.hh"
 #include <iosfwd>
 
@@ -332,6 +333,10 @@ public:
   bool OK() const;
 
 PPL_INTERNAL:
+  friend class Parma_Polyhedra_Library::GenSys;
+  friend class Parma_Polyhedra_Library::GenSys::const_iterator;
+  friend class Parma_Polyhedra_Library::Polyhedron;
+
   //! Copy-constructor with given size.
   Generator(const Generator& g, size_t sz);
 

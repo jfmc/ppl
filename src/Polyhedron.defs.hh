@@ -24,13 +24,16 @@ site: http://www.cs.unipr.it/ppl/ . */
 #ifndef _Polyhedron_defs_hh
 #define _Polyhedron_defs_hh 1
 
+#include "Polyhedron.types.hh"
 #include "Variable.defs.hh"
 #include "LinExpression.defs.hh"
 #include "ConSys.defs.hh"
+#include "ConSys.inlines.hh"
 #include "GenSys.defs.hh"
+#include "GenSys.inlines.hh"
 #include "SatMatrix.defs.hh"
 #include "Status.defs.hh"
-#include "Polyhedron.types.hh"
+#include "Generator.types.hh"
 #include "Poly_Con_Relation.defs.hh"
 #include "Poly_Gen_Relation.defs.hh"
 #include <set>

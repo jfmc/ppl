@@ -29,11 +29,15 @@ site: http://www.cs.unipr.it/ppl/ . */
 #include "Matrix.defs.hh"
 #include "Generator.types.hh"
 #include "Polyhedron.types.hh"
-#include "Constraint.defs.hh"
+#include "Constraint.types.hh"
 #include <cstddef>
 #include <vector>
 #include <iterator>
 
+namespace Parma_Polyhedra_Library {
+  // Put them in the namespace here to declare them friend later.
+  bool operator<=(const Polyhedron& x, const Polyhedron& y);
+}
 
 //! A system of constraints.
 /*!
@@ -194,6 +198,9 @@ public:
 
 PPL_INTERNAL:
   friend class Parma_Polyhedra_Library::Polyhedron;
+  friend bool
+  Parma_Polyhedra_Library::operator<=(const Polyhedron& x,
+				      const Polyhedron& y);
 
   //! Constructor: builds an empty system of constraints
   //! having the specified topology.
@@ -257,6 +264,6 @@ void swap(Parma_Polyhedra_Library::ConSys& x,
 
 } // namespace std
 
-#include "ConSys.inlines.hh"
+//#include "ConSys.inlines.hh"
 
 #endif

@@ -120,6 +120,15 @@ public:
   //! to the variable \p v.
   LinExpression(const Variable& v);
 
+  //! Constructor: builds the linear expression corresponding to
+  //! the constraint \p c.
+  explicit LinExpression(const Constraint& c);
+
+  //! Constructor: builds the linear expression corresponding to
+  //! the coefficients of generator \p g. Note that,
+  //! for points and closure points, the divisor is \e not copied.
+  explicit LinExpression(const Generator& g);
+
   //! Returns the dimension of the vector space enclosing \p *this.
   size_t space_dimension() const;
 
@@ -129,15 +138,6 @@ public:
 PPL_INTERNAL:
   //! Copy-constructor with a specified dimension.
   LinExpression(const LinExpression& e, size_t sz);
-
-  //! Constructor: builds the linear expression corresponding to
-  //! the constraint \p c.
-  explicit LinExpression(const Constraint& c);
-
-  //! Constructor: builds the linear expression corresponding to
-  //! the coefficients of generator \p g. Note that,
-  //! for points and closure points, the divisor is \e not copied.
-  explicit LinExpression(const Generator& g);
 
 private:
   //! Implementation sizing constructor.

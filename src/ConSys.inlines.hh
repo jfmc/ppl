@@ -21,6 +21,9 @@ USA.
 For the most up-to-date information see the Parma Polyhedra Library
 site: http://www.cs.unipr.it/ppl/ . */
 
+#ifndef _ConSys_inlines_hh
+#define _ConSys_inlines_hh 1
+
 #include "Constraint.defs.hh"
 
 namespace Parma_Polyhedra_Library {
@@ -173,3 +176,5 @@ swap(Parma_Polyhedra_Library::ConSys& x,
 }
 
 } // namespace std
+
+#endif

@@ -62,7 +62,7 @@ LIBPPL_LT_AGE =      1
 
 AM_CPPFLAGS = -I$(top_builddir) -I$(top_srcdir)/src @extra_includes@
 
-CPPFLAGS = -DPPL_INTERNAL=public -DPPL_HIDDEN=public @extra_cpp_flags@
+CPPFLAGS = -DPPL_INTERNAL=private -DPPL_HIDDEN=public @extra_cpp_flags@
 
 lib_LTLIBRARIES = libppl.la
 
@@ -115,13 +115,13 @@ Poly_Con_Relation.defs.hh \
 Poly_Con_Relation.inlines.hh \
 Poly_Gen_Relation.defs.hh \
 Poly_Gen_Relation.inlines.hh \
+ConSys.defs.hh \
 Constraint.defs.hh \
 Constraint.inlines.hh \
-ConSys.defs.hh \
 ConSys.inlines.hh \
+GenSys.defs.hh \
 Generator.defs.hh \
 Generator.inlines.hh \
-GenSys.defs.hh \
 GenSys.inlines.hh \
 Status.defs.hh \
 Status.inlines.hh \

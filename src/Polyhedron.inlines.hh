@@ -26,6 +26,7 @@ site: http://www.cs.unipr.it/ppl/ . */
 #define _Polyhedron_inlines_hh 1
 
 #include "Interval.defs.hh"
+#include "Generator.defs.hh"
 #include <algorithm>
 
 namespace Parma_Polyhedra_Library {

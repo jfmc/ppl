@@ -34,6 +34,11 @@ site: http://www.cs.unipr.it/ppl/ . */
 #include <cstddef>
 #include <vector>
 
+namespace Parma_Polyhedra_Library {
+  // Put them in the namespace here to declare them friend later.
+  bool operator<=(const Polyhedron& x, const Polyhedron& y);
+}
+
 //! A system of generators.
 /*!
     An object of the class GenSys is a system of generators,
@@ -250,6 +255,9 @@ public:
 
 PPL_INTERNAL:
   friend class Parma_Polyhedra_Library::Polyhedron;
+  friend bool
+  Parma_Polyhedra_Library::operator<=(const Polyhedron& x,
+				      const Polyhedron& y);
 
   //! Constructor: builds an empty system of generators
   //! having the specified topology.
@@ -333,6 +341,6 @@ void swap(Parma_Polyhedra_Library::GenSys& x,
 
 } // namespace std
 
-#include "GenSys.inlines.hh"
+//#include "GenSys.inlines.hh"
 
 #endif

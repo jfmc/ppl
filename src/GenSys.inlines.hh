@@ -21,6 +21,9 @@ USA.
 For the most up-to-date information see the Parma Polyhedra Library
 site: http://www.cs.unipr.it/ppl/ . */
 
+#ifndef _GenSys_inlines_hh
+#define _GenSys_inlines_hh 1
+
 #include "Generator.defs.hh"
 
 namespace Parma_Polyhedra_Library {
@@ -176,3 +179,5 @@ swap(Parma_Polyhedra_Library::GenSys& x,
 }
 
 } // namespace std
+
+#endif

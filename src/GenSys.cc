@@ -24,6 +24,7 @@ site: http://www.cs.unipr.it/ppl/ . */
 #include <config.h>
 
 #include "GenSys.defs.hh"
+#include "GenSys.inlines.hh"
 
 #include "Constraint.defs.hh"
 #include <cassert>
