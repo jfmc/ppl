@@ -482,6 +482,68 @@ For this reason, when computing the poly-difference of two
 C polyhedra, the library will enforce the topological closure
 of the result.
 
+<B>Adding New Dimensions</B>
+
+The library provides two operators for increasing the
+dimensions of a polyhedron \f$\cP\f$.
+In both cases, the added dimensions have the highest indices
+in the new polyhedron and
+the system of constraints representing the new polyhedron
+includes the original system of constraints.
+
+If the operator embeds the polyhedron
+\f$\cP\f$ in the new polyhedron,
+then these are all the constraints and the new variables
+corresponding to the added dimensions are unconstrained.
+For instance, when starting from a polyhedron \f$\cP \sseq \Rset^2\f$
+    and adding a third dimension, the result will be the polyhedron
+    \f[
+      \bigl\{\,
+        (x, y, z)^\transpose \in \Rset^3
+      \bigm|
+        (x, y)^\transpose \in \cP
+      \,\bigr\}.
+    \f]
+
+If the operator projects the polyhedron
+\f$\cP\f$ into the new polyhedron,
+then the variables corresponding to the added dimensions
+are all constrained to be equal to 0.
+For instance, when starting from a polyhedron \f$\cP \sseq \Rset^2\f$
+    and adding a third dimension, the result will be the polyhedron
+    \f[
+      \bigl\{\,
+        (x_0, x_1, 0)^\transpose \in \Rset^3
+      \bigm|
+        (x_0, x_1)^\transpose \in \cP
+      \,\bigr\}.
+    \f]
+
+<B>Removing Dimensions</B>
+
+The library provides two operators for removing
+dimensions from a polyhedron \f$\cP\f$.
+
+Given a set of variables corresponding to
+some of the dimensions of \f$\cP\f$, there is an operator that will
+remove the dimensions corresponding to this set.
+For instance,
+letting \f$\cP\f$ be the singleton set
+\f$\bigl\{ (3, 1, 0, 2)^\transpose \bigr\} \sseq \Rset^4\f$, 
+then after using this operator with  \f$\{x_1, x_2\}\f$ as the given set of
+variables, then the resulting polyhedron is the point
+\f$\bigl\{ (3, 2)^\transpose \bigr\} \sseq \Rset^2\f$.
+
+Given a space dimension that is no more than the space dimension of \f$\cP\f$,
+the other operator removes the higher dimensions from \f$\cP\f$ so that
+the new polyhedron has this dimension.
+For instance,
+letting \f$\cP\f$ be the singleton set
+\f$\bigl\{ (3, 1, 0, 2)^\transpose \bigr\} \sseq \Rset^4\f$ as before, 
+then after using this operator with \f$2\f$ as the given space dimension,
+then the  resulting polyhedron is the point
+\f$\bigl\{ (3, 1)^\transpose \bigr\} \sseq \Rset^2\f$.
+
 <B>Affine Images and Preimages</B>
 
 The function mapping \f$\fund{\phi}{\Rset^n}{\Rset^m}\f$
