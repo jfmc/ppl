@@ -7,7 +7,6 @@
 #endif
 #include <cassert>
 
-#undef PPL_FLEXIBLE_ARRAY
 #undef PACKAGE
 #undef PACKAGE_BUGREPORT
 #undef PACKAGE_NAME
