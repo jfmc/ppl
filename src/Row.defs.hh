@@ -36,10 +36,14 @@ site: http://www.cs.unipr.it/ppl/ . */
 
 #ifndef EXTRA_ROW_DEBUG
 #ifdef PPL_DOXYGEN_INCLUDE_IMPLEMENTATION_DETAILS
-//! \brief
-//! When EXTRA_ROW_DEBUG evaluates to <CODE>true</CODE>, each instance
-//! of the class Row carries its own capacity; this enables extra
-//! consistency checks to be performed.
+/*! \ingroup PPL_defines
+  \brief
+  Enables extra debugging infomration for class Row.
+ 
+  When <CODE>EXTRA_ROW_DEBUG</CODE> evaluates to <CODE>true</CODE>,
+  each instance of the class Row carries its own capacity; this enables
+  extra consistency checks to be performed.
+*/
 #endif // PPL_DOXYGEN_INCLUDE_IMPLEMENTATION_DETAILS
 #define EXTRA_ROW_DEBUG 0
 #endif
@@ -594,8 +598,16 @@ void iter_swap(std::vector<Parma_Polyhedra_Library::Row>::iterator x,
 } // namespace std
 
 #ifndef EXTRA_NORMALIZATION
-// If non-zero, lines and equalities are ALWAYS normalized so that the
-// first non-zero coefficient is positive.
+#ifdef PPL_DOXYGEN_INCLUDE_IMPLEMENTATION_DETAILS
+/*! \ingroup PPL_defines
+  \brief
+  If non-zero, lines and equalities will admit a unique representation.
+
+  The unique representation is obtained by applying the standard
+  normalization and also ensuring that the first non-zero coefficient
+  of lines and equalities is positive.
+*/
+#endif // PPL_DOXYGEN_INCLUDE_IMPLEMENTATION_DETAILS
 #define EXTRA_NORMALIZATION 0
 #endif
 

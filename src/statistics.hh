@@ -25,6 +25,16 @@ site: http://www.cs.unipr.it/ppl/ . */
 #define PPL_statistics_hh 1
 
 #ifndef PPL_STATISTICS
+#ifdef PPL_DOXYGEN_INCLUDE_IMPLEMENTATION_DETAILS
+/*! \ingroup PPL_defines
+  \brief
+  Enables the gathering of some statistical data.
+
+  Currently, when set, will collect a few information about
+  the usage of the heuristic techniques adopted in the
+  \ref BHRZ03_widening "BHRZ03-widening" operator.
+*/
+#endif // PPL_DOXYGEN_INCLUDE_IMPLEMENTATION_DETAILS
 #define PPL_STATISTICS 0
 #endif
 

@@ -32,7 +32,18 @@ site: http://www.cs.unipr.it/ppl/ . */
 #include <sstream>
 #include <stdexcept>
 
-#define BE_LAZY
+#ifdef PPL_DOXYGEN_INCLUDE_IMPLEMENTATION_DETAILS
+/*! \ingroup PPL_defines
+  \brief
+  Controls the laziness level of the implementation.
+
+  Temporarily used in a few of the function implementations to
+  switch to an even more lazy algorithm. To be removed as soon as
+  we collect enough information to decide which is the better
+  implementation alternative.
+*/
+#endif // PPL_DOXYGEN_INCLUDE_IMPLEMENTATION_DETAILS
+#define BE_LAZY 1
 
 namespace PPL = Parma_Polyhedra_Library;
 
@@ -366,7 +377,7 @@ PPL::Polyhedron::is_included(const Polyhedron& y) const {
   if (y.has_pending_generators())
     y.process_pending_generators();
 
-#ifdef BE_LAZY
+#if BE_LAZY
   if (!x.generators_are_up_to_date() && !x.update_generators())
     return true;
   if (!y.constraints_are_up_to_date())

@@ -28,7 +28,7 @@ site: http://www.cs.unipr.it/ppl/ . */
 
 #include <cassert>
 
-#define BE_LAZY
+#define BE_LAZY 1
 
 namespace PPL = Parma_Polyhedra_Library;
 
@@ -366,7 +366,7 @@ PPL::Polyhedron::concatenate_assign(const Polyhedron& y) {
   else {
     // The polyhedron cannot have pending constraints.
     con_sys.unset_pending_rows();
-#ifdef BE_LAZY
+#if BE_LAZY
     con_sys.set_sorted(false);
 #else
     con_sys.sort_rows();
