@@ -956,12 +956,12 @@ ppl_new_Polyhedron_from_generators(Prolog_term_ref t_tp,
   CATCH_ALL;
 }
 
+namespace {
+
 enum Boundary_Kind {
   LOWER,
   UPPER
 };
-
-namespace {
 
 bool
 term_to_boundary(Prolog_term_ref t_b, Boundary_Kind kind,
