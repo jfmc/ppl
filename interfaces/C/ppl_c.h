@@ -290,6 +290,28 @@ ppl_LinExpression_add_to_inhomogeneous __P((ppl_LinExpression_t le,
 					    ppl_const_Coefficient_t n));
 
 /*! \brief
+  Adds the linear expression \p src to \p dst.
+*/
+int
+ppl_add_LinExpression_to_LinExpression __P((ppl_LinExpression_t dst,
+					    ppl_const_LinExpression_t src));
+
+/*! \brief
+  Subtracts the linear expression \p src from \p dst.
+*/
+int
+ppl_subtract_LinExpression_from_LinExpression
+__P((ppl_LinExpression_t dst,
+     ppl_const_LinExpression_t src));
+
+/*! \brief
+  Multiply the linear expression \p dst by \p n.
+*/
+int
+ppl_multiply_LinExpression_by_Coefficient __P((ppl_LinExpression_t le,
+					       ppl_const_Coefficient_t n));
+
+/*! \brief
   Returns the space dimension of \p le.
 */
 int

@@ -310,6 +310,37 @@ ppl_LinExpression_add_to_inhomogeneous(ppl_LinExpression_t le,
 CATCH_ALL
 
 int
+ppl_add_LinExpression_to_LinExpression(ppl_LinExpression_t dst,
+				       ppl_const_LinExpression_t src) try {
+  LinExpression& ddst = *to_nonconst(dst);
+  const LinExpression& ssrc = *to_const(src);
+  ddst += ssrc;
+  return 0;
+}
+CATCH_ALL
+
+int
+ppl_subtract_LinExpression_from_LinExpression(ppl_LinExpression_t dst,
+					      ppl_const_LinExpression_t src)
+  try {
+  LinExpression& ddst = *to_nonconst(dst);
+  const LinExpression& ssrc = *to_const(src);
+  ddst -= ssrc;
+  return 0;
+}
+CATCH_ALL
+
+int
+ppl_multiply_LinExpression_by_Coefficient(ppl_LinExpression_t le,
+					  ppl_const_Coefficient_t n) try {
+  LinExpression& lle = *to_nonconst(le);
+  const Integer& nn = *to_const(n);
+  lle *= nn;
+  return 0;
+}
+CATCH_ALL
+
+int
 ppl_LinExpression_space_dimension(ppl_const_LinExpression_t le) try {
   return to_const(le)->space_dimension();
 }
