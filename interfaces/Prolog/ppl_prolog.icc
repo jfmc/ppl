@@ -857,13 +857,17 @@ term_to_boundary(Prolog_term_ref t_b, Boundary_Kind kind,
     Prolog_get_arg(1, t_limit, t_n);
     Prolog_get_arg(2, t_limit, t_d);
 
-    finite = true;
-    closed = (open_closed_atom == a_c);
-    n = integer_term_to_Integer(t_n);
-    d = integer_term_to_Integer(t_d);
-    // Catch divisions by zero here.
-    if (d == 0)
+    if (!Prolog_is_integer(t_n) || !Prolog_is_integer(t_d))
       return false;
+    else {
+      finite = true;
+      closed = (open_closed_atom == a_c);
+      n = integer_term_to_Integer(t_n);
+      d = integer_term_to_Integer(t_d);
+      // Catch negative denominators and divisions by zero here.
+      if (d <= 0)
+        return false;
+    }
   }
   return true;
 }
