@@ -3,23 +3,21 @@
 
 \subsection PI_Intro Introduction
 
-To be written.
-
+This Prolog library is an interface to the PPL and
+provides Prolog operations for creating and
+manipulating the PPL polyhedra.
 
 \subsection PI_SD_Features System-Dependent Features
 
-To be written.
-
-
 <H4>GNU Prolog</H4>
 
-To be written.
-
+Support for GNU Prolog is under development and will be available in 
+  a future release. 
 
 <H4>SWI Prolog</H4>
 
-To be written.
-
+Support for SWI Prolog is under development and will be available in 
+  a future release. 
 
 <H4>SICStus Prolog</H4>
 
@@ -104,7 +102,7 @@ using the PPL predicates.
   representing a polyhedron \f$P\f$ often have to include
   points in \f$P\f$ that are <EM>not</EM> vertices of \f$P\f$.
   Hence, it is convenient to use <EM>vertex</EM> to mean any element of
-  the set of generators \f$V\f$, even though it may not be a ``proper''
+  the set of generators \f$V\f$ even though it may not be a ``proper''
   vertex of \f$P\f$.
 
 
@@ -142,13 +140,18 @@ more information regarding these issues.
    \p X the reference address.
    
    The first argument must be a free  variable.
-    
+
+<H4><CODE>ppl_copy_polyhedron(+Address1, -Address2)</CODE></H4>
+
+   The polyhedron referenced by <CODE>Address1</CODE> is copied to
+   <CODE>Address2</CODE>.
+
 <H4><CODE>ppl_delete_polyhedron(+Address)</CODE></H4>
 
    Deletes the polyhedron referenced by <CODE>Address</CODE>.
 
    If <CODE>Address</CODE> is not an address of a polyhedron,
-   execution is aborted. e.g. the following aborts:
+   execution is aborted. E.g. the following aborts:
 \code
    | ?-ppl_new_polyhedron(X,3),
        ppl_delete_polyhedron(X),
@@ -221,7 +224,60 @@ by <CODE>Address</CODE>.
 
    Adds the constraints in list <CODE>List_of_Constraints</CODE>
    to the polyhedron referenced by <CODE>Address</CODE>.
+   Constraints are not minimized and a query will succeed even when
+   <CODE>List_of_Constraints</CODE> is unsatisfiable. E.g.
+\code
+   | ?- A = '$VAR'(0), B = '$VAR'(1),
+        ppl_new_polyhedron(X, 2),
+        ppl_insert_constraints(X, [4*A + B >= 3, A = 1]),
+        ppl_get_constraints(X,CS).
+ 
+   A = A,
+   B = B,
+   X = -32975498,
+   CS = [4*A+1*B>=3,1*A=1] ?
+ 
+   yes
+   | ?- A = '$VAR'(0), B = '$VAR'(1),
+        ppl_new_polyhedron(X, 2),
+        ppl_insert_constraints(X, [4*A + B >= 3, A = 1]),
+        ppl_get_constraints(X,CS).
+ 
+   A = A,
+   B = B,
+   X = -32975104,
+   CS = [4*A+1*B>=3,1*A=1],
+   GS = [vertex(1*A+ -1*B),ray(1*B)] ?
+ 
+   yes  
+\endcode  
+                                                                         
+<H4><CODE>ppl_add_constraints_and_minimize(+Address, 
+                                   +List_of_Constraints)</CODE></H4>
 
+   Adds the constraints in list <CODE>List_of_Constraints</CODE>
+   to the polyhedron referenced by <CODE>Address</CODE>.
+   This will fail if the resulting polyhedron is empty.
+   E.g.
+\code
+   | ?- A = '$VAR'(0), B = '$VAR'(1),
+        ppl_new_polyhedron(X, 2),
+        ppl_add_constraints_and_minimize(X, [4*A + B >= 3, A = 1]),
+        ppl_get_constraints(X,CS).
+
+   A = A,
+   B = B,
+   X = -33291612,
+   CS = [1*B>= -1,1*A=1] ?
+ 
+   yes
+   | ?- A = '$VAR'(0), B = '$VAR'(1),
+       ppl_new_polyhedron(X, 2),
+       ppl_add_constraints_and_minimize(X, [4*A + B >= 3, A = 0, B =< 0]),
+       ppl_get_constraints(X,CS).
+   | ?-
+   no
+\endcode                                                                              
 <H4><CODE>ppl_insert_generators(+Address, +List_of_Generators)</CODE></H4>
 
    Adds the generators in list <CODE>List_of_Generators</CODE>
