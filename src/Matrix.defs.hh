@@ -233,8 +233,11 @@ public:
                            resized matrix.
 
     A new matrix, with the specified dimensions, is created.
-    The contents of the old matrix are copied upper, left-hand corner
-    of the new matrix, which is then assigned to \p *this.
+    It is assumed that the dimensions of current matrix are no more
+    than \p new_n_rows and \p new_n_cols
+    If reallocation takes place, the contents of the old matrix are
+    copied in the upper, left-hand corner of the new matrix, which is
+    then assigned to \p *this.
   */
   void grow(dimension_type new_n_rows, dimension_type new_n_columns);
   
@@ -259,13 +262,13 @@ public:
   */
   void add_zero_columns(dimension_type n);
   
-  //! Adds \p n non-zero rows and columns to the matrix.
+  //! Adds \p n (non-zero!) rows and columns to the matrix.
   /*!
     \param n      The number of rows and columns to be added.
     
-    Turn the \f$r \times c\f$ matrix \f$M\f$ into
-    the \f$(r+n) \times (c+n)\f$ matrix
-    \f$\bigl({0 \atop M}{J \atop 0}\bigr)\f$,
+    Turns the matrix \f$M \in \Rset^r \times \Rset^c\f$ into
+    the matrix \f$N \in \Rset^{r+n} \times \Rset^{c+n}\f$
+    such that \f$N = \bigl({0 \atop M}{J \atop 0}\bigr)\f$,
     where \f$J\f$ is the specular image
     of the \f$n \times n\f$ identity matrix.
   */

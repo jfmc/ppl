@@ -242,11 +242,12 @@ PPL::Matrix::resize_no_copy(dimension_type new_n_rows,
     if (new_n_columns <= row_capacity) {
       // We can recycle the old rows.
       if (rows.capacity() < new_n_rows) {
-	// Reallocation will take place.
+	// Reallocation (of vector `rows') will take place.
 	std::vector<Row> new_rows;
 	new_rows.reserve(compute_capacity(new_n_rows));
 	new_rows.insert(new_rows.end(), new_n_rows, Row());
-	// Construct the new rows.
+	// Construct the new rows (be careful: each new row must have
+	// the same capacity as each one of the old rows).
 	Row::Type row_type(row_topology, Row::LINE_OR_EQUALITY);
 	dimension_type i = new_n_rows;
 	while (i-- > old_n_rows)
@@ -259,15 +260,17 @@ PPL::Matrix::resize_no_copy(dimension_type new_n_rows,
 	std::swap(rows, new_rows);
       }
       else {
-	// Reallocation will NOT take place.
+	// Reallocation (of vector `rows') will NOT take place.
 	rows.insert(rows.end(), new_n_rows - old_n_rows, Row());
 	Row::Type row_type(row_topology, Row::LINE_OR_EQUALITY);
+	// Be careful: each new row must have
+	// the same capacity as each one of the old rows.
 	for (dimension_type i = new_n_rows; i-- > old_n_rows; )
 	  rows[i].construct(row_type, new_n_columns, row_capacity);
       }
       // Even though `*this' may happen to keep its sortedness,
-      // we feel checking that this is the case is not worth the effort.
-      // Moreover, it is very likely the matrix will be overwritten
+      // we believe that checking such a property is not worth the effort.
+      // Moreover, it is very likely that the matrix will be overwritten
       // as soon as we return.
       set_sorted(false);
     }
