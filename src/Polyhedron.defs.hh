@@ -375,6 +375,62 @@ protected:
   //!                                  is not empty but has no points.
   Polyhedron(Topology topol, GenSys& gs);
 
+  //! Builds a polyhedron out of a generic, interval-based bounding box.
+  //!
+  //! \param topol    The topology of the polyhedron;
+  //! \param box      The bounding box representing the desired polyhedron.
+  //! \exception std::invalid_argument thrown if \p box has intervals that
+  //!                                  are incompatible with \p topol.
+  /*!
+    \param box
+    The bounding box representing the polyhedron to be built.
+    This must provide the following methods.
+    \code
+      unsigned int space_dimension() const
+    \endcode
+    returns the dimension of the vector space enclosing the polyhedron
+    represented by the bounding box.
+    \code
+      bool is_empty(unsigned int k) const
+    \endcode
+    returns <CODE>true</CODE> if and only if the interval corresponding
+    to the <CODE>k</CODE>-th dimension is \f$\emptyset\f$.
+    The <CODE>is_empty()</CODE> function will be called for every dimension
+    exactly once and before any other call concerning that dimension index
+    is performed; if <CODE>is_empty()</CODE> returns <CODE>true</CODE>
+    for a dimension index, none of the functions below will be called
+    on that dimension index.
+    \code
+      bool get_lower_bound(unsigned int k, bool closed,
+                           Integer& n, Integer& d) const
+    \endcode
+    Let \f$I\f$ the interval corresponding to the <CODE>k</CODE>-th dimension.
+    If \f$I\f$ is not bounded from below, simply return <CODE>false</CODE>.
+    Otherwise, set <CODE>closed</CODE>, <CODE>n</CODE> and <CODE>d</CODE>
+    as follows: <CODE>closed</CODE> is set to <CODE>true</CODE> if the 
+    the lower boundary of \f$I\f$ is closed and is set to <CODE>false</CODE>
+    otherwise; <CODE>n</CODE> and <CODE>d</CODE> are assigned the integers
+    \f$n\f$ and \f$d\f$ such that the canonical fraction $\f$n/d\f$
+    corresponds to the greatest lower bound of \f$I\f$.
+    The fraction \f$n/d\f$ is in canonical form if and only if \f$n\f$
+    and \f$d\f$ have no common factors and \f$d\f$ is positive, \f$0/1\f$
+    being the unique representation for zero.
+    \code
+      bool get_upper_bound(unsigned int k, bool closed,
+                           Integer& n, Integer& d) const
+    \endcode
+    Let \f$I\f$ the interval corresponding to the <CODE>k</CODE>-th dimension.
+    If \f$I\f$ is not bounded from below, simply return <CODE>false</CODE>.
+    Otherwise, set <CODE>closed</CODE>, <CODE>n</CODE> and <CODE>d</CODE>
+    as follows: <CODE>closed</CODE> is set to <CODE>true</CODE> if the 
+    the upper boundary of \f$I\f$ is closed and is set to <CODE>false</CODE>
+    otherwise; <CODE>n</CODE> and <CODE>d</CODE> are assigned the integers
+    \f$n\f$ and \f$d\f$ such that the canonical fraction $\f$n/d\f$
+    corresponds to the greatest upper bound of \f$I\f$.
+  */
+  template <class Box>
+  Polyhedron(Topology topol, const Box& box);
+
   //! The assignment operator.
   //! (Note that \p *this and \p y can be dimension-incompatible.)
   Polyhedron& operator=(const Polyhedron& y);
@@ -541,14 +597,22 @@ public:
   /*!
     \param box
     The bounding box to be shrunk.  This must provide the following
-    methods, whose return value, if any, is simply ignored:
+    methods, whose return value, if any, is simply ignored.
+    \code
+      set_empty(unsigned int k)
+    \endcode
+    intersects the interval corresponding to the <CODE>k</CODE>-th dimension
+    with \f$\emptyset\f$.
     \code
       raise_lower_bound(unsigned int k, bool closed,
                         const Integer& n, const Integer& d)
     \endcode
     intersects the interval corresponding to the <CODE>k</CODE>-th dimension
     with \f$[n/d, +\infty)\f$ if <CODE>closed</CODE> is <CODE>true</CODE>,
-    with \f$(n/d, +\infty)\f$ if <CODE>closed</CODE> is <CODE>false</CODE>;
+    with \f$(n/d, +\infty)\f$ if <CODE>closed</CODE> is <CODE>false</CODE>.
+    The fraction \f$n/d\f$ is in canonical form, that is, \f$n\f$
+    and \f$d\f$ have no common factors and \f$d\f$ is positive, \f$0/1\f$
+    being the unique representation for zero.
     \code
       lower_upper_bound(unsigned int k, bool closed,
                         const Integer& n, const Integer& d)
@@ -556,12 +620,8 @@ public:
     intersects the interval corresponding to the <CODE>k</CODE>-th dimension
     with \f$(-\infty, n/d]\f$ if <CODE>closed</CODE> is <CODE>true</CODE>,
     with \f$(-\infty, n/d)\f$ if <CODE>closed</CODE>
-    is <CODE>false</CODE>;
-    \code
-      set_empty(unsigned int k)
-    \endcode
-    intersects the interval corresponding to the <CODE>k</CODE>-th dimension
-    with \f$\emptyset\f$.
+    is <CODE>false</CODE>.
+    The fraction \f$n/d\f$ is in canonical form.
   */
   template <class Box>
   void shrink_bounding_box(Box& box) const;

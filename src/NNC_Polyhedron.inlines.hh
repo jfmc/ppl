@@ -42,6 +42,11 @@ NNC_Polyhedron::NNC_Polyhedron(GenSys& gs)
   : Polyhedron(NOT_NECESSARILY_CLOSED, gs) {
 }
 
+template <class Box>
+NNC_Polyhedron::NNC_Polyhedron(const Box& box)
+  : Polyhedron(NOT_NECESSARILY_CLOSED, box) {
+}
+
 inline
 NNC_Polyhedron::NNC_Polyhedron(const NNC_Polyhedron& y)
   : Polyhedron(y) {

@@ -67,6 +67,12 @@ public:
   //!                                  is not empty but has no points.
   NNC_Polyhedron(GenSys& gs);
 
+  // FIXME: adapt the documentation of the corresponding constructor
+  // of Polyhedron, once it has been peer reviewed.
+  // Notice that a topological clash is impossible here.
+  template <class Box>
+  NNC_Polyhedron(const Box& box);
+
   //! Ordinary copy-constructor.
   NNC_Polyhedron(const NNC_Polyhedron& y);
 

@@ -89,6 +89,11 @@ public:
   //!                                  is not topologically closed.
   explicit C_Polyhedron(const NNC_Polyhedron& y);
 
+  // FIXME: adapt the documentation of the corresponding constructor
+  // of Polyhedron, once it has been peer reviewed.
+  template <class Box>
+  C_Polyhedron(const Box& box);
+
   //! The assignment operator.
   //! (Note that \p *this and \p y can be dimension-incompatible.)
   C_Polyhedron& operator=(const C_Polyhedron& y);

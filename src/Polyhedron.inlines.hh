@@ -291,6 +291,87 @@ Polyhedron::check_empty() const {
 }
 
 template <class Box>
+Polyhedron::Polyhedron(Topology topol, const Box& box)
+  : con_sys(topol),
+    gen_sys(topol),
+    sat_c(),
+    sat_g() {
+  // Initialize the space dimension as indicated by the box.
+  space_dim = box.space_dimension();
+
+  for (size_t k = space_dim; k-- > 0; ) {
+    if (box.is_empty(k)) {
+      set_empty();
+      return;
+    }
+
+    // See if we have a valid lower bound.
+    bool l_bounded;
+    bool l_closed;
+    Integer l_n, l_d;
+    if (box.get_lower_bound(k, l_closed, l_n, l_d)) {
+      l_bounded = true;
+      if (topol == NECESSARILY_CLOSED && !l_closed)
+	throw_generic("C_Polyhedron(const Box& box)",
+		      "box has non closed interval(s)");
+    }
+    else
+      l_bounded = false;
+
+    // See if we have a valid upper bound.
+    bool u_bounded;
+    bool u_closed;
+    Integer u_n, u_d;
+    if (box.get_lower_bound(k, u_closed, u_n, u_d)) {
+      u_bounded = true;
+      if (topol == NECESSARILY_CLOSED && !u_closed)
+	throw_generic("C_Polyhedron(const Box& box)",
+		      "box has non closed interval(s)");
+    }
+    else
+      u_bounded = false;
+
+    // See if we have an implicit equality constraint.
+    if (l_bounded && u_bounded
+	&& l_closed && u_closed
+	&& l_n == u_n && l_d == u_d) {
+      // Add the constraint `l_d*v_k == l_n'.
+    }
+    // Lower bound constraint.
+    else if (l_bounded) {
+      if (l_closed)
+	// Add the constraint `l_d*v_k >= l_n'.
+	;
+      else
+	// Add the constraint `l_d*v_k > l_n'.
+	;
+    }
+    // Upper bound constraint.
+    else if (u_bounded) {
+      if (u_closed)
+	// Add the constraint `u_d*v_k <= u_n'.
+	;
+      else
+	// Add the constraint `u_d*v_k < u_n'.
+	;
+    }
+  }
+
+  if (space_dim > 0) {
+    if (topol == NECESSARILY_CLOSED)
+      // The only constraint is the positivity one.
+      con_sys.insert(Constraint::zero_dim_positivity());
+    else {
+      // Polyhedron NON-necessarily closed: the only constraints
+      // are the ones regarding the \epsilon dimension.
+      con_sys.insert(Constraint::epsilon_leq_one());
+      con_sys.insert(Constraint::epsilon_geq_zero());
+    }
+    con_sys.adjust_topology_and_dimension(topol, space_dim);
+  }
+}
+
+template <class Box>
 void
 Polyhedron::shrink_bounding_box(Box& box) const {
   if (check_universe())
