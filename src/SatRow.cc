@@ -271,6 +271,62 @@ PPL::subset_or_equal(const SatRow& x, const SatRow& y) {
 
 /*! \relates Parma_Polyhedra_Library::SatRow */
 bool
+PPL::subset_or_equal(const SatRow& x, const SatRow& y, bool& strict_subset) {
+  size_t x_size = mpz_size(x.vec);
+  size_t y_size = mpz_size(y.vec);
+  mp_srcptr xp = x.vec->_mp_d;
+  mp_srcptr yp = y.vec->_mp_d;
+  strict_subset = false;
+  if (x_size <= y_size) {
+    y_size -= x_size;
+    while (x_size > 0) {
+      mp_limb_t xl = *xp;
+      mp_limb_t yl = *yp;
+      if (xl & ~yl)
+	return false;
+      if (!strict_subset && xl != yl)
+	strict_subset = true;
+      ++xp;
+      ++yp;
+      --x_size;
+    }
+    if (strict_subset)
+      return true;
+    while (y_size > 0) {
+      if (*yp) {
+	strict_subset = true;
+	return true;
+      }
+      ++yp;
+      --y_size;
+    }
+    return true;
+  }
+  else {
+    x_size -= y_size;
+    while (y_size > 0) {
+      mp_limb_t xl = *xp;
+      mp_limb_t yl = *yp;
+      if (xl & ~yl)
+	return false;
+      if (!strict_subset && xl != yl)
+	strict_subset = true;
+      ++xp;
+      ++yp;
+      --y_size;
+    }
+    while (x_size > 0) {
+      if (*xp)
+	return false;
+      ++xp;
+      --x_size;
+    }
+    return true;
+  }
+}
+
+/*! \relates Parma_Polyhedra_Library::SatRow */
+bool
 PPL::strict_subset(const SatRow& x, const SatRow& y) {
   size_t x_size = mpz_size(x.vec);
   size_t y_size = mpz_size(y.vec);

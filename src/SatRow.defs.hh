@@ -69,6 +69,14 @@ int compare(const SatRow& x, const SatRow& y);
 bool subset_or_equal(const SatRow& x, const SatRow& y);
 
 #ifdef PPL_DOXYGEN_INCLUDE_IMPLEMENTATION_DETAILS
+//! \brief
+//! Set-theoretic inclusion test: sets \p strict_subset to a boolean
+//! indicating whether the inclusion is strict or not.
+/*! \relates SatRow */
+#endif // PPL_DOXYGEN_INCLUDE_IMPLEMENTATION_DETAILS
+bool subset_or_equal(const SatRow& x, const SatRow& y, bool& strict_subset);
+
+#ifdef PPL_DOXYGEN_INCLUDE_IMPLEMENTATION_DETAILS
 //! Set-theoretic strict inclusion test.
 /*! \relates SatRow */
 #endif // PPL_DOXYGEN_INCLUDE_IMPLEMENTATION_DETAILS
@@ -141,6 +149,10 @@ public:
 
   friend bool
   Parma_Polyhedra_Library::subset_or_equal(const SatRow& x, const SatRow& y);
+
+  friend bool
+  Parma_Polyhedra_Library::subset_or_equal(const SatRow& x, const SatRow& y,
+					   bool& strict_subset);
 
   friend bool
   Parma_Polyhedra_Library::strict_subset(const SatRow& x, const SatRow& y);
