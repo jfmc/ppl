@@ -123,6 +123,10 @@ poly_hull_assign_if_exact(PH& p, const PH& q) {
 
 template <typename PH>
 bool
+check_containment(const PH& ph, const Polyhedra_PowerSet<PH>& ps);
+
+template <typename PH>
+bool
 check_containment(const PH& ph, const Polyhedra_PowerSet<PH>& ps) {
   Polyhedra_PowerSet<NNC_Polyhedron> tmp(ph.space_dimension(),
 					 Polyhedron::EMPTY);
