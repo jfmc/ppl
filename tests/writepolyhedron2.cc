@@ -44,11 +44,11 @@ main() {
   Variable C(2);
 
   C_Polyhedron ph(3);
-  ph.add_constraint(A - B >= 3);
-  ph.add_constraint(- B + C>= 3);
-  ph.add_constraint(A - B <= 1);
-  ph.add_constraint(A - B + 3*C>= 3);
-  ph.add_constraint(3*A + 2*C>= 3);
+  ph.add_constraint(  A - B       >= 3);
+  ph.add_constraint(    - B +   C >= 3);
+  ph.add_constraint(  A - B       <= 1);
+  ph.add_constraint(  A - B + 3*C >= 3);
+  ph.add_constraint(3*A     + 2*C >= 3);
 
   fstream f;
   open(f, my_file, ios_base::out);
