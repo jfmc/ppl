@@ -42,10 +42,10 @@ namespace PPL = Parma_Polyhedra_Library;
 const PPL::ConSys&
 PPL::Polyhedron::constraints() const {
   if (is_empty())
-    throw std::invalid_argument("PPL::Polyhedron::constraints() "
+    throw std::invalid_argument("PPL::Polyhedron::constraints(): "
 				"*this is empty");
    if (is_zero_dim())
-    throw std::invalid_argument("PPL::Polyhedron::constraints() "
+    throw std::invalid_argument("PPL::Polyhedron::constraints(): "
 				"*this is zero-dimensional");
   if (!constraints_are_up_to_date())
     update_constraints();
@@ -78,10 +78,10 @@ PPL::Polyhedron::constraints() const {
 const PPL::GenSys&
 PPL::Polyhedron::generators() const {
   if (is_empty())
-    throw std::invalid_argument("PPL::Polyhedron::generators() "
+    throw std::invalid_argument("PPL::Polyhedron::generators(): "
 				"*this is empty");
   if (is_zero_dim())
-    throw std::invalid_argument("PPL::Polyhedron::generators() "
+    throw std::invalid_argument("PPL::Polyhedron::generators(): "
 				"*this is zero-dimensional");
 
   if (!generators_are_up_to_date())
@@ -182,20 +182,22 @@ PPL::Polyhedron::Polyhedron(GenSys& gs)
     // A matrix of generators must have at least two columns:
     // one for the inhomogeneus term and the other for a variable.
     assert(gs.num_columns() >= 2);
+    // Checking if the matrix of generators contains a vertex:
+    // we speculatively use an increasing index (instead of
+    // the standard decreasing one) because we hope this way
+    // vertices can be found earlier (we suppose users will
+    // insert vertices first in a system of generators).
     size_t i = 0;
     size_t iend = gs.num_rows();
-    // We suppose that the user inserts vertices first in a system of
-    // generators.
     for ( ; i < iend; ++i) {
       if (gs[i][0] != 0)
 	break;
     }
     if (i == iend)
-      throw std::invalid_argument("PPL::Polyhedron::Polyhedron(gs)"
-				  "with no-empty gs with no vertices");
-    // Note that this swap destroys the given argument `gs' because
-    // it is swapped with `gen_sys' that is created empty, i.e., with
-    // the default constructor.
+      throw std::invalid_argument("PPL::Polyhedron::Polyhedron(gs): "
+				  "non-empty gs with no vertices");
+    // The following swap is the only reason why we cannot declare
+    // `gs' as a constant reference parameter.
     std::swap(gen_sys, gs);
     set_generators_up_to_date();
   }
@@ -1272,18 +1274,18 @@ PPL::Polyhedron::assign_variable(const Variable& var,
 				 const Integer& denominator) {
   if (denominator == 0)
     throw std::invalid_argument("void PPL::Polyhedron::assign_variable"
-				"(v, e, d) with d == 0");
+				"(v, e, d): d == 0");
   Polyhedron& x = *this;
   size_t num_columns = x.gen_sys.num_columns();
   size_t num_var = var.id() + 1;
   if (num_columns != expr.size())
     throw std::invalid_argument("PPL::Polyhedron::assign_variable"
-				"(v, e, d) with dim(e) != dim(*this)");
+				"(v, e, d): dim(e) != dim(*this)");
 
   // Index of var must be in the range of the variables of generators.
   if (!(num_var < num_columns))
-    throw std::invalid_argument("PPL::Polyhedron::assign_variable(v, e, d)"
-				" with v not in *this");
+    throw std::invalid_argument("PPL::Polyhedron::assign_variable(v, e, d):"
+				" v is not in *this");
 
   if (expr[num_var] != 0) {
     // The transformation is invertible.
@@ -1375,19 +1377,19 @@ PPL::Polyhedron::substitute_variable(const Variable& var,
 				     const Integer& denominator) {
   if (denominator == 0)
     throw std::invalid_argument("void PPL::Polyhedron::substitute_variable"
-				"(v, e, d) with d == 0");
+				"(v, e, d): d == 0");
 
   Polyhedron& x = *this;
   size_t num_columns = x.con_sys.num_columns();
   size_t num_var = var.id() + 1;
   if (num_columns != expr.size())
     throw std::invalid_argument("PPL::Polyhedron::substitute_variable"
-				"(v, e, d) with dim(e) != dim(*this)");
+				"(v, e, d): dim(e) != dim(*this)");
 
   // Index of var must be in the range of the variables of generators.
   if (!(num_var < num_columns))
     throw std::invalid_argument("PPL::Polyhedron::substitute_variable"
-				"(v, e, d) with v not in *this");
+				"(v, e, d): v is not in *this");
 
   // The transformation is invertible.
   if (expr[num_var] != 0) {
