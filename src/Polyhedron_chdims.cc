@@ -562,8 +562,8 @@ PPL::Polyhedron::expand_space_dimension(Variable var, dimension_type m) {
   // overflow the maximum allowed space dimension.
   if (m > max_space_dimension() - space_dimension())
     throw_space_dimension_overflow("expand_dimension(v, m)",
-				   "adding m new space dimensions exceeds"
-				   "the maximum allowed space dimension.");
+				   "adding m new space dimensions exceeds "
+				   "the maximum allowed space dimension");
 
   // Nothing to do, if no dimensions must be added.
   if (m == 0)
