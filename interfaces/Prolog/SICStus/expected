@@ -23,11 +23,11 @@ PPL clpq ?- E >= 0
 Y =< 9
 -E + Y >= 0
 S = 9
-E + D - Y = 0
 M = 1
 O = 0
 R = 0
 -E + N = 0
+-E - D + Y = 0
  more? yes
 PPL clpq ?- yes
 PPL clpq ?- X = 10
