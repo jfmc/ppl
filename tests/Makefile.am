@@ -28,6 +28,7 @@ TESTS = addconstraints1 addconstraints2 addconstraints3 \
         append1 append2 \
         empty1 \
         error1 error2 error3 error4 error5 \
+	includes1 \
         inters1 inters2 \
 	onepoint \
         permute \
@@ -57,6 +58,8 @@ error2_SOURCES = error2.cc
 error3_SOURCES = error3.cc
 error4_SOURCES = error4.cc
 error5_SOURCES = error5.cc
+
+includes1_SOURCES = includes1.cc
 
 inters1_SOURCES = inters1.cc
 inters2_SOURCES = inters2.cc

@@ -1970,8 +1970,6 @@ PPL::Polyhedron::includes(const Generator& g) {
 
     return con_sys.satisfies_all_constraints(g);
   }
-  // Just to avoid a gcc warning.
-  abort();
 }
 
 /*!
