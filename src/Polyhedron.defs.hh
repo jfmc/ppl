@@ -393,8 +393,9 @@ protected:
     \endcode
     returns <CODE>true</CODE> if and only if
     the bounding box describes the empty set \f$\emptyset\f$.
-    If <CODE>is_empty()</CODE> returns <CODE>true</CODE>,
-    none of the functions below will be called.
+    The <CODE>is_empty()</CODE> method will always be called before the
+    methods below.  However, if <CODE>is_empty()</CODE> returns
+    <CODE>true</CODE>, none of the functions below will be called.
     \code
       bool get_lower_bound(unsigned int k, bool closed,
                            Integer& n, Integer& d) const

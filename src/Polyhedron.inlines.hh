@@ -304,14 +304,15 @@ Polyhedron::Polyhedron(Topology topol, const Box& box)
     set_empty();
     return;
   }
+
   // Zero-dim universe polyhedron.
   if (space_dim == 0) {
     set_zero_dim_univ();
     return;
   }
 
-  // Insert a dummy constraint of the highest dimension
-  // to avoid the need of resizing the matrix of constraints later;
+  // Insert a dummy constraint of the highest dimension to avoid the
+  // need of resizing the matrix of constraints later;
   // this constraint will be removed at the end.
   con_sys.insert(Variable(space_dim - 1) > 0);
 
