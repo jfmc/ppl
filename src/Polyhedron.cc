@@ -856,11 +856,6 @@ PPL::Polyhedron::remove_dimensions(const std::set<Variable>&
 }
 
 /*!
-  \param  constraints_to_add   The constraints that will be added to the 
-                               current system of constraints.
-  \return                      <CODE>false</CODE> if the resulting 
-                               polyhedron is empty.
-
   Adds further constraints to a polyhedron and computes the new polyhedron
   satisfying all the constraints.
 */
@@ -1049,9 +1044,6 @@ PPL::Polyhedron::add_constraints_lazy(ConSys& constraints_to_add) {
 }
 
 /*!
-  \param  generators_to_add   The generators that will be added to the 
-                              current system of generators.
-
   Adds further generators to a Polyhedron.
 */
 void
@@ -1137,10 +1129,6 @@ PPL::operator >>(std::istream& s, PPL::Polyhedron& p) {
 
 
 /*!
-  \param var           The variable to which the affine expression is assigned.
-  \param expr          The affine expression.
-  \param denominator   The denominator of the affine expression.
-
   When considering the generators of a polyhedron, the 
   affine transformation
   \f[
@@ -1243,11 +1231,6 @@ PPL::Polyhedron::assign_variable(const Variable& var,
 }
 
 /*!
-  \param var           The variable to which the affine expression is
-                       assigned.
-  \param expr          The affine expression.
-  \param denominator   The denominator of the affine expression.
-
   When considering constraints of a polyhedron, the affine transformation
   \f[
   \frac{\sum_{i=0}^{n-1} a_i x_i + b}{denominator},

@@ -285,7 +285,7 @@ public:
   //! Returns the relation between the generators of \p *this 
   //! and the constraint \p con.
   GenSys_Con_Rel poly_satisfies_constraint(const Constraint& con);
-  //! Tests the inclusion of a generator in a polyhedron. 
+  //! Tests the inclusion of the generator \p gen in a polyhedron.
   bool includes(const Generator& gen);
 
   //! Computes the widening between \p *this and \p y and 
@@ -293,6 +293,8 @@ public:
   void widening_assign(const Polyhedron& y);
   //! Limits the widening between \p *this and \p y by \p constraints
   //! and assigns the result to \p *this.
+  //! \return       <CODE>true</CODE> if the resulting polyhedron is not
+  //!               empty <CODE>false</CODE> otherwise.
   bool limited_widening_assign(const Polyhedron& y, ConSys& constraints);
 
   //! Returns the system of constraints.
@@ -307,11 +309,19 @@ public:
   void insert(const Generator& g);
 
   //! Assigns an affine expression to the specified variable.
+  //! \param var           The variable to which the affine 
+  //!                      expression is assigned.
+  //! \param expr          The affine expression.
+  //! \param denominator   The denominator of the affine expression.
   //! \exception std::invalid_argument \p denominator is zero.
   void assign_variable(const Variable& var, 
 		       const LinExpression& expr,
 		       Integer& denominator);
   //! Substitute an affine expression to the specified variable.
+  //! \param var           The variable to which the affine expression is
+  //!                      assigned.
+  //! \param expr          The affine expression.
+  //! \param denominator   The denominator of the affine expression.
   //! \exception std::invalid_argument \p denominator is zero.
   void substitute_variable(const Variable& var,
 			   const LinExpression& expr,
@@ -346,18 +356,29 @@ private:
   void obtain_sorted_generators_with_sat_g();
 
 public:
-  //! Adds new dimensions and embeds the old polyhedron in the new space. 
+  //! Adds new dimensions and embeds the old polyhedron in the new space.
+  //! \param add_dim      The number of dimensions to add. 
   void add_dimensions_and_embed(size_t add_dim);
   //! Adds new dimensions to the polyhedron 
   //! and does not embed it in the new space.
+  //! \param add_dim      The number of dimensions to add. 
   void add_dimensions_and_project(size_t add_dim);
   //! Removes the specified dimensions.
+  //! \param to_be_remove The set of variable to remove. 
   void remove_dimensions(const std::set<Variable>& to_be_removed);
   //! Adds given constraints to the polyhedron and compute a new polyhedron.
+  //! \param  constraints_to_add   The constraints that will be added to the 
+  //!                              current system of constraints.
+  //! \return                      <CODE>false</CODE> if the resulting 
+  //!                              polyhedron is empty.
   bool add_constraints(ConSys& constraints_to_add);
-  //! Adds given constraints to the polyhedron without minimizing. 
+  //! Adds given constraints to the polyhedron without minimizing.
+  //! \param  constraints_to_add   The constraints that will be added to the 
+  //!                              current system of constraints
   void add_constraints_lazy(ConSys& constraints_to_add);
   //! Adds given generators to the existing ones.
+  //! \param  generators_to_add   The generators that will be added to the 
+  //!                             current system of generators.
   void add_generators(GenSys& generators_to_add);
   //! Returns <CODE>true</CODE> if and only if the polyhedron is empty.
   bool check_empty() const;
