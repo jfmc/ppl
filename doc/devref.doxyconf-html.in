@@ -1,7 +1,7 @@
 # Doxyfile 1.2.6-20010319
 
 # This file describes the settings to be used by Doxygen for
-# the Polyhedra project.
+# the Parma Polyhedra Library project.
 #
 # All text after a hash (#) is considered a comment and will be ignored
 # The format is:
@@ -17,7 +17,7 @@
 # The PROJECT_NAME tag is a single word (or a sequence of words surrounded 
 # by quotes) that should identify the project. 
 
-PROJECT_NAME           = Polyhedra
+PROJECT_NAME           = PPL
 
 # The PROJECT_NUMBER tag can be used to enter a project or revision number. 
 # This could be handy for archiving the generated documentation or 
