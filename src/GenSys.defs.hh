@@ -222,7 +222,7 @@ PPL_INTERNAL:
   GenSys_Con_Rel satisfy(const Constraint& c) const;
 
   //! Assigns to a given variable an affine expression.
-  void assign_variable(size_t var,
+  void assign_variable(size_t v,
 		       const LinExpression& expr,
 		       Integer& denominator);
   //! Returns the number of lines of the system.

@@ -193,7 +193,7 @@ PPL::GenSys::satisfy(const Constraint& c) const {
 
 
 /*!
-  \param var          Index of the column to which the
+  \param v          Index of the column to which the
                       affine transformation is assigned.
   \param expr         The affine transformation:
                       \f$\sum_{i = 0}^{n - 1} a_i x_i + b\f$.
@@ -204,7 +204,7 @@ PPL::GenSys::satisfy(const Constraint& c) const {
   constraints are integers we must also provide an integer \p denominator
   that will be used as denominator of the affine transformation.
 
-  The affine transformation assigns to each element of \p var -th
+  The affine transformation assigns to each element of \p v -th
   column the follow expression:
   \f[
     \frac{\sum_{i = 0}^{n - 1} a_i x_i + b}
@@ -214,7 +214,7 @@ PPL::GenSys::satisfy(const Constraint& c) const {
   \p expr is a constant parameter and unaltered by this computation
 */
 void
-PPL::GenSys::assign_variable(size_t var,
+PPL::GenSys::assign_variable(size_t v,
 			     const LinExpression& expr,
 			     Integer& denominator) {
   GenSys& x = *this;
@@ -222,27 +222,27 @@ PPL::GenSys::assign_variable(size_t var,
   size_t num_rows = x.num_rows();
 
   // The first coefficient is the inhomogeneous term.
-  assert(var != 0);
+  assert(v != 0);
   assert(num_columns = expr.size());
   assert(denominator != 0);
-  assert(var < num_columns);
+  assert(v < num_columns);
 
   // Computing the numerator of the affine transformation and assigning
-  // it to the column of `*this' indexed by `var'.
+  // it to the column of `*this' indexed by `v'.
   for (size_t i = 0; i < num_rows; ++i) {
     Generator& row = x[i];
-    row[var] *= expr[var];
+    row[v] *= expr[v];
     for (size_t j = 0; j < num_columns; ++j)
-      if (j != var)
-	row[var] += row[j] * expr[j];
+      if (j != v)
+	row[v] += row[j] * expr[j];
   }
   if (denominator != 1)
     // Since we want integer elements in the matrix and the
-    // `var'-th columns is a multiple of `denominator', we
+    // `v'-th columns is a multiple of `denominator', we
     // multiply by `denominator' all the other columns of `*this'.
     for (size_t i = 0; i < num_rows; ++i)
       for (size_t j = 0; j < num_columns; ++j)
-	if( j != var)
+	if( j != v)
 	  x[i][j] *= denominator;
   x.normalize();
 }

@@ -65,18 +65,18 @@ Parma_Polyhedra_Library::ConSys::const_iterator::skip_forward() {
 }
 
 /*!
-  Returns <CODE>true</CODE> if the given generator satisfies
+  Returns <CODE>true</CODE> if the given generator \p g satisfies
   all the constraints in \p *this system.
 */
 bool
-PPL::ConSys::satisfies_all_constraints(const Generator& r) const {
+PPL::ConSys::satisfies_all_constraints(const Generator& g) const {
   size_t n_rows = num_rows();
-  bool r_is_ray_or_vertex = r.is_ray_or_vertex();
+  bool g_is_ray_or_vertex = g.is_ray_or_vertex();
   for (size_t i = n_rows; i-- > 0; ) {
     const Constraint& c = (*this)[i];
     // Compute the sign of the scalar product.
-    int sp_sign = sgn(c * r);
-    if (r_is_ray_or_vertex && c.is_inequality()) {
+    int sp_sign = sgn(c * g);
+    if (g_is_ray_or_vertex && c.is_inequality()) {
       // A ray satisfies an inequality if its scalar product
       // with such a constraint is positive.
       if (sp_sign < 0)
@@ -87,12 +87,12 @@ PPL::ConSys::satisfies_all_constraints(const Generator& r) const {
       // Lines saturate all equalities.
       return false;
   }
-  // All constraints are saturated by r.
+  // All constraints are saturated by g.
   return true;
 }
 
 /*!
-  \param var          Index of the column to which the
+  \param v            Index of the column to which the
                       affine transformation is assigned.
   \param expr  The affine transformation:
                       \f$\sum_{i = 0}^{n - 1} a_i x_i + b\f$
@@ -109,36 +109,36 @@ PPL::ConSys::satisfies_all_constraints(const Generator& r) const {
   \f[
     {a'}_{ij} =
     \begin{cases}
-    a_{ij} * \text{denominator} + a_{i\text{var}} * \text{expr}[j]
-    \quad \text{for } j \neq \text{var}; \\
-    \text{expr}[\text{var}] * a_{i\text{var}}
-    \quad \text{for } j = \text{var}.
+    a_{ij} * \text{denominator} + a_{i\text{v}} * \text{expr}[j]
+    \quad \text{for } j \neq \text{v}; \\
+    \text{expr}[\text{v}] * a_{i\text{v}}
+    \quad \text{for } j = \text{v}.
     \end{cases}
   \f]
 
   \p expr is a constant parameter and unaltered by this computation
 */
 void
-PPL::ConSys::substitute_variable(size_t var,
+PPL::ConSys::substitute_variable(size_t v,
 				 const LinExpression& expr,
 				 Integer& denominator) {
   ConSys& x = *this;
   size_t num_columns = x.num_columns();
   size_t num_rows = x.num_rows();
 
-  assert(var != 0);
+  assert(v != 0);
   assert(num_columns = expr.size());
   assert(denominator != 0);
-  assert(var < num_columns);
+  assert(v < num_columns);
 
   // Building the new matrix of constraints.
   for (size_t i = 0; i < num_rows; ++i) {
     Constraint& row = x[i];
-    if (row[var] != 0) {
-      Integer tmp = row[var];
-      row[var] *= expr[var];
+    if (row[v] != 0) {
+      Integer tmp = row[v];
+      row[v] *= expr[v];
       for (size_t j = 0; j < num_columns; ++j)
-	if (j != var) {
+	if (j != v) {
 	  row[j] *= denominator;
 	  row[j] += tmp * expr[j];
 	}

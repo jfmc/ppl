@@ -152,11 +152,11 @@ PPL_INTERNAL:
   //! Returns a constant reference to the \p k- th constraint of the system.
   const Constraint& operator [](size_t k) const;
 
-  //! Returns <CODE>true</CODE> if \p r satisfies all the constraints.
-  bool satisfies_all_constraints(const Generator& r) const;
+  //! Returns <CODE>true</CODE> if \p g satisfies all the constraints.
+  bool satisfies_all_constraints(const Generator& g) const;
 
   //! Substitutes a given column of coefficients by a given affine expression.
-  void substitute_variable(size_t var,
+  void substitute_variable(size_t v,
 			   const LinExpression& expr,
 			   Integer& denominator);
 
