@@ -24,13 +24,59 @@ site: http://www.cs.unipr.it/ppl/ . */
 #ifndef PPL_checked_mpz_inlines_hh
 #define PPL_checked_mpz_inlines_hh 1
 
-#include <limits>
 #include <cmath>
 #include <gmpxx.h>
+#include "Limits.hh"
 
 namespace Parma_Polyhedra_Library {
 
 namespace Checked {
+
+typedef int mpz_size_t;
+
+inline mpz_size_t
+get_mpz_size(const mpz_class &v)
+{
+  return v.get_mpz_t()->_mp_size;
+}
+
+inline void
+set_mpz_size(mpz_class &v, mpz_size_t size)
+{
+  v.get_mpz_t()->_mp_size = size;
+}
+
+template <typename Policy>
+inline Result
+value_type_mpz(const mpz_class& v) {
+  mpz_size_t s = get_mpz_size(v);
+  if (Policy::handle_nan && s == Limits<mpz_size_t>::min + 1)
+    return V_NAN;
+  if (Policy::handle_infinity) {
+    if (s == Limits<mpz_size_t>::min)
+      return V_NEG_OVERFLOW;
+    if (s == Limits<mpz_size_t>::max)
+      return V_POS_OVERFLOW;
+  }
+  return V_EQ;
+}
+
+SPECIALIZE_VALUE_TYPE(mpz, mpz_class)
+
+template <typename Policy>
+inline void
+set_special_mpz(mpz_class& v, const Result r) {
+  if (Policy::handle_nan && r == V_NAN)
+    set_mpz_size(v, Limits<mpz_size_t>::min + 1);
+  else if (Policy::handle_infinity) {
+    if (r == V_NEG_OVERFLOW)
+      set_mpz_size(v, Limits<mpz_size_t>::min);
+    else if (r == V_POS_OVERFLOW)
+      set_mpz_size(v, Limits<mpz_size_t>::max);
+  }
+}
+
+SPECIALIZE_SET_SPECIAL(mpz, mpz_class)
 
 template <typename Policy>
 inline Result
@@ -47,7 +93,8 @@ assign_mpz_mpq(mpz_class& to, const mpq_class& from) {
     case 1:
       return V_GT;
     }
-  } else {
+  }
+  else {
     to = from;
   }
   return V_EQ;
@@ -105,7 +152,8 @@ assign_mpz_float(mpz_class& to, const From from) {
       return V_LT;
     if (from > to)
       return V_GT;
-  } else {
+  }
+  else {
     to = from;
   }
   return V_EQ;
@@ -117,6 +165,8 @@ SPECIALIZE_ASSIGN(mpz_float, mpz_class, double)
 template <typename Policy>
 inline Result 
 pred_mpz(mpz_class& to) {
+  if (value_type<Policy>(to) != V_EQ)
+    throw(0);
   --to;
   return V_EQ;
 }
@@ -126,6 +176,8 @@ SPECIALIZE_PRED(mpz, mpz_class)
 template <typename Policy>
 inline Result 
 succ_mpz(mpz_class& to) {
+  if (value_type<Policy>(to) != V_EQ)
+    throw(0);
   ++to;
   return V_EQ;
 }
@@ -183,7 +235,8 @@ div_mpz(mpz_class& to, const mpz_class& x, const mpz_class& y) {
     case 1:
       return V_GT;
     }
-  } else {
+  }
+  else {
     mpz_divexact(to.get_mpz_t(), x.get_mpz_t(), y.get_mpz_t());
   }
   return V_EQ;
@@ -227,7 +280,8 @@ assign_signed_int_mpz(To& to, const mpz_class& from) {
       to = v;
       return V_EQ;
     }
-  } else {
+  }
+  else {
     mpz_srcptr m = from.get_mpz_t();
     size_t sz = mpz_size(m);
     if (sz <= sizeof(To) / sizeof(mp_limb_t)) {
@@ -273,7 +327,8 @@ assign_unsigned_int_mpz(To& to, const mpz_class& from) {
       to = v;
       return V_EQ;
     }
-  } else {
+  }
+  else {
     mpz_srcptr m = from.get_mpz_t();
     size_t sz = mpz_size(m);
     if (sz <= sizeof(To) / sizeof(mp_limb_t)) {
@@ -331,13 +386,34 @@ sqrt_mpz(mpz_class& to, const mpz_class& from) {
       return V_GT;
     if (r < 0)
       return V_LT;
-  } else {
+  }
+  else {
     to = sqrt(from);
   }
   return V_EQ;
 }
 
 SPECIALIZE_SQRT(mpz, mpz_class, mpz_class)
+
+template <typename Policy, typename Type>
+inline Result 
+sgn_mp(const Type& x) {
+  int i = ::sgn(x);
+  return i > 0 ? V_GT : i == 0 ? V_EQ : V_LT;
+}
+
+SPECIALIZE_SGN(mp, mpz_class)
+SPECIALIZE_SGN(mp, mpq_class)
+
+template <typename Policy, typename Type>
+inline Result
+cmp_mp(const Type& x, const Type& y) {
+  int i = ::cmp(x, y);
+  return i > 0 ? V_GT : i == 0 ? V_EQ : V_LT;
+}
+
+SPECIALIZE_CMP(mp, mpz_class)
+SPECIALIZE_CMP(mp, mpq_class)
 
 } // namespace Checked
 

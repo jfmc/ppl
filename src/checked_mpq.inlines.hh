@@ -32,6 +32,46 @@ namespace Parma_Polyhedra_Library {
 namespace Checked {
 
 template <typename Policy>
+inline Result
+value_type_mpq(const mpq_class& v) {
+  if (::sgn(v.get_den()) == 0) {
+    int s = ::sgn(v.get_num());
+    if (Policy::handle_nan && s == 0)
+      return V_NAN;
+    if (Policy::handle_infinity) {
+      if (s < 0)
+	return V_NEG_OVERFLOW;
+      if (s > 0)
+	return V_POS_OVERFLOW;
+    }
+  }
+  return V_EQ;
+}
+
+SPECIALIZE_VALUE_TYPE(mpq, mpq_class)
+
+template <typename Policy>
+inline void
+set_special_mpq(mpq_class& v, const Result r) {
+  int num;
+  if (Policy::handle_nan && r == V_NAN)
+    num = 0;
+  else if (Policy::handle_infinity) {
+    if (r == V_NEG_OVERFLOW)
+      num = -1;
+    else if (r == V_POS_OVERFLOW)
+      num = 1;
+    else
+      return;
+  } else
+    return;
+  v.get_num() = num;
+  v.get_den() = 0;
+}
+
+SPECIALIZE_SET_SPECIAL(mpq, mpq_class)
+
+template <typename Policy>
 inline Result 
 assign_mpq_mpz(mpq_class& to, const mpz_class& from) {
   to = from;
@@ -93,7 +133,8 @@ assign_int_mpq(To& to, const mpq_class& from) {
   if (Policy::check_inexact) {
     mpz_init(r);
     mpz_tdiv_qr(q, r, n, d);
-  } else {
+  }
+  else {
     mpz_divexact(q, n, d);
   }
   Result ret = assign<Policy>(to, q);
@@ -182,6 +223,8 @@ SPECIALIZE_MUL(mpq, mpq_class, mpq_class)
 template <typename Policy>
 inline Result 
 div_mpq(mpq_class& to, const mpq_class& x, const mpq_class& y) {
+  if (Policy::check_divbyzero && sgn(y) == 0)
+    return V_NAN;
   to = x / y;
   return V_EQ;
 }
@@ -191,6 +234,8 @@ SPECIALIZE_DIV(mpq, mpq_class, mpq_class)
 template <typename Policy>
 inline Result 
 mod_mpq(mpq_class& to, const mpq_class& x, const mpq_class& y) {
+  if (Policy::check_divbyzero && sgn(y) == 0)
+    return V_NAN;
   to = x / y;
   to.get_num() %= to.get_den();
   return V_EQ;
