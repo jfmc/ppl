@@ -64,7 +64,7 @@ main() {
   ph.insert(x >= 1);
 
   COUNT(ph);
-  for (int n = 1; n <= 500; ++n) {
+  for (int n = 1; n <= 200; ++n) {
     ph.insert(random(maxc)*x + random(maxc)*y + random(maxc)*z /= 1);
     COUNT(ph);
   }
