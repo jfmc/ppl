@@ -317,8 +317,6 @@ static struct {
   { &a_polynomial,          "polynomial" },
   { &a_simplex,             "simplex" },
   { &a_any,                 "any" },
-
-  { &a_nil,                 "[]" },
 };
 
 static Prolog_term_ref
