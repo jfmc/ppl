@@ -242,7 +242,7 @@ PPL::Generator::OK() const {
 
   // A generator has to be normalized.
   Generator tmp = g;
-#if STRONG_NORMALIZATION
+#if EXTRA_NORMALIZATION
   tmp.strongly_normalize();
 #else
   tmp.normalize();
@@ -250,7 +250,7 @@ PPL::Generator::OK() const {
   if (tmp != g) {
 #ifndef NDEBUG
     cerr << "Generators should be ";
-#if STRONG_NORMALIZATION
+#if EXTRA_NORMALIZATION
     cerr << "strongly ";
 #endif
     cerr << "normalized!"
