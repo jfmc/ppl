@@ -84,569 +84,522 @@ fpu_is_inexact() {
 
 namespace Checked {
 
-typedef union {
-  float32_t value;
-  u_int32_t word;
-} float32_iec559_union;
+template <typename T>
+struct Float;
 
-inline void
-get_float32_iec559_word(float32_t v, u_int32_t& w) {
-  float32_iec559_union u;
-  u.value = v;
-  w = u.word;
+template<>
+class Float<float32_t> {
+private:
+  union {
+    float32_t _value;
+    u_int32_t word;
+  } u;
+  static const u_int32_t SGN_MASK = 0x80000000;
+  static const u_int32_t POS_INF = 0x7f800000;
+  static const u_int32_t NEG_INF = 0xff800000;
+  static const u_int32_t POS_ZERO = 0x00000000;
+  static const u_int32_t NEG_ZERO = 0x80000000;
+public:
+  Float(float32_t v);
+  float32_t value();
+  int is_inf() const;
+  int is_nan() const;
+  int is_zero() const;
+  int sign_bit() const;
+  void negate();
+  void dec();
+  void inc();
+};
+
+inline
+Float<float32_t>::Float(float32_t v) {
+  u._value = v;
+}
+
+inline float32_t
+Float<float32_t>::value() {
+  return u._value;
+}
+
+inline int
+Float<float32_t>::is_inf() const {
+  if (u.word == NEG_INF)
+    return -1;
+  if (u.word == POS_INF)
+    return 1;
+  return 0;
+}
+
+inline int
+Float<float32_t>::is_nan() const {
+  return (u.word & ~SGN_MASK) > POS_INF;
+}
+
+inline int
+Float<float32_t>::is_zero() const {
+  if (u.word == NEG_ZERO)
+    return -1;
+  if (u.word == POS_ZERO)
+    return 1;
+  return 0;
 }
 
 inline void
-set_float32_iec559_word(float32_t &v, u_int32_t w) {
-  float32_iec559_union u;
-  u.word = w;
-  v = u.value;
+Float<float32_t>::negate() {
+  u.word ^= SGN_MASK;
 }
 
-#define REAL32_SGN_MASK	0x80000000
-#define REAL32_PINF	0x7f800000
-#define REAL32_NINF	0xff800000
-#define REAL32_PZERO	0x00000000
-#define REAL32_NZERO	0x80000000
-#define REAL32_PEPS	0x00000001
-#define REAL32_NEPS	0x80000001
-
-inline Result
-check_normal_parts(u_int32_t w) {
-  u_int32_t a = w & ~REAL32_SGN_MASK;
-  if (a == REAL32_PINF)
-    return (w & REAL32_SGN_MASK) ? V_NEG_OVERFLOW : V_POS_OVERFLOW;
-  if (a >= REAL32_PINF)
-    return V_NAN;
-  return V_EQ;
-}
-
-inline Result
-is_special(float32_t v) {
-  u_int32_t w;
-  get_float32_iec559_word(v, w);
-  return check_normal_parts(w);
+inline int
+Float<float32_t>::sign_bit() const {
+  return !!(u.word & SGN_MASK);
 }
 
 inline void
-set_special(float32_t& v, Result r) {
-  switch (r) {
-  case V_NEG_OVERFLOW:
-    v = -HUGE_VAL;
-    break;
-  case V_POS_OVERFLOW:
-    v = HUGE_VAL;
-    break;
-  case V_NAN:
-    v = NAN;
-    break;
-  default:
-    assert(0);
-    break;
-  }
+Float<float32_t>::dec() {
+  u.word--;
 }
 
-template <typename Policy>
-inline Result
-pred(float32_t& to) {
-  u_int32_t w;
-  get_float32_iec559_word(to, w);
-  if (Policy::check_normal) {
-    Result r = check_normal_parts(w);
-    if (r != V_EQ)
-      return r;
-  }
-  if (w & REAL32_SGN_MASK) {
-    ++w;
-    if (w == REAL32_NINF)
-      return V_NEG_OVERFLOW;
-  } else if (w == REAL32_PZERO) {
-    w = REAL32_NEPS;
-  } else {
-    --w;
-  }
-  set_float32_iec559_word(to, w);
-  return V_EQ;
+inline void
+Float<float32_t>::inc() {
+  u.word++;
 }
 
-template <typename Policy>
-inline Result
-succ(float32_t &to) {
-  u_int32_t w;
-  get_float32_iec559_word(to, w);
-  if (Policy::check_normal) {
-    Result r = check_normal_parts(w);
-    if (r != V_EQ)
-      return r;
-  }
-  if (!(w & REAL32_SGN_MASK)) {
-    ++w;
-    if (w == REAL32_PINF)
-      return V_POS_OVERFLOW;
-  } else if (w == REAL32_NZERO) {
-    w = REAL32_PEPS;
-  } else {
-    --w;
-  }
-  set_float32_iec559_word(to, w);
-  return V_EQ;
-}
-
-typedef union {
-  float64_t value;
-  struct {
+template<>
+class Float<float64_t> {
+private:
+  union {
+    float64_t _value;
+    struct {
 #if __FLOAT_WORD_ORDER == LITTLE_ENDIAN
-    u_int32_t lsp;
-    u_int32_t msp;
+      u_int32_t lsp;
+      u_int32_t msp;
 #endif
 #if __FLOAT_WORD_ORDER == BIG_ENDIAN
-    u_int32_t msp;
-    u_int32_t lsp;
+      u_int32_t msp;
+      u_int32_t lsp;
 #endif
-  } parts;
-} float64_iec559_union;
+    } parts;
+  } u;
+  static const u_int32_t MSP_SGN_MASK = 0x80000000;
+  static const u_int32_t MSP_POS_INF = 0x7ff00000;
+  static const u_int32_t MSP_NEG_INF = 0xfff00000;
+  static const u_int32_t MSP_POS_ZERO = 0x00000000;
+  static const u_int32_t MSP_NEG_ZERO = 0x80000000;
+  static const u_int32_t LSP_INF = 0;
+  static const u_int32_t LSP_ZERO = 0;
+  static const u_int32_t LSP_MAX = 0xffffffff;
+public:
+  Float(float64_t v);
+  float64_t value();
+  int is_inf() const;
+  int is_nan() const;
+  int is_zero() const;
+  int sign_bit() const;
+  void negate();
+  void dec();
+  void inc();
+};
 
-inline void
-get_float64_iec559_parts(float64_t v, u_int32_t& lsp, u_int32_t& msp) {
-  float64_iec559_union u;
-  u.value = v;
-  lsp = u.parts.lsp;
-  msp = u.parts.msp;
+inline
+Float<float64_t>::Float(float64_t v) {
+  u._value = v;
+}
+
+inline float64_t
+Float<float64_t>::value() {
+  return u._value;
+}
+
+inline int
+Float<float64_t>::is_inf() const {
+  if (u.parts.lsp != LSP_INF)
+    return 0;
+  if (u.parts.msp == MSP_NEG_INF)
+    return -1;
+  if (u.parts.msp == MSP_POS_INF)
+    return 1;
+  return 0;
+}
+
+inline int
+Float<float64_t>::is_nan() const {
+  u_int32_t a = u.parts.msp & ~MSP_SGN_MASK;
+  return a > MSP_POS_INF || (a == MSP_POS_INF && u.parts.lsp != LSP_INF);
+}
+
+inline int
+Float<float64_t>::is_zero() const {
+  if (u.parts.lsp != LSP_ZERO)
+    return 0;
+  if (u.parts.msp == MSP_NEG_ZERO)
+    return -1;
+  if (u.parts.msp == MSP_POS_ZERO)
+    return 1;
+  return 0;
 }
 
 inline void
-set_float64_iec559_parts(float64_t& v, u_int32_t lsp, u_int32_t msp) {
-  float64_iec559_union u;
-  u.parts.lsp = lsp;
-  u.parts.msp = msp;
-  v = u.value;
+Float<float64_t>::negate() {
+  u.parts.msp ^= MSP_SGN_MASK;
 }
 
-#define REAL64_MSP_SGN_MASK  0x80000000
-#define REAL64_MSP_PINF    0x7ff00000
-#define REAL64_MSP_NINF    0xfff00000
-#define REAL64_MSP_NEG    0x80000000
-#define REAL64_MSP_POS    0x00000000
-#define REAL64_LSP_INF    0
-#define REAL64_LSP_EPS    1
-#define REAL64_LSP_MAX    0xffffffff
-
-inline Result
-check_normal_parts(u_int32_t lsp, u_int32_t msp) {
-  u_int32_t a = msp & ~REAL64_MSP_SGN_MASK;
-  if (a == REAL64_MSP_PINF && lsp == REAL64_LSP_INF)
-    return (msp & REAL64_MSP_SGN_MASK) ? V_NEG_OVERFLOW : V_POS_OVERFLOW;
-  if (a >= REAL64_MSP_PINF)
-    return V_NAN;
-  return V_EQ;
-}
-
-inline Result
-is_special(float64_t v) {
-  u_int32_t lsp, msp;
-  get_float64_iec559_parts(v, lsp, msp);
-  return check_normal_parts(lsp, msp);
+inline int
+Float<float64_t>::sign_bit() const {
+  return !!(u.parts.msp & MSP_SGN_MASK);
 }
 
 inline void
-set_special(float64_t& v, Result r) {
-  switch (r) {
-  case V_NEG_OVERFLOW:
-    v = -HUGE_VAL;
-    break;
-  case V_POS_OVERFLOW:
-    v = HUGE_VAL;
-    break;
-  case V_NAN:
-    v = NAN;
-    break;
-  default:
-    assert(0);
-    break;
+Float<float64_t>::dec() {
+  if (u.parts.lsp == 0) {
+    u.parts.msp--;
+    u.parts.lsp = LSP_MAX;
   }
+  else
+    u.parts.lsp--;
 }
 
-template <typename Policy>
-inline Result
-pred(float64_t& to) {
-  u_int32_t lsp, msp;
-  get_float64_iec559_parts(to, lsp, msp);
-  if (Policy::check_normal) {
-    Result r = check_normal_parts(lsp, msp);
-    if (r != V_EQ)
-      return r;
+inline void
+Float<float64_t>::inc() {
+  if (u.parts.lsp == LSP_MAX) {
+    u.parts.msp++;
+    u.parts.lsp = 0;
   }
-  if (msp & REAL64_MSP_SGN_MASK) {
-    if (lsp == REAL64_LSP_MAX) {
-      lsp = 0;
-      ++msp;
-      if (msp == REAL64_MSP_NINF)
-        return V_NEG_OVERFLOW;
-    } else {
-      ++lsp;
-    }
-  } else {
-    if (lsp == 0) {
-      if (msp == REAL64_MSP_POS) {
-        msp = REAL64_MSP_NEG;
-        lsp = REAL64_LSP_EPS;
-      } else {
-        lsp = REAL64_LSP_MAX;
-        --msp;
-      }
-    } else {
-      --lsp;
-    }
-  }
-  set_float64_iec559_parts(to, lsp, msp);
-  return V_EQ;
-}
-
-template <typename Policy>
-inline Result
-succ(float64_t& to) {
-  u_int32_t lsp, msp;
-  get_float64_iec559_parts(to, lsp, msp);
-  if (Policy::check_normal) {
-    Result r = check_normal_parts(lsp, msp);
-    if (r != V_EQ)
-      return r;
-  }
-  if (!(msp & REAL64_MSP_SGN_MASK)) {
-    if (lsp == REAL64_LSP_MAX) {
-      lsp = 0;
-      ++msp;
-      if (msp == REAL64_MSP_PINF)
-        return V_POS_OVERFLOW;
-    } else {
-      ++lsp;
-    }
-  } else {
-    if (lsp == 0) {
-      if (msp == REAL64_MSP_NEG) {
-        lsp = REAL64_MSP_POS;
-        msp = REAL64_LSP_EPS;
-      } else {
-        lsp = REAL64_LSP_MAX;
-        --msp;
-      }
-    } else {
-      --lsp;
-    }
-  }
-  set_float64_iec559_parts(to, lsp, msp);
-  return V_EQ;
+  else
+    u.parts.lsp++;
 }
 
 #ifdef FLOAT96_TYPE
 
-typedef union {
-  float96_t value;
-  struct {
+template<>
+class Float<float96_t> {
+private:
+  union {
+    float96_t _value;
+    struct {
 #if __FLOAT_WORD_ORDER == LITTLE_ENDIAN
-    u_int64_t lsp;
-    u_int32_t msp;
+      u_int64_t lsp;
+      u_int32_t msp;
 #endif
 #if __FLOAT_WORD_ORDER == BIG_ENDIAN
-    u_int32_t msp;
-    u_int64_t lsp;
+      u_int32_t msp;
+      u_int64_t lsp;
 #endif
-  } parts;
-} float96_iec559_union;
+    } parts;
+  } u;
+  static const u_int32_t MSP_SGN_MASK = 0x00008000;
+  static const u_int32_t MSP_POS_INF = 0x00007fff;
+  static const u_int32_t MSP_NEG_INF = 0x0000ffff;
+  static const u_int32_t MSP_POS_ZERO = 0x00000000;
+  static const u_int32_t MSP_NEG_ZERO = 0x00008000;
+  static const u_int64_t LSP_INF = 0x8000000000000000ULL;
+  static const u_int64_t LSP_ZERO = 0;
+  static const u_int64_t LSP_DMAX = 0x7fffffffffffffffULL;
+  static const u_int64_t LSP_NMAX = 0xffffffffffffffffULL;
+public:
+  Float(float96_t v);
+  float96_t value();
+  int is_inf() const;
+  int is_nan() const;
+  int is_zero() const;
+  int sign_bit() const;
+  void negate();
+  void dec();
+  void inc();
+};
 
-inline void
-get_float96_iec559_parts(float96_t v, u_int64_t& lsp, u_int32_t& msp) {
-  float96_iec559_union u;
-  u.value = v;
-  lsp = u.parts.lsp;
-  msp = u.parts.msp;
+inline
+Float<float96_t>::Float(float96_t v) {
+  u._value = v;
+}
+
+inline float96_t
+Float<float96_t>::value() {
+  return u._value;
+}
+
+inline int
+Float<float96_t>::is_inf() const {
+  if (u.parts.lsp != LSP_INF)
+    return 0;
+  u_int32_t a = u.parts.msp & MSP_NEG_INF;
+  if (a == MSP_NEG_INF)
+    return -1;
+  if (a == MSP_POS_INF)
+    return 1;
+  return 0;
+}
+
+inline int
+Float<float96_t>::is_nan() const {
+  return (u.parts.msp & MSP_POS_INF) == MSP_POS_INF &&
+    u.parts.lsp != LSP_INF;
+}
+
+inline int
+Float<float96_t>::is_zero() const {
+  if (u.parts.lsp != LSP_ZERO)
+    return 0;
+  u_int32_t a = u.parts.msp & MSP_NEG_INF;
+  if (a == MSP_NEG_ZERO)
+    return -1;
+  if (a == MSP_POS_ZERO)
+    return 1;
+  return 0;
 }
 
 inline void
-set_float96_iec559_parts(float96_t &v, u_int64_t lsp, u_int32_t msp) {
-  float96_iec559_union u;
-  u.parts.lsp = lsp;
-  u.parts.msp = msp;
-  v = u.value;
+Float<float96_t>::negate() {
+  u.parts.msp ^= MSP_SGN_MASK;
 }
 
-#define REAL96_MSP_SGN_MASK  0x00008000
-#define REAL96_MSP_PINF    0x00007fff
-#define REAL96_MSP_NINF    0x0000ffff
-#define REAL96_MSP_NEG    0x00008000
-#define REAL96_MSP_POS    0x00000000
-#define REAL96_LSP_NORMAL 0x8000000000000000ULL
-#define REAL96_LSP_INF    0x8000000000000000ULL
-#define REAL96_LSP_EPS    1
-#define REAL96_LSP_MAX    0x7fffffffffffffffULL
-
-inline Result
-check_normal_parts(u_int64_t lsp, u_int32_t msp) {
-  u_int32_t a = msp & ~REAL96_MSP_SGN_MASK;
-  if (a == REAL96_MSP_PINF) {
-    if (lsp == REAL96_LSP_INF)
-      return (msp & REAL96_MSP_SGN_MASK) ? V_NEG_OVERFLOW : V_POS_OVERFLOW;
-    return V_NAN;
-  }
-  return V_EQ;
-}
-
-inline Result
-is_special(float96_t v) {
-  u_int64_t lsp;
-  u_int32_t msp;
-  get_float96_iec559_parts(v, lsp, msp);
-  return check_normal_parts(lsp, msp);
+inline int
+Float<float96_t>::sign_bit() const {
+  return !!(u.parts.msp & MSP_SGN_MASK);
 }
 
 inline void
-set_special(float96_t& v, Result r) {
-  switch (r) {
-  case V_NEG_OVERFLOW:
-    v = -HUGE_VAL;
-    break;
-  case V_POS_OVERFLOW:
-    v = HUGE_VAL;
-    break;
-  case V_NAN:
-    v = NAN;
-    break;
-  default:
-    assert(0);
-    break;
+Float<float96_t>::dec() {
+  if ((u.parts.lsp & LSP_DMAX) == 0) {
+    u.parts.msp--;
+    u.parts.lsp = (u.parts.msp & MSP_NEG_INF) == 0 ? LSP_DMAX : LSP_NMAX;
   }
+  else
+    u.parts.lsp--;
 }
 
-template <typename Policy>
-inline Result
-pred(float96_t& to) {
-  u_int64_t lsp;
-  u_int32_t msp;
-  get_float96_iec559_parts(to, lsp, msp);
-  if (Policy::check_normal) {
-    Result r = check_normal_parts(lsp, msp);
-    if (r != V_EQ)
-      return r;
+inline void
+Float<float96_t>::inc() {
+  if ((u.parts.lsp & LSP_DMAX) == LSP_DMAX) {
+    u.parts.msp++;
+    u.parts.lsp = LSP_DMAX + 1;
   }
-  lsp &= ~REAL96_LSP_NORMAL;
-  if (msp & REAL96_MSP_SGN_MASK) {
-    if (lsp == REAL96_LSP_MAX) {
-      lsp = 0;
-      ++msp;
-      if (msp == REAL96_MSP_NINF)
-        return V_NEG_OVERFLOW;
-    } else {
-      ++lsp;
-    }
-  } else {
-    if (lsp == 0) {
-      if (msp == REAL96_MSP_POS) {
-        msp = REAL96_MSP_NEG;
-        lsp = REAL96_LSP_EPS;
-      } else {
-        lsp = REAL96_LSP_MAX;
-        --msp;
-      }
-    } else {
-      --lsp;
-    }
-  }
-  if (msp != 0)
-    lsp |= REAL96_LSP_NORMAL;
-  set_float96_iec559_parts(to, lsp, msp);
-  return V_EQ;
-}
-
-template <typename Policy>
-inline Result
-succ(float96_t& to) {
-  u_int64_t lsp;
-  u_int32_t msp;
-  get_float96_iec559_parts(to, lsp, msp);
-  if (Policy::check_normal) {
-    Result r = check_normal_parts(lsp, msp);
-    if (r != V_EQ)
-      return r;
-  }
-  lsp &= ~REAL96_LSP_NORMAL;
-  if (!(msp & REAL96_MSP_SGN_MASK)) {
-    if (lsp == REAL96_LSP_MAX) {
-      lsp = 0;
-      ++msp;
-      if (msp == REAL96_MSP_PINF)
-        return V_POS_OVERFLOW;
-    } else {
-      ++lsp;
-    }
-  } else {
-    if (lsp == 0) {
-      if (msp == REAL96_MSP_NEG) {
-        lsp = REAL96_MSP_POS;
-        msp = REAL96_LSP_EPS;
-      } else {
-        lsp = REAL96_LSP_MAX;
-        --msp;
-      }
-    } else {
-      --lsp;
-    }
-  }
-  if (msp != 0)
-    lsp |= REAL96_LSP_NORMAL;
-  set_float96_iec559_parts(to, lsp, msp);
-  return V_EQ;
+  else
+    u.parts.lsp++;
 }
 
 #endif
 
 #ifdef FLOAT128_TYPE
 
-typedef union {
-  float128_t value;
-  struct {
+template<>
+class Float<float128_t> {
+private:
+  union {
+    float128_t _value;
+    struct {
 #if __FLOAT_WORD_ORDER == LITTLE_ENDIAN
-    u_int64_t lsp;
-    u_int64_t msp;
+      u_int64_t lsp;
+      u_int64_t msp;
 #endif
 #if __FLOAT_WORD_ORDER == BIG_ENDIAN
-    u_int64_t msp;
-    u_int64_t lsp;
+      u_int64_t msp;
+      u_int64_t lsp;
 #endif
-  } parts;
-} float128_iec559_union;
+    } parts;
+  } u;
+  static const u_int64_t MSP_SGN_MASK = 0x8000000000000000ULL;
+  static const u_int64_t MSP_POS_INF = 0x7fff000000000000ULL;
+  static const u_int64_t MSP_NEG_INF = 0xffff000000000000ULL;
+  static const u_int64_t MSP_POS_ZERO = 0x0000000000000000ULL;
+  static const u_int64_t MSP_NEG_ZERO = 0x8000000000000000ULL;
+  static const u_int64_t LSP_INF = 0;
+  static const u_int64_t LSP_ZERO = 0;
+  static const u_int64_t LSP_MAX = 0xffffffffffffffffULL;
+public:
+  Float(float128_t v);
+  float128_t value();
+  int is_inf() const;
+  int is_nan() const;
+  int is_zero() const;
+  int sign_bit() const;
+  void negate();
+  void dec();
+  void inc();
+};
 
-inline void
-get_float128_iec559_parts(float128_t v, u_int64_t& lsp, u_int64_t& msp) {
-  float128_iec559_union u;
-  u.value = v;
-  lsp = u.parts.lsp;
-  msp = u.parts.msp;
+inline
+Float<float128_t>::Float(float128_t v) {
+  u._value = v;
+}
+
+inline float128_t
+Float<float128_t>::value() {
+  return u._value;
+}
+
+inline int
+Float<float128_t>::is_inf() const {
+  if (u.parts.lsp != LSP_INF)
+    return 0;
+  if (u.parts.msp == MSP_NEG_INF)
+    return -1;
+  if (u.parts.msp == MSP_POS_INF)
+    return 1;
+  return 0;
+}
+
+inline int
+Float<float128_t>::is_nan() const {
+  return (u.parts.msp & ~MSP_SGN_MASK) == MSP_POS_INF &&
+    u.parts.lsp != LSP_INF;
+}
+
+inline int
+Float<float128_t>::is_zero() const {
+  if (u.parts.lsp != LSP_ZERO)
+    return 0;
+  if (u.parts.msp == MSP_NEG_ZERO)
+    return -1;
+  if (u.parts.msp == MSP_POS_ZERO)
+    return 1;
+  return 0;
 }
 
 inline void
-set_float128_iec559_parts(float128_t& v, u_int64_t lsp, u_int64_t msp) {
-  float128_iec559_union u;
-  u.parts.lsp = lsp;
-  u.parts.msp = msp;
-  v = u.value;
+Float<float128_t>::negate() {
+  u.parts.msp ^= MSP_SGN_MASK;
 }
 
-#define REAL128_MSP_SGN_MASK  0x8000000000000000
-#define REAL128_MSP_PINF    0x7fff000000000000
-#define REAL128_MSP_NINF    0xffff000000000000
-#define REAL128_MSP_NEG    0x8000000000000000
-#define REAL128_MSP_POS    0x0000000000000000
-#define REAL128_LSP_INF    0
-#define REAL128_LSP_EPS    1
-#define REAL128_LSP_MAX    0xffffffffffffffff
+inline int
+Float<float128_t>::sign_bit() const {
+  return !!(u.parts.msp & MSP_SGN_MASK);
+}
 
+inline void
+Float<float128_t>::dec() {
+  if (u.parts.lsp == 0) {
+    u.parts.msp--;
+    u.parts.lsp = LSP_MAX;
+  }
+  else
+    u.parts.lsp--;
+}
+
+inline void
+Float<float128_t>::inc() {
+  if (u.parts.lsp == LSP_MAX) {
+    u.parts.msp++;
+    u.parts.lsp = 0;
+  }
+  else
+    u.parts.lsp++;
+}
+
+#endif
+
+template <typename Policy, typename T>
 inline Result
-check_normal_parts(u_int64_t lsp, u_int64_t msp) {
-  u_int64_t a = msp & ~REAL128_MSP_SGN_MASK;
-  if (a == REAL128_MSP_PINF && lsp == REAL128_LSP_INF)
-    return (msp & REAL128_MSP_SGN_MASK) ? V_NEG_OVERFLOW : V_POS_OVERFLOW;
-  if (a >= REAL128_MSP_PINF)
+value_type_float(const T v) {
+  Float<T> f(v);
+  if (Policy::check_nan && f.is_nan())
     return V_NAN;
+  if (Policy::check_overflow) {
+    int i = f.is_inf();
+    if (i < 0)
+      return V_NEG_OVERFLOW;
+    if (i > 0)
+      return V_POS_OVERFLOW;
+  }
   return V_EQ;
 }
 
-inline Result
-is_special(float128_t v) {
-  u_int64_t lsp, msp;
-  get_float128_iec559_parts(v, lsp, msp);
-  return check_normal_parts(lsp, msp);
-}
-
+template <typename Policy, typename T>
 inline void
-set_special(float128_t& v, Result r) {
-  switch (r) {
-  case V_NEG_OVERFLOW:
+set_special_float(T& v, const Result r) {
+  if (r == V_NEG_OVERFLOW) {
     v = -HUGE_VAL;
-    break;
-  case V_POS_OVERFLOW:
+    return;
+  }
+  if (r == V_POS_OVERFLOW) {
     v = HUGE_VAL;
-    break;
-  case V_NAN:
-    v = NAN;
-    break;
-  default:
-    assert(0);
-    break;
+    return;
+  }
+  if (r == V_NAN) {
+      v = NAN;
+      return;
   }
 }
 
-template <typename Policy>
+template <typename Policy, typename T>
 inline Result
-pred(float128_t& to) {
-  u_int64_t lsp, msp;
-  get_float128_iec559_parts(to, lsp, msp);
-  if (Policy::check_normal) {
-    Result r = check_normal_parts(lsp, msp);
-    if (r != V_EQ)
-      return r;
+pred_float(T& v) {
+  Float<T> f(v);
+  if (Policy::check_nan) {
+    if (f.is_nan())
+      return V_NAN;
   }
-  if (msp & REAL128_MSP_SGN_MASK) {
-    if (lsp == REAL128_LSP_MAX) {
-      lsp = 0;
-      ++msp;
-      if (msp == REAL128_MSP_NINF)
-        return V_NEG_OVERFLOW;
-    } else {
-      ++lsp;
-    }
-  } else {
-    if (lsp == 0) {
-      if (msp == REAL128_MSP_POS) {
-        msp = REAL128_MSP_NEG;
-        lsp = REAL128_LSP_EPS;
-      } else {
-        lsp = REAL128_LSP_MAX;
-        --msp;
-      }
-    } else {
-      --lsp;
-    }
+  if (Policy::check_infinity) {
+    if (f.is_inf() < 0)
+      return V_NEG_OVERFLOW;
   }
-  set_float128_iec559_parts(to, lsp, msp);
+  Result r = V_EQ;
+  if (f.is_zero() > 0) {
+    f.negate();
+    f.inc();
+  }
+  else if (f.sign_bit) {
+    f.inc();
+    if (Policy::check_overflow && f.is_inf())
+      r = V_NEG_OVERFLOW;
+  }
+  else {
+    f.dec();
+  }
+  v = f.value();
+  return r;
+}
+
+template <typename Policy, typename T>
+inline Result
+succ_float(T& v) {
+  Float<T> f(v);
+  if (Policy::check_nan) {
+    if (f.is_nan())
+      return V_NAN;
+  }
+  if (Policy::check_infinity) {
+    if (f.is_inf() > 0)
+      return V_POS_OVERFLOW;
+  }
+  Result r = V_EQ;
+  if (f.is_zero() < 0) {
+    f.negate();
+    f.inc();
+  }
+  else if (!f.sign_bit) {
+    f.inc();
+    if (Policy::check_overflow && f.is_inf())
+      r = V_POS_OVERFLOW;
+  }
+  else {
+    f.dec();
+  }
+  v = f.value();
   return V_EQ;
 }
 
-template <typename Policy>
-inline Result
-succ(float128_t& to) {
-  u_int64_t lsp, msp;
-  get_float128_iec559_parts(to, lsp, msp);
-  if (Policy::check_normal) {
-    Result r = check_normal_parts(lsp, msp);
-    if (r != V_EQ)
-      return r;
-  }
-  if (!(msp & REAL128_MSP_SGN_MASK)) {
-    if (lsp == REAL128_LSP_MAX) {
-      lsp = 0;
-      ++msp;
-      if (msp == REAL128_MSP_PINF)
-        return V_POS_OVERFLOW;
-    } else {
-      ++lsp;
-    }
-  } else {
-    if (lsp == 0) {
-      if (msp == REAL128_MSP_NEG) {
-        lsp = REAL128_MSP_POS;
-        msp = REAL128_LSP_EPS;
-      } else {
-        lsp = REAL128_LSP_MAX;
-        --msp;
-      }
-    } else {
-      --lsp;
-    }
-  }
-  set_float128_iec559_parts(to, lsp, msp);
-  return V_EQ;
-}
+SPECIALIZE_VALUE_TYPE(float, float32_t);
+SPECIALIZE_SET_SPECIAL(float, float32_t);
+SPECIALIZE_PRED(float, float32_t);
+SPECIALIZE_SUCC(float, float32_t);
 
+SPECIALIZE_VALUE_TYPE(float, float64_t);
+SPECIALIZE_SET_SPECIAL(float, float64_t);
+SPECIALIZE_PRED(float, float64_t);
+SPECIALIZE_SUCC(float, float64_t);
+
+#ifdef FLOAT96_TYPE
+SPECIALIZE_VALUE_TYPE(float, float96_t);
+SPECIALIZE_SET_SPECIAL(float, float96_t);
+SPECIALIZE_PRED(float, float96_t);
+SPECIALIZE_SUCC(float, float96_t);
+#endif
+
+#ifdef FLOAT128_TYPE
+SPECIALIZE_VALUE_TYPE(float, float128_t);
+SPECIALIZE_SET_SPECIAL(float, float128_t);
+SPECIALIZE_PRED(float, float128_t);
+SPECIALIZE_SUCC(float, float128_t);
 #endif
 
 template <typename Policy, typename Type>
@@ -700,20 +653,26 @@ prepare_inexact() {
 template <typename Policy, typename From, typename To>
 inline Result 
 assign_float_float_exact(To& to, const From from) {
-  if (Policy::check_assign) {
-    Result r = is_special(from);
-    if (r != V_EQ)
-      return r;
+  Float<From> f(from);
+  Result r = V_EQ;
+  if (Policy::check_nan && f.is_nan())
+    r = V_NAN;
+  else if (Policy::check_infinity) {
+    int i = f.is_inf();
+    if (i < 0)
+      r = V_NEG_OVERFLOW;
+    else if (i > 0)
+      r = V_POS_OVERFLOW;
   }
   to = from;
-  return V_EQ;
+  return r;
 }
 
 template<typename Policy, typename To, typename From>
 inline Result
 assign_float_float(To& to, const From from) {
   prepare_inexact<Policy>();
-  Result r = assign_float_float_exact<Policy>();
+  Result r = assign_float_float_exact<Policy>(to, from);
   if (r == V_EQ)
     r = check_inexact<Policy>(from);
   return r;
@@ -722,19 +681,25 @@ assign_float_float(To& to, const From from) {
 template <typename Policy, typename Type>
 inline Result 
 assign_result_exact(Type& to, const Type from) {
-  if (Policy::check_overflow) {
-    Result r = is_special(from);
-    if (r != V_EQ)
-      return r;
+  Float<Type> f(from);
+  Result r = V_EQ;
+  if (Policy::check_invalid && f.is_nan())
+    r = V_NAN;
+  else if (Policy::check_overflow) {
+    int i = f.is_inf();
+    if (i < 0)
+      r = V_NEG_OVERFLOW;
+    else if (i > 0)
+      r = V_POS_OVERFLOW;
   }
   to = from;
-  return V_EQ;
+  return r;
 }
 
 template <typename Policy, typename Type>
 inline Result 
 assign_result_inexact(Type& to, const Type from) {
-  Result r = assign_result_exact(to, from);
+  Result r = assign_result_exact<Policy>(to, from);
   if (r == V_EQ)
     r = check_inexact<Policy>(from);
   return r;
@@ -743,7 +708,7 @@ assign_result_inexact(Type& to, const Type from) {
 template <typename Policy, typename Type>
 inline Result 
 neg_float(Type& to, const Type from) {
-  return assign_result_exact(to, -from);
+  return assign_result_exact<Policy>(to, -from);
 }
 
 template <typename Policy, typename Type>
@@ -784,7 +749,7 @@ mod_float(Type& to, const Type x, const Type y) {
 template <typename Policy, typename Type>
 inline Result
 abs_float(Type& to, const Type from) {
-  return assign_result_exact(to, std::abs(from));
+  return assign_result_exact<Policy>(to, std::abs(from));
 }
 
 template <typename Policy, typename Type>
