@@ -1106,7 +1106,7 @@ private:
  };
 
 
-#include "BD_Status.inlines.hh"
+#include "BDS_Status.inlines.hh"
 #include "BD_Shape.inlines.hh"
 
 #endif // !defined(PPL_BD_Shape_defs_hh)

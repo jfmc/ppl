@@ -1,4 +1,4 @@
-/* Test BDiffs::constraints(): we compute the system of
+/* Test BD_Shape::constraints(): we compute the system of
    constraints of a bdiff.
    Copyright (C) 2001-2003 Roberto Bagnara <bagnara@cs.unipr.it>
 

@@ -1,4 +1,4 @@
-/* Some incorrect uses of the function BDiffs::add_constraint().
+/* Some incorrect uses of the function BD_Shape::add_constraint().
    Copyright (C) 2001-2003 Roberto Bagnara <bagnara@cs.unipr.it>
 
 This file is part of the Parma Polyhedra Library (PPL).
@@ -39,7 +39,7 @@ error1() {
 
   try {
     // This is an invalid use of function
-    // BDiffs::add_constraint: it is illegal
+    // BD_Shape::add_constraint: it is illegal
     // to add a strict inequality.
     bd1.add_constraint(x <= 0);
     bd1.add_constraint(y < 0);
@@ -64,7 +64,7 @@ error2() {
 
   try {
     // This is an invalid use of function
-    // BDiffs::add_constraint: it is illegal
+    // BD_Shape::add_constraint: it is illegal
     // to add a constraint with bigger dimension.
     bd1.add_constraint(x <= 0);
     bd1.add_constraint(y - x + z >= 0);
@@ -86,7 +86,7 @@ error3() {
 
   try {
     // This is an invalid use of the function
-    // BDiffs::CH78_widening_assign(bd1): it is illegal to apply
+    // BD_Shape::CH78_widening_assign(bd1): it is illegal to apply
     // this function to two polyhedra that are not dimensional
     // compatible.
     bd2.CH78_widening_assign(bd1);
@@ -122,7 +122,7 @@ error4() {
 
   try {
     // This is an invalid use of the function
-    // BDiffs::limited_CH78_extrapolation_assign(bd, cs): it is
+    // BD_Shape::limited_CH78_extrapolation_assign(bd, cs): it is
     // illegal to apply this function to a system of constraints that
     // is not dimension-compatible with the two polyhedra.
     bd2.limited_CH78_extrapolation_assign(bd1, cs);
@@ -149,7 +149,7 @@ error5() {
 
   try {
     // This is an invalid use of the function
-    // BDiffs::limited_CH78_extrapolation_assign(bd2, cs): it is
+    // BD_Shape::limited_CH78_extrapolation_assign(bd2, cs): it is
     // illegal to apply this function to two polyhedra that are not
     // dimension-compatible.
     bd2.limited_CH78_extrapolation_assign(bd1, cs);
@@ -184,7 +184,7 @@ error6() {
 
   try {
     // This is an invalid use of the function
-    // BDiffs::limited_CH78_extrapolation_assign(bd, cs): it is
+    // BD_Shape::limited_CH78_extrapolation_assign(bd, cs): it is
     // illegal to apply this function to a system of constraints that
     // has a strict-inequality.
     bd2.limited_CH78_extrapolation_assign(bd1, cs);
@@ -213,7 +213,7 @@ error7() {
 
   try {
     // This is an incorrect use of function
-    // BDiffs::affine_image(v, expr,d): it is illegal applying
+    // BD_Shape::affine_image(v, expr,d): it is illegal applying
     // the function with a linear expression with the denominator equal to
     // zero.
     Integer d = 0;
@@ -239,7 +239,7 @@ error8() {
 
   try {
     // This is an invalid used of the function
-    // BDiffs::affine_image(v, expr, d): it is illegal to
+    // BD_Shape::affine_image(v, expr, d): it is illegal to
     // apply this function to a variable that is not in the space of
     // the polyhedron.
     bd.affine_image(y, x + 1);
@@ -266,7 +266,7 @@ error9() {
 
   try {
     // This is an invalid used of the function
-    // BDiffs::affine_image(v, expr, d): it is illegal to
+    // BD_Shape::affine_image(v, expr, d): it is illegal to
     // use a variable in the expression that does not appear in the
     // space of the polyhedron.
     bd.affine_image(y, x + z + 1);
@@ -290,7 +290,7 @@ error10() {
 
   try {
     // This is an invalid use of the function
-    // BDiffs::CC76_extrapolation_assign(bd): it is
+    // BD_Shape::CC76_extrapolation_assign(bd): it is
     // illegal to apply this function to two polyhedra that are not
     // dimension-compatible.
     bd2.CC76_extrapolation_assign(bd1);
@@ -320,7 +320,7 @@ error11() {
 
   try {
     // This is an incorrect use of function
-    // BDiffs::affine_image(v, expr,d): it is illegal applying
+    // BD_Shape::affine_image(v, expr,d): it is illegal applying
     // the function with a linear expression with the denominator equal to
     // zero.
     Integer d = 3;
@@ -348,7 +348,7 @@ error12() {
 
   try {
     // This is an invalid used of the function
-    // BDiffs::affine_image(v, expr, d): it is illegal to
+    // BD_Shape::affine_image(v, expr, d): it is illegal to
     // use two variables in the expression.
     bd.affine_image(y, y - x);
   }
@@ -372,7 +372,7 @@ error13() {
 
   try {
     // This is an invalid use of function
-    // BDiffs::add_constraint: it is illegal
+    // BD_Shape::add_constraint: it is illegal
     // to add a constraint with three dimension.
     bd1.add_constraint(x <= 0);
     bd1.add_constraint(y - x + z >= 0);
@@ -398,7 +398,7 @@ error14() {
 
   try {
     // This is an invalid use of function
-    // BDiffs::add_constraint: it is illegal
+    // BD_Shape::add_constraint: it is illegal
     // to add a constraint with two different coefficients.
     bd1.add_constraint(x <= 0);
     bd1.add_constraint(2*y - 3*x <= 0);

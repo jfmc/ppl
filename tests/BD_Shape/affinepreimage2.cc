@@ -1,4 +1,4 @@
-/* Test BDiffs::affine_preimage(): the transformation is not
+/* Test BD_Shape::affine_preimage(): the transformation is not
    invertible.
    Copyright (C) 2001-2003 Roberto Bagnara <bagnara@cs.unipr.it>
 

@@ -1,4 +1,4 @@
-/* Test BDiffs::affine_preimage(): we apply this function with
+/* Test BD_Shape::affine_preimage(): we apply this function with
    the denominator different from 1.
    Copyright (C) 2001-2003 Roberto Bagnara <bagnara@cs.unipr.it>
 

@@ -40,7 +40,7 @@ error1() {
   Linear_Expression expr(x + 1);
   try {
     // This is an incorrect use of the function
-    // BDiffs::affine_preimage(v, expr, d): it is illegal
+    // BD_Shape::affine_preimage(v, expr, d): it is illegal
     // to apply to a expression with the denominator
     // equal to zero.
     Integer d = 0;
@@ -66,7 +66,7 @@ error2() {
   Linear_Expression expr(x + y +1);
   try {
     // This is an incorrect use of the function
-    // BDiffs::affine_preimage(v, expr, d): it is illegal
+    // BD_Shape::affine_preimage(v, expr, d): it is illegal
     // to apply to a expression with two variables.
     bd.affine_preimage(y, expr);
   }
@@ -91,7 +91,7 @@ error3() {
   Linear_Expression expr(z);
   try {
     // This is an incorrect use of the function
-    // BDiffs::affine_preimage(v, expr, d): it is illegal
+    // BD_Shape::affine_preimage(v, expr, d): it is illegal
     // to apply to a expression which space dimension is
     // greather than bdiffs space dimension.
     bd.affine_preimage(y, expr);
@@ -116,7 +116,7 @@ error4() {
   Linear_Expression expr(2*x);
   try {
     // This is an incorrect use of the function
-    // BDiffs::affine_preimage(v, expr, d): it is illegal
+    // BD_Shape::affine_preimage(v, expr, d): it is illegal
     // to apply to a expression where the coefficient of the
     // variable is not equal to the denominator.
     bd.affine_preimage(y, expr);
@@ -141,7 +141,7 @@ error5() {
   Linear_Expression expr(x + 1);
   try {
     // This is an incorrect use of the function
-    // BDiffs::generalized_affine_image(v, r, expr, d): it is illegal
+    // BD_Shape::generalized_affine_image(v, r, expr, d): it is illegal
     // to use a strict relation symbol.
     bd.generalized_affine_image(x, LESS_THAN, expr);
   }
@@ -165,7 +165,7 @@ error6() {
   Linear_Expression expr(x + 1);
   try {
     // This is an incorrect use of the function
-    // BDiffs::generalized_affine_image(v, r, expr, d): it is illegal
+    // BD_Shape::generalized_affine_image(v, r, expr, d): it is illegal
     // to use a strict relation symbol.
     bd.generalized_affine_image(x, GREATER_THAN, expr);
   }
@@ -189,7 +189,7 @@ error7() {
   Linear_Expression expr(x + 1);
   try {
     // This is an incorrect use of the function
-    // BDiffs::generalized_affine_image(v, r, expr, d): it is illegal
+    // BD_Shape::generalized_affine_image(v, r, expr, d): it is illegal
     // to apply to a expression with the denominator
     // equal to zero.
     Integer d = 0;
@@ -215,7 +215,7 @@ error8() {
   Linear_Expression expr(x + y +1);
   try {
     // This is an incorrect use of the function
-    // BDiffs::generalized_affine_image(v, r, expr, d): it is illegal
+    // BD_Shape::generalized_affine_image(v, r, expr, d): it is illegal
     // to apply to a expression with two variables.
     bd.generalized_affine_image(y, LESS_THAN_OR_EQUAL, expr);
   }
@@ -240,7 +240,7 @@ error9() {
   Linear_Expression expr(z);
   try {
     // This is an incorrect use of the function
-    // BDiffs::generalized_affine_image(v, r, expr, d): it is illegal
+    // BD_Shape::generalized_affine_image(v, r, expr, d): it is illegal
     // to apply to a expression which space dimension is
     // greather than bdiffs space dimension.
     bd.generalized_affine_image(y, GREATER_THAN_OR_EQUAL, expr);
@@ -265,7 +265,7 @@ error10() {
   Linear_Expression expr(2*x);
   try {
     // This is an incorrect use of the function
-    // BDiffs::generalized_affine_image(v, r, expr, d): it is illegal
+    // BD_Shape::generalized_affine_image(v, r, expr, d): it is illegal
     // to apply to a expression where the coefficient of the
     // variable is not equal to the denominator.
     bd.generalized_affine_image(y, GREATER_THAN_OR_EQUAL, expr);
@@ -291,7 +291,7 @@ error11() {
 
   try {
     // This is an incorrect use of the function
-    // BDiffs::generalized_affine_image(lhs, r, rhs):
+    // BD_Shape::generalized_affine_image(lhs, r, rhs):
     // it is illegal to use a variable in the `rhs' expression that
     // does not appear in the bdiff.
 
@@ -318,7 +318,7 @@ error12() {
 
   try {
     // This is an incorrect use of function
-    // BDiffs::generalized_affine_image(lhs, r, rhs):
+    // BD_Shape::generalized_affine_image(lhs, r, rhs):
     // it is illegal to use a variable in the `lhs' expression that
     // does not appear in the bdiff.
     bd.generalized_affine_image(B + C, LESS_THAN_OR_EQUAL, A + 1);

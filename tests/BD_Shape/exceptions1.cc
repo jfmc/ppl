@@ -42,7 +42,7 @@ error1() {
 
   try {
     // This is an invalid use of function
-    // BDiffs::intersection_assign_and_minimize(bd2): it is illegal
+    // BD_Shape::intersection_assign_and_minimize(bd2): it is illegal
     // to apply this function to two polyhedra of different dimensions.
     bd1.intersection_assign_and_minimize(bd2);
   }
@@ -67,7 +67,7 @@ error2() {
 
   try {
     // This is an invalid use of function
-    // BDiffs::intersection_assign(bd2): it is illegal
+    // BD_Shape::intersection_assign(bd2): it is illegal
     // to apply this function to two polyhedra of different dimensions.
     bd1.intersection_assign(bd2);
   }
@@ -87,7 +87,7 @@ error3() {
 
   try {
     // This is an invalid use of the function
-    // BDiffs::remove_higher_dimensions(n): it is illegal to erase
+    // BD_Shape::remove_higher_dimensions(n): it is illegal to erase
     // a variable that is not in the space of the polyhedron.
     bd.remove_higher_space_dimensions(7);
   }
@@ -110,7 +110,7 @@ error4() {
 
   try {
     // This is an invalid use of the function
-    // BDiffs::add_constraints_and_minimize(cs): it is illegal to
+    // BD_Shape::add_constraints_and_minimize(cs): it is illegal to
     // add a system of constraints that is not dimensional incompatible
     // with the polyhedron.
     Constraint_System cs;
@@ -135,7 +135,7 @@ error5() {
 
   try {
     // This is an invalid use of the function
-    // RBDiffs::add_constraint(c): it is illegal to insert a
+    // RBD_Shape::add_constraint(c): it is illegal to insert a
     // constraints that contains a variable that is not in the space
     // of the polyhedron.
     bd.add_constraint(y >= 0);
@@ -159,7 +159,7 @@ error6() {
 
   try {
     // This is an invalid use of the function
-    // BDiffs::add_constraints(cs): it is illegal to add a system
+    // BD_Shape::add_constraints(cs): it is illegal to add a system
     // of constraints that is dimensional incompatible with the
     // polyhedron.
     Constraint_System cs;
@@ -183,7 +183,7 @@ error7() {
 
   try {
     // This is an invalid use of the function
-    // BDiffs::CC76_widening_assign(bd2): it is illegal to apply
+    // BD_Shape::CC76_widening_assign(bd2): it is illegal to apply
     // this function to two polyhedra that are not dimensional
     // compatible.
     bd2.CC76_extrapolation_assign(bd1);
@@ -210,7 +210,7 @@ error8() {
 
   try {
     // This is an invalid use of the function
-    // BDiffs::limited_CC76_extrapolation_assign(bd2, cs): it is
+    // BD_Shape::limited_CC76_extrapolation_assign(bd2, cs): it is
     // illegal to apply this function to two polyhedra that are not
     // dimension-compatible.
     bd2.limited_CC76_extrapolation_assign(bd1, cs);
@@ -246,7 +246,7 @@ error9() {
 
   try {
     // This is an invalid use of the function
-    // BDiffs::limited_CC76_extrapolation_assign(bd, cs): it is
+    // BD_Shape::limited_CC76_extrapolation_assign(bd, cs): it is
     // illegal to apply this function to a system of constraints that
     // is not dimension-compatible with the two polyhedra.
     bd2.limited_CC76_extrapolation_assign(bd1, cs);
@@ -296,7 +296,7 @@ error11() {
 
   try {
     // This is an incorrect use of function
-    // BDiffs::poly_difference_assign(bd2): it is impossible to apply
+    // BD_Shape::poly_difference_assign(bd2): it is impossible to apply
     // this function to two polyhedra of different dimensions.
     bd1.poly_difference_assign(bd2);
   }
@@ -319,7 +319,7 @@ error12() {
 
   try {
     // This is an incorrect use of function
-    // BDiffs::poly_hull_assign(bd2): it is impossible to apply
+    // BD_Shape::poly_hull_assign(bd2): it is impossible to apply
     // this function to two polyhedra of different dimensions.
     bd1.poly_hull_assign(bd2);
   }
@@ -345,7 +345,7 @@ error13() {
 
   try {
     // This is an invalid use of function
-    // BDiffs::poly_hull_assign_and_minimize(bd2): it is illegal
+    // BD_Shape::poly_hull_assign_and_minimize(bd2): it is illegal
     // to apply this function to two polyhedra of different dimensions.
     bd1.poly_hull_assign_and_minimize(bd2);
   }
@@ -372,7 +372,7 @@ error14() {
 
   try {
     // This is an invalid use of the function
-    // BDiffs::CC76_narrowing_assign(bd2, cs): it is
+    // BD_Shape::CC76_narrowing_assign(bd2, cs): it is
     // illegal to apply this function to two polyhedra that are not
     // dimension-compatible.
     bd2.CC76_narrowing_assign(bd1);
@@ -406,7 +406,7 @@ error15() {
   try {
     to_be_removed.insert(x);
     // This is an incorrect use use of function
-    // BDiffs::remove_dimensions(to_be_remove).
+    // BD_Shape::remove_dimensions(to_be_remove).
     // Here the set `to_be_removed' still contains variable `z'.
     // This variable is now beyond the space dimension,
     // so that a dimension-incompatibility exception is obtained.
@@ -443,7 +443,7 @@ error16() {
 
   try {
     // This is an invalid use of the function
-    // BDiffs::limited_CC76_extrapolation_assign(bd, cs): it is
+    // BD_Shape::limited_CC76_extrapolation_assign(bd, cs): it is
     // illegal to apply this function to a system of constraints that
     // in which there is a strict inequality.
     bd2.limited_CC76_extrapolation_assign(bd1, cs);
@@ -470,7 +470,7 @@ error17() {
 
   try {
     // This is an invalid use of the function
-    // BDiffs::time_elapse_assign(bd2): it is
+    // BD_Shape::time_elapse_assign(bd2): it is
     // illegal to apply this function to two polyhedra that are not
     // dimension-compatible.
     bd1.time_elapse_assign(bd2);

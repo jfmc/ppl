@@ -1,4 +1,4 @@
-/* BDiffs<T>::Status class declaration.
+/* BD_Shape<T>::Status class declaration.
    Copyright (C) 2001-2004 Roberto Bagnara <bagnara@cs.unipr.it>
 
 This file is part of the Parma Polyhedra Library (PPL).
@@ -24,13 +24,13 @@ site: http://www.cs.unipr.it/ppl/ . */
 #ifndef PPL_BD_Status_defs_hh
 #define PPL_BD_Status_defs_hh 1
 
-//! A conjunctive assertion about a BDiffs<T> object.
+//! A conjunctive assertion about a BD_Shape<T> object.
 /*!
   The assertions supported are:
   - <EM>zero-dim universe</EM>: the polyhedron is the zero-dimension
     vector space \f$\Rset^0 = \{\cdot\}\f$;
   - <EM>empty</EM>: the polyhedron is the empty set;
-  - <EM>transitively closed</EM>: the BDiffs object is transitively
+  - <EM>transitively closed</EM>: the BD_Shape object is transitively
     closed, so that all the constraints are as tigher as possible.
 
   Not all the conjunctions of these elementary assertions constitute

@@ -1,4 +1,4 @@
-/* Test BDiffs::poly_difference_assign(): if `bd1' is
+/* Test BD_Shape::poly_difference_assign(): if `bd1' is
    contained in `bd2', the result of `bd1.poly_difference_assign(bd2)'
    is an empty bdiffs.
    Copyright (C) 2001-2003 Roberto Bagnara <bagnara@cs.unipr.it>

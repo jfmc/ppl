@@ -1,4 +1,4 @@
-/* Test BDiffs::ascii_dump() and BDiffs::ascii_load().
+/* Test BD_Shape::ascii_dump() and BD_Shape::ascii_load().
    Copyright (C) 2001-2003 Roberto Bagnara <bagnara@cs.unipr.it>
 
 This file is part of the Parma Polyhedra Library (PPL).

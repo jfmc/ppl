@@ -1,4 +1,4 @@
-/* Test BDiffs::max_space_dimension().
+/* Test BD_Shape::max_space_dimension().
    Copyright (C) 2001-2003 Roberto Bagnara <bagnara@cs.unipr.it>
 
 This file is part of the Parma Polyhedra Library (PPL).
@@ -32,10 +32,10 @@ using namespace Parma_Polyhedra_Library;
 
 int
 main() TRY {
-  BDiffs<E_Rational> bd1(1);
-  BDiffs<E_NIT<long> > bd2(1);
-  BDiffs<E_NIT<int> > bd3(1);
-  BDiffs<E_NIT<signed char> > bd4(1);
+  BD_Shape<E_Rational> bd1(1);
+  BD_Shape<E_NIT<long> > bd2(1);
+  BD_Shape<E_NIT<int> > bd3(1);
+  BD_Shape<E_NIT<signed char> > bd4(1);
 
   dimension_type max_spacedim1 = bd1.max_space_dimension();
   dimension_type max_spacedim2 = bd2.max_space_dimension();

@@ -1,4 +1,4 @@
-/* Test BDiffs::poly_hull_assign().
+/* Test BD_Shape::poly_hull_assign().
    Copyright (C) 2001-2003 Roberto Bagnara <bagnara@cs.unipr.it>
 
 This file is part of the Parma Polyhedra Library (PPL).
@@ -64,7 +64,7 @@ main() TRY {
 
   }
   else
-    cout << endl << "The two BDiffs are empty." << endl;
+    cout << endl << "The two BD_Shape are empty." << endl;
 
   known_result.add_constraint(A <= 4);
   known_result.add_constraint(B >= -5);

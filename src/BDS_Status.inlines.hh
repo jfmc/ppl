@@ -1,4 +1,4 @@
-/* BDiffs<T>::Status class implementation: inline functions.
+/* BD_Shape<T>::Status class implementation: inline functions.
    Copyright (C) 2001-2004 Roberto Bagnara <bagnara@cs.unipr.it>
 
 This file is part of the Parma Polyhedra Library (PPL).
@@ -28,49 +28,49 @@ namespace Parma_Polyhedra_Library {
 
 template <typename T>
 inline
-BDiffs<T>::Status::Status(flags_t mask)
+BD_Shape<T>::Status::Status(flags_t mask)
   : flags(mask) {
 }
 
 template <typename T>
 inline
-BDiffs<T>::Status::Status()
+BD_Shape<T>::Status::Status()
   : flags(ZERO_DIM_UNIV) {
 }
 
 template <typename T>
 inline bool
-BDiffs<T>::Status::test_all(flags_t mask) const {
+BD_Shape<T>::Status::test_all(flags_t mask) const {
   return (flags & mask) == mask;
 }
 
 template <typename T>
 inline bool
-BDiffs<T>::Status::test_any(flags_t mask) const {
+BD_Shape<T>::Status::test_any(flags_t mask) const {
   return flags & mask;
 }
 
 template <typename T>
 inline void
-BDiffs<T>::Status::set(flags_t mask) {
+BD_Shape<T>::Status::set(flags_t mask) {
   flags |= mask;
 }
 
 template <typename T>
 inline void
-BDiffs<T>::Status::reset(flags_t mask) {
+BD_Shape<T>::Status::reset(flags_t mask) {
   flags &= ~mask;
 }
 
 template <typename T>
 inline bool
-BDiffs<T>::Status::test_zero_dim_univ() const {
+BD_Shape<T>::Status::test_zero_dim_univ() const {
   return flags == ZERO_DIM_UNIV;
 }
 
 template <typename T>
 inline void
-BDiffs<T>::Status::reset_zero_dim_univ() {
+BD_Shape<T>::Status::reset_zero_dim_univ() {
   // This is a no-op if the current status is not zero-dim.
   if (flags == ZERO_DIM_UNIV)
     // In the zero-dim space, if it is not the universe it is empty.
@@ -79,50 +79,50 @@ BDiffs<T>::Status::reset_zero_dim_univ() {
 
 template <typename T>
 inline void
-BDiffs<T>::Status::set_zero_dim_univ() {
+BD_Shape<T>::Status::set_zero_dim_univ() {
   // Zero-dim universe is incompatible with anything else.
   flags = ZERO_DIM_UNIV;
 }
 
 template <typename T>
 inline bool
-BDiffs<T>::Status::test_empty() const {
+BD_Shape<T>::Status::test_empty() const {
   return test_any(EMPTY);
 }
 
 template <typename T>
 inline void
-BDiffs<T>::Status::reset_empty() {
+BD_Shape<T>::Status::reset_empty() {
   reset(EMPTY);
 }
 
 template <typename T>
 inline void
-BDiffs<T>::Status::set_empty() {
+BD_Shape<T>::Status::set_empty() {
   flags = EMPTY;
 }
 
 template <typename T>
 inline bool
-BDiffs<T>::Status::test_transitively_closed() const {
+BD_Shape<T>::Status::test_transitively_closed() const {
   return test_any(TRANSITIVELY_CLOSED);
 }
 
 template <typename T>
 inline void
-BDiffs<T>::Status::reset_transitively_closed() {
+BD_Shape<T>::Status::reset_transitively_closed() {
   reset(TRANSITIVELY_CLOSED);
 }
 
 template <typename T>
 inline void
-BDiffs<T>::Status::set_transitively_closed() {
+BD_Shape<T>::Status::set_transitively_closed() {
   set(TRANSITIVELY_CLOSED);
 }
 
 template <typename T>
 inline bool
-BDiffs<T>::Status::OK() const {
+BD_Shape<T>::Status::OK() const {
   if (test_zero_dim_univ())
     // Zero-dim universe is OK.
     return true;
@@ -156,7 +156,7 @@ const char yes = '+';
 const char no = '-';
 const char sep = ' ';
  
-/*! \relates Parma_Polyhedra_Library::BDiffs<T>::Status
+/*! \relates Parma_Polyhedra_Library::BD_Shape<T>::Status
   Reads a keyword and its associated on/off flag from \p s.
   Returns <CODE>true</CODE> if the operation is successful,
   returns <CODE>false</CODE> otherwise.
@@ -178,7 +178,7 @@ get_field(std::istream& s, const std::string& keyword, bool& positive) {
 
 template <typename T>
 inline void
-BDiffs<T>::Status::ascii_dump(std::ostream& s) const {
+BD_Shape<T>::Status::ascii_dump(std::ostream& s) const {
   s << (test_zero_dim_univ() ? yes : no) << zero_dim_univ << sep
     << (test_empty() ? yes : no) << empty << sep
     << sep
@@ -187,7 +187,7 @@ BDiffs<T>::Status::ascii_dump(std::ostream& s) const {
 
 template <typename T>
 inline bool
-BDiffs<T>::Status::ascii_load(std::istream& s) {
+BD_Shape<T>::Status::ascii_load(std::istream& s) {
   bool positive;
 
   if (!get_field(s, zero_dim_univ, positive))

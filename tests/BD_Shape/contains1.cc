@@ -1,4 +1,4 @@
-/* Test BDiffs::contains().
+/* Test BD_Shape::contains().
    Copyright (C) 2001-2003 Roberto Bagnara <bagnara@cs.unipr.it>
 
 This file is part of the Parma Polyhedra Library (PPL).
@@ -39,7 +39,7 @@ main() TRY {
   TBD_Shape bd1(3);
   bd1.add_constraint(x - y <= 1);
 
-  // The BDiffs is empty, because it has got a negative cycle.
+  // The BD_Shape is empty, because it has got a negative cycle.
   TBD_Shape bd2(3);
   bd2.add_constraint(x - y <= 2);
   bd2.add_constraint(y - z <= 2);

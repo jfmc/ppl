@@ -1,5 +1,5 @@
-/* Test BDiffs::add_space_dimensions_and_embed() and
-   BDiffs::add_space_dimensions_and_project().
+/* Test BD_Shape::add_space_dimensions_and_embed() and
+   BD_Shape::add_space_dimensions_and_project().
    Copyright (C) 2001-2003 Roberto Bagnara <bagnara@cs.unipr.it>
 
 This file is part of the Parma Polyhedra Library (PPL).

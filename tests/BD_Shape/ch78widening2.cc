@@ -1,4 +1,4 @@
-/* Test BDiffs::CH78_widening_assign(): we apply this function
+/* Test BD_Shape::CH78_widening_assign(): we apply this function
    to two zero-dimensional polyhedra.
    Copyright (C) 2001-2003 Roberto Bagnara <bagnara@cs.unipr.it>
 

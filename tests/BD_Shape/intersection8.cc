@@ -1,4 +1,4 @@
-/* Test BDiffs::intersection_assign().
+/* Test BD_Shape::intersection_assign().
    Copyright (C) 2001-2003 Roberto Bagnara <bagnara@cs.unipr.it>
 
 This file is part of the Parma Polyhedra Library (PPL).
@@ -58,7 +58,7 @@ main() TRY {
 #endif
   }
   else
-    cout << endl << "One of the two BDiffs is empty." <<endl;
+    cout << endl << "One of the two BD_Shape is empty." <<endl;
 
   int retval = (bd1 == known_result) ? 0 : 1;
 
