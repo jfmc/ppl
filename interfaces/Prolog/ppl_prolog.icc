@@ -365,7 +365,10 @@ build_lin_expression(Prolog_term_ref t) {
       {
 	Prolog_term_ref arg = Prolog_new_term_ref();
 	Prolog_get_arg(1, t, arg);
-	if (functor == a_minus)
+	if (functor == a_plus)
+	  // Unary plus.
+	  return build_lin_expression(arg);
+	else if (functor == a_minus)
 	  // Unary minus.
 	  return -build_lin_expression(arg);
 	else if (functor == a_dollar_VAR)
