@@ -116,7 +116,7 @@ solve(_, read(N), Polys, Polys, VarNames) :-
     (integer(MeltN) ->
        true
     ;
-       ppl_delete_polyhedron(Poly),
+       ppl_delete_Polyhedron(Poly),
        fail
     ),
 
@@ -127,7 +127,7 @@ solve(_, read(N), Polys, Polys, VarNames) :-
     ;
        % if the new value makes the constraints unsatisfiable,
        % first throw the empty polyhedron away and then fail.
-       ppl_delete_polyhedron(Poly),
+       ppl_delete_Polyhedron(Poly),
        fail
     ).
 
