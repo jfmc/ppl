@@ -77,7 +77,6 @@ namespace PPL = Parma_Polyhedra_Library;
   where \f$\lambda_1, \lambda_2\f$ can be any real number.
 
 */
-
 int
 PPL::Polyhedron::simplify(Matrix& mat, SatMatrix& sat) {
   size_t num_rows = mat.num_rows();

@@ -31,12 +31,12 @@ namespace PPL = Parma_Polyhedra_Library;
 #include <iostream>
 
 /*!
-  \fn static bool PPL::Polyhedron::minimize(bool con_to_ray,
+  \fn static bool PPL::Polyhedron::minimize(bool con_to_gen,
                                             Matrix& source,
 				            Matrix& dest,
 				            SatMatrix& sat)
 
-  \param con_to_ray   <CODE>true</CODE> if \p source represent the
+  \param con_to_gen   <CODE>true</CODE> if \p source represent the
                       constraints, <CODE>false</CODE> otherwise.
   \param source       The given matrix.
   \param dest         The matrix to build and minimize.
@@ -52,7 +52,7 @@ namespace PPL = Parma_Polyhedra_Library;
   <CODE>conversion()</CODE> and <CODE>simplify()</CODE>.
 
   \p sat has the generators on its columns and the constraints on its rows
-  if \p con_to_ray is <CODE>true</CODE>, otherwise it has the generators on
+  if \p con_to_gen is <CODE>true</CODE>, otherwise it has the generators on
   its rows and the constraints on its columns.
 
   Given \p source, this function builds (by means of
@@ -65,8 +65,9 @@ namespace PPL = Parma_Polyhedra_Library;
 */
 
 bool
-PPL::Polyhedron::minimize(bool con_to_ray,
-			  Matrix& source, Matrix& dest, SatMatrix& sat) {
+PPL::Polyhedron::minimize(bool con_to_gen,
+			  Matrix& source, Matrix& dest, SatMatrix& sat,
+			  bool pos) {
   // Sort the source matrix, if necessary.
   if (!source.is_sorted())
     source.sort_rows();
@@ -80,12 +81,13 @@ PPL::Polyhedron::minimize(bool con_to_ray,
   // `dest' is resized such that it is a square matrix having dimension
   // `source.num_columns()': the most important thing is that generators
   // and constraints have the same number of variables. Rows of `dest'
-  // (i.e., constraints or generators based on `con_to_ray')
+  // (i.e., constraints or generators based on `con_to_gen')
   // can be added or removed if it is necessary.
 
   size_t source_num_columns = source.num_columns();
   dest.resize_no_copy(source_num_columns, source_num_columns);
 
+#ifndef POSITIVE
   // `dest' is now a square matrix.
   size_t dest_num_rows = source_num_columns;
   for(size_t i = dest_num_rows; i-- > 0; ) {
@@ -110,6 +112,41 @@ PPL::Polyhedron::minimize(bool con_to_ray,
   // Note that `dest.num_lines_or_equalities()' is the number of the rows
   // of `dest' (because of our construction) and also the number
   // of columns of `source'.
+#else
+   // `dest' is now a square matrix.
+  size_t dest_num_rows = source_num_columns;
+  for(size_t i = dest_num_rows; i-- > 0; ) {
+    for (size_t j = dest_num_rows; j-- > 0; )
+      if (j != i)
+	dest[i][j] = 0;
+    dest[i][i] = 1;
+    if (con_to_gen && pos)
+      dest[i].set_is_ray_or_vertex_or_inequality();
+    else
+      dest[i].set_is_line_or_equality();
+  }
+  // Since we have built `dest' as the identity matrix, it is not sorted
+  // (see the sorting rules in Row.cc).
+  dest.set_sorted(false);
+
+  // We need a saturation matrix, too; then we initialize a temporary one
+  // setting all the elements to zero. They will be modified together with
+  // `dest'.
+  size_t num_positive = 0;
+  if (con_to_gen && pos)
+    num_positive = source_num_columns;
+  SatMatrix tmp_sat(dest_num_rows, num_positive + source.num_rows());
+  if (con_to_gen && pos)
+    for (size_t i = 0; i < num_positive; ++i)
+      tmp_sat[i].set(i);
+  // Since we want to build a new matrix of generators starting from the
+  // given matrix of constraints, we invoke the function conversion() with
+  // `start' parameter zero and we pass it the initialized matrices
+  // `dest' and `tmp_sat'.
+  // Note that `dest.num_lines_or_equalities()' is the number of the rows
+  // of `dest' (because of our construction) and also the number
+  // of columns of `source'.
+#endif
 
   size_t num_lines_or_equalities = conversion(source, 0,
 					      dest, tmp_sat,
@@ -132,49 +169,64 @@ PPL::Polyhedron::minimize(bool con_to_ray,
   // conversion() may have modified dest.
   dest_num_rows = dest.num_rows();
   bool empty_or_illegal = true;
-  for (size_t i = num_lines_or_equalities; i < dest_num_rows; ++i) {
-    if (dest[i][0] > 0) {
-      empty_or_illegal = false;
-      break;
+#if POSITIVE
+  if (pos && !con_to_gen)
+    for (size_t i =  dest.num_lines_or_equalities(); i < dest_num_rows; ) {
+      if (dest[i].only_a_term_is_positive()) {
+	--dest_num_rows;
+	std::swap(dest[i], dest[dest_num_rows]);
+      }
+      else
+	++i;
     }
-  }
-  if (empty_or_illegal) {
-    if (con_to_ray) {
-      // In this case `dest' contains generators and we have not found
-      // any vertex: the polyhedron is empty (See Poly.cc).
-      return empty_or_illegal;
-    }
-    else
-      // In this case `dest' contains constraints but does not contain
-      // the positivity constraint. Since the polyhedron is not bounded
-      // (see the definition in the Introduction) because the inhomogeneous
-      // term is zero in all of them (i.e., all hyper-plane corresponding
-      // to the constraints contain the origin), the system of constraints
-      // is illegal.
-      abort();
-  }
   else {
-    // Polyhedron is not empty.
-    // Since `sat' has generators on its columns
-    // while the saturation matrix argument of the function conversion()
-    // (i.e., `tmp_sat') has constraints on its columns, we have to
-    // transpose the saturation matrix returned by conversion().
-    sat.transpose_assign(tmp_sat);
-    // Deleting the redundant rows of `source'.
-    simplify(source, sat);
+#endif
+    for (size_t i = num_lines_or_equalities; i < dest_num_rows; ++i) {
+      if (dest[i][0] > 0) {
+	empty_or_illegal = false;
+	break;
+      }
+    }
+    if (empty_or_illegal) {
+      if (con_to_gen) {
+	// In this case `dest' contains generators and we have not found
+	// any vertex: the polyhedron is empty (See Poly.cc).
+	return empty_or_illegal;
+      }
+      else
+	// In this case `dest' contains constraints but does not contain
+	// the positivity constraint. Since the polyhedron is not bounded
+	// (see the definition in the Introduction) because the inhomogeneous
+	// term is zero in all of them (i.e., all hyper-plane corresponding
+	// to the constraints contain the origin), the system of constraints
+	// is illegal.
+	abort();
+    }
+    else {
+      // Polyhedron is not empty.
+      // Since `sat' has generators on its columns
+      // while the saturation matrix argument of the function conversion()
+      // (i.e., `tmp_sat') has constraints on its columns, we have to
+      // transpose the saturation matrix returned by conversion().
+      sat.transpose_assign(tmp_sat);
+      // Deleting the redundant rows of `source'.
+      simplify(source, sat);
+    }
+#if POSITIVE
   }
+#endif
 
   return empty_or_illegal;
 }
 
 /*!
-  \fn bool PPL::Polyhedron::add_and_minimize(bool con_to_ray,
+  \fn bool PPL::Polyhedron::add_and_minimize(bool con_to_gen,
                                              Matrix& source1,
                                              Matrix& dest,
                                              SatMatrix& sat,
                                              const Matrix& source2)
 					
-  \param con_to_ray   <CODE>true</CODE> if \p source1 and \p source2
+  \param con_to_gen   <CODE>true</CODE> if \p source1 and \p source2
                       are matrix of constraints, <CODE>false</CODE> otherwise.
   \param source1      The first element of the given DD pair.
   \param dest         The second element of the given DD pair.
@@ -209,11 +261,12 @@ PPL::Polyhedron::minimize(bool con_to_ray,
   will be added to \p source1, it is constant: it will not be modified.
 */
 bool
-PPL::Polyhedron::add_and_minimize(bool con_to_ray,
+PPL::Polyhedron::add_and_minimize(bool con_to_gen,
 				  Matrix& source1,
 				  Matrix& dest,
 				  SatMatrix& sat,
-				  const Matrix& source2) {
+				  const Matrix& source2,
+				  bool pos) {
   // `source1' and `source2' must have the same number of dimensions
   // to be merged.
   assert(source1.num_columns() == source2.num_columns());
@@ -293,26 +346,42 @@ PPL::Polyhedron::add_and_minimize(bool con_to_ray,
   // that provides at least one vertex (see the function minimize()).
   bool empty_or_illegal = true;
   dest_num_rows = dest.num_rows();
-  for (size_t i = num_lines_or_equalities; i < dest_num_rows; ++i)
-    if (dest[i][0] > 0) {
-      empty_or_illegal = false;
-      break;
+#if POSITIVE
+    if (pos && !con_to_gen)
+      for (size_t i =  dest.num_lines_or_equalities(); i < dest_num_rows; ) {
+	if (dest[i].only_a_term_is_positive()) {
+	  --dest_num_rows;
+	  std::swap(dest[i], dest[dest_num_rows]);
+	}
+	else
+	  ++i;
+      }
+    else {
+#endif
+      for (size_t i = num_lines_or_equalities; i < dest_num_rows; ++i)
+	if (dest[i][0] > 0) {
+	  empty_or_illegal = false;
+	  break;
+	}
+      if (empty_or_illegal) {
+	if (con_to_gen)
+	  return empty_or_illegal;
+	else
+	  abort();
+      }
+      else {
+	// Since the function conversion() returns a `sat_c' we have to
+	// transpose this matrix to obtain the `sat_g' that will be
+	// passed to the function simplify().
+	sat.transpose_assign(tmp_sat);
+	// Deleting the redundant rows of `source1'.
+	simplify(source1, sat);
+	
+	// We re-obtain the `sat_c'.
+	sat.transpose_assign(sat);
+      }
+#if POSITIVE
     }
-  if (empty_or_illegal) {
-    if (con_to_ray)
-      return empty_or_illegal;
-    else
-      abort();
-  }
-  else {
-    // Since the function conversion() returns a `sat_c' we have to
-    // transpose this matrix to obtain the `sat_g' that will be
-    // passed to the function simplify().
-    sat.transpose_assign(tmp_sat);
-    // Deleting the redundant rows of `source1'.
-    simplify(source1, sat);
-    // We re-obtain the `sat_c'.
-    sat.transpose_assign(sat);
-  }
+#endif
   return empty_or_illegal;
 }
