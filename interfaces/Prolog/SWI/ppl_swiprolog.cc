@@ -322,6 +322,7 @@ static PL_extension predicates[] = {
   PL_EXTENSION_ENTRY(ppl_new_Polyhedron_from_Polyhedron, 4)
   PL_EXTENSION_ENTRY(ppl_new_Polyhedron_from_ConSys, 3)
   PL_EXTENSION_ENTRY(ppl_new_Polyhedron_from_GenSys, 3)
+  PL_EXTENSION_ENTRY(ppl_new_Polyhedron_from_bounding_box, 3)
   PL_EXTENSION_ENTRY(ppl_delete_Polyhedron, 1)
   PL_EXTENSION_ENTRY(ppl_Polyhedron_space_dimension, 2)
   PL_EXTENSION_ENTRY(ppl_Polyhedron_intersection_assign, 2)
