@@ -244,9 +244,21 @@ public:
   size_t space_dimension() const;
 
   //! The generator type.
+  /*! \enum Type
+      Describes the type of the generator.
+   */
   enum Type {
+    /*! \hideinitializer
+      The generator is a line.
+    */
     LINE = Row::LINE_OR_EQUALITY,
+    /*! \hideinitializer
+      The generator is a ray.
+    */
     RAY = Row::RAY_OR_VERTEX_OR_INEQUALITY,
+    /*! \hideinitializer
+      The generator is a vertex.
+    */
     VERTEX = RAY+1
   };
 
