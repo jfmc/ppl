@@ -1,4 +1,5 @@
 :- ensure_loaded(ppl_sicstus).
+:- use_module(library(lists)).
 
 /*
   A non-ground meta-interpreter for CLP(Q) for use with the Parma
@@ -9,13 +10,13 @@
 
 /*
 solve/2 is the top-level predicate.
-solve(+Goal,-Polyhedron,-Qs).
+solve(+Goal,-Qs).
 Goal: the goal which can be a conjunction of atoms and constraints.
       The atoms can have rationals or variables as arguments.
       Note that repeated variables in an atom are currently not supported.
 Qs: a stack of copies of polyhdron to enable backtracking.
     These are to be removed once it is known that
-    no more solutions are required.
+    no more solutions are required. 
 */
 
 solve(Goal,[Polyhedron,Q|Qs]):-
@@ -84,8 +85,6 @@ solve((A,B),Polyhedron,InDims,OutDims,Q,InQs,[QB|Qs]):-
     ppl_remove_higher_dimensions(Polyhedron,InDims),
     ppl_convex_hull_assign(Polyhedron,Q),
     solve(A,Polyhedron,InDims,AOutDims,Q,InQs,QAs),
-         % In case of backtracking, the previous state must be restored.
-%    ppl_remove_higher_dimensions(Polyhedron,AOutDims),
          % A current copy of Polyhedron is needed for the call to solve.
     ppl_copy_polyhedron(Polyhedron,QB), 
     solve(B,Polyhedron,AOutDims,OutDims,QB,QAs,Qs).
@@ -127,7 +126,7 @@ solve_constraints(C,Polyhedron,Q):-
     ;
      true
     ).
-check.
+
 /*
 The two lists are made equal in the polyhedron.
 */
@@ -148,6 +147,7 @@ check_constraints(Polyhedron) :-
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 :- dynamic user_clause/2.
+:- dynamic polyhedron_stack/1.
 
 write_error(Message) :-
   write('clpq error: '),
@@ -209,14 +209,12 @@ main_loop :-
   write('PPL clpq ?- '),
   read(Command),
   do_command(Command).
-main_loop :- 
-  nl,
-  main_loop.
 
 clear_program :-
   retract(user_clause(_, _)),
   fail.
-clear_program.
+clear_program:-
+  retract(polyhedron_stack(_)).
 
 list_program :-
   user_clause(Head, Body),
@@ -272,15 +270,37 @@ do_command(listing) :-
   !,
   list_program,
   main_loop.
+do_command(statistics) :-
+  !,
+  statistics,
+  main_loop.
 do_command(Query) :-
   solve(Query,Qs),
+  retract(polyhedron_stack(Ps)),
+  remove_redundant(Ps,Qs),
+  assert(polyhedron_stack(Qs)),
   query_next_solution,
       % If query_next_solution succeeds,
       % then no more solutions are required and stack of
       % temporary polyhedra can be removed.
+  retract(polyhedron_stack(Qs)),
   delete_polyhedra(Qs),
+  assert(polyhedron_stack([])),
+  main_loop.
+do_command(_) :-
+  retract(polyhedron_stack(Ps)),
+  delete_polyhedra(Ps),
+  assert(polyhedron_stack([])),
   main_loop.
 
+remove_redundant([],_Qs).
+remove_redundant([P|Ps],Qs):-
+  member(P,Qs),
+  !,
+  remove_redundant(Ps,Qs).
+remove_redundant([P|Ps],Qs):-
+  ppl_delete_polyhedron(P),
+  remove_redundant(Ps,Qs).
 
 delete_polyhedra([]).
 delete_polyhedra([Q|Qs]):-
@@ -306,4 +326,5 @@ query_next_solution :-
 
 :-
   nofileerrors,
+  assert(polyhedron_stack([])),
   main_loop.
