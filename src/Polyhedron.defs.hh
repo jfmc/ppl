@@ -528,6 +528,9 @@ public:
   //! Returns the dimension of the vector space enclosing \p *this.
   dimension_type space_dimension() const;
 
+  dimension_type num_cons() const;
+  dimension_type num_gens() const;
+
   //! \brief
   //! Assigns to \p *this the intersection of \p *this and \p y,
   //! minimizing the result.

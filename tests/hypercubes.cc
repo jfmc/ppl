@@ -112,6 +112,7 @@ NNC_dual_hypercube(size_t dims,
 size_t
 get_number_cons(NNC_Polyhedron& ph) {
   const ConSys& cs = ph.constraints();
+  /*
   ConSys::const_iterator i = cs.begin();
   ConSys::const_iterator cs_end = cs.end();
   dimension_type num_constraints = 0;
@@ -120,11 +121,14 @@ get_number_cons(NNC_Polyhedron& ph) {
     i++;
   }
   return num_constraints;
+  */
+  return ph.num_cons();
 }
 
 size_t
 get_number_gens(NNC_Polyhedron& ph) {
   const GenSys& gs = ph.generators();
+  /*
   GenSys::const_iterator i = gs.begin();
   GenSys::const_iterator gs_end = gs.end();
   dimension_type num_generators = 0;
@@ -133,6 +137,8 @@ get_number_gens(NNC_Polyhedron& ph) {
     i++;
   }
   return num_generators;
+  */
+  return ph.num_gens();
 }
 
 void
@@ -146,30 +152,37 @@ compute_smf_gens(NNC_Polyhedron& ph) {
 int
 smf_intersection_polyhull_test(size_t dims, size_t perc) {
 
-  // Build 4 polyhedra and 4 copies of them.
+  // Build 4 polyhedra and 8 copies of them.
 
   // 1st-polyhedron.
   LinExpression weight_center;
+  for (size_t axis = dims; axis-- > 0; )
+    weight_center += Variable(axis);
   NNC_Polyhedron ph1;
   NNC_dual_hypercube(dims, weight_center, 5, perc, ph1);
-  NNC_Polyhedron ph1_copy = ph1;
+  NNC_Polyhedron ph1_enh = ph1;
+  NNC_Polyhedron ph1_semi = ph1;
 
   // 2nd-polyhedron.
   weight_center = LinExpression(0);
   for (size_t axis = dims; axis-- > 0; )
-    weight_center += Variable(axis);
+    weight_center += 2*Variable(axis);
   NNC_Polyhedron ph2;
   NNC_dual_hypercube(dims, weight_center, 4, perc, ph2);
-  NNC_Polyhedron ph2_copy = ph2;
+  NNC_Polyhedron ph2_enh = ph2;
+  NNC_Polyhedron ph2_semi = ph2;
 
   // 3rd-polyhedron.
   weight_center = LinExpression(0);
   for (size_t axis = dims; axis-- > 0; )
     if (axis % 2 == 0)
       weight_center += 10*Variable(axis);
+    else
+      weight_center += 2*Variable(axis);      
   NNC_Polyhedron ph3;
   NNC_dual_hypercube(dims, weight_center, 5, perc, ph3);
-  NNC_Polyhedron ph3_copy = ph3;
+  NNC_Polyhedron ph3_enh = ph3;
+  NNC_Polyhedron ph3_semi = ph3;
 
   // 4th-polyhedron.
   weight_center = LinExpression(0);
@@ -177,10 +190,11 @@ smf_intersection_polyhull_test(size_t dims, size_t perc) {
     if (axis % 2 == 0)
       weight_center += 10*Variable(axis);
     else
-      weight_center -= Variable(axis);
+      weight_center += Variable(axis);
   NNC_Polyhedron ph4;
   NNC_dual_hypercube(dims, weight_center, 4, perc, ph4);
-  NNC_Polyhedron ph4_copy = ph4;
+  NNC_Polyhedron ph4_enh = ph4;
+  NNC_Polyhedron ph4_semi = ph4;
 
   cout << "Working with 4 NNC dual-hypercubes," << endl
        << "each one having " << get_number_gens(ph1) << " gens" << endl
@@ -196,7 +210,18 @@ smf_intersection_polyhull_test(size_t dims, size_t perc) {
   start_clock();
 #if NOISY
   // Print dimensions of arguments.
-  cout << "Computing intersection of ph1 and ph2:" << endl; 
+  cout << "Computing intersection of ph1 and ph2:" << endl;
+
+  /*****
+  cout << "ph1 wmf cons" << endl;
+  ph1.constraints().ascii_dump(cout);
+  cout << endl;
+
+  cout << "ph2 wmf cons" << endl;
+  ph2.constraints().ascii_dump(cout);
+  cout << endl;
+  ******/
+
   cout << "  ph1 wmf cons: " << get_number_cons(ph1) << endl;
   cout << "  ph2 wmf cons: " << get_number_cons(ph2) << endl;
 #endif
@@ -244,56 +269,111 @@ smf_intersection_polyhull_test(size_t dims, size_t perc) {
   cout << "=================================" << endl;
   cout << endl << "  Enhanced computation: " << endl;
 
-  // Compute the intersection of ph1_copy and ph2_copy.
+  // Compute the intersection of ph1_enh and ph2_enh.
   start_clock();
-  //ph1_copy.minimized_constraints();
-  ph2_copy.minimized_constraints();
+  ph1_enh.minimized_constraints();
+  ph2_enh.minimized_constraints();
 #if NOISY
   // Print dimensions of arguments.
   cout << "Computing intersection of ph1 and ph2:" << endl; 
-  cout << "  ph1 wmf cons: " << get_number_cons(ph1_copy) << endl;
-  cout << "  ph2 smf cons: " << get_number_cons(ph2_copy) << endl;
+  cout << "  ph1 smf cons: " << get_number_cons(ph1_enh) << endl;
+  cout << "  ph2 smf cons: " << get_number_cons(ph2_enh) << endl;
 #endif
-  ph1_copy.intersection_assign_and_minimize(ph2_copy);
+  ph1_enh.intersection_assign_and_minimize(ph2_enh);
 
-  // Compute the intersection of ph3_copy and ph4_copy.
-  //ph3_copy.minimized_constraints();
-  ph4_copy.minimized_constraints();
+  // Compute the intersection of ph3_enh and ph4_enh.
+  ph3_enh.minimized_constraints();
+  ph4_enh.minimized_constraints();
 #if NOISY
   // Print dimensions of arguments.
   cout << "Computing intersection of ph3 and ph4:" << endl; 
-  cout << "  ph3 wmf cons: " << get_number_cons(ph3_copy) << endl;
-  cout << "  ph4 smf cons: " << get_number_cons(ph4_copy) << endl;
+  cout << "  ph3 smf cons: " << get_number_cons(ph3_enh) << endl;
+  cout << "  ph4 smf cons: " << get_number_cons(ph4_enh) << endl;
 #endif
-  ph3_copy.intersection_assign_and_minimize(ph4_copy);
+  ph3_enh.intersection_assign_and_minimize(ph4_enh);
   //  cout << "After the two intersections: ";
   //  print_clock(cout);
   //  cout << endl;
 
-  // Compute the poly-hull of ph1_copy and ph3_copy.
+  // Compute the poly-hull of ph1_enh and ph3_enh.
   //  start_clock();
-  //ph1_copy.minimized_generators();
-  ph3_copy.minimized_generators();
+  ph1_enh.minimized_generators();
+  ph3_enh.minimized_generators();
 #if NOISY
   // Print dimensions of arguments.
   cout << "Computing poly-hull of ph1 and ph3:" << endl; 
-  cout << "  ph1 wmf gens: " << get_number_gens(ph1_copy) << endl;
-  cout << "  ph3 smf gens: " << get_number_gens(ph3_copy) << endl;
+  cout << "  ph1 smf gens: " << get_number_gens(ph1_enh) << endl;
+  cout << "  ph3 smf gens: " << get_number_gens(ph3_enh) << endl;
 #endif
-  ph1_copy.poly_hull_assign_and_minimize(ph3_copy);
+  ph1_enh.poly_hull_assign_and_minimize(ph3_enh);
   cout << "After poly-hull: ";
   print_clock(cout);
   cout << endl;
 
   // How many constraints obtained?
-  cout << "  Final result wmf cons: " << get_number_cons(ph1_copy) << endl;
+  cout << "  Final result wmf cons: " << get_number_cons(ph1_enh) << endl;
 
   // How many constraints obtained?
   cout << "  Final result smf cons (time ";
   start_clock();
-  ph1_copy.minimized_constraints();
+  ph1_enh.minimized_constraints();
   print_clock(cout);
-  cout << "): " << get_number_cons(ph1_copy) << endl;
+  cout << "): " << get_number_cons(ph1_enh) << endl;
+  cout << endl;
+
+  //-----------------------------------------------------
+  // Semi-enhanced computation.
+  //-----------------------------------------------------
+  cout << "=================================" << endl;
+  cout << endl << "  Semi-enhanced computation: " << endl;
+
+  // Compute the intersection of ph1_semi and ph2_semi.
+  start_clock();
+  ph2_semi.minimized_constraints();
+#if NOISY
+  // Print dimensions of arguments.
+  cout << "Computing intersection of ph1 and ph2:" << endl; 
+  cout << "  ph1 wmf cons: " << get_number_cons(ph1_semi) << endl;
+  cout << "  ph2 smf cons: " << get_number_cons(ph2_semi) << endl;
+#endif
+  ph1_semi.intersection_assign_and_minimize(ph2_semi);
+
+  // Compute the intersection of ph3_semi and ph4_semi.
+  ph4_semi.minimized_constraints();
+#if NOISY
+  // Print dimensions of arguments.
+  cout << "Computing intersection of ph3 and ph4:" << endl; 
+  cout << "  ph3 wmf cons: " << get_number_cons(ph3_semi) << endl;
+  cout << "  ph4 smf cons: " << get_number_cons(ph4_semi) << endl;
+#endif
+  ph3_semi.intersection_assign_and_minimize(ph4_semi);
+  //  cout << "After the two intersections: ";
+  //  print_clock(cout);
+  //  cout << endl;
+
+  // Compute the poly-hull of ph1_semi and ph3_semi.
+  //  start_clock();
+  ph3_semi.minimized_generators();
+#if NOISY
+  // Print dimensions of arguments.
+  cout << "Computing poly-hull of ph1 and ph3:" << endl; 
+  cout << "  ph1 wmf gens: " << get_number_gens(ph1_semi) << endl;
+  cout << "  ph3 smf gens: " << get_number_gens(ph3_semi) << endl;
+#endif
+  ph1_semi.poly_hull_assign_and_minimize(ph3_semi);
+  cout << "After poly-hull: ";
+  print_clock(cout);
+  cout << endl;
+
+  // How many constraints obtained?
+  cout << "  Final result wmf cons: " << get_number_cons(ph1_semi) << endl;
+
+  // How many constraints obtained?
+  cout << "  Final result smf cons (time ";
+  start_clock();
+  ph1_semi.minimized_constraints();
+  print_clock(cout);
+  cout << "): " << get_number_cons(ph1_semi) << endl;
   cout << endl;
 
   return 0;
@@ -301,8 +381,8 @@ smf_intersection_polyhull_test(size_t dims, size_t perc) {
 
 int
 main() {
-  for (size_t perc = 0; perc <= 50; perc += 25)
-    for (size_t dims = 4; dims <= 5; dims++) {
+  for (size_t dims = 4; dims <= 5; dims++)
+    for (size_t perc = 25; perc <= 50; perc += 25) {
       cout << endl
 	   << "++++++++ DIM = " << dims << "  ++++++++"
 	   << endl
