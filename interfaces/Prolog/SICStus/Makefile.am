@@ -30,7 +30,7 @@ SUBDIRS =
 
 SICSTUS_CFLI_FILES = sicstus_cfli.h sicstus_cfli.ic sicstus_cfli.cc
 
-EXTRA_DIST = $(SICSTUS_CFLI_FILES) ppl_sicstus_sd.cc ppl_sicstus.pl sp_clpq.pl
+EXTRA_DIST = $(SICSTUS_CFLI_FILES) ppl_sicstus_sd.cc ppl_sicstus.pl sp_clpq.pl sp_pl_check.pl
 
 if HAVE_SICSTUS_PROLOG
 
@@ -85,7 +85,7 @@ schedule.clpq
 
 CLPQ_TESTS = $(CLPQ_TESTS_NONSTRICT) $(CLPQ_TESTS_STRICT)
 
-check-local: ppl_sicstus ../check_script ../expected
+check-local: ppl_sicstus ../check_script ../expected ../check_script2 ../expected2 ../expected3
 	for k in $(CLPQ_TESTS); do cp -f $(srcdir)/../$$k .; done
 	$(LIBTOOL) --mode=execute -dlopen ../../../src/libppl.la \
 	  ./ppl_sicstus -l $(srcdir)/sp_clpq.pl \
@@ -97,6 +97,18 @@ check-local: ppl_sicstus ../check_script ../expected
 	    --goal "main('$(top_srcdir)/interfaces/Prolog/clpq2')." \
 	      <$(srcdir)/../check_script2 >obtained2
 	diff -q --ignore-all-space $(srcdir)/../expected2 obtained2
+	if [ $(srcdir) != `pwd` ]; then \
+	  cp -f $(srcdir)/../pl_check.pl . ;\
+	fi
+	$(LIBTOOL) --mode=execute \
+		-dlopen ../../../src/libppl.la \
+		 ./ppl_sicstus -l $(srcdir)/sp_pl_check.pl \
+        --goal "main."  \
+			>obtained3
+	if [ $(srcdir) != `pwd` ]; then \
+	  rm -f pl_check.pl ;\
+	fi
+	diff -q --ignore-all-space $(srcdir)/../expected3 obtained3
 
 MOSTLYCLEANFILES = \
 ppl_sicstus.s.o ppl_sicstus.so \
