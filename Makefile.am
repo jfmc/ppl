@@ -34,7 +34,7 @@ EXTRA_DIST = \
 configure \
 ppl.lsm.in \
 ppl.spec.in \
-BUGS CREDITS STANDARDS
+BUGS CREDITS README.configure STANDARDS
 
 @SET_MAKE@
 
