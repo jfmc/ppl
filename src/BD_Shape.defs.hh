@@ -601,7 +601,8 @@ public:
   */
   void affine_image(Variable var,
 		    const Linear_Expression& expr,
-		    const Coefficient& denominator = Coefficient_one());
+		    Coefficient_traits::const_reference denominator
+		    = Coefficient_one());
 
   //! \brief
   //! Assigns to \p *this the \ref affine_transformation "affine preimage"
@@ -620,7 +621,8 @@ public:
   */
   void affine_preimage(Variable var,
 		       const Linear_Expression& expr,
-		       const Coefficient& denominator = Coefficient_one());
+		       Coefficient_traits::const_reference denominator
+		       = Coefficient_one());
 
   //! \brief
   //! Assigns to \p *this the image of \p *this with respect to the
@@ -646,7 +648,7 @@ public:
   void generalized_affine_image(Variable var,
 				Relation_Symbol relsym,
 				const Linear_Expression& expr,
-				const Coefficient& denominator
+				Coefficient_traits::const_reference denominator
 				= Coefficient_one());
 
   //! \brief

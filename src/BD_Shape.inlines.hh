@@ -2378,7 +2378,7 @@ template <typename T>
 inline void
 BD_Shape<T>::affine_image(const Variable var,
 			  const Linear_Expression& expr,
-			  const Coefficient& denominator) {
+			  Coefficient_traits::const_reference denominator) {
   // The denominator cannot be zero.
   if (denominator == 0)
     throw_generic("affine_image(v, e, d)", "d == 0");
@@ -2652,7 +2652,7 @@ template <typename T>
 inline void
 BD_Shape<T>::affine_preimage(const Variable var,
 			     const Linear_Expression& expr,
-			     const Coefficient& denominator) {
+			     Coefficient_traits::const_reference denominator) {
 
   // The denominator cannot be zero.
   if (denominator == 0)
@@ -2767,10 +2767,11 @@ BD_Shape<T>::affine_preimage(const Variable var,
 
 template <typename T>
 inline void
-BD_Shape<T>::generalized_affine_image(const Variable var,
-				      const Relation_Symbol relsym,
-				      const Linear_Expression& expr,
-				      const Coefficient& denominator) {
+BD_Shape<T>::generalized_affine_image
+(const Variable var,
+ const Relation_Symbol relsym,
+ const Linear_Expression& expr,
+ Coefficient_traits::const_reference denominator) {
 
   // The denominator cannot be zero.
   if (denominator == 0)
