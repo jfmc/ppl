@@ -753,7 +753,7 @@ PPL::Polyhedron::strongly_minimize_constraints() const {
   if (x.space_dim == 0)
     return true;
 
-#if 1
+#if 0
   std::cout << "Constraint system before strong minimization" << std::endl;
   std::cout << con_sys << std::endl;
 #endif
@@ -875,6 +875,7 @@ PPL::Polyhedron::strongly_minimize_constraints() const {
 	topologically_closed = false;
 	if (strict_inequals_saturate_all_rays) {
 	  strict_inequals_saturate_all_rays = (sat[i] <= sat_lines_and_rays);
+#if 0
 	  if (!strict_inequals_saturate_all_rays) {
 	    std::cout << "STRICT_INEQ_SAT_ALL_RAYS setted to FALSE"
 		      << std::endl;
@@ -887,6 +888,7 @@ PPL::Polyhedron::strongly_minimize_constraints() const {
 	    std::cout << "generator system: " << std::endl
 		      << gen_sys << std::endl;
 	  }
+#endif
 	}
 	// Continue with next constraint.
 	++i;
@@ -896,7 +898,7 @@ PPL::Polyhedron::strongly_minimize_constraints() const {
       // `cs[i]' is not a strict inequality: consider next constraint.
       ++i;
 
-#if 1
+#if 0
   std::cout << std::endl;
   std::cout << "Constraint system after strong minimization" << std::endl;
   std::cout << "but before re-inserting the eps_leq_one" << std::endl;
@@ -3268,7 +3270,7 @@ PPL::Polyhedron::is_BBRZ02_stabilizing(const Polyhedron& x,
   dimension_type y_dimension =
     y.space_dimension() - y.con_sys.num_equalities();
   if (x_dimension > y_dimension) {
-#ifndef NDEBUG
+#if 0 //#ifndef NDEBUG
     std::cout << "BBRZ02_stabilizing: number of dimensions" << std::endl;
 #endif
     return true;
@@ -3285,7 +3287,7 @@ PPL::Polyhedron::is_BBRZ02_stabilizing(const Polyhedron& x,
   dimension_type x_num_lines = x.gen_sys.num_lines();
   dimension_type y_num_lines = y.gen_sys.num_lines();
   if (x_num_lines > y_num_lines) {
-#ifndef NDEBUG
+#if 0 //#ifndef NDEBUG
     std::cout << "BBRZ02_stabilizing: lineality space" << std::endl;
 #endif
     return true;
@@ -3305,7 +3307,7 @@ PPL::Polyhedron::is_BBRZ02_stabilizing(const Polyhedron& x,
     dimension_type y_num_points = y_gen_sys_num_rows
       - y_num_lines - y.gen_sys.num_rays();
     if (x_num_points < y_num_points) {
-#ifndef NDEBUG
+#if 0 //#ifndef NDEBUG
       std::cout << "BBRZ02_stabilizing: number of points" << std::endl;
 #endif
       return true;
@@ -3329,7 +3331,7 @@ PPL::Polyhedron::is_BBRZ02_stabilizing(const Polyhedron& x,
     // If the number of closure points of `x' is smaller than
     // the number of closure points of `y', the chain is stabilizing.
     if (x_num_closure_points < y_num_closure_points) {
-#ifndef NDEBUG
+#if 0 //#ifndef NDEBUG
       std::cout << "BBRZ02_stabilizing: number of closure points"
 		<< std::endl;
 #endif
@@ -3378,7 +3380,7 @@ PPL::Polyhedron::is_BBRZ02_stabilizing(const Polyhedron& x,
       // Not stabilizing.
       break;
     if (x_num_rays[i] < y_num_rays[i]) {
-#ifndef NDEBUG
+#if 0 //#ifndef NDEBUG
       std::cout << "BBRZ02_stabilizing: zero-coord rays" << std::endl;
 #endif
       return true;
@@ -3387,7 +3389,7 @@ PPL::Polyhedron::is_BBRZ02_stabilizing(const Polyhedron& x,
 
   // Hey, wait a minute! Are they equal?
   if (x == y) {
-#ifndef NDEBUG
+#if 0 //#ifndef NDEBUG
     std::cout << "BBRZ02_stabilizing: same polyhedra" << std::endl;
 #endif
     return true;
@@ -3447,7 +3449,7 @@ PPL::Polyhedron::BBRZ02_widening_assign(const Polyhedron& y) {
   
   // If the iteration is stabilizing, the resulting polyhedron is `x'.
   if (is_BBRZ02_stabilizing(x, y)) {
-#ifndef NDEBUG
+#if 0 //#ifndef NDEBUG
     std::cout << "BBRZ02: immediately stabilizing" << std::endl;
 #endif
     assert(OK());
@@ -3502,16 +3504,12 @@ PPL::Polyhedron::BBRZ02_widening_assign(const Polyhedron& y) {
   // The system of constraints of the resulting polyhedron
   // contains the constraints of `H79_con_sys'.
   ConSys new_con_sys = H79_con_sys;
-  // We must choose a point (if the polyhedra are necessarily closed)
-  // or a closure point (if the polyhedra are not necessarily closed)
-  // that belong to `x' and `y'.  In the case of not necessarily
-  // closed polyhedra, we can consider only the closure points,
-  // because the role of the points can be played by the closure
-  // points.
+  // We must choose a point or a closure point (if the polyhedra
+  // are not necessarily closed) that belong to `x' and `y'.
   dimension_type y_gen_sys_num_rows = y.gen_sys.num_rows();
   for (dimension_type i = y_gen_sys_num_rows; i-- > 0; ) {
     const Generator& g = y.gen_sys[i];
-    if ((g.is_point() && x.is_necessarily_closed())
+    if (g.is_point()
 	|| (g.is_closure_point() && !x.is_necessarily_closed())) {
       // We choose a constraint of `x' that saturates the point `g'
       // and that belongs to `x_con_sys_minus_y_con_sys' and we put
@@ -3603,7 +3601,7 @@ PPL::Polyhedron::BBRZ02_widening_assign(const Polyhedron& y) {
   // Check for stabilization.
   x.minimize();
   if (is_BBRZ02_stabilizing(x, y)) {
-#ifndef NDEBUG
+#if 0 //#ifndef NDEBUG
     std::cout << "BBRZ02: stabilizing on 1st technique" << std::endl;
 #endif
     assert(OK(true));
@@ -3626,11 +3624,9 @@ PPL::Polyhedron::BBRZ02_widening_assign(const Polyhedron& y) {
 
   for (dimension_type i = x_gen_sys_num_rows; i-- > 0; ) {
     Generator& g1 = x.gen_sys[i];
-    // For C polyhedra, we choose a point of `x.gen_sys'
+    // We choose a point (or closure point) of `x.gen_sys'
     // that is not included in `y'.
-    // In the case of NNC polyhedra, we can restrict attention to
-    // closure points (considering also points will only add redundancy).
-    if ((g1.is_point() && x.is_necessarily_closed())
+    if (g1.is_point()
 	|| (g1.is_closure_point() && !x.is_necessarily_closed())) {
       Poly_Gen_Relation relation = y.relation_with(g1);
       if (relation == Poly_Gen_Relation::nothing()) {
@@ -3641,13 +3637,16 @@ PPL::Polyhedron::BBRZ02_widening_assign(const Polyhedron& y) {
 	// we built the ray `g1 - g2' and put it into `new_rays'.
 	for (dimension_type j = y_gen_sys_num_rows; j-- > 0; ) {
 	  const Generator& g2 = y.gen_sys[j];
-	  if ((g2.is_point() && y.is_necessarily_closed())
+	  if (g2.is_point()
 	      || (g2.is_closure_point() && !y.is_necessarily_closed())) {
 	    // Check that `g1' and `g2' are different.
 	    if (compare(g1, g2) == 0)
 	      continue;
 	    Generator ray_from_g2_to_g1 = g1;
 	    ray_from_g2_to_g1.linear_combine(g2, 0);
+	    // In the NNC case, force a zero epsilon coefficient for rays.
+	    if (!is_necessarily_closed())
+	      ray_from_g2_to_g1[space_dimension()+1] = 0;
 	    new_rays.insert(ray_from_g2_to_g1);
 	  }
 	}
@@ -3661,10 +3660,13 @@ PPL::Polyhedron::BBRZ02_widening_assign(const Polyhedron& y) {
 	  if (i == j)
 	    continue;
 	  const Generator& g2 = x.gen_sys[j];
-	  if ((g2.is_point() && x.is_necessarily_closed())
+	  if (g2.is_point()
 	      || (g2.is_closure_point() && !x.is_necessarily_closed())) {
 	    Generator ray_from_g2_to_g1(g1);
 	    ray_from_g2_to_g1.linear_combine(g2, 0);
+	    // In the NNC case, force a zero epsilon coefficient for rays.
+	    if (!is_necessarily_closed())
+	      ray_from_g2_to_g1[space_dimension()+1] = 0;
 	    new_rays.insert(ray_from_g2_to_g1);
 	  }
 	}
@@ -3730,7 +3732,7 @@ PPL::Polyhedron::BBRZ02_widening_assign(const Polyhedron& y) {
   
     // Check for stabilization.
     if (is_BBRZ02_stabilizing(x, y)) {
-#ifndef NDEBUG
+#if 0 //#ifndef NDEBUG
       std::cout << "BBRZ02: stabilizing on the first case of 2nd technique"
 		<< std::endl;
 #endif
@@ -3747,7 +3749,7 @@ PPL::Polyhedron::BBRZ02_widening_assign(const Polyhedron& y) {
 
   // Check for stabilization.
   if (is_BBRZ02_stabilizing(x, y)) {
-#ifndef NDEBUG
+#if 0 //#ifndef NDEBUG
     std::cout << "BBRZ02: stabilizing on the second case of 2nd technique"
 	      << std::endl;
 #endif
@@ -3856,7 +3858,7 @@ PPL::Polyhedron::BBRZ02_widening_assign(const Polyhedron& y) {
   
   // Check for stabilization.
   if (is_BBRZ02_stabilizing(x, y)) {
-#ifndef NDEBUG
+#if 0 //#ifndef NDEBUG
     std::cout << "BBRZ02: stabilizing on 3rd technique" << std::endl;
 #endif
     assert(OK(true));
@@ -3873,7 +3875,7 @@ PPL::Polyhedron::BBRZ02_widening_assign(const Polyhedron& y) {
   // Check for stabilization.
   x.minimize();
   if (is_BBRZ02_stabilizing(x, y)) {
-#ifndef NDEBUG
+#if 0 //#ifndef NDEBUG
     std::cout << "BBRZ02: stabilizing on H79 widening" << std::endl;
 #endif
     assert(OK(true));
