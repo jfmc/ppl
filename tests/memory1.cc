@@ -71,12 +71,12 @@ compute_open_hypercube_generators(dimension_type dimension) {
 
 #define LIMIT(WHAT) \
 do { \
-  if (getrlimit(RLIMIT_AS, &t) != 0) { \
+  if (getrlimit(WHAT, &t) != 0) { \
     cerr << "getrlimit failed: " << strerror(errno) << endl; \
     exit(1); \
   } \
   t.rlim_cur = bytes; \
-  if (setrlimit(RLIMIT_AS, &t) != 0) { \
+  if (setrlimit(WHAT, &t) != 0) { \
     cerr << "setrlimit failed: " << strerror(errno) << endl; \
     exit(1); \
   } \
