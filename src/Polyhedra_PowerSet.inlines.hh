@@ -138,10 +138,8 @@ Polyhedra_PowerSet<PH>::add_constraint_and_minimize(const Constraint& c) {
 template <typename PH>
 void
 Polyhedra_PowerSet<PH>::add_constraints(const ConSys& cs) {
-  for (iterator xi = Base::begin(), x_end = Base::end(); xi != x_end; ++xi) {
-    ConSys cs_copy = cs;
-    xi->polyhedron().add_constraints(cs_copy);
-  }
+  for (iterator xi = Base::begin(), x_end = Base::end(); xi != x_end; ++xi)
+    xi->polyhedron().add_constraints(cs);
   Base::reduced = false;
 }
 
@@ -151,8 +149,7 @@ Polyhedra_PowerSet<PH>::add_constraints_and_minimize(const ConSys& cs) {
   for (iterator xi = Base::begin(),
 	 xin = xi, x_end = Base::end(); xi != x_end; xi = xin) {
     ++xin;
-    ConSys cs_copy = cs;
-    if (!xi->polyhedron().add_constraints_and_minimize(cs_copy)) {
+    if (!xi->polyhedron().add_constraints_and_minimize(cs)) {
       erase(xi);
       x_end = Base::end();
     }
