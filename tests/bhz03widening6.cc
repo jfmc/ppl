@@ -258,6 +258,82 @@ test3() {
     exit(1);
 }
 
+// This tests the first case of the widening definition when the widening
+// of the elements of the set reduces the multiset ordering.
+static void
+test4() {
+  C_Polyhedron p1(2);
+  p1.add_constraint(Y >= 2);
+  p1.add_constraint(Y <= 3);
+  p1.add_constraint(Y - X <= 2);
+  p1.add_constraint(X + Y <= 8);
+
+  C_Polyhedron p2(2);
+  p2.add_constraint(X >= 0);
+  p2.add_constraint(Y >= 0);
+  p2.add_constraint(X <= 1);
+  p2.add_constraint(Y <= 1);
+
+  C_Polyhedron p3(2);
+  p3.add_constraint(X >= 5);
+  p3.add_constraint(Y >= 0);
+  p3.add_constraint(X <= 8);
+  p3.add_constraint(Y <= 1);
+
+  C_Polyhedron p4(2);
+  p4.add_constraint(X >= 7);
+  p4.add_constraint(Y >= 4);
+  p4.add_constraint(X <= 8);
+  p4.add_constraint(Y <= 5);
+
+  PSet T1(2, Polyhedron::EMPTY);
+  T1.add_disjunct(p1);
+  T1.add_disjunct(p2);
+  T1.add_disjunct(p3);
+  T1.add_disjunct(p4);
+
+  C_Polyhedron q1(2);
+  q1.add_constraint(Y >= 2);
+  q1.add_constraint(Y <= 4);
+  q1.add_constraint(Y - X <= 2);
+  q1.add_constraint(X + Y <= 8);
+
+  PSet T2(2, Polyhedron::EMPTY);
+  T2.add_disjunct(q1);
+  T2.add_disjunct(p2);
+  T2.add_disjunct(p3);
+  T2.add_disjunct(p4);
+
+#if NOISY
+  using namespace Parma_Polyhedra_Library::IO_Operators;
+
+  cout << "T1 = " << T1 << endl
+       << "T2 = " << T2 << endl;
+#endif
+
+  PSet oldT2 = T2;
+  T2.BHZ03_widening_assign(T1, &Polyhedron::H79_widening_assign);
+
+  C_Polyhedron r1(2);
+  r1.add_constraint(Y >= 2);
+  r1.add_constraint(Y - X <= 2);
+  r1.add_constraint(X + Y <= 8);
+
+  PSet known_result(2, Polyhedron::EMPTY);
+  known_result.add_disjunct(r1);
+  known_result.add_disjunct(p2);
+  known_result.add_disjunct(p3);
+  known_result.add_disjunct(p4);
+
+#if NOISY
+  cout << "T2.BHZ03(T1, H79)" << " = " << T2 << endl;
+#endif
+
+  if (T2 != known_result ||
+      !T2.semantically_contains(oldT2) || !T2.semantically_contains(T1))
+    exit(1);
+}
+
 int
 main() TRY {
   set_handlers();
@@ -265,6 +341,7 @@ main() TRY {
   test1();
   test2();
   test3();
+  test4();
 
   return 0;
 }

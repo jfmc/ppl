@@ -88,11 +88,22 @@ main() TRY {
 
   PSet oldT2 = T2;
   T2.BHZ03_widening_assign(T1, &Polyhedron::H79_widening_assign);
+
+  C_Polyhedron pd(2);
+  pd.add_constraint(X >= 0);
+  pd.add_constraint(X <= 4);
+  pd.add_constraint(X + 2*Y >= 10);
+
+  PSet known_result = oldT2;
+  known_result.add_disjunct(pd);
+
 #if NOISY
   cout << "T2.BHZ03(T1, H79)" << " = " << T2 << endl;
+  cout << "known result" << " = " << known_result << endl;
 #endif
 
   return
-    (T2.semantically_contains(oldT2) && T2.semantically_contains(T1)) ? 0 : 1;
+    (T2 == known_result &&
+     T2.semantically_contains(oldT2) && T2.semantically_contains(T1)) ? 0 : 1;
 }
 CATCH

@@ -31,7 +31,7 @@ using namespace Parma_Polyhedra_Library;
 #define NOISY 0
 #endif
 
-// An unbounded NNC polyhedron in 4D but bounded in 2D
+// This is unbounded NNC polyhedron in 4D but bounded in 2D
 // with strict inequality and closure points at the lower bound.
 static void
 test1() {
@@ -123,7 +123,7 @@ test2() {
     exit(1);
 }
 
-// An empty polyhedron in 2D defined using strict constraints.
+// This is an empty polyhedron in 2D defined using strict constraints.
 static void
 test3() {
   Variable x(0);
