@@ -31,6 +31,7 @@ site: http://www.cs.unipr.it/ppl/ . */
 #include <cstdlib>
 #include <iostream>
 #include <fstream>
+#include <stdexcept>
 
 #ifdef HAVE_GETOPT_H
 # include <getopt.h>
@@ -350,34 +351,35 @@ read_coefficients(std::istream& in,
 		  mpz_class& denominator) {
   unsigned num_coefficients = coefficients.size();
   switch (number_type) {
-  case INTEGER: {
-    for (unsigned i = 0; i < num_coefficients; ++i)
-      if (!guarded_read(in, coefficients[i]))
-	error("missing or invalid integer coefficient");
-    denominator = 1;
-    break;
-  }
-  case RATIONAL: {
-    std::vector<mpq_class> rational_coefficients(num_coefficients);
-    for (unsigned i = 0; i < num_coefficients; ++i)
-      if (!guarded_read(in, rational_coefficients[i]))
-	error("missing or invalid rational coefficient");
-    normalize(rational_coefficients, coefficients, denominator);
-    break;
-  }
-  case REAL: {
-    std::vector<mpq_class> rational_coefficients(num_coefficients);
-    for (unsigned i = 0; i < num_coefficients; ++i) {
-      double d;
-      if (!guarded_read(in, d))
-	error("missing or invalid real coefficient");
-      rational_coefficients[i] = mpq_class(d);
+  case INTEGER:
+    {
+      for (unsigned i = 0; i < num_coefficients; ++i)
+	if (!guarded_read(in, coefficients[i]))
+	  error("missing or invalid integer coefficient");
+      denominator = 1;
+      break;
     }
-    normalize(rational_coefficients, coefficients, denominator);
-    break;
-  }
-  default:
-    fatal("internal error: wrong number type");
+  case RATIONAL:
+    {
+      std::vector<mpq_class> rational_coefficients(num_coefficients);
+      for (unsigned i = 0; i < num_coefficients; ++i)
+	if (!guarded_read(in, rational_coefficients[i]))
+	  error("missing or invalid rational coefficient");
+      normalize(rational_coefficients, coefficients, denominator);
+      break;
+    }
+  case REAL:
+    {
+      std::vector<mpq_class> rational_coefficients(num_coefficients);
+      for (unsigned i = 0; i < num_coefficients; ++i) {
+	double d;
+	if (!guarded_read(in, d))
+	  error("missing or invalid real coefficient");
+	rational_coefficients[i] = mpq_class(d);
+      }
+      normalize(rational_coefficients, coefficients, denominator);
+      break;
+    }
   }
 }
 
@@ -635,7 +637,7 @@ write_polyhedron(std::ostream& out,
 } // namespace
 
 int
-main(int argc, char* argv[]) {
+main(int argc, char* argv[]) try {
   program_name = argv[0];
 
   if (strcmp(PPL_VERSION, PPL::version()) != 0)
@@ -717,85 +719,99 @@ main(int argc, char* argv[]) {
     Representation e_rep = read_polyhedron(input(), e_ph);
 
     switch (command) {
-    case Project: {
-      if (ph != e_ph) {
-	if (verbose)
-	  std::cerr << "Check failed: polyhedra differ"
-		    << std::endl;
-	return 1;
+    case Project:
+      {
+	if (ph != e_ph) {
+	  if (verbose)
+	    std::cerr << "Check failed: polyhedra differ"
+		      << std::endl;
+	  return 1;
+	}
+	break;
       }
-      break;
-    }
-    case H_to_V: {
-      if (e_rep == H)
-	warning("checking an H-to-V conversion with an H representation");
+    case H_to_V:
+      {
+	if (e_rep == H)
+	  warning("checking an H-to-V conversion with an H representation");
 
-      // Count the number of generators of `ph'.
-      unsigned ph_num_generators = 0;
-      const PPL::GenSys& ph_gs = ph.generators();
-      for (PPL::GenSys::const_iterator i = ph_gs.begin(),
-	     ph_gs_end = ph_gs.end(); i != ph_gs_end; ++i)
-	++ph_num_generators;
+	// Count the number of generators of `ph'.
+	unsigned ph_num_generators = 0;
+	const PPL::GenSys& ph_gs = ph.generators();
+	for (PPL::GenSys::const_iterator i = ph_gs.begin(),
+	       ph_gs_end = ph_gs.end(); i != ph_gs_end; ++i)
+	  ++ph_num_generators;
+	
+	// Count the number of generators of `e_ph'.
+	unsigned e_ph_num_generators = 0;
+	const PPL::GenSys& e_ph_gs = e_ph.generators();
+	for (PPL::GenSys::const_iterator i = e_ph_gs.begin(),
+	       e_ph_gs_end = e_ph_gs.end(); i != e_ph_gs_end; ++i)
+	  ++e_ph_num_generators;
+
+	// If the polyhedra differ, that is the problem.
+	if (ph != e_ph) {
+	  if (verbose)
+	    std::cerr << "Check failed: polyhedra differ"
+		      << std::endl;
+	  return 1;
+	}
+	else if (ph_num_generators != e_ph_num_generators)
+	  // If we have different number of generators, we fail.
+	  std::cerr << "Check failed: different number of generators:\n"
+		    << "expected " << e_ph_num_generators
+		    << ", obtained " << ph_num_generators
+		    << std::endl;
+	break;
+      }
+    case V_to_H:
+      {
+	if (e_rep == V)
+	  warning("checking an V-to-H conversion with a V representation");
+
+	// Count the number of constraints of `ph'.
+	unsigned ph_num_constraints = 0;
+	const PPL::ConSys& ph_cs = ph.constraints();
+	for (PPL::ConSys::const_iterator i = ph_cs.begin(),
+	       ph_cs_end = ph_cs.end(); i != ph_cs_end; ++i)
+	  ++ph_num_constraints;
       
-      // Count the number of generators of `e_ph'.
-      unsigned e_ph_num_generators = 0;
-      const PPL::GenSys& e_ph_gs = e_ph.generators();
-      for (PPL::GenSys::const_iterator i = e_ph_gs.begin(),
-	     e_ph_gs_end = e_ph_gs.end(); i != e_ph_gs_end; ++i)
-	++e_ph_num_generators;
+	// Count the number of constraints of `e_ph'.
+	unsigned e_ph_num_constraints = 0;
+	const PPL::ConSys& e_ph_cs = e_ph.constraints();
+	for (PPL::ConSys::const_iterator i = e_ph_cs.begin(),
+	       e_ph_cs_end = e_ph_cs.end(); i != e_ph_cs_end; ++i)
+	  ++e_ph_num_constraints;
 
-      // If the polyhedra differ, that is the problem.
-      if (ph != e_ph) {
-	if (verbose)
-	  std::cerr << "Check failed: polyhedra differ"
+	// If the polyhedra differ, that is the problem.
+	if (ph != e_ph) {
+	  if (verbose)
+	    std::cerr << "Check failed: polyhedra differ"
+		      << std::endl;
+	  return 1;
+	}
+	else if (ph_num_constraints != e_ph_num_constraints)
+	  // If we have different number of constraints, we fail.
+	  std::cerr << "Check failed: different number of constraints:\n"
+		    << "expected " << e_ph_num_constraints
+		    << ", obtained " << ph_num_constraints
 		    << std::endl;
-	return 1;
+	break;
       }
-      else if (ph_num_generators != e_ph_num_generators)
-	// If we have different number of generators, we fail.
-	std::cerr << "Check failed: different number of generators:\n"
-		  << "expected " << e_ph_num_generators
-		  << ", obtained " << ph_num_generators
-		  << std::endl;
-      break;
-    }
-    case V_to_H: {
-      if (e_rep == V)
-	warning("checking an V-to-H conversion with a V representation");
-
-      // Count the number of constraints of `ph'.
-      unsigned ph_num_constraints = 0;
-      const PPL::ConSys& ph_cs = ph.constraints();
-      for (PPL::ConSys::const_iterator i = ph_cs.begin(),
-	     ph_cs_end = ph_cs.end(); i != ph_cs_end; ++i)
-	++ph_num_constraints;
-      
-      // Count the number of constraints of `e_ph'.
-      unsigned e_ph_num_constraints = 0;
-      const PPL::ConSys& e_ph_cs = e_ph.constraints();
-      for (PPL::ConSys::const_iterator i = e_ph_cs.begin(),
-	     e_ph_cs_end = e_ph_cs.end(); i != e_ph_cs_end; ++i)
-	++e_ph_num_constraints;
-
-      // If the polyhedra differ, that is the problem.
-      if (ph != e_ph) {
-	if (verbose)
-	  std::cerr << "Check failed: polyhedra differ"
-		    << std::endl;
-	return 1;
-      }
-      else if (ph_num_constraints != e_ph_num_constraints)
-	// If we have different number of constraints, we fail.
-	std::cerr << "Check failed: different number of constraints:\n"
-		  << "expected " << e_ph_num_constraints
-		  << ", obtained " << ph_num_constraints
-		  << std::endl;
-      break;
-    }
     case None:
       break;
     }
   }
-
   return 0;
+}
+catch(const std::bad_alloc&) {
+  fatal("out of memory");
+  exit(1);
+}
+catch(const std::overflow_error&) {
+  fatal("arithmetic overflow");
+  exit(1);
+}
+catch(...) {
+  fatal("internal error: please submit a bug report to ppl-devel@cs.unipr.it");
+  exit(1);
 }
