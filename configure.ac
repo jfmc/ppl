@@ -30,7 +30,7 @@ AC_INIT([the Parma Polyhedra Library], 0.5pre13, ppl-devel@cs.unipr.it, ppl)
 AC_PREREQ(2.57)
 
 # Make sure the sources are there.
-AC_CONFIG_SRCDIR(src/Polyhedron.cc)
+AC_CONFIG_SRCDIR(src/Polyhedron_public.cc)
 
 # Use Automake.
 AM_INIT_AUTOMAKE([foreign dist-bzip2 dist-zip 1.7.3])
