@@ -29,7 +29,7 @@ site: http://www.cs.unipr.it/ppl/ . */
 using namespace std;
 using namespace Parma_Polyhedra_Library;
 
-#define NOISY 1
+#define NOISY 0
 #define C_TESTS 1
 #define NNC_TESTS 1
 
@@ -617,8 +617,6 @@ void test_nnc6() {
 }
 
 // This is a bounded C polyhedron that is a single point;
-// There is a bug and the check "if (box != known_box)"
-// is commented out.
 void test_c7() {
 #if C_TESTS
   Variable x(0);
@@ -646,15 +644,13 @@ void test_c7() {
   known_box.print_box("*** test_c7 known ***");
 #endif
 
-//  if (box != known_box)
-//    exit(1);
+  if (box != known_box)
+    exit(1);
 
 #endif // C_TESTS
 }
 
 // This is a bounded NNC polyhedron that is a single point;
-// There is a bug and the check "if (box != known_box)"
-// is commented out.
 void test_nnc7() {
 #if NNC_TESTS
   Variable x(0);
@@ -682,8 +678,8 @@ void test_nnc7() {
   known_box.print_box("*** test_nnc7 known ***");
 #endif
 
-//  if (box != known_box)
-//    exit(1);
+ if (box != known_box)
+    exit(1);
 
 #endif // NNC_TESTS
 }
