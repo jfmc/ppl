@@ -36,12 +36,16 @@ The following definitions and results are taken from:
 
 Let \f$\lambda_1, \ldots, \lambda_k \in \Rset\f$ and 
 \f$\vect{x}_1, \ldots, \vect{x}_k \in \Rset^n\f$. The linear combination
-\f$\lambda_1 \vect{x}_1 + \ldots + \lambda_k \vect{x}_k\f$ is said to be
+\f$\sum_{j = 1}^k \lambda_j\vect{x}_j\f$
+is said to be
 
 - a <EM>positive combination</EM>,
   if \f$\forall j \in \{ 1, \ldots, k \} \itc \lambda_j \geq 0\f$;
 - an <EM>affine combination</EM>, if \f$\sum_{j = 1}^k \lambda_j = 1\f$;
 - a <EM>convex combination</EM>, if both the previous conditions hold.
+
+Note that, when \f$k = 0\f$,
+then \f$\sum_{j = 1}^k \lambda_j\vect{x}_j = \vect{0}\f$.
 
 <B>Scalar product</B>
 
@@ -104,14 +108,14 @@ matrix \f$A\f$ is the <EM>rank</EM> of \f$A\f$ and is denoted by
 
 A set of points \f$\vect{x}_1, \ldots, \vect{x}_k \in \Rset^n\f$ is 
 <EM>affinely independent</EM> if,
-for all \f$\alpha_1, \ldots, \alpha_k \in \Rset\f$,
+for all \f$\lambda_1, \ldots, \lambda_k \in \Rset\f$,
 the set of equations
 \f[
-  \sum_{i = 1}^k \alpha_i \vect{x}_i = \vect{0},
+  \sum_{i = 1}^k \lambda_i \vect{x}_i = \vect{0},
     \quad
-  \sum_{i = 1}^k \alpha_i = 0
+  \sum_{i = 1}^k \lambda_i = 0
 \f]
-implies that, for each \f$i = 1, \ldots, k\f$, \f$\alpha_i = 0\f$.
+implies that, for each \f$i = 1, \ldots, k\f$, \f$\lambda_i = 0\f$.
 
 Note that linear independence implies affine independence, but the 
 converse is not true. Moreover the maximum number of affinely independent
@@ -184,10 +188,11 @@ with rational coefficients such that
       \,\}.
 \f]
 
-In the sequel, we will consider only rational polyhedra and 
-assume that, if
-\f$P = \{\,\vect{x} \in \Rset^n \mid A\vect{x} \geq \vect{b}\,\}\f$,
-then \f$A\f$ and \f$\vect{b}\f$ both have rational coefficients.
+In the sequel, we will consider only rational polyhedra
+and assume that, if
+\f$\{\,\vect{x} \in \Rset^n \mid A\vect{x} \geq \vect{b}\,\}\f$
+is a system of constraints representing a polyhedron,
+then \f$A\f$ and \f$\vect{b}\f$ have rational coefficients.
 
 <B>Universe polyhedron</B>
 
@@ -311,8 +316,9 @@ and it is denoted by \f$\mathop{\mathrm{lin. space}}(P)\f$.
 
 <B>Minkowski's sum</B>
 
-Let \f$R\f$ and \f$S\f$ be two sets. Then the <EM>Minkowski's sum</EM> of 
-of \f$R\f$ and \f$S\f$ is defined as follows:
+Let \f$R, S \in \Rset^n\f$ be two sets of vectors.
+Then the <EM>Minkowski's sum</EM> of 
+of \f$R\f$ and \f$S\f$ is defined:
 \f[
   R + S = \{\,r + s \mid r \in R, s \in S\,\}.
 \f]
