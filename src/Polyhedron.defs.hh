@@ -162,18 +162,19 @@ namespace Parma_Polyhedra_Library {
     an half-plane in \f$\Rset^2\f$,
     by adding a single constraint to the universe polyhedron:
     \code
-  Polyhedron ph;
+  Polyhedron ph(2);
   ph.insert(y >= 0);
     \endcode
     The following code builds the same polyhedron as above,
     but starting from a system of generators specifying a vertex,
     a ray and a line.
     \code
-  Polyhedron ph;
-  ph.insert(vertex(0*x + 0*y));
-  ph.insert(ray(0*x + y));
-  ph.insert(line(x + 0*y));
-    \endcode
+  GenSys gs;
+  gs.insert(vertex(0*x + 0*y));
+  gs.insert(ray(0*x + y));
+  gs.insert(line(x + 0*y));
+  Polyhedron ph(gs);
+  \endcode
     In this last case, it is important to note that: even if this
     polyhedron has no real vertex, we must add one, because otherwise
     the polyhedron is considered empty.
@@ -182,7 +183,7 @@ namespace Parma_Polyhedra_Library {
     The following code shows the use of the function
     <CODE>add_dimensions_and_embed</CODE>:
     \code
-  Polyhedron ph;
+  Polyhedron ph(1);
   ph.insert(x == 2);
   ph.add_dimensions_and_embed(1);
     \endcode
@@ -203,7 +204,7 @@ namespace Parma_Polyhedra_Library {
     The following code shows the use of the function
     <CODE>add_dimensions_and_project</CODE>:
     \code
-  Polyhedron ph;
+  Polyhedron ph(1);
   ph.insert(x == 2);
   ph.add_dimensions_and_poject(1);
     \endcode
@@ -217,11 +218,12 @@ namespace Parma_Polyhedra_Library {
     The following code shows the use of the function
     <CODE>assign_variable</CODE>:
     \code
-  Polyhedron ph;
-  ph.insert(vertex(0*x + 0*y));
-  ph.insert(vertex(0*x + 3*y));
-  ph.insert(vertex(3*x + 0*y));
-  ph.insert(vertex(3*x + 3*y));
+  GenSys gs;
+  gs.insert(vertex(0*x + 0*y));
+  gs.insert(vertex(0*x + 3*y));
+  gs.insert(vertex(3*x + 0*y));
+  gs.insert(vertex(3*x + 3*y));
+  Polyhedron ph(gs);
   LinExpression coeff = x + 0*y + 4;
   ph.assign_variable(x, coeff);
     \endcode
@@ -247,7 +249,7 @@ namespace Parma_Polyhedra_Library {
     The following code shows the use of the function
     <CODE>substitute_variable</CODE>:
     \code
-  Polyhedron ph;
+  Polyhedron ph(2);
   ph.insert(x >= 0);
   ph.insert(x <= 3);
   ph.insert(y >= 0);
@@ -273,6 +275,43 @@ namespace Parma_Polyhedra_Library {
   LinExpression coeff = 0*x + y;
     \endcode
     the resulting polyhedron is a line that corresponds to the \f$y\f$ axis.
+
+    \par Example 8
+    For this example we use also the variables:
+    \code
+  Variable z(2);
+  Variable w(3);
+    \endcode
+    The following code shows the use of the function
+    <CODE>remove_dimensions</CODE>:
+    \code
+  GenSys gs;
+  gs.insert(vertex(3*x + y +0*z + 2*w));
+  Polyhedron ph(gs);
+  set<Variable> to_be_remove;
+  to_be_remove.insert(y);
+  to_be_remove.insert(z);
+  ph.remove_dimensions(to_be_remove);
+    \endcode
+    The starting polyhedron is the singleton set
+    \f$\bigl\{ (3, 1, 0, 2)^\transpose \bigr\} \sseq \Rset^4\f$, while
+    the resulting polyhedron is 
+    \f$\bigl\{ (3, 2)^\transpose \bigr\} \sseq \Rset^2\f$.
+    The resulting polyhedron is different if we use the following code:
+    \code
+  set<Variable> to_be_remove1;
+  to_be_remove1.insert(y);
+  ph.remove_dimensions(to_be_remove1);
+  set<Variable> to_be_remove2;
+  to_be_remove2.insert(z);
+  ph.remove_dimensions(to_be_remove2);
+    \endcode
+    In this case, the result is the polyhedron
+    \f$\bigl\{(3, 0)^\transpose \bigr\} \sseq \Rset^2\f$: the second
+    removed variable is not the variable \f$z\f$ of the starting
+    polyhedron, but it is the variable \f$z\f$ of the polyhedron after
+    the first <CODE>remove_dimensions</CODE> that corresponds to the
+    variable \f$w\f$ of the starting polyhedron.
 */
 
 class Parma_Polyhedra_Library::Polyhedron {
