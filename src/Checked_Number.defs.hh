@@ -153,8 +153,8 @@ public:
   Result assign(const Minus_Infinity& x, Rounding_Dir dir = ROUND_DEFAULT);
   Result assign(const Plus_Infinity& x, Rounding_Dir dir = ROUND_DEFAULT);
   Result assign(const Not_A_Number& x, Rounding_Dir dir = ROUND_DEFAULT);
-  Result assign(const char *x, Rounding_Dir dir = ROUND_DEFAULT);
-  Result assign(char *x, Rounding_Dir dir = ROUND_DEFAULT);
+  Result assign(const char* x, Rounding_Dir dir = ROUND_DEFAULT);
+  Result assign(char* x, Rounding_Dir dir = ROUND_DEFAULT);
 
 #define FUNC1(name) \
   template <typename From> \

@@ -284,7 +284,7 @@ struct FUNCTION_CLASS(name) <Policy, type1, type2, type3> { \
 #define SPECIALIZE_FROM_C_STRING(suf, Type) \
   SPECIALIZE_FUN1_0_2(from_c_string, suf, Result, nonconst, Type, const char*, Rounding_Dir)
 #define SPECIALIZE_TO_C_STRING(suf, Type) \
-  SPECIALIZE_FUN1_2_2(to_c_string, suf, Result, char *, size_t, const, Type, const Numeric_Format&, Rounding_Dir)
+  SPECIALIZE_FUN1_2_2(to_c_string, suf, Result, char*, size_t, const, Type, const Numeric_Format&, Rounding_Dir)
 
 
 DECLARE_FUN1_0_0(sgn,         Result, const, From)

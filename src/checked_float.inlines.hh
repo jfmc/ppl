@@ -442,48 +442,48 @@ sub_mul_float(Type& to, const Type x, const Type y, Rounding_Dir dir) {
 }
 
 template <typename T>
-T strtod_(const char *nptr, char **endptr);
+T strtod_(const char* nptr, char** endptr);
 
 #if !HAVE_DECL_STRTOF
-float strtof(const char *nptr, char **endptr);
+float strtof(const char* nptr, char** endptr);
 #endif
 
 template <>
 inline float
-strtod_(const char *nptr, char **endptr) {
+strtod_(const char* nptr, char** endptr) {
   return strtof(nptr, endptr);
 }
 
 #if !HAVE_DECL_STRTOD
-double strtod(const char *nptr, char **endptr);
+double strtod(const char* nptr, char** endptr);
 #endif
 
 template <>
 inline double
-strtod_(const char *nptr, char **endptr) {
+strtod_(const char* nptr, char** endptr) {
   return strtod(nptr, endptr);
 }
 
 #if !HAVE_DECL_STRTOLD
 long double
-strtold(const char *nptr, char **endptr);
+strtold(const char* nptr, char** endptr);
 #endif
 
 template <>
 inline long double
-strtod_(const char *nptr, char **endptr) {
+strtod_(const char*nptr, char** endptr) {
   return strtold(nptr, endptr);
 }
 
 template <typename T>
 inline int
-dtostr_(char *str, size_t size, T x) {
+dtostr_(char* str, size_t size, T x) {
   return snprintf(str, size, "%.99g", static_cast<double>(x));
 }
 
 template <>
 inline int
-dtostr_<long double>(char *str, size_t size, long double x) {
+dtostr_<long double>(char* str, size_t size, long double x) {
   return snprintf(str, size, "%.99Lg", x);
 }
 
@@ -491,7 +491,7 @@ template <typename Policy, typename Type>
 inline Result
 from_c_string_float(Type& to, const char* from, Rounding_Dir dir) {
   errno = 0;
-  char *end;
+  char* end;
   Type v = strtod_<Type>(from, &end);
   if (errno == ERANGE) {
     to = v;

@@ -1139,7 +1139,7 @@ template <typename Policy, typename Type>
 inline Result
 from_c_string_signed_int(Type& to, const char* from, Rounding_Dir dir) {
   errno = 0;
-  char *end;
+  char* end;
   signed long v = strtol(from, &end, 0);
   if (errno == ERANGE)
     return v < 0 ? set_neg_overflow_int<Policy>(to, dir) : set_pos_overflow_int<Policy>(to, dir);
@@ -1152,7 +1152,7 @@ template <typename Policy, typename Type>
 inline Result
 from_c_string_unsigned_int(Type& to, const char* from, Rounding_Dir dir) {
   errno = 0;
-  char *end;
+  char* end;
   unsigned long v = strtoul(from, &end, 0);
   if ((errno && errno != ERANGE) || *end)
     return set_special<Policy>(to, V_CVT_STR_UNK);
@@ -1175,7 +1175,7 @@ template <typename Policy, typename Type>
 inline Result
 from_c_string_long_long(Type& to, const char* from, Rounding_Dir dir) {
   errno = 0;
-  char *end;
+  char* end;
   signed long long v = strtoll(from, &end, 0);
   if (errno == ERANGE)
     return v < 0 ? set_neg_overflow_int<Policy>(to, dir) : set_pos_overflow_int<Policy>(to, dir);
@@ -1189,7 +1189,7 @@ template <typename Policy, typename Type>
 inline Result
 from_c_string_unsigned_long_long(Type& to, const char* from, Rounding_Dir dir) {
   errno = 0;
-  char *end;
+  char* end;
   unsigned long long v = strtoull(from, &end, 0);
   if ((errno && errno != ERANGE) || *end)
     return V_CVT_STR_UNK;

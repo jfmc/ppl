@@ -486,7 +486,7 @@ ne_ext(const Type1& x, const Type2& y) {
 
 template <typename Policy, typename Type>
 inline Result
-to_c_string_ext(char *str, size_t size, const Type& x, const Numeric_Format& format, Rounding_Dir dir) {
+to_c_string_ext(char* str, size_t size, const Type& x, const Numeric_Format& format, Rounding_Dir dir) {
   if (handle_ext_natively(Type))
     return to_c_string<Policy>(str, size, x, format, dir);
   if (is_nan<Policy>(x)) {
@@ -507,7 +507,7 @@ to_c_string_ext(char *str, size_t size, const Type& x, const Numeric_Format& for
 
 template <typename To_Policy, typename To>
 inline Result
-from_c_string_ext(To& to, const char *str, Rounding_Dir dir) {
+from_c_string_ext(To& to, const char* str, Rounding_Dir dir) {
   if (handle_ext_natively(To))
     return from_c_string<To_Policy>(to, str, dir);
   if (strcmp(str, "-inf") == 0)
