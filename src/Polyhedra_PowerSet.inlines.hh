@@ -67,7 +67,6 @@ Polyhedra_PowerSet<PH>::space_dimension() const {
 template <typename PH>
 void
 Polyhedra_PowerSet<PH>::concatenate_assign(const Polyhedra_PowerSet& y) {
-  space_dim += y.space_dim;
   Sequence new_sequence;
   const Polyhedra_PowerSet<PH>& x = *this;
   for (const_iterator xi = x.begin(), x_end = x.end(); xi != x_end; ++xi)
@@ -78,7 +77,9 @@ Polyhedra_PowerSet<PH>::concatenate_assign(const Polyhedra_PowerSet& y) {
       new_sequence.push_back(zi);
     }
   std::swap(sequence, new_sequence);
-  omega_reduction();
+  space_dim += y.space_dim;
+  assert(OK());
+  assert(is_omega_reduced());
 }
 
 template <typename PH>
@@ -93,7 +94,7 @@ Polyhedra_PowerSet<PH>::add_constraint(const Constraint& c) {
       x_end = end();
     }
   }
-  omega_reduction();
+  omega_reduce();
 }
 
 template <typename PH>
@@ -108,44 +109,48 @@ Polyhedra_PowerSet<PH>::add_constraints(ConSys& cs) {
       x_end = end();
     }
   }
-  omega_reduction();
+  omega_reduce();
 }
 
 template <typename PH>
 void
 Polyhedra_PowerSet<PH>::add_dimensions_and_embed(dimension_type m) {
-  space_dim += m;
   for (iterator i = begin(), send = end(); i != send; ++i)
     i->add_dimensions_and_embed(m);
-  omega_reduction();
+  space_dim += m;
+  assert(OK());
+  assert(is_omega_reduced());
 }
 
 template <typename PH>
 void
 Polyhedra_PowerSet<PH>::add_dimensions_and_project(dimension_type m) {
-  space_dim += m;
   for (iterator i = begin(), send = end(); i != send; ++i)
     i->add_dimensions_and_project(m);
-  omega_reduction();
+  space_dim += m;
+  assert(OK());
+  assert(is_omega_reduced());
 }
 
 template <typename PH>
 void
 Polyhedra_PowerSet<PH>::remove_dimensions(const Variables_Set& to_be_removed) {
-  // FIXME: set space_dim
   for (iterator i = begin(), send = end(); i != send; ++i)
     i->remove_dimensions(to_be_removed);
-  omega_reduction();
+  space_dim -= to_be_removed.size();
+  omega_reduce();
+  assert(OK());
 }
 
 template <typename PH>
 void
 Polyhedra_PowerSet<PH>::remove_higher_dimensions(dimension_type
 						 new_dimension) {
-  space_dim = new_dimension;
   for (iterator i = begin(), send = end(); i != send; ++i)
     i->remove_higher_dimensions(new_dimension);
-  omega_reduction();
+  space_dim = new_dimension;
+  omega_reduce();
+  assert(OK());
 }
 
 template <typename PH>
@@ -166,7 +171,7 @@ Polyhedra_PowerSet<PH>::map_dimensions(const PartialFunction& pfunc) {
     for (iterator i = sbegin, send = end(); i != send; ++i)
       i->map_dimensions(pfunc);
     space_dim = sbegin->space_dimension();
-    omega_reduction();
+    omega_reduce();
   }
   assert(OK());
 }
@@ -210,6 +215,7 @@ Polyhedra_PowerSet<PH>::pairwise_reduce() {
     std::swap(sequence, new_sequence);
     n -= deleted;
   } while (deleted > 0);
+  omega_reduce();
   assert(OK());
 }
 
@@ -260,22 +266,33 @@ void
 Polyhedra_PowerSet<PH>::collapse(unsigned max_disjuncts) {
   size_type n = size();
   if (n > max_disjuncts) {
-    iterator i = begin();
-    unsigned k = 1;
+    iterator sbegin = begin();
+    iterator i = sbegin;
+    unsigned m = 1;
     // Move to the last polyhedron that will survive.
-    for ( ; k < max_disjuncts; ++k)
+    for ( ; m < max_disjuncts; ++m)
       ++i;
     // This polyhedron will be assigned the poly-hull of itself
     // and of all the polyhedra that follow.
     PH& ph = i->polyhedron();
-    ++i;
     const_iterator j = i;
-    for (++k; k < n; ++k)
+    for (++m, ++j; m <= n; ++m, ++j)
       ph.poly_hull_assign(j->polyhedron());
+
+    // Ensure omega-reduction.
+    for (iterator k = sbegin, kn = k; k != i; k = kn) {
+      ++kn;
+      if (ph.contains(k->polyhedron()))
+	erase(k);
+    }
+
     // Erase the surplus polyhedra.
+    ++i;
     erase(i, end());
-    assert(size() == max_disjuncts);
+
+    assert(size() <= max_disjuncts);
   }
+  assert(OK());
 }
 
 template <typename PH>

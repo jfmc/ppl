@@ -24,10 +24,7 @@ site: http://www.cs.unipr.it/ppl/ . */
 #ifndef PPL_PowerSet_inlines_hh
 #define PPL_PowerSet_inlines_hh 1
 
-#include "ConSys.defs.hh"
-#include "ConSys.inlines.hh"
 #include <algorithm>
-#include <deque>
 #include <cassert>
 
 namespace Parma_Polyhedra_Library {
@@ -99,6 +96,18 @@ PowerSet<CS>::pop_back() {
 }
 
 template <typename CS>
+typename PowerSet<CS>::iterator
+PowerSet<CS>::erase(iterator first, iterator last) {
+  return sequence.erase(first, last);
+}
+
+template <typename CS>
+typename PowerSet<CS>::iterator
+PowerSet<CS>::erase(iterator position) {
+  return sequence.erase(position);
+}
+
+template <typename CS>
 PowerSet<CS>::PowerSet(const PowerSet<CS>& y)
   : sequence(y.sequence) {
 }
@@ -115,17 +124,12 @@ PowerSet<CS>::PowerSet() {
 }
 
 template <typename CS>
-PowerSet<CS>::PowerSet(const ConSys& cs) {
-  push_back(CS(cs));
-}
-
-template <typename CS>
 void
-PowerSet<CS>::omega_reduction() {
+PowerSet<CS>::omega_reduce() {
   for (iterator xi = begin(), xin = xi; xi != end(); xi = xin) {
     ++xin;
     const CS& xv = *xi;
-    for (iterator yi = xin, yin = yi; yi != end(); yi = yin) {
+    for (iterator yi = begin(), yin = yi; yi != end(); yi = yin) {
       ++yin;
       if (xi == yi)
 	continue;
@@ -146,11 +150,19 @@ PowerSet<CS>::omega_reduction() {
 
 template <typename CS>
 bool
-PowerSet<CS>::definitely_contains(const CS& y) const {
-  for (const_iterator xi = begin(), x_end = end(); xi != x_end; ++xi)
-    if (xi->is_definitely_equivalent_to(y))
-      return true;
-  return false;
+PowerSet<CS>::is_omega_reduced() const {
+  for (const_iterator sbegin = begin(), send = end(),
+	 xi = sbegin; xi != send; ++xi) {
+    const CS& xv = *xi;
+    for (const_iterator yi = sbegin; yi != send; ++yi) {
+      if (xi == yi)
+	continue;
+      const CS& yv = *yi;
+      if (xv.definitely_entails(yv) || yv.definitely_entails(xv))
+	return false;
+    }
+  }
+  return true;
 }
 
 template <typename CS>
@@ -158,7 +170,7 @@ PowerSet<CS>&
 PowerSet<CS>::add_disjunct(const CS& d) {
   if (!d.is_bottom()) {
     sequence.push_back(d);
-    omega_reduction();
+    omega_reduce();
   }
   return *this;
 }
@@ -191,8 +203,6 @@ inline
 bool operator!=(const PowerSet<CS>& x, const PowerSet<CS>& y) {
   return !(x == y);
 }
-
-// Simple tests
 
 template <typename CS>
 inline bool
@@ -241,7 +251,7 @@ operator*(const PowerSet<CS>& x, const PowerSet<CS>& y) {
 	z.sequence.push_back(zi);
     }
   }
-  z.omega_reduction();
+  z.omega_reduce();
   return z;
 }
 
@@ -258,16 +268,14 @@ PowerSet<CS>::meet_assign(const PowerSet<CS>& y) {
 	new_sequence.push_back(zi);
     }
   std::swap(sequence, new_sequence);
-  omega_reduction();
+  omega_reduce();
 }
-
-// Join operator
 
 template <typename CS>
 void
 PowerSet<CS>::upper_bound_assign(const PowerSet<CS>& y) {
   std::copy(y.begin(), y.end(), back_inserter(sequence));
-  omega_reduction();
+  omega_reduce();
 }
 
 namespace IO_Operators {

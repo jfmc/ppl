@@ -25,10 +25,6 @@ site: http://www.cs.unipr.it/ppl/ . */
 #define PPL_PowerSet_defs_hh
 
 #include "PowerSet.types.hh"
-#include "ConSys.types.hh"
-#include "Constraint.types.hh"
-#include "Variable.defs.hh"
-#include "globals.hh"
 #include <iosfwd>
 #include <list>
 #include <set>
@@ -96,14 +92,9 @@ public:
   //! Ordinary copy-constructor.
   PowerSet(const PowerSet& y);
 
-  //! \brief
   //! The assignment operator.
-  //! (\p *this and \p y can be dimension-incompatible.)
   PowerSet& operator=(const PowerSet& y);
   
-  //! Creates a PowerSet with the same information contents as \p cs.
-  PowerSet(const ConSys& cs);
-
   //! Adds to \p *this the disjunct \p d.
   PowerSet& add_disjunct(const CS& d);
 
@@ -149,9 +140,13 @@ protected:
   //! The sequence container holding powerset's elements.
   Sequence sequence;
 
-  void omega_reduction();
+  //! Erase from \p *this all the non-maximal elements.
+  void omega_reduce();
 
-  bool definitely_contains(const CS& y) const;
+  //! \brief
+  //! Returns <CODE>true</CODE> if and only if \p *this does not contain
+  //! non-maximal elements.
+  bool is_omega_reduced() const;
 
 public:
   typedef typename Sequence::size_type size_type;
@@ -176,15 +171,10 @@ public:
   reverse_iterator rend();
   const_reverse_iterator rend() const;
 
-//protected:
   void push_back(const CS& y);
   void pop_back();
-  iterator erase(iterator first, iterator last) {
-    return sequence.erase(first, last);
-  }
-  iterator erase(iterator position) {
-    return sequence.erase(position);
-  }
+  iterator erase(iterator first, iterator last);
+  iterator erase(iterator position);
 };
 
 #include "PowerSet.inlines.hh"
