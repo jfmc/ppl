@@ -32,8 +32,8 @@ namespace Parma_Polyhedra_Library {
 
 template <typename T>
 inline void*
-DB_Row<T>::Impl::operator new(const size_t fixed_size, 
-			     const dimension_type capacity) {
+DB_Row_Impl_Handler<T>::Impl::operator new(const size_t fixed_size, 
+					   const dimension_type capacity) {
 #if CXX_SUPPORTS_FLEXIBLE_ARRAYS
   return ::operator new(fixed_size + capacity*sizeof(T));
 #else
@@ -44,91 +44,118 @@ DB_Row<T>::Impl::operator new(const size_t fixed_size,
 
 template <typename T>
 inline void
-DB_Row<T>::Impl::operator delete(void* p) {
+DB_Row_Impl_Handler<T>::Impl::operator delete(void* p) {
   ::operator delete(p);
 }
 
 template <typename T>
 inline void
-DB_Row<T>::Impl::operator delete(void* p, dimension_type) {
+DB_Row_Impl_Handler<T>::Impl::operator delete(void* p, dimension_type) {
   ::operator delete(p);
 }
 
 template <typename T> 
 inline dimension_type
-DB_Row<T>::Impl::max_size() {
+DB_Row_Impl_Handler<T>::Impl::max_size() {
   return size_t(-1)/sizeof(T);
 }
 
 template <typename T>
 inline dimension_type
-DB_Row<T>::Impl::size() const {
+DB_Row_Impl_Handler<T>::Impl::size() const {
   return size_;
 }
 
 template <typename T>
 inline void
-DB_Row<T>::Impl::set_size(const dimension_type new_sz) {
+DB_Row_Impl_Handler<T>::Impl::set_size(const dimension_type new_sz) {
   size_ = new_sz;
 }
 
 template <typename T>
 inline void
-DB_Row<T>::Impl::bump_size() {
+DB_Row_Impl_Handler<T>::Impl::bump_size() {
   ++size_;
 }
 
 template <typename T>
-inline void
-DB_Row<T>::Impl::resize_no_copy(const dimension_type new_sz) {
-  if (new_sz < size())
-    shrink(new_sz);
-  else
-    grow_no_copy(new_sz);
-}
-
-template <typename T>
 inline
-DB_Row<T>::Impl::Impl(const dimension_type sz)
+DB_Row_Impl_Handler<T>::Impl::Impl()
   : size_(0) {
-  grow_no_copy(sz);
 }
 
 template <typename T>
 inline
-DB_Row<T>::Impl::Impl(const Impl& y)
-  : size_(0) {
-  copy_construct(y);
-}
-
-template <typename T>
-inline
-DB_Row<T>::Impl::Impl(const Impl& y, const dimension_type sz)
-  : size_(0) {
-  copy_construct(y);
-  grow_no_copy(sz);
-}
-
-template <typename T>
-inline
-DB_Row<T>::Impl::~Impl() {
-#if CXX_SUPPORTS_FLEXIBLE_ARRAYS
+DB_Row_Impl_Handler<T>::Impl::~Impl() {
   shrink(0);
-#else
-  shrink(1);
+}
+
+template <typename T>
+inline
+DB_Row_Impl_Handler<T>::DB_Row_Impl_Handler()
+  : impl(0) {
+#if EXTRA_ROW_DEBUG
+  capacity_ = 0;
 #endif
 }
 
 template <typename T>
+inline
+DB_Row_Impl_Handler<T>::~DB_Row_Impl_Handler() {
+  delete impl;
+}
+
+// template <typename T>
+// inline void
+// DB_Row<T>::Impl::resize_no_copy(const dimension_type new_sz) {
+//   if (new_sz < size())
+//     shrink(new_sz);
+//   else
+//     grow_no_copy(new_sz);
+// }
+
+// template <typename T>
+// inline
+// DB_Row<T>::Impl::Impl(const dimension_type sz)
+//   : size_(0) {
+//   grow_no_copy(sz);
+// }
+
+// template <typename T>
+// inline
+// DB_Row<T>::Impl::Impl(const Impl& y)
+//   : size_(0) {
+//   copy_construct(y);
+// }
+
+// template <typename T>
+// inline
+// DB_Row<T>::Impl::Impl(const Impl& y, const dimension_type sz)
+//   : size_(0) {
+//   copy_construct(y);
+//   grow_no_copy(sz);
+// }
+
+// template <typename T>
+// inline
+// DB_Row<T>::Impl::~Impl() {
+// #if CXX_SUPPORTS_FLEXIBLE_ARRAYS
+//   shrink(0);
+// #else
+//   shrink(1);
+// #endif
+// }
+
+template <typename T>
 inline T&
-DB_Row<T>::Impl::operator[](const dimension_type k) {
+DB_Row_Impl_Handler<T>::Impl::operator[](const dimension_type k) {
   assert(k < size());
   return vec_[k];
 }
 
 template <typename T>
 inline const T&
-DB_Row<T>::Impl::operator[](const dimension_type k) const {
+DB_Row_Impl_Handler<T>::Impl::operator[](const dimension_type k) const {
   assert(k < size());
   return vec_[k];
 }
@@ -136,45 +163,79 @@ DB_Row<T>::Impl::operator[](const dimension_type k) const {
 template <typename T>
 inline dimension_type
 DB_Row<T>::max_size() {
-  return Impl::max_size();
+  return DB_Row_Impl_Handler<T>::Impl::max_size();
 }
 
 template <typename T>
 inline dimension_type
 DB_Row<T>::size() const {
-  return impl->size();
+  return this->impl->size();
 }
 
 #if EXTRA_ROW_DEBUG
 template <typename T>
 inline dimension_type
 DB_Row<T>::capacity() const {
-  return capacity_;
+  return this->capacity_;
 }
-#endif
+#endif // EXTRA_ROW_DEBUG
 
 template <typename T>
 inline
 DB_Row<T>::DB_Row()
-  : impl(0) {
+  : DB_Row_Impl_Handler<T>() {
+}
+
+template <typename T>
+inline void
+DB_Row<T>::allocate(
+#if CXX_SUPPORTS_FLEXIBLE_ARRAYS
+	       const
+#endif
+	       dimension_type capacity) {
+  DB_Row<T>& x = *this;
+  assert(capacity <= max_size());
+#if !CXX_SUPPORTS_FLEXIBLE_ARRAYS
+  if (capacity == 0)
+    ++capacity;
+#endif
+  assert(x.impl == 0);
+  x.impl = new (capacity) typename DB_Row_Impl_Handler<T>::Impl();
+#if EXTRA_ROW_DEBUG
+  assert(x.capacity_ == 0);
+  x.capacity_ = capacity;
+#endif
+}
+
+template <typename T>
+inline void
+DB_Row<T>::expand_within_capacity(const dimension_type new_size) {
+  DB_Row<T>& x = *this;
+  assert(x.impl);
+#if EXTRA_ROW_DEBUG
+  assert(new_size <= x.capacity_);
+#endif
+  x.impl->expand_within_capacity(new_size);
+}
+
+template <typename T>
+inline void
+DB_Row<T>::copy_construct_coefficients(const DB_Row& y) {
+  DB_Row<T>& x = *this;
+  assert(x.impl && y.impl);
+#if EXTRA_ROW_DEBUG
+  assert(y.size() <= x.capacity_);
+#endif
+  x.impl->copy_construct_coefficients(*(y.impl));
 }
 
 template <typename T>
 inline void
 DB_Row<T>::construct(const dimension_type sz, 
-#if CXX_SUPPORTS_FLEXIBLE_ARRAYS
-		    const 
-#endif
-		    dimension_type capacity) {
-  assert(capacity >= sz);
-#if !CXX_SUPPORTS_FLEXIBLE_ARRAYS
-  if (capacity == 0)
-    ++capacity;
-#endif
-  impl = new (capacity) Impl(sz);
-#if EXTRA_ROW_DEBUG
-  capacity_ = capacity;
-#endif
+		     const dimension_type capacity) {
+  assert(sz <= capacity && capacity <= max_size());
+  allocate(capacity);
+  expand_within_capacity(sz);
 }
 
 template <typename T>
@@ -186,7 +247,8 @@ DB_Row<T>::construct(const dimension_type sz) {
 template <typename T>
 inline
 DB_Row<T>::DB_Row(const dimension_type sz, 
-		const dimension_type capacity) {
+		  const dimension_type capacity)
+  : DB_Row_Impl_Handler<T>() {
   construct(sz, capacity);
 }
 
@@ -199,105 +261,87 @@ DB_Row<T>::DB_Row(const dimension_type sz) {
 template <typename T>
 inline
 DB_Row<T>::DB_Row(const DB_Row& y)
-  : impl(y.impl
-	 ? new (compute_capacity(y.size())) Impl(*y.impl)
-	 : 0) {
-#if EXTRA_ROW_DEBUG
-# if CXX_SUPPORTS_FLEXIBLE_ARRAYS
-  capacity_ = y.impl ? compute_capacity(y.size()) : 0;
-# else
-  capacity_ = y.impl ? compute_capacity(y.size()) : 1;
-# endif
-#endif
+  : DB_Row_Impl_Handler<T>() {
+  if (y.impl) {
+    allocate(compute_capacity(y.size(), max_size()));
+    copy_construct_coefficients(y);
+  }
 }
 
 template <typename T>
 inline
 DB_Row<T>::DB_Row(const DB_Row& y, 
-#if CXX_SUPPORTS_FLEXIBLE_ARRAYS
-		const
-#endif
-
-		dimension_type capacity) {
-  assert(capacity >= y.size());
-#if !CXX_SUPPORTS_FLEXIBLE_ARRAYS
-  if (capacity == 0)
-    ++capacity;
-#endif
-  impl = y.impl ? new (capacity) Impl(*y.impl) : 0;
-#if EXTRA_ROW_DEBUG
-  capacity_ = capacity;
-#endif
+		  const	dimension_type capacity)
+  : DB_Row_Impl_Handler<T>() {
+  assert(y.impl);
+  assert(y.size() <= capacity && capacity <= max_size());
+  allocate(capacity);
+  copy_construct_coefficients(y);
 }
 
 template <typename T>
 inline
 DB_Row<T>::DB_Row(const DB_Row& y, 
-		const dimension_type sz, 
-#if CXX_SUPPORTS_FLEXIBLE_ARRAYS
-		const
-#endif
-		dimension_type capacity) {
-  assert(capacity >= sz);
-  assert(sz >= y.size());
-#if !CXX_SUPPORTS_FLEXIBLE_ARRAYS
-  if (capacity == 0)
-    ++capacity;
-#endif
-  impl = y.impl ? new (capacity) Impl(*y.impl, sz) : 0;
-#if EXTRA_ROW_DEBUG
-  capacity_ = capacity;
-#endif
+		  const dimension_type sz, 
+		  const	dimension_type capacity)
+  : DB_Row_Impl_Handler<T>() {
+  assert(y.impl);
+  assert(y.size() <= sz && sz <= capacity && capacity <= max_size());
+  allocate(capacity);
+  copy_construct_coefficients(y);
+  expand_within_capacity(sz);
 }
 
 template <typename T>
 inline
 DB_Row<T>::~DB_Row() {
-  delete impl;
 }
+
+// template <typename T>
+// inline void
+// DB_Row<T>::resize_no_copy(const dimension_type new_sz) {
+//   assert(impl);
+// #if EXTRA_ROW_DEBUG
+//   assert(new_sz <= capacity_);
+// #endif
+//   impl->resize_no_copy(new_sz);
+// }
+
+// template <typename T>
+// inline void
+// DB_Row<T>::grow_no_copy(const dimension_type new_sz) {
+//   assert(impl);
+// #if EXTRA_ROW_DEBUG
+//   assert(new_sz <= capacity_);
+// #endif
+//   impl->grow_no_copy(new_sz);
+// }
 
 template <typename T>
 inline void
-DB_Row<T>::resize_no_copy(const dimension_type new_sz) {
-  assert(impl);
-#if EXTRA_ROW_DEBUG
-  assert(new_sz <= capacity_);
-#endif
-  impl->resize_no_copy(new_sz);
-}
-
-template <typename T>
-inline void
-DB_Row<T>::grow_no_copy(const dimension_type new_sz) {
-  assert(impl);
-#if EXTRA_ROW_DEBUG
-  assert(new_sz <= capacity_);
-#endif
-  impl->grow_no_copy(new_sz);
-}
-
-template <typename T>
-inline void
-DB_Row<T>::shrink(const dimension_type new_sz) {
-  assert(impl);
-  impl->shrink(new_sz);
+DB_Row<T>::shrink(const dimension_type new_size) {
+  DB_Row<T>& x = *this;
+  assert(x.impl);
+  x.impl->shrink(new_size);
 }
 
 template <typename T>
 inline void
 DB_Row<T>::swap(DB_Row& y) {
-  std::swap(impl, y.impl);
+  DB_Row<T>& x = *this;
+  std::swap(x.impl, y.impl);
 #if EXTRA_ROW_DEBUG
-  std::swap(capacity_, y.capacity_);
+  std::swap(x.capacity_, y.capacity_);
 #endif
 }
 
 template <typename T>
 inline void
 DB_Row<T>::assign(DB_Row& y) {
-  impl = y.impl;
+  DB_Row<T>& x = *this;
+  x.impl = y.impl;
 #if EXTRA_ROW_DEBUG
-  capacity_ = y.capacity_;
+  x.capacity_ = y.capacity_;
 #endif
 }
 
@@ -315,49 +359,70 @@ DB_Row<T>::operator=(const DB_Row& y) {
 template <typename T>
 inline T&
 DB_Row<T>::operator[](const dimension_type k) {
-  return (*impl)[k];
+  DB_Row<T>& x = *this;
+  return (*x.impl)[k];
 }
 
 template <typename T>
 inline const T&
 DB_Row<T>::operator[](const dimension_type k) const {
-  return (*impl)[k];
+  const DB_Row<T>& x = *this;
+  return (*x.impl)[k];
 }
+
+// template <typename T>
+// inline void
+// DB_Row<T>::Impl::grow_no_copy(const dimension_type new_sz) {
+//   assert(new_sz >= size());
+// #if !CXX_SUPPORTS_FLEXIBLE_ARRAYS
+//   // vec[0] is already constructed.
+//   if (size() == 0 && new_sz > 0)
+//     bump_size();
+// #endif
+//   for (dimension_type i = size(); i < new_sz; ++i) {
+//     new (&vec_[i]) T();
+//     bump_size();
+//   }
+// }
 
 template <typename T>
 inline void
-DB_Row<T>::Impl::grow_no_copy(const dimension_type new_sz) {
-  assert(new_sz >= size());
+DB_Row_Impl_Handler<T>::
+Impl::expand_within_capacity(const dimension_type new_size) {
+  assert(size() <= new_size && new_size <= max_size());
 #if !CXX_SUPPORTS_FLEXIBLE_ARRAYS
-  // vec[0] is already constructed.
-  if (size() == 0 && new_sz > 0)
+  // vec_[0] is already constructed.
+  if (size() == 0 && new_size > 0)
     bump_size();
 #endif
-  for (dimension_type i = size(); i < new_sz; ++i) {
+  for (dimension_type i = size(); i < new_size; ++i) {
     new (&vec_[i]) T();
     bump_size();
   }
 }
 
 template <typename T>
-inline void
-DB_Row<T>::Impl::shrink(const dimension_type new_sz) {
+void
+DB_Row_Impl_Handler<T>::Impl::shrink(dimension_type new_size) {
+  const dimension_type old_size = size();
+  assert(new_size <= old_size);
+  // Since ~T() does not throw exceptions, nothing here does.
+  set_size(new_size);
 #if !CXX_SUPPORTS_FLEXIBLE_ARRAYS
-  assert(new_sz > 0);
+  // Make sure we do not try to destroy vec_[0].
+  if (new_size == 0)
+    ++new_size;
 #endif
-  assert(new_sz <= size());
   // We assume construction was done "forward".
   // We thus perform destruction "backward".
-  for (dimension_type i = size(); i-- > new_sz; )
-    // ~T() does not throw exceptions.  So we do.
+  for (dimension_type i = old_size; i-- > new_size; )
     vec_[i].~T();
-  set_size(new_sz);
 }
 
 template <typename T>
-inline void
-DB_Row<T>::Impl::copy_construct(const Impl& y) {
-  dimension_type y_size = y.size();
+void
+DB_Row_Impl_Handler<T>::Impl::copy_construct_coefficients(const Impl& y) {
+  const dimension_type y_size = y.size();
 #if CXX_SUPPORTS_FLEXIBLE_ARRAYS
   for (dimension_type i = 0; i < y_size; ++i) {
     new (&vec_[i]) T(y.vec_[i]);
@@ -376,84 +441,126 @@ DB_Row<T>::Impl::copy_construct(const Impl& y) {
 #endif
 }
 
+// template <typename T>
+// inline void
+// DB_Row<T>::Impl::shrink(const dimension_type new_sz) {
+// #if !CXX_SUPPORTS_FLEXIBLE_ARRAYS
+//   assert(new_sz > 0);
+// #endif
+//   assert(new_sz <= size());
+//   // We assume construction was done "forward".
+//   // We thus perform destruction "backward".
+//   for (dimension_type i = size(); i-- > new_sz; )
+//     // ~T() does not throw exceptions.  So we do.
+//     vec_[i].~T();
+//   set_size(new_sz);
+// }
+
+// template <typename T>
+// inline void
+// DB_Row<T>::Impl::copy_construct(const Impl& y) {
+//   dimension_type y_size = y.size();
+// #if CXX_SUPPORTS_FLEXIBLE_ARRAYS
+//   for (dimension_type i = 0; i < y_size; ++i) {
+//     new (&vec_[i]) T(y.vec_[i]);
+//     bump_size();
+//   }
+// #else
+//   assert(y_size > 0);
+//   if (y_size > 0) {
+//     vec_[0] = y.vec_[0];
+//     bump_size();
+//     for (dimension_type i = 1; i < y_size; ++i) {
+//       new (&vec_[i]) T(y.vec_[i]);
+//       bump_size();
+//     }
+//   }
+// #endif
+// }
+
 template <typename T>
 typename DB_Row<T>::iterator
 DB_Row<T>::begin() {
-  return iterator(impl->vec_);
+  DB_Row<T>& x = *this;
+  return iterator(x.impl->vec_);
 }
 
 template <typename T>
 typename DB_Row<T>::iterator
 DB_Row<T>::end() {
-  return iterator(impl->vec_ + impl->size_);
+  DB_Row<T>& x = *this;
+  return iterator(x.impl->vec_ + x.impl->size_);
 }
 
 template <typename T>
 typename DB_Row<T>::const_iterator
 DB_Row<T>::begin() const {
-  return const_iterator(impl->vec_);
+  const DB_Row<T>& x = *this;
+  return const_iterator(x.impl->vec_);
 }
 
 template <typename T>
 typename DB_Row<T>::const_iterator
 DB_Row<T>::end() const {
-  return const_iterator(impl->vec_ + impl->size_);
+  const DB_Row<T>& x = *this;
+  return const_iterator(x.impl->vec_ + x.impl->size_);
 }
 
 template <typename T>
 inline bool
 DB_Row<T>::OK(const dimension_type row_size,
-	     const dimension_type
+	      const dimension_type
 #if EXTRA_ROW_DEBUG
-	     row_capacity
+	      row_capacity
 #endif
-	     ) const {
+	      ) const {
 #ifndef NDEBUG
   using std::endl;
   using std::cerr;
 #endif
   
+  const DB_Row<T>& x = *this;
+
   bool is_broken = false;
 #if EXTRA_ROW_DEBUG
 # if !CXX_SUPPORTS_FLEXIBLE_ARRAYS
-  if (capacity_ == 0) {
+  if (x.capacity_ == 0) {
     cerr << "Illegal row capacity: is 0, should be at least 1"
 	 << endl;
     is_broken = true;
   }
-  else if (capacity_ == 1 && row_capacity == 0)
+  else if (x.capacity_ == 1 && row_capacity == 0)
     // This is fine.
     ;
   else
 # endif
-  if (capacity_ != row_capacity) {
-    cerr << "DB_Row capacity mismatch: is " << capacity_
+  if (x.capacity_ != row_capacity) {
+    cerr << "DB_Row capacity mismatch: is " << x.capacity_
 	 << ", should be " << row_capacity << "."
 	 << endl;
     is_broken = true;
   }
 #endif
-  if (size() != row_size) {
+  if (x.size() != row_size) {
 #ifndef NDEBUG
-    cerr << "DB_Row size mismatch: is " << size()
+    cerr << "DB_Row size mismatch: is " << x.size()
 	 << ", should be " << row_size << "."
 	 << endl;
 #endif
     is_broken = true;
   }
 #if EXTRA_ROW_DEBUG
-  if (capacity_ < size()) {
+  if (x.capacity_ < x.size()) {
 #ifndef NDEBUG
-    cerr << "DB_Row is completely broken: capacity is " << capacity_
-	 << ", size is " << size() << "."
+    cerr << "DB_Row is completely broken: capacity is " << x.capacity_
+	 << ", size is " << x.size() << "."
 	 << endl;
 #endif
     is_broken = true;
   }
 #endif
 
-  const DB_Row& x = *this;
-  for (dimension_type i = size(); i-- > 0; ) {
+  for (dimension_type i = x.size(); i-- > 0; ) {
     const T& element = x[i];
     // Not OK is bad.
     // In addition, nans should never occur.

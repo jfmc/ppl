@@ -15,6 +15,9 @@ PURPOSE. */
 namespace Parma_Polyhedra_Library {
 
 template <typename BT>
+class DB_Row_Impl_Handler;
+
+template <typename BT>
 class DB_Row;
 
 }

@@ -251,8 +251,8 @@ DB_Matrix<T>::grow(const dimension_type new_n_rows) {
       ++i;
       while (i-- > 0) {
 	DB_Row<T> new_row(rows[i],
-			 new_matrix.row_size,
-			 new_matrix.row_capacity);
+			  new_matrix.row_size,
+			  new_matrix.row_capacity);
 	std::swap(new_matrix.rows[i], new_row);
       }
       // Put the new vector into place.
@@ -266,7 +266,7 @@ DB_Matrix<T>::grow(const dimension_type new_n_rows) {
     if (new_n_rows <= row_capacity)
       // But we have enough capacity: we resize existing rows.
       for (dimension_type i = old_n_rows; i-- > 0; )
-	rows[i].grow_no_copy(new_n_rows);
+	rows[i].expand_within_capacity(new_n_rows);
     else {
       // Capacity exhausted: we must reallocate the rows and
       // make sure all the rows have the same capacity.
@@ -338,7 +338,7 @@ DB_Matrix<T>::resize_no_copy(const dimension_type new_n_rows) {
     if (new_n_rows <= row_capacity)
       // But we have enough capacity: we resize existing rows.
       for (dimension_type i = old_n_rows; i-- > 0; )
-	rows[i].grow_no_copy(new_n_rows);
+	rows[i].expand_within_capacity(new_n_rows);
     else {
       // Capacity exhausted: we must reallocate the rows and
       // make sure all the rows have the same capacity.
