@@ -124,8 +124,15 @@ poly_hull_assign_if_exact(PH& p, const PH& q) {
 template <typename PH>
 bool
 check_containment(const PH& ph, const Polyhedra_PowerSet<PH>& ps) {
-  Polyhedra_PowerSet<NNC_Polyhedron> tmp;
+  using namespace std;
+  using namespace IO_Operators;
+
+  Polyhedra_PowerSet<NNC_Polyhedron> tmp(ph.space_dimension(),
+					 Polyhedron::EMPTY);
   tmp.add_disjunct(NNC_Polyhedron(ph));
+  cout << "ph " << ph << endl;
+  cout << "ps " << ps << endl;
+  cout << "tmp at the beginning " << tmp << endl;
   for (typename Polyhedra_PowerSet<PH>::const_iterator i = ps.begin(),
 	 ps_end = ps.end(); i != ps_end; ++i) {
     const NNC_Polyhedron pi(i->polyhedron());
@@ -136,21 +143,26 @@ check_containment(const PH& ph, const Polyhedra_PowerSet<PH>& ps) {
       if (pj.contains(pi))
 	tmp.erase(j);
     }
+    cout << "tmp after filtering " << tmp << endl;
     if (tmp.is_bottom())
       return true;
     else {
+      Polyhedra_PowerSet<NNC_Polyhedron> new_disjuncts(ph.space_dimension(),
+						       Polyhedron::EMPTY);
       for (Polyhedra_PowerSet<NNC_Polyhedron>::iterator j = tmp.begin(),
 	     jn = j; j != tmp.end(); j = jn) {
 	++jn;
 	const NNC_Polyhedron& pj = j->polyhedron();
 	if (!pj.is_disjoint_from(pi)) {
-	  tmp.erase(j);
-	  std::pair<PH, Polyhedra_PowerSet<NNC_Polyhedron> >
+	  std::pair<NNC_Polyhedron, Polyhedra_PowerSet<NNC_Polyhedron> >
 	    partition = linear_partition(pi, pj);
-	  tmp.add_disjunct(NNC_Polyhedron(partition.first));
-	  tmp.upper_bound_assign(partition.second);
+	  tmp.erase(j);
+	  new_disjuncts.add_disjunct(partition.first);
+	  new_disjuncts.upper_bound_assign(partition.second);
 	}
       }
+      tmp.upper_bound_assign(new_disjuncts);
+      cout << "tmp after additions " << tmp << endl;
     }
   }
   return false;
