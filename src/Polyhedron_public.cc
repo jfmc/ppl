@@ -674,10 +674,8 @@ PPL::Polyhedron::OK(bool check_not_empty) const {
       // the polyhedron is not OK.
       Constraint_System new_con_sys(topology());
       Generator_System gs_without_pending = gen_sys;
-      // NOTE: We can avoid to update `index_first_pending'
-      // of `gs_without_pending', because it is equal to the
-      // new number of rows of `gs_without_pending'.
       gs_without_pending.erase_to_end(gen_sys.first_pending_row());
+      gs_without_pending.unset_pending_rows();
       Generator_System copy_of_gen_sys = gs_without_pending;
       Saturation_Matrix new_sat_c;
       minimize(false, copy_of_gen_sys, new_con_sys, new_sat_c);
@@ -782,10 +780,8 @@ PPL::Polyhedron::OK(bool check_not_empty) const {
     }
 
     Constraint_System cs_without_pending = con_sys;
-    // NOTE: We can avoid to update `index_first_pending'
-    // of `cs_without_pending', because it is equal to the
-    // new number of rows of `cs_without_pending'.
     cs_without_pending.erase_to_end(con_sys.first_pending_row());
+    cs_without_pending.unset_pending_rows();
     Constraint_System copy_of_con_sys = cs_without_pending;
     Generator_System new_gen_sys(topology());
     Saturation_Matrix new_sat_g;

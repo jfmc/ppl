@@ -1036,9 +1036,9 @@ PPL::Linear_System::OK(const bool check_strong_normalized) const {
     // Check for strong normalization of rows.
     // Note: normalization cannot be checked inside the
     // Linear_Row::OK() method, because a Linear_Row object may also
-    // implement a Linear_Expression object, which in general cannot be
-    // (strongly) normalized.
-    Linear_System tmp = x;
+    // implement a Linear_Expression object, which in general cannot
+    // be (strongly) normalized.
+    Linear_System tmp(x, With_Pending());
     tmp.strong_normalize();
     if (x != tmp) {
 #ifndef NDEBUG

@@ -77,9 +77,9 @@ PPL::Polyhedron::Polyhedron(const Polyhedron& y)
   // Being a protected method, we simply assert that topologies do match.
   assert(topology() == y.topology());
   if (y.constraints_are_up_to_date())
-    con_sys = y.con_sys;
+    con_sys.assign_with_pending(y.con_sys);
   if (y.generators_are_up_to_date())
-    gen_sys = y.gen_sys;
+    gen_sys.assign_with_pending(y.gen_sys);
   if (y.sat_c_is_up_to_date())
     sat_c = y.sat_c;
   if (y.sat_g_is_up_to_date())
@@ -312,9 +312,9 @@ PPL::Polyhedron::operator=(const Polyhedron& y) {
   else {
     status = y.status;
     if (y.constraints_are_up_to_date())
-      con_sys = y.con_sys;
+      con_sys.assign_with_pending(y.con_sys);
     if (y.generators_are_up_to_date())
-      gen_sys = y.gen_sys;
+      gen_sys.assign_with_pending(y.gen_sys);
     if (y.sat_c_is_up_to_date())
       sat_c = y.sat_c;
     if (y.sat_g_is_up_to_date())

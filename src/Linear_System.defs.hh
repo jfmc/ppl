@@ -78,11 +78,26 @@ public:
   Linear_System(Topology topol,
 		dimension_type n_rows, dimension_type n_columns);
 
-  //! Copy-constructor.
+  //! A tag class.
+  /*!
+    Tag class to differentiate the Linear_System copy-constructor that
+    copies pending rows as pending from the one that transforms
+    pending rows into non-pending ones.
+  */
+  struct With_Pending {
+  };
+
+  //! Copy-constructor: pending rows are transformed into non-pending ones.
   Linear_System(const Linear_System& y);
 
-  //! Assignment operator.
+  //! Full copy-constructor: pending rows are copied as pending.
+  Linear_System(const Linear_System& y, With_Pending);
+
+  //! Assignment operator: pending rows are transformed into non-pending ones.
   Linear_System& operator=(const Linear_System& y);
+
+  //! Full assignment operator: pending rows are copied as pending.
+  void assign_with_pending(const Linear_System& y);
 
   //! Swaps \p *this with \p y.
   void swap(Linear_System& y);
