@@ -58,7 +58,9 @@ namespace Parma_Polyhedra_Library {
   bool operator <=(const Polyhedron& x, const Polyhedron& y);
   std::ostream& operator <<(std::ostream& s, const Polyhedron& p);
   std::istream& operator >>(std::istream& s, Polyhedron& p);
-}
+
+} // namespace Parma_Polyhedra_Library
+
 
 //! A convex polyhedron.
 /*!
