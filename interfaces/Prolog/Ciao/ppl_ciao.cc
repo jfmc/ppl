@@ -324,6 +324,8 @@ ppl_deinit(int /* when */) {
     (void) SP_unregister_atom(*sp_atoms[i].p_atom);
 }
 
+#if 0
+// Ciao Prolog only deals with integer types `byte' and `int'.
 static size_t
 get_size_t(long n) {
   if (n >= 0)
@@ -334,9 +336,21 @@ get_size_t(long n) {
     throw not_unsigned_int(n_term);
   }
 }
+#endif
+
+static size_t
+get_size_t(int n) {
+  if (n >= 0)
+    return n;
+  else {
+    SP_term_ref n_term = SP_new_term_ref();
+    SP_put_integer(n_term, n);
+    throw not_unsigned_int(n_term);
+  }
+}
 
 extern "C" void*
-ppl_new_polyhedron(long num_dimensions) {
+ppl_new_polyhedron(int num_dimensions) {
   try {
     PPL::Polyhedron* ret = new PPL::Polyhedron(get_size_t(num_dimensions));
     REGISTER(ret);
@@ -347,7 +361,7 @@ ppl_new_polyhedron(long num_dimensions) {
 }
 
 extern "C" void*
-ppl_new_empty_polyhedron(long num_dimensions) {
+ppl_new_empty_polyhedron(int num_dimensions) {
   try {
     PPL::Polyhedron* ret = new PPL::Polyhedron(get_size_t(num_dimensions),
 					       PPL::Polyhedron::EMPTY);
@@ -382,7 +396,7 @@ ppl_delete_polyhedron(void* pp) {
   CATCH_PPL;
 }
 
-extern "C" long
+extern "C" int
 ppl_space_dimension(const void* pp) {
   CHECK(pp);
   // Polyhedron::space_dimension() cannot throw.
@@ -519,7 +533,7 @@ ppl_insert_constraint(void* pp, SP_term_ref t) {
   CATCH_ALL;
 }
 
-extern "C" long
+extern "C" int
 ppl_add_constraints_and_minimize(void* pp, SP_term_ref constraints_list) {
   try {
     CHECK(pp);
@@ -576,7 +590,7 @@ ppl_insert_generator(void* pp, SP_term_ref t) {
   CATCH_ALL;
 }
 
-extern "C" long
+extern "C" int
 ppl_check_empty(const void* pp) {
   try {
     CHECK(pp);
@@ -774,7 +788,7 @@ ppl_remove_dimensions(void* pp, SP_term_ref variables_list) {
 
 
 extern "C" void
-ppl_remove_higher_dimensions(void* pp, long new_dimension) {
+ppl_remove_higher_dimensions(void* pp, int new_dimension) {
   try {
     CHECK(pp);
     static_cast<PPL::Polyhedron*>(pp)
@@ -785,7 +799,7 @@ ppl_remove_higher_dimensions(void* pp, long new_dimension) {
 
 
 extern "C" void
-ppl_add_dimensions_and_project(void* pp, long num_new_dimensions) {
+ppl_add_dimensions_and_project(void* pp, int num_new_dimensions) {
   try {
     CHECK(pp);
     static_cast<PPL::Polyhedron*>(pp)
@@ -795,7 +809,7 @@ ppl_add_dimensions_and_project(void* pp, long num_new_dimensions) {
 }
 
 extern "C" void
-ppl_add_dimensions_and_embed(void* pp, long num_new_dimensions) {
+ppl_add_dimensions_and_embed(void* pp, int num_new_dimensions) {
   try {
     CHECK(pp);
     static_cast<PPL::Polyhedron*>(pp)

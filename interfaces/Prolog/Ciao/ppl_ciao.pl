@@ -1,10 +1,9 @@
 :- module(ppl_ciao,
 [
-%%FIXME
-///////////////// Initialization and finalization.
+%%FIXME: Initialization and finalization.
 	ppl_init/1,
 	ppl_deinit/1,
-/////////////////
+
 	ppl_new_polyhedron/2,
 	ppl_new_empty_polyhedron/2,
 	ppl_copy_polyhedron/2,
@@ -35,13 +34,21 @@
 
 :- use_foreign_source(ppl_ciao).
 
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%% FIXME: what is the exact syntax ?
+:- use_foreign_library([ppl]).
+
+:- extra_compiler_opts(['-O2']).
+
+%% :- extra_linker_opts('').
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
 :- impl_defined(
 [
-FIXME
-///////////////// Initialization and finalization.
+%%FIXME: Initialization and finalization.
 	ppl_init/1,
 	ppl_deinit/1,
-/////////////////
+
 	ppl_new_polyhedron/2,
 	ppl_new_empty_polyhedron/2,
 	ppl_copy_polyhedron/2,
