@@ -293,6 +293,10 @@ Integer_to_integer_term(const PPL::Integer& n) {
   return MkIntTerm(n.get_si());
 }
 
+static void
+ppl_Prolog_sysdep_init() {
+}
+
 #include "../ppl_prolog.outlines.hh"
 
 #define YAP_USER_C_PREDICATE(name, arity) \
