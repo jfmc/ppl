@@ -113,7 +113,7 @@ PWL::Watchdog::get_timer(Time& time) {
 void
 PWL::Watchdog::set_timer(const Time& time) {
   if (time.seconds() == 0 && time.microseconds() == 0)
-    abort();
+    throw std::runtime_error("PWL internal error");
   last_time_requested = time;
   signal_once.it_value.tv_sec = time.seconds();
   signal_once.it_value.tv_usec = time.microseconds();
