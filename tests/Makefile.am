@@ -58,6 +58,7 @@ TESTS = $(WATCHDOG_TESTS) \
 	inclusion1 \
         inters1 inters2 inters3 inters4 inters5 inters6 inters7 \
 	limitedh79widening1 limitedh79widening2\
+	mc91 \
 	memory1 \
 	onepoint \
         permute \
@@ -153,6 +154,8 @@ limitedh79widening1_SOURCES = limitedh79widening1.cc
 limitedh79widening2_SOURCES = limitedh79widening2.cc
 
 memory1_SOURCES = memory1.cc
+
+mc91_SOURCES = mc91.cc
 
 onepoint_SOURCES = onepoint.cc
 
