@@ -208,49 +208,49 @@ DECLARE_FUN2(cmp, Result, const, const)
 DECLARE_FUN1(value_type, Result, const)
 DECLARE_FUN2(set_special, void, , const)
 
-template <typename Policy, typename To, typename From>
+template <typename To_Policy, typename From_Policy, typename To, typename From>
 Result assign_ext(To& to, const From& from);
 
 template <typename Policy, typename Type>
 Result sgn_ext(const Type& x);
 
-template <typename Policy, typename Type1, typename Type2>
+template <typename Policy1, typename Policy2, typename Type1, typename Type2>
 Result cmp_ext(const Type1& x, const Type2& y);
 
-template <typename Policy, typename To, typename From>
+template <typename To_Policy, typename From_Policy, typename To, typename From>
 Result neg_ext(To& to, const From& x);
 
-template <typename Policy, typename To, typename From>
+template <typename To_Policy, typename From_Policy, typename To, typename From>
 Result abs_ext(To& to, const From& x);
 
-template <typename Policy, typename To, typename From1, typename From2>
+template <typename To_Policy, typename From1_Policy, typename From2_Policy, typename To, typename From1, typename From2>
 Result add_ext(To& to, const From1& x, const From2& y);
 
-template <typename Policy, typename To, typename From1, typename From2>
+template <typename To_Policy, typename From1_Policy, typename From2_Policy, typename To, typename From1, typename From2>
 Result sub_ext(To& to, const From1& x, const From2& y);
 
-template <typename Policy, typename To, typename From1, typename From2>
+template <typename To_Policy, typename From1_Policy, typename From2_Policy, typename To, typename From1, typename From2>
 Result mul_ext(To& to, const From1& x, const From2& y);
 
-template <typename Policy, typename To, typename From1, typename From2>
+template <typename To_Policy, typename From1_Policy, typename From2_Policy, typename To, typename From1, typename From2>
 Result div_ext(To& to, const From1& x, const From2& y);
 
-template <typename Policy, typename To, typename From1, typename From2>
+template <typename To_Policy, typename From1_Policy, typename From2_Policy, typename To, typename From1, typename From2>
 Result mod_ext(To& to, const From1& x, const From2& y);
 
-template <typename Policy, typename To, typename From1, typename From2>
+template <typename To_Policy, typename From1_Policy, typename From2_Policy, typename To, typename From1, typename From2>
 Result add_mul_ext(To& to, const From1& x, const From2& y);
 
-template <typename Policy, typename To, typename From1, typename From2>
+template <typename To_Policy, typename From1_Policy, typename From2_Policy, typename To, typename From1, typename From2>
 Result sub_mul_ext(To& to, const From1& x, const From2& y);
 
-template <typename Policy, typename To, typename From>
+template <typename To_Policy, typename From_Policy, typename To, typename From>
 Result sqrt_ext(To& to, const From& x);
 
-template <typename Policy, typename To, typename From1, typename From2>
+template <typename To_Policy, typename From1_Policy, typename From2_Policy, typename To, typename From1, typename From2>
 Result gcd_ext(To& to, const From1& x, const From2& y);
 
-template <typename Policy, typename To, typename From1, typename From2>
+template <typename To_Policy, typename From1_Policy, typename From2_Policy, typename To, typename From1, typename From2>
 Result lcm_ext(To& to, const From1& x, const From2& y);
 
 template <typename Policy, typename Type>
