@@ -53,28 +53,12 @@ namespace Parma_Polyhedra_Library {
 /*!
     An object of the class LinExpression represents the linear expression
     \f[
-      \sum_{i=0}^{d-1} a_i x_i + b
+      \sum_{i=0}^{n-1} a_i x_i + b
     \f]
-    where \f$d\f$ is the dimension of the space,
+    where \f$n\f$ is the dimension of the space,
     each \f$a_i\f$ is the integer coefficient
     of the \p i -th variable \f$x_i\f$
     and \f$b\f$ is the integer for the inhomogeneous term.
-
-    Note that the ``meaning'' of an object of the class Variable
-    is completely specified by the integer index given to its
-    constructor:
-    be careful not to be misled by C++ language variable names.
-    For instance, in the following example, the linear expressions
-    <CODE>e1</CODE> and <CODE>e2</CODE> are equivalent,
-    since the two variables <CODE>x</CODE> and <CODE>z</CODE> denote
-    the same Cartesian axis.
-  \code
-  Variable x(0);
-  Variable y(1);
-  Variable z(0);
-  LinExpression e1 = x + y;
-  LinExpression e2 = y + z;
-  \endcode
 
     \par How to build a linear expression.
 
@@ -91,12 +75,12 @@ namespace Parma_Polyhedra_Library {
     \par Example
     The following code builds the linear expression \f$4x - 2y - z + 14\f$:
     \code
-  LinExpression e = 4 * x - 2 * y - z + 14;
+  LinExpression e = 4*x - 2*y - z + 14;
     \endcode
     Another way to build the same linear expression is:
     \code
-  LinExpression e1 = 4 * x;
-  LinExpression e2 = 2 * y;
+  LinExpression e1 = 4*x;
+  LinExpression e2 = 2*y;
   LinExpression e3 = z;
   LinExpression e = LinExpression(14);
   e += e1 - e2 - e3;
@@ -117,8 +101,8 @@ public:
   //! to the inhomogeneous term \p n.
   explicit LinExpression(const Integer& n);
   //! Constructor: builds the linear expression corresponding
-  //! to the variable \p var.
-  LinExpression(const Variable& var);
+  //! to the variable \p v.
+  LinExpression(const Variable& v);
 
 private:
   //! Implementation sizing constructor.

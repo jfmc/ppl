@@ -85,8 +85,8 @@ namespace Parma_Polyhedra_Library {
     \endcode
 
     \par Example 1
-    The following code builds a square in \f$\Rset^2\f$ starting from
-    the system of constraints:
+    The following code builds a polyhedron corresponding to
+    a square in \f$\Rset^2\f$, given as a system of constraints:
     \code
   ConSys cs;
   cs.insert(x >= 0);
@@ -95,20 +95,22 @@ namespace Parma_Polyhedra_Library {
   cs.insert(y <= 3);
   Polyhedron ph(cs);
     \endcode
-    The following code builds the same polyhedron starting from the
-    system of generators:
+    The following code builds the same polyhedron as above,
+    but starting from a system of generators specifying
+    the four vertices of the square:
     \code
   GenSys gs;
-  gs.insert(0 * x + 0 * y /= 1);
-  gs.insert(0 * x + 3 * y /= 1);
-  gs.insert(3 * x + 0 * y /= 1);
-  gs.insert(3 * x + 3 * y /= 1);
+  gs.insert(0*x + 0*y /= 1);
+  gs.insert(0*x + 3*y /= 1);
+  gs.insert(3*x + 0*y /= 1);
+  gs.insert(3*x + 3*y /= 1);
   Polyhedron ph(gs);
     \endcode
 
     \par Example 2
-    The following code builds a half-strip in \f$\Rset^2\f$
-    starting from the system of constraints:
+    The following code builds an unbounded polyhedron
+    corresponding to a half-strip in \f$\Rset^2\f$,
+    given as a system of constraints:
     \code
   ConSys cs;
   cs.insert(x >= 0);
@@ -116,8 +118,9 @@ namespace Parma_Polyhedra_Library {
   cs.insert(x - y + 1 >= 0);
   Polyhedron ph(cs);
     \endcode
-    The following code builds the same polyhedron starting from the
-    system of generators:
+    The following code builds the same polyhedron as above,
+    but starting from the system of generators specifying
+    the two vertices of the polyhedron and one ray:
     \code
   GenSys gs;
   gs.insert(0 * x + 0 * y /= 1);
@@ -127,14 +130,16 @@ namespace Parma_Polyhedra_Library {
     \endcode
 
     \par Example 3
-    The following code builds the half-plane in \f$\Rset^2\f$
-    starting from the constraints:
+    The following code builds the polyhedron corresponding to
+    an half-plane in \f$\Rset^2\f$,
+    by adding a single constraint to the universe polyhedron:
     \code
   Polyhedron ph;
   ph.insert(y >= 0);
     \endcode
-    The following code builds the same polyhedron starting from
-    the generators:
+    The following code builds the same polyhedron as above,
+    but starting from a system of generators specifying a vertex,
+    a ray and a line.
     \code
   Polyhedron ph;
   ph.insert(0 * x + 0 * y /= 1);
@@ -153,10 +158,18 @@ namespace Parma_Polyhedra_Library {
   ph.insert(x == 2);
   ph.add_dimensions_and_embed(1);
     \endcode
-    The starting polyhedron is a point whose abscissa is equal to \f$2\f$
-    in \f$\Rset\f$. The resulting polyhedron in \f$\Rset^2\f$
-    is a line parallel to the \f$y\f$ axis and its intersection with the
-    \f$x\f$ axis is the point with the abscissa equal to \f$2\f$.
+    We start with the universe polyhedron in the 0-dimensional space.
+    Then we add a single equality constraint,
+    thus obtaining the polyhedron corresponding to the singleton set
+    \f$\{ 2 \} \sseq \Rset\f$.
+    After the last line of code, the resulting polyhedron is
+    \f[
+      \bigl\{\,
+        (2, x_1)^\transpose \in \Rset^2
+      \bigm|
+        x_1 \in \Rset
+      \,\bigr\}.
+    \f]
 
     \par Example 5
     The following code shows the use of the function
@@ -166,20 +179,21 @@ namespace Parma_Polyhedra_Library {
   ph.insert(x == 2);
   ph.add_dimensions_and_poject(1);
     \endcode
-    The starting polyhedron is the same as in Example 4 for
-    <CODE>add_dimensions_and_embed</CODE>. The resulting polyhedron
-    is a point with the abscissa equal to \f$2\f$ and the ordinate
-    equal to \f$0\f$.
+    The first two lines of code are the same as in Example 4 for
+    <CODE>add_dimensions_and_embed</CODE>.
+    After the last line of code, the resulting polyhedron is
+    the singleton set
+    \f$\bigl\{ (2, 0)^\transpose \bigr\} \sseq \Rset^2\f$.
 
     \par Example 6
     The following code shows the use of the function
     <CODE>assign_variable</CODE>:
     \code
   Polyhedron ph;
-  ph.insert(0 * x + 0 * y /= 1);
-  ph.insert(0 * x + 3 * y /= 1);
-  ph.insert(3 * x + 0 * y /= 1);
-  ph.insert(3 * x + 3 * y /= 1);
+  ph.insert(0*x + 0*y /= 1);
+  ph.insert(0*x + 3*y /= 1);
+  ph.insert(3*x + 0*y /= 1);
+  ph.insert(3*x + 3*y /= 1);
   Integer d = 1;
   LinExpression coeff = x + 0*y + 4;
   ph.assign_variable(x, coeff, d);

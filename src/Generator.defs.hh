@@ -41,20 +41,21 @@ namespace Parma_Polyhedra_Library {
   // Put them in the namespace here to declare them friend later.
   Generator operator |(int, const LinExpression& e);
   Generator operator ^(int, const LinExpression& e);
-  Generator operator /=(const LinExpression& e, const Integer& n);
+  Generator operator /=(const LinExpression& e, const Integer& d);
 }
 
 //! A line, ray or vertex.
 /*!
   An object of the class Generator is one of the following:
 
-  - a line: \f$\sum_{i=0}^{d-1} a_i \vec{x}_i\f$;
+  - a line: \f$\vect{l} = (a_0, \ldots, a_{n-1})^\transpose\f$;
 	
-  - a ray: \f$\sum_{i=0}^{d-1} a_i \vec{x}_i\f$;
+  - a ray: \f$\vect{r} = (a_0, \ldots, a_{n-1})^\transpose\f$;
 
-  - a vertex: \f$\sum_{i=0}^{d-1} \frac{a_i}{b} \vec{x}_i\f$;
+  - a vertex:
+    \f$\vect{v} = (\frac{a_0}{d}, \ldots, \frac{a_{n-1}}{d})^\transpose\f$;
 
-  where \f$d\f$ is the dimension of the space.
+  where \f$n\f$ is the dimension of the space.
 
   \par How to build a generator.
   Each type of generator is built by applying a particular operator
@@ -80,7 +81,7 @@ namespace Parma_Polyhedra_Library {
   Generator line(1 | x - y - z);
     \endcode
     When specifying a line, the actual value of the first argument
-    in the constructor is not significant.
+    of the operator is not significant.
     As we said above, also the inhomogeneous term of the linear expression
     is not significant.
     Thus, the same effect would have been obtained by replacing
@@ -99,24 +100,25 @@ namespace Parma_Polyhedra_Library {
     of the first argument is not significant.
 
     \par Example 3
-    The following code builds the vertex \f$(1, 3, 2)^\transpose\f$:
+    The following code builds the vertex
+    \f$(1, 3, 2)^\transpose \in \Rset^3\f$:
     \code
-  Generator vertex(x + 3 * y + 2 * z /= 1);
+  Generator vertex(x + 3*y + 2*z /= 1);
     \endcode
     Note that the second argument of the operator is
     the <EM>denominator</EM> for the coefficients
     of the linear expression.
     Therefore, the same vertex as above can be obtain also with the code:
     \code
-  Generator vertex(2 * x + 6 * y + 4 * z /= 2);
+  Generator vertex(2*x + 6*y + 4*z /= 2);
     \endcode
     Obviously, the denominator can be usefully exploited
     for specifying vertices that have some non-integer
     (but rational) coordinates.
-    For instance, the vertex \f$(-1.5, 3.2, 2.1)^\transpose\f$
+    For instance, the vertex \f$(-1.5, 3.2, 2.1)^\transpose \in \Rset^3\f$
     can be specified by the following code:
     \code
-  Generator vertex(-15 * x + 32 * y + 21 * z /= 10);
+  Generator vertex(-15*x + 32*y + 21*z /= 10);
     \endcode
     If a zero denominator is provided, an exception is thrown.
 */
@@ -131,11 +133,11 @@ private:
   //! Returns the (unidirectional) ray of direction \p e.
   friend Generator
   Parma_Polyhedra_Library::operator ^(int, const LinExpression& e);
-  //! Returns the vertex at \p e / \p n.
-  //! \exception std::invalid_argument \p n is zero.
+  //! Returns the vertex at \p e / \p d.
+  //! \exception std::invalid_argument thrown if \p d is zero.
   friend Generator
   Parma_Polyhedra_Library::operator /=(const LinExpression& e,
-				       const Integer& n);
+				       const Integer& d);
 
 public:
   //! Default constructor.
@@ -164,7 +166,7 @@ PPL_INTERNAL:
   bool is_ray_or_vertex() const;
   //! Sets the type to <CODE>LINE</CODE>.
   void set_is_line();
-  //! Sets the type to either <CODE>RAY</CODE>.
+  //! Sets the type to <CODE>RAY</CODE>.
   void set_is_ray_or_vertex();
 };
 

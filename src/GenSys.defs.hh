@@ -56,9 +56,9 @@ namespace Parma_Polyhedra_Library {
     An object of the class GenSys is a system of generators,
     i.e. a container of objects of the class Generator
     (lines, rays and vertices).
-    The system of generators must include at least one vertex.
-    This is needed since a line or ray only specifies a direction
-    and a point is needed to indicate its position.
+    Note that a system of generators which is meant to define a polyhedron
+    must include at least one vertex, the reason being that lines and
+    rays only specify directions.
 
     \par
      In all the examples it is assumed that variables
@@ -69,67 +69,62 @@ namespace Parma_Polyhedra_Library {
     \endcode
 
     \par Example 1
-    The following code builds the \f$x\f$ axis in \f$\Rset^2\f$:
+    The following code defines the line having the same direction
+    as the \f$x\f$ axis
+    (i.e., the 0-th indexed Cartesian axis) in \f$\Rset^2\f$:
     \code
     GenSys gs;
-    gs.insert(0 * x + 0 * y /= 1);
-    gs.insert(1 | x + 0 * y);
+    gs.insert(1 | x + 0*y);
     \endcode
-    Instead, the following code builds a line parallel to the
-    \f$x\f$ axis in \f$\Rset^2\f$:
+    As said above, this system of generators does not correspond
+    to a polyhedron, because the line has no supporting vertices.
+    To define a system of generators indeed corresponding to
+    the \f$x\f$ axis, one can add the following code which
+    inserts the origin of the space as a vertex:
     \code
-    GenSys gs;
-    gs.insert(0 * x + y /= 1);
-    gs.insert(1 | x + 0 * y);
+    gs.insert(0*x + 0*y /= 1);
     \endcode
-    If we use the following code:
+    In contrast, if we had added the following code, we would have
+    defined a line parallel to the \f$x\f$ axis and including
+    the point \f$(0, 1)^\transpose \in \Rset^2\f$.
     \code
-    GenSys gs;
-    gs.insert(1 | x + 0 * y);
+    gs.insert(0*x + y /= 1);
     \endcode
-    then this system of generators does not represent anything.
 
     \par Example 2
-    The following code builds a ray that corresponds to the positive
-    part of the axis \f$x\f$ in \f$\Rset^2\f$:
+    The following code builds a ray having the same direction as
+    the positive part of the \f$x\f$ axis in \f$\Rset^2\f$:
     \code
     GenSys gs;
-    gs.insert(0 * x + 0 * y /= 1);
-    gs.insert(1 ^ x + 0 * y);
+    gs.insert(1 ^ x + 0*y);
     \endcode
-    Instead, the following code builds a ray parallel to
-    the line in Example 1:
+    To define a system of generators indeed corresponding to
+    the positive part of the \f$x\f$ axis,
+    one just need to add the origin of the space as a vertex:
     \code
-    GenSys gs;
-    gs.insert(0 * x + y /= 1);
-    gs.insert(1 ^ x + 0 * y);
+    gs.insert(0*x + 0*y /= 1);
     \endcode
-    If we use the following code:
-    \code
-    GenSys gs;
-    gs.insert(1 ^ x + 0 * y);
-    \endcode
-    then this system of generators does not represent anything.
-
 
     \par Example 3
-    The following code builds a square in \f$\Rset^2\f$
+    The following code builds a system of generators having four vertices
+    and corresponding to a square in \f$\Rset^2\f$
     (the same as Example 1 for the system of constraints):
     \code
     GenSys gs;
-    gs.insert(0 * x + 0 * y /= 1);
-    gs.insert(0 * x + 3 * y /= 1);
-    gs.insert(3 * x + 0 * y /= 1);
-    gs.insert(3 * x + 3 * y /= 1);
+    gs.insert(0*x + 0*y /= 1);
+    gs.insert(0*x + 3*y /= 1);
+    gs.insert(3*x + 0*y /= 1);
+    gs.insert(3*x + 3*y /= 1);
     \endcode
 
     \par Example 4
-    The following code builds a half-strip in \f$\Rset^2\f$:
+    The following code builds a system of generators having two vertices
+    and a ray, corresponding to a half-strip in \f$\Rset^2\f$
     (the same as Example 2 for the system of constraints):
     \code
     GenSys gs;
-    gs.insert(0 * x + 0 * y /= 1);
-    gs.insert(0 * x + y /= 1);
+    gs.insert(0*x + 0*y /= 1);
+    gs.insert(0*x + y /= 1);
     gs.insert(1 ^ x - y);
     \endcode
 */
@@ -145,7 +140,7 @@ public:
   //! Inserts a copy of the generator \p g into \p *this.
   void insert(const Generator& g);
 
-  //! Swaps \p *this with \p y.
+  //! Swaps \p *this with the system of generators \p y.
   void swap(GenSys& y);
 
   /*!
@@ -202,7 +197,9 @@ public:
     bool operator !=(const const_iterator& y) const;
   };
 
-  //! Returns the const_iterator pointing to the first generator.
+  //! Returns the const_iterator pointing to the first generator,
+  //! if \p *this is not empty;
+  //! otherwise, returns the past-the-end const_iterator.
   const_iterator begin() const;
   //! Returns the past-the-end const_iterator.
   const_iterator end() const;

@@ -36,9 +36,9 @@ Parma_Polyhedra_Library::LinExpression::LinExpression(size_t size, bool)
 }
 
 INLINE
-Parma_Polyhedra_Library::LinExpression::LinExpression(const Variable& var)
-  : Row(Row::LINE_OR_EQUALITY, var.id() + 2) {
-  (*this)[var.id() + 1] = 1;
+Parma_Polyhedra_Library::LinExpression::LinExpression(const Variable& v)
+  : Row(Row::LINE_OR_EQUALITY, v.id() + 2) {
+  (*this)[v.id() + 1] = 1;
 }
 
 INLINE

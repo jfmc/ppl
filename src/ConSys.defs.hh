@@ -47,7 +47,8 @@ site: http://www.cs.unipr.it/ppl/ . */
     \endcode
 
     \par Example 1
-    The following code builds a square in \f$\Rset^2\f$:
+    The following code builds a system of constraints corresponding to
+    a square in \f$\Rset^2\f$:
   \code
   ConSys cs;
   cs.insert(x >= 0);
@@ -57,7 +58,8 @@ site: http://www.cs.unipr.it/ppl/ . */
   \endcode
 
     \par Example 2
-    The following code builds a half-strip in \f$\Rset^2\f$:
+    The following code builds a system of constraints corresponding to
+    a half-strip in \f$\Rset^2\f$:
   \code
   ConSys cs;
   cs.insert(x >= 0);
@@ -77,7 +79,7 @@ public:
   //! Inserts a copy of the constraint \p c into \p *this.
   void insert(const Constraint& c);
 
-  //! Swaps \p *this with \p y
+  //! Swaps \p *this with the system of constraints \p y.
   void swap(ConSys& y);
 
   /*!
@@ -137,7 +139,9 @@ public:
     bool operator !=(const const_iterator& y) const;
   };
 
-  //! Returns the const_iterator pointing to the first constraint.
+  //! Returns the const_iterator pointing to the first constraint,
+  //! if \p *this is not empty;
+  //! otherwise, returns the past-the-end const_iterator.
   const_iterator begin() const;
   //! Returns the past-the-end const_iterator.
   const_iterator end() const;

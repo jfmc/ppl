@@ -90,14 +90,14 @@ operator ^(int, const LinExpression& e) {
 }
 
 INLINE Generator
-operator /=(const LinExpression& e, const Integer& n) {
-  if (n == 0)
-    throw std::invalid_argument("Generator PPL::operator /=(e, n) "
-				"with n == 0");
+operator /=(const LinExpression& e, const Integer& d) {
+  if (d == 0)
+    throw std::invalid_argument("Generator PPL::operator /=(e, d) "
+				"with d == 0");
 
   LinExpression ec = e;
   Generator g(ec);
-  g[0] = n;
+  g[0] = d;
   g.set_is_ray_or_vertex();
   return g;
 }
