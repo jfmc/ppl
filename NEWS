@@ -10,6 +10,8 @@ NEWS for version 0.7  (released date to be decided)
 New and Changed Features
 ========================
 
+o  We now require GMP 4.1.3 or higher.
+
 o  Significant efficiency improvements have been achieved in the case
    of closed polyhedra.
 

@@ -43,9 +43,13 @@ ac_save_LIBS="$LIBS"
 LIBS="$LIBS $LIBGMPXX"
 AC_LANG_PUSH(C++)
 
-AC_MSG_CHECKING([for the GMP library])
+AC_MSG_CHECKING([for the GMP library version 4.1.3 or above])
 AC_RUN_IFELSE([AC_LANG_SOURCE([[
 #include <gmpxx.h>
+
+#if __GNU_MP_VERSION < 4 || (__GNU_MP_VERSION == 4 && __GNU_MP_VERSION_MINOR < 1) || (__GNU_MP_VERSION == 4 && __GNU_MP_VERSION_MINOR == 1 && __GNU_MP_VERSION_PATCHLEVEL < 3)
+#error "GMP version 4.1.3 or higher is required"
+#endif
 
 using namespace std;
 
