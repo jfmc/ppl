@@ -756,9 +756,9 @@ ppl_new_Polyhedron_from_Polyhedron(Prolog_term_ref t_tp_source,
 }
 
 extern "C" Prolog_foreign_return_type
-ppl_new_Polyhedron_from_ConSys(Prolog_term_ref t_tp,
-			       Prolog_term_ref t_clist,
-			       Prolog_term_ref t_ph) {
+ppl_new_Polyhedron_from_constraints(Prolog_term_ref t_tp,
+				    Prolog_term_ref t_clist,
+				    Prolog_term_ref t_ph) {
   try {
     PPL::ConSys cs;
     Prolog_term_ref c = Prolog_new_term_ref();
@@ -787,9 +787,9 @@ ppl_new_Polyhedron_from_ConSys(Prolog_term_ref t_tp,
 }
 
 extern "C" Prolog_foreign_return_type
-ppl_new_Polyhedron_from_GenSys(Prolog_term_ref t_tp,
-			       Prolog_term_ref t_glist,
-			       Prolog_term_ref t_ph) {
+ppl_new_Polyhedron_from_generators(Prolog_term_ref t_tp,
+				   Prolog_term_ref t_glist,
+				   Prolog_term_ref t_ph) {
   try {
     PPL::GenSys gs;
     Prolog_term_ref g = Prolog_new_term_ref();

@@ -28,8 +28,8 @@ site: http://www.cs.unipr.it/ppl/ . */
 	ppl_new_Polyhedron_from_dimension/3,
 	ppl_new_Polyhedron_empty_from_dimension/3,
 	ppl_new_Polyhedron_from_Polyhedron/4,
-	ppl_new_Polyhedron_from_ConSys/3,
-	ppl_new_Polyhedron_from_GenSys/3,
+	ppl_new_Polyhedron_from_constraints/3,
+	ppl_new_Polyhedron_from_generators/3,
 	ppl_new_Polyhedron_from_bounding_box/3,
 	ppl_delete_Polyhedron/1,
 	ppl_Polyhedron_space_dimension/2,
@@ -82,12 +82,23 @@ site: http://www.cs.unipr.it/ppl/ . */
 :- true pred ppl_new_Polyhedron_from_dimension(in(Kind),
                                                in(Dimension),
                                                in(Handle))
-             :: any_term(Kind) * any_term(Dimension) * any_term
+             :: any_term(Kind) * any_term(Dimension) * any_term(Handle)
+
+:- true pred ppl_new_Polyhedron_empty_from_dimension(in(Kind),
+                                                     in(Dimension),
+                                                     in(Handle))
+             :: any_term(Kind) * any_term(Dimension) * any_term(Handle)
+
+:- true pred ppl_new_Polyhedron_from_Polyhedron(in(SrcKind),
+                                                in(SrcPh),
+                                                in(DstKind),
+                                                in(DstPh))
+             :: any_term(SrcKind) * any_term(SrcPh)
+              * any_term(DstKind) * any_term(DstPh)
+
 /*
-:- true pred ppl_new_Polyhedron_empty_from_dimension/3,
-:- true pred ppl_new_Polyhedron_from_Polyhedron/4,
-:- true pred ppl_new_Polyhedron_from_ConSys/3,
-:- true pred ppl_new_Polyhedron_from_GenSys/3,
+:- true pred ppl_new_Polyhedron_from_constraints/3,
+:- true pred ppl_new_Polyhedron_from_generators/3,
 :- true pred ppl_delete_Polyhedron/1,
 :- true pred ppl_Polyhedron_space_dimension/2,
 :- true pred ppl_Polyhedron_intersection_assign/2,
@@ -134,8 +145,8 @@ site: http://www.cs.unipr.it/ppl/ . */
 	ppl_new_Polyhedron_from_dimension/3,
 	ppl_new_Polyhedron_empty_from_dimension/3,
 	ppl_new_Polyhedron_from_Polyhedron/4,
-	ppl_new_Polyhedron_from_ConSys/3,
-	ppl_new_Polyhedron_from_GenSys/3,
+	ppl_new_Polyhedron_from_constraints/3,
+	ppl_new_Polyhedron_from_generators/3,
 	ppl_delete_Polyhedron/1,
 	ppl_Polyhedron_space_dimension/2,
 	ppl_Polyhedron_intersection_assign/2,

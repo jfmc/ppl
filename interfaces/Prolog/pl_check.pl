@@ -146,7 +146,7 @@ ppl_delete_Polyhedron(P1a),
 ppl_delete_Polyhedron(P2),
 ppl_delete_Polyhedron(P2a),
 A = '$VAR'(0), B = '$VAR'(1), C = '$VAR'(2), 
-ppl_new_Polyhedron_from_ConSys(nnc, [3 >= A, 4 > A, 4*A + B - 2*C >= 5], P3),
+ppl_new_Polyhedron_from_constraints(nnc, [3 >= A, 4 > A, 4*A + B - 2*C >= 5], P3),
 ppl_new_Polyhedron_from_Polyhedron(nnc, P3, c, P4),
 ppl_Polyhedron_get_constraints(P4, CS),
 CS = [4*A + 1*B + -2*C >= 5, -1*A >= -3],
@@ -155,14 +155,14 @@ ppl_delete_Polyhedron(P4).
 
 get_cons_C :-
 A = '$VAR'(0), B = '$VAR'(1), C = '$VAR'(2), 
-ppl_new_Polyhedron_from_ConSys(c, [3 >= A, 4*A + B - 2*C >= 5], P),
+ppl_new_Polyhedron_from_constraints(c, [3 >= A, 4*A + B - 2*C >= 5], P),
 ppl_Polyhedron_get_constraints(P, CS),
 CS = [4*A + 1*B + -2*C >= 5, -1*A >= -3],
 ppl_delete_Polyhedron(P).
 
 get_gens_C :-
 A = '$VAR'(0), B = '$VAR'(1), C = '$VAR'(2), 
-ppl_new_Polyhedron_from_GenSys(c, [point(1*A + 1*B + 1*C, 1),
+ppl_new_Polyhedron_from_generators(c, [point(1*A + 1*B + 1*C, 1),
                                   point(1*A + 1*B + 1*C, 1)], P),
 ppl_Polyhedron_get_generators(P, GS),
 GS = [point(1*A + 1*B + 1*C), point(1*A + 1*B + 1*C)],
@@ -170,14 +170,14 @@ ppl_delete_Polyhedron(P).
 
 get_cons_NNC :-
 A = '$VAR'(0), B = '$VAR'(1), C = '$VAR'(2), 
-ppl_new_Polyhedron_from_ConSys(nnc, [3 > A, 4*A + B - 2*C >= 5], P),
+ppl_new_Polyhedron_from_constraints(nnc, [3 > A, 4*A + B - 2*C >= 5], P),
 ppl_Polyhedron_get_constraints(P, CS),
 CS = [4*A + 1*B + -2*C >= 5, -1*A > -3],
 ppl_delete_Polyhedron(P).
 
 get_gens_NNC :-
 A = '$VAR'(0), B = '$VAR'(1), C = '$VAR'(2), 
-ppl_new_Polyhedron_from_GenSys(nnc, [
+ppl_new_Polyhedron_from_generators(nnc, [
             point(1*A + 1*B + 1*C, 1),
             closure_point(1*A + 1*B + 1*C, 1)
                                    ], P),
@@ -199,9 +199,9 @@ ppl_delete_Polyhedron(P).
 
 inters_assign :-
 A = '$VAR'(0), B = '$VAR'(1), 
-ppl_new_Polyhedron_from_GenSys(nnc, [point(0), point(B), 
+ppl_new_Polyhedron_from_generators(nnc, [point(0), point(B), 
                                     point(A), point(A, 2)], P1),
-ppl_new_Polyhedron_from_GenSys(nnc, [point(0), point(A), 
+ppl_new_Polyhedron_from_generators(nnc, [point(0), point(A), 
                                     point(A + B), point(A, 2)], P2),
 ppl_Polyhedron_intersection_assign(P1, P2),
 ppl_Polyhedron_get_generators(P1, GS),
@@ -213,9 +213,9 @@ ppl_delete_Polyhedron(P2).
 
 inters_assign_min :-
 A = '$VAR'(0), B = '$VAR'(1), 
-ppl_new_Polyhedron_from_GenSys(nnc, [point(0), point(B), 
+ppl_new_Polyhedron_from_generators(nnc, [point(0), point(B), 
                                     point(A), point(A, 2)], P1),
-ppl_new_Polyhedron_from_GenSys(nnc, [point(0), point(A), point(A + B)], P2),
+ppl_new_Polyhedron_from_generators(nnc, [point(0), point(A), point(A + B)], P2),
 ppl_Polyhedron_intersection_assign_and_minimize(P1, P2),
 ppl_Polyhedron_get_generators(P1, GS),
 ppl_Polyhedron_get_constraints(P1, CS),
@@ -226,9 +226,9 @@ ppl_delete_Polyhedron(P2).
 
 polyhull_assign :-
 A = '$VAR'(0), B = '$VAR'(1), 
-ppl_new_Polyhedron_from_GenSys(c, [point(0), point(B),
+ppl_new_Polyhedron_from_generators(c, [point(0), point(B),
                                   point(A), point(A,2)], P1),
-ppl_new_Polyhedron_from_GenSys(c, [point(0), point(A), point(A + B),
+ppl_new_Polyhedron_from_generators(c, [point(0), point(A), point(A + B),
                                   point(A, 2)], P2),
 ppl_Polyhedron_poly_hull_assign(P1, P2),
 ppl_Polyhedron_get_generators(P1, GS),
@@ -240,9 +240,9 @@ ppl_delete_Polyhedron(P2).
 
 polyhull_assign_min :-
 A = '$VAR'(0), B = '$VAR'(1), 
-ppl_new_Polyhedron_from_GenSys(c, [point(0), point(B), point(A),
+ppl_new_Polyhedron_from_generators(c, [point(0), point(B), point(A),
                                   point(A, 2)], P1),
-ppl_new_Polyhedron_from_GenSys(c, [point(0), point(A), point(A + B)], P2),
+ppl_new_Polyhedron_from_generators(c, [point(0), point(A), point(A + B)], P2),
 ppl_Polyhedron_poly_hull_assign_and_minimize(P1,P2),
 ppl_Polyhedron_get_generators(P1, GS),
 ppl_Polyhedron_get_constraints(P1, CS),
@@ -253,9 +253,9 @@ ppl_delete_Polyhedron(P2).
 
 polydiff_assign :-
 A = '$VAR'(0), B = '$VAR'(1), 
-ppl_new_Polyhedron_from_GenSys(c, [point(0), point(B), point(A),
+ppl_new_Polyhedron_from_generators(c, [point(0), point(B), point(A),
                                   point(A,2)],P1),
-ppl_new_Polyhedron_from_GenSys(c, [point(0), point(A), point(A + B),
+ppl_new_Polyhedron_from_generators(c, [point(0), point(A), point(A + B),
                                   point(A,2)],P2),
 ppl_Polyhedron_poly_difference_assign(P1, P2),
 ppl_Polyhedron_get_generators(P1, GS),
@@ -267,9 +267,9 @@ ppl_delete_Polyhedron(P2).
 
 polydiff_assign_min :-
 A = '$VAR'(0), B = '$VAR'(1), 
-ppl_new_Polyhedron_from_GenSys(c, [point(0), point(B),
+ppl_new_Polyhedron_from_generators(c, [point(0), point(B),
                                   point(A), point(A,2)], P1),
-ppl_new_Polyhedron_from_GenSys(c, [point(0), point(A), point(A + B)], P2),
+ppl_new_Polyhedron_from_generators(c, [point(0), point(A), point(A + B)], P2),
 ppl_Polyhedron_poly_difference_assign_and_minimize(P1, P2),
 ppl_Polyhedron_get_generators(P1, GS),
 ppl_Polyhedron_get_constraints(P1, CS),
@@ -281,7 +281,7 @@ ppl_delete_Polyhedron(P2).
 widen_C :-
 A = '$VAR'(0), B = '$VAR'(1), 
 ppl_new_Polyhedron_from_dimension(c, 2, P),
-ppl_new_Polyhedron_from_ConSys(c, [A >= 1, B >= 0], Q),
+ppl_new_Polyhedron_from_constraints(c, [A >= 1, B >= 0], Q),
 ppl_Polyhedron_widening_CC92_assign(P, Q),
 ppl_Polyhedron_get_constraints(P, CP),
 ppl_Polyhedron_get_constraints(Q, CQ), 
@@ -293,7 +293,7 @@ ppl_delete_Polyhedron(Q).
 lim_widen_C :-
 A = '$VAR'(0), B = '$VAR'(1), 
 ppl_new_Polyhedron_from_dimension(c, 2, P),
-ppl_new_Polyhedron_from_ConSys(c, [A >= 1, B >= 0], Q),
+ppl_new_Polyhedron_from_constraints(c, [A >= 1, B >= 0], Q),
 ppl_Polyhedron_add_constraints_and_minimize(Q, 
      [A >= 1, B >= 0]),
 ppl_Polyhedron_limited_widening_CC92_assign(P, Q,
@@ -306,7 +306,7 @@ ppl_delete_Polyhedron(Q).
 widen_NNC :-
 A = '$VAR'(0), B = '$VAR'(1), 
 ppl_new_Polyhedron_from_dimension(nnc, 2, P),
-ppl_new_Polyhedron_from_ConSys(nnc, [A >= 1, B >= 0], Q),
+ppl_new_Polyhedron_from_constraints(nnc, [A >= 1, B >= 0], Q),
 ppl_Polyhedron_widening_CC92_assign(P, Q),
 ppl_Polyhedron_get_constraints(P, CP),
 ppl_Polyhedron_get_constraints(Q, CQ),
@@ -318,7 +318,7 @@ ppl_delete_Polyhedron(Q).
 lim_widen_NNC :-
 A = '$VAR'(0), B = '$VAR'(1), 
 ppl_new_Polyhedron_from_dimension(nnc, 2, P),
-ppl_new_Polyhedron_from_ConSys(nnc, [A >= 1, B >= 0], Q),
+ppl_new_Polyhedron_from_constraints(nnc, [A >= 1, B >= 0], Q),
 ppl_Polyhedron_add_constraints_and_minimize(Q, 
      [A >= 1, B >= 0]),
 ppl_Polyhedron_limited_widening_CC92_assign(P, Q,
@@ -528,7 +528,7 @@ ppl_delete_Polyhedron(P).
 % These next 2 tests demonstrate a bug in the bounding box software.
 boundingbox1(Box,CS) :-
 A = '$VAR'(0), B = '$VAR'(1), 
-ppl_new_Polyhedron_from_ConSys(nnc, [1*A>1, 1*B>1, -1*B> -1, -1*A> -1], P),
+ppl_new_Polyhedron_from_constraints(nnc, [1*A>1, 1*B>1, -1*B> -1, -1*A> -1], P),
 ppl_Polyhedron_get_bounding_box(P, Box),
 ppl_Polyhedron_get_constraints(P,CS), 
 ppl_delete_Polyhedron(P).

@@ -516,8 +516,8 @@ YAP_STUB_0(ppl_finalize, 0)
 YAP_STUB_3(ppl_new_Polyhedron_from_dimension, 3)
 YAP_STUB_3(ppl_new_Polyhedron_empty_from_dimension, 3)
 YAP_STUB_4(ppl_new_Polyhedron_from_Polyhedron, 4)
-YAP_STUB_3(ppl_new_Polyhedron_from_ConSys, 3)
-YAP_STUB_3(ppl_new_Polyhedron_from_GenSys, 3)
+YAP_STUB_3(ppl_new_Polyhedron_from_constraints, 3)
+YAP_STUB_3(ppl_new_Polyhedron_from_generators, 3)
 YAP_STUB_3(ppl_new_Polyhedron_from_bounding_box, 3)
 YAP_STUB_1(ppl_delete_Polyhedron, 1)
 YAP_STUB_2(ppl_Polyhedron_space_dimension, 2)
@@ -567,8 +567,8 @@ init() {
   YAP_USER_C_PREDICATE(ppl_new_Polyhedron_from_dimension, 3);
   YAP_USER_C_PREDICATE(ppl_new_Polyhedron_empty_from_dimension, 3);
   YAP_USER_C_PREDICATE(ppl_new_Polyhedron_from_Polyhedron, 4);
-  YAP_USER_C_PREDICATE(ppl_new_Polyhedron_from_ConSys, 3);
-  YAP_USER_C_PREDICATE(ppl_new_Polyhedron_from_GenSys, 3);
+  YAP_USER_C_PREDICATE(ppl_new_Polyhedron_from_constraints, 3);
+  YAP_USER_C_PREDICATE(ppl_new_Polyhedron_from_generators, 3);
   YAP_USER_C_PREDICATE(ppl_new_Polyhedron_from_bounding_box, 3);
   YAP_USER_C_PREDICATE(ppl_delete_Polyhedron, 1);
   YAP_USER_C_PREDICATE(ppl_Polyhedron_space_dimension, 2);

@@ -213,8 +213,8 @@ to the PPL library.
    ppl_new_Polyhedron_from_dimension/3, 
    ppl_new_Polyhedron_empty_from_dimension/3,
    ppl_new_Polyhedron_from_Polyhedron/4,
-   ppl_new_Polyhedron_from_ConSys/3,
-   ppl_new_Polyhedron_from_GenSys/3.
+   ppl_new_Polyhedron_from_constraints/3,
+   ppl_new_Polyhedron_from_generators/3.
    ppl_new_Polyhedron_from_bounding_box/3.
 \endcode
    These predicates will create or copy a PPL polyhedron
@@ -355,7 +355,7 @@ more information regarding these issues.
    rays and lines.
 
 <H4>
-   <CODE>ppl_new_Polyhedron_from_ConSys(+Topology,
+   <CODE>ppl_new_Polyhedron_from_constraints(+Topology,
                    +List_of_Constraints, -Handle)</CODE>
 </H4>
 
@@ -367,7 +367,7 @@ more information regarding these issues.
    only if <CODE>Topology</CODE> is <CODE>nnc</CODE>.
 
 <H4>
-   <CODE>ppl_new_Polyhedron_from_GenSys(+Topology
+   <CODE>ppl_new_Polyhedron_from_generators(+Topology
                    +List_of_Generators, -Handle)</CODE>
 </H4>
 
@@ -846,7 +846,7 @@ would not change \f$P\f$;
    E.g. 
 \code
    ?- A = '$VAR'(0), B = '$VAR'(1),
-      ppl_new_Polyhedron_from_ConSys(nnc, [B > 0, 4*A =< 2], P),
+      ppl_new_Polyhedron_from_constraints(nnc, [B > 0, 4*A =< 2], P),
       ppl_Polyhedron_get_bounding_box(P, Box).
  
    Box = [i(o(minf), c(1/2)), i(o(0), o(pinf))].
@@ -856,7 +856,7 @@ must be in canonical form.
 E.g. the following will fail:
 \code
    ?- A = '$VAR'(0), B = '$VAR'(1),
-      ppl_new_Polyhedron_from_ConSys(nnc, [B > 0, 4*A =< 2], P),
+      ppl_new_Polyhedron_from_constraints(nnc, [B > 0, 4*A =< 2], P),
       ppl_Polyhedron_get_bounding_box(P, Box),
       Box = [i(o(minf), c(2/4)), i(o(0), o(pinf))].
 \endcode

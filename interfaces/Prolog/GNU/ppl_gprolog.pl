@@ -26,8 +26,8 @@ site: http://www.cs.unipr.it/ppl/ . */
 :- foreign(ppl_new_Polyhedron_from_dimension(+term, +term, +term)).
 :- foreign(ppl_new_Polyhedron_empty_from_dimension(+term, +term, +term)).
 :- foreign(ppl_new_Polyhedron_from_Polyhedron(+term, +term, +term, +term)).
-:- foreign(ppl_new_Polyhedron_from_ConSys(+term, +term, +term)).
-:- foreign(ppl_new_Polyhedron_from_GenSys(+term, +term, +term)).
+:- foreign(ppl_new_Polyhedron_from_constraints(+term, +term, +term)).
+:- foreign(ppl_new_Polyhedron_from_generators(+term, +term, +term)).
 :- foreign(ppl_new_Polyhedron_from_bounding_box(+term, +term, +term)).
 :- foreign(ppl_delete_Polyhedron(+term)).
 :- foreign(ppl_Polyhedron_space_dimension(+term, +term)).
