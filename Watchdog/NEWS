@@ -4,6 +4,16 @@ Parma Watchdog Library NEWS -- history of user-visible changes
 
 
 --------------------------------------------------------------------------
+NEWS for version 0.4  (released on December 24, 2004)
+--------------------------------------------------------------------------
+
+Bugfixes
+========
+
+o  Fixed a bug that prevented profiling from functioning properly.
+
+
+--------------------------------------------------------------------------
 NEWS for version 0.3  (released on August 18, 2004)
 --------------------------------------------------------------------------
 
