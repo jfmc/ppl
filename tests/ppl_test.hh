@@ -105,6 +105,16 @@ void add_round_down(Checked_Number<T, Policy>& to,
 }
 
 template <typename T, typename Policy>
+void negate_round_down(Checked_Number<T, Policy>& to,
+		       const Checked_Number<T, Policy>& x) {
+  Rounding_State old;
+  Rounding mode(Rounding::DOWN);
+  mode.internal_save<T>(old);
+  to.assign_neg(x, mode);
+  mode.internal_restore<T>(old);
+}
+
+template <typename T, typename Policy>
 void numer_denom(const Checked_Number<T, Policy>& from,
 		 Coefficient& num, Coefficient& den) {
   // FIXME!
