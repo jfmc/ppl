@@ -586,7 +586,7 @@ and \ref operations of this manual.
    <CODE>Handle</CODE> is unified with the handle for \f$\cP\f$.
    Thus the query
 \code
-   ?- ppl_new_Polyhedron_from_dimension(c, X, 3).
+   ?- ppl_new_Polyhedron_from_dimension(c, 3, X).
 \endcode
    creates the C polyhedron defining the 3-dimensional vector space
    \f$\Rset^3\f$ with \p X bound to a valid handle for accessing it.
@@ -602,7 +602,7 @@ and \ref operations of this manual.
    <CODE>Handle</CODE> is unified with the handle for \f$\cP\f$.
    Thus the query
 \code
-   ?- ppl_new_Polyhedron_empty_from_dimension(nnc, X, 3).
+   ?- ppl_new_Polyhedron_empty_from_dimension(nnc, 3, X).
 \endcode
    creates an empty NNC polyhedron embedded in \f$\Rset^3\f$ with
    \p X bound to a valid handle for accessing it.
@@ -620,7 +620,7 @@ ppl_new_Polyhedron_from_Polyhedron(+Topology_1, +Handle_1,
    <CODE>Handle_2</CODE> is unified with the handle for \f$\cP_2\f$.
    Thus the query
 \code
-   ?- ppl_new_Polyhedron_empty_from_dimension(nnc, X, 3),
+   ?- ppl_new_Polyhedron_empty_from_dimension(nnc, 3, X),
       ppl_new_Polyhedron_from_Polyhedron(c, X, nnc, Y).
 \endcode
    creates an empty C polyhedron embedded in \f$\Rset^3\f$
