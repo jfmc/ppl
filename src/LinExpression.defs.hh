@@ -190,7 +190,7 @@ public:
   //! \brief
   //! Builds the linear expression corresponding
   //! to the inhomogeneous term \p n.
-  explicit LinExpression(const Integer_traits::const_reference n);
+  explicit LinExpression(Integer_traits::const_reference n);
 
   //! Builds the linear expression corresponding to the variable \p v.
   /*! \relates LinExpression
