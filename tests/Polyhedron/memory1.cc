@@ -62,7 +62,7 @@ main() TRY {
 }
 CATCH
 
-#else
+#else // GMP_SUPPORTS_EXCEPTIONS && !defined(__CYGWIN__) && ...
 
 namespace {
 
