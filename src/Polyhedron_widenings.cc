@@ -320,14 +320,16 @@ PPL::Polyhedron::limited_H79_extrapolation_assign(const Polyhedron& y,
 
   ConSys new_cs;
   // The constraints to be added must be satisfied by all the
-  // generators of `x'. We can disregard `y' because `y <= x'.
-  const GenSys& x_gs = x.gen_sys;
-  // FIXME: why iterating upwards here?
-  // FIXME: why repeating the call to cs[i]?
-  for (dimension_type i = 0, cs_num_rows = cs.num_rows(); i < cs_num_rows; ++i)
-    if (x_gs.satisfied_by_all_generators(cs[i]))
-      new_cs.insert(cs[i]);
-
+  // generators of `x'.  We can disregard `y' because `y <= x'.
+  const GenSys& x_gen_sys = x.gen_sys;
+  // Iterate upwards here so as to keep the relative ordering of constraints.
+  // Not really an issue: just aesthetics.
+  for (dimension_type i = 0,
+	 cs_num_rows = cs.num_rows(); i < cs_num_rows; ++i) {
+    const Constraint& c = cs[i];
+    if (x_gen_sys.satisfied_by_all_generators(c))
+      new_cs.insert(c);
+  }
   x.H79_widening_assign(y, tp);
   x.add_constraints(new_cs);
   assert(OK());
@@ -1191,13 +1193,15 @@ PPL::Polyhedron::limited_BHRZ03_extrapolation_assign(const Polyhedron& y,
   ConSys new_cs;
   // The constraints to be added must be satisfied by all the
   // generators of `x'. We can disregard `y' because `y <= x'.
-  const GenSys& x_gs = x.gen_sys;
-  // FIXME: why iterating upwards here?
-  // FIXME: why repeating the call to cs[i]?
-  for (dimension_type i = 0, cs_num_rows = cs.num_rows(); i < cs_num_rows; ++i)
-    if (x_gs.satisfied_by_all_generators(cs[i]))
-      new_cs.insert(cs[i]);
-
+  const GenSys& x_gen_sys = x.gen_sys;
+  // Iterate upwards here so as to keep the relative ordering of constraints.
+  // Not really an issue: just aesthetics.
+  for (dimension_type i = 0,
+	 cs_num_rows = cs.num_rows(); i < cs_num_rows; ++i) {
+    const Constraint& c = cs[i];
+    if (x_gen_sys.satisfied_by_all_generators(c))
+      new_cs.insert(c);
+  }
   x.BHRZ03_widening_assign(y, tp);
   x.add_constraints(new_cs);
   assert(OK());
