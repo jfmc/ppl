@@ -63,6 +63,16 @@ Constraint::space_dimension() const {
   return Row::space_dimension();
 }
 
+inline bool
+Constraint::is_equality() const {
+  return is_line_or_equality();
+}
+
+inline bool
+Constraint::is_inequality() const {
+  return is_ray_or_point_or_inequality();
+}
+
 inline Constraint::Type
 Constraint::type() const {
   if (is_equality())
@@ -73,16 +83,6 @@ Constraint::type() const {
     return ((*this)[size() - 1] < 0)
       ? STRICT_INEQUALITY
       : NONSTRICT_INEQUALITY;
-}
-
-inline bool
-Constraint::is_equality() const {
-  return is_line_or_equality();
-}
-
-inline bool
-Constraint::is_inequality() const {
-  return is_ray_or_point_or_inequality();
 }
 
 inline bool
@@ -115,30 +115,6 @@ Constraint::coefficient(Variable v) const {
 inline const Integer&
 Constraint::inhomogeneous_term() const {
   return Row::inhomogeneous_term();
-}
-
-inline const Constraint&
-Constraint::zero_dim_false() {
-  static Constraint zdf(LinExpression::zero() == Integer_one());
-  return zdf;
-}
-
-inline const Constraint&
-Constraint::zero_dim_positivity() {
-  static Constraint zdp(LinExpression::zero() <= Integer_one());
-  return zdp;
-}
-
-inline const Constraint&
-Constraint::epsilon_geq_zero() {
-  static Constraint eps_geq_zero = construct_epsilon_geq_zero();
-  return eps_geq_zero;
-}
-
-inline const Constraint&
-Constraint::epsilon_leq_one() {
-  static Constraint eps_leq_one(LinExpression::zero() < Integer_one());
-  return eps_leq_one;
 }
 
 inline Constraint
@@ -278,6 +254,30 @@ operator<(const Integer& n, const LinExpression& e) {
 inline Constraint
 operator<(const LinExpression& e, const Integer& n) {
   return n > e;
+}
+
+inline const Constraint&
+Constraint::zero_dim_false() {
+  static Constraint zdf(LinExpression::zero() == Integer_one());
+  return zdf;
+}
+
+inline const Constraint&
+Constraint::zero_dim_positivity() {
+  static Constraint zdp(LinExpression::zero() <= Integer_one());
+  return zdp;
+}
+
+inline const Constraint&
+Constraint::epsilon_geq_zero() {
+  static Constraint eps_geq_zero = construct_epsilon_geq_zero();
+  return eps_geq_zero;
+}
+
+inline const Constraint&
+Constraint::epsilon_leq_one() {
+  static Constraint eps_leq_one(LinExpression::zero() < Integer_one());
+  return eps_leq_one;
 }
 
 } // namespace Parma_Polyhedra_Library

@@ -185,16 +185,6 @@ Row::Type::reset(flags_t mask) {
 }
 
 inline bool
-Row::Type::is_line_or_equality() const {
-  return !is_ray_or_point_or_inequality();
-}
-
-inline void
-Row::Type::set_is_line_or_equality() {
-  reset(RPI);
-}
-
-inline bool
 Row::Type::is_ray_or_point_or_inequality() const {
   return test_all(RPI);
 }
@@ -202,6 +192,16 @@ Row::Type::is_ray_or_point_or_inequality() const {
 inline void
 Row::Type::set_is_ray_or_point_or_inequality() {
   set(RPI);
+}
+
+inline bool
+Row::Type::is_line_or_equality() const {
+  return !is_ray_or_point_or_inequality();
+}
+
+inline void
+Row::Type::set_is_line_or_equality() {
+  reset(RPI);
 }
 
 inline Topology
@@ -230,6 +230,22 @@ Row::Type::set_not_necessarily_closed() {
 inline size_t
 Row::size() const {
   return impl->size();
+}
+
+
+inline Row::Type
+Row::type() const {
+  return impl->type;
+}
+
+
+/*!
+  Returns <CODE>true</CODE> if \p *this row represent a constraint
+  or generator in a necessarily closed polyhedron.
+*/
+inline bool
+Row::is_necessarily_closed() const {
+  return type().is_necessarily_closed();
 }
 
 inline size_t
@@ -395,12 +411,6 @@ Row::operator=(const Row& y) {
 }
 
 
-inline Row::Type
-Row::type() const {
-  return impl->type;
-}
-
-
 /*!
   Returns <CODE>true</CODE> if \p *this row represent a line or
   an equality; <CODE>false</CODE> otherwise.
@@ -417,16 +427,6 @@ Row::is_line_or_equality() const {
 inline bool
 Row::is_ray_or_point_or_inequality() const {
   return type().is_ray_or_point_or_inequality();
-}
-
-
-/*!
-  Returns <CODE>true</CODE> if \p *this row represent a constraint
-  or generator in a necessarily closed polyhedron.
-*/
-inline bool
-Row::is_necessarily_closed() const {
-  return type().is_necessarily_closed();
 }
 
 /*!

@@ -30,6 +30,16 @@ site: http://www.cs.unipr.it/ppl/ . */
 
 namespace Parma_Polyhedra_Library {
 
+/*!
+  Returns the topological kind of the polyhedron.
+*/
+inline Topology
+Polyhedron::topology() const {
+  // We can check either one of the two matrices.
+  // (`con_sys' is slightly better, since it is placed at offset 0.)
+  return con_sys.topology();
+}
+
 inline void
 Polyhedron::swap(Polyhedron& y) {
   if (topology() != y.topology())
@@ -42,16 +52,6 @@ Polyhedron::swap(Polyhedron& y) {
   std::swap(space_dim, y.space_dim);
 }
 
-
-/*!
-  Returns the topological kind of the polyhedron.
-*/
-inline Topology
-Polyhedron::topology() const {
-  // We can check either one of the two matrices.
-  // (`con_sys' is slightly better, since it is placed at offset 0.)
-  return con_sys.topology();
-}
 
 /*!
   Returns <CODE>true</CODE> if and only if \p *this is a

@@ -79,6 +79,15 @@ Matrix::operator[](size_t k) const {
 }
 
 
+/*!
+  Returns the number of the rows of the matrix.
+*/
+inline size_t
+Matrix::num_rows() const {
+  return rows.size();
+}
+
+
 inline void
 Matrix::set_necessarily_closed() {
   row_topology = NECESSARILY_CLOSED;
@@ -146,15 +155,6 @@ Matrix::space_dimension() const {
   return (n_columns == 0)
     ? 0
     : n_columns - (is_necessarily_closed() ? 1 : 2);
-}
-
-
-/*!
-  Returns the number of the rows of the matrix.
-*/
-inline size_t
-Matrix::num_rows() const {
-  return rows.size();
 }
 
 

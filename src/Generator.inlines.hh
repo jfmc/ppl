@@ -56,6 +56,21 @@ Generator::space_dimension() const {
   return Row::space_dimension();
 }
 
+inline bool
+Generator::is_line() const {
+  return is_line_or_equality();
+}
+
+inline bool
+Generator::is_ray_or_point() const {
+  return is_ray_or_point_or_inequality();
+}
+
+inline bool
+Generator::is_ray() const {
+  return is_ray_or_point() && ((*this)[0] == 0);
+}
+
 inline Generator::Type
 Generator::type() const {
   if (is_line())
@@ -71,16 +86,6 @@ Generator::type() const {
 }
 
 inline bool
-Generator::is_line() const {
-  return is_line_or_equality();
-}
-
-inline bool
-Generator::is_ray() const {
-  return is_ray_or_point() && ((*this)[0] == 0);
-}
-
-inline bool
 Generator::is_point() const {
   return type() == POINT;
 }
@@ -88,11 +93,6 @@ Generator::is_point() const {
 inline bool
 Generator::is_closure_point() const {
   return type() == CLOSURE_POINT;
-}
-
-inline bool
-Generator::is_ray_or_point() const {
-  return is_ray_or_point_or_inequality();
 }
 
 inline void
