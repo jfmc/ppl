@@ -98,26 +98,26 @@ make prefix=$RPM_BUILD_ROOT%{_prefix} bindir=$RPM_BUILD_ROOT%{_bindir} \
 %files
 %defattr(-,root,root)
 %doc README doc/*.ps* doc/*.pdf*
+%{_includedir}/ppl.hh
 %{_libdir}/libppl.so.*
 %{_libdir}/libppl.so
 %{_libdir}/libppl.a
 %{_libdir}/libppl.la
-%{_includedir}/ppl.hh
 
 %files c
 %defattr(-,root,root)
-%{_libdir}/libppl_c.so.*
-%{_libdir}/libppl_c.so
+%{_includedir}/ppl_c.h
 %{_libdir}/libppl_c.a
 %{_libdir}/libppl_c.la
-%{_includedir}/ppl_c.h
+%{_libdir}/libppl_c.so*
 
 %files gprolog
 %defattr(-,root,root)
 %{_bindir}/ppl_gprolog
 %{_libdir}/ppl/libppl_gprolog.a
 %{_libdir}/ppl/libppl_gprolog.la
-%{_libdir}/ppl/libppl_gprolog.so*
+%{_libdir}/ppl/libppl_gprolog.pl
+%{_libdir}/ppl/libppl_gprolog.so
 
 %files sicstus
 %defattr(-,root,root)
@@ -133,7 +133,14 @@ make prefix=$RPM_BUILD_ROOT%{_prefix} bindir=$RPM_BUILD_ROOT%{_bindir} \
 %{_bindir}/ppl_pl
 %{_libdir}/ppl/libppl_swiprolog.a
 %{_libdir}/ppl/libppl_swiprolog.la
-%{_libdir}/ppl/libppl_swiprolog.so*
+%{_libdir}/ppl/libppl_swiprolog.so
+
+%files yap
+%defattr(-,root,root)
+%{_libdir}/ppl/libppl_yap.a
+%{_libdir}/ppl/libppl_yap.la
+%{_libdir}/ppl/libppl_yap.pl
+%{_libdir}/ppl/libppl_yap.so
 
 %post
 /sbin/ldconfig
