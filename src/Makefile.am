@@ -143,9 +143,6 @@ Determinate.inlines.hh \
 PowerSet.types.hh \
 PowerSet.defs.hh \
 PowerSet.inlines.hh \
-AskTell.types.hh \
-AskTell.defs.hh \
-AskTell.inlines.hh \
 Polyhedra_PowerSet.types.hh \
 Polyhedra_PowerSet.defs.hh \
 Polyhedra_PowerSet.inlines.hh \
@@ -225,9 +222,6 @@ Determinate.inlines.hh \
 PowerSet.types.hh \
 PowerSet.defs.hh \
 PowerSet.inlines.hh \
-AskTell.types.hh \
-AskTell.defs.hh \
-AskTell.inlines.hh \
 Polyhedra_PowerSet.types.hh \
 Polyhedra_PowerSet.defs.hh \
 Polyhedra_PowerSet.inlines.hh \
