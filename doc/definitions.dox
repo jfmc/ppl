@@ -490,81 +490,97 @@ to the references mentioned before, from:
 
 \section homogeneous Homogeneous Systems
 
-To simplify both the constraints and generators
-representations of a polyhedron \f$P \in \Rset^n\f$,
-it is useful to map each point \f$\vect{x} \in \Rset^n\f$
-to a point \f$\vect{x}' = (\xi \vect{x}, \xi)^\transpose \in \Rset^{n + 1}\f$
-where \f$\xi \geq 0\f$.
+To simplify the operations on polyhedra,
+each polyhedron is first transformed to a homogeneous cone
+in which the original polyhedron is embedded.
 
-The transformation changes an inhomogeneous system of constraints
-in \f$n\f$ variables, representing a polyhedron \f$P\f$, into a
-homogeneous system in \f$n + 1\f$ variables, representing a
-polyhedral cone \f$C\f$:
+<B>Corresponding Polyhedral Cone</B>
+
+The transformation changes the inhomogeneous system of constraints
+in \f$n\f$ variables, representing a polyhedron \f$P \in \Rset^n\f$,
+into a homogeneous system in \f$n + 1\f$ variables, representing a
+polyhedral cone \f$C \in \Rset^{n + 1}\f$,
+so that each point \f$\vect{x} \in P\f$
+corresponds to a point
+\f$\vect{x}' = (\xi \vect{x}^\transpose, \xi)^\transpose \in C\f$
+where \f$\xi \geq 0\f$. That is,
 \f[
   P = \{\,\vect{x} \mid A\vect{x} \geq \vect{b}\,\}
     = \{\,\vect{x} \mid A\vect{x} - \vect{b} \geq \vect{0}\,\}
 \f]
 \f[
-  C = \{\,(\xi \vect{x}, \xi)^\transpose \mid \xi A\vect{x} - \xi \vect{b}
-	\geq \vect{0}, \xi \geq 0\,\}
+  C = \{\,
+           (\xi \vect{x}^\transpose, \xi)^\transpose 
+      \mid 
+           \xi A\vect{x} - \xi \vect{b}
+	   \geq \vect{0}, \xi \geq 0
+      \,\}
     = \{\,\vect{x}' \mid A'\vect{x}' \geq \vect{0}\,\}
 \f]
-where \f$\vect{x}' = (\xi \vect{x}, \xi) \in \Rset^{n + 1}\f$
-and \f$A'\f$ is the \f$(m+1) \times (n+1)\f$ matrix having for
-its first \f$m\f$ rows the submatrix
-\f$(A, b) \in \Rset^m \times \Rset^{n + 1}\f$
-and for the \f$m + 1\f$ row the vector
-\f$(0, \ldots, 0, 1) \in \Rset^{n + 1}\f$.
-The cone \f$C\f$, which has a homogeneous representation, we call the
-<EM>corresponding polyhedral cone for \f$P\f$</EM>
+where:
+\f$\vect{x}' = (\xi \vect{x}^\transpose, \xi)^\transpose \in \Rset^{n + 1}\f$;
+\f$A'\f$ is the \f$(m+1) \times (n+1)\f$ matrix having, for
+its first \f$m\f$ rows, the submatrix
+\f$(A, -\vect{b}) \in \Rset^m \times \Rset^{n + 1}\f$;
+and, for the (\f$m + 1\f$)'st row,
+\f$(\vect{0}^\transpose, 1)\f$ where \f$\vect{0} \in \Rset^n\f$.
+We call  \f$C\f$ the
+<EM>corresponding polyhedral cone for \f$P\f$</EM>.
 
-<B>The positivity constraint</B>
+The (\f$m+1\f$)'st row 
+\f$(\vect{0}^\transpose, 1)\f$
+represents the <EM>positivity constraint</EM> \f$1 \geq 0\f$.
 
-<EM>The positivity constraint</EM> is the trivial constraint \f$1 \geq 0\f$.
-
-A polyhedra \f$P\f$ is contained in its corresponding polyhedral cone \f$C\f$
+Note that \f$P\f$ is contained in \f$C\f$
 since the intersection of \f$C\f$ with
 the hyperplane defined by the equality \f$\xi = 1\f$ is \f$P\f$.
 Therefore, it is always possible to
 transform  a polyhedron \f$P\f$ to its corresponding polyhedral cone
 \f$C\f$ and then recover \f$P\f$ by means of this intersection.
 
-As the representation of a polyhedral cone \f$C\f$
-is homogeneous and simpler than that for its corresponding polyhedron
-\f$P\f$, the PPL uses the two representations of \f$C\f$
-as a means of representing \f$P\f$.
-This means that, in PPL, a polyhedron
-is always changed to a representation of its corresponding cone
-before performing any operation on it.
-Moreover, in the sequel, by "representation of a polyhedra \f$P\f$"
-we are referring to a representation of its corresponding cone.
+As  \f$C\f$ always includes the origin and, hence, is non-empty,
+by Minkowski's theorem,
+it can also be represented by a system of generators.
 
-This choice of representation has three consequences:
--# the matrix of constraints acquires a new line  \f$(0, \ldots, 0, 1)\f$
-   so that the system of constraints acquires the positivity constraint;
--# in the transformation from a polyhedron to its corresponding cone,
-   vertices are transformed into rays and the only vertex is the origin.
--# since for any polyhedron (including the empty polyhedron),
-   the corresponding cone \f$C\f$ includes the origin \f$0\f$ as a vertex,
-   \f$C\f$ can always be represented both by a system of constraints and
-   by a system of generators.
+The systems of generators for \f$P\f$ and \f$C\f$ are such that:
+- Each vertex \f$\vect{v}\f$ in
+  \f$P\f$ corresponds to a ray \f$(\vect{v}^\transpose, d)^\transpose\f$
+  with \f$d \neq 0\f$, in \f$C\f$.
+- Each ray \f$\vect{r}\f$ in
+  \f$P\f$ corresponds to the ray \f$(\vect{r}^\transpose, 0)^\transpose\f$
+  in \f$C\f$.
+- Every ray in \f$C\f$ corresponds to a vertex or ray in \f$P\f$.
+- The origin in \f$\Rset^{n+1}\f$ is a point in \f$C\f$.
+
+Thus, in the cone \f$C\f$, a ray derived from a vertex 
+in \f$P\f$ differs from a ray derived from a ray in \f$P\f$
+only in that, for a vertex,
+the (\f$n+1\f$)'st term is different from zero and,
+for a ray, it is zero.
 
 <B>Double Description</B>
 
-Thus, in the PPL, every polyhedron is represented by a
-<EM>double description</EM> consisting of
-a system of constraints and a system of generators
-both defining its corresponding cone.
-Thus, in a double description for a polyhedron \f$P\f$
-the system of constraints will always contain the positivity constraint
-while the system of generators will always contain the
-origin as a vertex.
+Let \f$P \in \Rset^n \f$ be a polyhedron and  \f$C \in \Rset^{n+1} \f$
+the corresponding polyhedral cone.
+Then the dual representations, the systems of constraints
+and generators representing \f$C\f$, form the
+<EM>double description</EM> for \f$P\f$.
 
-In addition, in this representation of a polyhedron,
-vertices differ from rays only in that, for a vertex,
-the \f$n+1\f$'th term of its vector is different from zero and,
-for a ray, it is zero.
-In all other ways, vertices and rays are the same.
+Note that, in a double description for a non-empty polyhedron,
+the system of constraints subsumes the positivity constraint \f$1 \geq 0\f$
+while the system of generators (which has only rays and lines
+corresponding to the vertices, rays and lines for \f$P\f$)
+implicitly assumes the origin in \f$\Rset^{n+1} \f$
+as a point so that the cone \f$C\f$ represented by the generators is non-empty.
+
+<B>PPL Polyhedron Representation</B>
+
+In the PPL,
+a polyhedron is represented by one or both of the representations in
+its double description.
+Thus, in the sequel, by <EM>PPL representation of a polyhedra</EM>,
+we are referring to the corresponding representation of
+its corresponding polyhedral cone.
 
 <B>Valid linear inequalities</B>
 
