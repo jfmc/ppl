@@ -1019,6 +1019,10 @@ public:
     with \f$(-\infty, n/d)\f$ if <CODE>closed</CODE>
     is <CODE>false</CODE>.
     The fraction \f$n/d\f$ is in canonical form.
+    The function <CODE>raise_lower_bound(k, closed, n, d)</CODE>
+    will be called at most once for each possible value for <CODE>k</CODE>.
+    The same guarantee is offered for the function
+    <CODE>lower_upper_bound(k, closed, n, d)</CODE>.
   */
   template <typename Box>
   void shrink_bounding_box(Box& box, Complexity_Class complexity = ANY) const;
