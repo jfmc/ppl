@@ -337,9 +337,11 @@ Polyhedron::Polyhedron(Topology topol, const Box& box)
 template <typename Box>
 void
 Polyhedron::shrink_bounding_box(Box& box, bool polynomial) const {
+  // FIXME: this is exponential!!!
   if (check_universe())
     return;
 
+  // FIXME: this is exponential!!!
   if (check_empty()) {
     box.set_empty();
     return;
