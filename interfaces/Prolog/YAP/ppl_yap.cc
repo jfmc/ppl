@@ -409,6 +409,18 @@ yap_stub_##name() { \
   return name(arg1, arg2, arg3, arg4, arg5); \
 }
 
+#define YAP_STUB_6(name) \
+extern "C" Prolog_foreign_return_type \
+yap_stub_##name() { \
+  Prolog_term_ref arg1 = YAP_ARG1; \
+  Prolog_term_ref arg2 = YAP_ARG2; \
+  Prolog_term_ref arg3 = YAP_ARG3; \
+  Prolog_term_ref arg4 = YAP_ARG4; \
+  Prolog_term_ref arg5 = YAP_ARG5; \
+  Prolog_term_ref arg6 = YAP_ARG6; \
+  return name(arg1, arg2, arg3, arg4, arg5, arg6); \
+}
+
 YAP_STUB_1(ppl_version_major)
 YAP_STUB_1(ppl_version_minor)
 YAP_STUB_1(ppl_version_revision)
@@ -444,7 +456,9 @@ YAP_STUB_1(ppl_Polyhedron_is_bounded)
 YAP_STUB_2(ppl_Polyhedron_bounds_from_above)
 YAP_STUB_2(ppl_Polyhedron_bounds_from_below)
 YAP_STUB_5(ppl_Polyhedron_maximize)
+YAP_STUB_6(ppl_Polyhedron_maximize_with_point)
 YAP_STUB_5(ppl_Polyhedron_minimize)
+YAP_STUB_6(ppl_Polyhedron_minimize_with_point)
 YAP_STUB_1(ppl_Polyhedron_is_topologically_closed)
 YAP_STUB_2(ppl_Polyhedron_contains_Polyhedron)
 YAP_STUB_2(ppl_Polyhedron_strictly_contains_Polyhedron)
@@ -530,7 +544,9 @@ init() {
   YAP_USER_C_PREDICATE(ppl_Polyhedron_bounds_from_above, 2);
   YAP_USER_C_PREDICATE(ppl_Polyhedron_bounds_from_below, 2);
   YAP_USER_C_PREDICATE(ppl_Polyhedron_maximize, 5);
+  YAP_USER_C_PREDICATE(ppl_Polyhedron_maximize_with_point, 6);
   YAP_USER_C_PREDICATE(ppl_Polyhedron_minimize, 5);
+  YAP_USER_C_PREDICATE(ppl_Polyhedron_minimize_with_point, 6);
   YAP_USER_C_PREDICATE(ppl_Polyhedron_is_topologically_closed, 1);
   YAP_USER_C_PREDICATE(ppl_Polyhedron_contains_Polyhedron, 2);
   YAP_USER_C_PREDICATE(ppl_Polyhedron_strictly_contains_Polyhedron, 2);

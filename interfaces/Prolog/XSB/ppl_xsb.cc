@@ -400,7 +400,9 @@ Integer_to_integer_term(const PPL::Integer& n) {
 #define ppl_Polyhedron_bounds_from_above xsb_stub_ppl_Polyhedron_bounds_from_above
 #define ppl_Polyhedron_bounds_from_below xsb_stub_ppl_Polyhedron_bounds_from_below
 #define ppl_Polyhedron_maximize xsb_stub_ppl_Polyhedron_maximize
+#define ppl_Polyhedron_maximize_with_point xsb_stub_ppl_Polyhedron_maximize_with_point
 #define ppl_Polyhedron_minimize xsb_stub_ppl_Polyhedron_minimize
+#define ppl_Polyhedron_minimize_with_point xsb_stub_ppl_Polyhedron_minimize_with_point
 #define ppl_Polyhedron_is_topologically_closed xsb_stub_ppl_Polyhedron_is_topologically_closed
 #define ppl_Polyhedron_contains_Polyhedron xsb_stub_ppl_Polyhedron_contains_Polyhedron
 #define ppl_Polyhedron_strictly_contains_Polyhedron xsb_stub_ppl_Polyhedron_strictly_contains_Polyhedron
@@ -482,7 +484,9 @@ Integer_to_integer_term(const PPL::Integer& n) {
 #undef ppl_Polyhedron_bounds_from_above
 #undef ppl_Polyhedron_bounds_from_below
 #undef ppl_Polyhedron_maximize
+#undef ppl_Polyhedron_maximize_with_point
 #undef ppl_Polyhedron_minimize
+#undef ppl_Polyhedron_minimize_with_point
 #undef ppl_Polyhedron_is_topologically_closed
 #undef ppl_Polyhedron_contains_Polyhedron
 #undef ppl_Polyhedron_strictly_contains_Polyhedron
@@ -578,6 +582,18 @@ name() { \
   return xsb_stub_##name(arg1, arg2, arg3, arg4, arg5); \
 }
 
+#define XSB_ENTRY_6(name) \
+extern "C" Prolog_foreign_return_type \
+name() { \
+  Prolog_term_ref arg1 = reg_term(1); \
+  Prolog_term_ref arg2 = reg_term(2); \
+  Prolog_term_ref arg3 = reg_term(3); \
+  Prolog_term_ref arg4 = reg_term(4); \
+  Prolog_term_ref arg5 = reg_term(5); \
+  Prolog_term_ref arg6 = reg_term(6); \
+  return xsb_stub_##name(arg1, arg2, arg3, arg4, arg5, arg6); \
+}
+
 XSB_ENTRY_1(ppl_version_major)
 XSB_ENTRY_1(ppl_version_minor)
 XSB_ENTRY_1(ppl_version_revision)
@@ -613,7 +629,9 @@ XSB_ENTRY_1(ppl_Polyhedron_is_bounded)
 XSB_ENTRY_2(ppl_Polyhedron_bounds_from_above)
 XSB_ENTRY_2(ppl_Polyhedron_bounds_from_below)
 XSB_ENTRY_5(ppl_Polyhedron_maximize)
+XSB_ENTRY_6(ppl_Polyhedron_maximize_with_point)
 XSB_ENTRY_5(ppl_Polyhedron_minimize)
+XSB_ENTRY_6(ppl_Polyhedron_minimize_with_point)
 XSB_ENTRY_1(ppl_Polyhedron_is_topologically_closed)
 XSB_ENTRY_2(ppl_Polyhedron_contains_Polyhedron)
 XSB_ENTRY_2(ppl_Polyhedron_strictly_contains_Polyhedron)

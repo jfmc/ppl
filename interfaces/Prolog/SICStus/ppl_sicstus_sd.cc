@@ -131,6 +131,24 @@ sp_stub_##name(Prolog_term_ref goal, void*) { \
   return name(arg1, arg2, arg3); \
 }
 
+#define SP_STUB_4(name) \
+extern "C" Prolog_foreign_return_type \
+sp_stub_##name(Prolog_term_ref goal, void*) { \
+  Prolog_term_ref arg1 = Prolog_new_term_ref(); \
+  if (!Prolog_get_arg(1, goal, arg1)) \
+    return PROLOG_FAILURE; \
+  Prolog_term_ref arg2 = Prolog_new_term_ref(); \
+  if (!Prolog_get_arg(2, goal, arg2)) \
+    return PROLOG_FAILURE; \
+  Prolog_term_ref arg3 = Prolog_new_term_ref(); \
+  if (!Prolog_get_arg(3, goal, arg3)) \
+    return PROLOG_FAILURE; \
+  Prolog_term_ref arg4 = Prolog_new_term_ref(); \
+  if (!Prolog_get_arg(4, goal, arg4)) \
+    return PROLOG_FAILURE; \
+  return name(arg1, arg2, arg3, arg4); \
+}
+
 #define SP_STUB_5(name) \
 extern "C" Prolog_foreign_return_type \
 sp_stub_##name(Prolog_term_ref goal, void*) { \
@@ -152,7 +170,7 @@ sp_stub_##name(Prolog_term_ref goal, void*) { \
   return name(arg1, arg2, arg3, arg4, arg5); \
 }
 
-#define SP_STUB_4(name) \
+#define SP_STUB_6(name) \
 extern "C" Prolog_foreign_return_type \
 sp_stub_##name(Prolog_term_ref goal, void*) { \
   Prolog_term_ref arg1 = Prolog_new_term_ref(); \
@@ -167,7 +185,13 @@ sp_stub_##name(Prolog_term_ref goal, void*) { \
   Prolog_term_ref arg4 = Prolog_new_term_ref(); \
   if (!Prolog_get_arg(4, goal, arg4)) \
     return PROLOG_FAILURE; \
-  return name(arg1, arg2, arg3, arg4); \
+  Prolog_term_ref arg5 = Prolog_new_term_ref(); \
+  if (!Prolog_get_arg(5, goal, arg5)) \
+    return PROLOG_FAILURE; \
+  Prolog_term_ref arg6 = Prolog_new_term_ref(); \
+  if (!Prolog_get_arg(6, goal, arg6)) \
+    return PROLOG_FAILURE; \
+  return name(arg1, arg2, arg3, arg4, arg5, arg6); \
 }
 
 SP_STUB_1(ppl_version_major)
@@ -205,7 +229,9 @@ SP_STUB_1(ppl_Polyhedron_is_bounded)
 SP_STUB_2(ppl_Polyhedron_bounds_from_above)
 SP_STUB_2(ppl_Polyhedron_bounds_from_below)
 SP_STUB_5(ppl_Polyhedron_maximize)
+SP_STUB_6(ppl_Polyhedron_maximize_with_point)
 SP_STUB_5(ppl_Polyhedron_minimize)
+SP_STUB_6(ppl_Polyhedron_minimize_with_point)
 SP_STUB_1(ppl_Polyhedron_is_topologically_closed)
 SP_STUB_2(ppl_Polyhedron_contains_Polyhedron)
 SP_STUB_2(ppl_Polyhedron_strictly_contains_Polyhedron)
@@ -298,7 +324,9 @@ ppl_sicstus_init(int /* when */) {
   SP_DEFINE_C_PREDICATE(ppl_Polyhedron_bounds_from_above, 2);
   SP_DEFINE_C_PREDICATE(ppl_Polyhedron_bounds_from_below, 2);
   SP_DEFINE_C_PREDICATE(ppl_Polyhedron_maximize, 5);
+  SP_DEFINE_C_PREDICATE(ppl_Polyhedron_maximize_with_point, 6);
   SP_DEFINE_C_PREDICATE(ppl_Polyhedron_minimize, 5);
+  SP_DEFINE_C_PREDICATE(ppl_Polyhedron_minimize_with_point, 6);
   SP_DEFINE_C_PREDICATE(ppl_Polyhedron_is_topologically_closed, 1);
   SP_DEFINE_C_PREDICATE(ppl_Polyhedron_contains_Polyhedron, 2);
   SP_DEFINE_C_PREDICATE(ppl_Polyhedron_strictly_contains_Polyhedron, 2);
