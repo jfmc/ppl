@@ -79,7 +79,8 @@ public:
   template <typename QH>
   explicit Polyhedra_Powerset(const Polyhedra_Powerset<QH>& y);
 
-  //! Creates a Polyhedra_Powerset with the same information contents as \p cs.
+  //! Creates a Polyhedra_Powerset with a single polyhedron
+  //! with the same information contents as \p cs.
   explicit Polyhedra_Powerset(const Constraint_System& cs);
 
   //@} // Constructors and Destructor
@@ -423,7 +424,7 @@ namespace Parma_Polyhedra_Library {
   such that
   - <CODE>r.first</CODE> is the intersection of \p p and \p q;
   - <CODE>r.second</CODE> has the property that all its elements are
-    not empty, pairwise disjoint, and disjoint from \p p;
+    pairwise disjoint and disjoint from \p p;
   - the union of <CODE>r.first</CODE> with all the elements of
     <CODE>r.second</CODE> gives \p q (i.e., <CODE>r</CODE> is the
     representation of a partition of \p q).

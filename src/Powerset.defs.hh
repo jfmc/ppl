@@ -68,7 +68,8 @@ public:
   //! \name Constructors and Destructor
   //@{
 
-  //! Default constructor: builds the bottom of the powerset constraint system.
+  //! Default constructor: builds the bottom of the powerset constraint
+  //! system (i.e., the empty powerset).
   Powerset();
 
   //! Copy constructor.

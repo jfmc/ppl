@@ -113,11 +113,12 @@ bool operator!=(const Polyhedron& x, const Polyhedron& y);
       a set of variables, etc.) will throw an exception if
       the polyhedron and the object are not both topology-compatible
       and dimension-compatible (see Section \ref representation);
-    - there is no way to change the topology of a polyhedron;
-      rather, there are constructors of the two derived classes
-      that builds a new polyhedron having a topology when
-      provided with the corresponding polyhedron of the other topology;
-    - the only ways to change the space dimension of a polyhedron are:
+    - the topology of a polyhedron cannot be changed;
+      rather, there are constructors for each of the two derived classes
+      that will build a new polyhedron with the topology of that class
+      from another polyhedron from either class and any topology;
+    - the only ways in which the space dimension of a polyhedron can
+      be changed are:
       - <EM>explicit</EM> calls to operators provided for that purpose;
       - standard copy, assignment and swap operators.
 
@@ -340,8 +341,8 @@ bool operator!=(const Polyhedron& x, const Polyhedron& y);
     when removing the set of dimensions \p to_be_removed2
     we are actually removing variable \f$w\f$ of the original polyhedron.
     For the same reason, the operator \p remove_space_dimensions
-    is not idempotent: removing twice the same set of dimensions
-    is never a no-op.
+    is not idempotent: removing twice the same non-empty set of dimensions
+    is never the same as removing them just once.
 */
 
 class Parma_Polyhedra_Library::Polyhedron {
