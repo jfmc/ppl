@@ -295,7 +295,6 @@ PPL::GenSys::get(std::istream& s) {
 
 void
 PPL::GenSys::remove_invalid_lines_and_rays() {
-  assert(Matrix::OK());
   GenSys& gs = *this;
   size_t nrows = num_rows();
   size_t i;
@@ -305,7 +304,6 @@ PPL::GenSys::remove_invalid_lines_and_rays() {
       // An invalid line or ray.
       break;
   }
-  assert(Matrix::OK());
   // If `i < nrows', `gs[i]' is a generator to remove.
   for (size_t j = i+1; j < nrows; ++j) {
     const Generator& g = gs[j];
@@ -316,10 +314,8 @@ PPL::GenSys::remove_invalid_lines_and_rays() {
       ++i;
     }
   }
-  assert(Matrix::OK());
   if (i < nrows)
     gs.erase_to_end(i);
-  assert(Matrix::OK());
 }
 
 /*!
