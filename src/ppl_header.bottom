@@ -1,8 +1,11 @@
 
 #ifdef PPL_SAVE_NDEBUG
-#define NDEBUG 1
-#undef PPL_SAVE_NDEBUG
+# define NDEBUG 1
+# undef PPL_SAVE_NDEBUG
+#else
+# undef NDEBUG
 #endif
+#include <cassert>
 
 #undef PPL_FLEXIBLE_ARRAY
 #undef PACKAGE
