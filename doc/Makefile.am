@@ -21,18 +21,20 @@ fdl.pdf   \
 fdl.ps.gz
 
 HTML_DIRS =     \
-user.html-dir   \
-devref.html-dir
+ppl-user-@VERSION@-html   \
+ppl-devref-@VERSION@-html
 
 ALL_TARGETS = \
+$(HTML_DIRS)                     \
+$(LICENSES)                      \
 ppl-user-@VERSION@-browse.pdf    \
 ppl-user-@VERSION@-print.pdf     \
 ppl-user-@VERSION@-print.ps.gz   \
+ppl-user-@VERSION@-html.tar.gz   \
 ppl-devref-@VERSION@-browse.pdf  \
 ppl-devref-@VERSION@-print.pdf   \
 ppl-devref-@VERSION@-print.ps.gz \
-$(HTML_DIRS)                     \
-$(LICENSES)
+ppl-devref-@VERSION@-html.tar.gz
 
 # We distribute some preprocessed user's documentation,
 # both for browsing and for printing.
@@ -88,9 +90,12 @@ ppl-user-@VERSION@-%.ps: user-%.latex-dir
 ppl-devref-@VERSION@-%.ps: devref-%.latex-dir
 	$(TEX_ENV) make -C $< ps && mv -f $</refman.ps $@
 
-%.html-dir: %.doxyconf-html $(DEVREF_STUFF)
+ppl-%-@VERSION@-html: %.doxyconf-html $(DEVREF_STUFF)
 	rm -rf html
 	$(TEX_ENV) doxygen $< && rm -rf $@ && mv -f html $@
+
+%.tar: %
+	tar cf $@ $<
 
 %.gz: %
 	gzip --best --force $<
