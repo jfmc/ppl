@@ -113,6 +113,29 @@ throw_dimension_incompatible(const char* method,
 
 /*! \relates Parma_Polyhedra_Library::Polyhedron */
 static void
+throw_topology_incompatible(const char* method,
+			    const PPL::Polyhedron& x,
+			    const PPL::Polyhedron& y) {
+  std::ostringstream s;
+  s << "PPL::Polyhedron::" << method
+    << ": topology mismatch" << std::endl
+    << "*this is a ";
+  if (x.is_necessarily_closed())
+    s << "C_";
+  else
+    s << "NNC_";
+  s << "Polyhedron," << std::endl
+    << "y is a ";
+  if (y.is_necessarily_closed())
+    s << "C_";
+  else
+    s << "NNC_";
+  s << "Polyhedron" << std::endl;
+  throw std::invalid_argument(s.str());
+}
+
+/*! \relates Parma_Polyhedra_Library::Polyhedron */
+static void
 throw_topology_incompatible(const char* method, const PPL::ConSys& ) {
   std::ostringstream s;
   s << "PPL::Polyhedron::" << method << ":" << std::endl
@@ -275,6 +298,8 @@ PPL::Polyhedron::Polyhedron(const Polyhedron& y)
     gen_sys(y.topology()),
     status(y.status),
     space_dim(y.space_dim) {
+  // Being a protected method, we simply assert that topologies do match.
+  assert(topology() == y.topology());
   if (y.constraints_are_up_to_date())
     con_sys = y.con_sys;
   if (y.generators_are_up_to_date())
@@ -377,6 +402,7 @@ PPL::Polyhedron::Polyhedron(Topology topol, GenSys& gs)
 
 PPL::Polyhedron&
 PPL::Polyhedron::operator=(const Polyhedron& y) {
+  // Being a protected method, we simply assert that topologies do match.
   assert(topology() == y.topology());
   if (y.space_dim == 0) {
     set_zero_dim_univ();
@@ -978,7 +1004,9 @@ PPL::Polyhedron::update_sat_g() const {
 */
 bool
 PPL::operator<=(const Polyhedron& x, const Polyhedron& y) {
-  assert(x.topology() == y.topology());
+  // Topology compatibility check.
+  if (x.topology() != y.topology())
+    throw_topology_incompatible("operator<=(x, y)", x, y);    
   size_t x_space_dim = x.space_dim;
   // Dimension-compatibility check.
   if (x_space_dim != y.space_dim)
@@ -1082,8 +1110,10 @@ PPL::operator<=(const Polyhedron& x, const Polyhedron& y) {
 */
 bool
 PPL::Polyhedron::intersection_assign_and_minimize(const Polyhedron& y) {
-  assert(topology() == y.topology());
   Polyhedron& x = *this;
+  // Topology compatibility check.
+  if (x.topology() != y.topology())
+    throw_topology_incompatible("inters_assign_and_min(y)", x, y);
   size_t x_space_dim = x.space_dim;
   // Dimension-compatibility check.
   if (x_space_dim != y.space_dim)
@@ -1140,12 +1170,14 @@ PPL::Polyhedron::intersection_assign_and_minimize(const Polyhedron& y) {
 */
 void
 PPL::Polyhedron::intersection_assign(const Polyhedron& y) {
-  assert(topology() == y.topology());
   Polyhedron& x = *this;
+  // Topology compatibility check.
+  if (x.topology() != y.topology())
+    throw_topology_incompatible("inters_assign(y)", x, y);
   size_t x_space_dim = x.space_dim;
   // Dimension-compatibility check.
   if (x_space_dim != y.space_dim)
-    throw_different_dimensions("inters_assign_and_min(y)", x, y);
+    throw_different_dimensions("inters_assign(y)", x, y);
 
   // If one of the two polyhedra is empty, the intersection is empty.
   if (x.is_empty())
@@ -1189,8 +1221,10 @@ PPL::Polyhedron::intersection_assign(const Polyhedron& y) {
 */
 bool
 PPL::Polyhedron::convex_hull_assign_and_minimize(const Polyhedron& y) {
-  assert(topology() == y.topology());
   Polyhedron& x = *this;
+  // Topology compatibility check.
+  if (x.topology() != y.topology())
+    throw_topology_incompatible("convex_hull_assign_and_min(y)", x, y);    
   size_t x_space_dim = x.space_dim;
   // Dimension-compatibility check.
   if (x_space_dim != y.space_dim)
@@ -1245,8 +1279,10 @@ PPL::Polyhedron::convex_hull_assign_and_minimize(const Polyhedron& y) {
 */
 void
 PPL::Polyhedron::convex_hull_assign(const Polyhedron& y) {
-  assert(topology() == y.topology());
   Polyhedron& x = *this;
+  // Topology compatibility check.
+  if (x.topology() != y.topology())
+    throw_topology_incompatible("convex_hull_assign(y)", x, y);    
   size_t x_space_dim = x.space_dim;
   // Dimension-compatibility check.
   if (x_space_dim != y.space_dim)
@@ -1297,8 +1333,10 @@ PPL::Polyhedron::convex_hull_assign(const Polyhedron& y) {
 */
 void
 PPL::Polyhedron::convex_difference_assign(const Polyhedron& y) {
-  assert(topology() == y.topology());
   Polyhedron& x = *this;
+  // Topology compatibility check.
+  if (x.topology() != y.topology())
+    throw_topology_incompatible("convex_difference_assign(y)", x, y);    
   size_t x_space_dim = x.space_dim;
   // Dimension-compatibility check.
   if (x_space_dim != y.space_dim)
@@ -1360,7 +1398,8 @@ PPL::Polyhedron::convex_difference_assign(const Polyhedron& y) {
 */
 bool
 PPL::Polyhedron::convex_difference_assign_and_minimize(const Polyhedron& y) {
-  assert(topology() == y.topology());
+  // Topology and dimensions compatibility check are done
+  // inside convex_difference_assign(y).
   convex_difference_assign(y);
   bool not_empty = minimize();
   assert(OK(true));
@@ -1389,10 +1428,10 @@ PPL::Polyhedron::convex_difference_assign_and_minimize(const Polyhedron& y) {
 */
 void
 PPL::Polyhedron::add_dimensions(Matrix& mat1,
-			      Matrix& mat2,
-			      SatMatrix& sat1,
-			      SatMatrix& sat2,
-			      size_t add_dim) {
+				Matrix& mat2,
+				SatMatrix& sat1,
+				SatMatrix& sat2,
+				size_t add_dim) {
   assert(mat1.topology() == mat2.topology());
   assert(mat1.num_columns() == mat2.num_columns());
   assert(add_dim != 0);
@@ -2464,8 +2503,8 @@ PPL::operator>>(std::istream& s, Polyhedron& p) {
 */
 void
 PPL::Polyhedron::affine_image(const Variable& var,
-			    const LinExpression& expr,
-			    const Integer& denominator) {
+			      const LinExpression& expr,
+			      const Integer& denominator) {
   if (denominator == 0)
     throw_generic("affine_image(v, e, d)", "d == 0", *this);
 
@@ -2582,8 +2621,8 @@ PPL::Polyhedron::affine_image(const Variable& var,
 */
 void
 PPL::Polyhedron::affine_preimage(const Variable& var,
-			       const LinExpression& expr,
-			       const Integer& denominator) {
+				 const LinExpression& expr,
+				 const Integer& denominator) {
   if (denominator == 0)
     throw_generic("affine_preimage(v, e, d)", "d == 0", *this);
 
@@ -2710,8 +2749,14 @@ PPL::Polyhedron::relation_with(const Generator& g) const {
 // FIXME : what if the polyhedra contain strict inequalities ?
 void
 PPL::Polyhedron::widening_assign(const Polyhedron& y) {
-  assert(topology() == y.topology());
   Polyhedron& x = *this;
+  // Topology compatibility check.
+  if (x.topology() != y.topology())
+    throw_topology_incompatible("widening_assign(y)", x, y);
+  // Dimension-compatibility check.
+  size_t x_space_dim = x.space_dim;
+  if (x_space_dim != y.space_dim)
+    throw_different_dimensions("widening_assign(y)", x, y);
 
 #ifndef NDEBUG
   {
@@ -2721,11 +2766,6 @@ PPL::Polyhedron::widening_assign(const Polyhedron& y) {
     assert(y_copy <= x_copy);
   }
 #endif
-
-  // Dimension-compatibility check.
-  size_t x_space_dim = x.space_dim;
-  if (x_space_dim != y.space_dim)
-    throw_different_dimensions("widening_assign(y)", *this, y);
 
   // The widening between two polyhedra in a zero-dimensional space
   // is a polyhedron in a zero-dimensional space, too.
@@ -2844,8 +2884,18 @@ PPL::Polyhedron::widening_assign(const Polyhedron& y) {
 // FIXME : what if the polyhedra contains strict inequalities ?
 void
 PPL::Polyhedron::limited_widening_assign(const Polyhedron& y, ConSys& cs) {
-  assert(topology() == y.topology());
   Polyhedron& x = *this;
+  // Topology compatibility check.
+  if (x.topology() != y.topology())
+    throw_topology_incompatible("limited_widening_assign(y, cs)", x, y);
+  // Dimension-compatibility check.
+  size_t x_space_dim = x.space_dim;
+  if (x_space_dim != y.space_dim)
+    throw_different_dimensions("limited_widening_assign(y, cs)", x, y);
+  // `cs' must be dimension-compatible with the two polyhedra.
+  size_t cs_space_dim = cs.space_dimension();
+  if (x_space_dim < cs_space_dim)
+    throw_different_dimensions("limited_widening_assign(y, cs)", x, cs);
 
 #ifndef NDEBUG
   {
@@ -2855,15 +2905,6 @@ PPL::Polyhedron::limited_widening_assign(const Polyhedron& y, ConSys& cs) {
     assert(y_copy <= x_copy);
   }
 #endif
-
-  // Dimension-compatibility check.
-  size_t x_space_dim = x.space_dim;
-  if (x_space_dim != y.space_dim)
-    throw_different_dimensions("limited_widening_assign(y,cs)", *this, y);
-  // `cs' must be dimension-compatible with the two polyhedra.
-  size_t cs_space_dim = cs.space_dimension();
-  if (x_space_dim < cs_space_dim)
-    throw_different_dimensions("limited_widening_assign(y,cs)", *this, cs);
 
   if (y.is_empty())
     return;

@@ -373,8 +373,6 @@ protected:
   Polyhedron& operator=(const Polyhedron& y);
 
 public:
-  //! Returns the topological kind of the polyhedron.
-  Topology topology() const;
   //! Returns the dimension of the vector space enclosing \p *this.
   size_t space_dimension() const;
 
@@ -544,7 +542,7 @@ public:
   //!   <CODE>false</CODE> or \p *this is not empty.
   bool OK(bool check_not_empty = false) const;
 
-protected:
+private:
   //! Minimizes generators and constraints.
   //! Returns <CODE>false</CODE> if and only if \p *this turns out to be empty.
   bool minimize() const;
@@ -566,6 +564,8 @@ protected:
   //! Sorts the matrix of generators and updates \p sat_g.
   void obtain_sorted_generators_with_sat_g() const;
 
+  // FIXME: the following three methods are _temporarily_ public
+  // for debugging purposes.
 public:
   //! Applies strong minimization to generators and constraints
   //! of an NNC polyhedron.
@@ -678,7 +678,7 @@ public:
   //! (Note that \p *this and \p y can be dimension-incompatible.)
   void swap(Polyhedron& y);
 
-protected:
+private:
   //! The system of constraints.
   ConSys con_sys;
   //! The system of generators.
@@ -692,10 +692,14 @@ protected:
   //! The number of dimensions of the enclosing vector space.
   size_t space_dim;
 
+PPL_INTERNAL:
+  //! Returns the topological kind of the polyhedron.
+  Topology topology() const;
   //! Tests if the polyhedron is necessarily closed.
   bool is_necessarily_closed() const;
 
-  /*! @name Protected Verifiers
+private:
+  /*! @name Private Verifiers
     Verify if individual flags are set.
   */
   //@{
