@@ -81,12 +81,8 @@ extern const Throwable* volatile abandon_exponential_computations;
 #endif
 inline void
 maybe_abandon() {
-  if (abandon_exponential_computations) {
-    const Throwable* p = abandon_exponential_computations;
-    // Might have been zeroed since we checked.
-    if (p)
-      p->throw_me();
-  }
+  if (const Throwable* p = abandon_exponential_computations)
+    p->throw_me();
 }
 
 } // namespace Parma_Polyhedra_Library
