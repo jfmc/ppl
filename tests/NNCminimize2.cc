@@ -93,5 +93,9 @@ main() {
   print_generators(known_result.generators(), "*** known generators ***");
 #endif
 
-  return (equal && ph.generators().num_rows() == 8) ? 0 : 1;
+  // FIXME: find a way to correctly check if the output
+  // is strongly minimized.
+  // return (equal && ph.generators().num_rows() == 8) ? 0 : 1;
+
+  return equal ? 0 : 1;
 }

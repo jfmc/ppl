@@ -186,6 +186,11 @@ public:
   size_t space_dimension() const;
 
   //! \brief
+  //! Removes all the generators from the generator system
+  //! and sets its space dimension to 0.
+  void clear();
+
+  //! \brief
   //! Inserts a copy of the generator \p g into \p *this,
   //! increasing the number of dimensions if needed.
   void insert(const Generator& g);

@@ -79,6 +79,11 @@ ConSys::space_dimension() const {
   return Matrix::space_dimension();
 }
 
+inline void
+ConSys::clear() {
+  Matrix::clear();
+}
+
 inline const ConSys&
 ConSys::zero_dim_empty() {
   static ConSys zdf(Constraint::zero_dim_false());

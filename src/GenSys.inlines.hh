@@ -69,6 +69,11 @@ GenSys::space_dimension() const {
   return Matrix::space_dimension();
 }
 
+inline void
+GenSys::clear() {
+  Matrix::clear();
+}
+
 inline Generator&
 GenSys::operator[](size_t k) {
   return static_cast<Generator&>(Matrix::operator[](k));
