@@ -2335,7 +2335,29 @@ PPL::Polyhedron::check_universe() const {
   return true;
 }
 
-
+/*!
+  Returns <CODE>true</CODE> if and only if \p *this is a bounded
+  polyhedron: to be bounded a polyhedron must have only vertices
+  in its system of generators.
+*/
+bool
+PPL::Polyhedron::is_bounded() const {
+  if (!generators_are_up_to_date())
+    // We use the function `minimize()', because if the polyhedro is
+    // empty or zero-dimensional, this function does nothing.
+    minimize();
+  if (is_empty() || space_dim == 0)
+    // An empty or a zero-dimensional polyhedron is bounded.
+    return true;
+  
+  for (size_t i = gen_sys.num_rows(); i-- > 0; )
+    if (gen_sys[i][0] == 0)
+      // A line or a ray is found: the polyhedron is not bounded.
+      return false;
+  // The system of generators is composed only by vertices:
+  // the polyhedron is bounded.
+  return true;
+}
 
 /*!
   Checks if \p *this is really a polyhedron, i.e., excludes all the extreme

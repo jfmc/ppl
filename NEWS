@@ -13,6 +13,9 @@ New Features
 o The library does not call abort(): an appropriate error message is thrown
   in this case. 
 
+o New mothods Polyhedron::is_bounded(): it returns true if and only
+  if a polyhedron is bounded.
+
 o  ...
 
 

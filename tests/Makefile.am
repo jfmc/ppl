@@ -44,6 +44,7 @@ TESTS = addconstraints1 addconstraints2 addconstraints3 addconstraints4 \
 	affinepreimage1 affinepreimage2 affinepreimage3 affinepreimage4 \
 	affinetrans \
         append1 append2 \
+	bounded1 \
 	convexhull1 convexhull2 convexhull3 \
 	convexhull1 \
 	convexdifference1 \
@@ -100,6 +101,8 @@ affinetrans_SOURCES = affinetrans.cc
 
 append1_SOURCES = append1.cc
 append2_SOURCES = append2.cc
+
+bounded1_SOURCES = bounded1.cc
 
 convexhull1_SOURCES = convexhull1.cc
 convexhull2_SOURCES = convexhull2.cc
