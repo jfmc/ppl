@@ -30,17 +30,29 @@ namespace std {
 
 inline double
 fma(double x, double y, double z) {
+#if HAVE_DECL_FMA
   return ::fma(x, y, z);
+#else
+  return x*y + z;
+#endif
 }
 
 inline float
 fma(float x, float y, float z) {
+#if HAVE_DECL_FMAF
   return ::fmaf(x, y, z);
+#else
+  return x*y + z;
+#endif
 }
 
 inline long double
 fma(long double x, long double y, long double z) {
+#if HAVE_DECL_FMAL
   return ::fmal(x, y, z);
+#else
+  return x*y + z;
+#endif
 }
 
 }
