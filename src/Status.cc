@@ -69,12 +69,11 @@ PPL::operator <<(std::ostream& s, const PPL::Status& u) {
   has to be added to the conjunction, <CODE>false</CODE> otherwise.
 */
 static bool
-get_field(std::istream& s,
-          const std::string&
+get_field(std::istream& s, const std::string&
 #ifndef NDEBUG
-                             keyword
+	  keyword
 #endif
-         ) {
+	  ) {
   std::string str;
   s >> str;
   assert(str.length() == 1 + keyword.length());
