@@ -119,7 +119,7 @@ public:
   //! Constraint::zero_dim_false().
   static const ConSys& zero_dim_empty();
 
-  //! An iterator over a system of constraints
+  //! An iterator over a system of constraints.
   /*!
     A const_iterator is used to provide read-only access
     to each constraint contained in an object of ConSys.

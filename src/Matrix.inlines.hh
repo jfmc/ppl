@@ -29,9 +29,6 @@ site: http://www.cs.unipr.it/ppl/ . */
 
 namespace Parma_Polyhedra_Library {
 
-/*!
-  Swaps \p *this with \p y.
-*/
 inline void
 Matrix::swap(Matrix& y) {
   std::swap(rows, y.rows);
@@ -41,9 +38,6 @@ Matrix::swap(Matrix& y) {
   std::swap(sorted, y.sorted);
 }
 
-/*!
-  The default constructor initializes the rows' size and capacity to \f$0\f$.
-*/
 inline
 Matrix::Matrix(Topology topol)
   : rows(),
@@ -59,9 +53,6 @@ Matrix::~Matrix() {
 }
 
 
-/*!
-  Returns a reference to the \p k-th row of the matrix.
-*/
 inline Row&
 Matrix::operator[](size_t k) {
   assert(k < rows.size());
@@ -69,9 +60,6 @@ Matrix::operator[](size_t k) {
 }
 
 
-/*!
-  Returns a constant reference to the \p k-th row of the matrix.
-*/
 inline const Row&
 Matrix::operator[](size_t k) const {
   assert(k < rows.size());
@@ -79,9 +67,6 @@ Matrix::operator[](size_t k) const {
 }
 
 
-/*!
-  Returns the number of the rows of the matrix.
-*/
 inline size_t
 Matrix::num_rows() const {
   return rows.size();
@@ -102,34 +87,21 @@ Matrix::set_not_necessarily_closed() {
     set_rows_topology();
 }
 
-/*!
-  Returns <CODE>true</CODE> if and only if the value of \p topol_kind
-  is equal to <CODE>Row::NECESSARILY_CLOSED</CODE>.
-*/
 inline bool
 Matrix::is_necessarily_closed() const {
   return row_topology == NECESSARILY_CLOSED;
 }
 
-/*!
-  Returns the value of \p topol_kind.
-*/
 inline Topology
 Matrix::topology() const {
   return row_topology;
 }
 
-/*!
-  Sets the \p sorted flag of the matrix to the given \p value.
-*/
 inline void
 Matrix::set_sorted(bool value) {
   sorted = value;
 }
 
-/*!
-  Returns the value of the flag \p sorted.
-*/
 inline bool
 Matrix::is_sorted() const {
   // Since the flag `sorted' does not really reflect the
@@ -140,10 +112,6 @@ Matrix::is_sorted() const {
 }
 
 
-/*!
-  Returns the number of the columns of the matrix,
-  i.e., the size of the rows of the matrix.
-*/
 inline size_t
 Matrix::num_columns() const {
   return row_size;
@@ -165,22 +133,12 @@ operator!=(const Matrix& x, const Matrix& y) {
 }
 
 
-/*!
-  Turn the \f$r \times c\f$ matrix \f$M\f$ into
-  the \f$r \times (c+n)\f$ matrix \f$(M \, 0)\f$.
-*/
 inline void
 Matrix::add_zero_columns(size_t n) {
   assert(n > 0);
   grow(num_rows(), num_columns() + n);
 }
 
-/*!
-  \param first_to_erase   The row index from which start to erase.
-
-  Erases from the matrix all the rows between the
-  \p first_to_erase -th and the last one.
-*/
 inline void
 Matrix::erase_to_end(size_t first_to_erase) {
   assert(first_to_erase <= rows.size());
@@ -202,11 +160,7 @@ Matrix::clear() {
 
 namespace std {
 
-/*!
-  Specializes <CODE>std::swap</CODE> to use the fast swap that
-  is provided as a member function instead of using the default
-  algorithm (which creates a temporary and uses assignment).
-*/
+/*! \relates Parma_Polyhedra_Library::Matrix */
 inline void
 swap(Parma_Polyhedra_Library::Matrix& x,
      Parma_Polyhedra_Library::Matrix& y) {

@@ -35,10 +35,6 @@ site: http://www.cs.unipr.it/ppl/ . */
 
 namespace PPL = Parma_Polyhedra_Library;
 
-/*!
-  Returns the number of the rows of the matrix
-  that represent lines or equalities.
-*/
 size_t
 PPL::Matrix::num_lines_or_equalities() const {
   size_t n = 0;
@@ -48,16 +44,7 @@ PPL::Matrix::num_lines_or_equalities() const {
   return n;
 }
 
-/*!
-  \param topol       The topology of the matrix that will be created.
-  \param n_rows      The number of rows of the matrix that will be created.
-  \param n_columns   The number of columns of the matrix
-                     that will be created.
 
-  This constructor creates an unsorted \p n_rows \f$\times\f$ \p n_columns
-  matrix whose rows are all initialized to rays or points or inequalities
-  of the given topology.
-*/
 PPL::Matrix::Matrix(Topology topol, size_t n_rows, size_t n_columns)
   : rows(n_rows),
     row_topology(topol),
@@ -102,18 +89,6 @@ PPL::Matrix::set_rows_topology() {
 }
 
 
-/*!
-  \param new_n_rows      The number of rows of the
-                         resized matrix.
-  \param new_n_columns   The number of columns of the
-                         resized matrix.
-
-  Creates a new matrix with the given dimensions and copies the content
-  of the old elements to the new ones.
-  The new matrix is larger than the original one and
-  the old matrix is copied in the upper, left-hand corner of the new
-  matrix.
-*/
 void
 PPL::Matrix::grow(size_t new_n_rows, size_t new_n_columns) {
   size_t old_n_rows = rows.size();
@@ -220,15 +195,6 @@ PPL::Matrix::grow(size_t new_n_rows, size_t new_n_columns) {
 
 }
 
-/*!
-  \param new_n_rows      The number of rows of the
-                         resized matrix.
-  \param new_n_columns   The number of columns of the
-                         resized matrix.
-		
-  Creates a new matrix with the given dimensions without copying
-  the content of the old elements to the new ones.
-*/
 void
 PPL::Matrix::resize_no_copy(size_t new_n_rows, size_t new_n_columns) {
   size_t old_n_rows = rows.size();
@@ -313,18 +279,16 @@ PPL::Matrix::resize_no_copy(size_t new_n_rows, size_t new_n_columns) {
   }
 }
 
-/*!
-  This virtual raw write method prints the number of rows, the
-  number of columns and the \p sorted flag. The specialized
-  methods in ConSys and GenSys take care of properly printing
-  the contents of the Matrix.
-*/
 void
 PPL::Matrix::print(std::ostream& s) const {
   using std::endl;
 
   const Matrix& x = *this;
   const char separator = ' ';
+  s << "topology" << separator
+    << (x.is_necessarily_closed() ? "" : "NOT_")
+    << "NECESSARILY_CLOSED"
+    << endl;
   s << x.num_rows() << separator << 'x' << separator
     << x.num_columns() << separator
     << (x.sorted ? "(sorted)" : "(not_sorted)")
@@ -339,17 +303,20 @@ PPL::operator<<(std::ostream& s, const Matrix& m) {
   return s;
 }
 
-/*!
-  This virtual raw read method is meant to read into a Matrix
-  a <CODE>print()</CODE> output. The specialized methods in
-  <CODE>ConSys</CODE> and <CODE>GenSys</CODE> take care of properly
-  reading the contents.
-*/
 void
 PPL::Matrix::get(std::istream& s) {
   size_t nrows;
   size_t ncols;
   std::string tempstr;
+  s >> tempstr;
+  assert(tempstr == "topology");
+  s >> tempstr;
+  if (tempstr == "NECESSARILY_CLOSED")
+    set_necessarily_closed();
+  else {
+    assert(tempstr == "NOT_NECESSARILY_CLOSED");
+    set_not_necessarily_closed();
+  }
   s >> nrows
     >> tempstr
     >> ncols;
@@ -367,14 +334,6 @@ PPL::operator>>(std::istream& s, Matrix& m) {
   return s;
 }
 
-/*!
-  \param y   The matrix to be merged with \p *this one.
-
-  Merge \p y with \p *this removing duplicates (i.e., rows that
-  appear either in \p y and in \p *this) and obtaining a new
-  sorted matrix that will be assigned to \p *this.
-  Both matrices are assumed to be sorted on entry.
-*/
 void
 PPL::Matrix::merge_rows_assign(const Matrix& y) {
   assert(row_size >= y.row_size);
@@ -423,9 +382,6 @@ PPL::Matrix::merge_rows_assign(const Matrix& y) {
   assert(check_sorted());
 }
 
-/*!
-  Sorts the rows (in growing order) and eliminates duplicated ones.
-*/
 void
 PPL::Matrix::sort_rows() {
   Matrix& x = *this;
@@ -460,9 +416,6 @@ PPL::Matrix::sort_rows() {
   assert(OK());
 }
 
-/*!
-  Adds a copy of the given row to the matrix.
-*/
 void
 PPL::Matrix::add_row(const Row& row) {
   // The added row must have the same number
@@ -509,10 +462,6 @@ PPL::Matrix::add_row(const Row& row) {
   }
 }
 
-/*!
-  Adds the given row to the matrix, automatically resizing the
-  matrix or the row, if needed.
-*/
 void
 PPL::Matrix::insert(const Row& row) {
   assert(topology() == row.topology());
@@ -549,10 +498,6 @@ PPL::Matrix::insert(const Row& row) {
   assert(OK());
 }
 
-/*!
-  Adds a new empty row to the matrix setting its type to the given
-  \p type.
-*/
 void
 PPL::Matrix::add_row(Row::Type type) {
   bool was_sorted = is_sorted();
@@ -595,10 +540,6 @@ PPL::Matrix::add_row(Row::Type type) {
   }
 }
 
-
-/*!
-  Swaps each coefficient of the two columns of indexes \p i and \p j.
-*/
 void
 PPL::Matrix::swap_columns(size_t i,  size_t j) {
   assert(i != j && i < num_columns() && j < num_columns());
@@ -606,9 +547,6 @@ PPL::Matrix::swap_columns(size_t i,  size_t j) {
     std::swap(rows[k][i], rows[k][j]);
 }
 
-/*!
-  Normalize the matrix.
-*/
 void
 PPL::Matrix::normalize() {
   for (size_t i = num_rows(); i-- > 0; )
@@ -616,9 +554,6 @@ PPL::Matrix::normalize() {
   set_sorted(false);
 }
 
-/*!
-  Strongly normalizes each row.
-*/
 void
 PPL::Matrix::strong_normalize() {
   for (size_t i = num_rows(); i-- > 0; )
@@ -626,11 +561,7 @@ PPL::Matrix::strong_normalize() {
   set_sorted(false);
 }
 
-/*!
-  \relates Parma_Polyhedra_Library::Matrix
-  Returns <CODE>true</CODE> if and only if \p x and
-  \p y are identical.
-*/
+/*! \relates Parma_Polyhedra_Library::Matrix */
 bool
 PPL::operator==(const Matrix& x, const Matrix& y) {
   if (x.num_columns() != y.num_columns())
@@ -644,14 +575,6 @@ PPL::operator==(const Matrix& x, const Matrix& y) {
   return true;
 }
 
-/*!
-  \param sat   Saturation matrix whose rows represent the rows of \p *this.
-
-  If \p *this has constraints on its rows, then the rows of \p sat are
-  indexed by constraints, otherwise they are indexed by generators.
-
-  Sorts the matrix keeping \p sat consistent, then removes duplicates.
-*/
 void
 PPL::Matrix::sort_and_remove_with_sat(SatMatrix& sat) {
   Matrix& x = *this;
@@ -690,17 +613,6 @@ PPL::Matrix::sort_and_remove_with_sat(SatMatrix& sat) {
   x.set_sorted(true);
 }
 
-/*!
-  This method works only on equalities: this is because it requires that
-  equalities come first in the matrix. This way they are all grouped
-  in the top of the matrix and it is simpler to find them.
-
-  <CODE>gauss()</CODE> method finds a minimal system for
-  equalities and returns its rank i.e., the
-  number of linearly independent equalities.
-  The result is an upper triangular matrix obtained choosing
-  (for each equality) the pivot starting from the right-most columns.
-*/
 size_t
 PPL::Matrix::gauss() {
   size_t rank = 0;
@@ -751,13 +663,6 @@ PPL::Matrix::gauss() {
   return rank;
 }
 
-/*!
-  Takes an upper triangular matrix.
-  For each row, starting from the one having the minimum number of
-  coefficients not equal to zero, computes the expression of an element
-  as a function of the remaining ones and then substitutes this expression
-  in all the other rows.
-*/
 void
 PPL::Matrix::back_substitute(size_t rank) {
   bool was_sorted = is_sorted();
@@ -834,15 +739,6 @@ PPL::Matrix::back_substitute(size_t rank) {
   }
 }
 
-/*!
-  \param n      The number of rows and columns to be added.
-
-  Turn the \f$r \times c\f$ matrix \f$M\f$ into
-  the \f$(r+n) \times (c+n)\f$ matrix
-  \f$\bigl({0 \atop M}{J \atop 0}\bigr)\f$,
-  where \f$J\f$ is the specular image
-  of the \f$n \times n\f$ identity matrix.
-*/
 void
 PPL::Matrix::add_rows_and_columns(size_t n) {
   assert(n > 0);
@@ -877,10 +773,6 @@ PPL::Matrix::add_rows_and_columns(size_t n) {
 }
 
 
-/*!
-  Returns <CODE>true</CODE> if \p *this is sorted, <CODE>false</CODE>
-  otherwise.
-*/
 bool
 PPL::Matrix::check_sorted() const {
   const Matrix& x = *this;

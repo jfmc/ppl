@@ -333,11 +333,6 @@ PPL::ConSys::print(std::ostream& s) const {
   Matrix::print(s);
   const char separator = ' ';
   const ConSys& x = *this;
-  s << "topology ";
-  if (!x.is_necessarily_closed())
-    s << "NOT_";
-  s << "NECESSARILY_CLOSED"
-    << std::endl;
   for (size_t i = 0; i < x.num_rows(); ++i) {
     for (size_t j = 0; j < x.num_columns(); ++j)
       s << x[i][j] << separator;
@@ -368,15 +363,6 @@ PPL::ConSys::get(std::istream& s) {
   Matrix::get(s);
   std::string tempstr;
   ConSys& x = *this;
-  s >> tempstr;
-  assert(tempstr == "topology");
-  s >> tempstr;
-  if (tempstr == "NECESSARILY_CLOSED")
-    x.set_necessarily_closed();
-  else {
-    assert(tempstr == "NOT_NECESSARILY_CLOSED");
-    x.set_not_necessarily_closed();
-  }
   for (size_t i = 0; i < x.num_rows(); ++i) {
     for (size_t j = 0; j < x.num_columns(); ++j)
       s >> x[i][j];
