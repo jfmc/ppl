@@ -21,11 +21,12 @@ noinst_LIBRARIES = libpplsicstus.a
 
 libpplsicstus_a_SOURCES = ppl_sicstus.cc
 
-EXTRA_DIST = ppl_sicstus.pl ppl_check.pl
+EXTRA_DIST = ppl_sicstus.pl check_script expected
 
 if HAVE_SICSTUS
-check-local: pplsp ppl_check.pl
-	./pplsp -l $(srcdir)/ppl_check.pl
+check-local: pplsp check_script expected
+	./pplsp -l $(srcdir)/clpq.pl <$(srcdir)/check_script >obtained
+	diff -q $(srcdir)/expected obtained
 
 pplsp: ppl_sicstus.s.o $(top_builddir)/src/libppl.a
 	spld --main=prolog -S -o $@ --resources=./ppl_sicstus.s.o \

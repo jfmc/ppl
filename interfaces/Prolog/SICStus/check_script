@@ -1,0 +1,18 @@
+reconsult(ack).
+ack(3, 1, Z).
+
+reconsult(ackn).
+ack(X, Y, Z).
+
+reconsult(mc91).
+mc(112, Y).
+
+reconsult(fib).
+fib(5, Y).
+
+reconsult(smm).
+solve(S, E, N, D, M, O, R, Y).
+
+reconsult(sumto).
+sumto(X, 55).
+
