@@ -1,6 +1,11 @@
 Enhancements for PPL 0.6
 ========================
 
+- Provide access to Polyhedron::maximize(const LinExpression&, ...) and
+  Polyhedron::minimize(const LinExpression&, ...) in the Prolog interface.
+- Try to remember why all the documentation in the C interface
+  is tagged with \brief and see whether this is actually a good idea.
+- Decide once and for all how to format lists of \param documentations.
 - We must explain very well that iterators can be invalidated by several
   (actually, almost all) operations, and that use of an invalidated
   iterator causes undefined behavior.
@@ -11,7 +16,7 @@ Enhancements for PPL 0.6
 - See whether, using the techniques described in 
   ftp://ftp.ifor.math.ethz.ch/pub/fukuda/reports/polyunion001120.ps.gz
   we can implement bool poly_hull_assign_if_exact(PH& p, const PH& q),
-  tomporarily in algorithms.hh, more efficiently.
+  temporarily in algorithms.hh, more efficiently.
 - Harmonize all the methods void PPL::Polyhedron::throw_...().
 
 
