@@ -327,10 +327,6 @@ public:
 
   //! Checks if a polyhedron is allowed.
   bool OK(bool check_satisfiable = true) const;
-#ifndef NDEBUG
-  // Temporary debug constructor.
-  Polyhedron(size_t nblines, size_t nbrays, size_t nbeq);
-#endif
 
 private:
   //! Minimizes generators and constraints.
