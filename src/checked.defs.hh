@@ -151,4 +151,3 @@ int cmp(const From x, From y);
 #include "checked.inlines.hh"
 
 #endif // !defined(PPL_checked_defs_hh)
-	

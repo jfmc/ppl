@@ -28,8 +28,7 @@ namespace Parma_Polyhedra_Library {
 using namespace Checked;
 
 static void
-bad_result(Result r)
-{
+bad_result(Result r) {
   switch (r) {
   case V_NEG_OVERFLOW:
     throw std::overflow_error("Negative overflow.");
@@ -43,8 +42,7 @@ bad_result(Result r)
 }
 
 static inline void
-check_result(Result r)
-{
+check_result(Result r) {
   if (r != V_EQ)
     bad_result(r);
 }
@@ -320,14 +318,12 @@ cmp(const Checked_Number<T, Policy> REF x, const Checked_Number<T, Policy> REF y
 
 template <typename T, typename Policy>
 inline std::ostream&
-operator<<(std::ostream& os, const Checked_Number<T, Policy> REF x)
-{
+operator<<(std::ostream& os, const Checked_Number<T, Policy> REF x) {
   return os << x.value();
 }
 
 template <typename T, typename Policy>
-inline std::istream& operator>>(std::istream& is, Checked_Number<T, Policy>& x)
-{
+inline std::istream& operator>>(std::istream& is, Checked_Number<T, Policy>& x) {
   return is >> x.value();
 }
 

@@ -198,8 +198,7 @@ SPECIALIZE_MOD(mpq, mpq_class, mpq_class)
 
 template <typename Policy>
 inline Result
-abs_mpq(mpq_class& to, const mpq_class& from)
-{
+abs_mpq(mpq_class& to, const mpq_class& from) {
   to = abs(from);
   return V_EQ;
 }

@@ -90,7 +90,7 @@ template <typename T>
 inline T
 abs(T x) {
   return x >= 0 ? x : -x;
-}	
+}
 
 //! Returns the greatest common divisor of \p x and \p y.
 template <typename T>

@@ -111,8 +111,7 @@ set_float32_iec559_word(float32_t &v, u_int32_t w) {
 #define REAL32_NEPS    0x80000001
 
 inline Result
-check_normal_parts(u_int32_t w)
-{
+check_normal_parts(u_int32_t w) {
   u_int32_t a = w & ~REAL32_SGN_MASK;
   if (a == REAL32_PINF)
     return (w & REAL32_SGN_MASK) ? V_NEG_OVERFLOW : V_POS_OVERFLOW;
@@ -122,8 +121,7 @@ check_normal_parts(u_int32_t w)
 }
 
 inline Result
-check_normal_(float32_t v)
-{
+check_normal_(float32_t v) {
   u_int32_t w;
   get_float32_iec559_word(v, w);
   return check_normal_parts(w);
@@ -131,8 +129,7 @@ check_normal_(float32_t v)
 
 template <typename Policy>
 inline Result
-pred(float32_t& to)
-{
+pred(float32_t& to) {
   u_int32_t w;
   get_float32_iec559_word(to, w);
   if (Policy::check_normal) {
@@ -155,8 +152,7 @@ pred(float32_t& to)
 
 template <typename Policy>
 inline Result
-succ(float32_t &to)
-{
+succ(float32_t &to) {
   u_int32_t w;
   get_float32_iec559_word(to, w);
   if (Policy::check_normal) {
@@ -217,8 +213,7 @@ set_float64_iec559_parts(float64_t& v, u_int32_t lsp, u_int32_t msp) {
 #define REAL64_LSP_MAX    0xffffffff
 
 inline Result
-check_normal_parts(u_int32_t lsp, u_int32_t msp)
-{
+check_normal_parts(u_int32_t lsp, u_int32_t msp) {
   u_int32_t a = msp & ~REAL64_MSP_SGN_MASK;
   if (a == REAL64_MSP_PINF && lsp == REAL64_LSP_INF)
     return (msp & REAL64_MSP_SGN_MASK) ? V_NEG_OVERFLOW : V_POS_OVERFLOW;
@@ -228,8 +223,7 @@ check_normal_parts(u_int32_t lsp, u_int32_t msp)
 }
 
 inline Result
-check_normal_(float64_t v)
-{
+check_normal_(float64_t v) {
   u_int32_t lsp, msp;
   get_float64_iec559_parts(v, lsp, msp);
   return check_normal_parts(lsp, msp);
@@ -237,8 +231,7 @@ check_normal_(float64_t v)
 
 template <typename Policy>
 inline Result
-pred(float64_t& to)
-{
+pred(float64_t& to) {
   u_int32_t lsp, msp;
   get_float64_iec559_parts(to, lsp, msp);
   if (Policy::check_normal) {
@@ -274,8 +267,7 @@ pred(float64_t& to)
 
 template <typename Policy>
 inline Result
-succ(float64_t& to)
-{
+succ(float64_t& to) {
   u_int32_t lsp, msp;
   get_float64_iec559_parts(to, lsp, msp);
   if (Policy::check_normal) {
@@ -351,8 +343,7 @@ set_float96_iec559_parts(float96_t &v, u_int64_t lsp, u_int32_t msp) {
 #define REAL96_LSP_MAX    0xffffffffffffffffULL
 
 inline Result
-check_normal_parts(u_int64_t lsp, u_int32_t msp)
-{
+check_normal_parts(u_int64_t lsp, u_int32_t msp) {
   u_int32_t a = msp & ~REAL96_MSP_SGN_MASK;
   if (a == REAL96_MSP_PINF && lsp == REAL96_LSP_INF)
     return (msp & REAL96_MSP_SGN_MASK) ? V_NEG_OVERFLOW : V_POS_OVERFLOW;
@@ -362,8 +353,7 @@ check_normal_parts(u_int64_t lsp, u_int32_t msp)
 }
 
 inline Result
-check_normal_(float96_t v)
-{
+check_normal_(float96_t v) {
   u_int64_t lsp;
   u_int32_t msp;
   get_float96_iec559_parts(v, lsp, msp);
@@ -372,8 +362,7 @@ check_normal_(float96_t v)
 
 template <typename Policy>
 inline Result
-pred(float96_t& to)
-{
+pred(float96_t& to) {
   u_int64_t lsp;
   u_int32_t msp;
   get_float96_iec559_parts(to, lsp, msp);
@@ -410,8 +399,7 @@ pred(float96_t& to)
 
 template <typename Policy>
 inline Result
-succ(float96_t& to)
-{
+succ(float96_t& to) {
   u_int64_t lsp;
   u_int32_t msp;
   get_float96_iec559_parts(to, lsp, msp);
@@ -490,8 +478,7 @@ set_float128_iec559_parts(float128_t& v, u_int64_t lsp, u_int64_t msp) {
 #define REAL128_LSP_MAX    0xffffffffffffffff
 
 inline Result
-check_normal_parts(u_int64_t lsp, u_int64_t msp)
-{
+check_normal_parts(u_int64_t lsp, u_int64_t msp) {
   u_int64_t a = msp & ~REAL128_MSP_SGN_MASK;
   if (a == REAL128_MSP_PINF && lsp == REAL128_LSP_INF)
     return (msp & REAL128_MSP_SGN_MASK) ? V_NEG_OVERFLOW : V_POS_OVERFLOW;
@@ -501,8 +488,7 @@ check_normal_parts(u_int64_t lsp, u_int64_t msp)
 }
 
 inline Result
-check_normal_(float128_t v)
-{
+check_normal_(float128_t v) {
   u_int64_t lsp, msp;
   get_float128_iec559_parts(v, lsp, msp);
   return check_normal_parts(lsp, msp);
@@ -510,8 +496,7 @@ check_normal_(float128_t v)
 
 template <typename Policy>
 inline Result
-pred(float128_t& to)
-{
+pred(float128_t& to) {
   u_int64_t lsp, msp;
   get_float128_iec559_parts(to, lsp, msp);
   if (Policy::check_normal) {
@@ -547,8 +532,7 @@ pred(float128_t& to)
 
 template <typename Policy>
 inline Result
-succ(float128_t& to)
-{
+succ(float128_t& to) {
   u_int64_t lsp, msp;
   get_float128_iec559_parts(to, lsp, msp);
   if (Policy::check_normal) {
@@ -721,8 +705,7 @@ mod_float(Type& to, const Type x, const Type y) {
 
 template <typename Policy, typename Type>
 inline Result
-abs_float(Type& to, const Type from)
-{
+abs_float(Type& to, const Type from) {
   Result r = check_normal<Policy>(from);
   if (r != V_EQ)
     return r;
@@ -732,8 +715,7 @@ abs_float(Type& to, const Type from)
 
 template <typename Policy, typename Type>
 inline Result
-sqrt_float(Type& to, const Type from)
-{
+sqrt_float(Type& to, const Type from) {
   prepare_inexact<Policy>();
   return assign_float_float_inexact_<Policy>(to, std::sqrt(from));
 }
