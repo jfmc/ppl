@@ -1662,87 +1662,83 @@ ppl_Polyhedron_add_generators_and_minimize(Prolog_term_ref t_ph,
   return PROLOG_FAILURE;
 }
 
-extern "C" Prolog_foreign_return_type
-ppl_Polyhedron_intersection_assign(Prolog_term_ref t_lhs,
-				   Prolog_term_ref t_rhs) {
+namespace {
+
+Prolog_foreign_return_type
+bop_assign(Prolog_term_ref t_lhs,
+	   Prolog_term_ref t_rhs,
+	   void (Polyhedron::* bop_assign)(const Polyhedron&)) {
   try {
     Polyhedron* lhs = term_to_polyhedron_handle(t_lhs);
     const Polyhedron* rhs = term_to_polyhedron_handle(t_rhs);
     CHECK(lhs);
     CHECK(rhs);
-    lhs->intersection_assign(*rhs);
+    (lhs->*bop_assign)(*rhs);
     return PROLOG_SUCCESS;
   }
   CATCH_ALL;
   return PROLOG_FAILURE;
+}
+
+Prolog_foreign_return_type
+bop_assign_and_minimize(Prolog_term_ref t_lhs,
+			Prolog_term_ref t_rhs,
+			bool (Polyhedron::*
+			      bop_assign_and_minimize)(const Polyhedron&)) {
+  try {
+    Polyhedron* lhs = term_to_polyhedron_handle(t_lhs);
+    const Polyhedron* rhs = term_to_polyhedron_handle(t_rhs);
+    CHECK(lhs);
+    CHECK(rhs);
+    if ((lhs->*bop_assign_and_minimize)(*rhs))
+      return PROLOG_SUCCESS;
+  }
+  CATCH_ALL;
+  return PROLOG_FAILURE;
+}
+
+} // namespace
+
+extern "C" Prolog_foreign_return_type
+ppl_Polyhedron_intersection_assign(Prolog_term_ref t_lhs,
+				   Prolog_term_ref t_rhs) {
+  return bop_assign(t_lhs, t_rhs,
+		    &Polyhedron::intersection_assign);
 }
 
 extern "C" Prolog_foreign_return_type
 ppl_Polyhedron_intersection_assign_and_minimize(Prolog_term_ref t_lhs,
 						Prolog_term_ref t_rhs) {
-  try {
-    Polyhedron* lhs = term_to_polyhedron_handle(t_lhs);
-    const Polyhedron* rhs = term_to_polyhedron_handle(t_rhs);
-    CHECK(lhs);
-    CHECK(rhs);
-    Polyhedron& x = *static_cast<Polyhedron*>(lhs);
-    const Polyhedron& y = *static_cast<const Polyhedron*>(rhs);
-    if (x.intersection_assign_and_minimize(y))
-      return PROLOG_SUCCESS;
-  }
-  CATCH_ALL;
-  return PROLOG_FAILURE;
+  return bop_assign_and_minimize(t_lhs, t_rhs,
+		    &Polyhedron::intersection_assign_and_minimize);
 }
 
 extern "C" Prolog_foreign_return_type
 ppl_Polyhedron_poly_hull_assign(Prolog_term_ref t_lhs,
 				Prolog_term_ref t_rhs) {
-  try {
-    Polyhedron* lhs = term_to_polyhedron_handle(t_lhs);
-    const Polyhedron* rhs = term_to_polyhedron_handle(t_rhs);
-    CHECK(lhs);
-    CHECK(rhs);
-    Polyhedron& x = *static_cast<Polyhedron*>(lhs);
-    const Polyhedron& y = *static_cast<const Polyhedron*>(rhs);
-    x.poly_hull_assign(y);
-    return PROLOG_SUCCESS;
-  }
-  CATCH_ALL;
-  return PROLOG_FAILURE;
+  return bop_assign(t_lhs, t_rhs,
+		    &Polyhedron::poly_hull_assign);
 }
 
 extern "C" Prolog_foreign_return_type
 ppl_Polyhedron_poly_hull_assign_and_minimize(Prolog_term_ref t_lhs,
 					     Prolog_term_ref t_rhs) {
-  try {
-    Polyhedron* lhs = term_to_polyhedron_handle(t_lhs);
-    const Polyhedron* rhs = term_to_polyhedron_handle(t_rhs);
-    CHECK(lhs);
-    CHECK(rhs);
-    Polyhedron& x = *static_cast<Polyhedron*>(lhs);
-    const Polyhedron& y = *static_cast<const Polyhedron*>(rhs);
-    if (x.poly_hull_assign_and_minimize(y))
-      return PROLOG_SUCCESS;
-  }
-  CATCH_ALL;
-  return PROLOG_FAILURE;
+  return bop_assign_and_minimize(t_lhs, t_rhs,
+				 &Polyhedron::poly_hull_assign_and_minimize);
 }
 
 extern "C" Prolog_foreign_return_type
 ppl_Polyhedron_poly_difference_assign(Prolog_term_ref t_lhs,
 				      Prolog_term_ref t_rhs) {
-  try {
-    Polyhedron* lhs = term_to_polyhedron_handle(t_lhs);
-    const Polyhedron* rhs = term_to_polyhedron_handle(t_rhs);
-    CHECK(lhs);
-    CHECK(rhs);
-    Polyhedron& x = *static_cast<Polyhedron*>(lhs);
-    const Polyhedron& y = *static_cast<const Polyhedron*>(rhs);
-    x.poly_difference_assign(y);
-    return PROLOG_SUCCESS;
-  }
-  CATCH_ALL;
-  return PROLOG_FAILURE;
+  return bop_assign(t_lhs, t_rhs,
+		    &Polyhedron::poly_difference_assign);
+}
+
+extern "C" Prolog_foreign_return_type
+ppl_Polyhedron_time_elapse_assign(Prolog_term_ref t_lhs,
+				  Prolog_term_ref t_rhs) {
+  return bop_assign(t_lhs, t_rhs,
+		    &Polyhedron::time_elapse_assign);
 }
 
 extern "C" Prolog_foreign_return_type
@@ -1844,23 +1840,6 @@ ppl_Polyhedron_generalized_affine_image_lhs_rhs(Prolog_term_ref t_ph,
 }
 
 extern "C" Prolog_foreign_return_type
-ppl_Polyhedron_time_elapse_assign(Prolog_term_ref t_lhs,
-				  Prolog_term_ref t_rhs) {
-  try {
-    Polyhedron* lhs = term_to_polyhedron_handle(t_lhs);
-    const Polyhedron* rhs = term_to_polyhedron_handle(t_rhs);
-    CHECK(lhs);
-    CHECK(rhs);
-    Polyhedron& x = *static_cast<Polyhedron*>(lhs);
-    const Polyhedron& y = *static_cast<const Polyhedron*>(rhs);
-    x.time_elapse_assign(y);
-    return PROLOG_SUCCESS;
-  }
-  CATCH_ALL;
-  return PROLOG_FAILURE;
-}
-
-extern "C" Prolog_foreign_return_type
 ppl_Polyhedron_topological_closure_assign(Prolog_term_ref t_ph) {
   try {
     Polyhedron* ph = term_to_polyhedron_handle(t_ph);
@@ -1884,9 +1863,7 @@ widening_assign(Prolog_term_ref t_lhs,
     const Polyhedron* rhs = term_to_polyhedron_handle(t_rhs);
     CHECK(lhs);
     CHECK(rhs);
-    Polyhedron& x = *static_cast<Polyhedron*>(lhs);
-    const Polyhedron& y = *static_cast<const Polyhedron*>(rhs);
-    (x.*widening_assign)(y);
+    (lhs->*widening_assign)(*rhs);
     return PROLOG_SUCCESS;
   }
   CATCH_ALL;
@@ -1928,10 +1905,8 @@ widening_assign_with_token(Prolog_term_ref t_lhs,
     const Polyhedron* rhs = term_to_polyhedron_handle(t_rhs);
     CHECK(lhs);
     CHECK(rhs);
-    Polyhedron& x = *static_cast<Polyhedron*>(lhs);
-    const Polyhedron& y = *static_cast<const Polyhedron*>(rhs);
     unsigned t = 1;
-    (x.*widening_assign)(y, &t);
+    (lhs->*widening_assign)(*rhs, &t);
     if (unify_long(t_t, 1-t))
       return PROLOG_SUCCESS;
   }
@@ -1979,9 +1954,7 @@ limited_extrapolation_assign(Prolog_term_ref t_lhs,
       Prolog_get_cons(t_clist, c, t_clist);
       cs.insert(build_constraint(c));
     }
-    Polyhedron& x = *static_cast<Polyhedron*>(lhs);
-    const Polyhedron& y = *static_cast<const Polyhedron*>(rhs);
-    (x.*limited_extrap_assign)(y, cs);
+    (lhs->*limited_extrap_assign)(*rhs, cs);
     return PROLOG_SUCCESS;
   }
   CATCH_ALL;
