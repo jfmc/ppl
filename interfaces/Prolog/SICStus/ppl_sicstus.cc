@@ -38,15 +38,22 @@ public:
 
 class non_linear : public internal_exception {
 private:
-  const char* ws;
+  const char* w;
 
 public:
-  explicit non_linear(const char* w, SP_term_ref t)
-    : internal_exception(t), ws(w) {
+  explicit non_linear(const char* s, SP_term_ref t)
+    : internal_exception(t), w(s) {
   }
 
   const char* who() const {
-    return ws;
+    return w;
+  }
+};
+
+class integer_not_nonnegative : public internal_exception {
+public:
+  explicit integer_not_nonnegative(SP_term_ref t)
+    : internal_exception(t) {
   }
 };
 
@@ -60,12 +67,28 @@ handle_exception(const integer_out_of_range& e) {
   SP_put_term(culprit, e.term());
   SP_put_integer(arg_no, 1);
   {
-    string s;
-    ostringstream domain(s);
+    std::string s;
+    std::ostringstream domain(s);
     domain << "[" << LONG_MIN << ", " << LONG_MAX << "]";
     SP_put_string(expected_domain, domain.str().c_str());
   }
   SP_cons_functor(et, SP_atom_from_string("get_integer"), 1, culprit);
+  SP_cons_functor(et, SP_atom_from_string("domain_error"), 4,
+		  et, arg_no, expected_domain, culprit);
+  SP_raise_exception(et);
+}
+
+static void
+handle_exception(const integer_not_nonnegative& e) {
+  SP_term_ref culprit = SP_new_term_ref();
+  SP_term_ref arg_no = SP_new_term_ref();
+  SP_term_ref expected_domain = SP_new_term_ref();
+  SP_term_ref et = SP_new_term_ref();
+
+  SP_put_term(culprit, e.term());
+  SP_put_integer(arg_no, 1);
+  SP_put_string(expected_domain, ">= 0");
+  SP_cons_functor(et, SP_atom_from_string("get_size_t"), 1, culprit);
   SP_cons_functor(et, SP_atom_from_string("domain_error"), 4,
 		  et, arg_no, expected_domain, culprit);
   SP_raise_exception(et);
@@ -89,14 +112,20 @@ handle_exception(const non_linear& e) {
 
 static void
 handle_exception() {
+  abort();
 }
 
 static void
-handle_exception(const std::exception& /* e */) {
+handle_exception(const std::exception& e) {
+  std::cerr << e.what() << std::endl;
+  abort();
 }
 
 #define CATCH_INTERNAL \
   catch (const integer_out_of_range& e) { \
+    handle_exception(e); \
+  } \
+  catch (const integer_not_nonnegative& e) { \
     handle_exception(e); \
   } \
   catch (const non_linear& e) { \
@@ -174,13 +203,34 @@ ppl_deinit(int /* when */) {
     (void) SP_unregister_atom(*sp_atoms[i].p_atom);
 }
 
-extern "C" void*
-ppl_new_polyhedron() {
-  try {
-    return new PPL::Polyhedron();
+static size_t
+get_size_t(long n) {
+  if (n >= 0)
+    return n;
+  else {
+    SP_term_ref n_term = SP_new_term_ref();
+    SP_put_integer(n_term, n);
+    throw integer_not_nonnegative(n_term);
   }
-  CATCH_PPL;
-  abort();  // This is only to avoid a gcc warning.
+}
+
+extern "C" void*
+ppl_new_polyhedron(long num_dimensions) {
+  try {
+    return new PPL::Polyhedron(get_size_t(num_dimensions));
+  }
+  CATCH_ALL;
+  return 0;
+}
+
+extern "C" void*
+ppl_new_empty_polyhedron(long num_dimensions) {
+  try {
+    return new PPL::Polyhedron(get_size_t(num_dimensions),
+			       PPL::Polyhedron::EMPTY);
+  }
+  CATCH_ALL;
+  return 0;
 }
 
 extern "C" void
@@ -192,6 +242,13 @@ ppl_delete_polyhedron(void* pp) {
   }
   CATCH_PPL;
 }
+
+extern "C" long
+ppl_space_dimension(const void* pp) {
+  // Polyhedron::space_dimension() cannot throw.
+  return static_cast<const PPL::Polyhedron*>(pp)->space_dimension();
+}
+
 
 static long
 get_integer(SP_term_ref t) {
@@ -351,7 +408,7 @@ ppl_check_empty(const void* pp) {
     return static_cast<const PPL::Polyhedron*>(pp)->check_empty() ? 1 : 0;
   }
   CATCH_ALL;
-  abort();  // This is only to avoid a gcc warning.
+  return -1;
 }
 
 extern "C" void
