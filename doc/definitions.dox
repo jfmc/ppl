@@ -296,14 +296,15 @@ to the references mentioned before, from:
   Press, New Jersey 1963.
 
 
-\section homogeneous Equivalence of homogeneous and inhomogeneous systems
+\section homogeneous Homogeneous systems
 
-To simplify the representation of polyhedra in memory it is useful 
-perform the transformation that maps a point \f$x \in \mathbb{R}^n\f$ 
+To simplify both representations of a polyhedron,
+it is useful to transform it to a polyhedral cone.
+To do this, each point \f$x \in \mathbb{R}^n\f$ is mapped 
 to a point \f$x' = (\xi x, \xi) ^\mathrm{T} \in \mathbb{R}^{n + 1}\f$ 
 where \f$\xi \geq 0\f$.
 
-This transformation changes an inhomogeneous system of inequalities 
+The transformation changes an inhomogeneous system of inequalities 
 in \f$n\f$ variables, representing a polyhedron \f$P\f$, into a 
 homogeneous system in \f$n + 1\f$ variables, representing a 
 polyhedral cone \f$C\f$, as shown below:
@@ -316,43 +317,41 @@ polyhedral cone \f$C\f$, as shown below:
     = \{\,x' \mid A'x' \geq 0\,\} 
 \f]
 where \f$x' = (\xi x, \xi) \in \mathbb{R}^{n + 1}\f$ 
-and \f$A'\f$ is the matrix having on its first rows the submatrix 
+and \f$A'\f$ is the matrix having for its first rows the submatrix 
 \f$(A, b) \in \mathbb{R}^m \times \mathbb{R}^{n + 1}\f$ 
-and on the last row the vector \f$(0, \ldots, 0, 1) \in \mathbb{R}^{n + 1}\f$.
-
-It can be shown that the corresponding cone \f$C\f$ contains the old 
-polyhedron \f$P\f$; in fact \f$P\f$ is the intersection of \f$C\f$ with
-the hyperplane defined by the equality \f$\xi = 1\f$.
-
-Therefore, it is always possible to 
-transform  a polyhedron \f$P\f$ to a polyhedral cone
- \f$C\f$ represented in a homogeneous form and then return to \f$P\f$ 
-by intersecting \f$C\f$ with the hyperplane defined by the equality 
-\f$\xi = 1\f$;
-moreover the representation of \f$C\f$ is simpler than that for \f$P\f$. 
-For this 
-reason, in the PPL we have decided to work on the homogeneous
-representation for polyhedra. This means that, in PPL, a polyhedron 
-is changed to its homogeneous <EM>cone representation</EM> 
-before performing any operation on it.
-
-This choice has two consequences:
--# we have seen that the matrix of constraints acquires a new line 
-   (i.e., the system of constraints acquires a new constraint);
--# during the transformation process from a polyhedron to a cone, 
-   vertices are transformed into rays and the only vertex in the 
-   new representation is the origin.
+and for the last row the vector \f$(0, \ldots, 0, 1) \in \mathbb{R}^{n + 1}\f$.
+The cone \f$C\f$, which has a homogeneous representation, we call the
+<EM>corresponding polyhedral cone for \f$P\f$</EM>
 
 <B>The positivity constraint</B>
 
-<EM>The positivity constraint</EM> is the trivial 
-constraint \f$1 \geq 0\f$ and it is generated as a 
-side effect of converting a polyhedron from an inhomogeneous 
-representation to a homogeneous cone representation.
+<EM>The positivity constraint</EM> is the trivial constraint \f$1 \geq 0\f$.
+
+A polyhedra \f$P\f$ is contained in its corresponding polyhedral cone \f$C\f$
+since the intersection of \f$C\f$ with
+the hyperplane defined by the equality \f$\xi = 1\f$ is \f$P\f$.
+Therefore, it is always possible to 
+transform  a polyhedron \f$P\f$ to its corresponding polyhedral cone
+\f$C\f$ and then recover \f$P\f$ by means of this intersection.
+
+As the representation of a polyhedral cone \f$C\f$
+is homogeneous and simpler than that for its corresponding polyhedron
+\f$P\f$, we have decided that the PPL will use representations of \f$C\f$ 
+as a means of representing \f$P\f$. This means that, in PPL, a polyhedron 
+is always changed to a representation of its corresponding cone 
+before performing any operation on it.
+Moreover, in the sequel, by "representation of a polyhedra \f$P\f$"
+we are referring to a representation of its corresponding cone.
+
+This choice of representation has two consequences:
+-# the matrix of constraints acquires a new line  \f$(0, \ldots, 0, 1)\f$
+   so that the system of constraints acquires the positivity constraint;
+-# in the transformation from a polyhedron to its corresponding cone, 
+   vertices are transformed into rays and the only vertex is the origin.
 
 Thus, in the PPL, given a polyhedron \f$P\f$, a system of constraints 
-representing \f$P\f$ must always contains the positivity constraint 
-while a system of generators for \f$P\f$ must always contains the 
+representing \f$P\f$ will always contain the positivity constraint 
+while a system of generators for \f$P\f$ will always contain the 
 origin as a vertex.
 
 <B>Valid linear inequalities</B>
