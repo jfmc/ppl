@@ -36,6 +36,7 @@ ExtendedRational::ExtendedRational(const mpq_class& n)
 inline
 ExtendedRational::ExtendedRational(const Integer& num, const Integer& den)
   : e(0), v(num, den) {
+  v.canonicalize();
 }
 
 inline

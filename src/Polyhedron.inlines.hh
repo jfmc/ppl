@@ -337,19 +337,39 @@ Polyhedron::Polyhedron(Topology topol, const Box& box)
 template <typename Box>
 void
 Polyhedron::shrink_bounding_box(Box& box, bool polynomial) const {
-  // FIXME: this is exponential!!!
-  if (check_universe())
-    return;
+  if ((polynomial && constraints_are_minimized()) || !polynomial) {
+    // If the constraint system is minimized, the check
+    // `check_universe()' is not exponential.
+    if (check_universe())
+      return;
 
-  // FIXME: this is exponential!!!
-  if (check_empty()) {
-    box.set_empty();
-    return;
   }
+  if (polynomial) {
+    if (is_empty() ||
+	(generators_are_up_to_date() && gen_sys.num_rows() == 0)) {
+      box.set_empty();
+      return;
+    }
+    if (constraints_are_up_to_date()) {
+      for (ConSys::const_iterator i = con_sys.begin();
+	   i != con_sys.end(); ++i)
+	if ((*i).is_trivial_false()){
+	  box.set_empty();
+	  return;
+	} 
+    }
+  }
+  else
+    // The flag `polynomial' is `false'.
+    // Note that the check `check_empty()' is exponential!!!
+    if (check_empty()) {
+      box.set_empty();
+      return;
+    }
 
   if (space_dim == 0)
     return;
-
+  
   // To record the lower and upper bound for each dimension.
   std::vector<LBoundary> lower_bound(space_dim);
   std::vector<UBoundary> upper_bound(space_dim);
@@ -363,6 +383,74 @@ Polyhedron::shrink_bounding_box(Box& box, bool polynomial) const {
 
   if (polynomial && !generators_are_up_to_date()) {
     // Extract easy-to-find bounds from constraints.
+    assert(constraints_are_up_to_date());
+
+    // Note that using Polyhedron::constraints(), we obtain
+    // a sorted system of constraints.
+    const ConSys& cs = constraints();
+    if (!constraints_are_minimized())
+      const_cast<ConSys&>(cs).back_substitute(const_cast<ConSys&>(cs).gauss());
+
+    const ConSys::const_iterator cs_begin = cs.begin();
+    const ConSys::const_iterator cs_end = cs.end();
+    
+    for (ConSys::const_iterator i = cs_begin; i != cs_end; ++i) {
+      const Constraint& c = *i;
+      dimension_type index_limited_variable = space_dim;
+      // After using `gauss()' and `back_substitute()' some
+      // constraints can be trivial false.
+      for (dimension_type j = space_dim; j-- > 0; ) {
+	if (c.is_trivial_false()) {
+	  box.set_empty();
+	  return;
+	}
+	// We find the constraints like `Variable(j) == k',
+	// `Variable(j) >= k' `and Variable(j) > k'
+	if (c.coefficient(Variable(j)) != 0)
+	  if (index_limited_variable != space_dim) {
+	    index_limited_variable = space_dim;
+	    break;
+	  }
+	  else
+	    index_limited_variable = j;
+      }
+      if (index_limited_variable != space_dim) {
+	const Integer& d = c.coefficient(Variable(index_limited_variable));
+	const Integer& n = -c.inhomogeneous_term();
+	ExtendedRational r(n, d);
+	Constraint::Type c_type = c.type();
+	switch (c_type) {
+	case Constraint::EQUALITY:
+	  lower_bound[index_limited_variable]
+	    = LBoundary(r, LBoundary::CLOSED);
+	  upper_bound[index_limited_variable]
+	    = UBoundary(r, UBoundary::CLOSED);
+	  break;
+	case Constraint::NONSTRICT_INEQUALITY:
+	case Constraint::STRICT_INEQUALITY:
+	  if (d > 0)
+	  // If `d' is strictly positive, we have a
+	  // constraint like `Variable(index_limited_variable) >= 0'
+	  // or `Variable(index_limited_variable) >= 0.
+	    lower_bound[index_limited_variable]
+	      = LBoundary(r, (c_type == Constraint::NONSTRICT_INEQUALITY 
+			      ? LBoundary::CLOSED
+			      : LBoundary::OPEN));
+	  else {
+	    // Otherwise, we are sure that `d' is strictly negative
+	    // and in this case  we have a constraint like
+	    // `Variable(index_limited_variable) >= 0'
+	    // or `Variable(index_limited_variable) >= 0.
+	    assert(d < 0);
+	    upper_bound[index_limited_variable]
+	      = UBoundary(r, (c_type == Constraint::NONSTRICT_INEQUALITY 
+			      ? UBoundary::CLOSED
+			      : UBoundary::OPEN));
+	  }
+	  break;
+	}
+      }
+    }
   }
   else {
     // We are in the case where either the generators are up-to-date

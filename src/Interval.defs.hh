@@ -28,6 +28,7 @@ site: http://www.cs.unipr.it/ppl/ . */
 
 #include "Integer.types.hh"
 #include <gmpxx.h>
+#include <iosfwd>
 
 namespace Parma_Polyhedra_Library {
 
@@ -38,6 +39,7 @@ bool operator< (const ExtendedRational& x, const ExtendedRational& y);
 bool operator> (const ExtendedRational& x, const ExtendedRational& y);
 bool operator<=(const ExtendedRational& x, const ExtendedRational& y);
 bool operator>=(const ExtendedRational& x, const ExtendedRational& y);
+std::ostream& operator<<(std::ostream& s, const ExtendedRational& x);
 
 } // namespace Parma_Polyhedra_Library
 
@@ -92,7 +94,10 @@ public:
   friend bool
   Parma_Polyhedra_Library::operator>=(const ExtendedRational& x,
 				      const ExtendedRational& y);
-};  
+  friend std::ostream&
+  Parma_Polyhedra_Library::operator<<(std::ostream& s,
+				      const ExtendedRational& x);
+};
 
 
 namespace Parma_Polyhedra_Library {
