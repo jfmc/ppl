@@ -1517,13 +1517,15 @@ PPL::Polyhedron::add_constraints(ConSys& cs) {
   size_t cs_num_rows = cs.num_rows();
   size_t cs_num_columns = cs.num_columns();
   con_sys.grow(old_num_rows + cs_num_rows, num_columns);
-  if (num_columns == cs_num_columns)
-    // Since the numbers of columns match,
+  assert(old_num_rows > 0 && cs_num_rows > 0);
+  if (num_columns == cs_num_columns
+      && con_sys[0].capacity() == cs[0].capacity())
+    // Since both the sizes and the capacities of the rows match,
     // we can simply steel the rows of `cs'.
     for (size_t i = cs_num_rows; i-- > 0; )
       std::swap(con_sys[old_num_rows + i], cs[i]);
   else
-    // The numbers of columns do not match:
+    // Either the sizes or the capacities of the rows do not match:
     // we have to steel one coefficient at a time.
     for (size_t i = cs_num_rows; i-- > 0; ) {
       Constraint& c_new = con_sys[old_num_rows + i];
