@@ -1575,8 +1575,10 @@ BD_Shape<T>::map_space_dimensions(const PartialFunction& pfunc) {
 template <typename T>
 inline void
 BD_Shape<T>::intersection_assign(const BD_Shape& y) {
+  dimension_type space_dim = space_dimension();
+
   // Dimension-compatibility check.
-  if (space_dimension() != y.space_dimension())
+  if (space_dim != y.space_dimension())
     throw_dimension_incompatible("intersection_assign(y)", y);
 
   // If one of the two systems of bounded differences is empty,
@@ -1588,20 +1590,19 @@ BD_Shape<T>::intersection_assign(const BD_Shape& y) {
     return;
   }
 
-  dimension_type k = space_dimension();
   // If both systems of bounded differences are zero-dimensional,
   // then at this point they are necessarily non-empty,
   // so that their intersection is non-empty too.
-  if (k == 0)
+  if (space_dim == 0)
     return;
 
   // To intersect two systems of bounded differences we compare
   // the constraints and we choose the less values.
   bool changed = false;
-  for (dimension_type i = 0; i <= k; ++i) {
+  for (dimension_type i = 0; i <= space_dim; ++i) {
     DB_Row<T>& dbm_i = dbm[i];
     const DB_Row<T>& y_dbm_i = y.dbm[i];
-    for (dimension_type j = 0; j <= k; ++j) {
+    for (dimension_type j = 0; j <= space_dim; ++j) {
       T& dbm_ij = dbm_i[j];
       const T& y_dbm_ij = y_dbm_i[j];
       if (dbm_ij > y_dbm_ij) {
