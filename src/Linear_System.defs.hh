@@ -131,6 +131,9 @@ public:
   //! Strongly normalizes the system.
   void strong_normalize();
 
+  //! Sign-normalizes the system.
+  void sign_normalize();
+
   //! \name Accessors
   //@{
   //! Returns the system topology.

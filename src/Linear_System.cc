@@ -590,6 +590,15 @@ PPL::Linear_System::strong_normalize() {
   set_sorted(false);
 }
 
+void
+PPL::Linear_System::sign_normalize() {
+  Linear_System& x = *this;
+  // We sign-normalize also the pending rows.
+  for (dimension_type i = num_rows(); i-- > 0; )
+    x[i].sign_normalize();
+  set_sorted(false);
+}
+
 /*! \relates Parma_Polyhedra_Library::Linear_System */
 bool
 PPL::operator==(const Linear_System& x, const Linear_System& y) {
