@@ -95,6 +95,9 @@ o  Method C_Polyhedron::H79_widening_assign() now widens the polyhedron
 o  Fixed a bug that was affecting Polyhedron::H79_widening_assign()
    as well as all the limited and bounded extrapolation operators.
 
+o  Fixed a bug in Polyhedron::map_space_dimensions() that could manifest
+   itself when used with a partial function encoding permutation.
+
 o  Fixed a bug in the C interface function
    ppl_new_LinExpression_with_dimension().
 
