@@ -38,4 +38,5 @@ BUGS CREDITS STANDARDS
 
 @SET_MAKE@
 
-SUBDIRS = src Watchdog tests interfaces demos doc m4
+#SUBDIRS = src Watchdog tests interfaces demos doc m4
+SUBDIRS = src Watchdog tests demos doc m4
