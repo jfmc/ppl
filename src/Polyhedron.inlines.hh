@@ -211,6 +211,16 @@ Polyhedron::check_empty() const {
   return is_empty();
 }
 
+inline bool
+Polyhedron::bounds_from_above(const LinExpression& expr) const {
+  return bounds(expr, true);
+}
+
+inline bool
+Polyhedron::bounds_from_below(const LinExpression& expr) const {
+  return bounds(expr, false);
+}
+
 template <class Box>
 Polyhedron::Polyhedron(Topology topol, const Box& box)
   : con_sys(topol),

@@ -723,140 +723,6 @@ public:
   */
   bool OK(bool check_not_empty = false) const;
 
-private:
-  //! Updates constraints starting from generators and minimizes them.
-  /*!
-    The resulting system of constraints is only partially sorted:
-    the equalities are in the upper part of the matrix,
-    while the inequalities in the lower part.
-  */
-  void update_constraints() const;
-
-  //! Updates generators starting from constraints and minimizes them.
-  /*!
-    \return       <CODE>false</CODE> if and only if \p *this turns out
-                  to be an empty polyhedron.
-
-    The resulting system of generators is only partially sorted:
-    the lines are in the upper part of the matrix,
-    while rays and points are in the lower part.
-    It is illegal to call this method when the Status field
-    already declares the polyhedron to be empty.
-  */
-  bool update_generators() const;
-
-  //! Updates \p sat_c using the updated constraints and generators.
-  /*!
-    It is assumed that constraints and generators are up-to-date
-    and minimized and that the Status field does not already flag
-    \p sat_c to be up-to-date.
-    The values of the saturation matrix are computed as follows:
-    \f[
-      \begin{cases}
-        sat\_c[i][j] = 0,
-          \quad \text{if } G[i] \cdot C^\mathrm{T}[j] = 0; \\
-        sat\_c[i][j] = 1,
-          \quad \text{if } G[i] \cdot C^\mathrm{T}[j] > 0.
-      \end{cases}
-    \f]
-  */
-  void update_sat_c() const;
-
-  //! Updates \p sat_g using the updated constraints and generators.
-  /*!
-    It is assumed that constraints and generators are up-to-date
-    and minimized and that the Status field does not already flag
-    \p sat_g to be up-to-date.
-    The values of the saturation matrix are computed as follows:
-    \f[
-      \begin{cases}
-        sat\_g[i][j] = 0,
-          \quad \text{if } C[i] \cdot G^\mathrm{T}[j] = 0; \\
-        sat\_g[i][j] = 1,
-          \quad \text{if } C[i] \cdot G^\mathrm{T}[j] > 0.
-      \end{cases}
-    \f]
-  */
-  void update_sat_g() const;
-
-  //! Sorts the matrix of constraints keeping status consistency.
-  /*!
-    It is assumed that constraints are up-to-date.
-    If at least one of the saturation matrices is up-to-date,
-    then \p sat_g is kept consistent with the sorted matrix
-    of constraints.
-    The method is declared \p const because reordering
-    the constraints does not modify the polyhedron
-    from a \e logical point of view.
-  */
-  void obtain_sorted_constraints() const;
-
-  //! Sorts the matrix of generators keeping status consistency.
-  /*!
-    It is assumed that generators are up-to-date.
-    If at least one of the saturation matrices is up-to-date,
-    then \p sat_c is kept consistent with the sorted matrix
-    of generators.
-    The method is declared \p const because reordering
-    the generators does not modify the polyhedron
-    from a \e logical point of view.
-  */
-  void obtain_sorted_generators() const;
-
-  //! Sorts the matrix of constraints and updates \p sat_c.
-  /*!
-    It is assumed that both constraints and generators
-    are up-to-date and minimized.
-    The method is declared \p const because reordering
-    the constraints does not modify the polyhedron
-    from a \e logical point of view.
-  */
-  void obtain_sorted_constraints_with_sat_c() const;
-
-  //! Sorts the matrix of generators and updates \p sat_g.
-  /*!
-    It is assumed that both constraints and generators
-    are up-to-date and minimized.
-    The method is declared \p const because reordering
-    the generators does not modify the polyhedron
-    from a \e logical point of view.
-  */
-  void obtain_sorted_generators_with_sat_g() const;
-
-  //! Applies (weak) minimization to both the constraints and generators.
-  /*!
-    \return       <CODE>false</CODE> if and only if \p *this turns out
-                  to be an empty polyhedron.
-
-    Minimization is not attempted if the Status field already declares
-    both systems to be minimized.
-  */
-  bool minimize() const;
-
-  //! \brief
-  //! Applies strong minimization to both the constraints and generators
-  //! of an NNC polyhedron.
-  /*!
-    \return       <CODE>false</CODE> if and only if \p *this turns out
-                  to be an empty polyhedron.
-  */
-  bool strongly_minimize() const;
-
-  //! Applies strong minimization to the constraints of an NNC polyhedron.
-  /*!
-    \return       <CODE>false</CODE> if and only if \p *this turns out
-                  to be an empty polyhedron.
-  */
-  bool strongly_minimize_constraints() const;
-
-  //! Applies strong minimization to the generators of an NNC polyhedron.
-  /*!
-    \return       <CODE>false</CODE> if and only if \p *this turns out
-                  to be an empty polyhedron.
-  */
-  bool strongly_minimize_generators() const;
-
-public:
   //! \brief
   //! Adds \p dim new dimensions and embeds the old polyhedron
   //! into the new space.
@@ -1012,6 +878,24 @@ public:
   bool is_bounded() const;
 
   //! \brief
+  //! Returns <CODE>true</CODE> if and only if \p expr is
+  //! bounded from above in \p *this.
+  /*!
+    \exception std::invalid_argument thrown if \p expr and \p *this
+                                     are dimension-incompatible.
+  */
+  bool bounds_from_above(const LinExpression& expr) const;
+
+  //! \brief
+  //! Returns <CODE>true</CODE> if and only if \p expr is
+  //! bounded from below in \p *this.
+  /*!
+    \exception std::invalid_argument thrown if \p expr and \p *this
+                                     are dimension-incompatible.
+  */
+  bool bounds_from_below(const LinExpression& expr) const;
+
+  //! \brief
   //! Returns <CODE>true</CODE> if and only if \p *this
   //! is a topologically closed subset of the vector space.
   bool is_topologically_closed() const;
@@ -1067,7 +951,6 @@ private:
   //! The number of dimensions of the enclosing vector space.
   size_t space_dim;
 
-private:
   //! Returns the topological kind of the polyhedron.
   Topology topology() const;
 
@@ -1185,6 +1068,153 @@ private:
   //! Sets \p status to express that \p sat_g is no longer up-to-date.
   void clear_sat_g_up_to_date();
 //@}
+
+  //! Updates constraints starting from generators and minimizes them.
+  /*!
+    The resulting system of constraints is only partially sorted:
+    the equalities are in the upper part of the matrix,
+    while the inequalities in the lower part.
+  */
+  void update_constraints() const;
+
+  //! Updates generators starting from constraints and minimizes them.
+  /*!
+    \return       <CODE>false</CODE> if and only if \p *this turns out
+                  to be an empty polyhedron.
+
+    The resulting system of generators is only partially sorted:
+    the lines are in the upper part of the matrix,
+    while rays and points are in the lower part.
+    It is illegal to call this method when the Status field
+    already declares the polyhedron to be empty.
+  */
+  bool update_generators() const;
+
+  //! Updates \p sat_c using the updated constraints and generators.
+  /*!
+    It is assumed that constraints and generators are up-to-date
+    and minimized and that the Status field does not already flag
+    \p sat_c to be up-to-date.
+    The values of the saturation matrix are computed as follows:
+    \f[
+      \begin{cases}
+        sat\_c[i][j] = 0,
+          \quad \text{if } G[i] \cdot C^\mathrm{T}[j] = 0; \\
+        sat\_c[i][j] = 1,
+          \quad \text{if } G[i] \cdot C^\mathrm{T}[j] > 0.
+      \end{cases}
+    \f]
+  */
+  void update_sat_c() const;
+
+  //! Updates \p sat_g using the updated constraints and generators.
+  /*!
+    It is assumed that constraints and generators are up-to-date
+    and minimized and that the Status field does not already flag
+    \p sat_g to be up-to-date.
+    The values of the saturation matrix are computed as follows:
+    \f[
+      \begin{cases}
+        sat\_g[i][j] = 0,
+          \quad \text{if } C[i] \cdot G^\mathrm{T}[j] = 0; \\
+        sat\_g[i][j] = 1,
+          \quad \text{if } C[i] \cdot G^\mathrm{T}[j] > 0.
+      \end{cases}
+    \f]
+  */
+  void update_sat_g() const;
+
+  //! Sorts the matrix of constraints keeping status consistency.
+  /*!
+    It is assumed that constraints are up-to-date.
+    If at least one of the saturation matrices is up-to-date,
+    then \p sat_g is kept consistent with the sorted matrix
+    of constraints.
+    The method is declared \p const because reordering
+    the constraints does not modify the polyhedron
+    from a \e logical point of view.
+  */
+  void obtain_sorted_constraints() const;
+
+  //! Sorts the matrix of generators keeping status consistency.
+  /*!
+    It is assumed that generators are up-to-date.
+    If at least one of the saturation matrices is up-to-date,
+    then \p sat_c is kept consistent with the sorted matrix
+    of generators.
+    The method is declared \p const because reordering
+    the generators does not modify the polyhedron
+    from a \e logical point of view.
+  */
+  void obtain_sorted_generators() const;
+
+  //! Sorts the matrix of constraints and updates \p sat_c.
+  /*!
+    It is assumed that both constraints and generators
+    are up-to-date and minimized.
+    The method is declared \p const because reordering
+    the constraints does not modify the polyhedron
+    from a \e logical point of view.
+  */
+  void obtain_sorted_constraints_with_sat_c() const;
+
+  //! Sorts the matrix of generators and updates \p sat_g.
+  /*!
+    It is assumed that both constraints and generators
+    are up-to-date and minimized.
+    The method is declared \p const because reordering
+    the generators does not modify the polyhedron
+    from a \e logical point of view.
+  */
+  void obtain_sorted_generators_with_sat_g() const;
+
+  //! Applies (weak) minimization to both the constraints and generators.
+  /*!
+    \return       <CODE>false</CODE> if and only if \p *this turns out
+                  to be an empty polyhedron.
+
+    Minimization is not attempted if the Status field already declares
+    both systems to be minimized.
+  */
+  bool minimize() const;
+
+  //! \brief
+  //! Applies strong minimization to both the constraints and generators
+  //! of an NNC polyhedron.
+  /*!
+    \return       <CODE>false</CODE> if and only if \p *this turns out
+                  to be an empty polyhedron.
+  */
+  bool strongly_minimize() const;
+
+  //! Applies strong minimization to the constraints of an NNC polyhedron.
+  /*!
+    \return       <CODE>false</CODE> if and only if \p *this turns out
+                  to be an empty polyhedron.
+  */
+  bool strongly_minimize_constraints() const;
+
+  //! Applies strong minimization to the generators of an NNC polyhedron.
+  /*!
+    \return       <CODE>false</CODE> if and only if \p *this turns out
+                  to be an empty polyhedron.
+  */
+  bool strongly_minimize_generators() const;
+
+  //! \brief
+  //! Checks if and how \p expr is bounded in \p *this.
+  /*!
+    Returns <CODE>true</CODE> if and only if \p from_above is
+    <CODE>true</CODE> and \p expr is bounded from above in \p *this,
+    or \p from_above is <CODE>false</CODE> and \p expr is bounded
+    from below in \p *this.
+    \param expr        The linear expression to test.
+    \param from_above  <CODE>true</CODE> if and only if the boundedness
+                       of interest is "from above".
+    \exception std::invalid_argument thrown if \p expr and \p *this
+                                     are dimension-incompatible.
+  */
+  bool bounds(const LinExpression& expr, bool from_above) const;
 
   //! Adds new dimensions to the given matrices.
   /*!

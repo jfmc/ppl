@@ -3150,6 +3150,49 @@ PPL::Polyhedron::is_bounded() const {
 
 
 bool
+PPL::Polyhedron::bounds(const LinExpression& expr, bool from_above) const {
+  // The dimension of `expr' should not be greater than the dimension
+  // of `*this'.
+  size_t expr_space_dim = expr.space_dimension();
+  if (space_dim < expr_space_dim)
+    throw_dimension_incompatible((from_above
+				  ? "bounds_from_above(e)"
+				  : "bounds_from_below(e)"), expr);
+
+  // A zero-dimensional or empty polyhedron bounds everything.
+  if (space_dim == 0
+      || is_empty()
+      || (!generators_are_up_to_date() && !update_generators()))
+    return true;
+  
+  for (size_t i = gen_sys.num_rows(); i-- > 0; ) {
+    const Generator& g = gen_sys[i];
+    // Only lines and rays in `*this' can cause `expr' to be unbounded.
+    if (g[0] == 0) {
+      // Compute the scalar product between `g' and `expr'.
+      tmp_Integer[0] = 0;
+      for (size_t j = expr.size(); j-- > 0; ) {
+	// The following two lines optimize the computation
+	// of tmp_Integer[0] += g[j] * expr[j].
+	tmp_Integer[1] = g[j] * expr[j];
+	tmp_Integer[0] += tmp_Integer[1];
+      }
+      int sp_sign = sgn(tmp_Integer[0]);
+      if (sp_sign != 0
+	  && (g.is_line()
+	      || (from_above && sp_sign > 0)
+	      || (!from_above && sp_sign < 0)))
+	// `*this' does not bound `expr'.
+	return false;
+    }
+  }
+  // No sources of unboundedness have been found for `expr'
+  // in the given direction.
+  return true;
+}
+
+
+bool
 PPL::Polyhedron::is_topologically_closed() const {
   // Necessarily closed polyhedra are trivially closed.
   if (is_necessarily_closed())
