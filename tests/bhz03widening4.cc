@@ -153,8 +153,8 @@ main() TRY {
     cout << "S" << n << " = " << Sn << endl;
 #endif
     Sn.upper_bound_assign(T);
-    Widening_Function<Polyhedron> wf(&Polyhedron::H79_widening_assign);
-    Sn.BHZ03_widening_assign<H79_Certificate>(T, wf);
+    Sn.BHZ03_widening_assign<H79_Certificate>
+      (T, widen_fun(&Polyhedron::H79_widening_assign));
 #if NOISY
     cout << "T" << n << " = " << Sn << endl;
 #endif
