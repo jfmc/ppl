@@ -366,6 +366,8 @@ public:
   //! (Note that \p *this and \p y can be dimension-incompatible.)
   PolyBase& operator=(const PolyBase& y);
 
+  //! Returns the topological kind of the polyhedron.
+  Topology topology() const;
   //! Returns the dimension of the vector space enclosing \p *this.
   size_t space_dimension() const;
 
@@ -629,8 +631,6 @@ private:
   //! The number of dimensions of the enclosing vector space.
   size_t space_dim;
 
-  //! Returns the topological kind of the polyhedron.
-  Topology topology() const;
   //! Tests if the polyhedron is necessarily closed.
   bool is_necessarily_closed() const;
 
