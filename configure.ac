@@ -371,7 +371,9 @@ AC_CHECK_HEADER(sicstus/sicstus.h,
                   ],
                   AC_MSG_RESULT(yes),
                   SICSTUS_PROLOG=""
-                  AC_MSG_RESULT(no)))
+                  AC_MSG_RESULT(no)
+                ),
+                SICSTUS_PROLOG="")
 fi
 AM_CONDITIONAL(HAVE_SICSTUS_PROLOG, test x$SICSTUS_PROLOG = xsicstus)
 
