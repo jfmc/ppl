@@ -41,6 +41,16 @@ o  New method: template <typename PartialFunction>
 Bugfixes
 ========
 
+o  Any?
+
+
+--------------------------------------------------------------------------
+NEWS for version 0.4.2 (released on October 4, 2002)
+--------------------------------------------------------------------------
+
+Bugfixes
+========
+
 o  Fixed a bug in method Polyhedron::add_generator(const Generator&)
    whereby we were not adding the corresponding closure point when adding
    a point to an empty NNC polyhedron.
