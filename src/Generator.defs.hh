@@ -337,7 +337,7 @@ PPL_INTERNAL:
 
   //! Returns <CODE>true</CODE> if and only if the closure point
   //! \p *this has the same \e coordinates of the point \p p.
-  bool is_corresponding_closure_point(const Generator& p) const;
+  bool is_matching_closure_point(const Generator& p) const;
 
 private:
   //! Default constructor: private and not implemented.

@@ -183,7 +183,7 @@ PPL::operator<<(std::ostream& s, const Generator& g) {
   and both topologies and space-dimensions agree.
 */
 bool
-PPL::Generator::is_corresponding_closure_point(const Generator& p) const {
+PPL::Generator::is_matching_closure_point(const Generator& p) const {
   assert(topology() == p.topology()
 	 && space_dimension() == p.space_dimension()
 	 && type() == CLOSURE_POINT
