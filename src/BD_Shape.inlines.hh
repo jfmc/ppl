@@ -231,6 +231,97 @@ BD_Shape<T>::BD_Shape(const Generator_System& gs)
 }
 
 template <typename T>
+inline
+BD_Shape<T>::BD_Shape(const Polyhedron& ph, Complexity_Class complexity)
+  : dbm(), status() {
+  if (ph.marked_empty()
+      || (ph.generators_are_up_to_date() && ph.gen_sys.num_rows() == 0)) {
+    *this = BD_Shape(ph.space_dim, Polyhedron::EMPTY);
+    return;
+  }
+
+  if (ph.space_dim == 0) {
+    *this = BD_Shape(ph.space_dim, Polyhedron::UNIVERSE);
+    return;
+  }
+
+  // Build from generators when we do not care about complexity
+  // or when the process has polynomial complexity.
+  if (complexity == ANY_COMPLEXITY
+      || (!ph.has_pending_constraints() && ph.generators_are_up_to_date())) {
+    *this = BD_Shape(ph.generators());
+    return;
+  }
+
+  // We cannot affort exponential complexity, we do not have a complete set
+  // of generators for the polyhedron, and the polyhedron is not trivially
+  // empty or zero-dimensional.  Constraints, however, are up to date.
+  assert(ph.constraints_are_up_to_date());
+
+  if (!ph.has_something_pending() && ph.constraints_are_minimized()) {
+    // If the constraint system of the polyhedron is minimized,
+    // the test `is_universe()' has polynomial complexity.
+    if (ph.is_universe()) {
+      *this = BD_Shape(ph.space_dim, Polyhedron::UNIVERSE);
+      return;
+    }
+  }
+
+  // See if there is at least one inconsistent constraint in `ph.con_sys'.
+  for (Constraint_System::const_iterator i = ph.con_sys.begin(),
+	 cs_end = ph.con_sys.end(); i != cs_end; ++i)
+    if (i->is_inconsistent()) {
+      *this = BD_Shape(ph.space_dim, Polyhedron::EMPTY);
+      return;
+    }
+
+  // If `complexity' allows it, use simplex to determine whether or not
+  // the polyhedron is empty.
+  // FIXME: we must topologically close the constraint system here!
+  if (complexity == SIMPLEX_COMPLEXITY) {
+    Coefficient n;
+    Coefficient d;
+    if (ph.con_sys.primal_simplex(Linear_Expression(0), true, n, d)
+	== UNFEASIBLE_PROBLEM) {
+      *this = BD_Shape(ph.space_dim, Polyhedron::EMPTY);
+      return;
+    }
+
+    // TODO: use simplex to derive the exact (modulo the fact that
+    // our BDSs are topologically closed) variable bounds.
+  }
+
+  // Extract easy-to-find bounds from constraints.
+
+  // We must copy `con_sys' to a temporary matrix,
+  // because we must apply gauss() and back_substitute()
+  // to all the matrix and not only to the non-pending part.
+  Constraint_System cs(ph.con_sys);
+  if (cs.num_pending_rows() > 0) {
+    cs.unset_pending_rows();
+    cs.sort_rows();
+  }
+  else if (!cs.is_sorted())
+    cs.sort_rows();
+
+  if (ph.has_pending_constraints() || !ph.constraints_are_minimized())
+    cs.back_substitute(cs.gauss());
+
+  // After `gauss()' and `back_substitute()' some constraints
+  // may have become inconsistent.
+  for (Constraint_System::const_iterator i = cs.begin(),
+	 cs_end = cs.end(); i != cs_end; ++i) {
+    if (i->is_inconsistent()) {
+      *this = BD_Shape(ph.space_dim, Polyhedron::EMPTY);
+      return;
+    }
+  }
+
+  // Use `cs' to obtain an approximation of `ph'.
+  *this = BD_Shape(cs);
+}
+
+template <typename T>
 inline BD_Shape<T>&
 BD_Shape<T>::operator=(const BD_Shape& y) {
   status = y.status;
