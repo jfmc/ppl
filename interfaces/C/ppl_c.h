@@ -35,10 +35,30 @@ or through some other header file, with the directive
 \code
 #include <ppl_c.h>
 \endcode
+If this directive does not work, it means that your compiler is not finding
+<CODE>ppl_c.h</CODE> where it expects.
+Either you forgot to install the library (in which case you may want to
+<CODE>make install</CODE>, perhaps with root privileges),
+or you installed it in the wrong place (in which case you may want to
+reconfigure the library using the appropriate pathname for the
+<CODE>--prefix</CODE> option),
+or you forgot to tell your compiler where the right place is
+(in which case you should add an option, usually <CODE>-I</CODE>,
+to the ones you pass to the compiler).
 
 The name space of the PPL's C interface is <CODE>PPL_*</CODE> for
 preprocessor symbols, enumeration values and variables,
 and <CODE>ppl_*</CODE> for data types and function names,
+The interface systematically uses <EM>opaque data types</EM>
+(generic pointers that completely hide the internal representations
+from the client code) and provides required access functions.
+This way, the client code can exploit all the functionalities of
+the library yet avoiding the direct manipulation of the library's
+data structures.
+The advantages are that (1) applications do not depend on
+the internals of the library (these may change from release to release),
+and (2) the interface invariants can be thoroughly checked
+(by the access functions).
 
 TO BE CONTINUED HERE.
 
