@@ -44,9 +44,10 @@ PPL::Polyhedron::constraints() const {
   if (is_empty())
     throw std::invalid_argument("PPL::Polyhedron::constraints(): "
 				"*this is empty");
-   if (is_zero_dim())
-    throw std::invalid_argument("PPL::Polyhedron::constraints(): "
-				"*this is zero-dimensional");
+  if (is_zero_dim()) {
+    assert(con_sys.empty());
+    return con_sys;
+  }
   if (!constraints_are_up_to_date())
     update_constraints();
 
@@ -77,9 +78,10 @@ PPL::Polyhedron::constraints() const {
 */
 const PPL::GenSys&
 PPL::Polyhedron::generators() const {
-  if (is_empty())
-    throw std::invalid_argument("PPL::Polyhedron::generators(): "
-				"*this is empty");
+  if (is_empty()) {
+    assert(gen_sys.empty());
+    return gen_sys;
+  }
   if (is_zero_dim())
     throw std::invalid_argument("PPL::Polyhedron::generators(): "
 				"*this is zero-dimensional");
