@@ -34,7 +34,6 @@ site: http://www.cs.unipr.it/ppl/ . */
 #include <stdlib.h>
 
 static struct option long_options[] = {
-  {"bounds",         no_argument,       0, 'b'},
   {"check",          no_argument,       0, 'c'},
   {"help",           no_argument,       0, 'h'},
   {"minimize",       no_argument,       0, 'm'},
@@ -48,7 +47,6 @@ static struct option long_options[] = {
 
 static const char* usage_string
 = "Usage: %s [OPTION]... [FILE]...\n\n"
-"  -b, --bounds            treat variable bounds as ordinary constraints\n"
 "  -c, --check             check plausibility of the optimum value found\n"
 "  -m, --minimize          minimize the objective function (default)\n"
 "  -M, --maximize          maximize the objective function (default)\n"
@@ -66,7 +64,6 @@ static const char* program_name = 0;
 static unsigned long max_seconds_of_cpu_time = 0;
 static unsigned long max_bytes_of_virtual_memory = 0;
 static const char* output_argument = 0;
-static int add_bounds = 0;
 static int check_optimum = 0;
 static int print_timings = 0;
 static int maximize = 0;
@@ -97,10 +94,6 @@ process_options(int argc, char *argv[]) {
 
     switch (c) {
     case 0:
-      break;
-
-    case 'b':
-      add_bounds = 1;
       break;
 
     case 'c':
@@ -349,12 +342,6 @@ add_constraints(ppl_LinExpression_t ppl_le,
   }
 }
 
-struct bounds {
-  int type;
-  mpq_t lower;
-  mpq_t upper;
-};
-
 static void
 solve(char* file_name) {
   ppl_Polyhedron_t ppl_ph;
@@ -374,7 +361,6 @@ solve(char* file_name) {
   int first_candidate;
   mpq_t optimum;
   mpz_t den_lcm;
-  struct bounds* variable_bounds;
 
   if (print_timings)
     start_clock();
@@ -438,15 +424,6 @@ solve(char* file_name) {
     ppl_delete_LinExpression(ppl_le);
   }
 
-  if (!add_bounds) {
-    variable_bounds
-      = (struct bounds*) malloc((dimension)*sizeof(struct bounds));
-    for (i = 0; i < dimension; ++i) {
-      mpq_init(variable_bounds[i].lower);
-      mpq_init(variable_bounds[i].upper);
-    }
-  }
-
 #if 1
   ppl_new_C_Polyhedron_from_ConSys(&ppl_ph, ppl_cs);
   printf("created\n");
@@ -462,25 +439,18 @@ solve(char* file_name) {
     mpq_set_d(rational_lb, lb);
     mpq_set_d(rational_ub, ub);
 
-    if (add_bounds) {
-      /* Initialize the least common multiple computation. */
-      mpz_set_si(den_lcm, 1);
-      mpz_lcm(den_lcm, den_lcm, mpq_denref(rational_lb));
-      mpz_lcm(den_lcm, den_lcm, mpq_denref(rational_ub));
+    /* Initialize the least common multiple computation. */
+    mpz_set_si(den_lcm, 1);
+    mpz_lcm(den_lcm, den_lcm, mpq_denref(rational_lb));
+    mpz_lcm(den_lcm, den_lcm, mpq_denref(rational_ub));
 
-      ppl_new_LinExpression_with_dimension(&ppl_le, dimension);
-      ppl_assign_Coefficient_from_mpz_t(ppl_coeff, den_lcm);
-      ppl_LinExpression_add_to_coefficient(ppl_le, column-1, ppl_coeff);
+    ppl_new_LinExpression_with_dimension(&ppl_le, dimension);
+    ppl_assign_Coefficient_from_mpz_t(ppl_coeff, den_lcm);
+    ppl_LinExpression_add_to_coefficient(ppl_le, column-1, ppl_coeff);
 
-      add_constraints(ppl_le, type, rational_lb, rational_ub, den_lcm, ppl_cs);
+    add_constraints(ppl_le, type, rational_lb, rational_ub, den_lcm, ppl_cs);
 
-      ppl_delete_LinExpression(ppl_le);
-    }
-    else {
-      variable_bounds[column-1].type = type;
-      mpq_set(variable_bounds[column-1].lower, rational_lb);
-      mpq_set(variable_bounds[column-1].upper, rational_ub);
-    }
+    ppl_delete_LinExpression(ppl_le);
   }
 
 #if 0
@@ -534,49 +504,8 @@ solve(char* file_name) {
 	mpz_set(mpq_denref(candidate[i]), tmp_z);
 	ppl_Generator_coefficient(ppl_const_g, i, ppl_coeff);
 	ppl_Coefficient_to_mpz_t(ppl_coeff, mpq_numref(candidate[i]));
-#if 0
-	if (!add_bounds) {
-	  switch (variable_bounds[i].type) {
-	  case 'F':
-	    break;
-
-	  case 'L':
-	    if (mpq_cmp(variable_bounds[i].lower, candidate[i]) > 0) {
-	      mpq_out_str(stdout, 10, variable_bounds[i].lower);
-	      printf(" > ");
-	      mpq_out_str(stdout, 10, candidate[i]);
-	      printf("\n");
-	      goto next;
-	    }
-	    break;
-
-	  case 'U':
-	    if (mpq_cmp(variable_bounds[i].upper, candidate[i]) < 0) {
-	      mpq_out_str(stdout, 10, variable_bounds[i].upper);
-	      printf(" < ");
-	      mpq_out_str(stdout, 10, candidate[i]);
-	      printf("\n");
-	      goto next;
-	    }
-	    break;
-
-	  case 'D':
-	    if (mpq_cmp(variable_bounds[i].lower, candidate[i]) > 0
-		|| mpq_cmp(variable_bounds[i].upper, candidate[i]) < 0)
-	      goto next;
-	    break;
-
-	  case 'S':
-	    if (mpq_cmp(variable_bounds[i].lower, candidate[i]) != 0)
-	      goto next;
-	    break;
-	  default:
-	    abort();
-	    break;
-	  }
-	}
-#endif
       }
+
       /* Here we have a candidate.  Evaluate objective function. */
       mpq_set(tmp1_q, objective[0]);
       printf("***************\n");
@@ -601,7 +530,6 @@ solve(char* file_name) {
 								      git1);
       }
     }
-  next:
     ppl_GenSys__const_iterator_increment(git1);
   }
 
@@ -623,9 +551,6 @@ solve(char* file_name) {
   }
 
   free(candidate);
-
-  if (!add_bounds)
-    free(variable_bounds);
 
   ppl_delete_Polyhedron(ppl_ph);
   glp_delete_prob(lp);
