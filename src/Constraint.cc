@@ -68,7 +68,6 @@ PPL::Constraint::is_trivial_false() const {
 
 std::ostream&
 PPL::operator <<(std::ostream& s, const Constraint& c) {
-#if 0
   int num_variables = c.size()-1;
   bool first = true;
   for (int v = 0; v < num_variables; ++v) {
@@ -99,35 +98,4 @@ PPL::operator <<(std::ostream& s, const Constraint& c) {
     s << " >= ";
   s << -c[0];
   return s;
-#else
-  bool first = true;
-  for (int v = c.first(), last_v = c.last(); v <= last_v; v = c.next(v)) {
-    Integer cv = c.coefficient(Variable(v));
-    if (cv != 0) {
-      if (!first) {
-	if (cv > 0)
-	  s << " + ";
-	else {
-	  s << " - ";
-	  negate(cv);
-	}
-      }
-      else
-	first = false;
-      if (cv == -1)
-	s << "-";
-      else if (cv != 1)
-	s << cv << "*";
-      s << PPL::Variable(v);
-    }
-  }
-  if (first)
-    s << "0";
-  if (c.is_equality())
-    s << " = ";
-  else
-    s << " >= ";
-  s << -c.coefficient();
-  return s;
-#endif
 }
