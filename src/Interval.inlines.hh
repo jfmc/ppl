@@ -189,4 +189,4 @@ Interval::set_empty() {
 
 } // namespace Parma_Polyhedra_Library
 
-#endif
+#endif // !defined(PPL_Interval_inlines_hh)

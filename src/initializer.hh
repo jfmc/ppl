@@ -32,4 +32,4 @@ Parma_Polyhedra_Library::Init Parma_Polyhedra_Library_initializer;
 
 } // namespace
 
-#endif
+#endif // !defined(PPL_initializer_defs_hh)

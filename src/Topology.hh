@@ -24,4 +24,4 @@ namespace Parma_Polyhedra_Library {
 
 }
 
-#endif
+#endif // !defined(PPL_Topology_hh)
