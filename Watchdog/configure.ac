@@ -236,7 +236,7 @@ esac
 build_watchdog_library=$enableval
 AM_CONDITIONAL(BUILD_WATCHDOG_LIBRARY, test x"$build_watchdog_library" = xyes)
 
-if x"$build_watchdog_library" = xyes
+if test x"$build_watchdog_library" = xyes
 then
   # Checks for header files.
   AC_HEADER_TIME
