@@ -27,7 +27,7 @@ VPATH = @srcdir@
 
 @SET_MAKE@
 
-DOXYGEN = doxygen -d Validate
+DOXYGEN = doxygen
 
 LICENSES = \
 gpl.pdf \
