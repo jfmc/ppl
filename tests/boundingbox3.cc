@@ -96,6 +96,7 @@ public:
   }
 
   friend bool operator==(const BInterval& x, const BInterval& y);
+  friend bool operator<=(const BInterval& x, const BInterval& y);
 };
 
 inline bool
@@ -104,6 +105,51 @@ operator==(const BInterval& x, const BInterval& y) {
     && x.uclosed == y.uclosed
     && x.lc*y.ld == y.lc*x.ld
     && x.uc*y.ud == y.uc*x.ud;
+}
+
+inline bool
+operator<=(const BInterval& x, const BInterval& y) {
+  int l_sign = sgn(x.ld) * sgn(y.ld);
+  int u_sign = sgn(x.ud) * sgn(y.ud);
+  if (y.lclosed || (!x.lclosed && !y.lclosed)) {
+    if (l_sign > 0 && x.lc * y.ld < y.lc * x.ld)
+      return false;
+    if (l_sign < 0 && x.lc * y.ld > y.lc * x.ld)
+      return false;
+    if (l_sign == 0)
+      if (x.ld == 0 && x.lc < 0 && (y.ld != 0 || (y.ld == 0 && y.ld > 0)))
+	return false;
+  }
+  else {
+    assert(!y.lclosed && x.lclosed);
+    if (l_sign > 0 && x.lc * y.ld <= y.lc * x.ld)
+      return false;
+    if (l_sign < 0 && x.lc * y.ld >= y.lc * x.ld)
+      return false;
+    if (l_sign == 0)
+      if (x.ld == 0 && x.lc < 0)
+	return false;
+  }
+  if (y.uclosed || (!x.uclosed && !y.uclosed)) {
+    if (u_sign > 0 && x.uc * y.ud > y.uc * x.ud)
+      return false;
+    if (u_sign < 0 && x.uc * y.ud < y.uc * x.ud)
+      return false;
+    if (u_sign == 0)
+      if (x.ud == 0 && x.uc > 0 && (y.ud != 0 || (y.ud == 0 && y.ud < 0)))
+	return false;
+  }
+  else {
+    assert(!y.uclosed && x.uclosed);
+    if (u_sign > 0 && x.uc * y.ud >= y.uc * x.ud)
+      return false;
+    if (u_sign < 0 && x.uc * y.ud <= y.uc * x.ud)
+      return false;
+    if (u_sign == 0)
+      if (x.ud == 0 && x.uc > 0)
+	return false;
+  }
+  return true;
 }
 
 inline bool
@@ -169,6 +215,20 @@ operator==(const BBox& x, const BBox& y) {
   return true;
 }
 
+
+bool
+operator<=(const BBox& x, const BBox& y) {
+  dimension_type dimension = x.space_dimension();
+  if (dimension > y.space_dimension())
+    return false;
+
+  for (dimension_type i = dimension; i-- > 0; )
+    if (!(x[i] <= y[i]))
+      return false;
+  
+  return true;
+}
+
 inline bool
 operator!=(const BBox& x, const BBox& y) {
   return !(x == y);
@@ -218,7 +278,7 @@ void test1() {
   known_pbox.print_box("*** test_nnc9 known_pbox ***");
 #endif
 
-  if (nbox != known_nbox || pbox != known_pbox)
+  if (nbox != known_nbox || pbox != known_pbox || !(nbox <= pbox))
     exit(1);
 }
 
@@ -261,7 +321,7 @@ void test2() {
   known_pbox.print_box("*** test_nnc10 known_pbox ***");
 #endif
 
-  if (nbox != known_nbox || pbox != known_pbox)
+  if (nbox != known_nbox || pbox != known_pbox || !(nbox <= pbox))
     exit(1);
 }
 
