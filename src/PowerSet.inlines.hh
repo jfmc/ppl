@@ -200,10 +200,7 @@ PowerSet<CS>::collapse(const unsigned max_disjuncts) {
   omega_reduce();
   size_type n = size();
   if (n > max_disjuncts) {
-    iterator sbegin = begin();
-    iterator send = end();
-
-    iterator i = sbegin;
+    iterator i = begin();
     // Move `i' to the last disjunct that will survive.
     for (unsigned m = max_disjuncts-1; m-- > 0; )
       ++i;
