@@ -144,13 +144,16 @@ handle_exception(const not_a_variable& e) {
 
 static void
 handle_exception() {
-  abort();
+  SP_term_ref et = SP_new_term_ref();
+  SP_put_string(et, "PPL bug: unknown exception raised");
+  SP_raise_exception(et);
 }
 
 static void
 handle_exception(const std::exception& e) {
-  std::cerr << e.what() << std::endl;
-  abort();
+  SP_term_ref et = SP_new_term_ref();
+  SP_put_string(et, e.what());
+  SP_raise_exception(et);
 }
 
 #define CATCH_INTERNAL \
