@@ -37,7 +37,7 @@ AM_CPPFLAGS = -I$(top_srcdir)/src @extra_includes@ @extra_cpp_flags@
 bin_PROGRAMS = ppl_sicstus
 ppl_sicstus_SOURCES =
 
-pkglib_DATA = ppl_sicstus.s.o ppl_sicstus.so ppl_sicstus.pl
+pkglib_DATA = ppl_sicstus.s.o ppl_sicstus.pl
 
 noinst_LTLIBRARIES = ppl_sicstus_sd.la
 ppl_sicstus_sd_la_SOURCES = ppl_sicstus_sd.cc
@@ -56,6 +56,10 @@ ppl_sicstus.so: ppl_sicstus.pl ppl_sicstus_sd.o
 	$(LIBTOOL) --mode=link --tag=CXX \
 	splfr $(srcdir)/ppl_sicstus.pl ppl_sicstus_sd.o -o $@ \
 		$(top_builddir)/src/libppl.la @extra_libraries@
+
+install-data-local: ppl_sicstus.so
+	$(LIBTOOL) --mode=install $(INSTALL) $(INSTALL_STRIP_FLAG) \
+		$< $(DESTDIR)$(pkglibdir)/$<
 
 CLPQ_TESTS_NONSTRICT = \
 ack.clpq \
