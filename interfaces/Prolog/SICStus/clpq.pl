@@ -17,8 +17,9 @@ solve(Goal):-
 % Polyhedron: the main polyhedron is initialised with 0 dimensions.
     ppl_new_polyhedron(Polyhedron, 0), 
     solve(Goal,Polyhedron,0,_),
-    check_constraints(Polyhedron),
-    ppl_delete_polyhedron(Polyhedron).
+    check_constraints(Polyhedron).
+% The following line has been temporarily commented out.
+%    ppl_delete_polyhedron(Polyhedron).
 
 /*
 solve/4 is the main meta-interpreter.
@@ -50,7 +51,7 @@ solve((A,B),Polyhedron,InDims,OutDims):-
     (ppl_check_empty(Polyhedron)
      ->   % If B fails, then the Polyhedron will be empty.
           % The orginal Polyhedron is restored for backtracking.
-     ppl_project_dimensions(Polyhedron,InDims),
+     ppl_remove_higher_dimensions(Polyhedron,InDims),
      ppl_convex_hull_assign(Polyhedron,Q),
      fail
      ;    % If B succeeds, then the Polyhedron will be non-empty.
@@ -117,13 +118,13 @@ try_clause(Args,Args1,Body1,InDims,OutDims,Polyhedron):-
          % If the body fails, the polyhedron is empty.
          % The orginal Polyhedron is restored for backtracking.
          % First eliminate any new dimensions.
-     ppl_project_dimensions(Polyhedron,InDims),
+     ppl_remove_higher_dimensions(Polyhedron,InDims),
          % Then take the convex hull with the copy before failing.
      ppl_convex_hull_assign(Polyhedron,Q),
      fail
      ;
          % On success, project away all but the head variables.
-     ppl_project_dimensions(Polyhedron,OutDims)
+     ppl_remove_higher_dimensions(Polyhedron,OutDims)
     ))
   ->
     ppl_delete_polyhedron(Q)   % Q is now unwanted and removed.
@@ -161,13 +162,6 @@ rename([A|As],[_B|Bs]):-
     rename(As,Bs).
 rename([A|As],[A|Bs]):-
     rename(As,Bs).
-
-/*
-The Polyhedron is projected to have NewDims variables (dimensions).
-That is all variables with codes greater than NewDims are projected away.
-*/
-ppl_project_dimensions(Polyhedron,NewDims):-
-    ppl_remove_higher_dimensions(Polyhedron, NewDims).
 
 /*
 Displays the constraints.
@@ -208,7 +202,7 @@ read_program(Program) :-
   (open(Program, read, Stream) ->
     FileName = Program
   ;
-    atom_concat(Program, '.pl', FileName),
+    atom_concat(Program, '.clpq', FileName),
     (open(FileName, read, Stream) ->
       true
     ;
