@@ -226,7 +226,7 @@ template <typename Policy, typename From>
 inline Result
 assign_mpz_float(mpz_class& to, const From from, Rounding_Dir dir) {
   if (want_rounding<Policy>(dir)) {
-    double n = rint(from);
+    From n = rint(from);
     to = n;
     if (from < n)
       return round_lt_mpz<Policy>(to, dir);

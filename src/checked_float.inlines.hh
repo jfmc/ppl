@@ -383,6 +383,77 @@ assign_float_int(To& to, const From from, Rounding_Dir dir) {
 }
 
 template <typename Policy, typename Type>
+inline Result
+set_neg_overflow_float(Type& to, Rounding_Dir dir) {
+  switch (rounding_direction(dir)) {
+  case ROUND_UP:
+    {
+      Float<Type> f(-HUGE_VAL);
+      f.dec();
+      to = f.value();
+      return V_LT;
+    }
+  default:
+    to = -HUGE_VAL;
+    return V_NEG_OVERFLOW;
+  }
+}
+
+template <typename Policy, typename Type>
+inline Result
+set_pos_overflow_float(Type& to, Rounding_Dir dir) {
+  switch (rounding_direction(dir)) {
+  case ROUND_DOWN:
+    {
+      Float<Type> f(HUGE_VAL);
+      f.dec();
+      to = f.value();
+      return V_GT;
+    }
+  default:
+    to = HUGE_VAL;
+    return V_POS_OVERFLOW;
+  }
+}
+
+template <typename Policy, typename Type>
+inline Result
+assign_float_mpz(Type& to, const mpz_class& _from, Rounding_Dir dir)
+{
+  mpz_srcptr from = _from.get_mpz_t();
+  int sign = mpz_sgn(from);
+  if (sign == 0) {
+    to = 0;
+    return V_EQ;
+  }
+  size_t exponent = mpz_sizeinbase(from, 2) - 1;
+  if (exponent >= 1 << (Float<Type>::EXPONENT_BITS - 1)) {
+    if (sign < 0)
+      return set_neg_overflow_float<Policy>(to, dir);
+    else
+      return set_pos_overflow_float<Policy>(to, dir);
+  }
+  unsigned long int zeroes = mpn_scan1(from->_mp_d, 0);
+  size_t significative_bits = exponent - zeroes;
+  mpz_t mantissa;
+  mpz_init(mantissa);
+  if (exponent > Float<Type>::MANTISSA_BITS)
+    mpz_tdiv_q_2exp(mantissa, from, exponent - Float<Type>::MANTISSA_BITS);
+  else
+    mpz_mul_2exp(mantissa, from, Float<Type>::MANTISSA_BITS - exponent);
+  Float<Type> f(to);
+  f.build(sign < 0, mantissa, exponent);
+  to = f.value();
+  if (significative_bits > Float<Type>::MANTISSA_BITS) {
+    if (sign < 0)
+      return round_lt_float<Policy>(to, dir);
+    else
+      return round_gt_float<Policy>(to, dir);
+  }
+  return V_EQ;
+}
+
+template <typename Policy, typename Type>
 inline Result 
 add_mul_float(Type& to, const Type x, const Type y, Rounding_Dir dir) {
   prepare_inexact<Policy>();
@@ -583,6 +654,10 @@ SPECIALIZE_ADD_MUL(float, long double, long double)
 SPECIALIZE_SUB_MUL(float, long double, long double)
 SPECIALIZE_FROM_C_STRING(float, long double)
 SPECIALIZE_TO_C_STRING(float, long double)
+
+SPECIALIZE_ASSIGN(float_mpz, float, mpz_class)
+SPECIALIZE_ASSIGN(float_mpz, double, mpz_class)
+SPECIALIZE_ASSIGN(float_mpz, long double, mpz_class)
 
 } // namespace Checked
 

@@ -26,6 +26,7 @@ site: http://www.cs.unipr.it/ppl/ . */
 
 #include "compiler.hh"
 #include "float.types.hh"
+#include <gmp.h>
 #include <cassert>
 #include <cmath>
 
@@ -43,16 +44,19 @@ struct Float {
 template <>
 class Float<float32_t> {
 private:
-  union {
-    float32_t _value;
-    uint32_t word;
-  } u;
   static const uint32_t SGN_MASK = 0x80000000;
+  static const uint32_t EXP_MASK = 0x7f800000;
   static const uint32_t POS_INF = 0x7f800000;
   static const uint32_t NEG_INF = 0xff800000;
   static const uint32_t POS_ZERO = 0x00000000;
   static const uint32_t NEG_ZERO = 0x80000000;
+  union {
+    float32_t _value;
+    uint32_t word;
+  } u;
 public:
+  static const unsigned int EXPONENT_BITS = 8;
+  static const unsigned int MANTISSA_BITS = 23;
   Float(float32_t v);
   float32_t value();
   int is_inf() const;
@@ -62,6 +66,7 @@ public:
   void negate();
   void dec();
   void inc();
+  void build(bool negative, mpz_t mantissa, int exponent);
   static const bool fpu_related = true;
 };
 
@@ -89,6 +94,8 @@ private:
   static const uint32_t LSP_ZERO = 0;
   static const uint32_t LSP_MAX = 0xffffffff;
 public:
+  static const unsigned int EXPONENT_BITS = 11;
+  static const unsigned int MANTISSA_BITS = 52;
   Float(float64_t v);
   float64_t value();
   int is_inf() const;
@@ -98,6 +105,7 @@ public:
   void negate();
   void dec();
   void inc();
+  void build(bool negative, mpz_t mantissa, int exponent);
   static const bool fpu_related = true;
 };
 
@@ -128,6 +136,8 @@ private:
   static const uint64_t LSP_DMAX = 0x7fffffffffffffffULL;
   static const uint64_t LSP_NMAX = 0xffffffffffffffffULL;
 public:
+  static const unsigned int EXPONENT_BITS = 15;
+  static const unsigned int MANTISSA_BITS = 63;
   Float(float96_t v);
   float96_t value();
   int is_inf() const;
@@ -137,6 +147,7 @@ public:
   void negate();
   void dec();
   void inc();
+  void build(bool negative, mpz_t mantissa, int exponent);
   static const bool fpu_related = true;
 };
 
@@ -168,6 +179,8 @@ private:
   static const uint64_t LSP_ZERO = 0;
   static const uint64_t LSP_MAX = 0xffffffffffffffffULL;
 public:
+  static const unsigned int EXPONENT_BITS = 15;
+  static const unsigned int MANTISSA_BITS = 112;
   Float(float128_t v);
   float128_t value();
   int is_inf() const;
@@ -177,6 +190,7 @@ public:
   void negate();
   void dec();
   void inc();
+  void build(bool negative, mpz_t mantissa, int exponent);
   static const bool fpu_related = true;
 };
 
