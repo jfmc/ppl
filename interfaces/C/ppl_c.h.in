@@ -26,72 +26,76 @@ site: http://www.cs.unipr.it/ppl/ . */
 
 /*! \defgroup PPL_C_interface C Language Interface
 
-All the declarations needed to use the C interface of the Parma Polyhedra
-Library (preprocessor symbols, data types, variables and functions) are
-collected in the header file <CODE>ppl_c.h</CODE>.
+All the declarations needed to use the C interface of the Parma
+Polyhedra Library (preprocessor symbols, data types, variables and
+functions) are collected in the header file <CODE>ppl_c.h</CODE>.
 This file, that is designed to work with pre-ANSI and ANSI C compilers
 as well as C99 and C++ compilers, should be included, either directly
 or through some other header file, with the directive
 \code
 #include <ppl_c.h>
 \endcode
-If this directive does not work, it means that your compiler is not finding
-<CODE>ppl_c.h</CODE> where it expects.
-Either you forgot to install the library (in which case you may want to
-<CODE>make install</CODE>, perhaps with root privileges),
-or you installed it in the wrong place (in which case you may want to
-reconfigure the library using the appropriate pathname for the
-<CODE>--prefix</CODE> option),
-or you forgot to tell your compiler where the right place is
-(in which case you should add the path to the directory where
-<CODE>ppl_c.h</CODE> is located to the compiler's include file search path;
-this is usually done with the <CODE>-I</CODE> option).
+If this directive does not work, it means that your compiler is not
+finding <CODE>ppl_c.h</CODE> where it expects.  Either you forgot to
+install the library (in which case you may want to <CODE>make
+install</CODE>, perhaps with root privileges), or you installed it in
+the wrong place (in which case you may want to reconfigure the library
+using the appropriate pathname for the <CODE>--prefix</CODE> option),
+or you forgot to tell your compiler where the right place is (in which
+case you should add the path to the directory where
+<CODE>ppl_c.h</CODE> is located to the compiler's include file search
+path; this is usually done with the <CODE>-I</CODE> option).
 
 The name space of the PPL's C interface is <CODE>PPL_*</CODE> for
-preprocessor symbols, enumeration values and variables,
-and <CODE>ppl_*</CODE> for data types and function names,
-The interface systematically uses <EM>opaque data types</EM>
-(generic pointers that completely hide the internal representations
-from the client code) and provides required access functions.
-This way, the client code can exploit all the functionalities of
-the library yet avoiding the direct manipulation of the library's
-data structures.
-The advantages are that (1) applications do not depend on
-the internals of the library (these may change from release to release),
-and (2) the interface invariants can be thoroughly checked
-(by the access functions).
+preprocessor symbols, enumeration values and variables, and
+<CODE>ppl_*</CODE> for data types and function names, The interface
+systematically uses <EM>opaque data types</EM> (generic pointers that
+completely hide the internal representations from the client code) and
+provides required access functions.  This way, the client code can
+exploit all the functionalities of the library yet avoiding the direct
+manipulation of the library's data structures.  The advantages are
+that (1) applications do not depend on the internals of the library
+(these may change from release to release), and (2) the interface
+invariants can be thoroughly checked (by the access functions).
 
-When used through its C interface, the PPL needs to be initialized
-by means of the <CODE>ppl_initialize</CODE> function.
-This function must be called <EM>before using any other interface of the
-library</EM>.
-The application can release the resources allocated by the library
-by calling the <CODE>ppl_finalize</CODE> function.
-This function must be called <EM>after using any other interface of
-the library</EM>.
+When used through its C interface, the PPL needs to be initialized by
+means of the <CODE>ppl_initialize</CODE> function.  This function must
+be called <EM>before using any other interface of the library</EM>.
+The application can release the resources allocated by the library by
+calling the <CODE>ppl_finalize</CODE> function.  This function must be
+called <EM>after using any other interface of the library</EM>.
 
-Any application using the PPL should make sure that the version
-of the library used is (one of) the intended one(s).
-This can be checked at compile-time
-thanks to the macros PPL_VERSION_MAJOR, PPL_VERSION_MINOR,
-PPL_VERSION_REVISION and PPL_VERSION_BETA, the give, respectively
-major, minor, revision and beta numbers of the PPL version.
-This is an example of how to use them:
+Any application using the PPL should make sure that the version of the
+library used is (one of) the intended one(s).  This can be checked at
+compile-time thanks to the macros PPL_VERSION_MAJOR,
+PPL_VERSION_MINOR, PPL_VERSION_REVISION and PPL_VERSION_BETA, the
+give, respectively major, minor, revision and beta numbers of the PPL
+version.  This is an example of how to use them:
 \code
 #if PPL_VERSION_MAJOR == 0 && PPL_VERSION_MINOR < 6
 # error "PPL version 0.6 or following is required"
 #endif
 \endcode
-Compile-time checking, however, is normally not enough, especially
-in an environment where dynamic linking is used.
-Run-time checking can be performed by means of the functions
-<CODE>ppl_version_major</CODE>, <CODE>ppl_version_minor</CODE>,
-<CODE>ppl_version_revision</CODE>, and <CODE>ppl_version_beta</CODE>
-The C interface of the PPL also provides the functions
-<CODE>ppl_version</CODE>, returning character string containing
-the full version number, and <CODE>ppl_version</CODE>, returning a string
-that, in addition, provides (pointers to) other useful information
-for the library user.
+Compile-time checking, however, is normally not enough, especially in
+an environment where dynamic linking is used.  Run-time checking can
+be performed by means of the functions <CODE>ppl_version_major</CODE>,
+<CODE>ppl_version_minor</CODE>, <CODE>ppl_version_revision</CODE>, and
+<CODE>ppl_version_beta</CODE> The C interface of the PPL also provides
+the functions <CODE>ppl_version</CODE>, returning character string
+containing the full version number, and <CODE>ppl_version</CODE>,
+returning a string that, in addition, provides (pointers to) other
+useful information for the library user.
+
+All programs using the C interface of the PPL must link against the
+following libraries: <CODE>libppl_c</CODE> (PPL's C interface),
+<CODE>libppl</CODE> (PPL's core), <CODE>libgmpxx</CODE> (GMP's C++
+interface), and <CODE>libgmp</CODE> (GMP's library core).  On most
+Unix-like systems, this is done by adding <CODE>-lppl_c</CODE>,
+<CODE>-lppl</CODE>, <CODE>-lgmpxx</CODE>, and <CODE>-lgmp</CODE> to
+the compiler's or linker's command line.  For example:
+\verbatim
+gcc myprogram.c -lppl_c -lppl -lgmpxx -lgmp
+\endverbatim
 
 TO BE CONTINUED HERE.
 
