@@ -417,6 +417,15 @@ AC_CXX_SUPPORTS_ATTRIBUTE_WEAK
 # have bigger range or precision than double.
 AC_CXX_SUPPORTS_LONG_DOUBLE
 
+# Check whether C++ floats comply with IEC 559.
+AC_CXX_FLOAT_IS_IEC_559
+
+# Check whether C++ doubles comply with IEC 559.
+AC_CXX_DOUBLE_IS_IEC_559
+
+# Check whether C++ long doubles comply with IEC 559.
+AC_CXX_LONG_DOUBLE_IS_IEC_559
+
 # Check whether the C++ compiler supports long long integers.
 AC_CXX_SUPPORTS_LONG_LONG
 
