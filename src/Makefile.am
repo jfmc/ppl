@@ -76,7 +76,6 @@ Init.types.hh \
 Init.defs.hh \
 Init.inlines.hh \
 initializer.hh \
-maxmin.hh \
 SatRow.types.hh \
 SatMatrix.types.hh \
 Topology.hh \

@@ -25,7 +25,6 @@ site: http://www.cs.unipr.it/ppl/ . */
 
 #include "SatMatrix.defs.hh"
 
-#include "maxmin.hh"
 #include "globals.hh"
 #include <iostream>
 #include <algorithm>
@@ -121,7 +120,7 @@ PPL::SatMatrix::resize(size_t new_n_rows, size_t new_n_columns) {
   assert(OK());
   size_t old_num_rows = num_rows();
   if (new_n_columns < row_size) {
-    size_t num_preserved_rows = min(old_num_rows, new_n_rows);
+    size_t num_preserved_rows = std::min(old_num_rows, new_n_rows);
     SatMatrix& x = *this;
     for (size_t i = num_preserved_rows; i-- > 0; )
       x[i].clear_from(new_n_columns);

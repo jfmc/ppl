@@ -26,7 +26,7 @@ site: http://www.cs.unipr.it/ppl/ . */
 #include "Integer.defs.hh"
 #include "Row.defs.hh"
 #include "globals.hh"
-#include "maxmin.hh"
+#include <algorithm>
 #include <iostream>
 
 namespace PPL = Parma_Polyhedra_Library;
@@ -167,7 +167,7 @@ PPL::compare(const Row& x, const Row& y) {
   // Compare all the coefficients of the row starting from position 1.
   size_t xsz = x.size();
   size_t ysz = y.size();
-  size_t min_sz = min(xsz, ysz);
+  size_t min_sz = std::min(xsz, ysz);
   size_t i;
   for (i = 1; i < min_sz; ++i)
     if (int comp = cmp(x[i], y[i]))
