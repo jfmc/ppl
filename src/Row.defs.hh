@@ -206,7 +206,7 @@ namespace Parma_Polyhedra_Library {
   //! Computes the \e reduced scalar product between \p x and \p y,
   //! where the \f$\epsilon\f$ coefficient of \p x is ignored.
 #endif // PPL_DOXYGEN_INCLUDE_IMPLEMENTATION_DETAILS
-  const Integer& operator^(const Row& x, const Row& y);
+  const Integer& reduced_scalar_product(const Row& x, const Row& y);
 
 #ifdef PPL_DOXYGEN_INCLUDE_IMPLEMENTATION_DETAILS
   //! The basic comparison function.

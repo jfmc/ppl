@@ -458,7 +458,7 @@ PPL::GenSys::relation_with(const Constraint& c) const {
 	const Generator& g = gen_sys[i];
 	// Using the reduced scalar product operator to avoid
 	// both topology and num_columns mismatches.
-	int sp_sign = sgn(c ^ g);
+	int sp_sign = sgn(reduced_scalar_product(c, g));
 	// Checking whether the generator saturates the strict inequality.
 	// If that is the case, then we have to do something
 	// only if the generator is a point.

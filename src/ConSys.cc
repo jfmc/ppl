@@ -179,7 +179,7 @@ PPL::ConSys::satisfies_all_constraints(const Generator& g) const {
   if (g.is_necessarily_closed())
     sp_fp = PPL::operator*;
   else
-    sp_fp = PPL::operator^;
+    sp_fp = PPL::reduced_scalar_product;
 
   const ConSys& cs = *this;
   if (cs.is_necessarily_closed())

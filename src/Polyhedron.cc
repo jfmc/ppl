@@ -1108,18 +1108,18 @@ PPL::operator<=(const Polyhedron& x, const Polyhedron& y) {
       switch (c.type()) {
       case Constraint::NONSTRICT_INEQUALITY:
 	for (size_t j = gs.num_rows(); j-- > 0; )
-	  if ((c ^ gs[j]) < 0)
+	  if (reduced_scalar_product(c, gs[j]) < 0)
 	    return false;
 	break;
       case Constraint::EQUALITY:
 	for (size_t j = gs.num_rows(); j-- > 0; )
-	  if ((c ^ gs[j]) != 0)
+	  if (reduced_scalar_product(c, gs[j]) != 0)
 	    return false;
 	break;
       case Constraint::STRICT_INEQUALITY:
 	for (size_t j = gs.num_rows(); j-- > 0; ) {
 	  const Generator& g = gs[j];
-	  int sp_sign = sgn(c ^ g);
+	  int sp_sign = sgn(reduced_scalar_product(c, g));
 	  if (g[eps_index] > 0) {
 	    // Generator `g' is a POINT.
 	    // If a _point_ violates OR SATURATES a _strict_ inequality

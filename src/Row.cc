@@ -218,7 +218,7 @@ PPL::operator*(const Row& x, const Row& y) {
   where the \f$\epsilon\f$ coefficient of \p x is ignored.
 */
 const PPL::Integer&
-PPL::operator^(const Row& x, const Row& y) {
+PPL::reduced_scalar_product(const Row& x, const Row& y) {
   // The reduced scalar product is only defined
   // if the topology of `x' is NNC and `y' has enough coefficients.
   assert(!x.is_necessarily_closed());
