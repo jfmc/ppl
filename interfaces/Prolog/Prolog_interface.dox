@@ -9,14 +9,14 @@ manipulating the PPL polyhedra.
 
 \subsection PI_SD_Features System-Dependent Features
 
-<H4>GNU Prolog</H4>
+<H4>CIAO Prolog</H4>
 
 Support for GNU Prolog is under development and will be available in 
   a future release. 
 
-<H4>SWI Prolog</H4>
+<H4>GNU Prolog</H4>
 
-Support for SWI Prolog is under development and will be available in 
+Support for GNU Prolog is under development and will be available in 
   a future release. 
 
 <H4>SICStus Prolog</H4>
@@ -24,6 +24,10 @@ Support for SWI Prolog is under development and will be available in
 In order to use the library you should
 load <CODE>ppl_sicstus.pl</CODE>.
 
+<H4>SWI Prolog</H4>
+
+Support for SWI Prolog is under development and will be available in 
+  a future release. 
 
 \subsection PI_SI_Features System-Independent Features
 
