@@ -34,28 +34,34 @@ site: http://www.cs.unipr.it/ppl/ . */
 
 namespace Parma_Polyhedra_Library {
 
+/*! \relates PowerSet\<CS\> */
 template <typename CS>
 PowerSet<CS>
 operator+(const PowerSet<CS>&, const PowerSet<CS>&);
 
+/*! \relates PowerSet\<CS\> */
 template <typename CS>
 PowerSet<CS>
 operator*(const PowerSet<CS>&, const PowerSet<CS>&);
 
+/*! \relates PowerSet\<CS\> */
 template <typename CS>
 CS
 project(const PowerSet<CS>&);
 
+/*! \relates PowerSet\<CS\> */
 template <typename CS>
 bool
-operator==(const PowerSet<CS>&, const PowerSet<CS>&);
+operator==(const PowerSet<CS>& x, const PowerSet<CS>& y);
 
+/*! \relates PowerSet\<CS\> */
 template <typename CS>
 int
 lcompare(const PowerSet<CS>&, const PowerSet<CS>&);
 
 namespace IO_Operators {
 
+/*! \relates Parma_Polyhedra_Library::PowerSet\<CS\> */
 template <typename CS>
 std::ostream&
 operator<<(std::ostream&, const PowerSet<CS>&);
