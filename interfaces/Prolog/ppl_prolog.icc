@@ -1713,7 +1713,7 @@ public:
   dimension_type max_in_codomain() const {
     if (codomain.empty())
       throw unknown_interface_error("PIFunc::max_in_codomain()");
-    return *codomain.end();
+    return *codomain.rbegin();
   }
 
   bool maps(dimension_type i, dimension_type& j) const {
