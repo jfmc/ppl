@@ -2274,8 +2274,8 @@ PPL::Polyhedron::add_generator(const Generator& g) {
       }
     }
     else {
-      // Note: here we have a _legal_ topology mismatch, because
-      // `g' is a non-necessarily closed generator but it is a point.
+      // Note: here we have a _legal_ topology mismatch,
+      // because `g' is NOT a closure point (it is a point!)
       // However, by barely invoking `gen_sys.insert(g)' we would
       // cause a change in the topology of `gen_sys', which is wrong.
       // Thus, we insert a "topology corrected" copy of `g'.
@@ -3160,7 +3160,7 @@ PPL::Polyhedron::BBRZ02_widening_assign(const Polyhedron& y) {
   // `x.con_sys' and `x.gen_sys' should be in minimal form.
   x.minimize();
 
-  // `x.con_sys' and `y.gen_sys' should be in minimal form.
+  // `y.con_sys' and `y.gen_sys' should be in minimal form.
   if (y.is_necessarily_closed()) {
     if (!y.minimize())
       // `y' is empty: the result is `x'.
