@@ -1096,7 +1096,7 @@ Your configure command would then look like
 
 Support for CIAO Prolog is under development and will be available in
 a future release.
-
+Only Ciao Prolog 1.9 #44 or later is supported.
 
 <H2>GNU Prolog</H2>
 
@@ -1222,7 +1222,7 @@ the library with the <CODE>--enable-shared</CODE> option.
 
 The YAP Prolog interface to the PPL library is available
 as a dynamically linked module.
-Only YAP version 4.3.23 or later is supported.
+Only YAP version 4.4 or later is supported.
 
 In order to dynamically load the library from YAP you should
 simply load <CODE>prefix/lib/ppl/ppl_yap.pl</CODE>.
