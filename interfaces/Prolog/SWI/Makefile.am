@@ -86,18 +86,56 @@ pl_clpq2$(EXEEXT): ppl_swiprolog.o pl_clpq.o pl_clpq.pl ../clpq2.pl
 		-L$(top_builddir)/Watchdog/.libs -lpwl \
 		@extra_libraries@
 
-check-local: pl_clpq ../check_script ../expected pl_clpq2 ../check_script2 ../expected2 ../expected3
+if USE_INT64
+
+EXPECTED = expected_int64
+EXPECTED2 = expected2_int64
+EXPECTED3 = expected3_int64
+
+else !USE_INT64
+if USE_INT32
+
+EXPECTED = expected_int32
+EXPECTED2 = expected2_int32
+EXPECTED3 = expected3_int32
+
+else !USE_INT32
+if USE_INT16
+
+EXPECTED = expected_int16
+EXPECTED2 = expected2_int16
+EXPECTED3 = expected3_int16
+
+else !USE_INT16
+if USE_INT8
+
+EXPECTED = expected_int8
+EXPECTED2 = expected2_int8
+EXPECTED3 = expected3_int8
+
+else !USE_INT8
+
+EXPECTED = expected
+EXPECTED2 = expected2
+EXPECTED3 = expected3
+
+endif !USE_INT8
+endif !USE_INT16
+endif !USE_INT32
+endif !USE_INT64
+
+check-local: pl_clpq ../check_script ../$(EXPECTED) pl_clpq2 ../check_script2 ../$(EXPECTED2) ../$(EXPECTED3)
 	for k in $(CLPQ_TESTS); do cp -f $(srcdir)/../$$k .; done
 	$(LIBTOOL) --mode=execute \
 		-dlopen ../../../src/libppl.la \
 		-dlopen ../../../Watchdog/libpwl.la \
 		./pl_clpq <$(srcdir)/../check_script >obtained
-	diff -q --ignore-all-space $(srcdir)/../expected obtained
+	diff -q --ignore-all-space $(srcdir)/../$(EXPECTED) obtained
 	$(LIBTOOL) --mode=execute \
 		-dlopen ../../../src/libppl.la \
 		-dlopen ../../../Watchdog/libpwl.la \
 		./pl_clpq2 <$(srcdir)/../check_script2 >obtained2
-	diff -q --ignore-all-space $(srcdir)/../expected2 obtained2
+	diff -q --ignore-all-space $(srcdir)/../$(EXPECTED2) obtained2
 	if [ $(srcdir) != `pwd` ]; then \
 	  cp -f $(srcdir)/../pl_check.pl . ; \
 	fi ;\
@@ -109,7 +147,7 @@ check-local: pl_clpq ../check_script ../expected pl_clpq2 ../check_script2 ../ex
 	if [ $(srcdir) != `pwd` ]; then \
 	  rm -f pl_check.pl; \
 	fi
-	diff -q --ignore-all-space $(srcdir)/../expected3 obtained3
+	diff -q --ignore-all-space $(srcdir)/../$(EXPECTED3) obtained3
 
 MOSTLYCLEANFILES = \
 pl_clpq pl_clpq2 \

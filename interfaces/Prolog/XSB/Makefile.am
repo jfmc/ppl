@@ -91,7 +91,45 @@ CLPQ_TESTS = $(CLPQ_TESTS_NONSTRICT) $(CLPQ_TESTS_STRICT)
 #        and previous versions do not support control escape
 #        sequences.
 
-check-local: ppl_xsb.la xsb_clpq.P ../clpq.pl ../check_script expected xsb_clpq2.P ../clpq2.pl ../check_script2 expected2 xsb_pl_check.P ../pl_check.pl
+if USE_INT64
+
+EXPECTED = expected_int64
+EXPECTED2 = expected2_int64
+EXPECTED3 = expected3_int64
+
+else !USE_INT64
+if USE_INT32
+
+EXPECTED = expected_int32
+EXPECTED2 = expected2_int32
+EXPECTED3 = expected3_int32
+
+else !USE_INT32
+if USE_INT16
+
+EXPECTED = expected_int16
+EXPECTED2 = expected2_int16
+EXPECTED3 = expected3_int16
+
+else !USE_INT16
+if USE_INT8
+
+EXPECTED = expected_int8
+EXPECTED2 = expected2_int8
+EXPECTED3 = expected3_int8
+
+else !USE_INT8
+
+EXPECTED = expected
+EXPECTED2 = expected2
+EXPECTED3 = expected3
+
+endif !USE_INT8
+endif !USE_INT16
+endif !USE_INT32
+endif !USE_INT64
+
+check-local: ppl_xsb.la xsb_clpq.P ../clpq.pl ../check_script $(EXPECTED) xsb_clpq2.P ../clpq2.pl ../check_script2 $(EXPECTED2) xsb_pl_check.P ../pl_check.pl
 	for k in $(CLPQ_TESTS); do cp -f $(srcdir)/../$$k .; done
 	if [ $(abs_srcdir) != `pwd` ]; then \
 	  cp -f $(srcdir)/xsb_clpq.P . ; \
@@ -107,7 +145,7 @@ check-local: ppl_xsb.la xsb_clpq.P ../clpq.pl ../check_script expected xsb_clpq2
 	if [ $(abs_srcdir) != `pwd` ]; then \
 	  rm -f xsb_clpq.P; \
 	fi
-	diff -q --ignore-all-space $(srcdir)/expected obtained
+	diff -q --ignore-all-space $(srcdir)/$(EXPECTED) obtained
 	if [ $(abs_srcdir) != `pwd` ]; then \
 	  cp -f $(srcdir)/xsb_clpq2.P . ; \
 	fi
@@ -122,7 +160,7 @@ check-local: ppl_xsb.la xsb_clpq.P ../clpq.pl ../check_script expected xsb_clpq2
 	if [ $(abs_srcdir) != `pwd` ]; then \
 	  rm -f xsb_clpq2.P; \
 	fi
-	diff -q --ignore-all-space $(srcdir)/expected2 obtained2
+	diff -q --ignore-all-space $(srcdir)/$(EXPECTED2) obtained2
 	if [ $(abs_srcdir) != `pwd` ]; then \
 	  cp -f $(srcdir)/xsb_pl_check.P . ; \
 	fi
@@ -137,7 +175,7 @@ check-local: ppl_xsb.la xsb_clpq.P ../clpq.pl ../check_script expected xsb_clpq2
 	if [ $(abs_srcdir) != `pwd` ]; then \
 	  rm -f xsb_pl_check.P; \
 	fi
-	diff -q --ignore-all-space $(srcdir)/../expected3 obtained3
+	diff -q --ignore-all-space $(srcdir)/../$(EXPECTED3) obtained3
 
 MOSTLYCLEANFILES = \
 ppl_xsb.xwam ppl_xsb.so \
