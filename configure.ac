@@ -375,10 +375,11 @@ AC_PROG_CXXCPP
 AC_PROG_MAKE_SET
 AC_PROG_INSTALL
 
-# Checks for C typedefs, structures, and compiler characteristics.
+# Checks for C typedefs, structures, compiler and architecture characteristics.
 AC_LANG(C)
 AC_C_CONST
 AC_C_INLINE
+AC_C_BIGENDIAN
 
 # Checks for C functions.
 AC_CHECK_FUNCS(ffs)
