@@ -42,7 +42,7 @@ test1() {
   ph.add_constraint(B >= 0);
   C_Polyhedron copy_ph(ph);
 
-#if 0
+#if NOISY
   print_constraints(ph, "*** ph ***");
 #endif
 
@@ -51,7 +51,7 @@ test1() {
 
   bool ok = (ph == copy_ph);
 
-#if 0
+#if NOISY
   print_generators(ph, "*** After ph.affine_preimage(A, A + 1) ***");
   print_generators(copy_ph,
 		   "*** After copy_ph.affine_preimage(A, -A - 1, -1) ***");
@@ -72,7 +72,7 @@ test2() {
   ph.add_constraint(B >= 0);
   C_Polyhedron copy_ph(ph);
 
-#if 0
+#if NOISY
   print_constraints(ph, "*** ph ***");
 #endif
 
@@ -81,7 +81,7 @@ test2() {
 
   bool ok = (ph == copy_ph);
 
-#if 0
+#if NOISY
   print_generators(ph, "*** After ph.affine_preimage(B, A + 1) ***");
   print_generators(copy_ph,
 		   "*** After copy_ph.affine_preimage(B, -A - 1, -1) ***");
