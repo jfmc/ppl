@@ -540,9 +540,16 @@ PPL::GenSys::OK() const {
     if (!g.OK())
       return false;
 
+    // Checking for topology mismatches.
+    if (topology() != g.topology()) {
+      cerr << "Topology mismatch between "
+	   << "the generator systems and one of its elements!"
+	   << endl;
+      return false;
+    }
+
     // Looking for a point.
-    if (g.is_ray_or_point() && g[0] != 0)
-      // We found a point.
+    if (g.is_point())
       no_point = false;
   }
 
