@@ -31,7 +31,8 @@ site: http://www.cs.unipr.it/ppl/ . */
 namespace Parma_Polyhedra_Library {
 
 inline void*
-Row::Impl::operator new(size_t fixed_size, dimension_type capacity) {
+Row::Impl::operator new(const size_t fixed_size,
+			const dimension_type capacity) {
 #if CXX_SUPPORTS_FLEXIBLE_ARRAYS
   return ::operator new(fixed_size + capacity*sizeof(Integer));
 #else
@@ -56,7 +57,7 @@ Row::Impl::size() const {
 }
 
 inline void
-Row::Impl::set_size(dimension_type new_sz) {
+Row::Impl::set_size(const dimension_type new_sz) {
   size_ = new_sz;
 }
 
@@ -66,7 +67,7 @@ Row::Impl::bump_size() {
 }
 
 inline void
-Row::Impl::resize_no_copy(dimension_type new_sz) {
+Row::Impl::resize_no_copy(const dimension_type new_sz) {
   if (new_sz < size())
     shrink(new_sz);
   else
@@ -74,7 +75,7 @@ Row::Impl::resize_no_copy(dimension_type new_sz) {
 }
 
 inline
-Row::Impl::Impl(Type t, dimension_type sz)
+Row::Impl::Impl(const Type t, const dimension_type sz)
   : size_(0), type(t) {
   grow_no_copy(sz);
 }
@@ -86,7 +87,7 @@ Row::Impl::Impl(const Impl& y)
 }
 
 inline
-Row::Impl::Impl(const Impl& y, dimension_type sz)
+Row::Impl::Impl(const Impl& y, const dimension_type sz)
   : size_(0), type(y.type) {
   copy_construct(y);
   grow_no_copy(sz);
@@ -102,13 +103,13 @@ Row::Impl::~Impl() {
 }
 
 inline Integer&
-Row::Impl::operator[](dimension_type k) {
+Row::Impl::operator[](const dimension_type k) {
   assert(k < size());
   return vec_[k];
 }
 
 inline const Integer&
-Row::Impl::operator[](dimension_type k) const {
+Row::Impl::operator[](const dimension_type k) const {
   assert(k < size());
   return vec_[k];
 }
@@ -119,27 +120,27 @@ Row::Type::Type()
 }
 
 inline
-Row::Type::Type(Topology topol, Kind kind)
+Row::Type::Type(const Topology topol, const Kind kind)
   : flags(static_cast<flags_t>(topol | (kind << 1))) {
 }
 
 inline
-Row::Type::Type(flags_t mask)
+Row::Type::Type(const flags_t mask)
   : flags(mask) {
 }
 
 inline bool
-Row::Type::test_all(flags_t mask) const {
+Row::Type::test_all(const flags_t mask) const {
   return (flags & mask) == mask;
 }
 
 inline void
-Row::Type::set(flags_t mask) {
+Row::Type::set(const flags_t mask) {
   flags |= mask;
 }
 
 inline void
-Row::Type::reset(flags_t mask) {
+Row::Type::reset(const flags_t mask) {
   flags &= ~mask;
 }
 
@@ -200,7 +201,7 @@ Row::is_necessarily_closed() const {
 
 inline dimension_type
 Row::space_dimension() const {
-  dimension_type sz = size();
+  const dimension_type sz = size();
   return (sz == 0)
     ? 0
     : sz - (is_necessarily_closed() ? 1 : 2);
@@ -219,7 +220,12 @@ Row::Row()
 }
 
 inline void
-Row::construct(Type t, dimension_type sz, dimension_type capacity) {
+Row::construct(const Type t,
+	       const dimension_type sz,
+#if CXX_SUPPORTS_FLEXIBLE_ARRAYS
+	       const
+#endif
+	       dimension_type capacity) {
   assert(capacity >= sz);
 #if !CXX_SUPPORTS_FLEXIBLE_ARRAYS
   if (capacity == 0)
@@ -232,17 +238,18 @@ Row::construct(Type t, dimension_type sz, dimension_type capacity) {
 }
 
 inline void
-Row::construct(Type t, dimension_type sz) {
+Row::construct(const Type t, const dimension_type sz) {
   construct(t, sz, sz);
 }
 
 inline
-Row::Row(Type t, dimension_type sz, dimension_type capacity) {
+Row::Row(const Type t,
+	 const dimension_type sz, const dimension_type capacity) {
   construct(t, sz, capacity);
 }
 
 inline
-Row::Row(Type t, dimension_type sz) {
+Row::Row(const Type t, const dimension_type sz) {
   construct(t, sz);
 }
 
@@ -261,7 +268,11 @@ Row::Row(const Row& y)
 }
 
 inline
-Row::Row(const Row& y, dimension_type capacity) {
+Row::Row(const Row& y,
+#if CXX_SUPPORTS_FLEXIBLE_ARRAYS
+	 const
+#endif
+	 dimension_type capacity) {
   assert(capacity >= y.size());
 #if !CXX_SUPPORTS_FLEXIBLE_ARRAYS
   if (capacity == 0)
@@ -274,7 +285,12 @@ Row::Row(const Row& y, dimension_type capacity) {
 }
 
 inline
-Row::Row(const Row& y, dimension_type sz, dimension_type capacity) {
+Row::Row(const Row& y,
+	 const dimension_type sz,
+#if CXX_SUPPORTS_FLEXIBLE_ARRAYS
+	 const
+#endif
+	 dimension_type capacity) {
   assert(capacity >= sz);
   assert(sz >= y.size());
 #if !CXX_SUPPORTS_FLEXIBLE_ARRAYS
@@ -293,7 +309,7 @@ Row::~Row() {
 }
 
 inline void
-Row::resize_no_copy(dimension_type new_sz) {
+Row::resize_no_copy(const dimension_type new_sz) {
   assert(impl);
 #if EXTRA_ROW_DEBUG
   assert(new_sz <= capacity_);
@@ -302,7 +318,7 @@ Row::resize_no_copy(dimension_type new_sz) {
 }
 
 inline void
-Row::grow_no_copy(dimension_type new_sz) {
+Row::grow_no_copy(const dimension_type new_sz) {
   assert(impl);
 #if EXTRA_ROW_DEBUG
   assert(new_sz <= capacity_);
@@ -311,7 +327,7 @@ Row::grow_no_copy(dimension_type new_sz) {
 }
 
 inline void
-Row::shrink(dimension_type new_sz) {
+Row::shrink(const dimension_type new_sz) {
   assert(impl);
   impl->shrink(new_sz);
 }
@@ -378,12 +394,12 @@ Row::set_not_necessarily_closed() {
 }
 
 inline Integer&
-Row::operator[](dimension_type k) {
+Row::operator[](const dimension_type k) {
   return (*impl)[k];
 }
 
 inline const Integer&
-Row::operator[](dimension_type k) const {
+Row::operator[](const dimension_type k) const {
   return (*impl)[k];
 }
 
@@ -393,7 +409,7 @@ Row::inhomogeneous_term() const {
 }
 
 inline const Integer&
-Row::coefficient(dimension_type k) const {
+Row::coefficient(const dimension_type k) const {
   return (*this)[k+1];
 }
 

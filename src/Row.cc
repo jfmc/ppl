@@ -32,23 +32,21 @@ site: http://www.cs.unipr.it/ppl/ . */
 namespace PPL = Parma_Polyhedra_Library;
 
 void
-PPL::Row::Impl::grow_no_copy(dimension_type new_sz) {
-  dimension_type old_size = size();
-  assert(old_size <= new_sz);
+PPL::Row::Impl::grow_no_copy(const dimension_type new_sz) {
+  assert(new_sz >= size());
 #if !CXX_SUPPORTS_FLEXIBLE_ARRAYS
-  if (old_size == 0 && new_sz > 0) {
-    ++old_size;
+  // vec[0] is already constructed.
+  if (size() == 0 && new_sz > 0)
     bump_size();
-  }
 #endif
-  for (dimension_type i = old_size; i < new_sz; ++i) {
+  for (dimension_type i = size(); i < new_sz; ++i) {
     new (&vec_[i]) Integer();
     bump_size();
   }
 }
 
 void
-PPL::Row::Impl::shrink(dimension_type new_sz) {
+PPL::Row::Impl::shrink(const dimension_type new_sz) {
 #if !CXX_SUPPORTS_FLEXIBLE_ARRAYS
   assert(new_sz > 0);
 #endif
@@ -63,7 +61,7 @@ PPL::Row::Impl::shrink(dimension_type new_sz) {
 
 void
 PPL::Row::Impl::copy_construct(const Impl& y) {
-  dimension_type y_size = y.size();
+  const dimension_type y_size = y.size();
 #if CXX_SUPPORTS_FLEXIBLE_ARRAYS
   for (dimension_type i = 0; i < y_size; ++i) {
     new (&vec_[i]) Integer(y.vec_[i]);
@@ -88,7 +86,7 @@ PPL::Row::normalize() {
   // Compute the GCD of all the coefficients.
   // The GCD goes into tmp_Integer(1).
   tmp_Integer[1] = 0;
-  dimension_type sz = size();
+  const dimension_type sz = size();
   for (dimension_type i = sz; i-- > 0; ) {
     const Integer& x_i = x[i];
     if (x_i != 0)
@@ -104,7 +102,7 @@ void
 PPL::Row::sign_normalize() {
   if (is_line_or_equality()) {
     Row& x = *this;
-    dimension_type sz = x.size();
+    const dimension_type sz = x.size();
     // `first_non_zero' indicates the index of the first
     // coefficient of the row different from zero, disregarding
     // the very first coefficient (inhomogeneous term / divisor).
@@ -134,36 +132,36 @@ PPL::Row::check_strong_normalized() const {
 /*! \relates Parma_Polyhedra_Library::Row */
 int
 PPL::compare(const Row& x, const Row& y) {
-  bool x_is_line_or_equality = x.is_line_or_equality();
-  bool y_is_line_or_equality = y.is_line_or_equality();
+  const bool x_is_line_or_equality = x.is_line_or_equality();
+  const bool y_is_line_or_equality = y.is_line_or_equality();
   if (x_is_line_or_equality != y_is_line_or_equality)
     // Equalities (lines) precede inequalities (ray/point).
     return y_is_line_or_equality ? 2 : -2;
 
   // Compare all the coefficients of the row starting from position 1.
-  dimension_type xsz = x.size();
-  dimension_type ysz = y.size();
-  dimension_type min_sz = std::min(xsz, ysz);
+  const dimension_type xsz = x.size();
+  const dimension_type ysz = y.size();
+  const dimension_type min_sz = std::min(xsz, ysz);
   dimension_type i;
   for (i = 1; i < min_sz; ++i)
-    if (int comp = cmp(x[i], y[i]))
+    if (const int comp = cmp(x[i], y[i]))
       // There is at least a different coefficient.
       return (comp > 0) ? 2 : -2;
 
   // Handle the case where `x' and `y' are of different size.
   if (xsz != ysz) {
     for( ; i < xsz; ++i)
-      if (int sign = sgn(x[i]))
+      if (const int sign = sgn(x[i]))
 	return (sign > 0) ? 2 : -2;
     for( ; i < ysz; ++i)
-      if (int sign = sgn(y[i]))
+      if (const int sign = sgn(y[i]))
 	return (sign < 0) ? 2 : -2;
   }
 
   // If all the coefficients in `x' equal all the coefficients in `y'
   // (starting from position 1) we compare coefficients in position 0,
   // i.e., inhomogeneous terms.
-  if (int comp = cmp(x[0], y[0]))
+  if (const int comp = cmp(x[0], y[0]))
     return (comp > 0) ? 1 : -1;
 
   // `x' and `y' are equal.
@@ -204,7 +202,7 @@ PPL::reduced_scalar_product(const Row& x, const Row& y) {
 }
 
 void
-PPL::Row::linear_combine(const Row& y, dimension_type k) {
+PPL::Row::linear_combine(const Row& y, const dimension_type k) {
   Row& x = *this;
   // We can combine only vector of the same dimension.
   assert(x.size() == y.size());
@@ -237,8 +235,8 @@ PPL::Row::all_homogeneous_terms_are_zero() const {
 }
 
 bool
-PPL::Row::OK(dimension_type row_size,
-	     dimension_type
+PPL::Row::OK(const dimension_type row_size,
+	     const dimension_type
 #if EXTRA_ROW_DEBUG
 	     row_capacity
 #endif
@@ -287,7 +285,7 @@ PPL::Row::OK(dimension_type row_size,
   }
 #endif
   // Topology consistency check.
-  dimension_type min_cols = is_necessarily_closed() ? 1 : 2;
+  const dimension_type min_cols = is_necessarily_closed() ? 1 : 2;
   if (size() < min_cols) {
 #ifndef NDEBUG
     cerr << "Row has fewer coefficeints than the minumum "

@@ -40,7 +40,7 @@ Matrix::swap(Matrix& y) {
 }
 
 inline
-Matrix::Matrix(Topology topol)
+Matrix::Matrix(const Topology topol)
   : rows(),
     row_topology(topol),
     row_size(0),
@@ -54,13 +54,13 @@ Matrix::~Matrix() {
 }
 
 inline Row&
-Matrix::operator[](dimension_type k) {
+Matrix::operator[](const dimension_type k) {
   assert(k < rows.size());
   return rows[k];
 }
 
 inline const Row&
-Matrix::operator[](dimension_type k) const {
+Matrix::operator[](const dimension_type k) const {
   assert(k < rows.size());
   return rows[k];
 }
@@ -87,7 +87,7 @@ Matrix::unset_pending_rows() {
 }
 
 inline void
-Matrix::set_index_first_pending_row(dimension_type first_pending) {
+Matrix::set_index_first_pending_row(const dimension_type first_pending) {
   index_first_pending = first_pending;
 }
 
@@ -116,7 +116,7 @@ Matrix::topology() const {
 }
 
 inline void
-Matrix::set_sorted(bool value) {
+Matrix::set_sorted(const bool value) {
   sorted = value;
 }
 
@@ -137,7 +137,7 @@ Matrix::num_columns() const {
 
 inline dimension_type
 Matrix::space_dimension() const {
-  dimension_type n_columns = num_columns();
+  const dimension_type n_columns = num_columns();
   return (n_columns == 0)
     ? 0
     : n_columns - (is_necessarily_closed() ? 1 : 2);
@@ -150,13 +150,13 @@ operator!=(const Matrix& x, const Matrix& y) {
 }
 
 inline void
-Matrix::add_zero_columns(dimension_type n) {
+Matrix::add_zero_columns(const dimension_type n) {
   assert(n > 0);
   grow(num_rows(), num_columns() + n);
 }
 
 inline void
-Matrix::erase_to_end(dimension_type first_to_erase) {
+Matrix::erase_to_end(const dimension_type first_to_erase) {
   assert(first_to_erase <= rows.size());
   if (first_to_erase < rows.size())
     rows.erase(rows.begin() + first_to_erase, rows.end());
@@ -174,7 +174,7 @@ Matrix::clear() {
 }
 
 inline void
-Matrix::remove_columns(dimension_type new_n_columns) {
+Matrix::remove_columns(const dimension_type new_n_columns) {
   assert(new_n_columns < num_columns());
   // Since we are removing columns, reallocation will
   // not take place and the old contents of the first
