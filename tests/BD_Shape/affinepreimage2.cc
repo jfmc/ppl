@@ -1,5 +1,6 @@
-/* Header file for test programs.
-   Copyright (C) 2001-2004 Roberto Bagnara <bagnara@cs.unipr.it>
+/* Test BDiffs::affine_preimage(): the transformation is not
+   invertible.
+   Copyright (C) 2001-2003 Roberto Bagnara <bagnara@cs.unipr.it>
 
 This file is part of the Parma Polyhedra Library (PPL).
 
@@ -21,13 +22,41 @@ USA.
 For the most up-to-date information see the Parma Polyhedra Library
 site: http://www.cs.unipr.it/ppl/ . */
 
-#include "ppl_install.hh"
-#include "print.hh"
-#include "ehandlers.hh"
-#include <stdexcept>
+#include "ppl_test.hh"
 
-#ifdef DERIVED_TEST
-#define C_Polyhedron NNC_Polyhedron
+using namespace std;
+using namespace Parma_Polyhedra_Library;
+
+#ifndef NOISY
+#define NOISY 0
 #endif
 
-typedef Parma_Polyhedra_Library::BD_Shape<Parma_Polyhedra_Library::E_Rational> TBD_Shape;
+int
+main() TRY {
+  Variable A(0);
+  Variable B(1);
+
+  TBD_Shape bd(2);
+  bd.add_constraint(A >= 0);
+  bd.add_constraint(B >= 0);
+  bd.add_constraint(A - B - 3 >= 0);
+
+#if NOISY
+  print_constraints(bd, "*** bd ***");
+#endif
+
+  Linear_Expression expr(B-1);
+  bd.affine_preimage(A, expr);
+
+  TBD_Shape known_result(2);
+  known_result.add_constraint(B >= 0);
+
+  int retval = (bd == known_result) ? 0 : 1;
+
+#if NOISY
+    print_constraints(bd, "*** bd.affine_preimage(A, B-1) ***");
+#endif
+
+  return retval;
+}
+CATCH

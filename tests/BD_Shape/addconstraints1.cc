@@ -1,5 +1,5 @@
-/* Header file for test programs.
-   Copyright (C) 2001-2004 Roberto Bagnara <bagnara@cs.unipr.it>
+/* Test BDiffs::add_constraints_and_minimize().
+   Copyright (C) 2001-2003 Roberto Bagnara <bagnara@cs.unipr.it>
 
 This file is part of the Parma Polyhedra Library (PPL).
 
@@ -21,13 +21,41 @@ USA.
 For the most up-to-date information see the Parma Polyhedra Library
 site: http://www.cs.unipr.it/ppl/ . */
 
-#include "ppl_install.hh"
-#include "print.hh"
-#include "ehandlers.hh"
-#include <stdexcept>
+#include "ppl_test.hh"
 
-#ifdef DERIVED_TEST
-#define C_Polyhedron NNC_Polyhedron
+using namespace std;
+using namespace Parma_Polyhedra_Library;
+
+#ifndef NOISY
+#define NOISY 0
 #endif
 
-typedef Parma_Polyhedra_Library::BD_Shape<Parma_Polyhedra_Library::E_Rational> TBD_Shape;
+int
+main() TRY {
+  Variable A(0);
+  Variable B(1);
+
+  TBD_Shape bd1(2);
+  Constraint_System cs;
+  cs.insert(A >= 0);
+  cs.insert(B == 5);
+  bd1.add_constraints_and_minimize(cs);
+
+#if NOISY
+  print_constraints(bd1, "*** bd1.add_constraints_and_minimize(cs) ***");
+#endif
+
+  TBD_Shape known_result(2);
+  known_result.add_constraint(A >= 0);
+  known_result.add_constraint(B == 5);
+  known_result.add_constraint(B - A <= 5);
+
+  int retval = (bd1 == known_result) ? 0 : 1;
+
+#if NOISY
+  print_constraints(known_result, "*** known_result ***");
+#endif
+
+  return retval;
+}
+CATCH

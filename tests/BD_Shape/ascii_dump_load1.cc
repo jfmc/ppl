@@ -1,5 +1,5 @@
-/* Header file for test programs.
-   Copyright (C) 2001-2004 Roberto Bagnara <bagnara@cs.unipr.it>
+/* Test BDiffs::ascii_dump() and BDiffs::ascii_load().
+   Copyright (C) 2001-2003 Roberto Bagnara <bagnara@cs.unipr.it>
 
 This file is part of the Parma Polyhedra Library (PPL).
 
@@ -21,13 +21,41 @@ USA.
 For the most up-to-date information see the Parma Polyhedra Library
 site: http://www.cs.unipr.it/ppl/ . */
 
-#include "ppl_install.hh"
-#include "print.hh"
-#include "ehandlers.hh"
-#include <stdexcept>
+#include "ppl_test.hh"
 
-#ifdef DERIVED_TEST
-#define C_Polyhedron NNC_Polyhedron
+using namespace std;
+using namespace Parma_Polyhedra_Library;
+
+#ifndef NOISY
+#define NOISY 0
 #endif
+#include "files.hh"
+#include <fstream>
 
-typedef Parma_Polyhedra_Library::BD_Shape<Parma_Polyhedra_Library::E_Rational> TBD_Shape;
+static const char* my_file = "ascii_dump_load1.dat";
+
+int
+main() TRY {
+  Variable A(0);
+  Variable B(1);
+
+  TBD_Shape bd1(3);
+  bd1.add_constraint(A - B >= 2);
+  bd1.add_constraint(B >= 0);
+
+
+  fstream f;
+  open(f, my_file, ios_base::out);
+  bd1.ascii_dump(f);
+  close(f);
+
+  open(f, my_file, ios_base::in);
+  TBD_Shape bd2;
+  bd2.ascii_load(f);
+  close(f);
+
+  int retval = (bd1 == bd2) ? 0 : 1;
+
+  return retval;
+}
+CATCH

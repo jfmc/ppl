@@ -1,5 +1,5 @@
-/* Header file for test programs.
-   Copyright (C) 2001-2004 Roberto Bagnara <bagnara@cs.unipr.it>
+/* Test BDiffs::CH78_widening_assign().
+   Copyright (C) 2001-2003 Roberto Bagnara <bagnara@cs.unipr.it>
 
 This file is part of the Parma Polyhedra Library (PPL).
 
@@ -21,13 +21,48 @@ USA.
 For the most up-to-date information see the Parma Polyhedra Library
 site: http://www.cs.unipr.it/ppl/ . */
 
-#include "ppl_install.hh"
-#include "print.hh"
-#include "ehandlers.hh"
-#include <stdexcept>
+#include "ppl_test.hh"
 
-#ifdef DERIVED_TEST
-#define C_Polyhedron NNC_Polyhedron
+using namespace std;
+using namespace Parma_Polyhedra_Library;
+
+#ifndef NOISY
+#define NOISY 0
 #endif
 
-typedef Parma_Polyhedra_Library::BD_Shape<Parma_Polyhedra_Library::E_Rational> TBD_Shape;
+int
+main() TRY {
+  Variable A(0);
+  Variable B(1);
+  Variable C(2);
+
+  TBD_Shape bd1(3);
+  TBD_Shape bd2(3);
+
+  bd1.add_constraint(A - B <= 1);
+
+  TBD_Shape known_result(bd1);
+
+  bd2.add_constraint(A - B <= 1);
+  bd2.add_constraint(A - B >= 2);
+  bd2.add_constraint(A - C <= 1);
+  bd2.add_constraint(C - B <= 0);
+
+
+
+#if NOISY
+  print_constraints(bd1, "*** bd1 ***");
+  print_constraints(bd2, "*** bd2 ***");
+#endif
+
+  bd1.CH78_widening_assign(bd2);
+
+#if NOISY
+  print_constraints(bd1, "*** bd1.CH78_widening_assign(bd2) ***");
+#endif
+
+  int retval = (bd1 == known_result) ? 0 : 1;
+
+  return retval;
+}
+CATCH

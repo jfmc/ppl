@@ -1,5 +1,5 @@
-/* Header file for test programs.
-   Copyright (C) 2001-2004 Roberto Bagnara <bagnara@cs.unipr.it>
+/* Test BDiffs::is_empty().
+   Copyright (C) 2001-2003 Roberto Bagnara <bagnara@cs.unipr.it>
 
 This file is part of the Parma Polyhedra Library (PPL).
 
@@ -21,13 +21,36 @@ USA.
 For the most up-to-date information see the Parma Polyhedra Library
 site: http://www.cs.unipr.it/ppl/ . */
 
-#include "ppl_install.hh"
-#include "print.hh"
-#include "ehandlers.hh"
-#include <stdexcept>
+#include "ppl_test.hh"
 
-#ifdef DERIVED_TEST
-#define C_Polyhedron NNC_Polyhedron
+using namespace std;
+using namespace Parma_Polyhedra_Library;
+
+#ifndef NOISY
+#define NOISY 0
 #endif
 
-typedef Parma_Polyhedra_Library::BD_Shape<Parma_Polyhedra_Library::E_Rational> TBD_Shape;
+int
+main() TRY {
+  Variable A(0);
+  Variable B(1);
+  Variable C(2);
+
+  TBD_Shape bd(3);
+
+  bd.add_constraint(A == 0);
+  bd.add_constraint(C >= 0);
+  bd.add_constraint(B - C >= 1);
+
+  bool empty = bd.is_empty();
+
+#if NOISY
+  print_constraints(bd, "*** bd ***");
+  cout << "*** bd.is_empty() ***"
+       << endl
+       << (empty ? "true" : "false") << endl;
+#endif
+
+  return !empty ? 0 : 1;
+}
+CATCH

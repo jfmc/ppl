@@ -1,5 +1,5 @@
-/* Header file for test programs.
-   Copyright (C) 2001-2004 Roberto Bagnara <bagnara@cs.unipr.it>
+/* Test BDiffs::generalized_affine_image().
+   Copyright (C) 2001-2003 Roberto Bagnara <bagnara@cs.unipr.it>
 
 This file is part of the Parma Polyhedra Library (PPL).
 
@@ -21,13 +21,43 @@ USA.
 For the most up-to-date information see the Parma Polyhedra Library
 site: http://www.cs.unipr.it/ppl/ . */
 
-#include "ppl_install.hh"
-#include "print.hh"
-#include "ehandlers.hh"
-#include <stdexcept>
+#include "ppl_test.hh"
 
-#ifdef DERIVED_TEST
-#define C_Polyhedron NNC_Polyhedron
+using namespace std;
+using namespace Parma_Polyhedra_Library;
+
+#ifndef NOISY
+#define NOISY 0
 #endif
 
-typedef Parma_Polyhedra_Library::BD_Shape<Parma_Polyhedra_Library::E_Rational> TBD_Shape;
+int
+main() TRY {
+  Variable A(0);
+  Variable B(1);
+  Linear_Expression e1(A);
+  Linear_Expression e2(1);
+
+  TBD_Shape bd(2);
+  bd.add_constraint(A >= 0);
+  bd.add_constraint(A <= 4);
+  bd.add_constraint(B <= 5);
+  
+#if NOISY
+  print_constraints(bd, "*** bd ***");
+#endif
+
+  TBD_Shape known_result(2);
+  known_result.add_constraint(A == 1);
+  known_result.add_constraint(B <= 5);
+  
+  bd.generalized_affine_image(e1, EQUAL, e2);
+
+#if NOISY
+  print_constraints(bd, "*** bd.generalized_affine_image(A, EQUAL, 1) ***");
+#endif
+
+  int retval = (bd == known_result) ? 0 : 1;
+
+  return retval;
+}
+CATCH

@@ -1,5 +1,5 @@
-/* Header file for test programs.
-   Copyright (C) 2001-2004 Roberto Bagnara <bagnara@cs.unipr.it>
+/* Test BDiffs::add_space_dimensions_and_project().
+   Copyright (C) 2001-2003 Roberto Bagnara <bagnara@cs.unipr.it>
 
 This file is part of the Parma Polyhedra Library (PPL).
 
@@ -21,13 +21,38 @@ USA.
 For the most up-to-date information see the Parma Polyhedra Library
 site: http://www.cs.unipr.it/ppl/ . */
 
-#include "ppl_install.hh"
-#include "print.hh"
-#include "ehandlers.hh"
-#include <stdexcept>
+#include "ppl_test.hh"
 
-#ifdef DERIVED_TEST
-#define C_Polyhedron NNC_Polyhedron
+using namespace std;
+using namespace Parma_Polyhedra_Library;
+
+#ifndef NOISY
+#define NOISY 0
 #endif
 
-typedef Parma_Polyhedra_Library::BD_Shape<Parma_Polyhedra_Library::E_Rational> TBD_Shape;
+int
+main() TRY {
+  Variable A(0);
+
+  TBD_Shape bd1(0, Polyhedron::EMPTY);
+
+  TBD_Shape bd2(1, Polyhedron::EMPTY);
+
+#if NOISY
+  print_constraints(bd1, "*** bd1 ***");
+  print_constraints(bd2, "*** bd2 ***");
+#endif
+
+  bd1.add_space_dimensions_and_project(2);
+  bd2.add_space_dimensions_and_project(1);
+
+  int retval = (bd1 == bd2) ? 0 : 1;
+
+#if NOISY
+  print_constraints(bd1, "*** bd1.add_space_dimensions_and_project(2) ***");
+  print_constraints(bd2, "*** bd2.add_space_dimensions_and_project(1) ***");
+#endif
+
+  return retval;
+}
+CATCH

@@ -1,5 +1,5 @@
-/* Header file for test programs.
-   Copyright (C) 2001-2004 Roberto Bagnara <bagnara@cs.unipr.it>
+/* Test BDiffs::limited_CH78_extrapolation_assign().
+   Copyright (C) 2001-2003 Roberto Bagnara <bagnara@cs.unipr.it>
 
 This file is part of the Parma Polyhedra Library (PPL).
 
@@ -21,13 +21,43 @@ USA.
 For the most up-to-date information see the Parma Polyhedra Library
 site: http://www.cs.unipr.it/ppl/ . */
 
-#include "ppl_install.hh"
-#include "print.hh"
-#include "ehandlers.hh"
-#include <stdexcept>
+#include "ppl_test.hh"
 
-#ifdef DERIVED_TEST
-#define C_Polyhedron NNC_Polyhedron
+using namespace std;
+using namespace Parma_Polyhedra_Library;
+
+#ifndef NOISY
+#define NOISY 0
 #endif
 
-typedef Parma_Polyhedra_Library::BD_Shape<Parma_Polyhedra_Library::E_Rational> TBD_Shape;
+int
+main() TRY {
+  TBD_Shape bd1;
+  TBD_Shape known_result;
+
+#if NOISY
+    print_constraints(bd1, "*** bd1 ****");
+#endif
+
+  TBD_Shape bd2;
+
+#if NOISY
+  print_constraints(bd2, "*** bd2 ****");
+#endif
+
+  Constraint_System cs;
+
+#if NOISY
+  print_constraints(cs, "*** cs ****");
+#endif
+
+  bd1.limited_CH78_extrapolation_assign(bd2, cs);
+
+#if NOISY
+  print_constraints(bd1,
+		    "*** bd1.limited_CH78_extrapolation_assign(bd2) ***");
+#endif
+
+  return (bd1 == known_result) ? 0 : 1;
+}
+CATCH
