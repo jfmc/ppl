@@ -1,3 +1,164 @@
+2004-08-13 Friday 18:02  Roberto Bagnara <bagnara@cs.unipr.it>
+
+	* Makefile.am (1.10): Version info updated for the libtool
+	  libraries.
+
+2004-08-08 Sunday 19:36  Roberto Bagnara <bagnara@cs.unipr.it>
+
+	* Makefile.am (1.9), Watchdog.cc (1.17), Watchdog.defs.hh (1.13),
+	  Watchdog.inlines.hh (1.11): Watchdog library completely
+	  reorganized.	Deadlock bug fixed in the process.
+
+2004-08-08 Sunday 19:30  Roberto Bagnara <bagnara@cs.unipr.it>
+
+	* Handler.defs.hh (1.1), Handler.inlines.hh (1.1), Handler.types.hh
+	  (1.1): Classes for handlers of the watchdog events.
+
+2004-08-07 Saturday 19:16  Roberto Bagnara <bagnara@cs.unipr.it>
+
+	* ltmain.sh (1.8): Updated from Libtool 1.5.8.
+
+2004-08-07 Saturday 08:48  Roberto Bagnara <bagnara@cs.unipr.it>
+
+	* Pending_List.cc (1.1), Pending_List.defs.hh (1.1),
+	  Pending_List.inlines.hh (1.1), Pending_List.types.hh (1.1): An
+	  ordered list for recording pending watchdog events.
+
+2004-08-07 Saturday 08:41  Roberto Bagnara <bagnara@cs.unipr.it>
+
+	* EList.defs.hh (1.3), EList.inlines.hh (1.2): The clear() method
+	  has been removed.  The destructor now destructs also the elements
+	  in the list.
+
+2004-08-06 Friday 19:37  Roberto Bagnara <bagnara@cs.unipr.it>
+
+	* Pending_Element.cc (1.1), Pending_Element.defs.hh (1.1),
+	  Pending_Element.inlines.hh (1.1), Pending_Element.types.hh (1.1):
+	  A class for pending watchdog events with embedded links.
+
+2004-08-06 Friday 18:53  Roberto Bagnara <bagnara@cs.unipr.it>
+
+	* Doubly_Linked_Object.defs.hh (1.1),
+	  Doubly_Linked_Object.inlines.hh (1.1),
+	  Doubly_Linked_Object.types.hh (1.1): A (base) class for doubly
+	  linked objects.
+
+2004-08-06 Friday 18:35  Roberto Bagnara <bagnara@cs.unipr.it>
+
+	* EList_Iterator.defs.hh (1.1), EList_Iterator.inlines.hh (1.1),
+	  EList_Iterator.types.hh (1.1): A class providing iterators for
+	  embedded lists.
+
+2004-08-06 Friday 18:35  Roberto Bagnara <bagnara@cs.unipr.it>
+
+	* EList.defs.hh (1.2): Class comment revised.
+
+2004-08-06 Friday 18:21  Roberto Bagnara <bagnara@cs.unipr.it>
+
+	* EList.defs.hh (1.1), EList.inlines.hh (1.1), EList.types.hh
+	  (1.1): A list of doubly linked objects (where the links are
+	  embedded in the objects themselves).
+
+2004-08-06 Friday 18:04  Roberto Bagnara <bagnara@cs.unipr.it>
+
+	* Time.cc (1.1), Time.defs.hh (1.1), Time.inlines.hh (1.1),
+	  Time.types.hh (1.1): A class for representing and manipulating
+	  positive time intervals.
+
+2004-08-04 Wednesday 22:28  Roberto Bagnara <bagnara@cs.unipr.it>
+
+	* depcomp (1.6), install-sh (1.6): Updated from Automake 1.9.
+
+2004-08-04 Wednesday 20:14  Roberto Bagnara <bagnara@cs.unipr.it>
+
+	* config.guess (1.7), config.sub (1.7): Updated.
+
+2004-07-08 Thursday 16:50  Roberto Bagnara <bagnara@cs.unipr.it>
+
+	* Watchdog.cc (1.16): Spacing fixed.
+
+2004-05-09 Sunday 17:15  Roberto Bagnara <bagnara@cs.unipr.it>
+
+	* Watchdog.cc (1.15): Anachronisms removed.
+
+2004-04-25 Sunday 22:13  Roberto Bagnara <bagnara@cs.unipr.it>
+
+	* depcomp (1.5), install-sh (1.5), mkinstalldirs (1.3): Updated
+	  from Automake 1.8.4.
+
+2004-04-06 Tuesday 21:38  Roberto Bagnara <bagnara@cs.unipr.it>
+
+	* config.guess (1.6), config.sub (1.6), ltmain.sh (1.7): Updated
+	  from libtool-1.5.4.
+
+2004-01-28 Wednesday 09:08  Roberto Bagnara <bagnara@cs.unipr.it>
+
+	* Makefile.am (1.8), README (1.6), Watchdog.cc (1.14),
+	  Watchdog.defs.hh (1.12), Watchdog.inlines.hh (1.10),
+	  Watchdog.types.hh (1.5), configure.ac (1.19), pwl_header.top
+	  (1.4): Update copyright years.
+
+2004-01-27 Tuesday 17:39  Roberto Bagnara <bagnara@cs.unipr.it>
+
+	* compile (1.1): Added from Automake 1.8.2.
+
+2004-01-25 Sunday 22:56  Roberto Bagnara <bagnara@cs.unipr.it>
+
+	* depcomp (1.4), install-sh (1.4), missing (1.3), mkinstalldirs
+	  (1.2): Update from Automake.
+
+2004-01-25 Sunday 22:47  Roberto Bagnara <bagnara@cs.unipr.it>
+
+	* config.guess (1.5), config.sub (1.5): Updated from config.
+
+2004-01-25 Sunday 22:35  Roberto Bagnara <bagnara@cs.unipr.it>
+
+	* ltmain.sh (1.6): Updated from Libtool 1.5.2.
+
+2003-12-05 Friday 11:24  Roberto Bagnara <bagnara@cs.unipr.it>
+
+	* Watchdog.cc (1.13): Do not use the ITIMER_PROF timer when
+	  profiling.
+
+2003-11-04 Tuesday 17:58  Roberto Bagnara <bagnara@cs.unipr.it>
+
+	* config.guess (1.4), config.sub (1.4): Updated.
+
+2003-10-03 Friday 12:22  Roberto Bagnara <bagnara@cs.unipr.it>
+
+	* .cvsignore (1.4): Ignore config.h.in.
+
+2003-10-03 Friday 09:44  Roberto Bagnara <bagnara@cs.unipr.it>
+
+	* config.h.in (1.4): These should not be in the repository, since
+	  they are automatically generated.
+
+2003-09-10 Wednesday 18:41  Roberto Bagnara <bagnara@cs.unipr.it>
+
+	* config.guess (1.3), config.sub (1.3), depcomp (1.3), install-sh
+	  (1.3), missing (1.2): Updated.
+
+2003-08-06 Wednesday 08:17  Roberto Bagnara <bagnara@cs.unipr.it>
+
+	* configure.ac (1.18): Allow for `mild', -O1 optimization.
+
+2003-07-05 Saturday 17:52  Roberto Bagnara <bagnara@cs.unipr.it>
+
+	* Watchdog.cc (1.12): Delete statement uncommented.
+
+2003-04-27 Sunday 21:53  Roberto Bagnara <bagnara@cs.unipr.it>
+
+	* ChangeLog, NEWS, README, configure.ac (ppl-0_5-branch.[2,1,1,1]):
+	  Synchronize with the main trunk.
+
+2003-04-27 Sunday 21:35  Roberto Bagnara <bagnara@cs.unipr.it>
+
+	* ChangeLog (ppl-0_5-branch.1): Mark ChangeLog.
+
+2003-04-27 Sunday 21:31  Roberto Bagnara <bagnara@cs.unipr.it>
+
+	* ChangeLog (1.6): Updated.
+
 2003-04-27 Sunday 21:25  Roberto Bagnara <bagnara@cs.unipr.it>
 
 	* configure.ac (1.17): Version number bumped.
@@ -9,12 +170,12 @@
 2003-04-27 Sunday 21:16  Roberto Bagnara <bagnara@cs.unipr.it>
 
 	* ChangeLog (1.4), NEWS (1.3), README (1.5): Updated for release
-	0.2.
+	  0.2.
 
 2003-04-17 Thursday 22:17  Roberto Bagnara <bagnara@cs.unipr.it>
 
 	* Watchdog.cc (1.11): Prefer anonymous namespaces to static
-	declarations.
+	  declarations.
 
 2003-04-15 Tuesday 13:38  Roberto Bagnara <bagnara@cs.unipr.it>
 
@@ -35,12 +196,12 @@
 2003-03-03 Monday 21:07  Roberto Bagnara <bagnara@cs.unipr.it>
 
 	* configure.ac (1.16): Require Autoconf 2.57 or following and
-	Automake 1.7.3 or following.
+	  Automake 1.7.3 or following.
 
 2003-03-03 Monday 18:35  Roberto Bagnara <bagnara@cs.unipr.it>
 
 	* COPYING (1.2), ChangeLog (1.3), INSTALL (1.2), NEWS (1.2),
-	config.guess (1.2), config.sub (1.2), ltmain.sh (1.2): Updated.
+	  config.guess (1.2), config.sub (1.2), ltmain.sh (1.2): Updated.
 
 2003-03-03 Monday 18:21  Roberto Bagnara <bagnara@cs.unipr.it>
 
@@ -49,19 +210,19 @@
 2003-02-07 Friday 10:56  Roberto Bagnara <bagnara@cs.unipr.it>
 
 	* Watchdog.cc (1.10): Throw std::runtime_error instead of calling
-	abort().
+	  abort().
 
 2003-02-07 Friday 10:52  Roberto Bagnara <bagnara@cs.unipr.it>
 
 	* Watchdog.inlines.hh (1.9): Throw std::invalid_argument if a
-	Watchdog constructor is called with a non-positive number of time
-	units.
+	  Watchdog constructor is called with a non-positive number of time
+	  units.
 
 2003-01-26 Sunday 22:02  Roberto Bagnara <bagnara@cs.unipr.it>
 
 	* Watchdog.cc (1.9): Ported to Cygwin (it only supports
-	ITIMER_REAL).  Robustness increased.  Throw std:runtime_error
-	exceptions instead of calling exit().
+	  ITIMER_REAL).  Robustness increased.	Throw std:runtime_error
+	  exceptions instead of calling exit().
 
 2003-01-12 Sunday 08:33  Roberto Bagnara <bagnara@cs.unipr.it>
 
@@ -70,34 +231,34 @@
 2003-01-10 Friday 09:48  Roberto Bagnara <bagnara@cs.unipr.it>
 
 	* Watchdog.cc (1.8), Watchdog.defs.hh (1.10), Watchdog.inlines.hh
-	(1.8), Watchdog.types.hh (1.4): New "nifty counter" implementation
-	of library's initialization and finalization.  Explicit
-	initialization and finalization is no longer necessary nor
-	possible.
+	  (1.8), Watchdog.types.hh (1.4): New "nifty counter"
+	  implementation of library's initialization and finalization.
+	  Explicit initialization and finalization is no longer necessary
+	  nor possible.
 
 2003-01-09 Thursday 10:11  Roberto Bagnara <bagnara@cs.unipr.it>
 
 	* configure.ac (1.15): Building the Parma Watchdog Library is now
-	enabled by default.
+	  enabled by default.
 
 2003-01-01 Wednesday 02:48  Roberto Bagnara <bagnara@cs.unipr.it>
 
 	* Makefile.am (1.6), README (1.4), Watchdog.cc (1.7),
-	Watchdog.defs.hh (1.9), Watchdog.inlines.hh (1.7),
-	Watchdog.types.hh (1.3), configure.ac (1.14), pwl_header.top (1.3):
-	Update copyright years.
+	  Watchdog.defs.hh (1.9), Watchdog.inlines.hh (1.7),
+	  Watchdog.types.hh (1.3), configure.ac (1.14), pwl_header.top
+	  (1.3): Update copyright years.
 
 2002-11-05 Tuesday 11:49  Roberto Bagnara <bagnara@cs.unipr.it>
 
 	* Watchdog.cc (1.6), Watchdog.defs.hh (1.8): Standard conformance
-	fixes.
+	  fixes.
 
 2002-11-05 Tuesday 10:57  Roberto Bagnara <bagnara@cs.unipr.it>
 
 	* configure.ac (1.13): Work around a bug in AC_CHECK_FUNCS as
-	implemented in autoconf 2.54c and previous versions.  For more
-	information, see
-	http://www.cs.unipr.it/pipermail/ppl-devel/2002-November/002929.html.
+	  implemented in autoconf 2.54c and previous versions.	For more
+	  information, see
+	  http://www.cs.unipr.it/pipermail/ppl-devel/2002-November/002929.html.
 
 2002-11-05 Tuesday 10:11  Roberto Bagnara <bagnara@cs.unipr.it>
 
@@ -110,13 +271,13 @@
 2002-11-03 Sunday 09:42  Roberto Bagnara <bagnara@cs.unipr.it>
 
 	* Watchdog.defs.hh (1.7), Watchdog.inlines.hh (1.6): Little
-	cleaning.
+	  cleaning.
 
 2002-11-03 Sunday 09:42  Roberto Bagnara <bagnara@cs.unipr.it>
 
 	* config.h.in (1.3), configure.ac (1.11): Get rid of AC_C_INLINE:
-	we do not use inlines in C code and it was doing harm with some
-	compilers.
+	  we do not use inlines in C code and it was doing harm with some
+	  compilers.
 
 2002-11-02 Saturday 16:46  Roberto Bagnara <bagnara@cs.unipr.it>
 
@@ -125,8 +286,8 @@
 2002-10-19 Saturday 00:40  Roberto Bagnara <bagnara@cs.unipr.it>
 
 	* config.guess (1.1), config.sub (1.1), depcomp (1.1), install-sh
-	(1.1), ltmain.sh (1.1), missing (1.1), mkinstalldirs (1.1): Missing
-	files added.
+	  (1.1), ltmain.sh (1.1), missing (1.1), mkinstalldirs (1.1):
+	  Missing files added.
 
 2002-10-04 Friday 12:21  Roberto Bagnara <bagnara@cs.unipr.it>
 
@@ -135,16 +296,17 @@
 2002-08-17 Saturday 13:44  Roberto Bagnara <bagnara@cs.unipr.it>
 
 	* Watchdog.defs.hh, Watchdog.inlines.hh, Watchdog.types.hh,
-	pwl_header.top (alt_nnc.[1,1,1,1]): Merge changes from the trunk
-	between tags `merge_to_alt_nnc' and `second_merge_to_alt_nnc'.
+	  pwl_header.top (alt_nnc.[1,1,1,1]): Merge changes from the trunk
+	  between tags `merge_to_alt_nnc' and `second_merge_to_alt_nnc'.
 
 2002-08-16 Friday 10:07  Roberto Bagnara <bagnara@cs.unipr.it>
 
 	* Watchdog.defs.hh (1.6), Watchdog.inlines.hh (1.5),
-	Watchdog.types.hh (1.2), pwl_header.top (1.2): According to the C++
-	standard (Section 17.4), every name that starts with an underscore
-	is reserved to the implementation.  All the multiple inclusion
-	guards have been renamed (some missing ones have been added).
+	  Watchdog.types.hh (1.2), pwl_header.top (1.2): According to the
+	  C++ standard (Section 17.4), every name that starts with an
+	  underscore is reserved to the implementation.  All the multiple
+	  inclusion guards have been renamed (some missing ones have been
+	  added).
 
 2002-07-30 Tuesday 11:14  Roberto Bagnara <bagnara@cs.unipr.it>
 
@@ -153,7 +315,7 @@
 2002-07-02 Tuesday 21:52  Roberto Bagnara <bagnara@cs.unipr.it>
 
 	* configure.ac (1.9): Shared libraries are again turned off by
-	default.
+	  default.
 
 2002-07-01 Monday 18:23  Roberto Bagnara <bagnara@cs.unipr.it>
 
@@ -162,7 +324,7 @@
 2002-06-30 Sunday 20:15  Roberto Bagnara <bagnara@cs.unipr.it>
 
 	* Watchdog.defs.hh (1.5), Watchdog.inlines.hh (1.4): Implementation
-	of inline functions moved to Watchdog.inlines.hh.
+	  of inline functions moved to Watchdog.inlines.hh.
 
 2002-06-30 Sunday 17:08  Roberto Bagnara <bagnara@cs.unipr.it>
 
@@ -175,7 +337,7 @@
 2002-06-30 Sunday 15:17  Roberto Bagnara <bagnara@cs.unipr.it>
 
 	* Watchdog.defs.hh (1.4), Watchdog.inlines.hh (1.3): Use methods
-	instead of friends for binary operators over Time.
+	  instead of friends for binary operators over Time.
 
 2002-06-25 Tuesday 15:03  Roberto Bagnara <bagnara@cs.unipr.it>
 
@@ -188,7 +350,7 @@
 2002-06-17 Monday 08:07  Roberto Bagnara <bagnara@cs.unipr.it>
 
 	* Watchdog.cc (1.5), Watchdog.defs.hh (1.3): Use #ifdef to test
-	configuration symbols that may be undefined or defined to 1.
+	  configuration symbols that may be undefined or defined to 1.
 
 2002-06-15 Saturday 14:47  Roberto Bagnara <bagnara@cs.unipr.it>
 
@@ -197,17 +359,17 @@
 2002-06-09 Sunday 16:36  Roberto Bagnara <bagnara@cs.unipr.it>
 
 	* Makefile.am (1.4), configure.ac (1.6): Consistent spelling for
-	Autoconf and Automake.
+	  Autoconf and Automake.
 
 2002-06-09 Sunday 16:33  Roberto Bagnara <bagnara@cs.unipr.it>
 
 	* configure.ac (1.5): Set CFLAGS properly.  Check for header files
-	and library functions only if we are building the library.
+	  and library functions only if we are building the library.
 
 2002-06-09 Sunday 16:15  Roberto Bagnara <bagnara@cs.unipr.it>
 
 	* configure.ac (1.4): Be more friendly to compilers different from
-	GCC.
+	  GCC.
 
 2002-05-28 Tuesday 13:07  Roberto Bagnara <bagnara@cs.unipr.it>
 
@@ -216,29 +378,29 @@
 2002-05-28 Tuesday 12:58  Roberto Bagnara <bagnara@cs.unipr.it>
 
 	* Watchdog.cc (1.4), Watchdog.defs.hh (1.2), Watchdog.inlines.hh
-	(1.2): Better implementation using templates.
+	  (1.2): Better implementation using templates.
 
 2002-05-27 Monday 15:57  Roberto Bagnara <bagnara@cs.unipr.it>
 
 	* Makefile.am (1.3), README (1.3), Timeout.hh (1.3), Watchdog.cc
-	(1.3), Watchdog.defs.hh (1.1), Watchdog.hh (1.3),
-	Watchdog.inlines.hh (1.1), Watchdog.types.hh (1.1), configure.ac
-	(1.3), pwl_filter_doxygen.sed (1.1), pwl_filter_install.sed (1.1),
-	pwl_header.bottom (1.1), pwl_header.middle (1.1), pwl_header.top
-	(1.1): The Watchdog library is now complete.
+	  (1.3), Watchdog.defs.hh (1.1), Watchdog.hh (1.3),
+	  Watchdog.inlines.hh (1.1), Watchdog.types.hh (1.1), configure.ac
+	  (1.3), pwl_filter_doxygen.sed (1.1), pwl_filter_install.sed
+	  (1.1), pwl_header.bottom (1.1), pwl_header.middle (1.1),
+	  pwl_header.top (1.1): The Watchdog library is now complete.
 
 2002-05-24 Friday 07:25  Roberto Bagnara <bagnara@cs.unipr.it>
 
 	* Makefile.am (1.2), README (1.2), Timeout.hh (1.2), Watchdog.cc
-	(1.2), Watchdog.hh (1.2), config.h.in (1.2), configure.ac (1.2):
-	Several improvement (but still not operational).
+	  (1.2), Watchdog.hh (1.2), config.h.in (1.2), configure.ac (1.2):
+	  Several improvement (but still not operational).
 
 2002-05-22 Wednesday 11:02  Roberto Bagnara <bagnara@cs.unipr.it>
 
 	* .cvsignore (1.1), BUGS (1.1), COPYING (1.1), CREDITS (1.1),
-	ChangeLog (1.1), INSTALL (1.1), Makefile.am (1.1), NEWS (1.1),
-	README (1.1), Timeout.hh (1.1), Watchdog.cc (1.1), Watchdog.hh
-	(1.1), config.h.in (1.1), configure.ac (1.1): Even though the
-	Watchdog library is completely independent from the PPL, it will
-	live with it, at least for a while.
+	  ChangeLog (1.1), INSTALL (1.1), Makefile.am (1.1), NEWS (1.1),
+	  README (1.1), Timeout.hh (1.1), Watchdog.cc (1.1), Watchdog.hh
+	  (1.1), config.h.in (1.1), configure.ac (1.1): Even though the
+	  Watchdog library is completely independent from the PPL, it will
+	  live with it, at least for a while.
 
