@@ -367,7 +367,7 @@ Integer_to_integer_term(const PPL::Integer& n) {
     throw_unknown_interface_error("Integer_to_integer_term()");
   Prolog_term_ref t = p2p_new();
   c2p_int(n.get_si(), t);
-  return true;
+  return t;
 }
 
 #define ppl_initialize xsb_stub_ppl_initialize

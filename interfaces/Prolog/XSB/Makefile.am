@@ -64,7 +64,12 @@ CLPQ_TESTS = $(CLPQ_TESTS_NONSTRICT) $(CLPQ_TESTS_STRICT)
 .P.O:
 	xsb $<
 
-check-local: xsb_clpq.O ../check_script ../expected #xsb_clpq2.O ../check_script2 ../expected2
+# FIXME: we are checking against special versions of `expected'
+#        and `expected2'.  This is due to the fact that XSB 2.5
+#        and previous versions do not support control escape
+#        sequences.
+
+check-local: xsb_clpq.P ../check_script expected xsb_clpq2.P ../check_script2 #expected2
 	for k in $(CLPQ_TESTS); do cp -f $(srcdir)/../$$k .; done
 	cp -f $(srcdir)/xsb_clpq.P .
 	cp -f $(srcdir)/../clpq.pl .
@@ -72,12 +77,14 @@ check-local: xsb_clpq.O ../check_script ../expected #xsb_clpq2.O ../check_script
 				-dlopen ppl_xsb.la \
 		xsb xsb_clpq \
 			<$(srcdir)/../check_script >obtained
-	diff -q --ignore-all-space $(srcdir)/../expected obtained
+	diff -q --ignore-all-space $(srcdir)/expected obtained
+	cp -f $(srcdir)/xsb_clpq2.P .
+	cp -f $(srcdir)/../clpq2.pl .
 	$(LIBTOOL) --mode=execute -dlopen ../../../src/libppl.la \
 				-dlopen ppl_xsb.la \
 		xsb -l $(srcdir)/xsb_clpq2.pl \
 			<$(srcdir)/../check_script2 >obtained2
-	diff -q --ignore-all-space $(srcdir)/../expected2 obtained2
+	diff -q --ignore-all-space $(srcdir)/expected2 obtained2
 
 MOSTLYCLEANFILES = \
 ppl_xsb.H ppl_xsb.c ppl_xsb.O ppl_xsb.so \
