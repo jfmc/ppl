@@ -38,11 +38,20 @@ public:
   }
 };
 
-class integer_out_of_range : public internal_exception {
+class Prolog_unsigned_out_of_range : public internal_exception {
+private:
+  unsigned long m;
+
 public:
-  explicit integer_out_of_range(Prolog_term_ref t)
-    : internal_exception(t) {
+  explicit Prolog_unsigned_out_of_range(Prolog_term_ref t, unsigned long max)
+    : internal_exception(t),
+      m(max) {
   }
+
+  unsigned long max() const {
+    return m;
+  }
+
 };
 
 class non_linear : public internal_exception {
@@ -54,7 +63,7 @@ public:
     : internal_exception(t), w(s) {
   }
 
-  const char* who() const {
+  const char* where() const {
     return w;
   }
 };
@@ -66,9 +75,9 @@ public:
   }
 };
 
-class not_unsigned_int : public internal_exception {
+class not_unsigned_integer : public internal_exception {
 public:
-  explicit not_unsigned_int(Prolog_term_ref t)
+  explicit not_unsigned_integer(Prolog_term_ref t)
     : internal_exception(t) {
   }
 };
@@ -94,6 +103,16 @@ public:
   }
 };
 
+class PPL_integer_out_of_range {
+private:
+  Parma_Polyhedra_Library::Integer n;
+
+public:
+  explicit PPL_integer_out_of_range(const Parma_Polyhedra_Library::Integer& i)
+    : n(i) {
+  }
+};
+
 class unknown_interface_error {
 private:
   const char* w;
@@ -108,12 +127,10 @@ public:
   }
 };
 
-#if 0
 static void
-throw_integer_out_of_range(Prolog_term_ref t) {
-  throw integer_out_of_range(t);
+throw_PPL_integer_out_of_range(const Parma_Polyhedra_Library::Integer& n) {
+  throw PPL_integer_out_of_range(n);
 }
-#endif
 
 static void
 throw_unknown_interface_error(const char* s) {
