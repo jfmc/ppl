@@ -73,8 +73,8 @@ namespace Parma_Polyhedra_Library {
     \endcode
     As said above, this system of generators corresponds to
     an empty polyhedron, because the line has no supporting point.
-    To define a system of generators indeed corresponding to
-    the \f$x\f$ axis, one can add the following code which
+    To define a system of generators that does correspond to
+    the \f$x\f$ axis, we can add the following code which
     inserts the origin of the space as a point:
     \code
   gs.insert(point(0*x + 0*y));
@@ -85,7 +85,7 @@ namespace Parma_Polyhedra_Library {
   gs.insert(point(0*x));
     \endcode
     In contrast, if we had added the following code, we would have
-    defined a line parallel to the \f$x\f$ axis and including
+    defined a line parallel to the \f$x\f$ axis through
     the point \f$(0, 1)^\transpose \in \Rset^2\f$.
     \code
   gs.insert(point(0*x + 1*y));

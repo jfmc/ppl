@@ -64,8 +64,8 @@ namespace Parma_Polyhedra_Library {
 //! A linear equality or inequality.
 /*!
   An object of the class Constraint is either:
-  - an equality: \f$\sum_{i=0}^{n-1} a_i x_i + b = 0\f$; or
-  - a non-strict inequality: \f$\sum_{i=0}^{n-1} a_i x_i + b \geq 0\f$;
+  - an equality: \f$\sum_{i=0}^{n-1} a_i x_i + b = 0\f$;
+  - a non-strict inequality: \f$\sum_{i=0}^{n-1} a_i x_i + b \geq 0\f$; or
   - a strict inequality: \f$\sum_{i=0}^{n-1} a_i x_i + b > 0\f$;
 
   where \f$n\f$ is the dimension of the space,
