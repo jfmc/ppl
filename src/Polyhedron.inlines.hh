@@ -215,6 +215,16 @@ Polyhedron::space_dimension() const {
   return space_dim;
 }
 
+inline dimension_type
+Polyhedron::num_cons() const {
+  return con_sys.num_rows();
+}
+
+inline dimension_type
+Polyhedron::num_gens() const {
+  return gen_sys.num_rows();
+}
+
 inline bool
 Polyhedron::check_empty() const {
   minimize();
