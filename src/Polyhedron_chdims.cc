@@ -541,6 +541,9 @@ PPL::Polyhedron::expand_dimension(Variable var, dimension_type m) {
   if (m == 0)
     return;
 
+  // Keep track of the dimension before adding the new ones.
+  dimension_type old_dim = space_dim;
+
   // Add the required new dimensions.
   add_dimensions_and_embed(m);
 
@@ -555,9 +558,9 @@ PPL::Polyhedron::expand_dimension(Variable var, dimension_type m) {
       continue;
 
     // Each relevant constraint results in `m' new constraints.
-    for (dimension_type dst_d = space_dim; dst_d < space_dim+m; ++dst_d) {
+    for (dimension_type dst_d = old_dim; dst_d < old_dim+m; ++dst_d) {
       LinExpression e;
-      for (dimension_type j = space_dim; j-- > 0; )
+      for (dimension_type j = old_dim; j-- > 0; )
 	e +=
 	  c.coefficient(Variable(j))
 	  * (j == src_d ? Variable(dst_d) : Variable(j));
@@ -571,4 +574,18 @@ PPL::Polyhedron::expand_dimension(Variable var, dimension_type m) {
   }
   add_constraints(new_constraints);
   assert(OK());
+}
+
+void
+PPL::Polyhedron::fold_dimensions(const Variables_Set& to_be_folded,
+				 Variable var) {
+  // FIXME: add all the required checks.
+
+  for (Variables_Set::const_iterator i = to_be_folded.begin(),
+	 tbf_end = to_be_folded.end(); i != tbf_end; ++i) {
+    Polyhedron copy = *this;
+    copy.affine_image(var, LinExpression(*i));
+    poly_hull_assign(copy);
+  }
+  remove_dimensions(to_be_folded);
 }
