@@ -44,7 +44,7 @@ e.g., in the field of computational geometry.
 
 The main features of the library are the following:
 - it is user friendly:
-  you write <CODE>x + 2*y + 5*z <= 7</CODE> when you mean it;
+  you write <CODE>x + 2*y + 5*z \<= 7</CODE> when you mean it;
 - it is fully dynamic:
   available virtual memory is the only limitation to the
   dimension of anything;
