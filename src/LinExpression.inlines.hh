@@ -31,12 +31,6 @@ Parma_Polyhedra_Library::LinExpression::LinExpression()
 }
 
 INLINE
-Parma_Polyhedra_Library::LinExpression::LinExpression(size_t num_dimensions)
-  : Row(Row::LINE_OR_EQUALITY, num_dimensions+1) {
-  assert(num_dimensions > 0);
-}
-
-INLINE
 Parma_Polyhedra_Library::LinExpression::LinExpression(size_t size, bool)
   : Row(Row::LINE_OR_EQUALITY, size) {
 }

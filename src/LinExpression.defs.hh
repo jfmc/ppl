@@ -115,9 +115,6 @@ public:
   //! Destructor.
   virtual ~LinExpression();
 
-  //! Constructor: builds a linear expression with as many as
-  //! \p num_dimension variables.
-  explicit LinExpression(size_t num_dimensions);
   //! Constructor: builds the linear expression corresponding
   //! to the inhomogeneous term \p n.
   explicit LinExpression(const Integer& n);
@@ -126,9 +123,11 @@ public:
   LinExpression(const Variable& var);
 
 private:
-  //! Implementation sizing constructor: the bool parameter is just to
-  //! distinguish it from the public constructor with the space dimension.
-  explicit LinExpression(size_t size, bool);
+  //! Implementation sizing constructor.
+  //! The bool parameter is just to avoid problems with
+  //! the constructor LinExpression(const Integer& n).
+  LinExpression(size_t size, bool);
+
   //! Copy-constructor with a specified dimension.
   LinExpression(const LinExpression& e, size_t size);
 
