@@ -63,6 +63,9 @@ o  The enumeration values of enum Complexity_Class have been renamed
 Bugfixes
 ========
 
+o  Fixed a bug in the handling of empty generator systems having
+   a strictly positive space dimension.
+
 o  Fixed a bug that was affecting Polyhedra_PowerSet::geometrically_covers()
    and Polyhedra_PowerSet::geometrically_equals().
 

@@ -13,6 +13,10 @@ Enhancements for PPL 0.7
   may return something unexpected to the user.  This issue
   must be studied and dealt with in the appropriate way.
 
+  [Enea is in charge: this is already corrected in CVS, but should be
+   rechecked after merging the branch with the new handling of
+   matrices and constraint/generator systems.] 
+
 - Consider performing the following renamings:
 
     Integer -> Coefficient
