@@ -3324,8 +3324,12 @@ PPL::Polyhedron::is_BBRZ02_stabilizing(const Polyhedron& x,
     x.space_dimension() - x.con_sys.num_equalities();
   dimension_type y_dimension =
     y.space_dimension() - y.con_sys.num_equalities();
-  if (x_dimension > y_dimension)
+  if (x_dimension > y_dimension) {
+#ifndef NDEBUG
+    std::cout << "BBRZ02_stabilizing: number of dimensions" << std::endl;
+#endif
     return true;
+  }
 
   // Since `y' is assumed to be included into `x',
   // at this point the two polyhedra must have the same dimension.
@@ -3337,8 +3341,12 @@ PPL::Polyhedron::is_BBRZ02_stabilizing(const Polyhedron& x,
   // the dimension of the lineality space is equal to the number of lines.
   dimension_type x_num_lines = x.gen_sys.num_lines();
   dimension_type y_num_lines = y.gen_sys.num_lines();
-  if (x_num_lines > y_num_lines)
+  if (x_num_lines > y_num_lines) {
+#ifndef NDEBUG
+    std::cout << "BBRZ02_stabilizing: lineality space" << std::endl;
+#endif
     return true;
+  }
 
   // Since `y' is assumed to be included into `x', at this point
   // the lineality space of the two polyhedra must have the same dimension.
@@ -3350,8 +3358,12 @@ PPL::Polyhedron::is_BBRZ02_stabilizing(const Polyhedron& x,
     // If the number of points of `x' is smaller than the number
     // of points of `y', then the chain is stabilizing.
     if (x_gen_sys_num_rows - x_num_lines - x.gen_sys.num_rays() <
-	y_gen_sys_num_rows - y_num_lines - y.gen_sys.num_rays())
+	y_gen_sys_num_rows - y_num_lines - y.gen_sys.num_rays()) {
+#ifndef NDEBUG
+      std::cout << "BBRZ02_stabilizing: number of points" << std::endl;
+#endif
       return true;
+    }
   }
   else {
     // The polyhedra are NNC.
@@ -3365,8 +3377,13 @@ PPL::Polyhedron::is_BBRZ02_stabilizing(const Polyhedron& x,
 	++y_num_closure_points;
     // If the number of closure points of `x' is smaller than
     // the number of closure points of `y', the chain is stabilizing.
-    if (x_num_closure_points < y_num_closure_points)
+    if (x_num_closure_points < y_num_closure_points) {
+#ifndef NDEBUG
+      std::cout << "BBRZ02_stabilizing: number of closure points"
+		<< std::endl;
+#endif
       return true;
+    }
   }
 
   // For each i such that 0 <= i < x.space_dim, let x_num_rays[i] be
@@ -3399,13 +3416,25 @@ PPL::Polyhedron::is_BBRZ02_stabilizing(const Polyhedron& x,
     }
   // Compare (lexicographically) the two vectors:
   // if x_num_rays < y_num_rays the chain is stabilizing.
-  for (dimension_type i = 0; i < x.space_dimension(); i++)
-    if (x_num_rays[i] < y_num_rays[i])
+  for (dimension_type i = 0; i < x.space_dimension(); i++) {
+    if (x_num_rays[i] > y_num_rays[i])
+      // Not stabilizing.
+      break;
+    if (x_num_rays[i] < y_num_rays[i]) {
+#ifndef NDEBUG
+      std::cout << "BBRZ02_stabilizing: zero-coord rays" << std::endl;
+#endif
       return true;
+    }
+  }
 
   // Hey, wait a minute! Are they equal?
-  if (x == y)
+  if (x == y) {
+#ifndef NDEBUG
+    std::cout << "BBRZ02_stabilizing: same polyhedra" << std::endl;
+#endif
     return true;
+  }
 
   // The chain is not stabilizing.
   return false;
