@@ -46,9 +46,9 @@ site: http://www.cs.unipr.it/ppl/ . */
   compilers can issue warnings about type mismatches.
 */
 #undef __P
-#if defined (__STDC__) || defined (_AIX) \
-        || (defined (__mips) && defined (_SYSTYPE_SVR4)) \
-        || defined(WIN32) || defined(__cplusplus)
+#if defined(__STDC__) || defined(_AIX) \
+        || (defined(__mips) && defined(_SYSTYPE_SVR4)) \
+        || defined(WIN32) || defined(__cplusplus) || defined(SWIG)
 # define __P(protos) protos
 #else
 # define __P(protos) ()
