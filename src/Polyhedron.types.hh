@@ -17,10 +17,33 @@ namespace Parma_Polyhedra_Library {
 
 class Polyhedron;
 
-//! All input output operators are confined into this namespace.
+//! All input/output operators are confined into this namespace.
 /*!
-  This is done so that the library's input output operators
-  do not to interfere with those the user might want to define.
+  This is done so that the library's input/output operators
+  do not interfere with those the user might want to define.
+  In fact, it is highly unlikely that any pre-defined I/O
+  operator will suit the needs of a client application.
+  On the other hand, those applications for which the PPL
+  I/O operator are enough can easily obtain access to them.
+  For example, a directive like
+  \code
+    using namespace Parma_Polyhedra_Library::IO_Operators;
+  \endcode
+  would suffice for most uses.
+  In more complex situations, such as
+  \code
+    const ConSys& cs = ...;
+    copy(cs.begin(), cs.end(),
+	 ostream_iterator<Constraint>(cout, "\n"));
+  \endcode
+  the Parma_Polyhedra_Library namespace must be suitably extended.
+  This can be done as follows:
+  \code
+    namespace Parma_Polyhedra_Library {
+      // Import all the output operators into the main PPL namespace.
+      using IO_Operators::operator<<;
+    }
+  \endcode
 */
 namespace IO_Operators {
 }

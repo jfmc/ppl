@@ -6,8 +6,6 @@ Urgent Things
   and Interval.
 - Check the documentation for Polyhedron::rename_dimensions() and
   its wrappers for all the interfaces.
-- In the manual, explain PPL's I/O operators and how
-  to deal with the IO_Operators namespace.
 - Finish updating the NEWS file.
 
 Efficiency Issues
