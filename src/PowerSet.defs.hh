@@ -83,18 +83,15 @@ operator<<(std::ostream& s, const PowerSet<CS>& x);
 
 
 //! The powerset construction on constraint systems.
+/*!
+  This class offers a generic implementation of <EM>powerset
+  constraint systems</EM> as defined in \ref Bag98 "[Bag98]".
+*/
 template <typename CS>
 class Parma_Polyhedra_Library::PowerSet {
 public:
-  //! Builds a universe (top) or empty (bottom) PowerSet.
-  /*!
-    \param num_dimensions   The number of dimensions of the vector
-                            space enclosing the powerset.
-    \param universe         If <CODE>true</CODE>, a universe PowerSet
-                            is built;  an empty PowerSet is built otherwise.
-  */
-  explicit PowerSet(dimension_type num_dimensions = 0,
-		    bool universe = true);
+  //! Default constructor.
+  PowerSet();
 
   //! Ordinary copy-constructor.
   PowerSet(const PowerSet& y);
@@ -116,14 +113,6 @@ public:
   //! Assigns to \p *this the meet of \p *this and \p y.
   void meet_assign(const PowerSet& y);
 
-  //! Assigns to \p *this the concatenation of \p *this and \p y.
-  /*!
-    Seeing a powerset as a set of tuples, this method assigns to
-    \p *this all the tuples that can be obtained by concatenating,
-    in the order given, a tuple of \p *this with a tuple of \p y.
-  */
-  void concatenate_assign(const PowerSet& y);
-
   //! \brief
   //! Returns <CODE>true</CODE> if \p *this definitely entails \p y.
   //! Returns <CODE>false</CODE> if \p *this may not entail \p y
@@ -143,97 +132,13 @@ public:
   //! the empty set).
   bool is_bottom() const;
 
-  //! Returns the dimension of the vector space enclosing \p *this.
-  dimension_type space_dimension() const;
-
-  //! Intersects \p *this with (a copy of) constraint \p c.
-  /*!
-    \exception std::invalid_argument thrown if \p *this and constraint \p c
-                                     are topology-incompatible
-                                     or dimension-incompatible.
-  */
-  void add_constraint(const Constraint& c);
-
-  //! Intersects \p *this with the constraints in \p cs.
-  /*!
-    \param  cs             The constraints to intersect with.
-                           This parameter is not declared
-                           <CODE>const</CODE> because  it can be modified.
-    \exception std::invalid_argument thrown if \p *this and \p cs
-                                     are topology-incompatible
-                                     or dimension-incompatible.
-  */
-  void add_constraints(ConSys& cs);
-
-  //! \brief
-  //! Adds \p m new dimensions and embeds the old polyhedron
-  //! into the new space.
-  void add_dimensions_and_embed(dimension_type m);
-
-  //! \brief
-  //! Adds \p m new dimensions to the polyhedron
-  //! and does not embed it in the new space.
-  void add_dimensions_and_project(dimension_type m);
-
-  //! Removes all the specified dimensions.
-  /*!
-    \param to_be_removed  The set of Variable objects corresponding
-                          to the dimensions to be removed.
-    \exception std::invalid_argument thrown if \p *this is
-                                     dimension-incompatible with one
-				     of the Variable objects contained
-				     in \p to_be_removed.
-  */
-  void remove_dimensions(const Variables_Set& to_be_removed);
-
-  //! \brief
-  //! Removes the higher dimensions so that the resulting space
-  //! will have dimension \p new_dimension.
-  /*!
-    \exception std::invalid_argument thrown if \p new_dimensions is greater
-                                     than the space dimension of \p *this.
-  */
-  void remove_higher_dimensions(dimension_type new_dimension);
-
-  template <typename PartialFunction>
-  void map_dimensions(const PartialFunction& pfunc);
-
-  //! \brief
-  //! Assigns to \p *this the result of computing the
-  //! \ref H79_widening "H79-widening" between \p *this and \p y.
-  /*!
-    \param y           A polyhedron that <EM>must</EM>
-                       be contained in \p *this.
-    \exception std::invalid_argument thrown if \p *this and \p y
-                                     are topology-incompatible
-                                     or dimension-incompatible.
-  */
-  void H79_extrapolation_assign(const PowerSet& y);
-
-  //! \brief
-  //! Limits the \ref H79_widening "H79-widening" computation
-  //! between \p *this and \p y by enforcing constraints \p cs
-  //! and assigns the result to \p *this.
-  /*!
-    \param y                 A polyhedron that <EM>must</EM>
-                             be contained in \p *this.
-    \param cs                The system of constraints that limits
-                             the widened polyhedron. It is not
-                             declared <CODE>const</CODE>
-                             because it can be modified.
-    \exception std::invalid_argument thrown if \p *this, \p y and \p cs
-                                     are topology-incompatible
-                                     or dimension-incompatible.
-  */
-  void limited_H79_extrapolation_assign(const PowerSet& y, const ConSys& cs);
-
   //! Checks if all the invariants are satisfied.
   bool OK() const;
 
   // TO BE REMOVED.
   friend CS project<>(const PowerSet& x);
 
-private:
+protected:
   //! A powerset is implemented as a sequence of elements.
   /*!
     The particular sequence employed must support efficient deletion
@@ -243,9 +148,6 @@ private:
 
   //! The sequence container holding powerset's elements.
   Sequence sequence;
-
-  //! The number of dimensions of the enclosing vector space.
-  dimension_type space_dim;
 
   void omega_reduction();
 
@@ -274,9 +176,14 @@ public:
   reverse_iterator rend();
   const_reverse_iterator rend() const;
 
+//protected:
+  void push_back(const CS& y);
   void pop_back();
   iterator erase(iterator first, iterator last) {
     return sequence.erase(first, last);
+  }
+  iterator erase(iterator position) {
+    return sequence.erase(position);
   }
 };
 
