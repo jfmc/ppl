@@ -29,7 +29,6 @@ site: http://www.cs.unipr.it/ppl/ . */
 
 //! A dimension of the space.
 /*!
-  \ingroup LinExpression
   An object of the class Variable represents a dimension of the space,
   that is one of the Cartesian axes.
   Variables are used as base blocks in order to build
@@ -40,10 +39,7 @@ site: http://www.cs.unipr.it/ppl/ . */
 */
 
 class Parma_Polyhedra_Library::Variable {
-/*!
-  \addtogroup LinExpression Linear Expressions
-  @{
-*/
+
 public:
   //! Constructor: \p id is the index of the Cartesian axis.
   explicit Variable(unsigned int id);
@@ -53,24 +49,14 @@ public:
 private:
   //! The index of the Cartesian axis.
   unsigned int varid;
-/*!
-  @}
-*/
 };
 
 namespace Parma_Polyhedra_Library {
-  /*!
-    \addtogroup LinExpression Linear Expressions
-    @{
-  */
 
   //! Output operator.
   std::ostream&
   operator <<(std::ostream& s, const Parma_Polyhedra_Library::Variable& var);
 
-  /*!
-    @}
-  */
 }
 
 #if !OUTLINE

@@ -32,7 +32,7 @@ site: http://www.cs.unipr.it/ppl/ . */
 namespace Parma_Polyhedra_Library {
   // Put them in the namespace here to declare them friend later.
 
-  /*! \addtogroup LinExpression Linear Expressions
+  /*! \name Linear Expressions.
 
     Linear expressions are the blocks used for building both
     constraints (i.e., linear equalities or inequalities)
@@ -41,9 +41,8 @@ namespace Parma_Polyhedra_Library {
     variables and integer terms by applying the usual
     operators, i.e., unary negation, binary addition and subtraction,
     as well as multiplication by an integer.
-
-    @{
   */
+  //@{
   //! Returns the linear expression \p e1 + \p e2.
   LinExpression operator +(const LinExpression& e1, const LinExpression& e2);
   //! Returns the linear expression \p n + \p e.
@@ -72,15 +71,11 @@ namespace Parma_Polyhedra_Library {
   LinExpression& operator +=(LinExpression& e, const Variable& v);
   //! Returns the linear expression \p e + \p n and assigns it to \p e.
   LinExpression& operator +=(LinExpression& e, const Integer& n);
-
-  /*!
-    @}
-  */
+  //@}
 }
 
 //! A linear expression.
 /*!
-  \ingroup LinExpression
   An object of the class LinExpression represents the linear expression 
   \f[
     \sum_{i=0}^{d-1} a_i x_i + b
@@ -126,10 +121,7 @@ namespace Parma_Polyhedra_Library {
 */
 
 class Parma_Polyhedra_Library::LinExpression : PPL_INTERNAL Row {
-/*!
-  \addtogroup LinExpression Linear Expressions
-  @{
-*/
+
 public:
   //! Default constructor.
   LinExpression();
@@ -194,9 +186,6 @@ private:
   friend LinExpression&
   Parma_Polyhedra_Library::operator +=(LinExpression& e,
                                        const Integer& n);
-/*!
-  @}
-*/
 };
 
 #if !OUTLINE
