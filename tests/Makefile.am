@@ -27,7 +27,8 @@ TESTS = inters1 inters2 \
         empty1 \
         append1 append2 \
         permute \
-        error1 error2 error3 error4
+        error1 error2 error3 error4 \
+	affinetrans
 
 inters1_SOURCES = inters1.cc
 inters2_SOURCES = inters2.cc
@@ -45,6 +46,8 @@ append1_SOURCES = append1.cc
 append2_SOURCES = append2.cc
 
 permute_SOURCES = permute.cc
+
+affinetrans_SOURCES = affinetrans.cc
 
 check_PROGRAMS = $(TESTS)
 
