@@ -5,5 +5,7 @@
 .libs
 Makefile
 Makefile.in
+obtained
+obtained2
 ppl_sicstus
 ppl_sicstus.pl

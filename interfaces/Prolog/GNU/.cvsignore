@@ -5,4 +5,8 @@
 .libs
 Makefile
 Makefile.in
+gp_clpq
+gp_clpq2
+obtained
+obtained2
 ppl_gprolog
