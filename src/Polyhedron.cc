@@ -3055,7 +3055,7 @@ PPL::Polyhedron::time_elapse_assign(const Polyhedron& y) {
   Polyhedron& x = *this;
   // Topology compatibility check.
   if (x.topology() != y.topology())
-    throw_topology_incompatible("inters_assign_and_min(y)", y);
+    throw_topology_incompatible("time_elapse_assign(y)", y);
   size_t x_space_dim = x.space_dim;
   // Dimension-compatibility checks.
   if (x_space_dim != y.space_dim)
