@@ -1,3 +1,641 @@
+2002-02-20 Wednesday 13:26  Enea Zaffanella <zaffanella@cs.unipr.it>
+
+	* src/Polyhedron.cc (1.115): In Polyhedron::add_constraints(ConSys&
+	cs), turned on the BE_LAZY version which does not sort matrices and
+	does not perform unnecessary copies.
+
+2002-02-17 Sunday 23:02  Roberto Bagnara <bagnara@cs.unipr.it>
+
+	* tests/satisfies1.cc (1.2): Avoid a compiler warning when NOISY is
+	0.
+
+2002-02-17 Sunday 21:39  Roberto Bagnara <bagnara@cs.unipr.it>
+
+	* acinclude.m4 (1.2), configure.ac (1.23),
+	interfaces/Prolog/SICStus/Makefile.am (1.8), m4/Makefile.am (1.3),
+	m4/ac_check_gmp.m4 (1.1), m4/ac_check_gmp_exceptions.m4 (1.3),
+	m4/ac_check_have_gmp.m4 (1.3), tests/Makefile.am (1.38): GMP
+	configuration machinery rewritten (this should help people trying
+	to build the PPL under CygWin).
+
+2002-02-15 Friday 16:55  Roberto Bagnara <bagnara@cs.unipr.it>
+
+	* tests/bug6.dat (positive.2): This is the correct test data.
+
+2002-02-15 Friday 16:37  Roberto Bagnara <bagnara@cs.unipr.it>
+
+	* tests/: bug1.cc, bug2.cc, bug3.cc, bug4.cc, bug5.cc, bug6.cc
+	(positive.[3,2,2,2,2,2]): All the invocations of Polyhedron::OK()
+	were misplaced.
+
+2002-02-15 Friday 15:04  Roberto Bagnara <bagnara@cs.unipr.it>
+
+	* tests/bug6.cc (1.1): file bug6.cc was initially added on branch
+	positive.
+
+2002-02-15 Friday 15:04  Roberto Bagnara <bagnara@cs.unipr.it>
+
+	* tests/bug6.dat (1.1): file bug6.dat was initially added on branch
+	positive.
+
+2002-02-15 Friday 15:04  Roberto Bagnara <bagnara@cs.unipr.it>
+
+	* tests/: Makefile.am, bug6.cc, bug6.dat (positive.[7,1,1]): bug6
+	shows that problems minimizations problems persist.
+
+2002-02-14 Thursday 14:05  Roberto Bagnara <bagnara@cs.unipr.it>
+
+	* configure.ac (1.22), src/Integer.cc (1.1), src/Integer.defs.hh
+	(1.1), src/Integer.inlines.hh (1.1), src/Integer.types.hh (1.1),
+	src/Makefile.am (1.21): Integer stuff moved up one level.
+
+2002-02-14 Thursday 13:22  Roberto Bagnara <bagnara@cs.unipr.it>
+
+	* tests/: Makefile.am (1.37), affine_image1.cc (1.2),
+	affineimage1.cc (1.1): For consistency, affine_image1.cc has been
+	renamed affineimage1.cc.
+
+2002-02-14 Thursday 13:17  Elisa Ricci <ericci@cs.unipr.it>
+
+	* tests/: Makefile.am (1.36), adddimensions1.cc (1.1),
+	convexhull1.cc (1.1), inters3.cc (1.1), limitedwidening1.cc (1.1),
+	removedim4.cc (1.1): Added tests for the functions
+	Polyhedron::add_dimensions_and_project(),
+	Polyhedron::convex_hull_assign(),
+	Polyhedron::intersection_assign(),
+	Polyhedron::limited_widening_assign() and
+	Polyhedron::remove_higher_dimensions().
+
+2002-02-14 Thursday 11:34  Enea Zaffanella <zaffanella@cs.unipr.it>
+
+	* src/Polyhedron.cc (1.114): Added comments regarding the handling
+	of the `sorted' flag in methods remove_dimensions and
+	remove_higher_dimensions.
+
+2002-02-14 Thursday 11:32  Enea Zaffanella <zaffanella@cs.unipr.it>
+
+	* src/GenSys.cc (1.28): In method remove_invalid_lines_and_rays(),
+	we do not need to keep the generators sorted (this saves
+	efficiency, since we were always calling it with a possibly
+	non-sorted system).  Using remove_invalid_lines_and_rays() in
+	affine_image.
+
+2002-02-14 Thursday 10:04  Elisa Ricci <ericci@cs.unipr.it>
+
+	* src/Generator.cc (1.14): Changed the error message and the
+	comment in function Generator::OK().
+
+2002-02-14 Thursday 09:50  Enea Zaffanella <zaffanella@cs.unipr.it>
+
+	* src/: GenSys.cc (1.27), Polyhedron.cc (1.113): Avoiding all
+	shadowing of the space_dim member of a Polyhedron.  Now using the
+	accessor Polyhedron::space_dimension() only when needed.  Fixed a
+	few comments.
+
+2002-02-14 Thursday 09:37  Elisa Ricci <ericci@cs.unipr.it>
+
+	* src/Polyhedron.cc (1.112), tests/Makefile.am (1.35),
+	tests/includes1.cc (1.1): Erased the abort() at the end of function
+	Polyhedron::includes(g) and added a test for this function.
+
+2002-02-13 Wednesday 23:45  Roberto Bagnara <bagnara@cs.unipr.it>
+
+	* configure.ac (1.21): Bump version number.
+
+2002-02-13 Wednesday 23:42  Roberto Bagnara <bagnara@cs.unipr.it>
+
+	* src/: GenSys.cc (1.26), GenSys.defs.hh (1.40): Overload the
+	output operator for GenSys_Con_Rel.
+
+2002-02-13 Wednesday 23:41  Roberto Bagnara <bagnara@cs.unipr.it>
+
+	* tests/: Makefile.am (1.34), affine_image1.cc (1.1), satisfies1.cc
+	(1.1): New test programs.
+
+2002-02-13 Wednesday 19:08  Elisa Ricci <ericci@cs.unipr.it>
+
+	* src/: GenSys.cc (1.25), Polyhedron.cc (1.111): Modified the
+	function Polyhedron::satisfies(...).  In function
+	GenSys::affine_image(...) we erase the rows that have all the terms
+	equal to zero.
+
+2002-02-13 Wednesday 12:07  Elisa Ricci <ericci@cs.unipr.it>
+
+	* src/minimize.cc (positive.7): In functions minimize() and
+	add_and_minimize(), to obtain the system of constraints in the case
+	!con_to_gen now we use conversion().
+
+2002-02-12 Tuesday 15:16  Roberto Bagnara <bagnara@cs.unipr.it>
+
+	* tests/: Makefile.am, bug5.cc, bug5.dat (positive.[6,1,1]): bug5
+	shows that we still have problems with minimization.
+
+2002-02-12 Tuesday 15:16  Roberto Bagnara <bagnara@cs.unipr.it>
+
+	* tests/bug5.cc (1.1): file bug5.cc was initially added on branch
+	positive.
+
+2002-02-12 Tuesday 15:16  Roberto Bagnara <bagnara@cs.unipr.it>
+
+	* tests/bug5.dat (1.1): file bug5.dat was initially added on branch
+	positive.
+
+2002-02-12 Tuesday 10:10  Elisa Ricci <ericci@cs.unipr.it>
+
+	* src/minimize.cc (positive.6): We must simplify also `dest' in
+	function minimize to erase all redundant constraints in the case
+	!con_to_gen.  In functions minimize() and add_and_minimize(), in
+	the case !con_to_gen, there was an error when we choose the
+	constraints to erase.
+
+2002-02-11 Monday 12:29  Roberto Bagnara <bagnara@cs.unipr.it>
+
+	* tests/: Makefile.am, bug4.cc, bug4.dat (positive.[5,1,1]): bug4
+	shows that we still have minimization problems.
+
+2002-02-11 Monday 12:29  Roberto Bagnara <bagnara@cs.unipr.it>
+
+	* tests/bug4.dat (1.1): file bug4.dat was initially added on branch
+	positive.
+
+2002-02-11 Monday 12:29  Roberto Bagnara <bagnara@cs.unipr.it>
+
+	* tests/bug4.cc (1.1): file bug4.cc was initially added on branch
+	positive.
+
+2002-02-11 Monday 11:49  Elisa Ricci <ericci@cs.unipr.it>
+
+	* src/minimize.cc (positive.5): In function add_and_minimize, we
+	must simplify `dest' in the case !con_to_gen because it can contain
+	redundant constraints.
+
+2002-02-11 Monday 10:57  Elisa Ricci <ericci@cs.unipr.it>
+
+	* src/: conversion.cc, minimize.cc, simplify.cc (positive.[3,4,3]):
+	In function add_and_minimize and in the case of !con_to_gen, the
+	system of constraints (that in this case is `dest') must contain
+	the constraints of positivity of variables.  In minimize and
+	add_and_minimize, we must erase the constraints that are a linear
+	combination of an equality and a constraint of positivity of
+	variables.
+
+2002-02-09 Saturday 07:53  Roberto Bagnara <bagnara@cs.unipr.it>
+
+	* src/Polyhedron.cc (positive.4): Error message made more specific.
+
+2002-02-07 Thursday 16:25  Roberto Bagnara <bagnara@cs.unipr.it>
+
+	* tests/bug3.cc (1.1): file bug3.cc was initially added on branch
+	positive.
+
+2002-02-07 Thursday 16:25  Roberto Bagnara <bagnara@cs.unipr.it>
+
+	* tests/: Makefile.am, bug3.cc, bug3.dat (positive.[4,1,1]): bug3
+	shows that Polyhedron::minimize() does not minimize.
+
+2002-02-07 Thursday 16:25  Roberto Bagnara <bagnara@cs.unipr.it>
+
+	* tests/bug3.dat (1.1): file bug3.dat was initially added on branch
+	positive.
+
+2002-02-07 Thursday 14:12  Roberto Bagnara <bagnara@cs.unipr.it>
+
+	* src/: SatMatrix.cc, SatMatrix.inlines.hh (positive.[1,1]):
+	SatMatrix::columns_erase_to_end() fixed (and no longer inline).
+
+2002-02-07 Thursday 12:25  Elisa Ricci <ericci@cs.unipr.it>
+
+	* src/: Row.cc, minimize.cc (positive.[3,3]): Corrected an error in
+	the function Row::only_a_term_is_positive().  In minimize and in
+	the case !con_to_gen we must call simplify() also for the `dest'
+	because there is the possibility that constraints that are
+	redundant with the constraints of positivity of variables are
+	present in dest.
+
+2002-02-06 Wednesday 08:06  Roberto Bagnara <bagnara@cs.unipr.it>
+
+	* tests/: Makefile.am, bug2.cc, bug2.dat (positive.[3,1,1]): bug2
+	shows another problem this time cropping up in
+	SatMatrix::columns_erase_to_end().
+
+2002-02-06 Wednesday 08:06  Roberto Bagnara <bagnara@cs.unipr.it>
+
+	* tests/bug2.dat (1.1): file bug2.dat was initially added on branch
+	positive.
+
+2002-02-06 Wednesday 08:03  Roberto Bagnara <bagnara@cs.unipr.it>
+
+	* tests/bug1.cc (positive.2): Assert that the input polyhedra are
+	OK.
+
+2002-02-06 Wednesday 07:48  Roberto Bagnara <bagnara@cs.unipr.it>
+
+	* src/Polyhedron.cc (1.110): Error messages improved.
+
+2002-02-05 Tuesday 22:21  Roberto Bagnara <bagnara@cs.unipr.it>
+
+	* tests/bug1.dat (1.1): file bug1.dat was initially added on branch
+	positive.
+
+2002-02-05 Tuesday 22:21  Roberto Bagnara <bagnara@cs.unipr.it>
+
+	* tests/: Makefile.am, bug1.cc, bug1.dat (positive.[2,1,1]): bug1
+	shows a problem with Polyhedron::convex_hull_assign_and_minimize().
+
+2002-02-05 Tuesday 22:19  Roberto Bagnara <bagnara@cs.unipr.it>
+
+	* src/Polyhedron.cc (positive.3): The input operator now handles
+	the `positive' flag.
+
+2002-02-05 Tuesday 16:02  Elisa Ricci <ericci@cs.unipr.it>
+
+	* src/Matrix.cc, src/Matrix.defs.hh, src/Polyhedron.cc,
+	src/Polyhedron.defs.hh, src/Polyhedron.inlines.hh, src/Row.cc,
+	src/Row.defs.hh, src/conversion.cc, src/minimize.cc,
+	src/simplify.cc, tests/Makefile.am, tests/addconstraints1.cc,
+	tests/addconstraints2.cc, tests/addconstraints3.cc,
+	tests/addgenerators1.cc, tests/addgenerators2.cc,
+	tests/affinetrans.cc, tests/append1.cc, tests/append2.cc,
+	tests/empty1.cc, tests/error2.cc, tests/error3.cc, tests/error4.cc,
+	tests/error5.cc, tests/error6.cc, tests/inters1.cc,
+	tests/inters2.cc, tests/onepoint.cc, tests/permute.cc,
+	tests/randchull1.cc, tests/removedim1.cc, tests/removedim2.cc,
+	tests/removedim3.cc, tests/smm1.cc
+	(positive.[1,1,2,2,2,2,2,2,2,2,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,
+	1,1,1,1,1,1]): Considered the case of a positive poited cone (i.e.
+	a polyhedron composed by points that satisfies the constraints of
+	positivity of all variables).  Added a test that shows that we can
+	not add or insert a line in a positive pointed cone.  All the tests
+	use positive pointed cones.
+
+2002-02-05 Tuesday 16:02  Elisa Ricci <ericci@cs.unipr.it>
+
+	* tests/error6.cc (1.1): file error6.cc was initially added on
+	branch positive.
+
+2002-02-04 Monday 22:48  Roberto Bagnara <bagnara@cs.unipr.it>
+
+	* src/Polyhedron.cc (1.109): More concise usage of stringstreams.
+
+2002-02-03 Sunday 07:56  Roberto Bagnara <bagnara@cs.unipr.it>
+
+	* config.guess (1.6), config.sub (1.6): Updated.
+
+2002-02-01 Friday 15:08  Roberto Bagnara <bagnara@cs.unipr.it>
+
+	* src/: Polyhedron.cc, Polyhedron.defs.hh, Polyhedron.inlines.hh,
+	Row.cc, Row.defs.hh, conversion.cc, minimize.cc, simplify.cc
+	(positive.[1,1,1,1,1,1,1,1]): The work on positive polyhedra is
+	being moved onto the `positive' branch.  Phase 2: latest changes
+	reapplied on the branch.
+
+2002-02-01 Friday 15:02  Roberto Bagnara <bagnara@cs.unipr.it>
+
+	* src/: Polyhedron.cc (1.108), Polyhedron.defs.hh (1.72),
+	Polyhedron.inlines.hh (1.14), Row.cc (1.24), Row.defs.hh (1.23),
+	conversion.cc (1.18), minimize.cc (1.9), simplify.cc (1.9): The
+	work on positive polyhedra is being moved onto the `positive'
+	branch.  Phase 1: latest changes undone.
+
+2002-01-31 Thursday 08:35  Elisa Ricci <ericci@cs.unipr.it>
+
+	* src/: Polyhedron.cc (1.107), Polyhedron.defs.hh (1.71),
+	Polyhedron.inlines.hh (1.13), Row.cc (1.23), Row.defs.hh (1.22),
+	conversion.cc (1.17), minimize.cc (1.8), simplify.cc (1.8): Started
+	to consider the case of positive polyhedra: this part is controlled
+	by POSITIVE.
+
+2002-01-29 Tuesday 17:55  Roberto Bagnara <bagnara@cs.unipr.it>
+
+	* configure.ac (1.20): Tell the user how to configure GMP.
+
+2002-01-29 Tuesday 15:41  Elisa Ricci <ericci@cs.unipr.it>
+
+	* src/Polyhedron.cc (1.106): In function
+	Polyhedron::remove_higher_dimensions, erased the command `size_t
+	space_dim = space_dimension()' because it caused a problem.
+
+2002-01-29 Tuesday 11:10  Roberto Bagnara <bagnara@cs.unipr.it>
+
+	* configure.ac (1.19), interfaces/Prolog/SICStus/ppl_sicstus.cc
+	(1.28), m4/ac_check_gmp_exceptions.m4 (1.2),
+	m4/ac_check_have_gmp.m4 (1.2), src/Constraint.cc (1.12),
+	src/Constraint.inlines.hh (1.14), src/Generator.cc (1.13),
+	src/Generator.defs.hh (1.33), src/LinExpression.cc (1.8),
+	src/LinExpression.inlines.hh (1.9), src/Matrix.cc (1.26),
+	src/Matrix.inlines.hh (1.13), src/Polyhedron.defs.hh (1.70),
+	src/Row.cc (1.22), src/Row.defs.hh (1.21), src/conversion.cc
+	(1.16), src/globals.hh (1.6), tests/randchull1.cc (1.9): We now use
+	the integer C++ class of GMP, instead of baking our own.  Note: we
+	now require GMP 4.0.1 or higher.
+
+2002-01-29 Tuesday 08:45  Roberto Bagnara <bagnara@cs.unipr.it>
+
+	* src/Makefile.am (1.20): Finish backing out the unwanted commit.
+
+2002-01-29 Tuesday 08:34  Roberto Bagnara <bagnara@cs.unipr.it>
+
+	* src/Polyhedron.cc (1.105): Better formatting for error messages.
+
+2002-01-29 Tuesday 08:33  Roberto Bagnara <bagnara@cs.unipr.it>
+
+	* src/: Constraint.cc (1.11), Constraint.inlines.hh (1.13),
+	Generator.cc (1.12), Generator.defs.hh (1.32), LinExpression.cc
+	(1.7), LinExpression.inlines.hh (1.8), Matrix.cc (1.25),
+	Matrix.defs.hh (1.14), Matrix.inlines.hh (1.12), Polyhedron.cc
+	(1.104), Polyhedron.defs.hh (1.69), Row.cc (1.21), Row.defs.hh
+	(1.20), conversion.cc (1.15), globals.hh (1.5): Back out previous
+	commit.
+
+2002-01-29 Tuesday 08:23  Roberto Bagnara <bagnara@cs.unipr.it>
+
+	* src/: Constraint.cc (1.10), Constraint.inlines.hh (1.12),
+	Generator.cc (1.11), Generator.defs.hh (1.31), LinExpression.cc
+	(1.6), LinExpression.inlines.hh (1.7), Makefile.am (1.19),
+	Matrix.cc (1.24), Matrix.defs.hh (1.13), Matrix.inlines.hh (1.11),
+	Polyhedron.cc (1.103), Polyhedron.defs.hh (1.68), Row.cc (1.20),
+	Row.defs.hh (1.19), conversion.cc (1.14), globals.hh (1.4): Better
+	formatting for error messages.
+
+2002-01-29 Tuesday 07:53  Roberto Bagnara <bagnara@cs.unipr.it>
+
+	* interfaces/Prolog/SICStus/ppl_sicstus.cc (1.27): Fix a couple of
+	namespace and include file glitches.
+
+2002-01-27 Sunday 22:42  Roberto Bagnara <bagnara@cs.unipr.it>
+
+	* configure.ac (1.18), ppl.spec.in (1.7), doc/Makefile.am (1.14),
+	interfaces/Prolog/SICStus/Makefile.am (1.7), src/Makefile.am
+	(1.18), tests/Makefile.am (1.33): The move to libtool is complete:
+	we can now build and distribute (with, e.g., RPM) static and
+	dynamic versions of the library.
+
+2002-01-27 Sunday 17:44  Roberto Bagnara <bagnara@cs.unipr.it>
+
+	* config.h.in (1.12), configure.ac (1.17), ltmain.sh (1.1): Start
+	to migrate to libtool.
+
+2002-01-27 Sunday 15:36  Enea Zaffanella <zaffanella@cs.unipr.it>
+
+	* src/Constraint.defs.hh (1.28): Fixed a typo in a (documentation)
+	comment.
+
+2002-01-19 Saturday 15:43  Roberto Bagnara <bagnara@cs.unipr.it>
+
+	* src/: ConSys.defs.hh (1.29), ConSys.inlines.hh (1.10),
+	GenSys.defs.hh (1.39), GenSys.inlines.hh (1.10): ConSys and GenSys
+	were both missing the assignment operator.
+
+2002-01-14 Monday 08:39  Roberto Bagnara <bagnara@cs.unipr.it>
+
+	* config.guess (1.5), config.sub (1.5): Updated.
+
+2001-12-23 Sunday 22:28  Roberto Bagnara <bagnara@cs.unipr.it>
+
+	* src/Row.cc (1.19): Include maxmin.hh.
+
+2001-12-20 Thursday 09:21  Elisa Ricci <ericci@cs.unipr.it>
+
+	* src/Polyhedron.cc (1.102): Modified the part of function
+	Polyhedron::add_constraints(cs) that is controlled by "#if 0": used
+	Matrix::grow(size_t, size_t) instead of resize(size_t, size_t) and
+	swap instead of "=", where it is possible.
+
+2001-12-15 Saturday 11:58  Roberto Bagnara <bagnara@cs.unipr.it>
+
+	* interfaces/Prolog/SICStus/Makefile.am (1.6): Distribute also
+	clpq2.pl.
+
+2001-12-15 Saturday 11:45  Roberto Bagnara <bagnara@cs.unipr.it>
+
+	* src/: Matrix.cc (1.23), Polyhedron.cc (1.101), conversion.cc
+	(1.13): Some comments fixed.
+
+2001-12-14 Friday 16:06  Patricia M. Hill <hill@comp.leeds.ac.uk>
+
+	* interfaces/Prolog/SICStus/smmdiff.clpq (1.1): smmdiff.clpq is
+	based on smm.clpq and solves the classic send-more-money problem so
+	that each variable is bound to a unique number.
+
+2001-12-14 Friday 16:04  Patricia M. Hill <hill@comp.leeds.ac.uk>
+
+	* interfaces/Prolog/SICStus/clpq2.pl (1.1): clpq2.pl is an
+	alternative meta-interpreter with some extra features, including
+	disjunction.
+
+2001-12-13 Thursday 16:52  Elisa Ricci <ericci@cs.unipr.it>
+
+	* tests/: Makefile.am (1.32), addgenerators1.cc (1.1),
+	addgenerators2.cc (1.1): Added a test for the function
+	Polyhedron::add_generators_and_minimize(gs) and one for the
+	function Polyhedron::add_generators(gs).
+
+2001-12-13 Thursday 16:50  Elisa Ricci <ericci@cs.unipr.it>
+
+	* src/: Polyhedron.cc (1.100), Polyhedron.defs.hh (1.67): The
+	function Polyhedron::add_generators(gs) now is called
+	Polyhedron::add_generators_and_minimize(gs).  Added the function
+	Polyhedron::add_generators(gs) that adds the system of generators
+	"gs" to the polyhedron without minimizing the resulting polyhedron.
+
+2001-12-13 Thursday 11:35  Elisa Ricci <ericci@cs.unipr.it>
+
+	* src/Polyhedron.cc (1.99): In functions
+	Polyhedron::add_constraints() and add_constraints_and_minimize()
+	improved the comments for the case of a zero-dimensional
+	polyhedron.
+
+2001-12-13 Thursday 08:59  Roberto Bagnara <bagnara@cs.unipr.it>
+
+	* src/Polyhedron.cc (1.98): Some comments have been improved.
+
+2001-12-12 Wednesday 18:43  Roberto Bagnara <bagnara@cs.unipr.it>
+
+	* tests/: Makefile.am (1.31), bug1.cc (1.2), bug2.cc (1.2):
+	Obsolete bug witnesses removed.
+
+2001-12-12 Wednesday 18:41  Roberto Bagnara <bagnara@cs.unipr.it>
+
+	* tests/: Makefile.am (1.30), addconstraints3.cc (1.1): New test.
+
+2001-12-12 Wednesday 18:31  Roberto Bagnara <bagnara@cs.unipr.it>
+
+	* src/: Generator.cc (1.10), Generator.defs.hh (1.30),
+	LinExpression.defs.hh (1.21), Matrix.cc (1.22), Polyhedron.cc
+	(1.97), Polyhedron.defs.hh (1.66), Polyhedron.inlines.hh (1.12),
+	Row.cc (1.18), Row.defs.hh (1.18), conversion.cc (1.12),
+	minimize.cc (1.7), simplify.cc (1.7): Kill trailing blanks.
+
+2001-12-12 Wednesday 18:26  Roberto Bagnara <bagnara@cs.unipr.it>
+
+	* src/Row.cc (1.17): The function compare(const Row& x, const Row&
+	y) can now compare rows of different size.
+
+2001-12-12 Wednesday 17:16  Elisa Ricci <ericci@cs.unipr.it>
+
+	* src/: Polyhedron.cc (1.96), Polyhedron.inlines.hh (1.11): The
+	function Polyhedron::set_zero_dim_univ() is now in Polyhedron.cc
+	(instead of Polyhedron.inlines.hh), says that a zero-dimensional
+	polyhedron is in a 0-dimensional space and clears the system of the
+	polyhedron.  Used "space_dim" instead of "space_dimension()" (where
+	we call this function many times).
+
+2001-12-12 Wednesday 14:58  Roberto Bagnara <bagnara@cs.unipr.it>
+
+	* src/Polyhedron.cc (1.95): Some minor improvements.
+
+2001-12-11 Tuesday 22:39  Roberto Bagnara <bagnara@cs.unipr.it>
+
+	* src/Polyhedron.cc (1.94): Bad uses of the negation operator `!'
+	have been fixed.  Some comments improved.
+
+2001-12-11 Tuesday 19:10  Roberto Bagnara <bagnara@cs.unipr.it>
+
+	* src/: SatMatrix.cc (1.10), SatMatrix.defs.hh (1.11): Wrong
+	comments fixed.
+
+2001-12-11 Tuesday 19:05  Roberto Bagnara <bagnara@cs.unipr.it>
+
+	* src/SatMatrix.defs.hh (1.10): Spurious declarations removed: two
+	methods were declared and never used nor implemented.
+
+2001-12-11 Tuesday 18:59  Roberto Bagnara <bagnara@cs.unipr.it>
+
+	* src/: Matrix.defs.hh (1.12), Matrix.inlines.hh (1.10): Comments
+	for Matrix::clear() adjusted.
+
+2001-12-11 Tuesday 18:59  Roberto Bagnara <bagnara@cs.unipr.it>
+
+	* src/: SatMatrix.cc (1.9), SatMatrix.defs.hh (1.9),
+	SatMatrix.inlines.hh (1.6): SatMatrix::clear() was complete
+	nonsense: rewritten.
+
+2001-12-11 Tuesday 17:10  Roberto Bagnara <bagnara@cs.unipr.it>
+
+	* src/Matrix.inlines.hh (1.9): Matrix::clear() now releases as much
+	memory as possible.
+
+2001-12-11 Tuesday 16:44  Roberto Bagnara <bagnara@cs.unipr.it>
+
+	* doc/: devref.tex (1.6), user.tex (1.7): People that are no longer
+	contributing or willing to contribute take a back seat (will
+	simplify the publication of the documentation as a technical
+	report).
+
+2001-12-11 Tuesday 11:21  Roberto Bagnara <bagnara@cs.unipr.it>
+
+	* src/SatRow.inlines.hh (1.7): Much more efficient (and concise)
+	implementation for SatRow::clear_from().
+
+2001-12-11 Tuesday 10:18  Roberto Bagnara <bagnara@cs.unipr.it>
+
+	* src/: Polyhedron.cc (1.93), Polyhedron.defs.hh (1.65): Comments
+	added for Polyhedron::remove_higher_dimensions().
+
+2001-12-11 Tuesday 09:53  Roberto Bagnara <bagnara@cs.unipr.it>
+
+	* src/Polyhedron.cc (1.92): Polyhedron::Polyhedron(ConSys& cs)
+	improved.
+
+2001-12-11 Tuesday 00:09  Roberto Bagnara <bagnara@cs.unipr.it>
+
+	* src/: Matrix.cc (1.21), Matrix.defs.hh (1.11): Always compile
+	Matrix::check_sorted().  Matrix::OK() fixed: the symbols `cerr' and
+	`endl' live in the `std' namespace.
+
+2001-12-11 Tuesday 00:04  Roberto Bagnara <bagnara@cs.unipr.it>
+
+	* src/: Matrix.cc (1.20), Matrix.inlines.hh (1.8), Polyhedron.cc
+	(1.91): A default-constructed (empty) Matrix is now declared as
+	sorted.  Matrix::grow() was not handling the `sorted' flag
+	correctly: fixed.  Matrix::add_zero_columns() is now an inline
+	method.  Matrix::OK() now checks that the `sorted' flag is set only
+	if the matrix is actually sorted.  Matrix::add_rows_and_columns()
+	now asserts OK() before returning.  Some comments fixed.
+
+2001-12-10 Monday 16:26  Roberto Bagnara <bagnara@cs.unipr.it>
+
+	* src/SatMatrix.cc (1.8): SatMatrix::resize() was not shrinking the
+	matrix when requested to do so: fixed.
+
+2001-12-10 Monday 12:31  Roberto Bagnara <bagnara@cs.unipr.it>
+
+	* src/SatMatrix.cc (1.7): Added speculative memory allocation for
+	SatMatrix.
+
+2001-12-10 Monday 08:35  Roberto Bagnara <bagnara@cs.unipr.it>
+
+	* src/: Polyhedron.cc (1.90), Row.defs.hh (1.17): Some comments
+	have been fixed.
+
+2001-12-09 Sunday 11:26  Roberto Bagnara <bagnara@cs.unipr.it>
+
+	* configure.ac (1.16): Bump version number so as to avoid
+	confusion.
+
+2001-12-08 Saturday 10:40  Roberto Bagnara <bagnara@cs.unipr.it>
+
+	* interfaces/Prolog/SICStus/expected (1.2), src/Row.defs.hh (1.16):
+	EXTRA_NORMALIZATION defaults to 0.  Expected outcome from the clpq
+	test updated.
+
+2001-12-05 Wednesday 18:58  Elisa Ricci <ericci@cs.unipr.it>
+
+	* src/: ConSys.cc (1.21), GenSys.cc (1.24), Matrix.cc (1.19),
+	Matrix.defs.hh (1.10), Polyhedron.cc (1.89), Row.cc (1.16),
+	Row.defs.hh (1.15), conversion.cc (1.11): The method
+	Row::normalize() has been restored so that it only ensures
+	coefficients are mutually prime.  The new method
+	Row::strong_normalize() also ensures that the first non-zero
+	coefficient of lines and equalities is negative.  The new method
+	Matrix::strong_normalize() that calls strongly normalizes each row.
+	 Strong normalization is now used wherever it is guaranteed to be
+	both safe and efficient.  The "EXTRA_NORMALIZATION" flag is used to
+	decide whether strong_normalization is also used in
+	Row::libear_combine() (since in this case strong normalization can
+	incur performance penalties).
+
+2001-12-03 Monday 09:16  Elisa Ricci <ericci@cs.unipr.it>
+
+	* src/Row.cc (1.15): Changed the function Row::normalize() so that
+	the first coefficient different from zero is negative (and not
+	positive).
+
+2001-12-02 Sunday 16:09  Elisa Ricci <ericci@cs.unipr.it>
+
+	* src/: Matrix.cc (1.18), Polyhedron.cc (1.88), Row.cc (1.14): In
+	Polyhedron::intersection_assign_and_minimize added the assertion to
+	verify if the resulting polyhedron is OK.  In function
+	Row::normalize() if we normalize an equality or a line, we decide
+	that the first element of the corresponding row is positive.  In
+	function Matrix::back_substitute(), if we call linear_combine with
+	an equality and an inequality, we must change the coefficients of
+	the equality so that the coefficient of the inequality in the
+	linear combination is non-negative.
+
+2001-11-26 Monday 17:59  Roberto Bagnara <bagnara@cs.unipr.it>
+
+	* config.guess (1.4), config.sub (1.4): Updated.
+
+2001-11-26 Monday 17:25  Roberto Bagnara <bagnara@cs.unipr.it>
+
+	* interfaces/Prolog/SICStus/ppl_sicstus.cc (1.26): Typo fixed.
+
+2001-11-21 Wednesday 19:26  Elisa Ricci <ericci@cs.unipr.it>
+
+	* src/Polyhedron.cc (1.87): Changed the message of some exceptions:
+	where it is possible we use the functions
+	`throw_different_dimensions' and `throw_dimension_incompatible'.
+
+2001-11-20 Tuesday 20:42  Roberto Bagnara <bagnara@cs.unipr.it>
+
+	* interfaces/Prolog/SICStus/clpq.pl (1.25): End-of-line characters
+	left behind be read_term/2 are now eaten.
+
+2001-11-13 Tuesday 21:57  Roberto Bagnara <bagnara@cs.unipr.it>
+
+	* ChangeLog (1.4): Updated.
+
 2001-11-13 Tuesday 21:55  Roberto Bagnara <bagnara@cs.unipr.it>
 
 	* NEWS (1.5): Mention that we have greatly improved the
@@ -1074,10 +1712,8 @@
 2001-10-29 Monday 06:47  Roberto Bagnara <bagnara@cs.unipr.it>
 
 	* src/: Generator.cc (1.7), Polyhedron.defs.hh (1.52),
-	conversion.cc (1.7), Integer/Integer.cc (1.4),
-	Integer/Integer.defs.hh (1.5), Integer/Integer.inlines.hh (1.5):
-	The Integer constants 0 and 1 are now provided by the static
-	methods Integer::zero() and Integer::one().
+	conversion.cc (1.7): The Integer constants 0 and 1 are now provided
+	by the static methods Integer::zero() and Integer::one().
 
 2001-10-28 Sunday 21:41  Enea Zaffanella <zaffanella@cs.unipr.it>
 
@@ -1651,10 +2287,8 @@
 	src/SatRow.inlines.hh (1.4), src/Status.cc (1.6),
 	src/Status.defs.hh (1.8), src/Status.inlines.hh (1.2),
 	src/Variable.cc (1.3), src/Variable.defs.hh (1.8),
-	src/Variable.inlines.hh (1.3), src/ppl_header.bottom (1.2),
-	src/Integer/Integer.cc (1.3), src/Integer/Integer.defs.hh (1.4),
-	src/Integer/Integer.inlines.hh (1.4): The INLINE/OUTLINE mechanism
-	has gone: it caused too many problems.
+	src/Variable.inlines.hh (1.3), src/ppl_header.bottom (1.2): The
+	INLINE/OUTLINE mechanism has gone: it caused too many problems.
 
 2001-10-23 Tuesday 14:08  Enea Zaffanella <zaffanella@cs.unipr.it>
 
@@ -1993,11 +2627,6 @@
 	* src/: ConSys.defs.hh (1.15), GenSys.defs.hh (1.23): Use
 	PPL_INTERNAL inheritance.
 
-2001-10-19 Friday 19:56  Roberto Bagnara <bagnara@cs.unipr.it>
-
-	* src/Integer/Integer.defs.hh (1.3): Short comment to swap, not
-	long comment to std.
-
 2001-10-19 Friday 18:13  Patricia M. Hill <hill@comp.leeds.ac.uk>
 
 	* doc/definitions.dox (1.13): Generators and associated terminology
@@ -2049,10 +2678,9 @@
 	src/SatRow.defs.hh (1.5), src/SatRow.inlines.hh (1.2),
 	src/Status.cc (1.3), src/Status.defs.hh (1.5), src/conversion.cc
 	(1.4), src/minimize.cc (1.3), src/simplify.cc (1.3),
-	src/Integer/Integer.inlines.hh (1.3), src/Integer/Makefile.am
-	(1.2), tests/Makefile.am (1.15), tests/append2.cc (1.3),
-	tests/error2.cc (1.3), tests/inters1.cc (1.4), tests/inters2.cc
-	(1.4), tests/permute.cc (1.6): Annoying trailing blanks removed.
+	tests/Makefile.am (1.15), tests/append2.cc (1.3), tests/error2.cc
+	(1.3), tests/inters1.cc (1.4), tests/inters2.cc (1.4),
+	tests/permute.cc (1.6): Annoying trailing blanks removed.
 
 2001-10-19 Friday 14:15  Roberto Bagnara <bagnara@cs.unipr.it>
 
@@ -2297,12 +2925,6 @@
 	(1.2), SatMatrix.defs.hh (1.4), SatRow.cc (1.2), SatRow.defs.hh
 	(1.3), Status.cc (1.2), Status.defs.hh (1.3): Now, there is not
 	NDEBUG before the function OK.
-
-2001-10-17 Wednesday 07:48  Roberto Bagnara <bagnara@cs.unipr.it>
-
-	* src/Integer/: Integer.cc (1.2), Integer.defs.hh (1.2),
-	Integer.inlines.hh (1.2), Integer.types.hh (1.2): Integer is now in
-	the PPL namespace.
 
 2001-10-17 Wednesday 07:47  Roberto Bagnara <bagnara@cs.unipr.it>
 
@@ -2550,10 +3172,7 @@
 
 2001-10-15 Monday 15:40  Roberto Bagnara <bagnara@cs.unipr.it>
 
-	* src/: .cvsignore (1.3), Integer/.cvsignore (1.1),
-	Integer/Integer.cc (1.1), Integer/Integer.defs.hh (1.1),
-	Integer/Integer.inlines.hh (1.1), Integer/Integer.types.hh (1.1),
-	Integer/Makefile.am (1.1): Here is the Integer class again.
+	* src/.cvsignore (1.3): Here is the Integer class again.
 
 2001-10-15 Monday 15:40  Roberto Bagnara <bagnara@cs.unipr.it>
 
