@@ -488,7 +488,7 @@ SPECIALIZE_ASSIGN(unsigned_int_c_string, unsigned long, c_string)
 SPECIALIZE_ASSIGN(unsigned_long_long_c_string, unsigned long long, c_string)
 
 template<typename T>
-struct Larger_Types;
+struct Larger;
 
 // The following is architecture dependent.
 // It should be OK of ia32.
@@ -496,130 +496,131 @@ struct Larger_Types;
 // Chosen guidelines:
 //   - avoid division where possibile (int_larger variant for mul)
 //   - use int_larger variant for types smaller than architecture bit size
+
 template <>
-struct Larger_Types<char> {
-  static const bool Neg_ = true;
-  static const bool Add_ = true;
-  static const bool Sub_ = true;
-  static const bool Mul_ = true;
-  typedef int Neg;
-  typedef int Add;
-  typedef int Sub;
-  typedef int Mul;
+struct Larger<char> {
+  static const bool use_for_neg = true;
+  static const bool use_for_add = true;
+  static const bool use_for_sub = true;
+  static const bool use_for_mul = true;
+  typedef int Type_For_Neg;
+  typedef int Type_For_Add;
+  typedef int Type_For_Sub;
+  typedef int Type_For_Mul;
 };
 
 template <>
-struct Larger_Types<unsigned char> {
-  static const bool Neg_ = true;
-  static const bool Add_ = true;
-  static const bool Sub_ = true;
-  static const bool Mul_ = true;
-  typedef int Neg;
-  typedef unsigned int Add;
-  typedef int Sub;
-  typedef unsigned int Mul;
+struct Larger<unsigned char> {
+  static const bool use_for_neg = true;
+  static const bool use_for_add = true;
+  static const bool use_for_sub = true;
+  static const bool use_for_mul = true;
+  typedef int Type_For_Neg;
+  typedef unsigned int Type_For_Add;
+  typedef int Type_For_Sub;
+  typedef unsigned int Type_For_Mul;
 };
 
 template <>
-struct Larger_Types<short> {
-  static const bool Neg_ = true;
-  static const bool Add_ = true;
-  static const bool Sub_ = true;
-  static const bool Mul_ = true;
-  typedef int Neg;
-  typedef int Add;
-  typedef int Sub;
-  typedef int Mul;
+struct Larger<short> {
+  static const bool use_for_neg = true;
+  static const bool use_for_add = true;
+  static const bool use_for_sub = true;
+  static const bool use_for_mul = true;
+  typedef int Type_For_Neg;
+  typedef int Type_For_Add;
+  typedef int Type_For_Sub;
+  typedef int Type_For_Mul;
 };
 
 template <>
-struct Larger_Types<unsigned short> {
-  static const bool Neg_ = true;
-  static const bool Add_ = true;
-  static const bool Sub_ = true;
-  static const bool Mul_ = true;
-  typedef int Neg;
-  typedef unsigned int Add;
-  typedef int Sub;
-  typedef unsigned int Mul;
+struct Larger<unsigned short> {
+  static const bool use_for_neg = true;
+  static const bool use_for_add = true;
+  static const bool use_for_sub = true;
+  static const bool use_for_mul = true;
+  typedef int Type_For_Neg;
+  typedef unsigned int Type_For_Add;
+  typedef int Type_For_Sub;
+  typedef unsigned int Type_For_Mul;
 };
 
 template <>
-struct Larger_Types<int> {
-  static const bool Neg_ = false;
-  static const bool Add_ = false;
-  static const bool Sub_ = false;
-  static const bool Mul_ = false;
-  typedef long long Neg;
-  typedef long long Add;
-  typedef long long Sub;
-  typedef long long Mul;
+struct Larger<int> {
+  static const bool use_for_neg = false;
+  static const bool use_for_add = false;
+  static const bool use_for_sub = false;
+  static const bool use_for_mul = false;
+  typedef long long Type_For_Neg;
+  typedef long long Type_For_Add;
+  typedef long long Type_For_Sub;
+  typedef long long Type_For_Mul;
 };
 
 template <>
-struct Larger_Types<unsigned int> {
-  static const bool Neg_ = false;
-  static const bool Add_ = false;
-  static const bool Sub_ = false;
-  static const bool Mul_ = false;
-  typedef long long Neg;
-  typedef unsigned long long Add;
-  typedef long long Sub;
-  typedef unsigned long long Mul;
+struct Larger<unsigned int> {
+  static const bool use_for_neg = false;
+  static const bool use_for_add = false;
+  static const bool use_for_sub = false;
+  static const bool use_for_mul = false;
+  typedef long long Type_For_Neg;
+  typedef unsigned long long Type_For_Add;
+  typedef long long Type_For_Sub;
+  typedef unsigned long long Type_For_Mul;
 };
 
 template <>
-struct Larger_Types<long> {
-  static const bool Neg_ = false;
-  static const bool Add_ = false;
-  static const bool Sub_ = false;
-  static const bool Mul_ = false;
-  typedef long long Neg;
-  typedef long long Add;
-  typedef long long Sub;
-  typedef long long Mul;
+struct Larger<long> {
+  static const bool use_for_neg = false;
+  static const bool use_for_add = false;
+  static const bool use_for_sub = false;
+  static const bool use_for_mul = false;
+  typedef long long Type_For_Neg;
+  typedef long long Type_For_Add;
+  typedef long long Type_For_Sub;
+  typedef long long Type_For_Mul;
 };
 
 template <>
-struct Larger_Types<unsigned long> {
-  static const bool Neg_ = false;
-  static const bool Add_ = false;
-  static const bool Sub_ = false;
-  static const bool Mul_ = false;
-  typedef long long Neg;
-  typedef unsigned long long Add;
-  typedef long long Sub;
-  typedef unsigned long long Mul;
+struct Larger<unsigned long> {
+  static const bool use_for_neg = false;
+  static const bool use_for_add = false;
+  static const bool use_for_sub = false;
+  static const bool use_for_mul = false;
+  typedef long long Type_For_Neg;
+  typedef unsigned long long Type_For_Add;
+  typedef long long Type_For_Sub;
+  typedef unsigned long long Type_For_Mul;
 };
 
 template <>
-struct Larger_Types<long long> {
-  static const bool Neg_ = false;
-  static const bool Add_ = false;
-  static const bool Sub_ = false;
-  static const bool Mul_ = false;
-  typedef long long Neg;
-  typedef long long Add;
-  typedef long long Sub;
-  typedef long long Mul;
+struct Larger<long long> {
+  static const bool use_for_neg = false;
+  static const bool use_for_add = false;
+  static const bool use_for_sub = false;
+  static const bool use_for_mul = false;
+  typedef long long Type_For_Neg;
+  typedef long long Type_For_Add;
+  typedef long long Type_For_Sub;
+  typedef long long Type_For_Mul;
 };
 
 template <>
-struct Larger_Types<unsigned long long> {
-  static const bool Neg_ = false;
-  static const bool Add_ = false;
-  static const bool Sub_ = false;
-  static const bool Mul_ = false;
-  typedef long long Neg;
-  typedef unsigned long long Add;
-  typedef long long Sub;
-  typedef unsigned long long Mul;
+struct Larger<unsigned long long> {
+  static const bool use_for_neg = false;
+  static const bool use_for_add = false;
+  static const bool use_for_sub = false;
+  static const bool use_for_mul = false;
+  typedef long long Type_For_Neg;
+  typedef unsigned long long Type_For_Add;
+  typedef long long Type_For_Sub;
+  typedef unsigned long long Type_For_Mul;
 };
 
 template <typename Policy, typename Type>
 inline Result 
 neg_int_larger(Type& to, const Type x) {
-  typename Larger_Types<Type>::Neg l = x;
+  typename Larger<Type>::Type_For_Neg l = x;
   l = -l;
   return assign<Policy>(to, l);
 }
@@ -627,7 +628,7 @@ neg_int_larger(Type& to, const Type x) {
 template <typename Policy, typename Type>
 inline Result 
 add_int_larger(Type& to, const Type x, const Type y) {
-  typename Larger_Types<Type>::Add l = x;
+  typename Larger<Type>::Type_For_Add l = x;
   l += y;
   return assign<Policy>(to, l);
 }
@@ -635,7 +636,7 @@ add_int_larger(Type& to, const Type x, const Type y) {
 template <typename Policy, typename Type>
 inline Result 
 sub_int_larger(Type& to, const Type x, const Type y) {
-  typename Larger_Types<Type>::Sub l = x;
+  typename Larger<Type>::Type_For_Sub l = x;
   l -= y;
   return assign<Policy>(to, l);
 }
@@ -643,7 +644,7 @@ sub_int_larger(Type& to, const Type x, const Type y) {
 template <typename Policy, typename Type>
 inline Result 
 mul_int_larger(Type& to, const Type x, const Type y) {
-  typename Larger_Types<Type>::Mul l = x;
+  typename Larger<Type>::Type_For_Mul l = x;
   l *= y;
   return assign<Policy>(to, l);
 }
@@ -653,7 +654,7 @@ inline Result
 neg_signed_int(Type& to, const Type from) {
   Result r;
   if (Policy::check_overflow) {
-    if (Larger_Types<Type>::Neg_)
+    if (Larger<Type>::use_for_neg)
       return neg_int_larger<Policy>(to, from);
     if (from < -CHECKED_INT_MAX(Type, Policy)) {
       r = V_POS_OVERFLOW;
@@ -671,7 +672,7 @@ inline Result
 neg_unsigned_int(Type& to, const Type from) {
   Result r;
   if (Policy::check_overflow) {
-    if (Larger_Types<Type>::Neg_)
+    if (Larger<Type>::use_for_neg)
       return neg_int_larger<Policy>(to, from);
     if (from != 0) {
       r = V_NEG_OVERFLOW;
@@ -689,7 +690,7 @@ inline Result
 add_signed_int(Type& to, const Type x, const Type y) {
   Result r;
   if (Policy::check_overflow) {
-    if (Larger_Types<Type>::Add_)
+    if (Larger<Type>::use_for_add)
       return add_int_larger<Policy>(to, x, y);
     if (y >= 0) {
       if (x > CHECKED_INT_MAX(Type, Policy) - y) {
@@ -713,7 +714,7 @@ inline Result
 add_unsigned_int(Type& to, const Type x, const Type y) {
   Result r;
   if (Policy::check_overflow) {
-    if (Larger_Types<Type>::Add_)
+    if (Larger<Type>::use_for_add)
       return add_int_larger<Policy>(to, x, y);
     if (x > CHECKED_INT_MAX(Type, Policy) - y) {
       r = V_POS_OVERFLOW;
@@ -731,7 +732,7 @@ inline Result
 sub_signed_int(Type& to, const Type x, const Type y) {
   Result r;
   if (Policy::check_overflow) {
-    if (Larger_Types<Type>::Sub_)
+    if (Larger<Type>::use_for_sub)
       return sub_int_larger<Policy>(to, x, y);
     if (y >= 0) {
       if (x < CHECKED_INT_MIN(Type, Policy) + y) {
@@ -755,7 +756,7 @@ inline Result
 sub_unsigned_int(Type& to, const Type x, const Type y) {
   Result r;
   if (Policy::check_overflow) {
-    if (Larger_Types<Type>::Sub_)
+    if (Larger<Type>::use_for_sub)
       return sub_int_larger<Policy>(to, x, y);
     if (x < CHECKED_INT_MIN(Type, Policy) + y) {
       r = V_NEG_OVERFLOW;
@@ -775,7 +776,7 @@ mul_signed_int(Type& to, const Type x, const Type y) {
     to = x * y;
     return V_EQ;
   }
-  if (Larger_Types<Type>::Mul_)
+  if (Larger<Type>::use_for_mul)
     return mul_int_larger<Policy>(to, x, y);
   if (y == 0) {
     to = 0;
@@ -825,7 +826,7 @@ mul_unsigned_int(Type& to, const Type x, const Type y) {
     to = x * y;
     return V_EQ;
   }
-  if (Larger_Types<Type>::Mul_)
+  if (Larger<Type>::use_for_mul)
     return mul_int_larger<Policy>(to, x, y);
   if (y == 0) {
     to = 0;
