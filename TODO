@@ -2,6 +2,20 @@
 Enhancements for PPL 0.7
 ========================
 
+- Consider performing the following renamings:
+
+    Polyhedron::dimension() -> Polyhedron::affine_dimension()
+    *dimension* (except for *space_dimension*) -> *space_dimension*
+    Integer -> Coefficient
+    BoundingBox -> Bounding_Box
+    ConSys -> Constraint_System
+    GenSys -> Generator_System
+    AskTell -> Ask_Tell
+    LinExpression -> Linear_Expression
+    SatMatrix -> Saturation_Matrix
+    SatRow -> Saturation_Row
+    PartialFunction -> Partial_Function
+
 - Rewrite Matrix::sort_and_remove_with_sat() and perhaps
   Matrix::sort_rows().
 - Look carefully into the methods Polyhedron::obtain_sorted_constraints*()
