@@ -284,8 +284,19 @@ AC_CHECK_HEADER(gprolog.h,
                 extra_if_Prolog_subdirs="${extra_if_Prolog_subdirs} GNU")
 AC_CHECK_HEADER(SWI-Prolog.h,
                 extra_if_Prolog_subdirs="${extra_if_Prolog_subdirs} SWI")
+dnl We require SICStus Prolog 3.9.0 or later.
 AC_CHECK_HEADER(sicstus/sicstus.h,
-                extra_if_Prolog_subdirs="${extra_if_Prolog_subdirs} SICStus")
+                AC_MSG_CHECKING([for SICStus version 3.9.0 or later])
+                AC_EGREP_CPP(yes,
+                  [
+                    #include <sicstus/sicstus.h>
+                    #if SICSTUS_MAJOR_VERSION > 3 || (SICSTUS_MAJOR_VERSION == 3 && SICSTUS_MINOR_VERSION >= 9)
+                      yes
+                    #endif
+                  ],
+                  AC_MSG_RESULT(yes)
+                  extra_if_Prolog_subdirs="${extra_if_Prolog_subdirs} SICStus",
+                  AC_MSG_RESULT(no)))
 AC_CHECK_HEADER(Yap/c_interface.h,
                 extra_if_Prolog_subdirs="${extra_if_Prolog_subdirs} YAP")
 
