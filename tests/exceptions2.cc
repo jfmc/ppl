@@ -532,7 +532,7 @@ error17() {
     // `limited_H79_widening_assign': it is illegal to
     // apply this function to a closed polyhedron and
     // a non-closed polyhedron.
-    ph2.limited_H79_widening_assign(ph1, cs);
+    ph2.limited_H79_extrapolation_assign(ph1, cs);
   }
   catch(invalid_argument& e) {
 #if NOISY
@@ -570,10 +570,10 @@ error18() {
 
   try {
     // This is an invalid use of the function
-    // `limited_H79_widening_assign': it is illegal to
+    // `limited_H79_extrapolation_assign': it is illegal to
     // apply this function to two closed polyhedra and
     // to a non-closed system of constraints.
-    ph2.limited_H79_widening_assign(ph1, cs);
+    ph2.limited_H79_extrapolation_assign(ph1, cs);
   }
   catch(invalid_argument& e) {
 #if NOISY
@@ -848,11 +848,11 @@ error27() {
 
   try {
     // This is an invalid use of the function
-    // `limited_H79_widening_assign': it is illegal to
+    // `limited_H79_extrapolation_assign': it is illegal to
     // apply this function to a non-closed polyhedron,
     // a non-closed polyhedron and a system of
     // constraints that contains strict inequalities.
-    ph2.limited_H79_widening_assign(ph1, cs);
+    ph2.limited_H79_extrapolation_assign(ph1, cs);
   }
   catch(invalid_argument& e) {
 #if NOISY
