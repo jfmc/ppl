@@ -61,6 +61,8 @@ PPL::Matrix::Matrix(const Topology topol,
   // Construct in direct order: will destroy in reverse order.
   for (dimension_type i = 0; i < n_rows; ++i)
     rows[i].construct(row_type, n_columns, row_capacity);
+  // This will also check that `n_columns' is zero when `n_rows' is zero.
+  assert(OK());
 }
 
 PPL::Matrix::Matrix(const Matrix& y)

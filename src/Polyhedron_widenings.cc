@@ -178,7 +178,7 @@ PPL::Polyhedron::H79_widening_assign(const Polyhedron& y, unsigned* tp) {
   // widening by using the specification in CousotH78, therefore
   // avoiding converting from generators to constraints.
   if (x.has_pending_generators() || !x.constraints_are_up_to_date()) {
-    ConSys CH78_cs(tpl, 0, x.gen_sys.num_columns());
+    ConSys CH78_cs(tpl);
     x.select_CH78_constraints(y, CH78_cs);
 
     if (CH78_cs.num_rows() == y.con_sys.num_rows()) {
@@ -226,9 +226,8 @@ PPL::Polyhedron::H79_widening_assign(const Polyhedron& y, unsigned* tp) {
 
   // Copy into `H79_con_sys' the constraints of `x' that are common to `y',
   // according to the definition of the H79 widening.
-  const dimension_type num_columns = x.con_sys.num_columns();
-  ConSys H79_cs(tpl, 0, num_columns);
-  ConSys x_minus_H79_cs(tpl, 0, num_columns);
+  ConSys H79_cs(tpl);
+  ConSys x_minus_H79_cs(tpl);
   x.select_H79_constraints(y, H79_cs, x_minus_H79_cs);
 
   if (x_minus_H79_cs.num_rows() == 0)
@@ -572,9 +571,8 @@ PPL::Polyhedron::BHRZ03_combining_constraints(const Polyhedron& y,
     return false;
 
   const Topology tpl = x.topology();
-  const dimension_type num_columns = x.con_sys.num_columns();
-  ConSys combining_cs(tpl, 0, num_columns);
-  ConSys new_cs(tpl, 0, num_columns);
+  ConSys combining_cs(tpl);
+  ConSys new_cs(tpl);
 
   // Consider the points that belong to both `x.gen_sys' and `y.gen_sys'.
   // For NNC polyhedra, the role of points is played by closure points.
@@ -905,9 +903,8 @@ PPL::Polyhedron::BHRZ03_widening_assign(const Polyhedron& y, unsigned* tp) {
   // according to the definition of the H79 widening.
   // The other ones are copied into `x_minus_H79_cs'.
   const Topology tpl = x.topology();
-  const dimension_type num_columns = x.con_sys.num_columns();
-  ConSys H79_cs(tpl, 0, num_columns);
-  ConSys x_minus_H79_cs(tpl, 0, num_columns);
+  ConSys H79_cs(tpl);
+  ConSys x_minus_H79_cs(tpl);
   x.select_H79_constraints(y, H79_cs, x_minus_H79_cs);
 
   // We cannot have selected all of the rows, since otherwise
