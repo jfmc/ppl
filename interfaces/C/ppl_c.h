@@ -1333,21 +1333,21 @@ __P((ppl_const_Polyhedron_t ph,
   not empty.
 */
 int
-ppl_Polyhedron_check_empty __P((ppl_const_Polyhedron_t ph));
+ppl_Polyhedron_is_empty __P((ppl_const_Polyhedron_t ph));
 
 /*! \brief
   Returns a positive integer if \p ph is a universe polyhedron;
   returns 0 if it is not.
 */
 int
-ppl_Polyhedron_check_universe __P((ppl_const_Polyhedron_t ph));
+ppl_Polyhedron_is_universe __P((ppl_const_Polyhedron_t ph));
 
 /*! \brief
   Returns a positive integer if \p ph is bounded; returns 0 if \p ph is
   unbounded.
 */
 int
-ppl_Polyhedron_check_bounded __P((ppl_const_Polyhedron_t ph));
+ppl_Polyhedron_is_bounded __P((ppl_const_Polyhedron_t ph));
 
 /*! \brief
   Returns a positive integer if \p le is bounded from above in \p ph;
@@ -1370,7 +1370,7 @@ ppl_Polyhedron_bounds_from_below __P((ppl_const_Polyhedron_t ph,
   returns 0 if \p ph is not topologically closed.
 */
 int
-ppl_Polyhedron_check_topologically_closed __P((ppl_const_Polyhedron_t ph));
+ppl_Polyhedron_is_topologically_closed __P((ppl_const_Polyhedron_t ph));
 
 /*! \brief
   Returns a positive integer if \p x contains or is equal to \p y;
@@ -1393,8 +1393,8 @@ ppl_Polyhedron_strictly_contains_Polyhedron __P((ppl_const_Polyhedron_t x,
   if they are not.
 */
 int
-ppl_Polyhedron_check_disjoint_from_Polyhedron __P((ppl_const_Polyhedron_t x,
-						   ppl_const_Polyhedron_t y));
+ppl_Polyhedron_is_disjoint_from_Polyhedron __P((ppl_const_Polyhedron_t x,
+						ppl_const_Polyhedron_t y));
 
 /*! \brief
   Returns a positive integer if \p x and \p y are the same polyhedron;

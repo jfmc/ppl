@@ -118,7 +118,7 @@ main() TRY {
 	  constraints(ph,
 		      S, E, N, D, M, O, R, Y,
 		      C1, C2, C3, C4);
-	  if (!ph.check_empty()) {
+	  if (!ph.is_empty()) {
 #if NOISY
 	    cout << "Solution constraints" << endl;
 	    const ConSys& cs = ph.constraints();

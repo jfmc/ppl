@@ -413,15 +413,15 @@ YAP_STUB_2(ppl_Polyhedron_get_minimized_generators)
 YAP_STUB_3(ppl_Polyhedron_relation_with_constraint)
 YAP_STUB_3(ppl_Polyhedron_relation_with_generator)
 YAP_STUB_3(ppl_Polyhedron_get_bounding_box)
-YAP_STUB_1(ppl_Polyhedron_check_empty)
-YAP_STUB_1(ppl_Polyhedron_check_universe)
-YAP_STUB_1(ppl_Polyhedron_check_bounded)
+YAP_STUB_1(ppl_Polyhedron_is_empty)
+YAP_STUB_1(ppl_Polyhedron_is_universe)
+YAP_STUB_1(ppl_Polyhedron_is_bounded)
 YAP_STUB_2(ppl_Polyhedron_bounds_from_above)
 YAP_STUB_2(ppl_Polyhedron_bounds_from_below)
-YAP_STUB_1(ppl_Polyhedron_check_topologically_closed)
+YAP_STUB_1(ppl_Polyhedron_is_topologically_closed)
 YAP_STUB_2(ppl_Polyhedron_contains_Polyhedron)
 YAP_STUB_2(ppl_Polyhedron_strictly_contains_Polyhedron)
-YAP_STUB_2(ppl_Polyhedron_check_disjoint_from_Polyhedron)
+YAP_STUB_2(ppl_Polyhedron_is_disjoint_from_Polyhedron)
 YAP_STUB_2(ppl_Polyhedron_equals_Polyhedron)
 YAP_STUB_1(ppl_Polyhedron_OK)
 YAP_STUB_2(ppl_Polyhedron_add_constraint)
@@ -490,15 +490,15 @@ init() {
   YAP_USER_C_PREDICATE(ppl_Polyhedron_relation_with_constraint, 3);
   YAP_USER_C_PREDICATE(ppl_Polyhedron_relation_with_generator, 3);
   YAP_USER_C_PREDICATE(ppl_Polyhedron_get_bounding_box, 3);
-  YAP_USER_C_PREDICATE(ppl_Polyhedron_check_empty, 1);
-  YAP_USER_C_PREDICATE(ppl_Polyhedron_check_universe, 1);
-  YAP_USER_C_PREDICATE(ppl_Polyhedron_check_bounded, 1);
+  YAP_USER_C_PREDICATE(ppl_Polyhedron_is_empty, 1);
+  YAP_USER_C_PREDICATE(ppl_Polyhedron_is_universe, 1);
+  YAP_USER_C_PREDICATE(ppl_Polyhedron_is_bounded, 1);
   YAP_USER_C_PREDICATE(ppl_Polyhedron_bounds_from_above, 2);
   YAP_USER_C_PREDICATE(ppl_Polyhedron_bounds_from_below, 2);
-  YAP_USER_C_PREDICATE(ppl_Polyhedron_check_topologically_closed, 1);
+  YAP_USER_C_PREDICATE(ppl_Polyhedron_is_topologically_closed, 1);
   YAP_USER_C_PREDICATE(ppl_Polyhedron_contains_Polyhedron, 2);
   YAP_USER_C_PREDICATE(ppl_Polyhedron_strictly_contains_Polyhedron, 2);
-  YAP_USER_C_PREDICATE(ppl_Polyhedron_check_disjoint_from_Polyhedron, 2);
+  YAP_USER_C_PREDICATE(ppl_Polyhedron_is_disjoint_from_Polyhedron, 2);
   YAP_USER_C_PREDICATE(ppl_Polyhedron_equals_Polyhedron, 2);
   YAP_USER_C_PREDICATE(ppl_Polyhedron_OK, 1);
   YAP_USER_C_PREDICATE(ppl_Polyhedron_add_constraint, 2);

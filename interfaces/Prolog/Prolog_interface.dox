@@ -225,15 +225,15 @@ Here is a list of all the PPL predicates provided by the Prolog interface.
 </CODE>
 
 <CODE>
-  ppl_Polyhedron_check_empty(+Handle)
+  ppl_Polyhedron_is_empty(+Handle)
 </CODE>
 
 <CODE>
-  ppl_Polyhedron_check_universe(+Handle)
+  ppl_Polyhedron_is_universe(+Handle)
 </CODE>
 
 <CODE>
-  ppl_Polyhedron_check_bounded(+Handle)
+  ppl_Polyhedron_is_bounded(+Handle)
 </CODE>
 
 <CODE>
@@ -245,7 +245,7 @@ Here is a list of all the PPL predicates provided by the Prolog interface.
 </CODE>
 
 <CODE>
-  ppl_Polyhedron_check_topologically_closed(+Handle)
+  ppl_Polyhedron_is_topologically_closed(+Handle)
 </CODE>
 
 <CODE>
@@ -257,7 +257,7 @@ Here is a list of all the PPL predicates provided by the Prolog interface.
 </CODE>
 
 <CODE>
-  ppl_Polyhedron_check_disjoint_from_Polyhedron(+Handle_1, +Handle_2)
+  ppl_Polyhedron_is_disjoint_from_Polyhedron(+Handle_1, +Handle_2)
 </CODE>
 
 <CODE>
@@ -765,17 +765,17 @@ to be used has the following meaning:
 - <CODE>any</CODE> allows
   code of the universal complexity class.
 
-<H2><CODE>ppl_Polyhedron_check_empty(+Handle)</CODE></H2>
+<H2><CODE>ppl_Polyhedron_is_empty(+Handle)</CODE></H2>
 
    Succeeds if and only if the polyhedron referenced by
    <CODE>Handle</CODE> is empty.
 
-<H2><CODE>ppl_Polyhedron_check_universe(+Handle)</CODE></H2>
+<H2><CODE>ppl_Polyhedron_is_universe(+Handle)</CODE></H2>
 
    Succeeds if and only if the polyhedron referenced by
    <CODE>Handle</CODE> is the universe.
 
-<H2><CODE>ppl_Polyhedron_check_bounded(+Handle)</CODE></H2>
+<H2><CODE>ppl_Polyhedron_is_bounded(+Handle)</CODE></H2>
 
    Succeeds if and only if the polyhedron referenced by
    <CODE>Handle</CODE> is bounded.
@@ -794,7 +794,7 @@ to be used has the following meaning:
    the polyhedron referenced by <CODE>Handle</CODE>.
 
 
-<H2><CODE>ppl_Polyhedron_check_topologically_closed(+Handle)</CODE></H2>
+<H2><CODE>ppl_Polyhedron_is_topologically_closed(+Handle)</CODE></H2>
 
    Succeeds if and only if the polyhedron referenced by
    <CODE>Handle</CODE> is topologically closed.
@@ -811,7 +811,7 @@ to be used has the following meaning:
    <CODE>Handle_1</CODE> is included in but not
    equal to the polyhedron referenced by <CODE>Handle_2</CODE>.
 
-<H2><CODE>ppl_Polyhedron_check_disjoint_from_Polyhedron(+Handle_1, +Handle_2)
+<H2><CODE>ppl_Polyhedron_is_disjoint_from_Polyhedron(+Handle_1, +Handle_2)
     </CODE></H2>
 
    Succeeds if and only if the polyhedron referenced by
@@ -1402,7 +1402,7 @@ See <A HREF="http://www.cs.unipr.it/pipermail/ppl-devel/2002-July/002201.html">h
 for information about a bug in XSB 2.5 that has bitten several people.
 
 In order to dynamically load the library from XSB you should
-load the <CODE>ppl_xsb<CODE> module and import the predicates
+load the <CODE>ppl_xsb</CODE> module and import the predicates
 you need.
 For things to work, you may have to copy the files
 <CODE>prefix/lib/ppl/ppl_xsb.O</CODE>

@@ -43,8 +43,7 @@ main() TRY {
   GenSys gs;
   C_Polyhedron ph2(gs);
 
-  int retval
-    = (ph1 == ph2 && ph1.check_empty() && ph2.check_empty()) ? 0 : 1;
+  int retval = (ph1 == ph2 && ph1.is_empty() && ph2.is_empty()) ? 0 : 1;
 
 #if NOISY
   print_constraints(ph1, "*** ph1 ***");

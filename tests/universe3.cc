@@ -1,4 +1,4 @@
-/* Test Polyhedron::check_universe(): a polyhedron defined by
+/* Test Polyhedron::is_universe(): a polyhedron defined by
    a system of constraints containing an equality is not universal.
    Copyright (C) 2001-2003 Roberto Bagnara <bagnara@cs.unipr.it>
 
@@ -48,10 +48,10 @@ main() TRY {
   print_constraints(ph, "--- ph ---");
 #endif
 
-  bool universe = ph.check_universe();
+  bool universe = ph.is_universe();
 
 #if NOISY
-  cout << "*** ph.check_universe() ***"
+  cout << "*** ph.is_universe() ***"
        << endl
        << (universe ? "true" : "false")
        << endl;

@@ -1,4 +1,4 @@
-/* Test Polyhedron::check_bounded().
+/* Test Polyhedron::is_bounded().
    Copyright (C) 2001-2003 Roberto Bagnara <bagnara@cs.unipr.it>
 
 This file is part of the Parma Polyhedra Library (PPL).
@@ -43,7 +43,7 @@ main() TRY {
   print_constraints(ph1, "*** ph1 ***");
 #endif
 
-  if (ph1.check_bounded())
+  if (ph1.is_bounded())
     return 1;
 
   // This is a bounded polyhedron (it is a square);
@@ -57,7 +57,7 @@ main() TRY {
   print_constraints(ph2, "*** ph2 ***");
 #endif
 
-  if (!ph2.check_bounded())
+  if (!ph2.is_bounded())
     return 1;
 
   // This is a universal, zero-dimensional polyhedron.
@@ -67,7 +67,7 @@ main() TRY {
   print_constraints(ph3, "*** ph3 ***");
 #endif
 
-  if (!ph3.check_bounded())
+  if (!ph3.is_bounded())
     return 1;
 
   // This is an empty, zero-dimensional polyhedron.
@@ -78,7 +78,7 @@ main() TRY {
   print_constraints(ph4, "*** ph4 ***");
 #endif
 
-  if (!ph4.check_bounded())
+  if (!ph4.is_bounded())
     return 1;
 
   // This is an empty polyhedron.
@@ -88,7 +88,7 @@ main() TRY {
   print_constraints(ph5, "*** ph5 ***");
 #endif
 
-  if (!ph5.check_bounded())
+  if (!ph5.is_bounded())
     return 1;
 
   return 0;

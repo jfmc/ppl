@@ -1,4 +1,4 @@
-/* Test Polyhedron::check_universe(): a square is not an
+/* Test Polyhedron::is_universe(): a square is not an
    universal polyhedron.
    Copyright (C) 2001-2003 Roberto Bagnara <bagnara@cs.unipr.it>
 
@@ -49,10 +49,10 @@ main() TRY {
   print_constraints(ph, "--- ph ---");
 #endif
 
-  bool universe = ph.check_universe();
+  bool universe = ph.is_universe();
 
 #if NOISY
-  cout << "*** ph.check_universe() ***"
+  cout << "*** ph.is_universe() ***"
        << endl
        << (universe ? "true" : "false")
        << endl;

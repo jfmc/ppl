@@ -1,5 +1,4 @@
-/* Test check_disjoint(const Polyhedron& x, const Polyhedron& y):
-   we apply this function in some particular cases.
+/* Test Polyhedron::is_disjoint_from(const Polyhedron& y).
    Copyright (C) 2001-2003 Roberto Bagnara <bagnara@cs.unipr.it>
 
 This file is part of the Parma Polyhedra Library (PPL).
@@ -58,7 +57,7 @@ test1() {
   ph2.add_generator(point(4*A + 3*B));
   ph2.add_generator(ray(A - B));
 
-  bool disjoint = check_disjoint(ph1, ph2);
+  bool disjoint = ph1.is_disjoint_from(ph2);
 
 #if NOISY
   print_generators(ph1, "*** ph1 ***");
@@ -77,7 +76,7 @@ test2() {
   C_Polyhedron ph1 = half_strip(point(A + B), B);
   C_Polyhedron ph2 = half_strip(point(4*A + B), B);
 
-  bool disjoint = check_disjoint(ph1, ph2);
+  bool disjoint = ph1.is_disjoint_from(ph2);
 
 #if NOISY
   print_generators(ph1, "*** ph1 ***");
@@ -96,7 +95,7 @@ test3() {
   C_Polyhedron ph1 = half_strip(point(A + B), B);
   C_Polyhedron ph2 = half_strip(point(A + B), -B);
 
-  bool disjoint = check_disjoint(ph1, ph2);
+  bool disjoint = ph1.is_disjoint_from(ph2);
 
 #if NOISY
   print_generators(ph1, "*** ph1 ***");
@@ -119,7 +118,7 @@ test4() {
   ph2.add_generator(point(-2*A + 2*B));
   ph2.add_generator(ray(-A - B));
 
-  bool disjoint = check_disjoint(ph1, ph2);
+  bool disjoint = ph1.is_disjoint_from(ph2);
 
 #if NOISY
   print_generators(ph1, "*** ph1 ***");

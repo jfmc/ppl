@@ -58,11 +58,11 @@ o  New constructors to build polyhedra from read-only constraint and
 o  New function LinExpression& operator*=(LinExpression&, const Integer&)
    to multiply (in place) an expression by a scalar.
 
-o  The methods is_bounded() and is_topologically_closed() have been renamed
-   check_bounded() and check_topologically_closed(), respectively.
+o  The methods Polyhedron::check_empty() and Polyhedron::check_universe()
+   have been renamed is_empty() and is_universe(), respectively.
 
-o  New function bool check_disjoint(const Polyhedron&, const Polyhedron&)
-   returning true if and only if the two polyhedra are disjoint.
+o  New method bool Polyhedron::is_disjoint_from(const Polyhedron& y)
+   returning true if and only `*this' and `y' are disjoint.
 
 o  New methods bool Polyhedron::add_constraint_and_minimize(const
    Constraint&) and bool Polyhedron::add_generator_and_minimize(const
@@ -350,8 +350,8 @@ o  We now use the integer C++ class of GMP to represent the
 
 o  New methods Polyhedron::convex_difference_assign(const Polyhedron&) and
    Polyhedron::convex_difference_assign_and_minimize(const Polyhedron&).
-   They assigns to *this the convex hull of the set-theoretic difference
-   of *this and the argument (possibly non minimized or minimized,
+   They assigns to `*this' the convex hull of the set-theoretic difference
+   of `*this' and the argument (possibly non minimized or minimized,
    respectively).
 
 o  The method Polyhedron::add_generators(GenSys&) is now lazy,

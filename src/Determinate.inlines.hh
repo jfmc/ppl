@@ -154,7 +154,7 @@ Determinate<PH>::concatenate_assign(const Determinate& y) {
 template <typename PH>
 bool
 Determinate<PH>::definitely_entails(const Determinate<PH>& y) const {
-  return prep->ph <= y.prep->ph;
+  return y.prep->ph.contains(prep->ph);
 }
 
 template <typename PH>
@@ -192,13 +192,13 @@ operator+(const Determinate<PH>& x, const Determinate<PH>& y) {
 template <typename PH>
 bool
 Determinate<PH>::is_top() const {
-  return prep->ph.check_universe();
+  return prep->ph.is_universe();
 }
 
 template <typename PH>
 bool
 Determinate<PH>::is_bottom() const {
-  return prep->ph.check_empty();
+  return prep->ph.is_empty();
 }
 
 template <typename PH>

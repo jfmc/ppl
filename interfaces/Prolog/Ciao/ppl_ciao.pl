@@ -45,15 +45,15 @@ site: http://www.cs.unipr.it/ppl/ . */
         ppl_Polyhedron_relation_with_constraint/3,
         ppl_Polyhedron_relation_with_generator/3,
         ppl_Polyhedron_get_bounding_box/3,
-        ppl_Polyhedron_check_empty/1,
-        ppl_Polyhedron_check_universe/1,
-        ppl_Polyhedron_check_bounded/1,
+        ppl_Polyhedron_is_empty/1,
+        ppl_Polyhedron_is_universe/1,
+        ppl_Polyhedron_is_bounded/1,
         ppl_Polyhedron_bounds_from_above/2,
         ppl_Polyhedron_bounds_from_below/2,
-        ppl_Polyhedron_check_topologically_closed/1,
+        ppl_Polyhedron_is_topologically_closed/1,
         ppl_Polyhedron_contains_Polyhedron/2,
         ppl_Polyhedron_strictly_contains_Polyhedron/2,
-        ppl_Polyhedron_check_disjoint_from_Polyhedron/2,
+        ppl_Polyhedron_is_disjoint_from_Polyhedron/2,
         ppl_Polyhedron_equals_Polyhedron/2,
         ppl_Polyhedron_OK/1,
         ppl_Polyhedron_add_constraint/2,
@@ -272,29 +272,29 @@ ppl_Polyhedron_relation_with_generator(Handle, Generator, RList) :-
 ppl_Polyhedron_get_bounding_box(Handle, Relation, BBox) :-
         ppl_Polyhedron_get_bounding_box_2(Handle, Relation, BBox, 1).
 
-:- true pred ppl_Polyhedron_check_empty_2(in(Handle),
-                                          go(Success))
+:- true pred ppl_Polyhedron_is_empty_2(in(Handle),
+                                       go(Success))
   :: any_term * int
-  + (returns(Success), foreign(ppl_Polyhedron_check_empty)).
+  + (returns(Success), foreign(ppl_Polyhedron_is_empty)).
 
-ppl_Polyhedron_check_empty(Handle) :-
-	ppl_Polyhedron_check_empty_2(Handle, 1).
+ppl_Polyhedron_is_empty(Handle) :-
+	ppl_Polyhedron_is_empty_2(Handle, 1).
 
-:- true pred ppl_Polyhedron_check_universe_2(in(Handle),
+:- true pred ppl_Polyhedron_is_universe_2(in(Handle),
                                              go(Success))
   :: any_term * int
-  + (returns(Success), foreign(ppl_Polyhedron_check_universe)).
+  + (returns(Success), foreign(ppl_Polyhedron_is_universe)).
 
-ppl_Polyhedron_check_universe(Handle) :-
-	ppl_Polyhedron_check_universe_2(Handle, 1).
+ppl_Polyhedron_is_universe(Handle) :-
+	ppl_Polyhedron_is_universe_2(Handle, 1).
 
-:- true pred ppl_Polyhedron_check_bounded_2(in(Handle),
+:- true pred ppl_Polyhedron_is_bounded_2(in(Handle),
                                             go(Success))
   :: any_term * int
-  + (returns(Success), foreign(ppl_Polyhedron_check_bounded)).
+  + (returns(Success), foreign(ppl_Polyhedron_is_bounded)).
 
-ppl_Polyhedron_check_bounded(Handle) :-
-	ppl_Polyhedron_check_bounded_2(Handle, 1).
+ppl_Polyhedron_is_bounded(Handle) :-
+	ppl_Polyhedron_is_bounded_2(Handle, 1).
 
 :- true pred ppl_Polyhedron_bounds_from_above_2(in(Handle),
                                                 in(LinearExpression),
@@ -314,13 +314,13 @@ ppl_Polyhedron_bounds_from_above(Handle, LinearExpression) :-
 ppl_Polyhedron_bounds_from_below(Handle, LinearExpression) :-
 	ppl_Polyhedron_bounds_from_below_2(Handle, LinearExpression, 1).
 
-:- true pred ppl_Polyhedron_check_topologically_closed_2(in(Handle),
+:- true pred ppl_Polyhedron_is_topologically_closed_2(in(Handle),
                                                          go(Success))
   :: any_term * int
-  + (returns(Success), foreign(ppl_Polyhedron_check_topologically_closed)).
+  + (returns(Success), foreign(ppl_Polyhedron_is_topologically_closed)).
 
-ppl_Polyhedron_check_topologically_closed(Handle) :-
-	ppl_Polyhedron_check_topologically_closed_2(Handle, 1).
+ppl_Polyhedron_is_topologically_closed(Handle) :-
+	ppl_Polyhedron_is_topologically_closed_2(Handle, 1).
 
 
 :- true pred ppl_Polyhedron_contains_Polyhedron_2(in(Handle1),
@@ -342,15 +342,15 @@ ppl_Polyhedron_contains_Polyhedron(Handle1, Handle2) :-
 ppl_Polyhedron_strictly_contains_Polyhedron(Handle1, Handle2) :-
 	ppl_Polyhedron_strictly_contains_Polyhedron_2(Handle1, Handle2, 1).
 
-ppl_Polyhedron_check_disjoint_from_Polyhedron(Handle1, Handle2) :-
-	ppl_Polyhedron_check_disjoint_from_Polyhedron_2(Handle1, Handle2, 1).
+ppl_Polyhedron_is_disjoint_from_Polyhedron(Handle1, Handle2) :-
+	ppl_Polyhedron_is_disjoint_from_Polyhedron_2(Handle1, Handle2, 1).
 
 
-:- true pred ppl_Polyhedron_check_disjoint_from_Polyhedron_2(in(Handle1),
+:- true pred ppl_Polyhedron_is_disjoint_from_Polyhedron_2(in(Handle1),
                                                              in(Handle2),
                                                              go(Success))
   :: any_term * any_term * int
-  + (returns(Success), foreign(ppl_Polyhedron_check_disjoint_from_Polyhedron)).
+  + (returns(Success), foreign(ppl_Polyhedron_is_disjoint_from_Polyhedron)).
 
 ppl_Polyhedron_equals_Polyhedron(Handle1, Handle2) :-
 	ppl_Polyhedron_equals_Polyhedron_2(Handle1, Handle2, 1).
@@ -654,24 +654,24 @@ ppl_Polyhedron_bounded_H79_extrapolation_assign_with_token(Handle1,
         ppl_Polyhedron_relation_with_generator_2/4,
 %       ppl_Polyhedron_get_bounding_box/3,
         ppl_Polyhedron_get_bounding_box_2/4,
-%       ppl_Polyhedron_check_empty/1,
-        ppl_Polyhedron_check_empty_2/2,
-%       ppl_Polyhedron_check_universe/1,
-        ppl_Polyhedron_check_universe_2/2,
-%       ppl_Polyhedron_check_bounded/1,
-        ppl_Polyhedron_check_bounded_2/2,
+%       ppl_Polyhedron_is_empty/1,
+        ppl_Polyhedron_is_empty_2/2,
+%       ppl_Polyhedron_is_universe/1,
+        ppl_Polyhedron_is_universe_2/2,
+%       ppl_Polyhedron_is_bounded/1,
+        ppl_Polyhedron_is_bounded_2/2,
 %       ppl_Polyhedron_bounds_from_above/2,
         ppl_Polyhedron_bounds_from_above_2/3,
 %       ppl_Polyhedron_bounds_from_below/2,
         ppl_Polyhedron_bounds_from_below_2/3,
-%        ppl_Polyhedron_check_topologically_closed/1,
-        ppl_Polyhedron_check_topologically_closed_2/2,
+%        ppl_Polyhedron_is_topologically_closed/1,
+        ppl_Polyhedron_is_topologically_closed_2/2,
 %       ppl_Polyhedron_contains_Polyhedron/2,
         ppl_Polyhedron_contains_Polyhedron_2/3,
 %       ppl_Polyhedron_strictly_contains_Polyhedron/2,
         ppl_Polyhedron_strictly_contains_Polyhedron_2/3,
-%       ppl_Polyhedron_check_disjoint_from_Polyhedron/2,
-        ppl_Polyhedron_check_disjoint_from_Polyhedron_2/3,
+%       ppl_Polyhedron_is_disjoint_from_Polyhedron/2,
+        ppl_Polyhedron_is_disjoint_from_Polyhedron_2/3,
 %       ppl_Polyhedron_equals_Polyhedron/2,
         ppl_Polyhedron_equals_Polyhedron_2/3,
 %       ppl_Polyhedron_OK/1,
@@ -820,13 +820,13 @@ since the above version of this is temporary.
                                              in(BBox))
              :: any_term * any_term * any_term + foreign.
 
-:- true pred ppl_Polyhedron_check_empty(in(Handle))
+:- true pred ppl_Polyhedron_is_empty(in(Handle))
              :: any_term + foreign.
 
-:- true pred ppl_Polyhedron_check_universe(in(Handle))
+:- true pred ppl_Polyhedron_is_universe(in(Handle))
              :: any_term + foreign.
 
-:- true pred ppl_Polyhedron_check_bounded(in(Handle))
+:- true pred ppl_Polyhedron_is_bounded(in(Handle))
              :: any_term + foreign.
 
 :- true pred ppl_Polyhedron_bounds_from_above(in(Handle), in(LinearExpression))
@@ -835,7 +835,7 @@ since the above version of this is temporary.
 :- true pred ppl_Polyhedron_bounds_from_below(in(Handle), in(LinearExpression))
              :: any_term * any_term + foreign.
 
-:- true pred ppl_Polyhedron_check_topologically_closed(in(Handle))
+:- true pred ppl_Polyhedron_is_topologically_closed(in(Handle))
              :: any_term + foreign.
 
 :- true pred ppl_Polyhedron_contains_Polyhedron(in(Handle1), in(Handle2))
@@ -845,7 +845,7 @@ since the above version of this is temporary.
                                                          in(Handle2))
              :: any_term * any_term + foreign.
 
-:- true pred ppl_Polyhedron_check_disjoint_from_Polyhedron(in(Handle1),
+:- true pred ppl_Polyhedron_is_disjoint_from_Polyhedron(in(Handle1),
                                                         in(Handle2))
              :: any_term * any_term + foreign.
 
@@ -1030,15 +1030,15 @@ since the above version of this is temporary.
         ppl_Polyhedron_relation_with_constraint/3,
         ppl_Polyhedron_relation_with_generator/3,
         ppl_Polyhedron_get_bounding_box/3,
-        ppl_Polyhedron_check_empty/1,
-        ppl_Polyhedron_check_universe/1,
-        ppl_Polyhedron_check_bounded/1,
+        ppl_Polyhedron_is_empty/1,
+        ppl_Polyhedron_is_universe/1,
+        ppl_Polyhedron_is_bounded/1,
         ppl_Polyhedron_bounds_from_above/2,
         ppl_Polyhedron_bounds_from_below/2,
-        ppl_Polyhedron_check_topologically_closed/1,
+        ppl_Polyhedron_is_topologically_closed/1,
         ppl_Polyhedron_contains_Polyhedron/2,
         ppl_Polyhedron_strictly_contains_Polyhedron/2,
-        ppl_Polyhedron_check_disjoint_from_Polyhedron/2,
+        ppl_Polyhedron_is_disjoint_from_Polyhedron/2,
         ppl_Polyhedron_equals_Polyhedron/2,
         ppl_Polyhedron_OK/1,
         ppl_Polyhedron_add_constraint/2,

@@ -59,9 +59,9 @@ main() TRY {
 #endif
   ph5.time_elapse_assign(ph6);
 
-  int retval = (ph1.check_empty()
-		&& ph3.check_empty()
-		&& ph5.check_empty()) ? 0 : 1;
+  int retval = (ph1.is_empty()
+		&& ph3.is_empty()
+		&& ph5.is_empty()) ? 0 : 1;
 
 #if NOISY
   print_generators(ph1, "**** ph1_time_elapse_assign(ph2) ****");

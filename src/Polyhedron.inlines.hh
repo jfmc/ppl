@@ -260,7 +260,7 @@ Polyhedron::add_low_level_constraints(ConSys& cs) {
 }
 
 inline bool
-Polyhedron::check_empty() const {
+Polyhedron::is_empty() const {
   if (marked_empty())
     return true;
   // Try a fast-fail test: if generators are up-to-date and
@@ -385,9 +385,9 @@ Polyhedron::shrink_bounding_box(Box& box, Complexity_Class complexity) const {
   bool polynomial = (complexity != ANY);
   if ((polynomial && !has_something_pending()
        && constraints_are_minimized()) || !polynomial) {
-    // If the constraint system is minimized, the check
-    // `check_universe()' is not exponential.
-    if (check_universe())
+    // If the constraint system is minimized, the test `is_universe()'
+    // is not exponential.
+    if (is_universe())
       return;
 
   }
@@ -408,8 +408,8 @@ Polyhedron::shrink_bounding_box(Box& box, Complexity_Class complexity) const {
   }
   else
     // The flag `polynomial' is `false'.
-    // Note that the check `check_empty()' is exponential!!!
-    if (check_empty()) {
+    // Note that the test `is_empty()' is exponential in the worst case.
+    if (is_empty()) {
       box.set_empty();
       return;
     }

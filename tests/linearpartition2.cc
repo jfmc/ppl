@@ -49,13 +49,13 @@ partition_ok(const C_Polyhedron& p,
   for (iter i = s.begin(), s_end = s.end(); i != s_end; ++i) {
     const NNC_Polyhedron& a = i->polyhedron();
     // All elements of `s' must be disjoint from `p'.
-    if (!check_disjoint(a, nnc_p))
+    if (!a.is_disjoint_from(nnc_p))
       return false;
     iter j = i;
     for (++j; j != s_end; ++j) {
       const NNC_Polyhedron& b = j->polyhedron();
       // All elements of `s' must be pairwise disjoint.
-      if (!check_disjoint(a, b))
+      if (!a.is_disjoint_from(b))
 	return false;
     }
     the_union.poly_hull_assign(a);

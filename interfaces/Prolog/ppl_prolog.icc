@@ -1372,33 +1372,33 @@ ppl_Polyhedron_get_bounding_box(Prolog_term_ref t_ph,
 }
 
 extern "C" Prolog_foreign_return_type
-ppl_Polyhedron_check_empty(Prolog_term_ref t_ph) {
+ppl_Polyhedron_is_empty(Prolog_term_ref t_ph) {
   try {
     const Polyhedron* ph = term_to_polyhedron_handle(t_ph);
     CHECK(ph);
-    if (ph->check_empty())
+    if (ph->is_empty())
       return PROLOG_SUCCESS;
   }
   CATCH_ALL;
 }
 
 extern "C" Prolog_foreign_return_type
-ppl_Polyhedron_check_universe(Prolog_term_ref t_ph) {
+ppl_Polyhedron_is_universe(Prolog_term_ref t_ph) {
   try {
     const Polyhedron* ph = term_to_polyhedron_handle(t_ph);
     CHECK(ph);
-    if (ph->check_universe())
+    if (ph->is_universe())
       return PROLOG_SUCCESS;
   }
   CATCH_ALL;
 }
 
 extern "C" Prolog_foreign_return_type
-ppl_Polyhedron_check_bounded(Prolog_term_ref t_ph) {
+ppl_Polyhedron_is_bounded(Prolog_term_ref t_ph) {
   try {
     const Polyhedron* ph = term_to_polyhedron_handle(t_ph);
     CHECK(ph);
-    if (ph->check_bounded())
+    if (ph->is_bounded())
       return PROLOG_SUCCESS;
   }
   CATCH_ALL;
@@ -1431,11 +1431,11 @@ ppl_Polyhedron_bounds_from_below(Prolog_term_ref t_ph,
 }
 
 extern "C" Prolog_foreign_return_type
-ppl_Polyhedron_check_topologically_closed(Prolog_term_ref t_ph) {
+ppl_Polyhedron_is_topologically_closed(Prolog_term_ref t_ph) {
   try {
     const Polyhedron* ph = term_to_polyhedron_handle(t_ph);
     CHECK(ph);
-    if (ph->check_topologically_closed())
+    if (ph->is_topologically_closed())
       return PROLOG_SUCCESS;
   }
   CATCH_ALL;
@@ -1470,14 +1470,14 @@ ppl_Polyhedron_strictly_contains_Polyhedron(Prolog_term_ref t_lhs,
 }
 
 extern "C" Prolog_foreign_return_type
-ppl_Polyhedron_check_disjoint_from_Polyhedron(Prolog_term_ref t_lhs,
-				 Prolog_term_ref t_rhs) {
+ppl_Polyhedron_is_disjoint_from_Polyhedron(Prolog_term_ref t_lhs,
+					   Prolog_term_ref t_rhs) {
   try {
     const Polyhedron* lhs = term_to_polyhedron_handle(t_lhs);
     const Polyhedron* rhs = term_to_polyhedron_handle(t_rhs);
     CHECK(lhs);
     CHECK(rhs);
-    if (check_disjoint(*lhs, *rhs))
+    if (lhs->is_disjoint_from(*rhs))
       return PROLOG_SUCCESS;
   }
   CATCH_ALL;

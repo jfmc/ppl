@@ -1,4 +1,4 @@
-/* Test Polyhedron::check_topologically_closed(): a polyhedron
+/* Test Polyhedron::is_topologically_closed(): a polyhedron
    described by a system of generators composed by a point,
    a line and an unmatched closure point lying on the same line of
    the point is topologically closed.
@@ -48,7 +48,7 @@ main() TRY {
 
   NNC_Polyhedron ph(gs);
 
-  bool ok = ph.check_topologically_closed();
+  bool ok = ph.is_topologically_closed();
 
 #if NOISY
   print_constraints(ph, "*** ph ***");

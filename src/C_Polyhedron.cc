@@ -32,7 +32,7 @@ namespace PPL = Parma_Polyhedra_Library;
 PPL::C_Polyhedron::C_Polyhedron(const NNC_Polyhedron& y)
   : Polyhedron(NECESSARILY_CLOSED, y.space_dimension(), UNIVERSE) {
   // Topology compatibility check.
-  if (y.check_topologically_closed()) {
+  if (y.is_topologically_closed()) {
     ConSys cs = y.constraints();
     add_constraints(cs);
     assert(OK());

@@ -197,7 +197,7 @@ PPL::Polyhedron::relation_with(const Generator& g) const {
 }
 
 bool
-PPL::Polyhedron::check_universe() const {
+PPL::Polyhedron::is_universe() const {
   if (marked_empty())
     return false;
 
@@ -301,7 +301,7 @@ PPL::Polyhedron::check_universe() const {
 }
 
 bool
-PPL::Polyhedron::check_bounded() const {
+PPL::Polyhedron::is_bounded() const {
   // A zero-dimensional or empty polyhedron is bounded.
   if (space_dim == 0
       || marked_empty()
@@ -320,7 +320,7 @@ PPL::Polyhedron::check_bounded() const {
 }
 
 bool
-PPL::Polyhedron::check_topologically_closed() const {
+PPL::Polyhedron::is_topologically_closed() const {
   // Necessarily closed polyhedra are trivially closed.
   if (is_necessarily_closed())
     return true;
@@ -2315,9 +2315,9 @@ PPL::operator==(const Polyhedron& x, const Polyhedron& y) {
     return false;
 
   if (x.marked_empty())
-    return y.check_empty();
+    return y.is_empty();
   else if (y.marked_empty())
-    return x.check_empty();
+    return x.is_empty();
   else if (x_space_dim == 0)
     return true;
 
@@ -2331,7 +2331,7 @@ PPL::operator==(const Polyhedron& x, const Polyhedron& y) {
   default:
     if (x.is_included_in(y))
       if (x.marked_empty())
-	return y.check_empty();
+	return y.is_empty();
       else
 	return y.is_included_in(x);
     else
@@ -2355,7 +2355,7 @@ PPL::Polyhedron::contains(const Polyhedron& y) const {
   if (y.marked_empty())
     return true;
   else if (x.marked_empty())
-    return y.check_empty();
+    return y.is_empty();
   else if (y.space_dimension() == 0)
     return true;
   else if (x.quick_equivalence_test(y) == Polyhedron::TVB_TRUE)
@@ -2364,12 +2364,11 @@ PPL::Polyhedron::contains(const Polyhedron& y) const {
     return y.is_included_in(x);
 }
 
-/*! \relates Parma_Polyhedra_Library::Polyhedron */
 bool
-PPL::check_disjoint(const Polyhedron& x, const Polyhedron& y) {
-  Polyhedron z = x;
+PPL::Polyhedron::is_disjoint_from(const Polyhedron& y) const {
+  Polyhedron z = *this;
   z.intersection_assign_and_minimize(y);
-  return z.check_empty();
+  return z.is_empty();
 }
 
 void
@@ -2454,7 +2453,7 @@ PPL::Polyhedron::ascii_load(std::istream& s) {
 /*! \relates Parma_Polyhedra_Library::Polyhedron */
 std::ostream&
 PPL::IO_Operators::operator<<(std::ostream& s, const Polyhedron& ph) {
-  if (ph.check_empty())
+  if (ph.is_empty())
     s << "false";
   else
     s << ph.minimized_constraints();

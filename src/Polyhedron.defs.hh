@@ -76,15 +76,6 @@ bool operator==(const Polyhedron& x, const Polyhedron& y);
 */
 bool operator!=(const Polyhedron& x, const Polyhedron& y);
 
-//! Returns <CODE>true</CODE> if and only if \p x and \p y are disjoint.
-/*!
-  \relates Polyhedron
-  \exception std::invalid_argument thrown if \p x and \p y
-                                   are topology-incompatible
-                                   or dimension-incompatible.
-*/
-bool check_disjoint(const Polyhedron& x, const Polyhedron& y);
-
 } // namespace Parma_Polyhedra_Library
 
 
@@ -524,17 +515,30 @@ public:
   //! \brief
   //! Returns <CODE>true</CODE> if and only if \p *this is
   //! an empty polyhedron.
-  bool check_empty() const;
+  bool is_empty() const;
 
   //! \brief
   //! Returns <CODE>true</CODE> if and only if \p *this
   //! is a universe polyhedron.
-  bool check_universe() const;
+  bool is_universe() const;
+
+  //! \brief
+  //! Returns <CODE>true</CODE> if and only if \p *this
+  //! is a topologically closed subset of the vector space.
+  bool is_topologically_closed() const;
+
+  //! Returns <CODE>true</CODE> if and only if \p *this and \p y are disjoint.
+  /*!
+    \exception std::invalid_argument thrown if \p x and \p y
+                                     are topology-incompatible
+                                     or dimension-incompatible.
+  */
+  bool is_disjoint_from(const Polyhedron& y) const;
 
   //! \brief
   //! Returns <CODE>true</CODE> if and only if \p *this
   //! is a bounded polyhedron.
-  bool check_bounded() const;
+  bool is_bounded() const;
 
   //! \brief
   //! Returns <CODE>true</CODE> if and only if \p expr is
@@ -553,11 +557,6 @@ public:
                                      are dimension-incompatible.
   */
   bool bounds_from_below(const LinExpression& expr) const;
-
-  //! \brief
-  //! Returns <CODE>true</CODE> if and only if \p *this
-  //! is a topologically closed subset of the vector space.
-  bool check_topologically_closed() const;
 
   //! Returns <CODE>true</CODE> if and only if \p *this contains \p y.
   /*!
@@ -1299,8 +1298,6 @@ public:
 
   friend bool Parma_Polyhedra_Library::operator==(const Polyhedron& x,
 						  const Polyhedron& y);
-  friend bool Parma_Polyhedra_Library::check_disjoint(const Polyhedron& x,
-						      const Polyhedron& y);
 
   //! \name Miscellaneous Member Functions
   //@{

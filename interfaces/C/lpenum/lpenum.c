@@ -564,7 +564,7 @@ solve(char* file_name) {
     start_clock();
   }
 
-  empty = ppl_Polyhedron_check_empty(ppl_ph);
+  empty = ppl_Polyhedron_is_empty(ppl_ph);
 
   if (print_timings) {
     fprintf(stderr, "Time to check for emptiness: ");

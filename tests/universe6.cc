@@ -1,4 +1,4 @@
-/* Test the function check_universe() for a NNC_polyhedron.
+/* Test the function is_universe() for a NNC_polyhedron.
    Copyright (C) 2001-2003 Roberto Bagnara <bagnara@cs.unipr.it>
 
 This file is part of the Parma Polyhedra Library (PPL).
@@ -51,37 +51,37 @@ main() TRY {
   print_constraints(ph4, "--- ph4 ---");
 #endif
 
-  bool universe1 = ph1.check_universe();
+  bool universe1 = ph1.is_universe();
 
 #if NOISY
-  cout << "*** ph1.check_universe() ***"
+  cout << "*** ph1.is_universe() ***"
        << endl
        << (universe1 ? "true" : "false")
        << endl;
 #endif
 
-  bool universe2 = ph2.check_universe();
+  bool universe2 = ph2.is_universe();
 
 #if NOISY
-  cout << "*** ph2.check_universe() ***"
+  cout << "*** ph2.is_universe() ***"
        << endl
        << (universe2 ? "true" : "false")
        << endl;
 #endif
 
-  bool universe3 = ph3.check_universe();
+  bool universe3 = ph3.is_universe();
 
 #if NOISY
-  cout << "*** ph3.check_universe() ***"
+  cout << "*** ph3.is_universe() ***"
        << endl
        << (universe3 ? "true" : "false")
        << endl;
 #endif
 
-  bool universe4 = ph4.check_universe();
+  bool universe4 = ph4.is_universe();
 
 #if NOISY
-  cout << "*** ph4.check_universe() ***"
+  cout << "*** ph4.is_universe() ***"
        << endl
        << (universe4 ? "true" : "false")
        << endl;
