@@ -43,19 +43,19 @@ ORIGINAL_TESTS = \
         addconstraints1 addconstraints2 addconstraints3 addconstraints4 \
 	addconstraints5 addconstraints6 addconstraints7 addconstraints8 \
 	addconstraints9 addconstraints10 addconstraints11 \
-	addconstraints12 \
+	addconstraints12 addconstraints13 \
 	adddimensions1 adddimensions2 adddimensions3 adddimensions4 \
 	adddimensions5 adddimensions6 adddimensions7 adddimensions8 \
 	adddimensions9 adddimensions10 adddimensions11 adddimensions12 \
 	addgenerator1 addgenerator2 addgenerator3 addgenerator4 \
 	addgenerators1 addgenerators2 addgenerators3 addgenerators4 \
 	addgenerators5 addgenerators6 addgenerators7 addgenerators8 \
-	addgenerators9 addgenerators10 addgenerators11 \
+	addgenerators9 addgenerators10 addgenerators11 addgenerators12 \
 	affineimage1 affineimage2 affineimage3 affineimage4 affineimage5 \
-	affineimage6 affineimage7 \
+	affineimage6 affineimage7 affineimage8 \
 	affinepreimage1 affinepreimage2 affinepreimage3 affinepreimage4 \
 	affinepreimage5 affinepreimage6 affinepreimage7 affinepreimage8 \
-	affinepreimage9 \
+	affinepreimage9 affinepreimage10 \
 	affinetrans \
         append1 append2 \
 	ascii_dump_load1 ascii_dump_load2 ascii_dump_load3 ascii_dump_load4 \
@@ -69,7 +69,8 @@ ORIGINAL_TESTS = \
 	bounds1 bounds2 \
 	boundingbox1 boundingbox2 boundingbox3 boundingbox4 \
 	concatenate1 concatenate2 concatenate3 concatenate4 concatenate5 \
-	constraints1 constraints2 constraints3 \
+	concatenate6 \
+	constraints1 constraints2 constraints3 constraints4 \
 	contains1 \
 	disjoint1 disjoint2 disjoint3 \
         empty1 \
@@ -81,11 +82,12 @@ ORIGINAL_TESTS = \
 	generalizedaffineimage9 generalizedaffineimage10 \
 	generalizedaffineimage11 generalizedaffineimage12 \
 	generators1 generators2 generators3 generators4 generators5 \
+	generators6 \
 	h79widening1 h79widening2 h79widening3 h79widening4 h79widening5 \
 	inclusion1 inclusion2 \
         intersection1 intersection2 intersection3 intersection4 \
 	intersection5 intersection6 intersection7 intersection8 \
-	intersection9 intersection10 \
+	intersection9 intersection10 intersection11 \
 	limitedbbrz02widening1 \
 	limitedh79widening1 limitedh79widening2 \
 	limitedh79widening3 limitedh79widening4 \
@@ -101,20 +103,20 @@ ORIGINAL_TESTS = \
 	polydifference1 polydifference2 polydifference3 polydifference4 \
 	polydifference5 polydifference6 polydifference7 \
 	polyhull1 polyhull2 polyhull3 polyhull4 polyhull5 polyhull6 \
-	polyhull7 polyhull8 \
+	polyhull7 polyhull8 polyhull9 \
 	randphull1 randphull2 \
 	relations1 relations2 relations3 relations4 relations5 relations6 \
 	relations7 relations8 relations9 relations10 relations11 \
 	relations12 relations13 relations14 relations15 relations16 \
-	relations17 relations18 \
+	relations17 relations18 relations19 \
 	removedim1 removedim2 removedim3 removedim4 removedim5 removedim6 \
 	removedim7 removedim8 removedim9 \
 	smm1 \
 	shuffledim1 \
 	timeelapse1 timeelapse2 timeelapse3 timeelapse4 timeelapse5 \
-	timeelapse6 timeelapse7 \
+	timeelapse6 timeelapse7 timeelapse8 \
 	topclosed1 topclosed2 topclosed3 \
-	topclosure1 topclosure2 topclosure3 \
+	topclosure1 topclosure2 topclosure3 topclosure4 \
 	universe1 universe2 universe3 universe4 universe5 universe6 \
 	writeconsys1 \
 	writegensys1 writegensys2 writegensys3 \
@@ -127,18 +129,19 @@ DERIVED_TESTS = \
 	nnc_addconstraints1 nnc_addconstraints2 nnc_addconstraints3 \
 	nnc_addconstraints4 nnc_addconstraints5 nnc_addconstraints6 \
 	nnc_addconstraints7 nnc_addconstraints8 nnc_addconstraints9 \
-	nnc_addconstraints10 \
+	nnc_addconstraints10 nnc_addconstraints13 \
 	nnc_adddimensions1 nnc_adddimensions2 nnc_adddimensions3 \
 	nnc_adddimensions4 nnc_adddimensions9 nnc_adddimensions12 \
 	nnc_addgenerator3 \
 	nnc_addgenerators1 nnc_addgenerators2 nnc_addgenerators3 \
 	nnc_addgenerators4 nnc_addgenerators5 nnc_addgenerators6 \
-	nnc_addgenerators9 nnc_addgenerators10 \
+	nnc_addgenerators9 nnc_addgenerators10 nnc_addgenerators12 \
 	nnc_affineimage1 nnc_affineimage2 nnc_affineimage3 nnc_affineimage4 \
-	nnc_affineimage5 nnc_affineimage6 nnc_affineimage7 \
+	nnc_affineimage5 nnc_affineimage6 nnc_affineimage7 nnc_affineimage8 \
 	nnc_affinepreimage1 nnc_affinepreimage2 nnc_affinepreimage3 \
 	nnc_affinepreimage4 nnc_affinepreimage5 nnc_affinepreimage6 \
 	nnc_affinepreimage7 nnc_affinepreimage8 nnc_affinepreimage9 \
+	nnc_affinepreimage10 \
 	nnc_affinetrans \
 	nnc_append1 nnc_append2 \
 	nnc_ascii_dump_load1 nnc_ascii_dump_load2 nnc_ascii_dump_load3 \
@@ -151,8 +154,8 @@ DERIVED_TESTS = \
 	nnc_boundingbox1 nnc_boundingbox3 \
 	nnc_bounds1 nnc_bounds2 \
 	nnc_concatenate1 nnc_concatenate2 nnc_concatenate3 nnc_concatenate4 \
-	nnc_concatenate5 \
-	nnc_constraints1 nnc_constraints2 nnc_constraints3 \
+	nnc_concatenate5 nnc_concatenate6 \
+	nnc_constraints1 nnc_constraints2 nnc_constraints3 nnc_constraints4 \
 	nnc_disjoint1 nnc_disjoint2 \
 	nnc_empty1 \
 	nnc_exceptions1 \
@@ -161,13 +164,13 @@ DERIVED_TESTS = \
 	nnc_generalizedaffineimage5 nnc_generalizedaffineimage6 \
 	nnc_generalizedaffineimage11 \
 	nnc_generators1 nnc_generators2 nnc_generators3 nnc_generators4 \
-	nnc_generators5 \
+	nnc_generators5 nnc_generators6 \
 	nnc_h79widening1 nnc_h79widening2 nnc_h79widening4 nnc_h79widening5 \
 	nnc_inclusion1 nnc_inclusion2 \
 	nnc_intersection1 nnc_intersection2 nnc_intersection3 \
 	nnc_intersection4 nnc_intersection5 nnc_intersection6 \
 	nnc_intersection7 nnc_intersection8 nnc_intersection9 \
-	nnc_intersection10 \
+	nnc_intersection10 nnc_intersection11 \
 	nnc_limitedbbrz02widening1 \
 	nnc_limitedh79widening1 nnc_limitedh79widening2 \
 	nnc_limitedh79widening3 nnc_limitedh79widening4 \
@@ -181,16 +184,18 @@ DERIVED_TESTS = \
 	nnc_polydifference6 nnc_polydifference7 \
 	nnc_polyhull1 nnc_polyhull2 nnc_polyhull3 nnc_polyhull4 \
 	nnc_polyhull5 nnc_polyhull6 nnc_polyhull7 nnc_polyhull8 \
+	nnc_polyhull9 \
 	nnc_randphull1 nnc_randphull2 \
 	nnc_relations1 nnc_relations2 nnc_relations3 nnc_relations4 \
 	nnc_relations5 nnc_relations6 nnc_relations7 nnc_relations8 \
 	nnc_relations9 nnc_relations10 nnc_relations12 nnc_relations13 \
-	nnc_relations14 nnc_relations15 nnc_relations16 \
+	nnc_relations14 nnc_relations15 nnc_relations16 nnc_relations19 \
 	nnc_removedim1 nnc_removedim2 nnc_removedim3 nnc_removedim4 \
 	nnc_removedim5 nnc_removedim6 nnc_removedim8 nnc_removedim9 \
 	nnc_smm1 \
 	nnc_shuffledim1 \
 	nnc_timeelapse2 nnc_timeelapse5 nnc_timeelapse6 nnc_timeelapse7 \
+	nnc_timeelapse8 \
 	nnc_universe1 nnc_universe2 nnc_universe3 nnc_universe4 nnc_universe5 \
 	nnc_writepolyhedron2 nnc_writepolyhedron3
 
@@ -225,6 +230,7 @@ addconstraints9_SOURCES = addconstraints9.cc
 addconstraints10_SOURCES = addconstraints10.cc
 addconstraints11_SOURCES = addconstraints11.cc
 addconstraints12_SOURCES = addconstraints12.cc
+addconstraints13_SOURCES = addconstraints13.cc
 
 adddimensions1_SOURCES = adddimensions1.cc
 adddimensions2_SOURCES = adddimensions2.cc
@@ -255,6 +261,7 @@ addgenerators8_SOURCES = addgenerators8.cc
 addgenerators9_SOURCES = addgenerators9.cc
 addgenerators10_SOURCES = addgenerators10.cc
 addgenerators11_SOURCES = addgenerators11.cc
+addgenerators12_SOURCES = addgenerators12.cc
 
 affineimage1_SOURCES = affineimage1.cc
 affineimage2_SOURCES = affineimage2.cc
@@ -263,6 +270,7 @@ affineimage4_SOURCES = affineimage4.cc
 affineimage5_SOURCES = affineimage5.cc
 affineimage6_SOURCES = affineimage6.cc
 affineimage7_SOURCES = affineimage7.cc
+affineimage8_SOURCES = affineimage8.cc
 
 affinepreimage1_SOURCES = affinepreimage1.cc
 affinepreimage2_SOURCES = affinepreimage2.cc
@@ -273,6 +281,7 @@ affinepreimage6_SOURCES = affinepreimage6.cc
 affinepreimage7_SOURCES = affinepreimage7.cc
 affinepreimage8_SOURCES = affinepreimage8.cc
 affinepreimage9_SOURCES = affinepreimage9.cc
+affinepreimage10_SOURCES = affinepreimage10.cc
 
 affinetrans_SOURCES = affinetrans.cc
 
@@ -322,10 +331,12 @@ concatenate2_SOURCES = concatenate2.cc
 concatenate3_SOURCES = concatenate3.cc
 concatenate4_SOURCES = concatenate4.cc
 concatenate5_SOURCES = concatenate5.cc
+concatenate6_SOURCES = concatenate6.cc
 
 constraints1_SOURCES = constraints1.cc
 constraints2_SOURCES = constraints2.cc
 constraints3_SOURCES = constraints3.cc
+constraints4_SOURCES = constraints4.cc
 
 contains1_SOURCES = contains1.cc
 
@@ -356,6 +367,7 @@ generators2_SOURCES = generators2.cc
 generators3_SOURCES = generators3.cc
 generators4_SOURCES = generators4.cc
 generators5_SOURCES = generators5.cc
+generators6_SOURCES = generators6.cc
 
 h79widening1_SOURCES = h79widening1.cc
 h79widening2_SOURCES = h79widening2.cc
@@ -376,6 +388,7 @@ intersection7_SOURCES = intersection7.cc
 intersection8_SOURCES = intersection8.cc
 intersection9_SOURCES = intersection9.cc
 intersection10_SOURCES = intersection10.cc
+intersection11_SOURCES = intersection11.cc
 
 limitedbbrz02widening1_SOURCES = limitedbbrz02widening1.cc
 
@@ -424,6 +437,7 @@ polyhull5_SOURCES = polyhull5.cc
 polyhull6_SOURCES = polyhull6.cc
 polyhull7_SOURCES = polyhull7.cc
 polyhull8_SOURCES = polyhull8.cc
+polyhull9_SOURCES = polyhull9.cc
 
 relations1_SOURCES = relations1.cc
 relations2_SOURCES = relations2.cc
@@ -443,6 +457,7 @@ relations15_SOURCES = relations15.cc
 relations16_SOURCES = relations16.cc
 relations17_SOURCES = relations17.cc
 relations18_SOURCES = relations18.cc
+relations19_SOURCES = relations19.cc
 
 randphull1_SOURCES = randphull1.cc
 randphull2_SOURCES = randphull2.cc
@@ -468,6 +483,7 @@ timeelapse4_SOURCES = timeelapse4.cc
 timeelapse5_SOURCES = timeelapse5.cc
 timeelapse6_SOURCES = timeelapse6.cc
 timeelapse7_SOURCES = timeelapse7.cc
+timeelapse8_SOURCES = timeelapse8.cc
 
 topclosed1_SOURCES = topclosed1.cc
 topclosed2_SOURCES = topclosed2.cc
@@ -476,6 +492,7 @@ topclosed3_SOURCES = topclosed3.cc
 topclosure1_SOURCES = topclosure1.cc
 topclosure2_SOURCES = topclosure2.cc
 topclosure3_SOURCES = topclosure3.cc
+topclosure4_SOURCES = topclosure4.cc
 
 universe1_SOURCES = universe1.cc
 universe2_SOURCES = universe2.cc
@@ -529,6 +546,8 @@ nnc_addconstraints9_SOURCES = addconstraints9.cc
 nnc_addconstraints9_CXXFLAGS = $(DERIVED_CXXFLAGS)
 nnc_addconstraints10_SOURCES = addconstraints10.cc
 nnc_addconstraints10_CXXFLAGS = $(DERIVED_CXXFLAGS)
+nnc_addconstraints13_SOURCES = addconstraints13.cc
+nnc_addconstraints13_CXXFLAGS = $(DERIVED_CXXFLAGS)
 
 nnc_adddimensions1_SOURCES = adddimensions1.cc
 nnc_adddimensions1_CXXFLAGS = $(DERIVED_CXXFLAGS)
@@ -562,6 +581,8 @@ nnc_addgenerators9_SOURCES = addgenerators9.cc
 nnc_addgenerators9_CXXFLAGS = $(DERIVED_CXXFLAGS)
 nnc_addgenerators10_SOURCES = addgenerators10.cc
 nnc_addgenerators10_CXXFLAGS = $(DERIVED_CXXFLAGS)
+nnc_addgenerators12_SOURCES = addgenerators12.cc
+nnc_addgenerators12_CXXFLAGS = $(DERIVED_CXXFLAGS)
 
 nnc_affineimage1_SOURCES = affineimage1.cc
 nnc_affineimage1_CXXFLAGS = $(DERIVED_CXXFLAGS)
@@ -577,6 +598,8 @@ nnc_affineimage6_SOURCES = affineimage6.cc
 nnc_affineimage6_CXXFLAGS = $(DERIVED_CXXFLAGS)
 nnc_affineimage7_SOURCES = affineimage7.cc
 nnc_affineimage7_CXXFLAGS = $(DERIVED_CXXFLAGS)
+nnc_affineimage8_SOURCES = affineimage8.cc
+nnc_affineimage8_CXXFLAGS = $(DERIVED_CXXFLAGS)
 
 nnc_affinepreimage1_SOURCES = affinepreimage1.cc
 nnc_affinepreimage1_CXXFLAGS = $(DERIVED_CXXFLAGS)
@@ -596,6 +619,8 @@ nnc_affinepreimage8_SOURCES = affinepreimage8.cc
 nnc_affinepreimage8_CXXFLAGS = $(DERIVED_CXXFLAGS)
 nnc_affinepreimage9_SOURCES = affinepreimage9.cc
 nnc_affinepreimage9_CXXFLAGS = $(DERIVED_CXXFLAGS)
+nnc_affinepreimage10_SOURCES = affinepreimage10.cc
+nnc_affinepreimage10_CXXFLAGS = $(DERIVED_CXXFLAGS)
 
 nnc_affinetrans_SOURCES = affinetrans.cc
 nnc_affinetrans_CXXFLAGS = $(DERIVED_CXXFLAGS)
@@ -660,6 +685,8 @@ nnc_concatenate4_SOURCES = concatenate4.cc
 nnc_concatenate4_CXXFLAGS = $(DERIVED_CXXFLAGS)
 nnc_concatenate5_SOURCES = concatenate5.cc
 nnc_concatenate5_CXXFLAGS = $(DERIVED_CXXFLAGS)
+nnc_concatenate6_SOURCES = concatenate6.cc
+nnc_concatenate6_CXXFLAGS = $(DERIVED_CXXFLAGS)
 
 nnc_constraints1_SOURCES = constraints1.cc
 nnc_constraints1_CXXFLAGS = $(DERIVED_CXXFLAGS)
@@ -667,6 +694,8 @@ nnc_constraints2_SOURCES = constraints2.cc
 nnc_constraints2_CXXFLAGS = $(DERIVED_CXXFLAGS)
 nnc_constraints3_SOURCES = constraints3.cc
 nnc_constraints3_CXXFLAGS = $(DERIVED_CXXFLAGS)
+nnc_constraints4_SOURCES = constraints4.cc
+nnc_constraints4_CXXFLAGS = $(DERIVED_CXXFLAGS)
 
 nnc_empty1_SOURCES = empty1.cc
 nnc_empty1_CXXFLAGS = $(DERIVED_CXXFLAGS)
@@ -702,6 +731,8 @@ nnc_generators4_SOURCES = generators4.cc
 nnc_generators4_CXXFLAGS = $(DERIVED_CXXFLAGS)
 nnc_generators5_SOURCES = generators5.cc
 nnc_generators5_CXXFLAGS = $(DERIVED_CXXFLAGS)
+nnc_generators6_SOURCES = generators6.cc
+nnc_generators6_CXXFLAGS = $(DERIVED_CXXFLAGS)
 
 nnc_h79widening1_SOURCES = h79widening1.cc
 nnc_h79widening1_CXXFLAGS = $(DERIVED_CXXFLAGS)
@@ -737,6 +768,8 @@ nnc_intersection9_SOURCES = intersection9.cc
 nnc_intersection9_CXXFLAGS = $(DERIVED_CXXFLAGS)
 nnc_intersection10_SOURCES = intersection10.cc
 nnc_intersection10_CXXFLAGS = $(DERIVED_CXXFLAGS)
+nnc_intersection11_SOURCES = intersection11.cc
+nnc_intersection11_CXXFLAGS = $(DERIVED_CXXFLAGS)
 
 nnc_limitedbbrz02widening1_SOURCES = limitedbbrz02widening1.cc
 nnc_limitedbbrz02widening1_CXXFLAGS = $(DERIVED_CXXFLAGS)
@@ -803,6 +836,8 @@ nnc_polyhull7_SOURCES = polyhull7.cc
 nnc_polyhull7_CXXFLAGS = $(DERIVED_CXXFLAGS)
 nnc_polyhull8_SOURCES = polyhull8.cc
 nnc_polyhull8_CXXFLAGS = $(DERIVED_CXXFLAGS)
+nnc_polyhull9_SOURCES = polyhull9.cc
+nnc_polyhull9_CXXFLAGS = $(DERIVED_CXXFLAGS)
 
 nnc_relations1_SOURCES = relations1.cc
 nnc_relations1_CXXFLAGS = $(DERIVED_CXXFLAGS)
@@ -834,6 +869,8 @@ nnc_relations15_SOURCES = relations15.cc
 nnc_relations15_CXXFLAGS = $(DERIVED_CXXFLAGS)
 nnc_relations16_SOURCES = relations16.cc
 nnc_relations16_CXXFLAGS = $(DERIVED_CXXFLAGS)
+nnc_relations19_SOURCES = relations19.cc
+nnc_relations19_CXXFLAGS = $(DERIVED_CXXFLAGS)
 
 nnc_randphull1_SOURCES = randphull1.cc
 nnc_randphull1_CXXFLAGS = $(DERIVED_CXXFLAGS)
@@ -871,6 +908,8 @@ nnc_timeelapse6_SOURCES = timeelapse6.cc
 nnc_timeelapse6_CXXFLAGS = $(DERIVED_CXXFLAGS)
 nnc_timeelapse7_SOURCES = timeelapse7.cc
 nnc_timeelapse7_CXXFLAGS = $(DERIVED_CXXFLAGS)
+nnc_timeelapse8_SOURCES = timeelapse8.cc
+nnc_timeelapse8_CXXFLAGS = $(DERIVED_CXXFLAGS)
 
 nnc_universe1_SOURCES = universe1.cc
 nnc_universe1_CXXFLAGS = $(DERIVED_CXXFLAGS)
@@ -914,7 +953,9 @@ PFunction.hh
 
 EXTRA_DIST = ehandlers.cc print.cc $(watchdog1_SRCS)
 
-BUGS =
+BUGS = bug1
+
+bug1_SOURCES = bug1.cc
 
 MOSTLYCLEANFILES = \
 ascii_dump_load1.dat \

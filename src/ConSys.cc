@@ -77,12 +77,44 @@ PPL::ConSys::adjust_topology_and_dimension(Topology new_topology,
 	  was_sorted = true;
 	  cs.set_sorted(false);
 	}
-	for (dimension_type i = cs_num_rows; i-- > 0; )
-	  if (cs[i][eps_index] != 0) {
-	    --cs_num_rows;
-	    std::swap(cs[i], cs[cs_num_rows]);
-	  }
-	cs.erase_to_end(cs_num_rows);
+	// If we have no pending rows, we only check if
+	// we must erase some rows.
+	if (cs.num_pending_rows() == 0) { 
+	  for (dimension_type i = cs_num_rows; i-- > 0; )
+	    if (cs[i][eps_index] != 0) {
+	      --cs_num_rows;
+	      std::swap(cs[i], cs[cs_num_rows]);
+	    }
+	  cs.erase_to_end(cs_num_rows);
+	  cs.unset_pending_rows();
+	}
+	else {
+	  // There are pending rows, and we cannot swap them
+	  // into the non-pending part of the matrix.
+	  // Thus, we first work on the non-pending part as if it was
+	  // an independent matrix; then we work on the pending part.
+	  dimension_type old_first_pending = cs.first_pending_row();
+	  dimension_type new_first_pending = old_first_pending;
+	  for (dimension_type i = new_first_pending; i-- > 0; )
+	    if (cs[i][eps_index] != 0) {
+	      --new_first_pending;
+	      std::swap(cs[i], cs[new_first_pending]);
+	    }
+	  dimension_type num_swaps = old_first_pending - new_first_pending;
+          cs.set_index_first_pending_row(new_first_pending);
+	  // Move the swapped rows to the real end of the matrix.
+	  for (dimension_type i = num_swaps; i-- > 0; )
+	    std::swap(cs[old_first_pending - i], cs[cs_num_rows - i]);
+	  cs_num_rows -= num_swaps;
+	  // Now iterate through the pending rows.
+	  for (dimension_type i = cs_num_rows; i-- > new_first_pending; )
+	    if (cs[i][eps_index] != 0) {
+	      --cs_num_rows;
+	      std::swap(cs[i], cs[cs_num_rows]);
+	    }
+	  cs.erase_to_end(cs_num_rows);
+	}
+	
 	// If `cs' was sorted we sort it again.
 	if (was_sorted)
 	  cs.sort_rows();
@@ -134,6 +166,8 @@ PPL::ConSys::has_strict_inequalities() const {
     return false;
   const ConSys& cs = *this;
   dimension_type eps_index = cs.num_columns() - 1;
+  // We verify if the system has strict inequalities
+  // also in the pending part.
   for (dimension_type i = num_rows(); i-- > 0; )
     // Optimized type checking: we already know the topology;
     // also, equalities have the epsilon coefficient equal to zero.
@@ -147,6 +181,9 @@ PPL::ConSys::has_strict_inequalities() const {
 
 void
 PPL::ConSys::insert(const Constraint& c) {
+  // We are sure that the matrix has no pending rows
+  // and that the new row is not a pending constraint.
+  assert(num_pending_rows() == 0);
   if (topology() == c.topology())
     Matrix::insert(c);
   else
@@ -170,8 +207,36 @@ PPL::ConSys::insert(const Constraint& c) {
     }
 }
 
+void
+PPL::ConSys::insert_pending(const Constraint& c) {
+  if (topology() == c.topology())
+    Matrix::insert_pending(c);
+  else
+    // `*this' and `c' have different topologies.
+    if (is_necessarily_closed()) {
+      // Padding the matrix with a columns of zeros
+      // corresponding to the epsilon coefficients.
+      add_zero_columns(1);
+      set_not_necessarily_closed();
+      Matrix::insert_pending(c);
+    }
+    else {
+      // Here `*this' is NNC and `c' is necessarily closed.
+      // Copying the constraint adding the epsilon coefficient
+      // and the missing dimensions, if any.
+      dimension_type new_size = 2 + std::max(c.space_dimension(),
+					     space_dimension());
+      Constraint tmp_c(c, new_size);
+      tmp_c.set_not_necessarily_closed();
+      Matrix::insert_pending(tmp_c);
+    }
+}
+
 PPL::dimension_type
 PPL::ConSys::num_inequalities() const {
+  // We are sure that we call this method only when
+  // the matrix has no pending rows.
+  assert(num_pending_rows() == 0);
   int n = 0;
   // If the Matrix happens to be sorted, take advantage of the fact
   // that inequalities are at the bottom of the system.
@@ -188,6 +253,9 @@ PPL::ConSys::num_inequalities() const {
 
 PPL::dimension_type
 PPL::ConSys::num_equalities() const {
+  // We are sure that we call this method only when
+  // the matrix has no pending rows.
+  assert(num_pending_rows() == 0);
   return num_rows() - num_inequalities();
 }
 

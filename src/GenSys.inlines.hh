@@ -56,6 +56,11 @@ GenSys::GenSys(Topology topol,
 }
 
 inline
+GenSys::GenSys(GenSys& y, dimension_type first_stolen)
+  : Matrix(y, first_stolen) {
+}
+
+inline
 GenSys::~GenSys() {
 }
 

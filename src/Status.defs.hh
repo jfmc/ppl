@@ -119,6 +119,14 @@ public:
   bool test_sat_g_up_to_date() const;
   void reset_sat_g_up_to_date();
   void set_sat_g_up_to_date();
+
+  bool test_c_pending() const;
+  void reset_c_pending();
+  void set_c_pending();
+
+  bool test_g_pending() const;
+  void reset_g_pending();
+  void set_g_pending();
   //@}
 
   //! Checks if all the invariants are satisfied.
@@ -153,6 +161,8 @@ private:
   static const flags_t G_MINIMIZED      = 1U << 4;
   static const flags_t SAT_C_UP_TO_DATE = 1U << 5;
   static const flags_t SAT_G_UP_TO_DATE = 1U << 6;
+  static const flags_t CS_PENDING       = 1U << 7;
+  static const flags_t GS_PENDING       = 1U << 8;
   //@}
 
   //! This holds the current bitset.

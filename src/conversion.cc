@@ -359,6 +359,9 @@ PPL::Polyhedron::conversion(Matrix& source,
   assert(source_num_rows == sat.num_columns());
   assert(dest_num_rows == sat.num_rows());
 
+  // If `start > 0', then we are converting the pending constraints.
+  assert(start == 0 || start == source.first_pending_row());
+
   // During the iteration on the constraints in `source' we may identify
   // constraints that are redundant: these have to be removed by swapping
   // the rows of `source', taking care not to compromise the sortedness
@@ -720,8 +723,8 @@ PPL::Polyhedron::conversion(Matrix& source,
 		  // saturation row to `sat'.
 		  if (dest_num_rows == dest.num_rows()) {
 		    // Make room for one more row.
-		    dest.add_row(Row::Type(dest.topology(),
-					   Row::RAY_OR_POINT_OR_INEQUALITY));
+		    dest.add_pending_row(Row::Type(dest.topology(),
+						   Row::RAY_OR_POINT_OR_INEQUALITY));
 		    sat.add_row(new_satrow);
 		  }
 		  else
@@ -822,16 +825,42 @@ PPL::Polyhedron::conversion(Matrix& source,
 #endif
   }
 
-  // Since we may have deleted some redundant constraints from `source'
-  // or some redundant rays from `dest', we have to delete the useless
-  // rows from the corresponding matrices.
-  if (source_num_rows < source.num_rows()) {
+  // We may have identified some redundant constraints in `source',
+  // which have been swapped at the end of the matrix.
+  if (source_num_redundant > 0) {
+    assert(source_num_redundant == source.num_rows() - source_num_rows);
     source.erase_to_end(source_num_rows);
     sat.columns_erase_to_end(source_num_rows);
   }
+  // If `start == 0', then `source' was sorted and remained so.
+  // If otherwise `start > 0', then the two sub-matrix made by the
+  // non-pending rows and the pending rows, respectively, were both sorted.
+  // Thus, the overall matrix is sorted if and only if either
+  // `start == source_num_rows' (i.e., the second sub-matrix is empty)
+  // or the row ordering holds for the two rows at the boundary between
+  // the two sub-matrices.
+  if (start > 0 && start < source_num_rows)
+    source.set_sorted(source[start - 1] <= source[start]);
+  // There are no longer pending constraints in `source'.
+  source.set_index_first_pending_row(source_num_rows);
+
+  // We may have identified some redundant rays in `dest',
+  // which have been swapped at the end of the matrix.
   if (dest_num_rows < dest.num_rows()) {
     dest.erase_to_end(dest_num_rows);
     sat.rows_erase_to_end(dest_num_rows);
   }
+  if (dest.is_sorted())
+    // If the non-pending generators in `dest' are still declared to be
+    // sorted, then we have to also check for the sortedness of the
+    // pending generators.
+    for (dimension_type i = dest.first_pending_row(); i < dest_num_rows; ++i)
+      if (dest[i - 1] > dest[i]) {
+	dest.set_sorted(false);
+	break;
+      }
+  // There are no pending generators in `dest'.
+  dest.set_index_first_pending_row(dest_num_rows);
+  
   return num_lines_or_equalities;
 }

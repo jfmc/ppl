@@ -40,6 +40,8 @@ static const std::string consys_upd = "CS";
 static const std::string gensys_upd = "GS";
 static const std::string sat_c = "SC";
 static const std::string sat_g = "SG";
+static const std::string consys_pending = "CP";
+static const std::string gensys_pending = "GP";
 static const char yes = '+';
 static const char no = '-';
 static const char sep = ' ';
@@ -54,6 +56,9 @@ PPL::Status::ascii_dump(std::ostream& s) const {
     << sep
     << (test_c_up_to_date() ? yes : no) << consys_upd << sep
     << (test_g_up_to_date() ? yes : no) << gensys_upd << sep
+    << sep
+    << (test_c_pending() ? yes : no) << consys_pending << sep
+    << (test_g_pending() ? yes : no) << gensys_pending << sep
     << sep
     << (test_sat_c_up_to_date() ? yes : no) << sat_c << sep
     << (test_sat_g_up_to_date() ? yes : no) << sat_g << sep;
@@ -119,6 +124,20 @@ PPL::Status::ascii_load(std::istream& s) {
   else
     reset_g_up_to_date();
 
+  if (!get_field(s, consys_pending, positive))
+    return false;
+  if (positive)
+    set_c_pending();
+  else
+    reset_c_pending();
+
+  if (!get_field(s, gensys_pending, positive))
+    return false;
+  if (positive)
+    set_g_pending();
+  else
+    reset_g_pending();
+
   if (!get_field(s, sat_c, positive))
     return false;
   if (positive)
@@ -165,6 +184,21 @@ PPL::Status::OK() const {
     // If generators are minimized they must be up-to-date.
     return false;
 
+  if (test_c_pending() && test_g_pending())
+    // It is impossible that there are both pending constraints
+    // and pending generators.
+    return false;
+  
+  if (test_c_pending() || test_g_pending()) {
+    if (!test_c_minimized() || !test_g_minimized())
+      // If there are pending, constraints and generators
+      // must be minimized.
+      return false;
+    if (!test_sat_c_up_to_date() && !test_sat_g_up_to_date())
+      // If there are pending, there must be at least
+      // a saturation matrix up-to-date.
+      return false;
+  } 
   // Any other case is ok.
   return true;
 }

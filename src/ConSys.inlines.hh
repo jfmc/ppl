@@ -56,6 +56,11 @@ ConSys::ConSys(Topology topol,
 }
 
 inline
+ConSys::ConSys(ConSys& y, dimension_type first_stolen)
+  : Matrix(y, first_stolen) {
+}
+
+inline
 ConSys::~ConSys() {
 }
 

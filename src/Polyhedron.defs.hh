@@ -1331,6 +1331,22 @@ private:
   */
   bool generators_are_minimized() const;
 
+  //! Returns <CODE>true</CODE> if there are pending constraints.
+  bool has_pending_constraints() const;
+
+  //! Returns <CODE>true</CODE> if there are pending generators.
+  bool has_pending_generators() const;
+
+  //! \brief
+  //! Returns <CODE>true</CODE> if there are
+  //! either pending constraints or pending generators.
+  bool has_something_pending() const;
+
+  //! \brief
+  //! Returns <CODE>true</CODE> if the polyhedron can have something
+  //! pending.
+  bool can_have_something_pending() const;
+
   //! \brief
   //! Returns <CODE>true</CODE> if the saturation matrix \p sat_c
   //! is up-to-date.
@@ -1367,6 +1383,12 @@ private:
   //! Sets \p status to express that generators are minimized.
   void set_generators_minimized();
 
+  //! Sets \p status to express that constraints are pending.
+  void set_constraints_pending();
+
+  //! Sets \p status to express that generators are pending.
+  void set_generators_pending();
+
   //! Sets \p status to express that \p sat_c is up-to-date.
   void set_sat_c_up_to_date();
 
@@ -1398,6 +1420,12 @@ private:
 
   //! Sets \p status to express that generators are no longer minimized.
   void clear_generators_minimized();
+
+  //! Sets \p status to express that there are no longer pending constraints.
+  void clear_pending_constraints();
+
+  //! Sets \p status to express that there are no longer pending generators.
+  void clear_pending_generators();
 
   //! Sets \p status to express that \p sat_c is no longer up-to-date.
   void clear_sat_c_up_to_date();
@@ -1460,6 +1488,54 @@ private:
     \f]
   */
   void update_sat_g() const;
+
+  //! \brief
+  //! Processes the pending rows of either description of the polyhedron
+  //! and obtains a minimized polyhedron.
+  /*!
+    \return       <CODE>false</CODE> if and only if \p *this turns out
+                  to be an empty polyhedron.
+
+    It is assumed that the polyhedron does have some constraints or
+    generators pending.
+  */
+  bool process_pending() const;
+  
+  //! Processes the pending constraints and obtains a minimized polyhedron.
+  /*!
+    \return       <CODE>false</CODE> if and only if \p *this turns out
+                  to be an empty polyhedron.
+
+    It is assumed that the polyhedron does have some pending constraints.
+  */
+  bool process_pending_constraints() const;
+
+  //! Processes the pending generators and obtains a minimized polyhedron.
+  /*!
+    It is assumed that the polyhedron does have some pending generators.
+  */
+  void process_pending_generators() const;
+
+  //! \brief
+  //! Lazily integrates the pending descriptions of the polyhedron
+  //! to obtain a constraint system without pending rows.
+  /*!
+    It is assumed that the polyhedron does have some constraints or
+    generators pending.
+  */
+  void remove_pending_to_obtain_constraints() const;
+
+  //! \brief
+  //! Lazily integrates the pending descriptions of the polyhedron
+  //! to obtain a generator system without pending rows.
+  /*!
+    \return       <CODE>false</CODE> if and only if \p *this turns out
+                  to be an empty polyhedron.
+
+    It is assumed that the polyhedron does have some constraints or
+    generators pending.
+  */
+  bool remove_pending_to_obtain_generators() const;
 
   //! Sorts the matrix of constraints keeping status consistency.
   /*!
@@ -1598,6 +1674,13 @@ private:
   static bool add_and_minimize(bool con_to_gen,
 			       Matrix& source1, Matrix& dest, SatMatrix& sat,
 			       const Matrix& source2);
+
+  //! \brief
+  //! Adds given constraints and builds minimized corresponding generators
+  //! or vice versa. The given constraints are in \p source.
+  // Detailed Doxygen comment to be found in file minimize.cc.
+  static bool add_and_minimize(bool con_to_gen,
+			       Matrix& source, Matrix& dest, SatMatrix& sat);
   
   //! \brief
   //! Returns <CODE>true</CODE> if the given polyhedra satisfy

@@ -70,6 +70,17 @@ protected:
 
   //! Copy-constructor.
   Matrix(const Matrix& y);
+
+  //! \brief
+  //! Split-constructor: builds a matrix by stealing from \p y
+  //! the rows having index greater or equal to \p first_stolen.
+  /*!
+    \param y              The matrix being split. On entry, it is assumed
+                          that \p y has \p first_stolen + 1 rows at least.
+                          On exit, it will have \p first_stolen rows.
+    \param first_stolen   The index where \p y is split.
+  */
+  Matrix(Matrix& y, dimension_type first_stolen);
   
   //! Destructor.
   virtual ~Matrix();
@@ -183,6 +194,9 @@ private:
   //! <CODE>Integer</CODE> objects that each row can contain.
   dimension_type row_capacity;
 
+  //! The index of the first pending row.
+  dimension_type index_first_pending;
+
   //! \brief
   //! <CODE>true</CODE> if rows are sorted in the ascending order as
   //! defined by <CODE>bool operator<(const Row& x, const Row& y)</CODE>.
@@ -204,6 +218,12 @@ public:
   
   //! Sets the topology of all rows equal to the matrix topology.
   void set_rows_topology();
+
+  //! Sets the index to indicate that the matrix has no pending rows.
+  void unset_pending_rows();
+
+  //! Sets the index of the first pending row to \p first_pending.
+  void set_index_first_pending_row(dimension_type first_pending);
 
   //! Makes the matrix grow by adding more rows and/or more columns.
   /*!
@@ -286,6 +306,12 @@ public:
   //! Returns the number of rows in the matrix.
   dimension_type num_rows() const;
 
+  //! Returns the number of rows that built the system.
+  dimension_type first_pending_row() const;
+
+  //! Returns the number of rows that are in the pending part of the matrix.
+  dimension_type num_pending_rows() const;
+
   //! \brief
   //! Returns the number of rows in the matrix
   //! that represent either lines or equalities.
@@ -312,8 +338,48 @@ public:
   //! Strongly normalizes the matrix.
   void strong_normalize();
 
-  //! Sorts the rows (in growing order) and eliminates duplicated ones.
+  //! \brief
+  //! Sorts the non-pending rows (in growing order) and eliminates
+  //! duplicated ones.
   void sort_rows();
+
+  //! \brief
+  //! Sorts the rows (in growing order) form \p first_row to
+  //! \p last_row and eliminates duplicated ones.
+  void sort_rows(dimension_type first_row, dimension_type last_row);
+ 
+  //! \brief
+  //! Sorts the pending rows and eliminates those that also occur
+  //! in the non-pending part of the matrix.
+  void sort_pending_and_remove_duplicates();
+  
+  //! Adds a copy of the given row to the matrix.
+  void add_row(const Row& row);
+
+  //! Adds a copy of the given row to the pending part of the matrix.
+  void add_pending_row(const Row& row);
+
+  //! Adds a new empty row to the matrix, setting only its type.
+  void add_pending_row(Row::Type type);
+
+  //! \brief
+  //! Adds a copy of the given row to the matrix,
+  //! automatically resizing the matrix or the row, if needed.
+  void insert(const Row& row);
+
+  //! \brief
+  //! Adds a copy of the given row to the pending part of the matrix,
+  //! automatically resizing the matrix or the row, if needed.
+  void insert_pending(const Row& row);
+
+  //! Adds to \p *this a copy of the rows of `y'.
+  /*!
+    It is assumed that \p *this has no pending rows.
+  */
+  void add_rows(const Matrix& y);
+
+  //! Adds a copy of the rows of `y' to the pending part of `*this'.
+  void add_pending_rows(const Matrix& y);
 
   //! \brief
   //! Assigns to \p *this the result of merging its rows with
@@ -323,17 +389,6 @@ public:
     Both matrices are assumed to be sorted on entry.
   */
   void merge_rows_assign(const Matrix& y);
-
-  //! Adds a new empty row to the matrix, setting only its type.
-  void add_row(Row::Type type);
-
-  //! Adds a copy of the given row to the matrix.
-  void add_row(const Row& row);
-
-  //! \brief
-  //! Adds a copy of the given row to the matrix,
-  //! automatically resizing the matrix or the row, if needed.
-  void insert(const Row& row);
 
   //! Clears the matrix deallocating all its rows.
   void clear();
