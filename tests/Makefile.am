@@ -57,6 +57,7 @@ ORIGINAL_TESTS = \
 	affinepreimage5 affinepreimage6 affinepreimage7 affinepreimage8 \
 	affinetrans \
         append1 append2 \
+	ascii_dump1 \
 	ascii_dump_load1 ascii_dump_load2 ascii_dump_load3 ascii_dump_load4 \
 	ascii_dump_load5 \
 	bbrz02widening1 bbrz02widening2 bbrz02widening3 bbrz02widening4 \
@@ -269,6 +270,8 @@ affinetrans_SOURCES = affinetrans.cc
 
 append1_SOURCES = append1.cc
 append2_SOURCES = append2.cc
+
+ascii_dump1_SOURCES = ascii_dump1.cc files.cc
 
 ascii_dump_load1_SOURCES = ascii_dump_load1.cc files.cc
 ascii_dump_load2_SOURCES = ascii_dump_load2.cc files.cc
@@ -871,6 +874,7 @@ EXTRA_DIST = ehandlers.cc print.cc $(watchdog1_SRCS)
 BUGS =
 
 MOSTLYCLEANFILES = \
+ascii_dump_1.dat \
 ascii_dump_load_1.dat \
 ascii_dump_load_2.dat \
 ascii_dump_load_3.dat \

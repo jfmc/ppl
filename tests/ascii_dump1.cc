@@ -1,4 +1,5 @@
-/* Test ascii_dump() 5 ascii_load(): we read a non completed file.
+/* Test Poly_Con_Relation::ascii_dump() and
+   Poly_Gen_Relation::ascii_load():
    we test these functions in the case that the file does not contain
    the right thing.
    Copyright (C) 2001, 2002 Roberto Bagnara <bagnara@cs.unipr.it>
@@ -35,104 +36,56 @@ using namespace Parma_Polyhedra_Library;
 #define NOISY 0
 #endif
 
-const char* my_file = "ascii_dump_load_5.dat";
+const char* my_file = "ascii_dump_1.dat";
 
 void
 test1() {
+  Poly_Con_Relation rel(Poly_Con_Relation::nothing());
+  rel.OK();
 
   fstream f;
   open(f, my_file, ios_base::out);
-  f << "space_dim 2\n"
-    << "-ZE -EM  -CM -GM  +CS -GS  -SC -SG\n"
-    << "con_sys (up-to-date)\n"
-    << "topology NECESSARILY_CLOSED\n"
-    << "3 x 3 (not_sorted)\n"
-    << "1 0 0"; 
+  f << rel << endl;
   close(f);
-  
-  open(f, my_file, ios_base::in);
-  C_Polyhedron ph2;
-  bool ok =! ph2.ascii_load(f);
-  close(f);
-  
-  if (!ok)
-    exit(1);
 }
 
 void
 test2() {
+  Poly_Gen_Relation rel(Poly_Gen_Relation::nothing());
+  rel.OK();
 
   fstream f;
   open(f, my_file, ios_base::out);
-  f << "space_dim 2\n"
-    << "-ZE -EM  -CM -GM  +CS -GS  -SC -SG\n"
-    << "con_sys (up-to-date)\n"
-    << "topology NECESSARILY_CLOSED\n"
-    << "3 x 3 (not_sorted)\n"
-    << "1 0 0   >=\n"
-    << "0 1 0   >=\n"
-    << "0 0 1   >=\n\n"
-    << "gen_sys (not_up-to-date)\n"
-    << "topology NECESSARILY_CLOSED\n"
-    <<" 3 x 3 (not_sorted)\n"
-    << "1 0 0"; 
+  f << rel << endl;
   close(f);
-  
-  open(f, my_file, ios_base::in);
-  C_Polyhedron ph2;
-  bool ok =! ph2.ascii_load(f);
-  close(f);
-  
-  if (!ok)
-    exit(1);
 }
 
 void
 test3() {
+  Poly_Con_Relation rel(Poly_Con_Relation::is_disjoint());
+  rel.OK();
 
   fstream f;
   open(f, my_file, ios_base::out);
-  f << "space_dim 2\n"
-    << "-ZE -EM  -CM -GM  +CS -GS  -SC -SG\n"
-    << "con_sys (up-to-date)\n"
-    << "topology NECESSARILY_CLOSED\n"
-    << "3";
+  f << rel << endl;
   close(f);
-  
-  open(f, my_file, ios_base::in);
-  C_Polyhedron ph2;
-  bool ok =! ph2.ascii_load(f);
-  close(f);
-  
-  if (!ok)
-    exit(1);
 }
-
 
 void
 test4() {
+  Poly_Gen_Relation rel(Poly_Gen_Relation::subsumes());
+  rel.OK();
 
   fstream f;
   open(f, my_file, ios_base::out);
-  f << "space_dim 2\n"
-    << "-ZE -EM  -CM -GM  +CS -GS  -SC -SG\n"
-    << "con_sys (up-to-date)\n"
-    << "topology";
+  f << rel << endl;
   close(f);
-  
-  open(f, my_file, ios_base::in);
-  C_Polyhedron ph2;
-  bool ok =! ph2.ascii_load(f);
-  close(f);
-  
-  if (!ok)
-    exit(1);
 }
 
 int
 main() {
   set_handlers();
-  
+
   test1();
   test2();
   test3();
