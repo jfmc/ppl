@@ -201,73 +201,95 @@ mod_mpz(mpz_class& to, const mpz_class& x, const mpz_class& y) {
 
 SPECIALIZE_MOD(mpz, mpz_class, mpz_class)
 
-template <typename Policy>
-inline Result 
-assign_long_mpz(long& to, const mpz_class& from) {
-  if (!Policy::check_overflow || from.fits_slong_p()) {
-    to = from.get_si();
-    return V_EQ;
-  }
-  return sgn(from) < 0 ? V_NEG_OVERFLOW : V_POS_OVERFLOW;
-}
-
-SPECIALIZE_ASSIGN(long_mpz, long, mpz_class)
-
 template <typename Policy, typename To>
 inline Result 
 assign_signed_int_mpz(To& to, const mpz_class& from) {
   if (!Policy::check_overflow) {
-    to = from.get_si();
+    if (sizeof(To) <= sizeof(long))
+      to = from.get_si();
+    else {
+      To v;
+      mpz_export(&v, 0, 1, sizeof(To), 0, 0, from.get_mpz_t());
+      if (sgn(from) < 0)
+	return neg<Policy>(to, v);
+      to = v;
+    }
     return V_EQ;
   }
-  if (from.fits_slong_p()) {
-    long v = from.get_si();
-    if (v < std::numeric_limits<To>::min())
-      return V_NEG_OVERFLOW;
-    if (v > std::numeric_limits<To>::max())
-      return V_POS_OVERFLOW;
-    to = v;
-    return V_EQ;
+  if (sizeof(To) <= sizeof(long)) {
+    if (from.fits_slong_p()) {
+      long v = from.get_si();
+      if (v < std::numeric_limits<To>::min())
+	return V_NEG_OVERFLOW;
+      if (v > std::numeric_limits<To>::max())
+	return V_POS_OVERFLOW;
+      to = v;
+      return V_EQ;
+    }
+  } else {
+    mpz_srcptr m = from.get_mpz_t();
+    size_t sz = mpz_size(m);
+    if (sz <= sizeof(To) / sizeof(mp_limb_t)) {
+      if (sz == 0) {
+	to = 0;
+	return V_EQ;
+      }
+      To v;
+      mpz_export(&v, 0, 1, sizeof(To), 0, 0, m);
+      if (v >= 0) {
+	if (sgn(from) < 0)
+	  return neg<Policy>(to, v);
+	to = v;
+	return V_EQ;
+      }
+    }
   }
   return sgn(from) < 0 ? V_NEG_OVERFLOW : V_POS_OVERFLOW;
 }
 
-SPECIALIZE_ASSIGN(signed_int_mpz, signed char, mpz_class)
-SPECIALIZE_ASSIGN(signed_int_mpz, short, mpz_class)
-SPECIALIZE_ASSIGN(signed_int_mpz, int, mpz_class)
-
-template <typename Policy>
-inline Result 
-assign_unsigned_long_mpz(unsigned long& to, const mpz_class& from) {
-  if (!Policy::check_overflow || from.fits_ulong_p()) {
-    to = from.get_ui();
-    return V_EQ;
-  }
-  return sgn(from) < 0 ? V_NEG_OVERFLOW : V_POS_OVERFLOW;
-}
-
-SPECIALIZE_ASSIGN(unsigned_long_mpz, unsigned long, mpz_class)
+SPECIALIZE_ASSIGN(signed_int_mpz, int8_t, mpz_class)
+SPECIALIZE_ASSIGN(signed_int_mpz, int16_t, mpz_class)
+SPECIALIZE_ASSIGN(signed_int_mpz, int32_t, mpz_class)
+SPECIALIZE_ASSIGN(signed_int_mpz, int64_t, mpz_class)
 
 template <typename Policy, typename To>
 inline Result 
 assign_unsigned_int_mpz(To& to, const mpz_class& from) {
   if (!Policy::check_overflow) {
-    to = from.get_ui();
+    if (sizeof(To) <= sizeof(unsigned long))
+      to = from.get_ui();
+    else 
+      mpz_export(&to, 0, 1, sizeof(To), 0, 0, from.get_mpz_t());
     return V_EQ;
   }
-  if (from.fits_ulong_p()) {
-    unsigned long v = from.get_ui();
-    if (v > std::numeric_limits<To>::max())
-      return V_POS_OVERFLOW;
-    to = v;
-    return V_EQ;
+  if (sgn(from) < 0)
+    return V_NEG_OVERFLOW;
+  if (sizeof(To) <= sizeof(unsigned long)) {
+    if (from.fits_ulong_p()) {
+      unsigned long v = from.get_ui();
+      if (v > std::numeric_limits<To>::max())
+	return V_POS_OVERFLOW;
+      to = v;
+      return V_EQ;
+    }
+  } else {
+    mpz_srcptr m = from.get_mpz_t();
+    size_t sz = mpz_size(m);
+    if (sz <= sizeof(To) / sizeof(mp_limb_t)) {
+      if (sz == 0)
+	to = 0;
+      else
+	mpz_export(&to, 0, 1, sizeof(To), 0, 0, m);
+      return V_EQ;
+    }
   }
-  return sgn(from) < 0 ? V_NEG_OVERFLOW : V_POS_OVERFLOW;
+  return V_POS_OVERFLOW;
 }
 
-SPECIALIZE_ASSIGN(unsigned_int_mpz, unsigned char, mpz_class)
-SPECIALIZE_ASSIGN(unsigned_int_mpz, unsigned short, mpz_class)
-SPECIALIZE_ASSIGN(unsigned_int_mpz, unsigned int, mpz_class)
+SPECIALIZE_ASSIGN(unsigned_int_mpz, u_int8_t, mpz_class)
+SPECIALIZE_ASSIGN(unsigned_int_mpz, u_int16_t, mpz_class)
+SPECIALIZE_ASSIGN(unsigned_int_mpz, u_int32_t, mpz_class)
+SPECIALIZE_ASSIGN(unsigned_int_mpz, u_int64_t, mpz_class)
 
 template <typename Policy>
 inline Result 
