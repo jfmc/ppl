@@ -305,10 +305,17 @@ ppl_Prolog_sysdep_init() {
 extern "C" void
 init() {
   ppl_init();
-  YAP_USER_C_PREDICATE(ppl_new_polyhedron, 2);
-  YAP_USER_C_PREDICATE(ppl_new_empty_polyhedron, 2);
-  YAP_USER_C_PREDICATE(ppl_copy_polyhedron, 2);
-  YAP_USER_C_PREDICATE(ppl_delete_polyhedron, 1);
+  YAP_USER_C_PREDICATE(ppl_initialize, 0)
+  YAP_USER_C_PREDICATE(ppl_finalize, 0)
+  YAP_USER_C_PREDICATE(ppl_new_C_Polyhedron_from_dimension, 2);
+  YAP_USER_C_PREDICATE(ppl_new_NNC_Polyhedron_from_dimension, 2);
+  YAP_USER_C_PREDICATE(ppl_new_C_Polyhedron_empty_from_dimension, 2);
+  YAP_USER_C_PREDICATE(ppl_new_NNC_Polyhedron_empty_from_dimension, 2);
+  YAP_USER_C_PREDICATE(ppl_new_C_Polyhedron_from_C_Polyhedron, 2);
+  YAP_USER_C_PREDICATE(ppl_new_C_Polyhedron_from_NNC_Polyhedron, 2);
+  YAP_USER_C_PREDICATE(ppl_new_NNC_Polyhedron_from_C_Polyhedron, 2);
+  YAP_USER_C_PREDICATE(ppl_new_NNC_Polyhedron_from_NNC_Polyhedron, 2);
+  YAP_USER_C_PREDICATE(ppl_delete_Polyhedron, 1);
   YAP_USER_C_PREDICATE(ppl_space_dimension, 2);
   YAP_USER_C_PREDICATE(ppl_add_constraint, 2);
   YAP_USER_C_PREDICATE(ppl_add_generator, 2);

@@ -283,6 +283,12 @@ ppl_Prolog_sysdep_init() {
 
 #include "../ppl_prolog.icc"
 
+#define SP_STUB_0(name, arity) \
+extern "C" Prolog_foreign_return_type \
+sp_stub_##name(Prolog_term_ref goal, void*) { \
+  return name; \
+}
+
 #define SP_STUB_1(name, arity) \
 extern "C" Prolog_foreign_return_type \
 sp_stub_##name(Prolog_term_ref goal, void*) { \
@@ -337,10 +343,17 @@ sp_stub_##name(Prolog_term_ref goal, void*) { \
   return name(arg1, arg2, arg3, arg4); \
 }
 
-SP_STUB_2(ppl_new_polyhedron, 2)
-SP_STUB_2(ppl_new_empty_polyhedron, 2)
-SP_STUB_2(ppl_copy_polyhedron, 2)
-SP_STUB_1(ppl_delete_polyhedron, 1)
+SP_STUB_0(ppl_initialize, 0)
+SP_STUB_0(ppl_finalize, 0)
+SP_STUB_2(ppl_new_C_Polyhedron_from_dimension, 2)
+SP_STUB_2(ppl_new_NNC_Polyhedron_from_dimension, 2)
+SP_STUB_2(ppl_new_C_Polyhedron_empty_from_dimension, 2)
+SP_STUB_2(ppl_new_NNC_Polyhedron_empty_from_dimension, 2)
+SP_STUB_2(ppl_new_C_Polyhedron_from_C_Polyhedron, 2)
+SP_STUB_2(ppl_new_C_Polyhedron_from_NNC_Polyhedron, 2)
+SP_STUB_2(ppl_new_NNC_Polyhedron_from_C_Polyhedron, 2)
+SP_STUB_2(ppl_new_NNC_Polyhedron_from_NNC_Polyhedron, 2)
+SP_STUB_1(ppl_delete_Polyhedron, 1)
 SP_STUB_2(ppl_space_dimension, 2)
 SP_STUB_2(ppl_add_constraint, 2)
 SP_STUB_2(ppl_add_generator, 2)
@@ -387,10 +400,17 @@ ppl_sicstus_init(int /* when */) {
     }
     *prolog_atoms[i].p_atom = a;
   }
-  SP_DEFINE_C_PREDICATE(ppl_new_polyhedron, 2);
-  SP_DEFINE_C_PREDICATE(ppl_new_empty_polyhedron, 2);
-  SP_DEFINE_C_PREDICATE(ppl_copy_polyhedron, 2);
-  SP_DEFINE_C_PREDICATE(ppl_delete_polyhedron, 1);
+  SP_DEFINE_C_PREDICATE(ppl_initialize, 0);
+  SP_DEFINE_C_PREDICATE(ppl_finalize, 0);
+  SP_DEFINE_C_PREDICATE(ppl_new_C_Polyhedron_from_dimension, 2);
+  SP_DEFINE_C_PREDICATE(ppl_new_NNC_Polyhedron_from_dimension, 2);
+  SP_DEFINE_C_PREDICATE(ppl_new_C_Polyhedron_empty_from_dimension, 2);
+  SP_DEFINE_C_PREDICATE(ppl_new_NNC_Polyhedron_empty_from_dimension, 2);
+  SP_DEFINE_C_PREDICATE(ppl_new_C_Polyhedron_from_C_Polyhedron, 2);
+  SP_DEFINE_C_PREDICATE(ppl_new_C_Polyhedron_from_NNC_Polyhedron, 2);
+  SP_DEFINE_C_PREDICATE(ppl_new_NNC_Polyhedron_from_C_Polyhedron, 2);
+  SP_DEFINE_C_PREDICATE(ppl_new_NNC_Polyhedron_from_NNC_Polyhedron, 2);
+  SP_DEFINE_C_PREDICATE(ppl_delete_Polyhedron, 1);
   SP_DEFINE_C_PREDICATE(ppl_space_dimension, 2);
   SP_DEFINE_C_PREDICATE(ppl_add_constraint, 2);
   SP_DEFINE_C_PREDICATE(ppl_add_generator, 2);

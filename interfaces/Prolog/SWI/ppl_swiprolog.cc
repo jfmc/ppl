@@ -277,9 +277,16 @@ ppl_Prolog_sysdep_init() {
 #define PL_EXTENSION_ENTRY(name, arity) { #name, arity, (void*) name, 0 },
 
 static PL_extension predicates[] = {
-  PL_EXTENSION_ENTRY(ppl_new_polyhedron, 2)
-  PL_EXTENSION_ENTRY(ppl_new_empty_polyhedron, 2)
-  PL_EXTENSION_ENTRY(ppl_copy_polyhedron, 2)
+  PL_EXTENSION_ENTRY(ppl_initialize, 0)
+  PL_EXTENSION_ENTRY(ppl_finalize, 0)
+  PL_EXTENSION_ENTRY(ppl_new_C_Polyhedron_from_dimension, 2)
+  PL_EXTENSION_ENTRY(ppl_new_NNC_Polyhedron_from_dimension, 2)
+  PL_EXTENSION_ENTRY(ppl_new_C_Polyhedron_empty_from_dimension, 2)
+  PL_EXTENSION_ENTRY(ppl_new_NNC_Polyhedron_empty_from_dimension, 2)
+  PL_EXTENSION_ENTRY(ppl_new_C_Polyhedron_from_C_Polyhedron, 2)
+  PL_EXTENSION_ENTRY(ppl_new_C_Polyhedron_from_NNC_Polyhedron, 2)
+  PL_EXTENSION_ENTRY(ppl_new_NNC_Polyhedron_from_C_Polyhedron, 2)
+  PL_EXTENSION_ENTRY(ppl_new_NNC_Polyhedron_from_NNC_Polyhedron, 2)
   PL_EXTENSION_ENTRY(ppl_delete_polyhedron, 1)
   PL_EXTENSION_ENTRY(ppl_space_dimension, 2)
   PL_EXTENSION_ENTRY(ppl_add_constraint, 2)
