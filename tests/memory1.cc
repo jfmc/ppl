@@ -123,12 +123,12 @@ guarded_compute_open_hypercube_generators(dimension_type dimension,
 }
 
 #if GMP_SUPPORTS_EXCEPTIONS
-static void*
+extern "C" void*
 cxx_malloc(size_t size) {
   return ::operator new(size);
 }
 
-static void*
+extern "C" void*
 cxx_realloc(void* p, size_t old_size, size_t new_size) {
   if (new_size <= old_size)
     return p;
@@ -140,7 +140,7 @@ cxx_realloc(void* p, size_t old_size, size_t new_size) {
   }
 }
 
-static void
+extern "C" void
 cxx_free(void* p, size_t) {
   ::operator delete(p);
 }
