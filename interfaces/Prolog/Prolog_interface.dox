@@ -235,7 +235,11 @@ Here is a list of all the PPL predicates provided by the Prolog interface.
 </CODE>
 
 <CODE>
-  ppl_Polyhedron_space_dimension(+Handle, -Integer)
+  ppl_Polyhedron_space_dimension(+Handle, ?Integer)
+</CODE>
+
+<CODE>
+  ppl_Polyhedron_dimension(+Handle, ?Integer)
 </CODE>
 
 <CODE>
@@ -777,7 +781,13 @@ ppl_new_Polyhedron_from_Polyhedron(+Topology_1, +Handle_1,
 
 <H2><CODE> ppl_Polyhedron_space_dimension(+Handle, ?Integer) </CODE></H2>
 
-   Unifies the space dimension of the polyhedron referenced by
+   Unifies the dimension of the vector space in which the
+   polyhedron referenced by
+   <CODE>Handle</CODE> is embedded with <CODE>Integer</CODE>.
+
+<H2><CODE> ppl_Polyhedron_dimension(+Handle, ?Integer) </CODE></H2>
+
+   Unifies the actual dimension of the polyhedron referenced by
    <CODE>Handle</CODE> with <CODE>Integer</CODE>.
 
 <H2><CODE> ppl_Polyhedron_get_constraints(+Handle, ?Constraint_System)
