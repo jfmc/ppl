@@ -584,8 +584,9 @@ negate_round_down(E_NIT<T>& to,
 }
 
 template <typename T>
-void numer_denom(const E_NIT<T>& from,
-		 Coefficient& num, Coefficient& den) {
+inline void
+numer_denom(const E_NIT<T>& from,
+	    Coefficient& num, Coefficient& den) {
   from.numer_denom(num, den);
 }
 
