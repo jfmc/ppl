@@ -2,7 +2,7 @@ Source: ppl
 Priority: optional
 Maintainer: PPL developers <ppl-devel@cs.unipr.it>
 Standards-Version: 3.6.1
-Build-Depends: debhelper, binutils, g++ (== 3.4.2), libgmp3-dev (>= 4.1.3)
+Build-Depends: debhelper, binutils, g++ (== 3.4), libgmp3-dev (>= 4.1.3), autoconf, automake1.9, libtool, doxygen
 
 Package: ppl
 Architecture: any
@@ -23,7 +23,7 @@ Description: The Parma Polyhedra Library (base package)
 Package: ppl-dev
 Architecture: any
 Section: libdevel
-Depends: g++ (== 3.4.2), ppl
+Depends: g++ (== 3.4), ppl
 Recommends: libgmp3-dev
 Description: The Parma Polyhedra Library (C++ interface)
  The Parma Polyhedra Library (PPL) is a C++ library for the
