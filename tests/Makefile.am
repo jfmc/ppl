@@ -110,6 +110,7 @@ ORIGINAL_TESTS = \
 	removedim1 removedim2 removedim3 removedim4 removedim5 removedim6 \
 	removedim7 removedim8 removedim9 \
 	smm1 \
+	shuffledim1 \
 	timeelapse1 timeelapse2 timeelapse3 timeelapse4 timeelapse5 \
 	timeelapse6 timeelapse7 \
 	topclosed1 topclosed2 topclosed3 \
@@ -188,6 +189,7 @@ DERIVED_TESTS = \
 	nnc_removedim1 nnc_removedim2 nnc_removedim3 nnc_removedim4 \
 	nnc_removedim5 nnc_removedim6 nnc_removedim8 nnc_removedim9 \
 	nnc_smm1 \
+	nnc_shuffledim1 \
 	nnc_timeelapse2 nnc_timeelapse5 nnc_timeelapse6 nnc_timeelapse7 \
 	nnc_universe1 nnc_universe2 nnc_universe3 nnc_universe4 nnc_universe5 \
 	nnc_writepolyhedron2 nnc_writepolyhedron3
@@ -454,6 +456,8 @@ removedim6_SOURCES = removedim6.cc
 removedim7_SOURCES = removedim7.cc
 removedim8_SOURCES = removedim8.cc
 removedim9_SOURCES = removedim9.cc
+
+shuffledim1_SOURCES = shuffledim1.cc PFunction.cc
 
 smm1_SOURCES = smm1.cc
 
@@ -853,6 +857,9 @@ nnc_removedim8_CXXFLAGS = $(DERIVED_CXXFLAGS)
 nnc_removedim9_SOURCES = removedim9.cc
 nnc_removedim9_CXXFLAGS = $(DERIVED_CXXFLAGS)
 
+nnc_shuffledim1_SOURCES = shuffledim1.cc PFunction.cc
+nnc_shuffledim1_CXXFLAGS = $(DERIVED_CXXFLAGS)
+
 nnc_smm1_SOURCES = smm1.cc
 nnc_smm1_CXXFLAGS = $(DERIVED_CXXFLAGS)
 
@@ -897,7 +904,13 @@ XFAIL_TESTS = nnc_limitedh79widening3 nnc_polydifference1 addgenerators11
 
 check_PROGRAMS = $(TESTS) $(BUGS)
 
-noinst_HEADERS = ppl_test.hh ehandlers.hh files.hh print.hh BBox.hh
+noinst_HEADERS = \
+ppl_test.hh \
+ehandlers.hh \
+files.hh \
+print.hh \
+BBox.hh \
+PFunction.hh
 
 EXTRA_DIST = ehandlers.cc print.cc $(watchdog1_SRCS)
 
