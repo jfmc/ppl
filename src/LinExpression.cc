@@ -189,9 +189,9 @@ PPL::operator-=(LinExpression& e1, const LinExpression& e2) {
     for (size_t i = e2_size; i-- > 0; )
       e1[i] -= e2[i];
   else {
-    LinExpression e(e2);
-    for (size_t i = e1_size; i-- > 0; )
-      e[i] -= e1[i];
+    LinExpression e(e1, e2_size);
+    for (size_t i = e2_size; i-- > 0; )
+      e[i] -= e2[i];
     std::swap(e1, e);
   }
   return e1;
