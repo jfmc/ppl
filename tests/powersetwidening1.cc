@@ -143,7 +143,7 @@ main() TRY {
   cout << "T0 = " << T << endl;
 #endif
   bool converged = false;
-  for (unsigned n = 1; !converged && n <= 100; ++n) {
+  for (unsigned n = 1; !converged && n <= 20; ++n) {
     PSet Sn = S(n);
 #if NOISY
     cout << "S" << n << " = " << Sn << endl;
