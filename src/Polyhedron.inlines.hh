@@ -379,7 +379,6 @@ Polyhedron::Polyhedron(Topology topol, const Box& box)
   assert(OK());
 }
 
-// temporary kludge
 template <typename Box>
 void
 Polyhedron::shrink_bounding_box(Box& box, Complexity_Class complexity) const {
