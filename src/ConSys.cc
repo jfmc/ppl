@@ -192,20 +192,24 @@ PPL::ConSys::num_equalities() const {
 
 void
 PPL::ConSys::const_iterator::skip_forward() {
-  // If the current constraint is a strict inequality
-  // and the next one is the corresponding non-strict inequality,
-  // then we skip the next one.
   Matrix::const_iterator csp_end = csp->end();
   assert(i != csp_end);
-  Matrix::const_iterator i_previous = i;
-  ++i;
-  if (i != csp_end) {
-    const Constraint& sc = static_cast<const Constraint&>(*i_previous);
-    const Constraint& nsc = static_cast<const Constraint&>(*i);
-    if (sc.is_strict_inequality()
-	&& nsc.is_nonstrict_inequality()
-	&& sc.is_matching_strict_inequality(nsc))
-      ++i;
+  if (i->is_necessarily_closed())
+    ++i;
+  else {
+    // If the current constraint is a strict inequality
+    // and the next one is the corresponding non-strict inequality,
+    // then we skip the next one.
+    Matrix::const_iterator i_previous = i;
+    ++i;
+    if (i != csp_end) {
+      const Constraint& sc = static_cast<const Constraint&>(*i_previous);
+      const Constraint& nsc = static_cast<const Constraint&>(*i);
+      if (sc.is_strict_inequality()
+	  && nsc.is_nonstrict_inequality()
+	  && sc.is_matching_strict_inequality(nsc))
+	++i;
+    }
   }
   // Also skip the trivially true constraints.
   while (i != csp_end && (*this)->is_trivial_true())
