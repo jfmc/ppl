@@ -27,56 +27,316 @@ using namespace std;
 using namespace Parma_Polyhedra_Library;
 
 #ifndef NOISY
-#define NOISY 1
+#define NOISY 0
 #endif
 
 Variable A(0);
 Variable B(1);
 Variable C(2);
+Variable D(3);
 
-// To be written.
+// Test with a universe polyhedron.
 static void
 test1() {
+  C_Polyhedron ph1(3);
+
+#if NOISY
+  print_generators(ph1, "*** ph1 ***");
+#endif
+
+  // This is the set of the variables that we want to fold.
+  Variables_Set to_fold;
+  to_fold.insert(A);
+
+  ph1.fold_dimensions(to_fold, B);
+
+  C_Polyhedron known_result(2);
+
+  bool ok = (ph1 == known_result);
+
+#if NOISY
+  print_generators(ph1, "*** After folding {A} into B ***");
+#endif
+
+  if (!ok)
+    exit(1);
 }
 
-// To be written.
+// Test with an empty polyhedron.
 static void
 test2() {
+  C_Polyhedron ph1(3, C_Polyhedron::EMPTY);
+
+#if NOISY
+  print_constraints(ph1, "*** ph1 ***");
+#endif
+
+  // This is the set of the variables that we want to fold.
+  Variables_Set to_fold;
+  to_fold.insert(A);
+
+  ph1.fold_dimensions(to_fold, B);
+
+  C_Polyhedron known_result(2, C_Polyhedron::EMPTY);
+
+  bool ok = (ph1 == known_result);
+
+#if NOISY
+  print_constraints(ph1, "*** After folding {A} into B ***");
+#endif
+
+  if (!ok)
+    exit(1);
 }
 
-// To be written.
+// Trivial fold.
 static void
 test3() {
+  C_Polyhedron ph1(3);
+  ph1.add_constraint(A >= 0);
+  ph1.add_constraint(A + B + C <= 2);
+
+#if NOISY
+  print_constraints(ph1, "*** ph1 ***");
+#endif
+
+  // This is the set of the variables that we want to fold.
+  Variables_Set to_fold;
+
+  ph1.fold_dimensions(to_fold, B);
+
+  C_Polyhedron known_result(3);
+  known_result.add_constraint(A >= 0);
+  known_result.add_constraint(A + B + C <= 2);
+
+  bool ok = (ph1 == known_result);
+
+#if NOISY
+  print_constraints(ph1, "*** After folding {} into B ***");
+#endif
+
+  if (!ok)
+    exit(1);
 }
 
-// To be written.
+
+// Test as given in GopanDMDRS04 on page 519.
 static void
 test4() {
+  C_Polyhedron ph1(2);
+  ph1.add_constraint(A >= 1);
+  ph1.add_constraint(A <= 3);
+  ph1.add_constraint(B >= 7);
+  ph1.add_constraint(B <= 12);
+
+#if NOISY
+  print_constraints(ph1, "*** ph1 ***");
+#endif
+
+  // This is the set of the variables that we want to fold.
+  Variables_Set to_fold;
+  to_fold.insert(A);
+
+  ph1.fold_dimensions(to_fold, B);
+
+  C_Polyhedron known_result(1);
+  known_result.add_constraint(A >= 1);
+  known_result.add_constraint(A <= 12);
+
+  bool ok = (ph1 == known_result);
+
+#if NOISY
+  print_constraints(ph1, "***  After folding {A} into B ***");
+#endif
+
+  if (!ok)
+    exit(1);
 }
 
-// To be written.
+
+// Test that takes the expected result of the expand operation
+// example given in GopanDMDRS04 on page 519 and folds it to recover
+// the unexpanded polyhedron.
 static void
 test5() {
+  C_Polyhedron ph1(3, C_Polyhedron::EMPTY);
+  ph1.add_generator(point(A + 2*B + 2*C));
+  ph1.add_generator(point(A + 2*B + 3*C));
+  ph1.add_generator(point(A + 2*B + 4*C));
+  ph1.add_generator(point(A + 3*B + 2*C));
+  ph1.add_generator(point(A + 3*B + 3*C));
+  ph1.add_generator(point(A + 3*B + 4*C));
+  ph1.add_generator(point(A + 4*B + 2*C));
+  ph1.add_generator(point(A + 4*B + 3*C));
+  ph1.add_generator(point(A + 4*B + 4*C));
+
+#if NOISY
+  print_generators(ph1, "*** ph1 ***");
+#endif
+
+  // This is the set of the variables that we want to fold.
+  Variables_Set to_fold;
+  to_fold.insert(C);
+
+  ph1.fold_dimensions(to_fold, B);
+
+  C_Polyhedron known_result(2, C_Polyhedron::EMPTY);
+  known_result.add_generator(point(A + 2*B));
+  known_result.add_generator(point(A + 3*B));
+  known_result.add_generator(point(A + 4*B));
+
+  bool ok = (ph1 == known_result);
+
+#if NOISY
+  print_generators(ph1, "***  After folding {C} into B ***");
+#endif
+
+  if (!ok)
+    exit(1);
 }
 
-// To be written.
+// Test folding several dimensions into a higher dimension.
 static void
 test6() {
+  C_Polyhedron ph1(3);
+  ph1.add_constraint(A >= 1);
+  ph1.add_constraint(A <= 3);
+  ph1.add_constraint(B >= 7);
+  ph1.add_constraint(B <= 12);
+  ph1.add_constraint(C == 15);
+
+#if NOISY
+  print_constraints(ph1, "*** ph1 ***");
+#endif
+
+  // This is the set of the variables that we want to fold.
+  Variables_Set to_fold;
+  to_fold.insert(A);
+  to_fold.insert(B);
+
+  ph1.fold_dimensions(to_fold, C);
+
+  C_Polyhedron known_result(1);
+  known_result.add_constraint(A >= 1);
+  known_result.add_constraint(A <= 15);
+
+  bool ok = (ph1 == known_result);
+
+#if NOISY
+  print_constraints(ph1, "***  After folding {A,B} into C ***");
+#endif
+
+  if (!ok)
+    exit(1);
 }
 
-// To be written.
+// Test fold_dimensions() when there are rays.
 static void
 test7() {
+  C_Polyhedron ph1(3, C_Polyhedron::EMPTY);
+  ph1.add_generator(point(A));
+  ph1.add_generator(ray(A + B));
+  ph1.add_generator(ray(A + 2*C));
+
+#if NOISY
+  print_generators(ph1, "*** ph1 ***");
+#endif
+
+  // This is the set of the variables that we want to fold.
+  Variables_Set to_fold;
+  to_fold.insert(C);
+
+  ph1.fold_dimensions(to_fold, B);
+
+  C_Polyhedron known_result(2, C_Polyhedron::EMPTY);
+  known_result.add_generator(point(A));
+  known_result.add_generator(ray(A));
+  known_result.add_generator(ray(A + B));
+  known_result.add_generator(ray(A + 2*B));
+
+  bool ok = (ph1 == known_result);
+
+#if NOISY
+  print_generators(ph1, "***  After folding {C} into B ***");
+#endif
+
+  if (!ok)
+    exit(1);
 }
 
-// To be written.
+// Test folding dimensions into a lower dimension.
 static void
 test8() {
+  C_Polyhedron ph1(4);
+  ph1.add_constraint(A >= 0);
+  ph1.add_constraint(A + B <= 2);
+  ph1.add_constraint(C >= 0);
+  ph1.add_constraint(C + B <= 2);
+  ph1.add_constraint(D >= 0);
+  ph1.add_constraint(D + B <= 2);
+
+#if NOISY
+  print_constraints(ph1, "*** ph1 ***");
+#endif
+
+  // This is the set of the variables that we want to fold.
+  Variables_Set to_fold;
+  to_fold.insert(C);
+  to_fold.insert(D);
+
+  ph1.fold_dimensions(to_fold, A);
+
+  C_Polyhedron known_result(2);
+  known_result.add_constraint(A >= 0);
+  known_result.add_constraint(A + B <= 2);
+
+  bool ok = (ph1 == known_result);
+
+#if NOISY
+  print_constraints(ph1, "***  After folding {C,D} into A ***");
+#endif
+
+  if (!ok)
+    exit(1);
 }
 
-// To be written.
+// Test folding dimensions into an intermediate dimension.
 static void
 test9() {
+  C_Polyhedron ph1(4);
+  ph1.add_constraint(A >= 0);
+  ph1.add_constraint(B >= 0);
+  ph1.add_constraint(A + B <= 2);
+  ph1.add_constraint(C >= 0);
+  ph1.add_constraint(C + B <= 2);
+  ph1.add_constraint(D >= 0);
+  ph1.add_constraint(D + B <= 2);
+
+#if NOISY
+  print_constraints(ph1, "*** ph1 ***");
+#endif
+
+  // This is the set of the variables that we want to fold.
+  Variables_Set to_fold;
+  to_fold.insert(B);
+  to_fold.insert(D);
+
+  ph1.fold_dimensions(to_fold, C);
+
+  C_Polyhedron known_result(2);
+  known_result.add_constraint(A >= 0);
+  known_result.add_constraint(A <= 2);
+  known_result.add_constraint(B >= 0);
+  known_result.add_constraint(B <= 2);
+
+  bool ok = (ph1 == known_result);
+
+#if NOISY
+  print_constraints(ph1, "***  After folding {B,D} into C ***");
+#endif
+
+  if (!ok)
+    exit(1);
 }
 
 int
