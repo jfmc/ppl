@@ -23,18 +23,30 @@ ppl-devref-@VERSION@-print.ps.gz \
 user.html-dir                    \
 devref.html-dir
 
-# Make sure developers need not make the world every time.
-all: ppl-user-@VERSION@-browse.pdf
+# We distribute some user's documentation both for browsing and for printing.
+DIST_DOCS = \
+ppl-user-@VERSION@-browse.pdf  \
+ppl-user-@VERSION@-print.pdf   \
+ppl-user-@VERSION@-print.ps.gz
+
+# Do nothing by default.
+all:
+
+dist-hook: $(DIST_DOCS)
+
+user-browse: ppl-user-@VERSION@-browse.pdf
 
 world: $(ALL_TARGETS)
 
 PPL_SOURCE_FILES = $(wildcard $(srcdir)/../src/*.hh $(srcdir)/../src/*.cc)
 
-DOX_FILES = definitions.dox gpl.dox gfdl.dox
+DOX_FILES = definitions.dox gpl.dox fdl.dox
 
 USER_STUFF = $(DOX_FILES) user.tex $(top_builddir)/src/ppl.hh
 
 DEVREF_STUFF = $(DOX_FILES) devref.tex $(PPL_SOURCE_FILES)
+
+.SECONDARY: user-browse.latex-dir user-print.latex-dir devref-browse.latex-dir devref-print.latex-dir gpl.dvi fdl.dvi
 
 user-%.latex-dir: user-%.doxyconf-latex $(USER_STUFF)
 	rm -rf $@
@@ -56,20 +68,32 @@ ppl-user-@VERSION@-%.ps: user-%.latex-dir
 ppl-devref-@VERSION@-%.ps: devref-%.latex-dir
 	make -C $< ps && mv -f $</refman.ps $@
 
-%.gz: %
-	gzip -9 -f $<
-
 %.html-dir: %.doxyconf-html $(DEVREF_STUFF)
 	rm -rf html
 	doxygen $< && rm -rf $@ && mv -f html $@
 
+%.gz: %
+	gzip --best --force $<
+
+%.pdf: %.tex
+	pdflatex $<
+
+%.dvi: %.tex
+	latex $<
+
+%.ps:	%.dvi
+	dvips -o $@ $<
+
 EXTRA_DIST= \
-$(DOX_FILES) \
-user-browse.doxyconf-latex \
+$(DIST_DOCS)                 \
+$(DOX_FILES)                 \
+user-browse.doxyconf-latex   \
 devref-browse.doxyconf-latex \
-user-print.doxyconf-latex \
-devref-print.doxyconf-latex \
-user.doxyconf-html \
-devref.doxyconf-html \
-user.tex \
-devref.tex
+user-print.doxyconf-latex    \
+devref-print.doxyconf-latex  \
+user.doxyconf-html           \
+devref.doxyconf-html         \
+user.tex                     \
+devref.tex                   \
+gpl.tex                      \
+fdl.tex

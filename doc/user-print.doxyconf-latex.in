@@ -312,7 +312,7 @@ WARN_LOGFILE           =
 
 INPUT                  = @srcdir@/definitions.dox \
                          @srcdir@/gpl.dox \
-                         @srcdir@/gfdl.dox \
+                         @srcdir@/fdl.dox \
                          ../src/ppl.hh
 
 # If the value of the INPUT tag contains directories, you can use the

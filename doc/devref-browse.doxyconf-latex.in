@@ -312,7 +312,7 @@ WARN_LOGFILE           =
 
 INPUT                  = @srcdir@/definitions.dox \
                          @srcdir@/gpl.dox \
-                         @srcdir@/gfdl.dox \
+                         @srcdir@/fdl.dox \
                          @srcdir@/../src/Row.defs.hh \
 			 @srcdir@/../src/Row.inlines.hh \
                          @srcdir@/../src/Row.cc \
