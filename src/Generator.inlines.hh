@@ -75,6 +75,7 @@ INLINE Generator
 operator |(int, const LinExpression& e) {
   LinExpression ec = e;
   Generator g(ec);
+  g[0] = 0;
   g.set_is_line();
   return g;
 }
