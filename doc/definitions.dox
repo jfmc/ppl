@@ -39,26 +39,27 @@
   for additional information about each single data type.
 */
 
-/*! \mainpage Convex Polyhedra and the PPL
-\section preamble A Library for Convex Polyhedra
+/*! \mainpage General Information on the PPL
+\section preamble The Main Features
 
 The Parma Polyhedra Library (PPL) is a modern C++ library for the
-manipulation of rational convex polyhedra.
-Informally, a rational convex polyhedron is a set of points
-(in some \f$n\f$-dimensional vector space) that satisfies
-a finite number of linear inequalities having rational coefficients.
-The domain of convex polyhedra is employed in several systems
-for the analysis and verification of hardware and software components,
-with applications spanning imperative, functional and logic
-programming languages, synchronous languages and synchronization protocols,
-real-time and hybrid systems.
-Even though the PPL library is not meant to target a particular problem,
-the design of its interface has been largely influenced by the needs
-of the above class of applications.
-That is the reason why the library implements a few operators
-that are more or less specific to static analysis applications,
-while lacking some other operators that might be useful when working,
-e.g., in the field of computational geometry.
+manipulation of numerical information that can be represented by
+points in some \f$n\f$-dimensional vector space. For instance, one of
+the key domains the PPL supports is that of rational convex polyhedra
+(a rational convex polyhedron is a set of all points in the
+\f$n\f$-dimensional vector space that satisfies a finite number of
+linear inequalities with rational coefficients). Such domains
+are employed in several systems for the analysis and verification of
+hardware and software components, with applications spanning
+imperative, functional and logic programming languages, synchronous
+languages and synchronization protocols, real-time and hybrid systems.
+Even though the PPL library is not meant to target a particular
+problem, the design of its interface has been largely influenced by
+the needs of the above class of applications.  That is the reason why
+the library implements a few operators that are more or less specific
+to static analysis applications, while lacking some other operators
+that might be useful when working, e.g., in the field of computational
+geometry.
 
 The main features of the library are the following:
 - it is user friendly:
@@ -74,22 +75,30 @@ The main features of the library are the following:
 - it is rather efficient: and we hope to make it even more so;
 - it is thoroughly documented:
   perhaps not literate programming but close enough;
+- it has interfaces to other programming languages: including C and a number of
+  Prolog systems;
 - it is free software: distributed under the terms of the
   GNU General Public License.
 
-In the following sections we describe the polyhedra and
-the different representations and operations
-supported by the PPL in more detail.
+In addition to the basic domains, we also provide generic support for
+constructing new domains from pre-existing domains.
+The following domains and domain constructors are provided by the PPL:
+- the domain of rational convex polyhedra;
+- the powerset construction, instantiated for rational convex polyhedra.
+
+In the following sections we describe these domains and domain
+constructors together with their representations and operations 
+that are available to the PPL user.
+
+\section introduction Convex Polyhedra
+
+In this section we introduce convex polyhedra,
+as considered by the library, in more detail.
 For more information about the definitions and results stated here see
 \ref BRZH02b "[BRZH02b]",
 \ref Fuk98 "[Fuk98]",
 \ref NW88 "[NW88]", and
 \ref Wil93 "[Wil93]".
-
-\section introduction An Introduction to Convex Polyhedra
-
-In this section we introduce convex polyhedra,
-as considered by the library, in more detail.
 
 <B>Vectors, Matrices and Scalar Products</B>
 
@@ -1076,6 +1085,10 @@ performance by calling the eager version of the intersection operator,
 since the minimization process also enforces an emptyness check.
 Note anyway that the same effect can be obtained by interleaving
 the calls of the lazy operator with explicit emptyness checks.
+
+\section powerset The Powerset Construction
+
+\section cplusplus Using the C++ Library
 
 <B>On Const-Correctness: A Warning about the Use of References
 and Iterators</B>
