@@ -169,7 +169,7 @@ PPL::GenSys::has_points() const {
     // is_necessarily_closed() == false.
     size_t eps_index = gs.num_columns() - 1;
     for (size_t i = num_rows(); i-- > 0; )
-    if (gs[i][eps_index] != 0)
+    if (gs[i][eps_index] > 0)
       return true;
   }
   return false;
