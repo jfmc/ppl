@@ -23,6 +23,13 @@ o  The type of output functions for the class Variable,
    In other words, `v' is now passed by const reference and not by value.
 
 
+Bugfixes
+========
+
+o  Fixed a bug in the C interface function ppl_Polyhedron_map_dimensions() 
+   whereby a wrong result was computed.
+
+
 --------------------------------------------------------------------------
 NEWS for version 0.5  (released on April 28, 2003)
 --------------------------------------------------------------------------
@@ -168,7 +175,6 @@ o  The operator Constraint operator>>(const Constraint&, unsigned int)
 o  The method
    Polyhedron::poly_difference_assign_and_minimize(const Polyhedron&)
    has been removed.
-
 
 
 Bugfixes
