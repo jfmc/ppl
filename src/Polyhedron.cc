@@ -3031,13 +3031,9 @@ PPL::Polyhedron::generalized_affine_image(const LinExpression& lhs,
 
   // Dimension-compatibility checks.
   // The dimension of `lhs' should not be greater than the dimension
-  // of `*this'; also, `lhs' should have a non-zero coefficient for
-  // at least one dimension.
+  // of `*this'.
   dimension_type lhs_space_dim = lhs.space_dimension();
-  for ( ; lhs_space_dim > 0; lhs_space_dim--)
-    if (lhs.coefficient(Variable(lhs_space_dim-1)) != 0)
-      break;
-  if (lhs_space_dim == 0 || space_dim < lhs_space_dim)
+  if (space_dim < lhs_space_dim)
     throw_dimension_incompatible("generalized_affine_image(e1, r, e2, d)",
 				 lhs);
   // The dimension of `rhs' should not be greater than the dimension
@@ -3047,9 +3043,20 @@ PPL::Polyhedron::generalized_affine_image(const LinExpression& lhs,
     throw_dimension_incompatible("generalized_affine_image(e1, r, e2, d)",
 				 rhs);
 
+  // Check that at least one variable in the left hand side
+  // has a non-zero coefficient.
+  for ( ; lhs_space_dim > 0; lhs_space_dim--)
+    if (lhs.coefficient(Variable(lhs_space_dim - 1)) != 0)
+      break;
+  // If all variables have a zero coefficient, no image can be computed.
+  if (lhs_space_dim == 0)
+    throw_dimension_incompatible("generalized_affine_image(e1, r, e2, d)",
+				 lhs);
+
   // Checking validity of the relation operator encoding.
+  bool equal_to_relation = false;
   bool greater_than_relation = false;
-  bool nonstrict_relation = false;
+  bool strict_relation = false;
   bool valid_relation = relation && relation[0] != 0;
   if (valid_relation) {
     switch (relation[0]) {
@@ -3057,13 +3064,10 @@ PPL::Polyhedron::generalized_affine_image(const LinExpression& lhs,
       switch (relation[1]) {
       case '=':
 	// The relation operator is "<=".
-	greater_than_relation = false;
-	nonstrict_relation = true;
 	break;
       case 0:
 	// The relation operator is "<".
-	greater_than_relation = false;
-	nonstrict_relation = false;
+	strict_relation = true;
 	break;
       default:
 	// Invalid relation operator.
@@ -3072,14 +3076,9 @@ PPL::Polyhedron::generalized_affine_image(const LinExpression& lhs,
       }
       break;
     case '=':
-      if (relation[1] == '=') {
+      if (relation[1] == '=')
 	// The relation operator is "==":
-	// this is just an affine image computation.
-	// affine_image(var, expr, denominator);
-	throw_generic("generalized_affine_image(e1, \"==\", e2, d)",
-		      "to be implemented");
-	return;
-      }
+	equal_to_relation = true;
       else
 	// Invalid relation operator.
 	valid_relation = false;
@@ -3089,12 +3088,11 @@ PPL::Polyhedron::generalized_affine_image(const LinExpression& lhs,
       case '=':
 	// The relation operator is ">=".
 	greater_than_relation = true;
-	nonstrict_relation = true;
 	break;
       case 0:
 	// The relation operator is ">".
 	greater_than_relation = true;
-	nonstrict_relation = false;
+	strict_relation = true;
 	break;
       default:
 	// Invalid relation operator.
@@ -3113,7 +3111,7 @@ PPL::Polyhedron::generalized_affine_image(const LinExpression& lhs,
 		  "r is not a valid relation operator");
 
   // Strict relation operators are only admitted for NNC polyhedra.
-  if (!nonstrict_relation && is_necessarily_closed())
+  if (strict_relation && is_necessarily_closed())
     throw_generic("generalized_affine_image(e1, r, e2, d)",
 		  "r is a strict relation operator and "
 		  "*this is a C_Polyhedron");
@@ -3121,46 +3119,44 @@ PPL::Polyhedron::generalized_affine_image(const LinExpression& lhs,
   if (is_empty())
     return;
 
-  // First compute the affine image.
-  throw_generic("generalized_affine_image(e1, r, e2, d)",
-		"to be implemented");
-  /*
-  affine_image(var, expr, denominator);
-  if (nonstrict_relation)
-    add_generator(ray(greater_than_relation ? var : -var));
-  else {
-    // The relation operator is strict.
-    assert(!is_necessarily_closed());
-    // While adding the ray, we minimize the generators
-    // in order to avoid adding too many redundant generator later.
-    GenSys gs;
-    gs.insert(ray(greater_than_relation ? var : -var));
-    add_generators_and_minimize(gs);
-    // We split each point of the generator system into two generators:
-    // a closure point, having the same coordinates of the given point,
-    // and another point, having the same coordinates for all but the
-    // `var' dimension, which is displaced along the direction of the
-    // newly introduced ray.
-    dimension_type eps_index = space_dimension() + 1;
-    for (dimension_type i =  gen_sys.num_rows(); i-- > 0; )
-      if (gen_sys[i].is_point()) {
-	Generator& g = gen_sys[i];
-	// Add a `var'-displaced copy of `g' to the generator system.
-	gen_sys.add_row(g);
-	if (greater_than_relation)
-	  gen_sys[gen_sys.num_rows()-1][num_var]++;
-	else
-	  gen_sys[gen_sys.num_rows()-1][num_var]--;
-	// Transform `g' into a closure point.
-	g[eps_index] = 0;
-      }
-    clear_constraints_up_to_date();
-    clear_generators_minimized();
-    gen_sys.set_sorted(false);
-    clear_sat_c_up_to_date();
-    clear_sat_g_up_to_date();
-  }
-  */
+  // TODO: if the variables in `lhs' are disjoint from
+  // the variables in `rhs', then adding the new dimension
+  // is not needed.
+
+  // Add a new dimension.
+  Variable new_var = Variable(space_dimension());
+  add_dimensions_and_embed(1);
+
+  // Constrain the new dimension to be equal to the right hand side.
+  // (we force minimization because we will need the generators).
+  ConSys new_cs;
+  new_cs.insert(denominator * new_var == rhs);
+  add_constraints_and_minimize(new_cs);
+
+  // Cylindrificate on all the variables occurring in the left hand side
+  // (we force minimization because we will need the constraints).
+  GenSys new_gs;
+  for (dimension_type i = lhs_space_dim; i-- > 0; )
+    if (lhs.coefficient(Variable(i)) != 0)
+      new_gs.insert(line(Variable(i)));
+  add_generators_and_minimize(new_gs);
+
+  // Constrain the new dimension so that it is related to
+  // the left hand side as dictated by `relation'
+  // (we force minimization because we will need the generators).
+  new_cs.clear();
+  if (equal_to_relation)
+    new_cs.insert(lhs == new_var);
+  else
+    if (strict_relation)
+      new_cs.insert(greater_than_relation ? lhs > new_var : lhs < new_var);
+    else
+      new_cs.insert(greater_than_relation ? lhs >= new_var : lhs <= new_var);
+  add_constraints_and_minimize(new_cs);
+
+  // Remove the temporarily added dimension.
+  remove_higher_dimensions(space_dimension()-1);
+
   assert(OK());
 }
 
