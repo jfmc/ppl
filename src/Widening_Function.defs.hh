@@ -27,34 +27,81 @@ site: http://www.cs.unipr.it/ppl/ . */
 #include "Widening_Function.types.hh"
 #include "ConSys.types.hh"
 
+#ifdef PPL_DOXYGEN_INCLUDE_IMPLEMENTATION_DETAILS
+//! Wraps a widening method into a function object.
+#endif // PPL_DOXYGEN_INCLUDE_IMPLEMENTATION_DETAILS
 template <typename PH>
 class Parma_Polyhedra_Library::Widening_Function {
 public:
+  //! The (parametric) type of a widening method.
   typedef void (PH::* Widening_Method)(const PH&, unsigned*);
 
+  //! Constructor.
   Widening_Function(Widening_Method wm);
 
+  //! Function-application operator.
+  /*!
+    Computes <CODE>(x.*wm)(y, tp)</CODE>, where \p wm is the widening
+    method stored at construction time.
+  */
   void operator()(PH& x, const PH& y, unsigned* tp = 0) const;
 
 private:
+  //! The widening method.
   Widening_Method w_method;
 };
 
+
+#ifdef PPL_DOXYGEN_INCLUDE_IMPLEMENTATION_DETAILS
+//! Wraps a limited widening method into a function object.
+#endif // PPL_DOXYGEN_INCLUDE_IMPLEMENTATION_DETAILS
 template <typename PH>
 class Parma_Polyhedra_Library::Limited_Widening_Function {
 public:
+  //! The (parametric) type of a limited widening method.
   typedef void (PH::* Limited_Widening_Method)(const PH&,
 					       const ConSys&,
 					       unsigned*);
 
+  //! Constructor.
+  /*!
+    \param lw
+    The limited widening method.
+
+    \param cs
+    The constraint system limiting the widening.
+  */
   Limited_Widening_Function(Limited_Widening_Method lwm, const ConSys& cs);
 
+  //! Function-application operator.
+  /*!
+    Computes <CODE>(x.*lwm)(y, cs, tp)</CODE>, where \p lwm and \p cs
+    are the limited widening method and the constraint system stored
+    at construction time.
+  */
   void operator()(PH& x, const PH& y, unsigned* tp = 0) const;
 
 private:
+  //! The limited widening method.
   Limited_Widening_Method lw_method;
+  //! A constant reference to the constraint system limiting the widening.
   const ConSys& limiting_cs;
 };
+
+namespace Parma_Polyhedra_Library {
+
+//! Wraps a widening method into a function object.
+template <typename PH>
+Widening_Function<PH>
+widen_fun(void (PH::* wm)(const PH&, unsigned*));
+
+//! Wraps a limited widening method into a function object.
+template <typename PH>
+Limited_Widening_Function<PH>
+widen_fun(void (PH::* lwm)(const PH&, const ConSys&, unsigned*),
+	  const ConSys& cs);
+
+} // namespace Parma_Polyhedra_Library
 
 #include "Widening_Function.inlines.hh"
 

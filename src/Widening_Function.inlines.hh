@@ -53,6 +53,19 @@ operator()(PH& x, const PH& y, unsigned* tp) const {
   (x.*lw_method)(y, limiting_cs, tp);
 }
 
+template <typename PH>
+inline Widening_Function<PH>
+widen_fun(void (PH::* wm)(const PH&, unsigned*)) {
+  return Widening_Function<PH>(wm);
+}
+
+template <typename PH>
+inline Limited_Widening_Function<PH>
+widen_fun(void (PH::* lwm)(const PH&, const ConSys&, unsigned*),
+	  const ConSys& cs) {
+  return Limited_Widening_Function<PH>(lwm, cs);
+}
+
 } // namespace Parma_Polyhedra_Library
 
 
