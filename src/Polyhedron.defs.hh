@@ -251,8 +251,8 @@ bool operator!=(const Polyhedron& x, const Polyhedron& y);
   ph.add_generator(point(0*x + 3*y));
   ph.add_generator(point(3*x + 0*y));
   ph.add_generator(point(3*x + 3*y));
-  Linear_Expression coeff = x + 4;
-  ph.affine_image(x, coeff);
+  Linear_Expression expr = x + 4;
+  ph.affine_image(x, expr);
     \endcode
     In this example the starting polyhedron is a square in
     \f$\Rset^2\f$, the considered variable is \f$x\f$ and the affine
@@ -260,7 +260,7 @@ bool operator!=(const Polyhedron& x, const Polyhedron& y);
     square translated to the right.  Moreover, if the affine
     transformation for the same variable \p x is \f$x+y\f$:
     \code
-  Linear_Expression coeff = x + y;
+  Linear_Expression expr = x + y;
     \endcode
     the resulting polyhedron is a parallelogram with the height equal to
     the side of the square and the oblique sides parallel to the line
@@ -268,7 +268,7 @@ bool operator!=(const Polyhedron& x, const Polyhedron& y);
     Instead, if we do not use an invertible transformation for the same
     variable; for example, the affine expression \f$y\f$:
     \code
-  Linear_Expression coeff = y;
+  Linear_Expression expr = y;
     \endcode
     the resulting polyhedron is a diagonal of the square.
 
@@ -281,8 +281,8 @@ bool operator!=(const Polyhedron& x, const Polyhedron& y);
   ph.add_constraint(x <= 3);
   ph.add_constraint(y >= 0);
   ph.add_constraint(y <= 3);
-  Linear_Expression coeff = x + 4;
-  ph.affine_preimage(x, coeff);
+  Linear_Expression expr = x + 4;
+  ph.affine_preimage(x, expr);
     \endcode
     In this example the starting polyhedron, \p var and the affine
     expression and the denominator are the same as in Example 6,
@@ -290,7 +290,7 @@ bool operator!=(const Polyhedron& x, const Polyhedron& y);
     but translated to the left.
     Moreover, if the affine transformation for \p x is \f$x+y\f$
     \code
-  Linear_Expression coeff = x + y;
+  Linear_Expression expr = x + y;
     \endcode
     the resulting polyhedron is a parallelogram with the height equal to
     the side of the square and the oblique sides parallel to the line
@@ -298,7 +298,7 @@ bool operator!=(const Polyhedron& x, const Polyhedron& y);
     Instead, if we do not use an invertible transformation for the same
     variable \p x, for example, the affine expression \f$y\f$:
     \code
-  Linear_Expression coeff = y;
+  Linear_Expression expr = y;
     \endcode
     the resulting polyhedron is a line that corresponds to the \f$y\f$ axis.
 
