@@ -34,7 +34,7 @@
 % 'Polyhedra' are the live polyhedra; the head of the list
 % represents the result of the computation.
 
-solve_query(Goals, VN, PolysOut) :-
+solve_query(Goals, VN, [Q|PolysOut]) :-
   % Create a table `VarNames' between the PPL names of variables
   % and the actual variables.
   % Also, create a copy of the Goals
@@ -48,6 +48,7 @@ solve_query(Goals, VN, PolysOut) :-
   % We use the NNC topology so that we can handle strict constraints.
   Topology = nnc,
   ppl_new_Polyhedron_from_dimension(Topology, Dims, Poly),
+  % On backtracking, clean up the unwanted polyhedron
   cleanup(Poly),
   % Try to reduce `Goals'.
   solve(Topology, FrozeGoals, [Poly], PolysOut, VarNames),
@@ -57,11 +58,12 @@ solve_query(Goals, VN, PolysOut) :-
   % First project onto the variables of interest
   % before getting the constraints.
   ppl_new_Polyhedron_from_Polyhedron(Topology, PolyOut, Topology, Q),
+  % On backtracking, clean up the unwanted polyhedron
+  cleanup(Q),
   ppl_Polyhedron_remove_higher_dimensions(Q, Dims),
   ppl_Polyhedron_get_constraints(Q, CS),
   % Print the result.
-  write_constraints(CS, FrozeVN),
-  ppl_delete_Polyhedron(Q).
+  write_constraints(CS, FrozeVN).
 
 solve(_, true, Polys, Polys, _VarNames) :-
   % If the goal is true, we can return the input list of
@@ -83,12 +85,14 @@ solve(T, (A; B), PolysIn, PolysOut, VarNames) :-
   (
     (
       ppl_new_Polyhedron_from_Polyhedron(T, Poly, T, Q),
+      % On backtracking, clean up the unwanted polyhedron
       cleanup(Q),
       solve(T, A, [Q|PolysIn], PolysOut, VarNames)
     )
   ;
     (
       ppl_new_Polyhedron_from_Polyhedron(T, Poly, T, Q),
+      % On backtracking, clean up the unwanted polyhedron
       cleanup(Q),
       solve(T, B, [Q|PolysIn], PolysOut, VarNames)
     )
@@ -194,6 +198,9 @@ delete_all_polyhedra([Polyhedron|Polyhedra]):-
   ppl_delete_Polyhedron(Polyhedron),
   delete_all_polyhedra(Polyhedra).
 
+% To prevent leaks:
+% First succeed and then, on backtracking,
+% remove the unwanted polyhedron before failing.
 cleanup(_Polyhedron).
 cleanup(Polyhedron) :-
   ppl_delete_Polyhedron(Polyhedron),
