@@ -35,6 +35,7 @@ site: http://www.cs.unipr.it/ppl/ . */
 #include <iosfwd>
 #include <list>
 #include <set>
+#include <map>
 
 //! The powerset construction instantiated on PPL polyhedra.
 template <typename PH>
@@ -165,6 +166,12 @@ private:
 				     const ConSys&,
 				     unsigned*),
 				    unsigned max_disjuncts);
+
+  typedef typename PH::BHRZ03_info base_lgo_info;
+  typedef typename std::map<base_lgo_info, syze_type,
+			    base_lgo_info::Compare> lgo_info;
+  void collect_lgo_info(lgo_info& y_info) const;
+  bool is_lgo_stabilizing(const lgo_info& info) const;
 
 public:
   void H79_extrapolation_assign(const Polyhedra_PowerSet& y);

@@ -664,6 +664,14 @@ Polyhedron::map_dimensions(const PartialFunction& pfunc) {
   assert(OK(true));
 }
 
+inline bool
+Polyhedron::BHRZ03_info::Compare::operator()(const BHRZ03_info& x,
+					     const BHRZ03_info& y) const {
+  // For an efficient evaluation of the multiset ordering based
+  // on this lgo relation, we want larger elements to come first.
+  return (x.compare(y) == 1);
+}
+
 } // namespace Parma_Polyhedra_Library
 
 #endif // !defined(PPL_Polyhedron_inlines_hh)

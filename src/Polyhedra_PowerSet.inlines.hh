@@ -302,6 +302,59 @@ Polyhedra_PowerSet<PH>::collapse(unsigned max_disjuncts) {
 
 template <typename PH>
 void
+Polyhedra_PowerSet<PH>::collect_lgo_info(lgo_info& info) const {
+  assert(info.size() == 0);
+  for (const_iterator i = begin(), iend = end(); i != iend; i++) {
+    base_lgo_info ph_info(i->polyhedron());
+    info[ph_info]++;
+  }
+}
+
+template <typename PH>
+bool
+Polyhedra_PowerSet<PH>::is_lgo_stabilizing(const lgo_info& y_info) const {
+  lgo_info x_info;
+  collect_lgo_info(x_info);
+  const_iterator xi = x_info.begin();
+  const_iterator xend = x_info.end();
+  const_iterator yi = y_info.begin();
+  const_iterator yend = y_info.end();
+  while (xi != xend && yi != yend) {
+    const base_lgo_info& xi_info = xi->first;  
+    const base_lgo_info& yi_info = yi->first;
+    switch (xi_info.compare(yi_info)) {
+    case 0:
+      // xi_info == yi_info: check the number of multiset occurrences.
+      {
+	const size_type& xi_count = xi->second;
+	const size_type& yi_count = yi->second;
+	if (xi_count == yi_count) {
+	  // Same number of occurrences: compare the next pair.
+	  xi++;
+	  yi++;
+	}
+	else
+	  // Different number of occurrences: can decide ordering.
+	  return xi_count > yi_count;
+	break;
+      }
+    case 1:
+      // xi_info > yi_info: it is stabilizing.
+      return true;
+      break;
+    case -1:
+      // xi_info < yi_info: it is stabilizing.
+      return false;
+      break;
+    }
+  }
+  // Here xi == xend or yi == yend.
+  // Stabilization is achieved if `x_info' still has other elements.
+  return (xi != xend);
+}
+
+template <typename PH>
+void
 Polyhedra_PowerSet<PH>::widening_assign(const Polyhedra_PowerSet& y,
 					void (Polyhedron::*wm)
 					(const Polyhedron&, unsigned*),

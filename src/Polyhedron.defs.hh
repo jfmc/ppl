@@ -37,6 +37,7 @@ site: http://www.cs.unipr.it/ppl/ . */
 #include "Generator.types.hh"
 #include "Poly_Con_Relation.defs.hh"
 #include "Poly_Gen_Relation.defs.hh"
+#include <vector>
 
 namespace Parma_Polyhedra_Library {
 
@@ -1028,6 +1029,46 @@ public:
 
   //! Assigns to \p *this its topological closure.
   void topological_closure_assign();
+
+  class BHRZ03_info {
+  public:
+    //! Constructor: collects info from polyhedron \p x.
+    BHRZ03_info(const Polyhedron& x);
+
+    //! Total comparison function.
+    int compare(const BHRZ03_info& y) const;
+
+    //! \brief
+    //! Binary predicate defining a total ordering on BHRZ03_info objects
+    //! which is a refinement of the BHRZ03 lgo partial order.
+    struct Compare {
+      //! Returns <CODE>true</CODE> if and only if \p x comes before \p y.
+      bool operator()(const BHRZ03_info& x, const BHRZ03_info& y) const;
+    };
+
+  private:
+    friend class Polyhedron;
+
+    //! Dimension of the polyhedron.
+    dimension_type poly_dim;
+    //! Dimension of the lineality space of the polyhedron.
+    dimension_type lin_space_dim;
+    //! Cardinality of a non-redundant constraint system for the polyhedron.
+    dimension_type num_constraints;
+    //! \brief
+    //! Number of non-redundant points in a generator system
+    //! for the polyhedron.
+    dimension_type num_points;
+    //! \brief
+    //! Number of non-redundant rays in a generator system of the
+    //! polyhedron having exactly `i' null coordinates.
+    std::vector<dimension_type> num_zero_ray_coord;
+  };
+
+  //! \brief
+  //! Populates structure \p info with the information needed
+  //! to decide BHRZ03 stabilization.
+  void collect_BHRZ03_info(BHRZ03_info& info) const;
 
   //! \brief
   //! Assigns to \p *this the result of computing the
