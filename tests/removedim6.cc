@@ -47,11 +47,9 @@ main() {
   print_constraints(ph1, "*** ph1 ***");
 #endif
 
-  GenSys gs = ph1.generators();
-
-  C_Polyhedron ph2(gs);
+  C_Polyhedron ph2 = ph1;
 #if NOISY
-  print_generators(ph2, "*** ph2 ***");
+  print_constraints(ph2, "*** ph2 ***");
 #endif
 
   // This is the set of the variables that we want to remove.
