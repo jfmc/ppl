@@ -28,6 +28,8 @@ o  The method Polyhedron::add_generators(GenSys&) is now lazy,
    i.e., no minimization is performed.  Adding generators and
    minimizing at the same time is provided by the method
    Polyhedron::add_generators_and_minimize(GenSys&).
+   These methods now throw an exception if the resulting
+   polyhedron would be illegal.
 
 o  Some performance improvements.
 

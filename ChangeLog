@@ -1,3 +1,422 @@
+2002-02-26 Tuesday 11:21  Roberto Bagnara <bagnara@cs.unipr.it>
+
+	* NEWS (1.9): Updated.
+
+2002-02-26 Tuesday 11:19  Roberto Bagnara <bagnara@cs.unipr.it>
+
+	* ChangeLog (1.6), config.guess (1.8), doc/definitions.dox (1.36),
+	interfaces/Prolog/SICStus/clpq.pl (1.27),
+	interfaces/Prolog/SICStus/clpq2.pl (1.3),
+	interfaces/Prolog/SICStus/expected (1.4),
+	interfaces/Prolog/SICStus/fib.clpq (1.2),
+	interfaces/Prolog/SICStus/smmdiff.clpq (1.2),
+	src/Constraint.defs.hh (1.38), src/GenSys.cc (1.31),
+	src/Polyhedron.cc (1.126), tests/addconstraints11.cc (1.4),
+	tests/addconstraints5.cc (1.5), tests/adddimensions1.cc (1.5),
+	tests/convexdifference1.cc (1.7), tests/error28.cc (1.2),
+	tests/error29.cc (1.2), tests/universe5.cc (1.3): Trailing blanks
+	removed.
+
+2002-02-26 Tuesday 10:34  Elisa Ricci <ericci@cs.unipr.it>
+
+	* src/Polyhedron.defs.hh (1.76): Added the documentation for the
+	exception thrown in the function Polyhedron::add_generators and
+	Polyhedron::add_generators_and_minimize if the polyhedron is empty
+	and the system of generators has no vertices.
+
+2002-02-26 Tuesday 09:15  Roberto Bagnara <bagnara@cs.unipr.it>
+
+	* src/Constraint.defs.hh (1.37): Simplified the example showing how
+	to use the Constraint::coefficient() methods.
+
+2002-02-26 Tuesday 08:58  Roberto Bagnara <bagnara@cs.unipr.it>
+
+	* interfaces/Prolog/Prolog_interface.dox (1.15):
+	ppl_convex_difference_assign/2 mentioned.
+
+2002-02-26 Tuesday 02:01  Enea Zaffanella <zaffanella@cs.unipr.it>
+
+	* src/conversion.cc (1.23): Another big pass on all the comments,
+	trying to uniformize the terminology.  Small changes in the code to
+	avoid repeating tests that are useless under certain conditions.
+
+2002-02-25 Monday 22:15  Enea Zaffanella <zaffanella@cs.unipr.it>
+
+	* src/Constraint.defs.hh (1.36): Small changes in the
+	documentation.
+
+2002-02-25 Monday 22:01  Roberto Bagnara <bagnara@cs.unipr.it>
+
+	* Makefile.am (1.14), configure.ac (1.25), doc/Makefile.am (1.16),
+	interfaces/Makefile.am (1.3), interfaces/Prolog/Makefile.am (1.4),
+	interfaces/Prolog/SICStus/Makefile.am (1.10), m4/Makefile.am (1.5),
+	m4/ac_check_gmp.m4 (1.3), src/Makefile.am (1.25), tests/Makefile.am
+	(1.44): Limit the exceptions to the GPL.
+
+2002-02-25 Monday 21:08  Enea Zaffanella <zaffanella@cs.unipr.it>
+
+	* src/Generator.defs.hh (1.40): The example on the use of
+	coefficient(v) modified to keep into account the divisor of the
+	vertex and to actually check that g1 is a vertex.
+
+2002-02-25 Monday 18:02  Enea Zaffanella <zaffanella@cs.unipr.it>
+
+	* src/: Constraint.defs.hh (1.35), Generator.defs.hh (1.39):
+	Modified the example of the use of coefficient(v) for a generator. 
+	Modified also the similar example for a constraint, now using the
+	assignment operator.
+
+2002-02-25 Monday 17:28  Elisa Ricci <ericci@cs.unipr.it>
+
+	* tests/: Makefile.am (1.43), addconstraints10.cc (1.4),
+	addconstraints11.cc (1.3), addconstraints2.cc (1.8),
+	addconstraints4.cc (1.3), addconstraints5.cc (1.4),
+	addconstraints6.cc (1.4), addconstraints7.cc (1.4),
+	addconstraints8.cc (1.4), addconstraints9.cc (1.4),
+	adddimensions1.cc (1.4), adddimensions2.cc (1.3), adddimensions3.cc
+	(1.3), adddimensions4.cc (1.3), addgenerators1.cc (1.4),
+	addgenerators2.cc (1.4), addgenerators3.cc (1.3), addgenerators4.cc
+	(1.3), addgenerators5.cc (1.3), addgenerators6.cc (1.3),
+	affineimage1.cc (1.3), affineimage2.cc (1.3), affinepreimage1.cc
+	(1.3), affinepreimage2.cc (1.3), affinepreimage3.cc (1.2),
+	affinepreimage4.cc (1.3), convexdifference1.cc (1.6),
+	convexhull1.cc (1.4), convexhull2.cc (1.3), error28.cc (1.1),
+	error29.cc (1.1), includes2.cc (1.4), includes3.cc (1.4),
+	includes4.cc (1.4), inters3.cc (1.4), inters4.cc (1.3), inters5.cc
+	(1.4), inters6.cc (1.3), limitedwidening1.cc (1.5), removedim2.cc
+	(1.7), removedim3.cc (1.4), removedim4.cc (1.4), removedim5.cc
+	(1.3), removedim6.cc (1.3), satisfies1.cc (1.6), satisfies2.cc
+	(1.4), satisfies3.cc (1.4), universe1.cc (1.2), universe2.cc (1.2),
+	universe3.cc (1.2), universe4.cc (1.2), universe5.cc (1.2): We use
+	the functions of the file print.hh to print when it is possible. 
+	Added two tests for the functions Polyhedron::add_generators() and
+	Polyhedron::add_generators_and_minimize().
+
+2002-02-25 Monday 17:23  Elisa Ricci <ericci@cs.unipr.it>
+
+	* src/Polyhedron.cc (1.125): In functions
+	Polyhedron::add_generators() and
+	Polyhedron::add_generators_and_minimize, we throw an exception if
+	we add a system of generators with no vertex to an empty
+	polyhedron.
+
+2002-02-25 Monday 17:07  Roberto Bagnara <bagnara@cs.unipr.it>
+
+	* src/globals.hh (1.9): Qualified name is not allowed in namespace
+	member declaration.
+
+2002-02-25 Monday 17:02  Roberto Bagnara <bagnara@cs.unipr.it>
+
+	* src/: Constraint.defs.hh (1.34), Constraint.inlines.hh (1.18),
+	Generator.defs.hh (1.38), Generator.inlines.hh (1.19), Row.defs.hh
+	(1.27), Row.inlines.hh (1.10): Assignments operators added for
+	Constraint and Generator.  Some cleaning meanwhile.
+
+2002-02-25 Monday 15:32  Enea Zaffanella <zaffanella@cs.unipr.it>
+
+	* src/Constraint.defs.hh (1.33): Changed the example showing how to
+	use method coefficient(v) and is_equality(). This shows that we
+	probably miss a public method that is capable to set the relational
+	operator of a constraint.
+
+2002-02-25 Monday 15:02  Elisa Ricci <ericci@cs.unipr.it>
+
+	* tests/: addconstraints1.cc (1.4), addconstraints10.cc (1.3),
+	addconstraints5.cc (1.3), addconstraints6.cc (1.3),
+	addconstraints7.cc (1.3), addconstraints8.cc (1.3),
+	addconstraints9.cc (1.3), error25.cc (1.3), includes1.cc (1.5),
+	includes2.cc (1.3), includes3.cc (1.3), includes4.cc (1.3),
+	inters5.cc (1.3), satisfies2.cc (1.3), satisfies3.cc (1.3):
+	Corrected some errors in the tests.
+
+2002-02-25 Monday 14:51  Enea Zaffanella <zaffanella@cs.unipr.it>
+
+	* src/: Constraint.cc (1.16), Constraint.defs.hh (1.32),
+	Constraint.inlines.hh (1.17), Generator.cc (1.17),
+	Generator.defs.hh (1.37), Generator.inlines.hh (1.18): Added
+	non-inlined methods that throw exceptions. These are now called by
+	the inline methods coefficient(v).
+
+2002-02-25 Monday 14:34  Roberto Bagnara <bagnara@cs.unipr.it>
+
+	* config.guess (1.7), config.sub (1.7): Updated.
+
+2002-02-25 Monday 14:31  Roberto Bagnara <bagnara@cs.unipr.it>
+
+	* src/: Polyhedron.cc (1.124), Row.cc (1.27), Row.defs.hh (1.26):
+	Row::first(), Row::last(), Row::next() and Row::prev() are gone.
+
+2002-02-25 Monday 13:14  Enea Zaffanella <zaffanella@cs.unipr.it>
+
+	* src/conversion.cc (1.22): Started polishing comments. Avoided
+	swapping rows with themselves.	A few other tiny improvements.
+
+2002-02-25 Monday 12:21  Roberto Bagnara <bagnara@cs.unipr.it>
+
+	* tests/: addconstraints10.cc (1.2), addconstraints11.cc (1.2),
+	addconstraints2.cc (1.7), addconstraints4.cc (1.2),
+	addconstraints5.cc (1.2), addconstraints6.cc (1.2),
+	addconstraints7.cc (1.2), addconstraints8.cc (1.2),
+	addconstraints9.cc (1.2), adddimensions1.cc (1.3),
+	adddimensions2.cc (1.2), adddimensions3.cc (1.2), adddimensions4.cc
+	(1.2), addgenerators1.cc (1.3), addgenerators2.cc (1.3),
+	addgenerators3.cc (1.2), addgenerators4.cc (1.2), addgenerators5.cc
+	(1.2), addgenerators6.cc (1.2), affineimage2.cc (1.2),
+	affinepreimage1.cc (1.2), affinepreimage2.cc (1.2),
+	affinepreimage4.cc (1.2), affinetrans.cc (1.7),
+	convexdifference1.cc (1.5), convexhull1.cc (1.3), convexhull2.cc
+	(1.2), convexhull3.cc (1.2), error18.cc (1.2), error20.cc (1.2),
+	error21.cc (1.2), error25.cc (1.2), error26.cc (1.2), error27.cc
+	(1.2), error6.cc (1.3), error7.cc (1.2), error9.cc (1.2),
+	includes1.cc (1.4), includes2.cc (1.2), includes3.cc (1.2),
+	includes4.cc (1.2), inters3.cc (1.3), inters4.cc (1.2), inters5.cc
+	(1.2), inters6.cc (1.2), permute.cc (1.13), print.hh (1.5),
+	removedim3.cc (1.3), removedim4.cc (1.3), removedim5.cc (1.2),
+	removedim6.cc (1.2), satisfies1.cc (1.5), satisfies2.cc (1.2),
+	satisfies3.cc (1.2): Started putting some order in the way results
+	are returned how objects are built, and how we print things in
+	NOISY mode.  While at it, a zillion of trailing blanks have been
+	removed.
+
+2002-02-25 Monday 12:10  Roberto Bagnara <bagnara@cs.unipr.it>
+
+	* src/Constraint.cc (1.15): Unwanted change retracted.
+
+2002-02-25 Monday 11:43  Roberto Bagnara <bagnara@cs.unipr.it>
+
+	* src/: ConSys.defs.hh (1.31), Constraint.cc (1.14),
+	Constraint.defs.hh (1.31), GenSys.defs.hh (1.42), Generator.defs.hh
+	(1.36), Makefile.am (1.24), ppl_filter_doxygen.sed (1.1),
+	ppl_filter_install.sed (1.1): Now PPL_INTERNAL means `private'
+	everywhere we are not compiling the library itself.  PPL_HIDDEN,
+	instead, is `private' only to keep doxygen from including
+	documentation that is not for the user.
+
+2002-02-25 Monday 10:02  Elisa Ricci <ericci@cs.unipr.it>
+
+	* tests/: Makefile.am (1.42), addconstraints10.cc (1.1),
+	addconstraints11.cc (1.1), addconstraints4.cc (1.1),
+	addconstraints5.cc (1.1), addconstraints6.cc (1.1),
+	addconstraints7.cc (1.1), addconstraints8.cc (1.1),
+	addconstraints9.cc (1.1), adddimensions2.cc (1.1),
+	adddimensions3.cc (1.1), adddimensions4.cc (1.1), addgenerators3.cc
+	(1.1), addgenerators4.cc (1.1), addgenerators5.cc (1.1),
+	addgenerators6.cc (1.1), affineimage2.cc (1.1), affinepreimage1.cc
+	(1.1), affinepreimage2.cc (1.1), affinepreimage3.cc (1.1),
+	affinepreimage4.cc (1.1), convexhull2.cc (1.1), convexhull3.cc
+	(1.1), error10.cc (1.1), error11.cc (1.1), error12.cc (1.1),
+	error13.cc (1.1), error14.cc (1.1), error15.cc (1.1), error16.cc
+	(1.1), error17.cc (1.1), error18.cc (1.1), error19.cc (1.1),
+	error20.cc (1.1), error21.cc (1.1), error22.cc (1.1), error23.cc
+	(1.1), error24.cc (1.1), error25.cc (1.1), error26.cc (1.1),
+	error27.cc (1.1), error6.cc (1.2), error7.cc (1.1), error8.cc
+	(1.1), error9.cc (1.1), includes2.cc (1.1), includes3.cc (1.1),
+	includes4.cc (1.1), inters4.cc (1.1), inters5.cc (1.1), inters6.cc
+	(1.1), removedim5.cc (1.1), removedim6.cc (1.1), satisfies2.cc
+	(1.1), satisfies3.cc (1.1), universe1.cc (1.1), universe2.cc (1.1),
+	universe3.cc (1.1), universe4.cc (1.1), universe5.cc (1.1): Added
+	new tests for the functions of the Polyhedron class.
+
+2002-02-25 Monday 09:22  Roberto Bagnara <bagnara@cs.unipr.it>
+
+	* src/conversion.cc (1.21): Two kludges (with FIXME) to continue
+	supporting GCC 2.96.
+
+2002-02-25 Monday 08:40  Roberto Bagnara <bagnara@cs.unipr.it>
+
+	* interfaces/Prolog/Prolog_interface.dox (1.14): Minor typos fixed.
+
+2002-02-25 Monday 08:36  Roberto Bagnara <bagnara@cs.unipr.it>
+
+	* interfaces/Prolog/Prolog_interface.dox (1.13): Add CIAO Prolog to
+	the list of (to be) supported systems and sort the list of prologs
+	alphabetically.
+
+2002-02-25 Monday 01:00  Enea Zaffanella <zaffanella@cs.unipr.it>
+
+	* src/: Constraint.defs.hh (1.30), Generator.defs.hh (1.35): Added
+	examples on the use of methods coefficient(v), coefficient() and
+	divisor(), as well as (en passant) the method Generator::type().
+
+2002-02-25 Monday 00:56  Enea Zaffanella <zaffanella@cs.unipr.it>
+
+	* src/Row.defs.hh (1.25): Added comments to methods first(),
+	last(), next(...) and prev(...).
+
+2002-02-24 Sunday 22:14  Roberto Bagnara <bagnara@cs.unipr.it>
+
+	* tests/: addconstraints2.cc (1.6), includes1.cc (1.3),
+	satisfies1.cc (1.4): Do not use private methods.
+
+2002-02-24 Sunday 21:28  Roberto Bagnara <bagnara@cs.unipr.it>
+
+	* src/: Init.cc (1.1), Init.defs.hh (1.1), Init.inlines.hh (1.1),
+	Init.types.hh (1.1), Makefile.am (1.23), Row.cc (1.26),
+	conversion.cc (1.20), globals.cc (1.3), globals.hh (1.8),
+	initializer.hh (1.1): New standard compliant mechanism for the
+	library initialization and finalization.  New implementation for
+	tmp_Integer (worth a speedup greater than 3%).
+
+2002-02-24 Sunday 19:31  Enea Zaffanella <zaffanella@cs.unipr.it>
+
+	* src/SatRow.inlines.hh (1.9): Spurious space in comment removed.
+
+2002-02-24 Sunday 19:30  Enea Zaffanella <zaffanella@cs.unipr.it>
+
+	* src/Generator.cc (1.16): Using function
+	all_homogeneous_terms_are_zero() when building a ray or line to
+	check their validity.
+
+2002-02-24 Sunday 19:28  Enea Zaffanella <zaffanella@cs.unipr.it>
+
+	* src/Generator.inlines.hh (1.17): Throwing an exception if
+	Generator::coefficient(v) is called with a variable beyond the
+	space-dimension.
+
+2002-02-24 Sunday 19:27  Enea Zaffanella <zaffanella@cs.unipr.it>
+
+	* src/Constraint.inlines.hh (1.16): We now throw an exception if
+	Constraint::coefficient(v) is called with a variable which is
+	beyond the current space-dimension.
+
+2002-02-24 Sunday 19:25  Enea Zaffanella <zaffanella@cs.unipr.it>
+
+	* src/Polyhedron.cc (1.123): Many comments adjusted. We now use the
+	BE_LAZY flag in Polyhedron::operator<=, where we do not necessarily
+	minimize given arguments.
+
+2002-02-24 Sunday 19:18  Enea Zaffanella <zaffanella@cs.unipr.it>
+
+	* src/GenSys.cc (1.30): Using "satisfy" instead of "verify" when
+	talking about the relation between a generator and a constraint.
+
+2002-02-24 Sunday 12:14  Roberto Bagnara <bagnara@cs.unipr.it>
+
+	* Makefile.am (1.13), README (1.9), configure.ac (1.24),
+	doc/Makefile.am (1.15), doc/definitions.dox (1.35),
+	interfaces/Makefile.am (1.2), interfaces/Prolog/Makefile.am (1.3),
+	interfaces/Prolog/SICStus/Makefile.am (1.9),
+	interfaces/Prolog/SICStus/clpq.pl (1.26),
+	interfaces/Prolog/SICStus/clpq2.pl (1.2),
+	interfaces/Prolog/SICStus/expected (1.3), m4/Makefile.am (1.4),
+	m4/ac_check_gmp.m4 (1.2), src/ConSys.cc (1.22), src/ConSys.defs.hh
+	(1.30), src/ConSys.inlines.hh (1.11), src/ConSys.types.hh (1.2),
+	src/Constraint.cc (1.13), src/Constraint.defs.hh (1.29),
+	src/Constraint.inlines.hh (1.15), src/Constraint.types.hh (1.2),
+	src/GenSys.cc (1.29), src/GenSys.defs.hh (1.41),
+	src/GenSys.inlines.hh (1.11), src/GenSys.types.hh (1.2),
+	src/Generator.cc (1.15), src/Generator.defs.hh (1.34),
+	src/Generator.inlines.hh (1.16), src/Generator.types.hh (1.2),
+	src/Integer.cc (1.2), src/Integer.defs.hh (1.2),
+	src/Integer.inlines.hh (1.2), src/Integer.types.hh (1.2),
+	src/LinExpression.cc (1.9), src/LinExpression.defs.hh (1.22),
+	src/LinExpression.inlines.hh (1.10), src/LinExpression.types.hh
+	(1.2), src/Makefile.am (1.22), src/Matrix.cc (1.27),
+	src/Matrix.defs.hh (1.15), src/Matrix.inlines.hh (1.14),
+	src/Matrix.types.hh (1.2), src/Polyhedron.cc (1.122),
+	src/Polyhedron.defs.hh (1.75), src/Polyhedron.inlines.hh (1.15),
+	src/Polyhedron.types.hh (1.2), src/Row.cc (1.25), src/Row.defs.hh
+	(1.24), src/Row.inlines.hh (1.9), src/Row.types.hh (1.2),
+	src/SatMatrix.cc (1.11), src/SatMatrix.defs.hh (1.12),
+	src/SatMatrix.inlines.hh (1.7), src/SatMatrix.types.hh (1.2),
+	src/SatRow.cc (1.5), src/SatRow.defs.hh (1.9),
+	src/SatRow.inlines.hh (1.8), src/SatRow.types.hh (1.2),
+	src/Status.cc (1.9), src/Status.defs.hh (1.11),
+	src/Status.inlines.hh (1.5), src/Status.types.hh (1.2),
+	src/Variable.cc (1.4), src/Variable.defs.hh (1.11),
+	src/Variable.inlines.hh (1.5), src/Variable.types.hh (1.2),
+	src/conversion.cc (1.19), src/globals.hh (1.7), src/minimize.cc
+	(1.10), src/ppl_header.top (1.3), src/simplify.cc (1.10),
+	tests/Makefile.am (1.41), tests/addconstraints1.cc (1.3),
+	tests/addconstraints2.cc (1.5), tests/addconstraints3.cc (1.2),
+	tests/adddimensions1.cc (1.2), tests/addgenerators1.cc (1.2),
+	tests/addgenerators2.cc (1.2), tests/affineimage1.cc (1.2),
+	tests/affinetrans.cc (1.6), tests/append1.cc (1.8),
+	tests/append2.cc (1.9), tests/convexdifference1.cc (1.4),
+	tests/convexhull1.cc (1.2), tests/ehandlers.hh (1.3),
+	tests/empty1.cc (1.6), tests/error1.cc (1.7), tests/error2.cc
+	(1.9), tests/error3.cc (1.9), tests/error4.cc (1.4),
+	tests/error5.cc (1.5), tests/includes1.cc (1.2), tests/inters1.cc
+	(1.8), tests/inters2.cc (1.10), tests/inters3.cc (1.2),
+	tests/limitedwidening1.cc (1.4), tests/limitedwidening2.cc (1.3),
+	tests/onepoint.cc (1.2), tests/permute.cc (1.12),
+	tests/randchull1.cc (1.10), tests/removedim1.cc (1.3),
+	tests/removedim2.cc (1.6), tests/removedim3.cc (1.2),
+	tests/removedim4.cc (1.2), tests/satisfies1.cc (1.3), tests/smm1.cc
+	(1.2), doc/devref.tex (1.7), doc/user.tex (1.8): Copyright year
+	bumped.
+
+2002-02-23 Saturday 17:58  Roberto Bagnara <bagnara@cs.unipr.it>
+
+	* tests/convexdifference1.cc (1.3): Do not be noisy.
+
+2002-02-23 Saturday 17:52  Roberto Bagnara <bagnara@cs.unipr.it>
+
+	* src/Polyhedron.cc (1.121), tests/convexdifference1.cc (1.2):
+	Polyhedron::convex_difference_assign() fixed.
+
+2002-02-23 Saturday 16:57  Enea Zaffanella <zaffanella@cs.unipr.it>
+
+	* src/Polyhedron.cc (1.120): Method
+	Polyhedron::convex_diffrence_assign corrected.	The new version
+	forces the result to be a _closed_ polyhedron.
+
+2002-02-23 Saturday 14:06  Roberto Bagnara <bagnara@cs.unipr.it>
+
+	* NEWS (1.8), src/Polyhedron.cc (1.119), src/Polyhedron.defs.hh
+	(1.74), tests/Makefile.am (1.40), tests/convexdifference1.cc (1.1):
+	New methods Polyhedron::convex_difference_assign(const Polyhedron&)
+	and Polyhedron::convex_difference_assign_and_minimize(const
+	Polyhedron&).  They assigns to *this the convex hull of the
+	set-theoretic difference of *this and the argument (possibly non
+	minimized or minimized, respectively). 
+	Polyhedron::convex_hull_assign() was missing the final
+	assert(OK()).
+
+2002-02-22 Friday 22:16  Roberto Bagnara <bagnara@cs.unipr.it>
+
+	* NEWS (1.7), src/Polyhedron.cc (1.118), src/Polyhedron.defs.hh
+	(1.73), tests/limitedwidening1.cc (1.3), tests/limitedwidening2.cc
+	(1.2): Polyhedron::limited_widening_assign(const Polyhedron&,
+	ConSys&) was erroneously returning a (random) boolean: it is now a
+	void method.
+
+2002-02-22 Friday 19:47  Roberto Bagnara <bagnara@cs.unipr.it>
+
+	* tests/: Makefile.am (1.39), limitedwidening2.cc (1.1): New test
+	to check that the case where the passed constraint system is
+	inconsistent with respect to the widened polyhedron.  Note: it
+	currently fails, since Polyhedron::limited_widening_assign() is
+	buggy, as it is now.
+
+2002-02-22 Friday 19:45  Roberto Bagnara <bagnara@cs.unipr.it>
+
+	* tests/limitedwidening1.cc (1.2): Improved: now we check also the
+	returned boolean.
+
+2002-02-22 Friday 19:45  Roberto Bagnara <bagnara@cs.unipr.it>
+
+	* tests/print.hh (1.4): New functions to print the constraints and
+	the generators.
+
+2002-02-22 Friday 19:42  Roberto Bagnara <bagnara@cs.unipr.it>
+
+	* src/Polyhedron.cc (1.117): Readability improvements to
+	Polyhedron::limited_widening_assign().
+
+2002-02-22 Friday 18:18  Roberto Bagnara <bagnara@cs.unipr.it>
+
+	* src/Polyhedron.cc (1.116): Slightly optimized operator <=(const
+	Polyhedron& x, const Polyhedron& y).
+
+2002-02-22 Friday 08:12  Roberto Bagnara <bagnara@cs.unipr.it>
+
+	* NEWS (1.6): Updated for release 0.3.
+
+2002-02-20 Wednesday 19:13  Roberto Bagnara <bagnara@cs.unipr.it>
+
+	* ChangeLog (1.5): Updated.
+
 2002-02-20 Wednesday 13:26  Enea Zaffanella <zaffanella@cs.unipr.it>
 
 	* src/Polyhedron.cc (1.115): In Polyhedron::add_constraints(ConSys&
@@ -661,7 +1080,7 @@
 	* interfaces/Prolog/Prolog_interface.dox (1.10): Documentation for
 	ppl_add_consraints_and _minimize and for ppl_copy_polyhedron added.
 	 Two examples for ppl_insert_constraints added that compare with
-	examples for those for ppl_add_consraints_and_minimize.
+	examples for those for ppl_add_consraints_and_minimize. 
 	Introductory sentence added.  "To be written"  replaced by "Support
 	for XXX ...future release."
 
@@ -719,7 +1138,7 @@
 2001-11-12 Monday 22:33  Roberto Bagnara <bagnara@cs.unipr.it>
 
 	* interfaces/Prolog/SICStus/clpq.pl (1.21): Fixed a bug whereby
-	original_goal_variables/1 was not retracted in some cases.
+	original_goal_variables/1 was not retracted in some cases. 
 	Multiple clauses for original_goal_variables/1 were causing the use
 	of already discarded polyhedra.
 
@@ -779,7 +1198,7 @@
 
 	* src/: Constraint.defs.hh (1.27), Constraint.inlines.hh (1.11),
 	Generator.defs.hh (1.29), Generator.inlines.hh (1.15), Row.defs.hh
-	(1.14): std::swap() specialized both for Constraint and Generator.
+	(1.14): std::swap() specialized both for Constraint and Generator. 
 	Less verbose comments for such a simple operation.
 
 2001-11-11 Sunday 17:29  Roberto Bagnara <bagnara@cs.unipr.it>
@@ -813,7 +1232,7 @@
 2001-11-11 Sunday 15:40  Roberto Bagnara <bagnara@cs.unipr.it>
 
 	* src/: Constraint.cc (1.9), Constraint.defs.hh (1.26):
-	Constraint::is_trivial() renamed is_trivial_true().
+	Constraint::is_trivial() renamed is_trivial_true(). 
 	Constraint::is_unsatisfiable() renamed is_trivial_false().  Both
 	now use Row::all_homogeneous_terms_are_zero().
 
@@ -1315,7 +1734,7 @@
 2001-10-31 Wednesday 22:09  Roberto Bagnara <bagnara@cs.unipr.it>
 
 	* interfaces/Prolog/SICStus/ppl_sicstus.cc (1.18): In
-	ppl_get_constraints/2, no longer treat empty polyhedra specially.
+	ppl_get_constraints/2, no longer treat empty polyhedra specially. 
 	get_generator() renamed generator_term().
 
 2001-10-31 Wednesday 21:29  Roberto Bagnara <bagnara@cs.unipr.it>
@@ -1375,7 +1794,7 @@
 
 	* src/Polyhedron.cc (1.66): In functions
 	Polyhedron::widening_assign and Polyhedron::limited_widening_assign
-	considered the case of the polyhedra in a zero-dimensional space.
+	considered the case of the polyhedra in a zero-dimensional space. 
 	In function Polyhedron::limited_widening_assign considered the case
 	of cs.space_dimension() < space_dimension().
 
@@ -1912,7 +2331,7 @@
 
 	* tests/: affinetrans.cc, error3.cc (space_dim.[2,2]): To build the
 	polyhedron that we want using the system of generators, we must
-	create the system of generators and then use Polyhedron ph(gs).
+	create the system of generators and then use Polyhedron ph(gs). 
 	(If we use Polyhedron ph(num_dim), we have the universe polyhedron
 	and then when we add the generators we do not have our polyhedron
 	but the universe one).
@@ -1940,7 +2359,7 @@
 	interfaces/Prolog/SICStus/ppl_check.pl (1.1),
 	interfaces/Prolog/SICStus/ppl_sicstus.cc (1.4),
 	interfaces/Prolog/SICStus/ppl_sicstus.pl (1.1): Check to see
-	whether `sicstus' is installed: if it is, tests can be performed.
+	whether `sicstus' is installed: if it is, tests can be performed. 
 	Some progress in the interface itself.
 
 2001-10-27 Saturday 10:58  Roberto Bagnara <bagnara@cs.unipr.it>
@@ -2020,7 +2439,7 @@
 
 	* src/Polyhedron.cc (space_dim.6): Added the dimension-consistency
 	check in the function add_constraints_lazy and add_generators.	In
-	functions add_constraints and add_generators we use
+	functions add_constraints and add_generators we use 
 	if(check_empty()) instead of  minimize() if(is_empty()) In
 	functions add_constraints and add_constraints_lazy we resize the
 	matrix of constraints that we add if  num_columns - 1 <
@@ -2108,7 +2527,7 @@
 	Added private member Polyhedron::space_dim, which stores the number
 	of dimensions of the enclosing space.  Public member
 	Polyhedron::num_dimensions() renamed into
-	Polyhedron::space_dimension() and now reads the member space_dim.
+	Polyhedron::space_dimension() and now reads the member space_dim. 
 	Started modifying methods of the class Polyhedron so that they
 	consistently use space_dimension() and space_dim.  Started guarding
 	methods by suitable dimension-compatibility checks.
@@ -2293,7 +2712,7 @@
 2001-10-23 Tuesday 14:08  Enea Zaffanella <zaffanella@cs.unipr.it>
 
 	* src/: GenSys.defs.hh (1.28), GenSys.inlines.hh (1.4): Inserting a
-	generator in a GenSys automatically adjust the dimensions.
+	generator in a GenSys automatically adjust the dimensions. 
 	Specialization of std:swap for GenSys's added.
 
 2001-10-23 Tuesday 14:07  Enea Zaffanella <zaffanella@cs.unipr.it>
@@ -2638,7 +3057,7 @@
 	* src/: Polyhedron.cc (1.27), Polyhedron.defs.hh (1.34),
 	Polyhedron.inlines.hh (1.5): Simplified the comment to the function
 	swap.  Used `v' instead of `var', `dim' instead of `add_dim'.  All
-	the ConSys are called `cs' and all the GenSys are called `gs'.
+	the ConSys are called `cs' and all the GenSys are called `gs'. 
 	Used the expression "thrown if" to introduce the comment to the
 	exceptions.  The variable is "substituted" in the function
 	substitute_variable.
@@ -2836,7 +3255,7 @@
 
 2001-10-17 Wednesday 16:56  Roberto Bagnara <bagnara@cs.unipr.it>
 
-	* tests/permute.cc (1.2): We now use the intended constraints.
+	* tests/permute.cc (1.2): We now use the intended constraints. 
 	Termination is guaranteed by using Polyhedron::widening_assign().
 
 2001-10-17 Wednesday 16:31  Elisa Ricci <ericci@cs.unipr.it>
@@ -2894,7 +3313,7 @@
 	* src/: ConSys.defs.hh (1.9), GenSys.defs.hh (1.12), Matrix.defs.hh
 	(1.4), Polyhedron.cc (1.19), Polyhedron.defs.hh (1.22),
 	SatMatrix.cc (1.3), SatMatrix.defs.hh (1.5), SatRow.defs.hh (1.4),
-	Status.defs.hh (1.4): Changed the comments in the function OK().
+	Status.defs.hh (1.4): Changed the comments in the function OK(). 
 	In function Polyhedron::OK() used "check_not_empty" instead of
 	"check_satisfiable".
 
@@ -3384,7 +3803,7 @@
 
 	* src/Polyhedron.defs.hh (1.4): Added two examples to the comment:
 	one to specify the use of add_dimensions_and_embed(..) and the
-	other to specify the use of add_dimensions_and_project(...).
+	other to specify the use of add_dimensions_and_project(...). 
 	Corrected an error in a formula: now in the comment of
 	convex_hull(...) and convex_hull_lazy(..) there is \f$\cup\f$
 	instead of \f$\union\f$ (that caused an error in Latex).
@@ -3452,7 +3871,7 @@
 	theorem" renamed to   "Minkowski's theorem.  The condition "rank(A)
 	= n" changed to   "where A is a matrix of rank n".  The note
 	following the definition is reworded so that the   conditions are
-	not bracketed.	"Linear equalities and inequalities" has been
+	not bracketed.	"Linear equalities and inequalities" has been  
 	changed to "constraints".  "positive multiples of each inequality
 	and ray" has been    changed to "positive multiples of each
 	constraint and ray".  The word "the" inserted where necessary.
