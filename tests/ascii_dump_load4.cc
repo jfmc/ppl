@@ -36,7 +36,6 @@ using namespace Parma_Polyhedra_Library;
 #endif
 
 const char* my_file = "ascii_dump_load_4.dat";
-const char* my_temporary_file = "tmp_ascii_dump_load_4.dat";
 
 void
 test1() {

@@ -114,7 +114,7 @@ ORIGINAL_TESTS = \
 	topclosure1 topclosure2 topclosure3 \
 	universe1 universe2 universe3 universe4 universe5 universe6 \
 	writeconsys1 \
-	writegensys1 writegensys2 \
+	writegensys1 writegensys2 writegensys3 \
 	writepolyhedron1 writepolyhedron2 writepolyhedron3
 
 DERIVED_TESTS = \
@@ -471,6 +471,7 @@ writeconsys1_SOURCES = writeconsys1.cc files.cc
 
 writegensys1_SOURCES = writegensys1.cc files.cc
 writegensys2_SOURCES = writegensys2.cc files.cc
+writegensys3_SOURCES = writegensys3.cc files.cc
 
 writepolyhedron1_SOURCES = writepolyhedron1.cc files.cc
 writepolyhedron2_SOURCES = writepolyhedron2.cc files.cc
@@ -878,6 +879,7 @@ ascii_dump_load_4.dat \
 writeconsys1.dat \
 writegensys1.dat \
 writegensys2.dat \
+writegensys3.dat \
 writepolyhedron1.dat \
 writepolyhedron2.dat \
 writepolyhedron3.dat
