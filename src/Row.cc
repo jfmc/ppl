@@ -108,17 +108,21 @@ PPL::Row::strong_normalize() {
   dimension_type sz = x.size();
   if (x.is_line_or_equality()) {
     // `first_non_zero' indicates the index of the first
-    // coefficient of the row different from zero.
+    // coefficient of the row different from zero, disregarding
+    // the very first coefficient (inhomogeneous term / divisor).
     dimension_type first_non_zero;
-    for (first_non_zero = 0; first_non_zero < sz; ++first_non_zero)
+    for (first_non_zero = 1; first_non_zero < sz; ++first_non_zero)
       if (x[first_non_zero] != 0)
 	break;
     if (first_non_zero < sz)
       // If the first non-zero coefficient of the row is negative,
       // we negate the entire row.
-      if (x[first_non_zero] < 0)
+      if (x[first_non_zero] < 0) {
 	for (dimension_type j = first_non_zero; j < sz; ++j)
 	  negate(x[j]);
+	// Also negate the first coefficient.
+	negate(x[0]);
+      }
   }
 }
 

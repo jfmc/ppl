@@ -215,7 +215,7 @@ speed)
   arch=yes
   ;;
 size)
-  AC_MSG_RESULT(speed)
+  AC_MSG_RESULT(size)
   OPT_FLAGS="$OPT_FLAGS -Os"
   arch=yes
   ;;

@@ -186,8 +186,8 @@ public:
   //! different hyperplanes or hyperspaces.
   /*!
     In addition to the normalization performed by Row::normalize(), this
-    method ensures that the first non-zero coefficient of lines and
-    equalities is positive.
+    method ensures that the first non-zero (homogeneous) coefficient
+    of lines and equalities is positive.
   */
   void strong_normalize();
 
