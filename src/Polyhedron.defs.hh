@@ -98,15 +98,6 @@ bool operator<(const Polyhedron& x, const Polyhedron& y);
 */
 bool operator>(const Polyhedron& x, const Polyhedron& y);
 
-//! Returns <CODE>true</CODE> if and only if \p x contains \p y.
-/*!
-  \relates Polyhedron
-  \exception std::invalid_argument thrown if \p x and \p y
-                                   are topology-incompatible
-                                   or dimension-incompatible.
-*/
-bool operator>=(const Polyhedron& x, const Polyhedron& y);
-
 //! Returns <CODE>true</CODE> if and only if \p x is contained in \p y.
 /*!
   \relates Polyhedron
@@ -115,6 +106,15 @@ bool operator>=(const Polyhedron& x, const Polyhedron& y);
                                    or dimension-incompatible.
 */
 bool operator<=(const Polyhedron& x, const Polyhedron& y);
+
+//! Returns <CODE>true</CODE> if and only if \p x contains \p y.
+/*!
+  \relates Polyhedron
+  \exception std::invalid_argument thrown if \p x and \p y
+                                   are topology-incompatible
+                                   or dimension-incompatible.
+*/
+bool operator>=(const Polyhedron& x, const Polyhedron& y);
 
 //! Returns <CODE>true</CODE> if and only if \p x and \p y are disjoint.
 /*!
@@ -532,6 +532,16 @@ public:
   dimension_type space_dimension() const;
 
   //! \brief
+  //! Assigns to \p *this the intersection of \p *this and \p y.
+  //! The result is not guaranteed to be minimized.
+  /*!
+    \exception std::invalid_argument thrown if \p *this and \p y
+                                     are topology-incompatible
+                                     or dimension-incompatible.
+  */
+  void intersection_assign(const Polyhedron& y);
+
+  //! \brief
   //! Assigns to \p *this the intersection of \p *this and \p y,
   //! minimizing the result.
   /*!
@@ -541,16 +551,6 @@ public:
                                      or dimension-incompatible.
   */
   bool intersection_assign_and_minimize(const Polyhedron& y);
-
-  //! \brief
-  //! Assigns to \p *this the intersection of \p *this and \p y.
-  //! The result is not guaranteed to be minimized.
-  /*!
-    \exception std::invalid_argument thrown if \p *this and \p y
-                                     are topology-incompatible
-                                     or dimension-incompatible.
-  */
-  void intersection_assign(const Polyhedron& y);
 
   //! \brief
   //! Seeing a polyhedron as a set of tuples (its points), assigns
@@ -582,6 +582,16 @@ public:
   void concatenate_assign(const Polyhedron& y);
 
   //! \brief
+  //! Assigns to \p *this the poly-hull \p *this and \p y.
+  //! The result is not guaranteed to be minimized.
+  /*!
+    \exception std::invalid_argument thrown if \p *this and \p y
+                                     are topology-incompatible
+                                     or dimension-incompatible.
+  */
+  void poly_hull_assign(const Polyhedron& y);
+
+  //! \brief
   //! Assigns to \p *this the poly-hull of \p *this and \p y,
   //! minimizing the result.
   /*!
@@ -593,14 +603,14 @@ public:
   bool poly_hull_assign_and_minimize(const Polyhedron& y);
 
   //! \brief
-  //! Assigns to \p *this the poly-hull \p *this and \p y.
-  //! The result is not guaranteed to be minimized.
+  //! Assigns to \p *this the \ref poly_difference "poly-difference" of
+  //! \p *this and \p y. The result is not guaranteed to be minimized.
   /*!
     \exception std::invalid_argument thrown if \p *this and \p y
                                      are topology-incompatible
                                      or dimension-incompatible.
   */
-  void poly_hull_assign(const Polyhedron& y);
+  void poly_difference_assign(const Polyhedron& y);
 
   //! \brief
   //! Assigns to \p *this the \ref poly_difference "poly-difference" of
@@ -612,16 +622,6 @@ public:
                                      or dimension-incompatible.
   */
   bool poly_difference_assign_and_minimize(const Polyhedron& y);
-
-  //! \brief
-  //! Assigns to \p *this the \ref poly_difference "poly-difference" of
-  //! \p *this and \p y. The result is not guaranteed to be minimized.
-  /*!
-    \exception std::invalid_argument thrown if \p *this and \p y
-                                     are topology-incompatible
-                                     or dimension-incompatible.
-  */
-  void poly_difference_assign(const Polyhedron& y);
 
   //! \brief
   //! Returns the relations holding between the polyhedron \p *this
@@ -1214,6 +1214,19 @@ public:
   template <typename PartialInjectiveFunction>
   void shuffle_dimensions(const PartialInjectiveFunction& pifunc);
 
+  //! \brief Adds the constraints in \p cs to the system of constraints
+  //! of \p *this, minimizing the result.
+  /*!
+    \param  cs             The constraints that will be added to the
+                           current system of constraints. This parameter
+                           is not declared <CODE>const</CODE> because
+                           it can be modified.
+    \exception std::invalid_argument thrown if \p *this and \p cs
+                                     are topology-incompatible
+                                     or dimension-incompatible.
+  */
+  void add_constraints(ConSys& cs);
+
   //! \brief
   //! \brief Adds the constraints in \p cs to the system of constraints
   //! of \p *this (without minimizing the result).
@@ -1228,19 +1241,6 @@ public:
                                      or dimension-incompatible.
   */
   bool add_constraints_and_minimize(ConSys& cs);
-
-  //! \brief Adds the constraints in \p cs to the system of constraints
-  //! of \p *this, minimizing the result.
-  /*!
-    \param  cs             The constraints that will be added to the
-                           current system of constraints. This parameter
-                           is not declared <CODE>const</CODE> because
-                           it can be modified.
-    \exception std::invalid_argument thrown if \p *this and \p cs
-                                     are topology-incompatible
-                                     or dimension-incompatible.
-  */
-  void add_constraints(ConSys& cs);
 
   //! \brief Adds the generators in \p gs to the system of generators
   //! of \p *this (without minimizing the result).
@@ -1298,9 +1298,6 @@ public:
                                      are dimension-incompatible.
   */
   bool bounds_from_above(const LinExpression& expr) const;
-
-  //! Adds the low-level constraints to the constraint system.
-  static void add_low_level_constraints(ConSys& cs);
 
   //! \brief
   //! Returns <CODE>true</CODE> if and only if \p expr is
@@ -1563,6 +1560,9 @@ private:
     \f]
   */
   void update_sat_g() const;
+
+  //! Adds the low-level constraints to the constraint system.
+  static void add_low_level_constraints(ConSys& cs);
 
   //! \brief
   //! Processes the pending rows of either description of the polyhedron
