@@ -3738,37 +3738,47 @@ PPL::Polyhedron::BBRZ02_widening_assign(const Polyhedron& y) {
 	      || (y_g.is_closure_point() && !y.is_necessarily_closed())) {
 	    Generator tmp_x2_g(x2_g);
 	    tmp_x2_g.linear_combine(y_g, 0);
-	    // If the new ray satisfies all the constraints of
-	    // `common_con_sys', we add it to a temporary matrix.
+	    // In `tmp_gen_sys' we put all the rays that we have built.
+	    tmp_gen_sys.insert(tmp_x2_g);
+	    if (!x2.is_necessarily_closed())
+	      tmp_gen_sys[tmp_gen_sys.num_rows() - 1][x_space_dim + 1] = 0;
+	  }
+	}
+	// If `tmp_gen_sys' contains only a ray, it is added to the
+	// system of generators of `x' if it satisfies the constraints
+	// of `common_con_sys'.
+	if (tmp_gen_sys.num_rows() != 0) {
+	  if (tmp_gen_sys.num_rows() == 1) {
 	    bool not_satisfies = false;
 	    for (dimension_type h = common_con_sys.num_rows(); h-- > 0; )
-	      if (tmp_x2_g * common_con_sys[h] < 0) {
+	      if (tmp_gen_sys[0] * common_con_sys[h] < 0) {
 		not_satisfies = true;
 		break;
 	      }
 	    if (!not_satisfies) {
-	      tmp_gen_sys.insert(tmp_x2_g);
-	      tmp_gen_sys.set_sorted(false);
-	      if (!x2.is_necessarily_closed())
-		tmp_gen_sys[tmp_gen_sys.num_rows() - 1][x_space_dim + 1] = 0;
+	      x2.gen_sys.insert(tmp_gen_sys[0]);
+	      x2.gen_sys.set_sorted(false);
 	    }
 	  }
-	}
-	// If `tmp_gen_sys' contains only a ray, it is added to the
-	// system of generators of `x'.
-	if (tmp_gen_sys.num_rows() != 0) {
-	  if (tmp_gen_sys.num_rows() == 1)
-	    x2.gen_sys.insert(tmp_gen_sys[0]);
 	  else {
-	    // Otherwise, we "average" the directions of the rays that
-	    // belong to `tmp_gen_sys' and we add the new ray to the
-	    // system of generators of `x'.
-	    tmp_gen_sys.sort_rows();
-	    LinExpression e(0);
-	    for (dimension_type j = tmp_gen_sys.num_rows(); j-- > 0; )
-	      e += LinExpression(tmp_gen_sys[j]);
-	    e.normalize();
-	    x2.gen_sys.insert(ray(e));
+	    // We built a temporary polyhedron an we intersect it
+	    // `common_con_sys': the rays that generate the new
+	    // polyhedron are put into the system of generators of `x2'.
+	    tmp_gen_sys.insert(point());
+	    Polyhedron tmp_poly(x.topology(), tmp_gen_sys);
+	    tmp_poly.add_constraints_and_minimize(common_con_sys);
+	    tmp_gen_sys = tmp_poly.generators();
+	    dimension_type tmp_gen_sys_num_rows = tmp_gen_sys.num_rows();
+	    for (dimension_type t = tmp_gen_sys_num_rows; t-- > 0; )
+	      if (!tmp_gen_sys[t].is_ray()) {
+		--tmp_gen_sys_num_rows;
+		std::swap(tmp_gen_sys[t], tmp_gen_sys[tmp_gen_sys_num_rows]);
+		tmp_gen_sys.set_sorted(false);
+	      }
+	    if (tmp_gen_sys_num_rows != 0) {
+	      tmp_gen_sys.erase_to_end(tmp_gen_sys_num_rows);
+	      x2.add_generators(tmp_gen_sys);
+	    }
 	  }
 	}
       }
