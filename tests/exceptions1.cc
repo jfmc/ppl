@@ -844,6 +844,27 @@ error29() {
   }
 }
 
+void
+error30() {
+  
+  Polyhedron ph1(3);
+  Polyhedron ph2(5);
+
+  try {
+    // This is an incorrect use of function
+    // Polyhedron::convex_different_assign(ph2): it is impossibile to apply
+    // this function to two polyhedra of different dimensions.
+    ph1.convex_difference_assign(ph2);
+  }
+  catch(invalid_argument& e) {
+#if NOISY
+    cout << "invalid_polyhedra: " << e.what() << endl << endl;
+#endif
+  }
+  catch (...) {
+    exit(1);
+  }
+}
 
 int
 main() {
@@ -877,6 +898,7 @@ main() {
   error27();
   error28();
   error29();
+  error30();
 
   return 0;
 }
