@@ -31,7 +31,8 @@ Enhancements for PPL 0.8 or later versions
   if the argument is not a list, in the current version,
   the call to this predicate will fail. This needs to be changed so that
   an exception is thrown.
-
+- In the Prolog interface, reconsider the functionality and names of the
+  "with_token" predicates.
 
 Constructions on Polyhedra
 ==========================
