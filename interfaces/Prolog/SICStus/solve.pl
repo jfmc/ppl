@@ -10,7 +10,7 @@ solve(true,_P,M,M):-
     !.
 
 solve(A=B,P,M,N):-
-    solve({A==B},P,M,N).
+    solve({A=B},P,M,N).
 
 solve((A,B),P,M,N):- 
     !, 
@@ -30,9 +30,6 @@ solve_constraints((C,D),P):-
     !,
     solve_constraints(C,P),
     solve_constraints(D,P).
-solve_constraints(A=B,P):- 
-    !,
-    solve_constraints(A==B,P).
 solve_constraints(C,P):- 
     ppl_insert_constraint(P,C).
 
@@ -54,4 +51,4 @@ check_constraints(X) :-
 :- dynamic p1/2, p2/3, p3/2.
 p1(A,B):- {A>=B}, p2(A,B,C).
 p2(X,Y,Z):- {X+Y=<4}.
-p3(X,Y):- {X+Y==4}.
+p3(X,Y):- {X+Y=4}.
