@@ -39,18 +39,28 @@ namespace Parma_Polyhedra_Library {
   //@{
   //! Returns <CODE>true</CODE> if and only if
   //! \p x and \p y are the same polyhedron.
+  //! \exception std::invalid_argument thrown if \p x and \p y
+  //!                                  are dimension-incompatible.
   bool operator ==(const Polyhedron& x, const Polyhedron& y);
   //! Returns <CODE>true</CODE> if and only if
   //! \p x and \p y are different polyhedra.
+  //! \exception std::invalid_argument thrown if \p x and \p y
+  //!                                  are dimension-incompatible.
   bool operator !=(const Polyhedron& x, const Polyhedron& y);
   //! Returns <CODE>true</CODE> if and only if
   //! \p x is strictly contained in \p y.
+  //! \exception std::invalid_argument thrown if \p x and \p y
+  //!                                  are dimension-incompatible.
   bool operator <(const Polyhedron& x, const Polyhedron& y);
   //! Returns <CODE>true</CODE> if and only if
   //! \p x strictly contains \p y.
+  //! \exception std::invalid_argument thrown if \p x and \p y
+  //!                                  are dimension-incompatible.
   bool operator >(const Polyhedron& x, const Polyhedron& y);
   //! Returns <CODE>true</CODE> if and only if
-  //!  \p x contains \p y.
+  //! \p x contains \p y.
+  //! \exception std::invalid_argument thrown if \p x and \p y
+  //!                                  are dimension-incompatible.
   bool operator >=(const Polyhedron& x, const Polyhedron& y);
   //@}
 
