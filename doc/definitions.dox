@@ -658,7 +658,9 @@ Let \f$P \neq \emptyset\f$ be a polyhedron in \f$\Rset^n\f$ and
 with the homogenization, then:
 -# the only <EM>minimal proper face</EM> of \f$C\f$ is
    \f$\linspace(C)\f$;
--# let \f$\vect{y} \in C\f$ be different from \f$\vect{0}\f$. If the set
+-# let \f$\vect{y} \in C\f$ be different from \f$\vect{0}\f$ and
+   \f$\textit{cone}\{\vect{y}\}\f$ be defined as
+   \f$\{ \lambda \vect{y} \mid \lambda \geq 0 \}\f$. If the set
    \f$F = \textit{cone}\{\vect{y}\} + \linspace(C)\f$ is
    a proper face of \f$C,\f$ then \f$\vect{y}\f$ is an <EM>extremal ray</EM>
    of \f$C.\f$
