@@ -800,6 +800,7 @@ PPL::GenSys::OK() const {
   return true;
 }
 
+/*! \relates GenSys */
 std::ostream&
 PPL::operator<<(std::ostream& s, const GenSys& gs) {
   GenSys::const_iterator i = gs.begin();

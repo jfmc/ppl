@@ -4606,6 +4606,7 @@ PPL::Polyhedron::OK(bool check_not_empty) const {
   return false;
 }
 
+/*! \relates Polyhedron */
 std::ostream&
 PPL::operator<<(std::ostream& s, const Polyhedron& ph) {
   if (ph.check_empty())
