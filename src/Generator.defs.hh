@@ -362,9 +362,10 @@ private:
 						  const Generator& g);
   friend
   Parma_Polyhedra_Library::LinExpression::LinExpression(const Generator& g);
-  friend bool
-  Parma_Polyhedra_Library::
-  ConSys::satisfies_all_constraints(const Generator& g) const;
+  friend
+  bool Parma_Polyhedra_Library
+  ::ConSys::satisfies_all_constraints(const Generator& g)
+ const;
   friend bool Parma_Polyhedra_Library::operator<=(const Polyhedron& x,
 						  const Polyhedron& y);
   friend void std::swap(Parma_Polyhedra_Library::Generator& x,
