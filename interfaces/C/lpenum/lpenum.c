@@ -36,6 +36,12 @@ site: http://www.cs.unipr.it/ppl/ . */
 #include <signal.h>
 #include <string.h>
 
+#ifdef __GNUC__
+# define ATTRIBUTE_UNUSED __attribute__ ((__unused__))
+#else
+# define ATTRIBUTE_UNUSED
+#endif
+
 static struct option long_options[] = {
   {"check",          no_argument,       0, 'c'},
   {"help",           no_argument,       0, 'h'},
@@ -261,7 +267,7 @@ limit_virtual_memory(unsigned int bytes) {
 }
 
 static void
-my_timeout(int dummy) {
+my_timeout(int dummy ATTRIBUTE_UNUSED) {
   fprintf(stderr, "TIMEOUT\n");
   if (output_argument)
     fprintf(output_file, "TIMEOUT\n");
