@@ -981,6 +981,36 @@ error29() {
   }
 }
 
+void
+error30() {
+  set_handlers();
+
+  Variable A(0);
+  Variable B(1);
+
+  NNC_Polyhedron ph1(2);
+  ph1.add_constraint(A < 2);
+  ph1.add_constraint(B > 0);
+
+  C_Polyhedron ph2;
+
+  try {
+    // This is an invalid use of the function
+    // `Polyhedron::swap(Polyhedron&)': it is illegal
+    // to apply this function to a closed and a
+    // not necessarily closed polyhedron.
+    ph1.swap(ph2);
+  }
+  catch(invalid_argument& e) {
+#if NOISY
+    cout << "invalid_polyhedra: " << e.what() << endl << endl;
+#endif
+  }
+  catch (...) {
+    exit(1);
+  }
+}
+
 int
 main() {
   
@@ -1012,6 +1042,7 @@ main() {
   error27();
   error28();
   error29();
+  error30();
 
   return 0;
 }

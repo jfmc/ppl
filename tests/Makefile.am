@@ -45,7 +45,7 @@ ORIGINAL_TESTS = \
 	addconstraints9 addconstraints10 \
 	adddimensions1 adddimensions2 adddimensions3 adddimensions4 \
 	adddimensions5 adddimensions6 adddimensions7 adddimensions8 \
-	adddimensions9 adddimensions10 \
+	adddimensions9 adddimensions10 adddimensions11 \
 	addgenerator1 addgenerator2 \
 	addgenerators1 addgenerators2 addgenerators3 addgenerators4 \
 	addgenerators5 addgenerators6 addgenerators7 addgenerators8 \
@@ -185,6 +185,7 @@ adddimensions7_SOURCES = adddimensions7.cc
 adddimensions8_SOURCES = adddimensions8.cc
 adddimensions9_SOURCES = adddimensions9.cc
 adddimensions10_SOURCES = adddimensions10.cc
+adddimensions11_SOURCES = adddimensions11.cc
 
 addgenerator1_SOURCES = addgenerator1.cc
 addgenerator2_SOURCES = addgenerator2.cc
