@@ -63,7 +63,7 @@ gp_clpq: libppl_gprolog.a ppl_gprolog.pl gp_clpq.pl ../clpq.pl
 check-local: gp_clpq ../check_script ../expected
 	for k in $(CLPQ_TESTS); do cp -f $(srcdir)/../$$k .; done
 	libtool --mode=execute -dlopen ../../../src/libppl.la \
-		gp_clpq <$(srcdir)/../check_script >obtained
+		./gp_clpq <$(srcdir)/../check_script >obtained
 	diff -q --ignore-all-space $(srcdir)/../expected obtained
 
 MOSTLYCLEANFILES = \
