@@ -1588,8 +1588,10 @@ private:
   void throw_dimension_incompatible(const char* method,
 				    const Polyhedron& y) const;
   void throw_dimension_incompatible(const char* method,
+				    const char* name_system,
 				    const Matrix& y) const;
   void throw_dimension_incompatible(const char* method,
+				    const char* name_row,
 				    const Row& y) const;
   void throw_dimension_incompatible(const char* method,
 				    dimension_type required_dim) const;

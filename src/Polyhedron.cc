@@ -84,6 +84,7 @@ PPL::Polyhedron::throw_dimension_incompatible(const char* method,
 
 void
 PPL::Polyhedron::throw_dimension_incompatible(const char* method,
+					      const char* name_system,
 					      const Matrix& y) const {
   std::ostringstream s;
   s << "PPL::";
@@ -93,12 +94,14 @@ PPL::Polyhedron::throw_dimension_incompatible(const char* method,
     s << "NNC_";
   s << "Polyhedron::" << method << ":" << std::endl
     << "this->space_dimension() == " << space_dimension()
-    << ", system->space_dimension() == " << y.space_dimension() << ".";
+    << ", " << name_system << "->space_dimension() == "
+    << y.space_dimension() << ".";
   throw std::invalid_argument(s.str());
 }
 
 void
 PPL::Polyhedron::throw_dimension_incompatible(const char* method,
+					      const char* name_row,
 					      const Row& y) const {
   std::ostringstream s;
   s << "PPL::";
@@ -108,7 +111,8 @@ PPL::Polyhedron::throw_dimension_incompatible(const char* method,
     s << "NNC_";
   s << "Polyhedron::" << method << ":" << std::endl
     << "this->space_dimension() == " << space_dimension()
-    << ", y->space_dimension() == " << y.space_dimension() << ".";
+    << ", " << name_row << "->space_dimension() == "
+    << y.space_dimension() << ".";
   throw std::invalid_argument(s.str());
 }
 
@@ -2091,7 +2095,7 @@ PPL::Polyhedron::add_constraints_and_minimize(ConSys& cs) {
   // the dimension of `cs' can not be greater than space_dim.
   dimension_type cs_space_dim = cs.space_dimension();
   if (space_dim < cs_space_dim)
-    throw_dimension_incompatible("add_constraints_and_min(cs)", cs);
+    throw_dimension_incompatible("add_constraints_and_min(cs)", "cs", cs);
 
   // Adding no constraints: just minimize.
   if (cs.num_rows() == 0) {
@@ -2153,7 +2157,7 @@ PPL::Polyhedron::add_constraint(const Constraint& c) {
   // Dimension-compatibility check:
   // the dimension of `c' can not be greater than space_dim.
   if (space_dim < c.space_dimension())
-    throw_dimension_incompatible("add_constraint(c)", c);
+    throw_dimension_incompatible("add_constraint(c)", "c", c);
 
   // Adding a new constraint to an empty polyhedron
   // results in an empty polyhedron.
@@ -2206,7 +2210,7 @@ PPL::Polyhedron::add_generator(const Generator& g) {
   // the dimension of `g' can not be greater than space_dim.
   dimension_type g_space_dim = g.space_dimension();
   if (space_dim < g_space_dim)
-    throw_dimension_incompatible("add_generator(g)", g);
+    throw_dimension_incompatible("add_generator(g)", "g", g);
 
   // Dealing with a zero-dimensional space polyhedron first.
   if (space_dim == 0) {
@@ -2318,7 +2322,7 @@ PPL::Polyhedron::add_constraints(ConSys& cs) {
   // the dimension of `cs' can not be greater than space_dim.
   dimension_type cs_space_dim = cs.space_dimension();
   if (space_dim < cs_space_dim)
-    throw_dimension_incompatible("add_constraints(cs)", cs);
+    throw_dimension_incompatible("add_constraints(cs)", "cs", cs);
 
   // Adding no constraints is a no-op.
   if (cs.num_rows() == 0) {
@@ -2412,7 +2416,7 @@ PPL::Polyhedron::add_generators_and_minimize(GenSys& gs) {
   // the dimension of `gs' can not be greater than space_dimension().
   dimension_type gs_space_dim = gs.space_dimension();
   if (space_dim < gs_space_dim)
-    throw_dimension_incompatible("add_generators_and_min(gs)", gs);
+    throw_dimension_incompatible("add_generators_and_min(gs)", "gs", gs);
 
   // Adding no generators is equivalent to just requiring minimization.
   if (gs.num_rows() == 0) {
@@ -2485,7 +2489,7 @@ PPL::Polyhedron::add_generators(GenSys& gs) {
   // the dimension of `gs' can not be greater than space_dim.
   dimension_type gs_space_dim = gs.space_dimension();
   if (space_dim < gs_space_dim)
-    throw_dimension_incompatible("add_generators(gs)", gs);
+    throw_dimension_incompatible("add_generators(gs)", "gs", gs);
 
   // Adding no generators is a no-op.
   if (gs.num_rows() == 0) {
@@ -2631,7 +2635,7 @@ PPL::Polyhedron::affine_image(const Variable& var,
   // of `*this'.
   dimension_type expr_space_dim = expr.space_dimension();
   if (space_dim < expr_space_dim)
-    throw_dimension_incompatible("affine_image(v, e, d)", expr);
+    throw_dimension_incompatible("affine_image(v, e, d)", "e", expr);
   // `var' should be one of the dimensions of the polyhedron.
   dimension_type num_var = var.id() + 1;
   if (num_var > space_dim)
@@ -2709,7 +2713,7 @@ PPL::Polyhedron::affine_preimage(const Variable& var,
   // of `*this'.
   dimension_type expr_space_dim = expr.space_dimension();
   if (space_dim < expr_space_dim)
-    throw_dimension_incompatible("affine_preimage(v, e, d)", expr);
+    throw_dimension_incompatible("affine_preimage(v, e, d)", "e", expr);
   // `var' should be one of the dimensions of the polyhedron.
   dimension_type num_var = var.id() + 1;
   if (num_var > space_dim)
@@ -2785,7 +2789,8 @@ PPL::Polyhedron::generalized_affine_image(const Variable& var,
   // of `*this'.
   dimension_type expr_space_dim = expr.space_dimension();
   if (space_dim < expr_space_dim)
-    throw_dimension_incompatible("generalized_affine_image(v, r, e, d)", expr);
+    throw_dimension_incompatible("generalized_affine_image(v, r, e, d)",
+				 "e", expr);
   // `var' should be one of the dimensions of the polyhedron.
   dimension_type num_var = var.id() + 1;
   if (num_var > space_dim)
@@ -2865,13 +2870,13 @@ PPL::Polyhedron::generalized_affine_image(const LinExpression& lhs,
   dimension_type lhs_space_dim = lhs.space_dimension();
   if (space_dim < lhs_space_dim)
     throw_dimension_incompatible("generalized_affine_image(e1, r, e2)",
-				 lhs);
+				 "e1", lhs);
   // The dimension of `rhs' should not be greater than the dimension
   // of `*this'.
   dimension_type rhs_space_dim = rhs.space_dimension();
   if (space_dim < rhs_space_dim)
     throw_dimension_incompatible("generalized_affine_image(e1, r, e2)",
-				 rhs);
+				 "e2", rhs);
 
   // Strict relation operators are only admitted for NNC polyhedra.
   if (is_necessarily_closed() && (relop == PPL_LT || relop == PPL_GT))
@@ -3003,7 +3008,7 @@ PPL::Poly_Con_Relation
 PPL::Polyhedron::relation_with(const Constraint& c) const {
   // Dimension-compatibility check.
   if (space_dim < c.space_dimension())
-    throw_dimension_incompatible("relation_with(c)", c);
+    throw_dimension_incompatible("relation_with(c)", "c", c);
 
   if (is_empty())
     return Poly_Con_Relation::saturates()
@@ -3042,7 +3047,7 @@ PPL::Poly_Gen_Relation
 PPL::Polyhedron::relation_with(const Generator& g) const {
   // Dimension-compatibility check.
   if (space_dim < g.space_dimension())
-    throw_dimension_incompatible("relation_with(g)", g);
+    throw_dimension_incompatible("relation_with(g)", "g", g);
 
   // The empty polyhedron cannot subsume a generator.
   if (is_empty())
@@ -3224,7 +3229,7 @@ PPL::Polyhedron::limited_H79_widening_assign(const Polyhedron& y,
   // `cs' must be dimension-compatible with the two polyhedra.
   dimension_type cs_space_dim = cs.space_dimension();
   if (x_space_dim < cs_space_dim)
-    throw_dimension_incompatible("limited_H79_widening_assign(y, cs)", cs);
+    throw_dimension_incompatible("limited_H79_widening_assign(y, cs)", "cs", cs);
 
 #ifndef NDEBUG
   {
@@ -4122,7 +4127,7 @@ PPL::Polyhedron::bounds(const LinExpression& expr, bool from_above) const {
   if (space_dim < expr_space_dim)
     throw_dimension_incompatible((from_above
 				  ? "bounds_from_above(e)"
-				  : "bounds_from_below(e)"), expr);
+				  : "bounds_from_below(e)"), "e", expr);
 
   // A zero-dimensional or empty polyhedron bounds everything.
   if (space_dim == 0
