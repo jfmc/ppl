@@ -110,7 +110,8 @@ ORIGINAL_TESTS = \
 	limitedbhrz03extrapolation1 \
 	limitedh79extrapolation1 limitedh79extrapolation2 \
 	limitedh79extrapolation3 limitedh79extrapolation4 \
-	linearpartition1 linearpartition2 linearpartition3 \
+	linearpartition1 linearpartition2 \
+	linearpartition3 linearpartition4 \
 	linexpression1 \
 	mc91 \
 	memory1 \
@@ -199,7 +200,8 @@ DERIVED_TESTS = \
 	nnc_limitedbhrz03extrapolation1 \
 	nnc_limitedh79extrapolation1 nnc_limitedh79extrapolation2 \
 	nnc_limitedh79extrapolation3 nnc_limitedh79extrapolation4 \
-	nnc_linearpartition1 nnc_linearpartition2 nnc_linearpartition3 \
+	nnc_linearpartition1 nnc_linearpartition2 \
+	nnc_linearpartition3 nnc_linearpartition4 \
 	nnc_mc91 \
 	nnc_minconstraints1 nnc_minconstraints2 \
 	nnc_mingenerators1 nnc_mingenerators2 \
@@ -452,6 +454,7 @@ limitedh79extrapolation4_SOURCES = limitedh79extrapolation4.cc
 linearpartition1_SOURCES = linearpartition1.cc
 linearpartition2_SOURCES = linearpartition2.cc
 linearpartition3_SOURCES = linearpartition3.cc
+linearpartition4_SOURCES = linearpartition4.cc
 
 linexpression1_SOURCES = linexpression1.cc
 
@@ -873,6 +876,8 @@ nnc_linearpartition2_SOURCES = linearpartition2.cc
 nnc_linearpartition2_CXXFLAGS = $(DERIVED_CXXFLAGS)
 nnc_linearpartition3_SOURCES = linearpartition3.cc
 nnc_linearpartition3_CXXFLAGS = $(DERIVED_CXXFLAGS)
+nnc_linearpartition4_SOURCES = linearpartition4.cc
+nnc_linearpartition4_CXXFLAGS = $(DERIVED_CXXFLAGS)
 
 nnc_mc91_SOURCES = mc91.cc
 nnc_mc91_CXXFLAGS = $(DERIVED_CXXFLAGS)
