@@ -25,4 +25,33 @@ site: http://www.cs.unipr.it/ppl/ . */
 #ifndef _Polyhedron_inlines_hh
 #define _Polyhedron_inlines_hh 1
 
+namespace Parma_Polyhedra_Library {
+
+Polyhedron::Polyhedron(size_t num_dimensions, Degenerate_Kind kind)
+  : PolyBase(NECESSARILY_CLOSED, num_dimensions, kind) {
+}
+
+Polyhedron::Polyhedron(const Polyhedron& y)
+  : PolyBase(y) {
+}
+
+Polyhedron::Polyhedron(ConSys& cs)
+  : PolyBase(NECESSARILY_CLOSED, cs) {
+}
+
+Polyhedron::Polyhedron(GenSys& gs)
+  : PolyBase(NECESSARILY_CLOSED, gs) {
+}
+
+Polyhedron&
+Polyhedron::operator=(const Polyhedron& y) {
+  PolyBase::operator=(y);
+  return *this;
+}
+
+Polyhedron::~Polyhedron() {
+}
+
+} // namespace Parma_Polyhedra_Library
+
 #endif

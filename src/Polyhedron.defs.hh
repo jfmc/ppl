@@ -314,6 +314,10 @@ public:
   //!                                  is not empty but has no points.
   Polyhedron(GenSys& gs);
 
+  //! The assignment operator.
+  //! (Note that \p *this and \p y can be dimension-incompatible.)
+  Polyhedron& operator=(const Polyhedron& y);
+
   // Destructor
   ~Polyhedron();
 
