@@ -82,7 +82,7 @@ ORIGINAL_TESTS = \
 	intersection9 \
 	limitedh79widening1 limitedh79widening2 \
 	limitedh79widening3 \
-	linearpartition1 \
+	linearpartition1 linearpartition2 linearpartition3 \
 	mc91 \
 	memory1 \
 	minconstraints1 minconstraints2 minconstraints3 \
@@ -146,7 +146,7 @@ DERIVED_TESTS = \
 	nnc_intersection7 nnc_intersection8 nnc_intersection9 \
 	nnc_limitedh79widening1 nnc_limitedh79widening2 \
 	nnc_limitedh79widening3 \
-	nnc_linearpartition1 \
+	nnc_linearpartition1 nnc_linearpartition2 nnc_linearpartition3 \
 	nnc_mc91 \
 	nnc_minconstraints1 nnc_minconstraints2 \
 	nnc_mingenerators1 nnc_mingenerators2 \
@@ -327,6 +327,8 @@ limitedh79widening2_SOURCES = limitedh79widening2.cc
 limitedh79widening3_SOURCES = limitedh79widening3.cc
 
 linearpartition1_SOURCES = linearpartition1.cc
+linearpartition2_SOURCES = linearpartition2.cc
+linearpartition3_SOURCES = linearpartition3.cc
 
 memory1_SOURCES = memory1.cc
 
@@ -627,6 +629,10 @@ nnc_limitedh79widening3_CXXFLAGS = $(DERIVED_CXXFLAGS)
 
 nnc_linearpartition1_SOURCES = linearpartition1.cc
 nnc_linearpartition1_CXXFLAGS = $(DERIVED_CXXFLAGS)
+nnc_linearpartition2_SOURCES = linearpartition2.cc
+nnc_linearpartition2_CXXFLAGS = $(DERIVED_CXXFLAGS)
+nnc_linearpartition3_SOURCES = linearpartition3.cc
+nnc_linearpartition3_CXXFLAGS = $(DERIVED_CXXFLAGS)
 
 nnc_mc91_SOURCES = mc91.cc
 nnc_mc91_CXXFLAGS = $(DERIVED_CXXFLAGS)
