@@ -144,7 +144,7 @@ public:
     //! Constructor.
     const_iterator(const Matrix::const_iterator& iter, const ConSys& csys);
     
-    //! \p *this skips to the last non-trivial constraint.
+    //! \p *this skips to the next non-trivial constraint.
     void skip_forward();
 
     friend class ConSys;
