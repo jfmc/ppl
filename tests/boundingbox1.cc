@@ -28,7 +28,7 @@ using namespace std;
 using namespace Parma_Polyhedra_Library;
 
 #ifndef NOISY
-#define NOISY 0
+#define NOISY 1
 #endif
 
 // This is a non-bounded closed polyhedron consisting of the line x = y.
