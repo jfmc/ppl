@@ -125,12 +125,40 @@ typedef struct ppl_ ## Type ## _tag const* ppl_const_ ## Type ## _t
 PPL_TYPE_DECLARATION(Coefficient);
 
 /*!
+  Creates a new coefficent with value 0 and writes an handle for the
+  newly created coefficient at address \p pc.
+*/
+int
+ppl_new_Coefficient __P((ppl_Coefficient_t* pc));
+
+/*!
   Creates a new coefficent with the value given by the GMP integer
   \p z and writes an handle for the newly created coefficient
   at address \p pc.
 */
 int
 ppl_new_Coefficient_from_mpz_t __P((ppl_Coefficient_t* pc, mpz_t z));
+
+/*!
+  Builds a coefficient that is a copy of \p c; writes an handle
+  for the newly created coefficient at address \p pc.
+*/
+int
+ppl_new_Coefficient_from_Coefficient __P((ppl_Coefficient_t* pc,
+					  ppl_const_Coefficient_t c));
+
+/*!
+  Assign to \p dst the value given by the GMP integer \p z.
+*/
+int
+ppl_assign_Coefficient_from_mpz_t __P((ppl_Coefficient_t dst, mpz_t z));
+
+/*!
+  Assigns a copy of the linear expression \p src to \p dst.
+*/
+int
+ppl_assign_Coefficient_from_Coefficient __P((ppl_Coefficient_t dst,
+					     ppl_const_Coefficient_t src));
 
 /*!
   Invalidates the handle \p c: this makes sure the corresponding
@@ -189,12 +217,11 @@ int
 ppl_delete_LinExpression __P((ppl_const_LinExpression_t le));
 
 /*!
-  Assigns an exact copy of the linear expression \p src to \p dst.
+  Assigns a copy of the linear expression \p src to \p dst.
 */
 int
 ppl_assign_LinExpression_from_LinExpression
-__P((ppl_LinExpression_t dst,
-     ppl_const_LinExpression_t src));
+__P((ppl_LinExpression_t dst, ppl_const_LinExpression_t src));
 
 /*!
   Swaps the linear expressions \p x and \p y.
@@ -287,7 +314,7 @@ int
 ppl_delete_Constraint __P((ppl_const_Constraint_t c));
 
 /*!
-  Assigns an exact copy of the constraint \p src to \p dst.
+  Assigns a copy of the constraint \p src to \p dst.
 */
 int
 ppl_assign_Constraint_from_Constraint __P((ppl_Constraint_t dst,
@@ -370,7 +397,7 @@ int
 ppl_delete_ConSys __P((ppl_const_ConSys_t cs));
 
 /*!
-  Assigns an exact copy of the constraint system \p src to \p dst.
+  Assigns a copy of the constraint system \p src to \p dst.
 */
 int
 ppl_assign_ConSys_from_ConSys __P((ppl_ConSys_t dst, ppl_const_ConSys_t src));
@@ -430,7 +457,7 @@ ppl_delete_ConSys__const_iterator
 __P((ppl_const_ConSys__const_iterator_t cit));
 
 /*!
-  Assigns an exact copy of the const iterator \p src to \p dst.
+  Assigns a copy of the const iterator \p src to \p dst.
 */
 int
 ppl_assign_ConSys__const_iterator_from_ConSys__const_iterator
@@ -531,7 +558,7 @@ int
 ppl_delete_Generator __P((ppl_const_Generator_t g));
 
 /*!
-  Assigns an exact copy of the generator \p src to \p dst.
+  Assigns a copy of the generator \p src to \p dst.
 */
 int
 ppl_assign_Generator_from_Generator __P((ppl_Generator_t dst,
@@ -550,6 +577,12 @@ int
 ppl_Generator_space_dimension __P((ppl_const_Generator_t g));
 
 /*!
+  Returns the type of generator \p g.
+*/
+int
+ppl_Generator_type __P((ppl_const_Generator_t g));
+
+/*!
   Copies into \p n the coefficient of variable \p var in
   generator \p g.
 */
@@ -562,8 +595,7 @@ ppl_Generator_coefficient __P((ppl_const_Generator_t g,
   If \p g is a point or a closure point assigns its divisor to \p n.
 */
 int
-ppl_Generator_divisor __P((ppl_const_Generator_t g,
-			   ppl_Coefficient_t n));
+ppl_Generator_divisor __P((ppl_const_Generator_t g, ppl_Coefficient_t n));
 
 /*!
   Returns a positive integer if \p g is well formed, i.e., if it
@@ -615,7 +647,7 @@ int
 ppl_delete_GenSys __P((ppl_const_GenSys_t gs));
 
 /*!
-  Assigns an exact copy of the generator system \p src to \p dst.
+  Assigns a copy of the generator system \p src to \p dst.
 */
 int
 ppl_assign_GenSys_from_GenSys __P((ppl_GenSys_t dst, ppl_const_GenSys_t src));
@@ -675,7 +707,7 @@ ppl_delete_GenSys__const_iterator
 __P((ppl_const_GenSys__const_iterator_t git));
 
 /*!
-  Assigns an exact copy of the const iterator \p src to \p dst.
+  Assigns a copy of the const iterator \p src to \p dst.
 */
 int
 ppl_assign_GenSys__const_iterator_from_GenSys__const_iterator
@@ -781,11 +813,11 @@ int
 ppl_delete_Polyhedron __P((ppl_const_Polyhedron_t ph));
 
 /*!
-  Assigns an exact copy of the polyhedron \p src to \p dst.
+  Assigns a copy of the polyhedron \p src to \p dst.
 */
 int
 ppl_assign_Polyhedron_from_Polyhedron __P((ppl_Polyhedron_t dst,
-					     ppl_const_Polyhedron_t src));
+					   ppl_const_Polyhedron_t src));
 
 /*!
   Swaps the polyhedra \p x and \p y.

@@ -130,8 +130,24 @@ CATCH_ALL
 DECLARE_CONVERSIONS(Coefficient)
 
 int
+ppl_new_Coefficient(ppl_Coefficient_t* pc) try {
+  *pc = to_nonconst(new Integer(0));
+  return 0;
+}
+CATCH_ALL
+
+int
 ppl_new_Coefficient_from_mpz_t(ppl_Coefficient_t* pc, mpz_t z) try {
   *pc = to_nonconst(new Integer(z));
+  return 0;
+}
+CATCH_ALL
+
+int
+ppl_new_Coefficient_from_Coefficient(ppl_Coefficient_t* pc,
+				     ppl_const_Coefficient_t c) try {
+  const Coefficient& cc = *to_const(c);
+  *pc = to_nonconst(new Integer(cc));
   return 0;
 }
 CATCH_ALL
@@ -148,6 +164,24 @@ ppl_delete_Coefficient(ppl_const_Coefficient_t c) try {
   delete to_const(c);
   return 0;
 }
+CATCH_ALL
+
+int
+ppl_assign_Coefficient_from_mpz_t(ppl_Coefficient_t dst, mpz_t z) try {
+  Coefficient& ddst = *to_nonconst(dst);
+  ddst = z;
+  return 0;
+  }
+CATCH_ALL
+
+int
+ppl_assign_Coefficient_from_Coefficient(ppl_Coefficient_t dst,
+					ppl_const_Coefficient_t src) try {
+  const Coefficient& ssrc = *to_const(src);
+  Coefficient& ddst = *to_nonconst(dst);
+  ddst = ssrc;
+  return 0;
+  }
 CATCH_ALL
 
 int
@@ -590,6 +624,12 @@ CATCH_ALL
 int
 ppl_Generator_space_dimension(ppl_const_Generator_t g) try {
   return to_const(g)->space_dimension();
+}
+CATCH_ALL
+
+int
+ppl_Generator_type(ppl_const_Generator_t g) try {
+  return to_const(g)->type();
 }
 CATCH_ALL
 
