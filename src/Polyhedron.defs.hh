@@ -92,7 +92,7 @@ bool operator!=(const Polyhedron& x, const Polyhedron& y);
     and vice versa.
     These systems can contain redundant members: in this case we say
     that they are not in the minimal form.
-    Most operators on polyhedra are provided with two implementations: 
+    Most operators on polyhedra are provided with two implementations:
     one of these, denoted <CODE>\<operator-name\>_and_minimize</CODE>,
     also enforces the minimization of the representations,
     and returns the Boolean value <CODE>false</CODE> whenever
@@ -617,7 +617,7 @@ public:
     \param check_not_empty
       <CODE>true</CODE> if and only if, in addition to checking
       the invariants, \p *this must be checked to be not empty.
-   
+
     \return
       <CODE>true</CODE> if and only if \p *this satisfies
       all the invariants and either \p check_not_empty is
@@ -826,7 +826,7 @@ public:
       affine_preimage() (for the system of constraints)
       and inverse transformation to reach the same result.
       To obtain the inverse transformation we use the following observation.
-      
+
       Observation:
       -# The affine transformation is invertible if the coefficient
          of \p var in this transformation (i.e., \f$a_\mathrm{var}\f$)
@@ -1510,7 +1510,7 @@ private:
     generators pending.
   */
   bool process_pending() const;
-  
+
   //! Processes the pending constraints and obtains a minimized polyhedron.
   /*!
     \return       <CODE>false</CODE> if and only if \p *this turns out
@@ -1792,7 +1792,7 @@ private:
   // Detailed Doxygen comment to be found in file minimize.cc.
   static bool add_and_minimize(bool con_to_gen,
 			       Matrix& source, Matrix& dest, SatMatrix& sat);
-  
+
   //! \brief
   //! Performs the conversion from constraints to generators and vice versa.
   // Detailed Doxygen comment to be found in file conversion.cc.

@@ -172,7 +172,7 @@ Prolog_construct_compound(Prolog_term_ref& t, Prolog_atom f,
 }
 
 /*!
-  Assign to \p c a Prolog list whose head is \p h and tail is \p t. 
+  Assign to \p c a Prolog list whose head is \p h and tail is \p t.
 */
 static inline int
 Prolog_construct_cons(Prolog_term_ref& c,
@@ -205,7 +205,7 @@ Prolog_raise_exception(Prolog_term_ref /* t */) {
 }
 
 /*!
-  Return true if \p t is a Prolog variable, false otherwise. 
+  Return true if \p t is a Prolog variable, false otherwise.
 */
 static inline int
 Prolog_is_variable(Prolog_term_ref t) {
@@ -215,7 +215,7 @@ Prolog_is_variable(Prolog_term_ref t) {
 }
 
 /*!
-  Return true if \p t is a Prolog atom, false otherwise. 
+  Return true if \p t is a Prolog atom, false otherwise.
 */
 static inline int
 Prolog_is_atom(Prolog_term_ref t) {
@@ -225,7 +225,7 @@ Prolog_is_atom(Prolog_term_ref t) {
 }
 
 /*!
-  Return true if \p t is a Prolog integer, false otherwise. 
+  Return true if \p t is a Prolog integer, false otherwise.
 */
 static inline int
 Prolog_is_integer(Prolog_term_ref t) {
@@ -235,7 +235,7 @@ Prolog_is_integer(Prolog_term_ref t) {
 }
 
 /*!
-  Return true if \p t is the representation of an address, false otherwise. 
+  Return true if \p t is the representation of an address, false otherwise.
 */
 static inline int
 Prolog_is_address(Prolog_term_ref t) {
@@ -245,7 +245,7 @@ Prolog_is_address(Prolog_term_ref t) {
 }
 
 /*!
-  Return true if \p t is a Prolog compound term, false otherwise. 
+  Return true if \p t is a Prolog compound term, false otherwise.
 */
 static inline int
 Prolog_is_compound(Prolog_term_ref t) {
@@ -255,7 +255,7 @@ Prolog_is_compound(Prolog_term_ref t) {
 }
 
 /*!
-  Return true if \p t is a Prolog list, false otherwise. 
+  Return true if \p t is a Prolog list, false otherwise.
 */
 static inline int
 Prolog_is_cons(Prolog_term_ref t) {

@@ -298,6 +298,6 @@ PPL::Row::OK(dimension_type row_size,
 	 << endl;
 #endif
     is_broken = true;
-  }    
+  }
   return !is_broken;
 }

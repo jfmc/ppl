@@ -211,7 +211,7 @@ PPL::subset_or_equal(const SatRow& x, const SatRow& y) {
   size_t x_size = mpz_size(x.vec);
   size_t y_size = mpz_size(y.vec);
   size_t x_li = 0;
-  size_t y_li = 0; 
+  size_t y_li = 0;
   while (x_li < x_size && y_li < y_size) {
     mp_limb_t a = mpz_getlimbn(x.vec, x_li++);
     mp_limb_t b = mpz_getlimbn(y.vec, y_li++);

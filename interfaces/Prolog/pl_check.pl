@@ -30,13 +30,13 @@ site: http://www.cs.unipr.it/ppl/ . */
 noisy(0).
 
 % check_all
-% This executes all the test predicates which, together, check all 
+% This executes all the test predicates which, together, check all
 % the ppl interface predicates.
- 
+
 check_all :-
    run_all.
 
-run_all:- 
+run_all:-
    ppl_initialize,
    (new_polys -> true ;
         error_message(['error in a new poyhedron predicate'])),
@@ -66,7 +66,7 @@ run_all:-
         error_message(['error in a time out predicate'])),
    !,
    ppl_finalize.
-   
+
 run_all:-
    ppl_finalize,
    fail.
@@ -81,13 +81,13 @@ new_polys :-
   new_poly_from_bounding_box,
   !,
   ppl_finalize.
-  
+
 swap_polys :-
   ppl_initialize,
   swap,
   !,
   ppl_finalize.
- 
+
 space_dim :-
    ppl_initialize,
    space,
@@ -136,7 +136,7 @@ extrapolation_operators :-
    bound_extrapolate_H79_with_token_C,
    bound_extrapolate_H79_with_token_NNC,
    !,
-   ppl_finalize. 
+   ppl_finalize.
 
 get_system :-
    ppl_initialize,
@@ -145,7 +145,7 @@ get_system :-
    get_gens,
    get_min_gens,
    !,
-   ppl_finalize. 
+   ppl_finalize.
 
 add_to_system :-
    ppl_initialize,
@@ -189,7 +189,7 @@ compare_polys :-
    ok,
    !,
    ppl_finalize.
- 
+
 poly_boxes :-
    ppl_initialize,
    get_bounding_box,
@@ -201,7 +201,7 @@ catch_time :-
   time_out,
   !,
   ppl_finalize.
- 
+
 % Tests new_Polyhedron_from_dimension
 % and ppl_delete_Polyhedron for C and NNC Polyhedron.
 new_universe :-
@@ -442,7 +442,7 @@ polyhull_assign(T) :-
   ppl_Polyhedron_poly_hull_assign(P1, P2),
   ppl_new_Polyhedron_from_generators(T,
       [point(1*A+1*B), point(1*A, 2), point(1*A), point(1*B), point(0)], P1a),
-  ppl_new_Polyhedron_from_constraints(T, 
+  ppl_new_Polyhedron_from_constraints(T,
       [1*A>=0, 1*B>=0, -1*B>= -1, -1*A>= -1], P1b),
   ppl_Polyhedron_equals_Polyhedron(P1, P1a),
   ppl_Polyhedron_equals_Polyhedron(P1, P1b),
@@ -467,7 +467,7 @@ polyhull_assign_min(T) :-
   ppl_Polyhedron_poly_hull_assign_and_minimize(P1, P2),
   ppl_new_Polyhedron_from_generators(T,
       [point(1*A+1*B), point(1*A, 2), point(1*A), point(1*B), point(0)], P1a),
-  ppl_new_Polyhedron_from_constraints(T, 
+  ppl_new_Polyhedron_from_constraints(T,
       [1*A>=0, 1*B>=0, -1*B>= -1, -1*A>= -1], P1b),
   ppl_Polyhedron_equals_Polyhedron(P1, P1a),
   ppl_Polyhedron_equals_Polyhedron(P1, P1b),
@@ -544,7 +544,7 @@ top_close_assign :-
   ppl_Polyhedron_equals_Polyhedron(P, Pa),
   ppl_delete_Polyhedron(P),
   ppl_delete_Polyhedron(Pa).
-                               
+
 % Tests ppl_Polyhedron_affine_image
 affine :-
   affine(c), affine(nnc).
@@ -586,7 +586,7 @@ affine_pre(T) :-
   ppl_delete_Polyhedron(P1),
   ppl_delete_Polyhedron(P2),
   ppl_delete_Polyhedron(P).
-                               
+
 % Tests ppl_Polyhedron_generalized_affine_image
 % (using NNC Polyhedra).
 affine_gen :-
@@ -604,7 +604,7 @@ affine_gen(T) :-
   ppl_Polyhedron_equals_Polyhedron(P, P1),
   ppl_delete_Polyhedron(P1),
   ppl_delete_Polyhedron(P).
-                               
+
 % Tests ppl_Polyhedron_generalized_affine_image_lhs_rhs
 % (using NNC Polyhedra).
 affine_genlr :-
@@ -1378,7 +1378,7 @@ get_bounding_box:-
   get_bounding_box(c, [B >= 0, 4*A =< 2],
                      [i(o(minf), c(1/2)), i(c(0), o(pinf))]),
   get_bounding_box(nnc,[B > 0, 4*A =< 2],
-                     [i(o(minf), c(1/2)), i(o(0), o(pinf))]). 
+                     [i(o(minf), c(1/2)), i(o(0), o(pinf))]).
 
 get_bounding_box(T, CS, Box) :-
   ppl_new_Polyhedron_from_dimension(T, 2, P),
@@ -1424,7 +1424,7 @@ bounds_from_below :-
 % ppl_reset_timeout
 %
 
-time_out :- 
+time_out :-
   time_out(c), time_out(nnc).
 
 time_out(T) :-
@@ -1486,7 +1486,7 @@ time_watch(Topology, Goal, NoTimeOut, TimeOut) :-
    ppl_timeout_exception_atom(TimeOutAtom),
      (catch(GoalCopy, TimeOutAtom, fail) ->
        (ppl_reset_timeout,ppl_Polyhedron_swap(Poly, PolyCopy), call(NoTimeOut))
-     ; 
+     ;
        call(TimeOut)
    ),
    ppl_delete_Polyhedron(PolyCopy).
@@ -1532,7 +1532,7 @@ write_all([Phrase|Phrases]):-
 % constructs a list of variables with indices from I to Dimension - 1.
 % It is assumed that I =< Dimension.
 
-make_vars(Dim, VarList):- 
+make_vars(Dim, VarList):-
   make_var_list(0, Dim, VarList).
 make_var_list(Dim,Dim,[]):- !.
 make_var_list(I,Dim,['$VAR'(I)|VarList]):-

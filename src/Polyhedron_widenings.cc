@@ -47,7 +47,7 @@ PPL::Polyhedron::select_CH78_constraints(const Polyhedron& y,
   assert(!y.marked_empty()
 	 && !y.has_something_pending()
 	 && y.constraints_are_minimized());
-  
+
   // A constraint in `y.con_sys' is copied into `cs_selection'
   // if it is satisfied by all the generators of `gen_sys'.
 
@@ -123,7 +123,7 @@ PPL::Polyhedron::select_H79_constraints(const Polyhedron& y,
     if (tmp_sat_g.sorted_contains(buffer))
       cs_selected.insert(ci);
     else
-      cs_not_selected.insert(ci);      
+      cs_not_selected.insert(ci);
   }
 }
 
@@ -515,7 +515,7 @@ PPL::Polyhedron::is_BHRZ03_stabilizing(const Polyhedron& x,
 	return false;
   }
 
-  
+
   // For each i such that 0 <= i < x.space_dim, let x_num_rays[i] be
   // the number of rays in x.gen_sys
   // having exactly `i' coordinates equal to 0.
@@ -612,7 +612,7 @@ PPL::Polyhedron::BHRZ03_combining_constraints(const Polyhedron& y,
       // saturating this point, then there is no need to produce another
       // constraint.
       bool lies_on_the_boundary_of_H79 = false;
-      const ConSys& H79_cs = H79.con_sys; 
+      const ConSys& H79_cs = H79.con_sys;
       for (dimension_type j = H79_cs.num_rows(); j-- > 0; ) {
 	const Constraint& c = H79_cs[j];
 	if (c.is_inequality() && c * g == 0) {
@@ -648,7 +648,7 @@ PPL::Polyhedron::BHRZ03_combining_constraints(const Polyhedron& y,
 	  // Simple normalization is enough, since
 	  // `e' will not become an equality constraint.
 	  e.normalize();
-	  
+
 	  if (!e.all_homogeneous_terms_are_zero())
 	    if (strict_inequality)
 	      new_cs.insert(e > 0);
@@ -902,7 +902,7 @@ PPL::Polyhedron::BHRZ03_widening_assign(const Polyhedron& y, unsigned* tp) {
       return;
     }
   }
-  
+
   // If the iteration is stabilizing, the resulting polyhedron is `x'.
   // At this point, also check if the two polyhedra are the same
   // (exploiting the knowledge that `y <= x'.

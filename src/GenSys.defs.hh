@@ -287,7 +287,7 @@ public:
     //! Constructor.
     const_iterator(const Parma_Polyhedra_Library::Matrix::const_iterator& iter,
 		   const GenSys& gsys);
-    
+
     //! \brief
     //! \p *this skips to the next generator, skipping those
     //! closure points that are immediately followed by a matching point.
@@ -438,7 +438,7 @@ private:
     constraints are integers we must also provide an integer \p denominator
     that will be used as denominator of the affine transformation.
     The denominator is required to be a positive integer.
-    
+
     The affine transformation assigns to each element of \p v -th
     column the follow expression:
     \f[

@@ -87,7 +87,7 @@ PPL::SatMatrix::transpose() {
   swap(tmp);
   assert(OK());
 }
- 
+
 void
 PPL::SatMatrix::transpose_assign(const SatMatrix& y) {
   dimension_type y_nrows = y.num_rows();

@@ -139,7 +139,7 @@ PPL::Polyhedron::Polyhedron(Topology topol, ConSys& cs)
   dimension_type cs_space_dim = cs.space_dimension();
   if (!cs.adjust_topology_and_dimension(topol, cs_space_dim))
     throw_topology_incompatible("Polyhedron(cs)", cs);
-  
+
   if (cs.num_rows() > 0 && cs_space_dim > 0) {
     // Stealing the rows from `cs'.
     std::swap(con_sys, cs);
@@ -153,7 +153,7 @@ PPL::Polyhedron::Polyhedron(Topology topol, ConSys& cs)
     }
     add_low_level_constraints(con_sys);
     set_constraints_up_to_date();
-    
+
     // Set the space dimension.
     space_dim = cs_space_dim;
     assert(OK());
@@ -346,7 +346,7 @@ PPL::Polyhedron::quick_equivalence_test(const Polyhedron& y) const {
 	    return Polyhedron::TVB_FALSE;
 	}
       }
-      
+
       if (css_normalized) {
 	// Sort the two systems and check for identity.
 	x.obtain_sorted_constraints();
@@ -391,10 +391,10 @@ PPL::Polyhedron::is_included_in(const Polyhedron& y) const {
 
   assert(x.OK());
   assert(y.OK());
-  
+
   const GenSys& gs = x.gen_sys;
   const ConSys& cs = y.con_sys;
-  
+
   if (x.is_necessarily_closed())
     // When working with necessarily closed polyhedra,
     // `x' is contained in `y' if and only if all the generators of `x'
@@ -468,7 +468,7 @@ PPL::Polyhedron::is_included_in(const Polyhedron& y) const {
 	    if (sp_sign != 0)
 	      return false;
 	  }
-	  else 
+	  else
 	    // The generator is a ray or closure point: usual test.
 	    if (sp_sign < 0)
 	      return false;
@@ -498,7 +498,7 @@ PPL::Polyhedron::bounds(const LinExpression& expr, bool from_above) const {
       || (has_pending_constraints() && !process_pending_constraints())
       || (!generators_are_up_to_date() && !update_generators()))
     return true;
-  
+
   // The polyhedron has updated, possibly pending generators.
   for (dimension_type i = gen_sys.num_rows(); i-- > 0; ) {
     const Generator& g = gen_sys[i];
@@ -569,7 +569,7 @@ PPL::Polyhedron::process_pending_constraints() const {
 
   bool empty = add_and_minimize(true, x.con_sys, x.gen_sys, x.sat_c);
   assert(x.con_sys.num_pending_rows() == 0);
-  
+
   if (empty)
     x.set_empty();
   else {
@@ -604,7 +604,7 @@ PPL::Polyhedron::process_pending_generators() const {
     return;
   }
 
-  add_and_minimize(false, x.gen_sys, x.con_sys, x.sat_g); 
+  add_and_minimize(false, x.gen_sys, x.con_sys, x.sat_g);
   assert(x.gen_sys.num_pending_rows() == 0);
 
   x.clear_pending_generators();
@@ -743,7 +743,7 @@ PPL::Polyhedron::update_sat_g() const {
   assert(constraints_are_minimized());
   assert(generators_are_minimized());
   assert(!sat_g_is_up_to_date());
-  
+
   // We only consider non-pending rows.
   dimension_type csr = con_sys.first_pending_row();
   dimension_type gsr = gen_sys.first_pending_row();
@@ -911,7 +911,7 @@ PPL::Polyhedron::minimize() const {
   // Here there are no pending constraints or generators.
   // Is the polyhedron already minimized?
   if (constraints_are_minimized() && generators_are_minimized())
-    return true;   
+    return true;
 
   // If constraints or generators are up-to-date, invoking
   // update_generators() or update_constraints(), respectively,
@@ -944,7 +944,7 @@ PPL::Polyhedron::strongly_minimize_constraints() const {
   // `minimize()' will process any pending constraints or generators.
   if (!minimize())
     return false;
-  
+
   // If the polyhedron `*this' is zero-dimensional
   // at this point it must be a universe polyhedron.
   if (x.space_dim == 0)
@@ -1080,7 +1080,7 @@ PPL::Polyhedron::strongly_minimize_constraints() const {
       eps_leq_one[0] = 1;
       eps_leq_one[eps_index] = -1;
       for (dimension_type k = eps_index; k-- > 1; )
-	eps_leq_one[k] = 0;      
+	eps_leq_one[k] = 0;
       // Bump number of rows.
       ++cs_rows;
     }
@@ -1187,7 +1187,7 @@ PPL::Polyhedron::strongly_minimize_generators() const {
     gs.erase_to_end(gs_rows);
     gs.unset_pending_rows();
   }
-  
+
   if (changed) {
     // The generator system is no longer sorted.
     x.gen_sys.set_sorted(false);

@@ -192,7 +192,7 @@ PPL::Status::OK() const {
     // It is impossible that there are both pending constraints
     // and pending generators.
     return false;
-  
+
   if (test_c_pending() || test_g_pending()) {
     if (!test_c_minimized() || !test_g_minimized())
       // If there are pending, constraints and generators
@@ -202,7 +202,7 @@ PPL::Status::OK() const {
       // If there are pending, there must be at least
       // a saturation matrix up-to-date.
       return false;
-  } 
+  }
   // Any other case is OK.
   return true;
 }

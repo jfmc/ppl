@@ -1879,7 +1879,7 @@ to its lineality space. This for definition is composed by all \f$\vect{y}\f$
 of \f$C\f$ that satisfies \f$A \vect{x} = \vect{0}.\f$
 
 <B>Adjacent rays</B>
-	
+
 Let \f$A\f$ be representing matrix of constraints of a cone \f$C\f$
 and \f$Q\f$ the set of rays that generate \f$C\f$. Then two rays
 \f$\vect{r}_1\f$ and \f$\vect{r}_2\f$ are <EM>adjacent rays</EM> if

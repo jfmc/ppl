@@ -81,7 +81,7 @@ protected:
     \param first_stolen   The index where \p y is split.
   */
   Matrix(Matrix& y, dimension_type first_stolen);
-  
+
   //! Destructor.
   virtual ~Matrix();
 
@@ -212,10 +212,10 @@ public:
 
   //! Sets the matrix topology to <CODE>NECESSARILY_CLOSED</CODE>.
   void set_necessarily_closed();
-  
+
   //! Sets the matrix topology to <CODE>NOT_NECESSARILY_CLOSED</CODE>.
   void set_not_necessarily_closed();
-  
+
   //! Sets the topology of all rows equal to the matrix topology.
   void set_rows_topology();
 
@@ -241,7 +241,7 @@ public:
     The newly added rows and columns contain all zeroes.
   */
   void grow(dimension_type new_n_rows, dimension_type new_n_columns);
-  
+
   //! \brief
   //! Makes the matrix shrink by removing those columns having an index
   //! greater than or equal to \p new_n_columns.
@@ -269,7 +269,7 @@ public:
     the \f$r \times (c+n)\f$ matrix \f$(M \, 0)\f$.
   */
   void add_zero_columns(dimension_type n);
-  
+
   //! Adds \p n rows and columns to the matrix.
   /*!
     \param n      The number of rows and columns to be added:
@@ -359,12 +359,12 @@ public:
   //! Sorts the rows (in growing order) form \p first_row to
   //! \p last_row and eliminates duplicated ones.
   void sort_rows(dimension_type first_row, dimension_type last_row);
- 
+
   //! \brief
   //! Sorts the pending rows and eliminates those that also occur
   //! in the non-pending part of the matrix.
   void sort_pending_and_remove_duplicates();
-  
+
   //! Adds a copy of the given row to the matrix.
   void add_row(const Row& row);
 

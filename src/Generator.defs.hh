@@ -61,7 +61,7 @@ void swap(Parma_Polyhedra_Library::Generator& x,
   An object of the class Generator is one of the following:
 
   - a line \f$\vect{l} = (a_0, \ldots, a_{n-1})^\transpose\f$;
-	
+
   - a ray \f$\vect{r} = (a_0, \ldots, a_{n-1})^\transpose\f$;
 
   - a point

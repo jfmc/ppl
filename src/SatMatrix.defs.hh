@@ -40,7 +40,7 @@ site: http://www.cs.unipr.it/ppl/ . */
   \note
   since the constraints and generators are taken from the same polyhedron
   description, it cannot be the case that a generator <EM>violates</EM>
-  a constraint.  
+  a constraint.
 */
 #endif // PPL_DOXYGEN_INCLUDE_IMPLEMENTATION_DETAILS
 
@@ -77,7 +77,7 @@ public:
 
   //! Transposes the matrix.
   void transpose();
-  
+
   //! Makes \p *this a transposed copy of \p y.
   void transpose_assign(const SatMatrix& y);
 

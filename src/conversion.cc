@@ -55,7 +55,7 @@ namespace PPL = Parma_Polyhedra_Library;
   For simplicity, all the following comments assume we are converting a
   constraint system \p source into a generator system \p dest;
   the comments for the symmetric case can be obtained by duality.
- 
+
   If some of the constraints in \p source are redundant, they will be removed.
   This is why the \p source is not declared to be a constant parameter.
 
@@ -650,7 +650,7 @@ PPL::Polyhedron::conversion(Matrix& source,
 	  // -# they are obtained as a positive combination of two
 	  //    adjacent rays, the first taken from Q+ and the second
 	  //    taken from Q-.
-	
+
 	  // The adjacency property is necessary to have an irredundant
 	  // set of new rays (see proposition 2).
 	  dimension_type bound = dest_num_rows;
@@ -830,7 +830,7 @@ PPL::Polyhedron::conversion(Matrix& source,
     source.set_sorted(source[start - 1] <= source[start]);
   // There are no longer pending constraints in `source'.
   source.unset_pending_rows();
- 
+
   // We may have identified some redundant rays in `dest',
   // which have been swapped at the end of the matrix.
   if (dest_num_rows < dest.num_rows()) {
@@ -851,6 +851,6 @@ PPL::Polyhedron::conversion(Matrix& source,
       }
   // There are no pending generators in `dest'.
   dest.unset_pending_rows();
-  
+
   return num_lines_or_equalities;
 }

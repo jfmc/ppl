@@ -79,7 +79,7 @@ PPL::ConSys::adjust_topology_and_dimension(Topology new_topology,
 	}
 	// If we have no pending rows, we only check if
 	// we must erase some rows.
-	if (cs.num_pending_rows() == 0) { 
+	if (cs.num_pending_rows() == 0) {
 	  for (dimension_type i = cs_num_rows; i-- > 0; )
 	    if (cs[i][eps_index] != 0) {
 	      --cs_num_rows;
@@ -114,7 +114,7 @@ PPL::ConSys::adjust_topology_and_dimension(Topology new_topology,
 	    }
 	  cs.erase_to_end(cs_num_rows);
 	}
-	
+
 	// If `cs' was sorted we sort it again.
 	if (was_sorted)
 	  cs.sort_rows();

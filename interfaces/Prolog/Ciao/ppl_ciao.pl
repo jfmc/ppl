@@ -733,7 +733,7 @@ ppl_Polyhedron_bounded_H79_extrapolation_assign_with_token(Handle1,
 
 /*
 ***********************************************
-This commnted code has been kept for future use 
+This commnted code has been kept for future use
 since the above version of this is temporary.
 ***********************************************
 

@@ -1543,7 +1543,7 @@ public:
 	  empty = 0;
 	  break;
 	}
-    } 
+    }
     return empty;
   }
 

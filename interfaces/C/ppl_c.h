@@ -1641,7 +1641,7 @@ inline int
 ppl_Polyhedron_BHRZ03_widening_assign(ppl_Polyhedron_t x,
 				      ppl_const_Polyhedron_t y) {
   return ppl_Polyhedron_BHRZ03_widening_assign_with_tokens(x, y, 0);
-}			      
+}
 
 /*! \brief
   If the polyhedron \p y is contained in (or equal to) the polyhedron
@@ -1732,7 +1732,7 @@ inline int
 ppl_Polyhedron_H79_widening_assign(ppl_Polyhedron_t x,
 				   ppl_const_Polyhedron_t y) {
   return ppl_Polyhedron_H79_widening_assign_with_tokens(x, y, 0);
-}			      
+}
 
 /*! \brief
   If the polyhedron \p y is contained in (or equal to) the polyhedron

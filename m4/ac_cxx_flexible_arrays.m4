@@ -1,23 +1,23 @@
 dnl A function to check whether the C++ compiler supports flexible arrays.
 dnl Copyright (C) 2001-2003 Roberto Bagnara <bagnara@cs.unipr.it>
-dnl  
+dnl
 dnl This file is part of the Parma Polyhedra Library (PPL).
-dnl 
+dnl
 dnl The PPL is free software; you can redistribute it and/or modify it
 dnl under the terms of the GNU General Public License as published by the
 dnl Free Software Foundation; either version 2 of the License, or (at your
 dnl option) any later version.
-dnl 
+dnl
 dnl The PPL is distributed in the hope that it will be useful, but WITHOUT
 dnl ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or
 dnl FITNESS FOR A PARTICULAR PURPOSE.  See the GNU General Public License
 dnl for more details.
-dnl 
+dnl
 dnl You should have received a copy of the GNU General Public License
 dnl along with this program; if not, write to the Free Software
 dnl Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307,
 dnl USA.
-dnl 
+dnl
 dnl For the most up-to-date information see the Parma Polyhedra Library
 dnl site: http://www.cs.unipr.it/ppl/ .
 dnl

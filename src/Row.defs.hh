@@ -39,7 +39,7 @@ site: http://www.cs.unipr.it/ppl/ . */
 /*! \ingroup PPL_defines
   \brief
   Enables extra debugging infomration for class Row.
- 
+
   When <CODE>EXTRA_ROW_DEBUG</CODE> evaluates to <CODE>true</CODE>,
   each instance of the class Row carries its own capacity; this enables
   extra consistency checks to be performed.
@@ -117,10 +117,10 @@ site: http://www.cs.unipr.it/ppl/ . */
   (which is used as a common divisor for the coefficients),
   lines and rays must have the inhomogeneous term equal to zero.
   If needed, the coefficients of points and closure points are negated
-  at creation time so that they satisfy this invariant. 
+  at creation time so that they satisfy this invariant.
   The invariant is maintained because, when combining a point or closure
   point with another generator, we only consider positive combinations.
-  
+
   The \f$\epsilon\f$ coefficient, when present, is negative for strict
   inequality constraints, positive for points and equal to zero in all
   the other cases.
@@ -141,7 +141,7 @@ class Parma_Polyhedra_Library::Row {
 public:
   //! \brief
   //! The type of the object to which the coefficients refer to,
-  //! encoding both the row topology and the row kind. 
+  //! encoding both the row topology and the row kind.
   class Type;
 
   //! The possible kinds of Row objects.
@@ -166,7 +166,7 @@ public:
     \param t          The type of the row that will be constructed.
     \param sz         The size of the row that will be constructed.
     \param capacity   The minimum capacity of the row that will be constructed.
-    
+
     The row that we are constructing has a minimum capacity, i.e., it
     can contain at least \p capacity elements, \p sz of which will be
     constructed now.

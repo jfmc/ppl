@@ -87,7 +87,7 @@ private:
   | STRICTLY_INTERSECTS
   | IS_INCLUDED
   | SATURATES;
-  
+
   //! This holds the current bitset.
   flags_t flags;
 

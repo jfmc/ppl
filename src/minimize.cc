@@ -182,7 +182,7 @@ PPL::Polyhedron::minimize(bool con_to_gen,
 
   \return             <CODE>true</CODE> if the obtained polyhedron
                       is empty, <CODE>false</CODE> otherwise.
-  
+
   It is assumed that \p source1 and \p source2 are sorted and have
   no pending rows. It is also assumed that \p dest has no pending rows.
   On entry, the rows of \p sat are indexed by the rows of \p dest
@@ -268,7 +268,7 @@ PPL::Polyhedron::add_and_minimize(bool con_to_gen,
     // in `source2' were already in `source1'.
     // There is nothing left to do ...
     return false;
-  
+
   return add_and_minimize(con_to_gen, source1, dest, sat);
 }
 
@@ -338,7 +338,7 @@ PPL::Polyhedron::add_and_minimize(bool con_to_gen,
   for ( ; first_point < dest_num_rows; ++first_point)
      if (dest[first_point][checking_index] > 0)
       break;
- 
+
   if (first_point == dest_num_rows)
     if (con_to_gen)
       // No point has been found: the polyhedron is empty.

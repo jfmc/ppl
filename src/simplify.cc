@@ -172,7 +172,7 @@ PPL::Polyhedron::simplify(Matrix& mat, SatMatrix& sat) {
   //     = dim_vector_space - num_irred_equalities - dim_lin_space
   //     = num_columns - 1 - num_equal_or_line - dim_lin_space;
   //   min_sat_rays_or_points = dim_ray_space.
-  //   
+  //
   // An inequality saturated by less than `dim_ray_space' _rays/points_
   // is redundant. Thus we have the implication
   //

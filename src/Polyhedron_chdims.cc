@@ -331,7 +331,7 @@ PPL::Polyhedron::concatenate_assign(const Polyhedron& y) {
     for (dimension_type j = 1; j < cs_num_columns; ++j)
       std::swap(c_old[j], c_new[space_dim + j]);
   }
-  
+
   if (can_have_something_pending()) {
     // If `*this' can support pending constraints, then, since we have
     // resized the system of constraints, we must also add to the generator

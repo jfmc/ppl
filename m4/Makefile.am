@@ -28,4 +28,4 @@ VPATH = @srcdir@
 
 m4macros = ac_check_gmp.m4 ac_cxx_flexible_arrays.m4
 
-EXTRA_DIST = $(m4macros) 
+EXTRA_DIST = $(m4macros)

@@ -49,7 +49,7 @@ public:
     \param num_dimensions   The number of dimensions of the vector
                             space enclosing the NNC polyhedron.
     \param kind             Specifies whether a universe or an empty
-                            NNC polyhedron should be built. 
+                            NNC polyhedron should be built.
 
     Both parameters are optional:
     by default, a 0-dimension space universe NNC polyhedron is built.

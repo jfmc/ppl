@@ -372,7 +372,7 @@ PPL::Matrix::ascii_load(std::istream& s) {
     return false;
   if (!(s >> index))
     return false;
-  set_index_first_pending_row(index);  
+  set_index_first_pending_row(index);
   // Check for well-formedness.
   assert(OK(true));
   return true;
@@ -539,7 +539,7 @@ PPL::Matrix::sort_pending_and_remove_duplicates() {
 
   // The non-pending part of the matrix is already sorted.
   // Now sorting the pending part..
-  dimension_type first_pending = x.first_pending_row(); 
+  dimension_type first_pending = x.first_pending_row();
   x.sort_rows(first_pending, x.num_rows());
   // Recompute the number of rows, because we may have removed
   // some rows occurring more than once in the pending part.
@@ -870,7 +870,7 @@ PPL::Matrix::sort_and_remove_with_sat(SatMatrix& sat) {
   }
 
   if (num_pending_rows() > 0) {
-    // In this case, we must put the rows to erase after the 
+    // In this case, we must put the rows to erase after the
     // pending rows.
     dimension_type num_rows_to_erase = x.first_pending_row() - num_kept_rows;
     dimension_type n_rows = num_rows() - 1;
@@ -929,7 +929,7 @@ PPL::Matrix::gram_shmidt() {
   for (dimension_type i = 1; i < rank; i++) {
     Row& row_i = rows[i];
     std::vector<Integer>& mu_i = mu[i];
-    
+
     // Finish computing `mu[i][j]', for all j <= i.
     for (dimension_type j = 0; j <= i; j++) {
       const std::vector<Integer>& mu_j = mu[j];
@@ -961,7 +961,7 @@ PPL::Matrix::gram_shmidt() {
       }
     }
   }
-  
+
   // Normalize the coefficients of the orthogonal base found.
   for (dimension_type i = rank; i-- > 0; )
     rows[i].strong_normalize();
@@ -1127,7 +1127,7 @@ PPL::Matrix::back_substitute(dimension_type rank) {
   // before exiting, need to be re-checked for sortedness.
   std::deque<bool> check_for_sortedness;
   if (was_sorted)
-    check_for_sortedness.insert(check_for_sortedness.end(), nrows, false); 
+    check_for_sortedness.insert(check_for_sortedness.end(), nrows, false);
 
   for (dimension_type k = rank; k-- > 0; ) {
     // For each row, starting from the rank-th one,
@@ -1167,7 +1167,7 @@ PPL::Matrix::back_substitute(dimension_type rank) {
 	PPL::negate(row_k[h]);
     // Note: we do not mark index `k' in `check_for_sortedness',
     // because we will later negate back the row.
-    
+
     // Go through all the inequalities of the matrix.
     for (dimension_type i = rank; i < nrows; ++i) {
       Row& row_i = rows[i];
@@ -1231,7 +1231,7 @@ PPL::Matrix::add_rows_and_columns(dimension_type n) {
     // Since ray, points and inequalities come after lines
     // and equalities, this case implies the matrix is sorted.
     set_sorted(true);
-  }  
+  }
   else if (was_sorted)
     set_sorted(x[n-1] <= x[n]);
 

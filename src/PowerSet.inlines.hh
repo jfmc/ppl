@@ -350,7 +350,7 @@ PowerSet<CS>::add_constraint(const Constraint& c) {
     if (xv.is_bottom()) {
       sequence.erase(xi);
       xend = end();
-    }	
+    }
   }
   omega_reduction();
 }
@@ -375,7 +375,7 @@ PowerSet<CS>::add_constraints(ConSys& cs) {
       if (xv.is_bottom()) {
 	sequence.erase(xi);
 	xend = end();
-      }	
+      }
     }
   omega_reduction();
 }
@@ -518,7 +518,7 @@ PowerSet<CS>::OK() const {
   }
   return true;
 }
- 
+
 } // namespace Parma_Polyhedra_Library
 
 #endif // !defined(PPL_PowerSet_inlines_hh)

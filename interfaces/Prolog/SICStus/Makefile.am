@@ -81,7 +81,7 @@ tak.clpq
 CLPQ_TESTS_STRICT = \
 schedule.clpq
 
-CLPQ_TESTS = $(CLPQ_TESTS_NONSTRICT) $(CLPQ_TESTS_STRICT) 
+CLPQ_TESTS = $(CLPQ_TESTS_NONSTRICT) $(CLPQ_TESTS_STRICT)
 
 check-local: ppl_sicstus ../check_script ../expected
 	for k in $(CLPQ_TESTS); do cp -f $(srcdir)/../$$k .; done

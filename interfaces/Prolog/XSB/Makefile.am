@@ -77,7 +77,7 @@ tak.clpq
 CLPQ_TESTS_STRICT = \
 schedule.clpq
 
-CLPQ_TESTS = $(CLPQ_TESTS_NONSTRICT) $(CLPQ_TESTS_STRICT) 
+CLPQ_TESTS = $(CLPQ_TESTS_NONSTRICT) $(CLPQ_TESTS_STRICT)
 
 # FIXME: we are checking against special versions of `expected'
 #        and `expected2'.  This is due to the fact that XSB 2.5

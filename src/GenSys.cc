@@ -729,7 +729,7 @@ PPL::GenSys::affine_image(dimension_type v,
     tmp_Integer[1] = 0;
     for (dimension_type j = expr.size(); j-- > 0; )
       tmp_Integer[1] += row[j] * expr[j];
-    std::swap(tmp_Integer[1], row[v]); 
+    std::swap(tmp_Integer[1], row[v]);
   }
 
   if (denominator != 1) {
@@ -880,7 +880,7 @@ PPL::GenSys::remove_invalid_lines_and_rays() {
   }
   gs.erase_to_end(n_rows);
 }
-  
+
 bool
 PPL::GenSys::OK() const {
   // A GenSys must be a valid Matrix; do not check for

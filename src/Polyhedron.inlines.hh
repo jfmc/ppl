@@ -414,7 +414,7 @@ Polyhedron::shrink_bounding_box(Box& box, Complexity_Class complexity) const {
 
   if (space_dim == 0)
     return;
-  
+
   // To record the lower and upper bound for each dimension.
   std::vector<LBoundary> lower_bound(space_dim);
   std::vector<UBoundary> upper_bound(space_dim);
@@ -425,7 +425,7 @@ Polyhedron::shrink_bounding_box(Box& box, Complexity_Class complexity) const {
     // Upper bounds are initialized to (open) minus infinity.
     upper_bound[j] = UBoundary(ERational('-'), UBoundary::OPEN);
   }
-  
+
   if (!polynomial && has_something_pending())
     process_pending();
 
@@ -433,7 +433,7 @@ Polyhedron::shrink_bounding_box(Box& box, Complexity_Class complexity) const {
        (!generators_are_up_to_date() || has_pending_constraints())) {
     // Extract easy-to-find bounds from constraints.
     assert(constraints_are_up_to_date());
-    
+
     // We must copy `con_sys' into a temporary matrix,
     // because we must apply gauss() and back_substitute()
     // to all the matrix and not only to the non-pending part.
@@ -447,10 +447,10 @@ Polyhedron::shrink_bounding_box(Box& box, Complexity_Class complexity) const {
 
     if (has_pending_constraints() || !constraints_are_minimized())
       cs.back_substitute(cs.gauss());
-    
+
     const ConSys::const_iterator cs_begin = cs.begin();
     const ConSys::const_iterator cs_end = cs.end();
-    
+
     for (ConSys::const_iterator i = cs_begin; i != cs_end; ++i) {
       dimension_type varid = space_dim;
       const Constraint& c = *i;
@@ -492,7 +492,7 @@ Polyhedron::shrink_bounding_box(Box& box, Complexity_Class complexity) const {
 	  // If `d' is strictly positive, we have a constraint of the
 	  // form `Variable(varid) >= k' or `Variable(varid) > k'.
 	    lower_bound[varid]
-	      = LBoundary(r, (c_type == Constraint::NONSTRICT_INEQUALITY 
+	      = LBoundary(r, (c_type == Constraint::NONSTRICT_INEQUALITY
 			      ? LBoundary::CLOSED
 			      : LBoundary::OPEN));
 	  else {
@@ -501,7 +501,7 @@ Polyhedron::shrink_bounding_box(Box& box, Complexity_Class complexity) const {
 	    // `Variable(varid) <= k' or `Variable(varid) < k'.
 	    assert(d < 0);
 	    upper_bound[varid]
-	      = UBoundary(r, (c_type == Constraint::NONSTRICT_INEQUALITY 
+	      = UBoundary(r, (c_type == Constraint::NONSTRICT_INEQUALITY
 			      ? UBoundary::CLOSED
 			      : UBoundary::OPEN));
 	  }
@@ -571,7 +571,7 @@ Polyhedron::shrink_bounding_box(Box& box, Complexity_Class complexity) const {
       }
     }
   }
-  
+
   // Now shrink the bounded axes.
   for (dimension_type j = space_dim; j-- > 0; ) {
     // Lower bound.
