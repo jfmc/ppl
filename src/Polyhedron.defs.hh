@@ -420,7 +420,7 @@ protected:
     The system of generators defining the polyhedron.
 
     \exception std::invalid_argument
-    Thrown if if the topology of \p gs is incompatible with \p topol,
+    Thrown if the topology of \p gs is incompatible with \p topol,
     or if the system of generators is not empty but has no points.
   */
   Polyhedron(Topology topol, const Generator_System& gs);
@@ -438,7 +438,7 @@ protected:
     recycled to build the polyhedron.
 
     \exception std::invalid_argument
-    Thrown if if the topology of \p gs is incompatible with \p topol,
+    Thrown if the topology of \p gs is incompatible with \p topol,
     or if the system of generators is not empty but has no points.
   */
   Polyhedron(Topology topol, Generator_System& gs);
