@@ -2,8 +2,6 @@
 #include "ppl_install.hh"
 #include <SWI-Prolog.h>
 #include <cassert>
-// Temporary: just for abort().
-#include <cstdlib>
 
 #define SWI 1
 #define PARANOID 1
@@ -11,8 +9,8 @@
 typedef term_t Prolog_term_ref;
 typedef atom_t Prolog_atom;
 typedef foreign_t Prolog_foreign_return_type;
-#define PROLOG_SUCCESS TRUE
-#define PROLOG_FAILURE FALSE
+static const Prolog_foreign_return_type PROLOG_SUCCESS = TRUE;
+static const Prolog_foreign_return_type PROLOG_FAILURE = FALSE;
 
 #include "../exceptions.hh"
 
@@ -240,6 +238,10 @@ Prolog_get_list(Prolog_term_ref l, Prolog_term_ref h, Prolog_term_ref t) {
   return PL_get_list(l, h, t) != 0;
 }
 
+/*!
+  Unify the terms referenced by \p t and \p u and return true
+  if the unification is successful; return false otherwise.
+*/
 static inline bool
 Prolog_unify(Prolog_term_ref t, Prolog_term_ref u) {
   return PL_unify(t, u) != 0;
@@ -622,37 +624,50 @@ ppl_remove_dimensions(Prolog_term_ref t_ph, Prolog_term_ref t_vlist) {
   return PROLOG_FAILURE;
 }
 
-/*
-extern "C" void
-ppl_remove_higher_dimensions(void* pp, long new_dimension) {
+extern "C" Prolog_foreign_return_type
+ppl_remove_higher_dimensions(Prolog_term_ref t_ph, Prolog_term_ref t_nd) {
   try {
-    CHECK(pp);
-    static_cast<PPL::Polyhedron*>(pp)
-      ->remove_higher_dimensions(get_unsigned_int(new_dimension));
+    void* ph;
+    if (!Prolog_get_address(t_ph, &ph))
+      return PROLOG_FAILURE;
+    CHECK(ph);
+    static_cast<PPL::Polyhedron*>(ph)
+      ->remove_higher_dimensions(term_to_unsigned_int(t_nd));
+    return PROLOG_SUCCESS;
   }
   CATCH_ALL;
+  return PROLOG_FAILURE;
 }
 
-extern "C" void
-ppl_add_dimensions_and_project(void* pp, long num_new_dimensions) {
+extern "C" Prolog_foreign_return_type
+ppl_add_dimensions_and_project(Prolog_term_ref t_ph, Prolog_term_ref t_nnd) {
   try {
-    CHECK(pp);
-    static_cast<PPL::Polyhedron*>(pp)
-      ->add_dimensions_and_project(get_unsigned_int(num_new_dimensions));
+    void* ph;
+    if (!Prolog_get_address(t_ph, &ph))
+      return PROLOG_FAILURE;
+    CHECK(ph);
+    static_cast<PPL::Polyhedron*>(ph)
+      ->add_dimensions_and_project(term_to_unsigned_int(t_nnd));
+    return PROLOG_SUCCESS;
   }
   CATCH_ALL;
+  return PROLOG_FAILURE;
 }
 
-extern "C" void
-ppl_add_dimensions_and_embed(void* pp, long num_new_dimensions) {
+extern "C" Prolog_foreign_return_type
+ppl_add_dimensions_and_embed(Prolog_term_ref t_ph, Prolog_term_ref t_nnd) {
   try {
-    CHECK(pp);
-    static_cast<PPL::Polyhedron*>(pp)
-      ->add_dimensions_and_embed(get_unsigned_int(num_new_dimensions));
+    void* ph;
+    if (!Prolog_get_address(t_ph, &ph))
+      return PROLOG_FAILURE;
+    CHECK(ph);
+    static_cast<PPL::Polyhedron*>(ph)
+      ->add_dimensions_and_embed(term_to_unsigned_int(t_nnd));
+    return PROLOG_SUCCESS;
   }
   CATCH_ALL;
+  return PROLOG_FAILURE;
 }
-*/
 
 #define PL_EXTENSION_ENTRY(name, arity) { #name, arity, (void*) name, 0 },
 
@@ -676,6 +691,9 @@ static PL_extension predicates[] = {
   PL_EXTENSION_ENTRY(ppl_get_constraints, 2)
   PL_EXTENSION_ENTRY(ppl_get_generators, 2)
   PL_EXTENSION_ENTRY(ppl_remove_dimensions, 2)
+  PL_EXTENSION_ENTRY(ppl_remove_higher_dimensions, 2)
+  PL_EXTENSION_ENTRY(ppl_add_dimensions_and_project, 2)
+  PL_EXTENSION_ENTRY(ppl_add_dimensions_and_embed, 2)
   { NULL, 0, NULL, 0 }
 };
 
