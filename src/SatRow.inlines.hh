@@ -131,18 +131,16 @@ set_union(const SatRow& x, const SatRow& y, SatRow& z) {
 
 namespace std {
 
-/*!
-  \relates Parma_Polyhedra_Library::SatRow
-  Specializes <CODE>std::swap</CODE> to use the fast swap that is
-  provided as a member function instead of using the default
-  algorithm (which creates a temporary and uses assignment).
-*/
+/*! \relates Parma_Polyhedra_Library::SatRow */
 inline void
 swap(Parma_Polyhedra_Library::SatRow& x, Parma_Polyhedra_Library::SatRow& y) {
   x.swap(y);
 }
 
-/*! Specializes <CODE>std::iter_swap</CODE>. */
+/*!
+  \relates Parma_Polyhedra_Library::SatRow
+  Specializes <CODE>std::iter_swap</CODE>.
+*/
 /* FIXME: this was the original comment causing a doxygen bug.
   Specializes <CODE>std::iter_swap</CODE>
   for <CODE>std::vector<SatRow>::iterator</CODE>.

@@ -108,11 +108,7 @@ operator-=(LinExpression& e, const Integer& n) {
 
 namespace std {
 
-/*!
-  Specializes <CODE>std::swap</CODE> to use the fast swap that is
-  provided as a member function instead of using the default
-  algorithm (which creates a temporary and uses assignment).
-*/
+/*! \relates Parma_Polyhedra_Library::LinExpression */
 inline void
 swap(Parma_Polyhedra_Library::LinExpression& x,
      Parma_Polyhedra_Library::LinExpression& y) {
