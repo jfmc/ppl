@@ -57,21 +57,22 @@ public:
   virtual void throw_me() const = 0;
 };
 
-//! This pointer, which is initialized to zero, is checked at polynomial
-//! intervals along any exponential computation path in the library.
+//! This pointer, which is initialized to zero, is repeatedly checked
+//! along any exponential computation path in the library.
 //! When it is found nonzero the exception it points to is thrown.
 //! In other words, making this pointer point to an exception (and
 //! leaving it in this state) ensures that the library will return
 //! control to the client application, possibly by throwing the given
-//! exception, within a time that is a polynomial function of the data
-//! (polyhedra, systems of constraints or generators) on which the library
-//! is operating upon.
-//! \note It is perfectly possible to assign to this pointer
-//!       from within a signal handler.  For this reason, the library,
-//!       apart from ensuring that the pointer is initially zero,
-//!       never assigns to it.  In particular, it does not zero it again
-//!       when the exception is thrown: it is the client's responsibility
-//!       to do so.
+//! exception, within a time that is a linear function of the space
+//! dimension of the object (polyhedron, system of constraints or
+//! generators) of highest dimension on which the library is operating
+//! upon.
+//! \note The only sensible way to assign to this pointer is from within
+//!       a signal handler or from a parallel thread.  For this reason,
+//!       the library, apart from ensuring that the pointer is initially
+//!       set to zero, never assigns to it.  In particular, it does not
+//!       zero it again when the exception is thrown: it is the client's
+//!       responsibility to do so.
 extern const Throwable* volatile abandon_exponential_computations;
 
 #ifdef PPL_DOXYGEN_INCLUDE_IMPLEMENTATION_DETAILS

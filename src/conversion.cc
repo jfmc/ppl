@@ -31,6 +31,11 @@ site: http://www.cs.unipr.it/ppl/ . */
 
 namespace PPL = Parma_Polyhedra_Library;
 
+// True if `abandon_exponential_computations' should be checked often,
+// where the meaning of "often" is as stated in the documentation
+// of that variable.
+#define REACTIVE_ABANDONING 1
+
 /*!
   \fn static size_t PPL::Polyhedron::conversion(Matrix& source,
                                                 size_t start,
@@ -383,9 +388,19 @@ PPL::Polyhedron::conversion(Matrix& source,
       if (scalar_prod[index_non_zero] != 0)
 	// The generator does not saturate the constraint.
 	break;
+#if REACTIVE_ABANDONING
+      // Check if the client has requested abandoning all exponential
+      // computations.  If so, the exception specified by the client
+      // is thrown now.
+      maybe_abandon();
+#endif
     }
-    for (size_t i = index_non_zero + 1; i < dest_num_rows; ++i)
+    for (size_t i = index_non_zero + 1; i < dest_num_rows; ++i) {
       scalar_prod[i] = source[k] * dest[i];
+#if REACTIVE_ABANDONING
+      maybe_abandon();
+#endif
+    }
 
     // We first treat the case when `index_non_zero' is less than
     // `num_lines_or_equalities', i.e., when the generator that
@@ -517,6 +532,9 @@ PPL::Polyhedron::conversion(Matrix& source,
 	  scalar_prod[i] = 0;
 	  // `dest' has already been set as non-sorted.
 	}
+#if REACTIVE_ABANDONING
+	maybe_abandon();
+#endif
       }
       // Since the `scalar_prod[num_lines_or_equalities]' is positive
       // (by construction), it does not saturate the constraint `source[k]'.
@@ -643,7 +661,7 @@ PPL::Polyhedron::conversion(Matrix& source,
 	  // In the following loop,
 	  // `i' runs through the generators in the set Q+ and
 	  // `j' runs through the generators in the set Q-.
-	  for (size_t i = lines_or_equal_bound; i < sup_bound; ++i)
+	  for (size_t i = lines_or_equal_bound; i < sup_bound; ++i) {
 	    for(size_t j = sup_bound; j < bound; ++j) {
 	      // Checking if generators `dest[i]' and `dest[j]' are adjacent.
 	      // If there exist another generator that saturates
@@ -741,6 +759,10 @@ PPL::Polyhedron::conversion(Matrix& source,
 		}
 	      }
 	    }
+#if REACTIVE_ABANDONING
+	    maybe_abandon();
+#endif
+	  }
 	  // Now we substitute the rays in Q- (i.e., the rays violating
 	  // the constraint) with the newly added rays.
 	  size_t j;
@@ -784,13 +806,12 @@ PPL::Polyhedron::conversion(Matrix& source,
 	++k;
       }
     }
+#if !REACTIVE_ABANDONING
     // Check if the client has requested abandoning all exponential
     // computations.  If so, the exception specified by the client
     // is thrown now.
-    // This test is executed at time intervals that are polynomial
-    // in the size of the source matrix.
-    // FIXME: explain why it is so.
     maybe_abandon();
+#endif
   }
 
   // Since we may have deleted some redundant constraints from `source'
