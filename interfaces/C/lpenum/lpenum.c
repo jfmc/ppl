@@ -415,8 +415,6 @@ solve(char* file_name) {
   int unbounded;
   int included;
   int ok;
-  /* The following is initialized only to avoid a compiler warning. */
-  int first_printed = 0;
 
   if (print_timings)
     start_clock();
@@ -563,33 +561,14 @@ solve(char* file_name) {
   /* Set the LinExpression ppl_objective_le to be the objective function. */
   ppl_new_LinExpression_with_dimension(&ppl_objective_le, dimension);
   /* The inhomogeneous term is completely useless for our purpose. */
-  if (verbose) {
-    first_printed = 1;
-    fprintf(output_file, "Objective function:\n");
-    if (mpz_cmp_si(den_lcm, 1) != 0)
-      fprintf(output_file, "(");
-    mpz_mul(tmp_z, den_lcm, mpq_numref(objective[0]));
-    if (mpz_sgn(tmp_z) != 0) {
-      mpz_out_str(output_file, 10, tmp_z);
-      first_printed = 0;
-    }
-  }
   for (i = 1; i <= dimension; ++i) {
     mpz_mul(tmp_z, den_lcm, mpq_numref(objective[i]));
-    if (verbose)
-      if (mpz_sgn(tmp_z) != 0) {
-	if (first_printed)
-	  first_printed = 0;
-	else {
-	  if (mpz_sgn(tmp_z) > 0)
-	    fprintf(output_file, "+");
-	}
-	mpz_out_str(output_file, 10, tmp_z);
-	fprintf(output_file, "*");
-	ppl_io_fprint_variable(output_file, i-1);
-      }
     ppl_assign_Coefficient_from_mpz_t(ppl_coeff, tmp_z);
     ppl_LinExpression_add_to_coefficient(ppl_objective_le, i-1, ppl_coeff);
+  }
+  if (verbose) {
+    fprintf(output_file, "Objective function:\n");
+    ppl_io_fprint_LinExpression(output_file, ppl_objective_le);
   }
 
   for (i = 0; i <= dimension; ++i)
