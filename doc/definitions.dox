@@ -169,9 +169,9 @@ The set of all closed polyhedra on the vector space \f$\Rset^n\f$
 is denoted \f$\CPset_n\f$.
 
 When ordering NNC polyhedra by the set inclusion relation,
- the empty set \f$\emptyset\f$ and the vector space \f$\Rset^n\f$
-are, respectively, the smallest and the biggest elements of both \f$\Pset_n\f$
-and \f$\CPset_n\f$.
+the empty set \f$\emptyset\f$ and the vector space \f$\Rset^n\f$
+are, respectively, the smallest and the biggest elements of both
+\f$\Pset_n\f$ and \f$\CPset_n\f$.
 The vector space \f$\Rset^n\f$ is also called the <EM>universe</EM> polyhedron.
 
 In theoretical terms,
@@ -393,7 +393,7 @@ Moreover, operators restricted to work on closed polyhedra only
 can be implemented more efficiently.
 For this reason the library provides two alternative
 ``topological kinds'' for a polyhedron, <EM>NNC</EM> and <EM>C</EM>.
-We shall abuse terminology by referring to the topologcal kind of
+We shall abuse terminology by referring to the topological kind of
 a polyhedron as its <EM>topology</EM>.
 
 In the library, the topology of each polyhedron object is fixed
@@ -415,6 +415,12 @@ Wherever possible,
 the library provides methods that, starting from a polyhedron of
 a given topology, build the corresponding polyhedron having
 the other topology.
+
+As a rule of thumb, if your application will only manipulate polyhedra
+that are topologically closed, then it should use C polyhedra.
+In other words, using NNC polyhedra is only recommended if you are
+going to actually benefit from the increased accuracy.
+
 
 <B>Space Dimensions and Dimension-compatibility</B>
 
