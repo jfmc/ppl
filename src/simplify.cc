@@ -264,7 +264,7 @@ PPL::Polyhedron::simplify(Matrix& mat, SatMatrix& sat) {
   // Here we physically remove the redundant inequalities previously
   // moved to the bottom of `mat' and the corresponding `sat' rows.
   mat.erase_to_end(num_rows);
-  mat.set_index_first_pending_row(num_rows);
+  mat.unset_pending_rows();
   sat.rows_erase_to_end(num_rows);
   // At this point the first `num_equal_or_line' rows of 'mat'
   // represent the irredundant equalities, while the remaining rows
