@@ -31,7 +31,7 @@ site: http://www.cs.unipr.it/ppl/ . */
     vector space \f$\Rset^0 = \{\cdot\}\f$;
   - <EM>empty</EM>: the polyhedron is the empty set;
   - <EM>transitively closed</EM>: the BD_Shape object is transitively
-    closed, so that all the constraints are as tighter as possible.
+    closed, so that all the constraints are as tight as possible.
 
   Not all the conjunctions of these elementary assertions constitute
   a legal Status.  In fact:
