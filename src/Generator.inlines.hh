@@ -92,7 +92,7 @@ operator ^(int, const LinExpression& e) {
 INLINE Generator
 operator /=(const LinExpression& e, const Integer& n) {
   if (n == 0)
-    throw invalid_argument("Generator operator /=(e, n) with n == 0");
+    throw std::invalid_argument("Generator PPL::operator /=(e, n) with n == 0");
 
   LinExpression ec = e;
   Generator g(ec);

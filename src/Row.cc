@@ -119,7 +119,7 @@ PPL::compare(const Row& x, const Row& y) {
   return 0;
 }
 
-Integer
+Parma_Polyhedra_Library::Integer
 PPL::operator *(const Row& x, const Row& y) {
   // Scalar product is only defined  if `x' and `y' have the same size.
   assert(x.size() == y.size());

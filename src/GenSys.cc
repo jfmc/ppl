@@ -290,13 +290,8 @@ PPL::GenSys::get(std::istream& s) {
       x[i].set_is_line();
     else if (tempstr == "R" || tempstr == "V")
       x[i].set_is_ray_or_vertex();
-    else {
-#if !defined(__GNUC__) || GCC_MAJOR >= 3
-      throw std::runtime_error("PPL::GenSys::get(std::istream& s)");
-#else
-      abort();
-#endif
-    }
+    else
+      throw std::runtime_error("void PPL::GenSys::get(s)");
   }
 }
 

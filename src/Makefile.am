@@ -92,7 +92,15 @@ BUILT_SOURCES = ppl.hh
 
 include_HEADERS = ppl.hh
 
-ppl.hh:	$(include_files) ppl.cc protect.sed restore.sed
+MORE_PPL_HH_DEPS = \
+BitSet/BitSet.types.hh \
+BitSet/BitSet.defs.hh \
+BitSet/BitSet.inlines.hh \
+Integer/Integer.types.hh \
+Integer/Integer.defs.hh \
+Integer/Integer.inlines.hh
+
+ppl.hh:	$(include_files) ppl.cc protect.sed restore.sed $(MORE_PPL_HH_DEPS)
 	cpp -C -P -H $(INCLUDES) \
 		@debug_flag@ -DOUTLINE=0 $(srcdir)/ppl.cc >/dev/null 2>tmp.1
 	sed -e "s/^\.* //g" -e "/^\/usr/d" -e "/Multiple /d" <tmp.1 \

@@ -188,7 +188,7 @@ Parma_Polyhedra_Library::Row::Impl::~Impl() {
 /*!
   Returns a reference to the \p k-th element of \p *this row.
 */
-INLINE Integer&
+INLINE Parma_Polyhedra_Library::Integer&
 Parma_Polyhedra_Library::Row::Impl::operator [](size_t k) {
   assert(k < size());
   return vec_[k];
@@ -198,7 +198,7 @@ Parma_Polyhedra_Library::Row::Impl::operator [](size_t k) {
 /*!
   Returns a constant reference to the \p k-th element of \p *this row.
 */
-INLINE const Integer&
+INLINE const Parma_Polyhedra_Library::Integer&
 Parma_Polyhedra_Library::Row::Impl::operator [](size_t k) const {
   assert(k < size());
   return vec_[k];
@@ -394,7 +394,7 @@ Parma_Polyhedra_Library::Row::set_is_ray_or_vertex_or_inequality() {
 /*!
   Returns a reference to the element of the row indexed by \p k.
 */
-INLINE Integer&
+INLINE Parma_Polyhedra_Library::Integer&
 Parma_Polyhedra_Library::Row::operator [](size_t k) {
   return (*impl)[k];
 }
@@ -403,7 +403,7 @@ Parma_Polyhedra_Library::Row::operator [](size_t k) {
 /*!
   Returns a constant reference to the element of the row indexed by \p k.
 */
-INLINE const Integer&
+INLINE const Parma_Polyhedra_Library::Integer&
 Parma_Polyhedra_Library::Row::operator [](size_t k) const {
   return (*impl)[k];
 }
@@ -442,12 +442,12 @@ Parma_Polyhedra_Library::Row::prev(int n) const {
   return -1;
 }
 
-INLINE const Integer&
+INLINE const Parma_Polyhedra_Library::Integer&
 Parma_Polyhedra_Library::Row::coefficient() const {
   return (*this)[0];
 }
 
-INLINE const Integer&
+INLINE const Parma_Polyhedra_Library::Integer&
 Parma_Polyhedra_Library::Row::coefficient(size_t k) const {
   return (*this)[k+1];
 }

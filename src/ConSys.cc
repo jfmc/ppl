@@ -188,14 +188,8 @@ PPL::ConSys::get(std::istream& s) {
       x[i].set_is_equality();
     else if (tempstr == ">=")
       x[i].set_is_inequality();
-    else {
-#if !defined(__GNUC__) || GCC_MAJOR >= 3
-      throw std::runtime_error("PPL::ConSys::get(std::istream& s)");
-#else
-      abort();
-#endif
-
-    }
+    else
+      throw std::runtime_error("void PPL::ConSys::get(s)");
   }
 }
 

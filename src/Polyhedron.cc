@@ -829,7 +829,7 @@ PPL::Polyhedron::remove_dimensions(const std::set<Variable>&
   // order is kept.
   size_t nrows = gen_sys.num_rows();
   size_t ncols = gen_sys.num_columns();
-  for (set<Variable>::const_iterator i = to_be_removed.begin(),
+  for (std::set<Variable>::const_iterator i = to_be_removed.begin(),
 	 tbr_end = to_be_removed.end(); i != tbr_end; ++i) {
     // The (n+1)-th column correspond to the n-th dimension.
     size_t c = i->id() + 1;
@@ -1207,8 +1207,8 @@ PPL::Polyhedron::assign_variable(const Variable& var,
 				 const LinExpression& coefficient,
 				 Integer& denominator) {
   if (denominator == 0)
-    throw invalid_argument("Assign_variable with denominator == 0");
-  
+    throw std::invalid_argument("void PPL::Polyhedron::assign_variable(v, c, d) with d == 0");
+
   Polyhedron& x = *this;
   size_t num_columns = x.gen_sys.num_columns();
   size_t num_var = var.id() + 1;
@@ -1316,7 +1316,7 @@ PPL::Polyhedron::substitute_variable(const Variable& var,
 				     const LinExpression& coefficient,
 				     Integer& denominator) {
   if (denominator == 0)
-    throw invalid_argument("Substitute_variable with denominator == 0");
+    throw std::invalid_argument("void PPL::Polyhedron::substitute_variable(v, c, d) with d == 0");
   
   Polyhedron& x = *this;
   size_t num_columns = x.con_sys.num_columns();
