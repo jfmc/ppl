@@ -10,6 +10,10 @@ NEWS for version 0.5 (release date to be decided)
 New and Changed Features
 ========================
 
+o  New method Polyhedron::generalized_affine_image() computes the image of
+   a polyhedron under the relation `lhs relop rhs', where `lhs' and `rhs'
+   are linear expressions and `relop' is a relational operator.
+
 o  The method Polyhedron::limited_H79_widening_assign() has been renamed
    Polyhedron::limited_H79_extrapolation_assign().  From now on, the name
    `widening' is reserved for operators that come with a convergence
