@@ -63,10 +63,10 @@ namespace Parma_Polyhedra_Library {
     Variable x(0);
     Variable y(1);
     GenSys gs;
-    gs.insert(0 * x + 0 * y \= 1);
-    gs.insert(0 * x + 3 * y \= 1);
-    gs.insert(3 * x + 0 * y \= 1);
-    gs.insert(3 * x + 3 * y \= 1);
+    gs.insert(0 * x + 0 * y /= 1);
+    gs.insert(0 * x + 3 * y /= 1);
+    gs.insert(3 * x + 0 * y /= 1);
+    gs.insert(3 * x + 3 * y /= 1);
     \endcode
 
     \par Example 2
@@ -76,8 +76,8 @@ namespace Parma_Polyhedra_Library {
     Variable x(0);
     Variable y(1);
     GenSys gs;
-    gs.insert(0 * x + 0 * y \= 1);
-    gs.insert(0 * x + y \= 1);
+    gs.insert(0 * x + 0 * y /= 1);
+    gs.insert(0 * x + y /= 1);
     gs.insert(1 ^ x - y);
     \endcode
 */
