@@ -54,7 +54,7 @@ PPL::ConSys::adjust_topology_and_dimension(Topology new_topology,
 	// A NON_NECESSARILY_CLOSED constraint system
 	// can be converted to a NECESSARILY_CLOSED one
 	// only if it does not contain strict inequalities.
-	if (contains_strict_inequalities())
+	if (has_strict_inequalities())
 	  return false;
 	// Since there were no strict inequalities,
 	// all \epsilon coefficients are equal to zero
@@ -76,13 +76,8 @@ PPL::ConSys::adjust_topology_and_dimension(Topology new_topology,
       add_zero_columns(cols_to_be_added);
       // ... and, if needed, move the \epsilon coefficients
       // to the new last column.
-      if (old_topology == NON_NECESSARILY_CLOSED) {
-	ConSys& cs = *this;
-	size_t old_eps_index = old_space_dim + 1;
-	size_t new_eps_index = new_space_dim + 1;
-	for (size_t i = num_rows(); i-- > 0; )
-	  std::swap(cs[i][new_eps_index], cs[i][old_eps_index]);
-      }
+      if (old_topology == NON_NECESSARILY_CLOSED)
+	swap_columns(old_space_dim + 1, new_space_dim + 1);
     }
   else
     // Here `cols_to_be_added == 0', so that
@@ -91,7 +86,7 @@ PPL::ConSys::adjust_topology_and_dimension(Topology new_topology,
       // A NON_NECESSARILY_CLOSED constraint system
       // can be converted to a NECESSARILY_CLOSED one
       // only if it does not contain strict inequalities.
-      if (contains_strict_inequalities())
+      if (has_strict_inequalities())
 	return false;
       // We just remove the column of the \epsilon coefficients.
       resize_no_copy(num_rows(), old_space_dim + 1);
@@ -108,7 +103,7 @@ PPL::ConSys::adjust_topology_and_dimension(Topology new_topology,
 
 
 bool
-PPL::ConSys::contains_strict_inequalities() const {
+PPL::ConSys::has_strict_inequalities() const {
   if (is_necessarily_closed())
     return false;
   const ConSys& cs = *this;

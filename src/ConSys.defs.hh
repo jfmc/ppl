@@ -196,7 +196,7 @@ PPL_INTERNAL:
 
   //! Returns <CODE>true</CODE> if and only if \p *this
   //! contains one or more strict inequality constraints.
-  bool contains_strict_inequalities() const;
+  bool has_strict_inequalities() const;
 
   //! Returns the \p k- th constraint of the system.
   Constraint& operator[](size_t k);
