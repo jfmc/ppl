@@ -37,7 +37,7 @@ namespace PPL = Parma_Polyhedra_Library;
 #define REACTIVE_ABANDONING 1
 
 /*!
-  \fn static dimension_type
+  \fn static PPL::dimension_type
     PPL::Polyhedron::conversion(Matrix& source,
                                 dimension_type start,
                                 Matrix& dest,
