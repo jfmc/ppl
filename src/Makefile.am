@@ -81,12 +81,9 @@ endif
 
 if USE_CHECKED_INTEGERS
 
-COEFFICIENT_TYPES_INCLUDE_FILES = \
-  Checked_Number.types.hh
+COEFFICIENT_TYPES_INCLUDE_FILES =
 
-COEFFICIENT_DEFS_INCLUDE_FILES = \
-  Checked_Number.defs.hh \
-  Checked_Number.inlines.hh
+COEFFICIENT_DEFS_INCLUDE_FILES =
 
 endif
 
@@ -106,6 +103,7 @@ INCLUDE_FILES = \
 compiler.hh \
 float.types.hh \
 Coefficient_traits_template.hh \
+Checked_Number.types.hh \
 $(COEFFICIENT_TYPES_INCLUDE_FILES) \
 Coefficient.types.hh \
 Interval.types.hh \
@@ -131,8 +129,6 @@ Polyhedron.types.hh \
 C_Polyhedron.types.hh \
 NNC_Polyhedron.types.hh \
 Ptr_Iterator.types.hh \
-E_NIT.types.hh \
-E_Rational.types.hh \
 DB_Row.types.hh \
 DB_Matrix.types.hh \
 BD_Shape.types.hh \
@@ -155,6 +151,8 @@ checked_float.inlines.hh \
 checked_mpz.inlines.hh \
 checked_mpq.inlines.hh \
 checked_ext.inlines.hh \
+Checked_Number.defs.hh \
+Checked_Number.inlines.hh \
 $(COEFFICIENT_DEFS_INCLUDE_FILES) \
 Coefficient.defs.hh \
 Coefficient.inlines.hh \
@@ -211,10 +209,6 @@ Widening_Function.defs.hh \
 Widening_Function.inlines.hh \
 Ptr_Iterator.defs.hh \
 Ptr_Iterator.inlines.hh \
-E_NIT.defs.hh \
-E_NIT.inlines.hh \
-E_Rational.defs.hh \
-E_Rational.inlines.hh \
 DB_Row.defs.hh \
 DB_Row.inlines.hh \
 DB_Matrix.defs.hh \
