@@ -84,48 +84,48 @@ Watchdog::Time::operator-=(const Time& y) {
 }
 
 inline Watchdog::Time
-operator+(const Watchdog::Time& x, const Watchdog::Time& y) {
-  Watchdog::Time z = x;
+Watchdog::Time::operator+(const Time& y) const {
+  Time z = *this;
   z += y;
   return z;
 }
 
 inline Watchdog::Time
-operator-(const Watchdog::Time& x, const Watchdog::Time& y) {
-  Watchdog::Time z = x;
+Watchdog::Time::operator-(const Time& y) const {
+  Time z = *this;
   z -= y;
   return z;
 }
 
 inline bool
-operator==(const Watchdog::Time& x, const Watchdog::Time& y) {
-  return x.seconds() == y.seconds() && x.microseconds() == y.microseconds();
+Watchdog::Time::operator==(const Time& y) const {
+  return seconds() == y.seconds() && microseconds() == y.microseconds();
 }
 
 inline bool
-operator!=(const Watchdog::Time& x, const Watchdog::Time& y) {
-  return !(x == y);
+Watchdog::Time::operator!=(const Time& y) const {
+  return !(*this == y);
 }
 
 inline bool
-operator<(const Watchdog::Time& x, const Watchdog::Time& y) {
-  return x.seconds() < y.seconds()
-    || (x.seconds() == y.seconds() && x.microseconds() < y.microseconds());
+Watchdog::Time::operator<(const Time& y) const {
+  return seconds() < y.seconds()
+    || (seconds() == y.seconds() && microseconds() < y.microseconds());
 }
 
 inline bool
-operator<=(const Watchdog::Time& x, const Watchdog::Time& y) {
-  return x < y || x == y;
+Watchdog::Time::operator<=(const Time& y) const {
+  return *this < y || *this == y;
 }
 
 inline bool
-operator>(const Watchdog::Time& x, const Watchdog::Time& y) {
-  return y < x;
+Watchdog::Time::operator>(const Time& y) const {
+  return y < *this;
 }
 
 inline bool
-operator>=(const Watchdog::Time& x, const Watchdog::Time& y) {
-  return y <= x;
+Watchdog::Time::operator>=(const Time& y) const {
+  return y <= *this;
 }
 
 inline void

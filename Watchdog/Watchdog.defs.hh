@@ -64,23 +64,16 @@ private:
     Time& operator +=(const Time& y);
 
     Time& operator -=(const Time& y);
+
+    Time operator+(const Time& y) const;
+    Time operator-(const Time& y) const;
+    bool operator==(const Time& y) const;
+    bool operator!=(const Time& y) const;
+    bool operator<(const Time& y) const;
+    bool operator<=(const Time& y) const;
+    bool operator>(const Time& y) const;
+    bool operator>=(const Time& y) const;
   };
-
-  friend Time Parma_Watchdog_Library::operator+(const Time& x, const Time& y);
-
-  friend Time Parma_Watchdog_Library::operator-(const Time& x, const Time& y);
-
-  friend bool Parma_Watchdog_Library::operator==(const Time& x, const Time& y);
-
-  friend bool Parma_Watchdog_Library::operator!=(const Time& x, const Time& y);
-
-  friend bool Parma_Watchdog_Library::operator<(const Time& x, const Time& y);
-
-  friend bool Parma_Watchdog_Library::operator<=(const Time& x, const Time& y);
-
-  friend bool Parma_Watchdog_Library::operator>(const Time& x, const Time& y);
-
-  friend bool Parma_Watchdog_Library::operator>=(const Time& x, const Time& y);
 
   // Different kinds of handler for the watchdog events.
   class Handler {
