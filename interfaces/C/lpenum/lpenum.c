@@ -375,7 +375,6 @@ solve(char* file_name) {
   mpq_t* rational_coefficient;
   mpq_t* objective;
   ppl_LinExpression_t ppl_objective_le;
-  ppl_Generator_t ppl_objective_ray;
   mpq_t* candidate;
   int first_candidate;
   mpq_t optimum;
@@ -549,19 +548,8 @@ solve(char* file_name) {
   if (verbose)
     fprintf(stderr, "\n");
 
-  /* Create a ray out of the LinExpression: this points to the optimal
-     direction. */
-  ppl_assign_Coefficient_from_mpz_t(ppl_coeff, den_lcm);
-  ppl_new_Generator(&ppl_objective_ray, ppl_objective_le,
-		    PPL_GENERATOR_TYPE_RAY, ppl_coeff);
-
-  /* Check whether the problem is unbounded.  This is done by checking
-     whether the relation of the polyhedron with the "objective ray"
-     implies subsumption, in which case the problem is unbounded. */
-  unbounded
-    = (ppl_Polyhedron_relation_with_Generator(ppl_ph,
-					      ppl_objective_ray)
-       & PPL_POLY_GEN_RELATION_SUBSUMES) == PPL_POLY_GEN_RELATION_SUBSUMES;
+  /* Check whether the problem is unbounded. */
+  unbounded = !ppl_Polyhedron_bounds_from_above(ppl_ph, ppl_objective_le);
 
   if (print_timings) {
     fprintf(stderr, "Time to check for unboundedness: ");
