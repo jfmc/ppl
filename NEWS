@@ -10,6 +10,14 @@ NEWS for version 0.6  (released on August 18, 2004)
 New and Changed Features
 ========================
 
+o  New methods
+
+     void Polyhedron::expand_dimension(Variable, dimension_type) and
+     void Polyhedron::fold_dimensions(const Variables_Set&, Variable)
+
+   allow the easy realization of summary dimensions as proposed
+   by Gopan and colleagues in their TACAS 2004 paper.
+
 o  A new `demos' directory has been added.  In the `ppl_lcdd'
    subdirectory, this contains a sort of clone of the cddlib test
    program `lcdd', written using the PPL's C++ interface, together
