@@ -38,6 +38,7 @@ site: http://www.cs.unipr.it/ppl/ . */
 #include "Poly_Gen_Relation.defs.hh"
 #include "BHRZ03_Certificate.types.hh"
 #include "H79_Certificate.types.hh"
+#include "BD_Shape.types.hh"
 #include <vector>
 #include <iosfwd>
 
@@ -2109,9 +2110,6 @@ private:
 			      Constraint_System& cs_selected,
 			      Constraint_System& cs_not_selected) const;
 
-  friend class Parma_Polyhedra_Library::BHRZ03_Certificate;
-  friend class Parma_Polyhedra_Library::H79_Certificate;
-
   bool BHRZ03_combining_constraints(const Polyhedron& y,
 				    const BHRZ03_Certificate& y_cert,
  				    const Polyhedron& H79,
@@ -2205,6 +2203,11 @@ private:
   static int simplify(Linear_System& mat, Saturation_Matrix& sat);
 
   //@} // Minimization-Related Static Member Functions
+
+  template <typename T> friend class Parma_Polyhedra_Library::BD_Shape;
+  friend class Parma_Polyhedra_Library::BHRZ03_Certificate;
+  friend class Parma_Polyhedra_Library::H79_Certificate;
+
 
   //! \name Exception Throwers
   //@{
