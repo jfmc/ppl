@@ -3389,6 +3389,33 @@ PPL::Polyhedron::select_H79_constraints(const Polyhedron& y,
 
 
 void
+PPL::Polyhedron::select_CH78_constraints(const Polyhedron& y,
+					 ConSys& cs_selection) const {
+  // Private method: the caller must ensure the following conditions.
+  assert(topology() == y.topology()
+	 && topology() == cs_selection.topology()
+	 && space_dimension() == y.space_dimension());
+  assert(!is_empty()
+	 && !has_pending_constraints()
+	 && generators_are_up_to_date());
+  assert(!y.is_empty()
+	 && !y.has_something_pending()
+	 && y.constraints_are_minimized());
+  
+  // A constraint in `y.con_sys' is copied into `cs_selection'
+  // if it is satisfied by all the generators of `gen_sys'.
+
+  // Note: the loop index `i' goes upwards to avoid reversing
+  // the ordering of the chosen constraints.
+  for (dimension_type i = 0, iend = y.con_sys.num_rows(); i < iend; ++i) {
+    const Constraint& c = y.con_sys[i];
+    if (gen_sys.satisfied_by_all_generators(c))
+      cs_selection.insert(c);
+  }
+}
+
+
+void
 PPL::Polyhedron::H79_widening_assign(const Polyhedron& y) {
   Polyhedron& x = *this;
   // Topology compatibility check.

@@ -1605,8 +1605,15 @@ private:
   bool strongly_minimize_generators() const;
 
   //! \brief
-  //! Copies into \p cs_selection the constraints that will be used
-  //! to compute the \ref H79_widening "H79-widening" of \p *this and \p y.
+  //! Copies into \p cs_selection the constraints of `y' corresponding
+  //! to the definition of the CH78-widening of \p *this and \p y.
+  void select_CH78_constraints(const Polyhedron& y,
+			       ConSys& cs_selected) const;
+
+  //! \brief
+  //! Splits the constraints of `x' into two subsets, depending on whether
+  //! or not they are selected to compute the \ref H79_widening "H79-widening"
+  //! of \p *this and \p y.
   void select_H79_constraints(const Polyhedron& y,
 			      ConSys& cs_selected,
 			      ConSys& cs_not_selected) const;
