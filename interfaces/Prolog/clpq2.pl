@@ -79,9 +79,9 @@ solve(T, (A; B), PolysIn, PolysOut, VarNames) :-
     % disjunction is dealt with by making a copy of the polyhedron
     % before starting each branch.
     PolysIn = [Poly|_],
-    ((ppl_copy_polyhedron(Poly,Q),
+    ((ppl_new_Polyhedron_from_Polyhedron(T, Poly, T, Q),
     solve(T, A, [Q|PolysIn], PolysOut, VarNames));
-    (ppl_copy_polyhedron(Poly,Q),
+    (ppl_new_Polyhedron_from_Polyhedron(T, Poly, T, Q),
     solve(T, B, [Q|PolysIn], PolysOut, VarNames))).
 
 solve(_, {}, Polys, Polys, _VarNames) :-
@@ -176,18 +176,28 @@ parameter_passing(Atom, Head, PP_Constraints) :-
     Head =.. [_|Formals],
     build_pp_constraints(Actuals, Formals, PP_Constraints).
 
-
 % When the direct binding exists, we use unification.
-% Otherwise, we add the contsraint.
+% Otherwise, we add the constraint.
 % By only adding new variables when needed, the computation
 % is much more efficient.
 build_pp_constraints([], [], []).
 build_pp_constraints([A|Actuals], [F|Formals], NewEquations) :-
     build_pp_constraints(Actuals, Formals, Equations),
     (A = F ->
-     NewEquations = Equations
+      NewEquations = Equations
     ;
-     NewEquations = [(A = F)|Equations]
+      ((integer(A) ; A = '$VAR'(_)) ->
+        NewEquations = [(A = F)|Equations]
+      ;
+        (A =.. [AFunct|Aargs],
+        F =.. [FFunct|Fargs],
+        (AFunct == FFunct ->
+          (build_pp_constraints(Aargs, Fargs, Equations1),
+          append(Equations1, Equations, NewEquations))
+	;
+          NewEquations = [0 = 1]
+        ))        
+      )
     ).
 
 select_clause(Atom, Head, Body) :-
