@@ -21,7 +21,11 @@ USA.
 For the most up-to-date information see the Parma Polyhedra Library
 site: http://www.cs.unipr.it/ppl/ . */
 
-:- module(_, _, []).
+:- module(_, [main/0], [debug]).
+:- use_module(library(dynamic)). 
+:- use_module(library(lists)). 
+:- use_module(library(read)).
+:- use_module(library(write)).
 :- use_module(ppl_ciao).
 /*
 ,
@@ -39,9 +43,10 @@ site: http://www.cs.unipr.it/ppl/ . */
 ]).
 */
 
-%eat_eol.
+eat_eol.
+
+:- include('clpq.pl').
 
 main :-
-	true.
-%    ppl_initialize,
-%    common_main.
+    ppl_initialize,
+    common_main.

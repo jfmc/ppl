@@ -51,13 +51,13 @@ ppl_ciao.po: ppl_ciao.pl fake_main.pl
 	  rm -f ppl_ciao.pl fake_main.pl; \
 	fi
 
-ciao_clpq: libppl_ciao.la ppl_ciao.po ciao_clpq.pl ../clpq.pl
+ciao_clpq: libppl_ciao.la ppl_ciao.pl ciao_clpq.pl ../clpq.pl
 	if [ $(abs_srcdir) != `pwd` ]; then \
 	  cp -f $(srcdir)/ciao_clpq.pl $(srcdir)/ppl_ciao.pl $(srcdir)/../clpq.pl .; \
 	fi
-	ciaoc -o $@ ciao_clpq.pl clpq.pl
+	ciaoc -o $@ ciao_clpq.pl
 	if [ $(abs_srcdir) != `pwd` ]; then \
-	  rm -f ciao_clpq.pl clpq.pl; \
+	  rm -f ciao_clpq.pl ppl_ciao.pl clpq.pl; \
 	fi
 
 CLPQ_TESTS = \
