@@ -3156,8 +3156,8 @@ PPL::Polyhedron::topological_closure_assign() {
 
   if (constraints_are_up_to_date()) {
     // Transform all strict inequalities into non-strict ones.
-    for (size_t i = cs.num_rows(); i-- > 0; ) {
-      Constraint& c = cs[i];
+    for (size_t i = con_sys.num_rows(); i-- > 0; ) {
+      Constraint& c = con_sys[i];
       // FIXME : the non-triviality test is just a patch
       // to avoid considering the inequality constraint \epsilon <= 1.
       if (c[eps_index] < 0 && !c.is_trivial_true()) {
