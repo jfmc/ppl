@@ -1053,7 +1053,7 @@ throw_different_dimensions(const char* method,
 bool
 PPL::Polyhedron::add_constraints(ConSys& cs) {
   size_t cs_num_columns = cs.num_columns();
-  assert(cs_num_columns != 1);
+ 
   // Dimension-consistency check:
   // the dimension of `cs' can not be greater than space_dimension().
   if (space_dimension() < cs_num_columns - 1)
@@ -1065,6 +1065,19 @@ PPL::Polyhedron::add_constraints(ConSys& cs) {
   // when the polyhedron space is zero-dim.)
   if (cs_num_columns == 0)
     return true;
+
+  if (cs_num_columns == 1 && space_dimension() == 0) {
+    // Checking for an inconsistent constraint.
+    for (size_t i = cs.num_rows(); i-- > 0; ) {
+      const Row& r = cs[i];
+      if (r[0] != 0 && (r.is_line_or_equality() || r[0] < 0)) {
+	// Inconsistent constraint found.
+	status.set_empty();
+	return false;
+      }
+    }
+    return true;
+  }
 
   // We use `check_empty()' because we want the flag EMPTY
   // to precisely represents the status of the polyhedron
@@ -1218,7 +1231,6 @@ PPL::Polyhedron::insert(const Generator& g) {
 void
 PPL::Polyhedron::add_constraints_lazy(ConSys& cs) {
   size_t cs_num_columns = cs.num_columns();  
-  assert(cs_num_columns != 1);
   // Dimension-consistency check:
   // the dimension of `cs' can not be greater than space_dimension().
   if (space_dimension() < cs_num_columns - 1)
@@ -1231,6 +1243,19 @@ PPL::Polyhedron::add_constraints_lazy(ConSys& cs) {
   if (cs_num_columns == 0)
     return;
 
+  if (cs_num_columns == 1 && space_dimension() == 0) {
+    // Checking for an inconsistent constraint.
+    for (size_t i = cs.num_rows(); i-- > 0; ) {
+      const Row& r = cs[i];
+      if (r[0] != 0 && (r.is_line_or_equality() || r[0] < 0)) {
+	// Inconsistent constraint found.
+	status.set_empty();
+	return;
+      }
+    }
+    return;
+  }
+      
   // We only need that the system of constraints is up-to-date.
   if (!constraints_are_up_to_date())
     minimize();
@@ -1264,7 +1289,6 @@ PPL::Polyhedron::add_constraints_lazy(ConSys& cs) {
 void
 PPL::Polyhedron::add_generators(GenSys& gs) {
   size_t gs_num_columns = gs.num_columns();
-  assert(gs_num_columns != 1);
   // Dimension-consistency check:
   // the dimension of `gs' can not be greater than space_dimension().
   if (space_dimension() < gs_num_columns - 1)
@@ -1277,6 +1301,11 @@ PPL::Polyhedron::add_generators(GenSys& gs) {
   if (gs_num_columns == 0)
     // FIXME: what if polyhedron is empty ?
     return;
+
+  if (gs_num_columns == 1 && space_dimension() == 0) {
+    set_zero_dim_univ();
+    return;
+  }
 
   if (!gs.is_sorted())
     gs.sort_rows();
