@@ -1659,7 +1659,19 @@ PPL::Polyhedron::add_generators_and_minimize(GenSys& gs) {
     clear_sat_c_up_to_date();
   }
   else {
-    // The polyhedron is no longer empty and generators are up-to-date.
+    // Checking if the system of generators contains a vertex.
+    size_t i = 0;
+    size_t iend = gs.num_rows();
+    for ( ; i < iend; ++i) {
+      if (gs[i][0] != 0)
+	break;
+    }
+    if (i == iend)
+      throw std::invalid_argument("PPL::Polyhedron::add_generators_and_min"
+				  "(gs): non-empty gs with no vertices");
+
+    // If the system of generators has a vertex, the polyhedron is no
+    // longer empty and generators are up-to-date.
     std::swap(gen_sys, gs);
     clear_empty();
     set_generators_up_to_date();
@@ -1699,6 +1711,18 @@ PPL::Polyhedron::add_generators(GenSys& gs) {
 
  
   if (is_empty()) {
+    // Checking if the system of generators contains a vertex.
+    size_t i = 0;
+    size_t iend = gs.num_rows();
+    for ( ; i < iend; ++i) {
+      if (gs[i][0] != 0)
+	break;
+    }
+    if (i == iend)
+      throw std::invalid_argument("PPL::Polyhedron::add_generators(gs): "
+				  "non-empty gs with no vertices");
+
+    // The system of generators contains at least a vertex.
     // If needed, we extend `gs' to the right space dimension.
     if (space_dim > gs_space_dim)
       gs.add_zero_columns(space_dim - gs_space_dim);
