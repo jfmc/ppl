@@ -77,7 +77,7 @@ site: http://www.cs.unipr.it/ppl/ . */
 
     \note
     After inserting a multiset of constraints in a constraint system,
-    there is no guarantee at all that an <EM>exact</EM> copy of them
+    there are no guarantees that an <EM>exact</EM> copy of them
     can be retrieved:
     in general, only an <EM>equivalent</EM> constraint system
     will be available, where original constraints may have been

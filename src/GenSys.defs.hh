@@ -148,7 +148,7 @@ namespace Parma_Polyhedra_Library {
 
     \note
     After inserting a multiset of generators in a generator system,
-    there is no guarantee at all that an <EM>exact</EM> copy of them
+    there are no guarantees that an <EM>exact</EM> copy of them
     can be retrieved:
     in general, only an <EM>equivalent</EM> generator system
     will be available, where original generators may have been
