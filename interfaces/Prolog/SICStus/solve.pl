@@ -16,6 +16,15 @@ solve(A=B,Polyhedron,InDims,OutDims):-
 solve((A,B),Polyhedron,InDims,OutDims):- 
     !, 
     ppl_copy_polyhedron(Polyhedron,Q),
+    (try_solve((A,B),Polyhedron,InDims,OutDims,Q)
+     ->
+     ppl_delete_polyhedron(Q)
+     ;
+     ppl_delete_polyhedron(Q),
+     fail
+    ).
+
+try_solve((A,B),Polyhedron,InDims,OutDims,Q):-
     solve(A,Polyhedron,InDims,AOutDims),
     solve(B,Polyhedron,AOutDims,OutDims),
     (ppl_check_empty(Polyhedron)
@@ -25,8 +34,7 @@ solve((A,B),Polyhedron,InDims,OutDims):-
      fail
      ;
      true
-    ),
-    ppl_delete_polyhedron(Q).
+    ).
 
 solve({Cs},Polyhedron,M,N):- 
     !,
