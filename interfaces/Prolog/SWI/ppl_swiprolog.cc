@@ -282,6 +282,7 @@ static PL_extension predicates[] = {
   PL_EXTENSION_ENTRY(ppl_insert_generator, 2)
   PL_EXTENSION_ENTRY(ppl_add_constraints_and_minimize, 2)
   PL_EXTENSION_ENTRY(ppl_add_generators_and_minimize, 2)
+  PL_EXTENSION_ENTRY(ppl_add_dimensions_and_constraints, 2)
   PL_EXTENSION_ENTRY(ppl_check_empty, 1)
   PL_EXTENSION_ENTRY(ppl_check_universe, 1)
   PL_EXTENSION_ENTRY(ppl_is_bounded, 1)
