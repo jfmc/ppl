@@ -252,4 +252,6 @@ check_PROGRAMS = $(TESTS) $(BUGS)
 
 BUGS =
 
-MOSTLYCLEANFILES =
+MOSTLYCLEANFILES = \
+ascii_dump_load1.dat \
+ascii_dump_load2.dat
