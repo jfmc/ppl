@@ -322,23 +322,22 @@ Then the <EM>Minkowski's sum</EM> of
 
 <B>Generators representation</B>
 
-If \f$P\f$ is a polyhedron,
-then it can also be represented by
-a set of points \f$V\f$,
-a set of rays \f$R\f$ and
-a set of lines \f$L\f$.
-Together, these three sets are called the <EM>generators</EM> of \f$P\f$.
-and generate \f$P\f$ in the sense that
+A polyhedron \f$P \sseq \Rset^n\f$ can also be represented by
+a finite set \f$V\f$ of points of \f$P\f$,
+a finite set \f$R\f$ of rays of \f$P\f$ and
+a finite set \f$L\f$ of lines of \f$P\f$.
+The elements of these three sets are the <EM>generators</EM> of \f$P\f$,
+in the sense that
 \f[
-  P = \mathcal{V} + \mathcal{R} + \mathcal{L}
+  P = \mathcal{V} + \mathcal{R} + \mathcal{L},
 \f]
 where the symbol '\f$+\f$' denotes the Minkowski's sum and
  - \f$\mathcal{V}\f$ is the set of all the convex combinations
    of the points in \f$V\f$;
  - \f$\mathcal{R}\f$ is the set of all the non-negative combinations
-   of the points in \f$R\f$; and
+   of the rays in \f$R\f$; and
  - \f$\mathcal{L}\f$ is the set of all the linear combinations
-   of the points in \f$L\f$.
+   of the lines in \f$L\f$.
 
 Note that:
 \f$\mathcal{V}\f$ is a polytope,
@@ -347,7 +346,8 @@ Note that:
 
 Note also that \f$V\f$ must contain all vertices of \f$P\f$.
 However, \f$V\f$ can contain other points,
-particularly if the set of vertices in \f$P\f$ is empty.
+particularly if \f$P\f$ is a non-empty polyhedron having no vertices
+(e.g., a half-space).
 
 In the case that \f$P\f$ contains at least one vertex,
 (in which case, \f$L = \emptyset\f$)
