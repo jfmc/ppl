@@ -319,8 +319,8 @@ public:
   /*!
     See also Polyhedron::map_space_dimensions.
   */
-  template <typename PartialFunction>
-  void map_space_dimensions(const PartialFunction& pfunc);
+  template <typename Partial_Function>
+  void map_space_dimensions(const Partial_Function& pfunc);
 
   //@} // Member Functions that May Modify the Dimension of the Vector Space
 

@@ -1531,7 +1531,7 @@ public:
     \param pfunc
     The partial function specifying the destiny of each space dimension.
 
-    The template class PartialFunction must provide the following
+    The template class Partial_Function must provide the following
     methods.
     \code
       bool has_empty_codomain() const
@@ -1563,8 +1563,8 @@ public:
     function with the properties described in the
     \ref map_space_dimensions "specification of the mapping operator".
   */
-  template <typename PartialFunction>
-  void map_space_dimensions(const PartialFunction& pfunc);
+  template <typename Partial_Function>
+  void map_space_dimensions(const Partial_Function& pfunc);
 
   //! Creates \p m copies of the space dimension corresponding to \p var.
   /*!

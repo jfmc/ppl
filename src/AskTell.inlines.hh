@@ -273,9 +273,9 @@ AskTell<CS>::remove_higher_space_dimensions(dimension_type new_dimension) {
 }
 
 template <typename CS>
-template <typename PartialFunction>
+template <typename Partial_Function>
 void
-AskTell<CS>::map_space_dimensions(const PartialFunction& pfunc) {
+AskTell<CS>::map_space_dimensions(const Partial_Function& pfunc) {
   if (is_top()) {
     dimension_type n = 0;
     for (dimension_type i = space_dim; i-- > 0; ) {

@@ -229,8 +229,8 @@ public:
   */
   void remove_higher_space_dimensions(dimension_type new_dimension);
 
-  template <typename PartialFunction>
-  void map_space_dimensions(const PartialFunction& pfunc);
+  template <typename Partial_Function>
+  void map_space_dimensions(const Partial_Function& pfunc);
 
   void H79_extrapolation_assign(const AskTell& y);
 
