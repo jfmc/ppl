@@ -24,6 +24,10 @@ Efficiency Issues
   as far as the classes LinExpression, Constraint and Generator
   are concerned.
 
+- In Polyhedron::strongly_minimize_constraints(), after the removal
+  of eps-redundant constraints, find an efficient way to test whether
+  or not the eps_leq_one constraint is needed to obtain an upper bound
+  on the epsilon dimension.
 
 Cutting-Plane Methods
 =====================
