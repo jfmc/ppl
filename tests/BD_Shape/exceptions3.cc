@@ -43,7 +43,7 @@ error1() {
     // BD_Shape::affine_preimage(v, expr, d): it is illegal
     // to apply to a expression with the denominator
     // equal to zero.
-    Integer d = 0;
+    Coefficient d = 0;
     bd.affine_preimage(x, expr, d);
   }
   catch (invalid_argument& e) {
@@ -192,7 +192,7 @@ error7() {
     // BD_Shape::generalized_affine_image(v, r, expr, d): it is illegal
     // to apply to a expression with the denominator
     // equal to zero.
-    Integer d = 0;
+    Coefficient d = 0;
     bd.generalized_affine_image(x, LESS_THAN_OR_EQUAL, expr, d);
   }
   catch (invalid_argument& e) {

@@ -216,7 +216,7 @@ error7() {
     // BD_Shape::affine_image(v, expr,d): it is illegal applying
     // the function with a linear expression with the denominator equal to
     // zero.
-    Integer d = 0;
+    Coefficient d = 0;
     bd.affine_image(x, coeff1, d);
   }
   catch (invalid_argument& e) {
@@ -323,7 +323,7 @@ error11() {
     // BD_Shape::affine_image(v, expr,d): it is illegal applying
     // the function with a linear expression with the denominator equal to
     // zero.
-    Integer d = 3;
+    Coefficient d = 3;
     bd.affine_image(x, coeff1, d);
   }
   catch (invalid_argument& e) {
