@@ -206,17 +206,15 @@ PPL::Row::linear_combine(const Row& y, const dimension_type k) {
   TEMP_INTEGER(scale);
   TEMP_INTEGER(scaled_x_k);
   TEMP_INTEGER(scaled_y_k);
-  TEMP_INTEGER(prod1);
-  TEMP_INTEGER(prod2);
   gcd_assign(scale, x[k], y[k]);
   exact_div_assign(scaled_x_k, x[k], scale);
   exact_div_assign(scaled_y_k, y[k], scale);
 
   for (dimension_type i = size(); i-- > 0; )
     if (i != k) {
-      prod1 = x[i] * scaled_y_k;
-      prod2 = y[i] * scaled_x_k;
-      x[i] = prod1 - prod2;
+      Integer& x_i = x[i];
+      x_i *= scaled_y_k;
+      sub_mul_assign(x_i, y[i], scaled_x_k);
     }
   x[k] = 0;
   x.strong_normalize();

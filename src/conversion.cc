@@ -375,8 +375,6 @@ PPL::Polyhedron::conversion(Matrix& source,
   TEMP_INTEGER(scale);
   TEMP_INTEGER(scaled_sp_i);
   TEMP_INTEGER(scaled_sp_o);
-  TEMP_INTEGER(prod1);
-  TEMP_INTEGER(prod2);
 
   // Converting the sub-matrix of `source' having rows with indexes
   // from `start' to the last one (i.e., `source_num_rows' - 1).
@@ -498,13 +496,14 @@ PPL::Polyhedron::conversion(Matrix& source,
 	  exact_div_assign(scaled_sp_o,
 			   scalar_prod[num_lines_or_equalities],
 			   scale);
+	  Row& dest_i = dest[i];
 	  for (dimension_type c = dest_num_columns; c-- > 0; ) {
-	    // FIXME: why not use one less temporary?
-	    prod1 = scaled_sp_o * dest[i][c];
-	    prod2 = scaled_sp_i * dest[num_lines_or_equalities][c];
-	    dest[i][c] = prod1 - prod2;
+	    Integer& dest_i_c = dest_i[c];
+	    dest_i_c *= scaled_sp_o;
+	    sub_mul_assign(dest_i_c,
+			   scaled_sp_i, dest[num_lines_or_equalities][c]);
 	  }
-	  dest[i].strong_normalize();
+	  dest_i.strong_normalize();
 	  scalar_prod[i] = 0;
 	  // `dest' has already been set as non-sorted.
 	}
@@ -540,13 +539,14 @@ PPL::Polyhedron::conversion(Matrix& source,
 	  exact_div_assign(scaled_sp_o,
 			   scalar_prod[num_lines_or_equalities],
 			   scale);
+	  Row& dest_i = dest[i];
 	  for (dimension_type c = dest_num_columns; c-- > 0; ) {
-	    // FIXME: why not use one less temporary?
-	    prod1 = scaled_sp_o * dest[i][c];
-	    prod2 = scaled_sp_i * dest[num_lines_or_equalities][c];
-	    dest[i][c] = prod1 - prod2;
+	    Integer& dest_i_c = dest_i[c];
+	    dest_i_c *= scaled_sp_o;
+	    sub_mul_assign(dest_i_c,
+			   scaled_sp_i, dest[num_lines_or_equalities][c]);
 	  }
-	  dest[i].strong_normalize();
+	  dest_i.strong_normalize();
 	  scalar_prod[i] = 0;
 	  // `dest' has already been set as non-sorted.
 	}
@@ -713,7 +713,8 @@ PPL::Polyhedron::conversion(Matrix& source,
 		// Now we actually check for redundancy by computing
 		// adjacency information.
 		bool redundant = false;
-		for (dimension_type l = num_lines_or_equalities; l < bound; ++l)
+		for (dimension_type
+		       l = num_lines_or_equalities; l < bound; ++l)
 		  if (l != i && l != j
 		      && subset_or_equal(sat[l], new_satrow)) {
 		    // Found another generator saturating all the
@@ -753,9 +754,9 @@ PPL::Polyhedron::conversion(Matrix& source,
 				   scalar_prod[j],
 				   scale);
 		  for (dimension_type c = dest_num_columns; c-- > 0; ) {
-		    prod1 = scaled_sp_i * dest[j][c];
-		    prod2 = scaled_sp_o * dest[i][c];
-		    new_row[c] = prod1 - prod2;
+		    Integer& new_row_c = new_row[c];
+		    new_row_c = scaled_sp_i * dest[j][c];
+		    sub_mul_assign(new_row_c, scaled_sp_o, dest[i][c]);
 		  }
 		  new_row.strong_normalize();
 		  // Since we added a new generator to `dest',
