@@ -259,11 +259,11 @@ static mpz_t tmp_z;
 static mpq_t tmp1_q;
 static mpq_t tmp2_q;
 static ppl_Coefficient_t ppl_coeff;
-static LPI* lp;
+static LPX* lp;
 
 static void
 print_variable(FILE* f, unsigned int var) {
-  const char* name = glp_get_col_name(lp, var+1);
+  const char* name = lpx_get_col_name(lp, var+1);
   if (name != NULL)
     fprintf(f, "%s", name);
   else
@@ -332,10 +332,10 @@ add_constraints(ppl_LinExpression_t ppl_le,
   ppl_Constraint_t ppl_c;
   ppl_LinExpression_t ppl_le2;
   switch (type) {
-  case 'F':
+  case LPX_FR:
     break;
 
-  case 'L':
+  case LPX_LO:
     mpz_mul(tmp_z, den_lcm, mpq_numref(rational_lb));
     mpz_neg(tmp_z, tmp_z);
     ppl_assign_Coefficient_from_mpz_t(ppl_coeff, tmp_z);
@@ -350,7 +350,7 @@ add_constraints(ppl_LinExpression_t ppl_le,
     ppl_delete_Constraint(ppl_c);
     break;
 
-  case 'U':
+  case LPX_UP:
     mpz_mul(tmp_z, den_lcm, mpq_numref(rational_ub));
     mpz_neg(tmp_z, tmp_z);
     ppl_assign_Coefficient_from_mpz_t(ppl_coeff, tmp_z);
@@ -365,7 +365,7 @@ add_constraints(ppl_LinExpression_t ppl_le,
     ppl_delete_Constraint(ppl_c);
     break;
 
-  case 'D':
+  case LPX_DB:
     ppl_new_LinExpression_from_LinExpression(&ppl_le2, ppl_le);
 
     mpz_mul(tmp_z, den_lcm, mpq_numref(rational_lb));
@@ -396,7 +396,7 @@ add_constraints(ppl_LinExpression_t ppl_le,
     ppl_delete_Constraint(ppl_c);
     break;
 
-  case 'S':
+  case LPX_FX:
     mpz_mul(tmp_z, den_lcm, mpq_numref(rational_lb));
     mpz_neg(tmp_z, tmp_z);
     ppl_assign_Coefficient_from_mpz_t(ppl_coeff, tmp_z);
@@ -409,6 +409,10 @@ add_constraints(ppl_LinExpression_t ppl_le,
     }
     ppl_ConSys_insert_Constraint(ppl_cs, ppl_c);
     ppl_delete_Constraint(ppl_c);
+    break;
+
+ default:
+    fatal("internal error");
     break;
   }
 }
@@ -440,7 +444,7 @@ solve(char* file_name) {
   if (print_timings)
     start_clock();
 
-  lp = glp_read_mps1(file_name);
+  lp = lpx_read_mps(file_name);
   if (lp == NULL)
     fatal("cannot read MPS file `%s'", file_name);
 
@@ -451,7 +455,7 @@ solve(char* file_name) {
     start_clock();
   }
 
-  dimension = glp_get_num_cols(lp);
+  dimension = lpx_get_num_cols(lp);
 
   coefficient_index = (int*) malloc((dimension+1)*sizeof(int));
   coefficient_value = (double*) malloc((dimension+1)*sizeof(double));
@@ -471,18 +475,18 @@ solve(char* file_name) {
     fprintf(output_file, "Constraints:\n");
 
   /* Set up the row (ordinary) constraints. */
-  num_rows = glp_get_num_rows(lp);
+  num_rows = lpx_get_num_rows(lp);
   for (row = 1; row <= num_rows; ++row) {
     /* Initialize the least common multiple computation. */
     mpz_set_si(den_lcm, 1);
     /* Set `nz' to the number of non-zero coefficients. */ 
-    nz = glp_get_row_coef(lp, row, coefficient_index, coefficient_value);
+    nz = lpx_get_mat_row(lp, row, coefficient_index, coefficient_value);
     for (i = 1; i <= nz; ++i) {
       mpq_set_d(rational_coefficient[i], coefficient_value[i]);
       /* Update den_lcm. */
       mpz_lcm(den_lcm, den_lcm, mpq_denref(rational_coefficient[i]));
     }
-    glp_get_row_bnds(lp, row, &type, &lb, &ub);
+    lpx_get_row_bnds(lp, row, &type, &lb, &ub);
     mpq_set_d(rational_lb, lb);
     mpz_lcm(den_lcm, den_lcm, mpq_denref(rational_lb));
     mpq_set_d(rational_ub, ub);
@@ -508,7 +512,7 @@ solve(char* file_name) {
   /* Set up the columns constraints, i.e., variable bounds. */
   for (column = 1; column <= dimension; ++column) {
 
-    glp_get_col_bnds(lp, column, &type, &lb, &ub);
+    lpx_get_col_bnds(lp, column, &type, &lb, &ub);
 
     mpq_set_d(rational_lb, lb);
     mpq_set_d(rational_ub, ub);
@@ -559,9 +563,11 @@ solve(char* file_name) {
   /* Initialize the least common multiple computation. */
   mpz_set_si(den_lcm, 1);
 
-  for (i = 0; i <= dimension; ++i) {
+  mpq_init(objective[0]);
+  mpq_set_d(objective[0], lpx_get_obj_c0(lp));
+  for (i = 1; i <= dimension; ++i) {
     mpq_init(objective[i]);
-    mpq_set_d(objective[i], glp_get_obj_coef(lp, i));
+    mpq_set_d(objective[i], lpx_get_col_coef(lp, i));
     /* Update den_lcm. */
     mpz_lcm(den_lcm, den_lcm, mpq_denref(objective[i]));
   }
@@ -687,7 +693,7 @@ solve(char* file_name) {
   free(candidate);
 
   ppl_delete_Polyhedron(ppl_ph);
-  glp_delete_prob(lp);
+  lpx_delete_prob(lp);
 }
 
 static void
