@@ -9,6 +9,19 @@ This is work in progress and we hope to include it in
 release 0.4 of the Parma Polyhedra Library.
 
 
+Z-Polyhedra
+===========
+
+We plan to extend the PPL to deal with Z-polyhedra [Ancourt91th].
+Z-polyhedra are intersections and other representations for discrete sets.
+
+  C. Ancourt.
+  Génération automatique de codes de transfert pour
+  multiprocesseurs à méemoires locales.
+  PhD thesis, Université de Paris VI, March 1991.
+
+
+
 Design and Implementation of Strict Weak Orderings
 ==================================================
 
