@@ -371,12 +371,12 @@ public:
   //! Assigns the convex hull of \p *this \f$\cup\f$ \p y to \p *this.
   //! \exception std::invalid_argument thrown if \p *this and \p y
   //!                                  are dimension-incompatible.
-  void convex_hull_assign(const Polyhedron& y);
+  void convex_hull_assign_and_minimize(const Polyhedron& y);
   //! Assigns the convex hull of \p *this \f$\cup\f$ \p y to \p *this,
   //! without minimizing the result.
   //! \exception std::invalid_argument thrown if \p *this and \p y
   //!                                  are dimension-incompatible.
-  void convex_hull_assign_lazy(const Polyhedron& y);
+  void convex_hull_assign(const Polyhedron& y);
 
   //! Returns the relation between the generators of \p *this
   //! and the constraint \p c.
@@ -507,7 +507,7 @@ public:
   //!                       polyhedron is empty.
   //! \exception std::invalid_argument thrown if \p *this and \p cs
   //!                                  are dimension-incompatible.
-  bool add_constraints(ConSys& cs);
+  bool add_constraints_and_minimize(ConSys& cs);
   //! Adds the specified constraints without minimizing.
   //! \param  cs             The constraints that will be added to the
   //!                        current system of constraints. This parameter
@@ -515,7 +515,7 @@ public:
   //!                        it can be modified.
   //! \exception std::invalid_argument thrown if \p *this and \p cs 
   //!                                  are dimension-incompatible.
-  void add_constraints_lazy(ConSys& cs);
+  void add_constraints(ConSys& cs);
  
   //! First increases the space dimension of \p *this by adding
   //! \p cs.space_dimension() new dimensions;

@@ -1,4 +1,4 @@
-/* An incorrect use of the function convex_hull_assign.
+/* An incorrect use of the function convex_hull_assign_and_minimize.
    Copyright (C) 2001 Roberto Bagnara <bagnara@cs.unipr.it>
 
 This file is part of the Parma Polyhedra Library (PPL).
@@ -41,7 +41,7 @@ int main() {
   gs.insert(vertex(x + y));
   Polyhedron p2(gs);
   try {
-    p2.convex_hull_assign(p1);
+    p2.convex_hull_assign_and_minimize(p1);
   }
   catch (std::invalid_argument& e) {
 #if NOISY

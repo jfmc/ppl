@@ -676,12 +676,12 @@ PPL::Polyhedron::intersection_assign(const Polyhedron& y) {
   have the same dimension) is assigned to \p *this.
 */
 void
-PPL::Polyhedron::convex_hull_assign(const Polyhedron& y) {
+PPL::Polyhedron::convex_hull_assign_and_minimize(const Polyhedron& y) {
   Polyhedron& x = *this;
 
   // Dimension-compatibility check.
   if (x.space_dimension() != y.space_dimension())
-    throw_different_dimensions("PPL::Polyhedron::convex_hull_assign(y)",
+    throw_different_dimensions("PPL::Polyhedron::convex_hull_ass_and_min(y)",
 			       x, y);
 
   // Convex hull between a polyhedron `p' and an empty polyhedron is `p'.
@@ -725,15 +725,15 @@ PPL::Polyhedron::convex_hull_assign(const Polyhedron& y) {
   The result is not minimized.
 */
 void
-PPL::Polyhedron::convex_hull_assign_lazy(const Polyhedron& y) {
+PPL::Polyhedron::convex_hull_assign(const Polyhedron& y) {
   Polyhedron& x = *this;
 
   // Dimension-compatibility check.
   if (x.space_dimension() != y.space_dimension())
-    throw_different_dimensions("PPL::Polyhedron::convex_hull_assign_lazy(y)",
+    throw_different_dimensions("PPL::Polyhedron::convex_hull_assign(y)",
 			       x, y);
 
-  // Convex hull lazy between a polyhedron `p' and
+  // Convex hull  between a polyhedron `p' and
   // an empty polyhedron is `p'.
   if (y.is_empty())
     return;
@@ -763,7 +763,7 @@ PPL::Polyhedron::convex_hull_assign_lazy(const Polyhedron& y) {
 
   // After adding new generators, constraints are no longer up-to-date.
   x.clear_constraints_up_to_date();
-  // It is lazy, do not minimize.
+  // It does not minimize the system of generators.
   x.clear_generators_minimized();
 }
 
@@ -1074,13 +1074,13 @@ throw_different_dimensions(const char* method,
   satisfying all the constraints.
 */
 bool
-PPL::Polyhedron::add_constraints(ConSys& cs) {
+PPL::Polyhedron::add_constraints_and_minimize(ConSys& cs) {
   size_t cs_space_dim = cs.space_dimension();
  
   // Dimension-compatibility check:
   // the dimension of `cs' can not be greater than space_dimension().
   if (space_dimension() < cs_space_dim)
-    throw_different_dimensions("PPL::Polyhedron::add_constraints(c)",
+    throw_different_dimensions("PPL::Polyhedron::add_constraints_and_min(c)",
 			       *this, cs);
 
   // Adding no constraints is the same as checking for emptyness.
@@ -1251,12 +1251,12 @@ PPL::Polyhedron::insert(const Generator& g) {
   Adds specified constraints to a Polyhedron without minimizing.
 */
 void
-PPL::Polyhedron::add_constraints_lazy(ConSys& cs) {
+PPL::Polyhedron::add_constraints(ConSys& cs) {
   // Dimension-compatibility check:
   // the dimension of `cs' can not be greater than space_dimension().
   size_t cs_space_dim = cs.space_dimension();  
   if (space_dimension() < cs_space_dim)
-    throw_different_dimensions("PPL::Polyhedron::add_constraints_lazy(c)",
+    throw_different_dimensions("PPL::Polyhedron::add_constraints(c)",
 			       *this, cs);
 
   // Adding no constraints is a no-op.
