@@ -1270,11 +1270,12 @@ ppl_Polyhedron_poly_difference_assign(ppl_Polyhedron_t x,
 CATCH_ALL
 
 int
-ppl_Polyhedron_BHRZ03_widening_assign(ppl_Polyhedron_t x,
-				      ppl_const_Polyhedron_t y) try {
+ppl_Polyhedron_BHRZ03_widening_assign_with_tokens(ppl_Polyhedron_t x,
+						  ppl_const_Polyhedron_t y,
+						  unsigned* tp) try {
   Polyhedron& xx = *to_nonconst(x);
   const Polyhedron& yy = *to_const(y);
-  xx.BHRZ03_widening_assign(yy);
+  xx.BHRZ03_widening_assign(yy, tp);
   return 0;
 }
 CATCH_ALL
