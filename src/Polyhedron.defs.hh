@@ -520,9 +520,8 @@ public:
   void poly_hull_assign(const Polyhedron& y);
 
   //! \brief
-  //! Computes the poly-difference of \p *this and \p y; then,
-  //! if \p *this is a C_Polyhedron, computes its topological
-  //! closure. The result is minimized and assigned to \p *this.
+  //! Assigns to \p *this the \ref polydifference "poly-difference" of
+  //! \p *this and \p y, minimizing the result.
   /*!
     \return       <CODE>false</CODE> if and only if the result is empty.
     \exception std::invalid_argument thrown if \p *this and \p y
@@ -532,10 +531,8 @@ public:
   bool poly_difference_assign_and_minimize(const Polyhedron& y);
 
   //! \brief
-  //! Computes the poly-difference of \p *this and \p y; then,
-  //! if \p *this is a C_Polyhedron, computes its topological
-  //! closure. The result, which is not guaranteed to be minimized,
-  //! is assigned to \p *this.
+  //! Assigns to \p *this the \ref polydifference "poly-difference" of
+  //! \p *this and \p y. The result is not guaranteed to be minimized.
   /*!
     \exception std::invalid_argument thrown if \p *this and \p y
                                      are topology-incompatible
@@ -562,8 +559,8 @@ public:
   Poly_Gen_Relation relation_with(const Generator& g) const;
 
   //! \brief
-  //! Assigns to \p *this the result of computing the H79-widening
-  //! (see Section \ref operations) between \p *this and \p y.
+  //! Assigns to \p *this the result of computing the
+  //! \ref h79widening "H79-widening" between \p *this and \p y.
   /*!
     \param y           A polyhedron that <EM>must</EM>
                        be contained in \p *this.
@@ -574,8 +571,9 @@ public:
   void H79_widening_assign(const Polyhedron& y);
 
   //! \brief
-  //! Limits the H79-widening computation between \p *this and \p y
-  //! by enforcing constraints \p cs and assigns the result to \p *this.
+  //! Limits the \ref h79widening "H79-widening" computation
+  //! between \p *this and \p y by enforcing constraints \p cs
+  //! and assigns the result to \p *this.
   /*!
     \param y                 A polyhedron that <EM>must</EM>
                              be contained in \p *this.

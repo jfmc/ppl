@@ -468,6 +468,7 @@ the intersection and poly-hull operators defined above
 are the binary <EM>meet</EM> and the binary <EM>join</EM>
 operators on the lattices \f$\Pset_n\f$ and \f$\CPset_n\f$.
 
+\anchor polydifference
 <B>Convex Polyhedral Difference</B>
 
 For any pair of NNC polyhedra \f$\cP_1, \cP_2 \in \Pset_n\f$,
@@ -605,6 +606,7 @@ The polyhedron \f$\cP\f$ <EM>subsumes</EM> the generator \f$g\f$ if
 adding \f$g\f$ to any generator system representing \f$\cP\f$
 does not change \f$\cP\f$.
 
+\anchor h79widening
 <B>Widening Operators</B>
 
 The library provides widening operators for the domain of
