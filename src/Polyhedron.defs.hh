@@ -1593,6 +1593,7 @@ public:
     one of the Variable objects contained in \p to_be_folded.
 
     FIXME: documentation to be completed.
+    ... dimensions are \ref fold_dimensions "folded" onto...
   */
   void fold_dimensions(const Variables_Set& to_be_folded, Variable var);
 

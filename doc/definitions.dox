@@ -588,7 +588,7 @@ otherwise the result is \f$\cQ \in \Pset_m\f$ given by
 \f]
 
 \anchor expand_dimension
-<B>Expanding one Dimension of the Vector Space to Multiple Dimensions</B>
+<B>Expanding One Dimension of the Vector Space to Multiple Dimensions</B>
 
 The operator <CODE>expand_dimension</CODE> provided by the library
 adds \f$m\f$ new dimensions to a polyhedron \f$\cP \in \Pset_n\f$,
@@ -610,6 +610,15 @@ of \f$\cP\f$.  More formally,
                                      \itc k \neq i \implies u_k = v_k = w_k
       }.
 \f]
+This operation has been proposed in \ref GDMDRS04 "[GDMDRS04]".
+
+
+\anchor fold_dimensions
+<B>Folding Multiple Dimensions of the Vector Space onto One Dimension</B>
+
+The operator <CODE>fold_dimensions</CODE> provided by the library
+TO BE CONTINUED
+
 This operation has been proposed in \ref GDMDRS04 "[GDMDRS04]".
 
 
