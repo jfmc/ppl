@@ -157,7 +157,7 @@ PPL::GenSys::add_corresponding_points() {
   GenSys& gs = *this;
   dimension_type n_rows = gs.num_rows();
   dimension_type eps_index = gs.num_columns() - 1;
-  for (dimension_type i = n_rows; i-- > 0; ) {
+  for (dimension_type i = 0; i < n_rows; i++) {
     const Generator& g = gs[i];
     if (g[0] > 0 && g[eps_index] == 0) {
       // `g' is a closure point: adding the point.
