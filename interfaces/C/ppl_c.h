@@ -1396,6 +1396,22 @@ int
 ppl_Polyhedron_is_bounded __P((ppl_const_Polyhedron_t ph));
 
 /*!
+  Returns a positive integer if \p le is bounded from above in \p ph;
+  returns 0 otherwise.
+*/
+int
+ppl_Polyhedron_bounds_from_above __P((ppl_const_Polyhedron_t ph,
+				      ppl_const_LinExpression_t le));
+
+/*!
+  Returns a positive integer if \p le is bounded from below in \p ph;
+  returns 0 otherwise.
+*/
+int
+ppl_Polyhedron_bounds_from_below __P((ppl_const_Polyhedron_t ph,
+				      ppl_const_LinExpression_t le));
+
+/*!
   Returns a positive integer if \p ph is topologically closed;
   returns 0 if \p ph is not topologically closed.
 */

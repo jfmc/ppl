@@ -1408,6 +1408,24 @@ ppl_Polyhedron_is_bounded(ppl_const_Polyhedron_t ph) try {
 CATCH_ALL
 
 int
+ppl_Polyhedron_bounds_from_above(ppl_const_Polyhedron_t ph,
+				 ppl_const_LinExpression_t le) try {
+  const Polyhedron& pph = *to_const(ph);
+  const LinExpression& lle = *to_const(le);
+  return pph.bounds_from_above(lle) ? 1 : 0;
+}
+CATCH_ALL
+
+int
+ppl_Polyhedron_bounds_from_below(ppl_const_Polyhedron_t ph,
+				 ppl_const_LinExpression_t le) try {
+  const Polyhedron& pph = *to_const(ph);
+  const LinExpression& lle = *to_const(le);
+  return pph.bounds_from_below(lle) ? 1 : 0;
+}
+CATCH_ALL
+
+int
 ppl_Polyhedron_is_topologically_closed(ppl_const_Polyhedron_t ph) try {
   const Polyhedron& pph = *to_const(ph);
   return pph.is_topologically_closed() ? 1 : 0;
