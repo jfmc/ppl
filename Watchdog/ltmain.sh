@@ -56,7 +56,7 @@ modename="$progname"
 PROGRAM=ltmain.sh
 PACKAGE=libtool
 VERSION=1.4e
-TIMESTAMP=" (1.1218 2003/04/03 05:45:22)"
+TIMESTAMP=" (1.1223 2003/04/10 03:49:44)"
 
 default_mode=
 help="Try \`$progname --help' for more information."
@@ -5051,7 +5051,9 @@ fi\
       # Quote the link command for shipping.
       relink_command="(cd `pwd`; $SHELL $0 --mode=relink $libtool_args @inst_prefix_dir@)"
       relink_command=`$echo "X$relink_command" | $Xsed -e "$sed_quote_subst"`
-
+      if test "$hardcode_automatic" = yes ; then
+        relink_command=
+      fi  
       # Only create the output if not a dry run.
       if test -z "$run"; then
 	for installed in no yes; do
