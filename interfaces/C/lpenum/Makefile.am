@@ -28,7 +28,7 @@ VPATH = @srcdir@
 
 MPS_FILES = afiro.mps bgprtr.mps ex1.mps sample.mps unboundedmin.mps
 
-EXTRA_DIST = lpenum.c $(MPS_FILES)
+EXTRA_DIST = lpenum.c $(MPS_FILES) expected
 
 if HAVE_GLPK
 
@@ -48,7 +48,7 @@ check-local: $(MPS_FILES) lpenum #expected
 	do \
 	  for m in --min --max; \
 	  do \
-	    echo "*** lpenum -v $$m -oobtained $(srcdir)/$$k" >>obtained; \
+	    echo "*** lpenum -v $$m -oobtained $$k" >>obtained; \
 	    $(LIBTOOL) --mode=execute -dlopen ../../../src/libppl.la \
 	      -dlopen ../libppl_c.la \
 	        lpenum -v $$m -oobtained $(srcdir)/$$k >/dev/null; \
