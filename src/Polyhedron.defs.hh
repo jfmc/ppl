@@ -676,8 +676,9 @@ public:
                                      are topology-incompatible
                                      or dimension-incompatible.
   */
-  void limited_H79_widening_assign(const Polyhedron& y, const ConSys& cs,
-				   unsigned* tp = 0);
+  void limited_H79_extrapolation_assign(const Polyhedron& y,
+					const ConSys& cs,
+					unsigned* tp = 0);
 
   //! \brief
   //! Improves the result of the \ref H79_widening "H79-widening"
@@ -699,8 +700,9 @@ public:
                                      are topology-incompatible
                                      or dimension-incompatible.
   */
-  void bounded_H79_widening_assign(const Polyhedron& y, const ConSys& cs,
-				   unsigned* tp = 0);
+  void bounded_H79_extrapolation_assign(const Polyhedron& y,
+					const ConSys& cs,
+					unsigned* tp = 0);
 
   //! \brief
   //! Assigns to \p *this the result of computing the
@@ -737,8 +739,9 @@ public:
                                      are topology-incompatible
                                      or dimension-incompatible.
   */
-  void limited_BHRZ03_widening_assign(const Polyhedron& y, const ConSys& cs,
-				      unsigned* tp = 0);
+  void limited_BHRZ03_extrapolation_assign(const Polyhedron& y,
+					   const ConSys& cs,
+					   unsigned* tp = 0);
 
   //! \brief
   //! Improves the result of the \ref BHRZ03_widening "BHRZ03-widening"
@@ -760,8 +763,9 @@ public:
                                      are topology-incompatible
                                      or dimension-incompatible.
   */
-  void bounded_BHRZ03_widening_assign(const Polyhedron& y, const ConSys& cs,
-				      unsigned* tp = 0);
+  void bounded_BHRZ03_extrapolation_assign(const Polyhedron& y,
+					   const ConSys& cs,
+					   unsigned* tp = 0);
 
   //! \brief
   //! Assigns to \p *this the result of computing the

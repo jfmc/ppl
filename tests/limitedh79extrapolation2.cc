@@ -1,4 +1,4 @@
-/* Test Polyhedron::limited_H79_widening_assign().
+/* Test Polyhedron::limited_H79_extrapolation_assign().
    Copyright (C) 2001-2003 Roberto Bagnara <bagnara@cs.unipr.it>
 
 This file is part of the Parma Polyhedra Library (PPL).
@@ -33,10 +33,13 @@ using namespace Parma_Polyhedra_Library;
 int
 main() {
   Variable x(0);
+  Variable y(1);
 
   ConSys cs1;
   cs1.insert(x >= 0);
   cs1.insert(x <= 1);
+  cs1.insert(y == 0);
+
   C_Polyhedron ph1(cs1);
 
 #if NOISY
@@ -44,7 +47,10 @@ main() {
 #endif
 
   ConSys cs2;
-  cs2.insert(x == 0);
+  cs2.insert(x <= 2);
+  cs2.insert(y >= 0);
+  cs2.insert(y <= x);
+
   C_Polyhedron ph2(cs2);
 
 #if NOISY
@@ -52,21 +58,24 @@ main() {
 #endif
 
   ConSys cs;
-  cs.insert(x >= 0);
+  cs.insert(y <= -1);
+  cs.insert(x <= 5);
 
 #if NOISY
   print_constraints(cs, "*** cs ****");
 #endif
 
-  C_Polyhedron computed_result = ph1;
-  computed_result.limited_H79_widening_assign(ph2, cs);
+  C_Polyhedron computed_result = ph2;
+  computed_result.limited_H79_extrapolation_assign(ph1, cs);
 
-  C_Polyhedron known_result = ph1;
+  C_Polyhedron known_result = ph2;
+  known_result.add_generator(point(5*x));
+  known_result.add_generator(point(5*x + 5*y));
 
 #if NOISY
   print_constraints(computed_result,
-		    "*** After limited_H79_widening_assign ****");
+		    "*** After limited_H79_extrapolation_assign ****");
 #endif
 
-  return (computed_result == known_result) ? 0 : 1;
+  return computed_result == known_result ? 0 : 1;
 }

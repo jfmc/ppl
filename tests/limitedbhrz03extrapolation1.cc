@@ -1,4 +1,4 @@
-/* Test Polyhedron::limited_H79_widening_assign().
+/* Test Polyhedron::limited_BHRZ03_extrapolation_assign().
    Copyright (C) 2001-2003 Roberto Bagnara <bagnara@cs.unipr.it>
 
 This file is part of the Parma Polyhedra Library (PPL).
@@ -32,50 +32,46 @@ using namespace Parma_Polyhedra_Library;
 
 int
 main() {
-  Variable x(0);
-  Variable y(1);
+  set_handlers();
 
-  ConSys cs1;
-  cs1.insert(x >= 0);
-  cs1.insert(x <= 1);
-  cs1.insert(y == 0);
+  Variable A(0);
+  Variable B(1);
 
-  C_Polyhedron ph1(cs1);
+  GenSys gs1;
+  gs1.insert(point());
+  gs1.insert(point(A + B));
+  gs1.insert(point(A));
+  C_Polyhedron ph1(gs1);
 
-#if NOISY
-  print_constraints(ph1, "*** ph1 ****");
-#endif
-
-  ConSys cs2;
-  cs2.insert(x <= 2);
-  cs2.insert(y >= 0);
-  cs2.insert(y <= x);
-
-  C_Polyhedron ph2(cs2);
-
-#if NOISY
-  print_constraints(ph2, "*** ph2 ****");
-#endif
+  GenSys gs2;
+  gs2.insert(point());
+  gs2.insert(point(2*A));
+  gs2.insert(point(2*A + 2*B));
+  C_Polyhedron ph2(gs2);
 
   ConSys cs;
-  cs.insert(y <= -1);
-  cs.insert(x <= 5);
-
+  cs.insert(A <= 5);
+  cs.insert(B <= 4);
+  
 #if NOISY
-  print_constraints(cs, "*** cs ****");
+  print_constraints(ph1, "*** ph1 ***");
+  print_constraints(ph2, "*** ph2 ***");
+  print_constraints(cs, "*** cs ***");
 #endif
 
-  C_Polyhedron computed_result = ph2;
-  computed_result.limited_H79_widening_assign(ph1, cs);
+  ph2.limited_BHRZ03_extrapolation_assign(ph1, cs);
 
-  C_Polyhedron known_result = ph2;
-  known_result.add_generator(point(5*x));
-  known_result.add_generator(point(5*x + 5*y));
+  C_Polyhedron known_result(2);
+  known_result.add_constraint(B >= 0);
+  known_result.add_constraint(A - B >= 0);
+  known_result.add_constraint(B <= 4);
+  known_result.add_constraint(A <= 5);
+
+  int retval = (ph2 == known_result) ? 0 : 1;
 
 #if NOISY
-  print_constraints(computed_result,
-		    "*** After limited_H79_widening_assign ****");
+  print_constraints(ph2, "*** After ph2.limited_BHRZ03_widening(ph1, cs)***");
 #endif
-
-  return computed_result == known_result ? 0 : 1;
+  
+  return retval;
 }

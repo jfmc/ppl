@@ -1173,9 +1173,10 @@ ppl_Polyhedron_BHRZ03_widening_assign __P((ppl_Polyhedron_t x,
   upon return, no assumption can be made on its value.
 */
 int
-ppl_Polyhedron_limited_BHRZ03_widening_assign __P((ppl_Polyhedron_t x,
-						   ppl_const_Polyhedron_t y,
-						   ppl_ConSys_t cs));
+ppl_Polyhedron_limited_BHRZ03_extrapolation_assign
+__P((ppl_Polyhedron_t x,
+     ppl_const_Polyhedron_t y,
+     ppl_ConSys_t cs));
 
 /*!
   If the polyhedron \p y is contained in (or equal to) the polyhedron
@@ -1195,9 +1196,9 @@ ppl_Polyhedron_H79_widening_assign __P((ppl_Polyhedron_t x,
   upon return, no assumption can be made on its value.
 */
 int
-ppl_Polyhedron_limited_H79_widening_assign __P((ppl_Polyhedron_t x,
-						ppl_const_Polyhedron_t y,
-						ppl_ConSys_t cs));
+ppl_Polyhedron_limited_H79_extrapolation_assign __P((ppl_Polyhedron_t x,
+						     ppl_const_Polyhedron_t y,
+						     ppl_ConSys_t cs));
 
 /*!
   Writes a const handle to the constraint system defining the

@@ -59,13 +59,13 @@ check_all :-
   polydiff_assign,
   polydiff_assign_min,
   bhrz03_widen_C,
-  lim_bhrz03_widen_C,
+  lim_bhrz03_extrapolate_C,
   bhrz03_widen_NNC,
-  lim_bhrz03_widen_NNC,
+  lim_bhrz03_extrapolate_NNC,
   h79_widen_C,
-  lim_h79_widen_C,
+  lim_h79_extrapolate_C,
   h79_widen_NNC,
-  lim_h79_widen_NNC,
+  lim_h79_extrapolate_NNC,
   top_close_assign,
   get_cons,
   get_min_cons,
@@ -473,14 +473,14 @@ bhrz03_widen_C :-
   ppl_delete_Polyhedron(Pa),
   ppl_delete_Polyhedron(Qa).
 
-% Tests ppl_Polyhedron_limited_BHRZ03_widening_assign
+% Tests ppl_Polyhedron_limited_BHRZ03_extrapolation_assign
 % (using C Polyhedra).
-lim_bhrz03_widen_C :-
+lim_bhrz03_extrapolate_C :-
   A = '$VAR'(0), B = '$VAR'(1),
   ppl_new_Polyhedron_from_dimension(c, 2, P),
   ppl_new_Polyhedron_from_constraints(c, [A >= 1, B >= 0], Q),
   ppl_Polyhedron_add_constraints_and_minimize(Q, [A >= 1, B >= 0]),
-  ppl_Polyhedron_limited_BHRZ03_widening_assign(P, Q, [A >= 2, B >= 1]),
+  ppl_Polyhedron_limited_BHRZ03_extrapolation_assign(P, Q, [A >= 2, B >= 1]),
   ppl_new_Polyhedron_from_constraints(c,
                                       [A >= 2, B >= 1],
                                       Pa),
@@ -507,15 +507,15 @@ bhrz03_widen_NNC :-
   ppl_delete_Polyhedron(Pa),
   ppl_delete_Polyhedron(Qa).
 
-% Tests ppl_Polyhedron_limited_BHRZ03_widening_assign
+% Tests ppl_Polyhedron_limited_BHRZ03_extrapolation_assign
 % (using NNC Polyhedra).
-lim_bhrz03_widen_NNC :-
+lim_bhrz03_extrapolate_NNC :-
   A = '$VAR'(0), B = '$VAR'(1),
   ppl_new_Polyhedron_from_dimension(nnc, 2, P),
   ppl_new_Polyhedron_from_constraints(nnc, [A >= 1, B >= 0], Q),
   ppl_Polyhedron_add_constraints_and_minimize(Q, [A >= 1, B >= 0]),
-  ppl_Polyhedron_limited_BHRZ03_widening_assign(P, Q,
-                                             [A >= 2, B >= 1]),
+  ppl_Polyhedron_limited_BHRZ03_extrapolation_assign(P, Q,
+						     [A >= 2, B >= 1]),
   ppl_new_Polyhedron_from_constraints(nnc,
                                       [A >= 2, B >= 1],
                                       Pa),
@@ -542,14 +542,14 @@ h79_widen_C :-
   ppl_delete_Polyhedron(Pa),
   ppl_delete_Polyhedron(Qa).
 
-% Tests ppl_Polyhedron_limited_H79_widening_assign
+% Tests ppl_Polyhedron_limited_H79_extrapolation_assign
 % (using C Polyhedra).
-lim_h79_widen_C :-
+lim_h79_extrapolate_C :-
   A = '$VAR'(0), B = '$VAR'(1),
   ppl_new_Polyhedron_from_dimension(c, 2, P),
   ppl_new_Polyhedron_from_constraints(c, [A >= 1, B >= 0], Q),
   ppl_Polyhedron_add_constraints_and_minimize(Q, [A >= 1, B >= 0]),
-  ppl_Polyhedron_limited_H79_widening_assign(P, Q, [A >= 2, B >= 1]),
+  ppl_Polyhedron_limited_H79_extrapolation_assign(P, Q, [A >= 2, B >= 1]),
   ppl_new_Polyhedron_from_constraints(c,
                                       [A >= 2, B >= 1],
                                       Pa),
@@ -576,15 +576,15 @@ h79_widen_NNC :-
   ppl_delete_Polyhedron(Pa),
   ppl_delete_Polyhedron(Qa).
 
-% Tests ppl_Polyhedron_limited_H79_widening_assign
+% Tests ppl_Polyhedron_limited_H79_extrapolation_assign
 % (using NNC Polyhedra).
-lim_h79_widen_NNC :-
+lim_h79_extrapolate_NNC :-
   A = '$VAR'(0), B = '$VAR'(1),
   ppl_new_Polyhedron_from_dimension(nnc, 2, P),
   ppl_new_Polyhedron_from_constraints(nnc, [A >= 1, B >= 0], Q),
   ppl_Polyhedron_add_constraints_and_minimize(Q, [A >= 1, B >= 0]),
-  ppl_Polyhedron_limited_H79_widening_assign(P, Q,
-                                             [A >= 2, B >= 1]),
+  ppl_Polyhedron_limited_H79_extrapolation_assign(P, Q,
+						  [A >= 2, B >= 1]),
   ppl_new_Polyhedron_from_constraints(nnc,
                                       [A >= 2, B >= 1],
                                       Pa),

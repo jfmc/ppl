@@ -1,4 +1,4 @@
-/* Test Polyhedron::limited_H79_widening_assign(): the polyhedra
+/* Test Polyhedron::limited_H79_extrapolation_assign(): the polyhedra
    are empty or zero-dimensional.
    Copyright (C) 2001-2003 Roberto Bagnara <bagnara@cs.unipr.it>
 
@@ -54,13 +54,13 @@ test1() {
   print_constraints(cs, "*** cs ***");
 #endif
   
-  ph2.limited_H79_widening_assign(ph1, cs);
+  ph2.limited_H79_extrapolation_assign(ph1, cs);
 
   bool ok = (ph2 == known_result);
 
 #if NOISY
   print_constraints(ph2,
-		    "*** After ph2.limited_H79_widening_assign(ph1, cs) ***");
+		    "*** After ph2.limited_H79_extrapolation_assign(ph1, cs) ***");
 #endif
 
   if (!ok)
@@ -86,13 +86,13 @@ test2() {
   print_constraints(cs, "*** cs ***");
 #endif
   
-  ph2.limited_H79_widening_assign(ph1, cs);
+  ph2.limited_H79_extrapolation_assign(ph1, cs);
 
   bool ok = (ph2 == known_result);
 
 #if NOISY
   print_constraints(ph2,
-		    "*** After ph2.limited_H79_widening_assign(ph1, cs) ***");
+		    "*** After ph2.limited_H79_extrapolation_assign(ph1, cs) ***");
 #endif
 
   if (!ok)
@@ -116,13 +116,13 @@ test3() {
   print_constraints(cs, "*** cs ***");
 #endif
   
-  ph2.limited_H79_widening_assign(ph1, cs);
+  ph2.limited_H79_extrapolation_assign(ph1, cs);
 
   bool ok = (ph2 == known_result);
 
 #if NOISY
   print_constraints(ph2,
-		    "*** After ph2.limited_H79_widening_assign(ph1, cs) ***");
+		    "*** After ph2.limited_H79_extrapolation_assign(ph1, cs) ***");
 #endif
 
   if (!ok)
@@ -152,13 +152,13 @@ test4() {
   print_constraints(cs, "*** cs ***");
 #endif
   
-  ph2.limited_H79_widening_assign(ph1, cs);
+  ph2.limited_H79_extrapolation_assign(ph1, cs);
 
   bool ok = (ph2 == known_result);
 
 #if NOISY
   print_constraints(ph2,
-		    "*** After ph2.limited_H79_widening_assign(ph1, cs) ***");
+		    "*** After ph2.limited_H79_extrapolation_assign(ph1, cs) ***");
 #endif
 
   if (!ok)

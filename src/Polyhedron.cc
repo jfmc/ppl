@@ -3666,28 +3666,33 @@ PPL::Polyhedron::H79_widening_assign(const Polyhedron& y, unsigned* tp) {
 }
 
 void
-PPL::Polyhedron::limited_H79_widening_assign(const Polyhedron& y,
-					     const ConSys& cs,
-					     unsigned* tp) {
+PPL::Polyhedron::limited_H79_extrapolation_assign(const Polyhedron& y,
+						  const ConSys& cs,
+						  unsigned* tp) {
   Polyhedron& x = *this;
   // Topology compatibility check.
   if (x.is_necessarily_closed()) {
     if (!y.is_necessarily_closed())
-      throw_topology_incompatible("limited_H79_widening_assign(y, cs)", y);
+      throw_topology_incompatible("limited_H79_extrapolation_assign(y, cs)",
+				  y);
     if (cs.has_strict_inequalities())
-      throw_topology_incompatible("limited_H79_widening_assign(y, cs)", cs);
+      throw_topology_incompatible("limited_H79_extrapolation_assign(y, cs)",
+				  cs);
   }
   else if (y.is_necessarily_closed())
-    throw_topology_incompatible("limited_H79_widening_assign(y, cs)", y);
+    throw_topology_incompatible("limited_H79_extrapolation_assign(y, cs)",
+				y);
 
   // Dimension-compatibility check.
   dimension_type x_space_dim = x.space_dim;
   if (x_space_dim != y.space_dim)
-    throw_dimension_incompatible("limited_H79_widening_assign(y, cs)", y);
+    throw_dimension_incompatible("limited_H79_extrapolation_assign(y, cs)",
+				 y);
   // `cs' must be dimension-compatible with the two polyhedra.
   dimension_type cs_space_dim = cs.space_dimension();
   if (x_space_dim < cs_space_dim)
-    throw_dimension_incompatible("limited_H79_widening_assign(y, cs)", "cs", cs);
+    throw_dimension_incompatible("limited_H79_extrapolation_assign(y, cs)",
+				 "cs", cs);
 
 #ifndef NDEBUG
   {
@@ -3773,13 +3778,13 @@ public:
 } // namespace
 
 void
-PPL::Polyhedron::bounded_H79_widening_assign(const Polyhedron& y,
-					     const ConSys& cs,
-					     unsigned* tp) {
+PPL::Polyhedron::bounded_H79_extrapolation_assign(const Polyhedron& y,
+						  const ConSys& cs,
+						  unsigned* tp) {
   ConSys bounding_cs;
   BW_Box box(bounding_cs);
   shrink_bounding_box(box, ANY);
-  limited_H79_widening_assign(y, cs, tp);
+  limited_H79_extrapolation_assign(y, cs, tp);
   add_constraints(bounding_cs);
 }
 
@@ -4374,28 +4379,32 @@ PPL::Polyhedron::BHRZ03_widening_assign(const Polyhedron& y, unsigned* tp) {
 }
 
 void
-PPL::Polyhedron::limited_BHRZ03_widening_assign(const Polyhedron& y,
-						const ConSys& cs,
-						unsigned* tp) {
+PPL::Polyhedron::limited_BHRZ03_extrapolation_assign(const Polyhedron& y,
+						     const ConSys& cs,
+						     unsigned* tp) {
   Polyhedron& x = *this;
   // Topology compatibility check.
   if (x.is_necessarily_closed()) {
     if (!y.is_necessarily_closed())
-      throw_topology_incompatible("limited_BHRZ03_widening_assign(y, cs)", y);
+      throw_topology_incompatible("limited_BHRZ03_extrapolation_assign(y, cs)",
+				  y);
     if (cs.has_strict_inequalities())
-      throw_topology_incompatible("limited_BHRZ03_widening_assign(y, cs)", cs);
+      throw_topology_incompatible("limited_BHRZ03_extrapolation_assign(y, cs)",
+				  cs);
   }
   else if (y.is_necessarily_closed())
-    throw_topology_incompatible("limited_BHRZ03_widening_assign(y, cs)", y);
+    throw_topology_incompatible("limited_BHRZ03_extrapolation_assign(y, cs)",
+				y);
 
   // Dimension-compatibility check.
   dimension_type x_space_dim = x.space_dim;
   if (x_space_dim != y.space_dim)
-    throw_dimension_incompatible("limited_BHRZ03_widening_assign(y, cs)", y);
+    throw_dimension_incompatible("limited_BHRZ03_extrapolation_assign(y, cs)",
+				 y);
   // `cs' must be dimension-compatible with the two polyhedra.
   dimension_type cs_space_dim = cs.space_dimension();
   if (x_space_dim < cs_space_dim)
-    throw_dimension_incompatible("limited_BHRZ03_widening_assign(y, cs)",
+    throw_dimension_incompatible("limited_BHRZ03_extrapolation_assign(y, cs)",
 				 "cs", cs);
 
 #ifndef NDEBUG
@@ -4445,13 +4454,13 @@ PPL::Polyhedron::limited_BHRZ03_widening_assign(const Polyhedron& y,
 }
 
 void
-PPL::Polyhedron::bounded_BHRZ03_widening_assign(const Polyhedron& y,
-						const ConSys& cs,
-						unsigned* tp) {
+PPL::Polyhedron::bounded_BHRZ03_extrapolation_assign(const Polyhedron& y,
+						     const ConSys& cs,
+						     unsigned* tp) {
   ConSys bounding_cs;
   BW_Box box(bounding_cs);
   shrink_bounding_box(box, ANY);
-  limited_BHRZ03_widening_assign(y, cs, tp);
+  limited_BHRZ03_extrapolation_assign(y, cs, tp);
   add_constraints(bounding_cs);
 }
 

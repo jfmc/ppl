@@ -331,10 +331,10 @@ Determinate<PH>::H79_widening_assign(const Determinate& y) {
 
 template <typename PH>
 void
-Determinate<PH>::limited_H79_widening_assign(const Determinate& y,
-					     ConSys& cs) {
+Determinate<PH>::limited_H79_extrapolation_assign(const Determinate& y,
+						  ConSys& cs) {
   mutate();
-  prep->ph.limited_H79_widening_assign(y.prep->ph, cs);
+  prep->ph.limited_H79_extrapolation_assign(y.prep->ph, cs);
 }
 
 } // namespace Parma_Polyhedra_Library

@@ -224,7 +224,7 @@ public:
                                      are topology-incompatible
                                      or dimension-incompatible.
   */
-  void limited_H79_widening_assign(const Determinate& y, ConSys& cs);
+  void limited_H79_extrapolation_assign(const Determinate& y, ConSys& cs);
 
   //! Checks if all the invariants are satisfied.
   bool OK() const;

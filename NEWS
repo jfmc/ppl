@@ -10,10 +10,22 @@ NEWS for version 0.5 (release date to be decided)
 New and Changed Features
 ========================
 
-o  New methods void Polyhedron::BHRZ03_widening_assign(const Polyhedron&)
-   and void Polyhedron::BHRZ03_limited_widening_assign(const Polyhedron&,
-   ConSys&).  The BHRZ03 widening is a novel widening that is always more
-   precise than the one, by now standard, we call H79.
+o  The method Polyhedron::limited_H79_widening_assign() has been renamed
+   Polyhedron::limited_H79_extrapolation_assign().  From now on, the name
+   `widening' is reserved for operators that come with a convergence
+   guarantee (i.e., with the ability of turning infinite chains to finite
+   ones).  Upper bound operators without such a guarantee contain the word
+   `extrapolation' in their name.
+
+o  The renamed method Polyhedron::limited_H79_extrapolation_assign()
+   takes the constraint system argument by const reference (in the
+   old Polyhedron::limited_H79_widening_assign() that argument was
+   passed by non-const reference).
+
+o  New methods Polyhedron::BHRZ03_widening_assign() and
+   Polyhedron::BHRZ03_limited_extrapolation_assign().  The BHRZ03 widening
+   is a novel widening that is always more precise than the one, by now
+   standard, we call H79.
 
 o  New constructors to build polyhedra from read-only constraint and
    generator systems: C_Polyhedron(const ConSys&),

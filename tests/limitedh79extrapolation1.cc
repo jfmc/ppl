@@ -1,4 +1,4 @@
-/* Test Polyhedron::limited_H79_widening_assign().
+/* Test Polyhedron::limited_H79_extrapolation_assign().
    Copyright (C) 2001-2003 Roberto Bagnara <bagnara@cs.unipr.it>
 
 This file is part of the Parma Polyhedra Library (PPL).
@@ -70,7 +70,7 @@ main() {
 #endif
 
   C_Polyhedron computed_result = ph2;
-  computed_result.limited_H79_widening_assign(ph1, cs);
+  computed_result.limited_H79_extrapolation_assign(ph1, cs);
 
   C_Polyhedron known_result(2);
   known_result.add_constraint(x - y >= 0);
@@ -79,7 +79,7 @@ main() {
 
 #if NOISY
   print_constraints(computed_result,
-		    "*** After limited_H79_widening_assign ****");
+		    "*** After limited_H79_extrapolation_assign ****");
 #endif
 
   return (computed_result == known_result) ? 0 : 1;

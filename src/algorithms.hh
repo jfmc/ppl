@@ -58,13 +58,13 @@ linear_partition(const PH& p, const PH& q);
 
 template <typename PH>
 void
-H79_widening_assign(PowerSet<Determinate<PH> >& r,
-		    const PowerSet<Determinate<PH> >& q);
+H79_extrapolation_assign(PowerSet<Determinate<PH> >& r,
+			 const PowerSet<Determinate<PH> >& q);
 
 template <typename PH>
 void
-BHRZ03_widening_assign(PowerSet<Determinate<PH> >& r,
-		       const PowerSet<Determinate<PH> >& q);
+BHRZ03_extrapolation_assign(PowerSet<Determinate<PH> >& r,
+			    const PowerSet<Determinate<PH> >& q);
 
 namespace {
 
@@ -169,10 +169,10 @@ complete_reduction(PowerSet<Determinate<PH> >& p) {
 
 template <typename PH>
 void
-widening_assign(PowerSet<Determinate<PH> >& r,
-		const PowerSet<Determinate<PH> >& q,
-		//		void (PH::* widening_assign)(const PH&)) {
-		void (Polyhedron::* widening_assign)(const Polyhedron&)) {
+extrapolation_assign(PowerSet<Determinate<PH> >& r,
+		     const PowerSet<Determinate<PH> >& q,
+		     //	void (PH::* extrapolation_assign)(const PH&)) {
+		     void (Polyhedron::* extrapolation_assign)(const Polyhedron&)) {
   complete_reduction(r);
   size_t n = r.size();
   PowerSet<Determinate<PH> > p(q.space_dimension(), false);
@@ -187,7 +187,7 @@ widening_assign(PowerSet<Determinate<PH> >& r,
       PH& ri = i->polyhedron();
       const PH& qj = j->polyhedron();
       if (qj <= ri) {
-	(ri.*widening_assign)(qj);
+	(ri.*extrapolation_assign)(qj);
 	p.inject(ri);
 	marked[i_index] = true;
       }
@@ -203,16 +203,16 @@ widening_assign(PowerSet<Determinate<PH> >& r,
 
 template <typename PH>
 void
-H79_widening_assign(PowerSet<Determinate<PH> >& r,
-		    const PowerSet<Determinate<PH> >& q) {
-  widening_assign(r, q, &PH::H79_widening_assign);
+H79_extrapolation_assign(PowerSet<Determinate<PH> >& r,
+			 const PowerSet<Determinate<PH> >& q) {
+  extrapolation_assign(r, q, &PH::H79_extrapolation_assign);
 }
 
 template <typename PH>
 void
-BHRZ03_widening_assign(PowerSet<Determinate<PH> >& r,
-		       const PowerSet<Determinate<PH> >& q) {
-  widening_assign(r, q, &PH::BHRZ03_widening_assign);
+BHRZ03_extrapolation_assign(PowerSet<Determinate<PH> >& r,
+			    const PowerSet<Determinate<PH> >& q) {
+  extrapolation_assign(r, q, &PH::BHRZ03_extrapolation_assign);
 }
 
 } // namespace Parma_Polyhedra_Library

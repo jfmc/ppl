@@ -95,9 +95,9 @@ ORIGINAL_TESTS = \
         intersection1 intersection2 intersection3 intersection4 \
 	intersection5 intersection6 intersection7 intersection8 \
 	intersection9 intersection10 intersection11 \
-	limitedbhrz03widening1 \
-	limitedh79widening1 limitedh79widening2 \
-	limitedh79widening3 limitedh79widening4 \
+	limitedbhrz03extrapolation1 \
+	limitedh79extrapolation1 limitedh79extrapolation2 \
+	limitedh79extrapolation3 limitedh79extrapolation4 \
 	linearpartition1 linearpartition2 linearpartition3 \
 	linexpression1 \
 	mc91 \
@@ -178,9 +178,9 @@ DERIVED_TESTS = \
 	nnc_intersection4 nnc_intersection5 nnc_intersection6 \
 	nnc_intersection7 nnc_intersection8 nnc_intersection9 \
 	nnc_intersection10 nnc_intersection11 \
-	nnc_limitedbhrz03widening1 \
-	nnc_limitedh79widening1 nnc_limitedh79widening2 \
-	nnc_limitedh79widening3 nnc_limitedh79widening4 \
+	nnc_limitedbhrz03extrapolation1 \
+	nnc_limitedh79extrapolation1 nnc_limitedh79extrapolation2 \
+	nnc_limitedh79extrapolation3 nnc_limitedh79extrapolation4 \
 	nnc_linearpartition1 nnc_linearpartition2 nnc_linearpartition3 \
 	nnc_mc91 \
 	nnc_minconstraints1 nnc_minconstraints2 \
@@ -397,12 +397,12 @@ intersection9_SOURCES = intersection9.cc
 intersection10_SOURCES = intersection10.cc
 intersection11_SOURCES = intersection11.cc
 
-limitedbhrz03widening1_SOURCES = limitedbhrz03widening1.cc
+limitedbhrz03extrapolation1_SOURCES = limitedbhrz03extrapolation1.cc
 
-limitedh79widening1_SOURCES = limitedh79widening1.cc
-limitedh79widening2_SOURCES = limitedh79widening2.cc
-limitedh79widening3_SOURCES = limitedh79widening3.cc
-limitedh79widening4_SOURCES = limitedh79widening4.cc
+limitedh79extrapolation1_SOURCES = limitedh79extrapolation1.cc
+limitedh79extrapolation2_SOURCES = limitedh79extrapolation2.cc
+limitedh79extrapolation3_SOURCES = limitedh79extrapolation3.cc
+limitedh79extrapolation4_SOURCES = limitedh79extrapolation4.cc
 
 linearpartition1_SOURCES = linearpartition1.cc
 linearpartition2_SOURCES = linearpartition2.cc
@@ -781,17 +781,17 @@ nnc_intersection10_CXXFLAGS = $(DERIVED_CXXFLAGS)
 nnc_intersection11_SOURCES = intersection11.cc
 nnc_intersection11_CXXFLAGS = $(DERIVED_CXXFLAGS)
 
-nnc_limitedbhrz03widening1_SOURCES = limitedbhrz03widening1.cc
-nnc_limitedbhrz03widening1_CXXFLAGS = $(DERIVED_CXXFLAGS)
+nnc_limitedbhrz03extrapolation1_SOURCES = limitedbhrz03extrapolation1.cc
+nnc_limitedbhrz03extrapolation1_CXXFLAGS = $(DERIVED_CXXFLAGS)
 
-nnc_limitedh79widening1_SOURCES = limitedh79widening1.cc
-nnc_limitedh79widening1_CXXFLAGS = $(DERIVED_CXXFLAGS)
-nnc_limitedh79widening2_SOURCES = limitedh79widening2.cc
-nnc_limitedh79widening2_CXXFLAGS = $(DERIVED_CXXFLAGS)
-nnc_limitedh79widening3_SOURCES = limitedh79widening3.cc
-nnc_limitedh79widening3_CXXFLAGS = $(DERIVED_CXXFLAGS)
-nnc_limitedh79widening4_SOURCES = limitedh79widening4.cc
-nnc_limitedh79widening4_CXXFLAGS = $(DERIVED_CXXFLAGS)
+nnc_limitedh79extrapolation1_SOURCES = limitedh79extrapolation1.cc
+nnc_limitedh79extrapolation1_CXXFLAGS = $(DERIVED_CXXFLAGS)
+nnc_limitedh79extrapolation2_SOURCES = limitedh79extrapolation2.cc
+nnc_limitedh79extrapolation2_CXXFLAGS = $(DERIVED_CXXFLAGS)
+nnc_limitedh79extrapolation3_SOURCES = limitedh79extrapolation3.cc
+nnc_limitedh79extrapolation3_CXXFLAGS = $(DERIVED_CXXFLAGS)
+nnc_limitedh79extrapolation4_SOURCES = limitedh79extrapolation4.cc
+nnc_limitedh79extrapolation4_CXXFLAGS = $(DERIVED_CXXFLAGS)
 
 nnc_linearpartition1_SOURCES = linearpartition1.cc
 nnc_linearpartition1_CXXFLAGS = $(DERIVED_CXXFLAGS)
@@ -953,7 +953,7 @@ endif
 TESTS = $(ORIGINAL_TESTS) $(DERIVED_TESTS) $(WATCHDOG_TESTS)
 
 XFAIL_TESTS = \
-nnc_limitedh79widening3 \
+nnc_limitedh79extrapolation3 \
 nnc_polydifference1 \
 addgenerators11
 

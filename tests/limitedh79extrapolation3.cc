@@ -1,4 +1,4 @@
-/* Test Polyhedron::limited_BHRZ03_widening_assign().
+/* Test Polyhedron::limited_H79_extrapolation_assign().
    Copyright (C) 2001-2003 Roberto Bagnara <bagnara@cs.unipr.it>
 
 This file is part of the Parma Polyhedra Library (PPL).
@@ -32,46 +32,41 @@ using namespace Parma_Polyhedra_Library;
 
 int
 main() {
-  set_handlers();
+  Variable x(0);
 
-  Variable A(0);
-  Variable B(1);
+  ConSys cs1;
+  cs1.insert(x >= 0);
+  cs1.insert(x <= 1);
+  C_Polyhedron ph1(cs1);
 
-  GenSys gs1;
-  gs1.insert(point());
-  gs1.insert(point(A + B));
-  gs1.insert(point(A));
-  C_Polyhedron ph1(gs1);
+#if NOISY
+  print_constraints(ph1, "*** ph1 ****");
+#endif
 
-  GenSys gs2;
-  gs2.insert(point());
-  gs2.insert(point(2*A));
-  gs2.insert(point(2*A + 2*B));
-  C_Polyhedron ph2(gs2);
+  ConSys cs2;
+  cs2.insert(x == 0);
+  C_Polyhedron ph2(cs2);
+
+#if NOISY
+  print_constraints(ph2, "*** ph2 ****");
+#endif
 
   ConSys cs;
-  cs.insert(A <= 5);
-  cs.insert(B <= 4);
-  
-#if NOISY
-  print_constraints(ph1, "*** ph1 ***");
-  print_constraints(ph2, "*** ph2 ***");
-  print_constraints(cs, "*** cs ***");
-#endif
-
-  ph2.limited_BHRZ03_widening_assign(ph1, cs);
-
-  C_Polyhedron known_result(2);
-  known_result.add_constraint(B >= 0);
-  known_result.add_constraint(A - B >= 0);
-  known_result.add_constraint(B <= 4);
-  known_result.add_constraint(A <= 5);
-
-  int retval = (ph2 == known_result) ? 0 : 1;
+  cs.insert(x >= 0);
 
 #if NOISY
-  print_constraints(ph2, "*** After ph2.limited_BHRZ03_widening(ph1, cs)***");
+  print_constraints(cs, "*** cs ****");
 #endif
-  
-  return retval;
+
+  C_Polyhedron computed_result = ph1;
+  computed_result.limited_H79_extrapolation_assign(ph2, cs);
+
+  C_Polyhedron known_result = ph1;
+
+#if NOISY
+  print_constraints(computed_result,
+		    "*** After limited_H79_extrapolation_assign ****");
+#endif
+
+  return (computed_result == known_result) ? 0 : 1;
 }

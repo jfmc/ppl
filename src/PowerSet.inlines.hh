@@ -439,13 +439,13 @@ PowerSet<CS>::shuffle_dimensions(const PartialFunction& pfunc) {
 
 template <typename CS>
 void
-PowerSet<CS>::H79_widening_assign(const PowerSet& /* y */) {
+PowerSet<CS>::H79_extrapolation_assign(const PowerSet& /* y */) {
 }
 
 template <typename CS>
 void
-PowerSet<CS>::limited_H79_widening_assign(const PowerSet& y,
-					  ConSys& cs) {
+PowerSet<CS>::limited_H79_extrapolation_assign(const PowerSet& y,
+					       ConSys& cs) {
   std::deque<iterator> possibly_new;
   for (iterator xi = begin(), xend = end(); xi != xend; ++xi)
     if (!y.definitely_contains(*xi))
@@ -479,7 +479,7 @@ PowerSet<CS>::limited_H79_widening_assign(const PowerSet& y,
 
     assert(old_upper_bound.definitely_entails(new_upper_bound));
 
-    new_upper_bound.limited_H79_widening_assign(old_upper_bound, cs);
+    new_upper_bound.limited_H79_extrapolation_assign(old_upper_bound, cs);
   }
   else{
     // Heuristics again: less precise elements are later in the sequence.
@@ -491,7 +491,7 @@ PowerSet<CS>::limited_H79_widening_assign(const PowerSet& y,
 
     new_upper_bound.upper_bound_assign(old_upper_bound);
 
-    new_upper_bound.limited_H79_widening_assign(old_upper_bound, cs);
+    new_upper_bound.limited_H79_extrapolation_assign(old_upper_bound, cs);
   }
 
   sequence.push_back(new_upper_bound);

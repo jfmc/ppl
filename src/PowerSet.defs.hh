@@ -174,7 +174,7 @@ public:
                                      are topology-incompatible
                                      or dimension-incompatible.
   */
-  void H79_widening_assign(const PowerSet& y);
+  void H79_extrapolation_assign(const PowerSet& y);
 
   //! \brief
   //! Limits the \ref H79_widening "H79-widening" computation
@@ -191,7 +191,7 @@ public:
                                      are topology-incompatible
                                      or dimension-incompatible.
   */
-  void limited_H79_widening_assign(const PowerSet& y, ConSys& cs);
+  void limited_H79_extrapolation_assign(const PowerSet& y, ConSys& cs);
 
   //! Checks if all the invariants are satisfied.
   bool OK() const;
