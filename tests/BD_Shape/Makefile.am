@@ -89,7 +89,7 @@ ORIGINAL_TESTS = \
 	removespacedims1 removespacedims2 removespacedims3 \
 	timeelapse1 timeelapse2 timeelapse3 timeelapse4 timeelapse5 \
 	universe1 \
-	writebdiffs1 writebdiffs2
+	writebdshape1 writebdshape2
 
 #
 # Sources for the tests
@@ -252,8 +252,8 @@ timeelapse5_SOURCES = timeelapse5.cc
 
 universe1_SOURCES = universe1.cc
 
-writebdiffs1_SOURCES = writebdiffs1.cc
-writebdiffs2_SOURCES = writebdiffs2.cc
+writebdshape1_SOURCES = writebdshape1.cc
+writebdshape2_SOURCES = writebdshape2.cc
 
 TESTS = $(ORIGINAL_TESTS)
 

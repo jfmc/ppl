@@ -1,5 +1,5 @@
 /* Test BD_Shape::generalized_affine_image(): if the relation is
-   `==' the resulting bdiff is equal to the bdiff obtained
+   `==' the resulting BDS is equal to the BDS obtained
    with BD_Shape::affine_image().
    Copyright (C) 2001-2005 Roberto Bagnara <bagnara@cs.unipr.it>
 

@@ -92,8 +92,8 @@ error3() {
   try {
     // This is an incorrect use of the function
     // BD_Shape::affine_preimage(v, expr, d): it is illegal
-    // to apply to a expression which space dimension is
-    // greather than bdiffs space dimension.
+    // to apply it to an expression whose space dimension is
+    // greather than the space dimension of the BDS.
     bd.affine_preimage(y, z);
   }
   catch (invalid_argument& e) {
@@ -241,8 +241,8 @@ error9() {
   try {
     // This is an incorrect use of the function
     // BD_Shape::generalized_affine_image(v, r, expr, d): it is illegal
-    // to apply to a expression which space dimension is
-    // greather than bdiffs space dimension.
+    // to apply it to an expression whose space dimension is
+    // greather than the BDS's space dimension.
     bd.generalized_affine_image(y, GREATER_THAN_OR_EQUAL, z);
   }
   catch (invalid_argument& e) {
@@ -293,7 +293,7 @@ error11() {
     // This is an incorrect use of the function
     // BD_Shape::generalized_affine_image(lhs, r, rhs):
     // it is illegal to use a variable in the `rhs' expression that
-    // does not appear in the bdiff.
+    // does not appear in the BDS.
 
     bd.generalized_affine_image(A + B, GREATER_THAN_OR_EQUAL, B + C);
   }
@@ -320,7 +320,7 @@ error12() {
     // This is an incorrect use of function
     // BD_Shape::generalized_affine_image(lhs, r, rhs):
     // it is illegal to use a variable in the `lhs' expression that
-    // does not appear in the bdiff.
+    // does not appear in the BDS.
     bd.generalized_affine_image(B + C, LESS_THAN_OR_EQUAL, A + 1);
   }
   catch (invalid_argument& e) {
