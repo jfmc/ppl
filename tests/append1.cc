@@ -34,24 +34,13 @@ static void
 shift_rename_add(const C_Polyhedron& p,
 		 dimension_type offset,
 		 C_Polyhedron& q) {
-  if (p.space_dimension() == 0)
-    exit(1);
-
-  if (p.check_empty())
-    exit(1);
-
-  const ConSys& cs = p.constraints();
-  for (ConSys::const_iterator
-	 i = cs.begin(), cs_end = cs.end(); i != cs_end; ++i)
-    if (offset > 0)
-      q.add_constraint(*i >> offset);
-    else
-      q.add_constraint(*i);
+  C_Polyhedron r(offset);
+  r.concatenate_assign(p);
+  q.intersection_assign(r);
 }
 
-
 int
-main() {
+main() try {
   set_handlers();
 
   Variable A(0);
@@ -125,4 +114,9 @@ main() {
 #endif
 
   return current == expected ? 0 : 1;
+}
+catch (const std::exception& e) {
+  cerr << "std::exception caught: "
+       << e.what() << " (type == " << typeid(e).name() << ")"
+       << endl;
 }

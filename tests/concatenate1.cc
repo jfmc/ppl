@@ -36,6 +36,8 @@ main() try {
 
   Variable x(0);
   Variable y(1);
+  Variable z(2);
+  Variable w(3);
   ConSys cs1;
   cs1.insert(x >= 0);
   cs1.insert(y >= 0);
@@ -57,9 +59,9 @@ main() try {
   ph.concatenate_assign(qh);
 
   copy_ph.add_dimensions_and_embed(2);
-  for (ConSys::const_iterator i = qh.constraints().begin(),
-	 iend = qh.constraints().end(); i != iend; ++i )
-    copy_ph.add_constraint(*i >> 2);
+  copy_ph.add_constraint(z >= 1);
+  copy_ph.add_constraint(w >= 1);
+  copy_ph.add_constraint(z - w >= -1);
 
   int retval = (ph == copy_ph) ? 0 : 1;
 
