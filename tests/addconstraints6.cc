@@ -60,7 +60,7 @@ main() {
   int retval = (ph == known_result) ? 0 : 1;
 
 #if NOISY
-  print_constraints(ph, "*** After addconstraints_and_minimize(cs) ***");
+  print_constraints(ph, "*** After add_constraints_and_minimize(cs) ***");
 #endif
 
   return retval;

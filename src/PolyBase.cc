@@ -1198,10 +1198,10 @@ PPL::PolyBase::convex_hull_assign_and_minimize(const PolyBase& y) {
 
   // Convex hull of a polyhedron `p' with an empty polyhedron is `p'.
   if (y.is_empty())
-    return !minimize();
+    return minimize();
   if (x.is_empty()) {
     x = y;
-    return !minimize();
+    return minimize();
   }
 
   // If both polyhedra are zero-dimensional,
@@ -1216,7 +1216,7 @@ PPL::PolyBase::convex_hull_assign_and_minimize(const PolyBase& y) {
   if (!x.minimize()) {
     // We have just discovered that `x' is empty.
     x = y;
-    return !minimize();
+    return minimize();
   }
   x.obtain_sorted_generators_with_sat_g();
   // ...and `y' to have updated and sorted generators.
@@ -1362,9 +1362,9 @@ bool
 PPL::PolyBase::convex_difference_assign_and_minimize(const PolyBase& y) {
   assert(topology() == y.topology());
   convex_difference_assign(y);
-  bool empty = minimize();
+  bool not_empty = minimize();
   assert(OK(true));
-  return !empty;
+  return not_empty;
 }
 
 /*!
@@ -1799,7 +1799,7 @@ PPL::PolyBase::add_constraints_and_minimize(ConSys& cs) {
   // Adding no constraints: just minimize.
   if (cs.num_rows() == 0) {
     assert(cs.num_columns() == 0);
-    return !minimize();
+    return minimize();
   }
 
   // Dealing with zero-dim space polyhedra first.
@@ -1818,7 +1818,7 @@ PPL::PolyBase::add_constraints_and_minimize(ConSys& cs) {
   }
 
   // We need both the system of generators and constraints minimal.
-  if (minimize())
+  if (!minimize())
     return false;
 
   // PolyBase::add_and_minimize() requires that
@@ -2206,7 +2206,7 @@ PPL::PolyBase::add_generators_and_minimize(GenSys& gs) {
   // Adding no generators is equivalent to just requiring minimization.
   if (gs.num_rows() == 0) {
     assert(gs.num_columns() == 0);
-    return !minimize();
+    return minimize();
   }
 
   // Adding valid generators to a zero-dim polyhedron
