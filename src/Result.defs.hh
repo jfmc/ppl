@@ -27,6 +27,12 @@ site: http://www.cs.unipr.it/ppl/ . */
 namespace Parma_Polyhedra_Library {
 
 enum Result {
+
+  VC_MASK = 48,
+
+  //! Ordinary result class.
+  VC_NORMAL = 0,
+
   //! The computed result is inexact and rounded up.
   V_LT = 1,
 
@@ -48,36 +54,57 @@ enum Result {
   //! The computed result may be inexact.
   V_LGE = V_LT | V_EQ | V_GT,
 
-  V_NORMAL = 0,
-
-  // Special results.
-
-  //! \brief
-  //! The exact result does not exist (i.e., the operation does not make
-  //! sense for the given operands) or is unknown (i.e., the operands do
-  //! not encode enough information to give a mean.
-  V_UNKNOWN = 16,
-
-  V_MINUS_INFINITY = 32,
-
-  V_PLUS_INFINITY = 48,
-
-  V_TYPE_MASK = 48,
-
-  //! \brief
-  //! The exact result is outside the considered numeric domain
-  //! (e.g., sqrt(-1)).
-  V_DOMAIN = V_UNKNOWN | V_NE,
+  //! Negative infinity result class
+  VC_MINUS_INFINITY = 16,
 
   //! A negative overflow occurred.
-  V_NEG_OVERFLOW = V_MINUS_INFINITY | V_GT,
+  V_NEG_OVERFLOW = VC_MINUS_INFINITY | V_GT,
+
+  //! Positive infinity result classe
+  VC_PLUS_INFINITY = 32,
 
   //! A positive overflow occurred.
-  V_POS_OVERFLOW = V_PLUS_INFINITY | V_LT
+  V_POS_OVERFLOW = VC_PLUS_INFINITY | V_LT,
+
+  //! Not a number result class.
+  VC_NAN = 48,
+
+  //! Conversion from unknown string.
+  V_CVT_STR_UNK = 49,
+
+  //! x / 0.
+  V_DIV_ZERO = 50,
+
+  //! +/-inf + -/+inf.
+  V_INF_ADD_INF = 51,
+
+  //! +/-inf mod x.
+  V_INF_MOD = 52,
+
+  //! +/-inf * 0.
+  V_INF_MUL_ZERO = 53,
+
+  //! +/-inf - +/-inf.
+  V_INF_SUB_INF = 54,
+
+  //! x mod 0.
+  V_MOD_ZERO = 55,
+
+  //! sqrt(-x).
+  V_SQRT_NEG = 56,
+
+  //! Unknown result due to intermediate negative overflow.
+  V_UNKNOWN_NEG_OVERFLOW = 57,
+
+  //! Unknown result due to intermediate positive overflow.
+  V_UNKNOWN_POS_OVERFLOW = 58,
+
+  //! Unordered comparison
+  V_UNORD_COMP = 59
 };
 
 bool is_special(Result r);
-Result type(Result r);
+Result classify(Result r);
 Result sign(Result r);
 
 } // namespace Parma_Polyhedra_Library

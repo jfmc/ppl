@@ -60,19 +60,19 @@ Extended_Number<T, Policy>::Extended_Number() {
 template <typename T, typename Policy>
 inline Result
 Extended_Number<T, Policy>::assign(const Minus_Infinity&, const Rounding&) {
-  return Checked::set_special<Policy>(v, V_MINUS_INFINITY);
+  return Checked::set_special<Policy>(v, VC_MINUS_INFINITY);
 }
 
 template <typename T, typename Policy>
 inline Result
 Extended_Number<T, Policy>::assign(const Plus_Infinity&, const Rounding&) {
-  return Checked::set_special<Policy>(v, V_PLUS_INFINITY);
+  return Checked::set_special<Policy>(v, VC_PLUS_INFINITY);
 }
 
 template <typename T, typename Policy>
 inline Result
 Extended_Number<T, Policy>::assign(const Not_A_Number&, const Rounding&) {
-  return Checked::set_special<Policy>(v, V_UNKNOWN);
+  return Checked::set_special<Policy>(v, VC_NAN);
 }
 
 #define FUNC1(name, func) \

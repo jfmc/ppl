@@ -54,13 +54,13 @@ inline Result
 classify_float(const T v, bool nan, bool inf, bool sign) {
   Float<T> f(v);
   if ((nan || sign) && f.is_nan())
-    return V_UNKNOWN;
+    return VC_NAN;
   if (inf) {
     int i = f.is_inf();
     if (i < 0)
-      return V_MINUS_INFINITY;
+      return VC_MINUS_INFINITY;
     if (i > 0)
-      return V_PLUS_INFINITY;
+      return VC_PLUS_INFINITY;
   }
   if (sign) {
     if (v < 0)
@@ -69,20 +69,20 @@ classify_float(const T v, bool nan, bool inf, bool sign) {
       return V_GT;
     return V_EQ;
   }
-  return V_NORMAL;
+  return VC_NORMAL;
 }
 
 template <typename Policy, typename T>
 inline Result
 set_special_float(T& v, Result r) {
-  switch (type(r)) {
-  case V_MINUS_INFINITY:
+  switch (classify(r)) {
+  case VC_MINUS_INFINITY:
     v = -HUGE_VAL;
     break;
-  case V_PLUS_INFINITY:
+  case VC_PLUS_INFINITY:
     v = HUGE_VAL;
     break;
-  case V_UNKNOWN:
+  case VC_NAN:
     v = NAN;
     break;
   default:
@@ -104,13 +104,13 @@ pred_float(T& v) {
   else if (f.sign_bit()) {
     f.inc();
     if (Policy::fpu_classify && f.is_inf())
-      return V_MINUS_INFINITY;
+      return VC_MINUS_INFINITY;
   }
   else {
     f.dec();
   }
   v = f.value();
-  return V_NORMAL;
+  return VC_NORMAL;
 }
 
 template <typename Policy, typename T>
@@ -126,13 +126,13 @@ succ_float(T& v) {
   else if (!f.sign_bit()) {
     f.inc();
     if (Policy::fpu_classify && f.is_inf())
-      return V_PLUS_INFINITY;
+      return VC_PLUS_INFINITY;
   }
   else {
     f.dec();
   }
   v = f.value();
-  return V_NORMAL;
+  return VC_NORMAL;
 }
 
 SPECIALIZE_CLASSIFY(float, float32_t)
@@ -173,7 +173,7 @@ result_relation(const Rounding& mode) {
   if (Policy::fpu_check_inexact) {
     if (!fpu_check_inexact())
       return V_EQ;
-    r = V_NORMAL;
+    r = VC_NORMAL;
   } else
     r = V_EQ;
   switch (mode.direction()) {
@@ -191,7 +191,7 @@ inline Result
 classify_float_(const Type x) {
   if (Policy::fpu_classify)
     return classify<Policy>(x, true, true, false);
-  return V_NORMAL;
+  return VC_NORMAL;
 }
 
 template <typename Policy, typename From, typename To>
@@ -250,7 +250,7 @@ inline Result
 div_float(Type& to, const Type x, const Type y, const Rounding& mode) {
   if (Policy::check_divbyzero && y == 0) {
     to = NAN;
-    return V_UNKNOWN;
+    return V_DIV_ZERO;
   }
   prepare_inexact<Policy>();
   return assign_result_inexact<Policy>(to, x / y, mode);
@@ -261,7 +261,7 @@ inline Result
 mod_float(Type& to, const Type x, const Type y, const Rounding& mode) {
   if (Policy::check_divbyzero && y == 0) {
     to = NAN;
-    return V_UNKNOWN;
+    return V_MOD_ZERO;
   }
   prepare_inexact<Policy>();
   return assign_result_inexact<Policy>(to, std::fmod(x, y, mode));
@@ -278,7 +278,7 @@ inline Result
 sqrt_float(Type& to, const Type from, const Rounding& mode) {
   if (Policy::check_sqrt_neg && from < 0) {
     to = NAN;
-    return V_DOMAIN;
+    return V_SQRT_NEG;
   }
   prepare_inexact<Policy>();
   return assign_result_inexact<Policy>(to, std::sqrt(from), mode);

@@ -34,15 +34,30 @@ Checked_Number<T, Policy>::bad_result(Result r) {
   switch (r) {
   case V_NEG_OVERFLOW:
     throw std::overflow_error("Negative overflow.");
+  case V_UNKNOWN_NEG_OVERFLOW:
+    throw std::overflow_error("Unknown result due to negative overflow.");
   case V_POS_OVERFLOW:
     throw std::overflow_error("Positive overflow.");
-  case V_UNKNOWN:
-    throw std::overflow_error("Undefined result.");
-  case V_DOMAIN:
-    throw std::domain_error("Result is out of numeric domain.");
+  case V_UNKNOWN_POS_OVERFLOW:
+    throw std::overflow_error("Unknown result due to positive overflow.");
+  case V_CVT_STR_UNK:
+    throw std::domain_error("Invalid numeric string.");
+  case V_DIV_ZERO:
+    throw std::domain_error("Division by zero.");
+  case V_MOD_ZERO:
+    throw std::domain_error("Modulo by zero.");
+  case V_SQRT_NEG:
+    throw std::domain_error("Square root of negative number.");
+  case V_LT:
+  case V_LE:
+  case V_GT:
+  case V_GE:
+  case V_NE:
+  case V_LGE:
+    throw std::logic_error("Unexpected inexact computation.");
+    break;
   default:
-    if (Policy::round_inexact)
-      throw std::logic_error("Unexpected inexact computation.");
+    throw std::logic_error("Unexpected result.");
     break;
   }
 }
@@ -50,7 +65,7 @@ Checked_Number<T, Policy>::bad_result(Result r) {
 template <typename T, typename Policy>
 inline void
 Checked_Number<T, Policy>::check_result(Result r) {
-  if (r != V_EQ)
+  if (is_special(r) || (Policy::round_inexact && r != V_EQ))
     bad_result(r);
 }
 

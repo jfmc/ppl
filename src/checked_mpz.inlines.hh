@@ -48,19 +48,19 @@ classify_mpz(const mpz_class& v, bool nan, bool inf, bool sign) {
   if (Policy::store_nan || Policy::store_infinity) {
     mp_size_t s = get_mp_size(v);
     if (Policy::store_nan && (nan || sign) && s == Limits<mp_size_t>::min + 1)
-      return V_UNKNOWN;
+      return VC_NAN;
     if (!inf && !sign)
-      return V_NORMAL;
+      return VC_NORMAL;
     if (Policy::store_infinity) {
       if (s == Limits<mp_size_t>::min)
-	return inf ? V_MINUS_INFINITY : V_LT;
+	return inf ? VC_MINUS_INFINITY : V_LT;
       if (s == Limits<mp_size_t>::max)
-	return inf ? V_PLUS_INFINITY : V_GT;
+	return inf ? VC_PLUS_INFINITY : V_GT;
     }
   }
   if (sign)
     return sgn<Policy>(v);
-  return V_NORMAL;
+  return VC_NORMAL;
 }
 
 SPECIALIZE_CLASSIFY(mpz, mpz_class)
@@ -69,15 +69,15 @@ template <typename Policy>
 inline Result
 set_special_mpz(mpz_class& v, Result r) {
   mp_size_t s;
-  Result t = type(r);
-  if (Policy::store_nan && t == V_UNKNOWN)
+  Result t = classify(r);
+  if (Policy::store_nan && t == VC_NAN)
     s = Limits<mp_size_t>::min + 1;
   else if (Policy::store_infinity) {
     switch (t) {
-    case V_MINUS_INFINITY:
+    case VC_MINUS_INFINITY:
       s = Limits<mp_size_t>::min;
       break;
-    case V_PLUS_INFINITY:
+    case VC_PLUS_INFINITY:
       s = Limits<mp_size_t>::max;
       break;
     default:
@@ -95,9 +95,9 @@ SPECIALIZE_SET_SPECIAL(mpz, mpz_class)
 template <typename Policy>
 inline Result
 pred_mpz(mpz_class& to) {
-  assert(classify<Policy>(to, true, true, false) == V_NORMAL);
+  assert(classify<Policy>(to, true, true, false) == VC_NORMAL);
   --to;
-  return V_NORMAL;
+  return VC_NORMAL;
 }
 
 SPECIALIZE_PRED(mpz, mpz_class)
@@ -105,9 +105,9 @@ SPECIALIZE_PRED(mpz, mpz_class)
 template <typename Policy>
 inline Result
 succ_mpz(mpz_class& to) {
-  assert(classify<Policy>(to, true, true, false) == V_NORMAL);
+  assert(classify<Policy>(to, true, true, false) == VC_NORMAL);
   ++to;
-  return V_NORMAL;
+  return VC_NORMAL;
 }
 
 SPECIALIZE_SUCC(mpz, mpz_class)
@@ -255,7 +255,7 @@ template <typename Policy>
 inline Result
 div_mpz(mpz_class& to, const mpz_class& x, const mpz_class& y, const Rounding& mode) {
   if (Policy::check_divbyzero && ::sgn(y) == 0)
-    return set_special<Policy>(to, V_UNKNOWN);
+    return set_special<Policy>(to, V_DIV_ZERO);
   if (Policy::round_inexact && mode.direction() != Rounding::IGNORE) {
     mpz_t rem;
     mpz_init(rem);
@@ -285,7 +285,7 @@ template <typename Policy>
 inline Result
 mod_mpz(mpz_class& to, const mpz_class& x, const mpz_class& y, const Rounding&) {
   if (Policy::check_divbyzero && ::sgn(y) == 0)
-    return set_special<Policy>(to, V_UNKNOWN);
+    return set_special<Policy>(to, V_MOD_ZERO);
   to = x % y;
   return V_EQ;
 }
@@ -341,7 +341,7 @@ template <typename Policy>
 inline Result
 sqrt_mpz(mpz_class& to, const mpz_class& from, const Rounding& mode) {
   if (Policy::check_sqrt_neg && from < 0)
-    return set_special<Policy>(to, V_DOMAIN);
+    return set_special<Policy>(to, V_SQRT_NEG);
   if (Policy::round_inexact && mode.direction() != Rounding::IGNORE) {
     mpz_class r;
     mpz_sqrtrem(to.get_mpz_t(), r.get_mpz_t(), from.get_mpz_t());

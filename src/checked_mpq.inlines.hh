@@ -38,19 +38,19 @@ classify_mpq(const mpq_class& v, bool nan, bool inf, bool sign) {
       && ::sgn(v.get_den()) == 0) {
     int s = ::sgn(v.get_num());
     if (Policy::store_nan && (nan || sign) && s == 0)
-      return V_UNKNOWN;
+      return VC_NAN;
     if (!inf && !sign)
-      return V_NORMAL;
+      return VC_NORMAL;
     if (Policy::store_infinity) {
       if (s < 0)
-	return inf ? V_MINUS_INFINITY : V_LT;
+	return inf ? VC_MINUS_INFINITY : V_LT;
       if (s > 0)
-	return inf ? V_PLUS_INFINITY : V_GT;
+	return inf ? VC_PLUS_INFINITY : V_GT;
     }
   }
   if (sign)
     return sgn<Policy>(v);
-  return V_NORMAL;
+  return VC_NORMAL;
 }
 
 SPECIALIZE_CLASSIFY(mpq, mpq_class)
@@ -59,15 +59,15 @@ template <typename Policy>
 inline Result
 set_special_mpq(mpq_class& v, Result r) {
   int num;
-  Result t = type(r);
-  if (Policy::store_nan && t == V_UNKNOWN)
+  Result t = classify(r);
+  if (Policy::store_nan && t == VC_NAN)
     num = 0;
   else if (Policy::store_infinity) {
     switch (t) {
-    case V_MINUS_INFINITY:
+    case VC_MINUS_INFINITY:
       num = -1;
       break;
-    case V_PLUS_INFINITY:
+    case VC_PLUS_INFINITY:
       num = 1;
       break;
     default:
@@ -210,7 +210,7 @@ template <typename Policy>
 inline Result
 div_mpq(mpq_class& to, const mpq_class& x, const mpq_class& y, const Rounding&) {
   if (Policy::check_divbyzero && sgn(y) == 0)
-    return set_special<Policy>(to, V_UNKNOWN);
+    return set_special<Policy>(to, V_DIV_ZERO);
   to = x / y;
   return V_EQ;
 }
@@ -221,7 +221,7 @@ template <typename Policy>
 inline Result
 mod_mpq(mpq_class& to, const mpq_class& x, const mpq_class& y, const Rounding&) {
   if (Policy::check_divbyzero && sgn(y) == 0)
-    return set_special<Policy>(to, V_UNKNOWN);
+    return set_special<Policy>(to, V_MOD_ZERO);
   to = x / y;
   to.get_num() %= to.get_den();
   return V_EQ;

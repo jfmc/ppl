@@ -29,13 +29,13 @@ site: http://www.cs.unipr.it/ppl/ . */
 namespace Parma_Polyhedra_Library {
 
 inline Result
-type(Result r) {
-  return static_cast<Result>(r & V_TYPE_MASK);
+classify(Result r) {
+  return static_cast<Result>(r & VC_MASK);
 }
 
 inline bool
 is_special(Result r) {
-  return type(r) != V_NORMAL;
+  return classify(r) != VC_NORMAL;
 }
 
 inline Result
@@ -44,15 +44,15 @@ sign(Result r) {
   case V_LT:
   case V_EQ:
   case V_GT:
-  case V_UNKNOWN:
+  case VC_NAN:
     return r;
-  case V_MINUS_INFINITY:
+  case VC_MINUS_INFINITY:
     return V_LT;
-  case V_PLUS_INFINITY:
+  case VC_PLUS_INFINITY:
     return V_GT;
   default:
     assert(false);
-    return V_UNKNOWN;
+    return VC_NAN;
   }
 }
 
