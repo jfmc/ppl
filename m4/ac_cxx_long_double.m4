@@ -1,4 +1,5 @@
-dnl A function to check whether the C++ compiler supports long double numbers.
+dnl A function to check whether the C++ compiler provides long double
+dnl numbers that have bigger range or precision than double.
 dnl Copyright (C) 2001-2004 Roberto Bagnara <bagnara@cs.unipr.it>
 dnl
 dnl This file is part of the Parma Polyhedra Library (PPL).
@@ -27,9 +28,18 @@ ac_save_CPPFLAGS="$CPPFLAGS"
 ac_save_LIBS="$LIBS"
 AC_LANG_PUSH(C++)
 
-AC_MSG_CHECKING([whether the C++ compiler supports long double numbers])
-AC_COMPILE_IFELSE([AC_LANG_SOURCE([[
+AC_MSG_CHECKING([whether the C++ compiler provides proper long doubles])
+AC_RUN_IFELSE([AC_LANG_SOURCE([[
+#include <cfloat>
+
 long double f = 0.0;
+
+int main() {
+  return ((LDBL_MAX <= DBL_MAX) && (DBL_EPSILON <= LDBL_EPSILON)
+	  && (LDBL_MAX_EXP <= DBL_MAX_EXP) && (LDBL_MANT_DIG <= DBL_MANT_DIG))
+    ? 1
+    : 0;
+}
 ]])],
   AC_MSG_RESULT(yes)
   ac_cxx_supports_long_double=yes,
@@ -45,7 +55,7 @@ else
   value=0
 fi
 AC_DEFINE_UNQUOTED(CXX_SUPPORTS_LONG_DOUBLE, $value,
-  [Not zero if the C++ compiler supports long double numbers.])
+  [Not zero if the C++ compiler provides long double numbers that have bigger range or precision than double.])
 
 AC_LANG_POP(C++)
 CPPFLAGS="$ac_save_CPPFLAGS"

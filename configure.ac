@@ -399,7 +399,8 @@ AC_CXX_SUPPORTS_ATTRIBUTE_WEAK
 # Check whether the C++ compiler supports long double floating point numbers.
 AC_CXX_SUPPORTS_LONG_DOUBLE
 
-# Check whether the C++ compiler supports long long integers.
+# Check whether the C++ compiler provides long double numbers that
+# have bigger range or precision than double.
 AC_CXX_SUPPORTS_LONG_LONG
 
 # GMP library
