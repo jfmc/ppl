@@ -296,6 +296,22 @@ int
 ppl_LinExpression_space_dimension __P((ppl_const_LinExpression_t le));
 
 /*! \brief
+  Copies into \p n the coefficient of variable \p var in
+  the linear expression \p le.
+*/
+int
+ppl_LinExpression_coefficient __P((ppl_const_LinExpression_t le,
+				   ppl_dimension_type var,
+				   ppl_Coefficient_t n));
+
+/*! \brief
+  Copies into \p n the inhomogeneous term of linear expression \p le.
+*/
+int
+ppl_LinExpression_inhomogeneous_term __P((ppl_const_LinExpression_t le,
+					  ppl_Coefficient_t n));
+
+/*! \brief
   Returns a positive integer if \p le is well formed, i.e., if it
   satisfies all its implementation variant; returns 0 and perhaps
   make some noise if \p le is broken.  Useful for debugging purposes.

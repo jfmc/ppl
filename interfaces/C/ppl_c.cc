@@ -316,6 +316,27 @@ ppl_LinExpression_space_dimension(ppl_const_LinExpression_t le) try {
 CATCH_ALL
 
 int
+ppl_LinExpression_coefficient(ppl_const_LinExpression_t le,
+			      ppl_dimension_type var,
+			      ppl_Coefficient_t n) try {
+  const LinExpression& lle = *to_const(le);
+  Integer& nn = *to_nonconst(n);
+  nn = lle.coefficient(Variable(var));
+  return 0;
+}
+CATCH_ALL
+
+int
+ppl_LinExpression_inhomogeneous_term(ppl_const_LinExpression_t le,
+				     ppl_Coefficient_t n) try {
+  const LinExpression& lle = *to_const(le);
+  Integer& nn = *to_nonconst(n);
+  nn = lle.inhomogeneous_term();
+  return 0;
+}
+CATCH_ALL
+
+int
 ppl_LinExpression_OK(ppl_const_LinExpression_t /* le */) try {
   return 1;
 }
