@@ -107,7 +107,9 @@ main() {
     dimensions_to_remove.insert(D);
     dimensions_to_remove.insert(F);
     dimensions_to_remove.insert(E);
+    assert(current.OK());
     current.remove_dimensions(dimensions_to_remove);
+    assert(current.OK());
 #if NOISY
     print_constraints(current, "*** after remove_dimensions ***");
 #endif
