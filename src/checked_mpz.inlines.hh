@@ -165,7 +165,7 @@ assign_mpz_c_string(mpz_class& to, c_string from) {
   return V_EQ;
 }
 
-SPECIALIZE_ASSIGN(mpz_c_string, mpz_class, c_string);
+SPECIALIZE_ASSIGN(mpz_c_string, mpz_class, c_string)
 
 template <typename Policy>
 inline Result 

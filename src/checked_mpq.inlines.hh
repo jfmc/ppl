@@ -131,7 +131,7 @@ assign_mpq_c_string(mpq_class& to, c_string from) {
   return V_EQ;
 }
 
-SPECIALIZE_ASSIGN(mpq_c_string, mpq_class, c_string);
+SPECIALIZE_ASSIGN(mpq_c_string, mpq_class, c_string)
 
 template <typename Policy, typename To>
 inline Result
