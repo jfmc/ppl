@@ -133,7 +133,7 @@ or \f$n = 0\f$ and \f$\cP = \emptyset\f$.
 The set of all NNC polyhedra on the vector space \f$\Rset^n\f$
 is denoted \f$\Pset_n\f$.
 
-The set \f$\cP  \sseq \Pset_n\f$ is a <EM>closed convex polyhedron</EM>
+The set \f$\cP \in \Pset_n\f$ is a <EM>closed convex polyhedron</EM>
 (<EM>closed polyhedron</EM>, for short) if and only if either
 \f$\cP\f$ can be expressed as the intersection of a finite number
 of closed affine half-spaces of \f$\Rset^n\f$
@@ -394,28 +394,29 @@ the other topology.
 <B>Space Dimensions and Dimension-compatibility</B>
 
 The <EM>space dimension</EM> of an NNC polyhedron \f$P \in \Pset_n\f$
-is the dimension \f$n \in \Nset\f$ of the corresponding vector space
-\f$\Rset^n\f$.
+(resp., a C polyhedron \f$P \in \CPset_n\f$) is the dimension
+\f$n \in \Nset\f$ of the corresponding vector space \f$\Rset^n\f$.
 The space dimension of constraints, generators and other objects
-of the library are defined similarly.
+of the library is defined similarly.
 The space dimension of objects is important because most of the
-operations defined on NNC polyhedra are well-defined if and only if
-the various arguments are space dimension-compatible.
+operations defined on polyhedra are well-defined if and only if
+the various arguments are space dimension compatible.
 
 The following (space) <EM>dimension-compatibility</EM> rules are defined:
-- the NNC polyhedra \f$P \in \Pset_n\f$ and \f$Q \in \Pset_m\f$ are
-  dimension-compatible if and only if \f$n = m\f$;
+- the polyhedra are dimension-compatible if and only if they have
+  the same space dimension;
 - the constraint
   \f$\langle \vect{a}, \vect{x} \rangle \mathord{\relop} b\f$
   where \f$\mathord{\relop} \in \{ =, \geq, > \}\f$
-   and \f$\vect{a}, \vect{x} \in \Rset^m\f$,
-  is dimension-compatible with an NNC polyhedron \f$P \in \Pset_n\f$
+  and \f$\vect{a}, \vect{x} \in \Rset^m\f$, is dimension-compatible
+  with a polyhedron having space dimension \f$n\f$
   if and only if \f$m \leq n\f$;
 - the generator \f$\vect{x} \in \Rset^m\f$ is dimension-compatible
-  with an NNC polyhedron \f$P \in \Pset_n\f$ if and only if \f$m \leq n\f$;
+  with a polyhedron having space dimension \f$n\f$
+  if and only if \f$m \leq n\f$;
 - a system of constraints (resp., generators) is dimension-compatible with
-  an NNC polyhedron if and only if all the constraints (resp., generators)
-  in the system are dimension-compatible with the NNC polyhedron.
+  a polyhedron if and only if all the constraints (resp., generators)
+  in the system are dimension-compatible with the polyhedron.
 
 While the space dimension of a constraint, a generator or a system thereof
 is automatically adjusted when needed, the space dimension of polyhedra
