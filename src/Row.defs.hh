@@ -403,15 +403,14 @@ public:
   //@}
 
 private:
+  friend class Parma_Polyhedra_Library::Row;
+
   //! The number of coefficients in the row.
   dimension_type size_;
 
-public:
-  // FIXME: this should become private.
   //! The type of this row.
   Type type;
 
-private:
   //! The vector of coefficients.
   Integer vec_[
 #if !CXX_SUPPORTS_FLEXIBLE_ARRAYS
@@ -419,7 +418,6 @@ private:
 #endif
   ];
 
-private:
   //! Private and unimplemented: default construction is not allowed.
   Impl();
 
