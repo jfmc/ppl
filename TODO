@@ -1,3 +1,12 @@
+Minor Things
+============
+
+- Make sure all the public methods of Polyhedron are
+  available through the Prolog interfaces.
+
+- Seriously look at all the warnings issued by Doxygen
+  when it produces the developer's reference manual.
+
 
 Non-Necessarily-Closed Polyhedra
 ================================
