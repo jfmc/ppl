@@ -7,7 +7,7 @@ Parma Polyhedra Library (Release 0.6)
 
 This is the release 0.6 of the Parma Polyhedra Library:
 a C++ library for (not necessarily closed) convex polyhedra
-and other numerical abstractctions.
+and other numerical abstractions.
 
 To be more precise, the Parma Polyhedra Library (PPL) can handle:
 
