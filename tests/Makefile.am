@@ -200,7 +200,7 @@ DERIVED_TESTS = \
 	nnc_generators1 nnc_generators2 nnc_generators3 nnc_generators4 \
 	nnc_generators5 nnc_generators6 \
 	nnc_h79widening1 nnc_h79widening2 nnc_h79widening4 nnc_h79widening5 \
-        nnc_h79widening6 nnc_h79widening7 \
+        nnc_h79widening6 nnc_h79widening7 nnc_h79widening8 \
 	nnc_intersection1 nnc_intersection2 nnc_intersection3 \
 	nnc_intersection4 nnc_intersection5 nnc_intersection6 \
 	nnc_intersection7 nnc_intersection8 nnc_intersection9 \
@@ -843,6 +843,8 @@ nnc_h79widening6_SOURCES = h79widening6.cc
 nnc_h79widening6_CXXFLAGS = $(DERIVED_CXXFLAGS)
 nnc_h79widening7_SOURCES = h79widening7.cc
 nnc_h79widening7_CXXFLAGS = $(DERIVED_CXXFLAGS)
+nnc_h79widening8_SOURCES = h79widening8.cc
+nnc_h79widening8_CXXFLAGS = $(DERIVED_CXXFLAGS)
 
 nnc_intersection1_SOURCES = intersection1.cc
 nnc_intersection1_CXXFLAGS = $(DERIVED_CXXFLAGS)
