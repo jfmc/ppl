@@ -1,4 +1,5 @@
-/* Test polyhedron::poly_hull_assign_and_minimize().
+/* Test polyhedron::poly_hull_assign_and_minimize(): we apply
+   this function to two zero-dimensional polyhedra.
    Copyright (C) 2001, 2002 Roberto Bagnara <bagnara@cs.unipr.it>
 
 This file is part of the Parma Polyhedra Library (PPL).

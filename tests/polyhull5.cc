@@ -1,4 +1,5 @@
-/* Test Polyhedron::poly_hull_assign_and_minimize().
+/* Test Polyhedron::poly_hull_assign_and_minimize(): in this test
+   a polyhedron is empty.
    Copyright (C) 2001, 2002 Roberto Bagnara <bagnara@cs.unipr.it>
 
 This file is part of the Parma Polyhedra Library (PPL).

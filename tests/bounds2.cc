@@ -50,5 +50,5 @@ main() {
 
   bool ok = !ph.bounds_from_above(A + B) && ph.bounds_from_below(A + B);
 
-  return !ok;
+  return ok ? 0 : 1;
 }

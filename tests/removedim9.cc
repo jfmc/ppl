@@ -1,4 +1,6 @@
-/* Test Polyhedron::remove_higher_dimensions().
+/* Test Polyhedron::remove_higher_dimensions(): the dimension
+   of the resulting space is equal to the dimension of the
+   original space.
    Copyright (C) 2001, 2002 Roberto Bagnara <bagnara@cs.unipr.it>
 
 This file is part of the Parma Polyhedra Library (PPL).

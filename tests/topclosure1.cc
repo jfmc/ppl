@@ -1,4 +1,7 @@
-/* Test Polyhedron::topological_closure_assign().
+/* Test Polyhedron::topological_closure_assign(): we test this
+   function in the case of a polyhedron defined by the system of
+   constraints and in the case of a polyhedron defined by the
+   system of generators.
    Copyright (C) 2001, 2002 Roberto Bagnara <bagnara@cs.unipr.it>
 
 This file is part of the Parma Polyhedra Library (PPL).

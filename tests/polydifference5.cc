@@ -1,4 +1,5 @@
-/* Test Polyhedron::poly_difference_assign().
+/* Test Polyhedron::poly_difference_assign(): we test this function
+   in the case of strict inequalities.
    Copyright (C) 2001, 2002 Roberto Bagnara <bagnara@cs.unipr.it>
 
 This file is part of the Parma Polyhedra Library (PPL).
