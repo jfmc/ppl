@@ -91,11 +91,13 @@ private:
 namespace Parma_Polyhedra_Library {
 
 //! Wraps a widening method into a function object.
+/*! \relates Polyhedra_PowerSet */
 template <typename PH>
 Widening_Function<PH>
 widen_fun(void (PH::* wm)(const PH&, unsigned*));
 
 //! Wraps a limited widening method into a function object.
+/*! \relates Polyhedra_PowerSet */
 template <typename PH>
 Limited_Widening_Function<PH>
 widen_fun(void (PH::* lwm)(const PH&, const ConSys&, unsigned*),

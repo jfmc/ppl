@@ -35,7 +35,7 @@ site: http://www.cs.unipr.it/ppl/ . */
 namespace Parma_Polyhedra_Library {
 
 //! Partitions \p q with respect to \p p.
-/*!
+/*! \relates Polyhedra_PowerSet
   Let \p p and \p q be two polyhedra.
   The function returns an object <CODE>r</CODE> of type
   <CODE>std::pair\<PH, Polyhedra_PowerSet\<NNC_Polyhedron\> \></CODE>
@@ -75,6 +75,7 @@ linear_partition_aux(const Constraint& c,
 
 } // namespace
 
+/*! \relates Polyhedra_PowerSet */
 template <typename PH>
 std::pair<PH, Polyhedra_PowerSet<NNC_Polyhedron> >
 linear_partition(const PH& p, const PH& q) {
@@ -97,10 +98,12 @@ linear_partition(const PH& p, const PH& q) {
 }
 
 //! If the poly-hull between \p p and \p q is exact it is assigned to \p p.
+/*! \relates Polyhedron */
 template <typename PH>
 bool
 poly_hull_assign_if_exact(PH& p, const PH& q);
 
+/*! \relates Polyhedron */
 template <typename PH>
 bool
 poly_hull_assign_if_exact(PH& p, const PH& q) {
