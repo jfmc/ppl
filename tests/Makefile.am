@@ -61,7 +61,8 @@ TESTS = NNCinclusion1 \
 	relations7 relations8 relations9 \
 	removedim1 removedim2 removedim3 removedim4 removedim5 removedim6 \
 	smm1 \
-	universe1 universe2 universe3 universe4 universe5
+	universe1 universe2 universe3 universe4 universe5 \
+	widening1
 
 NNCinclusion1_SOURCES = NNCinclusion1.cc
 
@@ -165,6 +166,8 @@ universe2_SOURCES = universe2.cc
 universe3_SOURCES = universe3.cc
 universe4_SOURCES = universe4.cc
 universe5_SOURCES = universe5.cc
+
+widening1_SOURCES = widening1.cc
 
 check_PROGRAMS = $(TESTS) $(BUGS)
 
