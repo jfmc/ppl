@@ -32,8 +32,8 @@ site: http://www.cs.unipr.it/ppl/ . */
 namespace PPL = Parma_Polyhedra_Library;
 
 /*!
-  Adds new positions to the real implementation of the row
-  obtaining a new row having size \p new_size.
+  Adds new positions to the implementation of the row
+  obtaining a new row with size \p new_size.
 */
 void
 PPL::Row::Impl::grow_no_copy(dimension_type new_size) {
@@ -44,10 +44,9 @@ PPL::Row::Impl::grow_no_copy(dimension_type new_size) {
   }
 }
 
-
 /*!
-  Delete elements from the real implementation of the row
-  from \p new_size - th position to the end.
+  Destroys elements of the row implementation
+  from position \p new_size to the end.
 */
 void
 PPL::Row::Impl::shrink(dimension_type new_size) {
@@ -60,7 +59,6 @@ PPL::Row::Impl::shrink(dimension_type new_size) {
   set_size(new_size);
 }
 
-
 void
 PPL::Row::Impl::copy_construct(const Impl& y) {
   dimension_type y_size = y.size();
@@ -70,12 +68,9 @@ PPL::Row::Impl::copy_construct(const Impl& y) {
   }
 }
 
-
 /*!
   Computes the Greatest Common Divisor (GCD) among the elements of
   the row and normalizes them by the GCD itself.
-  This is useful because we know that constraints and generators are
-  unique up a multiplicative coefficient.
 */
 void
 PPL::Row::normalize() {
@@ -95,11 +90,10 @@ PPL::Row::normalize() {
       exact_div_assign(x[i], tmp_Integer[1]);
 }
 
-
 /*!
-  In addition to the normalization performed by normalize(),
-  this method ensures that the first non-zero coefficient
-  of lines and equalities is negative.
+  In addition to the normalization performed by normalize(), this
+  method ensures that the first non-zero coefficient of lines and
+  equalities is negative.
 */
 void
 PPL::Row::strong_normalize() {
@@ -122,7 +116,6 @@ PPL::Row::strong_normalize() {
 	  negate(x[j]);
   }
 }
-
 
 /*!
   \relates Parma_Polyhedra_Library::Row
@@ -210,7 +203,6 @@ PPL::operator*(const Row& x, const Row& y) {
   return tmp_Integer[0];
 }
 
-
 /*! \relates Parma_Polyhedra_Library::Row */
 const PPL::Integer&
 PPL::reduced_scalar_product(const Row& x, const Row& y) {
@@ -227,7 +219,6 @@ PPL::reduced_scalar_product(const Row& x, const Row& y) {
   }
   return tmp_Integer[0];
 }
-
 
 /*!
   \param y   The row that will be combined with \p *this object.
@@ -299,6 +290,17 @@ PPL::Row::OK(dimension_type row_size,
 
   bool is_broken = false;
 #if EXTRA_ROW_DEBUG
+ #if !CXX_SUPPORTS_FLEXIBLE_ARRAYS
+  if (capacity_ == 0) {
+    cerr << "Illegal row capacity: is 0, should be at least 1"
+	 << endl;
+    is_broken = true;
+  }
+  else if (capacity_ == 1 && row_capacity == 0)
+    // This is fine.
+    ;
+  else
+ #endif
   if (capacity_ != row_capacity) {
     cerr << "Row capacity mismatch: is " << capacity_
 	 << ", should be " << row_capacity << "."
