@@ -47,9 +47,9 @@ site: http://www.cs.unipr.it/ppl/ . */
 
 namespace PPL = Parma_Polyhedra_Library;
 
-PPL::Polyhedron::Polyhedron(Topology topol,
-			    dimension_type num_dimensions,
-			    Degenerate_Kind kind)
+PPL::Polyhedron::Polyhedron(const Topology topol,
+			    const dimension_type num_dimensions,
+			    const Degenerate_Kind kind)
   : con_sys(topol),
     gen_sys(topol),
     sat_c(),
@@ -85,7 +85,7 @@ PPL::Polyhedron::Polyhedron(const Polyhedron& y)
       sat_g = y.sat_g;
 }
 
-PPL::Polyhedron::Polyhedron(Topology topol, const ConSys& ccs)
+PPL::Polyhedron::Polyhedron(const Topology topol, const ConSys& ccs)
   : con_sys(topol),
     gen_sys(topol),
     sat_c(),
@@ -94,7 +94,7 @@ PPL::Polyhedron::Polyhedron(Topology topol, const ConSys& ccs)
   ConSys cs = ccs;
 
   // Try to adapt `cs' to the required topology.
-  dimension_type cs_space_dim = cs.space_dimension();
+  const dimension_type cs_space_dim = cs.space_dimension();
   if (!cs.adjust_topology_and_dimension(topol, cs_space_dim))
     throw_topology_incompatible("Polyhedron(cs)", cs);
 
@@ -130,13 +130,13 @@ PPL::Polyhedron::Polyhedron(Topology topol, const ConSys& ccs)
       }
 }
 
-PPL::Polyhedron::Polyhedron(Topology topol, ConSys& cs)
+PPL::Polyhedron::Polyhedron(const Topology topol, ConSys& cs)
   : con_sys(topol),
     gen_sys(topol),
     sat_c(),
     sat_g() {
   // Try to adapt `cs' to the required topology.
-  dimension_type cs_space_dim = cs.space_dimension();
+  const dimension_type cs_space_dim = cs.space_dimension();
   if (!cs.adjust_topology_and_dimension(topol, cs_space_dim))
     throw_topology_incompatible("Polyhedron(cs)", cs);
 
@@ -172,7 +172,7 @@ PPL::Polyhedron::Polyhedron(Topology topol, ConSys& cs)
       }
 }
 
-PPL::Polyhedron::Polyhedron(Topology topol, const GenSys& cgs)
+PPL::Polyhedron::Polyhedron(const Topology topol, const GenSys& cgs)
   : con_sys(topol),
     gen_sys(topol),
     sat_c(),
@@ -191,7 +191,7 @@ PPL::Polyhedron::Polyhedron(Topology topol, const GenSys& cgs)
   if (!gs.has_points())
     throw_invalid_generators("Polyhedron(gs)");
 
-  dimension_type gs_space_dim = gs.space_dimension();
+  const dimension_type gs_space_dim = gs.space_dimension();
   // Try to adapt `gs' to the required topology.
   if (!gs.adjust_topology_and_dimension(topol, gs_space_dim))
     throw_topology_incompatible("Polyhedron(gs)", gs);
@@ -226,7 +226,7 @@ PPL::Polyhedron::Polyhedron(Topology topol, const GenSys& cgs)
   space_dim = 0;
 }
 
-PPL::Polyhedron::Polyhedron(Topology topol, GenSys& gs)
+PPL::Polyhedron::Polyhedron(const Topology topol, GenSys& gs)
   : con_sys(topol),
     gen_sys(topol),
     sat_c(),
@@ -242,7 +242,7 @@ PPL::Polyhedron::Polyhedron(Topology topol, GenSys& gs)
   if (!gs.has_points())
     throw_invalid_generators("Polyhedron(gs)");
 
-  dimension_type gs_space_dim = gs.space_dimension();
+  const dimension_type gs_space_dim = gs.space_dimension();
   // Try to adapt `gs' to the required topology.
   if (!gs.adjust_topology_and_dimension(topol, gs_space_dim))
     throw_topology_incompatible("Polyhedron(gs)", gs);
@@ -332,7 +332,7 @@ PPL::Polyhedron::quick_equivalence_test(const Polyhedron& y) const {
 	if (x.gen_sys.num_rows() != y.gen_sys.num_rows())
 	  return Polyhedron::TVB_FALSE;
 	//  - the same number of lines; ...
-	dimension_type x_num_lines = x.gen_sys.num_lines();
+	const dimension_type x_num_lines = x.gen_sys.num_lines();
 	if (x_num_lines != y.gen_sys.num_lines())
 	  return Polyhedron::TVB_FALSE;
 	//  - if there are no lines, they have the same generators.
@@ -407,7 +407,7 @@ PPL::Polyhedron::is_included_in(const Polyhedron& y) const {
       if (c.is_inequality()) {
 	for (dimension_type j = gs.num_rows(); j-- > 0; ) {
 	  const Generator& g = gs[j];
-	  int sp_sign = sgn(c * g);
+	  const int sp_sign = sgn(c * g);
 	  if (g.is_line()) {
 	    if (sp_sign != 0)
 	      return false;
@@ -428,14 +428,14 @@ PPL::Polyhedron::is_included_in(const Polyhedron& y) const {
   else {
     // Here we have a NON-necessarily closed polyhedron: using the
     // reduced scalar product, which ignores the epsilon coefficient.
-    dimension_type eps_index = x.space_dim + 1;
+    const dimension_type eps_index = x.space_dim + 1;
     for (dimension_type i = cs.num_rows(); i-- > 0; ) {
       const Constraint& c = cs[i];
       switch (c.type()) {
       case Constraint::NONSTRICT_INEQUALITY:
 	for (dimension_type j = gs.num_rows(); j-- > 0; ) {
 	  const Generator& g = gs[j];
-	  int sp_sign = sgn(reduced_scalar_product(c, g));
+	  const int sp_sign = sgn(reduced_scalar_product(c, g));
 	  if (g.is_line()) {
 	    if (sp_sign != 0)
 	      return false;
@@ -454,7 +454,7 @@ PPL::Polyhedron::is_included_in(const Polyhedron& y) const {
       case Constraint::STRICT_INEQUALITY:
 	for (dimension_type j = gs.num_rows(); j-- > 0; ) {
 	  const Generator& g = gs[j];
-	  int sp_sign = sgn(reduced_scalar_product(c, g));
+	  const int sp_sign = sgn(reduced_scalar_product(c, g));
 	  if (g[eps_index] > 0) {
 	    // Generator `g' is a point.
 	    // If a point violates or saturates a strict inequality
@@ -483,10 +483,11 @@ PPL::Polyhedron::is_included_in(const Polyhedron& y) const {
 }
 
 bool
-PPL::Polyhedron::bounds(const LinExpression& expr, bool from_above) const {
+PPL::Polyhedron::bounds(const LinExpression& expr,
+			const bool from_above) const {
   // The dimension of `expr' should not be greater than the dimension
   // of `*this'.
-  dimension_type expr_space_dim = expr.space_dimension();
+  const dimension_type expr_space_dim = expr.space_dimension();
   if (space_dim < expr_space_dim)
     throw_dimension_incompatible((from_above
 				  ? "bounds_from_above(e)"
@@ -512,7 +513,7 @@ PPL::Polyhedron::bounds(const LinExpression& expr, bool from_above) const {
 	tmp_Integer[1] = g[j] * expr[j];
 	tmp_Integer[0] += tmp_Integer[1];
       }
-      int sign = sgn(tmp_Integer[0]);
+      const int sign = sgn(tmp_Integer[0]);
       if (sign != 0
 	  && (g.is_line()
 	      || (from_above && sign > 0)
@@ -567,7 +568,7 @@ PPL::Polyhedron::process_pending_constraints() const {
     return true;
   }
 
-  bool empty = add_and_minimize(true, x.con_sys, x.gen_sys, x.sat_c);
+  const bool empty = add_and_minimize(true, x.con_sys, x.gen_sys, x.sat_c);
   assert(x.con_sys.num_pending_rows() == 0);
 
   if (empty)
@@ -691,7 +692,7 @@ PPL::Polyhedron::update_generators() const {
   Polyhedron& x = const_cast<Polyhedron&>(*this);
   // If the system of constraints is not consistent the
   // polyhedron is empty.
-  bool empty = minimize(true, x.con_sys, x.gen_sys, x.sat_g);
+  const bool empty = minimize(true, x.con_sys, x.gen_sys, x.sat_g);
   if (empty)
     x.set_empty();
   else {
@@ -713,8 +714,8 @@ PPL::Polyhedron::update_sat_c() const {
   assert(!sat_c_is_up_to_date());
 
   // We only consider non-pending rows.
-  dimension_type csr = con_sys.first_pending_row();
-  dimension_type gsr = gen_sys.first_pending_row();
+  const dimension_type csr = con_sys.first_pending_row();
+  const dimension_type gsr = gen_sys.first_pending_row();
   Polyhedron& x = const_cast<Polyhedron&>(*this);
 
   // The columns of `sat_c' represent the constraints and
@@ -722,7 +723,7 @@ PPL::Polyhedron::update_sat_c() const {
   x.sat_c.resize(gsr, csr);
   for (dimension_type i = gsr; i-- > 0; )
     for (dimension_type j = csr; j-- > 0; ) {
-      int sp_sign = sgn(con_sys[j] * gen_sys[i]);
+      const int sp_sign = sgn(con_sys[j] * gen_sys[i]);
       // The negativity of this scalar product would mean
       // that the generator `gen_sys[i]' violates the constraint
       // `con_sys[j]' and it is not possible because both generators
@@ -745,8 +746,8 @@ PPL::Polyhedron::update_sat_g() const {
   assert(!sat_g_is_up_to_date());
 
   // We only consider non-pending rows.
-  dimension_type csr = con_sys.first_pending_row();
-  dimension_type gsr = gen_sys.first_pending_row();
+  const dimension_type csr = con_sys.first_pending_row();
+  const dimension_type gsr = gen_sys.first_pending_row();
   Polyhedron& x = const_cast<Polyhedron&>(*this);
 
   // The columns of `sat_g' represent generators and its
@@ -754,7 +755,7 @@ PPL::Polyhedron::update_sat_g() const {
   x.sat_g.resize(csr, gsr);
   for (dimension_type i = csr; i-- > 0; )
     for (dimension_type j = gsr; j-- > 0; ) {
-      int sp_sign = sgn(con_sys[i] * gen_sys[j]);
+      const int sp_sign = sgn(con_sys[i] * gen_sys[j]);
       // The negativity of this scalar product would mean
       // that the generator `gen_sys[j]' violates the constraint
       // `con_sys[i]' and it is not possible because both generators
@@ -903,9 +904,9 @@ PPL::Polyhedron::minimize() const {
 
   // If the polyhedron has something pending, process it.
   if (has_something_pending()) {
-    bool ret = process_pending();
+    const bool not_empty = process_pending();
     assert(OK());
-    return ret;
+    return not_empty;
   }
 
   // Here there are no pending constraints or generators.
@@ -963,8 +964,8 @@ PPL::Polyhedron::strongly_minimize_constraints() const {
   SatRow sat_all_but_points;
   SatRow sat_all_but_closure_points;
 
-  dimension_type gs_rows = gen_sys.num_rows();
-  dimension_type n_lines = gen_sys.num_lines();
+  const dimension_type gs_rows = gen_sys.num_rows();
+  const dimension_type n_lines = gen_sys.num_lines();
   for (dimension_type i = gs_rows; i-- > n_lines; )
     switch (gen_sys[i].type()) {
     case Generator::RAY:
@@ -991,19 +992,19 @@ PPL::Polyhedron::strongly_minimize_constraints() const {
   set_union(sat_lines_and_rays, sat_lines_and_closure_points,
 	    sat_lines);
 
-  // These flags are maintained to later decide
-  // if we have to add the eps_leq_one constraint
-  // and whether or not the constraint system was changed.
+  // These flags are maintained to later decide if we have to add the
+  // eps_leq_one constraint and whether or not the constraint system
+  // was changed.
   bool changed = false;
   bool found_eps_leq_one = false;
 
-  // For all the strict inequalities in `con_sys',
-  // check for eps-redundancy and eventually move them
-  // to the bottom part of the system.
+  // For all the strict inequalities in `con_sys', check for
+  // eps-redundancy and eventually move them to the bottom part of the
+  // system.
   ConSys& cs = x.con_sys;
   SatMatrix& sat = x.sat_g;
   dimension_type cs_rows = cs.num_rows();
-  dimension_type eps_index = cs.num_columns() - 1;
+  const dimension_type eps_index = cs.num_columns() - 1;
   for (dimension_type i = 0; i < cs_rows; )
     if (cs[i].is_strict_inequality()) {
       // First, check if it is saturated by no closure points
@@ -1084,8 +1085,8 @@ PPL::Polyhedron::strongly_minimize_constraints() const {
       // Bump number of rows.
       ++cs_rows;
     }
-    // Erase the eps-redundant constraints, if there are any
-    // (the remaining constraints are no pending).
+    // Erase the eps-redundant constraints, if there are any (the
+    // remaining constraints are not pending).
     if (cs_rows < cs.num_rows()) {
       cs.erase_to_end(cs_rows);
       cs.unset_pending_rows();
@@ -1126,8 +1127,8 @@ PPL::Polyhedron::strongly_minimize_generators() const {
   // This SatRow will have all and only the indexes
   // of strict inequalities set to 1.
   SatRow sat_all_but_strict_ineq;
-  dimension_type cs_rows = con_sys.num_rows();
-  dimension_type n_equals = con_sys.num_equalities();
+  const dimension_type cs_rows = con_sys.num_rows();
+  const dimension_type n_equals = con_sys.num_equalities();
   for (dimension_type i = cs_rows; i-- > n_equals; )
     if (con_sys[i].is_strict_inequality())
       sat_all_but_strict_ineq.set(i);
@@ -1140,8 +1141,8 @@ PPL::Polyhedron::strongly_minimize_generators() const {
   GenSys& gs = const_cast<GenSys&>(gen_sys);
   SatMatrix& sat = const_cast<SatMatrix&>(sat_c);
   dimension_type gs_rows = gs.num_rows();
-  dimension_type n_lines = gs.num_lines();
-  dimension_type eps_index = gs.num_columns() - 1;
+  const dimension_type n_lines = gs.num_lines();
+  const dimension_type eps_index = gs.num_columns() - 1;
   for (dimension_type i = n_lines; i < gs_rows; )
     if (gs[i].is_point()) {
       // Compute the SatRow corresponding to the candidate point
@@ -1181,8 +1182,8 @@ PPL::Polyhedron::strongly_minimize_generators() const {
       // Consider next generator.
       ++i;
 
-  // If needed, erase the eps-redundant generators
-  // (also updating `index_first_pending').
+  // If needed, erase the eps-redundant generators (also updating
+  // `index_first_pending').
   if (gs_rows < gs.num_rows()) {
     gs.erase_to_end(gs_rows);
     gs.unset_pending_rows();
