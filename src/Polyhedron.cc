@@ -1307,31 +1307,42 @@ PPL::Polyhedron::add_constraints_lazy(ConSys& cs) {
   assert(OK(false));
 }
 
+
 void
-PPL::Polyhedron::add_dimensions_and_constraints_lazy(const ConSys& cs) {
-  space_dim = space_dimension() + cs.num_columns() - 1;
-  // If the polyhedron is empty, we only modify the dimension of
-  // the space.
-  if (is_empty())
+PPL::Polyhedron::add_dimensions_and_constraints(ConSys& cs) {
+  // For an empty polyhedron, it is sufficient to adjust
+  // the dimension of the space.
+  if (is_empty()) {
+    space_dim += cs.space_dimension();
     return;
+  }
+
+  // For a non-empty 0-dim space polyhedron,
+  // the result is the polyhedron defined by `cs'.
+  if (space_dimension() == 0) {
+    Polyhedron y(cs);
+    swap(y);
+  }
 
   if (!constraints_are_up_to_date())
     update_constraints();
  
+  // The matrix for the new system of constraints is obtained
+  // by leaving the old system of constraints in the upper left-hand side 
+  // and placing the constraints of `cs' in the lower right-hand side.
   size_t old_num_rows = con_sys.num_rows();
   size_t old_num_columns = con_sys.num_columns();
-
-  // The new system of constraints has the matrix of constraints
-  // of the old polyhedron in the upper left hand side and the
-  // coefficients of the variables of `cs' in the lower right hand side.
-  con_sys.resize(old_num_rows + cs.num_rows(), space_dim + 1);
+  size_t new_num_columns = old_num_columns + cs.space_dimension();
+  con_sys.resize(old_num_rows + cs.num_rows(), new_num_columns);
+  space_dim = new_num_columns - 1;
   for (size_t i = cs.num_rows(); i-- > 0; ) {
-    Constraint& c = con_sys[old_num_rows + i];
-    c[0] = cs[i][0];
-    if (cs[i].is_equality())
-      c.set_is_equality();
+    Constraint& c_new = con_sys[old_num_rows + i];
+    Constraint& c_old = cs[i];
+    if (c_old.is_equality())
+      c_new.set_is_equality();
+    std::swap(c_new[0], c_old[0]);
     for (size_t j = cs.num_columns(); j-- > 1; )
-      c[old_num_columns - 1 + j] = cs[i][j];
+      std::swap(c_new[old_num_columns - 1 + j], c_old[j]);
   }
 
 #ifdef BE_LAZY

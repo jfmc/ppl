@@ -509,7 +509,7 @@ public:
   //!                                  are dimension-incompatible.
   void add_constraints_lazy(ConSys& cs);
  
-  void add_dimensions_and_constraints_lazy(const ConSys& cs);
+  void add_dimensions_and_constraints(ConSys& cs);
  
   //! Adds the specified generators.
   //! \param  gs          The generators that will be added to the

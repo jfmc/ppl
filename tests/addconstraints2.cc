@@ -1,4 +1,4 @@
-/* Use of the function add_dimensions_and_constraints_lazy.
+/* Use of the function add_dimensions_and_constraints.
    Copyright (C) 2001 Roberto Bagnara <bagnara@cs.unipr.it>
 
 This file is part of the Parma Polyhedra Library (PPL).
@@ -36,36 +36,41 @@ main() {
 
   Variable x(0);
   Variable y(1);
-  ConSys c1;
-  c1.insert(x >= 0);
-  c1.insert(y >= 0);
-  c1.insert(x - y >= 0);
-  Polyhedron ph(c1);
+  ConSys cs1;
+  cs1.insert(x >= 0);
+  cs1.insert(y >= 0);
+  cs1.insert(x - y >= 0);
+  Polyhedron ph(cs1);
 
 #if NOISY
-  print_constraints(ph, "*** ph ***");
+  print_constraints(ph, "*** ph before ***");
 #endif
   
+  ConSys cs2;
+  cs2.insert(x >= 1);
+  cs2.insert(y >= 1);
+  cs2.insert(x - y >= -1);
+
+  // Making copies.
   Polyhedron copy_ph = ph;
+  ConSys copy_cs2 = cs2;
 
-  ConSys c2;
-  c2.insert(x >= 1);
-  c2.insert(y >= 1);
-  c2.insert(x - y >= -1);
-
-  ph.add_dimensions_and_constraints_lazy(c2);
-
-  copy_ph.add_dimensions_and_embed(2);
-  size_t c2_num_rows = c2.num_rows();
-  for (size_t i = 0; i < c2_num_rows; i++)
-    copy_ph.insert(c2[i] >> 2);
-
-  int retval = (ph == copy_ph) ? 0 : 1;
+  ph.add_dimensions_and_constraints(cs2);
 
 #if NOISY
-  print_constraints(ph, "*** ph ***");
-  print_constraints(copy_ph, "*** copy_ph ***");
+  print_constraints(ph, "*** add_dimensions_and_constraints ***");
 #endif
+  
+  copy_ph.add_dimensions_and_embed(2);
+  size_t cs2_num_rows = copy_cs2.num_rows();
+  for (size_t i = 0; i < cs2_num_rows; i++)
+    copy_ph.insert(copy_cs2[i] >> 2);
+
+#if NOISY
+  print_constraints(copy_ph, "*** embed + renaming + insert ***");
+#endif
+  
+  int retval = (ph == copy_ph) ? 0 : 1;
 
   return retval;
 }
