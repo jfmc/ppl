@@ -830,13 +830,12 @@ The library provides two widening operators for the domain of NNC
 polyhedra.  The first one, that we call <EM>H79-widening</EM>, mainly
 follows the specification provided in the PhD thesis of N. Halbwachs
 \ref Hal79 "[Hal79]", also described in \ref HPR97 "[HPR97]".
-There are a few differences between the H79-widening and
-the widening described in the cited paper.
-In particular, the H79-widening of an NNC polyhedron \f$\cP \in \Pset_n\f$
-using the NNC polyhedron \f$\cQ \in \Pset_n\f$:
+There are a few differences between the H79-widening and the widening
+described in the cited paper.  In particular, the H79-widening of an
+NNC polyhedron \f$\cP \in \Pset_n\f$ using the NNC polyhedron
+\f$\cQ \in \Pset_n\f$:
  - allows for equalities in \f$\cP\f$ and \f$\cQ\f$
    (the original definition is restricted to inequalities);
- - does not require \f$\cP\f$ and \f$\cQ\f$ to be topologically closed;
  - requires as a precondition that \f$\cQ \sseq \cP\f$.
 
 \anchor BHRZ03_widening
@@ -845,6 +844,16 @@ is an instance of the specification provided in \ref BHRZ03 "[BHRZ03]".
 This operator also requires as a precondition that \f$\cQ \sseq \cP\f$
 and it is guaranteed to provide a result which is at least as precise as
 the H79-widening.
+
+Both widening operators can be applied to polyhedra that are not
+topologically closed. The user is warned that, in such a case, the
+results may not closely match the geometric intuition which is at the
+base of the specification of the two widenings. The reason is that, in
+the current implementation, the widenings are not directly applied to
+the NNC polyhedra, but rather to their internal representations.
+Implementation work is in progress and future versions of the library
+may provide an even better integration of the two widenings with the
+domain of NNC polyhedra.
 
 \anchor widening_with_tokens
 <B>Widening with Tokens</B>
