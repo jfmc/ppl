@@ -66,17 +66,22 @@ public:
   //!                                  is not empty but has no points.
   NNC_Polyhedron(GenSys& gs);
 
-  // FIXME: adapt the documentation of the corresponding constructor
-  // of Polyhedron, once it has been peer reviewed.
-  // Notice that a topological clash is impossible here.
+  //! Builds a NNC polyhedron from the C_Polyhedron \p y.
+  explicit NNC_Polyhedron(const C_Polyhedron& y);
+
+  //! Builds an NNC_Polyhedron out of a generic, interval-based bounding box.
+  //! For a description of the methods that should be provided by
+  //! the template class Box, see the documentation of the protected method:
+  //!   template <class Box>
+  //!   Polyhedron::Polyhedron(Topology topol, const Box& box);
+  //! \param box    The bounding box representing the polyhedron to be built.
+  //! \param dummy  A dummy tag to syntactically differentiate this one
+  //!               from the other constructors.
   template <class Box>
-  NNC_Polyhedron(const Box& box, From_Bounding_Box);
+  NNC_Polyhedron(const Box& box, From_Bounding_Box dummy);
 
   //! Ordinary copy-constructor.
   NNC_Polyhedron(const NNC_Polyhedron& y);
-
-  //! Builds a NNC polyhedron from the C_Polyhedron \p y.
-  explicit NNC_Polyhedron(const C_Polyhedron& y);
 
   //! The assignment operator.
   //! (Note that \p *this and \p y can be dimension-incompatible.)

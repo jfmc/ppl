@@ -384,7 +384,7 @@ protected:
     \exception std::invalid_argument thrown if \p box has intervals that
                                      are incompatible with \p topol.
 
-    The templatic class Box must provide the following methods.
+    The template class Box must provide the following methods.
     \code
       unsigned int space_dimension() const
     \endcode

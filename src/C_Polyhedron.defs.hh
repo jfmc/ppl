@@ -80,24 +80,33 @@ public:
   //!                                  or if it contains closure points.
   C_Polyhedron(GenSys& gs);
 
-  //! Ordinary copy-constructor.
-  C_Polyhedron(const C_Polyhedron& y);
-
   //! Builds a necessarily closed polyhedron from the NNC_Polyhedron \p y.
   //! \exception std::invalid_argument thrown if the polyhedron \p y
   //!                                  is not topologically closed.
   explicit C_Polyhedron(const NNC_Polyhedron& y);
 
-  // FIXME: adapt the documentation of the corresponding constructor
-  // of Polyhedron, once it has been peer reviewed.
+  //! Builds a C_Polyhedron out of a generic, interval-based bounding box. 
+  //! For a description of the methods that should be provided by
+  //! the template class Box, see the documentation of the protected method:
+  //!   template <class Box>
+  //!   Polyhedron::Polyhedron(Topology topol, const Box& box);
+  //! \param box    The bounding box representing the polyhedron to be built.
+  //! \param dummy  A dummy tag to syntactically differentiate this one
+  //!               from the other constructors.
+  //! \exception std::invalid_argument thrown if \p box has intervals that
+  //!                                  are not topologically closed (i.e.,
+  //!                                  having some finite but open bounds).
   template <class Box>
-  C_Polyhedron(const Box& box, From_Bounding_Box);
+  C_Polyhedron(const Box& box, From_Bounding_Box dummy);
+
+  //! Ordinary copy-constructor.
+  C_Polyhedron(const C_Polyhedron& y);
 
   //! The assignment operator.
   //! (Note that \p *this and \p y can be dimension-incompatible.)
   C_Polyhedron& operator=(const C_Polyhedron& y);
 
-  // Destructor
+  //! Destructor
   ~C_Polyhedron();
 };
 
