@@ -55,11 +55,11 @@ SUBDIRS =
 #	    0.2			    -----
 #	    0.3			    0:0:0
 #	    0.4			    1:0:1
-#	    0.5			    2:0:2
+#	    0.5			    2:0:0
 
 LIBPPL_LT_CURRENT =  2
 LIBPPL_LT_REVISION = 0
-LIBPPL_LT_AGE =      2
+LIBPPL_LT_AGE =      0
 
 AM_CPPFLAGS = -I$(top_builddir) -I$(top_srcdir)/src @extra_includes@
 

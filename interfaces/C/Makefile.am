@@ -54,7 +54,7 @@ SUBDIRS = . lpenum
 #	    0.2			    -----
 #	    0.3			    -----
 #	    0.4			    0:0:0
-#	    0.5			    1:0:1
+#	    0.5			    1:0:0
 
 LIBPPL_C_LT_CURRENT =  1
 LIBPPL_C_LT_REVISION = 0
