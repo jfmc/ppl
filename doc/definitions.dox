@@ -80,6 +80,9 @@ In the following sections we describe these domains and domain
 constructors together with their representations and operations 
 that are available to the PPL user.
 
+In the final section of this chapter (Section \ref use_of_library),
+we provide some additional advice on the use of the library.
+
 \section convex_polys Convex Polyhedra
 
 In this section we introduce convex polyhedra,
@@ -1057,7 +1060,10 @@ is an account of generic widenings for the powerset domain (some of
 which are supported in the instantiation of this construction by the
 domain of convex polyhedra and described in Section \ref poly_powerset).
 
-The construction is built from a pre-existing base-level domain
+\anchor powerset_domain
+<B>The Powerset Domain</B>
+
+The domain is built from a pre-existing base-level domain
 \f$D\f$ which must include an entailment relation `\f$\mathord{\entails}\f$',
 a meet operation `\f$\mathord{\meet}\f$',
 a top element `\f$\true\f$' and bottom element `\f$\false\f$'.
@@ -1067,10 +1073,7 @@ base-level domain is that of disjunction, elements of the powerset are
 always <EM>reduced</EM> to semantically-equivalent non-redundant
 elements.
 
-\anchor powerset_domain
-<B>The Powerset Domain</B>
-
-The set \f$\cS \in \wp(D)\f$ is called <EM>non-redundant</EM>
+A set \f$\cS \in \wp(D)\f$ is called <EM>non-redundant</EM>
 with respect to `\f$\mathord{\entails}\f$' if and only if
 \f$\false \notin \cS\f$
 and \f$\forall d_1, d_2 \in \cS \itc d_1 \entails d_2 \implies d_1 = d_2\f$.
@@ -1151,9 +1154,9 @@ NNC polyhedra \f$\Pset_n\f$.
 In addition to the operations described for the generic powerset
 domain in Section \ref ps_operations, we provide some operations that
 are specific to this instantiation.  Of these, most correspond to the
-application of the equivalent operation on each of the elements. Here
-we just describe those operations that are particular to the
-polyhedral powerset domain.
+application of the equivalent operation on each of the NNC polyhedron
+that are in the given set. Here we just describe those operations that
+are particular to the polyhedral powerset domain.
 
 \anchor pps_geometric
 <B>Geometric Comparisons</B>
@@ -1162,8 +1165,8 @@ Given the sets \f$\cS_1, \cS_2 \in (\Pset_n)_{\smallP}\f$, then
 we say that \f$\cS_1\f$ <EM>geometrically_covers</EM> \f$\cS_2\f$
 if every point (in some element) in a polyhedron in \f$\cS_2\f$ is also
 a point in a polyhedron in \f$\cS_1\f$.
-If \f$\cS_1\f$ <EM>geometrically_covers</EM> \f$\cS_2\f$
-and \f$\cS_2\f$ <EM>geometrically_covers</EM> \f$\cS_1\f$,
+If \f$\cS_1\f$ geometrically_covers \f$\cS_2\f$
+and \f$\cS_2\f$ geometrically_covers \f$\cS_1\f$,
 then we say that they are <EM>geometrically_equal</EM>.
 
 \anchor pps_pairwise_merge
@@ -1173,7 +1176,7 @@ Given the powerset \f$\cS \in (\Pset_n)_{\smallP}\f$, then the
 <EM>pairwise_merge</EM> operator takes pairs of distinct elements in
 \f$\cS\f$ whose poly-hull is the same as their set-theoretical union
 and replaces them by their union.  This replacement is done
-recursively so that, in the for each pair \f$\cP, \cQ\f$ of distinct
+recursively so that, for each pair \f$\cP, \cQ\f$ of distinct
 polyhedra in the result set, we have
 \f$\cP \uplus \cQ \neq \cP \union \cQ\f$.
 
@@ -1223,7 +1226,7 @@ to make sure that the widening operator is actually compatible with
 a given convergence certificate. If such a requirement is not met,
 then an extrapolation operator will be obtained.
 
-\section cplusplus Using the Library
+\section use_of_library Using the Library
 
 <B>A Note on the Implementation of the Operators</B>
 
@@ -1268,7 +1271,7 @@ polymorphically (since, e.g., most of the destructors are not declared
 library types should not be used as <EM>public base classes</EM> to be
 derived from. A user willing to extend the library types, adding new
 functionalities, often can do so by using <EM>containment</EM> instead
-of inheritance; even when there is the need of overriding a
+of inheritance; even when there is the need to override a
 <CODE>protected</CODE> method, non-public inheritance should suffice.
 
 <B>On Const-Correctness: A Warning about the Use of References
