@@ -41,13 +41,12 @@ PPL::operator >>(const Constraint& y, unsigned int offset) {
 }
 
 bool
-PPL::Constraint::is_trivial() const {
+PPL::Constraint::is_trivial_true() const {
   assert(size() > 0);
   const Constraint& x = *this;
-  for (size_t i = size(); --i > 0; )
-    if (x[i] != 0)
-      return false;
-  if (is_equality())
+  if (!x.all_homogeneous_terms_are_zero())
+    return false;
+  else if (is_equality())
     return (x[0] == 0);
   else
     // Inequality constraint.
@@ -55,13 +54,12 @@ PPL::Constraint::is_trivial() const {
 }
 
 bool
-PPL::Constraint::is_unsatisfiable() const {
+PPL::Constraint::is_trivial_false() const {
   assert(size() > 0);
   const Constraint& x = *this;
-  for (size_t i = size(); --i > 0; )
-    if (x[i] != 0)
-      return false;
-  if (is_equality())
+  if (!x.all_homogeneous_terms_are_zero())
+    return false;
+  else if (is_equality())
     return (x[0] != 0);
   else
     // Inequality constraint.

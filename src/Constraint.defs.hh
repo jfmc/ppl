@@ -197,15 +197,15 @@ public:
 
 PPL_INTERNAL:
   //! Returns <CODE>true</CODE> if and only if
-  //! \p *this is the trivial constraint \f$0 <= n\f$,
+  //! \p *this is the trivial true constraint \f$0 <= n\f$,
   //! where \f$n \geq 0\f$.
-  bool is_trivial() const;
+  bool is_trivial_true() const;
 
   //! Returns <CODE>true</CODE> if and only if
-  //! \p *this is an unsatisfiable constraint
+  //! \p *this is the trifial false constraint
   //! (i.e., either \f$0 >= n\f$, where \f$n > 0\f$
   //! or \f$0 = n\f$, where \f$n \neq 0\f$.
-  bool is_unsatisfiable() const;
+  bool is_trivial_false() const;
 
   enum Type {
     EQUALITY = Row::LINE_OR_EQUALITY,
@@ -223,6 +223,3 @@ PPL_INTERNAL:
 #include "Constraint.inlines.hh"
 
 #endif
-
-
-
