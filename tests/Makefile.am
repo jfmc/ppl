@@ -103,7 +103,7 @@ ORIGINAL_TESTS = \
 	polydifference1 polydifference2 polydifference3 polydifference4 \
 	polydifference5 polydifference6 polydifference7 \
 	polyhull1 polyhull2 polyhull3 polyhull4 polyhull5 polyhull6 \
-	polyhull7 polyhull8 polyhull9 \
+	polyhull7 polyhull8 polyhull9 polyhull10 \
 	randphull1 randphull2 \
 	relations1 relations2 relations3 relations4 relations5 relations6 \
 	relations7 relations8 relations9 relations10 relations11 \
@@ -184,7 +184,7 @@ DERIVED_TESTS = \
 	nnc_polydifference6 nnc_polydifference7 \
 	nnc_polyhull1 nnc_polyhull2 nnc_polyhull3 nnc_polyhull4 \
 	nnc_polyhull5 nnc_polyhull6 nnc_polyhull7 nnc_polyhull8 \
-	nnc_polyhull9 \
+	nnc_polyhull9 nnc_polyhull10 \
 	nnc_randphull1 nnc_randphull2 \
 	nnc_relations1 nnc_relations2 nnc_relations3 nnc_relations4 \
 	nnc_relations5 nnc_relations6 nnc_relations7 nnc_relations8 \
@@ -439,6 +439,7 @@ polyhull6_SOURCES = polyhull6.cc
 polyhull7_SOURCES = polyhull7.cc
 polyhull8_SOURCES = polyhull8.cc
 polyhull9_SOURCES = polyhull9.cc
+polyhull10_SOURCES = polyhull10.cc
 
 relations1_SOURCES = relations1.cc
 relations2_SOURCES = relations2.cc
@@ -840,6 +841,8 @@ nnc_polyhull8_SOURCES = polyhull8.cc
 nnc_polyhull8_CXXFLAGS = $(DERIVED_CXXFLAGS)
 nnc_polyhull9_SOURCES = polyhull9.cc
 nnc_polyhull9_CXXFLAGS = $(DERIVED_CXXFLAGS)
+nnc_polyhull10_SOURCES = polyhull10.cc
+nnc_polyhull10_CXXFLAGS = $(DERIVED_CXXFLAGS)
 
 nnc_relations1_SOURCES = relations1.cc
 nnc_relations1_CXXFLAGS = $(DERIVED_CXXFLAGS)
