@@ -560,17 +560,6 @@ get_lin_expression(const R& r) {
 }
 
 static SP_term_ref
-false_constraint_term() {
-  SP_term_ref zero_times_x = SP_new_term_ref();
-  SP_cons_functor(zero_times_x, a_asterisk, 2,
-		  integer_term(0), variable_term(0));
-  SP_term_ref t = SP_new_term_ref();
-  SP_cons_functor(t, a_equal, 2,
-		  zero_times_x, integer_term(1));
-  return t;
-}
-
-static SP_term_ref
 constraint_term(const PPL::Constraint& c) {
   SP_atom relation = c.is_equality() ? a_equal : a_greater_than_equal;
   SP_term_ref t = SP_new_term_ref();
