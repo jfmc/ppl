@@ -38,7 +38,7 @@ Most of the following definitions and results are taken from:
 
 <B>Vectors, Matrices and Scalar Products</B>
 
-We denote by \f$\Rset^n\f$ the \f$n\f$-dimensions vector space on the field
+We denote by \f$\Rset^n\f$ the \f$n\f$-dimensional vector space on the field
 of real numbers \f$\Rset\f$, endowed with the standard topology.
 The set of all non-negative reals is denoted by \f$\nonnegRset\f$.
 For each \f$i \in \{0, \ldots, n-1\}\f$, \f$v_i\f$ denotes
@@ -438,40 +438,46 @@ To be written.
 
 <B>Intervals, boxes and bounding boxes</B>
 
-An <EM>interval</EM> is a pair of <EM>bounds</EM>
-where each bound can be <EM>closed</EM> and <EM>bounded</EM>,
+An <EM>interval</EM> in \f$\Rset\f$ is a pair of <EM>bounds</EM>,
+called <EM>lower</EM> and <EM>upper</EM>.
+Each bound can be <EM>closed</EM> and <EM>bounded</EM>,
 <EM>open</EM> and <EM>bounded</EM>
 or  <EM>open</EM> and <EM>unbounded</EM>.
-If it is <EM>bounded</EM>, then it has a value in \f$\Rset\f$.
+If the bound is <EM>bounded</EM>, then it has a value in \f$\Rset\f$.
 
-An \f$n\f$-dimensional <EM>box</EM> in \f$\Rset^n\f$
-is an NNC polyhedron \f$\cP\f$ described by
-a sequence \f$I\f$ of \f$n\f$ intervals in \f$\Rset\f$.
-The NNC polyhedron \f$\cP\f$
+An \f$n\f$-dimensional <EM>box</EM> \f$\cB\f$ in \f$\Rset^n\f$
+is a sequence of \f$n\f$ intervals in \f$\Rset\f$.
+
+The polyhedron \f$\cP\f$ <EM>represents a box \f$\cB\f$</EM> in \f$\Rset^n\f$
+if \f$\cP\f$ 
 is described by a constraint system in \f$\Rset^n\f$ that
-consists of one constraint for each  lower or upper bound
-in an interval in \f$I\f$ that is bounded:
+consists of one constraint for each bounded bound (lower and upper)
+in an interval in \f$\cB\f$:
 Letting \f$\vect{i} = (0, \ldots, 1, \ldots, 0)\f$ be the vector in
 \f$\Rset^n\f$ with 1 in the \f$i\f$'th position
 and zeros in every other position;
-if the lower bound of the \f$i\f$'th interval in \f$I\f$
+if the lower bound of the \f$i\f$'th interval in \f$\cB\f$
  is bounded, the corresponding constraint is defined as 
 \f$\langle\vect{i},\vect{x}\rangle \mathord{\relop} b\f$ where
 \f$b\f$ is the value of the bound and \f$\mathord{\relop}\f$ is
-\f$\geq\f$ if it is a lower closed bound and
-\f$>\f$ if it is a lower open bound.
+\f$\geq\f$ if the bound is lower and is closed
+\f$>\f$ if  the bound is lower and is open.
 Similarly,
-if the upper bound of the \f$i\f$'th interval in \f$I\f$ is bounded,
+if the upper bound of the \f$i\f$'th interval in \f$\cB\f$ is bounded,
 the corresponding constraint is defined as 
 \f$\langle\vect{i},\vect{x}\rangle \mathord{\relop} b\f$ where
 \f$b\f$ is the value of the bound and \f$\mathord{\relop}\f$ is
 \f$\leq\f$ if it is an upper closed bound and
 \f$<\f$ if it is an upper open bound. 
 
-A <EM>bounding box</EM> of an NNC polyhedron \f$\cP\f$ is
+If every bound in the intervals 
+in a box \f$\cB\f$ is either <EM>closed</EM> and <EM>bounded</EM>
+or <EM>open</EM> and <EM>unbounded</EM>, then
+\f$\cB\f$ represents a closed polyhedron.
+
+The <EM>bounding box</EM> of an NNC polyhedron \f$\cP\f$ is
 the smallest \f$n\f$-dimensional box
 containing \f$\cP\f$. 
-
 
 <B>Rational Polyhedra</B>
 
