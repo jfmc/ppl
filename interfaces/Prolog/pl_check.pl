@@ -86,6 +86,41 @@ run_all:-
    ppl_finalize,
    fail.
 
+% Tests predicates that return PPL version information and the PPL banner.
+% If noisy(0) holds, there is no output but if not,
+% all the versions are printed and the banner is pretty printed.
+all_versions_and_banner :-
+  ppl_initialize,
+  ppl_version_major(Vmajor),
+  ppl_version_minor(Vminor),
+  ppl_version_revision(Vrevision),
+  ppl_version_beta(Vbeta),
+  ppl_version(V),
+  ppl_banner(B),
+  (noisy(0) -> true ;
+     (
+      write('Version major is '), write(Vmajor), nl,
+      write('Version minor is '), write(Vminor), nl,
+      write('Version revision is '), write(Vrevision), nl,
+      write('Version beta is '), write(Vbeta), nl,
+      write('Version is '), write(V), nl,
+      banner_pp(B), nl
+     )
+  ),
+  !,
+  ppl_finalize.
+
+% Tests predicates that return the maximum allowed dimension.
+% If noisy(0) holds, there is no output but if not, the maximum is printed.
+max_dim :-
+  ppl_initialize,
+  ppl_max_space_dimension(M),
+  (noisy(0) -> true ;
+     display_message(['Maximum possible dimension is', M, nl])
+  ),
+  !,
+  ppl_finalize.
+
 new_polys :-
   ppl_initialize,
   new_universe,
@@ -229,58 +264,6 @@ catch_time :-
 handle_exceptions :-
   ppl_initialize,
   exceptions,
-  !,
-  ppl_finalize.
-
-% Tests predicates that return the versions nad the PPL banner.
-% If noisy(0) holds, there is no output but if not,
-% all the versions are printed and the banner is pretty printed.
-all_versions_and_banner :-
-  ppl_initialize,
-  ppl_version_major(Vmajor),
-  ppl_version_minor(Vminor),
-  ppl_version_revision(Vrevision),
-  ppl_version_beta(Vbeta),
-  ppl_version(V),
-  ppl_banner(B),
-  (noisy(0) -> true ;
-     (
-      write('Version major is '), write(Vmajor), nl,
-      write('Version minor is '), write(Vminor), nl,
-      write('Version revision is '), write(Vrevision), nl,
-      write('Version beta is '), write(Vbeta), nl,
-      write('Version is '), write(V), nl,
-      banner_pp(B), nl
-     )
-  ),
-  !,
-  ppl_finalize.
-
-banner_pp(B) :-
-  name(B,Bcodes),
-  nl,
-  !,
-  format_banner(Bcodes).
-
-format_banner([]) :- nl.
-format_banner([C]) :- put_code(C), nl.
-format_banner([C,C1|Chars]):-
-  ([C,C1] == "/n" ->
-     (nl,
-     format_banner(Chars))
-   ;
-     (put_code(C),
-     format_banner([C1|Chars]))
-  ).
-
-% Tests predicates that return the maximum allowed dimension.
-% If noisy(0) holds, there is no output but if not, the maximum is printed.
-max_dim :-
-  ppl_initialize,
-  ppl_max_space_dimension(M),
-  (noisy(0) -> true ;
-     display_message(['Maximum possible dimension is', M, nl])
-  ),
   !,
   ppl_finalize.
 
@@ -1754,13 +1737,14 @@ exception_prolog(1, _) :-
           M, 
          check_exception(M)
          ),
+  !,
   ppl_delete_Polyhedron(P).
 
 %% TEST: not_unsigned_integer
 exception_prolog(2, _) :-
   catch(ppl_new_Polyhedron_from_dimension(c, n, P),
           M, 
-         check_exception(M)
+          check_exception(M)
         ),
   ppl_delete_Polyhedron(P).
 
@@ -1768,7 +1752,7 @@ exception_prolog(2, _) :-
 exception_prolog(3, _) :-
   catch(ppl_set_timeout(-1),
           M, 
-         check_exception(M)
+          check_exception(M)
         ).
 
 %% TEST: non_linear
@@ -1777,6 +1761,7 @@ exception_prolog(4, [A,B,C]) :-
           M, 
          check_exception(M)
         ),
+  !,
   ppl_delete_Polyhedron(P).
 
 %% TEST: not_a_variable
@@ -1784,9 +1769,10 @@ exception_prolog(5, [A,_,_]) :-
   ppl_new_Polyhedron_from_dimension(c, 3, P),
   catch(ppl_Polyhedron_remove_dimensions(P, [A,1]),
           M, 
-         (ppl_delete_Polyhedron(P),
-         check_exception(M))
+         (cleanup_ppl_Polyhedron(P),
+          check_exception(M))
         ),
+  !,
   ppl_delete_Polyhedron(P).
 
 %% TEST: not_an_integer
@@ -1795,9 +1781,10 @@ exception_prolog(6, [A,B,_]) :-
                [point(A + B), ray(A), ray(B)], P),
   catch(ppl_Polyhedron_affine_image(P, A, A + B + 1, i),
           M, 
-         (ppl_delete_Polyhedron(P),
-         check_exception(M))
+         (cleanup_ppl_Polyhedron(P),
+          check_exception(M))
         ),
+  !,
   ppl_delete_Polyhedron(P).
 
 %% TEST: not_a_polyhedron_kind
@@ -1812,7 +1799,7 @@ exception_prolog(1, [A,B,C]) :-
 exception_prolog(4, _) :-
   catch(ppl_Polyhedron_space_dimension(_, _N),
           M, 
-         check_exception(M)
+          check_exception(M)
         ).
 
 % exception_sys_prolog(+N, +V) checks exceptions thrown by Prolog interfaces
@@ -1824,9 +1811,10 @@ exception_sys_prolog(1, [A,B,_]) :-
   ppl_new_Polyhedron_from_constraints(c, [MaxInt * A - B >= 0, 3 >= A], P),
   catch(ppl_Polyhedron_get_generators(P, _),
           M, 
-         (ppl_delete_Polyhedron(P),
-         check_exception(M))
+         (cleanup_ppl_Polyhedron(P),
+          check_exception(M))
        ),
+  !,
   ppl_delete_Polyhedron(P).
 
  exception_sys_prolog(2, [A,B,_]) :-
@@ -1834,8 +1822,8 @@ exception_sys_prolog(1, [A,B,_]) :-
   ppl_new_Polyhedron_from_constraints(c, [MinInt * A - B =< 0, 2 >= A], P),
   catch(ppl_Polyhedron_get_generators(P, _),
           M, 
-         (ppl_delete_Polyhedron(P),
-         check_exception(M))
+         (cleanup_ppl_Polyhedron(P),
+          check_exception(M))
        ),
   ppl_delete_Polyhedron(P).
 
@@ -1846,9 +1834,10 @@ exception_sys_prolog(3, [A,B,_]) :-
   ppl_Polyhedron_affine_image(P, A, A + 1, 1),
   catch(ppl_Polyhedron_get_generators(P, _),
           M, 
-         (ppl_delete_Polyhedron(P),
-         check_exception(M))
+         (cleanup_ppl_Polyhedron(P),
+          check_exception(M))
         ),
+  !,
   ppl_delete_Polyhedron(P).
 
 exception_sys_prolog(4, [A,B,_]) :-
@@ -1858,10 +1847,11 @@ exception_sys_prolog(4, [A,B,_]) :-
   ppl_Polyhedron_affine_image(P, A, A - 1, 1),
   catch(ppl_Polyhedron_get_generators(P, GS),
           M, 
-         (ppl_delete_Polyhedron(P),
-         check_exception(M))
+         (cleanup_ppl_Polyhedron(P),
+          check_exception(M))
         ),
   write(GS),
+  !,
   ppl_delete_Polyhedron(P).
 
 % exception_cplusplus(+N, +V) checks exceptions thrown by the C++
@@ -1870,7 +1860,7 @@ exception_sys_prolog(4, [A,B,_]) :-
 exception_cplusplus(1, [A,B,C]) :-
   catch(ppl_new_Polyhedron_from_generators(C, [point(A + B + C, 0)], P),
           M, 
-         (display_message([M]), fail)
+         (check_exception([M]))
          ),
   ppl_delete_Polyhedron(P).
 
@@ -1879,9 +1869,8 @@ exception_cplusplus(2, [A,B,_]) :-
                [point(A + B), ray(A), ray(B)], P),
   catch(ppl_Polyhedron_affine_image(P, A, A + B + 1, 0),
           M, 
-         (display_message([M]),
-          ppl_delete_Polyhedron(P),
-          fail)
+         (cleanup_ppl_Polyhedron(P),
+          check_exception([M]))
         ),
   ppl_delete_Polyhedron(P).
 
@@ -1891,10 +1880,8 @@ exception_cplusplus(3, [A, B, _]) :-
                [point(A + B)], P2),
   catch(ppl_Polyhedron_poly_hull_assign_and_minimize(P1, P2),
           M, 
-         (display_message([M]),
-          ppl_delete_Polyhedron(P1),
-          ppl_delete_Polyhedron(P2),
-          fail)
+         (cleanup_ppl_Polyhedra([P1,P2]),
+          check_exception([M]))
         ),
   ppl_delete_Polyhedron(P1),
   ppl_delete_Polyhedron(P2).
@@ -1902,7 +1889,7 @@ exception_cplusplus(3, [A, B, _]) :-
 exception_cplusplus(4, [A,B,C]) :-
    catch(ppl_new_Polyhedron_from_generators(c, [line(A + B + C)], P),
           M, 
-         (display_message([M]), fail)
+         (check_exception([M]))
         ),
   ppl_delete_Polyhedron(P).
 
@@ -1911,9 +1898,8 @@ exception_cplusplus(5, [A,B,C]) :-
   ppl_Polyhedron_remove_dimensions(P,[C]),
   catch(ppl_Polyhedron_remove_dimensions(P,[A,C]),
           M, 
-         (display_message([M]),
-          ppl_delete_Polyhedron(P),
-          fail)
+         (cleanup_ppl_Polyhedron(P),
+          check_exception([M]))
         ),
   ppl_delete_Polyhedron(P).
 
@@ -1922,7 +1908,7 @@ exception_cplusplus(6, [A,B,_]) :-
                [A >= 1], P),
   catch(ppl_Polyhedron_affine_image(P, B, A + 1, 1),
           M, 
-         (display_message([M]), fail)
+         (check_exception([M]))
         ),
   ppl_delete_Polyhedron(P).
 
@@ -1931,7 +1917,7 @@ exception_cplusplus(7, [A, B, C]) :-
                [A >= 1, B>= 1], P),
   catch(ppl_Polyhedron_affine_image(P, B, A + C + 1, 1),
           M, 
-         (display_message([M]), fail)
+         (check_exception([M]))
         ),
   ppl_delete_Polyhedron(P).
 
@@ -1940,7 +1926,7 @@ exception_cplusplus(8, [A,B,_]) :-
                [A >= B], P),
   catch(ppl_Polyhedron_affine_preimage(P, A, A + B + 1, 0),
           M, 
-         (display_message([M]), fail)
+         (check_exception([M]))
         ),
   ppl_delete_Polyhedron(P).
 
@@ -1949,9 +1935,8 @@ exception_cplusplus(9, [A, B, C]) :-
                [point(0), ray(A + B), ray(A)], P),
   catch(ppl_Polyhedron_affine_preimage(P, C, A + 1, 1),
           M, 
-         (display_message([M]),
-          ppl_delete_Polyhedron(P),
-          fail)
+         (cleanup_ppl_Polyhedron(P),
+          check_exception([M]))
         ),
   ppl_delete_Polyhedron(P).
 
@@ -1961,13 +1946,20 @@ exception_cplusplus(10, [A, B, C]) :-
                [point(0), point(A), line(A + B)], P),
   catch(ppl_Polyhedron_affine_preimage(P, B, A + C, 1),
           M, 
-         (display_message([M]),
-          ppl_delete_Polyhedron(P),
-          fail)
+         (cleanup_ppl_Polyhedron(P),
+          check_exception([M])
+          )
         ),
   ppl_delete_Polyhedron(P).
 
-%%%%%%%%%%%% extra tests not executed by check_all %%%%%%%%%%%%%%%
+% check_exception(+Exception) checks and prints the exception message;
+% if the message is ok, then after printing it fails;
+% otherwise it just succeeds.
+
+check_exception(Exception):-
+         (call(format_exception_message(Exception)) -> fail ; true).
+
+%%%%%%%%%%%% extra tests not executed by run_all %%%%%%%%%%%%%%%
 
 % These next 2 tests demonstrate a bug in the bounding box software
 % and are not executed by run_all.
@@ -2002,6 +1994,17 @@ make_var_list(I,Dim,['$VAR'(I)|VarList]):-
   I1 is I + 1,
   make_var_list(I1,Dim,VarList).
 
+%%%%%%%%%%%% predicate for safely deleting polyhedra on failure %
+
+cleanup_ppl_Polyhedron(_).
+cleanup_ppl_Polyhedron(P) :-
+  ppl_delete_Polyhedron(P), fail.
+
+cleanup_ppl_Polyhedra([]).
+cleanup_ppl_Polyhedra([P|Ps]) :-
+  cleanup_ppl_Polyhedron(P),
+  cleanup_ppl_Polyhedra(Ps).
+
 %%%%%%%%%%%% predicates for switching on/off output messages %
 
 make_noisy :-
@@ -2016,6 +2019,52 @@ make_quiet :-
       make_quiet
    ; assertz(noisy(0))
   ).
+
+%%%%%%%%%%%% predicates for pretty printing the PPL banner %%%%%%%%%%
+%
+% The banner is read as an atom with"/n" denoting where there should
+% new lines. Here we print the banner as intended with new lines instead
+% of "/n".
+%
+
+banner_pp(B) :-
+  name(B,Bcodes),
+  nl,
+  !,
+  format_banner(Bcodes).
+
+format_banner([]) :- nl.
+format_banner([C]) :- put_code(C), nl.
+format_banner([C,C1|Chars]):-
+  ([C,C1] == "/n" ->
+     (nl,
+     format_banner(Chars))
+   ;
+     (put_code(C),
+     format_banner([C1|Chars]))
+  ).
+
+%%%%%%%%%%%% predicate for printing exception messages %%%%%%%%%%
+
+format_exception_message(
+             ppl_invalid_argument( found(F), expected(E), where(W))
+                        ) :-
+  !,
+  display_message(['PPL Prolog Interface Exception: ', nl, '   ',
+                   F, 'is an invalid argument for', W, nl, '   ',
+                  F, 'should be', E, '.']).
+
+format_exception_message(
+             ppl_representation_error(I, where(W))
+                        ) :-
+  !,
+  display_message(['PPL Prolog Interface Exception: ', nl, '   ',
+                   'This Prolog system has bounded integers', nl, '   ',
+                   I, 'is not in the allowed range of integers', nl, '   ',
+                   'in call to', W, '.']).
+
+format_exception_message(Error) :-
+  display_message([Error]).
 
 %%%%%%%%%%%% predicates for output messages %%%%%%%%%%%%%%%%%%
 
@@ -2037,32 +2086,4 @@ write_all([Phrase|Phrases]):-
       write(' '))
    ),
    write_all(Phrases).
-
-% checks the exception message for the Prolog interface exceptions
-
-check_exception(Exception):-
-         (call(format_exception_message(Exception)) -> fail ; true).
-
-
-% formats the messages for the Prolog interface exceptions
-
-format_exception_message(
-             ppl_invalid_argument( found(F), expected(E), where(W))
-                        ) :-
-  !,
-  display_message(['PPL Prolog Interface Exception: ', nl, '   ',
-                   F, 'is an invalid argument for', W, nl, '   ',
-                  F, 'should be', E, '.']).
-
-format_exception_message(
-             ppl_representation_error(I, where(W))
-                        ) :-
-  !,
-  display_message(['PPL Prolog Interface Exception: ', nl, '   ',
-                   'This Prolog system has bounded integers', nl, '   ',
-                   I, 'is not in the allowed range of integers', nl, '   ',
-                   'in call to', W, '.']).
-
-format_exception_message(Error) :-
-  display_message([Error]).
 
