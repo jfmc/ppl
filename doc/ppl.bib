@@ -1232,6 +1232,51 @@
               results."
 }
 
+@PhdThesis{Mine05th,
+  Author = "A. Min\'e",
+  Title  = "Weakly Relational Numerical Abstract Domains",
+  School = "\'Ecole Polytechnique",
+  Address = "Paris, France",
+  Month = mar,
+  Year   = 2005,
+  Abstract = "The goal of this thesis is to design techniques related
+              to the automatic analysis of computer programs. One major
+              application is the creation of tools to discover bugs
+              before they actually happen, an important goal in a time
+              when critical yet complex tasks are performed by computers.
+              We will work in the Abstract Interpretation framework, a
+              theory of sound approximations of program semantics. We
+              will focus, in particular, on numerical abstract domains
+              that specialise in the automatic discovery of properties
+              of the numerical variables of programs. In this thesis,
+              we introduce new numerical abstract domains: the zone
+              abstract domain (that can discover invariants of the form
+              $X - Y \leq c$), the zone congruence domain
+              ($X \equiv Y + a [b]$), and the octagon domain
+              ($\pm X \pm Y \leq c$), among others. These domains rely
+              on the classical notions of potential graphs, difference
+              bound matrices, and algorithms for the shortest-path
+              closure computation. They are in-between, in terms of
+              cost and precision, between nonrelational domains (such
+              as the interval domain), that are very imprecise, and
+              classical relational domains (such as the polyhedron
+              domain), that are very costly. We will call them ``weakly
+              relational''. We also introduce some methods to apply
+              relational domains to the analysis of floating-point
+              numbers, which was previously only possible using
+              imprecise, non-relational, domains. Finally, we introduce
+              the so-called linearisation and symbolic constant
+              propagation generic symbolic methods to enhance the
+              precision of any numerical domain, for only a slight
+              increase in cost. The techniques presented in this thesis
+              have been integrated within Astr\'ee, an analyser for
+              critical embedded avionic software, and were instrumental
+              in proving the absence of run-time errors in fly-by-wire
+              softwares used in Airbus A340 and A380 planes. Experimental
+              results show the usability of our methods of real-life
+              applications.",
+}
+
 @Incollection{MotzkinRTT53,
   Author = "T. S. Motzkin and H. Raiffa and G. L. Thompson and R. M. Thrall",
   Title = "The Double Description Method",
