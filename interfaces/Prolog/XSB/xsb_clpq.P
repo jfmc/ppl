@@ -90,18 +90,19 @@ main :-
 % XSB (up to version 2.5) does not offer read_term/2.
 % We just provide the functionality we need.
 
-convert_variable_names_list(L, VN) :-
-  var(L),
-  !,
-  VN = [].
-convert_variable_names_list([A|L], [(Name=Var)|VN]) :-
-  A =.. [_, Name, Var],
-  convert_variable_names_list(L, VN).
-
 :- import file_read/3 from xsb_read.
 
 read_term(Term, [variable_names(VN)]) :-
   file_read(0, Term, L),
   convert_variable_names_list(L, VN).
+
+convert_variable_names_list(L, VN) :-
+  var(L),
+  !,
+  VN = [].
+convert_variable_names_list([A|L], [Name=Var|VN]) :-
+  A =.. [_, Name, Var],
+  convert_variable_names_list(L, VN).
+
 
 :- ppl_initialize, main, ppl_finalize.
