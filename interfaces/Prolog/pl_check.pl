@@ -217,6 +217,7 @@ revamp_dim :-
    conc_assign,
    remove_dim,
    remove_high_dim,
+   expand_dim,
    map_dim,
    ppl_finalize.
 
@@ -1271,6 +1272,31 @@ remove_high_dim(T) :-
   ppl_delete_Polyhedron(P2),
   ppl_delete_Polyhedron(P).
 
+% Tests ppl_Polyhedron_expand_dimension
+expand_dim :-
+  expand_dim(c), expand_dim(nnc).
+
+expand_dim(T) :-
+  make_vars(4, [A, B, C, D]),
+  ppl_new_Polyhedron_from_dimension(T, 3, P),
+  ppl_Polyhedron_add_constraints(P, [A >= 1, B >= 0, C >= 2]),
+  ppl_Polyhedron_expand_dimension(P, B, 1),
+  ppl_Polyhedron_space_dimension(P, 4),
+  ppl_new_Polyhedron_from_constraints(T,
+                                      [A >= 1, B >= 0, C >= 2, D >= 0],
+                                      P1),
+  ppl_Polyhedron_equals_Polyhedron(P, P1),
+  ppl_delete_Polyhedron(P1),
+  ppl_Polyhedron_remove_higher_dimensions(P, 2),
+  ppl_Polyhedron_expand_dimension(P, A, 2),
+  ppl_new_Polyhedron_from_constraints(T,
+                                      [D >= 1, C >= 1, A >= 1, B >= 0],
+                                      P2),
+  ppl_Polyhedron_equals_Polyhedron(P, P2),
+  ppl_delete_Polyhedron(P2),
+  ppl_Polyhedron_space_dimension(P, 4),
+  ppl_delete_Polyhedron(P).
+
 % Tests ppl_Polyhedron_map_dimensions using constraints and generators
 map_dim:-
   map_dim(c), map_dim(nnc).
@@ -1862,6 +1888,7 @@ exception_cplusplus(1, [A,B,C]) :-
           M, 
          (check_exception([M]))
          ),
+  !,
   ppl_delete_Polyhedron(P).
 
 exception_cplusplus(2, [A,B,_]) :-
@@ -1872,6 +1899,7 @@ exception_cplusplus(2, [A,B,_]) :-
          (cleanup_ppl_Polyhedron(P),
           check_exception([M]))
         ),
+  !,
   ppl_delete_Polyhedron(P).
 
 exception_cplusplus(3, [A, B, _]) :-
@@ -1883,6 +1911,7 @@ exception_cplusplus(3, [A, B, _]) :-
          (cleanup_ppl_Polyhedra([P1,P2]),
           check_exception([M]))
         ),
+  !,
   ppl_delete_Polyhedron(P1),
   ppl_delete_Polyhedron(P2).
 
@@ -1901,6 +1930,7 @@ exception_cplusplus(5, [A,B,C]) :-
          (cleanup_ppl_Polyhedron(P),
           check_exception([M]))
         ),
+  !,
   ppl_delete_Polyhedron(P).
 
 exception_cplusplus(6, [A,B,_]) :-
@@ -1910,6 +1940,7 @@ exception_cplusplus(6, [A,B,_]) :-
           M, 
          (check_exception([M]))
         ),
+  !,
   ppl_delete_Polyhedron(P).
 
 exception_cplusplus(7, [A, B, C]) :-
@@ -1919,6 +1950,7 @@ exception_cplusplus(7, [A, B, C]) :-
           M, 
          (check_exception([M]))
         ),
+  !,
   ppl_delete_Polyhedron(P).
 
 exception_cplusplus(8, [A,B,_]) :-
@@ -1928,6 +1960,7 @@ exception_cplusplus(8, [A,B,_]) :-
           M, 
          (check_exception([M]))
         ),
+  !,
   ppl_delete_Polyhedron(P).
 
 exception_cplusplus(9, [A, B, C]) :-
@@ -1938,6 +1971,7 @@ exception_cplusplus(9, [A, B, C]) :-
          (cleanup_ppl_Polyhedron(P),
           check_exception([M]))
         ),
+  !,
   ppl_delete_Polyhedron(P).
 
 
@@ -1950,6 +1984,7 @@ exception_cplusplus(10, [A, B, C]) :-
           check_exception([M])
           )
         ),
+  !,
   ppl_delete_Polyhedron(P).
 
 % check_exception(+Exception) checks and prints the exception message;
@@ -2001,9 +2036,14 @@ cleanup_ppl_Polyhedron(P) :-
   ppl_delete_Polyhedron(P), fail.
 
 cleanup_ppl_Polyhedra([]).
+cleanup_ppl_Polyhedra([_|_]).
 cleanup_ppl_Polyhedra([P|Ps]) :-
-  cleanup_ppl_Polyhedron(P),
-  cleanup_ppl_Polyhedra(Ps).
+  delete_all_ppl_Polyhedra([P|Ps]).
+
+delete_all_ppl_Polyhedra([]).
+delete_all_ppl_Polyhedra([P|Ps]) :-
+  ppl_delete_Polyhedron(P),
+  delete_all_ppl_Polyhedra(Ps).
 
 %%%%%%%%%%%% predicates for switching on/off output messages %
 

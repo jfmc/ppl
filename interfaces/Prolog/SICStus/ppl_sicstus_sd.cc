@@ -273,6 +273,7 @@ SP_STUB_2(ppl_Polyhedron_add_dimensions_and_embed)
 SP_STUB_2(ppl_Polyhedron_concatenate_assign)
 SP_STUB_2(ppl_Polyhedron_remove_dimensions)
 SP_STUB_2(ppl_Polyhedron_remove_higher_dimensions)
+SP_STUB_3(ppl_Polyhedron_expand_dimension)
 SP_STUB_2(ppl_Polyhedron_map_dimensions)
 
 #define SP_DEFINE_C_PREDICATE(name, arity) \
@@ -373,6 +374,7 @@ ppl_sicstus_init(int /* when */) {
   SP_DEFINE_C_PREDICATE(ppl_Polyhedron_concatenate_assign, 2);
   SP_DEFINE_C_PREDICATE(ppl_Polyhedron_remove_dimensions, 2);
   SP_DEFINE_C_PREDICATE(ppl_Polyhedron_remove_higher_dimensions, 2);
+  SP_DEFINE_C_PREDICATE(ppl_Polyhedron_expand_dimension, 3);
   SP_DEFINE_C_PREDICATE(ppl_Polyhedron_map_dimensions, 2);
 }
 

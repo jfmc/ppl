@@ -514,6 +514,7 @@ YAP_STUB_2(ppl_Polyhedron_add_dimensions_and_embed)
 YAP_STUB_2(ppl_Polyhedron_concatenate_assign)
 YAP_STUB_2(ppl_Polyhedron_remove_dimensions)
 YAP_STUB_2(ppl_Polyhedron_remove_higher_dimensions)
+YAP_STUB_3(ppl_Polyhedron_expand_dimension)
 YAP_STUB_2(ppl_Polyhedron_map_dimensions)
 
 #define YAP_USER_C_PREDICATE(name, arity) \
@@ -606,5 +607,6 @@ init() {
   YAP_USER_C_PREDICATE(ppl_Polyhedron_concatenate_assign, 2);
   YAP_USER_C_PREDICATE(ppl_Polyhedron_remove_dimensions, 2);
   YAP_USER_C_PREDICATE(ppl_Polyhedron_remove_higher_dimensions, 2);
+  YAP_USER_C_PREDICATE(ppl_Polyhedron_expand_dimension, 3);
   YAP_USER_C_PREDICATE(ppl_Polyhedron_map_dimensions, 2);
 }
