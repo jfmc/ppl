@@ -457,8 +457,8 @@ read_polyhedron(std::istream& in, PPL::C_Polyhedron& ph) {
   PPL::ConSys cs;
   PPL::GenSys gs;
 
+  std::set<unsigned>::iterator linearity_end = linearity.end();
   if (rep == V) {
-    std::set<unsigned>::iterator linearity_end = linearity.end();
     std::vector<mpz_class> coefficients(num_columns-1);
     mpz_class denominator;
     bool has_a_point = false;
@@ -494,13 +494,16 @@ read_polyhedron(std::istream& in, PPL::C_Polyhedron& ph) {
     assert(rep == H);
     std::vector<mpz_class> coefficients(num_columns);
     mpz_class denominator;
-    for (unsigned i = 1; i <= num_rows; ++i) {
+    for (unsigned i = 0; i < num_rows; ++i) {
       read_coefficients(in, number_type, coefficients, denominator);
       PPL::LinExpression e;
-      for (unsigned i = num_columns; i-- > 1; )
-	e += coefficients[i] * PPL::Variable(i-1);
+      for (unsigned j = num_columns; j-- > 1; )
+	e += coefficients[j] * PPL::Variable(j-1);
       e += coefficients[0];
-      cs.insert(e >= 0);
+      if (linearity.find(i+1) != linearity_end)
+	cs.insert(e == 0);
+      else
+	cs.insert(e >= 0);
     }
     if (verbose) {
       using namespace PPL::IO_Operators;
@@ -661,12 +664,16 @@ main(int argc, char* argv[]) {
   Representation rep = read_polyhedron(input(), ph);
   //write_polyhedron(std::cout, ph, rep);
 
+  enum Command { None, H_to_V, V_to_H, Project };
+  Command command = None;
+
   // Read commands, if any.
   std::string s;
   while (guarded_read(input(), s)) {
     if (s == "linearity" || s == "equality" || s == "partial_enum")
       error("the `linearity' command must occur before `begin'");
     else if (s == "project") {
+      command = Project;
       std::set<unsigned> indexes;
       read_indexes_set(input(), indexes, "project");
       if (verbose) {
@@ -691,11 +698,13 @@ main(int argc, char* argv[]) {
 
   // If we are still here, we just make a conversion.
   if (rep == V) {
-    ph.constraints();
+    command = V_to_H;
+    ph.minimized_constraints();
     write_polyhedron(output(), ph, H);
   }
   else {
-    ph.generators();
+    command = H_to_V;
+    ph.minimized_generators();
     write_polyhedron(output(), ph, V);
   }
 
@@ -706,6 +715,21 @@ main(int argc, char* argv[]) {
     // Read the polyhedron containing the expected result.
     PPL::C_Polyhedron e_ph;
     Representation e_rep = read_polyhedron(input(), e_ph);
+
+    switch (command) {
+    case Project:
+      if (ph != e_ph) {
+	if (verbose)
+	  std::cerr << "Check failed"
+		    << std::endl;
+	return 1;
+      }
+      break;
+    case H_to_V:
+    case V_to_H:
+    case None:
+      break;
+    }
   }
 
   return 0;
