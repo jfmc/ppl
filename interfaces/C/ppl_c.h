@@ -378,7 +378,7 @@ ppl_Constraint_type __P((ppl_const_Constraint_t c));
 */
 int
 ppl_Constraint_coefficient __P((ppl_const_Constraint_t c,
-				int var,
+				ppl_dimension_type var,
 				ppl_Coefficient_t n));
 
 /*!
@@ -619,7 +619,7 @@ ppl_Generator_type __P((ppl_const_Generator_t g));
 */
 int
 ppl_Generator_coefficient __P((ppl_const_Generator_t g,
-			       int var,
+			       ppl_dimension_type var,
 			       ppl_Coefficient_t n));
 
 /*!

@@ -416,7 +416,7 @@ CATCH_ALL
 
 int
 ppl_Constraint_coefficient(ppl_const_Constraint_t c,
-			   int var,
+			   ppl_dimension_type var,
 			   ppl_Coefficient_t n) try {
   const Constraint& cc = *to_const(c);
   Integer& nn = *to_nonconst(n);
@@ -699,7 +699,7 @@ CATCH_ALL
 
 int
 ppl_Generator_coefficient(ppl_const_Generator_t g,
-			  int var,
+			  ppl_dimension_type var,
 			  ppl_Coefficient_t n) try {
   const Generator& gg = *to_const(g);
   Integer& nn = *to_nonconst(n);
