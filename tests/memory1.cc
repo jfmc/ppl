@@ -49,8 +49,10 @@ using namespace Parma_Polyhedra_Library;
 #define NOISY 0
 #endif
 
+// If GMP does not support exceptions the test is pointless.
 // Cygwin has an almost dummy definition of setrlimit().
-#if defined(__CYGWIN__) \
+#if !GMP_SUPPORTS_EXCEPTIONS \
+|| defined(__CYGWIN__) \
 || !(HAVE_DECL_RLIMIT_DATA || HAVE_DECL_RLIMIT_RSS \
      || HAVE_DECL_RLIMIT_VMEM || HAVE_DECL_RLIMIT_AS)
 
@@ -128,7 +130,6 @@ guarded_compute_open_hypercube_generators(dimension_type dimension,
   return false;
 }
 
-#if GMP_SUPPORTS_EXCEPTIONS
 extern "C" void*
 cxx_malloc(size_t size) {
   return ::operator new(size);
@@ -150,15 +151,12 @@ extern "C" void
 cxx_free(void* p, size_t) {
   ::operator delete(p);
 }
-#endif
 
 #define INIT_MEMORY 3*1024*1024
 
 int
 main() TRY {
-#if GMP_SUPPORTS_EXCEPTIONS
   mp_set_memory_functions(cxx_malloc, cxx_realloc, cxx_free);
-#endif
 
   set_handlers();
 
@@ -204,4 +202,4 @@ main() TRY {
 }
 CATCH
 
-#endif // !defined(__CYGWIN__) && (HAVE_DECL_RLIMIT_DATA || ...)
+#endif // GMP_SUPPORTS_EXCEPTIONS && !defined(__CYGWIN__) && ...
