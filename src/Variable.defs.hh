@@ -28,6 +28,7 @@ site: http://www.cs.unipr.it/ppl/ . */
 #include "Init.types.hh"
 #include "globals.hh"
 #include <iosfwd>
+#include <set>
 
 namespace Parma_Polyhedra_Library {
 
@@ -42,7 +43,7 @@ operator<<(std::ostream& s, const Variable& v);
 
 //! Defines a total ordering on variables.
 /*! \relates Variable */
-bool operator<(const Variable& v, const Variable& w);
+bool less(const Variable& v, const Variable& w);
 
 } // namespace Parma_Polyhedra_Library
 
@@ -91,6 +92,11 @@ public:
   //! Returns the pointer to the current output function.
   static Output_Function_Type* get_output_function();
 
+  //! FIXME: to be documented.
+  struct Compare {
+    bool operator()(const Variable& x, const Variable& y) const;
+  };
+
 private:
   //! The index of the Cartesian axis.
   dimension_type varid;
@@ -110,5 +116,12 @@ private:
 };
 
 #include "Variable.inlines.hh"
+
+namespace Parma_Polyhedra_Library {
+
+//! An std::set containing variables in increasing order of dimension index.
+typedef std::set<Variable, Variable::Compare> Variables_Set;
+
+} // namespace Parma_Polyhedra_Library
 
 #endif // !defined(PPL_Variable_defs_hh)

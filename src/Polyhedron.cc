@@ -2125,7 +2125,7 @@ PPL::Polyhedron::add_dimensions_and_project(dimension_type m) {
 }
 
 void
-PPL::Polyhedron::remove_dimensions(const std::set<Variable>& to_be_removed) {
+PPL::Polyhedron::remove_dimensions(const Variables_Set& to_be_removed) {
   // The removal of no dimensions from any polyhedron is a no-op.
   // Note that this case also captures the only legal removal of
   // dimensions from a polyhedron in a 0-dim space.
@@ -2167,8 +2167,8 @@ PPL::Polyhedron::remove_dimensions(const std::set<Variable>& to_be_removed) {
 
   // For each variable to be removed, we fill the corresponding column
   // by shifting left those columns that will not be removed.
-  std::set<Variable>::const_iterator tbr = to_be_removed.begin();
-  std::set<Variable>::const_iterator tbr_end = to_be_removed.end();
+  Variables_Set::const_iterator tbr = to_be_removed.begin();
+  Variables_Set::const_iterator tbr_end = to_be_removed.end();
   dimension_type dst_col = tbr->id() + 1;
   dimension_type src_col = dst_col + 1;
   dimension_type nrows = gen_sys.num_rows();

@@ -37,7 +37,6 @@ site: http://www.cs.unipr.it/ppl/ . */
 #include "Generator.types.hh"
 #include "Poly_Con_Relation.defs.hh"
 #include "Poly_Gen_Relation.defs.hh"
-#include <set>
 
 namespace Parma_Polyhedra_Library {
 
@@ -1095,7 +1094,7 @@ public:
 				     of the Variable objects contained
 				     in \p to_be_removed.
   */
-  void remove_dimensions(const std::set<Variable>& to_be_removed);
+  void remove_dimensions(const Variables_Set& to_be_removed);
 
   //! \brief
   //! Removes the higher dimensions so that the resulting space

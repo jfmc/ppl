@@ -302,7 +302,7 @@ Determinate<PH>::add_dimensions_and_project(dimension_type m) {
 
 template <typename PH>
 void
-Determinate<PH>::remove_dimensions(const std::set<Variable>& to_be_removed) {
+Determinate<PH>::remove_dimensions(const Variables_Set& to_be_removed) {
   mutate();
   prep->ph.remove_dimensions(to_be_removed);
 }

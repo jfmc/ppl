@@ -396,7 +396,7 @@ PowerSet<CS>::add_dimensions_and_project(dimension_type m) {
 
 template <typename CS>
 void
-PowerSet<CS>::remove_dimensions(const std::set<Variable>& to_be_removed) {
+PowerSet<CS>::remove_dimensions(const Variables_Set& to_be_removed) {
   // FIXME: set space_dim
   for (typename PowerSet<CS>::iterator i = begin(),
 	 xend = end(); i != xend; ++i)
