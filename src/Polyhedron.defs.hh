@@ -534,7 +534,6 @@ public:
   //! then adds to the system of constraints of \p *this
   //! a renamed-apart version of the constraints in `cs'.
   void add_dimensions_and_constraints(ConSys& cs);
-
   //! Adds the specified generators.
   //! \param  gs          The generators that will be added to the
   //!                     current system of generators. The parameter is
@@ -542,7 +541,16 @@ public:
   //!                     can be modified.
   //! \exception std::invalid_argument thrown if \p *this and
   //!                                  \p gs are dimension-incompatible.
+  void add_generators_and_minimize(GenSys& gs);
+  //! Adds the specified generators without minimizing.
+  //! \param  gs             The generators that will be added to the
+  //!                        current system of generators. This parameter
+  //!                        is not declared <CODE>const</CODE> because
+  //!                        it can be modified.
+  //! \exception std::invalid_argument thrown if \p *this and \p gs
+  //!                                  are dimension-incompatible.
   void add_generators(GenSys& gs);
+
   //! Returns <CODE>true</CODE> if and only if \p *this is
   //! an empty polyhedron.
   bool check_empty() const;

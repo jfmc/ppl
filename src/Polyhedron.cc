@@ -1518,14 +1518,14 @@ PPL::Polyhedron::add_dimensions_and_constraints(ConSys& cs) {
   Adds further generators to a Polyhedron.
 */
 void
-PPL::Polyhedron::add_generators(GenSys& gs) {
+PPL::Polyhedron::add_generators_and_minimize(GenSys& gs) {
   size_t space_dim = space_dimension();
   size_t gs_space_dim = gs.space_dimension();
 
   // Dimension-compatibility check:
   // the dimension of `gs' can not be greater than space_dimension().
   if (space_dim < gs_space_dim)
-    throw_different_dimensions("PPL::Polyhedron::add_generators(g)",
+    throw_different_dimensions("PPL::Polyhedron::add_generators_and_min(g)",
 			       *this, gs);
 
   // Adding no generators is a no-op.
@@ -1566,6 +1566,70 @@ PPL::Polyhedron::add_generators(GenSys& gs) {
     set_generators_up_to_date();
     minimize();
   }
+}
+
+/*!
+  Adds specified generators to a polyhedron without minimizing.
+*/
+void
+PPL::Polyhedron::add_generators(GenSys& gs) {
+  size_t space_dim = space_dimension();
+  size_t gs_space_dim = gs.space_dimension();
+
+  // Dimension-compatibility check:
+  // the dimension of `gs' can not be greater than space_dimension().
+  if (space_dim < gs_space_dim)
+    throw_different_dimensions("PPL::Polyhedron::add_generators(g)",
+			       *this, gs);
+
+  // Adding no generators is a no-op.
+  if (gs.num_rows() == 0) {
+    assert(gs.num_columns() == 0);
+    return;
+  }
+
+  if (space_dim == 0) {
+    // Since `gs' is 0-dim and non-empty,
+    // it has to contain only vertices.
+    assert(gs[0].type() == Generator::VERTEX);
+    status.set_zero_dim_univ();
+    return;
+  }
+
+  // We only need that the system of generators is up-to-date. 
+  if (!generators_are_up_to_date())
+    minimize();
+
+ 
+  if (is_empty()) {
+    // If needed, we extend `gs' to the right space dimension.
+    if (space_dim > gs_space_dim)
+      gs.add_zero_columns(space_dim - gs_space_dim);
+    
+    // The polyhedron is no longer empty and generators are up-to-date.
+    std::swap(gen_sys, gs);
+    set_generators_up_to_date();
+    clear_empty();
+    return;
+  }
+
+  // Matrix::merge_row_assign() requires both matrices to be sorted.
+  if (!gen_sys.is_sorted())
+    gen_sys.sort_rows();
+  
+  if (!gs.is_sorted())
+    gs.sort_rows();
+
+  // The function `merge_row_assign' automatically resizes
+  // the system `gs' if the dimension of the space of `gs'
+  // is smaller then the dimension of the space of the polyhedron.
+  gen_sys.merge_rows_assign(gs);
+
+  // After adding new generators, constraints are no more up-to-date.
+  clear_generators_minimized();
+  clear_constraints_up_to_date();
+
+  assert(OK());
 }
 
 std::ostream&
