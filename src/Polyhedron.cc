@@ -902,9 +902,12 @@ PPL::Polyhedron::convex_difference_assign(const Polyhedron& y) {
     assert(!c.is_trivial_true());
     assert(!c.is_trivial_false());
     if (c.is_inequality()) {
-      LinExpression e(0 * PPL::Variable(x_space_dim-1));
-      for (int varid = c.first(); varid >= 0; varid = c.next(varid))
-	e += PPL::Variable(varid) * c.coefficient(PPL::Variable(varid));
+      LinExpression e(0 * Variable(x_space_dim-1));
+      for (int varid = x_space_dim-1; varid >= 0; --varid) {
+	const Integer& n = c.coefficient(Variable(varid));
+	if (n != 0)
+	  e += n * Variable(varid);
+      }
       z_cs.insert(e <= -c.coefficient());
       new_polyhedron.convex_hull_assign(Polyhedron(z_cs));
     }

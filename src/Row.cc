@@ -71,44 +71,6 @@ PPL::Row::Impl::copy_construct(const Impl& y) {
 }
 
 
-int
-PPL::Row::first() const {
-  for (size_t i = 1, size_ = size(); i < size_; ++i)
-    if ((*this)[i] != 0)
-      return i-1;
-  return -1;
-}
-
-
-int
-PPL::Row::next(int p) const {
-  assert(p >= 0 && unsigned(p) < size()-1);
-  for (size_t i = p+2, size_ = size(); i < size_; ++i)
-    if ((*this)[i] != 0)
-      return i-1;
-  return -1;
-}
-
-
-int
-PPL::Row::last() const {
-  for (size_t i = size()-1; i >= 1; --i)
-    if ((*this)[i] != 0)
-      return i-1;
-  return -1;
-}
-
-
-int
-PPL::Row::prev(int n) const {
-  assert(n >= 0 && unsigned(n) < size()-1);
-  for (size_t i = n; i >= 1; --i)
-    if ((*this)[i] != 0)
-      return i-1;
-  return -1;
-}
-
-
 /*!
   Computes the Greatest Common Divisor (GCD) among the elements of
   the row and normalizes them by the GCD itself.
