@@ -170,6 +170,8 @@ user.tex \
 devref.tex \
 gpl.tex \
 fdl.tex \
+gpl.txt \
+fdl.txt \
 ppl.sty
 
 mostlyclean-local:
