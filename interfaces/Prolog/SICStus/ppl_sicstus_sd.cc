@@ -383,15 +383,15 @@ SP_STUB_2(ppl_Polyhedron_add_constraints_and_minimize, 2)
 SP_STUB_2(ppl_Polyhedron_add_generators, 2)
 SP_STUB_2(ppl_Polyhedron_add_generators_and_minimize, 2)
 SP_STUB_2(ppl_Polyhedron_add_dimensions_and_constraints, 2)
+SP_STUB_2(ppl_Polyhedron_add_dimensions_and_project, 2)
+SP_STUB_2(ppl_Polyhedron_add_dimensions_and_embed, 2)
+SP_STUB_2(ppl_Polyhedron_remove_dimensions, 2)
+SP_STUB_2(ppl_Polyhedron_remove_higher_dimensions, 2)
 SP_STUB_1(ppl_check_empty, 1)
 SP_STUB_1(ppl_check_universe, 1)
 SP_STUB_1(ppl_is_bounded, 1)
 SP_STUB_2(ppl_get_constraints, 2)
 SP_STUB_2(ppl_get_generators, 2)
-SP_STUB_2(ppl_remove_dimensions, 2)
-SP_STUB_2(ppl_remove_higher_dimensions, 2)
-SP_STUB_2(ppl_add_dimensions_and_project, 2)
-SP_STUB_2(ppl_add_dimensions_and_embed, 2)
 SP_STUB_2(ppl_polyhedron_included_or_equal, 2)
 SP_STUB_2(ppl_polyhedron_equal, 2)
 SP_STUB_2(ppl_polyhedron_strictly_included, 2)
@@ -445,15 +445,15 @@ ppl_sicstus_init(int /* when */) {
   SP_DEFINE_C_PREDICATE(ppl_Polyhedron_add_generators, 2);
   SP_DEFINE_C_PREDICATE(ppl_Polyhedron_add_generators_and_minimize, 2);
   SP_DEFINE_C_PREDICATE(ppl_Polyhedron_add_dimensions_and_constraints, 2);
+  SP_DEFINE_C_PREDICATE(ppl_Polyhedron_add_dimensions_and_project, 2);
+  SP_DEFINE_C_PREDICATE(ppl_Polyhedron_add_dimensions_and_embed, 2);
+  SP_DEFINE_C_PREDICATE(ppl_Polyhedron_remove_dimensions, 2);
+  SP_DEFINE_C_PREDICATE(ppl_Polyhedron_remove_higher_dimensions, 2);
   SP_DEFINE_C_PREDICATE(ppl_check_empty, 1);
   SP_DEFINE_C_PREDICATE(ppl_check_universe, 1);
   SP_DEFINE_C_PREDICATE(ppl_is_bounded, 1);
   SP_DEFINE_C_PREDICATE(ppl_get_constraints, 2);
   SP_DEFINE_C_PREDICATE(ppl_get_generators, 2);
-  SP_DEFINE_C_PREDICATE(ppl_remove_dimensions, 2);
-  SP_DEFINE_C_PREDICATE(ppl_remove_higher_dimensions, 2);
-  SP_DEFINE_C_PREDICATE(ppl_add_dimensions_and_project, 2);
-  SP_DEFINE_C_PREDICATE(ppl_add_dimensions_and_embed, 2);
   SP_DEFINE_C_PREDICATE(ppl_polyhedron_included_or_equal, 2);
   SP_DEFINE_C_PREDICATE(ppl_polyhedron_equal, 2);
   SP_DEFINE_C_PREDICATE(ppl_polyhedron_strictly_included, 2);

@@ -30,15 +30,15 @@
 :- foreign(ppl_Polyhedron_add_generators(+term, +term)).
 :- foreign(ppl_Polyhedron_add_generators_and_minimize(+term, +term)).
 :- foreign(ppl_Polyhedron_add_dimensions_and_constraints(+term, +term)).
+:- foreign(ppl_Polyhedron_add_dimensions_and_project(+term, +term)).
+:- foreign(ppl_Polyhedron_add_dimensions_and_embed(+term, +term)).
+:- foreign(ppl_Polyhedron_remove_dimensions(+term, +term)).
+:- foreign(ppl_Polyhedron_remove_higher_dimensions(+term, +term)).
 :- foreign(ppl_check_empty(+term)).
 :- foreign(ppl_check_universe(+term)).
 :- foreign(ppl_is_bounded(+term)).
 :- foreign(ppl_get_constraints(+term, +term)).
 :- foreign(ppl_get_generators(+term, +term)).
-:- foreign(ppl_remove_dimensions(+term, +term)).
-:- foreign(ppl_remove_higher_dimensions(+term, +term)).
-:- foreign(ppl_add_dimensions_and_project(+term, +term)).
-:- foreign(ppl_add_dimensions_and_embed(+term, +term)).
 :- foreign(ppl_polyhedron_included_or_equal(+term, +term)).
 :- foreign(ppl_polyhedron_equal(+term, +term)).
 :- foreign(ppl_polyhedron_strictly_included(+term, +term)).

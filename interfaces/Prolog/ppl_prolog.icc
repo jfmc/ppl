@@ -1181,6 +1181,72 @@ ppl_Polyhedron_add_dimensions_and_constraints(Prolog_term_ref t_ph,
 }
 
 extern "C" Prolog_foreign_return_type
+ppl_Polyhedron_add_dimensions_and_project(Prolog_term_ref t_ph,
+                    Prolog_term_ref t_nnd) {
+  try {
+    PPL::Polyhedron* ph = get_ph_pointer(t_ph);
+    if (ph == 0)
+      return PROLOG_FAILURE;
+    CHECK(ph);
+    ph->add_dimensions_and_project(term_to_unsigned_int(t_nnd));
+    return PROLOG_SUCCESS;
+  }
+  CATCH_ALL;
+  return PROLOG_FAILURE;
+}
+
+extern "C" Prolog_foreign_return_type
+ppl_Polyhedron_add_dimensions_and_embed(Prolog_term_ref t_ph,
+                    Prolog_term_ref t_nnd) {
+  try {
+    PPL::Polyhedron* ph = get_ph_pointer(t_ph);
+    if (ph == 0)
+      return PROLOG_FAILURE;
+    CHECK(ph);
+    ph->add_dimensions_and_embed(term_to_unsigned_int(t_nnd));
+    return PROLOG_SUCCESS;
+  }
+  CATCH_ALL;
+  return PROLOG_FAILURE;
+}
+
+extern "C" Prolog_foreign_return_type
+ppl_Polyhedron_remove_dimensions(Prolog_term_ref t_ph,
+                   Prolog_term_ref t_vlist) {
+  try {
+    PPL::Polyhedron* ph = get_ph_pointer(t_ph);
+    if (ph == 0)
+      return PROLOG_FAILURE;
+    CHECK(ph);
+    std::set<PPL::Variable> dead_variables;
+    Prolog_term_ref v = Prolog_new_term_ref();
+    while (Prolog_is_cons(t_vlist)) {
+      Prolog_get_cons(t_vlist, v, t_vlist);
+      dead_variables.insert(get_variable(v));
+    }
+    ph->remove_dimensions(dead_variables);
+    return PROLOG_SUCCESS;
+  }
+  CATCH_ALL;
+  return PROLOG_FAILURE;
+}
+
+extern "C" Prolog_foreign_return_type
+ppl_Polyhedron_remove_higher_dimensions(Prolog_term_ref t_ph,
+                   Prolog_term_ref t_nd) {
+  try {
+    PPL::Polyhedron* ph = get_ph_pointer(t_ph);
+    if (ph == 0)
+      return PROLOG_FAILURE;
+    CHECK(ph);
+    ph->remove_higher_dimensions(term_to_unsigned_int(t_nd));
+    return PROLOG_SUCCESS;
+  }
+  CATCH_ALL;
+  return PROLOG_FAILURE;
+}
+
+extern "C" Prolog_foreign_return_type
 ppl_check_empty(Prolog_term_ref t_ph) {
   try {
     const PPL::Polyhedron* ph = get_ph_pointer(t_ph);
@@ -1261,68 +1327,6 @@ ppl_get_generators(Prolog_term_ref t_ph, Prolog_term_ref t_glist) {
 
     if (Prolog_unify(t_glist, tail))
       return PROLOG_SUCCESS;
-  }
-  CATCH_ALL;
-  return PROLOG_FAILURE;
-}
-
-extern "C" Prolog_foreign_return_type
-ppl_remove_dimensions(Prolog_term_ref t_ph, Prolog_term_ref t_vlist) {
-  try {
-    PPL::Polyhedron* ph = get_ph_pointer(t_ph);
-    if (ph == 0)
-      return PROLOG_FAILURE;
-    CHECK(ph);
-    std::set<PPL::Variable> dead_variables;
-    Prolog_term_ref v = Prolog_new_term_ref();
-    while (Prolog_is_cons(t_vlist)) {
-      Prolog_get_cons(t_vlist, v, t_vlist);
-      dead_variables.insert(get_variable(v));
-    }
-    ph->remove_dimensions(dead_variables);
-    return PROLOG_SUCCESS;
-  }
-  CATCH_ALL;
-  return PROLOG_FAILURE;
-}
-
-extern "C" Prolog_foreign_return_type
-ppl_remove_higher_dimensions(Prolog_term_ref t_ph, Prolog_term_ref t_nd) {
-  try {
-    PPL::Polyhedron* ph = get_ph_pointer(t_ph);
-    if (ph == 0)
-      return PROLOG_FAILURE;
-    CHECK(ph);
-    ph->remove_higher_dimensions(term_to_unsigned_int(t_nd));
-    return PROLOG_SUCCESS;
-  }
-  CATCH_ALL;
-  return PROLOG_FAILURE;
-}
-
-extern "C" Prolog_foreign_return_type
-ppl_add_dimensions_and_project(Prolog_term_ref t_ph, Prolog_term_ref t_nnd) {
-  try {
-    PPL::Polyhedron* ph = get_ph_pointer(t_ph);
-    if (ph == 0)
-      return PROLOG_FAILURE;
-    CHECK(ph);
-    ph->add_dimensions_and_project(term_to_unsigned_int(t_nnd));
-    return PROLOG_SUCCESS;
-  }
-  CATCH_ALL;
-  return PROLOG_FAILURE;
-}
-
-extern "C" Prolog_foreign_return_type
-ppl_add_dimensions_and_embed(Prolog_term_ref t_ph, Prolog_term_ref t_nnd) {
-  try {
-    PPL::Polyhedron* ph = get_ph_pointer(t_ph);
-    if (ph == 0)
-      return PROLOG_FAILURE;
-    CHECK(ph);
-    ph->add_dimensions_and_embed(term_to_unsigned_int(t_nnd));
-    return PROLOG_SUCCESS;
   }
   CATCH_ALL;
   return PROLOG_FAILURE;
