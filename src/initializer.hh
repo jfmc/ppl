@@ -26,6 +26,6 @@ site: http://www.cs.unipr.it/ppl/ . */
 
 #include "Init.defs.hh"
 
-static Parma_Polyhedra_Library::Init Parma_Polyhedra_Library__initializer;
+static Parma_Polyhedra_Library::Init Parma_Polyhedra_Library_initializer;
 
 #endif

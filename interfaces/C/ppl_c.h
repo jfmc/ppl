@@ -129,13 +129,13 @@ PPL_TYPE_DECLARATION(Constraint);
 
 PPL_TYPE_DECLARATION(ConSys);
 
-PPL_TYPE_DECLARATION(ConSys__const_iterator);
+PPL_TYPE_DECLARATION(ConSys_const_iterator);
 
 PPL_TYPE_DECLARATION(Generator);
 
 PPL_TYPE_DECLARATION(GenSys);
 
-PPL_TYPE_DECLARATION(GenSys__const_iterator);
+PPL_TYPE_DECLARATION(GenSys_const_iterator);
 
 PPL_TYPE_DECLARATION(Polyhedron);
 
@@ -460,70 +460,69 @@ ppl_ConSys_OK __P((ppl_const_ConSys_t c));
   \p pcit.
 */
 int
-ppl_new_ConSys__const_iterator __P((ppl_ConSys__const_iterator_t* pcit));
+ppl_new_ConSys_const_iterator __P((ppl_ConSys_const_iterator_t* pcit));
 
 /*!
   Builds a const iterator system that is a copy of \p cit; writes an
   handle for the newly created const iterator at address \p pcit.
 */
 int
-ppl_new_ConSys__const_iterator_from_ConSys__const_iterator
-__P((ppl_ConSys__const_iterator_t* pcit,
-     ppl_const_ConSys__const_iterator_t cit));
+ppl_new_ConSys_const_iterator_from_ConSys_const_iterator
+__P((ppl_ConSys_const_iterator_t* pcit,
+     ppl_const_ConSys_const_iterator_t cit));
 
 /*!
   Invalidates the handle \p cit: this makes sure the corresponding
   resources will eventually be released.
 */
 int
-ppl_delete_ConSys__const_iterator
-__P((ppl_const_ConSys__const_iterator_t cit));
+ppl_delete_ConSys_const_iterator
+__P((ppl_const_ConSys_const_iterator_t cit));
 
 /*!
   Assigns a copy of the const iterator \p src to \p dst.
 */
 int
-ppl_assign_ConSys__const_iterator_from_ConSys__const_iterator
-__P((ppl_ConSys__const_iterator_t dst,
-     ppl_const_ConSys__const_iterator_t src));
+ppl_assign_ConSys_const_iterator_from_ConSys_const_iterator
+__P((ppl_ConSys_const_iterator_t dst,
+     ppl_const_ConSys_const_iterator_t src));
 
 /*!
   Assigns to \p cit a const iterator "pointing" to the beginning of
   the constraint system \p cs.
 */
 int
-ppl_ConSys_begin __P((ppl_ConSys_t cs, ppl_ConSys__const_iterator_t cit));
+ppl_ConSys_begin __P((ppl_ConSys_t cs, ppl_ConSys_const_iterator_t cit));
 
 /*!
   Assigns to \p cit a const iterator "pointing" past the end of the
   constraint system \p cs.
 */
 int
-ppl_ConSys_end __P((ppl_ConSys_t cs, ppl_ConSys__const_iterator_t cit));
+ppl_ConSys_end __P((ppl_ConSys_t cs, ppl_ConSys_const_iterator_t cit));
 
 /*!
   Dereference \p cit writing a const handle to the resulting
   constraint at address \p pc.
 */
 int
-ppl_ConSys__const_iterator_dereference
-__P((ppl_const_ConSys__const_iterator_t cit,
-     ppl_const_Constraint_t* pc));
+ppl_ConSys_const_iterator_dereference
+__P((ppl_const_ConSys_const_iterator_t cit, ppl_const_Constraint_t* pc));
 
 /*!
   Increment \p cit so that it "points" to the next constraint.
 */
 int
-ppl_ConSys__const_iterator_increment __P((ppl_ConSys__const_iterator_t cit));
+ppl_ConSys_const_iterator_increment __P((ppl_ConSys_const_iterator_t cit));
 
 /*!
   Returns a positive integer if the iterators corresponding to \p x and
   \p y are equal; return 0 if they are different.
 */
 int
-ppl_ConSys__const_iterator_equal_test
-__P((ppl_const_ConSys__const_iterator_t x,
-     ppl_const_ConSys__const_iterator_t y));
+ppl_ConSys_const_iterator_equal_test
+__P((ppl_const_ConSys_const_iterator_t x,
+     ppl_const_ConSys_const_iterator_t y));
 
 
 /*!
@@ -701,32 +700,32 @@ ppl_GenSys_OK __P((ppl_const_GenSys_t c));
   \p pgit.
 */
 int
-ppl_new_GenSys__const_iterator __P((ppl_GenSys__const_iterator_t* pgit));
+ppl_new_GenSys_const_iterator __P((ppl_GenSys_const_iterator_t* pgit));
 
 /*!
   Builds a const iterator system that is a copy of \p git; writes an
   handle for the newly created const iterator at address \p pgit.
 */
 int
-ppl_new_GenSys__const_iterator_from_GenSys__const_iterator
-__P((ppl_GenSys__const_iterator_t* pgit,
-     ppl_const_GenSys__const_iterator_t git));
+ppl_new_GenSys_const_iterator_from_GenSys_const_iterator
+__P((ppl_GenSys_const_iterator_t* pgit,
+     ppl_const_GenSys_const_iterator_t git));
 
 /*!
   Invalidates the handle \p git: this makes sure the corresponding
   resources will eventually be released.
 */
 int
-ppl_delete_GenSys__const_iterator
-__P((ppl_const_GenSys__const_iterator_t git));
+ppl_delete_GenSys_const_iterator
+__P((ppl_const_GenSys_const_iterator_t git));
 
 /*!
   Assigns a copy of the const iterator \p src to \p dst.
 */
 int
-ppl_assign_GenSys__const_iterator_from_GenSys__const_iterator
-__P((ppl_GenSys__const_iterator_t dst,
-     ppl_const_GenSys__const_iterator_t src));
+ppl_assign_GenSys_const_iterator_from_GenSys_const_iterator
+__P((ppl_GenSys_const_iterator_t dst,
+     ppl_const_GenSys_const_iterator_t src));
 
 /*!
   Assigns to \p git a const iterator "pointing" to the beginning of
@@ -734,7 +733,7 @@ __P((ppl_GenSys__const_iterator_t dst,
 */
 int
 ppl_GenSys_begin __P((ppl_const_GenSys_t gs,
-		      ppl_GenSys__const_iterator_t git));
+		      ppl_GenSys_const_iterator_t git));
 
 /*!
   Assigns to \p git a const iterator "pointing" past the end of the
@@ -742,31 +741,31 @@ ppl_GenSys_begin __P((ppl_const_GenSys_t gs,
 */
 int
 ppl_GenSys_end __P((ppl_const_GenSys_t gs,
-		    ppl_GenSys__const_iterator_t git));
+		    ppl_GenSys_const_iterator_t git));
 
 /*!
   Dereference \p git writing a const handle to the resulting
   generator at address \p pg.
 */
 int
-ppl_GenSys__const_iterator_dereference
-__P((ppl_const_GenSys__const_iterator_t git,
+ppl_GenSys_const_iterator_dereference
+__P((ppl_const_GenSys_const_iterator_t git,
      ppl_const_Generator_t* pg));
 
 /*!
   Increment \p git so that it "points" to the next generator.
 */
 int
-ppl_GenSys__const_iterator_increment __P((ppl_GenSys__const_iterator_t git));
+ppl_GenSys_const_iterator_increment __P((ppl_GenSys_const_iterator_t git));
 
 /*!
   Return a positive integer if the iterators corresponding to \p x and
   \p y are equal; return 0 if they are different.
 */
 int
-ppl_GenSys__const_iterator_equal_test
-__P((ppl_const_GenSys__const_iterator_t x,
-     ppl_const_GenSys__const_iterator_t y));
+ppl_GenSys_const_iterator_equal_test
+__P((ppl_const_GenSys_const_iterator_t x,
+     ppl_const_GenSys_const_iterator_t y));
 
 
 /*!

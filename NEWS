@@ -30,6 +30,9 @@ o  New type `dimension_type': an unsigned integral type for representing
 o  New function dimension_type max_space_dimension():
    returns the maximum space dimension this library can handle.
 
+o  In all the identifiers exported by the C interface, any occurrence
+   of "__" (double underscore) has been replaced by "_" (underscore).
+
 o  New method: template <typename PartialFunction>
    void shuffle_dimensions(const PartialFunction&).
    TO BE CONTINUED

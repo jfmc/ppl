@@ -429,7 +429,7 @@ solve(char* file_name) {
   ppl_Polyhedron_t ppl_ph;
   ppl_ConSys_t ppl_cs;
   ppl_const_GenSys_t ppl_const_gs;
-  ppl_GenSys__const_iterator_t git1, git2, ogit;
+  ppl_GenSys_const_iterator_t git1, git2, ogit;
   ppl_const_Generator_t ppl_const_g;
   ppl_LinExpression_t ppl_le;
   int dimension, row, num_rows, column, nz, i, type;
@@ -647,15 +647,15 @@ solve(char* file_name) {
     mpq_init(candidate[i]);
 
   mpq_init(optimum);
-  ppl_new_GenSys__const_iterator(&ogit);
+  ppl_new_GenSys_const_iterator(&ogit);
   first_candidate = 1;
 
-  ppl_new_GenSys__const_iterator(&git1);
-  ppl_new_GenSys__const_iterator(&git2);
+  ppl_new_GenSys_const_iterator(&git1);
+  ppl_new_GenSys_const_iterator(&git2);
   ppl_GenSys_begin(ppl_const_gs, git1);
   ppl_GenSys_end(ppl_const_gs, git2);
-  while (ppl_GenSys__const_iterator_equal_test(git1, git2) == 0) {
-    ppl_GenSys__const_iterator_dereference(git1, &ppl_const_g);
+  while (ppl_GenSys_const_iterator_equal_test(git1, git2) == 0) {
+    ppl_GenSys_const_iterator_dereference(git1, &ppl_const_g);
     if (ppl_Generator_type(ppl_const_g) == PPL_GENERATOR_TYPE_POINT) {
       ppl_Generator_divisor(ppl_const_g, ppl_coeff);
       ppl_Coefficient_to_mpz_t(ppl_coeff, tmp_z);
@@ -677,18 +677,18 @@ solve(char* file_name) {
 	  || (!maximize && (mpq_cmp(tmp1_q, optimum) < 0))) {
 	first_candidate = 0;
 	mpq_set(optimum, tmp1_q);
-	ppl_assign_GenSys__const_iterator_from_GenSys__const_iterator(ogit,
+	ppl_assign_GenSys_const_iterator_from_GenSys_const_iterator(ogit,
 								      git1);
       }
     }
-    ppl_GenSys__const_iterator_increment(git1);
+    ppl_GenSys_const_iterator_increment(git1);
   }
 
   assert(!first_candidate);
 
   fprintf(output_file, "Optimum value:\n%f\n", mpq_get_d(optimum));
   fprintf(output_file, "Optimum location:\n");
-  ppl_GenSys__const_iterator_dereference(ogit, &ppl_const_g);
+  ppl_GenSys_const_iterator_dereference(ogit, &ppl_const_g);
   ppl_Generator_divisor(ppl_const_g, ppl_coeff);
   ppl_Coefficient_to_mpz_t(ppl_coeff, tmp_z);
   for (i = 0; i < dimension; ++i) {

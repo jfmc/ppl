@@ -146,15 +146,15 @@ DECLARE_CONVERSIONS(Constraint)
 
 DECLARE_CONVERSIONS(ConSys)
 
-typedef ConSys::const_iterator ConSys__const_iterator;
-DECLARE_CONVERSIONS(ConSys__const_iterator)
+typedef ConSys::const_iterator ConSys_const_iterator;
+DECLARE_CONVERSIONS(ConSys_const_iterator)
 
 DECLARE_CONVERSIONS(Generator)
 
 DECLARE_CONVERSIONS(GenSys)
 
-typedef GenSys::const_iterator GenSys__const_iterator;
-DECLARE_CONVERSIONS(GenSys__const_iterator)
+typedef GenSys::const_iterator GenSys_const_iterator;
+DECLARE_CONVERSIONS(GenSys_const_iterator)
 
 DECLARE_CONVERSIONS(Polyhedron)
 
@@ -496,23 +496,23 @@ CATCH_ALL
 
 
 int
-ppl_new_ConSys__const_iterator(ppl_ConSys__const_iterator_t* pcit) try {
+ppl_new_ConSys_const_iterator(ppl_ConSys_const_iterator_t* pcit) try {
   *pcit = to_nonconst(new ConSys::const_iterator());
   return 0;
 }
 CATCH_ALL
 
 int
-ppl_new_ConSys__const_iterator_from_ConSys__const_iterator
-(ppl_ConSys__const_iterator_t* pcit,
- ppl_const_ConSys__const_iterator_t cit)  try {
+ppl_new_ConSys_const_iterator_from_ConSys_const_iterator
+(ppl_ConSys_const_iterator_t* pcit,
+ ppl_const_ConSys_const_iterator_t cit)  try {
   *pcit = to_nonconst(new ConSys::const_iterator(*to_const(cit)));
   return 0;
 }
 CATCH_ALL
 
 int
-ppl_delete_ConSys__const_iterator(ppl_const_ConSys__const_iterator_t cit)
+ppl_delete_ConSys_const_iterator(ppl_const_ConSys_const_iterator_t cit)
   try {
   delete to_const(cit);
   return 0;
@@ -520,9 +520,9 @@ ppl_delete_ConSys__const_iterator(ppl_const_ConSys__const_iterator_t cit)
 CATCH_ALL
 
 int
-ppl_assign_ConSys__const_iterator_from_ConSys__const_iterator
-(ppl_ConSys__const_iterator_t dst,
- ppl_const_ConSys__const_iterator_t src) try {
+ppl_assign_ConSys_const_iterator_from_ConSys_const_iterator
+(ppl_ConSys_const_iterator_t dst,
+ ppl_const_ConSys_const_iterator_t src) try {
   const ConSys::const_iterator& ssrc = *to_const(src);
   ConSys::const_iterator& ddst = *to_nonconst(dst);
   ddst = ssrc;
@@ -531,7 +531,7 @@ ppl_assign_ConSys__const_iterator_from_ConSys__const_iterator
 CATCH_ALL
 
 int
-ppl_ConSys_begin(ppl_const_ConSys_t cs, ppl_ConSys__const_iterator_t cit)
+ppl_ConSys_begin(ppl_const_ConSys_t cs, ppl_ConSys_const_iterator_t cit)
   try {
   const ConSys& ccs = *to_const(cs);
   ConSys::const_iterator& ccit = *to_nonconst(cit);
@@ -541,7 +541,7 @@ ppl_ConSys_begin(ppl_const_ConSys_t cs, ppl_ConSys__const_iterator_t cit)
 CATCH_ALL
 
 int
-ppl_ConSys_end(ppl_const_ConSys_t cs, ppl_ConSys__const_iterator_t cit) try {
+ppl_ConSys_end(ppl_const_ConSys_t cs, ppl_ConSys_const_iterator_t cit) try {
   const ConSys& ccs = *to_const(cs);
   ConSys::const_iterator& ccit = *to_nonconst(cit);
   ccit = ccs.end();
@@ -550,7 +550,7 @@ ppl_ConSys_end(ppl_const_ConSys_t cs, ppl_ConSys__const_iterator_t cit) try {
 CATCH_ALL
 
 int
-ppl_ConSys__const_iterator_dereference(ppl_const_ConSys__const_iterator_t cit,
+ppl_ConSys_const_iterator_dereference(ppl_const_ConSys_const_iterator_t cit,
 				       ppl_const_Constraint_t* pc) try {
   const ConSys::const_iterator& ccit = *to_const(cit);
   const Constraint& c = *ccit;
@@ -560,7 +560,7 @@ ppl_ConSys__const_iterator_dereference(ppl_const_ConSys__const_iterator_t cit,
 CATCH_ALL
 
 int
-ppl_ConSys__const_iterator_increment(ppl_ConSys__const_iterator_t cit) try {
+ppl_ConSys_const_iterator_increment(ppl_ConSys_const_iterator_t cit) try {
   ConSys::const_iterator& ccit = *to_nonconst(cit);
   ++ccit;
   return 0;
@@ -568,9 +568,9 @@ ppl_ConSys__const_iterator_increment(ppl_ConSys__const_iterator_t cit) try {
 CATCH_ALL
 
 int
-ppl_ConSys__const_iterator_equal_test
-(ppl_const_ConSys__const_iterator_t x,
- ppl_const_ConSys__const_iterator_t y) try {
+ppl_ConSys_const_iterator_equal_test
+(ppl_const_ConSys_const_iterator_t x,
+ ppl_const_ConSys_const_iterator_t y) try {
   const ConSys::const_iterator& xx = *to_const(x);
   const ConSys::const_iterator& yy = *to_const(y);
   return (xx == yy) ? 1 : 0;
@@ -778,23 +778,23 @@ CATCH_ALL
 
 
 int
-ppl_new_GenSys__const_iterator(ppl_GenSys__const_iterator_t* pgit) try {
+ppl_new_GenSys_const_iterator(ppl_GenSys_const_iterator_t* pgit) try {
   *pgit = to_nonconst(new GenSys::const_iterator());
   return 0;
 }
 CATCH_ALL
 
 int
-ppl_new_GenSys__const_iterator_from_GenSys__const_iterator
-(ppl_GenSys__const_iterator_t* pgit,
- ppl_const_GenSys__const_iterator_t git)  try {
+ppl_new_GenSys_const_iterator_from_GenSys_const_iterator
+(ppl_GenSys_const_iterator_t* pgit,
+ ppl_const_GenSys_const_iterator_t git)  try {
   *pgit = to_nonconst(new GenSys::const_iterator(*to_const(git)));
   return 0;
 }
 CATCH_ALL
 
 int
-ppl_delete_GenSys__const_iterator(ppl_const_GenSys__const_iterator_t git)
+ppl_delete_GenSys_const_iterator(ppl_const_GenSys_const_iterator_t git)
   try {
   delete to_const(git);
   return 0;
@@ -802,9 +802,9 @@ ppl_delete_GenSys__const_iterator(ppl_const_GenSys__const_iterator_t git)
 CATCH_ALL
 
 int
-ppl_assign_GenSys__const_iterator_from_GenSys__const_iterator
-(ppl_GenSys__const_iterator_t dst,
- ppl_const_GenSys__const_iterator_t src) try {
+ppl_assign_GenSys_const_iterator_from_GenSys_const_iterator
+(ppl_GenSys_const_iterator_t dst,
+ ppl_const_GenSys_const_iterator_t src) try {
   const GenSys::const_iterator& ssrc = *to_const(src);
   GenSys::const_iterator& ddst = *to_nonconst(dst);
   ddst = ssrc;
@@ -813,7 +813,7 @@ ppl_assign_GenSys__const_iterator_from_GenSys__const_iterator
 CATCH_ALL
 
 int
-ppl_GenSys_begin(ppl_const_GenSys_t gs, ppl_GenSys__const_iterator_t git)
+ppl_GenSys_begin(ppl_const_GenSys_t gs, ppl_GenSys_const_iterator_t git)
   try {
   const GenSys& ggs = *to_const(gs);
   GenSys::const_iterator& ggit = *to_nonconst(git);
@@ -823,7 +823,7 @@ ppl_GenSys_begin(ppl_const_GenSys_t gs, ppl_GenSys__const_iterator_t git)
 CATCH_ALL
 
 int
-ppl_GenSys_end(ppl_const_GenSys_t gs, ppl_GenSys__const_iterator_t git) try {
+ppl_GenSys_end(ppl_const_GenSys_t gs, ppl_GenSys_const_iterator_t git) try {
   const GenSys& ggs = *to_const(gs);
   GenSys::const_iterator& ggit = *to_nonconst(git);
   ggit = ggs.end();
@@ -832,7 +832,7 @@ ppl_GenSys_end(ppl_const_GenSys_t gs, ppl_GenSys__const_iterator_t git) try {
 CATCH_ALL
 
 int
-ppl_GenSys__const_iterator_dereference(ppl_const_GenSys__const_iterator_t git,
+ppl_GenSys_const_iterator_dereference(ppl_const_GenSys_const_iterator_t git,
 				       ppl_const_Generator_t* pg) try {
   const GenSys::const_iterator& ggit = *to_const(git);
   const Generator& c = *ggit;
@@ -842,7 +842,7 @@ ppl_GenSys__const_iterator_dereference(ppl_const_GenSys__const_iterator_t git,
 CATCH_ALL
 
 int
-ppl_GenSys__const_iterator_increment(ppl_GenSys__const_iterator_t git) try {
+ppl_GenSys_const_iterator_increment(ppl_GenSys_const_iterator_t git) try {
   GenSys::const_iterator& ggit = *to_nonconst(git);
   ++ggit;
   return 0;
@@ -850,9 +850,9 @@ ppl_GenSys__const_iterator_increment(ppl_GenSys__const_iterator_t git) try {
 CATCH_ALL
 
 int
-ppl_GenSys__const_iterator_equal_test
-(ppl_const_GenSys__const_iterator_t x,
- ppl_const_GenSys__const_iterator_t y) try {
+ppl_GenSys_const_iterator_equal_test
+(ppl_const_GenSys_const_iterator_t x,
+ ppl_const_GenSys_const_iterator_t y) try {
   const GenSys::const_iterator& xx = *to_const(x);
   const GenSys::const_iterator& yy = *to_const(y);
   return (xx == yy) ? 1 : 0;
