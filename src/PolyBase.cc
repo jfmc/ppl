@@ -37,6 +37,150 @@ site: http://www.cs.unipr.it/ppl/ . */
 
 namespace PPL = Parma_Polyhedra_Library;
 
+/*! \relates Parma_Polyhedra_Library::PolyBase */
+static void
+throw_not_implemented(const char* reason) {
+  std::ostringstream s;
+  s << "PPL_INTERNAL_ERROR: function not implemented (yet)."
+    << std::endl
+    << reason;
+  throw std::invalid_argument(s.str());
+}
+
+/*! \relates Parma_Polyhedra_Library::PolyBase */
+static void
+throw_generic(const char* method,
+	      const char* reason,
+	      const PPL::PolyBase& x) {
+  std::ostringstream s;
+  s << "PPL::";
+  if (x.topology() == PPL::NON_NECESSARILY_CLOSED)
+    s << "NNC_";
+  s << "Polyhedron::" << method << ":" << std::endl
+    << reason;
+  throw std::invalid_argument(s.str());
+}
+
+/*! \relates Parma_Polyhedra_Library::PolyBase */
+static void
+throw_different_dimensions(const char* method,
+			   const PPL::PolyBase& x,
+			   const PPL::PolyBase& y) {
+  std::ostringstream s;
+  s << "PPL::";
+  if (x.topology() == PPL::NON_NECESSARILY_CLOSED)
+    s << "NNC_";
+  s << "Polyhedron::" << method << ":" << std::endl
+    << "x->space_dimension() == " << x.space_dimension()
+    << ", y->space_dimension() == " << y.space_dimension();
+  throw std::invalid_argument(s.str());
+}
+
+/*! \relates Parma_Polyhedra_Library::PolyBase */
+static void
+throw_different_dimensions(const char* method,
+			   const PPL::PolyBase& x,
+			   const PPL::Matrix& y) {
+  std::ostringstream s;
+  s << "PPL::";
+  if (x.topology() == PPL::NON_NECESSARILY_CLOSED)
+    s << "NNC_";
+  s << "Polyhedron::" << method << ":" << std::endl
+    << "this->space_dimension() == " << x.space_dimension()
+    << ", system->space_dimension() == " << y.space_dimension();
+  throw std::invalid_argument(s.str());
+}
+
+/*! \relates Parma_Polyhedra_Library::PolyBase */
+static void
+throw_different_dimensions(const char* method,
+			   const PPL::PolyBase& x,
+			   const PPL::Row& y) {
+  std::ostringstream s;
+  s << "PPL::";
+  if (x.topology() == PPL::NON_NECESSARILY_CLOSED)
+    s << "NNC_";
+  s << "Polyhedron::" << method << ":" << std::endl
+    << "this->space_dimension() == " << x.space_dimension()
+    << ", y->space_dimension() == " << y.space_dimension();
+  throw std::invalid_argument(s.str());
+}
+
+/*! \relates Parma_Polyhedra_Library::PolyBase */
+static void
+throw_dimension_incompatible(const char* method,
+			     const PPL::PolyBase& x,
+			     size_t requested_dimension) {
+  std::ostringstream s;
+  s << "PPL::";
+  if (x.topology() == PPL::NON_NECESSARILY_CLOSED)
+    s << "NNC_";
+  s << "Polyhedron::" << method << ":" << std::endl
+    << "this->space_dimension() == " << x.space_dimension()
+    << ", requested dimension == " << requested_dimension;
+  throw std::invalid_argument(s.str());
+}
+
+/*! \relates Parma_Polyhedra_Library::PolyBase */
+static void
+throw_topology_incompatible(const char* method, const PPL::ConSys& ) {
+  std::ostringstream s;
+  s << "PPL::Polyhedron::" << method << ":" << std::endl
+    << "constraint system contains strict inequalities";
+  throw std::invalid_argument(s.str());
+}
+
+/*! \relates Parma_Polyhedra_Library::PolyBase */
+static void
+throw_topology_incompatible(const char* method, const PPL::Constraint& ) {
+  std::ostringstream s;
+  s << "PPL::Polyhedron::" << method << ":" << std::endl
+    << "the constraint is a strict inequality";
+  throw std::invalid_argument(s.str());
+}
+
+/*! \relates Parma_Polyhedra_Library::PolyBase */
+static void
+throw_topology_incompatible(const char* method, const PPL::GenSys& ) {
+  std::ostringstream s;
+  s << "PPL::Polyhedron::" << method << ":" << std::endl
+    << "generator system contains closure points";
+  throw std::invalid_argument(s.str());
+}
+
+/*! \relates Parma_Polyhedra_Library::PolyBase */
+static void
+throw_topology_incompatible(const char* method, const PPL::Generator& ) {
+  std::ostringstream s;
+  s << "PPL::Polyhedron::" << method << ":" << std::endl
+    << "the generator is a closure point";
+  throw std::invalid_argument(s.str());
+}
+
+/*! \relates Parma_Polyhedra_Library::PolyBase */
+static void
+throw_invalid_generators(const char* method, const PPL::PolyBase& x) {
+  std::ostringstream s;
+  s << "PPL::";
+  if (x.topology() == PPL::NON_NECESSARILY_CLOSED)
+    s << "NNC_";
+  s << "Polyhedron::" << method << ":" << std::endl
+    << "non-empty generator system contains no points";
+  throw std::invalid_argument(s.str());
+}
+
+/*! \relates Parma_Polyhedra_Library::PolyBase */
+static void
+throw_invalid_generator(const char* method, const PPL::PolyBase& x) {
+  std::ostringstream s;
+  s << "PPL::";
+  if (x.topology() == PPL::NON_NECESSARILY_CLOSED)
+    s << "NNC_";
+  s << "Polyhedron::" << method << ":" << std::endl
+    << "polyhedron is empty and generator is not a point";
+  throw std::invalid_argument(s.str());
+}
+
 /*!
   Updates the constraints as necessary, then returns a constant
   reference to the system of constraints.
@@ -179,6 +323,7 @@ PPL::PolyBase::PolyBase(const PolyBase& y)
       sat_g = y.sat_g;
 }
 
+
 /*!
   Builds a polyhedron satisfying the given system of constraints \p cs.
 */
@@ -187,15 +332,13 @@ PPL::PolyBase::PolyBase(Topology topology, ConSys& cs)
     gen_sys(topology),
     sat_c(),
     sat_g() {
+  // Try to adapt `cs' to the required topology.
   size_t cs_space_dim = cs.space_dimension();
+  if (!cs.adjust_topology_and_dimension(topology, cs_space_dim))
+    throw_topology_incompatible("Polyhedron(cs)", cs);
+
   if (cs.num_rows() > 0 && cs_space_dim > 0) {
-    // Try to adapt `cs' to the required topology.
-    // The possible topology change _and_ the following swap operation
-    // will modify the given argument `cs';
-    // that is why the formal parameter is not declared const.
-    if (!cs.adjust_topology_and_dimension(topology, cs_space_dim))
-      throw std::invalid_argument("PPL::Polyhedron::Polyhedron(cs): "
-				  "cs contains strict inequalities");
+    // Stealing the rows from `cs'.
     std::swap(con_sys, cs);
     if (topology == NECESSARILY_CLOSED)
       // Add the positivity constraint.
@@ -232,30 +375,25 @@ PPL::PolyBase::PolyBase(Topology topology, GenSys& gs)
     gen_sys(topology),
     sat_c(),
     sat_g() {
+  // An empty set of generators defines the empty polyhedron.
+  if (gs.num_rows() == 0) {
+    space_dim = 0;
+    status.set_empty();
+    return;
+  }
+
+  // Non-empty valid generator systems have a supporting point, at least.
+  if (!gs.has_points())
+    throw_invalid_generators("Polyhedron(gs)", *this);
 
   size_t gs_space_dim = gs.space_dimension();
-  if (gs.num_rows() > 0 && gs_space_dim > 0) {
-    // Valid generator systems need a supporting point, at least.
-    if (!gs.has_points()) {
-      std::ostringstream s;
-      std::ostringstream prefix;
-      if (topology == NECESSARILY_CLOSED)
-	prefix << "NNC_";
-      s << "PPL::"
-	<< prefix.str() << "Polyhedron::"
-	<< prefix.str() << "Polyhedron(gs): gs contains no points";
-      throw std::invalid_argument(s.str());
-    }
-    // Try to adapt `gs' to the required topology.
-    // The possible topology change _and_ the following swap operation
-    // will modify the given argument `gs';
-    // that is why the formal parameter is not declared const.
-    if (!gs.adjust_topology_and_dimension(topology, gs_space_dim))
-      throw std::invalid_argument("PPL::Polyhedron::Polyhedron(gs): "
-				  "gs contains closure points");
+  // Try to adapt `gs' to the required topology.
+  if (!gs.adjust_topology_and_dimension(topology, gs_space_dim))
+    throw_topology_incompatible("Polyhedron(gs)", gs);
+
+  if (gs_space_dim > 0) {
     // Stealing the rows from `gs'.
     std::swap(gen_sys, gs);
-
     if (topology == NON_NECESSARILY_CLOSED) {
       // In a generator system describing a NNC polyhedron,
       // for each point we must also have the corresponding closure point.
@@ -263,7 +401,7 @@ PPL::PolyBase::PolyBase(Topology topology, GenSys& gs)
       size_t eps_index = gs_space_dim + 1;
       for (size_t i = n_rows; i-- > 0; ) {
 	const Generator& g = gen_sys[i];
-	if (g[eps_index] != 0) {
+	if (g[eps_index] > 0) {
 	  // `g' is a point: adding the closure point.
 	  gen_sys.add_row(g);
 	  gen_sys[n_rows][eps_index] = 0;
@@ -277,23 +415,10 @@ PPL::PolyBase::PolyBase(Topology topology, GenSys& gs)
     return;
   }
 
-  // Here `gs.num_rows == 0' or `gs_space_dim == 0',
-  // so that we have a zero-dim space polyhedron.
+  // Here `gs.num_rows > 0' and `gs_space_dim == 0':
+  // we already checked for both the topology-compatibility
+  // and the supporting point.
   space_dim = 0;
-  if (gs.num_rows() == 0)
-    status.set_empty();
-  else
-    // Valid generator systems need a supporting point, at least.
-    if (!gs.has_points()) {
-      std::ostringstream s;
-      std::ostringstream prefix;
-      if (topology == NECESSARILY_CLOSED)
-	prefix << "NNC_";
-      s << "PPL::"
-	<< prefix.str() << "Polyhedron::"
-	<< prefix.str() << "Polyhedron(gs): gs contains no points";
-      throw std::invalid_argument(s.str());
-    }
 }
 
 
@@ -644,20 +769,8 @@ PPL::PolyBase::update_sat_g() const {
   x.set_sat_g_up_to_date();
 }
 
-static void
-throw_different_dimensions(const char* method,
-			   const PPL::PolyBase& x,
-			   const PPL::PolyBase& y) {
-  std::ostringstream s;
-  s << method << ":" << std::endl
-    << "x->space_dimension() == " << x.space_dimension()
-    << ", y->space_dimension() == " << y.space_dimension();
-  throw std::invalid_argument(s.str());
-}
-
 /*!
-  Returns <CODE>true</CODE> if and only if
-  \p x is contained in \p y.
+  Returns <CODE>true</CODE> if and only if \p x is contained in \p y.
 */
 bool
 PPL::operator<=(const PolyBase& x, const PolyBase& y) {
@@ -665,7 +778,7 @@ PPL::operator<=(const PolyBase& x, const PolyBase& y) {
   size_t x_space_dim = x.space_dim;
   // Dimension-compatibility check.
   if (x_space_dim != y.space_dim)
-    throw_different_dimensions("PPL::operator<=(x, y)", x, y);
+    throw_different_dimensions("operator<=(x, y)", x, y);
   if (x.is_empty())
     return true;
   else if (y.is_empty())
@@ -686,14 +799,13 @@ PPL::operator<=(const PolyBase& x, const PolyBase& y) {
 
 
   if (!x.is_necessarily_closed()) {
-    // FIXME.
-    // For non-necessarily closed polyhedra it is not that easy!
+    // FIXME : For NNC polyhedra it is not that easy!
     // We have to check that:
     //  - closure(x) <= closure(y); and
     //  - all _points_ of `x.gen_sys', when projected onto
     //    the hyper-plane \epsilon == 0, are included in `y'.
-    throw std::invalid_argument("PPL::operator<=(x, y) not (yet) "
-				"implemented for NNC_Polyhedron");
+    throw_not_implemented("PPL::operator<=(x, y): "
+			  "x and y are NNC polyhedra");
   }
 
   // We have that `x' is contained in `y' if and only if all the
@@ -731,8 +843,7 @@ PPL::PolyBase::intersection_assign_and_minimize(const PolyBase& y) {
   size_t x_space_dim = x.space_dim;
   // Dimension-compatibility check.
   if (x_space_dim != y.space_dim)
-    throw_different_dimensions("PPL::Polyhedron::inters_assign_and_min(y)",
-			       x, y);
+    throw_different_dimensions("inters_assign_and_min(y)", x, y);
 
   // If one of the two polyhedra is empty, the intersection is empty.
   if (x.is_empty())
@@ -776,8 +887,8 @@ PPL::PolyBase::intersection_assign_and_minimize(const PolyBase& y) {
 }
 
 /*!
-  The intersection of \p *this with \p y (that are assumed to
-  have the same dimension) is assigned to \p *this.
+  The intersection of \p *this with \p y (that are assumed to have
+  the same dimension) is assigned to \p *this.
   The result is not minimized.
 */
 void
@@ -787,8 +898,7 @@ PPL::PolyBase::intersection_assign(const PolyBase& y) {
   size_t x_space_dim = x.space_dim;
   // Dimension-compatibility check.
   if (x_space_dim != y.space_dim)
-    throw_different_dimensions("PPL::Polyhedron::inters_assign_and_min(y)",
-			       x, y);
+    throw_different_dimensions("inters_assign_and_min(y)", x, y);
 
   // If one of the two polyhedra is empty, the intersection is empty.
   if (x.is_empty())
@@ -835,8 +945,7 @@ PPL::PolyBase::convex_hull_assign_and_minimize(const PolyBase& y) {
   size_t x_space_dim = x.space_dim;
   // Dimension-compatibility check.
   if (x_space_dim != y.space_dim)
-    throw_different_dimensions("PPL::Polyhedron::con_hull_assign_and_min(y)",
-			       x, y);
+    throw_different_dimensions("convex_hull_assign_and_min(y)", x, y);
 
   // Convex hull of a polyhedron `p' with an empty polyhedron is `p'.
   if (y.is_empty())
@@ -885,8 +994,7 @@ PPL::PolyBase::convex_hull_assign(const PolyBase& y) {
   size_t x_space_dim = x.space_dim;
   // Dimension-compatibility check.
   if (x_space_dim != y.space_dim)
-    throw_different_dimensions("PPL::Polyhedron::convex_hull_assign(y)",
-			       x, y);
+    throw_different_dimensions("convex_hull_assign(y)", x, y);
 
   // Convex hull of a polyhedron `p' with an empty polyhedron is `p'.
   if (y.is_empty())
@@ -935,8 +1043,7 @@ PPL::PolyBase::convex_difference_assign(const PolyBase& y) {
   size_t x_space_dim = x.space_dim;
   // Dimension-compatibility check.
   if (x_space_dim != y.space_dim)
-    throw_different_dimensions("PPL::Polyhedron::convex_difference_assign(y)",
-			       x, y);
+    throw_different_dimensions("convex_difference_assign(y)", x, y);
 
   // The difference of a polyhedron `p' and an empty polyhedron is `p'.
   if (y.is_empty())
@@ -1054,9 +1161,8 @@ PPL::PolyBase::add_dimensions(Matrix& mat1,
     size_t old_eps_index = new_eps_index - add_dim;
     mat1.swap_columns(old_eps_index, new_eps_index);
     mat2.swap_columns(old_eps_index, new_eps_index);
-    // CHECK ME: since we swapped columns in both
-    // `mat1' and `mat2', no swapping is required
-    // for `sat1' and `sat2'.
+    // CHECK ME: since we swapped columns in both `mat1' and `mat2',
+    // no swapping is required for `sat1' and `sat2'.
   }
 }
 
@@ -1082,7 +1188,7 @@ PPL::PolyBase::add_dimensions_and_embed(size_t dim) {
     return;
 
   // Adding dimensions to an empty polyhedron is obtained
-  // by adjusting `space_dim' and clearing con_sys
+  // by adjusting `space_dim' and clearing `con_sys'
   // (since it can contain the unsatisfiable constraint system
   //  of the wrong dimension).
   if (is_empty()) {
@@ -1095,7 +1201,7 @@ PPL::PolyBase::add_dimensions_and_embed(size_t dim) {
   if (space_dim == 0) {
     // Since it is not empty, it has to be the universe polyhedron.
     assert(status.test_zero_dim_univ());
-    // We swap *this with a newly created
+    // We swap `*this' with a newly created
     // universe polyhedron of dimension `dim'.
     PolyBase ph(topology(), dim, UNIVERSE);
     swap(ph);
@@ -1123,7 +1229,7 @@ PPL::PolyBase::add_dimensions_and_embed(size_t dim) {
     // If the polyhedron is NON-necessarily closed,
     // move the \epsilon coefficients to the last column.
     if (!is_necessarily_closed())
-      con_sys.swap_columns(space_dim + 1, space_dim + dim + 1);
+      con_sys.swap_columns(space_dim + 1, space_dim + 1 + dim);
   }
   else {
     // Only generators are up-to-date: we do not need to modify constraints.
@@ -1132,7 +1238,7 @@ PPL::PolyBase::add_dimensions_and_embed(size_t dim) {
     // If the polyhedron is NON-necessarily closed,
     // move the \epsilon coefficients to the last column.
     if (!is_necessarily_closed())
-      gen_sys.swap_columns(space_dim + 1, space_dim + dim + 1);
+      gen_sys.swap_columns(space_dim + 1, space_dim + 1 + dim);
   }
   // Update the space dimension.
   space_dim += dim;
@@ -1178,7 +1284,8 @@ PPL::PolyBase::add_dimensions_and_project(size_t dim) {
     //        on the topology of gen_sys.
     gen_sys.adjust_topology_and_dimension(topology(), dim);
     // In a non-necessarily closed polyhedron, all points
-    // have to be accompanied by the corresponding closure points.
+    // have to be accompanied by the corresponding closure points
+    // (this time, dimensions are automatically adjusted).
     if (!is_necessarily_closed())
       gen_sys.insert(Generator::zero_dim_closure_point());
     set_generators_minimized();
@@ -1206,14 +1313,14 @@ PPL::PolyBase::add_dimensions_and_project(size_t dim) {
     // If the polyhedron is NON-necessarily closed,
     // move the \epsilon coefficients to the last column.
     if (!is_necessarily_closed())
-      con_sys.swap_columns(space_dim + 1, space_dim + dim + 1);
+      con_sys.swap_columns(space_dim + 1, space_dim + 1 + dim);
   }
   else {
     // Only generators are up-to-date: no need to modify the constraints.
     assert(generators_are_up_to_date());
     gen_sys.add_zero_columns(dim);
     if (!is_necessarily_closed())
-      gen_sys.swap_columns(space_dim + 1, space_dim + dim + 1);
+      gen_sys.swap_columns(space_dim + 1, space_dim + 1 + dim);
   }
   // Now we update the space dimension.
   space_dim += dim;
@@ -1221,17 +1328,6 @@ PPL::PolyBase::add_dimensions_and_project(size_t dim) {
   // Do not check for satisfiability, because the system of constraints
   // may be unsatisfiable.
   assert(OK(false));
-}
-
-static void
-throw_dimension_incompatible(const char* method,
-			     const PPL::PolyBase& x,
-			     size_t requested_dimension) {
-  std::ostringstream s;
-  s << method << ":" << std::endl
-    << "this->space_dimension() == " << x.space_dimension()
-    << ", requested dimension == " << requested_dimension;
-  throw std::invalid_argument(s.str());
 }
 
 /*!
@@ -1252,21 +1348,28 @@ PPL::PolyBase::remove_dimensions(const std::set<Variable>& to_be_removed) {
   // maximum cardinality is the one occurring last in the set.
   unsigned int max_dim_to_be_removed = to_be_removed.rbegin()->id();
   if (max_dim_to_be_removed >= space_dim)
-    throw_dimension_incompatible("void PPL::Polyhedron::remove_dimensions(vs)",
+    throw_dimension_incompatible("remove_dimensions(vs)",
 				 *this, max_dim_to_be_removed);
+
+  // Update the space dimension.
+  space_dim -= to_be_removed.size();
 
   if (is_empty()
       || (!generators_are_up_to_date() && !update_generators())) {
     // Removing dimensions from the empty polyhedron:
-    // just updates the space dimension.
-    space_dim -= to_be_removed.size();
+    // we clear `con_sys' since it could have contained the
+    // unsatisfiable constraint of the wrong dimension.
     con_sys.clear();
     assert(OK(false));
     return;
   }
 
-  // FIXME : is there an efficient way to check if removing
-  //         ALL the dimensions ?
+  // When removing _all_ dimensions from a non-empty polyhedron,
+  // we obtain the zero-dim universe polyhedron.
+  if (space_dim == 0) {
+    set_zero_dim_univ();
+    return;
+  }
 
   // For each variable to be removed, we fill the corresponding column
   // by shifting left those columns that will not be removed.
@@ -1300,18 +1403,11 @@ PPL::PolyBase::remove_dimensions(const std::set<Variable>& to_be_removed) {
   // We may have invalid line and rays now.
   gen_sys.remove_invalid_lines_and_rays();
 
-  // Update the space dimension.
-  space_dim = dst_col - (is_necessarily_closed() ? 1 : 2);
-  if (space_dim == 0)
-    // If zero `true' Cartesian axes have been left,
-    // the resulting polyhedron is the zero-dimension universe.
-    set_zero_dim_univ();
-  else {
-    // Constraints are not up-to-date.
-    clear_constraints_up_to_date();
-    // Generators are no longer guaranteed to be minimized.
-    clear_generators_minimized();
-  }
+  // Constraints are not up-to-date.
+  clear_constraints_up_to_date();
+  // Generators are no longer guaranteed to be minimized.
+  clear_generators_minimized();
+
   assert(OK());
 }
 
@@ -1321,6 +1417,12 @@ PPL::PolyBase::remove_dimensions(const std::set<Variable>& to_be_removed) {
 */
 void
 PPL::PolyBase::remove_higher_dimensions(size_t new_dimension) {
+  // Dimension-compatibility check: the variable having
+  // maximum cardinality is the one occurring last in the set.
+  if (new_dimension > space_dim)
+    throw_dimension_incompatible("remove_higher_dimensions(nd)",
+				 *this, new_dimension);
+
   // The removal of no dimensions from any polyhedron is a no-op.
   // Note that this case also captures the only legal removal of
   // dimensions from a polyhedron in a 0-dim space.
@@ -1328,13 +1430,6 @@ PPL::PolyBase::remove_higher_dimensions(size_t new_dimension) {
     assert(OK(false));
     return;
   }
-
-  // Dimension-compatibility check: the variable having
-  // maximum cardinality is the one occurring last in the set.
-  if (new_dimension > space_dim)
-    throw_dimension_incompatible("void PPL::Polyhedron::"
-				 "remove_higher_dimensions(nd)",
-				 *this, new_dimension);
 
   if (is_empty()
       || (!generators_are_up_to_date() && !update_generators())) {
@@ -1375,17 +1470,6 @@ PPL::PolyBase::remove_higher_dimensions(size_t new_dimension) {
   assert(OK());
 }
 
-static void
-throw_different_dimensions(const char* method,
-			   const PPL::PolyBase& x,
-			   const PPL::Matrix& y) {
-  std::ostringstream s;
-  s << method << ":" << std::endl
-    << "this->space_dimension() == " << x.space_dimension()
-    << ", system->space_dimension() == " << y.space_dimension();
-  throw std::invalid_argument(s.str());
-}
-
 
 /*!
   Adds further constraints to a polyhedron and computes the new polyhedron
@@ -1397,13 +1481,11 @@ PPL::PolyBase::add_constraints_and_minimize(ConSys& cs) {
   // the dimension of `cs' can not be greater than space_dim.
   size_t cs_space_dim = cs.space_dimension();
   if (space_dim < cs_space_dim)
-    throw_different_dimensions("PPL::Polyhedron::add_constraints_and_min(cs)",
+    throw_different_dimensions("add_constraints_and_min(cs)",
 			       *this, cs);
-  // Topology compatibility check.
+  // Topology-compatibility check.
   if (is_necessarily_closed() && cs.has_strict_inequalities())
-    throw std::invalid_argument("PPL::Polyhedron::"
-				"add_constraints_and_min(cs): "
-				"cs contains strict inequalities");
+    throw_topology_incompatible("add_constraints_and_min(cs)", cs);
 
   // Adding no constraints is the same as checking for emptyness.
   if (cs.num_rows() == 0) {
@@ -1435,7 +1517,7 @@ PPL::PolyBase::add_constraints_and_minimize(ConSys& cs) {
     return false;
 
   // PolyBase::add_and_minimize() requires that
-  // the matrix of constraints to add is sorted.
+  // the matrix of constraints to be added is sorted.
   if (!cs.is_sorted())
     cs.sort_rows();
 
@@ -1461,33 +1543,19 @@ PPL::PolyBase::add_constraints_and_minimize(ConSys& cs) {
 }
 
 
-static void
-throw_different_dimensions(const char* method,
-			   const PPL::PolyBase& x,
-			   const PPL::Row& y) {
-  std::ostringstream s;
-  s << method << ":" << std::endl
-    << "this->space_dimension() == " << x.space_dimension()
-    << ", y->space_dimension() == " << y.space_dimension();
-  throw std::invalid_argument(s.str());
-}
-
 /*!
   This function inserts a new constraint \p c into the system of
   constraints of the polyhedron \p *this.
 */
-// FIXME.
 void
 PPL::PolyBase::insert(const Constraint& c) {
   // Dimension-compatibility check:
   // the dimension of `c' can not be greater than space_dim.
   if (space_dim < c.space_dimension())
-    throw_different_dimensions("PPL::Polyhedron::insert(c)",
-			       *this, c);
+    throw_different_dimensions("insert(c)", *this, c);
   // Topology-compatibility check.
   if (c.is_strict_inequality() && is_necessarily_closed())
-    throw std::invalid_argument("PPL::Polyhedron::insert(c): "
-				"c is a strict inequality");
+    throw_topology_incompatible("insert(c)", c);
 
   // Adding a new constraint to an empty polyhedron
   // results in an empty polyhedron.
@@ -1505,20 +1573,27 @@ PPL::PolyBase::insert(const Constraint& c) {
     update_constraints();
 
   // Here we know that the system of constraints has at least a row.
-  if (is_necessarily_closed() && !c.is_necessarily_closed())
-    // FIXME : here we have a (legal) topology mismatch.
-    //         `ConSys::insert(c)' would change the topology
-    // of `con_sys', which is wrong. Should we provide a new method
-    //     ConSys::topology_and_dimension_preserving_insert(c)
-    // which can only modify the constraint ?
-    throw std::invalid_argument("PPL::Polyhedron::insert(c): "
-				"INTERNAL ERROR (not implemented yet).\n"
-				"[c is a _legal_ NNC constraint, "
-				"since it is not a strict inequality.]");
-  else
+  if (c.is_necessarily_closed() || !is_necessarily_closed())
     // Since `con_sys' is not empty, the topology and space dimension
     // of the inserted constraint are automatically adjusted.
     con_sys.insert(c);
+  else {
+    // Note: here we have a _legal_ topology mismatch, because
+    // `c' is NOT a strict inequality.
+    // However, by barely invoking `con_sys.insert(c)' we would
+    // cause a change in the topology of `con_sys', which is wrong.
+    // Thus, we compute a "topology corrected" copy of `c'.
+    LinExpression nc_expr;
+    // FIXME : provide a more handy way to copy the linear
+    // expression associated to a constraint (without the \eps coeff.).
+    for (size_t i = c.space_dimension(); i-- > 0; )
+      nc_expr += c.coefficient(Variable(i)) * Variable(i);
+    nc_expr += c.coefficient();
+    if (c.is_equality())
+      con_sys.insert(nc_expr == 0);
+    else
+      con_sys.insert(nc_expr >= 0);
+  }
 
   // After adding new constraints, generators are no longer up-to-date.
   clear_constraints_minimized();
@@ -1534,19 +1609,17 @@ PPL::PolyBase::insert(const Constraint& c) {
   generators of the polyhedron \p *this. The new generator
   can be redundant.
 */
-// FIXME.
+// CHECKME.
 void
 PPL::PolyBase::insert(const Generator& g) {
   // Dimension-compatibility check:
   // the dimension of `g' can not be greater than space_dim.
   size_t g_space_dim = g.space_dimension();
   if (space_dim < g_space_dim)
-    throw_different_dimensions("PPL::Polyhedron::insert(g)",
-			       *this, g);
+    throw_different_dimensions("insert(g)", *this, g);
   // Topology-compatibility check.
   if (g.is_closure_point() && is_necessarily_closed())
-    throw std::invalid_argument("PPL::Polyhedron::insert(g): "
-				"g is a closure point");
+    throw_topology_incompatible("insert(g)", g);
 
   // Dealing with a zero-dim space polyhedron first.
   if (space_dim == 0) {
@@ -1555,84 +1628,86 @@ PPL::PolyBase::insert(const Generator& g) {
     // Closure points can only be inserted in non-empty polyhedra.
     if (is_empty())
       if (g.type() != Generator::POINT)
-	throw std::invalid_argument("PPL::NCC_Polyhedron::insert(g): "
-				    "*this is empty and g is not a point");
+	throw_invalid_generator("insert(g)", *this);
       else
 	status.set_zero_dim_univ();
     return;
   }
 
-  if (generators_are_up_to_date()) {
-    if (is_necessarily_closed() && !g.is_necessarily_closed())
-      // FIXME : here we have a (legal) topology mismatch.
-      //         `GenSys::insert(g)' would change the topology
-      // of `gen_sys', which is wrong. Should we provide a new method
-      //     GenSys::topology_and_dimension_preserving_insert(g)
-      // which can only modify the generator ?
-      throw std::invalid_argument("PPL::Polyhedron::insert(g): "
-				  "INTERNAL ERROR (not implemented yet).\n"
-				  "[g is a _legal_ NNC generator, "
-				  "since it is not a closure point.]");
-    else
+  if (generators_are_up_to_date() || !check_empty()) {
+    if (g.is_necessarily_closed() || !is_necessarily_closed())
       // Since `gen_sys' is not empty, the topology and space dimension
       // of the inserted generator are automatically adjusted.
       gen_sys.insert(g);
-
-    // After adding the new generator, constraints are no longer up-to-date.
+    else {
+      assert(!g.is_closure_point());
+      // Note: here we have a _legal_ topology mismatch, because
+      // `g' is NOT a closure point.
+      // However, by barely invoking `gen_sys.insert(g)' we would
+      // cause a change in the topology of `gen_sys', which is wrong.
+      // Thus, we compute a "topology corrected" copy of `g'.
+      LinExpression nc_expr;
+      // FIXME : provide a more handy way to copy the linear
+      // expression associated to a generator (without the \eps coeff.).
+      for (size_t i = g.space_dimension(); i-- > 0; )
+	nc_expr += g.coefficient(Variable(i)) * Variable(i);
+      switch (g.type()) {
+      case Generator::LINE:
+	gen_sys.insert(line(nc_expr));
+	break;
+      case Generator::RAY:
+	gen_sys.insert(ray(nc_expr));
+	break;
+      case Generator::POINT:
+	gen_sys.insert(point(nc_expr, g.divisor()));
+	break;
+      }
+    }
+    // After adding the new generator,
+    // constraints are no longer up-to-date.
     clear_generators_minimized();
     clear_constraints_up_to_date();
-    return;
   }
-
-  // Generators are not up-to-date. Checking for emptyness and
-  // computing the generators at the same time.
-  if (check_empty()) {
-    // Polyhedron is empty:
+  else {
+    // Here the polyhedron is empty:
     // the specification says we can only insert a point.
-    if (g.type() != Generator::POINT)
-      throw std::invalid_argument("void PPL::Polyhedron::insert(g): "
-				  "*this is empty and g is not a point");
-
-    if (is_necessarily_closed() && !g.is_necessarily_closed())
-      // FIXME : here we have a (legal) topology mismatch.
-      //         `GenSys::insert(g)' would change the topology
-      // of `gen_sys', which is wrong. Should we provide a new method
-      //     GenSys::topology_and_dimension_preserving_insert(g)
-      // which can only modify the generator ?
-      throw std::invalid_argument("PPL::Polyhedron::insert(g): "
-				  "INTERNAL ERROR (not implemented yet).\n"
-				  "[g is a _legal_ NNC generator, "
-				  "since it is not a closure point.]");
-    else
+    if (!g.is_point())
+      throw_invalid_generator("insert(g)", *this);
+    if (g.is_necessarily_closed() || !is_necessarily_closed())
+      // Since `gen_sys' is not empty, the topology and space dimension
+      // of the inserted generator are automatically adjusted.
       gen_sys.insert(g);
-
+    else {
+      assert(!g.is_closure_point());
+      // Note: here we have a _legal_ topology mismatch, because
+      // `g' is NOT a closure point.
+      // However, by barely invoking `gen_sys.insert(g)' we would
+      // cause a change in the topology of `gen_sys', which is wrong.
+      // Thus, we compute a "topology corrected" copy of `g'.
+      LinExpression nc_expr;
+      // FIXME : provide a more handy way to copy the linear
+      // expression associated to a generator (without the \eps coeff.).
+      for (size_t i = g.space_dimension(); i-- > 0; )
+	nc_expr += g.coefficient(Variable(i)) * Variable(i);
+      switch (g.type()) {
+      case Generator::LINE:
+	gen_sys.insert(line(nc_expr));
+	break;
+      case Generator::RAY:
+	gen_sys.insert(ray(nc_expr));
+	break;
+      case Generator::POINT:
+	gen_sys.insert(point(nc_expr, g.divisor()));
+	break;
+      }
+    }
     // `gen_sys' was empty: after inserting `g' we have to resize
     // the system of generators to have the right dimension.
     gen_sys.adjust_topology_and_dimension(topology(), space_dim);
     // No longer empty, generators up-to-date and minimized.
     clear_empty();
     set_generators_minimized();
-    return;
   }
-
-  // Here the polyhedron is NOT empty and with generators up-to-date.
-  if (is_necessarily_closed() && !g.is_necessarily_closed())
-    // FIXME : here we have a (legal) topology mismatch.
-    //         `GenSys::insert(g)' would change the topology
-    // of `gen_sys', which is wrong. Should we provide a new method
-    //     GenSys::topology_and_dimension_preserving_insert(g)
-    // which can only modify the generator ?
-    throw std::invalid_argument("PPL::Polyhedron::insert(g): "
-				"INTERNAL ERROR (not implemented yet).\n"
-				"[g is a _legal_ NNC generator, "
-				"since it is not a closure point.]");
-  else
-    // Since `gen_sys' is not empty, the topology and space dimension
-    // of the inserted generator are automatically adjusted.
-    gen_sys.insert(g);
-  // Generators no longer minimized, constraints no longer up-to-date.
-  clear_generators_minimized();
-  clear_constraints_up_to_date();
 }
 
 
@@ -1645,13 +1720,10 @@ PPL::PolyBase::add_constraints(ConSys& cs) {
   // the dimension of `cs' can not be greater than space_dim.
   size_t cs_space_dim = cs.space_dimension();
   if (space_dim < cs_space_dim)
-    throw_different_dimensions("PPL::Polyhedron::add_constraints(cs)",
-			       *this, cs);
+    throw_different_dimensions("add_constraints(cs)", *this, cs);
   // Topology compatibility check.
   if (is_necessarily_closed() && cs.has_strict_inequalities())
-    throw std::invalid_argument("PPL::Polyhedron::"
-				"add_constraints(cs): "
-				"cs contains strict inequalities");
+    throw_topology_incompatible("add_constraints(cs)", cs);
 
   // Adding no constraints is a no-op.
   if (cs.num_rows() == 0)
@@ -1741,9 +1813,7 @@ PPL::PolyBase::add_dimensions_and_constraints(ConSys& cs) {
   size_t added_columns = cs.space_dimension();
   // Topology compatibility check: we do NOT adjust dimensions.
   if (!cs.adjust_topology_and_dimension(topology(), added_columns))
-    throw std::invalid_argument("PPL::Polyhedron::"
-				"add_dimensionss_and_constraints(cs): "
-				"cs contains strict inequalities");
+    throw_topology_incompatible("add_dimensions_and_constraints(cs)", cs);
 
   // For an empty polyhedron, it is sufficient to adjust
   // the dimension of the space.
@@ -1817,13 +1887,10 @@ PPL::PolyBase::add_generators_and_minimize(GenSys& gs) {
   // the dimension of `gs' can not be greater than space_dimension().
   size_t gs_space_dim = gs.space_dimension();
   if (space_dim < gs_space_dim)
-    throw_different_dimensions("PPL::Polyhedron::add_generators_and_min(g)",
-			       *this, gs);
+    throw_different_dimensions("add_generators_and_min(gs)", *this, gs);
   // Topology compatibility check.
   if (is_necessarily_closed() && gs.has_closure_points())
-    throw std::invalid_argument("PPL::Polyhedron::"
-				"add_generators_and_min(gs): "
-				"gs contains closure points");
+    throw_topology_incompatible("add_generators_and_min(gs)", gs);
 
   // Adding no generators is a no-op.
   if (gs.num_rows() == 0) {
@@ -1856,8 +1923,7 @@ PPL::PolyBase::add_generators_and_minimize(GenSys& gs) {
   else {
     // Checking if the system of generators contains a point.
     if (!gs.has_points())
-      throw std::invalid_argument("PPL::Polyhedron::add_generators_and_min"
-				  "(gs): non-empty gs with no points");
+      throw_invalid_generators("add_generators_and_min(gs)", *this);
     // If the system of generators has a point, the polyhedron is no
     // longer empty and generators are up-to-date.
     std::swap(gen_sys, gs);
@@ -1876,8 +1942,10 @@ PPL::PolyBase::add_generators(GenSys& gs) {
   // the dimension of `gs' can not be greater than space_dim.
   size_t gs_space_dim = gs.space_dimension();
   if (space_dim < gs_space_dim)
-    throw_different_dimensions("PPL::Polyhedron::add_generators(g)",
-			       *this, gs);
+    throw_different_dimensions("add_generators(gs)", *this, gs);
+  // Topology compatibility check.
+  if (is_necessarily_closed() && gs.has_closure_points())
+    throw_topology_incompatible("add_generators(gs)", gs);
 
   // Adding no generators is a no-op.
   if (gs.num_rows() == 0) {
@@ -1886,9 +1954,11 @@ PPL::PolyBase::add_generators(GenSys& gs) {
   }
 
   if (space_dim == 0) {
-    // Since `gs' is 0-dim and non-empty,
-    // it has to contain only points.
-    assert(gs[0].type() == Generator::POINT);
+    // Valid generator systems need a supporting point, at least.
+    if (!gs.has_points())
+      throw_invalid_generators("add_generators(gs)", *this);
+    // Adding valid generators to a zero-dim polyhedron
+    // transform it in the zero-dim universe polyhedron.
     status.set_zero_dim_univ();
     return;
   }
@@ -1897,18 +1967,10 @@ PPL::PolyBase::add_generators(GenSys& gs) {
   if (!generators_are_up_to_date())
     minimize();
 
-
   if (is_empty()) {
     // Checking if the system of generators contains a point.
-    size_t i = 0;
-    size_t iend = gs.num_rows();
-    for ( ; i < iend; ++i) {
-      if (gs[i][0] > 0)
-	break;
-    }
-    if (i == iend)
-      throw std::invalid_argument("PPL::Polyhedron::add_generators(gs): "
-				  "non-empty gs with no points");
+    if (!gs.has_points())
+      throw_invalid_generators("add_generators(gs)", *this);
 
     // The system of generators contains at least a point.
     // If needed, we extend `gs' to the right space dimension.
@@ -2076,25 +2138,25 @@ PPL::PolyBase::affine_image(const Variable& var,
 			    const LinExpression& expr,
 			    const Integer& denominator) {
   if (denominator == 0)
-    throw std::invalid_argument("void PPL::Polyhedron::affine_image"
-				"(v, e, d): d == 0");
+    throw_generic("affine_image(v, e, d)", "d == 0", *this);
   PolyBase& x = *this;
   // Dimension-compatibility checks.
   // The dimension of `expr' should not be greater than the dimension of `x'.
   size_t x_space_dim = x.space_dim;
   size_t expr_space_dim = expr.space_dimension();
   if (x_space_dim < expr_space_dim)
-    throw_different_dimensions("PPL::Polyhedron::affine_image(v, e, d)",
-			       x, expr);
+    throw_different_dimensions("affine_image(v, e, d)", x, expr);
   // `var' should be one of the dimensions of the polyhedron.
   size_t num_var = var.id() + 1;
+  // FIXME: is this the right test ?
   if (num_var >= x_space_dim + 1)
-    throw_dimension_incompatible("PPL::Polyhedron::affine_image(v, e, d)",
-				 x, var.id());
+    throw_dimension_incompatible("affine_image(v, e, d)", x, var.id());
 
   if (x.is_empty())
     return;
 
+  // FIXME: the const-cast is dangerous. Also we may need to
+  // adapt the topology of expr.
   if (x_space_dim > expr_space_dim) {
     LinExpression copy(expr, x_space_dim + 1);
     const_cast<LinExpression&>(expr).swap(copy);
@@ -2200,8 +2262,7 @@ PPL::PolyBase::affine_preimage(const Variable& var,
 			       const LinExpression& expr,
 			       const Integer& denominator) {
   if (denominator == 0)
-    throw std::invalid_argument("void PPL::Polyhedron::affine_preimage"
-				"(v, e, d): d == 0");
+    throw_generic("affine_preimage(v, e, d)", "d == 0", *this);
 
   PolyBase& x = *this;
   // Dimension-compatibility checks.
@@ -2209,17 +2270,18 @@ PPL::PolyBase::affine_preimage(const Variable& var,
   size_t x_space_dim = x.space_dim;
   size_t expr_space_dim = expr.space_dimension();
   if (x_space_dim < expr_space_dim)
-    throw_different_dimensions("PPL::Polyhedron::affine_preimage(v, e, d)",
-			       x, expr);
+    throw_different_dimensions("affine_preimage(v, e, d)", x, expr);
   // `var' should be one of the dimensions of the polyhedron.
   size_t num_var = var.id() + 1;
+  // FIXME: is this the right test ?
   if (num_var >= x_space_dim + 1)
-    throw_dimension_incompatible("PPL::Polyhedron::affine_preimage(v, e, d)",
-				 x, var.id());
+    throw_dimension_incompatible("affine_preimage(v, e, d)", x, var.id());
 
   if (x.is_empty())
     return;
 
+  // FIXME: the const-cast is dangerous. Also we may need to
+  // adapt the topology of expr.
   if (x_space_dim > expr_space_dim) {
     LinExpression copy(expr, x_space_dim + 1);
     const_cast<LinExpression&>(expr).swap(copy);
@@ -2255,12 +2317,13 @@ PPL::PolyBase::affine_preimage(const Variable& var,
   Returns the relations holding between the polyhedron \p *this and
   the constraint \p c.
 */
+// FIXME.
 PPL::Poly_Con_Relation
 PPL::PolyBase::relation_with(const Constraint& c) {
   // Dimension-compatibility check.
   if (space_dim < c.space_dimension())
-    throw_different_dimensions("PPL::Polyhedron::relation_with(c)",
-			       *this, c);
+    throw_different_dimensions("relation_with(c)", *this, c);
+
   if (is_empty())
     return Poly_Con_Relation::saturates()
       && Poly_Con_Relation::is_included()
@@ -2292,14 +2355,14 @@ PPL::PolyBase::relation_with(const Constraint& c) {
   Returns the relations holding between the polyhedron \p *this and
   the generator \p g.
 */
+// FIXME.
 PPL::Poly_Gen_Relation
 PPL::PolyBase::relation_with(const Generator& g) {
   // Dimension-compatibility check.
   if (space_dim < g.space_dimension())
-     throw_different_dimensions("PPL::Polyhedron::relation_with(g)",
-				 *this, g);
+     throw_different_dimensions("relation_with(g)", *this, g);
 
-  // Any generators is not subsumed by the empty-polyhedron.
+  // The empty polyhedron cannot subsume a generator.
   if (is_empty())
     return Poly_Gen_Relation::nothing();
 
@@ -2307,14 +2370,13 @@ PPL::PolyBase::relation_with(const Generator& g) {
   // all the generators of a zero-dimensional space.
   if (space_dim == 0)
     return Poly_Gen_Relation::subsumes();
-  else {
-    if (!constraints_are_up_to_date())
-      update_constraints();
-    return
-      con_sys.satisfies_all_constraints(g)
-      ? Poly_Gen_Relation::subsumes()
-      : Poly_Gen_Relation::nothing();
-  }
+
+  if (!constraints_are_up_to_date())
+    update_constraints();
+  return
+    con_sys.satisfies_all_constraints(g)
+    ? Poly_Gen_Relation::subsumes()
+    : Poly_Gen_Relation::nothing();
 }
 
 /*!
@@ -2323,9 +2385,9 @@ PPL::PolyBase::relation_with(const Generator& g) {
   The resulting polyhedron has a system of constraints
   which is up-to-date for just those constraints that are common
   to both the polyhedra.
-  For this function, it is required that the polyhedron \p y is contained
-  in \p *this.
+  It is assumed that the polyhedron \p y is contained in \p *this.
 */
+// FIXME.
 void
 PPL::PolyBase::widening_assign(const PolyBase& y) {
   assert(topology() == y.topology());
@@ -2344,11 +2406,10 @@ PPL::PolyBase::widening_assign(const PolyBase& y) {
   size_t x_space_dim = x.space_dim;
   size_t y_space_dim = y.space_dim;
   if (x_space_dim != y_space_dim)
-    throw_different_dimensions("PPL::Polyhedron::widening_assign(y)",
-			       *this, y);
+    throw_different_dimensions("widening_assign(y)", *this, y);
 
   // The widening between two polyhedra in a zero-dimensional space
-  // is a polyhedron iin a zero-dimensional space, too.
+  // is a polyhedron in a zero-dimensional space, too.
   if (x_space_dim == 0)
     return;
 
@@ -2454,6 +2515,7 @@ PPL::PolyBase::widening_assign(const PolyBase& y) {
   Returns <CODE>true</CODE> if the widened polyhedron \p *this is
   not empty.
 */
+// FIXME.
 void
 PPL::PolyBase::limited_widening_assign(const PolyBase& y, ConSys& cs) {
   assert(topology() == y.topology());
@@ -2472,13 +2534,11 @@ PPL::PolyBase::limited_widening_assign(const PolyBase& y, ConSys& cs) {
   size_t x_space_dim = x.space_dim;
   size_t y_space_dim = y.space_dim;
   if (x_space_dim != y_space_dim)
-    throw_different_dimensions("PPL::Polyhedron::limited_widening_assign(y,c)",
-			       *this, y);
+    throw_different_dimensions("limited_widening_assign(y,cs)", *this, y);
   // `cs' must be dimension-compatible with the two polyhedra.
   size_t cs_space_dim = cs.space_dimension();
   if (x_space_dim < cs_space_dim)
-    throw_different_dimensions("PPL::Polyhedron::limited_widening_assign(y,c)",
-			       *this, cs);
+    throw_different_dimensions("limited_widening_assign(y,cs)", *this, cs);
 
   if (y.is_empty())
     return;
@@ -2577,8 +2637,8 @@ PPL::PolyBase::is_bounded() const {
     if (gen_sys[i][0] == 0)
       // A line or a ray is found: the polyhedron is not bounded.
       return false;
-  // The system of generators is composed only by points:
-  // the polyhedron is bounded.
+  // The system of generators is composed only by
+  // points and closure points: the polyhedron is bounded.
   return true;
 }
 
@@ -2593,6 +2653,7 @@ PPL::PolyBase::is_bounded() const {
   - the system of constraints and the system of generators are really
     minimized, when they are declared minimal.
 */
+// FIXME.
 bool
 PPL::PolyBase::OK(bool check_not_empty) const {
   using std::endl;
