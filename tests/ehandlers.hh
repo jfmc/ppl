@@ -31,13 +31,13 @@ site: http://www.cs.unipr.it/ppl/ . */
 void
 my_unexpected_exception() {
   std::cerr << "unexpected exception thrown" << std::endl;
-  abort();
+  exit(1);
 }
 
 void
 my_uncaught_exception() {
   std::cerr << "uncaught exception" << std::endl;
-  abort();
+  exit(1);
 }
 
 void
@@ -45,5 +45,5 @@ set_handlers() {
   std::set_unexpected(my_unexpected_exception);
   std::set_terminate(my_uncaught_exception);
 }
-#endif
 
+#endif
