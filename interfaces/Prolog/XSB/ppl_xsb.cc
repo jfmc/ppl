@@ -24,8 +24,16 @@ site: http://www.cs.unipr.it/ppl/ . */
 #include <config.h>
 #include "Integer.defs.hh"
 #include <cinterf.h>
+
+// In XSB 2.6, <error_xsb.h> does not come with the extern "C" wrapper.
+extern "C" {
+#include <error_xsb.h>
+}
+
+// In XSB 2.6, <cinterf.h> pollutes the namespace with `min' and `max'.
 #undef min
 #undef max
+
 #include <cassert>
 
 typedef prolog_term Prolog_term_ref;
@@ -237,8 +245,8 @@ Prolog_construct_cons(Prolog_term_ref& c,
   Raise a Prolog exception with \p t as the exception term.
 */
 static inline void
-Prolog_raise_exception(Prolog_term_ref /* t */) {
-  // FIXME: to be written!
+Prolog_raise_exception(Prolog_term_ref t) {
+  xsb_throw(t);
 }
 
 /*!
