@@ -1,25 +1,22 @@
-Minor and Not So Minor Things
-=============================
+Efficiency Issues
+=================
 
 - There must be a more efficient way to compute convex
   differences.
 
-- We still are not providing all the services we ought
-  to provide.  For instance:
+- We are being rather careless about the creation of temporaries
+  as far as the classes LinExpression, Constraint and Generator
+  are concerned.
 
-  1) Bounding box: obtaining the smallest bounding box
-     (a polyhedron with the sides parallel to the axes)
-     containing a given convex polyhedron.  For this
-     to be really useful an appropriate user interface
-     should also be devised.  The typical use is reverting
-     from a polyhedra-based analysis to an interval-based
-     one.  This method gives an interval for each dimension.
 
-  2) Cutting-plane methods?  Suppose we are only interested
-     in integral solutions.  Then cutting-plane methods
-     (Gomory, Chvátal, ...) allow to shrink P still not losing
-     any integral solution.  See
-     http://www.cs.unipr.it/ppl/Documentation/bibliography#NemhauserW88
+Cutting-Plane Methods
+=====================
+
+Suppose we are only interested in integral solutions (as is the
+case, e.g., in most termination analyses).  Then cutting-plane methods
+(Gomory, Chvátal, ...) allow to shrink P still not losing any integral
+solution.
+See http://www.cs.unipr.it/ppl/Documentation/bibliography#NemhauserW88
 
 
 Z-Polyhedra
@@ -32,7 +29,6 @@ Z-polyhedra are intersections and other representations for discrete sets.
   Génération automatique de codes de transfert pour
   multiprocesseurs à mémoires locales.
   PhD thesis, Université de Paris VI, March 1991.
-
 
 
 Design and Implementation of Strict Weak Orderings
@@ -82,8 +78,8 @@ of the constraint system hierarchy described in
 A generic implementation (in the form of C++ templates) of the entire
 hierarchy has already been written.  What is missing is:
 
-1) a wrapper class for PPL::Polyhedron so that a polyhedron is seen
-   as a "determinate constraint system";
+1) wrapper classes for PPL::C_Polyhedron and PPL::NNC_Polyhedron
+   so that a polyhedron is seen as a "determinate constraint system";
 2) one or more strict weak ordering on polyhedra;
 3) extending the above mentioned templates so as to work also with
    ordinary swos (the current implementation only supports total swos
