@@ -48,9 +48,8 @@ namespace Parma_Polyhedra_Library {
     adjusted so that all the generators in the system are defined
     on the same vector space.
     A system of generators which is meant to define a non-empty polyhedron
-    must include at least one point, even if the polyhedron has
-    no vertices: the reason is that lines, rays and closure points
-    need a supporting point (they only specify directions).
+    must include at least one point: the reason is that lines, rays
+    and closure points need a supporting point (they only specify directions).
 
     \par
      In all the examples it is assumed that variables
@@ -121,6 +120,21 @@ namespace Parma_Polyhedra_Library {
     \endcode
 
     \par Example 4
+    By using closure points, we can define the \e kernel
+    (i.e., the largest open set included in a given set)
+    of the square defined in the previous example.
+    Note that a supporting point is needed and, for that purpose,
+    any inner point could be considered.
+    \code
+  GenSys gs;
+  gs.insert(point(x + y));
+  gs.insert(closure_point(0*x + 0*y));
+  gs.insert(closure_point(0*x + 3*y));
+  gs.insert(closure_point(3*x + 0*y));
+  gs.insert(closure_point(3*x + 3*y));
+    \endcode
+
+    \par Example 5
     The following code builds a system of generators having two points
     and a ray, corresponding to a half-strip in \f$\Rset^2\f$
     (the same as Example 2 for the system of constraints):

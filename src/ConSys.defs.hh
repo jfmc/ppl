@@ -71,6 +71,17 @@ namespace Parma_Polyhedra_Library {
     dimension to \f$1\f$ and \f$2\f$, respectively.
 
     \par Example 2
+    By adding some four strict inequalities to the constraint system
+    of the previous example, we can remove all and only the four
+    vertices from the square defined above.
+    \code
+  cs.insert(x + y > 0);
+  cs.insert(x + y < 6);
+  cs.insert(x - y < 3);
+  cs.insert(y - x < 3);
+    \endcode
+
+    \par Example 3
     The following code builds a system of constraints corresponding to
     a half-strip in \f$\Rset^2\f$:
     \code

@@ -65,9 +65,13 @@ namespace Parma_Polyhedra_Library {
 
   \par A note on terminology.
   As observed in the Introduction, there are cases when, in order to
-  represent a polyhedron \f$P\f$ using generators, we need to include
-  in the finite set \f$V\f$ even points of \f$P\f$ that are <EM>not</EM>
-  vertices of \f$P\f$.
+  represent a polyhedron \f$\cP\f$ using the generator system
+  \f$\cG = (L, R, P, C)\f$, we need to include in the finite set
+  \f$P\f$ even points of \f$\cP\f$ that are <EM>not</EM> vertices
+  of \f$\cP\f$.
+  This situation is even more frequent when working with NNC polyhedra
+  and it is the reason why we prefer to use the word `point'
+  where other libraries use the word `vertex'.
 
   \par How to build a generator.
   Each type of generator is built by applying the corresponding
