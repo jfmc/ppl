@@ -1,5 +1,5 @@
 
-This is the release 0.2 of the Parma Polyhedra Library:
+This is the release 0.3 of the Parma Polyhedra Library:
 a C++ library for convex polyhedra.
 
 To be more precise, the Parma Polyhedra Library (PPL) can handle all
@@ -39,10 +39,10 @@ See the file BUGS for known bugs and how to report new ones.
 See the file CREDITS for a list of people and organizations that
 made the PPL a reality.
 
-Here is the contents of the PPL 0.2 source distributions
-(8 directories, 162 files):
+Here is the contents of the PPL 0.3 source distributions
+(24 directories, 510 files):
 
-ppl-0.2/
+ppl-0.3/
 |-- BUGS
 |-- COPYING
 |-- CREDITS
@@ -76,9 +76,9 @@ ppl-0.2/
 |   |-- fdl.tex
 |   |-- gpl.dox
 |   |-- gpl.tex
-|   |-- ppl-user-0.2-browse.pdf
-|   |-- ppl-user-0.2-print.pdf
-|   |-- ppl-user-0.2-print.ps.gz
+|   |-- ppl-user-0.3-browse.pdf
+|   |-- ppl-user-0.3-print.pdf
+|   |-- ppl-user-0.3-print.ps.gz
 |   |-- ppl.sty
 |   |-- user-browse.doxyconf-latex
 |   |-- user-browse.doxyconf-latex.in
@@ -102,6 +102,7 @@ ppl-0.2/
 |           |-- ackn.clpq
 |           |-- check_script
 |           |-- clpq.pl
+|           |-- clpq2.pl
 |           |-- expected
 |           |-- fib.clpq
 |           |-- mc91.clpq
@@ -110,13 +111,300 @@ ppl-0.2/
 |           |-- smm.clpq
 |           |-- sumto.clpq
 |           `-- tak.clpq
+|-- ltmain.sh
 |-- m4
 |   |-- Makefile.am
 |   |-- Makefile.in
-|   |-- ac_check_gmp_exceptions.m4
-|   `-- ac_check_have_gmp.m4
+|   `-- ac_check_gmp.m4
 |-- missing
 |-- mkinstalldirs
+|-- ppl
+|   |-- #README#
+|   |-- BUGS
+|   |-- COPYING
+|   |-- CREDITS
+|   |-- CVS
+|   |   |-- Entries
+|   |   |-- Repository
+|   |   |-- Root
+|   |   `-- Tag
+|   |-- ChangeLog
+|   |-- INSTALL
+|   |-- Makefile.am
+|   |-- Makefile.in
+|   |-- NEWS
+|   |-- README
+|   |-- TODO
+|   |-- acinclude.m4
+|   |-- aclocal.m4
+|   |-- autom4te.cache
+|   |   |-- output.0
+|   |   |-- requests
+|   |   `-- traces.0
+|   |-- config.guess
+|   |-- config.h.in
+|   |-- config.sub
+|   |-- configure
+|   |-- configure.ac
+|   |-- depcomp
+|   |-- doc
+|   |   |-- CVS
+|   |   |   |-- Entries
+|   |   |   |-- Repository
+|   |   |   |-- Root
+|   |   |   `-- Tag
+|   |   |-- Makefile.am
+|   |   |-- Makefile.in
+|   |   |-- definitions.dox
+|   |   |-- devref-browse.doxyconf-latex.in
+|   |   |-- devref-print.doxyconf-latex.in
+|   |   |-- devref.doxyconf-html.in
+|   |   |-- devref.tex
+|   |   |-- fdl.dox
+|   |   |-- fdl.tex
+|   |   |-- gpl.dox
+|   |   |-- gpl.tex
+|   |   |-- ppl.sty
+|   |   |-- user-browse.doxyconf-latex.in
+|   |   |-- user-print.doxyconf-latex.in
+|   |   |-- user.doxyconf-html.in
+|   |   `-- user.tex
+|   |-- install-sh
+|   |-- interfaces
+|   |   |-- CVS
+|   |   |   |-- Entries
+|   |   |   |-- Repository
+|   |   |   |-- Root
+|   |   |   `-- Tag
+|   |   |-- Makefile.am
+|   |   |-- Makefile.in
+|   |   `-- Prolog
+|   |       |-- CVS
+|   |       |   |-- Entries
+|   |       |   |-- Repository
+|   |       |   |-- Root
+|   |       |   `-- Tag
+|   |       |-- Makefile.am
+|   |       |-- Makefile.in
+|   |       |-- Prolog_interface.dox
+|   |       `-- SICStus
+|   |           |-- CVS
+|   |           |   |-- Entries
+|   |           |   |-- Repository
+|   |           |   |-- Root
+|   |           |   `-- Tag
+|   |           |-- Makefile.am
+|   |           |-- Makefile.am.~1.10.~
+|   |           |-- Makefile.in
+|   |           |-- ack.clpq
+|   |           |-- ackn.clpq
+|   |           |-- check_script
+|   |           |-- clpq.pl
+|   |           |-- clpq2.pl
+|   |           |-- expected
+|   |           |-- fib.clpq
+|   |           |-- mc91.clpq
+|   |           |-- ppl_sicstus.cc
+|   |           |-- ppl_sicstus.pl
+|   |           |-- smm.clpq
+|   |           |-- smmdiff.clpq
+|   |           |-- sumto.clpq
+|   |           `-- tak.clpq
+|   |-- ltmain.sh
+|   |-- m4
+|   |   |-- CVS
+|   |   |   |-- Entries
+|   |   |   |-- Repository
+|   |   |   |-- Root
+|   |   |   `-- Tag
+|   |   |-- Makefile.am
+|   |   |-- Makefile.in
+|   |   `-- ac_check_gmp.m4
+|   |-- missing
+|   |-- mkinstalldirs
+|   |-- ppl.lsm.in
+|   |-- ppl.spec.in
+|   |-- src
+|   |   |-- CVS
+|   |   |   |-- Entries
+|   |   |   |-- Repository
+|   |   |   |-- Root
+|   |   |   `-- Tag
+|   |   |-- ConSys.cc
+|   |   |-- ConSys.defs.hh
+|   |   |-- ConSys.inlines.hh
+|   |   |-- ConSys.types.hh
+|   |   |-- Constraint.cc
+|   |   |-- Constraint.defs.hh
+|   |   |-- Constraint.inlines.hh
+|   |   |-- Constraint.types.hh
+|   |   |-- GenSys.cc
+|   |   |-- GenSys.defs.hh
+|   |   |-- GenSys.inlines.hh
+|   |   |-- GenSys.types.hh
+|   |   |-- Generator.cc
+|   |   |-- Generator.defs.hh
+|   |   |-- Generator.inlines.hh
+|   |   |-- Generator.types.hh
+|   |   |-- Init.cc
+|   |   |-- Init.defs.hh
+|   |   |-- Init.inlines.hh
+|   |   |-- Init.types.hh
+|   |   |-- Integer.cc
+|   |   |-- Integer.defs.hh
+|   |   |-- Integer.inlines.hh
+|   |   |-- Integer.types.hh
+|   |   |-- LinExpression.cc
+|   |   |-- LinExpression.defs.hh
+|   |   |-- LinExpression.inlines.hh
+|   |   |-- LinExpression.types.hh
+|   |   |-- Makefile.am
+|   |   |-- Makefile.in
+|   |   |-- Matrix.cc
+|   |   |-- Matrix.defs.hh
+|   |   |-- Matrix.inlines.hh
+|   |   |-- Matrix.types.hh
+|   |   |-- Polyhedron.cc
+|   |   |-- Polyhedron.defs.hh
+|   |   |-- Polyhedron.inlines.hh
+|   |   |-- Polyhedron.types.hh
+|   |   |-- Row.cc
+|   |   |-- Row.defs.hh
+|   |   |-- Row.inlines.hh
+|   |   |-- Row.types.hh
+|   |   |-- SatMatrix.cc
+|   |   |-- SatMatrix.defs.hh
+|   |   |-- SatMatrix.inlines.hh
+|   |   |-- SatMatrix.types.hh
+|   |   |-- SatRow.cc
+|   |   |-- SatRow.defs.hh
+|   |   |-- SatRow.inlines.hh
+|   |   |-- SatRow.types.hh
+|   |   |-- Status.cc
+|   |   |-- Status.defs.hh
+|   |   |-- Status.inlines.hh
+|   |   |-- Status.types.hh
+|   |   |-- Variable.cc
+|   |   |-- Variable.defs.hh
+|   |   |-- Variable.inlines.hh
+|   |   |-- Variable.types.hh
+|   |   |-- conversion.cc
+|   |   |-- globals.cc
+|   |   |-- globals.hh
+|   |   |-- initializer.hh
+|   |   |-- maxmin.hh
+|   |   |-- minimize.cc
+|   |   |-- ppl_filter_doxygen.sed
+|   |   |-- ppl_filter_install.sed
+|   |   |-- ppl_header.bottom
+|   |   |-- ppl_header.middle
+|   |   |-- ppl_header.top
+|   |   `-- simplify.cc
+|   |-- stamp-h.in
+|   `-- tests
+|       |-- CVS
+|       |   |-- Entries
+|       |   |-- Repository
+|       |   |-- Root
+|       |   `-- Tag
+|       |-- Makefile.am
+|       |-- Makefile.in
+|       |-- addconstraints1.cc
+|       |-- addconstraints10.cc
+|       |-- addconstraints11.cc
+|       |-- addconstraints2.cc
+|       |-- addconstraints3.cc
+|       |-- addconstraints4.cc
+|       |-- addconstraints5.cc
+|       |-- addconstraints6.cc
+|       |-- addconstraints7.cc
+|       |-- addconstraints8.cc
+|       |-- addconstraints9.cc
+|       |-- adddimensions1.cc
+|       |-- adddimensions2.cc
+|       |-- adddimensions3.cc
+|       |-- adddimensions4.cc
+|       |-- addgenerators1.cc
+|       |-- addgenerators2.cc
+|       |-- addgenerators3.cc
+|       |-- addgenerators4.cc
+|       |-- addgenerators5.cc
+|       |-- addgenerators6.cc
+|       |-- affineimage1.cc
+|       |-- affineimage2.cc
+|       |-- affinepreimage1.cc
+|       |-- affinepreimage2.cc
+|       |-- affinepreimage3.cc
+|       |-- affinepreimage4.cc
+|       |-- affinetrans.cc
+|       |-- append1.cc
+|       |-- append2.cc
+|       |-- convexdifference1.cc
+|       |-- convexhull1.cc
+|       |-- convexhull2.cc
+|       |-- convexhull3.cc
+|       |-- ehandlers.hh
+|       |-- empty1.cc
+|       |-- error1.cc
+|       |-- error10.cc
+|       |-- error11.cc
+|       |-- error12.cc
+|       |-- error13.cc
+|       |-- error14.cc
+|       |-- error15.cc
+|       |-- error16.cc
+|       |-- error17.cc
+|       |-- error18.cc
+|       |-- error19.cc
+|       |-- error2.cc
+|       |-- error20.cc
+|       |-- error21.cc
+|       |-- error22.cc
+|       |-- error23.cc
+|       |-- error24.cc
+|       |-- error25.cc
+|       |-- error26.cc
+|       |-- error27.cc
+|       |-- error28.cc
+|       |-- error29.cc
+|       |-- error3.cc
+|       |-- error4.cc
+|       |-- error5.cc
+|       |-- error6.cc
+|       |-- error7.cc
+|       |-- error8.cc
+|       |-- error9.cc
+|       |-- includes1.cc
+|       |-- includes2.cc
+|       |-- includes3.cc
+|       |-- includes4.cc
+|       |-- inters1.cc
+|       |-- inters2.cc
+|       |-- inters3.cc
+|       |-- inters4.cc
+|       |-- inters5.cc
+|       |-- inters6.cc
+|       |-- limitedwidening1.cc
+|       |-- limitedwidening2.cc
+|       |-- onepoint.cc
+|       |-- permute.cc
+|       |-- print.hh
+|       |-- randchull1.cc
+|       |-- removedim1.cc
+|       |-- removedim2.cc
+|       |-- removedim3.cc
+|       |-- removedim4.cc
+|       |-- removedim5.cc
+|       |-- removedim6.cc
+|       |-- satisfies1.cc
+|       |-- satisfies2.cc
+|       |-- satisfies3.cc
+|       |-- smm1.cc
+|       |-- universe1.cc
+|       |-- universe2.cc
+|       |-- universe3.cc
+|       |-- universe4.cc
+|       `-- universe5.cc
 |-- ppl.lsm.in
 |-- ppl.spec.in
 |-- src
@@ -136,13 +424,13 @@ ppl-0.2/
 |   |-- Generator.defs.hh
 |   |-- Generator.inlines.hh
 |   |-- Generator.types.hh
-|   |-- Integer
-|   |   |-- Integer.cc
-|   |   |-- Integer.defs.hh
-|   |   |-- Integer.inlines.hh
-|   |   |-- Integer.types.hh
-|   |   |-- Makefile.am
-|   |   `-- Makefile.in
+|   |-- Init.cc
+|   |-- Init.defs.hh
+|   |-- Init.inlines.hh
+|   |-- Init.types.hh
+|   |-- Integer.defs.hh
+|   |-- Integer.inlines.hh
+|   |-- Integer.types.hh
 |   |-- LinExpression.cc
 |   |-- LinExpression.defs.hh
 |   |-- LinExpression.inlines.hh
@@ -178,9 +466,13 @@ ppl-0.2/
 |   |-- Variable.inlines.hh
 |   |-- Variable.types.hh
 |   |-- conversion.cc
+|   |-- globals.cc
 |   |-- globals.hh
+|   |-- initializer.hh
 |   |-- maxmin.hh
 |   |-- minimize.cc
+|   |-- ppl_filter_doxygen.sed
+|   |-- ppl_filter_install.sed
 |   |-- ppl_header.bottom
 |   |-- ppl_header.middle
 |   |-- ppl_header.top
@@ -190,21 +482,82 @@ ppl-0.2/
     |-- Makefile.am
     |-- Makefile.in
     |-- addconstraints1.cc
+    |-- addconstraints10.cc
+    |-- addconstraints11.cc
     |-- addconstraints2.cc
+    |-- addconstraints3.cc
+    |-- addconstraints4.cc
+    |-- addconstraints5.cc
+    |-- addconstraints6.cc
+    |-- addconstraints7.cc
+    |-- addconstraints8.cc
+    |-- addconstraints9.cc
+    |-- adddimensions1.cc
+    |-- adddimensions2.cc
+    |-- adddimensions3.cc
+    |-- adddimensions4.cc
+    |-- addgenerators1.cc
+    |-- addgenerators2.cc
+    |-- addgenerators3.cc
+    |-- addgenerators4.cc
+    |-- addgenerators5.cc
+    |-- addgenerators6.cc
+    |-- affineimage1.cc
+    |-- affineimage2.cc
+    |-- affinepreimage1.cc
+    |-- affinepreimage2.cc
+    |-- affinepreimage3.cc
+    |-- affinepreimage4.cc
     |-- affinetrans.cc
     |-- append1.cc
     |-- append2.cc
-    |-- bug1.cc
-    |-- bug2.cc
+    |-- convexdifference1.cc
+    |-- convexhull1.cc
+    |-- convexhull2.cc
+    |-- convexhull3.cc
     |-- ehandlers.hh
     |-- empty1.cc
     |-- error1.cc
+    |-- error10.cc
+    |-- error11.cc
+    |-- error12.cc
+    |-- error13.cc
+    |-- error14.cc
+    |-- error15.cc
+    |-- error16.cc
+    |-- error17.cc
+    |-- error18.cc
+    |-- error19.cc
     |-- error2.cc
+    |-- error20.cc
+    |-- error21.cc
+    |-- error22.cc
+    |-- error23.cc
+    |-- error24.cc
+    |-- error25.cc
+    |-- error26.cc
+    |-- error27.cc
+    |-- error28.cc
+    |-- error29.cc
     |-- error3.cc
     |-- error4.cc
     |-- error5.cc
+    |-- error6.cc
+    |-- error7.cc
+    |-- error8.cc
+    |-- error9.cc
+    |-- includes1.cc
+    |-- includes2.cc
+    |-- includes3.cc
+    |-- includes4.cc
     |-- inters1.cc
     |-- inters2.cc
+    |-- inters3.cc
+    |-- inters4.cc
+    |-- inters5.cc
+    |-- inters6.cc
+    |-- limitedwidening1.cc
+    |-- limitedwidening2.cc
     |-- onepoint.cc
     |-- permute.cc
     |-- print.hh
@@ -212,7 +565,18 @@ ppl-0.2/
     |-- removedim1.cc
     |-- removedim2.cc
     |-- removedim3.cc
-    `-- smm1.cc
+    |-- removedim4.cc
+    |-- removedim5.cc
+    |-- removedim6.cc
+    |-- satisfies1.cc
+    |-- satisfies2.cc
+    |-- satisfies3.cc
+    |-- smm1.cc
+    |-- universe1.cc
+    |-- universe2.cc
+    |-- universe3.cc
+    |-- universe4.cc
+    `-- universe5.cc
 
 --------
 
