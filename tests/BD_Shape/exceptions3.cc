@@ -37,14 +37,14 @@ error1() {
 
   TBD_Shape bd(2);
   bd.add_constraint(x >= y);
-  Linear_Expression expr(x + 1);
+
   try {
     // This is an incorrect use of the function
     // BD_Shape::affine_preimage(v, expr, d): it is illegal
     // to apply to a expression with the denominator
     // equal to zero.
     Coefficient d = 0;
-    bd.affine_preimage(x, expr, d);
+    bd.affine_preimage(x, x + 1, d);
   }
   catch (invalid_argument& e) {
 #if NOISY
@@ -63,12 +63,12 @@ error2() {
 
   TBD_Shape bd(2);
   bd.add_constraint(x >= y);
-  Linear_Expression expr(x + y +1);
+
   try {
     // This is an incorrect use of the function
     // BD_Shape::affine_preimage(v, expr, d): it is illegal
     // to apply to a expression with two variables.
-    bd.affine_preimage(y, expr);
+    bd.affine_preimage(y, x + y +1);
   }
   catch (invalid_argument& e) {
 #if NOISY
@@ -88,13 +88,13 @@ error3() {
 
   TBD_Shape bd(2);
   bd.add_constraint(x >= y);
-  Linear_Expression expr(z);
+
   try {
     // This is an incorrect use of the function
     // BD_Shape::affine_preimage(v, expr, d): it is illegal
     // to apply to a expression which space dimension is
     // greather than bdiffs space dimension.
-    bd.affine_preimage(y, expr);
+    bd.affine_preimage(y, z);
   }
   catch (invalid_argument& e) {
 #if NOISY
@@ -113,13 +113,13 @@ error4() {
 
   TBD_Shape bd(2);
   bd.add_constraint(x >= y);
-  Linear_Expression expr(2*x);
+
   try {
     // This is an incorrect use of the function
     // BD_Shape::affine_preimage(v, expr, d): it is illegal
     // to apply to a expression where the coefficient of the
     // variable is not equal to the denominator.
-    bd.affine_preimage(y, expr);
+    bd.affine_preimage(y, 2*x);
   }
   catch (invalid_argument& e) {
 #if NOISY
@@ -138,12 +138,12 @@ error5() {
 
   TBD_Shape bd(2);
   bd.add_constraint(x >= y);
-  Linear_Expression expr(x + 1);
+
   try {
     // This is an incorrect use of the function
     // BD_Shape::generalized_affine_image(v, r, expr, d): it is illegal
     // to use a strict relation symbol.
-    bd.generalized_affine_image(x, LESS_THAN, expr);
+    bd.generalized_affine_image(x, LESS_THAN, x + 1);
   }
   catch (invalid_argument& e) {
 #if NOISY
@@ -162,12 +162,12 @@ error6() {
 
   TBD_Shape bd(2);
   bd.add_constraint(x >= y);
-  Linear_Expression expr(x + 1);
+
   try {
     // This is an incorrect use of the function
     // BD_Shape::generalized_affine_image(v, r, expr, d): it is illegal
     // to use a strict relation symbol.
-    bd.generalized_affine_image(x, GREATER_THAN, expr);
+    bd.generalized_affine_image(x, GREATER_THAN, x + 1);
   }
   catch (invalid_argument& e) {
 #if NOISY
@@ -186,14 +186,14 @@ error7() {
 
   TBD_Shape bd(2);
   bd.add_constraint(x >= y);
-  Linear_Expression expr(x + 1);
+
   try {
     // This is an incorrect use of the function
     // BD_Shape::generalized_affine_image(v, r, expr, d): it is illegal
     // to apply to a expression with the denominator
     // equal to zero.
     Coefficient d = 0;
-    bd.generalized_affine_image(x, LESS_THAN_OR_EQUAL, expr, d);
+    bd.generalized_affine_image(x, LESS_THAN_OR_EQUAL, x + 1, d);
   }
   catch (invalid_argument& e) {
 #if NOISY
@@ -212,12 +212,12 @@ error8() {
 
   TBD_Shape bd(2);
   bd.add_constraint(x >= y);
-  Linear_Expression expr(x + y +1);
+
   try {
     // This is an incorrect use of the function
     // BD_Shape::generalized_affine_image(v, r, expr, d): it is illegal
     // to apply to a expression with two variables.
-    bd.generalized_affine_image(y, LESS_THAN_OR_EQUAL, expr);
+    bd.generalized_affine_image(y, LESS_THAN_OR_EQUAL, x + y + 1);
   }
   catch (invalid_argument& e) {
 #if NOISY
@@ -237,13 +237,13 @@ error9() {
 
   TBD_Shape bd(2);
   bd.add_constraint(x >= y);
-  Linear_Expression expr(z);
+
   try {
     // This is an incorrect use of the function
     // BD_Shape::generalized_affine_image(v, r, expr, d): it is illegal
     // to apply to a expression which space dimension is
     // greather than bdiffs space dimension.
-    bd.generalized_affine_image(y, GREATER_THAN_OR_EQUAL, expr);
+    bd.generalized_affine_image(y, GREATER_THAN_OR_EQUAL, z);
   }
   catch (invalid_argument& e) {
 #if NOISY
@@ -262,13 +262,13 @@ error10() {
 
   TBD_Shape bd(2);
   bd.add_constraint(x >= y);
-  Linear_Expression expr(2*x);
+
   try {
     // This is an incorrect use of the function
     // BD_Shape::generalized_affine_image(v, r, expr, d): it is illegal
     // to apply to a expression where the coefficient of the
     // variable is not equal to the denominator.
-    bd.generalized_affine_image(y, GREATER_THAN_OR_EQUAL, expr);
+    bd.generalized_affine_image(y, GREATER_THAN_OR_EQUAL, 2*x);
   }
   catch (invalid_argument& e) {
 #if NOISY

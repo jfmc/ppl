@@ -45,8 +45,7 @@ main() TRY {
   print_constraints(bd, "*** bd ***");
 #endif
 
-  Linear_Expression expr(B-1);
-  bd.affine_preimage(A, expr);
+  bd.affine_preimage(A, B-1);
 
   TBD_Shape known_result(2);
   known_result.add_constraint(B >= 0);

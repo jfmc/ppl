@@ -34,7 +34,6 @@ int
 main() TRY {
   Variable x(0);
   Variable y(1);
-  Linear_Expression expr(x + 4);
 
   TBD_Shape bd1(3);
   TBD_Shape known_result(3);
@@ -43,12 +42,11 @@ main() TRY {
   bd1.add_constraint(x - y <= 3);
   bd1.add_constraint(y <= 2);
 
-
 #if NOISY
   print_constraints(bd1, "*** bd1 ***");
 #endif
 
-  bd1.affine_image(x, expr);
+  bd1.affine_image(x, x + 4);
 
   known_result.add_constraint(y <= 2);
   known_result.add_constraint(x - y <= 7);

@@ -40,13 +40,11 @@ main() TRY {
   bd.add_constraint(A >= 2);
   bd.add_constraint(B >= 0);
 
-  Linear_Expression expr(2*A + 2);
-
 #if NOISY
   print_constraints(bd, "*** bd ***");
 #endif
 
-  bd.affine_preimage(A,expr, 2);
+  bd.affine_preimage(A, 2*A + 2, 2);
 
   TBD_Shape known_result(2);
   known_result.add_constraint(A >= 1);
