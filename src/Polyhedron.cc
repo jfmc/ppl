@@ -1218,7 +1218,6 @@ PPL::Polyhedron::assign_variable(const Variable& var,
       x.gen_sys.assign_variable(num_var, coefficient, denominator);
     if (constraints_are_up_to_date()) {
       LinExpression inverse = coefficient;
-      cout << "INVERSE" << endl;
       // For the observation the inverse transformation can be 
       // obtained swapping `denominator' with `a[var]' in the initial 
       // transformation and making the necessary sign changes.
