@@ -277,7 +277,8 @@ public:
 
     Turns the matrix \f$M \in \Rset^r \times \Rset^c\f$ into
     the matrix \f$N \in \Rset^{r+n} \times \Rset^{c+n}\f$
-    such that \f$N = \bigl({0 \atop M}{J \atop 0}\bigr)\f$,
+    such that
+    \f$N = \bigl(\genfrac{}{}{0pt}{}{0}{M}\genfrac{}{}{0pt}{}{J}{o}\bigr)\f$,
     where \f$J\f$ is the specular image
     of the \f$n \times n\f$ identity matrix.
   */
