@@ -112,8 +112,17 @@ then
   AC_MSG_ERROR([Cannot find GMP version 4.1.2 or higher.
 GMP is the GNU Multi-Precision library:
 see http://www.swox.com/gmp/ for more information.
-Do not forget to enable the C++ interface: add --enable-cxx
-to the configuration options.])
+When compiling the GMP library, do not forget to enable the C++ interface:
+add --enable-cxx to the configuration options.])
+else
+  if test x"$have_gmpxx" = xno
+  then
+    AC_MSG_ERROR([GMP compiled without enabling the C++ interface.
+GMP is the GNU Multi-Precision library:
+see http://www.swox.com/gmp/ for more information.
+When compiling the GMP library, do not forget to enable the C++ interface:
+add --enable-cxx to the configuration options.])
+  fi
 fi
 
 extra_includes="${extra_includes} ${gmp_includes_option}"

@@ -38,17 +38,16 @@ ac_save_LIBS="$LIBS"
 LIBS="${gmp_library_option} $LIBS"
 ac_save_CPPFLAGS="$CPPFLAGS"
 CPPFLAGS="${gmp_includes_option} $CPPFLAGS"
+
 AC_LANG_PUSH(C++)
 
 AC_MSG_CHECKING([for the GMP library])
 AC_RUN_IFELSE([AC_LANG_SOURCE([[
-#include <gmpxx.h>
-
-using namespace std;
+#include <gmp.h>
 
 int main() {
-  mpz_class pie("3141592653589793238462643383279502884");
-  exit(0);
+  mpz_t pie;
+  return 0;
 }
 ]])],
   AC_MSG_RESULT(yes)
@@ -61,6 +60,29 @@ int main() {
 have_gmp=${ac_cv_have_gmp}
 
 if test x"$ac_cv_have_gmp" = xyes
+then
+
+AC_MSG_CHECKING([whether GMP has been compiled with support for C++])
+AC_RUN_IFELSE([AC_LANG_SOURCE([[
+#include <gmpxx.h>
+
+using namespace std;
+
+int main() {
+  mpz_class pie("3141592653589793238462643383279502884");
+  exit(0);
+}
+]])],
+  AC_MSG_RESULT(yes)
+  ac_cv_have_gmpxx=yes,
+  AC_MSG_RESULT(no)
+  ac_cv_have_gmpxx=no,
+  AC_MSG_RESULT(no)
+  ac_cv_have_gmpxx=no)
+
+have_gmpxx=${ac_cv_have_gmpxx}
+
+if test x"$ac_cv_have_gmpxx" = xyes
 then
 
 AC_MSG_CHECKING([size of GMP mp_limb_t])
@@ -135,6 +157,8 @@ else
 fi
 AC_DEFINE_UNQUOTED(GMP_SUPPORTS_EXCEPTIONS, $value,
   [Not zero if GMP has been compiled with support for exceptions.])
+
+fi
 
 fi
 
