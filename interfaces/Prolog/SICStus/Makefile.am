@@ -43,8 +43,7 @@ smm.clpq \
 sumto.clpq \
 tak.clpq
 
-EXTRA_DIST = ppl_sicstus.pl sp_clpq.pl \
-$(CLPQ_TESTS)
+EXTRA_DIST = ppl_sicstus.pl sp_clpq.pl
 
 if HAVE_SICSTUS_PROLOG
 check-local: pplsp ../check_script ../expected

@@ -77,8 +77,7 @@ smm.clpq \
 sumto.clpq \
 tak.clpq
 
-EXTRA_DIST = ppl_yap.pl clpq.pl clpq2.pl check_script expected \
-$(CLPQ_TESTS)
+EXTRA_DIST = ppl_yap.pl yap_clpq.pl
 
 if HAVE_GNU_PROLOG
 #check_PROGRAMS = pplyap

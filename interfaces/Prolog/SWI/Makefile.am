@@ -77,8 +77,7 @@ smm.clpq \
 sumto.clpq \
 tak.clpq
 
-EXTRA_DIST = ppl_swiprolog.pl clpq.pl clpq2.pl check_script expected \
-$(CLPQ_TESTS)
+EXTRA_DIST = pl_clpq.cc pl_clpq.pl
 
 if HAVE_SWI_PROLOG
 #check_PROGRAMS = pplpl

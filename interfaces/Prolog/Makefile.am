@@ -28,6 +28,16 @@ VPATH = @srcdir@
 
 SUBDIRS = @extra_if_Prolog_subdirs@
 
-EXTRA_DIST = check_script expected
+CLPQ_TESTS = \
+ack.clpq \
+ackn.clpq \
+fib.clpq \
+mc91.clpq \
+smm.clpq \
+sumto.clpq \
+tak.clpq
 
-noinst_HEADERS = ppl_prolog.outlines.hh
+EXTRA_DIST = ppl_prolog.pl clpq.pl clpq2.pl check_script expected \
+$(CLPQ_TESTS)
+
+noinst_HEADERS = ppl_prolog.outlines.hh exceptions.hh track_allocation.hh
