@@ -36,6 +36,29 @@ AC_CONFIG_SRCDIR(src/Polyhedron.cc)
 AM_INIT_AUTOMAKE([foreign dist-bzip2 dist-zip 1.7.3])
 AC_SUBST(VERSION)
 
+changequote(<<, >>)dnl
+if test -n "`expr $VERSION : '\([0-9]*\)\.[0-9]*\.[0-9]*'`"
+then
+  PPL_VERSION_MAJOR=`expr $VERSION : '\([0-9]*\)\.[0-9]*\.[0-9]*'`
+  PPL_VERSION_MINOR=`expr $VERSION : '[0-9]*\.\([0-9]*\)\.[0-9]*'`
+  PPL_VERSION_REVISION=`expr $VERSION : '[0-9]*\.[0-9]*\.\([0-9]*\)'`
+  PPL_VERSION_BETA=`expr $VERSION : '[0-9]*\.[0-9]*\.[0-9]*pre\([0-9]*\)'`
+else
+  PPL_VERSION_MAJOR=`expr $VERSION : '\([0-9]*\)\.[0-9]*'`
+  PPL_VERSION_MINOR=`expr $VERSION : '[0-9]*\.\([0-9]*\)'`
+  PPL_VERSION_REVISION=0
+  PPL_VERSION_BETA=`expr $VERSION : '[0-9]*\.[0-9]*pre\([0-9]*\)'`
+fi
+if test -z "$PPL_VERSION_BETA"
+then
+  PPL_VERSION_BETA=0
+fi
+changequote([, ])dnl
+AC_SUBST(PPL_VERSION_MAJOR)
+AC_SUBST(PPL_VERSION_MINOR)
+AC_SUBST(PPL_VERSION_REVISION)
+AC_SUBST(PPL_VERSION_BETA)
+
 # Generate a configuration header file.
 AC_CONFIG_HEADER(config.h)
 
@@ -445,6 +468,7 @@ AC_SUBST(xsb_includes)
 AC_CONFIG_FILES(Makefile
                 ppl.lsm ppl.spec
                 src/Makefile
+                src/version.hh
                 tests/Makefile
                 m4/Makefile
                 doc/Makefile

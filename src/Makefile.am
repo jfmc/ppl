@@ -168,6 +168,7 @@ conversion.cc \
 minimize.cc \
 simplify.cc \
 globals.cc \
+version.cc \
 $(INCLUDE_FILES)
 
 # The ordering of the following list *matters*!
@@ -212,7 +213,8 @@ noinst_HEADERS = ppl.hh ppl_install.hh
 BUILT_SOURCES = ppl.hh ppl_install.hh
 
 ppl.hh:	$(DOC_FILES) Makefile
-	(cd $(srcdir) ; cat $(DOC_FILES)) >ppl.hh
+	cat $(top_builddir)/src/version.hh >ppl.hh
+	(cd $(srcdir) ; cat $(DOC_FILES)) >>ppl.hh
 
 ppl_install.hh:	ppl_header.top $(top_builddir)/config.h ppl_header.middle $(INCLUDE_FILES) ppl_header.bottom Makefile
 	mkdir -p tmp
@@ -220,7 +222,8 @@ ppl_install.hh:	ppl_header.top $(top_builddir)/config.h ppl_header.middle $(INCL
 	(cd $(srcdir) ; cat $(INCLUDE_FILES)) >>tmp/concat
 	grep "^#include <" <tmp/concat | sort -u >tmp/includes
 	sed -e "/^#include/d" <tmp/concat >tmp/noincludes.cc
-	cat $(srcdir)/ppl_header.top $(top_builddir)/config.h \
+	cat $(srcdir)/ppl_header.top \
+		$(top_builddir)/src/version.hh $(top_builddir)/config.h \
 		$(srcdir)/ppl_header.middle tmp/includes >ppl_install.hh
 	$(CXXCPP) -P @debug_flag@ tmp/noincludes.cc >>ppl_install.hh
 	cat $(srcdir)/ppl_header.bottom >>ppl_install.hh
@@ -248,6 +251,6 @@ install-data-local: ppl_install.hh
 uninstall-local:
 	rm -f $(DESTDIR)$(includedir)/ppl.hh
 
-EXTRA_DIST = ppl_header.top ppl_header.middle ppl_header.bottom
+EXTRA_DIST = ppl_header.top ppl_header.middle ppl_header.bottom version.hh.in
 
 MOSTLYCLEANFILES = $(BUILT_SOURCES)

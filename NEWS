@@ -79,6 +79,19 @@ o  The method Polyhedron::add_dimensions_and_constraints(ConSys&)
    Polyhedron::concatenate_assign(const Polyhedron&).  The same change
    has, of course, been performed on all the PPL interfaces.
 
+o  New macros PPL_VERSION_MAJOR, PPL_VERSION_MINOR, PPL_VERSION_REVISION,
+   and PPL_VERSION_BETA allow the client application to adapt to different
+   versions of the library.
+
+o  New function const char* version() returns a character string
+   containing the PPL version.
+
+o  New function const char* banner() returns a character string
+   containing information about the PPL version, the licensing,
+   the lack of any warranty whatsoever, the C++ compiler used
+   to build the library, where to report bugs and where to look
+   for further information.
+
 o  We now require GMP 4.1.2 or higher.
 
 o  In conformance with the C++ standard [17.4.3.1.2], in all the
