@@ -380,6 +380,17 @@ yap_stub_##name() { \
   return name(arg1, arg2, arg3, arg4); \
 }
 
+#define YAP_STUB_5(name) \
+extern "C" Prolog_foreign_return_type \
+yap_stub_##name() { \
+  Prolog_term_ref arg1 = YAP_ARG1; \
+  Prolog_term_ref arg2 = YAP_ARG2; \
+  Prolog_term_ref arg3 = YAP_ARG3; \
+  Prolog_term_ref arg4 = YAP_ARG4; \
+  Prolog_term_ref arg5 = YAP_ARG5; \
+  return name(arg1, arg2, arg3, arg4, arg5); \
+}
+
 YAP_STUB_0(ppl_initialize)
 YAP_STUB_0(ppl_finalize)
 YAP_STUB_1(ppl_set_timeout_exception_atom)
@@ -426,6 +437,8 @@ YAP_STUB_2(ppl_Polyhedron_remove_higher_dimensions)
 YAP_STUB_2(ppl_Polyhedron_shuffle_dimensions)
 YAP_STUB_4(ppl_Polyhedron_affine_image)
 YAP_STUB_4(ppl_Polyhedron_affine_preimage)
+YAP_STUB_5(ppl_Polyhedron_generalized_affine_image)
+YAP_STUB_4(ppl_Polyhedron_generalized_affine_image_lhs_rhs)
 YAP_STUB_3(ppl_Polyhedron_relation_with_constraint)
 YAP_STUB_3(ppl_Polyhedron_relation_with_generator)
 YAP_STUB_1(ppl_Polyhedron_check_empty)
@@ -492,6 +505,8 @@ init() {
   YAP_USER_C_PREDICATE(ppl_Polyhedron_shuffle_dimensions, 2);
   YAP_USER_C_PREDICATE(ppl_Polyhedron_affine_image, 4);
   YAP_USER_C_PREDICATE(ppl_Polyhedron_affine_preimage, 4);
+  YAP_USER_C_PREDICATE(ppl_Polyhedron_generalized_affine_image, 5);
+  YAP_USER_C_PREDICATE(ppl_Polyhedron_generalized_affine_image_lhs_rhs, 4);
   YAP_USER_C_PREDICATE(ppl_Polyhedron_relation_with_constraint, 3);
   YAP_USER_C_PREDICATE(ppl_Polyhedron_relation_with_generator, 3);
   YAP_USER_C_PREDICATE(ppl_Polyhedron_check_empty, 1);

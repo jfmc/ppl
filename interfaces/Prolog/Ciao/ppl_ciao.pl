@@ -69,6 +69,8 @@ site: http://www.cs.unipr.it/ppl/ . */
 	ppl_Polyhedron_shuffle_dimensions/2,
 	ppl_Polyhedron_affine_image/4,
 	ppl_Polyhedron_affine_preimage/4,
+	ppl_Polyhedron_generalized_affine_image/5,
+	ppl_Polyhedron_generalized_affine_image_lhs_rhs/4,
 	ppl_Polyhedron_relation_with_constraint/3,
 	ppl_Polyhedron_relation_with_generator/3,
 	ppl_Polyhedron_check_empty/1,
@@ -235,6 +237,17 @@ site: http://www.cs.unipr.it/ppl/ . */
                                             in(LinearExpression), in(Divisor))
              :: any_term * any_term * any_term * any_term + foreign.
 
+:- true pred ppl_Polyhedron_generalized_affine_image(in(Handle),
+						     in(Var), in(Rel),
+						     in(LinExpression),
+						     in(Divisor))
+             :: any_term * any_term * any_term * any_term * any_term + foreign.
+
+:- true pred ppl_Polyhedron_generalized_affine_image_lhs_rhs(in(Handle),
+							     in(LHS),
+							     in(Rel), in(RHS))
+             :: any_term * any_term * any_term * any_term + foreign.
+
 :- true pred ppl_Polyhedron_relation_with_constraint(in(Handle),
                                                      in(Constraint),
                                                      in(RList))
@@ -328,6 +341,8 @@ site: http://www.cs.unipr.it/ppl/ . */
 	ppl_Polyhedron_shuffle_dimensions/2,
 	ppl_Polyhedron_affine_image/4,
 	ppl_Polyhedron_affine_preimage/4,
+	ppl_Polyhedron_generalized_affine_image/5,
+	ppl_Polyhedron_generalized_affine_image_lhs_rhs/4,
 	ppl_Polyhedron_relation_with_constraint/3,
 	ppl_Polyhedron_relation_with_generator/3,
 	ppl_Polyhedron_check_empty/1,

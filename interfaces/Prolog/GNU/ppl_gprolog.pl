@@ -69,6 +69,10 @@ site: http://www.cs.unipr.it/ppl/ . */
 :- foreign(ppl_Polyhedron_shuffle_dimensions(+term, +term)).
 :- foreign(ppl_Polyhedron_affine_image(+term, +term, +term, +term)).
 :- foreign(ppl_Polyhedron_affine_preimage(+term, +term, +term, +term)).
+:- foreign(ppl_Polyhedron_generalized_affine_image(+term, +term,
+						   +term, +term, +term)).
+:- foreign(ppl_Polyhedron_generalized_affine_image_lhs_rhs(+term, +term,
+							   +term, +term)).
 :- foreign(ppl_Polyhedron_relation_with_constraint(+term, +term, +term)).
 :- foreign(ppl_Polyhedron_relation_with_generator(+term, +term, +term)).
 :- foreign(ppl_Polyhedron_check_empty(+term)).

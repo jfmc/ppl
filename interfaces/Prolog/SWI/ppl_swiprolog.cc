@@ -367,6 +367,8 @@ static PL_extension predicates[] = {
   PL_EXTENSION_ENTRY(ppl_Polyhedron_shuffle_dimensions, 2)
   PL_EXTENSION_ENTRY(ppl_Polyhedron_affine_image, 4)
   PL_EXTENSION_ENTRY(ppl_Polyhedron_affine_preimage, 4)
+  PL_EXTENSION_ENTRY(ppl_Polyhedron_generalized_affine_image, 5)
+  PL_EXTENSION_ENTRY(ppl_Polyhedron_generalized_affine_image_lhs_rhs, 4)
   PL_EXTENSION_ENTRY(ppl_Polyhedron_relation_with_constraint, 3)
   PL_EXTENSION_ENTRY(ppl_Polyhedron_relation_with_generator, 3)
   PL_EXTENSION_ENTRY(ppl_Polyhedron_check_empty, 1)

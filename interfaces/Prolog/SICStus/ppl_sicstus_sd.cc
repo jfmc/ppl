@@ -111,6 +111,27 @@ sp_stub_##name(Prolog_term_ref goal, void*) { \
   return name(arg1, arg2, arg3); \
 }
 
+#define SP_STUB_5(name) \
+extern "C" Prolog_foreign_return_type \
+sp_stub_##name(Prolog_term_ref goal, void*) { \
+  Prolog_term_ref arg1 = Prolog_new_term_ref(); \
+  if (!Prolog_get_arg(1, goal, arg1)) \
+    return PROLOG_FAILURE; \
+  Prolog_term_ref arg2 = Prolog_new_term_ref(); \
+  if (!Prolog_get_arg(2, goal, arg2)) \
+    return PROLOG_FAILURE; \
+  Prolog_term_ref arg3 = Prolog_new_term_ref(); \
+  if (!Prolog_get_arg(3, goal, arg3)) \
+    return PROLOG_FAILURE; \
+  Prolog_term_ref arg4 = Prolog_new_term_ref(); \
+  if (!Prolog_get_arg(4, goal, arg4)) \
+    return PROLOG_FAILURE; \
+  Prolog_term_ref arg5 = Prolog_new_term_ref(); \
+  if (!Prolog_get_arg(5, goal, arg5)) \
+    return PROLOG_FAILURE; \
+  return name(arg1, arg2, arg3, arg4, arg5); \
+}
+
 #define SP_STUB_4(name) \
 extern "C" Prolog_foreign_return_type \
 sp_stub_##name(Prolog_term_ref goal, void*) { \
@@ -128,7 +149,6 @@ sp_stub_##name(Prolog_term_ref goal, void*) { \
     return PROLOG_FAILURE; \
   return name(arg1, arg2, arg3, arg4); \
 }
-
 
 SP_STUB_0(ppl_initialize)
 SP_STUB_0(ppl_finalize)
@@ -176,6 +196,8 @@ SP_STUB_2(ppl_Polyhedron_remove_higher_dimensions)
 SP_STUB_2(ppl_Polyhedron_shuffle_dimensions)
 SP_STUB_4(ppl_Polyhedron_affine_image)
 SP_STUB_4(ppl_Polyhedron_affine_preimage)
+SP_STUB_5(ppl_Polyhedron_generalized_affine_image)
+SP_STUB_4(ppl_Polyhedron_generalized_affine_image_lhs_rhs)
 SP_STUB_3(ppl_Polyhedron_relation_with_constraint)
 SP_STUB_3(ppl_Polyhedron_relation_with_generator)
 SP_STUB_1(ppl_Polyhedron_check_empty)
@@ -250,6 +272,8 @@ ppl_sicstus_init(int /* when */) {
   SP_DEFINE_C_PREDICATE(ppl_Polyhedron_shuffle_dimensions, 2);
   SP_DEFINE_C_PREDICATE(ppl_Polyhedron_affine_image, 4);
   SP_DEFINE_C_PREDICATE(ppl_Polyhedron_affine_preimage, 4);
+  SP_DEFINE_C_PREDICATE(ppl_Polyhedron_generalized_affine_image, 5);
+  SP_DEFINE_C_PREDICATE(ppl_Polyhedron_generalized_affine_image_lhs_rhs, 4);
   SP_DEFINE_C_PREDICATE(ppl_Polyhedron_relation_with_constraint, 3);
   SP_DEFINE_C_PREDICATE(ppl_Polyhedron_relation_with_generator, 3);
   SP_DEFINE_C_PREDICATE(ppl_Polyhedron_check_empty, 1);

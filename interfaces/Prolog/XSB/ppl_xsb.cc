@@ -420,6 +420,8 @@ Integer_to_integer_term(const PPL::Integer& n) {
 #define ppl_Polyhedron_shuffle_dimensions xsb_stub_ppl_Polyhedron_shuffle_dimensions
 #define ppl_Polyhedron_affine_image xsb_stub_ppl_Polyhedron_affine_image
 #define ppl_Polyhedron_affine_preimage xsb_stub_ppl_Polyhedron_affine_preimage
+#define ppl_Polyhedron_generalized_affine_image xsb_stub_ppl_Polyhedron_generalized_affine_image
+#define ppl_Polyhedron_generalized_affine_image_lhs_rhs xsb_stub_ppl_Polyhedron_generalized_affine_image_lhs_rhs
 #define ppl_Polyhedron_relation_with_constraint xsb_stub_ppl_Polyhedron_relation_with_constraint
 #define ppl_Polyhedron_relation_with_generator xsb_stub_ppl_Polyhedron_relation_with_generator
 #define ppl_Polyhedron_check_empty xsb_stub_ppl_Polyhedron_check_empty
@@ -482,6 +484,8 @@ Integer_to_integer_term(const PPL::Integer& n) {
 #undef ppl_Polyhedron_shuffle_dimensions
 #undef ppl_Polyhedron_affine_image
 #undef ppl_Polyhedron_affine_preimage
+#undef ppl_Polyhedron_generalized_affine_image
+#undef ppl_Polyhedron_generalized_affine_image_lhs_rhs
 #undef ppl_Polyhedron_relation_with_constraint
 #undef ppl_Polyhedron_relation_with_generator
 #undef ppl_Polyhedron_check_empty
@@ -536,6 +540,17 @@ name() { \
   return xsb_stub_##name(arg1, arg2, arg3, arg4); \
 }
 
+#define XSB_ENTRY_5(name) \
+extern "C" Prolog_foreign_return_type \
+name() { \
+  Prolog_term_ref arg1 = reg_term(1); \
+  Prolog_term_ref arg2 = reg_term(2); \
+  Prolog_term_ref arg3 = reg_term(3); \
+  Prolog_term_ref arg4 = reg_term(4); \
+  Prolog_term_ref arg5 = reg_term(5); \
+  return xsb_stub_##name(arg1, arg2, arg3, arg4, arg5); \
+}
+
 XSB_ENTRY_0(ppl_initialize)
 XSB_ENTRY_0(ppl_finalize)
 XSB_ENTRY_1(ppl_set_timeout_exception_atom)
@@ -582,6 +597,8 @@ XSB_ENTRY_2(ppl_Polyhedron_remove_higher_dimensions)
 XSB_ENTRY_2(ppl_Polyhedron_shuffle_dimensions)
 XSB_ENTRY_4(ppl_Polyhedron_affine_image)
 XSB_ENTRY_4(ppl_Polyhedron_affine_preimage)
+XSB_ENTRY_5(ppl_Polyhedron_generalized_affine_image)
+XSB_ENTRY_4(ppl_Polyhedron_generalized_affine_image_lhs_rhs)
 XSB_ENTRY_3(ppl_Polyhedron_relation_with_constraint)
 XSB_ENTRY_3(ppl_Polyhedron_relation_with_generator)
 XSB_ENTRY_1(ppl_Polyhedron_check_empty)
