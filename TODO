@@ -33,25 +33,6 @@ Enhancements for PPL 0.7
   C_Polyhedron& C_Polyhedron::operator=(const NNC_Polyhedron& y)
   nor
   NNC_Polyhedron& NNC_Polyhedron::operator=(const C_Polyhedron& y).
-- See for what reason the constructors
-    C_Polyhedron(const ConSys& cs);
-    C_Polyhedron(const GenSys& cs);
-    C_Polyhedron(ConSys& cs);
-    C_Polyhedron(GenSys& cs);
-  (as well as their NNC counterparts) are not declared explicit.
-  This allows for possibly unexpected conversions, such as
-    Polyhedron ph;
-    ConSys cs;
-    ph = cs;
-  which compiles cleanly. There is nothing really wrong with the
-  above conversion ... however, trickier conversions, such as
-    ph.limited_H79_extrapolation_assign(cs, cs);
-  happen to give a compilation error just for chance, since they
-  require the first argument to be a Polyhedron (instead of a C_Polyhedron).
-  Similarly, see whether or not the following constructors should be
-  made explicit:
-    ConSys(const Constraint& c);
-    GenSys(const Generator& c);
 - Clearly explain, in the documentation, how (not) to use
   set_GMP_memory_allocation_functions().  More generally, explain how
   to have memory-guarded computations.

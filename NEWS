@@ -44,6 +44,19 @@ o  The constructor C_Polyhedron(const NNC_Polyhedron& y) no longer
    it constructs a C_Polyhedron representing the topological closure
    of `y'.
 
+o  The following constructors have been made explicit:
+
+     ConSys::ConSys(const Constraint& c),
+     GenSys::GenSys(const Generator& g),
+     C_Polyhedron::C_Polyhedron(const ConSys& cs),
+     C_Polyhedron::C_Polyhedron(const GenSys& cs),
+     C_Polyhedron::C_Polyhedron(ConSys& cs),
+     C_Polyhedron::C_Polyhedron(GenSys& cs),
+     NNC_Polyhedron::NNC_Polyhedron(const ConSys& cs),
+     NNC_Polyhedron::NNC_Polyhedron(const GenSys& cs),
+     NNC_Polyhedron::NNC_Polyhedron(ConSys& cs),
+     NNC_Polyhedron::NNC_Polyhedron(GenSys& cs).
+
 o  Functions in the C interface that compute (space) dimensions
    no longer return their result.  The caller is now required to pass,
    as an extra argument, a pointer to a memory area where the result

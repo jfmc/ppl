@@ -82,7 +82,7 @@ public:
     \exception std::invalid_argument
     Thrown if the system of constraints contains strict inequalities.
   */
-  C_Polyhedron(const ConSys& cs);
+  explicit C_Polyhedron(const ConSys& cs);
 
   //! Builds a C polyhedron recycling a system of constraints.
   /*!
@@ -96,7 +96,7 @@ public:
     \exception std::invalid_argument
     Thrown if the system of constraints contains strict inequalities.
   */
-  C_Polyhedron(ConSys& cs);
+  explicit C_Polyhedron(ConSys& cs);
 
   //! Builds a C polyhedron from a system of generators.
   /*!
@@ -109,7 +109,7 @@ public:
     Thrown if the system of generators is not empty but has no points,
     or if it contains closure points.
   */
-  C_Polyhedron(const GenSys& gs);
+  explicit C_Polyhedron(const GenSys& gs);
 
   //! Builds a C polyhedron recycling a system of generators.
   /*!
@@ -124,7 +124,7 @@ public:
     Thrown if the system of generators is not empty but has no points,
     or if it contains closure points.
   */
-  C_Polyhedron(GenSys& gs);
+  explicit C_Polyhedron(GenSys& gs);
 
   //! \brief
   //! Builds a C polyhedron representing the topological closure

@@ -132,7 +132,7 @@ public:
   ConSys();
 
   //! Builds the singleton system containing only constraint \p c.
-  ConSys(const Constraint& c);
+  explicit ConSys(const Constraint& c);
 
   //! Ordinary copy-constructor.
   ConSys(const ConSys& cs);
@@ -282,7 +282,7 @@ private:
 			Parma_Polyhedra_Library::ConSys& y);
 
   //! Builds an empty system of constraints having the specified topology.
-  ConSys(Topology topol);
+  explicit ConSys(Topology topol);
 
   //! \brief
   //! Builds a system of \p n_rows constraints on a \p n_columns - 1

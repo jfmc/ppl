@@ -185,7 +185,7 @@ public:
   GenSys();
 
   //! Builds the singleton system containing only generator \p g.
-  GenSys(const Generator& g);
+  explicit GenSys(const Generator& g);
 
   //! Ordinary copy-constructor.
   GenSys(const GenSys& gs);
@@ -347,7 +347,7 @@ private:
 			Parma_Polyhedra_Library::GenSys& y);
 
   //! Builds an empty system of generators having the specified topology.
-  GenSys(Topology topol);
+  explicit GenSys(Topology topol);
 
   //! \brief
   //! Builds a system of \p n_rows rays/points on a \p n_columns - 1

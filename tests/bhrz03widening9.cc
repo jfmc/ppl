@@ -55,7 +55,7 @@ fixed_part() {
 
 static C_Polyhedron
 p(unsigned n) {
-  C_Polyhedron ph = fixed_part();
+  C_Polyhedron ph(fixed_part());
   n += 2;
   ph.add_generator(ray(A + (n-1)*B + E));
   if (n % 2 == 0) {

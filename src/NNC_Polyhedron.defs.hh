@@ -70,7 +70,7 @@ public:
     declared <CODE>const</CODE> because its data-structures will be
     recycled to build the polyhedron.
   */
-  NNC_Polyhedron(const ConSys& cs);
+  explicit NNC_Polyhedron(const ConSys& cs);
 
   //! Builds an NNC polyhedron recycling a system of constraints.
   /*!
@@ -81,7 +81,7 @@ public:
     declared <CODE>const</CODE> because its data-structures will be
     recycled to build the polyhedron.
   */
-  NNC_Polyhedron(ConSys& cs);
+  explicit NNC_Polyhedron(ConSys& cs);
 
   //! Builds an NNC polyhedron from a system of generators.
   /*!
@@ -95,7 +95,7 @@ public:
     \exception std::invalid_argument
     Thrown if the system of generators is not empty but has no points.
   */
-  NNC_Polyhedron(const GenSys& gs);
+  explicit NNC_Polyhedron(const GenSys& gs);
 
   //! Builds an NNC polyhedron recycling a system of generators.
   /*!
@@ -109,7 +109,7 @@ public:
     \exception std::invalid_argument
     Thrown if the system of generators is not empty but has no points.
   */
-  NNC_Polyhedron(GenSys& gs);
+  explicit NNC_Polyhedron(GenSys& gs);
 
   //! Builds an NNC polyhedron from the C polyhedron \p y.
   explicit NNC_Polyhedron(const C_Polyhedron& y);
