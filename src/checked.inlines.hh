@@ -156,23 +156,6 @@ want_rounding(Rounding_Dir dir) {
     (Policy::use_corrent_rounding || dir != ROUND_CURRENT);
 }
 
-template <typename Policy, typename To>
-inline Result
-round(To& to, Result r, Rounding_Dir dir) {
-  switch (rounding_direction(dir)) {
-  case ROUND_DOWN:
-    if (r == V_LT)
-      return static_cast<Result>(pred<Policy>(to) | V_GT);
-    return r;
-  case ROUND_UP:
-    if (r == V_GT)
-      return static_cast<Result>(succ<Policy>(to) | V_LT);
-    return r;
-  default:
-    return r;
-  }
-}
-
 } // namespace Checked
 
 } // namespace Parma_Polyhedra_Library

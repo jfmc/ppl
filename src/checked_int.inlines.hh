@@ -117,6 +117,38 @@ set_pos_overflow_int(Type& to, Rounding_Dir dir) {
   }
 }
 
+template <typename Policy, typename To>
+inline Result
+round_lt_int(To& to, Rounding_Dir dir) {
+  if (rounding_direction(dir) == ROUND_DOWN) {
+    if (to == min_int<Policy, To>()) {
+      if (Policy::store_infinity)
+	to = minus_infinity_int<Policy, To>();
+      return V_NEG_OVERFLOW;
+    } else {
+      to--;
+      return V_GT;
+    }
+  }
+  return V_LT;
+}
+
+template <typename Policy, typename To>
+inline Result
+round_gt_int(To& to, Rounding_Dir dir) {
+  if (rounding_direction(dir) == ROUND_UP) {
+    if (to == max_int<Policy, To>()) {
+      if (Policy::store_infinity)
+	to = plus_infinity_int<Policy, To>();
+      return V_POS_OVERFLOW;
+    } else {
+      to++;
+      return V_LT;
+    }
+  }
+  return V_GT;
+}
+
 template <typename Policy, typename Type>
 inline Result
 classify_int(const Type v, bool nan, bool inf, bool sign) {
@@ -400,9 +432,9 @@ assign_int_float_check_min_max(To& to, const From from, Rounding_Dir dir) {
   to = static_cast<To>(from);
   if (want_rounding<Policy>(dir)) {
     if (from < to)
-      return round<Policy>(to, V_LT, dir);
+      return round_lt_int<Policy>(to, dir);
     else if (from > to)
-      return round<Policy>(to, V_GT, dir);
+      return round_gt_int<Policy>(to, dir);
     else
       return V_EQ;
   }
@@ -569,9 +601,9 @@ assign_int_mpq(To& to, const mpq_class& from, Rounding_Dir dir) {
     if (use_round) {
       switch (mpz_sgn(rem)) {
       case -1:
-	return round<Policy>(to, V_LT, dir);
+	return round_lt_int<Policy>(to, dir);
       case 1:
-	return round<Policy>(to, V_GT, dir);
+	return round_gt_int<Policy>(to, dir);
       default:
 	return V_EQ;
       }
@@ -941,9 +973,9 @@ div_signed_int(Type& to, const Type x, const Type y, Rounding_Dir dir) {
   if (want_rounding<Policy>(dir)) {
     Type m = x % y;
     if (m < 0)
-      return round<Policy>(to, V_LT, dir);
+      return round_lt_int<Policy>(to, dir);
     else if (m > 0)
-      return round<Policy>(to, V_GT, dir);
+      return round_gt_int<Policy>(to, dir);
     else
       return V_EQ;
   }
@@ -960,7 +992,7 @@ div_unsigned_int(Type& to, const Type x, const Type y, Rounding_Dir dir) {
     Type m = x % y;
     if (m == 0)
       return V_EQ;
-    return round<Policy>(to, V_GT, dir);
+    return round_gt_int<Policy>(to, dir);
   }
   return V_GE;
 }
@@ -998,7 +1030,7 @@ sqrt_unsigned_int(Type& to, const Type from, Rounding_Dir dir) {
   if (want_rounding<Policy>(dir)) {
     if (rem == 0)
       return V_EQ;
-    return round<Policy>(to, V_GT, dir);
+    return round_gt_int<Policy>(to, dir);
   }
   return V_GE;
 }

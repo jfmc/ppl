@@ -32,6 +32,26 @@ namespace Parma_Polyhedra_Library {
 
 namespace Checked {
 
+template <typename Policy>
+inline Result
+round_lt_mpz(mpz_class& to, Rounding_Dir dir) {
+  if (rounding_direction(dir) == ROUND_DOWN) {
+    to--;
+    return V_GT;
+  }
+  return V_LT;
+}
+
+template <typename Policy>
+inline Result
+round_gt_mpz(mpz_class& to, Rounding_Dir dir) {
+  if (rounding_direction(dir) == ROUND_UP) {
+    to++;
+    return V_LT;
+  }
+  return V_GT;
+}
+
 inline mp_size_t
 get_mp_size(const mpz_class &v) {
   return v.get_mpz_t()->_mp_size;
@@ -147,9 +167,9 @@ assign_mpz_mpq(mpz_class& to, const mpq_class& from, Rounding_Dir dir) {
     mpz_tdiv_qr(to.get_mpz_t(), rem, n, d);
     switch (mpz_sgn(rem)) {
     case -1:
-      return round<Policy>(to, V_LT, dir);
+      return round_lt_mpz<Policy>(to, dir);
     case 1:
-      return round<Policy>(to, V_GT, dir);
+      return round_gt_mpz<Policy>(to, dir);
     default:
       return V_EQ;
     }
@@ -209,9 +229,9 @@ assign_mpz_float(mpz_class& to, const From from, Rounding_Dir dir) {
     double n = rint(from);
     to = n;
     if (from < n)
-      return round<Policy>(to, V_LT, dir);
+      return round_lt_mpz<Policy>(to, dir);
     else if (from > n)
-      return round<Policy>(to, V_GT, dir);
+      return round_gt_mpz<Policy>(to, dir);
     else
       return V_EQ;
   }
@@ -271,9 +291,9 @@ div_mpz(mpz_class& to, const mpz_class& x, const mpz_class& y, Rounding_Dir dir)
     mpz_tdiv_qr(to.get_mpz_t(), rem, x.get_mpz_t(), y.get_mpz_t());
     switch (mpz_sgn(rem)) {
     case -1:
-      return round<Policy>(to, V_LT, dir);
+      return round_lt_mpz<Policy>(to, dir);
     case 1:
-      return round<Policy>(to, V_GT, dir);
+      return round_gt_mpz<Policy>(to, dir);
     default:
       return V_EQ;
     }
@@ -352,7 +372,7 @@ sqrt_mpz(mpz_class& to, const mpz_class& from, Rounding_Dir dir) {
     mpz_sqrtrem(to.get_mpz_t(), r.get_mpz_t(), from.get_mpz_t());
     if (r == 0)
       return V_EQ;
-    return round<Policy>(to, V_GT, dir);
+    return round_gt_mpz<Policy>(to, dir);
   }
   else {
     to = sqrt(from);
