@@ -440,15 +440,17 @@ Generator ray(const Linear_Expression& e);
 //! Shorthand for Generator
 //! Generator::point(const Linear_Expression& e, Coefficient_traits::const_reference d).
 /*! \relates Generator */
-Generator point(const Linear_Expression& e = Linear_Expression::zero(),
-		Coefficient_traits::const_reference d = Coefficient_one());
+Generator
+point(const Linear_Expression& e = Linear_Expression::zero(),
+      Coefficient_traits::const_reference d = Coefficient_one());
 
 //! \brief
 //! Shorthand for Generator
 //! Generator::closure_point(const Linear_Expression& e, Coefficient_traits::const_reference d).
 /*! \relates Generator */
-Generator closure_point(const Linear_Expression& e = Linear_Expression::zero(),
-			Coefficient_traits::const_reference d = Coefficient_one());
+Generator
+closure_point(const Linear_Expression& e = Linear_Expression::zero(),
+	      Coefficient_traits::const_reference d = Coefficient_one());
 
 //! Returns <CODE>true</CODE> if and only if \p x is equivalent to \p y.
 /*! \relates Generator */
