@@ -142,16 +142,14 @@ namespace Parma_Polyhedra_Library {
 
 
 namespace std {
+
 #ifdef PPL_DOXYGEN_INCLUDE_IMPLEMENTATION_DETAILS
-  /*!
-    Specialize std::swap to use the fast swap that is provided
-    as a member function instead of using the default algorithm
-    (which creates a temporary and uses assignment).
-  */
+//! Specializes <CODE>std::swap</CODE>.
 #endif // PPL_DOXYGEN_INCLUDE_IMPLEMENTATION_DETAILS
-  void swap(Parma_Polyhedra_Library::SatRow& x,
-	    Parma_Polyhedra_Library::SatRow& y);
-}
+void swap(Parma_Polyhedra_Library::SatRow& x,
+	  Parma_Polyhedra_Library::SatRow& y);
+
+} // namespace std
 
 #include "SatRow.inlines.hh"
 

@@ -551,7 +551,7 @@ operator>(const Row& x, const Row& y) {
 namespace std {
 
 /*!
-  Specialize <CODE>std::swap</CODE> to use the fast swap that is
+  Specializes <CODE>std::swap</CODE> to use the fast swap that is
   provided as a member function instead of using the default
   algorithm (which creates a temporary and uses assignment).
 */
@@ -564,7 +564,7 @@ swap(Parma_Polyhedra_Library::Row& x, Parma_Polyhedra_Library::Row& y) {
   Specializes <CODE>std::iter_swap</CODE>.
 */
 /* FIXME: this was the original comment causing a doxygen bug.
-  Specialize <CODE>std::iter_swap</CODE>
+  Specializes <CODE>std::iter_swap</CODE>
   for <CODE>vector<Row>::iterator</CODE>.
 */
 inline void

@@ -100,7 +100,7 @@ namespace Parma_Polyhedra_Library {
     with space-dimension zero and then extended to space-dimension 3.
 */
 
-class Parma_Polyhedra_Library::LinExpression : PPL_INTERNAL Row {
+class Parma_Polyhedra_Library::LinExpression : PPL_HIDDEN Row {
 
 public:
   //! Default constructor: returns a copy of LinExpression::zero().
@@ -203,6 +203,14 @@ private:
   Parma_Polyhedra_Library::operator+=(LinExpression& e,
 				      const Integer& n);
 };
+
+namespace std {
+
+//! Specializes <CODE>std::swap</CODE>.
+void swap(Parma_Polyhedra_Library::LinExpression& x,
+	  Parma_Polyhedra_Library::LinExpression& y);
+
+} // namespace std
 
 #include "LinExpression.inlines.hh"
 

@@ -227,18 +227,17 @@ public:
 };
 
 namespace std {
+
 #ifdef PPL_DOXYGEN_INCLUDE_IMPLEMENTATION_DETAILS
-  /*!
-    Specialize std::swap to use the fast swap that is provided
-    as a member function instead of using the default algorithm
-    (which creates a temporary and uses assignment).
-  */
+//! Specializes <CODE>std::swap</CODE>.
 #endif // PPL_DOXYGEN_INCLUDE_IMPLEMENTATION_DETAILS
-  void swap(Parma_Polyhedra_Library::Matrix& x,
-	    Parma_Polyhedra_Library::Matrix& y);
-}
+void swap(Parma_Polyhedra_Library::Matrix& x,
+	  Parma_Polyhedra_Library::Matrix& y);
+
+} // namespace std
 
 namespace Parma_Polyhedra_Library {
+
 #ifdef PPL_DOXYGEN_INCLUDE_IMPLEMENTATION_DETAILS
   //! Returns <CODE>true</CODE> if and only if \p x and \p y are identical.
 #endif // PPL_DOXYGEN_INCLUDE_IMPLEMENTATION_DETAILS
@@ -256,7 +255,8 @@ namespace Parma_Polyhedra_Library {
   //! Output operator.
 #endif // PPL_DOXYGEN_INCLUDE_IMPLEMENTATION_DETAILS
   std::ostream& operator<<(std::ostream& s, const Matrix& m);
-}
+
+} // namespace Parma_Polyhedra_Library
 
 #include "Matrix.inlines.hh"
 

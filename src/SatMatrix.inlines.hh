@@ -131,13 +131,17 @@ operator()(const SatRow& x, const SatRow& y) const {
 } // namespace Parma_Polyhedra_Library
 
 
+namespace std {
+
 /*!
   Specializes <CODE>std::swap</CODE> to use the fast swap that
   is provided as a member function instead of using the default
   algorithm (which creates a temporary and uses assignment).
 */
 inline void
-std::swap(Parma_Polyhedra_Library::SatMatrix& x,
-	  Parma_Polyhedra_Library::SatMatrix& y) {
+swap(Parma_Polyhedra_Library::SatMatrix& x,
+     Parma_Polyhedra_Library::SatMatrix& y) {
   x.swap(y);
 }
+
+} // namespace std

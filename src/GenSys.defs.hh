@@ -288,7 +288,7 @@ private:
 
 namespace std {
 
-//! Specialize std::swap.
+//! Specializes <CODE>std::swap</CODE>.
 void swap(Parma_Polyhedra_Library::GenSys& x,
 	  Parma_Polyhedra_Library::GenSys& y);
 

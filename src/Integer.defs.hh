@@ -40,10 +40,12 @@ namespace Parma_Polyhedra_Library {
 } // namespace Parma_Polyhedra_Library
 
 namespace std {
-  //! Specialize std::swap.
-  void swap(Parma_Polyhedra_Library::Integer& x,
-            Parma_Polyhedra_Library::Integer& y);
-}
+
+//! Specializes <CODE>std::swap</CODE>.
+void swap(Parma_Polyhedra_Library::Integer& x,
+	  Parma_Polyhedra_Library::Integer& y);
+
+} // namespace std
 
 #include "Integer.inlines.hh"
 

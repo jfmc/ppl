@@ -704,10 +704,14 @@ protected:
 };
 
 namespace std {
-  //! Specialize std::swap.
-  void swap(Parma_Polyhedra_Library::PolyBase& x,
-	    Parma_Polyhedra_Library::PolyBase& y);
-}
+
+#ifdef PPL_DOXYGEN_INCLUDE_IMPLEMENTATION_DETAILS
+//! Specializes <CODE>std::swap</CODE>.
+#endif // PPL_DOXYGEN_INCLUDE_IMPLEMENTATION_DETAILS
+void swap(Parma_Polyhedra_Library::PolyBase& x,
+	  Parma_Polyhedra_Library::PolyBase& y);
+
+} // namespace std
 
 #include "PolyBase.inlines.hh"
 

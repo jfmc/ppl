@@ -141,7 +141,7 @@ Generator::zero_dim_closure_point() {
 namespace std {
 
 /*!
-  Specialize <CODE>std::swap</CODE> to use the fast swap that is
+  Specializes <CODE>std::swap</CODE> to use the fast swap that is
   provided as a member function instead of using the default
   algorithm (which creates a temporary and uses assignment).
 */

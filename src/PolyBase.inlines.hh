@@ -293,7 +293,7 @@ PolyBase::check_empty() const {
 
 
 /*!
-  Specializes std::swap to use the fast swap that is provided
+  Specializes <CODE>std::swap</CODE> to use the fast swap that is provided
   as a member function instead of using the default algorithm
   (which creates a temporary and uses assignment).
 */
