@@ -87,7 +87,8 @@ main() TRY {
 #endif
 
   PSet oldT2 = T2;
-  T2.BHZ03_widening_assign(T1, widen_fun(&Polyhedron::H79_widening_assign));
+  T2.BHZ03_widening_assign(T1,
+			   widen_fun_ref(&Polyhedron::H79_widening_assign));
 
   C_Polyhedron pd(2);
   pd.add_constraint(X >= 0);

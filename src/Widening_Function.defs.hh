@@ -99,7 +99,7 @@ namespace Parma_Polyhedra_Library {
 */
 template <typename PH>
 Widening_Function<PH>
-widen_fun(void (PH::* wm)(const PH&, unsigned*));
+widen_fun_ref(void (PH::* wm)(const PH&, unsigned*));
 
 //! Wraps a limited widening method into a function object.
 /*!
@@ -113,8 +113,8 @@ widen_fun(void (PH::* wm)(const PH&, unsigned*));
 */
 template <typename PH>
 Limited_Widening_Function<PH>
-widen_fun(void (PH::* lwm)(const PH&, const ConSys&, unsigned*),
-	  const ConSys& cs);
+widen_fun_ref(void (PH::* lwm)(const PH&, const ConSys&, unsigned*),
+	      const ConSys& cs);
 
 } // namespace Parma_Polyhedra_Library
 

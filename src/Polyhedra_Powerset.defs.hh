@@ -186,9 +186,9 @@ public:
     \param wf
     The widening function to be used on polyhedra objects. It is obtained
     from the corresponding widening method by using the helper function
-    Parma_Polyhedra_Library::widen_fun. Legal values are, e.g.,
-    <CODE>widen_fun(&Polyhedron::H79_widening_assign)</CODE> and
-    <CODE>widen_fun(&Polyhedron::limited_H79_extrapolation_assign, cs)</CODE>;
+    Parma_Polyhedra_Library::widen_fun_ref. Legal values are, e.g.,
+    <CODE>widen_fun_ref(&Polyhedron::H79_widening_assign)</CODE> and
+    <CODE>widen_fun_ref(&Polyhedron::limited_H79_extrapolation_assign, cs)</CODE>;
 
     \param max_disjuncts
     The maximum number of disjuncts occurring in the powerset \p *this
@@ -220,9 +220,9 @@ public:
     \param wf
     The widening function to be used on polyhedra objects.
     It is obtained from the corresponding widening method by using
-    the helper function widen_fun. Legal values are, e.g.,
-    <CODE>widen_fun(&Polyhedron::H79_widening_assign)</CODE> and
-    <CODE>widen_fun(&Polyhedron::limited_H79_extrapolation_assign, cs)</CODE>.
+    the helper function widen_fun_ref. Legal values are, e.g.,
+    <CODE>widen_fun_ref(&Polyhedron::H79_widening_assign)</CODE> and
+    <CODE>widen_fun_ref(&Polyhedron::limited_H79_extrapolation_assign, cs)</CODE>.
 
     \exception std::invalid_argument
     Thrown if \p *this and \p y are topology-incompatible or
