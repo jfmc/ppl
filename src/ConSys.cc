@@ -194,26 +194,45 @@ PPL::ConSys::satisfies_all_constraints(const Generator& g) const {
     sp_fp = PPL::operator*;
   else
     sp_fp = PPL::reduced_scalar_product;
-
   const ConSys& cs = *this;
-  if (cs.is_necessarily_closed())
-    for (size_t i = cs.num_rows(); i-- > 0; ) {
-      const Constraint& c = cs[i];
-      int sp_sign = sgn(sp_fp(g, c));
-      if (c.is_inequality()) {
-	// `c' is a non-strict inequality.
-	if (sp_sign < 0)
-	  return false;
-      }
-      else
-	// `c' is an equality.
-	if (sp_sign != 0)
+
+  if (cs.is_necessarily_closed()) {
+    if (g.is_line()) {
+      // Lines must saturate all constraints.
+      for (size_t i = cs.num_rows(); i-- > 0; )
+	if (sp_fp(g, cs[i]) != 0)
 	  return false;
     }
+    else
+      // `g' is either a ray, a point or a closure point.
+      for (size_t i = cs.num_rows(); i-- > 0; ) {
+	const Constraint& c = cs[i];
+	int sp_sign = sgn(sp_fp(g, c));
+	if (c.is_inequality()) {
+	  // As `cs' is necessarily closed,
+	  // `c' is a non-strict inequality.
+	  if (sp_sign < 0)
+	    return false;
+	}
+	else
+	  // `c' is an equality.
+	  if (sp_sign != 0)
+	    return false;
+      }
+  }
   else
-    // `cs' is NON-necessarily closed.
-    if (g.is_point())
-      // Generator `g' is a point: have to perform the special test
+    // `cs' is not necessarily closed.
+    switch (g.type()) {
+
+    case Generator::LINE:
+      // Lines must saturate all constraints.
+      for (size_t i = cs.num_rows(); i-- > 0; )
+	if (sp_fp(g, cs[i]) != 0)
+	  return false;
+      break;
+
+    case Generator::POINT:
+      // Have to perform the special test
       // when dealing with a strict inequality.
       for (size_t i = cs.num_rows(); i-- > 0; ) {
 	const Constraint& c = cs[i];
@@ -233,8 +252,11 @@ PPL::ConSys::satisfies_all_constraints(const Generator& g) const {
 	  break;
 	}
       }
-    else
-      // Generator `g' is a line, ray or closure point.
+      break;
+
+    case Generator::RAY:
+      // Intentionally fall through.
+    case Generator::CLOSURE_POINT:
       for (size_t i = cs.num_rows(); i-- > 0; ) {
 	const Constraint& c = cs[i];
 	int sp_sign = sgn(sp_fp(g, c));
@@ -248,7 +270,10 @@ PPL::ConSys::satisfies_all_constraints(const Generator& g) const {
 	  if (sp_sign != 0)
 	    return false;
       }
-  // `g' satisfies all constraints.
+      break;
+    }
+
+  // If we reach this point, `g' satisfies all constraints.
   return true;
 }
 

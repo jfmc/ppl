@@ -65,7 +65,7 @@ TESTS = $(WATCHDOG_TESTS) \
 	polyhull1 polyhull2 polyhull3 polyhull4 \
 	randphull1 \
 	relations1 relations2 relations3 relations4 relations5 relations6 \
-	relations7 relations8 relations9 \
+	relations7 relations8 relations9 relations14 \
 	removedim1 removedim2 removedim3 removedim4 removedim5 removedim6 \
 	removedim7 \
 	smm1 \
@@ -175,6 +175,7 @@ relations6_SOURCES = relations6.cc
 relations7_SOURCES = relations7.cc
 relations8_SOURCES = relations8.cc
 relations9_SOURCES = relations9.cc
+relations14_SOURCES = relations14.cc
 
 randphull1_SOURCES = randphull1.cc
 
