@@ -1513,28 +1513,20 @@ PPL::Polyhedron::add_constraints(ConSys& cs) {
   // Matrix::merge_rows_assign() we force `con_sys' to be sorted
   // and we _copy_ `cs'.
   size_t old_num_rows = con_sys.num_rows();
-  size_t num_columns = con_sys.num_columns();
   size_t cs_num_rows = cs.num_rows();
   size_t cs_num_columns = cs.num_columns();
-  con_sys.grow(old_num_rows + cs_num_rows, num_columns);
-  assert(old_num_rows > 0 && cs_num_rows > 0);
-  if (num_columns == cs_num_columns
-      && con_sys[0].capacity() == cs[0].capacity())
-    // Since both the sizes and the capacities of the rows match,
-    // we can simply steel the rows of `cs'.
-    for (size_t i = cs_num_rows; i-- > 0; )
-      std::swap(con_sys[old_num_rows + i], cs[i]);
-  else
-    // Either the sizes or the capacities of the rows do not match:
-    // we have to steel one coefficient at a time.
-    for (size_t i = cs_num_rows; i-- > 0; ) {
-      Constraint& c_new = con_sys[old_num_rows + i];
-      Constraint& c_old = cs[i];
-      if (c_old.is_equality())
-	c_new.set_is_equality();
-      for (size_t j = cs_num_columns; j-- > 0; )
-	std::swap(c_new[j], c_old[j]);
-    }
+  con_sys.grow(old_num_rows + cs_num_rows, con_sys.num_columns());
+  for (size_t i = cs_num_rows; i-- > 0; ) {
+    // NOTE: we cannot directly swap the rows, since they might have
+    // different capacities (besides possibly having different sizes):
+    // thus, we steel one coefficient at a time.
+    Constraint& c_new = con_sys[old_num_rows + i];
+    Constraint& c_old = cs[i];
+    if (c_old.is_equality())
+      c_new.set_is_equality();
+    for (size_t j = cs_num_columns; j-- > 0; )
+      std::swap(c_new[j], c_old[j]);
+  }
   // The new constraints have been simply appended.
   con_sys.set_sorted(false);
 
