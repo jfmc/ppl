@@ -47,14 +47,14 @@ main() {
 #endif
 
   // An equality constraint non-intersecting the polyhedron.
-  Constraint c(x == -1);
+  Constraint c(y == -1);
 #if NOISY
   print_constraint(c, "--- c ---");
 #endif
 
   Relation_Poly_Con rel = ph.relation_with(c);
 #if NOISY
-  cout << "ph.relation_with(c) == " << rel << endl;
+  cout << "ph.relation_with(y == -1) == " << rel << endl;
 #endif
 
   return rel == IS_DISJOINT ? 0 : 1;
