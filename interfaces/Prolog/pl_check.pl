@@ -55,7 +55,7 @@ check_all :-
   add_gens,
   add_cons_min,
   add_gens_min,
-  add_dim_cons,
+  conc-assign,
   remove_dim,
   remove_high_dim,
   affine,
@@ -476,17 +476,17 @@ add_gens_min :-
   GS = [point(1*A + 1*B + 1*C), ray(1*A)],
   ppl_delete_Polyhedron(P).
 
-% Tests ppl_Polyhedron_add_dimensions_and_constraints.
-add_dim_cons :-
+% Tests ppl_Polyhedron_concatenate_assign.
+conc-assign :-
   A = '$VAR'(0), B = '$VAR'(1), C = '$VAR'(2), 
   D = '$VAR'(3), E = '$VAR'(4), 
-  ppl_new_Polyhedron_from_dimension(nnc, 2, P),
-  ppl_Polyhedron_add_dimensions_and_constraints(P, 
-                                                [A > 1, B >= 0,
-                                                 C >= 0]),
-  ppl_Polyhedron_get_constraints(P, CS), 
+  ppl_new_Polyhedron_from_dimension(nnc, 2, X),
+  ppl_new_Polyhedron_from_constraints(nnc, [A > 1, B >= 0, C >= 0], Y),
+  ppl_Polyhedron_concatenate_assign(X, Y),
+  ppl_Polyhedron_get_constraints(X, CS), 
   CS = [1*C > 1, 1*D >= 0, 1*E >= 0],
-  ppl_delete_Polyhedron(P).
+  ppl_delete_Polyhedron(X),
+  ppl_delete_Polyhedron(Y).
 
 % Tests ppl_Polyhedron_remove_dimensions.
 remove_dim :-
