@@ -411,10 +411,9 @@ INPUT                  = @srcdir@/definitions.dox \
                          @srcdir@/../src/GenSys.types.hh \
                          @srcdir@/../src/GenSys.inlines.hh \
                          @srcdir@/../src/GenSys.cc \
-                         @srcdir@/../src/Status.types.hh \
-                         @srcdir@/../src/Status.defs.hh \
-                         @srcdir@/../src/Status.inlines.hh \
-                         @srcdir@/../src/Status.cc \
+                         @srcdir@/../src/Ph_Status.idefs.hh \
+                         @srcdir@/../src/Ph_Status.inlines.hh \
+                         @srcdir@/../src/Ph_Status.cc \
                          @srcdir@/../src/Polyhedron.types.hh \
                          @srcdir@/../src/Polyhedron.defs.hh \
                          @srcdir@/../src/Polyhedron.inlines.hh \
