@@ -32,6 +32,7 @@ site: http://www.cs.unipr.it/ppl/ . */
 #include "Variable.types.hh"
 #include "Constraint.types.hh"
 #include "Generator.types.hh"
+#include "Polyhedron.types.hh"
 #include <cstddef>
 
 namespace Parma_Polyhedra_Library {
@@ -102,7 +103,6 @@ namespace Parma_Polyhedra_Library {
 */
 
 class Parma_Polyhedra_Library::LinExpression : PPL_HIDDEN Row {
-
 public:
   //! Default constructor: returns a copy of LinExpression::zero().
   LinExpression();
@@ -121,6 +121,15 @@ public:
   //! to the variable \p v.
   LinExpression(const Variable& v);
 
+  //! Returns the dimension of the vector space enclosing \p *this.
+  size_t space_dimension() const;
+
+  //! Returns the (zero-dimension space) constant 0.
+  static const LinExpression& zero();
+
+private:
+  friend class Parma_Polyhedra_Library::Polyhedron;
+
   //! Builds the linear expression corresponding to
   //! the constraint \p c.
   explicit LinExpression(const Constraint& c);
@@ -130,13 +139,6 @@ public:
   //! for points and closure points, the divisor is \e not copied.
   explicit LinExpression(const Generator& g);
 
-  //! Returns the dimension of the vector space enclosing \p *this.
-  size_t space_dimension() const;
-
-  //! Returns the (zero-dimension space) constant 0.
-  static const LinExpression& zero();
-
-private:
   //! Copy-constructor with a specified dimension.
   LinExpression(const LinExpression& e, size_t sz);
 
