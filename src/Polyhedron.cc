@@ -3529,7 +3529,6 @@ PPL::Polyhedron::select_CH78_constraints(const Polyhedron& y,
   }
 }
 
-
 void
 PPL::Polyhedron::H79_widening_assign(const Polyhedron& y) {
   Polyhedron& x = *this;
