@@ -265,7 +265,7 @@ PPL::Polyhedron::constraints() const {
   if (!constraints_are_up_to_date())
     update_constraints();
 
-  // We insist in returning a sorted system of constraints.
+  // We insist in returning a sorted system of constraints:
   // this is needed so that the const_iterator on ConSys
   // could correctly filter out the matched non-strict inequalities
   // in the case of an NNC polyhedron. 
@@ -423,7 +423,7 @@ PPL::Polyhedron::Polyhedron(Topology topol, GenSys& gs)
     // In a generator system describing a NNC polyhedron,
     // we must have the minus_epsilon_ray.
     if (topol == NOT_NECESSARILY_CLOSED)
-      gen_sys.insert(zero_dim_minus_epsilon_ray());
+      gen_sys.insert(Generator::zero_dim_minus_epsilon_ray());
     set_generators_up_to_date();
     // Set the space dimension.
     space_dim = gs_space_dim;
@@ -2131,6 +2131,7 @@ PPL::Polyhedron::add_constraints(ConSys& cs) {
   // Adjust `cs' to the right topology and space dimension.
   // NOTE: we already checked for topology compatibility.
   cs.adjust_topology_and_dimension(topology(), space_dim);
+
   // For NNC polyhedra, each strict inequality must be matched by
   // the corresponding non-strict inequality.
   if (!is_necessarily_closed())
@@ -3117,15 +3118,15 @@ PPL::Polyhedron::check_universe() const {
       return false;
     obtain_sorted_constraints();
     const Constraint& eps_leq_one = con_sys[0]; 
-    const Constraint& eps_geq_zero = con_sys[1]; 
+    const Constraint& positivity = con_sys[1]; 
     size_t eps_index = con_sys.num_columns() - 1;
     if (eps_leq_one[0] <= 0
 	|| eps_leq_one[eps_index] >= 0
-	|| eps_geq_zero[0] != 0
-	|| eps_geq_zero[eps_index] <= 0)
+	|| positivity[0] <= 0
+	|| positivity[eps_index] != 0)
       return false;
     for (size_t i = eps_index; i-- > 1; )
-      if (eps_leq_one[i] != 0 || eps_geq_zero[i] != 0)
+      if (eps_leq_one[i] != 0 || positivity[i] != 0)
 	return false;
     return true;
   }
@@ -3141,8 +3142,12 @@ PPL::Polyhedron::is_bounded() const {
   
   for (size_t i = gen_sys.num_rows(); i-- > 0; )
     if (gen_sys[i][0] == 0)
-      // A line or a ray is found: the polyhedron is not bounded.
-      return false;
+      // A line or a ray has been found.
+      // If the polyhedron is necessarily closed or
+      // if it is NNC but the ray is NOT the minus_epsilon_ray,
+      // then the polyhedron is not bounded.
+      if (is_necessarily_closed() || gen_sys[i][space_dim + 1] == 0)
+	return false;
 
   // The system of generators is composed only by
   // points and closure points: the polyhedron is bounded.
@@ -3476,37 +3481,6 @@ PPL::Polyhedron::OK(bool check_not_empty) const {
       goto bomb;
     }
 
-#if 0
-    //=================================================
-    // TODO: this test is wrong in the general case.
-    // However, such an invariant does hold for a
-    // strongly-minimized GenSys.
-    // We will activate this test as soon as the Status
-    // flags will be able to remember if a system is
-    // strongly minimized.
-
-    // Checking that the number of closure points is always
-    // grater than the number of points.
-    if (!is_necessarily_closed()) {
-      size_t num_points = 0;
-      size_t num_closure_points = 0;
-      size_t eps_index = gen_sys.num_columns() - 1;
-      for (size_t i = gen_sys.num_rows(); i-- > 0; )
-	if (gen_sys[i][0] != 0)
-	  if (gen_sys[i][eps_index] > 0)
-	    ++num_points;
-	  else
-	    ++num_closure_points;
-      if (num_points > num_closure_points) {
-#ifndef NDEBUG
-	cerr << "# POINTS > # CLOSURE_POINTS" << endl;
-#endif
-	goto bomb;
-      }
-    }
-    //=================================================
-#endif
-
     if (generators_are_minimized()) {
       // If the system of generators is minimized, the number of lines,
       // rays and points of the polyhedron must be the same
@@ -3593,28 +3567,6 @@ PPL::Polyhedron::OK(bool check_not_empty) const {
 #endif
       goto bomb;
     }
-
-    if (!is_necessarily_closed()) {
-      // A non-empty system of constraints describing a NNC polyhedron
-      // must also contain a (combination of) the constraint epsilon >= 0,
-      // i.e., a constraint with a positive epsilon coefficient.
-      bool no_epsilon_geq_zero = true;
-      size_t eps_index = con_sys.num_columns() - 1;
-      for (size_t i = con_sys.num_rows(); i-- > 0; )
-	if (con_sys[i][eps_index] > 0) {
-	  no_epsilon_geq_zero = false;
-	  break;
-	}
-      if (no_epsilon_geq_zero) {
-#ifndef NDEBUG
-	cerr << "Non-empty constraint system for NNC polyhedron "
-	     << "has no epsilon >= 0 constraint"
-	     << endl;
-#endif
-	goto bomb;
-      }
-    }
-
 
     ConSys copy_of_con_sys = con_sys;
     GenSys new_gen_sys(topology());
