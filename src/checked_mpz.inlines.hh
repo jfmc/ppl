@@ -44,63 +44,106 @@ set_mp_size(mpz_class &v, mp_size_t size) {
 
 template <typename Policy>
 inline Result
-value_type_mpz(const mpz_class& v) {
-  mp_size_t s = get_mp_size(v);
-  if (Policy::store_unknown && s == Limits<mp_size_t>::min + 1)
-    return V_UNKNOWN;
-  if (Policy::store_overflows) {
-    if (s == Limits<mp_size_t>::min)
-      return V_NEG_OVERFLOW;
-    if (s == Limits<mp_size_t>::max)
-      return V_POS_OVERFLOW;
+classify_mpz(const mpz_class& v, bool nan, bool inf, bool sign) {
+  if (Policy::store_nan || Policy::store_infinity) {
+    mp_size_t s = get_mp_size(v);
+    if (Policy::store_nan && (nan || sign) && s == Limits<mp_size_t>::min + 1)
+      return V_UNKNOWN;
+    if (!inf && !sign)
+      return V_NORMAL;
+    if (Policy::store_infinity) {
+      if (s == Limits<mp_size_t>::min)
+	return inf ? V_MINUS_INFINITY : V_LT;
+      if (s == Limits<mp_size_t>::max)
+	return inf ? V_PLUS_INFINITY : V_GT;
+    }
   }
-  return V_EQ;
+  if (sign)
+    return sgn<Policy>(v);
+  return V_NORMAL;
 }
 
-SPECIALIZE_VALUE_TYPE(mpz, mpz_class)
+SPECIALIZE_CLASSIFY(mpz, mpz_class)
 
 template <typename Policy>
 inline void
-set_special_mpz(mpz_class& v, const Result r) {
-  if (Policy::store_unknown && (r == V_UNKNOWN || r == V_DOMAIN))
-    set_mp_size(v, Limits<mp_size_t>::min + 1);
-  else if (Policy::store_overflows) {
-    if (r == V_NEG_OVERFLOW)
-      set_mp_size(v, Limits<mp_size_t>::min);
-    else if (r == V_POS_OVERFLOW)
-      set_mp_size(v, Limits<mp_size_t>::max);
+set_special_mpz(mpz_class& v, Result r) {
+  mp_size_t s;
+  r = type(r);
+  if (Policy::store_nan && r == V_UNKNOWN)
+    s = Limits<mp_size_t>::min + 1;
+  else if (Policy::store_infinity) {
+    switch (r) {
+    case V_MINUS_INFINITY:
+      s = Limits<mp_size_t>::min;
+      break;
+    case V_PLUS_INFINITY:
+      s = Limits<mp_size_t>::max;
+      break;
+    default:
+      return;
+    }
   }
+  else
+    return;
+  set_mp_size(v, s);
 }
 
 SPECIALIZE_SET_SPECIAL(mpz, mpz_class)
 
 template <typename Policy>
 inline Result
-assign_mpz_mpq(mpz_class& to, const mpq_class& from) {
-  if (Policy::check_inexact) {
+pred_mpz(mpz_class& to) {
+  assert(classify<Policy>(to, true, true, false) == V_NORMAL);
+  --to;
+  return V_NORMAL;
+}
+
+SPECIALIZE_PRED(mpz, mpz_class)
+
+template <typename Policy>
+inline Result
+succ_mpz(mpz_class& to) {
+  assert(classify<Policy>(to, true, true, false) == V_NORMAL);
+  ++to;
+  return V_NORMAL;
+}
+
+SPECIALIZE_SUCC(mpz, mpz_class)
+
+template <typename Policy>
+inline Result
+assign_mpz_mpq(mpz_class& to, const mpq_class& from, const Rounding& mode) {
+  if (Policy::round_inexact) {
     mpz_srcptr n = from.get_num().get_mpz_t();
     mpz_srcptr d = from.get_den().get_mpz_t();
-    mpz_t r;
-    mpz_init(r);
-    mpz_tdiv_qr(to.get_mpz_t(), r, n, d);
-    switch (mpz_sgn(r)) {
+    mpz_t rem;
+    mpz_init(rem);
+    mpz_tdiv_qr(to.get_mpz_t(), rem, n, d);
+    Result r;
+    switch (mpz_sgn(rem)) {
     case -1:
-      return V_LT;
+      r = V_LT;
+      break;
     case 1:
-      return V_GT;
+      r = V_GT;
+      break;
+    default:
+      return V_EQ;
     }
+    return round<Policy>(to, r, mode);
   }
   else {
     to = from;
+    return V_LGE;
   }
-  return V_EQ;
 }
 
 SPECIALIZE_ASSIGN(mpz_mpq, mpz_class, mpq_class)
 
 template <typename Policy, typename From>
 inline Result
-assign_mpz_signed_int(mpz_class& to, const From from) {
+assign_mpz_signed_int(mpz_class& to, const From from, const Rounding&) {
   if (sizeof(From) <= sizeof(long))
     to = static_cast<long>(from);
   else {
@@ -124,7 +167,7 @@ SPECIALIZE_ASSIGN(mpz_signed_int, mpz_class, long long)
 
 template <typename Policy, typename From>
 inline Result
-assign_mpz_unsigned_int(mpz_class& to, const From from) {
+assign_mpz_unsigned_int(mpz_class& to, const From from, const Rounding&) {
   if (sizeof(From) <= sizeof(unsigned long))
     to = static_cast<unsigned long>(from);
   else
@@ -140,19 +183,23 @@ SPECIALIZE_ASSIGN(mpz_unsigned_int, mpz_class, unsigned long long)
 
 template <typename Policy, typename From>
 inline Result
-assign_mpz_float(mpz_class& to, const From from) {
-  if (Policy::check_inexact) {
+assign_mpz_float(mpz_class& to, const From from, const Rounding& mode) {
+  if (Policy::round_inexact) {
     double n = rint(from);
     to = n;
-    if (from < to)
-      return V_LT;
-    if (from > to)
-      return V_GT;
+    Result r;
+    if (from < n)
+      r = V_LT;
+    else if (from > n)
+      r = V_GT;
+    else
+      return V_EQ;
+    return round<Policy>(to, r, mode);
   }
   else {
     to = from;
+    return V_LGE;
   }
-  return V_EQ;
 }
 
 SPECIALIZE_ASSIGN(mpz_float, mpz_class, float)
@@ -160,7 +207,7 @@ SPECIALIZE_ASSIGN(mpz_float, mpz_class, double)
 
 template <typename Policy>
 inline Result
-assign_mpz_c_string(mpz_class& to, c_string from) {
+assign_mpz_c_string(mpz_class& to, c_string from, const Rounding& mode) {
   to = from;
   return V_EQ;
 }
@@ -169,29 +216,7 @@ SPECIALIZE_ASSIGN(mpz_c_string, mpz_class, c_string)
 
 template <typename Policy>
 inline Result
-pred_mpz(mpz_class& to) {
-  if (value_type<Policy>(to) != V_EQ)
-    throw(0);
-  --to;
-  return V_EQ;
-}
-
-SPECIALIZE_PRED(mpz, mpz_class)
-
-template <typename Policy>
-inline Result
-succ_mpz(mpz_class& to) {
-  if (value_type<Policy>(to) != V_EQ)
-    throw(0);
-  ++to;
-  return V_EQ;
-}
-
-SPECIALIZE_SUCC(mpz, mpz_class)
-
-template <typename Policy>
-inline Result
-neg_mpz(mpz_class& to, const mpz_class& from) {
+neg_mpz(mpz_class& to, const mpz_class& from, const Rounding&) {
   mpz_neg(to.get_mpz_t(), from.get_mpz_t());
   return V_EQ;
 }
@@ -200,7 +225,7 @@ SPECIALIZE_NEG(mpz, mpz_class, mpz_class)
 
 template <typename Policy>
 inline Result
-add_mpz(mpz_class& to, const mpz_class& x, const mpz_class& y) {
+add_mpz(mpz_class& to, const mpz_class& x, const mpz_class& y, const Rounding&) {
   to = x + y;
   return V_EQ;
 }
@@ -209,7 +234,7 @@ SPECIALIZE_ADD(mpz, mpz_class, mpz_class)
 
 template <typename Policy>
 inline Result
-sub_mpz(mpz_class& to, const mpz_class& x, const mpz_class& y) {
+sub_mpz(mpz_class& to, const mpz_class& x, const mpz_class& y, const Rounding&) {
   to = x - y;
   return V_EQ;
 }
@@ -218,7 +243,7 @@ SPECIALIZE_SUB(mpz, mpz_class, mpz_class)
 
 template <typename Policy>
 inline Result
-mul_mpz(mpz_class& to, const mpz_class& x, const mpz_class& y) {
+mul_mpz(mpz_class& to, const mpz_class& x, const mpz_class& y, const Rounding&) {
   to = x * y;
   return V_EQ;
 }
@@ -227,136 +252,52 @@ SPECIALIZE_MUL(mpz, mpz_class, mpz_class)
 
 template <typename Policy>
 inline Result
-div_mpz(mpz_class& to, const mpz_class& x, const mpz_class& y) {
-  if (Policy::check_divbyzero && sgn(y) == 0)
+div_mpz(mpz_class& to, const mpz_class& x, const mpz_class& y, const Rounding& mode) {
+  if (Policy::check_divbyzero && ::sgn(y) == 0) {
+    set_special<Policy>(to, V_UNKNOWN);
     return V_UNKNOWN;
-  if (Policy::check_inexact) {
-    mpz_t r;
-    mpz_init(r);
-    mpz_tdiv_qr(to.get_mpz_t(), r, x.get_mpz_t(), y.get_mpz_t());
-    switch (mpz_sgn(r)) {
+  }
+  if (Policy::round_inexact) {
+    mpz_t rem;
+    mpz_init(rem);
+    mpz_tdiv_qr(to.get_mpz_t(), rem, x.get_mpz_t(), y.get_mpz_t());
+    Result r;
+    switch (mpz_sgn(rem)) {
     case -1:
-      return V_LT;
+      r = V_LT;
+      break;
     case 1:
-      return V_GT;
+      r = V_GT;
+      break;
+    default:
+      return V_EQ;
     }
+    return round<Policy>(to, r, mode);
   }
   else {
     mpz_divexact(to.get_mpz_t(), x.get_mpz_t(), y.get_mpz_t());
+    return V_LGE;
   }
-  return V_EQ;
 }
 
 SPECIALIZE_DIV(mpz, mpz_class, mpz_class)
 
 template <typename Policy>
 inline Result
-mod_mpz(mpz_class& to, const mpz_class& x, const mpz_class& y) {
-  if (Policy::check_divbyzero && sgn(y) == 0)
+mod_mpz(mpz_class& to, const mpz_class& x, const mpz_class& y, const Rounding&) {
+  if (Policy::check_divbyzero && ::sgn(y) == 0) {
+    set_special<Policy>(to, V_UNKNOWN);
     return V_UNKNOWN;
+  }
   to = x % y;
   return V_EQ;
 }
 
 SPECIALIZE_MOD(mpz, mpz_class, mpz_class)
 
-template <typename Policy, typename To>
-inline Result
-assign_signed_int_mpz(To& to, const mpz_class& from) {
-  if (!Policy::check_overflow) {
-    if (sizeof(To) <= sizeof(long))
-      to = from.get_si();
-    else {
-      To v;
-      mpz_export(&v, 0, 1, sizeof(To), 0, 0, from.get_mpz_t());
-      if (sgn(from) < 0)
-	return neg<Policy>(to, v);
-      to = v;
-    }
-    return V_EQ;
-  }
-  if (sizeof(To) <= sizeof(long)) {
-    if (from.fits_slong_p()) {
-      long v = from.get_si();
-      if (v < Limits<To>::min)
-	return V_NEG_OVERFLOW;
-      if (v > Limits<To>::max)
-	return V_POS_OVERFLOW;
-      to = v;
-      return V_EQ;
-    }
-  }
-  else {
-    mpz_srcptr m = from.get_mpz_t();
-    size_t sz = mpz_size(m);
-    if (sz <= sizeof(To) / sizeof(mp_limb_t)) {
-      if (sz == 0) {
-	to = 0;
-	return V_EQ;
-      }
-      To v;
-      mpz_export(&v, 0, 1, sizeof(To), 0, 0, m);
-      if (v >= 0) {
-	if (sgn(from) < 0)
-	  return neg<Policy>(to, v);
-	to = v;
-	return V_EQ;
-      }
-    }
-  }
-  return sgn(from) < 0 ? V_NEG_OVERFLOW : V_POS_OVERFLOW;
-}
-
-SPECIALIZE_ASSIGN(signed_int_mpz, signed char, mpz_class)
-SPECIALIZE_ASSIGN(signed_int_mpz, short, mpz_class)
-SPECIALIZE_ASSIGN(signed_int_mpz, int, mpz_class)
-SPECIALIZE_ASSIGN(signed_int_mpz, long, mpz_class)
-SPECIALIZE_ASSIGN(signed_int_mpz, long long, mpz_class)
-
-template <typename Policy, typename To>
-inline Result
-assign_unsigned_int_mpz(To& to, const mpz_class& from) {
-  if (!Policy::check_overflow) {
-    if (sizeof(To) <= sizeof(unsigned long))
-      to = from.get_ui();
-    else
-      mpz_export(&to, 0, 1, sizeof(To), 0, 0, from.get_mpz_t());
-    return V_EQ;
-  }
-  if (sgn(from) < 0)
-    return V_NEG_OVERFLOW;
-  if (sizeof(To) <= sizeof(unsigned long)) {
-    if (from.fits_ulong_p()) {
-      unsigned long v = from.get_ui();
-      if (v > Limits<To>::max)
-	return V_POS_OVERFLOW;
-      to = v;
-      return V_EQ;
-    }
-  }
-  else {
-    mpz_srcptr m = from.get_mpz_t();
-    size_t sz = mpz_size(m);
-    if (sz <= sizeof(To) / sizeof(mp_limb_t)) {
-      if (sz == 0)
-	to = 0;
-      else
-	mpz_export(&to, 0, 1, sizeof(To), 0, 0, m);
-      return V_EQ;
-    }
-  }
-  return V_POS_OVERFLOW;
-}
-
-SPECIALIZE_ASSIGN(unsigned_int_mpz, unsigned char, mpz_class)
-SPECIALIZE_ASSIGN(unsigned_int_mpz, unsigned short, mpz_class)
-SPECIALIZE_ASSIGN(unsigned_int_mpz, unsigned int, mpz_class)
-SPECIALIZE_ASSIGN(unsigned_int_mpz, unsigned long, mpz_class)
-SPECIALIZE_ASSIGN(unsigned_int_mpz, unsigned long long, mpz_class)
-
 template <typename Policy>
 inline Result
-abs_mpz(mpz_class& to, const mpz_class& from) {
+abs_mpz(mpz_class& to, const mpz_class& from, const Rounding&) {
   to = abs(from);
   return V_EQ;
 }
@@ -365,7 +306,7 @@ SPECIALIZE_ABS(mpz, mpz_class, mpz_class)
 
 template <typename Policy>
 inline Result
-add_mul_mpz(mpz_class& to, const mpz_class& x, const mpz_class& y) {
+add_mul_mpz(mpz_class& to, const mpz_class& x, const mpz_class& y, const Rounding&) {
   mpz_addmul(to.get_mpz_t(), x.get_mpz_t(), y.get_mpz_t());
   return V_EQ;
 }
@@ -374,7 +315,7 @@ SPECIALIZE_ADD_MUL(mpz, mpz_class, mpz_class)
 
 template <typename Policy>
 inline Result
-sub_mul_mpz(mpz_class& to, const mpz_class& x, const mpz_class& y) {
+sub_mul_mpz(mpz_class& to, const mpz_class& x, const mpz_class& y, const Rounding&) {
   mpz_submul(to.get_mpz_t(), x.get_mpz_t(), y.get_mpz_t());
   return V_EQ;
 }
@@ -383,7 +324,7 @@ SPECIALIZE_SUB_MUL(mpz, mpz_class, mpz_class)
 
 template <typename Policy>
 inline Result
-gcd_mpz(mpz_class& to, const mpz_class& x, const mpz_class& y) {
+gcd_mpz(mpz_class& to, const mpz_class& x, const mpz_class& y, const Rounding&) {
   mpz_gcd(to.get_mpz_t(), x.get_mpz_t(), y.get_mpz_t());
   return V_EQ;
 }
@@ -392,7 +333,7 @@ SPECIALIZE_GCD(mpz, mpz_class, mpz_class)
 
 template <typename Policy>
 inline Result
-lcm_mpz(mpz_class& to, const mpz_class& x, const mpz_class& y) {
+lcm_mpz(mpz_class& to, const mpz_class& x, const mpz_class& y, const Rounding&) {
   mpz_lcm(to.get_mpz_t(), x.get_mpz_t(), y.get_mpz_t());
   return V_EQ;
 }
@@ -401,21 +342,22 @@ SPECIALIZE_LCM(mpz, mpz_class, mpz_class)
 
 template <typename Policy>
 inline Result
-sqrt_mpz(mpz_class& to, const mpz_class& from) {
-  if (Policy::check_sqrt_neg && from < 0)
+sqrt_mpz(mpz_class& to, const mpz_class& from, const Rounding& mode) {
+  if (Policy::check_sqrt_neg && from < 0) {
+    set_special<Policy>(to, V_DOMAIN);
     return V_DOMAIN;
-  if (Policy::check_inexact) {
+  }
+  if (Policy::round_inexact) {
     mpz_class r;
     mpz_sqrtrem(to.get_mpz_t(), r.get_mpz_t(), from.get_mpz_t());
-    if (r > 0)
-      return V_GT;
-    if (r < 0)
-      return V_LT;
+    if (r == 0)
+      return V_EQ;
+    return round<Policy>(to, V_GT, mode);
   }
   else {
     to = sqrt(from);
+    return V_GE;
   }
-  return V_EQ;
 }
 
 SPECIALIZE_SQRT(mpz, mpz_class, mpz_class)

@@ -24,242 +24,230 @@ site: http://www.cs.unipr.it/ppl/ . */
 #ifndef PPL_checked_int_inlines_hh
 #define PPL_checked_int_inlines_hh 1
 
-// Please do not remove the space separating `#' from `include':
-// this ensures that the directive will not be moved during the
-// procedure that automatically creates the library's include file
-// (see `Makefile.am' in the `src' directory).
-# include <limits.h>
-
 #include <stdint.h>
 #include <cerrno>
 #include <cstdlib>
+#include <gmpxx.h>
 #include "Limits.hh"
 #include "float.types.hh"
-
-#define CHECKED_INT_POS_OVERFLOW(Type) \
-(Limits<Type>::max)
-
-#define CHECKED_INT_NEG_OVERFLOW(Type) \
-(Limits<Type>::min >= 0 ? Limits<Type>::max - 1 : Limits<Type>::min)
-
-#define CHECKED_INT_UNKNOWN(Type) \
-(Limits<Type>::min >= 0 ? Limits<Type>::max - 2 : Limits<Type>::min + 1)
-
-#define CHECKED_INT_MIN(Type, Policy) \
-(Limits<Type>::min \
- + (Limits<Type>::min >= 0 \
-    ? 0 \
-    : (Policy::store_overflows + Policy::store_unknown)))
-
-#define CHECKED_INT_MAX(Type, Policy) \
-(Limits<Type>::max \
- - (Limits<Type>::min >= 0 ? 2 : 1) \
- * Policy::store_overflows - Policy::store_unknown)
-
 
 namespace Parma_Polyhedra_Library {
 
 namespace Checked {
 
-template <typename Policy, typename Type>
-inline Result
-value_type_signed_int(const Type v) {
-  if (Policy::store_unknown && v == CHECKED_INT_UNKNOWN(Type))
-    return V_UNKNOWN;
-  if (Policy::store_overflows) {
-    if (v == CHECKED_INT_NEG_OVERFLOW(Type))
-      return V_NEG_OVERFLOW;
-    if (v == CHECKED_INT_POS_OVERFLOW(Type))
-      return V_POS_OVERFLOW;
-  }
-  return V_EQ;
+template <typename Type>
+inline Type
+plus_infinity_int() {
+  return Limits<Type>::max;
 }
 
-SPECIALIZE_VALUE_TYPE(signed_int, signed char)
-SPECIALIZE_VALUE_TYPE(signed_int, short)
-SPECIALIZE_VALUE_TYPE(signed_int, int)
-SPECIALIZE_VALUE_TYPE(signed_int, long)
-SPECIALIZE_VALUE_TYPE(signed_int, long long)
+template <typename Type>
+inline Type
+minus_infinity_int() {
+  return Limits<Type>::min >= 0 ? Limits<Type>::max - 1 : Limits<Type>::min;
+}
+
+
+template <typename Type>
+inline Type
+not_a_number_int() {
+  return Limits<Type>::min >= 0 ? Limits<Type>::max - 2 : Limits<Type>::min + 1;
+}
+
+template <typename Policy, typename Type>
+inline Type
+min_int() {
+  return Limits<Type>::min
+    + (Limits<Type>::min >= 0 ? 0
+       : (Policy::store_infinity + Policy::store_nan));
+}
+
+template <typename Policy, typename Type>
+inline Type
+max_int() {
+  return Limits<Type>::max
+    - (Limits<Type>::min >= 0 ? 2 : 1) * Policy::store_infinity
+    - Policy::store_nan;
+}
+
+template <typename Policy, typename Type>
+inline Result
+set_neg_overflow_int(Type& to, const Rounding& mode) {
+  switch (mode.direction()) {
+  case Rounding::DOWN:
+    if (Policy::store_infinity) {
+      to = minus_infinity_int<Type>();
+      return V_NEG_OVERFLOW;
+    }
+    /* Fall through */
+  default:
+    to = min_int<Policy, Type>();
+    return V_LT;
+  }
+}
+
+template <typename Policy, typename Type>
+inline Result
+set_pos_overflow_int(Type& to, const Rounding& mode) {
+  switch (mode.direction()) {
+  case Rounding::UP:
+    if (Policy::store_infinity) {
+      to = plus_infinity_int<Type>();
+      return V_POS_OVERFLOW;
+    }
+    /* Fall through */
+  default:
+    to = max_int<Policy, Type>();
+    return V_GT;
+  }
+}
+
+template <typename Policy, typename Type>
+inline Result
+classify_int(const Type v, bool nan, bool inf, bool sign) {
+  if (Policy::store_nan && (nan || sign) && v == not_a_number_int<Type>())
+    return V_UNKNOWN;
+  if (!inf & !sign)
+    return V_NORMAL;
+  if (Policy::store_infinity) {
+    if (v == minus_infinity_int<Type>())
+      return inf ? V_MINUS_INFINITY : V_LT;
+    if (v == plus_infinity_int<Type>())
+      return inf ? V_PLUS_INFINITY : V_GT;
+  }
+  if (sign) {
+    if (v < 0)
+      return V_LT;
+    if (v > 0)
+      return V_GT;
+    return V_EQ;
+  }
+  return V_NORMAL;
+}
+
+SPECIALIZE_CLASSIFY(int, signed char)
+SPECIALIZE_CLASSIFY(int, short)
+SPECIALIZE_CLASSIFY(int, int)
+SPECIALIZE_CLASSIFY(int, long)
+SPECIALIZE_CLASSIFY(int, long long)
+SPECIALIZE_CLASSIFY(int, unsigned char)
+SPECIALIZE_CLASSIFY(int, unsigned short)
+SPECIALIZE_CLASSIFY(int, unsigned int)
+SPECIALIZE_CLASSIFY(int, unsigned long)
+SPECIALIZE_CLASSIFY(int, unsigned long long)
 
 template <typename Policy, typename Type>
 inline void
-set_special_signed_int(Type& v, const Result r) {
-  if (Policy::store_unknown && (r == V_UNKNOWN || r == V_DOMAIN)) {
-    v = CHECKED_INT_UNKNOWN(Type);
+set_special_int(Type& v, Result r) {
+  r = type(r);
+  if (Policy::store_nan && r == V_UNKNOWN) {
+    v = not_a_number_int<Type>();
     return;
   }
-  if (Policy::store_overflows) {
-    if (r == V_NEG_OVERFLOW) {
-      v = CHECKED_INT_NEG_OVERFLOW(Type);
-      return;
-    }
-    if (r == V_POS_OVERFLOW) {
-      v = CHECKED_INT_POS_OVERFLOW(Type);
-      return;
-    }
-  }
-}
-
-SPECIALIZE_SET_SPECIAL(signed_int, signed char)
-SPECIALIZE_SET_SPECIAL(signed_int, short)
-SPECIALIZE_SET_SPECIAL(signed_int, int)
-SPECIALIZE_SET_SPECIAL(signed_int, long)
-SPECIALIZE_SET_SPECIAL(signed_int, long long)
-
-template <typename Policy, typename Type>
-inline Result
-value_type_unsigned_int(const Type v) {
-  if (Policy::store_unknown && v == CHECKED_INT_UNKNOWN(Type))
-    return V_UNKNOWN;
-  if (Policy::store_overflows) {
-    if (v == CHECKED_INT_NEG_OVERFLOW(Type))
-      return V_NEG_OVERFLOW;
-    if (v == CHECKED_INT_POS_OVERFLOW(Type))
-      return V_POS_OVERFLOW;
-  }
-  return V_EQ;
-}
-
-SPECIALIZE_VALUE_TYPE(unsigned_int, unsigned char)
-SPECIALIZE_VALUE_TYPE(unsigned_int, unsigned short)
-SPECIALIZE_VALUE_TYPE(unsigned_int, unsigned int)
-SPECIALIZE_VALUE_TYPE(unsigned_int, unsigned long)
-SPECIALIZE_VALUE_TYPE(unsigned_int, unsigned long long)
-
-template <typename Policy, typename Type>
-inline void
-set_special_unsigned_int(Type& v, const Result r) {
-  if (Policy::store_unknown && (r == V_UNKNOWN || r == V_DOMAIN)) {
-      v = CHECKED_INT_UNKNOWN(Type);
-      return;
-  }
-  if (Policy::store_overflows) {
-    if (r == V_NEG_OVERFLOW) {
-      v = CHECKED_INT_NEG_OVERFLOW(Type);
-      return;
-    }
-    if (r == V_POS_OVERFLOW) {
-      v = CHECKED_INT_POS_OVERFLOW(Type);
-      return;
+  if (Policy::store_infinity) {
+    switch (r) {
+    case V_MINUS_INFINITY:
+      v = minus_infinity_int<Type>();
+      break;
+    case V_PLUS_INFINITY:
+      v = plus_infinity_int<Type>();
+      break;
+    default:
+      break;
     }
   }
 }
 
-SPECIALIZE_SET_SPECIAL(unsigned_int, unsigned char)
-SPECIALIZE_SET_SPECIAL(unsigned_int, unsigned short)
-SPECIALIZE_SET_SPECIAL(unsigned_int, unsigned int)
-SPECIALIZE_SET_SPECIAL(unsigned_int, unsigned long)
-SPECIALIZE_SET_SPECIAL(unsigned_int, unsigned long long)
+SPECIALIZE_SET_SPECIAL(int, signed char)
+SPECIALIZE_SET_SPECIAL(int, short)
+SPECIALIZE_SET_SPECIAL(int, int)
+SPECIALIZE_SET_SPECIAL(int, long)
+SPECIALIZE_SET_SPECIAL(int, long long)
+SPECIALIZE_SET_SPECIAL(int, unsigned char)
+SPECIALIZE_SET_SPECIAL(int, unsigned short)
+SPECIALIZE_SET_SPECIAL(int, unsigned int)
+SPECIALIZE_SET_SPECIAL(int, unsigned long)
+SPECIALIZE_SET_SPECIAL(int, unsigned long long)
 
 template<typename Policy, typename Type>
 inline Result
 pred_int(Type& to) {
-  Result r = value_type<Policy>(to);
-  if (r == V_UNKNOWN || r == V_NEG_OVERFLOW)
-    return r;
-  if (r == V_POS_OVERFLOW) {
-    to = CHECKED_INT_MAX(Type, Policy);
-    return V_EQ;
-  }
-  if (Policy::check_overflow && to == CHECKED_INT_MIN(Type, Policy)) {
-    r = V_NEG_OVERFLOW;
-    to = CHECKED_INT_NEG_OVERFLOW(Type);
-    return r;
-  }
-  --to;
-  return V_EQ;
+  Result r = classify<Policy>(to, true, true, false);
+  assert(r != V_UNKNOWN);
+  assert(r != V_MINUS_INFINITY);
+  if (r == V_PLUS_INFINITY)
+    to = max_int<Policy, Type>();
+  else if (to == min_int<Policy, Type>()) {
+    set_special<Policy>(to, V_MINUS_INFINITY);
+    return V_MINUS_INFINITY;
+  } else
+    --to;
+  return V_NORMAL;
 }
 
 template<typename Policy, typename Type>
 inline Result
 succ_int(Type& to) {
-  Result r = value_type<Policy>(to);
-  if (r == V_UNKNOWN || r == V_POS_OVERFLOW)
-    return r;
-  if (r == V_NEG_OVERFLOW) {
-    to = CHECKED_INT_MIN(Type, Policy);
-    return V_EQ;
+  Result r = classify<Policy>(to, true, true, false);
+  assert(r != V_UNKNOWN);
+  assert(r != V_PLUS_INFINITY);
+  if (r == V_MINUS_INFINITY)
+    to = min_int<Policy, Type>();
+  else if (to == max_int<Policy, Type>()) {
+    set_special<Policy>(to, V_PLUS_INFINITY);
+    return V_PLUS_INFINITY;
+  } else 
+    ++to;
+  return V_NORMAL;
+}
+
+template<typename Policy, typename To, typename From>
+inline Result
+assign_signed_int_signed_int(To& to, const From from, const Rounding& mode) {
+  if (Policy::check_overflow && sizeof(To) <= sizeof(From)) {
+    if (from < static_cast<From>(min_int<Policy, To>()))
+      return set_neg_overflow_int<Policy>(to, mode);
+    if (from > static_cast<From>(max_int<Policy, To>()))
+      return set_pos_overflow_int<Policy>(to, mode);
   }
-  if (Policy::check_overflow && to == CHECKED_INT_MAX(Type, Policy)) {
-    r = V_POS_OVERFLOW;
-    to = CHECKED_INT_POS_OVERFLOW(Type);
-    return r;
-  }
-  ++to;
+  to = To(from);
   return V_EQ;
 }
 
 template<typename Policy, typename To, typename From>
 inline Result
-assign_signed_int_signed_int(To& to, const From from) {
-  Result r;
+assign_signed_int_unsigned_int(To& to, const From from, const Rounding& mode) {
   if (Policy::check_overflow && sizeof(To) <= sizeof(From)) {
-    if (from < static_cast<From>(CHECKED_INT_MIN(To, Policy))) {
-      r = V_NEG_OVERFLOW;
-      goto bad;
-    }
-    if (from > static_cast<From>(CHECKED_INT_MAX(To, Policy))) {
-      r = V_POS_OVERFLOW;
-      goto bad;
-    }
+    if (from > static_cast<From>(max_int<Policy, To>()))
+      return set_pos_overflow_int<Policy>(to, mode);
   }
   to = To(from);
-  r = V_EQ;
- bad:
-  return r;
+  return V_EQ;
 }
 
 template<typename Policy, typename To, typename From>
 inline Result
-assign_signed_int_unsigned_int(To& to, const From from) {
-  Result r;
-  if (Policy::check_overflow && sizeof(To) <= sizeof(From)) {
-    if (from > static_cast<From>(CHECKED_INT_MAX(To, Policy))) {
-      r = V_POS_OVERFLOW;
-      goto bad;
-    }
-  }
-  to = To(from);
-  r = V_EQ;
- bad:
-  return r;
-}
-
-template<typename Policy, typename To, typename From>
-inline Result
-assign_unsigned_int_signed_int(To& to, const From from) {
-  Result r;
+assign_unsigned_int_signed_int(To& to, const From from, const Rounding& mode) {
   if (Policy::check_overflow) {
-    if (from < 0) {
-      r = V_NEG_OVERFLOW;
-      goto bad;
-    }
+    if (from < 0)
+      return set_neg_overflow_int<Policy>(to, mode);
     if (sizeof(To) < sizeof(From)
-	&& from > static_cast<From>(CHECKED_INT_MAX(To, Policy))) {
-      r = V_POS_OVERFLOW;
-      goto bad;
-    }
+	&& from > static_cast<From>(max_int<Policy, To>()))
+      return set_pos_overflow_int<Policy>(to, mode);
   }
   to = To(from);
-  r = V_EQ;
- bad:
-  return r;
+  return V_EQ;
 }
 
 template<typename Policy, typename To, typename From>
 inline Result
-assign_unsigned_int_unsigned_int(To& to, const From from) {
-  Result r;
+assign_unsigned_int_unsigned_int(To& to, const From from, const Rounding& mode) {
   if (Policy::check_overflow && sizeof(To) <= sizeof(From)) {
-    if (from > static_cast<From>(CHECKED_INT_MAX(To, Policy))) {
-      r = V_POS_OVERFLOW;
-      goto bad;
-    }
+    if (from > static_cast<From>(max_int<Policy, To>()))
+      return set_pos_overflow_int<Policy>(to, mode);
   }
   to = To(from);
-  r = V_EQ;
- bad:
-  return r;
+  return V_EQ;
 }
 
 
@@ -341,57 +329,54 @@ ASSIGN2_SIGNED_UNSIGNED(long long, unsigned long long)
 
 template<typename Policy, typename To, typename From>
 inline Result
-assign_int_float_check_min_max(To& to, const From from) {
-  Result r;
+assign_int_float_check_min_max(To& to, const From from, const Rounding& mode) {
   if (Policy::check_overflow) {
-    if (from < CHECKED_INT_MIN(To, Policy)) {
-      r = V_NEG_OVERFLOW;
-      goto bad;
-    }
-    if (from > CHECKED_INT_MAX(To, Policy)) {
-      r = V_POS_OVERFLOW;
-      goto bad;
-    }
+    if (from < min_int<Policy, To>())
+      return set_neg_overflow_int<Policy>(to, mode);
+    if (from > max_int<Policy, To>())
+      return set_pos_overflow_int<Policy>(to, mode);
   }
   to = static_cast<To>(from);
-  r = V_EQ;
-  if (Policy::check_inexact) {
+  if (Policy::round_inexact) {
+    Result r;
     if (from < to)
       r = V_LT;
     else if (from > to)
       r = V_GT;
+    else
+      return V_EQ;
+    return round<Policy>(to, r, mode);
   }
- bad:
-  return r;
+  return V_LGE;
 }
 
 SPECIALIZE_ASSIGN(int_float_check_min_max, int8_t, float32_t)
 SPECIALIZE_ASSIGN(int_float_check_min_max, int16_t, float32_t)
 SPECIALIZE_ASSIGN(int_float_check_min_max, int32_t, float32_t)
 SPECIALIZE_ASSIGN(int_float_check_min_max, int64_t, float32_t)
-SPECIALIZE_ASSIGN(int_float_check_min_max, u_int8_t, float32_t)
-SPECIALIZE_ASSIGN(int_float_check_min_max, u_int16_t, float32_t)
-SPECIALIZE_ASSIGN(int_float_check_min_max, u_int32_t, float32_t)
-SPECIALIZE_ASSIGN(int_float_check_min_max, u_int64_t, float32_t)
+SPECIALIZE_ASSIGN(int_float_check_min_max, uint8_t, float32_t)
+SPECIALIZE_ASSIGN(int_float_check_min_max, uint16_t, float32_t)
+SPECIALIZE_ASSIGN(int_float_check_min_max, uint32_t, float32_t)
+SPECIALIZE_ASSIGN(int_float_check_min_max, uint64_t, float32_t)
 
 SPECIALIZE_ASSIGN(int_float_check_min_max, int8_t, float64_t)
 SPECIALIZE_ASSIGN(int_float_check_min_max, int16_t, float64_t)
 SPECIALIZE_ASSIGN(int_float_check_min_max, int32_t, float64_t)
 SPECIALIZE_ASSIGN(int_float_check_min_max, int64_t, float64_t)
-SPECIALIZE_ASSIGN(int_float_check_min_max, u_int8_t, float64_t)
-SPECIALIZE_ASSIGN(int_float_check_min_max, u_int16_t, float64_t)
-SPECIALIZE_ASSIGN(int_float_check_min_max, u_int32_t, float64_t)
-SPECIALIZE_ASSIGN(int_float_check_min_max, u_int64_t, float64_t)
+SPECIALIZE_ASSIGN(int_float_check_min_max, uint8_t, float64_t)
+SPECIALIZE_ASSIGN(int_float_check_min_max, uint16_t, float64_t)
+SPECIALIZE_ASSIGN(int_float_check_min_max, uint32_t, float64_t)
+SPECIALIZE_ASSIGN(int_float_check_min_max, uint64_t, float64_t)
 
 #ifdef FLOAT96_TYPE
 SPECIALIZE_ASSIGN(int_float_check_min_max, int8_t, float96_t)
 SPECIALIZE_ASSIGN(int_float_check_min_max, int16_t, float96_t)
 SPECIALIZE_ASSIGN(int_float_check_min_max, int32_t, float96_t)
 SPECIALIZE_ASSIGN(int_float_check_min_max, int64_t, float96_t)
-SPECIALIZE_ASSIGN(int_float_check_min_max, u_int8_t, float96_t)
-SPECIALIZE_ASSIGN(int_float_check_min_max, u_int16_t, float96_t)
-SPECIALIZE_ASSIGN(int_float_check_min_max, u_int32_t, float96_t)
-SPECIALIZE_ASSIGN(int_float_check_min_max, u_int64_t, float96_t)
+SPECIALIZE_ASSIGN(int_float_check_min_max, uint8_t, float96_t)
+SPECIALIZE_ASSIGN(int_float_check_min_max, uint16_t, float96_t)
+SPECIALIZE_ASSIGN(int_float_check_min_max, uint32_t, float96_t)
+SPECIALIZE_ASSIGN(int_float_check_min_max, uint64_t, float96_t)
 #endif
 
 #ifdef FLOAT128_TYPE
@@ -399,10 +384,10 @@ SPECIALIZE_ASSIGN(int_float_check_min_max, int8_t, float128_t)
 SPECIALIZE_ASSIGN(int_float_check_min_max, int16_t, float128_t)
 SPECIALIZE_ASSIGN(int_float_check_min_max, int32_t, float128_t)
 SPECIALIZE_ASSIGN(int_float_check_min_max, int64_t, float128_t)
-SPECIALIZE_ASSIGN(int_float_check_min_max, u_int8_t, float128_t)
-SPECIALIZE_ASSIGN(int_float_check_min_max, u_int16_t, float128_t)
-SPECIALIZE_ASSIGN(int_float_check_min_max, u_int32_t, float128_t)
-SPECIALIZE_ASSIGN(int_float_check_min_max, u_int64_t, float128_t)
+SPECIALIZE_ASSIGN(int_float_check_min_max, uint8_t, float128_t)
+SPECIALIZE_ASSIGN(int_float_check_min_max, uint16_t, float128_t)
+SPECIALIZE_ASSIGN(int_float_check_min_max, uint32_t, float128_t)
+SPECIALIZE_ASSIGN(int_float_check_min_max, uint64_t, float128_t)
 #endif
 
 #undef ASSIGN2_SIGNED_SIGNED
@@ -412,48 +397,52 @@ SPECIALIZE_ASSIGN(int_float_check_min_max, u_int64_t, float128_t)
 
 template <typename Policy, typename To>
 inline Result
-assign_signed_int_c_string(To& to, const c_string from) {
+assign_signed_int_c_string(To& to, const c_string from, const Rounding& mode) {
   errno = 0;
   char *end;
   long v = strtol(from, &end, 0);
   if (errno == ERANGE)
-    return v < 0 ? V_NEG_OVERFLOW : V_POS_OVERFLOW;
-  if (errno || *end)
+    return v < 0 ? set_neg_overflow_int<Policy>(to, mode) : set_pos_overflow_int<Policy>(to, mode);
+  if (errno || *end) {
+    set_special<Policy>(to, V_DOMAIN);
     return V_DOMAIN;
-  return assign<Policy>(to, v);
+  }
+  return assign<Policy>(to, v, mode);
 }
 
 template <typename Policy, typename To>
 inline Result
-assign_unsigned_int_c_string(To& to, c_string from) {
+assign_unsigned_int_c_string(To& to, c_string from, const Rounding& mode) {
   errno = 0;
   char *end;
   unsigned long v = strtoul(from, &end, 0);
-  if ((errno && errno != ERANGE) || *end)
+  if ((errno && errno != ERANGE) || *end) {
+    set_special<Policy>(to, V_DOMAIN);
     return V_DOMAIN;
+  }
   char c;
   do {
     c = *from++;
   } while (isspace(c));
   if (c == '-') {
     if (errno || v != 0)
-      return V_NEG_OVERFLOW;
+      return set_neg_overflow_int<Policy>(to, mode);
   }
   else {
     if (errno == ERANGE)
-      return V_POS_OVERFLOW;
+      return set_pos_overflow_int<Policy>(to, mode);
   }
-  return assign<Policy>(to, v);
+  return assign<Policy>(to, v, mode);
 }
 
 template <typename Policy, typename To>
 inline Result
-assign_long_long_c_string(To& to, c_string from) {
+assign_long_long_c_string(To& to, c_string from, const Rounding& mode) {
   errno = 0;
   char *end;
   long long v = strtoll(from, &end, 0);
   if (errno == ERANGE)
-    return v < 0 ? V_NEG_OVERFLOW : V_POS_OVERFLOW;
+    return v < 0 ? set_neg_overflow_int<Policy>(to, mode) : set_pos_overflow_int<Policy>(to, mode);
   if (errno || *end)
     return V_DOMAIN;
   to = v;
@@ -462,7 +451,7 @@ assign_long_long_c_string(To& to, c_string from) {
 
 template <typename Policy, typename To>
 inline Result
-assign_unsigned_long_long_c_string(To& to, c_string from) {
+assign_unsigned_long_long_c_string(To& to, c_string from, const Rounding& mode) {
   errno = 0;
   char *end;
   unsigned long long v = strtoull(from, &end, 0);
@@ -474,13 +463,13 @@ assign_unsigned_long_long_c_string(To& to, c_string from) {
   } while (isspace(c));
   if (c == '-') {
     if (errno || v != 0)
-      return V_NEG_OVERFLOW;
+      return set_neg_overflow_int<Policy>(to, mode);
   }
   else {
     if (errno == ERANGE)
-      return V_POS_OVERFLOW;
+      return set_pos_overflow_int<Policy>(to, mode);
   }
-  return assign<Policy>(to, v);
+  return assign<Policy>(to, v, mode);
 }
 
 SPECIALIZE_ASSIGN(signed_int_c_string, signed char, c_string)
@@ -494,6 +483,146 @@ SPECIALIZE_ASSIGN(unsigned_int_c_string, unsigned short, c_string)
 SPECIALIZE_ASSIGN(unsigned_int_c_string, unsigned int, c_string)
 SPECIALIZE_ASSIGN(unsigned_int_c_string, unsigned long, c_string)
 SPECIALIZE_ASSIGN(unsigned_long_long_c_string, unsigned long long, c_string)
+
+template <typename Policy, typename To>
+inline Result
+assign_signed_int_mpz(To& to, const mpz_class& from, const Rounding& mode) {
+  if (!Policy::check_overflow) {
+    if (sizeof(To) <= sizeof(long))
+      to = from.get_si();
+    else {
+      To v;
+      mpz_export(&v, 0, 1, sizeof(To), 0, 0, from.get_mpz_t());
+      if (::sgn(from) < 0)
+	return neg<Policy>(to, v, mode);
+      to = v;
+    }
+    return V_EQ;
+  }
+  if (sizeof(To) <= sizeof(long)) {
+    if (from.fits_slong_p()) {
+      long v = from.get_si();
+      if (v < Limits<To>::min)
+	return set_neg_overflow_int<Policy>(to, mode);
+      if (v > Limits<To>::max)
+	return set_pos_overflow_int<Policy>(to, mode);
+      to = v;
+      return V_EQ;
+    }
+  }
+  else {
+    mpz_srcptr m = from.get_mpz_t();
+    size_t sz = mpz_size(m);
+    if (sz <= sizeof(To) / sizeof(mp_limb_t)) {
+      if (sz == 0) {
+	to = 0;
+	return V_EQ;
+      }
+      To v;
+      mpz_export(&v, 0, 1, sizeof(To), 0, 0, m);
+      if (v >= 0) {
+	if (::sgn(from) < 0)
+	  return neg<Policy>(to, v, mode);
+	to = v;
+	return V_EQ;
+      }
+    }
+  }
+  return ::sgn(from) < 0 ? set_neg_overflow_int<Policy>(to, mode) : set_pos_overflow_int<Policy>(to, mode);
+}
+
+SPECIALIZE_ASSIGN(signed_int_mpz, signed char, mpz_class)
+SPECIALIZE_ASSIGN(signed_int_mpz, short, mpz_class)
+SPECIALIZE_ASSIGN(signed_int_mpz, int, mpz_class)
+SPECIALIZE_ASSIGN(signed_int_mpz, long, mpz_class)
+SPECIALIZE_ASSIGN(signed_int_mpz, long long, mpz_class)
+
+template <typename Policy, typename To>
+inline Result
+assign_unsigned_int_mpz(To& to, const mpz_class& from, const Rounding& mode) {
+  if (!Policy::check_overflow) {
+    if (sizeof(To) <= sizeof(unsigned long))
+      to = from.get_ui();
+    else
+      mpz_export(&to, 0, 1, sizeof(To), 0, 0, from.get_mpz_t());
+    return V_EQ;
+  }
+  if (::sgn(from) < 0)
+    return set_neg_overflow_int<Policy>(to, mode);
+  if (sizeof(To) <= sizeof(unsigned long)) {
+    if (from.fits_ulong_p()) {
+      unsigned long v = from.get_ui();
+      if (v > Limits<To>::max)
+	return set_pos_overflow_int<Policy>(to, mode);
+      to = v;
+      return V_EQ;
+    }
+  }
+  else {
+    mpz_srcptr m = from.get_mpz_t();
+    size_t sz = mpz_size(m);
+    if (sz <= sizeof(To) / sizeof(mp_limb_t)) {
+      if (sz == 0)
+	to = 0;
+      else
+	mpz_export(&to, 0, 1, sizeof(To), 0, 0, m);
+      return V_EQ;
+    }
+  }
+  return set_pos_overflow_int<Policy>(to, mode);
+}
+
+SPECIALIZE_ASSIGN(unsigned_int_mpz, unsigned char, mpz_class)
+SPECIALIZE_ASSIGN(unsigned_int_mpz, unsigned short, mpz_class)
+SPECIALIZE_ASSIGN(unsigned_int_mpz, unsigned int, mpz_class)
+SPECIALIZE_ASSIGN(unsigned_int_mpz, unsigned long, mpz_class)
+SPECIALIZE_ASSIGN(unsigned_int_mpz, unsigned long long, mpz_class)
+
+template <typename Policy, typename To>
+inline Result
+assign_int_mpq(To& to, const mpq_class& from, const Rounding& mode) {
+  mpz_srcptr n = from.get_num().get_mpz_t();
+  mpz_srcptr d = from.get_den().get_mpz_t();
+  mpz_t q;
+  mpz_t rem;
+  mpz_init(q);
+  if (Policy::round_inexact) {
+    mpz_init(rem);
+    mpz_tdiv_qr(q, rem, n, d);
+  }
+  else {
+    mpz_divexact(q, n, d);
+  }
+  Result r = assign<Policy>(to, q, mode);
+  if (r == V_EQ) {
+    if (Policy::round_inexact) {
+      switch (mpz_sgn(rem)) {
+      case -1:
+	r = V_LT;
+	break;
+      case 1:
+	r = V_GT;
+	break;
+      default:
+	return V_EQ;
+      }
+      return round<Policy>(to, r, mode);
+    }
+    return V_LGE;
+  }
+  return r;
+}
+
+SPECIALIZE_ASSIGN(int_mpq, signed char, mpq_class)
+SPECIALIZE_ASSIGN(int_mpq, short, mpq_class)
+SPECIALIZE_ASSIGN(int_mpq, int, mpq_class)
+SPECIALIZE_ASSIGN(int_mpq, long, mpq_class)
+SPECIALIZE_ASSIGN(int_mpq, long long, mpq_class)
+SPECIALIZE_ASSIGN(int_mpq, unsigned char, mpq_class)
+SPECIALIZE_ASSIGN(int_mpq, unsigned short, mpq_class)
+SPECIALIZE_ASSIGN(int_mpq, unsigned int, mpq_class)
+SPECIALIZE_ASSIGN(int_mpq, unsigned long, mpq_class)
+SPECIALIZE_ASSIGN(int_mpq, unsigned long long, mpq_class)
 
 #if UCHAR_MAX == 0xff
 #define CHAR_BITS 8
@@ -521,7 +650,7 @@ SPECIALIZE_ASSIGN(unsigned_long_long_c_string, unsigned long long, c_string)
 #error "Unexpected max for unsigned long"
 #endif
 
-#if ULONG_LONG_MAX == 0xffffffffffffffffULL
+#if ULLONG_MAX == 0xffffffffffffffffULL
 #define LONG_LONG_BITS 64
 #else
 #error "Unexpected max for unsigned long long"
@@ -659,284 +788,230 @@ struct Larger<unsigned long long> {
 
 template <typename Policy, typename Type>
 inline Result
-neg_int_larger(Type& to, const Type x) {
+neg_int_larger(Type& to, const Type x, const Rounding& mode) {
   typename Larger<Type>::Type_For_Neg l = x;
   l = -l;
-  return assign<Policy>(to, l);
+  return assign<Policy>(to, l, mode);
 }
 
 template <typename Policy, typename Type>
 inline Result
-add_int_larger(Type& to, const Type x, const Type y) {
+add_int_larger(Type& to, const Type x, const Type y, const Rounding& mode) {
   typename Larger<Type>::Type_For_Add l = x;
   l += y;
-  return assign<Policy>(to, l);
+  return assign<Policy>(to, l, mode);
 }
 
 template <typename Policy, typename Type>
 inline Result
-sub_int_larger(Type& to, const Type x, const Type y) {
+sub_int_larger(Type& to, const Type x, const Type y, const Rounding& mode) {
   typename Larger<Type>::Type_For_Sub l = x;
   l -= y;
-  return assign<Policy>(to, l);
+  return assign<Policy>(to, l, mode);
 }
 
 template <typename Policy, typename Type>
 inline Result
-mul_int_larger(Type& to, const Type x, const Type y) {
+mul_int_larger(Type& to, const Type x, const Type y, const Rounding& mode) {
   typename Larger<Type>::Type_For_Mul l = x;
   l *= y;
-  return assign<Policy>(to, l);
+  return assign<Policy>(to, l, mode);
 }
 
 template <typename Policy, typename Type>
 inline Result
-neg_signed_int(Type& to, const Type from) {
-  Result r;
+neg_signed_int(Type& to, const Type from, const Rounding& mode) {
   if (Policy::check_overflow) {
     if (Larger<Type>::use_for_neg)
-      return neg_int_larger<Policy>(to, from);
-    if (from < -CHECKED_INT_MAX(Type, Policy)) {
-      r = V_POS_OVERFLOW;
-      goto bad;
-    }
+      return neg_int_larger<Policy>(to, from, mode);
+    if (from < -max_int<Policy, Type>())
+      return set_pos_overflow_int<Policy>(to, mode);
   }
   to = -from;
-  r = V_EQ;
- bad:
-  return r;
+  return V_EQ;
 }
 
 template <typename Policy, typename Type>
 inline Result
-neg_unsigned_int(Type& to, const Type from) {
-  Result r;
+neg_unsigned_int(Type& to, const Type from, const Rounding& mode) {
   if (Policy::check_overflow) {
     if (Larger<Type>::use_for_neg)
-      return neg_int_larger<Policy>(to, from);
-    if (from != 0) {
-      r = V_NEG_OVERFLOW;
-      goto bad;
-    }
+      return neg_int_larger<Policy>(to, from, mode);
+    if (from != 0)
+      return set_neg_overflow_int<Policy>(to, mode);
   }
   to = from;
-  r = V_EQ;
- bad:
-  return r;
+  return V_EQ;
 }
 
 template <typename Policy, typename Type>
 inline Result
-add_signed_int(Type& to, const Type x, const Type y) {
-  Result r;
+add_signed_int(Type& to, const Type x, const Type y, const Rounding& mode) {
   if (Policy::check_overflow) {
     if (Larger<Type>::use_for_add)
-      return add_int_larger<Policy>(to, x, y);
+      return add_int_larger<Policy>(to, x, y, mode);
     if (y >= 0) {
-      if (x > CHECKED_INT_MAX(Type, Policy) - y) {
-	r = V_POS_OVERFLOW;
-	goto bad;
-      }
+      if (x > max_int<Policy, Type>() - y)
+	return set_pos_overflow_int<Policy>(to, mode);
     }
-    else if (x < CHECKED_INT_MIN(Type, Policy) - y) {
-	r = V_NEG_OVERFLOW;
-	goto bad;
-    }
+    else if (x < min_int<Policy, Type>() - y)
+	return set_neg_overflow_int<Policy>(to, mode);
   }
   to = x + y;
-  r = V_EQ;
- bad:
-  return r;
+  return V_EQ;
 }
 
 template <typename Policy, typename Type>
 inline Result
-add_unsigned_int(Type& to, const Type x, const Type y) {
-  Result r;
+add_unsigned_int(Type& to, const Type x, const Type y, const Rounding& mode) {
   if (Policy::check_overflow) {
     if (Larger<Type>::use_for_add)
-      return add_int_larger<Policy>(to, x, y);
-    if (x > CHECKED_INT_MAX(Type, Policy) - y) {
-      r = V_POS_OVERFLOW;
-      goto bad;
-    }
+      return add_int_larger<Policy>(to, x, y, mode);
+    if (x > max_int<Policy, Type>() - y)
+      return set_pos_overflow_int<Policy>(to, mode);
   }
   to = x + y;
-  r = V_EQ;
- bad:
-  return r;
+  return V_EQ;
 }
 
 template <typename Policy, typename Type>
 inline Result
-sub_signed_int(Type& to, const Type x, const Type y) {
-  Result r;
+sub_signed_int(Type& to, const Type x, const Type y, const Rounding& mode) {
   if (Policy::check_overflow) {
     if (Larger<Type>::use_for_sub)
-      return sub_int_larger<Policy>(to, x, y);
+      return sub_int_larger<Policy>(to, x, y, mode);
     if (y >= 0) {
-      if (x < CHECKED_INT_MIN(Type, Policy) + y) {
-	r = V_NEG_OVERFLOW;
-	goto bad;
-      }
+      if (x < min_int<Policy, Type>() + y)
+	return set_neg_overflow_int<Policy>(to, mode);
     }
-    else if (x > CHECKED_INT_MAX(Type, Policy) + y) {
-	r = V_POS_OVERFLOW;
-	goto bad;
-    }
+    else if (x > max_int<Policy, Type>() + y)
+	return set_pos_overflow_int<Policy>(to, mode);
   }
   to = x - y;
-  r = V_EQ;
- bad:
-  return r;
+  return V_EQ;
 }
 
 template <typename Policy, typename Type>
 inline Result
-sub_unsigned_int(Type& to, const Type x, const Type y) {
-  Result r;
+sub_unsigned_int(Type& to, const Type x, const Type y, const Rounding& mode) {
   if (Policy::check_overflow) {
     if (Larger<Type>::use_for_sub)
-      return sub_int_larger<Policy>(to, x, y);
-    if (x < CHECKED_INT_MIN(Type, Policy) + y) {
-      r = V_NEG_OVERFLOW;
-      goto bad;
-    }
+      return sub_int_larger<Policy>(to, x, y, mode);
+    if (x < min_int<Policy, Type>() + y)
+      return set_neg_overflow_int<Policy>(to, mode);
   }
   to = x - y;
-  r = V_EQ;
- bad:
-  return r;
+  return V_EQ;
 }
 
 template <typename Policy, typename Type>
 inline Result
-mul_signed_int(Type& to, const Type x, const Type y) {
+mul_signed_int(Type& to, const Type x, const Type y, const Rounding& mode) {
   if (!Policy::check_overflow) {
     to = x * y;
     return V_EQ;
   }
   if (Larger<Type>::use_for_mul)
-    return mul_int_larger<Policy>(to, x, y);
+    return mul_int_larger<Policy>(to, x, y, mode);
   if (y == 0) {
     to = 0;
     return V_EQ;
   }
   if (y == -1)
-    return neg_signed_int<Policy>(to, x);
-  Result r;
+    return neg_signed_int<Policy>(to, x, mode);
   if (x >= 0) {
     if (y > 0) {
-      if (x > CHECKED_INT_MAX(Type, Policy) / y) {
-	r = V_POS_OVERFLOW;
-	goto bad;
-      }
+      if (x > max_int<Policy, Type>() / y)
+	return set_pos_overflow_int<Policy>(to, mode);
     }
     else {
-      if (x > CHECKED_INT_MIN(Type, Policy) / y) {
-	r = V_NEG_OVERFLOW;
-	goto bad;
-      }
+      if (x > min_int<Policy, Type>() / y)
+	return set_neg_overflow_int<Policy>(to, mode);
     }
   }
   else {
     if (y < 0) {
-      if (x < CHECKED_INT_MAX(Type, Policy) / y) {
-	r = V_POS_OVERFLOW;
-	goto bad;
-      }
+      if (x < max_int<Policy, Type>() / y)
+	return set_pos_overflow_int<Policy>(to, mode);
     }
     else {
-      if (x < CHECKED_INT_MIN(Type, Policy) / y) {
-	r = V_NEG_OVERFLOW;
-	goto bad;
-      }
+      if (x < min_int<Policy, Type>() / y)
+	return set_neg_overflow_int<Policy>(to, mode);
     }
   }
   to = x * y;
-  r = V_EQ;
- bad:
-  return r;
+  return V_EQ;
 }
 
 template <typename Policy, typename Type>
 inline Result
-mul_unsigned_int(Type& to, const Type x, const Type y) {
+mul_unsigned_int(Type& to, const Type x, const Type y, const Rounding& mode) {
   if (!Policy::check_overflow) {
     to = x * y;
     return V_EQ;
   }
   if (Larger<Type>::use_for_mul)
-    return mul_int_larger<Policy>(to, x, y);
+    return mul_int_larger<Policy>(to, x, y, mode);
   if (y == 0) {
     to = 0;
     return V_EQ;
   }
-  Result r;
-  if (x > CHECKED_INT_MAX(Type, Policy) / y) {
-    r = V_POS_OVERFLOW;
-    goto bad;
-  }
+  if (x > max_int<Policy, Type>() / y)
+    return set_pos_overflow_int<Policy>(to, mode);
   to = x * y;
-  r = V_EQ;
- bad:
-  return r;
+  return V_EQ;
 }
 
 template <typename Policy, typename Type>
 inline Result
-div_signed_int(Type& to, const Type x, const Type y) {
-  Result r;
+div_signed_int(Type& to, const Type x, const Type y, const Rounding& mode) {
   if (Policy::check_divbyzero && y == 0) {
-    r = V_UNKNOWN;
-    goto bad;
+    set_special<Policy>(to, V_UNKNOWN);
+    return V_UNKNOWN;
   }
   if (Policy::check_overflow && y == -1)
-    return neg_signed_int<Policy>(to, x);
-  r = V_EQ;
-  if (Policy::check_inexact) {
+    return neg_signed_int<Policy>(to, x, mode);
+  to = x / y;
+  if (Policy::round_inexact) {
     Type m = x % y;
+    Result r;
     if (m < 0)
       r = V_LT;
-    if (m > 0)
+    else if (m > 0)
       r = V_GT;
+    else
+      return V_EQ;
+    return round<Policy>(to, r, mode);
   }
-  to = x / y;
- bad:
-  return r;
+  return V_LGE;
 }
 
 template <typename Policy, typename Type>
 inline Result
-div_unsigned_int(Type& to, const Type x, const Type y) {
-  Result r;
+div_unsigned_int(Type& to, const Type x, const Type y, const Rounding& mode) {
   if (Policy::check_divbyzero && y == 0) {
-    r = V_UNKNOWN;
-    goto bad;
+    set_special<Policy>(to, V_UNKNOWN);
+    return V_UNKNOWN;
   }
-  r = V_EQ;
-  if (Policy::check_inexact) {
+  to = x / y;
+  if (Policy::round_inexact) {
     Type m = x % y;
-    if (m > 0)
-      r = V_GT;
+    if (m == 0)
+      return V_EQ;
+    return round<Policy>(to, V_GT, mode);
   }
-  to = x / y;
- bad:
-  return r;
+  return V_GE;
 }
 
 template <typename Policy, typename Type>
 inline Result
-mod_int(Type& to, const Type x, const Type y) {
-  Result r;
+mod_int(Type& to, const Type x, const Type y, const Rounding&) {
   if (Policy::check_divbyzero && y == 0) {
-    r = V_UNKNOWN;
-    goto bad;
+    set_special<Policy>(to, V_UNKNOWN);
+    return V_UNKNOWN;
   }
   to = x % y;
-  r = V_EQ;
- bad:
-  return r;
+  return V_EQ;
 }
 
 template <typename Type>
@@ -957,41 +1032,91 @@ isqrtrem_(Type& q, Type& r, const Type from) {
 
 template <typename Policy, typename Type>
 inline Result
-sqrt_unsigned_int(Type& to, const Type from) {
+sqrt_unsigned_int(Type& to, const Type from, const Rounding& mode) {
   Type rem;
   isqrtrem_(to, rem, from);
-  Result r = V_EQ;
-  if (Policy::check_inexact && rem > 0)
-    r = V_GT;
-  return r;
-}
-
-template <typename Policy, typename Type>
-inline Result
-sqrt_signed_int(Type& to, const Type from) {
-  Result r;
-  if (Policy::check_sqrt_neg && from < 0) {
-    r = V_DOMAIN;
-    goto bad;
+  if (Policy::round_inexact) {
+    if (rem == 0)
+      return V_EQ;
+    return round<Policy>(to, V_GT, mode);
   }
-  r = sqrt_unsigned_int<Policy>(to, from);
- bad:
-  return r;
+  return V_GE;
 }
 
 template <typename Policy, typename Type>
 inline Result
-print_char(std::ostream& os, const Type x) {
+sqrt_signed_int(Type& to, const Type from, const Rounding& mode) {
+  if (Policy::check_sqrt_neg && from < 0) {
+    set_special<Policy>(to, V_DOMAIN);
+    return V_DOMAIN;
+  }
+  return sqrt_unsigned_int<Policy>(to, from, mode);
+}
+
+template <typename Policy, typename Type>
+inline Result
+add_mul_int(Type& to, const Type x, const Type y, const Rounding& mode) {
+  Type z;
+  Result r = mul<Policy>(z, x, y, mode);
+  switch (r) {
+  case V_NEG_OVERFLOW:
+  case V_LT:
+    if (to <= 0) {
+      to = z;
+      return r;
+    }
+    set_special<Policy>(to, V_UNKNOWN);
+    return V_UNKNOWN;
+  case V_POS_OVERFLOW:
+  case V_GT:
+    if (to >= 0) {
+      to = z;
+      return r;
+    }
+    set_special<Policy>(to, V_UNKNOWN);
+    return V_UNKNOWN;
+  default:
+    return add<Policy>(to, to, z, mode);
+  }
+}
+
+template <typename Policy, typename Type>
+inline Result
+sub_mul_int(Type& to, const Type x, const Type y, const Rounding& mode) {
+  Type z;
+  Result r = mul<Policy>(z, x, y, mode);
+  switch (r) {
+  case V_NEG_OVERFLOW:
+  case V_LT:
+    if (to >= 0)
+      return set_pos_overflow_int<Policy>(to, mode);
+    return V_UNKNOWN;
+  case V_POS_OVERFLOW:
+  case V_GT:
+    if (to <= 0)
+      return set_neg_overflow_int<Policy>(to, mode);
+    return V_UNKNOWN;
+  default:
+    return sub<Policy>(to, to, z, mode);
+  }
+}
+
+template <typename Policy, typename Type>
+inline Result
+print_char(std::ostream& os, const Type x, const Numeric_Format& format, const Rounding& mode) {
+  used(format);
+  used(mode);
   os << (int) x;
   return V_EQ;
 }
 
 template <typename Policy, typename Type>
 inline Result
-input_char(std::istream& is, Type& x) {
+input_char(std::istream& is, Type& x, const Rounding& mode) {
+  used(mode);
   int i;
   is >> i;
-  return assign<Policy>(x, i);
+  return assign<Policy>(x, i, mode);
 }
 
 SPECIALIZE_PRED(int, signed char)
@@ -1148,27 +1273,27 @@ SPECIALIZE_CMP(generic, unsigned int, unsigned int)
 SPECIALIZE_CMP(generic, unsigned long, unsigned long)
 SPECIALIZE_CMP(generic, unsigned long long, unsigned long long)
 
-SPECIALIZE_ADD_MUL(generic, signed char, signed char)
-SPECIALIZE_ADD_MUL(generic, short, short)
-SPECIALIZE_ADD_MUL(generic, int, int)
-SPECIALIZE_ADD_MUL(generic, long, long)
-SPECIALIZE_ADD_MUL(generic, long long, long long)
-SPECIALIZE_ADD_MUL(generic, unsigned char, unsigned char)
-SPECIALIZE_ADD_MUL(generic, unsigned short, unsigned short)
-SPECIALIZE_ADD_MUL(generic, unsigned int, unsigned int)
-SPECIALIZE_ADD_MUL(generic, unsigned long, unsigned long)
-SPECIALIZE_ADD_MUL(generic, unsigned long long, unsigned long long)
+SPECIALIZE_ADD_MUL(int, signed char, signed char)
+SPECIALIZE_ADD_MUL(int, short, short)
+SPECIALIZE_ADD_MUL(int, int, int)
+SPECIALIZE_ADD_MUL(int, long, long)
+SPECIALIZE_ADD_MUL(int, long long, long long)
+SPECIALIZE_ADD_MUL(int, unsigned char, unsigned char)
+SPECIALIZE_ADD_MUL(int, unsigned short, unsigned short)
+SPECIALIZE_ADD_MUL(int, unsigned int, unsigned int)
+SPECIALIZE_ADD_MUL(int, unsigned long, unsigned long)
+SPECIALIZE_ADD_MUL(int, unsigned long long, unsigned long long)
 
-SPECIALIZE_SUB_MUL(generic, signed char, signed char)
-SPECIALIZE_SUB_MUL(generic, short, short)
-SPECIALIZE_SUB_MUL(generic, int, int)
-SPECIALIZE_SUB_MUL(generic, long, long)
-SPECIALIZE_SUB_MUL(generic, long long, long long)
-SPECIALIZE_SUB_MUL(generic, unsigned char, unsigned char)
-SPECIALIZE_SUB_MUL(generic, unsigned short, unsigned short)
-SPECIALIZE_SUB_MUL(generic, unsigned int, unsigned int)
-SPECIALIZE_SUB_MUL(generic, unsigned long, unsigned long)
-SPECIALIZE_SUB_MUL(generic, unsigned long long, unsigned long long)
+SPECIALIZE_SUB_MUL(int, signed char, signed char)
+SPECIALIZE_SUB_MUL(int, short, short)
+SPECIALIZE_SUB_MUL(int, int, int)
+SPECIALIZE_SUB_MUL(int, long, long)
+SPECIALIZE_SUB_MUL(int, long long, long long)
+SPECIALIZE_SUB_MUL(int, unsigned char, unsigned char)
+SPECIALIZE_SUB_MUL(int, unsigned short, unsigned short)
+SPECIALIZE_SUB_MUL(int, unsigned int, unsigned int)
+SPECIALIZE_SUB_MUL(int, unsigned long, unsigned long)
+SPECIALIZE_SUB_MUL(int, unsigned long long, unsigned long long)
 
 SPECIALIZE_PRINT(char, signed char)
 SPECIALIZE_PRINT(generic, short)

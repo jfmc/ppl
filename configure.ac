@@ -79,7 +79,16 @@ AH_TOP([
 ])
 
 AH_BOTTOM([
-#endif // !defined(PPL_ppl_config_h)
+/*
+  In order for the definition of `int64_t' to be seen by Comeau C/C++,
+  we must make sure <stdint.h> is included before <sys/types.hh> is
+  (even indirectly) included.
+*/
+#ifdef HAVE_STDINT_H 
+#include <stdint.h>
+#endif
+
+#endif /* !defined(PPL_ppl_config_h) */
 ])
 
 # C compiler
@@ -382,11 +391,10 @@ AC_C_CONST
 AC_C_INLINE
 AC_C_BIGENDIAN
 
-# Checks for C functions.
-AC_CHECK_FUNCS(ffs)
-
 # Checks for C type sizes.
 AC_CHECK_SIZEOF(int)
+AC_CHECK_SIZEOF(long long)
+
 
 # Use C++ for the remaining checks.
 AC_LANG(C++)
@@ -397,12 +405,19 @@ AC_CXX_SUPPORTS_FLEXIBLE_ARRAYS
 # Check whether the C++ compiler supports __attribute__ ((weak)).
 AC_CXX_SUPPORTS_ATTRIBUTE_WEAK
 
-# Check whether the C++ compiler supports long double floating point numbers.
-AC_CXX_SUPPORTS_LONG_DOUBLE
-
 # Check whether the C++ compiler provides long double numbers that
 # have bigger range or precision than double.
+AC_CXX_SUPPORTS_LONG_DOUBLE
+
+# Check whether the C++ compiler supports long long integers.
 AC_CXX_SUPPORTS_LONG_LONG
+
+# Checks for the availability of C library functions in C++.
+AC_CHECK_DECLS([ffs], , , [#include <strings.h>])
+AC_CHECK_DECLS([strtoll,strtoull], , , [#include <cstdlib>])
+
+# Must link everything with libm.
+extra_libraries="${extra_libraries} -lm"
 
 # GMP library
 
@@ -601,7 +616,6 @@ AC_CONFIG_FILES(Makefile
                 src/Makefile
                 src/version.hh
                 tests/Makefile
-                tests/Polyhedron/Makefile
                 utils/Makefile
                 m4/Makefile
                 demos/Makefile

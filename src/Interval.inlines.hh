@@ -35,8 +35,8 @@ ERational::ERational(Coefficient_traits::const_reference num,
 		     Coefficient_traits::const_reference den)
   : e(0) {
   assert(den != 0);
-  Checked::assign<Check_Overflow_Policy>(v.get_num(), raw_value(num));
-  Checked::assign<Check_Overflow_Policy>(v.get_den(), raw_value(den));
+  Checked::assign<Check_Overflow_Policy>(v.get_num(), raw_value(num), Rounding(Rounding::IGNORE));
+  Checked::assign<Check_Overflow_Policy>(v.get_den(), raw_value(den), Rounding(Rounding::IGNORE));
   v.canonicalize();
 }
 

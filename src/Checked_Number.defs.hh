@@ -30,8 +30,10 @@ site: http://www.cs.unipr.it/ppl/ . */
 #include <gmpxx.h>
 #include <iostream>
 
+namespace Parma_Polyhedra_Library {
+
 template <typename T, typename Policy>
-class Parma_Polyhedra_Library::Checked_Number {
+class Checked_Number {
 public:
   //! Default constructor.
   Checked_Number();
@@ -64,7 +66,7 @@ public:
 #endif
   Checked_Number(const mpq_class& y);
   Checked_Number(const mpz_class& y);
-  Checked_Number(const char* y);
+  Checked_Number(const c_string y);
 
   operator T() const;
   T& raw_value();
@@ -87,8 +89,6 @@ public:
 private:
   T v;
 };
-
-namespace Parma_Polyhedra_Library {
 
 template <typename T, typename Policy>
 const T&
@@ -243,10 +243,6 @@ operator>>(std::istream& is, Checked_Number<T, Policy>& x);
 
 } // namespace Parma_Polyhedra_Library
 
-#include "checked_int.inlines.hh"
-#include "checked_float.inlines.hh"
-#include "checked_mpz.inlines.hh"
-#include "checked_mpq.inlines.hh"
 #include "Checked_Number.inlines.hh"
 
 #endif // !defined(PPL_Checked_Number_defs_hh)

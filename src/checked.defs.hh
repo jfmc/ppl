@@ -25,96 +25,46 @@ site: http://www.cs.unipr.it/ppl/ . */
 #define PPL_checked_defs_hh 1
 
 #include <iostream>
+#include "Rounding.defs.hh"
+#include "Numeric_Format.defs.hh"
 
 namespace Parma_Polyhedra_Library {
 
 struct Check_Overflow_Policy {
   static const int check_overflow = 1;
-  static const int check_nan_result = 0;
-  static const int check_inexact = 0;
   static const int check_divbyzero = 0;
   static const int check_sqrt_neg = 0;
-  static const int check_nan_arg = 0;
-  static const int check_infinity_arg = 0;
-  static const int store_unknown = 0;
-  static const int store_overflows = 0;
+  static const int round_inexact = 1;
+  static const int store_nan = 0;
+  static const int store_infinity = 0;
   static const int convertible = 1;
+  static const int fpu_classify = 0;
+  static const int fpu_check_inexact = 0;
 };
 
 typedef const char* c_string;
 
 namespace Checked {
 
-struct Policy_Safe {
+struct Transparent_Policy {
   //! Check for overflowed result.
-  static const int check_overflow = 1;
-  //! Check for inexact result.
-  static const int check_inexact = 1;
+  static const int check_overflow = 0;
   //! Check for attempts to divide by zero.
-  static const int check_divbyzero = 1;
+  static const int check_divbyzero = 0;
   //! Check for attempts to take the square root of a negative number.
-  static const int check_sqrt_neg = 1;
+  static const int check_sqrt_neg = 0;
+  //! Support rounding mode
+  static const int round_inexact = 0;
   //! Store unknown special value.
-  static const int store_unknown = 1;
+  static const int store_nan = 0;
   //! Store overflow special values.
-  static const int store_overflows = 1;
-  //! Check for float NaN argument.
-  static const int check_nan_arg = 1;
-  //! Check for float infinity argument.
-  static const int check_infinity_arg = 1;
-  //! Check for float NaN result.
-  static const int check_nan_result = 1;
-};
-
-
-enum Result {
-  //! The computed result is exact.
-  V_EQ = 1,
-
-  //! The computed result is inexact and rounded up.
-  V_LT = 2,
-
-  //! The computed result is inexact and rounded down.
-  V_GT = 4,
-
-  //! The computed result is inexact.
-  V_NE = V_LT | V_GT,
-
-  //! The computed result may be inexact and rounded up.
-  V_LE = V_EQ | V_LT,
-
-  //! The computed result may be inexact and rounded down.
-  V_GE = V_EQ | V_GT,
-
-  //! The computed result may be inexact.
-  V_LGE = V_LT | V_EQ | V_GT,
-
-  //! \brief
-  //! The computed result may not be the nearest representable
-  //! approximation of the exact result.
-  //! To be bitwise OR'ed with values above.
-  V_APPROX = 8,
-
-  // Special results: no result could be computed.
-  // Keep all of these >= V_UNKNOWN.
-
-  //! \brief
-  //! The exact result does not exist (i.e., the operation does not make
-  //! sense for the given operands) or is unknown (i.e., the operands do
-  //! not encode enough information to give a mean.
-  V_UNKNOWN = 16,
-
-  //! \brief
-  //! The exact result is outside the considered numeric domain
-  //! (e.g., sqrt(-1)).
-  V_DOMAIN = 17,
-
-  //! A negative overflow occurred.
-  V_NEG_OVERFLOW = 18,
-
-  //! A positive overflow occurred.
-  V_POS_OVERFLOW = 19
-
+  static const int store_infinity = 0;
+  //! Representation is identical to primitive.
+  static const int convertible = 1;
+  //! Return information for special values.
+  static const int fpu_classify = 0;
+  //! Check for FPU inexact result.
+  static const int fpu_check_inexact = 0;
 };
 
 
@@ -148,7 +98,15 @@ template <typename Policy, typename Type1, typename Type2, typename Type3> \
 inline ret_type name(qual1 Type1& arg1, qual2 Type2& arg2, qual3 Type3& arg3) { \
   return FUNCTION_CLASS(name)<Policy, Type1, Type2, Type3>::function(arg1, arg2, arg3); \
 }
-
+  
+#define DECLARE_FUN4(name, ret_type, qual1, qual2, qual3, qual4) \
+template <typename Policy, typename Type1, typename Type2, typename Type3, typename Type4> \
+struct FUNCTION_CLASS(name); \
+template <typename Policy, typename Type1, typename Type2, typename Type3, typename Type4> \
+inline ret_type name(qual1 Type1& arg1, qual2 Type2& arg2, qual3 Type3& arg3, qual4 Type4& arg4) { \
+  return FUNCTION_CLASS(name)<Policy, Type1, Type2, Type3, Type4>::function(arg1, arg2, arg3, arg4); \
+}
+  
 #define SPECIALIZE_FUN1(name, suf, ret_type, qual, type) \
 template <typename Policy> \
 struct FUNCTION_CLASS(name)<Policy, type> { \
@@ -173,103 +131,93 @@ struct FUNCTION_CLASS(name) <Policy, type1, type2, type3> { \
   } \
 };
 
-#define SPECIALIZE_PRED(suf, type) SPECIALIZE_FUN1(pred, suf, Result, , type)
-#define SPECIALIZE_SUCC(suf, type) SPECIALIZE_FUN1(succ, suf, Result, , type)
-#define SPECIALIZE_ASSIGN(suf, To, From) SPECIALIZE_FUN2(assign, suf, Result, , To, const, From)
-#define SPECIALIZE_NEG(suf, To, From) SPECIALIZE_FUN2(neg, suf, Result, , To, const, From)
-#define SPECIALIZE_ABS(suf, To, From) SPECIALIZE_FUN2(abs, suf, Result, , To, const, From)
-#define SPECIALIZE_SQRT(suf, To, From) SPECIALIZE_FUN2(sqrt, suf, Result, , To, const, From)
-#define SPECIALIZE_ADD(suf, To, From) SPECIALIZE_FUN3(add, suf, Result, , To, const, From, const, From)
-#define SPECIALIZE_SUB(suf, To, From) SPECIALIZE_FUN3(sub, suf, Result, , To, const, From, const, From)
-#define SPECIALIZE_MUL(suf, To, From) SPECIALIZE_FUN3(mul, suf, Result, , To, const, From, const, From)
-#define SPECIALIZE_DIV(suf, To, From) SPECIALIZE_FUN3(div, suf, Result, , To, const, From, const, From)
-#define SPECIALIZE_MOD(suf, To, From) SPECIALIZE_FUN3(mod, suf, Result, , To, const, From, const, From)
-#define SPECIALIZE_ADD_MUL(suf, To, From) SPECIALIZE_FUN3(add_mul, suf, Result, , To, const, From, const, From)
-#define SPECIALIZE_SUB_MUL(suf, To, From) SPECIALIZE_FUN3(sub_mul, suf, Result, , To, const, From, const, From)
-#define SPECIALIZE_GCD(suf, To, From) SPECIALIZE_FUN3(gcd, suf, Result, , To, const, From, const, From)
-#define SPECIALIZE_LCM(suf, To, From) SPECIALIZE_FUN3(lcm, suf, Result, , To, const, From, const, From)
-#define SPECIALIZE_SGN(suf, From) SPECIALIZE_FUN1(sgn, suf, Result, const, From)
-#define SPECIALIZE_CMP(suf, Type1, Type2) SPECIALIZE_FUN2(cmp, suf, Result, const, Type1, const, Type2)
-#define SPECIALIZE_SET_SPECIAL(suf, type) SPECIALIZE_FUN2(set_special, suf, void, , type, const, Result)
-#define SPECIALIZE_VALUE_TYPE(suf, type) SPECIALIZE_FUN1(value_type, suf, Result, const, type)
-#define SPECIALIZE_PRINT(suf, type) SPECIALIZE_FUN2(print, suf, Result, , std::ostream, const, type)
-#define SPECIALIZE_INPUT(suf, type) SPECIALIZE_FUN2(input, suf, Result, , std::istream, , type)
+#define SPECIALIZE_FUN4(name, suf, ret_type, qual1, type1, qual2, type2, qual3, type3, qual4, type4) \
+template <typename Policy> \
+struct FUNCTION_CLASS(name) <Policy, type1, type2, type3, type4> { \
+  static inline Result function(qual1 type1& arg1, qual2 type2 &arg2, qual3 type3 &arg3, qual4 type4 &arg4) { \
+    return name ## _ ## suf<Policy>(arg1, arg2, arg3, arg4); \
+  } \
+};
+
+#define nonconst
+
+#define SPECIALIZE_PRED(suf, Type) \
+  SPECIALIZE_FUN1(pred, suf, Result, nonconst, Type)
+#define SPECIALIZE_SUCC(suf, Type) \
+  SPECIALIZE_FUN1(succ, suf, Result, nonconst, Type)
+#define SPECIALIZE_SGN(suf, From) \
+  SPECIALIZE_FUN1(sgn, suf, Result, const, From)
+#define SPECIALIZE_CMP(suf, Type1, Type2) \
+  SPECIALIZE_FUN2(cmp, suf, Result, const, Type1, const, Type2)
+#define SPECIALIZE_SET_SPECIAL(suf, Type) \
+  SPECIALIZE_FUN2(set_special, suf, void, nonconst, Type, const, Result)
+#define SPECIALIZE_CLASSIFY(suf, Type) \
+  SPECIALIZE_FUN4(classify, suf, Result, const, Type, const, bool, const, bool, const, bool)
+#define SPECIALIZE_ASSIGN(suf, To, From) \
+  SPECIALIZE_FUN3(assign, suf, Result, nonconst, To, const, From, const, Rounding)
+#define SPECIALIZE_NEG(suf, To, From) \
+  SPECIALIZE_FUN3(neg, suf, Result, nonconst, To, const, From, const, Rounding)
+#define SPECIALIZE_ABS(suf, To, From) \
+  SPECIALIZE_FUN3(abs, suf, Result, nonconst, To, const, From, const, Rounding)
+#define SPECIALIZE_SQRT(suf, To, From) \
+  SPECIALIZE_FUN3(sqrt, suf, Result, nonconst, To, const, From, const, Rounding)
+#define SPECIALIZE_ADD(suf, To, From) \
+  SPECIALIZE_FUN4(add, suf, Result, nonconst, To, const, From, const, From, const, Rounding)
+#define SPECIALIZE_SUB(suf, To, From) \
+  SPECIALIZE_FUN4(sub, suf, Result, nonconst, To, const, From, const, From, const, Rounding)
+#define SPECIALIZE_MUL(suf, To, From) \
+  SPECIALIZE_FUN4(mul, suf, Result, nonconst, To, const, From, const, From, const, Rounding)
+#define SPECIALIZE_DIV(suf, To, From) \
+  SPECIALIZE_FUN4(div, suf, Result, nonconst, To, const, From, const, From, const, Rounding)
+#define SPECIALIZE_MOD(suf, To, From) \
+  SPECIALIZE_FUN4(mod, suf, Result, nonconst, To, const, From, const, From, const, Rounding)
+#define SPECIALIZE_ADD_MUL(suf, To, From) \
+  SPECIALIZE_FUN4(add_mul, suf, Result, nonconst, To, const, From, const, From, const, Rounding)
+#define SPECIALIZE_SUB_MUL(suf, To, From) \
+  SPECIALIZE_FUN4(sub_mul, suf, Result, nonconst, To, const, From, const, From, const, Rounding)
+#define SPECIALIZE_GCD(suf, To, From) \
+  SPECIALIZE_FUN4(gcd, suf, Result, nonconst, To, const, From, const, From, const, Rounding)
+#define SPECIALIZE_LCM(suf, To, From) \
+  SPECIALIZE_FUN4(lcm, suf, Result, nonconst, To, const, From, const, From, const, Rounding)
+#define SPECIALIZE_PRINT(suf, Type) \
+  SPECIALIZE_FUN4(print, suf, void, nonconst, std::ostream, const, Type, const, Numeric_Format, const, Rounding)
+#define SPECIALIZE_INPUT(suf, Type) \
+  SPECIALIZE_FUN3(input, suf, Result, nonconst, std::istream, nonconst, Type, const, Rounding)
 
 
-DECLARE_FUN1(pred, Result, )
-DECLARE_FUN1(succ, Result, )
-DECLARE_FUN2(assign, Result, , const)
-DECLARE_FUN2(neg, Result, , const)
-DECLARE_FUN2(abs, Result, , const)
-DECLARE_FUN2(sqrt, Result, , const)
-DECLARE_FUN3(add, Result, , const, const)
-DECLARE_FUN3(sub, Result, , const, const)
-DECLARE_FUN3(mul, Result, , const, const)
-DECLARE_FUN3(div, Result, , const, const)
-DECLARE_FUN3(mod, Result, , const, const)
-DECLARE_FUN3(add_mul, Result, , const, const)
-DECLARE_FUN3(sub_mul, Result, , const, const)
-DECLARE_FUN3(gcd, Result, , const, const)
-DECLARE_FUN3(lcm, Result, , const, const)
-DECLARE_FUN1(sgn, Result, const)
-DECLARE_FUN2(cmp, Result, const, const)
-DECLARE_FUN1(value_type, Result, const)
-DECLARE_FUN2(set_special, void, , const)
-DECLARE_FUN2(print, Result, , const)
-DECLARE_FUN2(input, Result, , )
+DECLARE_FUN1(pred,        Result, )
+DECLARE_FUN1(succ,        Result, )
+DECLARE_FUN3(assign,      Result, nonconst, const,    const)
+DECLARE_FUN3(neg,         Result, nonconst, const,    const)
+DECLARE_FUN3(abs,         Result, nonconst, const,    const)
+DECLARE_FUN3(sqrt,        Result, nonconst, const,    const)
+DECLARE_FUN4(add,         Result, nonconst, const,    const,  const)
+DECLARE_FUN4(sub,         Result, nonconst, const,    const,  const)
+DECLARE_FUN4(mul,         Result, nonconst, const,    const,  const)
+DECLARE_FUN4(div,         Result, nonconst, const,    const,  const)
+DECLARE_FUN4(mod,         Result, nonconst, const,    const,  const)
+DECLARE_FUN4(add_mul,     Result, nonconst, const,    const,  const)
+DECLARE_FUN4(sub_mul,     Result, nonconst, const,    const,  const)
+DECLARE_FUN4(gcd,         Result, nonconst, const,    const,  const)
+DECLARE_FUN4(lcm,         Result, nonconst, const,    const,  const)
+DECLARE_FUN1(sgn,         Result, const)
+DECLARE_FUN2(cmp,         Result, const,    const)
+DECLARE_FUN4(classify,    Result, const,    const,    const,  const)
+DECLARE_FUN2(set_special, void,   nonconst, const)
+DECLARE_FUN4(print,       Result, nonconst, const,    const,  const)
+DECLARE_FUN3(input,       Result, nonconst, nonconst, const)
 
-template <typename To_Policy, typename From_Policy, typename To, typename From>
-Result assign_ext(To& to, const From& from);
-
-template <typename Policy, typename Type>
-Result sgn_ext(const Type& x);
-
-template <typename Policy1, typename Policy2, typename Type1, typename Type2>
-Result cmp_ext(const Type1& x, const Type2& y);
-
-template <typename To_Policy, typename From_Policy, typename To, typename From>
-Result neg_ext(To& to, const From& x);
-
-template <typename To_Policy, typename From_Policy, typename To, typename From>
-Result abs_ext(To& to, const From& x);
-
-template <typename To_Policy, typename From1_Policy, typename From2_Policy, typename To, typename From1, typename From2>
-Result add_ext(To& to, const From1& x, const From2& y);
-
-template <typename To_Policy, typename From1_Policy, typename From2_Policy, typename To, typename From1, typename From2>
-Result sub_ext(To& to, const From1& x, const From2& y);
-
-template <typename To_Policy, typename From1_Policy, typename From2_Policy, typename To, typename From1, typename From2>
-Result mul_ext(To& to, const From1& x, const From2& y);
-
-template <typename To_Policy, typename From1_Policy, typename From2_Policy, typename To, typename From1, typename From2>
-Result div_ext(To& to, const From1& x, const From2& y);
-
-template <typename To_Policy, typename From1_Policy, typename From2_Policy, typename To, typename From1, typename From2>
-Result mod_ext(To& to, const From1& x, const From2& y);
-
-template <typename To_Policy, typename From1_Policy, typename From2_Policy, typename To, typename From1, typename From2>
-Result add_mul_ext(To& to, const From1& x, const From2& y);
-
-template <typename To_Policy, typename From1_Policy, typename From2_Policy, typename To, typename From1, typename From2>
-Result sub_mul_ext(To& to, const From1& x, const From2& y);
-
-template <typename To_Policy, typename From_Policy, typename To, typename From>
-Result sqrt_ext(To& to, const From& x);
-
-template <typename To_Policy, typename From1_Policy, typename From2_Policy, typename To, typename From1, typename From2>
-Result gcd_ext(To& to, const From1& x, const From2& y);
-
-template <typename To_Policy, typename From1_Policy, typename From2_Policy, typename To, typename From1, typename From2>
-Result lcm_ext(To& to, const From1& x, const From2& y);
-
-template <typename Policy, typename Type>
-void print_ext(std::ostream& os, const Type& x);
+template <typename Policy, typename To>
+Result round(To& to, Result r, const Rounding& mode);
 
 } // namespace Checked
 
 } // namespace Parma_Polyhedra_Library
 
 #include "checked.inlines.hh"
+#include "checked_int.inlines.hh"
+#include "checked_float.inlines.hh"
+#include "checked_mpz.inlines.hh"
+#include "checked_mpq.inlines.hh"
 
 #endif // !defined(PPL_checked_defs_hh)
