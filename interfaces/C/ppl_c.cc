@@ -153,33 +153,33 @@ int
 ppl_new_Constraint(ppl_Constraint_t* pc,
 		   ppl_const_LinExpression_t le,
 		   enum ppl_enum_Constraint_Type t) try {
-  Constraint* pd;
+  Constraint* ppc;
   const LinExpression& e = *to_const(le);
   switch(t) {
-  case EQUAL:
-    pd = new Constraint(e == 0);
+  case PPL_CONSTRAINT_TYPE_EQUAL:
+    ppc = new Constraint(e == 0);
     break;
-  case GREATER_THAN_OR_EQUAL:
-    pd = new Constraint(e >= 0);
+  case PPL_CONSTRAINT_TYPE_GREATER_THAN_OR_EQUAL:
+    ppc = new Constraint(e >= 0);
     break;
 #if 0
-  case GREATER_THAN:
-    pd = new Constraint(e > 0);
+  case PPL_CONSTRAINT_TYPE_GREATER_THAN:
+    ppc = new Constraint(e > 0);
     break;
 #endif
-  case LESS_THAN_OR_EQUAL:
-    pd = new Constraint(e <= 0);
+  case PPL_CONSTRAINT_TYPE_LESS_THAN_OR_EQUAL:
+    ppc = new Constraint(e <= 0);
     break;
 #if 0
-  case LESS_THAN:
-    pd = new Constraint(e < 0);
+  case PPL_CONSTRAINT_TYPE_LESS_THAN:
+    ppc = new Constraint(e < 0);
     break;
 #endif
   default:
     // FIXME!
     throw 3;
   }
-  *pc = to_nonconst(pd);
+  *pc = to_nonconst(ppc);
   return 0;
 }
 CATCH_ALL
@@ -369,6 +369,229 @@ ppl_ConSys_const_iterator_equal_test(ppl_const_ConSys_const_iterator_t x,
 				     ppl_const_ConSys_const_iterator_t y) try {
   const ConSys::const_iterator& xx = *to_const(x);
   const ConSys::const_iterator& yy = *to_const(y);
+  return (xx == yy) ? 1 : 0;
+}
+CATCH_ALL
+
+
+DECLARE_CONVERSIONS(Generator)
+
+int
+ppl_new_Generator(ppl_Generator_t* pg,
+		  ppl_const_LinExpression_t le,
+		  enum ppl_enum_Generator_Type t,
+		  ppl_const_Coefficient_t d) try {
+  Generator* ppg;
+  const LinExpression& e = *to_const(le);
+  switch(t) {
+  case PPL_GENERATOR_TYPE_POINT:
+    ppg = new Generator(point(e, d));
+    break;
+#if 0
+  case PPL_GENERATOR_TYPE_CLOSURE_POINT:
+    ppg = new Generator(closure_point(e, d));
+    break;
+#endif
+  case PPL_GENERATOR_TYPE_RAY:
+    ppg = new Generator(ray(e));
+    break;
+  case PPL_GENERATOR_TYPE_LINE:
+    ppg = new Generator(line(e));
+    break;
+  default:
+    // FIXME!
+    throw 3;
+  }
+  *pg = to_nonconst(ppg);
+  return 0;
+}
+CATCH_ALL
+
+int
+ppl_delete_Generator(ppl_const_Generator_t le) try {
+  delete to_const(le);
+  return 0;
+}
+CATCH_ALL
+
+int
+ppl_assign_Generator_from_Generator(ppl_Generator_t dst,
+				      ppl_const_Generator_t src) try {
+  const Generator& ssrc = *to_const(src);
+  Generator& ddst = *to_nonconst(dst);
+  ddst = ssrc;
+  return 0;
+}
+CATCH_ALL
+
+int
+ppl_swap_Generator(ppl_Generator_t a, ppl_Generator_t b) try {
+  std::swap(*to_nonconst(a), *to_nonconst(b));
+  return 0;
+}
+CATCH_ALL
+
+int
+ppl_Generator_space_dimension(ppl_const_Generator_t g) try {
+  return to_const(g)->space_dimension();
+}
+CATCH_ALL
+
+int
+ppl_Generator_coefficient(ppl_const_Generator_t g,
+			  int var,
+			  ppl_Coefficient_t value) try {
+  const Generator& gg = *to_const(g);
+  Integer& vvalue = *to_nonconst(value);
+  vvalue = gg.coefficient(Variable(var));
+  return 0;
+}
+CATCH_ALL
+
+int
+ppl_Generator_divisor(ppl_const_Generator_t g,
+		      ppl_Coefficient_t value) try {
+  const Generator& gg = *to_const(g);
+  Integer& vvalue = *to_nonconst(value);
+  vvalue = gg.divisor();
+  return 0;
+}
+CATCH_ALL
+
+DECLARE_CONVERSIONS(GenSys)
+
+int
+ppl_new_GenSys(ppl_GenSys_t* pgs) try {
+  *pgs = to_nonconst(new GenSys());
+  return 0;
+}
+CATCH_ALL
+
+int
+ppl_new_GenSys_from_Generator(ppl_GenSys_t* pgs,
+			      ppl_const_Generator_t g) try {
+  const Generator& gg = *to_const(g);
+  *pgs = to_nonconst(new GenSys(gg));
+  return 0;
+}
+CATCH_ALL
+
+int
+ppl_new_GenSys_from_GenSys(ppl_GenSys_t* pgs, ppl_const_GenSys_t gs) try {
+  const GenSys& ggs = *to_const(gs);
+  *pgs = to_nonconst(new GenSys(ggs));
+  return 0;
+}
+CATCH_ALL
+
+int
+ppl_delete_GenSys(ppl_const_GenSys_t gs) try {
+  delete to_const(gs);
+  return 0;
+}
+CATCH_ALL
+
+int
+ppl_assign_GenSys_from_GenSys(ppl_GenSys_t dst, ppl_const_GenSys_t src) try {
+  const GenSys& ssrc = *to_const(src);
+  GenSys& ddst = *to_nonconst(dst);
+  ddst = ssrc;
+  return 0;
+}
+CATCH_ALL
+
+int
+ppl_GenSys_space_dimension(ppl_const_GenSys_t gs) try {
+  return to_const(gs)->space_dimension();
+}
+CATCH_ALL
+
+int
+ppl_GenSys_insert_Generator(ppl_GenSys_t gs, ppl_const_Generator_t g) try {
+  const Generator& gg = *to_const(g);
+  GenSys& ggs = *to_nonconst(gs);
+  ggs.insert(gg);
+  return 0;
+}
+CATCH_ALL
+
+typedef GenSys::const_iterator GenSys_const_iterator;
+DECLARE_CONVERSIONS(GenSys_const_iterator)
+
+int
+ppl_new_GenSys_const_iterator(ppl_GenSys_const_iterator_t* pgit) try {
+  *pgit = to_nonconst(new GenSys::const_iterator());
+  return 0;
+}
+CATCH_ALL
+
+int
+ppl_new_GenSys_const_iterator_from_GenSys_const_iterator
+(ppl_GenSys_const_iterator_t* pgit,
+ ppl_const_GenSys_const_iterator_t git)  try {
+  *pgit = to_nonconst(new GenSys::const_iterator(*to_const(git)));
+  return 0;
+}
+CATCH_ALL
+
+int
+ppl_delete_GenSys_const_iterator(ppl_const_GenSys_const_iterator_t git) try {
+  delete to_const(git);
+  return 0;
+}
+CATCH_ALL
+
+int
+ppl_assign_GenSys_const_iterator_from_GenSys_const_iterator
+(ppl_GenSys_const_iterator_t dst, ppl_const_GenSys_const_iterator_t src) try {
+  const GenSys::const_iterator& ssrc = *to_const(src);
+  GenSys::const_iterator& ddst = *to_nonconst(dst);
+  ddst = ssrc;
+  return 0;
+}
+CATCH_ALL
+
+int
+ppl_GenSys_begin(ppl_GenSys_t gs, ppl_GenSys_const_iterator_t git) try {
+  const GenSys& ggs = *to_const(gs);
+  GenSys::const_iterator& ggit = *to_nonconst(git);
+  ggit = ggs.begin();
+  return 0;
+}
+CATCH_ALL
+
+int
+ppl_GenSys_end(ppl_GenSys_t gs, ppl_GenSys_const_iterator_t git) try {
+  const GenSys& ggs = *to_const(gs);
+  GenSys::const_iterator& ggit = *to_nonconst(git);
+  ggit = ggs.end();
+  return 0;
+}
+CATCH_ALL
+
+int
+ppl_GenSys_const_iterator_dereference(ppl_const_GenSys_const_iterator_t git,
+				      ppl_const_Generator_t* pg) try {
+  const GenSys::const_iterator& ggit = *to_const(git);
+  const Generator& c = *ggit;
+  *pg = to_const(&c);
+  return 0;
+}
+CATCH_ALL
+
+int
+ppl_GenSys_const_iterator_increment(ppl_GenSys_const_iterator_t git) try {
+  GenSys::const_iterator& ggit = *to_nonconst(git);
+  ++ggit;
+  return 0;
+}
+CATCH_ALL
+
+int
+ppl_GenSys_const_iterator_equal_test(ppl_const_GenSys_const_iterator_t x,
+				     ppl_const_GenSys_const_iterator_t y) try {
+  const GenSys::const_iterator& xx = *to_const(x);
+  const GenSys::const_iterator& yy = *to_const(y);
   return (xx == yy) ? 1 : 0;
 }
 CATCH_ALL
