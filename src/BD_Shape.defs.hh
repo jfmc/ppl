@@ -426,10 +426,8 @@ public:
   //! Builds a BDS from the system of generators \p gs.
   /*!
     Builds the smallest BDS containing the polyhedron defined by \p gs.
-    \param gs       A system of generators defining the polyhedron to be
-                    approximated.
-    \exception std::invalid_argument thrown if the system of generators \p gs
-                                     contains closure points.
+    The built BDS inherits its space dimension from the space dimension
+    of \p gs.
   */
   BD_Shape(const Generator_System& gs);
 
