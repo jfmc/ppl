@@ -264,19 +264,22 @@ Polyhedra_PowerSet<PH>::BHRZ03_extrapolation_assign(const
 template <typename PH>
 void
 Polyhedra_PowerSet<PH>::collapse(unsigned max_disjuncts) {
+  assert(max_disjuncts > 0);
   size_type n = size();
   if (n > max_disjuncts) {
     iterator sbegin = begin();
+    iterator send = end();
+
     iterator i = sbegin;
-    unsigned m = 1;
-    // Move to the last polyhedron that will survive.
-    for ( ; m < max_disjuncts; ++m)
+    // Move `i' to the last polyhedron that will survive.
+    for (unsigned m = max_disjuncts-1; m-- > 0; )
       ++i;
+
     // This polyhedron will be assigned the poly-hull of itself
     // and of all the polyhedra that follow.
     PH& ph = i->polyhedron();
     const_iterator j = i;
-    for (++m, ++j; m <= n; ++m, ++j)
+    for (++j; j != send; ++j)
       ph.poly_hull_assign(j->polyhedron());
 
     // Ensure omega-reduction.
@@ -287,10 +290,7 @@ Polyhedra_PowerSet<PH>::collapse(unsigned max_disjuncts) {
     }
 
     // Erase the surplus polyhedra.
-    ++i;
-    erase(i, end());
-
-    assert(size() <= max_disjuncts);
+    erase(++i, send);
   }
   assert(OK());
 }
