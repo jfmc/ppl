@@ -159,7 +159,7 @@ struct FUNCTION_CLASS(name) <Policy, type1, type2, type3, type4> { \
 #define SPECIALIZE_CMP(suf, Type1, Type2) \
   SPECIALIZE_FUN2(cmp, suf, Result, const, Type1, const, Type2)
 #define SPECIALIZE_SET_SPECIAL(suf, Type) \
-  SPECIALIZE_FUN2(set_special, suf, void, nonconst, Type, const, Result)
+  SPECIALIZE_FUN2(set_special, suf, Result, nonconst, Type, const, Result)
 #define SPECIALIZE_CLASSIFY(suf, Type) \
   SPECIALIZE_FUN4(classify, suf, Result, const, Type, const, bool, const, bool, const, bool)
 #define SPECIALIZE_ASSIGN(suf, To, From) \
@@ -189,7 +189,7 @@ struct FUNCTION_CLASS(name) <Policy, type1, type2, type3, type4> { \
 #define SPECIALIZE_LCM(suf, To, From) \
   SPECIALIZE_FUN4(lcm, suf, Result, nonconst, To, const, From, const, From, const, Rounding)
 #define SPECIALIZE_PRINT(suf, Type) \
-  SPECIALIZE_FUN4(print, suf, void, nonconst, std::ostream, const, Type, const, Numeric_Format, const, Rounding)
+  SPECIALIZE_FUN4(print, suf, Result, nonconst, std::ostream, const, Type, const, Numeric_Format, const, Rounding)
 #define SPECIALIZE_INPUT(suf, Type) \
   SPECIALIZE_FUN3(input, suf, Result, nonconst, std::istream, nonconst, Type, const, Rounding)
 
