@@ -94,12 +94,14 @@ PPL::Matrix::Matrix(Matrix& y, dimension_type first_stolen)
 
 PPL::Matrix&
 PPL::Matrix::operator=(const Matrix& y) {
-  rows = y.rows;
-  row_topology = y.row_topology;
-  row_size = y.row_size;
-  row_capacity = compute_capacity(row_size);
-  index_first_pending = y.index_first_pending;
-  sorted = y.sorted;
+  if (this != &y) {
+    rows = y.rows;
+    row_topology = y.row_topology;
+    row_size = y.row_size;
+    row_capacity = compute_capacity(y.row_size);
+    index_first_pending = y.index_first_pending;
+    sorted = y.sorted;
+  }
   return *this;
 }
 
