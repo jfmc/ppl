@@ -121,11 +121,12 @@ PPL::Polyhedron::generators() const {
     return gen_sys;
   }
 
-  // We insist in returning a sorted system of generators:
-  // this is needed so that the const_iterator on GenSys
-  // could correctly filter out the matched closure points
+  // In the case of an NNC polyhedron, we insist in returning a sorted
+  // system of generators: this is needed so that the const_iterator
+  // on GenSys could correctly filter out the matched closure points
   // in the case of a NNC polyhedron.
-  obtain_sorted_generators();
+  if (!is_necessarily_closed())
+    obtain_sorted_generators();
   return gen_sys;
 }
 
