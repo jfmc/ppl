@@ -239,27 +239,6 @@ What is the dimension of the <EM>empty</EM> polyhedron?
 If the above definition is applied to an empty polyhedron,
 then the answer would be \f$-1\f$.
 
-<B>Space dimension and compatibility</B>
-
-Be careful not to confuse the dimension \f$k\f$ of a polyhedron
-\f$P \sseq \Rset^n\f$ with the dimension \f$n\f$ of the enclosing
-vector space.
-Two polyhedra \f$P \sseq \Rset^n\f$ and \f$Q \sseq \Rset^m\f$ are
-said to be <EM>dimension-compatible</EM> if \f$n = m\f$
-(i.e., if they are defined on the same vector space).
-Note that we can have \f$\pdim(P) = \pdim(Q)\f$ even though
-\f$P\f$ and \f$Q\f$ are dimension-incompatible.
-
-\note
-In the current implementation,
-there is no way to distinguish between two empty polyhedron,
-even though they are meant to be defined over dimension-incompatible
-vector spaces.
-This causes a few inconsistencies in the specification of some of
-the operations requiring dimension-compatibility.
-This issue is under consideration.
-
-
 <B>Vertex</B>
 
 A <EM>vertex</EM> of a polyhedron \f$P\f$ is any point in \f$P\f$ 
@@ -464,6 +443,30 @@ can be represented by a system of constraints
 or a system of generators.
 Moreover, given one of the representations, there is an algorithm for
 computing the other.
+
+<B>Dimension-compatibility</B>
+
+The <EM>space dimension</EM> of a polyhedron \f$P \sseq \Rset^n\f$
+is the dimension \f$n \in \Nset\f$ of the corresponding vector space.
+The following <EM>dimension-compatibility</EM> rules are defined:
+- the polyhedra \f$P \sseq \Rset^n\f$ and \f$Q \sseq \Rset^m\f$ are
+  dimension-incompatible if and only if \f$n \neq m\f$;
+- the constraint \f$\langle \vect{a}, \vect{x} \rangle = \lambda\f$
+  (or \f$\langle \vect{a}, \vect{x} \rangle \geq \lambda\f$),
+  where \f$\vect{a}, \vect{x} \in \Rset^m\f$,
+  is dimension-incompatible with polyhedron \f$P \sseq \Rset^n\f$
+  if and only if \f$n < m\f$;
+- the generator \f$\vect{x} \in \Rset^m\f$ is dimension-incompatible
+  with polyhedron \f$P \sseq \Rset^n\f$ if and only if \f$n < m\f$;
+- a system of constraints (generators) is dimension-incompatible with
+  a polyhedron if there exists a constraint (generator) in the system
+  which is dimension-incompatible with the polyhedron.
+
+Be careful not to confuse the dimension \f$k\f$ of a polyhedron
+\f$P \sseq \Rset^n\f$ with the dimension \f$n\f$ of the enclosing
+vector space.
+Note that we can have \f$\pdim(P) = \pdim(Q)\f$ even though
+\f$P\f$ and \f$Q\f$ are dimension-incompatible.
 
 (The following spurious string of characters in the user manual
  is due to a bug in Doxygen.)
