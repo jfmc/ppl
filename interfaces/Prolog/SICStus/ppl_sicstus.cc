@@ -5,11 +5,6 @@
 #include <stdexcept>
 #include <sstream>
 
-#include <iostream>
-
-//int SP_put_address(SP_term_ref t, void *pointer) 
-//void SP_raise_exception(SP_term_ref t)
-
 namespace PPL = Parma_Polyhedra_Library;
 
 class internal_exception {
@@ -50,9 +45,23 @@ public:
   }
 };
 
-class integer_not_nonnegative : public internal_exception {
+class not_an_integer : public internal_exception {
 public:
-  explicit integer_not_nonnegative(SP_term_ref t)
+  explicit not_an_integer(SP_term_ref t)
+    : internal_exception(t) {
+  }
+};
+
+class not_unsigned_int : public internal_exception {
+public:
+  explicit not_unsigned_int(SP_term_ref t)
+    : internal_exception(t) {
+  }
+};
+
+class not_a_variable : public internal_exception {
+public:
+  explicit not_a_variable(SP_term_ref t)
     : internal_exception(t) {
   }
 };
@@ -72,14 +81,15 @@ handle_exception(const integer_out_of_range& e) {
     domain << "[" << LONG_MIN << ", " << LONG_MAX << "]";
     SP_put_string(expected_domain, domain.str().c_str());
   }
-  SP_cons_functor(et, SP_atom_from_string("get_integer"), 1, culprit);
+  SP_cons_functor(et, SP_atom_from_string("integer_term_to_Integer"), 1,
+		  culprit);
   SP_cons_functor(et, SP_atom_from_string("domain_error"), 4,
 		  et, arg_no, expected_domain, culprit);
   SP_raise_exception(et);
 }
 
 static void
-handle_exception(const integer_not_nonnegative& e) {
+handle_exception(const not_unsigned_int& e) {
   SP_term_ref culprit = SP_new_term_ref();
   SP_term_ref arg_no = SP_new_term_ref();
   SP_term_ref expected_domain = SP_new_term_ref();
@@ -87,8 +97,14 @@ handle_exception(const integer_not_nonnegative& e) {
 
   SP_put_term(culprit, e.term());
   SP_put_integer(arg_no, 1);
-  SP_put_string(expected_domain, ">= 0");
-  SP_cons_functor(et, SP_atom_from_string("get_size_t"), 1, culprit);
+  {
+    std::string s;
+    std::ostringstream domain(s);
+    domain << "[" << 0 << ", " << UINT_MAX << "]";
+    SP_put_string(expected_domain, domain.str().c_str());
+  }
+  SP_cons_functor(et, SP_atom_from_string("get_size_t/term_to_varid"), 1,
+		  culprit);
   SP_cons_functor(et, SP_atom_from_string("domain_error"), 4,
 		  et, arg_no, expected_domain, culprit);
   SP_raise_exception(et);
@@ -111,6 +127,22 @@ handle_exception(const non_linear& e) {
 }
 
 static void
+handle_exception(const not_a_variable& e) {
+  SP_term_ref culprit = SP_new_term_ref();
+  SP_term_ref arg_no = SP_new_term_ref();
+  SP_term_ref expected_domain = SP_new_term_ref();
+  SP_term_ref et = SP_new_term_ref();
+
+  SP_put_term(culprit, e.term());
+  SP_put_integer(arg_no, 1);
+  SP_put_string(expected_domain, "$VAR(integer)");
+  SP_cons_functor(et, SP_atom_from_string("get_variable"), 1, culprit);
+  SP_cons_functor(et, SP_atom_from_string("domain_error"), 4,
+		  et, arg_no, expected_domain, culprit);
+  SP_raise_exception(et);
+}
+
+static void
 handle_exception() {
   abort();
 }
@@ -125,10 +157,13 @@ handle_exception(const std::exception& e) {
   catch (const integer_out_of_range& e) { \
     handle_exception(e); \
   } \
-  catch (const integer_not_nonnegative& e) { \
+  catch (const not_unsigned_int& e) { \
     handle_exception(e); \
   } \
   catch (const non_linear& e) { \
+    handle_exception(e); \
+  } \
+  catch (const not_a_variable& e) { \
     handle_exception(e); \
   }
 
@@ -232,7 +267,7 @@ get_size_t(long n) {
   else {
     SP_term_ref n_term = SP_new_term_ref();
     SP_put_integer(n_term, n);
-    throw integer_not_nonnegative(n_term);
+    throw not_unsigned_int(n_term);
   }
 }
 
@@ -272,20 +307,32 @@ ppl_space_dimension(const void* pp) {
 }
 
 
-static long
-get_integer(SP_term_ref t) {
+static PPL::Integer
+integer_term_to_Integer(SP_term_ref t) {
+  // FIXME: how can we get the unlimited precision integer?
   assert(SP_is_integer(t));
   long v;
   if (SP_get_integer(t, &v))
-    return v;
+    return PPL::Integer(v);
   else
     throw integer_out_of_range(t);
+}
+
+static unsigned int
+term_to_varid(SP_term_ref t) {
+  if (SP_is_integer(t)) {
+    long v;
+    if (SP_get_integer(t, &v))
+      if (v >= 0)
+	return v;
+  }
+  throw not_unsigned_int(t);
 }
 
 static PPL::LinExpression
 build_lin_expression(SP_term_ref t) {
   if (SP_is_integer(t))
-    return PPL::LinExpression(get_integer(t));
+    return PPL::LinExpression(integer_term_to_Integer(t));
   else if (SP_is_compound(t)) {
     SP_atom functor;
     int arity;
@@ -300,7 +347,7 @@ build_lin_expression(SP_term_ref t) {
 	  return -build_lin_expression(arg);
 	else if (functor == a_dollar_VAR)
 	  // Variable.
-	  return PPL::Variable(get_integer(arg));
+	  return PPL::Variable(term_to_varid(arg));
       }
       break;
     case 2:
@@ -312,25 +359,25 @@ build_lin_expression(SP_term_ref t) {
 	if (functor == a_plus)
 	  // Plus.
 	  if (SP_is_integer(arg1))
-	    return get_integer(arg1) + build_lin_expression(arg2);
+	    return integer_term_to_Integer(arg1) + build_lin_expression(arg2);
 	  else if (SP_is_integer(arg2))
-	    return build_lin_expression(arg1) + get_integer(arg2);
+	    return build_lin_expression(arg1) + integer_term_to_Integer(arg2);
 	  else
 	    return build_lin_expression(arg1) + build_lin_expression(arg2);
 	else if (functor == a_minus)
 	  // Minus.
 	  if (SP_is_integer(arg1))
-	    return get_integer(arg1) - build_lin_expression(arg2);
+	    return integer_term_to_Integer(arg1) - build_lin_expression(arg2);
 	  else if (SP_is_integer(arg2))
-	    return build_lin_expression(arg1) - get_integer(arg2);
+	    return build_lin_expression(arg1) - integer_term_to_Integer(arg2);
 	  else
 	    return build_lin_expression(arg1) - build_lin_expression(arg2);
 	else if (functor == a_asterisk)
 	  // Times.
 	  if (SP_is_integer(arg1))
-	    return get_integer(arg1) * build_lin_expression(arg2);
+	    return integer_term_to_Integer(arg1) * build_lin_expression(arg2);
 	  else if (SP_is_integer(arg2))
-	    return build_lin_expression(arg1) * get_integer(arg2);
+	    return build_lin_expression(arg1) * integer_term_to_Integer(arg2);
       }
     }
   }
@@ -353,25 +400,25 @@ build_constraint(SP_term_ref t) {
       if (functor == a_equal_equal)
 	// ==
 	if (SP_is_integer(arg1))
-	  return get_integer(arg1) == build_lin_expression(arg2);
+	  return integer_term_to_Integer(arg1) == build_lin_expression(arg2);
 	else if (SP_is_integer(arg2))
-	  return build_lin_expression(arg1) == get_integer(arg2);
+	  return build_lin_expression(arg1) == integer_term_to_Integer(arg2);
 	else
 	  return build_lin_expression(arg1) == build_lin_expression(arg2);
       else if (functor == a_equal_less_than)
 	// =<
 	if (SP_is_integer(arg1))
-	  return get_integer(arg1) <= build_lin_expression(arg2);
+	  return integer_term_to_Integer(arg1) <= build_lin_expression(arg2);
 	else if (SP_is_integer(arg2))
-	  return build_lin_expression(arg1) <= get_integer(arg2);
+	  return build_lin_expression(arg1) <= integer_term_to_Integer(arg2);
 	else
 	  return build_lin_expression(arg1) <= build_lin_expression(arg2);
       else if (functor == a_greater_than_equal)
 	// >=
 	if (SP_is_integer(arg1))
-	  return get_integer(arg1) >= build_lin_expression(arg2);
+	  return integer_term_to_Integer(arg1) >= build_lin_expression(arg2);
 	else if (SP_is_integer(arg2))
-	  return build_lin_expression(arg1) >= get_integer(arg2);
+	  return build_lin_expression(arg1) >= integer_term_to_Integer(arg2);
 	else
 	  return build_lin_expression(arg1) >= build_lin_expression(arg2);
     }
@@ -411,7 +458,8 @@ build_generator(SP_term_ref t) {
       SP_get_arg(2, t, arg2);
       if (functor == a_vertex)
 	if (SP_is_integer(arg2))
-	  return vertex(build_lin_expression(arg1), get_integer(arg2));
+	  return vertex(build_lin_expression(arg1),
+			integer_term_to_Integer(arg2));
     }
   }
   // Invalid.
@@ -600,6 +648,35 @@ ppl_get_generators(const void* pp, SP_term_ref generators_list) {
       }
     }
     SP_put_term(generators_list, tail);
+  }
+  CATCH_ALL;
+}
+
+static PPL::Variable
+get_variable(SP_term_ref t) {
+  if (SP_is_compound(t)) {
+    SP_atom functor;
+    int arity;
+    SP_get_functor(t, &functor, &arity);
+    if (functor == a_dollar_VAR && arity == 1) {
+      SP_term_ref arg = SP_new_term_ref();
+      SP_get_arg(1, t, arg);
+      return PPL::Variable(term_to_varid(arg));
+    }
+  }
+  throw not_a_variable(t);
+}
+
+extern "C" void
+ppl_remove_dimensions(void* pp, SP_term_ref variables_list) {
+  try {
+    std::set<PPL::Variable> dead_variables;
+    SP_term_ref v = SP_new_term_ref();
+    while (SP_is_list(variables_list)) {
+      SP_get_list(variables_list, v, variables_list);
+      dead_variables.insert(get_variable(v));
+    }
+    static_cast<PPL::Polyhedron*>(pp)->remove_dimensions(dead_variables);
   }
   CATCH_ALL;
 }

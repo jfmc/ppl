@@ -55,6 +55,10 @@ To be written.
 
 To be written.
 
+<H4><CODE>ppl_remove_dimensions(+Polyhedron, +List)</CODE></H4>
+
+To be written.
+
 <H4><CODE>ppl_check_empty(+Polyhedron)</CODE></H4>
 
 To be written.

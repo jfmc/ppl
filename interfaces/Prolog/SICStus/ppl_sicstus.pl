@@ -8,6 +8,7 @@ foreign_resource(ppl_sicstus,
 	ppl_space_dimension,
 	ppl_insert_constraint,
 	ppl_insert_generator,
+	ppl_remove_dimensions,
 	ppl_check_empty,
 	ppl_get_constraints,
 	ppl_get_generators,
@@ -25,6 +26,7 @@ foreign(ppl_space_dimension,      c,
 	ppl_space_dimension(+address, [-integer])).
 foreign(ppl_insert_constraint,    c, ppl_insert_constraint(+address, +term)).
 foreign(ppl_insert_generator,     c, ppl_insert_generator(+address, +term)).
+foreign(ppl_remove_dimensions,    c, ppl_remove_dimensions(+address, +term)).
 foreign(ppl_check_empty,          c, ppl_check_empty(+address, [-integer])).
 foreign(ppl_get_constraints,      c, ppl_get_constraints(+address, -term)).
 foreign(ppl_get_generators,       c, ppl_get_generators(+address, -term)).
