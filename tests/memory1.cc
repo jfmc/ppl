@@ -46,7 +46,7 @@ using namespace std;
 using namespace Parma_Polyhedra_Library;
 
 #ifndef NOISY
-#define NOISY 1
+#define NOISY 0
 #endif
 
 // If GMP does not support exceptions the test is pointless.
