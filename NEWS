@@ -10,6 +10,8 @@ NEWS for version 0.6  (released date to be decided)
 New and Changed Features
 ========================
 
+o  The documentation has been improved in various ways.
+
 o  The methods
 
      void Polyhedron::add_constraints(ConSys& cs),
