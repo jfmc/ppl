@@ -1738,10 +1738,17 @@ PPL::PolyBase::add_constraints(ConSys& cs) {
 
 void
 PPL::PolyBase::add_dimensions_and_constraints(ConSys& cs) {
+  size_t added_columns = cs.space_dimension();
+  // Topology compatibility check: we do NOT adjust dimensions.
+  if (!cs.adjust_topology_and_dimension(topology(), added_columns))
+    throw std::invalid_argument("PPL::Polyhedron::"
+				"add_dimensionss_and_constraints(cs): "
+				"cs contains strict inequalities");
+
   // For an empty polyhedron, it is sufficient to adjust
   // the dimension of the space.
   if (is_empty()) {
-    space_dim += cs.space_dimension();
+    space_dim += added_columns;
     con_sys.clear();
     return;
   }
@@ -1760,20 +1767,27 @@ PPL::PolyBase::add_dimensions_and_constraints(ConSys& cs) {
   // The matrix for the new system of constraints is obtained
   // by leaving the old system of constraints in the upper left-hand side
   // and placing the constraints of `cs' in the lower right-hand side.
+  // NOTE: here topologies agree, whereas dimensions may not agree.
   size_t old_num_rows = con_sys.num_rows();
   size_t old_num_columns = con_sys.num_columns();
-  size_t new_num_columns = old_num_columns + cs.space_dimension();
-  con_sys.grow(old_num_rows + cs.num_rows(), new_num_columns);
-  space_dim = new_num_columns - 1;
-  for (size_t i = cs.num_rows(); i-- > 0; ) {
+  size_t added_rows = cs.num_rows();
+  con_sys.grow(old_num_rows + added_rows, old_num_columns + added_columns);
+  // Move the \epsilon coefficient to the last column, if needed.
+  if (!is_necessarily_closed())
+    con_sys.swap_columns(old_num_columns - 1,
+			 old_num_columns - 1 + added_columns);
+  for (size_t i = added_rows; i-- > 0; ) {
     Constraint& c_new = con_sys[old_num_rows + i];
     Constraint& c_old = cs[i];
+    // Method `grow', by defaults, adds inequalities.
     if (c_old.is_equality())
       c_new.set_is_equality();
     std::swap(c_new[0], c_old[0]);
-    for (size_t j = cs.num_columns(); j-- > 1; )
+    for (size_t j = added_columns; j-- > 1; )
       std::swap(c_new[old_num_columns - 1 + j], c_old[j]);
   }
+  // Update space dimension.
+  space_dim += added_columns;
 
 #ifdef BE_LAZY
   con_sys.set_sorted(false);
