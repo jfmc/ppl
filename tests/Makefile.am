@@ -26,7 +26,7 @@ VPATH = @srcdir@
 
 @SET_MAKE@
 
-SUBDIRS = . BD_Shape Polyhedron
+SUBDIRS = . BD_Shape Polyhedron Grid
 
 AM_CPPFLAGS = -I$(top_builddir)/src -I$(top_srcdir)/src @extra_includes@
 
