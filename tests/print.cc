@@ -53,7 +53,7 @@ print_constraints(const ConSys& cs, const string& intro, ostream& s) {
 
 void
 print_constraints(const Polyhedron& ph, const string& intro, ostream& s) {
-  print_constraints(ph.constraints(), "", s);
+  print_constraints(ph.constraints(), intro, s);
 }
 
 void
@@ -79,5 +79,5 @@ print_generators(const GenSys& gs, const string& intro, ostream& s) {
 
 void
 print_generators(const Polyhedron& ph, const string& intro, ostream& s) {
-  print_generators(ph.generators(), "", s);
+  print_generators(ph.generators(), intro, s);
 }
