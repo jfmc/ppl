@@ -269,6 +269,15 @@ private:
 				     size_t num_dimensions);
 
   //! \brief
+  //! For each strict inequality in \p *this,
+  //! adds the corresponding non-strict inequality.
+  /*!
+    It is assumed that the topology of \p *this
+    is <CODE>NOT_NECESSARILY_CLOSED</CODE>.
+  */
+  void add_corresponding_nonstrict_inequalities();
+
+  //! \brief
   //! Returns <CODE>true</CODE> if and only if \p *this
   //! contains one or more strict inequality constraints.
   bool has_strict_inequalities() const;

@@ -110,6 +110,25 @@ PPL::ConSys::adjust_topology_and_dimension(Topology new_topology,
   return true;
 }
 
+void
+PPL::ConSys::add_corresponding_nonstrict_inequalities() {
+  assert(!is_necessarily_closed());
+  ConSys& cs = *this;
+  size_t n_rows = cs.num_rows();
+  size_t eps_index = cs.num_columns() - 1;
+  for (size_t i = n_rows; i-- > 0; ) {
+    const Constraint& c = cs[i];
+    if (c[eps_index] < 0) {
+      // `c' is a strict inequality: adding the non-strict inequality.
+      Constraint nsic = c;
+      nsic[eps_index] = 0;
+      // Enforcing normalization.
+      nsic.normalize();
+      cs.add_row(nsic);
+    }
+  }
+}
+
 bool
 PPL::ConSys::has_strict_inequalities() const {
   if (is_necessarily_closed())
