@@ -147,6 +147,7 @@ checked_mpz.inlines.hh \
 checked_mpq.inlines.hh \
 checked.inlines.hh \
 Integer.defs.hh \
+Integer.inlines.hh \
 Interval.defs.hh \
 Interval.inlines.hh \
 BoundingBox.defs.hh \
