@@ -137,7 +137,7 @@ check_containment(const PH& ph, const Polyhedra_PowerSet<PH>& ps) {
       if (pi.contains(pj))
 	tmp.erase(j);
     }
-    if (tmp.is_bottom())
+    if (tmp.empty())
       return true;
     else {
       Polyhedra_PowerSet<NNC_Polyhedron> new_disjuncts(ph.space_dimension(),
