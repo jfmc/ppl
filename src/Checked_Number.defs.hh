@@ -36,19 +36,6 @@ site: http://www.cs.unipr.it/ppl/ . */
 
 namespace Parma_Polyhedra_Library {
 
-struct Check_Overflow_Policy {
-  static const int check_overflow = 1;
-  static const int check_nan_result = 0;
-  static const int check_inexact = 0;
-  static const int check_divbyzero = 0;
-  static const int check_sqrt_neg = 0;
-  static const int check_nan_arg = 0;
-  static const int check_infinity_arg = 0;
-  static const int store_unknown = 0;
-  static const int store_overflows = 0;
-  static const int convertible = 1;
-};
-
 template <typename T, typename Policy>
 class Checked_Number {
 
