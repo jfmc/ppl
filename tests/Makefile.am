@@ -92,6 +92,7 @@ ORIGINAL_TESTS = \
 	empty1 \
 	exceptions1 exceptions2  exceptions3 \
 	expanddim1 \
+	folddims1 \
 	generalizedaffineimage1 generalizedaffineimage2 \
 	generalizedaffineimage3 generalizedaffineimage4 \
 	generalizedaffineimage5 generalizedaffineimage6 \
@@ -181,6 +182,7 @@ DERIVED_TESTS = \
 	nnc_empty1 \
 	nnc_exceptions1 nnc_exceptions3 \
 	nnc_expanddim1 \
+	nnc_folddims1 \
 	nnc_generalizedaffineimage1 nnc_generalizedaffineimage2 \
 	nnc_generalizedaffineimage3 \
 	nnc_generalizedaffineimage5 nnc_generalizedaffineimage6 \
@@ -388,6 +390,8 @@ exceptions2_SOURCES = exceptions2.cc
 exceptions3_SOURCES = exceptions3.cc
 
 expanddim1_SOURCES = expanddim1.cc
+
+folddims1_SOURCES = folddims1.cc
 
 generalizedaffineimage1_SOURCES = generalizedaffineimage1.cc
 generalizedaffineimage2_SOURCES = generalizedaffineimage2.cc
@@ -771,6 +775,9 @@ nnc_exceptions3_CXXFLAGS = $(DERIVED_CXXFLAGS)
 
 nnc_expanddim1_SOURCES = expanddim1.cc
 nnc_expanddim1_CXXFLAGS = $(DERIVED_CXXFLAGS)
+
+nnc_folddims1_SOURCES = folddims1.cc
+nnc_folddims1_CXXFLAGS = $(DERIVED_CXXFLAGS)
 
 nnc_generalizedaffineimage1_SOURCES = generalizedaffineimage1.cc
 nnc_generalizedaffineimage1_CXXFLAGS = $(DERIVED_CXXFLAGS)
