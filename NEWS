@@ -12,13 +12,12 @@ New and Changed Features
 
 o  We now require GMP 4.1.3 or higher.
 
-o  Significant efficiency improvements have been achieved in the case
-   of closed polyhedra.
+o  Significant efficiency improvements have been achieved everywhere.
 
 o  The classes PowerSet and Polyhedra_PowerSet have been renamed Powerset
    and Polyhedra_Powerset, respectively.
 
-o  The helper function widen_fun has been renamed widen_fun_ref.
+o  The helper function `widen_fun' has been renamed `widen_fun_ref'.
 
 o  New explicit constructors and assignment operators allowing to obtain a
    Polyhedra_Powerset<NNC_Polyhedron> from a Polyhedra_Powerset<C_Polyhedron>
@@ -30,21 +29,6 @@ o  New method
      Polyhedra_Powerset::poly_difference_assign(const Polyhedra_Powerset& y)
 
    assigns to `*this' the poly-difference of `*this' and `y'.
-
-o  New methods
-
-     C_Polyhedron& C_Polyhedron::operator=(const NNC_Polyhedron& y)
-
-   and
-
-     NNC_Polyhedron& NNC_Polyhedron::operator=(const C_Polyhedron& y).
-
-   The former assigns to `*this' the topological closure of `y',
-   the latter assigns `y' itself to `*this', but seen as an NNC polyhedron.
-
-o  New method dimension_type Polyhedron::affine_dimension() returns
-   the affine dimension of *this (not to be confused with the dimension
-   of its enclosing vector space) or 0, if *this is empty.
 
 o  All the public classes of the library have been endowed with methods
 
@@ -58,6 +42,10 @@ o  All the public classes of the library have been endowed with methods
    occupied by *this and of the memory managed by *this, respectively.
    The type `memory_size_type' is a newly added unsigned integral type
    suitable to the representation of such information.
+
+o  New method dimension_type Polyhedron::affine_dimension() returns
+   the affine dimension of *this (not to be confused with the dimension
+   of its enclosing vector space) or 0, if *this is empty.
 
 o  All the methods changing (i.e., adding, removing, mapping, etc.)
    the dimensions of the vector space have been renamed so as to avoid
