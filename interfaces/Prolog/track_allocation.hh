@@ -35,14 +35,14 @@ site: http://www.cs.unipr.it/ppl/ . */
 
 namespace Parma_Polyhedra_Library {
 
-class PolyTracker {
+class Poly_Tracker {
 public:
   void insert(const void* pp);
   void check(const void* pp) const;
   void remove(const void* pp);
 
-  PolyTracker();
-  ~PolyTracker();
+  Poly_Tracker();
+  ~Poly_Tracker();
 
 private:
   typedef std::set<const void*, std::less<const void*> > Set;
@@ -50,48 +50,48 @@ private:
 };
 
 inline
-PolyTracker::PolyTracker() {
+Poly_Tracker::Poly_Tracker() {
 }
 
 inline
-PolyTracker::~PolyTracker() {
+Poly_Tracker::~Poly_Tracker() {
   Set::size_type n = s.size();
   if (n > 0)
-    std::cerr << "PolyTracker: " << n << " polyhedra leaked!" << std::endl;
+    std::cerr << "Poly_Tracker: " << n << " polyhedra leaked!" << std::endl;
 }
 
 inline void
-PolyTracker::insert(const void* pp) {
+Poly_Tracker::insert(const void* pp) {
   std::pair<Set::iterator, bool> stat = s.insert(pp);
   if (!stat.second) {
-    std::cerr << "PolyTracker: two polyhedra at the same address "
+    std::cerr << "Poly_Tracker: two polyhedra at the same address "
 	      << "at the same time?!" << std::endl;
     abort();
   }
 }
 
 inline void
-PolyTracker::check(const void* pp) const {
+Poly_Tracker::check(const void* pp) const {
   if (s.find(pp) == s.end()) {
-    std::cerr << "PolyTracker: attempt to access an inexistent polyhedron."
+    std::cerr << "Poly_Tracker: attempt to access an inexistent polyhedron."
 	      << std::endl;
     abort();
   }
 }
 
 void
-PolyTracker::remove(const void* pp) {
+Poly_Tracker::remove(const void* pp) {
   if (s.erase(pp) != 1) {
-    std::cerr << "PolyTracker: attempt to deallocate "
+    std::cerr << "Poly_Tracker: attempt to deallocate "
 	      << "an inexistent polyhedron."
 	      << std::endl;
     abort();
   }
 }
 
-static inline PolyTracker&
+static inline Poly_Tracker&
 poly_tracker() {
-  static PolyTracker pt;
+  static Poly_Tracker pt;
   return pt;
 }
 

@@ -235,7 +235,7 @@ test7() {
     exit(1);
 }
 
-// Test as given in GopanDMDRS04 on page 519.
+// Test as given in [GopanDMDRS04] on page 519.
 static void
 test8() {
   C_Polyhedron ph1(2, C_Polyhedron::EMPTY);

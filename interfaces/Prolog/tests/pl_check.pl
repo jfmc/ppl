@@ -298,11 +298,11 @@ new_poly_from_dim :-
 
 % This also uses ppl_Polyhedron_is_universe/1
 % and ppl_Polyhedron_add_constraint/2.
-new_poly_from_dim(T, UniverseOrEmpty, Con) :-
-  \+ clean_ppl_new_Polyhedron_from_space_dimension(T, 3, UniverseOrEmpty, 0),
+new_poly_from_dim(T, Universe_Or_Empty, Con) :-
+  \+ clean_ppl_new_Polyhedron_from_space_dimension(T, 3, Universe_Or_Empty, 0),
   \+ clean_ppl_new_Polyhedron_from_space_dimension(T, 3, xxx, P),
-  clean_ppl_new_Polyhedron_from_space_dimension(T, 3, UniverseOrEmpty, P),
-  (UniverseOrEmpty = universe ->
+  clean_ppl_new_Polyhedron_from_space_dimension(T, 3, Universe_Or_Empty, P),
+  (Universe_Or_Empty = universe ->
       (ppl_Polyhedron_is_universe(P),
       ppl_Polyhedron_add_constraint(P, Con),
       \+ ppl_Polyhedron_is_universe(P))
@@ -889,8 +889,8 @@ widen_BHRZ03_with_token :-
 widen_BHRZ03_with_token(Topology, CS_P, CS_Q, CS_Pa, CS_Qa, Token) :-
   widen_extrapolation_init(P, CS_P, Topology),
   widen_extrapolation_init(Q, CS_Q, Topology),
-  WrongToken is 1 - Token,
-  \+ ppl_Polyhedron_BHRZ03_widening_assign_with_token(P, Q, WrongToken),
+  Wrong_Token is 1 - Token,
+  \+ ppl_Polyhedron_BHRZ03_widening_assign_with_token(P, Q, Wrong_Token),
   ppl_Polyhedron_BHRZ03_widening_assign_with_token(P, Q, Token),
   ppl_Polyhedron_BHRZ03_widening_assign_with_token(P, Q, X),
   X = Token,
@@ -937,9 +937,9 @@ lim_extrapolate_BHRZ03_with_token(Topology,
                  CS_P, CS_Q, CS_lim, CS_Pa, Token) :-
   widen_extrapolation_init(P, CS_P, Topology),
   widen_extrapolation_init(Q, CS_Q, Topology),
-  WrongToken is 1 - Token,
+  Wrong_Token is 1 - Token,
   \+ ppl_Polyhedron_limited_BHRZ03_extrapolation_assign_with_token(P, Q,
-                                                   CS_lim, WrongToken),
+                                                   CS_lim, Wrong_Token),
   ppl_Polyhedron_limited_BHRZ03_extrapolation_assign_with_token(P, Q,
                                                    CS_lim, Token),
   ppl_Polyhedron_limited_BHRZ03_extrapolation_assign_with_token(P, Q,
@@ -990,9 +990,9 @@ bound_extrapolate_BHRZ03_with_token(Topology,
                  CS_P, CS_Q, CS_lim, CS_Pa, Token) :-
   widen_extrapolation_init(P, CS_P, Topology),
   widen_extrapolation_init(Q, CS_Q, Topology),
-  WrongToken is 1 - Token,
+  Wrong_Token is 1 - Token,
   \+ ppl_Polyhedron_bounded_BHRZ03_extrapolation_assign_with_token(P, Q,
-                                                   CS_lim, WrongToken),
+                                                   CS_lim, Wrong_Token),
   ppl_Polyhedron_bounded_BHRZ03_extrapolation_assign_with_token(P, Q,
                                                    CS_lim, Token),
   ppl_Polyhedron_bounded_BHRZ03_extrapolation_assign_with_token(P, Q,
@@ -1044,8 +1044,8 @@ widen_H79_with_token :-
 widen_H79_with_token(Topology, CS_P, CS_Q, CS_Pa, CS_Qa, Token) :-
   widen_extrapolation_init(P, CS_P, Topology),
   widen_extrapolation_init(Q, CS_Q, Topology),
-  WrongToken is 1 - Token,
-  \+  ppl_Polyhedron_H79_widening_assign_with_token(P, Q, WrongToken),
+  Wrong_Token is 1 - Token,
+  \+  ppl_Polyhedron_H79_widening_assign_with_token(P, Q, Wrong_Token),
   ppl_Polyhedron_H79_widening_assign_with_token(P, Q, Token),
   ppl_Polyhedron_H79_widening_assign_with_token(P, Q, X),
   X = Token,
@@ -1098,9 +1098,9 @@ lim_extrapolate_H79_with_token(Topology,
                  CS_P, CS_Q, CS_lim, CS_Pa, Token) :-
   widen_extrapolation_init(P, CS_P, Topology),
   widen_extrapolation_init(Q, CS_Q, Topology),
-  WrongToken is 1 - Token,
+  Wrong_Token is 1 - Token,
   \+ ppl_Polyhedron_limited_H79_extrapolation_assign_with_token(P, Q,
-                                                   CS_lim, WrongToken),
+                                                   CS_lim, Wrong_Token),
   ppl_Polyhedron_limited_H79_extrapolation_assign_with_token(P, Q,
                                                    CS_lim, Token),
   widen_extrapolation_final(P, CS_Pa, Topology),
@@ -1148,9 +1148,9 @@ bound_extrapolate_H79_with_token(Topology,
                  CS_P, CS_Q, CS_lim, CS_Pa, Token) :-
   widen_extrapolation_init(P, CS_P, Topology),
   widen_extrapolation_init(Q, CS_Q, Topology),
-  WrongToken is 1 - Token,
+  Wrong_Token is 1 - Token,
   \+ ppl_Polyhedron_bounded_H79_extrapolation_assign_with_token(P, Q,
-                                                   CS_lim, WrongToken),
+                                                   CS_lim, Wrong_Token),
   ppl_Polyhedron_bounded_H79_extrapolation_assign_with_token(P, Q,
                                                    CS_lim, Token),
   ppl_Polyhedron_bounded_H79_extrapolation_assign_with_token(P, Q,
@@ -1523,7 +1523,7 @@ expand_dim(T) :-
   ppl_Polyhedron_space_dimension(P, 4),
   !,
   ppl_delete_Polyhedron(P),
-% Example taken from GopanDMDRS04, page 519.
+% Example taken from [GopanDMDRS04], page 519.
   clean_ppl_new_Polyhedron_from_space_dimension(T, 2, empty, Ptacas),
   ppl_Polyhedron_add_generators(Ptacas,
        [point(A + 2*B), point(A + 3*B), point(A + 4*B)]),
@@ -1860,8 +1860,8 @@ maximize_with_point(T, CS, LE, N, D, Max, Point) :-
   clean_ppl_new_Polyhedron_from_constraints(T, CS, P),
   (D > 0
    ->
-    (ppl_Polyhedron_maximize_with_point(P, LE, N, D, Max, PointMax),
-    (PointMax = closure_point(E) ; PointMax = point(E)),
+    (ppl_Polyhedron_maximize_with_point(P, LE, N, D, Max, Point_Max),
+    (Point_Max = closure_point(E) ; Point_Max = point(E)),
     clean_ppl_new_Polyhedron_from_generators(T, [point(E)], Pm),
     clean_ppl_new_Polyhedron_from_generators(T, [Point], Qm),
     ppl_Polyhedron_equals_Polyhedron(Pm, Qm),
@@ -1901,8 +1901,8 @@ minimize_with_point(T, CS, LE, N, D, Min, Point) :-
   clean_ppl_new_Polyhedron_from_constraints(T, CS, P),
   (D > 0
    ->
-    (ppl_Polyhedron_minimize_with_point(P, LE, N, D, Min, PointMin),
-    (PointMin = closure_point(E) ; PointMin = point(E)),
+    (ppl_Polyhedron_minimize_with_point(P, LE, N, D, Min, Point_Min),
+    (Point_Min = closure_point(E) ; Point_Min = point(E)),
     clean_ppl_new_Polyhedron_from_generators(T, [point(E)], Pm),
     clean_ppl_new_Polyhedron_from_generators(T, [Point], Qm),
     ppl_Polyhedron_equals_Polyhedron(Pm, Qm),
@@ -1970,31 +1970,31 @@ time_out(T) :-
   ppl_delete_Polyhedron(Q1),
   ppl_finalize.
 
-% time_watch(+Topology, +Goal, +NoTimeOut, +TimeOut)
+% time_watch(+Topology, +Goal, +No_Time_Out, +Time_Out)
 % time_watch/4 makes a copy of Goal with a copy of the polyhedron
 % and executes it with the currrent timeout exception settings.
 % If the call exceeds the time allowed, it catches the exception
-% and performs the TimeOut goal.
+% and performs the Time_Out goal.
 % If the call does not exceed the time allowed,
 % then the timeout exception time is reset and
-% then Goal is executed and then the NoTmeOut is executed.
+% then Goal is executed and then the No_Time_Out is executed.
 
-time_watch(Topology, Goal, NoTimeOut, TimeOut) :-
+time_watch(Topology, Goal, No_Time_Out, Time_Out) :-
    !,
    Goal =.. [PPLFunct, Poly|Args],
    clean_ppl_new_Polyhedron_from_Polyhedron(Topology, Poly,
-                                            Topology, PolyCopy),
-   GoalCopy =.. [PPLFunct, PolyCopy|Args],
-   ppl_timeout_exception_atom(TimeOutAtom),
-     (catch(GoalCopy, TimeOutAtom, fail) ->
+                                            Topology, Poly_Copy),
+   Goal_Copy =.. [PPLFunct, Poly_Copy|Args],
+   ppl_timeout_exception_atom(Time_Out_Atom),
+     (catch(Goal_Copy, Time_Out_Atom, fail) ->
        (ppl_reset_timeout,
-        ppl_Polyhedron_swap(Poly, PolyCopy),
-        call(NoTimeOut))
+        ppl_Polyhedron_swap(Poly, Poly_Copy),
+        call(No_Time_Out))
      ;
-       call(TimeOut)
+       call(Time_Out)
    ),
    !,
-   ppl_delete_Polyhedron(PolyCopy).
+   ppl_delete_Polyhedron(Poly_Copy).
 
 %%%%%%%%%%%%%%%%% Exceptions %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
@@ -2110,34 +2110,34 @@ exception_sys_prolog1(N, V) :-
    exception_sys_prolog1(N1, V).
 
 exception_sys_prolog(1, [A,B,_]) :-
-  current_prolog_flag(max_integer, MaxInt),
+  current_prolog_flag(max_integer, Max_Int),
   clean_ppl_new_Polyhedron_from_constraints(c,
-               [MaxInt * A - B >= 0, 3 >= A], P),
+               [Max_Int * A - B >= 0, 3 >= A], P),
   must_catch(ppl_Polyhedron_get_generators(P, _)),
   !,
   ppl_delete_Polyhedron(P).
 
  exception_sys_prolog(2, [A,B,_]) :-
-  current_prolog_flag(min_integer, MinInt),
+  current_prolog_flag(min_integer, Min_Int),
   clean_ppl_new_Polyhedron_from_constraints(c,
-                                            [MinInt * A - B =< 0, 2 >= A],
+                                            [Min_Int * A - B =< 0, 2 >= A],
                                             P),
   must_catch(ppl_Polyhedron_get_generators(P, _)),
   ppl_delete_Polyhedron(P).
 
 exception_sys_prolog(3, [A,B,_]) :-
-  current_prolog_flag(max_integer, MaxInt),
+  current_prolog_flag(max_integer, Max_Int),
   clean_ppl_new_Polyhedron_from_generators(c,
-               [point(MaxInt * A + B)], P),
+               [point(Max_Int * A + B)], P),
   ppl_Polyhedron_affine_image(P, A, A + 1, 1),
   must_catch(ppl_Polyhedron_get_generators(P, _)),
   !,
   ppl_delete_Polyhedron(P).
 
 exception_sys_prolog(4, [A,B,_]) :-
-  current_prolog_flag(min_integer, MinInt),
+  current_prolog_flag(min_integer, Min_Int),
   clean_ppl_new_Polyhedron_from_generators(c,
-               [point(MinInt * A + B)], P),
+               [point(Min_Int * A + B)], P),
   ppl_Polyhedron_affine_image(P, A, A - 1, 1),
   must_catch(ppl_Polyhedron_get_generators(P, _GS)),
   !,
@@ -2234,16 +2234,16 @@ check_exception(Exception):-
 
 %%%%%%%%%%%% predicate for making list of ppl variables %%%%%%
 
-% make_var_list(+I,+Dimension,?VariableList)
+% make_var_list(+I,+Dimension,?Variable_List)
 % constructs a list of variables with indices from I to Dimension - 1.
 % It is assumed that I =< Dimension.
 
-make_vars(Dim, VarList):-
-  make_var_list(0, Dim, VarList).
+make_vars(Dim, Var_List):-
+  make_var_list(0, Dim, Var_List).
 make_var_list(Dim,Dim,[]):- !.
-make_var_list(I,Dim,['$VAR'(I)|VarList]):-
+make_var_list(I,Dim,['$VAR'(I)|Var_List]):-
   I1 is I + 1,
-  make_var_list(I1,Dim,VarList).
+  make_var_list(I1,Dim,Var_List).
 
 %%%%%%%%%%%% predicate for safely deleting polyhedra on failure %
 

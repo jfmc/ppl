@@ -34,7 +34,7 @@
 % 'Polyhedra' are the live polyhedra; the head of the list
 % represents the result of the computation.
 
-solve_query(Goals, VN, PolysOut) :-
+solve_query(Goals, VN, Polys_Out) :-
   % The initial polyhedron is initialised with 0 dimensions
   % We use the NNC topology so that we can handle strict constraints.
   Topology = nnc,
@@ -43,32 +43,32 @@ solve_query(Goals, VN, PolysOut) :-
   cleanup(Poly),
 
   % Try to reduce `Goals'.
-  solve(Topology, Goals, [Poly], PolysOut2),
+  solve(Topology, Goals, [Poly], Polys_Out2),
 
-  % Use the last polyhedron `PolyOut' that has been added to the list
+  % Use the last polyhedron `Poly_Out' that has been added to the list
   % for generating the resulting set of constraints.
-  PolysOut2 = [PolyOut|_],
-  ppl_new_Polyhedron_from_Polyhedron(Topology, PolyOut, Topology, Q),
+  Polys_Out2 = [Poly_Out|_],
+  ppl_new_Polyhedron_from_Polyhedron(Topology, Poly_Out, Topology, Q),
   % On backtracking, clean up the unwanted polyhedron
   cleanup(Q),
 
   % Now find and sort all the PPL dimensions for variables
   % that occur in bindings to external variables.
-  terms2wanted_dims(VN, [], NumList),
-  sort(NumList, SortedNumList),
+  terms2wanted_dims(VN, [], Num_List),
+  sort(Num_List, Sorted_Num_List),
 
   % We want to remove (project away) all other dimensions.
   ppl_Polyhedron_space_dimension(Q, Dims),
-  get_unwanted_dims(SortedNumList, Dims, UnwantedPPLVars),
-  ppl_Polyhedron_remove_space_dimensions(Q, UnwantedPPLVars),
+  get_unwanted_dims(Sorted_Num_List, Dims, Unwanted_PPL_Vars),
+  ppl_Polyhedron_remove_space_dimensions(Q, Unwanted_PPL_Vars),
 
   % Get the constraints.
   ppl_Polyhedron_get_constraints(Q, CS),
 
   % Print the result.
-  write_bindings(VN, SortedNumList),
-  write_constraints(CS, SortedNumList, VN),
-  PolysOut = [Q|PolysOut2].
+  write_bindings(VN, Sorted_Num_List),
+  write_constraints(CS, Sorted_Num_List, VN),
+  Polys_Out = [Q|Polys_Out2].
 
 solve(_, true, Polys, Polys) :-
   % If the goal is true, we can return the input list of
@@ -76,31 +76,31 @@ solve(_, true, Polys, Polys) :-
   % The head of the list will contain the solution to the query.
   !.
 
-solve(T, (A, B), PolysIn, PolysOut) :-
+solve(T, (A, B), Polys_In, Polys_Out) :-
   !,
   % Conjunction is solved using the output list of non-empty
   % polyhedra from the first component for input to the second.
-  solve(T, A, PolysIn, PolysTmp),
-  solve(T, B, PolysTmp, PolysOut).
+  solve(T, A, Polys_In, Polys_Tmp),
+  solve(T, B, Polys_Tmp, Polys_Out).
 
-solve(T, (A; B), PolysIn, PolysOut) :-
+solve(T, (A; B), Polys_In, Polys_Out) :-
   !,
   % Disjunction is dealt with by making a copy of the polyhedron
   % before starting each branch.
-  PolysIn = [Poly|_],
+  Polys_In = [Poly|_],
   (
     (
       ppl_new_Polyhedron_from_Polyhedron(T, Poly, T, Q),
       % On backtracking, clean up the unwanted polyhedron
       cleanup(Q),
-      solve(T, A, [Q|PolysIn], PolysOut)
+      solve(T, A, [Q|Polys_In], Polys_Out)
     )
   ;
     (
       ppl_new_Polyhedron_from_Polyhedron(T, Poly, T, Q),
       % On backtracking, we clean up the unwanted polyhedron
       cleanup(Q),
-      solve(T, B, [Q|PolysIn], PolysOut)
+      solve(T, B, [Q|Polys_In], Polys_Out)
     )
   ).
 
@@ -117,16 +117,16 @@ solve(_, { Constraints }, [Poly|Polys], [Poly|Polys]) :-
   ppl_Polyhedron_space_dimension(Poly, Dims),
 
   % Change any free variables into PPL variables.
-  term2PPLterm(Constraints, Dims, NewDims),
-  AddedDims is NewDims - Dims,
-  ppl_Polyhedron_add_space_dimensions_and_embed(Poly, AddedDims),
+  term2PPLterm(Constraints, Dims, New_Dims),
+  Added_Dims is New_Dims - Dims,
+  ppl_Polyhedron_add_space_dimensions_and_embed(Poly, Added_Dims),
 
   % Make the sequence of constraints into a list
   % and check we do have constraints.
-  constraints2list(Constraints, ConstraintsList),
+  constraints2list(Constraints, Constraints_List),
 
   % Fails if `Poly' becomes empty.
-  ppl_Polyhedron_add_constraints_and_minimize(Poly, ConstraintsList).
+  ppl_Polyhedron_add_constraints_and_minimize(Poly, Constraints_List).
 
 % Built-ins may be added here.
 
@@ -146,7 +146,7 @@ solve(_, nl, Polys, Polys) :-
   !,
   nl.
 
-solve(Topology, Atom, [Poly|Polys], PolysOut) :-
+solve(Topology, Atom, [Poly|Polys], Polys_Out) :-
   % Here is a choicepoint: possibly different clauses
   % will be selected on backtracking.
   % NOTE: we may fail to find (another) clause,
@@ -155,42 +155,42 @@ solve(Topology, Atom, [Poly|Polys], PolysOut) :-
   ppl_Polyhedron_space_dimension(Poly, Dims),
 
   % Copy the current polyhedron and work on the copy.
-  ppl_new_Polyhedron_from_Polyhedron(Topology, Poly, Topology, PolyCopy),
+  ppl_new_Polyhedron_from_Polyhedron(Topology, Poly, Topology, Poly_Copy),
   % On backtracking, clean up the unwanted polyhedron
-  cleanup(PolyCopy),
+  cleanup(Poly_Copy),
 
   % Parameter passing.
-  parameter_passing(Atom, Head, BindingConstraints),
+  parameter_passing(Atom, Head, Binding_Constraints),
 
   % Change any free variables into PPL variables.
-  terms2PPLterms(BindingConstraints, Dims, NewDims),
-  AddedDims is NewDims - Dims,
-  ppl_Polyhedron_add_space_dimensions_and_embed(PolyCopy, AddedDims),
+  terms2PPLterms(Binding_Constraints, Dims, New_Dims),
+  Added_Dims is New_Dims - Dims,
+  ppl_Polyhedron_add_space_dimensions_and_embed(Poly_Copy, Added_Dims),
 
   % First solve the parameter passing equations.
-  ppl_Polyhedron_add_constraints_and_minimize(PolyCopy, BindingConstraints),
+  ppl_Polyhedron_add_constraints_and_minimize(Poly_Copy, Binding_Constraints),
   % Then solve the body.
-  solve(Topology, Body, [PolyCopy, Poly|Polys], PolysSolnOut),
+  solve(Topology, Body, [Poly_Copy, Poly|Polys], Polys_Soln_Out),
 
   % Now remove any dimensions that are higher than
   % previously and higher than any PPL variables in the atom.
-  term2wanted_dims(Atom, [], NumList),
-  MaxWanted1 is Dims - 1,
-  max(NumList, MaxWanted1, MaxWanted),
-  UnWanted is MaxWanted + 1,
+  term2wanted_dims(Atom, [], Num_List),
+  Max_Wanted1 is Dims - 1,
+  max(Num_List, Max_Wanted1, Max_Wanted),
+  Un_Wanted is Max_Wanted + 1,
 
   % Copy the current polyhedron and work on the copy.
-  PolysSolnOut = [PolySoln|_],
-  ppl_new_Polyhedron_from_Polyhedron(Topology, PolySoln,
-                                        Topology, PolySolnCopy),
+  Polys_Soln_Out = [Poly_Soln|_],
+  ppl_new_Polyhedron_from_Polyhedron(Topology, Poly_Soln,
+                                        Topology, Poly_Soln_Copy),
   % On backtracking, clean up the unwanted polyhedron
-  cleanup(PolySolnCopy),
+  cleanup(Poly_Soln_Copy),
 
   % We want to remove (project away) all other dimensions.
-  ppl_Polyhedron_remove_higher_space_dimensions(PolySolnCopy, UnWanted),
+  ppl_Polyhedron_remove_higher_space_dimensions(Poly_Soln_Copy, Un_Wanted),
 
   % The list of live polyhedra must be returned.
-  PolysOut = [PolySolnCopy|PolysSolnOut].
+  Polys_Out = [Poly_Soln_Copy|Polys_Soln_Out].
 
 parameter_passing(Atom, Head, Bindings) :-
   Atom =.. [_|Actuals],
@@ -202,7 +202,7 @@ parameter_passing(Atom, Head, Bindings) :-
 % By only adding new variables when needed, the computation
 % is much more efficient.
 parameter_passing_terms([], [], []).
-parameter_passing_terms([A|Actuals], [F|Formals], NewBindings) :-
+parameter_passing_terms([A|Actuals], [F|Formals], New_Bindings) :-
   parameter_passing_terms(Actuals, Formals, Bindings),
   (int_expr(F) ->
     F1 is F
@@ -210,24 +210,24 @@ parameter_passing_terms([A|Actuals], [F|Formals], NewBindings) :-
     F1 = F
   ),
   (A = F1 ->
-    NewBindings = Bindings
+    New_Bindings = Bindings
   ;
-    parameter_passing_term(A, F1, Bindings, NewBindings)
+    parameter_passing_term(A, F1, Bindings, New_Bindings)
   ).
 
-parameter_passing_term(A, F, Bindings, NewBindings) :-
+parameter_passing_term(A, F, Bindings, New_Bindings) :-
   ((int_expr(A) ; int_expr(F) ; A = '$VAR'(_) ; F = '$VAR'(_)) ->
-    NewBindings = [(A = F)|Bindings]
+    New_Bindings = [(A = F)|Bindings]
   ;
     A =.. [AFunct|Aargs],
     F =.. [FFunct|Fargs],
     (AFunct == FFunct ->
       % Functors agree so we process the arguments.
       parameter_passing_terms(Aargs, Fargs, Bindings1),
-      append(Bindings1, Bindings, NewBindings)
+      append(Bindings1, Bindings, New_Bindings)
     ;
       % Unification fails so we force the constraints to fail.
-      NewBindings = [0 = 1]
+      New_Bindings = [0 = 1]
     )
   ).
 
@@ -297,10 +297,10 @@ read_program(Program) :-
     fail
   ),
   (open_file_for_reading(Program, Stream) ->
-    FileName = Program
+    File_Name = Program
   ;
-    atom_concat(Program, '.clpq', FileName),
-    (open_file_for_reading(FileName, Stream) ->
+    atom_concat(Program, '.clpq', File_Name),
+    (open_file_for_reading(File_Name, Stream) ->
       true
     ;
       write_error(['read_program/1 - arg 1: file ',
@@ -451,11 +451,11 @@ do_command(statistics, _VN) :-
   main_loop_yes.
 
 do_command(Query, VN) :-
-  solve_query(Query, VN, PolysOut),
+  solve_query(Query, VN, Polys_Out),
   % See if the user wants to look for more solutions.
   query_next_solution,
   % When finished, remove remaining polyhedra.
-  delete_all_polyhedra(PolysOut),
+  delete_all_polyhedra(Polys_Out),
   main_loop_yes.
 
 do_command(_, _VN) :-
@@ -473,33 +473,33 @@ main_loop_yes :-
 
 %%%%%%%%%%%%%%%%% Writing Computed Answer Constraints %%%%%%%%%%%%%%%%%%
 
-write_var('$VAR'(N), _NameList) :-
+write_var('$VAR'(N), _Name_List) :-
   write('_'),
   write('$VAR'(N)).
 
-negate_expr(Num*Var, NegExpr) :-
+negate_expr(Num*Var, Neg_Expr) :-
   (Num < 0 ->
-    NegNum is -Num,
-    NegExpr = NegNum*Var
+    Neg_Num is -Num,
+    Neg_Expr = Neg_Num*Var
   ;
-    NegExpr = Num*Var
+    Neg_Expr = Num*Var
   ).
-negate_expr(Expr1 + Expr2, NegExpr1 + NegExpr2) :-
-  negate_expr(Expr1, NegExpr1),
-  negate_expr(Expr2, NegExpr2).
+negate_expr(Expr1 + Expr2, Neg_Expr1 + Neg_Expr2) :-
+  negate_expr(Expr1, Neg_Expr1),
+  negate_expr(Expr2, Neg_Expr2).
 
-write_expr('$VAR'(N), VarList, VN) :-
+write_expr('$VAR'(N), Var_List, VN) :-
   !,
-  position2element(N, VarList, M),
+  position2element(N, Var_List, M),
   (member((A = '$VAR'(M)), VN) ->
     write(A)
   ;
     write('_'),
     write('$VAR'(N))
   ).
-%write_expr('$VAR'(N), VariableNames) :-
-%  write_var('$VAR'(N), VariableNames).
-write_expr(Num*Var, VariableNames, VN) :-
+%write_expr('$VAR'(N), Variable_Names) :-
+%  write_var('$VAR'(N), Variable_Names).
+write_expr(Num*Var, Variable_Names, VN) :-
   (Num =:= 1 ->
     true
   ;
@@ -510,23 +510,23 @@ write_expr(Num*Var, VariableNames, VN) :-
       write('*')
     )
   ),
-  write_expr(Var, VariableNames, VN).
-write_expr(E + Num*Var, VariableNames, VN) :-
-  write_expr(E, VariableNames, VN),
+  write_expr(Var, Variable_Names, VN).
+write_expr(E + Num*Var, Variable_Names, VN) :-
+  write_expr(E, Variable_Names, VN),
   (Num < 0 ->
     write(' - '),
-    NegNum is -Num,
-    write_expr(NegNum*Var, VariableNames, VN)
+    Neg_Num is -Num,
+    write_expr(Neg_Num*Var, Variable_Names, VN)
   ;
     write(' + '),
-    write_expr(Num*Var, VariableNames, VN)
+    write_expr(Num*Var, Variable_Names, VN)
   ).
 
-write_constraint(Expr = Num, VariableNames, VN) :-
+write_constraint(Expr = Num, Variable_Names, VN) :-
   (var(Num) ->
     fail
   ;
-    write_expr(Expr, VariableNames, VN),
+    write_expr(Expr, Variable_Names, VN),
     write(' = '),
     (integer(Num) ->
       write(Num)
@@ -535,42 +535,42 @@ write_constraint(Expr = Num, VariableNames, VN) :-
       write(Int)
     )
   ).
-write_constraint(Expr >= Num, VariableNames, VN) :-
+write_constraint(Expr >= Num, Variable_Names, VN) :-
   (Num < 0 ->
-    negate_expr(Expr, NegExpr),
-    write_expr(NegExpr, VariableNames, VN),
+    negate_expr(Expr, Neg_Expr),
+    write_expr(Neg_Expr, Variable_Names, VN),
     write(' =< '),
-      NegNum is -Num,
-    write(NegNum)
+      Neg_Num is -Num,
+    write(Neg_Num)
   ;
-    write_expr(Expr, VariableNames, VN),
+    write_expr(Expr, Variable_Names, VN),
     write(' >= '),
     write(Num)
   ).
-write_constraint(Expr > Num, VariableNames, VN) :-
+write_constraint(Expr > Num, Variable_Names, VN) :-
   (Num < 0 ->
-    negate_expr(Expr, NegExpr),
-    write_expr(NegExpr, VariableNames, VN),
+    negate_expr(Expr, Neg_Expr),
+    write_expr(Neg_Expr, Variable_Names, VN),
     write(' < '),
-    NegNum is -Num,
-    write(NegNum)
+    Neg_Num is -Num,
+    write(Neg_Num)
   ;
-    write_expr(Expr, VariableNames, VN),
+    write_expr(Expr, Variable_Names, VN),
     write(' > '),
     write(Num)
   ).
 
-write_constraints([], _VariableNames, _VN).
-write_constraints([C|CS], VariableNames, VN) :-
-  (write_constraint(C, VariableNames, VN) ->
+write_constraints([], _Variable_Names, _VN).
+write_constraints([C|CS], Variable_Names, VN) :-
+  (write_constraint(C, Variable_Names, VN) ->
     nl
   ;
     true
   ),
-  write_constraints(CS, VariableNames, VN).
+  write_constraints(CS, Variable_Names, VN).
 
-write_bindings([], _VarList).
-write_bindings([(A = Term)|VN], VarList) :-
+write_bindings([], _Var_List).
+write_bindings([(A = Term)|VN], Var_List) :-
   (var(Term) ->
     (write(A), write(' = '), write(Term),
     nl)
@@ -580,63 +580,63 @@ write_bindings([(A = Term)|VN], VarList) :-
     ;
       (write(A),
       write(' = '),
-      write_termexpr(Term, VarList),
+      write_termexpr(Term, Var_List),
       nl)
     )
   ),
-  write_bindings(VN, VarList).
+  write_bindings(VN, Var_List).
 
-write_termexpr('$VAR'(N), VarList) :-
+write_termexpr('$VAR'(N), Var_List) :-
   !,
-  element2position(N, VarList, M),
+  element2position(N, Var_List, M),
   write('_'),
   write('$VAR'(M)).
-write_termexpr(Term, _VarList) :-
+write_termexpr(Term, _Var_List) :-
   int_expr(Term),
   !,
   N is Term,
   write(N).
-write_termexpr(Term, VarList) :-
+write_termexpr(Term, Var_List) :-
   Term = [_|_],
   !,
   write('['),
-  write_listexprs(Term, VarList),
+  write_listexprs(Term, Var_List),
   write(']').
-write_termexpr(Term, VarList) :-
+write_termexpr(Term, Var_List) :-
   Term =.. [F|Args],
   (Args = [] ->
     write(F)
   ;
     write(F),
     write('('),
-    write_termexprs(Args, VarList),
+    write_termexprs(Args, Var_List),
     write(')')
   ).
-write_termexprs([], _VarList).
-write_termexprs([Term|Terms], VarList) :-
-  write_termexpr(Term, VarList),
+write_termexprs([], _Var_List).
+write_termexprs([Term|Terms], Var_List) :-
+  write_termexpr(Term, Var_List),
   (Terms \= [] ->
     write(',')
   ;
     true
   ),
-  write_termexprs(Terms, VarList).
+  write_termexprs(Terms, Var_List).
 
-write_listexprs(Terms, _VarList) :-
+write_listexprs(Terms, _Var_List) :-
   var(Terms),
   !,
   write('|'),
   write(Terms).
-write_listexprs([], _VarList) :-
+write_listexprs([], _Var_List) :-
   !.
-write_listexprs([Term|Terms], VarList) :-
-  write_termexpr(Term, VarList),
+write_listexprs([Term|Terms], Var_List) :-
+  write_termexpr(Term, Var_List),
   ((Terms == []; var(Terms)) ->
     true
   ;
     write(',')
   ),
-  write_listexprs(Terms, VarList).
+  write_listexprs(Terms, Var_List).
 
 int_expr(I) :-
   nonvar(I),
@@ -665,14 +665,14 @@ term2wanted_dims(V, Ns, Ns) :-
   !.
 term2wanted_dims('$VAR'(N), Ns, [N|Ns]) :-
   !.
-term2wanted_dims(Term, NsIn, NsOut) :-
+term2wanted_dims(Term, Ns_In, Ns_Out) :-
   Term =.. [_F|Args],
-  terms2wanted_dims(Args, NsIn, NsOut).
+  terms2wanted_dims(Args, Ns_In, Ns_Out).
 
 terms2wanted_dims([], Ns, Ns).
-terms2wanted_dims([Arg|Args], NsIn, NsOut) :-
-  term2wanted_dims(Arg, NsIn, Ns1),
-  terms2wanted_dims(Args, Ns1, NsOut).
+terms2wanted_dims([Arg|Args], Ns_In, Ns_Out) :-
+  term2wanted_dims(Arg, Ns_In, Ns1),
+  terms2wanted_dims(Args, Ns1, Ns_Out).
 
 constraints2list(C, LC) :-
   constraints2list(C, [], LC).
@@ -688,30 +688,30 @@ constraints2list(C, Rest, Rest1) :-
     Rest1 = [0 = 1]
   ).
 
-% term2PPLterm(?Term, +InN, ?OutN)
+% term2PPLterm(?Term, +In_N, ?Out_N)
 %
 % Unifies each of the variables in Term with the special terms
-% '$VAR'(k), where k ranges from InN to OutN-1.
-term2PPLterm('$VAR'(InN), InN, OutN) :-
+% '$VAR'(k), where k ranges from In_N to Out_N-1.
+term2PPLterm('$VAR'(In_N), In_N, Out_N) :-
   !,
-  OutN is InN + 1.
-term2PPLterm(Term, InN, OutN) :-
+  Out_N is In_N + 1.
+term2PPLterm(Term, In_N, Out_N) :-
   Term =.. [_|Args],
-  terms2PPLterms(Args, InN, OutN).
+  terms2PPLterms(Args, In_N, Out_N).
 
-terms2PPLterms([], InN, InN).
-terms2PPLterms([Arg|Args], InN, OutN) :-
-  term2PPLterm(Arg, InN, TmpN),
-  terms2PPLterms(Args, TmpN, OutN).
+terms2PPLterms([], In_N, In_N).
+terms2PPLterms([Arg|Args], In_N, Out_N) :-
+  term2PPLterm(Arg, In_N, Tmp_N),
+  terms2PPLterms(Args, Tmp_N, Out_N).
 
 build_equality_constraints([], []).
-build_equality_constraints([Var = Num|Eqs], AllEqConstrs) :-
-  build_equality_constraints(Eqs, EqConstrs),
+build_equality_constraints([Var = Num|Eqs], All_Eq_Constrs) :-
+  build_equality_constraints(Eqs, Eq_Constrs),
   (nonvar(Num) ->
     Num = rat(Int, 1),
-    AllEqConstrs = [Var = Int|EqConstrs]
+    All_Eq_Constrs = [Var = Int|Eq_Constrs]
   ;
-    AllEqConstrs = EqConstrs
+    All_Eq_Constrs = Eq_Constrs
   ).
 
 check_expr('$VAR'(_)).

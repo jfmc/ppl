@@ -227,7 +227,7 @@ public:
 class Parma_Polyhedra_Library::LBoundary : public Boundary {
 public:
   //! Kinds of lower bounds.
-  enum OpenClosed {
+  enum Open_Closed {
     //! An open lower bound.
     OPEN = Boundary::POS,
     //! A closed lower bound.
@@ -235,7 +235,7 @@ public:
   };
 
   //! Builds a lower bound of kind \p f and having value \p v.
-  LBoundary(const ERational& v, OpenClosed f);
+  LBoundary(const ERational& v, Open_Closed f);
 
   //! Checks if all the invariants are satisfied.
   bool OK() const;
@@ -247,7 +247,7 @@ public:
 class Parma_Polyhedra_Library::UBoundary : public Boundary {
 public:
   //! Kinds of upper bounds.
-  enum OpenClosed {
+  enum Open_Closed {
     //! An open upper bound.
     OPEN = Boundary::NEG,
     //! A closed upper bound.
@@ -255,7 +255,7 @@ public:
   };
 
   //! Builds an upper bound of kind \p f and having value \p v.
-  UBoundary(const ERational& v, OpenClosed f);
+  UBoundary(const ERational& v, Open_Closed f);
 
   //! Checks if all the invariants are satisfied.
   bool OK() const;

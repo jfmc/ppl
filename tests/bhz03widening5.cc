@@ -106,13 +106,13 @@ main() TRY {
        << "Q = " << Q << endl;
 #endif
 
-  PSet oldP = P;
+  PSet old_P = P;
   P.BHZ03_widening_assign<H79_Certificate>
     (Q, widen_fun_ref(&Polyhedron::H79_widening_assign));
 #if NOISY
   cout << "P.BHZ03(Q, H79)" << " = " << P << endl;
 #endif
 
-  return (P.geometrically_covers(oldP) && P.geometrically_covers(Q)) ? 0 : 1;
+  return (P.geometrically_covers(old_P) && P.geometrically_covers(Q)) ? 0 : 1;
 }
 CATCH

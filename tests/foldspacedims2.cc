@@ -93,7 +93,7 @@ test2() {
 }
 
 
-// Test as given in GopanDMDRS04 on page 519 but with strict constraints.
+// Test as given in [GopanDMDRS04] on page 519 but with strict constraints.
 static void
 test3() {
   NNC_Polyhedron ph1(2);

@@ -1236,7 +1236,7 @@ CATCH_ALL
 
 namespace {
 
-class CBuildBox {
+class C_Build_Box {
 private:
   ppl_dimension_type (*s_d)(void);
   int (*i_e)(void);
@@ -1248,14 +1248,14 @@ private:
 	       ppl_Coefficient_t d);
 
 public:
-  CBuildBox(ppl_dimension_type (*sd)(void),
-	    int (*ie)(void),
-	    int (*glb)(ppl_dimension_type k, int closed,
-		       ppl_Coefficient_t n,
-		       ppl_Coefficient_t d),
-	    int (*gub)(ppl_dimension_type k, int closed,
-		       ppl_Coefficient_t n,
-		       ppl_Coefficient_t d))
+  C_Build_Box(ppl_dimension_type (*sd)(void),
+	      int (*ie)(void),
+	      int (*glb)(ppl_dimension_type k, int closed,
+			 ppl_Coefficient_t n,
+			 ppl_Coefficient_t d),
+	      int (*gub)(ppl_dimension_type k, int closed,
+			 ppl_Coefficient_t n,
+			 ppl_Coefficient_t d))
     : s_d(sd), i_e(ie), g_l_b(glb), g_u_b(gub) {
   }
 
@@ -1291,8 +1291,8 @@ ppl_new_C_Polyhedron_from_bounding_box
  int (*get_upper_bound)(ppl_dimension_type k, int closed,
 			ppl_Coefficient_t n,
 			ppl_Coefficient_t d)) try {
-  CBuildBox cbbox(space_dimension, is_empty,
-		  get_lower_bound, get_upper_bound);
+  C_Build_Box cbbox(space_dimension, is_empty,
+		    get_lower_bound, get_upper_bound);
   *pph = to_nonconst(new C_Polyhedron(cbbox, From_Bounding_Box()));
   return 0;
 }
@@ -1309,8 +1309,8 @@ ppl_new_NNC_Polyhedron_from_bounding_box
  int (*get_upper_bound)(ppl_dimension_type k, int closed,
 			ppl_Coefficient_t n,
 			ppl_Coefficient_t d)) try {
-  CBuildBox cbbox(space_dimension, is_empty,
-		  get_lower_bound, get_upper_bound);
+  C_Build_Box cbbox(space_dimension, is_empty,
+		    get_lower_bound, get_upper_bound);
   *pph = to_nonconst(new NNC_Polyhedron(cbbox, From_Bounding_Box()));
   return 0;
 }
@@ -1933,7 +1933,7 @@ CATCH_ALL
 
 namespace {
 
-class CShrinkBox {
+class C_Shrink_Box {
 private:
   void (*s_e)(void);
   void (*r_l_b)(ppl_dimension_type k, int closed,
@@ -1944,13 +1944,13 @@ private:
 		ppl_const_Coefficient_t d);
 
 public:
-  CShrinkBox(void (*se)(void),
-	     void (*rlb)(ppl_dimension_type k, int closed,
-			 ppl_const_Coefficient_t n,
-			 ppl_const_Coefficient_t d),
-	     void (*lub)(ppl_dimension_type k, int closed,
-			 ppl_const_Coefficient_t n,
-			 ppl_const_Coefficient_t d))
+  C_Shrink_Box(void (*se)(void),
+	       void (*rlb)(ppl_dimension_type k, int closed,
+			   ppl_const_Coefficient_t n,
+			   ppl_const_Coefficient_t d),
+	       void (*lub)(ppl_dimension_type k, int closed,
+			   ppl_const_Coefficient_t n,
+			   ppl_const_Coefficient_t d))
     : s_e(se), r_l_b(rlb), l_u_b(lub) {
   }
 
@@ -1988,7 +1988,7 @@ ppl_Polyhedron_shrink_bounding_box
     return PPL_ERROR_INVALID_ARGUMENT;
 
   const Polyhedron& pph = *to_const(ph);
-  CShrinkBox csbox(set_empty, raise_lower_bound, lower_upper_bound);
+  C_Shrink_Box csbox(set_empty, raise_lower_bound, lower_upper_bound);
   pph.shrink_bounding_box(csbox, Complexity_Class(complexity));
   return 0;
 }

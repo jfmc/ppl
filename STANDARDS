@@ -2,6 +2,24 @@
 Coding Standards for the Parma Polyhedra Library
 ================================================
 
+Please read the first chapters of "Ada 95 Quality and Style:
+Guidelines for Professional Programmers" (you will find a link to it
+in the "Links" section of the PPL web site).
+
+
+Names
+-----
+
+Carefully choose names that clarify the nature or the intended use of
+the entity you are naming.  Do not be afraid of long identifiers, even
+though conciseness is always a good thing.  Do not use abbreviations
+when shorter synonyms exist.  Use underscores to separate words in a
+compound name.  By all means, avoid baStudlyCaps: write
+available_widening_tokens (if it is a variable) or
+Available_Widening_Tokens (if it is a class or enum); never write
+availableWideningTokens or AvailableWideningTokens.
+
+
 Pre and post increment and decrement operators
 ----------------------------------------------
 
