@@ -3436,7 +3436,7 @@ PPL::Polyhedron::BBRZ02_widening_assign(const Polyhedron& y) {
   common_sat_g.sort_rows();
 
   // The system of constraints `x_con_sys_minus_y_con_sys' contains
-  // the constraints of `x' that does not belong also to `y'.
+  // the constraints of `x' that do not belong to `y'.
   ConSys x_con_sys_minus_y_con_sys;
   dimension_type x_con_sys_num_rows = x.con_sys.num_rows();
   for (dimension_type i = x_con_sys_num_rows; i-- > 0; )
@@ -3482,8 +3482,8 @@ PPL::Polyhedron::BBRZ02_widening_assign(const Polyhedron& y) {
 	  // homogeneous terms of the chosen constraints and 
 	  // we put it into the vector `norms'.
 	  // NOTE: Actually, the coefficients of `norms' are the
-	  // truncated integer part of the square of the norms of the
-	  // vectors.
+	  // truncated integer part of the square roots of the norms
+	  // of the vectors.
 	  std::vector<Integer> norms(tmp_con_sys_num_rows);
 	  for (dimension_type h = tmp_con_sys_num_rows; h-- > 0; ) {
 	    Constraint& tmp_c = tmp_con_sys[h];
@@ -3724,7 +3724,7 @@ PPL::Polyhedron::BBRZ02_widening_assign(const Polyhedron& y) {
   GenSys modified_rays;
   for (dimension_type i = x_gen_sys_num_rows; i-- > 0; ) {
     const Generator& x_g = x.gen_sys[i];
-    // We choose a ray of `x' that doesn't belong to `y' and
+    // We choose a ray of `x' that does not belong to `y' and
     // "evolved" since a ray of `y'.
     if (x_g.is_ray() && y.relation_with(x_g) == Poly_Gen_Relation::nothing()) {
       for (dimension_type j = y_gen_sys_num_rows; j-- > 0; ) {
