@@ -90,16 +90,16 @@ PPL::Constraint::is_trivial_true() const {
 	return false;
       else {
 	// Here the \epsilon coefficient is negative: strict inequality.
-	if (x[0] < 0)
+	if (x[0] <= 0)
 	  // A strict inequality such as `lhs - k > 0',
-	  // where k is a positive integer, cannot be trivially true.
+	  // where k is a non negative integer, cannot be trivially true.
 	  return false;
 	// Checking for another non-zero coefficient.
 	for (size_t i = eps_index; --i > 0; )
 	  if (x[i] != 0)
 	    return false;
 	// We have the inequality `k > 0',
-	// where k is zero or a positive integer. 
+	// where k is a positive integer. 
 	return true;
       }
     }
