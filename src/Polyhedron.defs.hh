@@ -675,12 +675,12 @@ private:
   static int simplify(Matrix& mat, SatMatrix& sat);
 
   //! Builds and simplifies constraints from generators (or vice versa).
-  static bool minimize(bool con_to_ray, Matrix& source, Matrix& dest,
+  static bool minimize(bool con_to_gen, Matrix& source, Matrix& dest,
 		       SatMatrix& sat);
 
   //! Adds given constraints and builds minimized corresponding generators
   //! or vice versa.
-  static bool add_and_minimize(bool con_to_ray,
+  static bool add_and_minimize(bool con_to_gen,
 			       Matrix& source1, Matrix& dest, SatMatrix& sat,
 			       const Matrix& source2);
 };

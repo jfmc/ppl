@@ -33,12 +33,12 @@ namespace PPL = Parma_Polyhedra_Library;
 #include <iostream>
 
 /*!
-  \fn static bool PPL::Polyhedron::minimize(bool con_to_ray,
+  \fn static bool PPL::Polyhedron::minimize(bool con_to_gen,
                                             Matrix& source,
 				            Matrix& dest,
 				            SatMatrix& sat)
 
-  \param con_to_ray   <CODE>true</CODE> if \p source represents the
+  \param con_to_gen   <CODE>true</CODE> if \p source represents the
                       constraints, <CODE>false</CODE> otherwise.
   \param source       The given matrix, which is not empty.
   \param dest         The matrix to build and minimize.
@@ -54,7 +54,7 @@ namespace PPL = Parma_Polyhedra_Library;
   <CODE>conversion()</CODE> and <CODE>simplify()</CODE>.
 
   \p sat has the generators on its columns and the constraints on its rows
-  if \p con_to_ray is <CODE>true</CODE>, otherwise it has the generators on
+  if \p con_to_gen is <CODE>true</CODE>, otherwise it has the generators on
   its rows and the constraints on its columns.
 
   Given \p source, this function builds (by means of
@@ -67,11 +67,13 @@ namespace PPL = Parma_Polyhedra_Library;
 */
 
 bool
-PPL::Polyhedron::minimize(bool con_to_ray,
+PPL::Polyhedron::minimize(bool con_to_gen,
 			  Matrix& source, Matrix& dest, SatMatrix& sat) {
   // `source' cannot be empty: even if it is an empty constraint system,
   // representing the universe polyhedron, homogeneization has added
-  // the positive constraint.
+  // the positive constraint. It also cannot be an empty generator system,
+  // since this function is always called starting from a non-empty
+  // polyhedron. 
   assert(source.num_rows() > 0);
 
   // Sort the source matrix, if necessary.
@@ -146,11 +148,11 @@ PPL::Polyhedron::minimize(bool con_to_ray,
       break;
 
   if (first_vertex == dest_num_rows)
-    if (con_to_ray)
+    if (con_to_gen)
       // No vertex has been found: the polyhedron is empty.
       return true;
     else
-      // Here `con_to_ray' is false: `dest' is a matrix of constraints.
+      // Here `con_to_gen' is false: `dest' is a matrix of constraints.
       // In this case the condition `first_vertex == dest_num_rows'
       // actually means that all the constraints in `dest' have their
       // inhomogeneous term equal to 0.
@@ -165,8 +167,8 @@ PPL::Polyhedron::minimize(bool con_to_ray,
     // from the matrix `source'.
     // Since the saturation matrix `tmp_sat' returned by conversion()
     // is a constraint (sat_c) saturation matrix, we have to transpose it
-    // to obtain the generator (sat_g) saturation matrix that needs
-    // to be passed to the function simplify().
+    // to obtain the generator (sat_g) saturation matrix that is needed
+    // by the function simplify().
     sat.transpose_assign(tmp_sat);
     simplify(source, sat);
     return false;
@@ -174,13 +176,13 @@ PPL::Polyhedron::minimize(bool con_to_ray,
 }
 
 /*!
-  \fn bool PPL::Polyhedron::add_and_minimize(bool con_to_ray,
+  \fn bool PPL::Polyhedron::add_and_minimize(bool con_to_gen,
                                              Matrix& source1,
                                              Matrix& dest,
                                              SatMatrix& sat,
                                              const Matrix& source2)
 					
-  \param con_to_ray   <CODE>true</CODE> if \p source1 and \p source2
+  \param con_to_gen   <CODE>true</CODE> if \p source1 and \p source2
                       are matrix of constraints, <CODE>false</CODE> otherwise.
   \param source1      The first element of the given DD pair.
   \param dest         The second element of the given DD pair.
@@ -215,11 +217,17 @@ PPL::Polyhedron::minimize(bool con_to_ray,
   will be added to \p source1, it is constant: it will not be modified.
 */
 bool
-PPL::Polyhedron::add_and_minimize(bool con_to_ray,
+PPL::Polyhedron::add_and_minimize(bool con_to_gen,
 				  Matrix& source1,
 				  Matrix& dest,
 				  SatMatrix& sat,
 				  const Matrix& source2) {
+  // `source1' and `source2' cannot be empty: even if they are empty
+  // constraint systems, representing universe polyhedra, homogeneization
+  // has added the positive constraint. They also cannot be empty
+  // generator systems, since this function is always called starting
+  // from a pair of non-empty polyhedra.
+  assert(source1.num_rows() > 0 && source2.num_rows() > 0);
   // `source1' and `source2' must have the same number of columns
   // to be merged.
   assert(source1.num_columns() == source2.num_columns());
@@ -227,98 +235,119 @@ PPL::Polyhedron::add_and_minimize(bool con_to_ray,
   assert(source2.is_sorted());
 
   size_t old_source1_num_rows = source1.num_rows();
-  size_t index = source1.num_rows();
-  // `k1' runs through the rows of `source1'.
+  // `k1' and `k2' run through the rows of `source1' and `source2', resp.
   size_t k1 = 0;
-  // `k2' runs through the rows of `source2'.
   size_t k2 = 0;
   size_t source2_num_rows = source2.num_rows();
   while (k1 < old_source1_num_rows && k2 < source2_num_rows) {
-    // Add to `source1' the non-redundant constraints from `source2'
-    // without sort.
+    // Add to `source1' the constraints from `source2'.
+    // We exploit the property (here called `initial sortedness')
+    // that initially both `source1' and `source2' are sorted and
+    // index `k1' only scans the initial rows of `source1', so that
+    // it is not influenced by rows appended at the end of `source1'.
+    // This allows to avoid the introduction in `source1' of any
+    // duplicate constraint (which would be trivially redundant).
     int cmp = compare(source1[k1], source2[k2]);
     if (cmp == 0) {
-      // If the compared rows are equal, we choose another couple of rows.
-      ++k1;
+      // We found the same row: there is no need to add `source2[k2]'.
       ++k2;
+      // By initial sortedness, since `k1 < old_source1_num_rows',
+      // we can increment index `k1' too.
+      ++k1;
     }
     else if (cmp < 0)
-      // If `source1[k1]' is less than `source2[k2]', we compare
-      // `source2[k2]' with another rows of `source1'.
-    	++k1;
+      // By initial sortedness, we can increment `k1'.
+      ++k1;
     else {
-      // If `source1[k1]' is greater than `source2[k2]' it means that
-      // in `source1' there is not the row `source2[k2]' then we add it
-      // to `source1' (after the existing rows): this is because the
-      // new merged matrix may be not sorted and also because we have to
-      // increment the number of rows of `source1'.
-      // Then we compare `source1[k1]' with another rows of `source2'.
+      // Here `cmp > 0'.
+      // By initial sortedness, `source2[k2]' cannot be in `source1'.
+      // We append it to the end of `source1', without worrying
+      // about maintaining the sortedness of `source1' (note however
+      // that `initial sortedness' is maintained).
       source1.add_row(source2[k2]);
-      ++index;
+      // We can increment `k2'.
       ++k2;
     }
   }
-  // If there exist rows of `source2' that are greater than the last
-  // (added) row of `source1', we add these ones at the end of 'source1'
-  // and update the number of rows of the matrix.
-  while (k2 < source2_num_rows) {
-    source1.add_row(source2[k2]);
-    ++index;
-    ++k2;
-  }
-  // At this point `source1' has the old rows of `source1' from the
-  // one indexed by 0 and the one indexed by `old_source1_num_rows' - 1.
-  // The remaining rows (from the `old_source1_num_rows'-th one to the
-  // end) are the ones added from `source2', i.e., the rows of `source2'
-  // that are different from those in the old 'source1'.
+  // Have we scanned all the rows in `source2' ?
+  if (k2 < source2_num_rows)
+    // By initial sortedness, all the rows in `source2' having indexes
+    // greater than or equal to `k2' were not in `source1'.
+    // We append them at the end of 'source1'.
+    for ( ; k2 < source2_num_rows; ++k2)
+      source1.add_row(source2[k2]);
 
-  // source1 is not sorted any more.
+  size_t new_source1_num_rows = source1.num_rows();
+  if (new_source1_num_rows == old_source1_num_rows)
+    // If we appended no rows to `source1', then all the constraints
+    // in `source2' were already in `source1' and there is nothing
+    // left to do ...
+    return false;
+
+  // FIXME: add_row() already sets correctly the flag `sorted'.
+  // ... otherwise, `source1' may have lost his sortedness.
   source1.set_sorted(false);
 
-  // Now we have to add to `sat' the same number of rows that we added to
+  // We have to add to `sat' the same number of rows that we added to
   // `source1'. The elements of these rows are set to zero.
   // New dimensions of `sat' are: `dest.num_rows()' rows and
-  // `source1.num_rows()' columns, i.e., the rows of `sat' are indexed by
-  // generators and its columns are indexed by constraints.
-  size_t dest_num_rows = dest.num_rows();
-  SatMatrix tmp_sat(dest_num_rows, source1.num_rows());
+  // `source1.num_rows()' columns, i.e., the rows of `sat' are
+  // indexed by generators and its columns are indexed by constraints.
+  SatMatrix tmp_sat(dest.num_rows(), source1.num_rows());
   // Copy the old `sat' into the new one.
   for (size_t i = sat.num_rows(); i-- > 0; )
     tmp_sat[i] = sat[i];
-  // We can compute the matrix of generators corresponding to the new
-  // matrix of constraints: we invoke the function conversion() but
-  // this time `start' is the index of the first row added to the
-  // old `source1', because generators corresponding to previous
-  // constraints are already in `dest'.
+  // We compute the matrix of generators corresponding to the new
+  // matrix of constraints by invoking the function conversion().
+  // The `start' parameter is set to the index of the first constraint
+  // we appended to `source1', because generators corresponding
+  // to previous constraints are already in `dest'.
   size_t num_lines_or_equalities = conversion(source1, old_source1_num_rows,
 					      dest, tmp_sat,
 					      dest.num_lines_or_equalities());
+  // conversion() may have modified the number of rows in `dest'.
+  size_t dest_num_rows = dest.num_rows();
 
-  // A non-empty polyhedron must have a constraints representation that
-  // provides the positivity constraint and a generators representation
-  // that provides at least one vertex (see the function minimize()).
-  bool empty_or_illegal = true;
-  dest_num_rows = dest.num_rows();
-  for (size_t i = num_lines_or_equalities; i < dest_num_rows; ++i)
-    if (dest[i][0] > 0) {
-      empty_or_illegal = false;
+  // NOTE: conversion() can only remove inequalities from `source'.
+  // Thus, all the equalities still come before the inequalities
+  // (the correctness of simplify() relies on this hypothesis).
+
+  // Checking if the generators in `dest' represent an empty polyhedron:
+  // the polyhedron is empty if there are no vertices (because rays
+  // and lines need a supporting point).
+  size_t first_vertex = num_lines_or_equalities;
+  for ( ; first_vertex < dest_num_rows; ++first_vertex)
+    // Vertices have a positive divisor.
+    if (dest[first_vertex][0] > 0)
       break;
-    }
-  if (empty_or_illegal) {
-    if (con_to_ray)
-      return empty_or_illegal;
+
+  if (first_vertex == dest_num_rows)
+    if (con_to_gen)
+      // No vertex has been found: the polyhedron is empty.
+      return true;
     else
+      // Here `con_to_gen' is false: `dest' is a matrix of constraints.
+      // In this case the condition `first_vertex == dest_num_rows'
+      // actually means that all the constraints in `dest' have their
+      // inhomogeneous term equal to 0.
+      // This is an ILLEGAL situation, because it implies that
+      // the constraint system `dest' lacks the positivity constraint
+      // and no linear combination of the constraints in `dest'
+      // can reintroduce the positivity constraint.
       throw std::invalid_argument("PPL internal error");
-  }
   else {
-    // Since the function conversion() returns a `sat_c' we have to
-    // transpose this matrix to obtain the `sat_g' that will be
-    // passed to the function simplify().
+    // A vertex has been found: the polyhedron is not empty.
+    // Now invoking simplify() to remove all the redundant constraints
+    // from the matrix `source1'.
+    // Since the saturation matrix `tmp_sat' returned by conversion()
+    // is a constraint (sat_c) saturation matrix, we have to transpose it
+    // to obtain the generator (sat_g) saturation matrix that is needed
+    // by the function simplify().
     sat.transpose_assign(tmp_sat);
-    // Deleting the redundant rows of `source1'.
     simplify(source1, sat);
     // We re-obtain the `sat_c'.
     sat.transpose_assign(sat);
+    return false;
   }
-  return empty_or_illegal;
 }
+
