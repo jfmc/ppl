@@ -4,9 +4,6 @@ Enhancements for PPL 0.6
 - Clearly explain, in the documentation, how (not) to use
   set_GMP_memory_allocation_functions().  More generally, explain how
   to have memory-guarded computations.
-- Try to remember why all the documentation in the C interface
-  is tagged with \brief and see whether this is actually a good idea.
-- Decide once and for all how to format lists of \param documentations.
 - Complete the documentation of the Determinate, PowerSet and
   Polyhedra_PowerSet classes.
 - Turn h79widening6 into a proper test.
