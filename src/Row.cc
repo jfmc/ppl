@@ -194,6 +194,20 @@ PPL::reduced_scalar_product_assign(Integer& z, const Row& x, const Row& y) {
     add_mul_assign(z, x[i], y[i]);
 }
 
+/*! \relates Parma_Polyhedra_Library::Row */
+void
+PPL::homogeneous_scalar_product_assign(Integer& z,
+				       const Row& x, const Row& y) {
+  // Scalar product is only defined  if `x' and `y' are
+  // dimension-compatible.
+  assert(x.size() <= y.size());
+  z = 0;
+    // Note the pre-decrement of `i': last iteration should be for `i == 1'.
+  for (dimension_type i = x.size(); --i > 0; )
+    // The following line optimizes the computation of z += x[i] * y[i].
+    add_mul_assign(z, x[i], y[i]);
+}
+
 void
 PPL::Row::linear_combine(const Row& y, const dimension_type k) {
   Row& x = *this;

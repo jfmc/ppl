@@ -512,23 +512,16 @@ PPL::Polyhedron::bounds(const LinExpression& expr,
       || (!generators_are_up_to_date() && !update_generators()))
     return true;
 
-  TEMP_INTEGER(sp);
   // The polyhedron has updated, possibly pending generators.
   for (dimension_type i = gen_sys.num_rows(); i-- > 0; ) {
     const Generator& g = gen_sys[i];
     // Only lines and rays in `*this' can cause `expr' to be unbounded.
     if (g[0] == 0) {
-      // Compute the scalar product between `g' and `expr'.
-      sp = 0;
-      // Note the pre-decrement of `j': last iteration should be for `j == 1'.
-      for (dimension_type j = expr.size(); --j > 0; )
-	// The following line optimizes the computation sp += g[j] * expr[j].
-	add_mul_assign(sp, g[j], expr[j]);
-      const int sign_sp = sgn(sp);
-      if (sign_sp != 0
+      const int sp_sign = homogeneous_scalar_product_sign(expr, g);
+      if (sp_sign != 0
 	  && (g.is_line()
-	      || (from_above && sign_sp > 0)
-	      || (!from_above && sign_sp < 0)))
+	      || (from_above && sp_sign > 0)
+	      || (!from_above && sp_sign < 0)))
 	// `*this' does not bound `expr'.
 	return false;
     }
@@ -576,21 +569,14 @@ PPL::Polyhedron::max_min(const LinExpression& expr,
   TEMP_INTEGER(sp);
   for (dimension_type i = gen_sys.num_rows(); i-- > 0; ) {
     const Generator& g = gen_sys[i];
-
-    // Compute the scalar product between `g' and `expr'.
-    sp = 0;
-    // Note the pre-decrement of `j': last iteration should be for `j == 1'.
-    for (dimension_type j = expr.size(); --j > 0; )
-      // The following line optimizes the computation of sp += g[j] * expr[j].
-      add_mul_assign(sp, g[j], expr[j]);
-
+    homogeneous_scalar_product_assign(sp, expr, g);
     // Lines and rays in `*this' can cause `expr' to be unbounded.
     if (g[0] == 0) {
-      const int sign_sp = sgn(sp);
-      if (sign_sp != 0
+      const int sp_sign = sgn(sp);
+      if (sp_sign != 0
 	  && (g.is_line()
-	      || (maximize && sign_sp > 0)
-	      || (!maximize && sign_sp < 0)))
+	      || (maximize && sp_sign > 0)
+	      || (!maximize && sp_sign < 0)))
 	// `expr' is unbounded in `*this'.
 	return false;
     }

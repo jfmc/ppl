@@ -443,6 +443,13 @@ reduced_scalar_product_sign(const Row& x, const Row& y) {
   return sgn(z);
 }
 
+inline int
+homogeneous_scalar_product_sign(const Row& x, const Row& y) {
+  TEMP_INTEGER(z);
+  homogeneous_scalar_product_assign(z, x, y);
+  return sgn(z);
+}
+
 /*! \relates Row */
 inline bool
 operator==(const Row& x, const Row& y) {

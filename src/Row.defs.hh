@@ -368,7 +368,7 @@ private:
 namespace Parma_Polyhedra_Library {
 
 #ifdef PPL_DOXYGEN_INCLUDE_IMPLEMENTATION_DETAILS
-//! Computes the scalar product between \p x and \p y and assigns it to \p z.
+//! Computes the scalar product of \p x and \p y and assigns it to \p z.
 /*! \relates Row */
 #endif // PPL_DOXYGEN_INCLUDE_IMPLEMENTATION_DETAILS
 void scalar_product_assign(Integer& z, const Row& x, const Row& y);
@@ -381,7 +381,7 @@ int scalar_product_sign(const Row& x, const Row& y);
 
 #ifdef PPL_DOXYGEN_INCLUDE_IMPLEMENTATION_DETAILS
 //! \brief
-//! Computes the \e reduced scalar product between \p x and \p y,
+//! Computes the \e reduced scalar product of \p x and \p y,
 //! where the \f$\epsilon\f$ coefficient of \p x is ignored,
 //! and assigns the result to \p z.
 /*! \relates Row */
@@ -390,11 +390,28 @@ void reduced_scalar_product_assign(Integer& z, const Row& x, const Row& y);
 
 #ifdef PPL_DOXYGEN_INCLUDE_IMPLEMENTATION_DETAILS
 //! \brief
-//! Returns the \e reduced scalar product between \p x and \p y,
+//! Returns the sign of the \e reduced scalar product of \p x and \p y,
 //! where the \f$\epsilon\f$ coefficient of \p x is ignored.
 /*! \relates Row */
 #endif // PPL_DOXYGEN_INCLUDE_IMPLEMENTATION_DETAILS
 int reduced_scalar_product_sign(const Row& x, const Row& y);
+
+#ifdef PPL_DOXYGEN_INCLUDE_IMPLEMENTATION_DETAILS
+//! \brief
+//! Computes the \e homogeneous scalar product of \p x and \p y,
+//! where the inhomogeneous terms are ignored,
+//! and assigns the result to \p z.
+/*! \relates Row */
+#endif // PPL_DOXYGEN_INCLUDE_IMPLEMENTATION_DETAILS
+void homogeneous_scalar_product_assign(Integer& z, const Row& x, const Row& y);
+
+#ifdef PPL_DOXYGEN_INCLUDE_IMPLEMENTATION_DETAILS
+//! \brief
+//! Returns the sign of the \e homogeneous scalar product of \p x and \p y,
+//! where the inhomogeneous terms are ignored,
+/*! \relates Row */
+#endif // PPL_DOXYGEN_INCLUDE_IMPLEMENTATION_DETAILS
+int homogeneous_scalar_product_sign(const Row& x, const Row& y);
 
 #ifdef PPL_DOXYGEN_INCLUDE_IMPLEMENTATION_DETAILS
 //! The basic comparison function.
