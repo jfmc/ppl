@@ -512,13 +512,13 @@ private:
   //! Updates \p sat_g using the updated constraints and generators.
   void update_sat_g() const;
   //! Sorts the matrix of constraints keeping \p sat_g consistent.
-  void obtain_sorted_constraints();
+  void obtain_sorted_constraints() const;
   //! Sorts the matrix of generators keeping \p sat_c consistent.
-  void obtain_sorted_generators();
+  void obtain_sorted_generators() const;
   //! Sorts the matrix of constraints and makes \p sat_c consistent.
-  void obtain_sorted_constraints_with_sat_c();
+  void obtain_sorted_constraints_with_sat_c() const;
   //! Sorts the matrix of generators and makes \p sat_g consistent.
-  void obtain_sorted_generators_with_sat_g();
+  void obtain_sorted_generators_with_sat_g() const;
 
 public:
   //! Adds new dimensions and embeds the old polyhedron into the new space.
