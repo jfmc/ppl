@@ -39,7 +39,15 @@ typedef size_t dimension_type;
 inline dimension_type
 max_space_dimension() {
   // We reserve one dimension for epsilon representations.
-  return std::numeric_limits<dimension_type>::max() - 1;
+  // We reserve one further dimension to have a value of type
+  // dimension_type that does not represent a legal dimension.
+  return std::numeric_limits<dimension_type>::max() - 2;
+}
+
+//! Returns a value that does not designate a valid dimension.
+inline dimension_type
+not_a_dimension() {
+  return std::numeric_limits<dimension_type>::max();
 }
 
 //! Relation operators.

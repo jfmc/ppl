@@ -49,6 +49,9 @@ o  New type `dimension_type': an unsigned integral type for representing
 o  New function dimension_type max_space_dimension():
    returns the maximum space dimension this library can handle.
 
+o  New function dimension_type not_a_dimension():
+   returns a value that does not designate a valid dimension.
+
 o  The method Polyhedron::add_dimensions_and_constraints(ConSys&)
    has gone.  A similar functionality is provided by the new method
    Polyhedron::concatenate_assign(const Polyhedron&).  The same change
