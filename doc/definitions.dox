@@ -44,11 +44,12 @@ is said to be
 - an <EM>affine combination</EM>, if \f$\sum_{j = 1}^k \lambda_j = 1\f$;
 - a <EM>convex combination</EM>, if both the previous conditions hold.
 
-Note that when \f$k=0\f$, 
+Note that, when \f$k=0\f$, we have
 \f$\sum_{j = 1}^k \lambda_j\vect{x}_j = \vect{0}\f$
 and \f$\sum_{j = 1}^k \lambda_j = 0\f$.
-This means that \f$\sum_{j = 1}^0 \lambda_j\vect{x}_j\f$ may be regarded as
-a positive but not an affine combination.
+Therefore, the origin \f$\vect{0} \in \Rset^n\f$ can always be regarded
+as a positive (but not affine) linear combination of an empty set
+of vectors.
 
 <B>Scalar product</B>
 
@@ -81,8 +82,9 @@ where \f$A \in \Rset^m \times \Rset^n\f$ and
 
 <B>Linear independence</B>
 
-A set of points \f$\vect{x}_1, \ldots, \vect{x}_k \in \Rset^n\f$ is 
-<EM>linearly independent</EM> if,
+A finite set of points
+\f$\{ \vect{x}_1, \ldots, \vect{x}_k \} \sseq \Rset^n\f$
+is <EM>linearly independent</EM> if,
 for all \f$\lambda_1, \ldots, \lambda_k \in \Rset\f$,
 the set of equations
 \f[
@@ -109,7 +111,8 @@ matrix \f$A\f$ is the <EM>rank</EM> of \f$A\f$ and is denoted by
 
 <B>Affine independence</B>
 
-A set of points \f$\vect{x}_1, \ldots, \vect{x}_k \in \Rset^n\f$ is 
+A finite set of points
+\f$\{ \vect{x}_1, \ldots, \vect{x}_k \} \sseq \Rset^n\f$ is 
 <EM>affinely independent</EM> if,
 for all \f$\lambda_1, \ldots, \lambda_k \in \Rset\f$,
 the set of equations
@@ -152,8 +155,23 @@ as a <EM>constraint</EM>.
 
 <B>Constraints representation</B>
 
-It follows that a polyhedron \f$P \sseq \Rset^n\f$
-can be always represented by a <EM>system of constraints</EM>:
+By definition, any polyhedron \f$P \sseq \Rset^n\f$ can be represented
+by a <EM>system of constraints</EM>:
+namely, the system given by the union of
+the equalities specified by matrix \f$A\f$ and vector \f$\vect{b}\f$
+and
+the inequalities specified by matrix \f$C\f$ and vector \f$\vect{d}\f$.
+
+Note that,
+if \f$\vect{c}, \vect{x} \in \Rset^n\f$ and \f$\lambda \in \Rset\f$
+and the system of constraints contains the equality
+\f$\langle \vect{c}, \vect{x} \rangle = \lambda\f$,
+then this one can be replaced by the two equivalent inequalities 
+\f$\langle \vect{c}, \vect{x} \rangle \geq \lambda\f$ and
+\f$\langle \vect{c}, \vect{x} \rangle \leq \lambda\f$
+(i.e., \f$\langle -\vect{c}, \vect{x} \rangle \geq -\lambda\f$).
+It follows that a polyhedron \f$P \sseq \Rset^n\f$ can always
+be represented as a system of <EM>inequality</EM> constraints
 \f[
   P = \{\,
         \vect{x} \in \Rset^n
@@ -164,17 +182,6 @@ can be always represented by a <EM>system of constraints</EM>:
 for some matrix \f$ A \in \Rset^{m} \times \Rset^n\f$
 and vector \f$\vect{b} \in \Rset^{m}\f$.
 
-Note that, if \f$\vect{c}, \vect{x} \in \Rset^n\f$
-and \f$\lambda \in \Rset\f$
-and the system of constraints contains the two inequalities 
-\f$\langle \vect{c}, \vect{x} \rangle \geq \lambda\f$ and
-\f$\langle \vect{c}, \vect{x} \rangle \leq \lambda\f$
-(i.e., \f$\langle -\vect{c}, \vect{x} \rangle \geq -\lambda\f$),
-then they can be replaced by the equivalent unique 
-<EM>equality</EM>
-\f$\langle \vect{c}, \vect{x} \rangle = \lambda\f$.
-Conversely, if we have an equality,
-then it can be replaced by two inequalities (as above).
 
 <B>Rational polyhedron</B>
 
@@ -200,12 +207,12 @@ then \f$A\f$ and \f$\vect{b}\f$ have rational coefficients.
 <B>Universe polyhedron</B>
 
 A polyhedron \f$P \sseq \Rset^n\f$ is called <EM>universe polyhedron</EM>
-if it is the whole space (i.e. \f$P = \Rset^n\f$).
+if it is the whole space (i.e., \f$P = \Rset^n\f$).
 
 <B>Polytope</B>
 
 A polyhedron \f$P \sslt \Rset^n\f$ is <EM>bounded</EM> if there 
-exists a \f$\lambda \in \Rset, \lambda > 0\f$ such that 
+exists a \f$\lambda \in \Rset, \lambda \geq 0\f$ such that 
 \f[
   P \sseq
    \bigl\{\,
@@ -264,19 +271,20 @@ A ray indicates a direction in which the polyhedron \f$P\f$ is infinite
 A point \f$\vect{r} \in \Rset^n \setminus \{ \vect{0} \}\f$
 is a ray of a non-empty polyhedron \f$P \sseq \Rset^n\f$
 if and only if, for any point \f$\vect{x} \in P\f$,
-\f$(\vect{x} + \mu \vect{r}) \in P\f$
-for all \f$\mu \in \Rset, \mu > 0\f$.
+\f$(\vect{x} + \lambda \vect{r}) \in P\f$
+for all \f$\lambda \in \Rset, \lambda \geq 0\f$.
 
 <B>Extreme ray</B>
 
 A ray \f$\vect{r}\f$ of a polyhedron \f$P\f$ is an <EM>extreme ray</EM>
-if there do not exist two rays \f$\vect{r}_1\f$ and \f$\vect{r}_2\f$
-of \f$P\f$, where \f$\vect{r}_1 \neq \lambda \vect{r}_2\f$ for any 
-\f$\lambda \in \Rset, \lambda > 0\f$, such that
-\f[
-  \vect{r} = \mu_1 \vect{r}_1 + \mu_2 \vect{r}_2,
-\f]
-where \f$\mu_1, \mu_2 \in \Rset\f$, \f$\mu_1 > 0\f$ and \f$\mu_2 > 0\f$.
+if and only if it cannot be expressed as
+a positive combination of any other pair
+\f$\vect{r}_1\f$ and \f$\vect{r}_2\f$ of rays of \f$P\f$,
+where
+\f$\vect{r} \neq \lambda \vect{r}_1\f$,
+\f$\vect{r} \neq \lambda \vect{r}_2\f$ and
+\f$\vect{r}_1 \neq \lambda \vect{r}_2\f$
+for all \f$\lambda \in \Rset, \lambda \geq 0\f$.
 
 <B>Line</B>
 
@@ -298,7 +306,7 @@ The polyhedron
 \f$P = \{\,\vect{x} \in \Rset^n \mid A\vect{x} \geq \vect{0}\,\}\f$ 
 is a convex cone and is called <EM>polyhedral cone</EM>. 
 
-Thus, a polyhedral cone is either <EM>pointed</EM>,
+A polyhedral cone is either <EM>pointed</EM>,
 having the origin as its only vertex, or has no vertices at all.
 
 <B>Lineality space</B>
@@ -334,24 +342,43 @@ in the sense that
 where the symbol '\f$+\f$' denotes the Minkowski's sum and
  - \f$\mathcal{V}\f$ is the set of all the convex combinations
    of the points in \f$V\f$;
- - \f$\mathcal{R}\f$ is the set of all the non-negative combinations
+ - \f$\mathcal{R}\f$ is the set of all the positive combinations
    of the rays in \f$R\f$; and
  - \f$\mathcal{L}\f$ is the set of all the linear combinations
    of the lines in \f$L\f$.
 
-Note that:
+Note that
 \f$\mathcal{V}\f$ is a polytope,
 \f$\mathcal{R}\f$ is a pointed cone, and
 \f$\mathcal{L}\f$ is \f$\mathop{\mathrm{lin.space}}(P)\f$.
+Moreover,
+if \f$V = \emptyset\f$,
+we obtain \f$\mathcal{V} = \emptyset\f$,
+so that \f$P = \emptyset\f$.
+In contrast,
+if both \f$R = L = \emptyset\f$,
+we obtain \f$\mathcal{R} = \mathcal{L} = \{ \vect{0} \}\f$,
+so that \f$P = \mathcal{V}\f$.
 
-Note also that \f$V\f$ must contain all vertices of \f$P\f$.
-However, \f$V\f$ can contain other points,
-particularly if \f$P\f$ is a non-empty polyhedron having no vertices
-(e.g., a half-space).
+Also note that \f$V\f$ must contain all the vertices of \f$P\f$
+(hence the choice for its name).
+However, if \f$P\f$ is a non-empty polyhedron having no vertices at all,
+then \f$V\f$ necessarily contains points that are <EM>not</EM> vertices
+of \f$P\f$.
+For instance, the half-space of \f$\Rset^2\f$ corresponding to the single
+constraint \f$y \geq 0\f$ can be represented by taking the generators
+\f$V = \bigl\{ (0, 0)^\transpose \bigr\}\f$,
+\f$R = \bigl\{ (0, 1)^\transpose \bigr\}\f$ and
+\f$L = \bigl\{ (1, 0)^\transpose \bigr\}\f$.
+Note that the only ray in \f$R\f$ is <EM>not</EM> an extreme ray
+of \f$P\f$.
 
-In the case that \f$P\f$ contains at least one vertex,
-(in which case, \f$L = \emptyset\f$)
-the following two theorems justify this terminology.
+The following theorem states that,
+whenever a polyhedron \f$P\f$ has a vertex,
+there exists a decomposition such that
+- \f$V\f$ is the set of all <EM>vertices</EM> of \f$P\f$;
+- \f$R\f$ is the set of all <EM>extreme</EM> rays of \f$P\f$; and
+- \f$L = \emptyset\f$.
 
 <B>Minkowski's theorem</B>
 
@@ -360,27 +387,26 @@ Let
 be a non-empty polyhedron where \f$\prank(A) = n\f$.
 Let \f$V\f$ be the set of vertices and
 \f$R\f$ the set of extreme rays of \f$P\f$.
-Let also \f$\mathcal{V}\f$ be the set of convex combinations
-   of \f$V\f$ and \f$\mathcal{R}\f$ the set of positive combinations
-   of \f$R\f$.
+Let also \f$\mathcal{V}\f$ be the set of convex combinations of \f$V\f$
+and \f$\mathcal{R}\f$ the set of positive combinations of \f$R\f$.
 Then
 \f[
   P = \mathcal{V} + \mathcal{R}.
 \f]
 
-The conditions that \f$P\f$ is not empty and 
-\f$\prank(A) = n\f$ required by this theorem are 
-equivalent to the condition that \f$P\f$ has a vertex.
-This condition is needed since, if the set of vertices \f$V = \emptyset\f$,
-then \f$\mathcal{V} = \emptyset\f$ and hence
-\f$\mathcal{V} + \mathcal{R}\f$ is also empty
-even though \f$P\f$ may contain a line.
+The conditions that \f$P\f$ is not empty and \f$\prank(A) = n\f$
+are equivalent to the condition that \f$P\f$ has a vertex.
 (See also Nemhauser and Wolsey - Integer and Combinatorial Optimization -
 propositions 4.1 and 4.2 on pages 92 and 93).
 
-The second theorem, called Weil's theorem, states that, starting from a 
-system of generators (having rational coefficients), we can build 
-a rational polyhedron:
+<B><EM>Proposition</EM></B>
+
+Under the same hypotheses of Minkowsky's theorem,
+if \f$P\f$ is a rational polyhedron then
+all the generators in \f$V\f$ and \f$R\f$ have rational coefficients. 
+
+The second theorem, called Weil's theorem, states that any system of
+generators having rational coefficients defines a rational polyhedron:
 
 <B>Weil's theorem</B>
 
@@ -394,7 +420,7 @@ If \f$A\f$ is a rational \f$m \times n\f$ matrix,
         \vect{y} = (y_0, \ldots, y_{m-1})^\transpose \in \Rset_+^{m},
         \sum_{k=0}^{m-1} y_k = 1, \\
 	\vect{z} \in \Rset_+^{m'}
-      }.
+      },
 \f]
 then \f$Q\f$ is a rational polyhedron.
 
@@ -546,7 +572,7 @@ represents \f$F\f$.
 A face \f$F\f$ is said to be <EM>proper</EM> if \f$F \neq \emptyset\f$ and
 \f$F \neq P\f$.
 
-When \f$F\f$ is nonempty, we say that \f$(\vect{c},b)\f$ <EM>supports</EM>
+When \f$F\f$ is non-empty, we say that \f$(\vect{c},b)\f$ <EM>supports</EM>
  \f$P\f$.
 
 <B>Facet</B>
@@ -686,7 +712,7 @@ the rank is equal to \f$n - t\f$.
 Let \f$A\f$ be representing matrix of constraints of a cone \f$C\f$
 and \f$Q\f$ the set of rays that generate \f$C\f$. Then two rays 
 \f$\vect{r}_1\f$ and \f$\vect{r}_2\f$ are <EM>adjacent rays</EM> if
--# there exist at least one row of \f$A\f$ (i.e. a constraint) that 
+-# there exist at least one row of \f$A\f$ (i.e., a constraint) that 
    is saturated by both \f$\vect{r}_1\f$ and \f$\vect{r}_2\f$
 -# and none of the rays of \f$Q\f$, except \f$\vect{r}_1\f$ and 
    \f$\vect{r}_2\f$, saturates all the constraints saturated by both 
