@@ -9,6 +9,7 @@ namespace PPL = Parma_Polyhedra_Library;
 
 #ifndef NDEBUG
 #include <set>
+#include <iostream>
 
 class PolyTracker {
 public:
@@ -20,7 +21,7 @@ public:
   ~PolyTracker();
 
 private:
-  typedef std::set<const void*, less<const void*> > Set;
+  typedef std::set<const void*, std::less<const void*> > Set;
   Set s;
 };
 
@@ -34,7 +35,7 @@ PolyTracker::~PolyTracker() {
 
 void
 PolyTracker::insert(const void* pp) {
-  pair<Set::iterator, bool> stat = s.insert(pp);
+  std::pair<Set::iterator, bool> stat = s.insert(pp);
   if (!stat.second)
     abort();
 }
