@@ -1,6 +1,7 @@
 /* Test Polyhedron::affine_preimage(): we apply this function with
-   the denominator different from 1 and a not invertible
-   transformation.
+   a negative denominator, a negative coefficient of the
+   variable to transform in the expression and a polyhedron defined
+   by its system of generators.
    Copyright (C) 2001, 2002 Roberto Bagnara <bagnara@cs.unipr.it>
 
 This file is part of the Parma Polyhedra Library (PPL).
@@ -38,24 +39,28 @@ main() {
 
   Variable A(0);
   Variable B(1);
-  C_Polyhedron ph(2);
-  ph.add_constraint(A >= 0);
-  ph.add_constraint(B >= 2);
+
+  GenSys gs;
+  gs.insert(point());
+  gs.insert(ray(A));
+  gs.insert(ray(A + B));
+  C_Polyhedron ph(gs);
 
 #if NOISY
-  print_constraints(ph, "*** ph ***");
+  print_generators(ph, "*** ph ***");
 #endif
 
-  ph.affine_preimage(B, A + 1, 2);
+  ph.affine_preimage(B, A - B, -1);
 
   C_Polyhedron known_result(2);
-  known_result.add_constraint(A >= 3);
- 
+  known_result.add_constraint(A - B <= 0);
+  known_result.add_constraint(2*A - B >= 0);
+
   int retval = (ph == known_result) ? 0 : 1;
 
 #if NOISY
-  print_constraints(ph, "*** After ph.affine_preimage(B, A + 1, 2) ***");
+  print_constraints(ph, "*** After ph.affine_preimage(B, A - B, -1) ***");
 #endif
-  
+
   return retval;
 }

@@ -1011,6 +1011,31 @@ error30() {
   }
 }
 
+void
+error31() {
+  set_handlers();
+
+  Variable A(0);
+
+ C_Polyhedron ph(1);
+  ph.add_constraint(A >= 1);
+
+  try {
+    // This is an invalid used of the function
+    // C_Polyhedron::generalized_affine_image(v, expr, d):
+    // `>' is an illegal relation for necessarily closed polyhedron.
+    ph.generalized_affine_image(A, ">", A + 1);
+  }
+  catch (invalid_argument& e) {
+#if NOISY
+    cout << "invalid_relation: " << e.what() << endl << endl;
+#endif
+  }
+  catch (...) {
+    exit(1);
+  }
+}
+
 int
 main() {
   
@@ -1043,6 +1068,7 @@ main() {
   error28();
   error29();
   error30();
+  error31();
 
   return 0;
 }

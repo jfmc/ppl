@@ -52,7 +52,7 @@ ORIGINAL_TESTS = \
 	addgenerators9 addgenerators10 \
 	affineimage1 affineimage2 affineimage3 affineimage4 affineimage5 \
 	affinepreimage1 affinepreimage2 affinepreimage3 affinepreimage4 \
-	affinepreimage5 affinepreimage6 \
+	affinepreimage5 affinepreimage6 affinepreimage7 \
 	affinetrans \
         append1 append2 \
 	ascii_dump_load1 \
@@ -86,6 +86,7 @@ ORIGINAL_TESTS = \
 	polydifference1 polydifference2 polydifference3 polydifference4 \
 	polydifference5 polydifference6 \
 	polyhull1 polyhull2 polyhull3 polyhull4 polyhull5 polyhull6 \
+	polyhull7 \
 	randphull1 \
 	relations1 relations2 relations3 relations4 relations5 relations6 \
 	relations7 relations8 relations9 relations10 relations11 \
@@ -113,6 +114,7 @@ DERIVED_TESTS = \
 	nnc_affineimage5 \
 	nnc_affinepreimage1 nnc_affinepreimage2 nnc_affinepreimage3 \
 	nnc_affinepreimage4 nnc_affinepreimage5 nnc_affinepreimage6 \
+	nnc_affinepreimage7 \
 	nnc_affinetrans \
 	nnc_append1 nnc_append2 \
 	nnc_ascii_dump_load1 \
@@ -145,7 +147,7 @@ DERIVED_TESTS = \
 	nnc_polydifference1 nnc_polydifference3 nnc_polydifference4 \
 	nnc_polydifference6 \
 	nnc_polyhull1 nnc_polyhull2 nnc_polyhull3 nnc_polyhull4 \
-	nnc_polyhull5 nnc_polyhull6 \
+	nnc_polyhull5 nnc_polyhull6 nnc_polyhull7 \
 	nnc_randphull1 \
 	nnc_relations1 nnc_relations2 nnc_relations3 nnc_relations4 \
 	nnc_relations5 nnc_relations6 nnc_relations7 nnc_relations8 \
@@ -224,6 +226,7 @@ affinepreimage3_SOURCES = affinepreimage3.cc
 affinepreimage4_SOURCES = affinepreimage4.cc
 affinepreimage5_SOURCES = affinepreimage5.cc
 affinepreimage6_SOURCES = affinepreimage6.cc
+affinepreimage7_SOURCES = affinepreimage7.cc
 
 affinetrans_SOURCES = affinetrans.cc
 
@@ -330,6 +333,7 @@ polyhull3_SOURCES = polyhull3.cc
 polyhull4_SOURCES = polyhull4.cc
 polyhull5_SOURCES = polyhull5.cc
 polyhull6_SOURCES = polyhull6.cc
+polyhull7_SOURCES = polyhull7.cc
 
 relations1_SOURCES = relations1.cc
 relations2_SOURCES = relations2.cc
@@ -461,6 +465,8 @@ nnc_affinepreimage5_SOURCES = affinepreimage5.cc
 nnc_affinepreimage5_CXXFLAGS = $(DERIVED_CXXFLAGS)
 nnc_affinepreimage6_SOURCES = affinepreimage6.cc
 nnc_affinepreimage6_CXXFLAGS = $(DERIVED_CXXFLAGS)
+nnc_affinepreimage7_SOURCES = affinepreimage7.cc
+nnc_affinepreimage7_CXXFLAGS = $(DERIVED_CXXFLAGS)
 
 nnc_affinetrans_SOURCES = affinetrans.cc
 nnc_affinetrans_CXXFLAGS = $(DERIVED_CXXFLAGS)
@@ -626,6 +632,8 @@ nnc_polyhull5_SOURCES = polyhull5.cc
 nnc_polyhull5_CXXFLAGS = $(DERIVED_CXXFLAGS)
 nnc_polyhull6_SOURCES = polyhull6.cc
 nnc_polyhull6_CXXFLAGS = $(DERIVED_CXXFLAGS)
+nnc_polyhull7_SOURCES = polyhull7.cc
+nnc_polyhull7_CXXFLAGS = $(DERIVED_CXXFLAGS)
 
 nnc_relations1_SOURCES = relations1.cc
 nnc_relations1_CXXFLAGS = $(DERIVED_CXXFLAGS)

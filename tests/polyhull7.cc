@@ -1,6 +1,4 @@
-/* Test Polyhedron::affine_preimage(): we apply this function with
-   the denominator different from 1 and a not invertible
-   transformation.
+/* Test polyhedron::poly_hull_assign_and_minimize().
    Copyright (C) 2001, 2002 Roberto Bagnara <bagnara@cs.unipr.it>
 
 This file is part of the Parma Polyhedra Library (PPL).
@@ -32,29 +30,44 @@ using namespace Parma_Polyhedra_Library;
 #define NOISY 0
 #endif
 
+
 int
 main() {
   set_handlers();
 
   Variable A(0);
   Variable B(1);
-  C_Polyhedron ph(2);
-  ph.add_constraint(A >= 0);
-  ph.add_constraint(B >= 2);
+
+  GenSys gs1;
+  gs1.insert(point());
+  gs1.insert(ray(A));
+  gs1.insert(point(B));
+  C_Polyhedron ph1(gs1);
+  ph1.generators();
+  ph1.constraints();
+
+  GenSys gs2;
+  gs2.insert(point());
+  gs2.insert(ray(B));
+  C_Polyhedron ph2(gs2);
 
 #if NOISY
-  print_constraints(ph, "*** ph ***");
+  print_constraints(ph1, "*** ph1 ***");
+  print_generators(ph1, "*** ph1 ***");
+  print_generators(ph2, "*** ph2 ***");
 #endif
 
-  ph.affine_preimage(B, A + 1, 2);
+  ph1.poly_hull_assign_and_minimize(ph2);
 
   C_Polyhedron known_result(2);
-  known_result.add_constraint(A >= 3);
- 
-  int retval = (ph == known_result) ? 0 : 1;
+  known_result.add_constraint(A >= 0);
+  known_result.add_constraint(B >= 0);
+
+  int retval = (ph1 == known_result) ? 0 : 1;
 
 #if NOISY
-  print_constraints(ph, "*** After ph.affine_preimage(B, A + 1, 2) ***");
+  print_generators(ph1,
+		   "*** After ph1.poly_hull_assugn_and_minimize(ph2) ***");
 #endif
   
   return retval;
