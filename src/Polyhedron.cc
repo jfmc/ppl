@@ -2047,15 +2047,19 @@ PPL::Polyhedron::OK(bool check_not_empty) const {
   // An empty polyhedron is allowed.
   if (is_empty())
     return true;
-  // A zero-dimensional polyhedron is allowed if
+  // A zero-dimensional, non-empty polyhedron is allowed if
   // the system of constraint `con_sys' and the system of generators
   // `gen_sys' have no rows.
   if (space_dimension() == 0)
-    if (!(gen_sys.num_rows() == 0 && con_sys.num_rows() == 0))
+    if (!(gen_sys.num_rows() == 0 && con_sys.num_rows() == 0)) {
       cerr << "Polyhedron zero-dimensional"
 	   << endl
 	   << "and with constraints or generator not clear"
 	   << endl;
+      goto bomb;
+    }
+    else
+      return true;
 
   // A polyhedron is defined by a system of constraints or a system
   // of generators.
