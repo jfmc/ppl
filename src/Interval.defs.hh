@@ -53,6 +53,10 @@ public:
 
   explicit ExtendedRational(char sign);
 
+  ExtendedRational(const ExtendedRational& y);
+
+  ExtendedRational& operator=(const ExtendedRational& y);
+
   int direction_of_infinity() const;
 
 #if 0

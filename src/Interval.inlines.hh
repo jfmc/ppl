@@ -44,6 +44,21 @@ ExtendedRational::ExtendedRational(char sign)
   assert(sign == '+' || sign == '-');
 }
 
+inline
+ExtendedRational::ExtendedRational(const ExtendedRational& y)
+  : e(y.e) {
+  if (e == 0)
+    v = y.v;
+}
+
+inline ExtendedRational&
+ExtendedRational::operator=(const ExtendedRational& y) {
+  e = y.e;
+  if (e == 0)
+    v = y.v;
+  return *this;
+}
+
 inline int
 ExtendedRational::direction_of_infinity() const {
   return e;
