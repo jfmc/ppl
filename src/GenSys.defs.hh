@@ -52,6 +52,9 @@ namespace Parma_Polyhedra_Library {
     //! and another generator which does not satisfy it.)
     SOME_SATISFY
   };
+
+  //! Output operator for GenSys_Con_Rel.
+  std::ostream& operator <<(std::ostream& s, GenSys_Con_Rel r);
 }
 
 //! A system of generators.

@@ -34,6 +34,28 @@ site: http://www.cs.unipr.it/ppl/ . */
 
 namespace PPL = Parma_Polyhedra_Library;
 
+std::ostream&
+PPL::operator <<(std::ostream& s, GenSys_Con_Rel r) {
+  const char* p = 0;
+  switch (r) {
+  case NONE_SATISFIES:
+    p = "NONE_SATISFIES";
+    break;
+  case ALL_SATISFY:
+    p = "ALL_SATISFY";
+    break;
+  case ALL_SATURATE:
+    p = "ALL_SATURATE";
+    break;
+  case SOME_SATISFY:
+    p = "SOME_SATISFY";
+    break;
+  }
+  assert(p != 0);
+  s << p;
+  return s;
+}
+
 size_t
 PPL::GenSys::num_lines() const {
   size_t n = 0;
