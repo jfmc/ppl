@@ -102,9 +102,6 @@ public:
   //! increasing the number of dimensions if needed.
   void insert(const Constraint& c);
 
-  //! Swaps \p *this with the system of constraints \p y.
-  void swap(ConSys& y);
-
   //! Returns the singleton system containing only
   //! Constraint::zero_dim_false().
   static const ConSys& zero_dim_empty();
@@ -207,10 +204,12 @@ PPL_INTERNAL:
 };
 
 namespace std {
-  //! Specialize std::swap.
-  void swap(Parma_Polyhedra_Library::ConSys& x,
-	    Parma_Polyhedra_Library::ConSys& y);
-}
+
+//! Specialize std::swap.
+void swap(Parma_Polyhedra_Library::ConSys& x,
+	  Parma_Polyhedra_Library::ConSys& y);
+
+} // namespace std
 
 #include "ConSys.inlines.hh"
 

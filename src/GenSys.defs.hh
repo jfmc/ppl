@@ -172,9 +172,6 @@ public:
   //! increasing the number of dimensions if needed.
   void insert(const Generator& g);
 
-  //! Swaps \p *this with the system of generators \p y.
-  void swap(GenSys& y);
-
   //! Returns the singleton system containing only
   //! Generator::zero_dim_vertex().
   static const GenSys& zero_dim_univ();
@@ -284,10 +281,12 @@ private:
 };
 
 namespace std {
-  //! Specialize std::swap.
-  void swap(Parma_Polyhedra_Library::GenSys& x,
-	    Parma_Polyhedra_Library::GenSys& y);
-}
+
+//! Specialize std::swap.
+void swap(Parma_Polyhedra_Library::GenSys& x,
+	  Parma_Polyhedra_Library::GenSys& y);
+
+} // namespace std
 
 #include "GenSys.inlines.hh"
 

@@ -70,11 +70,6 @@ ConSys::insert(const Constraint& c) {
   Matrix::insert(c);
 }
 
-inline void
-ConSys::swap(ConSys& y) {
-  Matrix::swap(y);
-}
-
 inline const ConSys&
 ConSys::zero_dim_empty() {
   static ConSys zdf(Constraint::zero_dim_false());

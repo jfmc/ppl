@@ -60,11 +60,6 @@ GenSys::insert(const Generator& g) {
   Matrix::insert(g);
 }
 
-inline void
-GenSys::swap(GenSys& y) {
-  Matrix::swap(y);
-}
-
 inline Generator&
 GenSys::operator [](size_t k) {
   return static_cast<Generator&>(Matrix::operator[](k));
