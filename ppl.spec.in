@@ -137,10 +137,10 @@ make prefix=$RPM_BUILD_ROOT%{_prefix} bindir=$RPM_BUILD_ROOT%{_bindir} \
 
 %files yap
 %defattr(-,root,root)
-%{_libdir}/ppl/libppl_yap.a
-%{_libdir}/ppl/libppl_yap.la
-%{_libdir}/ppl/libppl_yap.pl
-%{_libdir}/ppl/libppl_yap.so
+%{_libdir}/ppl/ppl_yap.a
+%{_libdir}/ppl/ppl_yap.la
+%{_libdir}/ppl/ppl_yap.pl
+%{_libdir}/ppl/ppl_yap.so
 
 %post
 /sbin/ldconfig
