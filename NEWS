@@ -43,6 +43,9 @@ o  A new `demos' directory has been added.  In the `ppl_lcdd'
 
 o  New macro PPL_VERSION expands to the version string of the library.
 
+o  New file README.configure provides additional information about
+   the configuration and compilation of the library.
+
 o  The documentation has been improved in various ways.
 
 o  The variable `abandon_exponential_computations' has been renamed
