@@ -559,6 +559,96 @@ public:
   */
   bool bounds_from_below(const LinExpression& expr) const;
 
+  //! \brief
+  //! Returns <CODE>true</CODE> if and only if \p expr is
+  //! bounded from above in \p *this, in which case the supremum
+  //! value is computed.
+  /*!
+    \param expr         The linear expression to be maximized subject
+                        to \p *this;
+    \param numerator    The numerator of the supremum value;
+    \param denominator  The denominator of the supremum value;
+    \param maximum      <CODE>true</CODE> if and only if the supremum
+                        is also the maximum value.
+    \exception std::invalid_argument thrown if \p expr and \p *this
+                                     are dimension-incompatible.
+
+    If \p expr is not bounded from above, <CODE>false</CODE> is returned
+    and \p numerator, \p denominator and \p maximum
+    are left untouched.
+  */
+  bool maximize(const LinExpression& expr,
+		Integer& numerator, Integer& denominator, bool& maximum) const;
+
+  //! \brief
+  //! Returns <CODE>true</CODE> if and only if \p expr is
+  //! bounded from above in \p *this, in which case the supremum
+  //! value and a point where \p expr reaches it are computed.
+  /*!
+    \param expr         The linear expression to be maximized subject
+                        to \p *this;
+    \param numerator    The numerator of the supremum value;
+    \param denominator  The denominator of the supremum value;
+    \param maximum      <CODE>true</CODE> if and only if the supremum
+                        is also the maximum value;
+    \param point        A point or closure point where \p expr
+                        reaches its supremum value.
+    \exception std::invalid_argument thrown if \p expr and \p *this
+                                     are dimension-incompatible.
+
+    If \p expr is not bounded from above, <CODE>false</CODE> is returned
+    and \p numerator, \p denominator, \p maximum and \p point
+    are left untouched.
+  */
+  bool maximize(const LinExpression& expr,
+		Integer& numerator, Integer& denominator, bool& maximum,
+		Generator& point) const;
+
+  //! \brief
+  //! Returns <CODE>true</CODE> if and only if \p expr is
+  //! bounded from below in \p *this, in which case the infimum
+  //! value is computed.
+  /*!
+    \param expr         The linear expression to be minimized subject
+                        to \p *this;
+    \param numerator    The numerator of the infimum value;
+    \param denominator  The denominator of the infimum value;
+    \param minimum      <CODE>true</CODE> if and only if the infimum
+                        is also the minimum value.
+    \exception std::invalid_argument thrown if \p expr and \p *this
+                                     are dimension-incompatible.
+
+    If \p expr is not bounded from below, <CODE>false</CODE> is returned
+    and \p numerator, \p denominator and \p minimum
+    are left untouched.
+  */
+  bool minimize(const LinExpression& expr,
+		Integer& numerator, Integer& denominator, bool& minimum) const;
+
+  //! \brief
+  //! Returns <CODE>true</CODE> if and only if \p expr is
+  //! bounded from below in \p *this, in which case the infimum
+  //! value and a point where \p expr reaches it are computed.
+  /*!
+    \param expr         The linear expression to be minimized subject
+                        to \p *this;
+    \param numerator    The numerator of the infimum value;
+    \param denominator  The denominator of the infimum value;
+    \param minimum      <CODE>true</CODE> if and only if the infimum
+                        is also the minimum value;
+    \param point        A point or closure point where \p expr
+                        reaches its infimum value.
+    \exception std::invalid_argument thrown if \p expr and \p *this
+                                     are dimension-incompatible.
+
+    If \p expr is not bounded from below, <CODE>false</CODE> is returned
+    and \p numerator, \p denominator, \p minimum and \p point
+    are left untouched.
+  */
+  bool minimize(const LinExpression& expr,
+		Integer& numerator, Integer& denominator, bool& minimum,
+		Generator& point) const;
+
   //! Returns <CODE>true</CODE> if and only if \p *this contains \p y.
   /*!
     \exception std::invalid_argument thrown if \p *this and \p y
