@@ -1731,18 +1731,23 @@ PPL::Polyhedron::satisfies(const Constraint& c) {
 */
 bool
 PPL::Polyhedron::includes(const Generator& g) {
+  if (space_dimension() < g.space_dimension())
+     throw_different_dimensions("PPL::Polyhedron::includes(g)",
+				 *this, g);
+
+  // Any generators is included in an empty-polyhedron.
   if(is_empty())
     return false;
+
+  // A universe polyhedron in a zero-dimensional space includes
+  // all the generators of a zero-dimensional space.
   if (space_dimension() == 0)
-    throw_different_dimensions("PPL::Polyhedron::includes(g)",
-				*this, g);
+    return true;
+ 
   else {
     if(!constraints_are_up_to_date())
       update_constraints();
-    if (con_sys.num_columns() != g.size())
-      throw_different_dimensions("PPL::Polyhedron::includes(g)",
-				 *this, g);
-
+        
     return con_sys.satisfies_all_constraints(g);
   }
   // Just to avoid a gcc warning.

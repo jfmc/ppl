@@ -68,11 +68,18 @@ PPL::ConSys::const_iterator::skip_forward() {
 bool
 PPL::ConSys::satisfies_all_constraints(const Generator& g) const {
   size_t n_rows = num_rows();
+  size_t space_dim = space_dimension();
+  size_t g_space_dim = g.space_dimension();
+  assert(g_space_dim <= space_dim);
   bool g_is_ray_or_vertex = g.is_ray_or_vertex();
   for (size_t i = n_rows; i-- > 0; ) {
     const Constraint& c = (*this)[i];
     // Compute the sign of the scalar product.
-    int sp_sign = sgn(c * g);
+    int sp_sign;
+    if (g_space_dim < space_dim)
+      sp_sign = sgn(projected_scalar_prod(g, c));
+    else
+      sp_sign = sgn(c * g);
     if (g_is_ray_or_vertex && c.is_inequality()) {
       // A ray satisfies an inequality if its scalar product
       // with such a constraint is positive.
