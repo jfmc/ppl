@@ -708,7 +708,7 @@ PPL::Polyhedron::update_generators() const {
     x.set_sat_g_up_to_date();
     x.clear_sat_c_up_to_date();
     // The system of constraints and the system of generators
-    // are minimized
+    // are minimized.
     x.set_constraints_minimized();
     x.set_generators_minimized();
   }
