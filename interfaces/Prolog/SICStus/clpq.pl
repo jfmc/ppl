@@ -217,7 +217,7 @@ read_clauses(Stream) :-
     (Clause = (Head :- Body) ->
       assertz(user_clause(Head, Body))
     ;
-      assertz(user_clause(Head, true))
+      assertz(user_clause(Clause, true))
     ),
     read_clauses(Stream)
   ;
