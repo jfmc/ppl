@@ -513,10 +513,10 @@ throw_different_dimensions(const char* method,
 			   const PPL::Polyhedron& y) {
   std::string what;
   std::ostringstream s(what);
-  s << method
-    << ": this->num_dimensions == " << x.num_dimensions()
-    << ": y->num_dimensions == " << y.num_dimensions();
-  throw std::invalid_argument(what);
+  s << method << ":" << std::endl
+    << "this->num_dimensions == " << x.num_dimensions()
+    << ", y->num_dimensions == " << y.num_dimensions();
+  throw std::invalid_argument(s.str());
 }
 
 /*!
