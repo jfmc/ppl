@@ -73,25 +73,7 @@ AC_PROG_CXXCPP
 
 dnl GMP library
 
-AC_ARG_WITH(gmp-includes,
-            [  --with-gmp-includes=DIR GMP include files are in DIR],
-            gmp_includes=${with_gmp_includes}
-            gmp_includes_option="-I${gmp_includes}")
-
-AC_ARG_WITH(gmp-dir,
-            [  --with-gmp-dir=DIR      GMP library files are in DIR],
-            gmp_dir=${with_gmp_dir}
-            gmp_library_option="${gmp_dir}/libgmpxx.a ${gmp_dir}/libgmp.a ",
-            gmp_library_option="-lgmpxx -lgmp")
-
-
-ac_save_LIBS="$LIBS"
-LIBS="${gmp_library_option} $LIBS"
-
-ac_save_CPPFLAGS="$CPPFLAGS"
-CPPFLAGS="${gmp_includes_option} $CPPFLAGS"
-
-AC_CHECK_HAVE_GMP
+AC_CHECK_GMP
 
 if test x"$have_gmp" = xno
 then
@@ -104,13 +86,8 @@ fi
 
 AC_CHECK_SIZEOF(mp_limb_t, 4, [#include <gmp.h>])
 
-AC_CHECK_GMP_EXCEPTIONS
-
-CPPFLAGS="$ac_save_CPPFLAGS"
-LIBS="$ac_save_LIBS"
-
 extra_includes="${extra_includes} ${gmp_includes_option}"
-
+extra_libraries="${extra_libraries} ${gmp_library_option}"
 
 dnl Compilation flags
 
@@ -296,8 +273,8 @@ dnl Checks for library functions.
 # Nothing for the time being.
 
 AC_SUBST(extra_includes)
+AC_SUBST(extra_libraries)
 AC_SUBST(extra_cpp_flags)
-AC_SUBST(gmp_library_option)
 AC_SUBST(debug_flag)
 AC_SUBST(extra_if_Prolog_subdirs)
 

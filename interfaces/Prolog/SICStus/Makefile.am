@@ -43,7 +43,7 @@ pplsp: ppl_sicstus.s.o $(top_builddir)/src/libppl.la
 	spld --main=prolog -S -o $@ --resources=./ppl_sicstus.s.o \
 	-LD -lstdc++ \
 	-Wl,-whole-archive $(top_builddir)/src/.libs/libppl.a -Wl,-no-whole-archive \
-	@gmp_library_option@
+	@extra_libraries@
 
 ppl_sicstus.s.o: ppl_sicstus.pl ppl_sicstus.o
 	splfr -S $(srcdir)/ppl_sicstus.pl ppl_sicstus.o
