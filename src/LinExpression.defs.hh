@@ -32,15 +32,33 @@ site: http://www.cs.unipr.it/ppl/ . */
 namespace Parma_Polyhedra_Library {
   // Put them in the namespace here to declare them friend later.
 
-  /*! \name Linear Expressions.
+  /*! \name How to build a linear expression.
 
-    Linear expressions are the blocks used for building both
-    constraints (i.e., linear equalities or inequalities)
+    Linear expressions are the basic blocks for defining
+    both constraints (i.e., linear equalities or inequalities)
     and generators (i.e., lines, rays and vertices).
-    Linear expressions are recursively built from
-    variables and integer terms by applying the usual
-    operators, i.e., unary negation, binary addition and subtraction,
-    as well as multiplication by an integer.
+    The following functions provide a convenient interface
+    for building a complex linear expression starting from simpler ones
+    (or even from objects of the classes Variable and Integer).
+    Available operators include unary negation,
+    binary addition and subtraction,
+    as well as multiplication by an Integer.
+
+    \par Example
+    The following code builds the linear expression \f$4x - 2y - z + 14\f$:
+    \code
+  LinExpression e = 4 * x - 2 * y - z + 14;
+    \endcode
+    Another way to build the same linear expression is:
+    \code
+  LinExpression e1 = 4 * x;
+  LinExpression e2 = 2 * y;
+  LinExpression e3 = z;
+  LinExpression e = LinExpression(Integer(14));
+  e += e1 - e2 - e3;
+    \endcode
+    Note that, in the second definition of linear expression <CODE>e</CODE>,
+    the double type-coercion is necessary. 
   */
   //@{
   //! Returns the linear expression \p e1 + \p e2.
@@ -85,24 +103,6 @@ namespace Parma_Polyhedra_Library {
   of the \p i -th variable \f$x_i\f$
   and \p b is the integer inhomogeneous term.
 
-  \par Example
-  The following code builds a linear expression \f$4x-2y-z+14\f$ :
-  \code
-  Variable x(0);
-  Variable y(1);
-  Variable z(2);
-  LinExpression e = 4 * x - 2 * y - z + 14;
-  \endcode
-  Another way to build the same linear expression is:
-  \code
-  Variable x(0);
-  Variable y(1);
-  Variable z(2);
-  LinExpression e = 4 * x;
-  LinExpression e1 = -2 * y;
-  LinExpression e2 = -z;
-  e += e1 + e2 + 14;
-  \endcode
   Note that the ``meaning'' of an object of the class Variable
   is completely specified by the integer index provided to its
   constructor:

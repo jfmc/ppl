@@ -32,7 +32,26 @@ site: http://www.cs.unipr.it/ppl/ . */
 namespace Parma_Polyhedra_Library {
   // Put them in the namespace here to declare them friend later.
 
-  //! @name Constraint.
+  /*! @name How to build a constraint.
+    Constraints are typically built by applying a relational operator
+    to a pair of linear expressions.
+    Available relational operators include equality (<CODE>==</CODE>)
+    and non-strict inequalities (<CODE>>=</CODE> and <CODE><=</CODE>).
+    Strict inequalities (<CODE><</CODE> and <CODE>></CODE>)
+    are not supported.
+    
+    \par Example
+    The following code builds the equality \f$3x + 5y - z = 0\f$:
+    \code
+  Constraint equal(3 * x + 5 * y - z == 0);
+    \endcode
+    The following code builds the constraint \f$4x - 2y \geq z - 13\f$:
+    \code
+  Constraint inequal(4 * x - 2 * y >= z - 13);
+    \endcode
+
+  (This spare line is added just to prevent a doxygen bug).
+   */
   //@{
   //! Returns the constraint \p e1 = \p e2.
   Constraint operator ==(const LinExpression& e1, const LinExpression& e2);
@@ -69,26 +88,6 @@ namespace Parma_Polyhedra_Library {
       - an inequality: \f$\sum_{i=0}^{d-1} a_i x_i + b \geq 0\f$;
 
     where \f$d\f$ is the dimension of the space.
-    Constraints are typically built by applying a relational operator
-    to a pair of linear expressions.
-    
-    \par Example 1
-    The following code builds the constraint \f$4x - 2y - z + 13 \geq 0\f$:
-    \code
-    Variable x(0);
-    Variable y(1);
-    Variable z(2);
-    Constraint inequal(4 * x - 2 * y - z + 13 >= 0);
-    \endcode
-
-    \par Example 2
-    The following code builds the equality \f$3x + 5y - z = 0\f$:
-    \code
-    Variable x(0);
-    Variable y(1);
-    Variable z(2);
-    Constraint equal(3 * x + 5 * y - z == 0);
-    \endcode
 */
 class Parma_Polyhedra_Library::Constraint : public Row {
 private:
