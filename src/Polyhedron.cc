@@ -3244,7 +3244,6 @@ PPL::Polyhedron::BBRZ02_widening_assign(const Polyhedron& y) {
   // polyhedron is `x'.
   if (is_BBRZ02_stabilizing(x, y))
     return;
-
   // In this function we need a temporary system of constraints composed
   // by the constraints that are common to `x' and `y'.
   ConSys common_con_sys;
@@ -3272,7 +3271,7 @@ PPL::Polyhedron::BBRZ02_widening_assign(const Polyhedron& y) {
   // ****************
   // First technique.
   // ****************
-
+  
   // To implement the first technique of the widening proposed in
   // BBRZ02 we must have a copy of `x'.
   Polyhedron x1(x);
@@ -3378,7 +3377,7 @@ PPL::Polyhedron::BBRZ02_widening_assign(const Polyhedron& y) {
   // *****************
   // Second technique.
   // *****************
-
+ 
   // To implement the secondtechnique of the widening proposed in
   // BBRZ02 we must have a copy of `x'.
   Polyhedron x2(x);
@@ -3423,7 +3422,7 @@ PPL::Polyhedron::BBRZ02_widening_assign(const Polyhedron& y) {
 	// system of generators of `x'.
 	if (tmp_gen.num_rows() != 0) {
 	  if (tmp_gen.num_rows() == 1)
-	    x.gen_sys.add_row(tmp_gen[0]);
+	    x2.gen_sys.add_row(tmp_gen[0]);
 	  else {
 	    // Otherwise, we "average" the directions of the rays
 	    // that belong to `tmp_gen' and we add the new ray to the
@@ -3467,6 +3466,8 @@ PPL::Polyhedron::BBRZ02_widening_assign(const Polyhedron& y) {
   if (!x3.sat_c_is_up_to_date())
     x3.sat_c.transpose_assign(x3.sat_g);
 
+  //tmp_sat.resize(y_gen_sys_num_rows, x3_con_sys_num_rows);
+  assert(tmp_sat.num_columns() >= x3_con_sys_num_rows);
   for (dimension_type i = y_gen_sys_num_rows; i-- > 0; )
     for (dimension_type j = x3_con_sys_num_rows; j-- > 0; )
       if (x3.con_sys[j]*y.gen_sys[i] > 0)
