@@ -380,7 +380,7 @@
               operator was previously known.",
 }
 
-@InProceedings{BalasundaramK89,
+@Inproceedings{BalasundaramK89,
   Author = "V. Balasundaram and K. Kennedy",
   Title = "A Technique for Summarizing Data Access
            and Its Use in Parallelism Enhancing Transformations",
@@ -395,7 +395,7 @@
   Pages = "41--53",
 }
 
-@InProceedings{BessonJT99,
+@Inproceedings{BessonJT99,
   Author = "F. Besson and T. P. Jensen and J.-P. Talpin",
   Title = "Polyhedral Analysis for Synchronous Languages",
   Booktitle = "Static Analysis:
@@ -693,22 +693,22 @@
               numeric objects is bounded, but large."
 }
  
-@InProceedings{Granger91,
+@Inproceedings{Granger91,
   Author = "P. Granger",
   Title = "Static Analysis of Linear Congruence Equalities
            among Variables of a Program",
   Booktitle = "TAPSOFT'91: Proceedings of the International Joint Conference
                on Theory and Practice of Software Development,
-           Volume 1: Colloquium on Trees in Algebra and Programming (CAAP'91)",
+               Volume 1: Colloquium on Trees in Algebra and Programming
+               (CAAP'91)",
   Address = "Brighton, UK",
   Year = 1991,
-  Editor = "Samson Abramsky and T. S. E. Maibaum",
+  Editor = "S. Abramsky and T. S. E. Maibaum",
   Publisher = "Springer-Verlag, Berlin",
   Series = "Lecture Notes in Computer Science",
   Volume = 493,
   ISBN = "3-540-53982-4",
   Pages = "169--192",
-
   Abstract = "In this paper, a new kind of static (or semantic)
              analysis is defined: congruence analysis, which is
              conceived to discover the properties of the following
@@ -721,13 +721,14 @@
              namely its combination with the analysis of bounds, and
              also some analysis defined when the modulus of
              congruences is given \emph{a priori}.",
-  }
+}
 
-@InProceedings{Granger97,
+@Inproceedings{Granger97,
   Author = "P. Granger",
   Title = "Static Analyses of Congruence Properties on Rational Numbers
            (Extended Abstract)",
-  Booktitle = "Static Analysis: Proceedings of the 4th International Symposium",
+  Booktitle = "Static Analysis: Proceedings of the 4th International
+               Symposium",
   Address = "Paris, France",
   Year = 1997,
   Editor = "P. {Van Hentenryck}",
@@ -741,25 +742,24 @@
              designed for discovering congruence properties satisfied
              by rational (or real) variables of programs. Two of them
              deal with additive congruence properties and generalize
-             linear equation analysis
-               [M. Karr, \emph{Affine Relationships among Variables of
-               a Program}, Acta Informatica, 6:133--151, 1976]
-             and congruence analysis on integer numbers
-               [P. Granger, \emph{Static Analysis of Arithmetical
-               Congruences}, International Journal of Computer
-               Mathematics, 30:165--190, 1989],
-               [P. Granger, \emph{Static Analysis of Linear Congruence
-               Equalities among Variables of a Program}, TAPSOFT'91:
-               Proceedings of the International Joint Conference on
-               Theory and Practice of Software Development, Volume 1:
-               Colloquium on Trees in Algebra and Programming
-               (CAAP'91), Lecture Notes in Computer Science, 493,
-               pp. 169--192].
-             The others are based on multiplicative congruence
-             properties in the set of positive rational numbers. Among
-             other potential applications, we exemplify the interest
-             of all these analyses for optimizing the representation
-             of rational or real valued variables.", }
+             linear equation analysis [M. Karr, \emph{Affine
+             Relationships among Variables of a Program}, Acta
+             Informatica, 6:133--151, 1976] and congruence analysis on
+             integer numbers [P. Granger, \emph{Static Analysis of
+             Arithmetical Congruences}, International Journal of
+             Computer Mathematics, 30:165--190, 1989], [P. Granger,
+             \emph{Static Analysis of Linear Congruence Equalities
+             among Variables of a Program}, TAPSOFT'91: Proceedings of
+             the International Joint Conference on Theory and Practice
+             of Software Development, Volume 1: Colloquium on Trees in
+             Algebra and Programming (CAAP'91), Lecture Notes in
+             Computer Science, 493, pp. 169--192].  The others are
+             based on multiplicative congruence properties in the set
+             of positive rational numbers. Among other potential
+             applications, we exemplify the interest of all these
+             analyses for optimizing the representation of rational or
+             real valued variables."
+}
 
 @PhDThesis{Halbwachs79th,
   Author = "N. Halbwachs",
@@ -1055,6 +1055,39 @@
               description of integer arrays."
 }
 
+@Inproceedings{Mine01a,
+  Author = "A. Min\'e",
+  Title = "A New Numerical Abstract Domain Based on Difference-Bound Matrices",
+  Booktitle = "Proceedings of the 2nd Symposium on Programs as Data Objects
+               (PADO 2001)",
+  Address = "Aarhus, Denmark",
+  Editor = "O. Danvy and A. Filinski",
+  Publisher = "Springer-Verlag, Berlin",
+  Series = "Lecture Notes in Computer Science",
+  Volume = 2053,
+  Publisher = springer,
+  Pages = "155--172",
+  Year = 2001,
+  Abstract = "This paper presents a new numerical domain for static
+              analysis by abstract interpretation. This domain allows
+              us to represent invariants of the form and , where and
+              are variables values and is an integer or real
+              constant. Abstract elements are represented by
+              Difference-Bound Matrices, widely used by
+              model-checkers, but we had to design new operators to
+              meet the needs of abstract interpretation. The result is
+              a complete lattice of infinite height featuring
+              widening, narrowing and common transfer functions. We
+              focus on giving an efficient representation and
+              graph-based algorithms---where is the number of
+              variables---and claim that this domain always performs
+              more precisely than the well-known interval domain. To
+              illustrate the precision/cost tradeoff of this domain,
+              we have implemented simple abstract interpreters for toy
+              imperative and parallel languages which allowed us to
+              prove some non-trivial algorithms correct."
+}
+
 @Inproceedings{Mine01b,
   Author = "A. Min\'e",
   Title  = "The Octagon Abstract Domain",
@@ -1080,7 +1113,39 @@
               fixpoint approximations."
 }
 
-@inproceedings{Mine04,
+@Inproceedings{Mine02,
+  Author = "A. Min\'e",
+  Title = "A Few Graph-Based Relational Numerical Abstract Domains",
+  Booktitle = "Static Analysis:
+               Proceedings of the 9th International Symposium",
+  Address = "Madrid, Spain",
+  Editor = "M. V. Hermenegildo and G. Puebla",
+  Publisher = "Springer-Verlag, Berlin",
+  Series = "Lecture Notes in Computer Science",
+  Volume = 2477,
+  ISBN = "3-540-44235-9",
+  Pages = "117--132",
+  Year = 2002,
+  Abstract = "This article presents the systematic design of a class
+              of relational numerical abstract domains from
+              non-relational ones. Constructed domains represent sets
+              of invariants of the form $(v_j-v_i\in C)$, where vj and
+              vi are two variables, and $C$ lives in an abstraction of
+              $\mathcal{P}(\mathbb {Z})$, $\mathcal{P}(\mathbb {Q})$,
+              or $\mathcal{P}(\mathbb {R})$. We will call this family
+              of domains weakly relational domains. The underlying
+              concept allowing this construction is an extension of
+              potential graphs and shortest-path closure algorithms in
+              exotic-like algebras.  Example constructions are given
+              in order to retrieve well-known domains as well as new
+              ones. Such domains can then be used in the Abstract
+              Interpretation framework in order to design various
+              static analyses. A major benefit of this construction is
+              its modularity, allowing to quickly implement new
+              abstract domains from existing ones."
+}
+
+@Inproceedings{Mine04,
   Author = "A. Min\'e",
   Title = "Relational Abstract Domains for the Detection
            of Floating-Point Run-Time Errors",
@@ -1186,7 +1251,6 @@
               discarded, and not be used to make any further
               derivations in subsequent iterations, if we use
               Semi-naive evaluation.
-
               We show that the problem of subsumption in CQLs with
               linear arithmetic constraints is co-NP complete, and
               present a deterministic algorithm, based on the divide
@@ -1222,33 +1286,30 @@
   Note = "Also published as IRISA \emph{Publication interne} 785,
           Rennes, France, 1993",
   Abstract = "Polyhedra are geometric representations of linear
-              systems of equations and inequalities.  Since
-              polyhedra are used to represent the iteration
-              domains of nested loop programs, procedures for
-              operating on polyhedra are useful for doing loop
-              transformations and other program restructuring
-              transformations which are needed in parallelizing
-              compilers.  Thus a need for a library of polyhedral
-              operations has recently been recognized in the
-              parallelizing compiler community.
-                Polyhedra are also used in the definition of
-              domains of variables in systems of affine recurrence
-              equations (SARE). {\sc Alpha} is a language which is
-              based on the SARE formalism in which all variables
-              are declared over finite unions of polyhedra.  This
-              report describes a library of polyhedral functions
-              which was developed to support the {\sc Alpha}
-              language environment, and which is general enough
-              to satisfy the needs of researchers doing
-              parallelizing compilers.
-                This report describes the data structures used to
-              represent domains, gives motivations for the major
-              design decisions, and presents the algorithms used
-              for doing polyhedral operations.
-                This library has been written and tested, and has
-              been in use since the beginning of 1993 by research
-              facilities in Europe and Canada.  The library is
-              freely distributed by ftp.",
+              systems of equations and inequalities.  Since polyhedra
+              are used to represent the iteration domains of nested
+              loop programs, procedures for operating on polyhedra are
+              useful for doing loop transformations and other program
+              restructuring transformations which are needed in
+              parallelizing compilers.  Thus a need for a library of
+              polyhedral operations has recently been recognized in
+              the parallelizing compiler community.  Polyhedra are
+              also used in the definition of domains of variables in
+              systems of affine recurrence equations (SARE). {\sc
+              Alpha} is a language which is based on the SARE
+              formalism in which all variables are declared over
+              finite unions of polyhedra.  This report describes a
+              library of polyhedral functions which was developed to
+              support the {\sc Alpha} language environment, and which
+              is general enough to satisfy the needs of researchers
+              doing parallelizing compilers.  This report describes
+              the data structures used to represent domains, gives
+              motivations for the major design decisions, and presents
+              the algorithms used for doing polyhedral operations.
+              This library has been written and tested, and has been
+              in use since the beginning of 1993 by research
+              facilities in Europe and Canada.  The library is freely
+              distributed by ftp.",
   URL = "ftp://ftp.ee.byu.edu/faculty/Wilde/Polylib/report.ps.gz"
 }
 
