@@ -24,6 +24,7 @@ site: http://www.cs.unipr.it/ppl/ . */
 #ifndef PPL_Polyhedra_PowerSet_inlines_hh
 #define PPL_Polyhedra_PowerSet_inlines_hh 1
 
+#include "BHRZ03_Certificate.types.hh"
 #include "ConSys.defs.hh"
 #include "ConSys.inlines.hh"
 #include "algorithms.hh"

@@ -27,8 +27,6 @@ site: http://www.cs.unipr.it/ppl/ . */
 #include "Polyhedra_PowerSet.types.hh"
 #include "ConSys.types.hh"
 #include "Constraint.types.hh"
-#include "BHRZ03_Certificate.types.hh"
-#include "H79_Certificate.types.hh"
 #include "Polyhedron.defs.hh"
 #include "Variable.defs.hh"
 #include "Determinate.defs.hh"
@@ -254,11 +252,6 @@ public:
   bool ascii_load(std::istream& s);
 
 private:
-//   typedef BHRZ03_Certificate certificate_type;
-//   typedef std::map<certificate_type,
-// 		   size_type,
-// 		   certificate_type::Compare> cert_multiset_type;
-
   //! Records into \p cert_ms the certificate for this set of polyhedra.
   template <typename Cert>
   void collect_certificates(std::map<Cert, size_type,
