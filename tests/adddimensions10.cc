@@ -54,7 +54,7 @@ main() {
   
   GenSys known_gs;
   known_gs.insert(point(A));
-  known_gs.insert(ray(B));
+  known_gs.insert(line(B));
   known_gs.insert(ray(A));
   NNC_Polyhedron known_result(known_gs);
 
