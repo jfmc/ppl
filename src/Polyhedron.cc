@@ -3942,18 +3942,8 @@ PPL::Polyhedron::is_BHRZ03_stabilizing(const Polyhedron& x,
     }
   }
 
-  // Hey, wait a minute! Are they equal?
-  if (x == y) {
-#if 0
-    std::cout << "BHRZ03_stabilizing: same polyhedra" << std::endl;
-#endif
-#if PPL_STATISTICS
-    statistics->reason.equal++;
-#endif
-    return true;
-  }
-
   // The chain is not stabilizing.
+  // NOTE: we do NOT check for equality of the two polyhedra here.
   return false;
 }
 
@@ -4493,7 +4483,9 @@ PPL::Polyhedron::BHRZ03_widening_assign(const Polyhedron& y) {
   }
   
   // If the iteration is stabilizing, the resulting polyhedron is `x'.
-  if (is_BHRZ03_stabilizing(x, y)) {
+  // At this point, also check if the two polyhedra are the same
+  // (exploiting the knowledge that `y <= x'.
+  if (is_BHRZ03_stabilizing(x, y) || x <= y) {
 #if PPL_STATISTICS
     statistics->technique.nop++;
 #endif
@@ -4501,8 +4493,9 @@ PPL::Polyhedron::BHRZ03_widening_assign(const Polyhedron& y) {
     return;
   }
 
-  // Copy into `H79_con_sys' the constraints that are common
-  // to `x' and `y', according to the definition of the H79 widening.
+  // Copy into `H79_cs' the constraints that are common to `x' and `y',
+  // according to the definition of the H79 widening.
+  // The other ones are copied into `x_minus_H79_cs'.
   Topology tpl = x.topology();
   dimension_type num_columns = x.con_sys.num_columns();
   ConSys H79_cs(tpl, 0, num_columns);
