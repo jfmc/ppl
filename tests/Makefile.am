@@ -17,12 +17,17 @@ SUBDIRS =
 
 INCLUDES = -I$(top_builddir)/src
 
-LDADD = -L$(top_builddir)/src -lppl @gmp_library_option@
+LDADD = $(top_builddir)/src/libppl.a
+LDFLAGS = @gmp_library_option@
 
 CPPFLAGS = @extra_cpp_flags@
 
-TESTS = inters1 inters2 randchull1 empty1 append \
-	append2 permute error1 error2
+TESTS = inters1 inters2 \
+        randchull1 \
+        empty1 \
+        append1 append2 \
+        permute \
+        error1 error2 error3
 
 inters1_SOURCES = inters1.cc
 inters2_SOURCES = inters2.cc
@@ -33,9 +38,11 @@ empty1_SOURCES = empty1.cc
 
 error1_SOURCES = error1.cc
 error2_SOURCES = error2.cc
+error3_SOURCES = error3.cc
 
-append_SOURCES = append.cc
+append1_SOURCES = append1.cc
 append2_SOURCES = append2.cc
+
 permute_SOURCES = permute.cc
 
 check_PROGRAMS = $(TESTS)

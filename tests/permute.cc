@@ -32,7 +32,7 @@ site: http://www.cs.unipr.it/ppl/ . */
 using namespace std;
 using namespace Parma_Polyhedra_Library;
 
-#define NOISY 1
+#define NOISY 0
 
 void
 shift_rename_insert(const Polyhedron& p, size_t offset, Polyhedron& q) {
