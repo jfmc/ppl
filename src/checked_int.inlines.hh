@@ -28,7 +28,7 @@ site: http://www.cs.unipr.it/ppl/ . */
 // this ensures that the directive will not be moved during the
 // procedure that automatically creates the library's include file
 // (see `Makefile.am' in the `src' directory).
-# include <limits.h>
+# include <climits>
 
 #include <stdint.h>
 #include <cerrno>
@@ -369,29 +369,29 @@ SPECIALIZE_ASSIGN(int_float_check_min_max, int8_t, float32_t)
 SPECIALIZE_ASSIGN(int_float_check_min_max, int16_t, float32_t)
 SPECIALIZE_ASSIGN(int_float_check_min_max, int32_t, float32_t)
 SPECIALIZE_ASSIGN(int_float_check_min_max, int64_t, float32_t)
-SPECIALIZE_ASSIGN(int_float_check_min_max, u_int8_t, float32_t)
-SPECIALIZE_ASSIGN(int_float_check_min_max, u_int16_t, float32_t)
-SPECIALIZE_ASSIGN(int_float_check_min_max, u_int32_t, float32_t)
-SPECIALIZE_ASSIGN(int_float_check_min_max, u_int64_t, float32_t)
+SPECIALIZE_ASSIGN(int_float_check_min_max, uint8_t, float32_t)
+SPECIALIZE_ASSIGN(int_float_check_min_max, uint16_t, float32_t)
+SPECIALIZE_ASSIGN(int_float_check_min_max, uint32_t, float32_t)
+SPECIALIZE_ASSIGN(int_float_check_min_max, uint64_t, float32_t)
 
 SPECIALIZE_ASSIGN(int_float_check_min_max, int8_t, float64_t)
 SPECIALIZE_ASSIGN(int_float_check_min_max, int16_t, float64_t)
 SPECIALIZE_ASSIGN(int_float_check_min_max, int32_t, float64_t)
 SPECIALIZE_ASSIGN(int_float_check_min_max, int64_t, float64_t)
-SPECIALIZE_ASSIGN(int_float_check_min_max, u_int8_t, float64_t)
-SPECIALIZE_ASSIGN(int_float_check_min_max, u_int16_t, float64_t)
-SPECIALIZE_ASSIGN(int_float_check_min_max, u_int32_t, float64_t)
-SPECIALIZE_ASSIGN(int_float_check_min_max, u_int64_t, float64_t)
+SPECIALIZE_ASSIGN(int_float_check_min_max, uint8_t, float64_t)
+SPECIALIZE_ASSIGN(int_float_check_min_max, uint16_t, float64_t)
+SPECIALIZE_ASSIGN(int_float_check_min_max, uint32_t, float64_t)
+SPECIALIZE_ASSIGN(int_float_check_min_max, uint64_t, float64_t)
 
 #ifdef FLOAT96_TYPE
 SPECIALIZE_ASSIGN(int_float_check_min_max, int8_t, float96_t)
 SPECIALIZE_ASSIGN(int_float_check_min_max, int16_t, float96_t)
 SPECIALIZE_ASSIGN(int_float_check_min_max, int32_t, float96_t)
 SPECIALIZE_ASSIGN(int_float_check_min_max, int64_t, float96_t)
-SPECIALIZE_ASSIGN(int_float_check_min_max, u_int8_t, float96_t)
-SPECIALIZE_ASSIGN(int_float_check_min_max, u_int16_t, float96_t)
-SPECIALIZE_ASSIGN(int_float_check_min_max, u_int32_t, float96_t)
-SPECIALIZE_ASSIGN(int_float_check_min_max, u_int64_t, float96_t)
+SPECIALIZE_ASSIGN(int_float_check_min_max, uint8_t, float96_t)
+SPECIALIZE_ASSIGN(int_float_check_min_max, uint16_t, float96_t)
+SPECIALIZE_ASSIGN(int_float_check_min_max, uint32_t, float96_t)
+SPECIALIZE_ASSIGN(int_float_check_min_max, uint64_t, float96_t)
 #endif
 
 #ifdef FLOAT128_TYPE
@@ -399,10 +399,10 @@ SPECIALIZE_ASSIGN(int_float_check_min_max, int8_t, float128_t)
 SPECIALIZE_ASSIGN(int_float_check_min_max, int16_t, float128_t)
 SPECIALIZE_ASSIGN(int_float_check_min_max, int32_t, float128_t)
 SPECIALIZE_ASSIGN(int_float_check_min_max, int64_t, float128_t)
-SPECIALIZE_ASSIGN(int_float_check_min_max, u_int8_t, float128_t)
-SPECIALIZE_ASSIGN(int_float_check_min_max, u_int16_t, float128_t)
-SPECIALIZE_ASSIGN(int_float_check_min_max, u_int32_t, float128_t)
-SPECIALIZE_ASSIGN(int_float_check_min_max, u_int64_t, float128_t)
+SPECIALIZE_ASSIGN(int_float_check_min_max, uint8_t, float128_t)
+SPECIALIZE_ASSIGN(int_float_check_min_max, uint16_t, float128_t)
+SPECIALIZE_ASSIGN(int_float_check_min_max, uint32_t, float128_t)
+SPECIALIZE_ASSIGN(int_float_check_min_max, uint64_t, float128_t)
 #endif
 
 #undef ASSIGN2_SIGNED_SIGNED
@@ -519,18 +519,6 @@ SPECIALIZE_ASSIGN(unsigned_long_long_c_string, unsigned long long, c_string)
 #define LONG_BITS 64
 #else
 #error "Unexpected max for unsigned long"
-#endif
-
-// C99 defines ULLONG_MAX, but this C99 is not yet part of the C++ standard.
-// GCC defines ULONG_LONG_MAX.
-// Some compilers (such as Comeau C++ up to and including version 4.3.3)
-// define nothing.  In this last case we make a reasonable guess.
-#ifndef ULLONG_MAX
-#if defined(ULONG_LONG_MAX)
-#define ULLONG_MAX ULONG_LONG_MAX
-#elif SIZEOF_LONG_LONG == 8
-#define ULLONG_MAX 0xffffffffffffffffULL
-#endif
 #endif
 
 #if ULLONG_MAX == 0xffffffffffffffffULL

@@ -137,13 +137,13 @@ class Float<float32_t> {
 private:
   union {
     float32_t _value;
-    u_int32_t word;
+    uint32_t word;
   } u;
-  static const u_int32_t SGN_MASK = 0x80000000;
-  static const u_int32_t POS_INF = 0x7f800000;
-  static const u_int32_t NEG_INF = 0xff800000;
-  static const u_int32_t POS_ZERO = 0x00000000;
-  static const u_int32_t NEG_ZERO = 0x80000000;
+  static const uint32_t SGN_MASK = 0x80000000;
+  static const uint32_t POS_INF = 0x7f800000;
+  static const uint32_t NEG_INF = 0xff800000;
+  static const uint32_t POS_ZERO = 0x00000000;
+  static const uint32_t NEG_ZERO = 0x80000000;
 public:
   Float(float32_t v);
   float32_t value();
@@ -216,22 +216,22 @@ private:
     float64_t _value;
     struct {
 #ifdef WORDS_BIGENDIAN
-      u_int32_t msp;
-      u_int32_t lsp;
+      uint32_t msp;
+      uint32_t lsp;
 #else
-      u_int32_t lsp;
-      u_int32_t msp;
+      uint32_t lsp;
+      uint32_t msp;
 #endif
     } parts;
   } u;
-  static const u_int32_t MSP_SGN_MASK = 0x80000000;
-  static const u_int32_t MSP_POS_INF = 0x7ff00000;
-  static const u_int32_t MSP_NEG_INF = 0xfff00000;
-  static const u_int32_t MSP_POS_ZERO = 0x00000000;
-  static const u_int32_t MSP_NEG_ZERO = 0x80000000;
-  static const u_int32_t LSP_INF = 0;
-  static const u_int32_t LSP_ZERO = 0;
-  static const u_int32_t LSP_MAX = 0xffffffff;
+  static const uint32_t MSP_SGN_MASK = 0x80000000;
+  static const uint32_t MSP_POS_INF = 0x7ff00000;
+  static const uint32_t MSP_NEG_INF = 0xfff00000;
+  static const uint32_t MSP_POS_ZERO = 0x00000000;
+  static const uint32_t MSP_NEG_ZERO = 0x80000000;
+  static const uint32_t LSP_INF = 0;
+  static const uint32_t LSP_ZERO = 0;
+  static const uint32_t LSP_MAX = 0xffffffff;
 public:
   Float(float64_t v);
   float64_t value();
@@ -267,7 +267,7 @@ Float<float64_t>::is_inf() const {
 
 inline int
 Float<float64_t>::is_nan() const {
-  u_int32_t a = u.parts.msp & ~MSP_SGN_MASK;
+  uint32_t a = u.parts.msp & ~MSP_SGN_MASK;
   return a > MSP_POS_INF || (a == MSP_POS_INF && u.parts.lsp != LSP_INF);
 }
 
@@ -321,23 +321,23 @@ private:
     float96_t _value;
     struct {
 #ifdef WORDS_BIGENDIAN
-      u_int32_t msp;
-      u_int64_t lsp;
+      uint32_t msp;
+      uint64_t lsp;
 #else
-      u_int64_t lsp;
-      u_int32_t msp;
+      uint64_t lsp;
+      uint32_t msp;
 #endif
     } parts;
   } u;
-  static const u_int32_t MSP_SGN_MASK = 0x00008000;
-  static const u_int32_t MSP_POS_INF = 0x00007fff;
-  static const u_int32_t MSP_NEG_INF = 0x0000ffff;
-  static const u_int32_t MSP_POS_ZERO = 0x00000000;
-  static const u_int32_t MSP_NEG_ZERO = 0x00008000;
-  static const u_int64_t LSP_INF = 0x8000000000000000ULL;
-  static const u_int64_t LSP_ZERO = 0;
-  static const u_int64_t LSP_DMAX = 0x7fffffffffffffffULL;
-  static const u_int64_t LSP_NMAX = 0xffffffffffffffffULL;
+  static const uint32_t MSP_SGN_MASK = 0x00008000;
+  static const uint32_t MSP_POS_INF = 0x00007fff;
+  static const uint32_t MSP_NEG_INF = 0x0000ffff;
+  static const uint32_t MSP_POS_ZERO = 0x00000000;
+  static const uint32_t MSP_NEG_ZERO = 0x00008000;
+  static const uint64_t LSP_INF = 0x8000000000000000ULL;
+  static const uint64_t LSP_ZERO = 0;
+  static const uint64_t LSP_DMAX = 0x7fffffffffffffffULL;
+  static const uint64_t LSP_NMAX = 0xffffffffffffffffULL;
 public:
   Float(float96_t v);
   float96_t value();
@@ -364,7 +364,7 @@ inline int
 Float<float96_t>::is_inf() const {
   if (u.parts.lsp != LSP_INF)
     return 0;
-  u_int32_t a = u.parts.msp & MSP_NEG_INF;
+  uint32_t a = u.parts.msp & MSP_NEG_INF;
   if (a == MSP_NEG_INF)
     return -1;
   if (a == MSP_POS_INF)
@@ -382,7 +382,7 @@ inline int
 Float<float96_t>::is_zero() const {
   if (u.parts.lsp != LSP_ZERO)
     return 0;
-  u_int32_t a = u.parts.msp & MSP_NEG_INF;
+  uint32_t a = u.parts.msp & MSP_NEG_INF;
   if (a == MSP_NEG_ZERO)
     return -1;
   if (a == MSP_POS_ZERO)
@@ -431,22 +431,22 @@ private:
     float128_t _value;
     struct {
 #ifdef WORDS_BIGENDIAN
-      u_int64_t msp;
-      u_int64_t lsp;
+      uint64_t msp;
+      uint64_t lsp;
 #else
-      u_int64_t lsp;
-      u_int64_t msp;
+      uint64_t lsp;
+      uint64_t msp;
 #endif
     } parts;
   } u;
-  static const u_int64_t MSP_SGN_MASK = 0x8000000000000000ULL;
-  static const u_int64_t MSP_POS_INF = 0x7fff000000000000ULL;
-  static const u_int64_t MSP_NEG_INF = 0xffff000000000000ULL;
-  static const u_int64_t MSP_POS_ZERO = 0x0000000000000000ULL;
-  static const u_int64_t MSP_NEG_ZERO = 0x8000000000000000ULL;
-  static const u_int64_t LSP_INF = 0;
-  static const u_int64_t LSP_ZERO = 0;
-  static const u_int64_t LSP_MAX = 0xffffffffffffffffULL;
+  static const uint64_t MSP_SGN_MASK = 0x8000000000000000ULL;
+  static const uint64_t MSP_POS_INF = 0x7fff000000000000ULL;
+  static const uint64_t MSP_NEG_INF = 0xffff000000000000ULL;
+  static const uint64_t MSP_POS_ZERO = 0x0000000000000000ULL;
+  static const uint64_t MSP_NEG_ZERO = 0x8000000000000000ULL;
+  static const uint64_t LSP_INF = 0;
+  static const uint64_t LSP_ZERO = 0;
+  static const uint64_t LSP_MAX = 0xffffffffffffffffULL;
 public:
   Float(float128_t v);
   float128_t value();
@@ -854,12 +854,12 @@ SPECIALIZE_ASSIGN(float_float, Smaller, Larger)
 
 SPECIALIZE_ASSIGN(float_int_exact, float32_t, int8_t)
 SPECIALIZE_ASSIGN(float_int_exact, float32_t, int16_t)
-SPECIALIZE_ASSIGN(float_int_exact, float32_t, u_int8_t)
-SPECIALIZE_ASSIGN(float_int_exact, float32_t, u_int16_t)
+SPECIALIZE_ASSIGN(float_int_exact, float32_t, uint8_t)
+SPECIALIZE_ASSIGN(float_int_exact, float32_t, uint16_t)
 SPECIALIZE_ASSIGN(float_int, float32_t, int32_t)
 SPECIALIZE_ASSIGN(float_int, float32_t, int64_t)
-SPECIALIZE_ASSIGN(float_int, float32_t, u_int32_t)
-SPECIALIZE_ASSIGN(float_int, float32_t, u_int64_t)
+SPECIALIZE_ASSIGN(float_int, float32_t, uint32_t)
+SPECIALIZE_ASSIGN(float_int, float32_t, uint64_t)
 SPECIALIZE_ASSIGN(float_float, float32_t, float32_t)
 ASSIGN_R2(float32_t, float64_t)
 
@@ -883,11 +883,11 @@ SPECIALIZE_INPUT(generic, float32_t)
 SPECIALIZE_ASSIGN(float_int_exact, float64_t, int8_t)
 SPECIALIZE_ASSIGN(float_int_exact, float64_t, int16_t)
 SPECIALIZE_ASSIGN(float_int_exact, float64_t, int32_t)
-SPECIALIZE_ASSIGN(float_int_exact, float64_t, u_int8_t)
-SPECIALIZE_ASSIGN(float_int_exact, float64_t, u_int16_t)
-SPECIALIZE_ASSIGN(float_int_exact, float64_t, u_int32_t)
+SPECIALIZE_ASSIGN(float_int_exact, float64_t, uint8_t)
+SPECIALIZE_ASSIGN(float_int_exact, float64_t, uint16_t)
+SPECIALIZE_ASSIGN(float_int_exact, float64_t, uint32_t)
 SPECIALIZE_ASSIGN(float_int, float64_t, int64_t)
-SPECIALIZE_ASSIGN(float_int, float64_t, u_int64_t)
+SPECIALIZE_ASSIGN(float_int, float64_t, uint64_t)
 SPECIALIZE_ASSIGN(float_float, float64_t, float64_t)
 
 SPECIALIZE_NEG(float, float64_t, float64_t)
@@ -912,10 +912,10 @@ SPECIALIZE_ASSIGN(float_int_exact, float96_t, int8_t)
 SPECIALIZE_ASSIGN(float_int_exact, float96_t, int16_t)
 SPECIALIZE_ASSIGN(float_int_exact, float96_t, int32_t)
 SPECIALIZE_ASSIGN(float_int_exact, float96_t, int64_t)
-SPECIALIZE_ASSIGN(float_int_exact, float96_t, u_int8_t)
-SPECIALIZE_ASSIGN(float_int_exact, float96_t, u_int16_t)
-SPECIALIZE_ASSIGN(float_int_exact, float96_t, u_int32_t)
-SPECIALIZE_ASSIGN(float_int_exact, float96_t, u_int64_t)
+SPECIALIZE_ASSIGN(float_int_exact, float96_t, uint8_t)
+SPECIALIZE_ASSIGN(float_int_exact, float96_t, uint16_t)
+SPECIALIZE_ASSIGN(float_int_exact, float96_t, uint32_t)
+SPECIALIZE_ASSIGN(float_int_exact, float96_t, uint64_t)
 SPECIALIZE_ASSIGN(float_float, float96_t, float96_t)
 ASSIGN_R2(float32_t, float96_t)
 ASSIGN_R2(float64_t, float96_t)
@@ -943,10 +943,10 @@ SPECIALIZE_ASSIGN(float_int_exact, float128_t, int8_t)
 SPECIALIZE_ASSIGN(float_int_exact, float128_t, int16_t)
 SPECIALIZE_ASSIGN(float_int_exact, float128_t, int32_t)
 SPECIALIZE_ASSIGN(float_int_exact, float128_t, int64_t)
-SPECIALIZE_ASSIGN(float_int_exact, float128_t, u_int8_t)
-SPECIALIZE_ASSIGN(float_int_exact, float128_t, u_int16_t)
-SPECIALIZE_ASSIGN(float_int_exact, float127_t, u_int32_t)
-SPECIALIZE_ASSIGN(float_int_exact, float128_t, u_int64_t)
+SPECIALIZE_ASSIGN(float_int_exact, float128_t, uint8_t)
+SPECIALIZE_ASSIGN(float_int_exact, float128_t, uint16_t)
+SPECIALIZE_ASSIGN(float_int_exact, float127_t, uint32_t)
+SPECIALIZE_ASSIGN(float_int_exact, float128_t, uint64_t)
 SPECIALIZE_ASSIGN(float_float, float128_t, float128_t)
 ASSIGN_R2(float32_t, float128_t)
 ASSIGN_R2(float64_t, float128_t)
