@@ -2982,7 +2982,7 @@ PPL::Polyhedron::relation_with(const Generator& g) const {
   to both the polyhedra.
   It is assumed that the polyhedron \p y is contained in \p *this.
 */
-// CHECK ME : what if the polyhedra contain strict inequalities ?
+// CHECK ME : what if the polyhedra contain strict inequalities?
 void
 PPL::Polyhedron::widening_assign(const Polyhedron& y) {
   Polyhedron& x = *this;

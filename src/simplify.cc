@@ -285,7 +285,7 @@ PPL::Polyhedron::simplify(Matrix& mat, SatMatrix& sat) {
   // i.e., the new number of rows obtained excluding the rows of redundant
   // inequalities.
   // FIXME: are these assertions meaningful, given that we just invoked
-  // erase_to_end(num_rows) on both matrices ?
+  // erase_to_end(num_rows) on both matrices?
   assert(mat.num_rows() == num_rows);
   assert(sat.num_rows() == num_rows);
 

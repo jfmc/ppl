@@ -274,7 +274,7 @@ PPL::Polyhedron::add_and_minimize(bool con_to_gen,
       ++k2;
     }
   }
-  // Have we scanned all the rows in `source2' ?
+  // Have we scanned all the rows in `source2'?
   if (k2 < source2_num_rows)
     // By initial sortedness, all the rows in `source2' having indexes
     // greater than or equal to `k2' were not in `source1'.

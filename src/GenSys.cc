@@ -109,7 +109,7 @@ PPL::GenSys::adjust_topology_and_dimension(Topology new_topology,
 }
 
 // FIXME: would be worth to avoid adding closure points
-// that already are in the system of generators ?
+// that already are in the system of generators?
 // To do this efficiently we could sort the system and
 // performing insertions keeping its sortedness.
 void
@@ -133,7 +133,7 @@ PPL::GenSys::add_corresponding_closure_points() {
 
 
 // FIXME: would be worth to avoid adding points
-// that already are in the system of generators ?
+// that already are in the system of generators?
 // To do this efficiently we could sort the system and
 // performing insertions keeping its sortedness.
 void
