@@ -312,7 +312,7 @@ static struct {
 };
 
 static Prolog_term_ref
-variable_term(unsigned int varid) {
+variable_term(PPL::dimension_type varid) {
   Prolog_term_ref v = Prolog_new_term_ref();
   Prolog_put_long(v, varid);
   Prolog_term_ref t = Prolog_new_term_ref();
@@ -508,8 +508,8 @@ static Prolog_term_ref
 get_lin_expression(const R& r) {
   Prolog_term_ref so_far = Prolog_new_term_ref();
   PPL::Integer coefficient;
-  unsigned int varid = 0;
-  unsigned int space_dimension = r.space_dimension();
+  PPL::dimension_type varid = 0;
+  PPL::dimension_type space_dimension = r.space_dimension();
   while (varid < space_dimension
 	 && (coefficient = r.coefficient(PPL::Variable(varid))) == 0)
     ++varid;
@@ -897,7 +897,7 @@ ppl_new_Polyhedron_from_bounding_box(Prolog_term_ref t_tp,
     Prolog_term_ref t_l = Prolog_new_term_ref();
     Prolog_term_ref t_interval = Prolog_new_term_ref();
     Prolog_put_term(t_l, t_bb);
-    unsigned int dimension;
+    PPL::dimension_type dimension;
     for (dimension = 0; Prolog_is_cons(t_l); ++dimension)
       Prolog_get_cons(t_l, t_interval, t_l);
     // Check whether the list is properly terminated.
@@ -912,7 +912,7 @@ ppl_new_Polyhedron_from_bounding_box(Prolog_term_ref t_tp,
 
     PPL::BoundingBox bbox(dimension);
     // Set bbox to reflect its Prolog representation.
-    for (unsigned int i = 0; i < dimension; ++i) {
+    for (PPL::dimension_type i = 0; i < dimension; ++i) {
       Prolog_get_cons(t_bb, t_interval, t_bb);
       // An interval is of the form i(Lower_Bound, Upper_Bound).
       if (!Prolog_is_compound(t_interval))
@@ -982,7 +982,7 @@ ppl_Polyhedron_space_dimension(Prolog_term_ref t_ph, Prolog_term_ref t_sd) {
   try {
     const PPL::Polyhedron* ph = term_to_polyhedron_handle(t_ph);
     CHECK(ph);
-    unsigned int sd = ph->space_dimension();
+    PPL::dimension_type sd = ph->space_dimension();
     Prolog_term_ref tmp = Prolog_new_term_ref();
     if (sd <= LONG_MAX
 	&& Prolog_put_long(tmp, long(sd)) 
@@ -1680,12 +1680,12 @@ ppl_Polyhedron_get_bounding_box(Prolog_term_ref t_ph, Prolog_term_ref t_bb) {
     PPL::Polyhedron* ph = term_to_polyhedron_handle(t_ph);
     CHECK(ph);
 
-    unsigned int dimension = ph->space_dimension();
+    PPL::dimension_type dimension = ph->space_dimension();
     PPL::BoundingBox bbox(dimension);
     ph->shrink_bounding_box(bbox);
     Prolog_term_ref tail = Prolog_new_term_ref();
     Prolog_put_atom(tail, a_nil);
-    for (size_t i = dimension; i-- > 0; )
+    for (PPL::dimension_type i = dimension; i-- > 0; )
       Prolog_construct_cons(tail, interval_term(bbox[i]), tail);
     if (Prolog_unify(t_bb, tail))
       return PROLOG_SUCCESS;

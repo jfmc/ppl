@@ -32,6 +32,7 @@ Detailed description with examples to be written.
 #define PPL_ppl_c_h 1
 
 #include <gmp.h>
+#include <stddef.h>
 
 /*
   __P is a macro used to wrap function prototypes, so that compilers
@@ -75,6 +76,16 @@ enum ppl_enum_error_code {
   PPL_ERROR_UNEXPECTED_ERROR = -6
 };
 
+/*!
+  An unsigned integral type for representing space dimensions.
+*/
+typedef size_t ppl_dimension_type;
+
+/*!
+  Writes to \p m the the maximum space dimension this library can handle.
+*/
+int
+ppl_max_space_dimension __P((ppl_dimension_type* m));
 
 /*!
   Initializes the Parma Polyhedra Library.
@@ -203,7 +214,7 @@ ppl_new_LinExpression __P((ppl_LinExpression_t* ple));
 */
 int
 ppl_new_LinExpression_with_dimension __P((ppl_LinExpression_t* ple,
-					  unsigned int d));
+					  ppl_dimension_type d));
 
 /*!
   Builds a linear expression that is a copy of \p le; writes an handle
@@ -250,7 +261,7 @@ __P((ppl_LinExpression_t dst, ppl_const_LinExpression_t src));
 */
 int
 ppl_LinExpression_add_to_coefficient __P((ppl_LinExpression_t le,
-					  unsigned int var,
+					  ppl_dimension_type var,
 					  ppl_const_Coefficient_t n));
 
 /*!
@@ -761,7 +772,7 @@ __P((ppl_const_GenSys__const_iterator_t x,
 */
 int
 ppl_new_C_Polyhedron_from_dimension __P((ppl_Polyhedron_t* pph,
-					 unsigned int d));
+					 ppl_dimension_type d));
 
 /*!
   Builds an universe NNC polyhedron of dimension \p d and writes an
@@ -769,7 +780,7 @@ ppl_new_C_Polyhedron_from_dimension __P((ppl_Polyhedron_t* pph,
 */
 int
 ppl_new_NNC_Polyhedron_from_dimension __P((ppl_Polyhedron_t* pph,
-					   unsigned int d));
+					   ppl_dimension_type d));
 
 /*!
   Builds an empty closed polyhedron of dimension \p d and writes an
@@ -777,7 +788,7 @@ ppl_new_NNC_Polyhedron_from_dimension __P((ppl_Polyhedron_t* pph,
 */
 int
 ppl_new_C_Polyhedron_empty_from_dimension __P((ppl_Polyhedron_t* pph,
-					       unsigned int d));
+					       ppl_dimension_type d));
 
 /*!
   Builds an empty NNC polyhedron of dimension \p d and writes an
@@ -785,7 +796,7 @@ ppl_new_C_Polyhedron_empty_from_dimension __P((ppl_Polyhedron_t* pph,
 */
 int
 ppl_new_NNC_Polyhedron_empty_from_dimension __P((ppl_Polyhedron_t* pph,
-					       unsigned int d));
+					       ppl_dimension_type d));
 
 /*!
   Builds a closed polyhedron that is a copy of \p ph; writes an handle
@@ -931,7 +942,7 @@ ppl_new_NNC_Polyhedron_recycle_GenSys __P((ppl_Polyhedron_t* pph,
   The bounding box is accessed by using the following functions,
   passed as arguments:
     \code
-      unsigned int space_dimension()
+      ppl_dimension_type space_dimension()
     \endcode
     returns the dimension of the vector space enclosing the polyhedron
     represented by the bounding box.
@@ -943,7 +954,7 @@ ppl_new_NNC_Polyhedron_recycle_GenSys __P((ppl_Polyhedron_t* pph,
     other functions. However, if <CODE>is_empty()</CODE> does not
     return 0, none of the functions below will be called.
     \code
-      int get_lower_bound(unsigned int k, int closed,
+      int get_lower_bound(ppl_dimension_type k, int closed,
                           ppl_Coefficient_t n, ppl_Coefficient_t d)
     \endcode
     Let \f$I\f$ the interval corresponding to the <CODE>k</CODE>-th dimension.
@@ -958,7 +969,7 @@ ppl_new_NNC_Polyhedron_recycle_GenSys __P((ppl_Polyhedron_t* pph,
     and \f$d\f$ have no common factors and \f$d\f$ is positive, \f$0/1\f$
     being the unique representation for zero.
     \code
-      int get_upper_bound(unsigned int k, int closed,
+      int get_upper_bound(ppl_dimension_type k, int closed,
                           ppl_Coefficient_t n, ppl_Coefficient_t d)
     \endcode
     Let \f$I\f$ the interval corresponding to the <CODE>k</CODE>-th dimension.
@@ -974,12 +985,12 @@ ppl_new_NNC_Polyhedron_recycle_GenSys __P((ppl_Polyhedron_t* pph,
 int
 ppl_new_C_Polyhedron_from_bounding_box
 __P((ppl_Polyhedron_t* pph,
-     unsigned int (*space_dimension)(void),
+     ppl_dimension_type (*space_dimension)(void),
      int (*is_empty)(void),
-     int (*get_lower_bound)(unsigned int k, int closed,
+     int (*get_lower_bound)(ppl_dimension_type k, int closed,
 			    ppl_Coefficient_t n,
 			    ppl_Coefficient_t d),
-     int (*get_upper_bound)(unsigned int k, int closed,
+     int (*get_upper_bound)(ppl_dimension_type k, int closed,
 			    ppl_Coefficient_t n,
 			    ppl_Coefficient_t d)));
 
@@ -991,7 +1002,7 @@ __P((ppl_Polyhedron_t* pph,
   The bounding box is accessed by using the following functions,
   passed as arguments:
     \code
-      unsigned int space_dimension()
+      ppl_dimension_type space_dimension()
     \endcode
     returns the dimension of the vector space enclosing the polyhedron
     represented by the bounding box.
@@ -1003,7 +1014,7 @@ __P((ppl_Polyhedron_t* pph,
     other functions. However, if <CODE>is_empty()</CODE> does not
     return 0, none of the functions below will be called.
     \code
-      int get_lower_bound(unsigned int k, int closed,
+      int get_lower_bound(ppl_dimension_type k, int closed,
                           ppl_Coefficient_t n, ppl_Coefficient_t d)
     \endcode
     Let \f$I\f$ the interval corresponding to the <CODE>k</CODE>-th dimension.
@@ -1018,7 +1029,7 @@ __P((ppl_Polyhedron_t* pph,
     and \f$d\f$ have no common factors and \f$d\f$ is positive, \f$0/1\f$
     being the unique representation for zero.
     \code
-      int get_upper_bound(unsigned int k, int closed,
+      int get_upper_bound(ppl_dimension_type k, int closed,
                           ppl_Coefficient_t n, ppl_Coefficient_t d)
     \endcode
     Let \f$I\f$ the interval corresponding to the <CODE>k</CODE>-th dimension.
@@ -1034,12 +1045,12 @@ __P((ppl_Polyhedron_t* pph,
 int
 ppl_new_NNC_Polyhedron_from_bounding_box
 __P((ppl_Polyhedron_t* pph,
-     unsigned int (*space_dimension)(void),
+     ppl_dimension_type (*space_dimension)(void),
      int (*is_empty)(void),
-     int (*get_lower_bound)(unsigned int k, int closed,
+     int (*get_lower_bound)(ppl_dimension_type k, int closed,
 			    ppl_Coefficient_t n,
 			    ppl_Coefficient_t d),
-     int (*get_upper_bound)(unsigned int k, int closed,
+     int (*get_upper_bound)(ppl_dimension_type k, int closed,
 			    ppl_Coefficient_t n,
 			    ppl_Coefficient_t d)));
 
@@ -1259,24 +1270,24 @@ ppl_Polyhedron_add_generators_and_minimize __P((ppl_Polyhedron_t ph,
 */
 int
 ppl_Polyhedron_add_dimensions_and_embed __P((ppl_Polyhedron_t ph,
-					     unsigned int d));
+					     ppl_dimension_type d));
 
 /*!
   Adds \p d new dimensions to the space enclosing the polyhedron \p ph.
 */
 int
 ppl_Polyhedron_add_dimensions_and_project __P((ppl_Polyhedron_t ph,
-					       unsigned int d));
+					       ppl_dimension_type d));
 
 /*!
   Removes from \p ph and its containing space the dimensions that are
   specified in first \p n positions of the array \p ds.  The presence
-  of duplicates in \p ds is innocuous.
+  of duplicates in \p ds is a waste but an innocuous one.
 */
 int
 ppl_Polyhedron_remove_dimensions __P((ppl_Polyhedron_t ph,
-				      unsigned int ds[],
-				      unsigned int n));
+				      ppl_dimension_type ds[],
+				      size_t n));
 
 /*!
   Removes the higher dimensions from \p ph and its enclosing space so
@@ -1284,7 +1295,7 @@ ppl_Polyhedron_remove_dimensions __P((ppl_Polyhedron_t ph,
 */
 int
 ppl_Polyhedron_remove_higher_dimensions __P((ppl_Polyhedron_t ph,
-					     unsigned int d));
+					     ppl_dimension_type d));
 
 /*!
   Transforms the polyhedron \p ph, assigning an affine expression
@@ -1296,7 +1307,7 @@ ppl_Polyhedron_remove_higher_dimensions __P((ppl_Polyhedron_t ph,
 */
 int
 ppl_Polyhedron_affine_image __P((ppl_Polyhedron_t ph,
-				 unsigned int var,
+				 ppl_dimension_type var,
 				 ppl_const_LinExpression_t le,
 				 ppl_const_Coefficient_t d));
 
@@ -1310,7 +1321,7 @@ ppl_Polyhedron_affine_image __P((ppl_Polyhedron_t ph,
 */
 int
 ppl_Polyhedron_affine_preimage __P((ppl_Polyhedron_t ph,
-				    unsigned int var,
+				    ppl_dimension_type var,
 				    ppl_const_LinExpression_t le,
 				    ppl_const_Coefficient_t d));
 
@@ -1327,7 +1338,7 @@ ppl_Polyhedron_affine_preimage __P((ppl_Polyhedron_t ph,
 
   \param raise_lower_bound
   a pointer to a void function with arguments
-  <CODE>(unsigned int k, int closed,
+  <CODE>(ppl_dimension_type k, int closed,
          ppl_const_Coefficient_t n, ppl_const_Coefficient_t d)</CODE>
   that intersects the interval corresponding to the <CODE>k</CODE>-th
   dimension with \f$[n/d, +\infty)\f$ if <CODE>closed</CODE> is non-zero,
@@ -1338,7 +1349,7 @@ ppl_Polyhedron_affine_preimage __P((ppl_Polyhedron_t ph,
 
   \param lower_upper_bound
   a pointer to a void function with argument
-  <CODE>(unsigned int k, int closed,
+  <CODE>(ppl_dimension_type k, int closed,
          ppl_const_Coefficient_t n, ppl_const_Coefficient_t d)</CODE>
   that intersects the interval corresponding to the <CODE>k</CODE>-th
   dimension with \f$(-\infty, n/d]\f$ if <CODE>closed</CODE> is non-zero,
@@ -1349,10 +1360,10 @@ int
 ppl_Polyhedron_shrink_bounding_box
 __P((ppl_const_Polyhedron_t ph,
      void (*set_empty)(void),
-     void (*raise_lower_bound)(unsigned int k, int closed,
+     void (*raise_lower_bound)(ppl_dimension_type k, int closed,
 			       ppl_const_Coefficient_t n,
 			       ppl_const_Coefficient_t d),
-     void (*lower_upper_bound)(unsigned int k, int closed,
+     void (*lower_upper_bound)(ppl_dimension_type k, int closed,
 			       ppl_const_Coefficient_t n,
 			       ppl_const_Coefficient_t d)));
 

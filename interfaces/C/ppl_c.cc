@@ -106,6 +106,13 @@ unsigned int PPL_POLY_GEN_RELATION_SUBSUMES;
 static Init* init_object_ptr = 0;
 
 int
+ppl_max_space_dimension(ppl_dimension_type* m) try {
+  *m = max_space_dimension();
+  return 0;
+}
+CATCH_ALL
+
+int
 ppl_initialize(void) try {
   init_object_ptr = new Init();
 
@@ -223,7 +230,7 @@ CATCH_ALL
 
 int
 ppl_new_LinExpression_with_dimension(ppl_LinExpression_t* ple,
-				     unsigned int d) try {
+				     ppl_dimension_type d) try {
   *ple = to_nonconst(new LinExpression(0*Variable(d)));
   return 0;
 }
@@ -257,7 +264,7 @@ CATCH_ALL
 
 int
 ppl_LinExpression_add_to_coefficient(ppl_LinExpression_t le,
-				     unsigned int var,
+				     ppl_dimension_type var,
 				     ppl_const_Coefficient_t n) try {
   LinExpression& lle = *to_nonconst(le);
   const Integer& nn = *to_const(n);
@@ -851,7 +858,7 @@ CATCH_ALL
 
 int
 ppl_new_C_Polyhedron_from_dimension(ppl_Polyhedron_t* pph,
-				    unsigned int d) try {
+				    ppl_dimension_type d) try {
   *pph = to_nonconst(new C_Polyhedron(d, Polyhedron::UNIVERSE));
   return 0;
 }
@@ -859,7 +866,7 @@ CATCH_ALL
 
 int
 ppl_new_NNC_Polyhedron_from_dimension(ppl_Polyhedron_t* pph,
-				      unsigned int d) try {
+				      ppl_dimension_type d) try {
   *pph = to_nonconst(new NNC_Polyhedron(d, Polyhedron::UNIVERSE));
   return 0;
 }
@@ -867,7 +874,7 @@ CATCH_ALL
 
 int
 ppl_new_C_Polyhedron_empty_from_dimension(ppl_Polyhedron_t* pph,
-					  unsigned int d) try {
+					  ppl_dimension_type d) try {
   *pph = to_nonconst(new C_Polyhedron(d, Polyhedron::EMPTY));
   return 0;
 }
@@ -875,7 +882,7 @@ CATCH_ALL
 
 int
 ppl_new_NNC_Polyhedron_empty_from_dimension(ppl_Polyhedron_t* pph,
-					    unsigned int d) try {
+					    ppl_dimension_type d) try {
   *pph = to_nonconst(new NNC_Polyhedron(d, Polyhedron::EMPTY));
   return 0;
 }
@@ -993,28 +1000,28 @@ CATCH_ALL
 
 class CBuildBox {
 private:
-  unsigned int (*s_d)(void);
+  ppl_dimension_type (*s_d)(void);
   int (*i_e)(void);
-  int (*g_l_b)(unsigned int k, int closed,
+  int (*g_l_b)(ppl_dimension_type k, int closed,
 		ppl_Coefficient_t n,
 		ppl_Coefficient_t d);
-  int (*g_u_b)(unsigned int k, int closed,
+  int (*g_u_b)(ppl_dimension_type k, int closed,
 		ppl_Coefficient_t n,
 		ppl_Coefficient_t d);
 
 public:
-  CBuildBox(unsigned int (*sd)(void),
+  CBuildBox(ppl_dimension_type (*sd)(void),
 	    int (*ie)(void),
-	    int (*glb)(unsigned int k, int closed,
+	    int (*glb)(ppl_dimension_type k, int closed,
 		       ppl_Coefficient_t n,
 		       ppl_Coefficient_t d),
-	    int (*gub)(unsigned int k, int closed,
+	    int (*gub)(ppl_dimension_type k, int closed,
 		       ppl_Coefficient_t n,
 		       ppl_Coefficient_t d))
     : s_d(sd), i_e(ie), g_l_b(glb), g_u_b(gub) {
   }
 
-  unsigned int space_dimension() const {
+  ppl_dimension_type space_dimension() const {
     return s_d();
   }
 
@@ -1022,12 +1029,12 @@ public:
     return i_e() != 0;
   }
 
-  bool get_lower_bound(unsigned int k, bool closed,
+  bool get_lower_bound(ppl_dimension_type k, bool closed,
 		       Integer& n, Integer& d) const {
     return g_l_b(k, closed, to_nonconst(&n), to_nonconst(&d)) != 0;
   }
 
-  bool get_upper_bound(unsigned int k, bool closed,
+  bool get_upper_bound(ppl_dimension_type k, bool closed,
 		       Integer& n, Integer& d) const {
     return g_u_b(k, closed, to_nonconst(&n), to_nonconst(&d)) != 0;
   }
@@ -1036,12 +1043,12 @@ public:
 int
 ppl_new_C_Polyhedron_from_bounding_box
 (ppl_Polyhedron_t* pph,
- unsigned int (*space_dimension)(void),
+ ppl_dimension_type (*space_dimension)(void),
  int (*is_empty)(void),
- int (*get_lower_bound)(unsigned int k, int closed,
+ int (*get_lower_bound)(ppl_dimension_type k, int closed,
 			ppl_Coefficient_t n,
 			ppl_Coefficient_t d),
- int (*get_upper_bound)(unsigned int k, int closed,
+ int (*get_upper_bound)(ppl_dimension_type k, int closed,
 			ppl_Coefficient_t n,
 			ppl_Coefficient_t d)) try {
   CBuildBox cbbox(space_dimension, is_empty, get_lower_bound, get_upper_bound);
@@ -1053,12 +1060,12 @@ CATCH_ALL
 int
 ppl_new_NNC_Polyhedron_from_bounding_box
 (ppl_Polyhedron_t* pph,
- unsigned int (*space_dimension)(void),
+ ppl_dimension_type (*space_dimension)(void),
  int (*is_empty)(void),
- int (*get_lower_bound)(unsigned int k, int closed,
+ int (*get_lower_bound)(ppl_dimension_type k, int closed,
 			ppl_Coefficient_t n,
 			ppl_Coefficient_t d),
- int (*get_upper_bound)(unsigned int k, int closed,
+ int (*get_upper_bound)(ppl_dimension_type k, int closed,
 			ppl_Coefficient_t n,
 			ppl_Coefficient_t d)) try {
   CBuildBox cbbox(space_dimension, is_empty, get_lower_bound, get_upper_bound);
@@ -1288,7 +1295,7 @@ CATCH_ALL
 
 int
 ppl_Polyhedron_add_dimensions_and_embed(ppl_Polyhedron_t ph,
-					unsigned int d) try {
+					ppl_dimension_type d) try {
   Polyhedron& pph = *to_nonconst(ph);
   pph.add_dimensions_and_embed(d);
   return 0;
@@ -1297,7 +1304,7 @@ CATCH_ALL
 
 int
 ppl_Polyhedron_add_dimensions_and_project(ppl_Polyhedron_t ph,
-					  unsigned int d) try {
+					  ppl_dimension_type d) try {
   Polyhedron& pph = *to_nonconst(ph);
   pph.add_dimensions_and_project(d);
   return 0;
@@ -1306,11 +1313,11 @@ CATCH_ALL
 
 int
 ppl_Polyhedron_remove_dimensions(ppl_Polyhedron_t ph,
-				 unsigned int ds[],
+				 size_t ds[],
 				 unsigned int n) try {
   Polyhedron& pph = *to_nonconst(ph);
   std::set<Variable> to_be_removed;
-  for (unsigned int i = 0; i < n; ++i)
+  for (ppl_dimension_type i = 0; i < n; ++i)
     to_be_removed.insert(Variable(ds[i]));
   pph.remove_dimensions(to_be_removed);
   return 0;
@@ -1319,7 +1326,7 @@ CATCH_ALL
 
 int
 ppl_Polyhedron_remove_higher_dimensions(ppl_Polyhedron_t ph,
-					unsigned int d) try {
+					ppl_dimension_type d) try {
   Polyhedron& pph = *to_nonconst(ph);
   pph.remove_higher_dimensions(d);
   return 0;
@@ -1328,7 +1335,7 @@ CATCH_ALL
 
 int
 ppl_Polyhedron_affine_image(ppl_Polyhedron_t ph,
-			    unsigned int var,
+			    ppl_dimension_type var,
 			    ppl_const_LinExpression_t le,
 			    ppl_const_Coefficient_t d) try {
   Polyhedron& pph = *to_nonconst(ph);
@@ -1341,7 +1348,7 @@ CATCH_ALL
 
 int
 ppl_Polyhedron_affine_preimage(ppl_Polyhedron_t ph,
-			       unsigned int var,
+			       ppl_dimension_type var,
 			       ppl_const_LinExpression_t le,
 			       ppl_const_Coefficient_t d) try {
   Polyhedron& pph = *to_nonconst(ph);
@@ -1355,19 +1362,19 @@ CATCH_ALL
 class CShrinkBox {
 private:
   void (*s_e)(void);
-  void (*r_l_b)(unsigned int k, int closed,
+  void (*r_l_b)(ppl_dimension_type k, int closed,
 		ppl_const_Coefficient_t n,
 		ppl_const_Coefficient_t d);
-  void (*l_u_b)(unsigned int k, int closed,
+  void (*l_u_b)(ppl_dimension_type k, int closed,
 		ppl_const_Coefficient_t n,
 		ppl_const_Coefficient_t d);
 
 public:
   CShrinkBox(void (*se)(void),
-	     void (*rlb)(unsigned int k, int closed,
+	     void (*rlb)(ppl_dimension_type k, int closed,
 			 ppl_const_Coefficient_t n,
 			 ppl_const_Coefficient_t d),
-	     void (*lub)(unsigned int k, int closed,
+	     void (*lub)(ppl_dimension_type k, int closed,
 			 ppl_const_Coefficient_t n,
 			 ppl_const_Coefficient_t d))
     : s_e(se), r_l_b(rlb), l_u_b(lub) {
@@ -1377,12 +1384,12 @@ public:
     s_e();
   }
 
-  void raise_lower_bound(unsigned int k, bool closed,
+  void raise_lower_bound(ppl_dimension_type k, bool closed,
 			 const Integer& n, const Integer& d) {
     r_l_b(k, closed, to_const(&n), to_const(&d));
   }
 
-  void lower_upper_bound(unsigned int k, bool closed,
+  void lower_upper_bound(ppl_dimension_type k, bool closed,
 			 const Integer& n, const Integer& d) {
     l_u_b(k, closed, to_const(&n), to_const(&d));
   }
@@ -1392,10 +1399,10 @@ int
 ppl_Polyhedron_shrink_bounding_box
 (ppl_const_Polyhedron_t ph,
  void (*set_empty)(void),
- void (*raise_lower_bound)(unsigned int k, int closed,
+ void (*raise_lower_bound)(ppl_dimension_type k, int closed,
 			   ppl_const_Coefficient_t n,
 			   ppl_const_Coefficient_t d),
- void (*lower_upper_bound)(unsigned int k, int closed,
+ void (*lower_upper_bound)(ppl_dimension_type k, int closed,
 			   ppl_const_Coefficient_t n,
 			   ppl_const_Coefficient_t d)) try {
   const Polyhedron& pph = *to_const(ph);

@@ -27,17 +27,17 @@ site: http://www.cs.unipr.it/ppl/ . */
 namespace Parma_Polyhedra_Library {
 
 inline
-BoundingBox::BoundingBox(unsigned int num_dimensions)
+BoundingBox::BoundingBox(dimension_type num_dimensions)
   : vec(num_dimensions), empty(false), empty_up_to_date(true) {
 }
 
-inline unsigned int
+inline dimension_type
 BoundingBox::space_dimension() const {
   return vec.size();
 }
 
 inline const Interval&
-BoundingBox::operator[](size_t k) const {
+BoundingBox::operator[](dimension_type k) const {
   return vec[k];
 }
 
@@ -47,7 +47,7 @@ BoundingBox::is_empty() const {
     return empty;
   else {
     empty_up_to_date = true;
-    for (size_t k = vec.size(); k-- > 0; )
+    for (dimension_type k = vec.size(); k-- > 0; )
       if (vec[k].is_empty()) {
 	empty = true;
 	return true;
@@ -58,7 +58,7 @@ BoundingBox::is_empty() const {
 }
 
 inline bool
-BoundingBox::get_lower_bound(unsigned int k, bool& closed,
+BoundingBox::get_lower_bound(dimension_type k, bool& closed,
 			     Integer& n, Integer& d) const {
   const LBoundary& lb = vec[k].lower_bound();
   const ExtendedRational& lr = lb.bound();
@@ -74,7 +74,7 @@ BoundingBox::get_lower_bound(unsigned int k, bool& closed,
 }
 
 inline bool
-BoundingBox::get_upper_bound(unsigned int k, bool& closed,
+BoundingBox::get_upper_bound(dimension_type k, bool& closed,
 			     Integer& n, Integer& d) const {
   const UBoundary& ub = vec[k].upper_bound();
   const ExtendedRational& ur = ub.bound();
@@ -94,7 +94,7 @@ BoundingBox::set_empty() {
 }
 
 inline void
-BoundingBox::raise_lower_bound(unsigned int k, bool closed,
+BoundingBox::raise_lower_bound(dimension_type k, bool closed,
 			       const Integer& n, const Integer& d) {
   vec[k].raise_lower_bound(LBoundary(ExtendedRational(n, d),
 				     (closed
@@ -104,7 +104,7 @@ BoundingBox::raise_lower_bound(unsigned int k, bool closed,
 }
 
 inline void
-BoundingBox::lower_upper_bound(unsigned int k, bool closed,
+BoundingBox::lower_upper_bound(dimension_type k, bool closed,
 			       const Integer& n, const Integer& d) {
   vec[k].lower_upper_bound(UBoundary(ExtendedRational(n, d),
 				     (closed

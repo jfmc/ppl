@@ -191,7 +191,7 @@ public:
   GenSys& operator=(const GenSys& y);
 
   //! Returns the dimension of the vector space enclosing \p *this.
-  size_t space_dimension() const;
+  dimension_type space_dimension() const;
 
   //! \brief
   //! Removes all the generators from the generator system
@@ -331,7 +331,7 @@ private:
   //! Builds a system of \p n_rows rays/points on a \p n_columns - 1
   //! dimensional space (including the \f$\epsilon\f$ dimension, if
   //! \p topol is <CODE>NOT_NECESSARILY_CLOSED</CODE>).
-  GenSys(Topology topol, size_t n_rows, size_t n_columns);
+  GenSys(Topology topol, dimension_type n_rows, dimension_type n_columns);
 
   //! Swaps \p *this with \p y.
   void swap(GenSys& y);
@@ -344,7 +344,7 @@ private:
   //! equal to <CODE>NECESSARILY_CLOSED</CODE> and \p *this
   //! contains closure points.
   bool adjust_topology_and_dimension(Topology topol,
-				     size_t num_dimensions);
+				     dimension_type num_dimensions);
 
   //! \brief
   //! For each unmatched closure point in \p *this, adds the
@@ -375,10 +375,10 @@ private:
   bool has_closure_points() const;
 
   //! Returns the \p k- th generator of the system.
-  Generator& operator[](size_t k);
+  Generator& operator[](dimension_type k);
 
   //! Returns a constant reference to the \p k- th generator of the system.
-  const Generator& operator[](size_t k) const;
+  const Generator& operator[](dimension_type k) const;
 
   //! \brief
   //! Returns the relations holding between the generator system
@@ -387,15 +387,15 @@ private:
   relation_with(const Constraint& c) const;
 
   //! Assigns to a given variable an affine expression.
-  void affine_image(size_t v,
+  void affine_image(dimension_type v,
 		    const LinExpression& expr,
 		    const Integer& denominator);
 
   //! Returns the number of lines of the system.
-  size_t num_lines() const;
+  dimension_type num_lines() const;
 
   //! Returns the number of rays of the system.
-  size_t num_rays() const;
+  dimension_type num_rays() const;
 
   //! \brief
   //! Removes all the invalid lines and rays.

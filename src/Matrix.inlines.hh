@@ -54,20 +54,20 @@ Matrix::~Matrix() {
 
 
 inline Row&
-Matrix::operator[](size_t k) {
+Matrix::operator[](dimension_type k) {
   assert(k < rows.size());
   return rows[k];
 }
 
 
 inline const Row&
-Matrix::operator[](size_t k) const {
+Matrix::operator[](dimension_type k) const {
   assert(k < rows.size());
   return rows[k];
 }
 
 
-inline size_t
+inline dimension_type
 Matrix::num_rows() const {
   return rows.size();
 }
@@ -112,14 +112,14 @@ Matrix::is_sorted() const {
 }
 
 
-inline size_t
+inline dimension_type
 Matrix::num_columns() const {
   return row_size;
 }
 
-inline size_t
+inline dimension_type
 Matrix::space_dimension() const {
-  size_t n_columns = num_columns();
+  dimension_type n_columns = num_columns();
   return (n_columns == 0)
     ? 0
     : n_columns - (is_necessarily_closed() ? 1 : 2);
@@ -134,13 +134,13 @@ operator!=(const Matrix& x, const Matrix& y) {
 
 
 inline void
-Matrix::add_zero_columns(size_t n) {
+Matrix::add_zero_columns(dimension_type n) {
   assert(n > 0);
   grow(num_rows(), num_columns() + n);
 }
 
 inline void
-Matrix::erase_to_end(size_t first_to_erase) {
+Matrix::erase_to_end(dimension_type first_to_erase) {
   assert(first_to_erase <= rows.size());
   if (first_to_erase < rows.size())
     rows.erase(rows.begin() + first_to_erase, rows.end());

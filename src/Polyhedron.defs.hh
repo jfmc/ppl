@@ -25,6 +25,7 @@ site: http://www.cs.unipr.it/ppl/ . */
 #define PPL_Polyhedron_defs_hh 1
 
 #include "Polyhedron.types.hh"
+#include "globals.hh"
 #include "Variable.defs.hh"
 #include "LinExpression.defs.hh"
 #include "ConSys.defs.hh"
@@ -394,7 +395,9 @@ protected:
     \param kind           Specifies whether the universe or the empty
                           polyhedron has to be built.
   */
-  Polyhedron(Topology topol, size_t num_dimensions, Degenerate_Kind kind);
+  Polyhedron(Topology topol,
+	     dimension_type num_dimensions,
+	     Degenerate_Kind kind);
 
   //! Builds a polyhedron from a system of constraints.
   /*!
@@ -454,7 +457,7 @@ protected:
 
     The template class Box must provide the following methods.
     \code
-      unsigned int space_dimension() const
+      dimension_type space_dimension() const
     \endcode
     returns the dimension of the vector space enclosing the polyhedron
     represented by the bounding box.
@@ -467,7 +470,7 @@ protected:
     methods below.  However, if <CODE>is_empty()</CODE> returns
     <CODE>true</CODE>, none of the functions below will be called.
     \code
-      bool get_lower_bound(unsigned int k, bool closed,
+      bool get_lower_bound(dimension_type k, bool closed,
                            Integer& n, Integer& d) const
     \endcode
     Let \f$I\f$ the interval corresponding to the <CODE>k</CODE>-th dimension.
@@ -482,7 +485,7 @@ protected:
     and \f$d\f$ have no common factors and \f$d\f$ is positive, \f$0/1\f$
     being the unique representation for zero.
     \code
-      bool get_upper_bound(unsigned int k, bool closed,
+      bool get_upper_bound(dimension_type k, bool closed,
                            Integer& n, Integer& d) const
     \endcode
     Let \f$I\f$ the interval corresponding to the <CODE>k</CODE>-th dimension.
@@ -507,7 +510,7 @@ public:
   ~Polyhedron();
 
   //! Returns the dimension of the vector space enclosing \p *this.
-  size_t space_dimension() const;
+  dimension_type space_dimension() const;
 
   //! \brief
   //! Assigns to \p *this the intersection of \p *this and \p y,
@@ -745,7 +748,7 @@ public:
     \endcode
     causes the box to become empty, i.e., to represent the empty set.
     \code
-      raise_lower_bound(unsigned int k, bool closed,
+      raise_lower_bound(dimension_type k, bool closed,
                         const Integer& n, const Integer& d)
     \endcode
     intersects the interval corresponding to the <CODE>k</CODE>-th dimension
@@ -755,7 +758,7 @@ public:
     and \f$d\f$ have no common factors and \f$d\f$ is positive, \f$0/1\f$
     being the unique representation for zero.
     \code
-      lower_upper_bound(unsigned int k, bool closed,
+      lower_upper_bound(dimension_type k, bool closed,
                         const Integer& n, const Integer& d)
     \endcode
     intersects the interval corresponding to the <CODE>k</CODE>-th dimension
@@ -805,7 +808,7 @@ public:
       \,\bigr\}.
     \f]
   */
-  void add_dimensions_and_embed(size_t m);
+  void add_dimensions_and_embed(dimension_type m);
 
   //! \brief
   //! Adds \p m new dimensions to the polyhedron
@@ -827,7 +830,7 @@ public:
       \,\bigr\}.
     \f]
   */
-  void add_dimensions_and_project(size_t m);
+  void add_dimensions_and_project(dimension_type m);
 
   //! \brief
   //! Removes all the specified dimensions.
@@ -848,7 +851,7 @@ public:
     \exception std::invalid_argument thrown if \p new_dimensions is greater
                                      than the space dimension of \p *this.
   */
-  void remove_higher_dimensions(size_t new_dimension);
+  void remove_higher_dimensions(dimension_type new_dimension);
 
   //! Shuffles the dimensions of a polyhedron according to a partial function.
   /*!
@@ -868,12 +871,12 @@ public:
     <CODE>has_empty_codomain()</CODE> returns <CODE>true</CODE>, none
     of the functions below will be called.
     \code
-      unsigned int max_in_codomain() const
+      dimension_type max_in_codomain() const
     \endcode
-    returns the maximum unsigned integer that belongs to the codomain
+    returns the maximum value that belongs to the codomain
     of the partial function.
     \code
-      bool maps(unsigned int i, unsigned int& j) const
+      bool maps(dimension_type i, dimension_type& j) const
     \endcode
     Let \f$f\f$ be the represented function and \f$n\f$ be the value of \p i.
     If \f$f\f$ is defined in \f$n\f$, then \f$f(n)\f$ is assigned to \p j
@@ -1038,7 +1041,7 @@ private:
   Status status;
 
   //! The number of dimensions of the enclosing vector space.
-  size_t space_dim;
+  dimension_type space_dim;
 
   //! Returns the topological kind of the polyhedron.
   Topology topology() const;
@@ -1325,15 +1328,15 @@ private:
                              Matrix& mat2,
                              SatMatrix& sat1,
                              SatMatrix& sat2,
-			     size_t add_dim);
+			     dimension_type add_dim);
 
   //! Performs the conversion from constraints to generators and vice versa.
   // Detailed Doxygen comment to be found in file conversion.cc.
-  static size_t conversion(Matrix& entry,
-			   size_t start,
+  static dimension_type conversion(Matrix& entry,
+			   dimension_type start,
 			   Matrix& result,
 			   SatMatrix& sat,
-			   size_t num_lines_or_equalities);
+			   dimension_type num_lines_or_equalities);
 
   //! \brief
   //! Uses Gauss' elimination method to simplify the result of
@@ -1377,7 +1380,7 @@ private:
   void throw_dimension_incompatible(const char* method,
 				    const Row& y) const;
   void throw_dimension_incompatible(const char* method,
-				    size_t needed_dim) const;
+				    dimension_type required_dim) const;
 
   void throw_invalid_generator(const char* method) const;
   void throw_invalid_generators(const char* method) const;

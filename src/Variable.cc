@@ -34,9 +34,9 @@ PPL::Variable::current_output_function = 0;
 
 void
 PPL::Variable::default_output_function(std::ostream& s, const Variable& v) {
-  unsigned int varid = v.id();
+  dimension_type varid = v.id();
   char c = 'A' + (varid % 26);
-  unsigned int i = varid / 26;
+  dimension_type i = varid / 26;
   s << c;
   if (i > 0)
     s << i;

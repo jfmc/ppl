@@ -33,9 +33,9 @@ using namespace Parma_Polyhedra_Library;
 #endif
 
 void
-compute_open_hypercube_generators(unsigned int dimension) {
+compute_open_hypercube_generators(dimension_type dimension) {
   NNC_Polyhedron hypercube(dimension);
-  for (unsigned int i = 0; i < dimension; ++i) {
+  for (dimension_type i = 0; i < dimension; ++i) {
     Variable x(i);
     hypercube.add_constraint(x > 0);
     hypercube.add_constraint(x < 1);
@@ -62,7 +62,7 @@ public:
 myTimeout t;
 
 bool
-timed_compute_open_hypercube_generators(unsigned int dimension,
+timed_compute_open_hypercube_generators(dimension_type dimension,
 					int hundredth_secs) {
   try {
     Parma_Watchdog_Library::Watchdog
@@ -97,7 +97,7 @@ main() {
   Parma_Watchdog_Library::Watchdog::initialize();
 
   // Find a dimension that cannot be computed with a INIT_TIME timeout.
-  unsigned int dimension = 0;
+  dimension_type dimension = 0;
   do {
     ++dimension;
 #if NOISY

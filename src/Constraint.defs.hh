@@ -59,7 +59,7 @@ Constraint operator>(const LinExpression& e1, const LinExpression& e2);
 Constraint operator>(const LinExpression& e, const Integer& n);
 Constraint operator>(const Integer& n, const LinExpression& e);
 
-Constraint operator>>(const Constraint& c, unsigned int offset);
+Constraint operator>>(const Constraint& c, dimension_type offset);
 
 } // namespace Parma_Polyhedra_Library
 
@@ -183,7 +183,7 @@ public:
   Constraint& operator=(const Constraint& c);
 
   //! Returns the dimension of the vector space enclosing \p *this.
-  size_t space_dimension() const;
+  dimension_type space_dimension() const;
 
   //! The constraint type.
   enum Type {
@@ -264,7 +264,7 @@ private:
   //! \brief
   //! Builds a constraint, having type \p type, which is able
   //! to store \p sz coefficients, whose values are left unspecified.
-  Constraint(Row::Type t, size_t sz);
+  Constraint(Row::Type t, dimension_type sz);
 
   //! Swaps \p *this with \p y.
   void swap(Constraint& y);
@@ -355,10 +355,10 @@ private:
   //! by adding \p offset to their Cartesian axis identifier.
   friend Constraint
   Parma_Polyhedra_Library::operator>>(const Constraint& c,
-				      unsigned int offset);
+				      dimension_type offset);
 
   //! Copy-constructor with given size.
-  Constraint(const Constraint& c, size_t sz);
+  Constraint(const Constraint& c, dimension_type sz);
 
   //! \brief
   //! Builds a new copy of the zero-dimension space constraint

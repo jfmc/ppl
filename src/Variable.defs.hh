@@ -26,6 +26,7 @@ site: http://www.cs.unipr.it/ppl/ . */
 
 #include "Variable.types.hh"
 #include "Init.types.hh"
+#include "globals.hh"
 #include <iosfwd>
 
 namespace Parma_Polyhedra_Library {
@@ -72,10 +73,10 @@ class Parma_Polyhedra_Library::Variable {
 
 public:
   //! Builds the variable corresponding to the Cartesian axis of index \p i.
-  explicit Variable(unsigned int i);
+  explicit Variable(dimension_type i);
 
   //! Returns the index of the Cartesian axis associated to the variable.
-  unsigned int id() const;
+  dimension_type id() const;
 
 public:
   //! Type of output functions.
@@ -89,7 +90,7 @@ public:
 
 private:
   //! The index of the Cartesian axis.
-  unsigned int varid;
+  dimension_type varid;
 
   // The initialization class needs to set the default output function.
   friend class Init;

@@ -31,7 +31,7 @@ using namespace Parma_Polyhedra_Library;
 #endif
 
 void
-shift_rename_add(const C_Polyhedron& p, size_t offset, C_Polyhedron& q) {
+shift_rename_add(const C_Polyhedron& p, dimension_type offset, C_Polyhedron& q) {
   if (p.space_dimension() == 0)
     exit(1);
 
@@ -50,7 +50,7 @@ shift_rename_add(const C_Polyhedron& p, size_t offset, C_Polyhedron& q) {
 
 void
 append_init(C_Polyhedron& base, C_Polyhedron& induct, C_Polyhedron& expect,
-            size_t& offset, unsigned int& arity) {
+            dimension_type& offset, unsigned int& arity) {
   offset = 3;
   arity = 3;
   Variable A(0);
@@ -91,7 +91,7 @@ append_init(C_Polyhedron& base, C_Polyhedron& induct, C_Polyhedron& expect,
 
 void
 fix_point(C_Polyhedron& start, C_Polyhedron& induct, C_Polyhedron& finish,
-          size_t offset, unsigned int arity) {
+          dimension_type offset, unsigned int arity) {
   // Initialize the fixpoint iteration.
   C_Polyhedron current = start;
 #if NOISY
@@ -109,9 +109,9 @@ fix_point(C_Polyhedron& start, C_Polyhedron& induct, C_Polyhedron& finish,
 #endif
 
     set<Variable> dimensions_to_remove;
-    size_t current_dim;
+    dimension_type current_dim;
     current_dim = current.space_dimension();
-    for (unsigned int i = current_dim-1 ; i >= arity; --i )
+    for (dimension_type i = current_dim-1 ; i >= arity; --i )
       dimensions_to_remove.insert(Variable(i));
     current.remove_dimensions(dimensions_to_remove);
 
@@ -136,7 +136,7 @@ append_size_rel(C_Polyhedron& ph) {
   C_Polyhedron start;
   C_Polyhedron induct;
   C_Polyhedron expect;
-  size_t recursive_offset;
+  dimension_type recursive_offset;
   unsigned int arity;
   append_init(start, induct, expect, recursive_offset, arity);
   fix_point(start, induct, ph, recursive_offset, arity);
@@ -144,7 +144,7 @@ append_size_rel(C_Polyhedron& ph) {
 
 void
 permute_init(C_Polyhedron& base, C_Polyhedron& induct, C_Polyhedron& expect,
-             size_t& offset, unsigned int& arity) {
+             dimension_type& offset, unsigned int& arity) {
   arity = 2;
   offset = 10;
   Variable A(0);
@@ -205,7 +205,7 @@ main() {
   C_Polyhedron start;
   C_Polyhedron induct;
   C_Polyhedron expect;
-  size_t recursive_offset;
+  dimension_type recursive_offset;
   unsigned int arity;
   permute_init(start, induct, expect, recursive_offset, arity);
   C_Polyhedron final;

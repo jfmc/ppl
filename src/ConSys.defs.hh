@@ -139,7 +139,7 @@ public:
   ConSys& operator=(const ConSys& y);
 
   //! Returns the dimension of the vector space enclosing \p *this.
-  size_t space_dimension() const;
+  dimension_type space_dimension() const;
 
   //! \brief
   //! Removes all the constraints from the constraint system
@@ -270,7 +270,7 @@ private:
   //! Builds a system of \p n_rows constraints on a \p n_columns - 1
   //! dimensional space (including the \f$\epsilon\f$ dimension, if
   //! \p topol is <CODE>NOT_NECESSARILY_CLOSED</CODE>).
-  ConSys(Topology topol, size_t n_rows, size_t n_columns);
+  ConSys(Topology topol, dimension_type n_rows, dimension_type n_columns);
 
   //! Swaps \p *this with \p y.
   void swap(ConSys& y);
@@ -283,7 +283,7 @@ private:
   //! equal to <CODE>NECESSARILY_CLOSED</CODE> and \p *this
   //! contains strict inequalities.
   bool adjust_topology_and_dimension(Topology topol,
-				     size_t num_dimensions);
+				     dimension_type num_dimensions);
 
   //! \brief
   //! Returns <CODE>true</CODE> if and only if \p *this
@@ -291,24 +291,24 @@ private:
   bool has_strict_inequalities() const;
 
   //! Returns the \p k- th constraint of the system.
-  Constraint& operator[](size_t k);
+  Constraint& operator[](dimension_type k);
   
   //! Returns a constant reference to the \p k- th constraint of the system.
-  const Constraint& operator[](size_t k) const;
+  const Constraint& operator[](dimension_type k) const;
 
   //! Returns <CODE>true</CODE> if \p g satisfies all the constraints.
   bool satisfies_all_constraints(const Generator& g) const;
 
   //! Substitutes a given column of coefficients by a given affine expression.
-  void affine_preimage(size_t v,
+  void affine_preimage(dimension_type v,
 		       const LinExpression& expr,
 		       const Integer& denominator);
 
   //! Returns the number of the equality constraints.
-  size_t num_equalities() const;
+  dimension_type num_equalities() const;
   
   //! Returns the number of the inequality constraints.
-  size_t num_inequalities() const;
+  dimension_type num_inequalities() const;
 };
 
 // ConSys.inlines.hh is not included here on purpose.

@@ -89,12 +89,12 @@ PPL::Polyhedron::minimize(bool con_to_gen,
   // to the canonical basis of the vector space.
 
   // Resizing `dest' to be the appropriate square matrix.
-  size_t dest_num_rows = source.num_columns();
+  dimension_type dest_num_rows = source.num_columns();
   dest.resize_no_copy(dest_num_rows, dest_num_rows);
 
   // Initializing it to the identity matrix.
-  for (size_t i = dest_num_rows; i-- > 0; ) {
-    for (size_t j = dest_num_rows; j-- > 0; )
+  for (dimension_type i = dest_num_rows; i-- > 0; ) {
+    for (dimension_type j = dest_num_rows; j-- > 0; )
       dest[i][j] = 0;
     dest[i][i] = 1;
     dest[i].set_is_line_or_equality();
@@ -127,7 +127,7 @@ PPL::Polyhedron::minimize(bool con_to_gen,
   // The `start' parameter is zero (we haven't seen any constraint yet)
   // and the 5th parameter (representing the number of lines in `dest'),
   // by construction, is equal to `dest_num_rows'.
-  size_t num_lines_or_equalities = conversion(source, 0,
+  dimension_type num_lines_or_equalities = conversion(source, 0,
 					      dest, tmp_sat,
 					      dest_num_rows);
   // conversion() may have modified the number of rows in `dest'.
@@ -142,10 +142,10 @@ PPL::Polyhedron::minimize(bool con_to_gen,
   // Points can be detected by looking at:
   // - the divisor, for necessarily closed polyhedra;
   // - the epsilon coordinate, for NNC polyhedra.
-  size_t checking_index = dest.is_necessarily_closed()
+  dimension_type checking_index = dest.is_necessarily_closed()
     ? 0
     : dest.num_columns() - 1;
-  size_t first_point = num_lines_or_equalities;
+  dimension_type first_point = num_lines_or_equalities;
   for ( ; first_point < dest_num_rows; ++first_point)
     if (dest[first_point][checking_index] > 0)
       break;
@@ -239,11 +239,11 @@ PPL::Polyhedron::add_and_minimize(bool con_to_gen,
   assert(source1.is_sorted());
   assert(source2.is_sorted());
 
-  size_t old_source1_num_rows = source1.num_rows();
+  dimension_type old_source1_num_rows = source1.num_rows();
   // `k1' and `k2' run through the rows of `source1' and `source2', resp.
-  size_t k1 = 0;
-  size_t k2 = 0;
-  size_t source2_num_rows = source2.num_rows();
+  dimension_type k1 = 0;
+  dimension_type k2 = 0;
+  dimension_type source2_num_rows = source2.num_rows();
   while (k1 < old_source1_num_rows && k2 < source2_num_rows) {
     // Add to `source1' the constraints from `source2'.
     // We exploit the property (here called `initial sortedness')
@@ -282,7 +282,7 @@ PPL::Polyhedron::add_and_minimize(bool con_to_gen,
     for ( ; k2 < source2_num_rows; ++k2)
       source1.add_row(source2[k2]);
 
-  size_t new_source1_num_rows = source1.num_rows();
+  dimension_type new_source1_num_rows = source1.num_rows();
   if (new_source1_num_rows == old_source1_num_rows)
     // No row was appended to `source1', because all the constraints
     // in `source2' were already in `source1'.
@@ -300,18 +300,18 @@ PPL::Polyhedron::add_and_minimize(bool con_to_gen,
   // indexed by generators and its columns are indexed by constraints.
   SatMatrix tmp_sat(dest.num_rows(), source1.num_rows());
   // Copy the old `sat' into the new one.
-  for (size_t i = sat.num_rows(); i-- > 0; )
+  for (dimension_type i = sat.num_rows(); i-- > 0; )
     tmp_sat[i] = sat[i];
   // We compute the matrix of generators corresponding to the new
   // matrix of constraints by invoking the function conversion().
   // The `start' parameter is set to the index of the first constraint
   // we appended to `source1', because generators corresponding
   // to previous constraints are already in `dest'.
-  size_t num_lines_or_equalities = conversion(source1, old_source1_num_rows,
+  dimension_type num_lines_or_equalities = conversion(source1, old_source1_num_rows,
 					      dest, tmp_sat,
 					      dest.num_lines_or_equalities());
   // conversion() may have modified the number of rows in `dest'.
-  size_t dest_num_rows = dest.num_rows();
+  dimension_type dest_num_rows = dest.num_rows();
 
   // NOTE: conversion() can only remove inequalities from `source'.
   // Thus, all the equalities still come before the inequalities
@@ -323,10 +323,10 @@ PPL::Polyhedron::add_and_minimize(bool con_to_gen,
   // Points can be detected by looking at:
   // - the divisor, for necessarily closed polyhedra;
   // - the epsilon coordinate, for NNC polyhedra.
-  size_t checking_index = dest.is_necessarily_closed()
+  dimension_type checking_index = dest.is_necessarily_closed()
     ? 0
     : dest.num_columns() - 1;
-  size_t first_point = num_lines_or_equalities;
+  dimension_type first_point = num_lines_or_equalities;
   for ( ; first_point < dest_num_rows; ++first_point)
     if (dest[first_point][checking_index] > 0)
       break;

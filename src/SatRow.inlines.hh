@@ -50,29 +50,29 @@ SatRow::operator=(const SatRow& y) {
 }
 
 inline bool
-SatRow::operator[](size_t k) const {
+SatRow::operator[](dimension_type k) const {
   return mpz_tstbit(vec, k);
 }
 
 inline void
-SatRow::set(size_t k) {
+SatRow::set(dimension_type k) {
   mpz_setbit(vec, k);
 }
 
 inline void
-SatRow::clear(size_t k) {
+SatRow::clear(dimension_type k) {
   mpz_clrbit(vec, k);
 }
 
 inline void
-SatRow::clear_from(size_t k) {
+SatRow::clear_from(dimension_type k) {
   mpz_tdiv_r_2exp(vec, vec, k);
 }
 
 /*!
   Returns the number of set bits in the row.
 */
-inline size_t
+inline dimension_type
 SatRow::count_ones() const {
   return mpz_popcount(vec);
 }

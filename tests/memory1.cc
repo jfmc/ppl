@@ -39,9 +39,9 @@ using namespace Parma_Polyhedra_Library;
 #endif
 
 void
-compute_open_hypercube_generators(unsigned int dimension) {
+compute_open_hypercube_generators(dimension_type dimension) {
   NNC_Polyhedron hypercube(dimension);
-  for (unsigned int i = 0; i < dimension; ++i) {
+  for (dimension_type i = 0; i < dimension; ++i) {
     Variable x(i);
     hypercube.add_constraint(x > 0);
     hypercube.add_constraint(x < 1);
@@ -50,7 +50,7 @@ compute_open_hypercube_generators(unsigned int dimension) {
 }
 
 void
-limit_virtual_memory(unsigned int bytes) {
+limit_virtual_memory(unsigned long bytes) {
   struct rlimit t;
   if (getrlimit(RLIMIT_AS, &t) != 0) {
     cerr << "getrlimit failed: " << strerror(errno) << endl;
@@ -64,8 +64,8 @@ limit_virtual_memory(unsigned int bytes) {
 }
 
 bool
-guarded_compute_open_hypercube_generators(unsigned int dimension,
-					  unsigned int max_memory_in_bytes) {
+guarded_compute_open_hypercube_generators(dimension_type dimension,
+					  unsigned long max_memory_in_bytes) {
   try {
     limit_virtual_memory(max_memory_in_bytes);
     compute_open_hypercube_generators(dimension);
@@ -117,7 +117,7 @@ main() {
   set_handlers();
 
   // Find a dimension that cannot be computed with INIT_MEMORY bytes.
-  unsigned int dimension = 0;
+  dimension_type dimension = 0;
   do {
     ++dimension;
 #if NOISY
@@ -127,7 +127,7 @@ main() {
   while (guarded_compute_open_hypercube_generators(dimension, INIT_MEMORY));
 
   // Now find an upper bound to the memory necessary to compute it.
-  unsigned int upper_bound = INIT_MEMORY;
+  unsigned long upper_bound = INIT_MEMORY;
   do {
     upper_bound *= 2;
 #if NOISY

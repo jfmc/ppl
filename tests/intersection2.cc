@@ -87,7 +87,7 @@ main() {
 
   bool ok = true;
 
-  for (size_t i = 0; i <= 6; ++i) {
+  for (dimension_type i = 0; i <= 6; ++i) {
     // Above.
     C_Polyhedron hyper_space_above(3);
     hyper_space_above.add_constraint(z >= ph_nv[i].plane_height);

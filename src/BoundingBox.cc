@@ -32,8 +32,8 @@ PPL::operator<<(std::ostream& s, const PPL::BoundingBox& bbox) {
     s << "empty";
     return s;
   }
-  unsigned int dimension = bbox.space_dimension();
-  for (unsigned int k = 0; k < dimension; ++k) {
+  dimension_type dimension = bbox.space_dimension();
+  for (dimension_type k = 0; k < dimension; ++k) {
     bool closed = false;
     PPL::Integer n;
     PPL::Integer d;

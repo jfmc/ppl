@@ -39,12 +39,12 @@ Constraint::Constraint(const Constraint& c)
 }
 
 inline
-Constraint::Constraint(const Constraint& c, size_t sz)
+Constraint::Constraint(const Constraint& c, dimension_type sz)
   : Row(c, sz, sz) {
 }
 
 inline
-Constraint::Constraint(Row::Type t, size_t sz)
+Constraint::Constraint(Row::Type t, dimension_type sz)
   : Row(t, sz) {
 }
 
@@ -58,7 +58,7 @@ Constraint::operator=(const Constraint& c) {
   return *this;
 }
 
-inline size_t
+inline dimension_type
 Constraint::space_dimension() const {
   return Row::space_dimension();
 }
@@ -146,8 +146,8 @@ operator>(const LinExpression& e1, const LinExpression& e2) {
   LinExpression diff;
   // Setting the epsilon coefficient to -1.
   // NOTE: this also enforces normalization.
-  size_t e1_dim = e1.space_dimension();
-  size_t e2_dim = e2.space_dimension();
+  dimension_type e1_dim = e1.space_dimension();
+  dimension_type e2_dim = e2.space_dimension();
   if (e1_dim > e2_dim)
     diff -= Variable(e1_dim);
   else

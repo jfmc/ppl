@@ -34,7 +34,7 @@ namespace PPL = Parma_Polyhedra_Library;
 PPL::LinExpression::LinExpression(const Constraint& c)
   : Row(Row::Type(), c.space_dimension() + 1) {
   LinExpression& e = *this;
-  for (size_t i = size(); i-- > 0; )
+  for (dimension_type i = size(); i-- > 0; )
     e[i] = c[i];
 }
 
@@ -43,17 +43,17 @@ PPL::LinExpression::LinExpression(const Generator& g)
   : Row(Row::Type(), g.space_dimension() + 1) {
   LinExpression& e = *this;
   // Do not copy the divisor of `g'.
-  for (size_t i = size(); --i > 0; )
+  for (dimension_type i = size(); --i > 0; )
     e[i] = g[i];
 }
 
 
 PPL::LinExpression
 PPL::operator+(const LinExpression& e1, const LinExpression& e2) {
-  size_t e1_size = e1.size();
-  size_t e2_size = e2.size();
-  size_t min_size;
-  size_t max_size;
+  dimension_type e1_size = e1.size();
+  dimension_type e2_size = e2.size();
+  dimension_type min_size;
+  dimension_type max_size;
   const LinExpression* p_e_max;
   if (e1_size > e2_size) {
     min_size = e2_size;
@@ -67,7 +67,7 @@ PPL::operator+(const LinExpression& e1, const LinExpression& e2) {
   }
 
   LinExpression r(max_size, false);
-  size_t i = max_size;
+  dimension_type i = max_size;
   while (i > min_size) {
     --i;
     r[i] = (*p_e_max)[i];
@@ -92,7 +92,7 @@ PPL::operator+(const Integer& n, const LinExpression& e) {
 PPL::LinExpression
 PPL::operator-(const LinExpression& e) {
   LinExpression r(e);
-  for (size_t i = e.size(); i-- > 0; )
+  for (dimension_type i = e.size(); i-- > 0; )
     negate(r[i]);
   return r;
 }
@@ -100,11 +100,11 @@ PPL::operator-(const LinExpression& e) {
 
 PPL::LinExpression
 PPL::operator-(const LinExpression& e1, const LinExpression& e2) {
-  size_t e1_size = e1.size();
-  size_t e2_size = e2.size();
+  dimension_type e1_size = e1.size();
+  dimension_type e2_size = e2.size();
   if (e1_size > e2_size) {
     LinExpression r(e1_size, false);
-    size_t i = e1_size;
+    dimension_type i = e1_size;
     while (i > e2_size) {
       --i;
       r[i] = e1[i];
@@ -117,7 +117,7 @@ PPL::operator-(const LinExpression& e1, const LinExpression& e2) {
   }
   else {
     LinExpression r(e2_size, false);
-    size_t i = e2_size;
+    dimension_type i = e2_size;
     while (i > e1_size) {
       --i;
       r[i] = -e2[i];
@@ -134,7 +134,7 @@ PPL::operator-(const LinExpression& e1, const LinExpression& e2) {
 PPL::LinExpression
 PPL::operator-(const Integer& n, const LinExpression& e) {
   LinExpression r(e);
-  for (size_t i = e.size(); i-- > 0; )
+  for (dimension_type i = e.size(); i-- > 0; )
     negate(r[i]);
   r[0] += n;
 
@@ -145,7 +145,7 @@ PPL::operator-(const Integer& n, const LinExpression& e) {
 PPL::LinExpression
 PPL::operator*(const Integer& n, const LinExpression& e) {
   LinExpression r(e);
-  for (size_t i = e.size(); i-- > 0; )
+  for (dimension_type i = e.size(); i-- > 0; )
     r[i] *= n;
   return r;
 }
@@ -153,14 +153,14 @@ PPL::operator*(const Integer& n, const LinExpression& e) {
 
 PPL::LinExpression&
 PPL::operator+=(LinExpression& e1, const LinExpression& e2) {
-  size_t e1_size = e1.size();
-  size_t e2_size = e2.size();
+  dimension_type e1_size = e1.size();
+  dimension_type e2_size = e2.size();
   if (e1_size >= e2_size)
-    for (size_t i = e2_size; i-- > 0; )
+    for (dimension_type i = e2_size; i-- > 0; )
       e1[i] += e2[i];
   else {
     LinExpression e(e2);
-    for (size_t i = e1_size; i-- > 0; )
+    for (dimension_type i = e1_size; i-- > 0; )
       e[i] += e1[i];
     std::swap(e1, e);
   }
@@ -170,8 +170,8 @@ PPL::operator+=(LinExpression& e1, const LinExpression& e2) {
 
 PPL::LinExpression&
 PPL::operator+=(LinExpression& e, const Variable& v) {
-  size_t e_size = e.size();
-  size_t vpos = v.id() + 1;
+  dimension_type e_size = e.size();
+  dimension_type vpos = v.id() + 1;
   if (e_size <= vpos) {
     LinExpression new_e(e, vpos+1);
     std::swap(e, new_e);
@@ -183,14 +183,14 @@ PPL::operator+=(LinExpression& e, const Variable& v) {
 
 PPL::LinExpression&
 PPL::operator-=(LinExpression& e1, const LinExpression& e2) {
-  size_t e1_size = e1.size();
-  size_t e2_size = e2.size();
+  dimension_type e1_size = e1.size();
+  dimension_type e2_size = e2.size();
   if (e1_size >= e2_size)
-    for (size_t i = e2_size; i-- > 0; )
+    for (dimension_type i = e2_size; i-- > 0; )
       e1[i] -= e2[i];
   else {
     LinExpression e(e2);
-    for (size_t i = e1_size; i-- > 0; )
+    for (dimension_type i = e1_size; i-- > 0; )
       e[i] -= e1[i];
     std::swap(e1, e);
   }
@@ -200,8 +200,8 @@ PPL::operator-=(LinExpression& e1, const LinExpression& e2) {
 
 PPL::LinExpression&
 PPL::operator-=(LinExpression& e, const Variable& v) {
-  size_t e_size = e.size();
-  size_t vpos = v.id() + 1;
+  dimension_type e_size = e.size();
+  dimension_type vpos = v.id() + 1;
   if (e_size <= vpos) {
     LinExpression new_e(e, vpos+1);
     std::swap(e, new_e);

@@ -79,7 +79,7 @@ template <typename PH>
 class Parma_Polyhedra_Library::Determinate {
 public:
   explicit
-  Determinate(size_t num_dimensions = 0,
+  Determinate(dimension_type num_dimensions = 0,
 	      Polyhedron::Degenerate_Kind kind = Polyhedron::UNIVERSE);
   Determinate(const PH& p);
   Determinate(const ConSys& cs);
@@ -100,8 +100,8 @@ public:
 
   bool is_definitely_equivalent_to(const Determinate& y) const;
 
-  Determinate& operator <<= (unsigned int n);
-  Determinate& hide_assign(unsigned int n);
+  Determinate& operator <<= (dimension_type n);
+  Determinate& hide_assign(dimension_type n);
 
   inline bool is_top() const;
   inline bool is_bottom() const;
@@ -120,7 +120,7 @@ public:
   friend std::ostream& operator<<<>(std::ostream& s, const Determinate& x);
 
   //! Returns the dimension of the vector space enclosing \p *this.
-  size_t space_dimension() const;
+  dimension_type space_dimension() const;
 
   //! Returns the system of constraints.
   const ConSys& constraints() const;
@@ -157,12 +157,12 @@ public:
   //! \brief
   //! Adds \p m new dimensions and embeds the old polyhedron
   //! into the new space.
-  void add_dimensions_and_embed(size_t m);
+  void add_dimensions_and_embed(dimension_type m);
 
   //! \brief
   //! Adds \p m new dimensions to the polyhedron
   //! and does not embed it in the new space.
-  void add_dimensions_and_project(size_t m);
+  void add_dimensions_and_project(dimension_type m);
 
   //! \brief
   //! Removes all the specified dimensions.
@@ -183,7 +183,7 @@ public:
     \exception std::invalid_argument thrown if \p new_dimensions is greater
                                      than the space dimension of \p *this.
   */
-  void remove_higher_dimensions(size_t new_dimension);
+  void remove_higher_dimensions(dimension_type new_dimension);
 
   template <typename PartialFunction>
   void shuffle_dimensions(const PartialFunction& pfunc);
@@ -238,7 +238,7 @@ private:
     //! A polyhedron.
     PH ph;
 
-    Rep(size_t num_dimensions, Polyhedron::Degenerate_Kind kind);
+    Rep(dimension_type num_dimensions, Polyhedron::Degenerate_Kind kind);
 
     Rep(const PH& p);
 

@@ -41,7 +41,7 @@ PPL::operator*(const Constraint& x, const Generator& y) {
   // dimension-compatible.
   assert(x.size() <= y.size());
   tmp_Integer[0] = 0;
-  for (size_t i = x.size(); i-- > 0; ) {
+  for (dimension_type i = x.size(); i-- > 0; ) {
     // The following two lines optimize the computation
     // of tmp_Integer[0] += x[i] * y[i].
     tmp_Integer[1] = x[i] * y[i];
@@ -59,7 +59,7 @@ PPL::reduced_scalar_product(const Constraint& x, const Generator& y) {
   assert(!x.is_necessarily_closed());
   assert(x.size() - 1 <= y.size());
   tmp_Integer[0] = 0;
-  for (size_t i = x.size() - 1; i-- > 0; ) {
+  for (dimension_type i = x.size() - 1; i-- > 0; ) {
     // The following two lines optimize the computation
     // of tmp_Integer[0] += x[i] * y[i].
     tmp_Integer[1] = x[i] * y[i];

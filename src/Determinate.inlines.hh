@@ -29,7 +29,7 @@ site: http://www.cs.unipr.it/ppl/ . */
 namespace Parma_Polyhedra_Library {
 
 template <typename PH>
-Determinate<PH>::Rep::Rep(size_t num_dimensions,
+Determinate<PH>::Rep::Rep(dimension_type num_dimensions,
 			  Polyhedron::Degenerate_Kind kind)
   : references(0), ph(num_dimensions, kind) {
 }
@@ -67,7 +67,7 @@ Determinate<PH>::Rep::is_shared() const {
 }
 
 template <typename PH>
-Determinate<PH>::Determinate(size_t num_dimensions,
+Determinate<PH>::Determinate(dimension_type num_dimensions,
 			     Polyhedron::Degenerate_Kind kind)
   : prep(new Rep(num_dimensions, kind)) {
   prep->new_reference();
@@ -225,7 +225,7 @@ operator!=(const Determinate<PH>& x, const Determinate<PH>& y) {
 }
 
 template <typename PH>
-size_t
+dimension_type
 Determinate<PH>::space_dimension() const {
   return prep->ph.space_dimension();
 }
@@ -270,14 +270,14 @@ Determinate<PH>::add_constraints(ConSys& cs) {
 
 template <typename PH>
 void
-Determinate<PH>::add_dimensions_and_embed(size_t m) {
+Determinate<PH>::add_dimensions_and_embed(dimension_type m) {
   mutate();
   prep->ph.add_dimensions_and_embed(m);
 }
 
 template <typename PH>
 void
-Determinate<PH>::add_dimensions_and_project(size_t m) {
+Determinate<PH>::add_dimensions_and_project(dimension_type m) {
   mutate();
   prep->ph.add_dimensions_and_project(m);
 }
@@ -291,7 +291,7 @@ Determinate<PH>::remove_dimensions(const std::set<Variable>& to_be_removed) {
 
 template <typename PH>
 void
-Determinate<PH>::remove_higher_dimensions(size_t new_dimension) {
+Determinate<PH>::remove_higher_dimensions(dimension_type new_dimension) {
   mutate();
   prep->ph.remove_higher_dimensions(new_dimension);
 }

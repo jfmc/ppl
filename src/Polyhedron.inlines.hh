@@ -200,7 +200,7 @@ operator>(const Polyhedron& x, const Polyhedron& y) {
 }
 
 
-inline size_t
+inline dimension_type
 Polyhedron::space_dimension() const {
   return space_dim;
 }
@@ -247,7 +247,7 @@ Polyhedron::Polyhedron(Topology topol, const Box& box)
   // this constraint will be removed at the end.
   con_sys.insert(Variable(space_dim - 1) >= 0);
 
-  for (size_t k = space_dim; k-- > 0; ) {
+  for (dimension_type k = space_dim; k-- > 0; ) {
     // See if we have a valid lower bound.
     bool l_closed = false;
     Integer l_n, l_d;
@@ -303,7 +303,7 @@ Polyhedron::Polyhedron(Topology topol, const Box& box)
   }
   
   // Now removing the dummy constraint inserted before.
-  size_t n_rows = con_sys.num_rows() - 1;
+  dimension_type n_rows = con_sys.num_rows() - 1;
   con_sys[0].swap(con_sys[n_rows]);
   con_sys.erase_to_end(n_rows);
 
@@ -330,7 +330,7 @@ Polyhedron::shrink_bounding_box(Box& box) const {
   std::vector<LBoundary> lower_bound(space_dim);
   std::vector<UBoundary> upper_bound(space_dim);
 
-  for (size_t j = space_dim; j-- > 0; ) {
+  for (dimension_type j = space_dim; j-- > 0; ) {
     // Lower bounds are initialized to (open) plus infinity;
     lower_bound[j] = LBoundary(ExtendedRational('+'), LBoundary::OPEN);
     // Upper bounds are initialized to (open) minus infinity;
@@ -351,7 +351,7 @@ Polyhedron::shrink_bounding_box(Box& box) const {
     case Generator::LINE:
       // Any axes `j' in which the coefficient is non-zero is unbounded
       // both below and above.
-      for (size_t j = space_dim; j-- > 0; )
+      for (dimension_type j = space_dim; j-- > 0; )
         if (g.coefficient(Variable(j)) != 0) {
 	  lower_bound[j] = LBoundary(ExtendedRational('-'), LBoundary::OPEN);
 	  upper_bound[j] = UBoundary(ExtendedRational('+'), UBoundary::OPEN);
@@ -360,7 +360,7 @@ Polyhedron::shrink_bounding_box(Box& box) const {
     case Generator::RAY:
       // Axes in which the coefficient is negative are unbounded below.
       // Axes in which the coefficient is positive are unbounded above.
-      for (size_t j = space_dim; j-- > 0; ) {
+      for (dimension_type j = space_dim; j-- > 0; ) {
         int sign = sgn(g.coefficient(Variable(j)));
         if (sign < 0)
 	  lower_bound[j] = LBoundary(ExtendedRational('-'), LBoundary::OPEN);
@@ -372,7 +372,7 @@ Polyhedron::shrink_bounding_box(Box& box) const {
     case Generator::CLOSURE_POINT:
       {
 	const Integer& d = g.divisor();
-	for (size_t j = space_dim; j-- > 0; ) {
+	for (dimension_type j = space_dim; j-- > 0; ) {
 	  const Integer& n = g.coefficient(Variable(j));
 	  ExtendedRational r(n, d);
 	  LBoundary lb(r,(g_type == Generator::CLOSURE_POINT
@@ -392,7 +392,7 @@ Polyhedron::shrink_bounding_box(Box& box) const {
   }
 
   // Now shrink the bounded axes.
-  for (size_t j = space_dim; j-- > 0; ) {
+  for (dimension_type j = space_dim; j-- > 0; ) {
     // Lower bound.
     const LBoundary& lb = lower_bound[j];
     const ExtendedRational& lr = lb.bound();
@@ -432,7 +432,7 @@ Polyhedron::shuffle_dimensions(const PartialFunction& pfunc) {
     return;
   }
 
-  unsigned int new_space_dimension = pfunc.max_in_codomain() + 1;
+  dimension_type new_space_dimension = pfunc.max_in_codomain() + 1;
   const GenSys& old_gensys = generators();
   GenSys new_gensys;
   for (GenSys::const_iterator i = old_gensys.begin(),
@@ -440,8 +440,8 @@ Polyhedron::shuffle_dimensions(const PartialFunction& pfunc) {
     const Generator& old_g = *i;
     LinExpression e(0 * Variable(new_space_dimension-1));
     bool all_zeroes = true;
-    for (unsigned int index = 0; index < space_dim; ++index) {
-      unsigned int new_index;
+    for (dimension_type index = 0; index < space_dim; ++index) {
+      dimension_type new_index;
       if (old_g.coefficient(Variable(index)) != 0
 	  && pfunc.maps(index, new_index)) {
 	e += Variable(new_index)

@@ -63,7 +63,7 @@ PPL::Generator::point(const LinExpression& e, const Integer& d) {
   // all the coefficients of the point, because we want to preserve
   // the invariant: the divisor of a point is strictly positive.
   if (d < 0)
-    for (size_t i = g.size(); i-- > 0; )
+    for (dimension_type i = g.size(); i-- > 0; )
       negate(g[i]);
 
   g.set_is_ray_or_point();
@@ -203,7 +203,7 @@ PPL::Generator::is_matching_closure_point(const Generator& p) const {
   if (cp[0] == p[0]) {
     // Divisors are equal: we can simply compare coefficients
     // (disregarding the epsilon coefficient).
-    for (size_t i = cp.size() - 2; i > 0; --i)
+    for (dimension_type i = cp.size() - 2; i > 0; --i)
       if (cp[i] != p[i])
 	return false;
     return true;
@@ -219,7 +219,7 @@ PPL::Generator::is_matching_closure_point(const Generator& p) const {
     }
     const Integer& cp_div = rel_prime ? cp[0] : tmp_Integer[2];
     const Integer& p_div = rel_prime ? p[0] : tmp_Integer[3];
-    for (size_t i = cp.size() - 2; i > 0; --i) {
+    for (dimension_type i = cp.size() - 2; i > 0; --i) {
       tmp_Integer[4] = cp[i] * p_div;
       tmp_Integer[5] = p[i] * cp_div;
       if (tmp_Integer[4] != tmp_Integer[5])

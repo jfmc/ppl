@@ -37,7 +37,7 @@ namespace Parma_Polyhedra_Library {
   allocated memory.
 */
 inline void*
-Row::Impl::operator new(size_t fixed_size, size_t capacity) {
+Row::Impl::operator new(size_t fixed_size, dimension_type capacity) {
   return ::operator new(fixed_size + capacity*sizeof(Integer));
 }
 
@@ -57,7 +57,7 @@ Row::Impl::operator delete(void* p) {
   uses the standard operator delete to free the memory \p p points to.
 */
 inline void
-Row::Impl::operator delete(void* p, size_t) {
+Row::Impl::operator delete(void* p, dimension_type) {
   ::operator delete(p);
 }
 
@@ -65,7 +65,7 @@ Row::Impl::operator delete(void* p, size_t) {
 /*!
   Returns the actual size of the row \p this points to.
 */
-inline size_t
+inline dimension_type
 Row::Impl::size() const {
   return size_;
 }
@@ -75,7 +75,7 @@ Row::Impl::size() const {
   Sets to \p new_size the actual size of \p *this.
 */
 inline void
-Row::Impl::set_size(size_t new_sz) {
+Row::Impl::set_size(dimension_type new_sz) {
   size_ = new_sz;
 }
 
@@ -95,7 +95,7 @@ Row::Impl::bump_size() {
   otherwise it is grown without copying the old contents.
 */
 inline void
-Row::Impl::resize_no_copy(size_t new_size) {
+Row::Impl::resize_no_copy(dimension_type new_size) {
   if (new_size < size())
     shrink(new_size);
   else
@@ -104,7 +104,7 @@ Row::Impl::resize_no_copy(size_t new_size) {
 
 
 inline
-Row::Impl::Impl(Type t, size_t sz)
+Row::Impl::Impl(Type t, dimension_type sz)
   : size_(0), type(t) {
   grow_no_copy(sz);
 }
@@ -117,7 +117,7 @@ Row::Impl::Impl(const Impl& y)
 }
 
 inline
-Row::Impl::Impl(const Impl& y, size_t sz)
+Row::Impl::Impl(const Impl& y, dimension_type sz)
   : size_(0), type(y.type) {
   copy_construct(y);
   grow_no_copy(sz);
@@ -138,7 +138,7 @@ Row::Impl::~Impl() {
   Returns a reference to the \p k-th element of \p *this row.
 */
 inline Integer&
-Row::Impl::operator[](size_t k) {
+Row::Impl::operator[](dimension_type k) {
   assert(k < size());
   return vec_[k];
 }
@@ -148,7 +148,7 @@ Row::Impl::operator[](size_t k) {
   Returns a constant reference to the \p k-th element of \p *this row.
 */
 inline const Integer&
-Row::Impl::operator[](size_t k) const {
+Row::Impl::operator[](dimension_type k) const {
   assert(k < size());
   return vec_[k];
 }
@@ -227,7 +227,7 @@ Row::Type::set_not_necessarily_closed() {
 /*!
   Returns the size of \p *this row.
 */
-inline size_t
+inline dimension_type
 Row::size() const {
   return impl->size();
 }
@@ -248,16 +248,16 @@ Row::is_necessarily_closed() const {
   return type().is_necessarily_closed();
 }
 
-inline size_t
+inline dimension_type
 Row::space_dimension() const {
-  size_t sz = size();
+  dimension_type sz = size();
   return (sz == 0)
     ? 0
     : sz - (is_necessarily_closed() ? 1 : 2);
 }
 
 #if EXTRA_ROW_DEBUG
-inline size_t
+inline dimension_type
 Row::capacity() const {
   return capacity_;
 }
@@ -282,7 +282,7 @@ Row::Row()
   that has to be considered is \p sz.
 */
 inline void
-Row::construct(Type t, size_t sz, size_t capacity) {
+Row::construct(Type t, dimension_type sz, dimension_type capacity) {
   assert(capacity >= sz);
   impl = new (capacity) Impl(t, sz);
 #if EXTRA_ROW_DEBUG
@@ -295,17 +295,17 @@ Row::construct(Type t, size_t sz, size_t capacity) {
   Builds a row having the capacity equal to its \p sz.
 */
 inline void
-Row::construct(Type t, size_t sz) {
+Row::construct(Type t, dimension_type sz) {
   construct(t, sz, sz);
 }
 
 inline
-Row::Row(Type t, size_t sz, size_t capacity) {
+Row::Row(Type t, dimension_type sz, dimension_type capacity) {
   construct(t, sz, capacity);
 }
 
 inline
-Row::Row(Type t, size_t sz) {
+Row::Row(Type t, dimension_type sz) {
   construct(t, sz);
 }
 
@@ -324,7 +324,7 @@ Row::Row(const Row& y)
   provided it is greater than or equal to \p y size.
 */
 inline
-Row::Row(const Row& y, size_t capacity) {
+Row::Row(const Row& y, dimension_type capacity) {
   assert(capacity >= y.size());
   impl = y.impl ? new (capacity) Impl(*y.impl) : 0;
 #if EXTRA_ROW_DEBUG
@@ -338,7 +338,7 @@ Row::Row(const Row& y, size_t capacity) {
   Of course, \p sz must also be less than or equal to \p capacity.
 */
 inline
-Row::Row(const Row& y, size_t sz, size_t capacity) {
+Row::Row(const Row& y, dimension_type sz, dimension_type capacity) {
   assert(capacity >= y.size());
   impl = y.impl ? new (capacity) Impl(*y.impl, sz) : 0;
 #if EXTRA_ROW_DEBUG
@@ -356,7 +356,7 @@ Row::~Row() {
   otherwise grows the row without copying the old contents.
 */
 inline void
-Row::resize_no_copy(size_t new_sz) {
+Row::resize_no_copy(dimension_type new_sz) {
   assert(impl);
 #if EXTRA_ROW_DEBUG
   assert(new_sz <= capacity_);
@@ -369,7 +369,7 @@ Row::resize_no_copy(size_t new_sz) {
   size \p new_sz.
 */
 inline void
-Row::grow_no_copy(size_t new_sz) {
+Row::grow_no_copy(dimension_type new_sz) {
   assert(impl);
 #if EXTRA_ROW_DEBUG
   assert(new_sz <= capacity_);
@@ -382,7 +382,7 @@ Row::grow_no_copy(size_t new_sz) {
   the end.
 */
 inline void
-Row::shrink(size_t new_sz) {
+Row::shrink(dimension_type new_sz) {
   assert(impl);
   impl->shrink(new_sz);
 }
@@ -473,7 +473,7 @@ Row::set_not_necessarily_closed() {
   Returns a reference to the element of the row indexed by \p k.
 */
 inline Integer&
-Row::operator[](size_t k) {
+Row::operator[](dimension_type k) {
   return (*impl)[k];
 }
 
@@ -481,7 +481,7 @@ Row::operator[](size_t k) {
   Returns a constant reference to the element of the row indexed by \p k.
 */
 inline const Integer&
-Row::operator[](size_t k) const {
+Row::operator[](dimension_type k) const {
   return (*impl)[k];
 }
 
@@ -491,7 +491,7 @@ Row::inhomogeneous_term() const {
 }
 
 inline const Integer&
-Row::coefficient(size_t k) const {
+Row::coefficient(dimension_type k) const {
   return (*this)[k+1];
 }
 

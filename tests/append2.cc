@@ -31,7 +31,7 @@ using namespace Parma_Polyhedra_Library;
 #endif
 
 void
-shift_rename_add(const C_Polyhedron& p, size_t offset, C_Polyhedron& q) {
+shift_rename_add(const C_Polyhedron& p, dimension_type offset, C_Polyhedron& q) {
   if (p.space_dimension() == 0)
     exit(1);
 
@@ -50,7 +50,8 @@ shift_rename_add(const C_Polyhedron& p, size_t offset, C_Polyhedron& q) {
 
 void
 append_init(C_Polyhedron& base, C_Polyhedron& induct, C_Polyhedron& expect,
-            size_t& offset, unsigned int& arity, unsigned int& num_vars) {
+            dimension_type& offset, unsigned int& arity,
+	    unsigned int& num_vars) {
   offset = 3;
   arity = 3;
   num_vars = 6;
@@ -92,7 +93,7 @@ append_init(C_Polyhedron& base, C_Polyhedron& induct, C_Polyhedron& expect,
 
 void
 fix_point(C_Polyhedron& start, C_Polyhedron& induct, C_Polyhedron& finish,
-          size_t offset, unsigned int arity, unsigned int num_vars) {
+          dimension_type offset, unsigned int arity, unsigned int num_vars) {
   // Initialize the fixpoint iteration.
   C_Polyhedron current = start;
 #if NOISY
@@ -132,7 +133,7 @@ main() {
   C_Polyhedron start;
   C_Polyhedron induct;
   C_Polyhedron expect;
-  size_t recursive_offset;
+  dimension_type recursive_offset;
   unsigned int arity;
   unsigned int num_vars;
   append_init(start, induct, expect, recursive_offset, arity, num_vars);

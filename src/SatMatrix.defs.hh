@@ -47,7 +47,7 @@ public:
 
   //! Construct a saturation matrix with \p n_rows rows
   //! and \p n_columns columns.
-  SatMatrix(size_t n_rows, size_t n_columns);
+  SatMatrix(dimension_type n_rows, dimension_type n_columns);
 
   //! Copy-constructor.
   SatMatrix(const SatMatrix& y);
@@ -62,10 +62,10 @@ public:
   void swap(SatMatrix& y);
 
   //! Subscript operator.
-  SatRow& operator[](size_t k);
+  SatRow& operator[](dimension_type k);
 
   //! Subscript operator.
-  const SatRow& operator[](size_t k) const;
+  const SatRow& operator[](dimension_type k) const;
 
   //! Clears the matrix deallocating all its rows.
   void clear();
@@ -77,10 +77,10 @@ public:
   void transpose_assign(const SatMatrix& y);
 
   //! Returns the number of columns of \p *this.
-  size_t num_columns() const;
+  dimension_type num_columns() const;
 
   //! Returns the number of rows of \p *this.
-  size_t num_rows() const;
+  dimension_type num_rows() const;
 
   //! Sorts the rows and removes duplicates.
   void sort_rows();
@@ -92,13 +92,13 @@ public:
   void add_row(const SatRow& row);
 
   //! Erases the rows from the \p first_to_erase -th to the last one.
-  void rows_erase_to_end(size_t first_to_erase);
+  void rows_erase_to_end(dimension_type first_to_erase);
 
   //! Erases the columns from the \p first_to_erase -th to the last one.
-  void columns_erase_to_end(size_t first_to_erase);
+  void columns_erase_to_end(dimension_type first_to_erase);
 
   //! Resizes the matrix copying the old contents.
-  void resize(size_t new_n_rows, size_t new_n_columns);
+  void resize(dimension_type new_n_rows, dimension_type new_n_columns);
 
   //! Checks if all the invariants are satisfied.
   bool OK() const;
@@ -123,7 +123,7 @@ private:
   std::vector<SatRow> rows;
 
   //! Size of the initialized part of each row.
-  size_t row_size;
+  dimension_type row_size;
 
   struct RowCompare {
     bool operator()(const SatRow& x, const SatRow& y) const;

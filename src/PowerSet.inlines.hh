@@ -78,7 +78,7 @@ PowerSet<CS>::rend() const {
 }
 
 template <typename CS>
-size_t
+dimension_type
 PowerSet<CS>::size() const {
   return sequence.size();
 }
@@ -318,7 +318,7 @@ operator<<(std::ostream& s, const PowerSet<CS>& x) {
 }
 
 template <typename CS>
-size_t
+dimension_type
 PowerSet<CS>::space_dimension() const {
   return space_dim;
 }
@@ -366,7 +366,7 @@ PowerSet<CS>::add_constraints(ConSys& cs) {
 
 template <typename CS>
 void
-PowerSet<CS>::add_dimensions_and_embed(size_t m) {
+PowerSet<CS>::add_dimensions_and_embed(dimension_type m) {
   space_dim += m;
   for (typename PowerSet<CS>::iterator i = begin(),
 	 xend = end(); i != xend; ++i)
@@ -376,7 +376,7 @@ PowerSet<CS>::add_dimensions_and_embed(size_t m) {
 
 template <typename CS>
 void
-PowerSet<CS>::add_dimensions_and_project(size_t m) {
+PowerSet<CS>::add_dimensions_and_project(dimension_type m) {
   space_dim += m;
   for (typename PowerSet<CS>::iterator i = begin(),
 	 xend = end(); i != xend; ++i)
@@ -396,7 +396,7 @@ PowerSet<CS>::remove_dimensions(const std::set<Variable>& to_be_removed) {
 
 template <typename CS>
 void
-PowerSet<CS>::remove_higher_dimensions(size_t new_dimension) {
+PowerSet<CS>::remove_higher_dimensions(dimension_type new_dimension) {
   space_dim = new_dimension;
   for (typename PowerSet<CS>::iterator i = begin(),
 	 xend = end(); i != xend; ++i)
@@ -409,9 +409,9 @@ template <typename PartialFunction>
 void
 PowerSet<CS>::shuffle_dimensions(const PartialFunction& pfunc) {
   if (is_bottom()) {
-    unsigned int n = 0;
-    for (unsigned int i = space_dim; i-- > 0; ) {
-      unsigned int new_i;
+    dimension_type n = 0;
+    for (dimension_type i = space_dim; i-- > 0; ) {
+      dimension_type new_i;
       if (pfunc.maps(i, new_i))
 	++n;
     }

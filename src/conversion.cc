@@ -37,11 +37,11 @@ namespace PPL = Parma_Polyhedra_Library;
 #define REACTIVE_ABANDONING 1
 
 /*!
-  \fn static size_t PPL::Polyhedron::conversion(Matrix& source,
-                                                size_t start,
+  \fn static dimension_type PPL::Polyhedron::conversion(Matrix& source,
+                                                dimension_type start,
                                                 Matrix& dest,
                                                 SatMatrix& sat,
-                                                size_t num_lines_or_equalities)
+                                                dimension_type num_lines_or_equalities)
 
   \param source  The matrix to use to convert \p dest: it
                  may be modified.
@@ -348,16 +348,16 @@ namespace PPL = Parma_Polyhedra_Library;
   These two adjacent rays built a ray equal to \f$\vect{r}\f$ and so
   \f$\vect{r}\f$ is redundant.
 */
-size_t
+PPL::dimension_type
 PPL::Polyhedron::conversion(Matrix& source,
-			    size_t start,
+			    dimension_type start,
 			    Matrix& dest,
 			    SatMatrix& sat,
-			    size_t num_lines_or_equalities) {
-  size_t source_num_rows = source.num_rows();
-  size_t source_num_columns = source.num_columns();
-  size_t dest_num_rows = dest.num_rows();
-  size_t dest_num_columns = dest.num_columns();
+			    dimension_type num_lines_or_equalities) {
+  dimension_type source_num_rows = source.num_rows();
+  dimension_type source_num_columns = source.num_columns();
+  dimension_type dest_num_rows = dest.num_rows();
+  dimension_type dest_num_columns = dest.num_columns();
 
   // By construction, the number of columns of `sat' is the same as
   // the number of rows of `source'; also, the number of rows of `sat'
@@ -367,7 +367,7 @@ PPL::Polyhedron::conversion(Matrix& source,
 
   // Converting the sub-matrix of `source' having rows with indexes
   // from `start' to the last one (i.e., `source_num_rows' - 1).
-  for (size_t k = start; k < source_num_rows; ) {
+  for (dimension_type k = start; k < source_num_rows; ) {
 
     // Constraints and generators must have the same dimension,
     // otherwise the scalar product below will bomb.
@@ -382,7 +382,7 @@ PPL::Polyhedron::conversion(Matrix& source,
       scalar_prod.insert(scalar_prod.end(), needed_space, Integer_zero());
     // `index_non_zero' will indicate the first generator in `dest'
     // that does not saturate the constraint `source[k]'.
-    size_t index_non_zero = 0;
+    dimension_type index_non_zero = 0;
     for ( ; index_non_zero < dest_num_rows; ++index_non_zero) {
       scalar_prod[index_non_zero] = source[k] * dest[index_non_zero];
       if (scalar_prod[index_non_zero] != 0)
@@ -395,7 +395,7 @@ PPL::Polyhedron::conversion(Matrix& source,
       maybe_abandon();
 #endif
     }
-    for (size_t i = index_non_zero + 1; i < dest_num_rows; ++i) {
+    for (dimension_type i = index_non_zero + 1; i < dest_num_rows; ++i) {
       scalar_prod[i] = source[k] * dest[i];
 #if REACTIVE_ABANDONING
       maybe_abandon();
@@ -425,7 +425,7 @@ PPL::Polyhedron::conversion(Matrix& source,
 	//        to get around a bug of GCC version 2.96 20000731
 	//        (Red Hat Linux 7.1 2.96-98)
 	PPL::negate(scalar_prod[index_non_zero]);
-	for (size_t j = dest_num_columns; j-- > 0; )
+	for (dimension_type j = dest_num_columns; j-- > 0; )
 	  // FIXME: the following qualification PPL:: is there only
 	  //        to get around a bug of GCC version 2.96 20000731
 	  //        (Red Hat Linux 7.1 2.96-98)
@@ -457,7 +457,7 @@ PPL::Polyhedron::conversion(Matrix& source,
       // Note that, by Observation 1 above, the resulting new line
       // will still saturate all the constraints that were saturated by
       // the old line.
-      for (size_t i = index_non_zero; i < num_lines_or_equalities; ++i) {
+      for (dimension_type i = index_non_zero; i < num_lines_or_equalities; ++i) {
 	if (scalar_prod[i] != 0) {
 	  // The following fragment optimizes the computation of
 	  //
@@ -466,7 +466,7 @@ PPL::Polyhedron::conversion(Matrix& source,
 	  // Integer scaled_sp_i = scalar_prod[i] / scale;
 	  // Integer scaled_sp_n
 	  //   = scalar_prod[num_lines_or_equalities] / scale;
-	  // for (size_t c = dest_num_columns; c-- > 0; ) {
+	  // for (dimension_type c = dest_num_columns; c-- > 0; ) {
 	  //   dest[i][c] *= scaled_sp_n;
 	  //   dest[i][c] -= scaled_sp_i * dest[num_lines_or_equalities][c];
 	  // }
@@ -479,7 +479,7 @@ PPL::Polyhedron::conversion(Matrix& source,
 	  exact_div_assign(tmp_Integer[3],
 			   scalar_prod[num_lines_or_equalities],
 			   tmp_Integer[1]);
-	  for (size_t c = dest_num_columns; c-- > 0; ) {
+	  for (dimension_type c = dest_num_columns; c-- > 0; ) {
 	    tmp_Integer[4] = tmp_Integer[3] * dest[i][c];
 	    tmp_Integer[5] = tmp_Integer[2]
 	      * dest[num_lines_or_equalities][c];
@@ -499,7 +499,7 @@ PPL::Polyhedron::conversion(Matrix& source,
       // that do not saturate the constraint `source[k]'. These rays are
       // positively combined with the ray `dest[num_lines_or_equalities]'
       // so that the resulting new rays saturate the constraint.
-      for (size_t i = num_lines_or_equalities + 1; i < dest_num_rows; ++i) {
+      for (dimension_type i = num_lines_or_equalities + 1; i < dest_num_rows; ++i) {
 	if (scalar_prod[i] != 0) {
 	  // The following fragment optimizes the computation of
 	  //
@@ -508,7 +508,7 @@ PPL::Polyhedron::conversion(Matrix& source,
 	  // Integer scaled_sp_i = scalar_prod[i] / scale;
 	  // Integer scaled_sp_n
 	  // = scalar_prod[num_lines_or_equalities] / scale;
-	  // for (size_t c = dest_num_columns; c-- > 0; ) {
+	  // for (dimension_type c = dest_num_columns; c-- > 0; ) {
 	  //   dest[i][c] *= scaled_sp_n;
 	  //   dest[i][c] -= scaled_sp_i * dest[num_lines_or_equalities][c];
 	  // }
@@ -521,7 +521,7 @@ PPL::Polyhedron::conversion(Matrix& source,
 	  exact_div_assign(tmp_Integer[3],
 			   scalar_prod[num_lines_or_equalities],
 			   tmp_Integer[1]);
-	  for (size_t c = dest_num_columns; c-- > 0; ) {
+	  for (dimension_type c = dest_num_columns; c-- > 0; ) {
 	    tmp_Integer[4] = tmp_Integer[3] * dest[i][c];
 	    tmp_Integer[5] = tmp_Integer[2]
 	      * dest[num_lines_or_equalities][c];
@@ -573,14 +573,14 @@ PPL::Polyhedron::conversion(Matrix& source,
       // -# all the rays that have a negative scalar product with the
       //    constraint should have indexes between `sup_bound' and
       //    `dest_num_rows' - 1; these rays form the set Q-.
-      size_t lines_or_equal_bound = num_lines_or_equalities;
-      size_t inf_bound = dest_num_rows;
+      dimension_type lines_or_equal_bound = num_lines_or_equalities;
+      dimension_type inf_bound = dest_num_rows;
       // While we find saturating generators, we simply increment
       // `lines_or_equal_bound'.
       while (inf_bound > lines_or_equal_bound
 	     && scalar_prod[lines_or_equal_bound] == 0)
 	++lines_or_equal_bound;
-      size_t sup_bound = lines_or_equal_bound;
+      dimension_type sup_bound = lines_or_equal_bound;
       while (inf_bound > sup_bound) {
 	int sp_sign = sgn(scalar_prod[sup_bound]);
 	if (sp_sign == 0) {
@@ -656,13 +656,13 @@ PPL::Polyhedron::conversion(Matrix& source,
 	
 	  // The adjacency property is necessary to have an irredundant
 	  // set of new rays (see proposition 2).
-	  size_t bound = dest_num_rows;
+	  dimension_type bound = dest_num_rows;
 
 	  // In the following loop,
 	  // `i' runs through the generators in the set Q+ and
 	  // `j' runs through the generators in the set Q-.
-	  for (size_t i = lines_or_equal_bound; i < sup_bound; ++i) {
-	    for(size_t j = sup_bound; j < bound; ++j) {
+	  for (dimension_type i = lines_or_equal_bound; i < sup_bound; ++i) {
+	    for(dimension_type j = sup_bound; j < bound; ++j) {
 	      // Checking if generators `dest[i]' and `dest[j]' are adjacent.
 	      // If there exist another generator that saturates
 	      // all the constraints saturated by both `dest[i]' and
@@ -678,7 +678,7 @@ PPL::Polyhedron::conversion(Matrix& source,
 	      // Computing the number of common saturators.
 	      // NOTE: this number has to be less than `k' because
 	      // we are treating the `k'-th constraint.
-	      size_t num_common_satur = k - new_satrow.count_ones();
+	      dimension_type num_common_satur = k - new_satrow.count_ones();
 
 	      // Even before actually creating the new ray as a
 	      // positive combination of `dest[i]' and `dest[j]',
@@ -700,7 +700,7 @@ PPL::Polyhedron::conversion(Matrix& source,
 		// Now we actually check for redundancy by computing
 		// adjacency information.
 		bool redundant = false;
-		for (size_t l = num_lines_or_equalities; l < bound; ++l)
+		for (dimension_type l = num_lines_or_equalities; l < bound; ++l)
 		  if (l != i && l != j && sat[l] <= new_satrow) {
 		    // Found another generator saturating all the
 		    // constraints saturated by both `dest[i]' and `dest[j]'.
@@ -725,7 +725,7 @@ PPL::Polyhedron::conversion(Matrix& source,
 		  // scale.gcd_assign(scalar_prod[j]);
 		  // Integer scaled_sp_i = scalar_prod[i] / scale;
 		  // Integer scaled_sp_j = scalar_prod[j] / scale;
-		  // for (size_t c = dest_num_columns; c-- > 0; ) {
+		  // for (dimension_type c = dest_num_columns; c-- > 0; ) {
 		  //   new_row[c] = scaled_sp_i * dest[j][c];
 		  //   new_row[c] -= scaled_sp_j * dest[i][c];
 		  // }
@@ -738,7 +738,7 @@ PPL::Polyhedron::conversion(Matrix& source,
 		  exact_div_assign(tmp_Integer[3],
 				   scalar_prod[j],
 				   tmp_Integer[1]);
-		  for (size_t c = dest_num_columns; c-- > 0; ) {
+		  for (dimension_type c = dest_num_columns; c-- > 0; ) {
 		    tmp_Integer[4] = tmp_Integer[2] * dest[j][c];
 		    tmp_Integer[5] = tmp_Integer[3] * dest[i][c];
 		    new_row[c] = tmp_Integer[4] - tmp_Integer[5];
@@ -765,14 +765,14 @@ PPL::Polyhedron::conversion(Matrix& source,
 	  }
 	  // Now we substitute the rays in Q- (i.e., the rays violating
 	  // the constraint) with the newly added rays.
-	  size_t j;
+	  dimension_type j;
 	  if (source[k].is_ray_or_point_or_inequality()) {
 	    // The constraint is an inequality:
 	    // the violating generators are those in Q-.
 	    j = sup_bound;
 	    // For all the generators in Q+, set to 1 the corresponding
 	    // entry for the constraint `source[k]' in the saturation matrix.
-            for (size_t l = lines_or_equal_bound; l < sup_bound; ++l)
+            for (dimension_type l = lines_or_equal_bound; l < sup_bound; ++l)
               sat[l].set(k);
 	  }
 	  else
@@ -784,7 +784,7 @@ PPL::Polyhedron::conversion(Matrix& source,
 	  // (index `i' running through `dest_num_rows - 1' down-to `bound')
 	  // with the generators violating the constraint
 	  // (index `j' running through `j' up-to `bound - 1').
-	  size_t i = dest_num_rows;
+	  dimension_type i = dest_num_rows;
 	  while (j < bound && i > bound) {
 	    --i;
 	    std::swap(dest[i], dest[j]);

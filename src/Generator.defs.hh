@@ -278,7 +278,7 @@ public:
   Generator& operator=(const Generator& g);
 
   //! Returns the dimension of the vector space enclosing \p *this.
-  size_t space_dimension() const;
+  dimension_type space_dimension() const;
 
   //! The generator type.
   enum Type {
@@ -376,8 +376,8 @@ private:
   friend std::ostream&
   Parma_Polyhedra_Library::operator<<(std::ostream& s, const Generator& g);
 
-  //! Copy-constructor with given size.
-  Generator(const Generator& g, size_t sz);
+  //! Copy-constructor with given dimension.
+  Generator(const Generator& g, dimension_type dimension);
 
   //! Returns <CODE>true</CODE> if and only if \p *this is not a line.
   bool is_ray_or_point() const;

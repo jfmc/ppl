@@ -60,14 +60,14 @@ PPL::SatMatrix::sort_rows() {
 */
 void
 PPL::SatMatrix::add_row(const SatRow& row) {
-  size_t new_rows_size = rows.size() + 1;
+  dimension_type new_rows_size = rows.size() + 1;
   if (rows.capacity() < new_rows_size) {
     // Reallocation will take place.
     std::vector<SatRow> new_rows;
     new_rows.reserve(compute_capacity(new_rows_size));
     new_rows.insert(new_rows.end(), new_rows_size, SatRow());
     // Put the new row in place.
-    size_t i = new_rows_size-1;
+    dimension_type i = new_rows_size-1;
     new_rows[i] = row;
     // Steal the old rows.
     while (i-- > 0)
@@ -87,10 +87,10 @@ PPL::SatMatrix::add_row(const SatRow& row) {
 void
 PPL::SatMatrix::transpose() {
   const SatMatrix& x = *this;
-  size_t nrows = num_rows();
-  size_t ncols = num_columns();
+  dimension_type nrows = num_rows();
+  dimension_type ncols = num_columns();
   SatMatrix tmp(ncols, nrows);
-  for (size_t i = nrows; i-- > 0; )
+  for (dimension_type i = nrows; i-- > 0; )
     for (int j = x[i].last(); j >= 0; j = x[i].prev(j))
       tmp[j].set(i);
   swap(tmp);
@@ -102,10 +102,10 @@ PPL::SatMatrix::transpose() {
 */
 void
 PPL::SatMatrix::transpose_assign(const SatMatrix& y) {
-  size_t y_nrows = y.num_rows();
-  size_t y_ncols = y.num_columns();
+  dimension_type y_nrows = y.num_rows();
+  dimension_type y_ncols = y.num_columns();
   SatMatrix tmp(y_ncols, y_nrows);
-  for (size_t i = y_nrows; i-- > 0; )
+  for (dimension_type i = y_nrows; i-- > 0; )
     for (int j = y[i].last(); j >= 0; j = y[i].prev(j))
       tmp[j].set(i);
   swap(tmp);
@@ -116,13 +116,13 @@ PPL::SatMatrix::transpose_assign(const SatMatrix& y) {
   Resizes the matrix copying the old contents.
 */
 void
-PPL::SatMatrix::resize(size_t new_n_rows, size_t new_n_columns) {
+PPL::SatMatrix::resize(dimension_type new_n_rows, dimension_type new_n_columns) {
   assert(OK());
-  size_t old_num_rows = num_rows();
+  dimension_type old_num_rows = num_rows();
   if (new_n_columns < row_size) {
-    size_t num_preserved_rows = std::min(old_num_rows, new_n_rows);
+    dimension_type num_preserved_rows = std::min(old_num_rows, new_n_rows);
     SatMatrix& x = *this;
-    for (size_t i = num_preserved_rows; i-- > 0; )
+    for (dimension_type i = num_preserved_rows; i-- > 0; )
       x[i].clear_from(new_n_columns);
   }
   row_size = new_n_columns;
@@ -133,7 +133,7 @@ PPL::SatMatrix::resize(size_t new_n_rows, size_t new_n_columns) {
       new_rows.reserve(compute_capacity(new_n_rows));
       new_rows.insert(new_rows.end(), new_n_rows, SatRow());
       // Steal the old rows.
-      for (size_t i = old_num_rows; i-- > 0; )
+      for (dimension_type i = old_num_rows; i-- > 0; )
 	new_rows[i].swap(rows[i]);
       // Put the new vector into place.
       std::swap(rows, new_rows);
@@ -156,10 +156,10 @@ PPL::operator==(const SatMatrix& x, const SatMatrix& y) {
   assert(y.OK());
   if (x.num_columns() != y.num_columns())
     return false;
-  size_t x_num_rows = x.num_rows();
+  dimension_type x_num_rows = x.num_rows();
   if (x_num_rows != y.num_rows())
     return false;
-  for (size_t i = x_num_rows; i-- > 0; )
+  for (dimension_type i = x_num_rows; i-- > 0; )
     if (compare(x[i], y[i]) != 0)
       return false;
   return true;
@@ -179,7 +179,7 @@ bool
 PPL::SatMatrix::sorted_contains(const SatRow& row) const {
   assert(check_sorted());
   const SatMatrix& x = *this;
-  for (size_t i = num_rows(); i-- > 0; ) {
+  for (dimension_type i = num_rows(); i-- > 0; ) {
     int comp = compare(x[i], row);
     if (comp == 0)
       return true;
@@ -197,8 +197,8 @@ PPL::SatMatrix::ASCII_dump(std::ostream& s) const {
   const char separator = ' ';
   s << num_rows() << separator << 'x' << separator
     << num_columns() << endl;
-  for (size_t i = 0; i < num_rows(); ++i) {
-    for (size_t j = 0; j < num_columns(); ++j)
+  for (dimension_type i = 0; i < num_rows(); ++i) {
+    for (dimension_type j = 0; j < num_columns(); ++j)
       s << x[i][j] << separator;
     s << endl;
   }
@@ -207,8 +207,8 @@ PPL::SatMatrix::ASCII_dump(std::ostream& s) const {
 bool
 PPL::SatMatrix::ASCII_load(std::istream& s) {
   SatMatrix& x = *this;
-  size_t nrows;
-  size_t ncols;
+  dimension_type nrows;
+  dimension_type ncols;
   std::string str;
   if (!(s >> nrows))
     return false;
@@ -218,8 +218,8 @@ PPL::SatMatrix::ASCII_load(std::istream& s) {
     return false;
   resize(nrows, ncols);
 
-  for (size_t i = 0; i < num_rows(); ++i)
-    for (size_t j = 0; j < num_columns(); ++j) {
+  for (dimension_type i = 0; i < num_rows(); ++i)
+    for (dimension_type j = 0; j < num_columns(); ++j) {
       int bit;
       if (!(s >> bit))
 	return false;
@@ -245,7 +245,7 @@ PPL::SatMatrix::OK() const {
 #endif
 
   const SatMatrix& x = *this;
-  for (size_t i = num_rows(); i-- > 1; ) {
+  for (dimension_type i = num_rows(); i-- > 1; ) {
     const SatRow& row = x[i];
     if (!row.OK())
       return false;
@@ -267,7 +267,7 @@ PPL::SatMatrix::OK() const {
 bool
 PPL::SatMatrix::check_sorted() const {
   const SatMatrix& x = *this;
-  for (size_t i = num_rows(); i-- > 1; )
+  for (dimension_type i = num_rows(); i-- > 1; )
     if (compare(x[i-1], x[i]) > 0)
       return false;
   return true;

@@ -24,6 +24,12 @@ o  New constructors to build polyhedra from read-only constraint and
    and <S> is either "ConSys" or "GenSys".  The old names have been
    given to the new const functions.
 
+o  New type `dimension_type': an unsigned integral type for representing
+   space dimensions.
+
+o  New function dimension_type max_space_dimension():
+   returns the maximum space dimension this library can handle.
+
 o  New method: template <typename PartialFunction>
    void shuffle_dimensions(const PartialFunction&).
    TO BE CONTINUED

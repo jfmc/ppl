@@ -28,8 +28,19 @@ site: http://www.cs.unipr.it/ppl/ . */
 #include "Constraint.types.hh"
 #include "Generator.types.hh"
 #include <exception>
+#include <limits>
 
 namespace Parma_Polyhedra_Library {
+
+//! An unsigned integral type for representing space dimensions.
+typedef size_t dimension_type;
+
+//! Returns the maximum space dimension this library can handle.
+inline dimension_type
+max_space_dimension() {
+  // We reserve one dimension for epsilon representations.
+  return std::numeric_limits<dimension_type>::max() - 1;
+}
 
 #ifdef PPL_DOXYGEN_INCLUDE_IMPLEMENTATION_DETAILS
 //! An array of temporaries used to avoid unnecessary memory allocation.
@@ -48,8 +59,8 @@ extern Integer* tmp_Integer;
   reallocations.
 */
 #endif
-inline size_t
-compute_capacity(size_t requested_size) {
+inline dimension_type
+compute_capacity(dimension_type requested_size) {
   return 2*(requested_size + 1);
 }
 

@@ -118,53 +118,53 @@ private:
   vector<BInterval> box;
 
 public:
-  BBox(unsigned int dimension) {
+  BBox(dimension_type dimension) {
     box.resize(dimension);
   }
 
-  unsigned int space_dimension() const {
+  dimension_type space_dimension() const {
     return box.size();
   }
 
-  const BInterval& operator[](size_t k) const {
+  const BInterval& operator[](dimension_type k) const {
     return box[k];
   }
 
   void print_box(const string& intro = "") {
     if (!intro.empty())
       cout << intro << endl;
-    size_t dim = box.size();
-    for (size_t j = 0; j != dim ; j++) {
+    dimension_type dim = box.size();
+    for (dimension_type j = 0; j != dim ; j++) {
       cout << j << " AXES:  ";
       box[j].print_interval();
     }
   }
 
-  void raise_lower_bound(size_t k, bool closed,
+  void raise_lower_bound(dimension_type k, bool closed,
 			 const Integer& c, const Integer& d) {
     assert(k < box.size());
     box[k].raise_lower_bound(closed, c, d);
   }
 
-  void lower_upper_bound(size_t k, bool closed,
+  void lower_upper_bound(dimension_type k, bool closed,
 			 const Integer& c, const Integer& d) {
     assert(k < box.size());
     box[k].lower_upper_bound(closed, c, d);
   }
 
   void set_empty() {
-    for (size_t k = box.size(); k-- > 0; )
+    for (dimension_type k = box.size(); k-- > 0; )
       box[k].set_empty();
   }
 };
 
 bool
 operator==(const BBox& x, const BBox& y) {
-  unsigned int dimension = x.space_dimension();
+  dimension_type dimension = x.space_dimension();
   if (dimension != y.space_dimension())
     return false;
 
-  for (unsigned int i = dimension; i-- > 0; )
+  for (dimension_type i = dimension; i-- > 0; )
     if (x[i] != y[i])
       return false;
 
