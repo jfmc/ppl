@@ -255,7 +255,7 @@ process_options(int argc, char* argv[]) {
     case 'C':
       l = strtol(optarg, &endptr, 10);
       if (*endptr || l < 0)
-	fatal("a non-negative integer must follow `-c'");
+	fatal("a non-negative integer must follow `-C'");
       else
 	max_seconds_of_cpu_time = l;
       break;
@@ -263,7 +263,7 @@ process_options(int argc, char* argv[]) {
     case 'V':
       l = strtol(optarg, &endptr, 10);
       if (*endptr || l < 0)
-	fatal("a non-negative integer must follow `-m'");
+	fatal("a non-negative integer must follow `-V'");
       else
 	max_bytes_of_virtual_memory = l*1024*1024;
       break;
