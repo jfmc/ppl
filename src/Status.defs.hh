@@ -126,7 +126,7 @@ private:
 
   //! @name Bitmasks for the individual assertions.
   //@{
-  static const status_t ZERO_DIM =             0U;
+  static const status_t ZERO_DIM =              0U;
   static const status_t EMPTY =            1U << 0;
   static const status_t C_UP_TO_DATE =     1U << 1;
   static const status_t G_UP_TO_DATE =     1U << 2;
