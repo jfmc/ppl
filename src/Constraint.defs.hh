@@ -133,9 +133,10 @@ namespace Parma_Polyhedra_Library {
   are actually built, all <CODE><=</CODE> inequalities are transformed
   into <CODE>>=</CODE> and then all the terms are moved to
   the left-hand side of the inequality.
-  When dealing with equalities, the actual sign of the
-  coefficients is somehow unpredictable, since they could have been
-  (consistently!) negated.
+  When dealing with equalities, whose relational symbol is not provided
+  with a default direction, the actual sign of the coefficients is
+  somehow unpredictable, since they could have been (consistently)
+  negated in either way.
   For instance, if the initial constraint was defined by
   \code
   Constraint c(5 == -3*y + 6*z);
@@ -147,25 +148,9 @@ namespace Parma_Polyhedra_Library {
   Variable C has coefficient -6
   The inhomogeneous term is 5
   \endcode
-  Finally, by using the following code, it is possible to
-  automatically skip all the variable coefficients that are
-  equal to zero:
-  \code
-  for (int varid = c.first(); varid >= 0; varid = c.next(varid)) {
-    Variable v(varid);
-    cout << "Variable " << v << " has coefficient "
-         << c.coefficient(v) << endl;
-  }
-  cout << "The inhomogeneous term is "
-       << c.coefficient() << endl;
-  \endcode
-  Therefore, for the last constraint defined above,
-  the output would have been:
-  \code
-  Variable B has coefficient 3
-  Variable C has coefficient -6
-  The inhomogeneous term is 5
-  \endcode
+  Note that the implementation is allowed to transform a given
+  constraint into an equivalent one, therefore influencing the
+  particular output obtained by the code above.
 */
 class Parma_Polyhedra_Library::Constraint : PPL_HIDDEN Row {
 private:
@@ -175,6 +160,9 @@ private:
   Constraint(LinExpression& e);
 
   Constraint(Row::Type type, size_t size);
+
+  void
+  throw_dimension_incompatible(const char* method, Variable v) const;
 
   //! Returns the constraint \p e1 = \p e2.
   friend Constraint

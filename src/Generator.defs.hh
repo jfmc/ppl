@@ -190,32 +190,14 @@ namespace Parma_Polyhedra_Library {
   Variable C has coefficient -1
   The divisor of the vertex is -1 
   \endcode
-  By using the following code, it is possible to automatically skip
-  all the variable coefficients that are equal to zero:
-  \code
-  for (int varid = g.first(); varid >= 0; varid = g.next(varid)) {
-    Variable v(varid);
-    cout << "Variable " << v << " has coefficient "
-         << g.coefficient(v) << endl;
-  }
-  if (g.type() == Generator::VERTEX) {
-    const Integer& d = g.divisor();
-    if (d != 1)
-      cout << "The divisor of the vertex is " << d << endl;
-  }
-  \endcode
-  Therefore, for the generator defined above,
-  the output would have been:
-  \code
-  Variable A has coefficient 2
-  Variable C has coefficient -1
-  The divisor of the vertex is -1
-  \endcode  
 */
 
 class Parma_Polyhedra_Library::Generator : PPL_HIDDEN Row {
 private:
   Generator(LinExpression& e);
+
+  void
+  throw_dimension_incompatible(const char* method, Variable v) const;
 
   //! Returns the (bidirectional) line of direction \p e.
   //! \exception std::invalid_argument thrown if the homogeneous part

@@ -73,12 +73,9 @@ Generator::set_is_ray_or_vertex() {
 
 inline const Integer&
 Generator::coefficient(Variable v) const {
-  size_t v_id = v.id();
-  if (v_id < space_dimension())
-    return Row::coefficient(v.id());
-  else
-    throw std::invalid_argument("PPL::Generator::coefficient(v): "
-				"v.id() >= *this.space_dimension()");
+  if (v.id() >= space_dimension())
+    throw_dimension_incompatible("PPL::Generator::coefficient(v)", v);
+  return Row::coefficient(v.id());
 }
 
 inline const Integer&

@@ -27,9 +27,20 @@ site: http://www.cs.unipr.it/ppl/ . */
 
 #include "Variable.defs.hh"
 #include <iostream>
+#include <sstream>
 #include <stdexcept>
 
 namespace PPL = Parma_Polyhedra_Library;
+
+void
+PPL::Generator::throw_dimension_incompatible(const char* method,
+					     PPL::Variable v) const {
+  std::ostringstream s;
+  s << method << ":" << std::endl
+    << "this->space_dimension() == " << this->space_dimension()
+    << ", v.id() == " << v.id();
+  throw std::invalid_argument(s.str());
+}
 
 PPL::Generator
 PPL::vertex(const LinExpression& e, const Integer& d) {
