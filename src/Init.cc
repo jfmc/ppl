@@ -27,7 +27,7 @@ site: http://www.cs.unipr.it/ppl/ . */
 #include "globals.hh"
 #include "Variable.defs.hh"
 
-#include "Statistics.hh"
+#include "statistics.hh"
 #if PPL_STATISTICS
 #include <iostream>
 #endif

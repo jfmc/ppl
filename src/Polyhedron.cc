@@ -27,7 +27,7 @@ site: http://www.cs.unipr.it/ppl/ . */
 
 #include "Generator.defs.hh"
 #include "Constraint.defs.hh"
-#include "Statistics.hh"
+#include "statistics.hh"
 #include <cassert>
 #include <string>
 #include <iostream>

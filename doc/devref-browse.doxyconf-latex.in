@@ -336,6 +336,7 @@ INPUT                  = @srcdir@/definitions.dox \
                          @srcdir@/../src/initializer.hh \
                          @srcdir@/../src/globals.hh \
                          @srcdir@/../src/globals.cc \
+                         @srcdir@/../src/statistics.hh \
                          @srcdir@/../src/Topology.hh \
                          @srcdir@/../src/Row.types.hh \
                          @srcdir@/../src/Row.defs.hh \
