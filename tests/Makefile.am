@@ -60,7 +60,8 @@ ORIGINAL_TESTS = \
 	bbrz02widening1 bbrz02widening2 bbrz02widening3 bbrz02widening4 \
 	bbrz02widening5 bbrz02widening6 bbrz02widening7 bbrz02widening8 \
 	bbrz02widening9 bbrz02widening10 bbrz02widening11 bbrz02widening12 \
-	bbrz02widening13 bbrz02widening14 bbrz02widening15 \
+	bbrz02widening13 bbrz02widening14 bbrz02widening15 bbrz02widening16 \
+	bbrz02widening17 \
 	bounded1 \
 	bounds1 bounds2 \
 	boundingbox1 boundingbox2 \
@@ -262,6 +263,8 @@ bbrz02widening12_SOURCES = bbrz02widening12.cc
 bbrz02widening13_SOURCES = bbrz02widening13.cc
 bbrz02widening14_SOURCES = bbrz02widening14.cc
 bbrz02widening15_SOURCES = bbrz02widening15.cc
+bbrz02widening16_SOURCES = bbrz02widening16.cc
+bbrz02widening17_SOURCES = bbrz02widening17.cc
 
 bounded1_SOURCES = bounded1.cc
 
