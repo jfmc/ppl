@@ -35,8 +35,16 @@ ppl_xsb.H \
 xsb_clpq.P \
 xsb_clpq2.P \
 xsb_pl_check.P \
-expected_mpz expected_int8 expected_int16 expected_int32 expected_int64 \
-expected2_mpz expected2_int8 expected2_int16 expected2_int32 expected2_int64
+expected_mpz expected2_mpz expected3_mpz \
+expected_int8 expected2_int8 expected3_int8 \
+expected_int16 expected2_int16 expected3_int16 \
+expected_int32 expected2_int32 expected3_int32 \
+expected_int64 expected2_int64 expected3_int64 \
+expected_mpz_a expected2_mpz_a expected3_mpz_a \
+expected_int8_a expected2_int8_a expected3_int8_a \
+expected_int16_a expected2_int16_a expected3_int16_a \
+expected_int32_a expected2_int32_a expected3_int32_a \
+expected_int64_a expected2_int64_a expected3_int64_a
 
 if HAVE_XSB_PROLOG
 
