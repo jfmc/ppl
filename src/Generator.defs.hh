@@ -59,17 +59,17 @@ namespace Parma_Polyhedra_Library {
 
   \par How to build a generator.
   Each type of generator is built by applying the corresponding
-  function (<CODE>line</CODE>, <CODE>ray</CODE> and <CODE>vertex</CODE>)
+  function (<CODE>line</CODE>, <CODE>ray</CODE> or <CODE>vertex</CODE>)
   to a linear expression, representing a direction in the space.
-  This means that a linear expression used to define a vertex, ray or line
+  This means that a linear expression used to define a generator
   should be homogeneous and any constant term will be ignored.
-  When defining vertices, an optional Integer argument can be used
+  When defining a vertex, an optional Integer argument can be used
   as a common <EM>denominator</EM> for all the coefficients occurring
   in the provided linear expression;
   the default value for this argument is 1.
 
     \par
-    In all the examples it is assumed that variables
+    In all the following examples it is assumed that variables
     <CODE>x</CODE>, <CODE>y</CODE> and <CODE>z</CODE>
     are defined as follows:
     \code
@@ -100,21 +100,40 @@ namespace Parma_Polyhedra_Library {
 
     \par Example 3
     The following code builds the vertex
-    \f$(1, 3, 2)^\transpose \in \Rset^3\f$:
+    \f$\vect{v} = (1, 0, 2)^\transpose \in \Rset^3\f$:
     \code
-  Generator v = vertex(x + 3*y + 2*z);
+  Generator v = vertex(1*x + 0*y + 2*z);
     \endcode
-    The same vertex as above can also be obtained with the following code,
-    where we also provide a non-default value for the denominator argument:
+    The same effect can be obtained by using the following code:
     \code
-  Generator v = vertex(2*x + 6*y + 4*z, 2);
+  Generator v = vertex(x + 2*z);
     \endcode
-    Obviously, the denominator can be usefully exploited for specifying
+    Similarly, the origin \f$\vect{0} \in \Rset^3\f$ can be defined
+    using either one of the following lines of code:
+    \code
+  Generator origin1 = vertex(0*x + 0*y + 0*z);
+  Generator origin2 = vertex(0*z);
+    \endcode
+    Note however that the following line would have defined
+    a different vertex, namely \f$\vect{0} \in \Rset^2\f$:
+    \code
+  Generator origin3 = vertex(0*y);
+    \endcode
+    
+    \par Example 4
+    The vertex \f$\vect{v}\f$ specified in Example 3 above
+    can also be obtained with the following code,
+    where we provide a non-default value for the denominator argument:
+    \code
+  Generator v = vertex(2*x + 0*y + 4*z, 2);
+    \endcode
+    Obviously, the denominator can be usefully exploited to specify
     vertices having some non-integer (but rational) coordinates.
-    For instance, the vertex \f$(-1.5, 3.2, 2.1)^\transpose \in \Rset^3\f$
+    For instance, the vertex
+    \f$\vect{w} = (-1.5, 3.2, 2.1)^\transpose \in \Rset^3\f$
     can be specified by the following code:
     \code
-  Generator v = vertex(-15*x + 32*y + 21*z, 10);
+  Generator w = vertex(-15*x + 32*y + 21*z, 10);
     \endcode
     If a zero denominator is provided, an exception is thrown.
 */
