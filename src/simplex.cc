@@ -571,7 +571,7 @@ void erase_slacks(Matrix& tableau,
 //! First phase of the simplex algorithm. Computes a feasible base and, if 
 //! possible, solves also the second phase.
 /*!
-  \return         <CODE>true</CODE> if and if only the problem has a feasible
+  \return         (FIXME: wrong comment) <CODE>true</CODE> if and if only the problem has a feasible
                   base.
   \param tableau  The matrix containing the constraints of the LP problem, 
                   given in the "compute_tableau" way.
@@ -582,7 +582,7 @@ void erase_slacks(Matrix& tableau,
    the cost functions and the new problem will be expressed by the slack 
    variables that will be in base at first.
 */ 
-bool 
+Simplex_Status
 first_phase(Matrix& tableau,
 	    Row& old_obj_function,
 	    std::vector<dimension_type>& base) {
@@ -621,11 +621,19 @@ first_phase(Matrix& tableau,
     bool result = compute_simplex(tableau_constraints, tableau_expressions, 
 				 base);
     tableau.swap(tableau_constraints); 
-    return result;
-  } 
-  else  // No feasible base found.
-    return false;
+
+    // Now if (result == true) we have an optimum, else
+    // the problem is unbounded.
+    if (result)
+      return SOLVED_PROBLEM;
+    else
+      return UNBOUNDED_PROBLEM;
+  }
+  else
+    // No feasible base found.
+    return UNFEASIBLE_PROBLEM;
 }
+
 
 //! \brief
 //! Assigns to \p tableau a simplex tableau representing the problem
@@ -1092,11 +1100,10 @@ PPL::Constraint_System::primal_simplex(const Linear_Expression& expression,
   // At this moment we can call only first_phase() to solve our LP problem
   // since we don't have a feasible base.
   std::vector<dimension_type> base(tableau.num_rows()); 
-  bool return_value = first_phase(tableau, cost_function, base);
+  Simplex_Status return_value = first_phase(tableau, cost_function, base);
   
-  if (!return_value) 
-    return UNFEASIBLE_PROBLEM;
-  
+  if (return_value == UNBOUNDED_PROBLEM || return_value == UNFEASIBLE_PROBLEM)
+    return return_value;
   else {
     Generator g = compute_generator(tableau, base, map, space_dim);
     // To use pppoint we need dynamic memory allocation.
