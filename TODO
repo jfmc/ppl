@@ -24,6 +24,7 @@ Enhancements for PPL 0.6
   we can implement bool poly_hull_assign_if_exact(PH& p, const PH& q),
   temporarily in algorithms.hh, more efficiently.
 - Harmonize all the methods void PPL::Polyhedron::throw_...().
+- Turn h79widening6 into a proper test.
 
 
 Constructions on Polyhedra

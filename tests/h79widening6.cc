@@ -119,7 +119,7 @@ main() TRY {
        << ps2 << endl;
 #endif
 
-  ps1.H79_widening_assign(ps2, 5);
+  ps1.BGP99_extrapolation_assign(ps2, &Polyhedron::H79_widening_assign, 5);
 
 #if 0
   C_Polyhedron known_result;
