@@ -252,12 +252,12 @@ CXXFLAGS="$COMP_FLAGS $OPT_FLAGS"
 dnl Allow the overriding of C and C++ compilation flags
 
 AC_ARG_WITH(cflags,
-[  --with-cflags=xxx       use XXX as options for the C compiler],
-CXXFLAGS=$with_cflags)
+[  --with-cflags=xxx       add XXX to the options for the C compiler],
+CFLAGS="$CFLAGS $with_cflags")
 
 AC_ARG_WITH(cxxflags,
-[  --with-cxxflags=xxx     use XXX as options for the C++ compiler],
-CXXFLAGS=$with_cxxflags)
+[  --with-cxxflags=xxx     add XXX to the options for the C++ compiler],
+CXXFLAGS="$CXXFLAGS $with_cxxflags")
 
 dnl Libtool.
 # Turn off shared libraries during beta-testing, since they
