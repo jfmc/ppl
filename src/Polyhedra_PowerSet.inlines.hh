@@ -502,7 +502,7 @@ Polyhedra_PowerSet<PH>::widening_assign(const Polyhedra_PowerSet& y,
     // We assume that y is entailed by or equal to *this.
     const Polyhedra_PowerSet<PH> x_copy = *this;
     const Polyhedra_PowerSet<PH> y_copy = y;
-    assert(x_copy.definitely_entails(y_copy));
+    assert(y_copy.definitely_entails(x_copy));
   }
 #endif
 
