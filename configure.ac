@@ -413,7 +413,7 @@ AC_LANG_POP(C)
 
 # Checks for header files.
 
-AC_CHECK_HEADERS([sys/resource.h])
+AC_CHECK_HEADERS([sys/resource.h sys/time.h sys/types.h unistd.h])
 
 # Checks for header declarations.
 

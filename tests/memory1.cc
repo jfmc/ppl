@@ -27,8 +27,20 @@ site: http://www.cs.unipr.it/ppl/ . */
 #include <cstring>
 #include <cerrno>
 
+#ifdef HAVE_SYS_TYPES_H
+# include <sys/types.h>
+#endif
+
+#ifdef HAVE_SYS_TIME_H
+# include <sys/time.h>
+#endif
+
 #ifdef HAVE_SYS_RESOURCE_H
 # include <sys/resource.h>
+#endif
+
+#ifdef HAVE_UNISTD_H
+# include <unistd.h>
 #endif
 
 using namespace std;
@@ -37,6 +49,15 @@ using namespace Parma_Polyhedra_Library;
 #ifndef NOISY
 #define NOISY 0
 #endif
+
+#if !(HAVE_DECL_RLIMIT_DATA || HAVE_DECL_RLIMIT_RSS || HAVE_DECL_RLIMIT_VMEM || HAVE_DECL_RLIMIT_AS)
+
+int
+main() {
+  return 0;
+}
+
+#else
 
 void
 compute_open_hypercube_generators(dimension_type dimension) {
@@ -176,3 +197,5 @@ main() {
 
   return 0;
 }
+
+#endif // HAVE_DECL_RLIMIT_DATA || HAVE_DECL_RLIMIT_RSS || ...
