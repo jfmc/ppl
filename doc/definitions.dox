@@ -440,21 +440,22 @@ LNCS 631, pp.269--295, 1992.
 
 There are a few differences between the CC92-widening
 and the widenings described in this paper.
-In particular:
+In particular, the CC92-widening of an NNC polyhedron \f$P\f$
+   using the NNC polyhedron \f$P'\f$:
 
- - we allow for equalities whereas the original definition is restricted to
-   inequalities;
- - The original definition assumes the polyhedra 
-   are closed whereas we assume NNC polyhedra;
- - Our CC92-widening operators for the NNC polyhedron \f$P\f$ with 
-   NNC polyhedron \f$P'\f$ require as a precondition that
-   they have the same topology and that \f$P' \sseq P\f$.
+ - allows for equalities in \f$P\f$ and \f$P'\f$
+   (the original definition is restricted to inequalities);
+ - does not require the polyhedra to be closed;
+ - requires as a precondition that \f$P' \sseq P\f$.
 
 
 <B>Time-Elapse Operator</B>
 
-To be written.
-
+The <EM>time-elapse</EM> operator provided by the PPL is the time elapse
+operator defined in
+N. Halbwachs and Y.-E. Proy and P. Roumanoff,
+Verification of Real-Time Systems using Linear Relation Analysis,
+in <EM>Formal Methods in System Design</EM> 11(2):157--185, 1997.
 
 <B>Intervals, boxes and bounding boxes</B>
 
