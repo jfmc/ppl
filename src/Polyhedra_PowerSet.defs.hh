@@ -57,8 +57,8 @@ public:
   /*!
     \param num_dimensions   The number of dimensions of the vector
                             space enclosing the powerset.
-    \param universe         If <CODE>true</CODE>, a universe Polyhedra_PowerSet
-                            is built;  an empty Polyhedra_PowerSet is built otherwise.
+    \param kind             Specifies whether the universe or the empty
+                            powerset has to be built.
   */
   explicit
   Polyhedra_PowerSet(dimension_type num_dimensions = 0,
