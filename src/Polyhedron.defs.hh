@@ -26,18 +26,8 @@ site: http://www.cs.unipr.it/ppl/ . */
 
 #include "Polyhedron.types.hh"
 #include "PolyBase.defs.hh"
-/*
-#include "Variable.defs.hh"
-#include "LinExpression.defs.hh"
-#include "ConSys.defs.hh"
-#include "GenSys.defs.hh"
-#include "SatMatrix.defs.hh"
-#include "Status.defs.hh"
-#include "Poly_Con_Relation.defs.hh"
-#include "Poly_Gen_Relation.defs.hh"
-#include <set>
-*/
-//! A convex polyhedron.
+
+//! A closed convex polyhedron.
 /*!
     An object of the class Polyhedron represents a convex polyhedron
     in the vector space \f$\Rset^n\f$.
