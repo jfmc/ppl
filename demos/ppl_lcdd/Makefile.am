@@ -117,7 +117,7 @@ check-local: ppl_lcdd
 	  grep -q $$file tough_examples && continue; \
 	  echo -n $$file " " >>obtained; \
 	  echo ppl_lcdd $$path; \
-	  ./ppl_lcdd $$path | $(MD5SUM) - >>obtained; \
+	  ./ppl_lcdd $$path | $(MD5SUM) -t >>obtained; \
 	done
 	diff -q $(srcdir)/$(EXPECTED) obtained
 
