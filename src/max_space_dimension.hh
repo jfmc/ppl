@@ -43,10 +43,8 @@ inline dimension_type
 max_space_dimension() {
   using std::min;
   return
-    min(
-	Polyhedron::max_space_dimension(),
-	min(
-	    Polyhedra_PowerSet<C_Polyhedron>::max_space_dimension(),
+    min(Polyhedron::max_space_dimension(),
+	min(Polyhedra_PowerSet<C_Polyhedron>::max_space_dimension(),
 	    Polyhedra_PowerSet<NNC_Polyhedron>::max_space_dimension()
 	    )
 	);

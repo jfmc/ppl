@@ -24,13 +24,20 @@ site: http://www.cs.unipr.it/ppl/ . */
 #ifndef PPL_C_Polyhedron_inlines_hh
 #define PPL_C_Polyhedron_inlines_hh 1
 
+#include <algorithm>
+
 namespace Parma_Polyhedra_Library {
 
 inline dimension_type
 C_Polyhedron::max_space_dimension() {
+  using std::min;
   // One dimension is reserved to have a value of type dimension_type
   // that does not represent a legal dimension.
-  return std::numeric_limits<dimension_type>::max() - 1;
+  return min(std::numeric_limits<dimension_type>::max() - 1,
+	     min(ConSys::max_space_dimension(),
+		 GenSys::max_space_dimension()
+		 )
+	     );
 }
 
 inline
