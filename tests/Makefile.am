@@ -29,7 +29,7 @@ TESTS = inters1 inters2 \
         permute \
         error1 error2 error3 error4 error5 \
 	affinetrans \
-	removedim1 removedim2 \
+	removedim1 removedim2 removedim3 \
 	onepoint
 
 inters1_SOURCES = inters1.cc
@@ -54,6 +54,7 @@ affinetrans_SOURCES = affinetrans.cc
 
 removedim1_SOURCES = removedim1.cc
 removedim2_SOURCES = removedim2.cc
+removedim3_SOURCES = removedim3.cc
 
 onepoint_SOURCES = onepoint.cc
 
