@@ -405,6 +405,7 @@ INPUT                  = @srcdir@/definitions.dox \
                          @srcdir@/../src/NNC_Polyhedron.defs.hh \
                          @srcdir@/../src/NNC_Polyhedron.inlines.hh \
                          @srcdir@/../src/NNC_Polyhedron.cc \
+                         @srcdir@/../src/algorithms.hh \
                          @srcdir@/../interfaces/C/ppl_c.h \
                          @srcdir@/../interfaces/C/ppl_c.cc \
                          @srcdir@/../interfaces/Prolog/Prolog_interface.dox \
