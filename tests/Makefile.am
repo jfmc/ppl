@@ -32,8 +32,14 @@ AM_CPPFLAGS = -I$(top_builddir)/src -I$(top_builddir)/Watchdog @extra_includes@
 
 check_LIBRARIES = libppl_tests.a
 libppl_tests_a_SOURCES = \
+BBox.hh \
+PFunction.hh \
+PFunction.cc \
 ehandlers.hh \
 ehandlers.cc \
+files.hh \
+files.cc \
+ppl_test.hh \
 print.hh \
 print.cc
 
@@ -304,13 +310,13 @@ affinetrans_SOURCES = affinetrans.cc
 append1_SOURCES = append1.cc
 append2_SOURCES = append2.cc
 
-ascii_dump_load1_SOURCES = ascii_dump_load1.cc files.cc
-ascii_dump_load2_SOURCES = ascii_dump_load2.cc files.cc
-ascii_dump_load3_SOURCES = ascii_dump_load3.cc files.cc
-ascii_dump_load4_SOURCES = ascii_dump_load4.cc files.cc
-ascii_dump_load5_SOURCES = ascii_dump_load5.cc files.cc
-ascii_dump_load6_SOURCES = ascii_dump_load6.cc files.cc
-ascii_dump_load7_SOURCES = ascii_dump_load7.cc files.cc
+ascii_dump_load1_SOURCES = ascii_dump_load1.cc
+ascii_dump_load2_SOURCES = ascii_dump_load2.cc
+ascii_dump_load3_SOURCES = ascii_dump_load3.cc
+ascii_dump_load4_SOURCES = ascii_dump_load4.cc
+ascii_dump_load5_SOURCES = ascii_dump_load5.cc
+ascii_dump_load6_SOURCES = ascii_dump_load6.cc
+ascii_dump_load7_SOURCES = ascii_dump_load7.cc
 
 bgp99extrapolation1_SOURCES = bgp99extrapolation1.cc
 
@@ -502,8 +508,8 @@ removedim8_SOURCES = removedim8.cc
 removedim9_SOURCES = removedim9.cc
 removedim10_SOURCES = removedim10.cc
 
-mapdim1_SOURCES = mapdim1.cc PFunction.cc
-mapdim2_SOURCES = mapdim2.cc PFunction.cc
+mapdim1_SOURCES = mapdim1.cc
+mapdim2_SOURCES = mapdim2.cc
 
 max_min1_SOURCES = max_min1.cc
 max_min2_SOURCES = max_min2.cc
@@ -535,19 +541,19 @@ universe4_SOURCES = universe4.cc
 universe5_SOURCES = universe5.cc
 universe6_SOURCES = universe6.cc
 
-writeconsys1_SOURCES = writeconsys1.cc files.cc
+writeconsys1_SOURCES = writeconsys1.cc
 
-writegensys1_SOURCES = writegensys1.cc files.cc
-writegensys2_SOURCES = writegensys2.cc files.cc
-writegensys3_SOURCES = writegensys3.cc files.cc
+writegensys1_SOURCES = writegensys1.cc
+writegensys2_SOURCES = writegensys2.cc
+writegensys3_SOURCES = writegensys3.cc
 
-writepolyhedron1_SOURCES = writepolyhedron1.cc files.cc
-writepolyhedron2_SOURCES = writepolyhedron2.cc files.cc
-writepolyhedron3_SOURCES = writepolyhedron3.cc files.cc
+writepolyhedron1_SOURCES = writepolyhedron1.cc
+writepolyhedron2_SOURCES = writepolyhedron2.cc
+writepolyhedron3_SOURCES = writepolyhedron3.cc
 
-writerelation1_SOURCES = writerelation1.cc files.cc
+writerelation1_SOURCES = writerelation1.cc
 
-writevariable1_SOURCES = writevariable1.cc files.cc
+writevariable1_SOURCES = writevariable1.cc
 
 #
 # Sources and compilation flags for the derived check programs
@@ -666,15 +672,15 @@ nnc_append1_CXXFLAGS = $(DERIVED_CXXFLAGS)
 nnc_append2_SOURCES = append2.cc
 nnc_append2_CXXFLAGS = $(DERIVED_CXXFLAGS)
 
-nnc_ascii_dump_load1_SOURCES = ascii_dump_load1.cc files.cc
+nnc_ascii_dump_load1_SOURCES = ascii_dump_load1.cc
 nnc_ascii_dump_load1_CXXFLAGS = $(DERIVED_CXXFLAGS)
-nnc_ascii_dump_load2_SOURCES = ascii_dump_load2.cc files.cc
+nnc_ascii_dump_load2_SOURCES = ascii_dump_load2.cc
 nnc_ascii_dump_load2_CXXFLAGS = $(DERIVED_CXXFLAGS)
-nnc_ascii_dump_load3_SOURCES = ascii_dump_load3.cc files.cc
+nnc_ascii_dump_load3_SOURCES = ascii_dump_load3.cc
 nnc_ascii_dump_load3_CXXFLAGS = $(DERIVED_CXXFLAGS)
-nnc_ascii_dump_load6_SOURCES = ascii_dump_load6.cc files.cc
+nnc_ascii_dump_load6_SOURCES = ascii_dump_load6.cc
 nnc_ascii_dump_load6_CXXFLAGS = $(DERIVED_CXXFLAGS)
-nnc_ascii_dump_load7_SOURCES = ascii_dump_load7.cc files.cc
+nnc_ascii_dump_load7_SOURCES = ascii_dump_load7.cc
 nnc_ascii_dump_load7_CXXFLAGS = $(DERIVED_CXXFLAGS)
 
 nnc_bgp99extrapolation1_SOURCES = bgp99extrapolation1.cc
@@ -945,9 +951,9 @@ nnc_removedim9_CXXFLAGS = $(DERIVED_CXXFLAGS)
 nnc_removedim10_SOURCES = removedim10.cc
 nnc_removedim10_CXXFLAGS = $(DERIVED_CXXFLAGS)
 
-nnc_mapdim1_SOURCES = mapdim1.cc PFunction.cc
+nnc_mapdim1_SOURCES = mapdim1.cc
 nnc_mapdim1_CXXFLAGS = $(DERIVED_CXXFLAGS)
-nnc_mapdim2_SOURCES = mapdim2.cc PFunction.cc
+nnc_mapdim2_SOURCES = mapdim2.cc
 nnc_mapdim2_CXXFLAGS = $(DERIVED_CXXFLAGS)
 
 nnc_max_min1_SOURCES = max_min1.cc
@@ -980,9 +986,9 @@ nnc_universe4_CXXFLAGS = $(DERIVED_CXXFLAGS)
 nnc_universe5_SOURCES = universe5.cc
 nnc_universe5_CXXFLAGS = $(DERIVED_CXXFLAGS)
 
-nnc_writepolyhedron2_SOURCES = writepolyhedron2.cc files.cc
+nnc_writepolyhedron2_SOURCES = writepolyhedron2.cc
 nnc_writepolyhedron2_CXXFLAGS = $(DERIVED_CXXFLAGS)
-nnc_writepolyhedron3_SOURCES = writepolyhedron3.cc files.cc
+nnc_writepolyhedron3_SOURCES = writepolyhedron3.cc
 nnc_writepolyhedron3_CXXFLAGS = $(DERIVED_CXXFLAGS)
 
 watchdog1_SRCS = watchdog1.cc timings.cc timings.hh
@@ -1003,12 +1009,6 @@ nnc_polydifference1 \
 addgenerators11
 
 check_PROGRAMS = $(TESTS) $(BUGS)
-
-noinst_HEADERS = \
-ppl_test.hh \
-files.hh \
-BBox.hh \
-PFunction.hh
 
 EXTRA_DIST = $(watchdog1_SRCS)
 
