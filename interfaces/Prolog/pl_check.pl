@@ -253,6 +253,7 @@ compare_polys :-
 poly_boxes :-
    ppl_initialize,
    get_bounding_box,
+   (noisy(1) -> boundingbox_test),
    !,
    ppl_finalize.
 
@@ -2037,7 +2038,7 @@ check_exception(Exception):-
 
 %%%%%%%%%%%% extra tests not executed by run_all %%%%%%%%%%%%%%%
 
-% These next 2 tests demonstrate a bug in the bounding box software.
+% These next 3 tests demonstrate a bug in the bounding box software.
 % and are not executed by run_all.
 
 boundingbox1(Box,CS) :-
@@ -2055,6 +2056,28 @@ boundingbox2(Box,CS) :-
   ppl_Polyhedron_add_constraints(P, [0=1]),
   ppl_Polyhedron_get_bounding_box(P, any, Box),
   ppl_Polyhedron_get_constraints(P,CS),
+  ppl_delete_Polyhedron(P).
+
+boundingbox_test :-
+  make_vars(1, [A]),
+  ppl_new_Polyhedron_empty_from_dimension(c, 1, P),
+  ppl_Polyhedron_get_constraints(P, CS),
+  ppl_Polyhedron_get_bounding_box(P, any, Box),
+  write('bounding box for polyhedron '),
+  write(CS),
+  write(' is '), write(Box), write('.'), nl,
+  ppl_Polyhedron_add_generator(P, point(0)),
+  ppl_Polyhedron_get_bounding_box(P, any, Box1),
+  ppl_Polyhedron_get_constraints(P, CS1),
+  write('bounding box for polyhedron '),
+  write(CS1),
+  write(' is '), write(Box1), write('.'), nl,
+  ppl_Polyhedron_add_generator(P, line(A)),
+  ppl_Polyhedron_get_bounding_box(P, any, Box2),
+  ppl_Polyhedron_get_constraints(P, CS2),
+  write('bounding box for polyhedron '),
+  write(CS2),
+  write(' is '), write(Box2), write('.'), nl,
   ppl_delete_Polyhedron(P).
 
 %%%%%%%%%%%% predicate for making list of ppl variables %%%%%%
