@@ -1028,6 +1028,8 @@ ppl_new_NNC_Polyhedron_recycle_GenSys(ppl_Polyhedron_t* pph,
 }
 CATCH_ALL
 
+namespace {
+
 class CBuildBox {
 private:
   ppl_dimension_type (*s_d)(void);
@@ -1069,6 +1071,8 @@ public:
     return g_u_b(k, closed, to_nonconst(&n), to_nonconst(&d)) != 0;
   }
 };
+
+} // namespace
 
 int
 ppl_new_C_Polyhedron_from_bounding_box
@@ -1408,6 +1412,8 @@ ppl_Polyhedron_remove_higher_dimensions(ppl_Polyhedron_t ph,
 }
 CATCH_ALL
 
+namespace {
+
 class PIFunc {
 private:
   //! Holds the vector implementing the map.
@@ -1464,6 +1470,8 @@ public:
   }
 };
 
+} // namespace
+
 int
 ppl_Polyhedron_shuffle_dimensions(ppl_Polyhedron_t ph,
 				  ppl_dimension_type maps[],
@@ -1501,6 +1509,8 @@ ppl_Polyhedron_affine_preimage(ppl_Polyhedron_t ph,
 }
 CATCH_ALL
 
+namespace {
+
 class CShrinkBox {
 private:
   void (*s_e)(void);
@@ -1536,6 +1546,8 @@ public:
     l_u_b(k, closed, to_const(&n), to_const(&d));
   }
 };
+
+} // namespace
 
 int
 ppl_Polyhedron_shrink_bounding_box
