@@ -460,6 +460,11 @@ PPL::GenSys::print(std::ostream& s) const {
   Matrix::print(s);
   const char separator = ' ';
   const GenSys& x = *this;
+  s << "topology ";
+  if (!x.is_necessarily_closed())
+    s << "NON_";
+  s << "NECESSARILY_CLOSED"
+    << std::endl;
   for (size_t i = 0; i < x.num_rows(); ++i) {
     for (size_t j = 0; j < x.num_columns(); ++j)
       s << x[i][j] << separator;
@@ -482,6 +487,15 @@ PPL::GenSys::get(std::istream& s) {
   Matrix::get(s);
   std::string tempstr;
   GenSys& x = *this;
+  s >> tempstr;
+  assert(tempstr == "topology");
+  s >> tempstr;
+  if (tempstr == "NECESSARILY_CLOSED")
+    x.set_necessarily_closed();
+  else {
+    assert(tempstr == "NON_NECESSARILY_CLOSED");
+    x.set_non_necessarily_closed();
+  }
   for (size_t i = 0; i < x.num_rows(); ++i) {
     for (size_t j = 0; j < x.num_columns(); ++j)
       s >> x[i][j];
