@@ -139,10 +139,10 @@ bool operator!=(const Polyhedron& x, const Polyhedron& y);
     a square in \f$\Rset^2\f$, given as a system of constraints:
     \code
   ConSys cs;
-  cs.add_constraint(x >= 0);
-  cs.add_constraint(x <= 3);
-  cs.add_constraint(y >= 0);
-  cs.add_constraint(y <= 3);
+  cs.insert(x >= 0);
+  cs.insert(x <= 3);
+  cs.insert(y >= 0);
+  cs.insert(y <= 3);
   C_Polyhedron ph(cs);
     \endcode
     The following code builds the same polyhedron as above,
@@ -150,10 +150,10 @@ bool operator!=(const Polyhedron& x, const Polyhedron& y);
     the four vertices of the square:
     \code
   GenSys gs;
-  gs.add_generator(point(0*x + 0*y));
-  gs.add_generator(point(0*x + 3*y));
-  gs.add_generator(point(3*x + 0*y));
-  gs.add_generator(point(3*x + 3*y));
+  gs.insert(point(0*x + 0*y));
+  gs.insert(point(0*x + 3*y));
+  gs.insert(point(3*x + 0*y));
+  gs.insert(point(3*x + 3*y));
   C_Polyhedron ph(gs);
     \endcode
 
@@ -163,9 +163,9 @@ bool operator!=(const Polyhedron& x, const Polyhedron& y);
     given as a system of constraints:
     \code
   ConSys cs;
-  cs.add_constraint(x >= 0);
-  cs.add_constraint(x - y <= 0);
-  cs.add_constraint(x - y + 1 >= 0);
+  cs.insert(x >= 0);
+  cs.insert(x - y <= 0);
+  cs.insert(x - y + 1 >= 0);
   C_Polyhedron ph(cs);
     \endcode
     The following code builds the same polyhedron as above,
@@ -173,9 +173,9 @@ bool operator!=(const Polyhedron& x, const Polyhedron& y);
     the two vertices of the polyhedron and one ray:
     \code
   GenSys gs;
-  gs.add_generator(point(0*x + 0*y));
-  gs.add_generator(point(0*x + y));
-  gs.add_generator(ray(x - y));
+  gs.insert(point(0*x + 0*y));
+  gs.insert(point(0*x + y));
+  gs.insert(ray(x - y));
   C_Polyhedron ph(gs);
     \endcode
 
@@ -309,7 +309,7 @@ bool operator!=(const Polyhedron& x, const Polyhedron& y);
     <CODE>remove_dimensions</CODE>:
     \code
   GenSys gs;
-  gs.add_generator(point(3*x + y +0*z + 2*w));
+  gs.insert(point(3*x + y +0*z + 2*w));
   C_Polyhedron ph(gs);
   set<Variable> to_be_removed;
   to_be_removed.insert(y);
