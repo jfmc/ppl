@@ -54,10 +54,6 @@ site: http://www.cs.unipr.it/ppl/ . */
 #define BHRZ03_EP_P1_P2 1
 #endif
 
-#ifndef BHRZ03_ER_CWQ
-#define BHRZ03_ER_CWQ 0
-#endif
-
 #define BE_LAZY
 
 namespace PPL = Parma_Polyhedra_Library;
@@ -4396,7 +4392,6 @@ PPL::Polyhedron::BHRZ03_evolving_rays(const Polyhedron& y,
 		if (!considered[h]) {
 		  tmp_1 = x_g[k] * y_g[h];
 		  tmp_2 = x_g[h] * y_g[k];
-#if BHRZ03_ER_CWQ
 		  tmp_1 -= tmp_2;
 		  int clockwise = sgn(tmp_1);
 		  int first_or_third_quadrant = sgn(x_g[k]) * sgn(x_g[h]);
@@ -4412,29 +4407,8 @@ PPL::Polyhedron::BHRZ03_evolving_rays(const Polyhedron& y,
 		  default:
 		    break;
 		  }
-#else //#if BHRZ03_ER_CWQ
-		  int ratio_sign = sgn(x_g[k]) * sgn(x_g[h]);
-		  if (tmp_1 != tmp_2)
-		    if ((tmp_1 >= 0 && tmp_2 > tmp_1)
-			|| (tmp_2 < tmp_1 && tmp_1 <= 0)
-			|| (tmp_2 > 0 && tmp_1 < 0 && ratio_sign > 0)
-			|| (tmp_1 < 0 && tmp_2 > 0 && ratio_sign > 0)
-			|| (tmp_2 < 0 && tmp_1 > 0 && ratio_sign < 0)) {
-		      new_ray[k] = 0;
-		      considered[k] = true;
-		    }
-		    else {
-		      new_ray[h] = 0;
-		      considered[h] = true;
-		    }
-#endif //#if BHRZ03_ER_CWQ
 		}
 	  new_ray.normalize();
-#if !BHRZ03_ER_CWQ
-	  // Insert both `new_ray' and `y_g' in `candidate_rays'
-	  // (so that we also generate all the rays in between).
-	  candidate_rays.insert(y_g);
-#endif //#if !BHRZ03_ER_CWQ
 	  candidate_rays.insert(new_ray);
 	}
       }
@@ -4447,51 +4421,10 @@ PPL::Polyhedron::BHRZ03_evolving_rays(const Polyhedron& y,
 
   // Be non-intrusive.
   Polyhedron result = x;
-#if BHRZ03_ER_CWQ
   // Add to `result' the rays in `candidate_rays'
   result.add_generators_and_minimize(candidate_rays);
   // Intersect with `H79'.
   result.intersection_assign_and_minimize(H79);
-#else
-  // Here `candidate_rays' contains more than one ray
-  // (because we added rays in pairs).
-  // Of all the candidate rays, we only consider those that are
-  // subsumed by `H79_con_sys': to this end, we add any point of `x'
-  // to `candidate_rays' and build the corresponding polyhedron
-  // (a polyhedral cone having the point as apex), and then we take
-  // the intersection with `H79'.
-
-  // Find any point of `x'
-  // (it must have at least one, since it is not empty).
-  dimension_type k = x_gen_sys_num_rows - 1;
-  while (!x.gen_sys[k].is_point())
-    --k;
-  // Insert the point found and build the polyhedral cone.
-  candidate_rays.insert(x.gen_sys[k]);
-  Polyhedron candidate_ph(x.topology(), candidate_rays);
-  candidate_ph.intersection_assign_and_minimize(H79);
-  // Copy the rays of `ph' into `valid_rays'.
-  const GenSys& gs = candidate_ph.generators();
-  GenSys valid_rays;
-  for (dimension_type j = gs.num_rows(); j-- > 0; ) {
-    const Generator& g = gs[j];
-    switch (g.type()) {
-    case Generator::RAY:
-      // Intentionally fall through.
-    case Generator::LINE:
-      valid_rays.insert(g);
-      break;
-    default:
-      break;
-    }
-  }
-
-  // If there are no valid rays, the technique is not successful.
-  if (valid_rays.num_rows() == 0)
-    return false;
-  // Add to `result' the generators in `valid_rays'
-  result.add_generators_and_minimize(valid_rays);
-#endif //#if BHRZ03_ER_CWQ
 
   // Check for stabilization wrt `y' and improvement over `H79'.
   if (H79 <= result || !is_BHRZ03_stabilizing(result, y))
