@@ -142,7 +142,8 @@ PowerSet<CS>::is_bottom() const {
 // Projection
 
 template <class CS>
-CS project(const PowerSet<CS>& x) {
+CS
+project(const PowerSet<CS>& x) {
   CS ret;
   typename PowerSet<CS>::const_iterator xi;
 
@@ -150,9 +151,8 @@ CS project(const PowerSet<CS>& x) {
     ret.bottom();
   else {
     ret = *(x.begin());
-    for (xi=x.begin(), ++xi; xi != x.end(); ++xi) {
-      ret += project(*xi);
-    }
+    for (xi=x.begin(), ++xi; xi != x.end(); ++xi)
+      ret.upper_bound_assign(project(*xi));
   }
   return ret;
 }

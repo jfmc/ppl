@@ -299,16 +299,6 @@ AskTell<CS>::definitely_entails(const AskTell<CS>& y) const {
   }
 }
 
-#if 0
-// Equality
-
-template <typename CS>
-bool
-operator==(const AskTell<CS>& x, const AskTell<CS>& y) {
-  return (x.size() == y.size() && equal(x.begin(), x.end(), y.begin()));
-}
-#endif
-
 template <typename CS>
 AskTell<CS>&
 AskTell<CS>::inject(const CS& askv, const CS& tellv) {

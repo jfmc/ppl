@@ -43,12 +43,6 @@ template <typename CS>
 CS
 project(const AskTell<CS>&);
 
-#if 0
-template <typename CS>
-bool
-operator==(const AskTell<CS>&, const AskTell<CS>&);
-#endif
-
 template <typename CS>
 int
 lcompare(const AskTell<CS>&, const AskTell<CS>&);
@@ -96,8 +90,6 @@ public:
   friend AskTell operator *<>(const AskTell& x, const AskTell& y);
 
   friend CS project<>(const AskTell& x);
-
-  //friend bool operator ==<>(const AskTell& x, const AskTell& y);
 
   friend int lcompare<>(const AskTell& x, const AskTell& y);
 
