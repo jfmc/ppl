@@ -222,52 +222,52 @@ AskTell<CS>::add_constraints(const ConSys& cs) {
 
 template <typename CS>
 void
-AskTell<CS>::add_dimensions_and_embed(dimension_type m) {
+AskTell<CS>::add_space_dimensions_and_embed(dimension_type m) {
   space_dim += m;
   for (typename AskTell<CS>::iterator i = begin(),
 	 send = end(); i != send; ++i) {
     AskTell_Pair<CS>& p = *i;
-    p.ask().add_dimensions_and_embed(m);
-    p.tell().add_dimensions_and_embed(m);
+    p.ask().add_space_dimensions_and_embed(m);
+    p.tell().add_space_dimensions_and_embed(m);
   }
   assert(OK());
 }
 
 template <typename CS>
 void
-AskTell<CS>::add_dimensions_and_project(dimension_type m) {
+AskTell<CS>::add_space_dimensions_and_project(dimension_type m) {
   space_dim += m;
   for (typename AskTell<CS>::iterator i = begin(),
 	 send = end(); i != send; ++i) {
     AskTell_Pair<CS>& p = *i;
-    p.ask().add_dimensions_and_project(m);
-    p.tell().add_dimensions_and_project(m);
+    p.ask().add_space_dimensions_and_project(m);
+    p.tell().add_space_dimensions_and_project(m);
   }
   assert(OK());
 }
 
 template <typename CS>
 void
-AskTell<CS>::remove_dimensions(const Variables_Set& to_be_removed) {
+AskTell<CS>::remove_space_dimensions(const Variables_Set& to_be_removed) {
   space_dim -= to_be_removed.size();
   for (typename AskTell<CS>::iterator i = begin(),
 	 send = end(); i != send; ++i) {
     AskTell_Pair<CS>& p = *i;
-    p.ask().remove_dimensions(to_be_removed);
-    p.tell().remove_dimensions(to_be_removed);
+    p.ask().remove_space_dimensions(to_be_removed);
+    p.tell().remove_space_dimensions(to_be_removed);
   }
   assert(OK());
 }
 
 template <typename CS>
 void
-AskTell<CS>::remove_higher_dimensions(dimension_type new_dimension) {
+AskTell<CS>::remove_higher_space_dimensions(dimension_type new_dimension) {
   space_dim = new_dimension;
   for (typename AskTell<CS>::iterator i = begin(),
 	 send = end(); i != send; ++i) {
     AskTell_Pair<CS>& p = *i;
-    p.ask().remove_higher_dimensions(new_dimension);
-    p.tell().remove_higher_dimensions(new_dimension);
+    p.ask().remove_higher_space_dimensions(new_dimension);
+    p.tell().remove_higher_space_dimensions(new_dimension);
   }
   assert(OK());
 }
@@ -275,7 +275,7 @@ AskTell<CS>::remove_higher_dimensions(dimension_type new_dimension) {
 template <typename CS>
 template <typename PartialFunction>
 void
-AskTell<CS>::map_dimensions(const PartialFunction& pfunc) {
+AskTell<CS>::map_space_dimensions(const PartialFunction& pfunc) {
   if (is_top()) {
     dimension_type n = 0;
     for (dimension_type i = space_dim; i-- > 0; ) {
@@ -289,8 +289,8 @@ AskTell<CS>::map_dimensions(const PartialFunction& pfunc) {
     iterator sbegin = begin();
     for (iterator i = sbegin, send = end(); i != send; ++i) {
       AskTell_Pair<CS>& p = *i;
-      p.ask().map_dimensions(pfunc);
-      p.tell().map_dimensions(pfunc);
+      p.ask().map_space_dimensions(pfunc);
+      p.tell().map_space_dimensions(pfunc);
     }
     space_dim = sbegin->ask().space_dimension();
   }
@@ -538,7 +538,7 @@ template <typename CS>
 void
 AskTell<CS>::concatenate_assign(const AskTell<CS>& y) {
   dimension_type old_space_dim = space_dim;
-  add_dimensions_and_embed(y.space_dimension());
+  add_space_dimensions_and_embed(y.space_dimension());
   for (typename AskTell<CS>::const_iterator y_end = y.end(),
 	 yi = y.begin(); yi != y_end; ++yi) {
     CS ask(old_space_dim);

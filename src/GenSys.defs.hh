@@ -49,6 +49,7 @@ std::ostream& operator<<(std::ostream& s, const GenSys& gs);
 } // namespace IO_Operators
 
 // Put it in the namespace here to declare it friend later.
+/*! \relates Polyhedron */
 bool operator==(const Polyhedron& x, const Polyhedron& y);
 
 } // namespace Parma_Polyhedra_Library
@@ -68,7 +69,7 @@ void swap(Parma_Polyhedra_Library::GenSys& x,
     An object of the class GenSys is a system of generators,
     i.e., a multiset of objects of the class Generator
     (lines, rays, points and closure points).
-    When inserting generators in a system, dimensions are automatically
+    When inserting generators in a system, space dimensions are automatically
     adjusted so that all the generators in the system are defined
     on the same vector space.
     A system of generators which is meant to define a non-empty
@@ -100,7 +101,7 @@ void swap(Parma_Polyhedra_Library::GenSys& x,
     \code
   gs.insert(point(0*x + 0*y));
     \endcode
-    Since dimensions are automatically adjusted, the following
+    Since space dimensions are automatically adjusted, the following
     code obtains the same effect:
     \code
   gs.insert(point(0*x));
@@ -208,7 +209,7 @@ public:
 
   //! \brief
   //! Inserts in \p *this a copy of the generator \p g,
-  //! increasing the number of dimensions if needed.
+  //! increasing the number of space dimensions if needed.
   void insert(const Generator& g);
 
   //! \brief
@@ -379,13 +380,13 @@ private:
 
   //! \brief
   //! Adjusts \p *this so that it matches the topology and
-  //! the number of dimensions given as parameters
+  //! the number of space dimensions given as parameters
   //! (adding or removing columns if needed).
   //! Returns <CODE>false</CODE> if and only if \p topol is
   //! equal to <CODE>NECESSARILY_CLOSED</CODE> and \p *this
   //! contains closure points.
-  bool adjust_topology_and_dimension(Topology topol,
-				     dimension_type num_dimensions);
+  bool adjust_topology_and_space_dimension(Topology topol,
+					   dimension_type num_dimensions);
 
   //! \brief
   //! For each unmatched closure point in \p *this, adds the
@@ -476,7 +477,7 @@ private:
 
   //! \brief
   //! Inserts in \p *this a copy of the generator \p g,
-  //! increasing the number of dimensions if needed.
+  //! increasing the number of space dimensions if needed.
   //! It is a pending generator.
   void insert_pending(const Generator& g);
 };

@@ -207,11 +207,11 @@ bool operator!=(const Polyhedron& x, const Polyhedron& y);
 
     \par Example 4
     The following code shows the use of the function
-    <CODE>add_dimensions_and_embed</CODE>:
+    <CODE>add_space_dimensions_and_embed</CODE>:
     \code
   C_Polyhedron ph(1);
   ph.add_constraint(x == 2);
-  ph.add_dimensions_and_embed(1);
+  ph.add_space_dimensions_and_embed(1);
     \endcode
     We build the universe polyhedron in the 1-dimension space \f$\Rset\f$.
     Then we add a single equality constraint,
@@ -228,14 +228,14 @@ bool operator!=(const Polyhedron& x, const Polyhedron& y);
 
     \par Example 5
     The following code shows the use of the function
-    <CODE>add_dimensions_and_project</CODE>:
+    <CODE>add_space_dimensions_and_project</CODE>:
     \code
   C_Polyhedron ph(1);
   ph.add_constraint(x == 2);
-  ph.add_dimensions_and_project(1);
+  ph.add_space_dimensions_and_project(1);
     \endcode
     The first two lines of code are the same as in Example 4 for
-    <CODE>add_dimensions_and_embed</CODE>.
+    <CODE>add_space_dimensions_and_embed</CODE>.
     After the last line of code, the resulting polyhedron is
     the singleton set
     \f$\bigl\{ (2, 0)^\transpose \bigr\} \sseq \Rset^2\f$.
@@ -307,7 +307,7 @@ bool operator!=(const Polyhedron& x, const Polyhedron& y);
   Variable w(3);
     \endcode
     The following code shows the use of the function
-    <CODE>remove_dimensions</CODE>:
+    <CODE>remove_space_dimensions</CODE>:
     \code
   GenSys gs;
   gs.insert(point(3*x + y +0*z + 2*w));
@@ -315,31 +315,31 @@ bool operator!=(const Polyhedron& x, const Polyhedron& y);
   set<Variable> to_be_removed;
   to_be_removed.insert(y);
   to_be_removed.insert(z);
-  ph.remove_dimensions(to_be_removed);
+  ph.remove_space_dimensions(to_be_removed);
     \endcode
     The starting polyhedron is the singleton set
     \f$\bigl\{ (3, 1, 0, 2)^\transpose \bigr\} \sseq \Rset^4\f$, while
     the resulting polyhedron is
     \f$\bigl\{ (3, 2)^\transpose \bigr\} \sseq \Rset^2\f$.
-    Be careful when removing dimensions <EM>incrementally</EM>:
+    Be careful when removing space dimensions <EM>incrementally</EM>:
     since dimensions are automatically renamed after each application
-    of the <CODE>remove_dimensions</CODE> operator, unexpected results
-    can be obtained.
+    of the <CODE>remove_space_dimensions</CODE> operator, unexpected
+    results can be obtained.
     For instance, by using the following code we would obtain
     a different result:
     \code
   set<Variable> to_be_removed1;
   to_be_removed1.insert(y);
-  ph.remove_dimensions(to_be_removed1);
+  ph.remove_space_dimensions(to_be_removed1);
   set<Variable> to_be_removed2;
   to_be_removed2.insert(z);
-  ph.remove_dimensions(to_be_removed2);
+  ph.remove_space_dimensions(to_be_removed2);
     \endcode
     In this case, the result is the polyhedron
     \f$\bigl\{(3, 0)^\transpose \bigr\} \sseq \Rset^2\f$:
     when removing the set of dimensions \p to_be_removed2
     we are actually removing variable \f$w\f$ of the original polyhedron.
-    For the same reason, the operator \p remove_dimensions
+    For the same reason, the operator \p remove_space_dimensions
     is not idempotent: removing twice the same set of dimensions
     is never a no-op.
 */
@@ -472,7 +472,7 @@ protected:
                            Integer& n, Integer& d) const
     \endcode
     Let \f$I\f$ the interval corresponding to the <CODE>k</CODE>-th
-    dimension.  If \f$I\f$ is not bounded from below, simply return
+    space dimension.  If \f$I\f$ is not bounded from below, simply return
     <CODE>false</CODE>.  Otherwise, set <CODE>closed</CODE>,
     <CODE>n</CODE> and <CODE>d</CODE> as follows: <CODE>closed</CODE>
     is set to <CODE>true</CODE> if the the lower boundary of \f$I\f$
@@ -488,7 +488,7 @@ protected:
                            Integer& n, Integer& d) const
     \endcode
     Let \f$I\f$ the interval corresponding to the <CODE>k</CODE>-th
-    dimension.  If \f$I\f$ is not bounded from above, simply return
+    space dimension.  If \f$I\f$ is not bounded from above, simply return
     <CODE>false</CODE>.  Otherwise, set <CODE>closed</CODE>,
     <CODE>n</CODE> and <CODE>d</CODE> as follows: <CODE>closed</CODE>
     is set to <CODE>true</CODE> if the the upper boundary of \f$I\f$
@@ -513,9 +513,9 @@ public:
   dimension_type space_dimension() const;
 
   //! \brief
-  //! Returns the dimension of \p *this (not to be confused with the
-  //! dimension of its enclosing vector space) or 0, if \p *this is empty.
-  dimension_type dimension() const;
+  //! Returns \f$0\f$, if \p *this is empty; otherwise, returns the
+  //! \ref affine_dimension "affine dimension" of \p *this.
+  dimension_type affine_dimension() const;
 
   //! Returns the system of constraints.
   const ConSys& constraints() const;
@@ -748,7 +748,8 @@ public:
                         Integer_traits::const_reference n,
                         Integer_traits::const_reference d)
     \endcode
-    intersects the interval corresponding to the <CODE>k</CODE>-th dimension
+    intersects the interval corresponding to the <CODE>k</CODE>-th
+    space dimension
     with \f$[n/d, +\infty)\f$ if <CODE>closed</CODE> is <CODE>true</CODE>,
     with \f$(n/d, +\infty)\f$ if <CODE>closed</CODE> is <CODE>false</CODE>.
     \code
@@ -756,7 +757,8 @@ public:
                         Integer_traits::const_reference n,
                         Integer_traits::const_reference d)
     \endcode
-    intersects the interval corresponding to the <CODE>k</CODE>-th dimension
+    intersects the interval corresponding to the <CODE>k</CODE>-th
+    space dimension
     with \f$(-\infty, n/d]\f$ if <CODE>closed</CODE> is <CODE>true</CODE>,
     with \f$(-\infty, n/d)\f$ if <CODE>closed</CODE>
     is <CODE>false</CODE>.
@@ -770,7 +772,8 @@ public:
     <CODE>lower_upper_bound(k, closed, n, d)</CODE>.
   */
   template <typename Box>
-  void shrink_bounding_box(Box& box, Complexity_Class complexity = ANY) const;
+  void shrink_bounding_box(Box& box,
+			   Complexity_Class complexity = ANY_COMPLEXITY) const;
 
   //! Checks if all the invariants are satisfied.
   /*!
@@ -793,7 +796,7 @@ public:
 
   //@} // Member Functions that Do Not Modify the Polyhedron
 
-  //! \name Space-Dimension Preserving Member Functions that May Modify the Polyhedron
+  //! \name Space Dimension Preserving Member Functions that May Modify the Polyhedron
   //@{
 
   //! \brief
@@ -1055,8 +1058,8 @@ public:
 
     \exception std::invalid_argument
     Thrown if \p denominator is zero or if \p expr and \p *this are
-    dimension-incompatible or if \p var is not a dimension of \p
-    *this.
+    dimension-incompatible or if \p var is not a space dimension of
+    \p *this.
 
     \if Include_Implementation_Details
 
@@ -1148,7 +1151,7 @@ public:
 
     \exception std::invalid_argument
     Thrown if \p denominator is zero or if \p expr and \p *this are
-    dimension-incompatible or if \p var is not a dimension of \p *this.
+    dimension-incompatible or if \p var is not a space dimension of \p *this.
 
     \if Include_Implementation_Details
 
@@ -1244,7 +1247,7 @@ public:
 
     \exception std::invalid_argument
     Thrown if \p denominator is zero or if \p expr and \p *this are
-    dimension-incompatible or if \p var is not a dimension of \p *this
+    dimension-incompatible or if \p var is not a space dimension of \p *this
     or if \p *this is a C_Polyhedron and \p relsym is a strict
     relation symbol.
   */
@@ -1427,24 +1430,24 @@ public:
 					const ConSys& cs,
 					unsigned* tp = 0);
 
-  //@} // Space-Dimension Preserving Member Functions that May Modify [...]
+  //@} // Space Dimension Preserving Member Functions that May Modify [...]
 
   //! \name Member Functions that May Modify the Dimension of the Vector Space
   //@{
 
   //! \brief
-  //! Adds \p m new dimensions and embeds the old polyhedron
-  //! in the new space.
+  //! Adds \p m new space dimensions and embeds the old polyhedron
+  //! in the new vector space.
   /*!
     \param m
     The number of dimensions to add.
 
-    The new dimensions will be those having the highest indexes
+    The new space dimensions will be those having the highest indexes
     in the new polyhedron, which is characterized by a system
     of constraints in which the variables running through
     the new dimensions are not constrained.
     For instance, when starting from the polyhedron \f$\cP \sseq \Rset^2\f$
-    and adding a third dimension, the result will be the polyhedron
+    and adding a third space dimension, the result will be the polyhedron
     \f[
       \bigl\{\,
         (x, y, z)^\transpose \in \Rset^3
@@ -1453,21 +1456,21 @@ public:
       \,\bigr\}.
     \f]
   */
-  void add_dimensions_and_embed(dimension_type m);
+  void add_space_dimensions_and_embed(dimension_type m);
 
   //! \brief
-  //! Adds \p m new dimensions to the polyhedron
-  //! and does not embed it in the new space.
+  //! Adds \p m new space dimensions to the polyhedron
+  //! and does not embed it in the new vector space.
   /*!
     \param m
-    The number of dimensions to add.
+    The number of space dimensions to add.
 
-    The new dimensions will be those having the highest indexes
+    The new space dimensions will be those having the highest indexes
     in the new polyhedron, which is characterized by a system
     of constraints in which the variables running through
     the new dimensions are all constrained to be equal to 0.
     For instance, when starting from the polyhedron \f$\cP \sseq \Rset^2\f$
-    and adding a third dimension, the result will be the polyhedron
+    and adding a third space dimension, the result will be the polyhedron
     \f[
       \bigl\{\,
         (x, y, 0)^\transpose \in \Rset^3
@@ -1476,7 +1479,7 @@ public:
       \,\bigr\}.
     \f]
   */
-  void add_dimensions_and_project(dimension_type m);
+  void add_space_dimensions_and_project(dimension_type m);
 
   //! \brief
   //! Assigns to \p *this the \ref concatenate "concatenation"
@@ -1487,34 +1490,34 @@ public:
   */
   void concatenate_assign(const Polyhedron& y);
 
-  //! Removes all the specified dimensions.
+  //! Removes all the specified dimensions from the vector space.
   /*!
     \param to_be_removed
-    The set of Variable objects corresponding to the dimensions to be
-    removed.
+    The set of Variable objects corresponding to the space dimensions
+    to be removed.
 
     \exception std::invalid_argument
     Thrown if \p *this is dimension-incompatible with one of the
     Variable objects contained in \p to_be_removed.
   */
-  void remove_dimensions(const Variables_Set& to_be_removed);
+  void remove_space_dimensions(const Variables_Set& to_be_removed);
 
   //! \brief
-  //! Removes the higher dimensions so that the resulting space
-  //! will have dimension \p new_dimension.
+  //! Removes the higher dimensions of the vector space so that
+  //! the resulting space will have dimension \p new_dimension.
   /*!
     \exception std::invalid_argument
     Thrown if \p new_dimensions is greater than the space dimension of
     \p *this.
   */
-  void remove_higher_dimensions(dimension_type new_dimension);
+  void remove_higher_space_dimensions(dimension_type new_dimension);
 
   //! \brief
   //! Remaps the dimensions of the vector space
-  //! according to a \ref map_dimensions "partial function".
+  //! according to a \ref map_space_dimensions "partial function".
   /*!
     \param pfunc
-    The partial function specifying the destiny of each dimension.
+    The partial function specifying the destiny of each space dimension.
 
     The template class PartialFunction must provide the following
     methods.
@@ -1546,37 +1549,37 @@ public:
 
     The result is undefined if \p pfunc does not encode a partial
     function with the properties described in the
-    \ref map_dimensions "specification of the mapping operator".
+    \ref map_space_dimensions "specification of the mapping operator".
   */
   template <typename PartialFunction>
-  void map_dimensions(const PartialFunction& pfunc);
+  void map_space_dimensions(const PartialFunction& pfunc);
 
-  //! Creates \p m copies of the dimension corresponding to \p var.
+  //! Creates \p m copies of the space dimension corresponding to \p var.
   /*!
     \param var
-    The variable corresponding to the dimension to be replicated;
+    The variable corresponding to the space dimension to be replicated;
 
     \param m
     The number of replica to be created.
 
     \exception std::invalid_argument
-    Thrown if \p var does not correspond to a dimension of the polyhedron.
+    Thrown if \p var does not correspond to a dimension of the vector space.
 
-    If \p *this is \f$n\f$-dimensional, with \f$n > 0\f$,
+    If \p *this has space dimension \f$n\f$, with \f$n > 0\f$,
     and \f$i < n\f$ is <CODE>var.id()</CODE>, then the \f$i\f$-th
-    dimension is \ref expand_dimension "expanded" to \p m new dimensions
-    \f$n\f$, \f$n+1\f$, \f$\dots\f$, \f$n+m-1\f$.
+    space dimension is \ref expand_space_dimension "expanded" to
+    \p m new space dimensions \f$n\f$, \f$n+1\f$, \f$\dots\f$, \f$n+m-1\f$.
   */
-  void expand_dimension(Variable var, dimension_type m);
+  void expand_space_dimension(Variable var, dimension_type m);
 
-  //! Folds the dimensions in \p to_be_folded into \p var.
+  //! Folds the space dimensions in \p to_be_folded into \p var.
   /*!
     \param to_be_folded
-    The set of Variable objects corresponding to the dimensions to be
-    folded;
+    The set of Variable objects corresponding to the space dimensions
+    to be folded;
 
     \param var
-    The variable corresponding to the dimension that is the
+    The variable corresponding to the space dimension that is the
     destination of the folding operation.
 
     \exception std::invalid_argument
@@ -1584,14 +1587,14 @@ public:
     one of the Variable objects contained in \p to_be_folded.
     Also thrown if \p var is contained in \p to_be_folded.
 
-    If \p *this is \f$n\f$-dimensional, with \f$n > 0\f$,
+    If \p *this has space dimension \f$n\f$, with \f$n > 0\f$,
     \f$i < n\f$ is <CODE>var.id()</CODE>, \p to_be_folded
     is a set of variables whose <CODE>id()</CODE> is also less than
     \f$n\f$, and \p var is not a member of \p to_be_folded,
-    then the dimensions corresponding to variables in \p to_be_folded
-    are \ref fold_dimensions "folded" into dimension \f$i\f$.
+    then the space dimensions corresponding to variables in \p to_be_folded
+    are \ref fold_space_dimensions "folded" into space dimension \f$i\f$.
   */
-  void fold_dimensions(const Variables_Set& to_be_folded, Variable var);
+  void fold_space_dimensions(const Variables_Set& to_be_folded, Variable var);
 
   //@} // Member Functions that May Modify the Dimension of the Vector Space
 
@@ -1622,9 +1625,9 @@ public:
 
 #ifdef PPL_DOXYGEN_INCLUDE_IMPLEMENTATION_DETAILS
   //! \brief
-  //! Loads from \p s an ASCII representation (as produced by \ref
-  //! ascii_dump) and sets \p *this accordingly.  Returns <CODE>true</CODE>
-  //! if successful, <CODE>false</CODE> otherwise.
+  //! Loads from \p s an ASCII representation (as produced by
+  //! \ref ascii_dump) and sets \p *this accordingly.
+  //! Returns <CODE>true</CODE> if successful, <CODE>false</CODE> otherwise.
 #endif // PPL_DOXYGEN_INCLUDE_IMPLEMENTATION_DETAILS
   bool ascii_load(std::istream& s);
 
@@ -2102,7 +2105,7 @@ private:
   //! Adds the low-level constraints to the constraint system.
   static void add_low_level_constraints(ConSys& cs);
 
-  //! Adds new dimensions to the given matrices.
+  //! Adds new space dimensions to the given matrices.
   /*!
     \param mat1
     The matrix to which columns are added;
@@ -2119,19 +2122,20 @@ private:
     mat2;
 
     \param add_dim
-    The number of dimensions to add.
+    The number of space dimensions to add.
 
-    Adds new dimensions to the polyhedron modifying the matrices.
-    This function is invoked only by <CODE>add_dimensions_and_embed()</CODE>
-    and <CODE>add_dimensions_and_project()</CODE>, passing the matrix of
+    Adds new space dimensions to the vector space modifying the matrices.
+    This function is invoked only by
+    <CODE>add_space_dimensions_and_embed()</CODE> and
+    <CODE>add_space_dimensions_and_project()</CODE>, passing the matrix of
     constraints and that of generators (and the corresponding saturation
     matrices) in different order (see those methods for details).
   */
-  static void add_dimensions(Matrix& mat1,
-                             Matrix& mat2,
-                             SatMatrix& sat1,
-                             SatMatrix& sat2,
-			     dimension_type add_dim);
+  static void add_space_dimensions(Matrix& mat1,
+				   Matrix& mat2,
+				   SatMatrix& sat1,
+				   SatMatrix& sat2,
+				   dimension_type add_dim);
 
   //! \name Minimization-Related Static Member Functions
   //@{

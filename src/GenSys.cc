@@ -36,8 +36,9 @@ site: http://www.cs.unipr.it/ppl/ . */
 namespace PPL = Parma_Polyhedra_Library;
 
 bool
-PPL::GenSys::adjust_topology_and_dimension(Topology new_topology,
-					   dimension_type new_space_dim) {
+PPL::GenSys::
+adjust_topology_and_space_dimension(Topology new_topology,
+				    dimension_type new_space_dim) {
   assert(space_dimension() <= new_space_dim);
 
   if (num_rows() == 0) {

@@ -41,7 +41,7 @@ test1() {
   ph.add_constraint(x - y >= 0);
 
   BBox pbox(2);
-  ph.shrink_bounding_box(pbox, POLYNOMIAL);
+  ph.shrink_bounding_box(pbox, POLYNOMIAL_COMPLEXITY);
 
   BBox nbox(2);
   ph.shrink_bounding_box(nbox);
@@ -75,7 +75,7 @@ test2() {
   ph.add_constraint(y >= 0);
 
   BBox pbox(ph.space_dimension());
-  ph.shrink_bounding_box(pbox, POLYNOMIAL);
+  ph.shrink_bounding_box(pbox, POLYNOMIAL_COMPLEXITY);
 
   BBox nbox(ph.space_dimension());
   ph.shrink_bounding_box(nbox);
@@ -113,7 +113,7 @@ test3() {
   ph.add_constraint(y <= 4);
 
   BBox pbox(ph.space_dimension());
-  ph.shrink_bounding_box(pbox, POLYNOMIAL);
+  ph.shrink_bounding_box(pbox, POLYNOMIAL_COMPLEXITY);
 
   BBox nbox(ph.space_dimension());
   ph.shrink_bounding_box(nbox);
@@ -157,7 +157,7 @@ test4() {
   ph.add_constraint(z >= 5);
 
   BBox pbox(ph.space_dimension());
-  ph.shrink_bounding_box(pbox, POLYNOMIAL);
+  ph.shrink_bounding_box(pbox, POLYNOMIAL_COMPLEXITY);
 
   BBox nbox(ph.space_dimension());
   ph.shrink_bounding_box(nbox);
@@ -195,7 +195,7 @@ test5() {
   C_Polyhedron ph(2);
 
   BBox pbox(ph.space_dimension());
-  ph.shrink_bounding_box(pbox, POLYNOMIAL);
+  ph.shrink_bounding_box(pbox, POLYNOMIAL_COMPLEXITY);
 
   BBox nbox(ph.space_dimension());
   ph.shrink_bounding_box(nbox);
@@ -222,7 +222,7 @@ test6() {
   C_Polyhedron ph;
 
   BBox pbox(ph.space_dimension());
-  ph.shrink_bounding_box(pbox, POLYNOMIAL);
+  ph.shrink_bounding_box(pbox, POLYNOMIAL_COMPLEXITY);
 
   BBox nbox(ph.space_dimension());
   ph.shrink_bounding_box(nbox);
@@ -249,7 +249,7 @@ test7() {
   C_Polyhedron ph(2, C_Polyhedron::EMPTY);
 
   BBox pbox(ph.space_dimension());
-  ph.shrink_bounding_box(pbox, POLYNOMIAL);
+  ph.shrink_bounding_box(pbox, POLYNOMIAL_COMPLEXITY);
 
   BBox nbox(ph.space_dimension());
   ph.shrink_bounding_box(nbox);
@@ -282,7 +282,7 @@ test8() {
   ph.add_constraint(y == 4);
 
   BBox pbox(ph.space_dimension());
-  ph.shrink_bounding_box(pbox, POLYNOMIAL);
+  ph.shrink_bounding_box(pbox, POLYNOMIAL_COMPLEXITY);
 
   BBox nbox(ph.space_dimension());
   ph.shrink_bounding_box(nbox);
@@ -322,7 +322,7 @@ test9() {
   C_Polyhedron ph(cs);
 
   BBox pbox(ph.space_dimension());
-  ph.shrink_bounding_box(pbox, POLYNOMIAL);
+  ph.shrink_bounding_box(pbox, POLYNOMIAL_COMPLEXITY);
 
   BBox nbox(ph.space_dimension());
   ph.shrink_bounding_box(nbox);
@@ -364,7 +364,7 @@ test10() {
 #endif
 
   BBox pbox(ph.space_dimension());
-  ph.shrink_bounding_box(pbox, POLYNOMIAL);
+  ph.shrink_bounding_box(pbox, POLYNOMIAL_COMPLEXITY);
 
   BBox nbox(ph.space_dimension());
   ph.shrink_bounding_box(nbox);

@@ -55,7 +55,7 @@ append_init(C_Polyhedron& base, C_Polyhedron& induct, C_Polyhedron& expect,
 
   // This is the base case:
   // append(A,B,C) :- A = [], B = C.
-  base.add_dimensions_and_embed(3);
+  base.add_space_dimensions_and_embed(3);
   base.add_constraint(A == 0);
   base.add_constraint(B >= 0);
   base.add_constraint(C == B);
@@ -65,7 +65,7 @@ append_init(C_Polyhedron& base, C_Polyhedron& induct, C_Polyhedron& expect,
 
   // This is the inductive case:
   // append(A,B,C) :- A = [X|D], B = E, C = [X|F], append(D,E,F).
-  induct.add_dimensions_and_embed(6);
+  induct.add_space_dimensions_and_embed(6);
   induct.add_constraint(A + F == C + D);
   induct.add_constraint(B == E);
   induct.add_constraint(C + D >= A);
@@ -76,7 +76,7 @@ append_init(C_Polyhedron& base, C_Polyhedron& induct, C_Polyhedron& expect,
   print_constraints(induct, "*** inductive ***");
 #endif
 
-  expect.add_dimensions_and_embed(3);
+  expect.add_space_dimensions_and_embed(3);
   expect.add_constraint(A + B == C);
   expect.add_constraint(B >= 0);
   expect.add_constraint(C >= B);
@@ -104,10 +104,10 @@ fix_point(C_Polyhedron& start, C_Polyhedron& induct, C_Polyhedron& finish,
     Variables_Set dimensions_to_remove;
     for (unsigned int i = num_vars-1 ; i >= arity; --i )
       dimensions_to_remove.insert(Variable(i));
-    current.remove_dimensions(dimensions_to_remove);
+    current.remove_space_dimensions(dimensions_to_remove);
 
 #if NOISY
-    print_constraints(current, "*** after remove_dimensions ***");
+    print_constraints(current, "*** after remove_space_dimensions ***");
 #endif
     current.poly_hull_assign_and_minimize(previous);
 #if NOISY

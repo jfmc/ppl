@@ -38,7 +38,7 @@ namespace Parma_Polyhedra_Library {
 /*!
   A BoundingBox object represents the Cartesian product of \f$n\f$
   not necessarily closed and possibly unbounded intervals,
-  where \f$n\f$ is the space-dimension of the box.
+  where \f$n\f$ is the space dimension of the box.
 */
 #endif // PPL_DOXYGEN_INCLUDE_IMPLEMENTATION_DETAILS
 class BoundingBox {
@@ -51,20 +51,20 @@ public:
 
   //! \brief
   //! Returns a reference the interval that bounds
-  //! the box on the <CODE>k</CODE>-th dimension.
+  //! the box on the <CODE>k</CODE>-th space dimension.
   const Interval& operator[](dimension_type k) const;
 
   //! Returns <CODE>true</CODE> if and only if \p *this is empty.
   bool is_empty() const;
 
   //! \brief
-  //! If the <CODE>k</CODE>-th dimension is unbounded below,
+  //! If the <CODE>k</CODE>-th space dimension is unbounded below,
   //! returns <CODE>false</CODE>.
   //! Otherwise returns <CODE>true</CODE> and set \p closed,
   //! \p n and \p d accordingly.
   /*!
     Let \f$I\f$ the interval corresponding to the <CODE>k</CODE>-th
-    dimension.  If \f$I\f$ is not bounded from below, simply return
+    space dimension.  If \f$I\f$ is not bounded from below, simply return
     <CODE>false</CODE>.  Otherwise, set <CODE>closed</CODE>,
     <CODE>n</CODE> and <CODE>d</CODE> as follows: <CODE>closed</CODE>
     is set to <CODE>true</CODE> if the the lower boundary of \f$I\f$
@@ -83,13 +83,13 @@ public:
 		       Integer& n, Integer& d) const;
 
   //! \brief
-  //! If the <CODE>k</CODE>-th dimension is unbounded above,
+  //! If the <CODE>k</CODE>-th space dimension is unbounded above,
   //! returns <CODE>false</CODE>.
   //! Otherwise returns <CODE>true</CODE> and set \p closed,
   //! \p n and \p d accordingly.
   /*!
     Let \f$I\f$ the interval corresponding to the <CODE>k</CODE>-th
-    dimension.  If \f$I\f$ is not bounded from above, simply return
+    space dimension.  If \f$I\f$ is not bounded from above, simply return
     <CODE>false</CODE>.  Otherwise, set <CODE>closed</CODE>,
     <CODE>n</CODE> and <CODE>d</CODE> as follows: <CODE>closed</CODE>
     is set to <CODE>true</CODE> if the the upper boundary of \f$I\f$
@@ -109,9 +109,10 @@ public:
 
   //! \brief
   //! Raises the lower bound of the interval corresponding
-  //! to the <CODE>k</CODE>-th dimension.
+  //! to the <CODE>k</CODE>-th space dimension.
   /*!
-    Intersects the interval corresponding to the <CODE>k</CODE>-th dimension
+    Intersects the interval corresponding to the <CODE>k</CODE>-th
+    space dimension
     with \f$[n/d, +\infty)\f$ if <CODE>closed</CODE> is <CODE>true</CODE>,
     with \f$(n/d, +\infty)\f$ if <CODE>closed</CODE> is <CODE>false</CODE>.
     An undefined behavior is obtained if \p k is greater than or equal to
@@ -123,9 +124,10 @@ public:
 
   //! \brief
   //! Lowers the upper bound of the interval corresponding
-  //! to the <CODE>k</CODE>-th dimension.
+  //! to the <CODE>k</CODE>-th space dimension.
   /*!
-    Intersects the interval corresponding to the <CODE>k</CODE>-th dimension
+    Intersects the interval corresponding to the <CODE>k</CODE>-th
+    space dimension
     with \f$(-\infty, n/d]\f$ if <CODE>closed</CODE> is <CODE>true</CODE>,
     with \f$(-\infty, n/d)\f$ if <CODE>closed</CODE>
     is <CODE>false</CODE>.

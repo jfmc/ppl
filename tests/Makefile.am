@@ -55,6 +55,7 @@ libppl_tests.a \
 
 ORIGINAL_TESTS = \
 	CbecomesNNC1 \
+	NNCbecomesC1 \
 	NNCminimize1 NNCminimize2 NNCminimize3 NNCminimize4 NNCminimize5 \
         NNCminimize6 \
 	addconstraint1 addconstraint2 addconstraint3 \
@@ -62,10 +63,10 @@ ORIGINAL_TESTS = \
 	addconstraints5 addconstraints6 addconstraints7 addconstraints8 \
 	addconstraints9 addconstraints10 addconstraints11 \
 	addconstraints12 addconstraints13 \
-	adddimensions1 adddimensions2 adddimensions3 adddimensions4 \
-	adddimensions5 adddimensions6 adddimensions7 adddimensions8 \
-	adddimensions9 adddimensions10 adddimensions11 adddimensions12 \
-	adddimensions13 \
+	addspacedims1 addspacedims2 addspacedims3 addspacedims4 \
+	addspacedims5 addspacedims6 addspacedims7 addspacedims8 \
+	addspacedims9 addspacedims10 addspacedims11 addspacedims12 \
+	addspacedims13 \
 	addgenerator1 addgenerator2 addgenerator3 addgenerator4 \
 	addgenerators1 addgenerators2 addgenerators3 addgenerators4 \
 	addgenerators5 addgenerators6 addgenerators7 addgenerators8 \
@@ -100,8 +101,8 @@ ORIGINAL_TESTS = \
 	dualhypercubes \
 	empty1 \
 	exceptions1 exceptions2  exceptions3 \
-	expanddim1 expanddim2 \
-	folddims1 folddims2 \
+	expandspacedim1 expandspacedim2 \
+	foldspacedims1 foldspacedims2 \
 	generalizedaffineimage1 generalizedaffineimage2 \
 	generalizedaffineimage3 generalizedaffineimage4 \
 	generalizedaffineimage5 generalizedaffineimage6 \
@@ -136,9 +137,10 @@ ORIGINAL_TESTS = \
 	relations7 relations8 relations9 relations10 relations11 \
 	relations12 relations13 relations14 relations15 relations16 \
 	relations17 relations18 relations19 \
-	removedim1 removedim2 removedim3 removedim4 removedim5 removedim6 \
-	removedim7 removedim8 removedim9 removedim10 \
-	mapdim1 mapdim2 mapdim3 \
+	removespacedims1 removespacedims2 removespacedims3 removespacedims4 \
+	removespacedims5 removespacedims6 removespacedims7 removespacedims8 \
+	removespacedims9 removespacedims10 \
+	mapspacedims1 mapspacedims2 mapspacedims3 \
 	max_min1 max_min2 \
 	smm1 \
 	timeelapse1 timeelapse2 timeelapse3 timeelapse4 timeelapse5 \
@@ -158,8 +160,8 @@ DERIVED_TESTS = \
 	nnc_addconstraints4 nnc_addconstraints5 nnc_addconstraints6 \
 	nnc_addconstraints7 nnc_addconstraints8 nnc_addconstraints9 \
 	nnc_addconstraints10 nnc_addconstraints13 \
-	nnc_adddimensions1 nnc_adddimensions2 nnc_adddimensions3 \
-	nnc_adddimensions4 nnc_adddimensions9 nnc_adddimensions12 \
+	nnc_addspacedims1 nnc_addspacedims2 nnc_addspacedims3 \
+	nnc_addspacedims4 nnc_addspacedims9 nnc_addspacedims12 \
 	nnc_addgenerator3 \
 	nnc_addgenerators1 nnc_addgenerators2 nnc_addgenerators3 \
 	nnc_addgenerators4 nnc_addgenerators5 nnc_addgenerators6 \
@@ -191,8 +193,8 @@ DERIVED_TESTS = \
 	nnc_disjoint1 nnc_disjoint2 \
 	nnc_empty1 \
 	nnc_exceptions1 nnc_exceptions3 \
-	nnc_expanddim1 \
-	nnc_folddims1 \
+	nnc_expandspacedim1 \
+	nnc_foldspacedims1 \
 	nnc_generalizedaffineimage1 nnc_generalizedaffineimage2 \
 	nnc_generalizedaffineimage3 \
 	nnc_generalizedaffineimage5 nnc_generalizedaffineimage6 \
@@ -224,10 +226,10 @@ DERIVED_TESTS = \
 	nnc_relations5 nnc_relations6 nnc_relations7 nnc_relations8 \
 	nnc_relations9 nnc_relations10 nnc_relations12 nnc_relations13 \
 	nnc_relations14 nnc_relations15 nnc_relations16 nnc_relations19 \
-	nnc_removedim1 nnc_removedim2 nnc_removedim3 nnc_removedim4 \
-	nnc_removedim5 nnc_removedim6 nnc_removedim8 nnc_removedim9 \
-	nnc_removedim10 \
-	nnc_mapdim1 nnc_mapdim2 nnc_mapdim3 \
+	nnc_removespacedims1 nnc_removespacedims2 nnc_removespacedims3 \
+	nnc_removespacedims4 nnc_removespacedims5 nnc_removespacedims6 \
+	nnc_removespacedims8 nnc_removespacedims9 nnc_removespacedims10 \
+	nnc_mapspacedims1 nnc_mapspacedims2 nnc_mapspacedims3 \
 	nnc_max_min1 nnc_max_min2 \
 	nnc_smm1 \
 	nnc_timeelapse2 nnc_timeelapse5 nnc_timeelapse6 nnc_timeelapse7 \
@@ -240,6 +242,8 @@ DERIVED_TESTS = \
 #
 
 CbecomesNNC1_SOURCES = CbecomesNNC1.cc
+
+NNCbecomesC1_SOURCES = NNCbecomesC1.cc
 
 NNCminimize1_SOURCES = NNCminimize1.cc
 NNCminimize2_SOURCES = NNCminimize2.cc
@@ -266,19 +270,19 @@ addconstraints11_SOURCES = addconstraints11.cc
 addconstraints12_SOURCES = addconstraints12.cc
 addconstraints13_SOURCES = addconstraints13.cc
 
-adddimensions1_SOURCES = adddimensions1.cc
-adddimensions2_SOURCES = adddimensions2.cc
-adddimensions3_SOURCES = adddimensions3.cc
-adddimensions4_SOURCES = adddimensions4.cc
-adddimensions5_SOURCES = adddimensions5.cc
-adddimensions6_SOURCES = adddimensions6.cc
-adddimensions7_SOURCES = adddimensions7.cc
-adddimensions8_SOURCES = adddimensions8.cc
-adddimensions9_SOURCES = adddimensions9.cc
-adddimensions10_SOURCES = adddimensions10.cc
-adddimensions11_SOURCES = adddimensions11.cc
-adddimensions12_SOURCES = adddimensions12.cc
-adddimensions13_SOURCES = adddimensions13.cc
+addspacedims1_SOURCES = addspacedims1.cc
+addspacedims2_SOURCES = addspacedims2.cc
+addspacedims3_SOURCES = addspacedims3.cc
+addspacedims4_SOURCES = addspacedims4.cc
+addspacedims5_SOURCES = addspacedims5.cc
+addspacedims6_SOURCES = addspacedims6.cc
+addspacedims7_SOURCES = addspacedims7.cc
+addspacedims8_SOURCES = addspacedims8.cc
+addspacedims9_SOURCES = addspacedims9.cc
+addspacedims10_SOURCES = addspacedims10.cc
+addspacedims11_SOURCES = addspacedims11.cc
+addspacedims12_SOURCES = addspacedims12.cc
+addspacedims13_SOURCES = addspacedims13.cc
 
 addgenerator1_SOURCES = addgenerator1.cc
 addgenerator2_SOURCES = addgenerator2.cc
@@ -405,11 +409,11 @@ exceptions1_SOURCES = exceptions1.cc
 exceptions2_SOURCES = exceptions2.cc
 exceptions3_SOURCES = exceptions3.cc
 
-expanddim1_SOURCES = expanddim1.cc
-expanddim2_SOURCES = expanddim2.cc
+expandspacedim1_SOURCES = expandspacedim1.cc
+expandspacedim2_SOURCES = expandspacedim2.cc
 
-folddims1_SOURCES = folddims1.cc
-folddims2_SOURCES = folddims2.cc
+foldspacedims1_SOURCES = foldspacedims1.cc
+foldspacedims2_SOURCES = foldspacedims2.cc
 
 generalizedaffineimage1_SOURCES = generalizedaffineimage1.cc
 generalizedaffineimage2_SOURCES = generalizedaffineimage2.cc
@@ -528,20 +532,20 @@ relations19_SOURCES = relations19.cc
 # randphull2_SOURCES = randphull2.cc
 # randphull2_LDADD = $(LDADD) -lm
 
-removedim1_SOURCES = removedim1.cc
-removedim2_SOURCES = removedim2.cc
-removedim3_SOURCES = removedim3.cc
-removedim4_SOURCES = removedim4.cc
-removedim5_SOURCES = removedim5.cc
-removedim6_SOURCES = removedim6.cc
-removedim7_SOURCES = removedim7.cc
-removedim8_SOURCES = removedim8.cc
-removedim9_SOURCES = removedim9.cc
-removedim10_SOURCES = removedim10.cc
+removespacedims1_SOURCES = removespacedims1.cc
+removespacedims2_SOURCES = removespacedims2.cc
+removespacedims3_SOURCES = removespacedims3.cc
+removespacedims4_SOURCES = removespacedims4.cc
+removespacedims5_SOURCES = removespacedims5.cc
+removespacedims6_SOURCES = removespacedims6.cc
+removespacedims7_SOURCES = removespacedims7.cc
+removespacedims8_SOURCES = removespacedims8.cc
+removespacedims9_SOURCES = removespacedims9.cc
+removespacedims10_SOURCES = removespacedims10.cc
 
-mapdim1_SOURCES = mapdim1.cc
-mapdim2_SOURCES = mapdim2.cc
-mapdim3_SOURCES = mapdim3.cc
+mapspacedims1_SOURCES = mapspacedims1.cc
+mapspacedims2_SOURCES = mapspacedims2.cc
+mapspacedims3_SOURCES = mapspacedims3.cc
 
 max_min1_SOURCES = max_min1.cc
 max_min2_SOURCES = max_min2.cc
@@ -621,18 +625,18 @@ nnc_addconstraints10_CXXFLAGS = $(DERIVED_CXXFLAGS)
 nnc_addconstraints13_SOURCES = addconstraints13.cc
 nnc_addconstraints13_CXXFLAGS = $(DERIVED_CXXFLAGS)
 
-nnc_adddimensions1_SOURCES = adddimensions1.cc
-nnc_adddimensions1_CXXFLAGS = $(DERIVED_CXXFLAGS)
-nnc_adddimensions2_SOURCES = adddimensions2.cc
-nnc_adddimensions2_CXXFLAGS = $(DERIVED_CXXFLAGS)
-nnc_adddimensions3_SOURCES = adddimensions3.cc
-nnc_adddimensions3_CXXFLAGS = $(DERIVED_CXXFLAGS)
-nnc_adddimensions4_SOURCES = adddimensions4.cc
-nnc_adddimensions4_CXXFLAGS = $(DERIVED_CXXFLAGS)
-nnc_adddimensions9_SOURCES = adddimensions9.cc
-nnc_adddimensions9_CXXFLAGS = $(DERIVED_CXXFLAGS)
-nnc_adddimensions12_SOURCES = adddimensions12.cc
-nnc_adddimensions12_CXXFLAGS = $(DERIVED_CXXFLAGS)
+nnc_addspacedims1_SOURCES = addspacedims1.cc
+nnc_addspacedims1_CXXFLAGS = $(DERIVED_CXXFLAGS)
+nnc_addspacedims2_SOURCES = addspacedims2.cc
+nnc_addspacedims2_CXXFLAGS = $(DERIVED_CXXFLAGS)
+nnc_addspacedims3_SOURCES = addspacedims3.cc
+nnc_addspacedims3_CXXFLAGS = $(DERIVED_CXXFLAGS)
+nnc_addspacedims4_SOURCES = addspacedims4.cc
+nnc_addspacedims4_CXXFLAGS = $(DERIVED_CXXFLAGS)
+nnc_addspacedims9_SOURCES = addspacedims9.cc
+nnc_addspacedims9_CXXFLAGS = $(DERIVED_CXXFLAGS)
+nnc_addspacedims12_SOURCES = addspacedims12.cc
+nnc_addspacedims12_CXXFLAGS = $(DERIVED_CXXFLAGS)
 
 nnc_addgenerator3_SOURCES = addgenerator3.cc
 nnc_addgenerator3_CXXFLAGS = $(DERIVED_CXXFLAGS)
@@ -799,11 +803,11 @@ nnc_exceptions1_CXXFLAGS = $(DERIVED_CXXFLAGS)
 nnc_exceptions3_SOURCES = exceptions3.cc
 nnc_exceptions3_CXXFLAGS = $(DERIVED_CXXFLAGS)
 
-nnc_expanddim1_SOURCES = expanddim1.cc
-nnc_expanddim1_CXXFLAGS = $(DERIVED_CXXFLAGS)
+nnc_expandspacedim1_SOURCES = expandspacedim1.cc
+nnc_expandspacedim1_CXXFLAGS = $(DERIVED_CXXFLAGS)
 
-nnc_folddims1_SOURCES = folddims1.cc
-nnc_folddims1_CXXFLAGS = $(DERIVED_CXXFLAGS)
+nnc_foldspacedims1_SOURCES = foldspacedims1.cc
+nnc_foldspacedims1_CXXFLAGS = $(DERIVED_CXXFLAGS)
 
 nnc_generalizedaffineimage1_SOURCES = generalizedaffineimage1.cc
 nnc_generalizedaffineimage1_CXXFLAGS = $(DERIVED_CXXFLAGS)
@@ -982,31 +986,31 @@ nnc_relations19_CXXFLAGS = $(DERIVED_CXXFLAGS)
 # nnc_randphull2_CXXFLAGS = $(DERIVED_CXXFLAGS)
 # nnc_randphull2_LDADD = $(LDADD) -lm
 
-nnc_removedim1_SOURCES = removedim1.cc
-nnc_removedim1_CXXFLAGS = $(DERIVED_CXXFLAGS)
-nnc_removedim2_SOURCES = removedim2.cc
-nnc_removedim2_CXXFLAGS = $(DERIVED_CXXFLAGS)
-nnc_removedim3_SOURCES = removedim3.cc
-nnc_removedim3_CXXFLAGS = $(DERIVED_CXXFLAGS)
-nnc_removedim4_SOURCES = removedim4.cc
-nnc_removedim4_CXXFLAGS = $(DERIVED_CXXFLAGS)
-nnc_removedim5_SOURCES = removedim5.cc
-nnc_removedim5_CXXFLAGS = $(DERIVED_CXXFLAGS)
-nnc_removedim6_SOURCES = removedim6.cc
-nnc_removedim6_CXXFLAGS = $(DERIVED_CXXFLAGS)
-nnc_removedim8_SOURCES = removedim8.cc
-nnc_removedim8_CXXFLAGS = $(DERIVED_CXXFLAGS)
-nnc_removedim9_SOURCES = removedim9.cc
-nnc_removedim9_CXXFLAGS = $(DERIVED_CXXFLAGS)
-nnc_removedim10_SOURCES = removedim10.cc
-nnc_removedim10_CXXFLAGS = $(DERIVED_CXXFLAGS)
+nnc_removespacedims1_SOURCES = removespacedims1.cc
+nnc_removespacedims1_CXXFLAGS = $(DERIVED_CXXFLAGS)
+nnc_removespacedims2_SOURCES = removespacedims2.cc
+nnc_removespacedims2_CXXFLAGS = $(DERIVED_CXXFLAGS)
+nnc_removespacedims3_SOURCES = removespacedims3.cc
+nnc_removespacedims3_CXXFLAGS = $(DERIVED_CXXFLAGS)
+nnc_removespacedims4_SOURCES = removespacedims4.cc
+nnc_removespacedims4_CXXFLAGS = $(DERIVED_CXXFLAGS)
+nnc_removespacedims5_SOURCES = removespacedims5.cc
+nnc_removespacedims5_CXXFLAGS = $(DERIVED_CXXFLAGS)
+nnc_removespacedims6_SOURCES = removespacedims6.cc
+nnc_removespacedims6_CXXFLAGS = $(DERIVED_CXXFLAGS)
+nnc_removespacedims8_SOURCES = removespacedims8.cc
+nnc_removespacedims8_CXXFLAGS = $(DERIVED_CXXFLAGS)
+nnc_removespacedims9_SOURCES = removespacedims9.cc
+nnc_removespacedims9_CXXFLAGS = $(DERIVED_CXXFLAGS)
+nnc_removespacedims10_SOURCES = removespacedims10.cc
+nnc_removespacedims10_CXXFLAGS = $(DERIVED_CXXFLAGS)
 
-nnc_mapdim1_SOURCES = mapdim1.cc
-nnc_mapdim1_CXXFLAGS = $(DERIVED_CXXFLAGS)
-nnc_mapdim2_SOURCES = mapdim2.cc
-nnc_mapdim2_CXXFLAGS = $(DERIVED_CXXFLAGS)
-nnc_mapdim3_SOURCES = mapdim3.cc
-nnc_mapdim3_CXXFLAGS = $(DERIVED_CXXFLAGS)
+nnc_mapspacedims1_SOURCES = mapspacedims1.cc
+nnc_mapspacedims1_CXXFLAGS = $(DERIVED_CXXFLAGS)
+nnc_mapspacedims2_SOURCES = mapspacedims2.cc
+nnc_mapspacedims2_CXXFLAGS = $(DERIVED_CXXFLAGS)
+nnc_mapspacedims3_SOURCES = mapspacedims3.cc
+nnc_mapspacedims3_CXXFLAGS = $(DERIVED_CXXFLAGS)
 
 nnc_max_min1_SOURCES = max_min1.cc
 nnc_max_min1_CXXFLAGS = $(DERIVED_CXXFLAGS)
@@ -1055,10 +1059,7 @@ endif # BUILD_WATCHDOG_LIBRARY
 
 TESTS = $(ORIGINAL_TESTS) $(DERIVED_TESTS) $(WATCHDOG_TESTS)
 
-XFAIL_TESTS = \
-nnc_limitedh79extrapolation3 \
-nnc_polydifference1 \
-addgenerators11
+XFAIL_TESTS = addgenerators11
 
 check_PROGRAMS = $(TESTS) $(BUGS)
 

@@ -45,6 +45,11 @@ cyclic12-6.ext \
 cyclic14-8.ext \
 cyclic16-10.ext \
 cyclic25_13.ext \
+dcube10.ext \
+dcube12.ext \
+dcube3.ext \
+dcube6.ext \
+dcube8.ext \
 irbox20-4.ext \
 irbox200-4.ext \
 mp5.ext \

@@ -263,38 +263,38 @@ Determinate<PH>::add_constraints(ConSys& cs) {
 
 template <typename PH>
 void
-Determinate<PH>::add_dimensions_and_embed(dimension_type m) {
+Determinate<PH>::add_space_dimensions_and_embed(dimension_type m) {
   mutate();
-  prep->ph.add_dimensions_and_embed(m);
+  prep->ph.add_space_dimensions_and_embed(m);
 }
 
 template <typename PH>
 void
-Determinate<PH>::add_dimensions_and_project(dimension_type m) {
+Determinate<PH>::add_space_dimensions_and_project(dimension_type m) {
   mutate();
-  prep->ph.add_dimensions_and_project(m);
+  prep->ph.add_space_dimensions_and_project(m);
 }
 
 template <typename PH>
 void
-Determinate<PH>::remove_dimensions(const Variables_Set& to_be_removed) {
+Determinate<PH>::remove_space_dimensions(const Variables_Set& to_be_removed) {
   mutate();
-  prep->ph.remove_dimensions(to_be_removed);
+  prep->ph.remove_space_dimensions(to_be_removed);
 }
 
 template <typename PH>
 void
-Determinate<PH>::remove_higher_dimensions(dimension_type new_dimension) {
+Determinate<PH>::remove_higher_space_dimensions(dimension_type new_dimension) {
   mutate();
-  prep->ph.remove_higher_dimensions(new_dimension);
+  prep->ph.remove_higher_space_dimensions(new_dimension);
 }
 
 template <typename PH>
 template <typename PartialFunction>
 void
-Determinate<PH>::map_dimensions(const PartialFunction& pfunc) {
+Determinate<PH>::map_space_dimensions(const PartialFunction& pfunc) {
   mutate();
-  prep->ph.map_dimensions(pfunc);
+  prep->ph.map_space_dimensions(pfunc);
 }
 
 } // namespace Parma_Polyhedra_Library

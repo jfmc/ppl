@@ -426,7 +426,7 @@ of the library is defined similarly.
 
 Unless it is otherwise stated,
 all the polyhedra, constraints and/or generators in any library operation
-must obey the following space <EM>dimension-compatibility</EM> rules:
+must obey the following (space) <EM>dimension-compatibility</EM> rules:
 - polyhedra are dimension-compatible if and only if they have
   the same space dimension;
 - the constraint
@@ -446,6 +446,45 @@ While the space dimension of a constraint, a generator or a system thereof
 is automatically adjusted when needed, the space dimension of a polyhedron
 can only be changed by explicit calls to operators provided for that
 purpose.
+
+\anchor affine_dimension
+<B>Affine Independence and Affine Dimension</B>
+
+A finite set of points
+\f$\{ \vect{x}_1, \ldots, \vect{x}_k \} \sseq \Rset^n\f$ is
+<EM>affinely independent</EM> if,
+for all \f$\lambda_1, \ldots, \lambda_k \in \Rset\f$,
+the system of equations
+\f[
+  \sum_{i = 1}^k \lambda_i \vect{x}_i = \vect{0},
+    \quad
+  \sum_{i = 1}^k \lambda_i = 0
+\f]
+implies that, for each \f$i = 1, \ldots, k\f$, \f$\lambda_i = 0\f$.
+
+The maximum number of affinely independent points in \f$\Rset^n\f$
+is \f$n + 1\f$.
+
+A <EM>non-empty</EM> NNC polyhedron \f$\cP \in \Pset_n\f$ has
+<EM>affine dimension</EM> \f$k \in \Nset\f$, denoted by \f$\pdim(\cP) = k\f$,
+if the maximum number of affinely independent points in \f$\cP\f$ is
+\f$k + 1\f$.
+
+We remark that the above definition only applies to polyhedra
+that are not empty, so that \f$0 \leq \pdim(\cP) \leq n\f$.
+By convention, the affine dimension of an empty polyhedron is 0
+(even though the ``natural'' generalization of the definition above
+would imply that the affine dimension of an empty polyhedron is \f$-1\f$).
+
+\note
+The affine dimension \f$k \leq n\f$ of an NNC polyhedron \f$\cP \in \Pset_n\f$
+must not be confused with the space dimension \f$n\f$ of \f$\cP\f$,
+which is the dimension of the enclosing vector space \f$\Rset^n\f$.
+In particular, we can have \f$\pdim(\cP) \neq \pdim(\cQ)\f$ even though
+\f$\cP\f$ and \f$\cQ\f$ are dimension-compatible;
+and vice versa, \f$\cP\f$ and \f$\cQ\f$ may be dimension-incompatible
+polyhedra even though \f$\pdim(\cP) = \pdim(\cQ)\f$.
+
 
 <B>Rational Polyhedra</B>
 
@@ -526,7 +565,7 @@ Another way of seeing it is as follows: first embed polyhedron \f$\cP\f$
 into a vector space of dimension \f$n+m\f$ and then add a suitably
 renamed-apart version of the constraints defining \f$\cQ\f$.
 
-\anchor add_dimensions
+\anchor add_space_dimensions
 <B>Adding New Dimensions to the Vector Space</B>
 
 The library provides two operators for adding a number \f$i\f$ of
@@ -536,13 +575,13 @@ therefore transforming it into a new NNC polyhedron
 In both cases, the added dimensions of the vector space
 are those having the highest indices.
 
-The operator <CODE>add_dimensions_and_embed</CODE>
+The operator <CODE>add_space_dimensions_and_embed</CODE>
 \e embeds the polyhedron \f$\cP\f$ into the new vector space of
 dimension \f$i+n\f$ and returns the polyhedron \f$\cQ\f$
 defined by all and only the constraints defining \f$\cP\f$
 (the variables corresponding to the added dimensions are unconstrained).
 For instance, when starting from a polyhedron \f$\cP \sseq \Rset^2\f$
-and adding a third dimension, the result will be the polyhedron
+and adding a third space dimension, the result will be the polyhedron
 \f[
  \cQ = \bigl\{\,
          (x_0, x_1, x_2)^\transpose \in \Rset^3
@@ -551,14 +590,14 @@ and adding a third dimension, the result will be the polyhedron
        \,\bigr\}.
 \f]
 
-In contrast, the operator  <CODE>add_dimensions_and_project</CODE>
+In contrast, the operator  <CODE>add_space_dimensions_and_project</CODE>
 \e projects the polyhedron \f$\cP\f$ into the new vector space of
 dimension \f$i+n\f$ and returns the polyhedron \f$\cQ\f$
 whose constraint system, besides the constraints defining \f$\cP\f$,
 will include additional constraints on the added dimensions.
 Namely, the corresponding variables are all constrained to be equal to 0.
 For instance, when starting from a polyhedron \f$\cP \sseq \Rset^2\f$
-and adding a third dimension, the result will be the polyhedron
+and adding a third space dimension, the result will be the polyhedron
 \f[
   \cQ = \bigl\{\,
           (x_0, x_1, 0)^\transpose \in \Rset^3
@@ -567,7 +606,7 @@ and adding a third dimension, the result will be the polyhedron
         \,\bigr\}.
 \f]
 
-\anchor remove_dimensions
+\anchor remove_space_dimensions
 <B>Removing Dimensions from the Vector Space</B>
 
 The library provides two operators for removing
@@ -575,7 +614,7 @@ space dimensions from an NNC polyhedron \f$\cP \in \Pset_n\f$,
 therefore transforming it into a new NNC polyhedron
 \f$\cQ \in \Pset_m\f$ where \f$m \leq n\f$.
 
-Given a set of variables, the operator <CODE>remove_dimensions</CODE>
+Given a set of variables, the operator <CODE>remove_space_dimensions</CODE>
 removes all the space dimensions specified by the variables in the set.
 For instance, letting \f$\cP \in \Pset_4\f$ be the singleton set
 \f$\bigl\{ (3, 1, 0, 2)^\transpose \bigr\} \sseq \Rset^4\f$,
@@ -586,8 +625,8 @@ then after invoking this operator with the set of variables
 \f]
 
 Given a space dimension \f$m\f$ less than or equal to that of the polyhedron,
-the operator <CODE>remove_higher_dimensions</CODE> removes
-the dimensions having indices greater than or equal to \f$m\f$.
+the operator <CODE>remove_higher_space_dimensions</CODE> removes
+the space dimensions having indices greater than or equal to \f$m\f$.
 For instance, letting \f$\cP \in \Pset_4\f$ defined as before,
 by invoking this operator with \f$m = 2\f$ the resulting polyhedron
 will be
@@ -595,10 +634,10 @@ will be
   \cQ = \bigl\{ (3, 1)^\transpose \bigr\} \sseq \Rset^2.
 \f]
 
-\anchor map_dimensions
+\anchor map_space_dimensions
 <B>Mapping the Dimensions of the Vector Space</B>
 
-The operator <CODE>map_dimensions</CODE> provided by the library
+The operator <CODE>map_space_dimensions</CODE> provided by the library
 maps the dimensions of the vector space \f$\Rset^n\f$ according
 to a partial injective function \f$\pard{\rho}{\{0, \ldots, n-1\}}{\Nset}\f$
 such that \f$\rho\bigl(\{0, \ldots, n-1\}\bigr) = \{0, \ldots, m-1\}\f$
@@ -620,14 +659,14 @@ otherwise the result is \f$\cQ \in \Pset_m\f$ given by
       \,\Bigr\}.
 \f]
 
-\anchor expand_dimension
+\anchor expand_space_dimension
 <B>Expanding One Dimension of the Vector Space to Multiple Dimensions</B>
 
-The operator <CODE>expand_dimension</CODE> provided by the library
-adds \f$m\f$ new dimensions to a polyhedron \f$\cP \in \Pset_n\f$,
+The operator <CODE>expand_space_dimension</CODE> provided by the library
+adds \f$m\f$ new space dimensions to a polyhedron \f$\cP \in \Pset_n\f$,
 with \f$n > 0\f$, so that dimensions
 \f$n\f$, \f$n+1\f$, \f$\ldots\f$, \f$n+m-1\f$
-of the result \f$\cQ\f$ are exact copies of the \f$i\f$-th dimension
+of the result \f$\cQ\f$ are exact copies of the \f$i\f$-th space dimension
 of \f$\cP\f$.  More formally,
 \f[
   \cQ
@@ -646,14 +685,14 @@ of \f$\cP\f$.  More formally,
 This operation has been proposed in \ref GDMDRS04 "[GDMDRS04]".
 
 
-\anchor fold_dimensions
+\anchor fold_space_dimensions
 <B>Folding Multiple Dimensions of the Vector Space into One Dimension</B>
 
-The operator <CODE>fold_dimensions</CODE> provided by the library,
+The operator <CODE>fold_space_dimensions</CODE> provided by the library,
 given a polyhedron \f$\cP \in \Pset_n\f$, with \f$n > 0\f$,
-folds a set of dimensions \f$J = \{ j_0, \ldots, j_{m-1} \}\f$,
+folds a set of space dimensions \f$J = \{ j_0, \ldots, j_{m-1} \}\f$,
 with \f$m < n\f$ and \f$j < n\f$ for each \f$j \in J\f$,
-into dimension \f$i < n\f$, where \f$i \notin J\f$.
+into space dimension \f$i < n\f$, where \f$i \notin J\f$.
 The result is given by
 \f[
   \cQ \defeq \biguplus_{d = 0}^m \cQ_d
@@ -730,10 +769,10 @@ a vector \f$\vect{b} \in \Rset^m\f$ such that,
 for all \f$\vect{x} \in \Rset^n\f$, we have
 \f$\phi(\vect{x}) = A\vect{x} + \vect{b}\f$.
 If \f$n = m\f$, then the function \f$\phi\f$ is said to be
-<EM>space-dimension preserving</EM>.
+<EM>space dimension preserving</EM>.
 
 Both \f$\Pset_n\f$ and \f$\CPset_n\f$ are closed under
-the application of any space-dimension preserving
+the application of any space dimension preserving
 affine image and preimage operators.
 
 The library provides two operators, one computes an affine image and
@@ -1924,119 +1963,7 @@ D.&nbsp;K. Wilde.
 
 \if Include_Implementation_Details
 
-\section prelims Further notation and terminology
-
-<B><EM>Proposition</EM></B>
-
-A polyhedron is a convex set.
-
-<B>Minkowski's theorem</B>
-
-Let
-\f$P = \{\, \vect{x} \in \Rset^n \mid A\vect{x} \geq \vect{b} \,\}\f$
-be a non-empty polyhedron where \f$\prank(A) = n\f$.
-Let \f$V\f$ be the set of vertices and
-\f$R\f$ the set of extreme rays of \f$P\f$.
-Let also \f$\mathcal{V}\f$ be the set of convex combinations of \f$V\f$
-and \f$\mathcal{R}\f$ the set of positive combinations of \f$R\f$.
-Then
-\f[
-  P = \mathcal{V} + \mathcal{R}.
-\f]
-
-Informally, this theorem states that,
-whenever a polyhedron \f$P\f$ has a vertex,
-there exists a decomposition such that
-- \f$V\f$ is the set of all <EM>vertices</EM> of \f$P\f$;
-- \f$R\f$ is the set of all <EM>extreme</EM> rays of \f$P\f$; and
-- \f$L = \emptyset\f$.
-
-The conditions that \f$P\f$ is not empty and \f$\prank(A) = n\f$
-are equivalent to the condition that \f$P\f$ has a vertex.
-(See also Nemhauser and Wolsey - Integer and Combinatorial Optimization -
-propositions 4.1 and 4.2 on pages 92 and 93).
-
-<B><EM>Proposition</EM></B>
-
-Under the same hypotheses of Minkowsky's theorem,
-if \f$P\f$ is a rational polyhedron then
-all the vertices in \f$V\f$ have rational coefficients and
-we can consider a set \f$R\f$ of extreme rays having
-rational coefficients only.
-
-The second theorem, called Weil's theorem, states that any system of
-generators having rational coefficients defines a rational polyhedron:
-
-<B>Weil's theorem</B>
-
-If \f$A\f$ is a rational \f$m \times n\f$ matrix,
-\f$B\f$ is a rational \f$m' \times n\f$ matrix and
-\f[
-  Q = \sset{
-        \vect{x} \in \Rset^n
-      }{
-        \vect{x}^\transpose = \vect{y}^\transpose A + \vect{z}^\transpose B, \\
-        \vect{y} = (y_0, \ldots, y_{m-1})^\transpose \in \Rset_+^{m},
-        \sum_{k=0}^{m-1} y_k = 1, \\
-	\vect{z} \in \Rset_+^{m'}
-      },
-\f]
-then \f$Q\f$ is a rational polyhedron.
-
-In fact, since \f$Q\f$ consists of the sum of convex combinations of
-the rows of \f$A\f$ with positive combinations of the rows of \f$B\f$,
-we can think of \f$A\f$ as the matrix of vertices and \f$B\f$ as
-the matrix of rays.
-
-<B>Polyhedron dimension</B>
-
-A non-empty polyhedron \f$P \sseq \Rset^n\f$
-is of <EM>dimension</EM> \f$k\f$,
-denoted by \f$\pdim(P) = k\f$, if the maximum number of
-affinely independent points in \f$P\f$ is \f$k + 1\f$.
-
-\note
-What is the dimension of the <EM>empty</EM> polyhedron?
-If the above definition is applied to an empty polyhedron,
-then the answer would be \f$-1\f$.
-
-
-The dimension \f$k \leq n\f$ of an NNC polyhedron
-\f$P \in \Pset_n\f$
-must not be confused with the <EM>space</EM> dimension \f$n\f$ of \f$P\f$,
-which is the dimension of the enclosing vector space.
-In particular, we can have \f$\pdim(P) \neq \pdim(Q)\f$ even though
-\f$P\f$ and \f$Q\f$ are dimension-compatible;
-and vice versa, \f$P\f$ and \f$Q\f$ may be dimension-incompatible polyhedra
-even though \f$\pdim(P) = \pdim(Q)\f$.
-
-
-<B>Cone</B>
-
-A set \f$C \sseq \Rset^n\f$ is a <EM>cone</EM> if
-\f[
-  \vect{x} \in C \Rightarrow \lambda \vect{x} \in C
-  \text{ for all } \lambda \in \Rset, \lambda \geq 0.
-\f]
-
-<B>Polyhedral cone</B>
-
-The polyhedron
-\f$P = \{\,\vect{x} \in \Rset^n \mid A\vect{x} \geq \vect{0}\,\}\f$
-is a convex cone and is called <EM>polyhedral cone</EM>.
-
-A polyhedral cone is either <EM>pointed</EM>,
-having the origin as its only vertex, or has no vertices at all.
-
-<B>Lineality space</B>
-
-Given a polyhedron
-\f$P = \{\,\vect{x} \in \Rset^n \mid A\vect{x} \geq \vect{b}\,\}\f$,
-the <EM>lineality space</EM> of \f$P\f$ is the set
-\f[
-  \{\, \vect{x} \in P \mid A\vect{x} = \vect{0} \,\}
-\f]
-and it is denoted by \f$\linspace(P)\f$.
+\section prelims Further Notation and Terminology
 
 <B>Linear independence</B>
 
@@ -2051,8 +1978,9 @@ the set of equations
 implies that, for each \f$i = 1\f$, \f$\ldots\f$, \f$k\f$,
 \f$\lambda_i = 0\f$.
 
-Note that the maximum number of linearly independent points in
-\f$\Rset^n\f$ is \f$n\f$.
+The maximum number of linearly independent points in \f$\Rset^n\f$ is \f$n\f$.
+Note that linear independence implies affine independence,
+but the converse is not true.
 
 <B><EM>Proposition</EM></B>
 
@@ -2067,24 +1995,95 @@ The maximum number of linearly independent rows (columns) of a
 matrix \f$A\f$ is the <EM>rank</EM> of \f$A\f$ and is denoted by
 \f$\prank(A)\f$.
 
-<B>Affine independence</B>
+<B><EM>Proposition</EM></B>
 
-A finite set of points
-\f$\{ \vect{x}_1, \ldots, \vect{x}_k \} \sseq \Rset^n\f$ is
-<EM>affinely independent</EM> if,
-for all \f$\lambda_1, \ldots, \lambda_k \in \Rset\f$,
-the set of equations
+A polyhedron is a convex set.
+
+<B>Minkowski's theorem</B>
+
+Let
+\f$\cP = \{\, \vect{x} \in \Rset^n \mid A\vect{x} \geq \vect{b} \,\}\f$
+be a non-empty polyhedron where \f$\prank(A) = n\f$.
+Let \f$V\f$ be the set of vertices and
+\f$R\f$ the set of extreme rays of \f$\cP\f$.
+Let also \f$\mathcal{V}\f$ be the set of convex combinations of \f$V\f$
+and \f$\mathcal{R}\f$ the set of positive combinations of \f$R\f$.
+Then
 \f[
-  \sum_{i = 1}^k \lambda_i \vect{x}_i = \vect{0},
-    \quad
-  \sum_{i = 1}^k \lambda_i = 0
+  \cP = \mathcal{V} + \mathcal{R}.
 \f]
-implies that, for each \f$i = 1, \ldots, k\f$, \f$\lambda_i = 0\f$.
 
-Note that linear independence implies affine independence, but the
-converse is not true. Moreover the maximum number of affinely independent
-points in \f$\Rset^n\f$ is \f$n + 1\f$
-(e.g., \f$n\f$ linearly independent points and the origin \f$\vect{0}\f$).
+Informally, this theorem states that,
+whenever a polyhedron \f$\cP\f$ has a vertex,
+there exists a decomposition such that
+- \f$V\f$ is the set of all <EM>vertices</EM> of \f$\cP\f$;
+- \f$R\f$ is the set of all <EM>extreme</EM> rays of \f$\cP\f$; and
+- \f$L = \emptyset\f$.
+
+The conditions that \f$\cP\f$ is not empty and \f$\prank(A) = n\f$
+are equivalent to the condition that \f$\cP\f$ has a vertex.
+(See also Nemhauser and Wolsey - Integer and Combinatorial Optimization -
+propositions 4.1 and 4.2 on pages 92 and 93).
+
+<B><EM>Proposition</EM></B>
+
+Under the same hypotheses of Minkowsky's theorem,
+if \f$\cP\f$ is a rational polyhedron then
+all the vertices in \f$V\f$ have rational coefficients and
+we can consider a set \f$R\f$ of extreme rays having
+rational coefficients only.
+
+The second theorem, called Weil's theorem, states that any system of
+generators having rational coefficients defines a rational polyhedron:
+
+<B>Weil's theorem</B>
+
+If \f$A\f$ is a rational \f$m \times n\f$ matrix,
+\f$B\f$ is a rational \f$m' \times n\f$ matrix and
+\f[
+  \cQ = \sset{
+          \vect{x} \in \Rset^n
+        }{
+          \vect{x}^\transpose = \vect{y}^\transpose A
+                                  + \vect{z}^\transpose B, \\
+          \vect{y} = (y_0, \ldots, y_{m-1})^\transpose \in \nonnegRset^{m},
+          \sum_{k=0}^{m-1} y_k = 1, \\
+	  \vect{z} \in \nonnegRset^{m'}
+        },
+\f]
+then \f$\cQ\f$ is a rational polyhedron.
+
+In fact, since \f$\cQ\f$ consists of the sum of convex combinations of
+the rows of \f$A\f$ with positive combinations of the rows of \f$B\f$,
+we can think of \f$A\f$ as the matrix of vertices and \f$B\f$ as
+the matrix of rays.
+
+<B>Cone</B>
+
+A set \f$C \sseq \Rset^n\f$ is a <EM>cone</EM> if
+\f[
+  \vect{x} \in C \Rightarrow \lambda \vect{x} \in C
+  \text{ for all } \lambda \in \nonnegRset.
+\f]
+
+<B>Polyhedral cone</B>
+
+The polyhedron
+\f$\cP = \{\,\vect{x} \in \Rset^n \mid A\vect{x} \geq \vect{0}\,\}\f$
+is a convex cone and is called <EM>polyhedral cone</EM>.
+
+A polyhedral cone is either <EM>pointed</EM>,
+having the origin as its only vertex, or has no vertices at all.
+
+<B>Lineality space</B>
+
+Given a polyhedron
+\f$\cP = \{\,\vect{x} \in \Rset^n \mid A\vect{x} \geq \vect{b}\,\}\f$,
+the <EM>lineality space</EM> of \f$\cP\f$ is the set
+\f[
+  \{\, \vect{x} \in \cP \mid A\vect{x} = \vect{0} \,\}
+\f]
+and it is denoted by \f$\linspace(\cP)\f$.
 
 
 \section homogeneous Homogeneous Systems
@@ -2096,16 +2095,16 @@ in which the original polyhedron is embedded.
 <B>Corresponding Polyhedral Cone</B>
 
 The transformation changes the inhomogeneous system of constraints
-in \f$n\f$ variables, representing a polyhedron \f$P \in \Rset^n\f$,
+in \f$n\f$ variables, representing a polyhedron \f$\cP \in \Rset^n\f$,
 into a homogeneous system in \f$n + 1\f$ variables, representing a
 polyhedral cone \f$C \in \Rset^{n + 1}\f$,
-so that each point \f$\vect{x} \in P\f$
+so that each point \f$\vect{x} \in \cP\f$
 corresponds to a point
 \f$\vect{x}' = (\xi \vect{x}^\transpose, \xi)^\transpose \in C\f$
 where \f$\xi \geq 0\f$. That is,
 \f[
-  P = \{\,\vect{x} \mid A\vect{x} \geq \vect{b}\,\}
-    = \{\,\vect{x} \mid A\vect{x} - \vect{b} \geq \vect{0}\,\}
+  \cP = \{\,\vect{x} \mid A\vect{x} \geq \vect{b}\,\}
+      = \{\,\vect{x} \mid A\vect{x} - \vect{b} \geq \vect{0}\,\}
 \f]
 \f[
   C = \{\,
@@ -2124,52 +2123,52 @@ its first \f$m\f$ rows, the submatrix
 and, for the (\f$m + 1\f$)'st row,
 \f$(\vect{0}^\transpose, 1)\f$ where \f$\vect{0} \in \Rset^n\f$.
 We call  \f$C\f$ the
-<EM>corresponding polyhedral cone for \f$P\f$</EM>.
+<EM>corresponding polyhedral cone for \f$\cP\f$</EM>.
 
 The (\f$m+1\f$)'st row
 \f$(\vect{0}^\transpose, 1)\f$
 represents the <EM>positivity constraint</EM> \f$1 \geq 0\f$.
 
-Note that \f$P\f$ is contained in \f$C\f$
+Note that \f$\cP\f$ is contained in \f$C\f$
 since the intersection of \f$C\f$ with
-the hyperplane defined by the equality \f$\xi = 1\f$ is \f$P\f$.
+the hyperplane defined by the equality \f$\xi = 1\f$ is \f$\cP\f$.
 Therefore, it is always possible to
-transform  a polyhedron \f$P\f$ to its corresponding polyhedral cone
-\f$C\f$ and then recover \f$P\f$ by means of this intersection.
+transform  a polyhedron \f$\cP\f$ to its corresponding polyhedral cone
+\f$C\f$ and then recover \f$\cP\f$ by means of this intersection.
 
 As  \f$C\f$ always includes the origin and, hence, is non-empty,
 by Minkowski's theorem,
 it can also be represented by a system of generators.
 
-The systems of generators for \f$P\f$ and \f$C\f$ are such that:
-- Each vertex \f$\vect{v}\f$ in
-  \f$P\f$ corresponds to a ray \f$(\vect{v}^\transpose, d)^\transpose\f$
+The systems of generators for \f$\cP\f$ and \f$C\f$ are such that:
+- Each vertex \f$\vect{v}\f$ in \f$\cP\f$
+  corresponds to a ray \f$(\vect{v}^\transpose, d)^\transpose\f$
   with \f$d \neq 0\f$, in \f$C\f$.
-- Each ray \f$\vect{r}\f$ in
-  \f$P\f$ corresponds to the ray \f$(\vect{r}^\transpose, 0)^\transpose\f$
+- Each ray \f$\vect{r}\f$ in \f$\cP\f$
+  corresponds to the ray \f$(\vect{r}^\transpose, 0)^\transpose\f$
   in \f$C\f$.
-- Every ray in \f$C\f$ corresponds to a vertex or ray in \f$P\f$.
+- Every ray in \f$C\f$ corresponds to a vertex or ray in \f$\cP\f$.
 - The origin in \f$\Rset^{n+1}\f$ is a point in \f$C\f$.
 
 Thus, in the cone \f$C\f$, a ray derived from a vertex
-in \f$P\f$ differs from a ray derived from a ray in \f$P\f$
+in \f$\cP\f$ differs from a ray derived from a ray in \f$\cP\f$
 only in that, for a vertex,
 the (\f$n+1\f$)'st term is different from zero and,
 for a ray, it is zero.
 
 <B>Double Description</B>
 
-Let \f$P \in \Rset^n \f$ be a polyhedron and  \f$C \in \Rset^{n+1} \f$
+Let \f$\cP \in \Rset^n \f$ be a polyhedron and  \f$C \in \Rset^{n+1} \f$
 the corresponding polyhedral cone.
 Then the dual representations, the systems of constraints
 and generators representing \f$C\f$, form the
-<EM>double description</EM> for \f$P\f$.
+<EM>double description</EM> for \f$\cP\f$.
 
 Note that, in a double description for a non-empty polyhedron,
 the system of constraints subsumes the positivity constraint \f$1 \geq 0\f$
 while the system of generators (which has only rays and lines
-corresponding to the vertices, rays and lines for \f$P\f$)
-implicitly assumes the origin in \f$\Rset^{n+1} \f$
+corresponding to the vertices, rays and lines for \f$\cP\f$)
+implicitly assumes the origin in \f$\Rset^{n+1}\f$
 as a point so that the cone \f$C\f$ represented by the generators is non-empty.
 
 <B>PPL Polyhedron Representation</B>
@@ -2183,11 +2182,11 @@ its corresponding polyhedral cone.
 
 <B>Valid linear inequalities</B>
 
-Let \f$P\f$ be a convex polyhedron (or polytope) in
+Let \f$\cP\f$ be a convex polyhedron (or polytope) in
 \f$\Rset^n\f$. For a real \f$n\f$-vector \f$\vect{c}\f$ and a real number
 \f$b\f$, a linear inequality \f$\langle \vect{c}, \vect{x} \rangle \geq b\f$
 (briefly denoted by \f$(\vect{c},b)\f$) is called <EM>valid</EM>
-for \f$P\f$ if it is satisfied by all points \f$\vect{x} \in P\f$.
+for \f$\cP\f$ if it is satisfied by all points \f$\vect{x} \in \cP\f$.
 
 <B>Redundancy</B>
 
@@ -2199,7 +2198,7 @@ for \f$P\f$ if it is satisfied by all points \f$\vect{x} \in P\f$.
    if it can be eliminated from the system obtaining a system
    equivalent to the previous one, i.e., having the same solutions.
 
-Given a polyhedron \f$P\f$ generated by \f$V\f$ vertices,
+Given a polyhedron \f$\cP\f$ generated by \f$V\f$ vertices,
 \f$R\f$ rays and \f$L\f$ lines, we say that:
 
 -# \f$L\f$ is <EM>irredundant</EM> if
@@ -2209,75 +2208,76 @@ Given a polyhedron \f$P\f$ generated by \f$V\f$ vertices,
   there exists \f$\lambda \in \Rset, \lambda > 0\f$
   such that \f$\vect{r}_1 = \lambda \vect{r}_2\f$.
 
-Note that, in the PPL representation of a polyhedron \f$P\f$,
+Note that, in the PPL representation of a polyhedron \f$\cP\f$,
 vertices are represented as rays so that
-this concept of a redundant ray also applies to the vertices of \f$P\f$.
+this concept of a redundant ray also applies to the vertices of \f$\cP\f$.
 
 
 <B>Face</B>
 
-If \f$(\vect{c},b)\f$ is a valid inequality for \f$P\f$, and
-\f$F = \{\,\vect{x} \in P \mid \langle \vect{c}, \vect{x} \rangle = b\,\}\f$,
- \f$F\f$ is called a <EM>face</EM> of \f$P\f$ and we say that the inequality
+If \f$(\vect{c},b)\f$ is a valid inequality for \f$\cP\f$, and
+\f$F = \{\,\vect{x} \in \cP \mid \langle \vect{c}, \vect{x} \rangle = b\,\}\f$,
+\f$F\f$ is called a <EM>face</EM> of \f$\cP\f$ and we say that the inequality
 represents \f$F\f$.
 A face \f$F\f$ is said to be <EM>proper</EM> if \f$F \neq \emptyset\f$ and
-\f$F \neq P\f$.
+\f$F \neq \cP\f$.
 
 When \f$F\f$ is non-empty, we say that \f$(\vect{c},b)\f$ <EM>supports</EM>
- \f$P\f$.
+\f$\cP\f$.
 
 The empty polyhedron and the universe polyhedron both have no proper faces,
 because the only face of an empty polyhedron is itself, while the faces of
 the universe polyhedron are itself and the emptyset.
 
-Let \f$P\f$ be a non-empty polyhedron. The set
+Let \f$\cP\f$ be a non-empty polyhedron. The set
 \f[
-  F = \{ \vect{p} \} + \linspace (P),
+  F = \{ \vect{p} \} + \linspace(\cP),
 \f]
-where \f$\vect{p}\f$ is a point of \f$P\f$ and the symbol
+where \f$\vect{p}\f$ is a point of \f$\cP\f$ and the symbol
 '\f$+\f$' denotes the Minkowski's sum, is a <EM>minimal proper face</EM> of
-the polyhedron if \f$F\f$ is a proper face of \f$P\f$.
+the polyhedron if \f$F\f$ is a proper face of \f$\cP\f$.
 
 <B>Facet</B>
 
-A proper face \f$F\f$ of \f$P\f$ is a <EM>facet</EM> (or <EM>maximal proper
-face</EM>) of \f$P\f$ if it is not strictly included into any other proper
-face of \f$P\f$. The dimension of a facet is equal to \f$\pdim(P) - 1\f$.
+A proper face \f$F\f$ of \f$\cP\f$ is a <EM>facet</EM> (or <EM>maximal proper
+face</EM>) of \f$\cP\f$ if it is not strictly included into any other proper
+face of \f$\cP\f$.
+The affine dimension of a facet is equal to \f$\pdim(\cP) - 1\f$.
 
 <B><EM>Proposition</EM></B>
 
-Let \f$P\f$ a polyhedron in \f$\Rset^n\f$. The set of all faces is a lattice
+Let \f$\cP\f$ a polyhedron in \f$\Rset^n\f$. The set of all faces is a lattice
 under inclusion: the minimal face is the emptyset, while the maximal face
 is the polyhedron.
 
 <B><EM>Proposition</EM></B>
 
-Let \f$P \neq \emptyset\f$ be a polyhedron in \f$\Rset^n\f$ and
-\f$C\f$ be the polyhedral cone in \f$\Rset^{n+1}\f$ obtaining by \f$P\f$
-with the homogenization, then:
+Let \f$\cP \neq \emptyset\f$ be a polyhedron in \f$\Rset^n\f$ and
+\f$C\f$ be the polyhedral cone in \f$\Rset^{n+1}\f$ obtained from \f$\cP\f$
+by homogenization, then:
 -# the only <EM>minimal proper face</EM> of \f$C\f$ is
    \f$\linspace(C)\f$;
 -# let \f$\vect{y} \in C\f$ be different from \f$\vect{0}\f$ and
    \f$\cone\{\vect{y}\}\f$ be defined as
-   \f$\{ \lambda \vect{y} \mid \lambda \geq 0 \}\f$. If the set
+   \f$\{\, \lambda \vect{y} \mid \lambda \geq 0 \,\}\f$. If the set
    \f$F = \cone\{\vect{y}\} + \linspace(C)\f$ is
-   a proper face of \f$C,\f$ then \f$\vect{y}\f$ is an <EM>extremal ray</EM>
-   of \f$C.\f$
+   a proper face of \f$C\f$, then \f$\vect{y}\f$ is an <EM>extremal ray</EM>
+   of \f$C\f$.
 
 <B>Ray space</B>
 
 Given the decomposition \f$\mathcal{V} + \mathcal{R} + \mathcal{L}\f$
-of a polyhedron \f$P\f$ the set \f$\mathcal{V} + \mathcal{R}\f$
-is called the <EM>ray space</EM> of \f$P\f$
-and denoted by \f$\mathop{\mathrm{ray space}}(P)\f$.
+of a polyhedron \f$\cP\f$ the set \f$\mathcal{V} + \mathcal{R}\f$
+is called the <EM>ray space</EM> of \f$\cP\f$
+and denoted by \f$\mathop{\mathrm{ray space}}(\cP)\f$.
 
-Thus a polyhedron \f$P\f$ can be always decomposed in its
+Thus a polyhedron \f$\cP\f$ can be always decomposed in its
 \f$\linspace\f$ and its \f$\mathop{\mathrm{ray space}}\f$.
 
-Note that, since \f$\linspace(P)\f$ and
-\f$\mathop{\mathrm{ray space}}(P)\f$ are special polyhedra, their
-dimension can be computed using the definition of dimension given for
-polyhedra.
+Note that, since \f$\linspace(\cP)\f$ and
+\f$\mathop{\mathrm{ray space}}(\cP)\f$ are polyhedra, their
+affine dimensions can be computed using the definition of affine
+dimension given for polyhedra.
 
 The spaces defined are connected by some consistency rules shown below.
 
@@ -2295,7 +2295,7 @@ In \f$\Rset^n\f$
   lines minus the number of irredundant equalities.
 
 The proofs of these properties can be obtained considering the definitions of
-dimension and the decomposition of a polyhedron.
+affine dimension and the decomposition of a polyhedron.
 
 <B>Saturation</B>
 

@@ -69,7 +69,7 @@ public:
   //! Copy-constructor allowing a source powerset with elements of a
   //! different polyhedron kind.
   template <typename QH>
-  Polyhedra_Powerset(const Polyhedra_Powerset<QH>& y);
+  explicit Polyhedra_Powerset(const Polyhedra_Powerset<QH>& y);
 
   //! Creates a Polyhedra_Powerset with the same information contents as \p cs.
   Polyhedra_Powerset(const ConSys& cs);
@@ -115,7 +115,7 @@ public:
 
   //@} // Member Functions that Do Not Modify the Powerset
 
-  //! \name Space-Dimension Preserving Member Functions that May Modify the Powerset of Polyhedra
+  //! \name Space Dimension Preserving Member Functions that May Modify the Powerset of Polyhedra
   //@{
 
   //! Intersects \p *this with constraint \p c.
@@ -245,7 +245,7 @@ public:
   template <typename Widening>
   void BHZ03_widening_assign(const Polyhedra_Powerset& y, Widening wf);
 
-  //@} // Space-Dimension Preserving Member Functions that May Modify [...]
+  //@} // Space Dimension Preserving Member Functions that May Modify [...]
 
   //! \name Member Functions that May Modify the Dimension of the Vector Space
   //@{
@@ -266,14 +266,14 @@ public:
   void swap(Polyhedra_Powerset& y);
 
   //! \brief
-  //! Adds \p m new dimensions to the space containing \p *this 
+  //! Adds \p m new dimensions to the vector space containing \p *this
   //! and embeds each polyhedron in \p *this in the new space.
-  void add_dimensions_and_embed(dimension_type m);
+  void add_space_dimensions_and_embed(dimension_type m);
 
   //! \brief
-  //! For each polyhedron in \p *this, adds \p m new dimensions
-  //! without embedding it in the new space.
-  void add_dimensions_and_project(dimension_type m);
+  //! Adds \p m new dimensions to the vector space containing \p *this
+  //! without embedding the polyhedra in \p *this in the new space.
+  void add_space_dimensions_and_project(dimension_type m);
 
   //! Assigns to \p *this the difference of \p *this and \p y.
   /*!
@@ -291,35 +291,36 @@ public:
   */
   void concatenate_assign(const Polyhedra_Powerset& y);
 
-  //! Removes all the specified dimensions.
+  //! Removes all the specified space dimensions.
   /*!
     \param to_be_removed
-    The set of Variable objects corresponding to the dimensions to be removed.
+    The set of Variable objects corresponding to the space dimensions
+    to be removed.
 
     \exception std::invalid_argument
     Thrown if \p *this is dimension-incompatible with one of the
     Variable objects contained in \p to_be_removed.
   */
-  void remove_dimensions(const Variables_Set& to_be_removed);
+  void remove_space_dimensions(const Variables_Set& to_be_removed);
 
   //! \brief
-  //! Removes the higher dimensions so that the resulting space
+  //! Removes the higher space dimensions so that the resulting space
   //! will have dimension \p new_dimension.
   /*!
     \exception std::invalid_argument
     Thrown if \p new_dimensions is greater than the space dimension
     of \p *this.
   */
-  void remove_higher_dimensions(dimension_type new_dimension);
+  void remove_higher_space_dimensions(dimension_type new_dimension);
 
   //! \brief
   //! Remaps the dimensions of the vector space according to
   //! a partial function.
   /*!
-    See also Polyhedron::map_dimensions.
+    See also Polyhedron::map_space_dimensions.
   */
   template <typename PartialFunction>
-  void map_dimensions(const PartialFunction& pfunc);
+  void map_space_dimensions(const PartialFunction& pfunc);
 
   //@} // Member Functions that May Modify the Dimension of the Vector Space
 

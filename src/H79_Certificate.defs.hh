@@ -79,8 +79,8 @@ public:
   };
   
 private:
-  //! Dimension of the polyhedron.
-  dimension_type poly_dim;
+  //! Affine dimension of the polyhedron.
+  dimension_type affine_dim;
   //! Cardinality of a non-redundant constraint system for the polyhedron.
   dimension_type num_constraints;
 };

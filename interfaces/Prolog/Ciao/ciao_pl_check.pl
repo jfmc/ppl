@@ -51,6 +51,7 @@ site: http://www.cs.unipr.it/ppl/ . */
 	ppl_Polyhedron_swap/2,
 	ppl_delete_Polyhedron/1,
 	ppl_Polyhedron_space_dimension/2,
+	ppl_Polyhedron_affine_dimension/2,
 	ppl_Polyhedron_get_constraints/2,
 	ppl_Polyhedron_get_minimized_constraints/2,
 	ppl_Polyhedron_get_generators/2,
@@ -104,14 +105,14 @@ site: http://www.cs.unipr.it/ppl/ . */
 	ppl_Polyhedron_limited_H79_extrapolation_assign/3,
 	ppl_Polyhedron_bounded_H79_extrapolation_assign_with_token/4,
 	ppl_Polyhedron_bounded_H79_extrapolation_assign/3,
-	ppl_Polyhedron_add_dimensions_and_project/2,
-	ppl_Polyhedron_add_dimensions_and_embed/2,
+	ppl_Polyhedron_add_space_dimensions_and_project/2,
+	ppl_Polyhedron_add_space_dimensions_and_embed/2,
 	ppl_Polyhedron_concatenate_assign/2,
-	ppl_Polyhedron_remove_dimensions/2,
-	ppl_Polyhedron_remove_higher_dimensions/2,
-	ppl_Polyhedron_expand_dimension/3,
-	ppl_Polyhedron_fold_dimensions/3,
-	ppl_Polyhedron_map_dimensions/2
+	ppl_Polyhedron_remove_space_dimensions/2,
+	ppl_Polyhedron_remove_higher_space_dimensions/2,
+	ppl_Polyhedron_expand_space_dimension/3,
+	ppl_Polyhedron_fold_space_dimensions/3,
+	ppl_Polyhedron_map_space_dimensions/2
 ]).
 
 :- set_prolog_flag(multi_arity_warnings, off).

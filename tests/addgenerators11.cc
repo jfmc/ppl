@@ -82,6 +82,7 @@ main() TRY {
 
 #if NOISY
   print_generators(ph2, "*** After ph2.add_generators_and_minimize(gs2) ***");
+  print_generators(known_result, "*** known_result ***");
 #endif
 
   return retval;

@@ -64,7 +64,7 @@ solve(true, true, Polyhedron) :-
     ppl_new_Polyhedron_from_Polyhedron(c, Polyhedron, c, Q),
     original_goal_variables(VariableNames),
     length(VariableNames, Dims),
-    ppl_Polyhedron_remove_higher_dimensions(Q, Dims),
+    ppl_Polyhedron_remove_higher_space_dimensions(Q, Dims),
     ppl_Polyhedron_get_constraints(Q, CS),
     write_constraints(CS, VariableNames),
     ppl_delete_Polyhedron(Q),
@@ -110,7 +110,7 @@ solve(Atom, Goals, Polyhedron) :-
     ppl_Polyhedron_space_dimension(PolyCopy, Dims),
     numvars((Head, Body), Dims, NewDims),
     AddedDims is NewDims - Dims,
-    ppl_Polyhedron_add_dimensions_and_embed(PolyCopy, AddedDims),
+    ppl_Polyhedron_add_space_dimensions_and_embed(PolyCopy, AddedDims),
     % Parameter passing.
     parameter_passing(Atom, Head, PP_Constraints),
 

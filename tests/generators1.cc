@@ -1,5 +1,5 @@
-/* The polyhedron built from the system of generators has a point
-   with a negative denominator.
+/* Test the construction of a polyhedron built from a system of
+   generators that has a point with a negative denominator.
    Copyright (C) 2001-2004 Roberto Bagnara <bagnara@cs.unipr.it>
 
 This file is part of the Parma Polyhedra Library (PPL).

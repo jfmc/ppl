@@ -88,7 +88,7 @@ void swap(Parma_Polyhedra_Library::Generator& x,
   function (<CODE>line</CODE>, <CODE>ray</CODE>, <CODE>point</CODE>
   or <CODE>closure_point</CODE>) to a linear expression,
   representing a direction in the space;
-  the space-dimension of the generator is defined as the space-dimension
+  the space dimension of the generator is defined as the space dimension
   of the corresponding linear expression.
   Linear expressions used to define a generator should be homogeneous
   (any constant term will be simply ignored).
@@ -109,7 +109,7 @@ void swap(Parma_Polyhedra_Library::Generator& x,
 
   \par Example 1
   The following code builds a line with direction \f$x-y-z\f$
-  and having space-dimension \f$3\f$:
+  and having space dimension \f$3\f$:
   \code
   Generator l = line(x - y - z);
   \endcode
@@ -156,7 +156,7 @@ void swap(Parma_Polyhedra_Library::Generator& x,
   Generator origin2 = point(0*y);
   \endcode
   The following two lines of code both define the only point
-  having space-dimension zero, namely \f$\vect{0} \in \Rset^0\f$.
+  having space dimension zero, namely \f$\vect{0} \in \Rset^0\f$.
   In the second case we exploit the fact that the first argument
   of the function <CODE>point</CODE> is optional.
   \code
@@ -191,7 +191,7 @@ void swap(Parma_Polyhedra_Library::Generator& x,
   Generator c = closure_point(1*x + 0*y + 2*z);
   \endcode
   For the particular case of the (only) closure point
-  having space-dimension zero, we can use any of the following:
+  having space dimension zero, we can use any of the following:
   \code
   Generator closure_origin0 = Generator::zero_dim_closure_point();
   Generator closure_origin0_alt = closure_point();
@@ -199,7 +199,7 @@ void swap(Parma_Polyhedra_Library::Generator& x,
 
   \par How to inspect a generator
   Several methods are provided to examine a generator and extract
-  all the encoded information: its space-dimension, its type and
+  all the encoded information: its space dimension, its type and
   the value of its integer coefficients.
 
   \par Example 6
@@ -318,7 +318,7 @@ public:
   /*!
     \exception std::invalid_argument
     Thrown if the index of \p v is greater than or equal to the
-    space-dimension of \p *this.
+    space dimension of \p *this.
   */
   Integer_traits::const_reference coefficient(Variable v) const;
 
@@ -381,7 +381,7 @@ private:
   Parma_Polyhedra_Library::IO_Operators::operator<<(std::ostream& s,
 						    const Generator& g);
 
-  //! Copy-constructor with given dimension.
+  //! Copy-constructor with given space dimension.
   Generator(const Generator& g, dimension_type dimension);
 
   //! Returns <CODE>true</CODE> if and only if \p *this is not a line.
@@ -398,7 +398,7 @@ private:
   //! \p *this has the same \e coordinates of the point \p p.
   /*!
     It is \e assumed that \p *this is a closure point, \p p is a point
-    and both topologies and space-dimensions agree.
+    and both topologies and space dimensions agree.
   */
   bool is_matching_closure_point(const Generator& p) const;
 

@@ -41,7 +41,7 @@ error1() {
 
   try {
     // This is an invalid use of the constructor of a polyhedron:
-    // it is illegal to built a closed polyhedron starting from
+    // it is illegal to build a closed polyhedron starting from
     // a system of constraints that contains strict-inequalities.
     C_Polyhedron ph(cs);
 
@@ -72,7 +72,7 @@ error2() {
 
   try {
     // This is an invalid use of the constructor of a polyhedron:
-    // it is illegal to built a closed polyhedron starting from
+    // it is illegal to build a closed polyhedron starting from
     // a system of generators that contains closure points.
     C_Polyhedron ph(gs);
     exit(1);
@@ -278,20 +278,22 @@ error9() {
 
 static void
 error10() {
-  Variable x(0);
-  Variable y(1);
+  Variable A(0);
+  Variable B(1);
 
-  NNC_Polyhedron ph1(3);
-  ph1.add_constraint(x >= 5);
-  ph1.add_constraint(y > x - 3);
+  C_Polyhedron ph(2);
+  ph.add_constraint(A >= 1);
+  ph.add_constraint(B >= 1);
 
   try {
-    // It is illegal to built a closed polyhedron starting from
-    // the system of constraints of a polyhedron that is not closed.
-    C_Polyhedron ph2(ph1);
+    // This is an invalid use of the function
+    // C_Polyhedron::generalized_affine_image(v, expr, d):
+    // `GREATER_THAN' is an illegal relation for necessarily closed
+    // polyhedron.
+    ph.generalized_affine_image(A + B, GREATER_THAN, A - B);
     exit(1);
   }
-  catch(invalid_argument& e) {
+  catch (invalid_argument& e) {
 #if NOISY
     cout << "invalid_argument: " << e.what() << endl << endl;
 #endif
@@ -300,7 +302,6 @@ error10() {
     exit(1);
   }
 }
-
 
 static void
 error11() {
@@ -693,7 +694,7 @@ error21() {
 
   try {
     // This is an incorrect use of the function
-    // C_Polyhedron::C_Polyhedron(cs): it is illegal to built a
+    // C_Polyhedron::C_Polyhedron(cs): it is illegal to build a
     // closed polyhedron starting from a system of constraints
     // that contains strict inequalities.
     C_Polyhedron ph2(cs);
@@ -724,7 +725,7 @@ error22() {
 
   try {
     // This is an incorrect use of the function
-    // `C_Polyhedron(const GenSys)': it is illegal to built
+    // `C_Polyhedron(const GenSys)': it is illegal to build
     // a closed polyhedron starting from a constant non-closed
     // system of generators.
     C_Polyhedron ph2(gs2);
@@ -932,20 +933,16 @@ error29() {
   Variable A(0);
   Variable B(1);
 
-  NNC_Polyhedron ph1(2);
-  ph1.add_constraint(A < 2);
-  ph1.add_constraint(B > 0);
-  ph1.add_constraint(A - B > 0);
-
+  GenSys gs;
   try {
-    // This is an invalid use of the function
-    // `C_Polyhedron(NNC_Polyhedron&)': it is illegal to
-    // built a closed polyhedron starting from a
-    // non-closed polyhedron.
-    C_Polyhedron ph2(ph1);
+    // This is an incorrect use of function
+    // Generator::closure_point(e, d):
+    // it is illegal to use a denominator
+    // equal to zero.
+    gs.insert(closure_point(A + 2*B, 0));
     exit(1);
   }
-  catch(invalid_argument& e) {
+  catch (invalid_argument& e) {
 #if NOISY
     cout << "invalid_argument: " << e.what() << endl << endl;
 #endif
@@ -1009,57 +1006,6 @@ error31() {
   }
 }
 
-static void
-error32() {
-  Variable A(0);
-  Variable B(1);
-
-  C_Polyhedron ph(2);
-  ph.add_constraint(A >= 1);
-  ph.add_constraint(B >= 1);
-
-  try {
-    // This is an invalid use of the function
-    // C_Polyhedron::generalized_affine_image(v, expr, d):
-    // `GREATER_THAN' is an illegal relation for necessarily closed
-    // polyhedron.
-    ph.generalized_affine_image(A + B, GREATER_THAN, A - B);
-    exit(1);
-  }
-  catch (invalid_argument& e) {
-#if NOISY
-    cout << "invalid_argument: " << e.what() << endl << endl;
-#endif
-  }
-  catch (...) {
-    exit(1);
-  }
-}
-
-static void
-error33() {
-  Variable A(0);
-  Variable B(1);
-
-  GenSys gs;
-  try {
-    // This is an incorrect use of function
-    // Generator::closure_point(e, d):
-    // it is illegal to use a denominator
-    // equal to zero.
-    gs.insert(closure_point(A + 2*B, 0));
-    exit(1);
-  }
-  catch (invalid_argument& e) {
-#if NOISY
-    cout << "invalid_argument: " << e.what() << endl << endl;
-#endif
-  }
-  catch (...) {
-    exit(1);
-  }
-}
-
 int
 main() TRY {
   set_handlers();
@@ -1095,8 +1041,6 @@ main() TRY {
   error29();
   error30();
   error31();
-  error32();
-  error33();
 
   return 0;
 }

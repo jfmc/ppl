@@ -307,7 +307,7 @@ public:
   //! Returns the value of the sortedness flag.
   bool is_sorted() const;
 
-  //! Returns the space-dimension of the rows in the matrix.
+  //! Returns the space dimension of the rows in the matrix.
   /*!
     The computation of the space dimension correctly ignores
     the column encoding the inhomogeneous terms of constraint

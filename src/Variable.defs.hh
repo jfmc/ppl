@@ -47,7 +47,7 @@ bool less(Variable v, Variable w);
 
 } // namespace Parma_Polyhedra_Library
 
-//! A dimension of the space.
+//! A dimension of the vector space.
 /*!
   An object of the class Variable represents a dimension of the space,
   that is one of the Cartesian axes.

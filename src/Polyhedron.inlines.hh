@@ -409,7 +409,7 @@ Polyhedron::Polyhedron(Topology topol, const Box& box)
 template <typename Box>
 void
 Polyhedron::shrink_bounding_box(Box& box, Complexity_Class complexity) const {
-  bool polynomial = (complexity != ANY);
+  bool polynomial = (complexity != ANY_COMPLEXITY);
   if ((polynomial && !has_something_pending()
        && constraints_are_minimized()) || !polynomial) {
     // If the constraint system is minimized, the test `is_universe()'
@@ -623,7 +623,7 @@ Polyhedron::shrink_bounding_box(Box& box, Complexity_Class complexity) const {
 
 template <typename PartialFunction>
 void
-Polyhedron::map_dimensions(const PartialFunction& pfunc) {
+Polyhedron::map_space_dimensions(const PartialFunction& pfunc) {
   if (space_dim == 0)
     return;
 

@@ -36,8 +36,9 @@ site: http://www.cs.unipr.it/ppl/ . */
 namespace PPL = Parma_Polyhedra_Library;
 
 bool
-PPL::ConSys::adjust_topology_and_dimension(Topology new_topology,
-					   dimension_type new_space_dim) {
+PPL::ConSys::
+adjust_topology_and_space_dimension(Topology new_topology,
+				    dimension_type new_space_dim) {
   assert(space_dimension() <= new_space_dim);
 
   if (num_rows() == 0) {
@@ -155,7 +156,7 @@ PPL::ConSys::adjust_topology_and_dimension(Topology new_topology,
 	add_zero_columns(1);
 	set_not_necessarily_closed();
       }
-  // We successfully adjusted dimensions and topology.
+  // We successfully adjusted space dimensions and topology.
   assert(OK());
   return true;
 }
@@ -198,7 +199,7 @@ PPL::ConSys::insert(const Constraint& c) {
     else {
       // Here `*this' is NNC and `c' is necessarily closed.
       // Copying the constraint adding the epsilon coefficient
-      // and the missing dimensions, if any.
+      // and the missing space dimensions, if any.
       const dimension_type new_size = 2 + std::max(c.space_dimension(),
 						   space_dimension());
       Constraint tmp_c(c, new_size);
@@ -223,7 +224,7 @@ PPL::ConSys::insert_pending(const Constraint& c) {
     else {
       // Here `*this' is NNC and `c' is necessarily closed.
       // Copying the constraint adding the epsilon coefficient
-      // and the missing dimensions, if any.
+      // and the missing space dimensions, if any.
       const dimension_type new_size = 2 + std::max(c.space_dimension(),
 						   space_dimension());
       Constraint tmp_c(c, new_size);

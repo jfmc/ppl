@@ -25,19 +25,16 @@ site: http://www.cs.unipr.it/ppl/ . */
 
 #include "C_Polyhedron.defs.hh"
 #include "NNC_Polyhedron.defs.hh"
-#include <stdexcept>
 
 namespace PPL = Parma_Polyhedra_Library;
 
 PPL::C_Polyhedron::C_Polyhedron(const NNC_Polyhedron& y)
   : Polyhedron(NECESSARILY_CLOSED, y.space_dimension(), UNIVERSE) {
-  // Topology compatibility check.
-  if (y.is_topologically_closed()) {
-    add_constraints(y.constraints());
-    assert(OK());
+  ConSys cs = y.constraints();
+  for (ConSys::const_iterator i = cs.begin(),
+	 cs_end = cs.end(); i != cs_end; ++i) {
+    const Constraint& c = *i;
+    add_constraint(c.is_strict_inequality() ? (LinExpression(c) >= 0) : c);
   }
-  else
-    throw std::invalid_argument("PPL::C_Polyhedron::C_Polyhedron(nnc_ph):\n"
- 				"nnc_ph is not a topologically closed "
- 				"polyhedron.");
+  assert(OK());
 }

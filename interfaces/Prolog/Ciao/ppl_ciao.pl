@@ -45,6 +45,7 @@ site: http://www.cs.unipr.it/ppl/ . */
         ppl_Polyhedron_swap/2,
         ppl_delete_Polyhedron/1,
         ppl_Polyhedron_space_dimension/2,
+        ppl_Polyhedron_affine_dimension/2,
         ppl_Polyhedron_get_constraints/2,
         ppl_Polyhedron_get_minimized_constraints/2,
         ppl_Polyhedron_get_generators/2,
@@ -98,14 +99,14 @@ site: http://www.cs.unipr.it/ppl/ . */
         ppl_Polyhedron_limited_H79_extrapolation_assign/3,
         ppl_Polyhedron_bounded_H79_extrapolation_assign_with_token/4,
         ppl_Polyhedron_bounded_H79_extrapolation_assign/3,
-        ppl_Polyhedron_add_dimensions_and_project/2,
-        ppl_Polyhedron_add_dimensions_and_embed/2,
+        ppl_Polyhedron_add_space_dimensions_and_project/2,
+        ppl_Polyhedron_add_space_dimensions_and_embed/2,
         ppl_Polyhedron_concatenate_assign/2,
-        ppl_Polyhedron_remove_dimensions/2,
-        ppl_Polyhedron_remove_higher_dimensions/2,
-        ppl_Polyhedron_expand_dimension/3,
-        ppl_Polyhedron_fold_dimensions/3,
-        ppl_Polyhedron_map_dimensions/2
+        ppl_Polyhedron_remove_space_dimensions/2,
+        ppl_Polyhedron_remove_higher_space_dimensions/2,
+        ppl_Polyhedron_expand_space_dimension/3,
+        ppl_Polyhedron_fold_space_dimensions/3,
+        ppl_Polyhedron_map_space_dimensions/2
 ],
 [
         assertions,
@@ -165,7 +166,7 @@ ppl_banner(Banner) :-
    ppl_banner_2(Banner, 1).
 
 :- true pred ppl_max_space_dimension_2(in(Dimension),
-                               go(Success))
+                                       go(Success))
           :: any_term * int
   + (returns(Success), foreign(ppl_max_space_dimension)).
 
@@ -193,9 +194,9 @@ ppl_timeout_exception_atom(Atom) :-
 :- true pred ppl_reset_timeout + foreign.
 
 :- true pred ppl_new_Polyhedron_from_dimension_2(in(Kind),
-                                               in(Dimension),
-                                               in(Handle),
-                                               go(Success))
+                                                 in(Dimension),
+                                                 in(Handle),
+                                                 go(Success))
   :: any_term * any_term * any_term * int
   + (returns(Success), foreign(ppl_new_Polyhedron_from_dimension)).
 
@@ -204,9 +205,9 @@ ppl_new_Polyhedron_from_dimension(Kind, Dimension, Handle) :-
 
 
 :- true pred ppl_new_Polyhedron_empty_from_dimension_2(in(Kind),
-                                               in(Dimension),
-                                               in(Handle),
-                                               go(Success))
+                                                       in(Dimension),
+                                                       in(Handle),
+                                                       go(Success))
   :: any_term * any_term * any_term * int
   + (returns(Success), foreign(ppl_new_Polyhedron_empty_from_dimension)).
 
@@ -272,6 +273,15 @@ ppl_new_Polyhedron_from_bounding_box(Kind, BBox, Handle) :-
 
 ppl_Polyhedron_space_dimension(Handle, Dimension) :-
         ppl_Polyhedron_space_dimension_2(Handle, Dimension, 1).
+
+:- true pred ppl_Polyhedron_affine_dimension_2(in(Handle),
+					       in(Dimension),
+					       go(Success))
+  :: any_term * any_term * int
+  + (returns(Success), foreign(ppl_Polyhedron_affine_dimension)).
+
+ppl_Polyhedron_affine_dimension(Handle, Dimension) :-
+        ppl_Polyhedron_affine_dimension_2(Handle, Dimension, 1).
 
 :- true pred ppl_Polyhedron_get_constraints_2(in(Handle),
                                               in(CList),
@@ -710,36 +720,38 @@ ppl_Polyhedron_bounded_H79_extrapolation_assign_with_token(Handle1,
                                                              in(CList))
   :: any_term * any_term * any_term + foreign.
 
-:- true pred ppl_Polyhedron_add_dimensions_and_project(in(Handle),
-                                                       in(NDimensionsToAdd))
+:- true pred
+   ppl_Polyhedron_add_space_dimensions_and_project(in(Handle),
+                                                   in(NDimensionsToAdd))
   :: any_term * any_term + foreign.
 
-:- true pred ppl_Polyhedron_add_dimensions_and_embed(in(Handle),
-                                                     in(NDimensionsToAdd))
+:- true pred
+   ppl_Polyhedron_add_space_dimensions_and_embed(in(Handle),
+                                                 in(NDimensionsToAdd))
   :: any_term * any_term + foreign.
 
 :- true pred ppl_Polyhedron_concatenate_assign(in(Handle1), in(Handle2))
   :: any_term * any_term + foreign.
 
-:- true pred ppl_Polyhedron_remove_dimensions(in(Handle), in(VList))
+:- true pred ppl_Polyhedron_remove_space_dimensions(in(Handle), in(VList))
   :: any_term * any_term + foreign.
 
-:- true pred ppl_Polyhedron_remove_higher_dimensions(in(Handle),
-                                                     in(Dimensions))
+:- true pred ppl_Polyhedron_remove_higher_space_dimensions(in(Handle),
+                                                           in(Dimensions))
   :: any_term * any_term + foreign.
 
-:- true pred ppl_Polyhedron_expand_dimension(in(Handle),
-                                           in(Var),
-                                           in(Dimensions))
+:- true pred ppl_Polyhedron_expand_space_dimension(in(Handle),
+                                                   in(Var),
+                                                   in(Dimensions))
   :: any_term * any_term * any_term + foreign.
 
-:- true pred ppl_Polyhedron_fold_dimensions(in(Handle),
-                                           in(VList),
-                                           in(Var))
+:- true pred ppl_Polyhedron_fold_space_dimensions(in(Handle),
+                                                  in(VList),
+                                                  in(Var))
   :: any_term * any_term * any_term + foreign.
 
-:- true pred ppl_Polyhedron_map_dimensions(in(Handle),
-                                           in(PIFunc))
+:- true pred ppl_Polyhedron_map_space_dimensions(in(Handle),
+                                                 in(PIFunc))
   :: any_term * any_term + foreign.
 
 :- extra_linker_opts('-L.libs').
@@ -764,7 +776,7 @@ ppl_Polyhedron_bounded_H79_extrapolation_assign_with_token(Handle1,
         ppl_initialize/0,
         ppl_finalize/0,
         ppl_set_timeout_exception_atom/1,
- %       ppl_timeout_exception_atom/1,
+%        ppl_timeout_exception_atom/1,
         ppl_timeout_exception_atom_2/2,
         ppl_set_timeout/1,
         ppl_reset_timeout/0,
@@ -782,105 +794,107 @@ ppl_Polyhedron_bounded_H79_extrapolation_assign_with_token(Handle1,
         ppl_new_Polyhedron_from_bounding_box_2/4,
         ppl_Polyhedron_swap/2,
         ppl_delete_Polyhedron/1,
-%       ppl_Polyhedron_space_dimension/2,
+%        ppl_Polyhedron_space_dimension/2,
         ppl_Polyhedron_space_dimension_2/3,
-%       ppl_Polyhedron_get_constraints/2,
+%        ppl_Polyhedron_affine_dimension/2,
+        ppl_Polyhedron_affine_dimension_2/3,
+%        ppl_Polyhedron_get_constraints/2,
         ppl_Polyhedron_get_constraints_2/3,
-%       ppl_Polyhedron_get_minimized_constraints/2,
+%        ppl_Polyhedron_get_minimized_constraints/2,
         ppl_Polyhedron_get_minimized_constraints_2/3,
-%       ppl_Polyhedron_get_generators/2,
+%        ppl_Polyhedron_get_generators/2,
         ppl_Polyhedron_get_generators_2/3,
-%       ppl_Polyhedron_get_minimized_generators/2,
+%        ppl_Polyhedron_get_minimized_generators/2,
         ppl_Polyhedron_get_minimized_generators_2/3,
-%       ppl_Polyhedron_relation_with_constraint/3,
+%        ppl_Polyhedron_relation_with_constraint/3,
         ppl_Polyhedron_relation_with_constraint_2/4,
-%       ppl_Polyhedron_relation_with_generator/3,
+%        ppl_Polyhedron_relation_with_generator/3,
         ppl_Polyhedron_relation_with_generator_2/4,
-%       ppl_Polyhedron_get_bounding_box/3,
+%        ppl_Polyhedron_get_bounding_box/3,
         ppl_Polyhedron_get_bounding_box_2/4,
-%       ppl_Polyhedron_is_empty/1,
+%        ppl_Polyhedron_is_empty/1,
         ppl_Polyhedron_is_empty_2/2,
-%       ppl_Polyhedron_is_universe/1,
+%        ppl_Polyhedron_is_universe/1,
         ppl_Polyhedron_is_universe_2/2,
-%       ppl_Polyhedron_is_bounded/1,
+%        ppl_Polyhedron_is_bounded/1,
         ppl_Polyhedron_is_bounded_2/2,
-%       ppl_Polyhedron_bounds_from_above/2,
+%        ppl_Polyhedron_bounds_from_above/2,
         ppl_Polyhedron_bounds_from_above_2/3,
-%       ppl_Polyhedron_bounds_from_below/2,
+%        ppl_Polyhedron_bounds_from_below/2,
         ppl_Polyhedron_bounds_from_below_2/3,
-%       ppl_Polyhedron_maximize/5,
+%        ppl_Polyhedron_maximize/5,
         ppl_Polyhedron_maximize_2/6,
-%       ppl_Polyhedron_maximize_with_point/6,
+%        ppl_Polyhedron_maximize_with_point/6,
         ppl_Polyhedron_maximize_with_point_2/7,
-%       ppl_Polyhedron_minimize/5,
+%        ppl_Polyhedron_minimize/5,
         ppl_Polyhedron_minimize_2/6,
-%       ppl_Polyhedron_minimize_with_point/6,
+%        ppl_Polyhedron_minimize_with_point/6,
         ppl_Polyhedron_minimize_with_point_2/7,
-%       ppl_Polyhedron_is_topologically_closed/1,
+%        ppl_Polyhedron_is_topologically_closed/1,
         ppl_Polyhedron_is_topologically_closed_2/2,
-%       ppl_Polyhedron_contains_Polyhedron/2,
+%        ppl_Polyhedron_contains_Polyhedron/2,
         ppl_Polyhedron_contains_Polyhedron_2/3,
-%       ppl_Polyhedron_strictly_contains_Polyhedron/2,
+%        ppl_Polyhedron_strictly_contains_Polyhedron/2,
         ppl_Polyhedron_strictly_contains_Polyhedron_2/3,
-%       ppl_Polyhedron_is_disjoint_from_Polyhedron/2,
+%        ppl_Polyhedron_is_disjoint_from_Polyhedron/2,
         ppl_Polyhedron_is_disjoint_from_Polyhedron_2/3,
-%       ppl_Polyhedron_equals_Polyhedron/2,
+%        ppl_Polyhedron_equals_Polyhedron/2,
         ppl_Polyhedron_equals_Polyhedron_2/3,
-%       ppl_Polyhedron_OK/1,
+%        ppl_Polyhedron_OK/1,
         ppl_Polyhedron_OK_2/2,
         ppl_Polyhedron_add_constraint/2,
-%       ppl_Polyhedron_add_constraint_and_minimize/2,
+%        ppl_Polyhedron_add_constraint_and_minimize/2,
         ppl_Polyhedron_add_constraint_and_minimize_2/3,
         ppl_Polyhedron_add_generator/2,
-%       ppl_Polyhedron_add_generator_and_minimize/2,
+%        ppl_Polyhedron_add_generator_and_minimize/2,
         ppl_Polyhedron_add_generator_and_minimize_2/3,
         ppl_Polyhedron_add_constraints/2,
-%       ppl_Polyhedron_add_constraints_and_minimize/2,
+%        ppl_Polyhedron_add_constraints_and_minimize/2,
         ppl_Polyhedron_add_constraints_and_minimize_2/3,
         ppl_Polyhedron_add_generators/2,
-%       ppl_Polyhedron_add_generators_and_minimize/2,
+%        ppl_Polyhedron_add_generators_and_minimize/2,
         ppl_Polyhedron_add_generators_and_minimize_2/3,
         ppl_Polyhedron_intersection_assign/2,
-%       ppl_Polyhedron_intersection_assign_and_minimize/2,
+%        ppl_Polyhedron_intersection_assign_and_minimize/2,
         ppl_Polyhedron_intersection_assign_and_minimize_2/3,
         ppl_Polyhedron_poly_hull_assign/2,
-%       ppl_Polyhedron_poly_hull_assign_and_minimize/2,
+%        ppl_Polyhedron_poly_hull_assign_and_minimize/2,
         ppl_Polyhedron_poly_hull_assign_and_minimize_2/3,
         ppl_Polyhedron_poly_difference_assign/2,
         ppl_Polyhedron_affine_image/4,
         ppl_Polyhedron_affine_preimage/4,
 %        ppl_Polyhedron_generalized_affine_image/5,
         ppl_Polyhedron_generalized_affine_image_2/6,
-%       ppl_Polyhedron_generalized_affine_image_lhs_rhs/4,
+%        ppl_Polyhedron_generalized_affine_image_lhs_rhs/4,
         ppl_Polyhedron_generalized_affine_image_lhs_rhs_2/5,
         ppl_Polyhedron_time_elapse_assign/2,
         ppl_Polyhedron_topological_closure_assign/1,
-%       ppl_Polyhedron_BHRZ03_widening_assign_with_token/3,
+%        ppl_Polyhedron_BHRZ03_widening_assign_with_token/3,
         ppl_Polyhedron_BHRZ03_widening_assign_with_token_2/4,
         ppl_Polyhedron_BHRZ03_widening_assign/2,
-%       ppl_Polyhedron_limited_BHRZ03_extrapolation_assign_with_token/4,
+%        ppl_Polyhedron_limited_BHRZ03_extrapolation_assign_with_token/4,
         ppl_Polyhedron_limited_BHRZ03_extrapolation_assign_with_token_2/5,
         ppl_Polyhedron_limited_BHRZ03_extrapolation_assign/3,
-%       ppl_Polyhedron_bounded_BHRZ03_extrapolation_assign_with_token/4,
+%        ppl_Polyhedron_bounded_BHRZ03_extrapolation_assign_with_token/4,
         ppl_Polyhedron_bounded_BHRZ03_extrapolation_assign_with_token_2/5,
         ppl_Polyhedron_bounded_BHRZ03_extrapolation_assign/3,
-%       ppl_Polyhedron_H79_widening_assign_with_token/3,
+%        ppl_Polyhedron_H79_widening_assign_with_token/3,
         ppl_Polyhedron_H79_widening_assign_with_token_2/4,
         ppl_Polyhedron_H79_widening_assign/2,
-%       ppl_Polyhedron_limited_H79_extrapolation_assign_with_token/4,
+%        ppl_Polyhedron_limited_H79_extrapolation_assign_with_token/4,
         ppl_Polyhedron_limited_H79_extrapolation_assign_with_token_2/5,
         ppl_Polyhedron_limited_H79_extrapolation_assign/3,
-%       ppl_Polyhedron_bounded_H79_extrapolation_assign_with_token/4,
+%        ppl_Polyhedron_bounded_H79_extrapolation_assign_with_token/4,
         ppl_Polyhedron_bounded_H79_extrapolation_assign_with_token_2/5,
         ppl_Polyhedron_bounded_H79_extrapolation_assign/3,
-        ppl_Polyhedron_add_dimensions_and_project/2,
-        ppl_Polyhedron_add_dimensions_and_embed/2,
+        ppl_Polyhedron_add_space_dimensions_and_project/2,
+        ppl_Polyhedron_add_space_dimensions_and_embed/2,
         ppl_Polyhedron_concatenate_assign/2,
-        ppl_Polyhedron_remove_dimensions/2,
-        ppl_Polyhedron_remove_higher_dimensions/2,
-        ppl_Polyhedron_expand_dimension/3,
-        ppl_Polyhedron_fold_dimensions/3,
-        ppl_Polyhedron_map_dimensions/2
+        ppl_Polyhedron_remove_space_dimensions/2,
+        ppl_Polyhedron_remove_higher_space_dimensions/2,
+        ppl_Polyhedron_expand_space_dimension/3,
+        ppl_Polyhedron_fold_space_dimensions/3,
+        ppl_Polyhedron_map_space_dimensions/2
 ]).
 
 :- comment(version_maintenance,off).
@@ -963,6 +977,9 @@ since the above version of this is temporary.
              :: any_term + foreign.
 
 :- true pred ppl_Polyhedron_space_dimension(in(Handle), in(Dimension))
+             :: any_term * any_term + foreign.
+
+:- true pred ppl_Polyhedron_affine_dimension(in(Handle), in(Dimension))
              :: any_term * any_term + foreign.
 
 :- true pred ppl_Polyhedron_get_constraints(in(Handle), in(CList))
@@ -1183,36 +1200,38 @@ since the above version of this is temporary.
                                                                in(CList))
              :: any_term * any_term * any_term + foreign.
 
-:- true pred ppl_Polyhedron_add_dimensions_and_project(in(Handle),
-                                                       in(NDimensionsToAdd))
+:- true pred
+   ppl_Polyhedron_add_space_dimensions_and_project(in(Handle),
+                                                   in(NDimensionsToAdd))
              :: any_term * any_term + foreign.
 
-:- true pred ppl_Polyhedron_add_dimensions_and_embed(in(Handle),
-                                                     in(NDimensionsToAdd))
+:- true pred
+   ppl_Polyhedron_add_space_dimensions_and_embed(in(Handle),
+                                                 in(NDimensionsToAdd))
              :: any_term * any_term + foreign.
 
 :- true pred ppl_Polyhedron_concatenate_assign(in(Handle1), in(Handle2))
              :: any_term * any_term + foreign.
 
-:- true pred ppl_Polyhedron_remove_dimensions(in(Handle), in(VList))
+:- true pred ppl_Polyhedron_remove_space_dimensions(in(Handle), in(VList))
              :: any_term * any_term + foreign.
 
-:- true pred ppl_Polyhedron_remove_higher_dimensions(in(Handle),
-                                                     in(Dimensions))
+:- true pred ppl_Polyhedron_remove_higher_space_dimensions(in(Handle),
+                                                           in(Dimensions))
              :: any_term * any_term + foreign.
 
-:- true pred ppl_Polyhedron_expand_dimension(in(Handle),
-                                           in(Var),
-                                           in(Dimensions))
+:- true pred ppl_Polyhedron_expand_space_dimension(in(Handle),
+                                                   in(Var),
+                                                   in(Dimensions))
              :: any_term * any_term * any_term + foreign.
 
-:- true pred ppl_Polyhedron_fold_dimensions(in(Handle),
-                                           in(VList),
-                                           in(Var))
+:- true pred ppl_Polyhedron_fold_space_dimensions(in(Handle),
+                                                  in(VList),
+                                                  in(Var))
              :: any_term * any_term * any_term + foreign.
 
-:- true pred ppl_Polyhedron_map_dimensions(in(Handle),
-                                           in(PIFunc))
+:- true pred ppl_Polyhedron_map_space_dimensions(in(Handle),
+                                                 in(PIFunc))
              :: any_term * any_term + foreign.
 
 :- extra_linker_opts('-L.libs').
@@ -1242,6 +1261,7 @@ since the above version of this is temporary.
         ppl_Polyhedron_swap/2,
         ppl_delete_Polyhedron/1,
         ppl_Polyhedron_space_dimension/2,
+        ppl_Polyhedron_affine_dimension/2,
         ppl_Polyhedron_get_constraints/2,
         ppl_Polyhedron_get_minimized_constraints/2,
         ppl_Polyhedron_get_generators/2,
@@ -1295,14 +1315,14 @@ since the above version of this is temporary.
         ppl_Polyhedron_limited_H79_extrapolation_assign/3,
         ppl_Polyhedron_bounded_H79_extrapolation_assign_with_token/4,
         ppl_Polyhedron_bounded_H79_extrapolation_assign/3,
-        ppl_Polyhedron_add_dimensions_and_project/2,
-        ppl_Polyhedron_add_dimensions_and_embed/2,
+        ppl_Polyhedron_add_space_dimensions_and_project/2,
+        ppl_Polyhedron_add_space_dimensions_and_embed/2,
         ppl_Polyhedron_concatenate_assign/2,
-        ppl_Polyhedron_remove_dimensions/2,
-        ppl_Polyhedron_remove_higher_dimensions/2,
-        ppl_Polyhedron_expand_dimension/3
-        ppl_Polyhedron_fold_dimensions/3
-        ppl_Polyhedron_map_dimensions/2
+        ppl_Polyhedron_remove_space_dimensions/2,
+        ppl_Polyhedron_remove_higher_space_dimensions/2,
+        ppl_Polyhedron_expand_space_dimension/3
+        ppl_Polyhedron_fold_space_dimensions/3
+        ppl_Polyhedron_map_space_dimensions/2
 ]).
 
 :- comment(version_maintenance,off).

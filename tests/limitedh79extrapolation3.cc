@@ -61,7 +61,7 @@ main() TRY {
   C_Polyhedron computed_result = ph1;
   computed_result.limited_H79_extrapolation_assign(ph2, cs);
 
-  C_Polyhedron known_result = ph1;
+  C_Polyhedron known_result(cs);
 
 #if NOISY
   print_constraints(computed_result,

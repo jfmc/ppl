@@ -39,7 +39,7 @@ error1() {
   GenSys gs;
   try {
     // This is an incorrect use of the function Generator::point(expr, d):
-    // it is illegal to built a point with the denominator
+    // it is illegal to build a point with the denominator
     // equal to zero.
     gs.insert(point(x + y + z, 0));
 
@@ -125,7 +125,7 @@ error4() {
 
   try {
     // This is an incorrect use of the function
-    // C_Polyhedron::C_Polyhedron(gs): it is illegal to built a
+    // C_Polyhedron::C_Polyhedron(gs): it is illegal to build a
     // polyhedron starting from a system of generators that does not
     // contain a point.
     C_Polyhedron ph(gs);
@@ -154,16 +154,16 @@ error5() {
   Variables_Set to_be_removed;
   to_be_removed.insert(z);
 
-  ph.remove_dimensions(to_be_removed);
+  ph.remove_space_dimensions(to_be_removed);
 
   try {
     to_be_removed.insert(x);
     // This is an incorrect use use of function
-    // C_Polyhedron::remove_dimensions(to_be_remove).
+    // C_Polyhedron::remove_space_dimensions(to_be_remove).
     // Here the set `to_be_removed' still contains variable `z'.
     // This variable is now beyond the space dimension,
     // so that a dimension-incompatibility exception is obtained.
-    ph.remove_dimensions(to_be_removed);
+    ph.remove_space_dimensions(to_be_removed);
     exit(1);
   }
   catch (invalid_argument& e) {
@@ -399,9 +399,9 @@ error14() {
 
   try {
     // This is an invalid use of the function
-    // C_Polyhedron::remove_higher_dimensions(n): it is illegal to erase
-    // a variable that is not in the space of the polyhedron.
-    ph.remove_higher_dimensions(7);
+    // C_Polyhedron::remove_higher_space_dimensions(n): it is illegal to
+    // erase a variable that is not in the space of the polyhedron.
+    ph.remove_higher_space_dimensions(7);
     exit(1);
   }
   catch (invalid_argument& e) {
@@ -890,7 +890,7 @@ error32() {
 
   try {
     // This is an incorrect use of the function
-    // `C_Polyhedron::C_Polyhedron(gs)': it is illegal to built a
+    // `C_Polyhedron::C_Polyhedron(gs)': it is illegal to build a
     // closed polyhedron starting from a constant system of
     // generators that does not contain points.
     C_Polyhedron ph2(gs2);

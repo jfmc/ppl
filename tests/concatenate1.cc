@@ -58,7 +58,7 @@ main() TRY {
 
   ph.concatenate_assign(qh);
 
-  copy_ph.add_dimensions_and_embed(2);
+  copy_ph.add_space_dimensions_and_embed(2);
   copy_ph.add_constraint(z >= 1);
   copy_ph.add_constraint(w >= 1);
   copy_ph.add_constraint(z - w >= -1);

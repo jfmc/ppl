@@ -195,9 +195,9 @@ ppl_initialize(void) try {
   PPL_POLY_GEN_RELATION_SUBSUMES
     = Poly_Gen_Relation::subsumes().get_flags();
 
-  PPL_COMPLEXITY_CLASS_POLYNOMIAL = POLYNOMIAL;
-  PPL_COMPLEXITY_CLASS_SIMPLEX = SIMPLEX;
-  PPL_COMPLEXITY_CLASS_ANY = ANY;
+  PPL_COMPLEXITY_CLASS_POLYNOMIAL = POLYNOMIAL_COMPLEXITY;
+  PPL_COMPLEXITY_CLASS_SIMPLEX = SIMPLEX_COMPLEXITY;
+  PPL_COMPLEXITY_CLASS_ANY = ANY_COMPLEXITY;
 
   c_variable_output_function = c_variable_default_output_function;
   saved_cxx_Variable_output_function = Variable::get_output_function();
@@ -457,8 +457,10 @@ ppl_multiply_LinExpression_by_Coefficient(ppl_LinExpression_t le,
 CATCH_ALL
 
 int
-ppl_LinExpression_space_dimension(ppl_const_LinExpression_t le) try {
-  return to_const(le)->space_dimension();
+ppl_LinExpression_space_dimension(ppl_const_LinExpression_t le,
+				  ppl_dimension_type* m) try {
+  *m = to_const(le)->space_dimension();
+  return 0;
 }
 CATCH_ALL
 
@@ -562,8 +564,10 @@ ppl_assign_Constraint_from_Constraint(ppl_Constraint_t dst,
 CATCH_ALL
 
 int
-ppl_Constraint_space_dimension(ppl_const_Constraint_t c) try {
-  return to_const(c)->space_dimension();
+ppl_Constraint_space_dimension(ppl_const_Constraint_t c,
+			       ppl_dimension_type* m) try {
+  *m = to_const(c)->space_dimension();
+  return 0;
 }
 CATCH_ALL
 
@@ -668,8 +672,10 @@ ppl_assign_ConSys_from_ConSys(ppl_ConSys_t dst, ppl_const_ConSys_t src) try {
 CATCH_ALL
 
 int
-ppl_ConSys_space_dimension(ppl_const_ConSys_t cs) try {
-  return to_const(cs)->space_dimension();
+ppl_ConSys_space_dimension(ppl_const_ConSys_t cs,
+			   ppl_dimension_type* m) try {
+  *m = to_const(cs)->space_dimension();
+  return 0;
 }
 CATCH_ALL
 
@@ -850,8 +856,10 @@ ppl_assign_Generator_from_Generator(ppl_Generator_t dst,
 CATCH_ALL
 
 int
-ppl_Generator_space_dimension(ppl_const_Generator_t g) try {
-  return to_const(g)->space_dimension();
+ppl_Generator_space_dimension(ppl_const_Generator_t g,
+			      ppl_dimension_type* m) try {
+  *m = to_const(g)->space_dimension();
+  return 0;
 }
 CATCH_ALL
 
@@ -957,8 +965,10 @@ ppl_assign_GenSys_from_GenSys(ppl_GenSys_t dst, ppl_const_GenSys_t src) try {
 CATCH_ALL
 
 int
-ppl_GenSys_space_dimension(ppl_const_GenSys_t gs) try {
-  return to_const(gs)->space_dimension();
+ppl_GenSys_space_dimension(ppl_const_GenSys_t gs,
+			   ppl_dimension_type* m) try {
+  *m = to_const(gs)->space_dimension();
+  return 0;
 }
 CATCH_ALL
 
@@ -1322,8 +1332,18 @@ ppl_assign_NNC_Polyhedron_from_NNC_Polyhedron(ppl_Polyhedron_t dst,
 CATCH_ALL
 
 int
-ppl_Polyhedron_space_dimension(ppl_const_Polyhedron_t ph) try {
-  return to_const(ph)->space_dimension();
+ppl_Polyhedron_space_dimension(ppl_const_Polyhedron_t ph,
+			       ppl_dimension_type* m) try {
+  *m = to_const(ph)->space_dimension();
+  return 0;
+}
+CATCH_ALL
+
+int
+ppl_Polyhedron_affine_dimension(ppl_const_Polyhedron_t ph,
+				ppl_dimension_type* m) try {
+  *m = to_const(ph)->affine_dimension();
+  return 0;
 }
 CATCH_ALL
 
@@ -1682,41 +1702,41 @@ try {
 CATCH_ALL
 
 int
-ppl_Polyhedron_add_dimensions_and_embed(ppl_Polyhedron_t ph,
-					ppl_dimension_type d) try {
+ppl_Polyhedron_add_space_dimensions_and_embed(ppl_Polyhedron_t ph,
+					      ppl_dimension_type d) try {
   Polyhedron& pph = *to_nonconst(ph);
-  pph.add_dimensions_and_embed(d);
+  pph.add_space_dimensions_and_embed(d);
   return 0;
 }
 CATCH_ALL
 
 int
-ppl_Polyhedron_add_dimensions_and_project(ppl_Polyhedron_t ph,
-					  ppl_dimension_type d) try {
+ppl_Polyhedron_add_space_dimensions_and_project(ppl_Polyhedron_t ph,
+						ppl_dimension_type d) try {
   Polyhedron& pph = *to_nonconst(ph);
-  pph.add_dimensions_and_project(d);
+  pph.add_space_dimensions_and_project(d);
   return 0;
 }
 CATCH_ALL
 
 int
-ppl_Polyhedron_remove_dimensions(ppl_Polyhedron_t ph,
-				 ppl_dimension_type ds[],
-				 size_t n) try {
+ppl_Polyhedron_remove_space_dimensions(ppl_Polyhedron_t ph,
+				       ppl_dimension_type ds[],
+				       size_t n) try {
   Polyhedron& pph = *to_nonconst(ph);
   Variables_Set to_be_removed;
   for (ppl_dimension_type i = n; i-- > 0; )
     to_be_removed.insert(Variable(ds[i]));
-  pph.remove_dimensions(to_be_removed);
+  pph.remove_space_dimensions(to_be_removed);
   return 0;
 }
 CATCH_ALL
 
 int
-ppl_Polyhedron_remove_higher_dimensions(ppl_Polyhedron_t ph,
-					ppl_dimension_type d) try {
+ppl_Polyhedron_remove_higher_space_dimensions(ppl_Polyhedron_t ph,
+					      ppl_dimension_type d) try {
   Polyhedron& pph = *to_nonconst(ph);
-  pph.remove_higher_dimensions(d);
+  pph.remove_higher_space_dimensions(d);
   return 0;
 }
 CATCH_ALL
@@ -1782,36 +1802,36 @@ public:
 } // namespace
 
 int
-ppl_Polyhedron_map_dimensions(ppl_Polyhedron_t ph,
-			      ppl_dimension_type maps[],
-			      size_t n) try {
+ppl_Polyhedron_map_space_dimensions(ppl_Polyhedron_t ph,
+				    ppl_dimension_type maps[],
+				    size_t n) try {
   Polyhedron& pph = *to_nonconst(ph);
   PIFunc pifunc(maps, n);
-  pph.map_dimensions(pifunc);
+  pph.map_space_dimensions(pifunc);
   return 0;
 }
 CATCH_ALL
 
 int
-ppl_Polyhedron_expand_dimension(ppl_Polyhedron_t ph,
-				ppl_dimension_type d,
-				ppl_dimension_type m) try {
+ppl_Polyhedron_expand_space_dimension(ppl_Polyhedron_t ph,
+				      ppl_dimension_type d,
+				      ppl_dimension_type m) try {
   Polyhedron& pph = *to_nonconst(ph);
-  pph.expand_dimension(Variable(d), m);
+  pph.expand_space_dimension(Variable(d), m);
   return 0;
 }
 CATCH_ALL
 
 int
-ppl_Polyhedron_fold_dimensions(ppl_Polyhedron_t ph,
-			       ppl_dimension_type ds[],
-			       size_t n,
-			       ppl_dimension_type d) try {
+ppl_Polyhedron_fold_space_dimensions(ppl_Polyhedron_t ph,
+				     ppl_dimension_type ds[],
+				     size_t n,
+				     ppl_dimension_type d) try {
   Polyhedron& pph = *to_nonconst(ph);
   Variables_Set to_be_folded;
   for (ppl_dimension_type i = n; i-- > 0; )
     to_be_folded.insert(Variable(ds[i]));
-  pph.fold_dimensions(to_be_folded, Variable(d));
+  pph.fold_space_dimensions(to_be_folded, Variable(d));
   return 0;
 }
 CATCH_ALL
@@ -1945,9 +1965,9 @@ ppl_Polyhedron_shrink_bounding_box
  void (*lower_upper_bound)(ppl_dimension_type k, int closed,
 			   ppl_const_Coefficient_t n,
 			   ppl_const_Coefficient_t d)) try {
-  if (complexity != POLYNOMIAL
-      && complexity != SIMPLEX
-      && complexity != ANY)
+  if (complexity != POLYNOMIAL_COMPLEXITY
+      && complexity != SIMPLEX_COMPLEXITY
+      && complexity != ANY_COMPLEXITY)
     return PPL_ERROR_INVALID_ARGUMENT;
 
   const Polyhedron& pph = *to_const(ph);

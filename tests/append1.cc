@@ -94,10 +94,10 @@ main() TRY {
     dimensions_to_remove.insert(F);
     dimensions_to_remove.insert(E);
     assert(current.OK());
-    current.remove_dimensions(dimensions_to_remove);
+    current.remove_space_dimensions(dimensions_to_remove);
     assert(current.OK());
 #if NOISY
-    print_constraints(current, "*** after remove_dimensions ***");
+    print_constraints(current, "*** after remove_space_dimensions ***");
 #endif
     current.poly_hull_assign_and_minimize(previous);
 #if NOISY

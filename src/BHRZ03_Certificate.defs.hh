@@ -93,8 +93,8 @@ public:
   bool OK() const;
   
 private:
-  //! Dimension of the polyhedron.
-  dimension_type poly_dim;
+  //! Affine dimension of the polyhedron.
+  dimension_type affine_dim;
   //! Dimension of the lineality space of the polyhedron.
   dimension_type lin_space_dim;
   //! Cardinality of a non-redundant constraint system for the polyhedron.

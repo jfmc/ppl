@@ -363,6 +363,12 @@ AC_LANG(C)
 AC_C_CONST
 AC_C_INLINE
 
+# Checks for C functions.
+AC_CHECK_FUNCS(ffs)
+
+# Checks for C type sizes.
+AC_CHECK_SIZEOF(int)
+
 # Use C++ for the remaining checks.
 AC_LANG(C++)
 
@@ -427,7 +433,6 @@ AC_LIBTOOL_WIN32_DLL
 AC_PROG_LIBTOOL
 
 # Checks for programs.
-
 AC_CHECK_PROG(MD5SUM, md5sum, md5sum)
 AM_CONDITIONAL(HAVE_MD5SUM, test x$MD5SUM = xmd5sum)
 
@@ -521,23 +526,19 @@ fi
 AM_CONDITIONAL(HAVE_YAP_PROLOG, test x$YAP_PROLOG = xyap)
 
 # Check for the Mercury compiler
-
 AC_CHECK_PROG(MERCURY_COMPILER, mmc, mmc)
 AM_CONDITIONAL(HAVE_MERCURY_COMPILER, test x$MERCURY_COMPILER = xmmc)
 
 # Check for the GLPK library
-
 AC_LANG_PUSH(C)
 AC_CHECK_HEADER(glpk.h, HAVE_GLPK_H=yes)
 AM_CONDITIONAL(HAVE_GLPK, test x$HAVE_GLPK_H = xyes)
 AC_LANG_POP(C)
 
 # Checks for header files.
-
 AC_CHECK_HEADERS([getopt.h signal.h sys/resource.h sys/time.h sys/types.h unistd.h])
 
 # Checks for header declarations.
-
 AC_CHECK_DECLS([RLIMIT_DATA, RLIMIT_RSS, RLIMIT_VMEM, RLIMIT_AS],
                ,
                ,

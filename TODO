@@ -2,30 +2,47 @@
 Enhancements for PPL 0.7
 ========================
 
+- Explain to the GNU Prolog user that GNU Prolog must be configured
+  using the `--disable-regs' option it is has to work with _any_
+  foreign code (not just the PPL).
+
+- The fragment
+
+    C_Polyhedron(500, Polyhedron::empty()).generators().space_dimension()
+
+  may return something unexpected to the user.  This issue
+  must be studied and dealt with in the appropriate way.
+
+- Consider performing the following renamings:
+
+    Integer -> Coefficient
+    BoundingBox -> Bounding_Box
+    ConSys -> Constraint_System
+    GenSys -> Generator_System
+    AskTell -> Ask_Tell
+    LinExpression -> Linear_Expression
+    SatMatrix -> Saturation_Matrix
+    SatRow -> Saturation_Row
+    PartialFunction -> Partial_Function
+
+- Rewrite Matrix::sort_and_remove_with_sat() and perhaps
+  Matrix::sort_rows().
+- Look carefully into the methods Polyhedron::obtain_sorted_constraints*()
+  and Polyhedron::obtain_sorted_generators*() and into the code that
+  uses them directly.
 - The Powerset class implementation is poorly documented.
-- We have an inconsistency: C_Polyhedron(const NNC_Polyhedron& y)
-  throws an exception if `y' is not topologically closed, whereas
-  the corresponding operation on Polyhedra_Powerset computes
-  topological closures.  This inconsistency should be removed.
-- See for what reason why we have neither
+- See for what reason we have neither
   C_Polyhedron& C_Polyhedron::operator=(const NNC_Polyhedron& y)
   nor
   NNC_Polyhedron& NNC_Polyhedron::operator=(const C_Polyhedron& y).
 - Consider whether it is the case to move the definition of dimension
   of a polyhedron in the user's manual and to refer to it in the
   documentation of Polyhedron::dimension().
-- Make Polyhedron::dimension() available in all the interfaces.
 - Allow the specification of alternative coefficient implementations.
 - Clearly explain, in the documentation, how (not) to use
   set_GMP_memory_allocation_functions().  More generally, explain how
   to have memory-guarded computations.
 - Completely rewrite the handling of temporary coefficients.
-- Make sure ppl_lcdd is able to parse problems produced by lrs, i.e.,
-  where the number of rows of the matrix is omitted and replaced by
-  "*****".
-- Add a README to the `tests' subdirectory.  There, explain how a
-  test program in that directory can be turned into a program that
-  can be used elsewhere.
 - Better explain the tradeoff in the choice between C_ and NNC_Polyhedron.
 - Investigate again all XFAILS.
 - Explain the ordering of the arguments in the widening methods.
