@@ -38,13 +38,20 @@ AM_CPPFLAGS = \
 -I$(top_srcdir)/Watchdog \
 @extra_includes@
 
+if NO_UNDEFINED
+
+NO_UNDEFINED_FLAG = -no-undefined
+
+endif NO_UNDEFINED
+
 pkglib_LTLIBRARIES = ppl_yap.la
 ppl_yap_la_SOURCES = ppl_yap.cc
 ppl_yap_la_LIBADD = \
 $(top_builddir)/src/libppl.la \
 $(top_builddir)/Watchdog/libpwl.la \
 @extra_libraries@
-ppl_yap_la_LDFLAGS = -module -avoid-version
+
+ppl_yap_la_LDFLAGS = $(NO_UNDEFINED_FLAG) -module -avoid-version
 
 pkglib_DATA = ppl_yap.pl
 

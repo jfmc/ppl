@@ -275,6 +275,18 @@ then
   CXXFLAGS="$CXXFLAGS -W -Wall"
 fi
 
+# System-dependent adjustments.
+no_undefined=no
+
+case "${host_os}" in
+cygwin)
+  no_undefined=yes
+  ;;
+*)
+  ;;
+esac
+AM_CONDITIONAL(NO_UNDEFINED, test x$no_undefined = xyes)
+
 AC_SUBST(debug_flag)
 
 AC_CONFIG_FILES(Makefile)

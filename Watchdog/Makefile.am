@@ -110,7 +110,15 @@ LIBPWL_LT_AGE =      0
 
 lib_LTLIBRARIES = libpwl.la
 libpwl_la_SOURCES = $(SOURCE_FILES)
+
+if NO_UNDEFINED
+
+NO_UNDEFINED_FLAG = -no-undefined
+
+endif NO_UNDEFINED
+
 libpwl_la_LDFLAGS = \
+$(NO_UNDEFINED_FLAG) \
 -version-info $(LIBPWL_LT_CURRENT):$(LIBPWL_LT_REVISION):$(LIBPWL_LT_AGE)
 
 noinst_HEADERS = pwl.hh pwl_install.hh
