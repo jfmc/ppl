@@ -101,6 +101,7 @@ ORIGINAL_TESTS = \
 	disjoint1 disjoint2 disjoint3 \
 	dualhypercubes \
 	empty1 \
+	equals1 \
 	exceptions1 exceptions2  exceptions3 \
 	expandspacedim1 expandspacedim2 \
 	foldspacedims1 foldspacedims2 \
@@ -196,6 +197,7 @@ DERIVED_TESTS = \
 	nnc_contains1 nnc_contains2 \
 	nnc_disjoint1 nnc_disjoint2 \
 	nnc_empty1 \
+	nnc_equals1 \
 	nnc_exceptions1 nnc_exceptions3 \
 	nnc_expandspacedim1 \
 	nnc_foldspacedims1 \
@@ -412,6 +414,8 @@ disjoint3_SOURCES = disjoint3.cc
 dualhypercubes_SOURCES = dualhypercubes.cc
 
 empty1_SOURCES = empty1.cc
+
+equals1_SOURCES = equals1.cc
 
 exceptions1_SOURCES = exceptions1.cc
 exceptions2_SOURCES = exceptions2.cc
@@ -813,6 +817,9 @@ nnc_disjoint2_CXXFLAGS = $(DERIVED_CXXFLAGS)
 nnc_empty1_SOURCES = empty1.cc
 nnc_empty1_CXXFLAGS = $(DERIVED_CXXFLAGS)
 
+nnc_equals1_SOURCES = equals1.cc
+nnc_equals1_CXXFLAGS = $(DERIVED_CXXFLAGS)
+
 nnc_exceptions1_SOURCES = exceptions1.cc
 nnc_exceptions1_CXXFLAGS = $(DERIVED_CXXFLAGS)
 nnc_exceptions3_SOURCES = exceptions3.cc
@@ -1091,7 +1098,9 @@ dualhypercubes
 XFAIL_WITH_INT16 = \
 $(XFAIL_WITH_INT32) \
 bgp99extrapolation1 \
-nnc_bgp99extrapolation1
+equals1 \
+nnc_bgp99extrapolation1 \
+nnc_equals1
 
 XFAIL_WITH_INT8 = \
 $(XFAIL_WITH_INT16) \
