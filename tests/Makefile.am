@@ -50,7 +50,7 @@ ORIGINAL_TESTS = \
 	addgenerator1 addgenerator2 \
 	addgenerators1 addgenerators2 addgenerators3 addgenerators4 \
 	addgenerators5 addgenerators6 addgenerators7 addgenerators8 \
-	addgenerators9 addgenerators10 \
+	addgenerators9 addgenerators10 addgenerators11 \
 	affineimage1 affineimage2 affineimage3 affineimage4 affineimage5 \
 	affinepreimage1 affinepreimage2 affinepreimage3 affinepreimage4 \
 	affinepreimage5 affinepreimage6 affinepreimage7 \
