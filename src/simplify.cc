@@ -214,11 +214,11 @@ PPL::Polyhedron::simplify(Matrix& mat, SatMatrix& sat) {
   // Now we check the independence rule.
   for (size_t i = num_equal_or_line; i < num_rows; ) {
     bool redundant = false;
-    // FIXME: check if it is possible to reduce the number of sat's
-    // row equality tests by letting `j' run through the indexes
-    // greater than `i'. This certainly require the addition of
-    // the reverse inclusion test `sat[i] < sat[j]'; we have to check
-    // how this can interact with the swapping of rows.
+    // NOTE: in the inner loop, index `j' runs through _all_ the
+    // inequalities and we do not test `sat[i] < sat[j]'.
+    // Experimentation has shown that this is faster than having
+    // `j' only run through the indexes greater than `i' and
+    // also doing the test `sat[i] < sat[j]'.
     for (size_t j = num_equal_or_line; j < num_rows; ) {
       if (i == j)
 	// Want to compare different rows of mat.
@@ -233,23 +233,18 @@ PPL::Polyhedron::simplify(Matrix& mat, SatMatrix& sat) {
 	// on the latter but not on the former, then `c_2' is more
 	// restrictive than `c_1', i.e., `c_1' is redundant.
 	if (sat[i] > sat[j]) {
-	  // Note that `sat[i]' > `sat[j]' means that the generators
-	  // that saturate the `i'-th constraint, saturate the
-	  // `j'-th constraint, too, and there is at least one
-	  // generator that saturates the `j'-th constraint but not
-	  // the `i'-th one, then on the hyper-plane corresponding to
-	  // the `j'-th constraint lies one more generator than
-	  // the ones lying on the hyper-plane corresponding to the
-	  // `i'-th one. It follows that (see comment above)
-	  // the `i'-th constraint is redundant.
+	  // All the saturators of the inequality `mat[i]' are
+	  // saturators of the inequality `mat[j]' too,
+	  // and there exists at least one saturator of `mat[j]'
+	  // which is not a saturator of `mat[i]'.
+	  // It follows that inequality `mat[i]' is redundant.
 	  redundant = true;
 	  break;
 	}
 	else if (sat[i] == sat[j]) {
-	  // Note that `sat[i]' == `sat[j]' means that the `i'-th
-	  // inequality is saturated by the same generators that
-	  // saturate the `j'-th one and then we can remove either one of
-	  // the two constraints: we remove the `j'-th one.
+	  // Inequalities `mat[i]' and `mat[j]' are saturated by
+	  // the same set of generators. Then we can remove either one
+	  // of the two inequalities: we remove `mat[j]'.
 	  --num_rows;
 	  std::swap(mat[j], mat[num_rows]);
 	  std::swap(sat[j], sat[num_rows]);
@@ -257,11 +252,9 @@ PPL::Polyhedron::simplify(Matrix& mat, SatMatrix& sat) {
 	  mat.set_sorted(false);
 	}
 	else
-	  // If a couple of `sat' rows is not comparable it means that
-	  // the corresponding constraints are satisfied by different
-	  // generators and then no one is redundant. Thus we test
-	  // another couple of constraints: we compare the `i'-th
-	  // inequality with a next one.
+	  // If we reach this point, then we know that `sat[i] >= sat[j]'
+	  // does not hold, so that `mat[i]' is not made redundant by
+	  // inequality `mat[j]'.
 	  ++j;
       }
     }
