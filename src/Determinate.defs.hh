@@ -64,7 +64,6 @@ template <typename PH>
 bool
 lcompare(const Determinate<PH>& x, const Determinate<PH>& y);
 
-#if 0
 template <typename PH>
 Determinate<PH>
 operator+(const Determinate<PH>& x, const Determinate<PH>& y);
@@ -72,7 +71,6 @@ operator+(const Determinate<PH>& x, const Determinate<PH>& y);
 template <typename PH>
 Determinate<PH>
 operator*(const Determinate<PH>& x, const Determinate<PH>& y);
-#endif
 
 namespace IO_Operators {
 
