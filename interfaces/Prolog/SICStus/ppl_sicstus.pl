@@ -19,6 +19,7 @@ foreign_resource(ppl_sicstus,
 	ppl_get_generators,
 	ppl_intersection_assign,
 	ppl_convex_hull_assign,
+	ppl_convex_difference_assign,
 	ppl_widening_assign
 ]).
 
@@ -73,6 +74,9 @@ foreign(ppl_intersection_assign,
 foreign(ppl_convex_hull_assign,
 	c,
 	ppl_convex_hull_assign(+address, +address)).
+foreign(ppl_convex_difference_assign,
+	c,
+	ppl_convex_difference_assign(+address, +address)).
 foreign(ppl_widening_assign,
 	c,
 	ppl_widening_assign(+address, +address)).

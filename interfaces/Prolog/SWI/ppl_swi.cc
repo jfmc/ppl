@@ -6,38 +6,41 @@
 #include <cstdlib>
 
 #define SWI 1
+#define PARANOID 1
 
 namespace PPL = Parma_Polyhedra_Library;
 
 typedef term_t Prolog_term_ref;
 typedef atom_t Prolog_atom;
 
-inline Prolog_term_ref
+#include "../exceptions.hh"
+
+static inline Prolog_term_ref
 Prolog_new_term_ref() {
   return PL_new_term_ref();
 }
 
-inline void
+static inline void
 Prolog_put_term(Prolog_term_ref t, Prolog_term_ref u) {
   PL_put_term(t, u);
 }
 
-inline void
-Prolog_put_integer(Prolog_term_ref t, long i) {
+static inline void
+Prolog_put_long(Prolog_term_ref t, long i) {
   PL_put_integer(t, i);
 }
 
-inline void
+static inline void
 Prolog_put_string(Prolog_term_ref t, const char* s) {
   PL_put_string_chars(t, s);
 }
 
-inline Prolog_atom
+static inline Prolog_atom
 Prolog_atom_from_string(const char* s) {
   return PL_new_atom(s);
 }
 
-inline void
+static inline void
 Prolog_construct_functor(Prolog_term_ref t, Prolog_atom name, int arity ...) {
   va_list ap;
   va_start(ap, arity);
@@ -45,65 +48,61 @@ Prolog_construct_functor(Prolog_term_ref t, Prolog_atom name, int arity ...) {
   va_end(ap);
 }
 
-inline void
+static inline void
 Prolog_construct_list(Prolog_term_ref l,
 		      Prolog_term_ref h, Prolog_term_ref t) {
-  // Apparently, PL_cons_list() cannot fail.
   PL_cons_list(l, h, t);
 }
 
-inline void
+static inline void
 Prolog_raise_exception(Prolog_term_ref t) {
-  PL_raise_exception(t);
+  (void) PL_raise_exception(t);
 }
 
-inline bool
+static inline bool
 Prolog_is_integer(Prolog_term_ref t) {
   return PL_is_integer(t) != 0;
 }
 
-inline bool
+static inline bool
 Prolog_is_compound(Prolog_term_ref t) {
   return PL_is_compound(t) != 0;
 }
 
-inline bool
+static inline bool
 Prolog_is_list(Prolog_term_ref t) {
   return PL_is_list(t) != 0;
 }
 
-inline long
+static inline long
 Prolog_get_long(Prolog_term_ref t) {
   assert(Prolog_is_integer(t));
   long v;
-  if (PL_get_long(t, &v) != 0)
-    return v;
-  else
-    //throw integer_out_of_range(t);
-    abort();
+  if (PL_get_long(t, &v) == 0)
+    throw_integer_out_of_range(t);
+  return v;
 }
 
-inline void
+static inline void
 Prolog_get_name_arity(Prolog_term_ref t, Prolog_atom& name, int& arity) {
-  if (PL_get_name_arity(t, &name, &arity) == 0)
-    abort();
+  assert(Prolog_is_compound(t));
+  CHECK_STATUS(PL_get_name_arity(t, &name, &arity));
 }
 
-inline void
+static inline void
 Prolog_get_arg(int i, Prolog_term_ref t, Prolog_term_ref a) {
-  if (PL_get_arg(i, t, a) == 0)
-    abort();
+  assert(Prolog_is_compound(t));
+  CHECK_STATUS(PL_get_arg(i, t, a));
 }
 
-inline void
+static inline void
 Prolog_get_list(Prolog_term_ref l, Prolog_term_ref h, Prolog_term_ref t) {
-  if (PL_get_list(l, h, t) == 0)
-    abort();
+  assert(Prolog_is_list(t));
+  CHECK_STATUS(PL_get_list(l, h, t));
 }
 
-inline void
+static inline void
 Prolog_put_atom(Prolog_term_ref t, Prolog_atom a) {
-  // Apparently, PL_put_atom() cannot fail.
   PL_put_atom(t, a);
 }
 
@@ -113,4 +112,84 @@ integer_term_to_Integer(Prolog_term_ref t) {
   return PPL::Integer(Prolog_get_long(t));
 }
 
+static Prolog_term_ref
+Integer_to_integer_term(const PPL::Integer& n) {
+  // FIXME: does SWI support unlimited precision integer?
+  Prolog_term_ref t = Prolog_new_term_ref();
+  if (!n.fits_slong_p())
+    throw_unknown_interface_error();
+  PL_put_integer(t, n.get_si());
+  return t;
+}
+
 #include "../ppl_prolog.outlines.hh"
+
+#if 0
+extern "C" foreign_t
+ppl_new_polyhedron(Prolog_term_ref tp, Prolog_term_ref td) {
+  try {
+    if (!Prolog_is_integer(td))
+      throw not_an_integer(td);
+    PPL::Polyhedron* ret = new PPL::Polyhedron(get_size_t(num_dimensions));
+    REGISTER(ret);
+    return TRUE;
+  }
+  CATCH_ALL;
+  return FALSE;
+
+extern "C" void*
+ppl_new_empty_polyhedron(long num_dimensions) {
+  try {
+    PPL::Polyhedron* ret = new PPL::Polyhedron(get_size_t(num_dimensions),
+					       PPL::Polyhedron::EMPTY);
+    REGISTER(ret);
+    return ret;
+  }
+  CATCH_ALL;
+  return 0;
+}
+
+extern "C" void*
+ppl_copy_polyhedron(const void* pp) {
+  try {
+    CHECK(pp);
+    PPL::Polyhedron* ret
+      = new PPL::Polyhedron(*static_cast<const PPL::Polyhedron*>(pp));
+    REGISTER(ret);
+    return ret;
+  }
+  CATCH_ALL;
+  return 0;
+}
+
+extern "C" void
+ppl_delete_polyhedron(void* pp) {
+  // If destructors throw it is a catastrophy.
+  // Anyway...
+  try {
+    UNREGISTER(pp);
+    delete static_cast<PPL::Polyhedron*>(pp);
+  }
+  CATCH_PPL;
+}
+
+extern "C" long
+ppl_space_dimension(const void* pp) {
+  CHECK(pp);
+  // Polyhedron::space_dimension() cannot throw.
+  return static_cast<const PPL::Polyhedron*>(pp)->space_dimension();
+}
+
+#endif
+
+/*
+static PL_extension predicates[] = {
+{ "ppl_new_polyhedron",        1,      ppl_new_polyhedron, 0 },
+{ "ppl_new_empty_polyhedron",        1,      ppl_new_empty_polyhedron, 0 },
+{ NULL,         0,      NULL,   0 }
+};
+
+void install() {
+  PL_register_extensions(predicates);
+}
+*/

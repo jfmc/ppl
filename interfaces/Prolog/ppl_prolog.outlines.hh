@@ -65,65 +65,6 @@ static PolyTracker poly_tracker;
 
 #endif
 
-class internal_exception {
-private:
-  Prolog_term_ref tr;
-
-public:
-  explicit internal_exception(Prolog_term_ref t)
-    : tr(t) {
-  }
-
-  virtual ~internal_exception() {
-  }
-
-  virtual Prolog_term_ref term() const {
-    return tr;
-  }
-};
-
-class integer_out_of_range : public internal_exception {
-public:
-  explicit integer_out_of_range(Prolog_term_ref t)
-    : internal_exception(t) {
-  }
-};
-
-class non_linear : public internal_exception {
-private:
-  const char* w;
-
-public:
-  explicit non_linear(const char* s, Prolog_term_ref t)
-    : internal_exception(t), w(s) {
-  }
-
-  const char* who() const {
-    return w;
-  }
-};
-
-class not_an_integer : public internal_exception {
-public:
-  explicit not_an_integer(Prolog_term_ref t)
-    : internal_exception(t) {
-  }
-};
-
-class not_unsigned_int : public internal_exception {
-public:
-  explicit not_unsigned_int(Prolog_term_ref t)
-    : internal_exception(t) {
-  }
-};
-
-class not_a_variable : public internal_exception {
-public:
-  explicit not_a_variable(Prolog_term_ref t)
-    : internal_exception(t) {
-  }
-};
-
 static void
 handle_exception(const integer_out_of_range& e) {
   Prolog_term_ref culprit = Prolog_new_term_ref();
@@ -132,7 +73,7 @@ handle_exception(const integer_out_of_range& e) {
   Prolog_term_ref et = Prolog_new_term_ref();
 
   Prolog_put_term(culprit, e.term());
-  Prolog_put_integer(arg_no, 1);
+  Prolog_put_long(arg_no, 1);
   {
     std::string s;
     std::ostringstream domain(s);
@@ -155,7 +96,7 @@ handle_exception(const not_unsigned_int& e) {
   Prolog_term_ref et = Prolog_new_term_ref();
 
   Prolog_put_term(culprit, e.term());
-  Prolog_put_integer(arg_no, 1);
+  Prolog_put_long(arg_no, 1);
   {
     std::string s;
     std::ostringstream domain(s);
@@ -178,7 +119,7 @@ handle_exception(const non_linear& e) {
   Prolog_term_ref et = Prolog_new_term_ref();
 
   Prolog_put_term(culprit, e.term());
-  Prolog_put_integer(arg_no, 1);
+  Prolog_put_long(arg_no, 1);
   Prolog_put_string(expected_domain, "linear expression or constraint");
   Prolog_construct_functor(et, Prolog_atom_from_string(e.who()), culprit);
   Prolog_construct_functor(et, Prolog_atom_from_string("domain_error"),
@@ -194,7 +135,7 @@ handle_exception(const not_a_variable& e) {
   Prolog_term_ref et = Prolog_new_term_ref();
 
   Prolog_put_term(culprit, e.term());
-  Prolog_put_integer(arg_no, 1);
+  Prolog_put_long(arg_no, 1);
   Prolog_put_string(expected_domain, "$VAR(integer)");
   Prolog_construct_functor(et, Prolog_atom_from_string("get_variable"),
 			   culprit);
@@ -286,19 +227,9 @@ static struct {
 };
 
 static Prolog_term_ref
-integer_term(const PPL::Integer& n) {
-  Prolog_term_ref t = Prolog_new_term_ref();
-  // FIXME: handle the case where n does not fit into a signed long.
-  if (!n.fits_slong_p())
-    abort();
-  Prolog_put_integer(t, n.get_si());
-  return t;
-}
-
-static Prolog_term_ref
 variable_term(unsigned int varid) {
   Prolog_term_ref v = Prolog_new_term_ref();
-  Prolog_put_integer(v, varid);
+  Prolog_put_long(v, varid);
   Prolog_term_ref t = Prolog_new_term_ref();
   Prolog_construct_functor(t, a_dollar_VAR, v);
   return t;
@@ -336,63 +267,9 @@ get_size_t(long n) {
     return n;
   else {
     Prolog_term_ref n_term = Prolog_new_term_ref();
-    Prolog_put_integer(n_term, n);
+    Prolog_put_long(n_term, n);
     throw not_unsigned_int(n_term);
   }
-}
-
-extern "C" void*
-ppl_new_polyhedron(long num_dimensions) {
-  try {
-    PPL::Polyhedron* ret = new PPL::Polyhedron(get_size_t(num_dimensions));
-    REGISTER(ret);
-    return ret;
-  }
-  CATCH_ALL;
-  return 0;
-}
-
-extern "C" void*
-ppl_new_empty_polyhedron(long num_dimensions) {
-  try {
-    PPL::Polyhedron* ret = new PPL::Polyhedron(get_size_t(num_dimensions),
-					       PPL::Polyhedron::EMPTY);
-    REGISTER(ret);
-    return ret;
-  }
-  CATCH_ALL;
-  return 0;
-}
-
-extern "C" void*
-ppl_copy_polyhedron(const void* pp) {
-  try {
-    CHECK(pp);
-    PPL::Polyhedron* ret
-      = new PPL::Polyhedron(*static_cast<const PPL::Polyhedron*>(pp));
-    REGISTER(ret);
-    return ret;
-  }
-  CATCH_ALL;
-  return 0;
-}
-
-extern "C" void
-ppl_delete_polyhedron(void* pp) {
-  // If destructors throw it is a catastrophy.
-  // Anyway...
-  try {
-    UNREGISTER(pp);
-    delete static_cast<PPL::Polyhedron*>(pp);
-  }
-  CATCH_PPL;
-}
-
-extern "C" long
-ppl_space_dimension(const void* pp) {
-  CHECK(pp);
-  // Polyhedron::space_dimension() cannot throw.
-  return static_cast<const PPL::Polyhedron*>(pp)->space_dimension();
 }
 
 static unsigned int
@@ -602,6 +479,18 @@ ppl_convex_hull_assign(void* pp_lhs, const void* pp_rhs) {
 }
 
 extern "C" void
+ppl_convex_difference_assign(void* pp_lhs, const void* pp_rhs) {
+  try {
+    CHECK(pp_lhs);
+    CHECK(pp_rhs);
+    PPL::Polyhedron& x = *static_cast<PPL::Polyhedron*>(pp_lhs);
+    const PPL::Polyhedron& y = *static_cast<const PPL::Polyhedron*>(pp_rhs);
+    x.convex_difference_assign_and_minimize(y);
+  }
+  CATCH_ALL;
+}
+
+extern "C" void
 ppl_widening_assign(void* pp_lhs, const void* pp_rhs) {
   try {
     CHECK(pp_lhs);
@@ -623,11 +512,12 @@ get_lin_expression(const R& r) {
 	 && (coefficient = r.coefficient(PPL::Variable(varid))) == 0)
     ++varid;
   if (varid >= space_dimension) {
-    Prolog_put_integer(so_far, 0);
+    Prolog_put_long(so_far, 0);
   }
   else {
     Prolog_construct_functor(so_far, a_asterisk,
-			     integer_term(coefficient), variable_term(varid));
+			     Integer_to_integer_term(coefficient),
+			     variable_term(varid));
     while (true) {
       ++varid;
       while (varid < space_dimension
@@ -638,7 +528,7 @@ get_lin_expression(const R& r) {
       else {
 	Prolog_term_ref addendum = Prolog_new_term_ref();
 	Prolog_construct_functor(addendum, a_asterisk,
-				 integer_term(coefficient),
+				 Integer_to_integer_term(coefficient),
 				 variable_term(varid));
 	Prolog_term_ref new_so_far = Prolog_new_term_ref();
 	Prolog_construct_functor(new_so_far, a_plus,
@@ -656,7 +546,7 @@ constraint_term(const PPL::Constraint& c) {
   Prolog_term_ref t = Prolog_new_term_ref();
   Prolog_construct_functor(t, relation,
 			   get_lin_expression(c),
-			   integer_term(-c.coefficient()));
+			   Integer_to_integer_term(-c.coefficient()));
   return t;
 }
 
@@ -701,7 +591,8 @@ generator_term(const PPL::Generator& g) {
 	break;
       else {
 	Prolog_construct_functor(t, constructor,
-				 get_lin_expression(g), integer_term(divisor));
+				 get_lin_expression(g),
+				 Integer_to_integer_term(divisor));
 	return t;
       }
     }
