@@ -306,6 +306,8 @@ AC_CHECK_HEADER(sicstus/sicstus.h,
                   AC_MSG_RESULT(no)))
 AC_CHECK_HEADER(Yap/c_interface.h,
                 extra_if_Prolog_subdirs="${extra_if_Prolog_subdirs} YAP")
+AC_CHECK_HEADER(glpk.h,
+                extra_if_C_subdirs="${extra_if_C_subdirs} lpenum")
 
 dnl Checks for typedefs, structures, and compiler characteristics.
 # Nothing for the time being.
@@ -317,6 +319,7 @@ AC_SUBST(extra_includes)
 AC_SUBST(extra_libraries)
 AC_SUBST(extra_cpp_flags)
 AC_SUBST(debug_flag)
+AC_SUBST(extra_if_C_subdirs)
 AC_SUBST(extra_if_Prolog_subdirs)
 
 AC_OUTPUT(Makefile
@@ -330,6 +333,7 @@ AC_OUTPUT(Makefile
           doc/user.doxyconf-html         doc/devref.doxyconf-html
           interfaces/Makefile
           interfaces/C/Makefile
+          interfaces/C/lpenum/Makefile
           interfaces/Prolog/Makefile
           interfaces/Prolog/GNU/Makefile
           interfaces/Prolog/SICStus/Makefile interfaces/Prolog/SWI/Makefile

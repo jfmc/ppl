@@ -26,10 +26,10 @@ VPATH = @srcdir@
 
 @SET_MAKE@
 
-SUBDIRS =
+SUBDIRS = @extra_if_C_subdirs@
 
 
-# Libtool -version-info for libpplc.la.
+# Libtool -version-info for libppl_c.la.
 #
 #  1. Start with version information of `0:0:0' for each libtool library.
 #
@@ -56,17 +56,17 @@ SUBDIRS =
 #	    0.3			    -----
 #	    0.4			    0:0:0
 
-LIBPPLC_LT_CURRENT =  0
-LIBPPLC_LT_REVISION = 0
-LIBPPLC_LT_AGE =      0
+LIBPPL_C_LT_CURRENT =  0
+LIBPPL_C_LT_REVISION = 0
+LIBPPL_C_LT_AGE =      0
 
 INCLUDES = -I$(top_srcdir)/src @extra_includes@
 
 CPPFLAGS = -DPPL_INTERNAL=public -DPPL_HIDDEN=public @extra_cpp_flags@
 
-lib_LTLIBRARIES = libpplc.la
-libpplc_la_SOURCES = ppl_c.cc
-libpplc_la_LDFLAGS = \
--version-info $(LIBPPLC_LT_CURRENT):$(LIBPPLC_LT_REVISION):$(LIBPPLC_LT_AGE)
+lib_LTLIBRARIES = libppl_c.la
+libppl_c_la_SOURCES = ppl_c.cc
+libppl_c_la_LDFLAGS = \
+-version-info $(LIBPPL_C_LT_CURRENT):$(LIBPPL_C_LT_REVISION):$(LIBPPL_C_LT_AGE)
 
 include_HEADERS = ppl_c.h
