@@ -1,5 +1,5 @@
 /* GMP_Integer class declaration.
-   Copyright (C) 2001-2005 Roberto Bagnara <bagnara@cs.unipr.it>
+   Copyright (C) 2001-2004 Roberto Bagnara <bagnara@cs.unipr.it>
 
 This file is part of the Parma Polyhedra Library (PPL).
 
@@ -40,6 +40,22 @@ inline void gcd_assign(GMP_Integer& x, const GMP_Integer& y);
 //! Assigns to \p x the greatest common divisor of \p y and \p z.
 inline void gcd_assign(GMP_Integer& x,
 		       const GMP_Integer& y, const GMP_Integer& z);
+
+//! Extended GCD which assigns to one of the input parameters.
+/*!
+  Assigns to \p x the greatest common divisor of \p x and \p y, and to
+  \p s and \p t the values such that \p x * \p s + \p y * \p t = \p x.
+*/
+inline void gcdext_assign(GMP_Integer& x, const GMP_Integer& y,
+			  GMP_Integer& s, GMP_Integer& t);
+//! Extended GCD.
+/*!
+  Assigns to \p x the greatest common divisor of \p y and \p z, and to
+  \p s and \p t the values such that \p y * \p s + \p z * \p t = \p x.
+*/
+inline void gcdext_assign(GMP_Integer& x,
+			  const GMP_Integer& y, const GMP_Integer& z,
+			  GMP_Integer& s, GMP_Integer& t);
 
 //! Assigns to \p x the least common multiple of \p x and \p y.
 inline void lcm_assign(GMP_Integer& x, const GMP_Integer& y);

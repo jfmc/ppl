@@ -42,6 +42,23 @@ gcd_assign(GMP_Integer& x, const GMP_Integer& y, const GMP_Integer& z) {
 }
 
 inline void
+gcdext_assign(GMP_Integer& x, const GMP_Integer& y,
+	      GMP_Integer& s, GMP_Integer& t) {
+  mpz_gcdext(x.get_mpz_t(),
+	     s.get_mpz_t(), t.get_mpz_t(),
+	     x.get_mpz_t(), y.get_mpz_t());
+}
+
+inline void
+gcdext_assign(GMP_Integer& x,
+	      const GMP_Integer& y, const GMP_Integer& z,
+	      GMP_Integer& s, GMP_Integer& t) {
+  mpz_gcdext(x.get_mpz_t(),
+	     s.get_mpz_t(), t.get_mpz_t(),
+	     y.get_mpz_t(), z.get_mpz_t());
+}
+
+inline void
 lcm_assign(GMP_Integer& x, const GMP_Integer& y) {
   mpz_lcm(x.get_mpz_t(), x.get_mpz_t(), y.get_mpz_t());
 }
