@@ -219,11 +219,7 @@ PPL::Row::linear_combine(const Row& y, dimension_type k) {
     }
   x[k] = 0;
 
-#if EXTRA_NORMALIZATION
   x.strong_normalize();
-#else
-  x.normalize();
-#endif
 }
 
 bool

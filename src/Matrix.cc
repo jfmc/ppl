@@ -1054,16 +1054,6 @@ PPL::Matrix::gauss() {
 	  // After swapping the matrix is no longer sorted.
 	  changed = true;
 	}
-#if !EXTRA_NORMALIZATION
-	// We want the pivot to be greater than zero to
-	// simplify future computing (back-substitution).
-	if (rows[rank][j] < 0) {
-	  for (dimension_type k = n_columns; k-- > 0; )
-	    negate(rows[rank][k]);
-	  // Matrix has changed.
-	  changed = true;
-	}
-#endif
 	// Linear combining the row containing the pivot with
 	// all the ones that follow it such that all the elements
 	// on the j-th column (of these rows) become 0.
@@ -1126,7 +1116,6 @@ PPL::Matrix::back_substitute(dimension_type rank) {
       }
     }
 
-#if EXTRA_NORMALIZATION
     // Due to strong normalization during previous iterations,
     // the pivot coefficient `row_k[j]' may now be negative.
     // Since an inequality (or ray or point) cannot be multiplied
@@ -1135,12 +1124,6 @@ PPL::Matrix::back_substitute(dimension_type rank) {
     if (row_k[j] < 0)
       for (dimension_type h = num_columns(); h-- > 0; )
 	PPL::negate(row_k[h]);
-#else
-    // If strong normalization is not enforced, then the pivot
-    // coefficient is always positive, because we always invoke
-    // method `gauss()' before this method.
-    assert(row_k[j] > 0);
-#endif
     
     // Go through all the inequalities of the matrix.
     for (dimension_type i = rank; i < nrows; ++i) {
@@ -1163,14 +1146,12 @@ PPL::Matrix::back_substitute(dimension_type rank) {
       }
     }
 
-#if EXTRA_NORMALIZATION
     // Restore strong normalization of `row_k'.
     // TODO: provide a method to just adjust the sign,
     // because (simple) normalization already holds.
     // Have a better control of sortedness.
     row_k.strong_normalize();
     set_sorted(false);
-#endif
   }
 }
 

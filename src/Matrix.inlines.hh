@@ -183,11 +183,7 @@ Matrix::remove_columns(dimension_type new_n_columns) {
   resize_no_copy(num_rows(), new_n_columns);
   // Have to re-normalize the rows of the matrix,
   // since we removed some coefficients.
-#if EXTRA_NORMALIZATION
   strong_normalize();
-#else
-  normalize();
-#endif
 }
 
 } // namespace Parma_Polyhedra_Library

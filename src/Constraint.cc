@@ -187,18 +187,10 @@ PPL::Constraint::OK() const {
 
   // A constraint has to be normalized.
   Constraint tmp = *this;
-#if EXTRA_NORMALIZATION
   tmp.strong_normalize();
-#else
-  tmp.normalize();
-#endif
   if (tmp != *this) {
 #ifndef NDEBUG
-    cerr << "Constraints should be ";
-#if EXTRA_NORMALIZATION
-    cerr << "strongly ";
-#endif
-    cerr << "normalized!"
+    cerr << "Constraints should be strongly normalized!"
 	 << endl;
 #endif
     return false;

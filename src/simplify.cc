@@ -98,10 +98,10 @@ PPL::Polyhedron::simplify(Matrix& mat, SatMatrix& sat) {
       // Thus, either it is already an equality or it can be transformed
       // into an equality (see proposition).
       mat[i].set_is_line_or_equality();
-#if EXTRA_NORMALIZATION
+
       // We do not enforce strong normalization here, because
       // it would be later compromised by `gauss' and `back_substitute'.
-#endif
+
       // We also move it just after all the other equalities,
       // so that matrix `mat' keeps its partial sortedness.
       std::swap(mat[i], mat[num_equal_or_line]);

@@ -597,20 +597,6 @@ void iter_swap(std::vector<Parma_Polyhedra_Library::Row>::iterator x,
 
 } // namespace std
 
-#ifndef EXTRA_NORMALIZATION
-#ifdef PPL_DOXYGEN_INCLUDE_IMPLEMENTATION_DETAILS
-/*! \ingroup PPL_defines
-  \brief
-  If non-zero, lines and equalities will admit a unique representation.
-
-  The unique representation is obtained by applying the standard
-  normalization and also ensuring that the first non-zero coefficient
-  of lines and equalities is positive.
-*/
-#endif // PPL_DOXYGEN_INCLUDE_IMPLEMENTATION_DETAILS
-#define EXTRA_NORMALIZATION 0
-#endif
-
 #include "Row.inlines.hh"
 
 #endif // !defined(PPL_Row_defs_hh)

@@ -123,12 +123,8 @@ operator==(const LinExpression& e1, const LinExpression& e2) {
   LinExpression diff = e1 - e2;
   Constraint c(diff);
   c.set_is_equality();
-  // Enforcing normalization.
-#if EXTRA_NORMALIZATION
+  // Enforce normalization.
   c.strong_normalize();
-#else
-  c.normalize();
-#endif
   return c;
 }
 
@@ -170,12 +166,8 @@ operator==(const Integer& n, const LinExpression& e) {
   LinExpression diff = n - e;
   Constraint c(diff);
   c.set_is_equality();
-  // Enforcing normalization.
-#if EXTRA_NORMALIZATION
+  // Enforce normalization.
   c.strong_normalize();
-#else
-  c.normalize();
-#endif
   return c;
 }
 
@@ -212,12 +204,8 @@ operator==(const LinExpression& e, const Integer& n) {
   LinExpression diff = e - n;
   Constraint c(diff);
   c.set_is_equality();
-  // Enforcing normalization.
-#if EXTRA_NORMALIZATION
+  // Enforce normalization.
   c.strong_normalize();
-#else
-  c.normalize();
-#endif
   return c;
 }
 

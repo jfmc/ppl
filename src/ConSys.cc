@@ -413,11 +413,7 @@ PPL::ConSys::affine_preimage(dimension_type v,
       }
     }
   // This also resets the sortedness flag.
-#if EXTRA_NORMALIZATION
   x.strong_normalize();
-#else
-  x.normalize();
-#endif
 }
 
 void
