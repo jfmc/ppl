@@ -817,7 +817,9 @@ Unifies <CODE>Relation_List</CODE> with the list of relations the polyhedron
 referenced by <CODE>Handle</CODE>
 has with <CODE>Constraint</CODE>.
 The possible relations are listed in the grammar rules above;
-their meaning is given in Section \ref operations.
+their meaning is given in the paragraph
+\ref relation_with "specifying the relation_with operations"
+in Section \ref operations.
 
 <H2><CODE> ppl_Polyhedron_relation_with_generator(+Handle, +Generator,
                ?Relation_List) </CODE></H2>
@@ -825,7 +827,9 @@ their meaning is given in Section \ref operations.
 Unifies <CODE>Relation_List</CODE> with the list of relations the polyhedron
 referenced by <CODE>Handle</CODE> has with <CODE>Generator</CODE>.
 The possible relations are listed in the grammar rules above;
-their meaning is given in Section \ref operations.
+their meaning is given in the paragraph
+\ref relation_with "specifying the relation_with operations"
+in Section \ref operations.
 
 <H2><CODE> ppl_Polyhedron_get_bounding_box(+Handle,
                                           +Complexity,
@@ -1120,14 +1124,14 @@ and a query will succeed even when
                      +Handle_2) </CODE></H2>
 
    Assigns to the polyhedron referenced by <CODE>Handle_1</CODE>
-   its intersection with the polyhedra referenced by <CODE>Handle_2</CODE>.
+   its intersection with the polyhedron referenced by <CODE>Handle_2</CODE>.
 
 <H2><CODE> ppl_Polyhedron_poly_hull_assign(+Handle_1, +Handle_2) </CODE></H2>
 <H2><CODE> ppl_Polyhedron_poly_hull_assign_and_minimize(+Handle_1,
                +Handle_2) </CODE></H2>
 
    Assigns to the polyhedron referenced by <CODE>Handle_1</CODE>
-   its poly-hull with the polyhedra referenced by <CODE>Handle_2</CODE>.
+   its poly-hull with the polyhedron referenced by <CODE>Handle_2</CODE>.
 
 <H2><CODE> ppl_Polyhedron_poly_difference_assign(+Handle_1, +Handle_2) </CODE></H2>
 
@@ -1174,7 +1178,7 @@ This is the inverse transformation to that for <CODE>ppl_affine_image</CODE>.
 
    Assigns to the polyhedron \f$\cP\f$ referenced by <CODE>Handle_1</CODE>
    the time-elapse \f$ (\cP \nearrow \cQ)\f$
-   with the polyhedra \f$\cQ\f$ referenced by <CODE>Handle_2</CODE>.
+   with the polyhedron \f$\cQ\f$ referenced by <CODE>Handle_2</CODE>.
 
 <H2><CODE> ppl_Polyhedron_BHRZ03_widening_assign_with_token(+Handle_1,
                +Handle_2, ?Integer) </CODE></H2>
@@ -1189,7 +1193,7 @@ This is the inverse transformation to that for <CODE>ppl_affine_image</CODE>.
                +Handle_2) </CODE></H2>
 
   Assigns to the polyhedron referenced by <CODE>Handle_1</CODE>
-   its BHRZ03-widening with the polyhedra referenced by <CODE>Handle_2</CODE>.
+   its BHRZ03-widening with the polyhedron referenced by <CODE>Handle_2</CODE>.
 
 <H2><CODE> ppl_Polyhedron_limited_BHRZ03_extrapolation_assign_with_token(
                +Handle_1,
@@ -1200,7 +1204,7 @@ This is the inverse transformation to that for <CODE>ppl_affine_image</CODE>.
    The polyhedra referenced by <CODE>Handle_1</CODE>
    and <CODE>Handle_2</CODE> are unaltered.
    The token <CODE>Integer</CODE> is 0 if
-   a BHRZ03-widening with the polyhedra referenced by
+   a BHRZ03-widening with the polyhedron referenced by
   <CODE>Handle_2</CODE>, improved by enforcing those constraints in
   <CODE>Constraint_System</CODE> would have changed the polyhedron referenced
    by <CODE>Handle_1</CODE> and is 1 otherwise.
@@ -1210,7 +1214,7 @@ This is the inverse transformation to that for <CODE>ppl_affine_image</CODE>.
                +Constraint_System) </CODE></H2>
 
    Assigns to the polyhedron \f$\cP\f$ referenced by <CODE>Handle_1</CODE>
-  the result of its BHRZ03-widening with the polyhedra referenced by
+  the result of its BHRZ03-widening with the polyhedron referenced by
   <CODE>Handle_2</CODE>, improved by enforcing those constraints in
   <CODE>Constraint_System</CODE>.
 
@@ -1220,7 +1224,7 @@ This is the inverse transformation to that for <CODE>ppl_affine_image</CODE>.
                +Constraint_System,
                ?Integer) </CODE></H2>
 
-  The polyhedron \f$\cP_1\f$ and \f$\cP_2\f$ referenced by
+  The polyhedra \f$\cP_1\f$ and \f$\cP_2\f$ referenced by
    <CODE>Handle_1</CODE> and <CODE>Handle_2</CODE>, respectively are unaltered.
    The token <CODE>Integer</CODE> is 0 if
    a BHRZ03-widening with \f$\cP_2\f$ ,
@@ -1236,7 +1240,7 @@ This is the inverse transformation to that for <CODE>ppl_affine_image</CODE>.
                +Constraint_System) </CODE></H2>
 
    Assigns to the polyhedron \f$\cP\f$ referenced by <CODE>Handle_1</CODE>
-  the result of its BHRZ03-widening with the polyhedra referenced by
+  the result of its BHRZ03-widening with the polyhedron referenced by
   <CODE>Handle_2</CODE> improved by enforcing all the constraints of
   the form \f$\pm x \leq r\f$ and \f$\pm x < r\f$ that are satisfied
   by all the points of \f$\cP\f$ together with the constraints in
@@ -1255,7 +1259,7 @@ This is the inverse transformation to that for <CODE>ppl_affine_image</CODE>.
                +Handle_2) </CODE></H2>
 
    Assigns to the polyhedron referenced by <CODE>Handle_1</CODE>
-   its H79-widening with the polyhedra referenced by <CODE>Handle_2</CODE>.
+   its H79-widening with the polyhedron referenced by <CODE>Handle_2</CODE>.
 
 <H2><CODE> ppl_Polyhedron_limited_H79_extrapolation_assign_with_token(+Handle_1,
                +Handle_2,
@@ -1265,7 +1269,7 @@ This is the inverse transformation to that for <CODE>ppl_affine_image</CODE>.
    The polyhedra referenced by <CODE>Handle_1</CODE>
    and <CODE>Handle_2</CODE> are unaltered.
    The token <CODE>Integer</CODE> is 0 if
-   a H79-widening with the polyhedra referenced by
+   a H79-widening with the polyhedron referenced by
   <CODE>Handle_2</CODE>, improved by enforcing those constraints in
   <CODE>Constraint_System</CODE> would have changed the polyhedron referenced
    by <CODE>Handle_1</CODE> and is 1 otherwise.
@@ -1275,7 +1279,7 @@ This is the inverse transformation to that for <CODE>ppl_affine_image</CODE>.
                +Constraint_System) </CODE></H2>
 
    Assigns to the polyhedron \f$\cP\f$ referenced by <CODE>Handle_1</CODE>
-  its H79-widening with the polyhedra referenced by
+  its H79-widening with the polyhedron referenced by
   <CODE>Handle_2</CODE>, improved by enforcing those constraints in
   <CODE>Constraint_System</CODE>.
 
@@ -1285,7 +1289,7 @@ This is the inverse transformation to that for <CODE>ppl_affine_image</CODE>.
                ?Integer) </CODE></H2>
 
 
-  The polyhedron \f$\cP_1\f$ and \f$\cP_2\f$ referenced by
+  The polyhedra \f$\cP_1\f$ and \f$\cP_2\f$ referenced by
    <CODE>Handle_1</CODE> and <CODE>Handle_2</CODE>, respectively are unaltered.
    The token <CODE>Integer</CODE> is 0 if
    a H79-widening with \f$\cP_2\f$ ,
@@ -1300,7 +1304,7 @@ This is the inverse transformation to that for <CODE>ppl_affine_image</CODE>.
                +Constraint_System) </CODE></H2>
 
    Assigns to the polyhedron \f$\cP\f$ referenced by <CODE>Handle_1</CODE>
-  the result of its H79-widening with the polyhedra referenced by
+  the result of its H79-widening with the polyhedron referenced by
   <CODE>Handle_2</CODE> improved by enforcing all the constraints of
   the form \f$\pm x \leq r\f$ and \f$\pm x < r\f$ that are satisfied
   by all the points of \f$\cP\f$ together with the constraints in
@@ -1367,7 +1371,7 @@ This is the inverse transformation to that for <CODE>ppl_affine_image</CODE>.
 <H2><CODE> ppl_Polyhedron_remove_dimensions(+Handle,
                +List_of_PPL_Vars) </CODE></H2>
 
-   Removes the dimensions given by the identifiers of the
+   Removes the space dimensions given by the identifiers of the
    PPL variables in list <CODE>List_of_PPL_Vars</CODE>
    from the polyhedron  referenced by <CODE>Handle</CODE>.
    The identifiers for the remaining PPL variables are renumbered so that
@@ -1387,7 +1391,7 @@ This is the inverse transformation to that for <CODE>ppl_affine_image</CODE>.
 
 <H2><CODE> ppl_Polyhedron_remove_higher_dimensions(+Handle, +Integer)) </CODE></H2>
 
-   Projects the the polyhedron  referenced to by <CODE>Handle</CODE>
+   Projects the polyhedron  referenced to by <CODE>Handle</CODE>
    onto  the first <CODE>Integer</CODE> dimension.
    E.g.,
 \code
@@ -1400,29 +1404,30 @@ This is the inverse transformation to that for <CODE>ppl_affine_image</CODE>.
   ppl_Polyhedron_expand_dimension(+Handle, +PPL_Var, +Integer))
 </CODE></H2>
 
-   Projects the polyhedron referenced by <CODE>Handle</CODE>
-   onto a space that is enlarged by <CODE>Integer</CODE> dimensions;
-   the added dimensions are copies of the dimension given by the
-   PPL variable <CODE>PPL_Var</CODE>.
+   <CODE>Integer</CODE> copies of the space dimension referenced by
+   <CODE>PPL_Var</CODE> are added to the polyhedron
+   referenced to by <CODE>Handle</CODE>.
 
 <H2><CODE>
   ppl_Polyhedron_fold_dimensions(+Handle, +List_of_PPL_Vars, +PPL_Var))
 </CODE></H2>
 
-   The dimensions referenced by the PPL variables in list
+   The space dimensions referenced by the PPL variables in list
    <CODE>List_of_PPL_Vars</CODE> are folded into the dimension referenced
    by <CODE>PPL_Var</CODE> and removed.
-   The identifiers for the remaining PPL variables are renumbered so that
-   they are consecutive and the maximum index is less than the number
-   of dimensions.
+   The result is undefined if <CODE>List_of_PPL_Vars</CODE>
+   does not have the properties described in the paragraph
+   \ref fold_dimensions "specifying the fold_dimensions operator"
+   in Section \ref operations.
 
 <H2><CODE> ppl_Polyhedron_map_dimensions(+Handle, +P_Func)) </CODE></H2>
 
    Maps the dimensions of the polyhedron referenced by <CODE>Handle</CODE>
    using the partial function defined by <CODE>P_Func</CODE>.
    The result is undefined if \p P_Func does not encode a partial
-   function with the properties described in the
-   \ref map_dimensions "specification of the mapping operator".
+   function with the properties described in the paragraph
+   \ref map_dimensions "specifying the map_dimensions operator"
+   in Section \ref operations.
 
 \anchor PI_Compilation
 <H1>Compilation and Installation</H1>
