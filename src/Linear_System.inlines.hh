@@ -202,6 +202,7 @@ Linear_System::permute_columns(const std::vector<dimension_type>& cycles) {
   sign_normalize();
 }
 
+/*! \relates Linear_System */
 inline bool
 operator!=(const Linear_System& x, const Linear_System& y) {
   return !(x == y);

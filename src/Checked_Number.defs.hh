@@ -30,11 +30,13 @@ site: http://www.cs.unipr.it/ppl/ . */
 #include <gmpxx.h>
 #include <iostream>
 
-//! A wrapper for native integer types implementing overflow detection.
+//! A wrapper for native numeric types implementing a given policy.
 /*!
   The wrapper and related functions implement an interface which is common
   to all kinds of coefficient types, therefore allowing for a uniform
-  coding style.
+  coding style. This class also implements the policy encoded by the
+  second template parameter. The default policy is to perform the detection
+  of overflow errors.
 */
 template <typename T, typename Policy>
 class Parma_Polyhedra_Library::Checked_Number {
@@ -156,6 +158,9 @@ private:
 
 namespace Parma_Polyhedra_Library {
 
+//! \name Accessor Functions
+//@{
+
 //! Returns a const reference to the underlying native integer value.
 /*! \relates Checked_Number */
 template <typename T, typename Policy>
@@ -168,6 +173,11 @@ template <typename T, typename Policy>
 T&
 raw_value(Checked_Number<T, Policy>& x);
 
+//@} // Accessor Functions
+
+//! \name Memory Size Inspection Functions
+//@{
+
 //! Returns the total size in bytes of the memory occupied by \p x.
 /*! \relates Checked_Number */
 template <typename T, typename Policy>
@@ -179,6 +189,8 @@ total_memory_in_bytes(const Checked_Number<T, Policy>& x);
 template <typename T, typename Policy>
 size_t
 external_memory_in_bytes(const Checked_Number<T, Policy>& x);
+
+//@} // Memory Size Inspection Functions
 
 //! \name Arithmetic Operators
 //@{

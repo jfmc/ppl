@@ -24,7 +24,7 @@ namespace Parma_Polyhedra_Library {
 */
 typedef mpz_class GMP_Integer;
 
-//! Traits for the unbounded integer coefficients.
+//! Coefficient traits specialization for unbounded integers.
 template <>
 struct Coefficient_traits_template<GMP_Integer> {
   //! The type used for references to const unbounded integers.

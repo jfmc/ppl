@@ -29,7 +29,7 @@ site: http://www.cs.unipr.it/ppl/ . */
 namespace Parma_Polyhedra_Library {
 
 #ifdef PPL_DOXYGEN_INCLUDE_IMPLEMENTATION_DETAILS
-//! A policy checking for integer overflows.
+//! A policy checking for overflows.
 #endif // PPL_DOXYGEN_INCLUDE_IMPLEMENTATION_DETAILS
 struct Check_Overflow_Policy {
   static const int check_overflow = 1;

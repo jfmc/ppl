@@ -293,6 +293,9 @@ PPL_DEFINE_RELATIONAL_OPERATORS(cl)
 
 namespace Parma_Polyhedra_Library {
 
+//! \name Accessor Functions
+//@{
+
 //! Returns a const reference to the underlying native integer value.
 /*! \relates Native_Integer */
 template <typename T>
@@ -304,6 +307,11 @@ raw_value(const Native_Integer<T>& x);
 template <typename T>
 T&
 raw_value(Native_Integer<T>& x);
+
+//@} // Accessor Functions
+
+//! \name Memory Size Inspection Functions
+//@{
 
 //! Returns the total size in bytes of the memory occupied by \p x.
 /*! \relates Native_Integer */
@@ -317,6 +325,7 @@ template <typename T>
 size_t
 external_memory_in_bytes(const Native_Integer<T>& x);
 
+//@} // Memory Size Inspection Functions
 
 //! \name Arithmetic Operators
 //@{

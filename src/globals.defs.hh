@@ -65,7 +65,8 @@ enum Complexity_Class {
 };
 
 #ifdef PPL_DOXYGEN_INCLUDE_IMPLEMENTATION_DETAILS
-//! FIXME: comment!
+//! A node of the list of available coefficients.
+// FIXME: rewrite the comment.
 #endif
 class Coefficient_free_list_element {
 private:
@@ -148,7 +149,7 @@ Temp_Coefficient_Holder temp_Coefficient_holder_ ## id = (id)
   for our vector-like data structures. In all cases, the speculative
   allocation will not exceed \p maximum_size.
 */
-#endif
+#endif // PPL_DOXYGEN_INCLUDE_IMPLEMENTATION_DETAILS
 dimension_type
 compute_capacity(const dimension_type requested_size,
 		 const dimension_type maximum_size);

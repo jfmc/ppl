@@ -23,28 +23,28 @@ PURPOSE. */
 
 namespace Parma_Polyhedra_Library {
 
-//! Traits for 8 bits checked integers.
+//! Coefficient traits specialization for 8 bits checked integers.
 template <>
 struct Coefficient_traits_template<Checked_Number<int8_t> > {
   //! The type used for references to const 8 bit checked integers.
   typedef Checked_Number<int8_t> const_reference;
 };
 
-//! Traits for 16 bits checked integers.
+//! Coefficient traits specialization for 16 bits checked integers.
 template <>
 struct Coefficient_traits_template<Checked_Number<int16_t> > {
   //! The type used for references to const 16 bit checked integers.
   typedef Checked_Number<int16_t> const_reference;
 };
 
-//! Traits for 32 bits checked integers.
+//! Coefficient traits specialization for 32 bits checked integers.
 template <>
 struct Coefficient_traits_template<Checked_Number<int32_t> > {
   //! The type used for references to const 32 bit checked integers.
   typedef Checked_Number<int32_t> const_reference;
 };
 
-//! Traits for 64 bits checked integers.
+//! Coefficient traits specialization for 64 bits checked integers.
 template <>
 struct Coefficient_traits_template<Checked_Number<int64_t> > {
   //! The type used for references to const 64 bit checked integers.
