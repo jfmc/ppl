@@ -159,7 +159,7 @@ Prolog_construct_compound(Prolog_term_ref& t, Prolog_atom f,
 }
 
 /*!
-  Assign to \p l a Prolog list whose head is \p h and tail is \p t. 
+  Assign to \p c a Prolog list whose head is \p h and tail is \p t. 
 */
 static inline bool
 Prolog_construct_cons(Prolog_term_ref& c,
@@ -289,13 +289,13 @@ Prolog_get_arg(int i, Prolog_term_ref t, Prolog_term_ref& a) {
 }
 
 /*!
-  If \p l is a Prolog list, assign its head and tail to \p h and \p t,
-  respectively.
-  The behavior is undefined if \p l is not a Prolog list.
+  If \p c is a Prolog cons (list constructor), assign its head and
+  tail to \p h and \p t, respectively.
+  The behavior is undefined if \p c is not a Prolog cons.
 */
 static inline bool
 Prolog_get_cons(Prolog_term_ref c, Prolog_term_ref& h, Prolog_term_ref& t) {
-  assert(Prolog_is_cons(t));
+  assert(Prolog_is_cons(c));
   h = ciao_list_head(c);
   t = ciao_list_tail(c);
   return true;
