@@ -47,7 +47,7 @@ GenSys::GenSys(Topology topology)
 }
 
 inline
-GenSys::GenSys(size_t n_rows, size_t n_columns, Topology topology)
+GenSys::GenSys(Topology topology, size_t n_rows, size_t n_columns)
   : Matrix(topology, n_rows, n_columns) {
 }
 

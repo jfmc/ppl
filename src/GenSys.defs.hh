@@ -234,7 +234,7 @@ PPL_INTERNAL:
   //! on a \p n_columns - 1 dimensional space (including the
   //! \f$\epsilon\f$ dimension, if \p topology is
   //! <CODE>NON_NECESSARILY_CLOSED</CODE>).
-  GenSys(size_t n_rows, size_t n_columns, Topology topology);
+  GenSys(Topology topology, size_t n_rows, size_t n_columns);
 
   //! Returns the \p k- th generator of the system.
   Generator& operator[](size_t k);
