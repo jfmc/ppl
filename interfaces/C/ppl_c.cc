@@ -127,7 +127,7 @@ Init* init_object_ptr = 0;
 namespace {
 
 extern "C" const char*
-c_Variable_default_output_function(ppl_dimension_type var) {
+c_variable_default_output_function(ppl_dimension_type var) {
   // On a 64 bits architecture, `var' will not be more than 2^64-1,
   // (2^64-1)/26 is written with 18 decimal digits, plus one letter,
   // plus one terminator makes 20.
@@ -147,18 +147,19 @@ c_Variable_default_output_function(ppl_dimension_type var) {
   return buffer;
 }
 
-extern "C" typedef const char*
-c_Variable_output_function_type(ppl_dimension_type var);
-
-// Pointer to the C current output function.
-c_Variable_output_function_type* c_Variable_output_function;
+// Holds a pointer to the C current output function.
+ppl_io_variable_output_function_type* c_variable_output_function;
 
 void
 cxx_Variable_output_function(std::ostream& s, const Variable& v) {
-  // FIXME: what if c_Variable_output_function() returns 0?
-  s << c_Variable_output_function(v.id());
+  // FIXME: what if c_variable_output_function() returns 0?
+  s << c_variable_output_function(v.id());
 }
 
+extern "C" typedef const char*
+c_variable_output_function_type(ppl_dimension_type var);
+
+// Holds a pointer to the C++ saved output function.
 Variable::Output_Function_Type* saved_cxx_Variable_output_function;
 
 } // namespace
@@ -188,7 +189,7 @@ ppl_initialize(void) try {
   PPL_COMPLEXITY_CLASS_SIMPLEX = SIMPLEX;
   PPL_COMPLEXITY_CLASS_ANY = ANY;
 
-  c_Variable_output_function = c_Variable_default_output_function;
+  c_variable_output_function = c_variable_default_output_function;
   saved_cxx_Variable_output_function = Variable::get_output_function();
   Variable::set_output_function(cxx_Variable_output_function);
 
@@ -2062,3 +2063,19 @@ DEFINE_PRINT_FUNCTIONS(Generator)
 DEFINE_PRINT_FUNCTIONS(GenSys)
 
 DEFINE_PRINT_FUNCTIONS(Polyhedron)
+
+int
+ppl_io_set_variable_output_function(ppl_io_variable_output_function_type* p)
+try {
+  c_variable_output_function = p;
+  return 0;
+}
+CATCH_ALL
+
+int
+ppl_io_get_variable_output_function(ppl_io_variable_output_function_type** pp)
+try {
+  *pp = c_variable_output_function;
+  return 0;
+}
+CATCH_ALL

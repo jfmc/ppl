@@ -2140,6 +2140,32 @@ PPL_DECLARE_PRINT_FUNCTIONS(Polyhedron)
 
 #undef PPL_DECLARE_PRINT_FUNCTIONS
 
+/*! \brief
+  The type of output functions used for printing variables.
+*/
+/*!
+  An output function for variables must write a textual representation
+  for \p var to a character buffer, null-terminate it, and return a
+  pointer to the beginning of the buffer.  In case the operation fails,
+  0 should be returned and perhaps <CODE>errno</CODE> should be set
+  in a meaningful way.  The library does nothing with the buffer, besides
+  printing its contents.
+*/
+typedef const char*
+ppl_io_variable_output_function_type(ppl_dimension_type var);
+
+/*! \brief
+  Sets the output function to be used for printing variables to \p p.
+*/
+int
+ppl_io_set_variable_output_function(ppl_io_variable_output_function_type* p);
+
+/*! \brief
+  Writes a pointer to the current variable output function to \p pp.
+*/
+int
+ppl_io_get_variable_output_function(ppl_io_variable_output_function_type** pp);
+
 /*@}*/ /* Simple I/O Functions */
 
 #ifdef __cplusplus
