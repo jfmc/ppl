@@ -121,6 +121,11 @@ make prefix=$RPM_BUILD_ROOT%{_prefix} bindir=$RPM_BUILD_ROOT%{_bindir} \
 %{_libdir}/ppl/ppl_sicstus.so
 %{_libdir}/ppl/ppl_sicstus.pl
 
+%files swi
+%defattr(-,root,root)
+%{_bindir}/ppl_pl
+%{_libdir}/ppl/libppl_swiprolog.so*
+
 %post
 /sbin/ldconfig
 
