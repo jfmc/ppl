@@ -46,7 +46,8 @@ temporary copy of Polyhedron.
 output_constraints(Polyhedron,Dims):-
     ppl_copy_polyhedron(Polyhedron,Q),
     ppl_remove_higher_dimensions(Q,Dims),
-    check_constraints(Q),
+    ppl_get_constraints(Q, CS),
+    write_constraints(CS),
     ppl_delete_polyhedron(Q).
 
 /*
@@ -161,6 +162,12 @@ numvars_list([],InN,InN).
 numvars_list([Arg|Args],InN,OutN):-
     numvars(Arg,InN,N),
     numvars_list(Args,N,OutN).
+
+write_constraints([]).
+write_constraints([C|CS]):-
+   write(C),
+   nl,
+   write_constraints(CS).
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 :- dynamic user_clause/2.
