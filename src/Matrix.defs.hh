@@ -182,7 +182,7 @@ public:
   void add_row(const Row& row);
   //! Adds a copy of the given row \p row to the matrix.
   void insert(const Row& row);
-  //! Clears the matrix.
+  //! Clears the matrix deallocating all its rows.
   void clear();
 
   //! Input/Output.

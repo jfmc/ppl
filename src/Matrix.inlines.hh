@@ -144,9 +144,6 @@ Matrix::erase_to_end(size_t first_to_erase) {
     rows.erase(rows.begin() + first_to_erase, rows.end());
 }
 
-/*!
-  Clears the matrix deallocating all its rows.
-*/
 inline void
 Matrix::clear() {
   // Clear `rows' and minimize its capacity.
