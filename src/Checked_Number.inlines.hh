@@ -313,13 +313,33 @@ DEF_ASSIGN_FUN2(lcm_assign, lcm)
 template <typename T, typename Policy>
 inline int
 sgn(const Checked_Number<T, Policy> REF x) {
-  return Checked::sgn(x.value());
+  Result r = Checked::sgn<Policy>(x.value());
+  switch (r) {
+  case V_LT:
+	  return -1;
+  case V_EQ:
+	  return 0;
+  case V_GT:
+	  return 1;
+  default:
+	  throw(0);
+  }
 }
 
 template <typename T, typename Policy>
 inline int
 cmp(const Checked_Number<T, Policy> REF x, const Checked_Number<T, Policy> REF y) {
-  return cmp(x.value(), y.value());
+  Result r = Checked::cmp<Policy>(x.value(), y.value());
+  switch (r) {
+  case V_LT:
+	  return -1;
+  case V_EQ:
+	  return 0;
+  case V_GT:
+	  return 1;
+  default:
+	  throw(0);
+  }
 }
 
 template <typename T, typename Policy>
