@@ -279,8 +279,55 @@ Integer_to_integer_term(const PPL::Integer& n) {
 
 #include "../ppl_prolog.outlines.hh"
 
+#define SP_STUB_1(name, arity) \
+extern "C" Prolog_foreign_return_type \
+sp_stub_##name(Prolog_term_ref goal, void*) { \
+  Prolog_term_ref arg1 = Prolog_new_term_ref(); \
+  if (!Prolog_get_arg(1, goal, arg1)) \
+    return PROLOG_FAILURE; \
+  return name(arg1); \
+}
+
+#define SP_STUB_2(name, arity) \
+extern "C" Prolog_foreign_return_type \
+sp_stub_##name(Prolog_term_ref goal, void*) { \
+  Prolog_term_ref arg1 = Prolog_new_term_ref(); \
+  if (!Prolog_get_arg(1, goal, arg1)) \
+    return PROLOG_FAILURE; \
+  Prolog_term_ref arg2 = Prolog_new_term_ref(); \
+  if (!Prolog_get_arg(2, goal, arg2)) \
+    return PROLOG_FAILURE; \
+  return name(arg1, arg2); \
+}
+
+SP_STUB_2(ppl_new_polyhedron, 2)
+SP_STUB_2(ppl_new_empty_polyhedron, 2)
+SP_STUB_2(ppl_copy_polyhedron, 2)
+SP_STUB_1(ppl_delete_polyhedron, 1)
+SP_STUB_2(ppl_space_dimension, 2)
+SP_STUB_2(ppl_insert_constraint, 2)
+SP_STUB_2(ppl_insert_generator, 2)
+SP_STUB_2(ppl_add_constraints_and_minimize, 2)
+SP_STUB_1(ppl_check_empty, 1)
+SP_STUB_2(ppl_intersection_assign, 2)
+SP_STUB_2(ppl_intersection_assign_and_minimize, 2)
+SP_STUB_2(ppl_convex_hull_assign, 2)
+SP_STUB_2(ppl_convex_hull_assign_and_minimize, 2)
+SP_STUB_2(ppl_convex_difference_assign, 2)
+SP_STUB_2(ppl_convex_difference_assign_and_minimize, 2)
+SP_STUB_2(ppl_widening_assign, 2)
+SP_STUB_2(ppl_get_constraints, 2)
+SP_STUB_2(ppl_get_generators, 2)
+SP_STUB_2(ppl_remove_dimensions, 2)
+SP_STUB_2(ppl_remove_higher_dimensions, 2)
+SP_STUB_2(ppl_add_dimensions_and_project, 2)
+SP_STUB_2(ppl_add_dimensions_and_embed, 2)
+
+#define SP_DEFINE_C_PREDICATE(name, arity) \
+  SP_define_c_predicate(#name, arity, "user", sp_stub_##name, NULL)
+
 extern "C" void
-ppl_init(int /* when */) {
+ppl_sicstus_init(int /* when */) {
   for (size_t i = 0; i < sizeof(prolog_atoms)/sizeof(prolog_atoms[0]); ++i) {
     Prolog_atom a = SP_atom_from_string(prolog_atoms[i].name);
     if (SP_register_atom(a) == 0) {
@@ -291,255 +338,34 @@ ppl_init(int /* when */) {
     }
     *prolog_atoms[i].p_atom = a;
   }
+  SP_DEFINE_C_PREDICATE(ppl_new_polyhedron, 2);
+  SP_DEFINE_C_PREDICATE(ppl_new_empty_polyhedron, 2);
+  SP_DEFINE_C_PREDICATE(ppl_copy_polyhedron, 2);
+  SP_DEFINE_C_PREDICATE(ppl_delete_polyhedron, 1);
+  SP_DEFINE_C_PREDICATE(ppl_space_dimension, 2);
+  SP_DEFINE_C_PREDICATE(ppl_insert_constraint, 2);
+  SP_DEFINE_C_PREDICATE(ppl_insert_generator, 2);
+  SP_DEFINE_C_PREDICATE(ppl_add_constraints_and_minimize, 2);
+  SP_DEFINE_C_PREDICATE(ppl_check_empty, 1);
+  SP_DEFINE_C_PREDICATE(ppl_intersection_assign, 2);
+  SP_DEFINE_C_PREDICATE(ppl_intersection_assign_and_minimize, 2);
+  SP_DEFINE_C_PREDICATE(ppl_convex_hull_assign, 2);
+  SP_DEFINE_C_PREDICATE(ppl_convex_hull_assign_and_minimize, 2);
+  SP_DEFINE_C_PREDICATE(ppl_convex_difference_assign, 2);
+  SP_DEFINE_C_PREDICATE(ppl_convex_difference_assign_and_minimize, 2);
+  SP_DEFINE_C_PREDICATE(ppl_widening_assign, 2);
+  SP_DEFINE_C_PREDICATE(ppl_get_constraints, 2);
+  SP_DEFINE_C_PREDICATE(ppl_get_generators, 2);
+  SP_DEFINE_C_PREDICATE(ppl_remove_dimensions, 2);
+  SP_DEFINE_C_PREDICATE(ppl_remove_higher_dimensions, 2);
+  SP_DEFINE_C_PREDICATE(ppl_add_dimensions_and_project, 2);
+  SP_DEFINE_C_PREDICATE(ppl_add_dimensions_and_embed, 2);
 }
 
 extern "C" void
-ppl_deinit(int /* when */) {
+ppl_sicstus_deinit(int /* when */) {
   for (size_t i = 0; i < sizeof(prolog_atoms)/sizeof(prolog_atoms[0]); ++i)
     // SP_unregister_atom can fail.
     // We ignore such failures: what else can we do?
     (void) SP_unregister_atom(*prolog_atoms[i].p_atom);
-}
-
-extern "C" void
-ppl_new_polyhedron(Prolog_term_ref t_ph, long nd) {
-  try {
-    if (!Prolog_is_variable(t_ph))
-      throw not_a_variable(t_ph);
-    PPL::Polyhedron* ph = new PPL::Polyhedron(get_unsigned_int(nd));
-    Prolog_term_ref tmp = Prolog_new_term_ref();
-    Prolog_put_address(tmp, ph);
-    if (Prolog_unify(t_ph, tmp))
-      REGISTER(ph);
-    else {
-      delete ph;
-      throw unknown_interface_error("ppl_new_polyhedron/2");
-    }
-  }
-  CATCH_ALL;
-}
-
-extern "C" void*
-ppl_new_empty_polyhedron(long num_dimensions) {
-  try {
-    PPL::Polyhedron* ret
-      = new PPL::Polyhedron(get_unsigned_int(num_dimensions),
-					       PPL::Polyhedron::EMPTY);
-    REGISTER(ret);
-    return ret;
-  }
-  CATCH_ALL;
-  return 0;
-}
-
-extern "C" void*
-ppl_copy_polyhedron(const void* pp) {
-  try {
-    CHECK(pp);
-    PPL::Polyhedron* ret
-      = new PPL::Polyhedron(*static_cast<const PPL::Polyhedron*>(pp));
-    REGISTER(ret);
-    return ret;
-  }
-  CATCH_ALL;
-  return 0;
-}
-
-extern "C" void
-ppl_delete_polyhedron(void* pp) {
-  // If destructors throw it is a catastrophy.
-  // Anyway...
-  try {
-    UNREGISTER(pp);
-    delete static_cast<PPL::Polyhedron*>(pp);
-  }
-  CATCH_ALL;
-}
-
-extern "C" long
-ppl_space_dimension(const void* pp) {
-  CHECK(pp);
-  // Polyhedron::space_dimension() cannot throw.
-  return static_cast<const PPL::Polyhedron*>(pp)->space_dimension();
-}
-
-extern "C" void
-ppl_insert_constraint(void* pp, Prolog_term_ref t) {
-  try {
-    CHECK(pp);
-    static_cast<PPL::Polyhedron*>(pp)->insert(build_constraint(t));
-  }
-  CATCH_ALL;
-}
-
-extern "C" long
-ppl_add_constraints_and_minimize(void* pp, Prolog_term_ref t_clist) {
-  try {
-    CHECK(pp);
-    PPL::ConSys cs;
-    Prolog_term_ref c = Prolog_new_term_ref();
-    while (Prolog_is_list(t_clist)) {
-      Prolog_get_list(t_clist, c, t_clist);
-      cs.insert(build_constraint(c));
-    }
-    PPL::Polyhedron& ph = *static_cast<PPL::Polyhedron*>(pp);
-    return ph.add_constraints_and_minimize(cs) ? 1 : 0;
-  }
-  CATCH_ALL;
-  return -1;
-}
-
-extern "C" void
-ppl_insert_generator(void* pp, Prolog_term_ref t) {
-  try {
-    CHECK(pp);
-    static_cast<PPL::Polyhedron*>(pp)->insert(build_generator(t));
-  }
-  CATCH_ALL;
-}
-
-extern "C" long
-ppl_check_empty(const void* pp) {
-  try {
-    CHECK(pp);
-    return static_cast<const PPL::Polyhedron*>(pp)->check_empty() ? 1 : 0;
-  }
-  CATCH_ALL;
-  return -1;
-}
-
-extern "C" void
-ppl_intersection_assign(void* pp_lhs, const void* pp_rhs) {
-  try {
-    CHECK(pp_lhs);
-    CHECK(pp_rhs);
-    PPL::Polyhedron& x = *static_cast<PPL::Polyhedron*>(pp_lhs);
-    const PPL::Polyhedron& y = *static_cast<const PPL::Polyhedron*>(pp_rhs);
-    x.intersection_assign(y);
-  }
-  CATCH_ALL;
-}
-
-extern "C" void
-ppl_convex_hull_assign(void* pp_lhs, const void* pp_rhs) {
-  try {
-    CHECK(pp_lhs);
-    CHECK(pp_rhs);
-    PPL::Polyhedron& x = *static_cast<PPL::Polyhedron*>(pp_lhs);
-    const PPL::Polyhedron& y = *static_cast<const PPL::Polyhedron*>(pp_rhs);
-    x.convex_hull_assign_and_minimize(y);
-  }
-  CATCH_ALL;
-}
-
-extern "C" void
-ppl_convex_difference_assign(void* pp_lhs, const void* pp_rhs) {
-  try {
-    CHECK(pp_lhs);
-    CHECK(pp_rhs);
-    PPL::Polyhedron& x = *static_cast<PPL::Polyhedron*>(pp_lhs);
-    const PPL::Polyhedron& y = *static_cast<const PPL::Polyhedron*>(pp_rhs);
-    x.convex_difference_assign_and_minimize(y);
-  }
-  CATCH_ALL;
-}
-
-extern "C" void
-ppl_widening_assign(void* pp_lhs, const void* pp_rhs) {
-  try {
-    CHECK(pp_lhs);
-    CHECK(pp_rhs);
-    static_cast<PPL::Polyhedron*>(pp_lhs)
-      ->widening_assign(*static_cast<const PPL::Polyhedron*>(pp_rhs));
-  }
-  CATCH_ALL;
-}
-
-extern "C" void
-ppl_get_constraints(const void* pp, Prolog_term_ref constraints_list) {
-  try {
-    CHECK(pp);
-    Prolog_term_ref tail = Prolog_new_term_ref();
-    Prolog_put_atom(tail, a_nil);
-
-    const PPL::Polyhedron& ph = *static_cast<const PPL::Polyhedron*>(pp);
-    const PPL::ConSys& cs = ph.constraints();
-
-    for (PPL::ConSys::const_iterator i = cs.begin(),
-	   cs_end = cs.end(); i != cs_end; ++i) {
-      Prolog_term_ref new_tail = Prolog_new_term_ref();
-      Prolog_construct_list(new_tail, constraint_term(*i), tail);
-      tail = new_tail;
-    }
-
-    Prolog_put_term(constraints_list, tail);
-  }
-  CATCH_ALL;
-}
-
-extern "C" void
-ppl_get_generators(const void* pp, Prolog_term_ref generators_list) {
-  try {
-    CHECK(pp);
-    Prolog_term_ref tail = Prolog_new_term_ref();
-    Prolog_put_atom(tail, a_nil);
-
-    const PPL::Polyhedron& ph = *static_cast<const PPL::Polyhedron*>(pp);
-    const PPL::GenSys& gs = ph.generators();
-
-    for (PPL::GenSys::const_iterator i = gs.begin(),
-	   gs_end = gs.end(); i != gs_end; ++i) {
-      Prolog_term_ref new_tail = Prolog_new_term_ref();
-      Prolog_construct_list(new_tail, generator_term(*i), tail);
-      tail = new_tail;
-    }
-
-    Prolog_put_term(generators_list, tail);
-  }
-  CATCH_ALL;
-}
-
-extern "C" void
-ppl_remove_dimensions(void* pp, Prolog_term_ref variables_list) {
-  try {
-    CHECK(pp);
-    std::set<PPL::Variable> dead_variables;
-    Prolog_term_ref v = Prolog_new_term_ref();
-    while (Prolog_is_list(variables_list)) {
-      Prolog_get_list(variables_list, v, variables_list);
-      dead_variables.insert(get_variable(v));
-    }
-    static_cast<PPL::Polyhedron*>(pp)->remove_dimensions(dead_variables);
-  }
-  CATCH_ALL;
-}
-
-extern "C" void
-ppl_remove_higher_dimensions(void* pp, long new_dimension) {
-  try {
-    CHECK(pp);
-    static_cast<PPL::Polyhedron*>(pp)
-      ->remove_higher_dimensions(get_unsigned_int(new_dimension));
-  }
-  CATCH_ALL;
-}
-
-extern "C" void
-ppl_add_dimensions_and_project(void* pp, long num_new_dimensions) {
-  try {
-    CHECK(pp);
-    static_cast<PPL::Polyhedron*>(pp)
-      ->add_dimensions_and_project(get_unsigned_int(num_new_dimensions));
-  }
-  CATCH_ALL;
-}
-
-extern "C" void
-ppl_add_dimensions_and_embed(void* pp, long num_new_dimensions) {
-  try {
-    CHECK(pp);
-    static_cast<PPL::Polyhedron*>(pp)
-      ->add_dimensions_and_embed(get_unsigned_int(num_new_dimensions));
-  }
-  CATCH_ALL;
 }

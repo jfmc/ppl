@@ -26,8 +26,9 @@ PolyTracker::PolyTracker() {
 }
 
 PolyTracker::~PolyTracker() {
-  int n = s.size();
-  std::cerr << n << " polyhedra leaked!" << std::endl;
+  size_t n = s.size();
+  if (n > 0) 
+    std::cerr << n << " polyhedra leaked!" << std::endl;
 }
 
 void
