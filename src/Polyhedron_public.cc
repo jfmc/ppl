@@ -932,7 +932,7 @@ PPL::Polyhedron::add_constraint(const Constraint& c) {
 
 bool
 PPL::Polyhedron::add_constraint_and_minimize(const Constraint& c) {
-  // FIXME: this is just an executable specification.
+  // TODO: this is just an executable specification.
   ConSys cs(c);
   return add_constraints_and_minimize(cs);
 }
@@ -1073,7 +1073,7 @@ PPL::Polyhedron::add_generator(const Generator& g) {
 
 bool
 PPL::Polyhedron::add_generator_and_minimize(const Generator& g) {
-  // FIXME: this is just an executable specification.
+  // TODO: this is just an executable specification.
   GenSys gs(g);
   return add_generators_and_minimize(gs);
 }

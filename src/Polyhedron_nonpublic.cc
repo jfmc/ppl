@@ -79,7 +79,7 @@ PPL::Polyhedron::Polyhedron(Topology topol, const ConSys& ccs)
     gen_sys(topol),
     sat_c(),
     sat_g() {
-  // FIXME: this implementation is just an executable specification.
+  // TODO: this implementation is just an executable specification.
   ConSys cs = ccs;
 
   // Try to adapt `cs' to the required topology.
@@ -166,7 +166,7 @@ PPL::Polyhedron::Polyhedron(Topology topol, const GenSys& cgs)
     gen_sys(topol),
     sat_c(),
     sat_g() {
-  // FIXME: this implementation is just an executable specification.
+  // TODO: this implementation is just an executable specification.
   GenSys gs = cgs;
 
   // An empty set of generators defines the empty polyhedron.

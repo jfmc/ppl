@@ -366,7 +366,7 @@ Polyhedron::shrink_bounding_box(Box& box, Complexity_Class complexity) const {
 template <typename PartialFunction>
 void
 Polyhedron::rename_dimensions(const PartialFunction& pifunc) {
-  // FIXME: this implementation is just an executable specification.
+  // TODO: this implementation is just an executable specification.
   if (space_dim == 0)
     return;
 

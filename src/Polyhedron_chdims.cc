@@ -289,7 +289,7 @@ PPL::Polyhedron::concatenate_assign(const Polyhedron& y) {
     return;
   }
 
-  // FIXME: this implementation is just an executable specification.
+  // TODO: this implementation is just an executable specification.
   ConSys cs = y.constraints();
 
   // The constraints of `x' (possibly with pending rows) are required.
