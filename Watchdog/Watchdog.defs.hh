@@ -30,7 +30,7 @@ site: http://www.cs.unipr.it/Software/ . */
 
 // FIXME
 #include <sys/time.h>
-#if HAVE_SYS_TIME_H
+#ifdef HAVE_SYS_TIME_H
 # include <sys/time.h>
 #endif
 
