@@ -946,11 +946,11 @@ PPL::Polyhedron::obtain_sorted_constraints_with_sat_c() const {
   else {
     if (!x.sat_g_is_up_to_date()) {
       // If constraints are not sorted and sat_g is not up-to-date
-      // we obtain sat_g from sat_c (that has to be up-to-date) ...
+      // we obtain sat_g from sat_c (that has to be up-to-date)...
       x.sat_g.transpose_assign(x.sat_c);
       x.set_sat_g_up_to_date();
     }
-    // ...and sort it together with constraints.
+    // ... and sort it together with constraints.
     x.con_sys.sort_and_remove_with_sat(x.sat_g);
   }
   // Obtaining sat_c from sat_g.
@@ -980,11 +980,11 @@ PPL::Polyhedron::obtain_sorted_generators_with_sat_g() const {
   else {
     if (!x.sat_c_is_up_to_date()) {
       // If generators are not sorted and sat_c is not up-to-date
-      // we obtain sat_c from sat_g (that has to be up-to-date) ...
+      // we obtain sat_c from sat_g (that has to be up-to-date)...
       x.sat_c.transpose_assign(x.sat_g);
       x.set_sat_c_up_to_date();
     }
-    // ...and sort it together with generators.
+    // ... and sort it together with generators.
     x.gen_sys.sort_and_remove_with_sat(x.sat_c);
   }
   // Obtaining sat_g from sat_c.
