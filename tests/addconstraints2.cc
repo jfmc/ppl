@@ -1,4 +1,5 @@
-/* Test Polyhedron::add_constraints().
+/* Test Polyhedron::add_constraints(): we add an empty system of
+   constraints to a non-empty polyhedron.
    Copyright (C) 2001, 2002 Roberto Bagnara <bagnara@cs.unipr.it>
 
 This file is part of the Parma Polyhedra Library (PPL).

@@ -49,9 +49,15 @@ main() {
 
   NNC_Polyhedron ph2(ph1);
 
+  NNC_Polyhedron known_result(2);
+  known_result.add_constraint(A - B >= 0);
+  known_result.add_constraint(A >= 0);
+
+  int retval = (ph2 == known_result) ? 0 : 1;
+
 #if NOISY
   print_constraints(ph2, "*** ph2 ***");
 #endif
 
-  return !ph2.OK(true);
+  return retval;
 }

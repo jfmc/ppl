@@ -1,4 +1,5 @@
-/* Test Polyhedron::constraints().
+/* Test Polyhedron::constraints(): we compute the system of
+   constraints of an empty, zero-dimensional polyhedron.
    Copyright (C) 2001, 2002 Roberto Bagnara <bagnara@cs.unipr.it>
 
 This file is part of the Parma Polyhedra Library (PPL).
@@ -36,12 +37,13 @@ main() {
 
   C_Polyhedron ph1(0);
   ph1.add_constraint(LinExpression::zero() == 1);
+  C_Polyhedron known_result(ph1);
 
   const ConSys cs = ph1.constraints();
 
   C_Polyhedron ph2(cs);
   
-  int retval = (ph1 == ph2) ? 0: 1;
+  int retval = (ph2 == known_result) ? 0: 1;
 
 #if NOISY
   print_constraints(ph2, "*** ph2 ***");

@@ -36,16 +36,15 @@ main() {
   
   Variable C(2);
 
-  NNC_Polyhedron ph(2);
+  C_Polyhedron ph(2);
   
-
 #if NOISY
   print_constraints(ph, "*** ph ***");
 #endif
   
   ph.add_dimensions_and_project(1);
 
-  NNC_Polyhedron known_result(3);
+  C_Polyhedron known_result(3);
   known_result.add_constraint(C == 0);
 
   int retval = (ph == known_result) ? 0 : 1;

@@ -1,4 +1,5 @@
-/* Test Polyhedron::minimized_constraints().
+/* Test Polyhedron::minimized_constraints(): we apply this function
+   to a polyhedron defined by a redundant system of constraints.
    Copyright (C) 2001, 2002 Roberto Bagnara <bagnara@cs.unipr.it>
 
 This file is part of the Parma Polyhedra Library (PPL).
@@ -40,12 +41,17 @@ main() {
   C_Polyhedron ph1(2);
   ph1.add_constraint(A >= 0);
   ph1.add_constraint(B >= 0);
+  ph1.add_constraint(A + B >= -2);
+  ph1.add_constraint(A >= -3);
 
   const ConSys cs = ph1.minimized_constraints();
 
   C_Polyhedron ph2(cs);
+  C_Polyhedron known_result(2);
+  known_result.add_constraint(A >= 0);
+  known_result.add_constraint(B >= 0); 
   
-  int retval = (ph1 == ph2) ? 0: 1;
+  int retval = (known_result == ph2) ? 0: 1;
 
 #if NOISY
   print_constraints(ph2, "*** ph2 ***");

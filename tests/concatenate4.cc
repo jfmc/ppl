@@ -1,4 +1,5 @@
-/* Test Polyhedron::concatenate_assign().
+/* Test Polyhedron::concatenate_assign(): we concatenate the tuples
+   of the two polyhedra.
    Copyright (C) 2001, 2002 Roberto Bagnara <bagnara@cs.unipr.it>
 
 This file is part of the Parma Polyhedra Library (PPL).

@@ -1,4 +1,6 @@
-/* Test Polyhedron::add_constraint().
+/* Test Polyhedron::add_constraint(): we add the equalities and
+   the non-strict inequalities of a non-necessary closed polyhedron
+   to a closed polyhedron.
    Copyright (C) 2001, 2002 Roberto Bagnara <bagnara@cs.unipr.it>
 
 This file is part of the Parma Polyhedra Library (PPL).
@@ -41,14 +43,24 @@ main() {
   ph1.add_constraint(A >= 0);
   ph1.add_constraint(B == 5);
 
+#if NOISY
+  print_constraints(ph1, "*** ph1 ***");
+#endif
+
   C_Polyhedron ph2(2);
   for (ConSys::const_iterator i = ph1.constraints().begin(),
 	 iend = ph1.constraints().end(); i != iend; ++i)
     ph2.add_constraint(*i);
 
+  C_Polyhedron known_result(2);
+  known_result.add_constraint(A >= 0);
+  known_result.add_constraint(B == 5);
+
+  int retval = (ph2 == known_result) ? 0 : 1;
+
 #if NOISY
   print_constraints(ph2, "*** ph2 ***");
 #endif
 
-  return !ph2.OK(true);
+  return retval;
 }

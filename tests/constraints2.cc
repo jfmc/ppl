@@ -1,4 +1,5 @@
-/* Test Polyhedron::constraints().
+/* Test Polyhedron::constraints(): we compute the system of constraints
+   of a polyhedron that is declared empty.
    Copyright (C) 2001, 2002 Roberto Bagnara <bagnara@cs.unipr.it>
 
 This file is part of the Parma Polyhedra Library (PPL).
@@ -34,16 +35,21 @@ int
 main() {
   set_handlers();
 
-  C_Polyhedron ph(3, C_Polyhedron::EMPTY);
+  C_Polyhedron ph1(3, C_Polyhedron::EMPTY);
 
 #if NOISY
-  print_constraints(ph, "*** ph ***");
+  print_constraints(ph1, "*** ph1 ***");
 #endif
-  ConSys cs = ph.constraints();
+  C_Polyhedron known_result = ph1;
+  
+  ConSys cs = ph1.constraints();
+  C_Polyhedron ph2(cs);
+
+  int retval = (ph2 == known_result) ? 0 : 1;
 
 #if NOISY
   print_constraints(cs, "*** cs ***");
 #endif
   
-  return !ph.OK();
+  return retval;
 }

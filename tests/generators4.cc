@@ -1,4 +1,5 @@
-/* Test Polyhedron::Polyhedron(const GenSys).
+/* Test Polyhedron::Polyhedron(const GenSys&): we built a polyhedron
+   starting from an empty system of generators.
    Copyright (C) 2001, 2002 Roberto Bagnara <bagnara@cs.unipr.it>
 
 This file is part of the Parma Polyhedra Library (PPL).
@@ -38,9 +39,13 @@ main() {
 
   C_Polyhedron ph(gs);
 
+  C_Polyhedron known_result(0, C_Polyhedron::EMPTY);
+
+  int retval = (ph == known_result) ? 0 : 1;
+
 #if NOISY
   print_generators(ph, "*** ph ***");
 #endif
 
-  return !ph.OK();
+  return retval;
 }

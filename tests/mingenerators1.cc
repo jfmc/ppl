@@ -1,4 +1,5 @@
-/* Test Polyhedron::minimized_generators().
+/* Test Polyhedron::minimized_generators(): we apply this function
+   to a polyhedron defined by a redundant system of generators.
    Copyright (C) 2001, 2002 Roberto Bagnara <bagnara@cs.unipr.it>
 
 This file is part of the Parma Polyhedra Library (PPL).
@@ -39,8 +40,11 @@ main() {
 
   GenSys gs1;
   gs1.insert(point());
+  gs1.insert(point(B));
   gs1.insert(line(A));
   gs1.insert(ray(B));
+  gs1.insert(ray(A + B));
+  gs1.insert(ray(-A + B));
 
   C_Polyhedron ph1(gs1);
 
@@ -51,9 +55,17 @@ main() {
 #endif
 
   C_Polyhedron ph2(gs2);
+  GenSys known_gs;
+  known_gs.insert(point());
+  known_gs.insert(line(A));
+  known_gs.insert(ray(B));
+  C_Polyhedron known_result(known_gs);
+
+  int retval = (ph2 == known_result) ? 0 : 1;
 
 #if NOISY
   print_generators(ph2, "*** ph2 ***");
 #endif
-  return !ph2.OK(true);
+
+  return retval;
 }

@@ -95,7 +95,7 @@ DERIVED_TESTS = \
 	nnc_addconstraints4 nnc_addconstraints5 nnc_addconstraints6 \
 	nnc_addconstraints7 nnc_addconstraints8 nnc_addconstraints9 \
 	nnc_adddimensions1 nnc_adddimensions2 nnc_adddimensions3 \
-	nnc_adddimensions4 \
+	nnc_adddimensions4 nnc_adddimensions9 \
 	nnc_addgenerators1 nnc_addgenerators2 nnc_addgenerators3 \
 	nnc_addgenerators4 nnc_addgenerators5 nnc_addgenerators6 \
 	nnc_addgenerators9 \
@@ -360,6 +360,8 @@ nnc_adddimensions3_SOURCES = adddimensions3.cc
 nnc_adddimensions3_CXXFLAGS = $(DERIVED_CXXFLAGS)
 nnc_adddimensions4_SOURCES = adddimensions4.cc
 nnc_adddimensions4_CXXFLAGS = $(DERIVED_CXXFLAGS)
+nnc_adddimensions9_SOURCES = adddimensions9.cc
+nnc_adddimensions9_CXXFLAGS = $(DERIVED_CXXFLAGS)
 
 nnc_addgenerators1_SOURCES = addgenerators1.cc
 nnc_addgenerators1_CXXFLAGS = $(DERIVED_CXXFLAGS)

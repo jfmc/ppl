@@ -1,4 +1,5 @@
-/* Test Polyhedron::add_dimensions_and_embed().
+/* Test Polyhedron::add_dimensions_and_embed(): we apply this function
+   to a non-necessarily closed polyhedron.
    Copyright (C) 2001, 2002 Roberto Bagnara <bagnara@cs.unipr.it>
 
 This file is part of the Parma Polyhedra Library (PPL).

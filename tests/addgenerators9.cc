@@ -1,4 +1,5 @@
-/* Test Polyhedron::add_constraint().
+/* Test Polyhedron::add_generators_and_minimize(): we add
+   an empty system of generators to a polyhedron.
    Copyright (C) 2001, 2002 Roberto Bagnara <bagnara@cs.unipr.it>
 
 This file is part of the Parma Polyhedra Library (PPL).

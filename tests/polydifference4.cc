@@ -1,4 +1,6 @@
-/* Test Polyhedron::poly_difference_assign().
+/* Test Polyhedron::poly_difference_assign(): if `ph1' is
+   contained in `ph2', the result of `ph1.poly_difference_assign(ph2)'
+   is an empty polyhedron.
    Copyright (C) 2001, 2002 Roberto Bagnara <bagnara@cs.unipr.it>
 
 This file is part of the Parma Polyhedra Library (PPL).

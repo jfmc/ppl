@@ -38,14 +38,21 @@ main() {
   gs1.insert(point());
 
   C_Polyhedron ph1(gs1);
+  C_Polyhedron known_result(ph1);
+
+#if NOISY
+  print_generators(ph1, "*** ph1 ***");
+#endif
 
   const GenSys gs2 = ph1.generators();
 
+  C_Polyhedron ph2(gs2);
+  
+  int retval = (ph2 == known_result) ? 0 : 1;
+
 #if NOISY
-  print_generators(gs2, "*** gs2 ***");
+  print_generators(ph2, "*** ph2 ***");
 #endif
 
-  C_Polyhedron ph2(gs2);
-
-  return !ph2.OK(true);
+  return retval;
 }

@@ -1,4 +1,6 @@
-/* Test Polyhedron::generators().
+/* Test Polyhedron::generators(): we test this function in the case
+   of a polyhedron that is declared empty, a zero-dimensional
+   polyhedron and an empty polyhedron.
    Copyright (C) 2001, 2002 Roberto Bagnara <bagnara@cs.unipr.it>
 
 This file is part of the Parma Polyhedra Library (PPL).
@@ -54,11 +56,17 @@ main() {
   GenSys gs2 = ph2.generators();
   GenSys gs3 = ph3.generators();
 
+  GenSys known_result2;
+  known_result2.insert(point());
+  int retval = (gs1.begin() == gs1.end()
+		&& C_Polyhedron(gs2) == C_Polyhedron(known_result2)
+		&& gs3.begin() == gs3.end()) ? 0 : 1;
+
 #if NOISY  
   print_generators(gs1, "*** gs1 ***");
   print_generators(gs2, "*** gs2 ***");
   print_generators(gs3, "*** gs3 ***");
 #endif
 
-  return !(ph1.OK() && ph2.OK() && ph3.OK());
+  return retval;
 }
