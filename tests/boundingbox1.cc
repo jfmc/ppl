@@ -97,7 +97,22 @@ public:
   else
     cout << " none,  " << endl;
   }
+
+  friend bool operator==(const BInterval& x, const BInterval& y);
 };
+
+inline bool
+operator==(const BInterval& x, const BInterval& y) {
+  return x.lclosed == y.lclosed
+    && x.uclosed == y.uclosed
+    && x.lc*y.ld == y.lc*x.ld
+    && x.uc*y.ud == y.uc*x.ud;
+}
+
+inline bool
+operator!=(const BInterval& x, const BInterval& y) {
+  return !(x == y);
+}
 
 class BBox {
 private:
@@ -106,6 +121,14 @@ private:
 public:
   BBox(unsigned int dimension) {
     box.resize(dimension);
+  }
+
+  unsigned int space_dimension() const {
+    return box.size();
+  }
+
+  const BInterval& operator[](size_t k) const {
+    return box[k];
   }
 
   void print_box(const string& intro = "") {
@@ -136,8 +159,26 @@ public:
   }
 };
 
-  // This is a non-bounded C polyhedron consisting of the line x = y.
-  // The bounding box is the xy plane - the universal polyhedron.
+bool
+operator==(const BBox& x, const BBox& y) {
+  unsigned int dimension = x.space_dimension();
+  if (dimension != y.space_dimension())
+    return false;
+
+  for (unsigned int i = dimension; i-- > 0; )
+    if (x[i] != y[i])
+      return false;
+
+  return true;
+}
+
+inline bool
+operator!=(const BBox& x, const BBox& y) {
+  return !(x == y);
+}
+
+// This is a non-bounded C polyhedron consisting of the line x = y.
+// The bounding box is the xy plane - the universal polyhedron.
 void test0() {
 #if C_TESTS
   Variable x(0);
