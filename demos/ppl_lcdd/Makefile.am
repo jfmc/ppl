@@ -41,6 +41,19 @@ $(top_builddir)/src/libppl.la \
 $(top_builddir)/utils/libppl_utils.a \
 @extra_libraries@
 
+polka_lcdd.o: $(srcdir)/ppl_lcdd.cc $(top_builddir)/utils/libppl_utils.a
+	$(CXXCOMPILE) -c -o $@ -DUSE_POLKA $(srcdir)/ppl_lcdd.cc
+
+polka_lcdd: polka_lcdd.o
+	$(CXXLINK) $< -lpolkag -lgmpxx -lgmp $(top_builddir)/utils/libppl_utils.a
+
+
+polylib_lcdd.o:	$(srcdir)/ppl_lcdd.cc
+	$(CXXCOMPILE) -c -o $@ -DUSE_POLYLIB $(srcdir)/ppl_lcdd.cc
+
+polylib_lcdd: polylib_lcdd.o $(top_builddir)/utils/libppl_utils.a
+	$(CXXLINK) $< -lpolylibgmp -lgmpxx -lgmp $(top_builddir)/utils/libppl_utils.a
+
 EXTRA_DIST = expected
 
 if HAVE_MD5SUM
