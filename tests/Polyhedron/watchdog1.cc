@@ -51,13 +51,19 @@ public:
   const char* what() const throw() {
     return "Timeout in watchdog1.cc";
   }
+
   void throw_me() const {
     throw *this;
   }
+
   int priority() const {
     return 0;
   }
+
   Timeout() {
+  }
+
+  ~Timeout() throw() {
   }
 };
 
