@@ -221,55 +221,68 @@ PPL::Generator::is_corresponding_closure_point(const Generator& p) const {
 
 bool
 PPL::Generator::OK() const {
+#ifndef NDEBUG
   using std::endl;
   using std::cerr;
+#endif
 
   const Generator& g = *this;
-
   switch (g.type()) {
-
   case LINE:
+    // Intentionally fall through.
   case RAY:
     if (g[0] != 0) {
+#ifndef NDEBUG
       cerr << "Lines must have a zero inhomogeneous term!"
 	   << endl;
+#endif
       return false;
     }
     if (!g.is_necessarily_closed() && g[size() - 1] != 0) {
+#ifndef NDEBUG
       cerr << "Lines and rays must have a zero coefficient "
 	   << "for the epsilon dimension!"
 	   << endl;
+#endif
       return false;
     }
     // The following test is correct, since we already checked
     // that the \epsilon coordinate is zero.
     if (g.all_homogeneous_terms_are_zero()) {
+#ifndef NDEBUG
       cerr << "The origin of the vector space cannot be "
 	   << "a line or a ray!"
 	   << endl;
+#endif
       return false;
     }
     break;
 
   case POINT:
     if (g[0] <= 0) {
+#ifndef NDEBUG
       cerr << "Points must have a positive divisor!"
 	   << endl;
+#endif
       return false;
     }
     if (!g.is_necessarily_closed())
       if (g[size() - 1] <= 0 || g[size() - 1] > g[0]) {
+#ifndef NDEBUG
 	cerr << "In the NNC topology, "
 	     << "points must have 0 < epsilon <= 1"
 	     << endl;
+#endif
 	return false;
       }
     break;
 
   case CLOSURE_POINT:
     if (g[0] <= 0) {
+#ifndef NDEBUG
       cerr << "Closure points must have a positive divisor!"
 	   << endl;
+#endif
       return false;
     }
     break;

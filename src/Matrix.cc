@@ -893,6 +893,10 @@ PPL::Matrix::check_sorted() const {
 
 bool
 PPL::Matrix::OK() const {
+#ifndef NDEBUG
+  using std::endl;
+  using std::cerr;
+#endif
 
   // The check in the following "#else" branch currently
   // fails after calls to method Matrix::grow().
@@ -905,11 +909,13 @@ PPL::Matrix::OK() const {
   // An empty matrix must have num_columns() == 0.
   if (num_rows() == 0)
     if (num_columns() == 0)
-      // An empty matrix is ok.
+      // An empty matrix is OK.
       return true;
     else {
-      std::cerr << "Matrix has no rows but num_columns() is positive!"
-		<< std::endl;
+#ifndef NDEBUG
+      cerr << "Matrix has no rows but num_columns() is positive!"
+	   << endl;
+#endif
       return false;
     }
 #endif
@@ -920,12 +926,14 @@ PPL::Matrix::OK() const {
   // for the \epsilon coefficient.
   size_t min_cols = is_necessarily_closed() ? 1 : 2;
   if (num_columns() < min_cols) {
-    std::cerr << "Matrix has fewer columns than the minimum "
-	      << "allowed by its topology:"
-	      << std::endl
-	      << "num_columns is " << num_columns()
-	      << ", minimum is " << min_cols
-	      << std::endl;
+#ifndef NDEBUG
+    cerr << "Matrix has fewer columns than the minimum "
+	 << "allowed by its topology:"
+	 << endl
+	 << "num_columns is " << num_columns()
+	 << ", minimum is " << min_cols
+	 << endl;
+#endif
     return false;
   }
 
@@ -936,16 +944,20 @@ PPL::Matrix::OK() const {
       return false;
     // Checking for topology mismatches.
     if (x.topology() != x[i].topology()) {
-      std::cerr << "Topology mismatch between the matrix "
-		<< "and one of its rows!"
-		<< std::endl;
+#ifndef NDEBUG
+      cerr << "Topology mismatch between the matrix "
+	   << "and one of its rows!"
+	   << endl;
+#endif
       return false;
     }
   }
 
   if (sorted && !check_sorted()) {
-    std::cerr << "The matrix declares itself to be sorted but it is not!"
-	      << std::endl;
+#ifndef NDEBUG
+    cerr << "The matrix declares itself to be sorted but it is not!"
+	 << endl;
+#endif
     return false;
   }
 

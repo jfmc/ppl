@@ -2991,8 +2991,10 @@ PPL::PolyBase::is_bounded() const {
 // FIXME.
 bool
 PPL::PolyBase::OK(bool check_not_empty) const {
+#ifndef NDEBUG
   using std::endl;
   using std::cerr;
+#endif
 
   // The expected number of columns in the constraint and generator
   // systems, if they are not empty. 
@@ -3000,8 +3002,10 @@ PPL::PolyBase::OK(bool check_not_empty) const {
 
   // Check whether the topologies of `con_sys' and `gen_sys' agree.
   if (con_sys.topology() != gen_sys.topology()) {
+#ifndef NDEBUG
     cerr << "Constraints and generators have different topologies!"
 	 << endl;
+#endif
     goto bomb;
   }
 
@@ -3013,15 +3017,18 @@ PPL::PolyBase::OK(bool check_not_empty) const {
 
   // Checks the possible meaningful status combinations.
   if (!status.OK()) {
+#ifndef NDEBUG
     cerr << "Wrong status!" << endl;
+#endif
     goto bomb;
   }
 
   if (is_empty()) {
     if (check_not_empty) {
       // The caller does not want the polyhedron to be empty.
-      cerr << "Empty polyhedron!"
-	   << endl;
+#ifndef NDEBUG
+      cerr << "Empty polyhedron!" << endl;
+#endif
       goto bomb;
     }
 
@@ -3031,23 +3038,29 @@ PPL::PolyBase::OK(bool check_not_empty) const {
       return true;
     else {
       if (con_sys.space_dimension() != space_dim) {
+#ifndef NDEBUG
 	cerr << "The polyhedron is in a space of dimension "
 	     << space_dim
 	     << " while the system of constraints is in a space of dimension "
 	     << con_sys.space_dimension()
 	     << endl;
+#endif
 	goto bomb;
       }
       if (con_sys.num_rows() != 1) {
+#ifndef NDEBUG
 	cerr << "The system of constraints for an empty polyhedron "
 	     << "has more then one row"
 	     << endl;
+#endif
 	goto bomb;
       }
       else
 	if (!con_sys[0].is_trivial_false()) {
+#ifndef NDEBUG
 	  cerr << "Empty polyhedron with a satisfiable system of constraints"
 	       << endl;
+#endif
 	  goto bomb;
 	}
     }
@@ -3058,10 +3071,12 @@ PPL::PolyBase::OK(bool check_not_empty) const {
   // `gen_sys' have no rows.
   if (space_dim == 0)
     if (con_sys.num_rows() != 0 || gen_sys.num_rows() != 0) {
+#ifndef NDEBUG
       cerr << "Zero-dimensional polyhedron with a non-empty"
 	   << endl
 	   << "system of constraints or generators."
 	   << endl;
+#endif
       goto bomb;
     }
     else
@@ -3070,10 +3085,12 @@ PPL::PolyBase::OK(bool check_not_empty) const {
   // A polyhedron is defined by a system of constraints
   // or a system of generators: at least one of them must be up to date.
   if (!constraints_are_up_to_date() && !generators_are_up_to_date()) {
+#ifndef NDEBUG
     cerr << "Polyhedron not empty, not zero-dimensional"
 	 << endl
 	 << "and with neither constraints nor generators up-to-date!"
 	 << endl;
+#endif
     goto bomb;
   }
 
@@ -3085,46 +3102,60 @@ PPL::PolyBase::OK(bool check_not_empty) const {
   // `sat_g'   : number of constraints x number of generators.
   if (constraints_are_up_to_date()) {
     if (con_sys.num_columns() != poly_num_columns) {
+#ifndef NDEBUG
       cerr << "Incompatible size! (con_sys and space_dim)"
 	   << endl;
+#endif
       goto bomb;
     }
     if (sat_c_is_up_to_date())
       if (con_sys.num_rows() != sat_c.num_columns()) {
+#ifndef NDEBUG
 	cerr << "Incompatible size! (con_sys and sat_c)"
 	     << endl;
+#endif
 	goto bomb;
       }
     if (sat_g_is_up_to_date())
       if (con_sys.num_rows() != sat_g.num_rows()) {
+#ifndef NDEBUG
 	cerr << "Incompatible size! (con_sys and sat_g)"
 	     << endl;
+#endif
 	goto bomb;
       }
     if (generators_are_up_to_date())
       if (con_sys.num_columns() != gen_sys.num_columns()) {
+#ifndef NDEBUG
 	cerr << "Incompatible size! (con_sys and gen_sys)"
 	     << endl;
+#endif
 	goto bomb;
       }
   }
 
   if (generators_are_up_to_date()) {
     if (gen_sys.num_columns() != poly_num_columns) {
+#ifndef NDEBUG
       cerr << "Incompatible size! (gen_sys and space_dim)"
 	   << endl;
+#endif
       goto bomb;
     }
     if (sat_c_is_up_to_date())
       if (gen_sys.num_rows() != sat_c.num_rows()) {
+#ifndef NDEBUG
 	cerr << "Incompatible size! (gen_sys and sat_c)"
 	     << endl;
+#endif
 	goto bomb;
       }
     if (sat_g_is_up_to_date())
       if (gen_sys.num_rows() != sat_g.num_columns()) {
+#ifndef NDEBUG
 	cerr << "Incompatible size! (gen_sys and sat_g)"
 	     << endl;
+#endif
 	goto bomb;
       }
   }
@@ -3137,9 +3168,11 @@ PPL::PolyBase::OK(bool check_not_empty) const {
     // A non_empty system of generators describing a polyhedron
     // is valid iff it contains a point.
     if (gen_sys.num_rows() > 0 && !gen_sys.has_points()) {
+#ifndef NDEBUG
       cerr << "Non-empty generator system declared up-to-date "
 	   << "has no points!"
 	   << endl;
+#endif
       goto bomb;
     }
 
@@ -3160,7 +3193,9 @@ PPL::PolyBase::OK(bool check_not_empty) const {
 	  else
 	    ++num_closure_points;
       if (num_points > num_closure_points) {
+#ifndef NDEBUG
 	cerr << "# POINTS > # CLOSURE_POINTS" << endl;
+#endif
 	goto bomb;
       }
     }
@@ -3180,12 +3215,14 @@ PPL::PolyBase::OK(bool check_not_empty) const {
       if (gen_sys.num_rows() != copy_of_gen_sys.num_rows()
 	  || gen_sys.num_lines() != copy_num_lines
 	  || gen_sys.num_rays() != copy_of_gen_sys.num_rays()) {
+#ifndef NDEBUG
 	cerr << "Generators are declared minimized, but they are not!"
 	     << endl
 	     << "Here is the minimized form of the generators:"
 	     << endl
 	     << copy_of_gen_sys
 	     << endl;
+#endif
 	goto bomb;
       }
 
@@ -3209,6 +3246,7 @@ PPL::PolyBase::OK(bool check_not_empty) const {
 	tmp_gen.strong_normalize();
 	tmp_gen.sort_rows();
 	if (copy_of_gen_sys != tmp_gen) {
+#ifndef NDEBUG
 	  cerr << "Generators are declared minimized, but they are not!"
 	       << endl
 	       << "(we are in the case:"
@@ -3219,6 +3257,7 @@ PPL::PolyBase::OK(bool check_not_empty) const {
 	       << endl
 	       << copy_of_gen_sys
 	       << endl;
+#endif
 	    goto bomb;
 	}
       }
@@ -3243,8 +3282,10 @@ PPL::PolyBase::OK(bool check_not_empty) const {
 	break;
       }
     if (no_positivity_constraint) {
+#ifndef NDEBUG
       cerr << "Non-empty constraint system has no positivity constraint"
 	   << endl;
+#endif
       goto bomb;
     }
 
@@ -3260,9 +3301,11 @@ PPL::PolyBase::OK(bool check_not_empty) const {
 	  break;
 	}
       if (no_epsilon_geq_zero) {
+#ifndef NDEBUG
 	cerr << "Non-empty constraint system for NNC polyhedron "
 	     << "has no epsilon >= 0 constraint"
 	     << endl;
+#endif
 	goto bomb;
       }
     }
@@ -3275,8 +3318,10 @@ PPL::PolyBase::OK(bool check_not_empty) const {
     if (minimize(true, copy_of_con_sys, new_gen_sys, new_sat_g)) {
       if (check_not_empty) {
 	// Want to know the satisfiability of the constraints.
+#ifndef NDEBUG
 	cerr << "Insoluble system of constraints!"
 	     << endl;
+#endif
 	goto bomb;
       }
       else
@@ -3291,12 +3336,14 @@ PPL::PolyBase::OK(bool check_not_empty) const {
       // If it does not happen, the polyhedron is not ok.
       if (con_sys.num_rows() != copy_of_con_sys.num_rows()
 	  || con_sys.num_equalities() != copy_of_con_sys.num_equalities()) {
+#ifndef NDEBUG
 	cerr << "Constraints are declared minimized, but they are not!"
 	     << endl
 	     << "Here is the minimized form of the constraints:"
 	     << endl
 	     << copy_of_con_sys
 	     << endl;
+#endif
 	goto bomb;
       }
       // The matrix `copy_of_con_sys' has the form that is obtained
@@ -3315,12 +3362,14 @@ PPL::PolyBase::OK(bool check_not_empty) const {
       tmp_con.strong_normalize();
       tmp_con.sort_rows();
       if (tmp_con != copy_of_con_sys) {
+#ifndef NDEBUG
 	cerr << "Constraints are declared minimized, but they are not!"
 	     << endl
 	     << "Here is the minimized form of the constraints:"
 	     << endl
 	     << copy_of_con_sys
 	     << endl;
+#endif
 	goto bomb;
       }
     }
@@ -3332,8 +3381,10 @@ PPL::PolyBase::OK(bool check_not_empty) const {
       SatRow tmp_sat = sat_c[i];
       for (size_t j = sat_c.num_columns(); j-- > 0; )
 	if (sgn(tmp_gen * con_sys[j]) != tmp_sat[j]) {
+#ifndef NDEBUG
 	  cerr << "sat_c is declared up-to-date, but it is not!"
 	       << endl;
+#endif
 	  goto bomb;
 	}
     }
@@ -3344,8 +3395,10 @@ PPL::PolyBase::OK(bool check_not_empty) const {
       SatRow tmp_sat = sat_g[i];
       for (size_t j = sat_g.num_columns(); j-- > 0; )
 	if (sgn(tmp_con * gen_sys[j]) != tmp_sat[j]) {
+#ifndef NDEBUG
 	  cerr << "sat_g is declared up-to-date, but it is not!"
 	       << endl;
+#endif
 	  goto bomb;
 	}
     }
@@ -3353,9 +3406,11 @@ PPL::PolyBase::OK(bool check_not_empty) const {
   return true;
 
  bomb:
+#ifndef NDEBUG
   cerr << "Here is the guilty polyhedron:"
        << endl
        << *this
        << endl;
+#endif
   return false;
 }

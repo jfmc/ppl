@@ -245,8 +245,10 @@ PPL::operator>>(std::istream& s, SatMatrix& x) {
 */
 bool
 PPL::SatMatrix::OK() const {
+#ifndef NDEBUG
   using std::endl;
   using std::cerr;
+#endif
 
   const SatMatrix& x = *this;
   for (size_t i = num_rows(); i-- > 1; ) {
@@ -254,11 +256,13 @@ PPL::SatMatrix::OK() const {
     if (!row.OK())
       return false;
     else if (row.last() >= 0 && unsigned(row.last()) >= row_size) {
+#ifndef NDEBUG
       cerr << "SatMatrix[" << i << "] is a SatRow with too many bits!"
 	   << endl
 	   << "(row_size == " << row_size
 	   << ", row.last() == " << row.last() << ")"
 	   << endl;
+#endif
       return false;
     }
   }

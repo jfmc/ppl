@@ -297,38 +297,49 @@ PPL::Row::OK(size_t row_size,
 	     row_capacity
 #endif
 	     ) const {
+#ifndef NDEBUG
+  using std::endl;
+  using std::cerr;
+#endif
+
   bool is_broken = false;
 #ifndef NDEBUG
   if (capacity_ != row_capacity) {
-    std::cerr << "Row capacity mismatch: is " << capacity_
-	      << ", should be " << row_capacity
-	      << std::endl;
+    cerr << "Row capacity mismatch: is " << capacity_
+	 << ", should be " << row_capacity
+	 << endl;
     is_broken = true;
   }
 #endif
   if (size() != row_size) {
-    std::cerr << "Row size mismatch: is " << size()
-	      << ", should be " << row_size
-	      << std::endl;
+#ifndef NDEBUG
+    cerr << "Row size mismatch: is " << size()
+	 << ", should be " << row_size
+	 << endl;
+#endif
     is_broken = true;
   }
 #ifndef NDEBUG
   if (capacity_ < size()) {
-    std::cerr << "Row is completely broken: capacity is " << capacity_
-	      << ", size is " << size()
-	      << std::endl;
+#ifndef NDEBUG
+    cerr << "Row is completely broken: capacity is " << capacity_
+	 << ", size is " << size()
+	 << endl;
+#endif
     is_broken = true;
   }
 #endif
   // Topology consistency check.
   size_t min_cols = is_necessarily_closed() ? 1 : 2;
   if (size() < min_cols) {
-    std::cerr << "Row has fewer coefficeints than the minumum "
-	      << "allowed by its topology:"
-	      << std::endl
-	      << "size is " << size()
-	      << ", minimum is " << min_cols
-	      << std::endl;
+#ifndef NDEBUG
+    cerr << "Row has fewer coefficeints than the minumum "
+	 << "allowed by its topology:"
+	 << endl
+	 << "size is " << size()
+	 << ", minimum is " << min_cols
+	 << endl;
+#endif
     is_broken = true;
   }    
   return !is_broken;
