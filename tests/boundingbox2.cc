@@ -35,7 +35,6 @@ using namespace Parma_Polyhedra_Library;
 // with strict inequality and closure points at the lower bound.
 static void
 test1() {
-  //Variable w(0);
   Variable x(1);
   Variable y(2);
   Variable z(3);
@@ -134,10 +133,10 @@ test3() {
   ph.add_constraint(y > 0);
   ph.add_constraint(y < 0);
 
-  BoundingBox pbox(2);
+  Bounding_Box pbox(2);
   ph.shrink_bounding_box(pbox, POLYNOMIAL_COMPLEXITY);
 
-  BoundingBox nbox(2);
+  Bounding_Box nbox(2);
   ph.shrink_bounding_box(nbox);
 
   NNC_Polyhedron known_ph(2, C_Polyhedron::EMPTY);

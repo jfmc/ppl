@@ -1,4 +1,4 @@
-/* BoundingBox class implementation: inline functions.
+/* Bounding_Box class implementation: inline functions.
    Copyright (C) 2001-2004 Roberto Bagnara <bagnara@cs.unipr.it>
 
 This file is part of the Parma Polyhedra Library (PPL).
@@ -21,29 +21,29 @@ USA.
 For the most up-to-date information see the Parma Polyhedra Library
 site: http://www.cs.unipr.it/ppl/ . */
 
-#ifndef PPL_BoundingBox_inlines_hh
-#define PPL_BoundingBox_inlines_hh 1
+#ifndef PPL_Bounding_Box_inlines_hh
+#define PPL_Bounding_Box_inlines_hh 1
 
 namespace Parma_Polyhedra_Library {
 
 inline
-BoundingBox::BoundingBox(dimension_type num_dimensions)
+Bounding_Box::Bounding_Box(dimension_type num_dimensions)
   : vec(num_dimensions), empty(false), empty_up_to_date(true) {
 }
 
 inline dimension_type
-BoundingBox::space_dimension() const {
+Bounding_Box::space_dimension() const {
   return vec.size();
 }
 
 inline const Interval&
-BoundingBox::operator[](const dimension_type k) const {
+Bounding_Box::operator[](const dimension_type k) const {
   assert(k < vec.size());
   return vec[k];
 }
 
 inline bool
-BoundingBox::is_empty() const {
+Bounding_Box::is_empty() const {
   if (empty_up_to_date)
     return empty;
   else {
@@ -59,7 +59,7 @@ BoundingBox::is_empty() const {
 }
 
 inline bool
-BoundingBox::get_lower_bound(const dimension_type k, bool& closed,
+Bounding_Box::get_lower_bound(const dimension_type k, bool& closed,
 			     Integer& n, Integer& d) const {
   assert(k < vec.size());
   const LBoundary& lb = vec[k].lower_bound();
@@ -76,7 +76,7 @@ BoundingBox::get_lower_bound(const dimension_type k, bool& closed,
 }
 
 inline bool
-BoundingBox::get_upper_bound(const dimension_type k, bool& closed,
+Bounding_Box::get_upper_bound(const dimension_type k, bool& closed,
 			     Integer& n, Integer& d) const {
   assert(k < vec.size());
   const UBoundary& ub = vec[k].upper_bound();
@@ -92,14 +92,14 @@ BoundingBox::get_upper_bound(const dimension_type k, bool& closed,
 }
 
 inline void
-BoundingBox::set_empty() {
+Bounding_Box::set_empty() {
   for (dimension_type k = vec.size(); k-- > 0; )
     vec[k].set_empty();
   empty = empty_up_to_date = true;
 }
 
 inline void
-BoundingBox::raise_lower_bound(const dimension_type k, const bool closed,
+Bounding_Box::raise_lower_bound(const dimension_type k, const bool closed,
 			       Integer_traits::const_reference n,
 			       Integer_traits::const_reference d) {
   assert(k < vec.size());
@@ -112,7 +112,7 @@ BoundingBox::raise_lower_bound(const dimension_type k, const bool closed,
 }
 
 inline void
-BoundingBox::lower_upper_bound(const dimension_type k, const bool closed,
+Bounding_Box::lower_upper_bound(const dimension_type k, const bool closed,
 			       Integer_traits::const_reference n,
 			       Integer_traits::const_reference d) {
   assert(k < vec.size());
@@ -126,4 +126,4 @@ BoundingBox::lower_upper_bound(const dimension_type k, const bool closed,
 
 } // namespace Parma_Polyhedra_Library
 
-#endif // !defined(PPL_BoundingBox_inlines_hh)
+#endif // !defined(PPL_Bounding_Box_inlines_hh)

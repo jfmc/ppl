@@ -519,10 +519,10 @@ INPUT                  = @srcdir@/definitions.dox \
                          @srcdir@/../src/Interval.defs.hh \
                          @srcdir@/../src/Interval.inlines.hh \
                          @srcdir@/../src/Interval.cc \
-                         @srcdir@/../src/BoundingBox.types.hh \
-                         @srcdir@/../src/BoundingBox.defs.hh \
-                         @srcdir@/../src/BoundingBox.inlines.hh \
-                         @srcdir@/../src/BoundingBox.cc \
+                         @srcdir@/../src/Bounding_Box.types.hh \
+                         @srcdir@/../src/Bounding_Box.defs.hh \
+                         @srcdir@/../src/Bounding_Box.inlines.hh \
+                         @srcdir@/../src/Bounding_Box.cc \
                          @srcdir@/../src/C_Polyhedron.types.hh \
                          @srcdir@/../src/C_Polyhedron.defs.hh \
                          @srcdir@/../src/C_Polyhedron.inlines.hh \

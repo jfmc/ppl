@@ -17,6 +17,7 @@ o  Significant efficiency improvements have been achieved everywhere.
 o  The following classes have been renamed as indicated:
 
      AskTell            -> Ask_Tell
+     BoundingBox        -> Bounding_Box
      Polyhedra_PowerSet -> Polyhedra_Powerset
      PowerSet           -> PowerSet 
 

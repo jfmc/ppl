@@ -10,7 +10,6 @@ Enhancements for PPL 0.7
 - Consider performing the following renamings:
 
     Integer -> Coefficient
-    BoundingBox -> Bounding_Box
     ConSys -> Constraint_System
     GenSys -> Generator_System
     LinExpression -> Linear_Expression

@@ -1,4 +1,4 @@
-/* BoundingBox class declaration.
+/* Bounding_Box class declaration.
    Copyright (C) 2001-2004 Roberto Bagnara <bagnara@cs.unipr.it>
 
 This file is part of the Parma Polyhedra Library (PPL).
@@ -21,8 +21,8 @@ USA.
 For the most up-to-date information see the Parma Polyhedra Library
 site: http://www.cs.unipr.it/ppl/ . */
 
-#ifndef PPL_BoundingBox_defs_hh
-#define PPL_BoundingBox_defs_hh 1
+#ifndef PPL_Bounding_Box_defs_hh
+#define PPL_Bounding_Box_defs_hh 1
 
 #include "Integer.types.hh"
 #include "globals.defs.hh"
@@ -36,15 +36,15 @@ namespace Parma_Polyhedra_Library {
 #ifdef PPL_DOXYGEN_INCLUDE_IMPLEMENTATION_DETAILS
 //! A not necessarily closed bounding-box.
 /*!
-  A BoundingBox object represents the Cartesian product of \f$n\f$
+  A Bounding_Box object represents the Cartesian product of \f$n\f$
   not necessarily closed and possibly unbounded intervals,
   where \f$n\f$ is the space dimension of the box.
 */
 #endif // PPL_DOXYGEN_INCLUDE_IMPLEMENTATION_DETAILS
-class BoundingBox {
+class Bounding_Box {
 public:
   //! Constructs a universe bounding box of dimension \p num_dimensions.
-  BoundingBox(dimension_type num_dimensions);
+  Bounding_Box(dimension_type num_dimensions);
 
   //! Returns the dimension of the vector space enclosing \p *this.
   dimension_type space_dimension() const;
@@ -155,14 +155,14 @@ namespace IO_Operators {
 
 #ifdef PPL_DOXYGEN_INCLUDE_IMPLEMENTATION_DETAILS
 //! Output operator.
-/*! \relates Parma_Polyhedra_Library::BoundingBox */
+/*! \relates Parma_Polyhedra_Library::Bounding_Box */
 #endif // PPL_DOXYGEN_INCLUDE_IMPLEMENTATION_DETAILS
-std::ostream& operator<<(std::ostream& s, const BoundingBox& bbox);
+std::ostream& operator<<(std::ostream& s, const Bounding_Box& bbox);
 
 } // namespace IO_Operators
 
 } // namespace Parma_Polyhedra_Library
 
-#include "BoundingBox.inlines.hh"
+#include "Bounding_Box.inlines.hh"
 
-#endif // !defined(PPL_BoundingBox_defs_hh)
+#endif // !defined(PPL_Bounding_Box_defs_hh)

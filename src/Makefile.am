@@ -108,7 +108,7 @@ Integer_macros.hh \
 $(COEFFICIENT_TYPES_INCLUDE_FILES) \
 Integer.types.hh \
 Interval.types.hh \
-BoundingBox.types.hh \
+Bounding_Box.types.hh \
 Constraint.types.hh \
 Generator.types.hh \
 Init.types.hh \
@@ -144,8 +144,8 @@ globals.defs.hh \
 globals.inlines.hh \
 Interval.defs.hh \
 Interval.inlines.hh \
-BoundingBox.defs.hh \
-BoundingBox.inlines.hh \
+Bounding_Box.defs.hh \
+Bounding_Box.inlines.hh \
 Variable.defs.hh \
 Variable.inlines.hh \
 Init.defs.hh \
@@ -204,7 +204,7 @@ max_space_dimension.hh \
 algorithms.hh
 
 libppl_la_SOURCES = \
-BoundingBox.cc \
+Bounding_Box.cc \
 Constraint.cc \
 ConSys.cc \
 GenSys.cc \

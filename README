@@ -399,10 +399,10 @@ ppl-0.6/
 |   |-- BHRZ03_Certificate.defs.hh
 |   |-- BHRZ03_Certificate.inlines.hh
 |   |-- BHRZ03_Certificate.types.hh
-|   |-- BoundingBox.cc
-|   |-- BoundingBox.defs.hh
-|   |-- BoundingBox.inlines.hh
-|   |-- BoundingBox.types.hh
+|   |-- Bounding_Box.cc
+|   |-- Bounding_Box.defs.hh
+|   |-- Bounding_Box.inlines.hh
+|   |-- Bounding_Box.types.hh
 |   |-- C_Polyhedron.cc
 |   |-- C_Polyhedron.defs.hh
 |   |-- C_Polyhedron.inlines.hh

@@ -33,7 +33,7 @@ using namespace Parma_Polyhedra_Library;
 // The box is the xy plane.
 static void
 test1() {
-  BoundingBox box(2);
+  Bounding_Box box(2);
 
   C_Polyhedron ph(box, From_Bounding_Box());
 
@@ -51,7 +51,7 @@ test1() {
 // This box is the closed +ve quadrant.
 static void
 test2() {
-  BoundingBox box(2);
+  Bounding_Box box(2);
   box.raise_lower_bound(0, true, 0, 1);
   box.raise_lower_bound(1, true, 0, 1);
 
@@ -76,7 +76,7 @@ test2() {
 // A bounded box in 2D.
 static void
 test3() {
-  BoundingBox box(2);
+  Bounding_Box box(2);
   box.raise_lower_bound(0, true, -2, 3);
   box.lower_upper_bound(0, true, 4, 1);
   box.raise_lower_bound(1, true, -10, 1);
@@ -105,7 +105,7 @@ test3() {
 // This is a unbounded closed box in 4D but bounded in 2D.
 static void
 test4() {
-  BoundingBox box(4);
+  Bounding_Box box(4);
   box.raise_lower_bound(1, true, -2, 3);
   box.lower_upper_bound(1, true, 4, 1);
   box.raise_lower_bound(2, true, -10, 1);
@@ -137,7 +137,7 @@ test4() {
 // This is a zero-dimensional box.
 static void
 test5() {
-  BoundingBox box(0);
+  Bounding_Box box(0);
 
   C_Polyhedron ph(box, From_Bounding_Box());
 
@@ -155,7 +155,7 @@ test5() {
 // This is an empty closed box in 2D.
 static void
 test6() {
-  BoundingBox box(2);
+  Bounding_Box box(2);
   box.set_empty();
 
   C_Polyhedron ph(box, From_Bounding_Box());
@@ -177,7 +177,7 @@ test6() {
 // This box is a single point.
 static void
 test7() {
-  BoundingBox box(2);
+  Bounding_Box box(2);
   box.raise_lower_bound(0, true, 2, 1);
   box.lower_upper_bound(0, true, 2, 1);
   box.raise_lower_bound(1, true, 4, 1);
@@ -204,7 +204,7 @@ test7() {
 // This box is a closed unit square.
 static void
 test8() {
-  BoundingBox box(2);
+  Bounding_Box box(2);
   box.raise_lower_bound(0, true, 0, 1);
   box.lower_upper_bound(0, true, 1, 1);
   box.raise_lower_bound(1, true, 0, 1);
@@ -236,8 +236,7 @@ test8() {
 // from the corresponding box.
 static void
 test9() {
-  BoundingBox box(2);
-
+  Bounding_Box box(2);
   box.raise_lower_bound(0, true, 0, 1);
   box.lower_upper_bound(0, true, 1, 2);
   box.raise_lower_bound(1, true, 0, 1);

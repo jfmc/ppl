@@ -1,4 +1,4 @@
-/* BoundingBox class implementation (non-inline functions).
+/* Bounding_Box class implementation (non-inline functions).
    Copyright (C) 2001-2004 Roberto Bagnara <bagnara@cs.unipr.it>
 
 This file is part of the Parma Polyhedra Library (PPL).
@@ -22,14 +22,14 @@ For the most up-to-date information see the Parma Polyhedra Library
 site: http://www.cs.unipr.it/ppl/ . */
 
 #include <config.h>
-#include "BoundingBox.defs.hh"
+#include "Bounding_Box.defs.hh"
 #include <iostream>
 
 namespace PPL = Parma_Polyhedra_Library;
 
-/*! \relates Parma_Polyhedra_Library::BoundingBox */
+/*! \relates Parma_Polyhedra_Library::Bounding_Box */
 std::ostream&
-PPL::IO_Operators::operator<<(std::ostream& s, const PPL::BoundingBox& bbox) {
+PPL::IO_Operators::operator<<(std::ostream& s, const PPL::Bounding_Box& bbox) {
   if (bbox.is_empty()) {
     s << "empty";
     return s;
