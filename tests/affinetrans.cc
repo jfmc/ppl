@@ -42,7 +42,7 @@ main() {
   gs.insert(vertex(3*x + 0*y));
   gs.insert(vertex(3*x + 3*y));
   Polyhedron ph(gs);
-  LinExpression coeff = x + 0*y + 4;
+  LinExpression coeff = x + 4;
 
   Polyhedron p1(ph);
 #if NOISY
