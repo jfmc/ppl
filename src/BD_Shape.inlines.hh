@@ -33,12 +33,19 @@ site: http://www.cs.unipr.it/ppl/ . */
 
 namespace Parma_Polyhedra_Library {
 
+//! Assigns to \p x the minimum between \p x and \p y.
 template <typename T>
 inline void
 min_assign(T& x, const T& y) {
-  // This is an auxiliary function to compute the minimum
-  // between two T-values.
   if (x > y)
+    x = y;
+}
+
+//! Assigns to \p x the maximum between \p x and \p y.
+template <typename T>
+inline void
+max_assign(T& x, const T& y) {
+  if (x < y)
     x = y;
 }
 
@@ -97,6 +104,127 @@ BD_Shape<T>::BD_Shape(const Constraint_System& cs)
     // is transitively closed.
     status.set_transitively_closed();
   add_constraints(cs);
+  assert(OK());
+}
+
+template <typename T>
+inline
+BD_Shape<T>::BD_Shape(const Generator_System& gs)
+  : dbm(gs.space_dimension() + 1) {
+  init();
+
+  dimension_type space_dim = space_dimension();
+  const Generator_System::const_iterator gs_begin = gs.begin();
+  const Generator_System::const_iterator gs_end = gs.end();
+  T tmp;
+
+  bool dbm_initialized = false;
+  bool point_seen = false;
+  for (Generator_System::const_iterator i = gs_begin; i != gs_end; ++i) {
+    const Generator& g = *i;
+    switch (g.type()) {
+    case Generator::POINT:
+      point_seen = true;
+      // Intentionally fall through.
+    case Generator::CLOSURE_POINT:
+      {
+	Coefficient_traits::const_reference d = g.divisor();
+	if (!dbm_initialized) {
+	  // When the first point is handled, we initialize the DBM.
+	  dbm_initialized = true;
+	  for (dimension_type i = space_dim; i > 0; --i) {
+	    DB_Row<T>& dbm_i = dbm[i];
+	    for (dimension_type j = space_dim; j > 0; --j)
+	      if (i != j)
+		div_round_up(dbm_i[j],
+			     g.coefficient(Variable(j-1))
+			     -g.coefficient(Variable(i-1)),
+			     d);
+	    div_round_up(dbm_i[0], -g.coefficient(Variable(i-1)), d);
+	  }
+	  DB_Row<T>& dbm_0 = dbm[0];
+	  for (dimension_type j = space_dim; j > 0; --j)
+	    div_round_up(dbm_0[j], g.coefficient(Variable(j-1)), d);
+	}
+	else {
+	  // This is not the first point: the DBM already contains
+	  // valid values and we must compute maxima.
+	  for (dimension_type i = space_dim; i > 0; --i) {
+	    DB_Row<T>& dbm_i = dbm[i];
+	    for (dimension_type j = space_dim; j > 0; --j)
+	      if (i != j) {
+		div_round_up(tmp,
+			     g.coefficient(Variable(j-1))
+			     -g.coefficient(Variable(i-1)),
+			     d);
+		max_assign(dbm_i[j], tmp);
+	      }
+	    div_round_up(tmp, -g.coefficient(Variable(i-1)), d);
+	    max_assign(dbm_i[0], tmp);
+	  }
+	  DB_Row<T>& dbm_0 = dbm[0];
+	  for (dimension_type j = space_dim; j > 0; --j) {
+	    div_round_up(tmp, g.coefficient(Variable(j-1)), d);
+	    max_assign(dbm_0[j], tmp);
+	  }
+	}
+      }
+      break;
+    default:
+      break;
+    }
+  }
+
+  if (!point_seen) {
+    // If no point was found in `gs', the corresponding polyhedron is empty.
+    set_empty();
+    assert(OK());
+    return;
+  }
+
+  for (Generator_System::const_iterator i = gs_begin; i != gs_end; ++i) {
+    const Generator& g = *i;
+    switch (g.type()) {
+    case Generator::LINE:
+      {
+	for (dimension_type i = space_dim; i > 0; --i) {
+	  DB_Row<T>& dbm_i = dbm[i];
+	  for (dimension_type j = space_dim; j > 0; --j)
+	    if (i != j
+		&& (g.coefficient(Variable(j-1))
+		    != g.coefficient(Variable(i-1))))
+	      dbm_i[j] = PLUS_INFINITY;
+	  if (g.coefficient(Variable(i-1)) != 0)
+	    dbm_i[0] = PLUS_INFINITY;
+	}
+	DB_Row<T>& dbm_0 = dbm[0];
+	for (dimension_type j = space_dim; j > 0; --j)
+	  if (g.coefficient(Variable(j-1)) != 0)
+	    dbm_0[j] = PLUS_INFINITY;
+      }
+      break;
+    case Generator::RAY:
+      {
+	for (dimension_type i = space_dim; i > 0; --i) {
+	  DB_Row<T>& dbm_i = dbm[i];
+	  for (dimension_type j = space_dim; j > 0; --j)
+	    if (i != j
+		&& (g.coefficient(Variable(j-1))
+		    > g.coefficient(Variable(i-1))))
+	      dbm_i[j] = PLUS_INFINITY;
+	  if (g.coefficient(Variable(i-1)) < 0)
+	    dbm_i[0] = PLUS_INFINITY;
+	}
+	DB_Row<T>& dbm_0 = dbm[0];
+	for (dimension_type j = space_dim; j > 0; --j)
+	  if (g.coefficient(Variable(j-1)) > 0)
+	    dbm_0[j] = PLUS_INFINITY;
+      }
+      break;
+    default:
+      break;
+    }
+  }
   assert(OK());
 }
 
