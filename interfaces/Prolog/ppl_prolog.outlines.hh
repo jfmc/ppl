@@ -79,7 +79,6 @@ using namespace std;
 
 static void
 handle_exception(const not_a_variable& e) {
-  cout << "I am here!!!" << endl;
   Prolog_term_ref culprit = Prolog_new_term_ref();
   Prolog_term_ref arg_no = Prolog_new_term_ref();
   Prolog_term_ref expected_domain = Prolog_new_term_ref();
@@ -578,10 +577,12 @@ ppl_add_constraints_and_minimize(Prolog_term_ref t_ph,
     CHECK(ph);
     PPL::ConSys cs;
     Prolog_term_ref c = Prolog_new_term_ref();
-    while (Prolog_is_list(t_clist)) {
-      Prolog_get_list(t_clist, c, t_clist);
+
+    while (Prolog_is_cons(t_clist)) {
+      Prolog_get_cons(t_clist, c, t_clist);
       cs.insert(build_constraint(c));
     }
+
     if (ph->add_constraints_and_minimize(cs))
       return PROLOG_SUCCESS;
   }
@@ -751,17 +752,13 @@ ppl_get_constraints(Prolog_term_ref t_ph, Prolog_term_ref t_clist) {
     if (ph == 0)
       return PROLOG_FAILURE;
     CHECK(ph);
+
     Prolog_term_ref tail = Prolog_new_term_ref();
     Prolog_put_atom(tail, a_nil);
-
     const PPL::ConSys& cs = ph->constraints();
-
     for (PPL::ConSys::const_iterator i = cs.begin(),
-	   cs_end = cs.end(); i != cs_end; ++i) {
-      Prolog_term_ref new_tail = Prolog_new_term_ref();
-      Prolog_construct_list(new_tail, constraint_term(*i), tail);
-      tail = new_tail;
-    }
+	   cs_end = cs.end(); i != cs_end; ++i)
+      Prolog_construct_cons(tail, constraint_term(*i), tail);
 
     if (Prolog_unify(t_clist, tail))
       return PROLOG_SUCCESS;
@@ -777,17 +774,13 @@ ppl_get_generators(Prolog_term_ref t_ph, Prolog_term_ref t_glist) {
     if (ph == 0)
       return PROLOG_FAILURE;
     CHECK(ph);
+
     Prolog_term_ref tail = Prolog_new_term_ref();
     Prolog_put_atom(tail, a_nil);
-
     const PPL::GenSys& gs = ph->generators();
-
     for (PPL::GenSys::const_iterator i = gs.begin(),
-	   gs_end = gs.end(); i != gs_end; ++i) {
-      Prolog_term_ref new_tail = Prolog_new_term_ref();
-      Prolog_construct_list(new_tail, generator_term(*i), tail);
-      tail = new_tail;
-    }
+	   gs_end = gs.end(); i != gs_end; ++i)
+      Prolog_construct_cons(tail, generator_term(*i), tail);
 
     if (Prolog_unify(t_glist, tail))
       return PROLOG_SUCCESS;
@@ -805,8 +798,8 @@ ppl_remove_dimensions(Prolog_term_ref t_ph, Prolog_term_ref t_vlist) {
     CHECK(ph);
     std::set<PPL::Variable> dead_variables;
     Prolog_term_ref v = Prolog_new_term_ref();
-    while (Prolog_is_list(t_vlist)) {
-      Prolog_get_list(t_vlist, v, t_vlist);
+    while (Prolog_is_cons(t_vlist)) {
+      Prolog_get_cons(t_vlist, v, t_vlist);
       dead_variables.insert(get_variable(v));
     }
     ph->remove_dimensions(dead_variables);
