@@ -499,9 +499,9 @@ For instance, when starting from a polyhedron \f$\cP \sseq \Rset^2\f$
     and adding a third dimension, the result will be the polyhedron
     \f[
       \bigl\{\,
-        (x, y, z)^\transpose \in \Rset^3
+        (x_0, x_1, x_2)^\transpose \in \Rset^3
       \bigm|
-        (x, y)^\transpose \in \cP
+        (x_0, x_1)^\transpose \in \cP
       \,\bigr\}.
     \f]
 
