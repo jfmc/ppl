@@ -844,8 +844,10 @@ PPL::Matrix::add_pending_row(const Row::Type type) {
 void
 PPL::Matrix::swap_columns(const dimension_type i,  const dimension_type j) {
   assert(i != j && i < num_columns() && j < num_columns());
-  for (dimension_type k = num_rows(); k-- > 0; )
-    std::swap(rows[k][i], rows[k][j]);
+  for (dimension_type k = num_rows(); k-- > 0; ) {
+    Row& rows_k = rows[k];
+    std::swap(rows_k[i], rows_k[j]);
+  }
 }
 
 void
@@ -961,17 +963,17 @@ PPL::Matrix::gram_shmidt() {
   // Compute the scalar products `rows[i]*rows[j]',
   // for all 0 <= j <= i < rank, storing them into `mu[i][j]'.
   for (dimension_type i = rank; i-- > 0; ) {
-    const Row& row_i = rows[i];
+    const Row& rows_i = rows[i];
     std::vector<Integer>& mu_i = mu[i];
     for (dimension_type j = i+1; j-- > 0; )
-      mu_i[j] = row_i * rows[j];
+      mu_i[j] = rows_i * rows[j];
   }
 
   const dimension_type n_columns = num_columns();
 
   // Start from the second line/equality of the matrix.
   for (dimension_type i = 1; i < rank; i++) {
-    Row& row_i = rows[i];
+    Row& rows_i = rows[i];
     std::vector<Integer>& mu_i = mu[i];
 
     // Finish computing `mu[i][j]', for all j <= i.
@@ -993,15 +995,15 @@ PPL::Matrix::gram_shmidt() {
     // Let the `i'-th line become orthogonal wrt the `j'-th line,
     // for all 0 <= j < i.
     for (dimension_type j = 0; j < i; j++) {
-      const Row& row_j = rows[j];
+      const Row& rows_j = rows[j];
       const Integer& mu_ij = mu_i[j];
       const Integer& mu_jj = mu[j][j];
       for (dimension_type k = n_columns; k-- > 0; ) {
-        row_i[k] *= mu_jj;
-        tmp_Integer[0] = mu_ij * row_j[k];
-        row_i[k] -= tmp_Integer[0];
+        rows_i[k] *= mu_jj;
+        tmp_Integer[0] = mu_ij * rows_j[k];
+        rows_i[k] -= tmp_Integer[0];
 	if (j > 0)
-	  exact_div_assign(row_i[k], mu[j-1][j-1]);
+	  exact_div_assign(rows_i[k], mu[j-1][j-1]);
       }
     }
   }
@@ -1018,9 +1020,9 @@ PPL::Matrix::gram_shmidt() {
 #ifndef NDEBUG
   // Check that the new base is indeed orthogonal.
   for (dimension_type i = rank; i-- > 0; ) {
-    const Row& row_i = rows[i];
+    const Row& rows_i = rows[i];
     for (dimension_type j = i; j-- > 0; )
-      if (row_i * rows[j] != 0) {
+      if (rows_i * rows[j] != 0) {
 	std::cout << "Not an orthogonal base" << std::endl;
 	std::cout << "i = " << i << ", j = " << j << std::endl;
 	std::cout << "After Gram-Shmidt on the base" << std::endl;
@@ -1053,8 +1055,8 @@ PPL::Matrix::gram_shmidt() {
   // Computing all the factors d[0], ..., d[rank-1], and the denominator.
   Integer denominator = 1;
   for (dimension_type i = rank; i-- > 0; ) {
-    const Row& row_i = rows[i];
-    d[i] = row_i * row_i;
+    const Row& rows_i = rows[i];
+    d[i] = rows_i * rows_i;
     denominator *= d[i];
   }
   for (dimension_type i = rank; i-- > 0; )
@@ -1177,19 +1179,19 @@ PPL::Matrix::back_substitute(const dimension_type rank) {
     // For each row, starting from the rank-th one,
     // looks for the last non-zero element.
     // j will be the index of such a element.
-    Row& row_k = rows[k];
+    Row& rows_k = rows[k];
     dimension_type j = num_columns() - 1;
-    while (j != 0 && row_k[j] == 0)
+    while (j != 0 && rows_k[j] == 0)
       --j;
 
-    // Go through the equalities above `row_k'.
+    // Go through the equalities above `rows_k'.
     for (dimension_type i = k; i-- > 0; ) {
-      Row& row_i = rows[i];
-      assert(row_i.is_line_or_equality());
-      if (row_i[j] != 0) {
-	// Combine linearly `row_i' with `row_k'
-	// so that `row_i[j]' becomes zero.
-	row_i.linear_combine(row_k, j);
+      Row& rows_i = rows[i];
+      assert(rows_i.is_line_or_equality());
+      if (rows_i[j] != 0) {
+	// Combine linearly `rows_i' with `rows_k'
+	// so that `rows_i[j]' becomes zero.
+	rows_i.linear_combine(rows_k, j);
 	if (still_sorted) {
 	  // Trying to keep sortedness: remember which rows
 	  // have to be re-checked for sortedness at the end.
@@ -1201,24 +1203,24 @@ PPL::Matrix::back_substitute(const dimension_type rank) {
     }
 
     // Due to strong normalization during previous iterations,
-    // the pivot coefficient `row_k[j]' may now be negative.
+    // the pivot coefficient `rows_k[j]' may now be negative.
     // Since an inequality (or ray or point) cannot be multiplied
     // by a negative factor, the coefficient of the pivot must be
     // forced to be positive.
-    const bool have_to_negate = (row_k[j] < 0);
+    const bool have_to_negate = (rows_k[j] < 0);
     if (have_to_negate)
       for (dimension_type h = num_columns(); h-- > 0; )
-	PPL::negate(row_k[h]);
+	PPL::negate(rows_k[h]);
     // Note: we do not mark index `k' in `check_for_sortedness',
     // because we will later negate back the row.
 
     // Go through all the inequalities of the matrix.
     for (dimension_type i = rank; i < nrows; ++i) {
-      Row& row_i = rows[i];
-      if (row_i[j] != 0) {
-	// Combine linearly the `row_i' with `row_k'
-	// so that `row_i[j]' becomes zero.
-	row_i.linear_combine(row_k, j);
+      Row& rows_i = rows[i];
+      if (rows_i[j] != 0) {
+	// Combine linearly the `rows_i' with `rows_k'
+	// so that `rows_i[j]' becomes zero.
+	rows_i.linear_combine(rows_k, j);
 	if (still_sorted) {
 	  // Trying to keep sortedness: remember which rows
 	  // have to be re-checked for sortedness at the end.
@@ -1230,9 +1232,9 @@ PPL::Matrix::back_substitute(const dimension_type rank) {
     }
 
     if (have_to_negate)
-      // Negate `row_k' to restore strong-normalization.
+      // Negate `rows_k' to restore strong-normalization.
       for (dimension_type h = num_columns(); h-- > 0; )
-	PPL::negate(row_k[h]);
+	PPL::negate(rows_k[h]);
   }
 
   // Trying to keep sortedness.
