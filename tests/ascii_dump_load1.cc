@@ -39,8 +39,9 @@ main() {
   set_handlers();
   Variable A(0);
   Variable B(1);
+  Variable C(2);
 
-  C_Polyhedron ph1(2);
+  C_Polyhedron ph1(3);
   ph1.add_constraint(A - B >= 2);
   ph1.add_constraint(B >= 0);
 
