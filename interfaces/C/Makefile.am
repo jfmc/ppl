@@ -61,7 +61,7 @@ LIBPPL_C_LT_AGE =      0
 
 AM_CPPFLAGS = -I$(top_srcdir)/src @extra_includes@
 
-CPPFLAGS = -DPPL_HIDDEN=public @extra_cpp_flags@
+CPPFLAGS = @extra_cpp_flags@
 
 lib_LTLIBRARIES = libppl_c.la
 libppl_c_la_SOURCES = ppl_c.cc

@@ -104,6 +104,7 @@ unsigned int PPL_POLY_CON_RELATION_SATURATES;
 unsigned int PPL_POLY_GEN_RELATION_SUBSUMES;
 
 static Init* init_object_ptr = 0;
+
 int
 ppl_initialize(void) try {
   init_object_ptr = new Init();

@@ -159,7 +159,7 @@ namespace Parma_Polyhedra_Library {
   syntactically different from the (semantically equivalent)
   constraint considered.
 */
-class Parma_Polyhedra_Library::Constraint : PPL_HIDDEN Row {
+class Parma_Polyhedra_Library::Constraint : private Row {
 public:
   //! Ordinary copy-constructor.
   Constraint(const Constraint& c);

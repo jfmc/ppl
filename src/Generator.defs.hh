@@ -226,7 +226,7 @@ namespace Parma_Polyhedra_Library {
   these are equivalent only when the divisor of the (closure) point is 1.
 */
 
-class Parma_Polyhedra_Library::Generator : PPL_HIDDEN Row {
+class Parma_Polyhedra_Library::Generator : private Row {
 private:
   //! \brief
   //! Builds a generator (of unspecified type) stealing

@@ -24,7 +24,7 @@ site: http://www.cs.unipr.it/ppl/ . */
 #ifndef _ConSys_defs_hh
 #define _ConSys_defs_hh 1
 
-#include "LinExpression.defs.hh"
+#include "LinExpression.types.hh"
 #include "ConSys.types.hh"
 #include "Matrix.defs.hh"
 #include "Generator.types.hh"
@@ -100,7 +100,7 @@ namespace Parma_Polyhedra_Library {
     reordered, removed (if they are trivial, duplicate or
     implied by other constraints), linearly combined, etc.
 */
-class Parma_Polyhedra_Library::ConSys : PPL_HIDDEN Matrix {
+class Parma_Polyhedra_Library::ConSys : private Matrix {
 public:
   //! Default constructor: builds an empty system of constraints.
   ConSys();

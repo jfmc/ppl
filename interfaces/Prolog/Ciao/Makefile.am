@@ -32,9 +32,7 @@ EXTRA_DIST = ppl_ciao.pl #ciao_clpq.pl
 
 if HAVE_CIAO_PROLOG
 
-AM_CPPFLAGS = \
--I$(top_srcdir)/src @extra_includes@ \
--DPPL_HIDDEN=public @extra_cpp_flags@
+AM_CPPFLAGS = -I$(top_srcdir)/src @extra_includes@ @extra_cpp_flags@
 
 pkglib_LTLIBRARIES = ppl_ciao.la
 ppl_ciao_la_SOURCES = ppl_ciao.cc
