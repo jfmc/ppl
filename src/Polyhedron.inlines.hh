@@ -39,7 +39,7 @@ Polyhedron::swap(Polyhedron& y) {
   std::swap(status, y.status);
 }
 
- 
+
 /*!
   Returns <CODE>true</CODE> if \p *this is definitely known to be
   an empty polyhedron.
@@ -149,7 +149,7 @@ Polyhedron::set_sat_c_up_to_date() {
 /*!
   Sets \p status to express \p sat_g is up-to-date,
   i.e., it actually represents the relations between
-  constraints and generators. 
+  constraints and generators.
 */
 inline void
 Polyhedron::set_sat_g_up_to_date() {

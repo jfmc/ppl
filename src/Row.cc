@@ -142,7 +142,7 @@ void
 PPL::Row::strong_normalize() {
   Row& x = *this;
   x.normalize();
-  
+
   size_t sz = x.size();
   if (x.is_line_or_equality()) {
     //`first_non_zero' indicates the index of the first
@@ -213,10 +213,10 @@ PPL::compare(const Row& x, const Row& y) {
 
   // Handle the case where `x' and `y' are of different size.
   if (xsz != ysz) {
-    for( ; i < xsz; ++i) 
+    for( ; i < xsz; ++i)
       if (int sign = sgn(x[i]))
 	return (sign > 0) ? 2 : -2;
-    for( ; i < ysz; ++i) 
+    for( ; i < ysz; ++i)
       if (int sign = sgn(y[i]))
 	return (sign < 0) ? 2 : -2;
   }
@@ -233,7 +233,7 @@ PPL::compare(const Row& x, const Row& y) {
 
 PPL::Integer
 PPL::operator *(const Row& x, const Row& y) {
-  // Scalar product is only defined  if `x' and `y' are 
+  // Scalar product is only defined  if `x' and `y' are
   // dimension-compatible.
   assert(x.size() <= y.size());
   Integer result = 0;
@@ -265,7 +265,7 @@ PPL::Row::linear_combine(const Row& y, size_t k) {
   tmp_Integer(1).gcd_assign(x[k], y[k]);
   tmp_Integer(2).exact_div_assign(x[k], tmp_Integer(1));
   tmp_Integer(3).exact_div_assign(y[k], tmp_Integer(1));
-  
+
   for (size_t i = size(); i-- > 0; )
     if (i != k) {
       tmp_Integer(4).mul_assign(x[i], tmp_Integer(3));

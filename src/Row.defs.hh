@@ -193,7 +193,7 @@ namespace Parma_Polyhedra_Library {
   /*! \relates Row */
 #endif // PPL_DOXYGEN_INCLUDE_IMPLEMENTATION_DETAILS
   int compare(const Row& x, const Row& y);
-  
+
 #ifdef PPL_DOXYGEN_INCLUDE_IMPLEMENTATION_DETAILS
   //! @name Classical comparison operators.
   /*! \relates Row */
@@ -278,7 +278,7 @@ void swap(Parma_Polyhedra_Library::Row& x,
 
 } // namespace std
 
-// If non-zero, lines and equalities are ALWAYS normalized so that the 
+// If non-zero, lines and equalities are ALWAYS normalized so that the
 // first non-zero coefficient is negative.
 #define EXTRA_NORMALIZATION 0
 

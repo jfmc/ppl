@@ -148,8 +148,8 @@ PPL::Polyhedron::minimize(bool con_to_ray,
       // In this case `dest' contains constraints but does not contain
       // the positivity constraint. Since the polyhedron is not bounded
       // (see the definition in the Introduction) because the inhomogeneous
-      // term is zero in all of them (i.e., all hyper-plane corresponding 
-      // to the constraints contain the origin), the system of constraints 
+      // term is zero in all of them (i.e., all hyper-plane corresponding
+      // to the constraints contain the origin), the system of constraints
       // is illegal.
       abort();
   }

@@ -66,11 +66,11 @@ namespace PPL = Parma_Polyhedra_Library;
   In fact, any vectors obtained combining generators that saturate
   the constraints will also saturate the constraints:
   \f[
-    \langle \vect{c}, \vect{r}_1 \rangle = 0 \land 
+    \langle \vect{c}, \vect{r}_1 \rangle = 0 \land
     \langle \vect{c}, \vect{r}_2 \rangle = 0
     \Rightarrow
     \langle \vect{c}, (\lambda_1 \vect{r}_1 + \lambda_2 \vect{r}_2) \rangle =
-    \lambda_1 \langle \vect{c}, \vect{r}_1 \rangle 
+    \lambda_1 \langle \vect{c}, \vect{r}_1 \rangle
     + \lambda_2 \langle \vect{c}, \vect{r}_2 \rangle
     = 0,
   \f]

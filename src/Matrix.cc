@@ -351,18 +351,17 @@ PPL::operator >>(std::istream& s, Matrix& m) {
 
 /*!
   \param y   The matrix to be merged with \p *this one.
-		
+
   Merge \p y with \p *this removing duplicates (i.e., rows that
   appear either in \p y and in \p *this) and obtaining a new
   sorted matrix that will be assigned to \p *this.
-
   Both matrices are assumed to be sorted on entry.
 */
 void
 PPL::Matrix::merge_rows_assign(const Matrix& y) {
   assert(row_size >= y.row_size);
   assert(check_sorted() && y.check_sorted());
- 
+
   Matrix& x = *this;
 
   // A temporary vector of rows...
@@ -713,7 +712,7 @@ PPL::Matrix::back_substitute(size_t rank) {
     size_t j = num_columns() - 1;
     while (j != 0 && rows[k][j] == 0)
       --j;
-    
+
     for (size_t i = 0; i < nrows; ++i)
       // i runs through all the rows of the matrix.
       if (i > k && i < rank)

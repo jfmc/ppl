@@ -90,7 +90,7 @@ namespace Parma_Polyhedra_Library {
       (see the dimension-compatibility rules in the Introduction);
     - the only ways to change the space dimension of a polyhedron are:
       - <EM>explicit</EM> calls to operators provided for that purpose;
-      - standard copy, assignment and swap operators. 
+      - standard copy, assignment and swap operators.
 
     Note that two polyhedra can be defined on the zero-dimension space:
     the empty polyhedron and the universe polyhedron \f$R^0\f$.
@@ -298,7 +298,7 @@ namespace Parma_Polyhedra_Library {
     \endcode
     The starting polyhedron is the singleton set
     \f$\bigl\{ (3, 1, 0, 2)^\transpose \bigr\} \sseq \Rset^4\f$, while
-    the resulting polyhedron is 
+    the resulting polyhedron is
     \f$\bigl\{ (3, 2)^\transpose \bigr\} \sseq \Rset^2\f$.
     Be careful when removing dimensions <EM>incrementally</EM>:
     since dimensions are automatically renamed after each application
@@ -343,12 +343,12 @@ public:
   //! Builds a polyhedron from a system of constraints.
   //! The polyhedron inherits the space dimension of the constraint system.
   //! \param cs       The system of constraints defining the polyhedron.
-  //!                 It is not declared <CODE>const</CODE> 
+  //!                 It is not declared <CODE>const</CODE>
   //!                 because it can be modified.
   Polyhedron(ConSys& cs);
   //! Builds a polyhedron from a system of generators.
   //! The polyhedron inherits the space dimension of the generator system.
-  //! \param gs       The system of generators defining the polyhedron. 
+  //! \param gs       The system of generators defining the polyhedron.
   //!                 It is not declared <CODE>const</CODE>
   //!                 because it can be modified.
   //! \exception std::invalid_argument thrown if the system of generators
@@ -385,12 +385,12 @@ public:
 
   //! Returns the relation between the generators of \p *this
   //! and the constraint \p c.
-  //! \exception std::invalid_argument thrown if \p *this and constraint 
+  //! \exception std::invalid_argument thrown if \p *this and constraint
   //!                                  \p c are dimension-incompatible.
   GenSys_Con_Rel satisfies(const Constraint& c);
-  //! Tests the inclusion of the generator \p g in the 
+  //! Tests the inclusion of the generator \p g in the
   //! polyhedron \p *this.
-  //! \exception std::invalid_argument thrown if \p *this and constraint 
+  //! \exception std::invalid_argument thrown if \p *this and constraint
   //!                                  \p g are dimension-incompatible.
   bool includes(const Generator& g);
 
@@ -398,7 +398,7 @@ public:
   //! assigns the result to \p *this.
   //! \param y           The polyhedron that <EM>must</EM>
   //!                    be contained in \p *this.
-  //! \exception std::invalid_argument thrown if \p *this and \p y 
+  //! \exception std::invalid_argument thrown if \p *this and \p y
   //!                                  are dimension-incompatible.
   void widening_assign(const Polyhedron& y);
   //! Limits the widening between \p *this and \p y by \p cs
@@ -406,12 +406,12 @@ public:
   //! \param y                 The polyhedron that <EM>must</EM>
   //!                          be contained in \p *this.
   //! \param cs                The system of constraints that limits
-  //!                          the widened polyhedron. It is not 
-  //!                          declared <CODE>const</CODE> 
+  //!                          the widened polyhedron. It is not
+  //!                          declared <CODE>const</CODE>
   //!                          because it can be modified.
   //! \return       <CODE>true</CODE> if the resulting polyhedron is not
   //!               empty <CODE>false</CODE> otherwise.
-  //! \exception std::invalid_argument thrown if \p *this, \p y and 
+  //! \exception std::invalid_argument thrown if \p *this, \p y and
   //!                                  \p cs are dimension-incompatible.
   bool limited_widening_assign(const Polyhedron& y, ConSys& cs);
 
@@ -450,9 +450,9 @@ public:
 		    const LinExpression& expr,
 		    const Integer& denominator = Integer::one());
   //! Transforms the polyhedrons \p *this, substituting an affine
-  //! expression for the specified variable. (It is the inverse 
+  //! expression for the specified variable. (It is the inverse
   //! operation of <CODE>affine_image</CODE>.)
-  //! \param v             The variable to which the affine expression 
+  //! \param v             The variable to which the affine expression
   //!                      is substituted.
   //! \param expr          The numerator of the affine expression.
   //! \param denominator   The denominator of the affine expression
@@ -513,7 +513,7 @@ public:
   //! Adds the specified constraints and computes a new polyhedron.
   //! \param  cs            The constraints that will be added to the
   //!                       current system of constraints. This parameter
-  //!                       is not declared <CODE>const</CODE> because 
+  //!                       is not declared <CODE>const</CODE> because
   //!                       it can be modified.
   //! \return               <CODE>false</CODE> if the resulting
   //!                       polyhedron is empty.
@@ -523,24 +523,24 @@ public:
   //! Adds the specified constraints without minimizing.
   //! \param  cs             The constraints that will be added to the
   //!                        current system of constraints. This parameter
-  //!                        is not declared <CODE>const</CODE> because 
+  //!                        is not declared <CODE>const</CODE> because
   //!                        it can be modified.
-  //! \exception std::invalid_argument thrown if \p *this and \p cs 
+  //! \exception std::invalid_argument thrown if \p *this and \p cs
   //!                                  are dimension-incompatible.
   void add_constraints(ConSys& cs);
- 
+
   //! First increases the space dimension of \p *this by adding
   //! \p cs.space_dimension() new dimensions;
   //! then adds to the system of constraints of \p *this
   //! a renamed-apart version of the constraints in `cs'.
   void add_dimensions_and_constraints(ConSys& cs);
- 
+
   //! Adds the specified generators.
   //! \param  gs          The generators that will be added to the
-  //!                     current system of generators. The parameter is 
-  //!                     not declared <CODE>const</CODE> because it 
+  //!                     current system of generators. The parameter is
+  //!                     not declared <CODE>const</CODE> because it
   //!                     can be modified.
-  //! \exception std::invalid_argument thrown if \p *this and 
+  //! \exception std::invalid_argument thrown if \p *this and
   //!                                  \p gs are dimension-incompatible.
   void add_generators(GenSys& gs);
   //! Returns <CODE>true</CODE> if and only if \p *this is

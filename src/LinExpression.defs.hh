@@ -93,7 +93,7 @@ namespace Parma_Polyhedra_Library {
     \endcode
     Note that \p e1, \p e2 and \p e3 have space-dimension 1, 2 and 3,
     respectively; also, in the fourth line of code, \p e is created
-    with space-dimension zero and then extended to space-dimension 3. 
+    with space-dimension zero and then extended to space-dimension 3.
 */
 
 class Parma_Polyhedra_Library::LinExpression : PPL_INTERNAL Row {

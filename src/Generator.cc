@@ -34,7 +34,7 @@ namespace PPL = Parma_Polyhedra_Library;
 PPL::Generator
 PPL::vertex(const LinExpression& e, const Integer& d) {
   if (d == 0)
-    throw std::invalid_argument("Generator PPL::vertex(e, d): d == 0");    
+    throw std::invalid_argument("Generator PPL::vertex(e, d): d == 0");
   LinExpression ec = e;
   Generator g(ec);
   g[0] = d;

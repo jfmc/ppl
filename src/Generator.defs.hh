@@ -105,7 +105,7 @@ namespace Parma_Polyhedra_Library {
     \code
   Generator l = line(0*x);
     \endcode
- 
+
 
     \par Example 2
     The following code builds a ray with the same direction as the
@@ -141,12 +141,12 @@ namespace Parma_Polyhedra_Library {
     The following two lines of code both define the only vertex
     having space-dimension zero, namely \f$\vect{0} \in \Rset^0\f$.
     In the second case we exploit the fact that the first argument
-    of the function <CODE>vertex</CODE> is optional. 
+    of the function <CODE>vertex</CODE> is optional.
     \code
   Generator origin0 = Generator::zero_dim_vertex();
   Generator origin0_alt = vertex();
     \endcode
-    
+
     \par Example 4
     The vertex \f$\vect{v}\f$ specified in Example 3 above
     can also be obtained with the following code,
