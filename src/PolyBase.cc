@@ -1103,14 +1103,16 @@ PPL::PolyBase::intersection_assign_and_minimize(const PolyBase& y) {
 
   // add_and_minimize() requires x to be up-to-date
   // and to have sorted constraints...
-  x.minimize();
+  if (!x.minimize())
+    // We have just discovered that `x' is empty.
+    return;
   // ... and y to have updated and sorted constraints.
   if (!y.constraints_are_up_to_date())
     y.update_constraints();
 
-  // After minimize(), x.con_sys is not necessarily sorted.
+  // After minimize(), `x.con_sys' is not necessarily sorted.
   x.obtain_sorted_constraints_with_sat_c();
-  // After update_constraint() y.con_sys is not necessarily sorted.
+  // After update_constraint(), `y.con_sys' is not necessarily sorted.
   y.obtain_sorted_constraints();
 
   bool empty = add_and_minimize(true,
