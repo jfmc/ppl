@@ -32,28 +32,26 @@ namespace Parma_Polyhedra_Library {
 
 namespace Checked {
 
-typedef int mpz_size_t;
-
-inline mpz_size_t
-get_mpz_size(const mpz_class &v) {
+inline mp_size_t
+get_mp_size(const mpz_class &v) {
   return v.get_mpz_t()->_mp_size;
 }
 
 inline void
-set_mpz_size(mpz_class &v, mpz_size_t size) {
+set_mp_size(mpz_class &v, mp_size_t size) {
   v.get_mpz_t()->_mp_size = size;
 }
 
 template <typename Policy>
 inline Result
 value_type_mpz(const mpz_class& v) {
-  mpz_size_t s = get_mpz_size(v);
-  if (Policy::store_unknown && s == Limits<mpz_size_t>::min + 1)
+  mp_size_t s = get_mp_size(v);
+  if (Policy::store_unknown && s == Limits<mp_size_t>::min + 1)
     return V_UNKNOWN;
   if (Policy::store_overflows) {
-    if (s == Limits<mpz_size_t>::min)
+    if (s == Limits<mp_size_t>::min)
       return V_NEG_OVERFLOW;
-    if (s == Limits<mpz_size_t>::max)
+    if (s == Limits<mp_size_t>::max)
       return V_POS_OVERFLOW;
   }
   return V_EQ;
@@ -65,12 +63,12 @@ template <typename Policy>
 inline void
 set_special_mpz(mpz_class& v, const Result r) {
   if (Policy::store_unknown && (r == V_UNKNOWN || r == V_DOMAIN))
-    set_mpz_size(v, Limits<mpz_size_t>::min + 1);
+    set_mp_size(v, Limits<mp_size_t>::min + 1);
   else if (Policy::store_overflows) {
     if (r == V_NEG_OVERFLOW)
-      set_mpz_size(v, Limits<mpz_size_t>::min);
+      set_mp_size(v, Limits<mp_size_t>::min);
     else if (r == V_POS_OVERFLOW)
-      set_mpz_size(v, Limits<mpz_size_t>::max);
+      set_mp_size(v, Limits<mp_size_t>::max);
   }
 }
 
