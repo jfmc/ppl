@@ -3,7 +3,7 @@ This is the Parma Polyhedra Library, a C++ library for convex polyhedra.
 
 To be more precise, the Parma Polyhedra Library (PPL) can handle all
 the convex polyhedra that can be defined as the intersection of a
-finite number of hyperspaces, each described by an equation or
+finite number of hyperspaces, each described by an equality or
 inequality with rational coefficients.
 
 The Parma Polyhedra Library is:
