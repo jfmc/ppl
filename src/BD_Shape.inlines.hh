@@ -36,7 +36,7 @@ namespace Parma_Polyhedra_Library {
 template <typename T>
 inline void
 min_assign(T& x, const T& y) {
-  // This is an auxiliary function to compute the minimum 
+  // This is an auxiliary function to compute the minimum
   // between two T-values.
   if (x > y)
     x = y;
@@ -55,7 +55,7 @@ template <typename T>
 inline void
 BD_Shape<T>::init() {
   dimension_type space_dim = space_dimension();
-  // The matrix `dbm' is initialized a plus infinity to 
+  // The matrix `dbm' is initialized a plus infinity to
   // haven't any constraints.
   for (dimension_type i = 0; i <= space_dim; ++i) {
     DB_Row<T>& dbm_i = dbm[i];
@@ -144,20 +144,20 @@ operator==(const BD_Shape<T>& x, const BD_Shape<T>& y) {
   // Dimension-compatibility check.
   if (x.space_dimension() != y.space_dimension())
     return false;
-  
-  // Two zero-dim polyhedra are equal if and only if they are 
+
+  // Two zero-dim polyhedra are equal if and only if they are
   // both empty or universe.
   if (x.space_dimension() == 0) {
     if (x.marked_empty())
       return y.marked_empty();
-    else 
+    else
       return !y.marked_empty();
   }
 
-  /* 
-     The two systems of bounded differences need be closed.     
+  /*
+     The two systems of bounded differences need be closed.
      In fact if, for example, in `x' we have the constraints:
-     
+
      x1 - x2 <= 1;
      x2      <= 2;
 
@@ -205,7 +205,7 @@ BD_Shape<T>::set_zero_dim_univ() {
 template <typename T>
 inline void
 BD_Shape<T>::add_constraint(const Constraint& c) {
-  /* 
+  /*
      This method not preserve the closure.
      If we consider a closed system of bounded differences bd(2)
      with these constraint:
@@ -225,7 +225,7 @@ BD_Shape<T>::add_constraint(const Constraint& c) {
      x     <= 5.
   */
   dimension_type c_space_dimension = c.space_dimension();
-  
+
   // Dimension-compatibility check.
   if (c_space_dimension > space_dimension())
     throw_dimension_incompatible("add_constraint(c)", c);
@@ -291,7 +291,7 @@ BD_Shape<T>::add_constraint(const Constraint& c) {
   }
   else
     dbm_cellp = &dbm_j_1_j_0;
-  
+
   bool check_change = false;
   // Compute b/a into `d', rounding the result towards plus infinity.
   T d;
@@ -360,14 +360,14 @@ BD_Shape<T>::concatenate_assign(const BD_Shape<T>& y) {
     return;
   }
 
-  // If `*this' is an empty 0-dim space 
+  // If `*this' is an empty 0-dim space
   // system of bounded differences, it is sufficient to adjust
   // the dimension of the space.
   if (k == 0 && marked_empty()) {
     dbm.grow(h + 1);
     return;
   }
-  // First we increase the space dimension of `*this' by adding 
+  // First we increase the space dimension of `*this' by adding
   // `y.space_dimension()' new dimensions.
   // The matrix for the new system of constraints is obtained
   // by leaving the old system of constraints in the upper left-hand side
@@ -395,48 +395,48 @@ BD_Shape<T>::contains(const BD_Shape& y) const {
   if (space_dimension() != y.space_dimension())
     throw_dimension_incompatible("contains(y)", y);
 
-  // The zero-dimensional universal system of bounded differences 
-  // always contains a zero-dimensional universal system of 
-  // bounded differences and a zero-dimensional empty system 
+  // The zero-dimensional universal system of bounded differences
+  // always contains a zero-dimensional universal system of
+  // bounded differences and a zero-dimensional empty system
   // of bounded differences.
-  // The zero-dimensional empty system of bounded differences 
+  // The zero-dimensional empty system of bounded differences
   // only contains a zero-dimensional empty system of bounded differences.
   if (space_dimension() == 0) {
     if (!marked_empty())
       return true;
-    else 
+    else
       return y.marked_empty();
   }
 
-  /* 
+  /*
     The `y' system of bounded differences need be closed.
     In fact if, for example, in `*this' we have the constraints:
-    
+
     x1 - x2 <= 1;
     x1      <= 3;
     x2      <= 2;
-    
+
     in `y' the constraints are:
-    
+
     x1 - x2 <= 0;
     x2      <= 1;
-    
+
     without closure it returns "false", instead if we close `y' we have
     the implicit constraint
-    
+
     x1      <= 1;
-    
+
     and so we obtain the right result "true".
   */
   y.closure_assign();
-  
+
   // If `y' is empty, then it is always contained by
   // every polyhedra.
   if (y.marked_empty())
     return true;
 
   // `*this' contains `y' if and only if every cell of `dbm'
-  // is greater than or equal to the correspondent one of `y.dbm'. 
+  // is greater than or equal to the correspondent one of `y.dbm'.
   dimension_type n = space_dimension();
   for (dimension_type i = 0; i <= n; ++i)
     for (dimension_type j = 0; j <= n; ++j)
@@ -455,7 +455,7 @@ BD_Shape<T>::is_empty() const {
   // If `*this' is close, then it is never empty.
   if (marked_transitively_closed())
     return false;
-  
+
   dimension_type k = space_dimension();
   // A zero-dim universal polyhedron it is never empty.
   if (k == 0)
@@ -467,9 +467,9 @@ BD_Shape<T>::is_empty() const {
   // Here we use a modification of Bellman-Ford algorithm for
   // not-necessary-connected graph.
   // Since the graph is not necessary connected we consider a new
-  // node, called source, that is joined with all other nodes with 
+  // node, called source, that is joined with all other nodes with
   // zero-weight arcs.
-  
+
   // Values of the minimum path, from source to all nodes.
   DB_Row<T> z(k + 1);
   for (dimension_type i = 0; i <= k; ++i)
@@ -478,9 +478,9 @@ BD_Shape<T>::is_empty() const {
   // The relax-technique: given an arc (j,h), it tries to improve
   // the value of minimum path for h passing by j.
   T sum1;
-  for (dimension_type i = 0; i <= k; ++i) 
+  for (dimension_type i = 0; i <= k; ++i)
     for (dimension_type j = 0; j <= k; ++j) {
-      const DB_Row<T>& dbm_j = dbm[j]; 
+      const DB_Row<T>& dbm_j = dbm[j];
       T& z_j = z[j];
       for (dimension_type h = 0; h <= k; ++h) {
 	add_round_up(sum1, dbm_j[h], z_j);
@@ -488,20 +488,20 @@ BD_Shape<T>::is_empty() const {
       }
     }
 
-  // `*this' is empty if and only if it has at least a cycles 
+  // `*this' is empty if and only if it has at least a cycles
   // with a negative weight.
-  // This happens when vector `z' don't contain really the 
+  // This happens when vector `z' don't contain really the
   // smaller values of minimum path, from source to all nodes.
   T sum2;
   for (dimension_type j = 0; j <= k; ++j) {
-    const DB_Row<T>& dbm_j = dbm[j]; 
+    const DB_Row<T>& dbm_j = dbm[j];
     T& z_j = z[j];
     for (dimension_type h = 0; h <= k; ++h) {
       add_round_up(sum2, dbm_j[h], z_j);
       if (z[h] > sum2) {
 	Status& nstatus = const_cast<Status&>(status);
 	nstatus.set_empty();
-	return true; 
+	return true;
       }
     }
   }
@@ -512,15 +512,15 @@ BD_Shape<T>::is_empty() const {
 template <typename T>
 inline bool
 BD_Shape<T>::is_universe() const {
-  
-  // If system of bounded differences is empty 
-  // then is not a universe system of bounded differences. 
+
+  // If system of bounded differences is empty
+  // then is not a universe system of bounded differences.
   if (marked_empty())
     return false;
 
   dimension_type n = space_dimension();
-  
-  // If system of bounded differences is zero-dimensional, 
+
+  // If system of bounded differences is zero-dimensional,
   // then it is necessarily an universe system of bounded differences.
   if (n == 0)
     return true;
@@ -528,7 +528,7 @@ BD_Shape<T>::is_universe() const {
   // An universe system of bounded differences has not constraints:
   // in all the cells of matrix `dbm' must have `plus infinity'.
   for (dimension_type i = 0; i <= n; ++i) {
-    const DB_Row<T>& dbm_i = dbm[i]; 
+    const DB_Row<T>& dbm_i = dbm[i];
     for (dimension_type j = 0; j <= n; ++j)
       if (!is_plus_infinity(dbm_i[j]))
 	return false;
@@ -542,37 +542,37 @@ BD_Shape<T>::is_transitively_reduced() const {
   // If system of bounded differences is already empty
   // is transitively reduced.
   if (marked_empty())
-    return true; 
+    return true;
 
   dimension_type space_dim = space_dimension();
 
   const BD_Shape x_copy = *this;
   x_copy.closure_assign();
 
-  // The vector `leader' is used to indicate which variables are equivalent. 
+  // The vector `leader' is used to indicate which variables are equivalent.
   std::vector<dimension_type> leader(space_dim + 1);
-  
+
   // We store the leader.
   for (dimension_type i = space_dim + 1; i-- > 0; )
     leader[i] = i;
-  
+
   // Step 1: we store really the leader with the corrected value.
   // We search for the equivalent or zero-equivalent variables.
-  // The variable(i-1) and variable(j-1) are equivalent if and only if 
-  // m_i_j == -(m_j_i). 
+  // The variable(i-1) and variable(j-1) are equivalent if and only if
+  // m_i_j == -(m_j_i).
   for (dimension_type i = 0; i < space_dim; ++i) {
     const DB_Row<T>& dbm_i = x_copy.dbm[i];
     for (dimension_type j = i + 1; j <= space_dim; ++j) {
       T negated_dbm_ji;
       if (exact_neg(negated_dbm_ji, x_copy.dbm[j][i]) &&
 	  negated_dbm_ji == dbm_i[j])
-	// Two equivalent variables have got the same leader 
+	// Two equivalent variables have got the same leader
 	// (the smaller variable).
 	leader[j] = leader[i];
     }
   }
 
-  // Step 2: we check if there are redundant constraints in the zero_cycle 
+  // Step 2: we check if there are redundant constraints in the zero_cycle
   // free systems of bounded differences, considering only the leaders.
   // A constraint `c' is redundant, when there are two constraints such that
   // their sum is the same constraint with the inhomogeneous term
@@ -581,11 +581,11 @@ BD_Shape<T>::is_transitively_reduced() const {
   for (dimension_type k = 0; k <= space_dim; ++k) {
     if (leader[k] == k) {
       const DB_Row<T>& x_k = dbm[k];
-      for (dimension_type i = 0; i <= space_dim; ++i) { 
+      for (dimension_type i = 0; i <= space_dim; ++i) {
 	if (leader[i] == i) {
 	  const DB_Row<T>& x_i = dbm[i];
 	  const T& x_i_k = x_i[k];
-	  for (dimension_type j = 0; j <= space_dim; ++j) { 
+	  for (dimension_type j = 0; j <= space_dim; ++j) {
 	    if (leader[j] == j) {
 	      const T& x_i_j = x_i[j];
 	      if (!is_plus_infinity(x_i_j)) {
@@ -595,7 +595,7 @@ BD_Shape<T>::is_transitively_reduced() const {
 	      }
 	    }
 	  }
-	} 
+	}
       }
     }
   }
@@ -603,12 +603,12 @@ BD_Shape<T>::is_transitively_reduced() const {
   // The vector `var_conn' is used to check if there is a single cycle
   // that connected all zero-equivalent variables between them.
   // The value `space_dim + 1' is used to indicate that the equivalence
-  // class contains a single variable. 
+  // class contains a single variable.
   std::vector<dimension_type> var_conn(space_dim + 1);
   for (dimension_type i = space_dim + 1; i-- > 0; )
-    var_conn[i] = space_dim + 1; 
+    var_conn[i] = space_dim + 1;
 
-  // Step 3: we store really the `var_conn' with the right value, putting 
+  // Step 3: we store really the `var_conn' with the right value, putting
   // the variable with the selected variable is connected:
   // we check the row of each variable:
   // a- each leader could be connected with only zero-equivalent one,
@@ -623,14 +623,14 @@ BD_Shape<T>::is_transitively_reduced() const {
     if (ld_i == i) {
       for (dimension_type j = 0; j <= space_dim; ++j) {
 	dimension_type ld_j = leader[j];
-	// Only the connectedness with equivalent variables 
+	// Only the connectedness with equivalent variables
 	// is considered.
 	if (j != ld_j)
 	  if (!is_plus_infinity(x_i[j])) {
 	    if (t == 1)
 	      // Two no-leaders couldn't connected with the same leader.
 	      return false;
-	    else 
+	    else
 	      if (ld_j != i)
 		// The variables isn't in the same equivalence class.
 		return false;
@@ -658,7 +658,7 @@ BD_Shape<T>::is_transitively_reduced() const {
 	      var_conn[i] = j;
 	    }
 	  }
-	  // A no-leader must be connected with 
+	  // A no-leader must be connected with
 	  // another variable.
 	  if (t == 0)
 	    return false;
@@ -667,8 +667,8 @@ BD_Shape<T>::is_transitively_reduced() const {
     }
   }
 
-  // The vector `just_checked' is used to check if 
-  // a variable is already checked. 
+  // The vector `just_checked' is used to check if
+  // a variable is already checked.
   std::vector<bool> just_checked(space_dim + 1);
   for (dimension_type i = space_dim + 1; i-- > 0; )
     just_checked[i] = false;
@@ -680,18 +680,18 @@ BD_Shape<T>::is_transitively_reduced() const {
     // We don't re-control the already considered single cycles.
     if (!jc_i) {
       dimension_type v_con = var_conn[i];
-      // We consider only the equivalence classes with 
+      // We consider only the equivalence classes with
       // 2 or plus variables.
       if (v_con != space_dim + 1) {
-	// There is a single cycle if taken a variable, 
-	// we return to this same variable. 
+	// There is a single cycle if taken a variable,
+	// we return to this same variable.
 	while (v_con != i) {
 	  just_checked[v_con] = true;
 	  v_con = var_conn[v_con];
-	  // If we re-pass to an already considered variable, 
+	  // If we re-pass to an already considered variable,
 	  // then we haven't a single cycle.
 	  if (just_checked[v_con])
-	    return false;  
+	    return false;
 	}
       }
     }
@@ -706,7 +706,7 @@ template <typename T>
 inline Poly_Con_Relation
 BD_Shape<T>::relation_with(const Constraint& c) const {
   dimension_type c_space_dimension = c.space_dimension();
-  
+
   // Dimension-compatibility check.
   if (c_space_dimension > space_dimension())
     throw_dimension_incompatible("relation_with(c)", c);
@@ -720,42 +720,42 @@ BD_Shape<T>::relation_with(const Constraint& c) const {
 
   if (space_dimension() == 0) {
     if ((c.is_equality() && c.inhomogeneous_term() != 0)
-	|| (c.is_inequality() && c.inhomogeneous_term() < 0)) 
+	|| (c.is_inequality() && c.inhomogeneous_term() < 0))
       return Poly_Con_Relation::is_disjoint();
-    else 
+    else
       if (c.is_strict_inequality() && c.inhomogeneous_term() == 0)
 	// The constraint 0 > 0 implicitly defines the hyperplane 0 = 0;
 	// thus, the zero-dimensional point also saturates it.
 	return Poly_Con_Relation::saturates()
 	  && Poly_Con_Relation::is_disjoint();
-      
+
       else if (c.is_equality() || c.inhomogeneous_term() == 0)
 	return Poly_Con_Relation::saturates()
 	  && Poly_Con_Relation::is_included();
-    
+
       else
 	// The zero-dimensional point saturates
 	// neither the positivity constraint 1 >= 0,
 	// nor the strict positivity constraint 1 > 0.
 	return Poly_Con_Relation::is_included();
   }
-  
+
   // Store the indices of the non-zero components of `c',
   dimension_type j[2] = { 0, 0 };
-  
+
   // Number of non-zero components of `c'.
   dimension_type t = 0;
-  
+
   // Collect the non-zero components of `c'.
   for (dimension_type i = c_space_dimension; i-- > 0; )
     if (c.coefficient(Variable(i)) != 0) {
       if (t >= 2)
 	throw_constraint_incompatible("relation_with(c)");
-      
+
       else
 	j[t++] = i;
     }
-  
+
   // We will now make sure `c' has one of the following forms:
   //
   //           0 <=/= b, if t == 0;
@@ -771,18 +771,18 @@ BD_Shape<T>::relation_with(const Constraint& c) const {
     a = c.coefficient(Variable(j[1]));
     if (a != -c.coefficient(Variable(j[0])))
       throw_constraint_incompatible("relation_with(c)");
-    
+
     ++j[1];
     ++j[0];
     break;
-    
+
   case 1:
     a = -c.coefficient(Variable(j[0]));
     ++j[0];
     break;
-    
+
   case 0:
-    if (b < 0) 
+    if (b < 0)
       return Poly_Con_Relation::is_disjoint();
     else if (b == 0) {
       if (c.is_strict_inequality())
@@ -792,11 +792,11 @@ BD_Shape<T>::relation_with(const Constraint& c) const {
 	return Poly_Con_Relation::saturates()
 	  && Poly_Con_Relation::is_included();
     }
-    else 
+    else
       return Poly_Con_Relation::is_included();
     break;
   }
-  
+
 
   // Select the cell to be checked for the "<=" part of the constraint,
   // and set `a' to the absolute value of itself.
@@ -814,26 +814,26 @@ BD_Shape<T>::relation_with(const Constraint& c) const {
 	  && Poly_Con_Relation::is_included();
       else if (d < dbm_j_1_j_0 && d1 > dbm_j_0_j_1)
 	return Poly_Con_Relation::is_disjoint();
-      else 
+      else
 	return Poly_Con_Relation::strictly_intersects();
     }
-    else 
+    else
       if (c.is_nonstrict_inequality()) {
 	if (d >= dbm_j_0_j_1 && d1 >= dbm_j_1_j_0)
 	  return Poly_Con_Relation::saturates()
 	    && Poly_Con_Relation::is_included();
-	else if (d >= dbm_j_0_j_1) 
+	else if (d >= dbm_j_0_j_1)
 	  return Poly_Con_Relation::is_included();
 	else if (d < dbm_j_0_j_1 && d1 > dbm_j_1_j_0)
 	  return Poly_Con_Relation::is_disjoint();
-	else 
-	  return Poly_Con_Relation::strictly_intersects(); 
+	else
+	  return Poly_Con_Relation::strictly_intersects();
       }
       else {
 	if (d >= dbm_j_0_j_1 && d1 >= dbm_j_1_j_0)
 	  return Poly_Con_Relation::saturates()
 	    && Poly_Con_Relation::is_disjoint();
-	else if (d > dbm_j_0_j_1) 
+	else if (d > dbm_j_0_j_1)
 	  return Poly_Con_Relation::is_included();
 	else if (d <= dbm_j_0_j_1 && d1 >= dbm_j_1_j_0)
 	  return Poly_Con_Relation::is_disjoint();
@@ -852,7 +852,7 @@ BD_Shape<T>::relation_with(const Constraint& c) const {
 	  && Poly_Con_Relation::is_included();
       else if (d < dbm_j_0_j_1 && d1 > dbm_j_1_j_0)
 	return Poly_Con_Relation::is_disjoint();
-      else 
+      else
 	return Poly_Con_Relation::strictly_intersects();
     }
     else
@@ -860,22 +860,22 @@ BD_Shape<T>::relation_with(const Constraint& c) const {
 	if (d >= dbm_j_1_j_0 && d1 >= dbm_j_0_j_1)
 	  return Poly_Con_Relation::saturates()
 	    && Poly_Con_Relation::is_included();
-	else if (d >= dbm_j_1_j_0) 
+	else if (d >= dbm_j_1_j_0)
 	  return Poly_Con_Relation::is_included();
 	else if (d < dbm_j_1_j_0 && d1 > dbm_j_0_j_1)
 	  return Poly_Con_Relation::is_disjoint();
-	else 
-	  return Poly_Con_Relation::strictly_intersects(); 
+	else
+	  return Poly_Con_Relation::strictly_intersects();
       }
       else {
 	if (d >= dbm_j_1_j_0 && d1 >= dbm_j_0_j_1)
 	  return Poly_Con_Relation::saturates()
 	    && Poly_Con_Relation::is_disjoint();
-	else if (d > dbm_j_1_j_0) 
+	else if (d > dbm_j_1_j_0)
 	  return Poly_Con_Relation::is_included();
 	else if (d <= dbm_j_1_j_0 && d1 >= dbm_j_0_j_1)
 	  return Poly_Con_Relation::is_disjoint();
-	else  
+	else
 	  return Poly_Con_Relation::strictly_intersects();
       }
   }
@@ -887,7 +887,7 @@ BD_Shape<T>::relation_with(const Generator& g) const {
   // Dimension-compatibility check.
   if (space_dimension() < g.space_dimension())
     throw_dimension_incompatible("relation_with(g)", g);
-  
+
   // The empty bdiff cannot subsume a generator.
   if (marked_empty())
     return Poly_Gen_Relation::nothing();
@@ -897,17 +897,17 @@ BD_Shape<T>::relation_with(const Generator& g) const {
   if (space_dimension() == 0)
     return Poly_Gen_Relation::subsumes();
 
-  dimension_type space_dim = space_dimension();  
+  dimension_type space_dim = space_dimension();
   dimension_type g_space_dim = g.space_dimension();
-  
+
   bool is_line = g.is_line();
-  
+
   // The relation between the bdiff and the given generator is obtained
   // checking if the generator satisfies all the constraints in the bdiff.
   // To check if the generator satisfies all the constraints it's enough
   // studying the sign of the scalar product between the generator and
   // all the constraints in the bdiff.
-  
+
   // We find in `*this' all the constraints.
   for (dimension_type i = 0; i <= space_dim; ++i) {
     for (dimension_type j = i + 1; j <= space_dim; ++j) {
@@ -918,8 +918,8 @@ BD_Shape<T>::relation_with(const Generator& g) const {
       T negated_dbm_ji;
       const bool is_equality = exact_neg(negated_dbm_ji, dbm_j_i) &&
 	negated_dbm_ji == dbm_i_j;
-      const bool dbm_i_j_is_infinity = is_plus_infinity(dbm_i_j); 
-      const bool dbm_j_i_is_infinity = is_plus_infinity(dbm_j_i); 
+      const bool dbm_i_j_is_infinity = is_plus_infinity(dbm_i_j);
+      const bool dbm_j_i_is_infinity = is_plus_infinity(dbm_j_i);
       if (i != 0) {
 	const Variable y(i - 1);
 	const bool y_dimension_incompatible = y.space_dimension() > g_space_dim;
@@ -929,20 +929,20 @@ BD_Shape<T>::relation_with(const Generator& g) const {
 	if (is_equality) {
 	  // We have one equality constraint.
 	  // The constraint has form ax - ay = b.
-	  // The scalar product has the form 
-	  // 'a * y_i - a * x_j' 
+	  // The scalar product has the form
+	  // 'a * y_i - a * x_j'
 	  // where y_i = g.coefficient(y) and x_j = g.coefficient(x).
-	  // It is not zero when both the coefficients of the 
+	  // It is not zero when both the coefficients of the
 	  // variables x and y are not zero or when these coefficients
  	  if (!is_trivial_zero && g.coefficient(x) != g.coefficient(y))
 	    return Poly_Gen_Relation::nothing();
 	}
-	else 
+	else
 	  // We have the binary inequality constraints.
 	  if (!dbm_i_j_is_infinity) {
 	  // The constraint has form ax - ay <= b.
-	  // The scalar product has the form 
-	  // 'a * y_i - a * x_j' 
+	  // The scalar product has the form
+	  // 'a * y_i - a * x_j'
 	    if (is_line && (!is_trivial_zero && g.coefficient(x) != g.coefficient(y)))
 	      return Poly_Gen_Relation::nothing();
 	    else
@@ -950,10 +950,10 @@ BD_Shape<T>::relation_with(const Generator& g) const {
 		return Poly_Gen_Relation::nothing();
 	  }
 
-	  else 
+	  else
 	    if (!dbm_j_i_is_infinity) {
 	      // The constraint has form ay - ax <= b.
-	      // The scalar product has the form 
+	      // The scalar product has the form
 	      // 'a * x_j - a* y_i'.
 	      if (is_line && (!is_trivial_zero && g.coefficient(x) != g.coefficient(y)))
 		return Poly_Gen_Relation::nothing();
@@ -967,13 +967,13 @@ BD_Shape<T>::relation_with(const Generator& g) const {
 	  // The constraint has form ax = b.
 	  // To satisfy the constraint it's necessary that the scalar product
 	  // is not zero.It happens when the coefficient of the variable 'x'
-	  // in the generator is not zero, because the scalar 
+	  // in the generator is not zero, because the scalar
 	  // product has the form:
 	  // 'a * x_i' where x_i = g.coefficient(x)..
 	  if (!x_dimension_incompatible && g.coefficient(x) != 0)
 	    return Poly_Gen_Relation::nothing();
 	}
-	else 
+	else
 	  // We have the unary inequality constraints.
 	  if (!dbm_i_j_is_infinity) {
 	    // The constraint has form ax <= b.
@@ -985,7 +985,7 @@ BD_Shape<T>::relation_with(const Generator& g) const {
 	      if (g.coefficient(x) > 0)
 		return Poly_Gen_Relation::nothing();
 	  }
-	  else 
+	  else
 	    if (!dbm_j_i_is_infinity) {
 	      // The constraint has form -ax <= b.
 	      // The scalar product has the form:
@@ -1005,14 +1005,14 @@ BD_Shape<T>::relation_with(const Generator& g) const {
 template <typename T>
 inline void
 BD_Shape<T>::closure_assign() const {
-  
+
   // If system of bounded differences is already empty
   // or closed, then the closure_assign is not necessary.
   if (marked_empty() || marked_transitively_closed())
     return;
   dimension_type n = space_dimension();
 
-  // If system of bounded differences is zero-dimensional, 
+  // If system of bounded differences is zero-dimensional,
   // then it is necessarily a closed system of bounded differences.
   if (n == 0)
     return;
@@ -1026,20 +1026,20 @@ BD_Shape<T>::closure_assign() const {
 
   // Algorithm is described in the following way:
   // indicated with `m' the matrix `dbm' we have
-  // m_i_j = min(m_i_j, 
+  // m_i_j = min(m_i_j,
   //             m_i_k + m_k_j).
   T sum;
   for (dimension_type k = 0; k <= n; ++k) {
-    DB_Row<T>& xdbm_k = x.dbm[k]; 
+    DB_Row<T>& xdbm_k = x.dbm[k];
     for (dimension_type i = 0; i <= n; ++i) {
       DB_Row<T>& xdbm_i = x.dbm[i];
       T& xdbm_i_k = xdbm_i[k];
       if (!is_plus_infinity(xdbm_i_k)) {
 	for (dimension_type j = 0; j <= n; j++) {
-	  T& xdbm_k_j = xdbm_k[j]; 
+	  T& xdbm_k_j = xdbm_k[j];
 	  if (!is_plus_infinity(xdbm_k_j)) {
 	    // Round upward. In fact, for example, we take this system:
-	    // x3      <= 2.5 
+	    // x3      <= 2.5
 	    // x2 - x3 <= 0.71
 	    // x1 - x2 <= 0
 	    //    - x1 <= 3.2  (x1 >= 3.2)
@@ -1062,9 +1062,9 @@ BD_Shape<T>::closure_assign() const {
   for (dimension_type h = 0; h <= n; ++h) {
     T& xdbm_h_h = x.dbm[h][h];
     // We can check the emptiness of the system of bounded differences.
-    // If the system of bounded differences is empty 
-    // on the diagonal there is a negative value. 
-    if (is_negative(xdbm_h_h)) 
+    // If the system of bounded differences is empty
+    // on the diagonal there is a negative value.
+    if (is_negative(xdbm_h_h))
       x.status.set_empty();
     // Fill the diagonal with plus_infinity.
     xdbm_h_h = PLUS_INFINITY;
@@ -1083,17 +1083,17 @@ BD_Shape<T>::transitive_reduction_assign() const {
   if (marked_empty())
     return;
 
-  // The vector `leader' is used to indicate which variables are equivalent. 
+  // The vector `leader' is used to indicate which variables are equivalent.
   std::vector<dimension_type> leader(space_dim + 1);
-  
+
   // We store the leader.
   for (dimension_type i = space_dim + 1; i-- > 0; )
     leader[i] = i;
-    
+
   // Step 1: we store really the leader with the corrected value.
   // We search for the equivalent or zero-equivalent variables.
-  // The variable(i-1) and variable(j-1) are equivalent if and only if 
-  // m_i_j == -(m_j_i). 
+  // The variable(i-1) and variable(j-1) are equivalent if and only if
+  // m_i_j == -(m_j_i).
   for (dimension_type i = 0; i < space_dim; ++i) {
     const DB_Row<T>& dbm_i = dbm[i];
     for (dimension_type j = i + 1; j <= space_dim; ++j) {
@@ -1106,7 +1106,7 @@ BD_Shape<T>::transitive_reduction_assign() const {
     }
   }
 
-  // Step 2: we remove the redundant constraint in the zero_cycle 
+  // Step 2: we remove the redundant constraint in the zero_cycle
   // free systems of bounded differences, considering only the leaders.
   // A constraint `c' is redundant when there are two constraints such that
   // their sum is the same constraint with the inhomogeneous term
@@ -1116,11 +1116,11 @@ BD_Shape<T>::transitive_reduction_assign() const {
   for (dimension_type k = 0; k <= space_dim; ++k) {
     if (leader[k] == k) {
       DB_Row<T>& x_k = x.dbm[k];
-      for (dimension_type i = 0; i <= space_dim; ++i) { 
+      for (dimension_type i = 0; i <= space_dim; ++i) {
 	if (leader[i] == i) {
 	  DB_Row<T>& x_i = x.dbm[i];
 	  T& x_i_k = x_i[k];
-	  for (dimension_type j = 0; j <= space_dim; ++j) { 
+	  for (dimension_type j = 0; j <= space_dim; ++j) {
 	    if (leader[j] == j) {
 	      add_round_up(c, x_i_k, x_k[j]);
 	      T& x_i_j = x_i[j];
@@ -1128,7 +1128,7 @@ BD_Shape<T>::transitive_reduction_assign() const {
 		x_i_j = PLUS_INFINITY;
 	    }
 	  }
-	} 
+	}
       }
     }
   }
@@ -1141,10 +1141,10 @@ BD_Shape<T>::transitive_reduction_assign() const {
     dimension_type ld_i = leader[i];
     DB_Row<T>& x_i = x.dbm[i];
     if (ld_i == i) {
-      // When we have a leader, we remove all constraints 
-      // that this variable has got with the no-leaders variables 
+      // When we have a leader, we remove all constraints
+      // that this variable has got with the no-leaders variables
       // less than it. This is possible because the smaller variables
-      // don't belong to the same equivalence class. 
+      // don't belong to the same equivalence class.
       for (dimension_type j = 0; j < i; ++j)
 	if (leader[j] != j) {
 	  x_i[j] = PLUS_INFINITY;
@@ -1169,7 +1169,7 @@ BD_Shape<T>::transitive_reduction_assign() const {
       }
     }
   }
-  
+
   assert(is_transitively_reduced());
 }
 
@@ -1200,7 +1200,7 @@ BD_Shape<T>::poly_hull_assign(const BD_Shape& y) {
     for (dimension_type j = 0; j <= k; ++j) {
       T& dbm_ij = dbm_i[j];
       const T& y_dbm_ij = y_dbm_i[j];
-      if (dbm_ij < y_dbm_ij) 
+      if (dbm_ij < y_dbm_ij)
 	dbm_ij = y_dbm_ij;
     }
   }
@@ -1213,7 +1213,7 @@ inline bool
 BD_Shape<T>::poly_hull_assign_and_minimize(const BD_Shape& y) {
   poly_hull_assign(y);
   assert(marked_empty()
-	 || space_dimension() == 0 || marked_transitively_closed()); 
+	 || space_dimension() == 0 || marked_transitively_closed());
   return !marked_empty();
 }
 
@@ -1223,18 +1223,18 @@ BD_Shape<T>::poly_difference_assign(const BD_Shape& y) {
   // Dimension-compatibility check.
   if (space_dimension() != y.space_dimension())
     throw_dimension_incompatible("poly_difference_assign(y)", y);
-  
+
   BD_Shape new_bdiffs(space_dimension(), Polyhedron::EMPTY);
-  
+
   BD_Shape& x = *this;
-  
+
   x.closure_assign();
   // The difference of an empty system of bounded differences
   // and of a system of bounded differences `p' is empty.
   if (x.marked_empty())
     return;
   y.closure_assign();
-  // The difference of a system of bounded differences `p' 
+  // The difference of a system of bounded differences `p'
   // and an empty system of bounded differences is `p'.
   if (y.marked_empty())
     return;
@@ -1254,7 +1254,7 @@ BD_Shape<T>::poly_difference_assign(const BD_Shape& y) {
     return;
   }
 
-  // We take a constraint of the system y at the time and we 
+  // We take a constraint of the system y at the time and we
   // consider its complementary. Then we intersect the union
   // of these complementaries with the system x.
   const Constraint_System& y_cs = y.constraints();
@@ -1262,15 +1262,15 @@ BD_Shape<T>::poly_difference_assign(const BD_Shape& y) {
 	 y_cs_end = y_cs.end(); i != y_cs_end; ++i) {
     BD_Shape z = x;
     const Constraint& c = *i;
-    const Linear_Expression e = Linear_Expression(c);      
+    const Linear_Expression e = Linear_Expression(c);
     bool change = false;
-    if (c.is_nonstrict_inequality()) 
-      change = z.add_constraint_and_minimize(e <= 0); 
+    if (c.is_nonstrict_inequality())
+      change = z.add_constraint_and_minimize(e <= 0);
     if (c.is_equality()) {
       BD_Shape w = x;
       if (w.add_constraint_and_minimize(e <= 0))
 	new_bdiffs.poly_hull_assign(w);
-      change = z.add_constraint_and_minimize(e >= 0); 
+      change = z.add_constraint_and_minimize(e >= 0);
     }
     if (change)
       new_bdiffs.poly_hull_assign(z);
@@ -1281,12 +1281,12 @@ BD_Shape<T>::poly_difference_assign(const BD_Shape& y) {
   // preserve the transitive closure.
   assert(OK());
 }
-  
+
 
 template <typename T>
 inline void
 BD_Shape<T>::add_space_dimensions_and_embed(dimension_type m) {
-  // Adding no dimensions to any system of bounded 
+  // Adding no dimensions to any system of bounded
   // differences is no-op.
   if (m == 0)
     return;
@@ -1298,7 +1298,7 @@ BD_Shape<T>::add_space_dimensions_and_embed(dimension_type m) {
   // in a (n+m)-dimension space, we just add `m' infinity-columns
   // and rows in the matrix of constraints.
   dbm.grow(h + m);
-  // Fill top-right corner of the matrix with plus infinity. 
+  // Fill top-right corner of the matrix with plus infinity.
   for (dimension_type i = 0; i < h; ++i) {
     DB_Row<T>& dbm_i = dbm[i];
     for (dimension_type j = h; j < h + m; ++j)
@@ -1312,10 +1312,10 @@ BD_Shape<T>::add_space_dimensions_and_embed(dimension_type m) {
   }
 
   // If `*this' was zero-dim-universe, since a non zero-dim universe polyhedron
-  // is always closed, we must set the flag.  
-  if (was_zero_dim_univ) 
-    status.set_transitively_closed(); 
-  
+  // is always closed, we must set the flag.
+  if (was_zero_dim_univ)
+    status.set_transitively_closed();
+
   assert(OK());
 }
 
@@ -1323,7 +1323,7 @@ BD_Shape<T>::add_space_dimensions_and_embed(dimension_type m) {
 template <typename T>
 inline void
 BD_Shape<T>::add_space_dimensions_and_project(dimension_type m) {
-  // Adding no dimensions to any system of bounded 
+  // Adding no dimensions to any system of bounded
   // differences is no-op.
   if (m == 0)
     return;
@@ -1333,7 +1333,7 @@ BD_Shape<T>::add_space_dimensions_and_project(dimension_type m) {
 
   // If `*this' was zero-dimensional, then we simply add `m' zero-rows
   // and columns. If `*this' was also universal, then we fill diagonal
-  // with plus_infinity and set the flag (a non zero-dim universe 
+  // with plus_infinity and set the flag (a non zero-dim universe
   // polyhedron is closed).
   if (k == 0) {
     dbm.grow(m + 1);
@@ -1349,11 +1349,11 @@ BD_Shape<T>::add_space_dimensions_and_project(dimension_type m) {
   // To project an n-dimension space system of bounded differences
   // in a (n+m)-dimension space, we just add `m' infinity-columns
   // and rows in the matrix of constraints.
-  // In the first row and column of the matrix we add `zero' from 
+  // In the first row and column of the matrix we add `zero' from
   // the h-position to the end.
   dbm.grow(h + m);
 
-  // Fill top-right corner of the matrix with plus_infinity. 
+  // Fill top-right corner of the matrix with plus_infinity.
   for (dimension_type i = 1; i < h; ++i){
     DB_Row<T>& dbm_i = dbm[i];
     for (dimension_type j = h; j < h + m; ++j)
@@ -1364,10 +1364,10 @@ BD_Shape<T>::add_space_dimensions_and_project(dimension_type m) {
     DB_Row<T>& dbm_i = dbm[i];
     dbm_i[0] = 0;
     dbm[0][i] = 0;
-    for (dimension_type j = 1; j < h + m; ++j) 
+    for (dimension_type j = 1; j < h + m; ++j)
       dbm_i[j] = PLUS_INFINITY;
   }
-  
+
   if (marked_transitively_closed())
     status.reset_transitively_closed();
   assert(OK());
@@ -1428,7 +1428,7 @@ BD_Shape<T>::remove_space_dimensions(const Variables_Set& to_be_removed) {
   }
 
   // For each variable to remove, we erase the corresponding column and
-  // row by shifting the other columns and rows, than are not removed, 
+  // row by shifting the other columns and rows, than are not removed,
   // respectively left and above.
   dimension_type old_space_dim = space_dimension();
   Variables_Set::const_iterator tbr = to_be_removed.begin();
@@ -1475,7 +1475,7 @@ BD_Shape<T>::remove_higher_space_dimensions(dimension_type new_dimension) {
   if (new_dimension > space_dimension())
     throw_dimension_incompatible("remove_higher_space_dimensions(nd)",
 				 new_dimension);
-  
+
   // The removal of no dimensions from any polyhedron is a no-op.
   // Note that this case also captures the only legal removal of
   // dimensions from a system of bounded differences in a 0-dim space.
@@ -1503,7 +1503,7 @@ BD_Shape<T>::map_space_dimensions(const PartialFunction& pfunc) {
   // TODO: this implementation is just an executable specification.
   if (space_dim == 0)
     return;
-  
+
   if (pfunc.has_empty_codomain()) {
     // All dimensions vanish: the system of bounded differences
     // becomes zero_dimensional.
@@ -1512,19 +1512,19 @@ BD_Shape<T>::map_space_dimensions(const PartialFunction& pfunc) {
     return;
   }
 
-  dimension_type new_space_dim = pfunc.max_in_codomain() + 1; 
-  // If the new dimension of space is strict less than the old one, 
-  // since we don't want to loose solutions, we must close. 
+  dimension_type new_space_dim = pfunc.max_in_codomain() + 1;
+  // If the new dimension of space is strict less than the old one,
+  // since we don't want to loose solutions, we must close.
   // In fact, we have this system of bounded differences:
   // x - y <= 1;
   // y     <= 2.
   // and we have this function:
   // x --> x.
   // If we don't close, we loose the constraint: x <= 3.
-  if (new_space_dim < space_dim) 
+  if (new_space_dim < space_dim)
     closure_assign();
 
-  // If we have got an empty system of bounded differences, 
+  // If we have got an empty system of bounded differences,
   // then we must only adjust the dimension of the system of bounded differences,
   // but it must remain empty.
   if (marked_empty()) {
@@ -1534,9 +1534,9 @@ BD_Shape<T>::map_space_dimensions(const PartialFunction& pfunc) {
 
   // We create a new matrix with the new space dimension.
   DB_Matrix<T> x(new_space_dim+1);
-  // First of all we must map the unary constraints, because 
-  // there is the fictitious variable `zero', that can't be mapped 
-  // at all. 
+  // First of all we must map the unary constraints, because
+  // there is the fictitious variable `zero', that can't be mapped
+  // at all.
   for (dimension_type i = new_space_dim + 1; i-- > 0; )
     x[i][i] = PLUS_INFINITY;
   DB_Row<T>& dbm_0 = dbm[0];
@@ -1566,8 +1566,8 @@ BD_Shape<T>::map_space_dimensions(const PartialFunction& pfunc) {
 	}
       }
     }
-  } 
-  
+  }
+
   std::swap(dbm, x);
   assert(OK());
 }
@@ -1579,7 +1579,7 @@ BD_Shape<T>::intersection_assign(const BD_Shape& y) {
   if (space_dimension() != y.space_dimension())
     throw_dimension_incompatible("intersection_assign(y)", y);
 
-  // If one of the two systems of bounded differences is empty, 
+  // If one of the two systems of bounded differences is empty,
   // the intersection is empty.
   if (marked_empty())
     return;
@@ -1596,7 +1596,7 @@ BD_Shape<T>::intersection_assign(const BD_Shape& y) {
     return;
 
   // To intersect two systems of bounded differences we compare
-  // the constraints and we choose the less values. 
+  // the constraints and we choose the less values.
   bool changed = false;
   for (dimension_type i = 0; i <= k; ++i) {
     DB_Row<T>& dbm_i = dbm[i];
@@ -1643,14 +1643,14 @@ BD_Shape<T>::CC76_extrapolation_assign(const BD_Shape& y,
 #endif
 
   dimension_type k = space_dimension();
-  // If both systems of bounded differences are zero-dimensional, 
+  // If both systems of bounded differences are zero-dimensional,
   // since `*this' contains `y', we simply return `*this'.
   if (k == 0)
     return;
 
   closure_assign();
   // If `*this' is empty, since `*this' contains `y', `y' is empty too.
-  if (marked_empty()) 
+  if (marked_empty())
     return;
   y.closure_assign();
   // If `y' is empty, we return.
@@ -1661,7 +1661,7 @@ BD_Shape<T>::CC76_extrapolation_assign(const BD_Shape& y,
      For example.
      In `*this' there are the constraints:
      x1 - x2 <= 1;
-     x2      <= 2; 
+     x2      <= 2;
      x1      <= 4;   (with the closure x1 <= 3).
 
      In `y' there are the constraints:
@@ -1678,18 +1678,18 @@ BD_Shape<T>::CC76_extrapolation_assign(const BD_Shape& y,
 
      We must close `y' too. In fact, if we have for `*this':
      x1      <= 4
-    
+
      and for `y':
      x2      <= 2;
      x1 - x2 <= 1;
      x1      <= 4; (with the closure x1 <= 3).
 
-     The result without the closure is the same  `*this', instead of universe. 
+     The result without the closure is the same  `*this', instead of universe.
   */
   // We compare a constraint of `y' at the time to the corresponding
-  // constraint of `*this'. If the value of constraint of `y' is 
+  // constraint of `*this'. If the value of constraint of `y' is
   // less than of `*this' one, we further compare the constraint of
-  // `*this' to elements in a sorted container, given by the user, 
+  // `*this' to elements in a sorted container, given by the user,
   // and, if in the container there is a value that is greater than
   // or equal to the value of the constraint, we take this value,
   // otherwise we remove this constraint.
@@ -1737,29 +1737,30 @@ inline void
 BD_Shape<T>::limited_CC76_extrapolation_assign(const BD_Shape& y,
 					     const Constraint_System& cs,
 					     unsigned* /*tp*/) {
-  dimension_type space_dim = space_dimension(); 
+  dimension_type space_dim = space_dimension();
   // Not strict-inequality check.
-  Constraint_System::const_iterator iend = cs.end();
-  for (Constraint_System::const_iterator i = cs.begin(); i != iend; ++i) 
-    if ((*i).is_strict_inequality()) 
-      throw_constraint_incompatible("limited_CC76_extrapolation_assign(y, cs)");
-    
+  for (Constraint_System::const_iterator i = cs.begin(),
+	 cs_end = cs.end(); i != cs_end; ++i)
+    if (i->is_strict_inequality())
+      throw_constraint_incompatible("limited_CC76_extrapolation_assign"
+				    "(y, cs)");
+
   // Dimension-compatibility check.
   if (space_dim != y.space_dimension())
     throw_dimension_incompatible("limited_CC76_extrapolation_assign(y, cs)",
 				 y);
-  // `cs' must be dimension-compatible with the two systems 
+  // `cs' must be dimension-compatible with the two systems
   // of bounded differences.
   const dimension_type cs_space_dim = cs.space_dimension();
   if (space_dim < cs_space_dim)
     throw_constraint_incompatible("limited_CC76_extrapolation_assign(y, cs)");
-  
-  // The limited CC76-extrapolation between two systems of bounded differences in a
-  // zero-dimensional space is a system of bounded differences in a zero-dimensional
-  // space, too.
+
+  // The limited CC76-extrapolation between two systems of bounded
+  // differences in a zero-dimensional space is a system of bounded
+  // differences in a zero-dimensional space, too.
   if (space_dim == 0)
     return;
-  
+
 #ifndef NDEBUG
   {
     // We assume that `y' is contained in or equal to `*this'.
@@ -1770,90 +1771,83 @@ BD_Shape<T>::limited_CC76_extrapolation_assign(const BD_Shape& y,
 #endif
 
   // If `*this' is empty, since `*this' contains `y', `y' is empty too.
-  if (marked_empty()) 
+  if (marked_empty())
     return;
   // If `y' is empty, we return.
   if (y.marked_empty())
     return;
 
   T d;
-  T d1;
   Constraint_System add_cons;
-  for (Constraint_System::const_iterator i = cs.begin(); i != iend; ++i) {
-    const Constraint& c = *i; 
-      
+  for (Constraint_System::const_iterator i = cs.begin(),
+	 cs_end = cs.end(); i != cs_end; ++i) {
+    const Constraint& c = *i;
+
     // Store the indices of the non-zero components of `c',
-    dimension_type j[2] = { 0, 0 };
-      
+    dimension_type non_zero_position[2] = { 0, 0 };
+
     // Number of non-zero components of `c'.
     dimension_type t = 0;
 
     // Controlled if the constraint must be to add.
     bool right_cons = true;
-      
+
     // Collect the non-zero components of `c'.
-    for (dimension_type i = cs_space_dim; i-- > 0; )
-      if (c.coefficient(Variable(i)) != 0) {
-	if (t >= 2) { 
+    for (dimension_type j = cs_space_dim; j-- > 0; )
+      if (c.coefficient(Variable(j)) != 0) {
+	if (t >= 2) {
 	  // Constraints that are not "bounded differences" are ignored.
 	  right_cons = false;
 	  break;
 	}
 	else
-	  j[t++] = i;
+	  non_zero_position[t++] = j+1;
       }
-    // Constraints that are not "bounded differences" are ignored.  
-    if (right_cons && t == 2)  
-      if (c.coefficient(Variable(j[1])) != -c.coefficient(Variable(j[0])))
+    // Constraints that are not "bounded differences" are ignored.
+    if (right_cons && t == 2)
+      if (c.coefficient(Variable(non_zero_position[1])) != -c.coefficient(Variable(non_zero_position[0])))
 	  right_cons = false;
-      
+
     // We will now make sure `c' has one of the following forms:
     //
     //           0 <=/= b, if t == 0;
     //   a*x       <=/= b, if t == 1;
     //   a*x - a*y <=/= b, if t == 2.
     //
-    // In addition, j[0] and (if t >= 1) j[1] will contain the indices
-    // of the cell(s) of `dbm' to be modified.
-    if (right_cons && t != 0) {    
+    // In addition, non_zero_position[0] and (if t >= 1)
+    // non_zero_position[1] will contain the indices of the cell(s) of
+    // `dbm' to be modified.
+    if (right_cons && t != 0) {
       Coefficient a;
       Coefficient b = c.inhomogeneous_term();
       switch (t) {
       case 2:
-	a = c.coefficient(Variable(j[1]));
-	++j[1];
-	++j[0];
+	a = c.coefficient(Variable(non_zero_position[1]));
 	break;
 	
       case 1:
-	a = -c.coefficient(Variable(j[0]));
-	++j[0];
+	a = -c.coefficient(Variable(non_zero_position[0]));
 	break;
       }
       // Select the cell to be modified for the "<=" part of the constraint,
       // and set `a' to the absolute value of itself.
-      T& dbm_j_0_j_1 = dbm[j[0]][j[1]];
-      T& dbm_j_1_j_0 = dbm[j[1]][j[0]];
-      T* dbm_cellp;
-      if (a < 0) {
-	dbm_cellp = &dbm_j_0_j_1;
+      T& dbm_j_0_j_1 = dbm[non_zero_position[0]][non_zero_position[1]];
+      T& dbm_j_1_j_0 = dbm[non_zero_position[1]][non_zero_position[0]];
+      T& x = (a < 0) ? dbm_j_0_j_1 : dbm_j_1_j_0;
+      // The element `y' is the symmetric of `x'.
+      T& y = (a < 0) ? dbm_j_1_j_0 : dbm_j_0_j_1;
+      if (a < 0)
 	a = -a;
-      }
-      else
-	dbm_cellp = &dbm_j_1_j_0;
-      
+
       // Compute b/a into `d', rounding the result towards plus infinity.
       div_round_up(d, b, a);
-      if (*dbm_cellp <= d) {
-	if (c.is_inequality()) 
+      if (x <= d) {
+	if (c.is_inequality())
 	  add_cons.insert(c);
 	else {
-	  T* dbm_cellp1;
-	  // The symmetric cell is the one to be possibly modified.
-	  dbm_cellp1 = (dbm_cellp == &dbm_j_0_j_1) ? &dbm_j_1_j_0 : &dbm_j_0_j_1;
 	  // Compute -b/a into `d', rounding the result towards plus infinity.
-	  div_round_up(d1, -b, a);
-	  if (*dbm_cellp1 <= d1)
+	  div_round_up(d, -b, a);
+	  if (y <= d)
 	    add_cons.insert(c);
 	}
       }
@@ -1881,11 +1875,11 @@ BD_Shape<T>::CH78_widening_assign(const BD_Shape& y) {
 #endif
 
   dimension_type k = space_dimension();
-  // If both systems of bounded differences are zero-dimensional, 
+  // If both systems of bounded differences are zero-dimensional,
   // since `*this' contains `y', we simply return `*this'.
   if (k == 0)
     return;
-  
+
   closure_assign();
   // If `*this' is empty, since `*this' contains `y', `y' is empty too.
   if (marked_empty())
@@ -1907,7 +1901,7 @@ BD_Shape<T>::CH78_widening_assign(const BD_Shape& y) {
       // Note: in the following line the use of `!=' (as opposed to
       // the use of `<' that would seem -but is not- equivalent) is
       // intentional.
-      if (y_dbm_ij != dbm_ij) 
+      if (y_dbm_ij != dbm_ij)
 	dbm_ij = PLUS_INFINITY;
     }
   }
@@ -1921,28 +1915,28 @@ BD_Shape<T>::limited_CH78_extrapolation_assign(const BD_Shape& y,
 					     const Constraint_System& cs,
 					     unsigned* /*tp*/) {
   dimension_type space_dim = space_dimension();
-  // Not strict-inequality check. 
+  // Not strict-inequality check.
   Constraint_System::const_iterator iend = cs.end();
-  for (Constraint_System::const_iterator i = cs.begin(); i != iend; ++i) 
-    if ((*i).is_strict_inequality()) 
+  for (Constraint_System::const_iterator i = cs.begin(); i != iend; ++i)
+    if ((*i).is_strict_inequality())
       throw_constraint_incompatible("limited_CH78_extrapolation_assign(y, cs)");
-    
+
   // Dimension-compatibility check.
   if (space_dim != y.space_dimension())
     throw_dimension_incompatible("limited_CH78_extrapolation_assign(y, cs)",
 				 y);
-  // `cs' must be dimension-compatible with the two systems 
+  // `cs' must be dimension-compatible with the two systems
   // of bounded differences.
   const dimension_type cs_space_dim = cs.space_dimension();
   if (space_dim < cs_space_dim)
     throw_constraint_incompatible("limited_CH78_extrapolation_assign(y, cs)");
-  
-  // The limited CH78-extrapolation between two systems of bounded 
-  // differences in a zero-dimensional space is a system of bounded 
+
+  // The limited CH78-extrapolation between two systems of bounded
+  // differences in a zero-dimensional space is a system of bounded
   // differences in a zero-dimensional space, too.
   if (space_dim == 0)
     return;
-  
+
 #ifndef NDEBUG
   {
     // We assume that `y' is contained in or equal to `*this'.
@@ -1953,7 +1947,7 @@ BD_Shape<T>::limited_CH78_extrapolation_assign(const BD_Shape& y,
 #endif
 
   // If `*this' is empty, since `*this' contains `y', `y' is empty too.
-  if (marked_empty()) 
+  if (marked_empty())
     return;
   // If `y' is empty, we return.
   if (y.marked_empty())
@@ -1963,21 +1957,21 @@ BD_Shape<T>::limited_CH78_extrapolation_assign(const BD_Shape& y,
   T d1;
   Constraint_System add_cons;
   for (Constraint_System::const_iterator i = cs.begin(); i != iend; ++i) {
-    const Constraint& c = *i; 
-      
+    const Constraint& c = *i;
+
     // Store the indices of the non-zero components of `c',
     dimension_type j[2] = { 0, 0 };
-      
+
     // Number of non-zero components of `c'.
     dimension_type t = 0;
 
     // Controlled if the constraint must be to add.
     bool right_cons = true;
-      
+
     // Collect the non-zero components of `c'.
     for (dimension_type i = cs_space_dim; i-- > 0; )
       if (c.coefficient(Variable(i)) != 0) {
-	if (t >= 2) { 
+	if (t >= 2) {
 	  // Constraints that are not "bounded differences" are ignored.
 	  right_cons = false;
 	  break;
@@ -1985,11 +1979,11 @@ BD_Shape<T>::limited_CH78_extrapolation_assign(const BD_Shape& y,
 	else
 	  j[t++] = i;
       }
-    // Constraints that are not "bounded differences" are ignored.  
-    if (right_cons && t == 2)  
+    // Constraints that are not "bounded differences" are ignored.
+    if (right_cons && t == 2)
       if (c.coefficient(Variable(j[1])) != -c.coefficient(Variable(j[0])))
 	  right_cons = false;
-      
+
     // We will now make sure `c' has one of the following forms:
     //
     //           0 <=/= b, if t == 0;
@@ -1998,7 +1992,7 @@ BD_Shape<T>::limited_CH78_extrapolation_assign(const BD_Shape& y,
     //
     // In addition, j[0] and (if t >= 1) j[1] will contain the indices
     // of the cell(s) of `dbm' to be modified.
-    if (right_cons && t != 0) {    
+    if (right_cons && t != 0) {
       Coefficient a;
       Coefficient b = c.inhomogeneous_term();
       switch (t) {
@@ -2024,11 +2018,11 @@ BD_Shape<T>::limited_CH78_extrapolation_assign(const BD_Shape& y,
       }
       else
 	dbm_cellp = &dbm_j_1_j_0;
-      
+
       // Compute b/a into `d', rounding the result towards plus infinity.
       div_round_up(d, b, a);
       if (*dbm_cellp <= d) {
-	if (c.is_inequality()) 
+	if (c.is_inequality())
 	  add_cons.insert(c);
 	else {
 	  T* dbm_cellp1;
@@ -2047,7 +2041,7 @@ BD_Shape<T>::limited_CH78_extrapolation_assign(const BD_Shape& y,
   assert(OK());
 }
 
-  
+
 template <typename T>
 inline void
 BD_Shape<T>::CC76_narrowing_assign(const BD_Shape& y) {
@@ -2065,14 +2059,14 @@ BD_Shape<T>::CC76_narrowing_assign(const BD_Shape& y) {
 #endif
 
   dimension_type k = space_dimension();
-  // If both systems of bounded differences are zero-dimensional, 
+  // If both systems of bounded differences are zero-dimensional,
   // since `*this' contains `y', we simply return `*this'.
   if (k == 0)
     return;
-   
+
   closure_assign();
   // If `*this' is empty, since `*this' contains `y', `y' is empty too.
-  if (marked_empty()) 
+  if (marked_empty())
     return;
   y.closure_assign();
   // If `y' is empty, we return.
@@ -2084,12 +2078,12 @@ BD_Shape<T>::CC76_narrowing_assign(const BD_Shape& y) {
      In `*this' there are the constraints:
 
      x1 - x2 <= 2;
-   
+
      In y there are the constraints:
 
      x1      <= 2;
      x1 - x2 <= 1;
-     x2      <= 0   
+     x2      <= 0
 
      If we don't close y the result is:
 
@@ -2107,10 +2101,10 @@ BD_Shape<T>::CC76_narrowing_assign(const BD_Shape& y) {
      x1 <= 1
      is more tight than
      x1 <= 2
-     
+
      We must close `*this' too, in fact, if we have these constraint for *this:
      x1 - x2 <= 1;
-     x2      <= 5    
+     x2      <= 5
      (and the implicit constraint x1 <= 6)
 
      and for y we have:
@@ -2122,15 +2116,15 @@ BD_Shape<T>::CC76_narrowing_assign(const BD_Shape& y) {
      x1      <= 1;
      x1 - x2 <= 1;
      x2      <= 5;
-    
-     instead of: 
+
+     instead of:
      x1      <= 6;
      x1 - x2 <= 1;
      x2      <= 5;
    */
-  // We consider a constraint of `*this' at the time, if its value is 
-  // `plus_infinity', we replace it with the value the corresponding 
-  // constraint of `y'. 
+  // We consider a constraint of `*this' at the time, if its value is
+  // `plus_infinity', we replace it with the value the corresponding
+  // constraint of `y'.
   bool changed = false;
   for (dimension_type i = 0; i <= k; ++i) {
     DB_Row<T>& dbm_i = dbm[i];
@@ -2192,22 +2186,22 @@ BD_Shape<T>::affine_image(const Variable var,
   dimension_type expr_space_dim = expr.space_dimension();
   if (space_dim < expr_space_dim)
     throw_dimension_incompatible("affine_image(v, e, d)", "e", expr);
-  
+
   // `var' should be one of the dimensions of the systems of bounded differences.
   dimension_type num_var = var.id() + 1;
   if (num_var > space_dim)
     throw_dimension_incompatible("affine_image(v, e, d)", var.id());
-  
+
   // If `*this' is empty, then its image is empty.
   if (marked_empty())
     return;
-  
+
   // Index of the non-zero component of `expr'.
   dimension_type j = 0;
-  
+
   // Number of non-zero components of `expr'.
   dimension_type t = 0;
-  
+
   // Compute the number of the non-zero components of `expr'.
   // The `expr' must not be in two or plus variables.
   for (dimension_type i = expr_space_dim; i-- > 0; )
@@ -2219,7 +2213,7 @@ BD_Shape<T>::affine_image(const Variable var,
 	j = i;
       }
     }
-  
+
   // Now we have got a form of `expr':
   // if t == 0, expr = n, with n integer.
   // if t == 1, expr = a*z + n, where z can be `var' or another variable.
@@ -2243,14 +2237,14 @@ BD_Shape<T>::affine_image(const Variable var,
     }
   }
   else {
-    // Case 2: expr = a*z + n. 
+    // Case 2: expr = a*z + n.
     closure_assign();
     // If `*this' is empty, then its image is empty.
     if (marked_empty())
       return;
     else {
       Coefficient a = expr.coefficient(Variable(j));
-      if (a != denominator) 
+      if (a != denominator)
 	throw_expression_too_complex("affine_image(v, e, d)", expr);
       else {
 	// We have got an expression of the following form: var + n.
@@ -2274,15 +2268,15 @@ BD_Shape<T>::affine_image(const Variable var,
 	  }
 	}
 	else {
-	  // We have got an expression of the following form: 
+	  // We have got an expression of the following form:
 	  // var1 + n, with `var1' != `var'.
-	  // We lose(remove) all constraints on `var' and we add the new 
+	  // We lose(remove) all constraints on `var' and we add the new
           // constraint `var - var1 = n/denominator'.
 	  for (dimension_type i = 0; i <= space_dim; ++i) {
 	    dbm[num_var][i] = PLUS_INFINITY;
 	    dbm[i][num_var] = PLUS_INFINITY;
 	  }
-	  add_constraint(denominator*var - denominator*Variable(j) == b); 
+	  add_constraint(denominator*var - denominator*Variable(j) == b);
 	}
       }
     }
@@ -2308,22 +2302,22 @@ BD_Shape<T>::affine_preimage(const Variable var,
   if (space_dim < expr_space_dim)
     throw_dimension_incompatible("affine_preimage(v, e, d)", "e", expr);
 
-  // `var' should be one of the dimensions of 
+  // `var' should be one of the dimensions of
   // the systems of bounded differences.
   const dimension_type num_var = var.id() + 1;
   if (num_var > space_dim)
     throw_dimension_incompatible("affine_preimage(v, e, d)", var.id());
-  
+
    // If `*this' is empty, then its image is empty.
   if (marked_empty())
     return;
 
   // Index of the non-zero component of `expr'.
   dimension_type j = 0;
-  
+
   // Number of non-zero components of `expr'.
   dimension_type t = 0;
-  
+
   // Compute the number of the non-zero components of `expr'.
   // The `expr' must not be in two or plus variables.
   for (dimension_type i = expr_space_dim; i-- > 0; )
@@ -2335,7 +2329,7 @@ BD_Shape<T>::affine_preimage(const Variable var,
         j = i;
       }
     }
-  
+
   // Now we have got a form of `expr':
   // if t == 0, expr = n, with n integer.
   // if t == 1, expr = a*z + n, where z can be `var' or another variable.
@@ -2350,7 +2344,7 @@ BD_Shape<T>::affine_preimage(const Variable var,
       return;
     else {
       // Case 1: expr = n.
-      // We remove all constraints on `var'. 
+      // We remove all constraints on `var'.
       for (dimension_type i = 0; i <= space_dim; ++i) {
 	dbm_nv[i] = PLUS_INFINITY;
 	dbm[i][num_var] = PLUS_INFINITY;
@@ -2365,7 +2359,7 @@ BD_Shape<T>::affine_preimage(const Variable var,
       return;
     else {
       Coefficient a = expr.coefficient(Variable(j));
-      if (a != denominator) 
+      if (a != denominator)
 	throw_expression_too_complex("affine_preimage(v, e, d)", expr);
       else {
         // We have got an expression of the following form: var + n.
@@ -2378,7 +2372,7 @@ BD_Shape<T>::affine_preimage(const Variable var,
 	    affine_image(var, a*var - b, denominator);
 	}
 	else {
-	  // We have got an expression of the following form: 
+	  // We have got an expression of the following form:
 	  // var1 + n, with `var1' != `var'.
 	  // We remove all constraints on `var'.
 	  for (dimension_type i = 0; i <= space_dim; ++i) {
@@ -2393,7 +2387,7 @@ BD_Shape<T>::affine_preimage(const Variable var,
 }
 
 template <typename T>
-inline void 
+inline void
 BD_Shape<T>::generalized_affine_image(Variable var,
 				    const Relation_Symbol relsym,
 				    const Linear_Expression& expr,
@@ -2410,12 +2404,12 @@ BD_Shape<T>::generalized_affine_image(Variable var,
   dimension_type expr_space_dim = expr.space_dimension();
   if (space_dim < expr_space_dim)
     throw_dimension_incompatible("generalized_affine_image(v, r, e, d)", "e", expr);
-  
+
   // `var' should be one of the dimensions of the system of bounded differences.
   dimension_type num_var = var.id() + 1;
   if (num_var > space_dim)
     throw_dimension_incompatible("generalized_affine_image(v, r, e, d)", var.id());
-  
+
   // The relation symbol cannot be a strict relation symbol.
   if (relsym == LESS_THAN || relsym == GREATER_THAN)
     throw_generic("generalized_affine_image(v, r, e, d)",
@@ -2424,10 +2418,10 @@ BD_Shape<T>::generalized_affine_image(Variable var,
 
   // Index of the non-zero component of `expr'.
   dimension_type j = 0;
-  
+
   // Number of non-zero components of `expr'.
   dimension_type t = 0;
-  
+
   // Compute the number of the non-zero components of `expr'.
   // The `expr' must not be in two or plus variables.
   for (dimension_type i = expr_space_dim; i-- > 0; )
@@ -2452,10 +2446,10 @@ BD_Shape<T>::generalized_affine_image(Variable var,
   // if t == 1, expr = a*z + n, where z can be `var' or another variable.
   // Attention: in the second case the coefficient of variable must
   // equal to denominator.
-  DB_Row<T>& n_v = dbm[num_var]; 
+  DB_Row<T>& n_v = dbm[num_var];
   Coefficient a = expr.coefficient(Variable(j));
   Coefficient b = expr.inhomogeneous_term();
-  if (t == 0) { 
+  if (t == 0) {
     // Case 1: expr = n.
     switch (relsym) {
     case LESS_THAN_OR_EQUAL:
@@ -2474,7 +2468,7 @@ BD_Shape<T>::generalized_affine_image(Variable var,
     case GREATER_THAN_OR_EQUAL:
       // We lose(remove) all constraints of the  form `var (- var1) >= const '
       // and we add the new constraint `var >= n/denominator'.
-      for (dimension_type i = 0; i <= space_dim; ++i) 
+      for (dimension_type i = 0; i <= space_dim; ++i)
 	dbm[num_var][i] = PLUS_INFINITY;
 	add_constraint(denominator*var >= b);
       break;
@@ -2488,7 +2482,7 @@ BD_Shape<T>::generalized_affine_image(Variable var,
     // Case 2: expr = a*z + n.
     switch (relsym) {
     case LESS_THAN_OR_EQUAL:
-      if (a != denominator) 
+      if (a != denominator)
 	throw_expression_too_complex("generalized_affine_image(v, r, e, d)",
 				     expr);
       else {
@@ -2497,7 +2491,7 @@ BD_Shape<T>::generalized_affine_image(Variable var,
 	  if (b == 0)
 	    return;
 	  else {
-	    // We translate all the constraints of the form `var (- var1) <= const' 
+	    // We translate all the constraints of the form `var (- var1) <= const'
 	    // adding the value `n/denominator'.
 	    T d;
 	    div_round_up(d, b, denominator);
@@ -2508,13 +2502,13 @@ BD_Shape<T>::generalized_affine_image(Variable var,
 	  }
 	}
 	else {
-	  // We have got an expression of the following form: 
+	  // We have got an expression of the following form:
 	  // var1 + n, with `var1' != `var'.
-	  // We lose(remove) all constraints of the form `var (- var1) <= const' 
+	  // We lose(remove) all constraints of the form `var (- var1) <= const'
 	  // and we add the new constraint `var - var1 <= n/denominator'.
-	  for (dimension_type i = 0; i <= space_dim; ++i) 
+	  for (dimension_type i = 0; i <= space_dim; ++i)
 	    dbm[i][num_var] = PLUS_INFINITY;
-	  add_constraint(denominator*var - denominator*Variable(j) <= b); 
+	  add_constraint(denominator*var - denominator*Variable(j) <= b);
 	}
       }
       break;
@@ -2524,7 +2518,7 @@ BD_Shape<T>::generalized_affine_image(Variable var,
       affine_image(var, expr, denominator);
       break;
     case GREATER_THAN_OR_EQUAL:
-      if (a != denominator) 
+      if (a != denominator)
 	throw_expression_too_complex("generalized_affine_image(v, r, e, d)",
 				     expr);
       else {
@@ -2533,7 +2527,7 @@ BD_Shape<T>::generalized_affine_image(Variable var,
 	  if (b == 0)
 	    return;
 	  else {
-	    // We translate all the constraints of the form 
+	    // We translate all the constraints of the form
             // `var (- var1) >= const' subtracting the value `n/denominator'.
 	    T c;
 	    div_round_up(c, -b, denominator);
@@ -2544,13 +2538,13 @@ BD_Shape<T>::generalized_affine_image(Variable var,
 	  }
 	}
 	else {
-	  // We have got an expression of the following form: 
+	  // We have got an expression of the following form:
 	  // var1 + n, with `var1' != `var'.
-	  // We lose(remove) all constraints of the form `var (- var1) >= const' 
+	  // We lose(remove) all constraints of the form `var (- var1) >= const'
 	  // and we add the new constraint `var - var1 >= n/denominator'.
-	  for (dimension_type i = 0; i <= space_dim; ++i) 
+	  for (dimension_type i = 0; i <= space_dim; ++i)
 	    n_v[i] = PLUS_INFINITY;
-	  add_constraint(denominator*var - denominator*Variable(j) >= b); 
+	  add_constraint(denominator*var - denominator*Variable(j) >= b);
 	}
       }
       break;
@@ -2562,9 +2556,9 @@ BD_Shape<T>::generalized_affine_image(Variable var,
   }
   assert(OK());
 }
- 
+
 template <typename T>
-inline void 
+inline void
 BD_Shape<T>::generalized_affine_image(const Linear_Expression& lhs,
 				     const Relation_Symbol relsym,
 				     const Linear_Expression& rhs) {
@@ -2598,7 +2592,7 @@ BD_Shape<T>::generalized_affine_image(const Linear_Expression& lhs,
   // Number of non-zero components of `lhs'.
   dimension_type t = 0;
   dimension_type j = 0;
-  
+
   // Compute the number of the non-zero components of `lhs'.
   for (dimension_type i = lhs_space_dim; i-- > 0; )
     if (lhs.coefficient(Variable(i)) != 0) {
@@ -2608,7 +2602,7 @@ BD_Shape<T>::generalized_affine_image(const Linear_Expression& lhs,
 
  // Number of non-zero components of `rhs'.
   dimension_type t1 = 0;
-  dimension_type j1 = 0;  
+  dimension_type j1 = 0;
 
   // Compute the number of the non-zero components of `rhs'.
   for (dimension_type i = rhs_space_dim; i-- > 0; )
@@ -2619,10 +2613,10 @@ BD_Shape<T>::generalized_affine_image(const Linear_Expression& lhs,
 
   // TODO: we want all the possible linear expressions without
   // exceptions.
-  if (t == 1) {    
+  if (t == 1) {
     // Case 1: lhs = var + n.
     Coefficient d = lhs.coefficient(Variable(j));
-    // We compute a new expression `e = rhs - n', so we recall 
+    // We compute a new expression `e = rhs - n', so we recall
     // BD_Shape<T>::generalized_affine_image(Variable var,
     //				           const Relation_Symbol relsym,
     //				           const Linear_Expression& e,
@@ -2632,18 +2626,18 @@ BD_Shape<T>::generalized_affine_image(const Linear_Expression& lhs,
     if (d < 0) {
       d = -d;
       if (relsym == GREATER_THAN_OR_EQUAL)
-	generalized_affine_image(Variable(j), LESS_THAN_OR_EQUAL, -e, d); 
+	generalized_affine_image(Variable(j), LESS_THAN_OR_EQUAL, -e, d);
       else if (relsym == LESS_THAN_OR_EQUAL)
 	generalized_affine_image(Variable(j), GREATER_THAN_OR_EQUAL, -e, d);
       else
-	generalized_affine_image(Variable(j), relsym, -e, d); 
+	generalized_affine_image(Variable(j), relsym, -e, d);
     }
     else
       generalized_affine_image(Variable(j), relsym, e, d);
   }
   else if (t1 == 1) {
     // Case 2: rhs = var + n.
-    // We compute a new expression `e = lhs - n', so we recall 
+    // We compute a new expression `e = lhs - n', so we recall
     // BD_Shape<T>::generalized_affine_image(Variable var,
     //				           const Relation_Symbol relsym,
     //				           const Linear_Expression& e,
@@ -2657,25 +2651,25 @@ BD_Shape<T>::generalized_affine_image(const Linear_Expression& lhs,
    }
    else {
      if (relsym == GREATER_THAN_OR_EQUAL)
-       generalized_affine_image(Variable(j1), LESS_THAN_OR_EQUAL, e, d); 
+       generalized_affine_image(Variable(j1), LESS_THAN_OR_EQUAL, e, d);
      else if (relsym == LESS_THAN_OR_EQUAL)
        generalized_affine_image(Variable(j1), GREATER_THAN_OR_EQUAL, e, d);
      else
-       generalized_affine_image(Variable(j1), relsym, e, d);           
+       generalized_affine_image(Variable(j1), relsym, e, d);
    }
   }
   else
-    
+
     // `lhs' and `rhs' are not acceptable if they has two or
     // plus variables or if they are both constants.
-    throw_generic("generalized_affine_image(e1, r, e2)", 
+    throw_generic("generalized_affine_image(e1, r, e2)",
 		  "The expressions are not compatible!");
 
-  assert(OK()); 
+  assert(OK());
 }
 
 template <typename T>
-inline void 
+inline void
 BD_Shape<T>::time_elapse_assign(const BD_Shape& y) {
   // Dimension-compatibility check.
   if (space_dimension() != y.space_dimension())
@@ -2688,7 +2682,7 @@ BD_Shape<T>::time_elapse_assign(const BD_Shape& y) {
   swap(x);
   assert(OK());
 }
- 
+
 template <typename T>
 inline Constraint_System
 BD_Shape<T>::constraints() const {
@@ -2704,7 +2698,7 @@ BD_Shape<T>::constraints() const {
     // KLUDGE: in the future `cs' will be constructed of the right dimension.
     // For the time being, we force the dimension with the following line.
     cs.insert(0*Variable(space_dim-1) <= 0);
-    
+
     // We find in `*this' all the constraints.
     for (dimension_type i = 0; i <= space_dim; ++i) {
       for (dimension_type j = i + 1; j <= space_dim; ++j) {
@@ -2788,7 +2782,7 @@ IO_Operators::operator<<(std::ostream& s, const BD_Shape<T>& c) {
       s << "false" << std::endl;
     else {
       bool first = true;
-      for (dimension_type i = 0; i <= n; ++i) 
+      for (dimension_type i = 0; i <= n; ++i)
 	for (dimension_type j = i + 1; j <= n; ++j) {
 	  const T& c_i_j = c.dbm[i][j];
 	  const T& c_j_i = c.dbm[j][i];
@@ -2798,7 +2792,7 @@ IO_Operators::operator<<(std::ostream& s, const BD_Shape<T>& c) {
 	    // We will print an equality.
 	    if (first)
 	      first = false;
-	    else 
+	    else
 	      s << ", ";
 	    if (i == 0) {
 	      // We have got a equality constraint with one Variable.
@@ -2826,7 +2820,7 @@ IO_Operators::operator<<(std::ostream& s, const BD_Shape<T>& c) {
 	    if (!is_plus_infinity(c_j_i)) {
 	      if (first)
 		first = false;
-	      else 
+	      else
 		s << ", ";
 	      if (i == 0) {
 		// We have got a constraint with an only Variable.
@@ -2856,7 +2850,7 @@ IO_Operators::operator<<(std::ostream& s, const BD_Shape<T>& c) {
 	    if (!is_plus_infinity(c_i_j)) {
 	      if (first)
 		first = false;
-	      else 
+	      else
 		s << ", ";
 	      if (i == 0) {
 		// We have got a constraint with an only Variable.
@@ -2899,7 +2893,7 @@ BD_Shape<T>::OK() const {
   if (!status.OK())
     return false;
 
-  // If `*this' is empty bdiffs are OK. 
+  // If `*this' is empty bdiffs are OK.
   if (marked_empty())
     return true;
 
@@ -2915,7 +2909,7 @@ BD_Shape<T>::OK() const {
       return false;
     }
   }
- 
+
   // Check whether the closure information is legal.
   if (marked_transitively_closed()) {
     BD_Shape x = *this;
@@ -2929,11 +2923,10 @@ BD_Shape<T>::OK() const {
       return false;
     }
   }
-  
+
   // All checks passed.
   return true;
 }
-  
 
 template <typename T>
 inline void
