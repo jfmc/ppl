@@ -118,7 +118,8 @@ main() TRY {
        << ps2 << endl;
 #endif
 
-  ps1.BGP99_extrapolation_assign(ps2, &Polyhedron::H79_widening_assign, 7);
+  ps1.BGP99_extrapolation_assign
+    (ps2, widen_fun(&Polyhedron::H79_widening_assign), 7);
 
   PSet known_result(2, Polyhedron::EMPTY);
   C_Polyhedron kr_1(2);
@@ -137,7 +138,8 @@ main() TRY {
 
 #if NOISY
   cout
-    << "*** ps1.BGP99_extrapolation_assign(ps2, &H79_widening_assign, 7) ***"
+    << "*** ps1.BGP99_extrapolation_assign"
+    << "(ps2, widen_fun(&H79_widening_assign), 7) ***"
     << endl
     << ps1 << endl;
 #endif

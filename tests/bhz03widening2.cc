@@ -77,7 +77,7 @@ main() TRY {
 #endif
 
   PSet oldP = P;
-  P.BHZ03_widening_assign(Q, &Polyhedron::H79_widening_assign);
+  P.BHZ03_widening_assign(Q, widen_fun(&Polyhedron::H79_widening_assign));
 #if NOISY
   cout << "P.BHZ03(Q, H79)" << " = " << P << endl;
 #endif
