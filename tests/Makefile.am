@@ -49,7 +49,7 @@ TESTS = addconstraints1 addconstraints2 addconstraints3 addconstraints4 \
 	convexhull1 \
 	convexdifference1 \
         empty1 \
-	exceptions1 \
+	exceptions1 exceptions2 \
 	generators1 \
         inters1 inters2 inters3 inters4 inters5 inters6 \
 	limitedwidening1 limitedwidening2\
@@ -110,6 +110,7 @@ convexdifference1_SOURCES = convexdifference1.cc
 empty1_SOURCES = empty1.cc
 
 exceptions1_SOURCES = exceptions1.cc
+exceptions2_SOURCES = exceptions2.cc
 
 generators1_SOURCES = generators1.cc
 
