@@ -186,7 +186,8 @@ PPL::Polyhedron::minimize(bool con_to_gen,
                                              const Matrix& source2)
 					
   \param con_to_gen   <CODE>true</CODE> if \p source1 and \p source2
-                      are matrix of constraints, <CODE>false</CODE> otherwise.
+                      are matrix of constraints, <CODE>false</CODE>
+                      otherwise.
   \param source1      The first element of the given DD pair.
   \param dest         The second element of the given DD pair.
   \param sat          The saturation matrix that bind \p source1 to \p dest.
@@ -307,9 +308,10 @@ PPL::Polyhedron::add_and_minimize(bool con_to_gen,
   // The `start' parameter is set to the index of the first constraint
   // we appended to `source1', because generators corresponding
   // to previous constraints are already in `dest'.
-  dimension_type num_lines_or_equalities = conversion(source1, old_source1_num_rows,
-					      dest, tmp_sat,
-					      dest.num_lines_or_equalities());
+  dimension_type num_lines_or_equalities
+    = conversion(source1, old_source1_num_rows,
+		 dest, tmp_sat,
+		 dest.num_lines_or_equalities());
   // conversion() may have modified the number of rows in `dest'.
   dimension_type dest_num_rows = dest.num_rows();
 

@@ -116,7 +116,8 @@ PPL::SatMatrix::transpose_assign(const SatMatrix& y) {
   Resizes the matrix copying the old contents.
 */
 void
-PPL::SatMatrix::resize(dimension_type new_n_rows, dimension_type new_n_columns) {
+PPL::SatMatrix::resize(dimension_type new_n_rows,
+		       dimension_type new_n_columns) {
   assert(OK());
   dimension_type old_num_rows = num_rows();
   if (new_n_columns < row_size) {

@@ -50,7 +50,8 @@ GenSys::GenSys(Topology topol)
 }
 
 inline
-GenSys::GenSys(Topology topol, dimension_type n_rows, dimension_type n_columns)
+GenSys::GenSys(Topology topol,
+	       dimension_type n_rows, dimension_type n_columns)
   : Matrix(topol, n_rows, n_columns) {
 }
 

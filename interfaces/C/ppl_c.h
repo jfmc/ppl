@@ -429,7 +429,8 @@ ppl_delete_ConSys __P((ppl_const_ConSys_t cs));
   Assigns a copy of the constraint system \p src to \p dst.
 */
 int
-ppl_assign_ConSys_from_ConSys __P((ppl_ConSys_t dst, ppl_const_ConSys_t src));
+ppl_assign_ConSys_from_ConSys __P((ppl_ConSys_t dst,
+				   ppl_const_ConSys_t src));
 
 /*!
   Returns the dimension of the vector space enclosing \p *this.
@@ -442,7 +443,8 @@ ppl_ConSys_space_dimension __P((ppl_const_ConSys_t cs));
   dimension is increased, if necessary.
 */
 int
-ppl_ConSys_insert_Constraint __P((ppl_ConSys_t cs, ppl_const_Constraint_t c));
+ppl_ConSys_insert_Constraint __P((ppl_ConSys_t cs,
+				  ppl_const_Constraint_t c));
 
 /*!
   Returns a positive integer if \p cs is well formed, i.e., if it
@@ -669,7 +671,8 @@ ppl_delete_GenSys __P((ppl_const_GenSys_t gs));
   Assigns a copy of the generator system \p src to \p dst.
 */
 int
-ppl_assign_GenSys_from_GenSys __P((ppl_GenSys_t dst, ppl_const_GenSys_t src));
+ppl_assign_GenSys_from_GenSys __P((ppl_GenSys_t dst,
+				   ppl_const_GenSys_t src));
 
 /*!
   Returns the dimension of the vector space enclosing \p *this.
@@ -957,30 +960,29 @@ ppl_new_NNC_Polyhedron_recycle_GenSys __P((ppl_Polyhedron_t* pph,
       int get_lower_bound(ppl_dimension_type k, int closed,
                           ppl_Coefficient_t n, ppl_Coefficient_t d)
     \endcode
-    Let \f$I\f$ the interval corresponding to the <CODE>k</CODE>-th dimension.
-    If \f$I\f$ is not bounded from below, simply return 0.
-    Otherwise, set <CODE>closed</CODE>, <CODE>n</CODE> and <CODE>d</CODE>
-    as follows: <CODE>closed</CODE> is set to 0 if the lower boundary
-    of \f$I\f$ is open and is set to a value different from zero otherwise;
-    <CODE>n</CODE> and <CODE>d</CODE> are assigned the integers
-    \f$n\f$ and \f$d\f$ such that the canonical fraction \f$n/d\f$
-    corresponds to the greatest lower bound of \f$I\f$.
-    The fraction \f$n/d\f$ is in canonical form if and only if \f$n\f$
-    and \f$d\f$ have no common factors and \f$d\f$ is positive, \f$0/1\f$
-    being the unique representation for zero.
+    Let \f$I\f$ the interval corresponding to the <CODE>k</CODE>-th
+    dimension.  If \f$I\f$ is not bounded from below, simply return 0.
+    Otherwise, set <CODE>closed</CODE>, <CODE>n</CODE> and
+    <CODE>d</CODE> as follows: <CODE>closed</CODE> is set to 0 if the
+    lower boundary of \f$I\f$ is open and is set to a value different
+    from zero otherwise; <CODE>n</CODE> and <CODE>d</CODE> are
+    assigned the integers \f$n\f$ and \f$d\f$ such that the canonical
+    fraction \f$n/d\f$ corresponds to the greatest lower bound of
+    \f$I\f$.  The fraction \f$n/d\f$ is in canonical form if and only
+    if \f$n\f$ and \f$d\f$ have no common factors and \f$d\f$ is
+    positive, \f$0/1\f$ being the unique representation for zero.
     \code
       int get_upper_bound(ppl_dimension_type k, int closed,
                           ppl_Coefficient_t n, ppl_Coefficient_t d)
     \endcode
-    Let \f$I\f$ the interval corresponding to the <CODE>k</CODE>-th dimension.
-    If \f$I\f$ is not bounded from above, simply return 0.
-    Otherwise, set <CODE>closed</CODE>, <CODE>n</CODE> and <CODE>d</CODE>
-    as follows: <CODE>closed</CODE> is set to 0 if the upper boundary
-    of \f$I\f$ is open and is set to a value different from 0 otherwise;
-    <CODE>n</CODE> and <CODE>d</CODE>
-    are assigned the integers
-    \f$n\f$ and \f$d\f$ such that the canonical fraction \f$n/d\f$
-    corresponds to the least upper bound of \f$I\f$.
+    Let \f$I\f$ the interval corresponding to the <CODE>k</CODE>-th
+    dimension.  If \f$I\f$ is not bounded from above, simply return 0.
+    Otherwise, set <CODE>closed</CODE>, <CODE>n</CODE> and
+    <CODE>d</CODE> as follows: <CODE>closed</CODE> is set to 0 if the
+    upper boundary of \f$I\f$ is open and is set to a value different
+    from 0 otherwise; <CODE>n</CODE> and <CODE>d</CODE> are assigned
+    the integers \f$n\f$ and \f$d\f$ such that the canonical fraction
+    \f$n/d\f$ corresponds to the least upper bound of \f$I\f$.
 */
 int
 ppl_new_C_Polyhedron_from_bounding_box
@@ -1017,30 +1019,29 @@ __P((ppl_Polyhedron_t* pph,
       int get_lower_bound(ppl_dimension_type k, int closed,
                           ppl_Coefficient_t n, ppl_Coefficient_t d)
     \endcode
-    Let \f$I\f$ the interval corresponding to the <CODE>k</CODE>-th dimension.
-    If \f$I\f$ is not bounded from below, simply return 0.
-    Otherwise, set <CODE>closed</CODE>, <CODE>n</CODE> and <CODE>d</CODE>
-    as follows: <CODE>closed</CODE> is set to 0 if the lower boundary
-    of \f$I\f$ is open and is set to a value different from zero otherwise;
-    <CODE>n</CODE> and <CODE>d</CODE> are assigned the integers
-    \f$n\f$ and \f$d\f$ such that the canonical fraction \f$n/d\f$
-    corresponds to the greatest lower bound of \f$I\f$.
-    The fraction \f$n/d\f$ is in canonical form if and only if \f$n\f$
-    and \f$d\f$ have no common factors and \f$d\f$ is positive, \f$0/1\f$
-    being the unique representation for zero.
+    Let \f$I\f$ the interval corresponding to the <CODE>k</CODE>-th
+    dimension.  If \f$I\f$ is not bounded from below, simply return 0.
+    Otherwise, set <CODE>closed</CODE>, <CODE>n</CODE> and
+    <CODE>d</CODE> as follows: <CODE>closed</CODE> is set to 0 if the
+    lower boundary of \f$I\f$ is open and is set to a value different
+    from zero otherwise; <CODE>n</CODE> and <CODE>d</CODE> are
+    assigned the integers \f$n\f$ and \f$d\f$ such that the canonical
+    fraction \f$n/d\f$ corresponds to the greatest lower bound of
+    \f$I\f$.  The fraction \f$n/d\f$ is in canonical form if and only
+    if \f$n\f$ and \f$d\f$ have no common factors and \f$d\f$ is
+    positive, \f$0/1\f$ being the unique representation for zero.
     \code
       int get_upper_bound(ppl_dimension_type k, int closed,
                           ppl_Coefficient_t n, ppl_Coefficient_t d)
     \endcode
-    Let \f$I\f$ the interval corresponding to the <CODE>k</CODE>-th dimension.
-    If \f$I\f$ is not bounded from above, simply return 0.
-    Otherwise, set <CODE>closed</CODE>, <CODE>n</CODE> and <CODE>d</CODE>
-    as follows: <CODE>closed</CODE> is set to 0 if the upper boundary
-    of \f$I\f$ is open and is set to a value different from 0 otherwise;
-    <CODE>n</CODE> and <CODE>d</CODE>
-    are assigned the integers
-    \f$n\f$ and \f$d\f$ such that the canonical fraction \f$n/d\f$
-    corresponds to the least upper bound of \f$I\f$.
+    Let \f$I\f$ the interval corresponding to the <CODE>k</CODE>-th
+    dimension.  If \f$I\f$ is not bounded from above, simply return 0.
+    Otherwise, set <CODE>closed</CODE>, <CODE>n</CODE> and
+    <CODE>d</CODE> as follows: <CODE>closed</CODE> is set to 0 if the
+    upper boundary of \f$I\f$ is open and is set to a value different
+    from 0 otherwise; <CODE>n</CODE> and <CODE>d</CODE> are assigned
+    the integers \f$n\f$ and \f$d\f$ such that the canonical fraction
+    \f$n/d\f$ corresponds to the least upper bound of \f$I\f$.
 */
 int
 ppl_new_NNC_Polyhedron_from_bounding_box

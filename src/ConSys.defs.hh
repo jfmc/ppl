@@ -299,7 +299,8 @@ private:
   //! Returns <CODE>true</CODE> if \p g satisfies all the constraints.
   bool satisfies_all_constraints(const Generator& g) const;
 
-  //! Substitutes a given column of coefficients by a given affine expression.
+  //! Substitutes a given column of coefficients by a given
+  //! affine expression.
   void affine_preimage(dimension_type v,
 		       const LinExpression& expr,
 		       const Integer& denominator);

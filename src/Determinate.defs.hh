@@ -112,8 +112,10 @@ public:
   operator!=<PH>(const Determinate<PH>& x, const Determinate<PH>& y);
 
 #if 0
-  friend Determinate operator +<>(const Determinate& x, const Determinate& y);
-  friend Determinate operator *<>(const Determinate& x, const Determinate& y);
+  friend Determinate operator +<>(const Determinate& x,
+				  const Determinate& y);
+  friend Determinate operator *<>(const Determinate& x,
+				  const Determinate& y);
 #endif
   friend bool lcompare<>(const Determinate& x, const Determinate& y);
 

@@ -37,11 +37,12 @@ namespace PPL = Parma_Polyhedra_Library;
 #define REACTIVE_ABANDONING 1
 
 /*!
-  \fn static dimension_type PPL::Polyhedron::conversion(Matrix& source,
-                                                dimension_type start,
-                                                Matrix& dest,
-                                                SatMatrix& sat,
-                                                dimension_type num_lines_or_equalities)
+  \fn static dimension_type
+    PPL::Polyhedron::conversion(Matrix& source,
+                                dimension_type start,
+                                Matrix& dest,
+                                SatMatrix& sat,
+                                dimension_type num_lines_or_equalities)
 
   \param source  The matrix to use to convert \p dest: it
                  may be modified.
@@ -317,11 +318,11 @@ namespace PPL = Parma_Polyhedra_Library;
   a) does not hold.
 
   Proposition 2: When we build the new system of generators starting a
-  matrix \f$A\f$ of constraints of \f$P\f$, if \f$\vect{c}\f$ is the constraint
-  to add to \f$A\f$ and all lines of \f$P\f$ saturate \f$\vect{c}\f$,
-  the new set of rays is the union of those rays that saturate, of
-  those that satisfy and of a set \f$\overline Q\f$ of rays such that
-  each of them
+  matrix \f$A\f$ of constraints of \f$P\f$, if \f$\vect{c}\f$ is the
+  constraint to add to \f$A\f$ and all lines of \f$P\f$ saturate
+  \f$\vect{c}\f$, the new set of rays is the union of those rays that
+  saturate, of those that satisfy and of a set \f$\overline Q\f$ of
+  rays such that each of them
   -# lies on the hyper-plane represented by the k-th constraint,
   -# is a positive combination of two adjacent rays \f$\vect{r}_1\f$ and
      \f$\vect{r}_2\f$ such that the first one satisfies the constraint and
@@ -457,7 +458,8 @@ PPL::Polyhedron::conversion(Matrix& source,
       // Note that, by Observation 1 above, the resulting new line
       // will still saturate all the constraints that were saturated by
       // the old line.
-      for (dimension_type i = index_non_zero; i < num_lines_or_equalities; ++i) {
+      for (dimension_type
+	     i = index_non_zero; i < num_lines_or_equalities; ++i) {
 	if (scalar_prod[i] != 0) {
 	  // The following fragment optimizes the computation of
 	  //
@@ -499,7 +501,8 @@ PPL::Polyhedron::conversion(Matrix& source,
       // that do not saturate the constraint `source[k]'. These rays are
       // positively combined with the ray `dest[num_lines_or_equalities]'
       // so that the resulting new rays saturate the constraint.
-      for (dimension_type i = num_lines_or_equalities + 1; i < dest_num_rows; ++i) {
+      for (dimension_type
+	     i = num_lines_or_equalities + 1; i < dest_num_rows; ++i) {
 	if (scalar_prod[i] != 0) {
 	  // The following fragment optimizes the computation of
 	  //

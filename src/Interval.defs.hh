@@ -161,22 +161,30 @@ protected:
   Parma_Polyhedra_Library::operator>=(const Boundary& x, ExtendedRational y);
 
   friend bool
-  Parma_Polyhedra_Library::operator< (const LBoundary& x, const UBoundary& y);
+  Parma_Polyhedra_Library::operator< (const LBoundary& x,
+				      const UBoundary& y);
   friend bool
-  Parma_Polyhedra_Library::operator> (const UBoundary& x, const LBoundary& y);
+  Parma_Polyhedra_Library::operator> (const UBoundary& x,
+				      const LBoundary& y);
   friend bool
-  Parma_Polyhedra_Library::operator<=(const UBoundary& x, const LBoundary& y);
+  Parma_Polyhedra_Library::operator<=(const UBoundary& x,
+				      const LBoundary& y);
   friend bool
-  Parma_Polyhedra_Library::operator>=(const LBoundary& x, const UBoundary& y);
+  Parma_Polyhedra_Library::operator>=(const LBoundary& x,
+				      const UBoundary& y);
 
   friend bool
-  Parma_Polyhedra_Library::operator< (const LBoundary& x, ExtendedRational y);
+  Parma_Polyhedra_Library::operator< (const LBoundary& x,
+				      ExtendedRational y);
   friend bool
-  Parma_Polyhedra_Library::operator> (const UBoundary& x, ExtendedRational y);
+  Parma_Polyhedra_Library::operator> (const UBoundary& x,
+				      ExtendedRational y);
   friend bool
-  Parma_Polyhedra_Library::operator<=(const UBoundary& x, ExtendedRational y);
+  Parma_Polyhedra_Library::operator<=(const UBoundary& x,
+				      ExtendedRational y);
   friend bool
-  Parma_Polyhedra_Library::operator>=(const LBoundary& x, ExtendedRational y);
+  Parma_Polyhedra_Library::operator>=(const LBoundary& x,
+				      ExtendedRational y);
 
 public:
   bool is_closed() const;

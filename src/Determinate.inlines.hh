@@ -146,7 +146,8 @@ Determinate<PH>::definitely_entails(const Determinate<PH>& y) const {
 
 template <typename PH>
 bool
-Determinate<PH>::is_definitely_equivalent_to(const Determinate<PH>& y) const {
+Determinate<PH>::is_definitely_equivalent_to(const Determinate<PH>& y)
+  const {
   return prep->ph == y.prep->ph;
 }
 

@@ -41,8 +41,8 @@ namespace PPL = Parma_Polyhedra_Library;
   to inequalities (resp., rays and points). This partial sortedness
   condition will also hold on exit.
 
-  \p mat may be modified by swapping some of its rows and by possibly removing
-  some of them, if they turn out to be redundant.
+  \p mat may be modified by swapping some of its rows and by possibly
+  removing some of them, if they turn out to be redundant.
 
   If \p mat is a matrix of constraints, then the rows of \p sat are
   indexed by constraints and its columns are indexed by generators;

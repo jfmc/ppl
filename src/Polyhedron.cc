@@ -1774,7 +1774,8 @@ PPL::Polyhedron::add_dimensions_and_embed(dimension_type m) {
     // `sat_c' must be up to date for add_dimensions(...).
     if (!sat_c_is_up_to_date())
       update_sat_c();
-    // Adds rows and/or columns to both matrices (constraints and generators).
+    // Adds rows and/or columns to both matrices (constraints and
+    // generators).
     add_dimensions(con_sys, gen_sys, sat_c, sat_g, m);
   }
   else if (constraints_are_up_to_date()) {
@@ -1862,7 +1863,8 @@ PPL::Polyhedron::add_dimensions_and_project(dimension_type m) {
     // `sat_g' must be up to date for add_dimensions(...).
     if (!sat_g_is_up_to_date())
       update_sat_g();
-    // Adds rows and/or columns to both matrices (constraints and generators).
+    // Adds rows and/or columns to both matrices (constraints and
+    // generators).
     add_dimensions(gen_sys, con_sys, sat_g, sat_c, m);
   }
   else if (constraints_are_up_to_date()) {
@@ -2769,7 +2771,7 @@ PPL::Polyhedron::affine_image(const Variable& var,
   \f[
     {a'}_{ij}
       = \begin{cases}
-          a_{ij} * \mathrm{denominator} + a_{i\mathrm{var}} * \mathrm{expr}[j]
+          a_{ij} * \mathrm{denominator} + a_{i\mathrm{var}}*\mathrm{expr}[j]
             \quad \mathrm{for } j \neq \mathrm{var}; \\
           \mathrm{expr}[\mathrm{var}] * a_{i\mathrm{var}},
             \quad \text{for } j = \mathrm{var}.
@@ -3020,7 +3022,8 @@ PPL::Polyhedron::H79_widening_assign(const Polyhedron& y) {
 
 
 void
-PPL::Polyhedron::limited_H79_widening_assign(const Polyhedron& y, ConSys& cs) {
+PPL::Polyhedron::limited_H79_widening_assign(const Polyhedron& y,
+					     ConSys& cs) {
   Polyhedron& x = *this;
   // Topology compatibility check.
   if (x.is_necessarily_closed()) {
@@ -3073,7 +3076,8 @@ PPL::Polyhedron::limited_H79_widening_assign(const Polyhedron& y, ConSys& cs) {
     return;
 
   dimension_type new_cs_num_rows = 0;
-  for (dimension_type i = 0, cs_num_rows = cs.num_rows(); i < cs_num_rows; ++i) {
+  for (dimension_type
+	 i = 0, cs_num_rows = cs.num_rows(); i < cs_num_rows; ++i) {
     // The constraints to be added must be saturated by both `x' and `y'.
     // We only consider the generators of the greater polyhedron `x',
     // because the generators of `y' can be obtained by combining
@@ -3435,7 +3439,8 @@ PPL::Polyhedron::OK(bool check_not_empty) const {
 
   // The expected number of columns in the constraint and generator
   // systems, if they are not empty. 
-  dimension_type poly_num_columns = space_dim + (is_necessarily_closed() ? 1 : 2); 
+  dimension_type poly_num_columns
+    = space_dim + (is_necessarily_closed() ? 1 : 2); 
 
   // Check whether the topologies of `con_sys' and `gen_sys' agree.
   if (con_sys.topology() != gen_sys.topology()) {

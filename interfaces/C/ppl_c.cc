@@ -512,7 +512,8 @@ ppl_new_ConSys__const_iterator_from_ConSys__const_iterator
 CATCH_ALL
 
 int
-ppl_delete_ConSys__const_iterator(ppl_const_ConSys__const_iterator_t cit) try {
+ppl_delete_ConSys__const_iterator(ppl_const_ConSys__const_iterator_t cit)
+  try {
   delete to_const(cit);
   return 0;
 }
@@ -530,7 +531,8 @@ ppl_assign_ConSys__const_iterator_from_ConSys__const_iterator
 CATCH_ALL
 
 int
-ppl_ConSys_begin(ppl_const_ConSys_t cs, ppl_ConSys__const_iterator_t cit) try {
+ppl_ConSys_begin(ppl_const_ConSys_t cs, ppl_ConSys__const_iterator_t cit)
+  try {
   const ConSys& ccs = *to_const(cs);
   ConSys::const_iterator& ccit = *to_nonconst(cit);
   ccit = ccs.begin();
@@ -792,7 +794,8 @@ ppl_new_GenSys__const_iterator_from_GenSys__const_iterator
 CATCH_ALL
 
 int
-ppl_delete_GenSys__const_iterator(ppl_const_GenSys__const_iterator_t git) try {
+ppl_delete_GenSys__const_iterator(ppl_const_GenSys__const_iterator_t git)
+  try {
   delete to_const(git);
   return 0;
 }
@@ -810,7 +813,8 @@ ppl_assign_GenSys__const_iterator_from_GenSys__const_iterator
 CATCH_ALL
 
 int
-ppl_GenSys_begin(ppl_const_GenSys_t gs, ppl_GenSys__const_iterator_t git) try {
+ppl_GenSys_begin(ppl_const_GenSys_t gs, ppl_GenSys__const_iterator_t git)
+  try {
   const GenSys& ggs = *to_const(gs);
   GenSys::const_iterator& ggit = *to_nonconst(git);
   ggit = ggs.begin();
@@ -1051,7 +1055,8 @@ ppl_new_C_Polyhedron_from_bounding_box
  int (*get_upper_bound)(ppl_dimension_type k, int closed,
 			ppl_Coefficient_t n,
 			ppl_Coefficient_t d)) try {
-  CBuildBox cbbox(space_dimension, is_empty, get_lower_bound, get_upper_bound);
+  CBuildBox cbbox(space_dimension, is_empty,
+		  get_lower_bound, get_upper_bound);
   *pph = to_nonconst(new C_Polyhedron(cbbox, From_Bounding_Box()));
   return 0;
 }
@@ -1068,7 +1073,8 @@ ppl_new_NNC_Polyhedron_from_bounding_box
  int (*get_upper_bound)(ppl_dimension_type k, int closed,
 			ppl_Coefficient_t n,
 			ppl_Coefficient_t d)) try {
-  CBuildBox cbbox(space_dimension, is_empty, get_lower_bound, get_upper_bound);
+  CBuildBox cbbox(space_dimension, is_empty,
+		  get_lower_bound, get_upper_bound);
   *pph = to_nonconst(new NNC_Polyhedron(cbbox, From_Bounding_Box()));
   return 0;
 }
@@ -1084,7 +1090,8 @@ CATCH_ALL
 int
 ppl_assign_C_Polyhedron_from_C_Polyhedron(ppl_Polyhedron_t dst,
 					  ppl_const_Polyhedron_t src) try {
-  const C_Polyhedron& ssrc = *static_cast<const C_Polyhedron*>(to_const(src));
+  const C_Polyhedron& ssrc
+    = *static_cast<const C_Polyhedron*>(to_const(src));
   C_Polyhedron& ddst = *static_cast<C_Polyhedron*>(to_nonconst(dst));
   ddst = ssrc;
   return 0;

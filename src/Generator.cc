@@ -75,7 +75,8 @@ PPL::Generator::point(const LinExpression& e, const Integer& d) {
 PPL::Generator
 PPL::Generator::closure_point(const LinExpression& e, const Integer& d) {
   if (d == 0)
-    throw std::invalid_argument("Generator PPL::closure_point(e, d): d == 0");
+    throw
+      std::invalid_argument("Generator PPL::closure_point(e, d): d == 0");
   // Adding the epsilon dimension with coefficient 0.
   LinExpression ec = 0 * Variable(e.space_dimension());
   ec += e;

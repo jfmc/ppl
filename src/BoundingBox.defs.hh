@@ -52,17 +52,18 @@ public:
   //! Otherwise returns <CODE>true</CODE> and set \p closed,
   //! \p n and \p d accordingly.
   /*!
-    Let \f$I\f$ the interval corresponding to the <CODE>k</CODE>-th dimension.
-    If \f$I\f$ is not bounded from below, simply return <CODE>false</CODE>.
-    Otherwise, set <CODE>closed</CODE>, <CODE>n</CODE> and <CODE>d</CODE>
-    as follows: <CODE>closed</CODE> is set to <CODE>true</CODE> if the 
-    the lower boundary of \f$I\f$ is closed and is set to <CODE>false</CODE>
-    otherwise; <CODE>n</CODE> and <CODE>d</CODE> are assigned the integers
+    Let \f$I\f$ the interval corresponding to the <CODE>k</CODE>-th
+    dimension.  If \f$I\f$ is not bounded from below, simply return
+    <CODE>false</CODE>.  Otherwise, set <CODE>closed</CODE>,
+    <CODE>n</CODE> and <CODE>d</CODE> as follows: <CODE>closed</CODE>
+    is set to <CODE>true</CODE> if the the lower boundary of \f$I\f$
+    is closed and is set to <CODE>false</CODE> otherwise;
+    <CODE>n</CODE> and <CODE>d</CODE> are assigned the integers
     \f$n\f$ and \f$d\f$ such that the canonical fraction \f$n/d\f$
-    corresponds to the greatest lower bound of \f$I\f$.
-    The fraction \f$n/d\f$ is in canonical form if and only if \f$n\f$
-    and \f$d\f$ have no common factors and \f$d\f$ is positive, \f$0/1\f$
-    being the unique representation for zero.
+    corresponds to the greatest lower bound of \f$I\f$.  The fraction
+    \f$n/d\f$ is in canonical form if and only if \f$n\f$ and \f$d\f$
+    have no common factors and \f$d\f$ is positive, \f$0/1\f$ being
+    the unique representation for zero.
   */
   bool get_lower_bound(dimension_type k, bool& closed,
 		       Integer& n, Integer& d) const;
@@ -72,12 +73,13 @@ public:
   //! Otherwise returns <CODE>true</CODE> and set \p closed,
   //! \p n and \p d accordingly.
   /*!
-    Let \f$I\f$ the interval corresponding to the <CODE>k</CODE>-th dimension.
-    If \f$I\f$ is not bounded from above, simply return <CODE>false</CODE>.
-    Otherwise, set <CODE>closed</CODE>, <CODE>n</CODE> and <CODE>d</CODE>
-    as follows: <CODE>closed</CODE> is set to <CODE>true</CODE> if the 
-    the upper boundary of \f$I\f$ is closed and is set to <CODE>false</CODE>
-    otherwise; <CODE>n</CODE> and <CODE>d</CODE> are assigned the integers
+    Let \f$I\f$ the interval corresponding to the <CODE>k</CODE>-th
+    dimension.  If \f$I\f$ is not bounded from above, simply return
+    <CODE>false</CODE>.  Otherwise, set <CODE>closed</CODE>,
+    <CODE>n</CODE> and <CODE>d</CODE> as follows: <CODE>closed</CODE>
+    is set to <CODE>true</CODE> if the the upper boundary of \f$I\f$
+    is closed and is set to <CODE>false</CODE> otherwise;
+    <CODE>n</CODE> and <CODE>d</CODE> are assigned the integers
     \f$n\f$ and \f$d\f$ such that the canonical fraction \f$n/d\f$
     corresponds to the least upper bound of \f$I\f$.
   */

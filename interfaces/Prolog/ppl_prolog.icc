@@ -641,7 +641,8 @@ ppl_initialize() {
   try {
     if (Prolog_interface_initialized)
       return PROLOG_SUCCESS;
-    for (size_t i = sizeof(prolog_atoms)/sizeof(prolog_atoms[0]); i-- > 0; ) {
+    for (size_t
+	   i = sizeof(prolog_atoms)/sizeof(prolog_atoms[0]); i-- > 0; ) {
       Prolog_atom a = Prolog_atom_from_string(prolog_atoms[i].name);
       *prolog_atoms[i].p_atom = a;
     }
@@ -1041,7 +1042,8 @@ ppl_Polyhedron_intersection_assign_and_minimize(Prolog_term_ref t_lhs,
 }
 
 extern "C" Prolog_foreign_return_type
-ppl_Polyhedron_poly_hull_assign(Prolog_term_ref t_lhs, Prolog_term_ref t_rhs) {
+ppl_Polyhedron_poly_hull_assign(Prolog_term_ref t_lhs,
+				Prolog_term_ref t_rhs) {
   try {
     PPL::Polyhedron* lhs = term_to_polyhedron_handle(t_lhs);
     const PPL::Polyhedron* rhs = term_to_polyhedron_handle(t_rhs);
@@ -1162,7 +1164,8 @@ ppl_Polyhedron_limited_H79_widening_assign(Prolog_term_ref t_lhs,
 }
 
 extern "C" Prolog_foreign_return_type
-ppl_Polyhedron_get_constraints(Prolog_term_ref t_ph, Prolog_term_ref t_clist) {
+ppl_Polyhedron_get_constraints(Prolog_term_ref t_ph,
+			       Prolog_term_ref t_clist) {
   try {
     const PPL::Polyhedron* ph = term_to_polyhedron_handle(t_ph);
     CHECK(ph);
@@ -1203,7 +1206,8 @@ ppl_Polyhedron_get_minimized_constraints(Prolog_term_ref t_ph,
 }
 
 extern "C" Prolog_foreign_return_type
-ppl_Polyhedron_get_generators(Prolog_term_ref t_ph, Prolog_term_ref t_glist) {
+ppl_Polyhedron_get_generators(Prolog_term_ref t_ph,
+			      Prolog_term_ref t_glist) {
   try {
     const PPL::Polyhedron* ph = term_to_polyhedron_handle(t_ph);
     CHECK(ph);

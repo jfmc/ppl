@@ -2,6 +2,12 @@
 Coding Standards for the Parma Polyhedra Library
 ================================================
 
+Length of source lines
+----------------------
+
+Avoid source lines longer than 78 characters.
+
+
 Block closures
 --------------
 

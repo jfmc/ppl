@@ -126,9 +126,10 @@ error4() {
   gs.insert(line(x + y + z));
 
   try {
-    // This is an incorrect use of the function C_Polyhedron::C_Polyhedron(gs):
-    // it is illegal to built a polyhedron starting from a system
-    // of generators that does not contain a point. 
+    // This is an incorrect use of the function
+    // C_Polyhedron::C_Polyhedron(gs): it is illegal to built a
+    // polyhedron starting from a system of generators that does not
+    // contain a point.
     C_Polyhedron ph(gs);
   }
   catch (invalid_argument& e) {
@@ -461,9 +462,10 @@ error16() {
   C_Polyhedron ph(1);
 
   try {
-    // This is an invalid use of the function C_Polyhedron::add_constraint(c):
-    // it is illegal to insert a constraints that contains a variable
-    // that is not in the space of the polyhedron.
+    // This is an invalid use of the function
+    // C_Polyhedron::add_constraint(c): it is illegal to insert a
+    // constraints that contains a variable that is not in the space
+    // of the polyhedron.
     ph.add_constraint(y >= 0);
   }
   catch (invalid_argument& e) {
@@ -574,9 +576,10 @@ error20() {
   C_Polyhedron ph(1, C_Polyhedron::EMPTY);
 
   try {
-    // This is an invalid use of the function C_Polyhedron::add_generators(gs):
-    // it is illegal to a system of generators that is dimensional
-    // incompatible with the polyhedron.
+    // This is an invalid use of the function
+    // C_Polyhedron::add_generators(gs): it is illegal to a system of
+    // generators that is dimensional incompatible with the
+    // polyhedron.
     GenSys gs;
     gs.insert(point());
     gs.insert(line(x + y));
@@ -631,9 +634,10 @@ error22() {
   C_Polyhedron ph(2);
 
   try {
-    // This is an invalid use of the function C_Polyhedronn::relation_with(g):
-    // it is illegal to apply this function to a generator that is
-    // not dimensional compatible with the polyhedron.
+    // This is an invalid use of the function
+    // C_Polyhedronn::relation_with(g): it is illegal to apply this
+    // function to a generator that is not dimensional compatible with
+    // the polyhedron.
     Generator g(point(z));
     ph.relation_with(g);
   }
@@ -799,9 +803,9 @@ error28() {
   C_Polyhedron ph(3, C_Polyhedron::EMPTY);
 
   try {
-    // This is an invalid use of the function C_Polyhedron::add_generators(gs):
-    // it is illegal to add a system of generators with no points
-    // to an empty polyhedron. 
+    // This is an invalid use of the function
+    // C_Polyhedron::add_generators(gs): it is illegal to add a system
+    // of generators with no points to an empty polyhedron.
     GenSys gs;
     gs.insert(ray(x + y));
     gs.insert(ray(x - y));

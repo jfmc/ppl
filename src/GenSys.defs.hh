@@ -67,9 +67,10 @@ void swap(Parma_Polyhedra_Library::GenSys& x,
     When inserting generators in a system, dimensions are automatically
     adjusted so that all the generators in the system are defined
     on the same vector space.
-    A system of generators which is meant to define a non-empty polyhedron
-    must include at least one point: the reason is that lines, rays
-    and closure points need a supporting point (they only specify directions).
+    A system of generators which is meant to define a non-empty
+    polyhedron must include at least one point: the reason is that
+    lines, rays and closure points need a supporting point (they only
+    specify directions).
 
     \par
      In all the examples it is assumed that variables

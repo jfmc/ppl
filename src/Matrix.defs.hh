@@ -229,7 +229,8 @@ public:
     without copying the content of the old matrix and assigned
     to \p *this.
   */
-  void resize_no_copy(dimension_type new_n_rows, dimension_type new_n_columns);
+  void resize_no_copy(dimension_type new_n_rows,
+		      dimension_type new_n_columns);
 
   //! Adds \p n columns of zeros to the matrix.
   /*!

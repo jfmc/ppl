@@ -45,7 +45,8 @@ PPL::Matrix::num_lines_or_equalities() const {
 }
 
 
-PPL::Matrix::Matrix(Topology topol, dimension_type n_rows, dimension_type n_columns)
+PPL::Matrix::Matrix(Topology topol,
+		    dimension_type n_rows, dimension_type n_columns)
   : rows(n_rows),
     row_topology(topol),
     row_size(n_columns),
@@ -196,7 +197,8 @@ PPL::Matrix::grow(dimension_type new_n_rows, dimension_type new_n_columns) {
 }
 
 void
-PPL::Matrix::resize_no_copy(dimension_type new_n_rows, dimension_type new_n_columns) {
+PPL::Matrix::resize_no_copy(dimension_type new_n_rows,
+			    dimension_type new_n_columns) {
   dimension_type old_n_rows = rows.size();
   // Note that, if we have `new_n_rows <= old_n_rows' and
   // `new_n_columns >= row_size', the matrix will keep its sortedness.

@@ -244,7 +244,8 @@ private:
   friend class Parma_Polyhedra_Library::ConSys::const_iterator;
   friend class Parma_Polyhedra_Library::Polyhedron;
   friend const Integer&
-  Parma_Polyhedra_Library::operator*(const Constraint& c, const Generator& g);
+  Parma_Polyhedra_Library::operator*(const Constraint& c,
+				     const Generator& g);
   friend const Integer&
   Parma_Polyhedra_Library::reduced_scalar_product(const Constraint& c,
 						  const Generator& g);
