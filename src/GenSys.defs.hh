@@ -299,38 +299,21 @@ public:
   const_iterator end() const;
 
   //! Checks if all the invariants are satisfied.
-  /*!
-    Returns <CODE>true</CODE> if and only if \p *this is a valid system
-    of generators. Namely, \p *this must be a valid Matrix and every
-    row in the matrix must be a valid Generator.
-  */
   bool OK() const;
 
 
 #ifdef PPL_DOXYGEN_INCLUDE_IMPLEMENTATION_DETAILS
-  //! \brief
   //! Writes to \p s an ASCII representation of the internal
   //! representation of \p *this.
-  /*!
-    After invoking the <CODE>Matrix::ascii_dump()</CODE> method,
-    prints the contents of each row, specifying the type
-    of the encoded generator.
-  */
 #endif // PPL_DOXYGEN_INCLUDE_IMPLEMENTATION_DETAILS
-  void ascii_dump(std::ostream& s) const;
+  void ASCII_dump(std::ostream& s) const;
 
 #ifdef PPL_DOXYGEN_INCLUDE_IMPLEMENTATION_DETAILS
-  //! \brief
-  //! Loads from \p s an ASCII representation (as produced by
-  //! \ref ascii_dump) and sets \p *this accordingly.
-  //! Returns <CODE>true</CODE> if successful, <CODE>false</CODE> otherwise.
-  /*!
-    Resizes the matrix of generators using the numbers of rows and columns
-    read from \p s, then initializes the coordinates of each generator
-    and its type reading the contents from \p s.
-  */
+  //! Loads from \p s an ASCII representation (as produced by \ref
+  //! ASCII_dump) and sets \p *this accordingly.  Returns <CODE>true</CODE>
+  //! if successful, <CODE>false</CODE> otherwise.
 #endif // PPL_DOXYGEN_INCLUDE_IMPLEMENTATION_DETAILS
-  bool ascii_load(std::istream& s);
+  bool ASCII_load(std::istream& s);
 
 private:
   friend class Parma_Polyhedra_Library::Polyhedron;
@@ -365,27 +348,9 @@ private:
 				     dimension_type num_dimensions);
 
   //! \brief
-  //! For each unmatched closure point in \p *this, adds the
-  //! corresponding point.
-  /*!
-    It is assumed that the topology of \p *this
-    is <CODE>NOT_NECESSARILY_CLOSED</CODE>.
-  */
-  void add_corresponding_points();
-
-  //! \brief
   //! Returns <CODE>true</CODE> if and only if \p *this
   //! contains one or more points.
   bool has_points() const;
-
-  //! \brief
-  //! For each unmatched point in \p *this, adds the corresponding
-  //! closure point.
-  /*!
-    It is assumed that the topology of \p *this
-    is <CODE>NOT_NECESSARILY_CLOSED</CODE>.
-  */
-  void add_corresponding_closure_points();
 
   //! \brief
   //! Returns <CODE>true</CODE> if and only if \p *this
@@ -405,28 +370,6 @@ private:
   relation_with(const Constraint& c) const;
 
   //! Assigns to a given variable an affine expression.
-  /*!
-    \param v            Index of the column to which the
-                        affine transformation is assigned.
-    \param expr         The numerator of the affine transformation:
-                        \f$\sum_{i = 0}^{n - 1} a_i x_i + b\f$.
-    \param denominator  The denominator of the affine transformation.
-
-    We want to allow affine transformations (see the Introduction) having
-    any rational coefficients. Since the coefficients of the
-    constraints are integers we must also provide an integer \p denominator
-    that will be used as denominator of the affine transformation.
-    The denominator is required to be a positive integer.
-    
-    The affine transformation assigns to each element of \p v -th
-    column the follow expression:
-    \f[
-      \frac{\sum_{i = 0}^{n - 1} a_i x_i + b}
-           {\mathrm{denominator}}.
-    \f]
-
-    \p expr is a constant parameter and unaltered by this computation.
-  */
   void affine_image(dimension_type v,
 		    const LinExpression& expr,
 		    const Integer& denominator);
@@ -437,6 +380,7 @@ private:
   //! Returns the number of rays of the system.
   dimension_type num_rays() const;
 
+  //! \brief
   //! Removes all the invalid lines and rays.
   /*!
     The invalid lines and rays are those with all

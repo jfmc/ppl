@@ -46,7 +46,9 @@ ppl_sicstus_sd_la_LDFLAGS = -no-undefined -module -avoid-version
 ppl_sicstus$(EXEEXT): ppl_sicstus.s.o $(top_builddir)/src/libppl.la
 	spld --main=prolog \
 		--resources=ppl_sicstus.s.o -o $@ \
-		-LD -lstdc++ -L$(top_builddir)/src/.libs -lppl \
+		-LD -lstdc++ \
+		-Wl,-whole-archive -L$(top_builddir)/src/.libs -lppl \
+		-Wl,-no-whole-archive \
 		@extra_libraries@
 
 ppl_sicstus.s.o: ppl_sicstus.pl ppl_sicstus_sd.o

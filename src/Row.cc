@@ -31,6 +31,10 @@ site: http://www.cs.unipr.it/ppl/ . */
 
 namespace PPL = Parma_Polyhedra_Library;
 
+/*!
+  Adds new positions to the implementation of the row
+  obtaining a new row with size \p new_size.
+*/
 void
 PPL::Row::Impl::grow_no_copy(dimension_type new_size) {
   assert(size() <= new_size);
@@ -40,6 +44,10 @@ PPL::Row::Impl::grow_no_copy(dimension_type new_size) {
   }
 }
 
+/*!
+  Destroys elements of the row implementation
+  from position \p new_size to the end.
+*/
 void
 PPL::Row::Impl::shrink(dimension_type new_size) {
   assert(new_size <= size());
@@ -60,6 +68,10 @@ PPL::Row::Impl::copy_construct(const Impl& y) {
   }
 }
 
+/*!
+  Computes the Greatest Common Divisor (GCD) among the elements of
+  the row and normalizes them by the GCD itself.
+*/
 void
 PPL::Row::normalize() {
   Row& x = *this;
@@ -78,6 +90,11 @@ PPL::Row::normalize() {
       exact_div_assign(x[i], tmp_Integer[1]);
 }
 
+/*!
+  In addition to the normalization performed by normalize(), this
+  method ensures that the first non-zero coefficient of lines and
+  equalities is negative.
+*/
 void
 PPL::Row::strong_normalize() {
   Row& x = *this;
@@ -85,7 +102,7 @@ PPL::Row::strong_normalize() {
 
   dimension_type sz = x.size();
   if (x.is_line_or_equality()) {
-    // `first_non_zero' indicates the index of the first
+    //`first_non_zero' indicates the index of the first
     // coefficient of the row different from zero.
     dimension_type first_non_zero;
     for (first_non_zero = 0; first_non_zero < sz; ++first_non_zero)
@@ -100,7 +117,38 @@ PPL::Row::strong_normalize() {
   }
 }
 
-/*! \relates Parma_Polyhedra_Library::Row */
+/*!
+  \relates Parma_Polyhedra_Library::Row
+
+  \param x    A row of coefficients.
+  \param y    Another row.
+
+  \return     The returned absolute value can be \f$0, 1\f$ or \f$2\f$.
+
+  Compares \p x and \p y, where \p x and \p y may be of different size,
+  in which case the "missing" coefficients are assumed to be zero.
+  The comparison is such that:
+  -# equalities are smaller than inequalities;
+  -# lines are smaller than points and rays;
+  -# the ordering is lexicographic;
+  -# the positions compared are, in decreasing order of significance,
+     1, 2, ..., \p size(), 0;
+  -# the result is negative, zero, or positive if x is smaller than,
+     equal to, or greater than y, respectively;
+  -# when \p x and \p y are different, the absolute value of the
+     result is 1 if the difference is due to the coefficient in
+     position 0; it is 2 otherwise.
+
+  When \p x and \p y represent the hyper-planes associated
+  to two equality or inequality constraints, the coefficient
+  at 0 is the known term.
+  In this case, the return value can be characterized as follows:
+  - -2, if \p x is smaller than \p y and they are \e not parallel;
+  - -1, if \p x is smaller than \p y and they \e are parallel;
+  -  0, if \p x and y are equal;
+  - +1, if \p y is smaller than \p x and they \e are parallel;
+  - +2, if \p y is smaller than \p x and they are \e not parallel.
+*/
 int
 PPL::compare(const Row& x, const Row& y) {
   bool x_is_line_or_equality = x.is_line_or_equality();
@@ -172,6 +220,14 @@ PPL::reduced_scalar_product(const Row& x, const Row& y) {
   return tmp_Integer[0];
 }
 
+/*!
+  \param y   The row that will be combined with \p *this object.
+  \param k   The position of \p *this that have to be \f$0\f$.
+
+  Computes a linear combination between \p *this and \p y such
+  that the k-th element of \p *this become \f$0\f$. Then it assigns the
+  resulting row to \p *this and normalizes it.
+*/
 void
 PPL::Row::linear_combine(const Row& y, dimension_type k) {
   Row& x = *this;

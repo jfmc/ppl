@@ -55,116 +55,53 @@ PPL::GenSys::adjust_topology_and_dimension(Topology new_topology,
   dimension_type cols_to_be_added = new_space_dim - old_space_dim;
   Topology old_topology = topology();
 
-  if (cols_to_be_added > 0)
-    if (old_topology != new_topology)
-      if (new_topology == NECESSARILY_CLOSED) {
-	// A NOT_NECESSARILY_CLOSED generator system
-	// can be converted to a NECESSARILY_CLOSED one
-	// only if it does not contain closure points.
-	if (has_closure_points())
-	  return false;
-	// Remove the epsilon column and, after that,
-	// add the missing dimensions. This ensures that
-	// non-zero epsilon coefficients will be cleared.
-	resize_no_copy(num_rows(), old_space_dim + 1);
-	set_necessarily_closed();
+  if (old_topology != new_topology)
+    if (new_topology == NECESSARILY_CLOSED) {
+      // A NOT_NECESSARILY_CLOSED generator system
+      // can be converted to a NECESSARILY_CLOSED one
+      // only if it does not contain closure points.
+      if (has_closure_points())
+	return false;
+      // Remove the column of the epsilon coefficients.
+      resize_no_copy(num_rows(), old_space_dim + 1);
+      set_necessarily_closed();
+      // The minus_epsilon_ray, if present, has been transformed
+      // into an illegal (0-vector) ray.
+      remove_invalid_lines_and_rays();
+      // Only now, if needed, add the missing dimensions.
+      if (cols_to_be_added > 0)
 	add_zero_columns(cols_to_be_added);
-      }
-      else {
-	// A NECESSARILY_CLOSED generator system is converted into
-	// a NOT_NECESSARILY_CLOSED one by adding a further column
-	// and setting the epsilon coordinate of all points to 1.
-	// Note: normalization is preserved.
-	add_zero_columns(++cols_to_be_added);
-	GenSys& gs = *this;
-	dimension_type eps_index = new_space_dim + 1;
-	for (dimension_type i = num_rows(); i-- > 0; )
-	  gs[i][eps_index] = gs[i][0];
-	set_not_necessarily_closed();
-      }
+    }
     else {
-      // Topologies agree: first add the required zero columns ...
+      // A NECESSARILY_CLOSED generator system is converted into
+      // a NOT_NECESSARILY_CLOSED one by adding a further column
+      // and setting the epsilon coordinate of all points to 1.
+      // Note: normalization is preserved.
+      if (cols_to_be_added > 0)
+	add_zero_columns(++cols_to_be_added);
+      else
+	add_zero_columns(1);
+      GenSys& gs = *this;
+      dimension_type eps_index = new_space_dim + 1;
+      for (dimension_type i = num_rows(); i-- > 0; )
+	gs[i][eps_index] = gs[i][0];
+      set_not_necessarily_closed();
+    }
+  else
+    // Topologies agree.
+    // If also dimensions agree, nothing to be done.
+    if (cols_to_be_added > 0) {
+      // First add the required zero columns ...
       add_zero_columns(cols_to_be_added);
       // ... and, if needed, move the epsilon coefficients
       // to the new last column.
       if (old_topology == NOT_NECESSARILY_CLOSED)
 	swap_columns(old_space_dim + 1, new_space_dim + 1);
     }
-  else
-    // Here `cols_to_be_added == 0'.
-    if (old_topology != new_topology)
-      if (new_topology == NECESSARILY_CLOSED) {
-	// A NOT_NECESSARILY_CLOSED generator system
-	// can be converted in to a NECESSARILY_CLOSED one
-	// only if it does not contain closure points.
-	if (has_closure_points())
-	  return false;
-	// We just remove the column of the epsilon coefficients.
-	resize_no_copy(num_rows(), old_space_dim + 1);
-	set_necessarily_closed();
-      }
-      else {
-	// Add the column of the epsilon coefficients
-	// and set the epsilon coordinate of all points to 1.
-	// Note: normalization is preserved.
-	add_zero_columns(1);
-	GenSys& gs = *this;
-	dimension_type eps_index = new_space_dim + 1;
-	for (dimension_type i = num_rows(); i-- > 0; )
-	  gs[i][eps_index] = gs[i][0];
-	set_not_necessarily_closed();
-      }
   // We successfully adjusted dimensions and topology.
   assert(OK());
   return true;
 }
-
-// TODO: would be worth to avoid adding closure points
-// that already are in the system of generators?
-// To do this efficiently we could sort the system and
-// perform insertions keeping its sortedness.
-void
-PPL::GenSys::add_corresponding_closure_points() {
-  assert(!is_necessarily_closed());
-  GenSys& gs = *this;
-  dimension_type n_rows = gs.num_rows();
-  dimension_type eps_index = gs.num_columns() - 1;
-  for (dimension_type i = n_rows; i-- > 0; ) {
-    const Generator& g = gs[i];
-    if (g[eps_index] > 0) {
-      // `g' is a point: adding the closure point.
-      Generator cp = g;
-      cp[eps_index] = 0;
-      // Enforcing normalization.
-      cp.normalize();
-      gs.add_row(cp);
-    }
-  }
-}
-
-
-// TODO: would be worth to avoid adding points
-// that already are in the system of generators?
-// To do this efficiently we could sort the system and
-// perform insertions keeping its sortedness.
-void
-PPL::GenSys::add_corresponding_points() {
-  assert(!is_necessarily_closed());
-  GenSys& gs = *this;
-  dimension_type n_rows = gs.num_rows();
-  dimension_type eps_index = gs.num_columns() - 1;
-  for (dimension_type i = n_rows; i-- > 0; ) {
-    const Generator& g = gs[i];
-    if (g[0] > 0 && g[eps_index] == 0) {
-      // `g' is a closure point: adding the point.
-      // Note: normalization is preserved.
-      Generator p = g;
-      p[eps_index] = p[0];
-      gs.add_row(p);
-    }
-  }
-}
-
 
 bool
 PPL::GenSys::has_closure_points() const {
@@ -193,30 +130,18 @@ PPL::GenSys::has_points() const {
     // is_necessarily_closed() == false.
     dimension_type eps_index = gs.num_columns() - 1;
     for (dimension_type i = num_rows(); i-- > 0; )
-    if (gs[i][eps_index] != 0)
+    if (gs[i][eps_index] > 0)
       return true;
   }
   return false;
 }
 
-
 void
 PPL::GenSys::const_iterator::skip_forward() {
   Matrix::const_iterator gsp_end = gsp->end();
-  if (i != gsp_end) {
-    Matrix::const_iterator i_next = i;
-    ++i_next;
-    if (i_next != gsp_end) {
-      const Generator& cp = static_cast<const Generator&>(*i);
-      const Generator& p = static_cast<const Generator&>(*i_next);
-      if (cp.is_closure_point()
-	  && p.is_point()
-	  && cp.is_matching_closure_point(p))
-	i = i_next;
-    }
-  }
+  while (i != gsp_end && (*this)->is_minus_epsilon_ray())
+    ++i;
 }
-
 
 void
 PPL::GenSys::insert(const Generator& g) {
@@ -299,6 +224,10 @@ PPL::GenSys::num_rays() const {
   return n;
 }
 
+/*!
+  Returns the relations holding between the set of points generated
+  by \p *this and the constraint \p c.
+*/
 PPL::Poly_Con_Relation
 PPL::GenSys::relation_with(const Constraint& c) const {
   // Note: this method is not public and it is the responsibility
@@ -604,6 +533,27 @@ PPL::GenSys::relation_with(const Constraint& c) const {
 }
 
 
+/*!
+  \param v            Index of the column to which the
+                      affine transformation is assigned.
+  \param expr         The numerator of the affine transformation:
+                      \f$\sum_{i = 0}^{n - 1} a_i x_i + b\f$.
+  \param denominator  The denominator of the affine transformation.
+
+  We want to allow affine transformations (see the Introduction) having
+  any rational coefficients. Since the coefficients of the
+  constraints are integers we must also provide an integer \p denominator
+  that will be used as denominator of the affine transformation.
+
+  The affine transformation assigns to each element of \p v -th
+  column the follow expression:
+  \f[
+    \frac{\sum_{i = 0}^{n - 1} a_i x_i + b}
+         {\mathrm{denominator}}.
+  \f]
+
+  \p expr is a constant parameter and unaltered by this computation.
+*/
 void
 PPL::GenSys::affine_image(dimension_type v,
 			  const LinExpression& expr,
@@ -613,7 +563,7 @@ PPL::GenSys::affine_image(dimension_type v,
   // nor the epsilon dimension of NNC polyhedra).
   assert(v > 0 && v <= space_dimension());
   assert(expr.space_dimension() <= space_dimension());
-  assert(denominator > 0);
+  assert(denominator != 0);
 
   dimension_type n_columns = num_columns();
   dimension_type n_rows = num_rows();
@@ -629,15 +579,14 @@ PPL::GenSys::affine_image(dimension_type v,
     std::swap(tmp_Integer[1], row[v]); 
   }
 
-  if (denominator != 1) {
+  if (denominator != 1)
     // Since we want integer elements in the matrix,
-    // we multiply by the value of `denominator'
-    // all the columns of `*this' having an index different from `v'.
+    // we multiply by `denominator' all the columns of `*this'
+    // having an index different from `v'.
     for (dimension_type i = n_rows; i-- > 0; )
       for (dimension_type j = n_columns; j-- > 0; )
 	if (j != v)
 	  x[i][j] *= denominator;
-  }
 
   // If the mapping is not invertible we may have trasformed
   // valid lines and rays into the origin of the space.
@@ -648,9 +597,16 @@ PPL::GenSys::affine_image(dimension_type v,
   x.strong_normalize();
 }
 
+/*!
+  Like <CODE>ConSys::ASCII_dump()</CODE>, this prints the number of
+  rows, the number of columns and value of \p sorted, using the
+  <CODE>Matrix::ASCII_dump()</CODE> method, then prints the contents
+  of all the rows, specifying whether a row represent a line or a
+  point/ray.
+*/
 void
-PPL::GenSys::ascii_dump(std::ostream& s) const {
-  Matrix::ascii_dump(s);
+PPL::GenSys::ASCII_dump(std::ostream& s) const {
+  Matrix::ASCII_dump(s);
   const char separator = ' ';
   const GenSys& x = *this;
   for (dimension_type i = 0; i < x.num_rows(); ++i) {
@@ -675,9 +631,15 @@ PPL::GenSys::ascii_dump(std::ostream& s) const {
   }
 }
 
+/*!
+  Like <CODE>ConSys::ASCII_load()</CODE>, this uses
+  <CODE>Matrix::ASCII_load()</CODE> to resize the matrix of generators
+  taking information from \p s, then initializes the coefficients of
+  each generator and its type (line or ray/point).
+*/
 bool
-PPL::GenSys::ascii_load(std::istream& s) {
-  if (!Matrix::ascii_load(s))
+PPL::GenSys::ASCII_load(std::istream& s) {
+  if (!Matrix::ASCII_load(s))
     return false;
 
   GenSys& x = *this;
@@ -738,6 +700,12 @@ PPL::GenSys::remove_invalid_lines_and_rays() {
   gs.erase_to_end(n_rows);
 }
 
+/*!
+  Returns <CODE>true</CODE> if and only if \p *this actually represents
+  a system of generators. So, \p *this must satisfy some rule:
+  -# it must be a valid Matrix;
+  -# every row in the matrix must be a valid generator.
+*/
 bool
 PPL::GenSys::OK() const {
   // A GenSys must be a valid Matrix.
@@ -755,7 +723,6 @@ PPL::GenSys::OK() const {
   return true;
 }
 
-/*! \relates Parma_Polyhedra_Library::GenSys */
 std::ostream&
 PPL::operator<<(std::ostream& s, const GenSys& gs) {
   GenSys::const_iterator i = gs.begin();

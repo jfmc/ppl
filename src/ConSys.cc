@@ -65,28 +65,9 @@ PPL::ConSys::adjust_topology_and_dimension(Topology new_topology,
 	if (has_strict_inequalities())
 	  return false;
 	// Since there were no strict inequalities,
-	// the only constraints that may have a non-zero epsilon coefficient
-	// are the eps-leq-one and the eps-geq-zero constraints.
-	// If they are present, we erase these rows, so that the
-	// epsilon column will only contain zeroes: as a consequence,
+	// all epsilon coefficients are equal to zero
+	// and we do not need to clear them:
 	// we just decrement the number of columns to be added.
-	ConSys& cs = *this;
-	dimension_type eps_index = old_space_dim + 1;
-	dimension_type cs_num_rows = cs.num_rows();
-	bool was_sorted = false;
-	if (cs.is_sorted()) {
-	  was_sorted = true;
-	  cs.set_sorted(false);
-	}
-	for (dimension_type i = cs_num_rows; i-- > 0; )
-	  if (cs[i][eps_index] != 0) {
-	    --cs_num_rows;
-	    std::swap(cs[i], cs[cs_num_rows]);
-	  }
-	cs.erase_to_end(cs_num_rows);
-	// If `cs' was sorted we sort it again.
-	if (was_sorted)
-	  cs.sort_rows();
 	if (--cols_to_be_added > 0)
 	  add_zero_columns(cols_to_be_added);
 	set_necessarily_closed();
@@ -127,6 +108,25 @@ PPL::ConSys::adjust_topology_and_dimension(Topology new_topology,
   // We successfully adjusted dimensions and topology.
   assert(OK());
   return true;
+}
+
+void
+PPL::ConSys::add_corresponding_nonstrict_inequalities() {
+  assert(!is_necessarily_closed());
+  ConSys& cs = *this;
+  dimension_type n_rows = cs.num_rows();
+  dimension_type eps_index = cs.num_columns() - 1;
+  for (dimension_type i = n_rows; i-- > 0; ) {
+    const Constraint& c = cs[i];
+    if (c[eps_index] < 0) {
+      // `c' is a strict inequality: adding the non-strict inequality.
+      Constraint nsic = c;
+      nsic[eps_index] = 0;
+      // Enforcing normalization.
+      nsic.normalize();
+      cs.add_row(nsic);
+    }
+  }
 }
 
 bool
@@ -195,10 +195,40 @@ PPL::ConSys::num_equalities() const {
 void
 PPL::ConSys::const_iterator::skip_forward() {
   Matrix::const_iterator csp_end = csp->end();
+  assert(i != csp_end);
+  if (i->is_necessarily_closed())
+    ++i;
+  else {
+    // If the current constraint is a strict inequality
+    // and the next one is the corresponding non-strict inequality,
+    // then we skip the next one.
+    Matrix::const_iterator i_previous = i;
+    ++i;
+    if (i != csp_end) {
+      const Constraint& sc = static_cast<const Constraint&>(*i_previous);
+      const Constraint& nsc = static_cast<const Constraint&>(*i);
+      if (sc.is_strict_inequality()
+	  && nsc.is_nonstrict_inequality()
+	  && sc.is_matching_strict_inequality(nsc))
+	++i;
+    }
+  }
+  // Also skip the trivially true constraints.
   while (i != csp_end && (*this)->is_trivial_true())
     ++i;
 }
 
+void
+PPL::ConSys::const_iterator::skip_trivial_true_constraints() {
+  Matrix::const_iterator csp_end = csp->end();
+  while (i != csp_end && (*this)->is_trivial_true())
+    ++i;
+}
+
+/*!
+  Returns <CODE>true</CODE> if the given generator \p g satisfies
+  all the constraints in \p *this system.
+*/
 bool
 PPL::ConSys::satisfies_all_constraints(const Generator& g) const {
   assert(g.space_dimension() <= space_dimension());
@@ -211,45 +241,26 @@ PPL::ConSys::satisfies_all_constraints(const Generator& g) const {
     sp_fp = PPL::operator*;
   else
     sp_fp = PPL::reduced_scalar_product;
-  const ConSys& cs = *this;
 
-  if (cs.is_necessarily_closed()) {
-    if (g.is_line()) {
-      // Lines must saturate all constraints.
-      for (dimension_type i = cs.num_rows(); i-- > 0; )
-	if (sp_fp(g, cs[i]) != 0)
+  const ConSys& cs = *this;
+  if (cs.is_necessarily_closed())
+    for (dimension_type i = cs.num_rows(); i-- > 0; ) {
+      const Constraint& c = cs[i];
+      int sp_sign = sgn(sp_fp(g, c));
+      if (c.is_inequality()) {
+	// `c' is a non-strict inequality.
+	if (sp_sign < 0)
+	  return false;
+      }
+      else
+	// `c' is an equality.
+	if (sp_sign != 0)
 	  return false;
     }
-    else
-      // `g' is either a ray, a point or a closure point.
-      for (dimension_type i = cs.num_rows(); i-- > 0; ) {
-	const Constraint& c = cs[i];
-	int sp_sign = sgn(sp_fp(g, c));
-	if (c.is_inequality()) {
-	  // As `cs' is necessarily closed,
-	  // `c' is a non-strict inequality.
-	  if (sp_sign < 0)
-	    return false;
-	}
-	else
-	  // `c' is an equality.
-	  if (sp_sign != 0)
-	    return false;
-      }
-  }
   else
-    // `cs' is not necessarily closed.
-    switch (g.type()) {
-
-    case Generator::LINE:
-      // Lines must saturate all constraints.
-      for (dimension_type i = cs.num_rows(); i-- > 0; )
-	if (sp_fp(g, cs[i]) != 0)
-	  return false;
-      break;
-
-    case Generator::POINT:
-      // Have to perform the special test
+    // `cs' is NON-necessarily closed.
+    if (g.is_point())
+      // Generator `g' is a point: have to perform the special test
       // when dealing with a strict inequality.
       for (dimension_type i = cs.num_rows(); i-- > 0; ) {
 	const Constraint& c = cs[i];
@@ -269,11 +280,8 @@ PPL::ConSys::satisfies_all_constraints(const Generator& g) const {
 	  break;
 	}
       }
-      break;
-
-    case Generator::RAY:
-      // Intentionally fall through.
-    case Generator::CLOSURE_POINT:
+    else
+      // Generator `g' is a line, ray or closure point.
       for (dimension_type i = cs.num_rows(); i-- > 0; ) {
 	const Constraint& c = cs[i];
 	int sp_sign = sgn(sp_fp(g, c));
@@ -287,14 +295,39 @@ PPL::ConSys::satisfies_all_constraints(const Generator& g) const {
 	  if (sp_sign != 0)
 	    return false;
       }
-      break;
-    }
-
-  // If we reach this point, `g' satisfies all constraints.
+  // `g' satisfies all constraints.
   return true;
 }
 
 
+/*!
+  \param v            Index of the column to which the
+                      affine transformation is substituted.
+  \param expr         The numerator of the affine transformation:
+                      \f$\sum_{i = 0}^{n - 1} a_i x_i + b\f$
+  \param denominator  The denominator of the affine transformation.
+
+  We want to allow affine transformations (see the Section \ref
+  operations) having any rational coefficients. Since the coefficients
+  of the constraints are integers we must also provide an integer
+  \p denominator that will be used as denominator of the affine
+  transformation.
+
+  The affine transformation substitutes the matrix of constraints
+  by a new matrix whose elements \f${a'}_{ij}\f$ are built from
+  the old one \f$a_{ij}\f$ as follows:
+  \f[
+    {a'}_{ij} =
+    \begin{cases}
+    a_{ij} * \mathrm{denominator} + a_{iv} * \mathrm{expr}[j]
+    \quad \text{for } j \neq v; \\
+    \mathrm{expr}[v] * a_{iv}
+    \quad \text{for } j = v.
+    \end{cases}
+  \f]
+
+  \p expr is a constant parameter and unaltered by this computation.
+*/
 void
 PPL::ConSys::affine_preimage(dimension_type v,
 			     const LinExpression& expr,
@@ -304,7 +337,7 @@ PPL::ConSys::affine_preimage(dimension_type v,
   // nor the epsilon dimension of NNC polyhedra).
   assert(v > 0 && v <= space_dimension());
   assert(expr.space_dimension() <= space_dimension());
-  assert(denominator > 0);
+  assert(denominator != 0);
 
   dimension_type n_columns = num_columns();
   dimension_type n_rows = num_rows();
@@ -348,9 +381,15 @@ PPL::ConSys::affine_preimage(dimension_type v,
   x.strong_normalize();
 }
 
+/*!
+  Prints the number of rows, the number of columns and the value of \p
+  sorted invoking the <CODE>Matrix::ASCII_dump()</CODE> method, then
+  prints the contents of all the rows, specifying whether a row is an
+  equality or an inequality.
+*/
 void
-PPL::ConSys::ascii_dump(std::ostream& s) const {
-  Matrix::ascii_dump(s);
+PPL::ConSys::ASCII_dump(std::ostream& s) const {
+  Matrix::ASCII_dump(s);
   const char separator = ' ';
   const ConSys& x = *this;
   for (dimension_type i = 0; i < x.num_rows(); ++i) {
@@ -372,9 +411,15 @@ PPL::ConSys::ascii_dump(std::ostream& s) const {
   }
 }
 
+/*!
+  Resizes the matrix of constraints using number of rows and number of
+  columns read from \p s, then initializes the coefficients of each
+  constraint and its type (equality or inequality) reading the
+  contents from \p s.
+*/
 bool
-PPL::ConSys::ascii_load(std::istream& s) {
-  if (!Matrix::ascii_load(s))
+PPL::ConSys::ASCII_load(std::istream& s) {
+  if (!Matrix::ASCII_load(s))
     return false;
 
   std::string str;
@@ -414,12 +459,16 @@ PPL::ConSys::ascii_load(std::istream& s) {
   return true;
 }
 
+/*!
+  Returns <CODE>true</CODE> if and only if \p *this is a valid Matrix.
+  No other checks can be performed here, since any valid Row object
+  in the matrix is also a valid Constraint object.
+*/
 bool
 PPL::ConSys::OK() const {
   return Matrix::OK();
 }
 
-/*! \relates Parma_Polyhedra_Library::ConSys */
 std::ostream&
 PPL::operator<<(std::ostream& s, const ConSys& cs) {
   ConSys::const_iterator i = cs.begin();

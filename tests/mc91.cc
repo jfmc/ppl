@@ -23,12 +23,12 @@ site: http://www.cs.unipr.it/ppl/ . */
 
 #include "ppl_test.hh"
 
-using namespace std;
-using namespace Parma_Polyhedra_Library;
-
 #ifndef NOISY
 #define NOISY 0
 #endif
+
+using namespace std;
+using namespace Parma_Polyhedra_Library;
 
 typedef Determinate<C_Polyhedron> DCS;
 
@@ -40,9 +40,7 @@ typedef AskTell<DCS> ACS;
 //typedef AskTell<PowerSet<PowerSet<DCS> > > APPCS;
 
 int
-main() {
-  set_handlers();
-
+main() try {
   Variable x(0);
   Variable y(1);
 
@@ -55,60 +53,42 @@ main() {
   ph2.add_constraint(y == x-10);
 
   DCS d1(ph1);
-#if NOISY
   cout << d1 << endl;
-#endif
 
   DCS d2(ph2);
-#if NOISY
   cout << d2 << endl;
-#endif
 
   DCS d3 = d1;
   d3.upper_bound_assign(d2);
-#if NOISY
   cout << d3 << endl;
-#endif
 
-  PCS p1(2);
+  PCS p1;
   p1.inject(d1);
-#if NOISY
   cout << p1 << endl;
-#endif
 
-  PCS p2(2);
+  PCS p2;
   p2.inject(d2);
-#if NOISY
   cout << p2 << endl;
-#endif
 
   p1.upper_bound_assign(p2);
-#if NOISY
   cout << p1 << endl;
-#endif
 
   p1.meet_assign(p2);
-#if NOISY
   cout << p1 << endl;
-#endif
 
   ACS a1;
   a1.inject(d1, d2);
-#if NOISY
   cout << a1 << endl;
-#endif
 
   C_Polyhedron top(2);
   C_Polyhedron y_91(2);
-#if NOISY
   y_91.add_constraint(y == 91);
-#endif
 
   ACS a2;
   a2.inject(top, y_91);
-#if NOISY
   cout << a2 << endl;
-#endif
-
-  return 0;
+}
+catch(std::exception& e) {
+  cerr << "EXCEPTION!!!" << endl
+       << e.what() << endl;
 }

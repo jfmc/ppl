@@ -42,21 +42,6 @@ max_space_dimension() {
   return std::numeric_limits<dimension_type>::max() - 1;
 }
 
-//! Relation operators.
-enum Relation_Operator {
-  //! Less than.
-  PPL_LT,
-  //! Less than or equal to.
-  PPL_LE,
-  //! Equal to.
-  PPL_EQ,
-  //! Greater than or equal to.
-  PPL_GE,
-  //! Greater than.
-  PPL_GT
-};
-
-
 #ifdef PPL_DOXYGEN_INCLUDE_IMPLEMENTATION_DETAILS
 //! An array of temporaries used to avoid unnecessary memory allocation.
 #endif

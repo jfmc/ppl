@@ -84,10 +84,9 @@ PowerSet<CS>::size() const {
 }
 
 template <typename CS>
-PowerSet<CS>::PowerSet(dimension_type num_dimensions, bool universe)
-  : space_dim(num_dimensions) {
-  if (universe)
-    sequence.push_back(CS(num_dimensions, true));
+PowerSet<CS>::PowerSet()
+  : space_dim(0) {
+  sequence.push_back(CS());
 }
 
 template <typename CS>
@@ -225,8 +224,7 @@ operator*(const PowerSet<CS>& x, const PowerSet<CS>& y) {
 template <typename CS>
 void
 PowerSet<CS>::meet_assign(const PowerSet<CS>& y) {
-  // We let others throw an exception if space_dim != y.space_dim.
-  PowerSet<CS> z(space_dim);
+  PowerSet<CS> z;
   const PowerSet<CS>& x = *this;
   for (typename PowerSet<CS>::const_iterator xi = x.begin(),
 	 xend = x.end(); xi != xend; ++xi) {

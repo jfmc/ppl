@@ -123,6 +123,14 @@ PPL::Generator::line(const LinExpression& e) {
   return g;
 }
 
+PPL::Generator
+PPL::Generator::construct_zero_dim_minus_epsilon_ray() {
+  Generator r = ray(- Variable(0));
+  r.set_not_necessarily_closed();
+  r.set_is_ray_or_point_or_inequality();
+  return r;
+}
+
 std::ostream&
 PPL::operator<<(std::ostream& s, const Generator& g) {
   bool needed_divisor = false;
@@ -189,41 +197,10 @@ PPL::operator<<(std::ostream& s, const Generator& g) {
 }
 
 bool
-PPL::Generator::is_matching_closure_point(const Generator& p) const {
-  assert(topology() == p.topology()
-	 && space_dimension() == p.space_dimension()
-	 && type() == CLOSURE_POINT
-	 && p.type() == POINT);
-  const Generator& cp = *this;
-  if (cp[0] == p[0]) {
-    // Divisors are equal: we can simply compare coefficients
-    // (disregarding the epsilon coefficient).
-    for (dimension_type i = cp.size() - 2; i > 0; --i)
-      if (cp[i] != p[i])
-	return false;
-    return true;
-  }
-  else {
-    // Divisors are different: divide them by their GCD
-    // to simplify the following computation.
-    gcd_assign(tmp_Integer[1], cp[0], p[0]);
-    bool rel_prime = (tmp_Integer[1] == 1);
-    if (!rel_prime) {
-      exact_div_assign(tmp_Integer[2], cp[0], tmp_Integer[1]);
-      exact_div_assign(tmp_Integer[3], p[0], tmp_Integer[1]);
-    }
-    const Integer& cp_div = rel_prime ? cp[0] : tmp_Integer[2];
-    const Integer& p_div = rel_prime ? p[0] : tmp_Integer[3];
-    for (dimension_type i = cp.size() - 2; i > 0; --i) {
-      tmp_Integer[4] = cp[i] * p_div;
-      tmp_Integer[5] = p[i] * cp_div;
-      if (tmp_Integer[4] != tmp_Integer[5])
-	return false;
-    }
-    return true;
-  }
+PPL::Generator::is_minus_epsilon_ray() const {
+  assert(!is_necessarily_closed());
+  return is_ray() && ((*this)[size() - 1] < 0);
 }
-
 
 bool
 PPL::Generator::OK() const {
@@ -255,8 +232,6 @@ PPL::Generator::OK() const {
 
   switch (g.type()) {
   case LINE:
-    // Intentionally fall through.
-  case RAY:
     if (g[0] != 0) {
 #ifndef NDEBUG
       cerr << "Lines must have a zero inhomogeneous term!"
@@ -266,11 +241,38 @@ PPL::Generator::OK() const {
     }
     if (!g.is_necessarily_closed() && g[size() - 1] != 0) {
 #ifndef NDEBUG
-      cerr << "Lines and rays must have a zero coefficient "
+      cerr << "Lines must have a zero coefficient "
 	   << "for the epsilon dimension!"
 	   << endl;
 #endif
       return false;
+    }
+    break;
+  case RAY:
+    if (g[0] != 0) {
+#ifndef NDEBUG
+      cerr << "Rays must have a zero inhomogeneous term!"
+	   << endl;
+#endif
+      return false;
+    }
+    if (!g.is_necessarily_closed() && g[size() - 1] != 0) {
+      // Check whether it is the minus_epsilon_ray.
+      bool is_minus_epsilon_ray = (g[size() - 1] < 0);
+      if (is_minus_epsilon_ray)
+	for (dimension_type i = size() - 1; i-- > 1; )
+	  if (g[i] != 0) {
+	    is_minus_epsilon_ray = false;
+	    break;
+	  }
+      if (!is_minus_epsilon_ray) {
+#ifndef NDEBUG
+	cerr << "Rays must have a zero coefficient "
+	     << "for the epsilon dimension!"
+	     << endl;
+#endif
+	return false;
+      }
     }
     // The following test is correct, since we already checked
     // that the epsilon coordinate is zero.

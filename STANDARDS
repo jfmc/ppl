@@ -31,21 +31,20 @@ extern "C" {
 
 3)
 
-#ifndef PPL_Class_defs_hh
+#ifndef _Class_defs_hh
 
 ...
 
-#endif // !defined(PPL_Class_defs_hh)
+#endif // !defined(_Class_defs_hh)
 
 
 Namespace indentation
 ---------------------
 
 The entire library is in its own namespace.  We sometimes specialize
-std::swap() and std::swap_iter().  Other namespaces may be involved
-but only in restricted contexts.  Therefore, we have unindented
-namespace-level declarations, thus saving some precious horizontal
-space.  For example:
+std::swap() and std::swap_iter().  No other namespaces are involved.
+Therefore, we have unindented namespace-level declarations, thus
+saving some precious horizontal space.  For example:
 
 namespace Parma_Polyhedra_Library {
 
@@ -53,8 +52,7 @@ non-empty lines here start at column 0;
 
 } // namespace Parma_Polyhedra_Library
 
-If you use emacs, you may want to put the following two lines in your
-.emacs:
+If you use emacs the following two lines may interest you:
 
 ;; Disable indentation when in namespace blocks.
 (c-set-offset 'innamespace 0)
@@ -69,8 +67,7 @@ Standards for Documenting the Project with Doxygen
 
      //! Brief comment for class C.
      class C {
-       ...
-     };
+       ....
 
    or, if the comment is multi-line, as follows:
 
@@ -78,8 +75,7 @@ Standards for Documenting the Project with Doxygen
      //! A brief comment for class C, that is a bit too long
      //! to be placed in a single line.
      class C {
-       ...
-     };
+       ....
 
 2) When needed or useful, brief comments should be followed
    by detailed Doxygen comments.
@@ -90,15 +86,14 @@ Standards for Documenting the Project with Doxygen
 	Even more details.
      */
      class C {
-       ...
-     };
+       ....
 
    In the produced documentation, the brief comment will be
    automatically repeated just before the detailed comment,
    so that bare repetitions should be avoided.
 
 3) In the source files, detailed comments should be placed
-   immediately after the brief ones, so that all the documentation
+   immediately after the brief ones, so that ALL the documentation
    pertinent to a code entity is kept in a single file
    (typically, the *.defs.hh file).
 
@@ -114,7 +109,7 @@ Standards for Documenting the Project with Doxygen
    (but that are useful for the developers) should be surrounded by
 
      #ifdef PPL_DOXYGEN_INCLUDE_IMPLEMENTATION_DETAILS
-	//! ... doxygen comments ...
+	// ... doxygen comments ...
      #endif // PPL_DOXYGEN_INCLUDE_IMPLEMENTATION_DETAILS
 
    so that they will only appear in the developer's reference.
@@ -122,23 +117,11 @@ Standards for Documenting the Project with Doxygen
    (and should therefore be avoided) when documenting:
     - a private member of a class (because private members never
       appear in the user manual);
-    - a public member of a class that is not documented
+    - a public member of a class that is NOT documented
       (because even the documented members of an undocumented
-      class are automatically filtered out of the user manual).
+       class are automatically filtered out of the user manual).
 
-5) Merging multiple comment blocks is not allowed by Doxygen.
-   Thus, the technique described in point 4) above is useless
-   when we want an end-user comment block to be integrated,
-   in the developer's reference only, by further comments.
-   In such a case, a single comment block should be used as follows:
-
-     // ... doxygen comments for both user and developer ...
-     // \if Include_Implementation_Details
-     // ... doxygen comments for developer only ...
-     // \endif
-     // ... doxygen comments for both user and developer ...
-
-6) The documentation of those functions that are neither methods
+5) The documentation of those functions that are neither methods
    nor friends of a given class, but are related in some way to that
    class, should be made part of the documentation of the class.
    This is obtained by using the Doxygen \relates special command

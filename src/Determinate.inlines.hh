@@ -67,9 +67,9 @@ Determinate<PH>::Rep::is_shared() const {
 }
 
 template <typename PH>
-Determinate<PH>::Determinate(dimension_type num_dimensions, bool universe)
-  : prep(new Rep(num_dimensions,
-		 universe ? Polyhedron::UNIVERSE : Polyhedron::EMPTY)) {
+Determinate<PH>::Determinate(dimension_type num_dimensions,
+			     Polyhedron::Degenerate_Kind kind)
+  : prep(new Rep(num_dimensions, kind)) {
   prep->new_reference();
 }
 
@@ -115,19 +115,6 @@ Determinate<PH>::mutate() {
     prep = new Rep(prep->ph);
     prep->new_reference();
   }
-}
-
-template <typename PH>
-const PH&
-Determinate<PH>::polyhedron() const {
-  return prep->ph;
-}
-
-template <typename PH>
-PH&
-Determinate<PH>::polyhedron() {
-  mutate();
-  return prep->ph;
 }
 
 template <typename PH>

@@ -13,7 +13,7 @@ of this license document, but changing it is not allowed.
 
 
 
-<H1>Preamble</H1>
+<H2>Preamble</H2>
 
 <P>
   The licenses for most software are designed to take away your
@@ -81,7 +81,7 @@ modification follow.
 </P>
 
 
-<H1>TERMS AND CONDITIONS FOR COPYING, DISTRIBUTION AND MODIFICATION</H1>
+<H2>TERMS AND CONDITIONS FOR COPYING, DISTRIBUTION AND MODIFICATION</H2>
 
 
 <P>
@@ -372,11 +372,13 @@ PROGRAMS), EVEN IF SUCH HOLDER OR OTHER PARTY HAS BEEN ADVISED OF THE
 POSSIBILITY OF SUCH DAMAGES.
 
 <P>
-<STRONG>END OF TERMS AND CONDITIONS</STRONG>
-<P>
 
 
-<H1>How to Apply These Terms to Your New Programs</H1>
+<H2>END OF TERMS AND CONDITIONS</H2>
+
+
+
+<H2>How to Apply These Terms to Your New Programs</H2>
 
 <P>
   If you develop a new program, and you want it to be of the greatest
@@ -430,10 +432,10 @@ for details.
 </PRE>
 
 <P>
-The hypothetical commands <CODE>`show w'</CODE> and <CODE>`show c'</CODE> should show
+The hypothetical commands <SAMP>`show w'</SAMP> and <SAMP>`show c'</SAMP> should show
 the appropriate parts of the General Public License.  Of course, the
-commands you use may be called something other than <CODE>`show w'</CODE> and
-<CODE>`show c'</CODE>; they could even be mouse-clicks or menu items--whatever
+commands you use may be called something other than <SAMP>`show w'</SAMP> and
+<SAMP>`show c'</SAMP>; they could even be mouse-clicks or menu items--whatever
 suits your program.
 
 </P>

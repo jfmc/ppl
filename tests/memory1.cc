@@ -49,45 +49,25 @@ compute_open_hypercube_generators(dimension_type dimension) {
   (void) hypercube.generators();
 }
 
-#define LIMIT(WHAT) \
-do { \
-  if (getrlimit(RLIMIT_AS, &t) != 0) { \
-    cerr << "getrlimit failed: " << strerror(errno) << endl; \
-    exit(1); \
-  } \
-  t.rlim_cur = bytes; \
-  if (setrlimit(RLIMIT_AS, &t) != 0) { \
-    cerr << "setrlimit failed: " << strerror(errno) << endl; \
-    exit(1); \
-  } \
-} while(0)
-
 void
-limit_memory(unsigned long bytes) {
+limit_virtual_memory(unsigned long bytes) {
   struct rlimit t;
-#if HAVE_DECL_RLIMIT_DATA
-  // Limit heap size.
-  LIMIT(RLIMIT_DATA);
-#endif
-#if HAVE_DECL_RLIMIT_RSS
-  // Limit resident set size.
-  LIMIT(RLIMIT_RSS);
-#endif
-#if HAVE_DECL_RLIMIT_VMEM
-  // Limit mapped memory (brk + mmap).
-  LIMIT(RLIMIT_VMEM);
-#endif
-#if HAVE_DECL_RLIMIT_AS
-  // Limit virtual memory.
-  LIMIT(RLIMIT_AS);
-#endif
+  if (getrlimit(RLIMIT_AS, &t) != 0) {
+    cerr << "getrlimit failed: " << strerror(errno) << endl;
+    exit(1);
+  }
+  t.rlim_cur = bytes;
+  if (setrlimit(RLIMIT_AS, &t) != 0) {
+    cerr << "setrlimit failed: " << strerror(errno) << endl;
+    exit(1);
+  }
 }
 
 bool
 guarded_compute_open_hypercube_generators(dimension_type dimension,
 					  unsigned long max_memory_in_bytes) {
   try {
-    limit_memory(max_memory_in_bytes);
+    limit_virtual_memory(max_memory_in_bytes);
     compute_open_hypercube_generators(dimension);
     return true;
   }

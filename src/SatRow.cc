@@ -173,6 +173,17 @@ PPL::SatRow::prev(int position) const {
 }
 
 
+/*!
+  Compares \p x with \p y starting from the least significant bits.
+  The ordering is total and has the following property: if \p x and \p y
+  are two rows seen as sets of naturals, if \p x is a strict subset
+  of \p y, then \p x comes before \p y.
+
+  Returns
+  - -1 if \p x comes before \p y in the ordering;
+  -  0 if \p x and \p y are equal;
+  -  1 if \p x comes after \p y in the ordering.
+*/
 int
 PPL::compare(const SatRow& x, const SatRow& y) {
   size_t x_size = mpz_size(x.vec);

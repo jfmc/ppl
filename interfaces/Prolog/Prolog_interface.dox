@@ -23,7 +23,8 @@ site: http://www.cs.unipr.it/ppl/ . */
 
 /*! \page Prolog_Interface Prolog Interface
 
-\section PI_Introduction Introduction
+
+\subsection PI_Introduction Introduction
 
 The Parma Polyhedra Library comes equipped with a Prolog interface.
 Despite the lack of standardization of Prolog's foreign language interfaces,
@@ -38,7 +39,7 @@ of the Prolog interface are compiled and installed.
 Section \ref PI_SD_Features illustrates the system-dependent
 features of the interface for all the supported systems.
 
-\section PI_SI_Features System-Independent Features
+\subsection PI_SI_Features System-Independent Features
 
 The Prolog interface provides access to the PPL polyhedra.
 A general introduction to convex polyhedra, their representation in the PPL
@@ -105,8 +106,8 @@ The specification uses the following grammar rules:
 
  Generator   --> point(LinExpr)		point
             | point(LinExpr, number)	point
-            | closure_point(LinExpr)	closure point
-            | closure_point(LinExpr, number)
+            | closure-point(LinExpr)	closure point
+            | closure-point(LinExpr, number)
 					closure point
               (Int is the denominator so that the point or
                closure point is defined by Expr/Int.)
@@ -236,9 +237,9 @@ We first give some general information about using the interface.
   If you just have  to compute the poly-hull of two polyhedra, then use
   <CODE>ppl_Polyhedron_poly_hull_assign_and_minimize/2</CODE>.
 
-<H2><CODE>
+<H4><CODE>
   ppl_new_Polyhedron_from_dimension(+Topology, +Integer, -Handle)
-</CODE></H2>
+</CODE></H4>
 
    Creates a new universe C or NNC polyhedron \f$\cP\f$,
    depending on the value of <CODE>Topology</CODE>,
@@ -251,10 +252,10 @@ We first give some general information about using the interface.
    creates the C polyhedron defining the 3-dimensional vector space
    \f$\Rset^3\f$ with \p X bound to a valid handle for accessing it.
 
-<H2><CODE>
+<H4><CODE>
   ppl_new_Polyhedron_empty_from_dimension(+Topology, +Integer, -Handle)
 </CODE>
-</H2>
+</H4>
 
    Creates a new empty C or NNC polyhedron \f$\cP\f$,
    depending on the value of <CODE>Topology</CODE>,
@@ -267,10 +268,10 @@ We first give some general information about using the interface.
    creates an empty NNC polyhedron embedded in \f$\Rset^3\f$ with
    \p X bound to a valid handle for accessing it.
 
-<H2><CODE>
+<H4><CODE>
 ppl_new_Polyhedron_from_Polyhedron(+Topology_1, +Handle_1,
                                    +Topology_2, -Handle_2)
-</CODE></H2>
+</CODE></H4>
 
    If <CODE>Handle_1</CODE> refers to a C or NNC polyhedron \f$\cP_1\f$
    (depending on the value of <CODE>Topology_1</CODE>),
@@ -293,30 +294,30 @@ ppl_new_Polyhedron_from_Polyhedron(+Topology_1, +Handle_1,
    care must be taken that the source polyhedron referenced by
    <CODE>Handle1</CODE> is topologically closed.
 
-<H2><CODE>
+<H4><CODE>
    ppl_new_Polyhedron_from_constraints(+Topology,
                    +Constraint_System, -Handle)
-</CODE></H2>
+</CODE></H4>
 
    Creates a polyhedron \f$\cP\f$ represented by
    <CODE>Constraint_System</CODE> with topology C or NNC,
    depending on the value of <CODE>Topology</CODE>.
    <CODE>Handle</CODE> is unified with the handle for \f$\cP\f$.
 
-<H2><CODE>
+<H4><CODE>
    ppl_new_Polyhedron_from_generators(+Topology,
                    +Generator_System, -Handle)
-</CODE></H2>
+</CODE></H4>
 
    Creates a polyhedron \f$\cP\f$ represented by
    <CODE>Generator_System</CODE> with topology C or NNC,
    depending on the value of <CODE>Topology</CODE>.
    <CODE>Handle</CODE> is unified with the handle for \f$\cP\f$.
 
-<H2><CODE>
+<H4><CODE>
    ppl_new_Polyhedron_from_bounding_box(+Topology,
                    +Box, -Handle)
-</CODE></H2>
+</CODE></H4>
 
    Creates a polyhedron \f$\cP\f$ represented by <CODE>Box</CODE>
    with topology C or NNC,
@@ -326,98 +327,86 @@ ppl_new_Polyhedron_from_Polyhedron(+Topology_1, +Handle_1,
    can be included in an interval in <CODE>Box</CODE>
    only if <CODE>Topology</CODE> is <CODE>nnc</CODE>.
 
-<H2><CODE>ppl_delete_Polyhedron(+Handle)</CODE></H2>
+<H4><CODE>ppl_delete_Polyhedron(+Handle)</CODE></H4>
 
    Deletes the polyhedron referenced by <CODE>Handle</CODE>.
    After execution,
    <CODE>Handle</CODE> is no longer a valid handle for a PPL polyhedron.
 
-<H2><CODE>ppl_Polyhedron_space_dimension(+Handle, -Integer)</CODE></H2>
+<H4><CODE>ppl_Polyhedron_space_dimension(+Handle, -Integer)</CODE></H4>
 
    Unifies the space dimension of the polyhedron referenced by
    <CODE>Handle</CODE> with <CODE>Integer</CODE>.
 
-<H2><CODE>ppl_Polyhedron_intersection_assign(+Handle_1, +Handle_2)</CODE></H2>
-<H2><CODE>ppl_Polyhedron_intersection_assign_and_minimize(+Handle_1,
-                     +Handle_2)</CODE></H2>
+<H4><CODE>ppl_Polyhedron_intersection_assign(+Handle_1, +Handle_2)</CODE></H4>
+<H4><CODE>ppl_Polyhedron_intersection_assign_and_minimize(+Handle_1,
+                     +Handle_2)</CODE></H4>
 
    Assign to the polyhedron referenced by <CODE>Handle_1</CODE>
    its intersection with the polyhedra referenced by <CODE>Handle_2</CODE>.
 
-<H2><CODE>ppl_Polyhedron_poly_hull_assign(+Handle_1, +Handle_2)</CODE></H2>
-<H2><CODE>ppl_Polyhedron_poly_hull_assign_and_minimize(+Handle_1,
-               +Handle_2)</CODE></H2>
+<H4><CODE>ppl_Polyhedron_poly_hull_assign(+Handle_1, +Handle_2)</CODE></H4>
+<H4><CODE>ppl_Polyhedron_poly_hull_assign_and_minimize(+Handle_1,
+               +Handle_2)</CODE></H4>
 
    Assign to the polyhedron referenced by <CODE>Handle_1</CODE>
    its poly-hull with the polyhedra referenced by <CODE>Handle_2</CODE>.
 
-<H2><CODE>ppl_Polyhedron_poly_difference_assign(+Handle_1, +Handle_2)</CODE></H2>
-<H2><CODE>ppl_Polyhedron_poly_difference_assign_and_minimize(+Handle_1,
-               +Handle_2)</CODE></H2>
+<H4><CODE>ppl_Polyhedron_poly_difference_assign(+Handle_1, +Handle_2)</CODE></H4>
+<H4><CODE>ppl_Polyhedron_poly_difference_assign_and_minimize(+Handle_1,
+               +Handle_2)</CODE></H4>
 
    Assign to the polyhedron referenced by <CODE>Handle_1</CODE>
    its poly-difference with the polyhedron referenced by <CODE>Handle_2</CODE>.
 
-<H2><CODE>ppl_Polyhedron_BBRZ02_widening_assign(+Handle_1, +Handle_2)</CODE></H2>
-
-   Assigns to the polyhedron referenced by <CODE>Handle_1</CODE>
-   its BBRZ02-widening with the polyhedra referenced by <CODE>Handle_2</CODE>,
-
-<H2><CODE>ppl_Polyhedron_limited_BBRZ02_widening_assign(+Handle_1, +Handle_2,
-               +Constraint_System)</CODE></H2>
-
-   Assigns to the polyhedron referenced by <CODE>Handle_1</CODE>
-   its BBRZ02-widening with the polyhedron referenced by <CODE>Handle_2</CODE>,
-   limited by the constraints in <CODE>Constraint_System</CODE>.
-
-<H2><CODE>ppl_Polyhedron_H79_widening_assign(+Handle_1, +Handle_2)</CODE></H2>
+<H4><CODE>ppl_Polyhedron_H79_widening_assign(+Handle_1, +Handle_2)</CODE></H4>
 
    Assigns to the polyhedron referenced by <CODE>Handle_1</CODE>
    its H79-widening with the polyhedra referenced by <CODE>Handle_2</CODE>,
 
-<H2><CODE>ppl_Polyhedron_limited_H79_widening_assign(+Handle_1, +Handle_2,
-               +Constraint_System)</CODE></H2>
+<H4><CODE>ppl_Polyhedron_limited_H79_widening_assign(+Handle_1, +Handle_2,
+               +Constraint_System)</CODE></H4>
 
    Assigns to the polyhedron referenced by <CODE>Handle_1</CODE>
    its H79-widening with the polyhedron referenced by <CODE>Handle_2</CODE>,
    limited by the constraints in <CODE>Constraint_System</CODE>.
 
-<H2><CODE>ppl_Polyhedron_topological_closure_assign(+Handle)</CODE></H2>
+<H4><CODE>ppl_Polyhedron_topological_closure_assign(+Handle)</CODE></H4>
 
    Assigns to the polyhedron referenced by <CODE>Handle</CODE>
    its topological closure.
 
-<H2><CODE>ppl_Polyhedron_get_constraints(+Handle, -Constraint_System)
-</CODE></H2>
+<H4><CODE>ppl_Polyhedron_get_constraints(+Handle, -Constraint_System)
+</CODE></H4>
 
    Unifies <CODE>Constraint_System</CODE> with a list of
    the constraints in the constraints system
    representing the polyhedron referenced by <CODE>Handle</CODE>.
 
-<H2><CODE>ppl_Polyhedron_get_minimized_constraints(+Handle,
+<H4><CODE>ppl_Polyhedron_get_minimized_constraints(+Handle,
                                                    -Constraint_System)
-</CODE></H2>
+</CODE></H4>
 
    Unifies <CODE>Constraint_System</CODE> with a minimized list of
    the constraints in the constraints system
    representing the polyhedron referenced by <CODE>Handle</CODE>.
 
-<H2><CODE>ppl_Polyhedron_get_generators(+Handle, -Generator_System)
-</CODE></H2>
+<H4><CODE>ppl_Polyhedron_get_generators(+Handle, -Generator_System)
+</CODE></H4>
 
    Unifies <CODE>Generator_System</CODE> with a list of
    the generators in the generators system
    representing the polyhedron referenced by <CODE>Handle</CODE>.
 
-<H2><CODE>ppl_Polyhedron_get_minimized_generators(+Handle,
+<H4><CODE>ppl_Polyhedron_get_minimized_generators(+Handle,
                                                   -Generator_System)
-</CODE></H2>
+</CODE></H4>
 
    Unifies <CODE>Generator_System</CODE> with a minimized list of
    the generators in the generators system
    representing the polyhedron referenced by <CODE>Handle</CODE>.
 
-<H2><CODE>ppl_Polyhedron_add_constraint(+Handle, +Constraint)</CODE></H2>
+<H4><CODE>ppl_Polyhedron_add_constraint(+Handle, +Constraint)</CODE></H4>
 
    Updates the polyhedron referenced by <CODE>Handle</CODE> to
    one obtained by adding
@@ -433,7 +422,7 @@ ppl_new_Polyhedron_from_Polyhedron(+Topology_1, +Handle_1,
     in the vector space \f$\Rset^3\f$ satisfying the constraint
     \f$4x + y - 2z >= 5\f$.
 
-<H2><CODE>ppl_Polyhedron_add_generator(+Handle, +Generator)</CODE></H2>
+<H4><CODE>ppl_Polyhedron_add_generator(+Handle, +Generator)</CODE></H4>
 
    Updates the polyhedron referenced by <CODE>Handle</CODE> to
    one obtained by adding
@@ -447,8 +436,8 @@ ppl_new_Polyhedron_from_Polyhedron(+Topology_1, +Handle_1,
     will update the polyhedron with handle \p X to be the single point
     \f$(-12.5, -0.625, 0)^\transpose\f$ in the vector space \f$\Rset^3\f$.
 
-<H2><CODE>ppl_Polyhedron_add_constraints(+Handle, +Constraint_System)
-</CODE></H2>
+<H4><CODE>ppl_Polyhedron_add_constraints(+Handle, +Constraint_System)
+</CODE></H4>
 
    Updates the polyhedron referenced by <CODE>Handle</CODE> to
    one obtained by adding to its constraint system the constraints in
@@ -466,8 +455,8 @@ The updated polyhedron referenced by <CODE>Handle</CODE> can be empty
 and a query will succeed even when
 <CODE>Constraint_System</CODE> is unsatisfiable.
 
-<H2><CODE>ppl_Polyhedron_add_constraints_and_minimize(+Handle,
-                                   +Constraint_System)</CODE></H2>
+<H4><CODE>ppl_Polyhedron_add_constraints_and_minimize(+Handle,
+                                   +Constraint_System)</CODE></H4>
 
    Updates the polyhedron referenced by <CODE>Handle</CODE> to
    one obtained by adding to its constraint system the constraints in
@@ -489,8 +478,8 @@ and a query will succeed even when
         [4*A + B >= 3, A = 0, B =< 0]),
       ppl_Polyhedron_get_constraints(X, CS).
 \endcode
-<H2><CODE>ppl_Polyhedron_add_generators(+Handle, +Generator_System)
-</CODE></H2>
+<H4><CODE>ppl_Polyhedron_add_generators(+Handle, +Generator_System)
+</CODE></H4>
 
    Updates the polyhedron referenced by <CODE>Handle</CODE> to
    one obtained by adding to its generator system the generators in
@@ -515,8 +504,8 @@ and a query will succeed even when
    GS = [ray(2*A), point(1*A+1*B+1*C), ray(1*A)]
 \endcode
 
-<H2><CODE>ppl_Polyhedron_add_generators_and_minimize(+Handle,
-                                   +Generator_System)</CODE></H2>
+<H4><CODE>ppl_Polyhedron_add_generators_and_minimize(+Handle,
+                                   +Generator_System)</CODE></H4>
 
    Updates the polyhedron referenced by <CODE>Handle</CODE> to
    one obtained by adding to its generator system the generators in
@@ -536,7 +525,7 @@ and a query will succeed even when
    GS = [point(1*A+1*B+1*C), ray(1*A)]
 \endcode
 
-<H2><CODE>ppl_Polyhedron_concatenate_assign(+Handle1, +Handle2)</CODE></H2>
+<H4><CODE>ppl_Polyhedron_concatenate_assign(+Handle1, +Handle2)</CODE></H4>
 
    Updates the polyhedron \f$\cP_1\f$ referred to by <CODE>Handle1</CODE>
    by first embedding \f$\cP_1\f$ in a new space enlarged by
@@ -557,8 +546,8 @@ and a query will succeed even when
    CS = [1*C > 1, 1*D >= 0, 1*E >= 0]
 \endcode
 
-<H2><CODE>ppl_Polyhedron_add_dimensions_and_project(+Handle, +Integer)
-</CODE></H2>
+<H4><CODE>ppl_Polyhedron_add_dimensions_and_project(+Handle, +Integer)
+</CODE></H4>
 
    Projects the polyhedron referred to by <CODE>Handle</CODE>
    onto a space that is enlarged by <CODE>Integer</CODE> dimensions,
@@ -573,8 +562,8 @@ and a query will succeed even when
    GS = [point(0)]
 \endcode
 
-<H2><CODE>ppl_Polyhedron_add_dimensions_and_embed(+Handle, +Integer)
-</CODE></H2>
+<H4><CODE>ppl_Polyhedron_add_dimensions_and_embed(+Handle, +Integer)
+</CODE></H4>
 
    Embeds the polyhedron referred to by <CODE>Handle</CODE>
    in a space that is enlarged by <CODE>Integer</CODE> dimensions,
@@ -589,8 +578,8 @@ and a query will succeed even when
    GS = [point(0),line(1*A),line(1*B)]
 \endcode
 
-<H2><CODE>ppl_Polyhedron_remove_dimensions(+Handle,
-               +List_of_PPL_Vars)</CODE></H2>
+<H4><CODE>ppl_Polyhedron_remove_dimensions(+Handle,
+               +List_of_PPL_Vars)</CODE></H4>
 
    Removes the dimensions given by the identifiers of the
    PPL variables in list <CODE>List_of_PPL_Vars</CODE>
@@ -610,7 +599,7 @@ and a query will succeed even when
    GS = [point(0),line(1*A),line(1*B),line(0)]
 \endcode
 
-<H2><CODE>ppl_Polyhedron_remove_higher_dimensions(+Handle, +Integer))</CODE></H2>
+<H4><CODE>ppl_Polyhedron_remove_higher_dimensions(+Handle, +Integer))</CODE></H4>
 
    Projects the the polyhedron referred to by <CODE>Handle</CODE>
    onto  the first <CODE>Integer</CODE> dimension.
@@ -626,20 +615,20 @@ and a query will succeed even when
    must have space dimension \f$k\f$ greater that or equal to
    <CODE>Integer</CODE>.
 
-<H2><CODE>ppl_Polyhedron_affine_image(+Handle, +PPL_Var,
-               +LinExpr, +Integer)</CODE></H2>
+<H4><CODE>ppl_Polyhedron_affine_image(+Handle, +PPL_Var,
+               +LinExpr, +Integer)</CODE></H4>
 
    Transforms the polyhedron referenced by <CODE>Handle</CODE>
    assigning the affine expression <CODE>LinExpr</CODE>/<CODE>Integer</CODE>
    to <CODE>PPL_Var</CODE>.
 
-<H2><CODE>ppl_Polyhedron_affine_preimage(+Handle, +PPL_Var,
-               +LinExpr, +Integer)</CODE></H2>
+<H4><CODE>ppl_Polyhedron_affine_preimage(+Handle, +PPL_Var,
+               +LinExpr, +Integer)</CODE></H4>
 
 This is the inverse transformation to that for <CODE>ppl_affine_image</CODE>.
 
-<H2><CODE>ppl_Polyhedron_relation_with_constraint(+Handle, +Constraint,
-               -Relation)</CODE></H2>
+<H4><CODE>ppl_Polyhedron_relation_with_constraint(+Handle, +Constraint,
+               -Relation)</CODE></H4>
 
 Unifies <CODE>Relation</CODE> with the relation the polyhedron
 referenced by <CODE>Handle</CODE>
@@ -650,8 +639,8 @@ The relation  <CODE>nothing</CODE> means that
 nothing is known about  the relation the polyhedron
 referenced by <CODE>Handle</CODE> has with <CODE>Constraint</CODE>.
 
-<H2><CODE>ppl_Polyhedron_relation_with_generator(+Handle, +Generator,
-               -Relation)</CODE></H2>
+<H4><CODE>ppl_Polyhedron_relation_with_generator(+Handle, +Generator,
+               -Relation)</CODE></H4>
 
 Unifies <CODE>Relation</CODE> with the relation the polyhedron
 referenced by <CODE>Handle</CODE> has with <CODE>Generator</CODE>.
@@ -662,60 +651,60 @@ The relation  <CODE>nothing</CODE> means that
 nothing is known about  the relation the polyhedron
 referenced by <CODE>Handle</CODE> has with <CODE>Generator</CODE>.
 
-<H2><CODE>ppl_Polyhedron_check_empty(+Handle)</CODE></H2>
+<H4><CODE>ppl_Polyhedron_check_empty(+Handle)</CODE></H4>
 
    Succeeds if and only if the polyhedron referenced by
    <CODE>Handle</CODE> is empty.
 
-<H2><CODE>ppl_Polyhedron_check_universe(+Handle)</CODE></H2>
+<H4><CODE>ppl_Polyhedron_check_universe(+Handle)</CODE></H4>
 
    Succeeds if and only if the polyhedron referenced by
    <CODE>Handle</CODE> is the universe.
 
-<H2><CODE>ppl_Polyhedron_is_bounded(+Handle)</CODE></H2>
+<H4><CODE>ppl_Polyhedron_is_bounded(+Handle)</CODE></H4>
 
    Succeeds if and only if the polyhedron referenced by
    <CODE>Handle</CODE> is bounded.
 
-<H2><CODE>ppl_Polyhedron_bounds_from_above(+Handle,
-                                   +LinExpr)</CODE></H2>
+<H4><CODE>ppl_Polyhedron_bounds_from_above(+Handle,
+                                   +LinExpr)</CODE></H4>
 
    Succeeds if and only if <CODE>LinExpr</CODE> is bounded from above in
    the polyhedron referenced by <CODE>Handle</CODE>.
 
 
-<H2><CODE>ppl_Polyhedron_bounds_from_below(+Handle,
-                                   +LinExpr)</CODE></H2>
+<H4><CODE>ppl_Polyhedron_bounds_from_below(+Handle,
+                                   +LinExpr)</CODE></H4>
 
    Succeeds if and only if <CODE>LinExpr</CODE> is bounded from below in
    the polyhedron referenced by <CODE>Handle</CODE>.
 
 
-<H2><CODE>ppl_Polyhedron_is_topologically_closed(+Handle)</CODE></H2>
+<H4><CODE>ppl_Polyhedron_is_topologically_closed(+Handle)</CODE></H4>
 
    Succeeds if and only if the polyhedron referenced by
    <CODE>Handle</CODE> is topologically closed.
 
-<H2><CODE>ppl_Polyhedron_contains_Polyhedron(+Handle_1, +Handle_2)</CODE></H2>
+<H4><CODE>ppl_Polyhedron_contains_Polyhedron(+Handle_1, +Handle_2)</CODE></H4>
 
    Succeeds if and only if the polyhedron referenced by
    <CODE>Handle_1</CODE> is included in or
    equal to the polyhedron referenced by <CODE>Handle_2</CODE>.
 
-<H2><CODE>ppl_Polyhedron_strictly_contains_Polyhedron(+Handle_1, +Handle_2)</CODE></H2>
+<H4><CODE>ppl_Polyhedron_strictly_contains_Polyhedron(+Handle_1, +Handle_2)</CODE></H4>
 
    Succeeds if and only if the polyhedron referenced by
    <CODE>Handle_1</CODE> is included in but not
    equal to the polyhedron referenced by <CODE>Handle_2</CODE>.
 
-<H2><CODE>ppl_Polyhedron_equals_Polyhedron, 2(+Handle_1, +Handle_2)</CODE></H2>
+<H4><CODE>ppl_Polyhedron_equals_Polyhedron, 2(+Handle_1, +Handle_2)</CODE></H4>
 
    Succeeds if and only if the polyhedron referenced by
    <CODE>Handle_1</CODE> is
    equal to the polyhedron referenced by <CODE>Handle_2</CODE>.
 
-<H2><CODE>ppl_Polyhedron_get_bounding_box(+Handle,
-                                      -Box)</CODE></H2>
+<H4><CODE>ppl_Polyhedron_get_bounding_box(+Handle,
+                                      -Box)</CODE></H4>
 
    Succeeds if and only if the bounding box
    of the polyhedron referenced by
@@ -738,7 +727,7 @@ E.g., the following will fail:
       Box = [i(o(minf), c(2/4)), i(o(0), o(pinf))].
 \endcode
 
-\section PI_Compilation Compilation and Installation
+\subsection PI_Compilation Compilation and Installation
 
 When the Parma Polyhedra Library is configured, it tests for the existence
 of each supported Prolog system.  If a supported Prolog system is
@@ -760,16 +749,16 @@ Your configure command would then look like
   path/to/configure --with-cxxflags="-DPROLOG_TRACK_ALLOCATION" ...
 \endcode
 
-\section PI_SD_Features System-Dependent Features
+\subsection PI_SD_Features System-Dependent Features
 
 
-<H2>CIAO Prolog</H2>
+<H4>CIAO Prolog</H4>
 
 Support for CIAO Prolog is under development and will be available in
 a future release.
 
 
-<H2>GNU Prolog</H2>
+<H4>GNU Prolog</H4>
 
 The GNU Prolog interface to the PPL library is available
 both as ``PPL enhanced'' GNU Prolog interpreter
@@ -788,13 +777,7 @@ and
 <A HREF="http://www.cs.unipr.it/pipermail/ppl-devel/2002-June/001789.html">http://www.cs.unipr.it/pipermail/ppl-devel/2002-June/001789.html</A>
 for more information.
 
-We have experienced other serious problems with the GNU Prolog
-interface, up to and including GNU Prolog version 1.2.16:
-see
-<A HREF="http://www.cs.unipr.it/pipermail/ppl-devel/2002-October/002657.html">http://www.cs.unipr.it/pipermail/ppl-devel/2002-October/002657.html</A>
-for more information.
-
-<H3>The <CODE>ppl_gprolog</CODE> Executable</H3>
+<H5>The <CODE>ppl_gprolog</CODE> Executable</H5>
 
 If an appropriate version of GNU Prolog is installed on the machine
 on which you compiled the library, the command <CODE>make install</CODE>
@@ -807,7 +790,7 @@ call <CODE>ppl_initialize/0</CODE> before any other PPL predicate
 and to call <CODE>ppl_finalize/0</CODE> when you are done with the
 library.
 
-<H3>Linking the Library To GNU Prolog Programs</H3>
+<H5>Linking the Library To GNU Prolog Programs</H5>
 
 In order to allow linking GNU Prolog programs to the PPL,
 the following files are installed in the directory
@@ -825,13 +808,13 @@ gplc -o myprog prefix/lib/ppl/ppl_gprolog.pl source1.pl source2.pl \
 \endcode
 
 
-<H2>SICStus Prolog</H2>
+<H4>SICStus Prolog</H4>
 
 The SICStus Prolog interface to the PPL library is available
 both as a statically linked module or as a dynamically linked one.
 Only SICStus Prolog version 3.9.0 or later is supported.
 
-<H3>The Statically Linked <CODE>ppl_sicstus</CODE> Executable</H3>
+<H5>The Statically Linked <CODE>ppl_sicstus</CODE> Executable</H5>
 
 If an appropriate version of SICStus Prolog is installed on the machine
 on which you compiled the library, the command <CODE>make install</CODE>
@@ -842,7 +825,7 @@ system with the Parma Polyhedra library statically linked.
 The only thing you should do to use the library is to
 load <CODE>prefix/lib/ppl/ppl_sicstus.pl</CODE>.
 
-<H3>Loading the SICStus Interface Dynamically</H3>
+<H5>Loading the SICStus Interface Dynamically</H5>
 
 In order to dynamically load the library from SICStus Prolog you should
 simply load <CODE>prefix/lib/ppl/ppl_sicstus.pl</CODE>.
@@ -850,13 +833,13 @@ Notice that, for dynamic linking to work, you should have configured
 the library with the <CODE>--enable-shared</CODE> option.
 
 
-<H2>SWI-Prolog</H2>
+<H4>SWI-Prolog</H4>
 
 The SWI-Prolog interface of the library is available
 both as a statically linked module or as a dynamically linked one.
 Only SWI-Prolog version 5.0 or later is supported.
 
-<H3>The <CODE>ppl_pl</CODE> Executable</H3>
+<H5>The <CODE>ppl_pl</CODE> Executable</H5>
 
 If an appropriate version of SWI-Prolog is installed on the machine
 on which you compiled the library, the command <CODE>make install</CODE>
@@ -867,7 +850,7 @@ shell with the Parma Polyhedra library statically linked:
 from within <CODE>ppl_pl</CODE> all the services of the library
 are available without further action.
 
-<H3>Loading the SWI-Prolog Interface Dynamically</H3>
+<H5>Loading the SWI-Prolog Interface Dynamically</H5>
 
 In order to dynamically load the library from SWI-Prolog you should
 simply load <CODE>prefix/lib/ppl/ppl_swiprolog.pl</CODE>.
@@ -889,7 +872,7 @@ Notice that, for dynamic linking to work, you should have configured
 the library with the <CODE>--enable-shared</CODE> option.
 
 
-<H2>YAP</H2>
+<H4>YAP</H4>
 
 The YAP Prolog interface to the PPL library is available
 as a dynamically linked module.

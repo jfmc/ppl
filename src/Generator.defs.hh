@@ -328,6 +328,16 @@ public:
   //! the origin of the zero-dimensional space \f$\Rset^0\f$.
   static const Generator& zero_dim_closure_point();
 
+  //! \brief
+  //! Builds a new copy of the zero-dimension space ray
+  //! of direction \f$- \epsilon\f$ (used to implement NNC polyhedra).
+  static Generator construct_zero_dim_minus_epsilon_ray();
+
+  //! \brief
+  //! Returns the zero-dimension space ray
+  //! of direction \f$- \epsilon\f$ (used to implement NNC polyhedra).
+  static const Generator& zero_dim_minus_epsilon_ray();
+
   //! Checks if all the invariants are satisfied.
   bool OK() const;
 
@@ -390,13 +400,13 @@ private:
   void set_is_ray_or_point();
 
   //! \brief
-  //! Returns <CODE>true</CODE> if and only if the closure point
-  //! \p *this has the same \e coordinates of the point \p p.
+  //! Returns <CODE>true</CODE> if and only if the generator
+  //! is a ray having a negative epsilon coefficient.
   /*!
-    It is \e assumed that \p *this is a closure point, \p p is a point
-    and both topologies and space-dimensions agree.
+    It is assumed that the topology of *this is
+    <CODE>NOT_NECESSARILY_CLOSED</CODE>.
   */
-  bool is_matching_closure_point(const Generator& p) const;
+  bool is_minus_epsilon_ray() const;
 
   //! Default constructor: private and not implemented.
   Generator();

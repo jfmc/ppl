@@ -71,7 +71,7 @@ private:
   Poly_Gen_Relation(flags_t mask);
 
   //! Pretty printing.
-  void ascii_dump(std::ostream& s) const;
+  void ASCII_dump(std::ostream& s) const;
 
   //! True if and only if \p x and \p y are logically equivalent.
   friend bool
@@ -88,7 +88,6 @@ private:
   Parma_Polyhedra_Library::operator&&(const Poly_Gen_Relation& x,
 				      const Poly_Gen_Relation& y);
 
-  //! \brief
   //! Yields the assertion with all the conjuncts of \p x
   //! that are not in \p y.
   friend Poly_Gen_Relation

@@ -84,22 +84,11 @@ public:
   void clear();
 
   //! The basic comparison function.
-  /*!
-    Compares \p x with \p y starting from the least significant bits.
-    The ordering is total and has the following property: if \p x and \p y
-    are two rows seen as sets of naturals, if \p x is a strict subset
-    of \p y, then \p x comes before \p y.
-    
-    Returns
-    - -1 if \p x comes before \p y in the ordering;
-    -  0 if \p x and \p y are equal;
-    -  1 if \p x comes after \p y in the ordering.
-  */
   friend int
   Parma_Polyhedra_Library::compare(const SatRow& x,
 				   const SatRow& y);
 
-  //! @name Set-theoretic comparisons.
+  //! Set-theoretic comparisons.
   //@{
   friend bool
   Parma_Polyhedra_Library::operator==(const SatRow& x,
@@ -122,10 +111,9 @@ public:
   //@}
 
   //! Set-theoretic union.
-  friend void
-  Parma_Polyhedra_Library::set_union(const SatRow& x,
-				     const SatRow& y,
-				     SatRow& z);
+  friend void Parma_Polyhedra_Library::set_union(const SatRow& x,
+						 const SatRow& y,
+						 SatRow& z);
 
   //! Return the size of the row.
   unsigned int size();
@@ -133,7 +121,6 @@ public:
   //! Returns the index of the first set bit or -1 if no bit is set.
   int first() const;
 
-  //! \brief
   //! Returns the index of the first set bit after \p position
   //! or -1 if no bit after \p position is set.
   int next(int position) const;
@@ -141,7 +128,6 @@ public:
   //! Returns the index of the last set bit or -1 if no bit is set.
   int last() const;
 
-  //! \brief
   //! Returns the index of the first set bit before \p position
   //! or -1 if no bits before \p position is set.
   int prev(int position) const;

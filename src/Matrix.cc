@@ -282,7 +282,7 @@ PPL::Matrix::resize_no_copy(dimension_type new_n_rows,
 }
 
 void
-PPL::Matrix::ascii_dump(std::ostream& s) const {
+PPL::Matrix::ASCII_dump(std::ostream& s) const {
   using std::endl;
 
   const Matrix& x = *this;
@@ -298,7 +298,7 @@ PPL::Matrix::ascii_dump(std::ostream& s) const {
 }
 
 bool
-PPL::Matrix::ascii_load(std::istream& s) {
+PPL::Matrix::ASCII_load(std::istream& s) {
   std::string str;
   if (!(s >> str) || str != "topology")
     return false;

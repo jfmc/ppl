@@ -209,11 +209,3 @@ PPL::operator-=(LinExpression& e, const Variable& v) {
   --e[vpos];
   return e;
 }
-
-PPL::LinExpression&
-PPL::operator*=(LinExpression& e, const Integer& n) {
-  dimension_type e_size = e.size();
-  for (dimension_type i = e_size; i-- > 0; )
-    e[i] *= n;
-  return e;
-}

@@ -31,12 +31,8 @@ namespace Parma_Polyhedra_Library {
 inline void negate(Integer& x);
 inline void gcd_assign(Integer& x, const Integer& y);
 inline void gcd_assign(Integer& x, const Integer& y, const Integer& z);
-inline void lcm_assign(Integer& x, const Integer& y);
-inline void lcm_assign(Integer& x, const Integer& y, const Integer& z);
 inline void exact_div_assign(Integer& x, const Integer& y);
 inline void exact_div_assign(Integer& x, const Integer& y, const Integer& z);
-inline void sqrt_assign(Integer& x);
-inline void sqrt_assign(Integer& x, const Integer& y);
 inline int cmp(const Integer& x, const Integer& y);
 inline const Integer& Integer_zero();
 inline const Integer& Integer_one();

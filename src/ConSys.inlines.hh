@@ -130,7 +130,6 @@ ConSys::const_iterator::operator->() const {
 
 inline ConSys::const_iterator&
 ConSys::const_iterator::operator++() {
-  ++i;
   skip_forward();
   return *this;
 }
@@ -155,7 +154,7 @@ ConSys::const_iterator::operator!=(const const_iterator& y) const {
 inline ConSys::const_iterator
 ConSys::begin() const {
   const_iterator i(Matrix::begin(), *this);
-  i.skip_forward();
+  i.skip_trivial_true_constraints();
   return i;
 }
 

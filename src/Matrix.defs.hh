@@ -254,7 +254,7 @@ public:
   //! Swaps the columns having indexes \p i and \p j.
   void swap_columns(dimension_type i,  dimension_type j);
 
-  //! @name Accessors.
+  //! Accessors
   //@{
   //! Returns the matrix topology.
   Topology topology() const;
@@ -338,7 +338,6 @@ public:
   //! Clears the matrix deallocating all its rows.
   void clear();
 
-  //! \brief
   //! Writes to \p s an ASCII representation of the internal
   //! representation of \p *this.
   /*!
@@ -347,19 +346,18 @@ public:
     The specialized methods provided by ConSys and GenSys
     take care of properly printing the contents of the matrix.
   */
-  virtual void ascii_dump(std::ostream& s) const;
+  virtual void ASCII_dump(std::ostream& s) const;
 
-  //! \brief
   //! Loads from \p s an ASCII representation (as produced by \ref
-  //! ascii_dump) and sets \p *this accordingly.  Returns <CODE>true</CODE>
+  //! ASCII_dump) and sets \p *this accordingly.  Returns <CODE>true</CODE>
   //! if successful, <CODE>false</CODE> otherwise.
   /*!
     This virtual method is meant to read into a Matrix object
-    the information produced by the output of <CODE>ascii_dump()</CODE>.
+    the information produced by the output of <CODE>ASCII_dump()</CODE>.
     The specialized methods provided by ConSys and GenSys
     take care of properly reading the contents of the matrix.
   */
-  virtual bool ascii_load(std::istream& s);
+  virtual bool ASCII_load(std::istream& s);
 
   //! \brief
   //! Erases from the matrix all the rows but those having

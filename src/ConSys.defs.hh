@@ -223,9 +223,15 @@ public:
 
     //! Constructor.
     const_iterator(const Matrix::const_iterator& iter, const ConSys& csys);
+    
+    //! \brief
+    //! \p *this skips to the next non-trivial constraint,
+    //! also ignoring the next one if it is a non-strict inequality
+    //! subsumed by the current strict inequality.
+    void skip_forward();
 
     //! \p *this skips to the next non-trivial constraint.
-    void skip_forward();
+    void skip_trivial_true_constraints();
   };
 
   //! \brief
@@ -238,39 +244,20 @@ public:
   const_iterator end() const;
 
   //! Checks if all the invariants are satisfied.
-#ifdef PPL_DOXYGEN_INCLUDE_IMPLEMENTATION_DETAILS
-  /*!
-    Returns <CODE>true</CODE> if and only if \p *this is a valid Matrix.
-    No other checks can be performed here, since any valid Row object
-    in the matrix is also a valid Constraint object.
-  */
-#endif // PPL_DOXYGEN_INCLUDE_IMPLEMENTATION_DETAILS
   bool OK() const;
 
 #ifdef PPL_DOXYGEN_INCLUDE_IMPLEMENTATION_DETAILS
-  //! \brief
   //! Writes to \p s an ASCII representation of the internal
   //! representation of \p *this.
-  /*!
-    After invoking the <CODE>Matrix::ascii_dump()</CODE> method,
-    prints the contents of each row, specifying the type
-    of the encoded constraint.
-  */
 #endif // PPL_DOXYGEN_INCLUDE_IMPLEMENTATION_DETAILS
-  void ascii_dump(std::ostream& s) const;
+  void ASCII_dump(std::ostream& s) const;
 
 #ifdef PPL_DOXYGEN_INCLUDE_IMPLEMENTATION_DETAILS
-  //! \brief
-  //! Loads from \p s an ASCII representation (as produced by
-  //! \ref ascii_dump) and sets \p *this accordingly.
-  //! Returns <CODE>true</CODE> if successful, <CODE>false</CODE> otherwise.
-  /*!
-    Resizes the matrix of constraints using the numbers of rows and columns
-    read from \p s, then initializes the coefficients of each constraint
-    and its type (equality or inequality) reading the contents from \p s.
-  */
+  //! Loads from \p s an ASCII representation (as produced by \ref
+  //! ASCII_dump) and sets \p *this accordingly.  Returns <CODE>true</CODE>
+  //! if successful, <CODE>false</CODE> otherwise.
 #endif // PPL_DOXYGEN_INCLUDE_IMPLEMENTATION_DETAILS
-  bool ascii_load(std::istream& s);
+  bool ASCII_load(std::istream& s);
 
 private:
   friend class Parma_Polyhedra_Library::Polyhedron;
@@ -305,6 +292,15 @@ private:
 				     dimension_type num_dimensions);
 
   //! \brief
+  //! For each strict inequality in \p *this,
+  //! adds the corresponding non-strict inequality.
+  /*!
+    It is assumed that the topology of \p *this
+    is <CODE>NOT_NECESSARILY_CLOSED</CODE>.
+  */
+  void add_corresponding_nonstrict_inequalities();
+
+  //! \brief
   //! Returns <CODE>true</CODE> if and only if \p *this
   //! contains one or more strict inequality constraints.
   bool has_strict_inequalities() const;
@@ -318,38 +314,8 @@ private:
   //! Returns <CODE>true</CODE> if \p g satisfies all the constraints.
   bool satisfies_all_constraints(const Generator& g) const;
 
-  //! \brief
   //! Substitutes a given column of coefficients by a given
   //! affine expression.
-  /*!
-    \param v            Index of the column to which the
-                        affine transformation is substituted.
-    \param expr         The numerator of the affine transformation:
-                        \f$\sum_{i = 0}^{n - 1} a_i x_i + b\f$
-    \param denominator  The denominator of the affine transformation.
-
-    We want to allow affine transformations (see the Section \ref
-    operations) having any rational coefficients. Since the coefficients
-    of the constraints are integers we must also provide an integer
-    \p denominator that will be used as denominator of the affine
-    transformation.
-    The denominator is required to be a positive integer.
-
-    The affine transformation substitutes the matrix of constraints
-    by a new matrix whose elements \f${a'}_{ij}\f$ are built from
-    the old one \f$a_{ij}\f$ as follows:
-    \f[
-      {a'}_{ij} =
-        \begin{cases}
-          a_{ij} * \mathrm{denominator} + a_{iv} * \mathrm{expr}[j]
-            \quad \text{for } j \neq v; \\
-          \mathrm{expr}[v] * a_{iv}
-            \quad \text{for } j = v.
-        \end{cases}
-    \f]
-
-    \p expr is a constant parameter and unaltered by this computation.
-  */
   void affine_preimage(dimension_type v,
 		       const LinExpression& expr,
 		       const Integer& denominator);

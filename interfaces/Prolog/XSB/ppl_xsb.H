@@ -16,8 +16,6 @@
 	ppl_Polyhedron_poly_hull_assign_and_minimize/2,
 	ppl_Polyhedron_poly_difference_assign/2,
 	ppl_Polyhedron_poly_difference_assign_and_minimize/2,
-	ppl_Polyhedron_BBRZ02_widening_assign/2,
-	ppl_Polyhedron_limited_BBRZ02_widening_assign/3,
 	ppl_Polyhedron_H79_widening_assign/2,
 	ppl_Polyhedron_limited_H79_widening_assign/3,
         ppl_Polyhedron_topological_closure_assign/1,
@@ -26,9 +24,7 @@
 	ppl_Polyhedron_get_generators/2,
 	ppl_Polyhedron_get_minimized_generators/2,
 	ppl_Polyhedron_add_constraint/2,
-	ppl_Polyhedron_add_constraint_and_minimize/2,
 	ppl_Polyhedron_add_generator/2,
-	ppl_Polyhedron_add_generator_and_minimize/2,
 	ppl_Polyhedron_add_constraints/2,
 	ppl_Polyhedron_add_constraints_and_minimize/2,
 	ppl_Polyhedron_add_generators/2,
@@ -49,7 +45,6 @@
         ppl_Polyhedron_is_topologically_closed/1,
 	ppl_Polyhedron_contains_Polyhedron/2,
 	ppl_Polyhedron_strictly_contains_Polyhedron/2,
-	ppl_Polyhedron_is_disjoint_from_Polyhedron/2,
 	ppl_Polyhedron_equals_Polyhedron/2,
 	ppl_Polyhedron_get_bounding_box/2.
 
