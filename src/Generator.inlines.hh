@@ -24,9 +24,6 @@ site: http://www.cs.unipr.it/ppl/ . */
 #ifndef _Generator_inlines_hh
 #define _Generator_inlines_hh 1
 
-#include "LinExpression.defs.hh"
-#include <stdexcept>
-
 namespace Parma_Polyhedra_Library {
 
 inline

@@ -24,8 +24,6 @@ site: http://www.cs.unipr.it/ppl/ . */
 #ifndef _Integer_inlines_hh
 #define _Integer_inlines_hh 1
 
-#include <cassert>
-
 namespace Parma_Polyhedra_Library {
 
 inline void

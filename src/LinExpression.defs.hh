@@ -28,6 +28,7 @@ site: http://www.cs.unipr.it/ppl/ . */
 #include "Constraint.types.hh"
 #include "Generator.types.hh"
 #include "Row.defs.hh"
+#include "Integer.types.hh"
 #include "Variable.types.hh"
 #include "Constraint.types.hh"
 #include "Generator.types.hh"

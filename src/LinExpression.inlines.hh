@@ -25,7 +25,6 @@ site: http://www.cs.unipr.it/ppl/ . */
 #define _LinExpression_inlines_hh 1
 
 #include "Variable.defs.hh"
-#include <cassert>
 #include "Integer.defs.hh"
 
 namespace Parma_Polyhedra_Library {
