@@ -64,6 +64,16 @@ enum Complexity_Class {
   ANY_COMPLEXITY
 };
 
+//! Possible outcomes of a simplex solver.
+enum Simplex_Status {
+  //! The problem is unfeasible.
+  UNFEASIBLE_PROBLEM,
+  //! The problem is unbounded.
+  UNBOUNDED_PROBLEM,
+  //! The problem has been solved.
+  SOLVED_PROBLEM
+};
+
 #ifdef PPL_DOXYGEN_INCLUDE_IMPLEMENTATION_DETAILS
 //! A node of the list of available coefficients.
 // FIXME: rewrite the comment.
