@@ -906,7 +906,6 @@ PPL::Generator_System::ascii_load(std::istream& s) {
       if (!(s >> x[i][j]))
 	return false;
 
-    std::string str;
     if (!(s >> str))
       return false;
     if (str == "L")
