@@ -2029,6 +2029,23 @@ ppl_Polyhedron_OK(ppl_const_Polyhedron_t ph) try {
 }
 CATCH_ALL
 
+int
+ppl_io_print_variable(ppl_dimension_type var) try {
+  const char* b = c_variable_output_function(var);
+  if (b == 0 || puts(b) < 0)
+    return PPL_STDIO_ERROR;
+  return 0;
+}
+CATCH_ALL
+
+int
+ppl_io_fprint_variable(FILE* stream, ppl_dimension_type var) try {
+  const char* b = c_variable_output_function(var);
+  if (b == 0 || fputs(b, stream) < 0)
+    return PPL_STDIO_ERROR;
+  return 0;
+}
+CATCH_ALL
 
 #define DEFINE_PRINT_FUNCTIONS(Type) \
 int \

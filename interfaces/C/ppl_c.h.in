@@ -2113,6 +2113,14 @@ ppl_Polyhedron_map_dimensions __P((ppl_Polyhedron_t ph,
 /*! \name Simple I/O Functions */
 /*@{*/
 
+/*! \brief Pretty-prints \p x to <CODE>stdout</CODE>. */
+int
+ppl_io_print_variable __P((ppl_dimension_type var));
+
+/*! \brief Pretty-prints \p var to the given output \p stream. */
+int
+ppl_io_fprint_variable __P((FILE* stream, ppl_dimension_type var));
+
 #undef PPL_DECLARE_PRINT_FUNCTIONS
 
 #define PPL_DECLARE_PRINT_FUNCTIONS(Type) \
