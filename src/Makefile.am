@@ -29,7 +29,7 @@ VPATH = @srcdir@
 SUBDIRS =
 
 
-# Libtool -version-info for libppl.la and libmp.la.
+# Libtool -version-info for libppl.la.
 #
 #  1. Start with version information of `0:0:0' for each libtool library.
 #
