@@ -1,6 +1,6 @@
-/* Test Polyhedron::add_generator(): we add points and rays of
-   a system of generators that is not necessarily closed to a
-   necessarily closed polyhedron.
+/* Test operator-=(LinExpression& e1, const LinExpression& e2):
+   in this case the dimension of e2 is strictly greater than
+   the dimension of e1.
    Copyright (C) 2001, 2002 Roberto Bagnara <bagnara@cs.unipr.it>
 
 This file is part of the Parma Polyhedra Library (PPL).
@@ -39,33 +39,21 @@ main() {
   Variable A(0);
   Variable B(1);
 
-  GenSys gs;
-  gs.insert(closure_point(3*A, 2));
-  gs.insert(point(7*A, 4));
-  gs.insert(ray(A - B));
+  LinExpression e1 = A;
+  LinExpression e2 = B;
+  e1 -= e2;
 
-#if NOISY
-  print_generators(gs, "*** gs ***");
-#endif
+  C_Polyhedron ph(2);
+  ph.add_constraint(e1 >= 0);
 
-  C_Polyhedron ph(2, C_Polyhedron::EMPTY);
-
-  for (GenSys::const_iterator i = gs.begin(),
-	 iend = gs.end(); i != iend; ++i)
-    if (!(*i).is_closure_point())
-      ph.add_generator(*i);
-  
-  GenSys gs_known;
-  gs_known.insert(point(7*A + 0*B, 4));
-  gs_known.insert(ray(A - B));
-  C_Polyhedron known_result(gs_known);
+  C_Polyhedron known_result(2);
+  known_result.add_constraint(A - B >= 0);
 
   int retval = (ph == known_result) ? 0 : 1;
 
 #if NOISY
-  print_generators(gs, "*** gs ***");
-  print_generators(ph, "*** ph ***");
+  print_constraints(ph, "*** ph ***");
 #endif
- 
+
   return retval;
 }

@@ -88,6 +88,7 @@ ORIGINAL_TESTS = \
 	limitedh79widening1 limitedh79widening2 \
 	limitedh79widening3 limitedh79widening4 \
 	linearpartition1 linearpartition2 linearpartition3 \
+	linexpression1 \
 	mc91 \
 	memory1 \
 	minconstraints1 minconstraints2 minconstraints3 \
@@ -370,6 +371,8 @@ limitedh79widening4_SOURCES = limitedh79widening4.cc
 linearpartition1_SOURCES = linearpartition1.cc
 linearpartition2_SOURCES = linearpartition2.cc
 linearpartition3_SOURCES = linearpartition3.cc
+
+linexpression1_SOURCES = linexpression1.cc
 
 memory1_SOURCES = memory1.cc
 
