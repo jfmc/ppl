@@ -83,6 +83,7 @@ Matrix::first_pending_row() const {
 
 inline dimension_type
 Matrix::num_pending_rows() const {
+  assert(num_rows() >= first_pending_row());
   return num_rows() - first_pending_row();
 }
 
