@@ -1,6 +1,10 @@
 :- export
 	ppl_initialize/0,
 	ppl_finalize/0,
+	ppl_set_timeout_exception_atom/1,
+	ppl_timeout_exception_atom/1,
+	ppl_set_timeout/1,
+	ppl_reset_timeout/0,
 	ppl_new_Polyhedron_from_dimension/3,
 	ppl_new_Polyhedron_empty_from_dimension/3,
 	ppl_new_Polyhedron_from_Polyhedron/4,
@@ -53,4 +57,4 @@
 	ppl_Polyhedron_equals_Polyhedron/2,
 	ppl_Polyhedron_get_bounding_box/3.
 
-:- ldoption('-lgmp -lgmpxx -L../../../src/.libs -lppl').
+:- ldoption('-L../../../src/.libs -lppl -L../../../Watchdog/.libs -lpwl -lgmp -lgmpxx').

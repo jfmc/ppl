@@ -65,6 +65,10 @@ o  All the input/output operators have been confined into namespace
    Parma_Polyhedra_Library::IO_Operators.  This way they do not conflict
    with the operators the user might want to define.
 
+o  Timeout computation facilities have been added to the Prolog interfaces:
+   new predicates ppl_set_timeout_exception_atom/1,
+   ppl_timeout_exception_atom/1, ppl_set_timeout/1, ppl_reset_timeout/0.
+
 
 Bugfixes
 ========

@@ -25,6 +25,10 @@ site: http://www.cs.unipr.it/ppl/ . */
 [
 	ppl_initialize/0,
 	ppl_finalize/0,
+	ppl_set_timeout_exception_atom/1,
+	ppl_timeout_exception_atom/1,
+	ppl_set_timeout/1,
+	ppl_reset_timeout/0,
 	ppl_new_Polyhedron_from_dimension/3,
 	ppl_new_Polyhedron_empty_from_dimension/3,
 	ppl_new_Polyhedron_from_Polyhedron/4,
@@ -87,6 +91,17 @@ site: http://www.cs.unipr.it/ppl/ . */
 :- true pred ppl_initialize + foreign.
 
 :- true pred ppl_finalize + foreign.
+
+:- true pred ppl_set_timeout_exception_atom(in(Atom))
+             :: any_term + foreign.
+
+:- true pred ppl_timeout_exception_atom(in(Term))
+             :: any_term + foreign.
+
+:- true pred ppl_set_timeout(in(Time))
+             :: any_term + foreign.
+
+:- true pred ppl_reset_timeout + foreign.
 
 :- true pred ppl_new_Polyhedron_from_dimension(in(Kind),
                                                in(Dimension),
@@ -268,6 +283,10 @@ site: http://www.cs.unipr.it/ppl/ . */
 [
 	ppl_initialize/0,
 	ppl_finalize/0,
+	ppl_set_timeout_exception_atom/1,
+	ppl_timeout_exception_atom/1,
+	ppl_set_timeout/1,
+	ppl_reset_timeout/0,
 	ppl_new_Polyhedron_from_dimension/3,
 	ppl_new_Polyhedron_empty_from_dimension/3,
 	ppl_new_Polyhedron_from_Polyhedron/4,

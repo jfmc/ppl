@@ -23,6 +23,10 @@ site: http://www.cs.unipr.it/ppl/ . */
 
 :- foreign(ppl_initialize).
 :- foreign(ppl_finalize).
+:- foreign(ppl_set_timeout_exception_atom(+term)).
+:- foreign(ppl_timeout_exception_atom(+term)).
+:- foreign(ppl_set_timeout(+term)).
+:- foreign(ppl_reset_timeout).
 :- foreign(ppl_new_Polyhedron_from_dimension(+term, +term, +term)).
 :- foreign(ppl_new_Polyhedron_empty_from_dimension(+term, +term, +term)).
 :- foreign(ppl_new_Polyhedron_from_Polyhedron(+term, +term, +term, +term)).

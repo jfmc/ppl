@@ -35,24 +35,13 @@ site: http://www.cs.unipr.it/ppl/ . */
 #include "C_Polyhedron.defs.hh"
 #include "NNC_Polyhedron.defs.hh"
 #include "track_allocation.hh"
+#include "Watchdog.defs.hh"
 #include <exception>
 #include <stdexcept>
 #include <sstream>
 #include <climits>
 
 namespace PPL = Parma_Polyhedra_Library;
-
-class timeout_exception : public PPL::Throwable {
-public:
-  void throw_me() const {
-    throw *this;
-  }
-  int priority() const {
-    return 0;
-  }
-  timeout_exception() {
-  }
-};
 
 static void
 handle_exception(const integer_out_of_range& e) {
@@ -190,7 +179,29 @@ handle_exception(const std::exception& e) {
   Prolog_raise_exception(et);
 }
 
-#define CATCH_INTERNAL \
+class timeout_exception : public PPL::Throwable {
+public:
+  void throw_me() const {
+    throw *this;
+  }
+  int priority() const {
+    return 0;
+  }
+  timeout_exception() {
+  }
+};
+
+static Prolog_atom timeout_exception_atom;
+
+static void
+handle_exception(const timeout_exception&) {
+  PPL::abandon_exponential_computations = 0;
+  Prolog_term_ref et = Prolog_new_term_ref();
+  Prolog_put_atom(et, timeout_exception_atom);
+  Prolog_raise_exception(et);
+}
+
+#define CATCH_ALL \
   catch (const integer_out_of_range& e) { \
     handle_exception(e); \
   } \
@@ -211,19 +222,16 @@ handle_exception(const std::exception& e) {
   } \
   catch (const unknown_interface_error& e) { \
     handle_exception(e); \
-  }
-
-#define CATCH_PPL \
+  } \
+  catch (const timeout_exception& e) { \
+    handle_exception(e); \
+  } \
   catch (const std::exception& e) { \
     handle_exception(e); \
   } \
   catch (...) { \
     handle_exception(); \
   }
-
-#define CATCH_ALL \
-  CATCH_INTERNAL  \
-  CATCH_PPL
 
 // For Prolog lists.
 static Prolog_atom a_nil;
@@ -285,6 +293,9 @@ static Prolog_atom a_polynomial;
 static Prolog_atom a_simplex;
 static Prolog_atom a_any;
 
+// Default timeout exception atom;
+static Prolog_atom a_time_out;
+
 static struct {
   Prolog_atom* p_atom;
   const char* name;
@@ -329,6 +340,8 @@ static struct {
   { &a_polynomial,          "polynomial" },
   { &a_simplex,             "simplex" },
   { &a_any,                 "any" },
+
+  { &a_time_out,            "time_out" },
 };
 
 static Prolog_term_ref
@@ -659,6 +672,8 @@ term_to_polyhedron_handle(Prolog_term_ref t_ph) {
 
 static bool Prolog_interface_initialized = false;
 
+static Parma_Watchdog_Library::Watchdog* p_timeout_object = 0;
+
 extern "C" Prolog_foreign_return_type
 ppl_initialize() {
   try {
@@ -669,6 +684,7 @@ ppl_initialize() {
       Prolog_atom a = Prolog_atom_from_string(prolog_atoms[i].name);
       *prolog_atoms[i].p_atom = a;
     }
+    timeout_exception_atom = a_time_out;
     ppl_Prolog_sysdep_init();
     Prolog_interface_initialized = true;
     return PROLOG_SUCCESS;
@@ -689,6 +705,64 @@ ppl_finalize() {
   }
   CATCH_ALL;
   return PROLOG_FAILURE;
+}
+
+extern "C" Prolog_foreign_return_type
+ppl_set_timeout_exception_atom(Prolog_term_ref t_tea) {
+  if (Prolog_is_atom(t_tea)) {
+    Prolog_atom tea;
+    if (Prolog_get_atom_name(t_tea, &tea)) {
+      timeout_exception_atom = tea;
+      return PROLOG_SUCCESS;
+    }
+  }
+  Prolog_term_ref culprit = Prolog_new_term_ref();
+  Prolog_term_ref arg_no = Prolog_new_term_ref();
+  Prolog_term_ref expected_domain = Prolog_new_term_ref();
+  Prolog_term_ref et = Prolog_new_term_ref();
+
+  Prolog_put_term(culprit, t_tea);
+  Prolog_put_long(arg_no, 1);
+  Prolog_put_atom_chars(expected_domain, "atom");
+  Prolog_construct_compound(et,
+			    Prolog_atom_from_string("ppl_set_timeout_exception_atom"),
+			    culprit);
+  Prolog_construct_compound(et, Prolog_atom_from_string("domain_error"),
+			    et, arg_no, expected_domain, culprit);
+  Prolog_raise_exception(et);
+  return PROLOG_FAILURE;
+}
+
+extern "C" Prolog_foreign_return_type
+ppl_timeout_exception_atom(Prolog_term_ref t) {
+  Prolog_term_ref t_tea = Prolog_new_term_ref();
+  Prolog_put_atom(t_tea, timeout_exception_atom);
+  if (Prolog_unify(t_tea, t))
+    return PROLOG_SUCCESS;
+  else
+    return PROLOG_FAILURE;
+}
+
+extern "C" Prolog_foreign_return_type
+ppl_set_timeout(Prolog_term_ref t_time) {
+  static timeout_exception e;
+  unsigned hundredth_secs = term_to_unsigned_int(t_time);
+  p_timeout_object =
+    new
+    Parma_Watchdog_Library::Watchdog(hundredth_secs,
+				     &PPL::abandon_exponential_computations,
+				     e);
+  return PROLOG_SUCCESS;
+}
+
+extern "C" Prolog_foreign_return_type
+ppl_reset_timeout() {
+  if (p_timeout_object) {
+    delete p_timeout_object;
+    p_timeout_object = 0;
+    PPL::abandon_exponential_computations = 0;
+  }
+  return PROLOG_SUCCESS;
 }
 
 extern "C" Prolog_foreign_return_type

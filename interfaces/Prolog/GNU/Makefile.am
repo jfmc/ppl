@@ -32,7 +32,9 @@ EXTRA_DIST = ppl_gprolog_sd.cc ppl_gprolog.pl gp_clpq.pl
 
 if HAVE_GNU_PROLOG
 
-AM_CPPFLAGS = -I$(top_srcdir)/src @extra_includes@ @extra_cpp_flags@
+AM_CPPFLAGS = \
+-I$(top_srcdir)/src -I$(top_srcdir)/Watchdog \
+@extra_includes@ @extra_cpp_flags@
 
 bin_PROGRAMS = ppl_gprolog
 ppl_gprolog_SOURCES =
@@ -49,7 +51,7 @@ pkglib_DATA = ppl_gprolog.pl
 # and gplc can interoperate.
 ppl_gprolog$(EXEEXT): libppl_gprolog.la ppl_gprolog.pl
 	gplc -o $@ $(srcdir)/ppl_gprolog.pl .libs/libppl_gprolog.a \
-		-L '-L$(top_builddir)/src/.libs -lppl -lgmpxx -lgmp -lstdc++'
+		-L '-L$(top_builddir)/src/.libs -lppl -L$(top_builddir)/Watchdog/.libs -lpwl -lgmpxx -lgmp -lstdc++'
 
 CLPQ_TESTS_NONSTRICT = \
 ack.clpq \
@@ -71,18 +73,22 @@ CLPQ_TESTS = $(CLPQ_TESTS_NONSTRICT) $(CLPQ_TESTS_STRICT)
 gp_clpq: libppl_gprolog.la ppl_gprolog.pl gp_clpq.pl ../clpq.pl
 	gplc -o $@ $(srcdir)/ppl_gprolog.pl $(srcdir)/gp_clpq.pl \
 		$(srcdir)/../clpq.pl .libs/libppl_gprolog.a \
-		-L '-L$(top_builddir)/src/.libs -lppl -lgmpxx -lgmp -lstdc++'
+		-L '-L$(top_builddir)/src/.libs -lppl -L$(top_builddir)/Watchdog/.libs -lpwl -lgmpxx -lgmp -lstdc++'
 gp_clpq2: libppl_gprolog.la ppl_gprolog.pl gp_clpq.pl ../clpq2.pl
 	gplc -o $@ $(srcdir)/ppl_gprolog.pl $(srcdir)/gp_clpq.pl \
 		$(srcdir)/../clpq2.pl .libs/libppl_gprolog.a \
-		-L '-L$(top_builddir)/src/.libs -lppl -lgmpxx -lgmp -lstdc++'
+		-L '-L$(top_builddir)/src/.libs -lppl -L$(top_builddir)/Watchdog/.libs -lpwl -lgmpxx -lgmp -lstdc++'
 
 check-local: gp_clpq ../check_script ../expected gp_clpq2 ../check_script2 ../expected2
 	for k in $(CLPQ_TESTS); do cp -f $(srcdir)/../$$k .; done
-	$(LIBTOOL) --mode=execute -dlopen ../../../src/libppl.la \
+	$(LIBTOOL) --mode=execute \
+		-dlopen ../../../src/libppl.la \
+		-dlopen ../../../Watchdog/libpwl.la \
 		./gp_clpq <$(srcdir)/../check_script >obtained
 	diff -q --ignore-all-space $(srcdir)/../expected obtained
-	$(LIBTOOL) --mode=execute -dlopen ../../../src/libppl.la \
+	$(LIBTOOL) --mode=execute \
+		-dlopen ../../../src/libppl.la \
+		-dlopen ../../../Watchdog/libpwl.la \
 		./gp_clpq2 <$(srcdir)/../check_script2 >obtained2
 	diff -q --ignore-all-space $(srcdir)/../expected2 obtained2
 

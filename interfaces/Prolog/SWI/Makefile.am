@@ -32,7 +32,9 @@ EXTRA_DIST = ppl_swiprolog.cc ppl_swiprolog.pl pl_clpq.cc pl_clpq.pl
 
 if HAVE_SWI_PROLOG
 
-AM_CPPFLAGS = -I$(top_srcdir)/src @extra_includes@ @extra_cpp_flags@
+AM_CPPFLAGS = \
+-I$(top_srcdir)/src -I$(top_srcdir)/Watchdog \
+@extra_includes@ @extra_cpp_flags@
 
 pkglib_LTLIBRARIES = libppl_swiprolog.la
 libppl_swiprolog_la_SOURCES = ppl_swiprolog.cc
@@ -65,20 +67,33 @@ pl_clpq2_SOURCES = pl_clpq.cc
 # Notice: we are linking statically until we understand whether
 # and if libtool and plld can interoperate.
 ppl_pl$(EXEEXT): ppl_swiprolog.o ppl_pl.o
-	plld -pl-options,-g,main., -o $@ $+ -L$(top_builddir)/src/.libs -lppl @extra_libraries@
+	plld -pl-options,-g,main., -o $@ $+ \
+		-L$(top_builddir)/src/.libs -lppl \
+		-L$(top_builddir)/Watchdog/.libs -lpwl \
+		@extra_libraries@
 
 pl_clpq$(EXEEXT): ppl_swiprolog.o pl_clpq.o pl_clpq.pl ../clpq.pl
-	plld -pl-options,-g,main., -o $@ $+ -L$(top_builddir)/src/.libs -lppl @extra_libraries@
+	plld -pl-options,-g,main., -o $@ $+ \
+		-L$(top_builddir)/src/.libs -lppl \
+		-L$(top_builddir)/Watchdog/.libs -lpwl \
+		@extra_libraries@
 
 pl_clpq2$(EXEEXT): ppl_swiprolog.o pl_clpq.o pl_clpq.pl ../clpq2.pl
-	plld -pl-options,-g,main., -o $@ $+ -L$(top_builddir)/src/.libs -lppl @extra_libraries@
+	plld -pl-options,-g,main., -o $@ $+ \
+		-L$(top_builddir)/src/.libs -lppl \
+		-L$(top_builddir)/Watchdog/.libs -lpwl \
+		@extra_libraries@
 
 check-local: pl_clpq ../check_script ../expected pl_clpq2 ../check_script2 ../expected2
 	for k in $(CLPQ_TESTS); do cp -f $(srcdir)/../$$k .; done
-	$(LIBTOOL) --mode=execute -dlopen ../../../src/libppl.la \
+	$(LIBTOOL) --mode=execute \
+		-dlopen ../../../src/libppl.la \
+		-dlopen ../../../Watchdog/libpwl.la \
 		./pl_clpq <$(srcdir)/../check_script >obtained
 	diff -q --ignore-all-space $(srcdir)/../expected obtained
-	$(LIBTOOL) --mode=execute -dlopen ../../../src/libppl.la \
+	$(LIBTOOL) --mode=execute \
+		-dlopen ../../../src/libppl.la \
+		-dlopen ../../../Watchdog/libpwl.la \
 		./pl_clpq2 <$(srcdir)/../check_script2 >obtained2
 	diff -q --ignore-all-space $(srcdir)/../expected2 obtained2
 

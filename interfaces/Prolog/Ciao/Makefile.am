@@ -33,11 +33,17 @@ EXTRA_DIST = ppl_ciao.pl fake_main.pl ciao_clpq.pl
 
 if HAVE_CIAO_PROLOG
 
-AM_CPPFLAGS = -I$(top_srcdir)/src @extra_includes@ @extra_cpp_flags@
+AM_CPPFLAGS = \
+-I$(top_srcdir)/src \
+-I$(top_srcdir)/Watchdog \
+@extra_includes@ @extra_cpp_flags@
 
 pkglib_LTLIBRARIES = libppl_ciao.la
 libppl_ciao_la_SOURCES = ppl_ciao.cc
-libppl_ciao_la_LIBADD = $(top_builddir)/src/libppl.la @extra_libraries@
+libppl_ciao_la_LIBADD = \
+$(top_builddir)/src/libppl.la \
+$(top_builddir)/Watchdog/libpwl.la \
+@extra_libraries@
 libppl_ciao_la_LDFLAGS = -no-undefined -module -avoid-version
 
 pkglib_DATA = ppl_ciao.po
@@ -71,12 +77,13 @@ tak.clpq
 
 #check-local: ciao_clpq$(EXEEXT) ../check_script ../expected
 #	for k in $(CLPQ_TESTS); do cp -f $(srcdir)/../$$k .; done
-#	ciao_clpq <$(srcdir)/../check_script >obtained
-#	diff -q --ignore-all-space $(srcdir)/../expected obtained
-#	$(LIBTOOL) --mode=execute -dlopen ../../../src/libppl.la \
-#				-dlopen ppl_ciao.la \
-#		xsb xsb_clpq \
+#	$(LIBTOOL) --mode=execute
+#		-dlopen ../../../src/libppl.la \
+#		-dlopen ../../../Watchdog/libpwl.la \
+#		-dlopen ppl_ciao.la \
+#		ciao_clpq \
 #			<$(srcdir)/../check_script >obtained
+#	diff -q --ignore-all-space $(srcdir)/../expected obtained
 
 #pplpl $(CLPQ_TESTS) obtained
 

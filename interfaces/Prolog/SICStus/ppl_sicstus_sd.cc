@@ -132,6 +132,10 @@ sp_stub_##name(Prolog_term_ref goal, void*) { \
 
 SP_STUB_0(ppl_initialize)
 SP_STUB_0(ppl_finalize)
+SP_STUB_1(ppl_set_timeout_exception_atom)
+SP_STUB_1(ppl_timeout_exception_atom)
+SP_STUB_1(ppl_set_timeout)
+SP_STUB_0(ppl_reset_timeout)
 SP_STUB_3(ppl_new_Polyhedron_from_dimension)
 SP_STUB_3(ppl_new_Polyhedron_empty_from_dimension)
 SP_STUB_4(ppl_new_Polyhedron_from_Polyhedron)
@@ -200,6 +204,10 @@ ppl_sicstus_init(int /* when */) {
   }
   SP_DEFINE_C_PREDICATE(ppl_initialize, 0);
   SP_DEFINE_C_PREDICATE(ppl_finalize, 0);
+  SP_DEFINE_C_PREDICATE(ppl_set_timeout_exception_atom, 1);
+  SP_DEFINE_C_PREDICATE(ppl_timeout_exception_atom, 1);
+  SP_DEFINE_C_PREDICATE(ppl_set_timeout, 1);
+  SP_DEFINE_C_PREDICATE(ppl_reset_timeout, 0);
   SP_DEFINE_C_PREDICATE(ppl_new_Polyhedron_from_dimension, 3);
   SP_DEFINE_C_PREDICATE(ppl_new_Polyhedron_empty_from_dimension, 3);
   SP_DEFINE_C_PREDICATE(ppl_new_Polyhedron_from_Polyhedron, 4);

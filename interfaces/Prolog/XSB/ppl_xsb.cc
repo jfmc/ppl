@@ -376,6 +376,10 @@ Integer_to_integer_term(const PPL::Integer& n) {
 
 #define ppl_initialize xsb_stub_ppl_initialize
 #define ppl_finalize xsb_stub_ppl_finalize
+#define ppl_set_timeout_exception_atom xsb_stub_ppl_set_timeout_exception_atom
+#define ppl_timeout_exception_atom xsb_stub_ppl_timeout_exception_atom
+#define ppl_set_timeout xsb_stub_ppl_set_timeout
+#define ppl_reset_timeout xsb_stub_ppl_reset_timeout
 #define ppl_new_Polyhedron_from_dimension xsb_stub_ppl_new_Polyhedron_from_dimension
 #define ppl_new_Polyhedron_empty_from_dimension xsb_stub_ppl_new_Polyhedron_empty_from_dimension
 #define ppl_new_Polyhedron_from_Polyhedron xsb_stub_ppl_new_Polyhedron_from_Polyhedron
@@ -432,6 +436,10 @@ Integer_to_integer_term(const PPL::Integer& n) {
 
 #undef ppl_initialize
 #undef ppl_finalize
+#undef ppl_set_timeout_exception_atom
+#undef ppl_timeout_exception_atom
+#undef ppl_set_timeout
+#undef ppl_reset_timeout
 #undef ppl_new_Polyhedron_from_dimension
 #undef ppl_new_Polyhedron_empty_from_dimension
 #undef ppl_new_Polyhedron_from_Polyhedron
@@ -526,6 +534,10 @@ name() { \
 
 XSB_ENTRY_0(ppl_initialize)
 XSB_ENTRY_0(ppl_finalize)
+XSB_ENTRY_1(ppl_set_timeout_exception_atom)
+XSB_ENTRY_1(ppl_timeout_exception_atom)
+XSB_ENTRY_1(ppl_set_timeout)
+XSB_ENTRY_0(ppl_reset_timeout)
 XSB_ENTRY_3(ppl_new_Polyhedron_from_dimension)
 XSB_ENTRY_3(ppl_new_Polyhedron_empty_from_dimension)
 XSB_ENTRY_4(ppl_new_Polyhedron_from_Polyhedron)

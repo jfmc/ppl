@@ -323,6 +323,10 @@ ppl_Prolog_sysdep_deinit() {
 static PL_extension predicates[] = {
   PL_EXTENSION_ENTRY(ppl_initialize, 0)
   PL_EXTENSION_ENTRY(ppl_finalize, 0)
+  PL_EXTENSION_ENTRY(ppl_set_timeout_exception_atom, 1)
+  PL_EXTENSION_ENTRY(ppl_timeout_exception_atom, 1)
+  PL_EXTENSION_ENTRY(ppl_set_timeout, 1)
+  PL_EXTENSION_ENTRY(ppl_reset_timeout, 0)
   PL_EXTENSION_ENTRY(ppl_new_Polyhedron_from_dimension, 3)
   PL_EXTENSION_ENTRY(ppl_new_Polyhedron_empty_from_dimension, 3)
   PL_EXTENSION_ENTRY(ppl_new_Polyhedron_from_Polyhedron, 4)

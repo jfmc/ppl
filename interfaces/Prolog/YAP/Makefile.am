@@ -32,11 +32,16 @@ EXTRA_DIST = ppl_yap.pl yap_clpq.pl yap_clpq2.pl
 
 if HAVE_YAP_PROLOG
 
-AM_CPPFLAGS = -I$(top_srcdir)/src @extra_includes@ @extra_cpp_flags@
+AM_CPPFLAGS = \
+-I$(top_srcdir)/src -I$(top_srcdir)/Watchdog \
+@extra_includes@ @extra_cpp_flags@
 
 pkglib_LTLIBRARIES = ppl_yap.la
 ppl_yap_la_SOURCES = ppl_yap.cc
-ppl_yap_la_LIBADD = $(top_builddir)/src/libppl.la @extra_libraries@
+ppl_yap_la_LIBADD = \
+$(top_builddir)/src/libppl.la \
+$(top_builddir)/Watchdog/libpwl.la \
+@extra_libraries@
 ppl_yap_la_LDFLAGS = -no-undefined -module -avoid-version
 
 pkglib_DATA = ppl_yap.pl
@@ -59,15 +64,19 @@ check-local: yap_clpq.pl ../check_script ../expected yap_clpq2.pl ../check_scrip
 	for k in $(CLPQ_TESTS); do cp -f $(srcdir)/../$$k .; done
 	echo "main." >check_script
 	cat $(srcdir)/../check_script >>check_script
-	$(LIBTOOL) --mode=execute -dlopen ../../../src/libppl.la \
-				-dlopen ppl_yap.la \
+	$(LIBTOOL) --mode=execute \
+		-dlopen ../../../src/libppl.la \
+		-dlopen ../../../Watchdog/libpwl.la \
+		-dlopen ppl_yap.la \
 		yap -l $(srcdir)/yap_clpq.pl \
 			<check_script >obtained
 	diff -q --ignore-all-space $(srcdir)/../expected obtained
 	echo "main." >check_script2
 	cat $(srcdir)/../check_script2 >>check_script2
-	$(LIBTOOL) --mode=execute -dlopen ../../../src/libppl.la \
-				-dlopen ppl_yap.la \
+	$(LIBTOOL) --mode=execute \
+		-dlopen ../../../src/libppl.la \
+		-dlopen ../../../Watchdog/libpwl.la \
+		-dlopen ppl_yap.la \
 		yap -l $(srcdir)/yap_clpq2.pl \
 			<check_script2 >obtained2
 	diff -q --ignore-all-space $(srcdir)/../expected2 obtained2

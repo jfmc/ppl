@@ -34,11 +34,16 @@ EXTRA_DIST = ppl_xsb.cc ppl_xsb.H xsb_clpq.P xsb_clpq2.P expected expected2
 if HAVE_XSB_PROLOG
 
 AM_CPPFLAGS = \
--I$(top_srcdir)/src @extra_includes@ @extra_cpp_flags@ @xsb_includes@
+-I$(top_srcdir)/src -I$(top_srcdir)/Watchdog \
+@extra_includes@ @extra_cpp_flags@ \
+@xsb_includes@
 
 pkglib_LTLIBRARIES = ppl_xsb.la
 ppl_xsb_la_SOURCES = ppl_xsb.cc
-ppl_xsb_la_LIBADD = $(top_builddir)/src/libppl.la @extra_libraries@
+ppl_xsb_la_LIBADD = \
+$(top_builddir)/src/libppl.la \
+$(top_builddir)/Watchdog/libpwl.la \
+@extra_libraries@
 ppl_xsb_la_LDFLAGS = -no-undefined -module -avoid-version
 
 pkglib_DATA = ppl_xsb.O
@@ -51,7 +56,10 @@ ppl_xsb.O: ppl_xsb.H ppl_xsb.cc Makefile
 	echo "consult(ppl_xsb," \
 	  "[cc('$(CXX)'), cc_opts('$(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) " \
 	    "$(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS)')])." \
-		| xsb
+		| $(LIBTOOL) --mode=execute \
+			-dlopen ../../../src/libppl.la \
+			-dlopen ../../../Watchdog/libpwl.la \
+			xsb
 	rm -f ppl_xsb.c
 	if [ $(abs_srcdir) != `pwd` ]; then \
 	  rm -f ppl_xsb.H; \
@@ -82,8 +90,10 @@ check-local: ppl_xsb.la xsb_clpq.P ../clpq.pl ../check_script expected xsb_clpq2
 	  cp -f $(srcdir)/xsb_clpq.P . ; \
 	fi
 	cp -f $(srcdir)/../clpq.pl .
-	$(LIBTOOL) --mode=execute -dlopen ../../../src/libppl.la \
-				-dlopen ppl_xsb.la \
+	$(LIBTOOL) --mode=execute \
+		-dlopen ../../../src/libppl.la \
+		-dlopen ../../../Watchdog/libpwl.la \
+		-dlopen ppl_xsb.la \
 		xsb xsb_clpq \
 			<$(srcdir)/../check_script >obtained
 	rm -f clpq.pl
@@ -95,8 +105,10 @@ check-local: ppl_xsb.la xsb_clpq.P ../clpq.pl ../check_script expected xsb_clpq2
 	  cp -f $(srcdir)/xsb_clpq2.P . ; \
 	fi
 	cp -f $(srcdir)/../clpq2.pl .
-	$(LIBTOOL) --mode=execute -dlopen ../../../src/libppl.la \
-				-dlopen ppl_xsb.la \
+	$(LIBTOOL) --mode=execute \
+		-dlopen ../../../src/libppl.la \
+		-dlopen ../../../Watchdog/libpwl.la \
+		-dlopen ppl_xsb.la \
 		xsb xsb_clpq2 \
 			<$(srcdir)/../check_script2 >obtained2
 	rm -f clpq2.pl

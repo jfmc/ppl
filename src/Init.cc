@@ -27,5 +27,4 @@ site: http://www.cs.unipr.it/ppl/ . */
 
 namespace PPL = Parma_Polyhedra_Library;
 
-unsigned int
-PPL::Init::count = 0;
+unsigned int PPL::Init::count = 0;

@@ -382,6 +382,10 @@ yap_stub_##name() { \
 
 YAP_STUB_0(ppl_initialize)
 YAP_STUB_0(ppl_finalize)
+YAP_STUB_1(ppl_set_timeout_exception_atom)
+YAP_STUB_1(ppl_timeout_exception_atom)
+YAP_STUB_1(ppl_set_timeout)
+YAP_STUB_0(ppl_reset_timeout)
 YAP_STUB_3(ppl_new_Polyhedron_from_dimension)
 YAP_STUB_3(ppl_new_Polyhedron_empty_from_dimension)
 YAP_STUB_4(ppl_new_Polyhedron_from_Polyhedron)
@@ -442,6 +446,10 @@ init() {
   ppl_initialize();
   YAP_USER_C_PREDICATE(ppl_initialize, 0);
   YAP_USER_C_PREDICATE(ppl_finalize, 0);
+  YAP_USER_C_PREDICATE(ppl_set_timeout_exception_atom, 1);
+  YAP_USER_C_PREDICATE(ppl_timeout_exception_atom, 1);
+  YAP_USER_C_PREDICATE(ppl_set_timeout, 1);
+  YAP_USER_C_PREDICATE(ppl_reset_timeout, 0);
   YAP_USER_C_PREDICATE(ppl_new_Polyhedron_from_dimension, 3);
   YAP_USER_C_PREDICATE(ppl_new_Polyhedron_empty_from_dimension, 3);
   YAP_USER_C_PREDICATE(ppl_new_Polyhedron_from_Polyhedron, 4);
