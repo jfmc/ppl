@@ -10,7 +10,6 @@ Enhancements for PPL 0.7
 - Consider performing the following renamings:
 
     Integer -> Coefficient
-    GenSys -> Generator_System
 
 - Rewrite Linear_System::sort_and_remove_with_sat() and perhaps
   Linear_System::sort_rows().

@@ -125,7 +125,7 @@ main() TRY {
 	    copy(cs.begin(), cs.end(),
 		 ostream_iterator<Constraint>(cout, "\n"));
 	    cout << "Solution generators" << endl;
-	    const GenSys& gs = ph.generators();
+	    const Generator_System& gs = ph.generators();
 	    copy(gs.begin(), gs.end(),
 		 ostream_iterator<Generator>(cout, "\n"));
 #endif

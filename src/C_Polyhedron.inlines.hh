@@ -68,7 +68,7 @@ C_Polyhedron::C_Polyhedron(Constraint_System& cs)
 }
 
 inline
-C_Polyhedron::C_Polyhedron(const GenSys& gs)
+C_Polyhedron::C_Polyhedron(const Generator_System& gs)
   : Polyhedron(NECESSARILY_CLOSED,
 	       gs.space_dimension() <= max_space_dimension()
 	       ? gs
@@ -80,7 +80,7 @@ C_Polyhedron::C_Polyhedron(const GenSys& gs)
 }
 
 inline
-C_Polyhedron::C_Polyhedron(GenSys& gs)
+C_Polyhedron::C_Polyhedron(Generator_System& gs)
   : Polyhedron(NECESSARILY_CLOSED,
 	       gs.space_dimension() <= max_space_dimension()
 	       ? gs

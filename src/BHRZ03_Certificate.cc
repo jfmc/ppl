@@ -63,8 +63,8 @@ PPL::BHRZ03_Certificate::BHRZ03_Certificate(const Polyhedron& ph)
 
   assert(lin_space_dim == 0);
   assert(num_points == 0);
-  const GenSys& gs = ph.minimized_generators();
-  for (GenSys::const_iterator i = gs.begin(),
+  const Generator_System& gs = ph.minimized_generators();
+  for (Generator_System::const_iterator i = gs.begin(),
 	 gs_end = gs.end(); i != gs_end; ++i)
     switch (i->type()) {
     case Generator::POINT:
@@ -179,8 +179,8 @@ PPL::BHRZ03_Certificate::compare(const Polyhedron& ph) const {
   // hoping that the other components will be enough.
   dimension_type ph_lin_space_dim = 0;
   dimension_type ph_num_points = 0;
-  const GenSys& gs = ph.minimized_generators();
-  for (GenSys::const_iterator i = gs.begin(),
+  const Generator_System& gs = ph.minimized_generators();
+  for (Generator_System::const_iterator i = gs.begin(),
 	 gs_end = gs.end(); i != gs_end; ++i)
     switch (i->type()) {
     case Generator::POINT:
@@ -230,7 +230,7 @@ PPL::BHRZ03_Certificate::compare(const Polyhedron& ph) const {
   // The speculative optimization was not worth:
   // compute information about rays.
   std::vector<dimension_type> ph_num_rays_null_coord(ph.space_dim, 0);
-  for (GenSys::const_iterator i = gs.begin(),
+  for (Generator_System::const_iterator i = gs.begin(),
 	 gs_end = gs.end(); i != gs_end; ++i)
     if (i->is_ray()) {
       const Generator& r = *i;

@@ -57,7 +57,7 @@ main() TRY {
 
   ph1.time_elapse_assign(ph2);
 
-  GenSys known_gs;
+  Generator_System known_gs;
   known_gs.insert(point());
   known_gs.insert(point(2*x));
   known_gs.insert(point(2*y));

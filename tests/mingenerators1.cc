@@ -38,7 +38,7 @@ main() TRY {
   Variable A(0);
   Variable B(1);
 
-  GenSys gs1;
+  Generator_System gs1;
   gs1.insert(point());
   gs1.insert(point(B));
   gs1.insert(line(A));
@@ -48,14 +48,14 @@ main() TRY {
 
   C_Polyhedron ph1(gs1);
 
-  const GenSys gs2 = ph1.minimized_generators();
+  const Generator_System gs2 = ph1.minimized_generators();
 
 #if NOISY
   print_generators(gs2, "*** gs2 ***");
 #endif
 
   C_Polyhedron ph2(gs2);
-  GenSys known_gs;
+  Generator_System known_gs;
   known_gs.insert(point());
   known_gs.insert(line(A));
   known_gs.insert(ray(B));

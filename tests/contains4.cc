@@ -41,7 +41,7 @@ main() TRY {
   ph1.add_constraint(A > 0);
   ph1.add_constraint(B > 0);
 
-  GenSys gs2;
+  Generator_System gs2;
   gs2.insert(point());
   gs2.insert(line(A + B));
   NNC_Polyhedron ph2(gs2);

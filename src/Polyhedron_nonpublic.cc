@@ -181,7 +181,7 @@ PPL::Polyhedron::Polyhedron(const Topology topol, Constraint_System& cs)
   assert(OK());
 }
 
-PPL::Polyhedron::Polyhedron(const Topology topol, const GenSys& cgs)
+PPL::Polyhedron::Polyhedron(const Topology topol, const Generator_System& cgs)
   : con_sys(topol),
     gen_sys(topol),
     sat_c(),
@@ -190,7 +190,7 @@ PPL::Polyhedron::Polyhedron(const Topology topol, const GenSys& cgs)
   assert(cgs.space_dimension() <= max_space_dimension());
 
   // TODO: this implementation is just an executable specification.
-  GenSys gs = cgs;
+  Generator_System gs = cgs;
 
   // An empty set of generators defines the empty polyhedron.
   if (gs.num_rows() == 0) {
@@ -242,7 +242,7 @@ PPL::Polyhedron::Polyhedron(const Topology topol, const GenSys& cgs)
   space_dim = 0;
 }
 
-PPL::Polyhedron::Polyhedron(const Topology topol, GenSys& gs)
+PPL::Polyhedron::Polyhedron(const Topology topol, Generator_System& gs)
   : con_sys(topol),
     gen_sys(topol),
     sat_c(),
@@ -415,7 +415,7 @@ PPL::Polyhedron::is_included_in(const Polyhedron& y) const {
   assert(x.OK());
   assert(y.OK());
 
-  const GenSys& gs = x.gen_sys;
+  const Generator_System& gs = x.gen_sys;
   const Constraint_System& cs = y.con_sys;
 
   if (x.is_necessarily_closed())
@@ -1249,7 +1249,7 @@ PPL::Polyhedron::strongly_minimize_generators() const {
 
   // For all points in the generator system, check for eps-redundancy
   // and eventually move them to the bottom part of the system.
-  GenSys& gs = const_cast<GenSys&>(gen_sys);
+  Generator_System& gs = const_cast<Generator_System&>(gen_sys);
   Saturation_Matrix& sat = const_cast<Saturation_Matrix&>(sat_c);
   dimension_type gs_rows = gs.num_rows();
   const dimension_type n_lines = gs.num_lines();
@@ -1393,7 +1393,7 @@ PPL::Polyhedron::throw_topology_incompatible(const char* method,
 void
 PPL::Polyhedron::throw_topology_incompatible(const char* method,
 					     const char* gs_name,
-					     const GenSys&) const {
+					     const Generator_System&) const {
   std::ostringstream s;
   s << "PPL::C_Polyhedron::" << method << ":" << std::endl
     << gs_name << " contains closure points.";
@@ -1451,7 +1451,7 @@ PPL::Polyhedron::throw_dimension_incompatible(const char* method,
 void
 PPL::Polyhedron::throw_dimension_incompatible(const char* method,
 					      const char* gs_name,
-					      const GenSys& gs) const {
+					      const Generator_System& gs) const {
   throw_dimension_incompatible(method, gs_name, gs.space_dimension());
 }
 

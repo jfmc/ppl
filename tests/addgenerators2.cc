@@ -42,7 +42,7 @@ main() TRY {
   print_generators(ph1, "*** before ***");
 #endif
 
-  GenSys gs;
+  Generator_System gs;
   gs.insert(point());
   gs.insert(line(x));
 

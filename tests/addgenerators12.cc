@@ -41,10 +41,10 @@ test1() {
   ph.add_constraint(A >= 0);
   C_Polyhedron copy_ph(ph);
 
-  GenSys gs1;
+  Generator_System gs1;
   gs1.insert(point());
   gs1.insert(ray(-A));
-  GenSys gs2(gs1);
+  Generator_System gs2(gs1);
 
   ph.add_generators(gs1);
   copy_ph.add_generators_and_minimize(gs2);
@@ -83,8 +83,8 @@ test2() {
   print_generators(ph2, "*** ph2 ***");
 #endif
 
-  GenSys gs1 = ph2.generators();
-  GenSys gs2 = ph2.generators();
+  Generator_System gs1 = ph2.generators();
+  Generator_System gs2 = ph2.generators();
 
   ph1.add_generators(gs1);
   copy_ph1.add_generators_and_minimize(gs2);

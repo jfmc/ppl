@@ -1,4 +1,4 @@
-/* Test operator<<(std::ostream&, const GenSys&).
+/* Test operator<<(std::ostream&, const Generator_System&).
    Copyright (C) 2001-2004 Roberto Bagnara <bagnara@cs.unipr.it>
 
 This file is part of the Parma Polyhedra Library (PPL).
@@ -42,7 +42,7 @@ main() TRY {
   Variable B(1);
   Variable C(2);
 
-  GenSys gs;
+  Generator_System gs;
   gs.insert(point());
   gs.insert(point(A - B));
   gs.insert(point(A + C));

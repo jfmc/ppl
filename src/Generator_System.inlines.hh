@@ -1,4 +1,4 @@
-/* GenSys class implementation: inline functions.
+/* Generator_System class implementation: inline functions.
    Copyright (C) 2001-2004 Roberto Bagnara <bagnara@cs.unipr.it>
 
 This file is part of the Parma Polyhedra Library (PPL).
@@ -21,171 +21,171 @@ USA.
 For the most up-to-date information see the Parma Polyhedra Library
 site: http://www.cs.unipr.it/ppl/ . */
 
-#ifndef PPL_GenSys_inlines_hh
-#define PPL_GenSys_inlines_hh 1
+#ifndef PPL_Generator_System_inlines_hh
+#define PPL_Generator_System_inlines_hh 1
 
 #include "Generator.defs.hh"
 
 namespace Parma_Polyhedra_Library {
 
 inline
-GenSys::GenSys()
+Generator_System::Generator_System()
   : Linear_System(NECESSARILY_CLOSED) {
 }
 
 inline
-GenSys::GenSys(const Generator& g)
+Generator_System::Generator_System(const Generator& g)
   : Linear_System(g.topology()) {
   Linear_System::insert(g);
 }
 
 inline
-GenSys::GenSys(const GenSys& gs)
+Generator_System::Generator_System(const Generator_System& gs)
   : Linear_System(gs) {
 }
 
 inline
-GenSys::GenSys(const Topology topol)
+Generator_System::Generator_System(const Topology topol)
   : Linear_System(topol) {
 }
 
 inline
-GenSys::GenSys(const Topology topol,
+Generator_System::Generator_System(const Topology topol,
 	       const dimension_type n_rows, const dimension_type n_columns)
   : Linear_System(topol, n_rows, n_columns) {
 }
 
 inline
-GenSys::~GenSys() {
+Generator_System::~Generator_System() {
 }
 
-inline GenSys&
-GenSys::operator=(const GenSys& y) {
+inline Generator_System&
+Generator_System::operator=(const Generator_System& y) {
   Linear_System::operator=(y);
   return *this;
 }
 
 inline dimension_type
-GenSys::max_space_dimension() {
+Generator_System::max_space_dimension() {
   return Linear_System::max_space_dimension();
 }
 
 inline dimension_type
-GenSys::space_dimension() const {
+Generator_System::space_dimension() const {
   return Linear_System::space_dimension();
 }
 
 inline void
-GenSys::clear() {
+Generator_System::clear() {
   Linear_System::clear();
 }
 
 inline Generator&
-GenSys::operator[](const dimension_type k) {
+Generator_System::operator[](const dimension_type k) {
   return static_cast<Generator&>(Linear_System::operator[](k));
 }
 
 inline const Generator&
-GenSys::operator[](const dimension_type k) const {
+Generator_System::operator[](const dimension_type k) const {
   return static_cast<const Generator&>(Linear_System::operator[](k));
 }
 
 inline
-GenSys::const_iterator::const_iterator()
+Generator_System::const_iterator::const_iterator()
   : i(), gsp(0) {
 }
 
 inline
-GenSys::const_iterator::const_iterator(const const_iterator& y)
+Generator_System::const_iterator::const_iterator(const const_iterator& y)
   : i(y.i), gsp(y.gsp) {
 }
 
 inline
-GenSys::const_iterator::~const_iterator() {
+Generator_System::const_iterator::~const_iterator() {
 }
 
 inline
-GenSys::const_iterator&
-GenSys::const_iterator::operator=(const const_iterator& y) {
+Generator_System::const_iterator&
+Generator_System::const_iterator::operator=(const const_iterator& y) {
   i = y.i;
   gsp = y.gsp;
   return *this;
 }
 
 inline const Generator&
-GenSys::const_iterator::operator*() const {
+Generator_System::const_iterator::operator*() const {
   return static_cast<const Generator&>(*i);
 }
 
 inline const Generator*
-GenSys::const_iterator::operator->() const {
+Generator_System::const_iterator::operator->() const {
   return static_cast<const Generator*>(i.operator->());
 }
 
-inline GenSys::const_iterator&
-GenSys::const_iterator::operator++() {
+inline Generator_System::const_iterator&
+Generator_System::const_iterator::operator++() {
   ++i;
   if (!gsp->is_necessarily_closed())
     skip_forward();
   return *this;
 }
 
-inline GenSys::const_iterator
-GenSys::const_iterator::operator++(int) {
+inline Generator_System::const_iterator
+Generator_System::const_iterator::operator++(int) {
   const const_iterator tmp = *this;
   operator++();
   return tmp;
 }
 
 inline bool
-GenSys::const_iterator::operator==(const const_iterator& y) const {
+Generator_System::const_iterator::operator==(const const_iterator& y) const {
   return i == y.i;
 }
 
 inline bool
-GenSys::const_iterator::operator!=(const const_iterator& y) const {
+Generator_System::const_iterator::operator!=(const const_iterator& y) const {
   return i != y.i;
 }
 
 inline
-GenSys::const_iterator::
+Generator_System::const_iterator::
 const_iterator(const Linear_System::const_iterator& iter,
-	       const GenSys& gsys)
+	       const Generator_System& gsys)
   : i(iter), gsp(&gsys) {
 }
 
-inline GenSys::const_iterator
-GenSys::begin() const {
+inline Generator_System::const_iterator
+Generator_System::begin() const {
   const_iterator i(Linear_System::begin(), *this);
   if (!is_necessarily_closed())
     i.skip_forward();
   return i;
 }
 
-inline GenSys::const_iterator
-GenSys::end() const {
+inline Generator_System::const_iterator
+Generator_System::end() const {
   const const_iterator i(Linear_System::end(), *this);
   return i;
 }
 
-inline const GenSys&
-GenSys::zero_dim_univ() {
-  static const GenSys zdu(Generator::zero_dim_point());
+inline const Generator_System&
+Generator_System::zero_dim_univ() {
+  static const Generator_System zdu(Generator::zero_dim_point());
   return zdu;
 }
 
 inline void
-GenSys::swap(GenSys& y) {
+Generator_System::swap(Generator_System& y) {
   Linear_System::swap(y);
 }
 
 inline memory_size_type
-GenSys::external_memory_in_bytes() const {
+Generator_System::external_memory_in_bytes() const {
   return Linear_System::external_memory_in_bytes();
 }
 
 inline memory_size_type
-GenSys::total_memory_in_bytes() const {
+Generator_System::total_memory_in_bytes() const {
   return Linear_System::total_memory_in_bytes();
 }
 
@@ -196,11 +196,11 @@ namespace std {
 
 /*! \relates Parma_Polyhedra_Library::Constraint_System */
 inline void
-swap(Parma_Polyhedra_Library::GenSys& x,
-     Parma_Polyhedra_Library::GenSys& y) {
+swap(Parma_Polyhedra_Library::Generator_System& x,
+     Parma_Polyhedra_Library::Generator_System& y) {
   x.swap(y);
 }
 
 } // namespace std
 
-#endif // !defined(PPL_GenSys_inlines_hh)
+#endif // !defined(PPL_Generator_System_inlines_hh)

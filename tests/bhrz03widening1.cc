@@ -36,7 +36,7 @@ dimensions() {
   Variable B(1);
   Variable C(2);
 
-  GenSys gs1;
+  Generator_System gs1;
   gs1.insert(point());
   gs1.insert(point(A));
   gs1.insert(point(B));
@@ -49,7 +49,7 @@ dimensions() {
 
   C_Polyhedron ph1_copy(ph1);
 
-  GenSys gs2;
+  Generator_System gs2;
   gs2.insert(point(0*C));
   gs2.insert(point(A));
   gs2.insert(point(B));
@@ -103,7 +103,7 @@ points() {
   Variable A(0);
   Variable B(1);
 
-  GenSys gs1;
+  Generator_System gs1;
   gs1.insert(point());
   gs1.insert(point(2*A));
   gs1.insert(point(2*B));
@@ -111,7 +111,7 @@ points() {
   C_Polyhedron ph1(gs1);
   C_Polyhedron ph1_copy(ph1);
 
-  GenSys gs2;
+  Generator_System gs2;
   gs2.insert(point());
   gs2.insert(point(A));
   gs2.insert(point(B));

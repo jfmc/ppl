@@ -38,12 +38,12 @@ main() TRY {
   Variable A(0);
   Variable B(1);
 
-  GenSys gs1;
+  Generator_System gs1;
   gs1.insert(point(A));
   gs1.insert(point(A + B));
   C_Polyhedron ph1(gs1);
 
-  GenSys gs2;
+  Generator_System gs2;
   gs2.insert(point(0*B));
   C_Polyhedron ph2(gs2);
 

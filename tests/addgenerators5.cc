@@ -46,7 +46,7 @@ main() TRY {
   print_constraints(ph, "*** ph ***");
 #endif
 
-  GenSys gs;
+  Generator_System gs;
   gs.insert(ray(x + y));
   gs.insert(point());
 
@@ -56,7 +56,7 @@ main() TRY {
 
   ph.add_generators_and_minimize(gs);
 
-  GenSys gs_known_result;
+  Generator_System gs_known_result;
   gs_known_result.insert(point());
   gs_known_result.insert(ray(x + y));
   C_Polyhedron known_result(gs_known_result);

@@ -40,7 +40,7 @@ main() TRY {
 
   // This is a more convoluted way of doing the same thing
   // using an empty system of generators.
-  GenSys gs;
+  Generator_System gs;
   C_Polyhedron ph2(gs);
 
   int retval = (ph1 == ph2 && ph1.is_empty() && ph2.is_empty()) ? 0 : 1;

@@ -37,7 +37,7 @@ main() TRY {
   Variable x(0);
   Variable y(1);
 
-  GenSys gs1;
+  Generator_System gs1;
   gs1.insert(point());
   gs1.insert(ray(x));
   gs1.insert(ray(y));
@@ -48,7 +48,7 @@ main() TRY {
   print_generators(ph1, "*** ph1 ***");
 #endif
 
-  GenSys gs2;
+  Generator_System gs2;
   gs2.insert(point(-x + y));
   gs2.insert(point(x + y));
   gs2.insert(point(3*x));
@@ -63,7 +63,7 @@ main() TRY {
 
   computed_result.poly_hull_assign(ph2);
 
-  GenSys gs_known_result;
+  Generator_System gs_known_result;
   gs_known_result.insert(point());
   gs_known_result.insert(point(-x + y));
   gs_known_result.insert(ray(x));

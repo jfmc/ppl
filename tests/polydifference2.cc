@@ -37,7 +37,7 @@ main() TRY {
   Variable x(0);
   Variable y(1);
 
-  GenSys gs1;
+  Generator_System gs1;
   gs1.insert(point(0*x + 0*y));
   gs1.insert(point(0*x + 3*y));
   gs1.insert(point(3*x + 0*y));
@@ -62,7 +62,7 @@ main() TRY {
 
   computed_result.poly_difference_assign(ph2);
 
-  GenSys gs_known_result;
+  Generator_System gs_known_result;
   gs_known_result.insert(closure_point(0*x + 0*y));
   gs_known_result.insert(closure_point(0*x + 3*y));
   gs_known_result.insert(point(3*x + 0*y));

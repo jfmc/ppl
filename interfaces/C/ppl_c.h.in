@@ -344,9 +344,9 @@ PPL_TYPE_DECLARATION(Constraint_System_const_iterator);
 
 PPL_TYPE_DECLARATION(Generator);
 
-PPL_TYPE_DECLARATION(GenSys);
+PPL_TYPE_DECLARATION(Generator_System);
 
-PPL_TYPE_DECLARATION(GenSys_const_iterator);
+PPL_TYPE_DECLARATION(Generator_System_const_iterator);
 
 PPL_TYPE_DECLARATION(Polyhedron);
 
@@ -674,14 +674,15 @@ ppl_new_Constraint_System_zero_dim_empty __P((ppl_Constraint_System_t* pcs));
 */
 int
 ppl_new_Constraint_System_from_Constraint __P((ppl_Constraint_System_t* pcs,
-				    ppl_const_Constraint_t c));
+					       ppl_const_Constraint_t c));
 
 /*! \brief
   Builds a constraint system that is a copy of \p cs; writes an handle
   for the newly created system at address \p pcs.
 */
 int
-ppl_new_Constraint_System_from_Constraint_System __P((ppl_Constraint_System_t* pcs, ppl_const_Constraint_System_t cs));
+ppl_new_Constraint_System_from_Constraint_System
+__P((ppl_Constraint_System_t* pcs, ppl_const_Constraint_System_t cs));
 
 /*! \brief
   Invalidates the handle \p cs: this makes sure the corresponding
@@ -694,15 +695,15 @@ ppl_delete_Constraint_System __P((ppl_const_Constraint_System_t cs));
   Assigns a copy of the constraint system \p src to \p dst.
 */
 int
-ppl_assign_Constraint_System_from_Constraint_System __P((ppl_Constraint_System_t dst,
-				   ppl_const_Constraint_System_t src));
+ppl_assign_Constraint_System_from_Constraint_System
+__P((ppl_Constraint_System_t dst, ppl_const_Constraint_System_t src));
 
 /*! \brief
   Writes to \p m the dimension of the vector space enclosing \p cs.
 */
 int
 ppl_Constraint_System_space_dimension __P((ppl_const_Constraint_System_t cs,
-				ppl_dimension_type* m));
+					   ppl_dimension_type* m));
 
 /*! \brief
   Removes all the constraints from the constraint system \p cs
@@ -717,7 +718,7 @@ ppl_Constraint_System_clear __P((ppl_Constraint_System_t cs));
 */
 int
 ppl_Constraint_System_insert_Constraint __P((ppl_Constraint_System_t cs,
-				  ppl_const_Constraint_t c));
+					     ppl_const_Constraint_t c));
 
 /*! \brief
   Returns a positive integer if \p cs is well formed, i.e., if it
@@ -733,7 +734,8 @@ ppl_Constraint_System_OK __P((ppl_const_Constraint_System_t c));
   \p pcit.
 */
 int
-ppl_new_Constraint_System_const_iterator __P((ppl_Constraint_System_const_iterator_t* pcit));
+ppl_new_Constraint_System_const_iterator
+__P((ppl_Constraint_System_const_iterator_t* pcit));
 
 /*! \brief
   Builds a const iterator that is a copy of \p cit; writes an
@@ -765,14 +767,17 @@ __P((ppl_Constraint_System_const_iterator_t dst,
   the constraint system \p cs.
 */
 int
-ppl_Constraint_System_begin __P((ppl_const_Constraint_System_t cs, ppl_Constraint_System_const_iterator_t cit));
+ppl_Constraint_System_begin
+__P((ppl_const_Constraint_System_t cs,
+     ppl_Constraint_System_const_iterator_t cit));
 
 /*! \brief
   Assigns to \p cit a const iterator "pointing" past the end of the
   constraint system \p cs.
 */
 int
-ppl_Constraint_System_end __P((ppl_const_Constraint_System_t cs, ppl_Constraint_System_const_iterator_t cit));
+ppl_Constraint_System_end __P((ppl_const_Constraint_System_t cs,
+			       ppl_Constraint_System_const_iterator_t cit));
 
 /*! \brief
   Dereference \p cit writing a const handle to the resulting
@@ -780,13 +785,15 @@ ppl_Constraint_System_end __P((ppl_const_Constraint_System_t cs, ppl_Constraint_
 */
 int
 ppl_Constraint_System_const_iterator_dereference
-__P((ppl_const_Constraint_System_const_iterator_t cit, ppl_const_Constraint_t* pc));
+__P((ppl_const_Constraint_System_const_iterator_t cit,
+     ppl_const_Constraint_t* pc));
 
 /*! \brief
   Increment \p cit so that it "points" to the next constraint.
 */
 int
-ppl_Constraint_System_const_iterator_increment __P((ppl_Constraint_System_const_iterator_t cit));
+ppl_Constraint_System_const_iterator_increment
+__P((ppl_Constraint_System_const_iterator_t cit));
 
 /*! \brief
   Returns a positive integer if the iterators corresponding to \p x and
@@ -915,7 +922,7 @@ ppl_Generator_OK __P((ppl_const_Generator_t g));
   address \p pgs.
 */
 int
-ppl_new_GenSys __P((ppl_GenSys_t* pgs));
+ppl_new_Generator_System __P((ppl_Generator_System_t* pgs));
 
 /*
   Creates the universe zero-dimensional system of generators (i.e.,
@@ -923,7 +930,7 @@ ppl_new_GenSys __P((ppl_GenSys_t* pgs));
   address \p pgs.
 */
 int
-ppl_new_GenSys_zero_dim_univ __P((ppl_GenSys_t* pgs));
+ppl_new_Generator_System_zero_dim_univ __P((ppl_Generator_System_t* pgs));
 
 /*! \brief
   Builds the singleton generator system containing only a copy of
@@ -931,50 +938,52 @@ ppl_new_GenSys_zero_dim_univ __P((ppl_GenSys_t* pgs));
   address \p pgs.
 */
 int
-ppl_new_GenSys_from_Generator __P((ppl_GenSys_t* pgs,
-				   ppl_const_Generator_t g));
+ppl_new_Generator_System_from_Generator __P((ppl_Generator_System_t* pgs,
+					     ppl_const_Generator_t g));
 
 /*! \brief
   Builds a generator system that is a copy of \p gs; writes an handle
   for the newly created system at address \p pgs.
 */
 int
-ppl_new_GenSys_from_GenSys __P((ppl_GenSys_t* pgs, ppl_const_GenSys_t gs));
+ppl_new_Generator_System_from_Generator_System
+__P((ppl_Generator_System_t* pgs, ppl_const_Generator_System_t gs));
 
 /*! \brief
   Invalidates the handle \p gs: this makes sure the corresponding
   resources will eventually be released.
 */
 int
-ppl_delete_GenSys __P((ppl_const_GenSys_t gs));
+ppl_delete_Generator_System __P((ppl_const_Generator_System_t gs));
 
 /*! \brief
   Assigns a copy of the generator system \p src to \p dst.
 */
 int
-ppl_assign_GenSys_from_GenSys __P((ppl_GenSys_t dst,
-				   ppl_const_GenSys_t src));
+ppl_assign_Generator_System_from_Generator_System
+__P((ppl_Generator_System_t dst, ppl_const_Generator_System_t src));
 
 /*! \brief
   Writes to \p m the dimension of the vector space enclosing \p gs.
 */
 int
-ppl_GenSys_space_dimension __P((ppl_const_GenSys_t gs,
-				ppl_dimension_type* m));
+ppl_Generator_System_space_dimension __P((ppl_const_Generator_System_t gs,
+					  ppl_dimension_type* m));
 
 /*! \brief
   Removes all the generators from the generator system \p gs
   and sets its space dimension to 0.
 */
 int
-ppl_GenSys_clear __P((ppl_GenSys_t gs));
+ppl_Generator_System_clear __P((ppl_Generator_System_t gs));
 
 /*! \brief
   Inserts a copy of the generator \p g into \p gs; the space
   dimension is increased, if necessary.
 */
 int
-ppl_GenSys_insert_Generator __P((ppl_GenSys_t gs, ppl_const_Generator_t g));
+ppl_Generator_System_insert_Generator __P((ppl_Generator_System_t gs,
+					   ppl_const_Generator_t g));
 
 /*! \brief
   Returns a positive integer if \p gs is well formed, i.e., if it
@@ -982,7 +991,7 @@ ppl_GenSys_insert_Generator __P((ppl_GenSys_t gs, ppl_const_Generator_t g));
   make some noise if \p gs is broken.  Useful for debugging purposes.
 */
 int
-ppl_GenSys_OK __P((ppl_const_GenSys_t c));
+ppl_Generator_System_OK __P((ppl_const_Generator_System_t c));
 
 
 /*! \brief
@@ -990,72 +999,74 @@ ppl_GenSys_OK __P((ppl_const_GenSys_t c));
   \p pgit.
 */
 int
-ppl_new_GenSys_const_iterator __P((ppl_GenSys_const_iterator_t* pgit));
+ppl_new_Generator_System_const_iterator
+__P((ppl_Generator_System_const_iterator_t* pgit));
 
 /*! \brief
   Builds a const iterator that is a copy of \p git; writes an
   handle for the newly created const iterator at address \p pgit.
 */
 int
-ppl_new_GenSys_const_iterator_from_GenSys_const_iterator
-__P((ppl_GenSys_const_iterator_t* pgit,
-     ppl_const_GenSys_const_iterator_t git));
+ppl_new_Generator_System_const_iterator_from_Generator_System_const_iterator
+__P((ppl_Generator_System_const_iterator_t* pgit,
+     ppl_const_Generator_System_const_iterator_t git));
 
 /*! \brief
   Invalidates the handle \p git: this makes sure the corresponding
   resources will eventually be released.
 */
 int
-ppl_delete_GenSys_const_iterator
-__P((ppl_const_GenSys_const_iterator_t git));
+ppl_delete_Generator_System_const_iterator
+__P((ppl_const_Generator_System_const_iterator_t git));
 
 /*! \brief
   Assigns a copy of the const iterator \p src to \p dst.
 */
 int
-ppl_assign_GenSys_const_iterator_from_GenSys_const_iterator
-__P((ppl_GenSys_const_iterator_t dst,
-     ppl_const_GenSys_const_iterator_t src));
+ppl_assign_Generator_System_const_iterator_from_Generator_System_const_iterator
+__P((ppl_Generator_System_const_iterator_t dst,
+     ppl_const_Generator_System_const_iterator_t src));
 
 /*! \brief
   Assigns to \p git a const iterator "pointing" to the beginning of
   the generator system \p gs.
 */
 int
-ppl_GenSys_begin __P((ppl_const_GenSys_t gs,
-		      ppl_GenSys_const_iterator_t git));
+ppl_Generator_System_begin __P((ppl_const_Generator_System_t gs,
+				ppl_Generator_System_const_iterator_t git));
 
 /*! \brief
   Assigns to \p git a const iterator "pointing" past the end of the
   generator system \p gs.
 */
 int
-ppl_GenSys_end __P((ppl_const_GenSys_t gs,
-		    ppl_GenSys_const_iterator_t git));
+ppl_Generator_System_end __P((ppl_const_Generator_System_t gs,
+			      ppl_Generator_System_const_iterator_t git));
 
 /*! \brief
   Dereference \p git writing a const handle to the resulting
   generator at address \p pg.
 */
 int
-ppl_GenSys_const_iterator_dereference
-__P((ppl_const_GenSys_const_iterator_t git,
+ppl_Generator_System_const_iterator_dereference
+__P((ppl_const_Generator_System_const_iterator_t git,
      ppl_const_Generator_t* pg));
 
 /*! \brief
   Increment \p git so that it "points" to the next generator.
 */
 int
-ppl_GenSys_const_iterator_increment __P((ppl_GenSys_const_iterator_t git));
+ppl_Generator_System_const_iterator_increment
+__P((ppl_Generator_System_const_iterator_t git));
 
 /*! \brief
   Return a positive integer if the iterators corresponding to \p x and
   \p y are equal; return 0 if they are different.
 */
 int
-ppl_GenSys_const_iterator_equal_test
-__P((ppl_const_GenSys_const_iterator_t x,
-     ppl_const_GenSys_const_iterator_t y));
+ppl_Generator_System_const_iterator_equal_test
+__P((ppl_const_Generator_System_const_iterator_t x,
+     ppl_const_Generator_System_const_iterator_t y));
 
 /*@}*/ /* Functions Related to Generator Systems */
 
@@ -1182,8 +1193,8 @@ ppl_new_NNC_Polyhedron_from_NNC_Polyhedron __P((ppl_Polyhedron_t* pph,
   The new polyhedron will inherit the space dimension of \p cs.
 */
 int
-ppl_new_C_Polyhedron_from_Constraint_System __P((ppl_Polyhedron_t* pph,
-				      ppl_const_Constraint_System_t cs));
+ppl_new_C_Polyhedron_from_Constraint_System
+__P((ppl_Polyhedron_t* pph, ppl_const_Constraint_System_t cs));
 
 /*! \brief
   Builds a new closed polyhedron recycling the system of constraints
@@ -1198,8 +1209,8 @@ ppl_new_C_Polyhedron_from_Constraint_System __P((ppl_Polyhedron_t* pph,
   upon return, no assumption can be made on its value.
 */
 int
-ppl_new_C_Polyhedron_recycle_Constraint_System __P((ppl_Polyhedron_t* pph,
-					 ppl_Constraint_System_t cs));
+ppl_new_C_Polyhedron_recycle_Constraint_System
+__P((ppl_Polyhedron_t* pph, ppl_Constraint_System_t cs));
 
 /*! \brief
   Builds a new NNC polyhedron from the system of constraints
@@ -1209,8 +1220,8 @@ ppl_new_C_Polyhedron_recycle_Constraint_System __P((ppl_Polyhedron_t* pph,
   The new polyhedron will inherit the space dimension of \p cs.
 */
 int
-ppl_new_NNC_Polyhedron_from_Constraint_System __P((ppl_Polyhedron_t* pph,
-					ppl_const_Constraint_System_t cs));
+ppl_new_NNC_Polyhedron_from_Constraint_System
+__P((ppl_Polyhedron_t* pph, ppl_const_Constraint_System_t cs));
 
 /*! \brief
   Builds a new NNC polyhedron recycling the system of constraints
@@ -1225,8 +1236,8 @@ ppl_new_NNC_Polyhedron_from_Constraint_System __P((ppl_Polyhedron_t* pph,
   upon return, no assumption can be made on its value.
 */
 int
-ppl_new_NNC_Polyhedron_recycle_Constraint_System __P((ppl_Polyhedron_t* pph,
-					   ppl_Constraint_System_t cs));
+ppl_new_NNC_Polyhedron_recycle_Constraint_System
+__P((ppl_Polyhedron_t* pph, ppl_Constraint_System_t cs));
 
 /*! \brief
   Builds a new closed polyhedron from the system of generators
@@ -1236,8 +1247,8 @@ ppl_new_NNC_Polyhedron_recycle_Constraint_System __P((ppl_Polyhedron_t* pph,
   The new polyhedron will inherit the space dimension of \p gs.
 */
 int
-ppl_new_C_Polyhedron_from_GenSys __P((ppl_Polyhedron_t* pph,
-				      ppl_const_GenSys_t gs));
+ppl_new_C_Polyhedron_from_Generator_System
+__P((ppl_Polyhedron_t* pph, ppl_const_Generator_System_t gs));
 
 /*! \brief
   Builds a new closed polyhedron recycling the system of generators
@@ -1252,8 +1263,8 @@ ppl_new_C_Polyhedron_from_GenSys __P((ppl_Polyhedron_t* pph,
   upon return, no assumption can be made on its value.
 */
 int
-ppl_new_C_Polyhedron_recycle_GenSys __P((ppl_Polyhedron_t* pph,
-					 ppl_GenSys_t gs));
+ppl_new_C_Polyhedron_recycle_Generator_System __P((ppl_Polyhedron_t* pph,
+						   ppl_Generator_System_t gs));
 
 /*! \brief
   Builds a new NNC polyhedron from the system of generators
@@ -1263,8 +1274,8 @@ ppl_new_C_Polyhedron_recycle_GenSys __P((ppl_Polyhedron_t* pph,
   The new polyhedron will inherit the space dimension of \p gs.
 */
 int
-ppl_new_NNC_Polyhedron_from_GenSys __P((ppl_Polyhedron_t* pph,
-					ppl_const_GenSys_t gs));
+ppl_new_NNC_Polyhedron_from_Generator_System
+__P((ppl_Polyhedron_t* pph, ppl_const_Generator_System_t gs));
 
 /*! \brief
   Builds a new NNC polyhedron recycling the system of generators
@@ -1279,8 +1290,8 @@ ppl_new_NNC_Polyhedron_from_GenSys __P((ppl_Polyhedron_t* pph,
   upon return, no assumption can be made on its value.
 */
 int
-ppl_new_NNC_Polyhedron_recycle_GenSys __P((ppl_Polyhedron_t* pph,
-					   ppl_GenSys_t gs));
+ppl_new_NNC_Polyhedron_recycle_Generator_System
+__P((ppl_Polyhedron_t* pph, ppl_Generator_System_t gs));
 
 /*! \brief
   Builds a new C polyhedron corresponding to an interval-based
@@ -1462,7 +1473,7 @@ ppl_Polyhedron_minimized_constraints __P((ppl_const_Polyhedron_t ph,
 */
 int
 ppl_Polyhedron_generators __P((ppl_const_Polyhedron_t ph,
-			       ppl_const_GenSys_t* pgs));
+			       ppl_const_Generator_System_t* pgs));
 
 /*! \brief
   Writes a const handle to the minimized generator system defining the
@@ -1470,7 +1481,7 @@ ppl_Polyhedron_generators __P((ppl_const_Polyhedron_t ph,
 */
 int
 ppl_Polyhedron_minimized_generators __P((ppl_const_Polyhedron_t ph,
-					 ppl_const_GenSys_t* pgs));
+					 ppl_const_Generator_System_t* pgs));
 
 /*! \brief
   Checks the relation between the polyhedron \p ph with the constraint \p c.
@@ -1755,8 +1766,8 @@ ppl_Polyhedron_add_constraints __P((ppl_Polyhedron_t ph,
   return, \p ph is guaranteed to be minimized.
 */
 int
-ppl_Polyhedron_add_constraints_and_minimize __P((ppl_Polyhedron_t ph,
-						 ppl_const_Constraint_System_t cs));
+ppl_Polyhedron_add_constraints_and_minimize
+__P((ppl_Polyhedron_t ph, ppl_const_Constraint_System_t cs));
 
 /*! \brief
   Adds a copy of the system of generators \p gs to the system of
@@ -1764,7 +1775,7 @@ ppl_Polyhedron_add_constraints_and_minimize __P((ppl_Polyhedron_t ph,
 */
 int
 ppl_Polyhedron_add_generators __P((ppl_Polyhedron_t ph,
-				   ppl_const_GenSys_t gs));
+				   ppl_const_Generator_System_t gs));
 
 /*! \brief
   Adds a copy of the system of generators \p gs to the system of
@@ -1773,8 +1784,8 @@ ppl_Polyhedron_add_generators __P((ppl_Polyhedron_t ph,
   return, \p ph is guaranteed to be minimized.
 */
 int
-ppl_Polyhedron_add_generators_and_minimize __P((ppl_Polyhedron_t ph,
-						ppl_const_GenSys_t gs));
+ppl_Polyhedron_add_generators_and_minimize
+__P((ppl_Polyhedron_t ph, ppl_const_Generator_System_t gs));
 
 /*! \brief
   Adds the system of constraints \p cs to the system of constraints of
@@ -1799,8 +1810,8 @@ ppl_Polyhedron_add_recycled_constraints __P((ppl_Polyhedron_t ph,
   upon return, no assumption can be made on its value.
 */
 int
-ppl_Polyhedron_add_recycled_constraints_and_minimize __P((ppl_Polyhedron_t ph,
-							  ppl_Constraint_System_t cs));
+ppl_Polyhedron_add_recycled_constraints_and_minimize
+__P((ppl_Polyhedron_t ph, ppl_Constraint_System_t cs));
 
 /*! \brief
   Adds the system of generators \p gs to the system of generators of
@@ -1812,7 +1823,7 @@ ppl_Polyhedron_add_recycled_constraints_and_minimize __P((ppl_Polyhedron_t ph,
 */
 int
 ppl_Polyhedron_add_recycled_generators __P((ppl_Polyhedron_t ph,
-					    ppl_GenSys_t gs));
+					    ppl_Generator_System_t gs));
 
 /*! \brief
   Adds the system of generators \p gs to the system of generators of
@@ -1825,8 +1836,8 @@ ppl_Polyhedron_add_recycled_generators __P((ppl_Polyhedron_t ph,
   upon return, no assumption can be made on its value.
 */
 int
-ppl_Polyhedron_add_recycled_generators_and_minimize __P((ppl_Polyhedron_t ph,
-							 ppl_GenSys_t gs));
+ppl_Polyhedron_add_recycled_generators_and_minimize
+__P((ppl_Polyhedron_t ph, ppl_Generator_System_t gs));
 
 /*! \brief
   Intersects \p x with polyhedron \p y and assigns the result \p x.
@@ -2101,9 +2112,10 @@ __P((ppl_Polyhedron_t x,
   satisfied by all the points of \p x.
 */
 int
-ppl_Polyhedron_limited_H79_extrapolation_assign __P((ppl_Polyhedron_t x,
-						     ppl_const_Polyhedron_t y,
-						     ppl_const_Constraint_System_t cs));
+ppl_Polyhedron_limited_H79_extrapolation_assign
+__P((ppl_Polyhedron_t x,
+     ppl_const_Polyhedron_t y,
+     ppl_const_Constraint_System_t cs));
 
 /*! \brief
   If the polyhedron \p y is contained in (or equal to) the polyhedron
@@ -2133,9 +2145,10 @@ __P((ppl_Polyhedron_t x,
   x.
 */
 int
-ppl_Polyhedron_bounded_H79_extrapolation_assign __P((ppl_Polyhedron_t x,
-						     ppl_const_Polyhedron_t y,
-						     ppl_const_Constraint_System_t cs));
+ppl_Polyhedron_bounded_H79_extrapolation_assign
+__P((ppl_Polyhedron_t x,
+     ppl_const_Polyhedron_t y,
+     ppl_const_Constraint_System_t cs));
 
 /*! \brief
   Assigns to \p ph its topological closure.
@@ -2260,7 +2273,7 @@ PPL_DECLARE_PRINT_FUNCTIONS(Constraint_System)
 
 PPL_DECLARE_PRINT_FUNCTIONS(Generator)
 
-PPL_DECLARE_PRINT_FUNCTIONS(GenSys)
+PPL_DECLARE_PRINT_FUNCTIONS(Generator_System)
 
 PPL_DECLARE_PRINT_FUNCTIONS(Polyhedron)
 

@@ -52,11 +52,11 @@ main() TRY {
   print_generators(ph3, "*** ph3 ***");
 #endif
 
-  GenSys gs1 = ph1.generators();
-  GenSys gs2 = ph2.generators();
-  GenSys gs3 = ph3.generators();
+  Generator_System gs1 = ph1.generators();
+  Generator_System gs2 = ph2.generators();
+  Generator_System gs3 = ph3.generators();
 
-  GenSys known_result2;
+  Generator_System known_result2;
   known_result2.insert(point());
   int retval = (gs1.begin() == gs1.end()
 		&& C_Polyhedron(gs2) == C_Polyhedron(known_result2)

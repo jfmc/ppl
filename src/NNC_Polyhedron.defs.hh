@@ -95,7 +95,7 @@ public:
     \exception std::invalid_argument
     Thrown if the system of generators is not empty but has no points.
   */
-  explicit NNC_Polyhedron(const GenSys& gs);
+  explicit NNC_Polyhedron(const Generator_System& gs);
 
   //! Builds an NNC polyhedron recycling a system of generators.
   /*!
@@ -109,7 +109,7 @@ public:
     \exception std::invalid_argument
     Thrown if the system of generators is not empty but has no points.
   */
-  explicit NNC_Polyhedron(GenSys& gs);
+  explicit NNC_Polyhedron(Generator_System& gs);
 
   //! Builds an NNC polyhedron from the C polyhedron \p y.
   explicit NNC_Polyhedron(const C_Polyhedron& y);

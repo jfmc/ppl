@@ -36,13 +36,13 @@ test1() {
   Variable A(0);
   Variable B(1);
 
-  GenSys gs1;
+  Generator_System gs1;
   gs1.insert(point());
   gs1.insert(ray(A));
   gs1.insert(ray(A + B));
   C_Polyhedron ph1(gs1);
 
-  GenSys gs2;
+  Generator_System gs2;
   gs2.insert(point());
   gs2.insert(ray(A));
   gs2.insert(ray(A + 2*B));
@@ -74,13 +74,13 @@ test2() {
   Variable A(0);
   Variable B(1);
 
-  GenSys gs1;
+  Generator_System gs1;
   gs1.insert(point());
   gs1.insert(ray(-A));
   gs1.insert(ray(-A + B));
   C_Polyhedron ph1(gs1);
 
-  GenSys gs2;
+  Generator_System gs2;
   gs2.insert(point());
   gs2.insert(ray(-A));
   gs2.insert(ray(-A + 2*B));
@@ -112,13 +112,13 @@ test3() {
   Variable A(0);
   Variable B(1);
 
-  GenSys gs1;
+  Generator_System gs1;
   gs1.insert(point());
   gs1.insert(ray(-A));
   gs1.insert(ray(-A - B));
   C_Polyhedron ph1(gs1);
 
-  GenSys gs2;
+  Generator_System gs2;
   gs2.insert(point());
   gs2.insert(ray(-A));
   gs2.insert(ray(-A - 2*B));
@@ -150,13 +150,13 @@ test4() {
   Variable A(0);
   Variable B(1);
 
-  GenSys gs1;
+  Generator_System gs1;
   gs1.insert(point());
   gs1.insert(ray(A));
   gs1.insert(ray(A - B));
   C_Polyhedron ph1(gs1);
 
-  GenSys gs2;
+  Generator_System gs2;
   gs2.insert(point());
   gs2.insert(ray(A));
   gs2.insert(ray(A - 2*B));
@@ -188,13 +188,13 @@ test5() {
   Variable A(0);
   Variable B(1);
 
-  GenSys gs1;
+  Generator_System gs1;
   gs1.insert(point());
   gs1.insert(ray(B));
   gs1.insert(ray(A + 2*B));
   C_Polyhedron ph1(gs1);
 
-  GenSys gs2;
+  Generator_System gs2;
   gs2.insert(point());
   gs2.insert(ray(B));
   gs2.insert(ray(A + B));
@@ -226,13 +226,13 @@ test6() {
   Variable A(0);
   Variable B(1);
 
-  GenSys gs1;
+  Generator_System gs1;
   gs1.insert(point());
   gs1.insert(ray(B));
   gs1.insert(ray(-A + 2*B));
   C_Polyhedron ph1(gs1);
 
-  GenSys gs2;
+  Generator_System gs2;
   gs2.insert(point());
   gs2.insert(ray(B));
   gs2.insert(ray(-A + B));
@@ -264,13 +264,13 @@ test7() {
   Variable A(0);
   Variable B(1);
 
-  GenSys gs1;
+  Generator_System gs1;
   gs1.insert(point());
   gs1.insert(ray(-B));
   gs1.insert(ray(-A - 2*B));
   C_Polyhedron ph1(gs1);
 
-  GenSys gs2;
+  Generator_System gs2;
   gs2.insert(point());
   gs2.insert(ray(-B));
   gs2.insert(ray(-A - B));
@@ -302,13 +302,13 @@ test8() {
   Variable A(0);
   Variable B(1);
 
-  GenSys gs1;
+  Generator_System gs1;
   gs1.insert(point());
   gs1.insert(ray(-B));
   gs1.insert(ray(A - 2*B));
   C_Polyhedron ph1(gs1);
 
-  GenSys gs2;
+  Generator_System gs2;
   gs2.insert(point());
   gs2.insert(ray(-B));
   gs2.insert(ray(A - B));
@@ -340,13 +340,13 @@ test9() {
   Variable A(0);
   Variable B(1);
 
-  GenSys gs1;
+  Generator_System gs1;
   gs1.insert(point());
   gs1.insert(ray(A));
   gs1.insert(ray(A + B));
   C_Polyhedron ph1(gs1);
 
-  GenSys gs2;
+  Generator_System gs2;
   gs2.insert(point());
   gs2.insert(ray(A));
   gs2.insert(ray(-A + B));
@@ -377,13 +377,13 @@ test10() {
   Variable A(0);
   Variable B(1);
 
-  GenSys gs1;
+  Generator_System gs1;
   gs1.insert(point());
   gs1.insert(ray(B));
   gs1.insert(ray(-A + B));
   C_Polyhedron ph1(gs1);
 
-  GenSys gs2;
+  Generator_System gs2;
   gs2.insert(point());
   gs2.insert(ray(B));
   gs2.insert(ray(-A - B));
@@ -414,13 +414,13 @@ test11() {
   Variable A(0);
   Variable B(1);
 
-  GenSys gs1;
+  Generator_System gs1;
   gs1.insert(point());
   gs1.insert(ray(-A));
   gs1.insert(ray(-A - B));
   C_Polyhedron ph1(gs1);
 
-  GenSys gs2;
+  Generator_System gs2;
   gs2.insert(point());
   gs2.insert(ray(-A));
   gs2.insert(ray(A - B));
@@ -451,13 +451,13 @@ test12() {
   Variable A(0);
   Variable B(1);
 
-  GenSys gs1;
+  Generator_System gs1;
   gs1.insert(point());
   gs1.insert(ray(-B));
   gs1.insert(ray(A - B));
   C_Polyhedron ph1(gs1);
 
-  GenSys gs2;
+  Generator_System gs2;
   gs2.insert(point());
   gs2.insert(ray(-B));
   gs2.insert(ray(A + B));
@@ -488,13 +488,13 @@ test13() {
   Variable A(0);
   Variable B(1);
 
-  GenSys gs1;
+  Generator_System gs1;
   gs1.insert(point());
   gs1.insert(ray(-A));
   gs1.insert(ray(-A + B));
   C_Polyhedron ph1(gs1);
 
-  GenSys gs2;
+  Generator_System gs2;
   gs2.insert(point());
   gs2.insert(ray(-A));
   gs2.insert(ray(A + B));
@@ -525,13 +525,13 @@ test14() {
   Variable A(0);
   Variable B(1);
 
-  GenSys gs1;
+  Generator_System gs1;
   gs1.insert(point());
   gs1.insert(ray(-B));
   gs1.insert(ray(-A - B));
   C_Polyhedron ph1(gs1);
 
-  GenSys gs2;
+  Generator_System gs2;
   gs2.insert(point());
   gs2.insert(ray(-B));
   gs2.insert(ray(-A + B));
@@ -562,13 +562,13 @@ test15() {
   Variable A(0);
   Variable B(1);
 
-  GenSys gs1;
+  Generator_System gs1;
   gs1.insert(point());
   gs1.insert(ray(A));
   gs1.insert(ray(A - B));
   C_Polyhedron ph1(gs1);
 
-  GenSys gs2;
+  Generator_System gs2;
   gs2.insert(point());
   gs2.insert(ray(A));
   gs2.insert(ray(-A - B));
@@ -599,13 +599,13 @@ test16() {
   Variable A(0);
   Variable B(1);
 
-  GenSys gs1;
+  Generator_System gs1;
   gs1.insert(point());
   gs1.insert(ray(B));
   gs1.insert(ray(A + B));
   C_Polyhedron ph1(gs1);
 
-  GenSys gs2;
+  Generator_System gs2;
   gs2.insert(point());
   gs2.insert(ray(B));
   gs2.insert(ray(A - B));

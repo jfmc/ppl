@@ -40,7 +40,7 @@ main() TRY {
   Variable C(2);
 
   C_Polyhedron ph_empty(2, C_Polyhedron::EMPTY);
-  GenSys gs1 = ph_empty.generators();
+  Generator_System gs1 = ph_empty.generators();
   assert(gs1.space_dimension() == ph_empty.space_dimension());
 
   gs1.insert(point());
@@ -58,7 +58,7 @@ main() TRY {
   if (ph1 != known_result1)
     return 1;
 
-  GenSys gs2 = ph_empty.generators();
+  Generator_System gs2 = ph_empty.generators();
   assert(gs2.space_dimension() == ph_empty.space_dimension());
 
   gs2.insert(point(C));

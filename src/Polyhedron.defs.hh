@@ -30,8 +30,8 @@ site: http://www.cs.unipr.it/ppl/ . */
 #include "Linear_Expression.defs.hh"
 #include "Constraint_System.defs.hh"
 #include "Constraint_System.inlines.hh"
-#include "GenSys.defs.hh"
-#include "GenSys.inlines.hh"
+#include "Generator_System.defs.hh"
+#include "Generator_System.inlines.hh"
 #include "Saturation_Matrix.defs.hh"
 #include "Generator.types.hh"
 #include "Poly_Con_Relation.defs.hh"
@@ -150,7 +150,7 @@ bool operator!=(const Polyhedron& x, const Polyhedron& y);
     but starting from a system of generators specifying
     the four vertices of the square:
     \code
-  GenSys gs;
+  Generator_System gs;
   gs.insert(point(0*x + 0*y));
   gs.insert(point(0*x + 3*y));
   gs.insert(point(3*x + 0*y));
@@ -173,7 +173,7 @@ bool operator!=(const Polyhedron& x, const Polyhedron& y);
     but starting from the system of generators specifying
     the two vertices of the polyhedron and one ray:
     \code
-  GenSys gs;
+  Generator_System gs;
   gs.insert(point(0*x + 0*y));
   gs.insert(point(0*x + y));
   gs.insert(ray(x - y));
@@ -309,7 +309,7 @@ bool operator!=(const Polyhedron& x, const Polyhedron& y);
     The following code shows the use of the function
     <CODE>remove_space_dimensions</CODE>:
     \code
-  GenSys gs;
+  Generator_System gs;
   gs.insert(point(3*x + y +0*z + 2*w));
   C_Polyhedron ph(gs);
   set<Variable> to_be_removed;
@@ -422,7 +422,7 @@ protected:
     Thrown if if the topology of \p gs is incompatible with \p topol,
     or if the system of generators is not empty but has no points.
   */
-  Polyhedron(Topology topol, const GenSys& gs);
+  Polyhedron(Topology topol, const Generator_System& gs);
 
   //! Builds a polyhedron recycling a system of generators.
   /*!
@@ -440,7 +440,7 @@ protected:
     Thrown if if the topology of \p gs is incompatible with \p topol,
     or if the system of generators is not empty but has no points.
   */
-  Polyhedron(Topology topol, GenSys& gs);
+  Polyhedron(Topology topol, Generator_System& gs);
 
   //! Builds a polyhedron out of a generic, interval-based bounding box.
   /*!
@@ -524,10 +524,10 @@ public:
   const Constraint_System& minimized_constraints() const;
 
   //! Returns the system of generators.
-  const GenSys& generators() const;
+  const Generator_System& generators() const;
 
   //! Returns the system of generators, with no redundant generator.
-  const GenSys& minimized_generators() const;
+  const Generator_System& minimized_generators() const;
 
   //! \brief
   //! Returns the relations holding between the polyhedron \p *this
@@ -927,7 +927,7 @@ public:
     dimension-incompatible, or if \p *this is empty and the system of
     generators \p gs is not empty, but has no points.
   */
-  void add_generators(const GenSys& gs);
+  void add_generators(const Generator_System& gs);
 
   //! \brief Adds the generators in \p gs to the system of generators
   //! of \p *this (without minimizing the result).
@@ -945,7 +945,7 @@ public:
     The only assumption that can be made on \p gs upon successful or
     exceptional return is that it can be safely destroyed.
   */
-  void add_recycled_generators(GenSys& gs);
+  void add_recycled_generators(Generator_System& gs);
 
   //! \brief Adds a copy of the generators in \p gs to the system
   //! of generators of \p *this, minimizing the result.
@@ -962,7 +962,7 @@ public:
     dimension-incompatible, or if \p *this is empty and the the system
     of generators \p gs is not empty, but has no points.
   */
-  bool add_generators_and_minimize(const GenSys& gs);
+  bool add_generators_and_minimize(const Generator_System& gs);
 
   //! \brief Adds the generators in \p gs to the system of generators
   //! of \p *this, minimizing the result.
@@ -983,7 +983,7 @@ public:
     The only assumption that can be made on \p gs upon successful or
     exceptional return is that it can be safely destroyed.
   */
-  bool add_recycled_generators_and_minimize(GenSys& gs);
+  bool add_recycled_generators_and_minimize(Generator_System& gs);
 
   //! \brief
   //! Assigns to \p *this the intersection of \p *this and \p y.
@@ -1662,7 +1662,7 @@ private:
   Constraint_System con_sys;
 
   //! The system of generators.
-  GenSys gen_sys;
+  Generator_System gen_sys;
 
   //! The saturation matrix having constraints on its columns.
   Saturation_Matrix sat_c;
@@ -2225,7 +2225,7 @@ protected:
 				   const Constraint_System& cs) const;
   void throw_topology_incompatible(const char* method,
 				   const char* gs_name,
-				   const GenSys& gs) const;
+				   const Generator_System& gs) const;
 
   void throw_dimension_incompatible(const char* method,
 				    const char* other_name,
@@ -2247,7 +2247,7 @@ protected:
 				    const Constraint_System& cs) const;
   void throw_dimension_incompatible(const char* method,
 				    const char* gs_name,
-				    const GenSys& gs) const;
+				    const Generator_System& gs) const;
   void throw_dimension_incompatible(const char* method,
 				    const char* var_name,
 				    const Variable var) const;

@@ -43,7 +43,7 @@ Polyhedron::max_space_dimension() {
   // that does not represent a legal dimension.
   return min(std::numeric_limits<dimension_type>::max() - 1,
 	     min(Constraint_System::max_space_dimension(),
-		 GenSys::max_space_dimension()
+		 Generator_System::max_space_dimension()
 		 )
 	     );
 }
@@ -558,14 +558,14 @@ Polyhedron::shrink_bounding_box(Box& box, Complexity_Class complexity) const {
 
     // We have not to copy `gen_sys', because in this case
     // we only read the generators.
-    const GenSys& gs = gen_sys;
+    const Generator_System& gs = gen_sys;
     // Using the iterator, we read also the pending part of the matrix.
-    const GenSys::const_iterator gs_begin = gs.begin();
-    const GenSys::const_iterator gs_end = gs.end();
+    const Generator_System::const_iterator gs_begin = gs.begin();
+    const Generator_System::const_iterator gs_end = gs.end();
 
     // We first need to identify those axes that are unbounded
     // below and/or above.
-    for (GenSys::const_iterator i = gs_begin; i != gs_end; ++i) {
+    for (Generator_System::const_iterator i = gs_begin; i != gs_end; ++i) {
       const Generator& g = *i;
       Generator::Type g_type = g.type();
       switch (g_type) {
@@ -729,7 +729,7 @@ Polyhedron::map_space_dimensions(const Partial_Function& pfunc) {
   // dimensions must be projected away.
 
   // If there are pending constraints, using `generators()' we process them.
-  const GenSys& old_gensys = generators();
+  const Generator_System& old_gensys = generators();
 
   if (old_gensys.num_rows() == 0) {
     // The polyhedron is empty.
@@ -747,8 +747,8 @@ Polyhedron::map_space_dimensions(const Partial_Function& pfunc) {
       pfunc_maps[j] = pfunc_j;
   }
 
-  GenSys new_gensys;
-  for (GenSys::const_iterator i = old_gensys.begin(),
+  Generator_System new_gensys;
+  for (Generator_System::const_iterator i = old_gensys.begin(),
 	 old_gensys_end = old_gensys.end(); i != old_gensys_end; ++i) {
     const Generator& old_g = *i;
     Linear_Expression e(0 * Variable(new_space_dimension-1));

@@ -585,7 +585,7 @@ read_polyhedron(std::istream& in, POLYHEDRON_TYPE& ph) {
 #if defined(USE_PPL)
 
   PPL::Constraint_System cs;
-  PPL::GenSys gs;
+  PPL::Generator_System gs;
 
 #elif defined(USE_POLKA)
 
@@ -881,8 +881,8 @@ write_polyhedron(std::ostream& out,
     }
   }
   else {
-    const PPL::GenSys& gs = ph.generators();
-    for (PPL::GenSys::const_iterator i = gs.begin(),
+    const PPL::Generator_System& gs = ph.generators();
+    for (PPL::Generator_System::const_iterator i = gs.begin(),
 	   gs_end = gs.end(); i != gs_end; ++i) {
       ++num_rows;
       if (i->is_line())
@@ -953,8 +953,8 @@ write_polyhedron(std::ostream& out,
   }
   else {
     assert(rep == V);
-    const PPL::GenSys& gs = ph.generators();
-    for (PPL::GenSys::const_iterator i = gs.begin(),
+    const PPL::Generator_System& gs = ph.generators();
+    for (PPL::Generator_System::const_iterator i = gs.begin(),
 	   gs_end = gs.end(); i != gs_end; ++i) {
       const PPL::Generator& g = *i;
       if (g.is_point()) {
@@ -1168,15 +1168,15 @@ main(int argc, char* argv[]) try {
 
 	// Count the number of generators of `ph'.
 	unsigned ph_num_generators = 0;
-	const PPL::GenSys& ph_gs = ph.generators();
-	for (PPL::GenSys::const_iterator i = ph_gs.begin(),
+	const PPL::Generator_System& ph_gs = ph.generators();
+	for (PPL::Generator_System::const_iterator i = ph_gs.begin(),
 	       ph_gs_end = ph_gs.end(); i != ph_gs_end; ++i)
 	  ++ph_num_generators;
 	
 	// Count the number of generators of `e_ph'.
 	unsigned e_ph_num_generators = 0;
-	const PPL::GenSys& e_ph_gs = e_ph.generators();
-	for (PPL::GenSys::const_iterator i = e_ph_gs.begin(),
+	const PPL::Generator_System& e_ph_gs = e_ph.generators();
+	for (PPL::Generator_System::const_iterator i = e_ph_gs.begin(),
 	       e_ph_gs_end = e_ph_gs.end(); i != e_ph_gs_end; ++i)
 	  ++e_ph_num_generators;
 

@@ -28,7 +28,7 @@ site: http://www.cs.unipr.it/ppl/ . */
 #include "Row.defs.hh"
 #include "Variable.defs.hh"
 #include "Constraint_System.types.hh"
-#include "GenSys.defs.hh"
+#include "Generator_System.defs.hh"
 #include "Linear_Expression.defs.hh"
 #include "Polyhedron.types.hh"
 #include <iosfwd>
@@ -374,8 +374,8 @@ private:
   void
   throw_invalid_argument(const char* method, const char* reason) const;
 
-  friend class Parma_Polyhedra_Library::GenSys;
-  friend class Parma_Polyhedra_Library::GenSys::const_iterator;
+  friend class Parma_Polyhedra_Library::Generator_System;
+  friend class Parma_Polyhedra_Library::Generator_System::const_iterator;
   friend class Parma_Polyhedra_Library::Polyhedron;
 
   friend

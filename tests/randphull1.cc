@@ -36,8 +36,8 @@ count_points(const C_Polyhedron& ph) {
     return 0;
 
   int count = 0;
-  const GenSys& gs = ph.generators();
-  for (GenSys::const_iterator i = gs.begin(), gs_end = gs.end();
+  const Generator_System& gs = ph.generators();
+  for (Generator_System::const_iterator i = gs.begin(), gs_end = gs.end();
        i != gs_end;
        ++i)
     if (i->type() == Generator::POINT)

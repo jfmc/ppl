@@ -69,7 +69,7 @@ main() TRY {
 
   ph.minimized_generators();
 
-  GenSys gs;
+  Generator_System gs;
   gs.insert(closure_point());
   gs.insert(closure_point(x));
   gs.insert(closure_point(y));

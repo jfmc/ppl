@@ -19,6 +19,7 @@ o  The following classes have been renamed as indicated:
      AskTell            -> Ask_Tell
      BoundingBox        -> Bounding_Box
      ConSys             -> Constraint_System
+     GenSys             -> Generator_System
      LinExpression      -> Linear_Expression
      Polyhedra_PowerSet -> Polyhedra_Powerset
      PowerSet           -> Powerset 
@@ -87,15 +88,15 @@ o  The constructor C_Polyhedron(const NNC_Polyhedron& y) no longer
 o  The following constructors have been made explicit:
 
      Constraint_System::Constraint_System(const Constraint& c),
-     GenSys::GenSys(const Generator& g),
+     Generator_System::Generator_System(const Generator& g),
      C_Polyhedron::C_Polyhedron(const Constraint_System& cs),
-     C_Polyhedron::C_Polyhedron(const GenSys& cs),
+     C_Polyhedron::C_Polyhedron(const Generator_System& cs),
      C_Polyhedron::C_Polyhedron(Constraint_System& cs),
-     C_Polyhedron::C_Polyhedron(GenSys& cs),
+     C_Polyhedron::C_Polyhedron(Generator_System& cs),
      NNC_Polyhedron::NNC_Polyhedron(const Constraint_System& cs),
-     NNC_Polyhedron::NNC_Polyhedron(const GenSys& cs),
+     NNC_Polyhedron::NNC_Polyhedron(const Generator_System& cs),
      NNC_Polyhedron::NNC_Polyhedron(Constraint_System& cs),
-     NNC_Polyhedron::NNC_Polyhedron(GenSys& cs).
+     NNC_Polyhedron::NNC_Polyhedron(Generator_System& cs).
      Polyhedra_Powerset<PH>::Polyhedra_Powerset(const Constraint_System& cs).
 
 o  Functions in the C interface that compute (space) dimensions

@@ -183,7 +183,7 @@ main() TRY {
   const Constraint_System& cs = ph.constraints();
   const memory_size_type cs_total_size = cs.total_memory_in_bytes();
   const memory_size_type cs_external_size = cs.external_memory_in_bytes();
-  const GenSys& gs = ph.generators();
+  const Generator_System& gs = ph.generators();
   const memory_size_type gs_total_size = gs.total_memory_in_bytes();
   const memory_size_type gs_external_size = gs.external_memory_in_bytes();
 
@@ -217,7 +217,7 @@ main() TRY {
 
   C_Polyhedron qh(3, Polyhedron::EMPTY);
   unsigned n = 0;
-  for (GenSys::const_iterator i = gs.begin(),
+  for (Generator_System::const_iterator i = gs.begin(),
 	 gs_end = gs.end(); i != gs_end; ++i) {
     add_generator(qh, *i);
     if (++n % 4 == 0)
@@ -253,7 +253,7 @@ main() TRY {
 #endif
 
   memory_size_type gs_elements_size = 0;
-  for (GenSys::const_iterator i = gs.begin(),
+  for (Generator_System::const_iterator i = gs.begin(),
 	 gs_end = gs.end(); i != gs_end; ++i)
     gs_elements_size += i->total_memory_in_bytes();
 

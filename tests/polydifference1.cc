@@ -37,7 +37,7 @@ main() TRY {
   Variable x(0);
   Variable y(1);
 
-  GenSys gs1;
+  Generator_System gs1;
   gs1.insert(point(0*x + 0*y));
   gs1.insert(point(4*x + 0*y));
   gs1.insert(point(2*x + 2*y));
@@ -48,7 +48,7 @@ main() TRY {
   print_generators(ph1, "*** ph1 ***");
 #endif
 
-  GenSys gs2;
+  Generator_System gs2;
   gs2.insert(point(0*x + 3*y));
   gs2.insert(point(4*x + 3*y));
   gs2.insert(point(2*x + 1*y));
@@ -63,7 +63,7 @@ main() TRY {
 
   computed_result.poly_difference_assign(ph2);
 
-  GenSys gs_known_result;
+  Generator_System gs_known_result;
   gs_known_result.insert(point());
   gs_known_result.insert(point(3*x + 3*y, 2));
   gs_known_result.insert(point(4*x));

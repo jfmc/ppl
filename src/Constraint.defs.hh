@@ -299,8 +299,8 @@ private:
   friend class Parma_Polyhedra_Library::Constraint_System::const_iterator;
   friend class Parma_Polyhedra_Library::Polyhedron;
   // FIXME: the following friend declaration is only to grant access to
-  // GenSys::satisfied_by_all_generators().
-  friend class Parma_Polyhedra_Library::GenSys;
+  // Generator_System::satisfied_by_all_generators().
+  friend class Parma_Polyhedra_Library::Generator_System;
 
   friend
   Parma_Polyhedra_Library::Linear_Expression::Linear_Expression(const Constraint& c);

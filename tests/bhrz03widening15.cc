@@ -35,9 +35,9 @@ static Variable A(0);
 static Variable B(1);
 static Variable C(2);
 
-static GenSys
+static Generator_System
 g_0() {
-  GenSys new_gs;
+  Generator_System new_gs;
   new_gs.insert(ray(A + C));
   new_gs.insert(ray(-B + C));
   new_gs.insert(ray(-A + C));
@@ -59,11 +59,11 @@ splitting_facet(const Generator& r1,
   return ray(expr);
 }
 
-static GenSys
-double_generators(const GenSys& gs, unsigned magic_number) {
-  GenSys new_gs;
-  GenSys::const_iterator i = gs.begin();
-  GenSys::const_iterator gs_end = gs.end();
+static Generator_System
+double_generators(const Generator_System& gs, unsigned magic_number) {
+  Generator_System new_gs;
+  Generator_System::const_iterator i = gs.begin();
+  Generator_System::const_iterator gs_end = gs.end();
   while (true) {
     const Generator& g = *i;
     new_gs.insert(g);
@@ -72,7 +72,7 @@ double_generators(const GenSys& gs, unsigned magic_number) {
       new_gs.insert(splitting_facet(g, *i, magic_number));
     else {
       // Split the last facet.
-      GenSys::const_iterator gs_begin = gs.begin();
+      Generator_System::const_iterator gs_begin = gs.begin();
       new_gs.insert(splitting_facet(g, *gs_begin, magic_number));
       break;
     }
@@ -88,7 +88,7 @@ p(unsigned n) {
 
   unsigned magic_number = 1;
   unsigned magic_factor = 4;
-  GenSys gs = g_0();
+  Generator_System gs = g_0();
   unsigned gs_facets = 4;
 
   while (gs_facets * 2 <= needed_facets) {
@@ -99,8 +99,8 @@ p(unsigned n) {
 
   if (gs_facets < needed_facets) {
     magic_number *= magic_factor;
-    GenSys gs2 = double_generators(gs, magic_number);
-    GenSys::const_iterator gs2_i = gs2.begin();
+    Generator_System gs2 = double_generators(gs, magic_number);
+    Generator_System::const_iterator gs2_i = gs2.begin();
     for ( ; gs_facets < needed_facets; ++gs_facets) {
       // Skip the even indexed facets of gs2.
       ++gs2_i;

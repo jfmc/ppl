@@ -36,7 +36,7 @@ error1() {
   Variable y(1);
   Variable z(2);
 
-  GenSys gs;
+  Generator_System gs;
   try {
     // This is an incorrect use of the function Generator::point(expr, d):
     // it is illegal to build a point with the denominator
@@ -63,7 +63,7 @@ error2() {
   Variable x(0);
   Variable y(1);
 
-  GenSys gs;
+  Generator_System gs;
   gs.insert(point(x + y));
   gs.insert(ray(x + 0*y));
   gs.insert(ray(0*x + y));
@@ -94,7 +94,7 @@ error3() {
   Variable y(1);
 
   C_Polyhedron ph1;
-  GenSys gs;
+  Generator_System gs;
   gs.insert(point(x + y));
   C_Polyhedron ph2(gs);
   try {
@@ -120,7 +120,7 @@ error4() {
   Variable y(1);
   Variable z(2);
 
-  GenSys gs;
+  Generator_System gs;
   gs.insert(line(x + y + z));
 
   try {
@@ -147,7 +147,7 @@ error5() {
   Variable y(1);
   Variable z(2);
 
-  GenSys gs;
+  Generator_System gs;
   gs.insert(point(0*x + 1*y +2*z));
   C_Polyhedron ph(gs);
 
@@ -263,7 +263,7 @@ error9() {
   Variable y(1);
   Variable z(2);
 
-  GenSys gs;
+  Generator_System gs;
   gs.insert(point());
   gs.insert(ray(x + y));
   gs.insert(ray(x));
@@ -293,7 +293,7 @@ error10() {
   Variable y(1);
   Variable z(2);
 
-  GenSys gs;
+  Generator_System gs;
   gs.insert(point());
   gs.insert(point(x));
   gs.insert(line(x + y));
@@ -378,7 +378,7 @@ error13() {
     // C_Polyhedron::add_generators_and_minimize(gs): it is illegal
     // to add a system of generator that is not dimension-compatible
     // with the polyhedron.
-    GenSys gs;
+    Generator_System gs;
     gs.insert(point(w));
     ph.add_generators_and_minimize(gs);
     exit(1);
@@ -497,13 +497,13 @@ error18() {
   Variable x(0);
   Variable y(1);
 
-  GenSys gs1;
+  Generator_System gs1;
   gs1.insert(point());
   gs1.insert(ray(x));
 
   C_Polyhedron ph1(gs1);
 
-  GenSys gs2;
+  Generator_System gs2;
   gs2.insert(point(x));
   gs2.insert(ray(x + y));
 
@@ -562,7 +562,7 @@ error20() {
     // C_Polyhedron::add_generators(gs): it is illegal to a system of
     // generators that is dimensional incompatible with the
     // polyhedron.
-    GenSys gs;
+    Generator_System gs;
     gs.insert(point());
     gs.insert(line(x + y));
     ph.add_generators(gs);
@@ -584,7 +584,7 @@ error21() {
   Variable y(1);
   Variable z(2);
 
-  GenSys gs;
+  Generator_System gs;
   gs.insert(ray(x + y));
   gs.insert(point());
 
@@ -784,7 +784,7 @@ error28() {
     // This is an invalid use of the function
     // C_Polyhedron::add_generators(gs): it is illegal to add a system
     // of generators with no points to an empty polyhedron.
-    GenSys gs;
+    Generator_System gs;
     gs.insert(ray(x + y));
     gs.insert(ray(x - y));
     ph.add_generators(gs);
@@ -812,7 +812,7 @@ error29() {
     // C_Polyhedron::add_generators_and_minimize(gs): it is illegal
     // to apply this function with a system of generators with no
     // points to an empty polyhedron.
-    GenSys gs;
+    Generator_System gs;
     gs.insert(line(x));
     gs.insert(line(y));
     ph.add_generators_and_minimize(gs);
@@ -878,11 +878,11 @@ error32() {
   Variable A(0);
   Variable B(1);
 
-  GenSys gs1;
+  Generator_System gs1;
   gs1.insert(ray(A));
   gs1.insert(line(B));
 
-  const GenSys gs2 = gs1;
+  const Generator_System gs2 = gs1;
 
 #if NOISY
   print_generators(gs2, "*** gs2 ***");
@@ -971,7 +971,7 @@ error35() {
   print_constraints(ph, "*** ph ***");
 #endif
 
-  GenSys gs;
+  Generator_System gs;
   gs.insert(line(A));
   gs.insert(ray(B));
 
@@ -1004,7 +1004,7 @@ error36() {
   print_constraints(ph, "*** ph ***");
 #endif
 
-  GenSys gs;
+  Generator_System gs;
   gs.insert(ray(A));
   gs.insert(ray(B));
 
@@ -1183,7 +1183,7 @@ error42() {
 
 static void
 error43() {
-  GenSys gs;
+  Generator_System gs;
   Linear_Expression e;
   try {
     // This is an incorrect use of function
@@ -1204,7 +1204,7 @@ error43() {
 
 static void
 error44() {
-  GenSys gs;
+  Generator_System gs;
   Linear_Expression e;
   try {
     // This is an incorrect use of function

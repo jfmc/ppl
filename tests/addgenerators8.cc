@@ -42,7 +42,7 @@ main() TRY {
 
   ph1.add_generator(point(x));
 
-  GenSys gs;
+  Generator_System gs;
   gs.insert(point(1*x + 0*y + 0*z));
   NNC_Polyhedron known_result(gs);
 

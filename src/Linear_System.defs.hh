@@ -322,7 +322,7 @@ public:
   /*!
     Prints the topology, the number of rows, the number of columns and
     the \p sorted flag.  The specialized methods provided by Constraint_System
-    and GenSys take care of properly printing the contents of the
+    and Generator_System take care of properly printing the contents of the
     system.
   */
   void ascii_dump(std::ostream& s) const;
@@ -334,7 +334,7 @@ public:
   /*!
     Reads into a Linear_System object the information produced by the output
     of <CODE>ascii_dump()</CODE>.  The specialized methods provided by
-    Constraint_System and GenSys take care of properly reading the contents of
+    Constraint_System and Generator_System take care of properly reading the contents of
     the system.
   */
   bool ascii_load(std::istream& s);

@@ -79,7 +79,7 @@ main() TRY {
 #endif
 
   int num_points = 0;
-  for (GenSys::const_iterator i = copy_ph1.generators().begin(),
+  for (Generator_System::const_iterator i = copy_ph1.generators().begin(),
 	 gs_end = copy_ph1.generators().end(); i != gs_end; ++i)
     if ((*i).is_point() || (*i).is_closure_point())
       ++num_points;
@@ -87,7 +87,7 @@ main() TRY {
   copy_ph1.minimized_generators();
 
   int num_minimized_points = 0;
-  for (GenSys::const_iterator i = copy_ph1.generators().begin(),
+  for (Generator_System::const_iterator i = copy_ph1.generators().begin(),
 	 gs_end = copy_ph1.generators().end(); i != gs_end; ++i)
     if ((*i).is_point() || (*i).is_closure_point())
       ++num_minimized_points;

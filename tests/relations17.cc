@@ -59,7 +59,7 @@ test2() {
   Variable A(0);
   Variable B(1);
 
-  GenSys gs;
+  Generator_System gs;
   gs.insert(point());
   gs.insert(ray(A));
   gs.insert(line(B));
@@ -85,7 +85,7 @@ test3() {
   Variable A(0);
   Variable B(1);
 
-  GenSys gs;
+  Generator_System gs;
   gs.insert(line(A));
   gs.insert(ray(B));
   gs.insert(point());
@@ -110,13 +110,13 @@ test4() {
   Variable A(0);
   Variable B(1);
 
-  GenSys gs;
+  Generator_System gs;
   gs.insert(line(B));
   gs.insert(point());
   gs.insert(ray(A));
   NNC_Polyhedron ph(gs);
-  GenSys gs1;
-  for (GenSys::const_iterator i = ph.generators().begin(),
+  Generator_System gs1;
+  for (Generator_System::const_iterator i = ph.generators().begin(),
 	 gs_end = ph.generators().end(); i != gs_end; ++i)
     if (!(*i).is_closure_point())
       gs.insert(*i);
@@ -141,15 +141,15 @@ test5() {
   Variable A(0);
   Variable B(1);
 
-  GenSys gs;
+  Generator_System gs;
   gs.insert(point(A));
   NNC_Polyhedron ph(gs);
 
   C_Polyhedron ph1(2);
   ph1.add_constraint(A == 1);
   ph1.add_constraint(B == 1);
-  GenSys gs1;
-  for (GenSys::const_iterator i = ph.generators().begin(),
+  Generator_System gs1;
+  for (Generator_System::const_iterator i = ph.generators().begin(),
 	 gs_end = ph.generators().end(); i != gs_end; ++i)
     if (!(*i).is_closure_point())
       gs1.insert(*i);
@@ -174,7 +174,7 @@ test6() {
   Variable A(0);
   Variable B(1);
 
-  GenSys gs;
+  Generator_System gs;
   gs.insert(ray(B));
   gs.insert(point(-A));
   C_Polyhedron ph1(gs);
@@ -199,7 +199,7 @@ test7() {
   Variable A(0);
   Variable B(1);
 
-  GenSys gs;
+  Generator_System gs;
   gs.insert(point(A + B));
   gs.insert(point(-A + B));
   C_Polyhedron ph1(gs);
@@ -224,7 +224,7 @@ test8() {
   Variable A(0);
   Variable B(1);
 
-  GenSys gs;
+  Generator_System gs;
   gs.insert(point(-A));
   gs.insert(ray(-B));
   gs.insert(ray(A + B));
@@ -250,7 +250,7 @@ test9() {
   Variable A(0);
   Variable B(1);
 
-  GenSys gs;
+  Generator_System gs;
   gs.insert(ray(A));
   gs.insert(ray(A + B));
   gs.insert(point(-B));

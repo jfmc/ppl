@@ -46,7 +46,7 @@ main() TRY {
   print_generators(p_half_space, "*** p_half_space generators ***");
 #endif
 
-  GenSys gs;
+  Generator_System gs;
   gs.insert(point(2*x));
   gs.insert(line(x+y));
   C_Polyhedron p_line(gs);

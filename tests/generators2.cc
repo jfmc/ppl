@@ -41,7 +41,7 @@ main() TRY {
 
   C_Polyhedron known_result(cs);
 
-  const GenSys& gs = known_result.generators();
+  const Generator_System& gs = known_result.generators();
 
 #if NOISY
   print_generators(gs, "*** gs ***");

@@ -39,7 +39,7 @@ main() TRY {
   Variable A(0);
   Variable B(1);
 
-  GenSys gs;
+  Generator_System gs;
   gs.insert(closure_point(3*A, 2));
   gs.insert(point(7*A, 4));
   gs.insert(ray(A - B));
@@ -50,12 +50,12 @@ main() TRY {
 
   C_Polyhedron ph(2, C_Polyhedron::EMPTY);
 
-  for (GenSys::const_iterator i = gs.begin(),
+  for (Generator_System::const_iterator i = gs.begin(),
 	 gs_end = gs.end(); i != gs_end; ++i)
     if (!(*i).is_closure_point())
       ph.add_generator(*i);
 
-  GenSys gs_known;
+  Generator_System gs_known;
   gs_known.insert(point(7*A + 0*B, 4));
   gs_known.insert(ray(A - B));
   C_Polyhedron known_result(gs_known);

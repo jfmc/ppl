@@ -66,7 +66,7 @@ main() TRY {
   C_Polyhedron computed_result = ph1;
   computed_result.poly_difference_assign(ph2);
 
-  GenSys gs_known_result;
+  Generator_System gs_known_result;
   gs_known_result.insert(point(0*x + 5*y));
   gs_known_result.insert(point(4*x + 3*y));
   gs_known_result.insert(ray(0*x + 1*y));

@@ -112,9 +112,9 @@ main() TRY {
 	 i != cs_end;
 	 ++i)
       ++num_constraints;
-    const GenSys& gs = ph.generators();
+    const Generator_System& gs = ph.generators();
     unsigned num_points = 0;
-    for (GenSys::const_iterator i = gs.begin(), gs_end = gs.end();
+    for (Generator_System::const_iterator i = gs.begin(), gs_end = gs.end();
 	 i != gs_end;
 	 ++i) {
       if (i->type() != Generator::POINT)

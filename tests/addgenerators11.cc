@@ -39,7 +39,7 @@ main() TRY {
   Variable A(0);
   Variable B(1);
 
-  GenSys gs1;
+  Generator_System gs1;
   gs1.insert(point(A + B));
   gs1.insert(closure_point());
   gs1.insert(ray(A));
@@ -51,7 +51,7 @@ main() TRY {
 #endif
 
   ph1.topological_closure_assign();
-  GenSys gs2 = ph1.minimized_generators();
+  Generator_System gs2 = ph1.minimized_generators();
 
 #if NOISY
   print_generators(gs2, "*** gs2 ***");

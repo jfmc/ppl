@@ -34,7 +34,7 @@ int
 main() TRY {
   set_handlers();
 
-  GenSys gs1;
+  Generator_System gs1;
   gs1.insert(point());
 
   C_Polyhedron ph1(gs1);
@@ -44,7 +44,7 @@ main() TRY {
   print_generators(ph1, "*** ph1 ***");
 #endif
 
-  const GenSys gs2 = ph1.generators();
+  const Generator_System gs2 = ph1.generators();
 
   C_Polyhedron ph2(gs2);
 

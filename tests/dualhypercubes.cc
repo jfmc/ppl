@@ -46,7 +46,7 @@ void
 closure_points_dual_hypercube(const dimension_type dims,
 			      const Linear_Expression& weight_center,
 			      const Integer& half_diagonal,
-			      GenSys& gs) {
+			      Generator_System& gs) {
   // An ill-formed (it has no points at all) generator system
   // for a dual hypercube.
   for (dimension_type axis = dims; axis-- > 0; ) {
@@ -57,7 +57,7 @@ closure_points_dual_hypercube(const dimension_type dims,
 
 void
 add_facets(dimension_type& to_be_added,
-	   GenSys& gs,
+	   Generator_System& gs,
 	   const Linear_Expression& expr,
 	   const dimension_type axis,
 	   const dimension_type dims,
@@ -100,7 +100,7 @@ NNC_dual_hypercube(const dimension_type dims,
 		   const Linear_Expression& weight_center,
 		   const Integer& half_diagonal,
 		   const int facet_percentage) {
-  GenSys gs;
+  Generator_System gs;
   closure_points_dual_hypercube(dims, weight_center, half_diagonal, gs);
   // Number of facets in the closed dual hypercube.
   dimension_type num_facets = 1;

@@ -34,7 +34,7 @@ int
 main() TRY {
   set_handlers();
 
-  GenSys gs;
+  Generator_System gs;
 
   // Creating 10 points.
   for (int i = 0; i < 10; i++) {

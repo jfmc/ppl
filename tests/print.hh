@@ -49,7 +49,7 @@ print_generator(const Parma_Polyhedra_Library::Generator& g,
 		std::ostream& s = std::cout);
 
 void
-print_generators(const Parma_Polyhedra_Library::GenSys& gs,
+print_generators(const Parma_Polyhedra_Library::Generator_System& gs,
 		 const std::string& intro = "",
 		 std::ostream& s = std::cout);
 

@@ -42,7 +42,7 @@ main() TRY {
   Variable v(4);
   Variable w(5);
 
-  GenSys gs;
+  Generator_System gs;
   gs.insert(point());
   gs.insert(ray(x + y));
 

@@ -104,23 +104,23 @@ PPL::Polyhedron::minimized_constraints() const {
   return constraints();
 }
 
-const PPL::GenSys&
+const PPL::Generator_System&
 PPL::Polyhedron::generators() const {
   if (marked_empty()) {
     assert(gen_sys.num_rows() == 0);
     // We want `gen_sys' to have the appropriate space dimension,
     // even though it is an empty generator system.
     if (gen_sys.space_dimension() != space_dim) {
-      GenSys gs;
+      Generator_System gs;
       gs.adjust_topology_and_space_dimension(topology(), space_dim);
-      const_cast<GenSys&>(gen_sys).swap(gs);
+      const_cast<Generator_System&>(gen_sys).swap(gs);
     }
     return gen_sys;
   }
 
   if (space_dim == 0) {
     assert(gen_sys.num_columns() == 0 && gen_sys.num_rows() == 0);
-    return GenSys::zero_dim_univ();
+    return Generator_System::zero_dim_univ();
   }
 
   // If the polyhedron has pending constraints, we process them to obtain
@@ -133,9 +133,9 @@ PPL::Polyhedron::generators() const {
     // We want `gen_sys' to have the appropriate space dimension,
     // even though it is an empty generator system.
     if (gen_sys.space_dimension() != space_dim) {
-      GenSys gs;
+      Generator_System gs;
       gs.adjust_topology_and_space_dimension(topology(), space_dim);
-      const_cast<GenSys&>(gen_sys).swap(gs);
+      const_cast<Generator_System&>(gen_sys).swap(gs);
     }
     return gen_sys;
   }
@@ -146,14 +146,14 @@ PPL::Polyhedron::generators() const {
 
   // In the case of an NNC polyhedron, we insist in returning a sorted
   // system of generators: this is needed so that the const_iterator
-  // on GenSys could correctly filter out the matched closure points
+  // on Generator_System could correctly filter out the matched closure points
   // in the case of a NNC polyhedron.
   if (!is_necessarily_closed())
     obtain_sorted_generators();
   return gen_sys;
 }
 
-const PPL::GenSys&
+const PPL::Generator_System&
 PPL::Polyhedron::minimized_generators() const {
   // `minimize()' or `strongly_minimize_generators()'
   // will process any pending constraints or generators.
@@ -635,7 +635,7 @@ PPL::Polyhedron::OK(bool check_not_empty) const {
     //=================================================
     // TODO: this test is wrong in the general case.
     // However, such an invariant does hold for a
-    // strongly-minimized GenSys.
+    // strongly-minimized Generator_System.
     // We will activate this test as soon as the Status
     // flags will be able to remember if a system is
     // strongly minimized.
@@ -668,12 +668,12 @@ PPL::Polyhedron::OK(bool check_not_empty) const {
       // of the temporary minimized one. If it does not happen
       // the polyhedron is not OK.
       Constraint_System new_con_sys(topology());
-      GenSys gs_without_pending = gen_sys;
+      Generator_System gs_without_pending = gen_sys;
       // NOTE: We can avoid to update `index_first_pending'
       // of `gs_without_pending', because it is equal to the
       // new number of rows of `gs_without_pending'.
       gs_without_pending.erase_to_end(gen_sys.first_pending_row());
-      GenSys copy_of_gen_sys = gs_without_pending;
+      Generator_System copy_of_gen_sys = gs_without_pending;
       Saturation_Matrix new_sat_c;
       minimize(false, copy_of_gen_sys, new_con_sys, new_sat_c);
       const dimension_type copy_num_lines = copy_of_gen_sys.num_lines();
@@ -782,7 +782,7 @@ PPL::Polyhedron::OK(bool check_not_empty) const {
     // new number of rows of `cs_without_pending'.
     cs_without_pending.erase_to_end(con_sys.first_pending_row());
     Constraint_System copy_of_con_sys = cs_without_pending;
-    GenSys new_gen_sys(topology());
+    Generator_System new_gen_sys(topology());
     Saturation_Matrix new_sat_g;
 
     if (minimize(true, copy_of_con_sys, new_gen_sys, new_sat_g)) {
@@ -1117,7 +1117,7 @@ PPL::Polyhedron::add_generator(const Generator& g) {
 bool
 PPL::Polyhedron::add_generator_and_minimize(const Generator& g) {
   // TODO: this is just an executable specification.
-  GenSys gs(g);
+  Generator_System gs(g);
   return add_recycled_generators_and_minimize(gs);
 }
 
@@ -1281,7 +1281,7 @@ PPL::Polyhedron::add_constraints_and_minimize(const Constraint_System& cs) {
 }
 
 void
-PPL::Polyhedron::add_recycled_generators(GenSys& gs) {
+PPL::Polyhedron::add_recycled_generators(Generator_System& gs) {
   // Topology compatibility check.
   if (is_necessarily_closed() && gs.has_closure_points())
     throw_topology_incompatible("add_recycled_generators(gs)", "gs", gs);
@@ -1374,14 +1374,14 @@ PPL::Polyhedron::add_recycled_generators(GenSys& gs) {
 }
 
 void
-PPL::Polyhedron::add_generators(const GenSys& gs) {
+PPL::Polyhedron::add_generators(const Generator_System& gs) {
   // TODO: this is just an executable specification.
-  GenSys gs_copy = gs;
+  Generator_System gs_copy = gs;
   add_recycled_generators(gs_copy);
 }
 
 bool
-PPL::Polyhedron::add_recycled_generators_and_minimize(GenSys& gs) {
+PPL::Polyhedron::add_recycled_generators_and_minimize(Generator_System& gs) {
   // Topology compatibility check.
   if (is_necessarily_closed() && gs.has_closure_points())
     throw_topology_incompatible("add_recycled_generators_and_minimize(gs)",
@@ -1455,9 +1455,9 @@ PPL::Polyhedron::add_recycled_generators_and_minimize(GenSys& gs) {
 }
 
 bool
-PPL::Polyhedron::add_generators_and_minimize(const GenSys& gs) {
+PPL::Polyhedron::add_generators_and_minimize(const Generator_System& gs) {
   // TODO: this is just an executable specification.
-  GenSys gs_copy = gs;
+  Generator_System gs_copy = gs;
   return add_recycled_generators_and_minimize(gs_copy);
 }
 
@@ -1840,7 +1840,7 @@ PPL::Polyhedron::affine_image(const Variable var,
     // minimality and saturators are preserved, so that
     // pending rows, if present, are correctly handled.
     if (generators_are_up_to_date()) {
-      // GenSys::affine_image() requires the third argument
+      // Generator_System::affine_image() requires the third argument
       // to be a positive Integer.
       if (denominator > 0)
 	gen_sys.affine_image(var_space_dim, expr, denominator);
@@ -1876,7 +1876,7 @@ PPL::Polyhedron::affine_image(const Variable var,
     else if (!generators_are_up_to_date())
       minimize();
     if (!marked_empty()) {
-      // GenSys::affine_image() requires the third argument
+      // Generator_System::affine_image() requires the third argument
       // to be a positive Integer.
       if (denominator > 0)
 	gen_sys.affine_image(var_space_dim, expr, denominator);
@@ -1939,7 +1939,7 @@ affine_preimage(const Variable var,
       }
       else {
 	// The new denominator is negative:
-	// we negate everything once more, as GenSys::affine_image()
+	// we negate everything once more, as Generator_System::affine_image()
 	// requires the third argument to be positive.
 	inverse = expr;
 	inverse[var_space_dim] = denominator;
@@ -2025,7 +2025,7 @@ generalized_affine_image(const Variable var,
       // While adding the ray, we minimize the generators
       // in order to avoid adding too many redundant generators later.
       // FIXME: why not using add_generator_and_minimize() here?
-      GenSys gs;
+      Generator_System gs;
       gs.insert(ray(relsym == GREATER_THAN ? var : -var));
       add_recycled_generators_and_minimize(gs);
       // We split each point of the generator system into two generators:
@@ -2116,7 +2116,7 @@ PPL::Polyhedron::generalized_affine_image(const Linear_Expression& lhs,
   // the direction of variables occurring in `lhs'.
   // While at it, check whether or not there exists a variable
   // occurring in both `lhs' and `rhs'.
-  GenSys new_lines;
+  Generator_System new_lines;
   bool lhs_vars_intersects_rhs_vars = false;
   for (dimension_type i = lhs_space_dim; i-- > 0; )
     if (lhs.coefficient(Variable(i)) != 0) {
@@ -2230,7 +2230,7 @@ PPL::Polyhedron::time_elapse_assign(const Polyhedron& y) {
 
   // At this point both generator systems are up-to-date,
   // possibly containing pending generators.
-  GenSys gs = y.gen_sys;
+  Generator_System gs = y.gen_sys;
   dimension_type gs_num_rows = gs.num_rows();
 
   if (!x.is_necessarily_closed())

@@ -121,7 +121,7 @@ Linear_System.types.hh \
 Saturation_Row.types.hh \
 Saturation_Matrix.types.hh \
 Constraint_System.types.hh \
-GenSys.types.hh \
+Generator_System.types.hh \
 Poly_Con_Relation.types.hh \
 Poly_Gen_Relation.types.hh \
 BHRZ03_Certificate.types.hh \
@@ -164,7 +164,7 @@ Linear_System.inlines.hh \
 Saturation_Matrix.defs.hh \
 Saturation_Matrix.inlines.hh \
 Constraint_System.defs.hh \
-GenSys.defs.hh \
+Generator_System.defs.hh \
 Linear_Expression.defs.hh \
 Linear_Expression.inlines.hh \
 Constraint.defs.hh \
@@ -172,7 +172,7 @@ Constraint.inlines.hh \
 Constraint_System.inlines.hh \
 Generator.defs.hh \
 Generator.inlines.hh \
-GenSys.inlines.hh \
+Generator_System.inlines.hh \
 Poly_Con_Relation.defs.hh \
 Poly_Con_Relation.inlines.hh \
 Poly_Gen_Relation.defs.hh \
@@ -207,7 +207,7 @@ libppl_la_SOURCES = \
 Bounding_Box.cc \
 Constraint.cc \
 Constraint_System.cc \
-GenSys.cc \
+Generator_System.cc \
 Generator.cc \
 Init.cc \
 Integer.cc \
@@ -250,7 +250,7 @@ Linear_Expression.types.hh \
 Constraint.types.hh \
 Constraint_System.types.hh \
 Generator.types.hh \
-GenSys.types.hh \
+Generator_System.types.hh \
 Poly_Con_Relation.types.hh \
 Poly_Gen_Relation.types.hh \
 BHRZ03_Certificate.types.hh \
@@ -263,7 +263,7 @@ Linear_Expression.defs.hh \
 Constraint.defs.hh \
 Constraint_System.defs.hh \
 Generator.defs.hh \
-GenSys.defs.hh \
+Generator_System.defs.hh \
 Poly_Con_Relation.defs.hh \
 Poly_Gen_Relation.defs.hh \
 BHRZ03_Certificate.defs.hh \

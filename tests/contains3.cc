@@ -51,7 +51,7 @@ main() TRY {
   NNC_Polyhedron ph1(cs);
 
   // Building an equivalent square.
-  GenSys gs;
+  Generator_System gs;
   gs.insert(closure_point());
   gs.insert(closure_point(x));
   gs.insert(closure_point(y));

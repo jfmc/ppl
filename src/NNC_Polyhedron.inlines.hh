@@ -67,7 +67,7 @@ NNC_Polyhedron::NNC_Polyhedron(Constraint_System& cs)
 }
 
 inline
-NNC_Polyhedron::NNC_Polyhedron(const GenSys& gs)
+NNC_Polyhedron::NNC_Polyhedron(const Generator_System& gs)
   : Polyhedron(NOT_NECESSARILY_CLOSED,
 	       gs.space_dimension() <= max_space_dimension()
 	       ? gs
@@ -79,7 +79,7 @@ NNC_Polyhedron::NNC_Polyhedron(const GenSys& gs)
 }
 
 inline
-NNC_Polyhedron::NNC_Polyhedron(GenSys& gs)
+NNC_Polyhedron::NNC_Polyhedron(Generator_System& gs)
   : Polyhedron(NOT_NECESSARILY_CLOSED,
 	       gs.space_dimension() <= max_space_dimension()
 	       ? gs

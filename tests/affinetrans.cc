@@ -36,7 +36,7 @@ main() TRY {
 
   Variable x(0);
   Variable y(1);
-  GenSys gs;
+  Generator_System gs;
   gs.insert(point(0*x + 0*y));
   gs.insert(point(0*x + 3*y));
   gs.insert(point(3*x + 0*y));
@@ -56,14 +56,14 @@ main() TRY {
 #endif
   p2.affine_preimage(x, coeff);
 
-  GenSys gs1_known_result;
+  Generator_System gs1_known_result;
   gs1_known_result.insert(point(4*x + 0*y));
   gs1_known_result.insert(point(4*x + 3*y));
   gs1_known_result.insert(point(7*x + 0*y));
   gs1_known_result.insert(point(7*x + 3*y));
   C_Polyhedron p1_known_result(gs1_known_result);
 
-  GenSys gs2_known_result;
+  Generator_System gs2_known_result;
   gs2_known_result.insert(point(-4*x + 0*y));
   gs2_known_result.insert(point(-4*x + 3*y));
   gs2_known_result.insert(point(-1*x + 0*y));

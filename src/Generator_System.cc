@@ -1,4 +1,4 @@
-/* GenSys class implementation (non-inline functions).
+/* Generator_System class implementation (non-inline functions).
    Copyright (C) 2001-2004 Roberto Bagnara <bagnara@cs.unipr.it>
 
 This file is part of the Parma Polyhedra Library (PPL).
@@ -23,8 +23,8 @@ site: http://www.cs.unipr.it/ppl/ . */
 
 #include <config.h>
 
-#include "GenSys.defs.hh"
-#include "GenSys.inlines.hh"
+#include "Generator_System.defs.hh"
+#include "Generator_System.inlines.hh"
 
 #include "Constraint.defs.hh"
 #include <cassert>
@@ -36,7 +36,7 @@ site: http://www.cs.unipr.it/ppl/ . */
 namespace PPL = Parma_Polyhedra_Library;
 
 bool
-PPL::GenSys::
+PPL::Generator_System::
 adjust_topology_and_space_dimension(const Topology new_topology,
 				    const dimension_type new_space_dim) {
   assert(space_dimension() <= new_space_dim);
@@ -102,7 +102,7 @@ adjust_topology_and_space_dimension(const Topology new_topology,
 	// closure points that were matching a point (i.e., those
 	// that are in the generator system, but are invisible to
 	// the user).
-	GenSys& gs = *this;
+	Generator_System& gs = *this;
 	dimension_type num_closure_points = 0;
 	dimension_type gs_end = gs.num_rows();
 	for (dimension_type i = 0; i < gs_end; ) {
@@ -137,7 +137,7 @@ adjust_topology_and_space_dimension(const Topology new_topology,
 	// and setting the epsilon coordinate of all points to 1.
 	// Note: normalization is preserved.
 	add_zero_columns(++cols_to_be_added);
-	GenSys& gs = *this;
+	Generator_System& gs = *this;
 	const dimension_type eps_index = new_space_dim + 1;
 	for (dimension_type i = num_rows(); i-- > 0; )
 	  gs[i][eps_index] = gs[i][0];
@@ -169,7 +169,7 @@ adjust_topology_and_space_dimension(const Topology new_topology,
 	// and set the epsilon coordinate of all points to 1.
 	// Note: normalization is preserved.
 	add_zero_columns(1);
-	GenSys& gs = *this;
+	Generator_System& gs = *this;
 	const dimension_type eps_index = new_space_dim + 1;
 	for (dimension_type i = num_rows(); i-- > 0; )
 	  gs[i][eps_index] = gs[i][0];
@@ -185,11 +185,11 @@ adjust_topology_and_space_dimension(const Topology new_topology,
 // To do this efficiently we could sort the system and
 // perform insertions keeping its sortedness.
 void
-PPL::GenSys::add_corresponding_closure_points() {
+PPL::Generator_System::add_corresponding_closure_points() {
   assert(!is_necessarily_closed());
   // NOTE: we always add (pending) rows at the end of the generator system.
   // Updating `index_first_pending', if needed, is done by the caller.
-  GenSys& gs = *this;
+  Generator_System& gs = *this;
   const dimension_type n_rows = gs.num_rows();
   const dimension_type eps_index = gs.num_columns() - 1;
   for (dimension_type i = n_rows; i-- > 0; ) {
@@ -211,11 +211,11 @@ PPL::GenSys::add_corresponding_closure_points() {
 // To do this efficiently we could sort the system and
 // perform insertions keeping its sortedness.
 void
-PPL::GenSys::add_corresponding_points() {
+PPL::Generator_System::add_corresponding_points() {
   assert(!is_necessarily_closed());
   // NOTE: we always add (pending) rows at the end of the generator system.
   // Updating `index_first_pending', if needed, is done by the caller.
-  GenSys& gs = *this;
+  Generator_System& gs = *this;
   const dimension_type n_rows = gs.num_rows();
   const dimension_type eps_index = gs.num_columns() - 1;
   for (dimension_type i = 0; i < n_rows; i++) {
@@ -231,19 +231,19 @@ PPL::GenSys::add_corresponding_points() {
 }
 
 bool
-PPL::GenSys::has_closure_points() const {
+PPL::Generator_System::has_closure_points() const {
   if (is_necessarily_closed())
     return false;
   // Adopt the point of view of the user.
-  for (GenSys::const_iterator i = begin(), iend = end(); i != iend; ++i)
+  for (Generator_System::const_iterator i = begin(), iend = end(); i != iend; ++i)
     if (i->is_closure_point())
       return true;
   return false;
 }
 
 bool
-PPL::GenSys::has_points() const {
-  const GenSys& gs = *this;
+PPL::Generator_System::has_points() const {
+  const Generator_System& gs = *this;
   // Avoiding the repeated tests on topology.
   if (is_necessarily_closed())
     for (dimension_type i = num_rows(); i-- > 0; ) {
@@ -261,7 +261,7 @@ PPL::GenSys::has_points() const {
 }
 
 void
-PPL::GenSys::const_iterator::skip_forward() {
+PPL::Generator_System::const_iterator::skip_forward() {
   const Linear_System::const_iterator gsp_end = gsp->end();
   if (i != gsp_end) {
     Linear_System::const_iterator i_next = i;
@@ -278,7 +278,7 @@ PPL::GenSys::const_iterator::skip_forward() {
 }
 
 void
-PPL::GenSys::insert(const Generator& g) {
+PPL::Generator_System::insert(const Generator& g) {
   // We are sure that the matrix has no pending rows
   // and that the new row is not a pending generator.
   assert(num_pending_rows() == 0);
@@ -295,7 +295,7 @@ PPL::GenSys::insert(const Generator& g) {
       // Note: normalization is preserved.
       const dimension_type eps_index = num_columns();
       add_zero_columns(1);
-      GenSys& gs = *this;
+      Generator_System& gs = *this;
       for (dimension_type i = num_rows(); i-- > 0; ) {
 	Generator& gen = gs[i];
 	if (gen[0] != 0)
@@ -324,7 +324,7 @@ PPL::GenSys::insert(const Generator& g) {
 }
 
 void
-PPL::GenSys::insert_pending(const Generator& g) {
+PPL::Generator_System::insert_pending(const Generator& g) {
   if (topology() == g.topology())
     Linear_System::insert_pending(g);
   else
@@ -338,7 +338,7 @@ PPL::GenSys::insert_pending(const Generator& g) {
       // Note: normalization is preserved.
       const dimension_type eps_index = num_columns();
       add_zero_columns(1);
-      GenSys& gs = *this;
+      Generator_System& gs = *this;
       for (dimension_type i = num_rows(); i-- > 0; ) {
 	Generator& gen = gs[i];
 	if (gen[0] != 0)
@@ -367,11 +367,11 @@ PPL::GenSys::insert_pending(const Generator& g) {
 }
 
 PPL::dimension_type
-PPL::GenSys::num_lines() const {
+PPL::Generator_System::num_lines() const {
   // We are sure that this method is applied only to a matrix
   // that does not contain pending rows.
   assert(num_pending_rows() == 0);
-  const GenSys& gs = *this;
+  const Generator_System& gs = *this;
   dimension_type n = 0;
   // If the Linear_System happens to be sorted, take advantage of the fact
   // that lines are at the top of the system.
@@ -388,11 +388,11 @@ PPL::GenSys::num_lines() const {
 }
 
 PPL::dimension_type
-PPL::GenSys::num_rays() const {
+PPL::Generator_System::num_rays() const {
   // We are sure that this method is applied only to a matrix
   // that does not contain pending rows.
   assert(num_pending_rows() == 0);
-  const GenSys& gs = *this;
+  const Generator_System& gs = *this;
   dimension_type n = 0;
   // If the Linear_System happens to be sorted, take advantage of the fact
   // that rays and points are at the bottom of the system and
@@ -412,7 +412,7 @@ PPL::GenSys::num_rays() const {
 }
 
 PPL::Poly_Con_Relation
-PPL::GenSys::relation_with(const Constraint& c) const {
+PPL::Generator_System::relation_with(const Constraint& c) const {
   // Note: this method is not public and it is the responsibility
   // of the caller to actually test for dimension compatibility.
   // We simply assert it.
@@ -421,7 +421,7 @@ PPL::GenSys::relation_with(const Constraint& c) const {
   // has already been filtered out by the caller.
   const dimension_type n_rows = num_rows();
   assert(n_rows > 0);
-  const GenSys& gs = *this;
+  const Generator_System& gs = *this;
 
   // `result' will keep the relation holding between the generators
   // we have seen so far and the constraint `c'.
@@ -717,7 +717,7 @@ PPL::GenSys::relation_with(const Constraint& c) const {
 
 
 bool
-PPL::GenSys::satisfied_by_all_generators(const Constraint& c) const {
+PPL::Generator_System::satisfied_by_all_generators(const Constraint& c) const {
   assert(c.space_dimension() <= space_dimension());
 
   // Setting `sp_fp' to the appropriate scalar product operator.
@@ -729,7 +729,7 @@ PPL::GenSys::satisfied_by_all_generators(const Constraint& c) const {
   else
     sps_fp = PPL::reduced_scalar_product_sign;
 
-  const GenSys& gs = *this;
+  const Generator_System& gs = *this;
   switch (c.type()) {
   case Constraint::EQUALITY:
     // Equalities must be saturated by all generators.
@@ -783,7 +783,7 @@ PPL::GenSys::satisfied_by_all_generators(const Constraint& c) const {
 
 
 void
-PPL::GenSys::affine_image(dimension_type v,
+PPL::Generator_System::affine_image(dimension_type v,
 			  const Linear_Expression& expr,
 			  Integer_traits::const_reference denominator) {
   // `v' is the index of a column corresponding to
@@ -795,7 +795,7 @@ PPL::GenSys::affine_image(dimension_type v,
 
   const dimension_type n_columns = num_columns();
   const dimension_type n_rows = num_rows();
-  GenSys& x = *this;
+  Generator_System& x = *this;
 
   // Compute the numerator of the affine transformation and assign it
   // to the column of `*this' indexed by `v'.
@@ -826,8 +826,8 @@ PPL::GenSys::affine_image(dimension_type v,
 }
 
 void
-PPL::GenSys::ascii_dump(std::ostream& s) const {
-  const GenSys& x = *this;
+PPL::Generator_System::ascii_dump(std::ostream& s) const {
+  const Generator_System& x = *this;
   dimension_type x_num_rows = x.num_rows();
   dimension_type x_num_columns = x.num_columns();
   s << "topology " << (is_necessarily_closed()
@@ -861,7 +861,7 @@ PPL::GenSys::ascii_dump(std::ostream& s) const {
 }
 
 bool
-PPL::GenSys::ascii_load(std::istream& s) {
+PPL::Generator_System::ascii_load(std::istream& s) {
   std::string str;
   if (!(s >> str) || str != "topology")
     return false;
@@ -895,7 +895,7 @@ PPL::GenSys::ascii_load(std::istream& s) {
     return false;
   set_index_first_pending_row(index);
 
-  GenSys& x = *this;
+  Generator_System& x = *this;
   for (dimension_type i = 0; i < x.num_rows(); ++i) {
     for (dimension_type j = 0; j < x.num_columns(); ++j)
       if (!(s >> x[i][j]))
@@ -937,12 +937,12 @@ PPL::GenSys::ascii_load(std::istream& s) {
 }
 
 void
-PPL::GenSys::remove_invalid_lines_and_rays() {
+PPL::Generator_System::remove_invalid_lines_and_rays() {
   // The origin of the vector space cannot be a valid line/ray.
   // NOTE: the following swaps will mix generators without even trying
   // to preserve sortedness: as a matter of fact, it will almost always
   // be the case that the input generator system is NOT sorted.
-  GenSys& gs = *this;
+  Generator_System& gs = *this;
   dimension_type n_rows = gs.num_rows();
   if (num_pending_rows() == 0) {
     for (dimension_type i = n_rows; i-- > 0; ) {
@@ -995,8 +995,8 @@ PPL::GenSys::remove_invalid_lines_and_rays() {
 }
 
 bool
-PPL::GenSys::OK() const {
-  // A GenSys must be a valid Linear_System; do not check for
+PPL::Generator_System::OK() const {
+  // A Generator_System must be a valid Linear_System; do not check for
   // strong normalization, since this will be done when
   // checking each individual generator.
   if (!Linear_System::OK(false))
@@ -1013,11 +1013,11 @@ PPL::GenSys::OK() const {
   return true;
 }
 
-/*! \relates Parma_Polyhedra_Library::GenSys */
+/*! \relates Parma_Polyhedra_Library::Generator_System */
 std::ostream&
-PPL::IO_Operators::operator<<(std::ostream& s, const GenSys& gs) {
-  GenSys::const_iterator i = gs.begin();
-  const GenSys::const_iterator gs_end = gs.end();
+PPL::IO_Operators::operator<<(std::ostream& s, const Generator_System& gs) {
+  Generator_System::const_iterator i = gs.begin();
+  const Generator_System::const_iterator gs_end = gs.end();
   if (i == gs_end)
     s << "false";
   else {

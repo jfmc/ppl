@@ -31,7 +31,7 @@ site: http://www.cs.unipr.it/ppl/ . */
 #include "Integer.types.hh"
 #include "Variable.types.hh"
 #include "Constraint_System.types.hh"
-#include "GenSys.types.hh"
+#include "Generator_System.types.hh"
 #include "Polyhedron.types.hh"
 #include <cstddef>
 
@@ -263,8 +263,8 @@ private:
   friend class Parma_Polyhedra_Library::Constraint_System;
 
   // FIXME: the following friend declaration is only to grant access to
-  // GenSys::affine_image().
-  friend class Parma_Polyhedra_Library::GenSys;
+  // Generator_System::affine_image().
+  friend class Parma_Polyhedra_Library::Generator_System;
 
   friend void std::swap(Parma_Polyhedra_Library::Linear_Expression& x,
 		       Parma_Polyhedra_Library::Linear_Expression& y);

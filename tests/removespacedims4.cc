@@ -39,7 +39,7 @@ main() TRY {
   Variable z(2);
   Variable w(3);
 
-  GenSys gs;
+  Generator_System gs;
   gs.insert(point(x + y + 2*z - w));
 
   C_Polyhedron ph(gs);
@@ -49,7 +49,7 @@ main() TRY {
 
   ph.remove_higher_space_dimensions(2);
 
-  GenSys gs_known_result;
+  Generator_System gs_known_result;
   gs_known_result.insert(point(x + y));
   C_Polyhedron known_result(gs_known_result);
 

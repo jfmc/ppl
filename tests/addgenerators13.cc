@@ -35,7 +35,7 @@ main() TRY {
   set_handlers();
 
   C_Polyhedron ph(1, C_Polyhedron::EMPTY);
-  GenSys gs(point());
+  Generator_System gs(point());
 
 #if NOISY
   print_generators(gs, "*** gs ***");

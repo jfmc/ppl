@@ -38,7 +38,7 @@ main() TRY {
   Variable A(0);
   Variable B(1);
 
-  GenSys gs;
+  Generator_System gs;
   gs.insert(point(A + B));
   NNC_Polyhedron ph1(gs);
 
@@ -52,7 +52,7 @@ main() TRY {
   print_generators(ph2, "*** ph2 ***");
 #endif
 
-  for (GenSys::const_iterator i = ph1.generators().begin(),
+  for (Generator_System::const_iterator i = ph1.generators().begin(),
 	 gs_end = ph1.generators().end(); i != gs_end; ++i)
     ph2.add_generator(*i);
 

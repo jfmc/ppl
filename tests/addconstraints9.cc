@@ -38,7 +38,7 @@ main() TRY {
   Variable x(0);
   Variable y(1);
 
-  GenSys gs;
+  Generator_System gs;
   gs.insert(point());
   gs.insert(ray(x));
   gs.insert(ray(x + y));

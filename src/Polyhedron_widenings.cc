@@ -332,7 +332,7 @@ PPL::Polyhedron::limited_H79_extrapolation_assign(const Polyhedron& y,
   Constraint_System new_cs;
   // The constraints to be added must be satisfied by all the
   // generators of `x'.  We can disregard `y' because `y <= x'.
-  const GenSys& x_gen_sys = x.gen_sys;
+  const Generator_System& x_gen_sys = x.gen_sys;
   // Iterate upwards here so as to keep the relative ordering of constraints.
   // Not really an issue: just aesthetics.
   for (dimension_type i = 0,
@@ -539,7 +539,7 @@ PPL::Polyhedron::BHRZ03_evolving_points(const Polyhedron& y,
   // this technique tries to identify a set of rays that:
   //  - are included in polyhedron `H79';
   //  - when added to `y' will subsume the point.
-  GenSys candidate_rays;
+  Generator_System candidate_rays;
 
   const dimension_type x_gen_sys_num_rows = x.gen_sys.num_rows();
   const dimension_type y_gen_sys_num_rows = y.gen_sys.num_rows();
@@ -606,7 +606,7 @@ PPL::Polyhedron::BHRZ03_evolving_rays(const Polyhedron& y,
   const dimension_type y_gen_sys_num_rows = y.gen_sys.num_rows();
 
   // Candidate rays are kept in a temporary generator system.
-  GenSys candidate_rays;
+  Generator_System candidate_rays;
   TEMP_INTEGER(tmp);
   for (dimension_type i = x_gen_sys_num_rows; i-- > 0; ) {
     const Generator& x_g = x.gen_sys[i];
@@ -847,7 +847,7 @@ PPL::Polyhedron::limited_BHRZ03_extrapolation_assign(const Polyhedron& y,
   Constraint_System new_cs;
   // The constraints to be added must be satisfied by all the
   // generators of `x'. We can disregard `y' because `y <= x'.
-  const GenSys& x_gen_sys = x.gen_sys;
+  const Generator_System& x_gen_sys = x.gen_sys;
   // Iterate upwards here so as to keep the relative ordering of constraints.
   // Not really an issue: just aesthetics.
   for (dimension_type i = 0,

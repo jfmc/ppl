@@ -37,7 +37,7 @@ main() TRY {
   Variable A(0);
   Variable B(1);
 
-  GenSys gs;
+  Generator_System gs;
   gs.insert(point());
   gs.insert(point(A + 2*B));
   gs.insert(point(A + B));
@@ -50,7 +50,7 @@ main() TRY {
 
   ph.add_generator_and_minimize(ray(A));
 
-  GenSys known_gs;
+  Generator_System known_gs;
   known_gs.insert(point());
   known_gs.insert(point(A + 2*B));
   known_gs.insert(ray(A));

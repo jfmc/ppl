@@ -38,7 +38,7 @@ main() TRY {
   Variable A(0);
   Variable B(1);
 
-  GenSys gs;
+  Generator_System gs;
   gs.insert(point());
   gs.insert(point(A));
   gs.insert(point(B));
@@ -51,7 +51,7 @@ main() TRY {
 
   ph.affine_image(A, -A - 1, -1);
 
-  GenSys known_gs;
+  Generator_System known_gs;
   known_gs.insert(point(A));
   known_gs.insert(point(2*A));
   known_gs.insert(point(A + B));

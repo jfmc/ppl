@@ -36,8 +36,8 @@ count_points(const C_Polyhedron& ph) {
     return 0;
 
   int count = 0;
-  const GenSys& gs = ph.generators();
-  for (GenSys::const_iterator i = gs.begin(), gs_end = gs.end();
+  const Generator_System& gs = ph.generators();
+  for (Generator_System::const_iterator i = gs.begin(), gs_end = gs.end();
        i != gs_end;
        ++i)
     if (i->type() == Generator::POINT)
@@ -72,7 +72,7 @@ main() TRY {
 	  { 5*(pyramid_height/4), 0, 5}
       };
 
-  GenSys gs;
+  Generator_System gs;
   gs.insert(point(0*x + 0*y + 0*z));
   gs.insert(point(2*x + 0*y + 0*z));
   gs.insert(point(0*x + 2*y + 0*z));

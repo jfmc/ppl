@@ -36,7 +36,7 @@ main() TRY {
   Variable x(0);
   Variable y(1);
 
-  GenSys gs;
+  Generator_System gs;
   gs.insert(point(x + y, -1));
 
   C_Polyhedron ph(gs);

@@ -1,4 +1,4 @@
-/* GenSys class declaration.
+/* Generator_System class declaration.
    Copyright (C) 2001-2004 Roberto Bagnara <bagnara@cs.unipr.it>
 
 This file is part of the Parma Polyhedra Library (PPL).
@@ -21,11 +21,11 @@ USA.
 For the most up-to-date information see the Parma Polyhedra Library
 site: http://www.cs.unipr.it/ppl/ . */
 
-#ifndef PPL_GenSys_defs_hh
-#define PPL_GenSys_defs_hh 1
+#ifndef PPL_Generator_System_defs_hh
+#define PPL_Generator_System_defs_hh 1
 
 #include "Linear_Expression.types.hh"
-#include "GenSys.types.hh"
+#include "Generator_System.types.hh"
 #include "Linear_System.defs.hh"
 #include "Generator.types.hh"
 #include "Constraint.types.hh"
@@ -40,11 +40,11 @@ namespace IO_Operators {
 
 //! Output operator.
 /*!
-  \relates Parma_Polyhedra_Library::GenSys
+  \relates Parma_Polyhedra_Library::Generator_System
   Writes <CODE>false</CODE> if \p gs is empty.  Otherwise, writes on
   \p s the generators of \p gs, all in one row and separated by ", ".
 */
-std::ostream& operator<<(std::ostream& s, const GenSys& gs);
+std::ostream& operator<<(std::ostream& s, const Generator_System& gs);
 
 } // namespace IO_Operators
 
@@ -58,15 +58,15 @@ bool operator==(const Polyhedron& x, const Polyhedron& y);
 namespace std {
 
 //! Specializes <CODE>std::swap</CODE>.
-/*! \relates Parma_Polyhedra_Library::GenSys */
-void swap(Parma_Polyhedra_Library::GenSys& x,
-	  Parma_Polyhedra_Library::GenSys& y);
+/*! \relates Parma_Polyhedra_Library::Generator_System */
+void swap(Parma_Polyhedra_Library::Generator_System& x,
+	  Parma_Polyhedra_Library::Generator_System& y);
 
 } // namespace std
 
 //! A system of generators.
 /*!
-    An object of the class GenSys is a system of generators,
+    An object of the class Generator_System is a system of generators,
     i.e., a multiset of objects of the class Generator
     (lines, rays, points and closure points).
     When inserting generators in a system, space dimensions are automatically
@@ -90,7 +90,7 @@ void swap(Parma_Polyhedra_Library::GenSys& x,
     as the \f$x\f$ axis (i.e., the first Cartesian axis)
     in \f$\Rset^2\f$:
     \code
-  GenSys gs;
+  Generator_System gs;
   gs.insert(line(x + 0*y));
     \endcode
     As said above, this system of generators corresponds to
@@ -117,7 +117,7 @@ void swap(Parma_Polyhedra_Library::GenSys& x,
     The following code builds a ray having the same direction as
     the positive part of the \f$x\f$ axis in \f$\Rset^2\f$:
     \code
-  GenSys gs;
+  Generator_System gs;
   gs.insert(ray(x + 0*y));
     \endcode
     To define a system of generators indeed corresponding to the set
@@ -138,7 +138,7 @@ void swap(Parma_Polyhedra_Library::GenSys& x,
     and corresponding to a square in \f$\Rset^2\f$
     (the same as Example 1 for the system of constraints):
     \code
-  GenSys gs;
+  Generator_System gs;
   gs.insert(point(0*x + 0*y));
   gs.insert(point(0*x + 3*y));
   gs.insert(point(3*x + 0*y));
@@ -152,7 +152,7 @@ void swap(Parma_Polyhedra_Library::GenSys& x,
     Note that a supporting point is needed and, for that purpose,
     any inner point could be considered.
     \code
-  GenSys gs;
+  Generator_System gs;
   gs.insert(point(x + y));
   gs.insert(closure_point(0*x + 0*y));
   gs.insert(closure_point(0*x + 3*y));
@@ -165,7 +165,7 @@ void swap(Parma_Polyhedra_Library::GenSys& x,
     and a ray, corresponding to a half-strip in \f$\Rset^2\f$
     (the same as Example 2 for the system of constraints):
     \code
-  GenSys gs;
+  Generator_System gs;
   gs.insert(point(0*x + 0*y));
   gs.insert(point(0*x + 1*y));
   gs.insert(ray(x - y));
@@ -179,24 +179,24 @@ void swap(Parma_Polyhedra_Library::GenSys& x,
     will be available, where original generators may have been
     reordered, removed (if they are duplicate or redundant), etc.
 */
-class Parma_Polyhedra_Library::GenSys : private Linear_System {
+class Parma_Polyhedra_Library::Generator_System : private Linear_System {
 public:
   //! Default constructor: builds an empty system of generators.
-  GenSys();
+  Generator_System();
 
   //! Builds the singleton system containing only generator \p g.
-  explicit GenSys(const Generator& g);
+  explicit Generator_System(const Generator& g);
 
   //! Ordinary copy-constructor.
-  GenSys(const GenSys& gs);
+  Generator_System(const Generator_System& gs);
 
   //! Destructor.
-  ~GenSys();
+  ~Generator_System();
 
   //! Assignment operator.
-  GenSys& operator=(const GenSys& y);
+  Generator_System& operator=(const Generator_System& y);
 
-  //! Returns the maximum space dimension a GenSys can handle.
+  //! Returns the maximum space dimension a Generator_System can handle.
   static dimension_type max_space_dimension();
 
   //! Returns the dimension of the vector space enclosing \p *this.
@@ -215,26 +215,26 @@ public:
   //! \brief
   //! Returns the singleton system containing only
   //! Generator::zero_dim_point().
-  static const GenSys& zero_dim_univ();
+  static const Generator_System& zero_dim_univ();
 
   //! An iterator over a system of generators
   /*!
       A const_iterator is used to provide read-only access
-      to each generator contained in an object of GenSys.
+      to each generator contained in an object of Generator_System.
 
       \par Example
       The following code prints the system of generators
       of the polyhedron <CODE>ph</CODE>:
       \code
-  const GenSys& gs = ph.generators();
-  for (GenSys::const_iterator i = gs.begin(),
+  const Generator_System& gs = ph.generators();
+  for (Generator_System::const_iterator i = gs.begin(),
          gs_end = gs.end(); i != gs_end; ++i)
     cout << *i << endl;
       \endcode
       The same effect can be obtained more concisely by using
       more features of the STL:
       \code
-  const GenSys& gs = ph.generators();
+  const Generator_System& gs = ph.generators();
   copy(gs.begin(), gs.end(), ostream_iterator<Generator>(cout, "\n"));
       \endcode
   */
@@ -280,7 +280,7 @@ public:
     bool operator!=(const const_iterator& y) const;
 
   private:
-    friend class GenSys;
+    friend class Generator_System;
 
     //! The const iterator over the Linear_System.
     Linear_System::const_iterator i;
@@ -290,7 +290,7 @@ public:
 
     //! Constructor.
     const_iterator(const Linear_System::const_iterator& iter,
-		   const GenSys& gsys);
+		   const Generator_System& gsys);
 
     //! \brief
     //! \p *this skips to the next generator, skipping those
@@ -349,20 +349,20 @@ private:
   Parma_Polyhedra_Library::operator==(const Polyhedron& x,
 				      const Polyhedron& y);
 
-  friend void std::swap(Parma_Polyhedra_Library::GenSys& x,
-			Parma_Polyhedra_Library::GenSys& y);
+  friend void std::swap(Parma_Polyhedra_Library::Generator_System& x,
+			Parma_Polyhedra_Library::Generator_System& y);
 
   //! Builds an empty system of generators having the specified topology.
-  explicit GenSys(Topology topol);
+  explicit Generator_System(Topology topol);
 
   //! \brief
   //! Builds a system of \p n_rows rays/points on a \p n_columns - 1
   //! dimensional space (including the \f$\epsilon\f$ dimension, if
   //! \p topol is <CODE>NOT_NECESSARILY_CLOSED</CODE>).
-  GenSys(Topology topol, dimension_type n_rows, dimension_type n_columns);
+  Generator_System(Topology topol, dimension_type n_rows, dimension_type n_columns);
 
   //! Swaps \p *this with \p y.
-  void swap(GenSys& y);
+  void swap(Generator_System& y);
 
   //! \brief
   //! Adjusts \p *this so that it matches the topology and
@@ -475,6 +475,6 @@ private:
   void insert_pending(const Generator& g);
 };
 
-// GenSys.inlines.hh is not included here on purpose.
+// Generator_System.inlines.hh is not included here on purpose.
 
-#endif // !defined(PPL_GenSys_defs_hh)
+#endif // !defined(PPL_Generator_System_defs_hh)

@@ -64,7 +64,7 @@ error2() {
   Variable x(0);
   Variable y(1);
 
-  GenSys gs;
+  Generator_System gs;
   gs.insert(closure_point(2*x + y));
   gs.insert(point(x + y));
   gs.insert(ray(x));
@@ -224,7 +224,7 @@ error8() {
   Variable y(1);
 
   C_Polyhedron ph(3);
-  GenSys gs;
+  Generator_System gs;
   gs.insert(point());
   gs.insert(closure_point(-x));
   gs.insert(ray(x));
@@ -254,7 +254,7 @@ error9() {
   Variable y(1);
 
   C_Polyhedron ph(3);
-  GenSys gs;
+  Generator_System gs;
   gs.insert(point(x));
   gs.insert(closure_point());
   gs.insert(ray(x+y));
@@ -375,12 +375,12 @@ error13() {
   Variable A(0);
   Variable B(1);
 
-  GenSys gs1;
+  Generator_System gs1;
   gs1.insert(point());
   gs1.insert(point(3*A));
   C_Polyhedron ph1(gs1);
 
-  GenSys gs2;
+  Generator_System gs2;
   gs2.insert(point(B));
   gs2.insert(closure_point());
   gs2.insert(closure_point(3*B));
@@ -414,12 +414,12 @@ error14() {
   Variable A(0);
   Variable B(1);
 
-  GenSys gs1;
+  Generator_System gs1;
   gs1.insert(point());
   gs1.insert(point(3*B));
   C_Polyhedron ph1(gs1);
 
-  GenSys gs2;
+  Generator_System gs2;
   gs2.insert(point(2*A));
   gs2.insert(closure_point());
   gs2.insert(closure_point(3*A));
@@ -617,7 +617,7 @@ error19() {
   ph1.add_constraint(B >= 0);
   ph1.add_constraint(A + B <= 1);
 
-  GenSys gs;
+  Generator_System gs;
   gs.insert(point(2*A + 2*B));
   gs.insert(ray(A + B));
   NNC_Polyhedron ph2(gs);
@@ -714,18 +714,18 @@ static void
 error22() {
   Variable A(0);
 
-  GenSys gs1;
+  Generator_System gs1;
   gs1.insert(point(3*A));
   gs1.insert(closure_point(2*A));
   gs1.insert(ray(A));
 
   NNC_Polyhedron ph1(gs1);
 
-  const GenSys gs2 = ph1.generators();
+  const Generator_System gs2 = ph1.generators();
 
   try {
     // This is an incorrect use of the function
-    // `C_Polyhedron(const GenSys)': it is illegal to build
+    // `C_Polyhedron(const Generator_System)': it is illegal to build
     // a closed polyhedron starting from a constant non-closed
     // system of generators.
     C_Polyhedron ph2(gs2);
@@ -770,7 +770,7 @@ error24() {
   print_constraints(ph, "*** ph ***");
 #endif
 
-  GenSys gs;
+  Generator_System gs;
   gs.insert(closure_point());
 
   try {
@@ -799,7 +799,7 @@ error25() {
   print_constraints(ph, "*** ph ***");
 #endif
 
-  GenSys gs;
+  Generator_System gs;
   gs.insert(closure_point());
 
   try {
@@ -933,7 +933,7 @@ error29() {
   Variable A(0);
   Variable B(1);
 
-  GenSys gs;
+  Generator_System gs;
   try {
     // This is an incorrect use of function
     // Generator::closure_point(e, d):

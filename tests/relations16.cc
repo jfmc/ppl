@@ -39,7 +39,7 @@ main() TRY {
   Variable A(0);
   Variable B(1);
 
-  GenSys gs;
+  Generator_System gs;
   gs.insert(point(A));
   gs.insert(line(B));
   C_Polyhedron ph(gs);

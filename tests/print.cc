@@ -65,11 +65,11 @@ print_generator(const Generator& g, const string& intro, ostream& s) {
 }
 
 void
-print_generators(const GenSys& gs, const string& intro, ostream& s) {
+print_generators(const Generator_System& gs, const string& intro, ostream& s) {
   if (!intro.empty())
     s << intro << endl;
-  GenSys::const_iterator i = gs.begin();
-  GenSys::const_iterator gs_end = gs.end();
+  Generator_System::const_iterator i = gs.begin();
+  Generator_System::const_iterator gs_end = gs.end();
   bool printed_something = i != gs_end;
   while (i != gs_end) {
     s << *i++;

@@ -45,7 +45,7 @@ main() TRY {
 
   NNC_Polyhedron ph1(ph);
 
-  GenSys gs;
+  Generator_System gs;
   gs.insert(point(x + y));
   NNC_Polyhedron ph2(gs);
 

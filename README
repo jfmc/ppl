@@ -418,10 +418,10 @@ ppl-0.6/
 |   |-- Determinate.defs.hh
 |   |-- Determinate.inlines.hh
 |   |-- Determinate.types.hh
-|   |-- GenSys.cc
-|   |-- GenSys.defs.hh
-|   |-- GenSys.inlines.hh
-|   |-- GenSys.types.hh
+|   |-- Generator_System.cc
+|   |-- Generator_System.defs.hh
+|   |-- Generator_System.inlines.hh
+|   |-- Generator_System.types.hh
 |   |-- Generator.cc
 |   |-- Generator.defs.hh
 |   |-- Generator.inlines.hh

@@ -47,7 +47,7 @@ main() TRY {
 
   ph1.add_space_dimensions_and_embed(2);
 
-  GenSys gs;
+  Generator_System gs;
   gs.insert(point(2*x));
   gs.insert(closure_point(x));
   gs.insert(closure_point(5*x));

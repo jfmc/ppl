@@ -1386,9 +1386,9 @@ For this reason, code fragments such as the following should be
 avoided, as they may result in undefined behavior:
 \code
 // Find a reference to the first point of the non-empty polyhedron `ph'.
-const GenSys& gs = ph.generators();
-GenSys::const_iterator i = gs.begin();
-for (GenSys::const_iterator gs_end = gs.end(); i != gs_end; ++i)
+const Generator_System& gs = ph.generators();
+Generator_System::const_iterator i = gs.begin();
+for (Generator_System::const_iterator gs_end = gs.end(); i != gs_end; ++i)
   if (i->is_point())
     break;
 const Generator& p = *i;
@@ -1410,7 +1410,7 @@ instead of a reference to, the parts of interest of the polyhedron;
 in the case above, one may have taken a copy of the generator system
 by replacing the second line of code with the following:
 \code
-GenSys gs = ph.generators();
+Generator_System gs = ph.generators();
 \endcode
 The same observations, modulo syntactic sugar, apply to the operators
 defined in the C interface of the library. 

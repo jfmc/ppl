@@ -46,7 +46,7 @@ main() TRY {
   print_constraints(ph, "*** ph ***");
 #endif
 
-  GenSys gs;
+  Generator_System gs;
   gs.insert(ray(x));
   gs.insert(point());
 
