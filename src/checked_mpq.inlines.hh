@@ -43,15 +43,15 @@ SPECIALIZE_ASSIGN(mpq_mpz, mpq_class, mpz_class)
 template <typename Policy, typename From>
 inline Result
 assign_mpq_signed_int(mpq_class& to, const From from) {
-  if (sizeof(From) <= sizeof(unsigned long))
-    to = static_cast<unsigned long>(from);
+  if (sizeof(From) <= sizeof(long))
+    to = static_cast<long>(from);
   else {
     mpz_ptr m = to.get_num().get_mpz_t();
     if (from >= 0)
       mpz_import(m, 1, 1, sizeof(From), 0, 0, &from);
     else {
-      from = -from;
-      mpz_import(m, 1, 1, sizeof(From), 0, 0, &from);
+      From n = -from;
+      mpz_import(m, 1, 1, sizeof(From), 0, 0, &n);
       mpz_neg(m, m);
     }
     to.get_den() = 1;

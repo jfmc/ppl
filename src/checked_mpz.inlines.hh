@@ -58,8 +58,8 @@ SPECIALIZE_ASSIGN(mpz_mpq, mpz_class, mpq_class)
 template <typename Policy, typename From>
 inline Result
 assign_mpz_signed_int(mpz_class& to, const From from) {
-  if (sizeof(From) <= sizeof(unsigned long))
-    to = static_cast<unsigned long>(from);
+  if (sizeof(From) <= sizeof(long))
+    to = static_cast<long>(from);
   else {
     mpz_ptr m = to.get_mpz_t();
     if (from >= 0)
