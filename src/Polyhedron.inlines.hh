@@ -194,6 +194,16 @@ Polyhedron::clear_generators_minimized() {
 }
 
 inline void
+Polyhedron::clear_pending_constraints() {
+  status.reset_c_pending();
+}
+
+inline void
+Polyhedron::clear_pending_generators() {
+  status.reset_g_pending();
+}
+
+inline void
 Polyhedron::clear_constraints_up_to_date() {
   clear_pending_constraints();
   clear_constraints_minimized();
@@ -211,16 +221,6 @@ Polyhedron::clear_generators_up_to_date() {
   clear_sat_g_up_to_date();
   status.reset_g_up_to_date();
   // Can get rid of gen_sys here.
-}
-
-inline void
-Polyhedron::clear_pending_constraints() {
-  status.reset_c_pending();
-}
-
-inline void
-Polyhedron::clear_pending_generators() {
-  status.reset_g_pending();
 }
 
 /*! \relates Polyhedron */
