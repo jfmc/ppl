@@ -28,6 +28,8 @@ site: http://www.cs.unipr.it/ppl/ . */
 #include <ctime>
 #include <iostream>
 #include <iomanip>
+#include <cstring>
+#include <cerrno>
 
 #if HAVE_SYS_RESOURCE_H
 # include <sys/resource.h>
@@ -41,8 +43,8 @@ static struct timeval saved_ru_utime;
 void
 start_clock() {
   struct rusage rsg;
-  if (int r = getrusage(RUSAGE_SELF, &rsg)) {
-    cerr << "getrusage failed: " << r << endl;
+  if (getrusage(RUSAGE_SELF, &rsg) != 0) {
+    cerr << "getrusage failed: " << strerror(errno) << endl;
     exit(1);
   }
   else
@@ -52,8 +54,8 @@ start_clock() {
 void
 print_clock(ostream& s) {
   struct rusage rsg;
-  if (int r = getrusage(RUSAGE_SELF, &rsg)) {
-    cerr << "getrusage failed: " << r << endl;
+  if (getrusage(RUSAGE_SELF, &rsg) != 0) {
+    cerr << "getrusage failed: " << strerror(errno) << endl;
     exit(1);
   }
   else {

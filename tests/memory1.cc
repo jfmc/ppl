@@ -53,14 +53,12 @@ compute_open_hypercube_generators(unsigned int dimension) {
 void
 limit_virtual_memory(unsigned int bytes) {
   struct rlimit t;
-  int r = getrlimit(RLIMIT_AS, &t);
-  if (r != 0) {
+  if (getrlimit(RLIMIT_AS, &t) != 0) {
     cerr << "getrlimit failed: " << strerror(errno) << endl;
     exit(1);
   }
   t.rlim_cur = bytes;
-  r = setrlimit(RLIMIT_AS, &t);
-  if (r != 0) {
+  if (setrlimit(RLIMIT_AS, &t) != 0) {
     cerr << "setrlimit failed: " << strerror(errno) << endl;
     exit(1);
   }
