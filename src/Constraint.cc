@@ -190,3 +190,34 @@ PPL::operator<<(std::ostream& s, const Constraint& c) {
   s << relation_symbol << -c[0];
   return s;
 }
+
+
+bool
+PPL::Constraint::OK() const {
+#ifndef NDEBUG
+  using std::endl;
+  using std::cerr;
+#endif
+
+  // A constraint has to be normalized.
+  Constraint tmp = *this;
+#if STRONG_NORMALIZATION
+  tmp.strongly_normalize();
+#else
+  tmp.normalize();
+#endif
+  if (tmp != *this) {
+#ifndef NDEBUG
+    cerr << "Constraints should be ";
+#if STRONG_NORMALIZATION
+    cerr << "strongly ";
+#endif
+    cerr << "normalized!"
+	 << endl;
+#endif
+    return false;
+  }
+
+  // All tests passed.
+  return true;
+}

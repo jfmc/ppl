@@ -269,12 +269,6 @@ public:
   //! Returns the dimension of the vector space enclosing \p *this.
   size_t space_dimension() const;
 
-  /*
-  //! Returns <CODE>true</CODE> if and only if the constraint
-  //! corresponds to a necessarily closed polyhedron.
-  bool is_necessarily_closed() const;
-  */
-
   //! The constraint type.
   /*! Describes the type of the constraint. */
   enum Type {
@@ -320,6 +314,9 @@ public:
   //! The true (zero-dimension space) constraint \f$0 \leq 1\f$,
   //! also known as <EM>positivity constraint</EM>.
   static const Constraint& zero_dim_positivity();
+
+  //! Checks if all the invariants are satisfied.
+  bool OK() const;
 
 PPL_INTERNAL:
   //! Copy-constructor with given size.

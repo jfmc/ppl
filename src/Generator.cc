@@ -239,6 +239,26 @@ PPL::Generator::OK() const {
 #endif
 
   const Generator& g = *this;
+
+  // A generator has to be normalized.
+  Generator tmp = g;
+#if STRONG_NORMALIZATION
+  tmp.strongly_normalize();
+#else
+  tmp.normalize();
+#endif
+  if (tmp != g) {
+#ifndef NDEBUG
+    cerr << "Generators should be ";
+#if STRONG_NORMALIZATION
+    cerr << "strongly ";
+#endif
+    cerr << "normalized!"
+	 << endl;
+#endif
+    return false;
+  }
+
   switch (g.type()) {
   case LINE:
     // Intentionally fall through.
