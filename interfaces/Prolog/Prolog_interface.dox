@@ -125,6 +125,8 @@ The specification uses the following grammar rules:
             | subsumes			between a generator and a polyhedron
             | nothing
 
+ Complexity  --> polynomial | simplex | any		
+
  Numerator   --> number | + number | - number
 
  Denominator --> number			number must be non-zero
@@ -745,6 +747,16 @@ E.g., the following will fail:
       ppl_Polyhedron_get_bounding_box(X, any, Box),
       Box = [i(o(minf), c(2/4)), i(o(0), o(pinf))].
 \endcode
+
+The complexity class <CODE>Complexity</CODE> determining the algorithm
+to be used has the following meaning:
+- <CODE>polynomial</CODE> allows
+  code of the worst-case polynomial complexity class;
+- <CODE>simplex</CODE> allows
+  code of the worst-case exponential but typically polynomial
+  complexity class;
+- <CODE>any</CODE> allows
+  code of the universal complexity class.
 
 \section PI_Compilation Compilation and Installation
 
