@@ -445,7 +445,7 @@ PowerSet<CS>::H79_extrapolation_assign(const PowerSet& /* y */) {
 template <typename CS>
 void
 PowerSet<CS>::limited_H79_extrapolation_assign(const PowerSet& y,
-					       ConSys& cs) {
+					       const ConSys& cs) {
   std::deque<iterator> possibly_new;
   for (iterator xi = begin(), xend = end(); xi != xend; ++xi)
     if (!y.definitely_contains(*xi))

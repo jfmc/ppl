@@ -191,7 +191,7 @@ public:
                                      are topology-incompatible
                                      or dimension-incompatible.
   */
-  void limited_H79_extrapolation_assign(const PowerSet& y, ConSys& cs);
+  void limited_H79_extrapolation_assign(const PowerSet& y, const ConSys& cs);
 
   //! Checks if all the invariants are satisfied.
   bool OK() const;
