@@ -386,15 +386,18 @@ a polyhedron as its <EM>topology</EM>.
 In the library, the topology of each polyhedron object is fixed
 once for all at the time of its creation and must be respected
 when performing operations on the polyhedron.
-In particular,
-this means that strict inequality constraints may only be added
-to an NNC polyhedron and any attempt to add them to a C polyhedron
-will result in a run-time exception;
-similarly, generators that are closure points can only be added
-to an NNC polyhedron; and
-only polyhedra having the same topology may be compared or combined.
-More generally, any operation on a polyhedron must be compatible
-with its given topology.
+
+Unless it is otherwise stated,
+all the polyhedra, constraints and/or generators in any library operation
+must obey the following <EM>topological-compatibility</EM> rules:
+- polyhedra are tologically-compatible if and only if they have
+  the same topology;
+- all constraints except for strict constraints
+  and all generators except for closure points are
+  topologically-compatible with both C and NNC polyhedra;
+- strict inequality constraints and closure points are 
+  topologically-compatible with a polyhedron if and only if it is NNC.
+
 Wherever possible,
 the library provides methods that, starting from a polyhedron of
 a given topology, build the corresponding polyhedron having
@@ -411,7 +414,7 @@ of the library is defined similarly.
 Unless it is otherwise stated,
 all the polyhedra, constraints and/or generators in any library operation
 must obey the following space <EM>dimension-compatibility</EM> rules:
-- the polyhedra are dimension-compatible if and only if they have
+- polyhedra are dimension-compatible if and only if they have
   the same space dimension;
 - the constraint
   \f$\langle \vect{a}, \vect{x} \rangle \relop b\f$
