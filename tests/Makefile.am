@@ -71,7 +71,7 @@ ORIGINAL_TESTS = \
 	concatenate1 concatenate2 concatenate3 concatenate4 concatenate5 \
 	constraints1 constraints2 constraints3 \
 	contains1 \
-	disjoint1 \
+	disjoint1 disjoint2 disjoint3 \
         empty1 \
 	exceptions1 exceptions2 \
 	generalizedaffineimage1 generalizedaffineimage2 \
@@ -152,7 +152,7 @@ DERIVED_TESTS = \
 	nnc_concatenate1 nnc_concatenate2 nnc_concatenate3 nnc_concatenate4 \
 	nnc_concatenate5 \
 	nnc_constraints1 nnc_constraints2 nnc_constraints3 \
-	nnc_disjoint1 \
+	nnc_disjoint1 nnc_disjoint2 \
 	nnc_empty1 \
 	nnc_exceptions1 \
 	nnc_generalizedaffineimage1 nnc_generalizedaffineimage2 \
@@ -328,6 +328,8 @@ constraints3_SOURCES = constraints3.cc
 contains1_SOURCES = contains1.cc
 
 disjoint1_SOURCES = disjoint1.cc
+disjoint2_SOURCES = disjoint2.cc
+disjoint3_SOURCES = disjoint3.cc
 
 empty1_SOURCES = empty1.cc
 
@@ -667,6 +669,8 @@ nnc_empty1_CXXFLAGS = $(DERIVED_CXXFLAGS)
 
 nnc_disjoint1_SOURCES = disjoint1.cc
 nnc_disjoint1_CXXFLAGS = $(DERIVED_CXXFLAGS)
+nnc_disjoint2_SOURCES = disjoint2.cc
+nnc_disjoint2_CXXFLAGS = $(DERIVED_CXXFLAGS)
 
 nnc_exceptions1_SOURCES = exceptions1.cc
 nnc_exceptions1_CXXFLAGS = $(DERIVED_CXXFLAGS)
