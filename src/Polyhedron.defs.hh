@@ -823,6 +823,10 @@ public:
   //! then adds to the system of constraints of \p *this
   //! a renamed-apart version of the constraints in \p cs.
   /*!
+  /*!
+    \param  cs             Specifies the constraints to be added.
+                           This parameter is not declared <CODE>const</CODE>
+                           because it can be modified.
     \exception std::invalid_argument thrown if \p *this and \p cs
                                      are topology-incompatible.
   */
