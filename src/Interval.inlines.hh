@@ -31,7 +31,7 @@ namespace Parma_Polyhedra_Library {
 inline
 ERational::ERational(Integer_traits::const_reference num,
 		     Integer_traits::const_reference den)
-  : e(0), v(num, den) {
+  : e(0), v(mpz_class(num), mpz_class(den)) {
   assert(den != 0);
   v.canonicalize();
 }

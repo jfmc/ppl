@@ -585,7 +585,9 @@ PPL::Polyhedron::max_min(const LinExpression& expr,
       assert(g.is_point() || g.is_closure_point());
       // Notice that we are ignoring the constant term in `expr' here.
       // We will add it to the extremum as soon as we find it.
-      mpq_class candidate(sp, g[0]);
+      mpq_class candidate;
+      candidate.get_num() = sp;
+      candidate.get_den() = g[0];
       candidate.canonicalize();
       const bool g_is_point = g.is_point();
       if (first_candidate
