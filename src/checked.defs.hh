@@ -212,7 +212,7 @@ DECLARE_FUN4(lcm,         Result, nonconst, const,    const,  const)
 DECLARE_FUN1(sgn,         Result, const)
 DECLARE_FUN2(cmp,         Result, const,    const)
 DECLARE_FUN4(classify,    Result, const,    const,    const,  const)
-DECLARE_FUN2(set_special, void,   nonconst, const)
+DECLARE_FUN2(set_special, Result, nonconst, const)
 DECLARE_FUN4(print,       Result, nonconst, const,    const,  const)
 DECLARE_FUN3(input,       Result, nonconst, nonconst, const)
 

@@ -36,8 +36,7 @@ assign_ext(To& to, const From& from, const Rounding& mode) {
   Result r = classify<From_Policy>(from, true, true, false);
   if (r == V_NORMAL)
     return assign<To_Policy>(to, from, mode);
-  set_special<To_Policy>(to, r);
-  return r;
+  return set_special<To_Policy>(to, r);
 }
 
 template <typename Policy1, typename Policy2,
@@ -76,8 +75,7 @@ neg_ext(To& to, const From& x, const Rounding& mode) {
     r = V_PLUS_INFINITY;
   else if (r == V_PLUS_INFINITY)
     r = V_MINUS_INFINITY;
-  set_special<To_Policy>(to, r);
-  return r;
+  return set_special<To_Policy>(to, r);
 }
 
 template <typename To_Policy, typename From_Policy,
@@ -91,8 +89,7 @@ abs_ext(To& to, const From& x, const Rounding& mode) {
     return abs<To_Policy>(to, x, mode);
   else if (r == V_MINUS_INFINITY)
     r = V_PLUS_INFINITY;
-  set_special<To_Policy>(to, r);
-  return r;
+  return set_special<To_Policy>(to, r);
 }
 
 template <typename To_Policy, typename From1_Policy, typename From2_Policy,
@@ -115,8 +112,7 @@ add_ext(To& to, const From1& x, const From2& y, const Rounding& mode) {
     r = rx;
   else
     r = V_UNKNOWN;
-  set_special<To_Policy>(to, r);
-  return r;
+  return set_special<To_Policy>(to, r);
 }
     
 template <typename To_Policy, typename From1_Policy, typename From2_Policy,
@@ -139,8 +135,7 @@ sub_ext(To& to, const From1& x, const From2& y, const Rounding& mode) {
     r = rx;
   else
     r = V_UNKNOWN;
-  set_special<To_Policy>(to, r);
-  return r;
+  return set_special<To_Policy>(to, r);
 }
     
 template <typename To_Policy, typename From1_Policy, typename From2_Policy,
@@ -167,8 +162,7 @@ mul_ext(To& to, const From1& x, const From2& y, const Rounding& mode) {
     else
       r = V_MINUS_INFINITY;
   }
-  set_special<To_Policy>(to, r);
-  return r;
+  return set_special<To_Policy>(to, r);
 }
     
 	
@@ -205,8 +199,7 @@ div_ext(To& to, const From1& x, const From2& y, const Rounding& mode) {
   }
   else
     r = V_UNKNOWN;
-  set_special<To_Policy>(to, r);
-  return r;
+  return set_special<To_Policy>(to, r);
 }
     
 	
@@ -232,8 +225,7 @@ mod_ext(To& to, const From1& x, const From2& y, const Rounding& mode) {
   }
   else
     r = V_UNKNOWN;
-  set_special<To_Policy>(to, r);
-  return r;
+  return set_special<To_Policy>(to, r);
 }
     
 template <typename To_Policy, typename From_Policy,
@@ -251,8 +243,7 @@ sqrt_ext(To& to, const From& x, const Rounding& mode) {
     r = V_DOMAIN;
   else
     r = V_PLUS_INFINITY;
-  set_special<To_Policy>(to, r);
-  return r;
+  return set_special<To_Policy>(to, r);
 }
 
 template <typename To_Policy, typename From1_Policy, typename From2_Policy,
@@ -279,8 +270,7 @@ gcd_ext(To& to, const From1& x, const From2& y, const Rounding& mode) {
   }
   else
     r = V_PLUS_INFINITY;
-  set_special<To_Policy>(to, r);
-  return r;
+  return set_special<To_Policy>(to, r);
 }
     
 template <typename To_Policy, typename From1_Policy, typename From2_Policy,
@@ -297,8 +287,7 @@ lcm_ext(To& to, const From1& x, const From2& y, const Rounding& mode) {
     return lcm<To_Policy>(to, x, y, mode);
   else
     r = V_PLUS_INFINITY;
-  set_special<To_Policy>(to, r);
-  return r;
+  return set_special<To_Policy>(to, r);
 }
 
 template <typename Policy, typename Type>

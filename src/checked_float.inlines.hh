@@ -73,21 +73,22 @@ classify_float(const T v, bool nan, bool inf, bool sign) {
 }
 
 template <typename Policy, typename T>
-inline void
+inline Result
 set_special_float(T& v, Result r) {
   switch (type(r)) {
   case V_MINUS_INFINITY:
     v = -HUGE_VAL;
-    return;
+    break;
   case V_PLUS_INFINITY:
     v = HUGE_VAL;
-    return;
+    break;
   case V_UNKNOWN:
     v = NAN;
-    return;
+    break;
   default:
-    return;
+    break;
   }
+  return r;
 }
 
 template <typename Policy, typename T>

@@ -56,14 +56,14 @@ classify_mpq(const mpq_class& v, bool nan, bool inf, bool sign) {
 SPECIALIZE_CLASSIFY(mpq, mpq_class)
 
 template <typename Policy>
-inline void
+inline Result
 set_special_mpq(mpq_class& v, Result r) {
   int num;
-  r = type(r);
-  if (Policy::store_nan && r == V_UNKNOWN)
+  Result t = type(r);
+  if (Policy::store_nan && t == V_UNKNOWN)
     num = 0;
   else if (Policy::store_infinity) {
-    switch (r) {
+    switch (t) {
     case V_MINUS_INFINITY:
       num = -1;
       break;
@@ -71,13 +71,14 @@ set_special_mpq(mpq_class& v, Result r) {
       num = 1;
       break;
     default:
-      return;
+      return r;
     }
   }
   else
-    return;
+    return r;
   v.get_num() = num;
   v.get_den() = 0;
+  return r;
 }
 
 SPECIALIZE_SET_SPECIAL(mpq, mpq_class)
@@ -208,10 +209,8 @@ SPECIALIZE_MUL(mpq, mpq_class, mpq_class)
 template <typename Policy>
 inline Result
 div_mpq(mpq_class& to, const mpq_class& x, const mpq_class& y, const Rounding&) {
-  if (Policy::check_divbyzero && sgn(y) == 0) {
-    set_special<Policy>(to, V_UNKNOWN);
-    return V_UNKNOWN;
-  }
+  if (Policy::check_divbyzero && sgn(y) == 0)
+    return set_special<Policy>(to, V_UNKNOWN);
   to = x / y;
   return V_EQ;
 }
@@ -221,10 +220,8 @@ SPECIALIZE_DIV(mpq, mpq_class, mpq_class)
 template <typename Policy>
 inline Result
 mod_mpq(mpq_class& to, const mpq_class& x, const mpq_class& y, const Rounding&) {
-  if (Policy::check_divbyzero && sgn(y) == 0) {
-    set_special<Policy>(to, V_UNKNOWN);
-    return V_UNKNOWN;
-  }
+  if (Policy::check_divbyzero && sgn(y) == 0)
+    return set_special<Policy>(to, V_UNKNOWN);
   to = x / y;
   to.get_num() %= to.get_den();
   return V_EQ;

@@ -66,14 +66,14 @@ classify_mpz(const mpz_class& v, bool nan, bool inf, bool sign) {
 SPECIALIZE_CLASSIFY(mpz, mpz_class)
 
 template <typename Policy>
-inline void
+inline Result
 set_special_mpz(mpz_class& v, Result r) {
   mp_size_t s;
-  r = type(r);
-  if (Policy::store_nan && r == V_UNKNOWN)
+  Result t = type(r);
+  if (Policy::store_nan && t == V_UNKNOWN)
     s = Limits<mp_size_t>::min + 1;
   else if (Policy::store_infinity) {
-    switch (r) {
+    switch (t) {
     case V_MINUS_INFINITY:
       s = Limits<mp_size_t>::min;
       break;
@@ -81,12 +81,13 @@ set_special_mpz(mpz_class& v, Result r) {
       s = Limits<mp_size_t>::max;
       break;
     default:
-      return;
+      return r;
     }
   }
   else
-    return;
+    return r;
   set_mp_size(v, s);
+  return r;
 }
 
 SPECIALIZE_SET_SPECIAL(mpz, mpz_class)
@@ -253,10 +254,8 @@ SPECIALIZE_MUL(mpz, mpz_class, mpz_class)
 template <typename Policy>
 inline Result
 div_mpz(mpz_class& to, const mpz_class& x, const mpz_class& y, const Rounding& mode) {
-  if (Policy::check_divbyzero && ::sgn(y) == 0) {
-    set_special<Policy>(to, V_UNKNOWN);
-    return V_UNKNOWN;
-  }
+  if (Policy::check_divbyzero && ::sgn(y) == 0)
+    return set_special<Policy>(to, V_UNKNOWN);
   if (Policy::round_inexact) {
     mpz_t rem;
     mpz_init(rem);
@@ -285,10 +284,8 @@ SPECIALIZE_DIV(mpz, mpz_class, mpz_class)
 template <typename Policy>
 inline Result
 mod_mpz(mpz_class& to, const mpz_class& x, const mpz_class& y, const Rounding&) {
-  if (Policy::check_divbyzero && ::sgn(y) == 0) {
-    set_special<Policy>(to, V_UNKNOWN);
-    return V_UNKNOWN;
-  }
+  if (Policy::check_divbyzero && ::sgn(y) == 0)
+    return set_special<Policy>(to, V_UNKNOWN);
   to = x % y;
   return V_EQ;
 }
@@ -343,10 +340,8 @@ SPECIALIZE_LCM(mpz, mpz_class, mpz_class)
 template <typename Policy>
 inline Result
 sqrt_mpz(mpz_class& to, const mpz_class& from, const Rounding& mode) {
-  if (Policy::check_sqrt_neg && from < 0) {
-    set_special<Policy>(to, V_DOMAIN);
-    return V_DOMAIN;
-  }
+  if (Policy::check_sqrt_neg && from < 0)
+    return set_special<Policy>(to, V_DOMAIN);
   if (Policy::round_inexact) {
     mpz_class r;
     mpz_sqrtrem(to.get_mpz_t(), r.get_mpz_t(), from.get_mpz_t());
