@@ -336,7 +336,7 @@ Polyhedron::Polyhedron(Topology topol, const Box& box)
 
 template <typename Box>
 void
-Polyhedron::shrink_bounding_box(Box& box) const {
+Polyhedron::shrink_bounding_box(Box& box, bool polynomial) const {
   if (check_universe())
     return;
 
@@ -359,57 +359,64 @@ Polyhedron::shrink_bounding_box(Box& box) const {
     upper_bound[j] = UBoundary(ExtendedRational('-'), UBoundary::OPEN);
   }
 
-  // Get the generators for *this.
-  const GenSys& gs = generators();
-  const GenSys::const_iterator gs_begin = gs.begin();
-  const GenSys::const_iterator gs_end = gs.end();
+  if (polynomial && !generators_are_up_to_date()) {
+    // Extract easy-to-find bounds from constraints.
+  }
+  else {
+    // We are in the case where either the generators are up-to-date
+    // or polynomial execution time is not required.
+    // Get the generators for *this.
+    const GenSys& gs = generators();
+    const GenSys::const_iterator gs_begin = gs.begin();
+    const GenSys::const_iterator gs_end = gs.end();
 
-  // We first need to identify those axes that are unbounded
-  // below and/or above.
-  for (GenSys::const_iterator i = gs_begin; i != gs_end; ++i) {
-    const Generator& g = *i;
-    Generator::Type g_type = g.type();
-    switch (g_type) {
-    case Generator::LINE:
-      // Any axes `j' in which the coefficient is non-zero is unbounded
-      // both below and above.
-      for (dimension_type j = space_dim; j-- > 0; )
-        if (g.coefficient(Variable(j)) != 0) {
-	  lower_bound[j] = LBoundary(ExtendedRational('-'), LBoundary::OPEN);
-	  upper_bound[j] = UBoundary(ExtendedRational('+'), UBoundary::OPEN);
-	}
-    break;
-    case Generator::RAY:
-      // Axes in which the coefficient is negative are unbounded below.
-      // Axes in which the coefficient is positive are unbounded above.
-      for (dimension_type j = space_dim; j-- > 0; ) {
-        int sign = sgn(g.coefficient(Variable(j)));
-        if (sign < 0)
-	  lower_bound[j] = LBoundary(ExtendedRational('-'), LBoundary::OPEN);
-        else if (sign > 0)
-	  upper_bound[j] = UBoundary(ExtendedRational('+'), UBoundary::OPEN);
-      }
-      break;
-    case Generator::POINT:
-    case Generator::CLOSURE_POINT:
-      {
-	const Integer& d = g.divisor();
+    // We first need to identify those axes that are unbounded
+    // below and/or above.
+    for (GenSys::const_iterator i = gs_begin; i != gs_end; ++i) {
+      const Generator& g = *i;
+      Generator::Type g_type = g.type();
+      switch (g_type) {
+      case Generator::LINE:
+	// Any axes `j' in which the coefficient is non-zero is unbounded
+	// both below and above.
+	for (dimension_type j = space_dim; j-- > 0; )
+	  if (g.coefficient(Variable(j)) != 0) {
+	    lower_bound[j] = LBoundary(ExtendedRational('-'), LBoundary::OPEN);
+	    upper_bound[j] = UBoundary(ExtendedRational('+'), UBoundary::OPEN);
+	  }
+	break;
+      case Generator::RAY:
+	// Axes in which the coefficient is negative are unbounded below.
+	// Axes in which the coefficient is positive are unbounded above.
 	for (dimension_type j = space_dim; j-- > 0; ) {
-	  const Integer& n = g.coefficient(Variable(j));
-	  ExtendedRational r(n, d);
-	  LBoundary lb(r,(g_type == Generator::CLOSURE_POINT
-			  ? LBoundary::OPEN
-			  : LBoundary::CLOSED));
-	  if (lb < lower_bound[j])
-	    lower_bound[j] = lb;
-	  UBoundary ub(r, (g_type == Generator::CLOSURE_POINT
-			   ? UBoundary::OPEN
-			   : UBoundary::CLOSED));
-	  if (ub > upper_bound[j])
-	    upper_bound[j] = ub;
+	  int sign = sgn(g.coefficient(Variable(j)));
+	  if (sign < 0)
+	    lower_bound[j] = LBoundary(ExtendedRational('-'), LBoundary::OPEN);
+	  else if (sign > 0)
+	    upper_bound[j] = UBoundary(ExtendedRational('+'), UBoundary::OPEN);
 	}
+	break;
+      case Generator::POINT:
+      case Generator::CLOSURE_POINT:
+	{
+	  const Integer& d = g.divisor();
+	  for (dimension_type j = space_dim; j-- > 0; ) {
+	    const Integer& n = g.coefficient(Variable(j));
+	    ExtendedRational r(n, d);
+	    LBoundary lb(r,(g_type == Generator::CLOSURE_POINT
+			    ? LBoundary::OPEN
+			    : LBoundary::CLOSED));
+	    if (lb < lower_bound[j])
+	      lower_bound[j] = lb;
+	    UBoundary ub(r, (g_type == Generator::CLOSURE_POINT
+			     ? UBoundary::OPEN
+			     : UBoundary::CLOSED));
+	    if (ub > upper_bound[j])
+	      upper_bound[j] = ub;
+	  }
+	}
+	break;
       }
-      break;
     }
   }
 

@@ -986,9 +986,11 @@ public:
 				const Relation_Operator relop,
 				const LinExpression& rhs);
 
-  //! Use \p *this to shrink a generic, interval-based bounding box.
+  //! Uses \p *this to shrink a generic, interval-based bounding box.
   /*!
-    \param box    The bounding box to be shrunk.
+    \param box         The bounding box to be shrunk.
+    \param polynomial  <CODE>true</CODE> if polynomial execution time
+                       must be guaranteed.
 
     The template class Box must provide the following
     methods, whose return value, if any, is simply ignored.
@@ -1017,7 +1019,7 @@ public:
     The fraction \f$n/d\f$ is in canonical form.
   */
   template <typename Box>
-  void shrink_bounding_box(Box& box) const;
+  void shrink_bounding_box(Box& box, bool polynomial = false) const;
 
   //! Checks if all the invariants are satisfied.
   /*!
