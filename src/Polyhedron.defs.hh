@@ -1491,6 +1491,12 @@ private:
   */
   bool strongly_minimize_generators() const;
 
+  //! \brief
+  //! Copies into \p cs_selection the constraints that will be used
+  //! to compute the \ref H79_widening "H79-widening" of \p *this and \p y.
+  void select_H79_constraints(const Polyhedron& y,
+			      ConSys& cs_selection) const;
+
   //! Checks if and how \p expr is bounded in \p *this.
   /*!
     Returns <CODE>true</CODE> if and only if \p from_above is
