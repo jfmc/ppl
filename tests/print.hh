@@ -9,7 +9,7 @@ using namespace std;
 using namespace Parma_Polyhedra_Library;
 
 inline bool
-easy_print(const PolyBase& ph,
+easy_print(const Polyhedron& ph,
 	   const string& intro = "",
 	   ostream& s = cout) {
   if (!intro.empty())
@@ -51,7 +51,7 @@ print_constraints(const ConSys& cs,
 }
 
 inline void
-print_constraints(const PolyBase& ph,
+print_constraints(const Polyhedron& ph,
 		  const string& intro = "",
 		  ostream& s = cout) {
   if (!easy_print(ph, intro, s))
@@ -84,7 +84,7 @@ print_generators(const GenSys& gs,
 }
 
 inline void
-print_generators(const PolyBase& ph,
+print_generators(const Polyhedron& ph,
 		 const string& intro = "",
 		 ostream& s = cout) {
   if (!easy_print(ph, intro, s))

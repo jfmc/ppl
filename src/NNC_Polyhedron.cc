@@ -24,12 +24,12 @@ site: http://www.cs.unipr.it/ppl/ . */
 #include <config.h>
 
 #include "NNC_Polyhedron.defs.hh"
-#include "Polyhedron.defs.hh"
+#include "C_Polyhedron.defs.hh"
 
 namespace PPL = Parma_Polyhedra_Library;
 
 PPL::NNC_Polyhedron::NNC_Polyhedron(const C_Polyhedron& y)
-  : PolyBase(NOT_NECESSARILY_CLOSED, y.space_dimension(), UNIVERSE) {
+  : Polyhedron(NOT_NECESSARILY_CLOSED, y.space_dimension(), UNIVERSE) {
   ConSys cs = y.constraints();
   add_constraints(cs);
   assert(OK());

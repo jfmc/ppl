@@ -91,7 +91,7 @@ GenSys.types.hh \
 Status.types.hh \
 Poly_Con_Relation.types.hh \
 Poly_Gen_Relation.types.hh \
-PolyBase.types.hh \
+Polyhedron.types.hh \
 C_Polyhedron.types.hh \
 NNC_Polyhedron.types.hh \
 SatRow.defs.hh \
@@ -120,8 +120,8 @@ GenSys.defs.hh \
 GenSys.inlines.hh \
 Status.defs.hh \
 Status.inlines.hh \
-PolyBase.defs.hh \
-PolyBase.inlines.hh \
+Polyhedron.defs.hh \
+Polyhedron.inlines.hh \
 C_Polyhedron.defs.hh \
 C_Polyhedron.inlines.hh \
 NNC_Polyhedron.defs.hh \
@@ -137,7 +137,7 @@ LinExpression.cc \
 Matrix.cc \
 Poly_Con_Relation.cc \
 Poly_Gen_Relation.cc \
-PolyBase.cc \
+Polyhedron.cc \
 C_Polyhedron.cc \
 NNC_Polyhedron.cc \
 Row.cc \
@@ -162,7 +162,7 @@ Generator.types.hh \
 GenSys.types.hh \
 Poly_Con_Relation.types.hh \
 Poly_Gen_Relation.types.hh \
-PolyBase.types.hh \
+Polyhedron.types.hh \
 C_Polyhedron.types.hh \
 NNC_Polyhedron.types.hh \
 Variable.defs.hh \
@@ -173,7 +173,7 @@ Generator.defs.hh \
 GenSys.defs.hh \
 Poly_Con_Relation.defs.hh \
 Poly_Gen_Relation.defs.hh \
-PolyBase.defs.hh \
+Polyhedron.defs.hh \
 C_Polyhedron.defs.hh \
 NNC_Polyhedron.defs.hh
 

@@ -26,7 +26,7 @@ site: http://www.cs.unipr.it/ppl/ . */
 
 #include "C_Polyhedron.types.hh"
 #include "NNC_Polyhedron.types.hh"
-#include "PolyBase.defs.hh"
+#include "Polyhedron.defs.hh"
 
 //! A not necessarily closed convex polyhedron.
 /*!
@@ -45,7 +45,7 @@ site: http://www.cs.unipr.it/ppl/ . */
     are characterized by a more efficient implementation,
     requiring less time and memory resources.
 */
-class Parma_Polyhedra_Library::NNC_Polyhedron : public PolyBase {
+class Parma_Polyhedra_Library::NNC_Polyhedron : public Polyhedron {
 public:
 
   //! Builds either the universe or the empty NNC polyhedron of dimension

@@ -1,4 +1,4 @@
-/* PolyBase class implementation: simplify().
+/* Polyhedron class implementation: simplify().
    Copyright (C) 2001, 2002 Roberto Bagnara <bagnara@cs.unipr.it>
 
 This file is part of the Parma Polyhedra Library (PPL).
@@ -23,13 +23,13 @@ site: http://www.cs.unipr.it/ppl/ . */
 
 #include <config.h>
 
-#include "PolyBase.defs.hh"
+#include "Polyhedron.defs.hh"
 #include "SatMatrix.defs.hh"
 
 namespace PPL = Parma_Polyhedra_Library;
 
 /*!
-  \fn static int PPL::PolyBase::simplify(Matrix& mat, SatMatrix& sat)
+  \fn static int PPL::Polyhedron::simplify(Matrix& mat, SatMatrix& sat)
 				
   \param mat          The matrix to simplify: it will be modified.
   \param sat          The saturation matrix corresponding to \p mat.
@@ -82,7 +82,7 @@ namespace PPL = Parma_Polyhedra_Library;
 */
 
 int
-PPL::PolyBase::simplify(Matrix& mat, SatMatrix& sat) {
+PPL::Polyhedron::simplify(Matrix& mat, SatMatrix& sat) {
   size_t num_rows = mat.num_rows();
   size_t num_columns = mat.num_columns();
   size_t num_cols_sat = sat.num_columns();

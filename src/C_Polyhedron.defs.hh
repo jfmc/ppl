@@ -26,7 +26,7 @@ site: http://www.cs.unipr.it/ppl/ . */
 
 #include "C_Polyhedron.types.hh"
 #include "NNC_Polyhedron.types.hh"
-#include "PolyBase.defs.hh"
+#include "Polyhedron.defs.hh"
 
 //! A necessarily closed convex polyhedron.
 /*!
@@ -54,7 +54,7 @@ site: http://www.cs.unipr.it/ppl/ . */
     the precise topological closure test will be performed.
 */
 
-class Parma_Polyhedra_Library::C_Polyhedron : public PolyBase {
+class Parma_Polyhedra_Library::C_Polyhedron : public Polyhedron {
 public:
 
   //! Builds either the universe or the empty polyhedron of dimension

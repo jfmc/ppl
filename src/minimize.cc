@@ -1,4 +1,4 @@
-/* PolyBase class implementation: minimize() and add_and_minimize().
+/* Polyhedron class implementation: minimize() and add_and_minimize().
    Copyright (C) 2001, 2002 Roberto Bagnara <bagnara@cs.unipr.it>
 
 This file is part of the Parma Polyhedra Library (PPL).
@@ -23,16 +23,16 @@ site: http://www.cs.unipr.it/ppl/ . */
 
 #include <config.h>
 #include "SatMatrix.defs.hh"
-#include "PolyBase.defs.hh"
+#include "Polyhedron.defs.hh"
 #include <stdexcept>
 
 namespace PPL = Parma_Polyhedra_Library;
 
 /*!
-  \fn static bool PPL::PolyBase::minimize(bool con_to_gen,
-                                          Matrix& source,
-					  Matrix& dest,
-				          SatMatrix& sat)
+  \fn static bool PPL::Polyhedron::minimize(bool con_to_gen,
+                                            Matrix& source,
+                                            Matrix& dest,
+                                            SatMatrix& sat)
 
   \param con_to_gen   <CODE>true</CODE> if \p source represents the
                       constraints, <CODE>false</CODE> otherwise.
@@ -63,8 +63,8 @@ namespace PPL = Parma_Polyhedra_Library;
 */
 
 bool
-PPL::PolyBase::minimize(bool con_to_gen,
-			Matrix& source, Matrix& dest, SatMatrix& sat) {
+PPL::Polyhedron::minimize(bool con_to_gen,
+			  Matrix& source, Matrix& dest, SatMatrix& sat) {
   // Topologies have to agree.
   assert(source.topology() == dest.topology());
   // `source' cannot be empty: even if it is an empty constraint system,
@@ -179,11 +179,11 @@ PPL::PolyBase::minimize(bool con_to_gen,
 }
 
 /*!
-  \fn bool PPL::PolyBase::add_and_minimize(bool con_to_gen,
-                                           Matrix& source1,
-                                           Matrix& dest,
-                                           SatMatrix& sat,
-                                           const Matrix& source2)
+  \fn bool PPL::Polyhedron::add_and_minimize(bool con_to_gen,
+                                             Matrix& source1,
+                                             Matrix& dest,
+                                             SatMatrix& sat,
+                                             const Matrix& source2)
 					
   \param con_to_gen   <CODE>true</CODE> if \p source1 and \p source2
                       are matrix of constraints, <CODE>false</CODE> otherwise.
@@ -222,11 +222,11 @@ PPL::PolyBase::minimize(bool con_to_gen,
   will be added to \p source1, it is constant: it will not be modified.
 */
 bool
-PPL::PolyBase::add_and_minimize(bool con_to_gen,
-				Matrix& source1,
-				Matrix& dest,
-				SatMatrix& sat,
-				const Matrix& source2) {
+PPL::Polyhedron::add_and_minimize(bool con_to_gen,
+				  Matrix& source1,
+				  Matrix& dest,
+				  SatMatrix& sat,
+				  const Matrix& source2) {
   // `source1' and `source2' cannot be empty: even if they are empty
   // constraint systems, representing universe polyhedra, homogeneization
   // has added the positive constraint. They also cannot be empty

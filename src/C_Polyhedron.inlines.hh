@@ -29,27 +29,27 @@ namespace Parma_Polyhedra_Library {
 
 inline
 C_Polyhedron::C_Polyhedron(size_t num_dimensions, Degenerate_Kind kind)
-  : PolyBase(NECESSARILY_CLOSED, num_dimensions, kind) {
+  : Polyhedron(NECESSARILY_CLOSED, num_dimensions, kind) {
 }
 
 inline
 C_Polyhedron::C_Polyhedron(ConSys& cs)
-  : PolyBase(NECESSARILY_CLOSED, cs) {
+  : Polyhedron(NECESSARILY_CLOSED, cs) {
 }
 
 inline
 C_Polyhedron::C_Polyhedron(GenSys& gs)
-  : PolyBase(NECESSARILY_CLOSED, gs) {
+  : Polyhedron(NECESSARILY_CLOSED, gs) {
 }
 
 inline
 C_Polyhedron::C_Polyhedron(const C_Polyhedron& y)
-  : PolyBase(y) {
+  : Polyhedron(y) {
 }
 
 inline C_Polyhedron&
 C_Polyhedron::operator=(const C_Polyhedron& y) {
-  PolyBase::operator=(y);
+  Polyhedron::operator=(y);
   return *this;
 }
 

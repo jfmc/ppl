@@ -29,7 +29,7 @@ site: http://www.cs.unipr.it/ppl/ . */
 namespace PPL = Parma_Polyhedra_Library;
 
 PPL::C_Polyhedron::C_Polyhedron(const NNC_Polyhedron& y)
-  : PolyBase(NECESSARILY_CLOSED, y.space_dimension(), UNIVERSE) {
+  : Polyhedron(NECESSARILY_CLOSED, y.space_dimension(), UNIVERSE) {
   // Topology compatibility check.
   if (y.is_topologically_closed()) {
     ConSys cs = y.constraints();
