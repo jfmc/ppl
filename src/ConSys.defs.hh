@@ -149,7 +149,7 @@ PPL_INTERNAL:
   bool satisfies_all_constraints(const Generator& r) const;
 
   //! Substitutes a given column of coefficients by a given affine expression.
-  void substitute_variable(size_t num_var,
+  void substitute_variable(size_t var,
 			   const LinExpression& coefficient,
 			   Integer& denominator);
   

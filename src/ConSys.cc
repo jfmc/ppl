@@ -121,7 +121,7 @@ PPL::ConSys::satisfies_all_constraints(const Generator& r) const {
   is not constant).
 */
 void
-PPL::ConSys::substitute_variable(size_t num_var,
+PPL::ConSys::substitute_variable(size_t var,
 				 const LinExpression& coefficient,
 				 Integer& denominator) {
   ConSys& x = *this;

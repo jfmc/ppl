@@ -216,7 +216,7 @@ PPL::GenSys::satisfy_constraint(const Constraint& c) const {
   is not constant).
 */
 void 
-PPL::GenSys::assign_variable(size_t num_var,
+PPL::GenSys::assign_variable(size_t var,
 			     const LinExpression& coefficient,
 			     Integer& denominator) {
   GenSys& x = *this;
