@@ -1,4 +1,4 @@
-/* Test building an NNC_Polyhedron from a closed interval-based bounding box.
+/* Test building an NNC_Polyhedron from non-closed bounding boxes.
    Copyright (C) 2001-2004 Roberto Bagnara <bagnara@cs.unipr.it>
 
 This file is part of the Parma Polyhedra Library (PPL).
