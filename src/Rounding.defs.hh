@@ -34,7 +34,8 @@ enum Rounding_Dir {
   ROUND_DOWN = FPU_DOWNWARD,
   ROUND_UP = FPU_UPWARD,
   ROUND_IGNORE = -1,
-  ROUND_CURRENT = -2
+  ROUND_CURRENT = -2,
+  ROUND_DEFAULT = ROUND_CURRENT
 };
 
 class Rounding_State {

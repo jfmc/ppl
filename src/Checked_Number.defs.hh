@@ -162,15 +162,15 @@ public:
 
   bool OK() const;
   Result classify(bool nan = true, bool inf = true, bool sign = true) const;
-  Result assign(const Minus_Infinity&, Rounding_Dir dir = ROUND_CURRENT);
-  Result assign(const Plus_Infinity&, Rounding_Dir dir = ROUND_CURRENT);
-  Result assign(const Not_A_Number&, Rounding_Dir dir = ROUND_CURRENT);
+  Result assign(const Minus_Infinity&, Rounding_Dir dir = ROUND_DEFAULT);
+  Result assign(const Plus_Infinity&, Rounding_Dir dir = ROUND_DEFAULT);
+  Result assign(const Not_A_Number&, Rounding_Dir dir = ROUND_DEFAULT);
 
 #define FUNC1(name) \
   template <typename From> \
-  Result name(const From& x, Rounding_Dir dir = ROUND_CURRENT); \
+  Result name(const From& x, Rounding_Dir dir = ROUND_DEFAULT); \
   template <typename From, typename From_Policy> \
-  Result name(const Checked_Number<From, From_Policy>& x, Rounding_Dir dir = ROUND_CURRENT);
+  Result name(const Checked_Number<From, From_Policy>& x, Rounding_Dir dir = ROUND_DEFAULT);
 
   FUNC1(assign)
   FUNC1(assign_neg)
@@ -181,16 +181,16 @@ public:
 
 #define FUNC2(name) \
   template <typename From1, typename From2> \
-  Result name(const From1& x, const From2& y, Rounding_Dir dir = ROUND_CURRENT); \
+  Result name(const From1& x, const From2& y, Rounding_Dir dir = ROUND_DEFAULT); \
   template <typename From1, \
 	    typename From2, typename Policy2> \
-  Result name(const From1& x, const Checked_Number<From2, Policy2>& y, Rounding_Dir dir = ROUND_CURRENT); \
+  Result name(const From1& x, const Checked_Number<From2, Policy2>& y, Rounding_Dir dir = ROUND_DEFAULT); \
   template <typename From1, typename Policy1, \
 	    typename From2> \
-  Result name(const Checked_Number<From1, Policy1>& x, const From2& y, Rounding_Dir dir = ROUND_CURRENT); \
+  Result name(const Checked_Number<From1, Policy1>& x, const From2& y, Rounding_Dir dir = ROUND_DEFAULT); \
   template <typename From1, typename Policy1, \
 	    typename From2, typename Policy2> \
-  Result name(const Checked_Number<From1, Policy1>& x, const Checked_Number<From2, Policy2>& y, Rounding_Dir dir = ROUND_CURRENT);
+  Result name(const Checked_Number<From1, Policy1>& x, const Checked_Number<From2, Policy2>& y, Rounding_Dir dir = ROUND_DEFAULT);
 
   FUNC2(assign_add)
   FUNC2(assign_sub)
@@ -273,6 +273,9 @@ public:
 
   //! Swaps \p *this with \p y.
   void swap(Checked_Number& y);
+
+  static void save_rounding_internal(Rounding_Dir dir, Rounding_State& old);
+  static void restore_rounding_internal(const Rounding_State& old, Rounding_Dir dir);
 
 private:
   //! The underlying native integer value.
