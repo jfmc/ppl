@@ -247,7 +247,8 @@ PPL::GenSys::insert(const Generator& g) {
       // The generator system is NOT necessarily closed:
       // copy the generator, adding the missing dimensions
       // and the epsilon coefficient.
-      dimension_type new_size = 2 + std::max(g.space_dimension(), space_dimension());
+      dimension_type new_size = 2 + std::max(g.space_dimension(),
+					     space_dimension());
       Generator tmp_g(g, new_size);
       // If it was a point, set the epsilon coordinate to 1
       // (i.e., set the coefficient equal to the divisor).

@@ -144,7 +144,8 @@ PPL::ConSys::insert(const Constraint& c) {
       // Here `*this' is NNC and `c' is necessarily closed.
       // Copying the constraint adding the epsilon coefficient
       // and the missing dimensions, if any.
-      dimension_type new_size = 2 + std::max(c.space_dimension(), space_dimension());
+      dimension_type new_size = 2 + std::max(c.space_dimension(),
+					     space_dimension());
       Constraint tmp_c(c, new_size);
       tmp_c.set_not_necessarily_closed();
       Matrix::insert(tmp_c);
