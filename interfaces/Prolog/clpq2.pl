@@ -81,13 +81,17 @@ solve(T, (A; B), PolysIn, PolysOut, VarNames) :-
   % before starting each branch.
   PolysIn = [Poly|_],
   (
-    (ppl_new_Polyhedron_from_Polyhedron(T, Poly, T, Q),
-     cleanup(Q),
-      solve(T, A, [Q|PolysIn], PolysOut, VarNames))
+    (
+      ppl_new_Polyhedron_from_Polyhedron(T, Poly, T, Q),
+      cleanup(Q),
+      solve(T, A, [Q|PolysIn], PolysOut, VarNames)
+    )
   ;
-    (ppl_new_Polyhedron_from_Polyhedron(T, Poly, T, Q),
-     cleanup(Q),
-      solve(T, B, [Q|PolysIn], PolysOut, VarNames))
+    (
+      ppl_new_Polyhedron_from_Polyhedron(T, Poly, T, Q),
+      cleanup(Q),
+      solve(T, B, [Q|PolysIn], PolysOut, VarNames)
+    )
   ).
 
 solve(_, {}, Polys, Polys, _VarNames) :-
@@ -190,7 +194,7 @@ delete_all_polyhedra([Polyhedron|Polyhedra]):-
   ppl_delete_Polyhedron(Polyhedron),
   delete_all_polyhedra(Polyhedra).
 
-cleanup(Polyhedron).
+cleanup(_Polyhedron).
 cleanup(Polyhedron) :-
   ppl_delete_Polyhedron(Polyhedron),
   fail.
