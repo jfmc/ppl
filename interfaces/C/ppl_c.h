@@ -95,6 +95,14 @@ ppl_new_Coefficient_from_mpz_t __P((ppl_Coefficient_t* pc, mpz_t z));
 int
 ppl_delete_Coefficient __P((ppl_const_Coefficient_t c));
 
+/*!
+  Returns a positive integer if \p c is well formed, i.e., if it
+  satisfies all its implementation variant; returns 0 and make some
+  noise if \p c is broken.  Useful for debugging purposes.
+*/
+int
+ppl_Coefficient_OK __P((ppl_const_Coefficient_t c));
+
 
 PPL_TYPE_DECLARATION(LinExpression);
 
@@ -131,10 +139,10 @@ __P((ppl_LinExpression_t dst,
      ppl_const_LinExpression_t src));
 
 /*!
-  Swaps the linear expressions \p a and \p b.
+  Swaps the linear expressions \p x and \p y.
 */
 int
-ppl_swap_LinExpression __P((ppl_LinExpression_t a, ppl_LinExpression_t b));
+ppl_swap_LinExpression __P((ppl_LinExpression_t x, ppl_LinExpression_t y));
 
 /*!
   Adds \p n to the coefficient of variable \p var in the linear
@@ -159,6 +167,14 @@ ppl_LinExpression_add_to_inhomogeneous __P((ppl_LinExpression_t le,
 */
 int
 ppl_LinExpression_space_dimension __P((ppl_const_LinExpression_t le));
+
+/*!
+  Returns a positive integer if \p le is well formed, i.e., if it
+  satisfies all its implementation variant; returns 0 and make some
+  noise if \p le is broken.  Useful for debugging purposes.
+*/
+int
+ppl_LinExpression_OK __P((ppl_const_LinExpression_t le));
 
 
 PPL_TYPE_DECLARATION(Constraint);
@@ -225,10 +241,10 @@ ppl_assign_Constraint_from_Constraint __P((ppl_Constraint_t dst,
 					   ppl_const_Constraint_t src));
 
 /*!
-  Swaps the constraints \p a and \p b.
+  Swaps the constraints \p x and \p y.
 */
 int
-ppl_swap_Constraint __P((ppl_Constraint_t a, ppl_Constraint_t b));
+ppl_swap_Constraint __P((ppl_Constraint_t x, ppl_Constraint_t y));
 
 /*!
   Returns the space dimension of \p c.
@@ -251,6 +267,14 @@ ppl_Constraint_coefficient __P((ppl_const_Constraint_t c,
 int
 ppl_Constraint_inhomogeneous_term __P((ppl_const_Constraint_t c,
 				       ppl_Coefficient_t n));
+
+/*!
+  Returns a positive integer if \p c is well formed, i.e., if it
+  satisfies all its implementation variant; returns 0 and make some
+  noise if \p c is broken.  Useful for debugging purposes.
+*/
+int
+ppl_Cnstraint_OK __P((ppl_const_Constraint_t c));
 
 
 PPL_TYPE_DECLARATION(ConSys);
@@ -299,6 +323,12 @@ int
 ppl_assign_ConSys_from_ConSys __P((ppl_ConSys_t dst, ppl_const_ConSys_t src));
 
 /*!
+  Swaps the constraint systems \p x and \p y.
+*/
+int
+ppl_swap_ConSys __P((ppl_ConSys_t x, ppl_ConSys_t y));
+
+/*!
   Returns the dimension of the vector space enclosing \p *this.
 */
 int
@@ -310,6 +340,14 @@ ppl_ConSys_space_dimension __P((ppl_const_ConSys_t cs));
 */
 int
 ppl_ConSys_insert_Constraint __P((ppl_ConSys_t cs, ppl_const_Constraint_t c));
+
+/*!
+  Returns a positive integer if \p cs is well formed, i.e., if it
+  satisfies all its implementation variant; returns 0 and make some
+  noise if \p cs is broken.  Useful for debugging purposes.
+*/
+int
+ppl_ConSys_OK __P((ppl_const_ConSys_t c));
 
 
 PPL_TYPE_DECLARATION(ConSys__const_iterator);
@@ -376,7 +414,7 @@ int
 ppl_ConSys__const_iterator_increment __P((ppl_ConSys__const_iterator_t cit));
 
 /*!
-  Return a positive integer if the iterators corresponding to \p x and
+  Returns a positive integer if the iterators corresponding to \p x and
   \p y are equal; return 0 if they are different.
 */
 int
@@ -451,10 +489,10 @@ ppl_assign_Generator_from_Generator __P((ppl_Generator_t dst,
 					 ppl_const_Generator_t src));
 
 /*!
-  Swaps the generators \p a and \p b.
+  Swaps the generators \p x and \p y.
 */
 int
-ppl_swap_Generator __P((ppl_Generator_t a, ppl_Generator_t b));
+ppl_swap_Generator __P((ppl_Generator_t x, ppl_Generator_t y));
 
 /*!
   Returns the space dimension of \p g.
@@ -477,6 +515,14 @@ ppl_Generator_coefficient __P((ppl_const_Generator_t g,
 int
 ppl_Generator_divisor __P((ppl_const_Generator_t g,
 			   ppl_Coefficient_t n));
+
+/*!
+  Returns a positive integer if \p g is well formed, i.e., if it
+  satisfies all its implementation variant; returns 0 and make some
+  noise if \p g is broken.  Useful for debugging purposes.
+*/
+int
+ppl_Generator_OK __P((ppl_const_Generator_t g));
 
 
 PPL_TYPE_DECLARATION(GenSys);
@@ -526,6 +572,12 @@ int
 ppl_assign_GenSys_from_GenSys __P((ppl_GenSys_t dst, ppl_const_GenSys_t src));
 
 /*!
+  Swaps the generator systems \p x and \p y.
+*/
+int
+ppl_swap_GenSys __P((ppl_GenSys_t x, ppl_GenSys_t y));
+
+/*!
   Returns the dimension of the vector space enclosing \p *this.
 */
 int
@@ -537,6 +589,14 @@ ppl_GenSys_space_dimension __P((ppl_const_GenSys_t gs));
 */
 int
 ppl_GenSys_insert_Generator __P((ppl_GenSys_t gs, ppl_const_Generator_t g));
+
+/*!
+  Returns a positive integer if \p gs is well formed, i.e., if it
+  satisfies all its implementation variant; returns 0 and make some
+  noise if \p gs is broken.  Useful for debugging purposes.
+*/
+int
+ppl_GenSys_OK __P((ppl_const_GenSys_t c));
 
 
 PPL_TYPE_DECLARATION(GenSys__const_iterator);
@@ -677,6 +737,12 @@ ppl_assign_Polyhedron_from_Polyhedron __P((ppl_Polyhedron_t dst,
 					     ppl_const_Polyhedron_t src));
 
 /*!
+  Swaps the polyhedra \p x and \p y.
+*/
+int
+ppl_swap_Polyhedron __P((ppl_Generator_t x, ppl_Generator_t y));
+
+/*!
   Returns the dimension of the vector space enclosing \p ph.
 */
 int
@@ -773,16 +839,111 @@ ppl_Polyhedron_generators __P((ppl_const_Polyhedron_t ph,
   \p ph.
 */
 int
-ppl_Polyhedron_insert_Constraint __P((ppl_Polyhedron_t ph,
-				      ppl_const_Constraint_t c));
+ppl_Polyhedron_add_constraint __P((ppl_Polyhedron_t ph,
+				   ppl_const_Constraint_t c));
 
 /*!
   Adds a copy of the generator \p g to the system of generatorss of
   \p ph.
 */
 int
-ppl_Polyhedron_insert_Generator __P((ppl_Polyhedron_t ph,
-				     ppl_const_Generator_t g));
+ppl_Polyhedron_add_generator __P((ppl_Polyhedron_t ph,
+				  ppl_const_Generator_t g));
+
+/*!
+  Adds the system of constraints \p cs to the system of constraints of
+  \p ph.
+
+  \warning
+  This function modifies the constraint system referenced by \p cs:
+  upon return, no assumption can be made on its value.
+*/
+int
+ppl_Polyhedron_add_constraints __P((ppl_Polyhedron_t ph, ppl_ConSys_t cs));
+
+/*!
+  Adds the system of constraints \p cs to the system of constraints of
+  \p ph.  Return a positive integer if the resulting polyhedron is
+  non-empty; return 0 if they are different.  Upon successful return,
+  \p ph is guaranteed to be minimized.
+
+  \warning
+  This function modifies the constraint system referenced by \p cs:
+  upon return, no assumption can be made on its value.
+*/
+int
+ppl_Polyhedron_add_constraints_and_minimize __P((ppl_Polyhedron_t ph,
+						 ppl_ConSys_t cs));
+
+/*!
+  Adds the system of generators \p gs to the system of generators of
+  \p ph.
+
+  \warning
+  This function modifies the generator system referenced by \p gs:
+  upon return, no assumption can be made on its value.
+*/
+int
+ppl_Polyhedron_add_generators __P((ppl_Polyhedron_t ph, ppl_GenSys_t gs));
+
+/*!
+  Adds the system of generators \p gs to the system of generators of
+  \p ph.  Upon successful return, \p ph is guaranteed to be minimized.
+
+  \warning
+  This function modifies the generator system referenced by \p gs:
+  upon return, no assumption can be made on its value.
+*/
+int
+ppl_Polyhedron_add_generators_and_minimize __P((ppl_Polyhedron_t ph,
+						ppl_GenSys_t gs));
+
+/*!
+  Adds \p d new dimensions to the space enclosing the polyhedron \p ph
+  and to \p ph itself.
+*/
+int
+ppl_Polyhedron_add_dimensions_and_embed __P((ppl_Polyhedron_t ph,
+					     unsigned int d));
+
+/*!
+  Adds \p d new dimensions to the space enclosing the polyhedron \p ph.
+*/
+int
+ppl_Polyhedron_add_dimensions_and_project __P((ppl_Polyhedron_t ph,
+					       unsigned int d));
+
+/*!
+  Removes from \p ph and its containing space the dimensions that are
+  specified in first \p n positions of the array \p ds.  The presence
+  of duplicates in \p ds is innocuous.
+*/
+int
+ppl_Polyhedron_remove_dimensions __P((ppl_Polyhedron_t ph,
+				      unsigned int ds[],
+				      unsigned int n));
+
+/*!
+  Removes the higher dimensions from \p ph and its enclosing space so
+  that, upon successful return, the new space dimension is \p d.
+*/
+int
+ppl_Polyhedron_remove_higher_dimensions __P((ppl_Polyhedron_t ph,
+					     unsigned int d));
+
+/*!
+  First increases the space dimension of \p ph by adding as many
+  dimensions as is the space dimension of \p cs; then adds to the
+  system of constraints of \p ph a renamed-apart version of the
+  constraints in \p cs.
+
+  \warning
+  This function modifies the constraint system referenced by \p cs:
+  upon return, no assumption can be made on its value.
+*/
+int
+ppl_Polyhedron_add_dimensions_and_constraints __P((ppl_Polyhedron_t ph,
+						   ppl_ConSys_t cs));
 
 /*!
   Transforms the polyhedron \p ph, assigning an affine expression
@@ -866,6 +1027,52 @@ extern unsigned int PPL_POLY_GEN_RELATION_SUBSUMES;
 int
 ppl_Polyhedron_relation_with_Generator __P((ppl_const_Polyhedron_t ph,
 					    ppl_const_Generator_t g));
+
+/*!
+  Returns a positive integer if \p ph is empty; returns 0 if \p ph is
+  not empty.
+*/
+int
+ppl_Polyhedron_check_empty __P((ppl_const_Polyhedron_t ph));
+
+/*!
+  Returns a positive integer if \p ph is a universe polyhedron;
+  returns 0 if it is not.
+*/
+int
+ppl_Polyhedron_check_universe __P((ppl_const_Polyhedron_t ph));
+
+/*!
+  Returns a positive integer if \p ph is bounded; returns 0 if \p ph is
+  unbounded.
+*/
+int
+ppl_Polyhedron_is_bounded __P((ppl_const_Polyhedron_t ph));
+
+/*!
+  Returns a positive integer if \p x contains or is equal to \p y;
+  returns 0 if it does not.
+*/
+int
+ppl_Polyhedron_contains_Polyhedron __P((ppl_const_Polyhedron_t x,
+					ppl_const_Polyhedron_t y));
+
+/*!
+  Returns a positive integer if \p x strictly contains \p y; returns 0
+  if it does not.
+*/
+int
+ppl_Polyhedron_strictly_contains_Polyhedron __P((ppl_const_Polyhedron_t x,
+						 ppl_const_Polyhedron_t y));
+
+/*!
+  Returns a positive integer if \p ph is well formed, i.e., if it
+  satisfies all its implementation variant; returns 0 and make some
+  noise if \p ph is broken.  Useful for debugging purposes.
+*/
+int
+ppl_Polyhedron_OK __P((ppl_const_Polyhedron_t ph));
+
 
 __END_DECLS
 #undef __P

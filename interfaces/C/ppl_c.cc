@@ -21,7 +21,16 @@ USA.
 For the most up-to-date information see the Parma Polyhedra Library
 site: http://www.cs.unipr.it/ppl/ . */
 
-#include "ppl_install.hh"
+
+#include <config.h>
+
+#include "Integer.defs.hh"
+#include "LinExpression.defs.hh"
+#include "Constraint.defs.hh"
+#include "ConSys.defs.hh"
+#include "Generator.defs.hh"
+#include "GenSys.defs.hh"
+#include "Polyhedron.defs.hh"
 #include "ppl_c.h"
 
 using namespace Parma_Polyhedra_Library;
@@ -104,6 +113,13 @@ ppl_delete_Coefficient(ppl_const_Coefficient_t c) try {
 }
 CATCH_ALL
 
+int
+ppl_Coefficient_OK(ppl_const_Coefficient_t /* c */) try {
+  return 1;
+}
+CATCH_ALL
+
+
 DECLARE_CONVERSIONS(LinExpression)
 
 int
@@ -139,8 +155,8 @@ ppl_assign_LinExpression_from_LinExpression(ppl_LinExpression_t dst,
 CATCH_ALL
 
 int
-ppl_swap_LinExpression(ppl_LinExpression_t a, ppl_LinExpression_t b) try {
-  std::swap(*to_nonconst(a), *to_nonconst(b));
+ppl_swap_LinExpression(ppl_LinExpression_t x, ppl_LinExpression_t y) try {
+  std::swap(*to_nonconst(x), *to_nonconst(y));
   return 0;
 }
 CATCH_ALL
@@ -172,6 +188,13 @@ ppl_LinExpression_space_dimension(ppl_const_LinExpression_t le) try {
 }
 CATCH_ALL
 
+int
+ppl_LinExpression_OK(ppl_const_LinExpression_t /* le */) try {
+  return 1;
+}
+CATCH_ALL
+
+
 DECLARE_CONVERSIONS(Constraint)
 
 int
@@ -179,25 +202,25 @@ ppl_new_Constraint(ppl_Constraint_t* pc,
 		   ppl_const_LinExpression_t le,
 		   enum ppl_enum_Constraint_Type t) try {
   Constraint* ppc;
-  const LinExpression& e = *to_const(le);
+  const LinExpression& lle = *to_const(le);
   switch(t) {
   case PPL_CONSTRAINT_TYPE_EQUAL:
-    ppc = new Constraint(e == 0);
+    ppc = new Constraint(lle == 0);
     break;
   case PPL_CONSTRAINT_TYPE_GREATER_THAN_OR_EQUAL:
-    ppc = new Constraint(e >= 0);
+    ppc = new Constraint(lle >= 0);
     break;
 #if 0
   case PPL_CONSTRAINT_TYPE_GREATER_THAN:
-    ppc = new Constraint(e > 0);
+    ppc = new Constraint(lle > 0);
     break;
 #endif
   case PPL_CONSTRAINT_TYPE_LESS_THAN_OR_EQUAL:
-    ppc = new Constraint(e <= 0);
+    ppc = new Constraint(lle <= 0);
     break;
 #if 0
   case PPL_CONSTRAINT_TYPE_LESS_THAN:
-    ppc = new Constraint(e < 0);
+    ppc = new Constraint(lle < 0);
     break;
 #endif
   default:
@@ -241,8 +264,8 @@ ppl_assign_Constraint_from_Constraint(ppl_Constraint_t dst,
 CATCH_ALL
 
 int
-ppl_swap_Constraint(ppl_Constraint_t a, ppl_Constraint_t b) try {
-  std::swap(*to_nonconst(a), *to_nonconst(b));
+ppl_swap_Constraint(ppl_Constraint_t x, ppl_Constraint_t y) try {
+  std::swap(*to_nonconst(x), *to_nonconst(y));
   return 0;
 }
 CATCH_ALL
@@ -271,6 +294,12 @@ ppl_Constraint_inhomogeneous_term(ppl_const_Constraint_t c,
   Integer& nn = *to_nonconst(n);
   nn = cc.coefficient();
   return 0;
+}
+CATCH_ALL
+
+int
+ppl_Constraint_OK(ppl_const_Constraint_t /* c */) try {
+  return 1;
 }
 CATCH_ALL
 
@@ -326,6 +355,13 @@ ppl_assign_ConSys_from_ConSys(ppl_ConSys_t dst, ppl_const_ConSys_t src) try {
 CATCH_ALL
 
 int
+ppl_swap_ConSys(ppl_ConSys_t x, ppl_ConSys_t y) try {
+  std::swap(*to_nonconst(x), *to_nonconst(y));
+  return 0;
+}
+CATCH_ALL
+
+int
 ppl_ConSys_space_dimension(ppl_const_ConSys_t cs) try {
   return to_const(cs)->space_dimension();
 }
@@ -339,6 +375,13 @@ ppl_ConSys_insert_Constraint(ppl_ConSys_t cs, ppl_const_Constraint_t c) try {
   return 0;
 }
 CATCH_ALL
+
+int
+ppl_ConSys_OK(ppl_const_ConSys_t cs) try {
+  return to_const(cs)->OK() ? 1 : 0;
+}
+CATCH_ALL
+
 
 typedef ConSys::const_iterator ConSys__const_iterator;
 DECLARE_CONVERSIONS(ConSys__const_iterator)
@@ -432,21 +475,22 @@ ppl_new_Generator(ppl_Generator_t* pg,
 		  enum ppl_enum_Generator_Type t,
 		  ppl_const_Coefficient_t d) try {
   Generator* ppg;
-  const LinExpression& e = *to_const(le);
+  const LinExpression& lle = *to_const(le);
+  const Coefficient& dd = *to_const(d);
   switch(t) {
   case PPL_GENERATOR_TYPE_POINT:
-    ppg = new Generator(point(e, d));
+    ppg = new Generator(point(lle, dd));
     break;
 #if 0
   case PPL_GENERATOR_TYPE_CLOSURE_POINT:
-    ppg = new Generator(closure_point(e, d));
+    ppg = new Generator(closure_point(lle, dd));
     break;
 #endif
   case PPL_GENERATOR_TYPE_RAY:
-    ppg = new Generator(ray(e));
+    ppg = new Generator(ray(lle));
     break;
   case PPL_GENERATOR_TYPE_LINE:
-    ppg = new Generator(line(e));
+    ppg = new Generator(line(lle));
     break;
   default:
     // FIXME!
@@ -491,8 +535,8 @@ ppl_assign_Generator_from_Generator(ppl_Generator_t dst,
 CATCH_ALL
 
 int
-ppl_swap_Generator(ppl_Generator_t a, ppl_Generator_t b) try {
-  std::swap(*to_nonconst(a), *to_nonconst(b));
+ppl_swap_Generator(ppl_Generator_t x, ppl_Generator_t y) try {
+  std::swap(*to_nonconst(x), *to_nonconst(y));
   return 0;
 }
 CATCH_ALL
@@ -523,6 +567,13 @@ ppl_Generator_divisor(ppl_const_Generator_t g,
   return 0;
 }
 CATCH_ALL
+
+int
+ppl_Generator_OK(ppl_const_Generator_t /* g */) try {
+  return 1;
+}
+CATCH_ALL
+
 
 DECLARE_CONVERSIONS(GenSys)
 
@@ -574,6 +625,13 @@ ppl_assign_GenSys_from_GenSys(ppl_GenSys_t dst, ppl_const_GenSys_t src) try {
 CATCH_ALL
 
 int
+ppl_swap_GenSys(ppl_GenSys_t x, ppl_GenSys_t y) try {
+  std::swap(*to_nonconst(x), *to_nonconst(y));
+  return 0;
+}
+CATCH_ALL
+
+int
 ppl_GenSys_space_dimension(ppl_const_GenSys_t gs) try {
   return to_const(gs)->space_dimension();
 }
@@ -587,6 +645,13 @@ ppl_GenSys_insert_Generator(ppl_GenSys_t gs, ppl_const_Generator_t g) try {
   return 0;
 }
 CATCH_ALL
+
+int
+ppl_GenSys_OK(ppl_const_GenSys_t gs) try {
+  return to_const(gs)->OK() ? 1 : 0;
+}
+CATCH_ALL
+
 
 typedef GenSys::const_iterator GenSys__const_iterator;
 DECLARE_CONVERSIONS(GenSys__const_iterator)
@@ -732,6 +797,13 @@ ppl_assign_Polyhedron_from_Polyhedron(ppl_Polyhedron_t dst,
 CATCH_ALL
 
 int
+ppl_swap_Polyhedron(ppl_Polyhedron_t x, ppl_Polyhedron_t y) try {
+  std::swap(*to_nonconst(x), *to_nonconst(y));
+  return 0;
+}
+CATCH_ALL
+
+int
 ppl_Polyhedron_space_dimension(ppl_const_Polyhedron_t ph) try {
   return to_const(ph)->space_dimension();
 }
@@ -840,8 +912,8 @@ ppl_Polyhedron_generators(ppl_const_Polyhedron_t ph,
 CATCH_ALL
 
 int
-ppl_Polyhedron_insert_Constraint(ppl_Polyhedron_t ph,
-				 ppl_const_Constraint_t c) try {
+ppl_Polyhedron_add_constraint(ppl_Polyhedron_t ph,
+			      ppl_const_Constraint_t c) try {
   Polyhedron& pph = *to_nonconst(ph);
   const Constraint& cc = *to_const(c);
   pph.insert(cc);
@@ -850,11 +922,98 @@ ppl_Polyhedron_insert_Constraint(ppl_Polyhedron_t ph,
 CATCH_ALL
 
 int
-ppl_Polyhedron_insert_Generator(ppl_Polyhedron_t ph,
-				ppl_const_Generator_t g) try {
+ppl_Polyhedron_add_generator(ppl_Polyhedron_t ph,
+			     ppl_const_Generator_t g) try {
   Polyhedron& pph = *to_nonconst(ph);
   const Generator& gg = *to_const(g);
   pph.insert(gg);
+  return 0;
+}
+CATCH_ALL
+
+int
+ppl_Polyhedron_add_constraints(ppl_Polyhedron_t ph, ppl_ConSys_t cs) try {
+  Polyhedron& pph = *to_nonconst(ph);
+  ConSys& ccs = *to_nonconst(cs);
+  pph.add_constraints(ccs);
+  return 0;
+}
+CATCH_ALL
+
+int
+ppl_Polyhedron_add_constraints_and_minimize(ppl_Polyhedron_t ph,
+					    ppl_ConSys_t cs) try {
+  Polyhedron& pph = *to_nonconst(ph);
+  ConSys& ccs = *to_nonconst(cs);
+  return pph.add_constraints_and_minimize(ccs) ? 1 : 0;
+}
+CATCH_ALL
+
+int
+ppl_Polyhedron_add_generators(ppl_Polyhedron_t ph, ppl_GenSys_t gs) try {
+  Polyhedron& pph = *to_nonconst(ph);
+  GenSys& ggs = *to_nonconst(gs);
+  pph.add_generators(ggs);
+  return 0;
+}
+CATCH_ALL
+
+int
+ppl_Polyhedron_add_generators_and_minimize(ppl_Polyhedron_t ph,
+					    ppl_GenSys_t gs) try {
+  Polyhedron& pph = *to_nonconst(ph);
+  GenSys& ggs = *to_nonconst(gs);
+  pph.add_generators_and_minimize(ggs);
+  return 0;
+}
+CATCH_ALL
+
+int
+ppl_Polyhedron_add_dimensions_and_embed(ppl_Polyhedron_t ph,
+					unsigned int d) try {
+  Polyhedron& pph = *to_nonconst(ph);
+  pph.add_dimensions_and_embed(d);
+  return 0;
+}
+CATCH_ALL
+
+int
+ppl_Polyhedron_add_dimensions_and_project(ppl_Polyhedron_t ph,
+					  unsigned int d) try {
+  Polyhedron& pph = *to_nonconst(ph);
+  pph.add_dimensions_and_project(d);
+  return 0;
+}
+CATCH_ALL
+
+int
+ppl_Polyhedron_remove_dimensions(ppl_Polyhedron_t ph,
+				 unsigned int ds[],
+				 unsigned int n) try {
+  Polyhedron& pph = *to_nonconst(ph);
+  std::set<Variable> to_be_removed;
+  for (unsigned int i = 0; i < n; ++i)
+    to_be_removed.insert(Variable(ds[i]));
+  pph.remove_dimensions(to_be_removed);
+  return 0;
+}
+CATCH_ALL
+
+int
+ppl_Polyhedron_remove_higher_dimensions(ppl_Polyhedron_t ph,
+					unsigned int d) try {
+  Polyhedron& pph = *to_nonconst(ph);
+  pph.remove_higher_dimensions(d);
+  return 0;
+}
+CATCH_ALL
+
+int
+ppl_Polyhedron_add_dimensions_and_constraints(ppl_Polyhedron_t ph,
+					      ppl_ConSys_t cs) try {
+  Polyhedron& pph = *to_nonconst(ph);
+  ConSys& ccs = *to_nonconst(cs);
+  pph.add_dimensions_and_constraints(ccs);
   return 0;
 }
 CATCH_ALL
@@ -904,3 +1063,47 @@ ppl_Polyhedron_relation_with_Generator(ppl_const_Polyhedron_t ph,
 }
 CATCH_ALL
 
+int
+ppl_Polyhedron_check_empty(ppl_const_Polyhedron_t ph) try {
+  const Polyhedron& pph = *to_const(ph);
+  return pph.check_empty() ? 1 : 0;
+}
+CATCH_ALL
+
+int
+ppl_Polyhedron_check_universe(ppl_const_Polyhedron_t ph) try {
+  const Polyhedron& pph = *to_const(ph);
+  return pph.check_universe() ? 1 : 0;
+}
+CATCH_ALL
+
+int
+ppl_Polyhedron_is_bounded(ppl_const_Polyhedron_t ph) try {
+  const Polyhedron& pph = *to_const(ph);
+  return pph.is_bounded() ? 1 : 0;
+}
+CATCH_ALL
+
+int
+ppl_Polyhedron_contains_Polyhedron(ppl_const_Polyhedron_t x,
+				   ppl_const_Polyhedron_t y) try {
+  const Polyhedron& xx = *to_const(x);
+  const Polyhedron& yy = *to_const(y);
+  return (xx >= yy) ? 1 : 0;
+}
+CATCH_ALL
+
+int
+ppl_Polyhedron_strictly_contains_Polyhedron(ppl_const_Polyhedron_t x,
+					    ppl_const_Polyhedron_t y) try {
+  const Polyhedron& xx = *to_const(x);
+  const Polyhedron& yy = *to_const(y);
+  return (xx > yy) ? 1 : 0;
+}
+CATCH_ALL
+
+int
+ppl_Polyhedron_OK(ppl_const_Polyhedron_t ph) try {
+  return to_const(ph)->OK(false) ? 1 : 0;
+}
+CATCH_ALL

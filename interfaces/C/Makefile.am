@@ -60,7 +60,7 @@ LIBPPLC_LT_CURRENT =  0
 LIBPPLC_LT_REVISION = 0
 LIBPPLC_LT_AGE =      0
 
-INCLUDES = -I$(top_builddir)/src @extra_includes@
+INCLUDES = -I$(top_srcdir)/src @extra_includes@
 
 CPPFLAGS = -DPPL_INTERNAL=public -DPPL_HIDDEN=public @extra_cpp_flags@
 
