@@ -738,6 +738,11 @@ PPL::Polyhedron::strongly_minimize_constraints() const {
   if (!minimize())
     return false;
 
+#if 1
+  std::cout << "Constraint system before strong minimization" << std::endl;
+  std::cout << con_sys << std::endl;
+#endif
+
   // We also need `sat_g' up-to-date.
   if (!sat_g_is_up_to_date()) {
     assert(sat_c_is_up_to_date());
@@ -853,8 +858,21 @@ PPL::Polyhedron::strongly_minimize_constraints() const {
 	// Maintain boolean flags to later check
 	// if the eps_leq_one constraint is needed.
 	topologically_closed = false;
-	if (strict_inequals_saturate_all_rays)
+	if (strict_inequals_saturate_all_rays) {
 	  strict_inequals_saturate_all_rays = (sat[i] <= sat_lines_and_rays);
+	  if (!strict_inequals_saturate_all_rays) {
+	    std::cout << "STRICT_INEQ_SAT_ALL_RAYS setted to FALSE"
+		      << std::endl;
+	    std::cout << "saturation line: " << sat[i]
+		      << std::endl;
+	    std::cout << "sat_lines_and_ray: " << sat_lines_and_rays
+		      << std::endl;
+	    std::cout << "constraint: " << cs[i]
+		      << std::endl;
+	    std::cout << "generator system: " << std::endl
+		      << gen_sys << std::endl;
+	  }
+	}
 	// Continue with next constraint.
 	++i;
       }
@@ -862,6 +880,19 @@ PPL::Polyhedron::strongly_minimize_constraints() const {
     else
       // `cs[i]' is not a strict inequality: consider next constraint.
       ++i;
+
+#if 1
+  std::cout << std::endl;
+  std::cout << "Constraint system after strong minimization" << std::endl;
+  std::cout << "but before re-inserting the eps_leq_one" << std::endl;
+  std::cout << con_sys << std::endl;
+  std::cout << "Number of significant rows (cs_rows) = "
+	    << cs_rows << std::endl;
+  std::cout << (topologically_closed ? "" : "NOT ")
+	    << "topologically closed" << std::endl;
+  std::cout << (strict_inequals_saturate_all_rays ? "" : "NOT ")
+	    << "strict_inequals_saturate_all_rays" << std::endl;
+#endif
 
   // Now insert the eps_leq_one constraint, if it is needed.
   // It is needed if either the polyhedron is topologically closed
@@ -1250,9 +1281,18 @@ PPL::operator<=(const Polyhedron& x, const Polyhedron& y) {
     for (size_t i = cs.num_rows(); i-- > 0; ) {
       const Constraint& c = cs[i];
       if (c.is_inequality()) {
-	for (size_t j = gs.num_rows(); j-- > 0; )
-	  if (c * gs[j] < 0)
-	    return false;
+	for (size_t j = gs.num_rows(); j-- > 0; ) {
+	  const Generator& g = gs[j];
+	  int sp_sign = sgn(c * g);
+	  if (g.is_line()) {
+	    if (sp_sign != 0)
+	      return false;
+	  }
+	  else
+	    // `g' is a ray or a point.
+	    if (sp_sign < 0)
+	      return false;
+	}
       }
       else
 	// `c' is an equality.
@@ -1268,9 +1308,18 @@ PPL::operator<=(const Polyhedron& x, const Polyhedron& y) {
       const Constraint& c = cs[i];
       switch (c.type()) {
       case Constraint::NONSTRICT_INEQUALITY:
-	for (size_t j = gs.num_rows(); j-- > 0; )
-	  if (reduced_scalar_product(c, gs[j]) < 0)
-	    return false;
+	for (size_t j = gs.num_rows(); j-- > 0; ) {
+	  const Generator& g = gs[j];
+	  int sp_sign = sgn(reduced_scalar_product(c, g));
+	  if (g.is_line()) {
+	    if (sp_sign != 0)
+	      return false;
+	  }
+	  else
+	    // `g' is a ray or a point or a closure point.
+	    if (sp_sign < 0)
+	      return false;
+	}
 	break;
       case Constraint::EQUALITY:
 	for (size_t j = gs.num_rows(); j-- > 0; )
@@ -1289,8 +1338,13 @@ PPL::operator<=(const Polyhedron& x, const Polyhedron& y) {
 	    if (sp_sign <= 0)
 	      return false;
 	  }
-	  else
-	    // The generator is a line, ray or closure point: usual test.
+	  else if (g.is_line()) {
+	    // Lines have to saturate all constraints.
+	    if (sp_sign != 0)
+	      return false;
+	  }
+	  else 
+	    // The generator is a ray or closure point: usual test.
 	    if (sp_sign < 0)
 	      return false;
 	}
@@ -3436,14 +3490,15 @@ PPL::Polyhedron::OK(bool check_not_empty) const {
 #endif
 	goto bomb;
       }
-      else
-	if (!con_sys[0].is_trivial_false()) {
+      if (!con_sys[0].is_trivial_false()) {
 #ifndef NDEBUG
-	  cerr << "Empty polyhedron with a satisfiable system of constraints"
-	       << endl;
+	cerr << "Empty polyhedron with a satisfiable system of constraints"
+	     << endl;
 #endif
-	  goto bomb;
-	}
+	goto bomb;
+      }
+      // Here the polyhedron contains one, trivially false constraint.
+      return true;
     }
   }
 
