@@ -32,7 +32,12 @@ o  The library no longer calls abort(): appropriate exceptions
 o  New method Polyhedron::is_bounded(): it returns true if and only
    if the polyhedron is bounded, i.e., finite.
 
-o  ...
+o  New methos Polyhedron::time_elapse_assign(const Polyhedron&):
+   it computed the time-elapse operation defined in
+
+     N. Halbwachs, Y.-E. Proy, and P. Roumanoff.
+     Verification of real-time systems using linear relation analysis.
+     Formal Methods in System Design, 11(2):157-185, 1997.
 
 
 Bugfixes
