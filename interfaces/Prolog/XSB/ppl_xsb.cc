@@ -110,7 +110,7 @@ Prolog_atom_from_string(const char* s) {
 static inline bool
 Prolog_construct_compound(Prolog_term_ref& t, Prolog_atom f,
 			  Prolog_term_ref a1) {
-  prolog_term new_compound;
+  prolog_term new_compound = 0;
   c2p_functor(f, 1, new_compound);
   p2p_unify(p2p_arg(new_compound, 1), a1);
   t = new_compound;
@@ -124,7 +124,7 @@ Prolog_construct_compound(Prolog_term_ref& t, Prolog_atom f,
 static inline bool
 Prolog_construct_compound(Prolog_term_ref& t, Prolog_atom f,
 			  Prolog_term_ref a1, Prolog_term_ref a2) {
-  prolog_term new_compound;
+  prolog_term new_compound = 0;
   c2p_functor(f, 2, new_compound);
   p2p_unify(p2p_arg(new_compound, 1), a1);
   p2p_unify(p2p_arg(new_compound, 2), a2);
@@ -157,7 +157,7 @@ static inline bool
 Prolog_construct_compound(Prolog_term_ref& t, Prolog_atom f,
 			  Prolog_term_ref a1, Prolog_term_ref a2,
 			  Prolog_term_ref a3, Prolog_term_ref a4) {
-  prolog_term new_compound;
+  prolog_term new_compound = 0;
   c2p_functor(f, 4, new_compound);
   p2p_unify(p2p_arg(new_compound, 1), a1);
   p2p_unify(p2p_arg(new_compound, 2), a2);
@@ -204,6 +204,8 @@ Prolog_raise_exception(Prolog_term_ref t) {
 */
 static inline bool
 Prolog_is_variable(Prolog_term_ref t) {
+  // The following statement is to get around a bug in XSB 2.5.
+  t = p2p_deref(t);
   return is_var(t) != FALSE;
 }
 
@@ -212,6 +214,8 @@ Prolog_is_variable(Prolog_term_ref t) {
 */
 static inline bool
 Prolog_is_atom(Prolog_term_ref t) {
+  // The following statement is to get around a bug in XSB 2.5.
+  t = p2p_deref(t);
   return is_string(t) != FALSE;
 }
 
@@ -220,6 +224,8 @@ Prolog_is_atom(Prolog_term_ref t) {
 */
 static inline bool
 Prolog_is_integer(Prolog_term_ref t) {
+  // The following statement is to get around a bug in XSB 2.5.
+  t = p2p_deref(t);
   return is_int(t) != FALSE;
 }
 
@@ -228,6 +234,8 @@ Prolog_is_integer(Prolog_term_ref t) {
 */
 static inline bool
 Prolog_is_address(Prolog_term_ref t) {
+  // The following statement is to get around a bug in XSB 2.5.
+  t = p2p_deref(t);
   return is_int(t) != FALSE;
 }
 
@@ -236,6 +244,8 @@ Prolog_is_address(Prolog_term_ref t) {
 */
 static inline bool
 Prolog_is_compound(Prolog_term_ref t) {
+  // The following statement is to get around a bug in XSB 2.5.
+  t = p2p_deref(t);
   return is_functor(t) != FALSE;
 }
 
@@ -244,6 +254,8 @@ Prolog_is_compound(Prolog_term_ref t) {
 */
 static inline bool
 Prolog_is_cons(Prolog_term_ref t) {
+  // The following statement is to get around a bug in XSB 2.5.
+  t = p2p_deref(t);
   return is_list(t) != FALSE;
 }
 
@@ -256,6 +268,8 @@ Prolog_is_cons(Prolog_term_ref t) {
 static inline bool
 Prolog_get_long(Prolog_term_ref t, long& v) {
   assert(Prolog_is_integer(t));
+  // The following statement is to get around a bug in XSB 2.5.
+  t = p2p_deref(t);
   v = p2c_int(t);
   return true;
 }
@@ -268,6 +282,8 @@ Prolog_get_long(Prolog_term_ref t, long& v) {
 static inline bool
 Prolog_get_address(Prolog_term_ref t, void*& p) {
   assert(Prolog_is_address(t));
+  // The following statement is to get around a bug in XSB 2.5.
+  t = p2p_deref(t);
   p = reinterpret_cast<void*>(p2c_int(t));
   return true;
 }
@@ -279,6 +295,8 @@ Prolog_get_address(Prolog_term_ref t, void*& p) {
 static inline bool
 Prolog_get_atom_name(Prolog_term_ref t, Prolog_atom& name) {
   assert(Prolog_is_atom(t));
+  // The following statement is to get around a bug in XSB 2.5.
+  t = p2p_deref(t);
   name = p2c_string(t);
   return true;
 }
@@ -292,6 +310,8 @@ static inline bool
 Prolog_get_compound_name_arity(Prolog_term_ref t,
 			       Prolog_atom& name, int& arity) {
   assert(Prolog_is_compound(t));
+  // The following statement is to get around a bug in XSB 2.5.
+  t = p2p_deref(t);
   name = p2c_functor(t);
   arity = p2c_arity(t);
   return true;
