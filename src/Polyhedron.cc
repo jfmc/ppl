@@ -1120,10 +1120,10 @@ PPL::operator<=(const Polyhedron& x, const Polyhedron& y) {
 	  const Generator& g = gs[j];
 	  int sp_sign = sgn(reduced_scalar_product(c, g));
 	  if (g[eps_index] > 0) {
-	    // Generator `g' is a POINT.
-	    // If a _point_ violates OR SATURATES a _strict_ inequality
-	    // (when ignoring the \epsilon coefficients)
-	    // then it is NOT included in the polyhedron.
+	    // Generator `g' is a point.
+	    // If a point violates or saturates a strict inequality
+	    // (when ignoring the epsilon coefficients) then it is
+	    // not included in the polyhedron.
 	    if (sp_sign <= 0)
 	      return false;
 	  }
