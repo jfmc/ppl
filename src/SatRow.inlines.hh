@@ -144,11 +144,11 @@ swap(Parma_Polyhedra_Library::SatRow& x, Parma_Polyhedra_Library::SatRow& y) {
 /*! Specializes <CODE>std::iter_swap</CODE>. */
 /* FIXME: this was the original comment causing a doxygen bug.
   Specializes <CODE>std::iter_swap</CODE>
-  for <CODE>vector<SatRow>::iterator</CODE>.
+  for <CODE>std::vector<SatRow>::iterator</CODE>.
 */
 inline void
-iter_swap(vector<Parma_Polyhedra_Library::SatRow>::iterator x,
-	  vector<Parma_Polyhedra_Library::SatRow>::iterator y) {
+iter_swap(std::vector<Parma_Polyhedra_Library::SatRow>::iterator x,
+	  std::vector<Parma_Polyhedra_Library::SatRow>::iterator y) {
   swap(*x, *y);
 }
 
