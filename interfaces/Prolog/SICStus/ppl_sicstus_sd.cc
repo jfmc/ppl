@@ -295,9 +295,13 @@ ppl_sicstus_init(int /* when */) {
   SP_DEFINE_C_PREDICATE(
              ppl_Polyhedron_bounded_BHRZ03_extrapolation_assign_with_token, 4);
   SP_DEFINE_C_PREDICATE(ppl_Polyhedron_bounded_BHRZ03_extrapolation_assign, 3);
-  SP_DEFINE_C_PREDICATE(ppl_Polyhedron_H79_widening_assign, 2);
   SP_DEFINE_C_PREDICATE(ppl_Polyhedron_H79_widening_assign_with_token, 3);
+  SP_DEFINE_C_PREDICATE(ppl_Polyhedron_H79_widening_assign, 2);
+  SP_DEFINE_C_PREDICATE(
+             ppl_Polyhedron_limited_H79_extrapolation_assign_with_token, 4);
   SP_DEFINE_C_PREDICATE(ppl_Polyhedron_limited_H79_extrapolation_assign, 3);
+  SP_DEFINE_C_PREDICATE(
+             ppl_Polyhedron_bounded_H79_extrapolation_assign_with_token, 4);
   SP_DEFINE_C_PREDICATE(ppl_Polyhedron_bounded_H79_extrapolation_assign, 3);
   SP_DEFINE_C_PREDICATE(ppl_Polyhedron_add_dimensions_and_project, 2);
   SP_DEFINE_C_PREDICATE(ppl_Polyhedron_add_dimensions_and_embed, 2);
