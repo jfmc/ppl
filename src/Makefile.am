@@ -222,8 +222,8 @@ noinst_HEADERS = ppl.hh ppl_install.hh
 BUILT_SOURCES = ppl.hh ppl_install.hh
 
 ppl.hh:	$(DOC_FILES) Makefile
-	cat $(top_builddir)/src/version.hh >ppl.hh
-	(cd $(srcdir) ; cat $(DOC_FILES)) >>ppl.hh
+	cat $(top_builddir)/src/version.hh >$@
+	(cd $(srcdir) ; cat $(DOC_FILES)) >>$@
 
 ppl_install.hh:	ppl_header.top $(top_builddir)/config.h ppl_header.middle $(INCLUDE_FILES) ppl_header.bottom Makefile
 	mkdir -p tmp
@@ -233,10 +233,10 @@ ppl_install.hh:	ppl_header.top $(top_builddir)/config.h ppl_header.middle $(INCL
 	sed -e "/^#include/d" <tmp/concat >tmp/noincludes.cc
 	cat $(srcdir)/ppl_header.top \
 		$(top_builddir)/src/version.hh $(top_builddir)/config.h \
-		$(srcdir)/ppl_header.middle tmp/includes >ppl_install.hh
+		$(srcdir)/ppl_header.middle tmp/includes >$@
 	$(CXXCPP) -I$(srcdir) -P @debug_flag@ tmp/noincludes.cc \
-		>>ppl_install.hh
-	cat $(srcdir)/ppl_header.bottom >>ppl_install.hh
+		>>$@
+	cat $(srcdir)/ppl_header.bottom >>$@
 	rm -rf tmp
 
 # ppl.hh and ppl_install.hh are not distributed.
