@@ -1690,6 +1690,18 @@ private:
   */
   static bool is_BHRZ03_stabilizing(const Polyhedron& x, const Polyhedron& y);
 
+  static bool BHRZ03_averaging_constraints(Polyhedron& x,
+					   const Polyhedron& y,
+					   const ConSys& H79_con_sys);
+
+  static bool BHRZ03_evolving_points(Polyhedron& x,
+				     const Polyhedron& y,
+				     const ConSys& H79_con_sys);
+
+  static bool BHRZ03_evolving_rays(Polyhedron& x,
+				   const Polyhedron& y,
+				   const ConSys& H79_con_sys);
+
   //! @name Exception throwers.
   //@{
   void throw_topology_incompatible(const char* method,

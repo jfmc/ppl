@@ -3595,6 +3595,9 @@ PPL::Polyhedron::is_BHRZ03_stabilizing(const Polyhedron& x,
 #if 0 //#ifndef NDEBUG
     std::cout << "BHRZ03_stabilizing: number of dimensions" << std::endl;
 #endif
+#if PPL_STATISTICS
+    statistics->reason.poly_dim++;
+#endif
     return true;
   }
 
@@ -3612,6 +3615,9 @@ PPL::Polyhedron::is_BHRZ03_stabilizing(const Polyhedron& x,
 #if 0 //#ifndef NDEBUG
     std::cout << "BHRZ03_stabilizing: lineality space" << std::endl;
 #endif
+#if PPL_STATISTICS
+    statistics->reason.lin_space_dim++;
+#endif
     return true;
   }
 
@@ -3622,7 +3628,7 @@ PPL::Polyhedron::is_BHRZ03_stabilizing(const Polyhedron& x,
 
 #if 1
   // Just for debugging.
-  bool stabilizing = true;
+  bool not_stabilizing_due_to_constraints = false;
 #endif
 
 #if NEW_LIMITED_GROWTH_ORDERING
@@ -3632,8 +3638,12 @@ PPL::Polyhedron::is_BHRZ03_stabilizing(const Polyhedron& x,
   // investigation is needed.
   dimension_type x_con_sys_num_rows = x.con_sys.num_rows();
   dimension_type y_con_sys_num_rows = y.con_sys.num_rows();
-  if (x_con_sys_num_rows < y_con_sys_num_rows)
+  if (x_con_sys_num_rows < y_con_sys_num_rows) {
+#if PPL_STATISTICS
+    statistics->reason.num_constraints++;
+#endif
     return true;
+  }
   else if (x_con_sys_num_rows == y_con_sys_num_rows) {
     // Check if a decreasing number of constraints is obtained
     // when disregarding the low-level constraints.
@@ -3645,13 +3655,17 @@ PPL::Polyhedron::is_BHRZ03_stabilizing(const Polyhedron& x,
     for (ConSys::const_iterator i = y.con_sys.begin(),
 	   y_cs_end = y.con_sys.end(); i != y_cs_end; ++i)
       y_con_sys_num_rows++;
-    if (x_con_sys_num_rows < y_con_sys_num_rows)
+    if (x_con_sys_num_rows < y_con_sys_num_rows) {
+#if PPL_STATISTICS
+      statistics->reason.num_constraints++;
+#endif
       return true;
+    }
   }
   else {
     assert(x_con_sys_num_rows > y_con_sys_num_rows);
 #if 1
-    stabilizing = false;
+    not_stabilizing_due_to_constraints = true;
 #else
     return false;
 #endif
@@ -3672,9 +3686,13 @@ PPL::Polyhedron::is_BHRZ03_stabilizing(const Polyhedron& x,
       std::cout << "BHRZ03_stabilizing: number of points" << std::endl;
 #endif
 #if 1
-      if (!stabilizing)
+      if (not_stabilizing_due_to_constraints) {
 	std::cerr << "*";
-      return stabilizing;
+	return false;
+      }
+#endif
+#if PPL_STATISTICS
+      statistics->reason.num_points++;
 #endif
       return true;
     }
@@ -3702,9 +3720,13 @@ PPL::Polyhedron::is_BHRZ03_stabilizing(const Polyhedron& x,
 		<< std::endl;
 #endif
 #if 1
-      if (!stabilizing)
+      if (not_stabilizing_due_to_constraints) {
 	std::cerr << "*";
-      return stabilizing;
+	return false;
+      }
+#endif
+#if PPL_STATISTICS
+      statistics->reason.num_points++;
 #endif
       return true;
     }
@@ -3755,9 +3777,13 @@ PPL::Polyhedron::is_BHRZ03_stabilizing(const Polyhedron& x,
       std::cout << "BHRZ03_stabilizing: zero-coord rays" << std::endl;
 #endif
 #if 1
-      if (!stabilizing)
+      if (not_stabilizing_due_to_constraints) {
 	std::cerr << "*";
-      return stabilizing;
+	return false;
+      }
+#endif
+#if PPL_STATISTICS
+      statistics->reason.zero_coord_rays++;
 #endif
       return true;
     }
@@ -3769,9 +3795,13 @@ PPL::Polyhedron::is_BHRZ03_stabilizing(const Polyhedron& x,
     std::cout << "BHRZ03_stabilizing: same polyhedra" << std::endl;
 #endif
 #if 1
-    if (!stabilizing)
+    if (not_stabilizing_due_to_constraints) {
       std::cerr << "*";
-    return stabilizing;
+      return false;
+    }
+#endif
+#if PPL_STATISTICS
+    statistics->reason.equal++;
 #endif
     return true;
   }
@@ -3780,88 +3810,19 @@ PPL::Polyhedron::is_BHRZ03_stabilizing(const Polyhedron& x,
   return false;
 }
 
-void
-PPL::Polyhedron::BHRZ03_widening_assign(const Polyhedron& y) {
-  Polyhedron& x = *this;
-  // Topology compatibility check.
-  if (x.topology() != y.topology())
-    throw_topology_incompatible("BHRZ03_widening_assign(y)", y);
-  // Dimension-compatibility check.
-  dimension_type x_space_dim = x.space_dim;
-  if (x_space_dim != y.space_dim)
-    throw_dimension_incompatible("BHRZ03_widening_assign(y)", y);
 
-#ifndef NDEBUG
-  {
-    // We assume that y is contained or equal to x.
-    Polyhedron x_copy = x;
-    Polyhedron y_copy = y;
-    assert(y_copy <= x_copy);
-  }
-#endif
-
-  // If any argument is zero-dimensional or empty,
-  // the BHRZ03-widening behaves as the identity function.
-  if (x_space_dim == 0 || x.is_empty() || y.is_empty())
-    return;
-
-  // `x.con_sys' and `x.gen_sys' should be in minimal form.
-  x.minimize();
-
-  // `y.con_sys' and `y.gen_sys' should be in minimal form.
-  if (y.is_necessarily_closed()) {
-    if (!y.minimize())
-      // `y' is empty: the result is `x'.
-      return;
-  }
-  else {
-    // Dealing with a NNC polyhedron.
-    // To obtain a correct reasoning when comparing
-    // the constraints of `x' with the generators of `y',
-    // we enforce the inclusion relation holding between
-    // the two NNC polyhedra `x' and `y' (i.e., `y <= x')
-    // to also hold for the corresponding eps-representations:
-    // this is obtained by intersecting the two eps-representations.
-    Polyhedron& yy = const_cast<Polyhedron&>(y);
-    if (!yy.intersection_assign_and_minimize(x))
-      // `y' is empty: the result is `x'.
-      return;
-  }
-  
-  // If the iteration is stabilizing, the resulting polyhedron is `x'.
-  if (is_BHRZ03_stabilizing(x, y)) {
-#if 0 //#ifndef NDEBUG
-    std::cout << "BHRZ03: immediately stabilizing" << std::endl;
-#endif
-    assert(OK());
-    return;
-  }
-
-  // Copy into `H79_con_sys' the constraints that are common
-  // to `x' and `y', according to the definition of the H79 widening.
-  ConSys H79_con_sys(x.topology());
-  x.select_H79_constraints(y, H79_con_sys);
-  // CHECK ME: why should it be sorted?
-  H79_con_sys.sort_rows();
-
-  // The following heuristics are intrusive: to avoid problems,
-  // we backup the current value of `x'.
-  Polyhedron x_backup = x;
-
-  // ****************
-  // First technique.
-  // ****************
-
-  // We must choose the constraints of `x' that do not belong to
-  // the system of constraints of `y'.
-  // To choose this constraints we use `x.sat_g'
+bool
+PPL::Polyhedron::BHRZ03_averaging_constraints(Polyhedron& x,
+					      const Polyhedron& y,
+					      const ConSys& H79_con_sys) {
+  // Select the constraints in `x.con_sys' that do not belong to `y.con_sys'.
+  // To this end we use `x.sat_g'.
   if (!x.sat_g_is_up_to_date())
     x.update_sat_g();
   dimension_type H79_con_sys_num_rows = H79_con_sys.num_rows();
   dimension_type x_gen_sys_num_rows = x.gen_sys.num_rows();
-  // We built a temporary saturation matrix that contains the
-  // relations between the constraints of `H79_con_sys' and
-  // the generators of `x'.
+  // Build a temporary saturation matrix containing the relations
+  // between `H79_con_sys' and `x.gen_sys'.
   SatMatrix common_sat_g(H79_con_sys_num_rows, x_gen_sys_num_rows);
   for (dimension_type i = H79_con_sys_num_rows; i-- > 0; ) {
     const Constraint& c = H79_con_sys[i];
@@ -3872,16 +3833,16 @@ PPL::Polyhedron::BHRZ03_widening_assign(const Polyhedron& y) {
     }
   }
   common_sat_g.sort_rows();
-
-  // The system of constraints `x_con_sys_minus_y_con_sys' contains
-  // the constraints of `x' that do not belong to `y'.
+  
+  // `x_con_sys_minus_y_con_sys' will contain the constraints of `x'
+  // that do not belong to `y'.
   ConSys x_con_sys_minus_y_con_sys;
   dimension_type x_con_sys_num_rows = x.con_sys.num_rows();
   for (dimension_type i = x_con_sys_num_rows; i-- > 0; )
     if (!x.con_sys[i].is_equality())
       if (!common_sat_g.sorted_contains(x.sat_g[i]))
 	x_con_sys_minus_y_con_sys.insert(x.con_sys[i]);
-
+  
   // The system of constraints of the resulting polyhedron
   // contains the constraints of `H79_con_sys'.
   ConSys new_con_sys = H79_con_sys;
@@ -3972,7 +3933,6 @@ PPL::Polyhedron::BHRZ03_widening_assign(const Polyhedron& y) {
 	      new_con_sys.insert(e > 0);
 	    else
 	      new_con_sys.insert(e >= 0);
-	  
 	}
       }
     }
@@ -3985,28 +3945,33 @@ PPL::Polyhedron::BHRZ03_widening_assign(const Polyhedron& y) {
 
   // Check for stabilization.
   x.minimize();
-  if (is_BHRZ03_stabilizing(x, y)) {
-#if 0 //#ifndef NDEBUG
-    std::cout << "BHRZ03: stabilizing on 1st technique" << std::endl;
-#endif
-    assert(OK(true));
-    return;
-  }
-  
-  // *****************
-  // Second technique.
-  // *****************
+  bool stabilizing = is_BHRZ03_stabilizing(x, y);
 
-  // The first tecnique did not succeeded, possibly modifying `x'.
-  // Thus, we recover the backup copy of `x'.
-  x = x_backup;
-  
+  if (stabilizing) {
+#if 0 //#ifndef NDEBUG
+    std::cout << "BHRZ03: stabilizing on averaging constraints"
+	      << std::endl;
+#endif
+#if PPL_STATISTICS
+    statistics->technique.combining_constraints++;
+#endif
+    assert(x.OK(true));
+  }
+  return stabilizing;
+}
+
+bool
+PPL::Polyhedron::BHRZ03_evolving_points(Polyhedron& x,
+					const Polyhedron& y,
+					const ConSys& H79_con_sys) {
   // For each point in `x.gen_sys' that is not included in `y',
   // this technique identifies a set of rays that subsume this point
   // and do not violate the constraints in `H79_con_sys'.
   // All such rays are kept in `valid_rays'.
   GenSys valid_rays;
 
+  dimension_type x_gen_sys_num_rows = x.gen_sys.num_rows();
+  dimension_type y_gen_sys_num_rows = y.gen_sys.num_rows();
   for (dimension_type i = x_gen_sys_num_rows; i-- > 0; ) {
     Generator& g1 = x.gen_sys[i];
     // For C polyhedra, we choose a point of `x.gen_sys'
@@ -4112,13 +4077,17 @@ PPL::Polyhedron::BHRZ03_widening_assign(const Polyhedron& y) {
     x.add_generators_and_minimize(avg_ray);
   
     // Check for stabilization.
-    if (is_BHRZ03_stabilizing(x, y)) {
+    bool stabilizing = is_BHRZ03_stabilizing(x, y);
+    if (stabilizing) {
 #if 0 //#ifndef NDEBUG
-      std::cout << "BHRZ03: stabilizing on the first case of 2nd technique"
+      std::cout << "BHRZ03: stabilizing on evolving points"
 		<< std::endl;
 #endif
-      assert(OK(true));
-      return;
+#if PPL_STATISTICS
+      statistics->technique.evolving_points++;
+#endif
+      assert(x.OK(true));
+      return true;
     }
   }
 
@@ -4127,24 +4096,29 @@ PPL::Polyhedron::BHRZ03_widening_assign(const Polyhedron& y) {
   // equal to zero, we add all the valid rays to `x' and
   // check for stabilization (which requires minimization).
   x.add_generators_and_minimize(valid_rays);
-
   // Check for stabilization.
-  if (is_BHRZ03_stabilizing(x, y)) {
+  bool stabilizing = is_BHRZ03_stabilizing(x, y);
+
+  if (stabilizing) {
 #if 0 //#ifndef NDEBUG
-    std::cout << "BHRZ03: stabilizing on the second case of 2nd technique"
+    std::cout << "BHRZ03: stabilizing on evolving points"
 	      << std::endl;
 #endif
-    assert(OK(true));
-    return;
+#if PPL_STATISTICS
+    statistics->technique.evolving_points++;
+#endif
+    assert(x.OK(true));
   }
+  return stabilizing;
+}
 
-  // ****************
-  // Third technique.
-  // ****************
-
-  // The second tecnique did not succeeded, possibly modifying `x'.
-  // Thus, we recover the backup copy of `x'.
-  x = x_backup;
+bool
+PPL::Polyhedron::BHRZ03_evolving_rays(Polyhedron& x,
+				      const Polyhedron& y,
+				      const ConSys& H79_con_sys) {
+  dimension_type x_con_sys_num_rows = x.con_sys.num_rows();
+  dimension_type x_gen_sys_num_rows = x.gen_sys.num_rows();
+  dimension_type y_gen_sys_num_rows = y.gen_sys.num_rows();
 
   if (!x.sat_c_is_up_to_date())
     x.sat_c.transpose_assign(x.sat_g);
@@ -4236,21 +4210,121 @@ PPL::Polyhedron::BHRZ03_widening_assign(const Polyhedron& y) {
   // We add the new system of generators `valid_modified_rays'
   // to the polyhedron `x'.
   x.add_generators_and_minimize(valid_modified_rays);
-  
+
   // Check for stabilization.
-  if (is_BHRZ03_stabilizing(x, y)) {
+  bool stabilizing = is_BHRZ03_stabilizing(x, y);
+  if (stabilizing) {
 #if 0 //#ifndef NDEBUG
-    std::cout << "BHRZ03: stabilizing on 3rd technique" << std::endl;
+    std::cout << "BHRZ03: stabilizing on evolving rays"
+	      << std::endl;
 #endif
-    assert(OK(true));
+#if PPL_STATISTICS
+    statistics->technique.evolving_rays++;
+#endif
+    assert(x.OK(true));
+  }
+  return stabilizing;
+}
+
+void
+PPL::Polyhedron::BHRZ03_widening_assign(const Polyhedron& y) {
+  Polyhedron& x = *this;
+  // Topology compatibility check.
+  if (x.topology() != y.topology())
+    throw_topology_incompatible("BHRZ03_widening_assign(y)", y);
+  // Dimension-compatibility check.
+  dimension_type x_space_dim = x.space_dim;
+  if (x_space_dim != y.space_dim)
+    throw_dimension_incompatible("BHRZ03_widening_assign(y)", y);
+
+#ifndef NDEBUG
+  {
+    // We assume that y is contained or equal to x.
+    Polyhedron x_copy = x;
+    Polyhedron y_copy = y;
+    assert(y_copy <= x_copy);
+  }
+#endif
+
+  // If any argument is zero-dimensional or empty,
+  // the BHRZ03-widening behaves as the identity function.
+  if (x_space_dim == 0 || x.is_empty() || y.is_empty()) {
+#if PPL_STATISTICS
+    statistics->reason.zero_dim_or_empty++;
+    statistics->technique.nop++;
+#endif
     return;
   }
 
-  // ****************
-  // Fourth technique.
-  // ****************
+  // `x.con_sys' and `x.gen_sys' should be in minimal form.
+  x.minimize();
+
+  // `y.con_sys' and `y.gen_sys' should be in minimal form.
+  if (y.is_necessarily_closed()) {
+    if (!y.minimize()) {
+      // `y' is empty: the result is `x'.
+#if PPL_STATISTICS
+      statistics->reason.zero_dim_or_empty++;
+      statistics->technique.nop++;
+#endif
+      return;
+    }
+  }
+  else {
+    // Dealing with a NNC polyhedron.
+    // To obtain a correct reasoning when comparing
+    // the constraints of `x' with the generators of `y',
+    // we enforce the inclusion relation holding between
+    // the two NNC polyhedra `x' and `y' (i.e., `y <= x')
+    // to also hold for the corresponding eps-representations:
+    // this is obtained by intersecting the two eps-representations.
+    Polyhedron& yy = const_cast<Polyhedron&>(y);
+    if (!yy.intersection_assign_and_minimize(x)) {
+      // `y' is empty: the result is `x'.
+#if PPL_STATISTICS
+      statistics->reason.zero_dim_or_empty++;
+      statistics->technique.nop++;
+#endif
+      return;
+    }
+  }
   
-  // Try applying the H79 widening.
+  // If the iteration is stabilizing, the resulting polyhedron is `x'.
+  if (is_BHRZ03_stabilizing(x, y)) {
+#if 0 //#ifndef NDEBUG
+    std::cout << "BHRZ03: immediately stabilizing" << std::endl;
+#endif
+#if PPL_STATISTICS
+    statistics->technique.nop++;
+#endif
+    assert(OK());
+    return;
+  }
+
+  // Copy into `H79_con_sys' the constraints that are common
+  // to `x' and `y', according to the definition of the H79 widening.
+  ConSys H79_con_sys(x.topology());
+  x.select_H79_constraints(y, H79_con_sys);
+  // CHECK ME: why should it be sorted?
+  H79_con_sys.sort_rows();
+
+  // The following heuristics are intrusive: to avoid problems,
+  // we backup the current value of `x'.
+  Polyhedron x_backup = x;
+  if (BHRZ03_averaging_constraints(x, y, H79_con_sys))
+    return;
+
+  // Recover the backup copy of `x'.
+  x = x_backup;
+  if (BHRZ03_evolving_points(x, y, H79_con_sys))
+    return;
+
+  // Recover the backup copy of `x'.
+  x = x_backup;
+  if (BHRZ03_evolving_rays(x, y, H79_con_sys))
+    return;
+
+  // Fall back to the H79 widening.
   Polyhedron ph(x.topology(), H79_con_sys);
   std::swap(x, ph);
   // Check for stabilization.
@@ -4259,7 +4333,10 @@ PPL::Polyhedron::BHRZ03_widening_assign(const Polyhedron& y) {
 #if 0 //#ifndef NDEBUG
     std::cout << "BHRZ03: stabilizing on H79 widening" << std::endl;
 #endif
-    assert(OK(true));
+#if PPL_STATISTICS
+    statistics->technique.h79++;
+#endif
+    assert(x.OK(true));
     return;
   }
 
