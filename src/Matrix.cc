@@ -71,7 +71,7 @@ PPL::Matrix::Matrix(size_t num_rows, size_t num_columns)
 PPL::Matrix::Matrix(const Matrix& y)
   : rows(y.rows),
     row_size(y.row_size),
-    row_capacity(y.row_size),
+    row_capacity(Row::compute_capacity(y.row_size)),
     sorted(y.sorted) {
 }
 
