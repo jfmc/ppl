@@ -69,7 +69,9 @@ site: http://www.cs.unipr.it/ppl/ . */
 :- foreign(ppl_Polyhedron_get_generators(+term, +term)).
 :- foreign(ppl_Polyhedron_get_minimized_generators(+term, +term)).
 :- foreign(ppl_Polyhedron_add_constraint(+term, +term)).
+:- foreign(ppl_Polyhedron_add_constraint_and_minimize(+term, +term)).
 :- foreign(ppl_Polyhedron_add_generator(+term, +term)).
+:- foreign(ppl_Polyhedron_add_generator_and_minimize(+term, +term)).
 :- foreign(ppl_Polyhedron_add_constraints(+term, +term)).
 :- foreign(ppl_Polyhedron_add_constraints_and_minimize(+term, +term)).
 :- foreign(ppl_Polyhedron_add_generators(+term, +term)).
@@ -97,4 +99,4 @@ site: http://www.cs.unipr.it/ppl/ . */
 :- foreign(ppl_Polyhedron_strictly_contains_Polyhedron(+term, +term)).
 :- foreign(ppl_Polyhedron_is_disjoint_from_Polyhedron(+term, +term)).
 :- foreign(ppl_Polyhedron_equals_Polyhedron(+term, +term)).
-:- foreign(ppl_Polyhedron_get_bounding_box(+term, +term)).
+:- foreign(ppl_Polyhedron_get_bounding_box(+term, +term, +term)).
