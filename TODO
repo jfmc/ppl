@@ -40,8 +40,6 @@ Enhancements for PPL 0.7
   to have memory-guarded computations.
 - Completely rewrite the handling of temporary coefficients.
 - Consider renaming Powerset::meet_assign().
-- Provide optimized implementations of Polyhedron::expand_dimension()
-  Polyhedron::fold_dimensions().
 
 
 Enhancements for PPL 0.8 or later versions
@@ -54,6 +52,8 @@ Enhancements for PPL 0.8 or later versions
   ftp://ftp.ifor.math.ethz.ch/pub/fukuda/reports/polyunion001120.ps.gz
   we can implement bool poly_hull_assign_if_exact(PH& p, const PH& q),
   temporarily in algorithms.hh, more efficiently.
+- Provide optimized implementations of Polyhedron::expand_dimension()
+  Polyhedron::fold_dimensions().
 
 
 Constructions on Polyhedra
