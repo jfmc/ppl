@@ -92,11 +92,21 @@ Prolog_put_term(Prolog_term_ref& t, Prolog_term_ref u) {
 }
 
 /*!
-  Assign to \p t a Prolog integer with value \p i.
+  Assign to \p t a Prolog integer with value \p l.
 */
 static inline int
-Prolog_put_long(Prolog_term_ref& t, long i) {
-  t = Mk_Integer(i);
+Prolog_put_long(Prolog_term_ref& t, long l) {
+  t = Mk_Integer(l);
+  return 1;
+}
+
+/*!
+  Assign to \p t a Prolog integer with value \p ul.
+*/
+static inline int
+Prolog_put_ulong(Prolog_term_ref& t, unsigned long ul) {
+  // FIXME!
+  t = Mk_Integer(ul);
   return 1;
 }
 
