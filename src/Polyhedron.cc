@@ -1163,6 +1163,9 @@ PPL::Polyhedron::insert(const Generator& g) {
   else
     if (check_empty()) {
       // Polyhedron is empty: we can only insert a vertex.
+      if (g.type() != Generator::VERTEX)
+	throw std::invalid_argument("void PPL::Polyhedron::insert(g): "
+				    "*this is empty and g is not a vertex");
       // FIXME: why do we need the following clear() ?
       // Would not be an assertion sufficient ?
       gen_sys.clear();
