@@ -153,9 +153,13 @@ public:
   //! Swaps \p *this with \p y.
   void swap(Checked_Number& y);
 
+  static void bad_result(Result r);
+  static void check_result(Result r);
+
 private:
   //! The underlying native integer value.
   T v;
+
 };
 
 //! \name Accessor Functions

@@ -28,9 +28,9 @@ site: http://www.cs.unipr.it/ppl/ . */
 
 namespace Parma_Polyhedra_Library {
 
-/*! \relates Checked_Number */
-static void
-bad_result(Result r) {
+template <typename T, typename Policy>
+void
+Checked_Number<T, Policy>::bad_result(Result r) {
   switch (r) {
   case V_NEG_OVERFLOW:
     throw std::overflow_error("Negative overflow.");
@@ -45,15 +45,12 @@ bad_result(Result r) {
   }
 }
 
-namespace {
-
+template <typename T, typename Policy>
 inline void
-check_result(Result r) {
+Checked_Number<T, Policy>::check_result(Result r) {
   if (r != V_EQ)
     bad_result(r);
 }
-
-} // namespace
 
 template <typename T, typename Policy>
 inline
@@ -187,7 +184,7 @@ template <typename T, typename Policy> \
 inline Checked_Number<T, Policy> \
 f(const Checked_Number<T, Policy>& x, const Checked_Number<T, Policy>& y) { \
   T r; \
-  check_result(Checked::fun<Policy>(r, x.raw_value(), y.raw_value(), Rounding(Rounding::IGNORE))); \
+  Checked_Number<T, Policy>::check_result(Checked::fun<Policy>(r, x.raw_value(), y.raw_value(), Rounding(Rounding::IGNORE))); \
   return r; \
 }
 
@@ -202,16 +199,16 @@ template <typename T, typename Policy> \
 inline Checked_Number<T, Policy> \
 f(const type x, const Checked_Number<T, Policy>& y) { \
   T r; \
-  check_result(Checked::assign<Policy>(r, x, Rounding(Rounding::IGNORE))); \
-  check_result(Checked::fun<Policy>(r, r, y.raw_value(), Rounding(Rounding::IGNORE))); \
+  Checked_Number<T, Policy>::check_result(Checked::assign<Policy>(r, x, Rounding(Rounding::IGNORE))); \
+  Checked_Number<T, Policy>::check_result(Checked::fun<Policy>(r, r, y.raw_value(), Rounding(Rounding::IGNORE))); \
   return r; \
 } \
 template <typename T, typename Policy> \
 inline Checked_Number<T, Policy> \
 f(const Checked_Number<T, Policy>& x, const type y) { \
   T r; \
-  check_result(Checked::assign<Policy>(r, y, Rounding(Rounding::IGNORE))); \
-  check_result(Checked::fun<Policy>(r, x.raw_value(), r, Rounding(Rounding::IGNORE))); \
+  Checked_Number<T, Policy>::check_result(Checked::assign<Policy>(r, y, Rounding(Rounding::IGNORE))); \
+  Checked_Number<T, Policy>::check_result(Checked::fun<Policy>(r, x.raw_value(), r, Rounding(Rounding::IGNORE))); \
   return r; \
 }
 
@@ -262,14 +259,14 @@ template <typename T, typename Policy> \
 inline bool \
 f(const type x, const Checked_Number<T, Policy>& y) { \
   T r; \
-  check_result(Checked::assign<Policy>(r, x, Rounding(Rounding::IGNORE))); \
+  Checked_Number<T, Policy>::check_result(Checked::assign<Policy>(r, x, Rounding(Rounding::IGNORE))); \
   return r op y.raw_value(); \
 } \
 template <typename T, typename Policy> \
 inline bool \
 f(const Checked_Number<T, Policy>& x, const type y) { \
   T r; \
-  check_result(Checked::assign<Policy>(r, y, Rounding(Rounding::IGNORE))); \
+  Checked_Number<T, Policy>::check_result(Checked::assign<Policy>(r, y, Rounding(Rounding::IGNORE))); \
   return x.raw_value() op r; \
 }
 
@@ -314,7 +311,7 @@ template <typename T, typename Policy>
 inline Checked_Number<T, Policy>
 operator-(const Checked_Number<T, Policy>& x) {
   T r;
-  check_result(Checked::neg<Policy>(r, x.raw_value(), Rounding(Rounding::IGNORE)));
+  Checked_Number<T, Policy>::check_result(Checked::neg<Policy>(r, x.raw_value(), Rounding(Rounding::IGNORE)));
   return r;
 }
 
@@ -322,21 +319,21 @@ operator-(const Checked_Number<T, Policy>& x) {
 template <typename T, typename Policy> \
 inline void \
 f(Checked_Number<T, Policy>& x) { \
-  check_result(Checked::fun<Policy>(x.raw_value(), x.raw_value(), Rounding(Rounding::IGNORE))); \
+  Checked_Number<T, Policy>::check_result(Checked::fun<Policy>(x.raw_value(), x.raw_value(), Rounding(Rounding::IGNORE))); \
 }
 
 #define DEF_ASSIGN_FUN2_2(f, fun) \
 template <typename T, typename Policy> \
 inline void \
 f(Checked_Number<T, Policy>& x, const Checked_Number<T, Policy>& y) { \
-  check_result(Checked::fun<Policy>(x.raw_value(), y.raw_value(), Rounding(Rounding::IGNORE))); \
+  Checked_Number<T, Policy>::check_result(Checked::fun<Policy>(x.raw_value(), y.raw_value(), Rounding(Rounding::IGNORE))); \
 }
 
 #define DEF_ASSIGN_FUN3_2(f, fun) \
 template <typename T, typename Policy> \
 inline void \
 f(Checked_Number<T, Policy>& x, const Checked_Number<T, Policy>& y) { \
-  check_result(Checked::fun<Policy>(x.raw_value(), x.raw_value(), y.raw_value(), Rounding(Rounding::IGNORE))); \
+  Checked_Number<T, Policy>::check_result(Checked::fun<Policy>(x.raw_value(), x.raw_value(), y.raw_value(), Rounding(Rounding::IGNORE))); \
 }
 
 #define DEF_ASSIGN_FUN3_3(f, fun) \
@@ -344,7 +341,7 @@ template <typename T, typename Policy> \
 inline void \
 f(Checked_Number<T, Policy>& x, \
   const Checked_Number<T, Policy>& y, const Checked_Number<T, Policy>& z) { \
-  check_result(Checked::fun<Policy>(x.raw_value(), y.raw_value(), z.raw_value(), Rounding(Rounding::IGNORE))); \
+  Checked_Number<T, Policy>::check_result(Checked::fun<Policy>(x.raw_value(), y.raw_value(), z.raw_value(), Rounding(Rounding::IGNORE))); \
 }
 
 DEF_ASSIGN_FUN2_1(sqrt_assign, sqrt)
@@ -405,14 +402,14 @@ cmp(const Checked_Number<T, Policy>& x, const Checked_Number<T, Policy>& y) {
 template <typename T, typename Policy>
 inline std::ostream&
 operator<<(std::ostream& os, const Checked_Number<T, Policy>& x) {
-  Checked::print<Policy>(os, x.raw_value(), Numeric_Format(), Rounding(Rounding::IGNORE));
+  Checked_Number<T, Policy>::check_result(Checked::print<Policy>(os, x.raw_value(), Numeric_Format(), Rounding(Rounding::IGNORE)));
   return os;
 }
 
 /*! \relates Checked_Number */
 template <typename T, typename Policy>
 inline std::istream& operator>>(std::istream& is, Checked_Number<T, Policy>& x) {
-  check_result(Checked::input<Policy>(is, x.raw_value(), Rounding(Rounding::IGNORE)));
+  Checked_Number<T, Policy>::check_result(Checked::input<Policy>(is, x.raw_value(), Rounding(Rounding::IGNORE)));
   return is;
 }
 
