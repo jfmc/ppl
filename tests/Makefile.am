@@ -28,6 +28,11 @@ VPATH = @srcdir@
 
 SUBDIRS =
 
+CHECKER =
+#CHECKER = valgrind --tool=memcheck -q --trace-children=yes --leak-check=yes --num-callers=100 --leak-resolution=high --suppressions=$(srcdir)/valgrind_suppressions
+
+TESTS_ENVIRONMENT = $(CHECKER)
+
 AM_CPPFLAGS = \
 -I$(top_builddir)/src \
 -I$(top_srcdir)/utils \
