@@ -35,7 +35,8 @@ SatMatrix::SatMatrix()
 }
 
 inline
-SatMatrix::SatMatrix(dimension_type n_rows, dimension_type n_columns)
+SatMatrix::SatMatrix(const dimension_type n_rows,
+		     const dimension_type n_columns)
   : rows(n_rows),
     row_size(n_columns) {
 }
@@ -51,7 +52,7 @@ SatMatrix::~SatMatrix() {
 }
 
 inline void
-SatMatrix::rows_erase_to_end(dimension_type first_to_erase) {
+SatMatrix::rows_erase_to_end(const dimension_type first_to_erase) {
   // The first row to be erased cannot be greater
   // than the actual number of the rows of the matrix.
   assert(first_to_erase <= rows.size());
@@ -61,7 +62,7 @@ SatMatrix::rows_erase_to_end(dimension_type first_to_erase) {
 }
 
 inline void
-SatMatrix::columns_erase_to_end(dimension_type first_to_erase) {
+SatMatrix::columns_erase_to_end(const dimension_type first_to_erase) {
   // The first column to be erased cannot be greater
   // than the actual number of the columns of the matrix.
   assert(first_to_erase <= row_size);
@@ -76,13 +77,13 @@ SatMatrix::swap(SatMatrix& y) {
 }
 
 inline SatRow&
-SatMatrix::operator[](dimension_type k) {
+SatMatrix::operator[](const dimension_type k) {
   assert(k < rows.size());
   return rows[k];
 }
 
 inline const SatRow&
-SatMatrix::operator[](dimension_type k) const {
+SatMatrix::operator[](const dimension_type k) const {
   assert(k < rows.size());
   return rows[k];
 }

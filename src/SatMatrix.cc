@@ -54,7 +54,7 @@ PPL::SatMatrix::sort_rows() {
 
 void
 PPL::SatMatrix::add_row(const SatRow& row) {
-  dimension_type new_rows_size = rows.size() + 1;
+  const dimension_type new_rows_size = rows.size() + 1;
   if (rows.capacity() < new_rows_size) {
     // Reallocation will take place.
     std::vector<SatRow> new_rows;
@@ -78,8 +78,8 @@ PPL::SatMatrix::add_row(const SatRow& row) {
 void
 PPL::SatMatrix::transpose() {
   const SatMatrix& x = *this;
-  dimension_type nrows = num_rows();
-  dimension_type ncols = num_columns();
+  const dimension_type nrows = num_rows();
+  const dimension_type ncols = num_columns();
   SatMatrix tmp(ncols, nrows);
   for (dimension_type i = nrows; i-- > 0; )
     for (int j = x[i].last(); j >= 0; j = x[i].prev(j))
@@ -90,8 +90,8 @@ PPL::SatMatrix::transpose() {
 
 void
 PPL::SatMatrix::transpose_assign(const SatMatrix& y) {
-  dimension_type y_nrows = y.num_rows();
-  dimension_type y_ncols = y.num_columns();
+  const dimension_type y_nrows = y.num_rows();
+  const dimension_type y_ncols = y.num_columns();
   SatMatrix tmp(y_ncols, y_nrows);
   for (dimension_type i = y_nrows; i-- > 0; )
     for (int j = y[i].last(); j >= 0; j = y[i].prev(j))
@@ -104,9 +104,10 @@ void
 PPL::SatMatrix::resize(dimension_type new_n_rows,
 		       dimension_type new_n_columns) {
   assert(OK());
-  dimension_type old_num_rows = num_rows();
+  const dimension_type old_num_rows = num_rows();
   if (new_n_columns < row_size) {
-    dimension_type num_preserved_rows = std::min(old_num_rows, new_n_rows);
+    const dimension_type num_preserved_rows
+      = std::min(old_num_rows, new_n_rows);
     SatMatrix& x = *this;
     for (dimension_type i = num_preserved_rows; i-- > 0; )
       x[i].clear_from(new_n_columns);
@@ -140,7 +141,7 @@ PPL::SatMatrix::sorted_contains(const SatRow& row) const {
   assert(check_sorted());
   const SatMatrix& x = *this;
   for (dimension_type i = num_rows(); i-- > 0; ) {
-    int comp = compare(x[i], row);
+    const int comp = compare(x[i], row);
     if (comp == 0)
       return true;
     else if (comp < 0)
