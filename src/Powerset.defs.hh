@@ -61,6 +61,30 @@ operator<<(std::ostream& s, const Powerset<CS>& x);
   This class offers a generic implementation of <EM>powerset
   constraint systems</EM> as defined in \ref Bag98 "[Bag98]".
   See also the description in Section \ref powerset.
+
+  Besides invoking the available methods on a Powerset element,
+  this class also provides bidirectional iterators that allow for
+  a direct inspection of the disjuncts. For a consistent handling
+  of Omega-reduction, all the iterators are <EM>read-only</EM>,
+  meaning that the disjuncts can not be overwritten. Rather,
+  by using class <CODE>iterator</CODE>, it is possible to drop
+  one or more disjuncts (to later add back the modified versions).
+  As an example of iterator usage, the following templatic function
+  drops from powerset \p ps all the disjuncts that would have become
+  redundant by the addition of the external element \p d.
+
+  \code
+template <typename CS>
+void
+drop_subsumed(Powerset<CS>& ps, const CS& d) {
+  for (typename Powerset<CS>::iterator i = ps.begin(),
+         ps_end = ps.end(), i != ps_end; )
+    if (i->definitely_entails(d))
+      i = ps.drop_disjunct(i);
+    else
+      ++i;
+}
+  \endcode
 */
 template <typename CS>
 class Parma_Polyhedra_Library::Powerset {
@@ -68,6 +92,7 @@ public:
   //! \name Constructors and Destructor
   //@{
 
+  //! \brief
   //! Default constructor: builds the bottom of the powerset constraint
   //! system (i.e., the empty powerset).
   Powerset();
@@ -130,7 +155,11 @@ protected:
     in any position and efficient back insertion.
   */
   typedef std::list<CS> Sequence;
+
+  //! Alias for the low-level iterator on the disjuncts. 
   typedef typename Sequence::iterator Sequence_iterator;
+
+  //! Alias for the low-level const_iterator on the disjuncts. 
   typedef typename Sequence::const_iterator Sequence_const_iterator;
 
   //! The sequence container holding powerset's elements.
@@ -288,6 +317,13 @@ private:
   void collapse(Sequence_iterator sink);
 };
 
+#ifdef PPL_DOXYGEN_INCLUDE_IMPLEMENTATION_DETAILS
+//! A const_iterator on the disjuncts of a Powerset element.
+/*!
+  This class implements a read-only bidirectional iterator
+  on the sequence of disjuncts.
+*/
+#endif // PPL_DOXYGEN_INCLUDE_IMPLEMENTATION_DETAILS
 template <typename CS>
 class Parma_Polyhedra_Library::Powerset<CS>::const_iterator {
 protected:
@@ -351,6 +387,25 @@ public:
   bool operator!=(const const_iterator& y) const;
 };
 
+#ifdef PPL_DOXYGEN_INCLUDE_IMPLEMENTATION_DETAILS
+//! An iterator on the disjuncts of a Powerset element.
+/*!
+  This class implements a <EM>read-only</EM> bidirectional iterator
+  on the sequence of disjuncts. That is, by using an instance of
+  this iterator class it is not possible to overwrite the disjuncts
+  contained in a Powerset element. However, using such an instance
+  allows for the removal of disjuncts by using methods
+  <CODE>Powerset::drop_disjunct(iterator position)</CODE> and
+  <CODE>Powerset::drop_disjuncts(iterator first, iterator last)</CODE>.
+  Such a policy is needed to allow for a reliable use of the Boolean
+  flag <CODE>Powerset::reduced</CODE>.
+
+  \note
+  For any developers' need, (low-level) iterators on the sequence of
+  disjuncts are still available by accessing the protected member
+  <CODE>Powerset::sequence</CODE>.
+*/
+#endif // PPL_DOXYGEN_INCLUDE_IMPLEMENTATION_DETAILS
 template <typename CS>
 class Parma_Polyhedra_Library::Powerset<CS>::iterator {
 protected:
@@ -413,6 +468,32 @@ public:
   //! \p *this and \p y are different.
   bool operator!=(const iterator& y) const;
 };
+
+namespace Parma_Polyhedra_Library {
+
+#ifdef PPL_DOXYGEN_INCLUDE_IMPLEMENTATION_DETAILS
+//! \brief
+//! Mixed comparison operator: returns <CODE>true</CODE> if and only
+//! if (the const version of) \p x is identical to \p y.
+/*! \relates Powerset::const_iterator */
+#endif // PPL_DOXYGEN_INCLUDE_IMPLEMENTATION_DETAILS
+template <typename CS>
+bool
+operator==(const typename Powerset<CS>::iterator& x,
+	   const typename Powerset<CS>::const_iterator& y);
+
+#ifdef PPL_DOXYGEN_INCLUDE_IMPLEMENTATION_DETAILS
+//! \brief
+//! Mixed comparison operator: returns <CODE>true</CODE> if and only
+//! if (the const version of) \p x is different from \p y.
+/*! \relates Powerset::const_iterator */
+#endif // PPL_DOXYGEN_INCLUDE_IMPLEMENTATION_DETAILS
+template <typename CS>
+bool
+operator!=(const typename Powerset<CS>::iterator& x,
+	   const typename Powerset<CS>::const_iterator& y);
+
+} // namespace Parma_Polyhedra_Library
 
 namespace std {
 

@@ -180,6 +180,22 @@ Powerset<CS>::const_iterator::const_iterator(const iterator& y)
   : base(y.base) {
 }
 
+/*! \relates Powerset::const_iterator */
+template <typename CS>
+inline bool
+operator==(const typename Powerset<CS>::iterator& x,
+	   const typename Powerset<CS>::const_iterator& y) {
+  return Powerset<CS>::const_iterator(x).operator==(y);
+}
+
+/*! \relates Powerset::const_iterator */
+template <typename CS>
+inline bool
+operator!=(const typename Powerset<CS>::iterator& x,
+	   const typename Powerset<CS>::const_iterator& y) {
+  return !(x == y);
+}
+
 template <typename CS>
 inline typename Powerset<CS>::iterator
 Powerset<CS>::begin() {
