@@ -44,7 +44,7 @@ site: http://www.cs.unipr.it/ppl/ . */
 :- foreign(ppl_Polyhedron_poly_difference_assign(+term, +term)).
 :- foreign(ppl_Polyhedron_time_elapse_assign(+term, +term)).
 :- foreign(ppl_Polyhedron_BHRZ03_widening_assign(+term, +term)).
-:- foreign(ppl_Polyhedron_BHRZ03_widening_assign_with_tokens(+term,
+:- foreign(ppl_Polyhedron_BHRZ03_widening_assign_with_token(+term,
 							     +term,
 							     +term)).
 :- foreign(ppl_Polyhedron_limited_BHRZ03_extrapolation_assign(+term,
@@ -54,12 +54,15 @@ site: http://www.cs.unipr.it/ppl/ . */
 							      +term,
 							      +term)).
 :- foreign(ppl_Polyhedron_H79_widening_assign(+term, +term)).
-:- foreign(ppl_Polyhedron_H79_widening_assign_with_tokens(+term,
+:- foreign(ppl_Polyhedron_H79_widening_assign_with_token(+term,
 							     +term,
 							     +term)).
 :- foreign(ppl_Polyhedron_limited_H79_extrapolation_assign(+term,
 							   +term,
 							   +term)).
+:- foreign(ppl_Polyhedron_bounded_H79_extrapolation_assign(+term,
+							      +term,
+							      +term)).
 :- foreign(ppl_Polyhedron_topological_closure_assign(+term)).
 :- foreign(ppl_Polyhedron_get_constraints(+term, +term)).
 :- foreign(ppl_Polyhedron_get_minimized_constraints(+term, +term)).
