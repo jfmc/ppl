@@ -257,7 +257,7 @@ PPL::GenSys::relation_with(const Constraint& c) const {
          {denominator}.
   \f]
 
-  \p expr is a constant parameter and unaltered by this computation
+  \p expr is a constant parameter and unaltered by this computation.
 */
 void
 PPL::GenSys::affine_image(size_t v,

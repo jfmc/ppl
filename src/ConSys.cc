@@ -113,7 +113,7 @@ PPL::ConSys::satisfies_all_constraints(const Generator& g) const {
     \end{cases}
   \f]
 
-  \p expr is a constant parameter and unaltered by this computation
+  \p expr is a constant parameter and unaltered by this computation.
 */
 void
 PPL::ConSys::affine_preimage(size_t v,
