@@ -145,6 +145,12 @@ operator==(const LinExpression& e1, const LinExpression& e2) {
   LinExpression diff = e1 - e2;
   Constraint c(diff);
   c.set_is_equality();
+  // Enforcing normalization.
+#if EXTRA_NORMALIZATION
+  c.strongly_normalize();
+#else
+  c.normalize();
+#endif
   return c;
 }
 
@@ -153,6 +159,8 @@ operator>=(const LinExpression& e1, const LinExpression& e2) {
   LinExpression diff = e1 - e2;
   Constraint c(diff);
   c.set_is_inequality();
+  // Enforcing normalization.
+  c.normalize();
   return c;
 }
 
@@ -160,6 +168,7 @@ inline Constraint
 operator>(const LinExpression& e1, const LinExpression& e2) {
   LinExpression diff = e1 - e2;
   // Setting the \epsilon coefficient to -1.
+  // NOTE: this also enforces normalization.
   diff += - Variable(diff.space_dimension());
   Constraint c(diff);
   // FIXME: provide a single istruction for setting both at once.
@@ -173,6 +182,12 @@ operator==(const Integer& n, const LinExpression& e) {
   LinExpression diff = n - e;
   Constraint c(diff);
   c.set_is_equality();
+  // Enforcing normalization.
+#if EXTRA_NORMALIZATION
+  c.strongly_normalize();
+#else
+  c.normalize();
+#endif
   return c;
 }
 
@@ -181,12 +196,15 @@ operator>=(const Integer& n, const LinExpression& e) {
   LinExpression diff = n - e;
   Constraint c(diff);
   c.set_is_inequality();
+  // Enforcing normalization.
+  c.normalize();
   return c;
 }
 
 inline Constraint
 operator>(const Integer& n, const LinExpression& e) {
   // Setting the \epsilon coefficient to -1.
+  // NOTE: this also enforces normalization.
   LinExpression diff = n - e - Variable(e.space_dimension());
   Constraint c(diff);
   // FIXME: provide a single istruction for setting both at once.
@@ -200,6 +218,12 @@ operator==(const LinExpression& e, const Integer& n) {
   LinExpression diff = e - n;
   Constraint c(diff);
   c.set_is_equality();
+  // Enforcing normalization.
+#if EXTRA_NORMALIZATION
+  c.strongly_normalize();
+#else
+  c.normalize();
+#endif
   return c;
 }
 
@@ -208,12 +232,15 @@ operator>=(const LinExpression& e, const Integer& n) {
   LinExpression diff = e - n;
   Constraint c(diff);
   c.set_is_inequality();
+  // Enforcing normalization.
+  c.normalize();
   return c;
 }
 
 inline Constraint
 operator>(const LinExpression& e, const Integer& n) {
   // Setting the \epsilon coefficient to -1.
+  // NOTE: this also enforces normalization.
   LinExpression diff = e - n - Variable(e.space_dimension());
   Constraint c(diff);
   // FIXME: provide a single istruction for setting both at once.

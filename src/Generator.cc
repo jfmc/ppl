@@ -67,6 +67,8 @@ PPL::point(const LinExpression& e, const Integer& d) {
       negate(g[i]);
 
   g.set_is_ray_or_point();
+  // Enforcing normalization.
+  g.normalize();
   return g;
 }
 
@@ -81,6 +83,8 @@ PPL::closure_point(const LinExpression& e, const Integer& d) {
   Generator g = point(ec, d);
   // Setting the topology kind.
   g.set_not_necessarily_closed();
+  // Enforcing normalization.
+  g.normalize();
   return g;
 }
 
@@ -94,6 +98,8 @@ PPL::ray(const LinExpression& e) {
   Generator g(ec);
   g[0] = 0;
   g.set_is_ray_or_point();
+  // Enforcing normalization.
+  g.normalize();
   return g;
 }
 
@@ -107,6 +113,12 @@ PPL::line(const LinExpression& e) {
   Generator g(ec);
   g[0] = 0;
   g.set_is_line();
+  // Enforcing normalization.
+#if EXTRA_NORMALIZATION
+  g.strongly_normalize();
+#else
+  g.normalize();
+#endif
   return g;
 }
 
