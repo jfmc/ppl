@@ -306,8 +306,8 @@ Polyhedron::Polyhedron(Topology topol, const Box& box)
     }
 
     // See if we have a valid lower bound.
-    bool l_bounded;
-    bool l_closed;
+    bool l_bounded = false;
+    bool l_closed = false;
     Integer l_n, l_d;
     if (box.get_lower_bound(k, l_closed, l_n, l_d)) {
       l_bounded = true;
@@ -315,12 +315,10 @@ Polyhedron::Polyhedron(Topology topol, const Box& box)
 	throw_generic("C_Polyhedron(const Box& box)",
 		      "box has non closed interval(s)");
     }
-    else
-      l_bounded = false;
 
     // See if we have a valid upper bound.
-    bool u_bounded;
-    bool u_closed;
+    bool u_bounded = false;
+    bool u_closed = false;
     Integer u_n, u_d;
     if (box.get_lower_bound(k, u_closed, u_n, u_d)) {
       u_bounded = true;
@@ -328,8 +326,6 @@ Polyhedron::Polyhedron(Topology topol, const Box& box)
 	throw_generic("C_Polyhedron(const Box& box)",
 		      "box has non closed interval(s)");
     }
-    else
-      u_bounded = false;
 
     // See if we have an implicit equality constraint.
     if (l_bounded && u_bounded
