@@ -2115,8 +2115,10 @@ PPL::Polyhedron::add_constraints(ConSys& cs) {
     throw_dimension_incompatible("add_constraints(cs)", cs);
 
   // Adding no constraints is a no-op.
-  if (cs.num_rows() == 0)
+  if (cs.num_rows() == 0) {
+    assert(cs.num_columns() == 0);
     return;
+  }
 
   if (space_dim == 0) {
     // In a 0-dimensional space the constraints are
@@ -2132,7 +2134,7 @@ PPL::Polyhedron::add_constraints(ConSys& cs) {
   }
 
   // We only need that the system of constraints is up-to-date.
-  if (!constraints_are_up_to_date() && !minimize())
+  if (is_empty() || !constraints_are_up_to_date() && !minimize())
     // We have just discovered that `*this' is empty, and adding
     // constraints to an empty polyhedron is a no-op.
     return;
