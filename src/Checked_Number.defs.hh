@@ -163,10 +163,10 @@ template <typename T, typename Policy>
 void negate(Checked_Number<T, Policy>& x);
 
 template <typename T, typename Policy>
-void add_assign_mul(Checked_Number<T, Policy>& x, const Checked_Number<T, Policy> REF y, const Checked_Number<T, Policy> REF z);
+void add_mul_assign(Checked_Number<T, Policy>& x, const Checked_Number<T, Policy> REF y, const Checked_Number<T, Policy> REF z);
 
 template <typename T, typename Policy>
-void sub_assign_mul(Checked_Number<T, Policy>& x, const Checked_Number<T, Policy> REF y, const Checked_Number<T, Policy> REF z);
+void sub_mul_assign(Checked_Number<T, Policy>& x, const Checked_Number<T, Policy> REF y, const Checked_Number<T, Policy> REF z);
 
 template <typename T, typename Policy>
 void gcd_assign(Checked_Number<T, Policy>& x, const Checked_Number<T, Policy> REF y);

@@ -26,7 +26,7 @@ site: http://www.cs.unipr.it/ppl/ . */
 
 #include "BHRZ03_Certificate.types.hh"
 #include "Polyhedron.types.hh"
-#include "globals.hh"
+#include "globals.defs.hh"
 #include <cassert>
 #include <vector>
 
@@ -61,7 +61,8 @@ public:
     is smaller than, equal to, or greater than \p y, respectively.
 
     Compares \p *this with \p y, using a total ordering which is a
-    refinement of the lgo relation for the BHRZ03 widening.
+    refinement of the limited growth ordering relation for the
+    BHRZ03 widening.
   */
   int compare(const BHRZ03_Certificate& y) const;
 

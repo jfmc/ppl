@@ -383,7 +383,7 @@ PPL::GenSys::relation_with(const Constraint& c) const {
 
       for (dimension_type i = n_rows; i-- > 0; ) {
 	const Generator& g = gs[i];
-	const int sp_sign = sgn(c * g);
+	const int sp_sign = scalar_product_sign(c, g);
 	// Checking whether the generator saturates the equality.
 	// If that is the case, then we have to do something only if
 	// the generator is a point.
@@ -453,7 +453,7 @@ PPL::GenSys::relation_with(const Constraint& c) const {
 
       for (dimension_type i = n_rows; i-- > 0; ) {
 	const Generator& g = gs[i];
-	const int sp_sign = sgn(c * g);
+	const int sp_sign = scalar_product_sign(c, g);
 	// Checking whether the generator saturates the non-strict
 	// inequality. If that is the case, then we have to do something
 	// only if the generator is a point.
@@ -565,7 +565,7 @@ PPL::GenSys::relation_with(const Constraint& c) const {
 	const Generator& g = gs[i];
 	// Using the reduced scalar product operator to avoid
 	// both topology and num_columns mismatches.
-	const int sp_sign = sgn(reduced_scalar_product(c, g));
+	const int sp_sign = reduced_scalar_product_sign(c, g);
 	// Checking whether the generator saturates the strict inequality.
 	// If that is the case, then we have to do something
 	// only if the generator is a point.
@@ -664,39 +664,57 @@ PPL::GenSys::satisfied_by_all_generators(const Constraint& c) const {
   // Setting `sp_fp' to the appropriate scalar product operator.
   // This also avoids problems when having _legal_ topology mismatches
   // (which could also cause a mismatch in the number of columns).
-  Integer_traits::const_reference (*sp_fp)(const Row&, const Row&);
+  int (*sps_fp)(const Row&, const Row&);
   if (c.is_necessarily_closed())
-    sp_fp = PPL::operator*;
+    sps_fp = PPL::scalar_product_sign;
   else
-    sp_fp = PPL::reduced_scalar_product;
+    sps_fp = PPL::reduced_scalar_product_sign;
 
   const GenSys& gs = *this;
   switch (c.type()) {
   case Constraint::EQUALITY:
     // Equalities must be saturated by all generators.
     for (dimension_type i = gs.num_rows(); i-- > 0; )
-      if (sp_fp(c, gs[i]) != 0)
+      if (sps_fp(c, gs[i]) != 0)
 	return false;
     break;
   case Constraint::NONSTRICT_INEQUALITY:
-    // Non-strict inequalities must be satisfied by all generators.
-    for (dimension_type i = gs.num_rows(); i-- > 0; )
-      if (sp_fp(c, gs[i]) < 0)
-	return false;
-    break;
-  case Constraint::STRICT_INEQUALITY:
-    // Strict inequalities must be satisfied by all generators
-    // and must not be saturated by points.
+    // Non-strict inequalities must be saturated by lines and
+    // satisfied by all the other generators.
     for (dimension_type i = gs.num_rows(); i-- > 0; ) {
       const Generator& g = gs[i];
-      if (g.is_point()) {
-	if (sp_fp(c, g) <= 0)
+      const int sp_sign = sps_fp(c, g);
+      if (g.is_line()) {
+	if (sp_sign != 0)
 	  return false;
       }
       else
-	// `g' is a line, ray or closure point.
-	if (sp_fp(c, g) < 0)
+	// `g' is a ray, point or closure point.
+	if (sp_sign < 0)
 	  return false;
+    }
+    break;
+  case Constraint::STRICT_INEQUALITY:
+    // Strict inequalities must be saturated by lines,
+    // satisfied by all generators, and must not be saturated by points.
+    for (dimension_type i = gs.num_rows(); i-- > 0; ) {
+      const Generator& g = gs[i];
+      const int sp_sign = sps_fp(c, g);
+      switch (g.type()) {
+      case Generator::POINT:
+	if (sp_sign <= 0)
+	  return false;
+	break;
+      case Generator::LINE:
+	if (sp_sign != 0)
+	  return false;
+	break;
+      default:
+	// `g' is a ray or closure point.
+	if (sp_sign < 0)
+	  return false;
+	break;
+      }
     }
     break;
   }
@@ -722,25 +740,11 @@ PPL::GenSys::affine_image(dimension_type v,
 
   // Compute the numerator of the affine transformation and assign it
   // to the column of `*this' indexed by `v'.
+  TEMP_INTEGER(numerator);
   for (dimension_type i = n_rows; i-- > 0; ) {
     Generator& row = x[i];
-#if NATIVE_INTEGERS || CHECKED_INTEGERS
-    Integer tmp = 0;
-    for (dimension_type j = expr.size(); j-- > 0; )
-      tmp += row[j] * expr[j];
-    std::swap(tmp, row[v]);
-#else // #if NATIVE_INTEGERS || CHECKED_INTEGERS
-    // The following fragment optimizes the above computation
-    // by avoiding gmp (de-)allocations.
-    tmp_Integer[0] = 0;
-    for (dimension_type j = expr.size(); j-- > 0; ) {
-      // The following two lines optimize the computation
-      // of tmp_Integer[0] += row[j] * expr[j].
-      tmp_Integer[1] = row[j] * expr[j];
-      tmp_Integer[0] += tmp_Integer[1];
-    }
-    std::swap(tmp_Integer[0], row[v]);
-#endif // #if NATIVE_INTEGERS || CHECKED_INTEGERS
+    scalar_product_assign(numerator, expr, row);
+    std::swap(numerator, row[v]);
   }
 
   if (denominator != 1) {

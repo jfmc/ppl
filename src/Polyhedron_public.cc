@@ -34,6 +34,20 @@ site: http://www.cs.unipr.it/ppl/ . */
 
 namespace PPL = Parma_Polyhedra_Library;
 
+PPL::dimension_type
+PPL::Polyhedron::dimension() const {
+  if (is_empty())
+    return 0;
+
+  const ConSys& cs = minimized_constraints();
+  dimension_type d = space_dim;
+  for (ConSys::const_iterator i = cs.begin(),
+	 cs_end = cs.end(); i != cs_end; ++i)
+    if (i->is_equality())
+      --d;
+  return d;
+}
+
 const PPL::ConSys&
 PPL::Polyhedron::constraints() const {
   if (marked_empty()) {
@@ -788,7 +802,7 @@ PPL::Polyhedron::OK(bool check_not_empty) const {
       const Generator tmp_gen = gen_sys[i];
       const SatRow tmp_sat = sat_c[i];
       for (dimension_type j = sat_c.num_columns(); j-- > 0; )
-	if (sgn(tmp_gen * con_sys[j]) != tmp_sat[j]) {
+	if (scalar_product_sign(tmp_gen, con_sys[j]) != tmp_sat[j]) {
 #ifndef NDEBUG
 	  cerr << "sat_c is declared up-to-date, but it is not!"
 	       << endl;
@@ -802,7 +816,7 @@ PPL::Polyhedron::OK(bool check_not_empty) const {
       const Constraint tmp_con = con_sys[i];
       const SatRow tmp_sat = sat_g[i];
       for (dimension_type j = sat_g.num_columns(); j-- > 0; )
-	if (sgn(tmp_con * gen_sys[j]) != tmp_sat[j]) {
+	if (scalar_product_sign(tmp_con, gen_sys[j]) != tmp_sat[j]) {
 #ifndef NDEBUG
 	  cerr << "sat_g is declared up-to-date, but it is not!"
 	       << endl;

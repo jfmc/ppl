@@ -23,6 +23,7 @@ site: http://www.cs.unipr.it/ppl/ . */
 
 #include "config.h"
 #include "ppl_install.hh"
+#include "timings.hh"
 #include <cstdarg>
 #include <csignal>
 #include <cerrno>
@@ -202,6 +203,7 @@ set_alarm_on_cpu_time(const unsigned seconds, sig_handler_type handler) {
   }
 }
 
+#if HAVE_DECL_RLIMIT_AS
 void
 limit_virtual_memory(const unsigned bytes) {
   struct rlimit t;
@@ -215,6 +217,11 @@ limit_virtual_memory(const unsigned bytes) {
       fatal("setrlimit failed: %s", strerror(errno));
   }
 }
+#else
+void
+limit_virtual_memory(unsigned) {
+}
+#endif // !HAVE_DECL_RLIMIT_AS
 
 extern "C" void
 timeout(int) {
@@ -701,16 +708,32 @@ main(int argc, char* argv[]) try {
   }
 
   // If we are still here, we just make a conversion.
+  // Start the timer, if requested to do so.
+  if (print_timings)
+    start_clock();
+
+  // Compute the dual representation.
   if (rep == V) {
     command = V_to_H;
     ph.minimized_constraints();
-    write_polyhedron(output(), ph, H);
   }
   else {
     command = H_to_V;
     ph.minimized_generators();
-    write_polyhedron(output(), ph, V);
   }
+
+  // Print the timing information.
+  if (print_timings) {
+    std::cerr << input_file_name << " ";
+    print_clock(std::cerr);
+    std::cerr << std::endl;
+  }
+
+  // Write the result of the conversion.
+  if (rep == V)
+    write_polyhedron(output(), ph, H);
+  else
+    write_polyhedron(output(), ph, V);
 
  commands_done:
   // Check the result, if requested to do so.

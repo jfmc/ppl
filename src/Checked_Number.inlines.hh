@@ -318,9 +318,9 @@ DEF_ASSIGN_FUN2_2(negate, neg)
 DEF_ASSIGN_FUN3_2(exact_div_assign, div)
 DEF_ASSIGN_FUN3_3(exact_div_assign, div)
 
-DEF_ASSIGN_FUN3_3(add_assign_mul, add_mul)
+DEF_ASSIGN_FUN3_3(add_mul_assign, add_mul)
 
-DEF_ASSIGN_FUN3_3(sub_assign_mul, sub_mul)
+DEF_ASSIGN_FUN3_3(sub_mul_assign, sub_mul)
 
 DEF_ASSIGN_FUN3_2(gcd_assign, gcd)
 DEF_ASSIGN_FUN3_3(gcd_assign, gcd)

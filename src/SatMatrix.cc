@@ -25,7 +25,7 @@ site: http://www.cs.unipr.it/ppl/ . */
 
 #include "SatMatrix.defs.hh"
 
-#include "globals.hh"
+#include "globals.defs.hh"
 #include <iostream>
 #include <algorithm>
 #include <string>

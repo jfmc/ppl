@@ -24,7 +24,7 @@ site: http://www.cs.unipr.it/ppl/ . */
 #ifndef PPL_Row_inlines_hh
 #define PPL_Row_inlines_hh 1
 
-#include "globals.hh"
+#include "globals.defs.hh"
 #include <cassert>
 #include <algorithm>
 
@@ -427,6 +427,27 @@ inline void
 Row::strong_normalize() {
   normalize();
   sign_normalize();
+}
+
+inline int
+scalar_product_sign(const Row& x, const Row& y) {
+  TEMP_INTEGER(z);
+  scalar_product_assign(z, x, y);
+  return sgn(z);
+}
+
+inline int
+reduced_scalar_product_sign(const Row& x, const Row& y) {
+  TEMP_INTEGER(z);
+  reduced_scalar_product_assign(z, x, y);
+  return sgn(z);
+}
+
+inline int
+homogeneous_scalar_product_sign(const Row& x, const Row& y) {
+  TEMP_INTEGER(z);
+  homogeneous_scalar_product_assign(z, x, y);
+  return sgn(z);
 }
 
 /*! \relates Row */

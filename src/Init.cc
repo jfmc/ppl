@@ -24,7 +24,7 @@ site: http://www.cs.unipr.it/ppl/ . */
 #include <config.h>
 
 #include "Init.defs.hh"
-#include "globals.hh"
+#include "globals.defs.hh"
 #include "Variable.defs.hh"
 
 namespace PPL = Parma_Polyhedra_Library;
@@ -48,8 +48,6 @@ PPL::Init::Init() {
   if (count++ == 0) {
     // ... the GMP memory allocation functions are set, ...
     set_GMP_memory_allocation_functions();
-    // ... then memory is allocated for tmp_Integer, ...
-    tmp_Integer = new Integer[6];
     // ... and the default output function for Variable objects is set.
     Variable::set_output_function(Variable::default_output_function);
   }
@@ -58,6 +56,6 @@ PPL::Init::Init() {
 PPL::Init::~Init() {
   // Only when the last Init object is destroyed...
   if (--count == 0)
-    // ... tmp_Integer is also destroyed.
-    delete[] tmp_Integer;
+    // ... well, there is nothing to do, at the moment.
+    ;
 }

@@ -31,7 +31,7 @@ using namespace Parma_Polyhedra_Library::IO_Operators;
 #define NOISY 0
 #endif
 
-typedef Polyhedra_PowerSet<C_Polyhedron> PCS;
+typedef Polyhedra_Powerset<C_Polyhedron> PCS;
 
 int
 main() TRY {

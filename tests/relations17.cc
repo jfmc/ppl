@@ -117,7 +117,7 @@ test4() {
   NNC_Polyhedron ph(gs);
   GenSys gs1;
   for (GenSys::const_iterator i = ph.generators().begin(),
-	 iend = ph.generators().end(); i != iend; ++i)
+	 gs_end = ph.generators().end(); i != gs_end; ++i)
     if (!(*i).is_closure_point())
       gs.insert(*i);
   C_Polyhedron ph1(gs);
@@ -150,7 +150,7 @@ test5() {
   ph1.add_constraint(B == 1);
   GenSys gs1;
   for (GenSys::const_iterator i = ph.generators().begin(),
-	 iend = ph.generators().end(); i != iend; ++i)
+	 gs_end = ph.generators().end(); i != gs_end; ++i)
     if (!(*i).is_closure_point())
       gs1.insert(*i);
   ph1.add_generators(gs1);

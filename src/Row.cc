@@ -25,7 +25,7 @@ site: http://www.cs.unipr.it/ppl/ . */
 
 #include "Integer.defs.hh"
 #include "Row.defs.hh"
-#include "globals.hh"
+#include "globals.defs.hh"
 #include <algorithm>
 #include <iostream>
 
@@ -83,18 +83,19 @@ PPL::Row::Impl::copy_construct(const Impl& y) {
 void
 PPL::Row::normalize() {
   Row& x = *this;
-  // Compute the GCD of all the coefficients into tmp_Integer[1].
-  tmp_Integer[1] = 0;
+  // Compute the GCD of all the coefficients into gcd.
+  TEMP_INTEGER(gcd);
+  gcd = 0;
   const dimension_type sz = size();
   for (dimension_type i = sz; i-- > 0; ) {
     Integer_traits::const_reference x_i = x[i];
     if (x_i != 0)
-      gcd_assign(tmp_Integer[1], x_i);
+      gcd_assign(gcd, x_i);
   }
-  if (tmp_Integer[1] > 1)
+  if (gcd > 1)
     // Divide the coefficients by the GCD.
     for (dimension_type i = sz; i-- > 0; )
-      exact_div_assign(x[i], tmp_Integer[1]);
+      exact_div_assign(x[i], gcd);
 }
 
 void
@@ -168,50 +169,43 @@ PPL::compare(const Row& x, const Row& y) {
 }
 
 /*! \relates Parma_Polyhedra_Library::Row */
-PPL::Integer_traits::const_reference
-PPL::operator*(const Row& x, const Row& y) {
+void
+PPL::scalar_product_assign(Integer& z, const Row& x, const Row& y) {
   // Scalar product is only defined  if `x' and `y' are
   // dimension-compatible.
   assert(x.size() <= y.size());
-#if NATIVE_INTEGERS || CHECKED_INTEGERS
-  Integer tmp = 0;
+  z = 0;
   for (dimension_type i = x.size(); i-- > 0; )
-    tmp += x[i] * y[i];
-  return tmp;
-#else // #if NATIVE_INTEGERS || CHECKED_INTEGERS
-  tmp_Integer[0] = 0;
-  for (dimension_type i = x.size(); i-- > 0; ) {
-    // The following two lines optimize the computation
-    // of tmp_Integer[0] += x[i] * y[i].
-    tmp_Integer[1] = x[i] * y[i];
-    tmp_Integer[0] += tmp_Integer[1];
-  }
-  return tmp_Integer[0];
-#endif // #if NATIVE_INTEGERS || CHECKED_INTEGERS
+    // The following line optimizes the computation of z += x[i] * y[i].
+    add_mul_assign(z, x[i], y[i]);
 }
 
 /*! \relates Parma_Polyhedra_Library::Row */
-PPL::Integer_traits::const_reference
-PPL::reduced_scalar_product(const Row& x, const Row& y) {
+void
+PPL::reduced_scalar_product_assign(Integer& z, const Row& x, const Row& y) {
   // The reduced scalar product is only defined
   // if the topology of `x' is NNC and `y' has enough coefficients.
   assert(!x.is_necessarily_closed());
   assert(x.size() - 1 <= y.size());
-#if NATIVE_INTEGERS || CHECKED_INTEGERS
-  Integer tmp = 0;
+  z = 0;
   for (dimension_type i = x.size() - 1; i-- > 0; )
-    tmp += x[i] * y[i];
-  return tmp;
-#else // #if NATIVE_INTEGERS || CHECKED_INTEGERS
-  tmp_Integer[0] = 0;
-  for (dimension_type i = x.size() - 1; i-- > 0; ) {
-    // The following two lines optimize the computation
-    // of tmp_Integer[0] += x[i] * y[i].
-    tmp_Integer[1] = x[i] * y[i];
-    tmp_Integer[0] += tmp_Integer[1];
-  }
-  return tmp_Integer[0];
-#endif // #if NATIVE_INTEGERS || CHECKED_INTEGERS
+    // The following line optimizes the computation
+    // of z += x[i] * y[i].
+    add_mul_assign(z, x[i], y[i]);
+}
+
+/*! \relates Parma_Polyhedra_Library::Row */
+void
+PPL::homogeneous_scalar_product_assign(Integer& z,
+				       const Row& x, const Row& y) {
+  // Scalar product is only defined  if `x' and `y' are
+  // dimension-compatible.
+  assert(x.size() <= y.size());
+  z = 0;
+    // Note the pre-decrement of `i': last iteration should be for `i == 1'.
+  for (dimension_type i = x.size(); --i > 0; )
+    // The following line optimizes the computation of z += x[i] * y[i].
+    add_mul_assign(z, x[i], y[i]);
 }
 
 void
@@ -220,34 +214,19 @@ PPL::Row::linear_combine(const Row& y, const dimension_type k) {
   // We can combine only vector of the same dimension.
   assert(x.size() == y.size());
   assert(y[k] != 0 && x[k] != 0);
-#if NATIVE_INTEGER || CHECKED_INTEGER
   // Let g be the GCD between `x[k]' and `y[k]'.
   // For each i the following computes
   //   x[i] = x[i]*y[k]/g - y[i]*x[k]/g.
-  Integer g;
-  gcd_assign(g, x[k], y[k]);
-  Integer xg = x[k] / g;
-  Integer yg = y[k] / g;
-  for (dimension_type i = size(); i-- > 0; )
-    if (i != k)
-      x[i] = x[i]*yg - y[i]*xg;
-#else // #if NATIVE_INTEGER || CHECKED_INTEGER
-  // Let g be the GCD between `x[k]' and `y[k]'.
-  // For each i the following computes
-  //   x[i] = x[i]*y[k]/g - y[i]*x[k]/g.
-  gcd_assign(tmp_Integer[1], x[k], y[k]);
-  exact_div_assign(tmp_Integer[2], x[k], tmp_Integer[1]);
-  exact_div_assign(tmp_Integer[3], y[k], tmp_Integer[1]);
-
+  TEMP_INTEGER(normalized_x_k);
+  TEMP_INTEGER(normalized_y_k);
+  normalize2(x[k], y[k], normalized_x_k, normalized_y_k);
   for (dimension_type i = size(); i-- > 0; )
     if (i != k) {
-      tmp_Integer[4] = x[i] * tmp_Integer[3];
-      tmp_Integer[5] = y[i] * tmp_Integer[2];
-      x[i] = tmp_Integer[4] - tmp_Integer[5];
+      Integer& x_i = x[i];
+      x_i *= normalized_y_k;
+      sub_mul_assign(x_i, y[i], normalized_x_k);
     }
-#endif // #if NATIVE_INTEGER || CHECKED_INTEGER
   x[k] = 0;
-
   x.strong_normalize();
 }
 

@@ -25,7 +25,7 @@ site: http://www.cs.unipr.it/ppl/ . */
 #define PPL_Polyhedron_defs_hh 1
 
 #include "Polyhedron.types.hh"
-#include "globals.hh"
+#include "globals.defs.hh"
 #include "Variable.defs.hh"
 #include "LinExpression.defs.hh"
 #include "ConSys.defs.hh"
@@ -511,6 +511,11 @@ public:
 
   //! Returns the dimension of the vector space enclosing \p *this.
   dimension_type space_dimension() const;
+
+  //! \brief
+  //! Returns the dimension of \p *this (not to be confused with the
+  //! dimension of its enclosing vector space) or 0, if \p *this is empty.
+  dimension_type dimension() const;
 
   //! Returns the system of constraints.
   const ConSys& constraints() const;
@@ -2127,18 +2132,6 @@ private:
                              SatMatrix& sat1,
                              SatMatrix& sat2,
 			     dimension_type add_dim);
-
-  //! \brief
-  //! Returns <CODE>true</CODE> if the given polyhedra satisfy
-  //! the theorem of BHRZ03.
-  /*!
-    \param x
-    The greater polyhedron;
-
-    \param y
-    The smaller polyhedron.
-  */
-  static bool is_BHRZ03_stabilizing(const Polyhedron& x, const Polyhedron& y);
 
   //! \name Minimization-Related Static Member Functions
   //@{

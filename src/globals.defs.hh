@@ -24,11 +24,10 @@ site: http://www.cs.unipr.it/ppl/ . */
 #ifndef PPL_globals_defs_hh
 #define PPL_globals_defs_hh 1
 
-#include "Integer.types.hh"
-#include "Constraint.types.hh"
-#include "Generator.types.hh"
+#include "Integer.defs.hh"
 #include <exception>
 #include <limits>
+#include <cstddef>
 
 namespace Parma_Polyhedra_Library {
 
@@ -121,13 +120,9 @@ public:
   }
 };
 
-#if 1
 #define TEMP_INTEGER(id) \
 Integer& id = get_tmp_Integer(); \
 Temp_Integer_Holder temp_Integer_holder_ ## id = (id)
-#else
-#define TEMP_INTEGER(id) static Integer id
-#endif
 
 #ifdef PPL_DOXYGEN_INCLUDE_IMPLEMENTATION_DETAILS
 //! Speculative allocation function.

@@ -451,6 +451,11 @@ AC_LIBTOOL_DLOPEN
 AC_LIBTOOL_WIN32_DLL
 AC_PROG_LIBTOOL
 
+# Checks for programs.
+
+AC_CHECK_PROG(MD5SUM, md5sum, md5sum)
+AM_CONDITIONAL(HAVE_MD5SUM, test x$MD5SUM = xmd5sum)
+
 # Checks for Prolog systems.
 
 # Ciao Prolog
@@ -593,6 +598,7 @@ AC_CONFIG_FILES(Makefile
                 src/Makefile
                 src/version.hh
                 tests/Makefile
+                utils/Makefile
                 m4/Makefile
                 demos/Makefile
 		demos/ppl_lcdd/Makefile

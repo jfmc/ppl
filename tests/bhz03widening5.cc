@@ -36,7 +36,7 @@ namespace {
 Variable A(0);
 Variable B(1);
 
-typedef Polyhedra_PowerSet<C_Polyhedron> PSet;
+typedef Polyhedra_Powerset<C_Polyhedron> PSet;
 
 PSet
 S(unsigned n) {
@@ -113,6 +113,6 @@ main() TRY {
   cout << "P.BHZ03(Q, H79)" << " = " << P << endl;
 #endif
 
-  return (P.semantically_contains(oldP) && P.semantically_contains(Q)) ? 0 : 1;
+  return (P.geometrically_covers(oldP) && P.geometrically_covers(Q)) ? 0 : 1;
 }
 CATCH

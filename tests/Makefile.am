@@ -28,7 +28,11 @@ VPATH = @srcdir@
 
 SUBDIRS =
 
-AM_CPPFLAGS = -I$(top_builddir)/src -I$(top_builddir)/Watchdog @extra_includes@
+AM_CPPFLAGS = \
+-I$(top_builddir)/src \
+-I$(top_srcdir)/utils \
+-I$(top_builddir)/Watchdog \
+@extra_includes@
 
 check_LIBRARIES = libppl_tests.a
 libppl_tests_a_SOURCES = \
@@ -43,7 +47,11 @@ ppl_test.hh \
 print.hh \
 print.cc
 
-LDADD = $(top_builddir)/src/libppl.la libppl_tests.a @extra_libraries@
+LDADD = \
+$(top_builddir)/src/libppl.la \
+$(top_builddir)/utils/libppl_utils.a \
+libppl_tests.a \
+@extra_libraries@
 
 ORIGINAL_TESTS = \
 	CbecomesNNC1 \
@@ -103,7 +111,7 @@ ORIGINAL_TESTS = \
 	generators1 generators2 generators3 generators4 generators5 \
 	generators6 \
 	h79widening1 h79widening2 h79widening3 h79widening4 h79widening5 \
-	h79widening6 h79widening7 \
+	h79widening6 h79widening7 h79widening8 \
         intersection1 intersection2 intersection3 intersection4 \
 	intersection5 intersection6 intersection7 intersection8 \
 	intersection9 intersection10 intersection11 \
@@ -121,6 +129,7 @@ ORIGINAL_TESTS = \
         permute \
 	polydifference1 polydifference2 polydifference3 polydifference4 \
 	polydifference5 polydifference6 polydifference7 polydifference8 \
+	polydifference9 \
 	polyhull1 polyhull2 polyhull3 polyhull4 polyhull5 polyhull6 \
 	polyhull7 polyhull8 polyhull9 polyhull10 \
 	relations1 relations2 relations3 relations4 relations5 relations6 \
@@ -191,7 +200,7 @@ DERIVED_TESTS = \
 	nnc_generators1 nnc_generators2 nnc_generators3 nnc_generators4 \
 	nnc_generators5 nnc_generators6 \
 	nnc_h79widening1 nnc_h79widening2 nnc_h79widening4 nnc_h79widening5 \
-        nnc_h79widening6 nnc_h79widening7 \
+        nnc_h79widening6 nnc_h79widening7 nnc_h79widening8 \
 	nnc_intersection1 nnc_intersection2 nnc_intersection3 \
 	nnc_intersection4 nnc_intersection5 nnc_intersection6 \
 	nnc_intersection7 nnc_intersection8 nnc_intersection9 \
@@ -207,7 +216,7 @@ DERIVED_TESTS = \
 	nnc_onepoint \
 	nnc_permute \
 	nnc_polydifference1 nnc_polydifference3 nnc_polydifference4 \
-	nnc_polydifference6 nnc_polydifference7 \
+	nnc_polydifference6 nnc_polydifference7 nnc_polydifference9 \
 	nnc_polyhull1 nnc_polyhull2 nnc_polyhull3 nnc_polyhull4 \
 	nnc_polyhull5 nnc_polyhull6 nnc_polyhull7 nnc_polyhull8 \
 	nnc_polyhull9 nnc_polyhull10 \
@@ -388,7 +397,7 @@ disjoint1_SOURCES = disjoint1.cc
 disjoint2_SOURCES = disjoint2.cc
 disjoint3_SOURCES = disjoint3.cc
 
-dualhypercubes_SOURCES = dualhypercubes.cc timings.cc
+dualhypercubes_SOURCES = dualhypercubes.cc
 
 empty1_SOURCES = empty1.cc
 
@@ -429,6 +438,7 @@ h79widening4_SOURCES = h79widening4.cc
 h79widening5_SOURCES = h79widening5.cc
 h79widening6_SOURCES = h79widening6.cc
 h79widening7_SOURCES = h79widening7.cc
+h79widening8_SOURCES = h79widening8.cc
 
 intersection1_SOURCES = intersection1.cc
 intersection2_SOURCES = intersection2.cc
@@ -481,6 +491,7 @@ polydifference5_SOURCES = polydifference5.cc
 polydifference6_SOURCES = polydifference6.cc
 polydifference7_SOURCES = polydifference7.cc
 polydifference8_SOURCES = polydifference8.cc
+polydifference9_SOURCES = polydifference9.cc
 
 polyhull1_SOURCES = polyhull1.cc
 polyhull2_SOURCES = polyhull2.cc
@@ -832,6 +843,8 @@ nnc_h79widening6_SOURCES = h79widening6.cc
 nnc_h79widening6_CXXFLAGS = $(DERIVED_CXXFLAGS)
 nnc_h79widening7_SOURCES = h79widening7.cc
 nnc_h79widening7_CXXFLAGS = $(DERIVED_CXXFLAGS)
+nnc_h79widening8_SOURCES = h79widening8.cc
+nnc_h79widening8_CXXFLAGS = $(DERIVED_CXXFLAGS)
 
 nnc_intersection1_SOURCES = intersection1.cc
 nnc_intersection1_CXXFLAGS = $(DERIVED_CXXFLAGS)
@@ -906,6 +919,8 @@ nnc_polydifference6_SOURCES = polydifference6.cc
 nnc_polydifference6_CXXFLAGS = $(DERIVED_CXXFLAGS)
 nnc_polydifference7_SOURCES = polydifference7.cc
 nnc_polydifference7_CXXFLAGS = $(DERIVED_CXXFLAGS)
+nnc_polydifference9_SOURCES = polydifference9.cc
+nnc_polydifference9_CXXFLAGS = $(DERIVED_CXXFLAGS)
 
 nnc_polyhull1_SOURCES = polyhull1.cc
 nnc_polyhull1_CXXFLAGS = $(DERIVED_CXXFLAGS)
@@ -1028,7 +1043,7 @@ nnc_writepolyhedron2_CXXFLAGS = $(DERIVED_CXXFLAGS)
 nnc_writepolyhedron3_SOURCES = writepolyhedron3.cc
 nnc_writepolyhedron3_CXXFLAGS = $(DERIVED_CXXFLAGS)
 
-watchdog1_SRCS = watchdog1.cc timings.cc timings.hh
+watchdog1_SRCS = watchdog1.cc
 
 if BUILD_WATCHDOG_LIBRARY
 WATCHDOG_TESTS = watchdog1
@@ -1036,7 +1051,7 @@ WATCHDOG_TESTS = watchdog1
 watchdog1_SOURCES = $(watchdog1_SRCS)
 watchdog1_LDADD = $(LDADD) $(top_builddir)/Watchdog/libpwl.la
 
-endif
+endif # BUILD_WATCHDOG_LIBRARY
 
 TESTS = $(ORIGINAL_TESTS) $(DERIVED_TESTS) $(WATCHDOG_TESTS)
 

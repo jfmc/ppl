@@ -98,8 +98,11 @@ sub(Result r1, Result r2) {
 
 template <typename Policy, typename To, typename From1, typename From2>
 struct FUNCTION_CLASS(add_mul) {
-  static To temp;
+  //RB: commented out
+  //static To temp;
   static inline Result function(To& to, const From1& x, const From2& y) {
+    //RB: added
+    static To temp;
     Result r1 = mul<Policy>(temp, x, y);
     switch (r1) {
     case V_UNKNOWN:
@@ -121,8 +124,11 @@ struct FUNCTION_CLASS(add_mul) {
 
 template <typename Policy, typename To, typename From1, typename From2>
 struct FUNCTION_CLASS(sub_mul) {
-  static To temp;
+  //RB: commented out
+  //static To temp;
   static inline Result function(To& to, const From1& x, const From2& y) {
+    //RB: added
+    static To temp;
     Result r1 = mul<Policy>(temp, x, y);
     switch (r1) {
     case V_UNKNOWN:

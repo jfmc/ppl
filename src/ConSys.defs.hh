@@ -172,9 +172,9 @@ public:
     The following code prints the system of constraints
     defining the polyhedron <CODE>ph</CODE>:
     \code
-  const ConSys cs = ph.constraints();
-  ConSys::const_iterator iend = cs.end();
-  for (ConSys::const_iterator i = cs.begin(); i != iend; ++i)
+  const ConSys& cs = ph.constraints();
+  for (ConSys::const_iterator i = cs.begin(),
+         cs_end = cs.end(); i != cs_end; ++i)
     cout << *i << endl;
     \endcode
   */

@@ -28,7 +28,7 @@ site: http://www.cs.unipr.it/ppl/ . */
 #include "ConSys.types.hh"
 #include "Constraint.types.hh"
 #include "Variable.defs.hh"
-#include "globals.hh"
+#include "globals.defs.hh"
 #include <iosfwd>
 #include <list>
 

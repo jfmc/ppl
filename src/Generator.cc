@@ -209,36 +209,26 @@ PPL::Generator::is_matching_closure_point(const Generator& p) const {
   else {
     // Divisors are different: divide them by their GCD
     // to simplify the following computation.
-#if NATIVE_INTEGERS || CHECKED_INTEGERS
-    Integer gcd = cp[0];
-    gcd_assign(gcd, p[0]);
-    Integer_traits::const_reference cp_div = cp[0] / gcd;
-    Integer_traits::const_reference  p_div =  p[0] / gcd;
-    for (dimension_type i = cp.size() - 2; i > 0; --i)
-      if (cp[i] * p_div != p[i] * cp_div)
-	return false;
-    return true;
-#else // #if NATIVE_INTEGERS || CHECKED_INTEGERS
-    // The following fragment optimizes the above computation
-    // by avoiding gmp (de-)allocations.
-    gcd_assign(tmp_Integer[1], cp[0], p[0]);
-    const bool rel_prime = (tmp_Integer[1] == 1);
+    TEMP_INTEGER(gcd);
+    gcd_assign(gcd, cp[0], p[0]);
+    const bool rel_prime = (gcd == 1);
+    TEMP_INTEGER(cp_0_scaled);
+    TEMP_INTEGER(p_0_scaled);
     if (!rel_prime) {
-      exact_div_assign(tmp_Integer[2], cp[0], tmp_Integer[1]);
-      exact_div_assign(tmp_Integer[3], p[0], tmp_Integer[1]);
+      exact_div_assign(cp_0_scaled, cp[0], gcd);
+      exact_div_assign(p_0_scaled, p[0], gcd);
     }
-    Integer_traits::const_reference
-      cp_div = rel_prime ? cp[0] : tmp_Integer[2];
-    Integer_traits::const_reference
-      p_div = rel_prime ? p[0] : tmp_Integer[3];
+    const Integer& cp_div = rel_prime ? cp[0] : cp_0_scaled;
+    const Integer& p_div = rel_prime ? p[0] : p_0_scaled;
+    TEMP_INTEGER(prod1);
+    TEMP_INTEGER(prod2);
     for (dimension_type i = cp.size() - 2; i > 0; --i) {
-      tmp_Integer[4] = cp[i] * p_div;
-      tmp_Integer[5] = p[i] * cp_div;
-      if (tmp_Integer[4] != tmp_Integer[5])
+      prod1 = cp[i] * p_div;
+      prod2 = p[i] * cp_div;
+      if (prod1 != prod2)
 	return false;
     }
     return true;
-#endif // #if NATIVE_INTEGERS || CHECKED_INTEGERS
   }
 }
 

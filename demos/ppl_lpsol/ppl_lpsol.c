@@ -260,7 +260,7 @@ print_clock(FILE* f) {
 }
 
 void
-set_alarm_on_cpu_time(unsigned int seconds, void (*handler)(int)) {
+set_alarm_on_cpu_time(unsigned seconds, void (*handler)(int)) {
   sigset_t mask;
   struct sigaction s;
   struct rlimit t;
@@ -290,8 +290,9 @@ set_alarm_on_cpu_time(unsigned int seconds, void (*handler)(int)) {
   }
 }
 
+#if HAVE_DECL_RLIMIT_AS
 void
-limit_virtual_memory(unsigned int bytes) {
+limit_virtual_memory(unsigned bytes) {
   struct rlimit t;
 
   if (getrlimit(RLIMIT_AS, &t) != 0)
@@ -303,6 +304,11 @@ limit_virtual_memory(unsigned int bytes) {
       fatal("setrlimit failed: %s", strerror(errno));
   }
 }
+#else
+void
+limit_virtual_memory(unsigned) {
+}
+#endif /* !HAVE_DECL_RLIMIT_AS */
 
 static void
 my_timeout(int dummy ATTRIBUTE_UNUSED) {
@@ -339,6 +345,7 @@ add_constraints(ppl_LinExpression_t ppl_le,
 
   case LPX_LO:
     mpz_mul(tmp_z, den_lcm, mpq_numref(rational_lb));
+    mpz_divexact(tmp_z, tmp_z, mpq_denref(rational_lb));
     mpz_neg(tmp_z, tmp_z);
     ppl_assign_Coefficient_from_mpz_t(ppl_coeff, tmp_z);
     ppl_LinExpression_add_to_inhomogeneous(ppl_le, ppl_coeff);
@@ -354,6 +361,7 @@ add_constraints(ppl_LinExpression_t ppl_le,
 
   case LPX_UP:
     mpz_mul(tmp_z, den_lcm, mpq_numref(rational_ub));
+    mpz_divexact(tmp_z, tmp_z, mpq_denref(rational_ub));
     mpz_neg(tmp_z, tmp_z);
     ppl_assign_Coefficient_from_mpz_t(ppl_coeff, tmp_z);
     ppl_LinExpression_add_to_inhomogeneous(ppl_le, ppl_coeff);
@@ -371,6 +379,7 @@ add_constraints(ppl_LinExpression_t ppl_le,
     ppl_new_LinExpression_from_LinExpression(&ppl_le2, ppl_le);
 
     mpz_mul(tmp_z, den_lcm, mpq_numref(rational_lb));
+    mpz_divexact(tmp_z, tmp_z, mpq_denref(rational_lb));
     mpz_neg(tmp_z, tmp_z);
     ppl_assign_Coefficient_from_mpz_t(ppl_coeff, tmp_z);
     ppl_LinExpression_add_to_inhomogeneous(ppl_le, ppl_coeff);
@@ -384,6 +393,7 @@ add_constraints(ppl_LinExpression_t ppl_le,
     ppl_delete_Constraint(ppl_c);
 
     mpz_mul(tmp_z, den_lcm, mpq_numref(rational_ub));
+    mpz_divexact(tmp_z, tmp_z, mpq_denref(rational_ub));
     mpz_neg(tmp_z, tmp_z);
     ppl_assign_Coefficient_from_mpz_t(ppl_coeff, tmp_z);
     ppl_LinExpression_add_to_inhomogeneous(ppl_le2, ppl_coeff);
@@ -400,6 +410,7 @@ add_constraints(ppl_LinExpression_t ppl_le,
 
   case LPX_FX:
     mpz_mul(tmp_z, den_lcm, mpq_numref(rational_lb));
+    mpz_divexact(tmp_z, tmp_z, mpq_denref(rational_lb));
     mpz_neg(tmp_z, tmp_z);
     ppl_assign_Coefficient_from_mpz_t(ppl_coeff, tmp_z);
     ppl_LinExpression_add_to_inhomogeneous(ppl_le, ppl_coeff);
@@ -497,6 +508,7 @@ solve(char* file_name) {
 
     for (i = 1; i <= nz; ++i) {
       mpz_mul(tmp_z, den_lcm, mpq_numref(rational_coefficient[i]));
+      mpz_divexact(tmp_z, tmp_z, mpq_denref(rational_coefficient[i]));
       ppl_assign_Coefficient_from_mpz_t(ppl_coeff, tmp_z);
       ppl_LinExpression_add_to_coefficient(ppl_le, coefficient_index[i]-1,
 					   ppl_coeff);
@@ -589,6 +601,7 @@ solve(char* file_name) {
   /* The inhomogeneous term is completely useless for our purpose. */
   for (i = 1; i <= dimension; ++i) {
     mpz_mul(tmp_z, den_lcm, mpq_numref(objective[i]));
+    mpz_divexact(tmp_z, tmp_z, mpq_denref(objective[i]));
     ppl_assign_Coefficient_from_mpz_t(ppl_coeff, tmp_z);
     ppl_LinExpression_add_to_coefficient(ppl_objective_le, i-1, ppl_coeff);
   }

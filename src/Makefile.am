@@ -57,8 +57,9 @@ SUBDIRS =
 #	    0.4			    1:0:1
 #	    0.5			    2:0:0
 #	    0.6			    3:0:0
+#	    0.7			    4:0:0
 
-LIBPPL_LT_CURRENT =  3
+LIBPPL_LT_CURRENT =  4
 LIBPPL_LT_REVISION = 0
 LIBPPL_LT_AGE =      0
 
@@ -139,7 +140,6 @@ Polyhedron.types.hh \
 C_Polyhedron.types.hh \
 NNC_Polyhedron.types.hh \
 float.types.hh \
-globals.hh \
 Limits.hh \
 checked.defs.hh \
 checked_int.inlines.hh \
@@ -150,6 +150,8 @@ checked.inlines.hh \
 $(COEFFICIENT_DEFS_INCLUDE_FILES) \
 Integer.defs.hh \
 Integer.inlines.hh \
+globals.defs.hh \
+globals.inlines.hh \
 Interval.defs.hh \
 Interval.inlines.hh \
 BoundingBox.defs.hh \
@@ -198,12 +200,12 @@ Widening_Function.inlines.hh \
 Determinate.types.hh \
 Determinate.defs.hh \
 Determinate.inlines.hh \
-PowerSet.types.hh \
-PowerSet.defs.hh \
-PowerSet.inlines.hh \
-Polyhedra_PowerSet.types.hh \
-Polyhedra_PowerSet.defs.hh \
-Polyhedra_PowerSet.inlines.hh \
+Powerset.types.hh \
+Powerset.defs.hh \
+Powerset.inlines.hh \
+Polyhedra_Powerset.types.hh \
+Polyhedra_Powerset.defs.hh \
+Polyhedra_Powerset.inlines.hh \
 max_space_dimension.hh \
 algorithms.hh
 
@@ -272,19 +274,19 @@ H79_Certificate.defs.hh \
 Polyhedron.defs.hh \
 C_Polyhedron.defs.hh \
 NNC_Polyhedron.defs.hh \
-globals.hh \
+globals.defs.hh \
 Widening_Function.types.hh \
 Widening_Function.defs.hh \
 Widening_Function.inlines.hh \
 Determinate.types.hh \
 Determinate.defs.hh \
 Determinate.inlines.hh \
-PowerSet.types.hh \
-PowerSet.defs.hh \
-PowerSet.inlines.hh \
-Polyhedra_PowerSet.types.hh \
-Polyhedra_PowerSet.defs.hh \
-Polyhedra_PowerSet.inlines.hh \
+Powerset.types.hh \
+Powerset.defs.hh \
+Powerset.inlines.hh \
+Polyhedra_Powerset.types.hh \
+Polyhedra_Powerset.defs.hh \
+Polyhedra_Powerset.inlines.hh \
 algorithms.hh
 
 libppl_la_LDFLAGS = \

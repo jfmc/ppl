@@ -27,7 +27,7 @@ site: http://www.cs.unipr.it/ppl/ . */
 #include "Determinate.types.hh"
 #include "ConSys.types.hh"
 #include "Variable.defs.hh"
-#include "globals.hh"
+#include "globals.defs.hh"
 #include <iosfwd>
 #include <cassert>
 
@@ -166,13 +166,6 @@ public:
   operator==<PH>(const Determinate<PH>& x, const Determinate<PH>& y);
   friend bool
   operator!=<PH>(const Determinate<PH>& x, const Determinate<PH>& y);
-
-#if 0
-  friend Determinate operator +<>(const Determinate& x,
-				  const Determinate& y);
-  friend Determinate operator *<>(const Determinate& x,
-				  const Determinate& y);
-#endif
 
   //! \name Space-Dimension Preserving Member Functions that May Modify the Domain Element
   //@{

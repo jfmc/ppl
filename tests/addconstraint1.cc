@@ -49,7 +49,7 @@ main() TRY {
 
   C_Polyhedron ph2(2);
   for (ConSys::const_iterator i = ph1.constraints().begin(),
-	 iend = ph1.constraints().end(); i != iend; ++i)
+	 cs_end = ph1.constraints().end(); i != cs_end; ++i)
     ph2.add_constraint(*i);
 
   C_Polyhedron known_result(2);

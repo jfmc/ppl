@@ -25,7 +25,7 @@
 ACLOCAL_AMFLAGS = -I m4
 
 DISTCHECK_CONFIGURE_FLAGS = \
---enable-shared --enable-watchdog --with-cxxflags=-Wno-deprecated
+--enable-shared --enable-watchdog
 
 srcdir = @srcdir@
 VPATH = @srcdir@
@@ -39,4 +39,4 @@ BUGS CREDITS README.configure STANDARDS
 @SET_MAKE@
 
 #SUBDIRS = src Watchdog tests interfaces demos doc m4
-SUBDIRS = src Watchdog tests demos doc m4
+SUBDIRS = src Watchdog utils tests demos doc m4

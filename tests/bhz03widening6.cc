@@ -36,7 +36,7 @@ namespace {
 Variable X(0);
 Variable Y(1);
 
-typedef Polyhedra_PowerSet<C_Polyhedron> PSet;
+typedef Polyhedra_Powerset<C_Polyhedron> PSet;
 
 } // namespace
 
@@ -107,7 +107,7 @@ test1() {
 #endif
 
   if (T2 != known_result ||
-      !T2.semantically_contains(oldT2) || !T2.semantically_contains(T1))
+      !T2.geometrically_covers(oldT2) || !T2.geometrically_covers(T1))
     exit(1);
 }
 
@@ -182,7 +182,7 @@ test2() {
 #endif
 
   if (T2 != oldT2 ||
-      !T2.semantically_contains(oldT2) || !T2.semantically_contains(T1))
+      !T2.geometrically_covers(oldT2) || !T2.geometrically_covers(T1))
     exit(1);
 }
 
@@ -254,7 +254,7 @@ test3() {
 #endif
 
   if (T2 != oldT2 ||
-      !T2.semantically_contains(oldT2) || !T2.semantically_contains(T1))
+      !T2.geometrically_covers(oldT2) || !T2.geometrically_covers(T1))
     exit(1);
 }
 
@@ -330,7 +330,7 @@ test4() {
 #endif
 
   if (T2 != known_result ||
-      !T2.semantically_contains(oldT2) || !T2.semantically_contains(T1))
+      !T2.geometrically_covers(oldT2) || !T2.geometrically_covers(T1))
     exit(1);
 }
 

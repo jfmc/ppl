@@ -419,7 +419,7 @@ PPL::Polyhedron::is_included_in(const Polyhedron& y) const {
       if (c.is_inequality()) {
 	for (dimension_type j = gs.num_rows(); j-- > 0; ) {
 	  const Generator& g = gs[j];
-	  const int sp_sign = sgn(c * g);
+	  const int sp_sign = scalar_product_sign(c, g);
 	  if (g.is_line()) {
 	    if (sp_sign != 0)
 	      return false;
@@ -433,7 +433,7 @@ PPL::Polyhedron::is_included_in(const Polyhedron& y) const {
       else {
 	// `c' is an equality.
 	for (dimension_type j = gs.num_rows(); j-- > 0; )
-	  if (c * gs[j] != 0)
+	  if (scalar_product_sign(c, gs[j]) != 0)
 	    return false;
       }
     }
@@ -447,7 +447,7 @@ PPL::Polyhedron::is_included_in(const Polyhedron& y) const {
       case Constraint::NONSTRICT_INEQUALITY:
 	for (dimension_type j = gs.num_rows(); j-- > 0; ) {
 	  const Generator& g = gs[j];
-	  const int sp_sign = sgn(reduced_scalar_product(c, g));
+	  const int sp_sign = reduced_scalar_product_sign(c, g);
 	  if (g.is_line()) {
 	    if (sp_sign != 0)
 	      return false;
@@ -460,13 +460,13 @@ PPL::Polyhedron::is_included_in(const Polyhedron& y) const {
 	break;
       case Constraint::EQUALITY:
 	for (dimension_type j = gs.num_rows(); j-- > 0; )
-	  if (reduced_scalar_product(c, gs[j]) != 0)
+	  if (reduced_scalar_product_sign(c, gs[j]) != 0)
 	    return false;
 	break;
       case Constraint::STRICT_INEQUALITY:
 	for (dimension_type j = gs.num_rows(); j-- > 0; ) {
 	  const Generator& g = gs[j];
-	  const int sp_sign = sgn(reduced_scalar_product(c, g));
+	  const int sp_sign = reduced_scalar_product_sign(c, g);
 	  if (g[eps_index] > 0) {
 	    // Generator `g' is a point.
 	    // If a point violates or saturates a strict inequality
@@ -517,28 +517,11 @@ PPL::Polyhedron::bounds(const LinExpression& expr,
     const Generator& g = gen_sys[i];
     // Only lines and rays in `*this' can cause `expr' to be unbounded.
     if (g[0] == 0) {
-      // Compute the scalar product between `g' and `expr'.
-#if NATIVE_INTEGERS || CHECKED_INTEGERS
-      Integer tmp = 0;
-      // Note the pre-decrement of `j': last iteration should be for `j == 1'.
-      for (dimension_type j = expr.size(); --j > 0; )
-	tmp += g[j] * expr[j];
-      const int sign = sgn(tmp);
-#else // #if NATIVE_INTEGERS || CHECKED_INTEGERS
-      tmp_Integer[0] = 0;
-      // Note the pre-decrement of `j': last iteration should be for `j == 1'.
-      for (dimension_type j = expr.size(); --j > 0; ) {
-	// The following two lines optimize the computation
-	// of tmp_Integer[0] += g[j] * expr[j].
-	tmp_Integer[1] = g[j] * expr[j];
-	tmp_Integer[0] += tmp_Integer[1];
-      }
-      const int sign = sgn(tmp_Integer[0]);
-#endif // #if NATIVE_INTEGERS || CHECKED_INTEGERS
-      if (sign != 0
+      const int sp_sign = homogeneous_scalar_product_sign(expr, g);
+      if (sp_sign != 0
 	  && (g.is_line()
-	      || (from_above && sign > 0)
-	      || (!from_above && sign < 0)))
+	      || (from_above && sp_sign > 0)
+	      || (!from_above && sp_sign < 0)))
 	// `*this' does not bound `expr'.
 	return false;
     }
@@ -583,37 +566,17 @@ PPL::Polyhedron::max_min(const LinExpression& expr,
   // Initialized only to avoid a compiler warning.
   bool ext_included = false;
 
+  TEMP_INTEGER(sp);
   for (dimension_type i = gen_sys.num_rows(); i-- > 0; ) {
     const Generator& g = gen_sys[i];
-
-    // Compute the scalar product between `g' and `expr'.
-#if NATIVE_INTEGERS || CHECKED_INTEGERS
-    Integer tmp = 0;
-    // Note the pre-decrement of `j': last iteration should be for `j == 1'.
-    for (dimension_type j = expr.size(); --j > 0; )
-      tmp += g[j] * expr[j];
-#else // #if NATIVE_INTEGERS || CHECKED_INTEGERS
-    tmp_Integer[0] = 0;
-    // Note the pre-decrement of `j': last iteration should be for `j == 1'.
-    for (dimension_type j = expr.size(); --j > 0; ) {
-      // The following two lines optimize the computation
-      // of tmp_Integer[0] += g[j] * expr[j].
-      tmp_Integer[1] = g[j] * expr[j];
-      tmp_Integer[0] += tmp_Integer[1];
-    }
-#endif // #if NATIVE_INTEGERS || CHECKED_INTEGERS
-
+    homogeneous_scalar_product_assign(sp, expr, g);
     // Lines and rays in `*this' can cause `expr' to be unbounded.
     if (g[0] == 0) {
-#if NATIVE_INTEGERS || CHECKED_INTEGERS
-      const int sign = sgn(tmp);
-#else
-      const int sign = sgn(tmp_Integer[0]);
-#endif
-      if (sign != 0
+      const int sp_sign = sgn(sp);
+      if (sp_sign != 0
 	  && (g.is_line()
-	      || (maximize && sign > 0)
-	      || (!maximize && sign < 0)))
+	      || (maximize && sp_sign > 0)
+	      || (!maximize && sp_sign < 0)))
 	// `expr' is unbounded in `*this'.
 	return false;
     }
@@ -622,11 +585,7 @@ PPL::Polyhedron::max_min(const LinExpression& expr,
       assert(g.is_point() || g.is_closure_point());
       // Notice that we are ignoring the constant term in `expr' here.
       // We will add it to the extremum as soon as we find it.
-#if NATIVE_INTEGERS || CHECKED_INTEGERS
-      mpq_class candidate(tmp, g[0]);
-#else
-      mpq_class candidate(tmp_Integer[0], g[0]);
-#endif
+      mpq_class candidate(sp, g[0]);
       candidate.canonicalize();
       const bool g_is_point = g.is_point();
       if (first_candidate
@@ -860,7 +819,7 @@ PPL::Polyhedron::update_sat_c() const {
   x.sat_c.resize(gsr, csr);
   for (dimension_type i = gsr; i-- > 0; )
     for (dimension_type j = csr; j-- > 0; ) {
-      const int sp_sign = sgn(con_sys[j] * gen_sys[i]);
+      const int sp_sign = scalar_product_sign(con_sys[j], gen_sys[i]);
       // The negativity of this scalar product would mean
       // that the generator `gen_sys[i]' violates the constraint
       // `con_sys[j]' and it is not possible because both generators
@@ -892,7 +851,7 @@ PPL::Polyhedron::update_sat_g() const {
   x.sat_g.resize(csr, gsr);
   for (dimension_type i = csr; i-- > 0; )
     for (dimension_type j = gsr; j-- > 0; ) {
-      const int sp_sign = sgn(con_sys[i] * gen_sys[j]);
+      const int sp_sign = scalar_product_sign(con_sys[i], gen_sys[j]);
       // The negativity of this scalar product would mean
       // that the generator `gen_sys[j]' violates the constraint
       // `con_sys[i]' and it is not possible because both generators

@@ -25,7 +25,7 @@ site: http://www.cs.unipr.it/ppl/ . */
 #define PPL_Row_defs_hh 1
 
 #include "Row.types.hh"
-#include "globals.hh"
+#include "globals.defs.hh"
 #include "Topology.hh"
 #include "LinExpression.types.hh"
 #include "Constraint.types.hh"
@@ -368,19 +368,50 @@ private:
 namespace Parma_Polyhedra_Library {
 
 #ifdef PPL_DOXYGEN_INCLUDE_IMPLEMENTATION_DETAILS
-//! Computes the scalar product between \p x and \p y.
+//! Computes the scalar product of \p x and \p y and assigns it to \p z.
 /*! \relates Row */
 #endif // PPL_DOXYGEN_INCLUDE_IMPLEMENTATION_DETAILS
-Integer_traits::const_reference operator*(const Row& x, const Row& y);
+void scalar_product_assign(Integer& z, const Row& x, const Row& y);
+
+#ifdef PPL_DOXYGEN_INCLUDE_IMPLEMENTATION_DETAILS
+//! Returns the sign of the scalar product between \p x and \p y.
+/*! \relates Row */
+#endif // PPL_DOXYGEN_INCLUDE_IMPLEMENTATION_DETAILS
+int scalar_product_sign(const Row& x, const Row& y);
 
 #ifdef PPL_DOXYGEN_INCLUDE_IMPLEMENTATION_DETAILS
 //! \brief
-//! Computes the \e reduced scalar product between \p x and \p y,
+//! Computes the \e reduced scalar product of \p x and \p y,
+//! where the \f$\epsilon\f$ coefficient of \p x is ignored,
+//! and assigns the result to \p z.
+/*! \relates Row */
+#endif // PPL_DOXYGEN_INCLUDE_IMPLEMENTATION_DETAILS
+void reduced_scalar_product_assign(Integer& z, const Row& x, const Row& y);
+
+#ifdef PPL_DOXYGEN_INCLUDE_IMPLEMENTATION_DETAILS
+//! \brief
+//! Returns the sign of the \e reduced scalar product of \p x and \p y,
 //! where the \f$\epsilon\f$ coefficient of \p x is ignored.
 /*! \relates Row */
 #endif // PPL_DOXYGEN_INCLUDE_IMPLEMENTATION_DETAILS
-Integer_traits::const_reference
-reduced_scalar_product(const Row& x, const Row& y);
+int reduced_scalar_product_sign(const Row& x, const Row& y);
+
+#ifdef PPL_DOXYGEN_INCLUDE_IMPLEMENTATION_DETAILS
+//! \brief
+//! Computes the \e homogeneous scalar product of \p x and \p y,
+//! where the inhomogeneous terms are ignored,
+//! and assigns the result to \p z.
+/*! \relates Row */
+#endif // PPL_DOXYGEN_INCLUDE_IMPLEMENTATION_DETAILS
+void homogeneous_scalar_product_assign(Integer& z, const Row& x, const Row& y);
+
+#ifdef PPL_DOXYGEN_INCLUDE_IMPLEMENTATION_DETAILS
+//! \brief
+//! Returns the sign of the \e homogeneous scalar product of \p x and \p y,
+//! where the inhomogeneous terms are ignored,
+/*! \relates Row */
+#endif // PPL_DOXYGEN_INCLUDE_IMPLEMENTATION_DETAILS
+int homogeneous_scalar_product_sign(const Row& x, const Row& y);
 
 #ifdef PPL_DOXYGEN_INCLUDE_IMPLEMENTATION_DETAILS
 //! The basic comparison function.

@@ -27,7 +27,7 @@ site: http://www.cs.unipr.it/ppl/ . */
 
 #include "Integer.defs.hh"
 #include "Row.defs.hh"
-#include "globals.hh"
+#include "globals.defs.hh"
 #include "SatMatrix.defs.hh"
 #include <algorithm>
 #include <iostream>
@@ -852,6 +852,7 @@ PPL::Matrix::swap_columns(const dimension_type i,  const dimension_type j) {
 
 void
 PPL::Matrix::permute_columns(const std::vector<dimension_type>& cycles) {
+  TEMP_INTEGER(tmp);
   const dimension_type n = cycles.size();
   for (dimension_type k = num_rows(); k-- > 0; ) {
     Row& rows_k = rows[k];
@@ -866,10 +867,10 @@ PPL::Matrix::permute_columns(const std::vector<dimension_type>& cycles) {
 	std::swap(rows_k[cycles[i]], rows_k[cycles[i+1]]);
       else {
 	// Longer cycles need a temporary.
-	std::swap(rows_k[cycles[j-1]], tmp_Integer[0]);
+	std::swap(rows_k[cycles[j-1]], tmp);
 	for (dimension_type l = j-1; l > i; --l)
 	  std::swap(rows_k[cycles[l-1]], rows_k[cycles[l]]);
-	std::swap(tmp_Integer[0], rows_k[cycles[i]]);
+	std::swap(tmp, rows_k[cycles[i]]);
       }
     }
   }
@@ -993,11 +994,12 @@ PPL::Matrix::gram_shmidt() {
     const Row& rows_i = rows[i];
     std::vector<Integer>& mu_i = mu[i];
     for (dimension_type j = i+1; j-- > 0; )
-      mu_i[j] = rows_i * rows[j];
+      scalar_product_assign(mu_i[j], rows_i, rows[j]);
   }
 
   const dimension_type n_columns = num_columns();
 
+  TEMP_INTEGER(accum);
   // Start from the second line/equality of the matrix.
   for (dimension_type i = 1; i < rank; i++) {
     Row& rows_i = rows[i];
@@ -1008,27 +1010,16 @@ PPL::Matrix::gram_shmidt() {
       const std::vector<Integer>& mu_j = mu[j];
       if (j > 0)
 	mu_i[j] *= mu[j-1][j-1];
-#if NATIVE_INTEGERS || CHECKED_INTEGERS
-      Integer tmp = 0;
+      accum = 0;
       for (dimension_type h = 0; h < j; h++) {
-        tmp = tmp * mu[h][h] + mu_i[h] * mu_j[h];
+        accum *= mu[h][h];
+	// The following line optimizes the computation of
+	// accum += mu_i[h] * mu_j[h].
+	add_mul_assign(accum, mu_i[h], mu_j[h]);
 	if (h > 0)
-	  tmp /= mu[h-1][h-1];
+	  exact_div_assign(accum, mu[h-1][h-1]);
       }
-      mu_i[j] -= tmp;
-#else // #if NATIVE_INTEGERS || CHECKED_INTEGERS
-      // The following fragment of code optimizes the above computation
-      // by avoiding some gmp (de-)allocations.
-      tmp_Integer[0] = 0;
-      for (dimension_type h = 0; h < j; h++) {
-        tmp_Integer[0] *= mu[h][h];
-	tmp_Integer[1] = mu_i[h] * mu_j[h];
-	tmp_Integer[0] += tmp_Integer[1];
-	if (h > 0)
-	  exact_div_assign(tmp_Integer[0], mu[h-1][h-1]);
-      }
-      mu_i[j] -= tmp_Integer[0];
-#endif // #if NATIVE_INTEGERS || CHECKED_INTEGERS
+      mu_i[j] -= accum;
     }
 
     // Let the `i'-th line become orthogonal wrt the `j'-th line,
@@ -1038,15 +1029,12 @@ PPL::Matrix::gram_shmidt() {
       Integer_traits::const_reference mu_ij = mu_i[j];
       Integer_traits::const_reference mu_jj = mu[j][j];
       for (dimension_type k = n_columns; k-- > 0; ) {
-#if NATIVE_INTEGERS || CHECKED_INTEGERS
-        rows_i[k] = rows_i[k] * mu_jj - mu_ij * rows_j[k];
-#else // #if NATIVE_INTEGERS || CHECKED_INTEGERS
-        // The following fragment of code optimizes the above computation
-        // by avoiding some gmp (de-)allocations.
+        // The following two lines of code optimize the computation
+        // rows_i[k] = rows_i[k] * mu_jj - mu_ij * rows_j[k].
         rows_i[k] *= mu_jj;
-        tmp_Integer[0] = mu_ij * rows_j[k];
-        rows_i[k] -= tmp_Integer[0];
-#endif // #if NATIVE_INTEGERS || CHECKED_INTEGERS
+	// The following line optimizes the computation of
+        // rows_i[k] -= mu_ij * rows_j[k].
+        sub_mul_assign(rows_i[k], mu_ij, rows_j[k]);
 	if (j > 0)
 	  exact_div_assign(rows_i[k], mu[j-1][j-1]);
       }
@@ -1067,7 +1055,7 @@ PPL::Matrix::gram_shmidt() {
   for (dimension_type i = rank; i-- > 0; ) {
     const Row& rows_i = rows[i];
     for (dimension_type j = i; j-- > 0; )
-      if (rows_i * rows[j] != 0) {
+      if (scalar_product_sign(rows_i, rows[j]) != 0) {
 	std::cout << "Not an orthogonal base" << std::endl;
 	std::cout << "i = " << i << ", j = " << j << std::endl;
 	std::cout << "After Gram-Shmidt on the base" << std::endl;
@@ -1101,7 +1089,7 @@ PPL::Matrix::gram_shmidt() {
   Integer denominator = 1;
   for (dimension_type i = rank; i-- > 0; ) {
     const Row& rows_i = rows[i];
-    d[i] = rows_i * rows_i;
+    scalar_product_assign(d[i], rows_i, rows_i);
     denominator *= d[i];
   }
   for (dimension_type i = rank; i-- > 0; )
@@ -1113,7 +1101,7 @@ PPL::Matrix::gram_shmidt() {
     Row& w = rows[i];
     // Compute `factors' according to `w'.
     for (dimension_type j = rank; j-- > 0; ) {
-      factors[j] = w * rows[j];
+      scalar_product_assign(factors[j], w, rows[j]);
       factors[j] *= d[j];
     }
     for (dimension_type k = n_columns; k-- > 0; )
@@ -1121,7 +1109,7 @@ PPL::Matrix::gram_shmidt() {
     for (dimension_type j = rank; j-- > 0; ) {
       const Row& v_j = rows[j];
       for (dimension_type k = n_columns; k-- > 0; )
-        w[k] -= factors[j] * v_j[k];
+        sub_mul_assign(w[k], factors[j], v_j[k]);
     }
     assert(w.is_ray_or_point_or_inequality());
     w.normalize();
@@ -1134,7 +1122,7 @@ PPL::Matrix::gram_shmidt() {
 #ifndef NDEBUG
     // Check that w is indeed orthogonal wrt all the vectors in the base.
     for (dimension_type h = rank; h-- > 0; )
-      if (w * rows[h] != 0) {
+      if (scalar_product_sign(w, rows[h]) != 0) {
 	std::cout << "Not orthogonal" << std::endl;
 	std::cout << "i = " << i << ", h = " << h << std::endl;
 	std::cout << "After Gram-Shmidt on the whole matrix" << std::endl;
@@ -1283,7 +1271,7 @@ PPL::Matrix::back_substitute(const dimension_type rank) {
   }
 
   // Trying to keep sortedness.
-  for (dimension_type i = 0, iend = nrows-1; still_sorted && i < iend; ++i)
+  for (dimension_type i = 0; still_sorted && i < nrows-1; ++i)
     if (check_for_sortedness[i])
       // Have to check sortedness of `mat[i]' wrt `mat[i+1]'.
       still_sorted = (rows[i] <= rows[i+1]);

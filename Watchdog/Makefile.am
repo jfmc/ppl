@@ -102,6 +102,7 @@ if BUILD_WATCHDOG_LIBRARY
 #	    0.1			0.4		    0:0:0
 #	    0.2			0.5		    1:0:0
 #	    0.3			0.6		    2:0:0
+#	    0.3			0.7		    2:0:0
 
 LIBPWL_LT_CURRENT =  2
 LIBPWL_LT_REVISION = 0
@@ -140,4 +141,4 @@ uninstall-local:
 
 MOSTLYCLEANFILES = $(BUILT_SOURCES)
 
-endif
+endif # BUILD_WATCHDOG_LIBRARY

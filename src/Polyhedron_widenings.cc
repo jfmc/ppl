@@ -53,7 +53,7 @@ PPL::Polyhedron::select_CH78_constraints(const Polyhedron& y,
 
   // Note: the loop index `i' goes upward to avoid reversing
   // the ordering of the chosen constraints.
-  for (dimension_type i = 0, iend = y.con_sys.num_rows(); i < iend; ++i) {
+  for (dimension_type i = 0, end = y.con_sys.num_rows(); i < end; ++i) {
     const Constraint& c = y.con_sys[i];
     if (gen_sys.satisfied_by_all_generators(c))
       cs_selection.insert(c);
@@ -105,14 +105,14 @@ PPL::Polyhedron::select_H79_constraints(const Polyhedron& y,
   SatRow buffer;
   // Note: the loop index `i' goes upward to avoid reversing
   // the ordering of the chosen constraints.
-  for (dimension_type i = 0, iend = con_sys.num_rows(); i < iend; ++i) {
+  for (dimension_type i = 0, end = con_sys.num_rows(); i < end; ++i) {
     const Constraint& ci = con_sys[i];
     // The saturation row `buffer' is built considering
     // the `i'-th constraint of the polyhedron `x' and
     // all the generators of the polyhedron `y'.
     buffer.clear();
     for (dimension_type j = y.gen_sys.num_rows(); j-- > 0; ) {
-      const int sp_sgn = sgn(y.gen_sys[j] * ci);
+      const int sp_sgn = scalar_product_sign(y.gen_sys[j], ci);
       // We are assuming that `y <= x'.
       assert(sp_sgn >= 0);
       if (sp_sgn > 0)
@@ -384,142 +384,6 @@ PPL::Polyhedron::bounded_H79_extrapolation_assign(const Polyhedron& y,
   add_recycled_constraints(bounding_cs);
 }
 
-bool
-PPL::Polyhedron::is_BHRZ03_stabilizing(const Polyhedron& x,
-				       const Polyhedron& y) {
-  // It is assumed that `y' is included in `x'.
-  assert(x.topology() == y.topology());
-  assert(x.space_dim == y.space_dim);
-  assert(!x.marked_empty() && !x.has_something_pending()
-	 && x.constraints_are_minimized() && x.generators_are_minimized());
-  assert(!y.marked_empty() && !y.has_something_pending()
-	 && y.constraints_are_minimized() && y.generators_are_minimized());
-
-  // If the dimension of `x' is greater than the dimension of `y',
-  // the chain is stabilizing.
-  // Since the constraint systems are minimized, the dimension of
-  // the polyhedra is obtained by subtracting the number of
-  // equalities from the space dimension.
-  const dimension_type x_dimension =
-    x.space_dim - x.con_sys.num_equalities();
-  const dimension_type y_dimension =
-    y.space_dim - y.con_sys.num_equalities();
-  if (x_dimension > y_dimension)
-    return true;
-
-  // Since `y' is assumed to be included in `x',
-  // at this point the two polyhedra must have the same dimension.
-  assert(x_dimension == y_dimension);
-
-  // If the dimension of the lineality space of `x' is greater than
-  // the dimension of the lineality space of `y', then the chain
-  // is stabilizing. Since both generator systems are minimized,
-  // the dimension of the lineality space is equal to the number of lines.
-  const dimension_type x_num_lines = x.gen_sys.num_lines();
-  const dimension_type y_num_lines = y.gen_sys.num_lines();
-  if (x_num_lines > y_num_lines)
-    return true;
-
-  // Since `y' is assumed to be included in `x', at this point
-  // the lineality space of the two polyhedra must have the same dimension.
-  assert (x_num_lines == y_num_lines);
-
-  // If the number of constraints of `x' is smaller than the number
-  // of constraints of `y', then the chain is stabilizing. If it is
-  // bigger, the chain is not stabilizing. If they are equal, further
-  // investigation is needed.
-
-  // NOTE: we have to consider high-level constraints only.
-  dimension_type x_con_sys_num_rows = 0;
-  for (ConSys::const_iterator i = x.con_sys.begin(),
-	 x_cs_end = x.con_sys.end(); i != x_cs_end; ++i)
-    ++x_con_sys_num_rows;
-  dimension_type y_con_sys_num_rows = 0;
-  for (ConSys::const_iterator i = y.con_sys.begin(),
-	 y_cs_end = y.con_sys.end(); i != y_cs_end; ++i)
-    ++y_con_sys_num_rows;
-  if (x_con_sys_num_rows < y_con_sys_num_rows)
-    return true;
-  else if (x_con_sys_num_rows > y_con_sys_num_rows)
-    return false;
-
-  const dimension_type x_gen_sys_num_rows = x.gen_sys.num_rows();
-  const dimension_type y_gen_sys_num_rows = y.gen_sys.num_rows();
-  if (x.is_necessarily_closed()) {
-    // If the number of points of `x' is smaller than the number
-    // of points of `y', then the chain is stabilizing.
-    const dimension_type x_num_points
-      = x_gen_sys_num_rows - x_num_lines - x.gen_sys.num_rays();
-    const dimension_type y_num_points
-      = y_gen_sys_num_rows - y_num_lines - y.gen_sys.num_rays();
-    if (x_num_points < y_num_points)
-      return true;
-    else
-      // If the number of points of `y' is smaller than the number of
-      // points of `x', then the chain is not stabilizing.
-      if (x_num_points > y_num_points)
-	return false;
-  }
-  else {
-    // The polyhedra are NNC.
-    dimension_type x_num_closure_points = 0;
-    for (dimension_type i = x_gen_sys_num_rows; i-- > 0; )
-      if (x.gen_sys[i].is_closure_point())
-	++x_num_closure_points;
-    dimension_type y_num_closure_points = 0;
-    for (dimension_type i = y_gen_sys_num_rows; i-- > 0; )
-      if (y.gen_sys[i].is_closure_point())
-	++y_num_closure_points;
-    // If the number of closure points of `x' is smaller than
-    // the number of closure points of `y', the chain is stabilizing.
-    if (x_num_closure_points < y_num_closure_points)
-      return true;
-    else
-      // If the number of closure points of `y' is smaller than the
-      // number of closure points of `x', the chain is not stabilizing.
-      if (x_num_closure_points > y_num_closure_points)
-	return false;
-  }
-
-  // For each i such that 0 <= i < x.space_dim, let x_num_rays[i] be
-  // the number of rays in x.gen_sys having exactly `i' coordinates
-  // equal to 0.
-  std::vector<dimension_type> x_num_rays(x.space_dim, 0);
-  for (dimension_type i = x_gen_sys_num_rows; i-- > 0; )
-    if (x.gen_sys[i].is_ray()) {
-      const Generator& r = x.gen_sys[i];
-      dimension_type num_zeroes = 0;
-      for (dimension_type j = x.space_dim; j >= 1; j--)
-	if (r[j] == 0)
-	  ++num_zeroes;
-      ++x_num_rays[num_zeroes];
-    }
-  // The same as above, this time for `y'.
-  std::vector<dimension_type> y_num_rays(y.space_dim, 0);
-  for (dimension_type i = y_gen_sys_num_rows; i-- > 0; )
-    if (y.gen_sys[i].is_ray()) {
-      const Generator& r = y.gen_sys[i];
-      dimension_type num_zeroes = 0;
-      for (dimension_type j = y.space_dim; j >= 1; j--)
-	if (r[j] == 0)
-	  ++num_zeroes;
-      ++y_num_rays[num_zeroes];
-    }
-  // Compare (lexicographically) the two vectors:
-  // if x_num_rays < y_num_rays the chain is stabilizing.
-  for (dimension_type i = 0; i < x.space_dim; i++) {
-    if (x_num_rays[i] > y_num_rays[i])
-      // Not stabilizing.
-      break;
-    if (x_num_rays[i] < y_num_rays[i])
-      return true;
-  }
-
-  // The chain is not stabilizing.
-  // NOTE: we do NOT check for equality of the two polyhedra here.
-  return false;
-}
-
 
 bool
 PPL::Polyhedron::BHRZ03_combining_constraints(const Polyhedron& y,
@@ -569,7 +433,7 @@ PPL::Polyhedron::BHRZ03_combining_constraints(const Polyhedron& y,
       const ConSys& H79_cs = H79.con_sys;
       for (dimension_type j = H79_cs.num_rows(); j-- > 0; ) {
 	const Constraint& c = H79_cs[j];
-	if (c.is_inequality() && c * g == 0) {
+	if (c.is_inequality() && scalar_product_sign(c, g) == 0) {
 	  lies_on_the_boundary_of_H79 = true;
 	  break;
 	}
@@ -582,7 +446,7 @@ PPL::Polyhedron::BHRZ03_combining_constraints(const Polyhedron& y,
       combining_cs.clear();
       for (dimension_type j = x_minus_H79_cs_num_rows; j-- > 0; ) {
 	const Constraint& c = x_minus_H79_cs[j];
-	if (c * g == 0)
+	if (scalar_product_sign(c, g) == 0)
 	  combining_cs.insert(c);
       }
       // Build a new constraint by combining all the chosen constraints.
@@ -731,8 +595,7 @@ PPL::Polyhedron::BHRZ03_evolving_rays(const Polyhedron& y,
 
   // Candidate rays are kept in a temporary generator system.
   GenSys candidate_rays;
-  Integer& tmp_1 = tmp_Integer[0];
-  Integer& tmp_2 = tmp_Integer[1];
+  TEMP_INTEGER(tmp);
   for (dimension_type i = x_gen_sys_num_rows; i-- > 0; ) {
     const Generator& x_g = x.gen_sys[i];
     // We choose a ray of `x' that does not belong to `y'.
@@ -747,11 +610,12 @@ PPL::Polyhedron::BHRZ03_evolving_rays(const Polyhedron& y,
 	    if (!considered[k])
 	      for (dimension_type h = k + 1; h <= x.space_dim; ++h)
 		if (!considered[h]) {
-		  tmp_1 = x_g[k] * y_g[h];
-		  tmp_2 = x_g[h] * y_g[k];
-		  tmp_1 -= tmp_2;
+		  tmp = x_g[k] * y_g[h];
+		  // The following line optimizes the computation of
+		  // tmp -= x_g[h] * y_g[k];
+		  sub_mul_assign(tmp, x_g[h], y_g[k]);
 		  const int clockwise
-		    = sgn(tmp_1);
+		    = sgn(tmp);
 		  const int first_or_third_quadrant
 		    = sgn(x_g[k])*sgn(x_g[h]);
 		  switch (clockwise * first_or_third_quadrant) {

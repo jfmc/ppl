@@ -44,7 +44,7 @@ for all the supported systems.
 The Prolog interface provides access to the PPL polyhedra.
 A general introduction to convex polyhedra, their representation in the PPL
 and the operations provided by the PPL is given in Sections
-\ref preamble, \ref introduction, \ref representation
+\ref preamble, \ref convex_polys, \ref representation
 and \ref operations of this manual.
 Here we just describe those aspects that are specific to the Prolog interface.
 
@@ -604,7 +604,7 @@ The specification uses the following grammar rules:
 
 Below is a short description of each of the interface predicates.
 For full definitions of terminology used here, see Sections
-\ref preamble, \ref introduction, \ref representation
+\ref preamble, \ref convex_polys, \ref representation
 and \ref operations of this manual.
 
 

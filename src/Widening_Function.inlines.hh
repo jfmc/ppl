@@ -53,12 +53,14 @@ operator()(PH& x, const PH& y, unsigned* tp) const {
   (x.*lw_method)(y, limiting_cs, tp);
 }
 
+/*! \relates Polyhedra_Powerset */
 template <typename PH>
 inline Widening_Function<PH>
 widen_fun(void (PH::* wm)(const PH&, unsigned*)) {
   return Widening_Function<PH>(wm);
 }
 
+/*! \relates Polyhedra_Powerset */
 template <typename PH>
 inline Limited_Widening_Function<PH>
 widen_fun(void (PH::* lwm)(const PH&, const ConSys&, unsigned*),

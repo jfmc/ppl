@@ -2,15 +2,37 @@
 Enhancements for PPL 0.7
 ========================
 
+- The Powerset class implementation is poorly documented.
+- We have an inconsistency: C_Polyhedron(const NNC_Polyhedron& y)
+  throws an exception if `y' is not topologically closed, whereas
+  the corresponding operation on Polyhedra_Powerset computes
+  topological closures.  This inconsistency should be removed.
+- See for what reason why we have neither
+  C_Polyhedron& C_Polyhedron::operator=(const NNC_Polyhedron& y)
+  nor
+  NNC_Polyhedron& NNC_Polyhedron::operator=(const C_Polyhedron& y).
+- Consider whether it is the case to move the definition of dimension
+  of a polyhedron in the user's manual and to refer to it in the
+  documentation of Polyhedron::dimension().
+- Make Polyhedron::dimension() available in all the interfaces.
 - Allow the specification of alternative coefficient implementations.
 - Clearly explain, in the documentation, how (not) to use
   set_GMP_memory_allocation_functions().  More generally, explain how
   to have memory-guarded computations.
 - Completely rewrite the handling of temporary coefficients.
-- Implement the -t option of ppl_lcdd.
 - Make sure ppl_lcdd is able to parse problems produced by lrs, i.e.,
   where the number of rows of the matrix is omitted and replaced by
   "*****".
+- Add a README to the `tests' subdirectory.  There, explain how a
+  test program in that directory can be turned into a program that
+  can be used elsewhere.
+- Better explain the tradeoff in the choice between C_ and NNC_Polyhedron.
+- Investigate again all XFAILS.
+- Explain the ordering of the arguments in the widening methods.
+- Implement overflow detection when manipulating space dimensions.
+- Consider renaming Powerset::meet_assign().
+- Provide optimized implementations of Polyhedron::expand_dimension()
+  Polyhedron::fold_dimensions().
 
 
 Enhancements for PPL 0.8 or later versions

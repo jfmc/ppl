@@ -25,16 +25,6 @@
   \defgroup PPL_Library The Library
   The core implementation of the Parma Polyhedra Library
   is written in C++.
-  The library is mainly a collection of so-called ``concrete data types'':
-  while providing the user with a clean and friendly interface,
-  these types are not meant to --- i.e., they should not --- be used
-  polymorphically (since, e.g., most of the destructors are not declared
-  <CODE>virtual</CODE>). In practice, this restriction means that
-  the library types should not be used as <EM>public base classes</EM>
-  to be derived from. A user willing to extend the library types,
-  adding new functionalities, often can do so by using <EM>containment</EM>
-  instead of inheritance; even when there is the need of overriding a
-  <CODE>protected</CODE> method, non-public inheritance should suffice.
   See Namespace, Hierarchical and Compound indexes
   for additional information about each single data type.
 */
@@ -46,9 +36,7 @@ The Parma Polyhedra Library (PPL) is a modern C++ library for the
 manipulation of numerical information that can be represented by
 points in some \f$n\f$-dimensional vector space. For instance, one of
 the key domains the PPL supports is that of rational convex polyhedra
-(a rational convex polyhedron is a set of all points in the
-\f$n\f$-dimensional vector space that satisfies a finite number of
-linear inequalities with rational coefficients). Such domains
+(Section \ref convex_polys). Such domains
 are employed in several systems for the analysis and verification of
 hardware and software components, with applications spanning
 imperative, functional and logic programming languages, synchronous
@@ -83,14 +71,19 @@ The main features of the library are the following:
 In addition to the basic domains, we also provide generic support for
 constructing new domains from pre-existing domains.
 The following domains and domain constructors are provided by the PPL:
-- the domain of rational convex polyhedra;
+- the domain of topologically closed, rational convex polyhedra;
+- the domain of rational convex polyhedra that are not necessarily closed;
+- the powerset construction;
 - the powerset construction, instantiated for rational convex polyhedra.
 
 In the following sections we describe these domains and domain
 constructors together with their representations and operations 
 that are available to the PPL user.
 
-\section introduction Convex Polyhedra
+In the final section of this chapter (Section \ref use_of_library),
+we provide some additional advice on the use of the library.
+
+\section convex_polys Convex Polyhedra
 
 In this section we introduce convex polyhedra,
 as considered by the library, in more detail.
@@ -220,7 +213,9 @@ By definition, each polyhedron \f$\cP \in \Pset_n\f$ is the set of solutions
 to a <EM>constraint system</EM>, i.e., a finite number of constraints.
 By using matrix notation, we have
 \f[
-  P = \{\,
+  \cP
+    \defeq
+      \{\,
         \vect{x} \in \Rset^n
       \mid
         A_1 \vect{x} =    \vect{b}_1,
@@ -423,8 +418,8 @@ the other topology.
 
 <B>Space Dimensions and Dimension-compatibility</B>
 
-The <EM>space dimension</EM> of an NNC polyhedron \f$P \in \Pset_n\f$
-(resp., a C polyhedron \f$P \in \CPset_n\f$) is the dimension
+The <EM>space dimension</EM> of an NNC polyhedron \f$\cP \in \Pset_n\f$
+(resp., a C polyhedron \f$\cP \in \CPset_n\f$) is the dimension
 \f$n \in \Nset\f$ of the corresponding vector space \f$\Rset^n\f$.
 The space dimension of constraints, generators and other objects
 of the library is defined similarly.
@@ -708,7 +703,7 @@ we denote by \f$\phi(S) \sseq \Rset^m\f$ the <EM>image</EM>
 under \f$\phi\f$ of the set \f$S \sseq \Rset^n\f$; formally,
 \f[
   \phi(S)
-    =
+    \defeq
       \bigl\{\,
         \phi(\vect{v}) \in \Rset^m
       \bigm|
@@ -721,7 +716,7 @@ that is the largest set \f$S \sseq \Rset^n\f$ such that
 \f$\phi(S) \sseq S'\f$; formally,
 \f[
   \phi^{-1}(S')
-    =
+    \defeq
       \bigl\{\,
         \vect{v} \in \Rset^n
       \bigm|
@@ -1053,15 +1048,208 @@ of the limited extrapolation operators described above, by ensuring
 that their results cannot be worse than the smallest
 \ref bounding_boxes "bounding box" enclosing the two argument polyhedra.
 
+
+\section powerset The Powerset Construction
+
+The PPL provides the finite powerset construction; this takes a
+pre-existing domain and upgrades it to one that can represent
+disjunctive information (by using a <EM>finite</EM> number of
+disjucts).  The construction follows the approach described in
+\ref Bag98 "[Bag98]", also summarised in \ref BHZ04 "[BHZ04]" where there
+is an account of generic widenings for the powerset domain (some of
+which are supported in the instantiation of this construction by the
+domain of convex polyhedra and described in Section \ref poly_powerset).
+
+\anchor powerset_domain
+<B>The Powerset Domain</B>
+
+The domain is built from a pre-existing base-level domain
+\f$D\f$ which must include an entailment relation `\f$\mathord{\entails}\f$',
+a meet operation `\f$\mathord{\meet}\f$',
+a top element `\f$\true\f$' and bottom element `\f$\false\f$'.
+
+As the intended semantics of an element of the powerset of the
+base-level domain is that of disjunction, elements of the powerset are
+always <EM>reduced</EM> to semantically-equivalent non-redundant
+elements.
+
+A set \f$\cS \in \wp(D)\f$ is called <EM>non-redundant</EM>
+with respect to `\f$\mathord{\entails}\f$' if and only if
+\f$\false \notin \cS\f$
+and \f$\forall d_1, d_2 \in \cS \itc d_1 \entails d_2 \implies d_1 = d_2\f$.
+The set of finite non-redundant subsets of \f$D\f$
+(with respect to `\f$\mathord{\entails}\f$')
+is denoted by \f$\wpfn{D}{\entails}\f$.
+The reduction function
+\f$\fund{\nonredmap}{\wpf(D)}{\wpfn{D}{\entails}}\f$
+mapping a finite set into its non-redundant counterpart
+is defined, for each \f$\cS \in \wpf(D)\f$, by
+\f[
+  \nonredmap(\cS)
+    \defeq
+      \cS \setdiff \{\,
+                   d \in \cS
+                 \mid
+                   d = \false \text{ or } \exists d' \in \cS \st d \sentails d'
+                 \,\}.
+\f]
+
+The restriction to the finite subsets reflects the fact that here
+disjunctions are implemented by explicit collections of elements
+of the base-level abstract domain.
+As a consequence of this restriction, for any \f$\cS \in \wpf(D)\f$
+such that \f$\cS \neq \{ \false \}\f$, \f$\nonredmap(\cS)\f$ is the (finite)
+set of the maximal elements of \f$\cS\f$.
+
+The <EM>finite powerset domain</EM> over a domain \f$D\f$ is the set
+of all finite reduced sets of \f$D\f$ and denoted by
+\f$D_{\smallP}\f$.
+The domain includes an approximation
+ordering `\f$\mathord{\entailsP}\f$' defined so that
+\f$\cS_1 \entailsP \cS_2\f$ if and only if
+\f[
+  \forall d_1 \in \cS_1 \itc
+    \exists d_2 \in \cS_2 \st
+      d_1 \entails d_2.
+\f]
+Therefore the top element is \f$\{\true\}\f$ and the bottom element is the
+emptyset.
+
+\section ps_operations Operations on the Powerset Construction
+
+In this section we briefly describe the generic operations on Powerset Domains
+that are provided by the library for any given base-level domain \f$D\f$.
+
+\anchor ps_meet_upper_bound
+<B>Meet and Upper Bound</B>
+
+Given the sets \f$\cS_1\f$ and \f$\cS_2 \in D_{\smallP}\f$, the
+<EM>meet</EM> and <EM>upper bound</EM> operators provided by the
+library returns the set
+\f$\nonredmap\bigl(\{d_1 \meet d_2 \,|\, d_1 \in \cS_1, d_2 \in \cS_2\}\bigr)\f$
+and reduced set union \f$\nonredmap(\cS_1 \union \cS_2)\f$ respectively.
+
+\anchor ps_add_disjunct
+<B>Adding a Disjunct</B>
+
+Given the powerset element \f$\cS \in D_{\smallP}\f$ and the base-level
+element \f$d \in D\f$, the <EM>add_disjunct</EM> operator provided by
+the library returns the powerset element
+\f$\nonredmap\bigl(\cS \union \{d\}\bigr)\f$.
+
+\anchor ps_collapse
+<B>Collapsing a Powerset Element</B>
+
+If the given powerset element is not empty, then the
+<EM>collapse</EM> operator returns the
+singleton powerset consisting of an upper-bound of all the disjuncts.
+
+\section poly_powerset The Polyhedra Powerset Domain
+
+The Polyhedra powerset domain \f$(\Pset_n)_{\smallP}\f$
+provided by the PPL is the finite
+powerset domain (defined in Section \ref powerset) over the domain of
+NNC polyhedra \f$\Pset_n\f$.
+
+In addition to the operations described for the generic powerset
+domain in Section \ref ps_operations, we provide some operations that
+are specific to this instantiation.  Of these, most correspond to the
+application of the equivalent operation on each of the NNC polyhedron
+that are in the given set. Here we just describe those operations that
+are particular to the polyhedra powerset domain.
+
+\anchor pps_geometric
+<B>Geometric Comparisons</B>
+
+Given the sets \f$\cS_1, \cS_2 \in (\Pset_n)_{\smallP}\f$, then
+we say that \f$\cS_1\f$ <EM>geometrically_covers</EM> \f$\cS_2\f$
+if every point (in some element) in a polyhedron in \f$\cS_2\f$ is also
+a point in a polyhedron in \f$\cS_1\f$.
+If \f$\cS_1\f$ geometrically_covers \f$\cS_2\f$
+and \f$\cS_2\f$ geometrically_covers \f$\cS_1\f$,
+then we say that they are <EM>geometrically_equal</EM>.
+
+\anchor pps_pairwise_merge
+<B>Pairwise Merge</B>
+
+Given the powerset \f$\cS \in (\Pset_n)_{\smallP}\f$, then the
+<EM>pairwise_merge</EM> operator takes pairs of distinct elements in
+\f$\cS\f$ whose poly-hull is the same as their set-theoretical union
+and replaces them by their union.  This replacement is done
+recursively so that, for each pair \f$\cP, \cQ\f$ of distinct
+polyhedra in the result set, we have
+\f$\cP \uplus \cQ \neq \cP \union \cQ\f$.
+
+\anchor pps_bgp99_extrapolation
+<B>Extrapolation Operators</B>
+
+The library implements a generalization of the extrapolation operator
+for powerset domains proposed in \ref BGP99 "[BGP99]".
+The operator <CODE>BGP99_extrapolation_assign</CODE> is made parametric
+by allowing for the specification of a base-level extrapolation operator
+different from the H79 widening (e.g., the BHRZ03 widening can be used).
+Note that, in the general case, this operator cannot guarantee the
+convergence of the iteration sequence in a finite number of steps
+(for a counter-example, see \ref BHZ04 "[BHZ04]").
+
+\anchor pps_certificate_widening
+<B>Certificate-Based Widenings</B>
+
+The PPL library provides support for the specification of proper widening
+operators on the powerset domain of convex polyhedra. In particular,
+this version of the library implements an instance of the
+<EM>certificate-based widening framework</EM> proposed in
+\ref BHZ03b "[BHZ03b]".
+
+A <EM>finite convergence certificate</EM> for an extrapolation operator
+is a formal way of ensuring that such an operator is indeed a widening
+on the considered domain. Given a widening operator on the base-level
+domain, together with the corresponding convergence certificate,
+the BHZ03 framework shows how it is possible to lift this widening
+so as to work on the finite powerset domain, while still ensuring
+convergence in a finite number of iterations.
+
+Being highly parametric, the BHZ03 widening framework can be
+instantiated in many ways. The current implementation provides
+the templatic operator
+<CODE>BHZ03_widening_assign\<Certificate, Widening\></CODE>
+which only exploits a fraction of this generality, by allowing the
+user to specify the base-level widening function and the corresponding
+certificate. The widening strategy is fixed and uses two extrapolation
+heuristics: first, the least upper bound is tried; second, the
+\ref pps_bgp99_extrapolation "BGP99 extrapolation operator" is tried,
+possibly applying
+\ref pps_pairwise_merge "pairwise merging".
+If both heuristics fail to converge according to the convergence
+certificate, then an attempt is made to apply the base-level widening
+to the poly-hulls of the two arguments, possibly improving the result
+obtained by means of the \ref poly_difference "poly-difference" operator.
+For more details and a justification of the overall approach,
+see \ref BHZ03b "[BHZ03b]" and \ref BHZ04 "[BHZ04]".
+
+The library provides two convergence certificates: while
+\ref Parma_Polyhedra_Library::BHRZ03_Certificate "BHRZ03_Certificate"
+is compatible with both the BHRZ03 and the H79 widenings,
+\ref Parma_Polyhedra_Library::H79_Certificate "H79_Certificate"
+is only compatible with the latter.
+Note that using different certificates will change the results obtained,
+even when using the same base-level widening operator.
+It is also worth stressing that it is up to the user
+to see that the widening operator is actually compatible with
+a given convergence certificate. If such a requirement is not met,
+then an extrapolation operator will be obtained.
+
+\section use_of_library Using the Library
+
 <B>A Note on the Implementation of the Operators</B>
 
-When adopting the double description method, the implementation of the
-above operators on polyhedra may require an explicit conversion from
-one of the two representations into the other one, leading to
-algorithms having a worst-case exponential complexity.
-However, thanks to the adoption of lazy and incremental computation
-techniques, the library turns out to be rather efficient in many
-practical cases.
+When adopting the double description method for the representation of
+convex polyhedra, the implementation of most of the operators may
+require an explicit conversion from one of the two representations
+into the other one, leading to algorithms having a worst-case
+exponential complexity.  However, thanks to the adoption of lazy and
+incremental computation techniques, the library turns out to be rather
+efficient in many practical cases.
 
 In earlier versions of the library, a number of operators were introduced
 in two flavors: a <EM>lazy</EM> version and an <EM>eager</EM> version,
@@ -1076,7 +1264,7 @@ have been refined to achieve a better integration: as a consequence,
 the lazy versions of the operators are now almost always more efficient
 than the eager versions.
 
-The only case when an eager computation still makes sense is when
+One of the cases when an eager computation still makes sense is when
 the well-known <EM>fail-first</EM> principle comes into play.
 For instance, if you have to compute the intersection of several
 polyhedra and you strongly suspect that the result will become empty
@@ -1086,9 +1274,18 @@ since the minimization process also enforces an emptyness check.
 Note anyway that the same effect can be obtained by interleaving
 the calls of the lazy operator with explicit emptyness checks.
 
-\section powerset The Powerset Construction
+<B>On Object-Orientation and Polymorphism: A Disclaimer</B>
 
-\section cplusplus Using the C++ Library
+The PPL library is mainly a collection of so-called ``concrete data
+types'': while providing the user with a clean and friendly interface,
+these types are not meant to --- i.e., they should not --- be used
+polymorphically (since, e.g., most of the destructors are not declared
+<CODE>virtual</CODE>). In practice, this restriction means that the
+library types should not be used as <EM>public base classes</EM> to be
+derived from. A user willing to extend the library types, adding new
+functionalities, often can do so by using <EM>containment</EM> instead
+of inheritance; even when there is the need to override a
+<CODE>protected</CODE> method, non-public inheritance should suffice.
 
 <B>On Const-Correctness: A Warning about the Use of References
 and Iterators</B>

@@ -117,4 +117,4 @@ obtained obtained2 obtained3 \
 $(CLPQ_TESTS) \
 check_script3
 
-endif
+endif HAVE_SWI_PROLOG

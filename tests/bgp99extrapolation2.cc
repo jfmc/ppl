@@ -34,7 +34,7 @@ int
 main() TRY {
   set_handlers();
 
-  typedef Polyhedra_PowerSet<C_Polyhedron> PSet;
+  typedef Polyhedra_Powerset<C_Polyhedron> PSet;
 
   Variable A(0);
   Variable B(1);
@@ -134,7 +134,7 @@ main() TRY {
   known_result.add_disjunct(kr_2);
   known_result.add_disjunct(kr_3);
 
-  int retval = ps1.semantically_equals(known_result) ? 0 : 1;
+  int retval = ps1.geometrically_equals(known_result) ? 0 : 1;
 
 #if NOISY
   cout
