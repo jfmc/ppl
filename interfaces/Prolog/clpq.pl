@@ -173,11 +173,11 @@ query_next_solution :-
   flush_output(user_output),
   get_code(user_input, C),
   (
-    C == 59, get_code(user_input, _EOL)
+    C == 59, eat_eol
   ;
     C == 10
   ;
-    get_code(user_input, _EOL),
+    eat_eol,
     write('Action (";" for more choices, otherwise <return>): '),
     fail
   ),
@@ -249,7 +249,7 @@ main_loop :-
   read_term(Command, [variable_names(VN)]),
   % The above read leaves an EOL character in the input buffer:
   % get rid of it.
-  get_code(_EOL),
+  eat_eol,
   do_command(Command, VN).
 
 clear_program :-
@@ -463,13 +463,13 @@ next_or_quit :-
     (
 	C == 10
     ;
-	get_code(user_input, _EOL)
+	eat_eol
     ),
     !,
     C \== 113.
 
 show_copying :-
-    get_code(user_input, _EOL),
+    eat_eol,
     write('\
                     GNU GENERAL PUBLIC LICENSE\n\
                        Version 2, June 1991\n\
