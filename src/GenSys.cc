@@ -651,17 +651,23 @@ PPL::GenSys::affine_image(dimension_type v,
     tmp_Integer[1] = 0;
     for (dimension_type j = expr.size(); j-- > 0; )
       tmp_Integer[1] += row[j] * expr[j];
+    if (denominator < 0)
+      negate(tmp_Integer[1]);
     std::swap(tmp_Integer[1], row[v]); 
   }
 
-  if (denominator != 1)
+  if (denominator != 1 && denominator != -1) {
     // Since we want integer elements in the matrix,
-    // we multiply by `denominator' all the columns of `*this'
-    // having an index different from `v'.
+    // we multiply by the absolute value of `denominator'
+    // all the columns of `*this' having an index different from `v'.
+    Integer abs_denominator = denominator;
+    if (denominator < 0)
+      negate(abs_denominator);
     for (dimension_type i = n_rows; i-- > 0; )
       for (dimension_type j = n_columns; j-- > 0; )
 	if (j != v)
-	  x[i][j] *= denominator;
+	  x[i][j] *= abs_denominator;
+  }
 
   // If the mapping is not invertible we may have trasformed
   // valid lines and rays into the origin of the space.
