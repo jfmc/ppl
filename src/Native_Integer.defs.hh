@@ -24,6 +24,8 @@ site: http://www.cs.unipr.it/ppl/ . */
 #ifndef PPL_Native_Integer_defs_hh
 #define PPL_Native_Integer_defs_hh 1
 
+#include "Native_Integer.types.hh"
+#include "Integer_macros.hh"
 #include <gmpxx.h>
 #include <limits>
 
@@ -113,7 +115,7 @@ std::ostream& operator<<(std::ostream& os, const Native_Integer<T> x);
 template <typename T>
 std::istream& operator>>(std::istream& is, Native_Integer<T>& x);
 
-  // PPL_INTEGER_DECLARE_NON_MEMBERS(Native_Integer)
+PPL_INTEGER_DECLARE_NON_MEMBERS(Native_Integer)
 
 } // namespace Parma_Polyhedra_Library
 

@@ -631,6 +631,8 @@ operator>>(std::istream& is, Checked_Integer<T>& x) {
   return is >> x.value_;
 }
 
+PPL_INTEGER_DEFINE_NON_MEMBERS(Checked_Integer)
+
 } // namespace Parma_Polyhedra_Library
 
 namespace std {

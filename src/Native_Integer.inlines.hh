@@ -456,6 +456,8 @@ operator>>(std::istream& is, Native_Integer<T>& x) {
   return is >> x.value_;
 }
 
+PPL_INTEGER_DEFINE_NON_MEMBERS(Native_Integer)
+
 } // namespace Parma_Polyhedra_Library
 
 namespace std {
