@@ -1,3 +1,15 @@
+Urgent Things
+=============
+
+- In the manual, explain PPL's I/O operators and how
+  to deal with the IO_Operators namespace.
+- Modify the Prolog interfaces so as to support the new
+  version of Polyhedron::shrink_bounding_box() method.
+- Several programs in th etest directory switch from input
+  to output on a bidirection file: check whether this is
+  allowed by the standard or not.
+
+
 Efficiency Issues
 =================
 
