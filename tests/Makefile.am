@@ -1102,13 +1102,10 @@ bhz03widening1 \
 bhz03widening4 \
 bhz03widening6 \
 boundedh79extrapolation1 \
-boundingbox4 \
 foldspacedims1 \
 foldspacedims2 \
 generalizedaffineimage3 \
 generalizedaffineimage7 \
-intersection1 \
-intersection2 \
 mapspacedims2 \
 max_min2 \
 onepoint \
@@ -1119,14 +1116,20 @@ smm1 \
 nnc_bgp99extrapolation2 \
 nnc_boundedh79extrapolation1 \
 nnc_generalizedaffineimage3 \
-nnc_intersection1 \
-nnc_intersection2 \
 nnc_max_min2 \
 nnc_onepoint \
 nnc_polydifference9 \
 nnc_randphull1 \
-nnc_removespacedims2 \
 nnc_smm1 
+
+XFAIL_WITH_INT8_A = \
+$(XFAIL_WITH_INT8) \
+boundingbox4 \
+intersection1 \
+intersection2 \
+nnc_intersection1 \
+nnc_intersection2 \
+nnc_removespacedims2
 
 
 if USE_INT64
@@ -1146,7 +1149,15 @@ XFAIL_SET = $(XFAIL_WITH_INT16)
 else !USE_INT16
 if USE_INT8
 
+if ASSERTIONS_ENABLED
+
+XFAIL_SET = $(XFAIL_WITH_INT8_A)
+
+else !ASSERTIONS_ENABLED
+
 XFAIL_SET = $(XFAIL_WITH_INT8)
+
+endif !ASSERTIONS_ENABLED
 
 else !USE_INT8
 
