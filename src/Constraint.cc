@@ -53,18 +53,56 @@ PPL::operator>>(const Constraint& y, unsigned int offset) {
   return x;
 }
 
+PPL::Constraint
+PPL::Constraint::construct_epsilon_geq_zero() {
+  LinExpression e = Variable(0);
+  Constraint c = Constraint(e);
+  c.set_non_necessarily_closed();
+  c.set_is_ray_or_point_or_inequality();
+  return c;
+}
+
 // CHECK ME.
 bool
 PPL::Constraint::is_trivial_true() const {
   assert(size() > 0);
   const Constraint& x = *this;
-  if (!x.all_homogeneous_terms_are_zero())
-    return false;
-  else if (is_equality())
-    return (x[0] == 0);
+  if (x.all_homogeneous_terms_are_zero())
+    if (is_equality())
+      return x[0] == 0;
+    else
+      // Non-strict inequality constraint.
+      return x[0] >= 0;
   else
-    // Inequality constraint.
-    return (x[0] >= 0);
+    // There is a non-zero homogeneous coefficient.
+    if (is_necessarily_closed())
+      return false;
+    else {
+      // The constraint is NOT necessarily closed.
+      size_t eps_index = size() - 1;
+      int eps_sign = sgn(x[eps_index]);
+      if (eps_sign > 0)
+	// We have found the constraint \epsilon \geq 0.
+	// CHECK ME : What ?
+	return true;
+      if (eps_sign == 0)
+	// One of the `true' dimensions has a non-zero coefficient.
+	return false;
+      else {
+	// Here the \epsilon coefficient is negative: strict inequality.
+	if (x[0] < 0)
+	  // A strict inequality such as `lhs - k > 0',
+	  // where k is a positive integer, cannot be trivially true.
+	  return false;
+	// Checking for another non-zero coefficient.
+	for (size_t i = eps_index; --i > 0; )
+	  if (x[i] != 0)
+	    return false;
+	// We have the inequality `k > 0',
+	// where k is zero or a positive integer. 
+	return true;
+      }
+    }
 }
 
 
@@ -86,11 +124,14 @@ PPL::Constraint::is_trivial_false() const {
     else {
       // The constraint is NOT necessarily closed.
       size_t eps_index = size() - 1;
-      if (x[eps_index] == 0)
-	// One of the `true' dimensions has a non-zero coefficient.
+      if (x[eps_index] >= 0)
+	// If positive, we have found the constraint \epsilon \geq 0.
+	// CHECK ME : What ?
+	// If zero, one of the `true' dimensions has a non-zero coefficient.
+	// In both cases, it is not trivially false.
 	return false;
       else {
-	assert(x[eps_index] < 0);
+	// Here the \epsilon coefficient is negative: strict inequality.
 	if (x[0] > 0)
 	  // A strict inequality such as `lhs + k > 0',
 	  // where k is a positive integer, cannot be trivially false.

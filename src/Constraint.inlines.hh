@@ -128,6 +128,18 @@ Constraint::zero_dim_positivity() {
   return zdp;
 }
 
+inline const Constraint&
+Constraint::epsilon_geq_zero() {
+  static Constraint eps_geq_zero = construct_epsilon_geq_zero();
+  return eps_geq_zero;
+}
+
+inline const Constraint&
+Constraint::epsilon_leq_one() {
+  static Constraint eps_leq_one(LinExpression::zero() < Integer_one());
+  return eps_leq_one;
+}
+
 inline Constraint
 operator==(const LinExpression& e1, const LinExpression& e2) {
   LinExpression diff = e1 - e2;

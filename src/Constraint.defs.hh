@@ -313,6 +313,14 @@ PPL_INTERNAL:
   //! Copy-constructor with given size.
   Constraint(const Constraint& c, size_t sz);
 
+  static Constraint construct_epsilon_geq_zero();
+  //! The zero-dimension space constraint \f$\epsilon \geq 0\f$
+  //! (used to implement non-necessarily closed polyhedra).
+  static const Constraint& epsilon_geq_zero();
+  //! The zero-dimension space constraint \f$\epsilon \leq 1\f$
+  //! (used to implement non-necessarily closed polyhedra).
+  static const Constraint& epsilon_leq_one();
+
   //! Returns <CODE>true</CODE> if and only if
   //! \p *this is the trivially true constraint \f$0 <= n\f$,
   //! where \f$n \geq 0\f$.
