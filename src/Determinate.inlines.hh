@@ -135,6 +135,27 @@ operator<<(std::ostream& s, const Determinate<PH>& x) {
 
 template <typename PH>
 void
+Determinate<PH>::add_constraint(const Constraint& c) {
+  mutate();
+  prep->ph.add_constraint(c);
+}
+
+template <typename PH>
+void
+Determinate<PH>::add_constraints(ConSys& cs) {
+  mutate();
+  prep->ph.add_constraints(cs);
+}
+
+template <typename PH>
+void
+Determinate<PH>::add_dimensions_and_constraints(ConSys& cs) {
+  mutate();
+  prep->ph.add_dimensions_and_constraints(cs);
+}
+
+template <typename PH>
+void
 Determinate<PH>::add_dimensions_and_embed(size_t dim) {
   mutate();
   prep->ph.add_dimensions_and_embed(dim);

@@ -252,6 +252,45 @@ std::ostream& operator<< (std::ostream& s, const PowerSet<CS>& x) {
 
 template <typename CS>
 void
+PowerSet<CS>::add_constraint(const Constraint& c) {
+  for (typename PowerSet<CS>::iterator i = begin(),
+	 xend = end(); i != xend; ++i)
+    i->add_constraint(c);
+  omega_reduction();
+}
+
+template <typename CS>
+void
+PowerSet<CS>::add_constraints(ConSys& cs) {
+  if (size() == 1)
+    begin()->add_constraints(cs);
+  else
+    for (typename PowerSet<CS>::iterator i = begin(),
+	   xend = end(); i != xend; ++i) {
+      // i->add_constraints(ConSys(cs));
+      ConSys cs_copy = cs;
+      i->add_constraints(cs_copy);
+    }
+  omega_reduction();
+}
+
+template <typename CS>
+void
+PowerSet<CS>::add_dimensions_and_constraints(ConSys& cs) {
+  if (size() == 1)
+    begin()->add_dimensions_and_constraints(cs);
+  else
+    for (typename PowerSet<CS>::iterator i = begin(),
+	   xend = end(); i != xend; ++i) {
+      //i->add_dimensions_and_constraints(ConSys(cs));
+      ConSys cs_copy = cs;
+      i->add_dimensions_and_constraints(cs_copy);
+    }
+  omega_reduction();
+}
+
+template <typename CS>
+void
 PowerSet<CS>::add_dimensions_and_embed(size_t dim) {
   for (typename PowerSet<CS>::iterator i = begin(),
 	 xend = end(); i != xend; ++i)

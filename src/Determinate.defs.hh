@@ -81,6 +81,40 @@ public:
   friend std::ostream& operator<<<>(std::ostream& s, const Determinate& x);
 
   //! \brief
+  //! Intersects \p *this with (a copy of) constraint \p c.
+  /*!
+    \exception std::invalid_argument thrown if \p *this and constraint \p c
+                                     are topology-incompatible
+                                     or dimension-incompatible.
+  */
+  void add_constraint(const Constraint& c);
+
+  //! Intersects \p *this with the constraints in \p cs.
+  /*!
+    \param  cs             The constraints to intersect with.
+                           This parameter is not declared
+                           <CODE>const</CODE> because  it can be modified.
+    \exception std::invalid_argument thrown if \p *this and \p cs
+                                     are topology-incompatible
+                                     or dimension-incompatible.
+  */
+  void add_constraints(ConSys& cs);
+
+  //! \brief
+  //! First increases the space dimension of \p *this by adding
+  //! \p cs.space_dimension() new dimensions;
+  //! then intersects \p *this with a renamed-apart version of
+  //! the constraints in \p cs.
+  /*!
+    \param  cs             Specifies the constraints to be added.
+                           This parameter is not declared <CODE>const</CODE>
+                           because it can be modified.
+    \exception std::invalid_argument thrown if \p *this and \p cs
+                                     are topology-incompatible.
+  */
+  void add_dimensions_and_constraints(ConSys& cs);
+
+  //! \brief
   //! Adds \p dim new dimensions and embeds the old polyhedron
   //! into the new space.
   void add_dimensions_and_embed(size_t dim);
