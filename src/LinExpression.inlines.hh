@@ -26,8 +26,14 @@ site: http://www.cs.unipr.it/ppl/ . */
 
 #include "Variable.defs.hh"
 #include "Integer.defs.hh"
+#include <stdexcept>
 
 namespace Parma_Polyhedra_Library {
+
+inline dimension_type
+LinExpression::max_space_dimension() {
+  return Linear_Row::max_space_dimension();
+}
 
 inline
 LinExpression::LinExpression()
@@ -41,7 +47,14 @@ LinExpression::LinExpression(dimension_type sz, bool)
 
 inline
 LinExpression::LinExpression(const Variable v)
-  : Linear_Row(v.id() + 2, Linear_Row::Flags()) {
+  : Linear_Row(v.space_dimension() <= max_space_dimension()
+	       ? v.id() + 2
+	       : (throw std::length_error("PPL::LinExpression::"
+					  "LinExpression(v):\n"
+					  "v exceeds the maximum allowed "
+					  "space dimension."),
+		  v.id() + 2)
+	       , Linear_Row::Flags()) {
   (*this)[v.id() + 1] = 1;
 }
 
@@ -72,7 +85,7 @@ LinExpression::space_dimension() const {
 
 inline Integer_traits::const_reference
 LinExpression::coefficient(Variable v) const {
-  if (v.id() >= space_dimension())
+  if (v.space_dimension() > space_dimension())
     return Integer_zero();
   return Linear_Row::coefficient(v.id());
 }
