@@ -433,6 +433,10 @@ INPUT                  = @srcdir@/definitions.dox \
                          @srcdir@/../src/NNC_Polyhedron.defs.hh \
                          @srcdir@/../src/NNC_Polyhedron.inlines.hh \
                          @srcdir@/../src/NNC_Polyhedron.cc \
+                         @srcdir@/../src/Determinate.defs.hh \
+                         @srcdir@/../src/Determinate.inlines.hh \
+                         @srcdir@/../src/PowerSet.defs.hh \
+                         @srcdir@/../src/PowerSet.inlines.hh \
                          @srcdir@/../src/algorithms.hh \
                          @srcdir@/../interfaces/C/ppl_c.h \
                          @srcdir@/../interfaces/C/ppl_c.cc \

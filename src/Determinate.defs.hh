@@ -39,7 +39,7 @@ namespace Parma_Polyhedra_Library {
 //! Returns <CODE>true</CODE> if and only if
 //! \p x and \p y are the same polyhedron.
 /*!
-  \relates Determinate\<PH\>
+  \relates Determinate
   \exception std::invalid_argument thrown if \p x and \p y
                                           are topology-incompatible
                                           or dimension-incompatible.
@@ -51,7 +51,7 @@ bool operator==(const Determinate<PH>& x, const Determinate<PH>& y);
 //! Returns <CODE>true</CODE> if and only if
 //! \p x and \p y are different polyhedra.
 /*!
-  \relates Determinate\<PH\>
+  \relates Determinate
   \exception std::invalid_argument thrown if \p x and \p y
                                           are topology-incompatible
                                           or dimension-incompatible.
@@ -59,24 +59,26 @@ bool operator==(const Determinate<PH>& x, const Determinate<PH>& y);
 template <typename PH>
 bool operator!=(const Determinate<PH>& x, const Determinate<PH>& y);
 
-/*! \relates Determinate\<PH\> */
+/*! \relates Determinate */
 template <typename PH>
 bool
 lcompare(const Determinate<PH>& x, const Determinate<PH>& y);
 
-/*! \relates Determinate\<PH\> */
+//! Computes an upper bound of \p x and \p y.
+/*! \relates Determinate */
 template <typename PH>
 Determinate<PH>
 operator+(const Determinate<PH>& x, const Determinate<PH>& y);
 
-/*! \relates Determinate\<PH\> */
+//! Computes the meet of \p x and \p y.
+/*! \relates Determinate */
 template <typename PH>
 Determinate<PH>
 operator*(const Determinate<PH>& x, const Determinate<PH>& y);
 
 namespace IO_Operators {
 
-/*! \relates Parma_Polyhedra_Library::Determinate\<PH\> */
+/*! \relates Parma_Polyhedra_Library::Determinate */
 template <typename PH>
 std::ostream&
 operator<<(std::ostream&, const Determinate<PH>&);
@@ -85,38 +87,87 @@ operator<<(std::ostream&, const Determinate<PH>&);
 
 } // namespace Parma_Polyhedra_Library
 
-//! Wrap a polyhedron class into a determinate constraint system interface.
+//! Wraps a polyhedron class into a determinate constraint system interface.
 template <typename PH>
 class Parma_Polyhedra_Library::Determinate {
 public:
+  //! \brief
+  //! Builds either the top or the bottom of the determinate constraint
+  //! system defined on the vector space having \p num_dimensions
+  //! dimensions.
+  /*!
+    The top element, corresponding to the universe polyhedron,
+    is built if \p universe is \c true; otherwise the bottom element
+    (corresponding to the empty polyhedron) is built. By default,
+    the top of a zero-dimension vector space is built.
+  */
   explicit
   Determinate(dimension_type num_dimensions = 0, bool universe = true);
+
+  //! \brief
+  //! Injection operator: builds the determinate constraint system element
+  //! corresponding to polyhedron \p p.
   Determinate(const PH& p);
+
+  //! \brief
+  //! Injection operator: builds the determinate constraint system element
+  //! corresponding to the polyhedron represented by \p cs.
   Determinate(const ConSys& cs);
+
+  //! Copy constructor.
   Determinate(const Determinate& y);
+
+  //! Destructor.
   ~Determinate();
 
+  //! Assignment operator.
   Determinate& operator=(const Determinate& y);
 
+#ifdef PPL_DOXYGEN_INCLUDE_IMPLEMENTATION_DETAILS
+  //! \brief
+  //! On return from this method, the representation of \p *this
+  //! is not shared by different Determinate objects.
+#endif // PPL_DOXYGEN_INCLUDE_IMPLEMENTATION_DETAILS
   void mutate();
 
+  //! \brief
+  //! Assigns to \p *this the upper bound (i.e., poly-hull)
+  //! of \p *this and \p y.
   void upper_bound_assign(const Determinate& y);
 
+  //! Assigns to \p *this the meet (i.e., intersection) of \p *this and \p y.
   void meet_assign(const Determinate& y);
 
+  //! Assigns to \p *this the concatenation of \p *this with \p y.
   void concatenate_assign(const Determinate& y);
 
+  //! \brief
+  //! Returns <CODE>true</CODE> if and only if \p *this entails \p y.
+  //! (i.e., \p x is contained into \p y).
   bool definitely_entails(const Determinate& y) const;
 
+  //! \brief
+  //! Returns <CODE>true</CODE> if and only if \p *this and \p y
+  //! are equivalent.
   bool is_definitely_equivalent_to(const Determinate& y) const;
 
   Determinate& operator <<= (dimension_type n);
   Determinate& hide_assign(dimension_type n);
 
+  //! Returns a const reference to the embedded polyhedron.
   const PH& polyhedron() const;
+
+  //! Returns a reference to the embedded polyhedron.
   PH& polyhedron();
 
+  //! \brief
+  //! Returns \c true if and only if \p *this is the top of the
+  //! determinate constraint system (i.e., the universe polyhedron).
   inline bool is_top() const;
+
+  //! \brief
+  //! Returns <CODE>true</CODE> if and only if \p *this is the bottom
+  //! of the determinate constraint system (i.e., the empty polyhedron).
   inline bool is_bottom() const;
 
   friend bool
@@ -234,45 +285,61 @@ public:
   bool OK() const;
 
 private:
+  //! The possibly shared representation of a Determinate object.
+  /*!
+    By adopting the <EM>copy-on-write</EM> technique, a single
+    representation of the polyhedron may be shared by more than
+    one object of the class Determinate.
+  */
   class Rep {
   private:
     //! \brief
     //! Count the number of references:
-    //! -   0: leaked, \p pph is non-const;
-    //! -   1: one reference, \p pph is non-const;
-    //! - > 1: more than one reference, \p pph is const.
+    //! -   0: leaked, \p ph is non-const;
+    //! -   1: one reference, \p ph is non-const;
+    //! - > 1: more than one reference, \p ph is const.
     mutable unsigned long references;
 
-    //! Private and unimplemented.
+    //! Private and unimplemented: assignment not allowed.
     Rep& operator=(const Rep& y);
+
+    //! Private and unimplemented: copies not allowed.
     Rep(const Rep& y);
+
+    //! Private and unimplemented: default construction not allowed.
     Rep();
 
   public:
-    //! A polyhedron.
+    //! A possibly shared polyhedron object.
     PH ph;
 
+    //! \brief
+    //! Builds a new representation by creating a polyhedron object
+    //! of the specified kind, in the specified vector space.
     Rep(dimension_type num_dimensions, Polyhedron::Degenerate_Kind kind);
 
+    //! Builds a new representation by copying polyhedron \p p.
     Rep(const PH& p);
 
+    //! Builds a new representation by copying the constraints in \p cs.
     Rep(const ConSys& cs);
 
     //! Destructor.
     ~Rep();
 
-    //! Register a new reference.
+    //! Registers a new reference.
     void new_reference() const;
 
     //! \brief
-    //! Unregister a reference and return true if the representation
-    //! has become unreferenced.
+    //! Unregisters one reference; returns <CODE>true</CODE> if and only if
+    //! the representation has become unreferenced.
     bool del_reference() const;
 
     //! True if and only if this representation is currently shared.
     bool is_shared() const;
   };
 
+  //! A pointer to the possibly shared representation of the polyhedron.
   Rep* prep;
 };
 

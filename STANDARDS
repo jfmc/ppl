@@ -182,3 +182,8 @@ Standards for Documenting the Project with Doxygen
    and definitions, the above command should be placed in both places.
    Typically, this will be the only kind of Doxygen command
    occurring in *.inlines.hh and *.cc source files.
+
+   If <classname> is a templatic class, the arguments of the template
+   (as well as the angle brackets) should be omitted.
+   The namespace qualification of the class can be omitted, provided
+   the comment block is included into the namespace scope.

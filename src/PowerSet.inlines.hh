@@ -157,14 +157,14 @@ PowerSet<CS>::definitely_entails(const PowerSet<CS>& y) const {
   return found;
 }
 
-/*! \relates PowerSet\<CS\> */
+/*! \relates PowerSet */
 template <typename CS>
 inline
 bool operator==(const PowerSet<CS>& x, const PowerSet<CS>& y) {
   return (x.size() == y.size() && equal(x.begin(), x.end(), y.begin()));
 }
 
-/*! \relates PowerSet\<CS\> */
+/*! \relates PowerSet */
 template <typename CS>
 inline
 bool operator!=(const PowerSet<CS>& x, const PowerSet<CS>& y) {
@@ -196,7 +196,7 @@ PowerSet<CS>::is_bottom() const {
 
 // Projection
 
-/*! \relates PowerSet\<CS\> */
+/*! \relates PowerSet */
 template <typename CS>
 CS
 project(const PowerSet<CS>& x) {
@@ -215,7 +215,7 @@ project(const PowerSet<CS>& x) {
 
 // Meet operators
 
-/*! \relates PowerSet\<CS\> */
+/*! \relates PowerSet */
 template <typename CS>
 PowerSet<CS>
 operator*(const PowerSet<CS>& x, const PowerSet<CS>& y) {
@@ -283,7 +283,7 @@ PowerSet<CS>::upper_bound_assign(const PowerSet<CS>& y) {
 
 // Lexicographic comparison
 
-/*! \relates PowerSet\<CS\> */
+/*! \relates PowerSet */
 template <typename CS>
 int
 lcompare(const PowerSet<CS>& x, const PowerSet<CS>& y) {
@@ -309,7 +309,7 @@ lcompare(const PowerSet<CS>& x, const PowerSet<CS>& y) {
 
 namespace IO_Operators {
 
-/*! \relates Parma_Polyhedra_Library::PowerSet\<CS\> */
+/*! \relates Parma_Polyhedra_Library::PowerSet */
 template <typename CS>
 std::ostream&
 operator<<(std::ostream& s, const PowerSet<CS>& x) {

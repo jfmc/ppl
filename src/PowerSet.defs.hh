@@ -34,37 +34,55 @@ site: http://www.cs.unipr.it/ppl/ . */
 
 namespace Parma_Polyhedra_Library {
 
-/*! \relates PowerSet\<CS\> */
+//! Returns the lattice upper bound (i.e., the union) of \p x and \p y. 
+/*! \relates PowerSet */
 template <typename CS>
 PowerSet<CS>
-operator+(const PowerSet<CS>&, const PowerSet<CS>&);
+operator+(const PowerSet<CS>& x, const PowerSet<CS>& y);
 
-/*! \relates PowerSet\<CS\> */
+//! Returns the lattice meet (i.e., the intersection) of \p x and \p y. 
+/*! \relates PowerSet */
 template <typename CS>
 PowerSet<CS>
-operator*(const PowerSet<CS>&, const PowerSet<CS>&);
+operator*(const PowerSet<CS>& x, const PowerSet<CS>& y);
 
-/*! \relates PowerSet\<CS\> */
+//! Returns the projection of \p x onto the underlying constraint system.
+/*!
+  \relates PowerSet
+  The result is obtained by computing the <CODE>CS</CODE>-upper-bound
+  (i.e., the poly-hull) of all the elements in \p x.
+*/
 template <typename CS>
 CS
-project(const PowerSet<CS>&);
+project(const PowerSet<CS>& x);
 
-/*! \relates PowerSet\<CS\> */
+//! Returns <CODE>true</CODE> if and only if \p x and \p y are equivalent.
+/*! \relates PowerSet */
 template <typename CS>
 bool
 operator==(const PowerSet<CS>& x, const PowerSet<CS>& y);
 
-/*! \relates PowerSet\<CS\> */
+//! Returns <CODE>true</CODE> if and only if \p x and \p y are not equivalent.
+/*! \relates PowerSet */
+template <typename CS>
+bool
+operator!=(const PowerSet<CS>& x, const PowerSet<CS>& y);
+
+//! \brief
+//! Returns \f$-1\f$, \f$0\f$, or \f$+1\f$ if \p x is lexicographically
+//! smaller than, equal to, or greater than \p y, respectively.
+/*! \relates PowerSet */
 template <typename CS>
 int
-lcompare(const PowerSet<CS>&, const PowerSet<CS>&);
+lcompare(const PowerSet<CS>& x, const PowerSet<CS>& y);
 
 namespace IO_Operators {
 
-/*! \relates Parma_Polyhedra_Library::PowerSet\<CS\> */
+//! Output operator.
+/*! \relates Parma_Polyhedra_Library::PowerSet */
 template <typename CS>
 std::ostream&
-operator<<(std::ostream&, const PowerSet<CS>&);
+operator<<(std::ostream& s, const PowerSet<CS>& x);
 
 } // namespace IO_Operators
 
@@ -106,7 +124,14 @@ public:
   //! not be decided).
   bool definitely_entails(const PowerSet& y) const;
 
+  //! \brief
+  //! Returns <CODE>true</CODE> if and only if \p *this is the top of the
+  //! determinate constraint system (i.e., the universe polyhedron).
   inline bool is_top() const;
+
+  //! \brief
+  //! Returns <CODE>true</CODE> if and only if \p *this is the bottom
+  //! of the determinate constraint system (i.e., the empty polyhedron).
   inline bool is_bottom() const;
 
   friend CS project<>(const PowerSet& x);

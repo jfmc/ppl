@@ -164,14 +164,14 @@ Determinate<PH>::is_definitely_equivalent_to(const Determinate<PH>& y)
   return prep->ph == y.prep->ph;
 }
 
-/*! \relates Determinate\<PH\> */
+/*! \relates Determinate */
 template <typename PH>
 bool
 lcompare(const Determinate<PH>& x, const Determinate<PH>& y) {
   return x.prep < y.prep;
 }
 
-/*! \relates Determinate\<PH\> */
+/*! \relates Determinate */
 template <typename PH>
 Determinate<PH>
 operator*(const Determinate<PH>& x, const Determinate<PH>& y) {
@@ -180,12 +180,12 @@ operator*(const Determinate<PH>& x, const Determinate<PH>& y) {
   return z;
 }
 
-/*! \relates Determinate\<PH\> */
+/*! \relates Determinate */
 template <typename PH>
 Determinate<PH>
 operator+(const Determinate<PH>& x, const Determinate<PH>& y) {
   Determinate<PH> z = x;
-  z += y;
+  z.upper_bound_assign(y);
   return z;
 }
 
@@ -209,7 +209,7 @@ Determinate<PH>::OK() const {
 
 namespace IO_Operators {
 
-/*! \relates Parma_Polyhedra_Library::Determinate\<PH\> */
+/*! \relates Parma_Polyhedra_Library::Determinate */
 template <typename PH>
 std::ostream&
 operator<<(std::ostream& s, const Determinate<PH>& x) {
@@ -234,14 +234,14 @@ operator<<(std::ostream& s, const Determinate<PH>& x) {
 
 } // namespace IO_Operators
 
-/*! \relates Determinate\<PH\> */
+/*! \relates Determinate */
 template <typename PH>
 bool
 operator==(const Determinate<PH>& x, const Determinate<PH>& y) {
   return x.prep->ph == y.prep->ph;
 }
 
-/*! \relates Determinate\<PH\> */
+/*! \relates Determinate */
 template <typename PH>
 bool
 operator!=(const Determinate<PH>& x, const Determinate<PH>& y) {
