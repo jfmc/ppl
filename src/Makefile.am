@@ -101,6 +101,7 @@ endif
 # The ordering of the following list *matters*!
 INCLUDE_FILES = \
 Integer_traits_template.hh \
+Integer_macros.hh \
 $(COEFFICIENT_TYPES_INCLUDE_FILES) \
 Integer.types.hh \
 Interval.types.hh \
