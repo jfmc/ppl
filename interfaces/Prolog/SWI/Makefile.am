@@ -81,16 +81,13 @@ smm.clpq \
 sumto.clpq \
 tak.clpq
 
-#check_PROGRAMS = pplpl
-#pplpl_SOURCES = pplpl.cc
-#pplpl_LDADD = libpplswiprolog.la $(top_builddir)/src/libppl.la /usr/local/lib/pl-5.0.2/runtime/i686-linux/libpl.a -lreadline -ldl -ltermcap @extra_libraries@
+bin_PROGRAMS = ppl_pl
+ppl_pl_SOURCES = ppl_pl.cc
 
-noinst_PROGRAMS = pplpl pl_clpq
-
-pplpl_SOURCES = pplpl.cc
+check_PROGRAMS = pl_clpq
 pl_clpq_SOURCES = pl_clpq.cc
 
-pplpl$(EXEEXT): ppl_swiprolog.o pplpl.o
+ppl_pl$(EXEEXT): ppl_swiprolog.o ppl_pl.o
 	plld -pl-options,-g,main., -o $@ $+ -L$(top_builddir)/src/.libs -lppl @extra_libraries@
 
 pl_clpq$(EXEEXT): ppl_swiprolog.o pl_clpq.o pl_clpq.pl ../clpq.pl
@@ -102,5 +99,5 @@ check-local: pl_clpq ../check_script ../expected
 		./pl_clpq -l $(srcdir)/clpq.pl <$(srcdir)/../check_script >obtained
 	diff -q --ignore-all-space $(srcdir)/../expected obtained
 
-MOSTLYCLEANFILES = pplpl pl_clpq $(CLPQ_TESTS) obtained
+MOSTLYCLEANFILES = pl_clpq $(CLPQ_TESTS) obtained
 endif
