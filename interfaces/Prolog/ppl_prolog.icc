@@ -35,6 +35,7 @@ site: http://www.cs.unipr.it/ppl/ . */
 #include "C_Polyhedron.defs.hh"
 #include "NNC_Polyhedron.defs.hh"
 #include "track_allocation.hh"
+#include "max_space_dimension.hh"
 #include "version.hh"
 #include <set>
 #include "Watchdog.defs.hh"
