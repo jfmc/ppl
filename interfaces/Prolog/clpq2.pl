@@ -35,14 +35,14 @@
 % represents the result of the computation.
 
 solve_query(Goals, VN, PolysOut) :-
+  % Create a table `VarNames' between the ppl names of variables
+  % and the actual variables.
+  % Also, create a copy of the Goals
+  % but where the actual variables are replaced by their PPL names.
+  freezevars(Goals, FrozeGoals, 0, Dims, [], VarNames),
   % Create a table `FrozeVN' between the names of variables as
   % input and those as used by the PPL in the polyhedra.
-  % Also another table `VarNames' between the ppl names of variables
-  % and the actual variables.
-  freezevars(VN, FrozeVN, 0, Dims, [], VarNames),
-  % Use the latter table to create a copy of the Goals
-  % but where the actual variables are replaced by their PPL names.
-  freezevars(Goals, FrozeGoals, Dims, _, VarNames, _),
+  freezevars(VN, FrozeVN, Dims, _, VarNames, _),
   % The initial polyhedron is initialised with
   % `Dims' dimensions, the number of variables in `Goals'.
   % We use the NNC topology so that we can handle strict constraints.
@@ -587,7 +587,6 @@ constraints2list(C, Rest, Rest1) :-
     Rest1 = [0 = 1]
   ).
 
-
 list2constraints([], {}) :-
   !.
 list2constraints(CSList, { CS }) :-
@@ -639,6 +638,9 @@ check_expr('$VAR'(_)).
 check_expr(Num) :-
   integer(Num).
 check_expr(Num*Var) :-
+  integer(Num),
+  check_expr(Var).
+check_expr(Var*Num) :-
   integer(Num),
   check_expr(Var).
 check_expr(E + F) :-
@@ -985,7 +987,7 @@ TO LOSS OF DATA OR DATA BEING RENDERED INACCURATE OR LOSSES SUSTAINED BY\n\
 YOU OR THIRD PARTIES OR A FAILURE OF THE PROGRAM TO OPERATE WITH ANY OTHER\n\
 PROGRAMS), EVEN IF SUCH HOLDER OR OTHER PARTY HAS BEEN ADVISED OF THE\n\
 POSSIBILITY OF SUCH DAMAGES.\n').
-
+   
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%% Startup %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
