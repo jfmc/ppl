@@ -584,19 +584,21 @@ defined by the matrix and vector
   \f[
  A =
    \begin{pmatrix}
-     1       & 0  & \dots & 0       & 0      & 0       & \dots & 0       \\
-     0       & 1  & \dots & 0       & 0      & 0       & \dots & 0       \\
-     \vdots  & \vdots &   & \vdots  & \vdots & \vdots  &       & \vdots  \\
-     a_0     & a_1  & \dots & a_{k-1} & a_k    & a_{k+1} & \dots & a_{n-1} \\
-      \vdots & \vdots &   & \vdots  & \vdots & \vdots  &       & \vdots  \\
-     0       & 0  & \dots & 0       & 0      & 0       & \dots & 1
+      1      &        &    0    &   0    & \cdots  & \cdots &    0    \\
+             & \ddots &         & \vdots &         &        & \vdots  \\
+      0      &        &    1    &   0    & \cdots  & \cdots &    0    \\
+     a_0     & \cdots & a_{k-1} &  a_k   & a_{k+1} & \cdots & a_{n-1} \\
+      0      & \cdots & \cdots  &   0    &   1     &        &    0    \\
+    \vdots   &        &         & \vdots &         & \ddots &         \\
+      0      & \cdots & \cdots  &   0    &   0     &        &    1
    \end{pmatrix}, \qquad
  \vect{b} =
    \begin{pmatrix}
      0      \\
-     0      \\
      \vdots \\
+     0      \\
      b      \\
+     0      \\
      \vdots \\
      0
    \end{pmatrix}
