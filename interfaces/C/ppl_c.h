@@ -64,6 +64,13 @@ Detailed description with examples to be written.
 
 __BEGIN_DECLS
 
+/*!
+  Initializes the Parma Polyhedra Library.
+  This function must be called before any other function.
+*/
+int
+ppl_initialize __P((void));
+
 #define PPL_TYPE_DECLARATION(Type) \
 /*! Opaque pointer to Type. */ \
 typedef struct ppl_ ## Type ## _tag* ppl_ ## Type ## _t; \
@@ -715,6 +722,61 @@ ppl_Polyhedron_convex_difference_assign __P((ppl_Polyhedron_t x,
 int
 ppl_Polyhedron_convex_difference_assign_and_minimize
 __P((ppl_Polyhedron_t x, ppl_const_Polyhedron_t y));
+
+/*!
+  Individual bit saying that the polyhedron and the set of points
+  satisfying the constraint are disjoint.
+*/
+extern unsigned int PPL_POLY_CON_RELATION_IS_DISJOINT;
+
+/*!
+  Individual bit saying that the polyhedron intersects the set of
+  points satisfying the constraint, but it is not included in it.
+*/
+extern unsigned int PPL_POLY_CON_RELATION_STRICTLY_INTERSECTS;
+
+/*!
+  Individual bit saying that the polyhedron is included in the set of
+  points satisfying the constraint.
+*/
+extern unsigned int PPL_POLY_CON_RELATION_IS_INCLUDED;
+
+/*!
+  Individual bit saying that the polyhedron is included in the set of
+  points saturating the constraint.
+*/
+extern unsigned int PPL_POLY_CON_RELATION_SATURATES;
+
+/*!
+  Checks the relation between the polyhedron \p ph with the constraint
+  \p c.  If successful, returns a non-negative integer that is
+  obtained as the bitwise or of the bits (chosen among
+  PPL_POLY_CON_RELATION_IS_DISJOINT
+  PPL_POLY_CON_RELATION_STRICTLY_INTERSECTS,
+  PPL_POLY_CON_RELATION_IS_INCLUDED, and
+  PPL_POLY_CON_RELATION_SATURATES) that describe the relation between
+  \p ph and \p c.
+*/
+int
+ppl_Polyhedron_relation_with_Constraint __P((ppl_const_Polyhedron_t ph,
+					     ppl_const_Constraint_t c));
+
+/*!
+  Individual bit saying that adding the generator would not change the
+  polyhedron.
+*/
+extern unsigned int PPL_POLY_GEN_RELATION_SUBSUMES;
+
+/*!
+  Checks the relation between the polyhedron \p ph with the generator
+  \p g.  If successful, returns a non-negative integer that is
+  obtained as the bitwise or of the bits (only
+  PPL_POLY_GEN_RELATION_SUBSUMES, at present) that describe the
+  relation between \p ph and \p g.
+*/
+int
+ppl_Polyhedron_relation_with_Generator __P((ppl_const_Polyhedron_t ph,
+					    ppl_const_Generator_t g));
 
 __END_DECLS
 #undef __P

@@ -63,6 +63,31 @@ catch(...) { \
   return -1; \
 }
 
+unsigned int PPL_POLY_CON_RELATION_IS_DISJOINT;
+unsigned int PPL_POLY_CON_RELATION_STRICTLY_INTERSECTS;
+unsigned int PPL_POLY_CON_RELATION_IS_INCLUDED;
+unsigned int PPL_POLY_CON_RELATION_SATURATES;
+
+unsigned int PPL_POLY_GEN_RELATION_SUBSUMES;
+
+int
+ppl_initialize(void) try {
+  PPL_POLY_CON_RELATION_IS_DISJOINT
+    = Poly_Con_Relation::is_disjoint().get_flags();
+  PPL_POLY_CON_RELATION_STRICTLY_INTERSECTS
+    = Poly_Con_Relation::strictly_intersects().get_flags();
+  PPL_POLY_CON_RELATION_IS_INCLUDED
+    = Poly_Con_Relation::is_included().get_flags();
+  PPL_POLY_CON_RELATION_SATURATES
+    = Poly_Con_Relation::saturates().get_flags();
+
+  PPL_POLY_GEN_RELATION_SUBSUMES
+    = Poly_Gen_Relation::subsumes().get_flags();
+  return 0;
+}
+CATCH_ALL
+
+
 DECLARE_CONVERSIONS(Coefficient)
 
 int
@@ -759,6 +784,24 @@ ppl_Polyhedron_convex_difference_assign_and_minimize
   const Polyhedron& yy = *to_const(y);
   xx.convex_difference_assign_and_minimize(yy);
   return 0;
+}
+CATCH_ALL
+
+int
+ppl_Polyhedron_relation_with_Constraint(ppl_const_Polyhedron_t ph,
+					ppl_const_Constraint_t c) try {
+  const Polyhedron& pph = *to_const(ph);
+  const Constraint& cc = *to_const(c);
+  return pph.relation_with(cc).get_flags();
+}
+CATCH_ALL
+
+int
+ppl_Polyhedron_relation_with_Generator(ppl_const_Polyhedron_t ph,
+				       ppl_const_Generator_t g) try {
+  const Polyhedron& pph = *to_const(ph);
+  const Generator& gg = *to_const(g);
+  return pph.relation_with(gg).get_flags();
 }
 CATCH_ALL
 
