@@ -90,11 +90,20 @@ Checked_Number<T, Policy>::value() {
 }
 
 template <typename T, typename Policy>
+inline
+Checked_Number<T, Policy>::operator T() const {
+  if (Policy::convertible)
+    return v;
+}
+
+#if 0
+template <typename T, typename Policy>
 Checked_Number<T, Policy>::operator mpz_class() const {
   mpz_class r;
   Checked::assign<Policy>(r, v);
   return r;
 }
+#endif
 
 template <typename T, typename Policy>
 inline const T&
@@ -359,17 +368,6 @@ cmp(const Checked_Number<T, Policy> REF x, const Checked_Number<T, Policy> REF y
   default:
 	  throw(0);
   }
-}
-
-template <typename T, typename Policy>
-inline std::ostream&
-operator<<(std::ostream& os, const Checked_Number<T, Policy> REF x) {
-  return os << x.value();
-}
-
-template <typename T, typename Policy>
-inline std::istream& operator>>(std::istream& is, Checked_Number<T, Policy>& x) {
-  return is >> x.value();
 }
 
 } // namespace Parma_Polyhedra_Library

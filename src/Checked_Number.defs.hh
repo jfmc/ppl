@@ -36,7 +36,7 @@ site: http://www.cs.unipr.it/ppl/ . */
 
 namespace Parma_Polyhedra_Library {
 
-struct Checked_Number_Default_Policy {
+struct Check_Overflow_Policy {
   static const int check_overflow = 1;
   static const int check_nan_result = 0;
   static const int check_inexact = 0;
@@ -46,6 +46,7 @@ struct Checked_Number_Default_Policy {
   static const int check_infinity_arg = 0;
   static const int store_unknown = 0;
   static const int store_overflows = 0;
+  static const int convertible = 1;
 };
 
 template <typename T, typename Policy>
@@ -86,11 +87,12 @@ public:
   Checked_Number(const mpq_class& y);
   Checked_Number(const mpz_class& y);
 
+  operator T() const;
  
   T& value();
   const T& value() const;
 
-#if 1
+#if 0
   /* Temporary kludge: needed by ERational */
   operator mpz_class() const;
 #endif
