@@ -41,7 +41,7 @@ Enhancements for PPL 0.6
 Portability
 ===========
 
-- Explain how to compile with Comeau C/C++ compiler: first compile
+- Explain how to compile with Comeau C/C++ compiler: first compile GMP
   configuring it with a command like
 
     CXX=como /path/to/gmp-4.1.2/configure --enable-cxx \
@@ -50,8 +50,17 @@ Portability
     /path/to/ppl/configure --with-cc="como --c" --with-cxx=como \
         --with-cxxflags="--remarks --strict --long_long \
         --display_error_number --diag_suppress 193,236,340,401,679" \
-        --disable-shared --with-libgmp-prefix=/usr/local/lib/como433/local
+        --disable-shared --with-libgmpxx-prefix=/usr/local/lib/como433/local
 
+- Explain how to compile with Intel C/C++ compiler: first compile GMP
+  configuring it with a command like
+
+    CC=icc CXX=icpc /usr/local/distrib/gmp-4.1.2/configure --enable-cxx \
+        --prefix=/opt/intel_cc_80
+
+    /path/to/ppl/configure --with-cxx=icpc --with-cc=icc \
+	--with-cxxflags="-w2 -wd177,193,279,383,444,981 -Xc" \
+	--with-libgmpxx-prefix=-I/opt/intel_cc_80/lib --prefix=/opt/intel_cc_80
 
 Constructions on Polyhedra
 ==========================
