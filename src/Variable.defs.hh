@@ -92,8 +92,9 @@ public:
   //! Returns the pointer to the current output function.
   static Output_Function_Type* get_output_function();
 
-  //! FIXME: to be documented.
+  //! Binary predicate defining the total ordering on variables.
   struct Compare {
+    //! Returns <CODE>true</CODE> if and only if \p x comes before \p y.
     bool operator()(const Variable& x, const Variable& y) const;
   };
 
