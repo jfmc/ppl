@@ -41,7 +41,7 @@ CPPFLAGS="${gmp_includes_option} $CPPFLAGS"
 AC_LANG_PUSH(C++)
 
 AC_MSG_CHECKING([for the GMP library])
-AC_TRY_RUN([
+AC_RUN_IFELSE([AC_LANG_SOURCE([
 #include <gmpxx.h>
 
 using namespace std;
@@ -50,7 +50,7 @@ int main() {
   mpz_class pie("3141592653589793238462643383279502884");
   exit(0);
 }
-],
+])],
   AC_MSG_RESULT(yes)
   ac_cv_have_gmp=yes,
   AC_MSG_RESULT(no)
@@ -67,8 +67,8 @@ AC_MSG_CHECKING([size of GMP mp_limb_t])
 ac_cv_sizeof_mp_limb_t=none
 for size in 2 4 8
 do
-  AC_TRY_COMPILE([#include <gmp.h>],
-    [switch (0) case 0: case (sizeof(mp_limb_t) == $size):;],
+  AC_COMPILE_IFELSE([AC_LANG_SOURCE([[#include <gmp.h>]],
+    [switch (0) case 0: case (sizeof(mp_limb_t) == $size):;])],
     ac_cv_sizeof_mp_limb_t=$size; break)
 done
 AC_MSG_RESULT($size)
@@ -76,7 +76,7 @@ AC_DEFINE_UNQUOTED(SIZEOF_MP_LIMB_T, $size,
   [Size of GMP's mp_limb_t.])
 
 AC_MSG_CHECKING([whether GMP has been compiled with support for exceptions])
-AC_TRY_RUN([
+AC_RUN_IFELSE([AC_LANG_SOURCE([
 #include <gmpxx.h>
 #include <new>
 #include <cstddef>
@@ -108,7 +108,7 @@ int main() {
   }
   exit(1);
 }
-],
+])],
   AC_MSG_RESULT(yes)
   ac_cv_gmp_supports_exceptions=yes,
   AC_MSG_RESULT(no)

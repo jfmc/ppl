@@ -27,17 +27,17 @@
 AC_INIT([the Parma Watchdog Library], 0.1, bagnara@cs.unipr.it, watchdog)
 
 # Minimum autoconf version required.
-AC_PREREQ(2.52g)
+AC_PREREQ(2.54)
 
 # Make sure the sources are there.
 AC_CONFIG_SRCDIR([Watchdog.cc])
 
 # Use Automake.
-AM_INIT_AUTOMAKE([foreign dist-bzip2 dist-zip 1.5])
+AM_INIT_AUTOMAKE([foreign dist-bzip2 dist-zip 1.7])
 AC_SUBST(VERSION)
 
 # Generate a configuration header file.
-AM_CONFIG_HEADER([config.h])
+AC_CONFIG_HEADER([config.h])
 
 # C compiler
 
@@ -268,6 +268,5 @@ fi
 
 AC_SUBST(debug_flag)
 
-#AC_CONFIG_FILES([])
-AC_OUTPUT(Makefile)
-
+AC_CONFIG_FILES(Makefile)
+AC_OUTPUT

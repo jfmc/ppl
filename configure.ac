@@ -442,25 +442,29 @@ AC_SUBST(extra_cpp_flags)
 AC_SUBST(debug_flag)
 AC_SUBST(xsb_includes)
 
-AC_OUTPUT(Makefile
-          ppl.lsm ppl.spec
-          src/Makefile
-          tests/Makefile
-          m4/Makefile
-          doc/Makefile
-          doc/user-browse.doxyconf-latex doc/devref-browse.doxyconf-latex
-          doc/user-print.doxyconf-latex  doc/devref-print.doxyconf-latex
-          doc/user.doxyconf-html         doc/devref.doxyconf-html
-          interfaces/Makefile
-          interfaces/C/Makefile
-          interfaces/C/lpenum/Makefile
-          interfaces/Prolog/Makefile
-          interfaces/Prolog/Ciao/Makefile
-          interfaces/Prolog/GNU/Makefile
-          interfaces/Prolog/SICStus/Makefile
-          interfaces/Prolog/SWI/Makefile
-          interfaces/Prolog/XSB/Makefile
-          interfaces/Prolog/YAP/Makefile)
+AC_CONFIG_FILES(Makefile
+                ppl.lsm ppl.spec
+                src/Makefile
+                tests/Makefile
+                m4/Makefile
+                doc/Makefile
+                doc/user-browse.doxyconf-latex
+                doc/devref-browse.doxyconf-latex
+                doc/user-print.doxyconf-latex
+                doc/devref-print.doxyconf-latex
+                doc/user.doxyconf-html
+                doc/devref.doxyconf-html
+                interfaces/Makefile
+                interfaces/C/Makefile
+                interfaces/C/lpenum/Makefile
+                interfaces/Prolog/Makefile
+                interfaces/Prolog/Ciao/Makefile
+                interfaces/Prolog/GNU/Makefile
+                interfaces/Prolog/SICStus/Makefile
+                interfaces/Prolog/SWI/Makefile
+                interfaces/Prolog/XSB/Makefile
+                interfaces/Prolog/YAP/Makefile)
+AC_OUTPUT
 
 if test x"$gmp_supports_exceptions" = xno
 then

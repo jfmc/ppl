@@ -26,7 +26,7 @@ AC_DEFUN([AC_CXX_SUPPORTS_FLEXIBLE_ARRAYS],
 AC_LANG_PUSH(C++)
 
 AC_MSG_CHECKING([whether the C++ compiler supports flexible arrays])
-AC_TRY_RUN([
+AC_RUN_IFELSE([AC_LANG_SOURCE([
 #include <new>
 #include <cstddef>
 #include <cstdlib>
@@ -71,7 +71,7 @@ main() {
   delete p;
   exit(0);
 }
-],
+])],
   AC_MSG_RESULT(yes)
   ac_cxx_supports_flexible_arrays=yes,
   AC_MSG_RESULT(no)
