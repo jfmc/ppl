@@ -15,8 +15,8 @@ Enhancements for PPL 0.6
 - We must explain very well that iterators can be invalidated by several
   (actually, almost all) operations, and that use of an invalidated
   iterator causes undefined behavior.
-- Complete the Determinate and PowerSet classes so as to provide
-  complete support for sets of polyhedra.
+- Complete the documentation of the Determinate, PowerSet and
+  Polyhedra_PowerSet classes.
 - Harmonize all the methods void PPL::Polyhedron::throw_...().
 - Turn h79widening6 into a proper test.
 
@@ -33,35 +33,11 @@ Enhancements for PPL 0.7 or later versions
   temporarily in algorithms.hh, more efficiently.
 
 
-Portability
-===========
-
-- Explain how to compile with Comeau C/C++ compiler: first compile GMP
-  configuring it with a command like
-
-    CXX=como /path/to/gmp-4.1.2/configure --enable-cxx \
-        --disable-shared --prefix=/usr/local/lib/como433/local 
-
-    /path/to/ppl/configure --with-cc="como --c" --with-cxx=como \
-        --with-cxxflags="--remarks --strict --long_long \
-        --display_error_number --diag_suppress 193,236,340,401,679" \
-        --disable-shared --with-libgmpxx-prefix=/usr/local/lib/como433/local
-
-- Explain how to compile with Intel C/C++ compiler: first compile GMP
-  configuring it with a command like
-
-    CC=icc CXX=icpc /usr/local/distrib/gmp-4.1.2/configure --enable-cxx \
-        --prefix=/opt/intel_cc_80
-
-    /path/to/ppl/configure --with-cxx=icpc --with-cc=icc \
-	--with-cxxflags="-w2 -wd177,193,279,383,444,981,1418 -Xc" \
-	--with-libgmpxx-prefix=-I/opt/intel_cc_80/lib --prefix=/opt/intel_cc_80
-
 Constructions on Polyhedra
 ==========================
 
-We want to extend the PPL so as to implement the constructions
-of the constraint system hierarchy described in
+Since version 0.6, the PPL supports the determinate and powerset
+constructions of the constraint system hierarchy described in
 
   R. Bagnara.
   A hierarchy of constraint systems for data-flow analysis
@@ -69,11 +45,11 @@ of the constraint system hierarchy described in
   Science of Computer Programming 30, 1-2 (January 1998), pp. 119-155.
   Available at http://www.cs.unipr.it/~bagnara/Papers/Abstracts/SCP98
 
-A generic implementation (in the form of C++ templates) of the entire
-hierarchy has already been written.  The wrapper class for C_Polyhedron
-and NNC_Polyhedron so that a polyhedron is seen as a "determinate
-constraint system" is almost finished, as is the implementation of
-powersets of polyhedra.  Ask-and-tell systems need extensive work.
+The implementation consists in a generic implementation (in the form
+of C++ templates) of the hierarchy, plus a specialization of the
+powerset construction on polyhedra.  What is missing now is the
+ask-and-tell construction.  We have some old code implementing it
+but it requires extensive work.
 
 
 Efficiency Issues
