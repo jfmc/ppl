@@ -2407,7 +2407,6 @@ PPL::PolyBase::relation_with(const Constraint& c) {
   Returns the relations holding between the polyhedron \p *this and
   the generator \p g.
 */
-// FIXME.
 PPL::Poly_Gen_Relation
 PPL::PolyBase::relation_with(const Generator& g) {
   // Dimension-compatibility check.
@@ -2685,7 +2684,7 @@ PPL::PolyBase::check_universe() const {
     obtain_sorted_constraints();
     const Constraint& eps_leq_one = con_sys[0]; 
     const Constraint& eps_geq_zero = con_sys[1]; 
-    size_t eps_index = num_columns() - 1;
+    size_t eps_index = con_sys.num_columns() - 1;
     if (eps_leq_one[0] <= 0
 	|| eps_leq_one[eps_index] >= 0
 	|| eps_geq_zero[0] != 0
