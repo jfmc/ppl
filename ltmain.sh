@@ -56,7 +56,7 @@ modename="$progname"
 PROGRAM=ltmain.sh
 PACKAGE=libtool
 VERSION=1.4e
-TIMESTAMP=" (1.1189 2003/02/12 05:54:20)"
+TIMESTAMP=" (1.1194 2003/02/19 23:29:40)"
 
 default_mode=
 help="Try \`$progname --help' for more information."
@@ -123,24 +123,34 @@ o2lo="s/\\.${objext}\$/.lo/"
 # that is supplied when $file_magic_command is called.
 win32_libid () {
   win32_libid_type="unknown"
-  if eval $OBJDUMP -f $1 2>/dev/null | \
-     grep -E 'file format pei+-i386(.*architecture: i386)?' >/dev/null ; then
-    win32_libid_type="x86 DLL"
-  else
-    if eval $OBJDUMP -f $1 2>/dev/null | \
-      grep -E 'file format pei*-i386(.*architecture: i386)?' >/dev/null ; then
-      win32_libid_type="x86"
-      if eval file $1 2>/dev/null | \
-         grep -E 'ar archive' >/dev/null; then
-        win32_libid_type="$win32_libid_type archive"
-        if eval $NM -f posix -A $1 | awk '{print $3}' | grep "I" >/dev/null ; then
-          win32_libid_type="$win32_libid_type import"
-        else
-          win32_libid_type="$win32_libid_type static"
-        fi
+  win32_fileres=`file -L $1 2>/dev/null`
+  case $win32_fileres in
+  *ar\ archive\ import\ library*) # definitely import
+    win32_libid_type="x86 archive import"
+    ;;
+  *ar\ archive*) # could be an import, or static
+    if eval $OBJDUMP -f $1 | head -n 10 2>/dev/null | \
+      grep -E 'file format pe-i386(.*architecture: i386)?' >/dev/null ; then
+      win32_nmres=`eval $NM -f posix -A $1 | \
+        sed -n -e '1,100{/ I /{x;/import/!{s/^/import/;h;p;};x;}}'`
+      if test "X$win32_nmres" = "Ximport" ; then
+        win32_libid_type="x86 archive import"
+      else
+        win32_libid_type="x86 archive static"
       fi
     fi
-  fi
+    ;;
+  *DLL*) 
+    win32_libid_type="x86 DLL"
+    ;;
+  *executable*) # but shell scripts are "executable" too...
+    case $win32_fileres in
+    *MS\ Windows\ PE\ Intel*)
+      win32_libid_type="x86 DLL"
+      ;;
+    esac
+    ;;
+  esac
   echo $win32_libid_type
 }
 
