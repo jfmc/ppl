@@ -874,29 +874,122 @@ BD_Shape<T>::relation_with(const Constraint& c) const {
 template <typename T>
 inline Poly_Gen_Relation
 BD_Shape<T>::relation_with(const Generator& g) const {
-#if 0
   // Dimension-compatibility check.
   if (space_dimension() < g.space_dimension())
     throw_dimension_incompatible("relation_with(g)", g);
-
-  // The empty octagon cannot subsume a generator.
+  
+  // The empty bdiff cannot subsume a generator.
   if (marked_empty())
     return Poly_Gen_Relation::nothing();
 
-  // A universe octagon in a zero-dimensional space subsumes
+  // A universe BD shape in a zero-dimensional space subsumes
   // all the generators of a zero-dimensional space.
   if (space_dimension() == 0)
     return Poly_Gen_Relation::subsumes();
+
+  dimension_type space_dim = space_dimension();  
+  dimension_type g_space_dim = g.space_dimension();
   
-  closure_assign();
-  return
-    constraints().satisfies_all_constraints(g)
-    ? Poly_Gen_Relation::subsumes()
-    : Poly_Gen_Relation::nothing();
-#else
-  C_Polyhedron ph(constraints());
-  return ph.relation_with(g);
-#endif
+  bool is_line = g.is_line();
+  
+  // The relation between the bdiff and the given generator is obtained
+  // checking if the generator satisfies all the constraints in the bdiff.
+  // To check if the generator satisfies all the constraints it's enough
+  // studying the sign of the scalar product between the generator and
+  // all the contraints in the bdiff.
+  
+  // We find in `*this' all the constraints.
+  for (dimension_type i = 0; i <= space_dim; ++i) {
+    for (dimension_type j = i + 1; j <= space_dim; ++j) {
+      const Variable x(j - 1);
+      const bool x_dimension_incompatible = x.space_dimension() > g_space_dim;
+      T dbm_i_j = dbm[i][j];
+      T dbm_j_i = dbm[j][i];
+      T negated_dbm_ji = negate_round_down(dbm_j_i);
+      const bool is_equality = negated_dbm_ji == negate_round_up(dbm_j_i) &&
+	negated_dbm_ji == dbm_i_j;
+      const bool dbm_i_j_is_infinity = dbm_i_j.is_plus_infinity(); 
+      const bool dbm_j_i_is_infinity = dbm_j_i.is_plus_infinity(); 
+      if (i != 0) {
+	const Variable y(i - 1);
+	const bool y_dimension_incompatible = y.space_dimension() > g_space_dim;
+	const bool is_trivial_zero = (x_dimension_incompatible && g.coefficient(y) == 0)
+	  || (y_dimension_incompatible && g.coefficient(x) == 0)
+	  || (x_dimension_incompatible && y_dimension_incompatible);
+	if (is_equality) {
+	  // We have one equality constraint.
+	  // The constraint has form ax - ay = b.
+	  // The scalar product has the form 
+	  // 'a * y_i - a * x_j' 
+	  // where y_i = g.coefficient(y) and x_j = g.coefficient(x).
+	  // It is not zero when both the coefficients of the 
+	  // variables x and y are not zero or when these coefficients
+ 	  if (!is_trivial_zero && g.coefficient(x) != g.coefficient(y))
+	    return Poly_Gen_Relation::nothing();
+	}
+	else 
+	  // We have the binary inequality constraints.
+	  if (!dbm_i_j_is_infinity) {
+	  // The constraint has form ax - ay <= b.
+	  // The scalar product has the form 
+	  // 'a * y_i - a * x_j' 
+	    if (is_line && (!is_trivial_zero && g.coefficient(x) != g.coefficient(y)))
+	      return Poly_Gen_Relation::nothing();
+	    else
+	      if (g.coefficient(y) < g.coefficient(x))
+		return Poly_Gen_Relation::nothing();
+	  }
+
+	  else 
+	    if (!dbm_j_i_is_infinity) {
+	      // The constraint has form ay - ax <= b.
+	      // The scalar product has the form 
+	      // 'a * x_j - a* y_i'.
+	      if (is_line && (!is_trivial_zero && g.coefficient(x) != g.coefficient(y)))
+		return Poly_Gen_Relation::nothing();
+	      else
+		if (g.coefficient(x) < g.coefficient(y))
+		  return Poly_Gen_Relation::nothing();
+	    }
+      }
+      else {
+	if (is_equality) {
+	  // The constraint has form ax = b.
+	  // To satisfy the constraint it's necessary that the scalar product
+	  // is not zero.It happens when the coefficient of the variable 'x'
+	  // in the generator is not zero, because the scalar 
+	  // product has the form:
+	  // 'a * x_i' where x_i = g.coefficient(x)..
+	  if (!x_dimension_incompatible && g.coefficient(x) != 0)
+	    return Poly_Gen_Relation::nothing();
+	}
+	else 
+	  // We have the unary inequality constraints.
+	  if (!dbm_i_j_is_infinity) {
+	    // The constraint has form ax <= b.
+	    // The scalar product has the form:
+	    // '-a * x_i' where x_i = g.coefficient(x).
+	    if (is_line && (!x_dimension_incompatible && g.coefficient(x) != 0))
+	      return Poly_Gen_Relation::nothing();
+	    else
+	      if (g.coefficient(x) > 0)
+		return Poly_Gen_Relation::nothing();
+	  }
+	  else 
+	    if (!dbm_j_i_is_infinity) {
+	      // The constraint has form -ax <= b.
+	      // The scalarproduct has the form:
+	      // 'a * x_i' where x_i = g.coefficient(x).
+	      if (is_line && (!x_dimension_incompatible && g.coefficient(x) != 0))
+		return Poly_Gen_Relation::nothing();
+	      else
+		if (g.coefficient(x) < 0)
+		  return Poly_Gen_Relation::nothing();
+	    }
+      }
+    }
+  }
+  return Poly_Gen_Relation::subsumes();
 }
 
 template <typename T>
