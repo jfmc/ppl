@@ -1279,8 +1279,14 @@ private:
   //! The system of constraints.
   ConSys con_sys;
 
+  //! The pending system of constraints.
+  ConSys pending_cs;
+
   //! The system of generators.
   GenSys gen_sys;
+
+  //! The pending system of generators.
+  GenSys pending_gs;
 
   //! The saturation matrix having constraints on its columns.
   SatMatrix sat_c;
@@ -1377,6 +1383,12 @@ private:
 
   //! Sets \p status to express that generators are minimized.
   void set_generators_minimized();
+
+  //! Sets \p status to express that constraints are pending.
+  void set_constraints_pending();
+
+  //! Sets \p status to express that generators are pending.
+  void set_generators_pending();
 
   //! Sets \p status to express that \p sat_c is up-to-date.
   void set_sat_c_up_to_date();
@@ -1477,6 +1489,44 @@ private:
     \f]
   */
   void update_sat_g() const;
+
+  //! Removes pendings otaining a minimized polyhedron. 
+  /*!
+    \return       <CODE>false</CODE> if and only if \p *this turns out
+                  to be an empty polyhedron.
+
+    The resulting system of generators is only partially sorted:
+    the lines are in the upper part of the matrix,
+    while rays and points are in the lower part.
+    The resulting system of constraints is only partially sorted:
+    the equalities are in the upper part of the matrix,
+    while the inequalities in the lower part.
+    It is illegal to call this method when the Status field
+    already declares the polyhedron to be empty and not to have
+    something pending.
+  */
+  bool remove_pending_and_minimize() const;
+
+  //! \brief
+  //! Removes pending and obtains the real system of constraints
+  //! of the polyhedron.
+  /*!
+    It is illegal to call this method when the polyhedron
+    has not something pending.
+  */
+  void remove_pending_to_obtain_constraints() const;
+
+  //! \brief
+  //! Removes pending and obtains the real system of generators
+  //! of the polyhedron.
+  /*!
+    \return       <CODE>false</CODE> if and only if \p *this turns out
+                  to be an empty polyhedron.
+
+    It is illegal to call this method when the polyhedron
+    has not something pending.
+  */
+  bool remove_pending_to_obtain_generators() const;
 
   //! Sorts the matrix of constraints keeping status consistency.
   /*!

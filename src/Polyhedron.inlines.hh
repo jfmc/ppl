@@ -140,6 +140,16 @@ Polyhedron::set_generators_minimized() {
 }
 
 inline void
+Polyhedron::set_constraints_pending() {
+  status.set_c_pending();
+}
+
+inline void
+Polyhedron::set_generators_pending() {
+  status.set_g_pending();
+}
+
+inline void
 Polyhedron::set_sat_c_up_to_date() {
   status.set_sat_c_up_to_date();
 }
