@@ -416,8 +416,10 @@ ppl_Polyhedron_maximize(Handle, LinearExpression, Num, Den, Max) :-
   :: any_term * any_term * any_term * any_term * any_term * any_term * int
   + (returns(Success), foreign(ppl_Polyhedron_maximize_with_point)).
 
-ppl_Polyhedron_maximize_with_point(Handle, LinearExpression, Num, Den, Max, Point) :-
-	ppl_Polyhedron_maximize_with_point_2(Handle, LinearExpression, Num, Den, Max, Point, 1).
+ppl_Polyhedron_maximize_with_point(Handle, LinearExpression,
+				   Num, Den, Max, Point) :-
+	ppl_Polyhedron_maximize_with_point_2(Handle, LinearExpression,
+					     Num, Den, Max, Point, 1).
 
 :- true pred ppl_Polyhedron_minimize_2(in(Handle),
                                        in(LinearExpression),
@@ -441,8 +443,10 @@ ppl_Polyhedron_minimize(Handle, LinearExpression, Num, Den, Min) :-
   :: any_term * any_term * any_term * any_term * any_term * any_term * int
   + (returns(Success), foreign(ppl_Polyhedron_minimize_with_point)).
 
-ppl_Polyhedron_minimize_with_point(Handle, LinearExpression, Num, Den, Min, Point) :-
-	ppl_Polyhedron_minimize_with_point_2(Handle, LinearExpression, Num, Den, Min, Point, 1).
+ppl_Polyhedron_minimize_with_point(Handle, LinearExpression,
+				   Num, Den, Min, Point) :-
+	ppl_Polyhedron_minimize_with_point_2(Handle, LinearExpression,
+					     Num, Den, Min, Point, 1).
 
 :- true pred ppl_Polyhedron_is_topologically_closed_2(in(Handle),
                                                          go(Success))
@@ -557,7 +561,8 @@ ppl_Polyhedron_add_generators_and_minimize(Handle, GList) :-
                                                           in(Handle2),
                                                           go(Success))
   :: any_term * any_term * int
-  + (returns(Success), foreign(ppl_Polyhedron_intersection_assign_and_minimize)).
+  + (returns(Success),
+	foreign(ppl_Polyhedron_intersection_assign_and_minimize)).
 
 ppl_Polyhedron_intersection_assign_and_minimize(Handle1, Handle2) :-
         ppl_Polyhedron_intersection_assign_and_minimize_2(Handle1, Handle2, 1).
@@ -588,16 +593,16 @@ ppl_Polyhedron_poly_hull_assign_and_minimize(Handle1, Handle2) :-
 :- true pred ppl_Polyhedron_generalized_affine_image_2(
                                          in(Handle),
                                          in(Var), in(Rel),
-                                         in(LinExpression),
+                                         in(Linear_Expression),
                                          in(Divisor), go(Success))
   :: any_term * any_term * any_term * any_term * any_term * int
   + (returns(Success),
       foreign(ppl_Polyhedron_generalized_affine_image)).
 
 ppl_Polyhedron_generalized_affine_image(
-                  Handle, Var, Rel, LinExpression, Divisor) :-
+                  Handle, Var, Rel, Linear_Expression, Divisor) :-
       ppl_Polyhedron_generalized_affine_image_2(
-                  Handle, Var, Rel, LinExpression, Divisor, 1).
+                  Handle, Var, Rel, Linear_Expression, Divisor, 1).
 
 :- true pred ppl_Polyhedron_generalized_affine_image_lhs_rhs_2(
                  in(Handle), in(LHS), in(Rel), in(RHS), go(Success))
@@ -1138,7 +1143,7 @@ since the above version of this is temporary.
 
 :- true pred ppl_Polyhedron_generalized_affine_image(in(Handle),
                                                      in(Var), in(Rel),
-                                                     in(LinExpression),
+                                                     in(Linear_Expression),
                                                      in(Divisor))
              :: any_term * any_term * any_term * any_term * any_term + foreign.
 

@@ -41,7 +41,7 @@ main() TRY {
 
   C_Polyhedron ph1(2, C_Polyhedron::EMPTY);
 
-  GenSys gs;
+  Generator_System gs;
   gs.insert(point());
   gs.insert(ray(x + y));
   C_Polyhedron ph2(gs);

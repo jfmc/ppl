@@ -55,11 +55,11 @@ error1() {
 static void
 error2() {
   try {
-    Variable v(LinExpression::max_space_dimension());
-    // This is an invalid use of the constructor of a LinExpression:
+    Variable v(Linear_Expression::max_space_dimension());
+    // This is an invalid use of the constructor of a Linear_Expression:
     // it is illegal to (try to) build a linear expression with a dimensions
-    // greater than LinExpression::max_space_dimension().
-    LinExpression e(v);
+    // greater than Linear_Expression::max_space_dimension().
+    Linear_Expression e(v);
 
     // It is an error if the exception is not thrown.
     exit(1);
@@ -78,11 +78,11 @@ error2() {
 static void
 error3() {
   try {
-    Variable v(LinExpression::max_space_dimension());
-    // This is an invalid use of the constructor of a LinExpression:
+    Variable v(Linear_Expression::max_space_dimension());
+    // This is an invalid use of the constructor of a Linear_Expression:
     // it is illegal to (try to) build a linear expression with a dimensions
-    // greater than LinExpression::max_space_dimension().
-    LinExpression e;
+    // greater than Linear_Expression::max_space_dimension().
+    Linear_Expression e;
     e += v;
 
     // It is an error if the exception is not thrown.
@@ -102,11 +102,11 @@ error3() {
 static void
 error4() {
   try {
-    Variable v(LinExpression::max_space_dimension());
-    // This is an invalid use of the constructor of a LinExpression:
+    Variable v(Linear_Expression::max_space_dimension());
+    // This is an invalid use of the constructor of a Linear_Expression:
     // it is illegal to (try to) build a linear expression with a dimensions
-    // greater than LinExpression::max_space_dimension().
-    LinExpression e;
+    // greater than Linear_Expression::max_space_dimension().
+    Linear_Expression e;
     e -= v;
 
     // It is an error if the exception is not thrown.

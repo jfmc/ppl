@@ -25,10 +25,10 @@ site: http://www.cs.unipr.it/ppl/ . */
 
 #include "Linear_System.defs.hh"
 
-#include "Integer.defs.hh"
+#include "Coefficient.defs.hh"
 #include "Row.defs.hh"
 #include "globals.defs.hh"
-#include "SatMatrix.defs.hh"
+#include "Saturation_Matrix.defs.hh"
 #include <algorithm>
 #include <iostream>
 #include <string>
@@ -254,60 +254,6 @@ PPL::Linear_System::insert_pending(const Linear_Row& r) {
   // because no modification of rows has occurred.
   assert(OK(false));
 }
-
-#if 0
-void
-PPL::Linear_System::merge_rows_assign(const Linear_System& y) {
-  assert(row_size >= y.row_size);
-  assert(check_sorted() && y.check_sorted());
-  // We can use this method only when the matrices do not
-  // contain any pending rows.
-  assert(num_pending_rows() == 0 && y.num_pending_rows() == 0);
-
-  Linear_System& x = *this;
-
-  // A temporary vector of rows...
-  std::vector<Row> tmp;
-  // ... with enough capacity not to require any reallocations.
-  tmp.reserve(compute_capacity(x.num_rows() + y.num_rows(), max_num_rows()));
-
-  std::vector<Row>::iterator xi = x.rows.begin();
-  const std::vector<Row>::iterator xend = x.rows.end();
-  std::vector<Row>::const_iterator yi = y.rows.begin();
-  const std::vector<Row>::const_iterator yend = y.rows.end();
-
-  while (xi != xend && yi != yend) {
-    const int comp = compare(*xi, *yi);
-    if (comp <= 0) {
-      // Elements that can be taken from `x' are actually _stolen_ from `x'
-      std::swap(*xi++, *tmp.insert(tmp.end(), Row()));
-      if (comp == 0)
-	// A duplicate element.
-	++yi;
-    }
-    else {
-      // (comp > 0)
-      Row copy(*yi++, row_size, row_capacity);
-      std::swap(copy, *tmp.insert(tmp.end(), Row()));
-    }
-  }
-  // Insert what is left.
-  if (xi != xend)
-    while (xi != xend)
-      std::swap(*xi++, *tmp.insert(tmp.end(), Row()));
-  else
-    while (yi != yend) {
-      Row copy(*yi++, row_size, row_capacity);
-      std::swap(copy, *tmp.insert(tmp.end(), Row()));
-    }
-
-  // We get the result vector and let the old one be destroyed.
-  std::swap(tmp, rows);
-  // There are no pending rows.
-  unset_pending_rows();
-  assert(check_sorted());
-}
-#endif
 
 void
 PPL::Linear_System::add_pending_rows(const Linear_System& y) {
@@ -562,7 +508,7 @@ PPL::operator==(const Linear_System& x, const Linear_System& y) {
 }
 
 void
-PPL::Linear_System::sort_and_remove_with_sat(SatMatrix& sat) {
+PPL::Linear_System::sort_and_remove_with_sat(Saturation_Matrix& sat) {
   Linear_System& sys = *this;
   // We can only sort the non-pending part of the system.
   assert(sys.first_pending_row() == sat.num_rows());
@@ -572,11 +518,11 @@ PPL::Linear_System::sort_and_remove_with_sat(SatMatrix& sat) {
   }
 
   // First, sort `sys' (keeping `sat' consistent) without removing duplicates.
-  With_SatMatrix_iterator first(sys.rows.begin(), sat.rows.begin());
-  With_SatMatrix_iterator last = first + sat.num_rows();
+  With_Saturation_Matrix_iterator first(sys.rows.begin(), sat.rows.begin());
+  With_Saturation_Matrix_iterator last = first + sat.num_rows();
   swapping_sort(first, last, Row_Less_Than());
   // Second, move duplicates in `sys' to the end (keeping `sat' consistent).
-  With_SatMatrix_iterator new_last = swapping_unique(first, last);
+  With_Saturation_Matrix_iterator new_last = swapping_unique(first, last);
 
   const dimension_type num_duplicates = last - new_last;
   const dimension_type new_first_pending_row
@@ -618,10 +564,10 @@ PPL::Linear_System::gram_shmidt() {
   ascii_dump(std::cout);
 #endif
 
-  static std::vector<std::vector<Integer> > mu;
+  static std::vector<std::vector<Coefficient> > mu;
   mu.reserve(compute_capacity(rank, mu.max_size()));
   for (dimension_type i = mu.size(); i < rank; i++) {
-    std::vector<Integer> mu_i(i+1);
+    std::vector<Coefficient> mu_i(i+1);
     mu.push_back(mu_i);
   }
 
@@ -631,7 +577,7 @@ PPL::Linear_System::gram_shmidt() {
   // for all 0 <= j <= i < rank, storing them into `mu[i][j]'.
   for (dimension_type i = rank; i-- > 0; ) {
     const Linear_Row& x_i = x[i];
-    std::vector<Integer>& mu_i = mu[i];
+    std::vector<Coefficient>& mu_i = mu[i];
     for (dimension_type j = i+1; j-- > 0; )
       scalar_product_assign(mu_i[j], x_i, x[j]);
   }
@@ -642,11 +588,11 @@ PPL::Linear_System::gram_shmidt() {
   // Start from the second line/equality of the system.
   for (dimension_type i = 1; i < rank; i++) {
     Linear_Row& x_i = x[i];
-    std::vector<Integer>& mu_i = mu[i];
+    std::vector<Coefficient>& mu_i = mu[i];
 
     // Finish computing `mu[i][j]', for all j <= i.
     for (dimension_type j = 0; j <= i; j++) {
-      const std::vector<Integer>& mu_j = mu[j];
+      const std::vector<Coefficient>& mu_j = mu[j];
       if (j > 0)
 	mu_i[j] *= mu[j-1][j-1];
       accum = 0;
@@ -665,8 +611,8 @@ PPL::Linear_System::gram_shmidt() {
     // for all 0 <= j < i.
     for (dimension_type j = 0; j < i; j++) {
       const Linear_Row& x_j = x[j];
-      const Integer& mu_ij = mu_i[j];
-      const Integer& mu_jj = mu[j][j];
+      const Coefficient& mu_ij = mu_i[j];
+      const Coefficient& mu_jj = mu[j][j];
       for (dimension_type k = n_columns; k-- > 0; ) {
         x_i[k] *= mu_jj;
 	// The following line optimizes the computation of
@@ -712,8 +658,8 @@ PPL::Linear_System::gram_shmidt() {
   //
   // factors[j] will contain d[j] * <w, v_j>.
 
-  static std::vector<Integer> d;
-  static std::vector<Integer> factors;
+  static std::vector<Coefficient> d;
+  static std::vector<Coefficient> factors;
   d.reserve(compute_capacity(rank, d.max_size()));
   factors.reserve(compute_capacity(rank, factors.max_size()));
   if (d.size() < rank) {
@@ -723,7 +669,7 @@ PPL::Linear_System::gram_shmidt() {
   }
 
   // Computing all the factors d[0], ..., d[rank-1], and the denominator.
-  Integer denominator = 1;
+  Coefficient denominator = 1;
   for (dimension_type i = rank; i-- > 0; ) {
     const Linear_Row& x_i = x[i];
     scalar_product_assign(d[i], x_i, x_i);
@@ -1085,7 +1031,7 @@ PPL::Linear_System::OK(const bool check_strong_normalized) const {
     // Check for strong normalization of rows.
     // Note: normalization cannot be checked inside the
     // Linear_Row::OK() method, because a Linear_Row object may also
-    // implement a LinExpression object, which in general cannot be
+    // implement a Linear_Expression object, which in general cannot be
     // (strongly) normalized.
     Linear_System tmp = x;
     tmp.strong_normalize();

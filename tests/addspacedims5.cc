@@ -39,7 +39,7 @@ main() TRY {
   Variable z(2);
   Variable w(3);
 
-  ConSys cs;
+  Constraint_System cs;
   cs.insert(x > 2);
   cs.insert(y > 2);
   cs.insert(x < 6);

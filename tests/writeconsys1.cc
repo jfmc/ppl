@@ -1,4 +1,4 @@
-/* Test operator<<(std::ostream&, const ConSys&).
+/* Test operator<<(std::ostream&, const Constraint_System&).
    Copyright (C) 2001-2004 Roberto Bagnara <bagnara@cs.unipr.it>
 
 This file is part of the Parma Polyhedra Library (PPL).
@@ -44,7 +44,7 @@ main() TRY {
 
   NNC_Polyhedron ph(2);
   ph.add_constraint(A - 2*B > 2);
-  ph.add_constraint(LinExpression(0) <= -1);
+  ph.add_constraint(Linear_Expression(0) <= -1);
   ph.add_constraint(A == 2);
 
   fstream f;

@@ -24,7 +24,7 @@ site: http://www.cs.unipr.it/ppl/ . */
 #include <config.h>
 #include "Linear_Row.defs.hh"
 #include "Linear_System.defs.hh"
-#include "SatMatrix.defs.hh"
+#include "Saturation_Matrix.defs.hh"
 #include "Polyhedron.defs.hh"
 #include <stdexcept>
 
@@ -70,7 +70,7 @@ bool
 PPL::Polyhedron::minimize(const bool con_to_gen,
 			  Linear_System& source,
 			  Linear_System& dest,
-			  SatMatrix& sat) {
+			  Saturation_Matrix& sat) {
   // Topologies have to agree.
   assert(source.topology() == dest.topology());
   // `source' cannot be empty: even if it is an empty constraint system,
@@ -126,7 +126,7 @@ PPL::Polyhedron::minimize(const bool con_to_gen,
   //       portion of `tmp_sat' is the sub-matrix consisting of
   //       the first 0 columns: thus the relevant portion correctly
   //       characterizes the initial saturation information.
-  SatMatrix tmp_sat(dest_num_rows, source.num_rows());
+  Saturation_Matrix tmp_sat(dest_num_rows, source.num_rows());
 
   // By invoking the function conversion(), we populate `dest' with
   // the generators characterizing the polyhedron described by all
@@ -219,7 +219,7 @@ PPL::Polyhedron::minimize(const bool con_to_gen,
   pair (\p source1, \p dest) and a system of new constraints \p source2,
   modifies \p source1 by adding to it the constraints of \p source2 that
   are not in \p source1. Then, by invoking
-  <CODE>add_and_minimize(bool, Linear_System&, Linear_System&, SatMatrix&)</CODE>,
+  <CODE>add_and_minimize(bool, Linear_System&, Linear_System&, Saturation_Matrix&)</CODE>,
   processes the added constraints obtaining a new DD pair.
 
   This method treats also the dual case, i.e., adding new generators to
@@ -234,7 +234,7 @@ bool
 PPL::Polyhedron::add_and_minimize(const bool con_to_gen,
 				  Linear_System& source1,
 				  Linear_System& dest,
-				  SatMatrix& sat,
+				  Saturation_Matrix& sat,
 				  const Linear_System& source2) {
   // `source1' and `source2' cannot be empty.
   assert(source1.num_rows() > 0 && source2.num_rows() > 0);
@@ -335,7 +335,7 @@ bool
 PPL::Polyhedron::add_and_minimize(const bool con_to_gen,
 				  Linear_System& source,
 				  Linear_System& dest,
-				  SatMatrix& sat) {
+				  Saturation_Matrix& sat) {
   assert(source.num_pending_rows() > 0);
   assert(source.num_columns() == dest.num_columns());
   assert(source.is_sorted());

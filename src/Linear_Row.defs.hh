@@ -27,7 +27,7 @@ site: http://www.cs.unipr.it/ppl/ . */
 #include "Linear_Row.types.hh"
 #include "Row.defs.hh"
 #include "Topology.hh"
-#include "LinExpression.types.hh"
+#include "Linear_Expression.types.hh"
 #include "Constraint.types.hh"
 #include "Generator.types.hh"
 
@@ -115,7 +115,7 @@ site: http://www.cs.unipr.it/ppl/ . */
   on the vector space \f$\Rset^{d+1}\f$, therefore interpreting the slack
   variable \f$\epsilon\f$ as an ordinary dimension of the vector space.
 
-  A Linear_Row object implementing a LinExpression is always of the form
+  A Linear_Row object implementing a Linear_Expression is always of the form
   \f$[0, a_0, \ldots, a_{d-1}]_{(c,=)}\f$, which represents the
   linear expression \f$\sum_{i=0}^{d-1} a_i x_i\f$.
 */
@@ -303,10 +303,10 @@ public:
   dimension_type space_dimension() const;
 
   //! Returns the inhomogeneous term.
-  Integer_traits::const_reference inhomogeneous_term() const;
+  Coefficient_traits::const_reference inhomogeneous_term() const;
 
   //! Returns the coefficient \f$a_n\f$.
-  Integer_traits::const_reference coefficient(dimension_type n) const;
+  Coefficient_traits::const_reference coefficient(dimension_type n) const;
 
   //! Normalizes the modulo of coefficients so that they are mutually prime.
   /*!
@@ -361,7 +361,7 @@ public:
   bool OK(dimension_type row_size, dimension_type row_capacity) const;
 
 private:
-  friend class Parma_Polyhedra_Library::LinExpression;
+  friend class Parma_Polyhedra_Library::Linear_Expression;
   friend class Parma_Polyhedra_Library::Constraint;
   friend class Parma_Polyhedra_Library::Generator;
 };
@@ -380,7 +380,7 @@ bool operator!=(const Linear_Row& x, const Linear_Row& y);
 //! Computes the scalar product of \p x and \p y and assigns it to \p z.
 /*! \relates Linear_Row */
 #endif // PPL_DOXYGEN_INCLUDE_IMPLEMENTATION_DETAILS
-void scalar_product_assign(Integer& z,
+void scalar_product_assign(Coefficient& z,
 			   const Linear_Row& x, const Linear_Row& y);
 
 #ifdef PPL_DOXYGEN_INCLUDE_IMPLEMENTATION_DETAILS
@@ -396,7 +396,7 @@ int scalar_product_sign(const Linear_Row& x, const Linear_Row& y);
 //! and assigns the result to \p z.
 /*! \relates Linear_Row */
 #endif // PPL_DOXYGEN_INCLUDE_IMPLEMENTATION_DETAILS
-void reduced_scalar_product_assign(Integer& z,
+void reduced_scalar_product_assign(Coefficient& z,
 				   const Linear_Row& x, const Linear_Row& y);
 
 #ifdef PPL_DOXYGEN_INCLUDE_IMPLEMENTATION_DETAILS
@@ -414,7 +414,7 @@ int reduced_scalar_product_sign(const Linear_Row& x, const Linear_Row& y);
 //! and assigns the result to \p z.
 /*! \relates Linear_Row */
 #endif // PPL_DOXYGEN_INCLUDE_IMPLEMENTATION_DETAILS
-void homogeneous_scalar_product_assign(Integer& z,
+void homogeneous_scalar_product_assign(Coefficient& z,
 				       const Linear_Row& x,
 				       const Linear_Row& y);
 

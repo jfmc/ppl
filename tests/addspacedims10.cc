@@ -38,11 +38,11 @@ main() TRY {
   Variable A(0);
   Variable B(1);
 
-  GenSys gs1;
+  Generator_System gs1;
   gs1.insert(point(A));
   NNC_Polyhedron ph(gs1);
 
-  GenSys gs2;
+  Generator_System gs2;
   gs2.insert(point(A));
   gs2.insert(ray(A));
   ph.add_generators(gs2);
@@ -53,7 +53,7 @@ main() TRY {
 
   ph.add_space_dimensions_and_embed(1);
 
-  GenSys known_gs;
+  Generator_System known_gs;
   known_gs.insert(point(A));
   known_gs.insert(line(B));
   known_gs.insert(ray(A));

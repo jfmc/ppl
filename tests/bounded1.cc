@@ -72,7 +72,7 @@ main() TRY {
 
   // This is an empty, zero-dimensional polyhedron.
   C_Polyhedron ph4;
-  ph4.add_constraint(LinExpression(-3) >= 0);
+  ph4.add_constraint(Linear_Expression(-3) >= 0);
 
 #if NOISY
   print_constraints(ph4, "*** ph4 ***");

@@ -37,19 +37,19 @@ main() TRY {
   Variable A(0);
   Variable B(1);
 
-  GenSys gs1;
+  Generator_System gs1;
   gs1.insert(point());
   gs1.insert(point(A + B));
   gs1.insert(point(A));
   C_Polyhedron ph1(gs1);
 
-  GenSys gs2;
+  Generator_System gs2;
   gs2.insert(point());
   gs2.insert(point(2*A));
   gs2.insert(point(2*A + 2*B));
   C_Polyhedron ph2(gs2);
 
-  ConSys cs;
+  Constraint_System cs;
   cs.insert(A <= 5);
   cs.insert(B <= 4);
 

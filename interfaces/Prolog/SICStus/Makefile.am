@@ -30,7 +30,12 @@ SUBDIRS =
 
 SICSTUS_CFLI_FILES = sicstus_cfli.h sicstus_cfli.ic sicstus_cfli.cc
 
-EXTRA_DIST = $(SICSTUS_CFLI_FILES) ppl_sicstus_sd.cc ppl_sicstus.pl sp_clpq.pl sp_pl_check.pl
+EXTRA_DIST = \
+$(SICSTUS_CFLI_FILES) \
+ppl_sicstus_sd.cc \
+ppl_sicstus.pl \
+sp_clpq.pl \
+sp_pl_check.pl
 
 if HAVE_SICSTUS_PROLOG
 

@@ -38,7 +38,7 @@ main() TRY {
   Variable y(1);
   Variable z(2);
   Variable w(3);
-  GenSys gs;
+  Generator_System gs;
   gs.insert(point(0*x + y +0*z + 2*w));
   C_Polyhedron ph(gs);
 #if NOISY
@@ -51,7 +51,7 @@ main() TRY {
   to_be_removed.insert(z);
   ph.remove_space_dimensions(to_be_removed);
 
-  GenSys known_result_gs;
+  Generator_System known_result_gs;
   known_result_gs.insert(point(0*x +2*y));
   C_Polyhedron known_result(known_result_gs);
 

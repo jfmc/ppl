@@ -39,7 +39,7 @@ main() TRY {
   Variable y(1);
 
   // Building an open square.
-  GenSys gs;
+  Generator_System gs;
   gs.insert(closure_point());
   gs.insert(closure_point(15*x));
   gs.insert(closure_point(15*y));

@@ -42,7 +42,7 @@ main() TRY {
   print_generators(ph, "*** ph ***");
 #endif
 
-  GenSys gs;
+  Generator_System gs;
   gs.insert(point());
 
 #if NOISY

@@ -124,7 +124,7 @@ total_memory_in_bytes(const Checked_Number<T, Policy>& x) {
 
 template <typename T, typename Policy>
 size_t
-external_memory_in_bytes(const Checked_Number<T, Policy>& x) {
+external_memory_in_bytes(const Checked_Number<T, Policy>&) {
   return 0;
 }
 
@@ -394,7 +394,7 @@ operator<<(std::ostream& os, const Checked_Number<T, Policy>& x) {
   check_result(Checked::print<Policy>(os, x.raw_value()));
   return os;
 }
- 
+
 template <typename T, typename Policy>
 inline std::istream& operator>>(std::istream& is, Checked_Number<T, Policy>& x) {
   check_result(Checked::input<Policy>(is, x.raw_value()));

@@ -31,13 +31,15 @@ using namespace Parma_Polyhedra_Library;
 #endif
 
 static NNC_Polyhedron
-half_strip(const Generator& p, const LinExpression& e, bool closed = true) {
+half_strip(const Generator& p,
+	   const Linear_Expression& e,
+	   bool closed = true) {
   assert((p.is_point() && closed) || (p.is_closure_point() && ! closed));
 
-  LinExpression e1(p);
+  Linear_Expression e1(p);
   e1 += 3*Variable(0);
 
-  GenSys gs;
+  Generator_System gs;
   gs.insert(p);
   gs.insert(ray(e));
   if (closed)

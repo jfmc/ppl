@@ -36,7 +36,7 @@ main() TRY {
   Variable x(0);
   Variable y(1);
 
-  GenSys gs;
+  Generator_System gs;
   gs.insert(point(x + y, -1));
 
   C_Polyhedron ph(gs);
@@ -45,7 +45,7 @@ main() TRY {
   print_generators(ph, "*** ph ***");
 #endif
 
-  ConSys cs = ph.constraints();
+  Constraint_System cs = ph.constraints();
 
   C_Polyhedron known_result(2);
   known_result.add_constraint(x == -1);

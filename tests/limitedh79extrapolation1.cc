@@ -35,7 +35,7 @@ main() TRY {
   Variable x(0);
   Variable y(1);
 
-  ConSys cs1;
+  Constraint_System cs1;
   cs1.insert(x >= 0);
   cs1.insert(x <= 1);
   cs1.insert(y >= 0);
@@ -47,7 +47,7 @@ main() TRY {
   print_constraints(ph1, "*** ph1 ****");
 #endif
 
-  ConSys cs2;
+  Constraint_System cs2;
   cs2.insert(x >= 0);
   cs2.insert(x <= 2);
   cs2.insert(y >= 0);
@@ -59,7 +59,7 @@ main() TRY {
   print_constraints(ph2, "*** ph2 ****");
 #endif
 
-  ConSys cs;
+  Constraint_System cs;
   cs.insert(x >= 0);
   cs.insert(y >= 0);
   cs.insert(x <= 5);

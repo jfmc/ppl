@@ -37,9 +37,9 @@ static Variable C(2);
 static Variable D(3);
 static Variable E(4);
 
-static const GenSys&
+static const Generator_System&
 fixed_part() {
-  static GenSys gs;
+  static Generator_System gs;
   static bool initialized = false;
   if (!initialized) {
     gs.insert(point());

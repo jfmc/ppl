@@ -52,7 +52,7 @@ main() TRY {
 
   ph1.time_elapse_assign(ph2);
 
-  GenSys gs;
+  Generator_System gs;
   gs.insert(closure_point(3*x + 2*y));
   gs.insert(point(3*x + 3*y));
   gs.insert(ray(y));

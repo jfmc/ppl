@@ -40,7 +40,7 @@ main() TRY {
   ph1.add_constraint(A >= 0);
   ph1.add_constraint(B >= 0);
 
-  ConSys cs = ph1.constraints();
+  Constraint_System cs = ph1.constraints();
 
   C_Polyhedron ph2(3);
   ph2.add_constraint(A <= 2);

@@ -31,8 +31,8 @@ site: http://www.cs.unipr.it/ppl/ . */
 namespace Parma_Polyhedra_Library {
 
 inline
-ERational::ERational(Integer_traits::const_reference num,
-		     Integer_traits::const_reference den)
+ERational::ERational(Coefficient_traits::const_reference num,
+		     Coefficient_traits::const_reference den)
   : e(0) {
   assert(den != 0);
   Checked::assign<Check_Overflow_Policy>(v.get_num(), raw_value(num));
@@ -66,31 +66,17 @@ ERational::direction_of_infinity() const {
   return e;
 }
 
-#if 0
-inline Integer_traits::const_reference
-ERational::numerator() const {
-  assert(e == 0);
-  return v.get_num();
-}
-
-inline Integer_traits::const_reference
-ERational::denominator() const {
-  assert(e == 0);
-  return v.get_den();
-}
-#else
 inline void
-ERational::numerator(Integer& n) const {
+ERational::numerator(Coefficient& n) const {
   assert(e == 0);
   n = v.get_num();
 }
 
 inline void
-ERational::denominator(Integer& d) const {
+ERational::denominator(Coefficient& d) const {
   assert(e == 0);
   d = v.get_den();
 }
-#endif
 
 /*! \relates ERational */
 inline bool

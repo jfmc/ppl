@@ -24,7 +24,7 @@ site: http://www.cs.unipr.it/ppl/ . */
 #ifndef PPL_globals_defs_hh
 #define PPL_globals_defs_hh 1
 
-#include "Integer.defs.hh"
+#include "Coefficient.defs.hh"
 #include <exception>
 #include <cstddef>
 
@@ -67,65 +67,66 @@ enum Complexity_Class {
 #ifdef PPL_DOXYGEN_INCLUDE_IMPLEMENTATION_DETAILS
 //! FIXME: comment!
 #endif
-class Integer_free_list_element {
+class Coefficient_free_list_element {
 private:
-  Integer i;
-  Integer_free_list_element* p;
+  Coefficient i;
+  Coefficient_free_list_element* p;
 
 public:
-  Integer_free_list_element()
+  Coefficient_free_list_element()
     : i() {
   }
 
-  Integer& integer() {
+  Coefficient& integer() {
     return i;
   }
 
-  Integer_free_list_element*& next() {
+  Coefficient_free_list_element*& next() {
     return p;
   }
 };
 
-extern Integer_free_list_element* Integer_free_list_first;
+extern Coefficient_free_list_element* Coefficient_free_list_first;
 
-inline Integer&
-get_tmp_Integer() {
-  Integer* p;
-  if (Integer_free_list_first != 0) {
-    p = &Integer_free_list_first->integer();
-    Integer_free_list_first = Integer_free_list_first->next();
+inline Coefficient&
+get_tmp_Coefficient() {
+  Coefficient* p;
+  if (Coefficient_free_list_first != 0) {
+    p = &Coefficient_free_list_first->integer();
+    Coefficient_free_list_first = Coefficient_free_list_first->next();
   }
   else
-    p = reinterpret_cast<Integer*>(new Integer_free_list_element());
+    p = reinterpret_cast<Coefficient*>(new Coefficient_free_list_element());
   return *p;
 }
 
 inline void
-release_tmp_Integer(Integer& i) {
-  Integer_free_list_element& e = reinterpret_cast<Integer_free_list_element&>(i);
-  e.next() = Integer_free_list_first;
-  Integer_free_list_first = &e;
+release_tmp_Coefficient(Coefficient& i) {
+  Coefficient_free_list_element& e
+    = reinterpret_cast<Coefficient_free_list_element&>(i);
+  e.next() = Coefficient_free_list_first;
+  Coefficient_free_list_first = &e;
 }
 
-class Temp_Integer_Holder {
+class Temp_Coefficient_Holder {
 private:
-  Integer& hold;
+  Coefficient& hold;
 
 public:
-  Temp_Integer_Holder(Integer& i)
+  Temp_Coefficient_Holder(Coefficient& i)
     : hold(i) {
   }
-  ~Temp_Integer_Holder() {
-    release_tmp_Integer(hold);
+  ~Temp_Coefficient_Holder() {
+    release_tmp_Coefficient(hold);
   }
 };
 
 #if 1
 #define TEMP_INTEGER(id) \
-Integer& id = get_tmp_Integer(); \
-Temp_Integer_Holder temp_Integer_holder_ ## id = (id)
+Coefficient& id = get_tmp_Coefficient(); \
+Temp_Coefficient_Holder temp_Coefficient_holder_ ## id = (id)
 #else
-#define TEMP_INTEGER(id) static Integer id
+#define TEMP_INTEGER(id) static Coefficient id
 #endif
 
 #ifdef PPL_DOXYGEN_INCLUDE_IMPLEMENTATION_DETAILS
@@ -210,7 +211,8 @@ struct From_Bounding_Box {
 */
 #endif
 void
-normalize2(const Integer& x, const Integer& y, Integer& nx, Integer& ny);
+normalize2(const Coefficient& x, const Coefficient& y,
+	   Coefficient& nx, Coefficient& ny);
 
 #ifdef PPL_DOXYGEN_INCLUDE_IMPLEMENTATION_DETAILS
 //! Returns a mask for the lowest \p n bits,

@@ -24,12 +24,12 @@ site: http://www.cs.unipr.it/ppl/ . */
 #ifndef PPL_Constraint_inlines_hh
 #define PPL_Constraint_inlines_hh 1
 
-#include "LinExpression.defs.hh"
+#include "Linear_Expression.defs.hh"
 
 namespace Parma_Polyhedra_Library {
 
 inline
-Constraint::Constraint(LinExpression& e, Type type, Topology topology) {
+Constraint::Constraint(Linear_Expression& e, Type type, Topology topology) {
   assert(type != STRICT_INEQUALITY || topology == NOT_NECESSARILY_CLOSED);
   Linear_Row::swap(e);
   flags() = Flags(topology, (type == EQUALITY
@@ -109,14 +109,14 @@ Constraint::set_is_inequality() {
   set_is_ray_or_point_or_inequality();
 }
 
-inline Integer_traits::const_reference
+inline Coefficient_traits::const_reference
 Constraint::coefficient(const Variable v) const {
   if (v.space_dimension() > space_dimension())
     throw_dimension_incompatible("coefficient(v)", "v", v);
   return Linear_Row::coefficient(v.id());
 }
 
-inline Integer_traits::const_reference
+inline Coefficient_traits::const_reference
 Constraint::inhomogeneous_term() const {
   return Linear_Row::inhomogeneous_term();
 }
@@ -133,8 +133,8 @@ Constraint::total_memory_in_bytes() const {
 
 /*! \relates Constraint */
 inline Constraint
-operator==(const LinExpression& e1, const LinExpression& e2) {
-  LinExpression diff = e1 - e2;
+operator==(const Linear_Expression& e1, const Linear_Expression& e2) {
+  Linear_Expression diff = e1 - e2;
   Constraint c(diff, Constraint::EQUALITY, NECESSARILY_CLOSED);
   // Enforce normalization.
   c.strong_normalize();
@@ -143,8 +143,8 @@ operator==(const LinExpression& e1, const LinExpression& e2) {
 
 /*! \relates Constraint */
 inline Constraint
-operator>=(const LinExpression& e1, const LinExpression& e2) {
-  LinExpression diff = e1 - e2;
+operator>=(const Linear_Expression& e1, const Linear_Expression& e2) {
+  Linear_Expression diff = e1 - e2;
   Constraint c(diff, Constraint::NONSTRICT_INEQUALITY, NECESSARILY_CLOSED);
   // Enforce normalization.
   c.normalize();
@@ -153,8 +153,8 @@ operator>=(const LinExpression& e1, const LinExpression& e2) {
 
 /*! \relates Constraint */
 inline Constraint
-operator>(const LinExpression& e1, const LinExpression& e2) {
-  LinExpression diff;
+operator>(const Linear_Expression& e1, const Linear_Expression& e2) {
+  Linear_Expression diff;
   // Setting the epsilon coefficient to -1.
   // NOTE: this also enforces normalization.
   const dimension_type e1_dim = e1.space_dimension();
@@ -172,8 +172,8 @@ operator>(const LinExpression& e1, const LinExpression& e2) {
 
 /*! \relates Constraint */
 inline Constraint
-operator==(Integer_traits::const_reference n, const LinExpression& e) {
-  LinExpression diff = n - e;
+operator==(Coefficient_traits::const_reference n, const Linear_Expression& e) {
+  Linear_Expression diff = n - e;
   Constraint c(diff, Constraint::EQUALITY, NECESSARILY_CLOSED);
   // Enforce normalization.
   c.strong_normalize();
@@ -182,8 +182,8 @@ operator==(Integer_traits::const_reference n, const LinExpression& e) {
 
 /*! \relates Constraint */
 inline Constraint
-operator>=(Integer_traits::const_reference n, const LinExpression& e) {
-  LinExpression diff = n - e;
+operator>=(Coefficient_traits::const_reference n, const Linear_Expression& e) {
+  Linear_Expression diff = n - e;
   Constraint c(diff, Constraint::NONSTRICT_INEQUALITY, NECESSARILY_CLOSED);
   // Enforce normalization.
   c.normalize();
@@ -192,8 +192,8 @@ operator>=(Integer_traits::const_reference n, const LinExpression& e) {
 
 /*! \relates Constraint */
 inline Constraint
-operator>(Integer_traits::const_reference n, const LinExpression& e) {
-  LinExpression diff;
+operator>(Coefficient_traits::const_reference n, const Linear_Expression& e) {
+  Linear_Expression diff;
   // Setting the epsilon coefficient to -1.
   // NOTE: this also enforces normalization.
   diff -= Variable(e.space_dimension());
@@ -206,8 +206,8 @@ operator>(Integer_traits::const_reference n, const LinExpression& e) {
 
 /*! \relates Constraint */
 inline Constraint
-operator==(const LinExpression& e, Integer_traits::const_reference n) {
-  LinExpression diff = e - n;
+operator==(const Linear_Expression& e, Coefficient_traits::const_reference n) {
+  Linear_Expression diff = e - n;
   Constraint c(diff, Constraint::EQUALITY, NECESSARILY_CLOSED);
   // Enforce normalization.
   c.strong_normalize();
@@ -216,8 +216,8 @@ operator==(const LinExpression& e, Integer_traits::const_reference n) {
 
 /*! \relates Constraint */
 inline Constraint
-operator>=(const LinExpression& e, Integer_traits::const_reference n) {
-  LinExpression diff = e - n;
+operator>=(const Linear_Expression& e, Coefficient_traits::const_reference n) {
+  Linear_Expression diff = e - n;
   Constraint c(diff, Constraint::NONSTRICT_INEQUALITY, NECESSARILY_CLOSED);
   // Enforce normalization.
   c.normalize();
@@ -226,8 +226,8 @@ operator>=(const LinExpression& e, Integer_traits::const_reference n) {
 
 /*! \relates Constraint */
 inline Constraint
-operator>(const LinExpression& e, Integer_traits::const_reference n) {
-  LinExpression diff;
+operator>(const Linear_Expression& e, Coefficient_traits::const_reference n) {
+  Linear_Expression diff;
   // Setting the epsilon coefficient to -1.
   // NOTE: this also enforces normalization.
   diff -= Variable(e.space_dimension());
@@ -242,49 +242,49 @@ operator>(const LinExpression& e, Integer_traits::const_reference n) {
 
 /*! \relates Constraint */
 inline Constraint
-operator<=(const LinExpression& e1, const LinExpression& e2) {
+operator<=(const Linear_Expression& e1, const Linear_Expression& e2) {
   return e2 >= e1;
 }
 
 /*! \relates Constraint */
 inline Constraint
-operator<=(Integer_traits::const_reference n, const LinExpression& e) {
+operator<=(Coefficient_traits::const_reference n, const Linear_Expression& e) {
   return e >= n;
 }
 
 /*! \relates Constraint */
 inline Constraint
-operator<=(const LinExpression& e, Integer_traits::const_reference n) {
+operator<=(const Linear_Expression& e, Coefficient_traits::const_reference n) {
   return n >= e;
 }
 
 /*! \relates Constraint */
 inline Constraint
-operator<(const LinExpression& e1, const LinExpression& e2) {
+operator<(const Linear_Expression& e1, const Linear_Expression& e2) {
   return e2 > e1;
 }
 
 /*! \relates Constraint */
 inline Constraint
-operator<(Integer_traits::const_reference n, const LinExpression& e) {
+operator<(Coefficient_traits::const_reference n, const Linear_Expression& e) {
   return e > n;
 }
 
 /*! \relates Constraint */
 inline Constraint
-operator<(const LinExpression& e, Integer_traits::const_reference n) {
+operator<(const Linear_Expression& e, Coefficient_traits::const_reference n) {
   return n > e;
 }
 
 inline const Constraint&
 Constraint::zero_dim_false() {
-  static const Constraint zdf(LinExpression::zero() == Integer_one());
+  static const Constraint zdf(Linear_Expression::zero() == Coefficient_one());
   return zdf;
 }
 
 inline const Constraint&
 Constraint::zero_dim_positivity() {
-  static const Constraint zdp(LinExpression::zero() <= Integer_one());
+  static const Constraint zdp(Linear_Expression::zero() <= Coefficient_one());
   return zdp;
 }
 
@@ -296,7 +296,8 @@ Constraint::epsilon_geq_zero() {
 
 inline const Constraint&
 Constraint::epsilon_leq_one() {
-  static const Constraint eps_leq_one(LinExpression::zero() < Integer_one());
+  static const Constraint
+    eps_leq_one(Linear_Expression::zero() < Coefficient_one());
   return eps_leq_one;
 }
 

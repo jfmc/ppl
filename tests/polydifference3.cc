@@ -42,8 +42,8 @@ main() TRY {
   print_constraints(ph2, "*** ph2 ***");
 #endif
 
-  ConSys cs;
-  cs.insert(LinExpression(-4) >= 0);
+  Constraint_System cs;
+  cs.insert(Linear_Expression(-4) >= 0);
   C_Polyhedron known_result(cs);
 
   ph1.poly_difference_assign(ph2);

@@ -107,7 +107,7 @@ private:
   // Whether the alarm clock is running.
   static volatile bool alarm_clock_running;
 
-  // Whether we are changing data which is also changed by the signal handler.
+  // Whether we are changing data that is also changed by the signal handler.
   static volatile bool in_critical_section;
 
   friend void Parma_Watchdog_Library::PWL_handle_timeout(int signum);

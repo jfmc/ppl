@@ -24,12 +24,12 @@ site: http://www.cs.unipr.it/ppl/ . */
 
 #include <config.h>
 
-#include "Integer.defs.hh"
-#include "LinExpression.defs.hh"
+#include "Coefficient.defs.hh"
+#include "Linear_Expression.defs.hh"
 #include "Constraint.defs.hh"
-#include "ConSys.defs.hh"
+#include "Constraint_System.defs.hh"
 #include "Generator.defs.hh"
-#include "GenSys.defs.hh"
+#include "Generator_System.defs.hh"
 #include "Polyhedron.defs.hh"
 #include "C_Polyhedron.defs.hh"
 #include "NNC_Polyhedron.defs.hh"
@@ -65,9 +65,6 @@ inline ppl_ ## Type ## _t \
 to_nonconst(Type* x) { \
   return reinterpret_cast<ppl_ ## Type ## _t>(x); \
 }
-
-// FIXME: this temporary until we rename Integer to Coefficient.
-typedef Parma_Polyhedra_Library::Integer Coefficient;
 
 namespace {
 
@@ -276,28 +273,28 @@ CATCH_ALL
 
 DECLARE_CONVERSIONS(Coefficient)
 
-DECLARE_CONVERSIONS(LinExpression)
+DECLARE_CONVERSIONS(Linear_Expression)
 
 DECLARE_CONVERSIONS(Constraint)
 
-DECLARE_CONVERSIONS(ConSys)
+DECLARE_CONVERSIONS(Constraint_System)
 
-typedef ConSys::const_iterator ConSys_const_iterator;
-DECLARE_CONVERSIONS(ConSys_const_iterator)
+typedef Constraint_System::const_iterator Constraint_System_const_iterator;
+DECLARE_CONVERSIONS(Constraint_System_const_iterator)
 
 DECLARE_CONVERSIONS(Generator)
 
-DECLARE_CONVERSIONS(GenSys)
+DECLARE_CONVERSIONS(Generator_System)
 
-typedef GenSys::const_iterator GenSys_const_iterator;
-DECLARE_CONVERSIONS(GenSys_const_iterator)
+typedef Generator_System::const_iterator Generator_System_const_iterator;
+DECLARE_CONVERSIONS(Generator_System_const_iterator)
 
 DECLARE_CONVERSIONS(Polyhedron)
 
 
 int
 ppl_new_Coefficient(ppl_Coefficient_t* pc) try {
-  *pc = to_nonconst(new Integer(0));
+  *pc = to_nonconst(new Coefficient(0));
   return 0;
 }
 CATCH_ALL
@@ -305,7 +302,7 @@ CATCH_ALL
 int
 ppl_new_Coefficient_from_mpz_t(ppl_Coefficient_t* pc, mpz_t z) try {
   // FIXME: this is a kludge.
-  *pc = to_nonconst(new Integer(mpz_class(z)));
+  *pc = to_nonconst(new Coefficient(mpz_class(z)));
   return 0;
 }
 CATCH_ALL
@@ -314,7 +311,7 @@ int
 ppl_new_Coefficient_from_Coefficient(ppl_Coefficient_t* pc,
 				     ppl_const_Coefficient_t c) try {
   const Coefficient& cc = *to_const(c);
-  *pc = to_nonconst(new Integer(cc));
+  *pc = to_nonconst(new Coefficient(cc));
   return 0;
 }
 CATCH_ALL
@@ -363,132 +360,130 @@ CATCH_ALL
 
 
 int
-ppl_new_LinExpression(ppl_LinExpression_t* ple) try {
-  *ple = to_nonconst(new LinExpression());
+ppl_new_Linear_Expression(ppl_Linear_Expression_t* ple) try {
+  *ple = to_nonconst(new Linear_Expression());
   return 0;
 }
 CATCH_ALL
 
 int
-ppl_new_LinExpression_with_dimension(ppl_LinExpression_t* ple,
-				     ppl_dimension_type d) try {
+ppl_new_Linear_Expression_with_dimension(ppl_Linear_Expression_t* ple,
+					 ppl_dimension_type d) try {
   *ple = to_nonconst(d == 0
-		     ? new LinExpression(0)
-		     : new LinExpression(0*Variable(d-1)));
+		     ? new Linear_Expression(0)
+		     : new Linear_Expression(0*Variable(d-1)));
   return 0;
 }
 CATCH_ALL
 
 int
-ppl_new_LinExpression_from_LinExpression(ppl_LinExpression_t* ple,
-					 ppl_const_LinExpression_t le) try {
-  const LinExpression& lle = *to_const(le);
-  *ple = to_nonconst(new LinExpression(lle));
+ppl_new_Linear_Expression_from_Linear_Expression
+(ppl_Linear_Expression_t* ple, ppl_const_Linear_Expression_t le) try {
+  const Linear_Expression& lle = *to_const(le);
+  *ple = to_nonconst(new Linear_Expression(lle));
   return 0;
 }
 CATCH_ALL
 
 int
-ppl_delete_LinExpression(ppl_const_LinExpression_t le) try {
+ppl_delete_Linear_Expression(ppl_const_Linear_Expression_t le) try {
   delete to_const(le);
   return 0;
 }
 CATCH_ALL
 
 int
-ppl_assign_LinExpression_from_LinExpression(ppl_LinExpression_t dst,
-					    ppl_const_LinExpression_t src)
-try {
-  const LinExpression& ssrc = *to_const(src);
-  LinExpression& ddst = *to_nonconst(dst);
+ppl_assign_Linear_Expression_from_Linear_Expression
+(ppl_Linear_Expression_t dst, ppl_const_Linear_Expression_t src) try {
+  const Linear_Expression& ssrc = *to_const(src);
+  Linear_Expression& ddst = *to_nonconst(dst);
   ddst = ssrc;
   return 0;
 }
 CATCH_ALL
 
 int
-ppl_LinExpression_add_to_coefficient(ppl_LinExpression_t le,
-				     ppl_dimension_type var,
-				     ppl_const_Coefficient_t n) try {
-  LinExpression& lle = *to_nonconst(le);
-  const Integer& nn = *to_const(n);
+ppl_Linear_Expression_add_to_coefficient(ppl_Linear_Expression_t le,
+					 ppl_dimension_type var,
+					 ppl_const_Coefficient_t n) try {
+  Linear_Expression& lle = *to_nonconst(le);
+  const Coefficient& nn = *to_const(n);
   lle += nn * Variable(var);
   return 0;
 }
 CATCH_ALL
 
 int
-ppl_LinExpression_add_to_inhomogeneous(ppl_LinExpression_t le,
-				       ppl_const_Coefficient_t n) try {
-  LinExpression& lle = *to_nonconst(le);
-  const Integer& nn = *to_const(n);
+ppl_Linear_Expression_add_to_inhomogeneous(ppl_Linear_Expression_t le,
+					   ppl_const_Coefficient_t n) try {
+  Linear_Expression& lle = *to_nonconst(le);
+  const Coefficient& nn = *to_const(n);
   lle += nn;
   return 0;
 }
 CATCH_ALL
 
 int
-ppl_add_LinExpression_to_LinExpression(ppl_LinExpression_t dst,
-				       ppl_const_LinExpression_t src) try {
-  LinExpression& ddst = *to_nonconst(dst);
-  const LinExpression& ssrc = *to_const(src);
+ppl_add_Linear_Expression_to_Linear_Expression
+(ppl_Linear_Expression_t dst, ppl_const_Linear_Expression_t src) try {
+  Linear_Expression& ddst = *to_nonconst(dst);
+  const Linear_Expression& ssrc = *to_const(src);
   ddst += ssrc;
   return 0;
 }
 CATCH_ALL
 
 int
-ppl_subtract_LinExpression_from_LinExpression(ppl_LinExpression_t dst,
-					      ppl_const_LinExpression_t src)
-  try {
-  LinExpression& ddst = *to_nonconst(dst);
-  const LinExpression& ssrc = *to_const(src);
+ppl_subtract_Linear_Expression_from_Linear_Expression
+(ppl_Linear_Expression_t dst, ppl_const_Linear_Expression_t src) try {
+  Linear_Expression& ddst = *to_nonconst(dst);
+  const Linear_Expression& ssrc = *to_const(src);
   ddst -= ssrc;
   return 0;
 }
 CATCH_ALL
 
 int
-ppl_multiply_LinExpression_by_Coefficient(ppl_LinExpression_t le,
-					  ppl_const_Coefficient_t n) try {
-  LinExpression& lle = *to_nonconst(le);
-  const Integer& nn = *to_const(n);
+ppl_multiply_Linear_Expression_by_Coefficient(ppl_Linear_Expression_t le,
+					      ppl_const_Coefficient_t n) try {
+  Linear_Expression& lle = *to_nonconst(le);
+  const Coefficient& nn = *to_const(n);
   lle *= nn;
   return 0;
 }
 CATCH_ALL
 
 int
-ppl_LinExpression_space_dimension(ppl_const_LinExpression_t le,
-				  ppl_dimension_type* m) try {
+ppl_Linear_Expression_space_dimension(ppl_const_Linear_Expression_t le,
+				      ppl_dimension_type* m) try {
   *m = to_const(le)->space_dimension();
   return 0;
 }
 CATCH_ALL
 
 int
-ppl_LinExpression_coefficient(ppl_const_LinExpression_t le,
-			      ppl_dimension_type var,
-			      ppl_Coefficient_t n) try {
-  const LinExpression& lle = *to_const(le);
-  Integer& nn = *to_nonconst(n);
+ppl_Linear_Expression_coefficient(ppl_const_Linear_Expression_t le,
+				  ppl_dimension_type var,
+				  ppl_Coefficient_t n) try {
+  const Linear_Expression& lle = *to_const(le);
+  Coefficient& nn = *to_nonconst(n);
   nn = lle.coefficient(Variable(var));
   return 0;
 }
 CATCH_ALL
 
 int
-ppl_LinExpression_inhomogeneous_term(ppl_const_LinExpression_t le,
-				     ppl_Coefficient_t n) try {
-  const LinExpression& lle = *to_const(le);
-  Integer& nn = *to_nonconst(n);
+ppl_Linear_Expression_inhomogeneous_term(ppl_const_Linear_Expression_t le,
+					 ppl_Coefficient_t n) try {
+  const Linear_Expression& lle = *to_const(le);
+  Coefficient& nn = *to_nonconst(n);
   nn = lle.inhomogeneous_term();
   return 0;
 }
 CATCH_ALL
 
 int
-ppl_LinExpression_OK(ppl_const_LinExpression_t /* le */) try {
+ppl_Linear_Expression_OK(ppl_const_Linear_Expression_t /* le */) try {
   return 1;
 }
 CATCH_ALL
@@ -496,10 +491,10 @@ CATCH_ALL
 
 int
 ppl_new_Constraint(ppl_Constraint_t* pc,
-		   ppl_const_LinExpression_t le,
+		   ppl_const_Linear_Expression_t le,
 		   enum ppl_enum_Constraint_Type t) try {
   Constraint* ppc;
-  const LinExpression& lle = *to_const(le);
+  const Linear_Expression& lle = *to_const(le);
   switch(t) {
   case PPL_CONSTRAINT_TYPE_EQUAL:
     ppc = new Constraint(lle == 0);
@@ -593,7 +588,7 @@ ppl_Constraint_coefficient(ppl_const_Constraint_t c,
 			   ppl_dimension_type var,
 			   ppl_Coefficient_t n) try {
   const Constraint& cc = *to_const(c);
-  Integer& nn = *to_nonconst(n);
+  Coefficient& nn = *to_nonconst(n);
   nn = cc.coefficient(Variable(var));
   return 0;
 }
@@ -603,7 +598,7 @@ int
 ppl_Constraint_inhomogeneous_term(ppl_const_Constraint_t c,
 				  ppl_Coefficient_t n) try {
   const Constraint& cc = *to_const(c);
-  Integer& nn = *to_nonconst(n);
+  Coefficient& nn = *to_nonconst(n);
   nn = cc.inhomogeneous_term();
   return 0;
 }
@@ -616,112 +611,118 @@ ppl_Constraint_OK(ppl_const_Constraint_t /* c */) try {
 CATCH_ALL
 
 int
-ppl_new_LinExpression_from_Constraint(ppl_LinExpression_t* ple,
-				      ppl_const_Constraint_t c) try {
+ppl_new_Linear_Expression_from_Constraint(ppl_Linear_Expression_t* ple,
+					  ppl_const_Constraint_t c) try {
   const Constraint& cc = *to_const(c);
-  *ple = to_nonconst(new LinExpression(cc));
+  *ple = to_nonconst(new Linear_Expression(cc));
   return 0;
 }
 CATCH_ALL
 
 
 int
-ppl_new_ConSys(ppl_ConSys_t* pcs) try {
-  *pcs = to_nonconst(new ConSys());
+ppl_new_Constraint_System(ppl_Constraint_System_t* pcs) try {
+  *pcs = to_nonconst(new Constraint_System());
   return 0;
 }
 CATCH_ALL
 
 int
-ppl_new_ConSys_zero_dim_empty(ppl_ConSys_t* pcs) try {
-  *pcs = to_nonconst(new ConSys(ConSys::zero_dim_empty()));
+ppl_new_Constraint_System_zero_dim_empty(ppl_Constraint_System_t* pcs) try {
+  *pcs = to_nonconst(new
+		     Constraint_System(Constraint_System::zero_dim_empty()));
   return 0;
 }
 CATCH_ALL
 
 
 int
-ppl_new_ConSys_from_Constraint(ppl_ConSys_t* pcs,
-			       ppl_const_Constraint_t c) try {
+ppl_new_Constraint_System_from_Constraint(ppl_Constraint_System_t* pcs,
+					  ppl_const_Constraint_t c) try {
   const Constraint& cc = *to_const(c);
-  *pcs = to_nonconst(new ConSys(cc));
+  *pcs = to_nonconst(new Constraint_System(cc));
   return 0;
 }
 CATCH_ALL
 
 int
-ppl_new_ConSys_from_ConSys(ppl_ConSys_t* pcs, ppl_const_ConSys_t cs) try {
-  const ConSys& ccs = *to_const(cs);
-  *pcs = to_nonconst(new ConSys(ccs));
+ppl_new_Constraint_System_from_Constraint_System
+(ppl_Constraint_System_t* pcs, ppl_const_Constraint_System_t cs) try {
+  const Constraint_System& ccs = *to_const(cs);
+  *pcs = to_nonconst(new Constraint_System(ccs));
   return 0;
 }
 CATCH_ALL
 
 int
-ppl_delete_ConSys(ppl_const_ConSys_t cs) try {
+ppl_delete_Constraint_System(ppl_const_Constraint_System_t cs) try {
   delete to_const(cs);
   return 0;
 }
 CATCH_ALL
 
 int
-ppl_assign_ConSys_from_ConSys(ppl_ConSys_t dst, ppl_const_ConSys_t src) try {
-  const ConSys& ssrc = *to_const(src);
-  ConSys& ddst = *to_nonconst(dst);
+ppl_assign_Constraint_System_from_Constraint_System
+(ppl_Constraint_System_t dst, ppl_const_Constraint_System_t src) try {
+  const Constraint_System& ssrc = *to_const(src);
+  Constraint_System& ddst = *to_nonconst(dst);
   ddst = ssrc;
   return 0;
 }
 CATCH_ALL
 
 int
-ppl_ConSys_space_dimension(ppl_const_ConSys_t cs,
-			   ppl_dimension_type* m) try {
+ppl_Constraint_System_space_dimension(ppl_const_Constraint_System_t cs,
+				      ppl_dimension_type* m) try {
   *m = to_const(cs)->space_dimension();
   return 0;
 }
 CATCH_ALL
 
 int
-ppl_ConSys_clear(ppl_ConSys_t cs) try {
+ppl_Constraint_System_clear(ppl_Constraint_System_t cs) try {
   to_nonconst(cs)->clear();
   return 0;
 }
 CATCH_ALL
 
 int
-ppl_ConSys_insert_Constraint(ppl_ConSys_t cs, ppl_const_Constraint_t c) try {
+ppl_Constraint_System_insert_Constraint(ppl_Constraint_System_t cs,
+					ppl_const_Constraint_t c) try {
   const Constraint& cc = *to_const(c);
-  ConSys& ccs = *to_nonconst(cs);
+  Constraint_System& ccs = *to_nonconst(cs);
   ccs.insert(cc);
   return 0;
 }
 CATCH_ALL
 
 int
-ppl_ConSys_OK(ppl_const_ConSys_t cs) try {
+ppl_Constraint_System_OK(ppl_const_Constraint_System_t cs) try {
   return to_const(cs)->OK() ? 1 : 0;
 }
 CATCH_ALL
 
 
 int
-ppl_new_ConSys_const_iterator(ppl_ConSys_const_iterator_t* pcit) try {
-  *pcit = to_nonconst(new ConSys::const_iterator());
+ppl_new_Constraint_System_const_iterator
+(ppl_Constraint_System_const_iterator_t* pcit) try {
+  *pcit = to_nonconst(new Constraint_System::const_iterator());
   return 0;
 }
 CATCH_ALL
 
 int
-ppl_new_ConSys_const_iterator_from_ConSys_const_iterator
-(ppl_ConSys_const_iterator_t* pcit,
- ppl_const_ConSys_const_iterator_t cit)  try {
-  *pcit = to_nonconst(new ConSys::const_iterator(*to_const(cit)));
+ppl_new_Constraint_System_const_iterator_from_Constraint_System_const_iterator
+(ppl_Constraint_System_const_iterator_t* pcit,
+ ppl_const_Constraint_System_const_iterator_t cit)  try {
+  *pcit = to_nonconst(new Constraint_System::const_iterator(*to_const(cit)));
   return 0;
 }
 CATCH_ALL
 
 int
-ppl_delete_ConSys_const_iterator(ppl_const_ConSys_const_iterator_t cit)
+ppl_delete_Constraint_System_const_iterator
+(ppl_const_Constraint_System_const_iterator_t cit)
   try {
   delete to_const(cit);
   return 0;
@@ -729,39 +730,41 @@ ppl_delete_ConSys_const_iterator(ppl_const_ConSys_const_iterator_t cit)
 CATCH_ALL
 
 int
-ppl_assign_ConSys_const_iterator_from_ConSys_const_iterator
-(ppl_ConSys_const_iterator_t dst,
- ppl_const_ConSys_const_iterator_t src) try {
-  const ConSys::const_iterator& ssrc = *to_const(src);
-  ConSys::const_iterator& ddst = *to_nonconst(dst);
+ppl_assign_Constraint_System_const_iterator_from_Constraint_System_const_iterator
+(ppl_Constraint_System_const_iterator_t dst,
+ ppl_const_Constraint_System_const_iterator_t src) try {
+  const Constraint_System::const_iterator& ssrc = *to_const(src);
+  Constraint_System::const_iterator& ddst = *to_nonconst(dst);
   ddst = ssrc;
   return 0;
 }
 CATCH_ALL
 
 int
-ppl_ConSys_begin(ppl_const_ConSys_t cs, ppl_ConSys_const_iterator_t cit)
-  try {
-  const ConSys& ccs = *to_const(cs);
-  ConSys::const_iterator& ccit = *to_nonconst(cit);
+ppl_Constraint_System_begin(ppl_const_Constraint_System_t cs,
+			    ppl_Constraint_System_const_iterator_t cit) try {
+  const Constraint_System& ccs = *to_const(cs);
+  Constraint_System::const_iterator& ccit = *to_nonconst(cit);
   ccit = ccs.begin();
   return 0;
 }
 CATCH_ALL
 
 int
-ppl_ConSys_end(ppl_const_ConSys_t cs, ppl_ConSys_const_iterator_t cit) try {
-  const ConSys& ccs = *to_const(cs);
-  ConSys::const_iterator& ccit = *to_nonconst(cit);
+ppl_Constraint_System_end(ppl_const_Constraint_System_t cs,
+			  ppl_Constraint_System_const_iterator_t cit) try {
+  const Constraint_System& ccs = *to_const(cs);
+  Constraint_System::const_iterator& ccit = *to_nonconst(cit);
   ccit = ccs.end();
   return 0;
 }
 CATCH_ALL
 
 int
-ppl_ConSys_const_iterator_dereference(ppl_const_ConSys_const_iterator_t cit,
-				      ppl_const_Constraint_t* pc) try {
-  const ConSys::const_iterator& ccit = *to_const(cit);
+ppl_Constraint_System_const_iterator_dereference
+(ppl_const_Constraint_System_const_iterator_t cit,
+ ppl_const_Constraint_t* pc) try {
+  const Constraint_System::const_iterator& ccit = *to_const(cit);
   const Constraint& c = *ccit;
   *pc = to_const(&c);
   return 0;
@@ -769,19 +772,20 @@ ppl_ConSys_const_iterator_dereference(ppl_const_ConSys_const_iterator_t cit,
 CATCH_ALL
 
 int
-ppl_ConSys_const_iterator_increment(ppl_ConSys_const_iterator_t cit) try {
-  ConSys::const_iterator& ccit = *to_nonconst(cit);
+ppl_Constraint_System_const_iterator_increment
+(ppl_Constraint_System_const_iterator_t cit) try {
+  Constraint_System::const_iterator& ccit = *to_nonconst(cit);
   ++ccit;
   return 0;
 }
 CATCH_ALL
 
 int
-ppl_ConSys_const_iterator_equal_test
-(ppl_const_ConSys_const_iterator_t x,
- ppl_const_ConSys_const_iterator_t y) try {
-  const ConSys::const_iterator& xx = *to_const(x);
-  const ConSys::const_iterator& yy = *to_const(y);
+ppl_Constraint_System_const_iterator_equal_test
+(ppl_const_Constraint_System_const_iterator_t x,
+ ppl_const_Constraint_System_const_iterator_t y) try {
+  const Constraint_System::const_iterator& xx = *to_const(x);
+  const Constraint_System::const_iterator& yy = *to_const(y);
   return (xx == yy) ? 1 : 0;
 }
 CATCH_ALL
@@ -789,11 +793,11 @@ CATCH_ALL
 
 int
 ppl_new_Generator(ppl_Generator_t* pg,
-		  ppl_const_LinExpression_t le,
+		  ppl_const_Linear_Expression_t le,
 		  enum ppl_enum_Generator_Type t,
 		  ppl_const_Coefficient_t d) try {
   Generator* ppg;
-  const LinExpression& lle = *to_const(le);
+  const Linear_Expression& lle = *to_const(le);
   const Coefficient& dd = *to_const(d);
   switch(t) {
   case PPL_GENERATOR_TYPE_POINT:
@@ -887,7 +891,7 @@ ppl_Generator_coefficient(ppl_const_Generator_t g,
 			  ppl_dimension_type var,
 			  ppl_Coefficient_t n) try {
   const Generator& gg = *to_const(g);
-  Integer& nn = *to_nonconst(n);
+  Coefficient& nn = *to_nonconst(n);
   nn = gg.coefficient(Variable(var));
   return 0;
 }
@@ -897,7 +901,7 @@ int
 ppl_Generator_divisor(ppl_const_Generator_t g,
 		      ppl_Coefficient_t n) try {
   const Generator& gg = *to_const(g);
-  Integer& nn = *to_nonconst(n);
+  Coefficient& nn = *to_nonconst(n);
   nn = gg.divisor();
   return 0;
 }
@@ -910,151 +914,157 @@ ppl_Generator_OK(ppl_const_Generator_t /* g */) try {
 CATCH_ALL
 
 int
-ppl_new_LinExpression_from_Generator(ppl_LinExpression_t* ple,
-				     ppl_const_Generator_t g) try {
+ppl_new_Linear_Expression_from_Generator(ppl_Linear_Expression_t* ple,
+					 ppl_const_Generator_t g) try {
   const Generator& gg = *to_const(g);
-  *ple = to_nonconst(new LinExpression(gg));
+  *ple = to_nonconst(new Linear_Expression(gg));
   return 0;
 }
 CATCH_ALL
 
 
 int
-ppl_new_GenSys(ppl_GenSys_t* pgs) try {
-  *pgs = to_nonconst(new GenSys());
+ppl_new_Generator_System(ppl_Generator_System_t* pgs) try {
+  *pgs = to_nonconst(new Generator_System());
   return 0;
 }
 CATCH_ALL
 
 int
-ppl_new_GenSys_zero_dim_univ(ppl_GenSys_t* pgs) try {
-  *pgs = to_nonconst(new GenSys(GenSys::zero_dim_univ()));
+ppl_new_Generator_System_zero_dim_univ(ppl_Generator_System_t* pgs) try {
+  *pgs = to_nonconst(new Generator_System(Generator_System::zero_dim_univ()));
   return 0;
 }
 CATCH_ALL
 
 int
-ppl_new_GenSys_from_Generator(ppl_GenSys_t* pgs,
+ppl_new_Generator_System_from_Generator(ppl_Generator_System_t* pgs,
 			      ppl_const_Generator_t g) try {
   const Generator& gg = *to_const(g);
-  *pgs = to_nonconst(new GenSys(gg));
+  *pgs = to_nonconst(new Generator_System(gg));
   return 0;
 }
 CATCH_ALL
 
 int
-ppl_new_GenSys_from_GenSys(ppl_GenSys_t* pgs, ppl_const_GenSys_t gs) try {
-  const GenSys& ggs = *to_const(gs);
-  *pgs = to_nonconst(new GenSys(ggs));
+ppl_new_Generator_System_from_Generator_System
+(ppl_Generator_System_t* pgs, ppl_const_Generator_System_t gs) try {
+  const Generator_System& ggs = *to_const(gs);
+  *pgs = to_nonconst(new Generator_System(ggs));
   return 0;
 }
 CATCH_ALL
 
 int
-ppl_delete_GenSys(ppl_const_GenSys_t gs) try {
+ppl_delete_Generator_System(ppl_const_Generator_System_t gs) try {
   delete to_const(gs);
   return 0;
 }
 CATCH_ALL
 
 int
-ppl_assign_GenSys_from_GenSys(ppl_GenSys_t dst, ppl_const_GenSys_t src) try {
-  const GenSys& ssrc = *to_const(src);
-  GenSys& ddst = *to_nonconst(dst);
+ppl_assign_Generator_System_from_Generator_System
+(ppl_Generator_System_t dst, ppl_const_Generator_System_t src) try {
+  const Generator_System& ssrc = *to_const(src);
+  Generator_System& ddst = *to_nonconst(dst);
   ddst = ssrc;
   return 0;
 }
 CATCH_ALL
 
 int
-ppl_GenSys_space_dimension(ppl_const_GenSys_t gs,
-			   ppl_dimension_type* m) try {
+ppl_Generator_System_space_dimension(ppl_const_Generator_System_t gs,
+				     ppl_dimension_type* m) try {
   *m = to_const(gs)->space_dimension();
   return 0;
 }
 CATCH_ALL
 
 int
-ppl_GenSys_clear(ppl_GenSys_t gs) try {
+ppl_Generator_System_clear(ppl_Generator_System_t gs) try {
   to_nonconst(gs)->clear();
   return 0;
 }
 CATCH_ALL
 
 int
-ppl_GenSys_insert_Generator(ppl_GenSys_t gs, ppl_const_Generator_t g) try {
+ppl_Generator_System_insert_Generator(ppl_Generator_System_t gs,
+				      ppl_const_Generator_t g) try {
   const Generator& gg = *to_const(g);
-  GenSys& ggs = *to_nonconst(gs);
+  Generator_System& ggs = *to_nonconst(gs);
   ggs.insert(gg);
   return 0;
 }
 CATCH_ALL
 
 int
-ppl_GenSys_OK(ppl_const_GenSys_t gs) try {
+ppl_Generator_System_OK(ppl_const_Generator_System_t gs) try {
   return to_const(gs)->OK() ? 1 : 0;
 }
 CATCH_ALL
 
 
 int
-ppl_new_GenSys_const_iterator(ppl_GenSys_const_iterator_t* pgit) try {
-  *pgit = to_nonconst(new GenSys::const_iterator());
+ppl_new_Generator_System_const_iterator
+(ppl_Generator_System_const_iterator_t* pgit) try {
+  *pgit = to_nonconst(new Generator_System::const_iterator());
   return 0;
 }
 CATCH_ALL
 
 int
-ppl_new_GenSys_const_iterator_from_GenSys_const_iterator
-(ppl_GenSys_const_iterator_t* pgit,
- ppl_const_GenSys_const_iterator_t git)  try {
-  *pgit = to_nonconst(new GenSys::const_iterator(*to_const(git)));
+ppl_new_Generator_System_const_iterator_from_Generator_System_const_iterator
+(ppl_Generator_System_const_iterator_t* pgit,
+ ppl_const_Generator_System_const_iterator_t git)  try {
+  *pgit = to_nonconst(new Generator_System::const_iterator(*to_const(git)));
   return 0;
 }
 CATCH_ALL
 
 int
-ppl_delete_GenSys_const_iterator(ppl_const_GenSys_const_iterator_t git)
-  try {
+ppl_delete_Generator_System_const_iterator
+(ppl_const_Generator_System_const_iterator_t git) try {
   delete to_const(git);
   return 0;
 }
 CATCH_ALL
 
 int
-ppl_assign_GenSys_const_iterator_from_GenSys_const_iterator
-(ppl_GenSys_const_iterator_t dst,
- ppl_const_GenSys_const_iterator_t src) try {
-  const GenSys::const_iterator& ssrc = *to_const(src);
-  GenSys::const_iterator& ddst = *to_nonconst(dst);
+ppl_assign_Generator_System_const_iterator_from_Generator_System_const_iterator
+(ppl_Generator_System_const_iterator_t dst,
+ ppl_const_Generator_System_const_iterator_t src) try {
+  const Generator_System::const_iterator& ssrc = *to_const(src);
+  Generator_System::const_iterator& ddst = *to_nonconst(dst);
   ddst = ssrc;
   return 0;
 }
 CATCH_ALL
 
 int
-ppl_GenSys_begin(ppl_const_GenSys_t gs, ppl_GenSys_const_iterator_t git)
-  try {
-  const GenSys& ggs = *to_const(gs);
-  GenSys::const_iterator& ggit = *to_nonconst(git);
+ppl_Generator_System_begin(ppl_const_Generator_System_t gs,
+			   ppl_Generator_System_const_iterator_t git) try {
+  const Generator_System& ggs = *to_const(gs);
+  Generator_System::const_iterator& ggit = *to_nonconst(git);
   ggit = ggs.begin();
   return 0;
 }
 CATCH_ALL
 
 int
-ppl_GenSys_end(ppl_const_GenSys_t gs, ppl_GenSys_const_iterator_t git) try {
-  const GenSys& ggs = *to_const(gs);
-  GenSys::const_iterator& ggit = *to_nonconst(git);
+ppl_Generator_System_end(ppl_const_Generator_System_t gs,
+			 ppl_Generator_System_const_iterator_t git) try {
+  const Generator_System& ggs = *to_const(gs);
+  Generator_System::const_iterator& ggit = *to_nonconst(git);
   ggit = ggs.end();
   return 0;
 }
 CATCH_ALL
 
 int
-ppl_GenSys_const_iterator_dereference(ppl_const_GenSys_const_iterator_t git,
-				       ppl_const_Generator_t* pg) try {
-  const GenSys::const_iterator& ggit = *to_const(git);
+ppl_Generator_System_const_iterator_dereference
+(ppl_const_Generator_System_const_iterator_t git,
+ ppl_const_Generator_t* pg) try {
+  const Generator_System::const_iterator& ggit = *to_const(git);
   const Generator& c = *ggit;
   *pg = to_const(&c);
   return 0;
@@ -1062,19 +1072,20 @@ ppl_GenSys_const_iterator_dereference(ppl_const_GenSys_const_iterator_t git,
 CATCH_ALL
 
 int
-ppl_GenSys_const_iterator_increment(ppl_GenSys_const_iterator_t git) try {
-  GenSys::const_iterator& ggit = *to_nonconst(git);
+ppl_Generator_System_const_iterator_increment
+(ppl_Generator_System_const_iterator_t git) try {
+  Generator_System::const_iterator& ggit = *to_nonconst(git);
   ++ggit;
   return 0;
 }
 CATCH_ALL
 
 int
-ppl_GenSys_const_iterator_equal_test
-(ppl_const_GenSys_const_iterator_t x,
- ppl_const_GenSys_const_iterator_t y) try {
-  const GenSys::const_iterator& xx = *to_const(x);
-  const GenSys::const_iterator& yy = *to_const(y);
+ppl_Generator_System_const_iterator_equal_test
+(ppl_const_Generator_System_const_iterator_t x,
+ ppl_const_Generator_System_const_iterator_t y) try {
+  const Generator_System::const_iterator& xx = *to_const(x);
+  const Generator_System::const_iterator& yy = *to_const(y);
   return (xx == yy) ? 1 : 0;
 }
 CATCH_ALL
@@ -1151,72 +1162,72 @@ ppl_new_NNC_Polyhedron_from_NNC_Polyhedron(ppl_Polyhedron_t* pph,
 CATCH_ALL
 
 int
-ppl_new_C_Polyhedron_from_ConSys(ppl_Polyhedron_t* pph,
-				 ppl_const_ConSys_t cs) try {
-  const ConSys& ccs = *to_const(cs);
+ppl_new_C_Polyhedron_from_Constraint_System
+(ppl_Polyhedron_t* pph, ppl_const_Constraint_System_t cs) try {
+  const Constraint_System& ccs = *to_const(cs);
   *pph = to_nonconst(new C_Polyhedron(ccs));
   return 0;
 }
 CATCH_ALL
 
 int
-ppl_new_C_Polyhedron_recycle_ConSys(ppl_Polyhedron_t* pph,
-				    ppl_ConSys_t cs) try {
-  ConSys& ccs = *to_nonconst(cs);
+ppl_new_C_Polyhedron_recycle_Constraint_System
+(ppl_Polyhedron_t* pph, ppl_Constraint_System_t cs) try {
+  Constraint_System& ccs = *to_nonconst(cs);
   *pph = to_nonconst(new C_Polyhedron(ccs));
   return 0;
 }
 CATCH_ALL
 
 int
-ppl_new_NNC_Polyhedron_from_ConSys(ppl_Polyhedron_t* pph,
-				   ppl_const_ConSys_t cs) try {
-  const ConSys& ccs = *to_const(cs);
+ppl_new_NNC_Polyhedron_from_Constraint_System
+(ppl_Polyhedron_t* pph, ppl_const_Constraint_System_t cs) try {
+  const Constraint_System& ccs = *to_const(cs);
   *pph = to_nonconst(new NNC_Polyhedron(ccs));
   return 0;
 }
 CATCH_ALL
 
 int
-ppl_new_NNC_Polyhedron_recycle_ConSys(ppl_Polyhedron_t* pph,
-				      ppl_ConSys_t cs) try {
-  ConSys& ccs = *to_nonconst(cs);
+ppl_new_NNC_Polyhedron_recycle_Constraint_System
+(ppl_Polyhedron_t* pph, ppl_Constraint_System_t cs) try {
+  Constraint_System& ccs = *to_nonconst(cs);
   *pph = to_nonconst(new NNC_Polyhedron(ccs));
   return 0;
 }
 CATCH_ALL
 
 int
-ppl_new_C_Polyhedron_from_GenSys(ppl_Polyhedron_t* pph,
-				 ppl_const_GenSys_t gs) try {
-  const GenSys& ggs = *to_const(gs);
+ppl_new_C_Polyhedron_from_Generator_System
+(ppl_Polyhedron_t* pph, ppl_const_Generator_System_t gs) try {
+  const Generator_System& ggs = *to_const(gs);
   *pph = to_nonconst(new C_Polyhedron(ggs));
   return 0;
 }
 CATCH_ALL
 
 int
-ppl_new_C_Polyhedron_recycle_GenSys(ppl_Polyhedron_t* pph,
-				    ppl_GenSys_t gs) try {
-  GenSys& ggs = *to_nonconst(gs);
+ppl_new_C_Polyhedron_recycle_Generator_System(ppl_Polyhedron_t* pph,
+					      ppl_Generator_System_t gs) try {
+  Generator_System& ggs = *to_nonconst(gs);
   *pph = to_nonconst(new C_Polyhedron(ggs));
   return 0;
 }
 CATCH_ALL
 
 int
-ppl_new_NNC_Polyhedron_from_GenSys(ppl_Polyhedron_t* pph,
-				   ppl_const_GenSys_t gs) try {
-  const GenSys& ggs = *to_const(gs);
+ppl_new_NNC_Polyhedron_from_Generator_System
+(ppl_Polyhedron_t* pph, ppl_const_Generator_System_t gs) try {
+  const Generator_System& ggs = *to_const(gs);
   *pph = to_nonconst(new C_Polyhedron(ggs));
   return 0;
 }
 CATCH_ALL
 
 int
-ppl_new_NNC_Polyhedron_recycle_GenSys(ppl_Polyhedron_t* pph,
-				      ppl_GenSys_t gs) try {
-  GenSys& ggs = *to_nonconst(gs);
+ppl_new_NNC_Polyhedron_recycle_Generator_System
+(ppl_Polyhedron_t* pph, ppl_Generator_System_t gs) try {
+  Generator_System& ggs = *to_nonconst(gs);
   *pph = to_nonconst(new C_Polyhedron(ggs));
   return 0;
 }
@@ -1256,12 +1267,12 @@ public:
   }
 
   bool get_lower_bound(ppl_dimension_type k, bool closed,
-		       Integer& n, Integer& d) const {
+		       Coefficient& n, Coefficient& d) const {
     return g_l_b(k, closed, to_nonconst(&n), to_nonconst(&d)) != 0;
   }
 
   bool get_upper_bound(ppl_dimension_type k, bool closed,
-		       Integer& n, Integer& d) const {
+		       Coefficient& n, Coefficient& d) const {
     return g_u_b(k, closed, to_nonconst(&n), to_nonconst(&d)) != 0;
   }
 };
@@ -1429,20 +1440,21 @@ int
 ppl_Polyhedron_limited_BHRZ03_extrapolation_assign_with_tokens
 (ppl_Polyhedron_t x,
  ppl_const_Polyhedron_t y,
- ppl_const_ConSys_t cs,
+ ppl_const_Constraint_System_t cs,
  unsigned* tp) try {
   Polyhedron& xx = *to_nonconst(x);
   const Polyhedron& yy = *to_const(y);
-  const ConSys& ccs = *to_const(cs);
+  const Constraint_System& ccs = *to_const(cs);
   xx.limited_BHRZ03_extrapolation_assign(yy, ccs, tp);
   return 0;
 }
 CATCH_ALL
 
 int
-ppl_Polyhedron_limited_BHRZ03_extrapolation_assign(ppl_Polyhedron_t x,
-						   ppl_const_Polyhedron_t y,
-						   ppl_const_ConSys_t cs) try {
+ppl_Polyhedron_limited_BHRZ03_extrapolation_assign
+(ppl_Polyhedron_t x,
+ ppl_const_Polyhedron_t y,
+ ppl_const_Constraint_System_t cs) try {
   return ppl_Polyhedron_limited_BHRZ03_extrapolation_assign_with_tokens(x, y,
 									cs, 0);
 }
@@ -1452,20 +1464,21 @@ int
 ppl_Polyhedron_bounded_BHRZ03_extrapolation_assign_with_tokens
 (ppl_Polyhedron_t x,
  ppl_const_Polyhedron_t y,
- ppl_const_ConSys_t cs,
+ ppl_const_Constraint_System_t cs,
  unsigned* tp) try {
   Polyhedron& xx = *to_nonconst(x);
   const Polyhedron& yy = *to_const(y);
-  const ConSys& ccs = *to_const(cs);
+  const Constraint_System& ccs = *to_const(cs);
   xx.bounded_BHRZ03_extrapolation_assign(yy, ccs, tp);
   return 0;
 }
 CATCH_ALL
 
 int
-ppl_Polyhedron_bounded_BHRZ03_extrapolation_assign(ppl_Polyhedron_t x,
-						   ppl_const_Polyhedron_t y,
-						   ppl_const_ConSys_t cs) try {
+ppl_Polyhedron_bounded_BHRZ03_extrapolation_assign
+(ppl_Polyhedron_t x,
+ ppl_const_Polyhedron_t y,
+ ppl_const_Constraint_System_t cs) try {
   return ppl_Polyhedron_bounded_BHRZ03_extrapolation_assign_with_tokens(x, y,
 									cs, 0);
 }
@@ -1493,20 +1506,21 @@ int
 ppl_Polyhedron_limited_H79_extrapolation_assign_with_tokens
 (ppl_Polyhedron_t x,
  ppl_const_Polyhedron_t y,
- ppl_const_ConSys_t cs,
+ ppl_const_Constraint_System_t cs,
  unsigned* tp) try {
   Polyhedron& xx = *to_nonconst(x);
   const Polyhedron& yy = *to_const(y);
-  const ConSys& ccs = *to_const(cs);
+  const Constraint_System& ccs = *to_const(cs);
   xx.limited_H79_extrapolation_assign(yy, ccs, tp);
   return 0;
 }
 CATCH_ALL
 
 int
-ppl_Polyhedron_limited_H79_extrapolation_assign(ppl_Polyhedron_t x,
-						ppl_const_Polyhedron_t y,
-						ppl_const_ConSys_t cs) try {
+ppl_Polyhedron_limited_H79_extrapolation_assign
+(ppl_Polyhedron_t x,
+ ppl_const_Polyhedron_t y,
+ ppl_const_Constraint_System_t cs) try {
   return ppl_Polyhedron_limited_H79_extrapolation_assign_with_tokens(x, y,
 								     cs, 0);
 }
@@ -1516,20 +1530,21 @@ int
 ppl_Polyhedron_bounded_H79_extrapolation_assign_with_tokens
 (ppl_Polyhedron_t x,
  ppl_const_Polyhedron_t y,
- ppl_const_ConSys_t cs,
+ ppl_const_Constraint_System_t cs,
  unsigned* tp) try {
   Polyhedron& xx = *to_nonconst(x);
   const Polyhedron& yy = *to_const(y);
-  const ConSys& ccs = *to_const(cs);
+  const Constraint_System& ccs = *to_const(cs);
   xx.bounded_H79_extrapolation_assign(yy, ccs, tp);
   return 0;
 }
 CATCH_ALL
 
 int
-ppl_Polyhedron_bounded_H79_extrapolation_assign(ppl_Polyhedron_t x,
-						ppl_const_Polyhedron_t y,
-						ppl_const_ConSys_t cs) try {
+ppl_Polyhedron_bounded_H79_extrapolation_assign
+(ppl_Polyhedron_t x,
+ ppl_const_Polyhedron_t y,
+ ppl_const_Constraint_System_t cs) try {
   return ppl_Polyhedron_bounded_H79_extrapolation_assign_with_tokens(x, y,
 								     cs, 0);
 }
@@ -1547,9 +1562,9 @@ CATCH_ALL
 
 int
 ppl_Polyhedron_constraints(ppl_const_Polyhedron_t ph,
-			   ppl_const_ConSys_t* pcs) try {
+			   ppl_const_Constraint_System_t* pcs) try {
   const Polyhedron& pph = *to_const(ph);
-  const ConSys& cs = pph.constraints();
+  const Constraint_System& cs = pph.constraints();
   *pcs = to_const(&cs);
   return 0;
 }
@@ -1557,9 +1572,9 @@ CATCH_ALL
 
 int
 ppl_Polyhedron_minimized_constraints(ppl_const_Polyhedron_t ph,
-				     ppl_const_ConSys_t* pcs) try {
+				     ppl_const_Constraint_System_t* pcs) try {
   const Polyhedron& pph = *to_const(ph);
-  const ConSys& cs = pph.minimized_constraints();
+  const Constraint_System& cs = pph.minimized_constraints();
   *pcs = to_const(&cs);
   return 0;
 }
@@ -1567,9 +1582,9 @@ CATCH_ALL
 
 int
 ppl_Polyhedron_generators(ppl_const_Polyhedron_t ph,
-			  ppl_const_GenSys_t* pgs) try {
+			  ppl_const_Generator_System_t* pgs) try {
   const Polyhedron& pph = *to_const(ph);
-  const GenSys& gs = pph.generators();
+  const Generator_System& gs = pph.generators();
   *pgs = to_const(&gs);
   return 0;
 }
@@ -1577,9 +1592,9 @@ CATCH_ALL
 
 int
 ppl_Polyhedron_minimized_generators(ppl_const_Polyhedron_t ph,
-				    ppl_const_GenSys_t* pgs) try {
+				    ppl_const_Generator_System_t* pgs) try {
   const Polyhedron& pph = *to_const(ph);
-  const GenSys& gs = pph.minimized_generators();
+  const Generator_System& gs = pph.minimized_generators();
   *pgs = to_const(&gs);
   return 0;
 }
@@ -1627,67 +1642,66 @@ CATCH_ALL
 
 int
 ppl_Polyhedron_add_constraints(ppl_Polyhedron_t ph,
-			       ppl_const_ConSys_t cs) try {
+			       ppl_const_Constraint_System_t cs) try {
   Polyhedron& pph = *to_nonconst(ph);
-  const ConSys& ccs = *to_const(cs);
+  const Constraint_System& ccs = *to_const(cs);
   pph.add_constraints(ccs);
   return 0;
 }
 CATCH_ALL
 
 int
-ppl_Polyhedron_add_constraints_and_minimize(ppl_Polyhedron_t ph,
-					    ppl_const_ConSys_t cs) try {
+ppl_Polyhedron_add_constraints_and_minimize
+(ppl_Polyhedron_t ph, ppl_const_Constraint_System_t cs) try {
   Polyhedron& pph = *to_nonconst(ph);
-  const ConSys& ccs = *to_const(cs);
+  const Constraint_System& ccs = *to_const(cs);
   return pph.add_constraints_and_minimize(ccs) ? 1 : 0;
 }
 CATCH_ALL
 
 int
 ppl_Polyhedron_add_generators(ppl_Polyhedron_t ph,
-			      ppl_const_GenSys_t gs) try {
+			      ppl_const_Generator_System_t gs) try {
   Polyhedron& pph = *to_nonconst(ph);
-  const GenSys& ggs = *to_const(gs);
+  const Generator_System& ggs = *to_const(gs);
   pph.add_generators(ggs);
   return 0;
 }
 CATCH_ALL
 
 int
-ppl_Polyhedron_add_generators_and_minimize(ppl_Polyhedron_t ph,
-					   ppl_const_GenSys_t gs) try {
+ppl_Polyhedron_add_generators_and_minimize
+(ppl_Polyhedron_t ph, ppl_const_Generator_System_t gs) try {
   Polyhedron& pph = *to_nonconst(ph);
-  const GenSys& ggs = *to_const(gs);
+  const Generator_System& ggs = *to_const(gs);
   return pph.add_generators_and_minimize(ggs) ? 1 : 0;
 }
 CATCH_ALL
 
 int
 ppl_Polyhedron_add_recycled_constraints(ppl_Polyhedron_t ph,
-					ppl_ConSys_t cs) try {
+					ppl_Constraint_System_t cs) try {
   Polyhedron& pph = *to_nonconst(ph);
-  ConSys& ccs = *to_nonconst(cs);
+  Constraint_System& ccs = *to_nonconst(cs);
   pph.add_recycled_constraints(ccs);
   return 0;
 }
 CATCH_ALL
 
 int
-ppl_Polyhedron_add_recycled_constraints_and_minimize(ppl_Polyhedron_t ph,
-						     ppl_ConSys_t cs)
-try {
+ppl_Polyhedron_add_recycled_constraints_and_minimize
+(ppl_Polyhedron_t ph, ppl_Constraint_System_t cs) try {
   Polyhedron& pph = *to_nonconst(ph);
-  ConSys& ccs = *to_nonconst(cs);
+  Constraint_System& ccs = *to_nonconst(cs);
   return pph.add_recycled_constraints_and_minimize(ccs) ? 1 : 0;
 }
 CATCH_ALL
 
 int
 ppl_Polyhedron_add_recycled_generators(ppl_Polyhedron_t ph,
-				       ppl_GenSys_t gs) try {
+				       ppl_Generator_System_t gs) try {
   Polyhedron& pph = *to_nonconst(ph);
-  GenSys& ggs = *to_nonconst(gs);
+  Generator_System& ggs = *to_nonconst(gs);
   pph.add_recycled_generators(ggs);
   return 0;
 }
@@ -1695,10 +1709,10 @@ CATCH_ALL
 
 int
 ppl_Polyhedron_add_recycled_generators_and_minimize(ppl_Polyhedron_t ph,
-						    ppl_GenSys_t gs)
+						    ppl_Generator_System_t gs)
 try {
   Polyhedron& pph = *to_nonconst(ph);
-  GenSys& ggs = *to_nonconst(gs);
+  Generator_System& ggs = *to_nonconst(gs);
   return pph.add_recycled_generators_and_minimize(ggs) ? 1 : 0;
 }
 CATCH_ALL
@@ -1841,11 +1855,11 @@ CATCH_ALL
 int
 ppl_Polyhedron_affine_image(ppl_Polyhedron_t ph,
 			    ppl_dimension_type var,
-			    ppl_const_LinExpression_t le,
+			    ppl_const_Linear_Expression_t le,
 			    ppl_const_Coefficient_t d) try {
   Polyhedron& pph = *to_nonconst(ph);
-  const LinExpression& lle = *to_const(le);
-  const Integer& dd = *to_const(d);
+  const Linear_Expression& lle = *to_const(le);
+  const Coefficient& dd = *to_const(d);
   pph.affine_image(Variable(var), lle, dd);
   return 0;
 }
@@ -1854,11 +1868,11 @@ CATCH_ALL
 int
 ppl_Polyhedron_affine_preimage(ppl_Polyhedron_t ph,
 			       ppl_dimension_type var,
-			       ppl_const_LinExpression_t le,
+			       ppl_const_Linear_Expression_t le,
 			       ppl_const_Coefficient_t d) try {
   Polyhedron& pph = *to_nonconst(ph);
-  const LinExpression& lle = *to_const(le);
-  const Integer& dd = *to_const(d);
+  const Linear_Expression& lle = *to_const(le);
+  const Coefficient& dd = *to_const(d);
   pph.affine_preimage(Variable(var), lle, dd);
   return 0;
 }
@@ -1890,11 +1904,11 @@ int
 ppl_Polyhedron_generalized_affine_image(ppl_Polyhedron_t ph,
 					ppl_dimension_type var,
 					enum ppl_enum_Constraint_Type relsym,
-					ppl_const_LinExpression_t le,
+					ppl_const_Linear_Expression_t le,
 					ppl_const_Coefficient_t d) try {
   Polyhedron& pph = *to_nonconst(ph);
-  const LinExpression& lle = *to_const(le);
-  const Integer& dd = *to_const(d);
+  const Linear_Expression& lle = *to_const(le);
+  const Coefficient& dd = *to_const(d);
   pph.generalized_affine_image(Variable(var), relation_symbol(relsym), lle,
 			       dd);
   return 0;
@@ -1904,12 +1918,12 @@ CATCH_ALL
 int
 ppl_Polyhedron_generalized_affine_image_lhs_rhs
 (ppl_Polyhedron_t ph,
- ppl_const_LinExpression_t lhs,
+ ppl_const_Linear_Expression_t lhs,
  enum ppl_enum_Constraint_Type relsym,
- ppl_const_LinExpression_t rhs) try {
+ ppl_const_Linear_Expression_t rhs) try {
   Polyhedron& pph = *to_nonconst(ph);
-  const LinExpression& llhs = *to_const(lhs);
-  const LinExpression& rrhs = *to_const(rhs);
+  const Linear_Expression& llhs = *to_const(lhs);
+  const Linear_Expression& rrhs = *to_const(rhs);
   pph.generalized_affine_image(llhs, relation_symbol(relsym), rrhs);
   return 0;
 }
@@ -1944,12 +1958,12 @@ public:
   }
 
   void raise_lower_bound(ppl_dimension_type k, bool closed,
-			 const Integer& n, const Integer& d) {
+			 const Coefficient& n, const Coefficient& d) {
     r_l_b(k, closed, to_const(&n), to_const(&d));
   }
 
   void lower_upper_bound(ppl_dimension_type k, bool closed,
-			 const Integer& n, const Integer& d) {
+			 const Coefficient& n, const Coefficient& d) {
     l_u_b(k, closed, to_const(&n), to_const(&d));
   }
 };
@@ -2020,33 +2034,33 @@ CATCH_ALL
 
 int
 ppl_Polyhedron_bounds_from_above(ppl_const_Polyhedron_t ph,
-				 ppl_const_LinExpression_t le) try {
+				 ppl_const_Linear_Expression_t le) try {
   const Polyhedron& pph = *to_const(ph);
-  const LinExpression& lle = *to_const(le);
+  const Linear_Expression& lle = *to_const(le);
   return pph.bounds_from_above(lle) ? 1 : 0;
 }
 CATCH_ALL
 
 int
 ppl_Polyhedron_bounds_from_below(ppl_const_Polyhedron_t ph,
-				 ppl_const_LinExpression_t le) try {
+				 ppl_const_Linear_Expression_t le) try {
   const Polyhedron& pph = *to_const(ph);
-  const LinExpression& lle = *to_const(le);
+  const Linear_Expression& lle = *to_const(le);
   return pph.bounds_from_below(lle) ? 1 : 0;
 }
 CATCH_ALL
 
 int
 ppl_Polyhedron_maximize(ppl_const_Polyhedron_t ph,
-			ppl_const_LinExpression_t le,
+			ppl_const_Linear_Expression_t le,
 			ppl_Coefficient_t sup_n,
 			ppl_Coefficient_t sup_d,
 			int* pmaximum,
 			ppl_const_Generator_t* ppoint) try {
   const Polyhedron& pph = *to_const(ph);
-  const LinExpression& lle = *to_const(le);
-  Integer& ssup_n = *to_nonconst(sup_n);
-  Integer& ssup_d = *to_nonconst(sup_d);
+  const Linear_Expression& lle = *to_const(le);
+  Coefficient& ssup_n = *to_nonconst(sup_n);
+  Coefficient& ssup_d = *to_nonconst(sup_d);
   bool maximum;
   bool ok = ppoint != 0
     ? pph.maximize(lle, ssup_n, ssup_d, maximum,
@@ -2060,15 +2074,15 @@ CATCH_ALL
 
 int
 ppl_Polyhedron_minimize(ppl_const_Polyhedron_t ph,
-			ppl_const_LinExpression_t le,
+			ppl_const_Linear_Expression_t le,
 			ppl_Coefficient_t inf_n,
 			ppl_Coefficient_t inf_d,
 			int* pminimum,
 			ppl_const_Generator_t* ppoint) try {
   const Polyhedron& pph = *to_const(ph);
-  const LinExpression& lle = *to_const(le);
-  Integer& iinf_n = *to_nonconst(inf_n);
-  Integer& iinf_d = *to_nonconst(inf_d);
+  const Linear_Expression& lle = *to_const(le);
+  Coefficient& iinf_n = *to_nonconst(inf_n);
+  Coefficient& iinf_d = *to_nonconst(inf_d);
   bool minimum;
   bool ok = ppoint != 0
     ? pph.minimize(lle, iinf_n, iinf_d, minimum,
@@ -2180,15 +2194,15 @@ CATCH_ALL
 
 DEFINE_PRINT_FUNCTIONS(Coefficient)
 
-DEFINE_PRINT_FUNCTIONS(LinExpression)
+DEFINE_PRINT_FUNCTIONS(Linear_Expression)
 
 DEFINE_PRINT_FUNCTIONS(Constraint)
 
-DEFINE_PRINT_FUNCTIONS(ConSys)
+DEFINE_PRINT_FUNCTIONS(Constraint_System)
 
 DEFINE_PRINT_FUNCTIONS(Generator)
 
-DEFINE_PRINT_FUNCTIONS(GenSys)
+DEFINE_PRINT_FUNCTIONS(Generator_System)
 
 DEFINE_PRINT_FUNCTIONS(Polyhedron)
 

@@ -58,7 +58,7 @@ Prolog_put_ulong(Prolog_term_ref t, unsigned long ul) {
   if (ul <= LONG_MAX)
     return SP_put_integer(t, (long) ul);
   else {
-    buf = (long long) ul; 
+    buf = (long long) ul;
     return SP_put_integer_bytes(t, &buf, sizeof(long long), 1);
   }
 }

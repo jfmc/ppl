@@ -44,7 +44,7 @@ C_Polyhedron::C_Polyhedron(dimension_type num_dimensions,
 }
 
 inline
-C_Polyhedron::C_Polyhedron(const ConSys& cs)
+C_Polyhedron::C_Polyhedron(const Constraint_System& cs)
   : Polyhedron(NECESSARILY_CLOSED,
 	       cs.space_dimension() <= max_space_dimension()
 	       ? cs
@@ -56,7 +56,7 @@ C_Polyhedron::C_Polyhedron(const ConSys& cs)
 }
 
 inline
-C_Polyhedron::C_Polyhedron(ConSys& cs)
+C_Polyhedron::C_Polyhedron(Constraint_System& cs)
   : Polyhedron(NECESSARILY_CLOSED,
 	       cs.space_dimension() <= max_space_dimension()
 	       ? cs
@@ -68,7 +68,7 @@ C_Polyhedron::C_Polyhedron(ConSys& cs)
 }
 
 inline
-C_Polyhedron::C_Polyhedron(const GenSys& gs)
+C_Polyhedron::C_Polyhedron(const Generator_System& gs)
   : Polyhedron(NECESSARILY_CLOSED,
 	       gs.space_dimension() <= max_space_dimension()
 	       ? gs
@@ -80,7 +80,7 @@ C_Polyhedron::C_Polyhedron(const GenSys& gs)
 }
 
 inline
-C_Polyhedron::C_Polyhedron(GenSys& gs)
+C_Polyhedron::C_Polyhedron(Generator_System& gs)
   : Polyhedron(NECESSARILY_CLOSED,
 	       gs.space_dimension() <= max_space_dimension()
 	       ? gs
@@ -111,6 +111,13 @@ C_Polyhedron::C_Polyhedron(const C_Polyhedron& y)
 inline C_Polyhedron&
 C_Polyhedron::operator=(const C_Polyhedron& y) {
   Polyhedron::operator=(y);
+  return *this;
+}
+
+inline C_Polyhedron&
+C_Polyhedron::operator=(const NNC_Polyhedron& y) {
+  C_Polyhedron c_y(y);
+  swap(c_y);
   return *this;
 }
 

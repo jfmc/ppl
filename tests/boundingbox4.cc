@@ -33,7 +33,7 @@ using namespace Parma_Polyhedra_Library;
 // This is a unbounded box in 4D but bounded in 2D with strict inequalities.
 static void
 test1() {
-  BoundingBox box(4);
+  Bounding_Box box(4);
   box.raise_lower_bound(1, false, -2, 3);
   box.lower_upper_bound(1, true, 4, 1);
   box.raise_lower_bound(2, false, -10, 1);
@@ -41,7 +41,7 @@ test1() {
   box.raise_lower_bound(3, true, 15, 3);
 
   NNC_Polyhedron ph(box, From_Bounding_Box());
-  
+
   Variable x(1);
   Variable y(2);
   Variable z(3);
@@ -66,14 +66,14 @@ test1() {
 // causing upper and lower bounds of the box to be open.
 static void
 test2() {
-  BoundingBox box(4);
+  Bounding_Box box(4);
   box.raise_lower_bound(1, true, -2, 3);
   box.lower_upper_bound(1, false, 4, 1);
   box.raise_lower_bound(2, false, -10, 1);
   box.lower_upper_bound(2, true, 12, 3);
 
   NNC_Polyhedron ph(box, From_Bounding_Box());
-  
+
   Variable x(1);
   Variable y(2);
 
@@ -95,7 +95,7 @@ test2() {
 // This is an empty box in 2D.
 static void
 test3() {
-  BoundingBox box(2);
+  Bounding_Box box(2);
   box.set_empty();
 
   NNC_Polyhedron ph(box, From_Bounding_Box());

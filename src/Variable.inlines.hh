@@ -53,6 +53,16 @@ Variable::space_dimension() const {
   return varid + 1;
 }
 
+inline memory_size_type
+Variable::external_memory_in_bytes() const {
+  return 0;
+}
+
+inline memory_size_type
+Variable::total_memory_in_bytes() const {
+  return sizeof(*this) + external_memory_in_bytes();
+}
+
 inline void
 Variable::set_output_function(output_function_type* p) {
   current_output_function = p;

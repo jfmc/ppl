@@ -37,7 +37,7 @@ main() TRY {
   Variable x(0);
   Variable y(1);
 
-  GenSys gs1;
+  Generator_System gs1;
   gs1.insert(point(x));
   gs1.insert(point(y));
   gs1.insert(line(x));
@@ -47,7 +47,7 @@ main() TRY {
   print_generators(ph1, "*** before ***");
 #endif
 
-  GenSys gs2;
+  Generator_System gs2;
   gs2.insert(point());
 
   ph1.add_generators_and_minimize(gs2);

@@ -24,7 +24,7 @@ site: http://www.cs.unipr.it/ppl/ . */
 #include <config.h>
 #include <sstream>
 
-#include "Integer.defs.hh"
+#include "Coefficient.defs.hh"
 #include "checked.defs.hh"
 #include "checked_int.inlines.hh"
 #include "checked_mpz.inlines.hh"
@@ -355,23 +355,23 @@ Prolog_unify(Prolog_term_ref t, Prolog_term_ref u) {
   return ciao_unify(t, u);
 }
 
-static PPL::Integer
-integer_term_to_Integer(Prolog_term_ref t) {
+static PPL::Coefficient
+integer_term_to_Coefficient(Prolog_term_ref t) {
   assert(ciao_is_integer(t));
   long v;
   if (Prolog_get_long(t, &v))
-    return PPL::Integer(v);
+    return PPL::Coefficient(v);
   else {
     char* s;
     s = ciao_get_number_chars(t);
-    PPL::Integer n(s);
+    PPL::Coefficient n(s);
     ciao_free(s);
     return n;
   }
 }
 
 static Prolog_term_ref
-Integer_to_integer_term(const PPL::Integer& n) {
+Coefficient_to_integer_term(const PPL::Coefficient& n) {
   long v;
   if (PPL::Checked::assign<PPL::Check_Overflow_Policy>(v, PPL::raw_value(n))
       == PPL::Checked::V_EQ)

@@ -34,7 +34,7 @@ EList_Iterator<T>::EList_Iterator() {
 }
 
 template <typename T>
-inline 
+inline
 EList_Iterator<T>::EList_Iterator(Doubly_Linked_Object* p)
   : ptr(p) {
 }

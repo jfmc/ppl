@@ -43,7 +43,7 @@ public:
   a value of type <CODE>Flag*</CODE> to an entity of type
   <CODE>Flag_Base*</CODE>.
   The class \p Flag must provide the method
-  
+
   \code
     int priority() const
   \endcode

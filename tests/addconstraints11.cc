@@ -46,7 +46,7 @@ main() TRY {
   NNC_Polyhedron ph2(1);
   ph2.add_constraint(A == 0);
 
-  ConSys cs = ph2.constraints();
+  Constraint_System cs = ph2.constraints();
 
 #if NOISY
   print_constraints(ph1, "*** ph1 ***");

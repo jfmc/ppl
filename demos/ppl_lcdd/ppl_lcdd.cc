@@ -584,8 +584,8 @@ read_polyhedron(std::istream& in, POLYHEDRON_TYPE& ph) {
 
 #if defined(USE_PPL)
 
-  PPL::ConSys cs;
-  PPL::GenSys gs;
+  PPL::Constraint_System cs;
+  PPL::Generator_System gs;
 
 #elif defined(USE_POLKA)
 
@@ -630,7 +630,7 @@ read_polyhedron(std::istream& in, POLYHEDRON_TYPE& ph) {
 
 #if defined(USE_PPL)
       // PPL variables have indices 0, 1, ..., space_dim-1.
-      PPL::LinExpression e;
+      PPL::Linear_Expression e;
       for (unsigned j = space_dim; j-- > 0; )
 	e += coefficients[j] * PPL::Variable(j);
 #elif defined(USE_POLKA)
@@ -753,7 +753,7 @@ read_polyhedron(std::istream& in, POLYHEDRON_TYPE& ph) {
 
 #if defined(USE_PPL)
       // PPL variables have indices 0, 1, ..., space_dim-1.
-      PPL::LinExpression e;
+      PPL::Linear_Expression e;
       for (unsigned j = num_columns; j-- > 1; )
 	e += coefficients[j] * PPL::Variable(j-1);
       e += coefficients[0];
@@ -792,7 +792,7 @@ read_polyhedron(std::istream& in, POLYHEDRON_TYPE& ph) {
 	// PolyLib stores the constraint kind at index 0 (1 = inequality).
 	value_set_si(mat->p[row][0], 1);
 #endif
-      } 
+      }
     }
 
     if (verbose) {
@@ -872,8 +872,8 @@ write_polyhedron(std::ostream& out,
 #if defined(USE_PPL)
   unsigned num_rows = 0;
   if (rep == H) {
-    const PPL::ConSys& cs = ph.constraints();
-    for (PPL::ConSys::const_iterator i = cs.begin(),
+    const PPL::Constraint_System& cs = ph.constraints();
+    for (PPL::Constraint_System::const_iterator i = cs.begin(),
 	   cs_end = cs.end(); i != cs_end; ++i) {
       ++num_rows;
       if (i->is_equality())
@@ -881,8 +881,8 @@ write_polyhedron(std::ostream& out,
     }
   }
   else {
-    const PPL::GenSys& gs = ph.generators();
-    for (PPL::GenSys::const_iterator i = gs.begin(),
+    const PPL::Generator_System& gs = ph.generators();
+    for (PPL::Generator_System::const_iterator i = gs.begin(),
 	   gs_end = gs.end(); i != gs_end; ++i) {
       ++num_rows;
       if (i->is_line())
@@ -939,8 +939,8 @@ write_polyhedron(std::ostream& out,
 
 #if defined(USE_PPL)
   if (rep == H) {
-    const PPL::ConSys& cs = ph.constraints();
-    for (PPL::ConSys::const_iterator i = cs.begin(),
+    const PPL::Constraint_System& cs = ph.constraints();
+    for (PPL::Constraint_System::const_iterator i = cs.begin(),
 	   cs_end = cs.end(); i != cs_end; ++i) {
       const PPL::Constraint& c = *i;
       guarded_write(out, c.inhomogeneous_term());
@@ -953,13 +953,13 @@ write_polyhedron(std::ostream& out,
   }
   else {
     assert(rep == V);
-    const PPL::GenSys& gs = ph.generators();
-    for (PPL::GenSys::const_iterator i = gs.begin(),
+    const PPL::Generator_System& gs = ph.generators();
+    for (PPL::Generator_System::const_iterator i = gs.begin(),
 	   gs_end = gs.end(); i != gs_end; ++i) {
       const PPL::Generator& g = *i;
       if (g.is_point()) {
 	guarded_write(out, '1');
-	const PPL::Integer& divisor = g.divisor();
+	const PPL::Coefficient& divisor = g.divisor();
 	for (PPL::dimension_type j = 0; j < space_dim; ++j) {
 	  guarded_write(out, ' ');
 	  if (g.coefficient(PPL::Variable(j)) == 0)
@@ -1168,15 +1168,15 @@ main(int argc, char* argv[]) try {
 
 	// Count the number of generators of `ph'.
 	unsigned ph_num_generators = 0;
-	const PPL::GenSys& ph_gs = ph.generators();
-	for (PPL::GenSys::const_iterator i = ph_gs.begin(),
+	const PPL::Generator_System& ph_gs = ph.generators();
+	for (PPL::Generator_System::const_iterator i = ph_gs.begin(),
 	       ph_gs_end = ph_gs.end(); i != ph_gs_end; ++i)
 	  ++ph_num_generators;
 	
 	// Count the number of generators of `e_ph'.
 	unsigned e_ph_num_generators = 0;
-	const PPL::GenSys& e_ph_gs = e_ph.generators();
-	for (PPL::GenSys::const_iterator i = e_ph_gs.begin(),
+	const PPL::Generator_System& e_ph_gs = e_ph.generators();
+	for (PPL::Generator_System::const_iterator i = e_ph_gs.begin(),
 	       e_ph_gs_end = e_ph_gs.end(); i != e_ph_gs_end; ++i)
 	  ++e_ph_num_generators;
 
@@ -1202,15 +1202,15 @@ main(int argc, char* argv[]) try {
 
 	// Count the number of constraints of `ph'.
 	unsigned ph_num_constraints = 0;
-	const PPL::ConSys& ph_cs = ph.constraints();
-	for (PPL::ConSys::const_iterator i = ph_cs.begin(),
+	const PPL::Constraint_System& ph_cs = ph.constraints();
+	for (PPL::Constraint_System::const_iterator i = ph_cs.begin(),
 	       ph_cs_end = ph_cs.end(); i != ph_cs_end; ++i)
 	  ++ph_num_constraints;
-      
+
 	// Count the number of constraints of `e_ph'.
 	unsigned e_ph_num_constraints = 0;
-	const PPL::ConSys& e_ph_cs = e_ph.constraints();
-	for (PPL::ConSys::const_iterator i = e_ph_cs.begin(),
+	const PPL::Constraint_System& e_ph_cs = e_ph.constraints();
+	for (PPL::Constraint_System::const_iterator i = e_ph_cs.begin(),
 	       e_ph_cs_end = e_ph_cs.end(); i != e_ph_cs_end; ++i)
 	  ++e_ph_num_constraints;
 

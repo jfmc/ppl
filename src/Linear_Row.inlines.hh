@@ -237,12 +237,12 @@ Linear_Row::set_not_necessarily_closed() {
   flags().set_not_necessarily_closed();
 }
 
-inline Integer_traits::const_reference
+inline Coefficient_traits::const_reference
 Linear_Row::inhomogeneous_term() const {
   return (*this)[0];
 }
 
-inline Integer_traits::const_reference
+inline Coefficient_traits::const_reference
 Linear_Row::coefficient(const dimension_type k) const {
   return (*this)[k+1];
 }
@@ -253,20 +253,20 @@ Linear_Row::strong_normalize() {
   sign_normalize();
 }
 
-/*! \relates Linear_Row */ 
+/*! \relates Linear_Row */
 inline bool
 operator==(const Linear_Row& x, const Linear_Row& y) {
   return x.flags() == y.flags()
     && static_cast<const Row&>(x) == static_cast<const Row&>(y);
 }
 
-/*! \relates Linear_Row */ 
+/*! \relates Linear_Row */
 inline bool
 operator!=(const Linear_Row& x, const Linear_Row& y) {
   return !(x == y);
 }
 
-/*! \relates Linear_Row */ 
+/*! \relates Linear_Row */
 inline int
 scalar_product_sign(const Linear_Row& x, const Linear_Row& y) {
   TEMP_INTEGER(z);
@@ -274,7 +274,7 @@ scalar_product_sign(const Linear_Row& x, const Linear_Row& y) {
   return sgn(z);
 }
 
-/*! \relates Linear_Row */ 
+/*! \relates Linear_Row */
 inline int
 reduced_scalar_product_sign(const Linear_Row& x, const Linear_Row& y) {
   TEMP_INTEGER(z);
@@ -282,7 +282,7 @@ reduced_scalar_product_sign(const Linear_Row& x, const Linear_Row& y) {
   return sgn(z);
 }
 
-/*! \relates Linear_Row */ 
+/*! \relates Linear_Row */
 inline int
 homogeneous_scalar_product_sign(const Linear_Row& x, const Linear_Row& y) {
   TEMP_INTEGER(z);

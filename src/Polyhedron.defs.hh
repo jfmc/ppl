@@ -27,12 +27,12 @@ site: http://www.cs.unipr.it/ppl/ . */
 #include "Polyhedron.types.hh"
 #include "globals.defs.hh"
 #include "Variable.defs.hh"
-#include "LinExpression.defs.hh"
-#include "ConSys.defs.hh"
-#include "ConSys.inlines.hh"
-#include "GenSys.defs.hh"
-#include "GenSys.inlines.hh"
-#include "SatMatrix.defs.hh"
+#include "Linear_Expression.defs.hh"
+#include "Constraint_System.defs.hh"
+#include "Constraint_System.inlines.hh"
+#include "Generator_System.defs.hh"
+#include "Generator_System.inlines.hh"
+#include "Saturation_Matrix.defs.hh"
 #include "Generator.types.hh"
 #include "Poly_Con_Relation.defs.hh"
 #include "Poly_Gen_Relation.defs.hh"
@@ -139,7 +139,7 @@ bool operator!=(const Polyhedron& x, const Polyhedron& y);
     The following code builds a polyhedron corresponding to
     a square in \f$\Rset^2\f$, given as a system of constraints:
     \code
-  ConSys cs;
+  Constraint_System cs;
   cs.insert(x >= 0);
   cs.insert(x <= 3);
   cs.insert(y >= 0);
@@ -150,7 +150,7 @@ bool operator!=(const Polyhedron& x, const Polyhedron& y);
     but starting from a system of generators specifying
     the four vertices of the square:
     \code
-  GenSys gs;
+  Generator_System gs;
   gs.insert(point(0*x + 0*y));
   gs.insert(point(0*x + 3*y));
   gs.insert(point(3*x + 0*y));
@@ -163,7 +163,7 @@ bool operator!=(const Polyhedron& x, const Polyhedron& y);
     corresponding to a half-strip in \f$\Rset^2\f$,
     given as a system of constraints:
     \code
-  ConSys cs;
+  Constraint_System cs;
   cs.insert(x >= 0);
   cs.insert(x - y <= 0);
   cs.insert(x - y + 1 >= 0);
@@ -173,7 +173,7 @@ bool operator!=(const Polyhedron& x, const Polyhedron& y);
     but starting from the system of generators specifying
     the two vertices of the polyhedron and one ray:
     \code
-  GenSys gs;
+  Generator_System gs;
   gs.insert(point(0*x + 0*y));
   gs.insert(point(0*x + y));
   gs.insert(ray(x - y));
@@ -249,7 +249,7 @@ bool operator!=(const Polyhedron& x, const Polyhedron& y);
   ph.add_generator(point(0*x + 3*y));
   ph.add_generator(point(3*x + 0*y));
   ph.add_generator(point(3*x + 3*y));
-  LinExpression coeff = x + 4;
+  Linear_Expression coeff = x + 4;
   ph.affine_image(x, coeff);
     \endcode
     In this example the starting polyhedron is a square in
@@ -258,7 +258,7 @@ bool operator!=(const Polyhedron& x, const Polyhedron& y);
     square translated to the right.  Moreover, if the affine
     transformation for the same variable \p x is \f$x+y\f$:
     \code
-  LinExpression coeff = x + y;
+  Linear_Expression coeff = x + y;
     \endcode
     the resulting polyhedron is a parallelogram with the height equal to
     the side of the square and the oblique sides parallel to the line
@@ -266,7 +266,7 @@ bool operator!=(const Polyhedron& x, const Polyhedron& y);
     Instead, if we do not use an invertible transformation for the same
     variable; for example, the affine expression \f$y\f$:
     \code
-  LinExpression coeff = y;
+  Linear_Expression coeff = y;
     \endcode
     the resulting polyhedron is a diagonal of the square.
 
@@ -279,7 +279,7 @@ bool operator!=(const Polyhedron& x, const Polyhedron& y);
   ph.add_constraint(x <= 3);
   ph.add_constraint(y >= 0);
   ph.add_constraint(y <= 3);
-  LinExpression coeff = x + 4;
+  Linear_Expression coeff = x + 4;
   ph.affine_preimage(x, coeff);
     \endcode
     In this example the starting polyhedron, \p var and the affine
@@ -288,7 +288,7 @@ bool operator!=(const Polyhedron& x, const Polyhedron& y);
     but translated to the left.
     Moreover, if the affine transformation for \p x is \f$x+y\f$
     \code
-  LinExpression coeff = x + y;
+  Linear_Expression coeff = x + y;
     \endcode
     the resulting polyhedron is a parallelogram with the height equal to
     the side of the square and the oblique sides parallel to the line
@@ -296,7 +296,7 @@ bool operator!=(const Polyhedron& x, const Polyhedron& y);
     Instead, if we do not use an invertible transformation for the same
     variable \p x, for example, the affine expression \f$y\f$:
     \code
-  LinExpression coeff = y;
+  Linear_Expression coeff = y;
     \endcode
     the resulting polyhedron is a line that corresponds to the \f$y\f$ axis.
 
@@ -309,7 +309,7 @@ bool operator!=(const Polyhedron& x, const Polyhedron& y);
     The following code shows the use of the function
     <CODE>remove_space_dimensions</CODE>:
     \code
-  GenSys gs;
+  Generator_System gs;
   gs.insert(point(3*x + y +0*z + 2*w));
   C_Polyhedron ph(gs);
   set<Variable> to_be_removed;
@@ -389,7 +389,7 @@ protected:
     \exception std::invalid_argument
     Thrown if the topology of \p cs is incompatible with \p topol.
   */
-  Polyhedron(Topology topol, const ConSys& cs);
+  Polyhedron(Topology topol, const Constraint_System& cs);
 
   //! Builds a polyhedron recycling a system of constraints.
   /*!
@@ -406,7 +406,7 @@ protected:
     \exception std::invalid_argument
     Thrown if the topology of \p cs is incompatible with \p topol.
   */
-  Polyhedron(Topology topol, ConSys& cs);
+  Polyhedron(Topology topol, Constraint_System& cs);
 
   //! Builds a polyhedron from a system of generators.
   /*!
@@ -422,7 +422,7 @@ protected:
     Thrown if if the topology of \p gs is incompatible with \p topol,
     or if the system of generators is not empty but has no points.
   */
-  Polyhedron(Topology topol, const GenSys& gs);
+  Polyhedron(Topology topol, const Generator_System& gs);
 
   //! Builds a polyhedron recycling a system of generators.
   /*!
@@ -440,7 +440,7 @@ protected:
     Thrown if if the topology of \p gs is incompatible with \p topol,
     or if the system of generators is not empty but has no points.
   */
-  Polyhedron(Topology topol, GenSys& gs);
+  Polyhedron(Topology topol, Generator_System& gs);
 
   //! Builds a polyhedron out of a generic, interval-based bounding box.
   /*!
@@ -469,7 +469,7 @@ protected:
     <CODE>true</CODE>, none of the functions below will be called.
     \code
       bool get_lower_bound(dimension_type k, bool closed,
-                           Integer& n, Integer& d) const
+                           Coefficient& n, Coefficient& d) const
     \endcode
     Let \f$I\f$ the interval corresponding to the <CODE>k</CODE>-th
     space dimension.  If \f$I\f$ is not bounded from below, simply return
@@ -485,7 +485,7 @@ protected:
     the unique representation for zero.
     \code
       bool get_upper_bound(dimension_type k, bool closed,
-                           Integer& n, Integer& d) const
+                           Coefficient& n, Coefficient& d) const
     \endcode
     Let \f$I\f$ the interval corresponding to the <CODE>k</CODE>-th
     space dimension.  If \f$I\f$ is not bounded from above, simply return
@@ -518,16 +518,16 @@ public:
   dimension_type affine_dimension() const;
 
   //! Returns the system of constraints.
-  const ConSys& constraints() const;
+  const Constraint_System& constraints() const;
 
   //! Returns the system of constraints, with no redundant constraint.
-  const ConSys& minimized_constraints() const;
+  const Constraint_System& minimized_constraints() const;
 
   //! Returns the system of generators.
-  const GenSys& generators() const;
+  const Generator_System& generators() const;
 
   //! Returns the system of generators, with no redundant generator.
-  const GenSys& minimized_generators() const;
+  const Generator_System& minimized_generators() const;
 
   //! \brief
   //! Returns the relations holding between the polyhedron \p *this
@@ -582,7 +582,7 @@ public:
     \exception std::invalid_argument
     Thrown if \p expr and \p *this are dimension-incompatible.
   */
-  bool bounds_from_above(const LinExpression& expr) const;
+  bool bounds_from_above(const Linear_Expression& expr) const;
 
   //! \brief
   //! Returns <CODE>true</CODE> if and only if \p expr is
@@ -591,7 +591,7 @@ public:
     \exception std::invalid_argument
     Thrown if \p expr and \p *this are dimension-incompatible.
   */
-  bool bounds_from_below(const LinExpression& expr) const;
+  bool bounds_from_below(const Linear_Expression& expr) const;
 
   //! \brief
   //! Returns <CODE>true</CODE> if and only if \p *this is not empty
@@ -607,7 +607,7 @@ public:
     \param sup_d
     The denominator of the supremum value;
 
-    \param maximum 
+    \param maximum
     <CODE>true</CODE> if and only if the supremum is also the maximum value.
 
     \exception std::invalid_argument
@@ -617,8 +617,8 @@ public:
     <CODE>false</CODE> is returned and \p sup_n, \p sup_d
     and \p maximum are left untouched.
   */
-  bool maximize(const LinExpression& expr,
-		Integer& sup_n, Integer& sup_d, bool& maximum) const;
+  bool maximize(const Linear_Expression& expr,
+		Coefficient& sup_n, Coefficient& sup_d, bool& maximum) const;
 
   //! \brief
   //! Returns <CODE>true</CODE> if and only if \p *this is not empty
@@ -649,8 +649,8 @@ public:
     <CODE>false</CODE> is returned and \p sup_n, \p sup_d, \p maximum
     and \p pppoint are left untouched.
   */
-  bool maximize(const LinExpression& expr,
-		Integer& sup_n, Integer& sup_d, bool& maximum,
+  bool maximize(const Linear_Expression& expr,
+		Coefficient& sup_n, Coefficient& sup_d, bool& maximum,
 		const Generator** const pppoint) const;
 
   //! \brief
@@ -677,8 +677,8 @@ public:
     <CODE>false</CODE> is returned and \p inf_n, \p inf_d
     and \p minimum are left untouched.
   */
-  bool minimize(const LinExpression& expr,
-		Integer& inf_n, Integer& inf_d, bool& minimum) const;
+  bool minimize(const Linear_Expression& expr,
+		Coefficient& inf_n, Coefficient& inf_d, bool& minimum) const;
 
   //! \brief
   //! Returns <CODE>true</CODE> if and only if \p *this is not empty
@@ -709,8 +709,8 @@ public:
     <CODE>false</CODE> is returned and \p inf_n, \p inf_d, \p minimum
     and \p pppoint are left untouched.
   */
-  bool minimize(const LinExpression& expr,
-		Integer& inf_n, Integer& inf_d, bool& minimum,
+  bool minimize(const Linear_Expression& expr,
+		Coefficient& inf_n, Coefficient& inf_d, bool& minimum,
 		const Generator** const pppoint) const;
 
   //! Returns <CODE>true</CODE> if and only if \p *this contains \p y.
@@ -745,8 +745,8 @@ public:
     causes the box to become empty, i.e., to represent the empty set.
     \code
       raise_lower_bound(dimension_type k, bool closed,
-                        Integer_traits::const_reference n,
-                        Integer_traits::const_reference d)
+                        Coefficient_traits::const_reference n,
+                        Coefficient_traits::const_reference d)
     \endcode
     intersects the interval corresponding to the <CODE>k</CODE>-th
     space dimension
@@ -754,8 +754,8 @@ public:
     with \f$(n/d, +\infty)\f$ if <CODE>closed</CODE> is <CODE>false</CODE>.
     \code
       lower_upper_bound(dimension_type k, bool closed,
-                        Integer_traits::const_reference n,
-                        Integer_traits::const_reference d)
+                        Coefficient_traits::const_reference n,
+                        Coefficient_traits::const_reference d)
     \endcode
     intersects the interval corresponding to the <CODE>k</CODE>-th
     space dimension
@@ -858,7 +858,7 @@ public:
     Thrown if \p *this and \p cs are topology-incompatible or
     dimension-incompatible.
   */
-  void add_constraints(const ConSys& cs);
+  void add_constraints(const Constraint_System& cs);
 
   //! \brief Adds the constraints in \p cs to the system of constraints
   //! of \p *this (without minimizing the result).
@@ -875,7 +875,7 @@ public:
     The only assumption that can be made on \p cs upon successful or
     exceptional return is that it can be safely destroyed.
   */
-  void add_recycled_constraints(ConSys& cs);
+  void add_recycled_constraints(Constraint_System& cs);
 
   //! \brief
   //! Adds a copy of the constraints in \p cs to the system
@@ -892,7 +892,7 @@ public:
     Thrown if \p *this and \p cs are topology-incompatible or
     dimension-incompatible.
   */
-  bool add_constraints_and_minimize(const ConSys& cs);
+  bool add_constraints_and_minimize(const Constraint_System& cs);
 
   //! \brief
   //! Adds the constraints in \p cs to the system of constraints
@@ -913,7 +913,7 @@ public:
     The only assumption that can be made on \p cs upon successful or
     exceptional return is that it can be safely destroyed.
   */
-  bool add_recycled_constraints_and_minimize(ConSys& cs);
+  bool add_recycled_constraints_and_minimize(Constraint_System& cs);
 
   //! \brief Adds a copy of the generators in \p gs to the system
   //! of generators of \p *this (without minimizing the result).
@@ -927,7 +927,7 @@ public:
     dimension-incompatible, or if \p *this is empty and the system of
     generators \p gs is not empty, but has no points.
   */
-  void add_generators(const GenSys& gs);
+  void add_generators(const Generator_System& gs);
 
   //! \brief Adds the generators in \p gs to the system of generators
   //! of \p *this (without minimizing the result).
@@ -945,7 +945,7 @@ public:
     The only assumption that can be made on \p gs upon successful or
     exceptional return is that it can be safely destroyed.
   */
-  void add_recycled_generators(GenSys& gs);
+  void add_recycled_generators(Generator_System& gs);
 
   //! \brief Adds a copy of the generators in \p gs to the system
   //! of generators of \p *this, minimizing the result.
@@ -962,7 +962,7 @@ public:
     dimension-incompatible, or if \p *this is empty and the the system
     of generators \p gs is not empty, but has no points.
   */
-  bool add_generators_and_minimize(const GenSys& gs);
+  bool add_generators_and_minimize(const Generator_System& gs);
 
   //! \brief Adds the generators in \p gs to the system of generators
   //! of \p *this, minimizing the result.
@@ -983,7 +983,7 @@ public:
     The only assumption that can be made on \p gs upon successful or
     exceptional return is that it can be safely destroyed.
   */
-  bool add_recycled_generators_and_minimize(GenSys& gs);
+  bool add_recycled_generators_and_minimize(Generator_System& gs);
 
   //! \brief
   //! Assigns to \p *this the intersection of \p *this and \p y.
@@ -1130,9 +1130,9 @@ public:
     \endif
   */
   void affine_image(Variable var,
-		    const LinExpression& expr,
-		    Integer_traits::const_reference denominator
-		      = Integer_one());
+		    const Linear_Expression& expr,
+		    Coefficient_traits::const_reference denominator
+		      = Coefficient_one());
 
   //! \brief
   //! Assigns to \p *this the \ref affine_transformation "affine preimage"
@@ -1221,9 +1221,9 @@ public:
     \endif
   */
   void affine_preimage(Variable var,
-		       const LinExpression& expr,
-		       Integer_traits::const_reference denominator
-		         = Integer_one());
+		       const Linear_Expression& expr,
+		       Coefficient_traits::const_reference denominator
+		         = Coefficient_one());
 
   //! \brief
   //! Assigns to \p *this the image of \p *this with respect to the
@@ -1253,9 +1253,9 @@ public:
   */
   void generalized_affine_image(Variable var,
 				const Relation_Symbol relsym,
-				const LinExpression& expr,
-				Integer_traits::const_reference denominator
-				  = Integer_one());
+				const Linear_Expression& expr,
+				Coefficient_traits::const_reference denominator
+				  = Coefficient_one());
 
   //! \brief
   //! Assigns to \p *this the image of \p *this with respect to the
@@ -1277,9 +1277,9 @@ public:
     or if \p *this is a C_Polyhedron and \p relsym is a strict
     relation symbol.
   */
-  void generalized_affine_image(const LinExpression& lhs,
+  void generalized_affine_image(const Linear_Expression& lhs,
 				const Relation_Symbol relsym,
-				const LinExpression& rhs);
+				const Linear_Expression& rhs);
 
   //! \brief
   //! Assigns to \p *this the result of computing the
@@ -1333,7 +1333,7 @@ public:
     dimension-incompatible.
   */
   void limited_BHRZ03_extrapolation_assign(const Polyhedron& y,
-					   const ConSys& cs,
+					   const Constraint_System& cs,
 					   unsigned* tp = 0);
 
   //! \brief
@@ -1353,13 +1353,13 @@ public:
     An optional pointer to an unsigned variable storing the number of
     available tokens (to be used when applying the
     \ref widening_with_tokens "widening with tokens" delay technique).
-    
+
     \exception std::invalid_argument
     Thrown if \p *this, \p y and \p cs are topology-incompatible or
     dimension-incompatible.
   */
   void bounded_BHRZ03_extrapolation_assign(const Polyhedron& y,
-					   const ConSys& cs,
+					   const Constraint_System& cs,
 					   unsigned* tp = 0);
 
   //! \brief
@@ -1401,7 +1401,7 @@ public:
     dimension-incompatible.
   */
   void limited_H79_extrapolation_assign(const Polyhedron& y,
-					const ConSys& cs,
+					const Constraint_System& cs,
 					unsigned* tp = 0);
 
   //! \brief
@@ -1427,7 +1427,7 @@ public:
     dimension-incompatible.
   */
   void bounded_H79_extrapolation_assign(const Polyhedron& y,
-					const ConSys& cs,
+					const Constraint_System& cs,
 					unsigned* tp = 0);
 
   //@} // Space Dimension Preserving Member Functions that May Modify [...]
@@ -1659,16 +1659,16 @@ public:
 
 private:
   //! The system of constraints.
-  ConSys con_sys;
+  Constraint_System con_sys;
 
   //! The system of generators.
-  GenSys gen_sys;
+  Generator_System gen_sys;
 
   //! The saturation matrix having constraints on its columns.
-  SatMatrix sat_c;
+  Saturation_Matrix sat_c;
 
   //! The saturation matrix having generators on its columns.
-  SatMatrix sat_g;
+  Saturation_Matrix sat_g;
 
   // Please, do not move the following include directive:
   // `Ph_Status.idefs.hh' must be included exactly at this point.
@@ -2053,7 +2053,7 @@ private:
     \exception std::invalid_argument
     Thrown if \p expr and \p *this are dimension-incompatible.
   */
-  bool bounds(const LinExpression& expr, bool from_above) const;
+  bool bounds(const Linear_Expression& expr, bool from_above) const;
 
   //! Maximizes or minimizes \p expr subject to \p *this.
   /*!
@@ -2086,9 +2086,9 @@ private:
     direction, <CODE>false</CODE> is returned and \p ext_n, \p ext_d,
     \p included and \p *pppoint are left untouched.
   */
-  bool max_min(const LinExpression& expr,
+  bool max_min(const Linear_Expression& expr,
 	       const bool maximize,
-	       Integer& ext_n, Integer& ext_d, bool& included,
+	       Coefficient& ext_n, Coefficient& ext_d, bool& included,
 	       const Generator** const pppoint = 0) const;
 
   //! \name Widening- and Extrapolation-Related Functions
@@ -2098,15 +2098,15 @@ private:
   //! Copies to \p cs_selection the constraints of `y' corresponding
   //! to the definition of the CH78-widening of \p *this and \p y.
   void select_CH78_constraints(const Polyhedron& y,
-			       ConSys& cs_selected) const;
+			       Constraint_System& cs_selected) const;
 
   //! \brief
   //! Splits the constraints of `x' into two subsets, depending on whether
   //! or not they are selected to compute the \ref H79_widening "H79-widening"
   //! of \p *this and \p y.
   void select_H79_constraints(const Polyhedron& y,
-			      ConSys& cs_selected,
-			      ConSys& cs_not_selected) const;
+			      Constraint_System& cs_selected,
+			      Constraint_System& cs_not_selected) const;
 
   friend class Parma_Polyhedra_Library::BHRZ03_Certificate;
   friend class Parma_Polyhedra_Library::H79_Certificate;
@@ -2114,7 +2114,7 @@ private:
   bool BHRZ03_combining_constraints(const Polyhedron& y,
 				    const BHRZ03_Certificate& y_cert,
  				    const Polyhedron& H79,
-				    const ConSys& x_minus_H79_con_sys);
+				    const Constraint_System& x_minus_H79_con_sys);
 
   bool BHRZ03_evolving_points(const Polyhedron& y,
 			      const BHRZ03_Certificate& y_cert,
@@ -2127,7 +2127,7 @@ private:
   //@} // Widening- and Extrapolation-Related Functions
 
   //! Adds the low-level constraints to the constraint system.
-  static void add_low_level_constraints(ConSys& cs);
+  static void add_low_level_constraints(Constraint_System& cs);
 
   //! Adds new space dimensions to the given matrices.
   /*!
@@ -2157,8 +2157,8 @@ private:
   */
   static void add_space_dimensions(Linear_System& mat1,
 				   Linear_System& mat2,
-				   SatMatrix& sat1,
-				   SatMatrix& sat2,
+				   Saturation_Matrix& sat1,
+				   Saturation_Matrix& sat2,
 				   dimension_type add_dim);
 
   //! \name Minimization-Related Static Member Functions
@@ -2167,7 +2167,7 @@ private:
   //! Builds and simplifies constraints from generators (or vice versa).
   // Detailed Doxygen comment to be found in file minimize.cc.
   static bool minimize(bool con_to_gen,
-		       Linear_System& source, Linear_System& dest, SatMatrix& sat);
+		       Linear_System& source, Linear_System& dest, Saturation_Matrix& sat);
 
   //! \brief
   //! Adds given constraints and builds minimized corresponding generators
@@ -2176,7 +2176,7 @@ private:
   static bool add_and_minimize(bool con_to_gen,
 			       Linear_System& source1,
 			       Linear_System& dest,
-			       SatMatrix& sat,
+			       Saturation_Matrix& sat,
 			       const Linear_System& source2);
 
   //! \brief
@@ -2186,7 +2186,7 @@ private:
   static bool add_and_minimize(bool con_to_gen,
 			       Linear_System& source,
 			       Linear_System& dest,
-			       SatMatrix& sat);
+			       Saturation_Matrix& sat);
 
   //! \brief
   //! Performs the conversion from constraints to generators and vice versa.
@@ -2194,14 +2194,14 @@ private:
   static dimension_type conversion(Linear_System& source,
 				   dimension_type start,
 				   Linear_System& dest,
-				   SatMatrix& sat,
+				   Saturation_Matrix& sat,
 				   dimension_type num_lines_or_equalities);
 
   //! \brief
   //! Uses Gauss' elimination method to simplify the result of
   //! <CODE>conversion()</CODE>.
   // Detailed Doxygen comment to be found in file simplify.cc.
-  static int simplify(Linear_System& mat, SatMatrix& sat);
+  static int simplify(Linear_System& mat, Saturation_Matrix& sat);
 
   //@} // Minimization-Related Static Member Functions
 
@@ -2222,10 +2222,10 @@ protected:
 				   const Generator& g) const;
   void throw_topology_incompatible(const char* method,
 				   const char* cs_name,
-				   const ConSys& cs) const;
+				   const Constraint_System& cs) const;
   void throw_topology_incompatible(const char* method,
 				   const char* gs_name,
-				   const GenSys& gs) const;
+				   const Generator_System& gs) const;
 
   void throw_dimension_incompatible(const char* method,
 				    const char* other_name,
@@ -2235,7 +2235,7 @@ protected:
 				    const Polyhedron& ph) const;
   void throw_dimension_incompatible(const char* method,
 				    const char* e_name,
-				    const LinExpression& e) const;
+				    const Linear_Expression& e) const;
   void throw_dimension_incompatible(const char* method,
 				    const char* c_name,
 				    const Constraint& c) const;
@@ -2244,10 +2244,10 @@ protected:
 				    const Generator& g) const;
   void throw_dimension_incompatible(const char* method,
 				    const char* cs_name,
-				    const ConSys& cs) const;
+				    const Constraint_System& cs) const;
   void throw_dimension_incompatible(const char* method,
 				    const char* gs_name,
-				    const GenSys& gs) const;
+				    const Generator_System& gs) const;
   void throw_dimension_incompatible(const char* method,
 				    const char* var_name,
 				    const Variable var) const;

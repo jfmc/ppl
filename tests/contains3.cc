@@ -38,7 +38,7 @@ main() TRY {
   Variable y(1);
 
   // Building a square without vertices.
-  ConSys cs;
+  Constraint_System cs;
   cs.insert(x >= 0);
   cs.insert(x <= 1);
   cs.insert(y >= 0);
@@ -51,7 +51,7 @@ main() TRY {
   NNC_Polyhedron ph1(cs);
 
   // Building an equivalent square.
-  GenSys gs;
+  Generator_System gs;
   gs.insert(closure_point());
   gs.insert(closure_point(x));
   gs.insert(closure_point(y));

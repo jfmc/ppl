@@ -75,10 +75,10 @@ inline void*
 Row::Impl::operator new(const size_t fixed_size,
 			const dimension_type capacity) {
 #if CXX_SUPPORTS_FLEXIBLE_ARRAYS
-  return ::operator new(fixed_size + capacity*sizeof(Integer));
+  return ::operator new(fixed_size + capacity*sizeof(Coefficient));
 #else
   assert(capacity >= 1);
-  return ::operator new(fixed_size + (capacity-1)*sizeof(Integer));
+  return ::operator new(fixed_size + (capacity-1)*sizeof(Coefficient));
 #endif
 }
 
@@ -94,7 +94,7 @@ Row::Impl::operator delete(void* p, dimension_type) {
 
 inline dimension_type
 Row::Impl::max_size() {
-  return size_t(-1)/sizeof(Integer);
+  return size_t(-1)/sizeof(Coefficient);
 }
 
 inline dimension_type
@@ -146,13 +146,13 @@ Row::Impl::flags() {
   return flags_;
 }
 
-inline Integer&
+inline Coefficient&
 Row::Impl::operator[](const dimension_type k) {
   assert(k < size());
   return vec_[k];
 }
 
-inline Integer_traits::const_reference
+inline Coefficient_traits::const_reference
 Row::Impl::operator[](const dimension_type k) const {
   assert(k < size());
   return vec_[k];
@@ -162,9 +162,9 @@ inline memory_size_type
 Row::Impl::total_memory_in_bytes(dimension_type capacity) const {
   return
     sizeof(*this)
-    + capacity*sizeof(Integer)
+    + capacity*sizeof(Coefficient)
 #if !CXX_SUPPORTS_FLEXIBLE_ARRAYS
-    - 1*sizeof(Integer)
+    - 1*sizeof(Coefficient)
 #endif
     + external_memory_in_bytes();
 }
@@ -337,12 +337,12 @@ Row::operator=(const Row& y) {
   return *this;
 }
 
-inline Integer&
+inline Coefficient&
 Row::operator[](const dimension_type k) {
   return (*impl)[k];
 }
 
-inline Integer_traits::const_reference
+inline Coefficient_traits::const_reference
 Row::operator[](const dimension_type k) const {
   return (*impl)[k];
 }
@@ -371,7 +371,7 @@ Row::total_memory_in_bytes() const {
   return sizeof(*this) + external_memory_in_bytes();
 }
 
-/*! \relates Row */ 
+/*! \relates Row */
 inline bool
 operator!=(const Row& x, const Row& y) {
   return !(x == y);

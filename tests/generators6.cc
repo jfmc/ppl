@@ -43,7 +43,7 @@ test1() {
 
   C_Polyhedron known_result(ph1);
 
-  GenSys gs = ph1.generators();
+  Generator_System gs = ph1.generators();
   C_Polyhedron ph2(gs);
 
   bool ok = (ph2 == known_result);
@@ -71,7 +71,7 @@ test2() {
 
   C_Polyhedron known_result(ph1);
 
-  GenSys gs = ph1.generators();
+  Generator_System gs = ph1.generators();
   C_Polyhedron ph2(gs);
 
   bool ok = (ph2 == known_result);

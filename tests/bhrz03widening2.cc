@@ -37,13 +37,13 @@ main() TRY {
   Variable A(0);
   Variable B(1);
 
-  GenSys gs1;
+  Generator_System gs1;
   gs1.insert(point(2*A));
   gs1.insert(closure_point(A+B));
   gs1.insert(closure_point(3*A+B));
   NNC_Polyhedron ph1(gs1);
 
-  GenSys gs2;
+  Generator_System gs2;
   gs2.insert(point(2*A));
   gs2.insert(closure_point(B));
   gs2.insert(closure_point(4*A+B));

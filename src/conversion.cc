@@ -25,8 +25,8 @@ site: http://www.cs.unipr.it/ppl/ . */
 
 #include "Linear_Row.defs.hh"
 #include "Linear_System.defs.hh"
-#include "SatRow.defs.hh"
-#include "SatMatrix.defs.hh"
+#include "Saturation_Row.defs.hh"
+#include "Saturation_Matrix.defs.hh"
 #include "Polyhedron.defs.hh"
 #include "globals.defs.hh"
 #include <cstddef>
@@ -351,7 +351,7 @@ PPL::dimension_type
 PPL::Polyhedron::conversion(Linear_System& source,
 			    const dimension_type start,
 			    Linear_System& dest,
-			    SatMatrix& sat,
+			    Saturation_Matrix& sat,
 			    dimension_type num_lines_or_equalities) {
   dimension_type source_num_rows = source.num_rows();
   dimension_type dest_num_rows = dest.num_rows();
@@ -398,10 +398,10 @@ PPL::Polyhedron::conversion(Linear_System& source,
     // `scalar_prod[i]' will contain the scalar product
     // of the constraint `source_k' and the generator `dest[i]'.
     // This product is 0 iff the generator saturates the constraint.
-    static std::vector<Integer> scalar_prod;
+    static std::vector<Coefficient> scalar_prod;
     const int needed_space = dest_num_rows - scalar_prod.size();
     if (needed_space > 0)
-      scalar_prod.insert(scalar_prod.end(), needed_space, Integer_zero());
+      scalar_prod.insert(scalar_prod.end(), needed_space, Coefficient_zero());
     // `index_non_zero' will indicate the first generator in `dest'
     // that does not saturate the constraint `source_k'.
     dimension_type index_non_zero = 0;
@@ -479,7 +479,7 @@ PPL::Polyhedron::conversion(Linear_System& source,
 #if 0
       // FIXME: this fragment was to avoid code duplication
       // and should be carefully reinstated.
-      Integer_traits::const_reference
+      Coefficient_traits::const_reference
 	scalar_prod_nle = scalar_prod[num_lines_or_equalities];
       const Row& dest_nle = dest[num_lines_or_equalities];
 #endif
@@ -488,10 +488,10 @@ PPL::Polyhedron::conversion(Linear_System& source,
 	if (scalar_prod[i] != 0) {
 	  // The following fragment optimizes the computation of
 	  //
-	  // Integer scale = scalar_prod[i];
+	  // Coefficient scale = scalar_prod[i];
 	  // scale.gcd_assign(scalar_prod[num_lines_or_equalities]);
-	  // Integer normalized_sp_i = scalar_prod[i] / scale;
-	  // Integer normalized_sp_n
+	  // Coefficient normalized_sp_i = scalar_prod[i] / scale;
+	  // Coefficient normalized_sp_n
 	  //   = scalar_prod[num_lines_or_equalities] / scale;
 	  // for (dimension_type c = dest_num_columns; c-- > 0; ) {
 	  //   dest[i][c] *= normalized_sp_n;
@@ -503,7 +503,7 @@ PPL::Polyhedron::conversion(Linear_System& source,
 		     normalized_sp_o);
 	  Linear_Row& dest_i = dest[i];
 	  for (dimension_type c = dest_num_columns; c-- > 0; ) {
-	    Integer& dest_i_c = dest_i[c];
+	    Coefficient& dest_i_c = dest_i[c];
 	    dest_i_c *= normalized_sp_o;
 	    sub_mul_assign(dest_i_c, normalized_sp_i, dest_nle[c]);
 	  }
@@ -525,10 +525,10 @@ PPL::Polyhedron::conversion(Linear_System& source,
 	if (scalar_prod[i] != 0) {
 	  // The following fragment optimizes the computation of
 	  //
-	  // Integer scale = scalar_prod[i];
+	  // Coefficient scale = scalar_prod[i];
 	  // scale.gcd_assign(scalar_prod[num_lines_or_equalities]);
-	  // Integer normalized_sp_i = scalar_prod[i] / scale;
-	  // Integer normalized_sp_n
+	  // Coefficient normalized_sp_i = scalar_prod[i] / scale;
+	  // Coefficient normalized_sp_n
 	  // = scalar_prod[num_lines_or_equalities] / scale;
 	  // for (dimension_type c = dest_num_columns; c-- > 0; ) {
 	  //   dest[i][c] *= normalized_sp_n;
@@ -540,7 +540,7 @@ PPL::Polyhedron::conversion(Linear_System& source,
 		     normalized_sp_o);
 	  Linear_Row& dest_i = dest[i];
 	  for (dimension_type c = dest_num_columns; c-- > 0; ) {
-	    Integer& dest_i_c = dest_i[c];
+	    Coefficient& dest_i_c = dest_i[c];
 	    dest_i_c *= normalized_sp_o;
 	    sub_mul_assign(dest_i_c, normalized_sp_i, dest_nle[c]);
 	  }
@@ -677,7 +677,7 @@ PPL::Polyhedron::conversion(Linear_System& source,
 	      // If there exist another generator that saturates
 	      // all the constraints saturated by both `dest[i]' and
 	      // `dest[j]', then they are NOT adjacent.
-	      SatRow new_satrow;
+	      Saturation_Row new_satrow;
 	      assert(sat[i].last() < 0 || unsigned(sat[i].last()) < k);
 	      assert(sat[j].last() < 0 || unsigned(sat[j].last()) < k);
 	      // Being the union of `sat[i]' and `sat[j]',
@@ -734,10 +734,10 @@ PPL::Polyhedron::conversion(Linear_System& source,
 		  Linear_Row& new_row = dest[dest_num_rows];
 		  // The following fragment optimizes the computation of
 		  //
-		  // Integer scale = scalar_prod[i];
+		  // Coefficient scale = scalar_prod[i];
 		  // scale.gcd_assign(scalar_prod[j]);
-		  // Integer normalized_sp_i = scalar_prod[i] / scale;
-		  // Integer normalized_sp_j = scalar_prod[j] / scale;
+		  // Coefficient normalized_sp_i = scalar_prod[i] / scale;
+		  // Coefficient normalized_sp_j = scalar_prod[j] / scale;
 		  // for (dimension_type c = dest_num_columns; c-- > 0; ) {
 		  //   new_row[c] = normalized_sp_i * dest[j][c];
 		  //   new_row[c] -= normalized_sp_j * dest[i][c];
@@ -747,7 +747,7 @@ PPL::Polyhedron::conversion(Linear_System& source,
 			     normalized_sp_i,
 			     normalized_sp_o);
 		  for (dimension_type c = dest_num_columns; c-- > 0; ) {
-		    Integer& new_row_c = new_row[c];
+		    Coefficient& new_row_c = new_row[c];
 		    new_row_c = normalized_sp_i * dest[j][c];
 		    sub_mul_assign(new_row_c, normalized_sp_o, dest[i][c]);
 		  }
@@ -759,9 +759,9 @@ PPL::Polyhedron::conversion(Linear_System& source,
 		  // Thus, the added scalar product is 0.
 		  assert(scalar_prod.size() >= dest_num_rows);
 		  if (scalar_prod.size() <= dest_num_rows)
-		    scalar_prod.push_back(Integer_zero());
+		    scalar_prod.push_back(Coefficient_zero());
 		  else
-		    scalar_prod[dest_num_rows] = Integer_zero();
+		    scalar_prod[dest_num_rows] = Coefficient_zero();
 		  // Increment the number of generators.
 		  ++dest_num_rows;
 		}

@@ -234,4 +234,4 @@ Standards for Documenting the Project with Doxygen
     Another piece of detailed description, if needed.
   */
   int foo(const bar& p1, const bar& p2, int p3);
-  
+

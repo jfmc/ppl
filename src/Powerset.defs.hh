@@ -64,11 +64,16 @@ operator<<(std::ostream& s, const Powerset<CS>& x);
 template <typename CS>
 class Parma_Polyhedra_Library::Powerset {
 public:
-  //! Default constructor.
+  //! Default constructor: builds the empty set.
   Powerset();
 
   //! Ordinary copy-constructor.
   Powerset(const Powerset& y);
+
+  //! \brief
+  //! If \p d is not bottom, builds a powerset containing only \p d.
+  //! Builds the empty powerset otherwise.
+  explicit Powerset(const CS& d);
 
   //! The assignment operator.
   Powerset& operator=(const Powerset& y);
@@ -103,6 +108,16 @@ public:
   //! element of the powerset constraint system (i.e., it represents
   //! the empty set).
   bool is_bottom() const;
+
+  //! \brief
+  //! Returns a lower bound to the total size in bytes of the memory
+  //! occupied by \p *this.
+  memory_size_type total_memory_in_bytes() const;
+
+  //! \brief
+  //! Returns a lower bound to the size in bytes of the memory
+  //! managed by \p *this.
+  memory_size_type external_memory_in_bytes() const;
 
   //! Checks if all the invariants are satisfied.
   // FIXME: document and perhaps use an enum instead of a bool.

@@ -43,7 +43,7 @@ test1() {
   ph2.add_constraint(A - B >= 0);
   ph2.add_constraint(A <= 2);
 
-  ConSys cs;
+  Constraint_System cs;
   cs.insert(B <= 4);
 
   C_Polyhedron known_result(ph2);
@@ -75,7 +75,7 @@ test2() {
 
   C_Polyhedron ph2(2, C_Polyhedron::EMPTY);
 
-  ConSys cs;
+  Constraint_System cs;
   cs.insert(B <= 4);
 
   C_Polyhedron known_result(ph2);
@@ -105,8 +105,8 @@ test3() {
 
   C_Polyhedron ph2;
 
-  ConSys cs;
-  cs.insert(LinExpression(2) <= 4);
+  Constraint_System cs;
+  cs.insert(Linear_Expression(2) <= 4);
 
   C_Polyhedron known_result(ph2);
 
@@ -141,7 +141,7 @@ test4() {
   C_Polyhedron ph2(2);
   ph1.add_constraint(A >= 2);
 
-  ConSys cs;
+  Constraint_System cs;
   cs.insert(B <= 4);
 
   C_Polyhedron known_result(ph2);

@@ -37,7 +37,7 @@ main() TRY {
 
   NNC_Polyhedron ph1;
 
-  ConSys cs = ph1.minimized_constraints();
+  Constraint_System cs = ph1.minimized_constraints();
 
   NNC_Polyhedron ph2(cs);
 

@@ -44,9 +44,9 @@ namespace {
 
 void
 closure_points_dual_hypercube(const dimension_type dims,
-			      const LinExpression& weight_center,
-			      const Integer& half_diagonal,
-			      GenSys& gs) {
+			      const Linear_Expression& weight_center,
+			      const Coefficient& half_diagonal,
+			      Generator_System& gs) {
   // An ill-formed (it has no points at all) generator system
   // for a dual hypercube.
   for (dimension_type axis = dims; axis-- > 0; ) {
@@ -57,19 +57,19 @@ closure_points_dual_hypercube(const dimension_type dims,
 
 void
 add_facets(dimension_type& to_be_added,
-	   GenSys& gs,
-	   const LinExpression& expr,
+	   Generator_System& gs,
+	   const Linear_Expression& expr,
 	   const dimension_type axis,
 	   const dimension_type dims,
-	   const LinExpression& weight_center,
-	   const Integer& half_diagonal) {
+	   const Linear_Expression& weight_center,
+	   const Coefficient& half_diagonal) {
   // Return if we have already added all facets.
   if (to_be_added == 0)
     return;
 
-  LinExpression expr1 = expr;
+  Linear_Expression expr1 = expr;
   expr1 += half_diagonal * Variable(axis);
-  LinExpression expr2 = expr;
+  Linear_Expression expr2 = expr;
   expr2 -= half_diagonal * Variable(axis);
 
   if (axis == 0) {
@@ -97,10 +97,10 @@ add_facets(dimension_type& to_be_added,
 
 NNC_Polyhedron
 NNC_dual_hypercube(const dimension_type dims,
-		   const LinExpression& weight_center,
-		   const Integer& half_diagonal,
+		   const Linear_Expression& weight_center,
+		   const Coefficient& half_diagonal,
 		   const int facet_percentage) {
-  GenSys gs;
+  Generator_System gs;
   closure_points_dual_hypercube(dims, weight_center, half_diagonal, gs);
   // Number of facets in the closed dual hypercube.
   dimension_type num_facets = 1;
@@ -111,7 +111,7 @@ NNC_dual_hypercube(const dimension_type dims,
     // There has to be a point, at least.
     gs.insert(point(weight_center));
   else
-    add_facets(facets_to_be_added, gs, LinExpression(0),
+    add_facets(facets_to_be_added, gs, Linear_Expression(0),
 	       dims-1, dims, weight_center, half_diagonal);
   // Actually build the polyhedron.
   return NNC_Polyhedron(gs);
@@ -122,31 +122,31 @@ build_polyhedra(const dimension_type dims,
 		const int perc,
 		vector<NNC_Polyhedron>& ph) {
 
-  LinExpression weight_center;
+  Linear_Expression weight_center;
 
   // 1st-polyhedron.
-  weight_center = LinExpression(0);
+  weight_center = Linear_Expression(0);
   for (dimension_type axis = dims; axis-- > 0; )
     weight_center += Variable(axis);
   ph.push_back(NNC_dual_hypercube(dims, weight_center, 5, perc));
 
   // 2nd-polyhedron.
-  weight_center = LinExpression(0);
+  weight_center = Linear_Expression(0);
   for (dimension_type axis = dims; axis-- > 0; )
     weight_center += 2*Variable(axis);
   ph.push_back(NNC_dual_hypercube(dims, weight_center, 4, perc));
 
   // 3rd-polyhedron.
-  weight_center = LinExpression(0);
+  weight_center = Linear_Expression(0);
   for (dimension_type axis = dims; axis-- > 0; )
     if (axis % 2 == 0)
       weight_center += 10*Variable(axis);
     else
-      weight_center += 2*Variable(axis);      
+      weight_center += 2*Variable(axis);
   ph.push_back(NNC_dual_hypercube(dims, weight_center, 5, perc));
 
   // 4th-polyhedron.
-  weight_center = LinExpression(0);
+  weight_center = Linear_Expression(0);
   for (dimension_type axis = dims; axis-- > 0; )
     if (axis % 2 == 0)
       weight_center += 10*Variable(axis);
@@ -173,7 +173,7 @@ computation(vector<NNC_Polyhedron>& ph, bool enhanced) {
 #if VERY_NOISY
   // Print dimensions of arguments
   // (being careful to override library laziness).
-  cout << "Computing intersection of ph[0] and ph[1]:" << endl; 
+  cout << "Computing intersection of ph[0] and ph[1]:" << endl;
   cout << "===  ph[0] generators ===" << endl;
   ph[0].generators().ascii_dump(cout);
   cout << "===  ph[1] generators ===" << endl;
@@ -200,7 +200,7 @@ computation(vector<NNC_Polyhedron>& ph, bool enhanced) {
 #if VERY_NOISY
   // Print dimensions of arguments
   // (being careful to override library laziness).
-  cout << "Computing intersection of ph[2] and ph[3]:" << endl; 
+  cout << "Computing intersection of ph[2] and ph[3]:" << endl;
   cout << "===  ph[2] generators ===" << endl;
   ph[2].generators().ascii_dump(cout);
   cout << "===  ph[3] generators ===" << endl;
@@ -225,7 +225,7 @@ computation(vector<NNC_Polyhedron>& ph, bool enhanced) {
 
   // Compute the poly-hull of ph[0] and ph[2].
 #if VERY_NOISY
-  cout << "Computing poly-hull of ph[0] and ph[2]:" << endl; 
+  cout << "Computing poly-hull of ph[0] and ph[2]:" << endl;
 #endif
   if (enhanced) {
     ph[0].minimized_generators();

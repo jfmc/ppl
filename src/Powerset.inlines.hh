@@ -146,6 +146,13 @@ Powerset<CS>::Powerset()
 }
 
 template <typename CS>
+Powerset<CS>::Powerset(const CS& d)
+  : sequence(), reduced(true) {
+  if (!d.is_bottom())
+    push_back(d);
+}
+
+template <typename CS>
 void
 Powerset<CS>::collapse(const iterator sink) {
   assert(sink != end());
@@ -408,6 +415,26 @@ operator<<(std::ostream& s, const Powerset<CS>& x) {
 }
 
 } // namespace IO_Operators
+
+template <typename CS>
+memory_size_type
+Powerset<CS>::external_memory_in_bytes() const {
+  memory_size_type bytes = 0;
+  for (const_iterator i = begin(), send = end(); i != send; ++i) {
+    bytes += i->total_memory_in_bytes();
+    // We assume there is at least a forward and a backward link, and
+    // that the pointers implementing them are at least the size of
+    // pointers to `CS'.
+    bytes += 2*sizeof(CS*);
+  }
+  return bytes;
+}
+
+template <typename CS>
+memory_size_type
+Powerset<CS>::total_memory_in_bytes() const {
+  return sizeof(*this) + external_memory_in_bytes();
+}
 
 template <typename CS>
 bool

@@ -41,7 +41,7 @@ main() TRY {
 
   NNC_Polyhedron ph1(1, NNC_Polyhedron::EMPTY);
 
-  GenSys gs1;
+  Generator_System gs1;
   gs1.insert(point(A));
   gs1.insert(closure_point());
   gs1.insert(closure_point(A));

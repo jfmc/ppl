@@ -63,7 +63,7 @@ test1() {
 }
 
 // This is non-bounded closed polyhedron  in 2D consisting of a wedge bounded
-// by y >= 0 and x >= y. 
+// by y >= 0 and x >= y.
 // The resulting bounding box depends on the complexity class.
 static void
 test2() {
@@ -313,7 +313,7 @@ test9() {
   Variable x(0);
   Variable y(1);
 
-  ConSys cs;
+  Constraint_System cs;
   cs.insert(x >= 0);
   cs.insert(x <= 1);
   cs.insert(y >= 0);

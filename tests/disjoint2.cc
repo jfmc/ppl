@@ -31,13 +31,13 @@ using namespace Parma_Polyhedra_Library;
 #endif
 
 static C_Polyhedron
-half_strip(const Generator& p, const LinExpression& e) {
+half_strip(const Generator& p, const Linear_Expression& e) {
   assert(p.is_point());
 
-  LinExpression e1(p);
+  Linear_Expression e1(p);
   e1 += 3*Variable(0);
 
-  GenSys gs;
+  Generator_System gs;
   gs.insert(p);
   gs.insert(ray(e));
   gs.insert(point(e1, p.divisor()));

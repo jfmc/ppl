@@ -42,8 +42,8 @@ Polyhedron::max_space_dimension() {
   // One dimension is reserved to have a value of type dimension_type
   // that does not represent a legal dimension.
   return min(std::numeric_limits<dimension_type>::max() - 1,
-	     min(ConSys::max_space_dimension(),
-		 GenSys::max_space_dimension()
+	     min(Constraint_System::max_space_dimension(),
+		 Generator_System::max_space_dimension()
 		 )
 	     );
 }
@@ -266,7 +266,7 @@ Polyhedron::process_pending() const {
 }
 
 inline void
-Polyhedron::add_low_level_constraints(ConSys& cs) {
+Polyhedron::add_low_level_constraints(Constraint_System& cs) {
   if (cs.is_necessarily_closed())
     // The positivity constraint.
     cs.insert(Constraint::zero_dim_positivity());
@@ -290,37 +290,37 @@ Polyhedron::is_empty() const {
 }
 
 inline bool
-Polyhedron::bounds_from_above(const LinExpression& expr) const {
+Polyhedron::bounds_from_above(const Linear_Expression& expr) const {
   return bounds(expr, true);
 }
 
 inline bool
-Polyhedron::bounds_from_below(const LinExpression& expr) const {
+Polyhedron::bounds_from_below(const Linear_Expression& expr) const {
   return bounds(expr, false);
 }
 
 inline bool
-Polyhedron::maximize(const LinExpression& expr,
-		     Integer& sup_n, Integer& sup_d, bool& maximum) const {
+Polyhedron::maximize(const Linear_Expression& expr,
+		     Coefficient& sup_n, Coefficient& sup_d, bool& maximum) const {
   return max_min(expr, true, sup_n, sup_d, maximum);
 }
 
 inline bool
-Polyhedron::maximize(const LinExpression& expr,
-		     Integer& sup_n, Integer& sup_d, bool& maximum,
+Polyhedron::maximize(const Linear_Expression& expr,
+		     Coefficient& sup_n, Coefficient& sup_d, bool& maximum,
 		     const Generator** const pppoint) const {
   return max_min(expr, true, sup_n, sup_d, maximum, pppoint);
 }
 
 inline bool
-Polyhedron::minimize(const LinExpression& expr,
-		     Integer& inf_n, Integer& inf_d, bool& minimum) const {
+Polyhedron::minimize(const Linear_Expression& expr,
+		     Coefficient& inf_n, Coefficient& inf_d, bool& minimum) const {
   return max_min(expr, false, inf_n, inf_d, minimum);
 }
 
 inline bool
-Polyhedron::minimize(const LinExpression& expr,
-		     Integer& inf_n, Integer& inf_d, bool& minimum,
+Polyhedron::minimize(const Linear_Expression& expr,
+		     Coefficient& inf_n, Coefficient& inf_d, bool& minimum,
 		     const Generator** const pppoint) const {
   return max_min(expr, false, inf_n, inf_d, minimum, pppoint);
 }
@@ -366,14 +366,14 @@ Polyhedron::Polyhedron(Topology topol, const Box& box)
   for (dimension_type k = space_dim; k-- > 0; ) {
     // See if we have a valid lower bound.
     bool l_closed = false;
-    Integer l_n, l_d;
+    Coefficient l_n, l_d;
     bool l_bounded = box.get_lower_bound(k, l_closed, l_n, l_d);
     if (l_bounded && topol == NECESSARILY_CLOSED && !l_closed)
       throw_invalid_argument("C_Polyhedron(const Box& box)",
 			     "box has an open lower bound");
     // See if we have a valid upper bound.
     bool u_closed = false;
-    Integer u_n, u_d;
+    Coefficient u_n, u_d;
     bool u_bounded = box.get_upper_bound(k, u_closed, u_n, u_d);
     if (u_bounded && topol == NECESSARILY_CLOSED && !u_closed)
       throw_invalid_argument("C_Polyhedron(const Box& box)",
@@ -441,7 +441,8 @@ Polyhedron::shrink_bounding_box(Box& box, Complexity_Class complexity) const {
       return;
     }
     if (constraints_are_up_to_date()) {
-      for (ConSys::const_iterator i = con_sys.begin(); i != con_sys.end(); ++i)
+      for (Constraint_System::const_iterator i
+	     = con_sys.begin(); i != con_sys.end(); ++i)
 	if ((*i).is_trivial_false()){
 	  box.set_empty();
 	  return;
@@ -478,7 +479,7 @@ Polyhedron::shrink_bounding_box(Box& box, Complexity_Class complexity) const {
     // We must copy `con_sys' to a temporary matrix,
     // because we must apply gauss() and back_substitute()
     // to all the matrix and not only to the non-pending part.
-    ConSys cs(con_sys);
+    Constraint_System cs(con_sys);
     if (cs.num_pending_rows() > 0) {
       cs.unset_pending_rows();
       cs.sort_rows();
@@ -489,10 +490,10 @@ Polyhedron::shrink_bounding_box(Box& box, Complexity_Class complexity) const {
     if (has_pending_constraints() || !constraints_are_minimized())
       cs.back_substitute(cs.gauss());
 
-    const ConSys::const_iterator cs_begin = cs.begin();
-    const ConSys::const_iterator cs_end = cs.end();
+    const Constraint_System::const_iterator cs_begin = cs.begin();
+    const Constraint_System::const_iterator cs_end = cs.end();
 
-    for (ConSys::const_iterator i = cs_begin; i != cs_end; ++i) {
+    for (Constraint_System::const_iterator i = cs_begin; i != cs_end; ++i) {
       dimension_type varid = space_dim;
       const Constraint& c = *i;
       // After `gauss()' and `back_substitute()' some constraints can
@@ -513,8 +514,8 @@ Polyhedron::shrink_bounding_box(Box& box, Complexity_Class complexity) const {
 	    varid = j;
       }
       if (varid != space_dim) {
-	Integer_traits::const_reference d = c.coefficient(Variable(varid));
-	Integer_traits::const_reference n = c.inhomogeneous_term();
+	Coefficient_traits::const_reference d = c.coefficient(Variable(varid));
+	Coefficient_traits::const_reference n = c.inhomogeneous_term();
 	// The constraint `c' is of the form
 	// `Variable(varid) + n / d rel 0', where
 	// `rel' is either the relation `==', `>=', or `>'.
@@ -558,14 +559,14 @@ Polyhedron::shrink_bounding_box(Box& box, Complexity_Class complexity) const {
 
     // We have not to copy `gen_sys', because in this case
     // we only read the generators.
-    const GenSys& gs = gen_sys;
+    const Generator_System& gs = gen_sys;
     // Using the iterator, we read also the pending part of the matrix.
-    const GenSys::const_iterator gs_begin = gs.begin();
-    const GenSys::const_iterator gs_end = gs.end();
+    const Generator_System::const_iterator gs_begin = gs.begin();
+    const Generator_System::const_iterator gs_end = gs.end();
 
     // We first need to identify those axes that are unbounded
     // below and/or above.
-    for (GenSys::const_iterator i = gs_begin; i != gs_end; ++i) {
+    for (Generator_System::const_iterator i = gs_begin; i != gs_end; ++i) {
       const Generator& g = *i;
       Generator::Type g_type = g.type();
       switch (g_type) {
@@ -592,9 +593,9 @@ Polyhedron::shrink_bounding_box(Box& box, Complexity_Class complexity) const {
       case Generator::POINT:
       case Generator::CLOSURE_POINT:
 	{
-	  Integer_traits::const_reference d = g.divisor();
+	  Coefficient_traits::const_reference d = g.divisor();
 	  for (dimension_type j = space_dim; j-- > 0; ) {
-	    Integer_traits::const_reference n = g.coefficient(Variable(j));
+	    Coefficient_traits::const_reference n = g.coefficient(Variable(j));
 	    ERational r(n, d);
 	    LBoundary lb(r,(g_type == Generator::CLOSURE_POINT
 			    ? LBoundary::OPEN
@@ -729,7 +730,7 @@ Polyhedron::map_space_dimensions(const Partial_Function& pfunc) {
   // dimensions must be projected away.
 
   // If there are pending constraints, using `generators()' we process them.
-  const GenSys& old_gensys = generators();
+  const Generator_System& old_gensys = generators();
 
   if (old_gensys.num_rows() == 0) {
     // The polyhedron is empty.
@@ -747,11 +748,11 @@ Polyhedron::map_space_dimensions(const Partial_Function& pfunc) {
       pfunc_maps[j] = pfunc_j;
   }
 
-  GenSys new_gensys;
-  for (GenSys::const_iterator i = old_gensys.begin(),
+  Generator_System new_gensys;
+  for (Generator_System::const_iterator i = old_gensys.begin(),
 	 old_gensys_end = old_gensys.end(); i != old_gensys_end; ++i) {
     const Generator& old_g = *i;
-    LinExpression e(0 * Variable(new_space_dimension-1));
+    Linear_Expression e(0 * Variable(new_space_dimension-1));
     bool all_zeroes = true;
     for (dimension_type j = space_dim; j-- > 0; ) {
       if (old_g.coefficient(Variable(j)) != 0

@@ -34,7 +34,7 @@ print_constraint(const Parma_Polyhedra_Library::Constraint& c,
 		 std::ostream& s = std::cout);
 
 void
-print_constraints(const Parma_Polyhedra_Library::ConSys& cs,
+print_constraints(const Parma_Polyhedra_Library::Constraint_System& cs,
 		  const std::string& intro = "",
 		  std::ostream& s = std::cout);
 
@@ -49,7 +49,7 @@ print_generator(const Parma_Polyhedra_Library::Generator& g,
 		std::ostream& s = std::cout);
 
 void
-print_generators(const Parma_Polyhedra_Library::GenSys& gs,
+print_generators(const Parma_Polyhedra_Library::Generator_System& gs,
 		 const std::string& intro = "",
 		 std::ostream& s = std::cout);
 

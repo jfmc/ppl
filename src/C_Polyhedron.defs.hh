@@ -82,7 +82,7 @@ public:
     \exception std::invalid_argument
     Thrown if the system of constraints contains strict inequalities.
   */
-  explicit C_Polyhedron(const ConSys& cs);
+  explicit C_Polyhedron(const Constraint_System& cs);
 
   //! Builds a C polyhedron recycling a system of constraints.
   /*!
@@ -96,7 +96,7 @@ public:
     \exception std::invalid_argument
     Thrown if the system of constraints contains strict inequalities.
   */
-  explicit C_Polyhedron(ConSys& cs);
+  explicit C_Polyhedron(Constraint_System& cs);
 
   //! Builds a C polyhedron from a system of generators.
   /*!
@@ -109,7 +109,7 @@ public:
     Thrown if the system of generators is not empty but has no points,
     or if it contains closure points.
   */
-  explicit C_Polyhedron(const GenSys& gs);
+  explicit C_Polyhedron(const Generator_System& gs);
 
   //! Builds a C polyhedron recycling a system of generators.
   /*!
@@ -124,7 +124,7 @@ public:
     Thrown if the system of generators is not empty but has no points,
     or if it contains closure points.
   */
-  explicit C_Polyhedron(GenSys& gs);
+  explicit C_Polyhedron(Generator_System& gs);
 
   //! \brief
   //! Builds a C polyhedron representing the topological closure
@@ -163,6 +163,10 @@ public:
   //! The assignment operator.
   //! (\p *this and \p y can be dimension-incompatible.)
   C_Polyhedron& operator=(const C_Polyhedron& y);
+
+  //! \brief
+  //! Assigns to \p *this the topological closure of the NNC polyhedron \p y.
+  C_Polyhedron& operator=(const NNC_Polyhedron& y);
 
   //! Destructor.
   ~C_Polyhedron();

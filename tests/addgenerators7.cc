@@ -37,7 +37,7 @@ main() TRY {
   Variable x(0);
   Variable y(1);
 
-  GenSys gs1;
+  Generator_System gs1;
   gs1.insert(closure_point());
   gs1.insert(closure_point(4*x));
   gs1.insert(closure_point(4*y));
@@ -53,7 +53,7 @@ main() TRY {
   print_generators(ph, "*** ph ***");
 #endif
 
-  GenSys gs2;
+  Generator_System gs2;
   gs2.insert(point());
   gs2.insert(point(4*x));
   gs2.insert(point(4*y));
@@ -61,7 +61,7 @@ main() TRY {
 
   ph.add_generators_and_minimize(gs2);
 
-  GenSys gs3;
+  Generator_System gs3;
   gs3.insert(point());
   gs3.insert(point(4*x));
   gs3.insert(point(4*y));

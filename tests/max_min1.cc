@@ -1,5 +1,5 @@
-/* Test Polyhedron::maximize(const LinExpression&, ...)
-   and Polyhedron::minimize(const LinExpression&, ...).
+/* Test Polyhedron::maximize(const Linear_Expression&, ...)
+   and Polyhedron::minimize(const Linear_Expression&, ...).
    Copyright (C) 2001-2004 Roberto Bagnara <bagnara@cs.unipr.it>
 
 This file is part of the Parma Polyhedra Library (PPL).
@@ -48,8 +48,8 @@ main() TRY {
   print_constraints(ph, "*** ph ***");
 #endif
 
-  Integer num;
-  Integer den;
+  Coefficient num;
+  Coefficient den;
   bool included;
   const Generator* pg;
   bool ok = ph.maximize(x1-2*x2, num, den, included, &pg)

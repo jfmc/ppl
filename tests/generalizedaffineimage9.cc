@@ -47,7 +47,7 @@ test1() {
   print_constraints(ph, "*** ph ***");
 #endif
 
-  ph.generalized_affine_image(LinExpression(2), EQUAL, A + B);
+  ph.generalized_affine_image(Linear_Expression(2), EQUAL, A + B);
 
   known_result.add_constraint(A + B == 2);
 
@@ -55,7 +55,7 @@ test1() {
 
 #if NOISY
   print_constraints(ph, "*** After ph.generalized_affine_image"
-		    "(LinExpression(2), EQUAL, A + B) ***");
+		    "(Linear_Expression(2), EQUAL, A + B) ***");
 #endif
 
   if (!ok)
@@ -77,7 +77,9 @@ test2() {
   print_constraints(ph, "*** ph ***");
 #endif
 
-  ph.generalized_affine_image(LinExpression(2), GREATER_THAN_OR_EQUAL, A + B);
+  ph.generalized_affine_image(Linear_Expression(2),
+			      GREATER_THAN_OR_EQUAL,
+			      A + B);
 
   known_result.add_constraint(2 >= A + B);
 
@@ -85,7 +87,7 @@ test2() {
 
 #if NOISY
   print_constraints(ph, "*** After ph.generalized_affine_image"
-		    "(LinExpression(2), GREATER_THAN_OR_EQUAL, A + B) ***");
+		    "(Linear_Expression(2), GREATER_THAN_OR_EQUAL, A + B) ***");
 #endif
 
   if (!ok)
@@ -107,7 +109,7 @@ test3() {
   print_constraints(ph, "*** ph ***");
 #endif
 
-  ph.generalized_affine_image(LinExpression(2), LESS_THAN_OR_EQUAL, A + B);
+  ph.generalized_affine_image(Linear_Expression(2), LESS_THAN_OR_EQUAL, A + B);
 
   known_result.add_constraint(2 <= A + B);
 
@@ -115,7 +117,7 @@ test3() {
 
 #if NOISY
   print_constraints(ph, "*** After ph.generalized_affine_image"
-		    "(LinExpression(2), LESS_THAN_OR_EQUAL, A + B) ***");
+		    "(Linear_Expression(2), LESS_THAN_OR_EQUAL, A + B) ***");
 #endif
 
   if (!ok)
@@ -137,7 +139,7 @@ test4() {
   print_constraints(ph, "*** ph ***");
 #endif
 
-  ph.generalized_affine_image(LinExpression(2), GREATER_THAN, A + B);
+  ph.generalized_affine_image(Linear_Expression(2), GREATER_THAN, A + B);
 
   known_result.add_constraint(2 > A + B);
 
@@ -145,7 +147,7 @@ test4() {
 
 #if NOISY
   print_constraints(ph, "*** After ph.generalized_affine_image"
-		    "(LinExpression(2), GREATER_THAN, A + B) ***");
+		    "(Linear_Expression(2), GREATER_THAN, A + B) ***");
 #endif
 
   if (!ok)
@@ -167,7 +169,7 @@ test5() {
   print_constraints(ph, "*** ph ***");
 #endif
 
-  ph.generalized_affine_image(LinExpression(2), LESS_THAN, A + B);
+  ph.generalized_affine_image(Linear_Expression(2), LESS_THAN, A + B);
 
   known_result.add_constraint(2 < A + B);
 
@@ -175,7 +177,7 @@ test5() {
 
 #if NOISY
   print_constraints(ph, "*** After ph.generalized_affine_image"
-		    "(LinExpression(2), LESS_THAN, A + B) ***");
+		    "(Linear_Expression(2), LESS_THAN, A + B) ***");
 #endif
 
   if (!ok)

@@ -19,7 +19,7 @@ namespace Parma_Polyhedra_Library {
 typedef mpz_class GMP_Integer;
 
 template <>
-struct Integer_traits_template<GMP_Integer> {
+struct Coefficient_traits_template<GMP_Integer> {
   typedef const GMP_Integer& const_reference;
 };
 

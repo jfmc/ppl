@@ -135,7 +135,7 @@ max_dim :-
 
 new_polys :-
   ppl_initialize,
-  new_universe, 
+  new_universe,
   new_empty,
   copy,
   new_poly_from_cons,
@@ -268,7 +268,7 @@ catch_time :-
   time_out,
   !,
   ppl_finalize.
-  
+
 handle_exceptions :-
   ppl_initialize,
   exceptions,
@@ -281,7 +281,7 @@ handle_exceptions :-
 % are made in such a way that, if the test fails, P is deleted.
 % This is done by using special "clean_new_Polyhedron_from_...(...,P)"
 % forms of the predicates that are defined later.
-% 
+%
 % As we also delete P on success of the test, to prevent trying to
 % delete P again when a later test fails, we always have a cut before these
 % in-line calls to ppl_Polyhedron_delete(P).
@@ -313,7 +313,7 @@ new_empty(T) :-
   clean_ppl_new_Polyhedron_empty_from_dimension(T, 3, P),
   ppl_Polyhedron_is_empty(P),
   ppl_Polyhedron_add_generator(P,point(0)),
-  \+ ppl_Polyhedron_is_empty(P), 
+  \+ ppl_Polyhedron_is_empty(P),
   !,
   ppl_delete_Polyhedron(P).
 
@@ -515,9 +515,9 @@ affine_dim(T) :-
                                       [A - B >= 0, B >= 1,
                                        A + B =< 1],
                                       P4),
-  (T = c -> 
+  (T = c ->
             ppl_Polyhedron_add_constraint(P4, B =< 0)
-         ;  
+         ;
             ppl_Polyhedron_add_constraint(P4, B < 1)
   ),
   ppl_Polyhedron_space_dimension(P4, 2),
@@ -1147,7 +1147,7 @@ bound_extrapolate_H79_with_token(Topology,
   !,
   ppl_delete_Polyhedron(Q).
 
-% widen_extrapolation_init/3 and widen_extrapolation_final/3 
+% widen_extrapolation_init/3 and widen_extrapolation_final/3
 % are used in the tests for widening and extrapolation predicates.
 widen_extrapolation_init(P, CS, Topology):-
   clean_ppl_new_Polyhedron_from_dimension(Topology, 2, P),
@@ -2069,7 +2069,7 @@ exception_prolog(5, [A,_,_]) :-
 
 %% TEST: not_an_integer
 exception_prolog(6, [A,B,_]) :-
-  clean_ppl_new_Polyhedron_from_generators(c, 
+  clean_ppl_new_Polyhedron_from_generators(c,
                [point(A + B), ray(A), ray(B)], P),
   must_catch(ppl_Polyhedron_affine_image(P, A, A + B + 1, i)),
   !,
@@ -2085,7 +2085,7 @@ exception_prolog(8, _) :-
 
 % exception_sys_prolog(+N, +V) checks exceptions thrown by Prolog interfaces
 % that are dependent on a specific Prolog system.
-% These are only checked if current_prolog_flag(bounded, false) holds. 
+% These are only checked if current_prolog_flag(bounded, false) holds.
 
 exception_sys_prolog(V) :-
    exception_sys_prolog1(4, V).
@@ -2106,13 +2106,15 @@ exception_sys_prolog(1, [A,B,_]) :-
 
  exception_sys_prolog(2, [A,B,_]) :-
   current_prolog_flag(min_integer, MinInt),
-  clean_ppl_new_Polyhedron_from_constraints(c, [MinInt * A - B =< 0, 2 >= A], P),
+  clean_ppl_new_Polyhedron_from_constraints(c,
+                                            [MinInt * A - B =< 0, 2 >= A],
+                                            P),
   must_catch(ppl_Polyhedron_get_generators(P, _)),
   ppl_delete_Polyhedron(P).
 
 exception_sys_prolog(3, [A,B,_]) :-
   current_prolog_flag(max_integer, MaxInt),
-  clean_ppl_new_Polyhedron_from_generators(c, 
+  clean_ppl_new_Polyhedron_from_generators(c,
                [point(MaxInt * A + B)], P),
   ppl_Polyhedron_affine_image(P, A, A + 1, 1),
   must_catch(ppl_Polyhedron_get_generators(P, _)),
@@ -2121,7 +2123,7 @@ exception_sys_prolog(3, [A,B,_]) :-
 
 exception_sys_prolog(4, [A,B,_]) :-
   current_prolog_flag(min_integer, MinInt),
-  clean_ppl_new_Polyhedron_from_generators(c, 
+  clean_ppl_new_Polyhedron_from_generators(c,
                [point(MinInt * A + B)], P),
   ppl_Polyhedron_affine_image(P, A, A - 1, 1),
   must_catch(ppl_Polyhedron_get_generators(P, _GS)),
@@ -2144,7 +2146,7 @@ exception_cplusplus(1, [A,B,C]) :-
   must_catch(ppl_new_Polyhedron_from_generators(C, [point(A + B + C, 0)], _)).
 
 exception_cplusplus(2, [A,B,_]) :-
-  clean_ppl_new_Polyhedron_from_generators(c, 
+  clean_ppl_new_Polyhedron_from_generators(c,
                [point(A + B), ray(A), ray(B)], P),
   must_catch(ppl_Polyhedron_affine_image(P, A, A + B + 1, 0)),
   !,
@@ -2152,7 +2154,7 @@ exception_cplusplus(2, [A,B,_]) :-
 
 exception_cplusplus(3, [A, B, _]) :-
   clean_ppl_new_Polyhedron_from_dimension(c, 0, P1),
-  clean_ppl_new_Polyhedron_from_generators(c, 
+  clean_ppl_new_Polyhedron_from_generators(c,
                [point(A + B)], P2),
   must_catch(ppl_Polyhedron_poly_hull_assign_and_minimize(P1, P2)),
   !,
@@ -2170,28 +2172,28 @@ exception_cplusplus(5, [A,B,C]) :-
   ppl_delete_Polyhedron(P).
 
 exception_cplusplus(6, [A,B,_]) :-
-  clean_ppl_new_Polyhedron_from_constraints(c, 
+  clean_ppl_new_Polyhedron_from_constraints(c,
                [A >= 1], P),
   must_catch(ppl_Polyhedron_affine_image(P, B, A + 1, 1)),
   !,
   ppl_delete_Polyhedron(P).
 
 exception_cplusplus(7, [A, B, C]) :-
-  clean_ppl_new_Polyhedron_from_constraints(c, 
+  clean_ppl_new_Polyhedron_from_constraints(c,
                [A >= 1, B>= 1], P),
   must_catch(ppl_Polyhedron_affine_image(P, B, A + C + 1, 1)),
   !,
   ppl_delete_Polyhedron(P).
 
 exception_cplusplus(8, [A,B,_]) :-
-  clean_ppl_new_Polyhedron_from_constraints(c, 
+  clean_ppl_new_Polyhedron_from_constraints(c,
                [A >= B], P),
   must_catch(ppl_Polyhedron_affine_preimage(P, A, A + B + 1, 0)),
   !,
   ppl_delete_Polyhedron(P).
 
 exception_cplusplus(9, [A, B, C]) :-
-  clean_ppl_new_Polyhedron_from_generators(c, 
+  clean_ppl_new_Polyhedron_from_generators(c,
                [point(0), ray(A + B), ray(A)], P),
   must_catch(ppl_Polyhedron_affine_preimage(P, C, A + 1, 1)),
   !,
@@ -2199,7 +2201,7 @@ exception_cplusplus(9, [A, B, C]) :-
 
 
 exception_cplusplus(10, [A, B, C]) :-
-  clean_ppl_new_Polyhedron_from_generators(c, 
+  clean_ppl_new_Polyhedron_from_generators(c,
                [point(0), point(A), line(A + B)], P),
   must_catch(ppl_Polyhedron_affine_preimage(P, B, A + C, 1)),
   !,
@@ -2348,7 +2350,7 @@ write_all([]) :- nl.
 write_all([Phrase|Phrases]):-
    (Phrase == nl ->
       nl
-   ; 
+   ;
       (write(Phrase),
       write(' '))
    ),

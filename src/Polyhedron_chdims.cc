@@ -34,8 +34,8 @@ namespace PPL = Parma_Polyhedra_Library;
 void
 PPL::Polyhedron::add_space_dimensions(Linear_System& sys1,
 				      Linear_System& sys2,
-				      SatMatrix& sat1,
-				      SatMatrix& sat2,
+				      Saturation_Matrix& sat1,
+				      Saturation_Matrix& sat2,
 				      dimension_type add_dim) {
   assert(sys1.topology() == sys2.topology());
   assert(sys1.num_columns() == sys2.num_columns());
@@ -317,7 +317,7 @@ PPL::Polyhedron::concatenate_assign(const Polyhedron& y) {
   }
 
   // TODO: this implementation is just an executable specification.
-  ConSys cs = y.constraints();
+  Constraint_System cs = y.constraints();
 
   // The constraints of `x' (possibly with pending rows) are required.
   if (has_pending_generators())
@@ -338,7 +338,7 @@ PPL::Polyhedron::concatenate_assign(const Polyhedron& y) {
   assert(added_rows > 0 && added_columns > 0);
 
   con_sys.add_zero_rows_and_columns(added_rows, added_columns,
-				    Linear_Row::Flags(topology(), 
+				    Linear_Row::Flags(topology(),
 						      Linear_Row::RAY_OR_POINT_OR_INEQUALITY));
   // Move the epsilon coefficient to the last column, if needed.
   if (!is_necessarily_closed())
@@ -580,9 +580,9 @@ PPL::Polyhedron::expand_space_dimension(Variable var, dimension_type m) {
   add_space_dimensions_and_embed(m);
 
   const dimension_type src_d = var.id();
-  const ConSys& cs = constraints();
-  ConSys new_constraints;
-  for(ConSys::const_iterator i = cs.begin(),
+  const Constraint_System& cs = constraints();
+  Constraint_System new_constraints;
+  for(Constraint_System::const_iterator i = cs.begin(),
 	cs_end = cs.end(); i != cs_end; ++i) {
     const Constraint& c = *i;
 
@@ -592,7 +592,7 @@ PPL::Polyhedron::expand_space_dimension(Variable var, dimension_type m) {
 
     // Each relevant constraint results in `m' new constraints.
     for (dimension_type dst_d = old_dim; dst_d < old_dim+m; ++dst_d) {
-      LinExpression e;
+      Linear_Expression e;
       for (dimension_type j = old_dim; j-- > 0; )
 	e +=
 	  c.coefficient(Variable(j))
@@ -636,7 +636,7 @@ PPL::Polyhedron::fold_space_dimensions(const Variables_Set& to_be_folded,
   for (Variables_Set::const_iterator i = to_be_folded.begin(),
 	 tbf_end = to_be_folded.end(); i != tbf_end; ++i) {
     Polyhedron copy = *this;
-    copy.affine_image(var, LinExpression(*i));
+    copy.affine_image(var, Linear_Expression(*i));
     poly_hull_assign(copy);
   }
   remove_space_dimensions(to_be_folded);

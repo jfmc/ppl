@@ -38,7 +38,7 @@ main() TRY {
   Variable x(0);
   Variable y(1);
 
-  GenSys gs;
+  Generator_System gs;
   gs.insert(point());
   gs.insert(ray(x));
   gs.insert(ray(x + y));
@@ -49,7 +49,7 @@ main() TRY {
   print_generators(ph, "*** ph ***");
 #endif
 
-  ConSys cs;
+  Constraint_System cs;
   cs.insert(x <= 3);
 
 #if NOISY

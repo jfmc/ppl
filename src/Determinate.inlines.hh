@@ -40,7 +40,7 @@ Determinate<PH>::Rep::Rep(const PH& p)
 }
 
 template <typename PH>
-Determinate<PH>::Rep::Rep(const ConSys& cs)
+Determinate<PH>::Rep::Rep(const Constraint_System& cs)
   : references(0), ph(cs) {
 }
 
@@ -67,6 +67,18 @@ Determinate<PH>::Rep::is_shared() const {
 }
 
 template <typename PH>
+inline memory_size_type
+Determinate<PH>::Rep::external_memory_in_bytes() const {
+  return ph.external_memory_in_bytes();
+}
+
+template <typename PH>
+inline memory_size_type
+Determinate<PH>::Rep::total_memory_in_bytes() const {
+  return sizeof(*this) + external_memory_in_bytes();
+}
+
+template <typename PH>
 Determinate<PH>::Determinate(dimension_type num_dimensions, bool universe)
   : prep(new Rep(num_dimensions,
 		 universe ? Polyhedron::UNIVERSE : Polyhedron::EMPTY)) {
@@ -80,7 +92,7 @@ Determinate<PH>::Determinate(const PH& ph)
 }
 
 template <typename PH>
-Determinate<PH>::Determinate(const ConSys& cs)
+Determinate<PH>::Determinate(const Constraint_System& cs)
   : prep(new Rep(cs)) {
   prep->new_reference();
 }
@@ -183,6 +195,18 @@ Determinate<PH>::is_bottom() const {
 }
 
 template <typename PH>
+inline memory_size_type
+Determinate<PH>::external_memory_in_bytes() const {
+  return prep->total_memory_in_bytes();
+}
+
+template <typename PH>
+inline memory_size_type
+Determinate<PH>::total_memory_in_bytes() const {
+  return sizeof(*this) + external_memory_in_bytes();
+}
+
+template <typename PH>
 bool
 Determinate<PH>::OK() const {
   return prep->ph.OK();
@@ -199,9 +223,9 @@ operator<<(std::ostream& s, const Determinate<PH>& x) {
   else if (x.is_bottom())
     s << "false";
   else {
-    const ConSys& cs = x.constraints();
-    ConSys::const_iterator i = cs.begin();
-    ConSys::const_iterator cs_end = cs.end();
+    const Constraint_System& cs = x.constraints();
+    Constraint_System::const_iterator i = cs.begin();
+    Constraint_System::const_iterator cs_end = cs.end();
     s << "{ ";
     while (i != cs_end) {
       s << *i++;
@@ -236,13 +260,13 @@ Determinate<PH>::space_dimension() const {
 }
 
 template <typename PH>
-const ConSys&
+const Constraint_System&
 Determinate<PH>::constraints() const {
   return prep->ph.constraints();
 }
 
 template <typename PH>
-const ConSys&
+const Constraint_System&
 Determinate<PH>::minimized_constraints() const {
   return prep->ph.minimized_constraints();
 }
@@ -256,7 +280,7 @@ Determinate<PH>::add_constraint(const Constraint& c) {
 
 template <typename PH>
 void
-Determinate<PH>::add_constraints(ConSys& cs) {
+Determinate<PH>::add_constraints(Constraint_System& cs) {
   mutate();
   prep->ph.add_constraints(cs);
 }

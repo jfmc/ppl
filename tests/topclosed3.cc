@@ -40,7 +40,7 @@ main() TRY {
   Variable A(0);
   Variable B(1);
 
-  GenSys gs;
+  Generator_System gs;
   gs.insert(point(0*B));
   gs.insert(closure_point(-A));
   gs.insert(closure_point(A));

@@ -73,8 +73,8 @@ bool less(Variable v, Variable w);
   Variable x(0);
   Variable y(1);
   Variable z(0);
-  LinExpression e1 = x + y;
-  LinExpression e2 = y + z;
+  Linear_Expression e1 = x + y;
+  Linear_Expression e2 = y + z;
   \endcode
 
 */
@@ -100,6 +100,16 @@ public:
     The returned value is <CODE>id()+1</CODE>.
   */
   dimension_type space_dimension() const;
+
+  //! \brief
+  //! Returns the total size in bytes of the memory occupied by \p *this.
+  memory_size_type total_memory_in_bytes() const;
+
+  //! Returns the size in bytes of the memory managed by \p *this.
+  memory_size_type external_memory_in_bytes() const;
+
+  //! Checks if all the invariants are satisfied.
+  bool OK() const;
 
   //! Type of output functions.
   typedef void output_function_type(std::ostream& s, const Variable& v);

@@ -36,11 +36,11 @@ dimension_type foo() {
 }
 
 template dimension_type foo<Variable>();
-template dimension_type foo<LinExpression>();
+template dimension_type foo<Linear_Expression>();
 template dimension_type foo<Constraint>();
 template dimension_type foo<Generator>();
-template dimension_type foo<ConSys>();
-template dimension_type foo<GenSys>();
+template dimension_type foo<Constraint_System>();
+template dimension_type foo<Generator_System>();
 template dimension_type foo<C_Polyhedron>();
 template dimension_type foo<NNC_Polyhedron>();
 template dimension_type foo<Polyhedra_Powerset<C_Polyhedron> >();
@@ -55,11 +55,11 @@ main() TRY {
 
 #if NOISY
   PRINT(Variable);
-  PRINT(LinExpression);
+  PRINT(Linear_Expression);
   PRINT(Constraint);
   PRINT(Generator);
-  PRINT(ConSys);
-  PRINT(GenSys);
+  PRINT(Constraint_System);
+  PRINT(Generator_System);
   PRINT(C_Polyhedron);
   PRINT(NNC_Polyhedron);
   PRINT(Polyhedra_Powerset<C_Polyhedron>);

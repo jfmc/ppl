@@ -44,7 +44,7 @@ main() TRY {
   print_constraints(ph, "*** ph ***");
 #endif
 
-  ConSys cs;
+  Constraint_System cs;
   cs.insert(x >= 4);
   cs.insert(x - y >= 0);
 

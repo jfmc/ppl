@@ -125,7 +125,8 @@ pwl_install.hh:	pwl_header.top $(top_builddir)/config.h pwl_header.middle $(INCL
 	mkdir -p tmp
 	(cd $(srcdir) ; cat $(INCLUDE_FILES)) >tmp/concat
 	grep "^#include <" <tmp/concat | sort -u >tmp/includes
-	sed -e "/^#include/d" -f $(srcdir)/pwl_filter_install.sed <tmp/concat >tmp/noincludes.cc
+	sed -e "/^#include/d" -f $(srcdir)/pwl_filter_install.sed \
+		<tmp/concat >tmp/noincludes.cc
 	cat $(srcdir)/pwl_header.top $(top_builddir)/config.h \
 		$(srcdir)/pwl_header.middle tmp/includes >pwl_install.hh
 	$(CXXCPP) -P @debug_flag@ tmp/noincludes.cc >>pwl_install.hh

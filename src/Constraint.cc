@@ -45,7 +45,7 @@ PPL::Constraint::throw_dimension_incompatible(const char* method,
 
 PPL::Constraint
 PPL::Constraint::construct_epsilon_geq_zero() {
-  LinExpression e = Variable(0);
+  Linear_Expression e = Variable(0);
   Constraint c(e, Constraint::NONSTRICT_INEQUALITY, NOT_NECESSARILY_CLOSED);
   return c;
 }
@@ -137,7 +137,7 @@ PPL::IO_Operators::operator<<(std::ostream& s, const Constraint& c) {
   const int num_variables = c.space_dimension();
   bool first = true;
   for (int v = 0; v < num_variables; ++v) {
-    Integer cv = c.coefficient(Variable(v));
+    Coefficient cv = c.coefficient(Variable(v));
     if (cv != 0) {
       if (!first) {
 	if (cv > 0)

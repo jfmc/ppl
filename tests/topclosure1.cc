@@ -43,7 +43,7 @@ main() TRY {
   NNC_Polyhedron ph1(2);
   ph1.add_constraint(A > 1);
   ph1.add_constraint(A - B > 0);
-  GenSys gs;
+  Generator_System gs;
   gs.insert(point(2*A));
   gs.insert(closure_point(A + B));
   gs.insert(ray(-B));

@@ -30,7 +30,7 @@ namespace Parma_Polyhedra_Library {
 
 template <typename PH>
 Widening_Function<PH>::Widening_Function(Widening_Method wm)
-  : w_method(wm) { 
+  : w_method(wm) {
 }
 
 template <typename PH>
@@ -42,8 +42,9 @@ operator()(PH& x, const PH& y, unsigned* tp) const {
 
 template <typename PH>
 Limited_Widening_Function<PH>::
-Limited_Widening_Function(Limited_Widening_Method lwm, const ConSys& cs)
-  : lw_method(lwm), limiting_cs(cs) { 
+Limited_Widening_Function(Limited_Widening_Method lwm,
+			  const Constraint_System& cs)
+  : lw_method(lwm), limiting_cs(cs) {
 }
 
 template <typename PH>
@@ -63,8 +64,8 @@ widen_fun_ref(void (PH::* wm)(const PH&, unsigned*)) {
 /*! \relates Polyhedra_Powerset */
 template <typename PH>
 inline Limited_Widening_Function<PH>
-widen_fun_ref(void (PH::* lwm)(const PH&, const ConSys&, unsigned*),
-	      const ConSys& cs) {
+widen_fun_ref(void (PH::* lwm)(const PH&, const Constraint_System&, unsigned*),
+	      const Constraint_System& cs) {
   return Limited_Widening_Function<PH>(lwm, cs);
 }
 

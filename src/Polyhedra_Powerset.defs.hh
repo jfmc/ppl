@@ -26,7 +26,7 @@ site: http://www.cs.unipr.it/ppl/ . */
 
 #include "Polyhedra_Powerset.types.hh"
 #include "BHRZ03_Certificate.types.hh"
-#include "ConSys.types.hh"
+#include "Constraint_System.types.hh"
 #include "Constraint.types.hh"
 #include "Polyhedron.defs.hh"
 #include "Variable.defs.hh"
@@ -70,13 +70,18 @@ public:
   Polyhedra_Powerset(const Polyhedra_Powerset& y);
 
   //! \brief
+  //! If \p ph is nonempty, builds a powerset containing only \p ph.
+  //! Builds the empty powerset otherwise.
+  explicit Polyhedra_Powerset(const PH& ph);
+
+  //! \brief
   //! Copy-constructor allowing a source powerset with elements of a
   //! different polyhedron kind.
   template <typename QH>
   explicit Polyhedra_Powerset(const Polyhedra_Powerset<QH>& y);
 
   //! Creates a Polyhedra_Powerset with the same information contents as \p cs.
-  Polyhedra_Powerset(const ConSys& cs);
+  explicit Polyhedra_Powerset(const Constraint_System& cs);
 
   //@} // Constructors and Destructor
 
@@ -114,6 +119,16 @@ public:
   */
   bool geometrically_equals(const Polyhedra_Powerset& y) const;
 
+  //! \brief
+  //! Returns a lower bound to the total size in bytes of the memory
+  //! occupied by \p *this.
+  memory_size_type total_memory_in_bytes() const;
+
+  //! \brief
+  //! Returns a lower bound to the size in bytes of the memory
+  //! managed by \p *this.
+  memory_size_type external_memory_in_bytes() const;
+
   //! Checks if all the invariants are satisfied.
   bool OK() const;
 
@@ -150,7 +165,7 @@ public:
     Thrown if \p *this and \p cs are topology-incompatible or
     dimension-incompatible.
   */
-  void add_constraints(const ConSys& cs);
+  void add_constraints(const Constraint_System& cs);
 
   //! \brief
   //! Intersects \p *this with the constraints in \p cs,
@@ -166,7 +181,7 @@ public:
     Thrown if \p *this and \p cs are topology-incompatible or
     dimension-incompatible.
   */
-  bool add_constraints_and_minimize(const ConSys& cs);
+  bool add_constraints_and_minimize(const Constraint_System& cs);
 
   //! \brief
   //! Assign to \p *this the result of (recursively) merging together
@@ -288,7 +303,7 @@ public:
     with each polyhedron in \p y and collecting all these differences.
   */
   void poly_difference_assign(const Polyhedra_Powerset& y);
- 
+
   //! Assigns to \p *this the concatenation of \p *this and \p y.
   /*!
     The result is obtained by computing the pairwise \ref concatenate

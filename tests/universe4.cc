@@ -44,7 +44,7 @@ main() TRY {
   ph.add_constraint(x <= 4);
   ph.add_constraint(y <= 4);
 
-  ConSys cs = ph.constraints();
+  Constraint_System cs = ph.constraints();
 #if NOISY
   print_constraints(ph, "--- ph ---");
 #endif

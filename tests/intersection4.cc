@@ -53,7 +53,7 @@ main() TRY {
   C_Polyhedron computed_result1(ph1);
   computed_result1.intersection_assign_and_minimize(ph2);
 
-  ConSys cs_computed_result2 = ph1.constraints();
+  Constraint_System cs_computed_result2 = ph1.constraints();
   C_Polyhedron computed_result2(cs_computed_result2);
   computed_result2.intersection_assign(ph2);
 

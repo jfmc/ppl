@@ -37,7 +37,7 @@ test1() {
   Variable A(0);
   Variable B(1);
 
-  ConSys cs;
+  Constraint_System cs;
   cs.insert(A >= B);
   cs.insert(B >= 0);
   C_Polyhedron ph1(cs);
@@ -60,7 +60,7 @@ test2() {
   Variable A(0);
   Variable B(1);
 
-  ConSys cs;
+  Constraint_System cs;
   cs.insert(A >= B);
   cs.insert(B >= 0);
   NNC_Polyhedron ph1(cs);
@@ -83,11 +83,11 @@ test3() {
   Variable A(0);
   Variable B(1);
 
-  ConSys cs1;
+  Constraint_System cs1;
   cs1.insert(A >= B);
   cs1.insert(B >= 0);
   C_Polyhedron ph1(cs1);
-  ConSys cs2;
+  Constraint_System cs2;
   cs2.insert(A >= B);
   cs2.insert(A <= 0);
   C_Polyhedron ph2(cs2);
@@ -108,7 +108,7 @@ test4() {
   Variable A(0);
   Variable B(1);
 
-  ConSys cs;
+  Constraint_System cs;
   cs.insert(A >= 0);
   cs.insert(B >= 0);
   NNC_Polyhedron ph1(cs);

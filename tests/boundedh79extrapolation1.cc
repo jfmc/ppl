@@ -53,7 +53,7 @@ main() TRY {
   print_constraints(ph2, "*** ph2 ****");
 #endif
 
-  ConSys cs;
+  Constraint_System cs;
   cs.insert(x <= 100);
 
 #if NOISY

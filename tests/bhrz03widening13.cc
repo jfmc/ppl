@@ -31,11 +31,11 @@ using namespace Parma_Polyhedra_Library::IO_Operators;
 #define NOISY 0
 #endif
 
-static GenSys
-gs_square(const Integer& half_side) {
+static Generator_System
+gs_square(const Coefficient& half_side) {
   Variable A(0);
   Variable B(1);
-  GenSys gs;
+  Generator_System gs;
   gs.insert(point(half_side*A + half_side*B));
   gs.insert(point(half_side*A - half_side*B));
   gs.insert(point(-half_side*A - half_side*B));
@@ -43,11 +43,11 @@ gs_square(const Integer& half_side) {
   return gs;
 }
 
-static GenSys
-gs_rhombus(const Integer& half_diagonal) {
+static Generator_System
+gs_rhombus(const Coefficient& half_diagonal) {
   Variable A(0);
   Variable B(1);
-  GenSys gs;
+  Generator_System gs;
   gs.insert(point(half_diagonal*A));
   gs.insert(point(half_diagonal*B));
   gs.insert(point(-half_diagonal*A));
@@ -59,25 +59,25 @@ gs_rhombus(const Integer& half_diagonal) {
 static C_Polyhedron
 p(unsigned n) {
 
-  Integer half_diagonal = 2;
+  Coefficient half_diagonal = 2;
   for (unsigned i = n / 8; i-- > 0; ) {
     half_diagonal *= 2;
   }
-  Integer half_side = half_diagonal;
+  Coefficient half_side = half_diagonal;
 
-  GenSys gs;
+  Generator_System gs;
   if (n % 8 < 4) {
     half_side /= 2;
     gs = gs_square(half_side);
-    GenSys gs2 = gs_rhombus(half_diagonal);
-    GenSys::const_iterator gi = gs2.begin();
+    Generator_System gs2 = gs_rhombus(half_diagonal);
+    Generator_System::const_iterator gi = gs2.begin();
     for (int i = n % 8; i-- > 0; )
       gs.insert(*gi++);
   }
   else {
     gs = gs_rhombus(half_diagonal);
-    GenSys gs2 = gs_square(half_side);
-    GenSys::const_iterator gi = gs2.begin();
+    Generator_System gs2 = gs_square(half_side);
+    Generator_System::const_iterator gi = gs2.begin();
     for (int i = n % 8 - 4; i-- > 0; )
       gs.insert(*gi++);
   }

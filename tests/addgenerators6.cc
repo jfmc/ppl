@@ -37,7 +37,7 @@ main() TRY {
   Variable x(0);
   Variable y(1);
 
-  GenSys gs1;
+  Generator_System gs1;
   gs1.insert(ray(x + y));
   gs1.insert(point());
 
@@ -47,7 +47,7 @@ main() TRY {
   print_generators(ph, "*** ph ***");
 #endif
 
-  GenSys gs2;
+  Generator_System gs2;
   gs2.insert(ray(x));
   gs2.insert(point());
 

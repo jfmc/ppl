@@ -38,11 +38,12 @@ print_constraint(const Constraint& c, const string& intro, ostream& s) {
 }
 
 void
-print_constraints(const ConSys& cs, const string& intro, ostream& s) {
+print_constraints(const Constraint_System& cs,
+		  const string& intro, ostream& s) {
   if (!intro.empty())
     s << intro << endl;
-  ConSys::const_iterator i = cs.begin();
-  ConSys::const_iterator cs_end = cs.end();
+  Constraint_System::const_iterator i = cs.begin();
+  Constraint_System::const_iterator cs_end = cs.end();
   bool printed_something = i != cs_end;
   while (i != cs_end) {
     s << *i++;
@@ -65,11 +66,11 @@ print_generator(const Generator& g, const string& intro, ostream& s) {
 }
 
 void
-print_generators(const GenSys& gs, const string& intro, ostream& s) {
+print_generators(const Generator_System& gs, const string& intro, ostream& s) {
   if (!intro.empty())
     s << intro << endl;
-  GenSys::const_iterator i = gs.begin();
-  GenSys::const_iterator gs_end = gs.end();
+  Generator_System::const_iterator i = gs.begin();
+  Generator_System::const_iterator gs_end = gs.end();
   bool printed_something = i != gs_end;
   while (i != gs_end) {
     s << *i++;

@@ -91,9 +91,9 @@ random_polytope(C_Polyhedron& ph, unsigned dimension, unsigned num_points,
       coordinate[i] = radius;
     point_on_the_unit_n_sphere(dimension, theta, coordinate);
 
-    LinExpression le;
+    Linear_Expression le;
     for (unsigned i = dimension; i-- > 0; )
-      le += Variable(i)*Integer(coordinate[i]*1000000.0);
+      le += Variable(i)*Coefficient(coordinate[i]*1000000.0);
     ph.add_generator(point(le));
   }
 }
@@ -106,15 +106,15 @@ main() TRY {
   for (int dimension = 2; dimension <= 6; ++dimension) {
     C_Polyhedron ph(dimension, C_Polyhedron::EMPTY);
     random_polytope(ph, dimension, dimension*dimension);
-    const ConSys& cs = ph.constraints();
+    const Constraint_System& cs = ph.constraints();
     unsigned num_constraints = 0;
-    for (ConSys::const_iterator i = cs.begin(), cs_end = cs.end();
+    for (Constraint_System::const_iterator i = cs.begin(), cs_end = cs.end();
 	 i != cs_end;
 	 ++i)
       ++num_constraints;
-    const GenSys& gs = ph.generators();
+    const Generator_System& gs = ph.generators();
     unsigned num_points = 0;
-    for (GenSys::const_iterator i = gs.begin(), gs_end = gs.end();
+    for (Generator_System::const_iterator i = gs.begin(), gs_end = gs.end();
 	 i != gs_end;
 	 ++i) {
       if (i->type() != Generator::POINT)

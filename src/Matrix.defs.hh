@@ -26,10 +26,9 @@ site: http://www.cs.unipr.it/ppl/ . */
 
 #include "Matrix.types.hh"
 #include "Row.defs.hh"
-#include "SatMatrix.types.hh"
-#include "ConSys.types.hh"
-#include "GenSys.types.hh"
-#include "Integer.types.hh"
+#include "Constraint_System.types.hh"
+#include "Generator_System.types.hh"
+#include "Coefficient.types.hh"
 #include <vector>
 #include <cstddef>
 

@@ -35,13 +35,13 @@ main() TRY {
   Variable x(0);
   Variable y(1);
 
-  ConSys cs;
+  Constraint_System cs;
   cs.insert(x + y >= 2);
   cs.insert(x + y <= 1);
 
   C_Polyhedron known_result(cs);
 
-  const GenSys& gs = known_result.generators();
+  const Generator_System& gs = known_result.generators();
 
 #if NOISY
   print_generators(gs, "*** gs ***");

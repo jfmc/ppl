@@ -18,7 +18,7 @@ template <typename T>
 class Native_Integer;
 
 template <typename T>
-struct Integer_traits_template<Native_Integer<T> > {
+struct Coefficient_traits_template<Native_Integer<T> > {
   typedef Native_Integer<T> const_reference;
 };
 

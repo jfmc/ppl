@@ -1,4 +1,4 @@
-/* Test operator-=(LinExpression& e1, const LinExpression& e2):
+/* Test operator-=(Linear_Expression& e1, const Linear_Expression& e2):
    in this case the dimension of e2 is strictly greater than
    the dimension of e1.
    Copyright (C) 2001-2004 Roberto Bagnara <bagnara@cs.unipr.it>
@@ -39,8 +39,8 @@ main() TRY {
   Variable A(0);
   Variable B(1);
 
-  LinExpression e1 = A;
-  LinExpression e2 = B;
+  Linear_Expression e1 = A;
+  Linear_Expression e2 = B;
   e1 -= e2;
 
   C_Polyhedron ph(2);

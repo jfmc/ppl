@@ -43,7 +43,7 @@ main() TRY {
 
   C_Polyhedron known_result = ph1;
 
-  GenSys gs = ph1.minimized_generators();
+  Generator_System gs = ph1.minimized_generators();
 
   C_Polyhedron ph2(2, C_Polyhedron::EMPTY);
   ph2.add_generators(gs);

@@ -36,7 +36,7 @@ main() TRY {
   set_handlers();
 
   Variable A(0);
-  GenSys gs;
+  Generator_System gs;
   gs.insert(point());
   gs.insert(ray(A));
   C_Polyhedron ph(gs);

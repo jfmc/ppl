@@ -38,7 +38,7 @@ main() TRY {
   Variable y(1);
 
   // Building a square.
-  ConSys cs;
+  Constraint_System cs;
   cs.insert(x >= 0);
   cs.insert(x <= 6);
   cs.insert(y >= 0);
@@ -69,7 +69,7 @@ main() TRY {
 
   ph.minimized_generators();
 
-  GenSys gs;
+  Generator_System gs;
   gs.insert(closure_point());
   gs.insert(closure_point(6*x));
   gs.insert(closure_point(6*y));

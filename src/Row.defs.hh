@@ -26,7 +26,7 @@ site: http://www.cs.unipr.it/ppl/ . */
 
 #include "Row.types.hh"
 #include "globals.defs.hh"
-#include "Integer.defs.hh"
+#include "Coefficient.defs.hh"
 #include <vector>
 #include <limits>
 
@@ -79,7 +79,7 @@ public:
 
     //! Total number of bits that can be stored.
     static const unsigned num_bits = std::numeric_limits<base_type>::digits;
-    
+
     //! Constructs an object with flags set as in \p n.
     explicit Flags(base_type n);
 
@@ -212,7 +212,7 @@ public:
   //! Returns a non-const reference to the flags of \p *this.
   Flags& flags();
 
-  //! Returns the size() of the largest possible Row. 
+  //! Returns the size() of the largest possible Row.
   static dimension_type max_size();
 
   //! Gives the number of coefficients currently in use.
@@ -221,10 +221,10 @@ public:
   //! \name Subscript operators
   //@{
   //! Returns a reference to the element of the row indexed by \p k.
-  Integer& operator[](dimension_type k);
+  Coefficient& operator[](dimension_type k);
 
   //! Returns a constant reference to the element of the row indexed by \p k.
-  Integer_traits::const_reference operator[](dimension_type k) const;
+  Coefficient_traits::const_reference operator[](dimension_type k) const;
   //@} // Subscript operators
 
   //! \brief
@@ -298,7 +298,7 @@ public:
   //@{
 
   /*! \brief
-    Allocates a chunk of memory able to contain \p capacity Integer objects
+    Allocates a chunk of memory able to contain \p capacity Coefficient objects
     beyond the specified \p fixed_size and returns a pointer to the new
     allocated memory.
   */
@@ -340,7 +340,7 @@ public:
   */
   void shrink(dimension_type new_size);
 
-  //! Returns the size() of the largest possible Impl. 
+  //! Returns the size() of the largest possible Impl.
   static dimension_type max_size();
 
   //! \name Flags accessors
@@ -367,10 +367,10 @@ public:
   //! \name Subscript operators
   //@{
   //! Returns a reference to the element of \p *this indexed by \p k.
-  Integer& operator[](dimension_type k);
+  Coefficient& operator[](dimension_type k);
 
   //! Returns a constant reference to the element of \p *this indexed by \p k.
-  Integer_traits::const_reference operator[](dimension_type k) const;
+  Coefficient_traits::const_reference operator[](dimension_type k) const;
   //@} // Subscript operators
 
   //! \brief
@@ -392,7 +392,7 @@ private:
   Flags flags_;
 
   //! The vector of coefficients.
-  Integer vec_[
+  Coefficient vec_[
 #if !CXX_SUPPORTS_FLEXIBLE_ARRAYS
 	       1
 #endif

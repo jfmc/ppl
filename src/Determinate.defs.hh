@@ -25,7 +25,7 @@ site: http://www.cs.unipr.it/ppl/ . */
 #define PPL_Determinate_defs_hh
 
 #include "Determinate.types.hh"
-#include "ConSys.types.hh"
+#include "Constraint_System.types.hh"
 #include "Variable.defs.hh"
 #include "globals.defs.hh"
 #include <iosfwd>
@@ -73,7 +73,6 @@ operator<<(std::ostream&, const Determinate<PH>&);
 template <typename PH>
 class Parma_Polyhedra_Library::Determinate {
 public:
-
   //! \name Constructors and Destructor
   //@{
 
@@ -98,7 +97,7 @@ public:
   //! \brief
   //! Injection operator: builds the determinate constraint system element
   //! corresponding to the base-level element represented by \p cs.
-  Determinate(const ConSys& cs);
+  Determinate(const Constraint_System& cs);
 
   //! Copy constructor.
   Determinate(const Determinate& y);
@@ -115,10 +114,10 @@ public:
   dimension_type space_dimension() const;
 
   //! Returns the system of constraints.
-  const ConSys& constraints() const;
+  const Constraint_System& constraints() const;
 
   //! Returns the system of constraints, with no redundant constraint.
-  const ConSys& minimized_constraints() const;
+  const Constraint_System& minimized_constraints() const;
 
   //! Returns a const reference to the embedded element.
   const PH& element() const;
@@ -153,19 +152,20 @@ public:
   //! are equivalent.
   bool is_definitely_equivalent_to(const Determinate& y) const;
 
+  //! \brief
+  //! Returns a lower bound to the total size in bytes of the memory
+  //! occupied by \p *this.
+  memory_size_type total_memory_in_bytes() const;
+
+  //! \brief
+  //! Returns a lower bound to the size in bytes of the memory
+  //! managed by \p *this.
+  memory_size_type external_memory_in_bytes() const;
+
   //! Checks if all the invariants are satisfied.
   bool OK() const;
 
   //@} // Member Functions that Do Not Modify the Domain Element
-
-
-  Determinate& operator <<= (dimension_type n);
-  Determinate& hide_assign(dimension_type n);
-
-  friend bool
-  operator==<PH>(const Determinate<PH>& x, const Determinate<PH>& y);
-  friend bool
-  operator!=<PH>(const Determinate<PH>& x, const Determinate<PH>& y);
 
   //! \name Space Dimension Preserving Member Functions that May Modify the Domain Element
   //@{
@@ -199,7 +199,7 @@ public:
     Thrown if \p *this and \p cs are topology-incompatible or
     dimension-incompatible.
   */
-  void add_constraints(ConSys& cs);
+  void add_constraints(Constraint_System& cs);
 
   //@} // Space Dimension Preserving Member Functions that May Modify [...]
 
@@ -299,7 +299,7 @@ private:
     Rep(const PH& p);
 
     //! Builds a new representation by copying the constraints in \p cs.
-    Rep(const ConSys& cs);
+    Rep(const Constraint_System& cs);
 
     //! Destructor.
     ~Rep();
@@ -314,12 +314,27 @@ private:
 
     //! True if and only if this representation is currently shared.
     bool is_shared() const;
+
+    //! \brief
+    //! Returns a lower bound to the total size in bytes of the memory
+    //! occupied by \p *this.
+    memory_size_type total_memory_in_bytes() const;
+
+    //! \brief
+    //! Returns a lower bound to the size in bytes of the memory
+    //! managed by \p *this.
+    memory_size_type external_memory_in_bytes() const;
   };
 
   //! \brief
   //! A pointer to the possibly shared representation of
   //! the base-level domain element.
   Rep* prep;
+
+  friend bool
+  operator==<PH>(const Determinate<PH>& x, const Determinate<PH>& y);
+  friend bool
+  operator!=<PH>(const Determinate<PH>& x, const Determinate<PH>& y);
 };
 
 

@@ -102,7 +102,7 @@ test3() {
   function.insert(2, 0);
   function.insert(1, 1);
 
-  GenSys gs;
+  Generator_System gs;
   gs.insert(point(2*C));
   gs.insert(line(A + B));
   gs.insert(ray(A + C));
@@ -116,7 +116,7 @@ test3() {
 
   ph1.map_space_dimensions(function);
 
-  GenSys known_gs;
+  Generator_System known_gs;
   known_gs.insert(point(2*A));
   known_gs.insert(line(C + B));
   known_gs.insert(ray(C + A));
@@ -142,7 +142,7 @@ test4() {
   function.insert(0, 1);
   function.insert(2, 0);
 
-  GenSys gs;
+  Generator_System gs;
   gs.insert(point());
   gs.insert(ray(A + B));
   gs.insert(ray(A - C));
@@ -156,7 +156,7 @@ test4() {
 
   ph1.map_space_dimensions(function);
 
-  GenSys known_gs;
+  Generator_System known_gs;
   known_gs.insert(point());
   known_gs.insert(ray(B));
   known_gs.insert(ray(B - A));
@@ -182,7 +182,7 @@ test5() {
   function.insert(3, 2);
   function.insert(4, 1);
 
-  GenSys gs;
+  Generator_System gs;
   gs.insert(point());
   gs.insert(ray(A));
   gs.insert(ray(B));
@@ -218,7 +218,7 @@ test6() {
   function.insert(0, 0);
   function.insert(1, 1);
 
-  GenSys gs;
+  Generator_System gs;
   gs.insert(point());
   gs.insert(point(A));
   gs.insert(point(B));
@@ -255,7 +255,7 @@ test7() {
   function.insert(2, 2);
   function.insert(3, 3);
 
-  GenSys gs;
+  Generator_System gs;
   gs.insert(point());
   gs.insert(point(A));
   gs.insert(point(2*B));
@@ -296,7 +296,7 @@ test8() {
   function.insert(2, 1);
   function.insert(3, 2);
 
-  GenSys gs;
+  Generator_System gs;
   gs.insert(point());
   gs.insert(point(A));
   gs.insert(ray(B));

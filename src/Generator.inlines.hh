@@ -27,7 +27,7 @@ site: http://www.cs.unipr.it/ppl/ . */
 namespace Parma_Polyhedra_Library {
 
 inline
-Generator::Generator(LinExpression& e, Type type, Topology topology) {
+Generator::Generator(Linear_Expression& e, Type type, Topology topology) {
   assert(type != CLOSURE_POINT || topology == NOT_NECESSARILY_CLOSED);
   Linear_Row::swap(e);
   flags() = Flags(topology, (type == LINE
@@ -114,22 +114,31 @@ Generator::set_is_ray_or_point() {
   set_is_ray_or_point_or_inequality();
 }
 
-inline Integer_traits::const_reference
+inline Coefficient_traits::const_reference
 Generator::coefficient(const Variable v) const {
   if (v.space_dimension() > space_dimension())
     throw_dimension_incompatible("coefficient(v)", "v", v);
   return Linear_Row::coefficient(v.id());
 }
 
-inline Integer_traits::const_reference
+inline Coefficient_traits::const_reference
 Generator::divisor() const {
-  Integer_traits::const_reference d = Linear_Row::inhomogeneous_term();
+  Coefficient_traits::const_reference d = Linear_Row::inhomogeneous_term();
   if (!is_ray_or_point() || d == 0)
     throw_invalid_argument("divisor()",
 			   "*this is neither a point nor a closure point");
   return d;
 }
 
+inline memory_size_type
+Generator::external_memory_in_bytes() const {
+  return Linear_Row::external_memory_in_bytes();
+}
+
+inline memory_size_type
+Generator::total_memory_in_bytes() const {
+  return Linear_Row::total_memory_in_bytes();
+}
 
 inline const Generator&
 Generator::zero_dim_point() {
@@ -145,25 +154,26 @@ Generator::zero_dim_closure_point() {
 
 /*! \relates Generator */
 inline Generator
-line(const LinExpression& e) {
+line(const Linear_Expression& e) {
   return Generator::line(e);
 }
 
 /*! \relates Generator */
 inline Generator
-ray(const LinExpression& e) {
+ray(const Linear_Expression& e) {
   return Generator::ray(e);
 }
 
 /*! \relates Generator */
 inline Generator
-point(const LinExpression& e, Integer_traits::const_reference d) {
+point(const Linear_Expression& e, Coefficient_traits::const_reference d) {
   return Generator::point(e, d);
 }
 
 /*! \relates Generator */
 inline Generator
-closure_point(const LinExpression& e, Integer_traits::const_reference d) {
+closure_point(const Linear_Expression& e,
+	      Coefficient_traits::const_reference d) {
   return Generator::closure_point(e, d);
 }
 

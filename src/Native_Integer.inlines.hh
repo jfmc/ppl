@@ -234,28 +234,6 @@ Native_Integer<T>::raw_value() const {
   return v;
 }
 
-#if 0
-template <typename T>
-inline
-Native_Integer<T>::operator mpz_class() const {
-  return v;
-}
-
-template <>
-inline
-Native_Integer<long long>::operator mpz_class() const {
-  mpz_class n;
-  if (v >= 0)
-    mpz_import(n.get_mpz_t(), 1, 1, sizeof(long long), 0, 0, &v);
-  else {
-    long long abs_v = abs(v);
-    mpz_import(n.get_mpz_t(), 1, 1, sizeof(long long), 0, 0, &abs_v);
-    mpz_neg(n.get_mpz_t(), n.get_mpz_t());
-  }
-  return n;
-}
-#endif
-
 template <typename T>
 inline Native_Integer<T>&
 Native_Integer<T>::operator=(const Native_Integer<T>& y) {

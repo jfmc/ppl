@@ -33,11 +33,11 @@ using namespace Parma_Polyhedra_Library;
 int
 main() TRY {
   set_handlers();
-  
+
   Variable x(0);
   Variable y(1);
 
-  ConSys cs1;
+  Constraint_System cs1;
   cs1.insert(x >= 0);
   cs1.insert(y >= 0);
   cs1.insert(x <= 4);
@@ -49,7 +49,7 @@ main() TRY {
   print_constraints(ph1, "*** ph1 ***");
 #endif
 
-  ConSys cs2;
+  Constraint_System cs2;
   cs2.insert(x >= 0);
   cs2.insert(y >= 0);
   cs2.insert(x <= 4);
@@ -66,7 +66,7 @@ main() TRY {
   C_Polyhedron computed_result = ph1;
   computed_result.poly_difference_assign(ph2);
 
-  GenSys gs_known_result;
+  Generator_System gs_known_result;
   gs_known_result.insert(point(0*x + 5*y));
   gs_known_result.insert(point(4*x + 3*y));
   gs_known_result.insert(ray(0*x + 1*y));

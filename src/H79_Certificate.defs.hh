@@ -42,7 +42,7 @@ class Parma_Polyhedra_Library::H79_Certificate {
 public:
   //! Default constructor.
   H79_Certificate();
-  
+
   //! Constructor: computes the certificate for \p ph.
   H79_Certificate(const Polyhedron& ph);
 
@@ -77,7 +77,7 @@ public:
     bool operator()(const H79_Certificate& x,
 		    const H79_Certificate& y) const;
   };
-  
+
 private:
   //! Affine dimension of the polyhedron.
   dimension_type affine_dim;

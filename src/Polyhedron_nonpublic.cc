@@ -86,7 +86,7 @@ PPL::Polyhedron::Polyhedron(const Polyhedron& y)
     sat_g = y.sat_g;
 }
 
-PPL::Polyhedron::Polyhedron(const Topology topol, const ConSys& ccs)
+PPL::Polyhedron::Polyhedron(const Topology topol, const Constraint_System& ccs)
   : con_sys(topol),
     gen_sys(topol),
     sat_c(),
@@ -95,7 +95,7 @@ PPL::Polyhedron::Polyhedron(const Topology topol, const ConSys& ccs)
   assert(ccs.space_dimension() <= max_space_dimension());
 
   // TODO: this implementation is just an executable specification.
-  ConSys cs = ccs;
+  Constraint_System cs = ccs;
 
   // Try to adapt `cs' to the required topology.
   const dimension_type cs_space_dim = cs.space_dimension();
@@ -135,7 +135,7 @@ PPL::Polyhedron::Polyhedron(const Topology topol, const ConSys& ccs)
   assert(OK());
 }
 
-PPL::Polyhedron::Polyhedron(const Topology topol, ConSys& cs)
+PPL::Polyhedron::Polyhedron(const Topology topol, Constraint_System& cs)
   : con_sys(topol),
     gen_sys(topol),
     sat_c(),
@@ -181,7 +181,7 @@ PPL::Polyhedron::Polyhedron(const Topology topol, ConSys& cs)
   assert(OK());
 }
 
-PPL::Polyhedron::Polyhedron(const Topology topol, const GenSys& cgs)
+PPL::Polyhedron::Polyhedron(const Topology topol, const Generator_System& cgs)
   : con_sys(topol),
     gen_sys(topol),
     sat_c(),
@@ -190,7 +190,7 @@ PPL::Polyhedron::Polyhedron(const Topology topol, const GenSys& cgs)
   assert(cgs.space_dimension() <= max_space_dimension());
 
   // TODO: this implementation is just an executable specification.
-  GenSys gs = cgs;
+  Generator_System gs = cgs;
 
   // An empty set of generators defines the empty polyhedron.
   if (gs.num_rows() == 0) {
@@ -242,7 +242,7 @@ PPL::Polyhedron::Polyhedron(const Topology topol, const GenSys& cgs)
   space_dim = 0;
 }
 
-PPL::Polyhedron::Polyhedron(const Topology topol, GenSys& gs)
+PPL::Polyhedron::Polyhedron(const Topology topol, Generator_System& gs)
   : con_sys(topol),
     gen_sys(topol),
     sat_c(),
@@ -415,8 +415,8 @@ PPL::Polyhedron::is_included_in(const Polyhedron& y) const {
   assert(x.OK());
   assert(y.OK());
 
-  const GenSys& gs = x.gen_sys;
-  const ConSys& cs = y.con_sys;
+  const Generator_System& gs = x.gen_sys;
+  const Constraint_System& cs = y.con_sys;
 
   if (x.is_necessarily_closed())
     // When working with necessarily closed polyhedra,
@@ -506,7 +506,7 @@ PPL::Polyhedron::is_included_in(const Polyhedron& y) const {
 }
 
 bool
-PPL::Polyhedron::bounds(const LinExpression& expr,
+PPL::Polyhedron::bounds(const Linear_Expression& expr,
 			const bool from_above) const {
   // The dimension of `expr' should not be greater than the dimension
   // of `*this'.
@@ -543,9 +543,9 @@ PPL::Polyhedron::bounds(const LinExpression& expr,
 }
 
 bool
-PPL::Polyhedron::max_min(const LinExpression& expr,
+PPL::Polyhedron::max_min(const Linear_Expression& expr,
 			 const bool maximize,
-			 Integer& ext_n, Integer& ext_d, bool& included,
+			 Coefficient& ext_n, Coefficient& ext_d, bool& included,
 			 const Generator** const pppoint) const {
   // The dimension of `expr' should not be greater than the dimension
   // of `*this'.
@@ -597,8 +597,10 @@ PPL::Polyhedron::max_min(const LinExpression& expr,
       // Notice that we are ignoring the constant term in `expr' here.
       // We will add it to the extremum as soon as we find it.
       mpq_class candidate;
-      Checked::assign<Check_Overflow_Policy>(candidate.get_num(), raw_value(sp));
-      Checked::assign<Check_Overflow_Policy>(candidate.get_den(), raw_value(g[0]));
+      Checked::assign<Check_Overflow_Policy>(candidate.get_num(),
+					     raw_value(sp));
+      Checked::assign<Check_Overflow_Policy>(candidate.get_den(),
+					     raw_value(g[0]));
       candidate.canonicalize();
       const bool g_is_point = g.is_point();
       if (first_candidate
@@ -625,12 +627,12 @@ PPL::Polyhedron::max_min(const LinExpression& expr,
   mpz_class n;
   Checked::assign<Check_Overflow_Policy>(n, raw_value(expr[0]));
   extremum += n;;
-  
+
   // The polyhedron is bounded in the right direction and we have
   // computed the extremum: write the result into the caller's structures.
   assert(!first_candidate);
-  ext_n = Integer(extremum.get_num());
-  ext_d = Integer(extremum.get_den());
+  ext_n = Coefficient(extremum.get_num());
+  ext_d = Coefficient(extremum.get_den());
   included = ext_included;
   if (pppoint != 0)
     *pppoint = &gen_sys[ext_position];
@@ -1068,12 +1070,12 @@ PPL::Polyhedron::strongly_minimize_constraints() const {
     x.sat_g.transpose_assign(sat_c);
   }
 
-  // These SatRow's will be later used as masks in order to check
-  // saturation conditions restricted to particular subsets of
+  // These Saturation_Row's will be later used as masks in order to
+  // check saturation conditions restricted to particular subsets of
   // the generator system.
-  SatRow sat_all_but_rays;
-  SatRow sat_all_but_points;
-  SatRow sat_all_but_closure_points;
+  Saturation_Row sat_all_but_rays;
+  Saturation_Row sat_all_but_points;
+  Saturation_Row sat_all_but_closure_points;
 
   const dimension_type gs_rows = gen_sys.num_rows();
   const dimension_type n_lines = gen_sys.num_lines();
@@ -1093,13 +1095,13 @@ PPL::Polyhedron::strongly_minimize_constraints() const {
       throw std::runtime_error("PPL internal error: "
 			       "strongly_minimize_constraints.");
     }
-  SatRow sat_lines_and_rays;
+  Saturation_Row sat_lines_and_rays;
   set_union(sat_all_but_points, sat_all_but_closure_points,
 	    sat_lines_and_rays);
-  SatRow sat_lines_and_closure_points;
+  Saturation_Row sat_lines_and_closure_points;
   set_union(sat_all_but_rays, sat_all_but_points,
 	    sat_lines_and_closure_points);
-  SatRow sat_lines;
+  Saturation_Row sat_lines;
   set_union(sat_lines_and_rays, sat_lines_and_closure_points,
 	    sat_lines);
 
@@ -1112,14 +1114,14 @@ PPL::Polyhedron::strongly_minimize_constraints() const {
   // For all the strict inequalities in `con_sys', check for
   // eps-redundancy and eventually move them to the bottom part of the
   // system.
-  ConSys& cs = x.con_sys;
-  SatMatrix& sat = x.sat_g;
+  Constraint_System& cs = x.con_sys;
+  Saturation_Matrix& sat = x.sat_g;
   dimension_type cs_rows = cs.num_rows();
   const dimension_type eps_index = cs.num_columns() - 1;
   for (dimension_type i = 0; i < cs_rows; )
     if (cs[i].is_strict_inequality()) {
       // First, check if it is saturated by no closure points
-      SatRow sat_ci;
+      Saturation_Row sat_ci;
       set_union(sat[i], sat_lines_and_closure_points, sat_ci);
       if (sat_ci == sat_lines) {
 	// It is saturated by no closure points.
@@ -1235,9 +1237,9 @@ PPL::Polyhedron::strongly_minimize_generators() const {
     x.sat_c.transpose_assign(sat_g);
   }
 
-  // This SatRow will have all and only the indexes
+  // This Saturation_Row will have all and only the indexes
   // of strict inequalities set to 1.
-  SatRow sat_all_but_strict_ineq;
+  Saturation_Row sat_all_but_strict_ineq;
   const dimension_type cs_rows = con_sys.num_rows();
   const dimension_type n_equals = con_sys.num_equalities();
   for (dimension_type i = cs_rows; i-- > n_equals; )
@@ -1249,16 +1251,16 @@ PPL::Polyhedron::strongly_minimize_generators() const {
 
   // For all points in the generator system, check for eps-redundancy
   // and eventually move them to the bottom part of the system.
-  GenSys& gs = const_cast<GenSys&>(gen_sys);
-  SatMatrix& sat = const_cast<SatMatrix&>(sat_c);
+  Generator_System& gs = const_cast<Generator_System&>(gen_sys);
+  Saturation_Matrix& sat = const_cast<Saturation_Matrix&>(sat_c);
   dimension_type gs_rows = gs.num_rows();
   const dimension_type n_lines = gs.num_lines();
   const dimension_type eps_index = gs.num_columns() - 1;
   for (dimension_type i = n_lines; i < gs_rows; )
     if (gs[i].is_point()) {
-      // Compute the SatRow corresponding to the candidate point
+      // Compute the Saturation_Row corresponding to the candidate point
       // when strict inequality constraints are ignored.
-      SatRow sat_gi;
+      Saturation_Row sat_gi;
       set_union(sat[i], sat_all_but_strict_ineq, sat_gi);
       // Check if the candidate point is actually eps-redundant:
       // namely, if there exists another point that saturates
@@ -1382,7 +1384,7 @@ PPL::Polyhedron::throw_topology_incompatible(const char* method,
 void
 PPL::Polyhedron::throw_topology_incompatible(const char* method,
 					     const char* cs_name,
-					     const ConSys&) const {
+					     const Constraint_System&) const {
   assert(is_necessarily_closed());
   std::ostringstream s;
   s << "PPL::C_Polyhedron::" << method << ":" << std::endl
@@ -1393,7 +1395,7 @@ PPL::Polyhedron::throw_topology_incompatible(const char* method,
 void
 PPL::Polyhedron::throw_topology_incompatible(const char* method,
 					     const char* gs_name,
-					     const GenSys&) const {
+					     const Generator_System&) const {
   std::ostringstream s;
   s << "PPL::C_Polyhedron::" << method << ":" << std::endl
     << gs_name << " contains closure points.";
@@ -1423,7 +1425,7 @@ PPL::Polyhedron::throw_dimension_incompatible(const char* method,
 void
 PPL::Polyhedron::throw_dimension_incompatible(const char* method,
 					      const char* e_name,
-					      const LinExpression& e) const {
+					      const Linear_Expression& e) const {
   throw_dimension_incompatible(method, e_name, e.space_dimension());
 }
 
@@ -1444,14 +1446,14 @@ PPL::Polyhedron::throw_dimension_incompatible(const char* method,
 void
 PPL::Polyhedron::throw_dimension_incompatible(const char* method,
 					      const char* cs_name,
-					      const ConSys& cs) const {
+					      const Constraint_System& cs) const {
   throw_dimension_incompatible(method, cs_name, cs.space_dimension());
 }
 
 void
 PPL::Polyhedron::throw_dimension_incompatible(const char* method,
 					      const char* gs_name,
-					      const GenSys& gs) const {
+					      const Generator_System& gs) const {
   throw_dimension_incompatible(method, gs_name, gs.space_dimension());
 }
 

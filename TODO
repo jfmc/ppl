@@ -2,42 +2,12 @@
 Enhancements for PPL 0.7
 ========================
 
-- Make sure all our public classes have methods total_memory_in_bytes()
-  and external_memory_in_bytes().
-
-- The check_containment() function is not officially available to
-  the PPL user.  However, someone uses it and, apparently, this
-  comes in handy.  See how to provide the same functionality the
-  right way.
-
-- Explain to the GNU Prolog user that GNU Prolog must be configured
-  using the `--disable-regs' option it is has to work with _any_
-  foreign code (not just the PPL).
-
-- Consider performing the following renamings:
-
-    Integer -> Coefficient
-    BoundingBox -> Bounding_Box
-    ConSys -> Constraint_System
-    GenSys -> Generator_System
-    AskTell -> Ask_Tell
-    LinExpression -> Linear_Expression
-    SatMatrix -> Saturation_Matrix
-    SatRow -> Saturation_Row
-
 - Rewrite Linear_System::sort_and_remove_with_sat() and perhaps
   Linear_System::sort_rows().
 - Look carefully into the methods Polyhedron::obtain_sorted_constraints*()
   and Polyhedron::obtain_sorted_generators*() and into the code that
   uses them directly.
 - The Powerset class implementation is poorly documented.
-- See for what reason we have neither
-  C_Polyhedron& C_Polyhedron::operator=(const NNC_Polyhedron& y)
-  nor
-  NNC_Polyhedron& NNC_Polyhedron::operator=(const C_Polyhedron& y).
-- Clearly explain, in the documentation, how (not) to use
-  set_GMP_memory_allocation_functions().  More generally, explain how
-  to have memory-guarded computations.
 - Completely rewrite the handling of temporary coefficients.
 - Consider renaming Powerset::meet_assign().
 
@@ -45,10 +15,17 @@ Enhancements for PPL 0.7
 Enhancements for PPL 0.8 or later versions
 ==========================================
 
+- Clearly explain, in the documentation, how (not) to use
+  set_GMP_memory_allocation_functions().  More generally, explain how
+  to have memory-guarded computations.
+- The check_containment() function is not officially available to
+  the PPL user.  However, someone uses it and, apparently, this
+  comes in handy.  See how to provide the same functionality the
+  right way.
 - Implement void Polyhedron::envelope_assign(const Polyhedron& y).
 - Implement the extrapolation operators defined in HenzingerH95
   and HenzingerPW01.
-- See whether, using the techniques described in 
+- See whether, using the techniques described in
   ftp://ftp.ifor.math.ethz.ch/pub/fukuda/reports/polyunion001120.ps.gz
   we can implement bool poly_hull_assign_if_exact(PH& p, const PH& q),
   temporarily in algorithms.hh, more efficiently.
@@ -85,7 +62,7 @@ Efficiency Issues
   differences.
 
 - We are being rather careless about the creation of temporaries
-  as far as the classes LinExpression, Constraint and Generator
+  as far as the classes Linear_Expression, Constraint and Generator
   are concerned.
 
 - In Polyhedron::strongly_minimize_constraints(), after the removal

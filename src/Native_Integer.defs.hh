@@ -25,10 +25,10 @@ site: http://www.cs.unipr.it/ppl/ . */
 #define PPL_Native_Integer_defs_hh 1
 
 #include "Native_Integer.types.hh"
-#include "Integer_macros.hh"
 #include "float.types.hh"
 #include <gmpxx.h>
 #include <limits>
+
 
 template <typename T>
 class Parma_Polyhedra_Library::Native_Integer {
@@ -85,6 +85,141 @@ public:
 private:
   T v;
 };
+
+#define PPL_DECLARE_BINARY_ARITHMETIC_OPERATOR_WITH_TYPE(cl, op, type)        \
+                                                                              \
+template <typename T>                                                         \
+cl<T>                                                                         \
+op(cl<T> x, type y);                                                          \
+                                                                              \
+template <typename T>                                                         \
+cl<T>                                                                         \
+op(type x, cl<T> y);
+
+#define PPL_DECLARE_BINARY_ARITHMETIC_OPERATOR(cl, op)                        \
+PPL_DECLARE_BINARY_ARITHMETIC_OPERATOR_WITH_TYPE(cl, op, signed char)         \
+PPL_DECLARE_BINARY_ARITHMETIC_OPERATOR_WITH_TYPE(cl, op, unsigned char)       \
+PPL_DECLARE_BINARY_ARITHMETIC_OPERATOR_WITH_TYPE(cl, op, signed short)        \
+PPL_DECLARE_BINARY_ARITHMETIC_OPERATOR_WITH_TYPE(cl, op, unsigned short)      \
+PPL_DECLARE_BINARY_ARITHMETIC_OPERATOR_WITH_TYPE(cl, op, signed int)          \
+PPL_DECLARE_BINARY_ARITHMETIC_OPERATOR_WITH_TYPE(cl, op, unsigned int)        \
+PPL_DECLARE_BINARY_ARITHMETIC_OPERATOR_WITH_TYPE(cl, op, signed long)         \
+PPL_DECLARE_BINARY_ARITHMETIC_OPERATOR_WITH_TYPE(cl, op, unsigned long)       \
+PPL_DECLARE_BINARY_ARITHMETIC_OPERATOR_WITH_TYPE(cl, op, signed long long)    \
+PPL_DECLARE_BINARY_ARITHMETIC_OPERATOR_WITH_TYPE(cl, op, unsigned long long)
+
+#define PPL_DECLARE_BINARY_ARITHMETIC_OPERATORS(cl)                           \
+PPL_DECLARE_BINARY_ARITHMETIC_OPERATOR(cl, operator+)                         \
+PPL_DECLARE_BINARY_ARITHMETIC_OPERATOR(cl, operator-)                         \
+PPL_DECLARE_BINARY_ARITHMETIC_OPERATOR(cl, operator*)                         \
+PPL_DECLARE_BINARY_ARITHMETIC_OPERATOR(cl, operator/)                         \
+PPL_DECLARE_BINARY_ARITHMETIC_OPERATOR(cl, operator%)
+
+#define PPL_DECLARE_RELATIONAL_OPERATOR_WITH_TYPE(cl, op, type)               \
+                                                                              \
+template <typename T>                                                         \
+bool                                                                          \
+op(cl<T> x, type y);                                                          \
+                                                                              \
+template <typename T>                                                         \
+bool                                                                          \
+op(type x, cl<T> y);
+
+#define PPL_DECLARE_RELATIONAL_OPERATOR(cl, op)                               \
+PPL_DECLARE_RELATIONAL_OPERATOR_WITH_TYPE(cl, op, signed char)                \
+PPL_DECLARE_RELATIONAL_OPERATOR_WITH_TYPE(cl, op, unsigned char)              \
+PPL_DECLARE_RELATIONAL_OPERATOR_WITH_TYPE(cl, op, signed short)               \
+PPL_DECLARE_RELATIONAL_OPERATOR_WITH_TYPE(cl, op, unsigned short)             \
+PPL_DECLARE_RELATIONAL_OPERATOR_WITH_TYPE(cl, op, signed int)                 \
+PPL_DECLARE_RELATIONAL_OPERATOR_WITH_TYPE(cl, op, unsigned int)               \
+PPL_DECLARE_RELATIONAL_OPERATOR_WITH_TYPE(cl, op, signed long)                \
+PPL_DECLARE_RELATIONAL_OPERATOR_WITH_TYPE(cl, op, unsigned long)              \
+PPL_DECLARE_RELATIONAL_OPERATOR_WITH_TYPE(cl, op, signed long long)           \
+PPL_DECLARE_RELATIONAL_OPERATOR_WITH_TYPE(cl, op, unsigned long long)
+
+#define PPL_DECLARE_RELATIONAL_OPERATORS(cl)                                  \
+PPL_DECLARE_RELATIONAL_OPERATOR(cl, operator==)                               \
+PPL_DECLARE_RELATIONAL_OPERATOR(cl, operator!=)                               \
+PPL_DECLARE_RELATIONAL_OPERATOR(cl, operator<=)                               \
+PPL_DECLARE_RELATIONAL_OPERATOR(cl, operator<)                                \
+PPL_DECLARE_RELATIONAL_OPERATOR(cl, operator>=)                               \
+PPL_DECLARE_RELATIONAL_OPERATOR(cl, operator>)
+
+#define PPL_INTEGER_DECLARE_NON_MEMBERS(cl)                                   \
+PPL_DECLARE_BINARY_ARITHMETIC_OPERATORS(cl)                                   \
+PPL_DECLARE_RELATIONAL_OPERATORS(cl)
+
+
+#define PPL_DEFINE_BINARY_ARITHMETIC_OPERATOR_WITH_TYPE(cl, op, type)         \
+                                                                              \
+template <typename T>                                                         \
+cl<T>                                                                         \
+op(cl<T> x, type y) {                                                         \
+  return op(x, cl<T>(y));                                                     \
+}                                                                             \
+                                                                              \
+template <typename T>                                                         \
+cl<T>                                                                         \
+op(type x, cl<T> y) {                                                         \
+  return op(cl<T>(x), y);                                                     \
+}
+
+#define PPL_DEFINE_BINARY_ARITHMETIC_OPERATOR(cl, op)                         \
+PPL_DEFINE_BINARY_ARITHMETIC_OPERATOR_WITH_TYPE(cl, op, signed char)          \
+PPL_DEFINE_BINARY_ARITHMETIC_OPERATOR_WITH_TYPE(cl, op, unsigned char)        \
+PPL_DEFINE_BINARY_ARITHMETIC_OPERATOR_WITH_TYPE(cl, op, signed short)         \
+PPL_DEFINE_BINARY_ARITHMETIC_OPERATOR_WITH_TYPE(cl, op, unsigned short)       \
+PPL_DEFINE_BINARY_ARITHMETIC_OPERATOR_WITH_TYPE(cl, op, signed int)           \
+PPL_DEFINE_BINARY_ARITHMETIC_OPERATOR_WITH_TYPE(cl, op, unsigned int)         \
+PPL_DEFINE_BINARY_ARITHMETIC_OPERATOR_WITH_TYPE(cl, op, signed long)          \
+PPL_DEFINE_BINARY_ARITHMETIC_OPERATOR_WITH_TYPE(cl, op, unsigned long)        \
+PPL_DEFINE_BINARY_ARITHMETIC_OPERATOR_WITH_TYPE(cl, op, signed long long)     \
+PPL_DEFINE_BINARY_ARITHMETIC_OPERATOR_WITH_TYPE(cl, op, unsigned long long)
+
+#define PPL_DEFINE_BINARY_ARITHMETIC_OPERATORS(cl)                            \
+PPL_DEFINE_BINARY_ARITHMETIC_OPERATOR(cl, operator+)                          \
+PPL_DEFINE_BINARY_ARITHMETIC_OPERATOR(cl, operator-)                          \
+PPL_DEFINE_BINARY_ARITHMETIC_OPERATOR(cl, operator*)                          \
+PPL_DEFINE_BINARY_ARITHMETIC_OPERATOR(cl, operator/)                          \
+PPL_DEFINE_BINARY_ARITHMETIC_OPERATOR(cl, operator%)
+
+#define PPL_DEFINE_RELATIONAL_OPERATOR_WITH_TYPE(cl, op, type)                \
+                                                                              \
+template <typename T>                                                         \
+bool                                                                          \
+op(cl<T> x, type y) {                                                         \
+  return op(x, cl<T>(y));                                                     \
+}                                                                             \
+                                                                              \
+template <typename T>                                                         \
+bool                                                                          \
+op(type x, cl<T> y) {                                                         \
+  return op(cl<T>(x), y);                                                     \
+}
+
+#define PPL_DEFINE_RELATIONAL_OPERATOR(cl, op)                                \
+PPL_DEFINE_RELATIONAL_OPERATOR_WITH_TYPE(cl, op, signed char)                 \
+PPL_DEFINE_RELATIONAL_OPERATOR_WITH_TYPE(cl, op, unsigned char)               \
+PPL_DEFINE_RELATIONAL_OPERATOR_WITH_TYPE(cl, op, signed short)                \
+PPL_DEFINE_RELATIONAL_OPERATOR_WITH_TYPE(cl, op, unsigned short)              \
+PPL_DEFINE_RELATIONAL_OPERATOR_WITH_TYPE(cl, op, signed int)                  \
+PPL_DEFINE_RELATIONAL_OPERATOR_WITH_TYPE(cl, op, unsigned int)                \
+PPL_DEFINE_RELATIONAL_OPERATOR_WITH_TYPE(cl, op, signed long)                 \
+PPL_DEFINE_RELATIONAL_OPERATOR_WITH_TYPE(cl, op, unsigned long)               \
+PPL_DEFINE_RELATIONAL_OPERATOR_WITH_TYPE(cl, op, signed long long)            \
+PPL_DEFINE_RELATIONAL_OPERATOR_WITH_TYPE(cl, op, unsigned long long)
+
+#define PPL_DEFINE_RELATIONAL_OPERATORS(cl)                                   \
+PPL_DEFINE_RELATIONAL_OPERATOR(cl, operator==)                                \
+PPL_DEFINE_RELATIONAL_OPERATOR(cl, operator!=)                                \
+PPL_DEFINE_RELATIONAL_OPERATOR(cl, operator<=)                                \
+PPL_DEFINE_RELATIONAL_OPERATOR(cl, operator<)                                 \
+PPL_DEFINE_RELATIONAL_OPERATOR(cl, operator>=)                                \
+PPL_DEFINE_RELATIONAL_OPERATOR(cl, operator>)
+
+#define PPL_INTEGER_DEFINE_NON_MEMBERS(cl)                                    \
+PPL_DEFINE_BINARY_ARITHMETIC_OPERATORS(cl)                                    \
+PPL_DEFINE_RELATIONAL_OPERATORS(cl)
 
 namespace Parma_Polyhedra_Library {
 

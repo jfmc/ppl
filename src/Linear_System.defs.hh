@@ -26,8 +26,8 @@ site: http://www.cs.unipr.it/ppl/ . */
 
 #include "Linear_System.types.hh"
 #include "Row.types.hh"
-#include "SatRow.types.hh"
-#include "SatMatrix.types.hh"
+#include "Saturation_Row.types.hh"
+#include "Saturation_Matrix.types.hh"
 #include "Matrix.defs.hh"
 #include "Topology.hh"
 #include "Linear_Row.defs.hh"
@@ -266,7 +266,7 @@ public:
   //! in the non-pending part of the system.
   void sort_pending_and_remove_duplicates();
 
-  class With_SatMatrix_iterator;
+  class With_Saturation_Matrix_iterator;
 
   //! \brief
   //! Sorts the system, removing duplicates,
@@ -275,7 +275,7 @@ public:
     \param sat
     Saturation matrix with rows corresponding to the rows of \p *this.
   */
-  void sort_and_remove_with_sat(SatMatrix& sat);
+  void sort_and_remove_with_sat(Saturation_Matrix& sat);
 
   //! Minimizes the subsystem of equations contained in \p *this.
   /*!
@@ -321,8 +321,8 @@ public:
   //! representation of \p *this.
   /*!
     Prints the topology, the number of rows, the number of columns and
-    the \p sorted flag.  The specialized methods provided by ConSys
-    and GenSys take care of properly printing the contents of the
+    the \p sorted flag.  The specialized methods provided by Constraint_System
+    and Generator_System take care of properly printing the contents of the
     system.
   */
   void ascii_dump(std::ostream& s) const;
@@ -332,10 +332,10 @@ public:
   //! ascii_dump) and sets \p *this accordingly.  Returns <CODE>true</CODE>
   //! if successful, <CODE>false</CODE> otherwise.
   /*!
-    Reads into a Linear_System object the information produced by the output
-    of <CODE>ascii_dump()</CODE>.  The specialized methods provided by
-    ConSys and GenSys take care of properly reading the contents of
-    the system.
+    Reads into a Linear_System object the information produced by the
+    output of <CODE>ascii_dump()</CODE>.  The specialized methods
+    provided by Constraint_System and Generator_System take care of
+    properly reading the contents of the system.
   */
   bool ascii_load(std::istream& s);
 
@@ -406,18 +406,19 @@ bool operator!=(const Linear_System& x, const Linear_System& y);
 } // namespace Parma_Polyhedra_Library
 
 #ifdef PPL_DOXYGEN_INCLUDE_IMPLEMENTATION_DETAILS
-//! An iterator keeping a Linear_System consistent with a SatMatrix.
+//! An iterator keeping a Linear_System consistent with a Saturation_Matrix.
 /*!
   An iterator on the vector of Row objects encoded in a Linear_System
-  extended to maintain a corresponding iterator on a vector of SatRow objects.
-  Access to values is always done on the Row objects, but iterator
+  extended to maintain a corresponding iterator on a vector of
+  Saturation_Row objects.  Access to values is always done on the Row
+  objects, but iterator
   movements and swaps are done on both components.
 */
 #endif // PPL_DOXYGEN_INCLUDE_IMPLEMENTATION_DETAILS
-class Parma_Polyhedra_Library::Linear_System::With_SatMatrix_iterator {
+class Parma_Polyhedra_Library::Linear_System::With_Saturation_Matrix_iterator {
 public:
   typedef std::vector<Row>::iterator Iter1;
-  typedef std::vector<SatRow>::iterator Iter2;
+  typedef std::vector<Saturation_Row>::iterator Iter2;
 
 private:
   Iter1 i1;
@@ -432,40 +433,41 @@ public:
   typedef Iter1::reference reference;
 
   //! Constructor.
-  With_SatMatrix_iterator(Iter1 iter1, Iter2 iter2);
+  With_Saturation_Matrix_iterator(Iter1 iter1, Iter2 iter2);
 
   //! Copy-constructor.
-  With_SatMatrix_iterator(const With_SatMatrix_iterator& y);
+  With_Saturation_Matrix_iterator(const With_Saturation_Matrix_iterator& y);
 
   //! Destructor.
-  ~With_SatMatrix_iterator();
+  ~With_Saturation_Matrix_iterator();
 
   //! Assignment operator.
-  With_SatMatrix_iterator& operator=(const With_SatMatrix_iterator& y);
+  With_Saturation_Matrix_iterator&
+  operator=(const With_Saturation_Matrix_iterator& y);
 
   //! \name Operators Implementing Iterator Movement
   //@{
-  With_SatMatrix_iterator& operator++();
-  With_SatMatrix_iterator operator++(int);
+  With_Saturation_Matrix_iterator& operator++();
+  With_Saturation_Matrix_iterator operator++(int);
 
-  With_SatMatrix_iterator& operator--();
-  With_SatMatrix_iterator operator--(int);
+  With_Saturation_Matrix_iterator& operator--();
+  With_Saturation_Matrix_iterator operator--(int);
 
-  With_SatMatrix_iterator& operator+=(difference_type d);
-  With_SatMatrix_iterator operator+(difference_type d) const;
+  With_Saturation_Matrix_iterator& operator+=(difference_type d);
+  With_Saturation_Matrix_iterator operator+(difference_type d) const;
 
-  With_SatMatrix_iterator& operator-=(difference_type d);
-  With_SatMatrix_iterator operator-(difference_type d) const;
+  With_Saturation_Matrix_iterator& operator-=(difference_type d);
+  With_Saturation_Matrix_iterator operator-(difference_type d) const;
   //@}
 
   //! Distance operator.
-  difference_type operator-(const With_SatMatrix_iterator& y) const;
+  difference_type operator-(const With_Saturation_Matrix_iterator& y) const;
 
   //! \name Comparisons between Iterators
   //@{
-  bool operator==(const With_SatMatrix_iterator& y) const;
-  bool operator!=(const With_SatMatrix_iterator& y) const;
-  bool operator<(const With_SatMatrix_iterator& y) const;
+  bool operator==(const With_Saturation_Matrix_iterator& y) const;
+  bool operator!=(const With_Saturation_Matrix_iterator& y) const;
+  bool operator<(const With_Saturation_Matrix_iterator& y) const;
   //@}
 
   //! Dereferencing operator.
@@ -474,8 +476,8 @@ public:
   //! Access-through operator.
   pointer operator->() const;
 
-  //! Swaps the pointed Row objects while keeping SatMatrix consistent.
-  void iter_swap(const With_SatMatrix_iterator& y) const;
+  //! Swaps the pointed Row objects while keeping Saturation_Matrix consistent.
+  void iter_swap(const With_Saturation_Matrix_iterator& y) const;
 
 };
 
@@ -483,11 +485,13 @@ namespace std {
 
 #ifdef PPL_DOXYGEN_INCLUDE_IMPLEMENTATION_DETAILS
 //! Specializes <CODE>std::iter_swap</CODE>.
-/*! \relates Parma_Polyhedra_Library::Linear_System::With_SatMatrix_iterator */
+/*! \relates Parma_Polyhedra_Library::Linear_System::With_Saturation_Matrix_iterator */
 #endif // PPL_DOXYGEN_INCLUDE_IMPLEMENTATION_DETAILS
 inline void
-iter_swap(Parma_Polyhedra_Library::Linear_System::With_SatMatrix_iterator x,
-	  Parma_Polyhedra_Library::Linear_System::With_SatMatrix_iterator y);
+iter_swap(Parma_Polyhedra_Library
+	  ::Linear_System::With_Saturation_Matrix_iterator x,
+	  Parma_Polyhedra_Library
+	  ::Linear_System::With_Saturation_Matrix_iterator y);
 
 } // namespace std
 

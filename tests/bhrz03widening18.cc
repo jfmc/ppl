@@ -37,7 +37,7 @@ main() TRY {
   Variable A(0);
   Variable B(1);
 
-  GenSys gs1;
+  Generator_System gs1;
   gs1.insert(point());
   gs1.insert(point(6*A - B));
   gs1.insert(point(6*B));
@@ -45,7 +45,7 @@ main() TRY {
   gs1.insert(ray(A + 2*B));
   C_Polyhedron ph1(gs1);
 
-  GenSys gs2;
+  Generator_System gs2;
   gs2.insert(point());
   gs2.insert(point(6*A - B));
   gs2.insert(point(6*B));
@@ -68,7 +68,7 @@ main() TRY {
   ph2.BHRZ03_widening_assign(ph1);
 
   // This is the result of applying H79.
-  GenSys gs_known_result;
+  Generator_System gs_known_result;
   gs_known_result.insert(point(-36*A + 6*B, 25));
   gs_known_result.insert(ray(A + 4*B));
   gs_known_result.insert(ray(6*A - B));

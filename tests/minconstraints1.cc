@@ -44,7 +44,7 @@ main() TRY {
   ph1.add_constraint(A + B >= -2);
   ph1.add_constraint(A >= -3);
 
-  const ConSys cs = ph1.minimized_constraints();
+  const Constraint_System cs = ph1.minimized_constraints();
 
   C_Polyhedron ph2(cs);
   C_Polyhedron known_result(2);

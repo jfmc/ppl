@@ -46,7 +46,7 @@ main() TRY {
 
   C_Polyhedron known_result(ph);
 
-  GenSys gs;
+  Generator_System gs;
   ph.add_generators_and_minimize(gs);
 
   int retval = (ph == known_result) ? 0 : 1;

@@ -53,8 +53,8 @@ PPL::BHRZ03_Certificate::BHRZ03_Certificate(const Polyhedron& ph)
   const dimension_type space_dim = ph.space_dimension();
   affine_dim = space_dim;
   assert(num_constraints == 0);
-  const ConSys& cs = ph.minimized_constraints();
-  for (ConSys::const_iterator i = cs.begin(),
+  const Constraint_System& cs = ph.minimized_constraints();
+  for (Constraint_System::const_iterator i = cs.begin(),
 	 cs_end = cs.end(); i != cs_end; ++i) {
     ++num_constraints;
     if (i->is_equality())
@@ -63,8 +63,8 @@ PPL::BHRZ03_Certificate::BHRZ03_Certificate(const Polyhedron& ph)
 
   assert(lin_space_dim == 0);
   assert(num_points == 0);
-  const GenSys& gs = ph.minimized_generators();
-  for (GenSys::const_iterator i = gs.begin(),
+  const Generator_System& gs = ph.minimized_generators();
+  for (Generator_System::const_iterator i = gs.begin(),
 	 gs_end = gs.end(); i != gs_end; ++i)
     switch (i->type()) {
     case Generator::POINT:
@@ -110,7 +110,7 @@ PPL::BHRZ03_Certificate::compare(const BHRZ03_Certificate& y) const {
   if (affine_dim != y.affine_dim)
     return affine_dim > y.affine_dim ? 1 : -1;
   if (lin_space_dim != y.lin_space_dim)
-    return lin_space_dim > y.lin_space_dim ? 1 : -1; 
+    return lin_space_dim > y.lin_space_dim ? 1 : -1;
   if (num_constraints != y.num_constraints)
     return num_constraints > y.num_constraints ? 1 : -1;
   if (num_points != y.num_points)
@@ -150,8 +150,8 @@ PPL::BHRZ03_Certificate::compare(const Polyhedron& ph) const {
   const dimension_type space_dim = ph.space_dimension();
   dimension_type ph_affine_dim = space_dim;
   dimension_type ph_num_constraints = 0;
-  const ConSys& cs = ph.minimized_constraints();
-  for (ConSys::const_iterator i = cs.begin(),
+  const Constraint_System& cs = ph.minimized_constraints();
+  for (Constraint_System::const_iterator i = cs.begin(),
 	 cs_end = cs.end(); i != cs_end; ++i) {
     ++ph_num_constraints;
     if (i->is_equality())
@@ -179,8 +179,8 @@ PPL::BHRZ03_Certificate::compare(const Polyhedron& ph) const {
   // hoping that the other components will be enough.
   dimension_type ph_lin_space_dim = 0;
   dimension_type ph_num_points = 0;
-  const GenSys& gs = ph.minimized_generators();
-  for (GenSys::const_iterator i = gs.begin(),
+  const Generator_System& gs = ph.minimized_generators();
+  for (Generator_System::const_iterator i = gs.begin(),
 	 gs_end = gs.end(); i != gs_end; ++i)
     switch (i->type()) {
     case Generator::POINT:
@@ -205,7 +205,7 @@ PPL::BHRZ03_Certificate::compare(const Polyhedron& ph) const {
   // process will solve this problem.
   if (!ph.is_necessarily_closed())
     ph.minimize();
-  
+
   // If the dimension of the lineality space is increasing,
   // then the chain is stabilizing.
   if (ph_lin_space_dim > lin_space_dim)
@@ -230,7 +230,7 @@ PPL::BHRZ03_Certificate::compare(const Polyhedron& ph) const {
   // The speculative optimization was not worth:
   // compute information about rays.
   std::vector<dimension_type> ph_num_rays_null_coord(ph.space_dim, 0);
-  for (GenSys::const_iterator i = gs.begin(),
+  for (Generator_System::const_iterator i = gs.begin(),
 	 gs_end = gs.end(); i != gs_end; ++i)
     if (i->is_ray()) {
       const Generator& r = *i;

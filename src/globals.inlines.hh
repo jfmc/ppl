@@ -24,7 +24,7 @@ site: http://www.cs.unipr.it/ppl/ . */
 #ifndef PPL_globals_inlines_hh
 #define PPL_globals_inlines_hh 1
 
-#include "Integer.defs.hh"
+#include "Coefficient.defs.hh"
 #include <limits>
 #include <cassert>
 
@@ -56,7 +56,8 @@ compute_capacity(const dimension_type requested_size,
 }
 
 inline void
-normalize2(const Integer& x, const Integer& y, Integer& nx, Integer& ny) {
+normalize2(const Coefficient& x, const Coefficient& y,
+	   Coefficient& nx, Coefficient& ny) {
   TEMP_INTEGER(gcd);
   gcd_assign(gcd, x, y);
   exact_div_assign(nx, x, gcd);

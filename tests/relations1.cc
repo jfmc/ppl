@@ -38,7 +38,7 @@ main() TRY {
   Variable x(0);
   Variable y(1);
 
-  ConSys cs;
+  Constraint_System cs;
   cs.insert(2*x - y >= 0);
   cs.insert(y >= 0);
   C_Polyhedron ph(cs);

@@ -70,7 +70,7 @@ public:
     declared <CODE>const</CODE> because its data-structures will be
     recycled to build the polyhedron.
   */
-  explicit NNC_Polyhedron(const ConSys& cs);
+  explicit NNC_Polyhedron(const Constraint_System& cs);
 
   //! Builds an NNC polyhedron recycling a system of constraints.
   /*!
@@ -81,7 +81,7 @@ public:
     declared <CODE>const</CODE> because its data-structures will be
     recycled to build the polyhedron.
   */
-  explicit NNC_Polyhedron(ConSys& cs);
+  explicit NNC_Polyhedron(Constraint_System& cs);
 
   //! Builds an NNC polyhedron from a system of generators.
   /*!
@@ -95,7 +95,7 @@ public:
     \exception std::invalid_argument
     Thrown if the system of generators is not empty but has no points.
   */
-  explicit NNC_Polyhedron(const GenSys& gs);
+  explicit NNC_Polyhedron(const Generator_System& gs);
 
   //! Builds an NNC polyhedron recycling a system of generators.
   /*!
@@ -109,7 +109,7 @@ public:
     \exception std::invalid_argument
     Thrown if the system of generators is not empty but has no points.
   */
-  explicit NNC_Polyhedron(GenSys& gs);
+  explicit NNC_Polyhedron(Generator_System& gs);
 
   //! Builds an NNC polyhedron from the C polyhedron \p y.
   explicit NNC_Polyhedron(const C_Polyhedron& y);
@@ -142,6 +142,10 @@ public:
   //! The assignment operator.
   //! (\p *this and \p y can be dimension-incompatible.)
   NNC_Polyhedron& operator=(const NNC_Polyhedron& y);
+
+  //! \brief
+  //! Assigns to \p *this the C polyhedron \p y.
+  NNC_Polyhedron& operator=(const C_Polyhedron& y);
 
   //! Destructor.
   ~NNC_Polyhedron();

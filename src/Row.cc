@@ -24,7 +24,7 @@ site: http://www.cs.unipr.it/ppl/ . */
 #include <config.h>
 
 #include "Row.defs.hh"
-#include "Integer.defs.hh"
+#include "Coefficient.defs.hh"
 #include "globals.defs.hh"
 #include <iostream>
 #include <iomanip>
@@ -41,7 +41,7 @@ PPL::Row::Impl::expand_within_capacity(const dimension_type new_size) {
     bump_size();
 #endif
   for (dimension_type i = size(); i < new_size; ++i) {
-    new (&vec_[i]) Integer();
+    new (&vec_[i]) Coefficient();
     bump_size();
   }
 }
@@ -50,7 +50,7 @@ void
 PPL::Row::Impl::shrink(dimension_type new_size) {
   dimension_type old_size = size();
   assert(new_size <= old_size);
-  // Since ~Integer() does not throw exceptions, nothing here does.
+  // Since ~Coefficient() does not throw exceptions, nothing here does.
   set_size(new_size);
 #if !CXX_SUPPORTS_FLEXIBLE_ARRAYS
   // Make sure we do not try to destroy vec_[0].
@@ -60,7 +60,7 @@ PPL::Row::Impl::shrink(dimension_type new_size) {
   // We assume construction was done "forward".
   // We thus perform destruction "backward".
   for (dimension_type i = old_size; i-- > new_size; )
-    vec_[i].~Integer();
+    vec_[i].~Coefficient();
 }
 
 void
@@ -68,7 +68,7 @@ PPL::Row::Impl::copy_construct(const Impl& y) {
   const dimension_type y_size = y.size();
 #if CXX_SUPPORTS_FLEXIBLE_ARRAYS
   for (dimension_type i = 0; i < y_size; ++i) {
-    new (&vec_[i]) Integer(y.vec_[i]);
+    new (&vec_[i]) Coefficient(y.vec_[i]);
     bump_size();
   }
 #else
@@ -77,7 +77,7 @@ PPL::Row::Impl::copy_construct(const Impl& y) {
     vec_[0] = y.vec_[0];
     bump_size();
     for (dimension_type i = 1; i < y_size; ++i) {
-      new (&vec_[i]) Integer(y.vec_[i]);
+      new (&vec_[i]) Coefficient(y.vec_[i]);
       bump_size();
     }
   }
@@ -183,7 +183,7 @@ PPL::Row::OK(const dimension_type row_size,
   return !is_broken;
 }
 
-/*! \relates Parma_Polyhedra_Library::Row */ 
+/*! \relates Parma_Polyhedra_Library::Row */
 bool
 PPL::operator==(const Row& x, const Row& y) {
   const dimension_type x_size = x.size();

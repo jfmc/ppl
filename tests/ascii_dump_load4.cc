@@ -113,7 +113,7 @@ test3() {
   ph1.add_constraint(A == 2);
   ph1.add_constraint(B >= 0);
 
-  ConSys cs = ph1.constraints();
+  Constraint_System cs = ph1.constraints();
 
   C_Polyhedron ph(6);
   ph.add_constraints(cs);

@@ -45,7 +45,7 @@ main() TRY {
 #endif
 
   // A false inequality constraint.
-  Constraint c_false1(LinExpression(-1) >= 0);
+  Constraint c_false1(Linear_Expression(-1) >= 0);
 #if NOISY
   print_constraint(c_false1, "--- c_false1 ---");
 #endif
@@ -60,7 +60,7 @@ main() TRY {
     return 1;
 
   // A false equality constraint.
-  Constraint c_false2(LinExpression(5) == -2);
+  Constraint c_false2(Linear_Expression(5) == -2);
 #if NOISY
   print_constraint(c_false2, "--- c_false2 ---");
 #endif
@@ -75,7 +75,7 @@ main() TRY {
     return 1;
 
   // A saturated inequality.
-  Constraint c_saturated1(LinExpression(3) >= 3);
+  Constraint c_saturated1(Linear_Expression(3) >= 3);
 #if NOISY
   print_constraint(c_saturated1, "--- c_saturated1 ---");
 #endif
@@ -91,7 +91,7 @@ main() TRY {
     return 1;
 
   // A saturated equality.
-  Constraint c_saturated2(LinExpression(1) == 1);
+  Constraint c_saturated2(Linear_Expression(1) == 1);
 #if NOISY
   print_constraint(c_saturated2, "--- c_saturated2 ---");
 #endif
@@ -107,7 +107,7 @@ main() TRY {
     return 1;
 
   // A satisfied inequality which is not saturated.
-  Constraint c_satisfied(LinExpression(7) >= 5);
+  Constraint c_satisfied(Linear_Expression(7) >= 5);
 #if NOISY
   print_constraint(c_satisfied, "--- c_satisfied ---");
 #endif

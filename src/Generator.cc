@@ -53,12 +53,12 @@ PPL::Generator::throw_invalid_argument(const char* method,
 }
 
 PPL::Generator
-PPL::Generator::point(const LinExpression& e,
-		      Integer_traits::const_reference d) {
+PPL::Generator::point(const Linear_Expression& e,
+		      Coefficient_traits::const_reference d) {
   if (d == 0)
     throw std::invalid_argument("PPL::point(e, d):\n"
 				"d == 0.");
-  LinExpression ec = e;
+  Linear_Expression ec = e;
   Generator g(ec, Generator::POINT, NECESSARILY_CLOSED);
   g[0] = d;
 
@@ -75,13 +75,13 @@ PPL::Generator::point(const LinExpression& e,
 }
 
 PPL::Generator
-PPL::Generator::closure_point(const LinExpression& e,
-			      Integer_traits::const_reference d) {
+PPL::Generator::closure_point(const Linear_Expression& e,
+			      Coefficient_traits::const_reference d) {
   if (d == 0)
     throw std::invalid_argument("PPL::closure_point(e, d):\n"
 				"d == 0.");
   // Adding the epsilon dimension with coefficient 0.
-  LinExpression ec = 0 * Variable(e.space_dimension());
+  Linear_Expression ec = 0 * Variable(e.space_dimension());
   ec += e;
   // A closure point is indeed a point in the higher dimension space.
   Generator g = point(ec, d);
@@ -93,13 +93,13 @@ PPL::Generator::closure_point(const LinExpression& e,
 }
 
 PPL::Generator
-PPL::Generator::ray(const LinExpression& e) {
+PPL::Generator::ray(const Linear_Expression& e) {
   // The origin of the space cannot be a ray.
   if (e.all_homogeneous_terms_are_zero())
     throw std::invalid_argument("PPL::ray(e):\n"
 				"e == 0, but the origin cannot be a ray.");
 
-  LinExpression ec = e;
+  Linear_Expression ec = e;
   Generator g(ec, Generator::RAY, NECESSARILY_CLOSED);
   g[0] = 0;
   // Enforce normalization.
@@ -108,13 +108,13 @@ PPL::Generator::ray(const LinExpression& e) {
 }
 
 PPL::Generator
-PPL::Generator::line(const LinExpression& e) {
+PPL::Generator::line(const Linear_Expression& e) {
   // The origin of the space cannot be a line.
   if (e.all_homogeneous_terms_are_zero())
     throw std::invalid_argument("PPL::line(e):\n"
 				"e == 0, but the origin cannot be a line.");
 
-  LinExpression ec = e;
+  Linear_Expression ec = e;
   Generator g(ec, Generator::LINE, NECESSARILY_CLOSED);
   g[0] = 0;
   // Enforce normalization.
@@ -158,7 +158,7 @@ PPL::IO_Operators::operator<<(std::ostream& s, const Generator& g) {
 
   bool first = true;
   for (int v = 0; v < num_variables; ++v) {
-    Integer gv = g[v+1];
+    Coefficient gv = g[v+1];
     if (gv != 0) {
       if (!first) {
 	if (gv > 0)
@@ -215,8 +215,8 @@ PPL::Generator::is_matching_closure_point(const Generator& p) const {
       exact_div_assign(cp_0_scaled, cp[0], gcd);
       exact_div_assign(p_0_scaled, p[0], gcd);
     }
-    const Integer& cp_div = rel_prime ? cp[0] : cp_0_scaled;
-    const Integer& p_div = rel_prime ? p[0] : p_0_scaled;
+    const Coefficient& cp_div = rel_prime ? cp[0] : cp_0_scaled;
+    const Coefficient& p_div = rel_prime ? p[0] : p_0_scaled;
     TEMP_INTEGER(prod1);
     TEMP_INTEGER(prod2);
     for (dimension_type i = cp.size() - 2; i > 0; --i) {

@@ -37,7 +37,7 @@ main() TRY {
   Variable x(0);
   Variable y(1);
 
-  ConSys cs1;
+  Constraint_System cs1;
   cs1.insert(x + y >= 0);
   C_Polyhedron ph(cs1);
 
@@ -45,8 +45,8 @@ main() TRY {
   print_constraints(ph, "*** ph ***");
 #endif
 
-  LinExpression e(1);
-  ConSys cs2;
+  Linear_Expression e(1);
+  Constraint_System cs2;
   cs2.insert(e == 0);
   ph.add_constraints(cs2);
 

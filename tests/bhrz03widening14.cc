@@ -31,11 +31,11 @@ using namespace Parma_Polyhedra_Library::IO_Operators;
 #define NOISY 0
 #endif
 
-static GenSys
+static Generator_System
 g_0() {
   Variable A(0);
   Variable B(1);
-  GenSys new_gs;
+  Generator_System new_gs;
   new_gs.insert(point(A));
   new_gs.insert(point(-B));
   new_gs.insert(point(-A));
@@ -47,10 +47,10 @@ static Generator
 splitting_segment(const Generator& p1,
 		  const Generator& p2,
 		  unsigned magic_number) {
-  const Integer& d1 = p1.divisor();
-  const Integer& d2 = p2.divisor();
-  LinExpression expr = d2 * LinExpression(p1);
-  expr += d1 * LinExpression(p2);
+  const Coefficient& d1 = p1.divisor();
+  const Coefficient& d2 = p2.divisor();
+  Linear_Expression expr = d2 * Linear_Expression(p1);
+  expr += d1 * Linear_Expression(p2);
   // The divisor for the average is 2 * d1 * d2.
   // by carefully taking a smaller divisor, we obtain a point
   // that won't be redundant in the polyhedron.
@@ -59,11 +59,11 @@ splitting_segment(const Generator& p1,
   return point((magic_number+1)*expr, magic_number*2*d1*d2);
 }
 
-static GenSys
-double_generators(const GenSys& gs, unsigned magic_number) {
-  GenSys new_gs;
-  GenSys::const_iterator i = gs.begin();
-  GenSys::const_iterator gs_end = gs.end();
+static Generator_System
+double_generators(const Generator_System& gs, unsigned magic_number) {
+  Generator_System new_gs;
+  Generator_System::const_iterator i = gs.begin();
+  Generator_System::const_iterator gs_end = gs.end();
   while (true) {
     const Generator& g = *i;
     new_gs.insert(g);
@@ -72,7 +72,7 @@ double_generators(const GenSys& gs, unsigned magic_number) {
       new_gs.insert(splitting_segment(g, *i, magic_number));
     else {
       // Split the last segment.
-      GenSys::const_iterator gs_begin = gs.begin();
+      Generator_System::const_iterator gs_begin = gs.begin();
       new_gs.insert(splitting_segment(g, *gs_begin, magic_number));
       break;
     }
@@ -87,7 +87,7 @@ p(unsigned n) {
 
   unsigned magic_number = 1;
   unsigned magic_factor = 4;
-  GenSys gs = g_0();
+  Generator_System gs = g_0();
   unsigned gs_vertices = 4;
 
   while (gs_vertices * 2 <= needed_vertices) {
@@ -98,8 +98,8 @@ p(unsigned n) {
 
   if (gs_vertices < needed_vertices) {
     magic_number *= magic_factor;
-    GenSys gs2 = double_generators(gs, magic_number);
-    GenSys::const_iterator gs2_i = gs2.begin();
+    Generator_System gs2 = double_generators(gs, magic_number);
+    Generator_System::const_iterator gs2_i = gs2.begin();
     for ( ; gs_vertices < needed_vertices; ++gs_vertices) {
       // Skip the even indexed vertices of gs2.
       ++gs2_i;

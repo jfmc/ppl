@@ -37,7 +37,7 @@ main() TRY {
 
   NNC_Polyhedron ph1;
 
-  GenSys gs = ph1.minimized_generators();
+  Generator_System gs = ph1.minimized_generators();
 
   NNC_Polyhedron ph2(gs);
 

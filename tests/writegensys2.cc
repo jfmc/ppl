@@ -1,4 +1,4 @@
-/* Test operator<<(std::ostream&, const GenSys&).
+/* Test operator<<(std::ostream&, const Generator_System&).
    Copyright (C) 2001-2004 Roberto Bagnara <bagnara@cs.unipr.it>
 
 This file is part of the Parma Polyhedra Library (PPL).
@@ -41,7 +41,7 @@ main() TRY {
 
   C_Polyhedron ph(3, C_Polyhedron::EMPTY);
 
-  GenSys gs = ph.generators();
+  Generator_System gs = ph.generators();
 
   fstream f;
   open(f, my_file, ios_base::out);

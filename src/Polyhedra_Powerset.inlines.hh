@@ -25,8 +25,8 @@ site: http://www.cs.unipr.it/ppl/ . */
 #define PPL_Polyhedra_Powerset_inlines_hh 1
 
 #include "BHRZ03_Certificate.types.hh"
-#include "ConSys.defs.hh"
-#include "ConSys.inlines.hh"
+#include "Constraint_System.defs.hh"
+#include "Constraint_System.inlines.hh"
 #include "Widening_Function.defs.hh"
 #include <algorithm>
 #include <deque>
@@ -54,6 +54,11 @@ Polyhedra_Powerset<PH>::Polyhedra_Powerset(const Polyhedra_Powerset& y)
   : Base(y), space_dim(y.space_dim) {
 }
 
+template <typename PH>
+Polyhedra_Powerset<PH>::Polyhedra_Powerset(const PH& ph)
+  : Base(ph), space_dim(ph.space_dimension()) {
+}
+
 template <>
 template <>
 inline
@@ -77,7 +82,7 @@ Polyhedra_Powerset<C_Polyhedron>
 }
 
 template <typename PH>
-Polyhedra_Powerset<PH>::Polyhedra_Powerset(const ConSys& cs)
+Polyhedra_Powerset<PH>::Polyhedra_Powerset(const Constraint_System& cs)
   : space_dim(cs.space_dimension()) {
   push_back(Determinate<PH>(cs));
 }
@@ -161,7 +166,8 @@ Polyhedra_Powerset<PH>::add_constraint(const Constraint& c) {
 template <typename PH>
 bool
 Polyhedra_Powerset<PH>::add_constraint_and_minimize(const Constraint& c) {
-  for (iterator xi = Base::begin(), xin = xi, x_end = Base::end(); xi != x_end; xi = xin) {
+  for (iterator xi = Base::begin(),
+	 xin = xi, x_end = Base::end(); xi != x_end; xi = xin) {
     ++xin;
     if (!xi->element().add_constraint_and_minimize(c)) {
       erase(xi);
@@ -175,7 +181,7 @@ Polyhedra_Powerset<PH>::add_constraint_and_minimize(const Constraint& c) {
 
 template <typename PH>
 void
-Polyhedra_Powerset<PH>::add_constraints(const ConSys& cs) {
+Polyhedra_Powerset<PH>::add_constraints(const Constraint_System& cs) {
   for (iterator xi = Base::begin(), x_end = Base::end(); xi != x_end; ++xi)
     xi->element().add_constraints(cs);
   Base::reduced = false;
@@ -183,7 +189,8 @@ Polyhedra_Powerset<PH>::add_constraints(const ConSys& cs) {
 
 template <typename PH>
 bool
-Polyhedra_Powerset<PH>::add_constraints_and_minimize(const ConSys& cs) {
+Polyhedra_Powerset<PH>::
+add_constraints_and_minimize(const Constraint_System& cs) {
   for (iterator xi = Base::begin(),
 	 xin = xi, x_end = Base::end(); xi != x_end; xi = xin) {
     ++xin;
@@ -432,7 +439,7 @@ is_cert_multiset_stabilizing(const std::map<Cert, size_type,
     yi = y_cert_ms.begin(),
     yend = y_cert_ms.end();
   while (xi != xend && yi != yend) {
-    const Cert& xi_cert = xi->first;  
+    const Cert& xi_cert = xi->first;
     const Cert& yi_cert = yi->first;
     switch (xi_cert.compare(yi_cert)) {
     case 0:
@@ -505,7 +512,7 @@ Polyhedra_Powerset<PH>::BHZ03_widening_assign(const Polyhedra_Powerset& y,
   if (hull_stabilization == 1)
     return;
 
-  // Multiset ordering is only useful when `y' is not a singleton. 
+  // Multiset ordering is only useful when `y' is not a singleton.
   const bool y_is_not_a_singleton = y.size() > 1;
 
   // The multiset certificate for `y':
@@ -532,7 +539,7 @@ Polyhedra_Powerset<PH>::BHZ03_widening_assign(const Polyhedra_Powerset& y,
   for (const_iterator i = bgp99_heuristics.begin(),
 	 bh_end = bgp99_heuristics.end(); i != bh_end; ++i)
     bgp99_heuristics_hull.poly_hull_assign(i->element());
-  
+
   // Check for stabilization and, if successful,
   // commit to the result of the extrapolation.
   hull_stabilization = y_hull_cert.compare(bgp99_heuristics_hull);
@@ -633,6 +640,18 @@ Polyhedra_Powerset<PH>::ascii_load(std::istream& s) {
 }
 
 template <typename PH>
+memory_size_type
+Polyhedra_Powerset<PH>::external_memory_in_bytes() const {
+  return Base::external_memory_in_bytes();
+}
+
+template <typename PH>
+memory_size_type
+Polyhedra_Powerset<PH>::total_memory_in_bytes() const {
+  return sizeof(*this) + external_memory_in_bytes();
+}
+
+template <typename PH>
 bool
 Polyhedra_Powerset<PH>::OK() const {
   for (const_iterator i = Base::begin(), send = Base::end(); i != send; ++i)
@@ -664,7 +683,7 @@ void
 linear_partition_aux(const Constraint& c,
 		     PH& qq,
 		     Polyhedra_Powerset<NNC_Polyhedron>& r) {
-  LinExpression le(c);
+  Linear_Expression le(c);
   Constraint neg_c = c.is_strict_inequality() ? (le <= 0) : (le < 0);
   NNC_Polyhedron qqq(qq);
   if (qqq.add_constraint_and_minimize(neg_c))
@@ -681,12 +700,12 @@ linear_partition(const PH& p, const PH& q) {
   Polyhedra_Powerset<NNC_Polyhedron> r(p.space_dimension(),
 				       Polyhedron::EMPTY);
   PH qq = q;
-  const ConSys& pcs = p.constraints();
-  for (ConSys::const_iterator i = pcs.begin(),
+  const Constraint_System& pcs = p.constraints();
+  for (Constraint_System::const_iterator i = pcs.begin(),
 	 pcs_end = pcs.end(); i != pcs_end; ++i) {
     const Constraint c = *i;
     if (c.is_equality()) {
-      LinExpression le(c);
+      Linear_Expression le(c);
       linear_partition_aux(le <= 0, qq, r);
       linear_partition_aux(le >= 0, qq, r);
     }
