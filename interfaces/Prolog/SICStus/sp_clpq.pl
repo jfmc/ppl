@@ -24,6 +24,7 @@ site: http://www.cs.unipr.it/ppl/ . */
 :- set_prolog_flag(language, iso).
 
 :- ensure_loaded('ppl_sicstus.pl').
+:- use_module(library(lists), [append/3, member/2]).
 
 eat_eol :-
 	get_code(user_input, _EOL).
