@@ -503,6 +503,7 @@ AC_CONFIG_FILES(Makefile
                 doc/devref.doxyconf-html
                 interfaces/Makefile
                 interfaces/C/Makefile
+		interfaces/C/ppl_c.h
                 interfaces/C/lpenum/Makefile
                 interfaces/OCaml/Makefile
                 interfaces/Prolog/Makefile

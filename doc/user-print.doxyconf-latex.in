@@ -363,7 +363,7 @@ WARN_LOGFILE           =
 
 INPUT                  = @srcdir@/definitions.dox \
                          ../src/ppl.hh \
-                         @srcdir@/../interfaces/C/ppl_c.h \
+                         ../interfaces/C/ppl_c.h \
                          @srcdir@/../interfaces/Prolog/Prolog_interface.dox \
                          @srcdir@/gpl.dox \
                          @srcdir@/fdl.dox

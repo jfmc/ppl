@@ -453,7 +453,7 @@ INPUT                  = @srcdir@/definitions.dox \
                          @srcdir@/../src/PowerSet.defs.hh \
                          @srcdir@/../src/PowerSet.inlines.hh \
                          @srcdir@/../src/algorithms.hh \
-                         @srcdir@/../interfaces/C/ppl_c.h \
+                         ../interfaces/C/ppl_c.h \
                          @srcdir@/../interfaces/C/ppl_c.cc \
                          @srcdir@/../interfaces/Prolog/Prolog_interface.dox \
                          @srcdir@/../interfaces/Prolog/Ciao/ppl_ciao.cc \

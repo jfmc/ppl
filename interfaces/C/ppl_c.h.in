@@ -78,6 +78,20 @@ find examples of how to use several functions provided by that interface.
 
 /*@{*/
 
+//! The major number of the PPL version.
+#define PPL_VERSION_MAJOR @PPL_VERSION_MAJOR@
+
+//! The minor number of the PPL version.
+#define PPL_VERSION_MINOR @PPL_VERSION_MINOR@
+
+//! The revision number of the PPL version.
+#define PPL_VERSION_REVISION @PPL_VERSION_REVISION@
+
+//! \brief
+//! The beta number of the PPL version.  This is zero for official
+//! releases and nonzero for development snapshots.
+#define PPL_VERSION_BETA @PPL_VERSION_BETA@
+
 /*
   For some reason, GMP up to and including version 4.1.2 requires
   <stdio.h> to be included before <gmp.h>.

@@ -80,7 +80,7 @@ $(DOX_FILES) \
 user.tex \
 ppl.sty \
 $(top_builddir)/src/ppl.hh \
-$(top_srcdir)/interfaces/C/ppl_c.h
+../interfaces/C/ppl_c.h
 
 DEVREF_STUFF = \
 $(DOX_FILES) \

@@ -34,11 +34,8 @@ $(srcdir)/ppl_ocaml_c.ml \
 $(srcdir)/ppl_ocaml_c.mli \
 $(srcdir)/ppl_ocaml_c_wrap.c
 
-$(SWIG_GENERATED_FILES): .swig_ppl_ocaml_c
-
-.swig_ppl_ocaml_c: ppl_ocaml_c.swg $(top_srcdir)/interfaces/C
-	$(SWIG) -ocaml -I$(top_srcdir)/interfaces/C $<
-	@touch $@
+$(SWIG_GENERATED_FILES): ppl_ocaml_c.swg $(top_srcdir)/interfaces/C
+	$(SWIG) -ocaml -I../C $<
 
 SWIG_SUPPORT_FILES = \
 $(srcdir)/swig.mli \
@@ -51,7 +48,7 @@ $(SWIG_SUPPORT_FILES):
 	if [ $(abs_srcdir) != `pwd` ]; then \
 	  cp -f $< . ; \
 	fi
-	ocamlc -c `basename $<`
+	ocamlc -g -c `basename $<`
 	if [ $(abs_srcdir) != `pwd` ]; then \
 	  rm -f `basename $<`; \
 	fi
@@ -60,16 +57,16 @@ $(SWIG_SUPPORT_FILES):
 	if [ $(abs_srcdir) != `pwd` ]; then \
 	  cp -f $< . ; \
 	fi
-	ocamlc -c `basename $<`
+	ocamlc -g -c `basename $<`
 	if [ $(abs_srcdir) != `pwd` ]; then \
 	  rm -f `basename $<`; \
 	fi
 
 
-nodist_PROGRAM = test
+##nodist_PROGRAM = test
 
-test:	test.cmo swig.cmi swig.cmo ppl_ocaml_c.cmi ppl_ocaml_c.cmo libppl_ocaml_c.la
-	ocamlc -custom -g -ccopt -g swig.cmo ppl_ocaml_c.cmo  test.cmo -cclib -lppl -cclib -lppl_c -cclib -lgmpxx -cclib -lgmp -cclib .libs/libppl_ocaml_c.a
+test:	libppl_ocaml_c.la swig.cmi swig.cmo ppl_ocaml_c.cmi ppl_ocaml_c.cmo test.cmo 
+	ocamlc -g -custom -ccopt -g swig.cmo ppl_ocaml_c.cmo  test.cmo -cclib -lppl -cclib -lppl_c -cclib -lgmpxx -cclib -lgmp -cclib .libs/libppl_ocaml_c.a
 
 dist-hook: $(SWIG_GENERATED_FILES) $(SWIG_SUPPORT_FILES)
 
@@ -123,7 +120,6 @@ libppl_ocaml_c_la_LDFLAGS = \
 #	rm -rf $(ALL_TARGETS) $(LATEX_DIRS) *.aux *.log
 
 CLEANFILES = \
-.swig_ppl_ocaml_c \
 swig.cmi \
 swig.cmo \
 ppl_ocaml_c.cmi \
