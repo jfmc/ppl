@@ -207,7 +207,7 @@ PPL::Constraint_System::has_strict_inequalities() const {
     // also, equalities have the epsilon coefficient equal to zero.
     // NOTE: the constraint eps_leq_one should not be considered
     //       a strict inequality.
-    if (cs[i][eps_index] < 0 && !cs[i].is_trivial_true())
+    if (cs[i][eps_index] < 0 && !cs[i].is_tautological())
       return true;
   return false;
 }
@@ -298,7 +298,7 @@ PPL::Constraint_System::num_equalities() const {
 void
 PPL::Constraint_System::const_iterator::skip_forward() {
   const Linear_System::const_iterator csp_end = csp->end();
-  while (i != csp_end && (*this)->is_trivial_true())
+  while (i != csp_end && (*this)->is_tautological())
     ++i;
 }
 

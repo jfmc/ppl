@@ -122,6 +122,42 @@ PPL::Generator::line(const Linear_Expression& e) {
   return g;
 }
 
+bool
+PPL::Generator::is_equivalent_to(const Generator& y) const {
+  const Generator& x = *this;
+  const dimension_type x_space_dim = x.space_dimension();
+  if (x_space_dim != y.space_dimension())
+    return false;
+
+  const Generator::Type x_type = x.type();
+  if (x_type != y.type())
+    return false;
+
+  if (x_type == Generator::POINT
+      && !(x.is_necessarily_closed() && y.is_necessarily_closed())) {
+    // Due to the presence of epsilon-coefficients, syntactically
+    // different points may actually encode the same generator.
+    // First, drop the epsilon-coefficient ...
+    Linear_Expression x_expr(x);
+    Linear_Expression y_expr(y);
+    // ... second, renormalize ...
+    x_expr.normalize();
+    y_expr.normalize();
+    // ... and finally check for syntactic equality.
+    for (dimension_type i = x_space_dim + 1; i-- > 0; )
+      if (x_expr[i] != y_expr[i])
+	return false;
+    return true;
+  }
+
+  // Here the epsilon-coefficient, if present, is zero.
+  // It is sufficient to check for syntactic equality.
+  for (dimension_type i = x_space_dim + 1; i-- > 0; )
+    if (x[i] != y[i])
+      return false;
+  return true;
+}
+
 /*! \relates Parma_Polyhedra_Library::Generator */
 std::ostream&
 PPL::IO_Operators::operator<<(std::ostream& s, const Generator& g) {

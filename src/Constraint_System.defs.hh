@@ -276,6 +276,9 @@ public:
   //! Returns the size in bytes of the memory managed by \p *this.
   memory_size_type external_memory_in_bytes() const;
 
+  //! Swaps \p *this with \p y.
+  void swap(Constraint_System& y);
+
 private:
   friend class const_iterator;
   friend class Parma_Polyhedra_Library::Polyhedron;
@@ -283,9 +286,6 @@ private:
   friend bool
   Parma_Polyhedra_Library::operator==(const Polyhedron& x,
 				      const Polyhedron& y);
-
-  friend void std::swap(Parma_Polyhedra_Library::Constraint_System& x,
-			Parma_Polyhedra_Library::Constraint_System& y);
 
   //! Builds an empty system of constraints having the specified topology.
   explicit Constraint_System(Topology topol);
@@ -296,9 +296,6 @@ private:
   //! \p topol is <CODE>NOT_NECESSARILY_CLOSED</CODE>).
   Constraint_System(Topology topol,
 		    dimension_type n_rows, dimension_type n_columns);
-
-  //! Swaps \p *this with \p y.
-  void swap(Constraint_System& y);
 
   //! \brief
   //! Adjusts \p *this so that it matches the topology and

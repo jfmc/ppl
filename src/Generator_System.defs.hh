@@ -342,6 +342,9 @@ public:
   //! Returns the size in bytes of the memory managed by \p *this.
   memory_size_type external_memory_in_bytes() const;
 
+  //! Swaps \p *this with \p y.
+  void swap(Generator_System& y);
+
 private:
   friend class const_iterator;
   friend class Parma_Polyhedra_Library::Polyhedron;
@@ -349,9 +352,6 @@ private:
   friend bool
   Parma_Polyhedra_Library::operator==(const Polyhedron& x,
 				      const Polyhedron& y);
-
-  friend void std::swap(Parma_Polyhedra_Library::Generator_System& x,
-			Parma_Polyhedra_Library::Generator_System& y);
 
   //! Builds an empty system of generators having the specified topology.
   explicit Generator_System(Topology topol);
@@ -362,9 +362,6 @@ private:
   //! \p topol is <CODE>NOT_NECESSARILY_CLOSED</CODE>).
   Generator_System(Topology topol,
 		   dimension_type n_rows, dimension_type n_columns);
-
-  //! Swaps \p *this with \p y.
-  void swap(Generator_System& y);
 
   //! \brief
   //! Adjusts \p *this so that it matches the topology and

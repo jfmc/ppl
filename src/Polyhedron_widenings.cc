@@ -82,14 +82,14 @@ PPL::Polyhedron::select_H79_constraints(const Polyhedron& y,
   if (!y.sat_g_is_up_to_date())
     y.update_sat_g();
   Saturation_Matrix tmp_sat_g = y.sat_g;
-  // Remove from `tmp_sat_g' the rows corresponding to trivially true
-  // constraints (i.e., the positivity or epsilon-bounding constraints):
+  // Remove from `tmp_sat_g' the rows corresponding to tautologies
+  // (i.e., the positivity or epsilon-bounding constraints):
   // this is needed in order to widen the polyhedron and not the
   // corresponding homogenized polyhedral cone.
   const Constraint_System& y_cs = y.con_sys;
   dimension_type num_rows = y_cs.num_rows();
   for (dimension_type i = 0; i < num_rows; ++i)
-    if (y_cs[i].is_trivial_true()) {
+    if (y_cs[i].is_tautological()) {
       --num_rows;
       std::swap(tmp_sat_g[i], tmp_sat_g[num_rows]);
     }

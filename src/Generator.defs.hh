@@ -350,17 +350,25 @@ public:
   //! Returns the size in bytes of the memory managed by \p *this.
   memory_size_type external_memory_in_bytes() const;
 
+  //! \brief
+  //! Returns <CODE>true</CODE> if and only if \p *this and \p y
+  //! are equivalent generators.
+  /*!
+    Generators having different space dimensions are not equivalent.
+  */
+  bool is_equivalent_to(const Generator& y) const;
+
   //! Checks if all the invariants are satisfied.
   bool OK() const;
+
+  //! Swaps \p *this with \p y.
+  void swap(Generator& y);
 
 private:
   //! \brief
   //! Builds a generatorof type \p type and topology \p topology,
   //! stealing the coefficients from \p e.
   Generator(Linear_Expression& e, Type type, Topology topology);
-
-  //! Swaps \p *this with \p y.
-  void swap(Generator& y);
 
   //! \brief
   //! Throw a <CODE>std::invalid_argument</CODE> exception
@@ -387,9 +395,6 @@ private:
   // FIXME: the following friend declaration is only to grant access to
   // Constraint_System::satisfies_all_constraints().
   friend class Parma_Polyhedra_Library::Constraint_System;
-
-  friend void std::swap(Parma_Polyhedra_Library::Generator& x,
-			Parma_Polyhedra_Library::Generator& y);
 
   friend std::ostream&
   Parma_Polyhedra_Library::IO_Operators::operator<<(std::ostream& s,
@@ -444,6 +449,14 @@ Generator point(const Linear_Expression& e = Linear_Expression::zero(),
 /*! \relates Generator */
 Generator closure_point(const Linear_Expression& e = Linear_Expression::zero(),
 			Coefficient_traits::const_reference d = Coefficient_one());
+
+//! Returns <CODE>true</CODE> if and only if \p x is equivalent to \p y.
+/*! \relates Generator */
+bool operator==(const Generator& x, const Generator& y);
+
+//! Returns <CODE>true</CODE> if and only if \p x is not equivalent to \p y.
+/*! \relates Generator */
+bool operator!=(const Generator& x, const Generator& y);
 
 } // namespace Parma_Polyhedra_Library
 

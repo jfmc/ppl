@@ -132,6 +132,18 @@ Constraint::total_memory_in_bytes() const {
 }
 
 /*! \relates Constraint */
+inline bool
+operator==(const Constraint& x, const Constraint& y) {
+  return x.is_equivalent_to(y);
+}
+
+/*! \relates Constraint */
+inline bool
+operator!=(const Constraint& x, const Constraint& y) {
+  return !x.is_equivalent_to(y);
+}
+
+/*! \relates Constraint */
 inline Constraint
 operator==(const Linear_Expression& e1, const Linear_Expression& e2) {
   Linear_Expression diff = e1 - e2;

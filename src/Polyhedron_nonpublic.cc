@@ -126,7 +126,7 @@ PPL::Polyhedron::Polyhedron(const Topology topol, const Constraint_System& ccs)
     if (cs.num_columns() > 0)
       // See if an inconsistent constraint has been passed.
       for (dimension_type i = cs.num_rows(); i-- > 0; )
-	if (cs[i].is_trivial_false()) {
+	if (cs[i].is_inconsistent()) {
 	  // Inconsistent constraint found: the polyhedron is empty.
 	  set_empty();
 	  break;
@@ -172,7 +172,7 @@ PPL::Polyhedron::Polyhedron(const Topology topol, Constraint_System& cs)
     if (cs.num_columns() > 0)
       // See if an inconsistent constraint has been passed.
       for (dimension_type i = cs.num_rows(); i-- > 0; )
-	if (cs[i].is_trivial_false()) {
+	if (cs[i].is_inconsistent()) {
 	  // Inconsistent constraint found: the polyhedron is empty.
 	  set_empty();
 	  break;

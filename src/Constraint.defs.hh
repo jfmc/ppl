@@ -44,6 +44,16 @@ std::ostream& operator<<(std::ostream& s, const Constraint& c);
 
 // Put them in the namespace here to declare them friend later.
 
+//! Returns <CODE>true</CODE> if and only if \p x is equivalent to \p y.
+/*! \relates Constraint */
+bool
+operator==(const Constraint& x, const Constraint& y);
+
+//! Returns <CODE>true</CODE> if and only if \p x is not equivalent to \p y.
+/*! \relates Constraint */
+bool
+operator!=(const Constraint& x, const Constraint& y);
+
 //! Returns the constraint \p e1 = \p e2.
 /*! \relates Constraint */
 Constraint
@@ -295,8 +305,48 @@ public:
   //! Returns the size in bytes of the memory managed by \p *this.
   memory_size_type external_memory_in_bytes() const;
 
+  //! \brief
+  //! Returns <CODE>true</CODE> if and only if
+  //! \p *this is a tautology (i.e., an always true constraint).
+  /*!
+    A tautology can have either one of the following forms:
+    - an equality: \f$\sum_{i=0}^{n-1} 0 x_i + 0 = 0\f$; or
+    - a non-strict inequality: \f$\sum_{i=0}^{n-1} 0 x_i + b \geq 0\f$,
+      where \f$b \geq 0\f$; or
+    - a strict inequality: \f$\sum_{i=0}^{n-1} 0 x_i + b > 0\f$,
+      where \f$b > 0\f$.
+  */
+  bool is_tautological() const;
+
+  //! \brief
+  //! Returns <CODE>true</CODE> if and only if
+  //! \p *this is inconsistent (i.e., an always false constraint).
+  /*!
+    An inconsistent constraint can have either one of the following forms:
+    - an equality: \f$\sum_{i=0}^{n-1} 0 x_i + b = 0\f$,
+      where \f$b \neq 0\f$; or
+    - a non-strict inequality: \f$\sum_{i=0}^{n-1} 0 x_i + b \geq 0\f$,
+      where \f$b < 0\f$; or
+    - a strict inequality: \f$\sum_{i=0}^{n-1} 0 x_i + b > 0\f$,
+      where \f$b \leq 0\f$.
+  */
+  bool is_inconsistent() const;
+
+  //! \brief
+  //! Returns <CODE>true</CODE> if and only if \p *this and \p y
+  //! are equivalent constraints.
+  /*!
+    Constraints having different space dimensions are not equivalent.
+    Note that constraints having different types may nonetheless be
+    equivalent, if they both are tautologies or inconsistent.
+  */
+  bool is_equivalent_to(const Constraint& y) const;
+
   //! Checks if all the invariants are satisfied.
   bool OK() const;
+
+  //! Swaps \p *this with \p y.
+  void swap(Constraint& y);
 
 private:
   friend class Parma_Polyhedra_Library::Constraint_System;
@@ -311,9 +361,6 @@ private:
   friend Parma_Polyhedra_Library::
   Linear_Expression::Linear_Expression(const Constraint& c);
 
-  friend void std::swap(Parma_Polyhedra_Library::Constraint& x,
-			Parma_Polyhedra_Library::Constraint& y);
-
   //! Default constructor: private and not implemented.
   Constraint();
 
@@ -321,9 +368,6 @@ private:
   //! Builds a constraint of type \p type and topology \p topology,
   //! stealing the coefficients from \p e.
   Constraint(Linear_Expression& e, Type type, Topology topology);
-
-  //! Swaps \p *this with \p y.
-  void swap(Constraint& y);
 
   //! \brief
   //! Throws a <CODE>std::invalid_argument</CODE> exception
@@ -398,33 +442,6 @@ private:
   //! The zero-dimension space constraint \f$\epsilon \leq 1\f$
   //! (used to implement NNC polyhedra).
   static const Constraint& epsilon_leq_one();
-
-  //! \brief
-  //! Returns <CODE>true</CODE> if and only if
-  //! \p *this is a trivially true constraint.
-  /*!
-    Trivially true constraints have either one of the following forms:
-    - an equality: \f$\sum_{i=0}^{n-1} 0 x_i + 0 = 0\f$; or
-    - a non-strict inequality: \f$\sum_{i=0}^{n-1} 0 x_i + b \geq 0\f$,
-      where \f$b \geq 0\f$; or
-    - a strict inequality: \f$\sum_{i=0}^{n-1} 0 x_i + b > 0\f$,
-      where \f$b > 0\f$.
-  */
-  bool is_trivial_true() const;
-
-  //! \brief
-  //! Returns <CODE>true</CODE> if and only if
-  //! \p *this is a trivially false constraint.
-  /*!
-    Trivially false constraints have either one of the following forms:
-    - an equality: \f$\sum_{i=0}^{n-1} 0 x_i + b = 0\f$,
-      where \f$b \neq 0\f$; or
-    - a non-strict inequality: \f$\sum_{i=0}^{n-1} 0 x_i + b \geq 0\f$,
-      where \f$b < 0\f$; or
-    - a strict inequality: \f$\sum_{i=0}^{n-1} 0 x_i + b > 0\f$,
-      where \f$b \leq 0\f$.
-  */
-  bool is_trivial_false() const;
 
   //! Sets the constraint type to <CODE>EQUALITY</CODE>.
   void set_is_equality();

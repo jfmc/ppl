@@ -441,9 +441,9 @@ Polyhedron::shrink_bounding_box(Box& box, Complexity_Class complexity) const {
       return;
     }
     if (constraints_are_up_to_date()) {
-      for (Constraint_System::const_iterator i
-	     = con_sys.begin(); i != con_sys.end(); ++i)
-	if ((*i).is_trivial_false()){
+      for (Constraint_System::const_iterator i = con_sys.begin(),
+	     cs_end = con_sys.end(); i != cs_end; ++i)
+	if (i->is_inconsistent()){
 	  box.set_empty();
 	  return;
 	}
@@ -496,13 +496,13 @@ Polyhedron::shrink_bounding_box(Box& box, Complexity_Class complexity) const {
     for (Constraint_System::const_iterator i = cs_begin; i != cs_end; ++i) {
       dimension_type varid = space_dim;
       const Constraint& c = *i;
-      // After `gauss()' and `back_substitute()' some constraints can
-      // be trivially false.
+      // After `gauss()' and `back_substitute()' some constraints
+      // may have become inconsistent.
+      if (c.is_inconsistent()) {
+	box.set_empty();
+	return;
+      }
       for (dimension_type j = space_dim; j-- > 0; ) {
-	if (c.is_trivial_false()) {
-	  box.set_empty();
-	  return;
-	}
 	// We look for constraints of the form `Variable(j) == k',
 	// `Variable(j) >= k', and `Variable(j) > k'.
 	if (c.coefficient(Variable(j)) != 0)
@@ -521,8 +521,8 @@ Polyhedron::shrink_bounding_box(Box& box, Complexity_Class complexity) const {
 	// `rel' is either the relation `==', `>=', or `>'.
 	// For the purpose of shrinking intervals, this is
 	// (morally) turned into `Variable(varid) rel  -n/d'.
-	ERational r(-n, d);
-	Constraint::Type c_type = c.type();
+	const ERational r(-n, d);
+	const Constraint::Type c_type = c.type();
 	switch (c_type) {
 	case Constraint::EQUALITY:
 	  lower_bound[varid] = LBoundary(r, LBoundary::CLOSED);

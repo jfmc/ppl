@@ -265,6 +265,9 @@ public:
   //! Checks if all the invariants are satisfied.
   bool OK() const;
 
+  //! Swaps \p *this with \p y.
+  void swap(Linear_Expression& y);
+
 private:
   friend class Parma_Polyhedra_Library::Constraint;
   friend class Parma_Polyhedra_Library::Generator;
@@ -278,9 +281,6 @@ private:
   // Generator_System::affine_image().
   friend class Parma_Polyhedra_Library::Generator_System;
 
-  friend void std::swap(Parma_Polyhedra_Library::Linear_Expression& x,
-		       Parma_Polyhedra_Library::Linear_Expression& y);
-
   //! Copy-constructor with a specified space dimension.
   Linear_Expression(const Linear_Expression& e, dimension_type sz);
 
@@ -290,9 +290,6 @@ private:
     the constructor Linear_Expression(Coefficient_traits::const_reference n).
   */
   Linear_Expression(dimension_type sz, bool);
-
-  //! Swaps \p *this with \p y.
-  void swap(Linear_Expression& y);
 
   friend Linear_Expression
   Parma_Polyhedra_Library::operator+(const Linear_Expression& e1,

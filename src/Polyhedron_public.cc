@@ -64,7 +64,7 @@ PPL::Polyhedron::constraints() const {
       // Checking that `con_sys' contains the right thing.
       assert(con_sys.space_dimension() == space_dim);
       assert(con_sys.num_rows() == 1);
-      assert(con_sys[0].is_trivial_false());
+      assert(con_sys[0].is_inconsistent());
     }
     return con_sys;
   }
@@ -184,7 +184,7 @@ PPL::Polyhedron::relation_with(const Constraint& c) const {
       && Poly_Con_Relation::is_disjoint();
 
   if (space_dim == 0)
-    if (c.is_trivial_false())
+    if (c.is_inconsistent())
       if (c.is_strict_inequality() && c[0] == 0)
 	// The constraint 0 > 0 implicitly defines the hyperplane 0 = 0;
 	// thus, the zero-dimensional point also saturates it.
@@ -246,11 +246,11 @@ PPL::Polyhedron::is_universe() const {
     return true;
 
   if (!has_pending_generators() && constraints_are_up_to_date()) {
-    // Search for a constraint that is not trivially true.
+    // Search for a constraint that is not a tautology.
     for (dimension_type i = con_sys.num_rows(); i-- > 0; )
-      if (!con_sys[i].is_trivial_true())
+      if (!con_sys[i].is_tautological())
 	return false;
-    // All the constraints are trivially true.
+    // All the constraints are tautologies.
     return true;
   }
 
@@ -498,14 +498,14 @@ PPL::Polyhedron::OK(bool check_not_empty) const {
 #endif
 	goto bomb;
       }
-      if (!con_sys[0].is_trivial_false()) {
+      if (!con_sys[0].is_inconsistent()) {
 #ifndef NDEBUG
 	cerr << "Empty polyhedron with a satisfiable system of constraints"
 	     << endl;
 #endif
 	goto bomb;
       }
-      // Here we have only one, trivially false constraint.
+      // Here we have only one, inconsistent constraint.
       return true;
     }
   }
@@ -924,7 +924,7 @@ PPL::Polyhedron::add_constraint(const Constraint& c) {
 
   // Dealing with a zero-dimensional space polyhedron first.
   if (space_dim == 0) {
-    if (!c.is_trivial_true())
+    if (!c.is_tautological())
       set_empty();
     return;
   }
@@ -1141,10 +1141,10 @@ PPL::Polyhedron::add_recycled_constraints(Constraint_System& cs) {
 
   if (space_dim == 0) {
     // In a 0-dimensional space the constraints are
-    // trivial (e.g., 0 == 0 or 1 >= 0 or 1 > 0) or
+    // tautologies (e.g., 0 == 0 or 1 >= 0 or 1 > 0) or
     // inconsistent (e.g., 1 == 0 or -1 >= 0 or 0 > 0).
     // In a system of constraints `begin()' and `end()' are equal
-    // if and only if the system contains trivial constraints only.
+    // if and only if the system only contains tautologies.
     if (cs.begin() != cs.end())
       // There is a constraint, it must be inconsistent,
       // the polyhedron is empty.
@@ -1231,10 +1231,10 @@ PPL::Polyhedron::add_recycled_constraints_and_minimize(Constraint_System& cs) {
   // Dealing with zero-dimensional space polyhedra first.
   if (space_dim == 0) {
     // In a 0-dimensional space the constraints are
-    // trivial (e.g., 0 == 0 or 1 >= 0 or 1 > 0) or
+    // tautologies (e.g., 0 == 0 or 1 >= 0 or 1 > 0) or
     // inconsistent (e.g., 1 == 0 or -1 >= 0 or 0 > 0).
     // In a system of constraints `begin()' and `end()' are equal
-    // if and only if the system contains trivial constraints only.
+    // if and only if the system only contains tautologies.
     if (cs.begin() == cs.end())
       return true;
     // There is a constraint, it must be inconsistent,
@@ -1773,8 +1773,8 @@ PPL::Polyhedron::poly_difference_assign(const Polyhedron& y) {
   for (Constraint_System::const_iterator i = y_cs.begin(),
 	 y_cs_end = y_cs.end(); i != y_cs_end; ++i) {
     const Constraint& c = *i;
-    assert(!c.is_trivial_true());
-    assert(!c.is_trivial_false());
+    assert(!c.is_tautological());
+    assert(!c.is_inconsistent());
     // If the polyhedron `x' is included in the polyhedron defined by
     // `c', then `c' can be skipped, as adding its complement to `x'
     // would result in the empty polyhedron.  Moreover, if we operate
@@ -2350,7 +2350,7 @@ PPL::Polyhedron::topological_closure_assign() {
     // Transform all strict inequalities into non-strict ones.
     for (dimension_type i = con_sys.num_rows(); i-- > 0; ) {
       Constraint& c = con_sys[i];
-      if (c[eps_index] < 0 && !c.is_trivial_true()) {
+      if (c[eps_index] < 0 && !c.is_tautological()) {
 	c[eps_index] = 0;
 	// Enforce normalization.
 	c.normalize();

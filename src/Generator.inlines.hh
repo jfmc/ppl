@@ -177,6 +177,16 @@ closure_point(const Linear_Expression& e,
   return Generator::closure_point(e, d);
 }
 
+inline bool
+operator==(const Generator& x, const Generator& y) {
+  return x.is_equivalent_to(y);
+}
+
+inline bool
+operator!=(const Generator& x, const Generator& y) {
+  return !x.is_equivalent_to(y);
+}
+
 inline void
 Generator::swap(Generator& y) {
   Linear_Row::swap(y);
