@@ -45,7 +45,7 @@ PPL::Polyhedron::constraints() const {
     throw std::invalid_argument("PPL::Polyhedron::constraints(): "
 				"*this is empty");
   if (is_zero_dim()) {
-    assert(con_sys.empty());
+    assert(con_sys.num_rows() == 0);
     return con_sys;
   }
   if (!constraints_are_up_to_date())
@@ -79,7 +79,7 @@ PPL::Polyhedron::constraints() const {
 const PPL::GenSys&
 PPL::Polyhedron::generators() const {
   if (is_empty()) {
-    assert(gen_sys.empty());
+    assert(gen_sys.num_rows() == 0);
     return gen_sys;
   }
   if (is_zero_dim())
@@ -1184,7 +1184,7 @@ PPL::Polyhedron::insert(const Generator& g) {
 void
 PPL::Polyhedron::add_constraints_lazy(ConSys& cs) {
   size_t cs_num_columns = cs.num_columns();  
-  assert(cs_num_columns() != 1);
+  assert(cs_num_columns != 1);
   // Dimension-consistency check:
   // the dimension of `cs' can not be greater than space_dimension().
   if (space_dimension() < cs_num_columns - 1)
