@@ -78,7 +78,7 @@ namespace Parma_Polyhedra_Library {
     Variable x(0);
     Variable y(1);
     Variable z(2);
-    Constraint cs(4 * x - 2 * y - z + 13 >= 0);
+    Constraint inequal(4 * x - 2 * y - z + 13 >= 0);
     \endcode
 
     \par Example 2
@@ -87,7 +87,7 @@ namespace Parma_Polyhedra_Library {
     Variable x(0);
     Variable y(1);
     Variable z(2);
-    Constraint cs(3 * x + 5 * y - z == 0);
+    Constraint equal(3 * x + 5 * y - z == 0);
     \endcode
 */
 class Parma_Polyhedra_Library::Constraint : public Row {
