@@ -126,6 +126,37 @@ namespace Parma_Polyhedra_Library {
   gs.insert(1 ^ x - y);
   Polyhedron ph(gs);
   \endcode
+
+  \par Example 3
+  The following code shows the use of the function
+  <CODE>add_dimensions_and_embed</CODE>
+  \code
+  Variable x(0);
+  ConSys cs;
+  cs.insert(x == 2);
+  Polyhedron ph(cs);
+  ph.add_dimensions_and_embed(1);
+  \endcode
+  The starting polyhedron is a point whose abscissa is equal to \f$2\f$
+  in \f$\mathbb{R}\f$. The resulting polyhedron in \f$\mathbb{R}^2\f$ 
+  is a line parallel to the axis \f$y\f$ and its intersection with the
+  axis \f$x\f$ is the point with the abscissa equal to \f$2\f$.
+  
+
+  \par Example 4
+  The following code shows the use of the function
+  <CODE>add_dimensions_and_project</CODE>:
+  \code
+  Variable x(0);
+  ConSys cs;
+  cs.insert(x == 2);
+  Polyhedron ph(cs);
+  ph.add_dimensions_and_poject(1);
+  \endcode
+  The starting polyhedron is the same of the example for the function
+  <CODE>add_dimensions_and_embed</CODE>. The resulting polyhedron
+  is a point with the abscissa equal to \f$2\f$ and the ordinate
+  equal to \f$0\f$.
 */
 
 class Parma_Polyhedra_Library::Polyhedron {
@@ -151,9 +182,9 @@ public:
   //! Intersects \p *this with polyhedron \p y and
   //! assigns the result to \p *this.
   void intersection_assign(const Polyhedron& y);
-  //! Assigns the convex hull of \p *this \f$\union\f$ \p y to \p *this.
+  //! Assigns the convex hull of \p *this \f$\cup\f$ \p y to \p *this.
   void convex_hull_assign(const Polyhedron& y);
-  //! Assigns the convex hull of \p *this \f$\union\f$ \p y to \p *this,
+  //! Assigns the convex hull of \p *this \f$\cup\f$ \p y to \p *this,
   //! without minimizing the result.
   void convex_hull_assign_lazy(const Polyhedron& y);
 
@@ -215,7 +246,7 @@ private:
   void obtain_sorted_generators_with_sat_g();
 
 public:
-  // Adds new dimensions and embeds the old polyhedron in the new space.
+  // Adds new dimensions and embeds the old polyhedron in the new space. 
   void add_dimensions_and_embed(size_t add_dim);
   // Adds new dimensions to the polyhedron 
   // and does not embed it in the new space.
