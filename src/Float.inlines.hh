@@ -161,7 +161,7 @@ inline void
 Float<float64_t>::build(bool negative, mpz_t mantissa, int exponent) {
   u.parts.msp = (negative ? MSP_SGN_MASK : 0);
   u.parts.msp |= static_cast<uint32_t>(exponent + (1 << (EXPONENT_BITS - 1)) - 1) << (MANTISSA_BITS - 32);
-#if ULONG_MAX == 0xffffffffL
+#if ULONG_MAX == 0xffffffffUL
   u.parts.lsp = mpz_get_ui(mantissa);
   mpz_tdiv_q_2exp(mantissa, mantissa, 32);
   unsigned long m = mpz_get_ui(mantissa);
@@ -249,7 +249,7 @@ inline void
 Float<float96_t>::build(bool negative, mpz_t mantissa, int exponent) {
   u.parts.msp = (negative ? MSP_SGN_MASK : 0);
   u.parts.msp |= static_cast<uint32_t>(exponent + (1 << (EXPONENT_BITS - 1)) - 1);
-#if ULONG_MAX == 0xffffffffL
+#if ULONG_MAX == 0xffffffffUL
   mpz_export(&u.parts.lsp, 0, 1, 8, 0, 0, mantissa);
 #else
   u.parts.lsp = mpz_get_ui(mantissa);
@@ -334,14 +334,14 @@ Float<float128_t>::build(bool negative, mpz_t mantissa, int exponent) {
   u.parts.msp = (negative ? MSP_SGN_MASK : 0);
   u.parts.msp |= static_cast(uint64_t)(exponent + (1 << (EXPONENT_BITS - 1)) - 1) << (MANTISSA_BITS - 64);
   u.parts.msp |= ;
-#if ULONG_MAX == 0xffffffffL
+#if ULONG_MAX == 0xffffffffUL
   mpz_export(&u.parts.lsp, 0, 1, 8, 0, 0, mantissa)
 #else
   u.parts.lsp = mpz_get_ui(mantissa);
 #endif
   mpz_tdiv_q_2exp(mantissa, mantissa, 64);
   uint64_t m;
-#if ULONG_MAX == 0xffffffffL
+#if ULONG_MAX == 0xffffffffUL
   mpz_export(&u.parts.lsp, 0, 1, 8, 0, 0, mantissa)
 #else
   m = mpz_get_ui(mantissa);

@@ -642,7 +642,7 @@ SPECIALIZE_ASSIGN(int_mpq, unsigned long long, mpq_class)
 #error "Unexpected max for unsigned int"
 #endif
 
-#if ULONG_MAX == 0xffffffffL
+#if ULONG_MAX == 0xffffffffUL
 #define LONG_BITS 32
 #elif ULONG_MAX == 0xffffffffffffffffULL
 #define LONG_BITS 64
