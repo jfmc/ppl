@@ -229,17 +229,6 @@ ppl_install.hh:	ppl_header.top $(top_builddir)/config.h ppl_header.middle $(INCL
 	cat $(srcdir)/ppl_header.bottom >>ppl_install.hh
 	rm -rf tmp*
 
-# ppl_install.hh:	ppl_header.top $(top_builddir)/config.h ppl_header.middle $(INCLUDE_FILES) ppl_header.bottom Makefile
-# 	mkdir -p tmp
-# 	(cd $(srcdir) ; cat $(INCLUDE_FILES)) >tmp/concat
-# 	grep "^#include <" <tmp/concat | sort -u >tmp/includes
-# 	sed -e "/^#include/d" <tmp/concat >tmp/noincludes.cc
-# 	cat $(srcdir)/ppl_header.top $(top_builddir)/config.h \
-# 		$(srcdir)/ppl_header.middle tmp/includes >ppl_install.hh
-# 	$(CXXCPP) -P @debug_flag@ tmp/noincludes.cc >>ppl_install.hh
-# 	cat $(srcdir)/ppl_header.bottom >>ppl_install.hh
-# 	rm -rf tmp*
-
 # ppl.hh and ppl_install.hh are not distributed.
 dist-hook:
 	rm -f $(distdir)/ppl.hh $(distdir)/ppl_install.hh
