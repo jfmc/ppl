@@ -589,18 +589,19 @@ public:
     \param sup_d    The denominator of the supremum value;
     \param maximum  <CODE>true</CODE> if and only if the supremum
                     is also the maximum value;
-    \param point    A point or closure point where \p expr
-                    reaches its supremum value.
+    \param pppoint  When nonzero and maximization succeeds, a pointer
+                    to a point or closure point where \p expr reaches
+                    its supremum value will be written at this address.
     \exception std::invalid_argument thrown if \p expr and \p *this
                                      are dimension-incompatible.
 
     If \p *this is empty or \p expr is not bounded from above,
     <CODE>false</CODE> is returned and \p sup_n, \p sup_d, \p maximum
-    and \p point are left untouched.
+    and \p pppoint are left untouched.
   */
   bool maximize(const LinExpression& expr,
 		Integer& sup_n, Integer& sup_d, bool& maximum,
-		Generator& point) const;
+		const Generator** const pppoint) const;
 
   //! \brief
   //! Returns <CODE>true</CODE> if and only if \p *this is not empty
@@ -632,18 +633,19 @@ public:
     \param inf_d    The denominator of the infimum value;
     \param minimum  <CODE>true</CODE> if and only if the infimum
                     is also the minimum value;
-    \param point    A point or closure point where \p expr
-                    reaches its infimum value.
+    \param pppoint  When nonzero and minimization succeeds, a pointer
+                    to a point or closure point where \p expr reaches
+                    its infimum value will be written at this address.
     \exception std::invalid_argument thrown if \p expr and \p *this
                                      are dimension-incompatible.
 
     If \p *this is empty or \p expr is not bounded from below,
     <CODE>false</CODE> is returned and \p inf_n, \p inf_d, \p minimum
-    and \p point are left untouched.
+    and \p pppoint are left untouched.
   */
   bool minimize(const LinExpression& expr,
 		Integer& inf_n, Integer& inf_d, bool& minimum,
-		Generator& point) const;
+		const Generator** const pppoint) const;
 
   //! Returns <CODE>true</CODE> if and only if \p *this contains \p y.
   /*!
@@ -1867,7 +1869,7 @@ private:
   bool max_min(const LinExpression& expr,
 	       const bool maximize,
 	       Integer& ext_n, Integer& ext_d, bool& included,
-	       Generator* const ppoint = 0) const;
+	       const Generator** const pppoint = 0) const;
 
   //! \name Widening- and Extrapolation-Related Functions
   //@{

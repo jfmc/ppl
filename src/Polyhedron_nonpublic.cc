@@ -532,7 +532,7 @@ bool
 PPL::Polyhedron::max_min(const LinExpression& expr,
 			 const bool maximize,
 			 Integer& ext_n, Integer& ext_d, bool& included,
-			 Generator* const ppoint) const {
+			 const Generator** const pppoint) const {
   // The dimension of `expr' should not be greater than the dimension
   // of `*this'.
   const dimension_type expr_space_dim = expr.space_dimension();
@@ -621,8 +621,8 @@ PPL::Polyhedron::max_min(const LinExpression& expr,
   ext_n = extremum.get_num();
   ext_d = extremum.get_den();
   included = ext_included;
-  if (ppoint != 0)
-    *ppoint = gen_sys[ext_position];
+  if (pppoint != 0)
+    *pppoint = &gen_sys[ext_position];
 
   return true;
 }

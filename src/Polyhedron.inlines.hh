@@ -290,8 +290,8 @@ Polyhedron::maximize(const LinExpression& expr,
 inline bool
 Polyhedron::maximize(const LinExpression& expr,
 		     Integer& sup_n, Integer& sup_d, bool& maximum,
-		     Generator& point) const {
-  return max_min(expr, true, sup_n, sup_d, maximum, &point);
+		     const Generator** const pppoint) const {
+  return max_min(expr, true, sup_n, sup_d, maximum, pppoint);
 }
 
 inline bool
@@ -303,8 +303,8 @@ Polyhedron::minimize(const LinExpression& expr,
 inline bool
 Polyhedron::minimize(const LinExpression& expr,
 		     Integer& inf_n, Integer& inf_d, bool& minimum,
-		     Generator& point) const {
-  return max_min(expr, false, inf_n, inf_d, minimum, &point);
+		     const Generator** const pppoint) const {
+  return max_min(expr, false, inf_n, inf_d, minimum, pppoint);
 }
 
 /*! \relates Polyhedron */
