@@ -60,30 +60,6 @@ static void
 error2() {
   Variable x(0);
   Variable y(1);
-
-  TBD_Shape bd(2);
-  bd.add_constraint(x >= y);
-
-  try {
-    // This is an incorrect use of the function
-    // BD_Shape::affine_preimage(v, expr, d): it is illegal
-    // to apply to a expression with two variables.
-    bd.affine_preimage(y, x + y +1);
-  }
-  catch (invalid_argument& e) {
-#if NOISY
-    cout << "invalid_argument: " << e.what() << endl << endl;
-#endif
-  }
-  catch (...) {
-    exit(1);
-  }
-}
-
-static void
-error3() {
-  Variable x(0);
-  Variable y(1);
   Variable z(2);
 
   TBD_Shape bd(2);
@@ -107,32 +83,7 @@ error3() {
 }
 
 static void
-error4() {
-  Variable x(0);
-  Variable y(1);
-
-  TBD_Shape bd(2);
-  bd.add_constraint(x >= y);
-
-  try {
-    // This is an incorrect use of the function
-    // BD_Shape::affine_preimage(v, expr, d): it is illegal
-    // to apply to a expression where the coefficient of the
-    // variable is not equal to the denominator.
-    bd.affine_preimage(y, 2*x);
-  }
-  catch (invalid_argument& e) {
-#if NOISY
-    cout << "invalid_argument: " << e.what() << endl << endl;
-#endif
-  }
-  catch (...) {
-    exit(1);
-  }
-}
-
-static void
-error5() {
+error3() {
   Variable x(0);
   Variable y(1);
 
@@ -156,7 +107,7 @@ error5() {
 }
 
 static void
-error6() {
+error4() {
   Variable x(0);
   Variable y(1);
 
@@ -180,7 +131,7 @@ error6() {
 }
 
 static void
-error7() {
+error5() {
   Variable x(0);
   Variable y(1);
 
@@ -206,31 +157,7 @@ error7() {
 }
 
 static void
-error8() {
-  Variable x(0);
-  Variable y(1);
-
-  TBD_Shape bd(2);
-  bd.add_constraint(x >= y);
-
-  try {
-    // This is an incorrect use of the function
-    // BD_Shape::generalized_affine_image(v, r, expr, d): it is illegal
-    // to apply to a expression with two variables.
-    bd.generalized_affine_image(y, LESS_THAN_OR_EQUAL, x + y + 1);
-  }
-  catch (invalid_argument& e) {
-#if NOISY
-    cout << "invalid_argument: " << e.what() << endl << endl;
-#endif
-  }
-  catch (...) {
-    exit(1);
-  }
-}
-
-static void
-error9() {
+error6() {
   Variable x(0);
   Variable y(1);
   Variable z(2);
@@ -256,32 +183,7 @@ error9() {
 }
 
 static void
-error10() {
-  Variable x(0);
-  Variable y(1);
-
-  TBD_Shape bd(2);
-  bd.add_constraint(x >= y);
-
-  try {
-    // This is an incorrect use of the function
-    // BD_Shape::generalized_affine_image(v, r, expr, d): it is illegal
-    // to apply to a expression where the coefficient of the
-    // variable is not equal to the denominator.
-    bd.generalized_affine_image(y, GREATER_THAN_OR_EQUAL, 2*x);
-  }
-  catch (invalid_argument& e) {
-#if NOISY
-    cout << "invalid_argument: " << e.what() << endl << endl;
-#endif
-  }
-  catch (...) {
-    exit(1);
-  }
-}
-
-static void
-error11() {
+error7() {
   Variable A(0);
   Variable B(1);
   Variable C(2);
@@ -308,7 +210,7 @@ error11() {
 }
 
 static void
-error12() {
+error8() {
   Variable A(0);
   Variable B(1);
   Variable C(2);
@@ -322,6 +224,110 @@ error12() {
     // it is illegal to use a variable in the `lhs' expression that
     // does not appear in the BDS.
     bd.generalized_affine_image(B + C, LESS_THAN_OR_EQUAL, A + 1);
+  }
+  catch (invalid_argument& e) {
+#if NOISY
+    cout << "invalid_argument: " << e.what() << endl << endl;
+#endif
+  }
+  catch (...) {
+    exit(1);
+  }
+}
+
+static void
+error9() {
+  Variable A(0);
+  Variable B(1);
+  Variable C(2);
+
+  TBD_Shape bd(2);
+  bd.add_constraint(A >= 1);
+
+  try {
+    // This is an incorrect use of function
+    // BD_Shape::relation_with(c):
+    // it is illegal to use a constraint that is
+    // dimensional incompatible with the BDS.
+    Poly_Con_Relation rel = bd.relation_with(C - B <= 2);
+  }
+  catch (invalid_argument& e) {
+#if NOISY
+    cout << "invalid_argument: " << e.what() << endl << endl;
+#endif
+  }
+  catch (...) {
+    exit(1);
+  }
+}
+
+static void
+error10() {
+  Variable A(0);
+  Variable B(1);
+  Variable C(2);
+
+  TBD_Shape bd(3);
+  bd.add_constraint(A >= 1);
+
+  try {
+    // This is an incorrect use of function
+    // BD_Shape::relation_with(c):
+    // it is illegal to use a constraint with three
+    // dimensions.
+    Poly_Con_Relation rel = bd.relation_with(A - C - B <= 2);
+  }
+  catch (invalid_argument& e) {
+#if NOISY
+    cout << "invalid_argument: " << e.what() << endl << endl;
+#endif
+  }
+  catch (...) {
+    exit(1);
+  }
+}
+
+static void
+error11() {
+  Variable A(0);
+  Variable B(1);
+  Variable C(2);
+
+  TBD_Shape bd(3);
+  bd.add_constraint(A >= 1);
+
+  try {
+    // This is an incorrect use of function
+    // BD_Shape::relation_with(c):
+    // it is illegal to use a constraint that is
+    // not a bounded difference.
+    Poly_Con_Relation rel = bd.relation_with(A - 2*B <= 2);
+  }
+  catch (invalid_argument& e) {
+#if NOISY
+    cout << "invalid_argument: " << e.what() << endl << endl;
+#endif
+  }
+  catch (...) {
+    exit(1);
+  }
+}
+
+static void
+error12() {
+  Variable A(0);
+  Variable B(1);
+  Variable C(2);
+
+  TBD_Shape bd(2);
+  bd.add_constraint(A >= 1);
+
+  try {
+    // This is an incorrect use of function
+    // BD_Shape::relation_with(c):
+    // it is illegal to use a generator that is
+    // dimensional incompatible with the BDS.
+    Poly_Gen_Relation rel = bd.relation_with(ray(C));
   }
   catch (invalid_argument& e) {
 #if NOISY
