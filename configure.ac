@@ -15,7 +15,7 @@ dnl Minimum autoconf version required.
 AC_PREREQ(2.12)
 
 dnl Every other copy of the package version number gets its value from here
-AM_INIT_AUTOMAKE(ppl, 0.1)
+AM_INIT_AUTOMAKE(ppl, 0.2-pre1)
 AC_SUBST(VERSION)
 
 AM_CONFIG_HEADER(config.h)
