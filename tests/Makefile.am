@@ -32,7 +32,7 @@ TESTS = addconstraints1 addconstraints2 addconstraints3 \
         error1 error2 error3 error4 error5 \
 	includes1 \
         inters1 inters2  inters3 \
-	limitedwidening1 \
+	limitedwidening1 limitedwidening2\
 	onepoint \
         permute \
 	randchull1 \
@@ -73,6 +73,7 @@ inters2_SOURCES = inters2.cc
 inters3_SOURCES = inters3.cc
 
 limitedwidening1_SOURCES = limitedwidening1.cc
+limitedwidening2_SOURCES = limitedwidening2.cc
 
 onepoint_SOURCES = onepoint.cc
 
