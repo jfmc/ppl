@@ -1,6 +1,6 @@
 
 Design and Implementation of Strict Weak Orderings
---------------------------------------------------
+==================================================
 
 Let S be a set and r be any binary relation over S.
 The relation r=, called "r-equivalence" is defined as follows,
@@ -26,6 +26,31 @@ than one.  That is
 
 - a fast to compute swo with no additional features;
 - a total swo;
-- a (total) swo that extends set inclusion, that is,
+- a (total) swo that extends set-theoretic inclusion, that is,
   x < y (x is strictly contained in y) implies r(x, y)
   for each polyhedra x and y.
+
+
+Constructions on Polyhedra
+==========================
+
+We want to extend the PPL so as to implement the constructions
+of the constraint system hierarchy described in
+
+  R. Bagnara.
+  A hierarchy of constraint systems for data-flow analysis
+  of constraint logic-based languages.
+  Science of Computer Programming 30, 1-2 (January 1998), pp. 119-155.
+  Available at http://www.cs.unipr.it/~bagnara/Papers/Abstracts/SCP98
+
+A generic implementation (in the form of C++ templates) of the entire
+hierarchy has already been written.  What is missing is:
+
+1) a wrapper class for PPL::Polyhedron so that a polyhedron is seen
+   as a "determinate constraint system";
+2) one or more strict weak ordering on polyhedra;
+3) extending the above mentioned templates so as to work also with
+   ordinary swos (the current implementation only supports total swos
+   that extend entailment).  This should be done by extending the
+   functionalities of the templates so that they can still exploit
+   the features of more powerful swos.
