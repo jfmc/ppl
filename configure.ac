@@ -251,6 +251,7 @@ no)
   ;;
 esac
 
+CFLAGS="$COMP_FLAGS $OPT_FLAGS"
 CXXFLAGS="$COMP_FLAGS $OPT_FLAGS"
 
 # Allow additions to C and C++ compilation flags
@@ -301,7 +302,7 @@ AC_PROG_INSTALL
 # Ciao Prolog
 
 AC_CHECK_PROG(CIAO_PROLOG, ciao, ciao)
-if test x$CIAO_PROLOG = xciao
+if test x"$CIAO_PROLOG" = xciao
 then
 AC_CHECK_HEADER(ciao_prolog.h,
                 [],
@@ -312,7 +313,7 @@ AM_CONDITIONAL(HAVE_CIAO_PROLOG, test x$CIAO_PROLOG = xciao)
 # GNU Prolog
 
 AC_CHECK_PROG(GNU_PROLOG, gprolog, gprolog)
-if test x$GNU_PROLOG = xgprolog
+if test x"$GNU_PROLOG" = xgprolog
 then
 AC_CHECK_HEADER(gprolog.h,
                 [],
@@ -323,7 +324,7 @@ AM_CONDITIONAL(HAVE_GNU_PROLOG, test x$GNU_PROLOG = xgprolog)
 # SICStus
 
 AC_CHECK_PROG(SICSTUS_PROLOG, sicstus, sicstus)
-if test x$SICSTUS_PROLOG = xsicstus
+if test x"$SICSTUS_PROLOG" = xsicstus
 then
 # We require SICStus Prolog 3.9.0 or later.
 AC_CHECK_HEADER(sicstus/sicstus.h,
@@ -344,7 +345,7 @@ AM_CONDITIONAL(HAVE_SICSTUS_PROLOG, test x$SICSTUS_PROLOG = xsicstus)
 # SWI Prolog
 
 AC_CHECK_PROG(SWI_PROLOG, pl, pl)
-if test x$SWI_PROLOG = xpl
+if test x"$SWI_PROLOG" = xpl
 then
 AC_CHECK_HEADER(SWI-Prolog.h,
                 [],
@@ -355,7 +356,7 @@ AM_CONDITIONAL(HAVE_SWI_PROLOG, test x$SWI_PROLOG = xpl)
 # XSB
 
 AC_CHECK_PROG(XSB_PROLOG, xsb, xsb)
-if test x$XSB_PROLOG = xxsb
+if test x"$XSB_PROLOG" = xxsb
 then
 AC_CHECK_HEADER(cinterf.h,
                 [],
@@ -366,7 +367,7 @@ AM_CONDITIONAL(HAVE_XSB_PROLOG, test x$XSB_PROLOG = xsb)
 # YAP
 
 AC_CHECK_PROG(YAP_PROLOG, yap, yap)
-if test x$YAP_PROLOG = xyap
+if test x"$YAP_PROLOG" = xyap
 then
 AC_CHECK_HEADER(Yap/c_interface.h,
                 [],
