@@ -26,7 +26,6 @@ site: http://www.cs.unipr.it/ppl/ . */
 
 #include "Integer.defs.hh"
 #include <exception>
-#include <limits>
 #include <cstddef>
 
 namespace Parma_Polyhedra_Library {
@@ -36,9 +35,7 @@ typedef size_t dimension_type;
 
 //! Returns a value that does not designate a valid dimension.
 inline dimension_type
-not_a_dimension() {
-  return std::numeric_limits<dimension_type>::max();
-}
+not_a_dimension();
 
 //! Relation symbols.
 enum Relation_Symbol {
@@ -190,10 +187,7 @@ extern const Throwable* volatile abandon_expensive_computations;
 /*! \relates Throwable */
 #endif
 inline void
-maybe_abandon() {
-  if (const Throwable* p = abandon_expensive_computations)
-    p->throw_me();
-}
+maybe_abandon();
 
 //! A tag class.
 /*! Tag class to differentiate the C_Polyhedron and NNC_Polyhedron

@@ -31,6 +31,17 @@ site: http://www.cs.unipr.it/ppl/ . */
 namespace Parma_Polyhedra_Library {
 
 inline dimension_type
+not_a_dimension() {
+  return std::numeric_limits<dimension_type>::max();
+}
+
+inline void
+maybe_abandon() {
+  if (const Throwable* p = abandon_expensive_computations)
+    p->throw_me();
+}
+
+inline dimension_type
 compute_capacity(const dimension_type requested_size,
 		 const dimension_type maximum_size) {
   assert(requested_size <= maximum_size);
