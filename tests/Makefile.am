@@ -42,7 +42,7 @@ ORIGINAL_TESTS = \
 	addconstraint1 \
         addconstraints1 addconstraints2 addconstraints3 addconstraints4 \
 	addconstraints5 addconstraints6 addconstraints7 addconstraints8 \
-	addconstraints9 addconstraints10 \
+	addconstraints9 addconstraints10 addconstraints11 \
 	adddimensions1 adddimensions2 adddimensions3 adddimensions4 \
 	adddimensions5 adddimensions6 adddimensions7 adddimensions8 \
 	adddimensions9 adddimensions10 adddimensions11 \
@@ -52,7 +52,7 @@ ORIGINAL_TESTS = \
 	addgenerators9 addgenerators10 \
 	affineimage1 affineimage2 affineimage3 \
 	affinepreimage1 affinepreimage2 affinepreimage3 affinepreimage4 \
-	affinepreimage5 \
+	affinepreimage5 affinepreimage6 \
 	affinetrans \
         append1 append2 \
 	bbrz02widening1 bbrz02widening2 bbrz02widening3 bbrz02widening4 \
@@ -86,6 +86,7 @@ ORIGINAL_TESTS = \
 	randphull1 \
 	relations1 relations2 relations3 relations4 relations5 relations6 \
 	relations7 relations8 relations9 relations10 relations11 \
+	relations12 \
 	removedim1 removedim2 removedim3 removedim4 removedim5 removedim6 \
 	removedim7 removedim8 removedim9 \
 	smm1 \
@@ -107,7 +108,7 @@ DERIVED_TESTS = \
 	nnc_addgenerators9 nnc_addgenerators10 \
 	nnc_affineimage1 nnc_affineimage2 nnc_affineimage3 \
 	nnc_affinepreimage1 nnc_affinepreimage2 nnc_affinepreimage3 \
-	nnc_affinepreimage4 nnc_affinepreimage5 \
+	nnc_affinepreimage4 nnc_affinepreimage5 nnc_affinepreimage6 \
 	nnc_affinetrans \
 	nnc_append1 nnc_append2 \
 	nnc_bbrz02widening1 nnc_bbrz02widening2 nnc_bbrz02widening3 \
@@ -141,7 +142,7 @@ DERIVED_TESTS = \
 	nnc_randphull1 \
 	nnc_relations1 nnc_relations2 nnc_relations3 nnc_relations4 \
 	nnc_relations5 nnc_relations6 nnc_relations7 nnc_relations8 \
-	nnc_relations9 nnc_relations10 \
+	nnc_relations9 nnc_relations10 nnc_relations12 \
 	nnc_removedim1 nnc_removedim2 nnc_removedim3 nnc_removedim4 \
 	nnc_removedim5 nnc_removedim6 nnc_removedim8 nnc_removedim9 \
 	nnc_smm1 \
@@ -175,6 +176,7 @@ addconstraints7_SOURCES = addconstraints7.cc
 addconstraints8_SOURCES = addconstraints8.cc
 addconstraints9_SOURCES = addconstraints9.cc
 addconstraints10_SOURCES = addconstraints10.cc
+addconstraints11_SOURCES = addconstraints11.cc
 
 adddimensions1_SOURCES = adddimensions1.cc
 adddimensions2_SOURCES = adddimensions2.cc
@@ -211,6 +213,7 @@ affinepreimage2_SOURCES = affinepreimage2.cc
 affinepreimage3_SOURCES = affinepreimage3.cc
 affinepreimage4_SOURCES = affinepreimage4.cc
 affinepreimage5_SOURCES = affinepreimage5.cc
+affinepreimage6_SOURCES = affinepreimage6.cc
 
 affinetrans_SOURCES = affinetrans.cc
 
@@ -321,6 +324,7 @@ relations8_SOURCES = relations8.cc
 relations9_SOURCES = relations9.cc
 relations10_SOURCES = relations10.cc
 relations11_SOURCES = relations11.cc
+relations12_SOURCES = relations12.cc
 
 randphull1_SOURCES = randphull1.cc
 
@@ -429,6 +433,8 @@ nnc_affinepreimage4_SOURCES = affinepreimage4.cc
 nnc_affinepreimage4_CXXFLAGS = $(DERIVED_CXXFLAGS)
 nnc_affinepreimage5_SOURCES = affinepreimage5.cc
 nnc_affinepreimage5_CXXFLAGS = $(DERIVED_CXXFLAGS)
+nnc_affinepreimage6_SOURCES = affinepreimage6.cc
+nnc_affinepreimage6_CXXFLAGS = $(DERIVED_CXXFLAGS)
 
 nnc_affinetrans_SOURCES = affinetrans.cc
 nnc_affinetrans_CXXFLAGS = $(DERIVED_CXXFLAGS)
@@ -603,6 +609,8 @@ nnc_relations9_SOURCES = relations9.cc
 nnc_relations9_CXXFLAGS = $(DERIVED_CXXFLAGS)
 nnc_relations10_SOURCES = relations10.cc
 nnc_relations10_CXXFLAGS = $(DERIVED_CXXFLAGS)
+nnc_relations12_SOURCES = relations12.cc
+nnc_relations12_CXXFLAGS = $(DERIVED_CXXFLAGS)
 
 nnc_randphull1_SOURCES = randphull1.cc
 nnc_randphull1_CXXFLAGS = $(DERIVED_CXXFLAGS)

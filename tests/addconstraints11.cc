@@ -1,6 +1,6 @@
-/* Test Polyhedron::relation_with(g): the system of constraints
-   of the polyhedron contains only an equality and the generator
-   `g' is a point.
+/* Test Polyhedron::add_constraints_and_minimize(): the space dimension
+   of the system of constraints that we want to add to the polyhedron
+   is smaller than the space dimension of the polyhedron.
    Copyright (C) 2001, 2002 Roberto Bagnara <bagnara@cs.unipr.it>
 
 This file is part of the Parma Polyhedra Library (PPL).
@@ -37,18 +37,33 @@ main() {
   set_handlers();
 
   Variable A(0);
-  
-  C_Polyhedron ph(2);
-  ph.add_constraint(A == 0);
+  Variable B(1);
 
-  Poly_Gen_Relation rel = ph.relation_with(point(2*A));
+  C_Polyhedron ph1(2);
+  ph1.add_constraint(A - B >= 0);
+  ph1.add_constraint(B >= 0);
+  
+  NNC_Polyhedron ph2(1);
+  ph2.add_constraint(A == 0);
+  
+  ConSys cs = ph2.constraints();
 
 #if NOISY
-  print_generators(ph, "--- ph ---");
-  cout << "ph.relation_with(point(2*A)) == " << rel << endl;
+  print_constraints(ph1, "*** ph1 ***");
+  print_constraints(cs, "*** cs ***");
 #endif
 
-  Poly_Gen_Relation known_result = Poly_Gen_Relation::nothing();
+  ph1.add_constraints_and_minimize(cs);
 
-  return (rel == known_result) ? 0 : 1;
+  C_Polyhedron known_result(2);
+  known_result.add_constraint(A == 0);
+  known_result.add_constraint(B == 0);
+
+  int retval = (ph1 == known_result) ? 0 : 1;
+
+#if NOISY
+  print_constraints(ph1, "*** After ph1.add_constraints_and_minimize(cs) ***");
+#endif
+
+  return retval;
 }

@@ -1,6 +1,5 @@
-/* Test Polyhedron::relation_with(g): the system of constraints
-   of the polyhedron contains only an equality and the generator
-   `g' is a point.
+/* Test Polyhedron::relation_with(c): we apply this function
+   to a bounded polyhedron and with an equality.
    Copyright (C) 2001, 2002 Roberto Bagnara <bagnara@cs.unipr.it>
 
 This file is part of the Parma Polyhedra Library (PPL).
@@ -37,18 +36,27 @@ main() {
   set_handlers();
 
   Variable A(0);
-  
-  C_Polyhedron ph(2);
-  ph.add_constraint(A == 0);
+  Variable B(1);
 
-  Poly_Gen_Relation rel = ph.relation_with(point(2*A));
+  GenSys gs;
+  gs.insert(point(A + 0*B));
+  gs.insert(point(3*A));
+  C_Polyhedron ph(gs);
 
 #if NOISY
-  print_generators(ph, "--- ph ---");
-  cout << "ph.relation_with(point(2*A)) == " << rel << endl;
+  print_generators(ph, "*** ph ***");
 #endif
 
-  Poly_Gen_Relation known_result = Poly_Gen_Relation::nothing();
+  Poly_Con_Relation rel = ph.relation_with(B == 0);
 
-  return (rel == known_result) ? 0 : 1;
+  Poly_Con_Relation known_rel = Poly_Con_Relation::saturates()
+    && Poly_Con_Relation::is_included();
+ 
+  int retval = (rel == known_rel) ? 0 : 1;
+
+#if NOISY
+  cout << "ph.relation_with(B == 0) == " << rel << endl;
+#endif
+
+  return retval;
 }
