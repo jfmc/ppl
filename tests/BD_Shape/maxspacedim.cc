@@ -32,10 +32,17 @@ using namespace Parma_Polyhedra_Library;
 
 int
 main() TRY {
+#if 0
   BD_Shape<E_Rational> bd1(1);
   BD_Shape<E_NIT<long> > bd2(1);
   BD_Shape<E_NIT<int> > bd3(1);
   BD_Shape<E_NIT<signed char> > bd4(1);
+#else
+  BD_Shape<Checked_Number<mpq_class, Extended_Number_Policy> > bd1(1);
+  BD_Shape<Checked_Number<long, Extended_Number_Policy> > bd2(1);
+  BD_Shape<Checked_Number<int, Extended_Number_Policy> > bd3(1);
+  BD_Shape<Checked_Number<signed char, Extended_Number_Policy> > bd4(1);
+#endif
 
   dimension_type max_spacedim1 = bd1.max_space_dimension();
   dimension_type max_spacedim2 = bd2.max_space_dimension();

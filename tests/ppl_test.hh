@@ -30,4 +30,86 @@ site: http://www.cs.unipr.it/ppl/ . */
 #define C_Polyhedron NNC_Polyhedron
 #endif
 
-typedef Parma_Polyhedra_Library::BD_Shape<Parma_Polyhedra_Library::E_Rational> TBD_Shape;
+namespace Parma_Polyhedra_Library {
+
+#if 0
+typedef BD_Shape<E_Rational> TBD_Shape;
+#else
+typedef BD_Shape<Checked_Number<mpq_class, Extended_Number_Policy> > TBD_Shape;
+
+template <typename T, typename Policy>
+bool is_plus_infinity(const Checked_Number<T, Policy>& x) {
+  return x.classify(false, true, false) == VC_PLUS_INFINITY;
+}
+
+template <typename T, typename Policy>
+bool is_nan(const Checked_Number<T, Policy>& x) {
+  return x.classify(true, false, false) == VC_NAN;
+}
+
+template <typename T, typename Policy>
+bool is_negative(const Checked_Number<T, Policy>& x) {
+  return x.classify(false, false, true) == V_LT;
+}
+
+template <typename T, typename Policy>
+bool exact_neg(Checked_Number<T, Policy>& to, const Checked_Number<T, Policy>& x) {
+  return to.assign_neg(x, Rounding::IGNORE) == V_EQ;
+}
+
+template <typename To, typename To_Policy,
+	  typename From, typename From_Policy>
+void div_round_up(Checked_Number<To, To_Policy>& to,
+		  const Checked_Number<From, From_Policy>& x,
+		  const Checked_Number<From, From_Policy>& y) {
+  Rounding_State old;
+  Checked_Number<To, To_Policy> nx;
+  Rounding x_r(y < 0 ? Rounding::DOWN : Rounding::UP);
+  x_r.internal_save<To>(old);
+  nx.assign(x, x_r);
+  Checked_Number<To, To_Policy> ny;
+  Rounding y_r(x > 0 ? Rounding::DOWN : Rounding::UP);
+  y_r.internal_install<To>();
+  ny.assign(y, y_r);
+  Rounding to_r(Rounding::UP);
+  to_r.internal_install<To>();
+  to.assign_div(nx, ny, to_r);
+  to_r.internal_restore<To>(old);
+}
+
+template <typename T, typename Policy>
+void add_round_up(Checked_Number<T, Policy>& to,
+		  const Checked_Number<T, Policy>& x,
+		  const Checked_Number<T, Policy>& y) {
+  Rounding_State old;
+  Rounding mode(Rounding::UP);
+  mode.internal_save<T>(old);
+  to.assign_add(x, y, mode);
+  mode.internal_restore<T>(old);
+}
+
+template <typename T, typename Policy>
+void add_round_down(Checked_Number<T, Policy>& to,
+		    const Checked_Number<T, Policy>& x,
+		    const Checked_Number<T, Policy>& y) {
+  Rounding_State old;
+  Rounding mode(Rounding::DOWN);
+  mode.internal_save<T>(old);
+  to.assign_add(x, y, mode);
+  mode.internal_restore<T>(old);
+}
+
+template <typename T, typename Policy>
+void numer_denom(const Checked_Number<T, Policy>& from,
+		 Coefficient& num, Coefficient& den) {
+  if (from.classify(true, true, false) != VC_NORMAL)
+    abort();
+  mpq_class q;
+  Checked::assign<Checked::Transparent_Policy>(q, raw_value(from), Rounding::IGNORE);
+  q.canonicalize();
+  num = q.get_num();
+  den = q.get_den();
+}
+#endif
+
+}

@@ -564,7 +564,7 @@ DB_Row<T>::OK(const dimension_type row_size,
     const T& element = x[i];
     // Not OK is bad.
     // In addition, nans should never occur.
-    if (!element.OK() || element.is_nan()) {
+    if (!element.OK() || is_nan(element)) {
       is_broken = true;
       break;
     }
