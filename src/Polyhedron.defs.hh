@@ -325,8 +325,13 @@ public:
 			   const LinExpression& expr,
 			   Integer& denominator);
 
-  //! Checks if a polyhedron is allowed.
-  bool OK(bool check_satisfiable = true) const;
+  //! Checks if all the invariants are satisfied.
+  //! \param check_satisfiable   <CODE>true</CODE> if it must be checked
+  //!                           whether system of constraint is satisfiable.
+  //! \return       <CODE>true</CODE> if the polyhedron satisfies
+  //!               all the invariants stated in the PPL, 
+  //!               <CODE>false</CODE> otherwise.
+  bool OK(bool check_not_empty = true) const;
 
 private:
   //! Minimizes generators and constraints.

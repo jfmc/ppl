@@ -1629,13 +1629,6 @@ PPL::Polyhedron::check_universe() const {
 
 
 /*!
-  \param check_satisfiable   <CODE>true</CODE> if it must be checked
-                             whether system of constraint is satisfiable.
-
-  \return        <CODE>true</CODE> if the polyhedron satisfies
-                 all the invariants stated in the PPL, 
-                 <CODE>false</CODE> otherwise.
-  
   Checks if \p *this is really a polyhedron, i.e., excludes all the extreme
   cases.
 
@@ -1647,7 +1640,7 @@ PPL::Polyhedron::check_universe() const {
     minimized, when they are declared minimal.
 */
 bool
-PPL::Polyhedron::OK(bool check_satisfiable) const {
+PPL::Polyhedron::OK(bool check_not_empty) const {
   using std::endl;
   using std::cerr;
 
@@ -1722,10 +1715,15 @@ PPL::Polyhedron::OK(bool check_satisfiable) const {
   }
 
   if (generators_are_up_to_date()) {
+    // Check if the set of generators is well-formed. 
     if (!gen_sys.OK()) 
       goto bomb;
 
-    if (generators_are_minimized()) { 
+    if (generators_are_minimized()) {
+      // If the set of generators is minimized, the number of lines,
+      // rays and vertices of the polyhedron must be the same
+      // of the temporary minimized one. If it does not happen 
+      // the polyhedron is not ok.
       ConSys new_con_sys;
       GenSys copy_of_gen_sys = gen_sys;
       SatMatrix new_sat_c;
@@ -1776,6 +1774,7 @@ PPL::Polyhedron::OK(bool check_satisfiable) const {
   }
 
   if (constraints_are_up_to_date()) {
+    // Check if the system of constraints is well-formed.
     if (!con_sys.OK()) 
       goto bomb;
 
@@ -1784,7 +1783,7 @@ PPL::Polyhedron::OK(bool check_satisfiable) const {
     SatMatrix new_sat_g;
 
     if (minimize(true, copy_of_con_sys, new_gen_sys, new_sat_g)) {
-      if (check_satisfiable) {
+      if (check_not_empty) {
 	// Want to know the satisfiability of the constraints.
 	cerr << "Insoluble set of constraints!" << endl;
 	goto bomb;
@@ -1836,6 +1835,8 @@ PPL::Polyhedron::OK(bool check_satisfiable) const {
     }
   }
 
+  // If the polyhedron has both the system of constraints and
+  // the set of generators, they must have the same number of columns.
   if (constraints_are_up_to_date() && generators_are_up_to_date()
       && con_sys.num_columns() != gen_sys.num_columns()) {
     cerr << "Constraints and generators of different dimensions:" << endl

@@ -158,8 +158,7 @@ PPL_INTERNAL:
   //! Returns the number of the inequality constraints.
   size_t num_inequalities() const;
 
-  //! Checks if the system of constraints is consistent with 
-  //! respect to the rules fixed for the PPL.
+  //! Checks if all the invariants are satisfied.
   bool OK() const;
 
  private:

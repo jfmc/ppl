@@ -120,7 +120,8 @@ public:
 
   //! Returns <CODE>true</CODE> if no bit is set in the row.
   bool empty() const;
-
+  
+  //! Checks if all the invariants are satisfied
   bool OK() const;
 };
 

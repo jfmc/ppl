@@ -214,7 +214,8 @@ PPL::operator >>(std::istream& s, SatMatrix& x) {
 }
 
 /*!
-  Checks if \p *this satisfies the stated invariants of the PPL.
+  Returns <CODE>true</CODE> if and only if \p *this actually represents
+  a saturation matrix.
 */
 bool
 PPL::SatMatrix::OK() const {

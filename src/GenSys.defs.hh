@@ -234,8 +234,7 @@ PPL_INTERNAL:
   //! Returns the number of rays of the system.
   size_t num_rays() const;
 
-  //! Returns <CODE>true</CODE> if the system of generators is consistent with 
-  //! respect to the rules fixed for the PPL.
+  //! Checks if all the invariants are satisfied.
   bool OK() const;
 
 private:

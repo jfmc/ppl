@@ -117,7 +117,7 @@ public:
   void set_sat_g_up_to_date();
   //@}
 
-  //! Check whether \p *this is a legal status.
+  //! Checks if all the invariants are satisfied.
   bool OK() const;
 
 private:

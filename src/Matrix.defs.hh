@@ -209,9 +209,7 @@ public:
   //! the complexity of the matrix.
   void back_substitute(size_t rank);
 
-  //! Returns <CODE>true</CODE> if the matrix is 
-  //! consistent with respect to the rules fixed for 
-  //! the PPL, <CODE>false</CODE> otherwise.
+  //! Checks if all the invariants are satisfied.
   bool OK() const;
 };
 
