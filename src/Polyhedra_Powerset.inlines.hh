@@ -46,7 +46,7 @@ Polyhedra_Powerset<PH>::Polyhedra_Powerset(dimension_type num_dimensions,
 					   Polyhedron::Degenerate_Kind kind)
   : space_dim(num_dimensions) {
   if (kind == Polyhedron::UNIVERSE)
-    push_back(Determinate<PH>(num_dimensions, true));
+    Base::push_back(Determinate<PH>(num_dimensions, true));
 }
 
 template <typename PH>
@@ -67,7 +67,7 @@ Polyhedra_Powerset<NNC_Polyhedron>
   : space_dim(y.space_dimension()) {
   for (Polyhedra_Powerset<C_Polyhedron>::const_iterator i = y.begin(),
 	 y_end = y.end(); i != y_end; ++i)
-    push_back(Determinate<NNC_Polyhedron>(NNC_Polyhedron(i->element())));
+    Base::push_back(Determinate<NNC_Polyhedron>(NNC_Polyhedron(i->element())));
 }
 
 template <>
@@ -78,7 +78,7 @@ Polyhedra_Powerset<C_Polyhedron>
   : space_dim(y.space_dimension()) {
   for (Polyhedra_Powerset<NNC_Polyhedron>::const_iterator i = y.begin(),
 	 y_end = y.end(); i != y_end; ++i)
-    push_back(Determinate<C_Polyhedron>(C_Polyhedron(i->element())));
+    Base::push_back(Determinate<C_Polyhedron>(C_Polyhedron(i->element())));
 }
 
 template <typename PH>
