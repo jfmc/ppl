@@ -1,9 +1,6 @@
 Enhancements for PPL 0.6
 ========================
 
-- Before releasing PPL 0.6, modify the documentation and the web site
-  so as to describe the new configure options that allow to use
-  versions of GMP installed in nonstandard places.
 - Clearly explain, in the documentation, how (not) to use
   set_GMP_memory_allocation_functions().  More generally, explain how
   to have memory-guarded computations.

@@ -36,6 +36,62 @@ The PPL-specific aspects of the configuration, compilation and
 installation process are discussed in the following sections.
 
 
+Using the Right Version of GMP
+------------------------------
+
+In order to use this version of the PPL you must make sure that:
+
+(1) GMP version 4.1.3 or later is installed on your system;
+(2) that this version was compiled with the C++ interface enabled;
+(3) that this C++ interface was compiled with the same compiler
+    version with which you will compile the PPL;
+(4) that your C and C++ compilers and your linker will found _that_
+   version of GMP and not others that may be present in your system.
+
+Since the binary distributions of GMP most likely contain a version
+that was compiled with the C++ interface disabled, or compiled with
+a C++ compiler implementing a different ABI than the compiler you
+will use to compile the PPL, the only reliable solution to points
+(1), (2) and (3) above is to visit GMP's home page at
+
+    http://www.swox.com/gmp/
+
+and download the last available version.  Then decide where to install
+it and call this place in your file system <GMP prefix>.  Then, unless
+you have special needs, you can invoke the GMP's configure script with
+the options
+
+    --prefix=/usr/local --enable-cxx
+
+If the C++ compiler you will use to compile the PPL is not the default
+on your system then, in order to satisfy point (3) above, you should
+set the `CXX', `CXXFLAGS' and `CXXCPP' environment variables so as to
+use the intended compiler with the intended options.  See the file
+`INSTALL.autoconf' in the GMP distribution for more on this subject.
+
+In case you want to use the PPL ability to recover from out-of-memory
+situations, you should use a version of GMP compiled with GCC (which
+implies you should then compile also the PPL with GCC) using the
+`-fexceptions' option.  To build such a version, you can use the
+`CPPFLAGS' environment variable, so that it contains (among possibly
+other compiler options) `-fexceptions'.  Again, see `INSTALL.autoconf'
+in the GMP distribution for more on using environment variables to
+influence the configure script.
+
+In order to achieve point (4) above, if the directory <GMP prefix>
+is not standard for your compiler and/or for your linker, you will
+have to make sure the configure script of the PPL is invoked with,
+among others, the option
+
+    --with-libgmpxx-prefix=<GMP prefix>
+
+In case you use shared libraries, consult the documentation of your
+dynamic linker/loader (`man ld.so' will do on most Un*x-like systems)
+to see how to make sure that GMP's shared library will be found at
+runtime (setting the environment variable `LD_LIBRARY_PATH' to "<GMP
+prefix>/lib:$LD_LIBRARY_PATH" is the most commonly used solution).
+
+
 Using the Right C++ and C Compilers
 -----------------------------------
 
@@ -61,11 +117,7 @@ Using the Right C++ and C Compilers
 	--with-libgmpxx-prefix=-I/opt/intel_cc_80/lib --prefix=/opt/intel_cc_80
 
 
-Using the Right Version of GMP
-------------------------------
 
-Describe the new configure options that allow to use
-versions of GMP installed in nonstandard places.
 
 
 --------
