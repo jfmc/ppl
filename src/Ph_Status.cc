@@ -162,46 +162,86 @@ PPL::Polyhedron::Status::ascii_load(std::istream& s) {
 
 bool
 PPL::Polyhedron::Status::OK() const {
+#ifndef NDEBUG
+  using std::endl;
+  using std::cerr;
+#endif
+
   if (test_zero_dim_univ())
     // Zero-dim universe is OK.
     return true;
 
   if (test_empty()) {
-    // The empty flag is incompatible with any other one.
     Status copy = *this;
     copy.reset_empty();
-    return copy.test_zero_dim_univ();
+    if (copy.test_zero_dim_univ())
+      return true;
+    else {
+#ifndef NDEBUG
+      cerr << "The empty flag is incompatible with any other one."
+	   << endl;
+#endif
+      return false;
+    }
   }
 
   if ((test_sat_c_up_to_date() || test_sat_g_up_to_date())
-      && !(test_c_up_to_date() && test_g_up_to_date()))
-    // If a saturation matrix is up-to-date, constraints and
-    // generators have to be both up-to-date.
+      && !(test_c_up_to_date() && test_g_up_to_date())) {
+#ifndef NDEBUG
+    cerr <<
+      "If a saturation matrix is up-to-date, constraints and\n"
+      "generators have to be both up-to-date."
+	 << endl;
+#endif
     return false;
+  }
 
-  if (test_c_minimized() && !test_c_up_to_date())
-    // If constraints are minimized they must be up-to-date.
+  if (test_c_minimized() && !test_c_up_to_date()) {
+#ifndef NDEBUG
+    cerr << "If constraints are minimized they must be up-to-date."
+	 << endl;
+#endif
     return false;
+  }
 
-  if (test_g_minimized() && !test_g_up_to_date())
-    // If generators are minimized they must be up-to-date.
+  if (test_g_minimized() && !test_g_up_to_date()) {
+#ifndef NDEBUG
+    cerr << "If generators are minimized they must be up-to-date."
+	 << endl;
+#endif
     return false;
+  }
 
-  if (test_c_pending() && test_g_pending())
-    // It is impossible that there are both pending constraints
-    // and pending generators.
+  if (test_c_pending() && test_g_pending()) {
+#ifndef NDEBUG
+    cerr << "There cannot be both pending constraints and pending generators."
+	 << endl;
+#endif
     return false;
+  }
 
   if (test_c_pending() || test_g_pending()) {
-    if (!test_c_minimized() || !test_g_minimized())
-      // If there are pending, constraints and generators
-      // must be minimized.
+    if (!test_c_minimized() || !test_g_minimized()) {
+#ifndef NDEBUG
+    cerr <<
+      "If there are pending constraints or generators, constraints\n"
+      "and generators must be minimized."
+	 << endl;
+#endif
       return false;
-    if (!test_sat_c_up_to_date() && !test_sat_g_up_to_date())
-      // If there are pending, there must be at least
-      // a saturation matrix up-to-date.
+    }
+
+    if (!test_sat_c_up_to_date() && !test_sat_g_up_to_date()) {
+#ifndef NDEBUG
+    cerr <<
+      "If there are pending constraints or generators, there must\n"
+      "be at least a saturation matrix up-to-date."
+	 << endl;
+#endif
       return false;
+    }
   }
+
   // Any other case is OK.
   return true;
 }

@@ -389,13 +389,9 @@ PPL::Polyhedron::OK(bool check_not_empty) const {
   if (!sat_g.OK())
     goto bomb;
 
-  // Checks the possible meaningful status combinations.
-  if (!status.OK()) {
-#ifndef NDEBUG
-    cerr << "Wrong status!" << endl;
-#endif
+  // Check whether the status information is legal.
+  if (!status.OK())
     goto bomb;
-  }
 
   if (marked_empty()) {
     if (check_not_empty) {
