@@ -27,6 +27,11 @@ using namespace std;
 using namespace Parma_Polyhedra_Library;
 using namespace Parma_Polyhedra_Library::IO_Operators;
 
+namespace Parma_Polyhedra_Library {
+  // Import all the output operators into the main PPL namespace.
+  using IO_Operators::operator<<;
+}
+
 #ifndef NOISY
 #define NOISY 0
 #endif
