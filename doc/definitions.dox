@@ -443,12 +443,12 @@ and the widenings described in this paper.
 In particular:
 
  - we allow for equalities whereas the original definition is restricted to
-    inequalities;
+   inequalities;
  - The original definition assumes the polyhedra 
    are closed whereas we assume NNC polyhedra;
- - The widening operators for the NNC polyhedron \f$P\f$ with 
-   NNC polyhedron \f$P'\f$ requires as a precondition that
-   \f$P' \sseq P\f$.
+ - Our CC92-widening operators for the NNC polyhedron \f$P\f$ with 
+   NNC polyhedron \f$P'\f$ require as a precondition that
+   they have the same topology and that \f$P' \sseq P\f$.
 
 
 <B>Time-Elapse Operator</B>
