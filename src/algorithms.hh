@@ -32,19 +32,6 @@ site: http://www.cs.unipr.it/ppl/ . */
 
 namespace Parma_Polyhedra_Library {
 
-template <typename PH>
-void
-linear_partition_aux(const Constraint& c,
-		     PH& qq,
-		     PowerSet<Determinate<NNC_Polyhedron> >& r) {
-  LinExpression le(c);
-  Constraint neg_c = c.is_strict_inequality() ? (le <= 0) : (le < 0);
-  NNC_Polyhedron qqq(qq);
-  if (qqq.add_constraint_and_minimize(neg_c))
-    r.inject(qqq);
-  qq.add_constraint(c);
-}
-
 //! Partitions \p q with respect to \p p.
 /*!
   Let \p p and \p q be two polyhedra.
@@ -67,6 +54,37 @@ linear_partition_aux(const Constraint& c,
 */
 template <typename PH>
 std::pair<PH, PowerSet<Determinate<NNC_Polyhedron> > >
+linear_partition(const PH& p, const PH& q);
+
+template <typename PH>
+void
+H79_widening_assign(PowerSet<Determinate<PH> >& r,
+		    const PowerSet<Determinate<PH> >& q);
+
+template <typename PH>
+void
+BBRZ02_widening_assign(PowerSet<Determinate<PH> >& r,
+		       const PowerSet<Determinate<PH> >& q);
+
+namespace {
+
+template <typename PH>
+void
+linear_partition_aux(const Constraint& c,
+		     PH& qq,
+		     PowerSet<Determinate<NNC_Polyhedron> >& r) {
+  LinExpression le(c);
+  Constraint neg_c = c.is_strict_inequality() ? (le <= 0) : (le < 0);
+  NNC_Polyhedron qqq(qq);
+  if (qqq.add_constraint_and_minimize(neg_c))
+    r.inject(qqq);
+  qq.add_constraint(c);
+}
+
+} // namespace
+
+template <typename PH>
+std::pair<PH, PowerSet<Determinate<NNC_Polyhedron> > >
 linear_partition(const PH& p, const PH& q) {
   PowerSet<Determinate<NNC_Polyhedron> > r(p.space_dimension(), false);
   PH qq = q;
@@ -84,6 +102,8 @@ linear_partition(const PH& p, const PH& q) {
   }
   return std::pair<PH, PowerSet<Determinate<NNC_Polyhedron> > >(qq, r);
 }
+
+namespace {
 
 template <typename PH>
 bool
@@ -178,6 +198,8 @@ widening_assign(PowerSet<Determinate<PH> >& r,
       p.inject(*i);
   r = p;
 }
+
+} // namespace
 
 template <typename PH>
 void
