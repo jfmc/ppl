@@ -51,18 +51,18 @@ ConSys::~ConSys() {
 }
 
 inline ConSys&
-ConSys::operator =(const ConSys& y) {
-  Matrix::operator =(y);
+ConSys::operator=(const ConSys& y) {
+  Matrix::operator=(y);
   return *this;
 }
 
 inline Constraint&
-ConSys::operator [](size_t k) {
+ConSys::operator[](size_t k) {
   return static_cast<Constraint&> (Matrix::operator[](k));
 }
 
 inline const Constraint&
-ConSys::operator [](size_t k) const {
+ConSys::operator[](size_t k) const {
   return static_cast<const Constraint&> (Matrix::operator[](k));
 }
 
@@ -103,43 +103,43 @@ ConSys::const_iterator::~const_iterator() {
 }
 
 inline ConSys::const_iterator&
-ConSys::const_iterator::operator =(const const_iterator& y) {
+ConSys::const_iterator::operator=(const const_iterator& y) {
   i = y.i;
   csp = y.csp;
   return *this;
 }
 
 inline const Constraint&
-ConSys::const_iterator::operator *() const {
+ConSys::const_iterator::operator*() const {
   return static_cast<const Constraint&>(*i);
 }
 
 inline const Constraint*
-ConSys::const_iterator::operator ->() const {
-  return static_cast<const Constraint*>(i.operator ->());
+ConSys::const_iterator::operator->() const {
+  return static_cast<const Constraint*>(i.operator->());
 }
 
 inline ConSys::const_iterator&
-ConSys::const_iterator::operator ++() {
+ConSys::const_iterator::operator++() {
   ++i;
   skip_forward();
   return *this;
 }
 
 inline ConSys::const_iterator
-ConSys::const_iterator::operator ++(int) {
+ConSys::const_iterator::operator++(int) {
   const_iterator tmp = *this;
-  operator ++();
+  operator++();
   return tmp;
 }
 
 inline bool
-ConSys::const_iterator::operator ==(const const_iterator& y) const {
+ConSys::const_iterator::operator==(const const_iterator& y) const {
   return i == y.i;
 }
 
 inline bool
-ConSys::const_iterator::operator !=(const const_iterator& y) const {
+ConSys::const_iterator::operator!=(const const_iterator& y) const {
   return i != y.i;
 }
 

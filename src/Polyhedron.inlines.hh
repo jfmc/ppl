@@ -231,27 +231,27 @@ Polyhedron::clear_generators_up_to_date() {
 }
 
 inline bool
-operator ==(const Polyhedron& x, const Polyhedron& y) {
+operator==(const Polyhedron& x, const Polyhedron& y) {
   return x <= y && y <= x;
 }
 
 inline bool
-operator !=(const Polyhedron& x, const Polyhedron& y) {
+operator!=(const Polyhedron& x, const Polyhedron& y) {
   return !(x == y);
 }
 
 inline bool
-operator >=(const Polyhedron& x, const Polyhedron& y) {
+operator>=(const Polyhedron& x, const Polyhedron& y) {
   return y <= x;
 }
 
 inline bool
-operator <(const Polyhedron& x, const Polyhedron& y) {
+operator<(const Polyhedron& x, const Polyhedron& y) {
   return x <= y && x != y;
 }
 
 inline bool
-operator >(const Polyhedron& x, const Polyhedron& y) {
+operator>(const Polyhedron& x, const Polyhedron& y) {
   return y < x;
 }
 

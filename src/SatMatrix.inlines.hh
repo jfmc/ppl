@@ -86,7 +86,7 @@ SatMatrix::swap(SatMatrix& y) {
   Returns a reference to the \p k -th row.
 */
 inline SatRow&
-SatMatrix::operator [](size_t k) {
+SatMatrix::operator[](size_t k) {
   assert(k < rows.size());
   return rows[k];
 }
@@ -95,7 +95,7 @@ SatMatrix::operator [](size_t k) {
   Returns a constant reference to the \p k -th row.
 */
 inline const SatRow&
-SatMatrix::operator [](size_t k) const {
+SatMatrix::operator[](size_t k) const {
   assert(k < rows.size());
   return rows[k];
 }
@@ -118,13 +118,13 @@ SatMatrix::clear() {
 }
 
 inline bool
-operator !=(const SatMatrix& x, const SatMatrix& y) {
+operator!=(const SatMatrix& x, const SatMatrix& y) {
   return !(x == y);
 }
 
 inline bool
 SatMatrix::RowCompare::
-operator ()(const SatRow& x, const SatRow& y) const {
+operator()(const SatRow& x, const SatRow& y) const {
   return compare(x, y) < 0;
 }
 

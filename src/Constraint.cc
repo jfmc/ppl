@@ -43,7 +43,7 @@ PPL::Constraint::throw_dimension_incompatible(const char* method,
 }
 
 PPL::Constraint
-PPL::operator >>(const Constraint& y, unsigned int offset) {
+PPL::operator>>(const Constraint& y, unsigned int offset) {
   size_t y_size = y.size();
   Constraint x(y.Row::type(), y_size+offset);
   x[0] = y[0];
@@ -79,7 +79,7 @@ PPL::Constraint::is_trivial_false() const {
 }
 
 std::ostream&
-PPL::operator <<(std::ostream& s, const Constraint& c) {
+PPL::operator<<(std::ostream& s, const Constraint& c) {
   int num_variables = c.size()-1;
   bool first = true;
   for (int v = 0; v < num_variables; ++v) {

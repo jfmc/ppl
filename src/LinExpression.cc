@@ -29,7 +29,7 @@ site: http://www.cs.unipr.it/ppl/ . */
 namespace Parma_Polyhedra_Library {
 
 LinExpression
-operator +(const LinExpression& e1, const LinExpression& e2) {
+operator+(const LinExpression& e1, const LinExpression& e2) {
   size_t e1_size = e1.size();
   size_t e2_size = e2.size();
   size_t min_size;
@@ -62,7 +62,7 @@ operator +(const LinExpression& e1, const LinExpression& e2) {
 
 
 LinExpression
-operator +(const Integer& n, const LinExpression& e) {
+operator+(const Integer& n, const LinExpression& e) {
   LinExpression r(e);
   r[0] += n;
   return r;
@@ -70,7 +70,7 @@ operator +(const Integer& n, const LinExpression& e) {
 
 
 LinExpression
-operator -(const LinExpression& e) {
+operator-(const LinExpression& e) {
   LinExpression r(e);
   for (size_t i = e.size(); i-- > 0; )
     negate(r[i]);
@@ -79,7 +79,7 @@ operator -(const LinExpression& e) {
 
 
 LinExpression
-operator -(const LinExpression& e1, const LinExpression& e2) {
+operator-(const LinExpression& e1, const LinExpression& e2) {
   size_t e1_size = e1.size();
   size_t e2_size = e2.size();
   if (e1_size > e2_size) {
@@ -112,7 +112,7 @@ operator -(const LinExpression& e1, const LinExpression& e2) {
 
 
 LinExpression
-operator -(const Integer& n, const LinExpression& e) {
+operator-(const Integer& n, const LinExpression& e) {
   LinExpression r(e);
   for (size_t i = e.size(); i-- > 0; )
     negate(r[i]);
@@ -123,7 +123,7 @@ operator -(const Integer& n, const LinExpression& e) {
 
 
 LinExpression
-operator *(const Integer& n, const LinExpression& e) {
+operator*(const Integer& n, const LinExpression& e) {
   LinExpression r(e);
   for (size_t i = e.size(); i-- > 0; )
     r[i] *= n;
@@ -132,7 +132,7 @@ operator *(const Integer& n, const LinExpression& e) {
 
 
 LinExpression&
-operator +=(LinExpression& e1, const LinExpression& e2) {
+operator+=(LinExpression& e1, const LinExpression& e2) {
   size_t e1_size = e1.size();
   size_t e2_size = e2.size();
   if (e1_size >= e2_size)
@@ -149,7 +149,7 @@ operator +=(LinExpression& e1, const LinExpression& e2) {
 
 
 LinExpression&
-operator +=(LinExpression& e, const Variable& v) {
+operator+=(LinExpression& e, const Variable& v) {
   size_t e_size = e.size();
   size_t vpos = v.id() + 1;
   if (e_size <= vpos) {

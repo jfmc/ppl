@@ -47,7 +47,7 @@ private:
   size_t row_size;
 
   struct RowCompare {
-    bool operator ()(const SatRow& x, const SatRow& y) const;
+    bool operator()(const SatRow& x, const SatRow& y) const;
   };
 
 public:
@@ -62,15 +62,15 @@ public:
   ~SatMatrix();
 
   //! Assignment operator.
-  SatMatrix& operator =(const SatMatrix& y);
+  SatMatrix& operator=(const SatMatrix& y);
 
   //! Swaps \p *this with \p y.
   void swap(SatMatrix& y);
 
   //! Subscript operator.
-  SatRow& operator [](size_t k);
+  SatRow& operator[](size_t k);
   //! Subscript operator.
-  const SatRow& operator [](size_t k) const;
+  const SatRow& operator[](size_t k) const;
 
   //! Clears the matrix deallocating all its rows.
   void clear();
@@ -130,24 +130,24 @@ namespace Parma_Polyhedra_Library {
   //! \p x and \p y are identical.
   /*! \relates SatMatrix */
 #endif // PPL_DOXYGEN_INCLUDE_IMPLEMENTATION_DETAILS
-  bool operator ==(const SatMatrix& x, const SatMatrix& y);
+  bool operator==(const SatMatrix& x, const SatMatrix& y);
 #ifdef PPL_DOXYGEN_INCLUDE_IMPLEMENTATION_DETAILS
   //! Returns <CODE>true</CODE> if and only if
   //! \p x and \p y are different.
   /*! \relates SatMatrix */
 #endif // PPL_DOXYGEN_INCLUDE_IMPLEMENTATION_DETAILS
-  bool operator !=(const SatMatrix& x, const SatMatrix& y);
+  bool operator!=(const SatMatrix& x, const SatMatrix& y);
 
 #ifdef PPL_DOXYGEN_INCLUDE_IMPLEMENTATION_DETAILS
   //! Input operator.
   /*! \relates SatMatrix */
 #endif // PPL_DOXYGEN_INCLUDE_IMPLEMENTATION_DETAILS
-  std::ostream& operator <<(std::ostream& s, const SatMatrix& x);
+  std::ostream& operator<<(std::ostream& s, const SatMatrix& x);
 #ifdef PPL_DOXYGEN_INCLUDE_IMPLEMENTATION_DETAILS
   //! Output operator.
   /*! \relates SatMatrix */
 #endif // PPL_DOXYGEN_INCLUDE_IMPLEMENTATION_DETAILS
-  std::istream& operator >>(std::istream& s, SatMatrix& x);
+  std::istream& operator>>(std::istream& s, SatMatrix& x);
 }
 
 #include "SatMatrix.inlines.hh"

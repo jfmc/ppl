@@ -64,7 +64,7 @@ PPL::Poly_Con_Relation::print(std::ostream& s) const {
 }
 
 std::ostream&
-PPL::operator <<(std::ostream& s, const Poly_Con_Relation& r) {
+PPL::operator<<(std::ostream& s, const Poly_Con_Relation& r) {
   r.print(s);
   return s;
 }

@@ -58,7 +58,7 @@ Matrix::~Matrix() {
   Returns a reference to the \p k-th row of the matrix.
 */
 inline Row&
-Matrix::operator [](size_t k) {
+Matrix::operator[](size_t k) {
   assert(k < rows.size());
   return rows[k];
 }
@@ -68,7 +68,7 @@ Matrix::operator [](size_t k) {
   Returns a constant reference to the \p k-th row of the matrix.
 */
 inline const Row&
-Matrix::operator [](size_t k) const {
+Matrix::operator[](size_t k) const {
   assert(k < rows.size());
   return rows[k];
 }
@@ -115,7 +115,7 @@ Matrix::num_rows() const {
 
 
 inline bool
-operator !=(const Matrix& x, const Matrix& y) {
+operator!=(const Matrix& x, const Matrix& y) {
   return !(x == y);
 }
 

@@ -106,7 +106,7 @@ Constraint::zero_dim_positivity() {
 }
 
 inline Constraint
-operator ==(const LinExpression& e1, const LinExpression& e2) {
+operator==(const LinExpression& e1, const LinExpression& e2) {
   LinExpression diff = e1 - e2;
   Constraint c(diff);
   c.set_is_equality();
@@ -114,7 +114,7 @@ operator ==(const LinExpression& e1, const LinExpression& e2) {
 }
 
 inline Constraint
-operator >=(const LinExpression& e1, const LinExpression& e2) {
+operator>=(const LinExpression& e1, const LinExpression& e2) {
   LinExpression diff = e1 - e2;
   Constraint c(diff);
   c.set_is_inequality();
@@ -122,7 +122,7 @@ operator >=(const LinExpression& e1, const LinExpression& e2) {
 }
 
 inline Constraint
-operator ==(const Integer& n, const LinExpression& e) {
+operator==(const Integer& n, const LinExpression& e) {
   LinExpression diff = n - e;
   Constraint c(diff);
   c.set_is_equality();
@@ -130,7 +130,7 @@ operator ==(const Integer& n, const LinExpression& e) {
 }
 
 inline Constraint
-operator >=(const Integer& n, const LinExpression& e) {
+operator>=(const Integer& n, const LinExpression& e) {
   LinExpression diff = n - e;
   Constraint c(diff);
   c.set_is_inequality();
@@ -138,7 +138,7 @@ operator >=(const Integer& n, const LinExpression& e) {
 }
 
 inline Constraint
-operator ==(const LinExpression& e, const Integer& n) {
+operator==(const LinExpression& e, const Integer& n) {
   LinExpression diff = e - n;
   Constraint c(diff);
   c.set_is_equality();
@@ -146,7 +146,7 @@ operator ==(const LinExpression& e, const Integer& n) {
 }
 
 inline Constraint
-operator >=(const LinExpression& e, const Integer& n) {
+operator>=(const LinExpression& e, const Integer& n) {
   LinExpression diff = e - n;
   Constraint c(diff);
   c.set_is_inequality();
@@ -154,17 +154,17 @@ operator >=(const LinExpression& e, const Integer& n) {
 }
 
 inline Constraint
-operator <=(const LinExpression& e1, const LinExpression& e2) {
+operator<=(const LinExpression& e1, const LinExpression& e2) {
   return e2 >= e1;
 }
 
 inline Constraint
-operator <=(const Integer& n, const LinExpression& e) {
+operator<=(const Integer& n, const LinExpression& e) {
   return e >= n;
 }
 
 inline Constraint
-operator <=(const LinExpression& e, const Integer& n) {
+operator<=(const LinExpression& e, const Integer& n) {
   return n >= e;
 }
 

@@ -34,7 +34,7 @@ site: http://www.cs.unipr.it/ppl/ . */
 namespace PPL = Parma_Polyhedra_Library;
 
 PPL::SatMatrix&
-PPL::SatMatrix::operator =(const SatMatrix& y){
+PPL::SatMatrix::operator=(const SatMatrix& y){
   rows = y.rows;
   row_size = y.row_size;
   assert(OK());
@@ -155,7 +155,7 @@ PPL::SatMatrix::resize(size_t new_num_rows, size_t new_num_columns) {
   to \p y.
 */
 bool
-PPL::operator ==(const SatMatrix& x, const SatMatrix& y) {
+PPL::operator==(const SatMatrix& x, const SatMatrix& y) {
   assert(x.OK());
   assert(y.OK());
   if (x.num_columns() != y.num_columns())
@@ -197,7 +197,7 @@ PPL::SatMatrix::sorted_contains(const SatRow& row) const {
   Raw output function.
 */
 std::ostream&
-PPL::operator <<(std::ostream& s, const SatMatrix& x) {
+PPL::operator<<(std::ostream& s, const SatMatrix& x) {
   using std::endl;
 
   const char separator = ' ';
@@ -215,7 +215,7 @@ PPL::operator <<(std::ostream& s, const SatMatrix& x) {
   Raw input function.
 */
 std::istream&
-PPL::operator >>(std::istream& s, SatMatrix& x) {
+PPL::operator>>(std::istream& s, SatMatrix& x) {
   size_t nrows;
   size_t ncols;
   std::string tempstr;

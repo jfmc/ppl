@@ -34,22 +34,22 @@ namespace Parma_Polyhedra_Library {
 
   //! Output operator.
   /*! \relates Constraint */
-  std::ostream& operator <<(std::ostream& s, const Constraint& c);
+  std::ostream& operator<<(std::ostream& s, const Constraint& c);
 
   // Put them in the namespace here to declare them friend later.
-  Constraint operator ==(const LinExpression& e1, const LinExpression& e2);
-  Constraint operator ==(const LinExpression& e, const Integer& n);
-  Constraint operator ==(const Integer& n, const LinExpression& e);
+  Constraint operator==(const LinExpression& e1, const LinExpression& e2);
+  Constraint operator==(const LinExpression& e, const Integer& n);
+  Constraint operator==(const Integer& n, const LinExpression& e);
 
-  Constraint operator <=(const LinExpression& e1, const LinExpression& e2);
-  Constraint operator <=(const LinExpression& e, const Integer& n);
-  Constraint operator <=(const Integer& n, const LinExpression& e);
+  Constraint operator<=(const LinExpression& e1, const LinExpression& e2);
+  Constraint operator<=(const LinExpression& e, const Integer& n);
+  Constraint operator<=(const Integer& n, const LinExpression& e);
 
-  Constraint operator >=(const LinExpression& e1, const LinExpression& e2);
-  Constraint operator >=(const LinExpression& e, const Integer& n);
-  Constraint operator >=(const Integer& n, const LinExpression& e);
+  Constraint operator>=(const LinExpression& e1, const LinExpression& e2);
+  Constraint operator>=(const LinExpression& e, const Integer& n);
+  Constraint operator>=(const Integer& n, const LinExpression& e);
 
-  Constraint operator >>(const Constraint& c, unsigned int offset);
+  Constraint operator>>(const Constraint& c, unsigned int offset);
 }
 
 //! A linear equality or inequality.
@@ -153,53 +153,53 @@ private:
 
   //! Returns the constraint \p e1 = \p e2.
   friend Constraint
-  Parma_Polyhedra_Library::operator ==(const LinExpression& e1,
+  Parma_Polyhedra_Library::operator==(const LinExpression& e1,
 				       const LinExpression& e2);
 
   //! Returns the constraint \p e = \p n.
   friend Constraint
-  Parma_Polyhedra_Library::operator ==(const LinExpression& e,
+  Parma_Polyhedra_Library::operator==(const LinExpression& e,
 				       const Integer& n);
 
   //! Returns the constraint \p n = \p e.
   friend Constraint
-  Parma_Polyhedra_Library::operator ==(const Integer& n,
+  Parma_Polyhedra_Library::operator==(const Integer& n,
 				       const LinExpression& e);
 
   //! Returns the constraint \p e1 >= \p e2.
   friend Constraint
-  Parma_Polyhedra_Library::operator >=(const LinExpression& e1,
+  Parma_Polyhedra_Library::operator>=(const LinExpression& e1,
 				       const LinExpression& e2);
 
   //! Returns the constraint \p e >= \p n.
   friend Constraint
-  Parma_Polyhedra_Library::operator >=(const LinExpression& e,
+  Parma_Polyhedra_Library::operator>=(const LinExpression& e,
 				       const Integer& n);
 
   //! Returns the constraint \p n >= \p e.
   friend Constraint
-  Parma_Polyhedra_Library::operator >=(const Integer& n,
+  Parma_Polyhedra_Library::operator>=(const Integer& n,
 				       const LinExpression& e);
 
   //! Returns the constraint \p e1 <= \p e2.
   friend Constraint
-  Parma_Polyhedra_Library::operator <=(const LinExpression& e1,
+  Parma_Polyhedra_Library::operator<=(const LinExpression& e1,
 				       const LinExpression& e2);
 
   //! Returns the constraint \p e <= \p n.
   friend Constraint
-  Parma_Polyhedra_Library::operator <=(const LinExpression& e,
+  Parma_Polyhedra_Library::operator<=(const LinExpression& e,
 				       const Integer& n);
 
   //! Returns the constraint \p n <= \p e.
   friend Constraint
-  Parma_Polyhedra_Library::operator <=(const Integer& n,
+  Parma_Polyhedra_Library::operator<=(const Integer& n,
 				       const LinExpression& e);
 
   //! Returns the constraint \p c with variables renamed
   //! by adding \p offset to their Cartesian axis identifier.
   friend Constraint
-  Parma_Polyhedra_Library::operator >>(const Constraint& c,
+  Parma_Polyhedra_Library::operator>>(const Constraint& c,
 				       unsigned int offset);
 
 public:
@@ -210,7 +210,7 @@ public:
   ~Constraint();
 
   //! Assignment operator.
-  Constraint& operator =(const Constraint& c);
+  Constraint& operator=(const Constraint& c);
 
   //! Returns the dimension of the vector space enclosing \p *this.
   size_t space_dimension() const;

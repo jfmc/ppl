@@ -76,22 +76,22 @@ LinExpression::zero() {
 }
 
 inline LinExpression
-operator +(const LinExpression& e, const Integer& n) {
+operator+(const LinExpression& e, const Integer& n) {
   return n + e;
 }
 
 inline LinExpression
-operator -(const LinExpression& e, const Integer& n) {
+operator-(const LinExpression& e, const Integer& n) {
   return -n + e;
 }
 
 inline LinExpression
-operator *(const LinExpression& e, const Integer& n) {
+operator*(const LinExpression& e, const Integer& n) {
   return n * e;
 }
 
 inline LinExpression&
-operator +=(LinExpression& e, const Integer& n) {
+operator+=(LinExpression& e, const Integer& n) {
   e[0] += n;
   return e;
 }

@@ -45,7 +45,7 @@ static const char no = '-';
 static const char sep = ' ';
 
 std::ostream&
-PPL::operator <<(std::ostream& s, const Status& u) {
+PPL::operator<<(std::ostream& s, const Status& u) {
   s << (u.test_zero_dim_univ() ? yes : no) << zero_dim_univ << sep
     << (u.test_empty() ? yes : no) << empty << sep
     << sep
@@ -80,7 +80,7 @@ get_field(std::istream& s, const std::string&
 }
 
 std::istream&
-PPL::operator >>(std::istream& s, Status& u) {
+PPL::operator>>(std::istream& s, Status& u) {
   if (get_field(s, zero_dim_univ))
     u.set_zero_dim_univ();
 

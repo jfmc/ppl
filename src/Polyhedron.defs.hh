@@ -41,36 +41,36 @@ namespace Parma_Polyhedra_Library {
   //! \exception std::invalid_argument thrown if \p x and \p y
   //!                                  are dimension-incompatible.
   /*! \relates Polyhedron */
-  bool operator ==(const Polyhedron& x, const Polyhedron& y);
+  bool operator==(const Polyhedron& x, const Polyhedron& y);
   //! Returns <CODE>true</CODE> if and only if
   //! \p x and \p y are different polyhedra.
   //! \exception std::invalid_argument thrown if \p x and \p y
   //!                                  are dimension-incompatible.
   /*! \relates Polyhedron */
-  bool operator !=(const Polyhedron& x, const Polyhedron& y);
+  bool operator!=(const Polyhedron& x, const Polyhedron& y);
   //! Returns <CODE>true</CODE> if and only if
   //! \p x is strictly contained in \p y.
   //! \exception std::invalid_argument thrown if \p x and \p y
   //!                                  are dimension-incompatible.
   /*! \relates Polyhedron */
-  bool operator <(const Polyhedron& x, const Polyhedron& y);
+  bool operator<(const Polyhedron& x, const Polyhedron& y);
   //! Returns <CODE>true</CODE> if and only if
   //! \p x strictly contains \p y.
   //! \exception std::invalid_argument thrown if \p x and \p y
   //!                                  are dimension-incompatible.
   /*! \relates Polyhedron */
-  bool operator >(const Polyhedron& x, const Polyhedron& y);
+  bool operator>(const Polyhedron& x, const Polyhedron& y);
   //! Returns <CODE>true</CODE> if and only if
   //! \p x contains \p y.
   //! \exception std::invalid_argument thrown if \p x and \p y
   //!                                  are dimension-incompatible.
   /*! \relates Polyhedron */
-  bool operator >=(const Polyhedron& x, const Polyhedron& y);
+  bool operator>=(const Polyhedron& x, const Polyhedron& y);
 
   // Put them in the namespace here to declare them friend later.
-  bool operator <=(const Polyhedron& x, const Polyhedron& y);
-  std::ostream& operator <<(std::ostream& s, const Polyhedron& p);
-  std::istream& operator >>(std::istream& s, Polyhedron& p);
+  bool operator<=(const Polyhedron& x, const Polyhedron& y);
+  std::ostream& operator<<(std::ostream& s, const Polyhedron& p);
+  std::istream& operator>>(std::istream& s, Polyhedron& p);
 
 } // namespace Parma_Polyhedra_Library
 
@@ -319,7 +319,7 @@ namespace Parma_Polyhedra_Library {
     \f$\bigl\{(3, 0)^\transpose \bigr\} \sseq \Rset^2\f$:
     when removing the set of dimensions \p to_be_removed2
     we are actually removing variable \f$w\f$ of the original polyhedron.
-    For the same reason, the operator \p remove_dimensions
+    For the same reason, the operator\p remove_dimensions
     is not idempotent: removing twice the same set of dimensions
     is never a no-op.
 */
@@ -360,7 +360,7 @@ public:
 
   //! The assignment operator.
   //! (Note that \p *this and \p y can be dimension-incompatible.)
-  Polyhedron& operator =(const Polyhedron& y);
+  Polyhedron& operator=(const Polyhedron& y);
 
   //! Returns the dimension of the vector space enclosing \p *this.
   size_t space_dimension() const;
@@ -585,16 +585,16 @@ public:
   //! polyhedron \p x is contained in polyhedron \p y.
   //! \exception std::invalid_argument thrown if \p x and \p y
   //!                                  are dimension-incompatible.
-  friend bool Parma_Polyhedra_Library::operator <=(const Polyhedron& x,
+  friend bool Parma_Polyhedra_Library::operator<=(const Polyhedron& x,
 						   const Polyhedron& y);
 
   //! Output operator.
   friend std::ostream&
-  Parma_Polyhedra_Library::operator <<(std::ostream& s, const Polyhedron& p);
+  Parma_Polyhedra_Library::operator<<(std::ostream& s, const Polyhedron& p);
 
   //! Input operator.
   friend std::istream&
-  Parma_Polyhedra_Library::operator >>(std::istream& s, Polyhedron& p);
+  Parma_Polyhedra_Library::operator>>(std::istream& s, Polyhedron& p);
 
   //! Swaps \p *this with polyhedron \p y.
   //! (Note that \p *this and \p y can be dimension-incompatible.)

@@ -51,8 +51,8 @@ GenSys::~GenSys() {
 }
 
 inline GenSys&
-GenSys::operator =(const GenSys& y) {
-  Matrix::operator =(y);
+GenSys::operator=(const GenSys& y) {
+  Matrix::operator=(y);
   return *this;
 }
 
@@ -67,12 +67,12 @@ GenSys::insert(const Generator& g) {
 }
 
 inline Generator&
-GenSys::operator [](size_t k) {
+GenSys::operator[](size_t k) {
   return static_cast<Generator&>(Matrix::operator[](k));
 }
 
 inline const Generator&
-GenSys::operator [](size_t k) const {
+GenSys::operator[](size_t k) const {
   return static_cast<const Generator&>(Matrix::operator[](k));
 }
 
@@ -97,41 +97,41 @@ GenSys::const_iterator::~const_iterator() {
 
 inline
 GenSys::const_iterator&
-GenSys::const_iterator::operator =(const const_iterator& y) {
+GenSys::const_iterator::operator=(const const_iterator& y) {
   i = y.i;
   return *this;
 }
 
 inline const Generator&
-GenSys::const_iterator::operator *() const {
+GenSys::const_iterator::operator*() const {
   return static_cast<const Generator&>(*i);
 }
 
 inline const Generator*
-GenSys::const_iterator::operator ->() const {
-  return static_cast<const Generator*>(i.operator ->());
+GenSys::const_iterator::operator->() const {
+  return static_cast<const Generator*>(i.operator->());
 }
 
 inline GenSys::const_iterator&
-GenSys::const_iterator::operator ++() {
+GenSys::const_iterator::operator++() {
   ++i;
   return *this;
 }
 
 inline GenSys::const_iterator
-GenSys::const_iterator::operator ++(int) {
+GenSys::const_iterator::operator++(int) {
   const_iterator tmp = *this;
-  operator ++();
+  operator++();
   return tmp;
 }
 
 inline bool
-GenSys::const_iterator::operator ==(const const_iterator& y) const {
+GenSys::const_iterator::operator==(const const_iterator& y) const {
   return i == y.i;
 }
 
 inline bool
-GenSys::const_iterator::operator !=(const const_iterator& y) const {
+GenSys::const_iterator::operator!=(const const_iterator& y) const {
   return i != y.i;
 }
 

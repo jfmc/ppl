@@ -34,12 +34,12 @@ Status::Status()
 }
 
 inline Status
-operator &(const Status& x, const Status& y) {
+operator&(const Status& x, const Status& y) {
   return Status(x.flags & y.flags);
 }
 
 inline Status
-operator |(const Status& x, const Status& y) {
+operator|(const Status& x, const Status& y) {
   return Status(x.flags | y.flags);
 }
 

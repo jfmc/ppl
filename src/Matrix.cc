@@ -78,7 +78,7 @@ PPL::Matrix::Matrix(const Matrix& y)
 
 
 PPL::Matrix&
-PPL::Matrix::operator =(const Matrix& y) {
+PPL::Matrix::operator=(const Matrix& y) {
   rows = y.rows;
   row_size = y.row_size;
   row_capacity = compute_capacity(row_size);
@@ -317,7 +317,7 @@ PPL::Matrix::print(std::ostream& s) const {
 
 // A placeholder for print().
 std::ostream&
-PPL::operator <<(std::ostream& s, const Matrix& m) {
+PPL::operator<<(std::ostream& s, const Matrix& m) {
   m.print(s);
   return s;
 }
@@ -344,7 +344,7 @@ PPL::Matrix::get(std::istream& s) {
 
 // A placeholder for get().
 std::istream&
-PPL::operator >>(std::istream& s, Matrix& m) {
+PPL::operator>>(std::istream& s, Matrix& m) {
   m.get(s);
   return s;
 }
@@ -575,7 +575,7 @@ PPL::Matrix::strong_normalize() {
   \p y are identical.
 */
 bool
-PPL::operator ==(const Matrix& x, const Matrix& y) {
+PPL::operator==(const Matrix& x, const Matrix& y) {
   if (x.num_columns() != y.num_columns())
     return false;
   size_t x_num_rows = x.num_rows();

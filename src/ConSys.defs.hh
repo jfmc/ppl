@@ -96,7 +96,7 @@ public:
   virtual ~ConSys();
 
   //! Assignment operator.
-  ConSys& operator =(const ConSys& y);
+  ConSys& operator=(const ConSys& y);
 
   //! Returns the dimension of the vector space enclosing \p *this.
   size_t space_dimension() const;
@@ -149,21 +149,21 @@ public:
     //! Destructor.
     virtual ~const_iterator();
     //! Assignment operator.
-    const_iterator& operator =(const const_iterator& y);
+    const_iterator& operator=(const const_iterator& y);
     //! Dereference operator.
-    const Constraint& operator *() const;
+    const Constraint& operator*() const;
     //! Indirect member selector.
-    const Constraint* operator ->() const;
+    const Constraint* operator->() const;
     //! Prefix increment operator.
-    const_iterator& operator ++();
+    const_iterator& operator++();
     //! Postfix increment operator.
-    const_iterator operator ++(int);
+    const_iterator operator++(int);
     //! Returns <CODE>true</CODE> if and only if
     //! \p *this and \p y are identical.
-    bool operator ==(const const_iterator& y) const;
+    bool operator==(const const_iterator& y) const;
     //! Returns <CODE>true</CODE> if and only if
     //! \p *this and \p y are different.
-    bool operator !=(const const_iterator& y) const;
+    bool operator!=(const const_iterator& y) const;
   };
 
   //! Returns the const_iterator pointing to the first constraint,
@@ -179,9 +179,9 @@ PPL_INTERNAL:
   ConSys(size_t num_rows, size_t num_columns);
 
   //! Returns the \p k- th constraint of the system.
-  Constraint& operator [](size_t k);
+  Constraint& operator[](size_t k);
   //! Returns a constant reference to the \p k- th constraint of the system.
-  const Constraint& operator [](size_t k) const;
+  const Constraint& operator[](size_t k) const;
 
   //! Returns <CODE>true</CODE> if \p g satisfies all the constraints.
   bool satisfies_all_constraints(const Generator& g) const;

@@ -34,7 +34,7 @@ Variable::id() const {
 }
 
 inline bool
-operator <(const Variable& v, const Variable& w) {
+operator<(const Variable& v, const Variable& w) {
   return v.id() < w.id();
 }
 

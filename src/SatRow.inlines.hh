@@ -41,13 +41,13 @@ SatRow::~SatRow() {
 }
 
 inline SatRow&
-SatRow::operator =(const SatRow& y) {
+SatRow::operator=(const SatRow& y) {
   mpz_set(vec, y.vec);
   return *this;
 }
 
 inline bool
-SatRow::operator [](size_t k) const {
+SatRow::operator[](size_t k) const {
   return mpz_tstbit(vec, k);
 }
 
@@ -99,22 +99,22 @@ SatRow::clear() {
 }
 
 inline bool
-operator ==(const SatRow& x, const SatRow& y) {
+operator==(const SatRow& x, const SatRow& y) {
   return mpz_cmp(x.vec, y.vec) == 0;
 }
 
 inline bool
-operator !=(const SatRow& x, const SatRow& y) {
+operator!=(const SatRow& x, const SatRow& y) {
   return mpz_cmp(x.vec, y.vec) != 0;
 }
 
 inline bool
-operator >(const SatRow& x, const SatRow& y) {
+operator>(const SatRow& x, const SatRow& y) {
   return y < x;
 }
 
 inline bool
-operator >=(const SatRow& x, const SatRow& y) {
+operator>=(const SatRow& x, const SatRow& y) {
   return y <= x;
 }
 

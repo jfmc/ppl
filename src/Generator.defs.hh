@@ -35,7 +35,7 @@ namespace Parma_Polyhedra_Library {
   //! Output operator.
   /*! \relates Generator */
   std::ostream&
-  operator <<(std::ostream& s, const Generator& g);
+  operator<<(std::ostream& s, const Generator& g);
 
   // Put them in the namespace here to declare them friend later.
   Generator line(const LinExpression& e);
@@ -238,7 +238,7 @@ public:
   ~Generator();
 
   //! Assignment operator.
-  Generator& operator =(const Generator& g);
+  Generator& operator=(const Generator& g);
 
   //! Returns the dimension of the vector space enclosing \p *this.
   size_t space_dimension() const;

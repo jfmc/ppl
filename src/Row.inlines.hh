@@ -151,7 +151,7 @@ Row::Impl::~Impl() {
   Returns a reference to the \p k-th element of \p *this row.
 */
 inline Integer&
-Row::Impl::operator [](size_t k) {
+Row::Impl::operator[](size_t k) {
   assert(k < size());
   return vec_[k];
 }
@@ -161,7 +161,7 @@ Row::Impl::operator [](size_t k) {
   Returns a constant reference to the \p k-th element of \p *this row.
 */
 inline const Integer&
-Row::Impl::operator [](size_t k) const {
+Row::Impl::operator[](size_t k) const {
   assert(k < size());
   return vec_[k];
 }
@@ -377,7 +377,7 @@ Row::set_is_ray_or_vertex_or_inequality() {
   Returns a reference to the element of the row indexed by \p k.
 */
 inline Integer&
-Row::operator [](size_t k) {
+Row::operator[](size_t k) {
   return (*impl)[k];
 }
 
@@ -386,7 +386,7 @@ Row::operator [](size_t k) {
   Returns a constant reference to the element of the row indexed by \p k.
 */
 inline const Integer&
-Row::operator [](size_t k) const {
+Row::operator[](size_t k) const {
   return (*impl)[k];
 }
 
@@ -403,32 +403,32 @@ Row::coefficient(size_t k) const {
 
 
 inline bool
-operator ==(const Row& x, const Row& y) {
+operator==(const Row& x, const Row& y) {
   return compare(x, y) == 0;
 }
 
 inline bool
-operator !=(const Row& x, const Row& y) {
+operator!=(const Row& x, const Row& y) {
   return compare(x, y) != 0;
 }
 
 inline bool
-operator <=(const Row& x, const Row& y) {
+operator<=(const Row& x, const Row& y) {
   return compare(x, y) <= 0;
 }
 
 inline bool
-operator <(const Row& x, const Row& y) {
+operator<(const Row& x, const Row& y) {
   return compare(x, y) < 0;
 }
 
 inline bool
-operator >=(const Row& x, const Row& y) {
+operator>=(const Row& x, const Row& y) {
   return compare(x, y) >= 0;
 }
 
 inline bool
-operator >(const Row& x, const Row& y) {
+operator>(const Row& x, const Row& y) {
   return compare(x, y) > 0;
 }
 

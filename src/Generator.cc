@@ -87,7 +87,7 @@ PPL::line(const LinExpression& e) {
 }
 
 std::ostream&
-PPL::operator <<(std::ostream& s, const Generator& g) {
+PPL::operator<<(std::ostream& s, const Generator& g) {
   bool vertex_with_divisor = false;
   bool extra_parentheses = false;
   int num_variables = g.size()-1;

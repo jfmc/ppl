@@ -195,7 +195,7 @@ PPL::compare(const Row& x, const Row& y) {
 }
 
 PPL::Integer
-PPL::operator *(const Row& x, const Row& y) {
+PPL::operator*(const Row& x, const Row& y) {
   // Scalar product is only defined  if `x' and `y' are
   // dimension-compatible.
   assert(x.size() <= y.size());
@@ -245,7 +245,7 @@ PPL::Row::linear_combine(const Row& y, size_t k) {
 }
 
 std::ostream&
-PPL::operator <<(std::ostream& s, const Row& row) {
+PPL::operator<<(std::ostream& s, const Row& row) {
   size_t i = 0;
   size_t size = row.size();
   if (i < size)

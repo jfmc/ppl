@@ -55,7 +55,7 @@ protected:
   virtual ~Matrix();
 
   //! Assignment operator.
-  Matrix& operator =(const Matrix& y);
+  Matrix& operator=(const Matrix& y);
 
   class const_iterator {
   private:
@@ -81,34 +81,34 @@ protected:
       : i(y.i) {
     }
 
-    const_iterator& operator =(const const_iterator& y) {
+    const_iterator& operator=(const const_iterator& y) {
       i = y.i;
       return *this;
     }
 
-    reference operator *() const {
+    reference operator*() const {
       return *i;
     }
 
-    pointer operator ->() const {
+    pointer operator->() const {
       return &*i;
     }
 
-    const_iterator& operator ++() {
+    const_iterator& operator++() {
       ++i;
       return *this;
     }
 
-    const_iterator operator ++(int) {
+    const_iterator operator++(int) {
       return const_iterator(i++);
     }
 
-    bool operator ==(const const_iterator& y) const {
+    bool operator==(const const_iterator& y) const {
       return i == y.i;
     }
 
-    bool operator !=(const const_iterator& y) const {
-      return !operator ==(y);
+    bool operator!=(const const_iterator& y) const {
+      return !operator==(y);
     }
   };
 
@@ -130,7 +130,7 @@ private:
   //! <CODE>Integer</CODE> objects that each row can contain.
   size_t row_capacity;
   //! <CODE>true</CODE> if rows are sorted in the ascending order as
-  //! defined by <CODE>bool operator <(const Row& x, const Row& y)</CODE>.
+  //! defined by <CODE>bool operator<(const Row& x, const Row& y)</CODE>.
   //! If <CODE>false</CODE> we cannot conclude that rows are not sorted.
   bool sorted;
 
@@ -165,8 +165,8 @@ public:
 
   //! @name Subscript operators.
   //@{
-  Row& operator [](size_t k);
-  const Row& operator [](size_t k) const;
+  Row& operator[](size_t k);
+  const Row& operator[](size_t k) const;
   //@}
   //! Normalize the matrix.
   void normalize();
@@ -224,23 +224,23 @@ namespace Parma_Polyhedra_Library {
   //! Returns <CODE>true</CODE> if and only if \p x and \p y are identical.
   /*! \relates Matrix */
 #endif // PPL_DOXYGEN_INCLUDE_IMPLEMENTATION_DETAILS
-  bool operator ==(const Matrix& x, const Matrix& y);
+  bool operator==(const Matrix& x, const Matrix& y);
 #ifdef PPL_DOXYGEN_INCLUDE_IMPLEMENTATION_DETAILS
   //! Returns <CODE>true</CODE> if and only if \p x and \p y are different.
   /*! \relates Matrix */
 #endif // PPL_DOXYGEN_INCLUDE_IMPLEMENTATION_DETAILS
-  bool operator !=(const Matrix& x, const Matrix& y);
+  bool operator!=(const Matrix& x, const Matrix& y);
 
 #ifdef PPL_DOXYGEN_INCLUDE_IMPLEMENTATION_DETAILS
   //! Input operator.
   /*! \relates Matrix */
 #endif // PPL_DOXYGEN_INCLUDE_IMPLEMENTATION_DETAILS
-  std::istream& operator >>(std::istream& s, Matrix& m);
+  std::istream& operator>>(std::istream& s, Matrix& m);
 #ifdef PPL_DOXYGEN_INCLUDE_IMPLEMENTATION_DETAILS
   //! Output operator.
   /*! \relates Matrix */
 #endif // PPL_DOXYGEN_INCLUDE_IMPLEMENTATION_DETAILS
-  std::ostream& operator <<(std::ostream& s, const Matrix& m);
+  std::ostream& operator<<(std::ostream& s, const Matrix& m);
 }
 
 #include "Matrix.inlines.hh"

@@ -249,7 +249,7 @@ PPL::Polyhedron::Polyhedron(GenSys& gs)
 
 
 PPL::Polyhedron&
-PPL::Polyhedron::operator =(const Polyhedron& y) {
+PPL::Polyhedron::operator=(const Polyhedron& y) {
   space_dim = y.space_dim;
   status = y.status;
   if (y.constraints_are_up_to_date())
@@ -610,11 +610,11 @@ throw_different_dimensions(const char* method,
   \p x is contained in \p y.
 */
 bool
-PPL::operator <=(const Polyhedron& x, const Polyhedron& y) {
+PPL::operator<=(const Polyhedron& x, const Polyhedron& y) {
   size_t x_space_dim = x.space_dim;
   // Dimension-compatibility check.
   if (x_space_dim != y.space_dim)
-    throw_different_dimensions("PPL::operator <=(x, y)",
+    throw_different_dimensions("PPL::operator<=(x, y)",
 				x, y);
   if (x.is_empty())
     return true;
@@ -1748,7 +1748,7 @@ PPL::Polyhedron::add_generators(GenSys& gs) {
 }
 
 std::ostream&
-PPL::operator <<(std::ostream& s, const Polyhedron& p) {
+PPL::operator<<(std::ostream& s, const Polyhedron& p) {
   using std::endl;
 
   s << "space_dim "
@@ -1781,7 +1781,7 @@ PPL::operator <<(std::ostream& s, const Polyhedron& p) {
 }
 
 std::istream&
-PPL::operator >>(std::istream& s, Polyhedron& p) {
+PPL::operator>>(std::istream& s, Polyhedron& p) {
   std::string str;
 
   s >> str;

@@ -31,12 +31,12 @@ site: http://www.cs.unipr.it/ppl/ . */
 namespace Parma_Polyhedra_Library {
   // Put them in the namespace here to declare them friends later.
   int compare(const SatRow& x, const SatRow& y);
-  bool operator ==(const SatRow& x, const SatRow& y);
-  bool operator !=(const SatRow& x, const SatRow& y);
-  bool operator  <(const SatRow& x, const SatRow& y);
-  bool operator  >(const SatRow& x, const SatRow& y);
-  bool operator <=(const SatRow& x, const SatRow& y);
-  bool operator >=(const SatRow& x, const SatRow& y);
+  bool operator==(const SatRow& x, const SatRow& y);
+  bool operator!=(const SatRow& x, const SatRow& y);
+  bool operator <(const SatRow& x, const SatRow& y);
+  bool operator >(const SatRow& x, const SatRow& y);
+  bool operator<=(const SatRow& x, const SatRow& y);
+  bool operator>=(const SatRow& x, const SatRow& y);
   void set_union(const SatRow& x, const SatRow& y, SatRow& z);
 }
 
@@ -57,13 +57,13 @@ public:
   ~SatRow();
 
   //! Assignment operator.
-  SatRow& operator =(const SatRow& y);
+  SatRow& operator=(const SatRow& y);
 
   //! Swaps \p *this with \p y.
   void swap(SatRow& y);
 
   //! Returns the truth value corresponding to the bit in position \p k.
-  bool operator [](size_t k) const;
+  bool operator[](size_t k) const;
   //! Sets the bit in position \p k.
   void set(size_t k);
   //! Clears the bit in position \p k.
@@ -82,17 +82,17 @@ public:
 
   //! Set-theoretic comparisons.
   //@{
-  friend bool Parma_Polyhedra_Library::operator ==(const SatRow& x,
+  friend bool Parma_Polyhedra_Library::operator==(const SatRow& x,
 						   const SatRow& y);
-  friend bool Parma_Polyhedra_Library::operator !=(const SatRow& x,
+  friend bool Parma_Polyhedra_Library::operator!=(const SatRow& x,
 						   const SatRow& y);
-  friend bool Parma_Polyhedra_Library::operator  <(const SatRow& x,
+  friend bool Parma_Polyhedra_Library::operator <(const SatRow& x,
 						   const SatRow& y);
-  friend bool Parma_Polyhedra_Library::operator  >(const SatRow& x,
+  friend bool Parma_Polyhedra_Library::operator >(const SatRow& x,
 						   const SatRow& y);
-  friend bool Parma_Polyhedra_Library::operator <=(const SatRow& x,
+  friend bool Parma_Polyhedra_Library::operator<=(const SatRow& x,
 						   const SatRow& y);
-  friend bool Parma_Polyhedra_Library::operator >=(const SatRow& x,
+  friend bool Parma_Polyhedra_Library::operator>=(const SatRow& x,
 						   const SatRow& y);
   //@}
 
@@ -133,7 +133,7 @@ namespace Parma_Polyhedra_Library {
   //! Output operator.
   /*! \relates SatRow */
 #endif // PPL_DOXYGEN_INCLUDE_IMPLEMENTATION_DETAILS
-  std::ostream& operator <<(std::ostream& s, const SatRow& r);
+  std::ostream& operator<<(std::ostream& s, const SatRow& r);
 }
 
 

@@ -31,7 +31,7 @@ site: http://www.cs.unipr.it/ppl/ . */
 
 namespace Parma_Polyhedra_Library {
   // Put it in the namespace here to declare it friend later.
-  std::ostream& operator <<(std::ostream& s, const Row& row);
+  std::ostream& operator<<(std::ostream& s, const Row& row);
 }
 
 #ifdef PPL_DOXYGEN_INCLUDE_IMPLEMENTATION_DETAILS
@@ -124,8 +124,8 @@ public:
 
   //! @name Subscript operators.
   //@{
-  Integer& operator [](size_t k);
-  const Integer& operator [](size_t k) const;
+  Integer& operator[](size_t k);
+  const Integer& operator[](size_t k) const;
   //@}
 
   //! @name Type inspection methods.
@@ -160,7 +160,7 @@ public:
 
   //! Output operator.
   friend std::ostream&
-  Parma_Polyhedra_Library::operator <<(std::ostream& s, const Row& row);
+  Parma_Polyhedra_Library::operator<<(std::ostream& s, const Row& row);
 
   //! Checks if all the invariants are satisfied.
   bool OK(size_t row_size, size_t row_capacity) const;
@@ -187,7 +187,7 @@ namespace Parma_Polyhedra_Library {
   //! Computes the scalar product between \p x and \p y.
   /*! \relates Row */
 #endif // PPL_DOXYGEN_INCLUDE_IMPLEMENTATION_DETAILS
-  Integer operator *(const Row& x, const Row& y);
+  Integer operator*(const Row& x, const Row& y);
 
 #ifdef PPL_DOXYGEN_INCLUDE_IMPLEMENTATION_DETAILS
   //! The basic comparison function.
@@ -200,12 +200,12 @@ namespace Parma_Polyhedra_Library {
   /*! \relates Row */
   //@{
 #endif // PPL_DOXYGEN_INCLUDE_IMPLEMENTATION_DETAILS
-  bool operator ==(const Row& x, const Row& y);
-  bool operator !=(const Row& x, const Row& y);
-  bool operator <=(const Row& x, const Row& y);
-  bool operator  <(const Row& x, const Row& y);
-  bool operator >=(const Row& x, const Row& y);
-  bool operator  >(const Row& x, const Row& y);
+  bool operator==(const Row& x, const Row& y);
+  bool operator!=(const Row& x, const Row& y);
+  bool operator<=(const Row& x, const Row& y);
+  bool operator <(const Row& x, const Row& y);
+  bool operator>=(const Row& x, const Row& y);
+  bool operator >(const Row& x, const Row& y);
 #ifdef PPL_DOXYGEN_INCLUDE_IMPLEMENTATION_DETAILS
   //@}
 #endif // PPL_DOXYGEN_INCLUDE_IMPLEMENTATION_DETAILS
@@ -239,8 +239,8 @@ public:
 
   //! @name Subscript operators.
   //@{
-  Integer& operator [](size_t k);
-  const Integer& operator [](size_t k) const;
+  Integer& operator[](size_t k);
+  const Integer& operator[](size_t k) const;
   //@}
 
   //! @name Type and size accessors.
@@ -264,7 +264,7 @@ private:
   //! Private and unimplemented: default construction is not allowed.
   Impl();
   //! Private and unimplemented: assignment is not allowed.
-  Impl& operator =(const Impl&);
+  Impl& operator=(const Impl&);
   //! Exception-safe copy construction mechanism.
   void copy_construct(const Impl& y);
 };
