@@ -52,6 +52,12 @@ Row::Impl::operator delete(void* p, dimension_type) {
 }
 
 inline dimension_type
+Row::Impl::max_size() {
+  return size_t(-1)/sizeof(Integer);
+}
+
+
+inline dimension_type
 Row::Impl::size() const {
   return size_;
 }
@@ -182,6 +188,11 @@ Row::Type::set_necessarily_closed() {
 inline void
 Row::Type::set_not_necessarily_closed() {
   set(NNC);
+}
+
+inline dimension_type
+Row::max_size() {
+  return Impl::max_size();
 }
 
 inline dimension_type

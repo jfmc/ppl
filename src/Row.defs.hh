@@ -269,6 +269,9 @@ public:
   void set_is_ray_or_point_or_inequality();
   //@}
 
+  //! Returns the size() of the largest possible Row. 
+  static dimension_type max_size();
+
   //! Gives the number of coefficients currently in use.
   dimension_type size() const;
 
@@ -543,9 +546,12 @@ public:
   //! Shrinks by erasing elements at the end.
   void shrink(dimension_type new_sz);
 
+  //! Returns the size() of the largest possible Impl. 
+  static dimension_type max_size();
+
   //! \name Size accessors.
   //@{
-  //! Returns the actual size of the row \p this points to.
+  //! Returns the actual size of \p this.
   dimension_type size() const;
 
   //! Sets to \p new_sz the actual size of \p *this.
