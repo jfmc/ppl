@@ -36,8 +36,9 @@ o  New methods bool Polyhedron::add_constraint_and_minimize(const
    result at the same time.
 
 o  New method: template <typename PartialFunction>
-   void shuffle_dimensions(const PartialFunction&).
-   TO BE CONTINUED
+   void Polyhedron::shuffle_dimensions(const PartialFunction&).
+   This allows to shuffle the dimensions of a polyhedron according
+   to a partial function mapping dimensions to dimensions.
 
 o  New function LinExpression operator+(const LinExpression&): previously
    an expressions like `+x2-x3-x4 <= 0' could not constitute valid syntax
