@@ -72,7 +72,7 @@ ORIGINAL_TESTS = \
         append1 append2 \
 	ascii_dump_load1 ascii_dump_load2 ascii_dump_load3 ascii_dump_load4 \
 	ascii_dump_load5 ascii_dump_load6 ascii_dump_load7 \
-	bgp99extrapolation1 \
+	bgp99extrapolation1 bgp99extrapolation2 \
 	bhrz03widening1 bhrz03widening2 bhrz03widening3 bhrz03widening4 \
 	bhrz03widening5 bhrz03widening6 bhrz03widening7 bhrz03widening8 \
 	bhrz03widening9 bhrz03widening10 bhrz03widening11 bhrz03widening12 \
@@ -166,7 +166,7 @@ DERIVED_TESTS = \
 	nnc_append1 nnc_append2 \
 	nnc_ascii_dump_load1 nnc_ascii_dump_load2 nnc_ascii_dump_load3 \
 	nnc_ascii_dump_load6 nnc_ascii_dump_load7 \
-	nnc_bgp99extrapolation1 \
+	nnc_bgp99extrapolation1 nnc_bgp99extrapolation2 \
 	nnc_bhrz03widening1 nnc_bhrz03widening2 nnc_bhrz03widening3 \
 	nnc_bhrz03widening5 nnc_bhrz03widening6 \
 	nnc_bhrz03widening8 nnc_bhrz03widening9 \
@@ -324,6 +324,7 @@ ascii_dump_load6_SOURCES = ascii_dump_load6.cc
 ascii_dump_load7_SOURCES = ascii_dump_load7.cc
 
 bgp99extrapolation1_SOURCES = bgp99extrapolation1.cc
+bgp99extrapolation2_SOURCES = bgp99extrapolation2.cc
 
 bhrz03widening1_SOURCES = bhrz03widening1.cc
 bhrz03widening2_SOURCES = bhrz03widening2.cc
@@ -703,6 +704,8 @@ nnc_ascii_dump_load7_CXXFLAGS = $(DERIVED_CXXFLAGS)
 
 nnc_bgp99extrapolation1_SOURCES = bgp99extrapolation1.cc
 nnc_bgp99extrapolation1_CXXFLAGS = $(DERIVED_CXXFLAGS)
+nnc_bgp99extrapolation2_SOURCES = bgp99extrapolation2.cc
+nnc_bgp99extrapolation2_CXXFLAGS = $(DERIVED_CXXFLAGS)
 
 nnc_bhrz03widening1_SOURCES = bhrz03widening1.cc
 nnc_bhrz03widening1_CXXFLAGS = $(DERIVED_CXXFLAGS)
