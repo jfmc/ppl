@@ -37,7 +37,6 @@ partition_ok(const C_Polyhedron& p,
 	     const C_Polyhedron& q,
 	     const std::pair<C_Polyhedron,
 	     PowerSet<Determinate<NNC_Polyhedron> > >& partition) {
-  typedef PowerSet<Determinate<NNC_Polyhedron> >::const_iterator iter;
   const C_Polyhedron& r = partition.first;
   // `r' must be a subset of or equal to `q'.
   if (!(r <= q))
@@ -47,6 +46,7 @@ partition_ok(const C_Polyhedron& p,
   // These are the NNC versions of `p' and `q'.
   NNC_Polyhedron nnc_p(p);
   NNC_Polyhedron nnc_q(q);
+  typedef PowerSet<Determinate<NNC_Polyhedron> >::const_iterator iter;
   for (iter i = s.begin(), s_end = s.end(); i != s_end; ++i) {
     const NNC_Polyhedron& a = i->polyhedron();
     // All elements of `s' must be disjoint from `p'.
