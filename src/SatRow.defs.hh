@@ -33,23 +33,80 @@ site: http://www.cs.unipr.it/ppl/ . */
 namespace Parma_Polyhedra_Library {
 
 // Put them in the namespace here to declare them friends later.
+
+#ifdef PPL_DOXYGEN_INCLUDE_IMPLEMENTATION_DETAILS
+//! Returns <CODE>true</CODE> if and only if \p x and \p y are equal.
+/*! \relates SatRow */
+#endif // PPL_DOXYGEN_INCLUDE_IMPLEMENTATION_DETAILS
 bool operator==(const SatRow& x, const SatRow& y);
+
+#ifdef PPL_DOXYGEN_INCLUDE_IMPLEMENTATION_DETAILS
+//! Returns <CODE>true</CODE> if and only if \p x and \p y are not equal.
+/*! \relates SatRow */
+#endif // PPL_DOXYGEN_INCLUDE_IMPLEMENTATION_DETAILS
 bool operator!=(const SatRow& x, const SatRow& y);
+
+#ifdef PPL_DOXYGEN_INCLUDE_IMPLEMENTATION_DETAILS
+//! The basic comparison function.
+/*! \relates SatRow
+  Compares \p x with \p y starting from the least significant bits.
+  The ordering is total and has the following property: if \p x and \p y
+  are two rows seen as sets of naturals, if \p x is a strict subset
+  of \p y, then \p x comes before \p y.
+  
+  Returns
+  - -1 if \p x comes before \p y in the ordering;
+  -  0 if \p x and \p y are equal;
+  -  1 if \p x comes after \p y in the ordering.
+*/
+#endif // PPL_DOXYGEN_INCLUDE_IMPLEMENTATION_DETAILS
 int compare(const SatRow& x, const SatRow& y);
+
+#ifdef PPL_DOXYGEN_INCLUDE_IMPLEMENTATION_DETAILS
+//! Set-theoretic inclusion test.
+/*! \relates SatRow */
+#endif // PPL_DOXYGEN_INCLUDE_IMPLEMENTATION_DETAILS
 bool subset_or_equal(const SatRow& x, const SatRow& y);
+
+#ifdef PPL_DOXYGEN_INCLUDE_IMPLEMENTATION_DETAILS
+//! Set-theoretic strict inclusion test.
+/*! \relates SatRow */
+#endif // PPL_DOXYGEN_INCLUDE_IMPLEMENTATION_DETAILS
 bool strict_subset(const SatRow& x, const SatRow& y);
+
+#ifdef PPL_DOXYGEN_INCLUDE_IMPLEMENTATION_DETAILS
+//! Set-theoretic union.
+/*! \relates SatRow */
+#endif // PPL_DOXYGEN_INCLUDE_IMPLEMENTATION_DETAILS
 void set_union(const SatRow& x, const SatRow& y, SatRow& z);
 
 } // namespace Parma_Polyhedra_Library
 
+#ifdef PPL_DOXYGEN_INCLUDE_IMPLEMENTATION_DETAILS
+//! A row of a saturation matrix SatMatrix.
+/*!
+  An object of this class represents a single row of a saturation matrix.
+  The saturation row corresponds to a constraint and a system of generators
+  (resp., a generator and a system of constraints) and records whether or
+  not the constraint is saturated by each one of the generators (resp.,
+  the generator saturates each one of the constraints).
 
+  The saturation relation is encoded by using a bitset, so that the
+  constraint is saturated by the \f$i\f$-th generator in the system
+  (resp., the generator saturates the \f$i\f$-th constraint in the system)
+  if and only if the \f$i\f$-th bit is not set.
+*/
+#endif // PPL_DOXYGEN_INCLUDE_IMPLEMENTATION_DETAILS
 class Parma_Polyhedra_Library::SatRow {
 private:
   //! Bitvector representing the row.
   mpz_t vec;
 
-  static unsigned int last_one(mp_limb_t w);
+  //! Returns the index of the first set bit in \p w or -1 if no bit is set.
   static unsigned int first_one(mp_limb_t w);
+
+  //! Returns the index of the last set bit in \p w or -1 if no bit is set.
+  static unsigned int last_one(mp_limb_t w);
 
 public:
   //! Default constructor.
@@ -82,24 +139,10 @@ public:
   //! Clears all the bits of the row.
   void clear();
 
-  //! The basic comparison function.
-  /*!
-    Compares \p x with \p y starting from the least significant bits.
-    The ordering is total and has the following property: if \p x and \p y
-    are two rows seen as sets of naturals, if \p x is a strict subset
-    of \p y, then \p x comes before \p y.
-    
-    Returns
-    - -1 if \p x comes before \p y in the ordering;
-    -  0 if \p x and \p y are equal;
-    -  1 if \p x comes after \p y in the ordering.
-  */
   friend int
   Parma_Polyhedra_Library::compare(const SatRow& x,
 				   const SatRow& y);
 
-  //! \name Set-theoretic comparisons.
-  //@{
   friend bool
   Parma_Polyhedra_Library::operator==(const SatRow& x,  const SatRow& y);
 
@@ -111,15 +154,13 @@ public:
 
   friend bool
   Parma_Polyhedra_Library::strict_subset(const SatRow& x, const SatRow& y);
-  //@}
 
-  //! Set-theoretic union.
   friend void
   Parma_Polyhedra_Library::set_union(const SatRow& x,
 				     const SatRow& y,
 				     SatRow& z);
 
-  //! Return the size of the row.
+  //! Returns the size of the row.
   unsigned int size();
 
   //! Returns the index of the first set bit or -1 if no bit is set.
