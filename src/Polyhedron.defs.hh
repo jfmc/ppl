@@ -654,16 +654,15 @@ public:
   void H79_widening_assign(const Polyhedron& y);
 
   //! \brief
-  //! Limits the \ref H79_widening "H79-widening" computation
-  //! between \p *this and \p y by enforcing constraints \p cs
-  //! and assigns the result to \p *this.
+  //! Improves the result of the \ref H79_widening "H79-widening"
+  //! computation by also enforcing those constraints in \p cs that are
+  //! satisfied by all the points of \p *this.
   /*!
     \param y                 A polyhedron that <EM>must</EM>
                              be contained in \p *this.
-    \param cs                The system of constraints that limits
-                             the widened polyhedron. It is not
-                             declared <CODE>const</CODE>
-                             because it can be modified.
+    \param cs                The system of constraints used to improve
+                             the widened polyhedron. It is not declared
+                             <CODE>const</CODE> because it can be modified.
     \exception std::invalid_argument thrown if \p *this, \p y and \p cs
                                      are topology-incompatible
                                      or dimension-incompatible.
@@ -683,16 +682,15 @@ public:
   void BHRZ03_widening_assign(const Polyhedron& y);
 
   //! \brief
-  //! Limits the \ref BHRZ03_widening "BHRZ03-widening" computation
-  //! between \p *this and \p y by enforcing constraints \p cs
-  //! and assigns the result to \p *this.
+  //! Improves the result of the \ref BHRZ03_widening "BHRZ03-widening"
+  //! computation by also enforcing those constraints in \p cs that are
+  //! satisfied by all the points of \p *this.
   /*!
     \param y                 A polyhedron that <EM>must</EM>
                              be contained in \p *this.
-    \param cs                The system of constraints that limits
-                             the widened polyhedron. It is not
-                             declared <CODE>const</CODE>
-                             because it can be modified.
+    \param cs                The system of constraints used to improve
+                             the widened polyhedron. It is not declared
+                             <CODE>const</CODE> because it can be modified.
     \exception std::invalid_argument thrown if \p *this, \p y and \p cs
                                      are topology-incompatible
                                      or dimension-incompatible.
