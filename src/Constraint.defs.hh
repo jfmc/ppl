@@ -58,7 +58,9 @@ namespace Parma_Polyhedra_Library {
   - an equality: \f$\sum_{i=0}^{n-1} a_i x_i + b = 0\f$; or
   - an inequality: \f$\sum_{i=0}^{n-1} a_i x_i + b \geq 0\f$;
 
-  where \f$n\f$ is the dimension of the space.
+  where \f$n\f$ is the dimension of the space,
+  \f$a_i\f$ is the integer coefficient of variable \f$x_i\f$
+  and \f$b\f$ is the integer inhomogeneous term.
 
   \par How to build a constraint
   Constraints are typically built by applying a relational operator
@@ -105,6 +107,11 @@ namespace Parma_Polyhedra_Library {
   \code
   Constraint false_c(0*z == 1);
   \endcode
+
+  \par How to inspect a constraint
+  Several methods are provided to examine a constraint and extract
+  all the encoded information: its space-dimension, its type
+  (equality or inequality) and the value of its integer coefficients.
 
   \par Example 2
   The following code shows how it is possible to access each single
