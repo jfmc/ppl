@@ -98,9 +98,6 @@ handle_exception(const non_linear& e) {
   Prolog_raise_exception(et);
 }
 
-#include <iostream>
-using namespace std;
-
 static void
 handle_exception(const not_a_variable& e) {
   Prolog_term_ref culprit = Prolog_new_term_ref();
@@ -1640,7 +1637,7 @@ ppl_Polyhedron_equals_Polyhedron(Prolog_term_ref t_lhs,
 
 class PBox {
 private:
-  vector<Interval> vec;
+  std::vector<Interval> vec;
 
 public:
   PBox(unsigned int dimension)
