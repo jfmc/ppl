@@ -852,7 +852,7 @@ of an NNC polyhedron and conversely, for obtaining the NNC polyhedron
 representing a given bounding box.
 
 
-\if Implementation_Info
+\if Include_Implementation_Details
 
 FIXME: We should find a way to have a decent bibliography
 and also to refer to the cited papers/books as usual.
