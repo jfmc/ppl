@@ -2329,11 +2329,11 @@ PPL::operator==(const Polyhedron& x, const Polyhedron& y) {
     return false;
 
   default:
-    if (x.is_included(y))
+    if (x.is_included_in(y))
       if (x.is_empty())
 	return y.check_empty();
       else
-	return y.is_included(x);
+	return y.is_included_in(x);
     else
       return false;
   }
@@ -2364,7 +2364,7 @@ PPL::operator<=(const Polyhedron& x, const Polyhedron& y) {
   if (x.quick_equivalence_test(y) == Polyhedron::TVB_TRUE)
     return true;
 
-  return x.is_included(y);
+  return x.is_included_in(y);
 }
 
 /*! \relates Parma_Polyhedra_Library::Polyhedron */

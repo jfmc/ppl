@@ -1720,7 +1720,7 @@ private:
 
   //! \brief
   //! Returns <CODE>true</CODE> if and only if \p *this is included in \p y.
-  bool is_included(const Polyhedron& y) const;
+  bool is_included_in(const Polyhedron& y) const;
 
   //! Checks if and how \p expr is bounded in \p *this.
   /*!

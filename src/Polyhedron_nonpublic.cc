@@ -362,7 +362,7 @@ PPL::Polyhedron::quick_equivalence_test(const Polyhedron& y) const {
 }
 
 bool
-PPL::Polyhedron::is_included(const Polyhedron& y) const {
+PPL::Polyhedron::is_included_in(const Polyhedron& y) const {
   // Private method: the caller must ensure the following.
   assert(topology() == y.topology());
   assert(space_dimension() == y.space_dimension());
