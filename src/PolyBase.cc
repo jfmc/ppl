@@ -797,36 +797,71 @@ PPL::operator<=(const PolyBase& x, const PolyBase& y) {
     y.minimize();
 #endif
 
-
-  if (!x.is_necessarily_closed()) {
-    // FIXME : For NNC polyhedra it is not that easy!
-    // We have to check that:
-    //  - closure(x) <= closure(y); and
-    //  - all _points_ of `x.gen_sys', when projected onto
-    //    the hyper-plane \epsilon == 0, are included in `y'.
-    throw_not_implemented("PPL::operator<=(x, y): "
-			  "x and y are NNC polyhedra");
-  }
-
-  // We have that `x' is contained in `y' if and only if all the
-  // generators of `x' satisfy or saturate all the inequalities and
-  // saturate all the equalities of `y'.  This comes from the
-  // definition of a polyhedron as the set of vectors that satisfy a
-  // given system of constraints and the fact that all vectors in `x'
-  // can be obtained as a combination of its generators.
-  for (size_t i = x.gen_sys.num_rows(); i-- > 0; ) {
-    const Generator& gx = x.gen_sys[i];
-    for (size_t j = y.con_sys.num_rows(); j-- > 0; ) {
-      const Constraint& cy = y.con_sys[j];
-      int sgn_gx_scalar_cy = sgn(gx * cy);
-      if (cy.is_inequality()) {
-	if (sgn_gx_scalar_cy < 0)
+  if (x.is_necessarily_closed())
+    // When working with necessarily closed polyhedra,
+    // `x' is contained in `y' if and only if all the generators of `x'
+    // satisfy all the inequalities and saturate all the equalities of `y'.
+    // This comes from the definition of a polyhedron as
+    // the set of vectors satisfying a constraint system and
+    // the fact that all vectors in `x' can be obtained by suitably
+    // combining its generators.
+    for (size_t i = x.gen_sys.num_rows(); i-- > 0; ) {
+      const Generator& gx = x.gen_sys[i];
+      for (size_t j = y.con_sys.num_rows(); j-- > 0; ) {
+	const Constraint& cy = y.con_sys[j];
+	int sgn_gx_scalar_cy = sgn(gx * cy);
+	if (cy.is_inequality()) {
+	  if (sgn_gx_scalar_cy < 0)
+	    return false;
+	}
+	else if (sgn_gx_scalar_cy != 0)
 	  return false;
       }
-      else if (sgn_gx_scalar_cy != 0)
-	return false;
+    }
+  else {
+    // Here we have a NON-necessarily closed polyhedron.
+    // FIXME : can be made more efficient by providing
+    // a "strict" scalar-product method,
+    // which ignores the \epsilon coefficient.
+
+    // First checking closure(x) <= closure(y):
+    // check scalar products, but ignoring the \epsilon coefficient.
+    size_t eps_index = x_space_dim + 1;
+    for (size_t i = x.gen_sys.num_rows(); i-- > 0; ) {
+      const Generator& gx = x.gen_sys[i];
+      for (size_t j = y.con_sys.num_rows(); j-- > 0; ) {
+	const Constraint& cy = y.con_sys[j];
+	bool do_normal_test = (cy[eps_index] == 0 && gx[eps_index] == 0);
+	// If `do_normal_test' is true, then we perform the same
+	// test we did for necessarily closed polyhedra.
+	// If otherwise `do_normal_test' is false, then
+	// `cy' is a strict inequality and `gx' is a point;
+	// in such a case, we should ignore the \epsilon coefficient
+	// when computing the scalar product; also, we should check
+	// that the computed scalar product is _strictly_ positive.
+	if (do_normal_test) {
+	  int sgn_gx_scalar_cy = sgn(gx * cy);
+	  if (cy.is_inequality()) {
+	    if (sgn_gx_scalar_cy < 0)
+	      return false;
+	  }
+	  else
+	  // Here `cy' is an equality.
+	    if (sgn_gx_scalar_cy != 0)
+	      return false;
+	}
+	else {
+	  assert(gx.is_point() && cy.is_strict_inequality());
+	  // Here we perform the special test.
+	  int sgn_gx_scalar_cy = sgn(gx * cy
+				     - gx[eps_index] * cy[eps_index]);
+	  if (sgn_gx_scalar_cy <= 0)
+	    return false;
+	}
+      }
     }
   }
+  // Inclusion holds.
   return true;
 }
 
@@ -1941,6 +1976,7 @@ PPL::PolyBase::add_generators(GenSys& gs) {
     // Adding valid generators to a zero-dim polyhedron
     // transform it in the zero-dim universe polyhedron.
     status.set_zero_dim_univ();
+    assert(OK());
     return;
   }
 
@@ -1962,6 +1998,7 @@ PPL::PolyBase::add_generators(GenSys& gs) {
     std::swap(gen_sys, gs);
     set_generators_up_to_date();
     clear_empty();
+    assert(OK(false));
     return;
   }
 
