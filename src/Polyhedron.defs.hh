@@ -96,10 +96,10 @@ namespace Parma_Polyhedra_Library {
   Variable x(0);
   Variable y(1);
   GenSys gs;
-  gs.insert(0 * x + 0 * y \= 1);
-  gs.insert(0 * x + 3 * y \= 1);
-  gs.insert(3 * x + 0 * y \= 1);
-  gs.insert(3 * x + 3 * y \= 1);
+  gs.insert(0 * x + 0 * y /= 1);
+  gs.insert(0 * x + 3 * y /= 1);
+  gs.insert(3 * x + 0 * y /= 1);
+  gs.insert(3 * x + 3 * y /= 1);
   Polyhedron ph(gs);
   \endcode
 
@@ -121,15 +121,15 @@ namespace Parma_Polyhedra_Library {
   Variable x(0);
   Variable y(1);
   GenSys gs;
-  gs.insert(0 * x + 0 * y \= 1);
-  gs.insert(0 * x + y \= 1);
+  gs.insert(0 * x + 0 * y /= 1);
+  gs.insert(0 * x + y /= 1);
   gs.insert(1 ^ x - y);
   Polyhedron ph(gs);
   \endcode
 
   \par Example 3
   The following code shows the use of the function
-  <CODE>add_dimensions_and_embed</CODE>
+  <CODE>add_dimensions_and_embed</CODE>:
   \code
   Variable x(0);
   ConSys cs;
@@ -142,7 +142,6 @@ namespace Parma_Polyhedra_Library {
   is a line parallel to the axis \f$y\f$ and its intersection with the
   axis \f$x\f$ is the point with the abscissa equal to \f$2\f$.
   
-
   \par Example 4
   The following code shows the use of the function
   <CODE>add_dimensions_and_project</CODE>:
