@@ -654,8 +654,10 @@ and, finally, for \f$ k = 0 \f$, \f$ \ldots \f$, \f$ n-1 \f$,
 \f[
   k'
     \defeq
-      k - \card \{\, j \in J \mid k > j \,\}.
+      k - \card \{\, j \in J \mid k > j \,\},
 \f]
+(\f$\card S\f$ denotes the cardinality of the finite set \f$S\f$).
+
 This operation has been proposed in \ref GDMDRS04 "[GDMDRS04]".
 
 
