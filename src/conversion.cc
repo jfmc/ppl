@@ -821,19 +821,15 @@ PPL::Polyhedron::conversion(Matrix& source,
     sat.columns_erase_to_end(source_num_rows);
   }
 
-  // We update `index_first_pending'.
-  dimension_type dest_old_index = dest.first_pending_row();
-  if (dest_old_index != dest_num_rows)
-    dest.set_index_first_pending_row(dest_num_rows);
-  // If `dest' is sorted before `index_first_pending' and we have
-  // added some pending rows, we check if the lower part of `dest'
-  // keeps the sortedness.
-  if (dest.is_sorted() && dest_old_index < dest_num_rows)
-    for (dimension_type i = dest_old_index; i < dest_num_rows; ++i)
+  
+  if (dest.is_sorted())
+    for (dimension_type i = dest.first_pending_row(); i < dest_num_rows; ++i)
       if (dest[i - 1] > dest[i]) {
 	dest.set_sorted(false);
 	break;
       }
+  // We must keep `index_first_pending' up-to-date.
+  dest.set_index_first_pending_row(dest_num_rows);
   
   if (dest_num_rows < dest.num_rows()) {
     // NOTE: We have just updated `index_first_pending' of `dest'.
