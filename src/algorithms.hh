@@ -171,9 +171,7 @@ template <typename PH>
 void
 extrapolation_assign(PowerSet<Determinate<PH> >& r,
 		     const PowerSet<Determinate<PH> >& q,
-		     void (Polyhedron::*
-			   extrapolation_assign)(const Polyhedron&,
-						 unsigned*)) {
+		     void (Polyhedron::*wm)(const Polyhedron&, unsigned*)) {
   complete_reduction(r);
   size_t n = r.size();
   PowerSet<Determinate<PH> > p(q.space_dimension(), false);
@@ -188,7 +186,7 @@ extrapolation_assign(PowerSet<Determinate<PH> >& r,
       PH& ri = i->polyhedron();
       const PH& qj = j->polyhedron();
       if (ri.contains(qj)) {
-	(ri.*extrapolation_assign)(qj, 0);
+	(ri.*wm)(qj, 0);
 	p.add_disjunct(ri);
 	marked[i_index] = true;
       }
@@ -214,6 +212,43 @@ void
 BHRZ03_extrapolation_assign(PowerSet<Determinate<PH> >& r,
 			    const PowerSet<Determinate<PH> >& q) {
   extrapolation_assign(r, q, &PH::BHRZ03_widening_assign);
+}
+
+template <typename PH>
+void
+widening_assign(PowerSet<Determinate<PH> >& r,
+		const PowerSet<Determinate<PH> >& q,
+		void (Polyhedron::*wm)(const Polyhedron&, unsigned*),
+		unsigned max_disjuncts) {
+  unsigned r_size = r.size();
+  if (r_size > max_disjuncts) {
+    typename PowerSet<Determinate<PH> >::reverse_iterator i = r.rbegin();
+    typename PowerSet<Determinate<PH> >::reverse_iterator j = i;
+    for (unsigned k = r_size-max_disjuncts; k > 0; --k) {
+      ++j;
+      j->polyhedron().poly_hull_assign(i->polyhedron());
+      ++i;
+      r.pop_back();
+    }
+    assert(r.size() == max_disjuncts);
+  }
+  extrapolation_assign(r, q, wm);
+}
+
+template <typename PH>
+void
+H79_widening_assign(PowerSet<Determinate<PH> >& r,
+		    const PowerSet<Determinate<PH> >& q,
+		    unsigned max_disjuncts = 10) {
+  widening_assign(r, q, &PH::H79_widening_assign, max_disjuncts);
+}
+
+template <typename PH>
+void
+BHRZ03_widening_assign(PowerSet<Determinate<PH> >& r,
+		       const PowerSet<Determinate<PH> >& q,
+		       unsigned max_disjuncts = 10) {
+  widening_assign(r, q, &PH::BHRZ03_widening_assign, max_disjuncts);
 }
 
 } // namespace Parma_Polyhedra_Library
