@@ -72,9 +72,6 @@ CXX=$with_cxx)
 
 AC_LANG(C++)
 
-# Check whether the C++ compiler supports flexible arrays.
-AC_CXX_SUPPORTS_FLEXIBLE_ARRAYS
-
 # Checks for programs.
 AC_PROG_CC
 AC_PROG_CXX
@@ -276,6 +273,9 @@ CFLAGS="$CFLAGS $with_cflags")
 AC_ARG_WITH(cxxflags,
 [  --with-cxxflags=xxx     add XXX to the options for the C++ compiler],
 CXXFLAGS="$CXXFLAGS $with_cxxflags")
+
+# Check whether the C++ compiler supports flexible arrays.
+AC_CXX_SUPPORTS_FLEXIBLE_ARRAYS
 
 enableval=no
 AC_MSG_CHECKING([whether to build the Parma Watchdog Library])
