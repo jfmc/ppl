@@ -75,14 +75,22 @@ This can be checked at compile-time
 thanks to the macros PPL_VERSION_MAJOR, PPL_VERSION_MINOR,
 PPL_VERSION_REVISION and PPL_VERSION_BETA, the give, respectively
 major, minor, revision and beta numbers of the PPL version.
+This is an example of how to use them:
 \code
 #if PPL_VERSION_MAJOR == 0 && PPL_VERSION_MINOR < 6
 # error "PPL version 0.6 or following is required"
 #endif
 \endcode
-
 Compile-time checking, however, is normally not enough, especially
 in an environment where dynamic linking is used.
+Run-time checking can be performed by means of the functions
+<CODE>ppl_version_major</CODE>, <CODE>ppl_version_minor</CODE>,
+<CODE>ppl_version_revision</CODE>, and <CODE>ppl_version_beta</CODE>
+The C interface of the PPL also provides the functions
+<CODE>ppl_version</CODE>, returning character string containing
+the full version number, and <CODE>ppl_version</CODE>, returning a string
+that, in addition, provides (pointers to) other useful information
+for the library user.
 
 TO BE CONTINUED HERE.
 
