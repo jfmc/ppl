@@ -152,6 +152,19 @@ private:
   void widening_assign(const Polyhedra_PowerSet& y,
 		       void (Polyhedron::*wm)(const Polyhedron&, unsigned*),
 		       unsigned max_disjuncts);
+  void limited_extrapolation_assign(const Polyhedra_PowerSet& y,
+				    const ConSys& cs,
+				    void (Polyhedron::*wm)
+				    (const Polyhedron&,
+				     const ConSys&,
+				     unsigned*));
+  void limited_extrapolation_assign(const Polyhedra_PowerSet& y,
+				    const ConSys& cs,
+				    void (Polyhedron::*wm)
+				    (const Polyhedron&,
+				     const ConSys&,
+				     unsigned*),
+				    unsigned max_disjuncts);
 
 public:
   void H79_extrapolation_assign(const Polyhedra_PowerSet& y);
@@ -163,6 +176,13 @@ public:
 			   unsigned max_disjuncts);
   void BHRZ03_widening_assign(const Polyhedra_PowerSet& y,
 			      unsigned max_disjuncts);
+
+  void limited_H79_extrapolation_assign(const Polyhedra_PowerSet& y,
+					const ConSys& cs,
+					unsigned max_disjuncts);
+  void limited_BHRZ03_extrapolation_assign(const Polyhedra_PowerSet& y,
+					   const ConSys& cs,
+					   unsigned max_disjuncts);
 
   //! Checks if all the invariants are satisfied.
   bool OK() const;

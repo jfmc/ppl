@@ -26,6 +26,7 @@ site: http://www.cs.unipr.it/ppl/ . */
 
 #include "ConSys.defs.hh"
 #include "ConSys.inlines.hh"
+#include "algorithms.hh"
 #include <algorithm>
 #include <deque>
 
@@ -317,6 +318,74 @@ void
 Polyhedra_PowerSet<PH>::BHRZ03_widening_assign(const Polyhedra_PowerSet& y,
 					       unsigned max_disjuncts) {
   widening_assign(y, &PH::BHRZ03_widening_assign, max_disjuncts);
+}
+
+template <typename PH>
+void
+Polyhedra_PowerSet<PH>::
+limited_extrapolation_assign(const Polyhedra_PowerSet& y,
+			     const ConSys& cs,
+			     void (Polyhedron::*wm)
+			     (const Polyhedron&, const ConSys&, unsigned*)) {
+  pairwise_reduce();
+  size_type n = size();
+  Sequence new_sequence;
+  std::deque<bool> marked(n, false);
+  iterator sbegin = begin();
+  iterator send = end();
+  unsigned i_index = 0;
+  for (iterator i = sbegin; i != send; ++i, ++i_index)
+    for (const_iterator j = y.begin(), y_end = y.end(); j != y_end; ++j) {
+      PH& pi = i->polyhedron();
+      const PH& pj = j->polyhedron();
+      if (pi.contains(pj)) {
+	(pi.*wm)(pj, cs, 0);
+	new_sequence.push_back(pi);
+	marked[i_index] = true;
+      }
+    }
+  i_index = 0;
+  for (iterator i = sbegin; i != send; ++i, ++i_index)
+    if (!marked[i_index])
+      new_sequence.push_back(*i);
+  std::swap(sequence, new_sequence);
+}
+
+template <typename PH>
+void
+Polyhedra_PowerSet<PH>::
+limited_extrapolation_assign(const Polyhedra_PowerSet& y,
+			     const ConSys& cs,
+			     void (Polyhedron::*wm)
+			     (const Polyhedron&, const ConSys&, unsigned*),
+			     unsigned max_disjuncts) {
+  collapse(max_disjuncts);
+  limited_extrapolation_assign(y, cs, wm);
+}
+
+
+template <typename PH>
+void
+Polyhedra_PowerSet<PH>::
+limited_H79_extrapolation_assign(const Polyhedra_PowerSet& y,
+				 const ConSys& cs,
+				 unsigned max_disjuncts) {
+  limited_extrapolation_assign(y,
+			       cs,
+			       &PH::limited_H79_extrapolation_assign,
+			       max_disjuncts);
+}
+
+template <typename PH>
+void
+Polyhedra_PowerSet<PH>::
+limited_BHRZ03_extrapolation_assign(const Polyhedra_PowerSet& y,
+				    const ConSys& cs,
+				    unsigned max_disjuncts) {
+  limited_extrapolation_assign(y,
+			       cs,
+			       &PH::limited_BHRZ03_extrapolation_assign,
+			       max_disjuncts);
 }
 
 template <typename PH>
