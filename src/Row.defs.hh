@@ -167,13 +167,6 @@ namespace Parma_Polyhedra_Library {
   Integer operator *(const Row& x, const Row& y);
 
 #ifdef PPL_DOXYGEN_INCLUDE_IMPLEMENTATION_DETAILS
-  //! Computes the scalar product between \p x and \p y
-  //! when the size of \p x is less than or equal to the size of \p y.
-  /*! \relates Row */
-#endif // PPL_DOXYGEN_INCLUDE_IMPLEMENTATION_DETAILS
-  Integer projected_scalar_prod(const Row& x, const Row& y);
-
-#ifdef PPL_DOXYGEN_INCLUDE_IMPLEMENTATION_DETAILS
   //! The basic comparison function.
   /*! \relates Row */
 #endif // PPL_DOXYGEN_INCLUDE_IMPLEMENTATION_DETAILS

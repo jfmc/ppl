@@ -96,12 +96,8 @@ PPL::GenSys::satisfy(const Constraint& c) const {
   size_t n_rows = num_rows();
   if (c.is_equality()) {
     for (size_t i = n_rows; i-- > 0;)
-      if (c_space_dim < space_dim) {
-	if (projected_scalar_prod(c, gen_sys[i]) != 0)
-	  return SOME_SATISFY;
-      }
-      else
-	if (gen_sys[i] * c != 0)
+      if (c_space_dim < space_dim)
+	if (c * gen_sys[i] != 0)
 	  // There is at least one generator that does not satisfy `c'.
 	  return SOME_SATISFY;
     // All generators satisfy `c' i.e., saturate it because
@@ -117,11 +113,7 @@ PPL::GenSys::satisfy(const Constraint& c) const {
     GenSys_Con_Rel res = ALL_SATURATE;
     for (size_t i = n_rows; i-- > 0; ) {
       const Generator& r = gen_sys[i];
-      int sp_sign;
-      if (c_space_dim < space_dim)
-	sp_sign = sgn(projected_scalar_prod(c, r));
-      else
-        sp_sign = sgn(r * c);
+      int sp_sign = sgn(c * r);
       if (r.is_line()) {
 	if (sp_sign != 0)
 	  // Lines must saturate every constraints.

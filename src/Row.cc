@@ -198,21 +198,9 @@ PPL::compare(const Row& x, const Row& y) {
 
 PPL::Integer
 PPL::operator *(const Row& x, const Row& y) {
-  // Scalar product is only defined  if `x' and `y' have the same size.
-  assert(x.size() == y.size());
-  Integer result = 0;
-  for (size_t i = x.size(); i-- > 0; ) {
-    // The following lines optimize the computation of result += x[i] * y[i].
-    tmp_Integer_1.mul_assign(x[i], y[i]);
-    result += tmp_Integer_1;
-  }
-  return result;
-}
-
-PPL::Integer
-PPL::projected_scalar_prod(const Row& x, const Row& y) {
-  // The dimension of `x' must be less then the dimension of `y'.
-  assert(x.size() < y.size());
+  // Scalar product is only defined  if `x' and `y' are 
+  // dimension-compatibility.
+  assert(x.size() <= y.size());
   Integer result = 0;
   for (size_t i = x.size(); i-- > 0; ) {
     // The following lines optimize the computation of result += x[i] * y[i].
