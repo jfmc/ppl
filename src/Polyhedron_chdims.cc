@@ -25,6 +25,7 @@ site: http://www.cs.unipr.it/ppl/ . */
 #include <config.h>
 
 #include "Polyhedron.defs.hh"
+#include "max_space_dimension.hh"
 
 #include <cassert>
 
@@ -90,6 +91,13 @@ PPL::Polyhedron::add_space_dimensions(Matrix& mat1,
 
 void
 PPL::Polyhedron::add_space_dimensions_and_embed(dimension_type m) {
+  // The space dimension of the resulting polyhedron should not
+  // overflow the maximum allowed space dimension.
+  if (m > max_space_dimension() - space_dimension())
+    throw_space_dimension_overflow("add_space_dimensions_and_embed(m)",
+				   "adding m new space dimensions exceeds "
+				   "the maximum allowed space dimension");
+
   // Adding no dimensions to any polyhedron is a no-op.
   if (m == 0)
     return;
@@ -178,6 +186,13 @@ PPL::Polyhedron::add_space_dimensions_and_embed(dimension_type m) {
 
 void
 PPL::Polyhedron::add_space_dimensions_and_project(dimension_type m) {
+  // The space dimension of the resulting polyhedron should not
+  // overflow the maximum allowed space dimension.
+  if (m > max_space_dimension() - space_dimension())
+    throw_space_dimension_overflow("add_space_dimensions_and_project(m)",
+				   "adding m new space dimensions exceeds "
+				   "the maximum allowed space dimension");
+
   // Adding no dimensions to any polyhedron is a no-op.
   if (m == 0)
     return;
@@ -273,7 +288,14 @@ PPL::Polyhedron::concatenate_assign(const Polyhedron& y) {
   if (topology() != y.topology())
     throw_topology_incompatible("concatenate_assign(y)", "y", y);
 
-  dimension_type added_columns = y.space_dim;
+  // The space dimension of the resulting polyhedron should not
+  // overflow the maximum allowed space dimension.
+  if (y.space_dim > max_space_dimension() - space_dimension())
+    throw_space_dimension_overflow("concatenate_assign(y)",
+				   "concatenation exceeds the maximum "
+				   "allowed space dimension");
+
+  const dimension_type added_columns = y.space_dim;
 
   // If `*this' or `y' are empty polyhedra, it is sufficient to adjust
   // the dimension of the space.
@@ -537,6 +559,13 @@ PPL::Polyhedron::expand_space_dimension(Variable var, dimension_type m) {
   if (src_d+1 > space_dim)
     throw_dimension_incompatible("expand_space_dimension(v, m)", "v", var);
 
+  // The space dimension of the resulting polyhedron should not
+  // overflow the maximum allowed space dimension.
+  if (m > max_space_dimension() - space_dimension())
+    throw_space_dimension_overflow("expand_dimension(v, m)",
+				   "adding m new space dimensions exceeds"
+				   "the maximum allowed space dimension.");
+
   // Nothing to do, if no dimensions must be added.
   if (m == 0)
     return;
@@ -578,7 +607,7 @@ PPL::Polyhedron::expand_space_dimension(Variable var, dimension_type m) {
 
 void
 PPL::Polyhedron::fold_space_dimensions(const Variables_Set& to_be_folded,
-				 Variable var) {
+				       Variable var) {
   // FIXME: this implementation is _really_ an executable specification.
 
   // `var' should be one of the dimensions of the polyhedron.

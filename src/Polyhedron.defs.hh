@@ -1437,6 +1437,10 @@ public:
     \param m
     The number of dimensions to add.
 
+    \exception std::length_error
+    Thrown if adding \p m new space dimensions would cause the
+    vector space to exceed dimension <CODE>max_space_dimension()</CODE>.
+
     The new space dimensions will be those having the highest indexes
     in the new polyhedron, which is characterized by a system
     of constraints in which the variables running through
@@ -1460,6 +1464,10 @@ public:
     \param m
     The number of space dimensions to add.
 
+    \exception std::length_error
+    Thrown if adding \p m new space dimensions would cause the
+    vector space to exceed dimension <CODE>max_space_dimension()</CODE>.
+
     The new space dimensions will be those having the highest indexes
     in the new polyhedron, which is characterized by a system
     of constraints in which the variables running through
@@ -1482,6 +1490,10 @@ public:
   /*!
     \exception std::invalid_argument
     Thrown if \p *this and \p y are topology-incompatible.
+
+    \exception std::length_error
+    Thrown if the concatenation would cause the vector space
+    to exceed dimension <CODE>max_space_dimension()</CODE>.
   */
   void concatenate_assign(const Polyhedron& y);
 
@@ -1559,6 +1571,10 @@ public:
 
     \exception std::invalid_argument
     Thrown if \p var does not correspond to a dimension of the vector space.
+
+    \exception std::length_error
+    Thrown if adding \p m new space dimensions would cause the
+    vector space to exceed dimension <CODE>max_space_dimension()</CODE>.
 
     If \p *this has space dimension \f$n\f$, with \f$n > 0\f$,
     and \f$i < n\f$ is <CODE>var.id()</CODE>, then the \f$i\f$-th
@@ -2207,6 +2223,9 @@ private:
 				    const Matrix& sys) const;
   void throw_dimension_incompatible(const char* method,
 				    dimension_type required_space_dim) const;
+
+  void throw_space_dimension_overflow(const char* method,
+				      const char* reason) const;
 
   void throw_invalid_generator(const char* method,
 			       const char* g_name) const;
