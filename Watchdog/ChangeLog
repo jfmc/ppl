@@ -1,3 +1,19 @@
+2004-08-18 Wednesday 18:31  Roberto Bagnara <bagnara@cs.unipr.it>
+
+	* ChangeLog (ppl-0_6-branch.1): Mark ChangeLog.
+
+2004-08-16 Monday 18:30  Roberto Bagnara <bagnara@cs.unipr.it>
+
+	* README (1.7): Updated.
+
+2004-08-16 Monday 09:50  Roberto Bagnara <bagnara@cs.unipr.it>
+
+	* NEWS (1.4): Our tentative release date is August 18, 2004.
+
+2004-08-16 Monday 08:36  Roberto Bagnara <bagnara@cs.unipr.it>
+
+	* ChangeLog (1.7): Updated.
+
 2004-08-13 Friday 18:02  Roberto Bagnara <bagnara@cs.unipr.it>
 
 	* Makefile.am (1.10): Version info updated for the libtool
