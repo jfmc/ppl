@@ -156,6 +156,56 @@ namespace Parma_Polyhedra_Library {
   <CODE>add_dimensions_and_embed</CODE>. The resulting polyhedron
   is a point with the abscissa equal to \f$2\f$ and the ordinate
   equal to \f$0\f$.
+
+  \par Example 5
+  The following code shows the use of the function
+  <CODE>assign_variable</CODE>:
+  \code
+  Variable x(0);
+  Variable y(1);
+  GenSys gs;
+  gs.insert(0 * x + 0 * y /= 1);
+  gs.insert(0 * x + 3 * y /= 1);
+  gs.insert(3 * x + 0 * y /= 1);
+  gs.insert(3 * x + 3 * y /= 1);
+  Polyhedron ph(gs);
+  size_t var = 1;
+  Integer d = 1;
+  vector<Integer> coeff(3);
+  coeff[0] = 4;
+  coeff[1] = 1;
+  ph.assign_variable(var, coeff, d);
+  \endcode
+  In this example 
+  - the starting polyhedron is a square in \f$\mathbb{R}^2\f$; 
+  - \p var is the variable \f$x\f$;
+  - the affine_expression is \f$x+4\f$;
+  - the resulting polyhedron is the same square translated 
+  towards right.
+  
+  \par Example 6
+  The following code shows the use of the function
+  <CODE>substitue_variable</CODE>:
+  \code
+  Variable x(0);
+  Variable y(1);
+  ConSys cs;
+  cs.insert(x >= 0);
+  cs.insert(x <= 3);
+  cs.insert(y >= 0);
+  cs.insert(y <= 3);
+  Polyhedron ph(cs);
+  size_t var = 1;
+  Integer d = 1;
+  vector<Integer> coeff(3);
+  coeff[0] = 4;
+  coeff[1] = 1;
+  ph.substitute_variable(var, coeff, d);
+  \endcode
+  In this example the starting polyhedron, \p var and the affine 
+  expression are the same of the previous example, while the resulting
+  polyhedron is again the same square but it is translated towards
+  left.
 */
 
 class Parma_Polyhedra_Library::Polyhedron {
