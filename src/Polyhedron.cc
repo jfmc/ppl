@@ -3344,14 +3344,16 @@ PPL::Polyhedron::BBRZ02_widening_assign(const Polyhedron& y) {
 	  // homogeneous terms of the chosen constraints and 
 	  // we put it into the vector `norms'.
 	  // NOTE: Actually, the coefficients of `norms' are the
-	  // square of the norms of the vectors.
+	  // truncated integer part of the square of the norms of the
+	  // vectors.
 	  std::vector<Integer> norms(tmp_con_sys_num_rows);
 	  for (dimension_type h = tmp_con_sys_num_rows; h-- > 0; ) {
 	    Constraint& tmp_c = tmp_con_sys[h];
 	    for (dimension_type k = tmp_con_sys.num_columns(); k-- > 1; )
-	    norms[h] += tmp_c[k] * tmp_c[k];
+	      norms[h] += tmp_c[k] * tmp_c[k];
+	    sqrt_assign(norms[h]);
 	  }
-
+	  
 	  // In `lcm_norm' we put the least common multiple of the
 	  // coefficients of the vector `norms'.
 	  Integer lcm_norm = norms[0];
@@ -3366,13 +3368,12 @@ PPL::Polyhedron::BBRZ02_widening_assign(const Polyhedron& y) {
 	  // of `tmp_con_sys' erasing the non-homogeneous term and
 	  // modifying them so that they have the same length; `b' is
 	  // equal to `e * g'.
-	  // NOTE: The real thing that we do is a bad approximation of
+	  // NOTE: The real thing that we do is an approximation of
 	  // what we have just written. We are still working on this
 	  // problem.
 	  LinExpression e(0);
 	  bool strict_inequality = false;
 	  for (dimension_type h = tmp_con_sys_num_rows; h-- > 0; ) {
-	    //for (dimension_type h = 0; h < tmp_con_sys.num_rows(); ++h) {
 	    LinExpression tmp(tmp_con_sys[h]);
 	    tmp -= tmp[0];
 	    for (dimension_type t = tmp.size(); t-- > 1; )

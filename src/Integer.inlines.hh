@@ -61,6 +61,16 @@ exact_div_assign(Integer& x, const Integer& y, const Integer& z) {
   mpz_divexact(x.get_mpz_t(), y.get_mpz_t(), z.get_mpz_t());
 }
 
+inline void
+sqrt_assign(Integer& x) {
+  mpz_sqrt(x.get_mpz_t(), x.get_mpz_t());
+}
+
+inline void
+sqrt_assign(Integer& x, const Integer& y) {
+  mpz_sqrt(x.get_mpz_t(), y.get_mpz_t());
+}
+
 inline int
 cmp(const Integer& x, const Integer& y) {
   return mpz_cmp(x.get_mpz_t(), y.get_mpz_t());
