@@ -37,7 +37,7 @@ site: http://www.cs.unipr.it/ppl/ . */
     An object of the class ConSys is a system of constraints,
     i.e. a container of objects of the class Constraint.
     
-    \par Example
+    \par Example 1
     The following code builds a square in \f$\mathbb{R}^2\f$:
     \code
     Variable x(0);
@@ -47,6 +47,17 @@ site: http://www.cs.unipr.it/ppl/ . */
     cs.insert(x <= 3);
     cs.insert(y >= 0);
     cs.insert(y <= 3);
+    \endcode
+
+    \par Example 2
+    The following code builds an half-strip in \f$\mathbb{R}^2\f$:
+    \code
+    Variable x(0);
+    Variable y(1);
+    ConSys cs;
+    cs.insert(x >= 0);
+    cs.insert(x - y <= 0);
+    cs.insert(x - y + 1 >= 0);
     \endcode
 */
 class Parma_Polyhedra_Library::ConSys : public Matrix {
