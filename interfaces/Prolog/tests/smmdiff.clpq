@@ -1,0 +1,44 @@
+% *************************************
+% CLP(R) Version 1.1 - Example Programs
+% *************************************
+%
+% The classic cryptarithmetic puzzle:
+%
+%       S E N D
+%     + M O R E
+%     ---------
+%     M O N E Y
+
+:- use_module(library(clpq)).
+
+solve(S, E, N, D, M, O, R, Y) :-
+	constraints(S, E, N, D, M, O, R, Y).
+
+constraints(S, E, N, D, M, O, R, Y) :-
+{
+	S >= 0, E >= 0, N >= 0, D >= 0, M >= 0, O >= 0, R >= 0, Y >= 0,
+	S =< 9, E =< 9, N =< 9, D =< 9, M =< 9, O =< 9, R =< 9, Y =< 9,
+	S >= 1, M >= 1,
+	C1 >= 0, C2 >= 0, C3 >= 0, C4 >= 0,
+	C1 =< 1, C2 =< 1, C3 =< 1, C4 =< 1,
+	M = C1,
+	C2 + S + M = O + C1 * 10,
+	C3 + E + O = N + 10 * C2,
+	C4 + N + R = E + 10 * C3,
+	D + E = Y + 10*C4
+},
+	bit(C1), bit(C2), bit(C3), bit(C4),
+
+        diff(S,E), diff(S,N), diff(S,D), diff(S,M),
+         diff(S,O), diff(S,R), diff(S,Y),
+        diff(E,N), diff(E,D), diff(E,M), diff(E,O),
+         diff(E,R), diff(E,Y),
+        diff(N,D), diff(N,M), diff(N,O), diff(N,R), diff(N,Y),
+        diff(D,M), diff(D,O), diff(D,R), diff(D,Y),
+        diff(M,O), diff(M,R), diff(M,Y),
+        diff(O,R), diff(O,Y),
+        diff(R,Y).
+
+bit(X) :- {X = 0}; {X = 1}.
+
+diff(X,Y) :- {X =< Y-1} ; {X >= Y+1}.
