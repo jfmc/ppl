@@ -37,6 +37,9 @@ site: http://www.cs.unipr.it/ppl/ . */
 /*!
     An object of the class ConSys is a system of constraints,
     i.e. a multiset of objects of the class Constraint.
+    When inserting constraints in a system, dimensions are automatically
+    adjusted so that all the constraints in the system are defined
+    on the same vector space.
 
     \par
     In all the examples it is assumed that variables
@@ -76,7 +79,8 @@ public:
   //! Destructor.
   virtual ~ConSys();
 
-  //! Inserts a copy of the constraint \p c into \p *this.
+  //! Inserts a copy of the constraint \p c into \p *this,
+  //! increasing the number of dimensions if needed.
   void insert(const Constraint& c);
 
   //! Swaps \p *this with the system of constraints \p y.
@@ -178,6 +182,12 @@ PPL_INTERNAL:
   //! Output operator.
   void print(std::ostream& s) const;
 };
+
+namespace std {
+  //! Specialize std::swap.
+  void swap(Parma_Polyhedra_Library::ConSys& x,
+	    Parma_Polyhedra_Library::ConSys& y);
+}
 
 #if !OUTLINE
 #include "ConSys.inlines.hh"

@@ -66,6 +66,12 @@ Parma_Polyhedra_Library::ConSys::swap(ConSys& y) {
   Matrix::swap(y);
 }
 
+INLINE void
+std::swap(Parma_Polyhedra_Library::ConSys& x,
+	  Parma_Polyhedra_Library::ConSys& y) {
+  x.swap(y);
+}
+
 INLINE
 Parma_Polyhedra_Library::
 ConSys::const_iterator::const_iterator(const Matrix::const_iterator& iter,
