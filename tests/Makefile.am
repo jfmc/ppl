@@ -61,7 +61,7 @@ TESTS = addconstraints1 addconstraints2 addconstraints3 addconstraints4 \
         permute \
 	randchull1 \
 	removedim1 removedim2 removedim3 removedim4 removedim5 removedim6 \
-	satisfies1 satisfies2 satisfies3 \
+	satisfies1 satisfies2 satisfies3 satisfies4 \
 	smm1 \
 	universe1 universe2 universe3 universe4 universe5
 
@@ -175,6 +175,7 @@ removedim6_SOURCES = removedim6.cc
 satisfies1_SOURCES = satisfies1.cc
 satisfies2_SOURCES = satisfies2.cc
 satisfies3_SOURCES = satisfies3.cc
+satisfies4_SOURCES = satisfies4.cc
 
 smm1_SOURCES = smm1.cc
 
