@@ -376,6 +376,8 @@ SP_STUB_2(ppl_Polyhedron_convex_difference_assign, 2)
 SP_STUB_2(ppl_Polyhedron_convex_difference_assign_and_minimize, 2)
 SP_STUB_2(ppl_Polyhedron_widening_assign, 2)
 SP_STUB_3(ppl_Polyhedron_limited_widening_assign, 3)
+SP_STUB_2(ppl_Polyhedron_get_constraints, 2)
+SP_STUB_2(ppl_Polyhedron_get_generators, 2)
 SP_STUB_2(ppl_Polyhedron_add_constraint, 2)
 SP_STUB_2(ppl_Polyhedron_add_generator, 2)
 SP_STUB_2(ppl_Polyhedron_add_constraints, 2)
@@ -387,18 +389,16 @@ SP_STUB_2(ppl_Polyhedron_add_dimensions_and_project, 2)
 SP_STUB_2(ppl_Polyhedron_add_dimensions_and_embed, 2)
 SP_STUB_2(ppl_Polyhedron_remove_dimensions, 2)
 SP_STUB_2(ppl_Polyhedron_remove_higher_dimensions, 2)
-SP_STUB_1(ppl_check_empty, 1)
-SP_STUB_1(ppl_check_universe, 1)
-SP_STUB_1(ppl_is_bounded, 1)
-SP_STUB_2(ppl_get_constraints, 2)
-SP_STUB_2(ppl_get_generators, 2)
-SP_STUB_2(ppl_polyhedron_included_or_equal, 2)
-SP_STUB_2(ppl_polyhedron_equal, 2)
-SP_STUB_2(ppl_polyhedron_strictly_included, 2)
-SP_STUB_3(ppl_relation_with_constraint, 3)
-SP_STUB_3(ppl_relation_with_generator, 3)
-SP_STUB_4(ppl_affine_image, 4)
-SP_STUB_4(ppl_affine_preimage, 4)
+SP_STUB_4(ppl_Polyhedron_affine_image, 4)
+SP_STUB_4(ppl_Polyhedron_affine_preimage, 4)
+SP_STUB_3(ppl_Polyhedron_relation_with_constraint, 3)
+SP_STUB_3(ppl_Polyhedron_relation_with_generator, 3)
+SP_STUB_1(ppl_Polyhedron_check_empty, 1)
+SP_STUB_1(ppl_Polyhedron_check_universe, 1)
+SP_STUB_1(ppl_Polyhedron_is_bounded, 1)
+SP_STUB_2(ppl_Polyhedron_contains_Polyhedron, 2)
+SP_STUB_2(ppl_Polyhedron_strictly_contains_Polyhedron, 2)
+SP_STUB_2(ppl_Polyhedron_equals_Polyhedron, 2)
 
 #define SP_DEFINE_C_PREDICATE(name, arity) \
   SP_define_c_predicate(#name, arity, "user", sp_stub_##name, NULL)
@@ -438,6 +438,8 @@ ppl_sicstus_init(int /* when */) {
   SP_DEFINE_C_PREDICATE(ppl_Polyhedron_convex_difference_assign_and_minimize, 2);
   SP_DEFINE_C_PREDICATE(ppl_Polyhedron_widening_assign, 2);
   SP_DEFINE_C_PREDICATE(ppl_Polyhedron_limited_widening_assign, 3);
+  SP_DEFINE_C_PREDICATE(ppl_Polyhedron_get_constraints, 2);
+  SP_DEFINE_C_PREDICATE(ppl_Polyhedron_get_generators, 2);
   SP_DEFINE_C_PREDICATE(ppl_Polyhedron_add_constraint, 2);
   SP_DEFINE_C_PREDICATE(ppl_Polyhedron_add_generator, 2);
   SP_DEFINE_C_PREDICATE(ppl_Polyhedron_add_constraints, 2);
@@ -449,18 +451,17 @@ ppl_sicstus_init(int /* when */) {
   SP_DEFINE_C_PREDICATE(ppl_Polyhedron_add_dimensions_and_embed, 2);
   SP_DEFINE_C_PREDICATE(ppl_Polyhedron_remove_dimensions, 2);
   SP_DEFINE_C_PREDICATE(ppl_Polyhedron_remove_higher_dimensions, 2);
-  SP_DEFINE_C_PREDICATE(ppl_check_empty, 1);
-  SP_DEFINE_C_PREDICATE(ppl_check_universe, 1);
-  SP_DEFINE_C_PREDICATE(ppl_is_bounded, 1);
-  SP_DEFINE_C_PREDICATE(ppl_get_constraints, 2);
-  SP_DEFINE_C_PREDICATE(ppl_get_generators, 2);
-  SP_DEFINE_C_PREDICATE(ppl_polyhedron_included_or_equal, 2);
-  SP_DEFINE_C_PREDICATE(ppl_polyhedron_equal, 2);
-  SP_DEFINE_C_PREDICATE(ppl_polyhedron_strictly_included, 2);
-  SP_DEFINE_C_PREDICATE(ppl_relation_with_constraint, 3);
-  SP_DEFINE_C_PREDICATE(ppl_relation_with_generator, 3);
-  SP_DEFINE_C_PREDICATE(ppl_affine_image, 4);
-  SP_DEFINE_C_PREDICATE(ppl_affine_preimage, 4);}
+  SP_DEFINE_C_PREDICATE(ppl_Polyhedron_affine_image, 4);
+  SP_DEFINE_C_PREDICATE(ppl_Polyhedron_affine_preimage, 4);
+  SP_DEFINE_C_PREDICATE(ppl_Polyhedron_relation_with_constraint, 3);
+  SP_DEFINE_C_PREDICATE(ppl_Polyhedron_relation_with_generator, 3);
+  SP_DEFINE_C_PREDICATE(ppl_Polyhedron_check_empty, 1);
+  SP_DEFINE_C_PREDICATE(ppl_Polyhedron_check_universe, 1);
+  SP_DEFINE_C_PREDICATE(ppl_Polyhedron_is_bounded, 1);
+  SP_DEFINE_C_PREDICATE(ppl_Polyhedron_contains_Polyhedron, 2);
+  SP_DEFINE_C_PREDICATE(ppl_Polyhedron_strictly_contains_Polyhedron, 2);
+  SP_DEFINE_C_PREDICATE(ppl_Polyhedron_equals_Polyhedron, 2);
+}
 
 extern "C" void
 ppl_sicstus_deinit(int /* when */) {

@@ -23,6 +23,8 @@
 :- foreign(ppl_Polyhedron_convex_difference_assign_and_minimize(+term, +term)).
 :- foreign(ppl_Polyhedron_widening_assign(+term, +term)).
 :- foreign(ppl_Polyhedron_limited_widening_assign(+term, +term)).
+:- foreign(ppl_Polyhedron_get_constraints(+term, +term)).
+:- foreign(ppl_Polyhedron_get_generators(+term, +term)).
 :- foreign(ppl_Polyhedron_add_constraint(+term, +term)).
 :- foreign(ppl_Polyhedron_add_generator(+term, +term)).
 :- foreign(ppl_Polyhedron_add_constraints(+term, +term)).
@@ -34,15 +36,13 @@
 :- foreign(ppl_Polyhedron_add_dimensions_and_embed(+term, +term)).
 :- foreign(ppl_Polyhedron_remove_dimensions(+term, +term)).
 :- foreign(ppl_Polyhedron_remove_higher_dimensions(+term, +term)).
-:- foreign(ppl_check_empty(+term)).
-:- foreign(ppl_check_universe(+term)).
-:- foreign(ppl_is_bounded(+term)).
-:- foreign(ppl_get_constraints(+term, +term)).
-:- foreign(ppl_get_generators(+term, +term)).
-:- foreign(ppl_polyhedron_included_or_equal(+term, +term)).
-:- foreign(ppl_polyhedron_equal(+term, +term)).
-:- foreign(ppl_polyhedron_strictly_included(+term, +term)).
-:- foreign(ppl_relation_with_constraint(+term, +term, +term)).
-:- foreign(ppl_relation_with_generator(+term, +term, +term)).
-:- foreign(ppl_affine_image(+term, +term, +term, +term)).
-:- foreign(ppl_affine_preimage(+term, +term, +term, +term)).
+:- foreign(ppl_Polyhedron_affine_image(+term, +term, +term, +term)).
+:- foreign(ppl_Polyhedron_affine_preimage(+term, +term, +term, +term)).
+:- foreign(ppl_Polyhedron_relation_with_constraint(+term, +term, +term)).
+:- foreign(ppl_Polyhedron_relation_with_generator(+term, +term, +term)).
+:- foreign(ppl_Polyhedron_check_empty(+term)).
+:- foreign(ppl_Polyhedron_check_universe(+term)).
+:- foreign(ppl_Polyhedron_is_bounded(+term)).
+:- foreign(ppl_Polyhedron_contains_Polyhedron(+term, +term)).
+:- foreign(ppl_Polyhedron_strictly_contains_Polyhedron(+term, +term)).
+:- foreign(ppl_Polyhedron_equals_Polyhedron(+term, +term)).
