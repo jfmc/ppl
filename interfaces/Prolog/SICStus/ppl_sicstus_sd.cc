@@ -1,4 +1,4 @@
-/* SICStus Prolog interface.
+/* SICStus Prolog interface: system-dependent part.
    Copyright (C) 2001, 2002 Roberto Bagnara <bagnara@cs.unipr.it>
 
 This file is part of the Parma Polyhedra Library (PPL).
@@ -133,7 +133,6 @@ Prolog_construct_compound(Prolog_term_ref t, Prolog_atom f,
 			  Prolog_term_ref a3, Prolog_term_ref a4) {
   return SP_cons_functor(t, f, 4, a1, a2, a3, a4) != 0;
 }
-
 
 /*!
   Assign to \p l a Prolog list whose head is \p h and tail is \p t. 

@@ -28,17 +28,22 @@ VPATH = @srcdir@
 
 SUBDIRS =
 
-EXTRA_DIST = ppl_sicstus.cc ppl_sicstus.pl sp_clpq.pl
+EXTRA_DIST = ppl_sicstus_sd.cc ppl_sicstus_sd.pl sp_clpq.pl
 
 if HAVE_SICSTUS_PROLOG
 
 INCLUDES = -I$(top_builddir)/src @extra_includes@
 
 bin_PROGRAMS = ppl_sicstus
+ppl_sicstus_SOURCES =
 
-ppl_sicstus_SOURCES = ppl_sicstus.cc
+pkglib_DATA = ppl_sicstus.s.o ppl_sicstus.so ppl_sicstus.pl
 
-ppl_sicstus$(EXEEXT): static_library $(top_builddir)/src/libppl.la
+noinst_LTLIBRARIES = ppl_sicstus_sd.la
+ppl_sicstus_sd_la_SOURCES = ppl_sicstus_sd.cc
+ppl_sicstus_sd_la_LDFLAGS = -no-undefined -module -avoid-version
+
+ppl_sicstus$(EXEEXT): ppl_sicstus.s.o $(top_builddir)/src/libppl.la
 	spld --static --main=prolog \
 		--resources=ppl_sicstus.s.o -o $@ \
 		-LD -lstdc++ \
@@ -46,13 +51,15 @@ ppl_sicstus$(EXEEXT): static_library $(top_builddir)/src/libppl.la
 		-Wl,-no-whole-archive \
 		@extra_libraries@
 
-static_library: ppl_sicstus.pl ppl_sicstus.o
-	splfr --verbose --static $(srcdir)/ppl_sicstus.pl ppl_sicstus.o
-	touch static_library
+ppl_sicstus.s.o: ppl_sicstus.pl ppl_sicstus_sd.o
+	splfr --static ppl_sicstus.pl ppl_sicstus_sd.o
 
-dynamic_library: ppl_sicstus.pl ppl_sicstus.o
-	splfr --verbose $(srcdir)/ppl_sicstus.pl ppl_sicstus.o
-	touch dynamic_library
+ppl_sicstus.so: ppl_sicstus.pl ppl_sicstus_sd.lo
+	splfr ppl_sicstus.pl ppl_sicstus_sd.lo \
+		-lppl @extra_libraries@
+
+ppl_sicstus.pl: ppl_sicstus_sd.pl ../ppl_prolog.pl
+	cat $^ >$@
 
 CLPQ_TESTS = \
 ack.clpq \
@@ -64,9 +71,14 @@ sumto.clpq \
 tak.clpq
 
 check-local: ppl_sicstus ../check_script ../expected
+	cp -f $(srcdir)/../clpq.pl .
+	cp -f $(srcdir)/sp_clpq.pl .
 	for k in $(CLPQ_TESTS); do cp -f $(srcdir)/../$$k .; done
-	./ppl_sicstus -l $(srcdir)/sp_clpq.pl --goal "main." <$(srcdir)/../check_script >obtained
+	./ppl_sicstus -l sp_clpq.pl --goal "main." \
+		<$(srcdir)/../check_script >obtained
 	diff -q --ignore-all-space $(srcdir)/../expected obtained
 
-MOSTLYCLEANFILES = $(CLPQ_TESTS) obtained static_library dynamic_library
+MOSTLYCLEANFILES = \
+ppl_sicstus.pl ppl_sicstus.s.o ppl_sicstus.so \
+clpq.pl sp_clpq.pl $(CLPQ_TESTS) obtained
 endif
