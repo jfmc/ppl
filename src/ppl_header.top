@@ -25,7 +25,7 @@ site: http://www.cs.unipr.it/ppl/ . */
 #define _ppl_hh 1
 
 #ifdef NDEBUG
-#define PPL_SAVE_NDEBUG NDEBUG
+#define PPL_SAVE_NDEBUG 1
 #undef NDEBUG
 #endif
 

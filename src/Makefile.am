@@ -118,13 +118,10 @@ ppl_install.hh:	ppl_header.top $(top_builddir)/config.h $(INCLUDE_FILES) $(MORE_
 	(cd $(srcdir) ; cat $(MORE_INCLUDE_FILES) $(INCLUDE_FILES)) >tmp/concat
 	grep -e "^#include <" <tmp/concat | sort -u >tmp/includes
 	sed -e "/^#include/d" -e "s/PPL_INTERNAL/public/g" <tmp/concat >tmp/noincludes.cc
-	grep -e "^#define" <$(top_builddir)/config.h \
-		| grep -v -e "^#define NDEBUG" >tmp/defines
-	sed -e "s/^#define *\([^ ]*\) *.*$$/#undef \1/g" <tmp/defines | sort -u >tmp/undefines
 	cat $(srcdir)/ppl_header.top $(top_builddir)/config.h \
 		tmp/includes >ppl_install.hh
 	$(CXXCPP) -P @debug_flag@ tmp/noincludes.cc >>ppl_install.hh
-	cat tmp/undefines $(srcdir)/ppl_header.bottom >>ppl_install.hh
+	cat $(srcdir)/ppl_header.bottom >>ppl_install.hh
 	rm -rf tmp*
 
 # ppl.hh and ppl_install.hh are not distributed.

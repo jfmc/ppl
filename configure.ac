@@ -41,12 +41,12 @@ AH_BOTTOM([
 // Flexible array members at the end of a struct
 // are defined as in
 //   Type array[];
-#define FLEXIBLE_ARRAY
+#define PPL_FLEXIBLE_ARRAY
 #else
 // Flexible array members at the end of a struct
 // are defined as in
 //   Type array[0];
-#define FLEXIBLE_ARRAY 0
+#define PPL_FLEXIBLE_ARRAY 0
 #endif
 
 #endif

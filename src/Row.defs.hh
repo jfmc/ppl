@@ -228,7 +228,7 @@ private:
   //! The type of this row.
   Type type_;
   //! The vector of coefficients.
-  Integer vec_[FLEXIBLE_ARRAY];
+  Integer vec_[PPL_FLEXIBLE_ARRAY];
 
 private:
   //! Private and unimplemented: default construction is not allowed.
