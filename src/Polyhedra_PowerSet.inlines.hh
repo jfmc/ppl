@@ -453,8 +453,7 @@ template <typename PH>
 void
 Polyhedra_PowerSet<PH>::BHZ03_widening_assign(const Polyhedra_PowerSet& y,
 					      void (Polyhedron::*wm)
-					      (const Polyhedron&,
-					       unsigned*)) {
+					      (const Polyhedron&, unsigned*)) {
   // `x' is the current iteration value.
   Polyhedra_PowerSet<PH>& x = *this;
 
@@ -554,6 +553,127 @@ Polyhedra_PowerSet<PH>::BHZ03_widening_assign(const Polyhedra_PowerSet& y,
     // Compute (y_hull \widen extrapolated_x_hull).
     PH ph = extrapolated_x_hull;
     (ph.*wm)(y_hull, 0);
+    // Compute the poly-difference between `ph' and `extrapolated_x_hull'.
+    ph.poly_difference_assign(extrapolated_x_hull);
+    x.add_disjunct(ph);
+    return;
+  }
+
+  // Fallback to the computation of the poly-hull.
+  Polyhedra_PowerSet<PH> x_hull_singleton(x.space_dim, PH::EMPTY);
+  x_hull_singleton.add_disjunct(x_hull);
+  std::swap(x, x_hull_singleton);
+}
+
+// TODO: to be generalized so as to use an arbitrary lgo relation.
+template <typename PH>
+void
+Polyhedra_PowerSet<PH>
+::limited_BHZ03_widening_assign(const Polyhedra_PowerSet& y,
+				const ConSys& cs,
+				void (Polyhedron::*lwm)
+				(const Polyhedron&,
+				 const ConSys&,
+				 unsigned*)) {
+  // `x' is the current iteration value.
+  Polyhedra_PowerSet<PH>& x = *this;
+
+#ifndef NDEBUG
+  {
+    // We assume that y is entailed by or equal to *this.
+    const Polyhedra_PowerSet<PH> x_copy = x;
+    const Polyhedra_PowerSet<PH> y_copy = y;
+    assert(y_copy.definitely_entails(x_copy));
+  }
+#endif
+
+  // First widening technique: do nothing.
+
+  // If `y' is the empty collection, do nothing.
+  assert(x.size() > 0);
+  if (y.size() == 0)
+    return;
+
+  // Compute the poly-hull of `x'.
+  PH x_hull(x.space_dim, PH::EMPTY);
+  for (const_iterator i = x.begin(), iend = x.end(); i != iend; ++i)
+    x_hull.poly_hull_assign(i->polyhedron());
+
+  // Compute the poly-hull of `y'.
+  PH y_hull(y.space_dim, PH::EMPTY);
+  for (const_iterator i = y.begin(), iend = y.end(); i != iend; ++i)
+    y_hull.poly_hull_assign(i->polyhedron());
+  // Compute the base-level lgo info for `y_hull'.
+  const base_lgo_info y_hull_info(y_hull);
+
+  // If the hull info is stabilizing, do nothing.
+  int hull_stabilization = y_hull_info.compare(x_hull);
+  if (hull_stabilization == 1)
+    return;
+
+  // Multiset ordering is only useful when `y' is not a singleton. 
+  const bool y_is_not_a_singleton = y.size() > 1;
+
+  // The multiset lgo information for `y':
+  // we want to be lazy about its computation.
+  multiset_lgo_info y_info;
+  bool y_info_computed = false;
+
+  if (hull_stabilization == 0 && y_is_not_a_singleton) {
+    // Collect the multiset lgo information for `y'.
+    y.collect_multiset_lgo_info(y_info);
+    y_info_computed = true;
+    // If multiset ordering is stabilizing, do nothing.
+    if (x.is_multiset_lgo_stabilizing(y_info))
+      return;
+  }
+
+  // Second widening technique: try the BGP99 powerset heuristics.
+  Polyhedra_PowerSet<PH> extrapolated_x = x;
+  extrapolated_x.limited_BGP99_heuristics_assign(y, cs, lwm);
+
+  // Compute the poly-hull of `extrapolated_x'.
+  PH extrapolated_x_hull(x.space_dim, PH::EMPTY);
+  for (const_iterator i = extrapolated_x.begin(),
+	 iend = extrapolated_x.end(); i != iend; ++i)
+    extrapolated_x_hull.poly_hull_assign(i->polyhedron());
+  
+  // Check for stabilization and, if successful,
+  // commit to the result of the extrapolation.
+  hull_stabilization = y_hull_info.compare(extrapolated_x_hull);
+  if (hull_stabilization == 1) {
+    // The poly-hull is stabilizing.
+    std::swap(x, extrapolated_x);
+    return;
+  }
+  else if (hull_stabilization == 0 && y_is_not_a_singleton) {
+    // If not already done, compute multiset lgo info for `y'.
+    if (!y_info_computed) {
+      y.collect_multiset_lgo_info(y_info);
+      y_info_computed = true;
+    }
+    if (extrapolated_x.is_multiset_lgo_stabilizing(y_info)) {
+      std::swap(x, extrapolated_x);
+      return;
+    }
+    // Third widening technique: pairwise-reduction on `extrapolated_x'.
+    // Note that pairwise-reduction does not affect the computation
+    // of the poly-hulls, so that we only have to check the multiset
+    // lgo relation.
+    Polyhedra_PowerSet<PH> reduced_extrapolated_x(extrapolated_x);
+    reduced_extrapolated_x.pairwise_reduce();
+    if (reduced_extrapolated_x.is_multiset_lgo_stabilizing(y_info)) {
+      std::swap(x, reduced_extrapolated_x);
+      return;
+    }
+  }
+
+  // Fourth widening technique: this is applicable only when
+  // `y_hull' is a proper subset of `extrapolated_x_hull'.
+  if (extrapolated_x_hull.strictly_contains(y_hull)) {
+    // Compute (y_hull \widen extrapolated_x_hull).
+    PH ph = extrapolated_x_hull;
+    (ph.*lwm)(y_hull, cs, 0);
     // Compute the poly-difference between `ph' and `extrapolated_x_hull'.
     ph.poly_difference_assign(extrapolated_x_hull);
     x.add_disjunct(ph);

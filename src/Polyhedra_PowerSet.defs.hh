@@ -172,6 +172,12 @@ public:
   void BHZ03_widening_assign(const Polyhedra_PowerSet& y,
 			     void (Polyhedron::*wm)(const Polyhedron&,
 						    unsigned*));
+  void limited_BHZ03_widening_assign(const Polyhedra_PowerSet& y,
+				     const ConSys& cs,
+				     void (Polyhedron::*lwm)
+				     (const Polyhedron&,
+				      const ConSys&,
+				      unsigned*));
 
   void collapse(unsigned max_disjuncts);
 
