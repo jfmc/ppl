@@ -91,7 +91,7 @@ ORIGINAL_TESTS = \
 	dualhypercubes \
 	empty1 \
 	exceptions1 exceptions2  exceptions3 \
-	expanddim1 \
+	expanddim1 expanddim2 \
 	folddims1 \
 	generalizedaffineimage1 generalizedaffineimage2 \
 	generalizedaffineimage3 generalizedaffineimage4 \
@@ -391,6 +391,7 @@ exceptions2_SOURCES = exceptions2.cc
 exceptions3_SOURCES = exceptions3.cc
 
 expanddim1_SOURCES = expanddim1.cc
+expanddim2_SOURCES = expanddim2.cc
 
 folddims1_SOURCES = folddims1.cc
 

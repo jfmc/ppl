@@ -198,45 +198,9 @@ test6() {
     exit(1);
 }
 
-// Test using constraints for NNC polyhedron.
-static void
-test7() {
-
-  NNC_Polyhedron ph1(2);
-  ph1.add_constraint(A - B > 2);
-  ph1.add_constraint(A + 2*B < 6);
-  ph1.add_constraint(B < 6);
-
-#if NOISY
-  print_constraints(ph1, "*** ph1 ***");
-#endif
-
-  ph1.expand_dimension(B, 2);
-
-  NNC_Polyhedron known_result(4);
-  known_result.add_constraint(A - B > 2);
-  known_result.add_constraint(A + 2*B < 6);
-  known_result.add_constraint(B < 6);
-  known_result.add_constraint(A - C > 2);
-  known_result.add_constraint(A + 2*C < 6);
-  known_result.add_constraint(C < 6);
-  known_result.add_constraint(A - D > 2);
-  known_result.add_constraint(A + 2*D < 6);
-  known_result.add_constraint(D < 6);
-
-  bool ok = (ph1 == known_result);
-
-#if NOISY
-  print_constraints(ph1, "*** After ph1.expand_dimension(B, 2) ***");
-#endif
-
-  if (!ok)
-    exit(1);
-}
-
 // Test using constraints with equality constraint.
 static void
-test8() {
+test7() {
   C_Polyhedron ph1(3);
   ph1.add_constraint(A <= 1);
   ph1.add_constraint(C == 1);
@@ -269,44 +233,9 @@ test8() {
     exit(1);
 }
 
-// Test using generators for NNC polyhedron.
-static void
-test9() {
-  NNC_Polyhedron ph1(2, NNC_Polyhedron::EMPTY);
-  ph1.add_generator(point(A));
-  ph1.add_generator(closure_point(A + B));
-  ph1.add_generator(ray(A - B));
-
-#if NOISY
-  print_generators(ph1, "*** ph1 ***");
-#endif
-
-  ph1.expand_dimension(A, 2);
-
-  NNC_Polyhedron known_result(4, NNC_Polyhedron::EMPTY);
-  known_result.add_generator(point(A + C + D));
-  known_result.add_generator(ray(A -B + C + D));
-  known_result.add_generator(closure_point(A + C + 2*D));
-  known_result.add_generator(closure_point(A + 2*C + D));
-  known_result.add_generator(closure_point(A + 2*C + 2*D));
-  known_result.add_generator(closure_point(A + B + C + D));
-  known_result.add_generator(closure_point(2*A + C + D));
-  known_result.add_generator(closure_point(2*A + C + 2*D));
-  known_result.add_generator(closure_point(2*A + 2*C + D));
-
-  bool ok = (ph1 == known_result);
-
-#if NOISY
-  print_generators(ph1, "***  After ph1.expand_dimension(A, 2) ***");
-#endif
-
-  if (!ok)
-    exit(1);
-}
-
 // Test as given in GopanDMDRS04 on page 519.
 static void
-test10() {
+test8() {
   C_Polyhedron ph1(2, C_Polyhedron::EMPTY);
   ph1.add_generator(point(A + 2*B));
   ph1.add_generator(point(A + 3*B));
@@ -351,8 +280,7 @@ main() TRY {
   test6();
   test7();
   test8();
-  test9();
-  test10();
+
   return 0;
 }
 CATCH
