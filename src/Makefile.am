@@ -141,6 +141,9 @@ PowerSet.inlines.hh \
 AskTell.types.hh \
 AskTell.defs.hh \
 AskTell.inlines.hh \
+Polyhedra_PowerSet.types.hh \
+Polyhedra_PowerSet.defs.hh \
+Polyhedra_PowerSet.inlines.hh \
 algorithms.hh
 
 libppl_la_SOURCES = \
@@ -209,6 +212,9 @@ PowerSet.inlines.hh \
 AskTell.types.hh \
 AskTell.defs.hh \
 AskTell.inlines.hh \
+Polyhedra_PowerSet.types.hh \
+Polyhedra_PowerSet.defs.hh \
+Polyhedra_PowerSet.inlines.hh \
 algorithms.hh
 
 libppl_la_LDFLAGS = \
