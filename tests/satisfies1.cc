@@ -1,4 +1,4 @@
-/* Testing Polyhedron::satisfies().
+/* Testing Polyhedron::relation_with(c).
    Copyright (C) 2001, 2002 Roberto Bagnara <bagnara@cs.unipr.it>
 
 This file is part of the Parma Polyhedra Library (PPL).
@@ -45,13 +45,13 @@ main() {
   print_generators(ph, "--- ph ---");
 #endif
 
-  GenSys_Con_Rel rel = ph.satisfies(A >= 0);
+  Relation_Poly_Con rel = ph.relation_with(A >= 0);
 
-  GenSys_Con_Rel known_rel = ALL_SATISFY;
+  Relation_Poly_Con known_rel = IS_INCLUDED;
   int retval = (rel == known_rel) ? 0 : 1;
 
 #if NOISY
-  cout << "ph.satisfies(A >= 0) == " << rel << endl;
+  cout << "ph.relation_with(A >= 0) == " << rel << endl;
 #endif
   return retval;
 }

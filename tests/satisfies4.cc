@@ -1,4 +1,4 @@
-/* Testing Polyhedron::satisfies().
+/* Testing Polyhedron::relation_with(c).
    Copyright (C) 2001, 2002 Roberto Bagnara <bagnara@cs.unipr.it>
 
 This file is part of the Parma Polyhedra Library (PPL).
@@ -52,11 +52,11 @@ main() {
   print_constraint(c, "--- c ---");
 #endif
 
-  GenSys_Con_Rel rel = ph.satisfies(c);
+  Relation_Poly_Con rel = ph.relation_with(c);
 #if NOISY
-  cout << "ph.satisfies(c) == " << rel << endl;
+  cout << "ph.relation_with(c) == " << rel << endl;
 #endif
 
-  return rel == NONE_SATISFIES ? 0 : 1;
+  return rel == IS_DISJOINT ? 0 : 1;
 
 }

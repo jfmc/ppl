@@ -1,5 +1,4 @@
-/* Testing Polyhedron::relation_with(c): we verify that all the points
-   of an empty polyhedron saturate a constraints.
+/* Relation enumerations implementation (non-inline functions).
    Copyright (C) 2001, 2002 Roberto Bagnara <bagnara@cs.unipr.it>
 
 This file is part of the Parma Polyhedra Library (PPL).
@@ -22,40 +21,48 @@ USA.
 For the most up-to-date information see the Parma Polyhedra Library
 site: http://www.cs.unipr.it/ppl/ . */
 
-#include "ppl_install.hh"
-#include "print.hh"
-#include "ehandlers.hh"
+#include <config.h>
 
-using namespace std;
-using namespace Parma_Polyhedra_Library;
+#include "relations.hh"
 
-#define NOISY 0
 
-int
-main() {
-  set_handlers();
+namespace PPL = Parma_Polyhedra_Library;
 
-  Variable y(1);
+std::ostream&
+PPL::operator <<(std::ostream& s, Relation_Poly_Con r) {
+  const char* p = 0;
+  switch (r) {
+  case IS_DISJOINT:
+    p = "IS_DISJOINT";
+    break;
+  case STRICTLY_INTERSECTS:
+    p = "STRICTLY_INTERSECTS";
+    break;
+  case IS_INCLUDED:
+    p = "IS_INCLUDED";
+    break;
+  case SATURATES:
+    p = "SATURATES";
+    break;
+  }
+  assert(p != 0);
+  s << p;
+  return s;
+}
 
-  Polyhedron ph(2, Polyhedron::EMPTY);
 
-#if NOISY
-  print_generators(ph, "--- ph ---");
-#endif
-  Constraint c(y >= 0);
-
-#if NOISY
-  print_constraint(c, "--- c ---");
-#endif
-
-  Relation_Poly_Con rel = ph.relation_with(c);
-
-  Relation_Poly_Con known_rel = SATURATES;
-  int retval = (rel == known_rel) ? 0 : 1;
-
-#if NOISY
-  cout << "ph.relation_with(c) == " << rel << endl;
-#endif
-
-  return retval;
+std::ostream&
+PPL::operator <<(std::ostream& s, Relation_Poly_Gen r) {
+  const char* p = 0;
+  switch (r) {
+  case SUBSUMES:
+    p = "SUBSUMES";
+    break;
+  case DOES_NOT_SUBSUME:
+    p = "DOES_NOT_SUBSUME";
+    break;
+  }
+  assert(p != 0);
+  s << p;
+  return s;
 }

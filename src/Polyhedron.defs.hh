@@ -31,10 +31,10 @@ site: http://www.cs.unipr.it/ppl/ . */
 #include "SatMatrix.defs.hh"
 #include "Status.defs.hh"
 #include "Polyhedron.types.hh"
+#include "relations.hh"
 #include <set>
 
 namespace Parma_Polyhedra_Library {
-
   //! Returns <CODE>true</CODE> if and only if
   //! \p x and \p y are the same polyhedron.
   //! \exception std::invalid_argument thrown if \p x and \p y
@@ -394,16 +394,16 @@ public:
   //!                                  are dimension-incompatible.
   void convex_difference_assign(const Polyhedron& y);
 
-  //! Returns the relation between the generators of \p *this
+  //! Returns the relation holding between the polyhedron \p *this
   //! and the constraint \p c.
   //! \exception std::invalid_argument thrown if \p *this and constraint
   //!                                  \p c are dimension-incompatible.
-  GenSys_Con_Rel satisfies(const Constraint& c);
-  //! Tests the inclusion of the generator \p g in the
-  //! polyhedron \p *this.
-  //! \exception std::invalid_argument thrown if \p *this and constraint
+  Relation_Poly_Con relation_with(const Constraint& c);
+  //! Returns the relation holding between the polyhedron \p *this
+  //! and the generator \p g.
+  //! \exception std::invalid_argument thrown if \p *this and generator
   //!                                  \p g are dimension-incompatible.
-  bool includes(const Generator& g);
+  Relation_Poly_Gen relation_with(const Generator& g);
 
   //! Computes the widening between \p *this and \p y and
   //! assigns the result to \p *this.

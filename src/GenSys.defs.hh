@@ -29,33 +29,9 @@ site: http://www.cs.unipr.it/ppl/ . */
 #include "Matrix.defs.hh"
 #include "Generator.types.hh"
 #include "Constraint.types.hh"
+#include "relations.hh"
 #include <cstddef>
 #include <vector>
-
-namespace Parma_Polyhedra_Library {
-  //! Describes possible relations between a system of
-  //! generators and a given constraint.
-  enum GenSys_Con_Rel {
-    //! No generator satisfies the given constraint.
-    NONE_SATISFIES,
-    //! All generators satisfy the given constraint,
-    //! but there exists a generator not saturating it
-    //! (i.e., a generator does not belong to the hyper-plane
-    //! defined by the constraint.)
-    ALL_SATISFY,
-    //! All generators saturate the given constraint
-    //! (i.e., they all belong to the hyper-plane
-    //! defined by the constraint.)
-    ALL_SATURATE,
-    //! Some generators satisfy the given constraint
-    //! (i.e., there exists both a generator satisfying the constraint
-    //! and another generator which does not satisfy it.)
-    SOME_SATISFY
-  };
-
-  //! Output operator for GenSys_Con_Rel.
-  std::ostream& operator <<(std::ostream& s, GenSys_Con_Rel r);
-}
 
 //! A system of generators.
 /*!
@@ -259,9 +235,9 @@ PPL_INTERNAL:
   //! Returns a constant reference to the \p k- th generator of the system.
   const Generator& operator [](size_t k) const;
 
-  //! Checks if the given constraint is satisfied by all generators
-  //! in the system.
-  GenSys_Con_Rel satisfy(const Constraint& c) const;
+  //! Returns the relation holding between the generator system
+  //! and the constraint \p c.
+  Relation_Poly_Con relation_with(const Constraint& c) const;
 
   //! Assigns to a given variable an affine expression.
   void affine_image(size_t v,

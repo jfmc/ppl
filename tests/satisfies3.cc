@@ -1,4 +1,4 @@
-/* Testing Polyhedron::satisfies(): we apply this function to
+/* Testing Polyhedron::relation_with(c): we apply this function to
    a zero-dimensional, universal polyhedron.
    Copyright (C) 2001, 2002 Roberto Bagnara <bagnara@cs.unipr.it>
 
@@ -35,7 +35,7 @@ int
 main() {
   set_handlers();
 
-  GenSys_Con_Rel rel;
+  Relation_Poly_Con rel;
 
   Polyhedron ph;
 #if NOISY
@@ -48,12 +48,12 @@ main() {
   print_constraint(c_false1, "--- c_false1 ---");
 #endif
 
-  rel = ph.satisfies(c_false1);
+  rel = ph.relation_with(c_false1);
 #if NOISY
-  cout << "ph.satisfies(c_false1) == " << rel << endl;
+  cout << "ph.relation_with(c_false1) == " << rel << endl;
 #endif
 
-  if (rel != NONE_SATISFIES)
+  if (rel != IS_DISJOINT)
     return 1;
 
   // A false equality constraint.
@@ -62,12 +62,12 @@ main() {
   print_constraint(c_false2, "--- c_false2 ---");
 #endif
 
-  rel = ph.satisfies(c_false2);
+  rel = ph.relation_with(c_false2);
 #if NOISY
-  cout << "ph.satisfies(c_false2) == " << rel << endl;
+  cout << "ph.relation_with(c_false2) == " << rel << endl;
 #endif
 
-  if (rel != NONE_SATISFIES)
+  if (rel != IS_DISJOINT)
     return 1;
 
   // A saturated inequality.
@@ -76,12 +76,12 @@ main() {
   print_constraint(c_saturated1, "--- c_saturated1 ---");
 #endif
 
-  rel = ph.satisfies(c_saturated1);
+  rel = ph.relation_with(c_saturated1);
 #if NOISY
-  cout << "ph.satisfies(c_saturated1) == " << rel << endl;
+  cout << "ph.relation_with(c_saturated1) == " << rel << endl;
 #endif
 
-  if (rel != ALL_SATURATE)
+  if (rel != SATURATES)
     return 1;
 
   // A saturated equality.
@@ -90,12 +90,12 @@ main() {
   print_constraint(c_saturated2, "--- c_saturated2 ---");
 #endif
 
-  rel = ph.satisfies(c_saturated2);
+  rel = ph.relation_with(c_saturated2);
 #if NOISY
-  cout << "ph.satisfies(c_saturated2) == " << rel << endl;
+  cout << "ph.relation_with(c_saturated2) == " << rel << endl;
 #endif
 
-  if (rel != ALL_SATURATE)
+  if (rel != SATURATES)
     return 1;
 
   // A satisfied inequality which is not saturated.
@@ -104,12 +104,12 @@ main() {
   print_constraint(c_satisfied, "--- c_satisfied ---");
 #endif
 
-  rel = ph.satisfies(c_satisfied);
+  rel = ph.relation_with(c_satisfied);
 #if NOISY
-  cout << "ph.satisfies(c_satisfied) == " << rel << endl;
+  cout << "ph.relation_with(c_satisfied) == " << rel << endl;
 #endif
 
-  if (rel != ALL_SATISFY)
+  if (rel != IS_INCLUDED)
     return 1;
 
   // All test passed.

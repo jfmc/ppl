@@ -101,6 +101,7 @@ Variable.defs.hh \
 Variable.inlines.hh \
 LinExpression.defs.hh \
 LinExpression.inlines.hh \
+relations.hh \
 Constraint.defs.hh \
 Constraint.inlines.hh \
 ConSys.defs.hh \
@@ -132,10 +133,12 @@ conversion.cc \
 minimize.cc \
 simplify.cc \
 globals.cc \
+relations.cc \
 $(INCLUDE_FILES)
 
 # The ordering of the following list *matters*!
 DOC_FILES = \
+relations.hh \
 Variable.types.hh \
 LinExpression.types.hh \
 Constraint.types.hh \

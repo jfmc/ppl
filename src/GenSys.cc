@@ -34,28 +34,6 @@ site: http://www.cs.unipr.it/ppl/ . */
 
 namespace PPL = Parma_Polyhedra_Library;
 
-std::ostream&
-PPL::operator <<(std::ostream& s, GenSys_Con_Rel r) {
-  const char* p = 0;
-  switch (r) {
-  case NONE_SATISFIES:
-    p = "NONE_SATISFIES";
-    break;
-  case ALL_SATISFY:
-    p = "ALL_SATISFY";
-    break;
-  case ALL_SATURATE:
-    p = "ALL_SATURATE";
-    break;
-  case SOME_SATISFY:
-    p = "SOME_SATISFY";
-    break;
-  }
-  assert(p != 0);
-  s << p;
-  return s;
-}
-
 size_t
 PPL::GenSys::num_lines() const {
   size_t n = 0;
@@ -107,8 +85,117 @@ PPL::GenSys::num_rays() const {
   Note that if \p c is an equality, then the value <CODE>ALL_SATISFY</CODE>
   can not be returned.
 */
-PPL::GenSys_Con_Rel
-PPL::GenSys::satisfy(const Constraint& c) const {
+PPL::Relation_Poly_Con
+PPL::GenSys::relation_with(const Constraint& c) const {
+  size_t gs_space_dim = space_dimension();
+  size_t c_space_dim = c.space_dimension();
+  // Note: this method is not public and it is the responsibility
+  // of the caller to actually test for dimension compatibility.
+  // We simply _assert_ it.
+  assert(gs_space_dim >= c_space_dim);
+  const GenSys& gen_sys = *this;
+  // Number of generators.
+  size_t n_rows = num_rows();
+  if (c.is_equality()) {
+    for (size_t i = n_rows; i-- > 0;)
+      if (c_space_dim < gs_space_dim)
+	if (c * gen_sys[i] != 0)
+	  // There is at least one generator that does not satisfy `c'.
+	  return STRICTLY_INTERSECTS;
+    // All generators satisfy `c' i.e., saturate it because
+    // `c' is an equality.
+    return SATURATES;
+  }
+  else {
+    // The constraint c is an inequality.
+    // first_ray_or_vertex will be set to `false'
+    // after finding a ray or a vertex (starting from the
+    // last row of the matrix).
+    bool first_ray_or_vertex = true;
+    Relation_Poly_Con res = SATURATES;
+    for (size_t i = n_rows; i-- > 0; ) {
+      const Generator& r = gen_sys[i];
+      int sp_sign = sgn(c * r);
+      if (r.is_line()) {
+	if (sp_sign != 0)
+	  // Lines must saturate every constraints.
+	  return STRICTLY_INTERSECTS;
+      }
+      else {
+	// The generator `r' is a vertex or a ray.
+	if (r[0] == 0) {
+	  // The generator r is a ray.
+	  if (sp_sign != 0) {
+	    if (first_ray_or_vertex) {
+	      // It is the first time that we have
+	      // a ray and we have never had a vertex.
+	      res = (sp_sign > 0) ? IS_INCLUDED : IS_DISJOINT;
+	      first_ray_or_vertex = false;
+	    }
+	    else {
+	      // It is not the first time we find a ray/vertex.
+	      if ((sp_sign > 0 && res == IS_DISJOINT)
+		  || (sp_sign < 0 && res != IS_DISJOINT))
+		// There are some generators satisfying c in two cases:
+		// - if r satisfy c but none of the generators that
+		//   we have already considered satisfy c;
+		// - if r does not satisfy c and there was some generators
+		//   that we have already considered that do not satisfy c.
+		return STRICTLY_INTERSECTS;
+	      if (sp_sign > 0)
+		// Since we always return if res == SOME_SATISFIES,
+		// at this point r and all the previous generators
+		// satisfy c.
+		res = IS_INCLUDED;
+	    }
+	  }
+	}
+	else {
+	  // The generator r is a vertex.
+	  if (first_ray_or_vertex) {
+	    // It is the first time that we have
+	    // a vertex and we have never had a ray.
+	    // If some lines do not saturate c we have already returned,
+	    // so here all lines checked until here (if any) saturate c.
+	    // - If r (that is a vertex) satisfy c then all
+	    //   the generators checked until here satisfy c.
+	    // - If r saturate c then all the generators
+	    //   checked until here saturate c.
+	    // - If r does not satisfy c we have only
+	    //   generators that saturate or do not satisfy c,
+	    //   then none of them satisfy c.
+	    res = (sp_sign > 0) ? IS_INCLUDED :
+	      ((sp_sign == 0) ? SATURATES : IS_DISJOINT);
+	    first_ray_or_vertex = false;
+	  }
+	  else{
+	    // It is not the first time we find a
+	    // vertex or it is the first found but
+	    // but it has been preceded by a ray.
+	    if ((sp_sign >= 0 && res == IS_DISJOINT)
+		|| (sp_sign < 0 && res != IS_DISJOINT))
+	      // We return SOME_SATISFY in two cases:
+	      // - if r satisfies c and all the previous
+	      //   generators do not;
+	      // - if r does not satisfy c and all the
+	      //   the previous generators satisfy it.
+	      return STRICTLY_INTERSECTS;
+	    if (sp_sign > 0)
+	      // Since we always return if res == SOME_SATISFIES,
+	      // at this point r and all the previous generators
+	      // satisfy c.
+	      res = IS_INCLUDED;
+	  }
+	}
+      }
+    }
+    return res;
+  }
+}
+
+/*
+PPL::Relation_Poly_Con
+PPL::GenSys::relation_with(const Constraint& c) const {
   size_t gs_space_dim = space_dimension();
   size_t c_space_dim = c.space_dimension();
   // Note: this method is not public and it is the responsibility
@@ -231,7 +318,7 @@ PPL::GenSys::satisfy(const Constraint& c) const {
   }
   return res;
 }
-
+*/
 
 /*!
   \param v            Index of the column to which the
@@ -289,7 +376,7 @@ PPL::GenSys::affine_image(size_t v,
   // If the mapping in not invertible,
   // we may have trasformed valid lines and rays
   // into the origin of the space.
-  if (expr[num_var] == 0)
+  if (expr[v] == 0)
     x.remove_invalid_lines_and_rays();
 
   x.strong_normalize();
