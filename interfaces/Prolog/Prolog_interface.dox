@@ -777,6 +777,12 @@ and
 <A HREF="http://www.cs.unipr.it/pipermail/ppl-devel/2002-June/001789.html">http://www.cs.unipr.it/pipermail/ppl-devel/2002-June/001789.html</A>
 for more information.
 
+We have experienced other serious problems with the GNU Prolog
+interface, up to and including GNU Prolog version 1.2.16:
+see
+<A HREF="http://www.cs.unipr.it/pipermail/ppl-devel/2002-October/002657.html">http://www.cs.unipr.it/pipermail/ppl-devel/2002-October/002657.html</A>
+for more information.
+
 <H5>The <CODE>ppl_gprolog</CODE> Executable</H5>
 
 If an appropriate version of GNU Prolog is installed on the machine
