@@ -27,6 +27,7 @@ site: http://www.cs.unipr.it/ppl/ . */
 #include <iostream>
 #include <limits>
 #include <cassert>
+#include <cstdlib>
 
 namespace Parma_Polyhedra_Library {
 
@@ -150,11 +151,76 @@ PPL_INTEGER_CONSTRUCT_FROM_NATIVE(unsigned int)
 PPL_INTEGER_CONSTRUCT_FROM_NATIVE(unsigned long)
 PPL_INTEGER_CONSTRUCT_FROM_NATIVE(unsigned long long)
 
-template <typename T>
-inline
-Native_Integer<T>::Native_Integer(const mpz_class& z)
-  : v(z.get_si()) {
+#define PPL_SIGNED_SMALL_NATIVE_CONSTRUCT_FROM_C_STRING(type) \
+template <> \
+inline \
+Native_Integer<type>::Native_Integer(const char* y) \
+  : v(strtol(y, 0, 0)) { \
 }
+
+template <>
+inline
+Native_Integer<long long>::Native_Integer(const char* y)
+  : v(strtoll(y, 0, 0)) {
+}
+
+PPL_SIGNED_SMALL_NATIVE_CONSTRUCT_FROM_C_STRING(signed char)
+PPL_SIGNED_SMALL_NATIVE_CONSTRUCT_FROM_C_STRING(short)
+PPL_SIGNED_SMALL_NATIVE_CONSTRUCT_FROM_C_STRING(int)
+PPL_SIGNED_SMALL_NATIVE_CONSTRUCT_FROM_C_STRING(long)
+
+#define PPL_UNSIGNED_SMALL_NATIVE_CONSTRUCT_FROM_C_STRING(type) \
+template <> \
+inline \
+Native_Integer<type>::Native_Integer(const char* y) \
+  : v(strtoul(y, 0, 0)) { \
+}
+
+PPL_UNSIGNED_SMALL_NATIVE_CONSTRUCT_FROM_C_STRING(unsigned char)
+PPL_UNSIGNED_SMALL_NATIVE_CONSTRUCT_FROM_C_STRING(unsigned short)
+PPL_UNSIGNED_SMALL_NATIVE_CONSTRUCT_FROM_C_STRING(unsigned int)
+PPL_UNSIGNED_SMALL_NATIVE_CONSTRUCT_FROM_C_STRING(unsigned long)
+
+template <>
+inline
+Native_Integer<unsigned long long>::Native_Integer(const char* y)
+  : v(strtoull(y, 0, 0)) {
+}
+
+#define PPL_SIGNED_NATIVE_CONSTRUCT_FROM_MPZ_CLASS(type) \
+template <> \
+inline \
+Native_Integer<type>::Native_Integer(const mpz_class& y) { \
+  if (sizeof(type) <= sizeof(long)) \
+    v = y.get_si(); \
+  else { \
+    mpz_export(&v, 0, 1, sizeof(type), 0, 0, y.get_mpz_t()); \
+    if (sgn(y) < 0) \
+      v = -v; \
+    } \
+}
+
+PPL_SIGNED_NATIVE_CONSTRUCT_FROM_MPZ_CLASS(signed char)
+PPL_SIGNED_NATIVE_CONSTRUCT_FROM_MPZ_CLASS(short)
+PPL_SIGNED_NATIVE_CONSTRUCT_FROM_MPZ_CLASS(int)
+PPL_SIGNED_NATIVE_CONSTRUCT_FROM_MPZ_CLASS(long)
+PPL_SIGNED_NATIVE_CONSTRUCT_FROM_MPZ_CLASS(long long)
+
+#define PPL_UNSIGNED_NATIVE_CONSTRUCT_FROM_MPZ_CLASS(type) \
+template <> \
+inline \
+Native_Integer<type>::Native_Integer(const mpz_class& y) { \
+  if (sizeof(type) <= sizeof(unsigned long)) \
+    v = y.get_ui(); \
+  else \
+    mpz_export(&v, 0, 1, sizeof(type), 0, 0, y.get_mpz_t()); \
+}
+
+PPL_UNSIGNED_NATIVE_CONSTRUCT_FROM_MPZ_CLASS(unsigned char)
+PPL_UNSIGNED_NATIVE_CONSTRUCT_FROM_MPZ_CLASS(unsigned short)
+PPL_UNSIGNED_NATIVE_CONSTRUCT_FROM_MPZ_CLASS(unsigned int)
+PPL_UNSIGNED_NATIVE_CONSTRUCT_FROM_MPZ_CLASS(unsigned long)
+PPL_UNSIGNED_NATIVE_CONSTRUCT_FROM_MPZ_CLASS(unsigned long long)
 
 template <typename T>
 inline T&
