@@ -93,6 +93,21 @@ Polyhedron::generators_are_minimized() const {
 }
 
 inline bool
+Polyhedron::has_pending_constraints() const {
+  return status.test_c_pending();
+}
+
+inline bool
+Polyhedron::has_pending_generators() const {
+  return status.test_g_pending();
+}
+
+inline bool
+Polyhedron::has_something_pending() const {
+  return status.test_c_pending() || status.test_g_pending();
+}
+
+inline bool
 Polyhedron::sat_c_is_up_to_date() const {
   return status.test_sat_c_up_to_date();
 }
@@ -177,6 +192,16 @@ Polyhedron::clear_generators_up_to_date() {
   clear_sat_g_up_to_date();
   status.reset_g_up_to_date();
   // Can get rid of gen_sys here.
+}
+
+inline void
+Polyhedron::clear_pending_constraints() {
+  status.reset_c_pending();
+}
+
+inline void
+Polyhedron::clear_pending_generators() {
+  status.reset_g_pending();
 }
 
 /*! \relates Polyhedron */

@@ -160,6 +160,38 @@ Status::set_g_minimized() {
   set(G_MINIMIZED);
 }
 
+
+inline bool
+Status::test_c_pending() const {
+  return test_any(CS_PENDING);
+}
+
+inline void
+Status::reset_c_pending() {
+  reset(CS_PENDING);
+}
+
+inline void
+Status::set_c_pending() {
+  set(CS_PENDING);
+}
+
+inline bool
+Status::test_g_pending() const {
+  return test_any(GS_PENDING);
+}
+
+inline void
+Status::reset_g_pending() {
+  reset(GS_PENDING);
+}
+
+inline void
+Status::set_g_pending() {
+  set(GS_PENDING);
+}
+
+
 inline bool
 Status::test_sat_c_up_to_date() const {
   return test_any(SAT_C_UP_TO_DATE);

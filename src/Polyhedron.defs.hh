@@ -1331,6 +1331,17 @@ private:
   */
   bool generators_are_minimized() const;
 
+  //! Returns <CODE>true</CODE> if there are pending constraints.
+  bool has_pending_constraints() const;
+
+  //! Returns <CODE>true</CODE> if there are pending generators.
+  bool has_pending_generators() const;
+
+  //! \brief
+  //! Returns <CODE>true</CODE> if there are pending constraints or
+  //! generators.
+  bool has_something_pending() const;
+
   //! \brief
   //! Returns <CODE>true</CODE> if the saturation matrix \p sat_c
   //! is up-to-date.
@@ -1398,6 +1409,12 @@ private:
 
   //! Sets \p status to express that generators are no longer minimized.
   void clear_generators_minimized();
+
+  //! Sets \p status to express that there are no longer pending constraints.
+  void clear_pending_constraints();
+
+  //! Sets \p status to express that there are no longer pending generators.
+  void clear_pending_generators();
 
   //! Sets \p status to express that \p sat_c is no longer up-to-date.
   void clear_sat_c_up_to_date();
