@@ -728,9 +728,9 @@ or <CODE>/usr/local</CODE>).
 
 As an option, the Prolog interface can track the creation and disposal
 of polyhedra.  In fact, differently from native Prolog data, PPL polyhedra
-must be explicitely disposed and forgetting to do so is a very common mistake.
+must be explicitly disposed and forgetting to do so is a very common mistake.
 To enable this option, configure the library adding
-<CODE>-DPROLOG_DTRACK_ALLOCATION</CODE> to the options passed to the
+<CODE>-DPROLOG_TRACK_ALLOCATION</CODE> to the options passed to the
 C++ compiler.
 Your configure command would then look like
 \code
@@ -739,10 +739,12 @@ Your configure command would then look like
 
 \subsection PI_SD_Features System-Dependent Features
 
+
 <H4>CIAO Prolog</H4>
 
 Support for CIAO Prolog is under development and will be available in
 a future release.
+
 
 <H4>GNU Prolog</H4>
 
@@ -770,7 +772,7 @@ on which you compiled the library, the command <CODE>make install</CODE>
 will install the executable <CODE>ppl_gprolog</CODE> in the directory
 <CODE>prefix/bin</CODE>.
 The <CODE>ppl_gprolog</CODE> executable is simply the GNU Prolog
-intepreter with the Parma Polyhedra library linked in.
+interpreter with the Parma Polyhedra library linked in.
 The only thing you should do to use the library is to
 call <CODE>ppl_initialize/0</CODE> before any other PPL predicate
 and to call <CODE>ppl_finalize/0</CODE> when you are done with the
@@ -793,6 +795,7 @@ gplc -o myprog prefix/lib/ppl/ppl_gprolog.pl source1.pl source2.pl \
   -L '-Lprefix/lib/ppl -lppl_gprolog -Lprefix/lib -lppl -lgmp -lgmpxx -lstdc++'
 \endcode
 
+
 <H4>SICStus Prolog</H4>
 
 The SICStus Prolog interface to the PPL library is available
@@ -810,7 +813,7 @@ system with the Parma Polyhedra library statically linked.
 The only thing you should do to use the library is to
 load <CODE>prefix/lib/ppl/ppl_sicstus.pl</CODE>.
 
-<H5>Dynamic Linking</H5>
+<H5>Loading the SICStus Interface Dynamically</H5>
 
 In order to dynamically load the library from SICStus Prolog you should
 simply load <CODE>prefix/lib/ppl/ppl_sicstus.pl</CODE>.
@@ -824,21 +827,35 @@ The SWI-Prolog interface of the library is available
 both as a statically linked module or as a dynamically linked one.
 Only SWI-Prolog version 5.0 or later is supported.
 
-<H5>The Statically Linked <CODE>ppl_pl</CODE> Executable</H5>
+<H5>The <CODE>ppl_pl</CODE> Executable</H5>
 
 If an appropriate version of SWI-Prolog is installed on the machine
 on which you compiled the library, the command <CODE>make install</CODE>
 will install the executable <CODE>ppl_pl</CODE> in the directory
 <CODE>prefix/bin</CODE>.
 The <CODE>ppl_pl</CODE> executable is simply the SWI-Prolog
-system with the Parma Polyhedra library statically linked:
+shell with the Parma Polyhedra library statically linked:
 from within <CODE>ppl_pl</CODE> all the services of the library
 are available without further action.
 
-<H5>Dynamic Linking</H5>
+<H5>Loading the SWI-Prolog Interface Dynamically</H5>
 
 In order to dynamically load the library from SWI-Prolog you should
 simply load <CODE>prefix/lib/ppl/ppl_swiprolog.pl</CODE>.
+This will invoke <CODE>ppl_initialize/0</CODE> automatically
+but, at least for SWI-Prolog versions up to 5.0.7, it is the programmer's
+responsibility to call <CODE>ppl_finalize/0</CODE>.
+Alternatively, you can load the library directly with
+\code
+:- load_foreign_library('prefix/lib/ppl/libppl_swiprolog').
+\endcode
+This will call <CODE>ppl_initialize/0</CODE> automatically.
+Analogously,
+\code
+:- unload_foreign_library('prefix/lib/ppl/libppl_swiprolog').
+\endcode
+will, as part of the unload process, invoke <CODE>ppl_finalize/0</CODE>.
+
 Notice that, for dynamic linking to work, you should have configured
 the library with the <CODE>--enable-shared</CODE> option.
 
@@ -851,9 +868,10 @@ Only YAP version 4.3.23 or later is supported.
 
 In order to dynamically load the library from YAP you should
 simply load <CODE>prefix/lib/ppl/ppl_yap.pl</CODE>.
+This will invoke <CODE>ppl_initialize/0</CODE> automatically;
+it is the programmer's responsibility to call <CODE>ppl_finalize/0</CODE>
+when the PPL library is no longer needed.
 Notice that, for dynamic linking to work, you should have configured
 the library with the <CODE>--enable-shared</CODE> option.
-
-
 
 */
