@@ -24,9 +24,46 @@ site: http://www.cs.unipr.it/ppl/ . */
 #include <config.h>
 
 #include "globals.hh"
+#include "Constraint.defs.hh"
+#include "Generator.defs.hh"
 
 namespace PPL = Parma_Polyhedra_Library;
 
 PPL::Integer* PPL::tmp_Integer;
 
 const PPL::Throwable* volatile PPL::abandon_exponential_computations = 0;
+
+
+/*! \relates Parma_Polyhedra_Library::Row */
+const PPL::Integer&
+PPL::operator*(const Constraint& x, const Generator& y) {
+  // Scalar product is only defined  if `x' and `y' are
+  // dimension-compatible.
+  assert(x.size() <= y.size());
+  tmp_Integer[0] = 0;
+  for (size_t i = x.size(); i-- > 0; ) {
+    // The following two lines optimize the computation
+    // of tmp_Integer[0] += x[i] * y[i].
+    tmp_Integer[1] = x[i] * y[i];
+    tmp_Integer[0] += tmp_Integer[1];
+  }
+  return tmp_Integer[0];
+}
+
+
+/*! \relates Parma_Polyhedra_Library::Row */
+const PPL::Integer&
+PPL::reduced_scalar_product(const Constraint& x, const Generator& y) {
+  // The reduced scalar product is only defined
+  // if the topology of `x' is NNC and `y' has enough coefficients.
+  assert(!x.is_necessarily_closed());
+  assert(x.size() - 1 <= y.size());
+  tmp_Integer[0] = 0;
+  for (size_t i = x.size() - 1; i-- > 0; ) {
+    // The following two lines optimize the computation
+    // of tmp_Integer[0] += x[i] * y[i].
+    tmp_Integer[1] = x[i] * y[i];
+    tmp_Integer[0] += tmp_Integer[1];
+  }
+  return tmp_Integer[0];
+}
