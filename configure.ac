@@ -79,6 +79,13 @@ AH_TOP([
 ])
 
 AH_BOTTOM([
+// In order for the definition of `int64_t' to be seen by Comeau C/C++,
+// we must make sure <stdint.h> is included before <sys/types.hh> is
+// (even indirectly) included.
+#ifdef HAVE_STDINT_H 
+#include <stdint.h>
+#endif
+
 #endif // !defined(PPL_ppl_config_h)
 ])
 
@@ -407,6 +414,8 @@ AC_CXX_SUPPORTS_LONG_LONG
 AC_CHECK_DECLS([ffs], , , [#include <strings.h>])
 AC_CHECK_DECLS([strtoll,strtoull], , , [#include <cstdlib>])
 
+# Must link everything with libm.
+extra_libraries="${extra_libraries} -lm"
 
 # GMP library
 
