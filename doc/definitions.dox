@@ -674,18 +674,36 @@ In particular, the H79-widening of an NNC polyhedron \f$\cP\f$
    using the NNC polyhedron \f$\cP'\f$:
  - allows for equalities in \f$\cP\f$ and \f$\cP'\f$
    (the original definition is restricted to inequalities);
- - does not require \f$\cP\f$ and \f$\cP'\f$ to be closed;
+ - does not require \f$\cP\f$ and \f$\cP'\f$ to be topologically closed;
  - requires as a precondition that \f$\cP' \sseq \cP\f$.
 
 
 \anchor time_elapse
 <B>Time-Elapse Operator</B>
 
-The <EM>time-elapse</EM> operator provided by the library is the time elapse
-operator defined in
+The <EM>time-elapse</EM> operator has been defined in
 N. Halbwachs and Y.-E. Proy and P. Roumanoff,
 Verification of Real-Time Systems using Linear Relation Analysis,
 in <EM>Formal Methods in System Design</EM> 11(2):157--185, 1997.
+
+Actually, the time-elapse operator provided by the library
+is a slight generalization of that one,
+since it also works on NNC polyhedra.
+For any two NNC polyhedra \f$\cP, \cQ \in \Pset_n\f$,
+the time-elapse between \f$\cP\f$ and \f$\cQ\f$,
+denoted \f$ \cP \nearrow \cQ\f$,
+is the smallest NNC polyhedron containing the set
+\f[
+  \bigl\{\,
+    \vect{p} + \lambda \vect{q} \in \Rset^n
+  \bigm|
+    \vect{p} \in \cP, \vect{q} \in \cQ, \lambda \in \nonnegRset
+  \,\bigr\}.
+\f]
+Note that, if \f$\cP,\cQ \in \CPset_n\f$ are closed polyhedra,
+the above set is also a closed polyhedron.
+In contrast, when \f$\cQ\f$ is not topologically closed,
+the above set might not be an NNC polyhedron.
 
 <B>Intervals, boxes and bounding boxes</B>
 
