@@ -1,5 +1,5 @@
-/* An incorrect use of the function satisfies: the constraint is
-   not dimension-compatible with the polyhedron.
+/* An incorrect use of the function relation_with(g): the constraint
+   is not dimension-compatible with the polyhedron.
    Copyright (C) 2001, 2002 Roberto Bagnara <bagnara@cs.unipr.it>
 
 This file is part of the Parma Polyhedra Library (PPL).
@@ -47,7 +47,7 @@ main() {
   try {
     // This is invalid constraint.
     Constraint c(z >= 0);
-    ph.satisfies(c);
+    ph.relation_with(c);
   }
   catch (invalid_argument& e) {
 #if NOISY

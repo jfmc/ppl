@@ -1,4 +1,4 @@
-/* Testing Polyhedron::includes().
+/* Testing Polyhedron::relation_with(g).
    Copyright (C) 2001, 2002 Roberto Bagnara <bagnara@cs.unipr.it>
 
 This file is part of the Parma Polyhedra Library (PPL).
@@ -52,14 +52,14 @@ main() {
   print_generator(g, "*** g ***");
 #endif
 
-  bool include = ph.includes(g);
+  Relation_Poly_Gen rel = ph.relation_with(g);
+
+  Relation_Poly_Gen known_rel = SUBSUMES;
+  int retval = (rel == known_rel) ? 0 : 1;
 
 #if NOISY
-  cout << "*** ph.includes(g)) ***"
-       << endl
-       << (include ? "true" : "false")
-       << endl;
+  cout << "ph.relation_with(r(A + B)) == " << rel << endl;
 #endif
+  return retval;
 
-  return include ? 0 : 1;
 }

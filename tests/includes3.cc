@@ -1,5 +1,5 @@
-/* Testing Polyhedron::includes(): we verify that a zero-dimensional
-   generator is includes in a zero-dimensional, universal polyhedron.
+/* Testing Polyhedron::relation_with(g): we verify that a zero-dimensional
+   generator is subsumed by a zero-dimensional, universal polyhedron.
    Copyright (C) 2001, 2002 Roberto Bagnara <bagnara@cs.unipr.it>
 
 This file is part of the Parma Polyhedra Library (PPL).
@@ -47,14 +47,15 @@ main() {
   print_generator(g, "--- g ---");
 #endif
 
-  bool include = ph.includes(g);
-#if NOISY
-  cout << "*** ph.includes(g)) ***"
-       << endl
-       << (include ? "true" : "false")
-       << endl;
-#endif
+  Relation_Poly_Gen rel = ph.relation_with(g);
 
-  return include ? 0 : 1;
+  Relation_Poly_Gen known_rel = SUBSUMES;
+  int retval = (rel == known_rel) ? 0 : 1;
+
+#if NOISY
+  cout << "ph.relation_with(v()) == " << rel << endl;
+#endif
+  return retval;
+
 }
 

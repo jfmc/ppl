@@ -1,5 +1,5 @@
-/* Testing Polyhedron::includes(): we verify that a generator is not
-   included into an empty polyhedron.
+/* Testing Polyhedron::relation_with(g): we verify that a generator
+   is not subsumed by an empty polyhedron.
    Copyright (C) 2001, 2002 Roberto Bagnara <bagnara@cs.unipr.it>
 
 This file is part of the Parma Polyhedra Library (PPL).
@@ -49,14 +49,14 @@ main() {
   print_generator(g, "--- g ---");
 #endif
 
-  bool include = ph.includes(g);
+  Relation_Poly_Gen rel = ph.relation_with(g);
+
+  Relation_Poly_Gen known_rel = DOES_NOT_SUBSUME;
+  int retval = (rel == known_rel) ? 0 : 1;
 
 #if NOISY
-  cout << "*** ph.includes(g)) ***"
-       << endl
-       << (include ? "true" : "false")
-       << endl;
+  cout << "ph.relation_with(v(A)) == " << rel << endl;
 #endif
+  return retval;
 
-  return !include ? 0 : 1;
 }

@@ -1,5 +1,5 @@
-/* An incorrect use of the function includes: the generator is not
-   dimension-compatible with the polyhedron.
+/* An incorrect use of the function relation_with(c): the generator
+   is not dimension-compatible with the polyhedron.
    Copyright (C) 2001, 2002 Roberto Bagnara <bagnara@cs.unipr.it>
 
 This file is part of the Parma Polyhedra Library (PPL).
@@ -42,7 +42,7 @@ main() {
   try {
     // This is invalid generator.
     Generator g(vertex(z));
-    ph.includes(g);
+    ph.relation_with(g);
   }
   catch (invalid_argument& e) {
 #if NOISY
