@@ -145,6 +145,10 @@ public:
     A dummy tag to syntactically differentiate this one from the other
     constructors.
 
+    \exception std::length_error
+    Thrown if the space dimension of \p box exceeds the maximum allowed
+    space dimension.
+
     \exception std::invalid_argument
     Thrown if \p box has intervals that are not topologically closed
     (i.e., having some finite but open bounds).

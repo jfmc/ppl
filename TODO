@@ -37,7 +37,6 @@ Enhancements for PPL 0.7
   set_GMP_memory_allocation_functions().  More generally, explain how
   to have memory-guarded computations.
 - Completely rewrite the handling of temporary coefficients.
-- Implement overflow detection when manipulating space dimensions.
 - Consider renaming Powerset::meet_assign().
 - Provide optimized implementations of Polyhedron::expand_dimension()
   Polyhedron::fold_dimensions().

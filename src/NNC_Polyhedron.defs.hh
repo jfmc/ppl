@@ -127,6 +127,10 @@ public:
     \param dummy
     A dummy tag to syntactically differentiate this one from the other
     constructors.
+
+    \exception std::length_error
+    Thrown if the space dimension of \p box exceeds the maximum allowed
+    space dimension.
   */
   template <typename Box>
   NNC_Polyhedron(const Box& box, From_Bounding_Box dummy);
