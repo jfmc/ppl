@@ -421,8 +421,9 @@ PPL::Polyhedron::remove_space_dimensions(const Variables_Set& to_be_removed) {
   }
 
   // Dimension-compatibility check: the variable having
-  // maximum id() is the one occurring last in the set.
-  const dimension_type min_space_dim = to_be_removed.rbegin()->id() + 1;
+  // maximum space dimension is the one occurring last in the set.
+  const dimension_type
+    min_space_dim = to_be_removed.rbegin()->space_dimension();
   if (space_dim < min_space_dim)
     throw_dimension_incompatible("remove_space_dimensions(vs)", min_space_dim);
 
@@ -457,10 +458,10 @@ PPL::Polyhedron::remove_space_dimensions(const Variables_Set& to_be_removed) {
   // by shifting left those columns that will not be removed.
   Variables_Set::const_iterator tbr = to_be_removed.begin();
   Variables_Set::const_iterator tbr_end = to_be_removed.end();
-  dimension_type dst_col = tbr->id() + 1;
+  dimension_type dst_col = tbr->space_dimension();
   dimension_type src_col = dst_col + 1;
   for (++tbr; tbr != tbr_end; ++tbr) {
-    dimension_type tbr_col = tbr->id() + 1;
+    dimension_type tbr_col = tbr->space_dimension();
     // All columns in between are moved to the left.
     while (src_col < tbr_col)
       // FIXME: consider whether Linear_System must have a swap_columns()
@@ -553,9 +554,8 @@ void
 PPL::Polyhedron::expand_space_dimension(Variable var, dimension_type m) {
   // FIXME: this implementation is _really_ an executable specification.
 
-  const dimension_type src_d = var.id();
   // `var' should be one of the dimensions of the vector space.
-  if (src_d+1 > space_dim)
+  if (var.space_dimension() > space_dim)
     throw_dimension_incompatible("expand_space_dimension(v, m)", "v", var);
 
   // The space dimension of the resulting polyhedron should not
@@ -575,6 +575,7 @@ PPL::Polyhedron::expand_space_dimension(Variable var, dimension_type m) {
   // Add the required new dimensions.
   add_space_dimensions_and_embed(m);
 
+  const dimension_type src_d = var.id();
   const ConSys& cs = constraints();
   ConSys new_constraints;
   for(ConSys::const_iterator i = cs.begin(),
@@ -610,7 +611,7 @@ PPL::Polyhedron::fold_space_dimensions(const Variables_Set& to_be_folded,
   // FIXME: this implementation is _really_ an executable specification.
 
   // `var' should be one of the dimensions of the polyhedron.
-  if (var.id()+1 > space_dim)
+  if (var.space_dimension() > space_dim)
     throw_dimension_incompatible("fold_space_dimensions(tbf, v)", "v", var);
 
   // The folding of no dimensions is a no-op.
@@ -618,7 +619,7 @@ PPL::Polyhedron::fold_space_dimensions(const Variables_Set& to_be_folded,
     return;
 
   // All variables in `to_be_folded' should be dimensions of the polyhedron.
-  if (to_be_folded.rbegin()->id()+1 > space_dim)
+  if (to_be_folded.rbegin()->space_dimension() > space_dim)
     throw_dimension_incompatible("fold_space_dimensions(tbf, v)",
 				 "*tbf.rbegin()",
 				 *to_be_folded.rbegin());

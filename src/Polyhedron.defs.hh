@@ -1582,9 +1582,10 @@ public:
     vector space to exceed dimension <CODE>max_space_dimension()</CODE>.
 
     If \p *this has space dimension \f$n\f$, with \f$n > 0\f$,
-    and \f$i < n\f$ is <CODE>var.id()</CODE>, then the \f$i\f$-th
-    space dimension is \ref expand_space_dimension "expanded" to
-    \p m new space dimensions \f$n\f$, \f$n+1\f$, \f$\dots\f$, \f$n+m-1\f$.
+    and <CODE>var</CODE> has space dimension \f$k \leq n\f$,
+    then the \f$k\f$-th space dimension is
+    \ref expand_space_dimension "expanded" to \p m new space dimensions
+    \f$n\f$, \f$n+1\f$, \f$\dots\f$, \f$n+m-1\f$.
   */
   void expand_space_dimension(Variable var, dimension_type m);
 
@@ -1604,11 +1605,12 @@ public:
     Also thrown if \p var is contained in \p to_be_folded.
 
     If \p *this has space dimension \f$n\f$, with \f$n > 0\f$,
-    \f$i < n\f$ is <CODE>var.id()</CODE>, \p to_be_folded
-    is a set of variables whose <CODE>id()</CODE> is also less than
-    \f$n\f$, and \p var is not a member of \p to_be_folded,
-    then the space dimensions corresponding to variables in \p to_be_folded
-    are \ref fold_space_dimensions "folded" into space dimension \f$i\f$.
+    <CODE>var</CODE> has space dimension \f$k \leq n\f$,
+    \p to_be_folded is a set of variables whose maximum space dimension
+    is also less than or equal to \f$n\f$, and \p var is not a member
+    of \p to_be_folded, then the space dimensions corresponding to
+    variables in \p to_be_folded are \ref fold_space_dimensions "folded"
+    into the \f$k\f$-th space dimension.
   */
   void fold_space_dimensions(const Variables_Set& to_be_folded, Variable var);
 

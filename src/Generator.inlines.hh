@@ -111,10 +111,9 @@ Generator::set_is_ray_or_point() {
 
 inline Integer_traits::const_reference
 Generator::coefficient(const Variable v) const {
-  const dimension_type v_id = v.id();
-  if (v_id >= space_dimension())
+  if (v.space_dimension() > space_dimension())
     throw_dimension_incompatible("coefficient(v)", "v", v);
-  return Linear_Row::coefficient(v_id);
+  return Linear_Row::coefficient(v.id());
 }
 
 inline Integer_traits::const_reference

@@ -38,8 +38,8 @@ PPL::Generator::throw_dimension_incompatible(const char* method,
 					     const Variable v) const {
   std::ostringstream s;
   s << "PPL::Generator::" << method << ":" << std::endl
-    << "this->space_dimension() == " << space_dimension()
-    << ", " << name_var << ".id() == " << v.id() << ".";
+    << "this->space_dimension() == " << space_dimension() << ", "
+    << name_var << ".space_dimension() == " << v.space_dimension() << ".";
   throw std::invalid_argument(s.str());
 }
 

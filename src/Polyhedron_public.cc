@@ -1806,14 +1806,14 @@ PPL::Polyhedron::affine_image(const Variable var,
   if (space_dim < expr_space_dim)
     throw_dimension_incompatible("affine_image(v, e, d)", "e", expr);
   // `var' should be one of the dimensions of the polyhedron.
-  const dimension_type num_var = var.id() + 1;
-  if (space_dim < num_var)
+  const dimension_type var_space_dim = var.space_dimension();
+  if (space_dim < var_space_dim)
     throw_dimension_incompatible("affine_image(v, e, d)", "v", var);
 
   if (marked_empty())
     return;
 
-  if (num_var <= expr_space_dim && expr[num_var] != 0) {
+  if (var_space_dim <= expr_space_dim && expr[var_space_dim] != 0) {
     // The transformation is invertible:
     // minimality and saturators are preserved, so that
     // pending rows, if present, are correctly handled.
@@ -1821,28 +1821,28 @@ PPL::Polyhedron::affine_image(const Variable var,
       // GenSys::affine_image() requires the third argument
       // to be a positive Integer.
       if (denominator > 0)
-	gen_sys.affine_image(num_var, expr, denominator);
+	gen_sys.affine_image(var_space_dim, expr, denominator);
       else
-	gen_sys.affine_image(num_var, -expr, -denominator);
+	gen_sys.affine_image(var_space_dim, -expr, -denominator);
     }
     if (constraints_are_up_to_date()) {
       // To build the inverse transformation,
       // after copying and negating `expr',
-      // we exchange the roles of `expr[num_var]' and `denominator'.
+      // we exchange the roles of `expr[var_space_dim]' and `denominator'.
       LinExpression inverse;
-      if (expr[num_var] > 0) {
+      if (expr[var_space_dim] > 0) {
 	inverse = -expr;
-	inverse[num_var] = denominator;
-	con_sys.affine_preimage(num_var, inverse, expr[num_var]);
+	inverse[var_space_dim] = denominator;
+	con_sys.affine_preimage(var_space_dim, inverse, expr[var_space_dim]);
       }
       else {
 	// The new denominator is negative:
 	// we negate everything once more, as ConSys::affine_preimage()
 	// requires the third argument to be positive.
 	inverse = expr;
-	inverse[num_var] = denominator;
-	negate(inverse[num_var]);
-	con_sys.affine_preimage(num_var, inverse, -expr[num_var]);
+	inverse[var_space_dim] = denominator;
+	negate(inverse[var_space_dim]);
+	con_sys.affine_preimage(var_space_dim, inverse, -expr[var_space_dim]);
       }
     }
   }
@@ -1857,9 +1857,9 @@ PPL::Polyhedron::affine_image(const Variable var,
       // GenSys::affine_image() requires the third argument
       // to be a positive Integer.
       if (denominator > 0)
-	gen_sys.affine_image(num_var, expr, denominator);
+	gen_sys.affine_image(var_space_dim, expr, denominator);
       else
-	gen_sys.affine_image(num_var, -expr, -denominator);
+	gen_sys.affine_image(var_space_dim, -expr, -denominator);
 
       clear_constraints_up_to_date();
       clear_generators_minimized();
@@ -1887,42 +1887,42 @@ affine_preimage(const Variable var,
   if (space_dim < expr_space_dim)
     throw_dimension_incompatible("affine_preimage(v, e, d)", "e", expr);
   // `var' should be one of the dimensions of the polyhedron.
-  const dimension_type num_var = var.id() + 1;
-  if (space_dim < num_var)
+  const dimension_type var_space_dim = var.space_dimension();
+  if (space_dim < var_space_dim)
     throw_dimension_incompatible("affine_preimage(v, e, d)", "v", var);
 
   if (marked_empty())
     return;
 
-  if (num_var <= expr_space_dim && expr[num_var] != 0) {
+  if (var_space_dim <= expr_space_dim && expr[var_space_dim] != 0) {
     // The transformation is invertible:
     // minimality and saturators are preserved.
     if (constraints_are_up_to_date()) {
       // ConSys::affine_preimage() requires the third argument
       // to be a positive Integer.
       if (denominator > 0)
-	con_sys.affine_preimage(num_var, expr, denominator);
+	con_sys.affine_preimage(var_space_dim, expr, denominator);
       else
-	con_sys.affine_preimage(num_var, -expr, -denominator);
+	con_sys.affine_preimage(var_space_dim, -expr, -denominator);
     }
     if (generators_are_up_to_date()) {
       // To build the inverse transformation,
       // after copying and negating `expr',
-      // we exchange the roles of `expr[num_var]' and `denominator'.
+      // we exchange the roles of `expr[var_space_dim]' and `denominator'.
       LinExpression inverse;
-      if (expr[num_var] > 0) {
+      if (expr[var_space_dim] > 0) {
 	inverse = -expr;
-	inverse[num_var] = denominator;
-	gen_sys.affine_image(num_var, inverse, expr[num_var]);
+	inverse[var_space_dim] = denominator;
+	gen_sys.affine_image(var_space_dim, inverse, expr[var_space_dim]);
       }
       else {
 	// The new denominator is negative:
 	// we negate everything once more, as GenSys::affine_image()
 	// requires the third argument to be positive.
 	inverse = expr;
-	inverse[num_var] = denominator;
-	negate(inverse[num_var]);
-	gen_sys.affine_image(num_var, inverse, -expr[num_var]);
+	inverse[var_space_dim] = denominator;
+	negate(inverse[var_space_dim]);
+	gen_sys.affine_image(var_space_dim, inverse, -expr[var_space_dim]);
       }
     }
   }
@@ -1936,9 +1936,9 @@ affine_preimage(const Variable var,
     // ConSys::affine_preimage() requires the third argument
     // to be a positive Integer.
     if (denominator > 0)
-      con_sys.affine_preimage(num_var, expr, denominator);
+      con_sys.affine_preimage(var_space_dim, expr, denominator);
     else
-      con_sys.affine_preimage(num_var, -expr, -denominator);
+      con_sys.affine_preimage(var_space_dim, -expr, -denominator);
 
     clear_generators_up_to_date();
     clear_constraints_minimized();
@@ -1966,8 +1966,8 @@ generalized_affine_image(const Variable var,
     throw_dimension_incompatible("generalized_affine_image(v, r, e, d)",
 				 "e", expr);
   // `var' should be one of the dimensions of the polyhedron.
-  const dimension_type num_var = var.id() + 1;
-  if (space_dim < num_var)
+  const dimension_type var_space_dim = var.space_dimension();
+  if (space_dim < var_space_dim)
     throw_dimension_incompatible("generalized_affine_image(v, r, e, d)",
 				 "v", var);
 
@@ -2018,9 +2018,9 @@ generalized_affine_image(const Variable var,
 	  // Add a `var'-displaced copy of `g' to the generator system.
 	  gen_sys.add_row(g);
 	  if (relsym == GREATER_THAN)
-	    ++gen_sys[gen_sys.num_rows()-1][num_var];
+	    ++gen_sys[gen_sys.num_rows()-1][var_space_dim];
 	  else
-	    --gen_sys[gen_sys.num_rows()-1][num_var];
+	    --gen_sys[gen_sys.num_rows()-1][var_space_dim];
 	  // Transform `g' into a closure point.
 	  g[eps_index] = 0;
 	}

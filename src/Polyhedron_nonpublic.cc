@@ -1467,7 +1467,7 @@ PPL::Polyhedron::throw_dimension_incompatible(const char* method,
     s << "NNC_";
   s << "Polyhedron::" << method << ":" << std::endl
     << "this->space_dimension() == " << space_dimension() << ", "
-    << var_name << ".id() == " << var.id() << ".";
+    << var_name << ".space_dimension() == " << var.space_dimension() << ".";
   throw std::invalid_argument(s.str());
 }
 
