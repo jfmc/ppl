@@ -396,7 +396,7 @@ PPL::Matrix::merge_rows_assign(const Matrix& y) {
     int comp = compare(*xi, *yi);
     if (comp <= 0) {
       // Elements that can be taken from `x' are actually _stolen_ from `x'
-      std::swap(*xi++, *tmp.insert(tmp.end()));
+      std::swap(*xi++, *tmp.insert(tmp.end(), Row()));
       if (comp == 0)
 	// A duplicate element.
 	++yi;
@@ -410,7 +410,7 @@ PPL::Matrix::merge_rows_assign(const Matrix& y) {
   // Insert what is left.
   if (xi != xend)
     while (xi != xend)
-      std::swap(*xi++, *tmp.insert(tmp.end()));
+      std::swap(*xi++, *tmp.insert(tmp.end(), Row()));
   else
     while (yi != yend) {
       Row copy(*yi++, row_size, row_capacity);
