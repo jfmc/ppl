@@ -38,7 +38,7 @@ o  New method Polyhedron::is_bounded(): it returns true if and only
    if the polyhedron is bounded, i.e., finite.
 
 o  New methods Polyhedron::bounds_from_above(const LinExpression& e)
-   and Polyhedron::bounds_from_above(const LinExpression& e): they
+   and Polyhedron::bounds_from_below(const LinExpression& e): they
    return true if and only if the linear expression `e' is bounded
    from above/below in the polyhedron.
 
