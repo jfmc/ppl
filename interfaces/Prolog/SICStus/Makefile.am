@@ -30,7 +30,8 @@ smm.clpq \
 sumto.clpq \
 tak.clpq
 
-EXTRA_DIST = ppl_sicstus.pl clpq.pl check_script expected $(CLPQ_TESTS)
+EXTRA_DIST = ppl_sicstus.pl clpq.pl clpq2.pl check_script expected \
+$(CLPQ_TESTS)
 
 if HAVE_SICSTUS
 check-local: pplsp check_script expected
