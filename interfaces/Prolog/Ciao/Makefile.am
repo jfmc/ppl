@@ -22,6 +22,7 @@
 # site: http://www.cs.unipr.it/ppl/ .
 
 srcdir = @srcdir@
+abs_srcdir = @abs_srcdir@
 VPATH = @srcdir@
 
 @SET_MAKE@
@@ -39,6 +40,17 @@ libppl_ciao_la_SOURCES = ppl_ciao.cc
 libppl_ciao_la_LIBADD = $(top_builddir)/src/libppl.la @extra_libraries@
 libppl_ciao_la_LDFLAGS = -no-undefined -module -avoid-version
 
+pkglib_DATA = ppl_ciao.po
+
+ppl_ciao.po: ppl_ciao.pl fake_main.pl
+	if [ $(abs_srcdir) != `pwd` ]; then \
+	  cp -f $(srcdir)/ppl_ciao.pl $(srcdir)/fake_main.pl .; \
+	fi
+	ciaoc fake_main.pl
+	if [ $(abs_srcdir) != `pwd` ]; then \
+	  rm -f ppl_ciao.pl fake_main.pl; \
+	fi
+
 CLPQ_TESTS = \
 ack.clpq \
 ackn.clpq \
@@ -52,6 +64,12 @@ tak.clpq
 #	for k in $(CLPQ_TESTS); do cp -f $(srcdir)/../$$k .; done
 #	ciao_clpq <$(srcdir)/../check_script >obtained
 #	diff -q --ignore-all-space $(srcdir)/../expected obtained
+#	$(LIBTOOL) --mode=execute -dlopen ../../../src/libppl.la \
+#				-dlopen ppl_ciao.la \
+#		xsb xsb_clpq \
+#			<$(srcdir)/../check_script >obtained
 
-#MOSTLYCLEANFILES = pplpl $(CLPQ_TESTS) obtained
+#pplpl $(CLPQ_TESTS) obtained
+
+MOSTLYCLEANFILES = *.itf *.po
 endif
