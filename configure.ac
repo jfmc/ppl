@@ -399,6 +399,9 @@ AC_CHECK_SIZEOF(unsigned)
 AC_CHECK_SIZEOF(unsigned long)
 AC_CHECK_SIZEOF(unsigned long long)
 AC_CHECK_SIZEOF(size_t)
+AC_CHECK_SIZEOF(float)
+AC_CHECK_SIZEOF(double)
+AC_CHECK_SIZEOF(long double)
 
 
 # Use C++ for the remaining checks.
