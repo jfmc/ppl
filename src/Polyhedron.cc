@@ -2693,15 +2693,34 @@ PPL::Polyhedron::affine_image(const Variable& var,
   if (num_var <= expr_space_dim && expr[num_var] != 0) {
     // The transformation is invertible:
     // minimality and saturators are preserved.
-    if (generators_are_up_to_date())
-      gen_sys.affine_image(num_var, expr, denominator);
+    if (generators_are_up_to_date()) {
+      // GenSys::affine_image() requires the third argument
+      // to be a positive Integer.
+      const LinExpression& sgn_adjusted_expr =
+	denominator > 0 ? expr : -expr;
+      const Integer& abs_denominator =
+	denominator > 0 ? denominator : -1 * denominator;
+      gen_sys.affine_image(num_var, sgn_adjusted_expr, abs_denominator);
+    }
     if (constraints_are_up_to_date()) {
       // To build the inverse transformation,
       // after copying and negating `expr',
       // we exchange the roles of `expr[num_var]' and `denominator'.
-      LinExpression inverse = -expr;
-      inverse[num_var] = denominator;
-      con_sys.affine_preimage(num_var, inverse, expr[num_var]);
+      LinExpression inverse;
+      if (expr[num_var] > 0) {
+	inverse = -expr;
+	inverse[num_var] = denominator;
+	con_sys.affine_preimage(num_var, inverse, expr[num_var]);
+      }
+      else {
+	// The new denominator is negative:
+	// we negate everything once more, as ConSys::affine_preimage()
+	// requires the third argument to be positive.
+	inverse = expr;
+	inverse[num_var] = denominator;
+	negate(inverse[num_var]);
+	con_sys.affine_preimage(num_var, inverse, -expr[num_var]);
+      }
     }
   }
   else {
@@ -2710,7 +2729,13 @@ PPL::Polyhedron::affine_image(const Variable& var,
     if (!generators_are_up_to_date())
       minimize();
     if (!is_empty()) {
-      gen_sys.affine_image(num_var, expr, denominator);
+      // GenSys::affine_image() requires the third argument
+      // to be a positive Integer.
+      const LinExpression& sgn_adjusted_expr =
+	denominator > 0 ? expr : -expr;
+      const Integer& abs_denominator =
+	denominator > 0 ? denominator : -1 * denominator;
+      gen_sys.affine_image(num_var, sgn_adjusted_expr, abs_denominator);
       clear_constraints_up_to_date();
       clear_generators_minimized();
       clear_sat_c_up_to_date();
@@ -2812,15 +2837,34 @@ PPL::Polyhedron::affine_preimage(const Variable& var,
   if (num_var <= expr_space_dim && expr[num_var] != 0) {
     // The transformation is invertible:
     // minimality and saturators are preserved.
-    if (constraints_are_up_to_date())
-      con_sys.affine_preimage(num_var, expr, denominator);
+    if (constraints_are_up_to_date()) {
+      // ConSys::affine_preimage() requires the third argument
+      // to be a positive Integer.
+      const LinExpression& sgn_adjusted_expr =
+	denominator > 0 ? expr : -expr;
+      const Integer& abs_denominator =
+	denominator > 0 ? denominator : -1 * denominator;
+      con_sys.affine_preimage(num_var, sgn_adjusted_expr, abs_denominator);
+    }
     if (generators_are_up_to_date()) {
       // To build the inverse transformation,
       // after copying and negating `expr',
       // we exchange the roles of `expr[num_var]' and `denominator'.
-      LinExpression inverse = -expr;
-      inverse[num_var] = denominator;
-      gen_sys.affine_image(num_var, inverse, expr[num_var]);
+      LinExpression inverse;
+      if (expr[num_var] > 0) {
+	inverse = -expr;
+	inverse[num_var] = denominator;
+	gen_sys.affine_image(num_var, inverse, expr[num_var]);
+      }
+      else {
+	// The new denominator is negative:
+	// we negate everything once more, as GenSys::affine_image()
+	// requires the third argument to be positive.
+	inverse = expr;
+	inverse[num_var] = denominator;
+	negate(inverse[num_var]);
+	gen_sys.affine_image(num_var, inverse, -expr[num_var]);
+      }
     }
   }
   else {
@@ -2828,7 +2872,13 @@ PPL::Polyhedron::affine_preimage(const Variable& var,
     // We need an up-to-date system of constraints.
     if (!constraints_are_up_to_date())
       minimize();
-    con_sys.affine_preimage(num_var, expr, denominator);
+    // ConSys::affine_preimage() requires the third argument
+    // to be a positive Integer.
+    const LinExpression& sgn_adjusted_expr =
+      denominator > 0 ? expr : -expr;
+    const Integer& abs_denominator =
+      denominator > 0 ? denominator : -1 * denominator;
+    con_sys.affine_preimage(num_var, sgn_adjusted_expr, abs_denominator);
     clear_generators_up_to_date();
     clear_constraints_minimized();
     clear_sat_c_up_to_date();
@@ -2928,13 +2978,41 @@ PPL::Polyhedron::generalized_affine_image(const Variable& var,
   if (is_empty())
     return;
 
-  if (is_necessarily_closed()) {
-    affine_image(var, expr, denominator);
+  // First compute the affine image.
+  affine_image(var, expr, denominator);
+  if (nonstrict_relation)
     add_generator(ray(greater_than_relation ? var : -var));
-  }
   else {
-    throw_generic("generalized_affine_image(v, r, e, d)",
-		  "*this is an NNC_Polyhedron: to be implemented");
+    // The relation operator is strict.
+    assert(!is_necessarily_closed());
+    // While adding the ray, we minimize the generators
+    // in order to avoid adding too many redundant generator later.
+    GenSys gs;
+    gs.insert(ray(greater_than_relation ? var : -var));
+    add_generators_and_minimize(gs);
+    // We split each point of the generator system into two generators:
+    // a closure point, having the same coordinates of the given point,
+    // and another point, having the same coordinates for all but the
+    // `var' dimension, which is displaced along the direction of the
+    // newly introduced ray.
+    dimension_type eps_index = space_dimension() + 1;
+    for (dimension_type i =  gen_sys.num_rows(); i-- > 0; )
+      if (gen_sys[i].is_point()) {
+	Generator& g = gen_sys[i];
+	// Add a `var'-displaced copy of `g' to the generator system.
+	gen_sys.add_row(g);
+	if (greater_than_relation)
+	  gen_sys[gen_sys.num_rows()-1][num_var]++;
+	else
+	  gen_sys[gen_sys.num_rows()-1][num_var]--;
+	// Transform `g' into a closure point.
+	g[eps_index] = 0;
+      }
+    clear_constraints_up_to_date();
+    clear_generators_minimized();
+    gen_sys.set_sorted(false);
+    clear_sat_c_up_to_date();
+    clear_sat_g_up_to_date();
   }
 
   assert(OK());
