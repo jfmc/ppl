@@ -126,6 +126,8 @@ PPL::GenSys::adjust_topology_and_dimension(Topology new_topology,
 void
 PPL::GenSys::add_corresponding_closure_points() {
   assert(!is_necessarily_closed());
+  // NOTE: we always add (pending) rows at the end of the generator system.
+  // Updating `index_first_pending', if needed, is done by the caller.
   GenSys& gs = *this;
   dimension_type n_rows = gs.num_rows();
   dimension_type eps_index = gs.num_columns() - 1;
@@ -137,10 +139,7 @@ PPL::GenSys::add_corresponding_closure_points() {
       cp[eps_index] = 0;
       // Enforcing normalization.
       cp.normalize();
-      if (gs.num_pending_rows() == 0)
-	gs.add_row(cp);
-      else
-	gs.add_pending_row(cp);
+      gs.add_pending_row(cp);
     }
   }
 }
@@ -153,6 +152,8 @@ PPL::GenSys::add_corresponding_closure_points() {
 void
 PPL::GenSys::add_corresponding_points() {
   assert(!is_necessarily_closed());
+  // NOTE: we always add (pending) rows at the end of the generator system.
+  // Updating `index_first_pending', if needed, is done by the caller.
   GenSys& gs = *this;
   dimension_type n_rows = gs.num_rows();
   dimension_type eps_index = gs.num_columns() - 1;
@@ -163,10 +164,7 @@ PPL::GenSys::add_corresponding_points() {
       // Note: normalization is preserved.
       Generator p = g;
       p[eps_index] = p[0];
-      if (gs.num_pending_rows() == 0)
-	gs.add_row(p);
-      else
-	gs.add_pending_row(p);
+      gs.add_pending_row(p);
     }
   }
 }
@@ -778,6 +776,8 @@ PPL::GenSys::ascii_load(std::istream& s) {
   return true;
 }
 
+
+// CHECK ME!
 void
 PPL::GenSys::remove_invalid_lines_and_rays() {
   // The origin of the vector space cannot be a valid line/ray.
