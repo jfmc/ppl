@@ -42,7 +42,6 @@ PPL::Constraint::throw_dimension_incompatible(const char* method,
   throw std::invalid_argument(s.str());
 }
 
-// CHECK ME.
 PPL::Constraint
 PPL::operator>>(const Constraint& y, unsigned int offset) {
   size_t y_size = y.size();
@@ -62,7 +61,6 @@ PPL::Constraint::construct_epsilon_geq_zero() {
   return c;
 }
 
-// CHECK ME.
 bool
 PPL::Constraint::is_trivial_true() const {
   assert(size() > 0);
@@ -83,7 +81,6 @@ PPL::Constraint::is_trivial_true() const {
       int eps_sign = sgn(x[eps_index]);
       if (eps_sign > 0)
 	// We have found the constraint \epsilon \geq 0.
-	// CHECK ME : What ?
 	return true;
       if (eps_sign == 0)
 	// One of the `true' dimensions has a non-zero coefficient.
@@ -126,7 +123,6 @@ PPL::Constraint::is_trivial_false() const {
       size_t eps_index = size() - 1;
       if (x[eps_index] >= 0)
 	// If positive, we have found the constraint \epsilon \geq 0.
-	// CHECK ME : What ?
 	// If zero, one of the `true' dimensions has a non-zero coefficient.
 	// In both cases, it is not trivially false.
 	return false;

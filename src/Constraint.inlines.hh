@@ -28,7 +28,6 @@ site: http://www.cs.unipr.it/ppl/ . */
 
 namespace Parma_Polyhedra_Library {
 
-  // CHECK ME.
 inline
 Constraint::Constraint(LinExpression& e) {
   swap(e);

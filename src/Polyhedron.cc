@@ -2982,7 +2982,7 @@ PPL::Polyhedron::relation_with(const Generator& g) const {
   to both the polyhedra.
   It is assumed that the polyhedron \p y is contained in \p *this.
 */
-// FIXME : what if the polyhedra contain strict inequalities ?
+// CHECK ME : what if the polyhedra contain strict inequalities ?
 void
 PPL::Polyhedron::widening_assign(const Polyhedron& y) {
   Polyhedron& x = *this;
@@ -3117,7 +3117,6 @@ PPL::Polyhedron::widening_assign(const Polyhedron& y) {
   Returns <CODE>true</CODE> if the widened polyhedron \p *this is
   not empty.
 */
-// FIXME : what if the polyhedra contains strict inequalities ?
 void
 PPL::Polyhedron::limited_widening_assign(const Polyhedron& y, ConSys& cs) {
   Polyhedron& x = *this;
@@ -3191,7 +3190,7 @@ PPL::Polyhedron::limited_widening_assign(const Polyhedron& y, ConSys& cs) {
   x.widening_assign(y);
 #if 1
   // FIXME : merge_rows_assign (in the #else branch below)
-  // does not automatically adjust the topology of cs !!!
+  // does not automatically adjust the topology of cs.
   // However, by simply calling add_constraints() we will
   // likely duplicate a big number of constraints.
   x.add_constraints(cs);
@@ -3482,7 +3481,7 @@ PPL::Polyhedron::topological_closure_assign() {
   - the system of constraints and the system of generators are really
     minimized, when they are declared minimal.
 */
-// FIXME.
+// CHECK ME.
 bool
 PPL::Polyhedron::OK(bool check_not_empty) const {
 #ifndef NDEBUG
