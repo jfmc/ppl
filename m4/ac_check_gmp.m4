@@ -1,4 +1,4 @@
-dnl Copyright (C) 2001 Roberto Bagnara <bagnara@cs.unipr.it>
+dnl Copyright (C) 2001, 2002 Roberto Bagnara <bagnara@cs.unipr.it>
 dnl  
 dnl This file is part of the Parma Polyhedra Library (PPL).
 dnl 
