@@ -6,3 +6,4 @@ Makefile
 Makefile.in
 ppl.hh
 ppl_install.hh
+version.hh
