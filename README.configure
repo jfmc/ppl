@@ -88,8 +88,8 @@ among others, the option
 If you use shared libraries, consult the documentation of your
 dynamic linker/loader (`man ld.so' will do on most Un*x-like systems)
 to see how to make sure that GMP's shared library will be found at
-runtime (setting the environment variable `LD_LIBRARY_PATH' to "<GMP
-prefix>/lib:$LD_LIBRARY_PATH" is the most commonly used solution).
+runtime (setting the environment variable `LD_LIBRARY_PATH' to
+"<GMPprefix>/lib:$LD_LIBRARY_PATH" is the most commonly used solution).
 
 
 Using the Right C and C++ Compilers
