@@ -578,15 +578,16 @@ The affine image operator computes the affine transformation
 defined by the matrix
   \f[
  A = \begin{pmatrix}
-        1 & 0 & \dots & 0 & a_1 & 0 & \dots & 0 \\
-        0 & 1 & \dots & 0 & a_2 & 0 & \dots & 0 \\
-          &   &        &   & \dots &&        &   \\   
-          &   &        &   & \dots &&        &   \\   
-        0 & 0 & \dots & 0 & a_n & 0 & \dots & 1 
+        1   & 0   & \dots & 0       \\
+        0   & 1   & \dots & 0       \\
+            &     & \dots &         \\   
+        a_0 & a_1 & \dots & a_{n-1} \\
+            &     & \dots &         \\   
+        0   & 0   & \dots & 1 
      \end{pmatrix}
   \f]
 and vector \f$\vect{b} = (0, \ldots, b, \ldots, 0)\f$
-where the \f$a_i\f$ (resp., \f$b\f$) occurs in the \f$k\f$th column
+where the \f$a_i\f$ (resp., \f$b\f$) occurs in the \f$k\f$th row
 in \f$A\f$
 (resp., position in \f$\vect{b}\f$).
 For instance,
