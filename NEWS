@@ -10,11 +10,11 @@ NEWS for version 0.4 (released date unknown)
 New Features
 ============
 
-o The library does not call abort(): an appropriate error message is thrown
-  in this case. 
+o  The library no longer calls abort(): appropriate exceptions
+   are always thrown instead.
 
-o New mothods Polyhedron::is_bounded(): it returns true if and only
-  if a polyhedron is bounded.
+o  New method Polyhedron::is_bounded(): it returns true if and only
+   if the polyhedron is bounded, i.e., finite.
 
 o  ...
 
@@ -22,10 +22,8 @@ o  ...
 Bugfixes
 ========
 
-o A vertex built with a negative denominator is transformed into the
-  corresponding vertex with a positive denominator. Previously, a vertex
-  with a negative denominator was accepted, even if then it was declared
-  illegal.
+o  Fixed a bug whereby creating a vertex with a negative denominator
+   caused the library to misbehave.
 
 o  ...
 
