@@ -220,6 +220,9 @@ public:
   //! Returns the origin of the zero-dimensional space \f$\Rset^0\f$.
   static const Generator& zero_dim_vertex();
 
+  //! Checks if all the invariants are satisfied.
+  bool OK() const;
+
 PPL_INTERNAL:
   //! Returns <CODE>true</CODE> if and only if
   //! \p *this is a line.
@@ -235,7 +238,6 @@ PPL_INTERNAL:
 private:
   //! Default constructor: private and not implemented.
   Generator();
-
 };
 
 #include "Generator.inlines.hh"

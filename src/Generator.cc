@@ -130,3 +130,43 @@ PPL::operator <<(std::ostream& s, const Generator& g) {
   s << ")";
   return s;
 }
+
+bool
+PPL::Generator::OK() const {
+  using std::endl;
+  using std::cerr;
+
+  const Generator& g = *this;
+  bool ray_or_line = false;
+  // Looking for vertices.
+  if (g.is_ray_or_vertex()) {
+    // A vertex is legal only if its inhomogeneous term
+    // is strictly positive.
+    if (g[0] < 0) {
+      cerr << "Vertices cannot have a negative inhomogeneous term!"
+	   << endl;
+      return false;
+    }
+    else if (g[0] == 0)
+      // Since rays and lines have a zero inhomogeneous term,
+      // we found a ray.
+      ray_or_line = true;
+  }
+  else if (g[0] != 0) {
+    cerr << "Lines must have a zero inhomogeneous term!"
+	 << endl;
+    return false;
+  }
+  else
+    // We found a line.
+    ray_or_line = true;
+
+  if (ray_or_line && g.all_homogeneous_terms_are_zero()) {
+    // Rays and lines must have at least one non-zero homogeneous term.
+    cerr << "Generators must have "
+      "at least one nonzero homogeneous coefficient!"
+	 << endl;
+    return false;
+  }
+  return true;
+}
