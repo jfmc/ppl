@@ -389,7 +389,7 @@ Polyhedron::rename_dimensions(const PartialFunction& pifunc) {
   }
 
   dimension_type new_space_dimension = pifunc.max_in_codomain() + 1;
-  // If there is something pending, using `generators()' we erase it.
+  // If there are pending constraints, using `generators()' we process them.
   const GenSys& old_gensys = generators();
 
   if (old_gensys.num_rows() == 0) {
@@ -398,7 +398,7 @@ Polyhedron::rename_dimensions(const PartialFunction& pifunc) {
     std::swap(*this, new_polyhedron);
     assert(OK());
     return;
-  } 
+  }
 
   GenSys new_gensys;
   for (GenSys::const_iterator i = old_gensys.begin(),
@@ -429,8 +429,9 @@ Polyhedron::rename_dimensions(const PartialFunction& pifunc) {
       new_gensys.insert(point(e, old_g.divisor()));
       break;
     case Generator::CLOSURE_POINT:
-      // Note: a point in the origin has all zero homogeneous coefficients.
-      new_gensys.insert(point(e, old_g.divisor()));
+      // Note: a closure point in the origin has all zero homogeneous
+      // coefficients.
+      new_gensys.insert(closure_point(e, old_g.divisor()));
       break;
     }
   }
