@@ -167,6 +167,8 @@ PPL::ConSys::has_strict_inequalities() const {
     return false;
   const ConSys& cs = *this;
   dimension_type eps_index = cs.num_columns() - 1;
+  // We verify if the system has strict inequalities
+  // also in the pending part.
   for (dimension_type i = num_rows(); i-- > 0; )
     // Optimized type checking: we already know the topology;
     // also, equalities have the epsilon coefficient equal to zero.
@@ -180,6 +182,9 @@ PPL::ConSys::has_strict_inequalities() const {
 
 void
 PPL::ConSys::insert(const Constraint& c) {
+  // We are sure that the matrix has no pending rows
+  // and that the new row is not a pending constraint.
+  assert(num_pending_rows() == 0);
   if (topology() == c.topology())
     Matrix::insert(c);
   else
@@ -230,6 +235,8 @@ PPL::ConSys::insert_pending(const Constraint& c) {
 
 PPL::dimension_type
 PPL::ConSys::num_inequalities() const {
+  // We are sure that we call this method only when
+  // the matrix has no pending rows.
   assert(num_pending_rows() == 0);
   int n = 0;
   // If the Matrix happens to be sorted, take advantage of the fact
@@ -247,6 +254,8 @@ PPL::ConSys::num_inequalities() const {
 
 PPL::dimension_type
 PPL::ConSys::num_equalities() const {
+  // We are sure that we call this method only when
+  // the matrix has no pending rows.
   assert(num_pending_rows() == 0);
   return num_rows() - num_inequalities();
 }

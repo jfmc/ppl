@@ -438,7 +438,7 @@ Polyhedron::shrink_bounding_box(Box& box, Complexity_Class complexity) const {
     assert(constraints_are_up_to_date());
     
     // We must copy the `con_sys' into a temporary matrix,
-    // because we must gauss() and back_substitute()
+    // because we must apply gauss() and back_substitute()
     // to all the matrix and not only to the non-pending part.
     ConSys cs(con_sys);
     cs.set_index_first_pending_row(cs.num_rows());
@@ -523,7 +523,7 @@ Polyhedron::shrink_bounding_box(Box& box, Complexity_Class complexity) const {
     // We have not to copy `gen_sys', because in this case
     // we only read the generators.
     const GenSys& gs = gen_sys;
-    
+    // Using the iterator, we read als the pending part of the matrix.
     const GenSys::const_iterator gs_begin = gs.begin();
     const GenSys::const_iterator gs_end = gs.end();
 

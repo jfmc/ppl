@@ -225,6 +225,9 @@ PPL::GenSys::const_iterator::skip_forward() {
 
 void
 PPL::GenSys::insert(const Generator& g) {
+  // We are sure that the matrix has no pending rows
+  // and that the new row is not a pending generator.
+  assert(num_pending_rows() == 0);
   if (topology() == g.topology())
     Matrix::insert(g);
   else
@@ -311,6 +314,8 @@ PPL::GenSys::insert_pending(const Generator& g) {
 
 PPL::dimension_type
 PPL::GenSys::num_lines() const {
+  // We are sure that this method is applied only to a matrix
+  // that does not contain pending rows.
   assert(num_pending_rows() == 0);
   dimension_type n = 0;
   // If the Matrix happens to be sorted, take advantage of the fact
@@ -329,6 +334,8 @@ PPL::GenSys::num_lines() const {
 
 PPL::dimension_type
 PPL::GenSys::num_rays() const {
+  // We are sure that this method is applied only to a matrix
+  // that does not contain pending rows.
   assert(num_pending_rows() == 0);
   dimension_type n = 0;
   // If the Matrix happens to be sorted, take advantage of the fact

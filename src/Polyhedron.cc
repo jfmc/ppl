@@ -4520,7 +4520,7 @@ PPL::Polyhedron::is_bounded() const {
       || (!generators_are_up_to_date() && !update_generators()))
     return true;
   
-  for (dimension_type i = gen_sys.num_rows(); i-- > 0; )
+   for (dimension_type i = gen_sys.num_rows(); i-- > 0; )
     if (gen_sys[i][0] == 0)
       // A line or a ray is found: the polyhedron is not bounded.
       return false;
@@ -4589,9 +4589,13 @@ PPL::Polyhedron::is_topologically_closed() const {
       || space_dimension() == 0)
     return true;
 
-  // At this point, the polyhedron has nothing pending.
-  // If at the beginning, the polyhedron had something pending,
-  // now we have that `gen_sys' is in minimal form.
+  // Note that after using remove_pending_and_minimize(),
+  // we have that the polyhedron is in minimal form. So
+  // at this point we have that the generators of
+  // the polyhedron are minimized. In this way,
+  // we avoid to call strongly_minimize_constraints() if
+  // the polyhedron at the beginning of this method had
+  // something pending.
   if (generators_are_minimized()) {
     // A polyhedron is closed iff all of its (non-redundant)
     // closure points are matched by a corresponding point.
@@ -4636,6 +4640,7 @@ PPL::Polyhedron::topological_closure_assign() {
 
   dimension_type eps_index = space_dim + 1;
   bool changed = false;
+  // We do not want to have pending constraints.
   if (has_pending_constraints())
     remove_pending_to_obtain_constraints();
 
@@ -4660,6 +4665,9 @@ PPL::Polyhedron::topological_closure_assign() {
     }
   }
   else {
+    // If the polyhedron can have something pending, we add the
+    // new points in the pending part. In this way, we still
+    // have the system of constraints.
     assert(generators_are_up_to_date() || can_have_something_pending());
     // Add the corresponding point to each closure point.
     gen_sys.add_corresponding_points();

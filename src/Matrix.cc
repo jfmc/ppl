@@ -346,6 +346,8 @@ void
 PPL::Matrix::merge_rows_assign(const Matrix& y) {
   assert(row_size >= y.row_size);
   assert(check_sorted() && y.check_sorted());
+  // We can use this method only when the matrices do not
+  // contain any pending rows.
   assert(num_pending_rows() == 0 && y.num_pending_rows() == 0);
 
   Matrix& x = *this;
@@ -396,6 +398,9 @@ PPL::Matrix::merge_rows_assign(const Matrix& y) {
 void
 PPL::Matrix::sort_rows() {
   Matrix& x = *this;
+  // We can sort only the non-pending rows.
+  // The rows below `index_first_pending' are not
+  // sorted.
   dimension_type n_rows = x.first_pending_row();
   Row x_i;
   for (dimension_type i = 1; i < n_rows; ) {
@@ -435,7 +440,7 @@ PPL::Matrix::add_row(const Row& row) {
   // The added row must have the same number
   // of elements of the existing rows of the matrix.
   assert(row.size() == row_size);
- // We are sure that we use this method only when
+  // We are sure that we use this method only when
   // we do not add a pending row and the matrix
   // has no pending rows.
   assert(num_pending_rows() == 0);
@@ -465,7 +470,7 @@ PPL::Matrix::add_row(const Row& row) {
   }
 
   //  We update `index_first_pending', because it must
-  // equal to `n_rows'.
+  // equal to `num_rows()'.
   set_index_first_pending_row(num_rows());
 
   if (was_sorted) {
@@ -517,7 +522,7 @@ PPL::Matrix::add_pending_row(const Row& row) {
 void
 PPL::Matrix::insert(const Row& row) {
   assert(topology() == row.topology());
- // We are sure that we use this method only when
+  // We are sure that we use this method only when
   // we do not add a pending row and the matrix
   // has no pending rows.
   assert(num_pending_rows() == 0);
@@ -653,6 +658,7 @@ PPL::Matrix::swap_columns(dimension_type i,  dimension_type j) {
 
 void
 PPL::Matrix::normalize() {
+  // We normalize also the pending rows.
   for (dimension_type i = num_rows(); i-- > 0; )
     rows[i].normalize();
   set_sorted(false);
@@ -660,6 +666,7 @@ PPL::Matrix::normalize() {
 
 void
 PPL::Matrix::strong_normalize() {
+  // We strongly normalize also the pending rows.
   for (dimension_type i = num_rows(); i-- > 0; )
     rows[i].strong_normalize();
   set_sorted(false);
@@ -673,6 +680,8 @@ PPL::operator==(const Matrix& x, const Matrix& y) {
   dimension_type x_num_rows = x.num_rows();
   if (x_num_rows != y.num_rows())
     return false;
+  if (x.first_pending_row() != y.first_pending_row())
+    return false;
   for (dimension_type i = x_num_rows; i-- > 0; )
     if (compare(x[i], y[i]) != 0)
       return false;
@@ -682,6 +691,7 @@ PPL::operator==(const Matrix& x, const Matrix& y) {
 void
 PPL::Matrix::sort_and_remove_with_sat(SatMatrix& sat) {
   Matrix& x = *this;
+  // We can only sort the non-pending part of the matrix.
   dimension_type num_kept_rows = x.first_pending_row();
   assert(num_kept_rows == sat.num_rows());
   if (num_kept_rows <= 1) {
@@ -729,6 +739,8 @@ PPL::Matrix::sort_and_remove_with_sat(SatMatrix& sat) {
 
 PPL::dimension_type
 PPL::Matrix::gauss() {
+  // We are sure that this method is applied only to a matrix
+  // that does not contain pending rows.
   assert(num_pending_rows() == 0);
   dimension_type rank = 0;
   // Will keep track of the variations on the matrix of equalities.
@@ -780,6 +792,8 @@ PPL::Matrix::gauss() {
 
 void
 PPL::Matrix::back_substitute(dimension_type rank) {
+  // We are sure that this method is applied only to a matrix
+  // that does not contain pending rows.
   assert(num_pending_rows() == 0);
   bool was_sorted = is_sorted();
   dimension_type nrows = num_rows();
