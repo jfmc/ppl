@@ -2,6 +2,13 @@
 Coding Standards for the Parma Polyhedra Library
 ================================================
 
+Pre and post increment and decrement operators
+----------------------------------------------
+
+All other things being equal, always prefer preincrement and
+predecrement to postincrement and postdecrement.
+
+
 Length of source lines
 ----------------------
 

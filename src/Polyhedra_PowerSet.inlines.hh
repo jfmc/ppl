@@ -438,7 +438,7 @@ collect_multiset_lgo_info(multiset_lgo_info& info) const {
   assert(info.size() == 0);
   for (const_iterator i = Base::begin(), iend = Base::end(); i != iend; i++) {
     base_lgo_info ph_info(i->polyhedron());
-    info[ph_info]++;
+    ++info[ph_info];
   }
 }
 
@@ -464,8 +464,8 @@ is_multiset_lgo_stabilizing(const multiset_lgo_info& y_info) const {
 	const size_type& yi_count = yi->second;
 	if (xi_count == yi_count) {
 	  // Same number of occurrences: compare the next pair.
-	  xi++;
-	  yi++;
+	  ++xi;
+	  ++yi;
 	}
 	else
 	  // Different number of occurrences: can decide ordering.

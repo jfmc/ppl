@@ -67,7 +67,7 @@ double_generators(const GenSys& gs, unsigned magic_number) {
   while (true) {
     const Generator& g = *i;
     new_gs.insert(g);
-    i++;
+    ++i;
     if (i != gs_end)
       new_gs.insert(splitting_segment(g, *i, magic_number));
     else {
@@ -100,9 +100,9 @@ p(unsigned n) {
     magic_number *= magic_factor;
     GenSys gs2 = double_generators(gs, magic_number);
     GenSys::const_iterator gs2_i = gs2.begin();
-    for ( ; gs_vertices < needed_vertices; gs_vertices++) {
+    for ( ; gs_vertices < needed_vertices; ++gs_vertices) {
       // Skip the even indexed vertices of gs2.
-      gs2_i++;
+      ++gs2_i;
       // Add the odd indexed vertices of gs2.
       gs.insert(*gs2_i++);
     }

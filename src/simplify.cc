@@ -202,7 +202,7 @@ PPL::Polyhedron::simplify(Matrix& mat, SatMatrix& sat) {
       mat.set_sorted(false);
     }
     else
-      i++;
+      ++i;
   }
 
   // Now we check the independence rule.

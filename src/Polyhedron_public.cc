@@ -223,10 +223,10 @@ PPL::Polyhedron::is_universe() const {
   for (dimension_type i = first_pending; i-- > 0; )
     switch (gen_sys[i].type()) {
     case Generator::RAY:
-      num_rays++;
+      ++num_rays;
       break;
     case Generator::LINE:
-      num_lines++;
+      ++num_lines;
       break;
     default:
       break;
@@ -241,10 +241,10 @@ PPL::Polyhedron::is_universe() const {
     for (dimension_type i = first_pending; i < gs_num_rows; i++)
       switch (gen_sys[i].type()) {
       case Generator::RAY:
-	num_rays++;
+	++num_rays;
 	break;
       case Generator::LINE:
-	num_lines++;
+	++num_lines;
 	break;
       default:
 	break;
@@ -1971,9 +1971,9 @@ PPL::Polyhedron::generalized_affine_image(const Variable var,
 	  // Add a `var'-displaced copy of `g' to the generator system.
 	  gen_sys.add_row(g);
 	  if (relsym == GREATER_THAN)
-	    gen_sys[gen_sys.num_rows()-1][num_var]++;
+	    ++gen_sys[gen_sys.num_rows()-1][num_var];
 	  else
-	    gen_sys[gen_sys.num_rows()-1][num_var]--;
+	    --gen_sys[gen_sys.num_rows()-1][num_var];
 	  // Transform `g' into a closure point.
 	  g[eps_index] = 0;
 	}

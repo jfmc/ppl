@@ -513,7 +513,7 @@ PPL::Polyhedron::collect_BHRZ03_info(BHRZ03_info& info) const {
   // TODO: provide a correct implementation for NNC polyhedra.
   for (dimension_type i = info.num_constraints; i-- > 0; )
     if (con_sys[i].is_trivial_true()) {
-      info.num_constraints--;
+      --info.num_constraints;
       break;
     }
 
@@ -524,13 +524,13 @@ PPL::Polyhedron::collect_BHRZ03_info(BHRZ03_info& info) const {
     // Count the number of points.
     for (dimension_type i = gen_sys_num_rows; i-- > 0; )
       if (gen_sys[i].is_point())
-	info.num_points++;
+	++info.num_points;
   }
   else {
     // For NNC polyhedra, count the number of closure points.
     for (dimension_type i = gen_sys_num_rows; i-- > 0; )
       if (gen_sys[i].is_closure_point())
-	info.num_points++;
+	++info.num_points;
   }
 
   // For each i such that 0 <= i < space_dim,
@@ -542,8 +542,8 @@ PPL::Polyhedron::collect_BHRZ03_info(BHRZ03_info& info) const {
       dimension_type num_zeroes = 0;
       for (dimension_type j = space_dim; j >= 1; j--)
 	if (r[j] == 0)
-	  num_zeroes++;
-      info.num_zero_ray_coord[num_zeroes]++;
+	  ++num_zeroes;
+      ++info.num_zero_ray_coord[num_zeroes];
     }
 }
 
@@ -569,7 +569,7 @@ PPL::Polyhedron::is_BHRZ03_stabilizing(const Polyhedron& x,
     y.space_dim - y.con_sys.num_equalities();
   if (x_dimension > y_dimension) {
 #if PPL_STATISTICS
-    statistics->reason.poly_dim++;
+    ++statistics->reason.poly_dim;
 #endif
     return true;
   }
@@ -586,7 +586,7 @@ PPL::Polyhedron::is_BHRZ03_stabilizing(const Polyhedron& x,
   const dimension_type y_num_lines = y.gen_sys.num_lines();
   if (x_num_lines > y_num_lines) {
 #if PPL_STATISTICS
-    statistics->reason.lin_space_dim++;
+    ++statistics->reason.lin_space_dim;
 #endif
     return true;
   }
@@ -604,14 +604,14 @@ PPL::Polyhedron::is_BHRZ03_stabilizing(const Polyhedron& x,
   dimension_type x_con_sys_num_rows = 0;
   for (ConSys::const_iterator i = x.con_sys.begin(),
 	 x_cs_end = x.con_sys.end(); i != x_cs_end; ++i)
-    x_con_sys_num_rows++;
+    ++x_con_sys_num_rows;
   dimension_type y_con_sys_num_rows = 0;
   for (ConSys::const_iterator i = y.con_sys.begin(),
 	 y_cs_end = y.con_sys.end(); i != y_cs_end; ++i)
-    y_con_sys_num_rows++;
+    ++y_con_sys_num_rows;
   if (x_con_sys_num_rows < y_con_sys_num_rows) {
 #if PPL_STATISTICS
-    statistics->reason.num_constraints++;
+    ++statistics->reason.num_constraints;
 #endif
     return true;
   }
@@ -629,7 +629,7 @@ PPL::Polyhedron::is_BHRZ03_stabilizing(const Polyhedron& x,
       = y_gen_sys_num_rows - y_num_lines - y.gen_sys.num_rays();
     if (x_num_points < y_num_points) {
 #if PPL_STATISTICS
-      statistics->reason.num_points++;
+      ++statistics->reason.num_points;
 #endif
       return true;
     }
@@ -653,7 +653,7 @@ PPL::Polyhedron::is_BHRZ03_stabilizing(const Polyhedron& x,
     // the number of closure points of `y', the chain is stabilizing.
     if (x_num_closure_points < y_num_closure_points) {
 #if PPL_STATISTICS
-      statistics->reason.num_points++;
+      ++statistics->reason.num_points;
 #endif
       return true;
     }
@@ -674,8 +674,8 @@ PPL::Polyhedron::is_BHRZ03_stabilizing(const Polyhedron& x,
       dimension_type num_zeroes = 0;
       for (dimension_type j = x.space_dim; j >= 1; j--)
 	if (r[j] == 0)
-	  num_zeroes++;
-      x_num_rays[num_zeroes]++;
+	  ++num_zeroes;
+      ++x_num_rays[num_zeroes];
     }
   // The same as above, this time for `y'.
   std::vector<dimension_type> y_num_rays(y.space_dim, 0);
@@ -685,8 +685,8 @@ PPL::Polyhedron::is_BHRZ03_stabilizing(const Polyhedron& x,
       dimension_type num_zeroes = 0;
       for (dimension_type j = y.space_dim; j >= 1; j--)
 	if (r[j] == 0)
-	  num_zeroes++;
-      y_num_rays[num_zeroes]++;
+	  ++num_zeroes;
+      ++y_num_rays[num_zeroes];
     }
   // Compare (lexicographically) the two vectors:
   // if x_num_rays < y_num_rays the chain is stabilizing.
@@ -696,7 +696,7 @@ PPL::Polyhedron::is_BHRZ03_stabilizing(const Polyhedron& x,
       break;
     if (x_num_rays[i] < y_num_rays[i]) {
 #if PPL_STATISTICS
-      statistics->reason.zero_coord_rays++;
+      ++statistics->reason.zero_coord_rays;
 #endif
       return true;
     }
@@ -821,7 +821,7 @@ PPL::Polyhedron::BHRZ03_combining_constraints(const Polyhedron& y,
   if (y_cert.is_stabilizing(result) && !result.contains(H79)) {
     // The technique was successful.
 #if PPL_STATISTICS
-    statistics->technique.combining_constraints++;
+    ++statistics->technique.combining_constraints;
 #endif
     std::swap(x, result);
     assert(x.OK(true));
@@ -891,7 +891,7 @@ PPL::Polyhedron::BHRZ03_evolving_points(const Polyhedron& y,
   if (y_cert.is_stabilizing(result) && !result.contains(H79)) {
     // The technique was successful.
 #if PPL_STATISTICS
-    statistics->technique.evolving_points++;
+    ++statistics->technique.evolving_points;
 #endif
     std::swap(x, result);
     assert(x.OK(true));
@@ -982,7 +982,7 @@ PPL::Polyhedron::BHRZ03_evolving_rays(const Polyhedron& y,
   if (y_cert.is_stabilizing(result) && !result.contains(H79)) {
     // The technique was successful.
 #if PPL_STATISTICS
-    statistics->technique.evolving_rays++;
+    ++statistics->technique.evolving_rays;
 #endif
     std::swap(x, result);
     assert(x.OK(true));
@@ -1016,8 +1016,8 @@ PPL::Polyhedron::BHRZ03_widening_assign(const Polyhedron& y, unsigned* tp) {
   // the BHRZ03-widening behaves as the identity function.
   if (x.space_dim == 0 || x.marked_empty() || y.marked_empty()) {
 #if PPL_STATISTICS
-    statistics->reason.zero_dim_or_empty++;
-    statistics->technique.nop++;
+    ++statistics->reason.zero_dim_or_empty;
+    ++statistics->technique.nop;
 #endif
     return;
   }
@@ -1030,8 +1030,8 @@ PPL::Polyhedron::BHRZ03_widening_assign(const Polyhedron& y, unsigned* tp) {
     if (!y.minimize()) {
       // `y' is empty: the result is `x'.
 #if PPL_STATISTICS
-      statistics->reason.zero_dim_or_empty++;
-      statistics->technique.nop++;
+      ++statistics->reason.zero_dim_or_empty;
+      ++statistics->technique.nop;
 #endif
       return;
     }
@@ -1048,8 +1048,8 @@ PPL::Polyhedron::BHRZ03_widening_assign(const Polyhedron& y, unsigned* tp) {
     if (!yy.intersection_assign_and_minimize(x)) {
       // `y' is empty: the result is `x'.
 #if PPL_STATISTICS
-      statistics->reason.zero_dim_or_empty++;
-      statistics->technique.nop++;
+      ++statistics->reason.zero_dim_or_empty;
+      ++statistics->technique.nop;
 #endif
       return;
     }
@@ -1063,7 +1063,7 @@ PPL::Polyhedron::BHRZ03_widening_assign(const Polyhedron& y, unsigned* tp) {
   // (exploiting the knowledge that `y <= x').
   if (y_cert.is_stabilizing(x) || y.contains(x)) {
 #if PPL_STATISTICS
-    statistics->technique.nop++;
+    ++statistics->technique.nop;
 #endif
     assert(OK());
     return;
@@ -1074,7 +1074,7 @@ PPL::Polyhedron::BHRZ03_widening_assign(const Polyhedron& y, unsigned* tp) {
   // there are tokens available, use one of them and return `x'.
   if (tp != 0 && *tp > 0) {
 #if PPL_STATISTICS
-    statistics->technique.delay++;
+    ++statistics->technique.delay;
 #endif
     --(*tp);
     assert(OK());
@@ -1116,7 +1116,7 @@ PPL::Polyhedron::BHRZ03_widening_assign(const Polyhedron& y, unsigned* tp) {
 
   // No previous technique was successful: fall back to the H79 widening.
 #if PPL_STATISTICS
-  statistics->technique.h79++;
+  ++statistics->technique.h79;
 #endif
   std::swap(x, H79);
   assert(x.OK(true));
