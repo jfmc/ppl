@@ -24,14 +24,13 @@ site: http://www.cs.unipr.it/ppl/ . */
 :- module(_, [main/0], []).
 :- use_module(library(debugger)). 
 :- use_module(library(dynamic)). 
+:- use_module(library(iso_misc)). 
 :- use_module(library(lists)). 
 :- use_module(library(prolog_sys)).
 :- use_module(library(read)).
+:- use_module(library(sort)).
 :- use_module(library(write)).
-:- use_module(ppl_ciao).
-/*
-,
-[
+:- use_module(ppl_ciao, [
 	ppl_initialize/0,
 	ppl_finalize/0,
 	ppl_new_Polyhedron_from_dimension/3,
@@ -41,9 +40,9 @@ site: http://www.cs.unipr.it/ppl/ . */
 	ppl_Polyhedron_get_constraints/2,
 	ppl_Polyhedron_add_constraints_and_minimize/2,
 	ppl_Polyhedron_add_dimensions_and_embed/2,
+	ppl_Polyhedron_remove_dimensions/2,
 	ppl_Polyhedron_remove_higher_dimensions/2
 ]).
-*/
 
 :- set_prolog_flag(multi_arity_warnings, off).
 
