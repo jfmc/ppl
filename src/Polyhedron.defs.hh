@@ -315,12 +315,12 @@ public:
   void insert(const Generator& g);
 
   //! Assigns an affine expression to the specified variable.
-  //! \exception invalid_argument \p denominator is zero.
+  //! \exception std::invalid_argument \p denominator is zero.
   void assign_variable(const Variable& var, 
 		       const LinExpression& coefficient,
 		       Integer& denominator);
   //! Substitute an affine expression to the specified variable.
-  //! \exception invalid_argument \p denominator is zero.
+  //! \exception std::invalid_argument \p denominator is zero.
   void substitute_variable(const Variable& var,
 			   const LinExpression& coefficient,
 			   Integer& denominator);
