@@ -21,8 +21,8 @@ USA.
 For the most up-to-date information see the Parma Polyhedra Library
 site: http://www.cs.unipr.it/ppl/ . */
 
-#ifndef _Determinate_defs_hh
-#define _Determinate_defs_hh
+#ifndef PPL_Determinate_defs_hh
+#define PPL_Determinate_defs_hh
 
 #include "Determinate.types.hh"
 #include <iosfwd>
@@ -82,6 +82,7 @@ public:
   Determinate(size_t num_dimensions = 0,
 	      Polyhedron::Degenerate_Kind kind = Polyhedron::UNIVERSE);
   Determinate(const PH& p);
+  Determinate(const ConSys& cs);
   Determinate(const Determinate& y);
   ~Determinate();
 
@@ -152,14 +153,14 @@ public:
   void add_constraints(ConSys& cs);
 
   //! \brief
-  //! Adds \p dim new dimensions and embeds the old polyhedron
+  //! Adds \p m new dimensions and embeds the old polyhedron
   //! into the new space.
-  void add_dimensions_and_embed(size_t dim);
+  void add_dimensions_and_embed(size_t m);
 
   //! \brief
-  //! Adds \p dim new dimensions to the polyhedron
+  //! Adds \p m new dimensions to the polyhedron
   //! and does not embed it in the new space.
-  void add_dimensions_and_project(size_t dim);
+  void add_dimensions_and_project(size_t m);
 
   //! \brief
   //! Removes all the specified dimensions.
@@ -239,6 +240,8 @@ private:
 
     Rep(const PH& p);
 
+    Rep(const ConSys& cs);
+
     //! Destructor.
     ~Rep();
 
@@ -258,4 +261,4 @@ private:
 
 #include "Determinate.inlines.hh"
 
-#endif // !defined(_Determinate_defs_hh)
+#endif // !defined(PPL_Determinate_defs_hh)

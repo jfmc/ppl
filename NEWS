@@ -15,6 +15,19 @@ o  The method Polyhedron::add_dimensions_and_constraints(ConSys&)
    Polyhedron::concatenate_assign(const Polyhedron&).  The same change
    has, of course, been performed on all the PPL interfaces.
 
+o  New constructors to build polyhedra from read-only constraint and
+   generator systems: C_Polyhedron(const ConSys&),
+   C_Polyhedron(const GenSys&), NNC_Polyhedron(const ConSys&), and
+   NNC_Polyhedron(const GenSys&).  In the C interface the functions
+   taking non-const arguments named ppl_new_<T>_from_<S> have been
+   renamed ppl_new_<T>_recycle_<S>, where <T> is either "C" or "NNC",
+   and <S> is either "ConSys" or "GenSys".  The old names have been
+   given to the new const functions.
+
+o  New method: template <typename PartialFunction>
+   void shuffle_dimensions(const PartialFunction&).
+   TO BE CONTINUED
+
 
 Bugfixes
 ========

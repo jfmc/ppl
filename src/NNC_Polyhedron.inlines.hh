@@ -21,8 +21,8 @@ USA.
 For the most up-to-date information see the Parma Polyhedra Library
 site: http://www.cs.unipr.it/ppl/ . */
 
-#ifndef _NNC_Polyhedron_inlines_hh
-#define _NNC_Polyhedron_inlines_hh 1
+#ifndef PPL_NNC_Polyhedron_inlines_hh
+#define PPL_NNC_Polyhedron_inlines_hh 1
 
 namespace Parma_Polyhedra_Library {
 
@@ -32,8 +32,18 @@ NNC_Polyhedron::NNC_Polyhedron(size_t num_dimensions, Degenerate_Kind kind)
 }
 
 inline
+NNC_Polyhedron::NNC_Polyhedron(const ConSys& cs)
+  : Polyhedron(NOT_NECESSARILY_CLOSED, cs) {
+}
+
+inline
 NNC_Polyhedron::NNC_Polyhedron(ConSys& cs)
   : Polyhedron(NOT_NECESSARILY_CLOSED, cs) {
+}
+
+inline
+NNC_Polyhedron::NNC_Polyhedron(const GenSys& gs)
+  : Polyhedron(NOT_NECESSARILY_CLOSED, gs) {
 }
 
 inline
@@ -63,4 +73,4 @@ NNC_Polyhedron::~NNC_Polyhedron() {
 
 } // namespace Parma_Polyhedra_Library
 
-#endif // !defined(_NNC_Polyhedron_inlines_hh)
+#endif // !defined(PPL_NNC_Polyhedron_inlines_hh)

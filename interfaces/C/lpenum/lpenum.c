@@ -76,6 +76,12 @@ static int verbose = 0;
 static int maximize = 1;
 
 static void
+my_exit(int status) {
+  (void) ppl_finalize();
+  exit(status);
+}
+
+static void
 fatal(const char* format, ...) {
   va_list ap;
   va_start(ap, format);
@@ -83,7 +89,7 @@ fatal(const char* format, ...) {
   vfprintf(stderr, format, ap);
   fprintf(stderr, "\n");
   va_end(ap);
-  exit(1);
+  my_exit(1);
 }
 
 static void
@@ -119,7 +125,7 @@ process_options(int argc, char *argv[]) {
     case '?':
     case 'h':
       fprintf(stderr, usage_string, argv[0]);
-      exit(0);
+      my_exit(0);
       break;
 
     case 'C':
@@ -252,7 +258,7 @@ my_timeout(int dummy) {
   fprintf(stderr, "TIMEOUT\n");
   if (output_argument)
     fprintf(output_file, "TIMEOUT\n");
-  exit(0);
+  my_exit(0);
 }
 
 static mpz_t tmp_z;
@@ -439,7 +445,8 @@ solve(char* file_name) {
   mpz_t den_lcm;
   int empty;
   int unbounded;
-  int first_printed;
+  /* The following is initialized only to avoid a compiler warning. */
+  int first_printed = 0;
 
   if (print_timings)
     start_clock();
@@ -532,7 +539,7 @@ solve(char* file_name) {
   }
 
   /* Create the polyhedron and get rid of the constraint system. */
-  ppl_new_C_Polyhedron_from_ConSys(&ppl_ph, ppl_cs);
+  ppl_new_C_Polyhedron_recycle_ConSys(&ppl_ph, ppl_cs);
   ppl_delete_ConSys(ppl_cs);
 
   if (print_timings) {
@@ -701,7 +708,7 @@ error_handler(enum ppl_enum_error_code code,
 	      const char* description) {
   fatal("PPL error code %d\n%s", code, description);
 }
-  
+
 int
 main(int argc, char* argv[]) {
   program_name = argv[0];
@@ -738,6 +745,8 @@ main(int argc, char* argv[]) {
   /* Close output file, if any. */
   if (output_argument)
     fclose(output_file);
+
+  my_exit(0);
 
   return 0;
 }

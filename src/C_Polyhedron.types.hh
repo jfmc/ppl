@@ -9,8 +9,8 @@ WITHOUT ANY WARRANTY, to the extent permitted by law; without even the
 implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR
 PURPOSE. */
 
-#ifndef _C_Polyhedron_types_hh
-#define _C_Polyhedron_types_hh 1
+#ifndef PPL_C_Polyhedron_types_hh
+#define PPL_C_Polyhedron_types_hh 1
 
 namespace Parma_Polyhedra_Library {
 
@@ -18,4 +18,4 @@ class C_Polyhedron;
 
 }
 
-#endif // !defined(_C_Polyhedron_types_hh)
+#endif // !defined(PPL_C_Polyhedron_types_hh)

@@ -9,8 +9,8 @@ WITHOUT ANY WARRANTY, to the extent permitted by law; without even the
 implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR
 PURPOSE. */
 
-#ifndef _SatRow_types_hh
-#define _SatRow_types_hh 1
+#ifndef PPL_SatRow_types_hh
+#define PPL_SatRow_types_hh 1
 
 namespace Parma_Polyhedra_Library {
 
@@ -18,4 +18,4 @@ class SatRow;
 
 }
 
-#endif // !defined(_SatRow_types_hh)
+#endif // !defined(PPL_SatRow_types_hh)

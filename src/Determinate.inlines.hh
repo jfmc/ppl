@@ -21,8 +21,8 @@ USA.
 For the most up-to-date information see the Parma Polyhedra Library
 site: http://www.cs.unipr.it/ppl/ . */
 
-#ifndef _Determinate_inlines_hh
-#define _Determinate_inlines_hh 1
+#ifndef PPL_Determinate_inlines_hh
+#define PPL_Determinate_inlines_hh 1
 
 #include <cassert>
 
@@ -37,6 +37,11 @@ Determinate<PH>::Rep::Rep(size_t num_dimensions,
 template <typename PH>
 Determinate<PH>::Rep::Rep(const PH& p)
   : references(0), ph(p) {
+}
+
+template <typename PH>
+Determinate<PH>::Rep::Rep(const ConSys& cs)
+  : references(0), ph(cs) {
 }
 
 template <typename PH>
@@ -69,8 +74,14 @@ Determinate<PH>::Determinate(size_t num_dimensions,
 }
 
 template <typename PH>
-Determinate<PH>::Determinate(const PH& p)
-  : prep(new Rep(p)) {
+Determinate<PH>::Determinate(const PH& ph)
+  : prep(new Rep(ph)) {
+  prep->new_reference();
+}
+
+template <typename PH>
+Determinate<PH>::Determinate(const ConSys& cs)
+  : prep(new Rep(cs)) {
   prep->new_reference();
 }
 
@@ -243,16 +254,16 @@ Determinate<PH>::add_constraints(ConSys& cs) {
 
 template <typename PH>
 void
-Determinate<PH>::add_dimensions_and_embed(size_t dim) {
+Determinate<PH>::add_dimensions_and_embed(size_t m) {
   mutate();
-  prep->ph.add_dimensions_and_embed(dim);
+  prep->ph.add_dimensions_and_embed(m);
 }
 
 template <typename PH>
 void
-Determinate<PH>::add_dimensions_and_project(size_t dim) {
+Determinate<PH>::add_dimensions_and_project(size_t m) {
   mutate();
-  prep->ph.add_dimensions_and_project(dim);
+  prep->ph.add_dimensions_and_project(m);
 }
 
 template <typename PH>
@@ -269,6 +280,29 @@ Determinate<PH>::remove_higher_dimensions(size_t new_dimension) {
   prep->ph.remove_higher_dimensions(new_dimension);
 }
 
+template <typename PH>
+template <typename PartialFunction>
+void
+Determinate<PH>::shuffle_dimensions(const PartialFunction& pfunc) {
+  mutate();
+  prep->ph.shuffle_dimensions(pfunc);
+}
+
+template <typename PH>
+void
+Determinate<PH>::H79_widening_assign(const Determinate& y) {
+  mutate();
+  prep->ph.H79_widening_assign(y.prep->ph);
+}
+
+template <typename PH>
+void
+Determinate<PH>::limited_H79_widening_assign(const Determinate& y,
+					     ConSys& cs) {
+  mutate();
+  prep->ph.limited_H79_widening_assign(y.prep->ph, cs);
+}
+
 } // namespace Parma_Polyhedra_Library
 
-#endif // !defined(_Determinate_inlines_hh)
+#endif // !defined(PPL_Determinate_inlines_hh)

@@ -21,8 +21,8 @@ USA.
 For the most up-to-date information see the Parma Polyhedra Library
 site: http://www.cs.unipr.it/ppl/ . */
 
-#ifndef _LinExpression_defs_hh
-#define _LinExpression_defs_hh 1
+#ifndef PPL_LinExpression_defs_hh
+#define PPL_LinExpression_defs_hh 1
 
 #include "LinExpression.types.hh"
 #include "Constraint.types.hh"
@@ -277,4 +277,4 @@ private:
 
 #include "LinExpression.inlines.hh"
 
-#endif // !defined(_LinExpression_defs_hh)
+#endif // !defined(PPL_LinExpression_defs_hh)

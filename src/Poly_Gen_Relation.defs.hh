@@ -21,8 +21,8 @@ USA.
 For the most up-to-date information see the Parma Polyhedra Library
 site: http://www.cs.unipr.it/ppl/ . */
 
-#ifndef _Poly_Gen_Relation_defs_hh
-#define _Poly_Gen_Relation_defs_hh 1
+#ifndef PPL_Poly_Gen_Relation_defs_hh
+#define PPL_Poly_Gen_Relation_defs_hh 1
 
 #include "Poly_Gen_Relation.types.hh"
 #include <iosfwd>
@@ -122,4 +122,4 @@ public:
 
 #include "Poly_Gen_Relation.inlines.hh"
 
-#endif // !defined(_Poly_Gen_Relation_defs_hh)
+#endif // !defined(PPL_Poly_Gen_Relation_defs_hh)

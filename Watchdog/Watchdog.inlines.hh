@@ -21,6 +21,9 @@ USA.
 For the most up-to-date information see the CS@Parma software
 site: http://www.cs.unipr.it/Software/ . */
 
+#ifndef PWL_Watchdog_inlines_hh
+#define PWL_Watchdog_inlines_hh 1
+
 namespace Parma_Watchdog_Library {
 
 template <typename Flag_Base, typename Flag>
@@ -185,3 +188,5 @@ Watchdog::Watchdog(int units, void (*function)())
 }
 
 } // namespace Parma_Watchdog_Library
+
+#endif // !defined(PWL_Watchdog_inlines_hh)

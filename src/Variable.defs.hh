@@ -21,8 +21,8 @@ USA.
 For the most up-to-date information see the Parma Polyhedra Library
 site: http://www.cs.unipr.it/ppl/ . */
 
-#ifndef _Variable_defs_hh
-#define _Variable_defs_hh 1
+#ifndef PPL_Variable_defs_hh
+#define PPL_Variable_defs_hh 1
 
 #include "Variable.types.hh"
 #include <iosfwd>
@@ -83,4 +83,4 @@ bool operator<(const Variable& v, const Variable& w);
 
 #include "Variable.inlines.hh"
 
-#endif // !defined(_Variable_defs_hh)
+#endif // !defined(PPL_Variable_defs_hh)

@@ -21,8 +21,8 @@ USA.
 For the most up-to-date information see the Parma Polyhedra Library
 site: http://www.cs.unipr.it/ppl/ . */
 
-#ifndef _BoundingBox_inlines_hh
-#define _BoundingBox_inlines_hh 1
+#ifndef PPL_BoundingBox_inlines_hh
+#define PPL_BoundingBox_inlines_hh 1
 
 namespace Parma_Polyhedra_Library {
 
@@ -115,4 +115,4 @@ BoundingBox::lower_upper_bound(unsigned int k, bool closed,
 
 } // namespace Parma_Polyhedra_Library
 
-#endif // !defined(_BoundingBox_inlines_hh)
+#endif // !defined(PPL_BoundingBox_inlines_hh)

@@ -21,8 +21,8 @@ USA.
 For the most up-to-date information see the Parma Polyhedra Library
 site: http://www.cs.unipr.it/ppl/ . */
 
-#ifndef _C_Polyhedron_inlines_hh
-#define _C_Polyhedron_inlines_hh 1
+#ifndef PPL_C_Polyhedron_inlines_hh
+#define PPL_C_Polyhedron_inlines_hh 1
 
 namespace Parma_Polyhedra_Library {
 
@@ -32,8 +32,18 @@ C_Polyhedron::C_Polyhedron(size_t num_dimensions, Degenerate_Kind kind)
 }
 
 inline
+C_Polyhedron::C_Polyhedron(const ConSys& cs)
+  : Polyhedron(NECESSARILY_CLOSED, cs) {
+}
+
+inline
 C_Polyhedron::C_Polyhedron(ConSys& cs)
   : Polyhedron(NECESSARILY_CLOSED, cs) {
+}
+
+inline
+C_Polyhedron::C_Polyhedron(const GenSys& gs)
+  : Polyhedron(NECESSARILY_CLOSED, gs) {
 }
 
 inline
@@ -63,4 +73,4 @@ C_Polyhedron::~C_Polyhedron() {
 
 } // namespace Parma_Polyhedra_Library
 
-#endif // !defined(_C_Polyhedron_inlines_hh)
+#endif // !defined(PPL_C_Polyhedron_inlines_hh)

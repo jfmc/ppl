@@ -21,8 +21,8 @@ USA.
 For the most up-to-date information see the Parma Polyhedra Library
 site: http://www.cs.unipr.it/ppl/ . */
 
-#ifndef _C_Polyhedron_defs_hh
-#define _C_Polyhedron_defs_hh 1
+#ifndef PPL_C_Polyhedron_defs_hh
+#define PPL_C_Polyhedron_defs_hh 1
 
 #include "C_Polyhedron.types.hh"
 #include "NNC_Polyhedron.types.hh"
@@ -72,8 +72,17 @@ public:
   /*!
     The polyhedron inherits the space dimension of the constraint system.
     \param cs       The system of constraints defining the polyhedron.
-                    It is not declared <CODE>const</CODE>
-                    because it can be modified.
+    \exception std::invalid_argument thrown if the system of constraints
+                                     contains strict inequalities.
+  */
+  C_Polyhedron(const ConSys& cs);
+
+  //! Builds a C polyhedron recycling a system of constraints.
+  /*!
+    The polyhedron inherits the space dimension of the constraint system.
+    \param cs       The system of constraints defining the polyhedron.
+                    It is not declared <CODE>const</CODE> because its
+                    data-structures will be recycled to build the polyhedron.
     \exception std::invalid_argument thrown if the system of constraints
                                      contains strict inequalities.
   */
@@ -83,15 +92,25 @@ public:
   /*!
     The polyhedron inherits the space dimension of the generator system.
     \param gs       The system of generators defining the polyhedron.
-                    It is not declared <CODE>const</CODE>
-                    because it can be modified.
+    \exception std::invalid_argument thrown if the system of generators
+                                     is not empty but has no points,
+                                     or if it contains closure points.
+  */
+  C_Polyhedron(const GenSys& gs);
+
+  //! Builds a C polyhedron recycling a system of generators.
+  /*!
+    The polyhedron inherits the space dimension of the generator system.
+    \param gs       The system of generators defining the polyhedron.
+                    It is not declared <CODE>const</CODE> because its
+                    data-structures will be recycled to build the polyhedron.
     \exception std::invalid_argument thrown if the system of generators
                                      is not empty but has no points,
                                      or if it contains closure points.
   */
   C_Polyhedron(GenSys& gs);
 
-  //! Builds a C polyhedron from the NNC_Polyhedron \p y.
+  //! Builds a C polyhedron from the NNC polyhedron \p y.
   /*!
     \exception std::invalid_argument thrown if the polyhedron \p y
                                      is not topologically closed.
@@ -128,4 +147,4 @@ public:
 
 #include "C_Polyhedron.inlines.hh"
 
-#endif // !defined(_C_Polyhedron_defs_hh)
+#endif // !defined(PPL_C_Polyhedron_defs_hh)

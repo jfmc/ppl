@@ -21,8 +21,8 @@ USA.
 For the most up-to-date information see the Parma Polyhedra Library
 site: http://www.cs.unipr.it/ppl/ . */
 
-#ifndef _SatRow_inlines_hh
-#define _SatRow_inlines_hh 1
+#ifndef PPL_SatRow_inlines_hh
+#define PPL_SatRow_inlines_hh 1
 
 #include <vector>
 
@@ -153,4 +153,4 @@ iter_swap(std::vector<Parma_Polyhedra_Library::SatRow>::iterator x,
 
 } // namespace std
 
-#endif // !defined(_SatRow_inlines_hh)
+#endif // !defined(PPL_SatRow_inlines_hh)

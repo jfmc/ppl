@@ -30,40 +30,7 @@ site: http://www.cs.unipr.it/ppl/ . */
 using namespace std;
 using namespace Parma_Polyhedra_Library;
 
-class Poly : public C_Polyhedron {
-public:
-  Poly()
-    : C_Polyhedron() {
-  }
-  Poly(const Poly& y)
-    : C_Polyhedron(y) {
-  }
-  Poly(unsigned int dimension)
-    : C_Polyhedron(dimension) {
-  }
-  Poly& operator=(const Poly& y) {
-    C_Polyhedron::operator=(y);
-    return *this;
-  }
-  friend std::ostream& operator<<(std::ostream& s, const Poly& x);
-};
-
-std::ostream&
-operator<<(std::ostream& s, const Poly& x) {
-  const Parma_Polyhedra_Library::ConSys& cs = x.constraints();
-  Parma_Polyhedra_Library::ConSys::const_iterator i = cs.begin();
-  Parma_Polyhedra_Library::ConSys::const_iterator cs_end = cs.end();
-  s << "{ ";
-  while (i != cs_end) {
-    s << *i++;
-    if (i != cs_end)
-      s << ", ";
-  }
-  s << " }";
-  return s;
-}
-
-typedef Determinate<Poly> DCS;
+typedef Determinate<C_Polyhedron> DCS;
 
 typedef PowerSet<DCS> PCS;
 
@@ -77,11 +44,11 @@ main() try {
   Variable x(0);
   Variable y(1);
 
-  Poly ph1(2);
+  C_Polyhedron ph1(2);
   ph1.add_constraint(x <= 101);
   ph1.add_constraint(y == 91);
 
-  Poly ph2(2);
+  C_Polyhedron ph2(2);
   ph2.add_constraint(x >= 102);
   ph2.add_constraint(y == x-10);
 
@@ -113,8 +80,8 @@ main() try {
   a1.inject(d1, d2);
   cout << a1 << endl;
 
-  Poly top(2);
-  Poly y_91(2);
+  C_Polyhedron top(2);
+  C_Polyhedron y_91(2);
   y_91.add_constraint(y == 91);
 
   ACS a2;

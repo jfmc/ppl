@@ -21,8 +21,8 @@ USA.
 For the most up-to-date information see the Parma Polyhedra Library
 site: http://www.cs.unipr.it/ppl/ . */
 
-#ifndef _Integer_defs_hh
-#define _Integer_defs_hh 1
+#ifndef PPL_Integer_defs_hh
+#define PPL_Integer_defs_hh 1
 
 #include "Integer.types.hh"
 
@@ -50,4 +50,4 @@ void swap(Parma_Polyhedra_Library::Integer& x,
 
 #include "Integer.inlines.hh"
 
-#endif // !defined(_Integer_defs_hh)
+#endif // !defined(PPL_Integer_defs_hh)

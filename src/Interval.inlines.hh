@@ -21,8 +21,8 @@ USA.
 For the most up-to-date information see the Parma Polyhedra Library
 site: http://www.cs.unipr.it/ppl/ . */
 
-#ifndef _Interval_inlines_hh
-#define _Interval_inlines_hh 1
+#ifndef PPL_Interval_inlines_hh
+#define PPL_Interval_inlines_hh 1
 
 #include <cassert>
 

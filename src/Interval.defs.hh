@@ -21,8 +21,8 @@ USA.
 For the most up-to-date information see the Parma Polyhedra Library
 site: http://www.cs.unipr.it/ppl/ . */
 
-#ifndef _Interval_defs_hh
-#define _Interval_defs_hh 1
+#ifndef PPL_Interval_defs_hh
+#define PPL_Interval_defs_hh 1
 
 #include "Interval.types.hh"
 
@@ -234,4 +234,4 @@ private:
 
 #include "Interval.inlines.hh"
 
-#endif // !defined(_Interval_defs_hh)
+#endif // !defined(PPL_Interval_defs_hh)

@@ -21,8 +21,8 @@ USA.
 For the most up-to-date information see the Parma Polyhedra Library
 site: http://www.cs.unipr.it/ppl/ . */
 
-#ifndef _ppl_hh
-#define _ppl_hh 1
+#ifndef PPL_ppl_hh
+#define PPL_ppl_hh 1
 
 #ifdef NDEBUG
 #define PPL_SAVE_NDEBUG 1

@@ -21,10 +21,10 @@ USA.
 For the most up-to-date information see the Parma Polyhedra Library
 site: http://www.cs.unipr.it/ppl/ . */
 
-#ifndef _ehandlers_hh
-#define _ehandlers_hh 1
+#ifndef PPL_ehandlers_hh
+#define PPL_ehandlers_hh 1
 
 void
 set_handlers();
 
-#endif
+#endif // !defined(PPL_ehandlers_hh)

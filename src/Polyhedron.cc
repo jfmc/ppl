@@ -63,7 +63,7 @@ PPL::Polyhedron::throw_dimension_incompatible(const char* method,
     s << "NNC_";
   s << "Polyhedron::" << method << ":" << std::endl
     << "x->space_dimension() == " << x.space_dimension()
-    << ", y->space_dimension() == " << y.space_dimension();
+    << ", y->space_dimension() == " << y.space_dimension() << ".";
   throw std::invalid_argument(s.str());
 }
 
@@ -78,7 +78,7 @@ PPL::Polyhedron::throw_dimension_incompatible(const char* method,
     s << "NNC_";
   s << "Polyhedron::" << method << ":" << std::endl
     << "this->space_dimension() == " << space_dimension()
-    << ", y->space_dimension() == " << y.space_dimension();
+    << ", y->space_dimension() == " << y.space_dimension() << ".";
   throw std::invalid_argument(s.str());
 }
 
@@ -93,7 +93,7 @@ PPL::Polyhedron::throw_dimension_incompatible(const char* method,
     s << "NNC_";
   s << "Polyhedron::" << method << ":" << std::endl
     << "this->space_dimension() == " << space_dimension()
-    << ", system->space_dimension() == " << y.space_dimension();
+    << ", system->space_dimension() == " << y.space_dimension() << ".";
   throw std::invalid_argument(s.str());
 }
 
@@ -108,13 +108,13 @@ PPL::Polyhedron::throw_dimension_incompatible(const char* method,
     s << "NNC_";
   s << "Polyhedron::" << method << ":" << std::endl
     << "this->space_dimension() == " << space_dimension()
-    << ", y->space_dimension() == " << y.space_dimension();
+    << ", y->space_dimension() == " << y.space_dimension() << ".";
   throw std::invalid_argument(s.str());
 }
 
 void
 PPL::Polyhedron::throw_dimension_incompatible(const char* method,
-					      size_t needed_dim) const {
+					      size_t required_dim) const {
   std::ostringstream s;
   s << "PPL::";
   if (is_necessarily_closed())
@@ -123,7 +123,7 @@ PPL::Polyhedron::throw_dimension_incompatible(const char* method,
     s << "NNC_";
   s << "Polyhedron::" << method << ":" << std::endl
     << "this->space_dimension() == " << space_dimension()
-    << ", requested dimension == " << needed_dim;
+    << ", required dimension == " << required_dim << ".";
   throw std::invalid_argument(s.str());
 }
 
@@ -132,8 +132,8 @@ PPL::Polyhedron::throw_topology_incompatible(const char* method,
 					     const Polyhedron& x,
 					     const Polyhedron& y) {
   std::ostringstream s;
-  s << "PPL::" << method
-    << ": topology mismatch" << std::endl
+  s << "Topology mismatch in PPL::" << method << ":"
+    << std::endl
     << "x is a ";
   if (x.is_necessarily_closed())
     s << "C_";
@@ -145,7 +145,7 @@ PPL::Polyhedron::throw_topology_incompatible(const char* method,
     s << "C_";
   else
     s << "NNC_";
-  s << "Polyhedron" << std::endl;
+  s << "Polyhedron." << std::endl;
   throw std::invalid_argument(s.str());
 }
 
@@ -153,8 +153,8 @@ void
 PPL::Polyhedron::throw_topology_incompatible(const char* method,
 					     const Polyhedron& y) const {
   std::ostringstream s;
-  s << "PPL::Polyhedron::" << method
-    << ": topology mismatch" << std::endl
+  s << "Topology mismatch in PPL::Polyhedron::" << method << ":"
+    << std::endl
     << "*this is a ";
   if (is_necessarily_closed())
     s << "C_";
@@ -166,7 +166,7 @@ PPL::Polyhedron::throw_topology_incompatible(const char* method,
     s << "C_";
   else
     s << "NNC_";
-  s << "Polyhedron" << std::endl;
+  s << "Polyhedron." << std::endl;
   throw std::invalid_argument(s.str());
 }
 
@@ -176,7 +176,7 @@ PPL::Polyhedron::throw_topology_incompatible(const char* method,
   assert(is_necessarily_closed());
   std::ostringstream s;
   s << "PPL::C_Polyhedron::" << method << ":" << std::endl
-    << "constraint system contains strict inequalities";
+    << "constraint system contains strict inequalities.";
   throw std::invalid_argument(s.str());
 }
 
@@ -186,7 +186,7 @@ PPL::Polyhedron::throw_topology_incompatible(const char* method,
   assert(is_necessarily_closed());
   std::ostringstream s;
   s << "PPL::C_Polyhedron::" << method << ":" << std::endl
-    << "the constraint is a strict inequality";
+    << "the constraint is a strict inequality.";
   throw std::invalid_argument(s.str());
 }
 
@@ -195,7 +195,7 @@ PPL::Polyhedron::throw_topology_incompatible(const char* method,
 					     const GenSys& ) const {
   std::ostringstream s;
   s << "PPL::C_Polyhedron::" << method << ":" << std::endl
-    << "generator system contains closure points";
+    << "generator system contains closure points.";
   throw std::invalid_argument(s.str());
 }
 
@@ -205,7 +205,7 @@ PPL::Polyhedron::throw_topology_incompatible(const char* method,
   assert(is_necessarily_closed());
   std::ostringstream s;
   s << "PPL::C_Polyhedron::" << method << ":" << std::endl
-    << "the generator is a closure point";
+    << "the generator is a closure point.";
   throw std::invalid_argument(s.str());
 }
 
@@ -218,7 +218,7 @@ PPL::Polyhedron::throw_invalid_generators(const char* method) const {
   else
     s << "NNC_";
   s << "Polyhedron::" << method << ":" << std::endl
-    << "non-empty generator system contains no points";
+    << "non-empty generator system contains no points.";
   throw std::invalid_argument(s.str());
 }
 
@@ -231,7 +231,7 @@ PPL::Polyhedron::throw_invalid_generator(const char* method) const {
   else
     s << "NNC_";
   s << "Polyhedron::" << method << ":" << std::endl
-    << "polyhedron is empty and generator is not a point";
+    << "polyhedron is empty and generator is not a point.";
   throw std::invalid_argument(s.str());
 }
 
@@ -257,7 +257,7 @@ PPL::Polyhedron::constraints() const {
   }
 
   if (space_dim == 0) {
-    // Zero-dim universe.
+    // zero-dimensional universe.
     assert(con_sys.num_columns() == 0 && con_sys.num_rows() == 0);
     return con_sys;
   }
@@ -395,6 +395,49 @@ PPL::Polyhedron::Polyhedron(Topology topol, ConSys& cs)
       }
 }
 
+PPL::Polyhedron::Polyhedron(Topology topol, const ConSys& ccs)
+  : con_sys(topol),
+    gen_sys(topol),
+    sat_c(),
+    sat_g() {
+  // FIXME: this implementation is just an executable specification.
+  ConSys cs = ccs;
+
+  // Try to adapt `cs' to the required topology.
+  size_t cs_space_dim = cs.space_dimension();
+  if (!cs.adjust_topology_and_dimension(topol, cs_space_dim))
+    throw_topology_incompatible("Polyhedron(cs)", cs);
+
+  if (cs.num_rows() > 0 && cs_space_dim > 0) {
+    // Stealing the rows from `cs'.
+    std::swap(con_sys, cs);
+    if (topol == NECESSARILY_CLOSED)
+      // Add the positivity constraint.
+      con_sys.insert(Constraint::zero_dim_positivity());
+    else {
+      // Add the epsilon constraints.
+      con_sys.insert(Constraint::epsilon_leq_one());
+      con_sys.insert(Constraint::epsilon_geq_zero());
+    }
+    set_constraints_up_to_date();
+    // Set the space dimension.
+    space_dim = cs_space_dim;
+    assert(OK());
+    return;
+  }
+
+  // Here `cs.num_rows == 0' or `cs_space_dim == 0'.
+  space_dim = 0;
+  if (cs.num_columns() > 0)
+    // See if an inconsistent constraint has been passed.
+    for (size_t i = cs.num_rows(); i-- > 0; )
+      if (cs[i].is_trivial_false()) {
+	// Inconsistent constraint found: the polyhedron is empty.
+	set_empty();
+	return;
+      }
+}
+
 
 PPL::Polyhedron::Polyhedron(Topology topol, GenSys& gs)
   : con_sys(topol),
@@ -437,6 +480,49 @@ PPL::Polyhedron::Polyhedron(Topology topol, GenSys& gs)
   space_dim = 0;
 }
 
+PPL::Polyhedron::Polyhedron(Topology topol, const GenSys& cgs)
+  : con_sys(topol),
+    gen_sys(topol),
+    sat_c(),
+    sat_g() {
+  // FIXME: this implementation is just an executable specification.
+  GenSys gs = cgs;
+
+  // An empty set of generators defines the empty polyhedron.
+  if (gs.num_rows() == 0) {
+    space_dim = 0;
+    status.set_empty();
+    return;
+  }
+
+  // Non-empty valid generator systems have a supporting point, at least.
+  if (!gs.has_points())
+    throw_invalid_generators("Polyhedron(gs)");
+
+  size_t gs_space_dim = gs.space_dimension();
+  // Try to adapt `gs' to the required topology.
+  if (!gs.adjust_topology_and_dimension(topol, gs_space_dim))
+    throw_topology_incompatible("Polyhedron(gs)", gs);
+
+  if (gs_space_dim > 0) {
+    // Stealing the rows from `gs'.
+    std::swap(gen_sys, gs);
+    // In a generator system describing a NNC polyhedron,
+    // for each point we must also have the corresponding closure point.
+    if (topol == NOT_NECESSARILY_CLOSED)
+      gen_sys.add_corresponding_closure_points();
+    set_generators_up_to_date();
+    // Set the space dimension.
+    space_dim = gs_space_dim;
+    assert(OK());
+    return;
+  }
+
+  // Here `gs.num_rows > 0' and `gs_space_dim == 0':
+  // we already checked for both the topology-compatibility
+  // and the supporting point.
+  space_dim = 0;
+}
 
 PPL::Polyhedron&
 PPL::Polyhedron::operator=(const Polyhedron& y) {
@@ -1124,12 +1210,15 @@ bool
 PPL::operator<=(const Polyhedron& x, const Polyhedron& y) {
   // Topology compatibility check.
   if (x.topology() != y.topology())
-    Polyhedron::throw_topology_incompatible("operator<=(x, y)", x, y);    
+    Polyhedron::throw_topology_incompatible("operator<=("
+					    "const Polyhedron& x, "
+					    "const Polyhedron& y)", x, y);
   size_t x_space_dim = x.space_dim;
   // Dimension-compatibility check.
   if (x_space_dim != y.space_dim)
-    Polyhedron::throw_dimension_incompatible("operator<=(x, y)", x, y);
-
+    Polyhedron::throw_dimension_incompatible("operator<=("
+					     "const Polyhedron& x, "
+					     "const Polyhedron& y)", x, y);
   if (x.is_empty())
     return true;
   else if (y.is_empty())
@@ -1636,34 +1725,33 @@ PPL::Polyhedron::add_dimensions(Matrix& mat1,
 
 
 void
-PPL::Polyhedron::add_dimensions_and_embed(size_t dim) {
+PPL::Polyhedron::add_dimensions_and_embed(size_t m) {
   // Adding no dimensions to any polyhedron is a no-op.
-  if (dim == 0)
+  if (m == 0)
     return;
 
-  // Adding dimensions to an empty polyhedron is obtained
-  // by adjusting `space_dim' and clearing `con_sys'
-  // (since it can contain the unsatisfiable constraint system
-  //  of the wrong dimension).
+  // Adding dimensions to an empty polyhedron is obtained by adjusting
+  // `space_dim' and clearing `con_sys' (since it can contain the
+  // unsatisfiable constraint system of the wrong dimension).
   if (is_empty()) {
-    space_dim += dim;
+    space_dim += m;
     con_sys.clear();
     return;
   }
 
-  // The case of a zero-dim space polyhedron.
+  // The case of a zero-dimensional space polyhedron.
   if (space_dim == 0) {
     // Since it is not empty, it has to be the universe polyhedron.
     assert(status.test_zero_dim_univ());
     // We swap `*this' with a newly created
-    // universe polyhedron of dimension `dim'.
-    Polyhedron ph(topology(), dim, UNIVERSE);
+    // universe polyhedron of dimension `m'.
+    Polyhedron ph(topology(), m, UNIVERSE);
     swap(ph);
     return;
   }
 
-  // To embed an n-dimension space polyhedron in a (n+dim)-dimension space,
-  // we just add `dim' zero-columns to the rows in the matrix of constraints;
+  // To embed an n-dimension space polyhedron in a (n+m)-dimension space,
+  // we just add `m' zero-columns to the rows in the matrix of constraints;
   // in contrast, the matrix of generators needs additional rows,
   // corresponding to the vectors of the canonical basis
   // for the added dimensions. That is, for each new dimension `x[k]'
@@ -1671,41 +1759,41 @@ PPL::Polyhedron::add_dimensions_and_embed(size_t dim) {
   // the function add_dimensions() giving the matrix of generators
   // as the second argument.
   if (constraints_are_up_to_date() && generators_are_up_to_date()) {
-    // sat_c is necessary in add_dimensions(...).
+    // `sat_c' must be up to date for add_dimensions(...).
     if (!sat_c_is_up_to_date())
       update_sat_c();
     // Adds rows and/or columns to both matrices (constraints and generators).
-    add_dimensions(con_sys, gen_sys, sat_c, sat_g, dim);
+    add_dimensions(con_sys, gen_sys, sat_c, sat_g, m);
   }
   else if (constraints_are_up_to_date()) {
     // Only constraints are up-to-date: we do not need to modify generators.
-    con_sys.add_zero_columns(dim);
+    con_sys.add_zero_columns(m);
     // If the polyhedron is NON-necessarily closed,
     // move the epsilon coefficients to the last column.
     if (!is_necessarily_closed())
-      con_sys.swap_columns(space_dim + 1, space_dim + 1 + dim);
+      con_sys.swap_columns(space_dim + 1, space_dim + 1 + m);
   }
   else {
     // Only generators are up-to-date: we do not need to modify constraints.
     assert(generators_are_up_to_date());
-    gen_sys.add_rows_and_columns(dim);
+    gen_sys.add_rows_and_columns(m);
 
     // If the polyhedron is NON-necessarily closed,
     // move the epsilon coefficients to the last column.
     if (!is_necessarily_closed()) {
       // Try to preserve sortedness of `gen_sys'.
       if (!gen_sys.is_sorted())
-	gen_sys.swap_columns(space_dim + 1, space_dim + 1 + dim);
+	gen_sys.swap_columns(space_dim + 1, space_dim + 1 + m);
       else {
 	size_t old_eps_index = space_dim + 1;
-	size_t new_eps_index = old_eps_index + dim;
-	for (size_t i = gen_sys.num_rows(); i-- > dim; ) {
+	size_t new_eps_index = old_eps_index + m;
+	for (size_t i = gen_sys.num_rows(); i-- > m; ) {
 	  Row& r = gen_sys[i];
 	  std::swap(r[old_eps_index], r[new_eps_index]);
 	}
 	// The upper-right corner of `gen_sys' contains the J matrix:
 	// swap coefficients to preserve sortedness.
-	for (size_t i = dim; i-- > 0; ++old_eps_index) {
+	for (size_t i = m; i-- > 0; ++old_eps_index) {
 	  Row& r = gen_sys[i];
 	  std::swap(r[old_eps_index], r[old_eps_index + 1]);
 	}
@@ -1713,7 +1801,7 @@ PPL::Polyhedron::add_dimensions_and_embed(size_t dim) {
     }
   }
   // Update the space dimension.
-  space_dim += dim;
+  space_dim += m;
 
   // Note: we do not check for satisfiability, because the system of
   // constraints may be unsatisfiable.
@@ -1721,15 +1809,15 @@ PPL::Polyhedron::add_dimensions_and_embed(size_t dim) {
 }
 
 void
-PPL::Polyhedron::add_dimensions_and_project(size_t dim) {
+PPL::Polyhedron::add_dimensions_and_project(size_t m) {
   // Adding no dimensions to any polyhedron is a no-op.
-  if (dim == 0)
+  if (m == 0)
     return;
 
   // Adding dimensions to an empty polyhedron is obtained
   // by merely adjusting `space_dim'.
   if (is_empty()) {
-    space_dim += dim;
+    space_dim += m;
     con_sys.clear();
     return;
   }
@@ -1742,46 +1830,46 @@ PPL::Polyhedron::add_dimensions_and_project(size_t dim) {
     if (!is_necessarily_closed())
       gen_sys.insert(Generator::zero_dim_minus_epsilon_ray());
     gen_sys.insert(Generator::zero_dim_point());
-    gen_sys.adjust_topology_and_dimension(topology(), dim);
+    gen_sys.adjust_topology_and_dimension(topology(), m);
     set_generators_minimized();
-    space_dim = dim;
+    space_dim = m;
     assert(OK());
     return;
   }
 
-  // To project an n-dimension space polyhedron in a (n+dim)-dimension space,
-  // we just add to the matrix of generators `dim' zero-columns;
+  // To project an n-dimension space polyhedron in a (n+m)-dimension space,
+  // we just add to the matrix of generators `m' zero-columns;
   // In contrast, in the matrix of constraints, new rows are needed
   // in order to avoid embedding the old polyhedron in the new space.
   // Thus, for each new dimensions `x[k]', we add the constraint
   // x[k] = 0; this is done by invoking the function add_dimensions()
   // giving the matrix of constraints as the second argument.
   if (constraints_are_up_to_date() && generators_are_up_to_date()) {
-    // sat_g is necessary in add_dimensions(...).
+    // `sat_g' must be up to date for add_dimensions(...).
     if (!sat_g_is_up_to_date())
       update_sat_g();
     // Adds rows and/or columns to both matrices (constraints and generators).
-    add_dimensions(gen_sys, con_sys, sat_g, sat_c, dim);
+    add_dimensions(gen_sys, con_sys, sat_g, sat_c, m);
   }
   else if (constraints_are_up_to_date()) {
     // Only constraints are up-to-date: no need to modify the generators.
-    con_sys.add_rows_and_columns(dim);
+    con_sys.add_rows_and_columns(m);
     // If the polyhedron is NON-necessarily closed,
     // move the epsilon coefficients to the last column.
     if (!is_necessarily_closed()) {
       // Try to preserve sortedness of `con_sys'.
       if (!con_sys.is_sorted())
-	con_sys.swap_columns(space_dim + 1, space_dim + 1 + dim);
+	con_sys.swap_columns(space_dim + 1, space_dim + 1 + m);
       else {
 	size_t old_eps_index = space_dim + 1;
-	size_t new_eps_index = old_eps_index + dim;
-	for (size_t i = con_sys.num_rows(); i-- > dim; ) {
+	size_t new_eps_index = old_eps_index + m;
+	for (size_t i = con_sys.num_rows(); i-- > m; ) {
 	  Row& r = con_sys[i];
 	  std::swap(r[old_eps_index], r[new_eps_index]);
 	}
 	// The upper-right corner of `con_sys' contains the J matrix:
 	// swap coefficients to preserve sortedness.
-	for (size_t i = dim; i-- > 0; ++old_eps_index) {
+	for (size_t i = m; i-- > 0; ++old_eps_index) {
 	  Row& r = con_sys[i];
 	  std::swap(r[old_eps_index], r[old_eps_index + 1]);
 	}
@@ -1791,12 +1879,12 @@ PPL::Polyhedron::add_dimensions_and_project(size_t dim) {
   else {
     // Only generators are up-to-date: no need to modify the constraints.
     assert(generators_are_up_to_date());
-    gen_sys.add_zero_columns(dim);
+    gen_sys.add_zero_columns(m);
     if (!is_necessarily_closed())
-      gen_sys.swap_columns(space_dim + 1, space_dim + 1 + dim);
+      gen_sys.swap_columns(space_dim + 1, space_dim + 1 + m);
   }
   // Now we update the space dimension.
-  space_dim += dim;
+  space_dim += m;
 
   // Note: we do not check for satisfiability, because the system of
   // constraints may be unsatisfiable.
@@ -1835,7 +1923,7 @@ PPL::Polyhedron::remove_dimensions(const std::set<Variable>& to_be_removed) {
   }
 
   // When removing _all_ dimensions from a non-empty polyhedron,
-  // we obtain the zero-dim universe polyhedron.
+  // we obtain the zero-dimensional universe polyhedron.
   if (new_space_dim == 0) {
     set_zero_dim_univ();
     return;
@@ -1912,7 +2000,7 @@ PPL::Polyhedron::remove_higher_dimensions(size_t new_dimension) {
 
   if (new_dimension == 0) {
     // Removing all dimensions from a non-empty polyhedron:
-    // just return the zero-dim universe polyhedron.
+    // just return the zero-dimensional universe polyhedron.
     set_zero_dim_univ();
     return;
   }
@@ -1939,7 +2027,6 @@ PPL::Polyhedron::remove_higher_dimensions(size_t new_dimension) {
   assert(OK(true));
 }
 
-
 bool
 PPL::Polyhedron::add_constraints_and_minimize(ConSys& cs) {
   // Topology-compatibility check.
@@ -1957,7 +2044,7 @@ PPL::Polyhedron::add_constraints_and_minimize(ConSys& cs) {
     return minimize();
   }
 
-  // Dealing with zero-dim space polyhedra first.
+  // Dealing with zero-dimensional space polyhedra first.
   if (space_dim == 0) {
     // In a 0-dimensional space the constraints are
     // trivial (e.g., 0 == 0 or 1 >= 0 or 1 > 0) or
@@ -2021,7 +2108,7 @@ PPL::Polyhedron::add_constraint(const Constraint& c) {
   if (is_empty())
     return;
 
-  // Dealing with a zero-dim space polyhedron first.
+  // Dealing with a zero-dimensional space polyhedron first.
   if (space_dim == 0) {
     if (!c.is_trivial_true())
       set_empty();
@@ -2085,7 +2172,7 @@ PPL::Polyhedron::add_generator(const Generator& g) {
   if (space_dim < g_space_dim)
     throw_dimension_incompatible("add_generator(g)", g);
 
-  // Dealing with a zero-dim space polyhedron first.
+  // Dealing with a zero-dimensional space polyhedron first.
   if (space_dim == 0) {
     // It is not possible to create 0-dim rays or lines.
     assert(g.is_point() || g.is_closure_point());
@@ -2283,8 +2370,8 @@ PPL::Polyhedron::add_generators_and_minimize(GenSys& gs) {
     return minimize();
   }
 
-  // Adding valid generators to a zero-dim polyhedron
-  // transforms it in the zero-dim universe polyhedron.
+  // Adding valid generators to a zero-dimensional polyhedron
+  // transform it in the zero-dimensional universe polyhedron.
   if (space_dim == 0) {
     if (is_empty() && !gs.has_points())
       throw_invalid_generators("add_generators_and_min(gs)");
@@ -2353,8 +2440,8 @@ PPL::Polyhedron::add_generators(GenSys& gs) {
     return;
   }
 
-  // Adding valid generators to a zero-dim polyhedron
-  // transform it in the zero-dim universe polyhedron.
+  // Adding valid generators to a zero-dimensional polyhedron
+  // transform it in the zero-dimensional universe polyhedron.
   if (space_dim == 0) {
     if (is_empty() && !gs.has_points())
       throw_invalid_generators("add_generators(gs)");
@@ -2713,7 +2800,7 @@ PPL::Polyhedron::relation_with(const Constraint& c) const {
     if (c.is_trivial_false())
       if (c.is_strict_inequality() && c[0] == 0)
 	// The constraint 0 > 0 implicitly defines the hyperplane 0 = 0;
-	// thus, the zero-dim-point also saturates it.
+	// thus, the zero-dimensional point also saturates it.
 	return Poly_Con_Relation::saturates()
 	  && Poly_Con_Relation::is_disjoint();
       else
@@ -2723,7 +2810,7 @@ PPL::Polyhedron::relation_with(const Constraint& c) const {
 	return Poly_Con_Relation::saturates()
 	  && Poly_Con_Relation::is_included();
       else
-	// The zero-dim point saturates
+	// The zero-dimensional point saturates
 	// neither the positivity constraint 1 >= 0,
 	// nor the strict positivity constraint 1 > 0. 
 	return Poly_Con_Relation::is_included();
@@ -3203,7 +3290,7 @@ PPL::Polyhedron::is_topologically_closed() const {
   // Necessarily closed polyhedra are trivially closed.
   if (is_necessarily_closed())
     return true;
-  // Any empty or zero-dim polyhedron is closed.
+  // Any empty or zero-dimensional polyhedron is closed.
   if (is_empty() || space_dimension() == 0)
     return true;
 
@@ -3223,7 +3310,7 @@ PPL::Polyhedron::topological_closure_assign() {
   // Necessarily closed polyhedra are trivially closed.
   if (is_necessarily_closed())
     return;
-  // Any empty or zero-dim polyhedron is closed.
+  // Any empty or zero-dimensional polyhedron is closed.
   if (is_empty() || space_dimension() == 0)
     return;
 

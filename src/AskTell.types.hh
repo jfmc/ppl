@@ -9,8 +9,8 @@ WITHOUT ANY WARRANTY, to the extent permitted by law; without even the
 implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR
 PURPOSE. */
 
-#ifndef _AskTell_types_hh
-#define _AskTell_types_hh 1
+#ifndef PPL_AskTell_types_hh
+#define PPL_AskTell_types_hh 1
 
 namespace Parma_Polyhedra_Library {
 
@@ -19,4 +19,4 @@ class AskTell;
 
 }
 
-#endif // !defined(_AskTell_types_hh)
+#endif // !defined(PPL_AskTell_types_hh)

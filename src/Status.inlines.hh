@@ -21,8 +21,8 @@ USA.
 For the most up-to-date information see the Parma Polyhedra Library
 site: http://www.cs.unipr.it/ppl/ . */
 
-#ifndef _Status_inlines_hh
-#define _Status_inlines_hh 1
+#ifndef PPL_Status_inlines_hh
+#define PPL_Status_inlines_hh 1
 
 namespace Parma_Polyhedra_Library {
 
@@ -192,4 +192,4 @@ Status::set_sat_g_up_to_date() {
 
 } // namespace Parma_Polyhedra_Library
 
-#endif // !defined(_Status_inlines_hh)
+#endif // !defined(PPL_Status_inlines_hh)

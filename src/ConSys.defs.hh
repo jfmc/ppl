@@ -21,8 +21,8 @@ USA.
 For the most up-to-date information see the Parma Polyhedra Library
 site: http://www.cs.unipr.it/ppl/ . */
 
-#ifndef _ConSys_defs_hh
-#define _ConSys_defs_hh 1
+#ifndef PPL_ConSys_defs_hh
+#define PPL_ConSys_defs_hh 1
 
 #include "LinExpression.types.hh"
 #include "ConSys.types.hh"
@@ -317,4 +317,4 @@ private:
 
 // ConSys.inlines.hh is not included here on purpose.
 
-#endif // !defined(_ConSys_defs_hh)
+#endif // !defined(PPL_ConSys_defs_hh)

@@ -21,8 +21,8 @@ USA.
 For the most up-to-date information see the Parma Polyhedra Library
 site: http://www.cs.unipr.it/ppl/ . */
 
-#ifndef _globals_hh
-#define _globals_hh 1
+#ifndef PPL_globals_hh
+#define PPL_globals_hh 1
 
 #include "Integer.types.hh"
 #include "Constraint.types.hh"

@@ -21,8 +21,8 @@ USA.
 For the most up-to-date information see the Parma Polyhedra Library
 site: http://www.cs.unipr.it/ppl/ . */
 
-#ifndef _PowerSet_defs_hh
-#define _PowerSet_defs_hh
+#ifndef PPL_PowerSet_defs_hh
+#define PPL_PowerSet_defs_hh
 
 #include "PowerSet.types.hh"
 #include "LCompare.defs.hh"
@@ -62,11 +62,14 @@ operator<<(std::ostream&, const PowerSet<CS>&);
 template <typename CS>
 class Parma_Polyhedra_Library::PowerSet {
 public:
-  //! Creates an empty (bottom) PowerSet.
+  //! Creates a universe (top) PowerSet.
   PowerSet();
 
+  //! Creates a PowerSet with the same information contents as \p cs.
+  PowerSet(const ConSys& cs);
+
   //! Injects \p y into \p *this.
-  PowerSet& inject(const CS& y);
+  PowerSet& inject(const CS& c);
 
   //! Assigns to \p *this an upper bound of \p *this and \p y.
   void upper_bound_assign(const PowerSet& y);
@@ -115,14 +118,14 @@ public:
   void add_constraints(ConSys& cs);
 
   //! \brief
-  //! Adds \p dim new dimensions and embeds the old polyhedron
+  //! Adds \p m new dimensions and embeds the old polyhedron
   //! into the new space.
-  void add_dimensions_and_embed(size_t dim);
+  void add_dimensions_and_embed(size_t m);
 
   //! \brief
-  //! Adds \p dim new dimensions to the polyhedron
+  //! Adds \p m new dimensions to the polyhedron
   //! and does not embed it in the new space.
-  void add_dimensions_and_project(size_t dim);
+  void add_dimensions_and_project(size_t m);
 
   //! \brief
   //! Removes all the specified dimensions.
@@ -144,6 +147,41 @@ public:
                                      than the space dimension of \p *this.
   */
   void remove_higher_dimensions(size_t new_dimension);
+
+  template <typename PartialFunction>
+  void shuffle_dimensions(const PartialFunction& pfunc);
+
+  //! \brief
+  //! Assigns to \p *this the result of computing the
+  //! \ref H79_widening "H79-widening" between \p *this and \p y.
+  /*!
+    \param y           A polyhedron that <EM>must</EM>
+                       be contained in \p *this.
+    \exception std::invalid_argument thrown if \p *this and \p y
+                                     are topology-incompatible
+                                     or dimension-incompatible.
+  */
+  void H79_widening_assign(const PowerSet& y);
+
+  //! \brief
+  //! Limits the \ref H79_widening "H79-widening" computation
+  //! between \p *this and \p y by enforcing constraints \p cs
+  //! and assigns the result to \p *this.
+  /*!
+    \param y                 A polyhedron that <EM>must</EM>
+                             be contained in \p *this.
+    \param cs                The system of constraints that limits
+                             the widened polyhedron. It is not
+                             declared <CODE>const</CODE>
+                             because it can be modified.
+    \exception std::invalid_argument thrown if \p *this, \p y and \p cs
+                                     are topology-incompatible
+                                     or dimension-incompatible.
+  */
+  void limited_H79_widening_assign(const PowerSet& y, ConSys& cs);
+
+  //! Checks if all the invariants are satisfied.
+  bool OK() const;
 
 private:
   typedef std::list<CS> Sequence;
@@ -173,4 +211,4 @@ public:
 
 #include "PowerSet.inlines.hh"
 
-#endif // !defined(_PowerSet_defs_hh)
+#endif // !defined(PPL_PowerSet_defs_hh)

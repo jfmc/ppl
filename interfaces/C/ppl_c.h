@@ -28,8 +28,8 @@ This file implements the C interface.
 Detailed description with examples to be written.
 */
 
-#ifndef _ppl_c_h
-#define _ppl_c_h 1
+#ifndef PPL_ppl_c_h
+#define PPL_ppl_c_h 1
 
 #include <gmp.h>
 
@@ -822,6 +822,16 @@ ppl_new_NNC_Polyhedron_from_NNC_Polyhedron __P((ppl_Polyhedron_t* pph,
 						ppl_const_Polyhedron_t ph));
 
 /*!
+  Builds a new closed polyhedron from the system of constraints
+  \p cs and writes an handle for the newly created polyhedron at
+  address \p pph.  The new polyhedron will inherit the space dimension
+  of \p cs.
+*/
+int
+ppl_new_C_Polyhedron_from_ConSys __P((ppl_Polyhedron_t* pph,
+				      ppl_const_ConSys_t cs));
+
+/*!
   Builds a new closed polyhedron recycling the system of constraints
   \p cs and writes an handle for the newly created polyhedron at
   address \p pph.  Since \p cs will be <EM>the</EM> system of
@@ -833,7 +843,18 @@ ppl_new_NNC_Polyhedron_from_NNC_Polyhedron __P((ppl_Polyhedron_t* pph,
   upon return, no assumption can be made on its value.
 */
 int
-ppl_new_C_Polyhedron_from_ConSys __P((ppl_Polyhedron_t* pph, ppl_ConSys_t cs));
+ppl_new_C_Polyhedron_recycle_ConSys __P((ppl_Polyhedron_t* pph,
+					 ppl_ConSys_t cs));
+
+/*!
+  Builds a new NNC polyhedron from the system of constraints
+  \p cs and writes an handle for the newly created polyhedron at
+  address \p pph.  The new polyhedron will inherit the space dimension
+  of \p cs.
+*/
+int
+ppl_new_NNC_Polyhedron_from_ConSys __P((ppl_Polyhedron_t* pph,
+					ppl_const_ConSys_t cs));
 
 /*!
   Builds a new NNC polyhedron recycling the system of constraints
@@ -847,13 +868,23 @@ ppl_new_C_Polyhedron_from_ConSys __P((ppl_Polyhedron_t* pph, ppl_ConSys_t cs));
   upon return, no assumption can be made on its value.
 */
 int
-ppl_new_NNC_Polyhedron_from_ConSys __P((ppl_Polyhedron_t* pph,
-					ppl_ConSys_t cs));
+ppl_new_NNC_Polyhedron_recycle_ConSys __P((ppl_Polyhedron_t* pph,
+					   ppl_ConSys_t cs));
+
+/*!
+  Builds a new closed polyhedron from the system of generators
+  \p gs and writes an handle for the newly created polyhedron at
+  address \p pph.  The new polyhedron will inherit the space dimension
+  of \p gs.
+*/
+int
+ppl_new_C_Polyhedron_from_GenSys __P((ppl_Polyhedron_t* pph,
+				      ppl_const_GenSys_t gs));
 
 /*!
   Builds a new closed polyhedron recycling the system of generators
   \p gs and writes an handle for the newly created polyhedron at
-  address \p pph.  Since \p cs will be <EM>the</EM> system of
+  address \p pph.  Since \p gs will be <EM>the</EM> system of
   generators of the new polyhedron, the space dimension is also
   inherited.
 
@@ -862,12 +893,23 @@ ppl_new_NNC_Polyhedron_from_ConSys __P((ppl_Polyhedron_t* pph,
   upon return, no assumption can be made on its value.
 */
 int
-ppl_new_C_Polyhedron_from_GenSys __P((ppl_Polyhedron_t* pph, ppl_GenSys_t gs));
+ppl_new_C_Polyhedron_recycle_GenSys __P((ppl_Polyhedron_t* pph,
+					 ppl_GenSys_t gs));
+
+/*!
+  Builds a new NNC polyhedron from the system of generators
+  \p gs and writes an handle for the newly created polyhedron at
+  address \p pph.  The new polyhedron will inherit the space dimension
+  of \p gs.
+*/
+int
+ppl_new_NNC_Polyhedron_from_GenSys __P((ppl_Polyhedron_t* pph,
+					ppl_const_GenSys_t gs));
 
 /*!
   Builds a new NNC polyhedron recycling the system of generators
   \p gs and writes an handle for the newly created polyhedron at
-  address \p pph.  Since \p cs will be <EM>the</EM> system of
+  address \p pph.  Since \p gs will be <EM>the</EM> system of
   generators of the new polyhedron, the space dimension is also
   inherited.
 
@@ -876,8 +918,8 @@ ppl_new_C_Polyhedron_from_GenSys __P((ppl_Polyhedron_t* pph, ppl_GenSys_t gs));
   upon return, no assumption can be made on its value.
 */
 int
-ppl_new_NNC_Polyhedron_from_GenSys __P((ppl_Polyhedron_t* pph,
-					ppl_GenSys_t gs));
+ppl_new_NNC_Polyhedron_recycle_GenSys __P((ppl_Polyhedron_t* pph,
+					   ppl_GenSys_t gs));
 
 /*!
   Builds a new C polyhedron corresponding to an interval-based
@@ -1048,14 +1090,9 @@ ppl_Polyhedron_intersection_assign_and_minimize
 __P((ppl_Polyhedron_t x, ppl_const_Polyhedron_t y));
 
 /*!
-  First increases the space dimension of \p ph by adding as many
-  dimensions as is the space dimension of \p cs; then adds to the
-  system of constraints of \p ph a renamed-apart version of the
-  constraints in \p cs.
-
-  \warning
-  This function modifies the constraint system referenced by \p cs:
-  upon return, no assumption can be made on its value.
+  Seeing a polyhedron as a set of tuples (its points), assigns
+  to \p x all the tuples that can be obtained by concatenating,
+  in the order given, a tuple of \p x with a tuple of \p y.
 */
 int
 ppl_Polyhedron_concatenate_assign __P((ppl_Polyhedron_t x,
@@ -1454,4 +1491,4 @@ ppl_Polyhedron_OK __P((ppl_const_Polyhedron_t ph));
 
 #undef __P
 
-#endif /* !defined(_ppl_c_h) */
+#endif /* !defined(PPL_ppl_c_h) */

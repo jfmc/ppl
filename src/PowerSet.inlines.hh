@@ -21,8 +21,8 @@ USA.
 For the most up-to-date information see the Parma Polyhedra Library
 site: http://www.cs.unipr.it/ppl/ . */
 
-#ifndef _PowerSet_inlines_hh
-#define _PowerSet_inlines_hh 1
+#ifndef PPL_PowerSet_inlines_hh
+#define PPL_PowerSet_inlines_hh 1
 
 #include <algorithm>
 
@@ -59,7 +59,15 @@ PowerSet<CS>::size() const {
 }
 
 template <typename CS>
-PowerSet<CS>::PowerSet() {
+PowerSet<CS>::PowerSet()
+  : space_dim(0) {
+  sequence.push_back(CS());
+}
+
+template <typename CS>
+PowerSet<CS>::PowerSet(const ConSys& cs)
+  : space_dim(cs.space_dimension()) {
+  sequence.push_back(CS(cs));
 }
 
 template <typename CS>
@@ -85,9 +93,9 @@ void PowerSet<CS>::omega_reduction() {
 
 template <typename CS>
 PowerSet<CS>&
-PowerSet<CS>::inject(const CS& x) {
-  if (!x.is_bottom()) {
-    sequence.push_back(x);
+PowerSet<CS>::inject(const CS& c) {
+  if (!c.is_bottom()) {
+    sequence.push_back(c);
     omega_reduction();
   }
   return *this;
@@ -197,7 +205,8 @@ PowerSet<CS>::meet_assign(const PowerSet<CS>& y) {
 template <typename CS>
 void
 PowerSet<CS>::concatenate_assign(const PowerSet<CS>& y) {
-  PowerSet<CS> z;
+  space_dim += y.space_dim;
+  Sequence new_sequence;
   const PowerSet<CS>& x = *this;
   for (typename PowerSet<CS>::const_iterator xi = x.begin(),
 	 xend = x.end(); xi != xend; ++xi) {
@@ -206,11 +215,11 @@ PowerSet<CS>::concatenate_assign(const PowerSet<CS>& y) {
       CS zi = *xi;
       zi.concatenate_assign(*yi);
       if (!zi.is_bottom())
-	z.sequence.push_back(zi);
+	new_sequence.push_back(zi);
     }
   }
-  z.omega_reduction();
-  std::swap(*this, z);
+  std::swap(sequence, new_sequence);
+  omega_reduction();
 }
 
 // Join operator
@@ -301,25 +310,28 @@ PowerSet<CS>::add_constraints(ConSys& cs) {
 
 template <typename CS>
 void
-PowerSet<CS>::add_dimensions_and_embed(size_t dim) {
+PowerSet<CS>::add_dimensions_and_embed(size_t m) {
+  space_dim += m;
   for (typename PowerSet<CS>::iterator i = begin(),
 	 xend = end(); i != xend; ++i)
-    i->add_dimensions_and_embed(dim);
+    i->add_dimensions_and_embed(m);
   omega_reduction();
 }
 
 template <typename CS>
 void
-PowerSet<CS>::add_dimensions_and_project(size_t dim) {
+PowerSet<CS>::add_dimensions_and_project(size_t m) {
+  space_dim += m;
   for (typename PowerSet<CS>::iterator i = begin(),
 	 xend = end(); i != xend; ++i)
-    i->add_dimensions_and_project(dim);
+    i->add_dimensions_and_project(m);
   omega_reduction();
 }
 
 template <typename CS>
 void
 PowerSet<CS>::remove_dimensions(const std::set<Variable>& to_be_removed) {
+  // FIXME: set space_dim
   for (typename PowerSet<CS>::iterator i = begin(),
 	 xend = end(); i != xend; ++i)
     i->remove_dimensions(to_be_removed);
@@ -329,12 +341,57 @@ PowerSet<CS>::remove_dimensions(const std::set<Variable>& to_be_removed) {
 template <typename CS>
 void
 PowerSet<CS>::remove_higher_dimensions(size_t new_dimension) {
+  space_dim = new_dimension;
   for (typename PowerSet<CS>::iterator i = begin(),
 	 xend = end(); i != xend; ++i)
     i->remove_higher_dimensions(new_dimension);
   omega_reduction();
 }
-  
+
+template <typename CS>
+template <typename PartialFunction>
+void
+PowerSet<CS>::shuffle_dimensions(const PartialFunction& pfunc) {
+  if (is_bottom()) {
+    unsigned int n = 0;
+    for (unsigned int i = space_dim; i-- > 0; ) {
+      unsigned int new_i;
+      if (pfunc.maps(i, new_i))
+	++n;
+    }
+    space_dim = n;
+  }
+  else {
+    typename PowerSet<CS>::iterator b = begin();
+    for (typename PowerSet<CS>::iterator i = b, xend = end(); i != xend; ++i)
+      i->shuffle_dimensions(pfunc);
+    space_dim = b->space_dimension();
+    omega_reduction();
+  }
+}
+
+template <typename CS>
+void
+PowerSet<CS>::H79_widening_assign(const PowerSet& y) {
+}
+
+template <typename CS>
+void
+PowerSet<CS>::limited_H79_widening_assign(const PowerSet& y,
+					  ConSys& cs) {
+}
+
+template <typename CS>
+bool
+PowerSet<CS>::OK() const {
+  for (typename PowerSet<CS>::const_iterator i = begin(),
+	 xend = end(); i != xend; ++i)
+    if (!i->OK()
+	|| i->space_dimension() != space_dim)
+      return false;
+  return true;
+}
+ 
 } // namespace Parma_Polyhedra_Library
 
-#endif // !defined(_PowerSet_inlines_hh)
+#endif // !defined(PPL_PowerSet_inlines_hh)

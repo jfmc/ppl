@@ -21,8 +21,8 @@ USA.
 For the most up-to-date information see the CS@Parma software
 site: http://www.cs.unipr.it/Software/ . */
 
-#ifndef _Watchdog_defs_hh
-#define _Watchdog_defs_hh 1
+#ifndef PWL_Watchdog_defs_hh
+#define PWL_Watchdog_defs_hh 1
 
 #include "Watchdog.types.hh"
 #include <list>
@@ -186,4 +186,5 @@ private:
 
 #include "Watchdog.inlines.hh"
 
-#endif
+#endif // !defined(PWL_Watchdog_defs_hh)
+

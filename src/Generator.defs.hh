@@ -21,8 +21,8 @@ USA.
 For the most up-to-date information see the Parma Polyhedra Library
 site: http://www.cs.unipr.it/ppl/ . */
 
-#ifndef _Generator_defs_hh
-#define _Generator_defs_hh 1
+#ifndef PPL_Generator_defs_hh
+#define PPL_Generator_defs_hh 1
 
 #include "Generator.types.hh"
 #include "Row.defs.hh"
@@ -436,4 +436,4 @@ Generator closure_point(const LinExpression& e = LinExpression::zero(),
 
 #include "Generator.inlines.hh"
 
-#endif // !defined(_Generator_defs_hh)
+#endif // !defined(PPL_Generator_defs_hh)

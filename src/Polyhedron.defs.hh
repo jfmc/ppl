@@ -21,8 +21,8 @@ USA.
 For the most up-to-date information see the Parma Polyhedra Library
 site: http://www.cs.unipr.it/ppl/ . */
 
-#ifndef _Polyhedron_defs_hh
-#define _Polyhedron_defs_hh 1
+#ifndef PPL_Polyhedron_defs_hh
+#define PPL_Polyhedron_defs_hh 1
 
 #include "Polyhedron.types.hh"
 #include "Variable.defs.hh"
@@ -391,8 +391,18 @@ protected:
     The polyhedron inherits the space dimension of the constraint system.
     \param topol    The topology of the polyhedron;
     \param cs       The system of constraints defining the polyhedron.
-                    It is not declared <CODE>const</CODE>
-                    because it can be modified.
+    \exception std::invalid_argument thrown if the topology of \p cs
+                                     is incompatible with \p topology.
+  */
+  Polyhedron(Topology topol, const ConSys& cs);
+
+  //! Builds a polyhedron recycling a system of constraints.
+  /*!
+    The polyhedron inherits the space dimension of the constraint system.
+    \param topol    The topology of the polyhedron;
+    \param cs       The system of constraints defining the polyhedron.
+                    It is not declared <CODE>const</CODE> because its
+                    data-structures will be recycled to build the polyhedron.
     \exception std::invalid_argument thrown if the topology of \p cs
                                      is incompatible with \p topology.
   */
@@ -403,8 +413,20 @@ protected:
     The polyhedron inherits the space dimension of the generator system.
     \param topol    The topology of the polyhedron;
     \param gs       The system of generators defining the polyhedron.
-                    It is not declared <CODE>const</CODE>
-                    because it can be modified.
+    \exception std::invalid_argument thrown if if the topology of \p gs
+                                     is incompatible with \p topol,
+                                     or if the system of generators
+                                     is not empty but has no points.
+  */
+  Polyhedron(Topology topol, const GenSys& gs);
+
+  //! Builds a polyhedron recycling a system of generators.
+  /*!
+    The polyhedron inherits the space dimension of the generator system.
+    \param topol    The topology of the polyhedron;
+    \param gs       The system of generators defining the polyhedron.
+                    It is not declared <CODE>const</CODE> because its
+                    data-structures will be recycled to build the polyhedron.
     \exception std::invalid_argument thrown if if the topology of \p gs
                                      is incompatible with \p topol,
                                      or if the system of generators
@@ -754,10 +776,10 @@ public:
   bool OK(bool check_not_empty = false) const;
 
   //! \brief
-  //! Adds \p dim new dimensions and embeds the old polyhedron
+  //! Adds \p m new dimensions and embeds the old polyhedron
   //! into the new space.
   /*!
-    \param dim      The number of dimensions to add.
+    \param m      The number of dimensions to add.
 
     The new dimensions will be those having the highest indexes
     in the new polyhedron, which is characterized by a system
@@ -773,13 +795,13 @@ public:
       \,\bigr\}.
     \f]
   */
-  void add_dimensions_and_embed(size_t dim);
+  void add_dimensions_and_embed(size_t m);
 
   //! \brief
-  //! Adds \p dim new dimensions to the polyhedron
+  //! Adds \p m new dimensions to the polyhedron
   //! and does not embed it in the new space.
   /*!
-    \param dim      The number of dimensions to add.
+    \param m      The number of dimensions to add.
 
     The new dimensions will be those having the highest indexes
     in the new polyhedron, which is characterized by a system
@@ -795,7 +817,7 @@ public:
       \,\bigr\}.
     \f]
   */
-  void add_dimensions_and_project(size_t dim);
+  void add_dimensions_and_project(size_t m);
 
   //! \brief
   //! Removes all the specified dimensions.
@@ -1372,4 +1394,4 @@ void swap(Parma_Polyhedra_Library::Polyhedron& x,
 
 #include "Polyhedron.inlines.hh"
 
-#endif // !defined(_Polyhedron_defs_hh)
+#endif // !defined(PPL_Polyhedron_defs_hh)

@@ -21,8 +21,8 @@ USA.
 For the most up-to-date information see the Parma Polyhedra Library
 site: http://www.cs.unipr.it/ppl/ . */
 
-#ifndef _SatMatrix_inlines_hh
-#define _SatMatrix_inlines_hh 1
+#ifndef PPL_SatMatrix_inlines_hh
+#define PPL_SatMatrix_inlines_hh 1
 
 #include <cassert>
 
@@ -145,4 +145,4 @@ swap(Parma_Polyhedra_Library::SatMatrix& x,
 
 } // namespace std
 
-#endif // !defined(_SatMatrix_inlines_hh)
+#endif // !defined(PPL_SatMatrix_inlines_hh)

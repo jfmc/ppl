@@ -9,8 +9,8 @@ WITHOUT ANY WARRANTY, to the extent permitted by law; without even the
 implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR
 PURPOSE. */
 
-#ifndef _Topology_hh
-#define _Topology_hh 1
+#ifndef PPL_Topology_hh
+#define PPL_Topology_hh 1
 
 namespace Parma_Polyhedra_Library {
 

@@ -21,8 +21,8 @@ USA.
 For the most up-to-date information see the Parma Polyhedra Library
 site: http://www.cs.unipr.it/ppl/ . */
 
-#ifndef _AskTell_inlines_hh
-#define _AskTell_inlines_hh 1
+#ifndef PPL_AskTell_inlines_hh
+#define PPL_AskTell_inlines_hh 1
 
 #include <algorithm>
 
@@ -451,4 +451,4 @@ operator<<(std::ostream& s, const AskTell<CS>& x) {
 
 } // namespace Parma_Polyhedra_Library
 
-#endif // !defined(_AskTell_inlines_hh)
+#endif // !defined(PPL_AskTell_inlines_hh)

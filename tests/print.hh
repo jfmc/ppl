@@ -21,8 +21,8 @@ USA.
 For the most up-to-date information see the Parma Polyhedra Library
 site: http://www.cs.unipr.it/ppl/ . */
 
-#ifndef _print_hh
-#define _print_hh 1
+#ifndef PPL_print_hh
+#define PPL_print_hh 1
 
 #include "ppl_install.hh"
 #include <iostream>
@@ -63,4 +63,4 @@ print_generators(const Parma_Polyhedra_Library::Polyhedron& ph,
 		 const std::string& intro = "",
 		 std::ostream& s = std::cout);
 
-#endif
+#endif // !defined(PPL_print_hh)
