@@ -14,8 +14,11 @@ PURPOSE. */
 
 namespace Parma_Polyhedra_Library {
 
-template <typename PH>
+template <typename CS>
 class AskTell;
+
+template <typename CS>
+class AskTell_Pair;
 
 }
 
