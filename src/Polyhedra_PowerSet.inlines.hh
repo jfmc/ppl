@@ -431,32 +431,38 @@ limited_BGP99_extrapolation_assign(const Polyhedra_PowerSet& y,
 }
 
 template <typename PH>
+template <typename Cert>
 void
 Polyhedra_PowerSet<PH>::
-collect_certificates(cert_multiset_type& cert_ms) const {
+collect_certificates(std::map<Cert, size_type,
+		              typename Cert::Compare>& cert_ms) const {
   assert(Base::is_omega_reduced());
   assert(cert_ms.size() == 0);
   for (const_iterator i = Base::begin(),
 	 iend = Base::end(); i != iend; i++) {
-    certificate_type ph_cert(i->polyhedron());
+    Cert ph_cert(i->polyhedron());
     ++cert_ms[ph_cert];
   }
 }
 
 template <typename PH>
+template <typename Cert>
 bool
 Polyhedra_PowerSet<PH>::
-is_cert_multiset_stabilizing(const cert_multiset_type& y_cert_ms) const {
-  cert_multiset_type x_cert_ms;
+is_cert_multiset_stabilizing(const std::map<Cert, size_type,
+			                    typename Cert::Compare>&
+			     y_cert_ms) const {
+  typedef std::map<Cert, size_type, typename Cert::Compare> Cert_Multiset;
+  Cert_Multiset x_cert_ms;
   collect_certificates(x_cert_ms);
-  typename cert_multiset_type::const_iterator
+  typename Cert_Multiset::const_iterator
     xi = x_cert_ms.begin(),
     xend = x_cert_ms.end(),
     yi = y_cert_ms.begin(),
     yend = y_cert_ms.end();
   while (xi != xend && yi != yend) {
-    const certificate_type& xi_cert = xi->first;  
-    const certificate_type& yi_cert = yi->first;
+    const Cert& xi_cert = xi->first;  
+    const Cert& yi_cert = yi->first;
     switch (xi_cert.compare(yi_cert)) {
     case 0:
       // xi_cert == yi_cert: check the number of multiset occurrences.
@@ -487,12 +493,13 @@ is_cert_multiset_stabilizing(const cert_multiset_type& y_cert_ms) const {
   return (yi != yend);
 }
 
-// TODO: to be generalized so as to use an arbitrary certificate.
 template <typename PH>
+template <typename Cert>
 void
-Polyhedra_PowerSet<PH>::BHZ03_widening_assign(const Polyhedra_PowerSet& y,
-					      void (Polyhedron::*wm)
-					      (const Polyhedron&, unsigned*)) {
+Polyhedra_PowerSet<PH>::
+generic_BHZ03_widening_assign(const Polyhedra_PowerSet& y,
+			      void (Polyhedron::*wm) (const Polyhedron&,
+						      unsigned*)) {
   // `x' is the current iteration value.
   Polyhedra_PowerSet<PH>& x = *this;
 
@@ -522,7 +529,7 @@ Polyhedra_PowerSet<PH>::BHZ03_widening_assign(const Polyhedra_PowerSet& y,
   for (const_iterator i = y.begin(), iend = y.end(); i != iend; ++i)
     y_hull.poly_hull_assign(i->polyhedron());
   // Compute the certificate for `y_hull'.
-  const certificate_type y_hull_cert(y_hull);
+  const Cert y_hull_cert(y_hull);
 
   // If the hull is stabilizing, do nothing.
   int hull_stabilization = y_hull_cert.compare(x_hull);
@@ -534,7 +541,8 @@ Polyhedra_PowerSet<PH>::BHZ03_widening_assign(const Polyhedra_PowerSet& y,
 
   // The multiset certificate for `y':
   // we want to be lazy about its computation.
-  cert_multiset_type y_cert_ms;
+  typedef std::map<Cert, size_type, typename Cert::Compare> Cert_Multiset;
+  Cert_Multiset y_cert_ms;
   bool y_cert_ms_computed = false;
 
   if (hull_stabilization == 0 && y_is_not_a_singleton) {
@@ -604,16 +612,24 @@ Polyhedra_PowerSet<PH>::BHZ03_widening_assign(const Polyhedra_PowerSet& y,
   std::swap(x, x_hull_singleton);
 }
 
-// TODO: to be generalized so as to use an arbitrary certificate relation.
 template <typename PH>
 void
-Polyhedra_PowerSet<PH>
-::limited_BHZ03_widening_assign(const Polyhedra_PowerSet& y,
-				const ConSys& cs,
-				void (Polyhedron::*lwm)
-				(const Polyhedron&,
-				 const ConSys&,
-				 unsigned*)) {
+Polyhedra_PowerSet<PH>::
+BHZ03_widening_assign(const Polyhedra_PowerSet& y,
+		      void (Polyhedron::*wm)(const Polyhedron&, unsigned*)) {
+  generic_BHZ03_widening_assign<BHRZ03_Certificate>(y, wm);
+}
+
+template <typename PH>
+template <typename Cert>
+void
+Polyhedra_PowerSet<PH>::
+generic_limited_BHZ03_widening_assign(const Polyhedra_PowerSet& y,
+				      const ConSys& cs,
+				      void (Polyhedron::*lwm)
+				      (const Polyhedron&,
+				       const ConSys&,
+				       unsigned*)) {
   // `x' is the current iteration value.
   Polyhedra_PowerSet<PH>& x = *this;
 
@@ -643,7 +659,7 @@ Polyhedra_PowerSet<PH>
   for (const_iterator i = y.begin(), iend = y.end(); i != iend; ++i)
     y_hull.poly_hull_assign(i->polyhedron());
   // Compute the certificate for `y_hull'.
-  const certificate_type y_hull_cert(y_hull);
+  const Cert y_hull_cert(y_hull);
 
   // If the hull info is stabilizing, do nothing.
   int hull_stabilization = y_hull_cert.compare(x_hull);
@@ -655,7 +671,8 @@ Polyhedra_PowerSet<PH>
 
   // The multiset certificate for `y':
   // we want to be lazy about its computation.
-  cert_multiset_type y_cert_ms;
+  typedef std::map<Cert, size_type, typename Cert::Compare> Cert_Multiset;
+  Cert_Multiset y_cert_ms;
   bool y_cert_ms_computed = false;
 
   if (hull_stabilization == 0 && y_is_not_a_singleton) {
@@ -723,6 +740,17 @@ Polyhedra_PowerSet<PH>
   Polyhedra_PowerSet<PH> x_hull_singleton(x.space_dim, PH::EMPTY);
   x_hull_singleton.add_disjunct(x_hull);
   std::swap(x, x_hull_singleton);
+}
+
+template <typename PH>
+void
+Polyhedra_PowerSet<PH>::
+limited_BHZ03_widening_assign(const Polyhedra_PowerSet& y,
+			      const ConSys& cs,
+			      void (Polyhedron::*lwm) (const Polyhedron&,
+						       const ConSys&,
+						       unsigned*)) {
+  generic_limited_BHZ03_widening_assign<BHRZ03_Certificate>(y, cs, lwm);
 }
 
 template <typename PH>

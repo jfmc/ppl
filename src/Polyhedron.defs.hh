@@ -37,6 +37,7 @@ site: http://www.cs.unipr.it/ppl/ . */
 #include "Poly_Con_Relation.defs.hh"
 #include "Poly_Gen_Relation.defs.hh"
 #include "BHRZ03_Certificate.types.hh"
+#include "H79_Certificate.types.hh"
 #include <vector>
 #include <iosfwd>
 
@@ -2091,6 +2092,7 @@ private:
 			      ConSys& cs_not_selected) const;
 
   friend class Parma_Polyhedra_Library::BHRZ03_Certificate;
+  friend class Parma_Polyhedra_Library::H79_Certificate;
 
   bool BHRZ03_combining_constraints(const Polyhedron& y,
 				    const BHRZ03_Certificate& y_cert,

@@ -85,6 +85,7 @@ GenSys.types.hh \
 Poly_Con_Relation.types.hh \
 Poly_Gen_Relation.types.hh \
 BHRZ03_Certificate.types.hh \
+H79_Certificate.types.hh \
 Polyhedron.types.hh \
 C_Polyhedron.types.hh \
 NNC_Polyhedron.types.hh \
@@ -124,6 +125,8 @@ Poly_Gen_Relation.defs.hh \
 Poly_Gen_Relation.inlines.hh \
 BHRZ03_Certificate.defs.hh \
 BHRZ03_Certificate.inlines.hh \
+H79_Certificate.defs.hh \
+H79_Certificate.inlines.hh \
 Polyhedron.defs.hh \
 Ph_Status.inlines.hh \
 Polyhedron.inlines.hh \
@@ -160,6 +163,7 @@ Matrix.cc \
 Poly_Con_Relation.cc \
 Poly_Gen_Relation.cc \
 BHRZ03_Certificate.cc \
+H79_Certificate.cc \
 Polyhedron_nonpublic.cc \
 Polyhedron_public.cc \
 Polyhedron_chdims.cc \
@@ -191,6 +195,7 @@ GenSys.types.hh \
 Poly_Con_Relation.types.hh \
 Poly_Gen_Relation.types.hh \
 BHRZ03_Certificate.types.hh \
+H79_Certificate.types.hh \
 Polyhedron.types.hh \
 C_Polyhedron.types.hh \
 NNC_Polyhedron.types.hh \
@@ -203,6 +208,7 @@ GenSys.defs.hh \
 Poly_Con_Relation.defs.hh \
 Poly_Gen_Relation.defs.hh \
 BHRZ03_Certificate.defs.hh \
+H79_Certificate.defs.hh \
 Polyhedron.defs.hh \
 C_Polyhedron.defs.hh \
 NNC_Polyhedron.defs.hh \

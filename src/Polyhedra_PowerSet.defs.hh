@@ -27,7 +27,8 @@ site: http://www.cs.unipr.it/ppl/ . */
 #include "Polyhedra_PowerSet.types.hh"
 #include "ConSys.types.hh"
 #include "Constraint.types.hh"
-#include "BHRZ03_Certificate.defs.hh"
+#include "BHRZ03_Certificate.types.hh"
+#include "H79_Certificate.types.hh"
 #include "Polyhedron.defs.hh"
 #include "Variable.defs.hh"
 #include "Determinate.defs.hh"
@@ -203,9 +204,20 @@ public:
 					   unsigned*),
 					  unsigned max_disjuncts = 0);
 
+  template <typename Cert>
+  void generic_BHZ03_widening_assign(const Polyhedra_PowerSet& y,
+				     void (Polyhedron::*wm)(const Polyhedron&,
+							    unsigned*));
   void BHZ03_widening_assign(const Polyhedra_PowerSet& y,
 			     void (Polyhedron::*wm)(const Polyhedron&,
 						    unsigned*));
+  template <typename Cert>
+  void generic_limited_BHZ03_widening_assign(const Polyhedra_PowerSet& y,
+					     const ConSys& cs,
+					     void (Polyhedron::*lwm)
+					     (const Polyhedron&,
+					      const ConSys&,
+					      unsigned*));
   void limited_BHZ03_widening_assign(const Polyhedra_PowerSet& y,
 				     const ConSys& cs,
 				     void (Polyhedron::*lwm)
@@ -242,18 +254,23 @@ public:
   bool ascii_load(std::istream& s);
 
 private:
-  typedef BHRZ03_Certificate certificate_type;
-  typedef std::map<certificate_type,
-		   size_type,
-		   certificate_type::Compare> cert_multiset_type;
+//   typedef BHRZ03_Certificate certificate_type;
+//   typedef std::map<certificate_type,
+// 		   size_type,
+// 		   certificate_type::Compare> cert_multiset_type;
 
   //! Records into \p cert_ms the certificate for this set of polyhedra.
-  void collect_certificates(cert_multiset_type& cert_ms) const;
+  template <typename Cert>
+  void collect_certificates(std::map<Cert, size_type,
+		                     typename Cert::Compare>& cert_ms) const;
 
   //! \brief
   //! Returns <CODE>true</CODE> if and only if the current set of polyhedra
   //! is stabilizing with respect to the multiset of certificates \p y_cert_ms.
-  bool is_cert_multiset_stabilizing(const cert_multiset_type& y_cert_ms) const;
+  template <typename Cert>
+  bool is_cert_multiset_stabilizing(const std::map<Cert, size_type,
+                                                   typename Cert::Compare>&
+				    y_cert_ms) const;
 };
 
 
