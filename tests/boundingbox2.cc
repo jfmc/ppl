@@ -465,7 +465,7 @@ void test_c7() {
   ph.add_constraint(y == 4);
 
 #if NOISY
-  print_generators(ph, "*** testc-7 ph ***");
+  print_generators(ph, "*** test_c7 ph ***");
 #endif
   
   BoundingBox box(2);
@@ -487,11 +487,11 @@ void test_c7() {
 
 // This is a bounded NNC polyhedron that is a single point;
 void test_nnc7() {
-#if C_TESTS
+#if NNC_TESTS
   Variable x(0);
   Variable y(1);
 
-  C_Polyhedron ph(2);
+  NNC_Polyhedron ph(2);
   ph.add_constraint(x == 2);
   ph.add_constraint(y == 4);
 
@@ -504,7 +504,7 @@ void test_nnc7() {
 
   From_Bounding_Box dummy;
 
-  C_Polyhedron known_ph(dummy, box);
+  NNC_Polyhedron known_ph(dummy, box);
 
 #if NOISY
   print_generators(known_ph, "*** test_nnc7 known_ph ***");
@@ -513,7 +513,7 @@ void test_nnc7() {
   if (ph != known_ph)
     exit(1);
 
-#endif // C_TESTS
+#endif // NNC_TESTS
 }
 
 // This is a unit square C polyhedron
@@ -587,7 +587,6 @@ void test_nnc8() {
 }
  
 // This is a unbounded C polyhedron in 4D but bounded in 2D
-// with strict inequality and closure points at the lower bound.
 void test_c9() {
 #if C_TESTS
   //Variable w(0);
