@@ -23,7 +23,9 @@ USA.
 For the most up-to-date information see the Parma Polyhedra Library
 site: http://www.cs.unipr.it/ppl/ . */
 
-#include "ppl_test.hh"
+#include "ppl_install.hh"
+#include "print.hh"
+#include "ehandlers.hh"
 
 using namespace std;
 using namespace Parma_Polyhedra_Library;

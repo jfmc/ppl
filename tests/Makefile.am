@@ -58,6 +58,7 @@ TESTS = $(WATCHDOG_TESTS) \
 	inclusion1 \
         inters1 inters2 inters3 inters4 inters5 inters6 inters7 \
 	limitedh79widening1 limitedh79widening2\
+	linexpression1 \
 	memory1 \
 	minconstraints1 minconstraints2 minconstraints3 \
 	mingenerators1 mingenerators2 mingenerators3 \
@@ -155,6 +156,8 @@ inters7_SOURCES = inters7.cc
 
 limitedh79widening1_SOURCES = limitedh79widening1.cc
 limitedh79widening2_SOURCES = limitedh79widening2.cc
+
+linexpression1_SOURCES = linexpression1.cc
 
 memory1_SOURCES = memory1.cc
 
