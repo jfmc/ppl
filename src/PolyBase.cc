@@ -354,25 +354,10 @@ PPL::PolyBase::PolyBase(Topology topology, GenSys& gs)
   if (gs_space_dim > 0) {
     // Stealing the rows from `gs'.
     std::swap(gen_sys, gs);
-    if (topology == NOT_NECESSARILY_CLOSED) {
-      // In a generator system describing a NNC polyhedron,
-      // for each point we must also have the corresponding closure point.
-      size_t n_rows = gen_sys.num_rows();
-      size_t eps_index = gs_space_dim + 1;
-      for (size_t i = n_rows; i-- > 0; ) {
-	const Generator& g = gen_sys[i];
-	if (g[eps_index] > 0) {
-	  // `g' is a point: adding the closure point.
-	  Generator cp = g;
-	  cp[eps_index] = 0;
-	  gen_sys.add_row(cp);
-	  ++n_rows;
-	}
-      }
-      // FIXME: can we avoid this by cleaverly inserting
-      // closure points ?
-      gen_sys.set_sorted(false);
-    }
+    // In a generator system describing a NNC polyhedron,
+    // for each point we must also have the corresponding closure point.
+    if (topology == NOT_NECESSARILY_CLOSED)
+      gen_sys.add_corresponding_closure_points();
     set_generators_up_to_date();
     // Set the space dimension.
     space_dim = gs_space_dim;
@@ -1920,10 +1905,19 @@ PPL::PolyBase::insert(const Generator& g) {
   }
 
   if (generators_are_up_to_date() || !check_empty()) {
-    if (g.is_necessarily_closed() || !is_necessarily_closed())
+    if (g.is_necessarily_closed() || !is_necessarily_closed()) {
       // Since `gen_sys' is not empty, the topology and space dimension
       // of the inserted generator are automatically adjusted.
       gen_sys.insert(g);
+      if (!is_necessarily_closed() && g.is_point()) {
+	// In the NNC topology, each point has to be matched by
+	// a corresponding closure point:
+	// turn the just inserted point into the corresponding
+	// closure point; then re-insert the point.
+	gen_sys[gen_sys.num_rows() - 1][space_dim + 1] = 0;
+	gen_sys.insert(g);
+      }
+    }
     else {
       assert(!g.is_closure_point());
       // Note: here we have a _legal_ topology mismatch, because
@@ -2161,7 +2155,7 @@ PPL::PolyBase::add_dimensions_and_constraints(ConSys& cs) {
 }
 
 /*!
-  Adds further generators to a polyhedron.
+  Adds further generators to a polyhedron, performing minimization.
 */
 void
 PPL::PolyBase::add_generators_and_minimize(GenSys& gs) {
@@ -2180,16 +2174,32 @@ PPL::PolyBase::add_generators_and_minimize(GenSys& gs) {
     return;
   }
 
+  // Adding valid generators to a zero-dim polyhedron
+  // transform it in the zero-dim universe polyhedron.
   if (space_dim == 0) {
+    if (is_empty() && !gs.has_points())
+      throw_invalid_generators("add_generators_and_min(gs)", *this);
     status.set_zero_dim_univ();
+    assert(OK(true));
     return;
   }
+
+  // Adjust `gs' to the right topology.
+  // NOTE: we already checked for topology compatibility;
+  // also, we do NOT adjust dimensions now, so that we will
+  // spend less time to sort rows.
+  gs.adjust_topology_and_dimension(topology(), gs_space_dim);
+
+  // For NNC polyhedra, each point must be matched by
+  // the corresponding closure point.
+  if (!is_necessarily_closed())
+    gs.add_corresponding_closure_points();
 
   if (!gs.is_sorted())
     gs.sort_rows();
 
-  // Adjust `gs' to the right topology and space dimension.
-  // NOTE: we already checked for topology compatibility.
+  // Now adjusting dimensions (topology already adjusted).
+  // NOTE: sortedness is preserved.
   gs.adjust_topology_and_dimension(topology(), space_dim);
 
   // We use `check_empty()' because we want the flag EMPTY
@@ -2197,12 +2207,7 @@ PPL::PolyBase::add_generators_and_minimize(GenSys& gs) {
   // (i.e., if it is false the polyhedron is really NOT empty)
   // and because, for a non-empty polyhedron, we need both
   // the system of generators and constraints minimal.
-  if (!check_empty()) {
-    obtain_sorted_generators_with_sat_g();
-    add_and_minimize(false, gen_sys, con_sys, sat_g, gs);
-    clear_sat_c_up_to_date();
-  }
-  else {
+  if (check_empty()) {
     // Checking if the system of generators contains a point.
     if (!gs.has_points())
       throw_invalid_generators("add_generators_and_min(gs)", *this);
@@ -2212,6 +2217,11 @@ PPL::PolyBase::add_generators_and_minimize(GenSys& gs) {
     clear_empty();
     set_generators_up_to_date();
     minimize();
+  }
+  else {
+    obtain_sorted_generators_with_sat_g();
+    add_and_minimize(false, gen_sys, con_sys, sat_g, gs);
+    clear_sat_c_up_to_date();
   }
   assert(OK(true));
 }
@@ -2237,16 +2247,23 @@ PPL::PolyBase::add_generators(GenSys& gs) {
     return;
   }
 
+  // Adding valid generators to a zero-dim polyhedron
+  // transform it in the zero-dim universe polyhedron.
   if (space_dim == 0) {
-    // Valid generator systems need a supporting point, at least.
-    if (!gs.has_points())
+    if (is_empty() && !gs.has_points())
       throw_invalid_generators("add_generators(gs)", *this);
-    // Adding valid generators to a zero-dim polyhedron
-    // transform it in the zero-dim universe polyhedron.
     status.set_zero_dim_univ();
     assert(OK(true));
     return;
   }
+
+  // Adjust `gs' to the right topology and dimensions.
+  // NOTE: we already checked for topology compatibility.
+  gs.adjust_topology_and_dimension(topology(), space_dim);
+  // For NNC polyhedra, each point must be matched by
+  // the corresponding closure point.
+  if (!is_necessarily_closed())
+    gs.add_corresponding_closure_points();
 
   // We only need that the system of generators is up-to-date.
   if (!generators_are_up_to_date())
@@ -2256,12 +2273,6 @@ PPL::PolyBase::add_generators(GenSys& gs) {
     // Checking if the system of generators contains a point.
     if (!gs.has_points())
       throw_invalid_generators("add_generators(gs)", *this);
-
-    // The system of generators contains at least a point.
-    // If needed, we extend `gs' to the right space dimension.
-    if (space_dim > gs_space_dim)
-      gs.add_zero_columns(space_dim - gs_space_dim);
-
     // The polyhedron is no longer empty and generators are up-to-date.
     std::swap(gen_sys, gs);
     set_generators_up_to_date();
@@ -2273,21 +2284,17 @@ PPL::PolyBase::add_generators(GenSys& gs) {
   // Matrix::merge_row_assign() requires both matrices to be sorted.
   if (!gen_sys.is_sorted())
     gen_sys.sort_rows();
-
   if (!gs.is_sorted())
     gs.sort_rows();
-
-  // The function `merge_row_assign' automatically resizes
-  // the system `gs' if the dimension of the space of `gs'
-  // is smaller then the dimension of the space of the polyhedron.
   gen_sys.merge_rows_assign(gs);
 
-  // After adding new generators, generators are no longer up-to-date.
+  // After adding new generators, constraints are no longer up-to-date.
   clear_generators_minimized();
   clear_constraints_up_to_date();
 
   assert(OK(true));
 }
+
 
 std::ostream&
 PPL::operator<<(std::ostream& s, const PolyBase& p) {
