@@ -27,7 +27,6 @@ site: http://www.cs.unipr.it/Software/ . */
 namespace Parma_Watchdog_Library {
 
 template <typename Flag_Base, typename Flag>
-inline
 Watchdog::Handler_Flag<Flag_Base,
 		       Flag>::Handler_Flag(const Flag_Base* volatile* h,
 					   Flag& f)
@@ -35,7 +34,7 @@ Watchdog::Handler_Flag<Flag_Base,
 }
 
 template <typename Flag_Base, typename Flag>
-inline void
+void
 Watchdog::Handler_Flag<Flag_Base, Flag>::act() const {
   if (*holder == 0
       || static_cast<const Flag*>(*holder)->priority() < flag.priority())
@@ -170,7 +169,6 @@ Watchdog::reschedule() {
 }
 
 template <typename Flag_Base, typename Flag>
-inline
 Watchdog::Watchdog(int units, const Flag_Base* volatile* holder, Flag& flag)
   : expired(false),
     handler(new Handler_Flag<Flag_Base, Flag>(holder, flag)) {

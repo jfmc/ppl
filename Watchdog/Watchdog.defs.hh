@@ -28,8 +28,6 @@ site: http://www.cs.unipr.it/Software/ . */
 #include <list>
 #include <cassert>
 
-// FIXME
-#include <sys/time.h>
 #ifdef HAVE_SYS_TIME_H
 # include <sys/time.h>
 #endif
@@ -96,23 +94,8 @@ private:
     Flag& flag;
 
   public:
-    Handler_Flag(const Flag_Base* volatile* h, Flag& f)
-#if 0
-      : holder(h), flag(f)
-    { }
-#else
-    ;
-#endif
-    void act() const
-#if 0
-    {
-      if (*holder == 0
-	  || static_cast<const Flag*>(*holder)->priority() < flag.priority())
-	*holder = &flag;
-    }
-#else
-    ;
-#endif
+    Handler_Flag(const Flag_Base* volatile* h, Flag& f);
+    void act() const;
   };
 
   class Handler_Function : virtual public Handler {
