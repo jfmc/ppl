@@ -205,7 +205,8 @@ PowerSet<CS>::meet_assign(const PowerSet<CS>& y) {
 template <typename CS>
 void
 PowerSet<CS>::concatenate_assign(const PowerSet<CS>& y) {
-  PowerSet<CS> z;
+  space_dim += y.space_dim;
+  Sequence new_sequence;
   const PowerSet<CS>& x = *this;
   for (typename PowerSet<CS>::const_iterator xi = x.begin(),
 	 xend = x.end(); xi != xend; ++xi) {
@@ -214,11 +215,11 @@ PowerSet<CS>::concatenate_assign(const PowerSet<CS>& y) {
       CS zi = *xi;
       zi.concatenate_assign(*yi);
       if (!zi.is_bottom())
-	z.sequence.push_back(zi);
+	new_sequence.push_back(zi);
     }
   }
-  z.omega_reduction();
-  std::swap(*this, z);
+  std::swap(sequence, new_sequence);
+  omega_reduction();
 }
 
 // Join operator
@@ -362,9 +363,9 @@ PowerSet<CS>::shuffle_dimensions(const PartialFunction& pfunc) {
   }
   else {
     typename PowerSet<CS>::iterator b = begin();
-    space_dim = b->space_dimension();
     for (typename PowerSet<CS>::iterator i = b, xend = end(); i != xend; ++i)
       i->shuffle_dimensions(pfunc);
+    space_dim = b->space_dimension();
     omega_reduction();
   }
 }
