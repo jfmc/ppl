@@ -8,10 +8,12 @@
 # WITHOUT ANY WARRANTY, to the extent permitted by law; without even the
 # implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
 
+AUTOMAKE_OPTIONS = foreign
+
 srcdir = @srcdir@
 VPATH = @srcdir@
 
-EXTRA_DIST = configure ppl.lsm.in ppl.spec.in
+EXTRA_DIST = configure ppl.lsm.in ppl.spec.in acinclude.m4
 
 @SET_MAKE@
 

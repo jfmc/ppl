@@ -25,6 +25,31 @@ AC_SUBST(ISODATE)
 
 AC_CANONICAL_HOST
 
+AH_TOP([
+#if OUTLINE
+#define INLINE
+#else
+#define INLINE inline
+#endif
+
+// Neutralize relops for GCC 2.96.
+#ifndef __SGI_STL_INTERNAL_RELOPS
+#define __SGI_STL_INTERNAL_RELOPS
+#endif
+
+#if __GNUC__ >= 3
+// Flexible array members at the end of a struct
+// are defined as in
+//   Type array[];
+#define FLEXIBLE_ARRAY
+#else
+// Flexible array members at the end of a struct
+// are defined as in
+//   Type array[0];
+#define FLEXIBLE_ARRAY 0
+#endif
+])
+
 dnl C compiler
 
 AC_ARG_WITH(cc,
@@ -42,6 +67,40 @@ CXX=$with_cxx)
 
 AC_LANG_CPLUSPLUS
 AC_PROG_CXX
+
+dnl GMP library
+
+AC_ARG_WITH(gmp-includes,
+            [  --with-gmp-includes=DIR GMP include files are in DIR],
+            gmp_includes=${with_gmp_includes}
+            gmp_includes_option="-I${gmp_includes}")
+
+AC_ARG_WITH(gmp-dir,
+            [  --with-gmp-dir=DIR      GMP library files are in DIR],
+            gmp_dir=${with_gmp_dir}
+            gmp_library_option="${gmp_dir}/libgmp.a",
+            gmp_library_option="-lgmp")
+
+
+ac_save_LIBS="$LIBS"
+LIBS="${gmp_library_option} $LIBS"
+
+ac_save_CPPFLAGS="$CPPFLAGS"
+CPPFLAGS="${gmp_includes_option} $CPPFLAGS"
+
+AC_CHECK_HAVE_GMP
+
+if test x"$have_gmp" = xno
+then
+  AC_MSG_ERROR([Cannot find GMP, the GNU Multi-Precision library])
+fi
+
+AC_CHECK_GMP_EXCEPTIONS
+
+CPPFLAGS="$ac_save_CPPFLAGS"
+LIBS="$ac_save_LIBS"
+
+extra_includes="${extra_includes} ${gmp_includes_option}"
 
 dnl Compilation flags
 
@@ -219,14 +278,6 @@ AC_PROG_RANLIB
 extra_src_subdirs="BitSet Integer $extra_src_subdirs"
 extra_includes="${extra_includes} -I\$(top_srcdir)/src/Integer"
 
-dnl Checks for libraries.
-AC_CHECK_LIB(gmp, __gmp_randinit,
-extra_ld_libs="${extra_ld_libs} -lgmp",
-AC_CONFIG_SUBDIRS(gmp-3.1.1)
-extra_subdirs="gmp-3.1.1 $extra_subdirs"
-extra_includes="${extra_includes} -I\$(top_srcdir)/gmp-3.1.1"
-extra_ld_libs="${extra_ld_libs} -L../gmp-3.1.1/.libs -lgmp")
-
 dnl Checks for header files.
 AC_HEADER_STDC
 AC_CHECK_HEADERS(unistd.h)
@@ -246,6 +297,7 @@ AC_OUTPUT(Makefile
           src/Makefile
           src/BitSet/Makefile src/Integer/Makefile
           tests/Makefile
+          m4/Makefile
           doc/Makefile
           doc/user-browse.doxyconf-latex doc/devref-browse.doxyconf-latex
           doc/user-print.doxyconf-latex  doc/devref-print.doxyconf-latex

@@ -30,11 +30,11 @@ world: $(ALL_TARGETS)
 
 PPL_SOURCE_FILES = $(wildcard $(srcdir)/../src/*.hh $(srcdir)/../src/*.cc)
 
-COMMON_STUFF = $(srcdir)/definitions.dox $(srcdir)/gpl.dox $(srcdir)/gfdl.dox
+DOX_FILES = definitions.dox gpl.dox gfdl.dox
 
-USER_STUFF = $(COMMON_STUFF) $(srcdir)/user.tex $(top_builddir)/src/ppl.hh
+USER_STUFF = $(DOX_FILES) user.tex $(top_builddir)/src/ppl.hh
 
-DEVREF_STUFF = $(COMMON_STUFF) $(srcdir)/devref.tex $(PPL_SOURCE_FILES)
+DEVREF_STUFF = $(DOX_FILES) devref.tex $(PPL_SOURCE_FILES)
 
 user-%.latex-dir: user-%.doxyconf-latex $(USER_STUFF)
 	rm -rf $@
@@ -64,7 +64,7 @@ ppl-devref-@VERSION@-%.ps: devref-%.latex-dir
 	doxygen $< && rm -rf $@ && mv -f html $@
 
 EXTRA_DIST= \
-Makefile \
+$(DOX_FILES) \
 user-browse.doxyconf-latex \
 devref-browse.doxyconf-latex \
 user-print.doxyconf-latex \

@@ -109,3 +109,5 @@ ppl.hh:	$(include_files) $(srcdir)/ppl.cc $(srcdir)/protect.sed $(srcdir)/restor
 	sed -f $(srcdir)/restore.sed <tmp.3 >>ppl.hh
 	echo "#endif" >>ppl.hh
 	rm -rf tmp* ppl.cc
+
+EXTRA_DIST = protect.sed restore.sed

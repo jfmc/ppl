@@ -1,32 +1,32 @@
-/* config.h.in.  Generated automatically from configure.in by autoheader.  */
-/* acconfig.h
-   This file is in the public domain.
-
-   Descriptive text for the C preprocessor macros that
-   the distributed Autoconf macros can define.
-   No software package will use all of them; autoheader copies the ones
-   your configure.in uses into your configuration header file templates.
-
-   The entries are in sort -df order: alphabetical, case insensitive,
-   ignoring punctuation (such as underscores).  Although this order
-   can split up related entries, it makes it easier to check whether
-   a given entry is in the file.
-
-   Leave the following blank line there!!  Autoheader needs it.  */
-
+/* config.h.in.  Generated from configure.ac by autoheader.  */
 
 
+#if OUTLINE
+#define INLINE
+#else
+#define INLINE inline
+#endif
 
-/* Define to the name of the distribution.  */
-#undef PACKAGE
+// Neutralize relops for GCC 2.96.
+#ifndef __SGI_STL_INTERNAL_RELOPS
+#define __SGI_STL_INTERNAL_RELOPS
+#endif
 
-/* Define to the version of the distribution.  */
-#undef VERSION
+#if __GNUC__ >= 3
+// Flexible array members at the end of a struct
+// are defined as in
+//   Type array[];
+#define FLEXIBLE_ARRAY
+#else
+// Flexible array members at the end of a struct
+// are defined as in
+//   Type array[0];
+#define FLEXIBLE_ARRAY 0
+#endif
 
-/* Define if words are stored with the most significant byte first
-   (like      Motorola and SPARC, but not Intel and VAX, CPUs).  */
-#undef WORDS_BIGENDIAN
 
+/* Not zero if GMP has been compiled with support for exceptions. */
+#undef GMP_SUPPORTS_EXCEPTIONS
 
 /* Define if you have the <inttypes.h> header file. */
 #undef HAVE_INTTYPES_H
@@ -69,32 +69,3 @@
 
 /* Version number of package */
 #undef VERSION
-
-#if OUTLINE
-#define INLINE
-#else
-#define INLINE inline
-#endif
-
-// Neutralize relops for GCC 2.96.
-#ifndef __SGI_STL_INTERNAL_RELOPS
-#define __SGI_STL_INTERNAL_RELOPS
-#endif
-
-#if __GNUC__ >= 3
-// Flexible array members at the end of a struct
-// are defined as in
-//   Type array[];
-#define FLEXIBLE_ARRAY
-#else
-// Flexible array members at the end of a struct
-// are defined as in
-//   Type array[0];
-#define FLEXIBLE_ARRAY 0
-#endif
-
-
-/* Leave that blank line there!!  Autoheader needs it.
-   If you're adding to this file, keep in mind:
-   The entries are in sort -df order: alphabetical, case insensitive,
-   ignoring punctuation (such as underscores).  */

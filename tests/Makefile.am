@@ -29,3 +29,5 @@ inters2_SOURCES = inters2.cc
 randchull1_SOURCES = randchull1.cc
 
 check_PROGRAMS = $(TESTS)
+
+noinst_HEADERS = print.hh
