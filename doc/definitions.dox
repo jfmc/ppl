@@ -167,6 +167,11 @@ In the sequel, we will consider only rational polyhedra and
 assume that, if \f$P = \{\,x \in \Rset^n \mid Ax \geq b\,\}\f$, then 
 \f$(A, b)\f$ has rational coefficients.
 
+<B>Universe polyhedron</B>
+
+A polyhedron \f$P\f$ of \f$\Rset^n\f$ is called <EM>universe polyhedron</EM>
+if it is the whole space (i.e. \f$P = \Rset^n\f$).
+
 <B>Polytope</B>
 
 A polyhedron \f$P \sslt \Rset^n\f$ is <EM>bounded</EM> if there 

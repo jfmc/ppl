@@ -66,8 +66,7 @@ namespace Parma_Polyhedra_Library {
 //! A convex polyhedron.
 /*!
     An object of the class Polyhedron represents a convex polyhedron
-    in the space \f$\Rset^n\f$. If the polyhedron is the whole space,
-    we say that it is the <EM>universal polyhedron</EM>.
+    in the space \f$\Rset^n\f$. 
 
     A polyhedron can be specified as either a finite system of constraints
     or a finite system of generators (see Minkowski's theorem in
