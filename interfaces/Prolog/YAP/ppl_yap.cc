@@ -49,7 +49,6 @@ namespace PPL = Parma_Polyhedra_Library;
 static inline Prolog_term_ref
 Prolog_new_term_ref() {
   return 0;
-  //return Mk_Variable();
 }
 
 /*!
