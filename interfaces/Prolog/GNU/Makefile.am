@@ -84,6 +84,18 @@ schedule.clpq
 
 CLPQ_TESTS = $(CLPQ_TESTS_NONSTRICT) $(CLPQ_TESTS_STRICT)
 
+CHECK_SCRIPT= $(srcdir)/../tests/check_script
+
+if USE_INT8
+
+CHECK_SCRIPT2 = $(srcdir)/../tests/check_script2_int8
+
+else !USE_INT8
+
+CHECK_SCRIPT2 = $(srcdir)/../tests/check_script2
+
+endif !USE_INT8
+
 COEFFICIENT_MNEMONIC = @coefficient_mnemonic@
 
 if ASSERTIONS_ENABLED
@@ -105,12 +117,12 @@ check-local: gp_clpq ../tests/check_script $(EXPECTED) gp_clpq2 ../tests/check_s
 	$(LIBTOOL) --mode=execute \
 		-dlopen ../../../src/libppl.la \
 		-dlopen ../../../Watchdog/libpwl.la \
-		./gp_clpq <$(srcdir)/../tests/check_script >obtained
+		./gp_clpq <$(CHECK_SCRIPT) >obtained
 	diff -q --ignore-all-space $(EXPECTED) obtained
 	$(LIBTOOL) --mode=execute \
 		-dlopen ../../../src/libppl.la \
 		-dlopen ../../../Watchdog/libpwl.la \
-		./gp_clpq2 <$(srcdir)/../tests/check_script2 >obtained2
+		./gp_clpq2 <$(CHECK_SCRIPT2) >obtained2
 	diff -q --ignore-all-space $(EXPECTED2) obtained2
 	echo "['$(srcdir)/../tests/pl_check.pl', '$(srcdir)/gnu_pl_check.pl']." \
 		>check_script3

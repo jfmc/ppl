@@ -44,7 +44,7 @@ CLPQ_TESTS = $(CLPQ_TESTS_NONSTRICT) $(CLPQ_TESTS_STRICT)
 
 EXTRA_DIST = \
 clpq.pl check_script \
-clpq2.pl check_script2 \
+clpq2.pl check_script2 check_script2_int8 \
 $(CLPQ_TESTS) \
 pl_check.pl \
 expected_mpz expected2_mpz expected3_mpz \
