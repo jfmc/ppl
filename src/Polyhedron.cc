@@ -2933,10 +2933,12 @@ PPL::Polyhedron::generalized_affine_image(const Variable& var,
       }
       break;
     case '=':
-      if (relation[1] == '=')
+      if (relation[1] == '=') {
 	// The relation operator is "==":
 	// this is just an affine image computation.
 	affine_image(var, expr, denominator);
+	return;
+      }
       else
 	// Invalid relation operator.
 	valid_relation = false;

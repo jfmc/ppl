@@ -69,6 +69,7 @@ ORIGINAL_TESTS = \
 	exceptions1 exceptions2 \
 	generalizedaffineimage1 generalizedaffineimage2 \
 	generalizedaffineimage3 generalizedaffineimage4 \
+	generalizedaffineimage5 \
 	generators1 generators2 generators3 generators4 generators5 \
 	h79widening1 h79widening2 h79widening3 h79widening4 h79widening5 \
 	inclusion1 inclusion2 \
@@ -129,7 +130,7 @@ DERIVED_TESTS = \
 	nnc_empty1 \
 	nnc_exceptions1 \
 	nnc_generalizedaffineimage1 nnc_generalizedaffineimage2 \
-	nnc_generalizedaffineimage3 \
+	nnc_generalizedaffineimage3 nnc_generalizedaffineimage5 \
 	nnc_generators1 nnc_generators2 nnc_generators3 nnc_generators4 \
 	nnc_generators5 \
 	nnc_h79widening1 nnc_h79widening2 nnc_h79widening4 nnc_h79widening5 \
@@ -276,6 +277,7 @@ generalizedaffineimage1_SOURCES = generalizedaffineimage1.cc
 generalizedaffineimage2_SOURCES = generalizedaffineimage2.cc
 generalizedaffineimage3_SOURCES = generalizedaffineimage3.cc
 generalizedaffineimage4_SOURCES = generalizedaffineimage4.cc
+generalizedaffineimage5_SOURCES = generalizedaffineimage5.cc
 
 generators1_SOURCES = generators1.cc
 generators2_SOURCES = generators2.cc
@@ -540,6 +542,8 @@ nnc_generalizedaffineimage2_SOURCES = generalizedaffineimage2.cc
 nnc_generalizedaffineimage2_CXXFLAGS = $(DERIVED_CXXFLAGS)
 nnc_generalizedaffineimage3_SOURCES = generalizedaffineimage3.cc
 nnc_generalizedaffineimage3_CXXFLAGS = $(DERIVED_CXXFLAGS)
+nnc_generalizedaffineimage5_SOURCES = generalizedaffineimage5.cc
+nnc_generalizedaffineimage5_CXXFLAGS = $(DERIVED_CXXFLAGS)
 
 nnc_generators1_SOURCES = generators1.cc
 nnc_generators1_CXXFLAGS = $(DERIVED_CXXFLAGS)
