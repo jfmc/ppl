@@ -133,6 +133,9 @@ public:
   //! Copy-constructor.
   E_Rational(const E_Rational& y);
 
+  //! Builds a plus-infinity object.
+  E_Rational(const Plus_Infinity&);
+
   //! Constructor with explicit initialization from an \p mpz_class object.
   explicit E_Rational(const mpq_class& y);
 

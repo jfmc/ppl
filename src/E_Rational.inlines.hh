@@ -152,6 +152,11 @@ E_Rational::plus_infinity() {
   return p;
 }
 
+inline
+E_Rational::E_Rational(const Plus_Infinity&)
+  : n(pinf()) {
+}
+
 inline const E_Rational&
 E_Rational::finite_max() {
   return plus_infinity();
@@ -414,6 +419,64 @@ div_round_up(const E_Rational& x, const Coefficient& y) {
 inline E_Rational 
 div_round_down(const E_Rational& x, const Coefficient& y) {
   return div_round_up(x, y);
+}
+
+inline bool
+is_plus_infinity(const E_Rational& x) {
+  return x.is_plus_infinity();
+}
+
+inline bool
+is_nan(const E_Rational& x) {
+  return x.is_nan();
+}
+
+inline bool
+is_negative(const E_Rational& x) {
+  return x.is_negative();
+}
+
+inline bool
+is_nonnegative(const E_Rational& x) {
+  return x.is_nonnegative();
+}
+
+inline bool
+exact_neg(E_Rational& to, const E_Rational& x) {
+  to = -x;
+  return true;
+}
+
+inline void
+div_round_up(E_Rational& to,
+	     const Coefficient& x,
+	     const Coefficient& y) {
+  to = div_round_up<E_Rational>(x, y);
+}
+
+inline void
+add_round_up(E_Rational& to,
+	     const E_Rational& x,
+	     const E_Rational& y) {
+  to = add_round_up(x, y);
+}
+
+inline void add_round_down(E_Rational& to,
+			   const E_Rational& x,
+			   const E_Rational& y) {
+  to = add_round_down(x, y);
+}
+
+inline void
+negate_round_down(E_Rational& to,
+		  const E_Rational& x) {
+  to = negate_round_down(x);
+}
+
+inline void
+numer_denom(const E_Rational& from,
+	    Coefficient& num, Coefficient& den) {
+  from.numer_denom(num, den);
 }
 
 namespace IO_Operators {
