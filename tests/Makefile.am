@@ -109,7 +109,6 @@ ORIGINAL_TESTS = \
 	removedim1 removedim2 removedim3 removedim4 removedim5 removedim6 \
 	removedim7 removedim8 removedim9 \
 	smm1 \
-	stronglyminimize1 stronglyminimize2 stronglyminimize3 \
 	timeelapse1 timeelapse2 timeelapse3 timeelapse4 timeelapse5 \
 	timeelapse6 timeelapse7 \
 	topclosed1 topclosed2 topclosed3 \
@@ -445,10 +444,6 @@ removedim8_SOURCES = removedim8.cc
 removedim9_SOURCES = removedim9.cc
 
 smm1_SOURCES = smm1.cc
-
-stronglyminimize1_SOURCES = stronglyminimize1.cc
-stronglyminimize2_SOURCES = stronglyminimize2.cc
-stronglyminimize3_SOURCES = stronglyminimize3.cc
 
 timeelapse1_SOURCES = timeelapse1.cc
 timeelapse2_SOURCES = timeelapse2.cc

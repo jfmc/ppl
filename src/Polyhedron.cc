@@ -921,26 +921,6 @@ PPL::Polyhedron::strongly_minimize_constraints() const {
   return true;
 }
 
-
-bool
-PPL::Polyhedron::strongly_minimize() const {
-  assert(!is_necessarily_closed());
-
-  if (!strongly_minimize_generators())
-    return false;
-  minimize();
-
-  // The constraint system is now in strong minimal form because:
-  // - the strong minimization procedure for generators enforces
-  //   all the point encodings to have the same epsilon coordinate;
-  // - the application of back_substitute() in the (weak) minimization
-  //   process ensures that counterexamples such as that identified
-  //   in the "Errata for Q286" do not apply.
-
-  assert(OK());
-  return true;
-}
-
 void
 PPL::Polyhedron::obtain_sorted_constraints() const {
   assert(constraints_are_up_to_date());

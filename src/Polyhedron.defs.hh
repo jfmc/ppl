@@ -1261,17 +1261,6 @@ public:
 #endif // PPL_DOXYGEN_INCLUDE_IMPLEMENTATION_DETAILS
   bool ascii_load(std::istream& s);
 
-#ifdef PPL_DOXYGEN_INCLUDE_IMPLEMENTATION_DETAILS
-  //! \brief
-  //! Applies strong minimization to both the constraints and generators
-  //! of an NNC polyhedron.
-  /*!
-    \return       <CODE>false</CODE> if and only if \p *this turns out
-                  to be an empty polyhedron.
-  */
-#endif // PPL_DOXYGEN_INCLUDE_IMPLEMENTATION_DETAILS
-  bool strongly_minimize() const;
-
   //! \brief
   //! Swaps \p *this with polyhedron \p y.
   //! (\p *this and \p y can be dimension-incompatible.)
