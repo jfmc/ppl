@@ -636,6 +636,15 @@ Polyhedron::shuffle_dimensions(const PartialFunction& pifunc) {
   dimension_type new_space_dimension = pifunc.max_in_codomain() + 1;
   // If there is something pending, using `generators()' we erase it.
   const GenSys& old_gensys = generators();
+
+  if (old_gensys.num_rows() == 0) {
+    // The polyhedron is empty.
+    Polyhedron new_polyhedron(topology(), new_space_dimension, EMPTY);
+    std::swap(*this, new_polyhedron);
+    assert(OK());
+    return;
+  } 
+
   GenSys new_gensys;
   for (GenSys::const_iterator i = old_gensys.begin(),
 	 old_gensys_end = old_gensys.end(); i != old_gensys_end; ++i) {
@@ -672,6 +681,7 @@ Polyhedron::shuffle_dimensions(const PartialFunction& pifunc) {
   }
   Polyhedron new_polyhedron(topology(), new_gensys);
   std::swap(*this, new_polyhedron);
+  assert(OK(true));
 }
 
 } // namespace Parma_Polyhedra_Library

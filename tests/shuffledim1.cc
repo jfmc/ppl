@@ -28,7 +28,7 @@ using namespace std;
 using namespace Parma_Polyhedra_Library;
 
 #ifndef NOISY
-#define NOISY 1
+#define NOISY 0
 #endif
 
 #if NOISY
@@ -62,7 +62,7 @@ test1() {
   print_constraints(ph1, "*** After ph1.shuffle_dimensions(function) ***");
 #endif
 
-  if(!ok)
+  if (!ok)
     exit(1);
 }
 
@@ -87,7 +87,7 @@ test2() {
   print_constraints(ph1, "*** After ph1.shuffle_dimensions(function) ***");
 #endif
 
-  if(!ok)
+  if (!ok)
     exit(1);
 }
 
@@ -129,7 +129,7 @@ test3() {
   print_generators(ph1, "*** After ph1.shuffle_dimensions(function) ***");
 #endif
 
-  if(!ok)
+  if (!ok)
     exit(1);
 }
 
@@ -169,7 +169,7 @@ test4() {
   print_generators(ph1, "*** After ph1.shuffle_dimensions(function) ***");
 #endif
 
-  if(!ok)
+  if (!ok)
     exit(1);
 }
 
@@ -206,7 +206,7 @@ test5() {
   print_generators(ph1, "*** After ph1.shuffle_dimensions(function) ***");
 #endif
 
-  if(!ok)
+  if (!ok)
     exit(1);
 }
 
@@ -241,7 +241,7 @@ test6() {
   print_generators(ph1, "*** After ph1.shuffle_dimensions(function) ***");
 #endif
 
-  if(!ok)
+  if (!ok)
     exit(1);
 }
 
@@ -283,7 +283,7 @@ test7() {
   print_generators(ph1, "*** After ph1.shuffle_dimensions(function) ***");
 #endif
 
-  if(!ok)
+  if (!ok)
     exit(1);
 }
 
@@ -322,7 +322,7 @@ test8() {
   print_generators(ph1, "*** After ph1.shuffle_dimensions(function) ***");
 #endif
 
-  if(!ok)
+  if (!ok)
     exit(1);
 }
 
@@ -348,7 +348,7 @@ test9() {
   print_generators(ph1, "*** After ph1.shuffle_dimensions(function) ***");
 #endif
 
-  if(!ok)
+  if (!ok)
     exit(1);
 }
 
@@ -366,7 +366,7 @@ test10() {
 
   ph1.shuffle_dimensions(function);
 
-  C_Polyhedron known_result(1, C_Polyhedron::EMPTY);
+  C_Polyhedron known_result(2, C_Polyhedron::EMPTY);
 
   bool ok = (ph1 == known_result);
 
@@ -374,7 +374,7 @@ test10() {
   print_constraints(ph1, "*** After ph1.shuffle_dimensions(function) ***");
 #endif
 
-  if(!ok)
+  if (!ok)
     exit(1);
 }
 
@@ -392,7 +392,6 @@ main() try {
   test8();
   test9();
   test10();
-
   return 0;
 }
 catch (const std::exception& e) {
