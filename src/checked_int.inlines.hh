@@ -169,41 +169,6 @@ succ_int(Type& to) {
 
 template<typename Policy, typename To, typename From>
 inline Result
-assign_int_int(To& to, const From from) {
-  to = To(from);
-  return V_EQ;
-}
-
-template<typename Policy, typename To, typename From>
-inline Result
-assign_int_int_check_min(To& to, const From from) {
-  Result r;
-  if (Policy::check_overflow && from < static_cast<From>(CHECKED_INT_MIN(To, Policy))) {
-    r = V_NEG_OVERFLOW;
-    goto bad;
-  }
-  to = To(from);
-  r = V_EQ;
- bad:
-  return r;
-}
-
-template<typename Policy, typename To, typename From>
-inline Result
-assign_int_int_check_max(To& to, const From from) {
-  Result r;
-  if (Policy::check_overflow && from > static_cast<From>(CHECKED_INT_MAX(To, Policy))) {
-    r = V_POS_OVERFLOW;
-    goto bad;
-  }
-  to = To(from);
-  r = V_EQ;
- bad:
-  return r;
-}
-
-template<typename Policy, typename To, typename From>
-inline Result
 assign_signed_int_signed_int(To& to, const From from) {
   Result r;
   if (Policy::check_overflow && sizeof(To) <= sizeof(From)) {
