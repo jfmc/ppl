@@ -145,4 +145,4 @@ public:
 
 #include "PowerSet.inlines.hh"
 
-#endif // _PowerSet_defs_hh
+#endif // !defined(_PowerSet_defs_hh)

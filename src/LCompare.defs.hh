@@ -36,4 +36,4 @@ public:
 
 #include "LCompare.inlines.hh"
 
-#endif // _LCompare_defs_hh
+#endif // !defined(_LCompare_defs_hh)

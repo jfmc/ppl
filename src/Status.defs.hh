@@ -177,4 +177,4 @@ std::istream& operator>>(std::istream& s, Status& u);
 
 #include "Status.inlines.hh"
 
-#endif // _Status_defs_hh
+#endif // !defined(_Status_defs_hh)

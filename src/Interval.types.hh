@@ -20,4 +20,4 @@ namespace Parma_Polyhedra_Library {
   class Interval;
 }
 
-#endif
+#endif // !defined(_Interval_types_hh)

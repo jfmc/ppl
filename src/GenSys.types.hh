@@ -16,4 +16,4 @@ namespace Parma_Polyhedra_Library {
   class GenSys;
 }
 
-#endif
+#endif // !defined(_GenSys_types_hh)

@@ -173,4 +173,4 @@ swap(Parma_Polyhedra_Library::Generator& x,
 
 } // namespace std
 
-#endif // _Generator_inlines_hh
+#endif // !defined(_Generator_inlines_hh)

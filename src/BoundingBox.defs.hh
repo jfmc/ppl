@@ -121,4 +121,4 @@ std::ostream& operator<<(std::ostream& s, const BoundingBox& bbox);
 
 #include "BoundingBox.inlines.hh"
 
-#endif // _BoundingBox_defs_hh
+#endif // !defined(_BoundingBox_defs_hh)

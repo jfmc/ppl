@@ -63,4 +63,4 @@ NNC_Polyhedron::~NNC_Polyhedron() {
 
 } // namespace Parma_Polyhedra_Library
 
-#endif // _NNC_Polyhedron_inlines_hh
+#endif // !defined(_NNC_Polyhedron_inlines_hh)

@@ -129,4 +129,4 @@ public:
 
 #include "AskTell.inlines.hh"
 
-#endif // _AskTell_defs_hh
+#endif // !defined(_AskTell_defs_hh)

@@ -313,4 +313,4 @@ swap(Parma_Polyhedra_Library::Constraint& x,
 
 } // namespace std
 
-#endif // _Constraint_inlines_hh
+#endif // !defined(_Constraint_inlines_hh)

@@ -302,4 +302,4 @@ private:
 
 // ConSys.inlines.hh is not included here on purpose.
 
-#endif // _ConSys_defs_hh
+#endif // !defined(_ConSys_defs_hh)

@@ -19,4 +19,4 @@ class AskTell;
 
 }
 
-#endif // _AskTell_types_hh
+#endif // !defined(_AskTell_types_hh)

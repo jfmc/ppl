@@ -56,4 +56,4 @@ public:
 
 #include "Init.inlines.hh"
 
-#endif // _Init_defs_hh
+#endif // !defined(_Init_defs_hh)

@@ -163,4 +163,4 @@ Determinate<PH>::remove_higher_dimensions(size_t new_dimension) {
 
 } // namespace Parma_Polyhedra_Library
 
-#endif // _Determinate_inlines_hh
+#endif // !defined(_Determinate_inlines_hh)

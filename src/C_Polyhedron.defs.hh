@@ -128,4 +128,4 @@ public:
 
 #include "C_Polyhedron.inlines.hh"
 
-#endif // _C_Polyhedron_defs_hh
+#endif // !defined(_C_Polyhedron_defs_hh)

@@ -163,4 +163,4 @@ std::istream& operator>>(std::istream& s, SatMatrix& x);
 
 #include "SatMatrix.inlines.hh"
 
-#endif // _SatMatrix_defs_hh
+#endif // !defined(_SatMatrix_defs_hh)

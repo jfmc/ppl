@@ -44,4 +44,4 @@ operator<(const Variable& v, const Variable& w) {
 
 } // namespace Parma_Polyhedra_Library
 
-#endif // _Variable_inlines_hh
+#endif // !defined(_Variable_inlines_hh)

@@ -422,4 +422,4 @@ Generator closure_point(const LinExpression& e = LinExpression::zero(),
 
 #include "Generator.inlines.hh"
 
-#endif // _Generator_defs_hh
+#endif // !defined(_Generator_defs_hh)

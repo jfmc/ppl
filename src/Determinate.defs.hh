@@ -175,4 +175,4 @@ private:
 
 #include "Determinate.inlines.hh"
 
-#endif // _Determinate_defs_hh
+#endif // !defined(_Determinate_defs_hh)

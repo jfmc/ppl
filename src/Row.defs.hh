@@ -34,8 +34,9 @@ site: http://www.cs.unipr.it/ppl/ . */
 #include <iosfwd>
 
 #ifndef EXTRA_ROW_DEBUG
-//! When EXTRA_ROW_DEBUG evaluates to true, each row carries its own
-//! capacity; this enables extra consistency checks to be performed.
+//! When EXTRA_ROW_DEBUG evaluates to <CODE>true</CODE>, each row
+//! carries its own capacity; this enables extra consistency checks to
+//! be performed.
 #define EXTRA_ROW_DEBUG 0
 #endif
 
@@ -202,13 +203,14 @@ private:
   Impl* impl;
 
 #if EXTRA_ROW_DEBUG
+
   //! The capacity of the row (only available during debugging).
   size_t capacity_;
 
   //! Returns the capacity of the row (only available during debugging).
   size_t capacity() const;
-#endif
 
+#endif // defined(EXTRA_ROW_DEBUG)
 };
 
 namespace Parma_Polyhedra_Library {
@@ -393,4 +395,4 @@ void swap(Parma_Polyhedra_Library::Row& x,
 
 #include "Row.inlines.hh"
 
-#endif // _Row_defs_hh
+#endif // !defined(_Row_defs_hh)

@@ -443,4 +443,4 @@ std::ostream& operator<<(std::ostream& s, const Matrix& m);
 
 #include "Matrix.inlines.hh"
 
-#endif // _Matrix_defs_hh
+#endif // !defined(_Matrix_defs_hh)

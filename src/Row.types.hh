@@ -16,4 +16,4 @@ namespace Parma_Polyhedra_Library {
   class Row;
 }
 
-#endif
+#endif // !defined(_Row_types_hh)

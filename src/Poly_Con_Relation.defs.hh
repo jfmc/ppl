@@ -145,4 +145,4 @@ public:
 
 #include "Poly_Con_Relation.inlines.hh"
 
-#endif // _Poly_Con_Relation_defs_hh
+#endif // !defined(_Poly_Con_Relation_defs_hh)

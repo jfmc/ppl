@@ -122,4 +122,4 @@ public:
 
 #include "Poly_Gen_Relation.inlines.hh"
 
-#endif // _Poly_Gen_Relation_defs_hh
+#endif // !defined(_Poly_Gen_Relation_defs_hh)

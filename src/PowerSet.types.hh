@@ -19,4 +19,4 @@ class PowerSet;
 
 }
 
-#endif // _PowerSet_types_hh
+#endif // !defined(_PowerSet_types_hh)

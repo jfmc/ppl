@@ -78,4 +78,4 @@ operator-(const Poly_Gen_Relation& x, const Poly_Gen_Relation& y) {
 
 } // namespace Parma_Polyhedra_Library
 
-#endif // _Poly_Gen_Relation_inlines_hh
+#endif // !defined(_Poly_Gen_Relation_inlines_hh)

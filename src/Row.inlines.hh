@@ -558,4 +558,4 @@ iter_swap(std::vector<Parma_Polyhedra_Library::Row>::iterator x,
 
 } // namespace std
 
-#endif // _Row_inlines_hh
+#endif // !defined(_Row_inlines_hh)

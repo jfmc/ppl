@@ -16,4 +16,4 @@ namespace Parma_Polyhedra_Library {
   class Init;
 }
 
-#endif
+#endif // !defined(_Init_types_hh)

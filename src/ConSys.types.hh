@@ -16,4 +16,4 @@ namespace Parma_Polyhedra_Library {
   class ConSys;
 }
 
-#endif
+#endif // !defined(_ConSys_types_hh)

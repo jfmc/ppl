@@ -16,4 +16,4 @@ namespace Parma_Polyhedra_Library {
   class C_Polyhedron;
 }
 
-#endif
+#endif // !defined(_C_Polyhedron_types_hh)

@@ -46,4 +46,4 @@ Init::~Init() {
 
 } // namespace Parma_Polyhedra_Library
 
-#endif // _Init_inlines_hh
+#endif // !defined(_Init_inlines_hh)

@@ -16,4 +16,4 @@ namespace Parma_Polyhedra_Library {
   class Poly_Con_Relation;
 }
 
-#endif
+#endif // !defined(_Poly_Con_Relation_types_hh)

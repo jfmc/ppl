@@ -63,4 +63,4 @@ C_Polyhedron::~C_Polyhedron() {
 
 } // namespace Parma_Polyhedra_Library
 
-#endif // _C_Polyhedron_inlines_hh
+#endif // !defined(_C_Polyhedron_inlines_hh)

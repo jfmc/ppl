@@ -122,4 +122,4 @@ swap(Parma_Polyhedra_Library::LinExpression& x,
 
 } // namespace std
 
-#endif // _LinExpression_inlines_hh
+#endif // !defined(_LinExpression_inlines_hh)

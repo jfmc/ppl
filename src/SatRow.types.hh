@@ -16,4 +16,4 @@ namespace Parma_Polyhedra_Library {
   class SatRow;
 }
 
-#endif
+#endif // !defined(_SatRow_types_hh)

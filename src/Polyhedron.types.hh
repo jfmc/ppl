@@ -28,4 +28,4 @@ namespace Parma_Polyhedra_Library {
 namespace std {
 }
 
-#endif
+#endif // !defined(_Polyhedron_types_hh)

@@ -153,4 +153,4 @@ iter_swap(std::vector<Parma_Polyhedra_Library::SatRow>::iterator x,
 
 } // namespace std
 
-#endif // _SatRow_inlines_hh
+#endif // !defined(_SatRow_inlines_hh)

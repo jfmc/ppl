@@ -16,4 +16,4 @@ namespace Parma_Polyhedra_Library {
   class Matrix;
 }
 
-#endif
+#endif // !defined(_Matrix_types_hh)

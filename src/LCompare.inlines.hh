@@ -34,4 +34,4 @@ LCompare<T>::operator()(const T& x, const T& y) const {
 
 } // namespace Parma_Polyhedra_Library
 
-#endif // _LCompare_inlines_hh
+#endif // !defined(_LCompare_inlines_hh)

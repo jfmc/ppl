@@ -1318,4 +1318,4 @@ void swap(Parma_Polyhedra_Library::Polyhedron& x,
 
 #include "Polyhedron.inlines.hh"
 
-#endif // _Polyhedron_defs_hh
+#endif // !defined(_Polyhedron_defs_hh)

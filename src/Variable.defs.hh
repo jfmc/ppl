@@ -83,4 +83,4 @@ bool operator<(const Variable& v, const Variable& w);
 
 #include "Variable.inlines.hh"
 
-#endif // _Variable_defs_hh
+#endif // !defined(_Variable_defs_hh)

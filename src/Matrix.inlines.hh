@@ -169,4 +169,4 @@ swap(Parma_Polyhedra_Library::Matrix& x,
 
 } // namespace std
 
-#endif // _Matrix_inlines_hh
+#endif // !defined(_Matrix_inlines_hh)

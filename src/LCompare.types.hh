@@ -19,4 +19,4 @@ class LCompare;
 
 }
 
-#endif // _LCompare_types_hh
+#endif // !defined(_LCompare_types_hh)

@@ -19,4 +19,4 @@ class Determinate;
 
 }
 
-#endif // _Determinate_types_hh
+#endif // !defined(_Determinate_types_hh)

@@ -396,4 +396,4 @@ private:
 
 // GenSys.inlines.hh is not included here on purpose.
 
-#endif // _GenSys_defs_hh
+#endif // !defined(_GenSys_defs_hh)

@@ -115,4 +115,4 @@ BoundingBox::lower_upper_bound(unsigned int k, bool closed,
 
 } // namespace Parma_Polyhedra_Library
 
-#endif // _BoundingBox_inlines_hh
+#endif // !defined(_BoundingBox_inlines_hh)

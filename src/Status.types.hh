@@ -16,4 +16,4 @@ namespace Parma_Polyhedra_Library {
   class Status;
 }
 
-#endif
+#endif // !defined(_Status_types_hh)

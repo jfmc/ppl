@@ -409,4 +409,4 @@ private:
 
 #include "Constraint.inlines.hh"
 
-#endif // _Constraint_defs_hh
+#endif // !defined(_Constraint_defs_hh)

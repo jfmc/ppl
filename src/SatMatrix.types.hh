@@ -16,4 +16,4 @@ namespace Parma_Polyhedra_Library {
   class SatMatrix;
 }
 
-#endif
+#endif // !defined(_SatMatrix_types_hh)

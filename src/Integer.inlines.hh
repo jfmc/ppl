@@ -76,4 +76,4 @@ std::swap(Parma_Polyhedra_Library::Integer& x,
   mpz_swap(x.get_mpz_t(), y.get_mpz_t());
 }
 
-#endif // _Integer_inlines_hh
+#endif // !defined(_Integer_inlines_hh)

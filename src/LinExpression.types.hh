@@ -16,4 +16,4 @@ namespace Parma_Polyhedra_Library {
   class LinExpression;
 }
 
-#endif
+#endif // !defined(_LinExpression_types_hh)

@@ -288,4 +288,4 @@ PowerSet<CS>::remove_higher_dimensions(size_t new_dimension) {
   
 } // namespace Parma_Polyhedra_Library
 
-#endif // _PowerSet_inlines_hh
+#endif // !defined(_PowerSet_inlines_hh)

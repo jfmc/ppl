@@ -277,4 +277,4 @@ private:
 
 #include "LinExpression.inlines.hh"
 
-#endif // _LinExpression_defs_hh
+#endif // !defined(_LinExpression_defs_hh)

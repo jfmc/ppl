@@ -145,4 +145,4 @@ swap(Parma_Polyhedra_Library::SatMatrix& x,
 
 } // namespace std
 
-#endif // _SatMatrix_inlines_hh
+#endif // !defined(_SatMatrix_inlines_hh)

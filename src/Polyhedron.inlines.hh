@@ -419,4 +419,4 @@ std::swap(Parma_Polyhedra_Library::Polyhedron& x,
   x.swap(y);
 }
 
-#endif // _Polyhedron_inlines_hh
+#endif // !defined(_Polyhedron_inlines_hh)

@@ -19,4 +19,4 @@ namespace Parma_Polyhedra_Library {
   typedef mpz_class Integer;
 }
 
-#endif
+#endif // !defined(_Integer_types_hh)

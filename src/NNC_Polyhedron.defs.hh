@@ -108,4 +108,4 @@ public:
 
 #include "NNC_Polyhedron.inlines.hh"
 
-#endif // _NNC_Polyhedron_defs_hh
+#endif // !defined(_NNC_Polyhedron_defs_hh)

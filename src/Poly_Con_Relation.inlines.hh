@@ -93,4 +93,4 @@ operator-(const Poly_Con_Relation& x, const Poly_Con_Relation& y) {
 
 } // namespace Parma_Polyhedra_Library
 
-#endif // _Poly_Con_Relation_inlines_hh
+#endif // !defined(_Poly_Con_Relation_inlines_hh)

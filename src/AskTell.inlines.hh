@@ -451,4 +451,4 @@ operator<<(std::ostream& s, const AskTell<CS>& x) {
 
 } // namespace Parma_Polyhedra_Library
 
-#endif // _AskTell_inlines_hh
+#endif // !defined(_AskTell_inlines_hh)
