@@ -28,7 +28,7 @@ using namespace std;
 using namespace Parma_Polyhedra_Library;
 
 #ifndef NOISY
-#define NOISY 0
+#define NOISY 1
 #endif
 
 Variable x(0);
@@ -119,11 +119,19 @@ S(unsigned n) {
   return s;
 }
 
+void
+my_output_function(ostream& s, const Variable& v) {
+  s << char('x' + v.id());
+}
+
 using namespace Parma_Polyhedra_Library::IO_Operators;
 
 int
 main() TRY {
   set_handlers();
+
+  // Install the alternate output function.
+  Variable::set_output_function(my_output_function);
 
   PSet T = S(0);
 #if NOISY
