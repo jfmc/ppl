@@ -111,9 +111,10 @@ template <typename PH>
 void
 Determinate<PH>::mutate() {
   if (prep->is_shared()) {
+    Rep* new_prep = new Rep(prep->ph);
     (void) prep->del_reference();
-    prep = new Rep(prep->ph);
-    prep->new_reference();
+    new_prep->new_reference();
+    prep = new_prep;
   }
 }
 
@@ -162,13 +163,6 @@ bool
 Determinate<PH>::is_definitely_equivalent_to(const Determinate<PH>& y)
   const {
   return prep->ph == y.prep->ph;
-}
-
-/*! \relates Determinate */
-template <typename PH>
-bool
-lcompare(const Determinate<PH>& x, const Determinate<PH>& y) {
-  return x.prep < y.prep;
 }
 
 /*! \relates Determinate */

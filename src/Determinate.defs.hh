@@ -59,11 +59,6 @@ bool operator==(const Determinate<PH>& x, const Determinate<PH>& y);
 template <typename PH>
 bool operator!=(const Determinate<PH>& x, const Determinate<PH>& y);
 
-/*! \relates Determinate */
-template <typename PH>
-bool
-lcompare(const Determinate<PH>& x, const Determinate<PH>& y);
-
 //! Computes an upper bound of \p x and \p y.
 /*! \relates Determinate */
 template <typename PH>
@@ -181,7 +176,6 @@ public:
   friend Determinate operator *<>(const Determinate& x,
 				  const Determinate& y);
 #endif
-  friend bool lcompare<>(const Determinate& x, const Determinate& y);
 
   //! Returns the dimension of the vector space enclosing \p *this.
   dimension_type space_dimension() const;
