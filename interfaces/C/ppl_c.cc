@@ -1825,6 +1825,15 @@ ppl_Polyhedron_check_disjoint_from_Polyhedron(ppl_const_Polyhedron_t x,
 CATCH_ALL
 
 int
+ppl_Polyhedron_equals_Polyhedron(ppl_const_Polyhedron_t x,
+				 ppl_const_Polyhedron_t y) try {
+  const Polyhedron& xx = *to_const(x);
+  const Polyhedron& yy = *to_const(y);
+  return (xx == yy) ? 1 : 0;
+}
+CATCH_ALL
+
+int
 ppl_Polyhedron_OK(ppl_const_Polyhedron_t ph) try {
   return to_const(ph)->OK() ? 1 : 0;
 }

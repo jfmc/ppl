@@ -1397,6 +1397,17 @@ ppl_Polyhedron_check_disjoint_from_Polyhedron __P((ppl_const_Polyhedron_t x,
 						   ppl_const_Polyhedron_t y));
 
 /*! \brief
+  Returns a positive integer if \p x and \p y are the same polyhedron;
+  return 0 if they are different.
+
+  Note that \p x and \p y may be topology- and/or dimension-incompatible
+  polyhedra: in those cases, the value 0 is returned.
+*/
+int
+ppl_Polyhedron_equals_Polyhedron __P((ppl_const_Polyhedron_t x,
+				      ppl_const_Polyhedron_t y));
+
+/*! \brief
   Returns a positive integer if \p ph is well formed, i.e., if it
   satisfies all its implementation variant; returns 0 and perhaps
   make some noise if \p ph is broken.  Useful for debugging purposes.
