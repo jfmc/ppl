@@ -338,9 +338,19 @@ PPL::ConSys::print(std::ostream& s) const {
   for (size_t i = 0; i < x.num_rows(); ++i) {
     for (size_t j = 0; j < x.num_columns(); ++j)
       s << x[i][j] << separator;
-    s << separator << separator
-      << (x[i].is_equality() ? "=" : ">=")
-      << std::endl;
+    s << separator << separator;
+    switch (static_cast<Constraint>(x[i]).type()) {
+    case Constraint::EQUALITY:
+      s << "=";
+      break;
+    case Constraint::NONSTRICT_INEQUALITY:
+      s << ">=";
+      break;
+    case Constraint::STRICT_INEQUALITY:
+      s << ">";
+      break;
+    }
+    s << std::endl;
   }
 }
 
@@ -370,11 +380,29 @@ PPL::ConSys::get(std::istream& s) {
     s >> tempstr;
     if (tempstr == "=")
       x[i].set_is_equality();
-    else if (tempstr == ">=")
-      x[i].set_is_inequality();
     else
-      throw std::runtime_error("void PPL::ConSys::get(s)");
+      x[i].set_is_inequality();
+    // Checking for equality of actual and declared types.
+    switch (static_cast<Constraint>(x[i]).type()) {
+    case Constraint::EQUALITY:
+      if (tempstr == "=")
+	continue;
+      break;
+    case Constraint::NONSTRICT_INEQUALITY:
+      if (tempstr == ">=")
+	continue;
+      break;
+    case Constraint::STRICT_INEQUALITY:
+      if (tempstr == ">")
+	continue;
+      break;
+    }
+    // Reaching this point means that the input was illegal.
+    throw std::runtime_error("void PPL::ConSys::get(s)");
   }
+  // Checking for well-formedness.
+  if (!x.OK())
+    throw std::runtime_error("void PPL::ConSys::get(s)");
 }
 
 /*!

@@ -612,11 +612,22 @@ PPL::GenSys::print(std::ostream& s) const {
   for (size_t i = 0; i < x.num_rows(); ++i) {
     for (size_t j = 0; j < x.num_columns(); ++j)
       s << x[i][j] << separator;
-    s << separator << separator
-      << (x[i].is_ray_or_point()
-	  ? (x[i][0] == 0 ? "R" : "P")
-	  : "L")
-      << std::endl;
+    s << separator << separator;
+    switch (static_cast<Generator>(x[i]).type()) {
+    case Generator::LINE:
+      s << "L";
+      break;
+    case Generator::RAY:
+      s << "R";
+      break;
+    case Generator::POINT:
+      s << "P";
+      break;
+    case Generator::CLOSURE_POINT:
+      s << "C";
+      break;
+    }
+    s << std::endl;
   }
 }
 
@@ -646,12 +657,35 @@ PPL::GenSys::get(std::istream& s) {
     s >> tempstr;
     if (tempstr == "L")
       x[i].set_is_line();
-    else if (tempstr == "R" || tempstr == "V")
-      x[i].set_is_ray_or_point();
     else
-      throw std::runtime_error("void PPL::GenSys::get(s)");
+      x[i].set_is_ray_or_point();
+    // Checking for equality of actual and declared types.
+    switch (static_cast<Generator>(x[i]).type()) {
+    case Generator::LINE:
+      if (tempstr == "L")
+	continue;
+      break;
+    case Generator::RAY:
+      if (tempstr == "R")
+	continue;
+      break;
+    case Generator::POINT:
+      if (tempstr == "P")
+	continue;
+      break;
+    case Generator::CLOSURE_POINT:
+      if (tempstr == "C")
+	continue;
+      break;
+    }
+    // Reaching this point means that the input was illegal.
+    throw std::runtime_error("void PPL::GenSys::get(s)");
   }
+  // Checking for well-formedness.
+  if (!x.OK())
+    throw std::runtime_error("void PPL::GenSys::get(s)");
 }
+
 
 void
 PPL::GenSys::remove_invalid_lines_and_rays() {
