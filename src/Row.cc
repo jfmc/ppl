@@ -176,8 +176,7 @@ PPL::scalar_product_assign(Integer& z, const Row& x, const Row& y) {
   assert(x.size() <= y.size());
   z = 0;
   for (dimension_type i = x.size(); i-- > 0; )
-    // The following line optimizes the computation
-    // of z += x[i] * y[i].
+    // The following line optimizes the computation of z += x[i] * y[i].
     add_mul_assign(z, x[i], y[i]);
 }
 

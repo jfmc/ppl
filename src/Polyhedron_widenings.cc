@@ -729,8 +729,7 @@ PPL::Polyhedron::BHRZ03_evolving_rays(const Polyhedron& y,
 
   // Candidate rays are kept in a temporary generator system.
   GenSys candidate_rays;
-  TEMP_INTEGER(tmp_1);
-  TEMP_INTEGER(tmp_2);
+  TEMP_INTEGER(tmp);
   for (dimension_type i = x_gen_sys_num_rows; i-- > 0; ) {
     const Generator& x_g = x.gen_sys[i];
     // We choose a ray of `x' that does not belong to `y'.
@@ -745,11 +744,12 @@ PPL::Polyhedron::BHRZ03_evolving_rays(const Polyhedron& y,
 	    if (!considered[k])
 	      for (dimension_type h = k + 1; h <= x.space_dim; ++h)
 		if (!considered[h]) {
-		  tmp_1 = x_g[k] * y_g[h];
-		  tmp_2 = x_g[h] * y_g[k];
-		  tmp_1 -= tmp_2;
+		  tmp = x_g[k] * y_g[h];
+		  // The following line optimizes the computation of
+		  // tmp -= x_g[h] * y_g[k];
+		  sub_mul_assign(tmp, x_g[h], y_g[k]);
 		  const int clockwise
-		    = sgn(tmp_1);
+		    = sgn(tmp);
 		  const int first_or_third_quadrant
 		    = sgn(x_g[k])*sgn(x_g[h]);
 		  switch (clockwise * first_or_third_quadrant) {

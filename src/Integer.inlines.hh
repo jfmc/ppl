@@ -57,6 +57,11 @@ add_mul_assign(Integer& x, const Integer& y, const Integer& z) {
 }
 
 inline void
+sub_mul_assign(Integer& x, const Integer& y, const Integer& z) {
+  mpz_submul(x.get_mpz_t(), y.get_mpz_t(), z.get_mpz_t());
+}
+
+inline void
 exact_div_assign(Integer& x, const Integer& y) {
   mpz_divexact(x.get_mpz_t(), x.get_mpz_t(), y.get_mpz_t());
 }

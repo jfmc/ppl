@@ -727,7 +727,9 @@ PPL::GenSys::affine_image(dimension_type v,
     Generator& row = x[i];
     numerator = 0;
     for (dimension_type j = expr.size(); j-- > 0; )
-      numerator += row[j] * expr[j];
+      // The following line optimizes the computation of
+      // numerator += row[j] * expr[j].
+      add_mul_assign(numerator, row[j], expr[j]);
     std::swap(numerator, row[v]);
   }
 

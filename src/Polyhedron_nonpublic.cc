@@ -513,7 +513,6 @@ PPL::Polyhedron::bounds(const LinExpression& expr,
     return true;
 
   TEMP_INTEGER(sp);
-  TEMP_INTEGER(prod);
   // The polyhedron has updated, possibly pending generators.
   for (dimension_type i = gen_sys.num_rows(); i-- > 0; ) {
     const Generator& g = gen_sys[i];
@@ -522,12 +521,9 @@ PPL::Polyhedron::bounds(const LinExpression& expr,
       // Compute the scalar product between `g' and `expr'.
       sp = 0;
       // Note the pre-decrement of `j': last iteration should be for `j == 1'.
-      for (dimension_type j = expr.size(); --j > 0; ) {
-	// The following two lines optimize the computation
-	// of sp += g[j] * expr[j].
-	prod = g[j] * expr[j];
-	sp += prod;
-      }
+      for (dimension_type j = expr.size(); --j > 0; )
+	// The following line optimizes the computation sp += g[j] * expr[j].
+	add_mul_assign(sp, g[j], expr[j]);
       const int sign_sp = sgn(sp);
       if (sign_sp != 0
 	  && (g.is_line()
@@ -578,19 +574,15 @@ PPL::Polyhedron::max_min(const LinExpression& expr,
   bool ext_included = false;
 
   TEMP_INTEGER(sp);
-  TEMP_INTEGER(prod);
   for (dimension_type i = gen_sys.num_rows(); i-- > 0; ) {
     const Generator& g = gen_sys[i];
 
     // Compute the scalar product between `g' and `expr'.
     sp = 0;
     // Note the pre-decrement of `j': last iteration should be for `j == 1'.
-    for (dimension_type j = expr.size(); --j > 0; ) {
-      // The following two lines optimize the computation
-      // of sp += g[j] * expr[j].
-      prod = g[j] * expr[j];
-      sp += prod;
-    }
+    for (dimension_type j = expr.size(); --j > 0; )
+      // The following line optimizes the computation of sp += g[j] * expr[j].
+      add_mul_assign(sp, g[j], expr[j]);
 
     // Lines and rays in `*this' can cause `expr' to be unbounded.
     if (g[0] == 0) {

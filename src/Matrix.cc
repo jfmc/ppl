@@ -999,7 +999,6 @@ PPL::Matrix::gram_shmidt() {
 
   const dimension_type n_columns = num_columns();
 
-  TEMP_INTEGER(prod);
   TEMP_INTEGER(accum);
   // Start from the second line/equality of the matrix.
   for (dimension_type i = 1; i < rank; i++) {
@@ -1014,8 +1013,9 @@ PPL::Matrix::gram_shmidt() {
       accum = 0;
       for (dimension_type h = 0; h < j; h++) {
         accum *= mu[h][h];
-	prod = mu_i[h] * mu_j[h];
-	accum += prod;
+	// The following line optimizes the computation of
+	// accum += mu_i[h] * mu_j[h].
+	add_mul_assign(accum, mu_i[h], mu_j[h]);
 	if (h > 0)
 	  exact_div_assign(accum, mu[h-1][h-1]);
       }
@@ -1030,8 +1030,9 @@ PPL::Matrix::gram_shmidt() {
       const Integer& mu_jj = mu[j][j];
       for (dimension_type k = n_columns; k-- > 0; ) {
         rows_i[k] *= mu_jj;
-        prod = mu_ij * rows_j[k];
-        rows_i[k] -= prod;
+	// The following line optimizes the computation of
+        // rows_i[k] -= mu_ij * rows_j[k].
+        sub_mul_assign(rows_i[k], mu_ij, rows_j[k]);
 	if (j > 0)
 	  exact_div_assign(rows_i[k], mu[j-1][j-1]);
       }
