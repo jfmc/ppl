@@ -40,7 +40,7 @@ namespace PPL = Parma_Polyhedra_Library;
 
   \param con_to_ray   <CODE>true</CODE> if \p source represents the
                       constraints, <CODE>false</CODE> otherwise.
-  \param source       The given matrix.
+  \param source       The given matrix, which is not empty.
   \param dest         The matrix to build and minimize.
   \param sat          The saturation matrix.
 
@@ -69,6 +69,11 @@ namespace PPL = Parma_Polyhedra_Library;
 bool
 PPL::Polyhedron::minimize(bool con_to_ray,
 			  Matrix& source, Matrix& dest, SatMatrix& sat) {
+  // `source' cannot be empty: even if it is an empty constraint system,
+  // representing the universe polyhedron, homogeneization has added
+  // the positive constraint.
+  assert(source.num_rows() > 0);
+
   // Sort the source matrix, if necessary.
   // This ensures that all the equalities come before the inequalities
   // (the correctness of simplify() relies on this hypothesis).
@@ -92,12 +97,20 @@ PPL::Polyhedron::minimize(bool con_to_ray,
     for (size_t j = dest_num_rows; j-- > 0; )
       dest[i][j] = 0;
     dest[i][i] = 1;
-    // FIXME: why the first row, having divisor 1, is said to be a line?
     dest[i].set_is_line_or_equality();
   }
   // The identity matrix `dest' is not sorted
   // (see the sorting rules in Row.cc).
   dest.set_sorted(false);
+
+  // NOTE: the matrix `dest', as it is now, it is not a _legal_
+  //       system of generators, because in the first row we have
+  // a line with a non-zero divisor (which should only happen for
+  // vertices). However, this is NOT a problem, because `source'
+  // necessarily contains the positivity constraint (or a combination
+  // of it with another constraint) which will restore things as they
+  // should be.
+
 
   // Building a saturation matrix and initializing it by setting
   // all of its elements to zero. This matrix will be modified together
@@ -207,7 +220,7 @@ PPL::Polyhedron::add_and_minimize(bool con_to_ray,
 				  Matrix& dest,
 				  SatMatrix& sat,
 				  const Matrix& source2) {
-  // `source1' and `source2' must have the same number of dimensions
+  // `source1' and `source2' must have the same number of columns
   // to be merged.
   assert(source1.num_columns() == source2.num_columns());
   assert(source1.is_sorted());
