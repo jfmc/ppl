@@ -150,7 +150,7 @@ PPL_INTERNAL:
 
   //! Substitutes a given column of coefficients by a given affine expression.
   void substitute_variable(size_t var,
-			   const LinExpression& coefficient,
+			   const LinExpression& expr,
 			   Integer& denominator);
   
   //! Returns the number of the equality constraints.

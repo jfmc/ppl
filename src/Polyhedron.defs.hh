@@ -317,12 +317,12 @@ public:
   //! Assigns an affine expression to the specified variable.
   //! \exception std::invalid_argument \p denominator is zero.
   void assign_variable(const Variable& var, 
-		       const LinExpression& coefficient,
+		       const LinExpression& expr,
 		       Integer& denominator);
   //! Substitute an affine expression to the specified variable.
   //! \exception std::invalid_argument \p denominator is zero.
   void substitute_variable(const Variable& var,
-			   const LinExpression& coefficient,
+			   const LinExpression& expr,
 			   Integer& denominator);
 
   //! Checks if a polyhedron is allowed.

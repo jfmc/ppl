@@ -1138,20 +1138,16 @@ PPL::operator >>(std::istream& s, PPL::Polyhedron& p) {
 
 /*!
   \param var           The variable to which the affine expression is assigned.
-  \param coefficient   The coefficients of the affine expression.
+  \param expr          The affine expression.
   \param denominator   The denominator of the affine expression.
-
-  \p coefficient is not a constant parameter because we may need 
-  to modify it when we have to compute the inverse of the affine 
-  transformation (in case of working on constraints).
 
   When considering the generators of a polyhedron, the 
   affine transformation
   \f[
     \frac{\sum_{i=0}^{n-1} a_i x_i + b}{denominator}
   \f]
-  is assigned to \p var where \p coefficient is 
-  \f$[b, a_0, \ldots, a_{n-1}]\f$
+  is assigned to \p var where \p expr is 
+  \f$\sum_{i=0}^{n-1} a_i x_i + b\f$
   (\f$b\f$ is the inhomogeneous term).
   
   If constraints are up-to-date, it uses the specialized function 
@@ -1204,25 +1200,26 @@ PPL::operator >>(std::istream& s, PPL::Polyhedron& p) {
 */
 void
 PPL::Polyhedron::assign_variable(const Variable& var,
-				 const LinExpression& coefficient,
+				 const LinExpression& expr,
 				 Integer& denominator) {
   if (denominator == 0)
-    throw std::invalid_argument("void PPL::Polyhedron::assign_variable(v, c, d) with d == 0");
+    throw std::invalid_argument("void PPL::Polyhedron::assign_variable"
+				"(v, e, d) with d == 0");
 
   Polyhedron& x = *this;
   size_t num_columns = x.gen_sys.num_columns();
   size_t num_var = var.id() + 1;
-  assert(num_columns == coefficient.size());
+  assert(num_columns == expr.size());
   
   // Index of var must be in the range of the variables of generators.
   assert(num_var < num_columns);
   
-  if (coefficient[num_var] != 0) {
+  if (expr[num_var] != 0) {
     // The transformation is invertible.
     if (generators_are_up_to_date())
-      x.gen_sys.assign_variable(num_var, coefficient, denominator);
+      x.gen_sys.assign_variable(num_var, expr, denominator);
     if (constraints_are_up_to_date()) {
-      LinExpression inverse = coefficient;
+      LinExpression inverse = expr;
       // For the observation the inverse transformation can be 
       // obtained swapping `denominator' with `a[var]' in the initial 
       // transformation and making the necessary sign changes.
@@ -1239,7 +1236,7 @@ PPL::Polyhedron::assign_variable(const Variable& var,
   else {
     if (!generators_are_up_to_date())
       x.minimize();
-    x.gen_sys.assign_variable(num_var, coefficient, denominator);
+    x.gen_sys.assign_variable(num_var, expr, denominator);
     x.clear_constraints_up_to_date();
     x.clear_generators_minimized();
   }
@@ -1248,19 +1245,15 @@ PPL::Polyhedron::assign_variable(const Variable& var,
 /*!
   \param var           The variable to which the affine expression is
                        assigned.
-  \param coefficient   The coefficients of the affine expression.
+  \param expr          The affine expression.
   \param denominator   The denominator of the affine expression.
-
-  \p coefficient is not a constant parameter because we may need 
-  to modify it when we have to compute the inverse of the affine 
-  transformation (when working on generators).
 
   When considering constraints of a polyhedron, the affine transformation
   \f[
   \frac{\sum_{i=0}^{n-1} a_i x_i + b}{denominator},
   \f]
-  is assigned to \p vars where \p coefficient is
-  \f$[b, a_0, \ldots, a_{n-1}]\f$ 
+  is assigned to \p vars where \p expr is
+  \f$\sum_{i=0}^{n-1} a_i x_i + b\f$ 
   (\f$b\f$ is the inhomogeneous term).
   
   If generators are up-to-date, then the specialized function 
@@ -1305,31 +1298,32 @@ PPL::Polyhedron::assign_variable(const Variable& var,
   \f[
     {a'}_{ij} =
     \begin{cases}
-    a_{ij} * \text{denominator} + a_{i\text{var}} * \text{coefficient}[j] 
+    a_{ij} * \text{denominator} + a_{i\text{var}} * \text{expr}[j] 
     \quad \text{for } j \neq \text{var}; \\
-    \text{coefficient}[\text{var}] * a_{i\text{var}}.
+    \text{expr}[\text{var}] * a_{i\text{var}}.
     \end{cases}
   \f]
 */
 void
 PPL::Polyhedron::substitute_variable(const Variable& var,
-				     const LinExpression& coefficient,
+				     const LinExpression& expr,
 				     Integer& denominator) {
   if (denominator == 0)
-    throw std::invalid_argument("void PPL::Polyhedron::substitute_variable(v, c, d) with d == 0");
+    throw std::invalid_argument("void PPL::Polyhedron::substitute_variable"
+				"(v, e, d) with d == 0");
   
   Polyhedron& x = *this;
   size_t num_columns = x.con_sys.num_columns();
   size_t num_var = var.id() + 1;
-  assert(num_columns == coefficient.size());
+  assert(num_columns == expr.size());
   assert(num_var < num_columns);
 
   // The transformation is invertible.
-  if (coefficient[num_var] != 0) {
+  if (expr[num_var] != 0) {
     if (constraints_are_up_to_date())
-      x.con_sys.substitute_variable(num_var, coefficient, denominator);
+      x.con_sys.substitute_variable(num_var, expr, denominator);
     if (generators_are_up_to_date()) {
-      LinExpression inverse = coefficient;
+      LinExpression inverse = expr;
       // For the observation, the inverse transformation can be 
       // obtained swapping `denominator' with `a[var]' in the initial 
       // transformation and making the necessary sign changes.
@@ -1346,7 +1340,7 @@ PPL::Polyhedron::substitute_variable(const Variable& var,
   else {
     if (!constraints_are_up_to_date())
       x.minimize();
-    x.con_sys.substitute_variable(num_var, coefficient, denominator);
+    x.con_sys.substitute_variable(num_var, expr, denominator);
     x.clear_generators_up_to_date();
     x.clear_constraints_minimized();
   }

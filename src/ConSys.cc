@@ -94,8 +94,8 @@ PPL::ConSys::satisfies_all_constraints(const Generator& r) const {
 /*!
   \param var          Index of the column to which the 
                       affine transformation is assigned.
-  \param coefficient  The coefficients of the affine transformation:
-                      \f$[b, a_0, \ldots, a_{n - 1}]\f$.
+  \param expr  The affine transformation:
+                      \f$\sum_{i = 0}^{n - 1} a_i x_i + b\f$
   \param denominator  The denominator of the affine transformation.
 
   We want to allow affine transformations (see definitions.dox) having 
@@ -109,27 +109,25 @@ PPL::ConSys::satisfies_all_constraints(const Generator& r) const {
   \f[
     {a'}_{ij} =
     \begin{cases}
-    a_{ij} * \text{denominator} + a_{i\text{var}} * \text{coefficient}[j] 
+    a_{ij} * \text{denominator} + a_{i\text{var}} * \text{expr}[j] 
     \quad \text{for } j \neq \text{var}; \\
-    \text{coefficient}[\text{var}] * a_{i\text{var}}
+    \text{expr}[\text{var}] * a_{i\text{var}}
     \quad \text{for } j = \text{var}.
     \end{cases}
   \f]
 
-  \p coefficient is a constant parameter and unaltered by this computation
-  (unlike Polyhedron::substitute_variable() where this parameter 
-  is not constant).
+  \p expr is a constant parameter and unaltered by this computation
 */
 void
 PPL::ConSys::substitute_variable(size_t var,
-				 const LinExpression& coefficient,
+				 const LinExpression& expr,
 				 Integer& denominator) {
   ConSys& x = *this;
   size_t num_columns = x.num_columns();
   size_t num_rows = x.num_rows();
  
   assert(var != 0);
-  assert(num_columns = coefficient.size());
+  assert(num_columns = expr.size());
   assert(denominator != 0);
   assert(var < num_columns);
   
@@ -138,11 +136,11 @@ PPL::ConSys::substitute_variable(size_t var,
     Constraint& row = x[i];
     if (row[var] != 0) {
       Integer tmp = row[var];
-      row[var] *= coefficient[var];
+      row[var] *= expr[var];
       for (size_t j = 0; j < num_columns; ++j)   
 	if (j != var) {
 	  row[j] *= denominator;
-	  row[j] += tmp * coefficient[j];
+	  row[j] += tmp * expr[j];
 	}
     }
   }

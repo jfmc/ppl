@@ -195,8 +195,8 @@ PPL::GenSys::satisfy_constraint(const Constraint& c) const {
 /*!
   \param var          Index of the column to which the 
                       affine transformation is assigned.
-  \param coefficient  The coefficients of the affine transformation:
-                      \f$[b, a_0, \ldots, a_{n - 1}]\f$.
+  \param expr         The affine transformation:
+                      \f$\sum_{i = 0}^{n - 1} a_i x_i + b\f$.
   \param denominator  The denominator of the affine transformation.
 
   We want to allow affine transformations (see definitions.dox) having 
@@ -211,13 +211,11 @@ PPL::GenSys::satisfy_constraint(const Constraint& c) const {
          {denominator}.
   \f]
 
-  \p coefficient is a constant parameter and unaltered by this computation
-  (unlike Polyhedron::substitute_variable() where this parameter 
-  is not constant).
+  \p expr is a constant parameter and unaltered by this computation
 */
 void 
 PPL::GenSys::assign_variable(size_t var,
-			     const LinExpression& coefficient,
+			     const LinExpression& expr,
 			     Integer& denominator) {
   GenSys& x = *this;
   size_t num_columns = x.num_columns();
@@ -225,7 +223,7 @@ PPL::GenSys::assign_variable(size_t var,
 
   // The first coefficient is the inhomogeneous term.
   assert(var != 0);
-  assert(num_columns = coefficient.size());
+  assert(num_columns = expr.size());
   assert(denominator != 0);
   assert(var < num_columns);
 
@@ -233,10 +231,10 @@ PPL::GenSys::assign_variable(size_t var,
   // it to the column of `*this' indexed by `var'.
   for (size_t i = 0; i < num_rows; ++i) {
     Generator& row = x[i]; 
-    row[var] *= coefficient[var];
+    row[var] *= expr[var];
     for (size_t j = 0; j < num_columns; ++j) 
       if (j != var) 
-	row[var] += row[j] * coefficient[j];
+	row[var] += row[j] * expr[j];
   }
   if (denominator != 1) 
     // Since we want integer elements in the matrix and the 

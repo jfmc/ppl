@@ -227,7 +227,7 @@ PPL_INTERNAL:
   
   //! Assigns to a given variable an affine expression.
   void assign_variable(size_t var,
-		       const LinExpression& coefficient,
+		       const LinExpression& expr,
 		       Integer& denominator);
   //! Returns the number of lines of the system.
   size_t num_lines() const;
