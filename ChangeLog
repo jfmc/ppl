@@ -1,6 +1,137 @@
-2002-07-01  Release Manager
+2002-07-28 Sunday 11:57  Roberto Bagnara <bagnara@cs.unipr.it>
 
-	* PPL 0.4 Released.
+	* README (ppl-0_4-branch.1): Updated for version 0.4.1.
+
+2002-07-28 Sunday 11:45  Roberto Bagnara <bagnara@cs.unipr.it>
+
+	* NEWS (ppl-0_4-branch.2): Add news for version 0.4.1.
+
+2002-07-28 Sunday 11:44  Roberto Bagnara <bagnara@cs.unipr.it>
+
+	* configure.ac (ppl-0_4-branch.2): Bump version number.
+
+2002-07-28 Sunday 11:32  Roberto Bagnara <bagnara@cs.unipr.it>
+
+	* src/: Integer.types.hh, Makefile.am (ppl-0_4-branch.[1,1]):
+	Document the fact that Parma_Polyhedra_Library::Integer is a
+	synonym for GMP's mpz_class.
+
+2002-07-24 Wednesday 14:28  Roberto Bagnara <bagnara@cs.unipr.it>
+
+	* interfaces/Prolog/Ciao/Makefile.am (1.8): Ciao Prolog library
+	renamed.
+
+2002-07-24 Wednesday 14:26  Roberto Bagnara <bagnara@cs.unipr.it>
+
+	* src/: Integer.types.hh (1.3), Makefile.am (1.45): Document the
+	fact that Parma_Polyhedra_Library::Integer is a synonym for GMP's
+	mpz_class.
+
+2002-07-23 Tuesday 18:48  Enea Zaffanella <zaffanella@cs.unipr.it>
+
+	* src/Generator.defs.hh (1.70): Corrected doxygen comments to
+	shorthands functions line, ray, point.
+
+2002-07-23 Tuesday 18:44  Enea Zaffanella <zaffanella@cs.unipr.it>
+
+	* doc/definitions.dox (1.88): Small correction in the example of
+	the use of an extended generator system.
+
+2002-07-22 Monday 15:37  Roberto Bagnara <bagnara@cs.unipr.it>
+
+	* interfaces/Prolog/: Ciao/ppl_ciao.cc (1.12),
+	GNU/ppl_gprolog_sd.cc (1.7), SICStus/ppl_sicstus_sd.cc (1.23),
+	SWI/ppl_swiprolog.cc (1.47), YAP/ppl_yap.cc (1.39): Comments fixed.
+	 Avoid macros with unused parameters.
+
+2002-07-22 Monday 15:33  Roberto Bagnara <bagnara@cs.unipr.it>
+
+	* configure.ac (1.55), interfaces/Prolog/Makefile.am (1.19): New
+	Prolog interface.
+
+2002-07-22 Monday 14:29  Enea Zaffanella <zaffanella@cs.unipr.it>
+
+	* src/Polyhedron.cc, tests/Makefile.am, tests/polydifference2.cc
+	(ppl-0_4-branch.[1,1,1]): The corrections of the bug identified in
+	revisions 1.193 and 1.194 of the HEAD branch are now reported in
+	the ppl-0_4-branch.  The same for the test that outlighted the bug.
+
+2002-07-10 Wednesday 12:52  Enea Zaffanella <zaffanella@cs.unipr.it>
+
+	* tests/polydifference2.cc (1.3): Don't be noisy.
+
+2002-07-10 Wednesday 12:40  Enea Zaffanella <zaffanella@cs.unipr.it>
+
+	* src/Polyhedron.cc (1.194): Corrected a bug in
+	poly_difference_assign(const Polyhedron& y).  No longer ignoring
+	the equality constraints of `y' (the bug was affecting both C and
+	NNC computations).
+
+2002-07-10 Wednesday 12:01  Enea Zaffanella <zaffanella@cs.unipr.it>
+
+	* tests/polydifference2.cc (1.2): Output improved.
+
+2002-07-10 Wednesday 11:58  Enea Zaffanella <zaffanella@cs.unipr.it>
+
+	* src/Polyhedron.cc (1.193): Corrected a bug in
+	Polyhedron::operator=(...).  When assigning to *this a polyhedron
+	declared to be empty, we now call set_empty() to also clear the
+	constraint and generator systems, therefore enforcing the
+	corresponding invariant.
+
+2002-07-10 Wednesday 11:55  Enea Zaffanella <zaffanella@cs.unipr.it>
+
+	* tests/: Makefile.am (1.80), polydifference2.cc (1.1): Added a new
+	test showing two bugs:	- the assignment operator on Polyhedron
+	breaks the invariant saying that    an empty polyhedron has a
+	constraint system with either no rows or    a single unsatisfiable
+	constraint;  - the current implementation of
+	poly_difference_assign() is wrong in	that it disregards equality
+	constraints.
+
+2002-07-03 Wednesday 15:22  Roberto Bagnara <bagnara@cs.unipr.it>
+
+	* interfaces/Prolog/Ciao/: fake_main.pl (1.1), ppl_ciao.pl (1.20):
+	Wrong declarations fixed (thanks to Jose Morales).  The file
+	fake_main.pl is a kludge to convince ciaoc to produce object code
+	(the `-c' option is broken in Ciao Prolog 1.8 #2).  Missing
+	predicate declarations have been added.
+
+2002-07-02 Tuesday 22:56  Roberto Bagnara <bagnara@cs.unipr.it>
+
+	* interfaces/Prolog/Ciao/ppl_ciao.pl (1.19): Some bugs have been
+	fixed.
+
+2002-07-02 Tuesday 22:02  Roberto Bagnara <bagnara@cs.unipr.it>
+
+	* configure.ac (1.54): Version bumped: we are now in the 0.5 era.
+
+2002-07-02 Tuesday 22:00  Roberto Bagnara <bagnara@cs.unipr.it>
+
+	* configure.ac (1.53), interfaces/Prolog/Makefile.am (1.18): The
+	Ciao Prolog interface has been re-enabled.
+
+2002-07-02 Tuesday 21:52  Roberto Bagnara <bagnara@cs.unipr.it>
+
+	* configure.ac (1.52), Watchdog/configure.ac (1.9): Shared
+	libraries are again turned off by default.
+
+2002-07-02 Tuesday 21:49  Roberto Bagnara <bagnara@cs.unipr.it>
+
+	* NEWS (ppl-0_4-branch.1), NEWS (1.28): Cut and paste error fixed.
+
+2002-07-01 Monday 18:24  Roberto Bagnara <bagnara@cs.unipr.it>
+
+	* configure.ac (ppl-0_4-branch.1): Update version.
+
+2002-07-01 Monday 18:23  Roberto Bagnara <bagnara@cs.unipr.it>
+
+	* Watchdog/ChangeLog, ChangeLog (ppl-0_4-branch.[1,1]): Mark
+	ChangeLog.
+
+2002-07-01 Monday 18:12  Roberto Bagnara <bagnara@cs.unipr.it>
+
+	* ChangeLog (1.9): Updated.
 
 2002-07-01 Monday 16:54  Roberto Bagnara <bagnara@cs.unipr.it>
 
