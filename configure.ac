@@ -450,7 +450,7 @@ AC_LANG_POP(C)
 
 # Checks for header files.
 
-AC_CHECK_HEADERS([sys/resource.h sys/time.h sys/types.h unistd.h])
+AC_CHECK_HEADERS([getopt.h signal.h sys/resource.h sys/time.h sys/types.h unistd.h])
 
 # Checks for header declarations.
 
@@ -490,6 +490,7 @@ AC_CONFIG_FILES(Makefile
                 src/version.hh
                 tests/Makefile
                 m4/Makefile
+                demos/Makefile
                 doc/Makefile
                 doc/user-browse.doxyconf-latex
                 doc/devref-browse.doxyconf-latex
