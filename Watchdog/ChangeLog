@@ -1,3 +1,7 @@
+2003-04-27  Release Manager
+
+	* PPL 0.5 Released.
+
 2003-03-03 Monday 18:21  Roberto Bagnara <bagnara@cs.unipr.it>
 
 	* Makefile.am (1.7): Update version info.
