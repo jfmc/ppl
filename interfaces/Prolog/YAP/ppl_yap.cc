@@ -294,3 +294,44 @@ Integer_to_integer_term(const PPL::Integer& n) {
 }
 
 #include "../ppl_prolog.outlines.hh"
+
+#define YAP_USER_C_PREDICATE(name, arity) \
+ UserCPredicate(#name, reinterpret_cast<int(*)()>(name), arity)
+
+extern "C" void
+init() {
+  ppl_init();
+  YAP_USER_C_PREDICATE(ppl_new_polyhedron, 2);
+  YAP_USER_C_PREDICATE(ppl_new_empty_polyhedron, 2);
+  YAP_USER_C_PREDICATE(ppl_copy_polyhedron, 2);
+  YAP_USER_C_PREDICATE(ppl_delete_polyhedron, 1);
+  YAP_USER_C_PREDICATE(ppl_space_dimension, 2);
+  YAP_USER_C_PREDICATE(ppl_insert_constraint, 2);
+  YAP_USER_C_PREDICATE(ppl_insert_generator, 2);
+  YAP_USER_C_PREDICATE(ppl_add_constraints_and_minimize, 2);
+  YAP_USER_C_PREDICATE(ppl_add_generators_and_minimize, 2);
+  YAP_USER_C_PREDICATE(ppl_check_empty, 1);
+  YAP_USER_C_PREDICATE(ppl_check_universe, 1);
+  YAP_USER_C_PREDICATE(ppl_is_bounded, 1);
+  YAP_USER_C_PREDICATE(ppl_intersection_assign, 2);
+  YAP_USER_C_PREDICATE(ppl_intersection_assign_and_minimize, 2);
+  YAP_USER_C_PREDICATE(ppl_convex_hull_assign, 2);
+  YAP_USER_C_PREDICATE(ppl_convex_hull_assign_and_minimize, 2);
+  YAP_USER_C_PREDICATE(ppl_convex_difference_assign, 2);
+  YAP_USER_C_PREDICATE(ppl_convex_difference_assign_and_minimize, 2);
+  YAP_USER_C_PREDICATE(ppl_widening_assign, 2);
+  YAP_USER_C_PREDICATE(ppl_limited_widening_assign, 3);
+  YAP_USER_C_PREDICATE(ppl_get_constraints, 2);
+  YAP_USER_C_PREDICATE(ppl_get_generators, 2);
+  YAP_USER_C_PREDICATE(ppl_remove_dimensions, 2);
+  YAP_USER_C_PREDICATE(ppl_remove_higher_dimensions, 2);
+  YAP_USER_C_PREDICATE(ppl_add_dimensions_and_project, 2);
+  YAP_USER_C_PREDICATE(ppl_add_dimensions_and_embed, 2);
+  YAP_USER_C_PREDICATE(ppl_polyhedron_included_or_equal, 2);
+  YAP_USER_C_PREDICATE(ppl_polyhedron_equal, 2);
+  YAP_USER_C_PREDICATE(ppl_polyhedron_strictly_included, 2);
+  YAP_USER_C_PREDICATE(ppl_relation_with_constraint, 3);
+  YAP_USER_C_PREDICATE(ppl_relation_with_generator, 3);
+  YAP_USER_C_PREDICATE(ppl_affine_image, 4);
+  YAP_USER_C_PREDICATE(ppl_affine_preimage, 4);
+}

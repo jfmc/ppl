@@ -66,6 +66,7 @@ lib_LTLIBRARIES = libpplyap.la
 libpplyap_la_SOURCES = ppl_yap.cc
 
 libpplyap_la_LDFLAGS = \
+-module \
 -version-info $(LIBPPLYAP_LT_CURRENT):$(LIBPPLYAP_LT_REVISION):$(LIBPPLYAP_LT_AGE)
 
 CLPQ_TESTS = \
@@ -79,12 +80,12 @@ tak.clpq
 
 EXTRA_DIST = ppl_yap.pl yap_clpq.pl
 
-if HAVE_GNU_PROLOG
+if HAVE_YAP_PROLOG
 #check_PROGRAMS = pplyap
 #pplyap_SOURCES = ppl_yap.cc
 #pplyap_LDADD = libpplyap.la $(top_builddir)/src/libppl.la /usr/local/lib/pl-5.0.1/runtime/i686-linux/libpl.a -lreadline -ldl -ltermcap @extra_libraries@
 
-#pplyap$(EXEEXT): ppl_yap.o ppl_yap.pl
+#pplyap$(EXEEXT): ppl_yap.o #ppl_yap.pl
 #	yaplc -o $@ $+ -L '-L../../../src/.libs -lppl -lgmp -lgmpxx -lstdc++'
 
 #yap_clpq$(EXEEXT): yap_clpq.pl ppl_yap.o ppl_yap.pl ../clpq.pl
@@ -95,5 +96,5 @@ if HAVE_GNU_PROLOG
 #	yap_clpq <$(srcdir)/../check_script >obtained
 #	diff -q --ignore-all-space $(srcdir)/../expected obtained
 
-MOSTLYCLEANFILES = pplpl $(CLPQ_TESTS) obtained
+#MOSTLYCLEANFILES = pplpl $(CLPQ_TESTS) obtained
 endif
