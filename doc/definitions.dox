@@ -633,9 +633,9 @@ the universe polyhedron are itself and the emptyset.
 
 Let \f$P\f$ be a non-empty polyhedron. The set
 \f[
-  F = \{ \vect{p} \} + \textit{lin.space } (C),
+  F = \{ \vect{p} \} + \textit{lin.space } (P),
 \f]
-where \f$\vect{p}\f$ is a point of \f$C\f$ and the symbol
+where \f$\vect{p}\f$ is a point of \f$P\f$ and the symbol
 '\f$+\f$' denotes the Minkowski's sum, is the <EM>minimal proper face</EM> of  
 the polyhedron if \f$F\f$ is a proper face of \f$P\f$ and \f$F \neq P.\f$
 
