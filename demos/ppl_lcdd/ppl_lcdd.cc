@@ -499,7 +499,8 @@ read_polyhedron(std::istream& in, PPL::C_Polyhedron& ph) {
       PPL::LinExpression e;
       for (unsigned i = num_columns; i-- > 1; )
 	e += coefficients[i] * PPL::Variable(i-1);
-      cs.insert(e <= coefficients[0]);
+      e += coefficients[0];
+      cs.insert(e >= 0);
     }
     if (verbose) {
       using namespace PPL::IO_Operators;
@@ -578,7 +579,7 @@ write_polyhedron(std::ostream& out,
       guarded_write(out, c.inhomogeneous_term());
       for (PPL::dimension_type j = 0; j < space_dim; ++j) {
 	guarded_write(out, ' ');
-	guarded_write(out, -c.coefficient(PPL::Variable(j)));
+	guarded_write(out, c.coefficient(PPL::Variable(j)));
       }
       guarded_write(out, '\n');
     }
@@ -595,8 +596,11 @@ write_polyhedron(std::ostream& out,
 	const PPL::Integer& divisor = g.divisor();
 	for (PPL::dimension_type j = 0; j < space_dim; ++j) {
 	  guarded_write(out, ' ');
-	  guarded_write(out, mpq_class(g.coefficient(PPL::Variable(j)),
-				       divisor));
+	  if (g.coefficient(PPL::Variable(j)) == 0)
+	    guarded_write(out, '0');
+	  else
+	    guarded_write(out, mpq_class(g.coefficient(PPL::Variable(j)),
+					 divisor));
 	}
       }
       else {
