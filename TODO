@@ -2,6 +2,18 @@
 Enhancements for PPL 0.7
 ========================
 
+- The PowerSet class implementation is poorly documented.
+  Consider also whether it should be called Powerset instead
+  (notice the lower case `s' and that the same change should
+  be done for Polyhedra_Powerset).
+- We have an inconsistency: C_Polyhedron(const NNC_Polyhedron& y)
+  throws an exception if `y' is not topologically closed, whereas
+  the corresponding operation on Polyhedra_PowerSet computes
+  topological closures.  This inconsistency should be removed.
+- See for what reason why we have neither
+  C_Polyhedron& C_Polyhedron::operator=(const NNC_Polyhedron& y)
+  nor
+  NNC_Polyhedron& NNC_Polyhedron::operator=(const C_Polyhedron& y).
 - Consider whether it is the case to move the definition of dimension
   of a polyhedron in the user's manual and to refer to it in the
   documentation of Polyhedron::dimension().
