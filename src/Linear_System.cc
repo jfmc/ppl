@@ -183,16 +183,7 @@ PPL::Linear_System::insert(const Linear_Row& r) {
 
   // Resize the system, if necessary.
   if (r_size > row_size) {
-    if (is_necessarily_closed() || old_num_rows == 0)
-      // FIXME: why not factorize this call to add_zero_columns()?
-      add_zero_columns(r_size - row_size);
-    else {
-      // After resizing, move the epsilon coefficients to
-      // the last column (note: sorting is preserved).
-      const dimension_type old_eps_index = row_size - 1;
-      add_zero_columns(r_size - row_size);
-      swap_columns(old_eps_index, row_size - 1);
-    }
+    add_zero_columns(r_size - row_size);
     add_row(r);
   }
   else if (r_size < row_size)
@@ -228,16 +219,7 @@ PPL::Linear_System::insert_pending(const Linear_Row& r) {
 
   // Resize the system, if necessary.
   if (r_size > row_size) {
-    if (is_necessarily_closed() || old_num_rows == 0)
-      // FIXME: why not factorize this call to add_zero_columns()?
-      add_zero_columns(r_size - row_size);
-    else {
-      // After resizing, move the epsilon coefficients to
-      // the last column (note: sorting is preserved).
-      const dimension_type old_eps_index = row_size - 1;
-      add_zero_columns(r_size - row_size);
-      swap_columns(old_eps_index, row_size - 1);
-    }
+    add_zero_columns(r_size - row_size);
     add_pending_row(r);
   }
   else if (r_size < row_size)
