@@ -78,7 +78,7 @@ ORIGINAL_TESTS = \
 	bhrz03widening9 bhrz03widening10 bhrz03widening11 bhrz03widening12 \
 	bhrz03widening13 bhrz03widening14 bhrz03widening15 bhrz03widening16 \
 	bhrz03widening17 bhrz03widening18 bhrz03widening19 \
-	bhz03widening1 bhz03widening2 \
+	bhz03widening1 bhz03widening2 bhz03widening3 \
 	bounded1 \
 	boundedh79extrapolation1 \
 	bounds1 bounds2 \
@@ -118,7 +118,7 @@ ORIGINAL_TESTS = \
 	onepoint \
         permute \
 	polydifference1 polydifference2 polydifference3 polydifference4 \
-	polydifference5 polydifference6 polydifference7 \
+	polydifference5 polydifference6 polydifference7 polydifference8 \
 	polyhull1 polyhull2 polyhull3 polyhull4 polyhull5 polyhull6 \
 	polyhull7 polyhull8 polyhull9 polyhull10 \
 	randphull1 randphull2 \
@@ -346,6 +346,7 @@ bhrz03widening19_SOURCES = bhrz03widening19.cc
 
 bhz03widening1_SOURCES = bhz03widening1.cc
 bhz03widening2_SOURCES = bhz03widening2.cc
+bhz03widening3_SOURCES = bhz03widening3.cc
 
 bounded1_SOURCES = bounded1.cc
 
@@ -470,6 +471,7 @@ polydifference4_SOURCES = polydifference4.cc
 polydifference5_SOURCES = polydifference5.cc
 polydifference6_SOURCES = polydifference6.cc
 polydifference7_SOURCES = polydifference7.cc
+polydifference8_SOURCES = polydifference8.cc
 
 polyhull1_SOURCES = polyhull1.cc
 polyhull2_SOURCES = polyhull2.cc
