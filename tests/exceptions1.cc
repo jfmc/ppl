@@ -1,4 +1,4 @@
-/* Some incorrect uses of the functions of PPL.
+/* Test that the right exceptions are thrown in case of incorrect uses.
    Copyright (C) 2001-2004 Roberto Bagnara <bagnara@cs.unipr.it>
 
 This file is part of the Parma Polyhedra Library (PPL).
