@@ -25,8 +25,8 @@ site: http://www.cs.unipr.it/ppl/ . */
 
 #include "Integer.defs.hh"
 #include "sicstus_cfli.h"
-#include <cassert>
 #include "../exceptions.hh"
+#include <cassert>
 
 namespace PPL = Parma_Polyhedra_Library;
 
