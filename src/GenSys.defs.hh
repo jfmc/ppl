@@ -379,6 +379,16 @@ private:
   */
   void add_corresponding_points();
 
+//! \brief
+  //! For each unmatched closure point in \p *this and \p gs,
+  //! adds the corresponding point.
+  /*!
+    \param gs              The second system of generators.
+    It is assumed that the topology of \p *this and \p gs
+    are <CODE>NOT_NECESSARILY_CLOSED</CODE>.
+  */
+  void add_corresponding_points(const GenSys& gs);
+
   //! \brief
   //! Returns <CODE>true</CODE> if and only if \p *this
   //! contains one or more points.

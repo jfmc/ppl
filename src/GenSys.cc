@@ -165,6 +165,33 @@ PPL::GenSys::add_corresponding_points() {
   }
 }
 
+// TODO: would be worth to avoid adding points
+// that already are in the system of generators?
+// To do this efficiently we could sort the system and
+// perform insertions keeping its sortedness.
+void
+PPL::GenSys::add_corresponding_points(const GenSys& gs) {
+  assert(!is_necessarily_closed() && !gs.is_necessarily_closed());
+  GenSys& x_gs = *this;
+  
+  // We add to `x_gs' the points corresponding to the
+  // closure points that it contains.
+  if (x_gs.num_rows() != 0)
+    x_gs.add_corresponding_points();
+  
+  dimension_type gs_n_rows = gs.num_rows();
+  dimension_type gs_eps_index = gs.num_columns() - 1;
+  for (dimension_type i = gs_n_rows; i-- > 0; ) {
+    const Generator& g = gs[i];
+    if (g[0] > 0 && g[gs_eps_index] == 0) {
+      // `g' is a closure point: adding the point.
+      // Note: normalization is preserved.
+      Generator p = g;
+      p[gs_eps_index] = p[0];
+      x_gs.insert(p);
+    }
+  }
+}
 
 bool
 PPL::GenSys::has_closure_points() const {
