@@ -260,7 +260,7 @@ static SP_atom a_equal_less_than;
 // For generators.
 static SP_atom a_line;
 static SP_atom a_ray;
-static SP_atom a_vertex;
+static SP_atom a_point;
 
 static struct {
   SP_atom* p_atom;
@@ -280,7 +280,7 @@ static struct {
 
   { &a_line,               "line" },
   { &a_ray,                "ray" },
-  { &a_vertex,             "vertex" },
+  { &a_point,              "point" },
 };
 
 static SP_term_ref
@@ -563,18 +563,18 @@ build_generator(SP_term_ref t) {
 	return line(build_lin_expression(arg));
       else if (functor == a_ray)
 	return ray(build_lin_expression(arg));
-      else if (functor == a_vertex)
-	return vertex(build_lin_expression(arg));
+      else if (functor == a_point)
+	return point(build_lin_expression(arg));
     }
     else if (arity == 2) {
       SP_term_ref arg1 = SP_new_term_ref();
       SP_term_ref arg2 = SP_new_term_ref();
       SP_get_arg(1, t, arg1);
       SP_get_arg(2, t, arg2);
-      if (functor == a_vertex)
+      if (functor == a_point)
 	if (SP_is_integer(arg2))
-	  return vertex(build_lin_expression(arg1),
-			integer_term_to_Integer(arg2));
+	  return point(build_lin_expression(arg1),
+		       integer_term_to_Integer(arg2));
     }
   }
   // Invalid.
@@ -714,9 +714,9 @@ generator_term(const PPL::Generator& g) {
   case PPL::Generator::RAY:
     constructor = a_ray;
     break;
-  case PPL::Generator::VERTEX:
+  case PPL::Generator::POINT:
     {
-      constructor = a_vertex;
+      constructor = a_point;
       const PPL::Integer& divisor = g.divisor();
       if (divisor == 1)
 	break;
