@@ -847,7 +847,9 @@ ppl_Polyhedron_intersection_assign __P((ppl_Polyhedron_t x,
 
 /*!
   Intersects \p x with polyhedron \p y and assigns the result \p x.
-  Upon successful return, \p x is also guaranteed to be minimized.
+  Returns a positive integer if the resulting polyhedron is non-empty;
+  returns 0 if it is empty.  Upon successful return, \p x is also
+  guaranteed to be minimized.
 */
 int
 ppl_Polyhedron_intersection_assign_and_minimize
@@ -862,9 +864,10 @@ ppl_Polyhedron_convex_hull_assign __P((ppl_Polyhedron_t x,
 				       ppl_const_Polyhedron_t y));
 
 /*!
-  Assigns to \p x the convex hull of the set-theoretic union
-  of \p x and \p y.
-  Upon successful return, \p x is also guaranteed to be minimized.
+  Assigns to \p x the convex hull of the set-theoretic union of \p x
+  and \p y.  Returns a positive integer if the resulting polyhedron is
+  non-empty; returns 0 if it is empty.  Upon successful return, \p x is
+  also guaranteed to be minimized.
 */
 int
 ppl_Polyhedron_convex_hull_assign_and_minimize __P((ppl_Polyhedron_t x,
@@ -878,9 +881,10 @@ ppl_Polyhedron_convex_difference_assign __P((ppl_Polyhedron_t x,
 					     ppl_const_Polyhedron_t y));
 
 /*!
-  Assigns to \p x the convex hull of the set-theoretic difference
-  of \p x and \p y.
-  Upon successful return, \p x is also guaranteed to be minimized.
+  Assigns to \p x the convex hull of the set-theoretic difference of
+  \p x and \p y.  Returns a positive integer if the resulting
+  polyhedron is non-empty; returns 0 if it is empty.  Upon successful
+  return, \p x is also guaranteed to be minimized.
 */
 int
 ppl_Polyhedron_convex_difference_assign_and_minimize
@@ -953,9 +957,9 @@ ppl_Polyhedron_add_constraints __P((ppl_Polyhedron_t ph, ppl_ConSys_t cs));
 
 /*!
   Adds the system of constraints \p cs to the system of constraints of
-  \p ph.  Return a positive integer if the resulting polyhedron is
-  non-empty; return 0 if they are different.  Upon successful return,
-  \p ph is guaranteed to be minimized.
+  \p ph.  Returns a positive integer if the resulting polyhedron is
+  non-empty; returns 0 if it is empty.  Upon successful return, \p ph
+  is guaranteed to be minimized.
 
   \warning
   This function modifies the constraint system referenced by \p cs:
@@ -978,7 +982,9 @@ ppl_Polyhedron_add_generators __P((ppl_Polyhedron_t ph, ppl_GenSys_t gs));
 
 /*!
   Adds the system of generators \p gs to the system of generators of
-  \p ph.  Upon successful return, \p ph is guaranteed to be minimized.
+  \p ph. Returns a positive integer if the resulting polyhedron is
+  non-empty; returns 0 if it is empty.  Upon successful return, \p ph
+  is guaranteed to be minimized.
 
   \warning
   This function modifies the generator system referenced by \p gs:

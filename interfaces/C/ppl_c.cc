@@ -936,8 +936,7 @@ ppl_Polyhedron_intersection_assign_and_minimize(ppl_Polyhedron_t x,
 						ppl_const_Polyhedron_t y) try {
   Polyhedron& xx = *to_nonconst(x);
   const Polyhedron& yy = *to_const(y);
-  xx.intersection_assign_and_minimize(yy);
-  return 0;
+  return xx.intersection_assign_and_minimize(yy) ? 1 : 0;
 }
 CATCH_ALL
 
@@ -956,8 +955,7 @@ ppl_Polyhedron_convex_hull_assign_and_minimize(ppl_Polyhedron_t x,
 					       ppl_const_Polyhedron_t y) try {
   Polyhedron& xx = *to_nonconst(x);
   const Polyhedron& yy = *to_const(y);
-  xx.convex_hull_assign_and_minimize(yy);
-  return 0;
+  return xx.convex_hull_assign_and_minimize(yy) ? 1 : 0;
 }
 CATCH_ALL
 
@@ -976,8 +974,7 @@ ppl_Polyhedron_convex_difference_assign_and_minimize
 (ppl_Polyhedron_t x, ppl_const_Polyhedron_t y) try {
   Polyhedron& xx = *to_nonconst(x);
   const Polyhedron& yy = *to_const(y);
-  xx.convex_difference_assign_and_minimize(yy);
-  return 0;
+  return xx.convex_difference_assign_and_minimize(yy) ? 1 : 0;
 }
 CATCH_ALL
 
@@ -1075,8 +1072,7 @@ ppl_Polyhedron_add_generators_and_minimize(ppl_Polyhedron_t ph,
 					    ppl_GenSys_t gs) try {
   Polyhedron& pph = *to_nonconst(ph);
   GenSys& ggs = *to_nonconst(gs);
-  pph.add_generators_and_minimize(ggs);
-  return 0;
+  return pph.add_generators_and_minimize(ggs) ? 1 : 0;
 }
 CATCH_ALL
 
