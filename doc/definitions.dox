@@ -25,28 +25,40 @@
 \section preamble A Library for Convex Polyhedra
 
 The Parma Polyhedra Library (PPL) is a modern C++ library for the
-manipulation of convex polyhedra.
-To be more precise, the PPL can
-handle all the convex polyhedra that can be defined as the
-intersection of a finite number of closed hyperspaces, each described
-by an equality or an inequality with rational
-coefficients.
+manipulation of rational convex polyhedra.
+Informally, a rational convex polyhedron is a set of points
+(in some \f$n\f$-dimensional vector space) that satisfies
+a finite number of linear inequalities having rational coefficients.
+The domain of convex polyhedra is employed in several systems
+for the analysis and verification of hardware and software components,
+with applications spanning imperative, functional and logic
+programming languages, synchronous languages and synchronization protocols,
+real-time and hybrid systems.
+Even though the PPL library is not meant to target a particular problem,
+the design of its interface has been largely influenced by the needs
+of the above class of applications.
+That is the reason why the library implements a few operators
+that are more or less specific to static analysis applications,
+while lacking some other operators that might be useful when working,
+e.g., in the field of computational geometry.
 
-The library is:
-- user friendly: you write <CODE>x + 2*y + 5*z <= 7</CODE> when you mean it; 
-- fully dynamic: available virtual memory is the only limitation to the
+The main features of the library are the following:
+- it is user friendly:
+  you write <CODE>x + 2*y + 5*z <= 7</CODE> when you mean it; 
+- it is fully dynamic:
+  available virtual memory is the only limitation to the
   dimension of anything; 
-- written in standard C++: meant to be portable;
-- exception-safe: never leaks resources or leaves invalid object
+- it provides full support for the manipulation of convex polyhedra
+  that are not topologically closed;
+- it is written in standard C++: meant to be portable;
+- it is exception-safe: never leaks resources or leaves invalid object
   fragments around;
-- rather efficient: and we hope to make it even more so; 
-- thoroughly documented: perhaps not literate programming but close enough; 
-- free software: distributed under the terms of the
+- it is rather efficient: and we hope to make it even more so; 
+- it is thoroughly documented:
+  perhaps not literate programming but close enough; 
+- it is free software: distributed under the terms of the
   GNU General Public License. 
 
-Informally, a convex polyhedron is a set of points
-(in some \f$n\f$-dimensional vector space) that satisfies
-a finite number of linear inequalities.
 In the following sections we describe the polyhedra and
 the different representations and operations 
 supported by the PPL in more detail.
@@ -336,9 +348,9 @@ both by means of the <EM>double description pair (DD pair)</EM>
 \f$(\cC, \cG)\f$.
 The <EM>double description method</EM> is a collection
 of well-known as well as novel theoretical results showing that,
-given one kind of representation, there is an algorithm
+given one kind of representation, there are algorithms
 for computing a representation of the other kind
-and eventually minimize both representations by removing
+and for minimizing both representations by removing
 redundant constraints/generators.
 
 Such changes of representation form a key step
@@ -483,7 +495,9 @@ If \f$n = m\f$, then the function \f$\phi\f$ is said to be
 We denote by \f$\phi(S) \sseq \Rset^m\f$ the <EM>image</EM>
 under \f$\phi\f$ of the set \f$S \sseq \Rset^n\f$;
 similarly, we denote by \f$\phi^{-1}(S') \sseq \Rset^n\f$
-the <EM>preimage</EM> under \f$\phi\f$ of \f$S' \sseq \Rset^m\f$.
+the <EM>preimage</EM> under \f$\phi\f$ of \f$S' \sseq \Rset^m\f$,
+that is the largest set \f$S \sseq \Rset^n\f$ such that
+\f$\phi(S) = S'\f$.
 
 Both \f$\Pset_n\f$ and \f$\CPset_n\f$ are closed under
 the application of any space-dimension preserving
