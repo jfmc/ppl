@@ -1924,8 +1924,9 @@ BD_Shape<T>::limited_CH78_extrapolation_assign(const BD_Shape& y,
   // Not strict-inequality check.
   Constraint_System::const_iterator iend = cs.end();
   for (Constraint_System::const_iterator i = cs.begin(); i != iend; ++i)
-    if ((*i).is_strict_inequality())
-      throw_constraint_incompatible("limited_CH78_extrapolation_assign(y, cs)");
+    if (i->is_strict_inequality())
+      throw_constraint_incompatible("limited_CH78_extrapolation_assign"
+				    "(y, cs)");
 
   // Dimension-compatibility check.
   if (space_dim != y.space_dimension())
@@ -1960,13 +1961,12 @@ BD_Shape<T>::limited_CH78_extrapolation_assign(const BD_Shape& y,
     return;
 
   T d;
-  T d1;
   Constraint_System add_cons;
   for (Constraint_System::const_iterator i = cs.begin(); i != iend; ++i) {
     const Constraint& c = *i;
 
     // Store the indices of the non-zero components of `c',
-    dimension_type j[2] = { 0, 0 };
+    dimension_type non_zero_position[2] = { 0, 0 };
 
     // Number of non-zero components of `c'.
     dimension_type t = 0;
@@ -1975,20 +1975,21 @@ BD_Shape<T>::limited_CH78_extrapolation_assign(const BD_Shape& y,
     bool right_cons = true;
 
     // Collect the non-zero components of `c'.
-    for (dimension_type i = cs_space_dim; i-- > 0; )
-      if (c.coefficient(Variable(i)) != 0) {
+    for (dimension_type j = cs_space_dim; j-- > 0; )
+      if (c.coefficient(Variable(j)) != 0) {
 	if (t >= 2) {
 	  // Constraints that are not "bounded differences" are ignored.
 	  right_cons = false;
 	  break;
 	}
 	else
-	  j[t++] = i;
+	  non_zero_position[t++] = j;
       }
     // Constraints that are not "bounded differences" are ignored.
     if (right_cons && t == 2)
-      if (c.coefficient(Variable(j[1])) != -c.coefficient(Variable(j[0])))
-	  right_cons = false;
+      if (c.coefficient(Variable(non_zero_position[1]))
+	  != -c.coefficient(Variable(non_zero_position[0])))
+	right_cons = false;
 
     // We will now make sure `c' has one of the following forms:
     //
@@ -1996,47 +1997,45 @@ BD_Shape<T>::limited_CH78_extrapolation_assign(const BD_Shape& y,
     //   a*x       <=/= b, if t == 1;
     //   a*x - a*y <=/= b, if t == 2.
     //
-    // In addition, j[0] and (if t >= 1) j[1] will contain the indices
+    // In addition, non_zero_position[0] and (if t >= 1) 
+    // non_zero_position[1] will contain the indices
     // of the cell(s) of `dbm' to be modified.
     if (right_cons && t != 0) {
       Coefficient a;
       Coefficient b = c.inhomogeneous_term();
       switch (t) {
       case 2:
-	a = c.coefficient(Variable(j[1]));
-	++j[1];
-	++j[0];
+	a = c.coefficient(Variable(non_zero_position[1]));
+	// In DBMs there is a +1 offset on the position of each dimension.
+	++non_zero_position[1];
+	++non_zero_position[0];
 	break;
 	
       case 1:
-	a = -c.coefficient(Variable(j[0]));
-	++j[0];
+	a = -c.coefficient(Variable(non_zero_position[0]));
+	// In DBMs there is a +1 offset on the position of each dimension.
+	++non_zero_position[0];
 	break;
       }
       // Select the cell to be modified for the "<=" part of the constraint,
       // and set `a' to the absolute value of itself.
-      T& dbm_j_0_j_1 = dbm[j[0]][j[1]];
-      T& dbm_j_1_j_0 = dbm[j[1]][j[0]];
-      T* dbm_cellp;
-      if (a < 0) {
-	dbm_cellp = &dbm_j_0_j_1;
+      T& dbm_j_0_j_1 = dbm[non_zero_position[0]][non_zero_position[1]];
+      T& dbm_j_1_j_0 = dbm[non_zero_position[1]][non_zero_position[0]];
+      T& x = (a < 0) ? dbm_j_0_j_1 : dbm_j_1_j_0;
+      // The element `y' is the symmetric of `x'.
+      T& y = (a < 0) ? dbm_j_1_j_0 : dbm_j_0_j_1;
+      if (a < 0)
 	a = -a;
-      }
-      else
-	dbm_cellp = &dbm_j_1_j_0;
 
       // Compute b/a into `d', rounding the result towards plus infinity.
       div_round_up(d, b, a);
-      if (*dbm_cellp <= d) {
+      if (x <= d) {
 	if (c.is_inequality())
 	  add_cons.insert(c);
 	else {
-	  T* dbm_cellp1;
-	  // The symmetric cell is the one to be possibly modified.
-	  dbm_cellp1 = (dbm_cellp == &dbm_j_0_j_1) ? &dbm_j_1_j_0 : &dbm_j_0_j_1;
 	  // Compute -b/a into `d', rounding the result towards plus infinity.
-	  div_round_up(d1, -b, a);
-	  if (*dbm_cellp1 <= d1)
+	  div_round_up(d, -b, a);
+	  if (y <= d)
 	    add_cons.insert(c);
 	}
       }
