@@ -42,7 +42,7 @@ main() {
   Polyhedron ph(2, Polyhedron::EMPTY);
 
 #if NOISY
-  cout << "--- ph ---" << endl << ph << endl;
+  print_constraints(ph, "--- ph ---");
 #endif
 
   ConSys cs;
@@ -55,14 +55,13 @@ main() {
 
   ph.add_dimensions_and_constraints(cs);
 
-#if NOISY
-  cout << "--- After add_dimensions_and_constraints ---" << endl
-       << ph << endl;
-#endif
-
   Polyhedron known_result(4, Polyhedron::EMPTY);
 
   int retval = (ph == known_result) ? 0 : 1;
+
+#if NOISY
+  print_constraints(ph, "--- After add_dimensions_and_constraints ---");
+#endif
 
   return retval;
 }

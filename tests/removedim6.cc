@@ -63,12 +63,12 @@ main() {
   ph1.remove_dimensions(to_be_removed);
   ph2.remove_higher_dimensions(0);
 
+  int retval = (ph1 == ph2) ? 0 : 1;
+
 #if NOISY
   print_generators(ph1, "*** ph1 after remove_dimensions ***");
   print_generators(ph2, "*** ph2 after remove_higher_dimensions ***");
 #endif
-
-  int retval = (ph1 == ph2) ? 0 : 1;
 
   return retval;
 }

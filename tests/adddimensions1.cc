@@ -51,15 +51,17 @@ main() {
 
   ph.add_dimensions_and_project(1);
 
-#if NOISY
-  print_generators(ph, "*** After add_dimensions_and_project ***");
-#endif
-
   Polyhedron known_result(3, Polyhedron::EMPTY);
   known_result.insert(vertex());
   known_result.insert(vertex(x));
   known_result.insert(vertex(y));
   known_result.insert(vertex(x + y));
 
-  return (ph == known_result) ? 0 : 1;
+  int retval = (ph == known_result) ? 0 : 1;
+  
+#if NOISY
+  print_generators(ph, "*** After add_dimensions_and_project ***");
+#endif
+  
+  return retval;
 }

@@ -63,10 +63,6 @@ main() {
 
   computed_result.convex_hull_assign(ph2);
 
-#if NOISY
-  print_generators(computed_result, "*** After convex_hull_assign ***");
-#endif
-
   GenSys gs_known_result;
   gs_known_result.insert(vertex());
   gs_known_result.insert(vertex(-x + y));
@@ -74,6 +70,10 @@ main() {
   gs_known_result.insert(ray(y));
 
   Polyhedron known_result(gs_known_result);
+
+#if NOISY
+  print_generators(computed_result, "*** After convex_hull_assign ***");
+#endif
 
   return (computed_result == known_result) ? 0 : 1;
 }

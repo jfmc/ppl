@@ -44,17 +44,21 @@ main() {
   ph.insert(A + B - 3 >= 0);
 
 #if NOISY
-  cout << "--- ph ---" << endl << ph << endl;
+  print_constraints(ph, "--- ph ---");
 #endif
 
-  ph.affine_preimage(A, B+2);
+  ph.affine_preimage(A, B+1);
+
+  Polyhedron known_result(2, Polyhedron::EMPTY);
+  known_result.insert(vertex(B));
+  known_result.insert(line(A));
+  known_result.insert(ray(B));
+
+  int retval = (ph == known_result) ? 0 : 1;
 
 #if NOISY
-    cout << "--- ph after ph.affine_preimage(A, B+2) ---" << endl
-	 << ph << endl;
+    print_generators(ph, "--- ph after ph.affine_preimage(A, B+2) ---");
 #endif
 
-  if(!ph.OK())
-    exit(1);
-  return 0;
+  return retval;
 }

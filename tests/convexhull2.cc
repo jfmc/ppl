@@ -55,22 +55,20 @@ main() {
 
   computed_result1.convex_hull_assign_and_minimize(ph2);
 
-#if NOISY
-  print_generators(computed_result1,
-		   "*** After convex_hull_assign_and_minimize ***");
-#endif
-
   Polyhedron computed_result2(ph1);
   computed_result2.convex_hull_assign(ph2);
-
-#if NOISY
-  print_generators(computed_result2, "*** After convex_hull_assign ***");
-#endif
 
   Polyhedron known_result(ph2);
 
   int retval = (computed_result1 == known_result
 		&& computed_result2 == known_result) ? 0 : 1;
+
+
+#if NOISY
+  print_generators(computed_result1,
+		   "*** After convex_hull_assign_and_minimize ***");
+  print_generators(computed_result2, "*** After convex_hull_assign ***");
+#endif
 
   return retval;
 }

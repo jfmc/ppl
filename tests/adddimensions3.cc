@@ -59,10 +59,6 @@ main() {
 
   ph.add_dimensions_and_embed(2);
 
-#if NOISY
-  cout << "*** ph ***" << endl << ph << endl;
-#endif
-
   Polyhedron known_result(6, Polyhedron::EMPTY);
   known_result.insert(vertex());
   known_result.insert(ray(x + y));
@@ -72,6 +68,10 @@ main() {
   known_result.insert(line(w));
 
   int retval = (ph == known_result) ? 0 : 1;
+
+#if NOISY
+  print_generators(ph, "*** ph ***");
+#endif
 
   return retval;
 }

@@ -57,20 +57,17 @@ main() try {
 
   ph.add_dimensions_and_constraints(cs2);
 
-#if NOISY
-  print_constraints(ph, "*** add_dimensions_and_constraints ***");
-#endif
-
   copy_ph.add_dimensions_and_embed(2);
   for (ConSys::const_iterator i = copy_cs2.begin(),
 	 iend = copy_cs2.end(); i != iend; ++i )
     copy_ph.insert(*i >> 2);
 
+  int retval = (ph == copy_ph) ? 0 : 1;
+
 #if NOISY
+  print_constraints(ph, "*** add_dimensions_and_constraints ***");
   print_constraints(copy_ph, "*** embed + renaming + insert ***");
 #endif
-
-  int retval = (ph == copy_ph) ? 0 : 1;
 
   return retval;
 }

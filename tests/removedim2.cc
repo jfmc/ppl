@@ -47,9 +47,7 @@ main() {
   Polyhedron ph(gs);
 
 #if NOISY
-  cout << "*** before ***" << endl;
-  cout << ph << endl;
-  cout << "**************" << endl;
+  print_generators(ph, "*** before ***");
 #endif
 
   // This is the set of the variables that we want to remove.
@@ -61,12 +59,6 @@ main() {
   to_be_removed.insert(Variable(8));
 
   ph.remove_dimensions(to_be_removed);
-
-#if NOISY
-  cout << "*** after ***" << endl;
-  cout << ph << endl;
-  cout << "*************" << endl;
-#endif
 
   // Useless, but much clearer.
   gs.clear();
@@ -87,13 +79,12 @@ main() {
 
   Polyhedron known_result(gs);
 
-#if NOISY
-  cout << "*** known_result ***" << endl;
-  cout << known_result << endl;
-  cout << "********************" << endl;
-#endif
-
   int retval = (ph == known_result ? 0 : 1);
+
+#if NOISY
+  print_generators(ph, "*** after ***");
+  print_generators(known_result, "*** known_result ***");
+#endif
 
   return retval;
 }

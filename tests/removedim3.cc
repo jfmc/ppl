@@ -54,15 +54,8 @@ main() {
   int retval = (known_result == ph) ? 0 : 1;
 
 #if NOISY
-  cout << "*** ph ***"
-       << endl
-       << ph
-       << endl;
-
-  cout << "*** known_result ***"
-       << endl
-       << known_result
-       << endl;
+  print_constraints(ph, "*** ph ***");
+  print_constraints(known_result, "*** known_result ***");
 #endif
 
   return retval;

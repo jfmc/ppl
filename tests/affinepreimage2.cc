@@ -45,14 +45,10 @@ main() {
   ph.insert(A + B - 1 >= 0);
 
 #if NOISY
-  cout << "--- ph ---" << endl << ph << endl;
+  print_constraints(ph, "--- ph ---");
 #endif
 
   ph.affine_preimage(A, A + B);
-
-#if NOISY
-  cout << "--- ph after ph.affine_preimage(A, A+B) ---" << endl << ph << endl;
-#endif
 
   Polyhedron known_result(3);
   known_result.insert(A + B + C == 0);
@@ -60,6 +56,10 @@ main() {
   known_result.insert(A + 2*B -1 >= 0);
 
   int retval = (ph == known_result) ? 0 : 1;
+
+#if NOISY
+  print_constraints(ph, "--- ph after ph.affine_preimage(A, A+B) ---");
+#endif
 
   return retval;
 }

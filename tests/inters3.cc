@@ -59,14 +59,16 @@ main() {
 
   computed_result.intersection_assign(ph2);
 
-#if NOISY
-  print_constraints(computed_result, "*** After intersection_assign ***");
-#endif
-
   Polyhedron known_result(2);
   known_result.insert(y >= 0);
   known_result.insert(x - y >= 0);
   known_result.insert(x <= 1);
 
-  return (computed_result == known_result) ? 0 : 1;
+  int retval = (computed_result == known_result) ? 0 : 1;
+
+#if NOISY
+  print_constraints(computed_result, "*** After intersection_assign ***");
+#endif
+
+  return retval;
 }

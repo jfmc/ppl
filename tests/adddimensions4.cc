@@ -54,11 +54,12 @@ main() {
 #endif
 
   ph2.add_dimensions_and_project(3);
+
+  int retval = (ph1 == ph2) ? 0: 1;
+
 #if NOISY
   print_generators(ph2, "*** After add_dimensions_and_project(3) ***");
 #endif
-
-  int retval = (ph1 == ph2) ? 0: 1;
 
   return retval;
 }

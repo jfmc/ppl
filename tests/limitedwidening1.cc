@@ -73,14 +73,14 @@ main() {
   Polyhedron computed_result = ph2;
   computed_result.limited_widening_assign(ph1, cs);
 
-#if NOISY
-  print_constraints(computed_result, "*** After limited_widening_assign ****");
-#endif
-
   Polyhedron known_result(2);
   known_result.insert(x - y >= 0);
   known_result.insert(y >= 0);
   known_result.insert(x <= 5);
+
+#if NOISY
+  print_constraints(computed_result, "*** After limited_widening_assign ****");
+#endif
 
   return (computed_result == known_result) ? 0 : 1;
 }

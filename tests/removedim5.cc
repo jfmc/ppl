@@ -38,17 +38,17 @@ main() {
   Polyhedron ph(4, Polyhedron::EMPTY);
 
 #if NOISY
-  cout << "--- ph ---" << endl << ph << endl;
+  print_constraints(ph, "--- ph ---");
 #endif
   ph.remove_higher_dimensions(0);
-
-#if NOISY
-  cout << "--- ph after remove_higer_dimensions(0)---" << endl << ph << endl;
-#endif
 
   Polyhedron known_result(0, Polyhedron::EMPTY);
 
   int retval = (ph == known_result) ? 0 : 1;
+
+#if NOISY
+  print_constraints(ph, "--- ph after remove_higer_dimensions(0)---");
+#endif
 
   return retval;
 }

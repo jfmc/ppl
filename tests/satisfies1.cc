@@ -42,15 +42,16 @@ main() {
   Polyhedron ph(gs);
 
 #if NOISY
-  cout << "--- ph ---" << endl << ph << endl;
+  print_generators(ph, "--- ph ---");
 #endif
 
-#if NOISY
-  GenSys_Con_Rel rel =
-#endif
-    ph.satisfies(A >= 0);
+  GenSys_Con_Rel rel = ph.satisfies(A >= 0);
+
+  GenSys_Con_Rel known_rel = ALL_SATISFY;
+  int retval = (rel == known_rel) ? 0 : 1;
+
 #if NOISY
   cout << "ph.satisfies(A >= 0) == " << rel << endl;
 #endif
-  return 0;
+  return retval;
 }

@@ -49,12 +49,12 @@ main() {
 
   computed_result.add_constraints_and_minimize(cs);
 
+  int retval = (computed_result == ph) ? 0: 1;
+
 #if NOISY
   print_constraints(computed_result,
 		    "*** After add_constraints_and_minimize ***");
 #endif
-
-  int retval = (computed_result == ph) ? 0: 1;
 
   return retval;
 }

@@ -38,7 +38,7 @@ main() {
   Polyhedron ph;
 
 #if NOISY
-  cout << "--- ph ---" << endl << ph << endl;
+  print_generators(ph, "--- ph ---");
 #endif
 
   Constraint c(LinExpression(3) >= 0);
@@ -47,12 +47,13 @@ main() {
   print_constraint(c, "--- c ---");
 #endif
   GenSys_Con_Rel rel = ph.satisfies(c);
-#if NOISY
-  cout << "ph.satisfies(c) == " << rel << endl;
-#endif
 
   GenSys_Con_Rel known_rel = SOME_SATISFY;
   int retval = (rel == known_rel) ? 0 : 1;
+
+#if NOISY
+  cout << "ph.satisfies(c) == " << rel << endl;
+#endif
 
   return retval;
 }

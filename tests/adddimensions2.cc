@@ -39,7 +39,7 @@ main() {
   Polyhedron ph(3, Polyhedron::EMPTY);
 
 #if NOISY
-  cout << "*** ph ***" << endl << ph << endl;
+  print_constraints(ph, "*** ph ***");
 #endif
 
   Polyhedron computed_result1(ph);
@@ -48,15 +48,15 @@ main() {
   computed_result1.add_dimensions_and_project(4);
   computed_result2.add_dimensions_and_embed(4);
 
-#if NOISY
-  cout << "*** computed_result1 ***" << endl << computed_result1 << endl;
-  cout << "*** computed_result2 ***" << endl << computed_result2 << endl;
-#endif
-
   Polyhedron known_result(7, Polyhedron::EMPTY);
 
   int retval = (computed_result1 == known_result
 		&& computed_result2 == known_result) ? 0 : 1;
+
+#if NOISY
+  print_constraints(computed_result1, "*** computed_result1 ***");
+  print_constraints(computed_result2, "*** computed_result2 ***");
+#endif
 
   return retval;
 }

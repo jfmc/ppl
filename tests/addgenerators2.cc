@@ -49,14 +49,16 @@ main() {
 
   ph1.add_generators(gs);
 
-#if NOISY
-  print_generators(ph1, "*** add_generators ***");
-#endif
-
   Polyhedron known_result(2, Polyhedron::EMPTY);
   known_result.insert(vertex());
   known_result.insert(line(x));
 
-  return (ph1 == known_result) ? 0 : 1;
+  int retval = (ph1 == known_result) ? 0 : 1;
+
+#if NOISY
+  print_generators(ph1, "*** add_generators ***");
+#endif
+
+  return retval;
 }
 

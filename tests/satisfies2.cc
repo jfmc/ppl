@@ -40,20 +40,22 @@ main() {
   Polyhedron ph(2, Polyhedron::EMPTY);
 
 #if NOISY
-  cout << "--- ph ---" << endl << ph << endl;
+  print_generators(ph, "--- ph ---");
 #endif
   Constraint c(y >= 0);
 
 #if NOISY
   print_constraint(c, "--- c ---");
 #endif
+
   GenSys_Con_Rel rel = ph.satisfies(c);
-#if NOISY
-  cout << "ph.satisfies(c) == " << rel << endl;
-#endif
 
   GenSys_Con_Rel known_rel = ALL_SATURATE;
   int retval = (rel == known_rel) ? 0 : 1;
+
+#if NOISY
+  cout << "ph.satisfies(c) == " << rel << endl;
+#endif
 
   return retval;
 }

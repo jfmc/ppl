@@ -48,5 +48,14 @@ main() {
   print_constraints(ph, "--- ph ---");
 #endif
 
-  return ph.check_universe();
+  bool universe = ph.check_universe();
+
+#if NOISY
+  cout << "*** ph.check_universe() ***"
+       << endl
+       << (universe ? "true" : "false")
+       << endl;
+#endif
+
+  return !universe ? 0 : 1;
 }

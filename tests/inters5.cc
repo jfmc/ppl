@@ -54,15 +54,15 @@ main() {
 
   ph1.intersection_assign_and_minimize(ph2);
 
-#if NOISY
-  print_constraints(ph1, "*** After intersection_assign_and_minimize ***");
-#endif
-
   Polyhedron known_result(2);
   known_result.insert(y >= 0);
   known_result.insert(x >= y);
 
   int retval = (known_result == ph1) ? 0 : 1;
+
+#if NOISY
+  print_constraints(ph1, "*** After intersection_assign_and_minimize ***");
+#endif
 
   return retval;
 }

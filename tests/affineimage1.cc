@@ -42,15 +42,19 @@ main() {
   ph.insert(C == -2);
   ph.insert(A == 0);
 #if NOISY
-  cout << "--- ph ---" << endl << ph << endl;
+  print_constraints(ph, "--- ph ---");
 #endif
 
   ph.affine_image(B, A+2, 1);
+
+  Polyhedron known_result(3, Polyhedron::EMPTY);
+  known_result.insert(vertex(2*B - 2*C));
+
+  int retval = (ph == known_result) ? 0 : 1;
+
 #if NOISY
-  cout << "--- ph after ph.affine_image(B, A+2, 1) ---" << endl << ph << endl;
+  print_generators(ph, "--- ph after ph.affine_image(B, A+2, 1) ---");
 #endif
 
-  if(!ph.OK())
-    exit(1);
-  return 0;
+  return retval;
 }

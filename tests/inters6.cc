@@ -58,9 +58,6 @@ main() {
 #endif
 
   ph1.intersection_assign(ph2);
-#if NOISY
-  print_constraints(ph1, "*** After intersection_assign ***");
-#endif
 
   Polyhedron known_result(2, Polyhedron::EMPTY);
   known_result.insert(vertex(x));
@@ -69,6 +66,10 @@ main() {
   known_result.insert(vertex(3*x + 3*y));
 
   int retval =(ph1 == known_result) ? 0 : 1;
+
+#if NOISY
+  print_constraints(ph1, "*** After intersection_assign ***");
+#endif
 
   return retval;
 }

@@ -38,7 +38,7 @@ main() {
   Polyhedron ph;
 
 #if NOISY
-  cout << "--- ph ---" << endl << ph << endl;
+  print_constraints(ph, "--- ph ---");
 #endif
 
   Generator g = vertex();

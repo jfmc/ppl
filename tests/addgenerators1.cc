@@ -52,16 +52,16 @@ main() {
 
   ph1.add_generators_and_minimize(gs2);
 
-#if NOISY
-  print_generators(ph1, "*** add_generators_and_minimize ***");
-#endif
-
   Polyhedron known_result(2, Polyhedron::EMPTY);
   known_result.insert(vertex());
   known_result.insert(vertex(y));
   known_result.insert(line(x));
 
   int retval = (ph1 == known_result) ? 0: 1;
+
+#if NOISY
+  print_generators(ph1, "*** add_generators_and_minimize ***");
+#endif
 
   return retval;
 }

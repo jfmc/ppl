@@ -1,5 +1,6 @@
-/* Testing Polyhedron::add_generators(): we add a system of generators
-   to a polyhedron defined by its system of constraints.
+/* An incorrect use of the function add_generators: we want to add
+   a system of generators that does not contain a vertex to an
+   empty polyhedron.
    Copyright (C) 2001, 2002 Roberto Bagnara <bagnara@cs.unipr.it>
 
 This file is part of the Parma Polyhedra Library (PPL).
@@ -23,8 +24,8 @@ For the most up-to-date information see the Parma Polyhedra Library
 site: http://www.cs.unipr.it/ppl/ . */
 
 #include "ppl_install.hh"
-#include "print.hh"
 #include "ehandlers.hh"
+#include <stdexcept>
 
 using namespace std;
 using namespace Parma_Polyhedra_Library;
@@ -34,37 +35,29 @@ using namespace Parma_Polyhedra_Library;
 int
 main() {
   set_handlers();
-
   Variable x(0);
   Variable y(1);
 
-  Polyhedron ph(2);
-  ph.insert(x >= 1);
-  ph.insert(x <= 0);
+  Polyhedron ph(3, Polyhedron::EMPTY);
 
+  try {
+    // This is an invalid system of generators
+    // to add to an empty polyhedron. 
+    GenSys gs;
+    gs.insert(ray(x + y));
+    gs.insert(ray(x - y));
+    ph.add_generators(gs);
+  }
+  catch (invalid_argument& e) {
 #if NOISY
-  print_constraints(ph, "*** ph ***");
+    cout << "invalid_system_of_generators: " << e.what() << endl;
 #endif
+    exit(0);
+  }
+  catch (...) {
+    exit(1);
+  }
 
-  GenSys gs;
-  gs.insert(ray(x));
-  gs.insert(vertex());
-
-#if NOISY
-  print_generators(gs, "*** gs ***");
-#endif
-
-  ph.add_generators(gs);
-
-  Polyhedron known_result(2);
-  known_result.insert(y == 0);
-  known_result.insert(x >= 0);
-
-  int retval = (ph == known_result) ? 0 : 1;
-
-#if NOISY
-  print_generators(ph, "*** After add_generators ***");
-#endif
-
-  return retval;
+  // Should not get here.
+  return 1;
 }

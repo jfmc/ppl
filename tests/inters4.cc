@@ -53,23 +53,20 @@ main() {
   Polyhedron computed_result1(ph1);
   computed_result1.intersection_assign_and_minimize(ph2);
 
-#if NOISY
-  print_constraints(computed_result1,
-		    "*** After intersection_assign_and_minimize ***");
-#endif
-
   ConSys cs_computed_result2 = ph1.constraints();
   Polyhedron computed_result2(cs_computed_result2);
   computed_result2.intersection_assign(ph2);
-
-#if NOISY
-  print_constraints(computed_result2, "*** After intersection_assign ***");
-#endif
 
   Polyhedron known_result(2, Polyhedron::EMPTY);
 
   int retval = (computed_result1 == known_result
 		&& computed_result2 == known_result) ? 0 : 1;
+
+#if NOISY
+  print_constraints(computed_result1,
+		    "*** After intersection_assign_and_minimize ***");
+  print_constraints(computed_result2, "*** After intersection_assign ***");
+#endif
 
   return retval;
 }

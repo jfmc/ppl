@@ -49,15 +49,15 @@ main() {
 
   ph.remove_higher_dimensions(2);
 
-#if NOISY
-  print_generators(ph, "*** After remove_higher_dimensions(2) ***");
-#endif
-
   GenSys gs_known_result;
   gs_known_result.insert(vertex(x + y));
   Polyhedron known_result(gs_known_result);
 
   int retval = (ph == known_result) ? 0 : 1;
+
+#if NOISY
+  print_generators(ph, "*** After remove_higher_dimensions(2) ***");
+#endif
 
   return retval;
 }

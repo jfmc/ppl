@@ -46,14 +46,10 @@ main() {
   Polyhedron ph(gs);
 
 #if NOISY
-  cout << "--- ph ---" << endl << ph << endl;
+  print_generators(ph, "--- ph ---");
 #endif
 
   ph.affine_preimage(A, A+2);
-
-#if NOISY
-  cout << "--- ph after ph.affine_preimage(A, A+2) ---" << endl << ph << endl;
-#endif
 
   GenSys gs_known_result;
   gs_known_result.insert(vertex(-2*A));
@@ -63,6 +59,10 @@ main() {
   Polyhedron known_result(gs_known_result);
 
   int retval = (ph == known_result) ? 0 : 1;
+
+#if NOISY
+  print_generators(ph, "--- ph after ph.affine_preimage(A, A+2) ---");
+#endif
 
   return retval;
 }

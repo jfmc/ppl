@@ -51,14 +51,10 @@ main() {
   gs.insert(vertex());
 
 #if NOISY
-  cout << "--- gs ---" << endl << gs << endl;
+  print_generators(gs, "--- gs ---");
 #endif
 
   ph.add_generators_and_minimize(gs);
-
-#if NOISY
-  print_generators(ph, "*** After add_generators_and_minimize ***");
-#endif
 
   GenSys gs_known_result;
   gs_known_result.insert(vertex());
@@ -67,6 +63,10 @@ main() {
 
 
   int retval = (ph == known_result) ? 0 : 1;
+
+#if NOISY
+  print_generators(ph, "*** After add_generators_and_minimize ***");
+#endif
 
   return retval;
 }

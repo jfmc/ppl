@@ -50,14 +50,15 @@ main() {
 #endif
 
   ph.affine_preimage(x, y+1);
-#if NOISY
-  print_constraints(ph, "*** After affine_preimage(x, y+1) ***");
-#endif
 
   Polyhedron known_result(2);
   known_result.insert(y >= 1);
 
   int retval = (ph == known_result) ? 0 : 1;
+
+#if NOISY
+  print_constraints(ph, "*** After affine_preimage(x, y+1) ***");
+#endif
 
   return retval;
 }

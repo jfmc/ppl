@@ -58,16 +58,16 @@ main() {
 
   ph.add_constraints(cs);
 
-#if NOISY
-  print_constraints(ph, "*** After add_constraints ***");
-#endif
-
   Polyhedron known_result(2);
   known_result.insert(y >= 0);
   known_result.insert(x - y >= 0);
   known_result.insert(x <= 3);
 
   int retval = (known_result == ph) ? 0 : 1;
+
+#if NOISY
+  print_constraints(ph, "*** After add_constraints ***");
+#endif
 
   return retval;
 }

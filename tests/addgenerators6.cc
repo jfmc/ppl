@@ -52,13 +52,10 @@ main() {
   gs2.insert(vertex());
 
 #if NOISY
-  cout << "--- gs2 ---" << endl << gs2 << endl;
+  print_generators(gs2, "--- gs2 ---");
 #endif
 
   ph.add_generators(gs2);
-#if NOISY
-  print_generators(ph, "*** After add_generators ***");
-#endif
 
   Polyhedron known_result(2, Polyhedron::EMPTY);
   known_result.insert(vertex());
@@ -66,6 +63,10 @@ main() {
   known_result.insert(ray(x + y));
 
   int retval = (ph == known_result) ? 0 : 1;
+
+#if NOISY
+  print_generators(ph, "*** After add_generators ***");
+#endif
 
   return retval;
 }

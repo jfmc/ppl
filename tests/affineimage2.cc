@@ -44,19 +44,20 @@ main() {
   ph.insert(A <= 3);
 
 #if NOISY
-  cout << "--- ph ---" << endl << ph << endl;
+  print_constraints(ph, "--- ph ---");
 #endif
   ph.affine_image(A, A+B+1);
 
-#if NOISY
-  cout << "--- ph after ph.affine_image(A, A+B+1) ---" << endl << ph << endl;
-#endif
   Polyhedron known_result(2);
   known_result.insert(A -2*B - 1 >= 0);
   known_result.insert(B >= 0);
   known_result.insert(A - B <= 4);
 
   int retval = (ph == known_result) ? 0 : 1;
+
+#if NOISY
+  print_constraints(ph, "--- ph after ph.affine_image(A, A+B+1) ---");
+#endif
 
   return retval;
 }
