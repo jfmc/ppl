@@ -3004,16 +3004,6 @@ PPL::Polyhedron::generalized_affine_image(const LinExpression& lhs,
     throw_dimension_incompatible("generalized_affine_image(e1, r, e2, d)",
 				 rhs);
 
-  // Check that at least one variable in the left hand side
-  // has a non-zero coefficient.
-  for ( ; lhs_space_dim > 0; lhs_space_dim--)
-    if (lhs.coefficient(Variable(lhs_space_dim - 1)) != 0)
-      break;
-  // If all variables have a zero coefficient, no image can be computed.
-  if (lhs_space_dim == 0)
-    throw_dimension_incompatible("generalized_affine_image(e1, r, e2, d)",
-				 lhs);
-
   // Strict relation operators are only admitted for NNC polyhedra.
   if (is_necessarily_closed() && (relop == PPL_LT || relop == PPL_GT))
     throw_generic("generalized_affine_image(e1, r, e2, d)",
@@ -3024,56 +3014,143 @@ PPL::Polyhedron::generalized_affine_image(const LinExpression& lhs,
   if (is_empty())
     return;
 
-  // TODO: if the variables in `lhs' are disjoint from
-  // the variables in `rhs', then adding the new dimension
-  // is not needed.
+  // If `denominator' is negative, then we may need to change
+  // the relation operator accordingly.
+  // We do this here once and for all.
+  Relation_Operator new_relop = relop;
+  if (denominator < 0)
+    switch (relop) {
+      case PPL_LT:
+	new_relop = PPL_GT;
+	break;
+      case PPL_LE:
+	new_relop = PPL_GE;
+	break;
+      case PPL_EQ:
+	break;
+      case PPL_GE:
+	new_relop = PPL_LE;
+	break;
+      case PPL_GT:
+	new_relop = PPL_LT;
+	break;
+      }
 
-  // Add a new dimension.
-  Variable new_var = Variable(space_dimension());
-  add_dimensions_and_embed(1);
-
-  // Constrain the new dimension to be equal to the right hand side.
-  // (we force minimization because we will need the generators).
-  ConSys new_cs;
-  new_cs.insert(denominator * new_var == rhs);
-  add_constraints_and_minimize(new_cs);
-
-  // Cylindrificate on all the variables occurring in the left hand side
-  // (we force minimization because we will need the constraints).
-  GenSys new_gs;
-  for (dimension_type i = lhs_space_dim; i-- > 0; )
-    if (lhs.coefficient(Variable(i)) != 0)
-      new_gs.insert(line(Variable(i)));
-  add_generators_and_minimize(new_gs);
-
-  // Constrain the new dimension so that it is related to
-  // the left hand side as dictated by `relation'
-  // (we force minimization because we will need the generators).
-  new_cs.clear();
-  switch (relop) {
-  case PPL_LT:
-    new_cs.insert(lhs < new_var);
-    break;
-  case PPL_LE:
-    new_cs.insert(lhs <= new_var);
-    break;
-  case PPL_EQ:
-    new_cs.insert(lhs == new_var);
-    break;
-  case PPL_GE:
-    new_cs.insert(lhs >= new_var);
-    break;
-  case PPL_GT:
-    new_cs.insert(lhs > new_var);
-    break;
+  // Compute the actual space dimension of `lhs',
+  // i.e., the highest dimension having a non-zero coefficient in `lhs'.
+  for ( ; lhs_space_dim > 0; lhs_space_dim--)
+    if (lhs.coefficient(Variable(lhs_space_dim - 1)) != 0)
+      break;
+  // If all variables have a zero coefficient, then `lhs' is a constant:
+  // we can simply add the constraint `denominator * lhs new_relop rhs'.
+  if (lhs_space_dim == 0) {
+    switch (new_relop) {
+    case PPL_LT:
+      add_constraint(denominator * lhs < rhs);
+      break;
+    case PPL_LE:
+      add_constraint(denominator * lhs <= rhs);
+      break;
+    case PPL_EQ:
+      add_constraint(denominator * lhs == rhs);
+      break;
+    case PPL_GE:
+      add_constraint(denominator * lhs >= rhs);
+      break;
+    case PPL_GT:
+      add_constraint(denominator * lhs > rhs);
+      break;
+    }
+    return;
   }
-  add_constraints_and_minimize(new_cs);
 
-  // Remove the temporarily added dimension.
-  remove_higher_dimensions(space_dimension()-1);
+  // Gather in `new_gs' the collections of all the lines having
+  // the direction of variables occurring in `lhs'.
+  // While at it, check whether or not there exists a variable
+  // occurring in both `lhs' and `rhs'.
+  GenSys new_lines;
+  bool lhs_vars_intersects_rhs_vars = false;
+  for (dimension_type i = lhs_space_dim; i-- > 0; )
+    if (lhs.coefficient(Variable(i)) != 0) {
+      new_lines.insert(line(Variable(i)));
+      if (rhs.coefficient(Variable(i)) != 0)
+	lhs_vars_intersects_rhs_vars = true;
+    }
+
+  if (lhs_vars_intersects_rhs_vars) {
+    // Some variables in `lhs' also occur in `rhs'.
+    // To ease the computation, we add and additional dimension.
+    Variable new_var = Variable(space_dimension());
+    add_dimensions_and_embed(1);
+
+    // Constrain the new dimension to be equal to the right hand side.
+    // (we force minimization because we will need the generators).
+    ConSys new_cs;
+    new_cs.insert(denominator * new_var == rhs);
+    add_constraints_and_minimize(new_cs);
+    
+    // Cylindrificate on all the variables occurring in the left hand side
+    // (we force minimization because we will need the constraints).
+    add_generators_and_minimize(new_lines);
+    
+    // Constrain the new dimension so that it is related to
+    // the left hand side as dictated by `relation'
+    // (we force minimization because we will need the generators).
+    new_cs.clear();
+    switch (relop) {
+    case PPL_LT:
+      new_cs.insert(lhs < new_var);
+      break;
+    case PPL_LE:
+      new_cs.insert(lhs <= new_var);
+      break;
+    case PPL_EQ:
+      new_cs.insert(lhs == new_var);
+      break;
+    case PPL_GE:
+      new_cs.insert(lhs >= new_var);
+      break;
+    case PPL_GT:
+      new_cs.insert(lhs > new_var);
+      break;
+    }
+    add_constraints_and_minimize(new_cs);
+
+    // Remove the temporarily added dimension.
+    remove_higher_dimensions(space_dimension()-1);
+  }
+  else {
+    // `lhs' and `rhs' variables are disjoint:
+    // there is no need to add a further dimension.
+
+    // Cylindrificate on all the variables occurring in the left hand side
+    // (we force minimization because we will need the constraints).
+    add_generators_and_minimize(new_lines);
+
+    // Constrain the left hand side expression so that it is related to
+    // the right hand side expression as dictated by `relop'.
+    switch (new_relop) {
+    case PPL_LT:
+      add_constraint(denominator * lhs < rhs);
+      break;
+    case PPL_LE:
+      add_constraint(denominator * lhs <= rhs);
+      break;
+    case PPL_EQ:
+      add_constraint(denominator * lhs == rhs);
+      break;
+    case PPL_GE:
+      add_constraint(denominator * lhs >= rhs);
+      break;
+    case PPL_GT:
+      add_constraint(denominator * lhs > rhs);
+      break;
+    }
+  }
 
   assert(OK());
 }
+
 
 PPL::Poly_Con_Relation
 PPL::Polyhedron::relation_with(const Constraint& c) const {
