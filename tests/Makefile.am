@@ -34,7 +34,7 @@ LDADD = $(top_builddir)/src/libppl.la ehandlers.o print.o @extra_libraries@
 
 CPPFLAGS = @extra_cpp_flags@
 
-TESTS = $(WATCHDOG_TESTS) \
+ORIGINAL_TESTS = \
 	NNCinclusion1 \
 	NNCminimize1 NNCminimize2 NNCminimize3 NNCminimize4 NNCminimize5 \
         NNCminimize6 \
@@ -74,6 +74,49 @@ TESTS = $(WATCHDOG_TESTS) \
 	smm1 \
 	timeelapse1 timeelapse2 timeelapse3 timeelapse4 timeelapse5 \
 	universe1 universe2 universe3 universe4 universe5 universe6
+
+DERIVED_TESTS = \
+	nnc_addconstraints1                     nnc_addconstraints3 \
+	nnc_addconstraints4 nnc_addconstraints5 nnc_addconstraints6 \
+	nnc_addconstraints7 nnc_addconstraints8 nnc_addconstraints9 \
+	nnc_adddimensions1 nnc_adddimensions2 nnc_adddimensions3 \
+	nnc_adddimensions4 \
+	nnc_addgenerators1 nnc_addgenerators2 nnc_addgenerators3 \
+	nnc_addgenerators4 nnc_addgenerators5 nnc_addgenerators6 \
+	nnc_affineimage1 nnc_affineimage2 \
+	nnc_affinepreimage1 nnc_affinepreimage2 nnc_affinepreimage3 \
+	nnc_affinepreimage4 \
+	nnc_affinetrans \
+	nnc_append1 nnc_append2 \
+	nnc_bounded1 \
+	nnc_concatenate1 nnc_concatenate2 nnc_concatenate3 \
+	nnc_empty1 \
+	nnc_exceptions1 \
+	nnc_generators1 nnc_generators2 \
+	nnc_h79widening1 nnc_h79widening2 \
+	nnc_inclusion1 \
+	nnc_intersection1 nnc_intersection2 nnc_intersection3 \
+	nnc_intersection4 nnc_intersection5 nnc_intersection6 \
+	nnc_intersection7 \
+	nnc_limitedh79widening1 nnc_limitedh79widening2 \
+	nnc_mc91 \
+	nnc_onepoint \
+	nnc_permute \
+	nnc_polydifference1 \
+	nnc_polyhull1 nnc_polyhull2 nnc_polyhull3 nnc_polyhull4 \
+	nnc_randphull1 \
+	nnc_relations1 nnc_relations2 nnc_relations3 nnc_relations4 \
+	nnc_relations5 nnc_relations6 nnc_relations7 nnc_relations8 \
+	nnc_relations9 \
+	nnc_removedim1 nnc_removedim2 nnc_removedim3 nnc_removedim4 \
+	nnc_removedim5 nnc_removedim6 \
+	nnc_smm1 \
+	nnc_timeelapse2 nnc_timeelapse5 \
+	nnc_universe1 nnc_universe2 nnc_universe3 nnc_universe4 nnc_universe5
+
+#
+# Sources for the tests
+#
 
 NNCinclusion1_SOURCES = NNCinclusion1.cc
 
@@ -209,6 +252,199 @@ universe4_SOURCES = universe4.cc
 universe5_SOURCES = universe5.cc
 universe6_SOURCES = universe6.cc
 
+#
+# Sources and compilation flags for the derived check programs
+#
+
+DERIVED_CXXFLAGS = -DDERIVED_TEST $(AM_CXXFLAGS)
+
+nnc_addconstraints1_SOURCES = addconstraints1.cc
+nnc_addconstraints1_CXXFLAGS = $(DERIVED_CXXFLAGS)
+#nnc_addconstraints2_SOURCES = addconstraints2.cc
+#nnc_addconstraints2_CXXFLAGS = $(DERIVED_CXXFLAGS)
+nnc_addconstraints3_SOURCES = addconstraints3.cc
+nnc_addconstraints3_CXXFLAGS = $(DERIVED_CXXFLAGS)
+nnc_addconstraints4_SOURCES = addconstraints4.cc
+nnc_addconstraints4_CXXFLAGS = $(DERIVED_CXXFLAGS)
+nnc_addconstraints5_SOURCES = addconstraints5.cc
+nnc_addconstraints5_CXXFLAGS = $(DERIVED_CXXFLAGS)
+nnc_addconstraints6_SOURCES = addconstraints6.cc
+nnc_addconstraints6_CXXFLAGS = $(DERIVED_CXXFLAGS)
+nnc_addconstraints7_SOURCES = addconstraints7.cc
+nnc_addconstraints7_CXXFLAGS = $(DERIVED_CXXFLAGS)
+nnc_addconstraints8_SOURCES = addconstraints8.cc
+nnc_addconstraints8_CXXFLAGS = $(DERIVED_CXXFLAGS)
+nnc_addconstraints9_SOURCES = addconstraints9.cc
+nnc_addconstraints9_CXXFLAGS = $(DERIVED_CXXFLAGS)
+
+nnc_adddimensions1_SOURCES = adddimensions1.cc
+nnc_adddimensions1_CXXFLAGS = $(DERIVED_CXXFLAGS)
+nnc_adddimensions2_SOURCES = adddimensions2.cc
+nnc_adddimensions2_CXXFLAGS = $(DERIVED_CXXFLAGS)
+nnc_adddimensions3_SOURCES = adddimensions3.cc
+nnc_adddimensions3_CXXFLAGS = $(DERIVED_CXXFLAGS)
+nnc_adddimensions4_SOURCES = adddimensions4.cc
+nnc_adddimensions4_CXXFLAGS = $(DERIVED_CXXFLAGS)
+
+nnc_addgenerators1_SOURCES = addgenerators1.cc
+nnc_addgenerators1_CXXFLAGS = $(DERIVED_CXXFLAGS)
+nnc_addgenerators2_SOURCES = addgenerators2.cc
+nnc_addgenerators2_CXXFLAGS = $(DERIVED_CXXFLAGS)
+nnc_addgenerators3_SOURCES = addgenerators3.cc
+nnc_addgenerators3_CXXFLAGS = $(DERIVED_CXXFLAGS)
+nnc_addgenerators4_SOURCES = addgenerators4.cc
+nnc_addgenerators4_CXXFLAGS = $(DERIVED_CXXFLAGS)
+nnc_addgenerators5_SOURCES = addgenerators5.cc
+nnc_addgenerators5_CXXFLAGS = $(DERIVED_CXXFLAGS)
+nnc_addgenerators6_SOURCES = addgenerators6.cc
+nnc_addgenerators6_CXXFLAGS = $(DERIVED_CXXFLAGS)
+
+nnc_affineimage1_SOURCES = affineimage1.cc
+nnc_affineimage1_CXXFLAGS = $(DERIVED_CXXFLAGS)
+nnc_affineimage2_SOURCES = affineimage2.cc
+nnc_affineimage2_CXXFLAGS = $(DERIVED_CXXFLAGS)
+
+nnc_affinepreimage1_SOURCES = affinepreimage1.cc
+nnc_affinepreimage1_CXXFLAGS = $(DERIVED_CXXFLAGS)
+nnc_affinepreimage2_SOURCES = affinepreimage2.cc
+nnc_affinepreimage2_CXXFLAGS = $(DERIVED_CXXFLAGS)
+nnc_affinepreimage3_SOURCES = affinepreimage3.cc
+nnc_affinepreimage3_CXXFLAGS = $(DERIVED_CXXFLAGS)
+nnc_affinepreimage4_SOURCES = affinepreimage4.cc
+nnc_affinepreimage4_CXXFLAGS = $(DERIVED_CXXFLAGS)
+
+nnc_affinetrans_SOURCES = affinetrans.cc
+nnc_affinetrans_CXXFLAGS = $(DERIVED_CXXFLAGS)
+
+nnc_append1_SOURCES = append1.cc
+nnc_append1_CXXFLAGS = $(DERIVED_CXXFLAGS)
+nnc_append2_SOURCES = append2.cc
+nnc_append2_CXXFLAGS = $(DERIVED_CXXFLAGS)
+
+nnc_bounded1_SOURCES = bounded1.cc
+nnc_bounded1_CXXFLAGS = $(DERIVED_CXXFLAGS)
+
+nnc_concatenate1_SOURCES = concatenate1.cc
+nnc_concatenate1_CXXFLAGS = $(DERIVED_CXXFLAGS)
+nnc_concatenate2_SOURCES = concatenate2.cc
+nnc_concatenate2_CXXFLAGS = $(DERIVED_CXXFLAGS)
+nnc_concatenate3_SOURCES = concatenate3.cc
+nnc_concatenate3_CXXFLAGS = $(DERIVED_CXXFLAGS)
+
+nnc_empty1_SOURCES = empty1.cc
+nnc_empty1_CXXFLAGS = $(DERIVED_CXXFLAGS)
+
+nnc_exceptions1_SOURCES = exceptions1.cc
+nnc_exceptions1_CXXFLAGS = $(DERIVED_CXXFLAGS)
+
+nnc_generators1_SOURCES = generators1.cc
+nnc_generators1_CXXFLAGS = $(DERIVED_CXXFLAGS)
+nnc_generators2_SOURCES = generators2.cc
+nnc_generators2_CXXFLAGS = $(DERIVED_CXXFLAGS)
+
+nnc_h79widening1_SOURCES = h79widening1.cc
+nnc_h79widening1_CXXFLAGS = $(DERIVED_CXXFLAGS)
+nnc_h79widening2_SOURCES = h79widening2.cc
+nnc_h79widening2_CXXFLAGS = $(DERIVED_CXXFLAGS)
+
+nnc_inclusion1_SOURCES = inclusion1.cc
+nnc_inclusion1_CXXFLAGS = $(DERIVED_CXXFLAGS)
+
+nnc_intersection1_SOURCES = intersection1.cc
+nnc_intersection1_CXXFLAGS = $(DERIVED_CXXFLAGS)
+nnc_intersection2_SOURCES = intersection2.cc
+nnc_intersection2_CXXFLAGS = $(DERIVED_CXXFLAGS)
+nnc_intersection3_SOURCES = intersection3.cc
+nnc_intersection3_CXXFLAGS = $(DERIVED_CXXFLAGS)
+nnc_intersection4_SOURCES = intersection4.cc
+nnc_intersection4_CXXFLAGS = $(DERIVED_CXXFLAGS)
+nnc_intersection5_SOURCES = intersection5.cc
+nnc_intersection5_CXXFLAGS = $(DERIVED_CXXFLAGS)
+nnc_intersection6_SOURCES = intersection6.cc
+nnc_intersection6_CXXFLAGS = $(DERIVED_CXXFLAGS)
+nnc_intersection7_SOURCES = intersection7.cc
+nnc_intersection7_CXXFLAGS = $(DERIVED_CXXFLAGS)
+
+nnc_limitedh79widening1_SOURCES = limitedh79widening1.cc
+nnc_limitedh79widening1_CXXFLAGS = $(DERIVED_CXXFLAGS)
+nnc_limitedh79widening2_SOURCES = limitedh79widening2.cc
+nnc_limitedh79widening2_CXXFLAGS = $(DERIVED_CXXFLAGS)
+
+nnc_mc91_SOURCES = mc91.cc
+nnc_mc91_CXXFLAGS = $(DERIVED_CXXFLAGS)
+
+nnc_onepoint_SOURCES = onepoint.cc
+nnc_onepoint_CXXFLAGS = $(DERIVED_CXXFLAGS)
+
+nnc_permute_SOURCES = permute.cc
+nnc_permute_CXXFLAGS = $(DERIVED_CXXFLAGS)
+
+nnc_polydifference1_SOURCES = polydifference1.cc
+nnc_polydifference1_CXXFLAGS = $(DERIVED_CXXFLAGS)
+
+nnc_polyhull1_SOURCES = polyhull1.cc
+nnc_polyhull1_CXXFLAGS = $(DERIVED_CXXFLAGS)
+nnc_polyhull2_SOURCES = polyhull2.cc
+nnc_polyhull2_CXXFLAGS = $(DERIVED_CXXFLAGS)
+nnc_polyhull3_SOURCES = polyhull3.cc
+nnc_polyhull3_CXXFLAGS = $(DERIVED_CXXFLAGS)
+nnc_polyhull4_SOURCES = polyhull4.cc
+nnc_polyhull4_CXXFLAGS = $(DERIVED_CXXFLAGS)
+
+nnc_relations1_SOURCES = relations1.cc
+nnc_relations1_CXXFLAGS = $(DERIVED_CXXFLAGS)
+nnc_relations2_SOURCES = relations2.cc
+nnc_relations2_CXXFLAGS = $(DERIVED_CXXFLAGS)
+nnc_relations3_SOURCES = relations3.cc
+nnc_relations3_CXXFLAGS = $(DERIVED_CXXFLAGS)
+nnc_relations4_SOURCES = relations4.cc
+nnc_relations4_CXXFLAGS = $(DERIVED_CXXFLAGS)
+nnc_relations5_SOURCES = relations5.cc
+nnc_relations5_CXXFLAGS = $(DERIVED_CXXFLAGS)
+nnc_relations6_SOURCES = relations6.cc
+nnc_relations6_CXXFLAGS = $(DERIVED_CXXFLAGS)
+nnc_relations7_SOURCES = relations7.cc
+nnc_relations7_CXXFLAGS = $(DERIVED_CXXFLAGS)
+nnc_relations8_SOURCES = relations8.cc
+nnc_relations8_CXXFLAGS = $(DERIVED_CXXFLAGS)
+nnc_relations9_SOURCES = relations9.cc
+nnc_relations9_CXXFLAGS = $(DERIVED_CXXFLAGS)
+
+nnc_randphull1_SOURCES = randphull1.cc
+nnc_randphull1_CXXFLAGS = $(DERIVED_CXXFLAGS)
+
+nnc_removedim1_SOURCES = removedim1.cc
+nnc_removedim1_CXXFLAGS = $(DERIVED_CXXFLAGS)
+nnc_removedim2_SOURCES = removedim2.cc
+nnc_removedim2_CXXFLAGS = $(DERIVED_CXXFLAGS)
+nnc_removedim3_SOURCES = removedim3.cc
+nnc_removedim3_CXXFLAGS = $(DERIVED_CXXFLAGS)
+nnc_removedim4_SOURCES = removedim4.cc
+nnc_removedim4_CXXFLAGS = $(DERIVED_CXXFLAGS)
+nnc_removedim5_SOURCES = removedim5.cc
+nnc_removedim5_CXXFLAGS = $(DERIVED_CXXFLAGS)
+nnc_removedim6_SOURCES = removedim6.cc
+nnc_removedim6_CXXFLAGS = $(DERIVED_CXXFLAGS)
+
+nnc_smm1_SOURCES = smm1.cc
+nnc_smm1_CXXFLAGS = $(DERIVED_CXXFLAGS)
+
+nnc_timeelapse2_SOURCES = timeelapse2.cc
+nnc_timeelapse2_CXXFLAGS = $(DERIVED_CXXFLAGS)
+nnc_timeelapse5_SOURCES = timeelapse5.cc
+nnc_timeelapse5_CXXFLAGS = $(DERIVED_CXXFLAGS)
+
+nnc_universe1_SOURCES = universe1.cc
+nnc_universe1_CXXFLAGS = $(DERIVED_CXXFLAGS)
+nnc_universe2_SOURCES = universe2.cc
+nnc_universe2_CXXFLAGS = $(DERIVED_CXXFLAGS)
+nnc_universe3_SOURCES = universe3.cc
+nnc_universe3_CXXFLAGS = $(DERIVED_CXXFLAGS)
+nnc_universe4_SOURCES = universe4.cc
+nnc_universe4_CXXFLAGS = $(DERIVED_CXXFLAGS)
+nnc_universe5_SOURCES = universe5.cc
+nnc_universe5_CXXFLAGS = $(DERIVED_CXXFLAGS)
+
 watchdog1_SRCS = watchdog1.cc timings.cc timings.hh
 
 if BUILD_WATCHDOG_LIBRARY
@@ -219,9 +455,11 @@ watchdog1_LDADD = $(LDADD) $(top_builddir)/Watchdog/libpwl.la
 
 endif
 
+TESTS = $(ORIGINAL_TESTS) $(DERIVED_TESTS) $(WATCHDOG_TESTS)
+
 check_PROGRAMS = $(TESTS) $(BUGS)
 
-noinst_HEADERS = ehandlers.hh print.hh
+noinst_HEADERS = ppl_test.hh ehandlers.hh print.hh
 
 EXTRA_DIST = ehandlers.cc print.cc $(watchdog1_SRCS)
 
