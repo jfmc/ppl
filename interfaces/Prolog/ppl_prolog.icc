@@ -127,7 +127,7 @@ handle_exception(const not_a_polyhedron_kind& e) {
 
   Prolog_put_term(culprit, e.term());
   Prolog_put_long(arg_no, 1);
-  Prolog_put_atom_chars(expected_domain, "'c' or 'nnc'");
+  Prolog_put_atom_chars(expected_domain, "c or nnc");
   Prolog_construct_compound(et,
 			    Prolog_atom_from_string("term_to_polyhedron_kind"),
 			    culprit);
