@@ -1,5 +1,5 @@
 /* Row class implementation (non-inline functions).
-   Copyright (C) 2001-2005 Roberto Bagnara <bagnara@cs.unipr.it>
+   Copyright (C) 2001-2004 Roberto Bagnara <bagnara@cs.unipr.it>
 
 This file is part of the Parma Polyhedra Library (PPL).
 
@@ -64,7 +64,7 @@ PPL::Row::Impl::shrink(dimension_type new_size) {
 }
 
 void
-PPL::Row::Impl::copy_construct(const Impl& y) {
+PPL::Row::Impl::copy_construct_coefficients(const Impl& y) {
   const dimension_type y_size = y.size();
 #if CXX_SUPPORTS_FLEXIBLE_ARRAYS
   for (dimension_type i = 0; i < y_size; ++i) {

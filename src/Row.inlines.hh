@@ -1,5 +1,5 @@
 /* Row class implementation: inline functions.
-   Copyright (C) 2001-2005 Roberto Bagnara <bagnara@cs.unipr.it>
+   Copyright (C) 2001-2004 Roberto Bagnara <bagnara@cs.unipr.it>
 
 This file is part of the Parma Polyhedra Library (PPL).
 
@@ -113,22 +113,8 @@ Row::Impl::bump_size() {
 }
 
 inline
-Row::Impl::Impl(const dimension_type sz, const Flags f)
+Row::Impl::Impl(const Flags f)
   : size_(0), flags_(f) {
-  expand_within_capacity(sz);
-}
-
-inline
-Row::Impl::Impl(const Impl& y)
-  : size_(0), flags_(y.flags_) {
-  copy_construct(y);
-}
-
-inline
-Row::Impl::Impl(const Impl& y, const dimension_type sz)
-  : size_(0), flags_(y.flags_) {
-  copy_construct(y);
-  expand_within_capacity(sz);
 }
 
 inline
@@ -181,19 +167,29 @@ Row::max_size() {
   return Impl::max_size();
 }
 
+inline Row::Impl_Pointer&
+Row::impl() {
+  return handler.impl_;
+}
+
+inline const Row::Impl_Pointer&
+Row::impl() const {
+  return handler.impl_;
+}
+
 inline dimension_type
 Row::size() const {
-  return impl->size();
+  return impl()->size();
 }
 
 inline const Row::Flags&
 Row::flags() const {
-  return impl->flags();
+  return impl()->flags();
 }
 
 inline Row::Flags&
 Row::flags() {
-  return impl->flags();
+  return impl()->flags();
 }
 
 #if EXTRA_ROW_DEBUG
@@ -204,8 +200,35 @@ Row::capacity() const {
 #endif
 
 inline
-Row::Row()
-  : impl(0) {
+Row::Impl_Handler::Impl_Handler()
+  : impl_(0) {
+}
+
+inline
+Row::Impl_Handler::~Impl_Handler() {
+  delete impl_;
+}
+
+inline
+Row::Row() {
+}
+
+inline void
+Row::expand_within_capacity(const dimension_type new_size) {
+  assert(impl());
+#if EXTRA_ROW_DEBUG
+  assert(new_size <= capacity_);
+#endif
+  impl()->expand_within_capacity(new_size);
+}
+
+inline void
+Row::copy_construct_coefficients(const Row& y) {
+  assert(impl() && y.impl());
+#if EXTRA_ROW_DEBUG
+  assert(y.size() <= capacity_);
+#endif
+  impl()->copy_construct_coefficients(*(y.impl()));
 }
 
 inline void
@@ -220,7 +243,8 @@ Row::construct(const dimension_type sz,
   if (capacity == 0)
     ++capacity;
 #endif
-  impl = new (capacity) Impl(sz, f);
+  impl() = new (capacity) Impl(f);
+  expand_within_capacity(sz);
 #if EXTRA_ROW_DEBUG
   capacity_ = capacity;
 #endif
@@ -232,7 +256,8 @@ Row::construct(const dimension_type sz, const Flags f) {
 }
 
 inline
-Row::Row(const dimension_type sz, const dimension_type capacity,
+Row::Row(const dimension_type sz,
+	 const dimension_type capacity,
 	 const Flags f) {
   construct(sz, capacity, f);
 }
@@ -243,15 +268,16 @@ Row::Row(const dimension_type sz, const Flags f) {
 }
 
 inline
-Row::Row(const Row& y)
-  : impl(y.impl
-	 ? new (compute_capacity(y.size(), Row::max_size())) Impl(*y.impl)
-	 : 0) {
+Row::Row(const Row& y) {
+  if (y.impl()) {
+    impl() = new (compute_capacity(y.size(), Row::max_size())) Impl(y.flags());
+    copy_construct_coefficients(y);
+  }
 #if EXTRA_ROW_DEBUG
 # if CXX_SUPPORTS_FLEXIBLE_ARRAYS
-  capacity_ = y.impl ? compute_capacity(y.size(), Row::max_size()) : 0;
+  capacity_ = y.impl() ? compute_capacity(y.size(), Row::max_size()) : 0;
 # else
-  capacity_ = y.impl ? compute_capacity(y.size(), Row::max_size()) : 1;
+  capacity_ = y.impl() ? compute_capacity(y.size(), Row::max_size()) : 1;
 # endif
 #endif
 }
@@ -267,7 +293,10 @@ Row::Row(const Row& y,
   if (capacity == 0)
     ++capacity;
 #endif
-  impl = y.impl ? new (capacity) Impl(*y.impl) : 0;
+  if (y.impl()) {
+    impl() = new (capacity) Impl(y.flags());
+    copy_construct_coefficients(y);
+  }
 #if EXTRA_ROW_DEBUG
   capacity_ = capacity;
 #endif
@@ -285,7 +314,11 @@ Row::Row(const Row& y,
   if (capacity == 0)
     ++capacity;
 #endif
-  impl = y.impl ? new (capacity) Impl(*y.impl, sz) : 0;
+  if (y.impl()) {
+    impl() = new (capacity) Impl(y.flags());
+    copy_construct_coefficients(y);
+    expand_within_capacity(sz);
+  }
 #if EXTRA_ROW_DEBUG
   capacity_ = capacity;
 #endif
@@ -293,27 +326,17 @@ Row::Row(const Row& y,
 
 inline
 Row::~Row() {
-  delete impl;
-}
-
-inline void
-Row::expand_within_capacity(const dimension_type new_size) {
-  assert(impl);
-#if EXTRA_ROW_DEBUG
-  assert(new_size <= capacity_);
-#endif
-  impl->expand_within_capacity(new_size);
 }
 
 inline void
 Row::shrink(const dimension_type new_size) {
-  assert(impl);
-  impl->shrink(new_size);
+  assert(impl());
+  impl()->shrink(new_size);
 }
 
 inline void
 Row::swap(Row& y) {
-  std::swap(impl, y.impl);
+  std::swap(impl(), y.impl());
 #if EXTRA_ROW_DEBUG
   std::swap(capacity_, y.capacity_);
 #endif
@@ -321,7 +344,7 @@ Row::swap(Row& y) {
 
 inline void
 Row::assign(Row& y) {
-  impl = y.impl;
+  impl() = y.impl();
 #if EXTRA_ROW_DEBUG
   capacity_ = y.capacity_;
 #endif
@@ -339,17 +362,17 @@ Row::operator=(const Row& y) {
 
 inline Coefficient&
 Row::operator[](const dimension_type k) {
-  return (*impl)[k];
+  return (*impl())[k];
 }
 
 inline Coefficient_traits::const_reference
 Row::operator[](const dimension_type k) const {
-  return (*impl)[k];
+  return (*impl())[k];
 }
 
 inline memory_size_type
 Row::external_memory_in_bytes(dimension_type capacity) const {
-  return impl->total_memory_in_bytes(capacity);
+  return impl()->total_memory_in_bytes(capacity);
 }
 
 inline memory_size_type
@@ -360,9 +383,9 @@ Row::total_memory_in_bytes(dimension_type capacity) const {
 inline memory_size_type
 Row::external_memory_in_bytes() const {
 #if EXTRA_ROW_DEBUG
-  return impl->total_memory_in_bytes(capacity_);
+  return impl()->total_memory_in_bytes(capacity_);
 #else
-  return impl->total_memory_in_bytes();
+  return impl()->total_memory_in_bytes();
 #endif
 }
 

@@ -1,5 +1,5 @@
 /* Row class declaration.
-   Copyright (C) 2001-2005 Roberto Bagnara <bagnara@cs.unipr.it>
+   Copyright (C) 2001-2004 Roberto Bagnara <bagnara@cs.unipr.it>
 
 This file is part of the Parma Polyhedra Library (PPL).
 
@@ -257,18 +257,48 @@ public:
 
 private:
   class Impl;
+  typedef Impl* Impl_Pointer;
 
-  //! The real implementation, as far as memory allocation is concerned.
-  Impl* impl;
+  //! The handler of the actual Row implementation.
+  /*!
+    Exception-safety is the only responsibility of this class: it has
+    to ensure that its \p impl_ method is correctly deallocated.
+  */
+  class Impl_Handler {
+  public:
+    //! Default constructor.
+    Impl_Handler();
+
+    //! Destructor.
+    ~Impl_Handler();
+
+    //! A pointer to the actual implementation.
+    Impl_Pointer impl_;
+
+  private:
+    //! Private and unimplemented: copy construction is not allowed.
+    Impl_Handler(const Impl_Handler&);
+
+    //! Private and unimplemented: copy assignment is not allowed.
+    Impl_Handler& operator=(const Impl_Handler&);
+  };
+
+  //! \name Access points for the actual implementation.
+  //@{
+  Impl_Handler handler;
+  Impl_Pointer& impl();
+  const Impl_Pointer& impl() const;
+  //@}
+
+  //! Exception-safe copy construction mechanism for coefficients.
+  void copy_construct_coefficients(const Row& y);
 
 #if EXTRA_ROW_DEBUG
-
   //! The capacity of the row (only available during debugging).
   dimension_type capacity_;
 
   //! Returns the capacity of the row (only available during debugging).
   dimension_type capacity() const;
-
 #endif // EXTRA_ROW_DEBUG
 };
 
@@ -312,14 +342,8 @@ public:
   void operator delete(void* p, dimension_type capacity);
   //@} // Custom allocator and deallocator
 
-  //! Sizing constructor.
-  Impl(dimension_type sz, Flags f);
-
-  //! Copy constructor.
-  Impl(const Impl& y);
-
-  //! Copy constructor with specified size.
-  Impl(const Impl& y, dimension_type sz);
+  //! Constructor.
+  Impl(Flags f);
 
   //! Destructor.
   /*!
@@ -339,6 +363,9 @@ public:
     It is assumed that \p new_size is not greater than the current size.
   */
   void shrink(dimension_type new_size);
+
+  //! Exception-safe copy construction mechanism for coefficients.
+  void copy_construct_coefficients(const Impl& y);
 
   //! Returns the size() of the largest possible Impl.
   static dimension_type max_size();
@@ -401,11 +428,11 @@ private:
   //! Private and unimplemented: default construction is not allowed.
   Impl();
 
+  //! Private and unimplemented: copy construction is not allowed.
+  Impl(const Impl& y);
+
   //! Private and unimplemented: assignment is not allowed.
   Impl& operator=(const Impl&);
-
-  //! Exception-safe copy construction mechanism.
-  void copy_construct(const Impl& y);
 };
 
 namespace std {
