@@ -57,7 +57,8 @@ TESTS = $(WATCHDOG_TESTS) \
 	generators1 generators2 \
 	h79widening1 h79widening2 h79widening3 \
 	inclusion1 \
-        inters1 inters2 inters3 inters4 inters5 inters6 inters7 \
+        intersection1 intersection2 intersection3 intersection4 \
+	intersection5 intersection6 intersection7 \
 	limitedh79widening1 limitedh79widening2\
 	mc91 \
 	memory1 \
@@ -146,13 +147,13 @@ h79widening3_SOURCES = h79widening3.cc
 
 inclusion1_SOURCES = inclusion1.cc
 
-inters1_SOURCES = inters1.cc
-inters2_SOURCES = inters2.cc
-inters3_SOURCES = inters3.cc
-inters4_SOURCES = inters4.cc
-inters5_SOURCES = inters5.cc
-inters6_SOURCES = inters6.cc
-inters7_SOURCES = inters7.cc
+intersection1_SOURCES = intersection1.cc
+intersection2_SOURCES = intersection2.cc
+intersection3_SOURCES = intersection3.cc
+intersection4_SOURCES = intersection4.cc
+intersection5_SOURCES = intersection5.cc
+intersection6_SOURCES = intersection6.cc
+intersection7_SOURCES = intersection7.cc
 
 limitedh79widening1_SOURCES = limitedh79widening1.cc
 limitedh79widening2_SOURCES = limitedh79widening2.cc
