@@ -344,25 +344,6 @@ PowerSet<CS>::collapse() {
     collapse(begin());
 }
 
-// Meet operators
-
-/*! \relates PowerSet */
-template <typename CS>
-PowerSet<CS>
-operator*(const PowerSet<CS>& x, const PowerSet<CS>& y) {
-  PowerSet<CS> z;
-  typename PowerSet<CS>::const_iterator xi, yi;
-  for (xi = x.begin(); xi != x.end(); ++xi) {
-    for (yi = y.begin(); yi != y.end(); ++yi) {
-      CS zi = *xi * *yi;
-      if (!zi.is_bottom())
-	z.push_back(zi);
-    }
-  }
-  z.omega_reduce();
-  return z;
-}
-
 template <typename CS>
 void
 PowerSet<CS>::meet_assign(const PowerSet<CS>& y) {

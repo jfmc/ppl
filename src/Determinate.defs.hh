@@ -59,18 +59,6 @@ bool operator==(const Determinate<PH>& x, const Determinate<PH>& y);
 template <typename PH>
 bool operator!=(const Determinate<PH>& x, const Determinate<PH>& y);
 
-//! Computes an upper bound of \p x and \p y.
-/*! \relates Determinate */
-template <typename PH>
-Determinate<PH>
-operator+(const Determinate<PH>& x, const Determinate<PH>& y);
-
-//! Computes the meet of \p x and \p y.
-/*! \relates Determinate */
-template <typename PH>
-Determinate<PH>
-operator*(const Determinate<PH>& x, const Determinate<PH>& y);
-
 namespace IO_Operators {
 
 /*! \relates Parma_Polyhedra_Library::Determinate */

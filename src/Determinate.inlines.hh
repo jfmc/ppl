@@ -170,24 +170,6 @@ Determinate<PH>::is_definitely_equivalent_to(const Determinate& y) const {
   return prep == y.prep || prep->ph == y.prep->ph;
 }
 
-/*! \relates Determinate */
-template <typename PH>
-Determinate<PH>
-operator*(const Determinate<PH>& x, const Determinate<PH>& y) {
-  Determinate<PH> z = x;
-  z.meet_assign(y);
-  return z;
-}
-
-/*! \relates Determinate */
-template <typename PH>
-Determinate<PH>
-operator+(const Determinate<PH>& x, const Determinate<PH>& y) {
-  Determinate<PH> z = x;
-  z.upper_bound_assign(y);
-  return z;
-}
-
 template <typename PH>
 inline bool
 Determinate<PH>::is_top() const {
