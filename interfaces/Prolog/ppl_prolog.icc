@@ -682,8 +682,8 @@ extern "C" Prolog_foreign_return_type
 ppl_new_C_Polyhedron_from_NNC_Polyhedron(Prolog_term_ref t_source,
 					 Prolog_term_ref t_ph) {
   try {
-    const PPL::C_Polyhedron* source_ph
-      = static_cast<const PPL::C_Polyhedron*>(get_ph_pointer(t_source));
+    const PPL::NNC_Polyhedron* source_ph
+      = static_cast<const PPL::NNC_Polyhedron*>(get_ph_pointer(t_source));
     if (source_ph == 0)
       return PROLOG_FAILURE;
     CHECK(source_ph);

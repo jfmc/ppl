@@ -9,7 +9,6 @@ not_equals_NNC,
 copy_C_C,
 copy_NNC_NNC,
 copy_C_NNC,
-copy_NNC_C,
 get_cons_C,
 get_gens_C,
 get_cons_NNC,
@@ -18,10 +17,10 @@ space_C,
 space_NNC,
 inters_assign,
 inters_assign_min,
-convhull_assign,
-convhull_assign_min,
-convdiff_assign,
-convdiff_assign_min,
+polyhull_assign,
+polyhull_assign_min,
+polydiff_assign,
+polydiff_assign_min,
 widen_C,
 lim_widen_C,
 widen_NNC,
@@ -109,18 +108,22 @@ ppl_delete_Polyhedron(P1),
 ppl_delete_Polyhedron(P2).
 
 copy_C_NNC :-
-ppl_new_C_Polyhedron_from_dimension(3, P1),
-ppl_new_C_Polyhedron_from_NNC_Polyhedron(P1, P2),
-ppl_Polyhedron_equals_Polyhedron(P1, P2),
-ppl_delete_Polyhedron(P1),
-ppl_delete_Polyhedron(P2).
-
-copy_NNC_C :-
 ppl_new_NNC_Polyhedron_from_dimension(3, P1),
-ppl_new_NNC_Polyhedron_from_C_Polyhedron(P1, P2),
-ppl_Polyhedron_equals_Polyhedron(P1, P2),
+ppl_new_C_Polyhedron_from_NNC_Polyhedron(P1, P2),
+ppl_new_NNC_Polyhedron_from_C_Polyhedron(P2, P1a),
+ppl_Polyhedron_equals_Polyhedron(P1, P1a),
+ppl_new_C_Polyhedron_from_NNC_Polyhedron(P1a, P2a),
+ppl_Polyhedron_equals_Polyhedron(P2, P2a),
 ppl_delete_Polyhedron(P1),
-ppl_delete_Polyhedron(P2).
+ppl_delete_Polyhedron(P1a),
+ppl_delete_Polyhedron(P2),
+A = '$VAR'(0), B = '$VAR'(1), C = '$VAR'(2), 
+ppl_new_NNC_Polyhedron_from_ConSys([3 >= A, 4*A + B - 2*C >= 5], P3),
+ppl_new_C_Polyhedron_from_NNC_Polyhedron(P3, P4),
+ppl_Polyhedron_get_constraints(P4, CS),
+CS = [4*A + 1*B + -2*C >= 5, -1*A >= -3],
+ppl_delete_Polyhedron(P3),
+ppl_delete_Polyhedron(P4).
 
 get_cons_C :-
 A = '$VAR'(0), B = '$VAR'(1), C = '$VAR'(2), 
@@ -195,7 +198,7 @@ GS = [point(1*A + 1*B, 2), closure_point(1*A + 1*B, 2),
 ppl_delete_Polyhedron(P1),
 ppl_delete_Polyhedron(P2).
 
-convhull_assign :-
+polyhull_assign :-
 A = '$VAR'(0), B = '$VAR'(1), 
 ppl_new_C_Polyhedron_from_GenSys([point(0), point(B),
                                   point(A), point(A,2)], P1),
@@ -209,7 +212,7 @@ GS = [point(1*A + 1*B), point(1*A, 2), point(1*A), point(1*B), point(0)],
 ppl_delete_Polyhedron(P1),
 ppl_delete_Polyhedron(P2).
 
-convhull_assign_min :-
+polyhull_assign_min :-
 A = '$VAR'(0), B = '$VAR'(1), 
 ppl_new_C_Polyhedron_from_GenSys([point(0), point(B), point(A),
                                   point(A, 2)], P1),
@@ -222,7 +225,7 @@ GS = [point(1*A + 1*B), point(1*A), point(1*B), point(0)],
 ppl_delete_Polyhedron(P1),
 ppl_delete_Polyhedron(P2).
 
-convdiff_assign :-
+polydiff_assign :-
 A = '$VAR'(0), B = '$VAR'(1), 
 ppl_new_C_Polyhedron_from_GenSys([point(0), point(B), point(A),
                                   point(A,2)],P1),
@@ -236,7 +239,7 @@ GS = [point(1*A + 1*B, 2), point(1*A), point(1*B), point(0)],
 ppl_delete_Polyhedron(P1),
 ppl_delete_Polyhedron(P2).
 
-convdiff_assign_min :-
+polydiff_assign_min :-
 A = '$VAR'(0), B = '$VAR'(1), 
 ppl_new_C_Polyhedron_from_GenSys([point(0), point(B),
                                   point(A), point(A,2)], P1),
