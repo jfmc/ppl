@@ -53,6 +53,13 @@ o  Revised and completed Prolog interface:
    - the interface has been extended to allow for closed and not
      necessarily closed polyhedra.
 
+o  Added support for timeout-guarded operations.  It is now possible
+   for client applications to safely interrupt any exponential
+   computation paths in the library and get control back in a time
+   that is a linear function of the space dimension of the object
+   (polyhedron, system of constraints or generators) of highest
+   dimension on which the library is operating upon.
+
 o  The methods named convex_hull_* and convex_difference_*
    have been renamed poly_hull_* and poly_difference_*.
 
