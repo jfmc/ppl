@@ -865,7 +865,7 @@ NNC polyhedron \f$\cP \in \Pset_n\f$ using the NNC polyhedron
 
 \anchor BHRZ03_widening
 The second widening operator, that we call <EM>BHRZ03-widening</EM>,
-is an instance of the specification provided in \ref BHRZ03 "[BHRZ03]".
+is an instance of the specification provided in \ref BHRZ03a "[BHRZ03a]".
 This operator also requires as a precondition that \f$\cQ \sseq \cP\f$
 and it is guaranteed to provide a result which is at least as precise as
 the H79-widening.
@@ -890,7 +890,7 @@ a parameter \f$k\f$ and only apply widenings starting from the
 \f$k\f$-th iteration.
 
 The library also supports an improved widening delay strategy,
-that we call <EM>widening with tokens</EM> \ref BHRZ03 "[BHRZ03]".
+that we call <EM>widening with tokens</EM> \ref BHRZ03a "[BHRZ03a]".
 A token is a sort of wildcard allowing for the replacement of the widening
 application by the exact upper bound computation: the token is used
 (and thus consumed) only when the widening would have resulted in an
