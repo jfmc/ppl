@@ -24,13 +24,9 @@ site: http://www.cs.unipr.it/ppl/ . */
 #include <config.h>
 #include "SatMatrix.defs.hh"
 #include "Polyhedron.defs.hh"
-#include <sstream>
 #include <stdexcept>
 
 namespace PPL = Parma_Polyhedra_Library;
-
-// FOR DEBUGGING PURPOSES ONLY
-#include <iostream>
 
 /*!
   \fn static bool PPL::Polyhedron::minimize(bool con_to_gen,
@@ -160,7 +156,7 @@ PPL::Polyhedron::minimize(bool con_to_gen,
       // the constraint system `dest' lacks the positivity constraint
       // and no linear combination of the constraints in `dest'
       // can reintroduce the positivity constraint.
-      throw std::invalid_argument("PPL internal error");
+      throw std::runtime_error("PPL internal error");
   else {
     // A point has been found: the polyhedron is not empty.
     // Now invoking simplify() to remove all the redundant constraints
@@ -336,7 +332,7 @@ PPL::Polyhedron::add_and_minimize(bool con_to_gen,
       // the constraint system `dest' lacks the positivity constraint
       // and no linear combination of the constraints in `dest'
       // can reintroduce the positivity constraint.
-      throw std::invalid_argument("PPL internal error");
+      throw std::runtime_error("PPL internal error");
   else {
     // A point has been found: the polyhedron is not empty.
     // Now invoking simplify() to remove all the redundant constraints
