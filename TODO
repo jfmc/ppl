@@ -8,7 +8,6 @@ Enhancements for PPL 0.6
 - See if we can provide some guarantee on the maximum number of
   times we are calling the methods of the argument of
   Polyhedron::map_dimensions(const PartialFunction&).
-- Implement void Polyhedron::envelope_assign(const Polyhedron& y).
 - Before releasing PPL 0.6, modify the documentation and the web site
   so as to describe the new configure options that allow to use
   versions of GMP installed in nonstandard places.
@@ -26,16 +25,22 @@ Enhancements for PPL 0.6
 - We must explain very well that iterators can be invalidated by several
   (actually, almost all) operations, and that use of an invalidated
   iterator causes undefined behavior.
-- Implement the extrapolation operators defined in HenzingerH95
-  and HenzingerPW01.
 - Complete the Determinate and PowerSet classes so as to provide
   complete support for sets of polyhedra.
+- Harmonize all the methods void PPL::Polyhedron::throw_...().
+- Turn h79widening6 into a proper test.
+
+
+Enhancements for PPL 0.7 or later versions
+==========================================
+
+- Implement void Polyhedron::envelope_assign(const Polyhedron& y).
+- Implement the extrapolation operators defined in HenzingerH95
+  and HenzingerPW01.
 - See whether, using the techniques described in 
   ftp://ftp.ifor.math.ethz.ch/pub/fukuda/reports/polyunion001120.ps.gz
   we can implement bool poly_hull_assign_if_exact(PH& p, const PH& q),
   temporarily in algorithms.hh, more efficiently.
-- Harmonize all the methods void PPL::Polyhedron::throw_...().
-- Turn h79widening6 into a proper test.
 
 
 Portability
