@@ -35,11 +35,11 @@ site: http://www.cs.unipr.it/ppl/ . */
 #include <deque>
 
 #ifndef BHRZ03_AC_IS_SUM
-#define BHRZ03_AC_IS_SUM 1
+#define BHRZ03_AC_IS_SUM 0
 #endif
 
 #ifndef BHRZ03_AC_CHECKS_H79_BOUNDARY
-#define BHRZ03_AC_CHECKS_H79_BOUNDARY 1
+#define BHRZ03_AC_CHECKS_H79_BOUNDARY 0
 #endif
 
 #define BE_LAZY
