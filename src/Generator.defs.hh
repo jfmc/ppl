@@ -31,15 +31,37 @@ site: http://www.cs.unipr.it/ppl/ . */
 
 namespace Parma_Polyhedra_Library {
   // Put them in the namespace here to declare them friend later.
+  //@{
+  //! Returns the (bidirectional) line of direction \p e.
+  Generator operator |(int, const LinExpression& e);
+  //! Returns the (unidirectional) ray of direction \p e.
+  Generator operator ^(int, const LinExpression& e);
+  //! Returns the vertex at \p e / \p n.
+  //! \exception std::invalid_argument \p n is zero.
+  Generator operator /=(const LinExpression& e, const Integer& n);
+  //@}
+}
 
-  /*! @name How to build a generator.
-    Each type of generator is built by applying a particular operator
-    (<CODE>|</CODE> for a line, <CODE>^</CODE> for a ray
-    and <CODE>/=</CODE> for a vertex) to a linear expression.
-    The linear expression represents a direction in the space:
-    note that the inhomogeneous term of this linear expression
-    is plainly disregarded.
+//! A line, ray or vertex.
+/*!
+  An object of the class Generator is either: 
+  
+  - a line: \f$\sum_{i=0}^{d-1} a_i \vec{x}_i\f$;
+	
+  - a ray: \f$\sum_{i=0}^{d-1} a_i \vec{x}_i\f$;
+       
+  - a vertex: \f$\sum_{i=0}^{d-1} \frac{a_i}{b} \vec{x}_i\f$;
 
+  where \f$d\f$ is the dimension of the space.
+
+  \par How to build a generator.
+  Each type of generator is built by applying a particular operator
+  (<CODE>|</CODE> for a line, <CODE>^</CODE> for a ray
+  and <CODE>/=</CODE> for a vertex) to a linear expression.
+  The linear expression represents a direction in the space:
+  note that the inhomogeneous term of this linear expression
+  is plainly disregarded.
+  
     \par
     In all the examples it is assumed that variables
     <CODE>x</CODE>, <CODE>y</CODE> and <CODE>z</CODE>
@@ -49,7 +71,7 @@ namespace Parma_Polyhedra_Library {
   Variable y(1);
   Variable z(2);
     \endcode
- 
+  
     \par Example 1
     The following code builds a line of direction \f$x-y-z\f$:
     \code
@@ -94,30 +116,6 @@ namespace Parma_Polyhedra_Library {
   Generator vertex(-15 * x + 32 * y + 21 * z /= 10);
     \endcode
     If a zero denominator is provided, an exception is thrown.
-   */
-  //@{
-  //! Returns the (bidirectional) line of direction \p e.
-  Generator operator |(int, const LinExpression& e);
-  //! Returns the (unidirectional) ray of direction \p e.
-  Generator operator ^(int, const LinExpression& e);
-  //! Returns the vertex at \p e / \p n.
-  //! \exception invalid_argument \p n is zero.
-  Generator operator /=(const LinExpression& e, const Integer& n);
-  //@}
-}
-
-//! A line, ray or vertex.
-/*!
-  An object of the class Generator is either: 
-  
-  - a line: \f$\sum_{i=0}^{d-1} a_i \vec{x}_i\f$;
-	
-  - a ray: \f$\sum_{i=0}^{d-1} a_i \vec{x}_i\f$;
-       
-  - a vertex: \f$\sum_{i=0}^{d-1} \frac{a_i}{b} \vec{x}_i\f$;
-
-  where \f$d\f$ is the dimension of the space.
-
 */
 
 class Parma_Polyhedra_Library::Generator : public Row {
