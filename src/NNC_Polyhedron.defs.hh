@@ -46,17 +46,19 @@ class Parma_Polyhedra_Library::NNC_Polyhedron : public Polyhedron {
 public:
   //! Builds either the universe or the empty NNC polyhedron.
   /*!
-    Depending on the value of \p kind, builds either the universe
-    or the empty NNC polyhedron in the vector space of dimension
-    \p num_dimensions. Both parameters are optional:
-    by default, a 0-dimension space universe polyhedron is built.
+    \param num_dimensions   The number of dimensions of the vector
+                            space enclosing the NNC polyhedron.
+    \param kind             Specifies whether a universe or an empty
+                            NNC polyhedron should be built. 
+
+    Both parameters are optional:
+    by default, a 0-dimension space universe NNC polyhedron is built.
   */
   explicit NNC_Polyhedron(size_t num_dimensions = 0,
 			  Degenerate_Kind kind = UNIVERSE);
 
   //! Builds a NNC polyhedron from a system of constraints.
   /*!
-    Builds a NNC polyhedron from a system of constraints.
     The polyhedron inherits the space dimension of the constraint system.
     \param cs       The system of constraints defining the polyhedron.
                     It is not declared <CODE>const</CODE>
@@ -66,7 +68,6 @@ public:
 
   //! Builds a NNC polyhedron from a system of generators.
   /*!
-    Builds a NNC polyhedron from a system of generators.
     The polyhedron inherits the space dimension of the generator system.
     \param gs       The system of generators defining the polyhedron.
                     It is not declared <CODE>const</CODE>
@@ -81,7 +82,6 @@ public:
 
   //! Builds an NNC polyhedron out of a generic, interval-based bounding box.
   /*!
-    Builds an NNC polyhedron out of a generic, interval-based bounding box.
     For a description of the methods that should be provided by
     the template class Box, see the documentation of the protected method:
       template <class Box>
@@ -98,10 +98,10 @@ public:
 
   //! \brief
   //! The assignment operator.
-  //! (Note that \p *this and \p y can be dimension-incompatible.)
+  //! (\p *this and \p y can be dimension-incompatible.)
   NNC_Polyhedron& operator=(const NNC_Polyhedron& y);
 
-  //! Destructor
+  //! Destructor.
   ~NNC_Polyhedron();
 
 };

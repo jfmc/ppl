@@ -57,17 +57,19 @@ class Parma_Polyhedra_Library::C_Polyhedron : public Polyhedron {
 public:
   //! Builds either the universe or the empty C polyhedron.
   /*!
-    Depending on the value of \p kind, builds either the universe
-    or the empty C polyhedron in the vector space of dimension
-    \p num_dimensions. Both parameters are optional:
-    by default, a 0-dimension space universe polyhedron is built.
+    \param num_dimensions   The number of dimensions of the vector
+                            space enclosing the C polyhedron.
+    \param kind             Specifies whether a universe or an empty
+                            C polyhedron should be built. 
+
+    Both parameters are optional:
+    by default, a 0-dimension space universe C polyhedron is built.
   */
   explicit C_Polyhedron(size_t num_dimensions = 0,
 			Degenerate_Kind kind = UNIVERSE);
 
   //! Builds a C polyhedron from a system of constraints.
   /*!
-    Builds a C polyhedron from a system of constraints.
     The polyhedron inherits the space dimension of the constraint system.
     \param cs       The system of constraints defining the polyhedron.
                     It is not declared <CODE>const</CODE>
@@ -79,7 +81,6 @@ public:
 
   //! Builds a C polyhedron from a system of generators.
   /*!
-    Builds a C polyhedron from a system of generators.
     The polyhedron inherits the space dimension of the generator system.
     \param gs       The system of generators defining the polyhedron.
                     It is not declared <CODE>const</CODE>
@@ -92,7 +93,6 @@ public:
 
   //! Builds a C polyhedron from the NNC_Polyhedron \p y.
   /*!
-    Builds a necessarily closed polyhedron from the NNC_Polyhedron \p y.
     \exception std::invalid_argument thrown if the polyhedron \p y
                                      is not topologically closed.
   */
@@ -100,8 +100,6 @@ public:
 
   //! Builds a C polyhedron out of a generic, interval-based bounding box.
   /*!
-    Builds a necessarily closed polyhedron out of a generic,
-    interval-based bounding box.
     For a description of the methods that should be provided by
     the template class Box, see the documentation of the protected method:
       template <class Box>
@@ -121,10 +119,10 @@ public:
 
   //! \brief
   //! The assignment operator.
-  //! (Note that \p *this and \p y can be dimension-incompatible.)
+  //! (\p *this and \p y can be dimension-incompatible.)
   C_Polyhedron& operator=(const C_Polyhedron& y);
 
-  //! Destructor
+  //! Destructor.
   ~C_Polyhedron();
 };
 
