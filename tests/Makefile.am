@@ -30,7 +30,7 @@ SUBDIRS =
 
 AM_CPPFLAGS = -I$(top_builddir)/src -I$(top_builddir)/Watchdog @extra_includes@
 
-noinst_LIBRARIES = libppl_tests.a
+check_LIBRARIES = libppl_tests.a
 libppl_tests_a_SOURCES = \
 ehandlers.hh \
 ehandlers.cc \
