@@ -29,6 +29,7 @@ site: http://www.cs.unipr.it/ppl/ . */
 #include "algorithms.hh"
 #include <algorithm>
 #include <deque>
+#include <string>
 
 namespace Parma_Polyhedra_Library {
 
@@ -691,6 +692,38 @@ Polyhedra_PowerSet<PH>
   Polyhedra_PowerSet<PH> x_hull_singleton(x.space_dim, PH::EMPTY);
   x_hull_singleton.add_disjunct(x_hull);
   std::swap(x, x_hull_singleton);
+}
+
+template <typename PH>
+void
+Polyhedra_PowerSet<PH>::ascii_dump(std::ostream& s) const {
+  s << "size " << size() << std::endl;
+  for (const_iterator i = begin(), send = end(); i != send; ++i)
+    i->polyhedron().ascii_dump(s);
+}
+
+template <typename PH>
+bool
+Polyhedra_PowerSet<PH>::ascii_load(std::istream& s) {
+  std::string str;
+
+  if (!(s >> str) || str != "size")
+    return false;
+
+  size_type sz;
+
+  if (!(s >> sz))
+    return false;
+
+  while (sz-- > 0) {
+    PH ph;
+    if (!ph.ascii_load(s))
+      return false;
+  }
+
+  // Check for well-formedness.
+  assert(OK());
+  return true;
 }
 
 template <typename PH>

@@ -197,6 +197,21 @@ public:
   typedef typename Base::const_reverse_iterator const_reverse_iterator;
   typedef typename Base::value_type value_type;
 
+#ifdef PPL_DOXYGEN_INCLUDE_IMPLEMENTATION_DETAILS
+  //! \brief
+  //! Writes to \p s an ASCII representation of the internal
+  //! representation of \p *this.
+#endif // PPL_DOXYGEN_INCLUDE_IMPLEMENTATION_DETAILS
+  void ascii_dump(std::ostream& s) const;
+
+#ifdef PPL_DOXYGEN_INCLUDE_IMPLEMENTATION_DETAILS
+  //! \brief
+  //! Loads from \p s an ASCII representation (as produced by \ref
+  //! ascii_dump) and sets \p *this accordingly.  Returns <CODE>true</CODE>
+  //! if successful, <CODE>false</CODE> otherwise.
+#endif // PPL_DOXYGEN_INCLUDE_IMPLEMENTATION_DETAILS
+  bool ascii_load(std::istream& s);
+
 private:
   typedef Polyhedron::BHRZ03_info base_lgo_info;
   typedef std::map<base_lgo_info,
