@@ -454,12 +454,12 @@ PPL::Polyhedron&
 PPL::Polyhedron::operator=(const Polyhedron& y) {
   // Being a protected method, we simply assert that topologies do match.
   assert(topology() == y.topology());
-  if (y.space_dim == 0) {
+  space_dim = y.space_dim;
+  if (y.is_empty())
+    set_empty();
+  else if (space_dim == 0)
     set_zero_dim_univ();
-    status = y.status;
-  }
   else {
-    space_dim = y.space_dim;
     status = y.status;
     if (y.constraints_are_up_to_date())
       con_sys = y.con_sys;
@@ -1474,16 +1474,31 @@ PPL::Polyhedron::poly_difference_assign(const Polyhedron& y) {
     const Constraint& c = *i;
     assert(!c.is_trivial_true());
     assert(!c.is_trivial_false());
-    if (c.is_inequality()) {
-      LinExpression e = LinExpression(c);
-      if (is_necessarily_closed() || c.is_strict_inequality())
+    LinExpression e = LinExpression(c);
+    switch (c.type()) {
+    case Constraint::NONSTRICT_INEQUALITY:
+      if (is_necessarily_closed())
 	z_cs.insert(e <= 0);
       else
-	// `c' is a non-strict inequality and
-	// we do support strict ones.
 	z_cs.insert(e < 0);
-      new_polyhedron.poly_hull_assign(Polyhedron(topology(), z_cs));
+      break;
+    case Constraint::STRICT_INEQUALITY:
+      z_cs.insert(e <= 0);
+      break;
+    case Constraint::EQUALITY:
+      if (is_necessarily_closed())
+	// We have already filtered out the case
+	// when `x' is included in `y': the result is `x'.
+	return;
+      else {
+	ConSys w_cs = x_cs;
+	w_cs.insert(e < 0);
+	new_polyhedron.poly_hull_assign(Polyhedron(topology(), w_cs));
+	z_cs.insert(e > 0);
+      }
+      break;
     }
+    new_polyhedron.poly_hull_assign(Polyhedron(topology(), z_cs));
   }
   *this = new_polyhedron;
 

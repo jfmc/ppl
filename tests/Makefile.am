@@ -61,7 +61,7 @@ TESTS = $(WATCHDOG_TESTS) \
 	memory1 \
 	onepoint \
         permute \
-	polydifference1 \
+	polydifference1 polydifference2 \
 	polyhull1 polyhull2 polyhull3 polyhull4 \
 	randphull1 \
 	relations1 relations2 relations3 relations4 relations5 relations6 \
@@ -159,6 +159,7 @@ onepoint_SOURCES = onepoint.cc
 permute_SOURCES = permute.cc
 
 polydifference1_SOURCES = polydifference1.cc
+polydifference2_SOURCES = polydifference2.cc
 
 polyhull1_SOURCES = polyhull1.cc
 polyhull2_SOURCES = polyhull2.cc
