@@ -68,46 +68,48 @@ struct Policy_Safe {
 
 
 enum Result {
-  //! The returned result is exact.
+  //! The computed result is exact.
   V_EQ = 1,
 
-  //! The returned result is inexact and rounded up.
+  //! The computed result is inexact and rounded up.
   V_LT = 2,
 
-  //! The returned result is inexact and rounded down.
+  //! The computed result is inexact and rounded down.
   V_GT = 4,
 
-  //! The returned result is inexact.
+  //! The computed result is inexact.
   V_NE = V_LT | V_GT,
 
-  //! The returned result may be inexact and rounded up.
+  //! The computed result may be inexact and rounded up.
   V_LE = V_EQ | V_LT,
 
-  //! The returned result may be inexact and rounded down.
+  //! The computed result may be inexact and rounded down.
   V_GE = V_EQ | V_GT,
 
-  //! The returned result may be inexact.
+  //! The computed result may be inexact.
   V_LGE = V_LT | V_EQ | V_GT,
 
   //! \brief
-  //! The returned result may not be the nearest representable
-  //! approximation of the exact result.  To be OR'ed with values
-  //! above.
+  //! The computed result may not be the nearest representable
+  //! approximation of the exact result.
+  //! To be bitwise OR'ed with values above.
   V_APPROX = 8,
 
-  // Special results (no numeric result is returned).
-  // Keep all of these > V_UNKNOWN.
+  // Special results: no result could be computed.
+  // Keep all of these >= V_UNKNOWN.
 
-  //! The result is unknown.
+  //! The exact result is unknown.
   V_UNKNOWN = 16,
 
-  //! The result is outside the considered numeric domain.
+  //! \brief
+  //! The exact result is outside the considered numeric domain
+  //! (e.g., sqrt(-1)).
   V_DOMAIN = 17,
 
-  //! Negative overflow.
+  //! A negative overflow occurred.
   V_NEG_OVERFLOW = 18,
 
-  //! Positive overflow.
+  //! A positive overflow occurred.
   V_POS_OVERFLOW = 19
 
 };
