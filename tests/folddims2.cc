@@ -1,5 +1,4 @@
-/* Test Polyhedron::fold_dimensions() for not necessarily closed
-   polyhedra.
+/* Test Polyhedron::fold_dimensions() for non-closed polyhedra.
    Copyright (C) 2001-2004 Roberto Bagnara <bagnara@cs.unipr.it>
 
 This file is part of the Parma Polyhedra Library (PPL).
@@ -36,36 +35,9 @@ Variable B(1);
 Variable C(2);
 Variable D(3);
 
-// Test with a universe polyhedron.
-static void
-test1() {
-  NNC_Polyhedron ph1(3);
-
-#if NOISY
-  print_generators(ph1, "*** ph1 ***");
-#endif
-
-  // This is the set of the variables that we want to fold.
-  Variables_Set to_fold;
-  to_fold.insert(A);
-
-  ph1.fold_dimensions(to_fold, B);
-
-  NNC_Polyhedron known_result(2);
-
-  bool ok = (ph1 == known_result);
-
-#if NOISY
-  print_generators(ph1, "*** After folding {A} into B ***");
-#endif
-
-  if (!ok)
-    exit(1);
-}
-
 // Test with an empty polyhedron.
 static void
-test2() {
+test1() {
   NNC_Polyhedron ph1(3, NNC_Polyhedron::EMPTY);
 
 #if NOISY
@@ -92,7 +64,7 @@ test2() {
 
 // Trivial fold.
 static void
-test3() {
+test2() {
   NNC_Polyhedron ph1(3);
   ph1.add_constraint(A >= 0);
   ph1.add_constraint(A + B + C < 2);
@@ -123,7 +95,7 @@ test3() {
 
 // Test as given in GopanDMDRS04 on page 519 but with strict constraints.
 static void
-test4() {
+test3() {
   NNC_Polyhedron ph1(2);
   ph1.add_constraint(A > 1);
   ph1.add_constraint(A < 3);
@@ -157,7 +129,7 @@ test4() {
 
 // Test folding several dimensions into a higher dimension.
 static void
-test5() {
+test4() {
   NNC_Polyhedron ph1(3);
   ph1.add_constraint(A > 1);
   ph1.add_constraint(A <= 3);
@@ -192,7 +164,7 @@ test5() {
 
 // Test folding dimensions into a lower dimension.
 static void
-test6() {
+test5() {
   NNC_Polyhedron ph1(4);
   ph1.add_constraint(A > 0);
   ph1.add_constraint(A + B < 2);
@@ -228,7 +200,7 @@ test6() {
 
 // Test folding dimensions into an intermediate dimension.
 static void
-test7() {
+test6() {
   NNC_Polyhedron ph1(4);
   ph1.add_constraint(A >= 0);
   ph1.add_constraint(B > 0);
@@ -275,7 +247,6 @@ main() TRY {
   test4();
   test5();
   test6();
-  test7();
   return 0;
 }
 CATCH
