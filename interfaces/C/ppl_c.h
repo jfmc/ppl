@@ -1295,13 +1295,32 @@ ppl_Polyhedron_BHRZ03_widening_assign(ppl_Polyhedron_t x,
   If the polyhedron \p y is contained in (or equal to) the polyhedron
   \p x, assigns to \p x the \ref BHRZ03_widening "BHRZ03-widening" of
   \p x and \p y intersected with the constraints in \p cs that are
-  satisfied by all the points of \p x.
+  satisfied by all the points of \p x.  If \p tp is not the null pointer,
+  the \ref widening_with_tokens "widening with tokens" delay technique
+  is applied with <CODE>*tp</CODE> available tokens.
 */
 int
+ppl_Polyhedron_limited_BHRZ03_extrapolation_assign_with_tokens
+__P((ppl_Polyhedron_t x,
+     ppl_const_Polyhedron_t y,
+     ppl_const_ConSys_t cs,
+     unsigned* tp));
+
+/*! \brief
+  If the polyhedron \p y is contained in (or equal to) the polyhedron
+  \p x, assigns to \p x the \ref BHRZ03_widening "BHRZ03-widening" of
+  \p x and \p y intersected with the constraints in \p cs that are
+  satisfied by all the points of \p x.
+*/
+inline int
 ppl_Polyhedron_limited_BHRZ03_extrapolation_assign
 __P((ppl_Polyhedron_t x,
      ppl_const_Polyhedron_t y,
-     ppl_const_ConSys_t cs));
+     ppl_const_ConSys_t cs)) {
+  return
+    ppl_Polyhedron_limited_BHRZ03_extrapolation_assign_with_tokens(x, y,
+								   cs, 0);
+}
 
 /*! \brief
   If the polyhedron \p y is contained in (or equal to) the polyhedron
@@ -1310,22 +1329,73 @@ __P((ppl_Polyhedron_t x,
   satisfied by all the points of \p x, further intersected with all
   the constraints of the form \f$\pm v \leq r\f$ and \f$\pm v < r\f$,
   with \f$r \in \Qset\f$, that are satisfied by all the points of \p
-  x.
+  x. If \p tp is not the null pointer,
+  the \ref widening_with_tokens "widening with tokens" delay technique
+  is applied with <CODE>*tp</CODE> available tokens.
+*/
+int
+ppl_Polyhedron_bounded_BHRZ03_extrapolation_assign_with_tokens
+__P((ppl_Polyhedron_t x,
+     ppl_const_Polyhedron_t y,
+     ppl_const_ConSys_t cs,
+     unsigned* tp));
+
+/*! \brief
+  If the polyhedron \p y is contained in (or equal to) the polyhedron
+  \p x, assigns to \p x the \ref BHRZ03_widening "BHRZ03-widening" of
+  \p x and \p y intersected with the constraints in \p cs that are
+  satisfied by all the points of \p x, further intersected with all
+  the constraints of the form \f$\pm v \leq r\f$ and \f$\pm v < r\f$,
+  with \f$r \in \Qset\f$, that are satisfied by all the points of \p x.
 */
 int
 ppl_Polyhedron_bounded_BHRZ03_extrapolation_assign
 __P((ppl_Polyhedron_t x,
      ppl_const_Polyhedron_t y,
-     ppl_const_ConSys_t cs));
+     ppl_const_ConSys_t cs)) {
+  return
+    ppl_Polyhedron_bounded_BHRZ03_extrapolation_assign_with_tokens(x, y,
+								   cs, 0);
+}
+
+/*! \brief
+  If the polyhedron \p y is contained in (or equal to) the polyhedron
+  \p x, assigns to \p x the \ref H79_widening "H79-widening" of \p x
+  and \p y.  If \p tp is not the null pointer, the
+  \ref widening_with_tokens "widening with tokens" delay technique is
+  applied with <CODE>*tp</CODE> available tokens.
+*/
+int
+ppl_Polyhedron_H79_widening_assign_with_tokens
+__P((ppl_Polyhedron_t x,
+     ppl_const_Polyhedron_t y,
+     unsigned* tp));
 
 /*! \brief
   If the polyhedron \p y is contained in (or equal to) the polyhedron
   \p x, assigns to \p x the \ref H79_widening "H79-widening" of \p x
   and \p y.
 */
+inline int
+ppl_Polyhedron_H79_widening_assign(ppl_Polyhedron_t x,
+				   ppl_const_Polyhedron_t y) {
+  return ppl_Polyhedron_H79_widening_assign_with_tokens(x, y, 0);
+}			      
+
+/*! \brief
+  If the polyhedron \p y is contained in (or equal to) the polyhedron
+  \p x, assigns to \p x the \ref H79_widening "H79-widening" of \p x
+  and \p y intersected with the constraints in \p cs that are
+  satisfied by all the points of \p x. If \p tp is not the null
+  pointer, the \ref widening_with_tokens "widening with tokens" delay
+  technique is applied with <CODE>*tp</CODE> available tokens.
+*/
 int
-ppl_Polyhedron_H79_widening_assign __P((ppl_Polyhedron_t x,
-					ppl_const_Polyhedron_t y));
+ppl_Polyhedron_limited_H79_extrapolation_assign_with_tokens
+__P((ppl_Polyhedron_t x,
+     ppl_const_Polyhedron_t y,
+     ppl_const_ConSys_t cs,
+     unsigned* tp));
 
 /*! \brief
   If the polyhedron \p y is contained in (or equal to) the polyhedron
@@ -1333,10 +1403,32 @@ ppl_Polyhedron_H79_widening_assign __P((ppl_Polyhedron_t x,
   and \p y intersected with the constraints in \p cs that are
   satisfied by all the points of \p x.
 */
+inline int
+ppl_Polyhedron_limited_H79_extrapolation_assign
+__P((ppl_Polyhedron_t x,
+     ppl_const_Polyhedron_t y,
+     ppl_const_ConSys_t cs)) {
+  return
+    ppl_Polyhedron_limited_H79_extrapolation_assign_with_tokens(x, y, cs, 0);
+}
+
+/*! \brief
+  If the polyhedron \p y is contained in (or equal to) the polyhedron
+  \p x, assigns to \p x the \ref H79_widening "H79-widening" of \p x
+  and \p y intersected with the constraints in \p cs that are
+  satisfied by all the points of \p x, further intersected with all
+  the constraints of the form \f$\pm v \leq r\f$ and \f$\pm v < r\f$,
+  with \f$r \in \Qset\f$, that are satisfied by all the points of \p x.
+  If \p tp is not the null pointer,
+  the \ref widening_with_tokens "widening with tokens" delay technique
+  is applied with <CODE>*tp</CODE> available tokens.
+*/
 int
-ppl_Polyhedron_limited_H79_extrapolation_assign __P((ppl_Polyhedron_t x,
-						     ppl_const_Polyhedron_t y,
-						     ppl_const_ConSys_t cs));
+ppl_Polyhedron_bounded_H79_extrapolation_assign_with_tokens
+__P((ppl_Polyhedron_t x,
+     ppl_const_Polyhedron_t y,
+     ppl_const_ConSys_t cs,
+     unsigned* tp));
 
 /*! \brief
   If the polyhedron \p y is contained in (or equal to) the polyhedron
@@ -1347,11 +1439,14 @@ ppl_Polyhedron_limited_H79_extrapolation_assign __P((ppl_Polyhedron_t x,
   with \f$r \in \Qset\f$, that are satisfied by all the points of \p
   x.
 */
-int
+inline int
 ppl_Polyhedron_bounded_H79_extrapolation_assign
 __P((ppl_Polyhedron_t x,
      ppl_const_Polyhedron_t y,
-     ppl_const_ConSys_t cs));
+     ppl_const_ConSys_t cs)) {
+  return
+    ppl_Polyhedron_bounded_H79_extrapolation_assign_with_tokens(x, y, cs, 0);
+}
 
 /*! \brief
   Assigns to \p x the \ref time_elapse "time-elapse" between the polyhedra
