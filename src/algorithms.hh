@@ -81,27 +81,29 @@ check_containment(const PH& ph, const Polyhedra_Powerset<PH>& ps) {
   for (typename Polyhedra_Powerset<PH>::const_iterator i = ps.begin(),
 	 ps_end = ps.end(); i != ps_end; ++i) {
     const NNC_Polyhedron pi(i->element());
-    for (typename Polyhedra_Powerset<NNC_Polyhedron>::iterator j = tmp.begin(),
-	   jn = j; j != tmp.end(); j = jn) {
-      ++jn;
+    for (typename Polyhedra_Powerset<NNC_Polyhedron>::iterator
+	   j = tmp.begin(); j != tmp.end(); ) {
       const NNC_Polyhedron& pj = j->element();
       if (pi.contains(pj))
-	tmp.erase(j);
+	j = tmp.erase(j);
+      else
+	++j;
     }
     if (tmp.empty())
       return true;
     else {
       Polyhedra_Powerset<NNC_Polyhedron> new_disjuncts(ph.space_dimension(),
 						       Polyhedron::EMPTY);
-      for (Polyhedra_Powerset<NNC_Polyhedron>::iterator j = tmp.begin(),
-	     jn = j; j != tmp.end(); j = jn) {
-	++jn;
+      for (Polyhedra_Powerset<NNC_Polyhedron>::iterator
+	     j = tmp.begin(); j != tmp.end(); ) {
 	const NNC_Polyhedron& pj = j->element();
-	if (!pj.is_disjoint_from(pi)) {
+	if (pj.is_disjoint_from(pi))
+	  ++j;
+	else {
 	  std::pair<NNC_Polyhedron, Polyhedra_Powerset<NNC_Polyhedron> >
 	    partition = linear_partition(pi, pj);
-	  tmp.erase(j);
 	  new_disjuncts.upper_bound_assign(partition.second);
+	  j = tmp.erase(j);
 	}
       }
       tmp.upper_bound_assign(new_disjuncts);

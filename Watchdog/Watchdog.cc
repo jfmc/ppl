@@ -140,14 +140,10 @@ PWL::Watchdog::handle_timeout(int) {
     time_so_far += last_time_requested;
     if (!pending.empty()) {
       Pending_List::Iterator i = pending.begin();
-      Pending_List::Iterator in;
       do {
 	i->handler().act();
 	i->expired_flag() = true;
-	in = i;
-	++in;
-	pending.erase(i);
-	i = in;
+	i = pending.erase(i);
       } while (i != pending.end() && i->deadline() <= time_so_far);
       if (pending.empty())
 	alarm_clock_running = false;

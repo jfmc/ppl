@@ -162,10 +162,11 @@ Powerset<CS>::collapse(const iterator sink) {
   erase(++j, send);
 
   // Ensure omega-reduction.
-  for (iterator k = begin(), kn = k; k != sink; k = kn) {
-    ++kn;
+  for (iterator k = begin(); k != sink; ) {
     if (k->definitely_entails(d))
-      erase(k);
+      k = erase(k);
+    else
+      ++k;
   }
   assert(OK());
 }
@@ -178,33 +179,36 @@ Powerset<CS>::omega_reduce() const {
 
   Powerset& ps = const_cast<Powerset&>(*this);
   // First remove all bottom elements.
-  for (iterator xi = ps.begin(), xin = xi; xi != ps.end(); xi = xin) {
-    ++xin;
+  for (iterator xi = ps.begin(); xi != ps.end(); )
     if (xi->is_bottom())
-      ps.erase(xi);
-  }
+      xi = ps.erase(xi);
+    else
+      ++xi;
   // Then remove non-maximal elements.
-  for (iterator xi = ps.begin(), xin = xi; xi != ps.end(); xi = xin) {
-    ++xin;
+  for (iterator xi = ps.begin(); xi != ps.end(); ) {
     const CS& xv = *xi;
-    for (iterator yi = ps.begin(), yin = yi; yi != ps.end(); yi = yin) {
-      ++yin;
+    bool erasing_xi = false;
+    for (iterator yi = ps.begin(); yi != ps.end(); )
       if (xi == yi)
-	continue;
-      const CS& yv = *yi;
-      if (yv.definitely_entails(xv)) {
-	if (yi == xin)
-	  ++xin;
-	ps.erase(yi);
+	++yi;
+      else {
+	const CS& yv = *yi;
+	if (yv.definitely_entails(xv))
+	  yi = ps.erase(yi);
+	else if (xv.definitely_entails(yv)) {
+	  erasing_xi = true;
+	  break;
+	}
+	else
+	  ++yi;
       }
-      else if (xv.definitely_entails(yv)) {
-	ps.erase(xi);
-	break;
-      }
-    }
-    if (abandon_expensive_computations && xin != ps.end()) {
+    if (erasing_xi)
+      xi = ps.erase(xi);
+    else
+      ++xi;
+    if (abandon_expensive_computations && xi != ps.end()) {
       // Hurry up!
-      ps.collapse(xin);
+      ps.collapse(xi);
       break;
     }
   }
@@ -266,16 +270,17 @@ Powerset<CS>::add_non_bottom_disjunct(Sequence& s,
 				      const CS& d,
 				      iterator& first,
 				      iterator last) {
-  for (iterator xi = first, xin = xi; xi != last; xi = xin) {
-    ++xin;
+  for (iterator xi = first; xi != last; ) {
     const CS& xv = *xi;
     if (d.definitely_entails(xv))
       return;
     else if (xv.definitely_entails(d)) {
       if (xi == first)
-	first = xin;
-      s.erase(xi);
+	++first;
+      xi = s.erase(xi);
     }
+    else
+      ++xi;
   }
   s.push_back(d);
 }
