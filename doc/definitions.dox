@@ -256,38 +256,33 @@ Then any point
 \f$\vect{r} \in P_0 \setminus \{ \vect{0} \}\f$
 is called a <EM>ray</EM> of \f$P\f$.
 
-A ray indicates a direction in which the polyhedra \f$P\f$ and \f$P_0\f$
-is infinite (i.e., unbounded).
+A ray indicates a direction in which the polyhedron \f$P\f$ is infinite
+(i.e., unbounded).
 
 <B><EM>Proposition</EM></B>
 
 A point \f$\vect{r} \in \Rset^n \setminus \{ \vect{0} \}\f$
-is a ray of \f$P\f$ if and only if, for 
-any point \f$\vect{x} \in P\f$, \f$(\vect{x} + \mu \vect{r}) \in P\f$
+is a ray of a non-empty polyhedron \f$P \sseq \Rset^n\f$
+if and only if, for any point \f$\vect{x} \in P\f$,
+\f$(\vect{x} + \mu \vect{r}) \in P\f$
 for all \f$\mu \in \Rset, \mu > 0\f$.
 
 <B>Extreme ray</B>
 
-A ray \f$\vect{r}\f$ of \f$P\f$ is an <EM>extreme ray</EM>
+A ray \f$\vect{r}\f$ of a polyhedron \f$P\f$ is an <EM>extreme ray</EM>
 if there do not exist two rays \f$\vect{r}_1\f$ and \f$\vect{r}_2\f$
-of \f$P\f$, 
-\f$\vect{r}_1 \neq \lambda \vect{r}_2\f$ for any 
-\f$\lambda \in \Rset, \lambda > 0\f$, such that 
+of \f$P\f$, where \f$\vect{r}_1 \neq \lambda \vect{r}_2\f$ for any 
+\f$\lambda \in \Rset, \lambda > 0\f$, such that
 \f[
-  \vect{r} = 0.5 \vect{r}_1 + 0.5 \vect{r}_2.
+  \vect{r} = \mu_1 \vect{r}_1 + \mu_2 \vect{r}_2,
 \f]
-
-Note that the set of extreme rays describes <EM>all</EM> the directions
-in which the polyhedron is unbounded.
+where \f$\mu_1, \mu_2 \in \Rset\f$, \f$\mu_1 > 0\f$ and \f$\mu_2 > 0\f$.
 
 <B>Line</B>
 
 A <EM>line</EM> (or <EM>bidirectional ray</EM>) of a polyhedron
-\f$P\f$ is a vector \f$\vect{l}\f$, such that,
-for all \f$\vect{x} \in P\f$ and all \f$\mu \in \Rset\f$,
-\f$(\vect{x} + \mu \vect{l}) \in P\f$.
-
-It follows that two rays in exactly opposite directions make a line.
+\f$P \sseq \Rset^n\f$ is a ray \f$\vect{l}\f$ of \f$P\f$
+such that \f$-\vect{l}\f$ is another ray of \f$P\f$.
 
 <B>Cone</B>
 
@@ -318,7 +313,7 @@ and it is denoted by \f$\linspace(P)\f$.
 
 <B>Minkowski's sum</B>
 
-Let \f$R, S \in \Rset^n\f$ be two sets of vectors.
+Let \f$R, S \sseq \Rset^n\f$ be two sets of vectors.
 Then the <EM>Minkowski's sum</EM> of 
 \f$R\f$ and \f$S\f$ is:
 \f[
