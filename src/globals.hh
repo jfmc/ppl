@@ -24,11 +24,7 @@ site: http://www.cs.unipr.it/ppl/ . */
 #ifndef _globals_hh
 #define _globals_hh 1
 
-#if 0
 #include "Integer.defs.hh"
-#else
-#include "Coefficient.types.hh"
-#endif
 
 namespace Parma_Polyhedra_Library {
 

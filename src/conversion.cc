@@ -372,7 +372,7 @@ PPL::Polyhedron::conversion(Matrix& source,
     static std::vector<Integer> scalar_prod;
     int needed_space = dest_num_rows - scalar_prod.size();
     if (needed_space > 0)
-      scalar_prod.insert(scalar_prod.end(), needed_space, Integer_zero());
+      scalar_prod.insert(scalar_prod.end(), needed_space, Integer::zero());
     // `index_non_zero' will indicate the first row of `dest' that does
     // not saturate the k-th constraint: we initialize it to
     // `dest_num_rows' and we will change it if we will find a
@@ -451,20 +451,20 @@ PPL::Polyhedron::conversion(Matrix& source,
 	  //   dest[i][c] *= scaled_sp_n;
 	  //   dest[i][c] -= scaled_sp_i * dest[num_lines_or_equalities][c];
 	  // }
-	  gcd_assign(tmp_Integer(1),
-		     scalar_prod[i],
-		     scalar_prod[num_lines_or_equalities]);
-	  exact_div_assign(tmp_Integer(2),
-			   scalar_prod[i],
-			   tmp_Integer(1));
-	  exact_div_assign(tmp_Integer(3),
-			   scalar_prod[num_lines_or_equalities],
-			   tmp_Integer(1));
+	  tmp_Integer(1).gcd_assign(scalar_prod[i],
+				   scalar_prod[num_lines_or_equalities]);
+	  tmp_Integer(2)
+	    .exact_div_assign(scalar_prod[i],
+			      tmp_Integer(1));
+	  tmp_Integer(3)
+	    .exact_div_assign(scalar_prod[num_lines_or_equalities],
+			      tmp_Integer(1));
 	  for (size_t c = dest_num_columns; c-- > 0; ) {
-	    tmp_Integer(4) = tmp_Integer(3) * dest[i][c];
-	    tmp_Integer(5) = tmp_Integer(2)
-	      * dest[num_lines_or_equalities][c];
-	    dest[i][c] = tmp_Integer(4) - tmp_Integer(5);
+	    tmp_Integer(4).mul_assign(tmp_Integer(3),
+				     dest[i][c]);
+	    tmp_Integer(5).mul_assign(tmp_Integer(2),
+				     dest[num_lines_or_equalities][c]);
+	    dest[i][c].sub_assign(tmp_Integer(4), tmp_Integer(5));
 	  }
 
 	  dest[i].strong_normalize();
@@ -479,13 +479,13 @@ PPL::Polyhedron::conversion(Matrix& source,
       // satisfy the constraint). If it is not the case, we
       // multiply the `num_lines_or_equalities'-th row of `dest' by -1.
       if (scalar_prod[num_lines_or_equalities] < 0) {
-	negate(scalar_prod[num_lines_or_equalities]);
+	scalar_prod[num_lines_or_equalities].negate();
 	for (size_t j = source_num_columns; j-- > 0; )
 	  // source and dest have the same number of columns:
 	  // we can use j (running through source's columns)
 	  // to change sign to all the elements of the
 	  // `num_lines_or_equalities'-th row of dest.
-	  negate(dest[num_lines_or_equalities][j]);
+	  dest[num_lines_or_equalities][j].negate();
       }
       // To build the new pointed cone we need the new oriented ray: we
       // have to compute a positive combination of this ray with each of
@@ -513,20 +513,20 @@ PPL::Polyhedron::conversion(Matrix& source,
 	  //   dest[i][c] *= scaled_sp_n;
 	  //   dest[i][c] -= scaled_sp_i * dest[num_lines_or_equalities][c];
 	  // }
-	  gcd_assign(tmp_Integer(1),
-		     scalar_prod[i],
-		     scalar_prod[num_lines_or_equalities]);
-	  exact_div_assign(tmp_Integer(2),
-			   scalar_prod[i],
-			   tmp_Integer(1));
-	  exact_div_assign(tmp_Integer(3),
-			   scalar_prod[num_lines_or_equalities],
-			   tmp_Integer(1));
+	  tmp_Integer(1).gcd_assign(scalar_prod[i],
+				   scalar_prod[num_lines_or_equalities]);
+	  tmp_Integer(2)
+	    .exact_div_assign(scalar_prod[i],
+			      tmp_Integer(1));
+	  tmp_Integer(3)
+	    .exact_div_assign(scalar_prod[num_lines_or_equalities],
+			      tmp_Integer(1));
 	  for (size_t c = dest_num_columns; c-- > 0; ) {
-	    tmp_Integer(4) = tmp_Integer(3) * dest[i][c];
-	    tmp_Integer(5) = tmp_Integer(2)
-	      * dest[num_lines_or_equalities][c];
-	    dest[i][c] = tmp_Integer(4) - tmp_Integer(5);
+	    tmp_Integer(4).mul_assign(tmp_Integer(3),
+				     dest[i][c]);
+	    tmp_Integer(5).mul_assign(tmp_Integer(2),
+				     dest[num_lines_or_equalities][c]);
+	    dest[i][c].sub_assign(tmp_Integer(4), tmp_Integer(5));
 	  }
 
 	  dest[i].strong_normalize();
@@ -725,19 +725,16 @@ PPL::Polyhedron::conversion(Matrix& source,
 		  //   new_row[c] = scaled_sp_i * dest[j][c];
 		  //   new_row[c] -= scaled_sp_j * dest[i][c];
 		  // }
-		  gcd_assign(tmp_Integer(1),
-			     scalar_prod[i],
-			     scalar_prod[j]);
-		  exact_div_assign(tmp_Integer(2),
-				   scalar_prod[i],
-				   tmp_Integer(1));
-		  exact_div_assign(tmp_Integer(3),
-				   scalar_prod[j],
-				   tmp_Integer(1));
+		  tmp_Integer(1).gcd_assign(scalar_prod[i],
+					   scalar_prod[j]);
+		  tmp_Integer(2).exact_div_assign(scalar_prod[i],
+						 tmp_Integer(1));
+		  tmp_Integer(3).exact_div_assign(scalar_prod[j],
+						 tmp_Integer(1));
 		  for (size_t c = dest_num_columns; c-- > 0; ) {
-		    tmp_Integer(4) = tmp_Integer(2) * dest[j][c];
-		    tmp_Integer(5) = tmp_Integer(3) * dest[i][c];
-		    new_row[c] = tmp_Integer(4) - tmp_Integer(5);
+		    tmp_Integer(4).mul_assign(tmp_Integer(2), dest[j][c]);
+		    tmp_Integer(5).mul_assign(tmp_Integer(3), dest[i][c]);
+		    new_row[c].sub_assign(tmp_Integer(4), tmp_Integer(5));
 		  }
 		  new_row.strong_normalize();
 		  // Since we added a new row to `dest', we have to add
@@ -746,9 +743,9 @@ PPL::Polyhedron::conversion(Matrix& source,
 		  // the `k'-th constraint.
 		  assert(scalar_prod.size() >= dest_num_rows);
 		  if (scalar_prod.size() <= dest_num_rows)
-		    scalar_prod.push_back(Integer_zero());
+		    scalar_prod.push_back(Integer::zero());
 		  else
-		    scalar_prod[dest_num_rows] = Integer_zero();
+		    scalar_prod[dest_num_rows] = Integer::zero();
 		  ++dest_num_rows;
 		}
 	      }

@@ -87,21 +87,13 @@ Constraint::coefficient() const {
 
 inline const Constraint&
 Constraint::zero_dim_false() {
-#if 0
   static Constraint zdf(LinExpression::zero() == Integer::one());
-#else
-  static Constraint zdf(LinExpression::zero() == Integer_one());
-#endif
   return zdf;
 }
 
 inline const Constraint&
 Constraint::zero_dim_positivity() {
-#if 0
   static Constraint zdp(LinExpression::zero() <= Integer::one());
-#else
-  static Constraint zdp(LinExpression::zero() <= Integer_one());
-#endif
   return zdp;
 }
 

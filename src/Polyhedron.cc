@@ -2274,14 +2274,13 @@ PPL::Polyhedron::OK(bool check_not_empty) const {
 	goto bomb;
       }
       if (con_sys.num_rows() != 1) {
-	cerr << "The system of constraints has more then one row "
-	     << endl;
+	cerr << "The system of constraints has more then one row " << endl;
 	goto bomb;
       }
       else
 	if (!con_sys[0].is_trivial_false()) {
-	  cerr << "Empty polyhedron with a satisfiable system of constraints"
-	       << endl;
+	  cerr << "Empty polyhedron "
+	    "with a satisfiable system of constraints" << endl;
 	  goto bomb;
 	}
     }
@@ -2317,46 +2316,39 @@ PPL::Polyhedron::OK(bool check_not_empty) const {
   // `sat_g'   : number of constraints x number of generators
   if (constraints_are_up_to_date()) {
     if (con_sys.num_columns() != space_dimension() + 1) {
-      cerr << "Incompatible size! (con_sys and space_dim)"
-	   << endl;
+      cerr << "Incompatible size! (con_sys and space_dim)";
       goto bomb;
     }
     if (sat_c_is_up_to_date())
       if (con_sys.num_rows() != sat_c.num_columns()) {
-	cerr << "Incompatible size! (con_sys and sat_c)"
-	     << endl;
+	cerr << "Incompatible size! (con_sys and sat_c)";
 	goto bomb;
       }
     if (sat_g_is_up_to_date())
       if (con_sys.num_rows() != sat_g.num_rows()) {
-	cerr << "Incompatible size! (con_sys and sat_g)"
-	     << endl;
+	cerr << "Incompatible size! (con_sys and sat_g)";
 	goto bomb;
       }
     if (generators_are_up_to_date())
       if (con_sys.num_columns() != gen_sys.num_columns()) {
-	cerr << "Incompatible size! (con_sys and gen_sys)"
-	     << endl;
+	cerr << "Incompatible size! (con_sys and gen_sys)";
 	goto bomb;
       }
   }
 
   if (generators_are_up_to_date()) {
     if (gen_sys.num_columns() != space_dimension() + 1) {
-      cerr << "Incompatible size! (gen_sys and space_dim)"
-	   << endl;
+      cerr << "Incompatible size! (gen_sys and space_dim)";
       goto bomb;
     }
     if (sat_c_is_up_to_date())
       if (gen_sys.num_rows() != sat_c.num_rows()) {
-	cerr << "Incompatible size! (gen_sys and sat_c)"
-	     << endl;
+	cerr << "Incompatible size! (gen_sys and sat_c)";
 	goto bomb;
       }
     if (sat_g_is_up_to_date())
       if (gen_sys.num_rows() != sat_g.num_columns()) {
-	cerr << "Incompatible size! (gen_sys and sat_g)"
-	     << endl;
+	cerr << "Incompatible size! (gen_sys and sat_g)";
 	goto bomb;
       }
   }
@@ -2431,8 +2423,7 @@ PPL::Polyhedron::OK(bool check_not_empty) const {
     if (minimize(true, copy_of_con_sys, new_gen_sys, new_sat_g)) {
       if (check_not_empty) {
 	// Want to know the satisfiability of the constraints.
-	cerr << "Insoluble system of constraints!"
-	     << endl;
+	cerr << "Insoluble system of constraints!" << endl;
 	goto bomb;
       }
       else
@@ -2498,8 +2489,7 @@ PPL::Polyhedron::OK(bool check_not_empty) const {
       SatRow tmp_sat = sat_c[i];
       for (size_t j = sat_c.num_columns(); j-- > 0; )
 	if (sgn(tmp_gen * con_sys[j]) != tmp_sat[j] ) {
-	  cerr << "sat_c is declared up-to-date, but it is not!"
-	       << endl;
+	  cerr << "sat_c is declared up-to-date, but it is not!" << endl;
 	  goto bomb;
 	}
     }
@@ -2510,8 +2500,7 @@ PPL::Polyhedron::OK(bool check_not_empty) const {
       SatRow tmp_sat = sat_g[i];
       for (size_t j = sat_g.num_columns(); j-- > 0; )
 	if (sgn(tmp_con * gen_sys[j]) != tmp_sat[j] ) {
-	  cerr << "sat_g is declared up-to-date, but it is not!"
-	       << endl;
+	  cerr << "sat_g is declared up-to-date, but it is not!" << endl;
 	  goto bomb;
 	}
     }

@@ -108,7 +108,7 @@ PPL::operator <<(std::ostream& s, const Generator& g) {
 	  s << " + ";
 	else {
 	  s << " - ";
-	  negate(gv);
+	  gv.negate();
 	}
       }
       else
@@ -122,7 +122,7 @@ PPL::operator <<(std::ostream& s, const Generator& g) {
   }
   if (first)
     // A vertex in the origin.
-    s << 0;
+    s << Integer::zero();
   if (extra_parentheses)
     s << ")";
   if (vertex_with_divisor)

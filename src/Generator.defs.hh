@@ -190,7 +190,7 @@ private:
   friend Generator
   Parma_Polyhedra_Library::vertex(const LinExpression& e
 				  = LinExpression::zero(),
-				  const Integer& d = Integer_one());
+				  const Integer& d = Integer::one());
 
 public:
   //! Ordinary copy-constructor.

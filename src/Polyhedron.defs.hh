@@ -448,7 +448,7 @@ public:
   //!                                  of \p *this.
   void affine_image(const Variable& v,
 		    const LinExpression& expr,
-		    const Integer& denominator = Integer_one());
+		    const Integer& denominator = Integer::one());
   //! Transforms the polyhedrons \p *this, substituting an affine
   //! expression for the specified variable. (It is the inverse
   //! operation of <CODE>affine_image</CODE>.)
@@ -464,7 +464,7 @@ public:
   //!                                  of \p *this.
   void affine_preimage(const Variable& v,
 		       const LinExpression& expr,
-		       const Integer& denominator = Integer_one());
+		       const Integer& denominator = Integer::one());
 
   //! Checks if all the invariants are satisfied.
   //! \param check_not_empty    <CODE>true</CODE> if it must be checked
