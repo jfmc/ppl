@@ -1,3 +1,594 @@
+2003-04-27 Sunday 20:17  Roberto Bagnara <bagnara@cs.unipr.it>
+
+	* NEWS (1.76): Reorganized.
+
+2003-04-27 Sunday 16:49  Enea Zaffanella <zaffanella@cs.unipr.it>
+
+	* src/: BoundingBox.cc (1.7), BoundingBox.defs.hh (1.10),
+	BoundingBox.inlines.hh (1.10), Polyhedron.inlines.hh (1.80): Added
+	Doxygen comments for class BoundingBox.  Method
+	Polyehdron::shrink_bounding_box() adapted to the lack of default
+	constructors for LBoundary and UBoundary.
+
+2003-04-27 Sunday 16:48  Enea Zaffanella <zaffanella@cs.unipr.it>
+
+	* src/: Interval.cc (1.8), Interval.defs.hh (1.15),
+	Interval.inlines.hh (1.10): Added Doxygen comments to classes
+	ERational, Boundary, LBoundary, UBoundary, Interval. Removed all
+	the comparison operators that are not currently used in the
+	sources. Removed the default constructors for LBoundary and
+	UBoundary.  Made explicit that the Interval class, as it is
+	defined, can only manipulate standard (i.e., non-extended) rational
+	intervals.
+
+2003-04-27 Sunday 16:44  Enea Zaffanella <zaffanella@cs.unipr.it>
+
+	* src/Row.defs.hh (1.72): Added a scary comment to Row::assign(),
+	since its improper use may cause memory leaks.
+
+2003-04-27 Sunday 16:42  Enea Zaffanella <zaffanella@cs.unipr.it>
+
+	* src/Polyhedron.defs.hh (1.211): In the documentation of
+	shrink_bounding_box, we now state that we will always call
+	raise_lower_bound and lower_upper_bound with fractions in canonical
+	form.
+
+2003-04-27 Sunday 16:40  Enea Zaffanella <zaffanella@cs.unipr.it>
+
+	* doc/: devref-browse.doxyconf-latex.in (1.30),
+	devref-print.doxyconf-latex.in (1.30), devref.doxyconf-html.in
+	(1.31): Added files Interval.* and BoundingBox.* to the
+	documentation of the developers.
+
+2003-04-27 Sunday 12:48  Roberto Bagnara <bagnara@cs.unipr.it>
+
+	* tests/writevariable1.cc (1.7): Pass objects of type `Variable' by
+	value.
+
+2003-04-27 Sunday 11:24  Roberto Bagnara <bagnara@cs.unipr.it>
+
+	* src/: LinExpression.cc (1.18), LinExpression.defs.hh (1.60),
+	LinExpression.inlines.hh (1.28), Polyhedron.defs.hh (1.210),
+	Polyhedron_public.cc (1.13), Variable.cc (1.12), Variable.defs.hh
+	(1.31), Variable.inlines.hh (1.16): Be consistent: always pass
+	objects of type `Variable' by value.
+
+2003-04-27 Sunday 11:09  Roberto Bagnara <bagnara@cs.unipr.it>
+
+	* src/: BoundingBox.cc (1.6), BoundingBox.inlines.hh (1.9),
+	ConSys.cc (1.66), ConSys.inlines.hh (1.30), Constraint.cc (1.39),
+	Constraint.inlines.hh (1.47), GenSys.cc (1.84), GenSys.inlines.hh
+	(1.31), Generator.cc (1.46), Generator.inlines.hh (1.41): Declare
+	variables `const' whenever possible or desirable.  Other little
+	improvements.
+
+2003-04-27 Sunday 10:41  Enea Zaffanella <zaffanella@cs.unipr.it>
+
+	* src/Matrix.cc (1.62): Fixed a typo in a comment.
+
+2003-04-27 Sunday 09:19  Roberto Bagnara <bagnara@cs.unipr.it>
+
+	* src/Polyhedron_widenings.cc (1.9): Avoid unnecessary explicit
+	initialization of vectors.
+
+2003-04-27 Sunday 09:01  Roberto Bagnara <bagnara@cs.unipr.it>
+
+	* src/Polyhedron_widenings.cc (1.8): Some debugging output removed.
+
+2003-04-27 Sunday 08:59  Roberto Bagnara <bagnara@cs.unipr.it>
+
+	* src/Polyhedron_widenings.cc (1.7): Declare variables `const'
+	whenever possible or desirable.
+
+2003-04-26 Saturday 20:56  Roberto Bagnara <bagnara@cs.unipr.it>
+
+	* src/Polyhedron_public.cc (1.12): Declare variables `const'
+	whenever possible or desirable.
+
+2003-04-26 Saturday 19:31  Roberto Bagnara <bagnara@cs.unipr.it>
+
+	* src/Polyhedron_nonpublic.cc (1.11): Declare variables `const'
+	whenever possible or desirable.
+
+2003-04-26 Saturday 19:30  Roberto Bagnara <bagnara@cs.unipr.it>
+
+	* README (1.16): Updated.
+
+2003-04-26 Saturday 19:20  Roberto Bagnara <bagnara@cs.unipr.it>
+
+	* NEWS (1.75): Tentative release date for PPL 0.5 is April 28,
+	2003.
+
+2003-04-26 Saturday 15:58  Roberto Bagnara <bagnara@cs.unipr.it>
+
+	* src/: SatMatrix.cc (1.27), SatMatrix.inlines.hh (1.20): Declare
+	variables `const' whenever possible or desirable.
+
+2003-04-26 Saturday 15:52  Roberto Bagnara <bagnara@cs.unipr.it>
+
+	* src/: SatRow.cc (1.20), SatRow.inlines.hh (1.27): Declare
+	variables `const' whenever possible or desirable.
+
+2003-04-26 Saturday 14:24  Enea Zaffanella <zaffanella@cs.unipr.it>
+
+	* src/Matrix.cc (1.61): Added comments to Matrix::sort_rows(first,
+	last).
+
+2003-04-26 Saturday 14:21  Roberto Bagnara <bagnara@cs.unipr.it>
+
+	* NEWS (1.74), TODO (1.52): Widening with tokens announced in the
+	NEWS file.
+
+2003-04-26 Saturday 07:51  Roberto Bagnara <bagnara@cs.unipr.it>
+
+	* interfaces/C/: ppl_c.cc (1.80), ppl_c.h (1.89): Stick to the C89
+	standard.
+
+2003-04-26 Saturday 07:33  Roberto Bagnara <bagnara@cs.unipr.it>
+
+	* TODO (1.51): We must announce widening with tokens in the NEWS
+	file.
+
+2003-04-25 Friday 21:56  Roberto Bagnara <bagnara@cs.unipr.it>
+
+	* src/algorithms.hh (1.15): Changes made elsewhere (removal of the
+	comparison operators over polyhedra and introduction of widenings
+	with tokens) now reflected here.
+
+2003-04-25 Friday 21:10  Roberto Bagnara <bagnara@cs.unipr.it>
+
+	* TODO (1.50): All the functionalities are available in all
+	interfaces.  The documentation for Polyhedron::map_dimensions() and
+	its wrappers for all the interfaces is OK.
+
+2003-04-24 Thursday 22:12  Roberto Bagnara <bagnara@cs.unipr.it>
+
+	* NEWS (1.73), TODO (1.49), doc/definitions.dox (1.120),
+	interfaces/C/ppl_c.cc (1.79), interfaces/C/ppl_c.h (1.88),
+	interfaces/Prolog/Prolog_interface.dox (1.104),
+	interfaces/Prolog/pl_check.pl (1.66),
+	interfaces/Prolog/ppl_prolog.icc (1.115),
+	interfaces/Prolog/Ciao/ppl_ciao.pl (1.57),
+	interfaces/Prolog/GNU/ppl_gprolog.pl (1.38),
+	interfaces/Prolog/SICStus/ppl_sicstus_sd.cc (1.52),
+	interfaces/Prolog/SWI/ppl_swiprolog.cc (1.76),
+	interfaces/Prolog/XSB/ppl_xsb.H (1.25),
+	interfaces/Prolog/XSB/ppl_xsb.cc (1.39),
+	interfaces/Prolog/YAP/ppl_yap.cc (1.70), src/Determinate.defs.hh
+	(1.31), src/Determinate.inlines.hh (1.30), src/Polyhedron.defs.hh
+	(1.209), src/Polyhedron.inlines.hh (1.79), src/PowerSet.defs.hh
+	(1.31), src/PowerSet.inlines.hh (1.36), tests/Makefile.am (1.180),
+	tests/mapdim1.cc (1.1), tests/remapdim1.cc (1.3): The
+	"remap_dimensions" operation is now called "map_dimensions".
+
+2003-04-23 Wednesday 14:39  Patricia M. Hill <hill@comp.leeds.ac.uk>
+
+	* interfaces/Prolog/: Prolog_interface.dox (1.103), pl_check.pl
+	(1.65): Improved grammar specification for Prolog interface. 
+	Amended remap test so that it does not refer to unused (singleton)
+	variable D.
+
+2003-04-22 Tuesday 18:54  Roberto Bagnara <bagnara@cs.unipr.it>
+
+	* src/: conversion.cc (1.50), minimize.cc (1.34), simplify.cc
+	(1.32): Declare variables `const' whenever possible or desirable.
+
+2003-04-22 Tuesday 08:29  Roberto Bagnara <bagnara@cs.unipr.it>
+
+	* src/: Polyhedron_chdims.cc (1.7), Polyhedron_nonpublic.cc (1.10),
+	Polyhedron_public.cc (1.11), Polyhedron_widenings.cc (1.6):
+	Consistently use `space_dim' instead of `space_dimension()' from
+	within the Polyhedron class.
+
+2003-04-22 Tuesday 08:28  Roberto Bagnara <bagnara@cs.unipr.it>
+
+	* src/: Matrix.cc (1.60), Matrix.inlines.hh (1.34), Row.cc (1.56),
+	Row.inlines.hh (1.41): Declare variables `const' whenever possible
+	or desirable.
+
+2003-04-20 Sunday 11:22  Enea Zaffanella <zaffanella@cs.unipr.it>
+
+	* interfaces/C/ppl_c.h (1.87),
+	interfaces/Prolog/Prolog_interface.dox (1.102),
+	interfaces/Prolog/pl_check.pl (1.64),
+	interfaces/Prolog/ppl_prolog.icc (1.114), src/Polyhedron.defs.hh
+	(1.208), src/Polyhedron.inlines.hh (1.78), tests/remapdim1.cc
+	(1.2): Changed the documentation of the remapping operator to refer
+	to the specification provided in doc/definitions.dox; changed the
+	tests to avoid experimenting with cases when the behavior is
+	undefined; no longer insisting that the partial function is
+	injective (since this is required but it is not enough to obtain a
+	well-defined behavior).
+
+2003-04-19 Saturday 10:05  Roberto Bagnara <bagnara@cs.unipr.it>
+
+	* tests/: Makefile.am (1.179), remapdim1.cc (1.1), renamedim1.cc
+	(1.3): Test program renamedim1.cc renamed remapdim1.cc.
+
+2003-04-18 Friday 21:37  Roberto Bagnara <bagnara@cs.unipr.it>
+
+	* doc/definitions.dox (1.119), doc/devref-browse.doxyconf-latex.in
+	(1.29), doc/devref-print.doxyconf-latex.in (1.29),
+	doc/devref.doxyconf-html.in (1.30),
+	doc/user-browse.doxyconf-latex.in (1.16),
+	doc/user-print.doxyconf-latex.in (1.16), doc/user.doxyconf-html.in
+	(1.18), interfaces/C/ppl_c.cc (1.78), interfaces/C/ppl_c.h (1.86),
+	interfaces/Prolog/Prolog_interface.dox (1.101),
+	interfaces/Prolog/pl_check.pl (1.63),
+	interfaces/Prolog/Ciao/ciao_clpq.pl (1.7),
+	interfaces/Prolog/Ciao/ppl_ciao.cc (1.19),
+	interfaces/Prolog/Ciao/ppl_ciao.pl (1.56),
+	interfaces/Prolog/GNU/Makefile.am (1.30),
+	interfaces/Prolog/GNU/ppl_gprolog_sd.cc (1.13),
+	interfaces/Prolog/SICStus/Makefile.am (1.36),
+	interfaces/Prolog/SICStus/sicstus_cfli.ic (1.6),
+	interfaces/Prolog/SWI/Makefile.am (1.28),
+	interfaces/Prolog/SWI/ppl_swiprolog.cc (1.75),
+	interfaces/Prolog/XSB/Makefile.am (1.14),
+	interfaces/Prolog/XSB/ppl_xsb.cc (1.38),
+	interfaces/Prolog/YAP/Makefile.am (1.22),
+	interfaces/Prolog/YAP/ppl_yap.cc (1.69), m4/Makefile.am (1.9),
+	m4/ac_check_gmp.m4 (1.12), m4/ac_cxx_flexible_arrays.m4 (1.6),
+	src/ConSys.cc (1.65), src/GenSys.cc (1.83), src/GenSys.defs.hh
+	(1.92), src/Generator.defs.hh (1.84), src/Matrix.cc (1.59),
+	src/Matrix.defs.hh (1.49), src/NNC_Polyhedron.defs.hh (1.22),
+	src/Poly_Con_Relation.defs.hh (1.22), src/Polyhedron.defs.hh
+	(1.207), src/Polyhedron.inlines.hh (1.77), src/Polyhedron_chdims.cc
+	(1.6), src/Polyhedron_nonpublic.cc (1.9), src/Polyhedron_public.cc
+	(1.10), src/Polyhedron_widenings.cc (1.5), src/PowerSet.inlines.hh
+	(1.35), src/Row.cc (1.55), src/Row.defs.hh (1.71), src/SatMatrix.cc
+	(1.26), src/SatMatrix.defs.hh (1.32), src/SatRow.cc (1.19),
+	src/SatRow.defs.hh (1.31), src/Status.cc (1.21), src/conversion.cc
+	(1.49), src/minimize.cc (1.33), src/simplify.cc (1.31): Trailing
+	blanks removed.
+
+2003-04-18 Friday 19:33  Roberto Bagnara <bagnara@cs.unipr.it>
+
+	* NEWS (1.72), TODO (1.48), interfaces/C/ppl_c.cc (1.77),
+	interfaces/C/ppl_c.h (1.85), interfaces/Prolog/Prolog_interface.dox
+	(1.100), interfaces/Prolog/pl_check.pl (1.62),
+	interfaces/Prolog/ppl_prolog.icc (1.113),
+	interfaces/Prolog/Ciao/ppl_ciao.pl (1.55),
+	interfaces/Prolog/GNU/ppl_gprolog.pl (1.37),
+	interfaces/Prolog/SICStus/ppl_sicstus_sd.cc (1.51),
+	interfaces/Prolog/SWI/ppl_swiprolog.cc (1.74),
+	interfaces/Prolog/XSB/ppl_xsb.H (1.24),
+	interfaces/Prolog/XSB/ppl_xsb.cc (1.37),
+	interfaces/Prolog/YAP/ppl_yap.cc (1.68), src/Determinate.defs.hh
+	(1.30), src/Determinate.inlines.hh (1.29), src/Polyhedron.defs.hh
+	(1.206), src/Polyhedron.inlines.hh (1.76), src/PowerSet.defs.hh
+	(1.30), src/PowerSet.inlines.hh (1.34), tests/renamedim1.cc (1.2):
+	The "rename_dimensions" operation is now called "remap_dimensions".
+
+2003-04-18 Friday 19:11  Roberto Bagnara <bagnara@cs.unipr.it>
+
+	* doc/definitions.dox (1.118): Section about "Remapping the
+	Dimension of the Vector Space" rewritten.
+
+2003-04-18 Friday 19:10  Roberto Bagnara <bagnara@cs.unipr.it>
+
+	* doc/ppl.sty (1.12): New macro \pard[3] to typeset the signature
+	of a partial function.
+
+2003-04-17 Thursday 22:33  Roberto Bagnara <bagnara@cs.unipr.it>
+
+	* doc/definitions.dox (1.117), src/ConSys.cc (1.64),
+	src/Matrix.defs.hh (1.48), src/Polyhedron_nonpublic.cc (1.8):
+	Prefer "zeroes" to "zeros".
+
+2003-04-17 Thursday 22:27  Roberto Bagnara <bagnara@cs.unipr.it>
+
+	* interfaces/Prolog/ppl_prolog.icc (1.112): The Boundary_Kind enum
+	is now confined into the anonymous namespace.
+
+2003-04-17 Thursday 22:17  Roberto Bagnara <bagnara@cs.unipr.it>
+
+	* Watchdog/Watchdog.cc (1.11), interfaces/Prolog/ppl_prolog.icc
+	(1.111): Prefer anonymous namespaces to static declarations.
+
+2003-04-17 Thursday 22:08  Roberto Bagnara <bagnara@cs.unipr.it>
+
+	* interfaces/Prolog/ppl_prolog.icc (1.110),
+	src/BoundingBox.inlines.hh (1.8), src/Interval.cc (1.7),
+	src/Interval.defs.hh (1.14), src/Interval.inlines.hh (1.9),
+	src/Interval.types.hh (1.6), src/Polyhedron.inlines.hh (1.75):
+	Class `ExtendedRational' renamed `ERational'.
+
+2003-04-17 Thursday 19:39  Roberto Bagnara <bagnara@cs.unipr.it>
+
+	* TODO (1.47), src/Matrix.defs.hh (1.47), src/Matrix.inlines.hh
+	(1.33): Fixed the comments of the following methods of Matrix: void
+	grow(dimension_type new_n_rows, dimension_type new_n_columns); void
+	resize_no_copy(dimension_type new_n_rows, void
+	add_rows_and_columns(dimension_type n).
+
+2003-04-17 Thursday 19:12  Roberto Bagnara <bagnara@cs.unipr.it>
+
+	* configure.ac (1.94): Version number bumped.
+
+2003-04-17 Thursday 19:11  Roberto Bagnara <bagnara@cs.unipr.it>
+
+	* interfaces/Prolog/YAP/Makefile.am (1.21): Target `check-local'
+	fixed.
+
+2003-04-17 Thursday 19:11  Roberto Bagnara <bagnara@cs.unipr.it>
+
+	* interfaces/Prolog/Ciao/Makefile.am (1.20): Remove ciao_clpq and
+	ciao_clpq2 when cleaning.
+
+2003-04-17 Thursday 19:08  Roberto Bagnara <bagnara@cs.unipr.it>
+
+	* interfaces/Prolog/GNU/Makefile.am (1.29): Remove check_script3
+	when cleaning.
+
+2003-04-17 Thursday 07:34  Roberto Bagnara <bagnara@cs.unipr.it>
+
+	* interfaces/Prolog/YAP/Makefile.am (1.20): Distribute also
+	yap_pl_check.pl.
+
+2003-04-17 Thursday 07:34  Roberto Bagnara <bagnara@cs.unipr.it>
+
+	* interfaces/Prolog/GNU/Makefile.am (1.28): Distribute also
+	gnu_pl_check.pl.
+
+2003-04-16 Wednesday 07:38  Patricia M. Hill <hill@comp.leeds.ac.uk>
+
+	* interfaces/Prolog/Prolog_interface.dox (1.99): Small corrections
+	made.
+
+2003-04-16 Wednesday 05:56  Roberto Bagnara <bagnara@cs.unipr.it>
+
+	* interfaces/Prolog/Makefile.am (1.23): Distribute expected3.
+
+2003-04-15 Tuesday 21:39  Roberto Bagnara <bagnara@cs.unipr.it>
+
+	* interfaces/Prolog/Makefile.am (1.22): Distribute also
+	pl_check.pl.
+
+2003-04-15 Tuesday 19:38  Roberto Bagnara <bagnara@cs.unipr.it>
+
+	* NEWS (1.71), TODO (1.46), interfaces/C/ppl_c.cc (1.76),
+	interfaces/C/ppl_c.h (1.84), interfaces/C/lpenum/lpenum.c (1.22),
+	interfaces/Prolog/Prolog_interface.dox (1.98),
+	interfaces/Prolog/pl_check.pl (1.61),
+	interfaces/Prolog/ppl_prolog.icc (1.109),
+	interfaces/Prolog/Ciao/ppl_ciao.pl (1.54),
+	interfaces/Prolog/GNU/ppl_gprolog.pl (1.36),
+	interfaces/Prolog/SICStus/ppl_sicstus_sd.cc (1.50),
+	interfaces/Prolog/SWI/ppl_swiprolog.cc (1.73),
+	interfaces/Prolog/XSB/ppl_xsb.H (1.23),
+	interfaces/Prolog/XSB/ppl_xsb.cc (1.36),
+	interfaces/Prolog/YAP/ppl_yap.cc (1.67), src/C_Polyhedron.cc (1.6),
+	src/Determinate.inlines.hh (1.28), src/Polyhedron.defs.hh (1.205),
+	src/Polyhedron.inlines.hh (1.74), src/Polyhedron_public.cc (1.9),
+	tests/bounded1.cc (1.12), tests/disjoint1.cc (1.6),
+	tests/disjoint2.cc (1.7), tests/disjoint3.cc (1.6), tests/empty1.cc
+	(1.13), tests/intersection2.cc (1.9), tests/linearpartition1.cc
+	(1.12), tests/linearpartition2.cc (1.12), tests/linearpartition3.cc
+	(1.12), tests/randphull1.cc (1.9), tests/smm1.cc (1.14),
+	tests/timeelapse5.cc (1.8), tests/topclosed1.cc (1.6),
+	tests/topclosed2.cc (1.5), tests/topclosed3.cc (1.7),
+	tests/universe1.cc (1.9), tests/universe2.cc (1.10),
+	tests/universe3.cc (1.10), tests/universe4.cc (1.10),
+	tests/universe5.cc (1.11), tests/universe6.cc (1.8): The methods
+	Polyhedron::check_empty() and Polyhedron::check_universe() have
+	been renamed is_empty() and is_universe(), respectively.  The
+	function check_disjoint(const Polyhedron&, const Polyhedron&) had
+	been replaced by method Polyhedron::is_disjoint_from(const
+	Polyhedron&).  The methods Polyhedron::check_bounded() and
+	Polyhedron::check_topologically_closed() have been renamed
+	is_bounded() and is_topologically_closed(), respectively.
+
+2003-04-15 Tuesday 19:25  Roberto Bagnara <bagnara@cs.unipr.it>
+
+	* interfaces/Prolog/Ciao/Makefile.am (1.19): Distribute also
+	ciao_clpq2.pl.
+
+2003-04-15 Tuesday 13:40  Roberto Bagnara <bagnara@cs.unipr.it>
+
+	* src/: Polyhedron.defs.hh (1.204), Polyhedron.inlines.hh (1.73),
+	Polyhedron_chdims.cc (1.5), Polyhedron_nonpublic.cc (1.7),
+	Polyhedron_public.cc (1.8), Polyhedron_widenings.cc (1.4):
+	Polyhedron::is_empty() renamed Polyhedron::marked_empty().
+
+2003-04-15 Tuesday 13:38  Roberto Bagnara <bagnara@cs.unipr.it>
+
+	* ltmain.sh (1.16), Watchdog/ltmain.sh (1.5): Updated.
+
+2003-04-15 Tuesday 09:11  Roberto Bagnara <bagnara@cs.unipr.it>
+
+	* NEWS (1.70), interfaces/C/ppl_c.cc (1.75),
+	interfaces/Prolog/ppl_prolog.icc (1.108), src/ConSys.defs.hh
+	(1.79), src/GenSys.defs.hh (1.91), src/Generator.defs.hh (1.83),
+	src/Polyhedron.defs.hh (1.203), src/Polyhedron.inlines.hh (1.72),
+	src/Polyhedron_public.cc (1.7), src/Polyhedron_widenings.cc (1.3),
+	tests/Makefile.am (1.178), tests/NNCinclusion1.cc (1.7),
+	tests/contains1.cc (1.4), tests/contains2.cc (1.1),
+	tests/contains3.cc (1.1), tests/contains4.cc (1.1),
+	tests/contains5.cc (1.1), tests/exceptions1.cc (1.34),
+	tests/exceptions2.cc (1.28), tests/inclusion1.cc (1.7),
+	tests/inclusion2.cc (1.4), tests/linearpartition1.cc (1.11),
+	tests/linearpartition2.cc (1.11), tests/linearpartition3.cc (1.11),
+	tests/operator1.cc (1.5): The functions
+	Polyhedron::operator<=(const Polyhedron&, const Polyhedron&),
+	Polyhedron::operator>=(const Polyhedron&, const Polyhedron&),
+	Polyhedron::operator<(const Polyhedron&, const Polyhedron&), and
+	Polyhedron::operator>(const Polyhedron&, const Polyhedron&) have
+	been removed.  The methods Polyhedron::contains(const Polyhedron&)
+	and Polyhedron::strictly_contains(const Polyhedron&) provide the
+	same functionality.
+
+2003-04-14 Monday 16:16  Roberto Bagnara <bagnara@cs.unipr.it>
+
+	* src/: Polyhedron.defs.hh (1.202), Polyhedron_nonpublic.cc (1.6),
+	Polyhedron_public.cc (1.6): Polyhedron::is_included(const
+	Polyhedron&) renamed Polyhedron::is_included_in(const Polyhedron&).
+
+2003-04-14 Monday 12:24  Patricia M. Hill <hill@comp.leeds.ac.uk>
+
+	* interfaces/Prolog/: pl_check.pl (1.60), Ciao/ppl_ciao.pl (1.53):
+	The ciao system now allows for
+	ppl_Polyhedron_generalized_affine_image to fail.  This is now
+	tested in pl_check.
+
+2003-04-14 Monday 11:39  Patricia M. Hill <hill@comp.leeds.ac.uk>
+
+	* interfaces/Prolog/: pl_check.pl (1.59), Ciao/ppl_ciao.pl (1.52):
+	This allows for failure in ciao for timeout_exception_atom when the
+	atom given does not unify with the current value and also for the
+	new_Polyhedron predicates when unifying the new handle with the
+	input value.  In order to test this, the tests in pl_check assume
+	that unifying a new handle with value 0 will fail.
+
+2003-04-13 Sunday 21:08  Roberto Bagnara <bagnara@cs.unipr.it>
+
+	* interfaces/Prolog/XSB/expected2 (1.8): Adapted to strong
+	normalization.
+
+2003-04-13 Sunday 13:12  Enea Zaffanella <zaffanella@cs.unipr.it>
+
+	* src/: ConSys.cc (1.63), GenSys.cc (1.82), Matrix.cc (1.58),
+	Matrix.defs.hh (1.46), Row.cc (1.54), Row.defs.hh (1.70),
+	simplify.cc (1.30): Added a boolean parameter to Matrix::OK() to
+	control whether or not we also want to check for strong
+	normalization of the rows in the matrix.  Strong normalization is
+	now checked when this might be useful, i.e., avoiding bare
+	repetitions of the same check.	Also added a method
+	Row::check_strongly_normalized() with the obvious semantics.
+
+2003-04-13 Sunday 09:32  Roberto Bagnara <bagnara@cs.unipr.it>
+
+	* interfaces/Prolog/Ciao/Makefile.am (1.18): Do not use the
+	GLOBALSTKSIZE kludge for testing with clpq2.pl.
+
+2003-04-13 Sunday 09:31  Roberto Bagnara <bagnara@cs.unipr.it>
+
+	* interfaces/Prolog/Ciao/ppl_ciao.pl (1.51): Indentation fixed.
+
+2003-04-12 Saturday 20:51  Enea Zaffanella <zaffanella@cs.unipr.it>
+
+	* interfaces/Prolog/expected2 (1.10): Updated according to the
+	enforcing of strong-normalization.
+
+2003-04-12 Saturday 20:49  Enea Zaffanella <zaffanella@cs.unipr.it>
+
+	* src/simplify.cc (1.29): Method Polyhedron::simplify(mat, sat)
+	takes as 1st input argument a well-formed Matrix mat.  When a
+	ray-point-inequality is transformed into a line-equality,
+	sign_normalization is applied to enforce strong-normalization. 
+	Well-formedness of mat also asserted on exit.
+
+2003-04-12 Saturday 20:46  Enea Zaffanella <zaffanella@cs.unipr.it>
+
+	* src/Matrix.cc (1.57): Methods Matrix::gauss() and
+	Matrix::back_substitute() are applied to well-formed matrices and
+	will return well-formed matrices.  Corrected a bug in the handling
+	of the sortedness flag in back_substitute().  Method Matrix::OK()
+	now also checks strong normalization of rows.
+
+2003-04-12 Saturday 20:43  Enea Zaffanella <zaffanella@cs.unipr.it>
+
+	* src/: Row.cc (1.53), Row.defs.hh (1.69), Row.inlines.hh (1.40):
+	Strong normalization of rows made inline and implemented by calling
+	Row::normalize() and Row::sign_normalize().
+
+2003-04-11 Friday 10:25  Roberto Bagnara <bagnara@cs.unipr.it>
+
+	* interfaces/C/lpenum/expected (1.3): Adapted to strong
+	normalization.
+
+2003-04-11 Friday 08:38  Enea Zaffanella <zaffanella@cs.unipr.it>
+
+	* src/: ConSys.cc (1.62), GenSys.cc (1.81): Fixed a couple of
+	comments.
+
+2003-04-11 Friday 08:17  Roberto Bagnara <bagnara@cs.unipr.it>
+
+	* ltmain.sh (1.15), Watchdog/ltmain.sh (1.4): Updated.
+
+2003-04-11 Friday 08:13  Roberto Bagnara <bagnara@cs.unipr.it>
+
+	* src/: ConSys.cc (1.61), Constraint.cc (1.38),
+	Constraint.inlines.hh (1.46), GenSys.cc (1.80), Generator.cc
+	(1.45), Matrix.cc (1.56), Matrix.inlines.hh (1.32), Row.cc (1.52),
+	Row.defs.hh (1.68), conversion.cc (1.48), simplify.cc (1.28):
+	Commit to EXTRA_NORMALIZATION=1.
+
+2003-04-10 Thursday 14:08  Enea Zaffanella <zaffanella@cs.unipr.it>
+
+	* src/: ConSys.cc (1.60), GenSys.cc (1.79), Polyhedron_widenings.cc
+	(1.2), conversion.cc (1.47): Strong normalization of rows called
+	when EXTRA_NORMALIZATION is set; otherwise use (simple)
+	normalization.
+
+2003-04-10 Thursday 12:22  Enea Zaffanella <zaffanella@cs.unipr.it>
+
+	* src/: ConSys.cc (1.59), GenSys.cc (1.78), Matrix.defs.hh (1.45),
+	Matrix.inlines.hh (1.31), Polyhedron_chdims.cc (1.4): Added method
+	Matrix::remove_columns(dimension_type new_n_columns) with the
+	expected semantics. The method ensures that the resulting matrix is
+	in normal form, thus correcting the bug shown by removedim10.cc. 
+	The new method is now used everywhere we remove columns from a
+	matrix.
+
+2003-04-10 Thursday 11:11  Enea Zaffanella <zaffanella@cs.unipr.it>
+
+	* tests/removedim10.cc (1.2): Corrected the known result.
+
+2003-04-10 Thursday 10:21  Roberto Bagnara <bagnara@cs.unipr.it>
+
+	* tests/: Makefile.am (1.177), removedim10.cc (1.1): New test
+	showing a bug whereby rows of matrices are not re-normalized after
+	the removal of some columns.
+
+2003-04-10 Thursday 10:08  Roberto Bagnara <bagnara@cs.unipr.it>
+
+	* tests/removedim9.cc (1.5): Indentation fixed.
+
+2003-04-09 Wednesday 09:38  Enea Zaffanella <zaffanella@cs.unipr.it>
+
+	* STANDARDS (1.9): Improved the section about the production of
+	Doxygen documentation.
+
+2003-04-09 Wednesday 09:02  Patricia M. Hill <hill@comp.leeds.ac.uk>
+
+	* interfaces/Prolog/pl_check.pl (1.58): Changed the way variables
+	are bound to dimension names.  This avoids a problem due to a bug
+	in XSB.
+
+2003-04-08 Tuesday 19:45  Roberto Bagnara <bagnara@cs.unipr.it>
+
+	* TODO (1.45): For the moment, it is convenient to have
+	Matrix::set_sorted(bool value) instead of, say,
+	Matrix::set_sorted() and Matrix::set_unsorted().  Sortedness will
+	have to be dealt with at a more fundamental level anyway.
+
+2003-04-08 Tuesday 19:19  Roberto Bagnara <bagnara@cs.unipr.it>
+
+	* ppl.lsm.in (1.4): Updated.
+
+2003-04-08 Tuesday 19:09  Roberto Bagnara <bagnara@cs.unipr.it>
+
+	* TODO (1.44): Section on "Constructions on Polyhedra" revised. 
+	Minor fix in the section about "Cutting-Plane Methods".
+
+2003-04-08 Tuesday 19:04  Roberto Bagnara <bagnara@cs.unipr.it>
+
+	* TODO (1.43): Remove the section about designing and
+	implementating strict weak orderings on polyhedra.
+
+2003-04-08 Tuesday 19:00  Roberto Bagnara <bagnara@cs.unipr.it>
+
+	* README (1.15): Updated.
+
+2003-04-08 Tuesday 18:49  Roberto Bagnara <bagnara@cs.unipr.it>
+
+	* INSTALL (1.5): Copyright symbol added.
+
+2003-04-08 Tuesday 18:45  Roberto Bagnara <bagnara@cs.unipr.it>
+
+	* ChangeLog (1.12): Updated.
+
 2003-04-08 Tuesday 18:40  Roberto Bagnara <bagnara@cs.unipr.it>
 
 	* CREDITS (1.7): Minor correction.
