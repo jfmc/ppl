@@ -1157,33 +1157,42 @@ PPL::Polyhedron::insert(const Generator& g) {
 
   // If the dimension-compatibility check is passed,
   // we have space_dimension() > 0.
-  if (generators_are_up_to_date())
+  if (generators_are_up_to_date()) {
     gen_sys.insert(g);
-  else
-    if (check_empty()) {
-      // Polyhedron is empty: we can only insert a vertex.
-      if (g.type() != Generator::VERTEX)
-	throw std::invalid_argument("void PPL::Polyhedron::insert(g): "
-				    "*this is empty and g is not a vertex");
-      // FIXME: why do we need the following clear() ?
-      // Would not be an assertion sufficient ?
-      gen_sys.clear();
-      gen_sys.insert(g);
-      // Resize `gen_sys' to have space_dimension() + 1 columns.
-      if (gen_sys.num_columns() != space_dimension() + 1)
-	gen_sys.add_zero_columns(space_dimension()
-				 - gen_sys.num_columns() + 1);
-      // No longer empty, generators up-to-date and minimized.
-      clear_empty();
-      set_generators_minimized();
-    }
-    else {
-      // Polyhedron is NOT empty and with generators up-to-date.
-      gen_sys.insert(g);
-      // After adding the new generator, constraints are no longer up-to-date.
-      clear_generators_minimized();
-      clear_constraints_up_to_date();
-    }
+    // After adding the new generator, constraints are no longer up-to-date.
+    clear_generators_minimized();
+    clear_constraints_up_to_date();
+    return;
+  }
+
+  // Generators are not up-to-date: now calling `check_empty' because,
+  // if the polyhedron is not empty, we need the generators anyway.
+  if (check_empty()) {
+    // Polyhedron is empty:
+    // the specification says we can only insert a vertex.
+    if (g.type() != Generator::VERTEX)
+      throw std::invalid_argument("void PPL::Polyhedron::insert(g): "
+				  "*this is empty and g is not a vertex");
+    // FIXME: why do we need the following clear() ?
+    // Would not be an assertion sufficient ?
+    gen_sys.clear();
+    gen_sys.insert(g);
+    // Resize `gen_sys' to have space_dimension() + 1 columns.
+    if (gen_sys.num_columns() != space_dimension() + 1)
+      gen_sys.add_zero_columns(space_dimension()
+			       - gen_sys.num_columns() + 1);
+    // No longer empty, generators up-to-date and minimized.
+    clear_empty();
+    set_generators_up_to_date();
+    return;
+  }
+
+  // Polyhedron is NOT empty and with generators up-to-date.
+  gen_sys.insert(g);
+  // Generators no longer minimized, constraints no longer up-to-date.
+  clear_generators_minimized();
+  clear_constraints_up_to_date();
+
 }
 
 
