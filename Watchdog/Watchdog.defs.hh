@@ -194,7 +194,7 @@ private:
   friend void Parma_Watchdog_Library::PWL_handle_timeout(int signum);
 };
 
-class Parma_Watchdog_Library::Init {
+class Init {
 private:
   //! Count the number of objects created.
   static unsigned int count;
