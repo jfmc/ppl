@@ -331,7 +331,7 @@ namespace Parma_Polyhedra_Library {
     \f$\bigl\{(3, 0)^\transpose \bigr\} \sseq \Rset^2\f$:
     when removing the set of dimensions \p to_be_removed2
     we are actually removing variable \f$w\f$ of the original polyhedron.
-    For the same reason, the operator\p remove_dimensions
+    For the same reason, the operator \p remove_dimensions
     is not idempotent: removing twice the same set of dimensions
     is never a no-op.
 */

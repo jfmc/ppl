@@ -51,7 +51,10 @@ compute_capacity(size_t requested_size) {
   return 2*(requested_size + 1);
 }
 
-//! Abstract base class for the user objects' the PPL can throw.
+//! User objects' the PPL can throw.
+/*!
+  Abstract base class for the user objects' the PPL can throw.
+*/
 class Throwable {
 public:
   virtual void throw_me() const = 0;
