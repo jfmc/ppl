@@ -4,21 +4,25 @@
 solve(Goal):-
     numbervars(Goal,0,M),
     ppl_new_polyhedron(P, M),
-    solve(Goal,P),
+    solve(Goal,P,M,_),
     check_constraints(P).
 
-solve(true,_P):-
+solve(true,_P,M,M):-
     !.
-solve((A,B),P):- 
+solve((A,B),P,M,N):- 
     !, 
-    solve(A,P),
-    solve(B,P).
-solve({Cs},P):- 
+    solve(A,P,M,M1),
+    solve(B,P,M1,N).
+solve({Cs},P,M,N):- 
     !,
+    numbervars(Cs,M,N),
     solve_constraints(Cs,P).
-solve(A,P):-
+solve(A,P,M,N):-
     clause(A,B), 
-    solve(B,P).
+    numbervars(B,M,N1),
+    M1 is N1-M,
+    ppl_add_dimensions_and_embed(P, M1),
+    solve(B,P,N1,N).
 
 solve_constraints((C,D),P):- 
     !,
@@ -41,3 +45,7 @@ check_constraints(X) :-
 	).
 
 % ?- solve({X+Y>=3,Y>=0,X=<2}).
+
+:- dynamic p1/2, p2/3.
+p1(A,B):- {A>=B}, p2(A,B,C).
+p2(X,Y,Z):- {X+Y=<4}.
