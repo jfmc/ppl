@@ -63,6 +63,16 @@ Generator::type() const {
 }
 
 inline bool
+Generator::is_ray() const {
+  return is_ray_or_vertex() && ((*this)[0] == 0);
+}
+
+inline bool
+Generator::is_vertex() const {
+  return is_ray_or_vertex() && ((*this)[0] != 0);
+}
+
+inline bool
 Generator::is_ray_or_vertex() const {
   return is_ray_or_vertex_or_inequality();
 }

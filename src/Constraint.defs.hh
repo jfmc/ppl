@@ -220,6 +220,22 @@ public:
   //! Returns the dimension of the vector space enclosing \p *this.
   size_t space_dimension() const;
 
+  //! The constraint type.
+  /*! \enum Type
+      Describes the type of the constraint.
+  */
+  enum Type {
+    /*! \hideinitializer
+      The constraint is an equality. */
+    EQUALITY = Row::LINE_OR_EQUALITY,
+    /*! \hideinitializer
+      The constraint is an inequality. */
+    INEQUALITY = Row::RAY_OR_VERTEX_OR_INEQUALITY
+  };
+
+  //! Returns the constraint type of \p *this.
+  Type type() const;
+
   //! Returns <CODE>true</CODE> if and only if
   //! \p *this is an equality constraint.
   bool is_equality() const;
@@ -254,19 +270,6 @@ PPL_INTERNAL:
   //! or \f$0 = n\f$, where \f$n \neq 0\f$.
   bool is_trivial_false() const;
 
-  //! The constraint type.
-  /*! \enum Type
-      Describes the type of the constraint.
-  */
-  enum Type {
-    /*! The constraint is an equality. */
-    EQUALITY = Row::LINE_OR_EQUALITY,
-    /*! The constraint is an inequality. */
-    INEQUALITY = Row::RAY_OR_VERTEX_OR_INEQUALITY
-  };
-
-  //! Returns the constraint type of \p *this.
-  Type type() const;
   //! Sets the constraint type to <CODE>EQUALITY</CODE>.
   void set_is_equality();
   //! Sets the constraint type to <CODE>INEQUALITY</CODE>.

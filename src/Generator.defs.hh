@@ -272,6 +272,16 @@ public:
   //! Returns the generator type of \p *this.
   Type type() const;
 
+  //! Returns <CODE>true</CODE> if and only if
+  //! \p *this is a line.
+  bool is_line() const;
+  //! Returns <CODE>true</CODE> if and only if
+  //! \p *this is a ray.
+  bool is_ray() const;
+  //! Returns <CODE>true</CODE> if and only if
+  //! \p *this is a vertex.
+  bool is_vertex() const;
+
   //! If the index of variable \p v is less than the space-dimension
   //! of \p *this, returns the coefficient of \p v in \p *this.
   //! \exception std::invalid_argument thrown if the index of \p v
@@ -288,9 +298,6 @@ public:
   bool OK() const;
 
 PPL_INTERNAL:
-  //! Returns <CODE>true</CODE> if and only if
-  //! \p *this is a line.
-  bool is_line() const;
   //! Returns <CODE>true</CODE> if and only if
   //! \p *this is either a ray or a vertex.
   bool is_ray_or_vertex() const;
