@@ -1,4 +1,4 @@
-/* Test Polyhedra_Powerset<PH>::BGP99_extrapolation_assign()
+/* Test Polyhedra_Powerset<PH>::BGP99_extrapolation_assign().
    Copyright (C) 2001-2004 Roberto Bagnara <bagnara@cs.unipr.it>
 
 This file is part of the Parma Polyhedra Library (PPL).
@@ -27,7 +27,7 @@ using namespace std;
 using namespace Parma_Polyhedra_Library;
 
 #ifndef NOISY
-#define NOISY 0
+#define NOISY 1
 #endif
 
 int
@@ -118,20 +118,28 @@ main() TRY {
        << ps2 << endl;
 #endif
 
-  ps1.BGP99_extrapolation_assign(ps2, &Polyhedron::H79_widening_assign, 5);
+  ps1.BGP99_extrapolation_assign(ps2, &Polyhedron::H79_widening_assign, 7);
 
-#if 0
-  C_Polyhedron known_result;
-  known_result = ph1;
+  PSet known_result(2, Polyhedron::EMPTY);
+  C_Polyhedron kr_1(2);
+  kr_1.add_constraint(A - B >= -16);
+  kr_1.add_constraint(A >= 3);
+  C_Polyhedron kr_2(2);
+  kr_2.add_constraint(-A + B >= 3);
+  kr_2.add_constraint(A >= 1);
+  C_Polyhedron kr_3(2);
+  kr_3.add_constraint(A - B >= -12);
+  known_result.add_disjunct(kr_1);
+  known_result.add_disjunct(kr_2);
+  known_result.add_disjunct(kr_3);
 
-  int retval = (ph1 == known_result) ? 0 : 1;
-#else
-  int retval = 0;
-#endif
+  int retval = ps1.semantically_equals(known_result) ? 0 : 1;
 
 #if NOISY
-  cout << "*** ps1 ***" << endl
-       << ps1 << endl;
+  cout
+    << "*** ps1.BGP99_extrapolation_assign(ps2, &H79_widening_assign, 7) ***"
+    << endl
+    << ps1 << endl;
 #endif
 
   return retval;
