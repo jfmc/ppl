@@ -628,7 +628,6 @@ and a query will succeed even when
 
 This is the inverse transformation to that for <CODE>ppl_affine_image</CODE>.
 
-
 <H4><CODE>ppl_Polyhedron_relation_with_constraint(+Handle, +Constraint,
                -Relation)</CODE></H4>
 
@@ -667,6 +666,20 @@ referenced by <CODE>Handle</CODE> has with <CODE>Generator</CODE>.
 
    Succeeds if and only if the polyhedron referenced by
    <CODE>Handle</CODE> is bounded.
+
+<H4><CODE>ppl_Polyhedron_bounds_from_above(+Handle,
+                                   +LinExpr)</CODE></H4>
+
+   Succeeds if and only if <CODE>LinExpr</CODE> is bounded from above in
+   the polyhedron referenced by <CODE>Handle</CODE>.
+
+
+<H4><CODE>ppl_Polyhedron_bounds_from_below(+Handle,
+                                   +LinExpr)</CODE></H4>
+
+   Succeeds if and only if <CODE>LinExpr</CODE> is bounded from below in
+   the polyhedron referenced by <CODE>Handle</CODE>.
+
 
 <H4><CODE>ppl_Polyhedron_is_topologically_closed(+Handle)</CODE></H4>
 

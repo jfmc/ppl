@@ -56,14 +56,14 @@ site: http://www.cs.unipr.it/ppl/ . */
 :- foreign(ppl_Polyhedron_remove_dimensions(+term, +term)).
 :- foreign(ppl_Polyhedron_remove_higher_dimensions(+term, +term)).
 :- foreign(ppl_Polyhedron_affine_image(+term, +term, +term, +term)).
-:- foreign(ppl_Polyhedron_bounds_from_above(+term, +term)).
-:- foreign(ppl_Polyhedron_bounds_from_below(+term, +term)).
 :- foreign(ppl_Polyhedron_affine_preimage(+term, +term, +term, +term)).
 :- foreign(ppl_Polyhedron_relation_with_constraint(+term, +term, +term)).
 :- foreign(ppl_Polyhedron_relation_with_generator(+term, +term, +term)).
 :- foreign(ppl_Polyhedron_check_empty(+term)).
 :- foreign(ppl_Polyhedron_check_universe(+term)).
 :- foreign(ppl_Polyhedron_is_bounded(+term)).
+:- foreign(ppl_Polyhedron_bounds_from_above(+term, +term)).
+:- foreign(ppl_Polyhedron_bounds_from_below(+term, +term)).
 :- foreign(ppl_Polyhedron_is_topologically_closed(+term)).
 :- foreign(ppl_Polyhedron_contains_Polyhedron(+term, +term)).
 :- foreign(ppl_Polyhedron_strictly_contains_Polyhedron(+term, +term)).
