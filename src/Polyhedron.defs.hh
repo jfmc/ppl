@@ -275,8 +275,12 @@ public:
   size_t num_dimensions() const;
   //! Intersects \p *this with polyhedron \p y and
   //! assigns the result to \p *this.
+  //! \exception std::invalid_argument \p *this and \p y 
+  //!                                  does not have the same dimension.  
   void intersection_assign(const Polyhedron& y);
   //! Assigns the convex hull of \p *this \f$\cup\f$ \p y to \p *this.
+  //! \exception std::invalid_argument \p *this and \p y 
+  //!                                  does not have the same dimension.  
   void convex_hull_assign(const Polyhedron& y);
   //! Assigns the convex hull of \p *this \f$\cup\f$ \p y to \p *this,
   //! without minimizing the result.

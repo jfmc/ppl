@@ -34,6 +34,7 @@ site: http://www.cs.unipr.it/ppl/ . */
 #include <cassert>
 #include <string>
 #include <iostream>
+#include <sstream>
 
 #define DLEVEL 0
 
@@ -506,6 +507,18 @@ PPL::operator <=(const Polyhedron& x, const Polyhedron& y) {
   return true;
 }
 
+static void
+throw_different_dimensions(const char* method,
+			   const PPL::Polyhedron& x,
+			   const PPL::Polyhedron& y) {
+  std::string what;
+  std::ostringstream s(what);
+  s << method
+    << ": this->num_dimensions == " << x.num_dimensions()
+    << ": y->num_dimensions == " << y.num_dimensions();
+  throw std::invalid_argument(what);
+}
+
 /*!
   The intersection of \p *this with \p y (that are assumed to 
   have the same dimension) is assigned to \p *this. 
@@ -520,16 +533,19 @@ PPL::Polyhedron::intersection_assign(const Polyhedron& y) {
     x.set_empty();
     return;
   }
-
+  
   // If both polyhedra are zero-dimensional, the intersection
   // is zero-dimensional too.  It is illegal for one polyhedron
   // to be zero-dimensional and the other one neither empty
   // nor zero-dimensional.
   if (x.is_zero_dim() || y.is_zero_dim()) {
-    assert(x.is_zero_dim() && y.is_zero_dim());
-    return;
+    if (!x.is_zero_dim() || !y.is_zero_dim())
+      throw_different_dimensions("PPL::Polyhedron::intersection_assign(y)",
+				 *this, y);
+    else
+      return;
   }
-
+ 
   // add_and_minimize() requires x to be up-to-date 
   // and to have sorted constraints...
   x.minimize();
@@ -537,7 +553,10 @@ PPL::Polyhedron::intersection_assign(const Polyhedron& y) {
   if (!y.constraints_are_up_to_date())
     y.update_constraints();
   // x and y must have the same dimension.
-  assert(x.con_sys.num_columns() == y.con_sys.num_columns());
+  if (x.con_sys.num_columns() != y.con_sys.num_columns())
+    throw_different_dimensions("PPL::Polyhedron::intersection_assign(y)",
+			       *this, y);
+      
   // After minimize() is not assured constraints of x to be sorted.
   x.obtain_sorted_constraints_with_sat_c();
   // After update_constraint() is not assured constraint of y to be sorted.
@@ -578,35 +597,43 @@ PPL::Polyhedron::convex_hull_assign(const Polyhedron& y) {
     x = y;
     return;
   }
-  if (x.is_zero_dim() && y.is_zero_dim())
-    return;
-
+  if (x.is_zero_dim() || y.is_zero_dim()) {
+    if (!x.is_zero_dim() || !y.is_zero_dim())
+      throw_different_dimensions("PPL::Polyhedron::convex_hull_assign(y)",
+				 *this, y);
+    else
+      return;
+  }
+   
   // The function add_and_minimize() requires `x' to be up-to-date and 
   // to have sorted generators...
   x.minimize();
   // ...and `y' to have updated and sorted generators.
- 
+  
   if (!y.generators_are_up_to_date())
     y.update_generators();
+  
   // `x' and `y' must have the same dimension.
-  assert(x.gen_sys.num_columns() == y.gen_sys.num_columns());
-
+  if (x.gen_sys.num_columns() != y.gen_sys.num_columns())
+    throw_different_dimensions("PPL::Polyhedron::convex_hull_assign(y)",
+			       *this, y);
+  
   x.obtain_sorted_generators_with_sat_g();
-
+    
   const_cast<Polyhedron&>(y).obtain_sorted_generators();
-
+  
   add_and_minimize(false,
 		   x.gen_sys, x.con_sys, x.sat_g,
 		   y.gen_sys);
-    
+  
   x.set_sat_g_up_to_date();
   x.clear_sat_c_up_to_date();
-
+  
 #if DLEVEL >= 1
   cout << endl << "On exit from x.convex_hull_assign(y)" << endl
        << "--- x ---" << endl << x << endl;
 #endif
- 
+  
   assert(OK());
 }
 
