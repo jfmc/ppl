@@ -33,8 +33,6 @@ using namespace Parma_Polyhedra_Library;
 
 void
 test1() {
-  set_handlers();
-
   Variable A(0);
   Variable B(1);
   
@@ -73,8 +71,6 @@ test1() {
 
 void
 test2() {
-  set_handlers();
-
   Variable A(0);
   Variable B(1);
   
@@ -113,8 +109,6 @@ test2() {
 
 void
 test3() {
-  set_handlers();
-
   Variable A(0);
   Variable B(1);
   
@@ -153,8 +147,6 @@ test3() {
 
 void
 test4() {
-  set_handlers();
-
   Variable A(0);
   Variable B(1);
   
@@ -193,8 +185,6 @@ test4() {
 
 void
 test5() {
-  set_handlers();
-
   Variable A(0);
   Variable B(1);
   
@@ -233,8 +223,6 @@ test5() {
 
 void
 test6() {
-  set_handlers();
-
   Variable A(0);
   Variable B(1);
   
@@ -273,8 +261,6 @@ test6() {
 
 void
 test7() {
-  set_handlers();
-
   Variable A(0);
   Variable B(1);
   
@@ -313,8 +299,6 @@ test7() {
 
 void
 test8() {
-  set_handlers();
-
   Variable A(0);
   Variable B(1);
   
@@ -353,8 +337,6 @@ test8() {
 
 void
 test9() {
-  set_handlers();
-
   Variable A(0);
   Variable B(1);
   
@@ -392,8 +374,6 @@ test9() {
 
 void
 test10() {
-  set_handlers();
-
   Variable A(0);
   Variable B(1);
   
@@ -431,8 +411,6 @@ test10() {
 
 void
 test11() {
-  set_handlers();
-
   Variable A(0);
   Variable B(1);
   
@@ -470,8 +448,6 @@ test11() {
 
 void
 test12() {
-  set_handlers();
-
   Variable A(0);
   Variable B(1);
   
@@ -509,8 +485,6 @@ test12() {
 
 void
 test13() {
-  set_handlers();
-
   Variable A(0);
   Variable B(1);
   
@@ -548,8 +522,6 @@ test13() {
 
 void
 test14() {
-  set_handlers();
-
   Variable A(0);
   Variable B(1);
   
@@ -587,8 +559,6 @@ test14() {
 
 void
 test15() {
-  set_handlers();
-
   Variable A(0);
   Variable B(1);
   
@@ -626,8 +596,6 @@ test15() {
 
 void
 test16() {
-  set_handlers();
-
   Variable A(0);
   Variable B(1);
   
@@ -665,6 +633,7 @@ test16() {
 
 int
 main() {
+  set_handlers();
 
   test1();
   test2();
@@ -681,6 +650,7 @@ main() {
   test13();
   test14();
   test15();
+  test16();
 
   return 0;
 }

@@ -32,8 +32,6 @@ using namespace Parma_Polyhedra_Library;
 
 void
 error1() {
-  set_handlers();
-  
   Variable x(0);
   Variable y(1);
   Variable z(2);
@@ -58,8 +56,6 @@ error1() {
 
 void
 error2() {
-  set_handlers();
-  
   Variable x(0);
   Variable y(1);
   
@@ -89,8 +85,6 @@ error2() {
 
 void
 error3() {
-  set_handlers();
-  
   Variable x(0);
   Variable y(1);
 
@@ -116,8 +110,6 @@ error3() {
 
 void
 error4() {
-  set_handlers();
-
   Variable x(0);
   Variable y(1);
   Variable z(2);
@@ -144,8 +136,6 @@ error4() {
 
 void
 error5() {
-  set_handlers();
-
   Variable x(0);
   Variable y(1);
   Variable z(2);
@@ -180,8 +170,6 @@ error5() {
 
 void
 error6() {
-  set_handlers();
-
   Variable x(0);
   Variable y(1);
 
@@ -207,8 +195,6 @@ error6() {
 
 void
 error7() {
-  set_handlers();
-  
   Variable x(0);
   Variable y(1);
   Variable z(2);
@@ -236,8 +222,6 @@ error7() {
 
 void
 error8() {
-  set_handlers();
-
   Variable x(0);
   Variable y(1);
 
@@ -264,8 +248,6 @@ error8() {
 
 void
 error9() {
-  set_handlers();
-
   Variable x(0);
   Variable y(1);
   Variable z(2);
@@ -295,8 +277,6 @@ error9() {
 
 void
 error10() {
-  set_handlers();
-
   Variable x(0);
   Variable y(1);
   Variable z(2);
@@ -326,8 +306,6 @@ error10() {
 
 void
 error11() {
-  set_handlers();
-
   Variable x(0);
   Variable y(1);
 
@@ -354,8 +332,6 @@ error11() {
 
 void
 error12() {
-  set_handlers();
-
   C_Polyhedron ph1(7);
 
   C_Polyhedron ph2(15);
@@ -378,8 +354,6 @@ error12() {
 
 void
 error13() {
-  set_handlers();
-
   Variable w(4);
 
   C_Polyhedron ph(2, C_Polyhedron::EMPTY);
@@ -405,8 +379,6 @@ error13() {
 
 void
 error14() {
-  set_handlers();
-
   C_Polyhedron ph(5);
 
   try {
@@ -427,8 +399,6 @@ error14() {
 
 void
 error15() {
-  set_handlers();
-
   Variable x(0);
   Variable y(1);
 
@@ -455,8 +425,6 @@ error15() {
 
 void
 error16() {
-  set_handlers();
-
   Variable y(1);
 
   C_Polyhedron ph(1);
@@ -480,8 +448,6 @@ error16() {
 
 void
 error17() {
-  set_handlers();
-
   Variable x(0);
   Variable y(1);
   
@@ -508,8 +474,6 @@ error17() {
 
 void
 error18() {
-  set_handlers();
-
   Variable x(0);
   Variable y(1);
 
@@ -543,8 +507,6 @@ error18() {
 
 void
 error19() {
-  set_handlers();
-
   Variable x(0);
   Variable y(1);
 
@@ -568,8 +530,6 @@ error19() {
 
 void
 error20() {
-  set_handlers();
-
   Variable x(0);
   Variable y(1);
 
@@ -597,8 +557,6 @@ error20() {
 
 void
 error21() {
-  set_handlers();
-
   Variable x(0);
   Variable y(1);
   Variable z(2);
@@ -627,8 +585,6 @@ error21() {
 
 void
 error22() {
-  set_handlers();
-
   Variable z(2);
 
   C_Polyhedron ph(2);
@@ -653,8 +609,6 @@ error22() {
 
 void
 error23() {
-  set_handlers();
-
   C_Polyhedron ph1(5);
   C_Polyhedron ph2(10);
 
@@ -677,8 +631,6 @@ error23() {
 
 void
 error24() {
-  set_handlers();
-
   Variable y(1);
 
   C_Polyhedron ph1(1);
@@ -706,8 +658,6 @@ error24() {
 
 void
 error25() {
-  set_handlers();
-
   Variable x(0);
   Variable y(1);
   Variable z(2);
@@ -744,8 +694,6 @@ error25() {
 
 void
 error26() {
-  set_handlers();
-
   Variable x(0);
   Variable y(1);
 
@@ -772,7 +720,6 @@ error26() {
 
 void
 error27() {
-  set_handlers();
   Variable x(0);
 
   C_Polyhedron ph(2, C_Polyhedron::EMPTY);
@@ -796,7 +743,6 @@ error27() {
 
 void
 error28() {
-  set_handlers();
   Variable x(0);
   Variable y(1);
 
@@ -823,7 +769,6 @@ error28() {
 
 void
 error29() {
-  set_handlers();
   Variable x(0);
   Variable y(1);
 
@@ -873,8 +818,6 @@ error30() {
 
 void
 error31() {
-  set_handlers();
-
   C_Polyhedron ph1(3);
   C_Polyhedron ph2(8);
 
@@ -896,8 +839,6 @@ error31() {
 
 void
 error32() {
-  set_handlers();
-
   Variable A(0);
   Variable B(1);
 
@@ -930,8 +871,6 @@ error32() {
 
 void
 error33() {
-  set_handlers();
-
   Variable A(0);
 
   C_Polyhedron ph1(2, C_Polyhedron::EMPTY);
@@ -958,8 +897,6 @@ error33() {
 
 void
 error34() {
-  set_handlers();
-
   Variable A(0);
   Variable B(1);
 
@@ -986,8 +923,6 @@ error34() {
 
 void
 error35() {
-  set_handlers();
-  
   Variable A(0);
   Variable B(1);
 
@@ -1020,8 +955,6 @@ error35() {
 
 void
 error36() {
-  set_handlers();
-  
   Variable A(0);
   Variable B(1);
 
@@ -1054,8 +987,6 @@ error36() {
 
 void
 error37() {
-  set_handlers();
-
   C_Polyhedron ph1(5);
   C_Polyhedron ph2(10);
 
@@ -1078,8 +1009,6 @@ error37() {
 
 void
 error38() {
-  set_handlers();
-
   Variable A(0);
   Variable B(1);
 
@@ -1106,8 +1035,6 @@ error38() {
 
 void
 error39() {
-  set_handlers();
-
   Variable A(0);
   Variable B(1);
 
@@ -1132,8 +1059,6 @@ error39() {
 
 void
 error40() {
-  set_handlers();
-
   Variable A(0);
   Variable B(1);
 
@@ -1159,8 +1084,6 @@ error40() {
 
 void
 error41() {
-  set_handlers();
-
   Variable A(0);
   Variable B(1);
   Variable C(2);
@@ -1187,8 +1110,6 @@ error41() {
 
 void
 error42() {
-  set_handlers();
-
   Variable A(0);
   Variable B(1);
   Variable C(2);
@@ -1215,7 +1136,8 @@ error42() {
 
 int
 main() {
-  
+  set_handlers();
+
   error1();
   error2();
   error3();

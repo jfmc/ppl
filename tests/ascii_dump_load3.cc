@@ -39,8 +39,6 @@ const char* my_file = "/tmp/ascii_dump_load_3.dat";
 
 void
 test1() {
-  set_handlers();
-
   Variable A(0);
   Variable B(1);
 
@@ -72,8 +70,6 @@ test1() {
 
 void
 test2() {
-  set_handlers();
-
   Variable A(0);
   Variable B(1);
 
@@ -105,8 +101,6 @@ test2() {
 
 void
 test3() {
-  set_handlers();
-
   Variable A(0);
   Variable B(1);
 
@@ -138,8 +132,6 @@ test3() {
 
 void
 test4() {
-  set_handlers();
-
   Variable A(0);
   Variable B(1);
 
@@ -171,8 +163,6 @@ test4() {
 
 void
 test5() {
-  set_handlers();
-
   Variable A(0);
   Variable B(1);
 
@@ -204,8 +194,6 @@ test5() {
 
 void
 test6() {
-  set_handlers();
-
   Variable A(0);
   Variable B(1);
 
@@ -237,8 +225,6 @@ test6() {
 
 void
 test7() {
-  set_handlers();
-
   Variable A(0);
   Variable B(1);
 
@@ -270,8 +256,6 @@ test7() {
 
 void
 test8() {
-  set_handlers();
-
   Variable A(0);
   Variable B(1);
 
@@ -303,8 +287,6 @@ test8() {
 
 void
 test9() {
-  set_handlers();
-
   Variable A(0);
   Variable B(1);
 
@@ -336,8 +318,6 @@ test9() {
 
 void
 test10() {
-  set_handlers();
-
   Variable A(0);
   Variable B(1);
 
@@ -369,8 +349,6 @@ test10() {
 
 void
 test11() {
-  set_handlers();
-
   Variable A(0);
   Variable B(1);
 
@@ -402,8 +380,6 @@ test11() {
 
 void
 test12() {
-  set_handlers();
-
   Variable A(0);
   Variable B(1);
 
@@ -435,7 +411,8 @@ test12() {
 
 int
 main() {
-
+  set_handlers();
+  
   test1();
   test2();
   test3();
