@@ -5,6 +5,8 @@
 #include <stdexcept>
 #include <sstream>
 
+#include <iostream>
+
 //int SP_put_address(SP_term_ref t, void *pointer) 
 //void SP_raise_exception(SP_term_ref t)
 
@@ -107,11 +109,10 @@ handle_exception(const std::exception& /* e */) {
   } \
   catch (...) { \
     handle_exception(); \
-  } \
-  abort()  // This is only to silence a warning.
+  }
 
 #define CATCH_ALL \
-  CATCH_INTERNAL \
+  CATCH_INTERNAL  \
   CATCH_PPL
 
 static SP_atom a_dollar_VAR;
@@ -158,6 +159,7 @@ ppl_new_polyhedron() {
     return new PPL::Polyhedron();
   }
   CATCH_PPL;
+  abort();  // This is only to avoid a gcc warning.
 }
 
 extern "C" void

@@ -20,3 +20,21 @@ INCLUDES = -I$(top_builddir)/src @extra_includes@
 noinst_LIBRARIES = libpplsicstus.a
 
 libpplsicstus_a_SOURCES = ppl_sicstus.cc
+
+EXTRA_DIST = ppl_sicstus.pl ppl_check.pl
+
+if HAVE_SICSTUS
+check-local: pplsp ppl_check.pl
+	pplsp -l $(srcdir)/ppl_check.pl
+
+pplsp: ppl_sicstus.s.o
+	spld --main=prolog -S -o $@ --resources=./ppl_sicstus.s.o \
+	-LD -lstdc++ \
+	-Wl,-whole-archive $(top_builddir)/src/libppl.a -Wl,-no-whole-archive \
+	@gmp_library_option@
+
+ppl_sicstus.s.o: ppl_sicstus.pl ppl_sicstus.o
+	splfr -S $(srcdir)/ppl_sicstus.pl ppl_sicstus.o
+
+MOSTLYCLEANFILES = pplsp
+endif

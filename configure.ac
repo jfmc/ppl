@@ -269,6 +269,8 @@ dnl Checks for programs.
 AC_PROG_MAKE_SET
 AC_PROG_INSTALL
 AC_PROG_RANLIB
+AC_CHECK_PROG(SICSTUS, sicstus, sicstus)
+AM_CONDITIONAL(HAVE_SICSTUS, test x$SICSTUS = xsicstus)
 
 dnl Checks for header files.
 AC_CHECK_HEADERS(gprolog.h SWI-Prolog.h sicstus/sicstus.h)
