@@ -340,8 +340,94 @@ Integer_to_integer_term(const PPL::Integer& n) {
 
 #include "../ppl_prolog.icc"
 
+#define YAP_STUB_0(name, arity) \
+extern "C" Prolog_foreign_return_type \
+yap_stub_##name() { \
+  return name(); \
+}
+
+#define YAP_STUB_1(name, arity) \
+extern "C" Prolog_foreign_return_type \
+yap_stub_##name() { \
+  Prolog_term_ref arg1 = ARG1; \
+  return name(arg1); \
+}
+
+#define YAP_STUB_2(name, arity) \
+extern "C" Prolog_foreign_return_type \
+yap_stub_##name() { \
+  Prolog_term_ref arg1 = ARG1; \
+  Prolog_term_ref arg2 = ARG2; \
+  return name(arg1, arg2); \
+}
+
+#define YAP_STUB_3(name, arity) \
+extern "C" Prolog_foreign_return_type \
+yap_stub_##name() { \
+  Prolog_term_ref arg1 = ARG1; \
+  Prolog_term_ref arg2 = ARG2; \
+  Prolog_term_ref arg3 = ARG3; \
+  return name(arg1, arg2, arg3); \
+}
+
+#define YAP_STUB_4(name, arity) \
+extern "C" Prolog_foreign_return_type \
+yap_stub_##name() { \
+  Prolog_term_ref arg1 = ARG1; \
+  Prolog_term_ref arg2 = ARG2; \
+  Prolog_term_ref arg3 = ARG3; \
+  Prolog_term_ref arg4 = ARG4; \
+  return name(arg1, arg2, arg3, arg4); \
+}
+
+
+YAP_STUB_0(ppl_initialize, 0)
+YAP_STUB_0(ppl_finalize, 0)
+YAP_STUB_3(ppl_new_Polyhedron_from_dimension, 3)
+YAP_STUB_3(ppl_new_Polyhedron_empty_from_dimension, 3)
+YAP_STUB_4(ppl_new_Polyhedron_from_Polyhedron, 4)
+YAP_STUB_3(ppl_new_Polyhedron_from_ConSys, 3)
+YAP_STUB_3(ppl_new_Polyhedron_from_GenSys, 3)
+YAP_STUB_3(ppl_new_Polyhedron_from_bounding_box, 3)
+YAP_STUB_1(ppl_delete_Polyhedron, 1)
+YAP_STUB_2(ppl_Polyhedron_space_dimension, 2)
+YAP_STUB_2(ppl_Polyhedron_intersection_assign, 2)
+YAP_STUB_2(ppl_Polyhedron_intersection_assign_and_minimize, 2)
+YAP_STUB_2(ppl_Polyhedron_poly_hull_assign, 2)
+YAP_STUB_2(ppl_Polyhedron_poly_hull_assign_and_minimize, 2)
+YAP_STUB_2(ppl_Polyhedron_poly_difference_assign, 2)
+YAP_STUB_2(ppl_Polyhedron_poly_difference_assign_and_minimize, 2)
+YAP_STUB_2(ppl_Polyhedron_widening_assign, 2)
+YAP_STUB_3(ppl_Polyhedron_limited_widening_assign, 3)
+YAP_STUB_2(ppl_Polyhedron_get_constraints, 2)
+YAP_STUB_2(ppl_Polyhedron_get_minimized_constraints, 2)
+YAP_STUB_2(ppl_Polyhedron_get_generators, 2)
+YAP_STUB_2(ppl_Polyhedron_get_minimized_generators, 2)
+YAP_STUB_2(ppl_Polyhedron_add_constraint, 2)
+YAP_STUB_2(ppl_Polyhedron_add_generator, 2)
+YAP_STUB_2(ppl_Polyhedron_add_constraints, 2)
+YAP_STUB_2(ppl_Polyhedron_add_constraints_and_minimize, 2)
+YAP_STUB_2(ppl_Polyhedron_add_generators, 2)
+YAP_STUB_2(ppl_Polyhedron_add_generators_and_minimize, 2)
+YAP_STUB_2(ppl_Polyhedron_add_dimensions_and_constraints, 2)
+YAP_STUB_2(ppl_Polyhedron_add_dimensions_and_project, 2)
+YAP_STUB_2(ppl_Polyhedron_add_dimensions_and_embed, 2)
+YAP_STUB_2(ppl_Polyhedron_remove_dimensions, 2)
+YAP_STUB_2(ppl_Polyhedron_remove_higher_dimensions, 2)
+YAP_STUB_4(ppl_Polyhedron_affine_image, 4)
+YAP_STUB_4(ppl_Polyhedron_affine_preimage, 4)
+YAP_STUB_3(ppl_Polyhedron_relation_with_constraint, 3)
+YAP_STUB_3(ppl_Polyhedron_relation_with_generator, 3)
+YAP_STUB_1(ppl_Polyhedron_check_empty, 1)
+YAP_STUB_1(ppl_Polyhedron_check_universe, 1)
+YAP_STUB_1(ppl_Polyhedron_is_bounded, 1)
+YAP_STUB_2(ppl_Polyhedron_contains_Polyhedron, 2)
+YAP_STUB_2(ppl_Polyhedron_strictly_contains_Polyhedron, 2)
+YAP_STUB_2(ppl_Polyhedron_equals_Polyhedron, 2)
+YAP_STUB_2(ppl_Polyhedron_get_bounding_box, 2)
+
 #define YAP_USER_C_PREDICATE(name, arity) \
- UserCPredicate(#name, reinterpret_cast<int(*)()>(name), arity)
+ UserCPredicate(#name, reinterpret_cast<int(*)()>(yap_stub_##name), arity)
 
 extern "C" void
 init() {
