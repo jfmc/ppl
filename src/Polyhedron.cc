@@ -2173,7 +2173,7 @@ PPL::Polyhedron::add_constraints(ConSys& cs) {
   // The new constraints have been simply appended.
   con_sys.set_sorted(false);
 
-#else
+#else // !defined(BE_LAZY)
 
   // Matrix::merge_rows_assign() requires both matrices to be sorted.
   if (!con_sys.is_sorted())
@@ -2186,7 +2186,7 @@ PPL::Polyhedron::add_constraints(ConSys& cs) {
   // the system `cs' if the dimension of the space of `cs'
   // is smaller then the dimension of the space of the polyhedron.
   con_sys.merge_rows_assign(cs);
-#endif //#ifdef BE_LAZY
+#endif // !defined(BE_LAZY)
 
   // After adding new constraints, generators are no longer up-to-date.
   clear_constraints_minimized();
