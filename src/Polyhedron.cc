@@ -978,13 +978,10 @@ PPL::Polyhedron::strongly_minimize_constraints() const {
 	    sat_lines);
 
   // These flags are maintained to later decide
-  // if we have to add back the eps_leq_one constraint
-  // and whether or not the constraint system is changed.
-  SatRow eps_leq_one_saturators;
-  bool topologically_closed = true;
-  bool strict_inequals_saturate_all_rays = true;
-  bool eps_leq_one_removed = false;
+  // if we have to add the eps_leq_one constraint
+  // and whether or not the constraint system was changed.
   bool changed = false;
+  bool found_eps_leq_one = false;
 
   // For all the strict inequalities in `con_sys',
   // check for eps-redundancy and eventually move them
@@ -992,38 +989,41 @@ PPL::Polyhedron::strongly_minimize_constraints() const {
   ConSys& cs = x.con_sys;
   SatMatrix& sat = x.sat_g;
   dimension_type cs_rows = cs.num_rows();
-  dimension_type n_equals = cs.num_equalities();
   dimension_type eps_index = cs.num_columns() - 1;
-  for (dimension_type i = n_equals; i < cs_rows; )
+  for (dimension_type i = 0; i < cs_rows; )
     if (cs[i].is_strict_inequality()) {
       // First, check if it is saturated by no closure points
       SatRow sat_ci;
       set_union(sat[i], sat_lines_and_closure_points, sat_ci);
       if (sat_ci == sat_lines) {
-	// Constraint `cs[i]' is eps-redundant.
-	// move it to the bottom of the constraint system,
+	// It is saturated by no closure points.
+	if (!found_eps_leq_one) {
+	  // Check if it is the eps_leq_one constraint.
+	  const Constraint& c = cs[i];
+	  bool all_zeros = true;
+	  for (dimension_type k = eps_index; k-- > 1; )
+	    if (c[k] != 0) {
+	      all_zeros = false;
+	      break;
+	    }
+	  if (all_zeros && (c[0] + c[eps_index] == 0)) {
+	    // We found the eps_leq_one constraint.
+	    found_eps_leq_one = true;
+	    // Consider next constraint.
+	    ++i;
+	    continue;
+	  }
+	}
+	// Here `cs[i]' is not the eps_leq_one constraint,
+	// so it is eps-redundant.
+	// Move it to the bottom of the constraint system,
 	// while keeping `sat_g' consistent.
 	--cs_rows;
 	std::swap(cs[i], cs[cs_rows]);
 	std::swap(sat[i], sat[cs_rows]);
-	// Check if it was the eps_leq_one constraint.
-	const Constraint& c = cs[cs_rows];
-	bool all_zeros = true;
-	for (dimension_type k = eps_index; k-- > 1; )
-	  if (c[k] != 0) {
-	    all_zeros = false;
-	    break;
-	  }
-	if (all_zeros && (c[0] + c[eps_index] == 0)) {
-	  // We removed the eps_leq_one constraint.
-	  eps_leq_one_removed = true;
-	  // Remembering it to eventually restore it later.
-	  eps_leq_one_saturators = sat[cs_rows];
-	}
-	else
-	  // We removed another constraint.
-	  changed = true;
-	// Continue considering next constraint,
+	// The constraint system is changed.
+	changed = true;
+	// Continue by considering next constraint,
 	// which is already in place due to the swap.
 	continue;
       }
@@ -1033,7 +1033,7 @@ PPL::Polyhedron::strongly_minimize_constraints() const {
       sat_ci.clear();
       set_union(sat[i], sat_all_but_points, sat_ci);
       bool eps_redundant = false;
-      for (dimension_type j = n_equals; j < cs_rows; ++j)
+      for (dimension_type j = 0; j < cs_rows; ++j)
 	if (i != j && cs[j].is_strict_inequality()
 	    && subset_or_equal(sat[j], sat_ci)) {
 	  // Constraint `cs[i]' is eps-redundant:
@@ -1047,64 +1047,34 @@ PPL::Polyhedron::strongly_minimize_constraints() const {
 	  changed = true;
 	  break;
 	}
-      if (!eps_redundant) {
-	// The constraint is not eps-redudnant.
-	// Maintain boolean flags to later check
-	// if the eps_leq_one constraint is needed.
-	topologically_closed = false;
-	if (strict_inequals_saturate_all_rays)
-	  strict_inequals_saturate_all_rays
-	    = subset_or_equal(sat[i], sat_lines_and_rays);
-	// Continue with next constraint.
+      // Continue with next constraint, which is already in place
+      // due to the swap if we have found an eps-redundant constraint.
+      if (!eps_redundant)
 	++i;
-      }
     }
     else
       // `cs[i]' is not a strict inequality: consider next constraint.
       ++i;
 
-  // Now insert the eps_leq_one constraint, if it is needed.
-  // It is needed if either the polyhedron is topologically closed
-  // or there exists a strict inequality encoding that is not
-  // saturated by one of the rays.
-  if (topologically_closed || !strict_inequals_saturate_all_rays) {
-    assert(cs_rows < cs.num_rows());
-    // Note: `eps_leq_one' is already normalized.
-    Constraint& eps_leq_one = cs[cs_rows];
-    eps_leq_one[0] = 1;
-    eps_leq_one[eps_index] = -1;
-    for (dimension_type k = eps_index; k-- > 1; )
-      eps_leq_one[k] = 0;
-    // If this is the only change performed to the constraint system,
-    // maybe we can keep things consistent.
-    if (!changed) {
-      if (eps_leq_one_removed) {
-	// The constraint system is no longer sorted.
-	cs.set_sorted(false);
-	// Restore the corresponding saturation row.
-	sat[cs_rows] = eps_leq_one_saturators;
-	// `sat_c' is no longer up-to-date.
-	x.clear_sat_c_up_to_date();
-      }
-      else
-	changed = true;
-    }
-    // Bump number of rows.
-    cs_rows++;
-  }
-  else
-    // The eps_leq_one constraint is not needed:
-    // if we previously removed it from the input constraint system,
-    // then the constraint system has changed.
-    if (eps_leq_one_removed)
-      changed = true;
-
   if (changed) {
+    // If the constraint system has been changed and we haven't found the
+    // eps_leq_one constraint, insert it to force an upper bound on epsilon.
+    if (!found_eps_leq_one) {
+      // Note: we overwrite the first of the eps-redundant constraints found.
+      assert(cs_rows < cs.num_rows());
+      Constraint& eps_leq_one = cs[cs_rows];
+      eps_leq_one[0] = 1;
+      eps_leq_one[eps_index] = -1;
+      for (dimension_type k = eps_index; k-- > 1; )
+	eps_leq_one[k] = 0;      
+      // Bump number of rows.
+      ++cs_rows;
+    }
     // Erase the eps-redundant constraints, if there are any
-    // (also updating `index_first_pending').
+    // (the remaining constraints are no pending).
     if (cs_rows < cs.num_rows()) {
       cs.erase_to_end(cs_rows);
-      cs.set_index_first_pending_row(cs_rows);
+      cs.unset_pending_rows();
     }
     // The constraint system is no longer sorted.
     cs.set_sorted(false);
