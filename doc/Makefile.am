@@ -73,9 +73,16 @@ definitions.dox \
 gpl.dox \
 fdl.dox
 
-USER_STUFF = $(DOX_FILES) user.tex $(top_builddir)/src/ppl.hh
+USER_STUFF = \
+$(DOX_FILES) \
+user.tex \
+$(top_builddir)/src/ppl.hh \
+$(top_srcdir)/interfaces/C/ppl_c.h
 
-DEVREF_STUFF = $(DOX_FILES) devref.tex $(PPL_SOURCE_FILES)
+DEVREF_STUFF = \
+$(DOX_FILES) \
+devref.tex \
+$(PPL_SOURCE_FILES)
 
 LATEX_DIRS = \
 user-browse.latex-dir \

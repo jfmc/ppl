@@ -368,6 +368,8 @@ INPUT                  = @srcdir@/definitions.dox \
                          @srcdir@/../src/Poly_Gen_Relation.defs.hh \
                          @srcdir@/../src/Poly_Gen_Relation.inlines.hh \
                          @srcdir@/../src/Poly_Gen_Relation.cc \
+                         @srcdir@/../interfaces/C/ppl_c.h \
+                         @srcdir@/../interfaces/C/ppl_c.cc \
                          @srcdir@/../interfaces/Prolog/Prolog_interface.dox \
                          @srcdir@/../interfaces/Prolog/Ciao/ppl_ciao.cc \
                          @srcdir@/../interfaces/Prolog/GNU/ppl_gprolog.cc \
@@ -799,7 +801,8 @@ INCLUDE_FILE_PATTERNS  =
 
 PREDEFINED             = PPL_DOXYGEN_INCLUDE_IMPLEMENTATION_DETAILS \
                          PPL_INTERNAL=public \
-                         PPL_HIDDEN=public
+                         PPL_HIDDEN=public \
+                         "__P(protos)=protos"
 
 # If the MACRO_EXPANSION and EXPAND_PREDEF_ONLY tags are set to YES then 
 # this tag can be used to specify a list of macro names that should be expanded. 

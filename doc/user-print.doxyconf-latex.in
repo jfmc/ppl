@@ -303,6 +303,7 @@ WARN_LOGFILE           =
 
 INPUT                  = @srcdir@/definitions.dox \
                          ../src/ppl.hh \
+                         @srcdir@/../interfaces/C/ppl_c.h \
                          @srcdir@/../interfaces/Prolog/Prolog_interface.dox \
                          @srcdir@/gpl.dox \
                          @srcdir@/fdl.dox
@@ -726,7 +727,7 @@ INCLUDE_FILE_PATTERNS  =
 # or name=definition (no spaces). If the definition and the = are 
 # omitted =1 is assumed.
 
-PREDEFINED             = 
+PREDEFINED             = "__P(protos)=protos"
 
 # If the MACRO_EXPANSION and EXPAND_PREDEF_ONLY tags are set to YES then 
 # this tag can be used to specify a list of macro names that should be expanded. 
