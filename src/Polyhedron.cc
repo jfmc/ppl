@@ -2538,11 +2538,8 @@ PPL::Polyhedron::affine_image(const Variable& var,
     if (generators_are_up_to_date()) {
       // GenSys::affine_image() requires the third argument
       // to be a positive Integer.
-      const LinExpression& sgn_adjusted_expr =
-	denominator > 0 ? expr : -expr;
-      const Integer& abs_denominator =
-	denominator > 0 ? denominator : -1 * denominator;
-      gen_sys.affine_image(num_var, sgn_adjusted_expr, abs_denominator);
+      LinExpression sgn_adjusted_expr = denominator > 0 ? expr : -expr;
+      gen_sys.affine_image(num_var, sgn_adjusted_expr, abs(denominator));
     }
     if (constraints_are_up_to_date()) {
       // To build the inverse transformation,
@@ -2573,11 +2570,8 @@ PPL::Polyhedron::affine_image(const Variable& var,
     if (!is_empty()) {
       // GenSys::affine_image() requires the third argument
       // to be a positive Integer.
-      const LinExpression& sgn_adjusted_expr =
-	denominator > 0 ? expr : -expr;
-      const Integer& abs_denominator =
-	denominator > 0 ? denominator : -1 * denominator;
-      gen_sys.affine_image(num_var, sgn_adjusted_expr, abs_denominator);
+      LinExpression sgn_adjusted_expr = denominator > 0 ? expr : -expr;
+      gen_sys.affine_image(num_var, sgn_adjusted_expr, abs(denominator));
       clear_constraints_up_to_date();
       clear_generators_minimized();
       clear_sat_c_up_to_date();
@@ -2616,11 +2610,8 @@ PPL::Polyhedron::affine_preimage(const Variable& var,
     if (constraints_are_up_to_date()) {
       // ConSys::affine_preimage() requires the third argument
       // to be a positive Integer.
-      const LinExpression& sgn_adjusted_expr =
-	denominator > 0 ? expr : -expr;
-      const Integer& abs_denominator =
-	denominator > 0 ? denominator : -1 * denominator;
-      con_sys.affine_preimage(num_var, sgn_adjusted_expr, abs_denominator);
+      LinExpression sgn_adjusted_expr = denominator > 0 ? expr : -expr;
+      con_sys.affine_preimage(num_var, sgn_adjusted_expr, abs(denominator));
     }
     if (generators_are_up_to_date()) {
       // To build the inverse transformation,
@@ -2650,11 +2641,8 @@ PPL::Polyhedron::affine_preimage(const Variable& var,
       minimize();
     // ConSys::affine_preimage() requires the third argument
     // to be a positive Integer.
-    const LinExpression& sgn_adjusted_expr =
-      denominator > 0 ? expr : -expr;
-    const Integer& abs_denominator =
-      denominator > 0 ? denominator : -1 * denominator;
-    con_sys.affine_preimage(num_var, sgn_adjusted_expr, abs_denominator);
+    LinExpression sgn_adjusted_expr = denominator > 0 ? expr : -expr;
+    con_sys.affine_preimage(num_var, sgn_adjusted_expr, abs(denominator));
     clear_generators_up_to_date();
     clear_constraints_minimized();
     clear_sat_c_up_to_date();
