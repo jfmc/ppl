@@ -38,10 +38,14 @@ namespace Parma_Polyhedra_Library {
 
 struct Checked_Number_Default_Policy {
   static const int check_overflow = 1;
+  static const int check_invalid = 0;
   static const int check_inexact = 0;
   static const int check_divbyzero = 0;
   static const int check_sqrt_neg = 0;
-  static const int check_assign = 0;
+  static const int check_nan = 0;
+  static const int check_infinity = 0;
+  static const int handle_nan = 0;
+  static const int handle_infinity = 0;
 };
 
 template <typename T, typename Policy>
