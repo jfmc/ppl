@@ -25,9 +25,6 @@ site: http://www.cs.unipr.it/ppl/ . */
 #include <config.h>
 
 #include "LinExpression.defs.hh"
-#if OUTLINE
-#include "LinExpression.inlines.hh"
-#endif
 
 namespace PPL = Parma_Polyhedra_Library;
 

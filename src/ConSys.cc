@@ -24,9 +24,6 @@ site: http://www.cs.unipr.it/ppl/ . */
 #include <config.h>
 
 #include "ConSys.defs.hh"
-#if OUTLINE
-#include "ConSys.inlines.hh"
-#endif
 
 #include "Generator.defs.hh"
 #include <cassert>

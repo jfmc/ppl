@@ -26,16 +26,11 @@ AC_SUBST(ISODATE)
 AC_CANONICAL_HOST
 
 AH_TOP([
-#ifndef _config_h
-#define _config_h 1
+#ifndef _ppl_config_h
+#define _ppl_config_h 1
 ])
 
 AH_BOTTOM([
-#if OUTLINE
-#define INLINE
-#else
-#define INLINE inline
-#endif
 
 // Neutralize relops for GCC 2.96.
 #ifndef __SGI_STL_INTERNAL_RELOPS
@@ -123,7 +118,6 @@ else
 fi
 
 OPT_FLAGS=""
-outline=no
 
 enableval=yes
 AC_MSG_CHECKING([whether to compile with debug info])
@@ -151,7 +145,6 @@ yes)
   AC_MSG_RESULT(yes)
   OPT_FLAGS="-g"
   COMP_FLAGS="$COMP_FLAGS -pg"
-  outline=yes
   ;;
 no)
   AC_MSG_RESULT(no)
@@ -170,7 +163,6 @@ yes)
   AC_MSG_RESULT(yes)
   OPT_FLAGS="-g"
   COMP_FLAGS="$COMP_FLAGS -fprofile-arcs -ftest-coverage"
-  outline=yes
   ;;
 no)
   AC_MSG_RESULT(no)
@@ -260,13 +252,6 @@ no)
   OPT_FLAGS="$OPT_FLAGS -march=$enableval"
   ;;
 esac
-
-if test x"$outline" = xyes
-then
-  AC_DEFINE(OUTLINE, 1, [Inlining is disabled when this is not zero])
-else
-  AC_DEFINE(OUTLINE, 0, [Inlining is disabled when this is not zero])
-fi
 
 CXXFLAGS="$COMP_FLAGS $OPT_FLAGS"
 

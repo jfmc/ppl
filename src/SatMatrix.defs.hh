@@ -151,9 +151,7 @@ namespace Parma_Polyhedra_Library {
   std::istream& operator >>(std::istream& s, SatMatrix& x);
 }
 
-#if !OUTLINE
 #include "SatMatrix.inlines.hh"
-#endif
 
 #endif
 

@@ -189,13 +189,6 @@ namespace std {
 	    Parma_Polyhedra_Library::ConSys& y);
 }
 
-#if !OUTLINE
 #include "ConSys.inlines.hh"
-#endif
 
 #endif
-
-
-
-
-

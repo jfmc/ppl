@@ -250,8 +250,6 @@ namespace Parma_Polyhedra_Library {
 #endif // PPL_DOXYGEN_INCLUDE_IMPLEMENTATION_DETAILS
 }
 
-#if !OUTLINE
 #include "Matrix.inlines.hh"
-#endif
 
 #endif

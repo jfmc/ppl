@@ -179,9 +179,7 @@ PPL_INTERNAL:
   void set_is_inequality();
 };
 
-#if !OUTLINE
 #include "Constraint.inlines.hh"
-#endif
 
 #endif
 

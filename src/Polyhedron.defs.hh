@@ -550,8 +550,6 @@ namespace std {
 	    Parma_Polyhedra_Library::Polyhedron& y);
 }
 
-#if !OUTLINE
 #include "Polyhedron.inlines.hh"
-#endif
 
 #endif

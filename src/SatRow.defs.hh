@@ -145,8 +145,6 @@ namespace std {
 	    Parma_Polyhedra_Library::SatRow& y);
 }
 
-#if !OUTLINE
 #include "SatRow.inlines.hh"
-#endif
 
 #endif

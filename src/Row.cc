@@ -24,9 +24,6 @@ site: http://www.cs.unipr.it/ppl/ . */
 #include <config.h>
 
 #include "Row.defs.hh"
-#if OUTLINE
-#include "Row.inlines.hh"
-#endif
 
 #include "globals.hh"
 #include <iostream>

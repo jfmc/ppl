@@ -250,8 +250,6 @@ namespace std {
   void swap(Parma_Polyhedra_Library::Row& x, Parma_Polyhedra_Library::Row& y);
 }
 
-#if !OUTLINE
 #include "Row.inlines.hh"
-#endif
 
 #endif

@@ -25,38 +25,38 @@ site: http://www.cs.unipr.it/ppl/ . */
 #include "Variable.defs.hh"
 #include <cassert>
 
-INLINE
+inline
 Parma_Polyhedra_Library::LinExpression::LinExpression()
   : Row(Row::LINE_OR_EQUALITY, 1) {
 }
 
-INLINE
+inline
 Parma_Polyhedra_Library::LinExpression::LinExpression(size_t size, bool)
   : Row(Row::LINE_OR_EQUALITY, size) {
 }
 
-INLINE
+inline
 Parma_Polyhedra_Library::LinExpression::LinExpression(const Variable& v)
   : Row(Row::LINE_OR_EQUALITY, v.id() + 2) {
   (*this)[v.id() + 1] = 1;
 }
 
-INLINE
+inline
 Parma_Polyhedra_Library::LinExpression::LinExpression(const LinExpression& e)
   : Row(e) {
 }
 
-INLINE
+inline
 Parma_Polyhedra_Library::LinExpression::~LinExpression() {
 }
 
-INLINE
+inline
 Parma_Polyhedra_Library::LinExpression::LinExpression(const LinExpression& e,
 						      size_t size)
   : Row(e, size, size) {
 }
 
-INLINE
+inline
 Parma_Polyhedra_Library::LinExpression::LinExpression(const Integer& n)
   : Row(Row::LINE_OR_EQUALITY, 1) {
   (*this)[0] = n;
@@ -65,22 +65,22 @@ Parma_Polyhedra_Library::LinExpression::LinExpression(const Integer& n)
 
 namespace Parma_Polyhedra_Library {
 
-INLINE LinExpression
+inline LinExpression
 operator +(const LinExpression& e, const Integer& n) {
   return n + e;
 }
 
-INLINE LinExpression
+inline LinExpression
 operator -(const LinExpression& e, const Integer& n) {
   return -n + e;
 }
 
-INLINE LinExpression
+inline LinExpression
 operator *(const LinExpression& e, const Integer& n) {
   return n * e;
 }
 
-INLINE LinExpression&
+inline LinExpression&
 operator +=(LinExpression& e, const Integer& n) {
   e[0] += n;
   return e;

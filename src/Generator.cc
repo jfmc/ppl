@@ -24,9 +24,6 @@ site: http://www.cs.unipr.it/ppl/ . */
 #include <config.h>
 
 #include "Generator.defs.hh"
-#if OUTLINE
-#include "Generator.inlines.hh"
-#endif
 
 #include <iostream>
 #include "Variable.defs.hh"

@@ -21,17 +21,17 @@ USA.
 For the most up-to-date information see the Parma Polyhedra Library
 site: http://www.cs.unipr.it/ppl/ . */
 
-INLINE
+inline
 Parma_Polyhedra_Library::Variable::Variable(unsigned int id)
   : varid(id) {
 }
 
-INLINE unsigned int
+inline unsigned int
 Parma_Polyhedra_Library::Variable::id() const {
   return varid;
 }
 
-INLINE bool
+inline bool
 Parma_Polyhedra_Library::operator <(const Variable& v, const Variable& w) {
   return v.id() < w.id();
 }

@@ -24,9 +24,6 @@ site: http://www.cs.unipr.it/ppl/ . */
 #include <config.h>
 
 #include "Matrix.defs.hh"
-#if OUTLINE
-#include "Matrix.inlines.hh"
-#endif
 
 #include "Integer.defs.hh"
 #include "Row.defs.hh"

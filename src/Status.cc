@@ -24,9 +24,6 @@ site: http://www.cs.unipr.it/ppl/ . */
 #include <config.h>
 
 #include "Status.defs.hh"
-#if OUTLINE
-#include "Status.inlines.hh"
-#endif
 
 #include <iostream>
 #include <string>

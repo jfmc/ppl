@@ -22,12 +22,8 @@ For the most up-to-date information see the Parma Polyhedra Library
 site: http://www.cs.unipr.it/ppl/ . */
 
 #include <config.h>
-#include <stdexcept>
 
 #include "Polyhedron.defs.hh"
-#if OUTLINE
-#include "Polyhedron.inlines.hh"
-#endif
 
 #include "Generator.defs.hh"
 #include "Constraint.defs.hh"
@@ -35,6 +31,7 @@ site: http://www.cs.unipr.it/ppl/ . */
 #include <string>
 #include <iostream>
 #include <sstream>
+#include <stdexcept>
 
 #define DLEVEL 0
 

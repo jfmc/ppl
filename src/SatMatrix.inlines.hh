@@ -24,33 +24,33 @@ site: http://www.cs.unipr.it/ppl/ . */
 
 #include <cassert>
 
-INLINE
+inline
 Parma_Polyhedra_Library::SatMatrix::SatMatrix()
   : rows(),
     row_size(0) {
 }
 
-INLINE
+inline
 Parma_Polyhedra_Library::SatMatrix::SatMatrix(size_t num_rows,
 					      size_t num_columns)
   : rows(num_rows),
     row_size(num_columns) {
 }
 
-INLINE
+inline
 Parma_Polyhedra_Library::SatMatrix::SatMatrix(const SatMatrix& y)
   : rows(y.rows),
     row_size(y.row_size) {
 }
 
-INLINE
+inline
 Parma_Polyhedra_Library::SatMatrix::~SatMatrix() {
 }
 
 /*!
   Erases the rows from the \p first_to_erase -th to the last one.
 */
-INLINE void
+inline void
 Parma_Polyhedra_Library::SatMatrix::rows_erase_to_end(size_t first_to_erase) {
   assert(OK());
   // The first row to be erased cannot be greater
@@ -64,7 +64,7 @@ Parma_Polyhedra_Library::SatMatrix::rows_erase_to_end(size_t first_to_erase) {
 /*!
   Erases the columns from the \p first_to_erase -th to the last one.
 */
-INLINE void
+inline void
 Parma_Polyhedra_Library::SatMatrix::columns_erase_to_end(size_t
 							 first_to_erase) {
   assert(OK());
@@ -78,7 +78,7 @@ Parma_Polyhedra_Library::SatMatrix::columns_erase_to_end(size_t
 /*!
   Swaps \p *this with \p y.
 */
-INLINE void
+inline void
 Parma_Polyhedra_Library::SatMatrix::swap(SatMatrix& y) {
   assert(OK());
   std::swap(row_size, y.row_size);
@@ -91,7 +91,7 @@ Parma_Polyhedra_Library::SatMatrix::swap(SatMatrix& y) {
   is provided as a member function instead of using the default
   algorithm (which creates a temporary and uses assignment).
 */
-INLINE void
+inline void
 std::swap(Parma_Polyhedra_Library::SatMatrix& x,
 	  Parma_Polyhedra_Library::SatMatrix& y) {
   x.swap(y);
@@ -100,7 +100,7 @@ std::swap(Parma_Polyhedra_Library::SatMatrix& x,
 /*!
   Returns a reference to the \p k -th row.
 */
-INLINE Parma_Polyhedra_Library::SatRow&
+inline Parma_Polyhedra_Library::SatRow&
 Parma_Polyhedra_Library::SatMatrix::operator [](size_t k) {
   assert(k < rows.size());
   return rows[k];
@@ -109,28 +109,28 @@ Parma_Polyhedra_Library::SatMatrix::operator [](size_t k) {
 /*!
   Returns a constant reference to the \p k -th row.
 */
-INLINE const Parma_Polyhedra_Library::SatRow&
+inline const Parma_Polyhedra_Library::SatRow&
 Parma_Polyhedra_Library::SatMatrix::operator [](size_t k) const {
   assert(k < rows.size());
   return rows[k];
 }
 
-INLINE size_t
+inline size_t
 Parma_Polyhedra_Library::SatMatrix::num_columns() const {
   return row_size;
 }
 
-INLINE size_t
+inline size_t
 Parma_Polyhedra_Library::SatMatrix::num_rows() const {
   return rows.size();
 }
 
-INLINE bool
+inline bool
 Parma_Polyhedra_Library::operator !=(const SatMatrix& x, const SatMatrix& y) {
   return !(x == y);
 }
 
-INLINE bool
+inline bool
 Parma_Polyhedra_Library::SatMatrix::RowCompare::
 operator ()(const SatRow& x, const SatRow& y) const {
   return compare(x, y) < 0;

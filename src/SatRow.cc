@@ -25,10 +25,6 @@ site: http://www.cs.unipr.it/ppl/ . */
 
 #include "SatRow.defs.hh"
 
-#if OUTLINE
-#include "SatRow.inlines.hh"
-#endif
-
 #include <iostream>
 #include <cassert>
 #include <climits>

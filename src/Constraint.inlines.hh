@@ -24,58 +24,58 @@ site: http://www.cs.unipr.it/ppl/ . */
 
 #include "LinExpression.defs.hh"
 
-INLINE
+inline
 Parma_Polyhedra_Library::Constraint::Constraint()
   : Row() {
 }
 
-INLINE
+inline
 Parma_Polyhedra_Library::Constraint::Constraint(LinExpression& e) {
   swap(e);
 }
 
-INLINE
+inline
 Parma_Polyhedra_Library::Constraint::Constraint(const Constraint& c)
   : Row(c) {
 }
 
-INLINE
+inline
 Parma_Polyhedra_Library::Constraint::Constraint(Row::Type type, size_t size)
   : Row(type, size) {
 }
 
-INLINE
+inline
 Parma_Polyhedra_Library::Constraint::~Constraint() {
 }
 
-INLINE bool
+inline bool
 Parma_Polyhedra_Library::Constraint::is_equality() const {
   return is_line_or_equality();
 }
 
-INLINE Parma_Polyhedra_Library::Constraint::Type
+inline Parma_Polyhedra_Library::Constraint::Type
 Parma_Polyhedra_Library::Constraint::type() const {
   return is_equality() ? EQUALITY : INEQUALITY;
 }
 
-INLINE bool
+inline bool
 Parma_Polyhedra_Library::Constraint::is_inequality() const {
   return is_ray_or_vertex_or_inequality();
 }
 
-INLINE void
+inline void
 Parma_Polyhedra_Library::Constraint::set_is_equality() {
   set_is_line_or_equality();
 }
 
-INLINE void
+inline void
 Parma_Polyhedra_Library::Constraint::set_is_inequality() {
   set_is_ray_or_vertex_or_inequality();
 }
 
 namespace Parma_Polyhedra_Library {
 
-INLINE Constraint
+inline Constraint
 operator ==(const LinExpression& e1, const LinExpression& e2) {
   LinExpression diff = e1 - e2;
   Constraint c(diff);
@@ -83,7 +83,7 @@ operator ==(const LinExpression& e1, const LinExpression& e2) {
   return c;
 }
 
-INLINE Constraint
+inline Constraint
 operator >=(const LinExpression& e1, const LinExpression& e2) {
   LinExpression diff = e1 - e2;
   Constraint c(diff);
@@ -91,7 +91,7 @@ operator >=(const LinExpression& e1, const LinExpression& e2) {
   return c;
 }
 
-INLINE Constraint
+inline Constraint
 operator ==(const Integer& n, const LinExpression& e) {
   LinExpression diff = n - e;
   Constraint c(diff);
@@ -99,7 +99,7 @@ operator ==(const Integer& n, const LinExpression& e) {
   return c;
 }
 
-INLINE Constraint
+inline Constraint
 operator >=(const Integer& n, const LinExpression& e) {
   LinExpression diff = n - e;
   Constraint c(diff);
@@ -107,7 +107,7 @@ operator >=(const Integer& n, const LinExpression& e) {
   return c;
 }
 
-INLINE Constraint
+inline Constraint
 operator ==(const LinExpression& e, const Integer& n) {
   LinExpression diff = e - n;
   Constraint c(diff);
@@ -115,7 +115,7 @@ operator ==(const LinExpression& e, const Integer& n) {
   return c;
 }
 
-INLINE Constraint
+inline Constraint
 operator >=(const LinExpression& e, const Integer& n) {
   LinExpression diff = e - n;
   Constraint c(diff);
@@ -123,17 +123,17 @@ operator >=(const LinExpression& e, const Integer& n) {
   return c;
 }
 
-INLINE Constraint
+inline Constraint
 operator <=(const LinExpression& e1, const LinExpression& e2) {
   return e2 >= e1;
 }
 
-INLINE Constraint
+inline Constraint
 operator <=(const Integer& n, const LinExpression& e) {
   return e >= n;
 }
 
-INLINE Constraint
+inline Constraint
 operator <=(const LinExpression& e, const Integer& n) {
   return n >= e;
 }

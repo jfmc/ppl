@@ -1,8 +1,8 @@
 /* config.h.in.  Generated from configure.ac by autoheader.  */
 
 
-#ifndef _config_h
-#define _config_h 1
+#ifndef _ppl_config_h
+#define _ppl_config_h 1
 
 
 /* Not zero if GMP has been compiled with support for exceptions. */
@@ -10,9 +10,6 @@
 
 /* Assertions are disabled when this is defined */
 #undef NDEBUG
-
-/* Inlining is disabled when this is not zero */
-#undef OUTLINE
 
 /* Name of package */
 #undef PACKAGE
@@ -24,11 +21,6 @@
 #undef VERSION
 
 
-#if OUTLINE
-#define INLINE
-#else
-#define INLINE inline
-#endif
 
 // Neutralize relops for GCC 2.96.
 #ifndef __SGI_STL_INTERNAL_RELOPS

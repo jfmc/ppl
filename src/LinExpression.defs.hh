@@ -176,9 +176,7 @@ private:
                                        const Integer& n);
 };
 
-#if !OUTLINE
 #include "LinExpression.inlines.hh"
-#endif
 
 #endif
 

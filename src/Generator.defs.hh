@@ -186,8 +186,6 @@ PPL_INTERNAL:
   void set_is_ray_or_vertex();
 };
 
-#if !OUTLINE
 #include "Generator.inlines.hh"
-#endif
 
 #endif

@@ -24,9 +24,6 @@ site: http://www.cs.unipr.it/ppl/ . */
 #include <config.h>
 
 #include "SatMatrix.defs.hh"
-#if OUTLINE
-#include "SatMatrix.inlines.hh"
-#endif
 
 #include "maxmin.hh"
 #include <iostream>

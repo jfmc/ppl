@@ -159,8 +159,6 @@ namespace Parma_Polyhedra_Library {
   //@}
 }
 
-#if !OUTLINE
 #include "Status.inlines.hh"
-#endif
 
 #endif

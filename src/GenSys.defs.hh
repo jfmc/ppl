@@ -262,8 +262,6 @@ namespace std {
 	    Parma_Polyhedra_Library::GenSys& y);
 }
 
-#if !OUTLINE
 #include "GenSys.inlines.hh"
-#endif
 
 #endif

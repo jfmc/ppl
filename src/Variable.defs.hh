@@ -81,9 +81,7 @@ namespace Parma_Polyhedra_Library {
   //@}
 }
 
-#if !OUTLINE
 #include "Variable.inlines.hh"
-#endif
 
 #endif
 

@@ -21,52 +21,52 @@ USA.
 For the most up-to-date information see the Parma Polyhedra Library
 site: http://www.cs.unipr.it/ppl/ . */
 
-INLINE
+inline
 Parma_Polyhedra_Library::Status::Status(status_t mask)
   : flags(mask) {
 }
 
-INLINE
+inline
 Parma_Polyhedra_Library::Status::Status()
   : flags(ZERO_DIM) {
 }
 
-INLINE Parma_Polyhedra_Library::Status
+inline Parma_Polyhedra_Library::Status
 Parma_Polyhedra_Library::operator &(const Status& x, const Status& y) {
   return Status(x.flags & y.flags);
 }
 
-INLINE Parma_Polyhedra_Library::Status
+inline Parma_Polyhedra_Library::Status
 Parma_Polyhedra_Library::operator |(const Status& x, const Status& y) {
   return Status(x.flags | y.flags);
 }
 
-INLINE bool
+inline bool
 Parma_Polyhedra_Library::Status::test_all(status_t mask) const {
   return (flags & mask) == mask;
 }
 
-INLINE bool
+inline bool
 Parma_Polyhedra_Library::Status::test_any(status_t mask) const {
   return flags & mask;
 }
 
-INLINE void
+inline void
 Parma_Polyhedra_Library::Status::set(status_t mask) {
   flags |= mask;
 }
 
-INLINE void
+inline void
 Parma_Polyhedra_Library::Status::reset(status_t mask) {
   flags &= ~mask;
 }
 
-INLINE bool
+inline bool
 Parma_Polyhedra_Library::Status::test_zero_dim() const {
   return flags == ZERO_DIM;
 }
 
-INLINE void
+inline void
 Parma_Polyhedra_Library::Status::reset_zero_dim() {
   // This is a no-op if the current status is not zero-dim,
   if (flags == ZERO_DIM)
@@ -74,113 +74,113 @@ Parma_Polyhedra_Library::Status::reset_zero_dim() {
     flags = EMPTY;
 }
 
-INLINE void
+inline void
 Parma_Polyhedra_Library::Status::set_zero_dim() {
   // Zero-dim is incompatible with anything else.
   flags = ZERO_DIM;
 }
 
-INLINE bool
+inline bool
 Parma_Polyhedra_Library::Status::test_empty() const {
   return test_any(EMPTY);
 }
 
-INLINE void
+inline void
 Parma_Polyhedra_Library::Status::reset_empty() {
   reset(EMPTY);
 }
 
-INLINE void
+inline void
 Parma_Polyhedra_Library::Status::set_empty() {
   flags = EMPTY;
 }
 
-INLINE bool
+inline bool
 Parma_Polyhedra_Library::Status::test_c_up_to_date() const {
   return test_any(C_UP_TO_DATE);
 }
 
-INLINE void
+inline void
 Parma_Polyhedra_Library::Status::reset_c_up_to_date() {
   reset(C_UP_TO_DATE);
 }
 
-INLINE void
+inline void
 Parma_Polyhedra_Library::Status::set_c_up_to_date() {
   set(C_UP_TO_DATE);
 }
 
-INLINE bool
+inline bool
 Parma_Polyhedra_Library::Status::test_g_up_to_date() const {
   return test_any(G_UP_TO_DATE);
 }
 
-INLINE void
+inline void
 Parma_Polyhedra_Library::Status::reset_g_up_to_date() {
   reset(G_UP_TO_DATE);
 }
 
-INLINE void
+inline void
 Parma_Polyhedra_Library::Status::set_g_up_to_date() {
   set(G_UP_TO_DATE);
 }
 
-INLINE bool
+inline bool
 Parma_Polyhedra_Library::Status::test_c_minimized() const {
   return test_any(C_MINIMIZED);
 }
 
-INLINE void
+inline void
 Parma_Polyhedra_Library::Status::reset_c_minimized() {
   reset(C_MINIMIZED);
 }
 
-INLINE void
+inline void
 Parma_Polyhedra_Library::Status::set_c_minimized() {
   set(C_MINIMIZED);
 }
 
-INLINE bool
+inline bool
 Parma_Polyhedra_Library::Status::test_g_minimized() const {
   return test_any(G_MINIMIZED);
 }
 
-INLINE void
+inline void
 Parma_Polyhedra_Library::Status::reset_g_minimized() {
   reset(G_MINIMIZED);
 }
 
-INLINE void
+inline void
 Parma_Polyhedra_Library::Status::set_g_minimized() {
   set(G_MINIMIZED);
 }
 
-INLINE bool
+inline bool
 Parma_Polyhedra_Library::Status::test_sat_c_up_to_date() const {
   return test_any(SAT_C_UP_TO_DATE);
 }
 
-INLINE void
+inline void
 Parma_Polyhedra_Library::Status::reset_sat_c_up_to_date() {
   reset(SAT_C_UP_TO_DATE);
 }
 
-INLINE void
+inline void
 Parma_Polyhedra_Library::Status::set_sat_c_up_to_date() {
   set(SAT_C_UP_TO_DATE);
 }
 
-INLINE bool
+inline bool
 Parma_Polyhedra_Library::Status::test_sat_g_up_to_date() const {
   return test_any(SAT_G_UP_TO_DATE);
 }
 
-INLINE void
+inline void
 Parma_Polyhedra_Library::Status::reset_sat_g_up_to_date() {
   reset(SAT_G_UP_TO_DATE);
 }
 
-INLINE void
+inline void
 Parma_Polyhedra_Library::Status::set_sat_g_up_to_date() {
   set(SAT_G_UP_TO_DATE);
 }

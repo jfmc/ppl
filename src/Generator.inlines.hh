@@ -25,53 +25,53 @@ site: http://www.cs.unipr.it/ppl/ . */
 #include "LinExpression.defs.hh"
 #include <stdexcept>
 
-INLINE
+inline
 Parma_Polyhedra_Library::Generator::Generator()
   : Row() {
 }
 
-INLINE
+inline
 Parma_Polyhedra_Library::Generator::Generator(LinExpression& e) {
   swap(e);
 }
 
-INLINE
+inline
 Parma_Polyhedra_Library::Generator::Generator(const Generator& g)
   : Row(g) {
 }
 
-INLINE
+inline
 Parma_Polyhedra_Library::Generator::~Generator() {
 }
 
-INLINE bool
+inline bool
 Parma_Polyhedra_Library::Generator::is_line() const {
   return is_line_or_equality();
 }
 
-INLINE Parma_Polyhedra_Library::Generator::Type
+inline Parma_Polyhedra_Library::Generator::Type
 Parma_Polyhedra_Library::Generator::type() const {
   return is_line() ? LINE : (((*this)[0] == 0) ? RAY : VERTEX);
 }
 
-INLINE bool
+inline bool
 Parma_Polyhedra_Library::Generator::is_ray_or_vertex() const {
   return is_ray_or_vertex_or_inequality();
 }
 
-INLINE void
+inline void
 Parma_Polyhedra_Library::Generator::set_is_line() {
   set_is_line_or_equality();
 }
 
-INLINE void
+inline void
 Parma_Polyhedra_Library::Generator::set_is_ray_or_vertex() {
   set_is_ray_or_vertex_or_inequality();
 }
 
 namespace Parma_Polyhedra_Library {
 
-INLINE Generator
+inline Generator
 line(const LinExpression& e) {
   LinExpression ec = e;
   Generator g(ec);
@@ -80,7 +80,7 @@ line(const LinExpression& e) {
   return g;
 }
 
-INLINE Generator
+inline Generator
 ray(const LinExpression& e) {
   LinExpression ec = e;
   Generator g(ec);
@@ -89,7 +89,7 @@ ray(const LinExpression& e) {
   return g;
 }
 
-INLINE Generator
+inline Generator
 vertex(const LinExpression& e, const Integer& d) {
   if (d == 0)
     throw std::invalid_argument("Generator PPL::vertex(e, d) "

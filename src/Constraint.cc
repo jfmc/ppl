@@ -24,9 +24,6 @@ site: http://www.cs.unipr.it/ppl/ . */
 #include <config.h>
 
 #include "Constraint.defs.hh"
-#if OUTLINE
-#include "Constraint.inlines.hh"
-#endif
 
 #include "Variable.defs.hh"
 #include <iostream>

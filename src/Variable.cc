@@ -24,9 +24,6 @@ site: http://www.cs.unipr.it/ppl/ . */
 #include <config.h>
 
 #include "Variable.defs.hh"
-#if OUTLINE
-#include "Variable.inlines.hh"
-#endif
 
 #include <iostream>
 
