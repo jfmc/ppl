@@ -162,10 +162,13 @@ PPL::Generator::OK() const {
     ray_or_line = true;
 
   if (ray_or_line && g.all_homogeneous_terms_are_zero()) {
-    // Rays and lines must have at least one non-zero homogeneous term.
-    cerr << "Generators must have "
-      "at least one nonzero homogeneous coefficient!"
-	 << endl;
+    // By definition, the origin of the space cannot be a ray or a line.
+    cerr << "The origin of the vector space cannot be a ";
+    if (g.is_line())
+      cerr << "line.";
+    else
+      cerr << "ray.";
+    cerr << endl;
     return false;
   }
   return true;
