@@ -4461,12 +4461,75 @@ PPL::Polyhedron::time_elapse_assign(const Polyhedron& y) {
 
 bool
 PPL::Polyhedron::check_universe() const {
+  if (is_empty())
+    return false;
+
   if (space_dim == 0)
-    return !is_empty();
+    return true;
+
+  if (!has_pending_generators() && constraints_are_up_to_date()) {
+    // Search for a constraint that is not trivially true.
+    for (dimension_type i = con_sys.num_rows(); i-- > 0; )
+      if (!con_sys[i].is_trivial_true())
+	return false;
+    // All the constraints are trivially true.
+    return true;
+  }
+
+  assert(!has_pending_constraints() && generators_are_up_to_date());
+  // Try a fast-fail test: the universe polyhedron has `space_dim' lines.
+  // If there are too few lines and rays we can return `false'
+  // without performing minimization.
+  dimension_type num_rays_required = 2*space_dimension();
+
+  dimension_type num_lines = 0;
+  dimension_type num_rays = 0;
+  dimension_type first_pending = gen_sys.first_pending_row();
+  for (dimension_type i = first_pending; i-- > 0; )
+    switch (gen_sys[i].type()) {
+    case Generator::RAY:
+      num_rays++;
+      break;
+    case Generator::LINE:
+      num_lines++;
+      break;
+    default:
+      break;
+    }
+  
+  if (has_pending_generators()) {
+    // The seen part of `gen_sys' was minimized.
+    if (num_rays == 0 && num_lines == space_dimension())
+      return true;
+    // Now scan the pending generators.
+    dimension_type gs_num_rows = gen_sys.num_rows();
+    for (dimension_type i = first_pending; i < gs_num_rows; i++)
+      switch (gen_sys[i].type()) {
+      case Generator::RAY:
+	num_rays++;
+	break;
+      case Generator::LINE:
+	num_lines++;
+	break;
+      default:
+	break;
+      }
+    if (2*num_lines + num_rays < num_rays_required)
+      return false;
+  }
+  else {
+    // There is nothing pending.
+    if (generators_are_minimized())
+      // The exact test is possible.
+      return (num_rays == 0 && num_lines == space_dimension());
+    else
+      if (2*num_lines + num_rays < num_rays_required)
+	return false;
+  }
 
   // We need the polyhedron in minimal form.
-  if (has_something_pending())
-    process_pending();
+  if (has_pending_generators())
+    process_pending_generators();
   else if (!constraints_are_minimized())
     minimize();
   if (is_necessarily_closed())
