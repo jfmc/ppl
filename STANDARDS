@@ -2,7 +2,54 @@
 Coding Standards for the Parma Polyhedra Library
 ================================================
 
-To be written.
+Block closures
+--------------
+
+Try to make clear what is being closed.  For example:
+
+1)
+
+namespace Parma_Polyhedra_Library {
+
+...
+
+} // namespace Parma_Polyhedra_Library
+
+2)
+
+extern "C" {
+
+...
+
+} // extern "C"
+
+3)
+
+#ifndef _Class_defs_hh
+
+...
+
+#endif // !defined(_Class_defs_hh)
+
+
+Namespace indentation
+---------------------
+
+The entire library is in its own namespace.  We sometimes specialize
+std::swap() and std::swap_iter().  No other namespaces are involved.
+Therefore, we have unindented namespace-level declarations, thus
+saving some precious horizontal space.  For example:
+
+namespace Parma_Polyhedra_Library {
+
+non-empty lines here start at column 0;
+
+} // namespace Parma_Polyhedra_Library
+
+If you use emacs the following two lines may interest you:
+
+;; Disable indentation when in namespace blocks.
+(c-set-offset 'innamespace 0)
 
 
 Standards for Documenting the Project with Doxygen
