@@ -217,6 +217,7 @@ addgenerators7_SOURCES = addgenerators7.cc
 addgenerators8_SOURCES = addgenerators8.cc
 addgenerators9_SOURCES = addgenerators9.cc
 addgenerators10_SOURCES = addgenerators10.cc
+addgenerators11_SOURCES = addgenerators11.cc
 
 affineimage1_SOURCES = affineimage1.cc
 affineimage2_SOURCES = affineimage2.cc
