@@ -28,7 +28,7 @@ VPATH = @srcdir@
 
 SUBDIRS =
 
-EXTRA_DIST = ppl_xsb.cc ppl_xsb.H xsb_clpq.pl xsb_clpq2.pl
+EXTRA_DIST = ppl_xsb.cc ppl_xsb.H xsb_clpq.P xsb_clpq2.P
 
 if HAVE_XSB_PROLOG
 
@@ -61,13 +61,16 @@ schedule.clpq
 
 CLPQ_TESTS = $(CLPQ_TESTS_NONSTRICT) $(CLPQ_TESTS_STRICT) 
 
-check-local: xsb_clpq.pl ../check_script ../expected xsb_clpq2.pl ../check_script2 ../expected2
+.P.O:
+	xsb $<
+
+check-local: xsb_clpq.O ../check_script ../expected #xsb_clpq2.O ../check_script2 ../expected2
 	for k in $(CLPQ_TESTS); do cp -f $(srcdir)/../$$k .; done
 	echo "main." >check_script
 	cat $(srcdir)/../check_script >>check_script
 	$(LIBTOOL) --mode=execute -dlopen ../../../src/libppl.la \
 				-dlopen ppl_xsb.la \
-		xsb -l $(srcdir)/xsb_clpq.pl \
+		xsb xsb_clpq \
 			<check_script >obtained
 	diff -q --ignore-all-space $(srcdir)/../expected obtained
 	echo "main." >check_script2
