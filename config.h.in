@@ -8,17 +8,11 @@
 /* Not zero if GMP has been compiled with support for exceptions. */
 #undef GMP_SUPPORTS_EXCEPTIONS
 
-/* Define if you have the <gprolog.h> header file. */
-#undef HAVE_GPROLOG_H
-
 /* Define if you have the <inttypes.h> header file. */
 #undef HAVE_INTTYPES_H
 
 /* Define if you have the <memory.h> header file. */
 #undef HAVE_MEMORY_H
-
-/* Define if you have the <sicstus/sicstus.h> header file. */
-#undef HAVE_SICSTUS_SICSTUS_H
 
 /* Define if you have the <stdint.h> header file. */
 #undef HAVE_STDINT_H
@@ -31,9 +25,6 @@
 
 /* Define if you have the <string.h> header file. */
 #undef HAVE_STRING_H
-
-/* Define if you have the <SWI-Prolog.h> header file. */
-#undef HAVE_SWI_PROLOG_H
 
 /* Define if you have the <sys/stat.h> header file. */
 #undef HAVE_SYS_STAT_H

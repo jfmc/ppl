@@ -273,7 +273,12 @@ AC_CHECK_PROG(SICSTUS, sicstus, sicstus)
 AM_CONDITIONAL(HAVE_SICSTUS, test x$SICSTUS = xsicstus)
 
 dnl Checks for header files.
-AC_CHECK_HEADERS(gprolog.h SWI-Prolog.h sicstus/sicstus.h)
+#AC_CHECK_HEADER(gprolog.h,
+#                extra_if_Prolog_subdirs="${extra_if_Prolog_subdirs} GNU")
+#AC_CHECK_HEADER(SWI-Prolog.h,
+#                extra_if_Prolog_subdirs="${extra_if_Prolog_subdirs} SWI")
+AC_CHECK_HEADER(sicstus/sicstus.h,
+                extra_if_Prolog_subdirs="${extra_if_Prolog_subdirs} SICStus")
 
 dnl Checks for typedefs, structures, and compiler characteristics.
 # Nothing for the time being.
@@ -285,6 +290,7 @@ AC_SUBST(extra_includes)
 AC_SUBST(extra_cpp_flags)
 AC_SUBST(gmp_library_option)
 AC_SUBST(debug_flag)
+AC_SUBST(extra_if_Prolog_subdirs)
 
 AC_OUTPUT(Makefile
           ppl.lsm ppl.spec

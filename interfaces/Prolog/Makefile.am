@@ -13,4 +13,4 @@ VPATH = @srcdir@
 
 @SET_MAKE@
 
-SUBDIRS = SICStus
+SUBDIRS = @extra_if_Prolog_subdirs@
