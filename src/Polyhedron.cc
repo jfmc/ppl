@@ -1069,8 +1069,10 @@ PPL::Polyhedron::add_constraints(ConSys& cs) {
 			       *this, cs);
 
   // Adding no constraints is the same as checking for emptyness.
-  if (cs.num_rows() == 0)
+  if (cs_num_columns == 0) {
+    assert(cs.num_rows() == 0);
     return !check_empty();
+  }
 
   // Dealing with zero-dim space polyhedra first.
   if (space_dimension() == 0) {
@@ -1186,8 +1188,15 @@ PPL::Polyhedron::insert(const Generator& g) {
     throw_different_dimensions("PPL::Polyhedron::insert(g)",
 			       *this, g);
 
-  // If the dimension-compatibility check is passed,
-  // we have space_dimension() > 0.
+  // Dealing with a zero-dim space polyhedron first.
+  if (space_dimension() == 0) {
+    // For dimension-compatibility, `g' has 1 column;
+    // moreover, it is not possible to create 0-dim rays or lines.
+    assert(g.size() == 1 && g.type() == Generator::VERTEX);
+    set_zero_dim_univ();
+    return;
+  }
+
   if (generators_are_up_to_date()) {
     gen_sys.insert(g);
     // After adding the new generator, constraints are no longer up-to-date.
@@ -1196,25 +1205,23 @@ PPL::Polyhedron::insert(const Generator& g) {
     return;
   }
 
-  // Generators are not up-to-date: now calling `check_empty' because,
-  // if the polyhedron is not empty, we need the generators anyway.
+  // Generators are not up-to-date. Checking for emptyness and
+  // computing the generators at the same time.
   if (check_empty()) {
     // Polyhedron is empty:
     // the specification says we can only insert a vertex.
     if (g.type() != Generator::VERTEX)
       throw std::invalid_argument("void PPL::Polyhedron::insert(g): "
 				  "*this is empty and g is not a vertex");
-    // FIXME: why do we need the following clear() ?
-    // Would not be an assertion sufficient ?
-    gen_sys.clear();
+    // `gen_sys' is empty. Insert `g' and then resize it
+    // to have space_dimension() + 1 columns.
     gen_sys.insert(g);
-    // Resize `gen_sys' to have space_dimension() + 1 columns.
     if (gen_sys.num_columns() != space_dimension() + 1)
       gen_sys.add_zero_columns(space_dimension()
 			       - gen_sys.num_columns() + 1);
     // No longer empty, generators up-to-date and minimized.
     clear_empty();
-    set_generators_up_to_date();
+    set_generators_minimized();
     return;
   }
 
@@ -1326,12 +1333,11 @@ PPL::Polyhedron::add_generators(GenSys& gs) {
     throw_different_dimensions("PPL::Polyhedron::add_generators(g)",
 			       *this, gs);
 
-  // Adding zero-dimension generators is a no-op.
-  // (By dimension-compatibility, this also capture the case
-  // when the polyhedron space is zero-dim.)
-  if (gs_num_columns == 0)
-    // FIXME: what if polyhedron is empty ?
+  // Adding no generators is a no-op.
+  if (gs_num_columns == 0) {
+    assert(gs.num_rows() == 0);
     return;
+  }
 
   if (gs_num_columns == 1 && space_dimension() == 0) {
     set_zero_dim_univ();
