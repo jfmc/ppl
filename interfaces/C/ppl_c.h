@@ -1165,15 +1165,26 @@ ppl_Polyhedron_BHRZ03_widening_assign __P((ppl_Polyhedron_t x,
 
 /*!
   If the polyhedron \p y is contained in (or equal to) the polyhedron
-  \p x, assigns to \p x the BHRZ03-widening of \p x and \p y intersected with
-  the constraint system \p cs.
-
-  \warning
-  This function modifies the constraint system referenced by \p cs:
-  upon return, no assumption can be made on its value.
+  \p x, assigns to \p x the BHRZ03-widening of \p x and \p y
+  intersected with the constraints in \p cs that are satisfied by all
+  the points of \p x.
 */
 int
 ppl_Polyhedron_limited_BHRZ03_extrapolation_assign
+__P((ppl_Polyhedron_t x,
+     ppl_const_Polyhedron_t y,
+     ppl_const_ConSys_t cs));
+
+/*!
+  If the polyhedron \p y is contained in (or equal to) the polyhedron
+  \p x, assigns to \p x the BHRZ03-widening of \p x and \p y
+  intersected with the constraints in \p cs that are satisfied by all
+  the points of \p x, further intersected with all the constraints
+  of the form \f$\pm v \leq r\f$ and \f$\pm v < r\f$, with
+  \f$r \in \Qset\f$, that are satisfied by all the points of \p x.
+*/
+int
+ppl_Polyhedron_bounded_BHRZ03_extrapolation_assign
 __P((ppl_Polyhedron_t x,
      ppl_const_Polyhedron_t y,
      ppl_const_ConSys_t cs));
@@ -1188,17 +1199,28 @@ ppl_Polyhedron_H79_widening_assign __P((ppl_Polyhedron_t x,
 
 /*!
   If the polyhedron \p y is contained in (or equal to) the polyhedron
-  \p x, assigns to \p x the H79-widening of \p x and \p y intersected with
-  the constraint system \p cs.
-
-  \warning
-  This function modifies the constraint system referenced by \p cs:
-  upon return, no assumption can be made on its value.
+  \p x, assigns to \p x the H79-widening of \p x and \p y
+  intersected with the constraints in \p cs that are satisfied by all
+  the points of \p x.
 */
 int
 ppl_Polyhedron_limited_H79_extrapolation_assign __P((ppl_Polyhedron_t x,
 						     ppl_const_Polyhedron_t y,
 						     ppl_const_ConSys_t cs));
+
+/*!
+  If the polyhedron \p y is contained in (or equal to) the polyhedron
+  \p x, assigns to \p x the H79-widening of \p x and \p y
+  intersected with the constraints in \p cs that are satisfied by all
+  the points of \p x, further intersected with all the constraints
+  of the form \f$\pm v \leq r\f$ and \f$\pm v < r\f$, with
+  \f$r \in \Qset\f$, that are satisfied by all the points of \p x.
+*/
+int
+ppl_Polyhedron_bounded_H79_extrapolation_assign
+__P((ppl_Polyhedron_t x,
+     ppl_const_Polyhedron_t y,
+     ppl_const_ConSys_t cs));
 
 /*!
   Writes a const handle to the constraint system defining the
