@@ -1488,16 +1488,17 @@ throw_dimension_incompatible(const char* method,
 }
 
 void
-PPL::Polyhedron::throw_space_dimension_overflow(const char* method,
-						const char* reason) const {
+PPL::Polyhedron::throw_space_dimension_overflow(const Topology topol,
+						const char* method,
+						const char* reason) {
   std::ostringstream s;
   s << "PPL::";
-  if (is_necessarily_closed())
+  if (topol == NECESSARILY_CLOSED)
     s << "C_";
   else
     s << "NNC_";
   s << "Polyhedron::" << method << ":" << std::endl
-  << reason << ".";
+    << reason << ".";
   throw std::length_error(s.str());
 }
 
