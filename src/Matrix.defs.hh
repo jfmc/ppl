@@ -29,7 +29,11 @@ site: http://www.cs.unipr.it/ppl/ . */
 #include "SatMatrix.types.hh"
 #include "ConSys.types.hh"
 #include "GenSys.types.hh"
+#if 0
 #include "Integer.types.hh"
+#else
+#include "Coefficient.types.hh"
+#endif
 #include <vector>
 #include <cstddef>
 

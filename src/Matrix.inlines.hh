@@ -21,7 +21,9 @@ USA.
 For the most up-to-date information see the Parma Polyhedra Library
 site: http://www.cs.unipr.it/ppl/ . */
 
+#if 0
 #include "Integer.defs.hh"
+#endif
 #include <algorithm>
 #include <cassert>
 

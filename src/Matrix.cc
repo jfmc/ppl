@@ -25,7 +25,9 @@ site: http://www.cs.unipr.it/ppl/ . */
 
 #include "Matrix.defs.hh"
 
+#if 0
 #include "Integer.defs.hh"
+#endif
 #include "Row.defs.hh"
 #include "globals.hh"
 #include "SatMatrix.defs.hh"
@@ -669,7 +671,7 @@ PPL::Matrix::gauss() {
 	// simplify future computing (back-substitution).
 	if (rows[rank][j] < 0) {
 	  for (size_t k = nb_columns; k-- > 0; )
-	    rows[rank][k].negate();
+	    negate(rows[rank][k]);
 	  // Matrix has changed.
 	  changed = true;
 	}
