@@ -122,22 +122,23 @@ PPL::Polyhedron::add_dimensions_and_embed(dimension_type m) {
   // we add the line having that direction. This is done by invoking
   // the function add_dimensions() giving the matrix of generators
   // as the second argument.
-  if (constraints_are_up_to_date() && generators_are_up_to_date()) {
-    // `sat_c' must be up to date for add_dimensions(...).
-    if (!sat_c_is_up_to_date())
-      update_sat_c();
-    // Adds rows and/or columns to both matrices.
-    // `add_dimensions' correctly handles pending constraints or generators.
-    add_dimensions(con_sys, gen_sys, sat_c, sat_g, m);
-  }
-  else if (constraints_are_up_to_date()) {
-    // Only constraints are up-to-date: no need to modify the generators.
-    con_sys.add_zero_columns(m);
-    // If the polyhedron is not necessarily closed,
-    // move the epsilon coefficients to the last column.
-    if (!is_necessarily_closed())
-      con_sys.swap_columns(space_dim + 1, space_dim + 1 + m);
-  }
+  if (constraints_are_up_to_date())
+    if (generators_are_up_to_date()) {
+      // `sat_c' must be up to date for add_dimensions(...).
+      if (!sat_c_is_up_to_date())
+	update_sat_c();
+      // Adds rows and/or columns to both matrices.
+      // `add_dimensions' correctly handles pending constraints or generators.
+      add_dimensions(con_sys, gen_sys, sat_c, sat_g, m);
+    }
+    else {
+      // Only constraints are up-to-date: no need to modify the generators.
+      con_sys.add_zero_columns(m);
+      // If the polyhedron is not necessarily closed,
+      // move the epsilon coefficients to the last column.
+      if (!is_necessarily_closed())
+	con_sys.swap_columns(space_dim + 1, space_dim + 1 + m);
+    }
   else {
     // Only generators are up-to-date: no need to modify the constraints.
     assert(generators_are_up_to_date());
@@ -212,41 +213,42 @@ PPL::Polyhedron::add_dimensions_and_project(dimension_type m) {
   // Thus, for each new dimensions `x[k]', we add the constraint
   // x[k] = 0; this is done by invoking the function add_dimensions()
   // giving the matrix of constraints as the second argument.
-  if (constraints_are_up_to_date() && generators_are_up_to_date()) {
-    // `sat_g' must be up to date for add_dimensions(...).
-    if (!sat_g_is_up_to_date())
-      update_sat_g();
-    // Adds rows and/or columns to both matrices.
-    // `add_dimensions' correctly handles pending constraints or generators.
-    add_dimensions(gen_sys, con_sys, sat_g, sat_c, m);
-  }
-  else if (constraints_are_up_to_date()) {
-    // Only constraints are up-to-date: no need to modify the generators.
-    con_sys.add_rows_and_columns(m);
-    // The polyhedron does not support pending constraints.
-    con_sys.unset_pending_rows();
-    // If the polyhedron is not necessarily closed,
-    // move the epsilon coefficients to the last column.
-    if (!is_necessarily_closed()) {
-      // Try to preserve sortedness of `con_sys'.
-      if (!con_sys.is_sorted())
-	con_sys.swap_columns(space_dim + 1, space_dim + 1 + m);
-      else {
-	dimension_type old_eps_index = space_dim + 1;
-	dimension_type new_eps_index = old_eps_index + m;
-	for (dimension_type i = con_sys.num_rows(); i-- > m; ) {
-	  Row& r = con_sys[i];
-	  std::swap(r[old_eps_index], r[new_eps_index]);
+  if (constraints_are_up_to_date())
+    if (generators_are_up_to_date()) {
+      // `sat_g' must be up to date for add_dimensions(...).
+      if (!sat_g_is_up_to_date())
+	update_sat_g();
+      // Adds rows and/or columns to both matrices.
+      // `add_dimensions' correctly handles pending constraints or generators.
+      add_dimensions(gen_sys, con_sys, sat_g, sat_c, m);
+    }
+    else {
+      // Only constraints are up-to-date: no need to modify the generators.
+      con_sys.add_rows_and_columns(m);
+      // The polyhedron does not support pending constraints.
+      con_sys.unset_pending_rows();
+      // If the polyhedron is not necessarily closed,
+      // move the epsilon coefficients to the last column.
+      if (!is_necessarily_closed()) {
+	// Try to preserve sortedness of `con_sys'.
+	if (!con_sys.is_sorted())
+	  con_sys.swap_columns(space_dim + 1, space_dim + 1 + m);
+	else {
+	  dimension_type old_eps_index = space_dim + 1;
+	  dimension_type new_eps_index = old_eps_index + m;
+	  for (dimension_type i = con_sys.num_rows(); i-- > m; ) {
+	    Row& r = con_sys[i];
+	    std::swap(r[old_eps_index], r[new_eps_index]);
+	  }
+	  // The upper-right corner of `con_sys' contains the J matrix:
+	  // swap coefficients to preserve sortedness.
+	  for (dimension_type i = m; i-- > 0; ++old_eps_index) {
+	    Row& r = con_sys[i];
+	    std::swap(r[old_eps_index], r[old_eps_index + 1]);
+	  }
 	}
-	// The upper-right corner of `con_sys' contains the J matrix:
-	// swap coefficients to preserve sortedness.
-	for (dimension_type i = m; i-- > 0; ++old_eps_index) {
-	  Row& r = con_sys[i];
-	  std::swap(r[old_eps_index], r[old_eps_index + 1]);
-        }
       }
     }
-  }
   else {
     // Only generators are up-to-date: no need to modify the constraints.
     assert(generators_are_up_to_date());
