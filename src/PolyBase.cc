@@ -2372,7 +2372,6 @@ PPL::PolyBase::affine_preimage(const Variable& var,
   Returns the relations holding between the polyhedron \p *this and
   the constraint \p c.
 */
-// FIXME.
 PPL::Poly_Con_Relation
 PPL::PolyBase::relation_with(const Constraint& c) {
   // Dimension-compatibility check.
