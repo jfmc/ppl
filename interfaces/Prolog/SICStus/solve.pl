@@ -13,16 +13,28 @@ solve(true,_Polyhedron,Dims,Dims):-
 solve(A=B,Polyhedron,InDims,OutDims):-
     solve({A=B},Polyhedron,InDims,OutDims).
 
+
 solve((A,B),Polyhedron,InDims,OutDims):- 
     !, 
     ppl_copy_polyhedron(Polyhedron,Q),
-    (conjunct_solve(A,B,Polyhedron,InDims,OutDims,Q)
+  (
+    (solve(A,Polyhedron,InDims,AOutDims),
+    solve(B,Polyhedron,AOutDims,OutDims),
+    (ppl_check_empty(Polyhedron)
      ->
-     ppl_delete_polyhedron(Q)
-     ;
-     ppl_delete_polyhedron(Q),
+     ppl_renew_polyhedron(Polyhedron,InDims),
+     ppl_get_constraints(Q,QConstraints),
+     ppl_insert_constraints(Polyhedron,QConstraints),
      fail
-    ).
+     ;
+     true
+    ))
+  ->
+    ppl_delete_polyhedron(Q)
+    ;
+    ppl_delete_polyhedron(Q),
+    fail
+  ).
 
 solve({Cs},Polyhedron,InDims,OutDims):- 
     !,
@@ -40,27 +52,24 @@ solve(Atom,Polyhedron,InDims,OutDims):-
     rename(Args,Args1),
     numbervars(Args,InDims,OutDims),
     numbervars(Args1,OutDims,_),
-%    AddedDims is OutDims - InDims,
-%    try_clause(Args,Args1,Body1,InDims,AddedDims,Polyhedron).
     try_clause(Args,Args1,Body1,InDims,OutDims,Polyhedron).
-
 
 try_clause(Args,Args1,Body1,InDims,OutDims,Polyhedron):-
     ppl_copy_polyhedron(Polyhedron,Q),
     AddedDims is 2 * (OutDims - InDims),
-    ppl_add_dimensions_and_embed(Polyhedron, AddedDims),
-    solve_equal_list(Args,Args1,Polyhedron),
+    ppl_add_dimensions_and_embed(Q, AddedDims),
+    solve_equal_list(Args,Args1,Q),
     NewInDims is InDims + AddedDims,
   (
-    (solve(Body1,Polyhedron,NewInDims,_),
-    (ppl_check_empty(Polyhedron)
+    (solve(Body1,Q,NewInDims,_),
+    (ppl_check_empty(Q)
      ->
-     ppl_renew_polyhedron(Polyhedron,InDims),
-     ppl_get_constraints(Q,QConstraints),
-     ppl_insert_constraints(Polyhedron,QConstraints),
      fail
      ;
-     ppl_project_dimensions(Polyhedron,OutDims)
+     ppl_project_dimensions(Q,OutDims),
+     ExtraDims is OutDims - InDims,
+     ppl_add_dimensions_and_embed(Polyhedron,ExtraDims),
+     ppl_intersection_assign(Polyhedron,Q)
     ))
   ->
     ppl_delete_polyhedron(Q)
@@ -68,19 +77,6 @@ try_clause(Args,Args1,Body1,InDims,OutDims,Polyhedron):-
     ppl_delete_polyhedron(Q),
     fail
   ).
-
-conjunct_solve(A,B,Polyhedron,InDims,OutDims,Q):-
-    solve(A,Polyhedron,InDims,AOutDims),
-    solve(B,Polyhedron,AOutDims,OutDims),
-    (ppl_check_empty(Polyhedron)
-     ->
-     ppl_renew_polyhedron(Polyhedron,InDims),
-     ppl_get_constraints(Q,QConstraints),
-     ppl_insert_constraints(Polyhedron,QConstraints),
-     fail
-     ;
-     true
-    ).
 
 solve_constraints((C,D),Polyhedron):- 
     !,
