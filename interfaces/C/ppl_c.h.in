@@ -1103,6 +1103,21 @@ extern unsigned int PPL_COMPLEXITY_CLASS_SIMPLEX;
 extern unsigned int PPL_COMPLEXITY_CLASS_ANY;
 
 /*! \brief
+  Code of the "unfeasible problem" simplex status.
+*/
+extern unsigned int PPL_SIMPLEX_STATUS_UNFEASIBLE;
+
+/*! \brief
+  Code of the "unbounded problem" simplex status.
+*/
+extern unsigned int PPL_SIMPLEX_STATUS_UNBOUNDED;
+
+/*! \brief
+  Code of the "solved problem" simplex status.
+*/
+extern unsigned int PPL_SIMPLEX_STATUS_SOLVED;
+
+/*! \brief
   Individual bit saying that the polyhedron and the set of points
   satisfying the constraint are disjoint.
 */

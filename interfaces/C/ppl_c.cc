@@ -117,6 +117,10 @@ unsigned int PPL_COMPLEXITY_CLASS_POLYNOMIAL;
 unsigned int PPL_COMPLEXITY_CLASS_SIMPLEX;
 unsigned int PPL_COMPLEXITY_CLASS_ANY;
 
+unsigned int PPL_SIMPLEX_STATUS_UNFEASIBLE;
+unsigned int PPL_SIMPLEX_STATUS_UNBOUNDED;
+unsigned int PPL_SIMPLEX_STATUS_SOLVED;
+
 namespace {
 
 // Holds a pointer to the init object.
@@ -208,6 +212,10 @@ ppl_initialize(void) try {
   PPL_COMPLEXITY_CLASS_POLYNOMIAL = POLYNOMIAL_COMPLEXITY;
   PPL_COMPLEXITY_CLASS_SIMPLEX = SIMPLEX_COMPLEXITY;
   PPL_COMPLEXITY_CLASS_ANY = ANY_COMPLEXITY;
+
+  PPL_SIMPLEX_STATUS_UNFEASIBLE = UNFEASIBLE_PROBLEM;
+  PPL_SIMPLEX_STATUS_UNBOUNDED = UNBOUNDED_PROBLEM;
+  PPL_SIMPLEX_STATUS_SOLVED = SOLVED_PROBLEM;
 
   c_variable_output_function = c_variable_default_output_function;
   saved_cxx_Variable_output_function = Variable::get_output_function();
