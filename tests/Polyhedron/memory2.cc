@@ -63,6 +63,24 @@ reset_allocators(unsigned long new_malloc_threshold,
   realloc_threshold = new_realloc_threshold;
 }
 
+void
+fail_if_leaked() {
+  if (mallocated != freed) {
+#if NOISY
+    cout << "Memory leak: allocated " << mallocated
+	 << ", freed " << freed
+	 << endl;
+#endif
+    exit(1);
+  }
+  else {
+#if NOISY
+    cout << "allocated = freed = " << mallocated
+	 << endl;
+#endif
+  }
+}
+
 extern "C" void*
 cxx_malloc(size_t size) {
   if (mallocated >= malloc_threshold) {
@@ -143,10 +161,14 @@ test1() {
 #if NOISY
     cout << "std::bad_alloc caught" << endl;
 #endif
+    fail_if_leaked();
   }
-
-  if (mallocated != freed)
-    exit(1);
+  catch (...) {
+#if NOISY
+    cout << "exception different from std::bad_alloc caught" << endl;
+#endif
+    fail_if_leaked();
+  }
 }
 
 enum Threshold { Malloc, Realloc };
@@ -181,22 +203,16 @@ test_every_allocation(const dimension_type d, const Threshold threshold) {
 #if NOISY
       cout << "std::bad_alloc caught" << endl;
 #endif
-      if (mallocated != freed) {
+      fail_if_leaked();
+      go_ahead = true;
+      ++k;
+    }
+    catch (...) {
 #if NOISY
-	cout << "Memory leak: allocated " << mallocated
-	     << ", freed " << freed
-	     << endl;
+      cout << "exception different from std::bad_alloc caught" << endl;
 #endif
-	exit(1);
-      }
-      else {
-#if NOISY
-	cout << "allocated = freed = " << mallocated
-	     << endl;
-#endif
-	go_ahead = true;
-	++k;
-      }
+      fail_if_leaked();
+      // Notice that we do not go ahead if we did not catch a bad_alloc.
     }
     if (dry_run) {
       dry_run = false;
@@ -224,6 +240,12 @@ test3() {
 
 } // namespace
 
+#define IGNORE_OVERFLOWS(fun) \
+try { \
+  fun; \
+} \
+catch (const std::overflow_error&) { \
+}
 
 int
 main() TRY {
@@ -231,9 +253,11 @@ main() TRY {
 
   set_handlers();
 
-  test1();
-  test2();
-  test3();
+  // The point of this test is to detect memory leaks.
+  // So we plainly ignore overflow exceptions.
+  IGNORE_OVERFLOWS(test1());
+  IGNORE_OVERFLOWS(test2());
+  IGNORE_OVERFLOWS(test3());
 
   return 0;
 }
