@@ -32,13 +32,11 @@ site: http://www.cs.unipr.it/ppl/ . */
 namespace Parma_Polyhedra_Library {
 
 // Put them in the namespace here to declare them friends later.
-int compare(const SatRow& x, const SatRow& y);
 bool operator==(const SatRow& x, const SatRow& y);
 bool operator!=(const SatRow& x, const SatRow& y);
-bool operator <(const SatRow& x, const SatRow& y);
-bool operator >(const SatRow& x, const SatRow& y);
-bool operator<=(const SatRow& x, const SatRow& y);
-bool operator>=(const SatRow& x, const SatRow& y);
+int compare(const SatRow& x, const SatRow& y);
+bool subset_or_equal(const SatRow& x, const SatRow& y);
+bool strict_subset(const SatRow& x, const SatRow& y);
 void set_union(const SatRow& x, const SatRow& y, SatRow& z);
 
 } // namespace Parma_Polyhedra_Library
@@ -102,23 +100,16 @@ public:
   //! @name Set-theoretic comparisons.
   //@{
   friend bool
-  Parma_Polyhedra_Library::operator==(const SatRow& x,
-				      const SatRow& y);
+  Parma_Polyhedra_Library::operator==(const SatRow& x,  const SatRow& y);
+
   friend bool
-  Parma_Polyhedra_Library::operator!=(const SatRow& x,
-				      const SatRow& y);
+  Parma_Polyhedra_Library::operator!=(const SatRow& x, const SatRow& y);
+
   friend bool
-  Parma_Polyhedra_Library::operator <(const SatRow& x,
-				      const SatRow& y);
+  Parma_Polyhedra_Library::subset_or_equal(const SatRow& x, const SatRow& y);
+
   friend bool
-  Parma_Polyhedra_Library::operator >(const SatRow& x,
-				      const SatRow& y);
-  friend bool
-  Parma_Polyhedra_Library::operator<=(const SatRow& x,
-				      const SatRow& y);
-  friend bool
-  Parma_Polyhedra_Library::operator>=(const SatRow& x,
-				      const SatRow& y);
+  Parma_Polyhedra_Library::strict_subset(const SatRow& x, const SatRow& y);
   //@}
 
   //! Set-theoretic union.

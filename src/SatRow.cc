@@ -205,7 +205,7 @@ PPL::compare(const SatRow& x, const SatRow& y) {
 }
 
 bool
-PPL::operator<=(const SatRow& x, const SatRow& y) {
+PPL::subset_or_equal(const SatRow& x, const SatRow& y) {
   size_t x_size = mpz_size(x.vec);
   size_t y_size = mpz_size(y.vec);
   size_t x_li = 0;
@@ -224,7 +224,7 @@ PPL::operator<=(const SatRow& x, const SatRow& y) {
 }
 
 bool
-PPL::operator<(const SatRow& x, const SatRow& y) {
+PPL::strict_subset(const SatRow& x, const SatRow& y) {
   size_t x_size = mpz_size(x.vec);
   size_t y_size = mpz_size(y.vec);
   bool one_diff = false;

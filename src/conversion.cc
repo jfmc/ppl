@@ -697,7 +697,8 @@ PPL::Polyhedron::conversion(Matrix& source,
 		// adjacency information.
 		bool redundant = false;
 		for (dimension_type l = num_lines_or_equalities; l < bound; ++l)
-		  if (l != i && l != j && sat[l] <= new_satrow) {
+		  if (l != i && l != j
+		      && subset_or_equal(sat[l], new_satrow)) {
 		    // Found another generator saturating all the
 		    // constraints saturated by both `dest[i]' and `dest[j]'.
 		    redundant = true;

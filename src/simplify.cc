@@ -227,7 +227,7 @@ PPL::Polyhedron::simplify(Matrix& mat, SatMatrix& sat) {
 	// corresponding to `c_2', too, and there is another one lying
 	// on the latter but not on the former, then `c_2' is more
 	// restrictive than `c_1', i.e., `c_1' is redundant.
-	if (sat[i] > sat[j]) {
+	if (strict_subset(sat[j], sat[i])) {
 	  // All the saturators of the inequality `mat[i]' are
 	  // saturators of the inequality `mat[j]' too,
 	  // and there exists at least one saturator of `mat[j]'

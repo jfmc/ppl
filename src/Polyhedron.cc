@@ -686,7 +686,7 @@ PPL::Polyhedron::strongly_minimize_generators() const {
       // all the non-strict inequalities saturated by the candidate.
       bool eps_redundant = false;
       for (dimension_type j = n_lines; j < gs_rows; ++j)
-	if (i != j && gs[j].is_point() && sat[j] <= sat_gi) {
+	if (i != j && gs[j].is_point() && subset_or_equal(sat[j], sat_gi)) {
 	  // Point `gs[i]' is eps-redundant:
 	  // move it to the bottom of the generator system,
 	  // while keeping `sat_c' consistent.
@@ -844,7 +844,8 @@ PPL::Polyhedron::strongly_minimize_constraints() const {
       set_union(sat[i], sat_all_but_points, sat_ci);
       bool eps_redundant = false;
       for (dimension_type j = n_equals; j < cs_rows; ++j)
-	if (i != j && cs[j].is_strict_inequality() && sat[j] <= sat_ci) {
+	if (i != j && cs[j].is_strict_inequality()
+	    && subset_or_equal(sat[j], sat_ci)) {
 	  // Constraint `cs[i]' is eps-redundant:
 	  // move it to the bottom of the constraint system,
 	  // while keeping `sat_g' consistent.
@@ -862,7 +863,8 @@ PPL::Polyhedron::strongly_minimize_constraints() const {
 	// if the eps_leq_one constraint is needed.
 	topologically_closed = false;
 	if (strict_inequals_saturate_all_rays)
-	  strict_inequals_saturate_all_rays = (sat[i] <= sat_lines_and_rays);
+	  strict_inequals_saturate_all_rays
+	    = subset_or_equal(sat[i], sat_lines_and_rays);
 	// Continue with next constraint.
 	++i;
       }
@@ -3727,7 +3729,7 @@ PPL::Polyhedron::BBRZ02_widening_assign(const Polyhedron& y) {
     if (x_g.is_ray() && y.relation_with(x_g) == Poly_Gen_Relation::nothing()) {
       for (dimension_type j = y_gen_sys_num_rows; j-- > 0; ) {
 	const Generator& y_g = y.gen_sys[j];
-	if (y_g.is_ray() && tmp_sat[j] > x.sat_c[i]) {
+	if (y_g.is_ray() && strict_subset(x.sat_c[i], tmp_sat[j])) {
 	  Generator new_ray(x_g);
 	  std::deque<bool> considered(x.space_dim + 1);
 	  Integer tmp_1;

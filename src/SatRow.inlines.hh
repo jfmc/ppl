@@ -111,16 +111,6 @@ operator!=(const SatRow& x, const SatRow& y) {
   return mpz_cmp(x.vec, y.vec) != 0;
 }
 
-inline bool
-operator>(const SatRow& x, const SatRow& y) {
-  return y < x;
-}
-
-inline bool
-operator>=(const SatRow& x, const SatRow& y) {
-  return y <= x;
-}
-
 inline void
 set_union(const SatRow& x, const SatRow& y, SatRow& z) {
   mpz_ior(z.vec, x.vec, y.vec);
