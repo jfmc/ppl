@@ -301,91 +301,93 @@ WARN_LOGFILE           =
 # directories like "/usr/src/myproject". Separate the files or directories 
 # with spaces.
 
-INPUT                  = @srcdir@/definitions.dox \
-                         @srcdir@/../src/Init.types.hh \
-                         @srcdir@/../src/Init.defs.hh \
-                         @srcdir@/../src/Init.inlines.hh \
-                         @srcdir@/../src/Init.cc \
-                         @srcdir@/../src/initializer.hh \
-                         @srcdir@/../src/globals.hh \
-                         @srcdir@/../src/globals.cc \
-                         @srcdir@/../src/Topology.hh \
-                         @srcdir@/../src/Row.types.hh \
-                         @srcdir@/../src/Row.defs.hh \
-                         @srcdir@/../src/Row.inlines.hh \
-                         @srcdir@/../src/Row.cc \
-                         @srcdir@/../src/Matrix.types.hh \
-                         @srcdir@/../src/Matrix.defs.hh \
-                         @srcdir@/../src/Matrix.inlines.hh \
-                         @srcdir@/../src/Matrix.cc \
-                         @srcdir@/../src/SatRow.types.hh \
-                         @srcdir@/../src/SatRow.defs.hh \
-                         @srcdir@/../src/SatRow.inlines.hh \
-                         @srcdir@/../src/SatRow.cc \
-                         @srcdir@/../src/SatMatrix.types.hh \
-                         @srcdir@/../src/SatMatrix.defs.hh \
-                         @srcdir@/../src/SatMatrix.inlines.hh \
-                         @srcdir@/../src/SatMatrix.cc \
-                         @srcdir@/../src/Variable.types.hh \
-                         @srcdir@/../src/Variable.defs.hh \
-                         @srcdir@/../src/Variable.inlines.hh \
-                         @srcdir@/../src/Variable.cc \
-                         @srcdir@/../src/LinExpression.types.hh \
-                         @srcdir@/../src/LinExpression.defs.hh \
-                         @srcdir@/../src/LinExpression.inlines.hh \
-                         @srcdir@/../src/LinExpression.cc \
-                         @srcdir@/../src/Constraint.types.hh \
-                         @srcdir@/../src/Constraint.defs.hh \
-                         @srcdir@/../src/Constraint.inlines.hh \
-                         @srcdir@/../src/Constraint.cc \
-                         @srcdir@/../src/Generator.types.hh \
-                         @srcdir@/../src/Generator.defs.hh \
-                         @srcdir@/../src/Generator.inlines.hh \
-                         @srcdir@/../src/Generator.cc \
-                         @srcdir@/../src/ConSys.types.hh \
-                         @srcdir@/../src/ConSys.defs.hh \
-                         @srcdir@/../src/ConSys.inlines.hh \
-                         @srcdir@/../src/ConSys.cc \
-                         @srcdir@/../src/GenSys.defs.hh \
-                         @srcdir@/../src/GenSys.types.hh \
-                         @srcdir@/../src/GenSys.inlines.hh \
-                         @srcdir@/../src/GenSys.cc \
-                         @srcdir@/../src/Status.types.hh \
-                         @srcdir@/../src/Status.defs.hh \
-                         @srcdir@/../src/Status.inlines.hh \
-                         @srcdir@/../src/Status.cc \
-                         @srcdir@/../src/Polyhedron.types.hh \
-                         @srcdir@/../src/Polyhedron.defs.hh \
-                         @srcdir@/../src/Polyhedron.inlines.hh \
-                         @srcdir@/../src/Polyhedron.cc \
-                         @srcdir@/../src/conversion.cc \
-                         @srcdir@/../src/minimize.cc \
-                         @srcdir@/../src/simplify.cc \
-                         @srcdir@/../src/Poly_Con_Relation.types.hh \
-                         @srcdir@/../src/Poly_Con_Relation.defs.hh \
-                         @srcdir@/../src/Poly_Con_Relation.inlines.hh \
-                         @srcdir@/../src/Poly_Con_Relation.cc \
-                         @srcdir@/../src/Poly_Gen_Relation.types.hh \
-                         @srcdir@/../src/Poly_Gen_Relation.defs.hh \
-                         @srcdir@/../src/Poly_Gen_Relation.inlines.hh \
-                         @srcdir@/../src/Poly_Gen_Relation.cc \
-                         @srcdir@/../src/C_Polyhedron.types.hh \
-                         @srcdir@/../src/C_Polyhedron.defs.hh \
-                         @srcdir@/../src/C_Polyhedron.inlines.hh \
-                         @srcdir@/../src/C_Polyhedron.cc \
-                         @srcdir@/../src/NNC_Polyhedron.types.hh \
-                         @srcdir@/../src/NNC_Polyhedron.defs.hh \
-                         @srcdir@/../src/NNC_Polyhedron.inlines.hh \
-                         @srcdir@/../src/NNC_Polyhedron.cc \
-                         @srcdir@/../interfaces/C/ppl_c.h \
-                         @srcdir@/../interfaces/C/ppl_c.cc \
-                         @srcdir@/../interfaces/Prolog/Prolog_interface.dox \
-                         @srcdir@/../interfaces/Prolog/Ciao/ppl_ciao.cc \
-                         @srcdir@/../interfaces/Prolog/GNU/ppl_gprolog.cc \
-                         @srcdir@/../interfaces/Prolog/SICStus/ppl_sicstus.cc \
-                         @srcdir@/../interfaces/Prolog/SWI/ppl_swiprolog.cc \
-                         @srcdir@/gpl.dox \
-                         @srcdir@/fdl.dox
+INPUT                  = \
+@srcdir@/definitions.dox \
+@srcdir@/../src/Init.types.hh \
+@srcdir@/../src/Init.defs.hh \
+@srcdir@/../src/Init.inlines.hh \
+@srcdir@/../src/Init.cc \
+@srcdir@/../src/initializer.hh \
+@srcdir@/../src/globals.hh \
+@srcdir@/../src/globals.cc \
+@srcdir@/../src/Topology.hh \
+@srcdir@/../src/Row.types.hh \
+@srcdir@/../src/Row.defs.hh \
+@srcdir@/../src/Row.inlines.hh \
+@srcdir@/../src/Row.cc \
+@srcdir@/../src/Matrix.types.hh \
+@srcdir@/../src/Matrix.defs.hh \
+@srcdir@/../src/Matrix.inlines.hh \
+@srcdir@/../src/Matrix.cc \
+@srcdir@/../src/SatRow.types.hh \
+@srcdir@/../src/SatRow.defs.hh \
+@srcdir@/../src/SatRow.inlines.hh \
+@srcdir@/../src/SatRow.cc \
+@srcdir@/../src/SatMatrix.types.hh \
+@srcdir@/../src/SatMatrix.defs.hh \
+@srcdir@/../src/SatMatrix.inlines.hh \
+@srcdir@/../src/SatMatrix.cc \
+@srcdir@/../src/Variable.types.hh \
+@srcdir@/../src/Variable.defs.hh \
+@srcdir@/../src/Variable.inlines.hh \
+@srcdir@/../src/Variable.cc \
+@srcdir@/../src/LinExpression.types.hh \
+@srcdir@/../src/LinExpression.defs.hh \
+@srcdir@/../src/LinExpression.inlines.hh \
+@srcdir@/../src/LinExpression.cc \
+@srcdir@/../src/Constraint.types.hh \
+@srcdir@/../src/Constraint.defs.hh \
+@srcdir@/../src/Constraint.inlines.hh \
+@srcdir@/../src/Constraint.cc \
+@srcdir@/../src/Generator.types.hh \
+@srcdir@/../src/Generator.defs.hh \
+@srcdir@/../src/Generator.inlines.hh \
+@srcdir@/../src/Generator.cc \
+@srcdir@/../src/ConSys.types.hh \
+@srcdir@/../src/ConSys.defs.hh \
+@srcdir@/../src/ConSys.inlines.hh \
+@srcdir@/../src/ConSys.cc \
+@srcdir@/../src/GenSys.defs.hh \
+@srcdir@/../src/GenSys.types.hh \
+@srcdir@/../src/GenSys.inlines.hh \
+@srcdir@/../src/GenSys.cc \
+@srcdir@/../src/Status.types.hh \
+@srcdir@/../src/Status.defs.hh \
+@srcdir@/../src/Status.inlines.hh \
+@srcdir@/../src/Status.cc \
+@srcdir@/../src/Polyhedron.types.hh \
+@srcdir@/../src/Polyhedron.defs.hh \
+@srcdir@/../src/Polyhedron.inlines.hh \
+@srcdir@/../src/Polyhedron.cc \
+@srcdir@/../src/conversion.cc \
+@srcdir@/../src/minimize.cc \
+@srcdir@/../src/simplify.cc \
+@srcdir@/../src/Poly_Con_Relation.types.hh \
+@srcdir@/../src/Poly_Con_Relation.defs.hh \
+@srcdir@/../src/Poly_Con_Relation.inlines.hh \
+@srcdir@/../src/Poly_Con_Relation.cc \
+@srcdir@/../src/Poly_Gen_Relation.types.hh \
+@srcdir@/../src/Poly_Gen_Relation.defs.hh \
+@srcdir@/../src/Poly_Gen_Relation.inlines.hh \
+@srcdir@/../src/Poly_Gen_Relation.cc \
+@srcdir@/../src/C_Polyhedron.types.hh \
+@srcdir@/../src/C_Polyhedron.defs.hh \
+@srcdir@/../src/C_Polyhedron.inlines.hh \
+@srcdir@/../src/C_Polyhedron.cc \
+@srcdir@/../src/NNC_Polyhedron.types.hh \
+@srcdir@/../src/NNC_Polyhedron.defs.hh \
+@srcdir@/../src/NNC_Polyhedron.inlines.hh \
+@srcdir@/../src/NNC_Polyhedron.cc \
+@srcdir@/../interfaces/C/ppl_c.h \
+@srcdir@/../interfaces/C/ppl_c.cc \
+@srcdir@/../interfaces/Prolog/Prolog_interface.dox \
+@srcdir@/../interfaces/Prolog/Ciao/ppl_ciao.cc \
+@srcdir@/../interfaces/Prolog/GNU/ppl_gprolog_sd.cc \
+@srcdir@/../interfaces/Prolog/SICStus/ppl_sicstus_sd.cc \
+@srcdir@/../interfaces/Prolog/SWI/ppl_swiprolog.cc \
+@srcdir@/../interfaces/Prolog/YAP/ppl_yap.cc \
+@srcdir@/gpl.dox \
+@srcdir@/fdl.dox
 
 # If the value of the INPUT tag contains directories, you can use the 
 # FILE_PATTERNS tag to specify one or more wildcard pattern (like *.cpp 
