@@ -1728,11 +1728,15 @@ time_watch(Topology, Goal, NoTimeOut, TimeOut) :-
 % has a wrong exception message, then exceptions/0 will fail.
 
 exceptions :-
+   current_prolog_flag(bounded, Y),
    make_vars(3, V),
-   (exception_prolog(_, V) ;   exception_cplusplus(_, V)),
+   (  exception_prolog(_, V) ;
+      (Y == true -> exception_sys_prolog(_, V) ; fail) ;
+      exception_cplusplus(_, V)
+   ),
    !,
    fail.
-exceptions:- !.
+exceptions :- !.
 
 exception_prolog(1, [A,B,C]) :-
    catch(ppl_new_Polyhedron_from_generators(_, [point(A + B + C, 1)], _),
@@ -1753,16 +1757,63 @@ exception_prolog(3, _) :-
         ).
 
 exception_prolog(4, _) :-
-  ppl_new_Polyhedron_from_dimension(c, 0, _P),
-  catch(ppl_Polyhedron_space_dimension(_P1, _N),
+  ppl_new_Polyhedron_from_dimension(c, 0, _),
+  catch(ppl_Polyhedron_space_dimension(_, _N),
           M, 
          check_exception(invalid_argument(M))
         ).
 
-% checks the exception message for the Prolog interface exceptions
+exception_prolog(5, [A,B,_]) :-
+  ppl_new_Polyhedron_from_generators(c, 
+               [point(A + B), ray(A), ray(B)], P),
+  catch(ppl_Polyhedron_affine_image(P, A, A + B + 1, i),
+          M, 
+         check_exception(invalid_argument(M))
+        ).
 
-check_exception(Exception_Goal):-
-         (call(Exception_Goal) -> fail ; true).
+exception_prolog(6, [A,_,_]) :-
+  ppl_new_Polyhedron_from_dimension(c, 3, P),
+  catch(ppl_Polyhedron_remove_dimensions(P, [A,1]),
+          M, 
+         check_exception(invalid_argument(M))
+        ).
+
+exception_prolog(7, _) :-
+  catch(ppl_set_timeout(-1),
+          M, 
+         check_exception(invalid_argument(M))
+        ).
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+exception_sys_prolog(1, [A,B,_]) :-
+  current_prolog_flag(max_integer, MaxInt),
+  Max is (MaxInt // 2) + 1,
+  ppl_new_Polyhedron_from_generators(c, [point(Max * A), point(B, 2)], P),
+  catch(ppl_Polyhedron_get_constraints(P, _),
+          M, 
+         check_exception(representation_error(M))
+       ).
+
+exception_sys_prolog(2, [A,B,_]) :-
+  current_prolog_flag(min_integer, MinInt),
+  Min is (MinInt // 2) - 1,
+  ppl_new_Polyhedron_from_generators(c, [point(Min * A), point(B, 2)], P),
+  catch(ppl_Polyhedron_get_constraints(P, _),
+          M, 
+         check_exception(representation_error(M))
+       ).
+
+exception_sys_prolog(3, _) :-
+  current_prolog_flag(max_integer, MaxInt),
+  Max is MaxInt + 1,
+  catch(ppl_set_timeout(Max),
+          M, 
+         check_exception(invalid_argument(M))
+        ).
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
 exception_cplusplus(1, [A,B,C]) :-
    catch(ppl_new_Polyhedron_from_generators(C, [point(A + B + C, 0)], _),
@@ -1907,7 +1958,21 @@ make_quiet :-
    ; assertz(noisy(0))
   ).
 
+% checks the exception message for the Prolog interface exceptions
+
+check_exception(Exception_Goal):-
+         (call(Exception_Goal) -> fail ; true).
+
 invalid_argument(ppl_invalid_argument(found(F), expected(E), where(W))) :-
   display_message(['PPL Prolog Interface Exception: ', nl, '   ',
                    F, 'is an invalid argument for', W, nl, '   ',
                   F, 'should be', E, '.']).
+
+representation_error(ppl_representation_error(I,
+                                       where(W))) :-
+  (name(I,[45|_]) -> B = 'less than the minimum' ;
+                     B = 'more than the maximum'),
+  display_message(['PPL Prolog Interface Exception: ', nl, '   ',
+                   'This Prolog system has bounded integers', nl, '   ',
+                   I, 'is', B, 'allowed for integers', nl, '   ',
+                   'in call to', W, '.']).
