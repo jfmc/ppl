@@ -110,7 +110,8 @@ namespace std {
 inline void
 swap(Parma_Polyhedra_Library::LinExpression& x,
      Parma_Polyhedra_Library::LinExpression& y) {
-  x.swap(y);
+  swap(static_cast<Parma_Polyhedra_Library::Row&>(x), 
+       static_cast<Parma_Polyhedra_Library::Row&>(y));
 }
 
 } // namespace std

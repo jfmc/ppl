@@ -175,7 +175,8 @@ namespace std {
 inline void
 swap(Parma_Polyhedra_Library::GenSys& x,
      Parma_Polyhedra_Library::GenSys& y) {
-  x.swap(y);
+  swap(static_cast<Parma_Polyhedra_Library::Matrix&>(x), 
+       static_cast<Parma_Polyhedra_Library::Matrix&>(y));
 }
 
 } // namespace std

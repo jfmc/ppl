@@ -150,7 +150,7 @@ PPL::operator<<(std::ostream& s, const Constraint& c) {
   int num_variables = c.space_dimension();
   bool first = true;
   for (int v = 0; v < num_variables; ++v) {
-    Integer cv = c[v+1];
+    Integer cv = c.coefficient(Variable(v));
     if (cv != 0) {
       if (!first) {
 	if (cv > 0)
@@ -183,7 +183,7 @@ PPL::operator<<(std::ostream& s, const Constraint& c) {
     relation_symbol = " > ";
     break;
   }
-  s << relation_symbol << -c[0];
+  s << relation_symbol << -c.inhomogeneous_term();
   return s;
 }
 

@@ -292,7 +292,8 @@ namespace std {
 inline void
 swap(Parma_Polyhedra_Library::Constraint& x,
      Parma_Polyhedra_Library::Constraint& y) {
-  x.swap(y);
+  swap(static_cast<Parma_Polyhedra_Library::Row&>(x), 
+       static_cast<Parma_Polyhedra_Library::Row&>(y));
 }
 
 } // namespace std

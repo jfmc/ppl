@@ -27,6 +27,9 @@ site: http://www.cs.unipr.it/ppl/ . */
 #include "Topology.hh"
 #include "Row.types.hh"
 #include "Integer.types.hh"
+#include "LinExpression.types.hh"
+#include "Constraint.types.hh"
+#include "Generator.types.hh"
 #include <cstddef>
 #include <iosfwd>
 
@@ -70,15 +73,12 @@ The class Row allows us to build objects like these:
 #endif // PPL_DOXYGEN_INCLUDE_IMPLEMENTATION_DETAILS
 
 class Parma_Polyhedra_Library::Row {
-
 public:
   //! Returns the inhomogeneous term.
   const Integer& inhomogeneous_term() const;
 
   //! Returns the coefficient \f$a_n\f$.
   const Integer& coefficient(size_t n) const;
-
-public:
 
   enum Kind {
     LINE_OR_EQUALITY = 0,
@@ -156,7 +156,6 @@ public:
   void set_not_necessarily_closed();
   //@}
 
-public:
   //! Gives the number of coefficients currently in use.
   size_t size() const;
 
@@ -185,6 +184,10 @@ public:
   bool OK(size_t row_size, size_t row_capacity) const;
 
 private:
+  friend class Parma_Polyhedra_Library::LinExpression;
+  friend class Parma_Polyhedra_Library::Constraint;
+  friend class Parma_Polyhedra_Library::Generator;
+
   class Impl;
 
   //! The real implementation, as far as memory allocation is concerned.
