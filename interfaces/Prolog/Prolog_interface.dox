@@ -831,8 +831,7 @@ to be used has the following meaning:
 
    Succeeds only if the polyhedron referenced by
    <CODE>Handle</CODE is well formed, i.e., if it
-   satisfies all its implementation invariants
-   is broken.  Useful for debugging purposes.
+   satisfies all its implementation invariants.  Useful for debugging purposes.
 
 <H2><CODE>ppl_Polyhedron_add_constraint(+Handle, +Constraint)</CODE></H2>
 
