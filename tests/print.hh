@@ -26,36 +26,51 @@ easy_print(const Polyhedron& ph,
 }
 
 inline void
+print_constraints(const ConSys& cs,
+		  const string& intro = "",
+		  ostream& s = cout) {
+  if (!intro.empty())
+    s << intro << endl;
+  ConSys::const_iterator i = cs.begin();
+  ConSys::const_iterator cs_end = cs.end();
+  while (i != cs_end) {
+    s << *i++;
+    if (i != cs_end)
+      s << "," << endl;
+  }
+  s << "." << endl;
+}
+
+inline void
 print_constraints(const Polyhedron& ph,
 		  const string& intro = "",
 		  ostream& s = cout) {
-  if (!easy_print(ph, intro, s)) {
-    const ConSys& cs = ph.constraints();
-    ConSys::const_iterator i = cs.begin();
-    ConSys::const_iterator cs_end = cs.end();
-    while (i != cs_end) {
-      s << *i++;
-      if (i != cs_end)
-	s << "," << endl;
-    }
-    s << "." << endl;
+  if (!easy_print(ph, intro, s))
+    print_constraints(ph.constraints(), "", s);
+}
+
+inline void
+print_generators(const GenSys& gs,
+		 const string& intro = "",
+		 ostream& s = cout) {
+  if (!intro.empty())
+    s << intro << endl;
+  GenSys::const_iterator i = gs.begin();
+  GenSys::const_iterator gs_end = gs.end();
+  while (i != gs_end) {
+    s << *i++;
+    if (i != gs_end)
+      s << "," << endl;
   }
+  s << "." << endl;
 }
 
 inline void
 print_generators(const Polyhedron& ph,
 		 const string& intro = "",
 		 ostream& s = cout) {
-  if (!easy_print(ph, intro, s)) {
-    const GenSys& gs = ph.generators();
-    GenSys::const_iterator i = gs.begin();
-    GenSys::const_iterator gs_end = gs.end();
-    while (i != gs_end) {
-      s << *i++;
-      if (i != gs_end)
-	s << "," << endl;
-    }
-    s << "." << endl;
-  }
+  if (!easy_print(ph, intro, s))
+    print_generators(ph.generators(), "", s);
 }
+
 #endif
