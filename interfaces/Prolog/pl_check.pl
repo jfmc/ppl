@@ -21,17 +21,15 @@ USA.
 For the most up-to-date information see the Parma Polyhedra Library
 site: http://www.cs.unipr.it/ppl/ . */
 
+:- dynamic(noisy/0).
 
-% noisy(F)
-% When F = 1, a message is displayed if a time out occurs
-% when running the `timeout' predicate.
+% noisy
+% When noisy is defined, a message is displayed if a time out 
+% occurs when running the `timeout' predicate.
 % Also, the values of the PPL versions and banner are displayed.
-% When F = 0, no 'time out' message or versions are displayed.
-% noisy/1 can be reset by calling make_noisy/0 or make_quiet/0.
+% When noisy is not defined, no 'time out' message or versions are displayed.
 
-:- dynamic(noisy/1).
-
-noisy(0).
+%noisy.
 
 % check_all
 % This executes all the test predicates which, together, check all
@@ -223,7 +221,7 @@ catch_time :-
   
 
 % Tests predicates that return the versions nad the PPL banner.
-% If noisy(0) holds, there is no output but if not,
+% If noisy is not defined, there is no output but if is is,
 % all the versions are printed and the banner is pretty printed.
 all_versions_and_banner :-
   ppl_initialize,
@@ -233,7 +231,7 @@ all_versions_and_banner :-
   ppl_version_beta(Vbeta),
   ppl_version(V),
   ppl_banner(B),
-  (noisy(0) -> true ;
+  (noisy ->
      (
       write('Version major is '), write(Vmajor), nl,
       write('Version minor is '), write(Vminor), nl,
@@ -242,6 +240,7 @@ all_versions_and_banner :-
       write('Version is '), write(V), nl,
       banner_pp(B), nl
      )
+  ; true
   ),
   !,
   ppl_finalize.
@@ -252,26 +251,26 @@ banner_pp(B) :-
   !,
   format_banner(Bcodes).
 
-format_banner([]) :- nl.
-format_banner([_]) :- nl.
-format_banner([C,C1|Chars]):-
-  ([C,C1] == "/n" ->
-     (nl,
-     format_banner(Chars))
-   ;
-     (put_code(C),
-     format_banner([C1|Chars]))
-  ).
+format_banner([]).
+format_banner([_]).
+format_banner(["/n"|Chars]):-
+  nl,
+  format_banner(Chars), !.
+format_banner([C|Chars]):- 
+  put_code(C),
+  format_banner(Chars).
 
 % Tests predicates that return the maximum allowed dimension.
-% If noisy(0) holds, there is no output but if not, the maximum is printed.
+% If noisy does not hold, there is no output but if not,
+% the maximum is printed.
 max_dim :-
   ppl_initialize,
   ppl_max_space_dimension(M),
-  (noisy(0) -> true ;
+  (noisy -> 
      (
       write('Maximum possible dimension is '), write(M), nl
      )
+  ; true
   ),
   !,
   ppl_finalize.
@@ -1315,26 +1314,12 @@ rel_cons :-
   R1 = [strictly_intersects],
   ppl_Polyhedron_relation_with_constraint(P, A >= 0, R2),
   R2 = [is_included],
-  ppl_Polyhedron_relation_with_constraint(P, C >= 0, R3),
-  (R3 = [is_included, saturates] ; R3 = [saturates, is_included]),
-  ppl_delete_Polyhedron(P).
-
-% Tests ppl_Polyhedron_relation_with_constraint.
-rel_cons1 :-
-  make_vars(3, [A, B, C]),
-  ppl_new_Polyhedron_from_dimension(c, 3, P),
-  ppl_Polyhedron_add_constraints(P, [A >= 1, B >= 0, C = 0]),
-  \+ ppl_Polyhedron_relation_with_constraint(P, A = 0, x),
-  ppl_Polyhedron_relation_with_constraint(P, A = 0, R),
-  R = [is_disjoint],
-  ppl_Polyhedron_relation_with_constraint(P, A = 1, R1),
-  R1 = [strictly_intersects],
-  ppl_Polyhedron_relation_with_constraint(P, A >= 0, R2),
-  R2 = [is_included],
-/*
-% ppl_Polyhedron_relation_with_constraint(P, C >= 0, R3),
+  ppl_new_Polyhedron_from_dimension(c, 3, P1),
+  ppl_Polyhedron_add_constraints(P1, [A >= 1, B >= 0, C = 0]),
+  ppl_Polyhedron_relation_with_constraint(P1, C >= 0, R3),
 %  (R3 = [is_included, saturates] ; R3 = [saturates, is_included]),
-*/
+ (R3 = [is_included, saturates] ; R3 = [saturates, is_included] ; R3 = [is_included, is_included]),
+  ppl_delete_Polyhedron(P1),
   ppl_delete_Polyhedron(P).
 
 % Tests ppl_Polyhedron_relation_with_generator.
@@ -1748,7 +1733,7 @@ error_message(Message):-
    fail.
 
 display_message(Message):-
-   noisy(1), !,
+   noisy, !,
    nl, write_all(Message), nl.
 display_message(_).
 
@@ -1769,11 +1754,4 @@ make_var_list(I,Dim,['$VAR'(I)|VarList]):-
   I1 is I + 1,
   make_var_list(I1,Dim,VarList).
 
-make_noisy :-
-  retractall(noisy(_)),
-  assertz(noisy(1)).
-
-make_quiet :-
-  retractall(noisy(_)),
-  assertz(noisy(0)).
-
+:- ppl_initialize.
