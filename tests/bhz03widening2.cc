@@ -38,36 +38,6 @@ Variable B(1);
 
 typedef Polyhedra_PowerSet<C_Polyhedron> PSet;
 
-PSet
-S(unsigned n) {
-  PSet s(2, Polyhedron::EMPTY);
-  n += 3;
-  if (n % 2 == 0) {
-    C_Polyhedron p(2);
-    p.add_constraint(A >= 1);
-    p.add_constraint(A <= n);
-    p.add_constraint(B == 1);
-    s.add_disjunct(p);
-  }
-  else {
-    C_Polyhedron p(2);
-    C_Polyhedron q(2);
-    C_Polyhedron r(2);
-    p.add_constraint(A >= 1);
-    p.add_constraint(B == 0);
-    q.add_constraint(A >= 2);
-    q.add_constraint(A <= n);
-    q.add_constraint(B == 1);
-    r.add_constraint(A >= 1);
-    r.add_constraint(A <= n-1);
-    r.add_constraint(B == 1);
-    s.add_disjunct(p);
-    s.add_disjunct(q);
-    s.add_disjunct(r);
-  }
-  return s;
-}
-
 } // namespace
 
 int
