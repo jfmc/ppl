@@ -281,7 +281,7 @@ static void
 ppl_Prolog_sysdep_init() {
 }
 
-#include "../ppl_prolog.outlines.hh"
+#include "../ppl_prolog.icc"
 
 #define SP_STUB_1(name, arity) \
 extern "C" Prolog_foreign_return_type \

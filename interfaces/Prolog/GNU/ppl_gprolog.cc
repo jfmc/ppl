@@ -326,4 +326,4 @@ Integer_to_integer_term(const PPL::Integer& n) {
   return Mk_Integer(n.get_si());
 }
 
-#include "../ppl_prolog.outlines.hh"
+#include "../ppl_prolog.icc"

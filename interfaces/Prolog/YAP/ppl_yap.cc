@@ -297,7 +297,7 @@ static void
 ppl_Prolog_sysdep_init() {
 }
 
-#include "../ppl_prolog.outlines.hh"
+#include "../ppl_prolog.icc"
 
 #define YAP_USER_C_PREDICATE(name, arity) \
  UserCPredicate(#name, reinterpret_cast<int(*)()>(name), arity)

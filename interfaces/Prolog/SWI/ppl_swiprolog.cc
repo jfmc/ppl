@@ -272,7 +272,7 @@ static void
 ppl_Prolog_sysdep_init() {
 }
 
-#include "../ppl_prolog.outlines.hh"
+#include "../ppl_prolog.icc"
 
 #define PL_EXTENSION_ENTRY(name, arity) { #name, arity, (void*) name, 0 },
 
