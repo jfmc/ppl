@@ -237,6 +237,11 @@ PPL::Generator::is_matching_closure_point(const Generator& p) const {
   }
 }
 
+bool
+PPL::Generator::is_minus_epsilon_ray() const {
+  assert(!is_necessarily_closed());
+  return is_ray() && ((*this)[size() - 1] < 0);
+}
 
 bool
 PPL::Generator::OK() const {

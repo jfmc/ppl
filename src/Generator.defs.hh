@@ -403,6 +403,15 @@ private:
   //! \p *this has the same \e coordinates of the point \p p.
   bool is_matching_closure_point(const Generator& p) const;
 
+  //! \brief
+  //! Returns <CODE>true</CODE> if and only if the generator
+  //! is a ray having a negative epsilon coefficient.
+  /*!
+    It is assumed that the topology of *this is
+    <CODE>NOT_NECESSARILY_CLOSED</CODE>.
+  */
+  bool is_minus_epsilon_ray() const;
+
   //! Default constructor: private and not implemented.
   Generator();
 };
