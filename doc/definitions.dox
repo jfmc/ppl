@@ -31,7 +31,7 @@ Most of the following definitions and results are taken from:
   interne n. 785, December 1993.
 - K. Fukuda - Polyhedral Computation FAQ - Swiss Federal Institute of
   Technology, Lausanne and Zurich, Switzerland, October 2000.
-- R. Bagnara, E. Ricci, E. Zaffanella, and P. M. Hill - Possibly Not Closed
+- R. Bagnara, E. Ricci, E. Zaffanella and P. M. Hill - Possibly Not Closed
   Convex Polyhedra and the Parma Polyhedra Library - Quaderno 286 -
   Department of Mathematics, University of Parma, Italy, May 2002.
 
@@ -51,13 +51,13 @@ as a matrix in \f$\Rset^{n \times 1}\f$ and manipulated accordingly
 using the usual definitions for addition, multiplication
 (both by a scalar and by another matrix), and transposition,
 denoted by \f$\vect{v}^\transpose\f$.
+
 The <EM>scalar product</EM> of \f$\vect{v},\vect{w} \in \Rset^n\f$,
 denoted \f$\langle \vect{v}, \vect{w} \rangle\f$,
 is the real number
 \f[
   \vect{v}^\transpose \vect{w} = \sum_{i=0}^{n-1} v_i w_i.
 \f]
-
 
 <B>Affine hyperplanes and half-spaces</B>
 
@@ -80,7 +80,7 @@ can be defined as the intersection of the two closed affine half-spaces
 \f$\langle \vect{a}, \vect{x} \rangle \geq b\f$ and
 \f$\langle -\vect{a}, \vect{x} \rangle \geq -b\f$.
 Also note that, when \f$\vect{a} = \vect{0}\f$,
-the constraint \f$0 \relop b\f$ is either a tauthology (i.e., always true)
+the constraint \f$0 \relop b\f$ is either a tautology (i.e., always true)
 or inconsistent (i.e., always false), so that it defines
 either the whole vector space \f$\Rset^n\f$ or the empty set.
 
@@ -142,7 +142,6 @@ and their poly-hull \f$\cP_1 \uplus \cP_2 \in \CPset_n\f$
 are still closed polyhedra. In theoretical terms,
 \f$\CPset_n\f$ is a <EM>sub-lattice</EM> of \f$\Pset_n\f$.
 
-
 <B>Constraints representation</B>
 
 In the sequel, we will simply write ``equality'' and ``inequality''
@@ -170,23 +169,6 @@ the number of non-strict inequalities, and
 the number of strict inequalities,
 respectively.
 
-
-<B>The generators of a NNC polyhedron</B>
-
-Let \f$\cP \in \Pset_n\f$ be an NNC polyhedron. Then
-- a vector \f$\vect{p} \in \cP\f$ is called a <EM>point</EM> of \f$\cP\f$;
-- a vector \f$\vect{c} \in \Rset^n\f$ is called a
-  <EM>closure point</EM> of \f$\cP\f$ if it is a point
-  of the topological closure of \f$\cP\f$;
-- a vector \f$\vect{r} \in \Rset^n\f$, where \f$\vect{r} \neq \vect{0}\f$,
-  is called a <EM>ray</EM> (or direction of infinity) of \f$\cP\f$
-  if \f$\cP \neq \emptyset\f$ and,
-  for all points \f$\vect{p} \in \cP\f$ and all \f$\lambda \in \nonnegRset\f$,
-  it holds \f$\vect{p} + \lambda \vect{r} \in \cP\f$;
-- a vector \f$\vect{l} \in \Rset^n\f$ is called a <EM>line</EM> of \f$\cP\f$
-  if both \f$\vect{l}\f$ and \f$-\vect{l}\f$ are rays of \f$\cP\f$.
-
-
 <B>Combinations, hulls and Minkowski's sum</B>
 
 Let \f$S = \{ \vect{x}_1, \ldots, \vect{x}_k \} \sseq \Rset^n\f$
@@ -202,20 +184,15 @@ Such a combination is said to be
 
 We denote by \f$\linearhull(S)\f$
 (resp., \f$\conichull(S)\f$, \f$\affinehull(S)\f$, \f$\convexhull(S)\f$)
-the set of all the linear (resp., positive, affine, convex) combinations
-of the vectors in \f$S\f$.
+the set of all the linear (resp., positive, affine, convex)
+combinations of the vectors in \f$S\f$.
 
-Let \f$P, C \sseq \Rset^n\f$ be such that \f$P \union C = S\f$.
-A convex combination \f$\vect{v} = \sum_{j=1}^k \lambda_j \vect{x}_j\f$
-of the vectors in \f$S\f$ is said to be an <EM>NNC-convex</EM> combination
-of \f$P\f$ and \f$C\f$ if there exists \f$\vect{x}_j \in P\f$
-such that \f$\lambda_j > 0\f$
-(i.e., there exists a vector in \f$P\f$ that plays an active role
-in the convex combination).
-We denote by  \f$\NNChull(P, C)\f$ the set of all NNC-convex combinations
-of \f$P\f$ and \f$C\f$.
-Note that, whenever \f$C \sseq P\f$, it holds
-\f$\NNChull(P, C) = \convexhull(P)\f$.
+Let \f$P, C \sseq \Rset^n\f$ where \f$P \union C = S\f$.
+We denote by  \f$\NNChull(P, C)\f$ the set of all convex combinations
+of the vectors in \f$S\f$
+such that \f$\lambda_j > 0\f$ for some \f$\vect{x}_j \in P\f$.
+It follows that \f$\NNChull(P, C) = \convexhull(P)\f$
+if \f$C \sseq P\f$.
 
 For any \f$S_1, S_2 \sseq \Rset^n\f$, the <EM>Minkowski's sum</EM> of
 \f$R\f$ and \f$S\f$ is:
@@ -226,6 +203,34 @@ For any \f$S_1, S_2 \sseq \Rset^n\f$, the <EM>Minkowski's sum</EM> of
                 \vect{v}_1 \in S_1, \vect{v}_2 \in S_2
               \,\}.
 \f]
+
+<B>The generators of an NNC polyhedron</B>
+
+Let \f$\cP \in \Pset_n\f$ be an NNC polyhedron. Then
+- a vector \f$\vect{p} \in \cP\f$ is called a <EM>point</EM> of \f$\cP\f$;
+- a vector \f$\vect{c} \in \Rset^n\f$ is called a
+  <EM>closure point</EM> of \f$\cP\f$ if it is a point
+  of the topological closure of \f$\cP\f$;
+- a vector \f$\vect{r} \in \Rset^n\f$, where \f$\vect{r} \neq \vect{0}\f$,
+  is called a <EM>ray</EM> (or direction of infinity) of \f$\cP\f$
+  if \f$\cP \neq \emptyset\f$ and,
+  for all points \f$\vect{p} \in \cP\f$ and all \f$\lambda \in \nonnegRset\f$,
+  it holds \f$\vect{p} + \lambda \vect{r} \in \cP\f$;
+- a vector \f$\vect{l} \in \Rset^n\f$ is called a <EM>line</EM> of \f$\cP\f$
+  if both \f$\vect{l}\f$ and \f$-\vect{l}\f$ are rays of \f$\cP\f$.
+
+A point of a polyhedron \f$P\f$ is a <EM>vertex</EM> if and only if
+it cannot be expressed as a convex combination of any other pair of
+distinct points in \f$P\f$.
+A ray \f$\vect{r}\f$ of a polyhedron \f$P\f$ is an <EM>extreme ray</EM>
+if and only if it cannot be expressed as
+a positive combination of any other pair
+\f$\vect{r}_1\f$ and \f$\vect{r}_2\f$ of rays of \f$P\f$,
+where
+\f$\vect{r} \neq \lambda \vect{r}_1\f$,
+\f$\vect{r} \neq \lambda \vect{r}_2\f$ and
+\f$\vect{r}_1 \neq \lambda \vect{r}_2\f$
+for all \f$\lambda \in \Rset, \lambda \geq 0\f$.
 
 <B>Generators representation</B>
 
@@ -305,24 +310,6 @@ affinely independent points in \f$P\f$ is \f$k + 1\f$.
 What is the dimension of the <EM>empty</EM> polyhedron?
 If the above definition is applied to an empty polyhedron,
 then the answer would be \f$-1\f$.
-
-<B>Vertex</B>
-
-A <EM>vertex</EM> of a polyhedron \f$P\f$ is any point in \f$P\f$
-which cannot be expressed as a convex combination of any other
-distinct points in \f$P\f$.
-
-<B>Extreme ray</B>
-
-A ray \f$\vect{r}\f$ of a polyhedron \f$P\f$ is an <EM>extreme ray</EM>
-if and only if it cannot be expressed as
-a positive combination of any other pair
-\f$\vect{r}_1\f$ and \f$\vect{r}_2\f$ of rays of \f$P\f$,
-where
-\f$\vect{r} \neq \lambda \vect{r}_1\f$,
-\f$\vect{r} \neq \lambda \vect{r}_2\f$ and
-\f$\vect{r}_1 \neq \lambda \vect{r}_2\f$
-for all \f$\lambda \in \Rset, \lambda \geq 0\f$.
 
 <B>Cone</B>
 
