@@ -25,7 +25,10 @@ site: http://www.cs.unipr.it/ppl/ . */
 /*! \file
 
 This file implements the C interface.
-Detailed description with examples to be written.
+*/
+/*
+  FIXME: a detailed description with examples should be added
+  to the above Doxygen comment.
 */
 
 #ifndef PPL_ppl_c_h
