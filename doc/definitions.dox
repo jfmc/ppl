@@ -388,9 +388,9 @@ when performing operations on the polyhedron.
 Unless it is otherwise stated,
 all the polyhedra, constraints and/or generators in any library operation
 must obey the following <EM>topological-compatibility</EM> rules:
-- polyhedra are tologically-compatible if and only if they have
+- polyhedra are topologically-compatible if and only if they have
   the same topology;
-- all constraints except for strict constraints
+- all constraints except for strict inequality constraints
   and all generators except for closure points are
   topologically-compatible with both C and NNC polyhedra;
 - strict inequality constraints and closure points are
