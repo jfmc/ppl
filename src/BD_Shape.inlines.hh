@@ -517,18 +517,18 @@ BD_Shape<T>::is_universe() const {
   if (marked_empty())
     return false;
 
-  dimension_type n = space_dimension();
+  dimension_type space_dim = space_dimension();
 
   // If system of bounded differences is zero-dimensional,
   // then it is necessarily an universe system of bounded differences.
-  if (n == 0)
+  if (space_dim == 0)
     return true;
 
   // An universe system of bounded differences has not constraints:
   // in all the cells of matrix `dbm' must have `plus infinity'.
-  for (dimension_type i = 0; i <= n; ++i) {
+  for (dimension_type i = 0; i <= space_dim; ++i) {
     const DB_Row<T>& dbm_i = dbm[i];
-    for (dimension_type j = 0; j <= n; ++j)
+    for (dimension_type j = 0; j <= space_dim; ++j)
       if (!is_plus_infinity(dbm_i[j]))
 	return false;
   }
