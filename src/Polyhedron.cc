@@ -1307,13 +1307,18 @@ PPL::Polyhedron::add_dimensions_and_constraints_lazy(const ConSys& cs) {
   con_sys.resize(old_num_rows + cs.num_rows(), space_dim + 1);
   for (size_t i = cs.num_rows(); i-- > 0; ) {
     Constraint& c = con_sys[old_num_rows + i];
-      c[0] = cs[i][0];
-      if (cs[i].is_equality())
-	c.set_is_equality();
-      for (size_t j = cs.num_columns(); j-- > 1; )
+    c[0] = cs[i][0];
+    if (cs[i].is_equality())
+      c.set_is_equality();
+    for (size_t j = cs.num_columns(); j-- > 1; )
       c[old_num_columns - 1 + j] = cs[i][j];
   }
- 
+
+#ifdef BE_LAZY
+  con_sys.set_sorted(false);
+#else
+  con_sys.sort_rows();
+#endif
   clear_constraints_minimized();
   clear_generators_up_to_date();
   clear_sat_g_up_to_date();
