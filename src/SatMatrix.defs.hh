@@ -71,9 +71,6 @@ public:
   //! Clears the matrix deallocating all its rows.
   void clear();
 
-  //! Transposes the matrix.
-  void transpose();
-
   //! Makes \p *this a transposed copy of \p y.
   void transpose_assign(const SatMatrix& y);
 
@@ -151,26 +148,6 @@ void swap(Parma_Polyhedra_Library::SatMatrix& x,
 	  Parma_Polyhedra_Library::SatMatrix& y);
 
 } // namespace std
-
-namespace Parma_Polyhedra_Library {
-
-#ifdef PPL_DOXYGEN_INCLUDE_IMPLEMENTATION_DETAILS
-//! \brief
-//! Returns <CODE>true</CODE> if and only if
-//! \p x and \p y are identical.
-/*! \relates SatMatrix */
-#endif // PPL_DOXYGEN_INCLUDE_IMPLEMENTATION_DETAILS
-bool operator==(const SatMatrix& x, const SatMatrix& y);
-
-#ifdef PPL_DOXYGEN_INCLUDE_IMPLEMENTATION_DETAILS
-//! \brief
-//! Returns <CODE>true</CODE> if and only if
-//! \p x and \p y are different.
-/*! \relates SatMatrix */
-#endif // PPL_DOXYGEN_INCLUDE_IMPLEMENTATION_DETAILS
-bool operator!=(const SatMatrix& x, const SatMatrix& y);
-
-} // namespace Parma_Polyhedra_Library
 
 #include "SatMatrix.inlines.hh"
 

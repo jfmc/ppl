@@ -76,19 +76,6 @@ PPL::SatMatrix::add_row(const SatRow& row) {
 }
 
 void
-PPL::SatMatrix::transpose() {
-  const SatMatrix& x = *this;
-  dimension_type nrows = num_rows();
-  dimension_type ncols = num_columns();
-  SatMatrix tmp(ncols, nrows);
-  for (dimension_type i = nrows; i-- > 0; )
-    for (int j = x[i].last(); j >= 0; j = x[i].prev(j))
-      tmp[j].set(i);
-  swap(tmp);
-  assert(OK());
-}
-
-void
 PPL::SatMatrix::transpose_assign(const SatMatrix& y) {
   dimension_type y_nrows = y.num_rows();
   dimension_type y_ncols = y.num_columns();
@@ -134,23 +121,6 @@ PPL::SatMatrix::resize(dimension_type new_n_rows,
 
   assert(OK());
 }
-
-/*! \relates Parma_Polyhedra_Library::SatMatrix */
-bool
-PPL::operator==(const SatMatrix& x, const SatMatrix& y) {
-  assert(x.OK());
-  assert(y.OK());
-  if (x.num_columns() != y.num_columns())
-    return false;
-  dimension_type x_num_rows = x.num_rows();
-  if (x_num_rows != y.num_rows())
-    return false;
-  for (dimension_type i = x_num_rows; i-- > 0; )
-    if (compare(x[i], y[i]) != 0)
-      return false;
-  return true;
-}
-
 
 bool
 PPL::SatMatrix::sorted_contains(const SatRow& row) const {
