@@ -48,6 +48,7 @@ PPL::LinExpression::LinExpression(const Generator& g)
 }
 
 
+/*! \relates Parma_Polyhedra_Library::LinExpression */
 PPL::LinExpression
 PPL::operator+(const LinExpression& e1, const LinExpression& e2) {
   dimension_type e1_size = e1.size();
@@ -81,6 +82,7 @@ PPL::operator+(const LinExpression& e1, const LinExpression& e2) {
 }
 
 
+/*! \relates Parma_Polyhedra_Library::LinExpression */
 PPL::LinExpression
 PPL::operator+(const Integer& n, const LinExpression& e) {
   LinExpression r(e);
@@ -89,6 +91,7 @@ PPL::operator+(const Integer& n, const LinExpression& e) {
 }
 
 
+/*! \relates Parma_Polyhedra_Library::LinExpression */
 PPL::LinExpression
 PPL::operator-(const LinExpression& e) {
   LinExpression r(e);
@@ -98,6 +101,7 @@ PPL::operator-(const LinExpression& e) {
 }
 
 
+/*! \relates Parma_Polyhedra_Library::LinExpression */
 PPL::LinExpression
 PPL::operator-(const LinExpression& e1, const LinExpression& e2) {
   dimension_type e1_size = e1.size();
@@ -131,6 +135,7 @@ PPL::operator-(const LinExpression& e1, const LinExpression& e2) {
 }
 
 
+/*! \relates Parma_Polyhedra_Library::LinExpression */
 PPL::LinExpression
 PPL::operator-(const Integer& n, const LinExpression& e) {
   LinExpression r(e);
@@ -142,6 +147,7 @@ PPL::operator-(const Integer& n, const LinExpression& e) {
 }
 
 
+/*! \relates Parma_Polyhedra_Library::LinExpression */
 PPL::LinExpression
 PPL::operator*(const Integer& n, const LinExpression& e) {
   LinExpression r(e);
@@ -151,6 +157,7 @@ PPL::operator*(const Integer& n, const LinExpression& e) {
 }
 
 
+/*! \relates Parma_Polyhedra_Library::LinExpression */
 PPL::LinExpression&
 PPL::operator+=(LinExpression& e1, const LinExpression& e2) {
   dimension_type e1_size = e1.size();
@@ -168,6 +175,7 @@ PPL::operator+=(LinExpression& e1, const LinExpression& e2) {
 }
 
 
+/*! \relates Parma_Polyhedra_Library::LinExpression */
 PPL::LinExpression&
 PPL::operator+=(LinExpression& e, const Variable& v) {
   dimension_type e_size = e.size();
@@ -181,6 +189,7 @@ PPL::operator+=(LinExpression& e, const Variable& v) {
 }
 
 
+/*! \relates Parma_Polyhedra_Library::LinExpression */
 PPL::LinExpression&
 PPL::operator-=(LinExpression& e1, const LinExpression& e2) {
   dimension_type e1_size = e1.size();
@@ -198,6 +207,7 @@ PPL::operator-=(LinExpression& e1, const LinExpression& e2) {
 }
 
 
+/*! \relates Parma_Polyhedra_Library::LinExpression */
 PPL::LinExpression&
 PPL::operator-=(LinExpression& e, const Variable& v) {
   dimension_type e_size = e.size();
@@ -210,6 +220,7 @@ PPL::operator-=(LinExpression& e, const Variable& v) {
   return e;
 }
 
+/*! \relates Parma_Polyhedra_Library::LinExpression */
 PPL::LinExpression&
 PPL::operator*=(LinExpression& e, const Integer& n) {
   dimension_type e_size = e.size();
