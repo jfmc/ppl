@@ -1956,6 +1956,8 @@ PPL::PolyBase::insert(const Generator& g) {
       case Generator::POINT:
 	gen_sys.insert(point(nc_expr, g.divisor()));
 	break;
+      default:
+	throw std::runtime_error("PolyBase::insert(const Generator& g)");
       }
     }
     // After adding the new generator,
@@ -1990,6 +1992,8 @@ PPL::PolyBase::insert(const Generator& g) {
       case Generator::POINT:
 	gen_sys.insert(point(nc_expr, g.divisor()));
 	break;
+      default:
+	throw std::runtime_error("PolyBase::insert(const Generator& g)");
       }
     }
     // `gen_sys' was empty: after inserting `g' we have to resize
