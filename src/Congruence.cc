@@ -26,9 +26,11 @@ site: http://www.cs.unipr.it/ppl/ . */
 #include "Congruence.defs.hh"
 
 #include "Variable.defs.hh"
+#include <cassert>
 #include <iostream>
 #include <sstream>
 #include <stdexcept>
+#include <string>
 
 namespace PPL = Parma_Polyhedra_Library;
 
@@ -169,6 +171,35 @@ PPL::Congruence::ascii_dump(std::ostream& s) const {
   if (x_size)
     s << "m " << x[x_size - 1];
   s << std::endl;
+}
+
+bool
+PPL::Congruence::ascii_load(std::istream& s) {
+  std::string str;
+  Congruence& x = *this;
+  dimension_type col = 0;
+  while (col < x.size() - 1)
+    if ((s >> x[col]) == false)
+      return false;
+    else
+      col++;
+
+  if ((s >> str) == false && str.compare("m"))
+    return false;
+
+  if ((s >> x[col]) == false)
+    return false;
+
+#if 0
+  if (!(s >> str))
+    return false;
+  if (str == "=")
+    x.set_is_equality();
+  else
+    x.set_is_inequality();
+#endif
+
+  return true;
 }
 
 bool

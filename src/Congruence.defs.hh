@@ -349,6 +349,11 @@ public:
   //! representation of \p *this.
   void ascii_dump(std::ostream& s) const;
 
+  //! \brief
+  //! Loads from \p s an ASCII representation of the internal
+  //! representation of \p *this.
+  bool ascii_load(std::istream& s);
+
   //! Checks if all the invariants are satisfied.
   bool OK() const;
 
