@@ -617,7 +617,7 @@ succ_float(T& v) {
     f.dec();
   }
   v = f.value();
-  return V_EQ;
+  return r;
 }
 
 SPECIALIZE_VALUE_TYPE(float, float32_t)
