@@ -28,6 +28,11 @@ Poly_Gen_Relation::Poly_Gen_Relation(flags_t mask)
   : flags(mask) {
 }
 
+inline Poly_Gen_Relation::flags_t
+Poly_Gen_Relation::get_flags() const {
+  return flags;
+}
+
 inline Poly_Gen_Relation
 Poly_Gen_Relation::nothing() {
   return Poly_Gen_Relation(NOTHING);
