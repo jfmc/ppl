@@ -42,6 +42,7 @@ LinExpression operator+(const LinExpression& e1, const LinExpression& e2);
 LinExpression operator+(const Integer& n, const LinExpression& e);
 LinExpression operator+(const LinExpression& e, const Integer& n);
 
+LinExpression operator+(const LinExpression& e);
 LinExpression operator-(const LinExpression& e);
 
 LinExpression operator-(const LinExpression& e1, const LinExpression& e2);

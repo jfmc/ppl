@@ -53,6 +53,10 @@ o  New methods void Polyhedron::BBRZ02_widening_assign(const Polyhedron&)
    ConSys&).  The BBRZ02 widening is a novel widening that is always more
    precise than the, by now standard, one we call H79.
 
+o  New function LinExpression operator+(const LinExpression&): previously
+   an expressions like `+x2-x3-x4 <= 0' could not constitute valid syntax
+   for a constraint.
+
 
 Bugfixes
 ========

@@ -89,6 +89,11 @@ LinExpression::zero() {
 }
 
 inline LinExpression
+operator+(const LinExpression& e) {
+  return e;
+}
+
+inline LinExpression
 operator+(const LinExpression& e, const Integer& n) {
   return n + e;
 }
