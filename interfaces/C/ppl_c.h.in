@@ -1555,8 +1555,8 @@ ppl_Polyhedron_bounds_from_below __P((ppl_const_Polyhedron_t ph,
 /*! \brief
   Returns a positive integer if  \p ph is not empty
   and \p le is bounded from above in \p ph, in which case
-  the supremum value and a point where \p expr reaches it are computed.
-  \param ph       The polyhedron constraining \p le;
+  the supremum value and a point where \p le reaches it are computed.
+  \param ph        The polyhedron constraining \p le;
   \param le        The linear expression to be maximized subject to \p ph;
   \param sup_n     Will be assigned the numerator of the supremum value;
   \param sup_d     Will be assigned the denominator of the supremum value;
@@ -1579,8 +1579,8 @@ ppl_Polyhedron_maximize __P((ppl_const_Polyhedron_t ph,
 /*! \brief
   Returns a positive integer if  \p ph is not empty
   and \p le is bounded from above in \p ph, in which case
-  the infimum value and a point where \p expr reaches it are computed.
-  \param ph       The polyhedron constraining \p le;
+  the infimum value and a point where \p le reaches it are computed.
+  \param ph        The polyhedron constraining \p le;
   \param le        The linear expression to be minimized subject to \p ph;
   \param inf_n     Will be assigned the numerator of the infimum value;
   \param inf_d     Will be assigned the denominator of the infimum value;
