@@ -458,7 +458,7 @@ Polyhedron::shrink_bounding_box(Box& box, Complexity_Class complexity) const {
 	  box.set_empty();
 	  return;
 	}
-	// We look foe constraints of the form `Variable(j) == k',
+	// We look for constraints of the form `Variable(j) == k',
 	// `Variable(j) >= k', and `Variable(j) > k'.
 	if (c.coefficient(Variable(j)) != 0)
 	  if (varid != space_dim) {
