@@ -1,4 +1,4 @@
-/* Prolog main program for the toy PPL/YAP-Prolog CLP(Q) interpreter.
+/* Prolog main program for the PPL/YAP-Prolog predicate checker.
    Copyright (C) 2001-2003 Roberto Bagnara <bagnara@cs.unipr.it>
 
 This file is part of the Parma Polyhedra Library (PPL).
@@ -31,5 +31,3 @@ main :-
 	write('FAILURE')
     ),
     nl.
-
-
