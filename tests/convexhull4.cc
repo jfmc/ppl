@@ -1,5 +1,4 @@
-/* Test Polyhedron::convex_hull_assign_and_minimize()
-   with an empty parameter polyhedron.
+/* Test Polyhedron::convex_hull_assign_and_minimize() with empty polyhedra.
    Copyright (C) 2001, 2002 Roberto Bagnara <bagnara@cs.unipr.it>
 
 This file is part of the Parma Polyhedra Library (PPL).
@@ -31,29 +30,14 @@ using namespace Parma_Polyhedra_Library;
 
 #define NOISY 0
 
-int
-main() {
-  set_handlers();
-
-  Variable x(0);
-  Variable y(1);
-
-  Polyhedron ph1(2);
-  ph1.insert(x >= 0);
-  ph1.insert(y >= 0);
-  ph1.insert(x <= 2);
-  ph1.insert(y <= 2);
-
-  Polyhedron ph2(2);
-  ph2.insert(x+y <= 0);
-  ph2.insert(x+y >= 2);
-
+static bool
+try_convex_hull_assign_and_minimize(Polyhedron& ph1, const Polyhedron& ph2,
+				    // Note intentional call-by-value!
+				    Polyhedron known_result) {
 #if NOISY
   print_constraints(ph1, "*** ph1 ***");
   print_constraints(ph2, "*** ph2 ***");
 #endif
-
-  Polyhedron known_result(ph1);
 
   ph1.convex_hull_assign_and_minimize(ph2);
 
@@ -61,7 +45,39 @@ main() {
   print_generators(ph1, "*** After convex_hull_assign ***");
 #endif
 
-  int retval = (ph1 == known_result) ? 0 : 1;
+  return ph1 == known_result;
+}
 
-  return retval;
+int
+main() {
+  set_handlers();
+
+  Variable x(0);
+  Variable y(1);
+
+  Polyhedron ph1_1(2);
+  ph1_1.insert(x >= 0);
+  ph1_1.insert(y >= 0);
+  ph1_1.insert(x <= 2);
+  ph1_1.insert(y <= 2);
+  Polyhedron ph1_2(ph1_1);
+
+  Polyhedron ph2_1(2);
+  ph2_1.insert(x+y <= 0);
+  ph2_1.insert(x+y >= 2);
+  Polyhedron ph2_2(ph2_1);
+  Polyhedron ph2_3(ph2_1);
+  Polyhedron ph2_4(ph2_1);
+
+  if (!try_convex_hull_assign_and_minimize(ph1_1, ph2_1, ph1_1))
+    return 1;
+
+
+  if (!try_convex_hull_assign_and_minimize(ph2_2, ph1_2, ph1_2))
+    return 1;
+
+  if (!try_convex_hull_assign_and_minimize(ph2_3, ph2_4, ph2_3))
+    return 1;
+
+  return 0;
 }
