@@ -454,12 +454,12 @@ PPL::Polyhedron&
 PPL::Polyhedron::operator=(const Polyhedron& y) {
   // Being a protected method, we simply assert that topologies do match.
   assert(topology() == y.topology());
-  if (y.space_dim == 0) {
+  space_dim = y.space_dim;
+  if (y.is_empty())
+    set_empty();
+  else if (space_dim == 0)
     set_zero_dim_univ();
-    status = y.status;
-  }
   else {
-    space_dim = y.space_dim;
     status = y.status;
     if (y.constraints_are_up_to_date())
       con_sys = y.con_sys;
