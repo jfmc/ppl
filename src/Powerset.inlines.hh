@@ -297,7 +297,7 @@ Powerset<CS>::add_non_bottom_disjunct(Sequence& s,
 }
 
 template <typename CS>
-void
+inline void
 Powerset<CS>::add_non_bottom_disjunct(Sequence& s, const CS& d) {
   assert(!d.is_bottom());
   iterator s_begin = s.begin();
@@ -306,7 +306,7 @@ Powerset<CS>::add_non_bottom_disjunct(Sequence& s, const CS& d) {
 }
 
 template <typename CS>
-void
+inline void
 Powerset<CS>::add_disjunct(const CS& d) {
   if (!d.is_bottom())
     add_non_bottom_disjunct(sequence, d);
