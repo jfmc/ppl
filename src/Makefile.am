@@ -113,7 +113,7 @@ ppl.hh:	$(DOC_FILES)
 	(cd $(srcdir) ; cat $(DOC_FILES)) \
 		| sed -e "s/PPL_INTERNAL/private/g" >ppl.hh
 
-ppl_install.hh:	ppl_header.top $(top_builddir)/config.h $(INCLUDE_FILES) $(MORE_INCLUDE_FILES) ppl_header.bottom
+ppl_install.hh:	ppl_header.top $(top_builddir)/config.h ppl_header.middle $(INCLUDE_FILES) $(MORE_INCLUDE_FILES) ppl_header.bottom
 	mkdir -p tmp
 	(cd $(srcdir) ; cat $(MORE_INCLUDE_FILES) $(INCLUDE_FILES)) >tmp/concat
 	grep -e "^#include <" <tmp/concat | sort -u >tmp/includes
