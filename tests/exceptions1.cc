@@ -42,6 +42,9 @@ error1() {
     // it is illegal to built a point with the denominator
     // equal to zero.
     gs.insert(point(x + y + z, 0));
+
+    // It is an error if the exception is not thrown.
+    exit(1);
   }
 
   catch (invalid_argument& e) {
@@ -50,6 +53,7 @@ error1() {
 #endif
   }
   catch (...) {
+    // It is an error if the wrong exception is thrown.
     exit(1);
   }
 }
@@ -72,6 +76,7 @@ error2() {
     // zero.
     Integer d = 0;
     ph.affine_image(x, coeff1, d);
+    exit(1);
   }
   catch (invalid_argument& e) {
 #if NOISY
@@ -97,6 +102,7 @@ error3() {
     // C_Polyhedron::poly_hull_assign(p): it is illegal to use
     // it with two polyhedra of different dimensions.
     ph1.poly_hull_assign_and_minimize(ph2);
+    exit(1);
   }
   catch (invalid_argument& e) {
 #if NOISY
@@ -123,6 +129,7 @@ error4() {
     // polyhedron starting from a system of generators that does not
     // contain a point.
     C_Polyhedron ph(gs);
+    exit(1);
   }
   catch (invalid_argument& e) {
 #if NOISY
@@ -157,6 +164,7 @@ error5() {
     // This variable is now beyond the space dimension,
     // so that a dimension-incompatibility exception is obtained.
     ph.remove_dimensions(to_be_removed);
+    exit(1);
   }
   catch (invalid_argument& e) {
 #if NOISY
@@ -182,6 +190,7 @@ error6() {
     // apply this function to a variable that is not in the space of
     // the polyhedron.
     ph.affine_image(y, x + 1);
+    exit(1);
   }
   catch (invalid_argument& e) {
 #if NOISY
@@ -209,6 +218,7 @@ error7() {
     // use a variable in the expression that does not appear in the
     // space of the polyhedron.
     ph.affine_image(y, x + z + 1);
+    exit(1);
   }
   catch (invalid_argument& e) {
 #if NOISY
@@ -235,6 +245,7 @@ error8() {
     // equal to zero.
     Integer d = 0;
     ph.affine_preimage(x, coeff, d);
+    exit(1);
   }
   catch (invalid_argument& e) {
 #if NOISY
@@ -264,6 +275,7 @@ error9() {
     // the transformation to a variable that is not in the space
     // of the polyhedron.
     ph.affine_preimage(z, x + 1);
+    exit(1);
   }
   catch (invalid_argument& e) {
 #if NOISY
@@ -293,6 +305,7 @@ error10() {
     // apply to a polyhedron an expression that contains a variable that
     // is not in the space of the polyhedron.
     ph.affine_preimage(y, x + z + 1);
+    exit(1);
   }
   catch (invalid_argument& e) {
 #if NOISY
@@ -319,6 +332,7 @@ error11() {
     // C_Polyhedron::intersection_assign_and_minimize(ph2): it is illegal
     // to apply this function to two polyhedra of different dimensions.
     ph1.intersection_assign_and_minimize(ph2);
+    exit(1);
   }
   catch (invalid_argument& e) {
 #if NOISY
@@ -341,6 +355,7 @@ error12() {
     // C_Polyhedron::intersection_assign(ph2): it is illegal to apply
     // this function to two polyhedron of different dimensions.
     ph1.intersection_assign(ph2);
+    exit(1);
   }
   catch (invalid_argument& e) {
 #if NOISY
@@ -366,6 +381,7 @@ error13() {
     GenSys gs;
     gs.insert(point(w));
     ph.add_generators_and_minimize(gs);
+    exit(1);
   }
   catch (invalid_argument& e) {
 #if NOISY
@@ -386,6 +402,7 @@ error14() {
     // C_Polyhedron::remove_higher_dimensions(n): it is illegal to erase
     // a variable that is not in the space of the polyhedron.
     ph.remove_higher_dimensions(7);
+    exit(1);
   }
   catch (invalid_argument& e) {
 #if NOISY
@@ -412,6 +429,7 @@ error15() {
     ConSys cs;
     cs.insert(x - y >= 0);
     ph.add_constraints_and_minimize(cs);
+    exit(1);
   }
   catch (invalid_argument& e) {
 #if NOISY
@@ -435,6 +453,7 @@ error16() {
     // constraints that contains a variable that is not in the space
     // of the polyhedron.
     ph.add_constraint(y >= 0);
+    exit(1);
   }
   catch (invalid_argument& e) {
 #if NOISY
@@ -461,6 +480,7 @@ error17() {
     ConSys cs;
     cs.insert(x - y == 0);
     ph.add_constraints(cs);
+    exit(1);
   }
   catch (invalid_argument& e) {
 #if NOISY
@@ -494,6 +514,7 @@ error18() {
     // C_Polyhedron::poly_hull_assign(ph2): it is illegal to apply
     // this function to two polyhedra with different dimensions.
     ph1.poly_hull_assign(ph2);
+    exit(1);
   }
   catch (invalid_argument& e) {
 #if NOISY
@@ -517,6 +538,7 @@ error19() {
     // it is illegal to insert a generator that is dimensional
     // incompatible with the polyhedron.
     ph.add_generator(point(x + y));
+    exit(1);
   }
   catch (invalid_argument& e) {
 #if NOISY
@@ -544,6 +566,7 @@ error20() {
     gs.insert(point());
     gs.insert(line(x + y));
     ph.add_generators(gs);
+    exit(1);
   }
   catch (invalid_argument& e) {
 #if NOISY
@@ -572,6 +595,7 @@ error21() {
     // incompatible with the polyhedron.
     Constraint c(z >= 0);
     ph.relation_with(c);
+    exit(1);
   }
   catch (invalid_argument& e) {
 #if NOISY
@@ -596,6 +620,7 @@ error22() {
     // the polyhedron.
     Generator g(point(z));
     ph.relation_with(g);
+    exit(1);
   }
   catch (invalid_argument& e) {
 #if NOISY
@@ -618,6 +643,7 @@ error23() {
     // this function to two polyhedra that are not dimensional
     // compatible.
     ph2.H79_widening_assign(ph1);
+    exit(1);
   }
   catch (invalid_argument& e) {
 #if NOISY
@@ -645,6 +671,7 @@ error24() {
     // illegal to apply this function to two polyhedra that are not
     // dimension-compatible.
     ph2.limited_H79_extrapolation_assign(ph1, cs);
+    exit(1);
   }
   catch (invalid_argument& e) {
 #if NOISY
@@ -681,6 +708,7 @@ error25() {
     // illegal to apply this function to a system of constraints that
     // is not dimension-compatible with the two polyhedra.
     ph2.limited_H79_extrapolation_assign(ph1, cs);
+    exit(1);
   }
   catch (invalid_argument& e) {
 #if NOISY
@@ -708,6 +736,7 @@ error26() {
     // illegal to apply this method to two polyhedra that are not
     // dimension-compatible.
     ph1.contains(ph2);
+    exit(1);
   }
   catch (invalid_argument& e) {
 #if NOISY
@@ -732,6 +761,7 @@ error27() {
     // polyhedron.
     Generator g(ray(x));
     ph.add_generator(g);
+    exit(1);
   }
   catch (invalid_argument& e) {
 #if NOISY
@@ -758,6 +788,7 @@ error28() {
     gs.insert(ray(x + y));
     gs.insert(ray(x - y));
     ph.add_generators(gs);
+    exit(1);
   }
   catch (invalid_argument& e) {
 #if NOISY
@@ -785,6 +816,7 @@ error29() {
     gs.insert(line(x));
     gs.insert(line(y));
     ph.add_generators_and_minimize(gs);
+    exit(1);
   }
   catch (invalid_argument& e) {
 #if NOISY
@@ -807,6 +839,7 @@ error30() {
     // C_Polyhedron::poly_difference_assign(ph2): it is impossible to apply
     // this function to two polyhedra of different dimensions.
     ph1.poly_difference_assign(ph2);
+    exit(1);
   }
   catch(invalid_argument& e) {
 #if NOISY
@@ -828,6 +861,7 @@ error31() {
     // C_Polyhedron::time_elapse_assign(p): it is illegal to use
     // it with two polyhedra of different dimensions.
     ph1.time_elapse_assign(ph2);
+    exit(1);
   }
   catch(invalid_argument& e) {
 #if NOISY
@@ -860,6 +894,7 @@ error32() {
     // closed polyhedron starting from a constant system of
     // generators that does not contain points.
     C_Polyhedron ph2(gs2);
+    exit(1);
   }
   catch(invalid_argument& e) {
 #if NOISY
@@ -886,6 +921,7 @@ error33() {
     // `add_generator(g)': it is illegal to add a
     // ray to an empty polyhedron.
     ph1.add_generator(ray(A));
+    exit(1);
   }
   catch(invalid_argument& e) {
 #if NOISY
@@ -912,6 +948,7 @@ error34() {
     // use a variable in the expression that does not appear in the
     // space of the polyhedron.
     ph.bounds_from_above(A + B);
+    exit(1);
   }
   catch (invalid_argument& e) {
 #if NOISY
@@ -944,6 +981,7 @@ error35() {
     // add a system of generators that does not contain points
     // to an empty polyhedron.
     ph.add_generators_and_minimize(gs);
+    exit(1);
   }
   catch (invalid_argument& e) {
 #if NOISY
@@ -976,6 +1014,7 @@ error36() {
     // add a system of generators that does not contain points
     // to an empty polyhedron.
     ph.add_generators(gs);
+    exit(1);
   }
   catch (invalid_argument& e) {
 #if NOISY
@@ -998,6 +1037,7 @@ error37() {
     // this function to two polyhedra that are not dimensional
     // compatible.
     ph2.BHRZ03_widening_assign(ph1);
+    exit(1);
   }
   catch (invalid_argument& e) {
 #if NOISY
@@ -1024,6 +1064,7 @@ error38() {
     // equal to zero.
     Integer d = 0;
     ph.generalized_affine_image(B, GREATER_THAN_OR_EQUAL, B + 2, d);
+    exit(1);
   }
   catch (invalid_argument& e) {
 #if NOISY
@@ -1048,6 +1089,7 @@ error39() {
     // C_Polyhedron::generalized_affine_image(v, r, expr, d): it is illegal to
     // use a variable in the expression that does not appear in the polyhedron.
     ph.generalized_affine_image(A, GREATER_THAN_OR_EQUAL, B);
+    exit(1);
   }
   catch (invalid_argument& e) {
 #if NOISY
@@ -1073,6 +1115,7 @@ error40() {
     // apply this function to a variable that is not in the space of
     // the polyhedron.
     ph.generalized_affine_image(B, LESS_THAN_OR_EQUAL, A + 1);
+    exit(1);
   }
   catch (invalid_argument& e) {
 #if NOISY
@@ -1099,6 +1142,7 @@ error41() {
     // it is illegal to use a variable in the `rhs' expression that
     // does not appear in the polyhedron.
     ph.generalized_affine_image(A + B, GREATER_THAN_OR_EQUAL, B + C);
+    exit(1);
   }
   catch (invalid_argument& e) {
 #if NOISY
@@ -1125,6 +1169,7 @@ error42() {
     // it is illegal to use a variable in the `lhs' expression that
     // does not appear in the polyhedron.
     ph.generalized_affine_image(B + C, LESS_THAN_OR_EQUAL, A + 1);
+    exit(1);
   }
   catch (invalid_argument& e) {
 #if NOISY
@@ -1145,6 +1190,7 @@ error43() {
     // Generator::ray(e):
     // the origin can not be a ray.
     gs.insert(ray(e));
+    exit(1);
   }
   catch (invalid_argument& e) {
 #if NOISY
@@ -1165,6 +1211,7 @@ error44() {
     // Generator::line(e):
     // the origin can not be a line.
     gs.insert(line(e));
+    exit(1);
   }
   catch (invalid_argument& e) {
 #if NOISY
@@ -1190,6 +1237,7 @@ error45() {
     // of a variable that is not in the space of the
     // generator.
     g.coefficient(C);
+    exit(1);
   }
   catch (invalid_argument& e) {
 #if NOISY
@@ -1211,6 +1259,7 @@ error46() {
     // This is an incorrect use of method Generator::divisor(): it is
     // illegal to ask for the divisor of a line.
     g.divisor();
+    exit(1);
   }
   catch (invalid_argument& e) {
 #if NOISY
@@ -1236,6 +1285,7 @@ error47() {
     // of a variable that is not in the space of the
     // constraint.
     c.coefficient(C);
+    exit(1);
   }
   catch (invalid_argument& e) {
 #if NOISY

@@ -44,6 +44,9 @@ error1() {
     // it is illegal to built a closed polyhedron starting from
     // a system of constraints that contains strict-inequalities.
     C_Polyhedron ph(cs);
+
+    // It is an error if the exception is not thrown.
+    exit(1);
   }
   catch(invalid_argument& e) {
 #if NOISY
@@ -51,6 +54,7 @@ error1() {
 #endif
   }
   catch (...) {
+    // It is an error if the wrong exception is thrown.
     exit(1);
   }
 }
@@ -71,6 +75,7 @@ error2() {
     // it is illegal to built a closed polyhedron starting from
     // a system of generators that contains closure points.
     C_Polyhedron ph(gs);
+    exit(1);
   }
   catch(invalid_argument& e) {
 #if NOISY
@@ -94,6 +99,7 @@ error3() {
     // illegal to insert a strict-inequality into a system of
     // constraints of a closed polyhedron.
     ph.add_constraint(x - y > 0);
+    exit(1);
   }
   catch(invalid_argument& e) {
 #if NOISY
@@ -114,6 +120,7 @@ error4() {
     // is illegal to insert a closure-point into a system of
     // generators of a closed polyhedron.
     ph.add_generator(closure_point(LinExpression(2)));
+    exit(1);
   }
   catch(invalid_argument& e) {
 # if NOISY
@@ -143,6 +150,7 @@ error5() {
     // add_constraints_and_minimize(cs): it is illegal to add a system of
     // constraints that contains strict-inequalities to a closed polyhedron.
     ph.add_constraints_and_minimize(cs);
+    exit(1);
   }
   catch(invalid_argument& e) {
 #if NOISY
@@ -169,6 +177,7 @@ error6() {
     // it is illegal to add a system of constraints that contains
     // strict-inequalities to a closed polyhedron.
     ph.add_constraints(cs);
+    exit(1);
   }
   catch(invalid_argument& e) {
 #if NOISY
@@ -197,6 +206,7 @@ error7() {
     // is illegal to apply this method to a closed polyhedron with a
     // NNC Polyhedron.
     ph.concatenate_assign(qh);
+    exit(1);
   }
   catch(invalid_argument& e) {
 #if NOISY
@@ -226,6 +236,7 @@ error8() {
     // system of generators that contains closure-points to a closed
     // polyhedron.
     ph.add_generators_and_minimize(gs);
+    exit(1);
   }
   catch(invalid_argument& e) {
 #if NOISY
@@ -253,6 +264,7 @@ error9() {
     // illegal to add a system of generators that contains closure-points
     // to a closed polyhedron.
     ph.add_generators(gs);
+    exit(1);
   }
   catch(invalid_argument& e) {
 #if NOISY
@@ -277,6 +289,7 @@ error10() {
     // It is illegal to built a closed polyhedron starting from
     // the system of constraints of a polyhedron that is not closed.
     C_Polyhedron ph2(ph1);
+    exit(1);
   }
   catch(invalid_argument& e) {
 #if NOISY
@@ -310,6 +323,7 @@ error11() {
     // `intersection_assign_and_minimize': it is illegal to apply
     // to a closed polyhedron and a non-closed polyhedron.
     ph1.intersection_assign_and_minimize(ph2);
+    exit(1);
   }
   catch(invalid_argument& e) {
 #if NOISY
@@ -342,6 +356,7 @@ error12() {
     // `intersection_assign': it is illegal to apply this function
     // to a closed polyhedron and a non-closed polyhedron.
     ph1.intersection_assign(ph2);
+    exit(1);
   }
   catch(invalid_argument& e) {
 #if NOISY
@@ -381,6 +396,7 @@ error13() {
      // this function to a closed polyhedron and a
      // non-closed polyhedron.
     ph1.poly_hull_assign_and_minimize(ph2);
+    exit(1);
   }
   catch(invalid_argument& e) {
 #if NOISY
@@ -418,6 +434,7 @@ error14() {
     // `poly_hull_assign': it is illegal to apply this function
     // to a closed polyhedron and a non-closed polyhedron.
     ph1.poly_hull_assign(ph2);
+    exit(1);
   }
   catch(invalid_argument& e) {
 #if NOISY
@@ -456,6 +473,7 @@ error15() {
     // `poly_difference_assign': it is illegal to apply this function
     // to a closed polyhedron and a non-closed polyhedron.
     ph1.poly_difference_assign(ph2);
+    exit(1);
   }
   catch(invalid_argument& e) {
 #if NOISY
@@ -492,6 +510,7 @@ error16() {
     // `H79_widening_assign': it is illegal to apply this function
     // to a closed polyhedron and a non-closed polyhedron.
     ph2.H79_widening_assign(ph1);
+    exit(1);
   }
   catch(invalid_argument& e) {
 #if NOISY
@@ -533,6 +552,7 @@ error17() {
     // apply this function to a closed polyhedron and
     // a non-closed polyhedron.
     ph2.limited_H79_extrapolation_assign(ph1, cs);
+    exit(1);
   }
   catch(invalid_argument& e) {
 #if NOISY
@@ -574,6 +594,7 @@ error18() {
     // apply this function to two closed polyhedra and
     // to a non-closed system of constraints.
     ph2.limited_H79_extrapolation_assign(ph1, cs);
+    exit(1);
   }
   catch(invalid_argument& e) {
 #if NOISY
@@ -611,6 +632,7 @@ error19() {
     // apply this function to a closed polyhedron and
     // a non-closed polyhedron.
     ph1.time_elapse_assign(ph2);
+    exit(1);
   }
   catch(invalid_argument& e) {
 #if NOISY
@@ -642,6 +664,7 @@ error20() {
     // illegal to apply this method to a closed polyhedron and a
     // non-closed polyhedron.
     ph1.contains(ph2);
+    exit(1);
   }
   catch(invalid_argument& e) {
 #if NOISY
@@ -674,6 +697,7 @@ error21() {
     // closed polyhedron starting from a system of constraints
     // that contains strict inequalities.
     C_Polyhedron ph2(cs);
+    exit(1);
   }
   catch(invalid_argument& e) {
 #if NOISY
@@ -704,6 +728,7 @@ error22() {
     // a closed polyhedron starting from a constant non-closed
     // system of generators.
     C_Polyhedron ph2(gs2);
+    exit(1);
   }
   catch(invalid_argument& e) {
 #if NOISY
@@ -724,6 +749,7 @@ error23() {
     // `add_generator(g)': it is illegal add a closure point
     // to a zero-dimensional and empty non-closed polyhedron.
     ph.add_generator(closure_point());
+    exit(1);
   }
   catch(invalid_argument& e) {
 #if NOISY
@@ -752,6 +778,7 @@ error24() {
     // add a system of generators that does not contain points
     // to an empty zero-dimensional polyhedron.
     ph.add_generators_and_minimize(gs);
+    exit(1);
   }
   catch (invalid_argument& e) {
 #if NOISY
@@ -780,6 +807,7 @@ error25() {
     // add a system of generators that does not contain points
     // to an empty zero-dimensional polyhedron.
     ph.add_generators(gs);
+    exit(1);
   }
   catch (invalid_argument& e) {
 #if NOISY
@@ -811,6 +839,7 @@ error26() {
     // it is illegal to apply this method to a
     // closed polyhedron and a non-closed polyhedron.
     ph2.contains(ph1);
+    exit(1);
   }
   catch(invalid_argument& e) {
 #if NOISY
@@ -853,6 +882,7 @@ error27() {
     // a non-closed polyhedron and a system of
     // constraints that contains strict inequalities.
     ph2.limited_H79_extrapolation_assign(ph1, cs);
+    exit(1);
   }
   catch(invalid_argument& e) {
 #if NOISY
@@ -885,6 +915,7 @@ error28() {
     // apply this function to a non-closed polyhedron and
     // a non-closed polyhedron.
     ph2.BHRZ03_widening_assign(ph1);
+    exit(1);
   }
   catch(invalid_argument& e) {
 #if NOISY
@@ -912,6 +943,7 @@ error29() {
     // built a closed polyhedron starting from a
     // non-closed polyhedron.
     C_Polyhedron ph2(ph1);
+    exit(1);
   }
   catch(invalid_argument& e) {
 #if NOISY
@@ -940,6 +972,7 @@ error30() {
     // to apply this function to a closed and a
     // not necessarily closed polyhedron.
     ph1.swap(ph2);
+    exit(1);
   }
   catch(invalid_argument& e) {
 #if NOISY
@@ -964,6 +997,7 @@ error31() {
     // `GREATER_THAN' is an illegal relation for necessarily closed
     // polyhedron.
     ph.generalized_affine_image(A, GREATER_THAN, A + 1);
+    exit(1);
   }
   catch (invalid_argument& e) {
 #if NOISY
@@ -990,6 +1024,7 @@ error32() {
     // `GREATER_THAN' is an illegal relation for necessarily closed
     // polyhedron.
     ph.generalized_affine_image(A + B, GREATER_THAN, A - B);
+    exit(1);
   }
   catch (invalid_argument& e) {
 #if NOISY
@@ -1013,6 +1048,7 @@ error33() {
     // it is illegal to use a denominator
     // equal to zero.
     gs.insert(closure_point(A + 2*B, 0));
+    exit(1);
   }
   catch (invalid_argument& e) {
 #if NOISY
