@@ -86,6 +86,8 @@ Bugfixes
 o  Fixed a bug in the C interface function ppl_Polyhedron_map_dimensions() 
    whereby a wrong result was computed.
 
+o  Fixed a deadlock bug in the watchdog library.
+
 
 --------------------------------------------------------------------------
 NEWS for version 0.5  (released on April 28, 2003)

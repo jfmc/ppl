@@ -66,7 +66,7 @@ timed_compute_open_hypercube_generators(dimension_type dimension,
 					int hundredth_secs) {
   try {
     Parma_Watchdog_Library::Watchdog
-      w(hundredth_secs, &abandon_exponential_computations, t);
+      w(hundredth_secs, abandon_exponential_computations, t);
 #if NOISY
     start_clock();
 #endif
