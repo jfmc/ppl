@@ -414,28 +414,31 @@ private:
 };
 
 
+#ifdef PPL_DOXYGEN_INCLUDE_IMPLEMENTATION_DETAILS
+//! The real implementation of a Row object.
+/*!
+  The class Row::Impl provides the implementation of Row objects and,
+  in particular, of the corresponding memory allocation functions.
+*/
+#endif // PPL_DOXYGEN_INCLUDE_IMPLEMENTATION_DETAILS
 class Parma_Polyhedra_Library::Row::Impl {
 public:
   //! \name Custom allocator and deallocator.
   //@{
 
-  /*!
+  /*! \brief
     Allocates a chunk of memory able to contain \p capacity Integer objects
     beyond the specified \p fixed_size and returns a pointer to the new
     allocated memory.
   */
   void* operator new(size_t fixed_size, dimension_type capacity);
 
-  /*!
-    Placement version:
-    uses the standard operator delete to free the memory \p p points to.
-  */
-  void operator delete(void* p, dimension_type capacity);
-
-  /*!
-    Uses the standard operator delete to free the memory \p p points to.
-  */
+  //! Uses the standard delete operator to free the memory \p p points to.
   void operator delete(void* p);
+
+  //! \brief Placement version:
+  //! uses the standard operator delete to free the memory \p p points to.
+  void operator delete(void* p, dimension_type capacity);
   //@}
 
   //! Sizing constructor.
@@ -456,9 +459,9 @@ public:
 
   //! Resizes without copying the old contents.
   /*!
-    Shrinks the real implementation of the row if \p new_sz is less
-    than <CODE>size()</CODE>; otherwise the real implementation is grown
-    without copying the old contents.
+    If \p new_sz is less than <CODE>size()</CODE>, shrinks the implementation
+    of the row; otherwise the real implementation is grown without copying
+    the old contents.
   */
   void resize_no_copy(dimension_type new_sz);
 
