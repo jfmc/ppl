@@ -98,7 +98,10 @@ enum Result {
   // Special results: no result could be computed.
   // Keep all of these >= V_UNKNOWN.
 
-  //! The exact result is unknown.
+  //! \brief
+  //! The exact result does not exist (i.e., the operation does not make
+  //! sense for the given operands) or is unknown (i.e., the operands do
+  //! not encode enough information to give a mean.
   V_UNKNOWN = 16,
 
   //! \brief
