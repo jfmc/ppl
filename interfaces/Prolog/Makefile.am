@@ -28,7 +28,7 @@ VPATH = @srcdir@
 
 SUBDIRS = Ciao GNU SICStus SWI YAP
 
-CLPQ_TESTS = \
+CLPQ_TESTS_NONSTRICT = \
 ack.clpq \
 ackn.clpq \
 fib.clpq \
@@ -37,7 +37,14 @@ smm.clpq \
 sumto.clpq \
 tak.clpq
 
-EXTRA_DIST = clpq.pl clpq2.pl check_script expected \
+CLPQ_TESTS_STRICT = \
+schedule.clpq
+
+CLPQ_TESTS = $(CLPQ_TESTS_NONSTRICT) $(CLPQ_TESTS_STRICT) 
+
+EXTRA_DIST = \
+clpq.pl clpq2.pl \
+check_script expected \
 $(CLPQ_TESTS)
 
 noinst_HEADERS = ppl_prolog.icc exceptions.hh track_allocation.hh
