@@ -1524,7 +1524,7 @@ PPL::Polyhedron::is_included(const Polyhedron& y) const {
 }
 
 bool
-PPL::are_disjoint(const Polyhedron& x, const Polyhedron& y) {
+PPL::check_disjoint(const Polyhedron& x, const Polyhedron& y) {
   Polyhedron z = x;
   z.intersection_assign_and_minimize(y);
   return z.check_empty();
@@ -4684,7 +4684,7 @@ PPL::Polyhedron::check_universe() const {
 }
 
 bool
-PPL::Polyhedron::is_bounded() const {
+PPL::Polyhedron::check_bounded() const {
   // A zero-dimensional or empty polyhedron is bounded.
   if (space_dim == 0
       || is_empty()
@@ -4749,7 +4749,7 @@ PPL::Polyhedron::bounds(const LinExpression& expr, bool from_above) const {
 
 
 bool
-PPL::Polyhedron::is_topologically_closed() const {
+PPL::Polyhedron::check_topologically_closed() const {
   // Necessarily closed polyhedra are trivially closed.
   if (is_necessarily_closed())
     return true;

@@ -121,7 +121,7 @@ bool operator>=(const Polyhedron& x, const Polyhedron& y);
                                    are topology-incompatible
                                    or dimension-incompatible.
 */
-bool are_disjoint(const Polyhedron& x, const Polyhedron& y);
+bool check_disjoint(const Polyhedron& x, const Polyhedron& y);
 
 } // namespace Parma_Polyhedra_Library
 
@@ -188,7 +188,7 @@ bool are_disjoint(const Polyhedron& x, const Polyhedron& y);
   cs.add_constraint(x <= 3);
   cs.add_constraint(y >= 0);
   cs.add_constraint(y <= 3);
-  Polyhedron ph(cs);
+  C_Polyhedron ph(cs);
     \endcode
     The following code builds the same polyhedron as above,
     but starting from a system of generators specifying
@@ -199,7 +199,7 @@ bool are_disjoint(const Polyhedron& x, const Polyhedron& y);
   gs.add_generator(point(0*x + 3*y));
   gs.add_generator(point(3*x + 0*y));
   gs.add_generator(point(3*x + 3*y));
-  Polyhedron ph(gs);
+  C_Polyhedron ph(gs);
     \endcode
 
     \par Example 2
@@ -211,7 +211,7 @@ bool are_disjoint(const Polyhedron& x, const Polyhedron& y);
   cs.add_constraint(x >= 0);
   cs.add_constraint(x - y <= 0);
   cs.add_constraint(x - y + 1 >= 0);
-  Polyhedron ph(cs);
+  C_Polyhedron ph(cs);
     \endcode
     The following code builds the same polyhedron as above,
     but starting from the system of generators specifying
@@ -221,7 +221,7 @@ bool are_disjoint(const Polyhedron& x, const Polyhedron& y);
   gs.add_generator(point(0*x + 0*y));
   gs.add_generator(point(0*x + y));
   gs.add_generator(ray(x - y));
-  Polyhedron ph(gs);
+  C_Polyhedron ph(gs);
     \endcode
 
     \par Example 3
@@ -229,7 +229,7 @@ bool are_disjoint(const Polyhedron& x, const Polyhedron& y);
     an half-plane by adding a single constraint
     to the universe polyhedron in \f$\Rset^2\f$:
     \code
-  Polyhedron ph(2);
+  C_Polyhedron ph(2);
   ph.add_constraint(y >= 0);
     \endcode
     The following code builds the same polyhedron as above,
@@ -237,7 +237,7 @@ bool are_disjoint(const Polyhedron& x, const Polyhedron& y);
     and inserting the appropriate generators
     (a point, a ray and a line).
     \code
-  Polyhedron ph(2, Polyhedron::EMPTY);
+  C_Polyhedron ph(2, Polyhedron::EMPTY);
   ph.add_generator(point(0*x + 0*y));
   ph.add_generator(ray(y));
   ph.add_generator(line(x));
@@ -253,7 +253,7 @@ bool are_disjoint(const Polyhedron& x, const Polyhedron& y);
     The following code shows the use of the function
     <CODE>add_dimensions_and_embed</CODE>:
     \code
-  Polyhedron ph(1);
+  C_Polyhedron ph(1);
   ph.add_constraint(x == 2);
   ph.add_dimensions_and_embed(1);
     \endcode
@@ -274,7 +274,7 @@ bool are_disjoint(const Polyhedron& x, const Polyhedron& y);
     The following code shows the use of the function
     <CODE>add_dimensions_and_project</CODE>:
     \code
-  Polyhedron ph(1);
+  C_Polyhedron ph(1);
   ph.add_constraint(x == 2);
   ph.add_dimensions_and_project(1);
     \endcode
@@ -288,7 +288,7 @@ bool are_disjoint(const Polyhedron& x, const Polyhedron& y);
     The following code shows the use of the function
     <CODE>affine_image</CODE>:
     \code
-  Polyhedron ph(2, Polyhedron::EMPTY);
+  C_Polyhedron ph(2, Polyhedron::EMPTY);
   ph.add_generator(point(0*x + 0*y));
   ph.add_generator(point(0*x + 3*y));
   ph.add_generator(point(3*x + 0*y));
@@ -318,7 +318,7 @@ bool are_disjoint(const Polyhedron& x, const Polyhedron& y);
     The following code shows the use of the function
     <CODE>affine_preimage</CODE>:
     \code
-  Polyhedron ph(2);
+  C_Polyhedron ph(2);
   ph.add_constraint(x >= 0);
   ph.add_constraint(x <= 3);
   ph.add_constraint(y >= 0);
@@ -355,7 +355,7 @@ bool are_disjoint(const Polyhedron& x, const Polyhedron& y);
     \code
   GenSys gs;
   gs.add_generator(point(3*x + y +0*z + 2*w));
-  Polyhedron ph(gs);
+  C_Polyhedron ph(gs);
   set<Variable> to_be_removed;
   to_be_removed.insert(y);
   to_be_removed.insert(z);
@@ -523,92 +523,23 @@ protected:
   Polyhedron& operator=(const Polyhedron& y);
 
 public:
-  //! Destructor.
-  ~Polyhedron();
+  //! \name Member Functions that Do Not Modify the Polyhedron
+  //@{
 
   //! Returns the dimension of the vector space enclosing \p *this.
   dimension_type space_dimension() const;
 
-  //! \brief
-  //! Assigns to \p *this the intersection of \p *this and \p y.
-  //! The result is not guaranteed to be minimized.
-  /*!
-    \exception std::invalid_argument thrown if \p *this and \p y
-                                     are topology-incompatible
-                                     or dimension-incompatible.
-  */
-  void intersection_assign(const Polyhedron& y);
+  //! Returns the system of constraints.
+  const ConSys& constraints() const;
 
-  //! \brief
-  //! Assigns to \p *this the intersection of \p *this and \p y,
-  //! minimizing the result.
-  /*!
-    \return    <CODE>false</CODE> if and only if the result is empty.
-    \exception std::invalid_argument thrown if \p *this and \p y
-                                     are topology-incompatible
-                                     or dimension-incompatible.
-  */
-  bool intersection_assign_and_minimize(const Polyhedron& y);
+  //! Returns the system of constraints, with no redundant constraint.
+  const ConSys& minimized_constraints() const;
 
-  //! \brief
-  //! Seeing a polyhedron as a set of tuples (its points), assigns
-  //! to \p *this all the tuples that can be obtained by concatenating,
-  //! in the order given, a tuple of \p *this with a tuple of \p y.
-  /*!
-    Let \f$P \sseq \Rset^n\f$ and \f$Q \sseq \Rset^m\f$ be the polyhedra
-    represented, on entry, by \p *this and \p y, respectively.
-    Upon successful completion, \p *this will represent the polyhedron
-    \f$R \sseq \Rset^{n+m}\f$ such that
-    \f[
-      R
-        \defeq
-          \Bigl\{\,
-            (x_1, \ldots, x_n, y_1, \ldots, y_m)^\transpose
-          \Bigm|
-            (x_1, \ldots, x_n)^\transpose \in P,
-            (y_1, \ldots, y_m)^\transpose \in Q
-          \,\Bigl\}.
-    \f]
-    Another way of seeing it is as follows: first increases the space
-    dimension of \p *this by adding \p y.space_dimension() new
-    dimensions; then adds to the system of constraints of \p *this a
-    renamed-apart version of the constraints of \p y.
+  //! Returns the system of generators.
+  const GenSys& generators() const;
 
-    \exception std::invalid_argument thrown if \p *this and \p y
-                                     are topology-incompatible.
-  */
-  void concatenate_assign(const Polyhedron& y);
-
-  //! \brief
-  //! Assigns to \p *this the poly-hull \p *this and \p y.
-  //! The result is not guaranteed to be minimized.
-  /*!
-    \exception std::invalid_argument thrown if \p *this and \p y
-                                     are topology-incompatible
-                                     or dimension-incompatible.
-  */
-  void poly_hull_assign(const Polyhedron& y);
-
-  //! \brief
-  //! Assigns to \p *this the poly-hull of \p *this and \p y,
-  //! minimizing the result.
-  /*!
-    \return    <CODE>false</CODE> if and only if the result is empty.
-    \exception std::invalid_argument thrown if \p *this and \p y
-                                     are topology-incompatible
-                                     or dimension-incompatible.
-  */
-  bool poly_hull_assign_and_minimize(const Polyhedron& y);
-
-  //! \brief
-  //! Assigns to \p *this the \ref poly_difference "poly-difference" of
-  //! \p *this and \p y. The result is not guaranteed to be minimized.
-  /*!
-    \exception std::invalid_argument thrown if \p *this and \p y
-                                     are topology-incompatible
-                                     or dimension-incompatible.
-  */
-  void poly_difference_assign(const Polyhedron& y);
+  //! Returns the system of generators, with no redundant generator.
+  const GenSys& minimized_generators() const;
 
   //! \brief
   //! Returns the relations holding between the polyhedron \p *this
@@ -629,153 +560,104 @@ public:
   Poly_Gen_Relation relation_with(const Generator& g) const;
 
   //! \brief
-  //! Assigns to \p *this the result of computing the
-  //! \ref H79_widening "H79-widening" between \p *this and \p y.
-  /*!
-    \param y           A polyhedron that <EM>must</EM>
-                       be contained in \p *this.
-    \param tp          An optional pointer to an unsigned variable storing
-                       the number of available tokens
-		       (to be used when applying the
-		       \ref widening_with_tokens "widening with tokens"
-		       delay technique).
-    \exception std::invalid_argument thrown if \p *this and \p y
-                                     are topology-incompatible
-                                     or dimension-incompatible.
-  */
-  void H79_widening_assign(const Polyhedron& y, unsigned* tp = 0);
+  //! Returns <CODE>true</CODE> if and only if \p *this is
+  //! an empty polyhedron.
+  bool check_empty() const;
 
   //! \brief
-  //! Improves the result of the \ref H79_widening "H79-widening"
-  //! computation by also enforcing those constraints in \p cs that are
-  //! satisfied by all the points of \p *this.
-  /*!
-    \param y                 A polyhedron that <EM>must</EM>
-                             be contained in \p *this.
-    \param cs                The system of constraints used to improve
-                             the widened polyhedron.
-    \param tp                An optional pointer to an unsigned variable
-                             storing the number of available tokens
-			     (to be used when applying the
-			     \ref widening_with_tokens "widening with tokens"
-			     delay technique).
-    \exception std::invalid_argument thrown if \p *this, \p y and \p cs
-                                     are topology-incompatible
-                                     or dimension-incompatible.
-  */
-  void limited_H79_extrapolation_assign(const Polyhedron& y,
-					const ConSys& cs,
-					unsigned* tp = 0);
+  //! Returns <CODE>true</CODE> if and only if \p *this
+  //! is a universe polyhedron.
+  bool check_universe() const;
 
   //! \brief
-  //! Improves the result of the \ref H79_widening "H79-widening"
-  //! computation by also enforcing those constraints in \p cs that are
-  //! satisfied by all the points of \p *this, plus all the constraints
-  //! of the form \f$\pm x \leq r\f$ and \f$\pm x < r\f$, with
-  //! \f$r \in \Qset\f$, that are satisfied by all the points of \p *this.
-  /*!
-    \param y                 A polyhedron that <EM>must</EM>
-                             be contained in \p *this.
-    \param cs                The system of constraints used to improve
-                             the widened polyhedron.
-    \param tp                An optional pointer to an unsigned variable
-                             storing the number of available tokens
-			     (to be used when applying the
-			     \ref widening_with_tokens "widening with tokens"
-			     delay technique).
-    \exception std::invalid_argument thrown if \p *this, \p y and \p cs
-                                     are topology-incompatible
-                                     or dimension-incompatible.
-  */
-  void bounded_H79_extrapolation_assign(const Polyhedron& y,
-					const ConSys& cs,
-					unsigned* tp = 0);
+  //! Returns <CODE>true</CODE> if and only if \p *this
+  //! is a bounded polyhedron.
+  bool check_bounded() const;
 
   //! \brief
-  //! Assigns to \p *this the result of computing the
-  //! \ref BHRZ03_widening "BHRZ03-widening" between \p *this and \p y.
+  //! Returns <CODE>true</CODE> if and only if \p expr is
+  //! bounded from above in \p *this.
   /*!
-    \param y           A polyhedron that <EM>must</EM>
-                       be contained in \p *this.
-    \param tp          An optional pointer to an unsigned variable storing
-                       the number of available tokens (to be used when
-                       applying the
-		       \ref widening_with_tokens "widening with tokens"
-		       delay technique).
-    \exception std::invalid_argument thrown if \p *this and \p y
-                                     are topology-incompatible
-                                     or dimension-incompatible.
+    \exception std::invalid_argument thrown if \p expr and \p *this
+                                     are dimension-incompatible.
   */
-  void BHRZ03_widening_assign(const Polyhedron& y, unsigned* tp = 0);
+  bool bounds_from_above(const LinExpression& expr) const;
 
   //! \brief
-  //! Improves the result of the \ref BHRZ03_widening "BHRZ03-widening"
-  //! computation by also enforcing those constraints in \p cs that are
-  //! satisfied by all the points of \p *this.
+  //! Returns <CODE>true</CODE> if and only if \p expr is
+  //! bounded from below in \p *this.
   /*!
-    \param y                 A polyhedron that <EM>must</EM>
-                             be contained in \p *this.
-    \param cs                The system of constraints used to improve
-                             the widened polyhedron.
-    \param tp                An optional pointer to an unsigned variable
-                             storing the number of available tokens
-                             (to be used when applying the
-			     \ref widening_with_tokens "widening with tokens"
-			     delay technique).
-    \exception std::invalid_argument thrown if \p *this, \p y and \p cs
-                                     are topology-incompatible
-                                     or dimension-incompatible.
+    \exception std::invalid_argument thrown if \p expr and \p *this
+                                     are dimension-incompatible.
   */
-  void limited_BHRZ03_extrapolation_assign(const Polyhedron& y,
-					   const ConSys& cs,
-					   unsigned* tp = 0);
+  bool bounds_from_below(const LinExpression& expr) const;
 
   //! \brief
-  //! Improves the result of the \ref BHRZ03_widening "BHRZ03-widening"
-  //! computation by also enforcing those constraints in \p cs that are
-  //! satisfied by all the points of \p *this, plus all the constraints
-  //! of the form \f$\pm x \leq r\f$ and \f$\pm x < r\f$, with
-  //! \f$r \in \Qset\f$, that are satisfied by all the points of \p *this.
+  //! Returns <CODE>true</CODE> if and only if \p *this
+  //! is a topologically closed subset of the vector space.
+  bool check_topologically_closed() const;
+
+  //! Uses \p *this to shrink a generic, interval-based bounding box.
   /*!
-    \param y                 A polyhedron that <EM>must</EM>
-                             be contained in \p *this.
-    \param cs                The system of constraints used to improve
-                             the widened polyhedron.
-    \param tp                An optional pointer to an unsigned variable
-                             storing the number of available tokens
-			     (to be used when applying the
-			     \ref widening_with_tokens "widening with tokens"
-			     delay technique).
-    \exception std::invalid_argument thrown if \p *this, \p y and \p cs
-                                     are topology-incompatible
-                                     or dimension-incompatible.
-  */
-  void bounded_BHRZ03_extrapolation_assign(const Polyhedron& y,
-					   const ConSys& cs,
-					   unsigned* tp = 0);
+    \param box         The bounding box to be shrunk.
+    \param complexity  The complexity class of the algorithm to be used.
 
-  //! \brief
-  //! Assigns to \p *this the result of computing the
-  //! \ref time_elapse "time-elapse" between \p *this and \p y.
+    The template class Box must provide the following
+    methods, whose return value, if any, is simply ignored.
+    \code
+      set_empty()
+    \endcode
+    causes the box to become empty, i.e., to represent the empty set.
+    \code
+      raise_lower_bound(dimension_type k, bool closed,
+                        const Integer& n, const Integer& d)
+    \endcode
+    intersects the interval corresponding to the <CODE>k</CODE>-th dimension
+    with \f$[n/d, +\infty)\f$ if <CODE>closed</CODE> is <CODE>true</CODE>,
+    with \f$(n/d, +\infty)\f$ if <CODE>closed</CODE> is <CODE>false</CODE>.
+    The fraction \f$n/d\f$ is in canonical form, that is, \f$n\f$
+    and \f$d\f$ have no common factors and \f$d\f$ is positive, \f$0/1\f$
+    being the unique representation for zero.
+    \code
+      lower_upper_bound(dimension_type k, bool closed,
+                        const Integer& n, const Integer& d)
+    \endcode
+    intersects the interval corresponding to the <CODE>k</CODE>-th dimension
+    with \f$(-\infty, n/d]\f$ if <CODE>closed</CODE> is <CODE>true</CODE>,
+    with \f$(-\infty, n/d)\f$ if <CODE>closed</CODE>
+    is <CODE>false</CODE>.
+    The fraction \f$n/d\f$ is in canonical form.
+    The function <CODE>raise_lower_bound(k, closed, n, d)</CODE>
+    will be called at most once for each possible value for <CODE>k</CODE>.
+    The same guarantee is offered for the function
+    <CODE>lower_upper_bound(k, closed, n, d)</CODE>.
+  */
+  template <typename Box>
+  void shrink_bounding_box(Box& box, Complexity_Class complexity = ANY) const;
+
+  //! Checks if all the invariants are satisfied.
   /*!
-    \exception std::invalid_argument thrown if \p *this and \p y
-                                     are topology-incompatible
-                                     or dimension-incompatible.
+    \param check_not_empty
+      <CODE>true</CODE> if and only if, in addition to checking
+      the invariants, \p *this must be checked to be not empty.
+   
+    \return
+      <CODE>true</CODE> if and only if \p *this satisfies
+      all the invariants and either \p check_not_empty is
+      <CODE>false</CODE> or \p *this is not empty.
+
+    The check is performed so as to intrude as little as possible.  If
+    the library has been compiled with run-time assertions enabled,
+    error messages are written on <CODE>std::cerr</CODE> in case
+    invariants are violated. This is useful for the purpose of
+    debugging the library.
   */
-  void time_elapse_assign(const Polyhedron& y);
+  bool OK(bool check_not_empty = false) const;
 
+  //@} // Member Functions that Do Not Modify the Polyhedron
 
-  //! Returns the system of constraints.
-  const ConSys& constraints() const;
-
-  //! Returns the system of constraints, with no redundant constraint.
-  const ConSys& minimized_constraints() const;
-
-  //! Returns the system of generators.
-  const GenSys& generators() const;
-
-  //! Returns the system of generators, with no redundant generator.
-  const GenSys& minimized_generators() const;
+  //! \name Space-Dimension Preserving Member Functions that May Modify the Polyhedron
+  //@{
 
   //! \brief
   //! Adds a copy of constraint \p c to the system of constraints
@@ -883,6 +765,58 @@ public:
                                      is not empty, but has no points.
   */
   bool add_generators_and_minimize(GenSys& gs);
+
+  //! \brief
+  //! Assigns to \p *this the intersection of \p *this and \p y.
+  //! The result is not guaranteed to be minimized.
+  /*!
+    \exception std::invalid_argument thrown if \p *this and \p y
+                                     are topology-incompatible
+                                     or dimension-incompatible.
+  */
+  void intersection_assign(const Polyhedron& y);
+
+  //! \brief
+  //! Assigns to \p *this the intersection of \p *this and \p y,
+  //! minimizing the result.
+  /*!
+    \return    <CODE>false</CODE> if and only if the result is empty.
+    \exception std::invalid_argument thrown if \p *this and \p y
+                                     are topology-incompatible
+                                     or dimension-incompatible.
+  */
+  bool intersection_assign_and_minimize(const Polyhedron& y);
+
+  //! \brief
+  //! Assigns to \p *this the poly-hull \p *this and \p y.
+  //! The result is not guaranteed to be minimized.
+  /*!
+    \exception std::invalid_argument thrown if \p *this and \p y
+                                     are topology-incompatible
+                                     or dimension-incompatible.
+  */
+  void poly_hull_assign(const Polyhedron& y);
+
+  //! \brief
+  //! Assigns to \p *this the poly-hull of \p *this and \p y,
+  //! minimizing the result.
+  /*!
+    \return    <CODE>false</CODE> if and only if the result is empty.
+    \exception std::invalid_argument thrown if \p *this and \p y
+                                     are topology-incompatible
+                                     or dimension-incompatible.
+  */
+  bool poly_hull_assign_and_minimize(const Polyhedron& y);
+
+  //! \brief
+  //! Assigns to \p *this the \ref poly_difference "poly-difference" of
+  //! \p *this and \p y. The result is not guaranteed to be minimized.
+  /*!
+    \exception std::invalid_argument thrown if \p *this and \p y
+                                     are topology-incompatible
+                                     or dimension-incompatible.
+  */
+  void poly_difference_assign(const Polyhedron& y);
 
   //! \brief
   //! Assigns to \p *this the \ref affine_transformation "affine image"
@@ -1105,62 +1039,149 @@ public:
 				const Relation_Symbol relsym,
 				const LinExpression& rhs);
 
-  //! Uses \p *this to shrink a generic, interval-based bounding box.
+  //! \brief
+  //! Assigns to \p *this the result of computing the
+  //! \ref time_elapse "time-elapse" between \p *this and \p y.
   /*!
-    \param box         The bounding box to be shrunk.
-    \param complexity  The complexity class of the algorithm to be used.
-
-    The template class Box must provide the following
-    methods, whose return value, if any, is simply ignored.
-    \code
-      set_empty()
-    \endcode
-    causes the box to become empty, i.e., to represent the empty set.
-    \code
-      raise_lower_bound(dimension_type k, bool closed,
-                        const Integer& n, const Integer& d)
-    \endcode
-    intersects the interval corresponding to the <CODE>k</CODE>-th dimension
-    with \f$[n/d, +\infty)\f$ if <CODE>closed</CODE> is <CODE>true</CODE>,
-    with \f$(n/d, +\infty)\f$ if <CODE>closed</CODE> is <CODE>false</CODE>.
-    The fraction \f$n/d\f$ is in canonical form, that is, \f$n\f$
-    and \f$d\f$ have no common factors and \f$d\f$ is positive, \f$0/1\f$
-    being the unique representation for zero.
-    \code
-      lower_upper_bound(dimension_type k, bool closed,
-                        const Integer& n, const Integer& d)
-    \endcode
-    intersects the interval corresponding to the <CODE>k</CODE>-th dimension
-    with \f$(-\infty, n/d]\f$ if <CODE>closed</CODE> is <CODE>true</CODE>,
-    with \f$(-\infty, n/d)\f$ if <CODE>closed</CODE>
-    is <CODE>false</CODE>.
-    The fraction \f$n/d\f$ is in canonical form.
-    The function <CODE>raise_lower_bound(k, closed, n, d)</CODE>
-    will be called at most once for each possible value for <CODE>k</CODE>.
-    The same guarantee is offered for the function
-    <CODE>lower_upper_bound(k, closed, n, d)</CODE>.
+    \exception std::invalid_argument thrown if \p *this and \p y
+                                     are topology-incompatible
+                                     or dimension-incompatible.
   */
-  template <typename Box>
-  void shrink_bounding_box(Box& box, Complexity_Class complexity = ANY) const;
+  void time_elapse_assign(const Polyhedron& y);
 
-  //! Checks if all the invariants are satisfied.
+  //! \brief
+  //! Assigns to \p *this the result of computing the
+  //! \ref H79_widening "H79-widening" between \p *this and \p y.
   /*!
-    \param check_not_empty
-      <CODE>true</CODE> if and only if, in addition to checking
-      the invariants, \p *this must be checked to be not empty.
-   
-    \return
-      <CODE>true</CODE> if and only if \p *this satisfies
-      all the invariants and either \p check_not_empty is
-      <CODE>false</CODE> or \p *this is not empty.
-
-    The check is performed so as to intrude as little as possible.  If
-    the library has been compiled with run-time assertions enabled,
-    error messages are written on <CODE>std::cerr</CODE> in case
-    invariants are violated. This is useful for the purpose of
-    debugging the library.
+    \param y           A polyhedron that <EM>must</EM>
+                       be contained in \p *this.
+    \param tp          An optional pointer to an unsigned variable storing
+                       the number of available tokens
+		       (to be used when applying the
+		       \ref widening_with_tokens "widening with tokens"
+		       delay technique).
+    \exception std::invalid_argument thrown if \p *this and \p y
+                                     are topology-incompatible
+                                     or dimension-incompatible.
   */
-  bool OK(bool check_not_empty = false) const;
+  void H79_widening_assign(const Polyhedron& y, unsigned* tp = 0);
+
+  //! \brief
+  //! Improves the result of the \ref H79_widening "H79-widening"
+  //! computation by also enforcing those constraints in \p cs that are
+  //! satisfied by all the points of \p *this.
+  /*!
+    \param y                 A polyhedron that <EM>must</EM>
+                             be contained in \p *this.
+    \param cs                The system of constraints used to improve
+                             the widened polyhedron.
+    \param tp                An optional pointer to an unsigned variable
+                             storing the number of available tokens
+			     (to be used when applying the
+			     \ref widening_with_tokens "widening with tokens"
+			     delay technique).
+    \exception std::invalid_argument thrown if \p *this, \p y and \p cs
+                                     are topology-incompatible
+                                     or dimension-incompatible.
+  */
+  void limited_H79_extrapolation_assign(const Polyhedron& y,
+					const ConSys& cs,
+					unsigned* tp = 0);
+
+  //! \brief
+  //! Improves the result of the \ref H79_widening "H79-widening"
+  //! computation by also enforcing those constraints in \p cs that are
+  //! satisfied by all the points of \p *this, plus all the constraints
+  //! of the form \f$\pm x \leq r\f$ and \f$\pm x < r\f$, with
+  //! \f$r \in \Qset\f$, that are satisfied by all the points of \p *this.
+  /*!
+    \param y                 A polyhedron that <EM>must</EM>
+                             be contained in \p *this.
+    \param cs                The system of constraints used to improve
+                             the widened polyhedron.
+    \param tp                An optional pointer to an unsigned variable
+                             storing the number of available tokens
+			     (to be used when applying the
+			     \ref widening_with_tokens "widening with tokens"
+			     delay technique).
+    \exception std::invalid_argument thrown if \p *this, \p y and \p cs
+                                     are topology-incompatible
+                                     or dimension-incompatible.
+  */
+  void bounded_H79_extrapolation_assign(const Polyhedron& y,
+					const ConSys& cs,
+					unsigned* tp = 0);
+
+  //! \brief
+  //! Assigns to \p *this the result of computing the
+  //! \ref BHRZ03_widening "BHRZ03-widening" between \p *this and \p y.
+  /*!
+    \param y           A polyhedron that <EM>must</EM>
+                       be contained in \p *this.
+    \param tp          An optional pointer to an unsigned variable storing
+                       the number of available tokens (to be used when
+                       applying the
+		       \ref widening_with_tokens "widening with tokens"
+		       delay technique).
+    \exception std::invalid_argument thrown if \p *this and \p y
+                                     are topology-incompatible
+                                     or dimension-incompatible.
+  */
+  void BHRZ03_widening_assign(const Polyhedron& y, unsigned* tp = 0);
+
+  //! \brief
+  //! Improves the result of the \ref BHRZ03_widening "BHRZ03-widening"
+  //! computation by also enforcing those constraints in \p cs that are
+  //! satisfied by all the points of \p *this.
+  /*!
+    \param y                 A polyhedron that <EM>must</EM>
+                             be contained in \p *this.
+    \param cs                The system of constraints used to improve
+                             the widened polyhedron.
+    \param tp                An optional pointer to an unsigned variable
+                             storing the number of available tokens
+                             (to be used when applying the
+			     \ref widening_with_tokens "widening with tokens"
+			     delay technique).
+    \exception std::invalid_argument thrown if \p *this, \p y and \p cs
+                                     are topology-incompatible
+                                     or dimension-incompatible.
+  */
+  void limited_BHRZ03_extrapolation_assign(const Polyhedron& y,
+					   const ConSys& cs,
+					   unsigned* tp = 0);
+
+  //! \brief
+  //! Improves the result of the \ref BHRZ03_widening "BHRZ03-widening"
+  //! computation by also enforcing those constraints in \p cs that are
+  //! satisfied by all the points of \p *this, plus all the constraints
+  //! of the form \f$\pm x \leq r\f$ and \f$\pm x < r\f$, with
+  //! \f$r \in \Qset\f$, that are satisfied by all the points of \p *this.
+  /*!
+    \param y                 A polyhedron that <EM>must</EM>
+                             be contained in \p *this.
+    \param cs                The system of constraints used to improve
+                             the widened polyhedron.
+    \param tp                An optional pointer to an unsigned variable
+                             storing the number of available tokens
+			     (to be used when applying the
+			     \ref widening_with_tokens "widening with tokens"
+			     delay technique).
+    \exception std::invalid_argument thrown if \p *this, \p y and \p cs
+                                     are topology-incompatible
+                                     or dimension-incompatible.
+  */
+  void bounded_BHRZ03_extrapolation_assign(const Polyhedron& y,
+					   const ConSys& cs,
+					   unsigned* tp = 0);
+
+  //! Assigns to \p *this its topological closure.
+  void topological_closure_assign();
+
+  //@} Space-Dimension Preserving Member Functions that May Modify [...]
+
+  //! \name Member Functions that May Modify the Dimension of the Vector Space
+  //@{
 
   //! \brief
   //! Adds \p m new dimensions and embeds the old polyhedron
@@ -1205,6 +1226,35 @@ public:
     \f]
   */
   void add_dimensions_and_project(dimension_type m);
+
+  //! \brief
+  //! Seeing a polyhedron as a set of tuples (its points), assigns
+  //! to \p *this all the tuples that can be obtained by concatenating,
+  //! in the order given, a tuple of \p *this with a tuple of \p y.
+  /*!
+    Let \f$P \sseq \Rset^n\f$ and \f$Q \sseq \Rset^m\f$ be the polyhedra
+    represented, on entry, by \p *this and \p y, respectively.
+    Upon successful completion, \p *this will represent the polyhedron
+    \f$R \sseq \Rset^{n+m}\f$ such that
+    \f[
+      R
+        \defeq
+          \Bigl\{\,
+            (x_1, \ldots, x_n, y_1, \ldots, y_m)^\transpose
+          \Bigm|
+            (x_1, \ldots, x_n)^\transpose \in P,
+            (y_1, \ldots, y_m)^\transpose \in Q
+          \,\Bigl\}.
+    \f]
+    Another way of seeing it is as follows: first increases the space
+    dimension of \p *this by adding \p y.space_dimension() new
+    dimensions; then adds to the system of constraints of \p *this a
+    renamed-apart version of the constraints of \p y.
+
+    \exception std::invalid_argument thrown if \p *this and \p y
+                                     are topology-incompatible.
+  */
+  void concatenate_assign(const Polyhedron& y);
 
   //! Removes all the specified dimensions.
   /*!
@@ -1267,53 +1317,29 @@ public:
   template <typename PartialInjectiveFunction>
   void rename_dimensions(const PartialInjectiveFunction& pifunc);
 
-  //! \brief
-  //! Returns <CODE>true</CODE> if and only if \p *this is
-  //! an empty polyhedron.
-  bool check_empty() const;
-
-  //! \brief
-  //! Returns <CODE>true</CODE> if and only if \p *this
-  //! is a universe polyhedron.
-  bool check_universe() const;
-
-  //! \brief
-  //! Returns <CODE>true</CODE> if and only if \p *this
-  //! is a bounded polyhedron.
-  bool is_bounded() const;
-
-  //! \brief
-  //! Returns <CODE>true</CODE> if and only if \p expr is
-  //! bounded from above in \p *this.
-  /*!
-    \exception std::invalid_argument thrown if \p expr and \p *this
-                                     are dimension-incompatible.
-  */
-  bool bounds_from_above(const LinExpression& expr) const;
-
-  //! \brief
-  //! Returns <CODE>true</CODE> if and only if \p expr is
-  //! bounded from below in \p *this.
-  /*!
-    \exception std::invalid_argument thrown if \p expr and \p *this
-                                     are dimension-incompatible.
-  */
-  bool bounds_from_below(const LinExpression& expr) const;
-
-  //! \brief
-  //! Returns <CODE>true</CODE> if and only if \p *this
-  //! is a topologically closed subset of the vector space.
-  bool is_topologically_closed() const;
-
-  //! Assigns to \p *this its topological closure.
-  void topological_closure_assign();
+  //@} // Member Functions that May Modify the Dimension of the Vector Space
 
   friend bool Parma_Polyhedra_Library::operator==(const Polyhedron& x,
 						  const Polyhedron& y);
   friend bool Parma_Polyhedra_Library::operator<=(const Polyhedron& x,
 						  const Polyhedron& y);
-  friend bool Parma_Polyhedra_Library::are_disjoint(const Polyhedron& x,
-						    const Polyhedron& y);
+  friend bool Parma_Polyhedra_Library::check_disjoint(const Polyhedron& x,
+						      const Polyhedron& y);
+
+  //! \name Miscellaneous Member Functions
+  //@{
+
+  //! Destructor.
+  ~Polyhedron();
+
+  //! \brief
+  //! Swaps \p *this with polyhedron \p y.
+  //! (\p *this and \p y can be dimension-incompatible.)
+  /*!
+    \exception std::invalid_argument thrown if \p x and \p y
+                                     are topology-incompatible.
+  */
+  void swap(Polyhedron& y);
 
 #ifdef PPL_DOXYGEN_INCLUDE_IMPLEMENTATION_DETAILS
   //! \brief
@@ -1330,14 +1356,7 @@ public:
 #endif // PPL_DOXYGEN_INCLUDE_IMPLEMENTATION_DETAILS
   bool ascii_load(std::istream& s);
 
-  //! \brief
-  //! Swaps \p *this with polyhedron \p y.
-  //! (\p *this and \p y can be dimension-incompatible.)
-  /*!
-    \exception std::invalid_argument thrown if \p x and \p y
-                                     are topology-incompatible.
-  */
-  void swap(Polyhedron& y);
+  //@} // Miscellaneous Member Functions
 
 private:
   //! The system of constraints.
@@ -1366,8 +1385,9 @@ private:
   //! is necessarily closed.
   bool is_necessarily_closed() const;
 
-  //! @name Private verifiers: verify if individual flags are set.
+  //! \name Private Verifiers: Verify if Individual Flags are Set
   //@{
+
   //! Returns <CODE>true</CODE> if the polyhedron is known to be empty.
   /*!
     The return value <CODE>false</CODE> does not necessarily
@@ -1420,10 +1440,12 @@ private:
   //! Returns <CODE>true</CODE> if the saturation matrix \p sat_g
   //! is up-to-date.
   bool sat_g_is_up_to_date() const;
-  //@}
 
-  //! @name State flag setters: set only the specified flags.
+  //@} // Private Verifiers: Verify if Individual Flags are Set
+
+  //! \name State Flag Setters: Set Only the Specified Flags
   //@{
+
   //! \brief
   //! Sets \p status to express that the polyhedron
   //! is the universe 0-dimension vector space,
@@ -1458,10 +1480,12 @@ private:
 
   //! Sets \p status to express that \p sat_g is up-to-date.
   void set_sat_g_up_to_date();
-  //@}
 
-  //! @name State flag cleaners: clear only the specified flag.
+  //@} // State Flag Setters: Set Only the Specified Flags
+
+  //! \name State Flag Cleaners: Clear Only the Specified Flag
   //@{
+
   //! Clears the \p status flag indicating that the polyhedron is empty.
   void clear_empty();
 
@@ -1496,7 +1520,64 @@ private:
 
   //! Sets \p status to express that \p sat_g is no longer up-to-date.
   void clear_sat_g_up_to_date();
-//@}
+
+  //@} // State Flag Cleaners: Clear Only the Specified Flag
+
+  //! \name The Handling of Pending Rows
+  //@{
+
+  //! \brief
+  //! Processes the pending rows of either description of the polyhedron
+  //! and obtains a minimized polyhedron.
+  /*!
+    \return       <CODE>false</CODE> if and only if \p *this turns out
+                  to be an empty polyhedron.
+
+    It is assumed that the polyhedron does have some constraints or
+    generators pending.
+  */
+  bool process_pending() const;
+  
+  //! Processes the pending constraints and obtains a minimized polyhedron.
+  /*!
+    \return       <CODE>false</CODE> if and only if \p *this turns out
+                  to be an empty polyhedron.
+
+    It is assumed that the polyhedron does have some pending constraints.
+  */
+  bool process_pending_constraints() const;
+
+  //! Processes the pending generators and obtains a minimized polyhedron.
+  /*!
+    It is assumed that the polyhedron does have some pending generators.
+  */
+  void process_pending_generators() const;
+
+  //! \brief
+  //! Lazily integrates the pending descriptions of the polyhedron
+  //! to obtain a constraint system without pending rows.
+  /*!
+    It is assumed that the polyhedron does have some constraints or
+    generators pending.
+  */
+  void remove_pending_to_obtain_constraints() const;
+
+  //! \brief
+  //! Lazily integrates the pending descriptions of the polyhedron
+  //! to obtain a generator system without pending rows.
+  /*!
+    \return       <CODE>false</CODE> if and only if \p *this turns out
+                  to be an empty polyhedron.
+
+    It is assumed that the polyhedron does have some constraints or
+    generators pending.
+  */
+  bool remove_pending_to_obtain_generators() const;
+
+  //@} // The Handling of Pending Rows
+
+  //! \name Updating and Sorting Matrices
+  //@{
 
   //! Updates constraints starting from generators and minimizes them.
   /*!
@@ -1553,57 +1634,6 @@ private:
   */
   void update_sat_g() const;
 
-  //! Adds the low-level constraints to the constraint system.
-  static void add_low_level_constraints(ConSys& cs);
-
-  //! \brief
-  //! Processes the pending rows of either description of the polyhedron
-  //! and obtains a minimized polyhedron.
-  /*!
-    \return       <CODE>false</CODE> if and only if \p *this turns out
-                  to be an empty polyhedron.
-
-    It is assumed that the polyhedron does have some constraints or
-    generators pending.
-  */
-  bool process_pending() const;
-  
-  //! Processes the pending constraints and obtains a minimized polyhedron.
-  /*!
-    \return       <CODE>false</CODE> if and only if \p *this turns out
-                  to be an empty polyhedron.
-
-    It is assumed that the polyhedron does have some pending constraints.
-  */
-  bool process_pending_constraints() const;
-
-  //! Processes the pending generators and obtains a minimized polyhedron.
-  /*!
-    It is assumed that the polyhedron does have some pending generators.
-  */
-  void process_pending_generators() const;
-
-  //! \brief
-  //! Lazily integrates the pending descriptions of the polyhedron
-  //! to obtain a constraint system without pending rows.
-  /*!
-    It is assumed that the polyhedron does have some constraints or
-    generators pending.
-  */
-  void remove_pending_to_obtain_constraints() const;
-
-  //! \brief
-  //! Lazily integrates the pending descriptions of the polyhedron
-  //! to obtain a generator system without pending rows.
-  /*!
-    \return       <CODE>false</CODE> if and only if \p *this turns out
-                  to be an empty polyhedron.
-
-    It is assumed that the polyhedron does have some constraints or
-    generators pending.
-  */
-  bool remove_pending_to_obtain_generators() const;
-
   //! Sorts the matrix of constraints keeping status consistency.
   /*!
     It is assumed that constraints are up-to-date.
@@ -1648,6 +1678,11 @@ private:
   */
   void obtain_sorted_generators_with_sat_g() const;
 
+  //@} // Updating and Sorting Matrices
+
+  //! \name Weak and Strong Minimization of Descriptions
+  //@{
+
   //! Applies (weak) minimization to both the constraints and generators.
   /*!
     \return       <CODE>false</CODE> if and only if \p *this turns out
@@ -1672,19 +1707,7 @@ private:
   */
   bool strongly_minimize_generators() const;
 
-  //! \brief
-  //! Copies into \p cs_selection the constraints of `y' corresponding
-  //! to the definition of the CH78-widening of \p *this and \p y.
-  void select_CH78_constraints(const Polyhedron& y,
-			       ConSys& cs_selected) const;
-
-  //! \brief
-  //! Splits the constraints of `x' into two subsets, depending on whether
-  //! or not they are selected to compute the \ref H79_widening "H79-widening"
-  //! of \p *this and \p y.
-  void select_H79_constraints(const Polyhedron& y,
-			      ConSys& cs_selected,
-			      ConSys& cs_not_selected) const;
+  //@} // Weak and Strong Minimization of Descriptions
 
   enum Three_Valued_Boolean {
     TVB_TRUE,
@@ -1713,6 +1736,36 @@ private:
   */
   bool bounds(const LinExpression& expr, bool from_above) const;
 
+  //! \name Widening- and Extrapolation-Related Functions
+  //@{
+
+  //! \brief
+  //! Copies into \p cs_selection the constraints of `y' corresponding
+  //! to the definition of the CH78-widening of \p *this and \p y.
+  void select_CH78_constraints(const Polyhedron& y,
+			       ConSys& cs_selected) const;
+
+  //! \brief
+  //! Splits the constraints of `x' into two subsets, depending on whether
+  //! or not they are selected to compute the \ref H79_widening "H79-widening"
+  //! of \p *this and \p y.
+  void select_H79_constraints(const Polyhedron& y,
+			      ConSys& cs_selected,
+			      ConSys& cs_not_selected) const;
+
+  bool BHRZ03_combining_constraints(const Polyhedron& y,
+ 				    const Polyhedron& H79,
+				    const ConSys& x_minus_H79_con_sys);
+
+  bool BHRZ03_evolving_points(const Polyhedron& y, const Polyhedron& H79);
+
+  bool BHRZ03_evolving_rays(const Polyhedron& y, const Polyhedron& H79);
+
+  //@} // Widening- and Extrapolation-Related Functions
+
+  //! Adds the low-level constraints to the constraint system.
+  static void add_low_level_constraints(ConSys& cs);
+
   //! Adds new dimensions to the given matrices.
   /*!
     \param mat1      The matrix to which columns are added.
@@ -1736,19 +1789,16 @@ private:
 			     dimension_type add_dim);
 
   //! \brief
-  //! Performs the conversion from constraints to generators and vice versa.
-  // Detailed Doxygen comment to be found in file conversion.cc.
-  static dimension_type conversion(Matrix& entry,
-				   dimension_type start,
-				   Matrix& result,
-				   SatMatrix& sat,
-				   dimension_type num_lines_or_equalities);
+  //! Returns <CODE>true</CODE> if the given polyhedra satisfy
+  //! the theorem of BHRZ03.
+  /*!
+    \param x        The greater polyhedron.
+    \param y        The smaller polyhedron.
+  */
+  static bool is_BHRZ03_stabilizing(const Polyhedron& x, const Polyhedron& y);
 
-  //! \brief
-  //! Uses Gauss' elimination method to simplify the result of
-  //! <CODE>conversion()</CODE>.
-  // Detailed Doxygen comment to be found in file simplify.cc.
-  static int simplify(Matrix& mat, SatMatrix& sat);
+  //! \name Minimization-Related Static Member Functions
+  //@{
 
   //! Builds and simplifies constraints from generators (or vice versa).
   // Detailed Doxygen comment to be found in file minimize.cc.
@@ -1771,58 +1821,64 @@ private:
 			       Matrix& source, Matrix& dest, SatMatrix& sat);
   
   //! \brief
-  //! Returns <CODE>true</CODE> if the given polyhedra satisfy
-  //! the theorem of BHRZ03.
-  /*!
-    \param x        The greater polyhedron.
-    \param y        The smaller polyhedron.
-  */
-  static bool is_BHRZ03_stabilizing(const Polyhedron& x, const Polyhedron& y);
+  //! Performs the conversion from constraints to generators and vice versa.
+  // Detailed Doxygen comment to be found in file conversion.cc.
+  static dimension_type conversion(Matrix& entry,
+				   dimension_type start,
+				   Matrix& result,
+				   SatMatrix& sat,
+				   dimension_type num_lines_or_equalities);
 
-  bool BHRZ03_combining_constraints(const Polyhedron& y,
- 				    const Polyhedron& H79,
-				    const ConSys& x_minus_H79_con_sys);
+  //! \brief
+  //! Uses Gauss' elimination method to simplify the result of
+  //! <CODE>conversion()</CODE>.
+  // Detailed Doxygen comment to be found in file simplify.cc.
+  static int simplify(Matrix& mat, SatMatrix& sat);
 
-  bool BHRZ03_evolving_points(const Polyhedron& y, const Polyhedron& H79);
+  //@} // Minimization-Related Static Member Functions
 
-  bool BHRZ03_evolving_rays(const Polyhedron& y, const Polyhedron& H79);
-
-  //! @name Exception throwers.
+  //! \name Exception Throwers
   //@{
+  void throw_runtime_error(const char* method) const;
+  void throw_invalid_argument(const char* method, const char* reason) const;
+
   void throw_topology_incompatible(const char* method,
 				   const Polyhedron& y) const;
   void throw_topology_incompatible(const char* method,
-				   const ConSys& ) const;
-  void throw_topology_incompatible(const char* method,
 				   const Constraint& ) const;
   void throw_topology_incompatible(const char* method,
-				   const GenSys& ) const;
-  void throw_topology_incompatible(const char* method,
 				   const Generator& ) const;
+  void throw_topology_incompatible(const char* method,
+				   const ConSys& ) const;
+  void throw_topology_incompatible(const char* method,
+				   const GenSys& ) const;
 
   void throw_dimension_incompatible(const char* method,
 				    const Polyhedron& y) const;
   void throw_dimension_incompatible(const char* method,
-				    const char* name_system,
-				    const Matrix& y) const;
-  void throw_dimension_incompatible(const char* method,
 				    const char* name_row,
 				    const Row& y) const;
+  void throw_dimension_incompatible(const char* method,
+				    const char* name_system,
+				    const Matrix& y) const;
   void throw_dimension_incompatible(const char* method,
 				    dimension_type required_dim) const;
 
   void throw_invalid_generator(const char* method) const;
   void throw_invalid_generators(const char* method) const;
 
-  void throw_generic(const char* method, const char* reason) const;
+  //@} // Exception Throwers (non-static)
 
+  //! \name Exception Throwers
+  //@{
   static void throw_topology_incompatible(const char* method,
 					  const Polyhedron& x,
 					  const Polyhedron& y);
   static void throw_dimension_incompatible(const char* method,
 					   const Polyhedron& x,
 					   const Polyhedron& y);
-  //@}
+  //@} // Exception Throwers (static)
+
 
 };
 

@@ -156,7 +156,10 @@ LinExpression.cc \
 Matrix.cc \
 Poly_Con_Relation.cc \
 Poly_Gen_Relation.cc \
-Polyhedron.cc \
+Polyhedron_nonpublic.cc \
+Polyhedron_public.cc \
+Polyhedron_chdims.cc \
+Polyhedron_widenings.cc \
 C_Polyhedron.cc \
 NNC_Polyhedron.cc \
 Row.cc \
