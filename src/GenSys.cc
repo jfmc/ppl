@@ -265,22 +265,12 @@ PPL::GenSys::affine_image(size_t v,
     // multiply by `denominator' all the other columns of `*this'.
     for (size_t i = 0; i < num_rows; ++i)
       for (size_t j = 0; j < num_columns; ++j)
-	if( j != v)
+	if (j != v)
 	  x[i][j] *= denominator;
-  for (size_t i = num_rows; i--> 0; )
-    if (x[i][0] == 0) {
-      bool is_origin = true;
-      for (size_t j = 1; j < num_columns; ++j)
-	if (x[i][j] != 0) {
-	  is_origin = false;
-	  break;
-	}
-      if (is_origin) {
-	--num_rows;
-	std::swap(x[i], x[num_rows]);
-      }
-    }
-  x.erase_to_end(num_rows);
+  // We may have trasformed valid lines and rays
+  // into the origin of the space.
+  x.remove_invalid_lines_and_rays();
+
   x.strong_normalize();
 }
 
@@ -332,27 +322,19 @@ PPL::GenSys::get(std::istream& s) {
 
 void
 PPL::GenSys::remove_invalid_lines_and_rays() {
+  // The origin of the vector space cannot be a valid line/ray. 
   GenSys& gs = *this;
-  size_t nrows = num_rows();
-  size_t i;
-  for (i = 0; i < nrows; ++i) {
-    const Generator& g = gs[i];
-    if (g[0] == 0 && g.all_homogeneous_terms_are_zero())
-      // An invalid line or ray.
-      break;
-  }
-  // If `i < nrows', `gs[i]' is a generator to remove.
-  for (size_t j = i+1; j < nrows; ++j) {
-    const Generator& g = gs[j];
-    if (g[0] != 0 || !g.all_homogeneous_terms_are_zero()) {
-      // Found some good stuff.
-      std::swap(gs[i], gs[j]);
-      // Now, if `i+1 < nrows', `gs[i+1]' is a generator to remove.
-      ++i;
+  size_t num_rows = gs.num_rows();
+  for (size_t i = num_rows; i-- > 0; ) {
+    Generator& g = gs[i];
+    if (g[0] == 0 && g.all_homogeneous_terms_are_zero()) {
+      // An invalid line/ray has been found.
+      --num_rows;
+      std::swap(g, gs[num_rows]);
+      gs.set_sorted(false);
     }
   }
-  if (i < nrows)
-    gs.erase_to_end(i);
+  gs.erase_to_end(num_rows);
 }
 
 /*!
