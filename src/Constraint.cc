@@ -51,7 +51,7 @@ PPL::Constraint::is_nontrivial() const {
     return (x[0] == 0);
   else
     // Inequality constraint.
-    return (x[0] >= 0);
+    return (x[0] <= 0);
 }
 
 std::ostream&
