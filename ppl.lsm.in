@@ -15,10 +15,11 @@ Author:		Roberto Bagnara (bagnara@cs.unipr.it)
 		Tatiana Zolo (zolo@cs.unipr.it)
 Maintained-by:	ppl-devel@cs.unipr.it (PPL developers)
 Primary-site:	metlab.unc.edu /pub/linux/libs
-		1700k ppl-@VERSION@.tar.gz
+		2500k ppl-@VERSION@.tar.gz
 		800  ppl.lsm
 Alternate-site:	
 Original-site:	http://www.cs.unipr.it/ppl/
-Platforms:      Linux (tested on RedHat 7.x), but meant to be portable
+Platforms:      Portable; tested on Linux, FreeBSD, Solaris, IRIX64,
+                Mac OS X, Cygwin, DEC OSF/1.
 Copying-policy:	GPL
 End
