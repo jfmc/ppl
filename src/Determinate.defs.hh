@@ -73,7 +73,6 @@ operator<<(std::ostream&, const Determinate<PH>&);
 template <typename PH>
 class Parma_Polyhedra_Library::Determinate {
 public:
-
   //! \name Constructors and Destructor
   //@{
 
@@ -157,15 +156,6 @@ public:
   bool OK() const;
 
   //@} // Member Functions that Do Not Modify the Domain Element
-
-
-  Determinate& operator <<= (dimension_type n);
-  Determinate& hide_assign(dimension_type n);
-
-  friend bool
-  operator==<PH>(const Determinate<PH>& x, const Determinate<PH>& y);
-  friend bool
-  operator!=<PH>(const Determinate<PH>& x, const Determinate<PH>& y);
 
   //! \name Space Dimension Preserving Member Functions that May Modify the Domain Element
   //@{
@@ -320,6 +310,11 @@ private:
   //! A pointer to the possibly shared representation of
   //! the base-level domain element.
   Rep* prep;
+
+  friend bool
+  operator==<PH>(const Determinate<PH>& x, const Determinate<PH>& y);
+  friend bool
+  operator!=<PH>(const Determinate<PH>& x, const Determinate<PH>& y);
 };
 
 
