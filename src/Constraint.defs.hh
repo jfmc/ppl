@@ -280,12 +280,6 @@ private:
   // GenSys::satisfied_by_all_generators().
   friend class Parma_Polyhedra_Library::GenSys;
 
-  friend const Integer&
-  Parma_Polyhedra_Library::operator*(const Constraint& c,
-				     const Generator& g);
-  friend const Integer&
-  Parma_Polyhedra_Library::reduced_scalar_product(const Constraint& c,
-						  const Generator& g);
   friend
   Parma_Polyhedra_Library::LinExpression::LinExpression(const Constraint& c);
   friend void std::swap(Parma_Polyhedra_Library::Constraint& x,

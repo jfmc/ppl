@@ -567,7 +567,7 @@ PPL::Polyhedron::BHRZ03_combining_constraints(const Polyhedron& y,
       const ConSys& H79_cs = H79.con_sys;
       for (dimension_type j = H79_cs.num_rows(); j-- > 0; ) {
 	const Constraint& c = H79_cs[j];
-	if (c.is_inequality() && c * g == 0) {
+	if (c.is_inequality() && scalar_product_sign(c, g) == 0) {
 	  lies_on_the_boundary_of_H79 = true;
 	  break;
 	}
@@ -580,7 +580,7 @@ PPL::Polyhedron::BHRZ03_combining_constraints(const Polyhedron& y,
       combining_cs.clear();
       for (dimension_type j = x_minus_H79_cs_num_rows; j-- > 0; ) {
 	const Constraint& c = x_minus_H79_cs[j];
-	if (c * g == 0)
+	if (scalar_product_sign(c, g) == 0)
 	  combining_cs.insert(c);
       }
       // Build a new constraint by combining all the chosen constraints.

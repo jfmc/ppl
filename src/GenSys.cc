@@ -383,7 +383,7 @@ PPL::GenSys::relation_with(const Constraint& c) const {
 
       for (dimension_type i = n_rows; i-- > 0; ) {
 	const Generator& g = gs[i];
-	const int sp_sign = sgn(c * g);
+	const int sp_sign = scalar_product_sign(c, g);
 	// Checking whether the generator saturates the equality.
 	// If that is the case, then we have to do something only if
 	// the generator is a point.
@@ -453,7 +453,7 @@ PPL::GenSys::relation_with(const Constraint& c) const {
 
       for (dimension_type i = n_rows; i-- > 0; ) {
 	const Generator& g = gs[i];
-	const int sp_sign = sgn(c * g);
+	const int sp_sign = scalar_product_sign(c, g);
 	// Checking whether the generator saturates the non-strict
 	// inequality. If that is the case, then we have to do something
 	// only if the generator is a point.
@@ -565,7 +565,7 @@ PPL::GenSys::relation_with(const Constraint& c) const {
 	const Generator& g = gs[i];
 	// Using the reduced scalar product operator to avoid
 	// both topology and num_columns mismatches.
-	const int sp_sign = sgn(reduced_scalar_product(c, g));
+	const int sp_sign = reduced_scalar_product_sign(c, g);
 	// Checking whether the generator saturates the strict inequality.
 	// If that is the case, then we have to do something
 	// only if the generator is a point.

@@ -419,7 +419,7 @@ PPL::Polyhedron::is_included_in(const Polyhedron& y) const {
       if (c.is_inequality()) {
 	for (dimension_type j = gs.num_rows(); j-- > 0; ) {
 	  const Generator& g = gs[j];
-	  const int sp_sign = sgn(c * g);
+	  const int sp_sign = scalar_product_sign(c, g);
 	  if (g.is_line()) {
 	    if (sp_sign != 0)
 	      return false;
@@ -433,7 +433,7 @@ PPL::Polyhedron::is_included_in(const Polyhedron& y) const {
       else {
 	// `c' is an equality.
 	for (dimension_type j = gs.num_rows(); j-- > 0; )
-	  if (c * gs[j] != 0)
+	  if (scalar_product_sign(c, gs[j]) != 0)
 	    return false;
       }
     }
@@ -447,7 +447,7 @@ PPL::Polyhedron::is_included_in(const Polyhedron& y) const {
       case Constraint::NONSTRICT_INEQUALITY:
 	for (dimension_type j = gs.num_rows(); j-- > 0; ) {
 	  const Generator& g = gs[j];
-	  const int sp_sign = sgn(reduced_scalar_product(c, g));
+	  const int sp_sign = reduced_scalar_product_sign(c, g);
 	  if (g.is_line()) {
 	    if (sp_sign != 0)
 	      return false;
@@ -460,13 +460,13 @@ PPL::Polyhedron::is_included_in(const Polyhedron& y) const {
 	break;
       case Constraint::EQUALITY:
 	for (dimension_type j = gs.num_rows(); j-- > 0; )
-	  if (reduced_scalar_product(c, gs[j]) != 0)
+	  if (reduced_scalar_product_sign(c, gs[j]) != 0)
 	    return false;
 	break;
       case Constraint::STRICT_INEQUALITY:
 	for (dimension_type j = gs.num_rows(); j-- > 0; ) {
 	  const Generator& g = gs[j];
-	  const int sp_sign = sgn(reduced_scalar_product(c, g));
+	  const int sp_sign = reduced_scalar_product_sign(c, g);
 	  if (g[eps_index] > 0) {
 	    // Generator `g' is a point.
 	    // If a point violates or saturates a strict inequality
@@ -841,7 +841,7 @@ PPL::Polyhedron::update_sat_c() const {
   x.sat_c.resize(gsr, csr);
   for (dimension_type i = gsr; i-- > 0; )
     for (dimension_type j = csr; j-- > 0; ) {
-      const int sp_sign = sgn(con_sys[j] * gen_sys[i]);
+      const int sp_sign = scalar_product_sign(con_sys[j], gen_sys[i]);
       // The negativity of this scalar product would mean
       // that the generator `gen_sys[i]' violates the constraint
       // `con_sys[j]' and it is not possible because both generators
@@ -873,7 +873,7 @@ PPL::Polyhedron::update_sat_g() const {
   x.sat_g.resize(csr, gsr);
   for (dimension_type i = csr; i-- > 0; )
     for (dimension_type j = gsr; j-- > 0; ) {
-      const int sp_sign = sgn(con_sys[i] * gen_sys[j]);
+      const int sp_sign = scalar_product_sign(con_sys[i], gen_sys[j]);
       // The negativity of this scalar product would mean
       // that the generator `gen_sys[j]' violates the constraint
       // `con_sys[i]' and it is not possible because both generators
