@@ -42,7 +42,7 @@ ORIGINAL_TESTS = \
 	addconstraint1 \
         addconstraints1 addconstraints2 addconstraints3 addconstraints4 \
 	addconstraints5 addconstraints6 addconstraints7 addconstraints8 \
-	addconstraints9 \
+	addconstraints9 addconstraints10 \
 	adddimensions1 adddimensions2 adddimensions3 adddimensions4 \
 	adddimensions5 adddimensions6 adddimensions7 adddimensions8 \
 	adddimensions9 adddimensions10 \
@@ -56,7 +56,7 @@ ORIGINAL_TESTS = \
         append1 append2 \
 	bbrz02widening1 bbrz02widening2 bbrz02widening3 bbrz02widening4 \
 	bbrz02widening5 bbrz02widening6 bbrz02widening7 bbrz02widening8 \
-	bbrz02widening9 \
+	bbrz02widening9 bbrz02widening10 bbrz02widening11 \
 	bounded1 \
 	bounds1 bounds2 \
 	boundingbox1 boundingbox2 \
@@ -65,7 +65,7 @@ ORIGINAL_TESTS = \
         empty1 \
 	exceptions1 exceptions2 \
 	generators1 generators2 generators3 generators4 generators5 \
-	h79widening1 h79widening2 h79widening3 h79widening4 \
+	h79widening1 h79widening2 h79widening3 h79widening4 h79widening5 \
 	inclusion1 inclusion2 \
         intersection1 intersection2 intersection3 intersection4 \
 	intersection5 intersection6 intersection7 intersection8 \
@@ -74,8 +74,8 @@ ORIGINAL_TESTS = \
 	limitedh79widening3 \
 	mc91 \
 	memory1 \
-	minconstraints1 \
-	mingenerators1 \
+	minconstraints1 minconstraints2 \
+	mingenerators1 mingenerators2 \
 	onepoint \
         permute \
 	polydifference1 polydifference2 polydifference3 polydifference4 \
@@ -88,15 +88,16 @@ ORIGINAL_TESTS = \
 	removedim7 removedim8 removedim9 \
 	smm1 \
 	timeelapse1 timeelapse2 timeelapse3 timeelapse4 timeelapse5 \
-	timeelapse6 \
+	timeelapse6 timeelapse7 \
 	topclosed1 topclosed2 \
-	topclosure1 \
+	topclosure1 topclosure2 \
 	universe1 universe2 universe3 universe4 universe5 universe6 
 
 DERIVED_TESTS = \
 	nnc_addconstraints1 nnc_addconstraints2 nnc_addconstraints3 \
 	nnc_addconstraints4 nnc_addconstraints5 nnc_addconstraints6 \
 	nnc_addconstraints7 nnc_addconstraints8 nnc_addconstraints9 \
+	nnc_addconstraints10 \
 	nnc_adddimensions1 nnc_adddimensions2 nnc_adddimensions3 \
 	nnc_adddimensions4 nnc_adddimensions9 \
 	nnc_addgenerators1 nnc_addgenerators2 nnc_addgenerators3 \
@@ -109,8 +110,8 @@ DERIVED_TESTS = \
 	nnc_append1 nnc_append2 \
 	nnc_bbrz02widening1 nnc_bbrz02widening2 nnc_bbrz02widening3 \
 	nnc_bbrz02widening4 nnc_bbrz02widening5 nnc_bbrz02widening6 \
-	nnc_bbrz02widening7 nnc_bbrz02widening8 \
-	nnc_bbrz02widening9 \
+	nnc_bbrz02widening7 nnc_bbrz02widening8 nnc_bbrz02widening9 \
+	nnc_bbrz02widening10 nnc_bbrz02widening11 \
 	nnc_bounded1 \
 	nnc_bounds1 nnc_bounds2 \
 	nnc_concatenate1 nnc_concatenate2 nnc_concatenate3 nnc_concatenate4 \
@@ -119,7 +120,7 @@ DERIVED_TESTS = \
 	nnc_exceptions1 \
 	nnc_generators1 nnc_generators2 nnc_generators3 nnc_generators4 \
 	nnc_generators5 \
-	nnc_h79widening1 nnc_h79widening2 nnc_h79widening4 \
+	nnc_h79widening1 nnc_h79widening2 nnc_h79widening4 nnc_h79widening5 \
 	nnc_inclusion1 nnc_inclusion2 \
 	nnc_intersection1 nnc_intersection2 nnc_intersection3 \
 	nnc_intersection4 nnc_intersection5 nnc_intersection6 \
@@ -127,8 +128,8 @@ DERIVED_TESTS = \
 	nnc_limitedh79widening1 nnc_limitedh79widening2 \
 	nnc_limitedh79widening3 \
 	nnc_mc91 \
-	nnc_minconstraints1 \
-	nnc_mingenerators1 \
+	nnc_minconstraints1 nnc_minconstraints2 \
+	nnc_mingenerators1 nnc_mingenerators2 \
 	nnc_onepoint \
 	nnc_permute \
 	nnc_polydifference1 nnc_polydifference3 nnc_polydifference4 \
@@ -142,7 +143,7 @@ DERIVED_TESTS = \
 	nnc_removedim1 nnc_removedim2 nnc_removedim3 nnc_removedim4 \
 	nnc_removedim5 nnc_removedim6 nnc_removedim8 nnc_removedim9 \
 	nnc_smm1 \
-	nnc_timeelapse2 nnc_timeelapse5 nnc_timeelapse6 \
+	nnc_timeelapse2 nnc_timeelapse5 nnc_timeelapse6 nnc_timeelapse7 \
 	nnc_universe1 nnc_universe2 nnc_universe3 nnc_universe4 nnc_universe5
 
 #
@@ -171,6 +172,7 @@ addconstraints6_SOURCES = addconstraints6.cc
 addconstraints7_SOURCES = addconstraints7.cc
 addconstraints8_SOURCES = addconstraints8.cc
 addconstraints9_SOURCES = addconstraints9.cc
+addconstraints10_SOURCES = addconstraints10.cc
 
 adddimensions1_SOURCES = adddimensions1.cc
 adddimensions2_SOURCES = adddimensions2.cc
@@ -219,6 +221,8 @@ bbrz02widening6_SOURCES = bbrz02widening6.cc
 bbrz02widening7_SOURCES = bbrz02widening7.cc
 bbrz02widening8_SOURCES = bbrz02widening8.cc
 bbrz02widening9_SOURCES = bbrz02widening9.cc
+bbrz02widening10_SOURCES = bbrz02widening10.cc
+bbrz02widening11_SOURCES = bbrz02widening11.cc
 
 bounded1_SOURCES = bounded1.cc
 
@@ -252,6 +256,7 @@ h79widening1_SOURCES = h79widening1.cc
 h79widening2_SOURCES = h79widening2.cc
 h79widening3_SOURCES = h79widening3.cc
 h79widening4_SOURCES = h79widening4.cc
+h79widening5_SOURCES = h79widening5.cc
 
 inclusion1_SOURCES = inclusion1.cc
 inclusion2_SOURCES = inclusion2.cc
@@ -275,8 +280,10 @@ memory1_SOURCES = memory1.cc
 mc91_SOURCES = mc91.cc
 
 minconstraints1_SOURCES = minconstraints1.cc
+minconstraints2_SOURCES = minconstraints2.cc
 
 mingenerators1_SOURCES = mingenerators1.cc
+mingenerators2_SOURCES = mingenerators2.cc
 
 onepoint_SOURCES = onepoint.cc
 
@@ -326,11 +333,13 @@ timeelapse3_SOURCES = timeelapse3.cc
 timeelapse4_SOURCES = timeelapse4.cc
 timeelapse5_SOURCES = timeelapse5.cc
 timeelapse6_SOURCES = timeelapse6.cc
+timeelapse7_SOURCES = timeelapse7.cc
 
 topclosed1_SOURCES = topclosed1.cc
 topclosed2_SOURCES = topclosed2.cc
 
 topclosure1_SOURCES = topclosure1.cc
+topclosure2_SOURCES = topclosure2.cc
 
 universe1_SOURCES = universe1.cc
 universe2_SOURCES = universe2.cc
@@ -363,6 +372,8 @@ nnc_addconstraints8_SOURCES = addconstraints8.cc
 nnc_addconstraints8_CXXFLAGS = $(DERIVED_CXXFLAGS)
 nnc_addconstraints9_SOURCES = addconstraints9.cc
 nnc_addconstraints9_CXXFLAGS = $(DERIVED_CXXFLAGS)
+nnc_addconstraints10_SOURCES = addconstraints10.cc
+nnc_addconstraints10_CXXFLAGS = $(DERIVED_CXXFLAGS)
 
 nnc_adddimensions1_SOURCES = adddimensions1.cc
 nnc_adddimensions1_CXXFLAGS = $(DERIVED_CXXFLAGS)
@@ -432,6 +443,10 @@ nnc_bbrz02widening8_SOURCES = bbrz02widening8.cc
 nnc_bbrz02widening8_CXXFLAGS = $(DERIVED_CXXFLAGS)
 nnc_bbrz02widening9_SOURCES = bbrz02widening9.cc
 nnc_bbrz02widening9_CXXFLAGS = $(DERIVED_CXXFLAGS)
+nnc_bbrz02widening10_SOURCES = bbrz02widening10.cc
+nnc_bbrz02widening10_CXXFLAGS = $(DERIVED_CXXFLAGS)
+nnc_bbrz02widening11_SOURCES = bbrz02widening11.cc
+nnc_bbrz02widening11_CXXFLAGS = $(DERIVED_CXXFLAGS)
 
 nnc_bounded1_SOURCES = bounded1.cc
 nnc_bounded1_CXXFLAGS = $(DERIVED_CXXFLAGS)
@@ -480,6 +495,8 @@ nnc_h79widening2_SOURCES = h79widening2.cc
 nnc_h79widening2_CXXFLAGS = $(DERIVED_CXXFLAGS)
 nnc_h79widening4_SOURCES = h79widening4.cc
 nnc_h79widening4_CXXFLAGS = $(DERIVED_CXXFLAGS)
+nnc_h79widening5_SOURCES = h79widening5.cc
+nnc_h79widening5_CXXFLAGS = $(DERIVED_CXXFLAGS)
 
 nnc_inclusion1_SOURCES = inclusion1.cc
 nnc_inclusion1_CXXFLAGS = $(DERIVED_CXXFLAGS)
@@ -517,9 +534,13 @@ nnc_mc91_CXXFLAGS = $(DERIVED_CXXFLAGS)
 
 nnc_minconstraints1_SOURCES = minconstraints1.cc
 nnc_minconstraints1_CXXFLAGS = $(DERIVED_CXXFLAGS)
+nnc_minconstraints2_SOURCES = minconstraints2.cc
+nnc_minconstraints2_CXXFLAGS = $(DERIVED_CXXFLAGS)
 
 nnc_mingenerators1_SOURCES = mingenerators1.cc
 nnc_mingenerators1_CXXFLAGS = $(DERIVED_CXXFLAGS)
+nnc_mingenerators2_SOURCES = mingenerators2.cc
+nnc_mingenerators2_CXXFLAGS = $(DERIVED_CXXFLAGS)
 
 nnc_onepoint_SOURCES = onepoint.cc
 nnc_onepoint_CXXFLAGS = $(DERIVED_CXXFLAGS)
@@ -597,6 +618,8 @@ nnc_timeelapse5_SOURCES = timeelapse5.cc
 nnc_timeelapse5_CXXFLAGS = $(DERIVED_CXXFLAGS)
 nnc_timeelapse6_SOURCES = timeelapse6.cc
 nnc_timeelapse6_CXXFLAGS = $(DERIVED_CXXFLAGS)
+nnc_timeelapse7_SOURCES = timeelapse7.cc
+nnc_timeelapse7_CXXFLAGS = $(DERIVED_CXXFLAGS)
 
 nnc_universe1_SOURCES = universe1.cc
 nnc_universe1_CXXFLAGS = $(DERIVED_CXXFLAGS)
