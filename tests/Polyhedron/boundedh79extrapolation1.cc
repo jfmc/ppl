@@ -36,38 +36,49 @@ main() TRY {
   Variable y(1);
 
   C_Polyhedron ph1(2);
-  ph1.add_constraint(x >= 3);
-  ph1.add_constraint(x <= 7);
+  ph1.add_constraint(x-3 >= 0);
+  ph1.add_constraint(x-3 <= 1);
+  ph1.add_constraint(y >= 0);
+  ph1.add_constraint(y <= 1);
 
 
 #if NOISY
-  print_constraints(ph1, "*** ph1 ****");
+  print_constraints(ph1, "*** ph1 ***");
 #endif
 
   C_Polyhedron ph2(2);
-  ph2.add_constraint(x >= 3);
-  ph2.add_constraint(x <= 8);
-
+  ph2.add_constraint(2*x-5 >= 0);
+  ph2.add_constraint(x-3 <= 1);
+  ph2.add_constraint(2*y+3 >= 0);
+  ph2.add_constraint(2*y-5 <= 0);
 
 #if NOISY
-  print_constraints(ph2, "*** ph2 ****");
+  print_constraints(ph2, "*** ph2 ***");
 #endif
 
   Constraint_System cs;
-  cs.insert(x <= 100);
+  cs.insert(x >= y);
 
 #if NOISY
-  print_constraints(cs, "*** cs ****");
+  print_constraints(cs, "*** cs ***");
 #endif
 
-  C_Polyhedron computed_result = ph2;
-  computed_result.bounded_H79_extrapolation_assign(ph1, cs);
+  ph2.bounded_H79_extrapolation_assign(ph1, cs);
+
+  C_Polyhedron known_result(2);
+  known_result.add_constraint(x >= 2);
+  known_result.add_constraint(x <= 4);
+  known_result.add_constraint(y >= -2);
+  known_result.add_constraint(x >= y);
+
+  bool ok = (ph2 == known_result);
 
 #if NOISY
-  print_constraints(computed_result,
-		    "*** After bounded_H79_extrapolation_assign ****");
+  print_constraints(ph2,
+		    "*** After ph2.bounded_H79_extrapolation_assign(ph1, cs) "
+		    "***");
 #endif
 
-  return (computed_result == ph2) ? 0 : 1;
+  return ok ? 0 : 1;
 }
 CATCH

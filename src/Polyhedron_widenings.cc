@@ -27,6 +27,7 @@ site: http://www.cs.unipr.it/ppl/ . */
 #include "Polyhedron.defs.hh"
 
 #include "BHRZ03_Certificate.defs.hh"
+#include "Bounding_Box.defs.hh"
 #include <cassert>
 #include <iostream>
 #include <stdexcept>
@@ -389,11 +390,16 @@ void
 PPL::Polyhedron::bounded_H79_extrapolation_assign(const Polyhedron& y,
 						  const Constraint_System& cs,
 						  unsigned* tp) {
-  Constraint_System bounding_cs;
-  BW_Box box(bounding_cs);
-  shrink_bounding_box(box, ANY_COMPLEXITY);
+  dimension_type space_dim = space_dimension();
+  Bounding_Box x_box(space_dim);
+  Bounding_Box y_box(space_dim);
+  shrink_bounding_box(x_box, ANY_COMPLEXITY);
+  y.shrink_bounding_box(y_box, ANY_COMPLEXITY);
+  x_box.CC76_widening_assign(y_box);
   limited_H79_extrapolation_assign(y, cs, tp);
-  add_recycled_constraints(bounding_cs);
+  // FIXME: see if come copies can be avoided.
+  // add_recycled_constraints(x_box.constraints());
+  add_constraints(x_box.constraints());
 }
 
 
@@ -868,9 +874,14 @@ void
 PPL::Polyhedron::bounded_BHRZ03_extrapolation_assign(const Polyhedron& y,
 						     const Constraint_System& cs,
 						     unsigned* tp) {
-  Constraint_System bounding_cs;
-  BW_Box box(bounding_cs);
-  shrink_bounding_box(box, ANY_COMPLEXITY);
+  dimension_type space_dim = space_dimension();
+  Bounding_Box x_box(space_dim);
+  Bounding_Box y_box(space_dim);
+  shrink_bounding_box(x_box, ANY_COMPLEXITY);
+  y.shrink_bounding_box(y_box, ANY_COMPLEXITY);
+  x_box.CC76_widening_assign(y_box);
   limited_BHRZ03_extrapolation_assign(y, cs, tp);
-  add_recycled_constraints(bounding_cs);
+  // FIXME: see if come copies can be avoided.
+  // add_recycled_constraints(x_box.constraints());
+  add_constraints(x_box.constraints());
 }
