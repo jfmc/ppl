@@ -296,8 +296,8 @@ PPL::PolyBase::PolyBase(Topology topology,
       else {
 	// Polyhedron NON-necessarily closed: the only constraints
 	// are the ones regarding the \epsilon dimension.
-	con_sys.insert(Constraint::epsilon_geq_zero());
 	con_sys.insert(Constraint::epsilon_leq_one());
+	con_sys.insert(Constraint::epsilon_geq_zero());
       }
       con_sys.adjust_topology_and_dimension(topology, num_dimensions);
       // In both cases (positivity or epsilon constraints)
@@ -345,8 +345,8 @@ PPL::PolyBase::PolyBase(Topology topology, ConSys& cs)
       con_sys.insert(Constraint::zero_dim_positivity());
     else {
       // Add the \epsilon constraints.
-      con_sys.insert(Constraint::epsilon_geq_zero());
       con_sys.insert(Constraint::epsilon_leq_one());
+      con_sys.insert(Constraint::epsilon_geq_zero());
     }
     set_constraints_up_to_date();
     // Set the space dimension.
