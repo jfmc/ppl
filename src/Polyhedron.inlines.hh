@@ -230,15 +230,6 @@ Polyhedron::clear_generators_up_to_date() {
   // Can get rid of gen_sys here.
 }
 
-/*!
-  Sets \p status to express that \p *this is a universe zero-dimensional
-  polyhedron.
-*/
-inline void
-Polyhedron::set_zero_dim_univ() {
-  status.set_zero_dim_univ();
-}
-
 inline bool
 operator ==(const Polyhedron& x, const Polyhedron& y) {
   return x <= y && y <= x;
