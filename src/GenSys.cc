@@ -88,7 +88,7 @@ Parma_Polyhedra_Library::GenSys::num_rays() const {
   or <CODE>NONE_SATISFIES</CODE> can be returned.
 */
 PPL::GenSys_Con_Rel
-PPL::GenSys::satisfy_constraint(const Constraint& c) const {
+PPL::GenSys::satisfy(const Constraint& c) const {
   // Generators and constraint `c' have to be given in 
   // spaces having the same dimension.
   assert(num_columns() == c.size());

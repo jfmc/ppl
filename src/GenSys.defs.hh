@@ -170,7 +170,7 @@ public:
 
   private:
     Matrix::const_iterator i;
-    
+  
     //! Copy-constructor.
     const_iterator(const Matrix::const_iterator& iter);
 
@@ -218,7 +218,7 @@ PPL_INTERNAL:
   
   //! Checks if the given constraint is satisfied by all generators
   //! in the system.
-  GenSys_Con_Rel satisfy_constraint(const Constraint& c) const;
+  GenSys_Con_Rel satisfy(const Constraint& c) const;
   
   //! Assigns to a given variable an affine expression.
   void assign_variable(size_t var,
