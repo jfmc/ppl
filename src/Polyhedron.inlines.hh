@@ -448,6 +448,7 @@ Polyhedron::shrink_bounding_box(Box& box, Complexity_Class complexity) const {
 	  box.set_empty();
 	  return;
 	}
+#if 0
       // If `complexity' allows it, use simplex to determine whether or not
       // the polyhedron is empty.
       if (complexity == SIMPLEX_COMPLEXITY) {
@@ -459,6 +460,7 @@ Polyhedron::shrink_bounding_box(Box& box, Complexity_Class complexity) const {
 	  return;
 	}
       }
+#endif
     }
   }
   else
