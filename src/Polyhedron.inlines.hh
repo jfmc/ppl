@@ -294,7 +294,6 @@ template <class Box>
 void
 Polyhedron::shrink_bounding_box(Box& box) const {
   size_t sd = space_dimension();
-   assert(box.dimension() == sd);
   if (check_universe())
     return;
   if (check_empty()) {

@@ -29,7 +29,7 @@ site: http://www.cs.unipr.it/ppl/ . */
 using namespace std;
 using namespace Parma_Polyhedra_Library;
 
-#define NOISY 0
+#define NOISY 1
 #define TEST4 1
 #define TEST5 1
 #define TEST6 1
@@ -92,14 +92,11 @@ public:
     box.resize(dimension);
   }
 
-  size_t dimension() {
-    return box.size();
-  }
-
   void print_box(const string& intro = "") {
     if (!intro.empty())
       cout << intro << endl;
-    for (size_t j = 0; j != dimension() ; j++) {
+    size_t dim = box.size();
+    for (size_t j = 0; j != dim ; j++) {
       cout << j << " AXES:  ";
       box[j].print_interval();
     }
@@ -112,6 +109,7 @@ public:
     // << (closed ? "true" : "false") << ", "
     // << n << ", "
     // << d << ")" << endl;
+    assert(k < box.size());
     box[k].raise_lower_bound(closed, n, d);
   }
 
@@ -122,12 +120,14 @@ public:
     // << (closed ? "true" : "false") << ", "
     // << n << ", "
     // << d << ")" << endl;
+    assert(k < box.size());
     box[k].lower_upper_bound(closed, n, d);
   }
 
   void set_empty(size_t k) {
     //cout << "lower_upper_bound("
     // << k << ")" << endl;
+    assert(k < box.size());
     box[k].set_empty();
   }
 };
@@ -217,7 +217,7 @@ void test2() {
 #endif
   
   BBox known_box2(2);
-  known_box2.raise_lower_bound(0, true, 2, -3);
+  known_box2.raise_lower_bound(0, true, -2, 3);
   known_box2.lower_upper_bound(0, true, 4, 1);
   known_box2.raise_lower_bound(1, true, -10, 1);
   known_box2.lower_upper_bound(1, true, 12, 3);
