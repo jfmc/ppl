@@ -36,17 +36,20 @@ namespace Parma_Polyhedra_Library {
   //! Describes possible relations between a system of
   //! generators and a given constraint.
   enum GenSys_Con_Rel {
-    //! No generators satisfy the given constraint.
+    //! No generator satisfies the given constraint.
     NONE_SATISFIES,
-    //! All generators satisfy the given constraint but they do not
-    //! belong to the hyper-plane defined by it.
+    //! All generators satisfy the given constraint,
+    //! but there exists a generator not saturating it
+    //! (i.e., a generator does not belong to the hyper-plane
+    //! defined by the constraint.)
     ALL_SATISFY,
-    //! All generators saturate the given constraint (i.e.
-    //! all generators belong to the hyper-plane defined by
-    //! the constraint).
+    //! All generators saturate the given constraint
+    //! (i.e., they all belong to the hyper-plane
+    //! defined by the constraint.)
     ALL_SATURATE,
-    //! Some generators satisfy the given constraint (i.e. one or
-    //! more generators do not satisfy it).
+    //! Some generators satisfy the given constraint
+    //! (i.e., there exists both a generator satisfying the constraint
+    //! and another generator which does not satisfy it.)
     SOME_SATISFY
   };
 }
@@ -70,11 +73,11 @@ namespace Parma_Polyhedra_Library {
 
     \par Example 1
     The following code defines the line having the same direction
-    as the \f$x\f$ axis
-    (i.e., the 0-th indexed Cartesian axis) in \f$\Rset^2\f$:
+    as the \f$x\f$ axis (i.e., the first Cartesian axis)
+    in \f$\Rset^2\f$:
     \code
-    GenSys gs;
-    gs.insert(line(x + 0*y));
+  GenSys gs;
+  gs.insert(line(x + 0*y));
     \endcode
     As said above, this system of generators does not correspond
     to a polyhedron, because the line has no supporting vertices.
@@ -82,27 +85,33 @@ namespace Parma_Polyhedra_Library {
     the \f$x\f$ axis, one can add the following code which
     inserts the origin of the space as a vertex:
     \code
-    gs.insert(vertex(0*x + 0*y));
+  gs.insert(vertex(0*x + 0*y));
     \endcode
     In contrast, if we had added the following code, we would have
     defined a line parallel to the \f$x\f$ axis and including
     the point \f$(0, 1)^\transpose \in \Rset^2\f$.
     \code
-    gs.insert(vertex(0*x + y));
+  gs.insert(vertex(0*x + 1*y));
     \endcode
 
     \par Example 2
     The following code builds a ray having the same direction as
     the positive part of the \f$x\f$ axis in \f$\Rset^2\f$:
     \code
-    GenSys gs;
-    gs.insert(ray(x + 0*y));
+  GenSys gs;
+  gs.insert(ray(x + 0*y));
     \endcode
-    To define a system of generators indeed corresponding to
-    the positive part of the \f$x\f$ axis,
-    one just need to add the origin of the space as a vertex:
+    To define a system of generators indeed corresponding to the set
+    \f[
+      \bigl\{\,
+        (x, 0)^\transpose \in \Rset^2
+      \bigm|
+        x \geq 0
+      \,\bigr\},
+    \f]
+    one just has to add the origin:
     \code
-    gs.insert(vertex(0*x + 0*y));
+  gs.insert(vertex(0*x + 0*y));
     \endcode
 
     \par Example 3
@@ -110,11 +119,11 @@ namespace Parma_Polyhedra_Library {
     and corresponding to a square in \f$\Rset^2\f$
     (the same as Example 1 for the system of constraints):
     \code
-    GenSys gs;
-    gs.insert(vertex(0*x + 0*y));
-    gs.insert(vertex(0*x + 3*y));
-    gs.insert(vertex(3*x + 0*y));
-    gs.insert(vertex(3*x + 3*y));
+  GenSys gs;
+  gs.insert(vertex(0*x + 0*y));
+  gs.insert(vertex(0*x + 3*y));
+  gs.insert(vertex(3*x + 0*y));
+  gs.insert(vertex(3*x + 3*y));
     \endcode
 
     \par Example 4
@@ -122,10 +131,10 @@ namespace Parma_Polyhedra_Library {
     and a ray, corresponding to a half-strip in \f$\Rset^2\f$
     (the same as Example 2 for the system of constraints):
     \code
-    GenSys gs;
-    gs.insert(vertex(0*x + 0*y));
-    gs.insert(vertex(0*x + y));
-    gs.insert(ray(x - y));
+  GenSys gs;
+  gs.insert(vertex(0*x + 0*y));
+  gs.insert(vertex(0*x + 1*y));
+  gs.insert(ray(x - y));
     \endcode
 */
 class Parma_Polyhedra_Library::GenSys : PPL_INTERNAL Matrix {
@@ -151,10 +160,10 @@ public:
       The following code prints the system of generators
       of the polyhedron <CODE>ph</CODE>:
       \code
-      const GenSys gs = ph.generators();
-      GenSys::const_iterator iend = gs.end();
-      for (GenSys::const_iterator i = gs.begin(); i != iend; ++i)
-        cout << *i << endl;
+  const GenSys gs = ph.generators();
+  GenSys::const_iterator iend = gs.end();
+  for (GenSys::const_iterator i = gs.begin(); i != iend; ++i)
+    cout << *i << endl;
       \endcode
   */
   class const_iterator

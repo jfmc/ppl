@@ -41,31 +41,31 @@ site: http://www.cs.unipr.it/ppl/ . */
     \par
     In all the examples it is assumed that variables
     <CODE>x</CODE> and <CODE>y</CODE> are defined as follows:
-  \code
+    \code
   Variable x(0);
   Variable y(1);
-  \endcode
+    \endcode
 
     \par Example 1
     The following code builds a system of constraints corresponding to
     a square in \f$\Rset^2\f$:
-  \code
+    \code
   ConSys cs;
   cs.insert(x >= 0);
   cs.insert(x <= 3);
   cs.insert(y >= 0);
   cs.insert(y <= 3);
-  \endcode
+    \endcode
 
     \par Example 2
     The following code builds a system of constraints corresponding to
     a half-strip in \f$\Rset^2\f$:
-  \code
+    \code
   ConSys cs;
   cs.insert(x >= 0);
   cs.insert(x - y <= 0);
   cs.insert(x - y + 1 >= 0);
-  \endcode
+    \endcode
 */
 class Parma_Polyhedra_Library::ConSys : PPL_INTERNAL Matrix {
 public:
@@ -90,10 +90,10 @@ public:
       The following code prints the system of constraints
       defining the polyhedron <CODE>ph</CODE>:
       \code
-      const ConSys cs = ph.constraints();
-      ConSys::const_iterator iend = cs.end();
-      for (ConSys::const_iterator i = cs.begin(); i != iend; ++i)
-        cout << *i << endl;
+  const ConSys cs = ph.constraints();
+  ConSys::const_iterator iend = cs.end();
+  for (ConSys::const_iterator i = cs.begin(); i != iend; ++i)
+    cout << *i << endl;
       \endcode
   */
   class const_iterator
