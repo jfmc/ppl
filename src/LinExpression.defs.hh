@@ -133,7 +133,7 @@ public:
   //! Builds the linear expression corresponding to
   //! the coefficients of generator \p g (for points and closure points,
   //! the divisor is \e not copied).
-  //! If \p c is a ray, point or closure point (resp., a line), then
+  //! If \p g is a ray, point or closure point (resp., a line), then
   //! the built linear expression is unique up to a positive
   //! (resp., non-zero) factor.
   explicit LinExpression(const Generator& g);
