@@ -335,14 +335,14 @@ PPL::ConSys::affine_preimage(size_t v,
 }
 
 /*!
-  Raw write function: prints the number of rows,
-  the number of columns and the value of \p sorted invoking the
-  <CODE>Matrix::print()</CODE> method, then prints the contents of
-  all the rows, specifying whether a row is an equality or an inequality.
+  Prints the number of rows, the number of columns and the value of \p
+  sorted invoking the <CODE>Matrix::ASCII_dump()</CODE> method, then
+  prints the contents of all the rows, specifying whether a row is an
+  equality or an inequality.
 */
 void
-PPL::ConSys::print(std::ostream& s) const {
-  Matrix::print(s);
+PPL::ConSys::ASCII_dump(std::ostream& s) const {
+  Matrix::ASCII_dump(s);
   const char separator = ' ';
   const ConSys& x = *this;
   for (size_t i = 0; i < x.num_rows(); ++i) {
@@ -364,60 +364,52 @@ PPL::ConSys::print(std::ostream& s) const {
   }
 }
 
-/*! \relates Parma_Polyhedra_Library::ConSys */
-std::ostream&
-PPL::operator<<(std::ostream& s, const ConSys& cs) {
-  cs.print(s);
-  return s;
-}
-
 /*!
-  Raw read function: resizes the matrix of constraints using number of
-  rows and number of columns read from \p s, then initializes the
-  coefficients of each constraint and its type (equality or inequality)
-  reading the contents from \p s.
+  Resizes the matrix of constraints using number of rows and number of
+  columns read from \p s, then initializes the coefficients of each
+  constraint and its type (equality or inequality) reading the
+  contents from \p s.
 */
-void
-PPL::ConSys::get(std::istream& s) {
-  Matrix::get(s);
-  std::string tempstr;
+bool
+PPL::ConSys::ASCII_load(std::istream& s) {
+  if (!Matrix::ASCII_load(s))
+    return false;
+
+  std::string str;
   ConSys& x = *this;
   for (size_t i = 0; i < x.num_rows(); ++i) {
     for (size_t j = 0; j < x.num_columns(); ++j)
-      s >> x[i][j];
-    s >> tempstr;
-    if (tempstr == "=")
+      if (!(s >> x[i][j]))
+	return false;
+
+    if (!(s >> str))
+      return false;
+    if (str == "=")
       x[i].set_is_equality();
     else
       x[i].set_is_inequality();
+
     // Checking for equality of actual and declared types.
     switch (static_cast<Constraint>(x[i]).type()) {
     case Constraint::EQUALITY:
-      if (tempstr == "=")
+      if (str == "=")
 	continue;
       break;
     case Constraint::NONSTRICT_INEQUALITY:
-      if (tempstr == ">=")
+      if (str == ">=")
 	continue;
       break;
     case Constraint::STRICT_INEQUALITY:
-      if (tempstr == ">")
+      if (str == ">")
 	continue;
       break;
     }
     // Reaching this point means that the input was illegal.
-    throw std::runtime_error("void PPL::ConSys::get(s)");
+    return false;
   }
-  // Checking for well-formedness.
-  if (!x.OK())
-    throw std::runtime_error("void PPL::ConSys::get(s)");
-}
-
-/*! \relates Parma_Polyhedra_Library::ConSys */
-std::istream&
-PPL::operator>>(std::istream& s, ConSys& cs) {
-  cs.get(s);
-  return s;
+  // Check for well-formedness.
+  assert(OK());
+  return true;
 }
 
 /*!
@@ -428,4 +420,20 @@ PPL::operator>>(std::istream& s, ConSys& cs) {
 bool
 PPL::ConSys::OK() const {
   return Matrix::OK();
+}
+
+std::ostream&
+PPL::operator<<(std::ostream& s, const ConSys& cs) {
+  ConSys::const_iterator i = cs.begin();
+  ConSys::const_iterator cs_end = cs.end();
+  if (i == cs_end)
+    s << "true";
+  else {
+    while (i != cs_end) {
+      s << *i++;
+      if (i != cs_end)
+	s << ", ";
+    }
+  }
+  return s;
 }

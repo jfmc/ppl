@@ -189,43 +189,48 @@ PPL::SatMatrix::sorted_contains(const SatRow& row) const {
   return false;
 }
 
-/*! \relates Parma_Polyhedra_Library::SatMatrix */
-std::ostream&
-PPL::operator<<(std::ostream& s, const SatMatrix& x) {
+void
+PPL::SatMatrix::ASCII_dump(std::ostream& s) const {
   using std::endl;
 
+  const SatMatrix& x = *this;
   const char separator = ' ';
-  s << x.num_rows() << separator << 'x' << separator
-    << x.num_columns() << endl;
-  for (size_t i = 0; i < x.num_rows(); ++i) {
-    for (size_t j = 0; j < x.num_columns(); ++j)
+  s << num_rows() << separator << 'x' << separator
+    << num_columns() << endl;
+  for (size_t i = 0; i < num_rows(); ++i) {
+    for (size_t j = 0; j < num_columns(); ++j)
       s << x[i][j] << separator;
     s << endl;
   }
-  return s;
 }
 
-/*! \relates Parma_Polyhedra_Library::SatMatrix */
-std::istream&
-PPL::operator>>(std::istream& s, SatMatrix& x) {
+bool
+PPL::SatMatrix::ASCII_load(std::istream& s) {
+  SatMatrix& x = *this;
   size_t nrows;
   size_t ncols;
-  std::string tempstr;
-  s >> nrows
-    >> tempstr
-    >> ncols;
-  x.resize(nrows, ncols);
-  for (size_t i = 0; i < x.num_rows(); ++i)
-    for (size_t j = 0; j < x.num_columns(); ++j) {
+  std::string str;
+  if (!(s >> nrows))
+    return false;
+  if (!(s >> str))
+    return false;
+  if (!(s >> ncols))
+    return false;
+  resize(nrows, ncols);
+
+  for (size_t i = 0; i < num_rows(); ++i)
+    for (size_t j = 0; j < num_columns(); ++j) {
       int bit;
-      s >> bit;
+      if (!(s >> bit))
+	return false;
       if (bit)
 	x[i].set(j);
       else
 	x[i].clear(j);
     }
-  assert(x.OK());
-  return s;
+  // Check for well-formedness.
+  assert(OK());
+  return true;
 }
 
 /*!

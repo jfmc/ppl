@@ -45,7 +45,7 @@ static const char no = '-';
 static const char sep = ' ';
 
 void
-PPL::Status::ASCII_dump(std::ostream& s) {
+PPL::Status::ASCII_dump(std::ostream& s) const {
   s << (test_zero_dim_univ() ? yes : no) << zero_dim_univ << sep
     << (test_empty() ? yes : no) << empty << sep
     << sep
@@ -133,6 +133,8 @@ PPL::Status::ASCII_load(std::istream& s) {
   else
     reset_sat_g_up_to_date();
 
+  // Check for well-formedness.
+  assert(OK());
   return true;
 }
 

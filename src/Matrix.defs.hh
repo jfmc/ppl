@@ -337,26 +337,26 @@ public:
   //! Clears the matrix deallocating all its rows.
   void clear();
 
-  //! @name Input/Output.
-  //@{
-  //! Raw read method.
-  /*!
-    This virtual method is meant to read into a Matrix object
-    the information produced by a <CODE>print()</CODE> output.
-    The specialized methods provided by ConSys and GenSys
-    take care of properly reading the contents of the matrix.
-  */
-  virtual void get(std::istream& s);
-
-  //! Raw write method.
+  //! Writes to \p s an ASCII representation of the internal
+  //! representation of \p *this.
   /*!
     This virtual method prints the topology, the number of rows,
     the number of columns and the \p sorted flag.
     The specialized methods provided by ConSys and GenSys
     take care of properly printing the contents of the matrix.
   */
-  virtual void print(std::ostream& s) const;
-  //@}
+  virtual void ASCII_dump(std::ostream& s) const;
+
+  //! Loads from \p s an ASCII representation (as produced by \ref
+  //! ASCII_dump) and sets \p *this accordingly.  Returns <CODE>true</CODE>
+  //! if successful, <CODE>false</CODE> otherwise.
+  /*!
+    This virtual method is meant to read into a Matrix object
+    the information produced by the output of <CODE>ASCII_dump()</CODE>.
+    The specialized methods provided by ConSys and GenSys
+    take care of properly reading the contents of the matrix.
+  */
+  virtual bool ASCII_load(std::istream& s);
 
   //! \brief
   //! Erases from the matrix all the rows but those having
@@ -426,18 +426,6 @@ bool operator==(const Matrix& x, const Matrix& y);
 /*! \relates Matrix */
 #endif // PPL_DOXYGEN_INCLUDE_IMPLEMENTATION_DETAILS
 bool operator!=(const Matrix& x, const Matrix& y);
-
-#ifdef PPL_DOXYGEN_INCLUDE_IMPLEMENTATION_DETAILS
-//! Input operator.
-/*! \relates Matrix */
-#endif // PPL_DOXYGEN_INCLUDE_IMPLEMENTATION_DETAILS
-std::istream& operator>>(std::istream& s, Matrix& m);
-
-#ifdef PPL_DOXYGEN_INCLUDE_IMPLEMENTATION_DETAILS
-//! Output operator.
-/*! \relates Matrix */
-#endif // PPL_DOXYGEN_INCLUDE_IMPLEMENTATION_DETAILS
-std::ostream& operator<<(std::ostream& s, const Matrix& m);
 
 } // namespace Parma_Polyhedra_Library
 

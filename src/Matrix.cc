@@ -280,7 +280,7 @@ PPL::Matrix::resize_no_copy(size_t new_n_rows, size_t new_n_columns) {
 }
 
 void
-PPL::Matrix::print(std::ostream& s) const {
+PPL::Matrix::ASCII_dump(std::ostream& s) const {
   using std::endl;
 
   const Matrix& x = *this;
@@ -295,41 +295,37 @@ PPL::Matrix::print(std::ostream& s) const {
     << endl;
 }
 
-/*! \relates Parma_Polyhedra_Library::Matrix */
-std::ostream&
-PPL::operator<<(std::ostream& s, const Matrix& m) {
-  m.print(s);
-  return s;
-}
-
-void
-PPL::Matrix::get(std::istream& s) {
-  size_t nrows;
-  size_t ncols;
-  std::string tempstr;
-  s >> tempstr;
-  assert(tempstr == "topology");
-  s >> tempstr;
-  if (tempstr == "NECESSARILY_CLOSED")
+bool
+PPL::Matrix::ASCII_load(std::istream& s) {
+  std::string str;
+  if (!(s >> str) || str != "topology")
+    return false;
+  if (!(s >> str))
+    return false;
+  if (str == "NECESSARILY_CLOSED")
     set_necessarily_closed();
   else {
-    assert(tempstr == "NOT_NECESSARILY_CLOSED");
+    if (str != "NOT_NECESSARILY_CLOSED")
+      return false;
     set_not_necessarily_closed();
   }
-  s >> nrows
-    >> tempstr
-    >> ncols;
-  resize_no_copy(nrows, ncols);
-  s >> tempstr;
-  assert(tempstr == "(sorted)" || tempstr == "(not_sorted)");
-  set_sorted(tempstr == "(sorted)");
-}
 
-/*! \relates Parma_Polyhedra_Library::Matrix */
-std::istream&
-PPL::operator>>(std::istream& s, Matrix& m) {
-  m.get(s);
-  return s;
+  size_t nrows;
+  size_t ncols;
+  if (!(s >> nrows))
+    return false;
+  if (!(s >> str))
+    return false;
+  if (!(s >> ncols))
+      return false;
+  resize_no_copy(nrows, ncols);
+  
+  if (!(s >> str) || (str != "(sorted)" && str != "(not_sorted)"))
+    return false;
+  set_sorted(str == "(sorted)");
+  // Check for well-formedness.
+  assert(OK());
+  return true;
 }
 
 void

@@ -2524,23 +2524,23 @@ PPL::Polyhedron::ASCII_dump(std::ostream& s) const {
     << "con_sys ("
     << (constraints_are_up_to_date() ? "" : "not_")
     << "up-to-date)"
-    << endl
-    << con_sys
-    << endl
+    << endl;
+  con_sys.ASCII_dump(s);
+  s << endl
     << "gen_sys ("
     << (generators_are_up_to_date() ? "" : "not_")
     << "up-to-date)"
-    << endl
-    << gen_sys
-    << endl
-    << "sat_c"
-    << endl
-    << sat_c
-    << endl
-    << "sat_g"
-    << endl
-    << sat_g
     << endl;
+  gen_sys.ASCII_dump(s);
+  s << endl
+    << "sat_c"
+    << endl;
+  sat_c.ASCII_dump(s);
+  s << endl
+    << "sat_g"
+    << endl;
+  sat_c.ASCII_dump(s);
+  s << endl;
 }
 
 bool
@@ -2562,7 +2562,8 @@ PPL::Polyhedron::ASCII_load(std::istream& s) {
   if (!(s >> str) || (str != "(not_up-to-date)" && str != "(up-to-date)"))
     return false;
 
-  s >> con_sys;
+  if (!con_sys.ASCII_load(s))
+    return false;
 
   if (!(s >> str) || str != "gen_sys")
     return false;
@@ -2570,18 +2571,23 @@ PPL::Polyhedron::ASCII_load(std::istream& s) {
   if (!(s >> str) || (str != "(not_up-to-date)" && str != "(up-to-date)"))
     return false;
 
-  s >> gen_sys;
+  if (!gen_sys.ASCII_load(s))
+    return false;
 
   if (!(s >> str) || str != "sat_c")
     return false;
 
-  s >> sat_c;
+  if (!sat_c.ASCII_load(s))
+    return false;
 
   if (!(s >> str) || str != "sat_g")
     return false;
 
-  s >> sat_g;
+  if (!sat_g.ASCII_load(s))
+    return false;
 
+  // Check for well-formedness.
+  assert(OK());
   return true;
 }
 
@@ -3655,9 +3661,9 @@ PPL::Polyhedron::OK(bool check_not_empty) const {
 	cerr << "Generators are declared minimized, but they are not!"
 	     << endl
 	     << "Here is the minimized form of the generators:"
-	     << endl
-	     << copy_of_gen_sys
 	     << endl;
+	copy_of_gen_sys.ASCII_dump(cerr);
+	cerr << endl;
 #endif
 	goto bomb;
       }
@@ -3690,9 +3696,9 @@ PPL::Polyhedron::OK(bool check_not_empty) const {
 	       << "dimension of lineality space equal to 0)"
 	       << endl
 	       << "Here is the minimized form of the generators:"
-	       << endl
-	       << copy_of_gen_sys
 	       << endl;
+	  copy_of_gen_sys.ASCII_dump(cerr);
+	  cerr << endl;
 #endif
 	    goto bomb;
 	}
@@ -3776,9 +3782,9 @@ PPL::Polyhedron::OK(bool check_not_empty) const {
 	cerr << "Constraints are declared minimized, but they are not!"
 	     << endl
 	     << "Here is the minimized form of the constraints:"
-	     << endl
-	     << copy_of_con_sys
 	     << endl;
+	copy_of_con_sys.ASCII_dump(cerr);
+	cerr << endl;
 #endif
 	goto bomb;
       }
@@ -3802,9 +3808,9 @@ PPL::Polyhedron::OK(bool check_not_empty) const {
 	cerr << "Constraints are declared minimized, but they are not!"
 	     << endl
 	     << "Here is the minimized form of the constraints:"
-	     << endl
-	     << copy_of_con_sys
 	     << endl;
+	copy_of_con_sys.ASCII_dump(cerr);
+	cerr << endl;
 #endif
 	goto bomb;
       }
@@ -3854,19 +3860,7 @@ std::ostream&
 PPL::operator<<(std::ostream& s, const Polyhedron& ph) {
   if (ph.check_empty())
     s << "false";
-  else {
-    const ConSys& cs = ph.minimized_constraints();
-    ConSys::const_iterator i = cs.begin();
-    ConSys::const_iterator cs_end = cs.end();
-    if (i == cs_end)
-      s << "true";
-    else {
-      while (i != cs_end) {
-	s << *i++;
-	if (i != cs_end)
-	  s << ", ";
-      }
-    }
-  }
+  else
+    s << ph.minimized_constraints();
   return s;
 }

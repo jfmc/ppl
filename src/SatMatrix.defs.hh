@@ -24,9 +24,10 @@ site: http://www.cs.unipr.it/ppl/ . */
 #ifndef PPL_SatMatrix_defs_hh
 #define PPL_SatMatrix_defs_hh 1
 
+#include "SatMatrix.types.hh"
 #include "SatRow.defs.hh"
 #include <vector>
-#include "SatMatrix.types.hh"
+#include <iosfwd>
 
 #ifdef PPL_DOXYGEN_INCLUDE_IMPLEMENTATION_DETAILS
 /*!
@@ -40,17 +41,6 @@ site: http://www.cs.unipr.it/ppl/ . */
 #endif // PPL_DOXYGEN_INCLUDE_IMPLEMENTATION_DETAILS
 
 class Parma_Polyhedra_Library::SatMatrix {
-private:
-  //! Contains the rows of the matrix.
-  std::vector<SatRow> rows;
-
-  //! Size of the initialized part of each row.
-  size_t row_size;
-
-  struct RowCompare {
-    bool operator()(const SatRow& x, const SatRow& y) const;
-  };
-
 public:
   //! Default constructor.
   SatMatrix();
@@ -113,11 +103,31 @@ public:
   //! Checks if all the invariants are satisfied.
   bool OK() const;
 
+  //! Writes to \p s an ASCII representation of the internal
+  //! representation of \p *this.
+  void ASCII_dump(std::ostream& s) const;
+
+  //! Loads from \p s an ASCII representation (as produced by \ref
+  //! ASCII_dump) and sets \p *this accordingly.  Returns <CODE>true</CODE>
+  //! if successful, <CODE>false</CODE> otherwise.
+  bool ASCII_load(std::istream& s);
+
 #ifndef NDEBUG
   //! Checks whether \p *this is sorted.
   //! It does NOT check for duplicates.
   bool check_sorted() const;
 #endif
+
+private:
+  //! Contains the rows of the matrix.
+  std::vector<SatRow> rows;
+
+  //! Size of the initialized part of each row.
+  size_t row_size;
+
+  struct RowCompare {
+    bool operator()(const SatRow& x, const SatRow& y) const;
+  };
 };
 
 namespace std {
@@ -146,18 +156,6 @@ bool operator==(const SatMatrix& x, const SatMatrix& y);
 /*! \relates SatMatrix */
 #endif // PPL_DOXYGEN_INCLUDE_IMPLEMENTATION_DETAILS
 bool operator!=(const SatMatrix& x, const SatMatrix& y);
-
-#ifdef PPL_DOXYGEN_INCLUDE_IMPLEMENTATION_DETAILS
-//! Input operator.
-/*! \relates SatMatrix */
-#endif // PPL_DOXYGEN_INCLUDE_IMPLEMENTATION_DETAILS
-std::ostream& operator<<(std::ostream& s, const SatMatrix& x);
-
-#ifdef PPL_DOXYGEN_INCLUDE_IMPLEMENTATION_DETAILS
-//! Output operator.
-/*! \relates SatMatrix */
-#endif // PPL_DOXYGEN_INCLUDE_IMPLEMENTATION_DETAILS
-std::istream& operator>>(std::istream& s, SatMatrix& x);
 
 } // namespace Parma_Polyhedra_Library
 

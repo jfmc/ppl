@@ -672,14 +672,15 @@ PPL::GenSys::affine_image(size_t v,
 }
 
 /*!
-  Like <CODE>ConSys::print()</CODE>, this prints the number of rows,
-  the number of columns and value of \p sorted, using the
-  <CODE>Matrix::print()</CODE> method, then prints the contents of
-  all the rows, specifying whether a row represent a line or a point/ray.
+  Like <CODE>ConSys::ASCII_dump()</CODE>, this prints the number of
+  rows, the number of columns and value of \p sorted, using the
+  <CODE>Matrix::ASCII_dump()</CODE> method, then prints the contents
+  of all the rows, specifying whether a row represent a line or a
+  point/ray.
 */
 void
-PPL::GenSys::print(std::ostream& s) const {
-  Matrix::print(s);
+PPL::GenSys::ASCII_dump(std::ostream& s) const {
+  Matrix::ASCII_dump(s);
   const char separator = ' ';
   const GenSys& x = *this;
   for (size_t i = 0; i < x.num_rows(); ++i) {
@@ -704,64 +705,56 @@ PPL::GenSys::print(std::ostream& s) const {
   }
 }
 
-/*! \relates Parma_Polyhedra_Library::GenSys */
-std::ostream&
-PPL::operator<<(std::ostream& s, const GenSys& gs) {
-  gs.print(s);
-  return s;
-}
-
 /*!
-  Like <CODE>ConSys::get()</CODE>, this uses <CODE>Matrix::get()</CODE>
-  to resize the matrix of generators taking information from \p s,
-  then initializes the coefficients of each generator and its type
-  (line or ray/point).
+  Like <CODE>ConSys::ASCII_load()</CODE>, this uses
+  <CODE>Matrix::ASCII_load()</CODE> to resize the matrix of generators
+  taking information from \p s, then initializes the coefficients of
+  each generator and its type (line or ray/point).
 */
-void
-PPL::GenSys::get(std::istream& s) {
-  Matrix::get(s);
-  std::string tempstr;
+bool
+PPL::GenSys::ASCII_load(std::istream& s) {
+  if (!Matrix::ASCII_load(s))
+    return false;
+
   GenSys& x = *this;
   for (size_t i = 0; i < x.num_rows(); ++i) {
     for (size_t j = 0; j < x.num_columns(); ++j)
-      s >> x[i][j];
-    s >> tempstr;
-    if (tempstr == "L")
+      if (!(s >> x[i][j]))
+	return false;
+
+    std::string str;
+    if (!(s >> str))
+      return false;
+    if (str == "L")
       x[i].set_is_line();
     else
       x[i].set_is_ray_or_point();
+
     // Checking for equality of actual and declared types.
     switch (static_cast<Generator>(x[i]).type()) {
     case Generator::LINE:
-      if (tempstr == "L")
+      if (str == "L")
 	continue;
       break;
     case Generator::RAY:
-      if (tempstr == "R")
+      if (str == "R")
 	continue;
       break;
     case Generator::POINT:
-      if (tempstr == "P")
+      if (str == "P")
 	continue;
       break;
     case Generator::CLOSURE_POINT:
-      if (tempstr == "C")
+      if (str == "C")
 	continue;
       break;
     }
     // Reaching this point means that the input was illegal.
-    throw std::runtime_error("void PPL::GenSys::get(s)");
+    return false;
   }
   // Checking for well-formedness.
-  if (!x.OK())
-    throw std::runtime_error("void PPL::GenSys::get(s)");
-}
-
-/*! \relates Parma_Polyhedra_Library::GenSys */
-std::istream&
-PPL::operator>>(std::istream& s, GenSys& gs) {
-  gs.get(s);
-  return s;
+  assert(OK());
+  return true;
 }
 
 void
@@ -802,4 +795,20 @@ PPL::GenSys::OK() const {
 
   // All checks passed.
   return true;
+}
+
+std::ostream&
+PPL::operator<<(std::ostream& s, const GenSys& gs) {
+  GenSys::const_iterator i = gs.begin();
+  GenSys::const_iterator gs_end = gs.end();
+  if (i == gs_end)
+    s << "false";
+  else {
+    while (i != gs_end) {
+      s << *i++;
+      if (i != gs_end)
+	s << ", ";
+    }
+  }
+  return s;
 }

@@ -71,7 +71,7 @@ private:
   Poly_Gen_Relation(flags_t mask);
 
   //! Pretty printing.
-  void print(std::ostream& s) const;
+  void ASCII_dump(std::ostream& s) const;
 
   //! True if and only if \p x and \p y are logically equivalent.
   friend bool

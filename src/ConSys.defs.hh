@@ -37,10 +37,16 @@ site: http://www.cs.unipr.it/ppl/ . */
 
 namespace Parma_Polyhedra_Library {
 
-// Put them in the namespace here to declare them friend later.
-bool operator<=(const Polyhedron& x, const Polyhedron& y);
+//! Output operator.
+/*!
+  \relates ConSys
+  Writes <CODE>true</CODE> if \p cs is empty.  Otherwise, writes on
+  \p s the constraints of \p cs, all in one row and separated by ", ".
+*/
 std::ostream& operator<<(std::ostream& s, const ConSys& cs);
-std::istream& operator>>(std::istream& s, ConSys& cs);
+
+// Put it in the namespace here to declare it friend later.
+bool operator<=(const Polyhedron& x, const Polyhedron& y);
 
 } // namespace Parma_Polyhedra_Library
 
@@ -234,15 +240,26 @@ public:
   //! Checks if all the invariants are satisfied.
   bool OK() const;
 
+#ifdef PPL_DOXYGEN_INCLUDE_IMPLEMENTATION_DETAILS
+  //! Writes to \p s an ASCII representation of the internal
+  //! representation of \p *this.
+#endif // PPL_DOXYGEN_INCLUDE_IMPLEMENTATION_DETAILS
+  void ASCII_dump(std::ostream& s) const;
+
+#ifdef PPL_DOXYGEN_INCLUDE_IMPLEMENTATION_DETAILS
+  //! Loads from \p s an ASCII representation (as produced by \ref
+  //! ASCII_dump) and sets \p *this accordingly.  Returns <CODE>true</CODE>
+  //! if successful, <CODE>false</CODE> otherwise.
+#endif // PPL_DOXYGEN_INCLUDE_IMPLEMENTATION_DETAILS
+  bool ASCII_load(std::istream& s);
+
 private:
   friend class Parma_Polyhedra_Library::Polyhedron;
+
   friend bool
   Parma_Polyhedra_Library::operator<=(const Polyhedron& x,
 				      const Polyhedron& y);
-  friend std::ostream&
-  Parma_Polyhedra_Library::operator<<(std::ostream& s, const ConSys& m);
-  friend std::istream&
-  Parma_Polyhedra_Library::operator>>(std::istream& s, ConSys& cs);
+
   friend void std::swap(Parma_Polyhedra_Library::ConSys& x,
 			Parma_Polyhedra_Library::ConSys& y);
 
@@ -292,12 +309,6 @@ private:
   
   //! Returns the number of the inequality constraints.
   size_t num_inequalities() const;
-
-  //! Input operator.
-  void get(std::istream& s);
-  
-  //! Output operator.
-  void print(std::ostream& s) const;
 };
 
 // ConSys.inlines.hh is not included here on purpose.
