@@ -75,12 +75,14 @@ where \f$A \in \Rset^m \times \Rset^n\f$ and
 <B>Linear independence</B>
 
 A set of points \f$x_1, \ldots, x_k \in \Rset^n\f$ is 
-<EM>linearly independent</EM> if the unique solution of 
+<EM>linearly independent</EM> if,
+for all \f$\lambda_1, \ldots, \lambda_k \in \Rset\f$,
+the set of equations
 \f[
-  \sum_{i = 1}^k \lambda_i x_i = 0 \quad 
-  \text{where } \lambda_i \in \Rset \text{ for } i = 1, \ldots, k
+  \sum_{i = 1}^k \lambda_i x_i = 0
 \f]
-is \f$\lambda_i = 0\f$ for \f$i = 1, \ldots, k\f$.
+implies that, for each \f$i = 1\f$, \f$\dots\f$, \f$k\f$,
+\f$\lambda_i = 0\f$.
 
 Note that the maximum number of linearly independent points in 
 \f$\Rset^n\f$ is \f$n\f$.
@@ -101,13 +103,13 @@ matrix \f$A\f$ is the <EM>rank</EM> of \f$A\f$ and is denoted by
 <B>Affine independence</B>
 
 A set of points \f$x_1, \ldots, x_k \in \Rset^n\f$ is 
-<EM>affinely independent</EM> if the unique solution of 
+<EM>affinely independent</EM> if,
+for all \f$\alpha_1, \ldots, \alpha_k \in \Rset\f$,
+the set of equations
 \f[
-  \sum_{i = 1}^k \alpha_i x_i = 0, \quad \sum_{i = 1}^k \alpha_i = 0,
-   \quad \text{where } \alpha_i \in \Rset \text{ for } 
-     i = 1, \ldots, k
+  \sum_{i = 1}^k \alpha_i x_i = 0, \quad \sum_{i = 1}^k \alpha_i = 0
 \f]
-is \f$\alpha_i = 0\f$, for \f$i = 1, \ldots, k\f$.
+implies that, for each \f$i = 1, \ldots, k\f$, \f$\alpha_i = 0\f$.
 
 Note that linear independence implies affine independence, but the 
 converse is not true. Moreover the maximum number of affinely independent
