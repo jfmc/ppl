@@ -851,6 +851,178 @@ PPL::Matrix::sort_and_remove_with_sat(SatMatrix& sat) {
   x.set_sorted(true);
 }
 
+void
+PPL::Matrix::gram_shmidt() {
+  assert(num_pending_rows() == 0);
+
+  // The first part of this algorithm is is an adaptation of the one
+  // proposed in a 1996 TR by Erlingsson, Kaltofen, and Musser
+  // "Generic Gram-Shmidt Orthogonalization by Exact Division".
+
+  // It is assumed that the lines/equalities come first in the matrix,
+  // which contains no redundant row.
+
+  dimension_type rank = num_lines_or_equalities();
+  if (rank == 0)
+    return;
+
+#if 0
+  std::cout << "+++ Before Gram-Shmidt +++" << std::endl;
+  ascii_dump(std::cout);
+#endif
+
+  static std::vector< std::vector<Integer> > mu;
+  mu.reserve(compute_capacity(rank));
+  for (dimension_type i = mu.size(); i < rank; i++) {
+    std::vector<Integer> mu_i(i+1);
+    mu.push_back(mu_i);
+  }
+
+  // Compute the scalar products `rows[i]*rows[j]',
+  // for all 0 <= j <= i < rank, storing them into `mu[i][j]'.
+  for (dimension_type i = rank; i-- > 0; ) {
+    Row& row_i = rows[i];
+    std::vector<Integer>& mu_i = mu[i];
+    for (dimension_type j = i+1; j-- > 0; )
+      mu_i[j] = row_i * rows[j];
+  }
+
+  dimension_type n_columns = num_columns();
+
+  // Start from the second line/equality of the matrix.
+  for (dimension_type i = 1; i < rank; i++) {
+    Row& row_i = rows[i];
+    std::vector<Integer>& mu_i = mu[i];
+    
+    // Finish computing `mu[i][j]', for all j <= i.
+    for (dimension_type j = 0; j <= i; j++) {
+      const std::vector<Integer>& mu_j = mu[j];
+      if (j > 0)
+	mu_i[j] *= mu[j-1][j-1];
+      tmp_Integer[0] = 0;
+      for (dimension_type h = 0; h < j; h++) {
+        tmp_Integer[0] *= mu[h][h];
+	tmp_Integer[1] = mu_i[h] * mu_j[h];
+	tmp_Integer[0] += tmp_Integer[1];
+	if (h > 0)
+	  exact_div_assign(tmp_Integer[0], mu[h-1][h-1]);
+      }
+      mu_i[j] -= tmp_Integer[0];
+    }
+
+    // Let the `i'-th line become orthogonal wrt the `j'-th line,
+    // for all 0 <= j < i.
+    for (dimension_type j = 0; j < i; j++) {
+      const Row& row_j = rows[j];
+      const Integer& mu_ij = mu_i[j];
+      const Integer& mu_jj = mu[j][j];
+      for (dimension_type k = n_columns; k-- > 0; ) {
+        row_i[k] *= mu_jj;
+        tmp_Integer[0] = mu_ij * row_j[k];
+        row_i[k] -= tmp_Integer[0];
+	if (j > 0)
+	  exact_div_assign(row_i[k], mu[j-1][j-1]);
+      }
+    }
+  }
+  
+  // Normalize the coefficients of the orthogonal base found.
+  for (dimension_type i = rank; i-- > 0; )
+    rows[i].strong_normalize();
+
+#if 0
+  std::cout << "+++ After Gram-Shmidt on the base +++" << std::endl;
+  ascii_dump(std::cout);
+#endif
+
+#ifndef NDEBUG
+  // Check that the new base is indeed orthogonal.
+  for (dimension_type i = rank; i-- > 0; ) {
+    const Row& row_i = rows[i];
+    for (dimension_type j = i; j-- > 0; )
+      if (row_i * rows[j] != 0) {
+	std::cout << "Not an orthogonal base" << std::endl;
+	std::cout << "i = " << i << ", j = " << j << std::endl;
+	std::cout << "After Gram-Shmidt on the base" << std::endl;
+	ascii_dump(std::cout);
+	assert(false);
+      }
+  }
+#endif
+
+  // Let denominator = <v_0, v_0> * ... * <v_{rank-1}, v_{rank-1}>
+  // be the product of the squared norms of the orthogonal base.
+  // Define d[j] = denominator / <v_j, v_j>.
+  // Then, the formula to be computed, for each vector w which is not
+  // in the orthogonal base, is the following:
+  //
+  // w' = denominator * w - \sum_{j=0}^{rank-1} (d[j] * <w, v_j> * v_j)
+  //
+  // factors[j] will contain d[j] * <w, v_j>.
+
+  static std::vector<Integer> d;
+  static std::vector<Integer> factors;
+  d.reserve(compute_capacity(rank));
+  factors.reserve(compute_capacity(rank));
+  if (d.size() < rank) {
+    dimension_type growth = rank - d.size();
+    d.insert(d.end(), growth, 0);
+    factors.insert(factors.end(), growth, 0);
+  }
+
+  // Computing all the factors d[0], ..., d[rank-1], and the denominator.
+  Integer denominator = 1;
+  for (dimension_type i = rank; i-- > 0; ) {
+    const Row& row_i = rows[i];
+    d[i] = row_i * row_i;
+    denominator *= d[i];
+  }
+  for (dimension_type i = rank; i-- > 0; )
+    exact_div_assign(d[i], denominator, d[i]);
+
+  // Orthogonalize the rows that are not lines/equalities.
+  dimension_type n_rows = num_rows();
+  for (dimension_type i = rank; i < n_rows; i++) {
+    Row& w = rows[i];
+    // Compute `factors' according to `w'.
+    for (dimension_type j = rank; j-- > 0; ) {
+      factors[j] = w * rows[j];
+      factors[j] *= d[j];
+    }
+    for (dimension_type k = n_columns; k-- > 0; )
+      w[k] *= denominator;
+    for (dimension_type j = rank; j-- > 0; ) {
+      Row& v_j = rows[j];
+      for (dimension_type k = n_columns; k-- > 0; )
+        w[k] -= factors[j] * v_j[k];
+    }
+    assert(w.is_ray_or_point_or_inequality());
+    w.normalize();
+
+#if 0
+  std::cout << "+++ After Gram-Shmidt on the whole matrix +++" << std::endl;
+  ascii_dump(std::cout);
+#endif
+
+#ifndef NDEBUG
+    // Check that w is indeed orthogonal wrt all the vectors in the base.
+    for (dimension_type h = rank; h-- > 0; )
+      if (w * rows[h] != 0) {
+	std::cout << "Not orthogonal" << std::endl;
+	std::cout << "i = " << i << ", h = " << h << std::endl;
+	std::cout << "After Gram-Shmidt on the whole matrix" << std::endl;
+	ascii_dump(std::cout);
+	assert(false);
+      }
+#endif
+  }
+  // Matrix may be no longer sorted (unless it has one line/equality
+  // and at most one ray/point/inequality).
+  if (rank > 1 || n_rows > rank + 1)
+    set_sorted(false);
+  assert(OK());
+}
+
 PPL::dimension_type
 PPL::Matrix::gauss() {
   // This method is only applied to a matrix having no pending rows.

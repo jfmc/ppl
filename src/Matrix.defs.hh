@@ -455,6 +455,13 @@ public:
   */
   void back_substitute(dimension_type rank);
 
+  //! Applies the Gram-Shmidt orthogonalization method to the matrix.
+  /*!
+    It is assumed that the matrix corresponds to a minimized representation,
+    with all lines/equalities coming first.
+  */
+  void gram_shmidt();
+
   //! Checks if all the invariants are satisfied.
   bool OK() const;
 };
