@@ -14,9 +14,9 @@ PURPOSE. */
 
 namespace Parma_Polyhedra_Library {
 
-struct Check_Overflow_Policy;
+struct Checked_Number_Default_Policy;
 
-template <typename T, typename Policy = Check_Overflow_Policy>
+template <typename T, typename Policy = Checked_Number_Default_Policy>
 class Checked_Number;
 
 } // namespace Parma_Polyhedra_Library

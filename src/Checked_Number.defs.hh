@@ -41,6 +41,20 @@ struct Plus_Infinity {
 struct Not_A_Number {
 };
 
+struct Checked_Number_Default_Policy {
+  static const int check_overflow = 1;
+  static const int check_divbyzero = 0;
+  static const int check_sqrt_neg = 0;
+  static const int round_inexact = 0;
+  static const int store_nan = 0;
+  static const int store_infinity = 0;
+  static const int convertible = 1;
+  static const int fpu_classify = 0;
+  static const int fpu_check_inexact = 0;
+  static void handle_result(Result r);
+  static void bad_result(Result r);
+};
+
 //! A wrapper for native numeric types implementing a given policy.
 /*!
   The wrapper and related functions implement an interface which is common
@@ -237,9 +251,6 @@ public:
 
   //! Swaps \p *this with \p y.
   void swap(Checked_Number& y);
-
-  static void bad_result(Result r);
-  static void check_result(Result r);
 
 private:
   //! The underlying native integer value.

@@ -240,6 +240,7 @@ BDS_Status.idefs.hh
 
 libppl_la_SOURCES = \
 Bounding_Box.cc \
+Checked_Number.cc \
 Constraint.cc \
 Constraint_System.cc \
 simplex.cc \
