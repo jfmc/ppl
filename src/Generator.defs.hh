@@ -38,7 +38,7 @@ namespace Parma_Polyhedra_Library {
 
 //! A line, ray or vertex.
 /*!
-  An object of the class Generator is either: 
+  An object of the class Generator is one of the following: 
   
   - a line: \f$\sum_{i=0}^{d-1} a_i \vec{x}_i\f$;
 	
@@ -54,7 +54,7 @@ namespace Parma_Polyhedra_Library {
   and <CODE>/=</CODE> for a vertex) to a linear expression.
   The linear expression represents a direction in the space:
   note that the inhomogeneous term of this linear expression
-  is plainly disregarded.
+  is clearly disregarded.
   
     \par
     In all the examples it is assumed that variables
@@ -67,7 +67,7 @@ namespace Parma_Polyhedra_Library {
     \endcode
   
     \par Example 1
-    The following code builds a line of direction \f$x-y-z\f$:
+    The following code builds a line with direction \f$x-y-z\f$:
     \code
   Generator line(1 | x - y - z);
     \endcode
@@ -82,16 +82,16 @@ namespace Parma_Polyhedra_Library {
     \endcode
 
     \par Example 2
-    The following code builds a ray with the same direction of the
-    previous line:
+    The following code builds a ray with the same direction as the
+    line in Example 1:
     \code
   Generator ray(1 ^ x - y - z);
     \endcode
-    As was the case for lines, when specifying a ray the actual value
+    As is the case for lines, when specifying a ray the actual value
     of the first argument is not significant.
 
     \par Example 3
-    The following code builds the vertex \f$(1, 3, 2)^\mathrm{T}\f$:
+    The following code builds the vertex \f$(1, 3, 2)^\transpose\f$:
     \code
   Generator vertex(x + 3 * y + 2 * z /= 1);
     \endcode
@@ -102,9 +102,10 @@ namespace Parma_Polyhedra_Library {
     \code
   Generator vertex(2 * x + 6 * y + 4 * z /= 2);
     \endcode
-    Obviously, the denominator is more usefully exploited
-    to specify those vertices having some non-integer (rational) coordinates.
-    For instance, the vertex \f$(-1.5, 3.2, 2.1)^\mathrm{T}\f$
+    Obviously, the denominator can be usefully exploited
+    for specifying vertices that have some non-integer
+    (but rational) coordinates.
+    For instance, the vertex \f$(-1.5, 3.2, 2.1)^\transpose\f$
     can be specified by the following code:
     \code
   Generator vertex(-15 * x + 32 * y + 21 * z /= 10);

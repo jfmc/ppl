@@ -56,9 +56,10 @@ namespace Parma_Polyhedra_Library {
     An object of the class GenSys is a system of generators,
     i.e. a container of objects of the class Generator
     (lines, rays and vertices).
-    It is necessary that inside the set of generators there is
-    at least a vertex, because this indicates for a line one of its 
-    points, and for a ray the point from which it starts.
+    It is necessary that the set of generators includes
+    at least one vertex.
+    This is needed since a line or ray only specify a direction
+    and a point is needed to indicate its position.
     
     \par
      In all the examples it is assumed that variables
@@ -69,14 +70,14 @@ namespace Parma_Polyhedra_Library {
     \endcode
 
     \par Example 1
-    The following code builds the axis \f$x\f$ in \f$\Rset^2\f$:
+    The following code builds the \f$x\f$ axis in \f$\Rset^2\f$:
     \code
     GenSys gs;
     gs.insert(0 * x + 0 * y /= 1);
     gs.insert(1 | x + 0 * y);
     \endcode
-    Instead, the following code builds a line parallel to the axis
-    \f$x\f$ in \f$\Rset^2\f$: 
+    Instead, the following code builds a line parallel to the
+    \f$x\f$ axis in \f$\Rset^2\f$: 
     \code
     GenSys gs;
     gs.insert(0 * x + y /= 1);
@@ -87,7 +88,7 @@ namespace Parma_Polyhedra_Library {
     GenSys gs;
     gs.insert(1 | x + 0 * y);
     \endcode
-    this set of generators does not represent anything.
+    then this set of generators does not represent anything.
 
     \par Example 2
     The following code builds a ray that corresponds to the positive
@@ -97,7 +98,8 @@ namespace Parma_Polyhedra_Library {
     gs.insert(0 * x + 0 * y /= 1);
     gs.insert(1 ^ x + 0 * y);
     \endcode
-    Instead,the following code builds a ray parallel to the previuos:
+    Instead, the following code builds a ray parallel to
+    the line in Example 1:
     \code
     GenSys gs;
     gs.insert(0 * x + y /= 1);
@@ -108,12 +110,12 @@ namespace Parma_Polyhedra_Library {
     GenSys gs;
     gs.insert(1 ^ x + 0 * y);
     \endcode
-    this set of generators does not represent anything.
+    then this set of generators does not represent anything.
 
 
     \par Example 3
     The following code builds a square in \f$\Rset^2\f$ 
-    (the same of the first example for the system of constraints):
+    (the same as Example 1 for the system of constraints):
     \code
     GenSys gs;
     gs.insert(0 * x + 0 * y /= 1);
@@ -123,8 +125,8 @@ namespace Parma_Polyhedra_Library {
     \endcode
 
     \par Example 4
-    The following code builds an half-strip in \f$\Rset^2\f$:
-    (the same of the second example for the system of constraints): 
+    The following code builds a half-strip in \f$\Rset^2\f$:
+    (the same as Example 2 for the system of constraints): 
     \code 
     GenSys gs;
     gs.insert(0 * x + 0 * y /= 1);
@@ -170,7 +172,7 @@ public:
 
   private:
     Matrix::const_iterator i;
-  
+    
     //! Copy-constructor.
     const_iterator(const Matrix::const_iterator& iter);
 
@@ -218,7 +220,7 @@ PPL_INTERNAL:
   
   //! Checks if the given constraint is satisfied by all generators
   //! in the system.
-  GenSys_Con_Rel satisfy(const Constraint& c) const;
+  GenSys_Con_Rel satisfy_constraint(const Constraint& c) const;
   
   //! Assigns to a given variable an affine expression.
   void assign_variable(size_t var,

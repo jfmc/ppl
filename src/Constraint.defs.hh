@@ -52,7 +52,7 @@ namespace Parma_Polyhedra_Library {
 //! A linear equality or inequality.
 /*! 
   An object of the class Constraint is either:
-  - an equality: \f$\sum_{i=0}^{d-1} a_i x_i + b = 0\f$;
+  - an equality: \f$\sum_{i=0}^{d-1} a_i x_i + b = 0\f$; or
   - an inequality: \f$\sum_{i=0}^{d-1} a_i x_i + b \geq 0\f$;
   
   where \f$d\f$ is the dimension of the space.

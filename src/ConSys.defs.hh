@@ -57,7 +57,7 @@ site: http://www.cs.unipr.it/ppl/ . */
   \endcode
 
     \par Example 2
-    The following code builds an half-strip in \f$\Rset^2\f$:
+    The following code builds a half-strip in \f$\Rset^2\f$:
   \code
   ConSys cs;
   cs.insert(x >= 0);
@@ -86,7 +86,7 @@ public:
       
       \par Example 
       The following code prints the system of constraints
-      defining polyhedron <CODE>ph</CODE>:
+      defining the polyhedron <CODE>ph</CODE>:
       \code
       const ConSys cs = ph.constraints();
       ConSys::const_iterator iend = cs.end();
