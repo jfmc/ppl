@@ -10,7 +10,7 @@ PPL clpq ?- Z = 13
  more? yes
 PPL clpq ?- yes
 PPL clpq ?- X = 0
--Z + Y = -1
+Z - Y = 1
  more? yes
 PPL clpq ?- yes
 PPL clpq ?- Y = 102
