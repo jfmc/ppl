@@ -57,7 +57,6 @@ check_all :-
   polyhull_assign,
   polyhull_assign_min,
   polydiff_assign,
-  polydiff_assign_min,
   widen_H79_C,
   lim_extrapolate_H79_C,
   widen_H79_NNC,
@@ -269,7 +268,7 @@ new_poly_from_bounding_box_NNC :-
 % Tests ppl_Polyhedron_swap for a C Polyhedron.
 swap :-
   ppl_new_Polyhedron_from_dimension(c, 3, P),
-  ppl_new_Polyhedron_empty_from_dimension(c, 3, Q),
+  ppl_new_Polyhedron_empty_from_dimension(c, 2, Q),
   ppl_Polyhedron_swap(P, Q),
   ppl_Polyhedron_check_empty(P),
   ppl_Polyhedron_check_universe(Q),
