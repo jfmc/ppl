@@ -692,7 +692,7 @@ solve(char* file_name) {
 	first_candidate = 0;
 	mpq_set(optimum, tmp1_q);
 	ppl_assign_GenSys_const_iterator_from_GenSys_const_iterator(ogit,
-								      git1);
+								    git1);
       }
     }
     ppl_GenSys_const_iterator_increment(git1);
