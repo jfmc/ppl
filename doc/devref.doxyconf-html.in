@@ -481,6 +481,10 @@ INPUT                  = @srcdir@/definitions.dox \
                          @srcdir@/../src/Constraint.defs.hh \
                          @srcdir@/../src/Constraint.inlines.hh \
                          @srcdir@/../src/Constraint.cc \
+                         @srcdir@/../src/Congruence.types.hh \
+                         @srcdir@/../src/Congruence.defs.hh \
+                         @srcdir@/../src/Congruence.inlines.hh \
+                         @srcdir@/../src/Congruence.cc \
                          @srcdir@/../src/Generator.types.hh \
                          @srcdir@/../src/Generator.defs.hh \
                          @srcdir@/../src/Generator.inlines.hh \
@@ -489,6 +493,10 @@ INPUT                  = @srcdir@/definitions.dox \
                          @srcdir@/../src/Constraint_System.defs.hh \
                          @srcdir@/../src/Constraint_System.inlines.hh \
                          @srcdir@/../src/Constraint_System.cc \
+                         @srcdir@/../src/Congruence_System.types.hh \
+                         @srcdir@/../src/Congruence_System.defs.hh \
+                         @srcdir@/../src/Congruence_System.inlines.hh \
+                         @srcdir@/../src/Congruence_System.cc \
                          @srcdir@/../src/Generator_System.defs.hh \
                          @srcdir@/../src/Generator_System.types.hh \
                          @srcdir@/../src/Generator_System.inlines.hh \
@@ -506,6 +514,13 @@ INPUT                  = @srcdir@/definitions.dox \
                          @srcdir@/../src/conversion.cc \
                          @srcdir@/../src/minimize.cc \
                          @srcdir@/../src/simplify.cc \
+                         @srcdir@/../src/Grid.types.hh \
+                         @srcdir@/../src/Grid.defs.hh \
+                         @srcdir@/../src/Grid_public.cc \
+                         @srcdir@/../src/Grid_nonpublic.cc \
+                         @srcdir@/../src/Grid_conversion.cc \
+                         @srcdir@/../src/Grid_minimize.cc \
+                         @srcdir@/../src/Grid_simplify.cc \
                          @srcdir@/../src/Poly_Con_Relation.types.hh \
                          @srcdir@/../src/Poly_Con_Relation.defs.hh \
                          @srcdir@/../src/Poly_Con_Relation.inlines.hh \
