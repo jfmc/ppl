@@ -1088,7 +1088,7 @@ error38() {
   
   try {
     // This is an incorrect use of function
-    // C_Polyhedron::generalized_affine_image(v, expr,d): it is illegal
+    // C_Polyhedron::generalized_affine_image(v, r, expr, d): it is illegal
     // applying the function with a linear expression with the denominator
     // equal to zero.
     Integer d = 0;
@@ -1116,8 +1116,8 @@ error39() {
   
   try {
     // This is an incorrect use of function
-    // C_Polyhedron::generalized_affine_image(v, expr,d): it is illegal to
-    // use a variable in the expression that does not apper in the
+    // C_Polyhedron::generalized_affine_image(v, r, expr, d): it is illegal to
+    // use a variable in the expression that does not apper in the polyhedron.
     ph.generalized_affine_image(A, PPL_GE, B);
   }
   catch (invalid_argument& e) {
