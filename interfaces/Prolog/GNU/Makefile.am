@@ -79,7 +79,7 @@ gp_clpq2: libppl_gprolog.la ppl_gprolog.pl gp_clpq.pl ../clpq2.pl
 		$(srcdir)/../clpq2.pl .libs/libppl_gprolog.a \
 		-L '-L$(top_builddir)/src/.libs -lppl -L$(top_builddir)/Watchdog/.libs -lpwl -lgmpxx -lgmp -lstdc++'
 
-check-local: gp_clpq ../check_script ../expected gp_clpq2 ../check_script2 ../expected2
+check-local: gp_clpq ../check_script ../expected gp_clpq2 ../check_script2 ../expected2 ../pl_check.pl ../expected3
 	for k in $(CLPQ_TESTS); do cp -f $(srcdir)/../$$k .; done
 	$(LIBTOOL) --mode=execute \
 		-dlopen ../../../src/libppl.la \
@@ -91,7 +91,18 @@ check-local: gp_clpq ../check_script ../expected gp_clpq2 ../check_script2 ../ex
 		-dlopen ../../../Watchdog/libpwl.la \
 		./gp_clpq2 <$(srcdir)/../check_script2 >obtained2
 	diff -q --ignore-all-space $(srcdir)/../expected2 obtained2
+	echo "['$(srcdir)/../pl_check.pl', '$(srcdir)/gnu_pl_check.pl']." \
+		>check_script3
+	echo "main." >>check_script3
+	$(LIBTOOL) --mode=execute \
+		-dlopen ../../../src/libppl.la \
+		-dlopen ../../../Watchdog/libpwl.la \
+		./ppl_gprolog <check_script3
+	diff -q --ignore-all-space $(srcdir)/../expected3 obtained3
 
-MOSTLYCLEANFILES = gp_clpq gp_clpq2 $(CLPQ_TESTS) obtained obtained2
+MOSTLYCLEANFILES = \
+gp_clpq gp_clpq2 \
+obtained obtained2 obtained3 \
+$(CLPQ_TESTS)
 
 endif
