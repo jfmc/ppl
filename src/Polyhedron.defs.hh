@@ -504,8 +504,7 @@ private:
   void obtain_sorted_generators_with_sat_g();
 
 #if POSITIVE_TRANSFORMATION
-  void transform_assign(Matrix& inverse_trans, Matrix& trans,
-			std::vector<Integer>& denominator);
+  void transform_assign(Matrix& inverse_trans, Matrix& trans);
 #endif
 
 

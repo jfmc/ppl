@@ -361,16 +361,13 @@ PPL::GenSys::transform_assign(GenSys& trans, GenSys& inverse_trans,
   // In `trans' we need only `num_columns' linear indipendent lines: we choose
   // the lines of `trans' that are linear indipendent and if these are not
   // enought, we add the indipendent vector of the canonical base.
-  size_t found = trans_num_rows;
+  size_t found = 0 /*num_columns - 1*/;
   for (size_t i = trans_num_rows; i-- > 0; ) {
-    for (size_t j = num_columns; j-- > 0; )
-      if (lin_indip[j][i] != 0 && found != j) {
-	found = j;
-	break;
-      }
-    for (size_t j = num_columns; j-- > 0; )
-      tmp[found][j] = trans[trans_num_rows - 1 - found][j];
-    tmp[found].set_is_line_or_equality();
+    if (found < rank && lin_indip[found][i] != 0/* && found != j*/) {
+      tmp[found] = trans[i];
+      tmp[found].set_is_line_or_equality();
+      ++found;
+    }
   }
   if (rank < num_columns)
     for (size_t i = num_columns - rank; i-- > 0; ) {
@@ -417,6 +414,9 @@ PPL::GenSys::transform_assign(GenSys& trans, GenSys& inverse_trans,
   for (size_t i = 0; i < num_columns; ++i)
     denominator[i] = inverse_trans[i][num_columns + i];
   inverse_trans.resize_no_copy(num_columns, num_columns);
+  Integer den =1;
+  for (size_t i = 0; i < num_columns; ++i)
+    den *= denominator[i];
 #if 0
   using std::cout;
   using std::endl;
@@ -424,6 +424,7 @@ PPL::GenSys::transform_assign(GenSys& trans, GenSys& inverse_trans,
   cout << inverse_trans << endl;
   for (size_t i = 0; i < num_columns; ++i)
     cout << denominator[i] << endl;
+  cout << "denominatore: " << den << endl;
 #endif
 
   GenSys tmp_mat(mat_num_rows, num_columns);
@@ -439,6 +440,16 @@ PPL::GenSys::transform_assign(GenSys& trans, GenSys& inverse_trans,
   using std::endl;
   cout << "Dopo aver calcolato i prodotti scalari." << endl;
   cout << mat << endl;
+#endif
+  
+  for (size_t i = 0; i < num_columns; ++i)
+    for (size_t j = 0; j < num_columns; ++j)
+      inverse_trans[i][j] *= den / denominator[i];
+#if 0
+  using std::cout;
+  using std::endl;
+  cout << "Denominatori." << endl;
+  cout << inverse_trans << endl;
 #endif
 }
 #endif

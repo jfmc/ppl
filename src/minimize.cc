@@ -278,6 +278,7 @@ PPL::Polyhedron::minimize(bool con_to_gen,
 #if 0
 	std::cout << "Dopo la nuova simplify" << std::endl;
 	std::cout << dest << std::endl;
+	std::cout << sat << std::endl;
 #endif
 #else
 #if !POSITIVE_TRANSFORMATION
@@ -576,6 +577,20 @@ PPL::Polyhedron::add_and_minimize(bool con_to_gen,
     // equalities. Then we re-obtain the `sat_c'.
     if (pos) {
       if (!con_to_gen) {
+#if POSITIVE_TRANSFORMATION
+	sat.transpose_assign(sat);
+	for (size_t i = dest_num_rows; i-- > 0; )
+	  if (dest[i].is_ray_or_vertex_or_inequality()
+	      && dest[i].only_a_term_is_positive()) {
+	    --dest_num_rows;
+	    std::swap(dest[i], dest[dest_num_rows]);
+	    std::swap(sat[i],sat[dest_num_rows]);
+	  }
+	if (dest_num_rows < dest.num_rows()) {
+	  dest.erase_to_end(dest_num_rows);
+	  sat.rows_erase_to_end(dest_num_rows);
+	}
+#else
 	source1.resize_no_copy(num_columns, num_columns);
 	for(size_t i = num_columns; i-- > 0; ) {
 	  for (size_t j = num_columns; j-- > 0; )
@@ -590,6 +605,7 @@ PPL::Polyhedron::add_and_minimize(bool con_to_gen,
 	conversion(dest, 0, source1, tmp, 0);
 	tmp.transpose_assign(tmp);
 	std::swap(tmp, sat);
+#endif
       }
       else {
 	for (size_t i = source1.num_lines_or_equalities();
