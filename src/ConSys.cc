@@ -85,36 +85,35 @@ PPL::ConSys::adjust_topology_and_dimension(Topology new_topology,
 	      --cs_num_rows;
 	      std::swap(cs[i], cs[cs_num_rows]);
 	    }
-	  set_index_first_pending_row(cs_num_rows);
+	  cs.erase_to_end(cs_num_rows);
+	  cs.unset_pending_rows();
 	}
 	else {
-	  // If there are some pending rows, we can not
-	  // swap the "normal" rows with the pending rows. So
-	  // we must put at the end of the "normal" rows
-	  // the "normal" rows that must be erased,
-	  // put them at the end of the matrix, find the rows
-	  // that must be erased in the pending
-	  // part and then erase the rows that now
-	  // are in the bottom part of the matrix.
-	  dimension_type cs_first_pending = cs.first_pending_row();
-	  for (dimension_type i = cs_first_pending; i-- > 0; )
+	  // There are pending rows, and we cannot swap them
+	  // into the non-pending part of the matrix.
+	  // Thus, we first work on the non-pending part as if it was
+	  // an independent matrix; then we work on the pending part.
+	  dimension_type old_first_pending = cs.first_pending_row();
+	  dimension_type new_first_pending = old_first_pending;
+	  for (dimension_type i = new_first_pending; i-- > 0; )
 	    if (cs[i][eps_index] != 0) {
-	      --cs_first_pending;
-	      std::swap(cs[i], cs[cs_num_rows]);
+	      --new_first_pending;
+	      std::swap(cs[i], cs[new_first_pending]);
 	    }
-	  dimension_type num_invalid_rows
-	    = cs.first_pending_row() - cs_first_pending;
-	  cs.set_index_first_pending_row(cs_first_pending);
-	  for (dimension_type i = 0; i < num_invalid_rows; ++i)
-	    std::swap(cs[cs_num_rows - i], cs[cs_first_pending + i]);
-	  cs_num_rows -= num_invalid_rows;
-	  for (dimension_type i = cs_num_rows; i-- > cs_first_pending; )
+	  dimension_type num_swaps = old_first_pending - new_first_pending;
+          cs.set_index_first_pending_row(new_first_pending);
+	  // Move the swapped rows to the real end of the matrix.
+	  for (dimension_type i = num_swaps; i-- > 0; )
+	    std::swap(cs[old_first_pending - i], cs[cs_num_rows - i]);
+	  cs_num_rows -= num_swaps;
+	  // Now iterate through the pending rows.
+	  for (dimension_type i = cs_num_rows; i-- > new_first_pending; )
 	    if (cs[i][eps_index] != 0) {
 	      --cs_num_rows;
 	      std::swap(cs[i], cs[cs_num_rows]);
 	    }
+	  cs.erase_to_end(cs_num_rows);
 	}
-	cs.erase_to_end(cs_num_rows);
 	
 	// If `cs' was sorted we sort it again.
 	if (was_sorted)
