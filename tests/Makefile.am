@@ -88,6 +88,7 @@ ORIGINAL_TESTS = \
 	removedim7 removedim8 removedim9 \
 	smm1 \
 	timeelapse1 timeelapse2 timeelapse3 timeelapse4 timeelapse5 \
+	topclosed1 topclosed2 \
 	topclosure1 \
 	universe1 universe2 universe3 universe4 universe5 universe6
 
@@ -323,6 +324,9 @@ timeelapse2_SOURCES = timeelapse2.cc
 timeelapse3_SOURCES = timeelapse3.cc
 timeelapse4_SOURCES = timeelapse4.cc
 timeelapse5_SOURCES = timeelapse5.cc
+
+topclosed1_SOURCES = topclosed1.cc
+topclosed2_SOURCES = topclosed2.cc
 
 topclosure1_SOURCES = topclosure1.cc
 
