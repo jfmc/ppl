@@ -613,8 +613,17 @@ PPL::Polyhedron::conversion(Matrix& source,
 	    // Here it is not necessary to swap the columns of `sat',
 	    // because the `sat' columns having indexes greater than
 	    // or equal to `k' are all made of zero coefficients.
+#if 1
 	    std::swap(source[k], source[source_num_rows]);
 	    source.set_sorted(false);
+#else
+	    // Preserve the sortedness of `source'.
+	    for (dimension_type i = k; i < source_num_rows; ) {
+	      Row& source_i = source[i];
+	      ++i;
+	      std::swap(source_i, source[i]);
+	    }
+#endif
 	  }
 	  // NOTE: we continue with the next cicle of the loop
 	  // without incrementing the index `k', because:
