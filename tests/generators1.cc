@@ -54,10 +54,12 @@ main() try {
   
   if (!ph.OK())
     exit(1);
+
   return 0;
 }
-
 catch (std::invalid_argument& e) {
+#if NOISY
   cout << "invalid_argument: " << e.what() << endl;
+#endif
   exit(1);
 }
