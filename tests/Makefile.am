@@ -462,7 +462,7 @@ relations19_SOURCES = relations19.cc
 
 randphull1_SOURCES = randphull1.cc
 randphull2_SOURCES = randphull2.cc
-randphull2_LDADD = -lm
+randphull2_LDADD = $(LDADD) -lm
 
 removedim1_SOURCES = removedim1.cc
 removedim2_SOURCES = removedim2.cc
@@ -878,7 +878,7 @@ nnc_randphull1_SOURCES = randphull1.cc
 nnc_randphull1_CXXFLAGS = $(DERIVED_CXXFLAGS)
 nnc_randphull2_SOURCES = randphull2.cc
 nnc_randphull2_CXXFLAGS = $(DERIVED_CXXFLAGS)
-nnc_randphull2_LDADD = -lm
+nnc_randphull2_LDADD = $(LDADD) -lm
 
 nnc_removedim1_SOURCES = removedim1.cc
 nnc_removedim1_CXXFLAGS = $(DERIVED_CXXFLAGS)
