@@ -194,23 +194,6 @@ public:
 				void,
 				const Generator*,
                                 const Generator&> {
-
-  private:
-    //! The const iterator over the matrix of generators.
-    Matrix::const_iterator i;
-
-    //! A const pointer to the matrix of generators.
-    const Matrix* gsp;
-
-    //! Constructor.
-    const_iterator(const Matrix::const_iterator& iter, const GenSys& gsys);
-    
-    //! \p *this skips to the next generator, skipping those
-    //! closure points that are immediately followed by a matching point.
-    void skip_forward();
-
-    friend class GenSys;
-
   public:
     //! Default constructor.
     const_iterator();
@@ -243,6 +226,22 @@ public:
     //! Returns <CODE>true</CODE> if and only if
     //! \p *this and \p y are different.
     bool operator!=(const const_iterator& y) const;
+
+  private:
+    friend class GenSys;
+
+    //! The const iterator over the matrix of generators.
+    Matrix::const_iterator i;
+
+    //! A const pointer to the matrix of generators.
+    const Matrix* gsp;
+
+    //! Constructor.
+    const_iterator(const Matrix::const_iterator& iter, const GenSys& gsys);
+    
+    //! \p *this skips to the next generator, skipping those
+    //! closure points that are immediately followed by a matching point.
+    void skip_forward();
   };
 
   //! Returns the const_iterator pointing to the first generator,
@@ -258,9 +257,8 @@ public:
 
 private:
   friend class Parma_Polyhedra_Library::Polyhedron;
-  friend bool
-  Parma_Polyhedra_Library::operator<=(const Polyhedron& x,
-				      const Polyhedron& y);
+  friend bool Parma_Polyhedra_Library::operator<=(const Polyhedron& x,
+						  const Polyhedron& y);
 
   //! Builds an empty system of generators having the specified topology.
   GenSys(Topology topol);

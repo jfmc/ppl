@@ -134,26 +134,10 @@ public:
   */
   class const_iterator
     : public std::iterator<std::forward_iterator_tag,
-				Constraint,
-				void,
-				const Constraint*,
-                                const Constraint&> {
-
-  private:
-    //! The const iterator over the matrix of constraints.
-    Matrix::const_iterator i;
-  
-    //! A const pointer to the matrix of constraints.
-    const Matrix* csp;
-
-    //! Constructor.
-    const_iterator(const Matrix::const_iterator& iter, const ConSys& csys);
-    
-    //! \p *this skips to the next non-trivial constraint.
-    void skip_forward();
-
-    friend class ConSys;
-
+			   Constraint,
+			   void,
+			   const Constraint*,
+			   const Constraint&> {
   public:
     //! Default constructor.
     const_iterator();
@@ -186,6 +170,21 @@ public:
     //! Returns <CODE>true</CODE> if and only if
     //! \p *this and \p y are different.
     bool operator!=(const const_iterator& y) const;
+
+  private:
+    friend class ConSys;
+
+    //! The const iterator over the matrix of constraints.
+    Matrix::const_iterator i;
+  
+    //! A const pointer to the matrix of constraints.
+    const Matrix* csp;
+
+    //! Constructor.
+    const_iterator(const Matrix::const_iterator& iter, const ConSys& csys);
+    
+    //! \p *this skips to the next non-trivial constraint.
+    void skip_forward();
   };
 
   //! Returns the const_iterator pointing to the first constraint,
@@ -201,9 +200,8 @@ public:
 
 private:
   friend class Parma_Polyhedra_Library::Polyhedron;
-  friend bool
-  Parma_Polyhedra_Library::operator<=(const Polyhedron& x,
-				      const Polyhedron& y);
+  friend bool Parma_Polyhedra_Library::operator<=(const Polyhedron& x,
+						  const Polyhedron& y);
 
   //! Builds an empty system of constraints having the specified topology.
   ConSys(Topology topol);

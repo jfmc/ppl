@@ -128,6 +128,8 @@ public:
   static const LinExpression& zero();
 
 private:
+  friend class Parma_Polyhedra_Library::Constraint;
+  friend class Parma_Polyhedra_Library::Generator;
   friend class Parma_Polyhedra_Library::Polyhedron;
 
   //! Builds the linear expression corresponding to
@@ -146,9 +148,6 @@ private:
   //! The bool parameter is just to avoid problems with
   //! the constructor LinExpression(const Integer& n).
   LinExpression(size_t sz, bool);
-
-  friend class Parma_Polyhedra_Library::Constraint;
-  friend class Parma_Polyhedra_Library::Generator;
 
   //! Returns the linear expression \p e1 + \p e2.
   friend LinExpression
