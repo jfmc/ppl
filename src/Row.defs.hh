@@ -66,9 +66,25 @@ The class Row allows us to build objects like these:
 class Parma_Polyhedra_Library::Row {
 
 public:
+  //! Returns the identifier of the lowest dimension variable
+  //! having a non-zero coefficient in \p *this.
+  //! Returns -1 if all the variables in \p *this have coefficient 0.
   int first() const;
+  //! Returns the identifier of the highest dimension variable
+  //! having a non-zero coefficient in \p *this.
+  //! Returns -1 if all the variables in \p *this have coefficient 0.
   int last() const;
+  //! Searching among those variables with identifier greater
+  //! than \p prev, returns the identifier of the lowest dimension
+  //! variable having a non-zero coefficient in \p *this.
+  //! Returns -1 if all the variables with identifier greater than \p prev
+  //! in \p *this have coefficient 0.
   int next(int prev) const;
+  //! Searching among those variables with identifier less
+  //! than \p next, returns the identifier of the lowest dimension
+  //! variable having a non-zero coefficient in \p *this.
+  //! Returns -1 if all the variables with identifier greater than \p prev
+  //! in \p *this have coefficient 0.
   int prev(int next) const;
   const Integer& coefficient() const;
   const Integer& coefficient(size_t n) const;
