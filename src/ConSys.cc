@@ -291,30 +291,11 @@ PPL::ConSys::get(std::istream& s) {
 }
 
 /*!
-  Returns <CODE>true</CODE> if and only if \p *this actually represents
-  a system of constraints. So \p *this must have:
-  -# at least a column for the inhomogeneus term and one for a variable;
-  -# at least a row.
+  Returns <CODE>true</CODE> if and only if \p *this is a valid Matrix.
+  No other checks can be performed here, since any valid Row object
+  in the matrix is also a valid Constraint object.
 */
 bool
 PPL::ConSys::OK() const {
-  using std::endl;
-  using std::cerr;
-
-  // A ConSys must be a valid Matrix.
-  if (!Matrix::OK())
-    return false;
-
-  if (num_rows() == 0) {
-    // A valid constraint system must have at least one constraint.
-    // In fact, the constraint representation of a non-universe
-    // polyhedron has, by definition, at least one constraint,
-    // while a constraint system denoting a universe polyhedron must have,
-    // in our representation, at least one positivity constraint.
-    cerr << "A ConSys must not have zero rows!"
-	 << endl;
-    return false;
-  }
-
-  return true;
+  return Matrix::OK();
 }
