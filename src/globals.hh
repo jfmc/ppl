@@ -66,12 +66,8 @@ enum Complexity_Class {
 };
 
 #ifdef PPL_DOXYGEN_INCLUDE_IMPLEMENTATION_DETAILS
-//! An array of temporaries used to avoid unnecessary memory allocation.
+//! FIXME: comment!
 #endif
-extern Integer* tmp_Integer;
-
-#ifndef DONT_USE_NEW_TEMPS
-
 class Integer_free_list_element {
 private:
   Integer i;
@@ -128,8 +124,6 @@ public:
 #define TEMP_INTEGER(id) \
 Integer& id = get_tmp_Integer(); \
 Temp_Integer_Holder temp_Integer_holder_ ## id = (id)
-
-#endif
 
 #ifdef PPL_DOXYGEN_INCLUDE_IMPLEMENTATION_DETAILS
 //! Speculative allocation function.

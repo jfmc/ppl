@@ -83,20 +83,6 @@ PPL::Row::Impl::copy_construct(const Impl& y) {
 void
 PPL::Row::normalize() {
   Row& x = *this;
-#ifdef DONT_USE_NEW_TEMPS
-  // Compute the GCD of all the coefficients into tmp_Integer[1].
-  tmp_Integer[1] = 0;
-  const dimension_type sz = size();
-  for (dimension_type i = sz; i-- > 0; ) {
-    const Integer& x_i = x[i];
-    if (x_i != 0)
-      gcd_assign(tmp_Integer[1], x_i);
-  }
-  if (tmp_Integer[1] > 1)
-    // Divide the coefficients by the GCD.
-    for (dimension_type i = sz; i-- > 0; )
-      exact_div_assign(x[i], tmp_Integer[1]);
-#else
   // Compute the GCD of all the coefficients into gcd.
   TEMP_INTEGER(gcd);
   gcd = 0;
@@ -110,7 +96,6 @@ PPL::Row::normalize() {
     // Divide the coefficients by the GCD.
     for (dimension_type i = sz; i-- > 0; )
       exact_div_assign(x[i], gcd);
-#endif
 }
 
 void
@@ -189,16 +174,6 @@ PPL::operator*(const Row& x, const Row& y) {
   // Scalar product is only defined  if `x' and `y' are
   // dimension-compatible.
   assert(x.size() <= y.size());
-#ifdef DONT_USE_NEW_TEMPS
-  tmp_Integer[0] = 0;
-  for (dimension_type i = x.size(); i-- > 0; ) {
-    // The following two lines optimize the computation
-    // of tmp_Integer[0] += x[i] * y[i].
-    tmp_Integer[1] = x[i] * y[i];
-    tmp_Integer[0] += tmp_Integer[1];
-  }
-  return tmp_Integer[0];
-#else
   TEMP_INTEGER(accum);
   TEMP_INTEGER(prod);
   accum = 0;
@@ -209,7 +184,6 @@ PPL::operator*(const Row& x, const Row& y) {
     accum += prod;
   }
   return accum;
-#endif
 }
 
 /*! \relates Parma_Polyhedra_Library::Row */
@@ -219,16 +193,6 @@ PPL::reduced_scalar_product(const Row& x, const Row& y) {
   // if the topology of `x' is NNC and `y' has enough coefficients.
   assert(!x.is_necessarily_closed());
   assert(x.size() - 1 <= y.size());
-#ifdef DONT_USE_NEW_TEMPS
-  tmp_Integer[0] = 0;
-  for (dimension_type i = x.size() - 1; i-- > 0; ) {
-    // The following two lines optimize the computation
-    // of tmp_Integer[0] += x[i] * y[i].
-    tmp_Integer[1] = x[i] * y[i];
-    tmp_Integer[0] += tmp_Integer[1];
-  }
-  return tmp_Integer[0];
-#else
   TEMP_INTEGER(accum);
   TEMP_INTEGER(prod);
   accum = 0;
@@ -239,7 +203,6 @@ PPL::reduced_scalar_product(const Row& x, const Row& y) {
     accum += prod;
   }
   return accum;
-#endif
 }
 
 void
@@ -251,18 +214,6 @@ PPL::Row::linear_combine(const Row& y, const dimension_type k) {
   // Let g be the GCD between `x[k]' and `y[k]'.
   // For each i the following computes
   //   x[i] = x[i]*y[k]/g - y[i]*x[k]/g.
-#ifdef DONT_USE_NEW_TEMPS
-  gcd_assign(tmp_Integer[1], x[k], y[k]);
-  exact_div_assign(tmp_Integer[2], x[k], tmp_Integer[1]);
-  exact_div_assign(tmp_Integer[3], y[k], tmp_Integer[1]);
-
-  for (dimension_type i = size(); i-- > 0; )
-    if (i != k) {
-      tmp_Integer[4] = x[i] * tmp_Integer[3];
-      tmp_Integer[5] = y[i] * tmp_Integer[2];
-      x[i] = tmp_Integer[4] - tmp_Integer[5];
-    }
-#else
   TEMP_INTEGER(scale);
   TEMP_INTEGER(scaled_x_k);
   TEMP_INTEGER(scaled_y_k);
@@ -278,7 +229,6 @@ PPL::Row::linear_combine(const Row& y, const dimension_type k) {
       prod2 = y[i] * scaled_x_k;
       x[i] = prod1 - prod2;
     }
-#endif
   x[k] = 0;
   x.strong_normalize();
 }

@@ -29,11 +29,7 @@ site: http://www.cs.unipr.it/ppl/ . */
 
 namespace PPL = Parma_Polyhedra_Library;
 
-#ifdef DONT_USE_NEW_TEMPS
-PPL::Integer* PPL::tmp_Integer;
-#else
 PPL::Integer_free_list_element* PPL::Integer_free_list_first = 0;
-#endif
 
 const PPL::Throwable* volatile PPL::abandon_expensive_computations = 0;
 
@@ -44,16 +40,6 @@ PPL::operator*(const Constraint& x, const Generator& y) {
   // Scalar product is only defined  if `x' and `y' are
   // dimension-compatible.
   assert(x.size() <= y.size());
-#ifdef DONT_USE_NEW_TEMPS
-  tmp_Integer[0] = 0;
-  for (dimension_type i = x.size(); i-- > 0; ) {
-    // The following two lines optimize the computation
-    // of tmp_Integer[0] += x[i] * y[i].
-    tmp_Integer[1] = x[i] * y[i];
-    tmp_Integer[0] += tmp_Integer[1];
-  }
-  return tmp_Integer[0];
-#else
   TEMP_INTEGER(sp);
   TEMP_INTEGER(prod);
   sp = 0;
@@ -64,7 +50,6 @@ PPL::operator*(const Constraint& x, const Generator& y) {
     sp += prod;
   }
   return sp;
-#endif
 }
 
 
@@ -75,16 +60,6 @@ PPL::reduced_scalar_product(const Constraint& x, const Generator& y) {
   // if the topology of `x' is NNC and `y' has enough coefficients.
   assert(!x.is_necessarily_closed());
   assert(x.size() - 1 <= y.size());
-#ifdef DONT_USE_NEW_TEMPS
-  tmp_Integer[0] = 0;
-  for (dimension_type i = x.size() - 1; i-- > 0; ) {
-    // The following two lines optimize the computation
-    // of tmp_Integer[0] += x[i] * y[i].
-    tmp_Integer[1] = x[i] * y[i];
-    tmp_Integer[0] += tmp_Integer[1];
-  }
-  return tmp_Integer[0];
-#else
   TEMP_INTEGER(sp);
   TEMP_INTEGER(prod);
   sp = 0;
@@ -95,5 +70,4 @@ PPL::reduced_scalar_product(const Constraint& x, const Generator& y) {
     sp += prod;
   }
   return sp;
-#endif
 }

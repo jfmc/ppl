@@ -512,27 +512,14 @@ PPL::Polyhedron::bounds(const LinExpression& expr,
       || (!generators_are_up_to_date() && !update_generators()))
     return true;
 
-#ifndef DONT_USE_NEW_TEMPS
   TEMP_INTEGER(sp);
   TEMP_INTEGER(prod);
-#endif
   // The polyhedron has updated, possibly pending generators.
   for (dimension_type i = gen_sys.num_rows(); i-- > 0; ) {
     const Generator& g = gen_sys[i];
     // Only lines and rays in `*this' can cause `expr' to be unbounded.
     if (g[0] == 0) {
       // Compute the scalar product between `g' and `expr'.
-#ifdef DONT_USE_NEW_TEMPS
-      tmp_Integer[0] = 0;
-      // Note the pre-decrement of `j': last iteration should be for `j == 1'.
-      for (dimension_type j = expr.size(); --j > 0; ) {
-	// The following two lines optimize the computation
-	// of tmp_Integer[0] += g[j] * expr[j].
-	tmp_Integer[1] = g[j] * expr[j];
-	tmp_Integer[0] += tmp_Integer[1];
-      }
-      const int sign_sp = sgn(tmp_Integer[0]);
-#else
       sp = 0;
       // Note the pre-decrement of `j': last iteration should be for `j == 1'.
       for (dimension_type j = expr.size(); --j > 0; ) {
@@ -542,7 +529,6 @@ PPL::Polyhedron::bounds(const LinExpression& expr,
 	sp += prod;
       }
       const int sign_sp = sgn(sp);
-#endif
       if (sign_sp != 0
 	  && (g.is_line()
 	      || (from_above && sign_sp > 0)
@@ -591,28 +577,12 @@ PPL::Polyhedron::max_min(const LinExpression& expr,
   // Initialized only to avoid a compiler warning.
   bool ext_included = false;
 
-#ifndef DONT_USE_NEW_TEMPS
   TEMP_INTEGER(sp);
   TEMP_INTEGER(prod);
-#endif
   for (dimension_type i = gen_sys.num_rows(); i-- > 0; ) {
     const Generator& g = gen_sys[i];
 
     // Compute the scalar product between `g' and `expr'.
-#ifdef DONT_USE_NEW_TEMPS
-    tmp_Integer[0] = 0;
-    // Note the pre-decrement of `j': last iteration should be for `j == 1'.
-    for (dimension_type j = expr.size(); --j > 0; ) {
-      // The following two lines optimize the computation
-      // of tmp_Integer[0] += g[j] * expr[j].
-      tmp_Integer[1] = g[j] * expr[j];
-      tmp_Integer[0] += tmp_Integer[1];
-    }
-
-    // Lines and rays in `*this' can cause `expr' to be unbounded.
-    if (g[0] == 0) {
-      const int sign_sp = sgn(tmp_Integer[0]);
-#else
     sp = 0;
     // Note the pre-decrement of `j': last iteration should be for `j == 1'.
     for (dimension_type j = expr.size(); --j > 0; ) {
@@ -625,7 +595,6 @@ PPL::Polyhedron::max_min(const LinExpression& expr,
     // Lines and rays in `*this' can cause `expr' to be unbounded.
     if (g[0] == 0) {
       const int sign_sp = sgn(sp);
-#endif
       if (sign_sp != 0
 	  && (g.is_line()
 	      || (maximize && sign_sp > 0)
