@@ -139,12 +139,11 @@ public:
 
   //! \brief
   //! Returns <CODE>true</CODE> if and only if \p *this is the bottom
-  //! of the determinate constraint system (i.e., the emptyset).
+  //! of the determinate constraint system.
   bool is_bottom() const;
 
   //! \brief
-  //! Returns <CODE>true</CODE> if and only if \p *this entails \p y
-  //! (i.e., \p *this is contained in \p y).
+  //! Returns <CODE>true</CODE> if and only if \p *this entails \p y.
   bool definitely_entails(const Determinate& y) const;
 
   //! \brief

@@ -1159,7 +1159,8 @@ The set of finite non-redundant subsets of \f$D\f$
 is denoted by \f$\wpfn{D}{\entails}\f$.
 The reduction function
 \f$\fund{\nonredmap}{\wpf(D)}{\wpfn{D}{\entails}}\f$
-mapping a finite set into its non-redundant counterpart
+mapping a finite set into its non-redundant counterpart,
+also called <EM>Omega-reduction</EM>,
 is defined, for each \f$\cS \in \wpf(D)\f$, by
 \f[
   \nonredmap(\cS)
@@ -1179,10 +1180,9 @@ such that \f$\cS \neq \{ \false \}\f$, \f$\nonredmap(\cS)\f$ is the (finite)
 set of the maximal elements of \f$\cS\f$.
 
 The <EM>finite powerset domain</EM> over a domain \f$D\f$ is the set
-of all finite reduced sets of \f$D\f$ and denoted by
-\f$D_{\smallP}\f$.
-The domain includes an approximation
-ordering `\f$\mathord{\entailsP}\f$' defined so that
+of all finite reduced sets of \f$D\f$ and denoted by \f$D_{\smallP}\f$.
+The domain includes an approximation ordering
+`\f$\mathord{\entailsP}\f$' defined so that
 \f$\cS_1 \entailsP \cS_2\f$ if and only if
 \f[
   \forall d_1 \in \cS_1 \itc
@@ -1191,6 +1191,15 @@ ordering `\f$\mathord{\entailsP}\f$' defined so that
 \f]
 Therefore the top element is \f$\{\true\}\f$ and the bottom element is the
 emptyset.
+
+\note
+As far as Omega-reduction is concerned, the library adopts a
+<EM>lazy</EM> approach: an element of the powerset domain is
+represented by a potentially redundant sequence of disjuncts.
+Redundancies can be eliminated by explicitly invoking the operator
+<CODE>omega_reduce()</CODE>, e.g., before performing the output of a
+powerset element. Note that all the documented operators automatically
+perform reductions of their arguments, when needed or appropriate.
 
 \section ps_operations Operations on the Powerset Construction
 
@@ -1219,7 +1228,7 @@ and reduced set union \f$\nonredmap(\cS_1 \union \cS_2)\f$ respectively.
 <B>Adding a Disjunct</B>
 
 Given the powerset element \f$\cS \in D_{\smallP}\f$ and the base-level
-element \f$d \in D\f$, the <EM>add_disjunct</EM> operator provided by
+element \f$d \in D\f$, the <EM>add disjunct</EM> operator provided by
 the library returns the powerset element
 \f$\nonredmap\bigl(\cS \union \{d\}\bigr)\f$.
 
@@ -1248,18 +1257,18 @@ are particular to the polyhedra powerset domain.
 <B>Geometric Comparisons</B>
 
 Given the sets \f$\cS_1, \cS_2 \in (\Pset_n)_{\smallP}\f$, then
-we say that \f$\cS_1\f$ <EM>geometrically_covers</EM> \f$\cS_2\f$
+we say that \f$\cS_1\f$ <EM>geometrically covers</EM> \f$\cS_2\f$
 if every point (in some element) in a polyhedron in \f$\cS_2\f$ is also
 a point in a polyhedron in \f$\cS_1\f$.
-If \f$\cS_1\f$ geometrically_covers \f$\cS_2\f$
-and \f$\cS_2\f$ geometrically_covers \f$\cS_1\f$,
-then we say that they are <EM>geometrically_equal</EM>.
+If \f$\cS_1\f$ geometrically covers \f$\cS_2\f$
+and \f$\cS_2\f$ geometrically covers \f$\cS_1\f$,
+then we say that they are <EM>geometrically equal</EM>.
 
 \anchor pps_pairwise_merge
 <B>Pairwise Merge</B>
 
 Given the powerset \f$\cS \in (\Pset_n)_{\smallP}\f$, then the
-<EM>pairwise_merge</EM> operator takes pairs of distinct elements in
+<EM>pairwise merge</EM> operator takes pairs of distinct elements in
 \f$\cS\f$ whose poly-hull is the same as their set-theoretical union
 and replaces them by their union.  This replacement is done
 recursively so that, for each pair \f$\cP, \cQ\f$ of distinct

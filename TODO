@@ -1,14 +1,8 @@
-
-Enhancements for PPL 0.7
-========================
-
-- The Powerset class implementation is poorly documented.
-- Consider renaming Powerset::meet_assign().
-
-
 Enhancements for PPL 0.8 or later versions
 ==========================================
 
+- The Powerset class implementation is poorly documented.
+- Consider renaming Powerset::meet_assign().
 - Clearly explain, in the documentation, how (not) to use
   set_GMP_memory_allocation_functions().  More generally, explain how
   to have memory-guarded computations.
