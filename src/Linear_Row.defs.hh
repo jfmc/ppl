@@ -145,9 +145,6 @@ public:
     //! Builds an object corresponding to the topology \p t.
     explicit Flags(Topology t);
 
-    //! Builds an object corresponding to the kind \p k.
-    explicit Flags(Kind k);
-
     //! Builds an object corresponding to the topology \p t and kind \p k.
     Flags(Topology t, Kind k);
 
