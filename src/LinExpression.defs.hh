@@ -125,7 +125,7 @@ namespace Parma_Polyhedra_Library {
   \endcode
 */
 
-class Parma_Polyhedra_Library::LinExpression : private Row {
+class Parma_Polyhedra_Library::LinExpression : PPL_INTERNAL Row {
 /*!
   \addtogroup LinExpression Linear Expressions
   @{
