@@ -34,10 +34,10 @@ if HAVE_CIAO_PROLOG
 
 AM_CPPFLAGS = -I$(top_srcdir)/src @extra_includes@ @extra_cpp_flags@
 
-pkglib_LTLIBRARIES = ppl_ciao.la
-ppl_ciao_la_SOURCES = ppl_ciao.cc
-ppl_ciao_la_LIBADD = $(top_builddir)/src/libppl.la @extra_libraries@
-ppl_ciao_la_LDFLAGS = -no-undefined -module -avoid-version
+pkglib_LTLIBRARIES = libppl_ciao.la
+libppl_ciao_la_SOURCES = ppl_ciao.cc
+libppl_ciao_la_LIBADD = $(top_builddir)/src/libppl.la @extra_libraries@
+libppl_ciao_la_LDFLAGS = -no-undefined -module -avoid-version
 
 CLPQ_TESTS = \
 ack.clpq \
