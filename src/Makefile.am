@@ -13,7 +13,7 @@ VPATH = @srcdir@
 
 @SET_MAKE@
 
-SUBDIRS = Integer .
+SUBDIRS =
 
 
 # Libtool -version-info for libppl.la and libmp.la.
@@ -46,7 +46,7 @@ LIBPPL_LT_CURRENT =  0
 LIBPPL_LT_REVISION = 0
 LIBPPL_LT_AGE =      0
 
-INCLUDES = -I$(top_builddir) -I$(top_srcdir)/src -I$(top_srcdir)/src/Integer @extra_includes@
+INCLUDES = -I$(top_builddir) -I$(top_srcdir)/src @extra_includes@
 
 CPPFLAGS = -DPPL_INTERNAL=public @extra_cpp_flags@
 
@@ -54,6 +54,9 @@ lib_LTLIBRARIES = libppl.la
 
 # The ordering of the following list *matters*!
 INCLUDE_FILES = \
+Integer.types.hh \
+Integer.defs.hh \
+Integer.inlines.hh \
 globals.hh \
 maxmin.hh \
 SatRow.types.hh \
@@ -131,25 +134,17 @@ Polyhedron.defs.hh
 libppl_la_LDFLAGS = \
 -version-info $(LIBPPL_LT_CURRENT):$(LIBPPL_LT_REVISION):$(LIBPPL_LT_AGE)
 
-libppl_la_LIBADD = \
-Integer/Integer.o
-
 noinst_HEADERS = ppl.hh ppl_install.hh
 
 BUILT_SOURCES = ppl.hh ppl_install.hh
-
-MORE_INCLUDE_FILES = \
-Integer/Integer.types.hh \
-Integer/Integer.defs.hh \
-Integer/Integer.inlines.hh
 
 ppl.hh:	$(DOC_FILES)
 	(cd $(srcdir) ; cat $(DOC_FILES)) \
 		| sed -e "s/PPL_INTERNAL/private/g" >ppl.hh
 
-ppl_install.hh:	ppl_header.top $(top_builddir)/config.h ppl_header.middle $(INCLUDE_FILES) $(MORE_INCLUDE_FILES) ppl_header.bottom
+ppl_install.hh:	ppl_header.top $(top_builddir)/config.h ppl_header.middle $(INCLUDE_FILES) ppl_header.bottom
 	mkdir -p tmp
-	(cd $(srcdir) ; cat $(MORE_INCLUDE_FILES) $(INCLUDE_FILES)) >tmp/concat
+	(cd $(srcdir) ; cat $(INCLUDE_FILES)) >tmp/concat
 	grep -e "^#include <" <tmp/concat | sort -u >tmp/includes
 	sed -e "/^#include/d" -e "s/PPL_INTERNAL/public/g" <tmp/concat >tmp/noincludes.cc
 	cat $(srcdir)/ppl_header.top $(top_builddir)/config.h \

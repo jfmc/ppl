@@ -304,7 +304,6 @@ AC_SUBST(extra_if_Prolog_subdirs)
 AC_OUTPUT(Makefile
           ppl.lsm ppl.spec
           src/Makefile
-          src/Integer/Makefile
           tests/Makefile
           m4/Makefile
           doc/Makefile
