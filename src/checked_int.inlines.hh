@@ -526,7 +526,7 @@ SPECIALIZE_ASSIGN(unsigned_long_long_c_string, unsigned long long, c_string)
 
 #if ULONG_MAX == 0xffffffffL
 #define LONG_BITS 32
-#elif LONG_MAX == 0xffffffffffffffffULL
+#elif ULONG_MAX == 0xffffffffffffffffULL
 #define LONG_BITS 64
 #else
 #error "Unexpected max for unsigned long"
