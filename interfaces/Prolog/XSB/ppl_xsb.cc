@@ -22,18 +22,10 @@ For the most up-to-date information see the Parma Polyhedra Library
 site: http://www.cs.unipr.it/ppl/ . */
 
 #include <config.h>
-
 #include "Integer.defs.hh"
-
-// XSB 2.4 and 2.5 miss the `extern "C"' wrapper.
-extern "C" {
-
 #include <cinterf.h>
 #undef min
 #undef max
-
-} // extern "C"
-
 #include <cassert>
 
 typedef prolog_term Prolog_term_ref;
@@ -209,8 +201,6 @@ Prolog_raise_exception(Prolog_term_ref /* t */) {
 */
 static inline int
 Prolog_is_variable(Prolog_term_ref t) {
-  // The following statement is to get around a bug in XSB 2.5.
-  t = p2p_deref(t);
   return is_var(t) != FALSE;
 }
 
@@ -219,8 +209,6 @@ Prolog_is_variable(Prolog_term_ref t) {
 */
 static inline int
 Prolog_is_atom(Prolog_term_ref t) {
-  // The following statement is to get around a bug in XSB 2.5.
-  t = p2p_deref(t);
   return is_string(t) != FALSE;
 }
 
@@ -229,8 +217,6 @@ Prolog_is_atom(Prolog_term_ref t) {
 */
 static inline int
 Prolog_is_integer(Prolog_term_ref t) {
-  // The following statement is to get around a bug in XSB 2.5.
-  t = p2p_deref(t);
   return is_int(t) != FALSE;
 }
 
@@ -239,8 +225,6 @@ Prolog_is_integer(Prolog_term_ref t) {
 */
 static inline int
 Prolog_is_address(Prolog_term_ref t) {
-  // The following statement is to get around a bug in XSB 2.5.
-  t = p2p_deref(t);
   return is_int(t) != FALSE;
 }
 
@@ -249,8 +233,6 @@ Prolog_is_address(Prolog_term_ref t) {
 */
 static inline int
 Prolog_is_compound(Prolog_term_ref t) {
-  // The following statement is to get around a bug in XSB 2.5.
-  t = p2p_deref(t);
   return is_functor(t) != FALSE;
 }
 
@@ -259,8 +241,6 @@ Prolog_is_compound(Prolog_term_ref t) {
 */
 static inline int
 Prolog_is_cons(Prolog_term_ref t) {
-  // The following statement is to get around a bug in XSB 2.5.
-  t = p2p_deref(t);
   return is_list(t) != FALSE;
 }
 
@@ -273,8 +253,6 @@ Prolog_is_cons(Prolog_term_ref t) {
 static inline int
 Prolog_get_long(Prolog_term_ref t, long* lp) {
   assert(Prolog_is_integer(t));
-  // The following statement is to get around a bug in XSB 2.5.
-  t = p2p_deref(t);
   *lp = p2c_int(t);
   return 1;
 }
@@ -287,8 +265,6 @@ Prolog_get_long(Prolog_term_ref t, long* lp) {
 static inline int
 Prolog_get_address(Prolog_term_ref t, void** vpp) {
   assert(Prolog_is_address(t));
-  // The following statement is to get around a bug in XSB 2.5.
-  t = p2p_deref(t);
   *vpp = reinterpret_cast<void*>(p2c_int(t));
   return 1;
 }
@@ -300,8 +276,6 @@ Prolog_get_address(Prolog_term_ref t, void** vpp) {
 static inline int
 Prolog_get_atom_name(Prolog_term_ref t, Prolog_atom* ap) {
   assert(Prolog_is_atom(t));
-  // The following statement is to get around a bug in XSB 2.5.
-  t = p2p_deref(t);
   *ap = p2c_string(t);
   return 1;
 }
@@ -314,8 +288,6 @@ Prolog_get_atom_name(Prolog_term_ref t, Prolog_atom* ap) {
 static inline int
 Prolog_get_compound_name_arity(Prolog_term_ref t, Prolog_atom* ap, int* ip) {
   assert(Prolog_is_compound(t));
-  // The following statement is to get around a bug in XSB 2.5.
-  t = p2p_deref(t);
   *ap = p2c_functor(t);
   *ip = p2c_arity(t);
   return 1;

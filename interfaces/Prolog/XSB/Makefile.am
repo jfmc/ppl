@@ -46,9 +46,9 @@ $(top_builddir)/Watchdog/libpwl.la \
 @extra_libraries@
 ppl_xsb_la_LDFLAGS = -no-undefined -module -avoid-version
 
-pkglib_DATA = ppl_xsb.O
+pkglib_DATA = ppl_xsb.xwam
 
-ppl_xsb.O: ppl_xsb.H ppl_xsb.cc Makefile
+ppl_xsb.xwam: ppl_xsb.H ppl_xsb.cc Makefile
 	if [ $(abs_srcdir) != `pwd` ]; then \
 	  cp -f $(srcdir)/ppl_xsb.H . ; \
 	fi
@@ -80,7 +80,7 @@ schedule.clpq
 CLPQ_TESTS = $(CLPQ_TESTS_NONSTRICT) $(CLPQ_TESTS_STRICT)
 
 # FIXME: we are checking against special versions of `expected'
-#        and `expected2'.  This is due to the fact that XSB 2.5
+#        and `expected2'.  This is due to the fact that XSB 2.6
 #        and previous versions do not support control escape
 #        sequences.
 
@@ -118,8 +118,8 @@ check-local: ppl_xsb.la xsb_clpq.P ../clpq.pl ../check_script expected xsb_clpq2
 	diff -q --ignore-all-space $(srcdir)/expected2 obtained2
 
 MOSTLYCLEANFILES = \
-ppl_xsb.O ppl_xsb.so \
-xsb_clpq.O xsb_clpq2.O \
+ppl_xsb.xwam ppl_xsb.so \
+xsb_clpq.xwam xsb_clpq2.xwam \
 $(CLPQ_TESTS) obtained obtained2
 
 endif
