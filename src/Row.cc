@@ -167,8 +167,8 @@ PPL::Row::strong_normalize() {
 
   \return     The returned absolute value can be \f$0, 1\f$ or \f$2\f$.
 
-  Compares \p x and \p y,
-  where \p x and \p y are assumed to be of the same size.
+  Compares \p x and \p y, where \p x and \p y may be of different size,
+  in which case the "missing" coefficients are assumed to be zero.
   The comparison is such that:
   -# equalities are smaller than inequalities;
   -# lines are smaller than vertices and rays;
@@ -195,8 +195,6 @@ PPL::Row::strong_normalize() {
 
 int
 PPL::compare(const Row& x, const Row& y) {
-  // `x' and `y' must have the same number of elements.
-  assert(x.size() == y.size());
   bool x_is_line_or_equality = x.is_line_or_equality();
   bool y_is_line_or_equality = y.is_line_or_equality();
   if (x_is_line_or_equality != y_is_line_or_equality)
@@ -204,18 +202,29 @@ PPL::compare(const Row& x, const Row& y) {
     return y_is_line_or_equality ? 2 : -2;
 
   // Compare all the coefficients of the row starting from position 1.
-  size_t sz = x.size();
-  for (size_t i = 1; i < sz; ++i) {
-    int comp = cmp(x[i], y[i]);
-    if (comp != 0)
+  size_t xsz = x.size();
+  size_t ysz = y.size();
+  size_t min_sz = min(xsz, ysz);
+  size_t i;
+  for (i = 1; i < min_sz; ++i)
+    if (int comp = cmp(x[i], y[i]))
       // There is at least a different coefficient.
       return (comp > 0) ? 2 : -2;
+
+  // Handle the case where `x' and `y' are of different size.
+  if (xsz != ysz) {
+    for( ; i < xsz; ++i) 
+      if (int sign = sgn(x[i]))
+	return (sign > 0) ? 2 : -2;
+    for( ; i < ysz; ++i) 
+      if (int sign = sgn(y[i]))
+	return (sign < 0) ? 2 : -2;
   }
+
   // If all the coefficients in `x' equal all the coefficients in `y'
   // (starting from position 1) we compare coefficients in position 0,
   // i.e., inhomogeneous terms.
-  int comp = cmp(x[0], y[0]);
-  if (comp != 0)
+  if (int comp = cmp(x[0], y[0]))
     return (comp > 0) ? 1 : -1;
 
   // `x' and `y' are equal.
