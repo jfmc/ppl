@@ -115,6 +115,12 @@ PowerSet<CS>::erase(iterator position) {
 }
 
 template <typename CS>
+void
+PowerSet<CS>::clear() {
+  sequence.clear();
+}
+
+template <typename CS>
 PowerSet<CS>::PowerSet(const PowerSet<CS>& y)
   : sequence(y.sequence), reduced(y.reduced) {
 }

@@ -172,6 +172,7 @@ public:
   void pop_back();
   iterator erase(iterator first, iterator last);
   iterator erase(iterator position);
+  void clear();
 
 protected:
   //! \brief
