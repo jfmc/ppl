@@ -48,7 +48,7 @@ AC_TRY_RUN([
 using namespace std;
 
 int main() {
-  mpz_class pie = "3141592653589793238462643383279502884";
+  mpz_class pie("3141592653589793238462643383279502884");
   exit(0);
 }
 ],
@@ -90,7 +90,7 @@ x_free(void*, size_t) {
 int main() {
   mp_set_memory_functions(x_malloc, x_realloc, x_free);
   try {
-    mpz_class pie = "3141592653589793238462643383279502884";
+    mpz_class pie("3141592653589793238462643383279502884");
   }
   catch (bad_alloc) {
     exit(0);
