@@ -27,6 +27,10 @@ site: http://www.cs.unipr.it/Software/ . */
 
 #include <csignal>
 #include <iostream>
+#include <stdexcept>
+#include <cerrno>
+#include <string>
+#include <string.h>
 
 #ifdef TIME_WITH_SYS_TIME
 # include <sys/time.h>
@@ -39,6 +43,14 @@ site: http://www.cs.unipr.it/Software/ . */
 # endif
 #endif
 
+// Cygwin only supports ITIMER_REAL.
+#ifdef __CYGWIN__
+#define THE_TIMER  ITIMER_REAL
+#define THE_SIGNAL SIGALRM
+#else
+#define THE_TIMER  ITIMER_PROF
+#define THE_SIGNAL SIGPROF
+#endif
 
 namespace PWL = Parma_Watchdog_Library;
 
@@ -66,9 +78,34 @@ volatile bool PWL::Watchdog::alarm_clock_running = false;
 // Whether we are changing data which are also changed by the signal handler.
 volatile bool PWL::Watchdog::in_critical_section = false;
 
+static void
+throw_syscall_error(const char* syscall_name) {
+  throw std::runtime_error(std::string(syscall_name) + strerror(errno));
+}
+
+static void
+my_getitimer(int which, struct itimerval* value) {
+  if (getitimer(which, value) != 0)
+    throw_syscall_error("getitimer");
+}
+
+static void
+my_setitimer(int which,
+	     const struct itimerval* value, struct itimerval* ovalue) {
+  if (setitimer(which, value, ovalue) != 0)
+    throw_syscall_error("setitimer");
+}
+
+static void
+my_sigaction(int signum,
+	    const struct sigaction* act, struct sigaction* oldact) {
+  if (sigaction(signum, act, oldact) != 0)
+    throw_syscall_error("sigaction");
+}
+
 void
 PWL::Watchdog::get_timer(Time& time) {
-  getitimer(ITIMER_PROF, &current_timer_status);
+  my_getitimer(THE_TIMER, &current_timer_status);
   time.set(current_timer_status.it_value.tv_sec,
 	   current_timer_status.it_value.tv_usec);
 }
@@ -80,14 +117,14 @@ PWL::Watchdog::set_timer(const Time& time) {
   last_time_requested = time;
   signal_once.it_value.tv_sec = time.seconds();
   signal_once.it_value.tv_usec = time.microseconds();
-  setitimer(ITIMER_PROF, &signal_once, 0);
+  my_setitimer(THE_TIMER, &signal_once, 0);
 }
 
 void
 PWL::Watchdog::stop_timer() {
   signal_once.it_value.tv_sec = 0;
   signal_once.it_value.tv_usec = 0;
-  setitimer(ITIMER_PROF, &signal_once, 0);
+  my_setitimer(THE_TIMER, &signal_once, 0);
 }
 
 void
@@ -198,7 +235,7 @@ PWL::Watchdog::~Watchdog() {
     remove_watchdog_event(pending_position);
     in_critical_section = false;
   }
-  //  delete handler;
+  // delete handler;
 }
 
 void
@@ -214,11 +251,7 @@ PWL::Watchdog::initialize() {
   s.sa_mask = mask;
   s.sa_flags = 0;  // Was SA_ONESHOT: why?
 
-  int r = sigaction(SIGPROF, &s, 0);
-  if (r) {
-    cerr << "sigaction failed: " << r << endl;
-    exit(1);
-  }
+  my_sigaction(THE_SIGNAL, &s, 0);
 }
 
 void
