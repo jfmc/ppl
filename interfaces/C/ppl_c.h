@@ -60,6 +60,17 @@ the internals of the library (these may change from release to release),
 and (2) the interface invariants can be thoroughly checked
 (by the access functions).
 
+When used through its C interface, the PPL needs to be initialized
+by means of the <CODE>ppl_initialize</CODE> function.
+This function must be called <EM>before using any other interface of the
+library</EM>.
+The application can release the resources allocated by the library
+by calling the <CODE>ppl_finalize</CODE> function.
+This function must be called <EM>after using any other interface of
+the library</EM>.
+Using a library interface before calling <CODE>ppl_initialize</CODE> or
+after calling <CODE>ppl_finalize</CODE> results in undefined behavior.
+
 TO BE CONTINUED HERE.
 
 Look into the `interfaces/C/lpenum/' directory.  It contains a toy
