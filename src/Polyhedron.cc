@@ -2042,7 +2042,7 @@ PPL::Polyhedron::affine_preimage(const Variable& var,
 }
 
 /*!
-  Returns the relation holding between the polyhedron \p *this and
+  Returns the relations holding between the polyhedron \p *this and
   the constraint \p c.
 */
 PPL::Poly_Con_Relation
@@ -2052,15 +2052,17 @@ PPL::Polyhedron::relation_with(const Constraint& c) {
     throw_different_dimensions("PPL::Polyhedron::relation_with(c)",
 			       *this, c);
   if (is_empty())
-    // FIXME: arbitrary!
-    return Poly_Con_Relation::saturates();
+    return Poly_Con_Relation::saturates()
+      && Poly_Con_Relation::is_included()
+      && Poly_Con_Relation::is_disjoint();
 
   if (space_dim == 0)
     if (c.is_trivial_false())
       return Poly_Con_Relation::is_disjoint();
     else
       if (c.is_equality() || c[0] == 0)
-	return Poly_Con_Relation::saturates();
+	return Poly_Con_Relation::saturates()
+	  && Poly_Con_Relation::is_included();
       else
 	// The zero-dim vertex does not saturate
 	// the positivity constraint. 
@@ -2068,15 +2070,17 @@ PPL::Polyhedron::relation_with(const Constraint& c) {
 
   if (!generators_are_up_to_date())
     if (!update_generators())
-      return Poly_Con_Relation::saturates();
+      // The polyhedron is empty.
+      return Poly_Con_Relation::saturates()
+	&& Poly_Con_Relation::is_included()
+	&& Poly_Con_Relation::is_disjoint();
 
   return gen_sys.relation_with(c);
 }
 
 /*!
-  Returns <CODE>Poly_Gen_Relation::subsumes()</CODE> if the generator
-  \p g satisfies all the constraints representing \p *this; otherwise,
-  returns <CODE>DOES_NOT_SUBSUME</CODE>.
+  Returns the relations holding between the polyhedron \p *this and
+  the generator \p g.
 */
 PPL::Poly_Gen_Relation
 PPL::Polyhedron::relation_with(const Generator& g) {

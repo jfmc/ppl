@@ -395,14 +395,14 @@ public:
   //!                                  are dimension-incompatible.
   void convex_difference_assign(const Polyhedron& y);
 
-  //! Returns the relation holding between the polyhedron \p *this
+  //! Returns the relations holding between the polyhedron \p *this
   //! and the constraint \p c.
   //! \exception std::invalid_argument thrown if \p *this and constraint
   //!                                  \p c are dimension-incompatible.
   Parma_Polyhedra_Library::Poly_Con_Relation
   relation_with(const Constraint& c);
 
-  //! Returns the relation holding between the polyhedron \p *this
+  //! Returns the relations holding between the polyhedron \p *this
   //! and the generator \p g.
   //! \exception std::invalid_argument thrown if \p *this and generator
   //!                                  \p g are dimension-incompatible.

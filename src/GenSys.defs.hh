@@ -235,7 +235,7 @@ PPL_INTERNAL:
   //! Returns a constant reference to the \p k- th generator of the system.
   const Generator& operator[](size_t k) const;
 
-  //! Returns the relation holding between the generator system
+  //! Returns the relations holding between the generator system
   //! and the constraint \p c.
   Parma_Polyhedra_Library::Poly_Con_Relation
   relation_with(const Constraint& c) const;

@@ -73,11 +73,8 @@ PPL::GenSys::num_rays() const {
 }
 
 /*!
-  Returns the relation holding between the set of points generated
+  Returns the relations holding between the set of points generated
   by \p *this and the constraint \p c.
-
-  Note that if \p c is an equality, then the value <CODE>IS_INCLUDED</CODE>
-  can not be returned.
 */
 PPL::Poly_Con_Relation
 PPL::GenSys::relation_with(const Constraint& c) const {
@@ -93,7 +90,8 @@ PPL::GenSys::relation_with(const Constraint& c) const {
 
   // `res' will keep the relation holding between the generators
   // we have seen so far and the constraint `c'.
-  Poly_Con_Relation res = Poly_Con_Relation::saturates();
+  Poly_Con_Relation res = Poly_Con_Relation::saturates()
+    && Poly_Con_Relation::is_included();
 
   if (c.is_equality()) {
     // The following integer variable will hold the scalar product sign
@@ -174,12 +172,16 @@ PPL::GenSys::relation_with(const Constraint& c) const {
 	      // It is the first time that we have a non-saturating ray
 	      // and we have not found any vertex yet.
 	      first_vertex_or_nonsaturating_ray = false;
-	      res = (sp_sign > 0) ? Poly_Con_Relation::is_included() : Poly_Con_Relation::is_disjoint();
+	      res = (sp_sign > 0)
+		? Poly_Con_Relation::is_included()
+		: Poly_Con_Relation::is_disjoint();
 	    }
 	    else {
 	      // We already found a vertex or a non-saturating ray.
-	      if ((sp_sign > 0 && res == Poly_Con_Relation::is_disjoint())
-		  || (sp_sign < 0 && res != Poly_Con_Relation::is_disjoint()))
+	      if ((sp_sign > 0
+		   && res == Poly_Con_Relation::is_disjoint())
+		  || (sp_sign < 0
+		      && res.implies(Poly_Con_Relation::is_included())))
 		// We have a strict intersection if either:
 		// - `g' satisfies `c' but none of the generators seen
 		//    so far are included in `c'; or
@@ -206,13 +208,17 @@ PPL::GenSys::relation_with(const Constraint& c) const {
 	    // - If vertex `g' does not satisfy `c', then all the
 	    //   generators seen so far are disjoint from `c'.
 	    first_vertex_or_nonsaturating_ray = false;
-	    res = (sp_sign > 0) ? Poly_Con_Relation::is_included() :
-	      ((sp_sign == 0) ? Poly_Con_Relation::saturates() : Poly_Con_Relation::is_disjoint());
+	    if (sp_sign > 0)
+	      res = Poly_Con_Relation::is_included();
+	    else if (sp_sign < 0)
+	      res = Poly_Con_Relation::is_disjoint();
 	  }
 	  else {
 	    // We already found a vertex or a non-saturating ray before.
-	    if ((sp_sign >= 0 && res == Poly_Con_Relation::is_disjoint())
-		|| (sp_sign < 0 && res != Poly_Con_Relation::is_disjoint()))
+	    if ((sp_sign >= 0
+		 && res == Poly_Con_Relation::is_disjoint())
+		|| (sp_sign < 0
+		    && res.implies(Poly_Con_Relation::is_included())))
 	      // We have a strict intersection if either:
 	      // - `g' satisfies or saturates `c' but none of the
 	      //    generators seen so far are included in `c'; or
