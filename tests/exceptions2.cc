@@ -999,6 +999,28 @@ error32() {
   }
 }
 
+void
+error33() {
+  Variable A(0);
+  Variable B(1);
+
+  GenSys gs;
+  try {
+    // This is an incorrect use of function
+    // Generator::closure_point(e, d):
+    // it is illegal to use a denominator
+    // equal to zero.
+    gs.insert(closure_point(A + 2*B, 0));
+  }
+  catch (invalid_argument& e) {
+#if NOISY
+    cout << "invalid_argument: " << e.what() << endl << endl;
+#endif
+  }
+  catch (...) {
+    exit(1);
+  }
+}
 
 int
 main() {
@@ -1035,6 +1057,7 @@ main() {
   error30();
   error31();
   error32();
+  error33();
 
   return 0;
 }

@@ -43,7 +43,7 @@ main() {
 
   GenSys gs;
   gs.insert(point());
-  gs.insert(point(A + B));
+  gs.insert(point(A - B));
   gs.insert(point(A + C));
   gs.insert(ray(B + C));
   gs.insert(line(C));

@@ -1134,6 +1134,94 @@ error42() {
   }
 }
 
+void
+error43() {
+  GenSys gs;
+  LinExpression e;
+  try {
+    // This is an incorrect use of function
+    // Generator::ray(e):
+    // the origin can not be a ray.
+    gs.insert(ray(e));
+  }
+  catch (invalid_argument& e) {
+#if NOISY
+    cout << "invalid_expression: " << e.what() << endl << endl;
+#endif
+  }
+  catch (...) {
+    exit(1);
+  }
+}
+
+void
+error44() {
+  GenSys gs;
+  LinExpression e;
+  try {
+    // This is an incorrect use of function
+    // Generator::line(e):
+    // the origin can not be a line.
+    gs.insert(line(e));
+  }
+  catch (invalid_argument& e) {
+#if NOISY
+    cout << "invalid_expression: " << e.what() << endl << endl;
+#endif
+  }
+  catch (...) {
+    exit(1);
+  }
+}
+
+void
+error45() {
+  Variable A(0);
+  Variable B(1);
+  Variable C(2);
+
+  Generator g = point(3*A - 2*B);
+  try {
+    // This is an incorrect use of function
+    // Generator::coefficient(v):
+    // it is impossible to compute the coefficient
+    // of a variable that is not in the space of the
+    // generator.
+    g.coefficient(C);
+  }
+  catch (invalid_argument& e) {
+#if NOISY
+    cout << "invalid_variable: " << e.what() << endl << endl;
+#endif
+  }
+  catch (...) {
+    exit(1);
+  }
+}
+
+void
+error46() {
+  Variable A(0);
+  Variable B(1);
+
+  Generator g = line(3*A - 2*B);
+  try {
+    // This is an incorrect use of function
+    // Generator::divisor():
+    // it is impossible to compute the
+    // diviso of a line.
+    g.divisor();
+  }
+  catch (invalid_argument& e) {
+#if NOISY
+    cout << "invalid_variable: " << e.what() << endl << endl;
+#endif
+  }
+  catch (...) {
+    exit(1);
+  }
+}
+
 int
 main() {
   set_handlers();
@@ -1180,8 +1268,10 @@ main() {
   error40();
   error41();
   error42();
+  error43();
+  error44();
+  error45();
+  error46();
 
   return 0;
 }
-
-
