@@ -317,27 +317,9 @@ PPL::Congruence_System::ascii_load(std::istream& s) {
   // FIX freeing on failure?
 
   Congruence_System& x = *this;
-  for (dimension_type i = 0; i < x.num_rows(); ++i) {
-    dimension_type col;
-    for (col = 0; col < x.num_columns() - 1; ++col)
-      if ((s >> x[i][col]) == false)
-	return false;
+  for (dimension_type i = 0; i < x.num_rows(); ++i)
+    x[i].ascii_load(s);
 
-    if ((s >> str) == false && str.compare("m"))
-      return false;
-
-    if ((s >> x[i][col]) == false)
-      return false;
-
-#if 0
-    if (!(s >> str))
-      return false;
-    if (str == "=")
-      x[i].set_is_equality();
-    else
-      x[i].set_is_inequality();
-#endif
-  }
   // Check for well-formedness.
   assert(OK());
   return true;
