@@ -15,7 +15,7 @@ EXTRA_DIST = reconf configure ppl.lsm.in ppl.spec.in
 
 @SET_MAKE@
 
-SUBDIRS = @extra_subdirs@ src test # m4 doc
+SUBDIRS = @extra_subdirs@ src # test # m4 doc
 
 
 #  if you write a self-test script named `chk', uncomment the

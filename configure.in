@@ -248,5 +248,4 @@ AC_OUTPUT(Makefile
           doc/Makefile
           doc/user.doxyconf-pdf    doc/devref.doxyconf-pdf
           doc/user.doxyconf-html   doc/devref.doxyconf-html
-          test/Makefile
           ppl.lsm ppl.spec)
