@@ -417,8 +417,9 @@ Polyhedron::shrink_bounding_box(Box& box, Complexity_Class complexity) const {
       }
       if (index_limited_variable != space_dim) {
 	const Integer& d = c.coefficient(Variable(index_limited_variable));
-	const Integer& n = -c.inhomogeneous_term();
-	ExtendedRational r(n, d);
+	const Integer& n = c.inhomogeneous_term();
+	// FIXME: explain this change of sign!
+	ExtendedRational r(-n, d);
 	Constraint::Type c_type = c.type();
 	switch (c_type) {
 	case Constraint::EQUALITY:
