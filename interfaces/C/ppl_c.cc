@@ -1582,7 +1582,7 @@ private:
 
 public:
   PIFunc(dimension_type* v, size_t n)
-    : vec(v), vec_size(n), max_in_codomain_(not_a_dimension()) {
+    : vec(v), vec_size(n), max_in_codomain_(not_a_dimension()), empty(-1) {
   }
 
   bool has_empty_codomain() const {
