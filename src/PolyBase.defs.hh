@@ -338,15 +338,15 @@ public:
   PolyBase(const PolyBase& y);
   //! Builds either the universe or the empty polyhedron of dimension
   //! \p num_dimensions, either necessarily closed or not.
-  explicit PolyBase(size_t num_dimensions,
-		    Degenerate_Kind kind,
-		    Topology topology);
+  explicit PolyBase(Topology topology,
+		    size_t num_dimensions,
+		    Degenerate_Kind kind);
   //! Builds a polyhedron from a system of constraints.
   //! The polyhedron inherits the space dimension of the constraint system.
   //! \param cs       The system of constraints defining the polyhedron.
   //!                 It is not declared <CODE>const</CODE>
   //!                 because it can be modified.
-  PolyBase(ConSys& cs, Topology topology);
+  PolyBase(Topology topology, ConSys& cs);
   //! Builds a polyhedron from a system of generators.
   //! The polyhedron inherits the space dimension of the generator system.
   //! \param gs       The system of generators defining the polyhedron.
@@ -354,7 +354,7 @@ public:
   //!                 because it can be modified.
   //! \exception std::invalid_argument thrown if the system of generators
   //!                                  is not empty but has no points.
-  PolyBase(GenSys& gs, Topology topology);
+  PolyBase(Topology topology, GenSys& gs);
   // Destructor
   ~PolyBase();
 

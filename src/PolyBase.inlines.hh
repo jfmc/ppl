@@ -31,7 +31,7 @@ namespace Parma_Polyhedra_Library {
 
 inline void
 PolyBase::swap(PolyBase& y) {
-  assert(this->is_necessarily_closed() == y.is_necessarily_closed());
+  assert(topology() == y.topology());
   std::swap(con_sys, y.con_sys);
   std::swap(gen_sys, y.gen_sys);
   std::swap(sat_c, y.sat_c);

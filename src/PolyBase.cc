@@ -50,13 +50,7 @@ PPL::PolyBase::constraints() const {
       // The 0-dim unsatisfiable constraint is extended to
       // the appropriate dimension and then stored in `con_sys'.
       ConSys unsat_cs = ConSys::zero_dim_empty();
-      if (is_necessarily_closed())
-	unsat_cs.add_zero_columns(space_dim);
-      else {
-	// NOT necessarily closed: also adding the \epsilon coefficient.
-	unsat_cs.add_zero_columns(space_dim + 1);
-	unsat_cs.set_non_necessarily_closed();
-      }
+      unsat_cs.adjust_topology_and_dimension(topology(), space_dim);
       const_cast<ConSys&>(con_sys).swap(unsat_cs);
     }
     else {
@@ -112,7 +106,8 @@ PPL::PolyBase::generators() const {
 
   if (space_dim == 0) {
     assert(gen_sys.num_columns() == 0 && gen_sys.num_rows() == 0);
-    // NOTE : we do NOT need check the topology of the polyhedron.
+    // CHECK ME: do we need to provide a zero_dim_univ polyhedron
+    // of the same topology ?
     return GenSys::zero_dim_univ();
   }
 
@@ -140,9 +135,9 @@ PPL::PolyBase::generators() const {
 }
 
 
-PPL::PolyBase::PolyBase(size_t num_dimensions,
-			Degenerate_Kind kind,
-			Topology topology)
+PPL::PolyBase::PolyBase(Topology topology,
+			size_t num_dimensions,
+			Degenerate_Kind kind)
   : con_sys(topology),
     gen_sys(topology),
     sat_c(),
@@ -150,36 +145,25 @@ PPL::PolyBase::PolyBase(size_t num_dimensions,
   if (kind == EMPTY)
     status.set_empty();
   else
-    if (num_dimensions > 0)
-      if (topology == NECESSARILY_CLOSED) {
+    if (num_dimensions > 0) {
+      if (topology == NECESSARILY_CLOSED)
 	// The only constraint is the positivity one.
-	con_sys.resize_no_copy(1, num_dimensions+1);
-	con_sys[0][0] = 1;
-	con_sys[0].set_is_inequality();
-	// The system of constraints only composed by the positivity
-	// constraint is in the minimal form.
-	set_constraints_minimized();
-      }
+	con_sys.insert(Constraint::zero_dim_positivity());
       else {
 	// Polyhedron NON-necessarily closed: the only constraints
 	// are the ones regarding the \epsilon dimension.
-	con_sys.resize_no_copy(2, num_dimensions+1);
-	// The constraint \epsilon >= 0.
-	con_sys[0][num_dimensions] = 1;
-	con_sys[0].set_is_inequality();
-	// The constraint \epsilon <= 1.
-	con_sys[1][0] = 1;
-	con_sys[1][num_dimensions] = -1;
-	con_sys[1].set_is_inequality();
-	// The system of constraints only composed by the \epsilon
-	// constraints is in the minimal form.
-	set_constraints_minimized();
+	con_sys.insert(Constraint::epsilon_geq_zero());
+	con_sys.insert(Constraint::epsilon_leq_one());
       }
+      con_sys.adjust_topology_and_dimension(topology, num_dimensions);
+      // In both cases (positivity or epsilon constraints)
+      // the constraint system is in the minimal form.
+      set_constraints_minimized();
+    }
   space_dim = num_dimensions;
 }
 
-// FIXME: have to set the topol_kind of gen_sys and con_sys
-//        when they are NOT assigned explicitly.
+
 PPL::PolyBase::PolyBase(const PolyBase& y)
   : con_sys(y.topology()),
     gen_sys(y.topology()),
@@ -198,37 +182,44 @@ PPL::PolyBase::PolyBase(const PolyBase& y)
 /*!
   Builds a polyhedron satisfying the given system of constraints \p cs.
 */
-// FIXME
-PPL::PolyBase::PolyBase(ConSys& cs, Topology topology)
+PPL::PolyBase::PolyBase(Topology topology, ConSys& cs)
   : con_sys(topology),
     gen_sys(topology),
     sat_c(),
     sat_g() {
-
-  if (cs.num_columns() > 1) {
+  size_t cs_space_dim = cs.space_dimension();
+  if (cs.num_rows() > 0 && cs_space_dim > 0) {
+    // Try to adapt `cs' to the required topology.
+    if (!cs.adjust_topology_and_dimension(topology, cs_space_dim))
+      throw std::invalid_argument("PPL::Polyhedron::Polyhedron(cs): "
+				  "cs contains strict inequalities");
     // The following swap destroys the given argument `cs';
     // that is why the formal parameter is not declared const.
     std::swap(con_sys, cs);
-    // Add the positivity constraint.
-    con_sys.insert(Constraint::zero_dim_positivity());
+    if (topology == NECESSARILY_CLOSED)
+      // Add the positivity constraint.
+      con_sys.insert(Constraint::zero_dim_positivity());
+    else {
+      // Add the \epsilon constraints.
+      con_sys.insert(Constraint::epsilon_geq_zero());
+      con_sys.insert(Constraint::epsilon_leq_one());
+    }
     set_constraints_up_to_date();
     // Set the space dimension.
-    space_dim = con_sys.num_columns() - 1;
+    space_dim = cs_space_dim;
     return;
   }
 
-  // As cs.num_columns <= 1, this is a zero-dim space polyhedron.
+  // Here `cs.num_rows == 0' or `cs_space_dim == 0'.
   space_dim = 0;
-  if (cs.num_columns() == 1)
+  if (cs.num_columns() > 0)
     // See if an inconsistent constraint has been passed.
-    for (size_t i = cs.num_rows(); i-- > 0; ) {
-      const Row& r = cs[i];
-      if (r[0] != 0 && (r.is_line_or_equality() || r[0] < 0)) {
+    for (size_t i = cs.num_rows(); i-- > 0; )
+      if (cs[i].is_trivial_false()) {
 	// Inconsistent constraint found: the polyhedron is empty.
 	set_empty();
 	return;
       }
-    }
 }
 
 
@@ -236,7 +227,7 @@ PPL::PolyBase::PolyBase(ConSys& cs, Topology topology)
   Builds a polyhedron generated by the given system of generators \p gs.
 */
 // FIXME.
-PPL::PolyBase::PolyBase(GenSys& gs, Topology topology)
+PPL::PolyBase::PolyBase(Topology topology, GenSys& gs)
   : con_sys(topology),
     gen_sys(topology),
     sat_c(),
@@ -694,8 +685,8 @@ PPL::operator<=(const PolyBase& x, const PolyBase& y) {
 */
 void
 PPL::PolyBase::intersection_assign_and_minimize(const PolyBase& y) {
+  assert(topology() == y.topology());
   PolyBase& x = *this;
-  assert(x.topology() == y.topology());
   size_t x_space_dim = x.space_dim;
   // Dimension-compatibility check.
   if (x_space_dim != y.space_dim)
@@ -750,8 +741,8 @@ PPL::PolyBase::intersection_assign_and_minimize(const PolyBase& y) {
 */
 void
 PPL::PolyBase::intersection_assign(const PolyBase& y) {
+  assert(topology() == y.topology());
   PolyBase& x = *this;
-  assert(x.topology() == y.topology());
   size_t x_space_dim = x.space_dim;
   // Dimension-compatibility check.
   if (x_space_dim != y.space_dim)
@@ -798,8 +789,8 @@ PPL::PolyBase::intersection_assign(const PolyBase& y) {
 */
 void
 PPL::PolyBase::convex_hull_assign_and_minimize(const PolyBase& y) {
+  assert(topology() == y.topology());
   PolyBase& x = *this;
-  assert(x.topology() == y.topology());
   size_t x_space_dim = x.space_dim;
   // Dimension-compatibility check.
   if (x_space_dim != y.space_dim)
@@ -848,8 +839,8 @@ PPL::PolyBase::convex_hull_assign_and_minimize(const PolyBase& y) {
 */
 void
 PPL::PolyBase::convex_hull_assign(const PolyBase& y) {
+  assert(topology() == y.topology());
   PolyBase& x = *this;
-  assert(x.topology() == y.topology());
   size_t x_space_dim = x.space_dim;
   // Dimension-compatibility check.
   if (x_space_dim != y.space_dim)
@@ -898,8 +889,8 @@ PPL::PolyBase::convex_hull_assign(const PolyBase& y) {
 */
 void
 PPL::PolyBase::convex_difference_assign(const PolyBase& y) {
+  assert(topology() == y.topology());
   PolyBase& x = *this;
-  assert(x.topology() == y.topology());
   size_t x_space_dim = x.space_dim;
   // Dimension-compatibility check.
   if (x_space_dim != y.space_dim)
@@ -927,7 +918,7 @@ PPL::PolyBase::convex_difference_assign(const PolyBase& y) {
     return;
   }
 
-  PolyBase new_polyhedron(x_space_dim, EMPTY, topology());
+  PolyBase new_polyhedron(topology(), x_space_dim, EMPTY);
 
   const ConSys& x_cs = x.constraints();
   const ConSys& y_cs = y.constraints();
@@ -945,7 +936,7 @@ PPL::PolyBase::convex_difference_assign(const PolyBase& y) {
 	  e += n * Variable(varid);
       }
       z_cs.insert(e <= -c.coefficient());
-      new_polyhedron.convex_hull_assign(PolyBase(z_cs, topology()));
+      new_polyhedron.convex_hull_assign(PolyBase(topology(), z_cs));
     }
   }
   *this = new_polyhedron;
@@ -1622,7 +1613,7 @@ PPL::PolyBase::add_dimensions_and_constraints(ConSys& cs) {
   // For a non-empty 0-dim space polyhedron,
   // the result is the polyhedron defined by `cs'.
   if (space_dim == 0) {
-    PolyBase y(cs, topology());
+    PolyBase y(topology(), cs);
     swap(y);
     return;
   }
@@ -2188,6 +2179,7 @@ PPL::PolyBase::relation_with(const Generator& g) {
 */
 void
 PPL::PolyBase::widening_assign(const PolyBase& y) {
+  assert(topology() == y.topology());
   PolyBase& x = *this;
 
 #ifndef NDEBUG
@@ -2256,7 +2248,7 @@ PPL::PolyBase::widening_assign(const PolyBase& y) {
   // Now, we start to build the system of constraints of the
   // widened polyhedron. The first constraint is the positivity
   // one: its presence is necessary to have a correct polyhedron.
-  ConSys new_con_sys(1, x.con_sys.num_columns(), topology());
+  ConSys new_con_sys(topology(), 1, x.con_sys.num_columns());
   // Hand-made positivity constraint.
   new_con_sys[0][0] = 1;
   new_con_sys[0].set_is_inequality();
@@ -2315,6 +2307,7 @@ PPL::PolyBase::widening_assign(const PolyBase& y) {
 */
 void
 PPL::PolyBase::limited_widening_assign(const PolyBase& y, ConSys& cs) {
+  assert(topology() == y.topology());
   PolyBase& x = *this;
 
 #ifndef NDEBUG
