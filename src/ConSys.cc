@@ -292,6 +292,7 @@ PPL::ConSys::satisfies_all_constraints(const Generator& g) const {
   of the constraints are integers we must also provide an integer
   \p denominator that will be used as denominator of the affine
   transformation.
+  The denominator is required to be a positive integer.
 
   The affine transformation substitutes the matrix of constraints
   by a new matrix whose elements \f${a'}_{ij}\f$ are built from
@@ -317,7 +318,7 @@ PPL::ConSys::affine_preimage(dimension_type v,
   // nor the epsilon dimension of NNC polyhedra).
   assert(v > 0 && v <= space_dimension());
   assert(expr.space_dimension() <= space_dimension());
-  assert(denominator != 0);
+  assert(denominator > 0);
 
   dimension_type n_columns = num_columns();
   dimension_type n_rows = num_rows();

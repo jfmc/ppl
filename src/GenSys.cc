@@ -619,6 +619,7 @@ PPL::GenSys::relation_with(const Constraint& c) const {
   any rational coefficients. Since the coefficients of the
   constraints are integers we must also provide an integer \p denominator
   that will be used as denominator of the affine transformation.
+  The denominator is required to be a positive integer.
 
   The affine transformation assigns to each element of \p v -th
   column the follow expression:
@@ -638,7 +639,7 @@ PPL::GenSys::affine_image(dimension_type v,
   // nor the epsilon dimension of NNC polyhedra).
   assert(v > 0 && v <= space_dimension());
   assert(expr.space_dimension() <= space_dimension());
-  assert(denominator != 0);
+  assert(denominator > 0);
 
   dimension_type n_columns = num_columns();
   dimension_type n_rows = num_rows();
@@ -651,22 +652,17 @@ PPL::GenSys::affine_image(dimension_type v,
     tmp_Integer[1] = 0;
     for (dimension_type j = expr.size(); j-- > 0; )
       tmp_Integer[1] += row[j] * expr[j];
-    if (denominator < 0)
-      negate(tmp_Integer[1]);
     std::swap(tmp_Integer[1], row[v]); 
   }
 
-  if (denominator != 1 && denominator != -1) {
+  if (denominator != 1) {
     // Since we want integer elements in the matrix,
-    // we multiply by the absolute value of `denominator'
+    // we multiply by the value of `denominator'
     // all the columns of `*this' having an index different from `v'.
-    Integer abs_denominator = denominator;
-    if (denominator < 0)
-      negate(abs_denominator);
     for (dimension_type i = n_rows; i-- > 0; )
       for (dimension_type j = n_columns; j-- > 0; )
 	if (j != v)
-	  x[i][j] *= abs_denominator;
+	  x[i][j] *= denominator;
   }
 
   // If the mapping is not invertible we may have trasformed
