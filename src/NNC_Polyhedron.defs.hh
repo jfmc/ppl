@@ -35,15 +35,12 @@ site: http://www.cs.unipr.it/ppl/ . */
     in the vector space \f$\Rset^n\f$.
 
     \note
-    NNC polyhedra are a generalization of necessarily closed polyhedra:
-    this means that any object of the class C_Polyhedron
-    can be converted into an object of the class NNC_Polyhedron
-    and all the methods defined for C_Polyhedron objects are also
-    available when using objects of the class NNC_Polyhedron.
-    The reason for defining two different classes is that
-    necessarily closed polyhedra (i.e., objects of the class C_Polyhedron)
-    are characterized by a more efficient implementation,
-    requiring less time and memory resources.
+    Since NNC polyhedra are a generalization of closed polyhedra,
+    any object of the class C_Polyhedron can be (explicitly) converted
+    into an object of the class NNC_Polyhedron.
+    The reason for defining two different classes is that objects of
+    the class C_Polyhedron are characterized by a more efficient
+    implementation, requiring less time and memory resources.
 */
 class Parma_Polyhedra_Library::NNC_Polyhedron : public Polyhedron {
 public:
@@ -82,10 +79,6 @@ public:
 
   //! Destructor
   ~NNC_Polyhedron();
-
-  //! Returns <CODE>true</CODE> if and only if \p *this
-  //! is a topologically closed subset of the vector space.
-  bool is_topologically_closed() const;
 
   void limited_widening_assign(const NNC_Polyhedron& y, ConSys& cs);  
 

@@ -2993,6 +2993,65 @@ PPL::Polyhedron::is_bounded() const {
   return true;
 }
 
+
+/*!
+  Returns <CODE>true</CODE> if and only if \p *this is a
+  topologically closed polyhedron.
+  Any C_Polyhedron is trivially topologically closed;
+  for NNC polyhedra, we have to check that either there are
+  no (non-redundant) strict inequality constraints,
+  or there are no (non-redundant) unmatched closure points.
+*/
+bool
+PPL::Polyhedron::is_topologically_closed() const {
+  // Necessarily closed polyhedra are trivially closed.
+  if (is_necessarily_closed())
+    return true;
+  // Any empty or zero-dim polyhedron is closed.
+  if (is_empty() || space_dimension() == 0)
+    return true;
+
+  if (constraints_are_minimized())
+    // A polyhedron is closed iff
+    // it has no (non-redundant) strict inequalities.
+    return !con_sys.has_strict_inequalities();
+
+  if (generators_are_minimized()) {
+    // A polyhedron is closed iff all of its (non-redundant)
+    // closure points are matched by a corresponding point.
+    obtain_sorted_generators();
+    size_t n_rows = gen_sys.num_rows();
+    size_t n_lines = gen_sys.num_lines();
+    for (size_t i = n_rows; i-- > n_lines; ) {
+      const Generator& gi = gen_sys[i];
+      if (gi.is_closure_point()) {
+	bool gi_has_no_matching_point = true;
+	// Since `gen_sys' is sorted, matching point must have
+	// an index `j' greater than `i'.
+	for (size_t j = i + 1; j < n_rows; ++j) {
+	  const Generator& gj = gen_sys[j];
+	  if (gj.is_point()
+	      && gi.is_corresponding_closure_point(gj)) {
+	    gi_has_no_matching_point = false;
+	    break;
+	  }
+	}
+	if (gi_has_no_matching_point)
+	  return false;
+      }
+    }
+    // All closure points are matched.
+    return true;
+  }
+
+  // Both `con_sys' and `gen_sys' are not minimized.
+  // A polyhedron is closed iff
+  // it has no (non-redundant) strict inequalities.
+  minimize();
+  return is_empty() || !con_sys.has_strict_inequalities();
+}
+
+
 /*!
   Checks if \p *this is really a polyhedron, i.e., excludes all the extreme
   cases.

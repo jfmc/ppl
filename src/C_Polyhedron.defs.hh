@@ -28,18 +28,17 @@ site: http://www.cs.unipr.it/ppl/ . */
 #include "NNC_Polyhedron.types.hh"
 #include "Polyhedron.defs.hh"
 
-//! A necessarily closed convex polyhedron.
+//! A closed convex polyhedron.
 /*!
     An object of the class C_Polyhedron represents a
-    <EM>necessarily closed</EM> convex polyhedron
+    <EM>topologically closed</EM> convex polyhedron
     in the vector space \f$\Rset^n\f$.
 
-    When building a necessarily closed polyhedron starting from
+    When building a closed polyhedron starting from
     a system of constraints, an exception is thrown if the system
     contains a <EM>strict inequality</EM> constraint.
-    Similarly, an exception is thrown when building a necessarily closed
-    polyhedron starting from a system of generators containing a
-    <EM>closure point</EM>.
+    Similarly, an exception is thrown when building a closed polyhedron
+    starting from a system of generators containing a <EM>closure point</EM>.
 
     \note
     Such an exception will be obtained even if the system of
@@ -49,8 +48,8 @@ site: http://www.cs.unipr.it/ppl/ . */
     in the system happen to be redundant with respect to the
     system obtained by removing all the strict inequality constraints
     (resp., all the closure points).
-    In contrast, when building a necessarily closed polyhedron
-    starting from an object of the class NNC_Polyhedron,
+    In contrast, when building a closed polyhedron starting from
+    an object of the class NNC_Polyhedron,
     the precise topological closure test will be performed.
 */
 

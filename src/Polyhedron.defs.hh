@@ -654,6 +654,10 @@ public:
   //! is a bounded polyhedron.
   bool is_bounded() const;
 
+  //! Returns <CODE>true</CODE> if and only if \p *this
+  //! is a topologically closed subset of the vector space.
+  bool is_topologically_closed() const;
+
   //! Returns <CODE>true</CODE> if and only if
   //! polyhedron \p x is contained in polyhedron \p y.
   //! \exception std::invalid_argument thrown if \p x and \p y
