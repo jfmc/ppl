@@ -84,6 +84,6 @@ check-local: gp_clpq ../check_script ../expected gp_clpq2 ../check_script2 ../ex
 		./gp_clpq2 <$(srcdir)/../check_script2 >obtained2
 	diff -q --ignore-all-space $(srcdir)/../expected2 obtained2
 
-MOSTLYCLEANFILES = \
-gp_clpq $(CLPQ_TESTS) obtained
+MOSTLYCLEANFILES = gp_clpq gp_clpq2 $(CLPQ_TESTS) obtained obtained2
+
 endif
