@@ -64,7 +64,15 @@ Detailed description with examples to be written.
 
 __BEGIN_DECLS
 
-typedef struct ppl_Coefficient_tag* ppl_Coefficient_t;
+#define PPL_TYPE_DECLARATION(Type) \
+/*! Opaque pointer to Type. */ \
+typedef struct ppl_ ## Type ## _tag* ppl_ ## Type ## _t; \
+/*! Opaque pointer to const Type. */ \
+typedef struct ppl_ ## Type ## _tag const* ppl_const_ ## Type ## _t
+
+PPL_TYPE_DECLARATION(Coefficient);
+
+//typedef struct ppl_Coefficient_tag* ppl_Coefficient_t;
 
 //! Creates a new coefficent with the value given by the GMP integer \p z
 //! and writes an handle for the newly created coefficient at address \p pc.
@@ -74,10 +82,10 @@ ppl_new_Coefficient_from_mpz_t __P((ppl_Coefficient_t* pc, mpz_t z));
 //! Invalidates the handle \p c: this makes sure
 //! the corresponding resources will eventually be released.
 int
-ppl_delete_Coefficient __P((ppl_Coefficient_t c));
+ppl_delete_Coefficient __P((ppl_const_Coefficient_t c));
 
 
-typedef struct ppl_LinExpression_tag *ppl_LinExpression_t;
+PPL_TYPE_DECLARATION(LinExpression);
 
 //! Creates a new linear expression corresponding to the
 //! constant 0 in a zero-dimensional space.
@@ -95,12 +103,13 @@ ppl_new_LinExpression_with_dimension __P((ppl_LinExpression_t* ple,
 //! Invalidates the handle \p le: this makes sure
 //! the corresponding resources will eventually be released.
 int
-ppl_delete_LinExpression __P((ppl_LinExpression_t le));
+ppl_delete_LinExpression __P((ppl_const_LinExpression_t le));
 
 //! Assigns an exact copy of the linear expression \p src to \p dst.
 int
-ppl_assign_LinExpresson_from_LinExpression __P((ppl_LinExpression_t dst,
-						ppl_LinExpression_t src));
+ppl_assign_LinExpresson_from_LinExpression
+__P((ppl_LinExpression_t dst,
+     ppl_const_LinExpression_t src));
 
 //! Swaps the linear expressions \p a and \p b.
 int
@@ -113,20 +122,20 @@ ppl_swap_LinExpresson __P((ppl_LinExpression_t a, ppl_LinExpression_t b));
 int
 ppl_LinExpression_add_to_coefficient __P((ppl_LinExpression_t le,
 					  unsigned int var,
-					  ppl_Coefficient_t value));
+					  ppl_const_Coefficient_t value));
 
 //! Adds \p value to the inhomogeneous term
 //! of the linear expression \p le.
 int
 ppl_LinExpression_add_to_inhomogeneous __P((ppl_LinExpression_t le,
-					    ppl_Coefficient_t value));
+					    ppl_const_Coefficient_t value));
 
 //! Returns the space dimension of \p le.
 int
-ppl_LinExpression_space_dimension __P((ppl_LinExpression_t le));
+ppl_LinExpression_space_dimension __P((ppl_const_LinExpression_t le));
 
 
-typedef struct ppl_Constraint_tag *ppl_Constraint_t;
+PPL_TYPE_DECLARATION(Constraint);
 
 //! Describes the relations represented by a constraint.
 enum ppl_enum_Constraint_Type {
@@ -153,18 +162,18 @@ enum ppl_enum_Constraint_Type {
 //! is equal to the space dimension of \p le.
 int
 ppl_new_Constraint __P((ppl_Constraint_t* pc,
-			ppl_LinExpression_t le,
+			ppl_const_LinExpression_t le,
 			enum ppl_enum_Constraint_Type));
 
 //! Invalidates the handle \p c: this makes sure
 //! the corresponding resources will eventually be released.
 int
-ppl_delete_Constraint __P((ppl_Constraint_t c));
+ppl_delete_Constraint __P((ppl_const_Constraint_t c));
 
 //! Assigns an exact copy of the constraint \p src to \p dst.
 int
 ppl_assign_Constraint_from_Constraint __P((ppl_Constraint_t dst,
-					   ppl_Constraint_t src));
+					   ppl_const_Constraint_t src));
 
 //! Swaps the constraints \p a and \p b.
 int
@@ -172,53 +181,56 @@ ppl_swap_Constraint __P((ppl_Constraint_t a, ppl_Constraint_t b));
 
 //! Returns the space dimension of \p c.
 int
-ppl_Constraint_space_dimension __P((ppl_Constraint_t c));
+ppl_Constraint_space_dimension __P((ppl_const_Constraint_t c));
 
 //! Copies into \p value the coefficient of variable \p var in constraint \p c.
 int
-ppl_Constraint_coefficient __P((ppl_Constraint_t c,
+ppl_Constraint_coefficient __P((ppl_const_Constraint_t c,
 				int var,
 				ppl_Coefficient_t value));
 
 //! Copies into \p value the inhomogeneous term of constraint \p c.
 int
-ppl_Constraint_inhomogeneous_term __P((ppl_Constraint_t c,
+ppl_Constraint_inhomogeneous_term __P((ppl_const_Constraint_t c,
 				       ppl_Coefficient_t value));
 
-typedef struct ppl_ConSys_tag *ppl_ConSys_t;
+
+PPL_TYPE_DECLARATION(ConSys);
 
 //! Builds an empty system of constraints and writes an handle to it
 //! at address \p pcs.
 int
 ppl_new_ConSys __P((ppl_ConSys_t* pcs));
 
-//! Builds the singleton constraint system containing only constraint \p c;
-//! writes an handle for the newly created system at address \p pcs.
+//! Builds the singleton constraint system containing only a copy
+//! of constraint \p c; writes an handle for the newly created system
+//! at address \p pcs.
 int
-ppl_new_ConSys_from_Constraint __P((ppl_ConSys_t* pcs, ppl_Constraint_t c));
+ppl_new_ConSys_from_Constraint __P((ppl_ConSys_t* pcs,
+				    ppl_const_Constraint_t c));
 
 //! Builds a constraint system that is a copy of \p cs;
 //! writes an handle for the newly created system at address \p pcs.
 int
-ppl_new_ConSys_from_ConSys __P((ppl_ConSys_t* pcs, ppl_ConSys_t cs));
+ppl_new_ConSys_from_ConSys __P((ppl_ConSys_t* pcs, ppl_const_ConSys_t cs));
 
 //! Invalidates the handle \p cs: this makes sure
 //! the corresponding resources will eventually be released.
 int
-ppl_delete_ConSys __P((ppl_ConSys_t cs));
+ppl_delete_ConSys __P((ppl_const_ConSys_t cs));
 
 //! Assigns an exact copy of the constraint system \p src to \p dst.
 int
-ppl_assign_ConSys_from_ConSys __P((ppl_ConSys_t dst, ppl_ConSys_t src));
+ppl_assign_ConSys_from_ConSys __P((ppl_ConSys_t dst, ppl_const_ConSys_t src));
 
 //! Returns the dimension of the vector space enclosing \p *this.
 int
-ppl_ConSys_space_dimension __P((ppl_ConSys_t cs));
+ppl_ConSys_space_dimension __P((ppl_const_ConSys_t cs));
 
 //! Inserts a copy of the constraint \p c into \p *this;
 //! the space dimension is increased, if necessary.
 int
-ppl_ConSys_insert_Constraint __P((ppl_ConSys_t cs, ppl_Constraint_t c));
+ppl_ConSys_insert_Constraint __P((ppl_ConSys_t cs, ppl_const_Constraint_t c));
 
 #if 0
 //! Returns the singleton system containing only

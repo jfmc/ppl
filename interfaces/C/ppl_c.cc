@@ -26,6 +26,30 @@ site: http://www.cs.unipr.it/ppl/ . */
 
 using namespace Parma_Polyhedra_Library;
 
+#define DECLARE_CONVERSIONS(Type) \
+inline const Type* \
+to_const(ppl_const_ ## Type ## _t x) { \
+  return reinterpret_cast<const Type*>(x); \
+} \
+ \
+inline Type* \
+to_nonconst(ppl_ ## Type ## _t x) { \
+  return reinterpret_cast<Type*>(x); \
+} \
+ \
+inline ppl_const_ ## Type ## _t \
+to_const(const Type* x) { \
+  return reinterpret_cast<ppl_const_ ## Type ## _t>(x); \
+} \
+ \
+inline ppl_ ## Type ## _t \
+to_nonconst(Type* x) { \
+  return reinterpret_cast<ppl_ ## Type ## _t>(x); \
+}
+
+// FIXME: this temporary until we rename Integer to Coefficient.
+typedef Parma_Polyhedra_Library::Integer Coefficient;
+
 static void (*user_error_handler)(int , const char*) = 0;
 
 int
@@ -39,23 +63,27 @@ catch(...) { \
   return -1; \
 }
 
+DECLARE_CONVERSIONS(Coefficient)
+
 int
 ppl_Coefficient_from_mpz_t(ppl_Coefficient_t* pc, mpz_t z) try {
-  *pc = reinterpret_cast<ppl_Coefficient_t>(new Integer(z));
+  *pc = to_nonconst(new Integer(z));
   return 0;
 }
 CATCH_ALL
 
 int
-ppl_delete_Coefficient(ppl_Coefficient_t c) try {
-  delete reinterpret_cast<Integer*>(c);
+ppl_delete_Coefficient(ppl_const_Coefficient_t c) try {
+  delete to_const(c);
   return 0;
 }
 CATCH_ALL
+
+DECLARE_CONVERSIONS(LinExpression)
 
 int
 ppl_new_LinExpression(ppl_LinExpression_t* ple) try {
-  *ple = reinterpret_cast<ppl_LinExpression_t>(new LinExpression());
+  *ple = to_nonconst(new LinExpression());
   return 0;
 }
 CATCH_ALL
@@ -63,33 +91,31 @@ CATCH_ALL
 int
 ppl_new_LinExpression_with_dimension(ppl_LinExpression_t* ple,
 				     unsigned int d) try {
-  *ple = reinterpret_cast<ppl_LinExpression_t>
-    (new LinExpression(0*Variable(d)));
+  *ple = to_nonconst(new LinExpression(0*Variable(d)));
   return 0;
 }
 CATCH_ALL
 
 int
-ppl_delete_LinExpression(ppl_LinExpression_t le) try {
-  delete reinterpret_cast<LinExpression*>(le);
+ppl_delete_LinExpression(ppl_const_LinExpression_t le) try {
+  delete to_const(le);
   return 0;
 }
 CATCH_ALL
 
 int
-ppl_assign_LinExpresson_from_LinExpression(ppl_LinExpression_t dst,
-					   ppl_LinExpression_t src) try {
-  const LinExpression& ssrc = *reinterpret_cast<const LinExpression*>(src);
-  LinExpression& ddst = *reinterpret_cast<LinExpression*>(dst);
+ppl_assign_LinExpression_from_LinExpression(ppl_LinExpression_t dst,
+					    ppl_const_LinExpression_t src) try {
+  const LinExpression& ssrc = *to_const(src);
+  LinExpression& ddst = *to_nonconst(dst);
   ddst = ssrc;
   return 0;
-}
+  }
 CATCH_ALL
 
 int
-ppl_swap_LinExpresson(ppl_LinExpression_t a, ppl_LinExpression_t b) try {
-  std::swap(*reinterpret_cast<LinExpression*>(a),
-	    *reinterpret_cast<LinExpression*>(b));
+ppl_swap_LinExpression(ppl_LinExpression_t a, ppl_LinExpression_t b) try {
+  std::swap(*to_nonconst(a), *to_nonconst(b));
   return 0;
 }
 CATCH_ALL
@@ -97,9 +123,9 @@ CATCH_ALL
 int
 ppl_LinExpression_add_to_coefficient(ppl_LinExpression_t le,
 				     unsigned int var,
-				     ppl_Coefficient_t value) try {
-  LinExpression& lle = *reinterpret_cast<LinExpression*>(le);
-  const Integer& vvalue = *reinterpret_cast<const Integer*>(value);
+				     ppl_const_Coefficient_t value) try {
+  LinExpression& lle = *to_nonconst(le);
+  const Integer& vvalue = *to_const(value);
   lle += vvalue * Variable(var);
   return 0;
 }
@@ -107,26 +133,28 @@ CATCH_ALL
 
 int
 ppl_LinExpression_add_to_inhomogeneous(ppl_LinExpression_t le,
-				       ppl_Coefficient_t value) try {
-  LinExpression& lle = *reinterpret_cast<LinExpression*>(le);
-  const Integer& vvalue = *reinterpret_cast<const Integer*>(value);
+				       ppl_const_Coefficient_t value) try {
+  LinExpression& lle = *to_nonconst(le);
+  const Integer& vvalue = *to_const(value);
   lle += vvalue;
   return 0;
 }
 CATCH_ALL
 
 int
-ppl_LinExpression_space_dimension(ppl_LinExpression_t le) try {
-  return reinterpret_cast<LinExpression*>(le)->space_dimension();
+ppl_LinExpression_space_dimension(ppl_const_LinExpression_t le) try {
+  return to_const(le)->space_dimension();
 }
 CATCH_ALL
 
+DECLARE_CONVERSIONS(Constraint)
+
 int
 ppl_new_Constraint(ppl_Constraint_t* pc,
-		   ppl_LinExpression_t le,
+		   ppl_const_LinExpression_t le,
 		   enum ppl_enum_Constraint_Type t) try {
   Constraint* pd;
-  const LinExpression& e = *reinterpret_cast<LinExpression*>(le);
+  const LinExpression& e = *to_const(le);
   switch(t) {
   case EQUAL:
     pd = new Constraint(e == 0);
@@ -151,23 +179,23 @@ ppl_new_Constraint(ppl_Constraint_t* pc,
     // FIXME!
     throw 3;
   }
-  *pc = reinterpret_cast<ppl_Constraint_t>(pd);
+  *pc = to_nonconst(pd);
   return 0;
 }
 CATCH_ALL
 
 int
-ppl_delete_Constraint(ppl_Constraint_t le) try {
-  delete reinterpret_cast<Constraint*>(le);
+ppl_delete_Constraint(ppl_const_Constraint_t le) try {
+  delete to_const(le);
   return 0;
 }
 CATCH_ALL
 
 int
 ppl_assign_Constraint_from_Constraint(ppl_Constraint_t dst,
-				      ppl_Constraint_t src) try {
-  const Constraint& ssrc = *reinterpret_cast<const Constraint*>(src);
-  Constraint& ddst = *reinterpret_cast<Constraint*>(dst);
+				      ppl_const_Constraint_t src) try {
+  const Constraint& ssrc = *to_const(src);
+  Constraint& ddst = *to_nonconst(dst);
   ddst = ssrc;
   return 0;
 }
@@ -175,88 +203,90 @@ CATCH_ALL
 
 int
 ppl_swap_Constraint(ppl_Constraint_t a, ppl_Constraint_t b) try {
-  std::swap(*reinterpret_cast<Constraint*>(a),
-	    *reinterpret_cast<Constraint*>(b));
+  std::swap(*to_nonconst(a), *to_nonconst(b));
   return 0;
 }
 CATCH_ALL
 
 int
-ppl_Constraint_space_dimension(ppl_Constraint_t c) try {
-  return reinterpret_cast<Constraint*>(c)->space_dimension();
+ppl_Constraint_space_dimension(ppl_const_Constraint_t c) try {
+  return to_const(c)->space_dimension();
 }
 CATCH_ALL
 
 int
-ppl_Constraint_coefficient(ppl_Constraint_t c,
+ppl_Constraint_coefficient(ppl_const_Constraint_t c,
 			   int var,
 			   ppl_Coefficient_t value) try {
-  const Constraint& cc = *reinterpret_cast<const Constraint*>(c);
-  Integer& vvalue = *reinterpret_cast<Integer*>(value);
+  const Constraint& cc = *to_const(c);
+  Integer& vvalue = *to_nonconst(value);
   vvalue = cc.coefficient(Variable(var));
   return 0;
 }
 CATCH_ALL
 
 int
-ppl_Constraint_inhomogeneous_term(ppl_Constraint_t c,
+ppl_Constraint_inhomogeneous_term(ppl_const_Constraint_t c,
 				  ppl_Coefficient_t value) try {
-  const Constraint& cc = *reinterpret_cast<const Constraint*>(c);
-  Integer& vvalue = *reinterpret_cast<Integer*>(value);
+  const Constraint& cc = *to_const(c);
+  Integer& vvalue = *to_nonconst(value);
   vvalue = cc.coefficient();
   return 0;
 }
 CATCH_ALL
 
+DECLARE_CONVERSIONS(ConSys)
+
 int
 ppl_new_ConSys(ppl_ConSys_t* pcs) try {
-  *pcs = reinterpret_cast<ppl_ConSys_t>(new ConSys());
+  *pcs = to_nonconst(new ConSys());
   return 0;
 }
 CATCH_ALL
 
 int
-ppl_new_ConSys_from_Constraint(ppl_ConSys_t* pcs, ppl_Constraint_t c) try {
-  const Constraint& cc = *reinterpret_cast<const Constraint*>(c);
-  *pcs = reinterpret_cast<ppl_ConSys_t>(new ConSys(cc));
+ppl_new_ConSys_from_Constraint(ppl_ConSys_t* pcs,
+			       ppl_const_Constraint_t c) try {
+  const Constraint& cc = *to_const(c);
+  *pcs = to_nonconst(new ConSys(cc));
   return 0;
 }
 CATCH_ALL
 
 int
-ppl_new_ConSys_from_ConSys(ppl_ConSys_t* pcs, ppl_ConSys_t cs) try {
-  const Constraint& ccs = *reinterpret_cast<const Constraint*>(cs);
-  *pcs = reinterpret_cast<ppl_ConSys_t>(new ConSys(ccs));
+ppl_new_ConSys_from_ConSys(ppl_ConSys_t* pcs, ppl_const_ConSys_t cs) try {
+  const ConSys& ccs = *to_const(cs);
+  *pcs = to_nonconst(new ConSys(ccs));
   return 0;
 }
 CATCH_ALL
 
 int
-ppl_delete_ConSys(ppl_ConSys_t cs) try {
-  delete reinterpret_cast<ConSys*>(cs);
+ppl_delete_ConSys(ppl_const_ConSys_t cs) try {
+  delete to_const(cs);
   return 0;
 }
 CATCH_ALL
 
 int
-ppl_assign_ConSys_from_ConSys(ppl_ConSys_t dst, ppl_ConSys_t src) try {
-  const ConSys& ssrc = *reinterpret_cast<const ConSys*>(src);
-  ConSys& ddst = *reinterpret_cast<ConSys*>(dst);
+ppl_assign_ConSys_from_ConSys(ppl_ConSys_t dst, ppl_const_ConSys_t src) try {
+  const ConSys& ssrc = *to_const(src);
+  ConSys& ddst = *to_nonconst(dst);
   ddst = ssrc;
   return 0;
 }
 CATCH_ALL
 
 int
-ppl_ConSys_space_dimension(ppl_ConSys_t cs) try {
-  return reinterpret_cast<const ConSys*>(cs)->space_dimension();
+ppl_ConSys_space_dimension(ppl_const_ConSys_t cs) try {
+  return to_const(cs)->space_dimension();
 }
 CATCH_ALL
 
 int
-ppl_ConSys_insert_Constraint(ppl_ConSys_t cs, ppl_Constraint_t c) try {
-  const Constraint& cc = *reinterpret_cast<const Constraint*>(c);
-  ConSys& ccs = *reinterpret_cast<ConSys*>(cs);
+ppl_ConSys_insert_Constraint(ppl_ConSys_t cs, ppl_const_Constraint_t c) try {
+  const Constraint& cc = *to_const(c);
+  ConSys& ccs = *to_nonconst(cs);
   ccs.insert(cc);
   return 0;
 }
