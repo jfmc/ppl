@@ -22,7 +22,6 @@ For the most up-to-date information see the Parma Polyhedra Library
 site: http://www.cs.unipr.it/ppl/ . */
 
 #include "ppl_install.hh"
-#include "Interval.hh"
 #include <exception>
 #include <stdexcept>
 #include <sstream>
@@ -1415,44 +1414,6 @@ ppl_Polyhedron_equals_Polyhedron(Prolog_term_ref t_lhs,
   CATCH_ALL;
   return PROLOG_FAILURE;
 }
-
-namespace Parma_Polyhedra_Library {
-
-class BoundingBox {
-private:
-  std::vector<Interval> vec;
-
-public:
-  BoundingBox(unsigned int dimension)
-    : vec(dimension) {
-  }
-
-  const Interval& operator[](size_t k) const {
-    return vec[k];
-  }
-
-  void raise_lower_bound(unsigned int k, bool closed,
-			 const Integer& n, const Integer& d) {
-    vec[k].raise_lower_bound(LBoundary(Boundary::Value(n, d),
-				       (closed
-					? LBoundary::CLOSED
-					: LBoundary::OPEN)));
-  }
-
-  void lower_upper_bound(unsigned int k, bool closed,
-			 const Integer& n, const Integer& d) {
-    vec[k].lower_upper_bound(UBoundary(Boundary::Value(n, d),
-				       (closed
-					? UBoundary::CLOSED
-					: UBoundary::OPEN)));
-    }
-
-  void set_empty(unsigned int k) {
-    vec[k].set_empty();
-  }
-};
-
-} // namespace Parma_Polyhedra_Library
 
 static Prolog_term_ref
 extended_rational_term(const PPL::ExtendedRational& e) {
