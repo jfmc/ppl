@@ -1221,6 +1221,9 @@ public:
   */
   bool bounds_from_above(const LinExpression& expr) const;
 
+  //! Adds the low-level constraints to the constraint system.
+  static void add_low_level_constraints(ConSys& cs);
+
   //! \brief
   //! Returns <CODE>true</CODE> if and only if \p expr is
   //! bounded from below in \p *this.

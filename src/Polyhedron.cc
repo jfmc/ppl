@@ -335,18 +335,9 @@ PPL::Polyhedron::Polyhedron(Topology topol,
     status.set_empty();
   else
     if (num_dimensions > 0) {
-      if (topol == NECESSARILY_CLOSED)
-	// The only constraint is the positivity one.
-	con_sys.insert(Constraint::zero_dim_positivity());
-      else {
-	// Polyhedron NON-necessarily closed: the only constraints
-	// are the ones regarding the epsilon dimension.
-	con_sys.insert(Constraint::epsilon_leq_one());
-	con_sys.insert(Constraint::epsilon_geq_zero());
-      }
+      add_low_level_constraints(con_sys);
       con_sys.adjust_topology_and_dimension(topol, num_dimensions);
-      // In both cases (positivity or epsilon constraints)
-      // the constraint system is in the minimal form.
+      // The constraint system is in the minimal form.
       set_constraints_minimized();
     }
   space_dim = num_dimensions;
@@ -385,14 +376,7 @@ PPL::Polyhedron::Polyhedron(Topology topol, ConSys& cs)
   if (cs.num_rows() > 0 && cs_space_dim > 0) {
     // Stealing the rows from `cs'.
     std::swap(con_sys, cs);
-    if (topol == NECESSARILY_CLOSED)
-      // Add the positivity constraint.
-      con_sys.insert(Constraint::zero_dim_positivity());
-    else {
-      // Add the epsilon constraints.
-      con_sys.insert(Constraint::epsilon_leq_one());
-      con_sys.insert(Constraint::epsilon_geq_zero());
-    }
+    add_low_level_constraints(con_sys);
     set_constraints_up_to_date();
     // Set the space dimension.
     space_dim = cs_space_dim;
@@ -428,14 +412,7 @@ PPL::Polyhedron::Polyhedron(Topology topol, const ConSys& ccs)
   if (cs.num_rows() > 0 && cs_space_dim > 0) {
     // Stealing the rows from `cs'.
     std::swap(con_sys, cs);
-    if (topol == NECESSARILY_CLOSED)
-      // Add the positivity constraint.
-      con_sys.insert(Constraint::zero_dim_positivity());
-    else {
-      // Add the epsilon constraints.
-      con_sys.insert(Constraint::epsilon_leq_one());
-      con_sys.insert(Constraint::epsilon_geq_zero());
-    }
+    add_low_level_constraints(con_sys);
     set_constraints_up_to_date();
     // Set the space dimension.
     space_dim = cs_space_dim;
@@ -3010,14 +2987,7 @@ PPL::Polyhedron::select_H79_constraints(const Polyhedron& y,
 	 && y.generators_are_minimized());
 
   // Add low-level constraints.
-  if (is_necessarily_closed())
-    // Add the positivity constraint.
-    cs_selection.insert(Constraint::zero_dim_positivity());
-  else {
-    // Add the epsilon constraints.
-    cs_selection.insert(Constraint::epsilon_leq_one());
-    cs_selection.insert(Constraint::epsilon_geq_zero());
-  }
+  add_low_level_constraints(cs_selection);
   cs_selection.adjust_topology_and_dimension(topology(), space_dimension());
 
   // Obtain a sorted copy of `y.sat_g'.

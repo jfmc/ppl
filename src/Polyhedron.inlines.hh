@@ -231,6 +231,18 @@ Polyhedron::bounds_from_below(const LinExpression& expr) const {
   return bounds(expr, false);
 }
 
+inline void
+Polyhedron::add_low_level_constraints(ConSys& cs) {
+  if (cs.is_necessarily_closed())
+    // The positivity constraint.
+    cs.insert(Constraint::zero_dim_positivity());
+  else {
+    // Add the epsilon constraints.
+    cs.insert(Constraint::epsilon_leq_one());
+    cs.insert(Constraint::epsilon_geq_zero());
+  }
+}
+
 template <typename Box>
 Polyhedron::Polyhedron(Topology topol, const Box& box)
   : con_sys(topol),
