@@ -218,7 +218,7 @@ the constraints (or implicit) representation and
 the generators (or parametric) representation.
 
 
-<B>Constraints representation</B>
+<B>Constraints Representation</B>
 
 In the sequel, we will simply write ``equality'' and ``inequality''
 to mean ``linear equality'' and ``linear inequality'', respectively;
@@ -434,7 +434,7 @@ a given topology, build the corresponding polyhedron having
 the other topology.
 
 
-<B>Space Dimensions and Dimension-compatibility</B>
+<B>Space Dimensions and Dimension-Compatibility</B>
 
 The <EM>space dimension</EM> of an NNC polyhedron \f$\cP \in \Pset_n\f$
 (resp., a C polyhedron \f$\cP \in \CPset_n\f$) is the dimension
@@ -939,7 +939,7 @@ In contrast, when \f$\cQ\f$ is not topologically closed,
 the above set might not be an NNC polyhedron.
 
 \anchor relation_with
-<B>Relation-with Operators</B>
+<B>Relation-With Operators</B>
 
 The library provides operators for checking the relation holding
 between an NNC polyhedron  and
@@ -980,7 +980,7 @@ adding \f$g\f$ to any generator system representing \f$\cP\f$
 does not change \f$\cP\f$.
 
 \anchor bounding_boxes
-<B>Intervals, boxes and bounding boxes</B>
+<B>Intervals, Boxes and Bounding Boxes</B>
 
 An <EM>interval</EM> in \f$\Rset\f$ is a pair of <EM>bounds</EM>,
 called <EM>lower</EM> and <EM>upper</EM>.
@@ -2021,7 +2021,7 @@ D.&nbsp;K. Wilde.
 
 \section prelims Further Notation and Terminology
 
-<B>Linear independence</B>
+<B>Linear Independence</B>
 
 A finite set of points
 \f$\{ \vect{x}_1, \ldots, \vect{x}_k \} \sseq \Rset^n\f$
@@ -2055,7 +2055,7 @@ matrix \f$A\f$ is the <EM>rank</EM> of \f$A\f$ and is denoted by
 
 A polyhedron is a convex set.
 
-<B>Minkowski's theorem</B>
+<B>Minkowski's Theorem</B>
 
 Let
 \f$\cP = \{\, \vect{x} \in \Rset^n \mid A\vect{x} \geq \vect{b} \,\}\f$
@@ -2092,7 +2092,7 @@ rational coefficients only.
 The second theorem, called Weyl's theorem, states that any system of
 generators having rational coefficients defines a rational polyhedron:
 
-<B>Weyl's theorem</B>
+<B>Weyl's Theorem</B>
 
 If \f$A\f$ is a rational \f$m \times n\f$ matrix,
 \f$B\f$ is a rational \f$m' \times n\f$ matrix and
@@ -2122,7 +2122,7 @@ A set \f$C \sseq \Rset^n\f$ is a <EM>cone</EM> if
   \text{ for all } \lambda \in \nonnegRset.
 \f]
 
-<B>Polyhedral cone</B>
+<B>Polyhedral Cone</B>
 
 The polyhedron
 \f$\cP = \{\,\vect{x} \in \Rset^n \mid A\vect{x} \geq \vect{0}\,\}\f$
@@ -2131,7 +2131,7 @@ is a convex cone and is called <EM>polyhedral cone</EM>.
 A polyhedral cone is either <EM>pointed</EM>,
 having the origin as its only vertex, or has no vertices at all.
 
-<B>Lineality space</B>
+<B>Lineality Space</B>
 
 Given a polyhedron
 \f$\cP = \{\,\vect{x} \in \Rset^n \mid A\vect{x} \geq \vect{b}\,\}\f$,
@@ -2236,7 +2236,7 @@ Thus, in the sequel, by <EM>PPL representation of a polyhedra</EM>,
 we are referring to the corresponding representation of
 its corresponding polyhedral cone.
 
-<B>Valid linear inequalities</B>
+<B>Valid Linear Inequalities</B>
 
 Let \f$\cP\f$ be a convex polyhedron (or polytope) in
 \f$\Rset^n\f$. For a real \f$n\f$-vector \f$\vect{c}\f$ and a real number
@@ -2320,7 +2320,7 @@ by homogenization, then:
    a proper face of \f$C\f$, then \f$\vect{y}\f$ is an <EM>extremal ray</EM>
    of \f$C\f$.
 
-<B>Ray space</B>
+<B>Ray Space</B>
 
 Given the decomposition \f$\mathcal{V} + \mathcal{R} + \mathcal{L}\f$
 of a polyhedron \f$\cP\f$ the set \f$\mathcal{V} + \mathcal{R}\f$
@@ -2337,7 +2337,7 @@ dimension given for polyhedra.
 
 The spaces defined are connected by some consistency rules shown below.
 
-<B>Dimensionality rules</B>
+<B>Dimensionality Rules</B>
 
 In \f$\Rset^n\f$
 
@@ -2385,7 +2385,7 @@ if and only if the set of constraints that are saturated by \f$\vect{y}_1\f$
 is equal to the set of constraints that are saturated by \f$\vect{y}_2\f$.
 
 
-<B> Saturation matrix</B>
+<B>Saturation Matrix</B>
 
 A <EM>saturation matrix</EM> is a
 Boolean matrix that represent the connection between constraints and
@@ -2408,7 +2408,7 @@ s_{ij} =
 \f]
 For efficiency reasons, the PPL uses both the sat_g and sat_c matrices.
 
-<B>Saturation rule</B>
+<B>Saturation Rule</B>
 
 In an \f$n\f$-dimensional \f$\mathop{\mathrm{ray space}}\f$,
 -# Every inequality must be saturated by at least \f$n\f$ vertices/rays.
@@ -2433,7 +2433,7 @@ To see this, note that the minimal proper face of a polyhedral cone is equal
 to its lineality space. This for definition is composed by all \f$\vect{y}\f$
 of \f$C\f$ that satisfies \f$A \vect{x} = \vect{0}.\f$
 
-<B>Adjacent rays</B>
+<B>Adjacent Rays</B>
 
 Let \f$A\f$ be representing matrix of constraints of a cone \f$C\f$
 and \f$Q\f$ the set of rays that generate \f$C\f$. Then two rays
@@ -2444,7 +2444,7 @@ and \f$Q\f$ the set of rays that generate \f$C\f$. Then two rays
    \f$\vect{r}_2\f$, saturates all the constraints saturated by both
    \f$\vect{r}_1\f$ and \f$\vect{r}_2\f$.
 
-<B>Independence rule</B>
+<B>Independence Rule</B>
 
 -# No inequality is a positive combination of any other two inequalities
    or equalities.
@@ -2455,7 +2455,7 @@ and \f$Q\f$ the set of rays that generate \f$C\f$. Then two rays
 To remove redundant constraints/generators we will use the following
 characterization:
 
-<B>Redundancy rules</B>
+<B>Redundancy Rules</B>
 
 - An inequality is not redundant if it
   satisfies both point (1) of the saturation rule and point (1)
