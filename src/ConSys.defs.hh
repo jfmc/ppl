@@ -74,6 +74,8 @@ class Parma_Polyhedra_Library::ConSys : PPL_INTERNAL Matrix {
 public:
   //! Default constructor: builds an empty system of constraints.
   ConSys();
+  //! Builds the singleton system containing only constraint \p c.
+  ConSys(const Constraint& c);
   //! Ordinary copy-constructor.
   ConSys(const ConSys& cs);
   //! Destructor.
@@ -85,6 +87,9 @@ public:
 
   //! Swaps \p *this with the system of constraints \p y.
   void swap(ConSys& y);
+
+  //! The singleton system containing the zero-dim false constraint.
+  static ConSys zero_dim_empty;
 
   /*!
       A const_iterator is used to provide read-only access

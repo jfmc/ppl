@@ -29,6 +29,12 @@ Parma_Polyhedra_Library::ConSys::ConSys()
 }
 
 inline
+Parma_Polyhedra_Library::ConSys::ConSys(const Constraint& c)
+  : Matrix() {
+  Matrix::insert(c);
+}
+
+inline
 Parma_Polyhedra_Library::ConSys::ConSys(const ConSys& cs)
   : Matrix(cs) {
 }

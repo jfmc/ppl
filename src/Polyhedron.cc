@@ -41,13 +41,19 @@ namespace PPL = Parma_Polyhedra_Library;
 */
 const PPL::ConSys&
 PPL::Polyhedron::constraints() const {
-  if (is_empty())
-    throw std::invalid_argument("PPL::Polyhedron::constraints(): "
-				"*this is empty");
+
+  if (is_empty()) {
+    assert(con_sys.num_columns() == 0 && con_sys.num_rows() == 0);
+    // FIXME: does the user want an inconsistent constraint
+    // of the actual space dimension ?
+    return ConSys::zero_dim_empty;
+  }
+
   if (space_dimension() == 0) {
-    assert(con_sys.num_rows() == 0);
+    assert(con_sys.num_columns() == 0 && con_sys.num_rows() == 0);
     return con_sys;
   }
+
   if (!constraints_are_up_to_date())
     update_constraints();
 
@@ -78,13 +84,16 @@ PPL::Polyhedron::constraints() const {
 */
 const PPL::GenSys&
 PPL::Polyhedron::generators() const {
+
   if (is_empty()) {
-    assert(gen_sys.num_rows() == 0);
+    assert(gen_sys.num_columns() == 0 && gen_sys.num_rows() == 0);
     return gen_sys;
   }
-  if (space_dimension() == 0)
-    throw std::invalid_argument("PPL::Polyhedron::generators(): "
-				"*this zero-dimensional and non-empty");
+
+  if (space_dimension() == 0) {
+    assert(gen_sys.num_columns() == 0 && gen_sys.num_rows() == 0);
+    return GenSys::zero_dim_univ;
+  }
 
   if (!generators_are_up_to_date())
     update_generators();
@@ -1103,8 +1112,6 @@ throw_different_dimensions(const char* method,
 void
 PPL::Polyhedron::insert(const Constraint& c) {
 
-  assert(c.size() != 1);
-
   // Dimension-consistency check:
   // the dimension of `c' can not be greater than space_dimension().
   if (space_dimension() < c.size() - 1)
@@ -1146,8 +1153,6 @@ PPL::Polyhedron::insert(const Constraint& c) {
 */
 void
 PPL::Polyhedron::insert(const Generator& g) {
-
-  assert(g.size() > 1);
 
   // Dimension-consistency check:
   // the dimension of `g' can not be greater than space_dimension().

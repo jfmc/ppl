@@ -150,6 +150,8 @@ class Parma_Polyhedra_Library::GenSys : PPL_INTERNAL Matrix {
 public:
   //! Default constructor: builds an empty system of generators.
   GenSys();
+  //! Builds the singleton system containing only generator \p g.
+  GenSys(const Generator& g);
   //! Ordinary copy-constructor.
   GenSys(const GenSys& gs);
   //! Destructor.
@@ -161,6 +163,9 @@ public:
 
   //! Swaps \p *this with the system of generators \p y.
   void swap(GenSys& y);
+
+  //! The singleton systems containing the zero-dim vertex.
+  static GenSys zero_dim_univ;
 
   /*!
       A const_iterator is used to provide read-only access

@@ -181,8 +181,8 @@ private:
   //! with default values LinExpression::zero and 1, respectively.
   //! \exception std::invalid_argument thrown if \p d is zero.
   friend Generator
-  Parma_Polyhedra_Library::vertex(const LinExpression& e = LinExpression::zero,
-				  const Integer& d = Integer::one);
+  Parma_Polyhedra_Library::vertex(const LinExpression& e = LinExpression(0),
+				  const Integer& d = Integer(1));
 
 public:
   //! Ordinary copy-constructor.

@@ -29,6 +29,12 @@ Parma_Polyhedra_Library::GenSys::GenSys()
 }
 
 inline
+Parma_Polyhedra_Library::GenSys::GenSys(const Generator& g)
+  : Matrix() {
+  Matrix::insert(g);
+}
+
+inline
 Parma_Polyhedra_Library::GenSys::GenSys(const GenSys& gs)
   : Matrix(gs) {
 }
