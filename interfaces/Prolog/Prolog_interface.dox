@@ -341,21 +341,21 @@ ppl_new_Polyhedron_from_Polyhedron(+Topology_1, +Handle_1,
 <H2><CODE>ppl_Polyhedron_intersection_assign_and_minimize(+Handle_1,
                      +Handle_2)</CODE></H2>
 
-   Assign to the polyhedron referenced by <CODE>Handle_1</CODE>
+   Assigns to the polyhedron referenced by <CODE>Handle_1</CODE>
    its intersection with the polyhedra referenced by <CODE>Handle_2</CODE>.
 
 <H2><CODE>ppl_Polyhedron_poly_hull_assign(+Handle_1, +Handle_2)</CODE></H2>
 <H2><CODE>ppl_Polyhedron_poly_hull_assign_and_minimize(+Handle_1,
                +Handle_2)</CODE></H2>
 
-   Assign to the polyhedron referenced by <CODE>Handle_1</CODE>
+   Assigns to the polyhedron referenced by <CODE>Handle_1</CODE>
    its poly-hull with the polyhedra referenced by <CODE>Handle_2</CODE>.
 
 <H2><CODE>ppl_Polyhedron_poly_difference_assign(+Handle_1, +Handle_2)</CODE></H2>
 <H2><CODE>ppl_Polyhedron_poly_difference_assign_and_minimize(+Handle_1,
                +Handle_2)</CODE></H2>
 
-   Assign to the polyhedron referenced by <CODE>Handle_1</CODE>
+   Assigns to the polyhedron referenced by <CODE>Handle_1</CODE>
    its poly-difference with the polyhedron referenced by <CODE>Handle_2</CODE>.
 
 <H2><CODE>ppl_Polyhedron_BBRZ02_widening_assign(+Handle_1, +Handle_2)</CODE></H2>
@@ -419,6 +419,8 @@ ppl_new_Polyhedron_from_Polyhedron(+Topology_1, +Handle_1,
 
 <H2><CODE>ppl_Polyhedron_add_constraint(+Handle, +Constraint)</CODE></H2>
 
+<H2><CODE>ppl_Polyhedron_add_constraint_and_minimize(+Handle, +Constraint)</CODE></H2>
+
    Updates the polyhedron referenced by <CODE>Handle</CODE> to
    one obtained by adding
    <CODE>Constraint</CODE> to its constraint system.
@@ -433,7 +435,12 @@ ppl_new_Polyhedron_from_Polyhedron(+Topology_1, +Handle_1,
     in the vector space \f$\Rset^3\f$ satisfying the constraint
     \f$4x + y - 2z >= 5\f$.
 
+   Note that <CODE>ppl_Polyhedron_add_constraint_and_minimize/2</CODE>
+   will fail if, after adding the constraint, the polyhedron is empty.
+
 <H2><CODE>ppl_Polyhedron_add_generator(+Handle, +Generator)</CODE></H2>
+
+<H2><CODE>ppl_Polyhedron_add_generator_and_minimize(+Handle, +Generator)</CODE></H2>
 
    Updates the polyhedron referenced by <CODE>Handle</CODE> to
    one obtained by adding
