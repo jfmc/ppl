@@ -1099,9 +1099,8 @@ PPL::operator<=(const Polyhedron& x, const Polyhedron& y) {
 	    return false;
     }
   else {
-    // Here we have a NON-necessarily closed polyhedron:
-    // using the reduced scalar product operator ^,
-    // which ignores the \epsilon coefficient.
+    // Here we have a NON-necessarily closed polyhedron: using the
+    // reduced scalar product, which ignores the \epsilon coefficient.
     size_t eps_index = x_space_dim + 1;
     for (size_t i = cs.num_rows(); i-- > 0; ) {
       const Constraint& c = cs[i];
