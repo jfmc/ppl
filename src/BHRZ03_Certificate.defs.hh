@@ -30,6 +30,16 @@ site: http://www.cs.unipr.it/ppl/ . */
 #include <cassert>
 #include <vector>
 
+#ifdef PPL_DOXYGEN_INCLUDE_IMPLEMENTATION_DETAILS
+//! The convergence certificate for the BHRZ03 widening operator.
+/*!
+  Convergence certificates are used to instantiate the BHZ03 framework
+  so as to define widening operators for the finite powerset domain.
+  \note
+  The BHRZ03_Certificate can be used to certify the convergence of
+  both the BHRZ03 and the H79 widening operators.
+*/
+#endif // PPL_DOXYGEN_INCLUDE_IMPLEMENTATION_DETAILS
 class Parma_Polyhedra_Library::BHRZ03_Certificate {
 public:
   //! Default constructor.
@@ -40,12 +50,12 @@ public:
 
   //! The comparison function for certificates.
   /*!
-    \return     The returned value can be \f$-1\f$, \f$0\f$ or \f$1\f$.
+    \return
+    \f$-1\f$, \f$0\f$ or \f$1\f$ depending on whether \p *this
+    is smaller than, equal to, or greater than \p y, respectively.
 
     Compares \p *this with \p y, using a total ordering which is a
-    refinement of the lgo relation defined in BHRZ03.
-    The result is negative, zero, or positive if \p *this is smaller
-    than, equal to, or greater than y, respectively.
+    refinement of the lgo relation for the BHRZ03 widening.
   */
   int compare(const BHRZ03_Certificate& y) const;
 
@@ -57,12 +67,13 @@ public:
   //! polyhedron \p ph is stricly smaller than \p *this.
   bool is_stabilizing(const Polyhedron& ph) const;
   
+#ifdef PPL_DOXYGEN_INCLUDE_IMPLEMENTATION_DETAILS
   //! A total ordering on BHRZ03 certificates.
   /*!
     This binary predicate defines a total ordering on BHRZ03 certificates
-    which is a refinement of the BHRZ03 limited growth order relation.
-    The total order is used when storing information about sets of polyhedra.
+    which is used when storing information about sets of polyhedra.
   */
+#endif // PPL_DOXYGEN_INCLUDE_IMPLEMENTATION_DETAILS
   struct Compare {
     //! Returns <CODE>true</CODE> if and only if \p x comes before \p y.
     bool operator()(const BHRZ03_Certificate& x,
