@@ -966,7 +966,7 @@ PPL::Polyhedron::remove_dimensions(const std::set<Variable>& to_be_removed) {
   if (to_be_removed.empty())
     return;
 
-  // Checking for dimension-compatibility: the variable having
+  // Dimension-compatibility check: the variable having
   // maximum cardinality is the one occurring last in the set.
   if (to_be_removed.rbegin()->id() >= space_dimension())
     throw std::invalid_argument("void PPL::Polyhedron::remove_dimensions"
@@ -1060,23 +1060,22 @@ throw_different_dimensions(const char* method,
 */
 bool
 PPL::Polyhedron::add_constraints(ConSys& cs) {
-  size_t cs_num_columns = cs.num_columns();
+  size_t cs_space_dim = cs.space_dimension();
  
-  // Dimension-consistency check:
+  // Dimension-compatibility check:
   // the dimension of `cs' can not be greater than space_dimension().
-  if (space_dimension() < cs_num_columns - 1)
+  if (space_dimension() < cs_space_dim)
     throw_different_dimensions("PPL::Polyhedron::add_constraints(c)",
 			       *this, cs);
 
   // Adding no constraints is the same as checking for emptyness.
-  if (cs_num_columns == 0) {
-    assert(cs.num_rows() == 0);
+  if (cs.num_rows() == 0) {
+    assert(cs.num_columns() == 0);
     return !check_empty();
   }
 
   // Dealing with zero-dim space polyhedra first.
   if (space_dimension() == 0) {
-    assert(cs_num_columns == 1);
     // Checking for an inconsistent constraint.
     if (cs.begin() == cs.end())
       return true;
@@ -1099,8 +1098,8 @@ PPL::Polyhedron::add_constraints(ConSys& cs) {
     cs.sort_rows();
 
   // If needed, we extend `cs' to the right space dimension.
-  if (space_dimension() > cs_num_columns - 1)
-    cs.add_zero_columns(space_dimension() - cs_num_columns + 1);
+  if (space_dimension() > cs_space_dim)
+    cs.add_zero_columns(space_dimension() - cs_space_dim);
 
   obtain_sorted_constraints_with_sat_c();
 
@@ -1138,8 +1137,7 @@ throw_different_dimensions(const char* method,
 */
 void
 PPL::Polyhedron::insert(const Constraint& c) {
-
-  // Dimension-consistency check:
+  // Dimension-compatibility check:
   // the dimension of `c' can not be greater than space_dimension().
   if (space_dimension() < c.space_dimension())
     throw_different_dimensions("PPL::Polyhedron::insert(c)",
@@ -1181,10 +1179,10 @@ PPL::Polyhedron::insert(const Constraint& c) {
 */
 void
 PPL::Polyhedron::insert(const Generator& g) {
-
-  // Dimension-consistency check:
+  // Dimension-compatibility check:
   // the dimension of `g' can not be greater than space_dimension().
-  if (space_dimension() < g.space_dimension())
+  size_t g_space_dim = g.space_dimension();
+  if (space_dimension() < g_space_dim)
     throw_different_dimensions("PPL::Polyhedron::insert(g)",
 			       *this, g);
 
@@ -1198,6 +1196,8 @@ PPL::Polyhedron::insert(const Generator& g) {
   }
 
   if (generators_are_up_to_date()) {
+    // Since `gen_sys' is not empty, the space dimension
+    // of the inserted generator is automatically adjusted.
     gen_sys.insert(g);
     // After adding the new generator, constraints are no longer up-to-date.
     clear_generators_minimized();
@@ -1213,12 +1213,11 @@ PPL::Polyhedron::insert(const Generator& g) {
     if (g.type() != Generator::VERTEX)
       throw std::invalid_argument("void PPL::Polyhedron::insert(g): "
 				  "*this is empty and g is not a vertex");
-    // `gen_sys' is empty. Insert `g' and then resize it
-    // to have space_dimension() + 1 columns.
+    // `gen_sys' is empty: after inserting `g' we have to resize
+    // the system of generators to have the right dimension.
     gen_sys.insert(g);
-    if (gen_sys.num_columns() != space_dimension() + 1)
-      gen_sys.add_zero_columns(space_dimension()
-			       - gen_sys.num_columns() + 1);
+    if (space_dimension() != g_space_dim)
+      gen_sys.add_zero_columns(space_dimension() - g_space_dim);
     // No longer empty, generators up-to-date and minimized.
     clear_empty();
     set_generators_minimized();
@@ -1239,20 +1238,18 @@ PPL::Polyhedron::insert(const Generator& g) {
 */
 void
 PPL::Polyhedron::add_constraints_lazy(ConSys& cs) {
-  size_t cs_num_columns = cs.num_columns();  
-  // Dimension-consistency check:
+  // Dimension-compatibility check:
   // the dimension of `cs' can not be greater than space_dimension().
-  if (space_dimension() < cs_num_columns - 1)
+  size_t cs_space_dim = cs.space_dimension();  
+  if (space_dimension() < cs_space_dim)
     throw_different_dimensions("PPL::Polyhedron::add_constraints_lazy(c)",
 			       *this, cs);
 
-  // Adding zero-dimension constraints is a no-op.
-  // (By dimension-compatibility, this also capture the case
-  // when the polyhedron space is zero-dim.)
-  if (cs_num_columns == 0)
+  // Adding no constraints is a no-op.
+  if (cs.num_rows() == 0)
     return;
 
-  if (cs_num_columns == 1 && space_dimension() == 0) {
+  if (space_dimension() == 0) {
     // Checking for an inconsistent constraint.
     if (cs.begin() != cs.end())
       // Inconsistent constraint found.
@@ -1264,20 +1261,44 @@ PPL::Polyhedron::add_constraints_lazy(ConSys& cs) {
   if (!constraints_are_up_to_date())
     minimize();
   
+  // Adding constraints to an empty polyhedron is a no-op.
   if (is_empty())
     return;
 
+#if 0
+  //#ifdef BE_LAZY
+  // FIXME: this has to be checked carefully
+  // for correctness and/or efficiency.
+  size_t old_num_rows = con_sys.num_rows();
+  con_sys.resize(old_num_rows + cs.num_rows(), con_sys.num_columns());
+  for (size_t i = cs.num_rows(); i-- > 0; ) {
+    Constraint& c_new = con_sys[old_num_rows + i];
+    Constraint& c_old = cs[i];
+    if (c_old.is_equality())
+      c_new.set_is_equality();
+    c_new[0] = c_old[0];
+    for (size_t j = cs.num_columns(); j-- > 1; )
+      c_new[old_num_columns - 1 + j] = c_old[j];
+  }
+  con_sys.set_sorted(false);
+#else
   // Matrix::merge_rows_assign() requires both matrices to be sorted.
+  if (!con_sys.is_sorted())
+    con_sys.sort_rows();
+
   if (!cs.is_sorted())
     cs.sort_rows();
 
-  // If needed, we extend `cs' to the right space dimension.
-  if (space_dimension() > cs_num_columns - 1)
-    cs.add_zero_columns(space_dimension() - cs_num_columns + 1);
- 
-  con_sys.sort_rows();
+  // FIXME : why don't we allow `merge_rows_assign'
+  // to automatically adjust the numebr of columns ?
 
+  // If needed, we extend `cs' to the right space dimension.
+  if (space_dimension() > cs_space_dim)
+    cs.add_zero_columns(space_dimension() - cs_space_dim);
+ 
   con_sys.merge_rows_assign(cs);
+#endif
+
   // After adding new constraints, generators are no more up-to-date.
   clear_constraints_minimized();
   clear_generators_up_to_date();
@@ -1330,21 +1351,25 @@ PPL::Polyhedron::add_dimensions_and_constraints_lazy(const ConSys& cs) {
 */
 void
 PPL::Polyhedron::add_generators(GenSys& gs) {
-  size_t gs_num_columns = gs.num_columns();
+  size_t gs_space_dim = gs.space_dimension();
+  //  size_t gs_num_columns = gs.num_columns();
 
-  // Dimension-consistency check:
+  // Dimension-compatibility check:
   // the dimension of `gs' can not be greater than space_dimension().
-  if (space_dimension() < gs_num_columns - 1)
+  if (space_dimension() < gs_space_dim)
     throw_different_dimensions("PPL::Polyhedron::add_generators(g)",
 			       *this, gs);
 
   // Adding no generators is a no-op.
-  if (gs_num_columns == 0) {
-    assert(gs.num_rows() == 0);
+  if (gs.num_rows() == 0) {
+    assert(gs.num_columns() == 0);
     return;
   }
 
-  if (gs_num_columns == 1 && space_dimension() == 0) {
+  if (space_dimension() == 0) {
+    // Since `gs' is 0-dim and non-empty,
+    // it has to contain only vertices.
+    assert(gs[0].type() == Generator::VERTEX);
     set_zero_dim_univ();
     return;
   }
@@ -1353,8 +1378,8 @@ PPL::Polyhedron::add_generators(GenSys& gs) {
     gs.sort_rows();
   
   // If needed, we extend `gs' to the right space dimension.
-  if (space_dimension() > gs_num_columns - 1)
-    gs.add_zero_columns(space_dimension() - gs_num_columns + 1);
+  if (space_dimension() > gs_space_dim)
+    gs.add_zero_columns(space_dimension() - gs_space_dim);
 
   // We use `check_empty()' because we want the flag EMPTY
   // to precisely represents the status of the polyhedron
