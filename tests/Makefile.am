@@ -152,7 +152,7 @@ ORIGINAL_TESTS = \
 	timeelapse6 timeelapse7 timeelapse8 \
 	topclosed1 topclosed2 topclosed3 \
 	topclosure1 topclosure2 topclosure3 topclosure4 \
-	universe1 universe2 universe3 universe4 universe5 universe6 \
+	universe1 universe2 universe3 universe4 universe5 universe6 universe7 \
 	writeconsys1 \
 	writegensys1 writegensys2 writegensys3 \
 	writepolyhedron1 writepolyhedron2 writepolyhedron3 \
@@ -243,7 +243,8 @@ DERIVED_TESTS = \
 	nnc_smm1 \
 	nnc_timeelapse2 nnc_timeelapse5 nnc_timeelapse6 nnc_timeelapse7 \
 	nnc_timeelapse8 \
-	nnc_universe1 nnc_universe2 nnc_universe3 nnc_universe4 nnc_universe5 \
+	nnc_universe1 nnc_universe2 nnc_universe3 nnc_universe4 \
+	nnc_universe5 nnc_universe7 \
 	nnc_writepolyhedron2 nnc_writepolyhedron3
 
 #
@@ -595,6 +596,7 @@ universe3_SOURCES = universe3.cc
 universe4_SOURCES = universe4.cc
 universe5_SOURCES = universe5.cc
 universe6_SOURCES = universe6.cc
+universe7_SOURCES = universe7.cc
 
 writeconsys1_SOURCES = writeconsys1.cc
 
@@ -1070,6 +1072,8 @@ nnc_universe4_SOURCES = universe4.cc
 nnc_universe4_CXXFLAGS = $(DERIVED_CXXFLAGS)
 nnc_universe5_SOURCES = universe5.cc
 nnc_universe5_CXXFLAGS = $(DERIVED_CXXFLAGS)
+nnc_universe7_SOURCES = universe7.cc
+nnc_universe7_CXXFLAGS = $(DERIVED_CXXFLAGS)
 
 nnc_writepolyhedron2_SOURCES = writepolyhedron2.cc
 nnc_writepolyhedron2_CXXFLAGS = $(DERIVED_CXXFLAGS)
