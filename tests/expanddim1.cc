@@ -85,14 +85,54 @@ static void
 test3() {
 }
 
-// To be written.
+// Test with given generators.
 static void
 test4() {
+  C_Polyhedron ph1(2, C_Polyhedron::EMPTY);
+  ph1.add_generator(point(A));
+  ph1.add_generator(point(A + B));
+
+#if NOISY
+  print_generators(ph1, "*** ph1 ***");
+#endif
+
+  ph1.expand_dimension(A, 1);
+
+  C_Polyhedron known_result = ph1;
+
+  bool ok = (ph1 == known_result);
+
+#if NOISY
+  print_generators(ph1, "***  After ph1.expand_dimension(A, 1) ***");
+#endif
+
+  if (!ok)
+    exit(1);
 }
 
-// To be written.
+// Test with given constraints.
 static void
 test5() {
+  C_Polyhedron ph1(2);
+  ph1.add_constraint(A >= 0);
+  ph1.add_constraint(A + B <= 2);
+#if NOISY
+  print_constraints(ph1, "*** ph1 ***");
+#endif
+
+  ph1.expand_dimension(A, 1);
+
+  C_Polyhedron known_result = ph1;
+
+  bool ok = (ph1 == known_result);
+
+#if NOISY
+  print_constraints(ph1, "*** After ph1.expand_dimension(A, 1) ***");
+  print_generators(ph1, "***  After ph1.expand_dimension(A, 1) ***");
+#endif
+
+  if (!ok)
+    exit(1);
 }
 
 // To be written.
