@@ -302,7 +302,6 @@ PPL::Row::all_homogeneous_terms_are_zero() const {
   return true;
 }
 
-//#if POSITIVE
 bool
 PPL::Row::only_a_term_is_positive() const {
   assert(size() > 0);
@@ -320,7 +319,6 @@ PPL::Row::only_a_term_is_positive() const {
 	return false;
   return true;
 }
-//#endif
 
 bool
 PPL::Row::OK(size_t row_size,

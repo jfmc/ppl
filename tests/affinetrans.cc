@@ -41,9 +41,9 @@ main() {
   gs.insert(vertex(0*x + 3*y));
   gs.insert(vertex(3*x + 0*y));
   gs.insert(vertex(3*x + 3*y));
-  Polyhedron ph(gs);
+  Polyhedron ph(gs, true);
   LinExpression coeff = x + 4;
-
+ 
   Polyhedron p1(ph);
 #if NOISY
   print_generators(p1, "*** p1 ***");
@@ -61,17 +61,17 @@ main() {
   gs1_known_result.insert(vertex(4*x + 3*y));
   gs1_known_result.insert(vertex(7*x + 0*y));
   gs1_known_result.insert(vertex(7*x + 3*y));
-  Polyhedron p1_known_result(gs1_known_result);
+  Polyhedron p1_known_result(gs1_known_result, true);
 
   GenSys gs2_known_result;
   gs2_known_result.insert(vertex(-4*x + 0*y));
   gs2_known_result.insert(vertex(-4*x + 3*y));
   gs2_known_result.insert(vertex(-1*x + 0*y));
   gs2_known_result.insert(vertex(-1*x + 3*y));
-  Polyhedron p2_known_result(gs2_known_result);
+  Polyhedron p2_known_result(gs2_known_result, true);
 
   int retval = ((p1 == p1_known_result) && (p2 == p2_known_result)) ? 0 : 1;
-  
+
 #if NOISY
   print_generators(p1 ,"*** p1 ***");
   print_generators(p1_known_result, "*** p1_known_result ***");

@@ -39,7 +39,7 @@ main() {
   Variable z(2);
   GenSys gs;
   gs.insert(vertex(0*x + 1*y +2*z));
-  Polyhedron ph(gs);
+  Polyhedron ph(gs, true);
 
   set<Variable> to_be_removed;
   to_be_removed.insert(z);

@@ -36,10 +36,10 @@ int main() {
 
   Variable x(0);
   Variable y(1);
-  Polyhedron p1;
+  Polyhedron p1(0, Polyhedron::UNIVERSE, true);
   GenSys gs;
   gs.insert(vertex(x + y));
-  Polyhedron p2(gs);
+  Polyhedron p2(gs, true);
   try {
     p2.convex_hull_assign_and_minimize(p1);
   }

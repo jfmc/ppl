@@ -61,7 +61,7 @@ main() {
 
   // This is the base case:
   // append(A,B,C) :- A = [], B = C.
-  Polyhedron base(3);
+  Polyhedron base(3, Polyhedron::UNIVERSE, true);
   base.insert(A == 0);
   base.insert(B >= 0);
   base.insert(C == B);
@@ -71,7 +71,7 @@ main() {
 
   // This is the inductive case:
   // append(A,B,C) :- A = [X|D], B = E, C = [X|F], append(D,E,F).
-  Polyhedron inductive(6);
+  Polyhedron inductive(6, Polyhedron::UNIVERSE, true);
   inductive.insert(A + F == C + D);
   inductive.insert(B == E);
   inductive.insert(C + D >= A);
@@ -89,7 +89,7 @@ main() {
 #endif
 
   // Contains the polyhedron computed at the previous iteration.
-  Polyhedron previous;
+  Polyhedron previous(0, Polyhedron::UNIVERSE, true);
   do {
     previous = current;
     current = inductive;
@@ -106,20 +106,24 @@ main() {
     current.remove_dimensions(dimensions_to_remove);
     assert(current.OK());
 #if NOISY
+    print_constraints(previous, "*** previous ***");
+    print_generators(previous, "*** previous ***");
     print_constraints(current, "*** after remove_dimensions ***");
+    print_generators(current, "*** after remove_dimensions ***");
 #endif
     current.convex_hull_assign_and_minimize(previous);
 #if NOISY
     print_constraints(current, "*** after convex_hull_assign_and_minimize***");
+    print_generators(current, "*** after convex_hull_assign_and_minimize***");
 #endif
   } while (current != previous);
 
-  Polyhedron expected(3);
+  Polyhedron expected(3, Polyhedron::UNIVERSE, true);
   expected.insert(A + B == C);
   expected.insert(B >= 0);
   expected.insert(C >= B);
 #if NOISY
-    print_constraints(expected, "*** expected ***");
+  print_constraints(expected, "*** expected ***");
 #endif
 
   return current == expected ? 0 : 1;

@@ -78,7 +78,7 @@ main() {
   gs.insert(vertex(0*x + 2*y + 0*z));
   gs.insert(vertex(2*x + 2*y + 0*z));
   gs.insert(vertex(x + y + pyramid_height*z));
-  Polyhedron pyramid(gs);
+  Polyhedron pyramid(gs, true);
 
 #if NOISY
     print_constraints(pyramid, "*** pyramid constraints ***");
@@ -89,7 +89,7 @@ main() {
 
   for (size_t i = 0; i <= 6; ++i) {
     // Above.
-    Polyhedron hyper_space_above(3);
+    Polyhedron hyper_space_above(3, Polyhedron::UNIVERSE, true);
     hyper_space_above.insert(z >= ph_nv[i].plane_height);
 
     Polyhedron computed_result = pyramid;
@@ -105,7 +105,7 @@ main() {
 #endif
 
     // Below.
-    Polyhedron hyper_space_below(3);
+    Polyhedron hyper_space_below(3, Polyhedron::UNIVERSE, true);
     hyper_space_below.insert(z <= ph_nv[i].plane_height);
 
     computed_result = pyramid;

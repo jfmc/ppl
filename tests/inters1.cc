@@ -38,7 +38,7 @@ main() {
   Variable y(1);
   Variable z(2);
 
-  Polyhedron icosahedron(3);
+  Polyhedron icosahedron(3, Polyhedron::UNIVERSE, true);
   icosahedron.insert(4*x - 2*y - z + 14 >= 0);
   icosahedron.insert(4*x + 2*y - z + 2 >= 0);
   icosahedron.insert(x + y - 1 >= 0);
@@ -60,7 +60,7 @@ main() {
   icosahedron.insert(-x - y + 5 >= 0);
   icosahedron.insert(-x - y -2*z +13 >= 0);
 
-  Polyhedron column(3);
+  Polyhedron column(3, Polyhedron::UNIVERSE, true);
   column.insert(y >= 2);
   column.insert(y <= 4);
   column.insert(x >= 0);
@@ -69,7 +69,7 @@ main() {
   Polyhedron computed_result = icosahedron;
   computed_result.intersection_assign_and_minimize(column);
 
-  Polyhedron known_result(3);
+  Polyhedron known_result(3, Polyhedron::UNIVERSE, true);
   known_result.insert(-4*x - 2*y + z >= -8);
   known_result.insert(-4*x + 2*y + z >= 4);
   known_result.insert(-2*x - y + 2*z >= -1);

@@ -157,9 +157,9 @@ public:
   //! terms of \p *this are zero.
   bool all_homogeneous_terms_are_zero() const;
 
-  //#if POSITIVE
+  //! Returns <CODE>true</CODE> if and only if all the terms of \p *this
+  //! except one that is positivie.
   bool only_a_term_is_positive() const;
-  //#endif
 
   //! Output operator.
   friend std::ostream&

@@ -787,7 +787,7 @@ PPL::Matrix::back_substitute(size_t rank) {
   of the \f$n \times n\f$ identity matrix.
 */
 void
-PPL::Matrix::add_rows_and_columns(size_t n) {
+PPL::Matrix::add_rows_and_columns(size_t n, bool pos) {
   assert(n > 0);
   bool was_sorted = is_sorted();
   size_t old_num_rows = num_rows();
@@ -803,7 +803,10 @@ PPL::Matrix::add_rows_and_columns(size_t n) {
     // of the identity matrix.
     Row& r = x[i];
     r[c++] = 1;
-    r.set_is_line_or_equality();
+    if (pos)
+      r.set_is_ray_or_vertex_or_inequality();
+    else
+      r.set_is_line_or_equality();
   }
   // If the old matrix was empty, the last row added is either
   // a positivity constraint or a vertex.

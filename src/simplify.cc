@@ -77,8 +77,10 @@ namespace PPL = Parma_Polyhedra_Library;
   where \f$\lambda_1, \lambda_2\f$ can be any real number.
 
 */
+
 int
 PPL::Polyhedron::simplify(Matrix& mat, SatMatrix& sat) {
+
   size_t num_rows = mat.num_rows();
   size_t num_columns = mat.num_columns();
   size_t num_cols_sat = sat.num_columns();
@@ -292,6 +294,7 @@ PPL::Polyhedron::simplify(Matrix& mat, SatMatrix& sat) {
   // expression obtained considering the equalities starting
   // from the last one.
   mat.back_substitute(num_equal_or_line);
+
   // The returned value is the number of irredundant equalities i.e.,
   // the rank of the sub-matrix of `mat' containing only equalities.
   // (See the Introduction for definition of lineality space dimension).

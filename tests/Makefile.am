@@ -26,7 +26,7 @@ TESTS = addconstraints1 addconstraints2 addconstraints3 \
 	affinetrans \
         append1 append2 \
         empty1 \
-        error1 error2 error3 error4 error5 \
+        error1 error2 error3 error4 error5 error6\
         inters1 inters2 \
 	onepoint \
         permute \
@@ -53,6 +53,7 @@ error2_SOURCES = error2.cc
 error3_SOURCES = error3.cc
 error4_SOURCES = error4.cc
 error5_SOURCES = error5.cc
+error6_SOURCES = error6.cc
 
 inters1_SOURCES = inters1.cc
 inters2_SOURCES = inters2.cc

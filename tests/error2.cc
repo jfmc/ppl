@@ -41,7 +41,7 @@ main() {
   gs.insert(vertex(x + y));
   gs.insert(ray(x + 0*y));
   gs.insert(ray(0*x + y));
-  Polyhedron ph(gs);
+  Polyhedron ph(gs, true);
   LinExpression coeff = x + y + 1;
   try {
     // This is an invalid denominator.

@@ -38,7 +38,7 @@ main() {
   Variable y(1);
   Variable z(2);
 
-  Polyhedron ph(3, Polyhedron::EMPTY);
+  Polyhedron ph(3, Polyhedron::EMPTY, true);
   ph.insert(vertex(-1000*x - 9*y, 16));
 
 #if NOISY
@@ -46,7 +46,7 @@ main() {
   print_constraints(ph, "*** constraints ***");
 #endif
 
-  Polyhedron known_result(3);
+  Polyhedron known_result(3, Polyhedron::UNIVERSE, true);
   known_result.insert(2*x == -125);
   known_result.insert(16*y == -9);
   known_result.insert(z == 0);

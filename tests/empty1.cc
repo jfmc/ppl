@@ -36,12 +36,12 @@ main() {
 
   // This is the easy way to create
   // the empty polyhedron in the zero-dimension space.
-  Polyhedron ph1(0, Polyhedron::EMPTY);
+  Polyhedron ph1(0, Polyhedron::EMPTY, true);
 
   // This is a more convoluted way of doing the same thing
   // using an empty system of generators.
   GenSys gs;
-  Polyhedron ph2(gs);
+  Polyhedron ph2(gs, true);
 
   int retval = (ph1 == ph2 && ph1.check_empty() && ph2.check_empty()) ? 0 : 1;
 
@@ -49,6 +49,6 @@ main() {
   print_constraints(ph1, "*** ph1 ***");
   print_constraints(ph2, "*** ph2 ***");
 #endif
-
+ 
   return retval;
 }

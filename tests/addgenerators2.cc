@@ -36,7 +36,7 @@ main() {
 
   Variable x(0);
 
-  Polyhedron ph1(2, Polyhedron::EMPTY);
+  Polyhedron ph1(2, Polyhedron::EMPTY, true);
   
 #if NOISY
   print_generators(ph1, "*** before ***");
@@ -44,7 +44,7 @@ main() {
   
   GenSys gs;
   gs.insert(vertex());
-  gs.insert(line(x));
+  gs.insert(ray(x));
   
   
   ph1.add_generators(gs);
@@ -53,10 +53,10 @@ main() {
   print_generators(ph1, "*** add_generators ***");
 #endif
   
-  Polyhedron known_result(2, Polyhedron::EMPTY);
+  Polyhedron known_result(2, Polyhedron::EMPTY, true);
   known_result.insert(vertex());
-  known_result.insert(line(x));
-  
+  known_result.insert(ray(x));
+ 
   int retval = (ph1 == known_result) ? 0 : 1;
   
   return retval;

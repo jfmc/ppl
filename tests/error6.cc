@@ -1,4 +1,4 @@
-/* Remove some variables from the space.
+/* An incorrect use of the function affine_image.
    Copyright (C) 2001 Roberto Bagnara <bagnara@cs.unipr.it>
 
 This file is part of the Parma Polyhedra Library (PPL).
@@ -22,8 +22,8 @@ For the most up-to-date information see the Parma Polyhedra Library
 site: http://www.cs.unipr.it/ppl/ . */
 
 #include "ppl_install.hh"
-#include "print.hh"
 #include "ehandlers.hh"
+#include <stdexcept>
 
 using namespace std;
 using namespace Parma_Polyhedra_Library;
@@ -34,36 +34,25 @@ int
 main() {
   set_handlers();
 
+  Variable x(0);
   Variable y(1);
-  Variable z(2);
-  Variable w(6);
 
-  // This is the set of the variables that we want to remove.
-  set<Variable> to_be_removed;
-  to_be_removed.insert(y);
-  to_be_removed.insert(z);
-  to_be_removed.insert(w);
-
-  // A 10-dim space, empty polyhedron.
-  Polyhedron ph(10, Polyhedron::EMPTY, true);  
-  ph.remove_dimensions(to_be_removed);
-
-  // A 7-dim space, empty polyhedron.
-  Polyhedron known_result(7, Polyhedron::EMPTY, true);
-
-  int retval = (known_result == ph) ? 0 : 1;
-
+  GenSys gs;
+  gs.insert(vertex(x + y));
+  gs.insert(line(x + y));
+  try {
+    Polyhedron ph(gs, true);
+  }
+  catch (invalid_argument& e) {
 #if NOISY
-  cout << "*** ph ***"
-       << endl
-       << ph
-       << endl;
-
-  cout << "*** known_result ***"
-       << endl
-       << known_result
-       << endl;
+    cout << "invalid_system_of_generators: " << e.what() << endl;
 #endif
+    exit(0);
+  }
+  catch (...) {
+    exit(1);
+  }
 
-  return retval;
+  // Should not get here.
+  return 1;
 }

@@ -99,7 +99,7 @@ fix_point(Polyhedron& start, Polyhedron& induct, Polyhedron& finish,
 #endif
 
   // Contains the polyhedron computed at the previous iteration.
-  Polyhedron previous;
+  Polyhedron previous(0, Polyhedron::UNIVERSE, true);
   do {
     previous = current;
     current = induct;
@@ -133,9 +133,9 @@ fix_point(Polyhedron& start, Polyhedron& induct, Polyhedron& finish,
 
 void
 append_size_rel(Polyhedron& ph) {
-  Polyhedron start;
-  Polyhedron induct;
-  Polyhedron expect;
+  Polyhedron start(0, Polyhedron::UNIVERSE, true);
+  Polyhedron induct(0, Polyhedron::UNIVERSE, true);
+  Polyhedron expect(0, Polyhedron::UNIVERSE, true);
   size_t recursive_offset;
   unsigned int arity;
   append_init(start, induct, expect, recursive_offset, arity);
@@ -177,7 +177,7 @@ permute_init(Polyhedron& base, Polyhedron& inductive, Polyhedron& expected,
   inductive.insert(B == C + 1);
   inductive.insert(E == G + 1);
   inductive.insert(F == A);
-  Polyhedron ph_append;
+  Polyhedron ph_append(0, Polyhedron::UNIVERSE, true);
   append_size_rel(ph_append);
   shift_rename_insert(ph_append, 3, inductive);
   shift_rename_insert(ph_append, 7, inductive);
@@ -202,27 +202,27 @@ int
 main() {
   set_handlers();
 
-  Polyhedron start;
-  Polyhedron induct;
-  Polyhedron expect;
+  Polyhedron start(0, Polyhedron::UNIVERSE, true);
+  Polyhedron induct(0, Polyhedron::UNIVERSE, true);
+  Polyhedron expect(0, Polyhedron::UNIVERSE, true);
   size_t recursive_offset;
   unsigned int arity;
   permute_init(start, induct, expect, recursive_offset, arity);
-  Polyhedron final;
+  Polyhedron final(0, Polyhedron::UNIVERSE, true);
   fix_point(start, induct, final, recursive_offset, arity);
 
 #if NOISY
     print_constraints(expect, "*** expected ***");
 #endif
 
-    Polyhedron final1;
+    Polyhedron final1(0, Polyhedron::UNIVERSE, true);
     final1 = induct;
     shift_rename_insert(final, recursive_offset, final1);
 
 #if NOISY
     print_constraints(final1, "*** after shift_rename_insert ***");
 #endif
-    Polyhedron final2;
+    Polyhedron final2(0, Polyhedron::UNIVERSE, true);
     final2 = final1;
     Variable A(0);
     Variable B(1);

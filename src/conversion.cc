@@ -351,22 +351,19 @@ PPL::Polyhedron::conversion(Matrix& source,
   size_t dest_num_rows = dest.num_rows();
   size_t dest_num_columns = dest.num_columns();
 
-#if POSITIVE
-  size_t num_positive = sat.num_columns() - source_num_rows;
+  size_t num_cols_positive = sat.num_columns() - source_num_rows;
+  size_t num_rows_positive = sat.num_rows() - dest_num_rows;
 
-  // `sat' have the same number of columns of `source' rows and
-  // the same number of rows of `dest' rows (because of the choice
+  // `sat' have the same number of columns of `source' rows plus the
+  // `num_cols_positve' and the same number of rows of `dest' rows
+  // plus the `num_rows_positive' (because of the choice
   // made for the definition of `sat').
-  assert(source_num_rows + num_positive == sat.num_columns());
-#else  
-  assert(source_num_rows == sat.num_columns());
-#endif
-  assert(dest_num_rows == sat.num_rows());
+  assert(source_num_rows + num_cols_positive == sat.num_columns());
+  assert(dest_num_rows + num_rows_positive == sat.num_rows());
 
   // Making conversion for the sub-matrix whose rows are those
   // of `source' from the one indexed by `start' to the last one.
   for (size_t k = start; k < source_num_rows; ) {
-
     // Constraints and generators must have the same dimension,
     // otherwise the scalar product below will bomb.
     assert(source_num_columns == dest_num_columns);
@@ -546,13 +543,9 @@ PPL::Polyhedron::conversion(Matrix& source,
       // generator only verifies the constraint, so we set to 1 the
       // corresponding element of `sat'. This is what we do with the
       // following instruction.
-      if (source[k].is_ray_or_vertex_or_inequality()) {
-#if POSITIVE
-	sat[num_lines_or_equalities].set(num_positive + k);
-#else
-	sat[num_lines_or_equalities].set(k);
-#endif
-      }
+      if (source[k].is_ray_or_vertex_or_inequality())
+	sat[num_rows_positive + num_lines_or_equalities].set(num_cols_positive
+							     + k);
       // If the k-th constraint is an equality, as we have chosen the
       // `num_lines_or_equalities' generator such above, it does not verify
       // the constraint, so it has to be removed from the system of generators.
@@ -562,7 +555,7 @@ PPL::Polyhedron::conversion(Matrix& source,
 		  dest[dest_num_rows]);
 	std::swap(scalar_prod[dest_num_rows],
 		  scalar_prod[num_lines_or_equalities]);
-	std::swap(sat[num_lines_or_equalities],
+	std::swap(sat[num_rows_positive + num_lines_or_equalities],
 		  sat[dest_num_rows]);
 	dest.set_sorted(false);
       }
@@ -594,7 +587,8 @@ PPL::Polyhedron::conversion(Matrix& source,
 	if (sp_sign == 0) {
 	  std::swap(dest[sup_bound], dest[lines_or_equal_bound]);
 	  std::swap(scalar_prod[sup_bound], scalar_prod[lines_or_equal_bound]);
-	  std::swap(sat[sup_bound], sat[lines_or_equal_bound]);
+	  std::swap(sat[num_rows_positive + sup_bound],
+		    sat[num_rows_positive + lines_or_equal_bound]);
 	  ++lines_or_equal_bound;
 	  ++sup_bound;
 	  dest.set_sorted(false);
@@ -603,7 +597,8 @@ PPL::Polyhedron::conversion(Matrix& source,
 	  --inf_bound;
 	  std::swap(dest[sup_bound], dest[inf_bound]);
 	  std::swap(scalar_prod[sup_bound], scalar_prod[inf_bound]);
-	  std::swap(sat[sup_bound], sat[inf_bound]);
+	  std::swap(sat[num_rows_positive + sup_bound],
+		    sat[num_rows_positive + inf_bound]);
 	  dest.set_sorted(false);
 	}
 	else
@@ -672,32 +667,28 @@ PPL::Polyhedron::conversion(Matrix& source,
 	      // j runs through the rows of dest containing
 	      // the rays that do not verify the k-th constraint.
 	      SatRow new_satrow;
-#if POSITIVE
-	      assert(sat[i].last() < 0
-		     || unsigned(sat[i].last()) < num_positive + k);
-	      assert(sat[j].last() < 0
-		     || unsigned(sat[j].last()) < num_positive + k);
-#else
-	      assert(sat[i].last() < 0 || unsigned(sat[i].last()) < k);
-	      assert(sat[j].last() < 0 || unsigned(sat[j].last()) < k);
-#endif
+	      assert(sat[num_rows_positive + i].last() < 0
+		     || unsigned(sat[num_rows_positive + i].last())
+		     < num_cols_positive + k);
+	      assert(sat[num_rows_positive + j].last() < 0
+		     || unsigned(sat[num_rows_positive + j].last())
+		     < num_cols_positive + k);
 	      // `new_satrow' is a Boolean row that has 1 in position
 	      // where `sat[i]' or `sat[j]' has 1; this new row of
 	      // `sat' correspond to a ray that verify all the constraints
 	      // verified by both `dest[i]' and `dest[j]'.
-	      set_union(sat[i], sat[j], new_satrow);
+	      set_union(sat[num_rows_positive + i],
+			sat[num_rows_positive + j], new_satrow);
 
 	      // `num_common_satur' indicates the number of constraints
 	      // that are saturated by both `dest[i]' and `dest[j]'.
 	      // Note that the set to 1 bits of `sat[i]' and `sat[j]'
-	      // have to be less than `k' because we are treating the
+	      // have to be less than `k' (or `k + num_cols_positive', if 
+	      // `num_cols_positive' is different from 0)
+	      // because we are treating the
 	      // `k'-th constraint: we use 'sat.set()' only with k argument.
-#if POSITIVE	      
-	      size_t num_common_satur = k + num_positive
+	      size_t num_common_satur = k + num_cols_positive
 		- new_satrow.count_ones();
-#else
-	      size_t num_common_satur = k - new_satrow.count_ones();
-#endif
 	      if (num_common_satur >=
 		  source_num_columns - num_lines_or_equalities - 2) {
 		// To check if the new ray is an extremal ray we refer
@@ -721,12 +712,13 @@ PPL::Polyhedron::conversion(Matrix& source,
 		  // definition in the Introduction) otherwise
 		  // the new ray is redundant.
 		
-		  if (l != i && l != j && sat[l] <= new_satrow) {
+		  if (l != i && l != j && sat[num_rows_positive + l]
+		      <= new_satrow) {
 		    redundant = true;
 		    break;
 		  }
-		if (!redundant) {	
-		  // If the new ray obtained as positive combination of
+		if (!redundant) {
+      		  // If the new ray obtained as positive combination of
 		  // the i-th and the j-th ones is not redundant, we add it
 		  // to `dest' and we add the correspondent row to `sat'.
 		  if (dest_num_rows == dest.num_rows()) {
@@ -735,7 +727,7 @@ PPL::Polyhedron::conversion(Matrix& source,
 		    sat.add_row(new_satrow);
 		  }
 		  else
-		    sat[dest_num_rows] = new_satrow;
+		    sat[num_rows_positive + dest_num_rows] = new_satrow;
 
 		  Row& new_row = dest[dest_num_rows];
 		  // The following fragment optimizes the computation of
@@ -788,13 +780,8 @@ PPL::Polyhedron::conversion(Matrix& source,
 	    // [lines_or_equal_bound, sup_bound-1]
 	    // satisfy the `k'-th constraint.
 	    // We record this fact in the saturation matrix.
-            for (size_t l = lines_or_equal_bound; l < sup_bound; ++l) {
-#if POSITIVE
-              sat[l].set(num_positive + k);
-#else
-	      sat[l].set(k);
-#endif
-	    }
+            for (size_t l = lines_or_equal_bound; l < sup_bound; ++l)
+              sat[num_rows_positive + l].set(num_cols_positive + k);
 	  }
 	  else
 	    // If the `k'-th constraint is an equality, the `dest' rows
@@ -813,7 +800,7 @@ PPL::Polyhedron::conversion(Matrix& source,
 	    --i;
 	    std::swap(dest[i], dest[j]);
 	    std::swap(scalar_prod[i], scalar_prod[j]);
-	    std::swap(sat[i], sat[j]);
+	    std::swap(sat[num_rows_positive +i], sat[num_rows_positive + j]);
 	    ++j;
 	    dest.set_sorted(false);
 	  }
@@ -840,11 +827,14 @@ PPL::Polyhedron::conversion(Matrix& source,
     source.erase_to_end(source_num_rows);
   if (dest_num_rows < dest.num_rows()) {
     dest.erase_to_end(dest_num_rows);
-    sat.rows_erase_to_end(dest_num_rows);
+    sat.rows_erase_to_end(num_rows_positive + dest_num_rows);
   }
-
-#if POSITIVE
-  if (num_positive != 0) { 
+  // We erase the columns of saturation matrix that consider the behaviour
+  // of the generators with the constraints od positivity of the variables.
+  // `num_cols_positive' is different form zero if and only if `dest' is the
+  // system of generators and `source' the system of constraints and the
+  // polyhedron is positive.
+  if (num_cols_positive != 0) { 
     SatMatrix tmp_sat(dest_num_rows, source_num_rows);
     for (size_t i = 0; i < dest_num_rows; ++i)
       for (size_t j = sat[i].last(); j >= source_num_columns;
@@ -854,8 +844,5 @@ PPL::Polyhedron::conversion(Matrix& source,
   }
   else 
     sat.columns_erase_to_end(source_num_rows);
-#endif
-
-  sat.columns_erase_to_end(source_num_rows);
   return num_lines_or_equalities;
 }

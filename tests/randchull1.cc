@@ -64,7 +64,7 @@ main() {
   const Integer maxc = 10000;
 
   // Polyhedra born full.
-  Polyhedron ph(3);
+  Polyhedron ph(3, Polyhedron::UNIVERSE, true);
   // We need an empty one.
   ph.insert(x <= 0);
   ph.insert(x >= 1);

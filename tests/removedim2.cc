@@ -44,7 +44,7 @@ main() {
     gs.insert(vertex(e));
   }
 
-  Polyhedron ph(gs);
+  Polyhedron ph(gs, true);
 
 #if NOISY
   cout << "*** before ***" << endl;
@@ -85,7 +85,7 @@ main() {
     gs.insert(vertex(expr));
   }
 
-  Polyhedron known_result(gs);
+  Polyhedron known_result(gs, true);
 
 #if NOISY
   cout << "*** known_result ***" << endl;

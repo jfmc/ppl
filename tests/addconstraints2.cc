@@ -40,7 +40,7 @@ main() try {
   cs1.insert(x >= 0);
   cs1.insert(y >= 0);
   cs1.insert(x - y >= 0);
-  Polyhedron ph(cs1);
+  Polyhedron ph(cs1, true);
 
 #if NOISY
   print_constraints(ph, "*** ph before ***");

@@ -33,8 +33,6 @@ site: http://www.cs.unipr.it/ppl/ . */
 #include "Polyhedron.types.hh"
 #include <set>
 
-#define POSITIVE 1
-
 namespace Parma_Polyhedra_Library {
 
   //! Returns <CODE>true</CODE> if and only if
@@ -367,10 +365,10 @@ public:
 
   //! Returns the dimension of the vector space enclosing \p *this.
   size_t space_dimension() const;
- #if POSITIVE
+
   //! Returns if the polyhedron is positive.
   bool is_positive() const;
-#endif
+
   //! Intersects \p *this with polyhedron \p y and
   //! assigns the result to \p *this.
   //! \exception std::invalid_argument thrown if \p *this and \p y
@@ -440,6 +438,8 @@ public:
   //!                                  are dimension-incompatible
   //!                                  or if a ray/line is inserted
   //!                                  in an empty polyhedron.
+  //! \exception std::invalid_argument thrown if \p *this is a positive
+  //!                                  pointed cone and \p g is a line
   void insert(const Generator& g);
 
   //! Transforms the polyhedron \p *this, assigning an affine expression
@@ -549,6 +549,8 @@ public:
   //!                     can be modified.
   //! \exception std::invalid_argument thrown if \p *this and
   //!                                  \p gs are dimension-incompatible.
+  //! \exception std::invalid_argument thrown if \p *this is a positive
+  //!                                  pointed cone and \p gs contains a line.
   void add_generators_and_minimize(GenSys& gs);
   //! Adds the specified generators without minimizing.
   //! \param  gs             The generators that will be added to the
@@ -557,6 +559,8 @@ public:
   //!                        it can be modified.
   //! \exception std::invalid_argument thrown if \p *this and \p gs
   //!                                  are dimension-incompatible.
+  //! \exception std::invalid_argument thrown if \p *this is a positive
+  //!                                  pointed cone and \p gs contains a line.
   void add_generators(GenSys& gs);
 
   //! Returns <CODE>true</CODE> if and only if \p *this is
@@ -598,10 +602,10 @@ private:
   SatMatrix sat_g;
   //! The status flags to keep track of the polyhedron's internal state.
   Status status;
-#if POSITIVE
+
   //! The flag says if the polyhedron is positive.
   bool positive;
-#endif
+
 
 public:
   //! Returns <CODE>true</CODE> if and only if
@@ -654,7 +658,8 @@ private:
                              Matrix& mat2,
                              SatMatrix& sat1,
                              SatMatrix& sat2,
-			     size_t add_dim);
+			     size_t add_dim,
+			     bool pos);
 
   //! Performs the conversion from constraints to generators and vice versa.
   static size_t conversion(Matrix& entry,
@@ -666,7 +671,6 @@ private:
   //! <CODE>conversion()</CODE>.
   static int simplify(Matrix& mat, SatMatrix& sat);
 
-#if POSITIVE
   //! Builds and simplifies constraints from generators (or vice versa).
   static bool minimize(bool con_to_gen, Matrix& source, Matrix& dest,
 		       SatMatrix& sat, bool pos);
@@ -676,17 +680,6 @@ private:
 			       Matrix& source1, Matrix& dest, SatMatrix& sat,
 			       const Matrix& source2,
 			       bool pos);
-#else
-  //! Builds and simplifies constraints from generators (or vice versa).
-  static bool minimize(bool con_to_gen, Matrix& source, Matrix& dest,
-		       SatMatrix& sat);
-
-  //! Adds given constraints and builds minimized corresponding generators
-  //! or vice versa.
-  static bool add_and_minimize(bool con_to_gen,
-			       Matrix& source1, Matrix& dest, SatMatrix& sat,
-			       const Matrix& source2);
-#endif
 };
 
 namespace std {

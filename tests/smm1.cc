@@ -87,6 +87,7 @@ constraints(Polyhedron& ph,
   less_than(ph, N, D);
   less_than(ph, D, R);
   less_than(ph, R, S);
+
 }
 
 int
@@ -108,7 +109,7 @@ main() try {
     for (int C2 = 0; C2 <= 1; ++C2)
       for (int C3 = 0; C3 <= 1; ++C3)
 	for (int C4 = 0; C4 <= 1; ++C4) {
-	  Polyhedron ph(8);
+	  Polyhedron ph(8, Polyhedron::UNIVERSE, true);
 	  constraints(ph,
 		      S, E, N, D, M, O, R, Y,
 		      C1, C2, C3, C4);
@@ -128,7 +129,7 @@ main() try {
 
 	    solution_found = true;
 
-	    Polyhedron expected(8);
+	    Polyhedron expected(8, Polyhedron::UNIVERSE, true);
 	    expected.insert(S == 9);
 	    expected.insert(E == 5);
 	    expected.insert(N == 6);

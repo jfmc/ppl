@@ -100,7 +100,7 @@ fix_point(Polyhedron& start, Polyhedron& induct, Polyhedron& finish,
 #endif
 
   // Contains the polyhedron computed at the previous iteration.
-  Polyhedron previous;
+  Polyhedron previous(0, Polyhedron::UNIVERSE, true);
   do {
     previous = current;
     current = induct;
@@ -129,16 +129,16 @@ int
 main() {
   set_handlers();
 
-  Polyhedron start;
-  Polyhedron induct;
-  Polyhedron expect;
+  Polyhedron start(0, Polyhedron::UNIVERSE, true);
+  Polyhedron induct(0, Polyhedron::UNIVERSE, true);
+  Polyhedron expect(0, Polyhedron::UNIVERSE, true);
   size_t recursive_offset;
   unsigned int arity;
   unsigned int num_vars;
   append_init(start, induct, expect, recursive_offset, arity, num_vars);
-  Polyhedron final;
+  Polyhedron final(0, Polyhedron::UNIVERSE, true);
   fix_point(start, induct, final, recursive_offset, arity, num_vars);
-
+  
 #if NOISY
     print_constraints(expect, "*** expected ***");
 #endif

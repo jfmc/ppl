@@ -43,7 +43,7 @@ main() {
 
   try {
     // This system of generators has no vertices.
-    Polyhedron ph(gs);
+    Polyhedron ph(gs, true);
   }
   catch (invalid_argument& e) {
 #if NOISY

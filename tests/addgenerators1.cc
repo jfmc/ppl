@@ -40,8 +40,8 @@ main() {
   GenSys gs1;
   gs1.insert(vertex(x));
   gs1.insert(vertex(y));
-  gs1.insert(line(x));
-  Polyhedron ph1(gs1);
+  gs1.insert(ray(x));
+  Polyhedron ph1(gs1, true);
 
 #if NOISY
   print_generators(ph1, "*** before ***");
@@ -56,10 +56,10 @@ main() {
   print_generators(ph1, "*** add_generators_and_minimize ***");
 #endif
 
-  Polyhedron known_result(2, Polyhedron::EMPTY);
+  Polyhedron known_result(2, Polyhedron::EMPTY, true);
   known_result.insert(vertex());
   known_result.insert(vertex(y));
-  known_result.insert(line(x));
+  known_result.insert(ray(x));
 
   int retval = (ph1 == known_result) ? 0: 1;
 

@@ -149,7 +149,7 @@ public:
   //! Turn the matrix \f$M\f$ into \f$(M \, 0)\f$.
   void add_zero_columns(size_t n);
   //! Turn the matrix \f$M\f$ into \f$\bigl({0 \atop M}{J \atop 0}\bigr)\f$.
-  void add_rows_and_columns(size_t n);
+  void add_rows_and_columns(size_t n, bool pos);
 
   //! Accessories
   //@{
