@@ -836,7 +836,7 @@ consists of one constraint for each bounded bound (lower and upper)
 in an interval in \f$\cB\f$:
 Letting \f$\vect{e}_i = (0, \ldots, 1, \ldots, 0)^\transpose\f$
 be the vector in \f$\Rset^n\f$ with 1 in the \f$i\f$'th position
-and zeros in every other position;
+and zeroes in every other position;
 if the lower bound of the \f$i\f$'th interval in \f$\cB\f$
 is bounded, the corresponding constraint is defined as
 \f$\langle \vect{e}_i, \vect{x} \rangle \relsym b\f$,

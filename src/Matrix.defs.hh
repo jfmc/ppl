@@ -238,7 +238,7 @@ public:
     than \p new_n_rows and \p new_n_cols
     The contents of the original matrix will be found in the upper,
     left-hand corner of the new matrix.
-    The newly added rows and columns contain all zeros.
+    The newly added rows and columns contain all zeroes.
   */
   void grow(dimension_type new_n_rows, dimension_type new_n_columns);
   
@@ -260,7 +260,7 @@ public:
   */
   void resize_no_copy(dimension_type new_n_rows, dimension_type new_n_columns);
 
-  //! Adds \p n columns of zeros to the matrix.
+  //! Adds \p n columns of zeroes to the matrix.
   /*!
     \param n      The number of columns to be added:
                   must be strictly positive.

@@ -1014,13 +1014,13 @@ PPL::Polyhedron::strongly_minimize_constraints() const {
 	if (!found_eps_leq_one) {
 	  // Check if it is the eps_leq_one constraint.
 	  const Constraint& c = cs[i];
-	  bool all_zeros = true;
+	  bool all_zeroes = true;
 	  for (dimension_type k = eps_index; k-- > 1; )
 	    if (c[k] != 0) {
-	      all_zeros = false;
+	      all_zeroes = false;
 	      break;
 	    }
-	  if (all_zeros && (c[0] + c[eps_index] == 0)) {
+	  if (all_zeroes && (c[0] + c[eps_index] == 0)) {
 	    // We found the eps_leq_one constraint.
 	    found_eps_leq_one = true;
 	    // Consider next constraint.
