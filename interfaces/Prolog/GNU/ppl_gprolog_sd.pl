@@ -14,7 +14,15 @@
 :- foreign(ppl_new_C_Polyhedron_from_GenSys(+term, +term)).
 :- foreign(ppl_new_NNC_Polyhedron_from_GenSys(+term, +term)).
 :- foreign(ppl_delete_Polyhedron(+term)).
-:- foreign(ppl_space_dimension(+term, +term)).
+:- foreign(ppl_Polyhedron_space_dimension(+term, +term)).
+:- foreign(ppl_Polyhedron_intersection_assign(+term, +term)).
+:- foreign(ppl_Polyhedron_intersection_assign_and_minimize(+term, +term)).
+:- foreign(ppl_Polyhedron_convex_hull_assign(+term, +term)).
+:- foreign(ppl_Polyhedron_convex_hull_assign_and_minimize(+term, +term)).
+:- foreign(ppl_Polyhedron_convex_difference_assign(+term, +term)).
+:- foreign(ppl_Polyhedron_convex_difference_assign_and_minimize(+term, +term)).
+:- foreign(ppl_Polyhedron_widening_assign(+term, +term)).
+:- foreign(ppl_Polyhedron_limited_widening_assign(+term, +term)).
 :- foreign(ppl_add_constraint(+term, +term)).
 :- foreign(ppl_add_generator(+term, +term)).
 :- foreign(ppl_add_constraints_and_minimize(+term, +term)).
@@ -23,14 +31,6 @@
 :- foreign(ppl_check_empty(+term)).
 :- foreign(ppl_check_universe(+term)).
 :- foreign(ppl_is_bounded(+term)).
-:- foreign(ppl_intersection_assign(+term, +term)).
-:- foreign(ppl_intersection_assign_and_minimize(+term, +term)).
-:- foreign(ppl_convex_hull_assign(+term, +term)).
-:- foreign(ppl_convex_hull_assign_and_minimize(+term, +term)).
-:- foreign(ppl_convex_difference_assign(+term, +term)).
-:- foreign(ppl_convex_difference_assign_and_minimize(+term, +term)).
-:- foreign(ppl_widening_assign(+term, +term)).
-:- foreign(ppl_limited_widening_assign(+term, +term)).
 :- foreign(ppl_get_constraints(+term, +term)).
 :- foreign(ppl_get_generators(+term, +term)).
 :- foreign(ppl_remove_dimensions(+term, +term)).

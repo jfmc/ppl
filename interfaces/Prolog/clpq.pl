@@ -107,7 +107,7 @@ solve(Atom, Goals, Polyhedron) :-
     ppl_new_C_Polyhedron_from_C_Polyhedron(Polyhedron, PolyCopy),
 
     % Rename the selected clause apart and extend the polyhedron.
-    ppl_space_dimension(PolyCopy, Dims),
+    ppl_Polyhedron_space_dimension(PolyCopy, Dims),
     numvars((Head, Body), Dims, NewDims),
     AddedDims is NewDims - Dims,
     ppl_add_dimensions_and_embed(PolyCopy, AddedDims),

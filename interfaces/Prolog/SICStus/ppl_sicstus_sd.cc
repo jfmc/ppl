@@ -352,6 +352,7 @@ sp_stub_##name(Prolog_term_ref goal, void*) { \
   return name(arg1, arg2, arg3, arg4); \
 }
 
+
 SP_STUB_0(ppl_initialize, 0)
 SP_STUB_0(ppl_finalize, 0)
 SP_STUB_2(ppl_new_C_Polyhedron_from_dimension, 2)
@@ -366,7 +367,15 @@ SP_STUB_2(ppl_new_NNC_Polyhedron_from_ConSys, 2)
 SP_STUB_2(ppl_new_C_Polyhedron_from_GenSys, 2)
 SP_STUB_2(ppl_new_NNC_Polyhedron_from_GenSys, 2)
 SP_STUB_1(ppl_delete_Polyhedron, 1)
-SP_STUB_2(ppl_space_dimension, 2)
+SP_STUB_2(ppl_Polyhedron_space_dimension, 2)
+SP_STUB_2(ppl_Polyhedron_intersection_assign, 2)
+SP_STUB_2(ppl_Polyhedron_intersection_assign_and_minimize, 2)
+SP_STUB_2(ppl_Polyhedron_convex_hull_assign, 2)
+SP_STUB_2(ppl_Polyhedron_convex_hull_assign_and_minimize, 2)
+SP_STUB_2(ppl_Polyhedron_convex_difference_assign, 2)
+SP_STUB_2(ppl_Polyhedron_convex_difference_assign_and_minimize, 2)
+SP_STUB_2(ppl_Polyhedron_widening_assign, 2)
+SP_STUB_3(ppl_Polyhedron_limited_widening_assign, 3)
 SP_STUB_2(ppl_add_constraint, 2)
 SP_STUB_2(ppl_add_generator, 2)
 SP_STUB_2(ppl_add_constraints_and_minimize, 2)
@@ -375,14 +384,6 @@ SP_STUB_2(ppl_add_dimensions_and_constraints, 2)
 SP_STUB_1(ppl_check_empty, 1)
 SP_STUB_1(ppl_check_universe, 1)
 SP_STUB_1(ppl_is_bounded, 1)
-SP_STUB_2(ppl_intersection_assign, 2)
-SP_STUB_2(ppl_intersection_assign_and_minimize, 2)
-SP_STUB_2(ppl_convex_hull_assign, 2)
-SP_STUB_2(ppl_convex_hull_assign_and_minimize, 2)
-SP_STUB_2(ppl_convex_difference_assign, 2)
-SP_STUB_2(ppl_convex_difference_assign_and_minimize, 2)
-SP_STUB_2(ppl_widening_assign, 2)
-SP_STUB_3(ppl_limited_widening_assign, 3)
 SP_STUB_2(ppl_get_constraints, 2)
 SP_STUB_2(ppl_get_generators, 2)
 SP_STUB_2(ppl_remove_dimensions, 2)
@@ -426,7 +427,15 @@ ppl_sicstus_init(int /* when */) {
   SP_DEFINE_C_PREDICATE(ppl_new_C_Polyhedron_from_GenSys, 2);
   SP_DEFINE_C_PREDICATE(ppl_new_NNC_Polyhedron_from_GenSys, 2);
   SP_DEFINE_C_PREDICATE(ppl_delete_Polyhedron, 1);
-  SP_DEFINE_C_PREDICATE(ppl_space_dimension, 2);
+  SP_DEFINE_C_PREDICATE(ppl_Polyhedron_space_dimension, 2);
+  SP_DEFINE_C_PREDICATE(ppl_Polyhedron_intersection_assign, 2);
+  SP_DEFINE_C_PREDICATE(ppl_Polyhedron_intersection_assign_and_minimize, 2);
+  SP_DEFINE_C_PREDICATE(ppl_Polyhedron_convex_hull_assign, 2);
+  SP_DEFINE_C_PREDICATE(ppl_Polyhedron_convex_hull_assign_and_minimize, 2);
+  SP_DEFINE_C_PREDICATE(ppl_Polyhedron_convex_difference_assign, 2);
+  SP_DEFINE_C_PREDICATE(ppl_Polyhedron_convex_difference_assign_and_minimize, 2);
+  SP_DEFINE_C_PREDICATE(ppl_Polyhedron_widening_assign, 2);
+  SP_DEFINE_C_PREDICATE(ppl_Polyhedron_limited_widening_assign, 3);
   SP_DEFINE_C_PREDICATE(ppl_add_constraint, 2);
   SP_DEFINE_C_PREDICATE(ppl_add_generator, 2);
   SP_DEFINE_C_PREDICATE(ppl_add_constraints_and_minimize, 2);
@@ -435,14 +444,6 @@ ppl_sicstus_init(int /* when */) {
   SP_DEFINE_C_PREDICATE(ppl_check_empty, 1);
   SP_DEFINE_C_PREDICATE(ppl_check_universe, 1);
   SP_DEFINE_C_PREDICATE(ppl_is_bounded, 1);
-  SP_DEFINE_C_PREDICATE(ppl_intersection_assign, 2);
-  SP_DEFINE_C_PREDICATE(ppl_intersection_assign_and_minimize, 2);
-  SP_DEFINE_C_PREDICATE(ppl_convex_hull_assign, 2);
-  SP_DEFINE_C_PREDICATE(ppl_convex_hull_assign_and_minimize, 2);
-  SP_DEFINE_C_PREDICATE(ppl_convex_difference_assign, 2);
-  SP_DEFINE_C_PREDICATE(ppl_convex_difference_assign_and_minimize, 2);
-  SP_DEFINE_C_PREDICATE(ppl_widening_assign, 2);
-  SP_DEFINE_C_PREDICATE(ppl_limited_widening_assign, 3);
   SP_DEFINE_C_PREDICATE(ppl_get_constraints, 2);
   SP_DEFINE_C_PREDICATE(ppl_get_generators, 2);
   SP_DEFINE_C_PREDICATE(ppl_remove_dimensions, 2);
@@ -455,8 +456,7 @@ ppl_sicstus_init(int /* when */) {
   SP_DEFINE_C_PREDICATE(ppl_relation_with_constraint, 3);
   SP_DEFINE_C_PREDICATE(ppl_relation_with_generator, 3);
   SP_DEFINE_C_PREDICATE(ppl_affine_image, 4);
-  SP_DEFINE_C_PREDICATE(ppl_affine_preimage, 4);
-}
+  SP_DEFINE_C_PREDICATE(ppl_affine_preimage, 4);}
 
 extern "C" void
 ppl_sicstus_deinit(int /* when */) {
