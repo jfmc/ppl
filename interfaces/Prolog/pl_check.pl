@@ -666,19 +666,3 @@ boundingbox2(Box,CS) :-
   ppl_Polyhedron_get_bounding_box(P, Box),
   ppl_Polyhedron_get_constraints(P,CS), 
   ppl_delete_Polyhedron(P).
-
-/*
-bounds_from_above :-
-  A = '$VAR'(0), B = '$VAR'(1), 
-  ppl_new_Polyhedron_from_constraints(nnc,
-                                      [],
-                                     P),
-  ppl_Polyhedron_bounds_from_above(P,A),
-  ppl_delete_Polyhedron(P).
-
-?- bounds_from_above.
-Matrix has no rows but num_columns() is positive!
-ppl_pl: ../../ppl/src/ConSys.cc:98: bool Parma_Polyhedra_Library::ConSys::adjust_topology_and_dimension(Parma_Polyhedra_Library::Topology, unsigned int): Assertion `OK()' failed.
-Abort (core dumped)        
-
-*/
