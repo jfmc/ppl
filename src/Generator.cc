@@ -125,11 +125,11 @@ PPL::operator<<(std::ostream& s, const Generator& g) {
     s << "r(";
     break;
   case Generator::POINT:
+    s << "p(";
+    goto any_point;
   case Generator::CLOSURE_POINT:
-    if (t == Generator::POINT)
-      s << "p(";
-    else
-      s << "c(";
+    s << "c(";
+  any_point:
     if (g[0] != 1) {
       needed_divisor = true;
       int num_non_zero_coefficients = 0;
