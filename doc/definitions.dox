@@ -34,7 +34,7 @@ The following definitions and results are taken from:
 
 <B>Combination</B>
 
-Let \f$\lambda_1, \ldots, \lambda_k \in \mathbb{R}\f$ and 
+Let \f$\lambda_1, \ldots, \lambda_k \in \Rset\f$ and 
 \f$x_1, \ldots, x_k \in \Rset^n\f$. The linear combination 
 \f$\lambda_1 x_1 + \ldots + \lambda_k x_k\f$ is said to be
 
@@ -45,8 +45,8 @@ Let \f$\lambda_1, \ldots, \lambda_k \in \mathbb{R}\f$ and
 
 <B>Scalar product</B>
 
-Let \f$x = (x_1, \ldots, x_n)^\mathrm{T}\f$,
-\f$y = (y_1, \ldots, y_n)^\mathrm{T} \in \Rset^n\f$.
+Let \f$x = (x_1, \ldots, x_n)^\transpose\f$,
+\f$y = (y_1, \ldots, y_n)^\transpose \in \Rset^n\f$.
 The <EM>scalar product</EM> of \f$x\f$ and \f$y\f$ 
 is defined as
 \f[
@@ -63,7 +63,7 @@ The set \f$K\f$ is convex if it is its own convex hull.
 
 <B>Affine transformation</B>
 
-An <EM>affine transformation</EM> is a function \f$T\f$ which maps a 
+An <EM>affine transformation</EM> is a function which maps a 
 point \f$x \in \Rset^n\f$ to a point \f$x' \in \Rset^m\f$
 such that
 \f[
@@ -96,7 +96,7 @@ viewed as vectors of \f$\Rset^m\f$.
 
 The maximum number of linearly independent rows (columns) of a 
 matrix \f$A\f$ is the <EM>rank</EM> of \f$A\f$ and is denoted by 
-\f$\mathop{\mathrm{rank}}(A)\f$.
+\f$\prank(A)\f$.
 
 <B>Affine independence</B>
 
@@ -107,7 +107,7 @@ A set of points \f$x_1, \ldots, x_k \in \Rset^n\f$ is
    \quad \text{where } \alpha_i \in \Rset \text{ for } 
      i = 1, \ldots, k
 \f]
-is \f$\alpha_i = 0\f$ for \f$i = 1, \ldots, k\f$.
+is \f$\alpha_i = 0\f$, for \f$i = 1, \ldots, k\f$.
 
 Note that linear independence implies affine independence, but the 
 converse is not true. Moreover the maximum number of affinely independent
@@ -167,11 +167,15 @@ assume that, if \f$P = \{\,x \in \Rset^n \mid Ax \geq b\,\}\f$, then
 
 <B>Polytope</B>
 
-A polyhedron \f$P \subset \Rset^n\f$ is <EM>bounded</EM> if there 
+A polyhedron \f$P \sslt \Rset^n\f$ is <EM>bounded</EM> if there 
 exists a \f$\lambda \in \Rset, \lambda > 0\f$ such that 
 \f[
-  P \subseteq \{\,(x_1, \ldots, x_n)^\mathrm{T} \in \Rset^n \mid 
-  - \lambda \leq x_j \leq \lambda \text{ for } j = 1, \ldots, n\,\}.
+  P \sseq
+   \bigl\{\,
+     (x_1, \ldots, x_n)^\transpose \in \Rset^n
+   \bigm| 
+     - \lambda \leq x_j \leq \lambda \text{ for } j = 1, \ldots, n
+    \,\bigr\}.
 \f]
 A bounded polyhedron is called a <EM>polytope</EM>.
 
@@ -182,7 +186,7 @@ A polyhedron is a convex set.
 <B>Dimension</B>
 
 A polyhedron \f$P\f$ is of <EM>dimension</EM> \f$k\f$, denoted by 
-\f$\mathop{\mathrm{dim}}(P) = k\f$, if the maximum number of 
+\f$\pdim(P) = k\f$, if the maximum number of 
 affinely independent points in \f$P\f$ is \f$k + 1\f$.
 
 <B>Vertices</B>
@@ -236,7 +240,7 @@ It follows that two rays in exactly opposite directions make a line.
 
 <B>Cone</B>
 
-A set \f$C \subseteq \Rset^n\f$ is a <EM>cone</EM> if 
+A set \f$C \sseq \Rset^n\f$ is a <EM>cone</EM> if 
 \f[
   x \in C \Rightarrow \lambda x \in C 
   \text{ for all } \lambda \in \Rset, \lambda \geq 0.
@@ -256,19 +260,23 @@ Let \f$P = \{\,x \in \Rset^n \mid Ax \geq b\,\}\f$ is a nonempty
 polyhedron where \f$A\f$ is a matrix of rank \f$n\f$. 
 Then
 \f[
-  P = \bigl\{\,x \in \Rset^n \mid 
+  P = \sset{
+      x \in \Rset^n 
+      }{
     x = \sum_{k \in K} \lambda_k v_k + \sum_{j \in J} \mu_j r_j, 
+         \text{ where, } \\ 
+         \text{ for all } k \in K, j \in J, 
         \lambda_k, \mu_j \in \Rset, 
-        \sum_{k \in K} \lambda_k = 1,
-        \lambda_k \geq 0 \text{ for } k \in K,
-        \mu_j \geq 0 \text{ for } j \in J\,\bigr\},
+        \lambda_k \geq 0, \mu_j \geq 0, \\
+        \sum_{k \in K} \lambda_k = 1, \\
+     }
 \f]
 where \f$\{v_k\}_{k \in K}\f$ is the set of vertices of \f$P\f$ and 
 \f$\{r_j\}_{j \in J}\f$ is the set of extreme rays of \f$P\f$.
 
 \note
 The conditions that \f$P\f$ is not empty and 
-\f$\mathop{\mathrm{rank}}(A) = n\f$ required by this theorem are 
+\f$\prank(A) = n\f$ required by this theorem are 
 equivalent to the condition that \f$P\f$ has a vertex.
 (See Nemhauser and Wolsey - Integer and Combinatorial Optimization -
 propositions 4.1 and 4.2 on pages 92 and 93).
@@ -299,7 +307,7 @@ a rational polyhedron:
 If \f$A\f$ is a rational \f$m_1 \times n\f$ matrix, \f$B\f$ is a rational 
 \f$m_2 \times n\f$ matrix and 
 \f[
-  Q = \bigl\{\,x \in \Rset^n \mid x = y^\mathrm{T}A + z^\mathrm{T}B,
+  Q = \bigl\{\,x \in \Rset^n \mid x = y^\transpose A + z^\transpose B,
              \sum_{k=1}^{m_1} y_k = 1, y \in \Rset_+^{m_1}, 
 	     z \in \Rset_+^{m_2}\,\bigr\},  
 \f]
@@ -326,7 +334,7 @@ to the references mentioned before, from:
 To simplify both representations of a polyhedron,
 it is useful to transform it to a polyhedral cone.
 To do this, each point \f$x \in \Rset^n\f$ is mapped 
-to a point \f$x' = (\xi x, \xi) ^\mathrm{T} \in \Rset^{n + 1}\f$ 
+to a point \f$x' = (\xi x, \xi)^\transpose \in \Rset^{n + 1}\f$ 
 where \f$\xi \geq 0\f$.
 
 The transformation changes an inhomogeneous system of inequalities 
@@ -338,7 +346,7 @@ polyhedral cone \f$C\f$, as shown below:
     = \{\,x \mid Ax - b \geq 0\,\} 
 \f]
 \f[
-  C = \{\,(\xi x, \xi)^\mathrm{T} \mid \xi Ax - \xi b \geq 0, \xi \geq 0\,\} 
+  C = \{\,(\xi x, \xi)^\transpose \mid \xi Ax - \xi b \geq 0, \xi \geq 0\,\} 
     = \{\,x' \mid A'x' \geq 0\,\} 
 \f]
 where \f$x' = (\xi x, \xi) \in \Rset^{n + 1}\f$ 
@@ -430,7 +438,7 @@ When \f$F\f$ is nonempty, we say that \f$(c,b)\f$ <EM>supports</EM> \f$P\f$.
 <B>Facet</B>
 
 A face \f$F\f$ of \f$P\f$ is a <EM>facet</EM> of \f$P\f$ if 
-\f$\mathop{\mathrm{dim}}(F) = \mathop{\mathrm{dim}}(P) - 1\f$. 
+\f$\pdim(F) = \pdim(P) - 1\f$. 
 
 <B>Lineality space</B>
 
@@ -439,7 +447,7 @@ the <EM>lineality space</EM> of \f$P\f$ is the set
 \f[
   \{\,x \in P \mid Ax = 0\,\}
 \f]
-and it is denoted by \f$\mathop{\mathrm{lin. space}}(P)\f$.
+and it is denoted by \f$\mathop{\mathrm{lin. space}}(P)\f$. 
 
 <EM><B>Propositions</B></EM>
 

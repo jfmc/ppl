@@ -20,6 +20,10 @@
 \newcommand*{\sslt}{\subset}
 \newcommand*{\Sseq}{\supseteq}
 \newcommand*{\Ssgt}{\supset}
+\newcommand{\sset}[2]{{\renewcommand{\arraystretch}{1.2}
+                      \left\{\,#1 \,\left|\,
+                               \begin{array}{@{}l@{}}#2\end{array}
+                      \right.   \,\right\}}}
 
 %% Logic notation
 \newcommand*{\entails}{\mathrel{\vdash}}
@@ -35,3 +39,11 @@
 \newcommand{\defrel}[1]{\mathrel{\buildrel \mathrm{def} \over {#1}}}
 \newcommand{\defeq}{\defrel{=}}
 \newcommand{\defiff}{\defrel{\Longleftrightarrow}}
+
+% Matrix functions
+\newcommand*{\transpose}{\mathrm{T}}
+
+% Polyhedron functions
+\newcommand{\prank}{\mathop{\mathrm{rank}}}
+\newcommand{\pdim}{\mathop{\mathrm{dim}}}
+
