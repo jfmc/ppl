@@ -24,6 +24,7 @@ site: http://www.cs.unipr.it/ppl/ . */
 #include "ppl_install.hh"
 #include "print.hh"
 #include "ehandlers.hh"
+#include <iostream>
 
 using namespace std;
 using namespace Parma_Polyhedra_Library;
@@ -65,10 +66,17 @@ main() {
   cs.insert(x <= 5);
   cs.insert(y <= 5);
 
+#if NOISY
+  print_constraints(cs, "*** cs ****");
+#endif
+
   Polyhedron computed_result = ph2;
-  computed_result.limited_widening_assign(ph1, cs);
+  bool retval = computed_result.limited_widening_assign(ph1, cs);
 
 #if NOISY
+  cout << "limited_widening_assign returned "
+       << (retval ? "true" : "false")
+       << endl;
   print_constraints(computed_result, "*** After limited_widening_assign ****");
 #endif
 
@@ -77,7 +85,6 @@ main() {
   known_result.insert(y >= 0);
   known_result.insert(x <= 5);
 
-  int retval = (computed_result == known_result) ? 0 : 1;
-
-  return retval;
+  // Must have returned `true'.
+  return (retval && (computed_result == known_result)) ? 0 : 1;
 }
