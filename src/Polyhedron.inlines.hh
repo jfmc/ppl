@@ -261,13 +261,6 @@ Polyhedron::space_dimension() const {
   return space_dim;
 }
 
-#if POSITIVE
-inline bool
-Polyhedron::is_positive() const {
-  return positive;
-}
-#endif
-
 inline bool
 Polyhedron::check_empty() const {
   minimize();

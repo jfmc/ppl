@@ -157,10 +157,6 @@ public:
   //! terms of \p *this are zero.
   bool all_homogeneous_terms_are_zero() const;
 
-  //#if POSITIVE
-  bool only_a_term_is_positive() const;
-  //#endif
-
   //! Output operator.
   friend std::ostream&
   Parma_Polyhedra_Library::operator <<(std::ostream& s, const Row& row);

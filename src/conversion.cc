@@ -351,16 +351,10 @@ PPL::Polyhedron::conversion(Matrix& source,
   size_t dest_num_rows = dest.num_rows();
   size_t dest_num_columns = dest.num_columns();
 
-#if POSITIVE
-  size_t num_positive = sat.num_columns() - source_num_rows;
-
   // `sat' have the same number of columns of `source' rows and
   // the same number of rows of `dest' rows (because of the choice
   // made for the definition of `sat').
-  assert(source_num_rows + num_positive == sat.num_columns());
-#else  
   assert(source_num_rows == sat.num_columns());
-#endif
   assert(dest_num_rows == sat.num_rows());
 
   // Making conversion for the sub-matrix whose rows are those
@@ -546,13 +540,8 @@ PPL::Polyhedron::conversion(Matrix& source,
       // generator only verifies the constraint, so we set to 1 the
       // corresponding element of `sat'. This is what we do with the
       // following instruction.
-      if (source[k].is_ray_or_vertex_or_inequality()) {
-#if POSITIVE
-	sat[num_lines_or_equalities].set(num_positive + k);
-#else
+      if (source[k].is_ray_or_vertex_or_inequality())
 	sat[num_lines_or_equalities].set(k);
-#endif
-      }
       // If the k-th constraint is an equality, as we have chosen the
       // `num_lines_or_equalities' generator such above, it does not verify
       // the constraint, so it has to be removed from the system of generators.
@@ -672,15 +661,8 @@ PPL::Polyhedron::conversion(Matrix& source,
 	      // j runs through the rows of dest containing
 	      // the rays that do not verify the k-th constraint.
 	      SatRow new_satrow;
-#if POSITIVE
-	      assert(sat[i].last() < 0
-		     || unsigned(sat[i].last()) < num_positive + k);
-	      assert(sat[j].last() < 0
-		     || unsigned(sat[j].last()) < num_positive + k);
-#else
 	      assert(sat[i].last() < 0 || unsigned(sat[i].last()) < k);
 	      assert(sat[j].last() < 0 || unsigned(sat[j].last()) < k);
-#endif
 	      // `new_satrow' is a Boolean row that has 1 in position
 	      // where `sat[i]' or `sat[j]' has 1; this new row of
 	      // `sat' correspond to a ray that verify all the constraints
@@ -692,12 +674,7 @@ PPL::Polyhedron::conversion(Matrix& source,
 	      // Note that the set to 1 bits of `sat[i]' and `sat[j]'
 	      // have to be less than `k' because we are treating the
 	      // `k'-th constraint: we use 'sat.set()' only with k argument.
-#if POSITIVE	      
-	      size_t num_common_satur = k + num_positive
-		- new_satrow.count_ones();
-#else
 	      size_t num_common_satur = k - new_satrow.count_ones();
-#endif
 	      if (num_common_satur >=
 		  source_num_columns - num_lines_or_equalities - 2) {
 		// To check if the new ray is an extremal ray we refer
@@ -788,13 +765,8 @@ PPL::Polyhedron::conversion(Matrix& source,
 	    // [lines_or_equal_bound, sup_bound-1]
 	    // satisfy the `k'-th constraint.
 	    // We record this fact in the saturation matrix.
-            for (size_t l = lines_or_equal_bound; l < sup_bound; ++l) {
-#if POSITIVE
-              sat[l].set(num_positive + k);
-#else
-	      sat[l].set(k);
-#endif
-	    }
+            for (size_t l = lines_or_equal_bound; l < sup_bound; ++l)
+              sat[l].set(k);
 	  }
 	  else
 	    // If the `k'-th constraint is an equality, the `dest' rows
@@ -842,20 +814,6 @@ PPL::Polyhedron::conversion(Matrix& source,
     dest.erase_to_end(dest_num_rows);
     sat.rows_erase_to_end(dest_num_rows);
   }
-
-#if POSITIVE
-  if (num_positive != 0) { 
-    SatMatrix tmp_sat(dest_num_rows, source_num_rows);
-    for (size_t i = 0; i < dest_num_rows; ++i)
-      for (size_t j = sat[i].last(); j >= source_num_columns;
-           j = sat[i].prev(j))
-        tmp_sat[i].set(j - source_num_columns);
-    std::swap(tmp_sat, sat);
-  }
-  else 
-    sat.columns_erase_to_end(source_num_rows);
-#endif
-
   sat.columns_erase_to_end(source_num_rows);
   return num_lines_or_equalities;
 }
