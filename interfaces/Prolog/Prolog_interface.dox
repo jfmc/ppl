@@ -174,13 +174,13 @@ The specification uses the following grammar rules:
           | subsumes			between a generator and a polyhedron
           | nothing			
  
- numerator --> number | + number | - number
+ Numerator --> number | + number | - number
                                         number must be non-zero	
 
- denominator --> number                 number must be non-zero	
+ Denominator --> number                 number must be non-zero	
 
  Rational  --> number | + number | - number
-          | numerator/denominator	rational number in canonical form
+          | Numerator/Denominator	rational number in canonical form
               (That is, if the rational is n/m, the gcd(n,m) = 1.)             
 
  Bound     --> c(Rational)		closed rational limit
