@@ -221,12 +221,14 @@ list_program :-
 list_program.
 
 pp(Head, Body) :-
-  write(Head),
+  % write(Head),
   (Body == true ->
-    write('.')
+    % write('.')
+    portray_clause(Head)
   ;
-    write(' :- '),
-    write(Body)
+    % write(' :- '),
+    % write(Body)
+    portray_clause((Head :- Body))
   ),
   nl.
 
@@ -237,29 +239,29 @@ do_command(halt) :-
 do_command(trace) :-
   !,
   trace,
-  main_loop.
+  main_loop_yes.
 do_command(notrace) :-
   !,
   notrace,
-  main_loop.
+  main_loop_yes.
 do_command(spy) :-
   !,
   read(PredList),
   Spy =.. [spy|PredList],
   Spy,
-  main_loop.
+  main_loop_yes.
 do_command([]) :-
   !,
   (read_programs([]) ; true),
-  main_loop.
+  main_loop_yes.
 do_command([H|T]) :-
   !,
   (read_programs([H|T]) ; true),
-  main_loop.
+  main_loop_yes.
 do_command(consult(Program)) :-
   !,
   (read_program(Program) ; true),
-  main_loop.
+  main_loop_yes.
 do_command(reconsult(Program)) :-
   !,
   clear_program,
@@ -267,19 +269,29 @@ do_command(reconsult(Program)) :-
 do_command(listing) :-
   !,
   list_program,
-  main_loop.
+  main_loop_yes.
 do_command(statistics) :-
   !,
   statistics,
-  main_loop.
+  main_loop_yes.
 do_command(Query) :-
   solve(Query),
   query_next_solution,
       % If query_next_solution succeeds,
       % then no more solutions are required and stack of
       % temporary polyhedra can be removed.
-  main_loop.
+  main_loop_yes.
 do_command(_) :-
+  main_loop_no.
+
+main_loop_no :-
+  write(no),
+  nl,
+  main_loop.
+
+main_loop_yes :-
+  write(yes),
+  nl,
   main_loop.
 
 query_next_solution :-
