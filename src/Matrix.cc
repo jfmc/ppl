@@ -263,7 +263,7 @@ void
 PPL::Matrix::merge_rows_assign(const Matrix& y) {
   assert(row_size >= y.row_size);
   assert(check_sorted() && y.check_sorted());
-
+ 
   Matrix& x = *this;
 
   // A temporary vector of rows...
@@ -542,8 +542,10 @@ PPL::Matrix::gauss() {
 	// all the ones that follow it such that all the elements
 	// on the j-th column (of these rows) become 0.
 	for (size_t k = i + 1; k < nb_lines_or_equalities; ++k) {
-	  if (rows[k][j] != 0)
+	  if (rows[k][j] != 0) {
 	    rows[k].linear_combine(rows[rank], j);
+	    changed = true;
+	  }
 	  // The 'sorted' flag is set to false in linear_combine(),
 	  // so we have not to set 'changed' to true.
 	}
