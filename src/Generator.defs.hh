@@ -27,7 +27,7 @@ site: http://www.cs.unipr.it/ppl/ . */
 #include "Generator.types.hh"
 #include "Row.defs.hh"
 #include "Variable.defs.hh"
-#include "ConSys.defs.hh"
+#include "ConSys.types.hh"
 #include "GenSys.defs.hh"
 #include "LinExpression.defs.hh"
 #include "Polyhedron.types.hh"
@@ -363,9 +363,11 @@ private:
 						  const Generator& g);
   friend
   Parma_Polyhedra_Library::LinExpression::LinExpression(const Generator& g);
-  friend bool
-  Parma_Polyhedra_Library
-  ::ConSys::satisfies_all_constraints(const Generator& g) const;
+
+  // FIXME: the following friend declaration is only to grant access to
+  // ConSys::satisfies_all_constraints().
+  friend class Parma_Polyhedra_Library::ConSys;
+
   friend bool Parma_Polyhedra_Library::operator<=(const Polyhedron& x,
 						  const Polyhedron& y);
   friend void std::swap(Parma_Polyhedra_Library::Generator& x,

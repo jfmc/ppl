@@ -30,8 +30,8 @@ site: http://www.cs.unipr.it/ppl/ . */
 #include "Row.defs.hh"
 #include "Integer.types.hh"
 #include "Variable.types.hh"
-#include "ConSys.defs.hh"
-#include "GenSys.defs.hh"
+#include "ConSys.types.hh"
+#include "GenSys.types.hh"
 #include "Polyhedron.types.hh"
 #include <cstddef>
 
@@ -175,14 +175,15 @@ private:
   friend class Parma_Polyhedra_Library::Constraint;
   friend class Parma_Polyhedra_Library::Generator;
   friend class Parma_Polyhedra_Library::Polyhedron;
-  friend void
-  Parma_Polyhedra_Library::ConSys::affine_preimage(dimension_type v,
-						   const LinExpression& expr,
-						   const Integer& denominator);
-  friend void
-  Parma_Polyhedra_Library::GenSys::affine_image(dimension_type v,
-						const LinExpression& expr,
-						const Integer& denominator);
+
+  // FIXME: the following friend declaration is only to grant access to
+  // ConSys::affine_preimage().
+  friend class Parma_Polyhedra_Library::ConSys;
+
+  // FIXME: the following friend declaration is only to grant access to
+  // GenSys::affine_image().
+  friend class Parma_Polyhedra_Library::GenSys;
+
   friend void std::swap(Parma_Polyhedra_Library::LinExpression& x,
 		       Parma_Polyhedra_Library::LinExpression& y);
 
