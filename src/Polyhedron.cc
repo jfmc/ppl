@@ -3368,6 +3368,46 @@ PPL::Polyhedron::is_BBRZ02_stabilizing(const Polyhedron& x,
     if (x_num_closure_points < y_num_closure_points)
       return true;
   }
+
+  // For each i such that 0 <= i < x.space_dim, let x_num_rays[i] be
+  // the number of rays in x.gen_sys
+  // having exactly `i' coordinates equal to 0.
+  std::vector<dimension_type> x_num_rays(x.space_dimension());
+  for (dimension_type i = x.space_dimension(); i-- > 0; )
+    x_num_rays[i] = 0;
+  for (dimension_type i = x_gen_sys_num_rows; i-- > 0; )
+    if (x.gen_sys[i].is_ray()) {
+      const Generator& r = x.gen_sys[i];
+      dimension_type num_zeroes = 0;
+      for (dimension_type j = x.space_dimension(); j >= 1; j--)
+	if (r[j] == 0)
+	  num_zeroes++;
+      x_num_rays[num_zeroes]++;
+    }
+  // The same as above, this time for `y'.
+  std::vector<dimension_type> y_num_rays(y.space_dimension());
+  for (dimension_type i = y.space_dimension(); i-- > 0; )
+    y_num_rays[i] = 0;
+  for (dimension_type i = y_gen_sys_num_rows; i-- > 0; )
+    if (y.gen_sys[i].is_ray()) {
+      const Generator& r = y.gen_sys[i];
+      dimension_type num_zeroes = 0;
+      for (dimension_type j = y.space_dimension(); j >= 1; j--)
+	if (r[j] == 0)
+	  num_zeroes++;
+      y_num_rays[num_zeroes]++;
+    }
+  // Compare (lexicographically) the two vectors:
+  // if x_num_rays < y_num_rays the chain is stabilizing.
+  for (dimension_type i = 0; i < x.space_dimension(); i++)
+    if (x_num_rays[i] < y_num_rays[i])
+      return true;
+
+  // Hey, wait a minute! Are they equal?
+  if (x == y)
+    return true;
+
+  // The chain is not stabilizing.
   return false;
 }
 
@@ -3432,6 +3472,7 @@ PPL::Polyhedron::BBRZ02_widening_assign(const Polyhedron& y) {
   // to `x' and `y', according to the definition of the H79 widening.
   ConSys common_con_sys;
   x.select_H79_constraints(y, common_con_sys);
+  // CHECK ME: why should it be sorted?
   common_con_sys.sort_rows();
 
   // The following heuristics are intrusive: to avoid problems,
@@ -3454,7 +3495,7 @@ PPL::Polyhedron::BBRZ02_widening_assign(const Polyhedron& y) {
   // the generators of `x'.
   SatMatrix common_sat_g(common_con_sys_num_rows, x_gen_sys_num_rows);
   for (dimension_type i = common_con_sys_num_rows; i-- > 0; ) {
-    Constraint& c = common_con_sys[i];
+    const Constraint& c = common_con_sys[i];
     for (dimension_type j = x_gen_sys_num_rows; j-- > 0; ) {
       Generator& g = x.gen_sys[j];
       if (sgn(c * g) != 0)
@@ -3474,7 +3515,7 @@ PPL::Polyhedron::BBRZ02_widening_assign(const Polyhedron& y) {
 
   // The system of constraints of the resulting polyhedron
   // contains the constraints of `common_con_sys'.
-  ConSys new_con_sys(common_con_sys);
+  ConSys new_con_sys = common_con_sys;
   // We must choose a point (if the polyhedra are necessarily closed)
   // or a closure point (if the polyhedra are not necessarily closed)
   // that belong to `x' and `y'.  In the case of not necessarily
@@ -3568,15 +3609,14 @@ PPL::Polyhedron::BBRZ02_widening_assign(const Polyhedron& y) {
     }
   }
   std::swap(new_con_sys, x.con_sys);
-  
   // The resulting polyhedron has only
   // the system of constraints up to date.
   x.clear_generators_up_to_date();
   x.clear_constraints_minimized();
+
+  // Check for stabilization.
   x.minimize();
   if (is_BBRZ02_stabilizing(x, y)) {
-    // If `is_BBRZ02_stabilizing()' returns true,
-    // then the resulting polyhedron is `x'.
 #ifndef NDEBUG
     std::cout << "BBRZ02: stabilizing on 1st technique" << std::endl;
 #endif
@@ -3670,7 +3710,10 @@ PPL::Polyhedron::BBRZ02_widening_assign(const Polyhedron& y) {
 	    // Insert the point.
 	    new_rays.insert(x.gen_sys[k]);
 	    Polyhedron ph(x.topology(), new_rays);
-	    ph.add_constraints_and_minimize(common_con_sys);
+	    // Have to take a copy, because `common_con_sys'
+	    // may be needed later.
+	    ConSys common_con_sys_copy = common_con_sys;
+	    ph.add_constraints_and_minimize(common_con_sys_copy);
 	    const GenSys& ph_gs = ph.generators();
 	    // Copy the rays of `ph' into `valid_rays'.
 	    for (dimension_type j = ph_gs.num_rows(); j-- > 0; ) {
@@ -3756,12 +3799,29 @@ PPL::Polyhedron::BBRZ02_widening_assign(const Polyhedron& y) {
   }
   x.clear_generators_minimized();
   x.clear_constraints_up_to_date();
+
+  // Check for stabilization.
   x.minimize();
   if (is_BBRZ02_stabilizing(x, y)) {
-    // If `is_BBRZ02_stabilizing()' returns true,
-    // then the resulting polyhedron is `x'.
 #ifndef NDEBUG
     std::cout << "BBRZ02: stabilizing on 3rd technique" << std::endl;
+#endif
+    assert(OK(true));
+    return;
+  }
+
+  // ****************
+  // Fourth technique.
+  // ****************
+  
+  // Try applying the H79 widening.
+  Polyhedron ph(x.topology(), common_con_sys);
+  std::swap(x, ph);
+  // Check for stabilization.
+  x.minimize();
+  if (is_BBRZ02_stabilizing(x, y)) {
+#ifndef NDEBUG
+    std::cout << "BBRZ02: stabilizing on H79 widening" << std::endl;
 #endif
     assert(OK(true));
     return;
@@ -3773,7 +3833,8 @@ PPL::Polyhedron::BBRZ02_widening_assign(const Polyhedron& y) {
   // FIXME: here we should abort the computation, because we have
   // found a chain that is not stabilizing under the BBRZ02 widening.
   // Since we are still developing and debugging this operator,
-  // for the moment we simply return `x'.
+  // for the moment we simply return the input polyhedron `x'.
+  x = x_backup;
   assert(OK(true));
 }
 
