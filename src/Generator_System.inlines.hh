@@ -51,7 +51,8 @@ Generator_System::Generator_System(const Topology topol)
 
 inline
 Generator_System::Generator_System(const Topology topol,
-	       const dimension_type n_rows, const dimension_type n_columns)
+				   const dimension_type n_rows,
+				   const dimension_type n_columns)
   : Linear_System(topol, n_rows, n_columns) {
 }
 

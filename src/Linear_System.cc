@@ -216,8 +216,8 @@ PPL::Linear_System::insert(const Linear_Row& r) {
 
 void
 PPL::Linear_System::insert_pending(const Linear_Row& r) {
-  // The added row must be strongly normalized and have
-  // the same topology of the system.
+  // The added row must be strongly normalized and have the same
+  // topology of the system.
   assert(r.check_strong_normalized());
   assert(topology() == r.topology());
 
@@ -339,13 +339,15 @@ PPL::Linear_System::sort_rows(const dimension_type first_row,
 
 void
 PPL::Linear_System::add_row(const Linear_Row& r) {
-  // The added row must be strongly normalized and have
-  // the same number of elements of the existing rows of the system.
+  // The added row must be strongly normalized and have the same
+  // number of elements of the existing rows of the system.
   assert(r.check_strong_normalized());
   assert(r.size() == row_size);
   // This method is only used when the system has no pending rows.
   assert(num_pending_rows() == 0);
+
   const bool was_sorted = is_sorted();
+
   const dimension_type new_rows_size = rows.size() + 1;
   if (rows.capacity() < new_rows_size) {
     // Reallocation will take place.
@@ -364,8 +366,8 @@ PPL::Linear_System::add_row(const Linear_Row& r) {
   }
   else {
     // Reallocation will NOT take place.
-    // Inserts a new empty row at the end,
-    // then substitutes it with a copy of the given row.
+    // Inserts a new empty row at the end, then substitutes it with a
+    // copy of the given row.
     Row tmp(r, row_capacity);
     std::swap(*rows.insert(rows.end(), Row()), tmp);
   }
@@ -378,8 +380,8 @@ PPL::Linear_System::add_row(const Linear_Row& r) {
     const dimension_type nrows = num_rows();
     // The added row may have caused the system to be not sorted anymore.
     if (nrows > 1) {
-      // If the system is not empty and the inserted row
-      // is the greatest one, the system is set to be sorted.
+      // If the system is not empty and the inserted row is the
+      // greatest one, the system is set to be sorted.
       // If it is not the greatest one then the system is no longer sorted.
       Linear_System& x = *this;
       set_sorted(compare(x[nrows-2], x[nrows-1]) <= 0);
@@ -390,15 +392,15 @@ PPL::Linear_System::add_row(const Linear_Row& r) {
   }
   // The added row was not a pending row.
   assert(num_pending_rows() == 0);
-  // Do not check for strong normalization,
-  // because no modification of rows has occurred.
+  // Do not check for strong normalization, because no modification of
+  // rows has occurred.
   assert(OK(false));
 }
 
 void
 PPL::Linear_System::add_pending_row(const Linear_Row& r) {
-  // The added row must be strongly normalized and have
-  // the same number of elements of the existing rows of the system.
+  // The added row must be strongly normalized and have the same
+  // number of elements of the existing rows of the system.
   assert(r.check_strong_normalized());
   assert(r.size() == row_size);
 
@@ -420,16 +422,16 @@ PPL::Linear_System::add_pending_row(const Linear_Row& r) {
   }
   else {
     // Reallocation will NOT take place.
-    // Inserts a new empty row at the end,
-    // then substitutes it with a copy of the given row.
+    // Inserts a new empty row at the end, then substitutes it with a
+    // copy of the given row.
     Row tmp(r, row_capacity);
     std::swap(*rows.insert(rows.end(), Row()), tmp);
   }
 
   // The added row was a pending row.
   assert(num_pending_rows() > 0);
-  // Do not check for strong normalization,
-  // because no modification of rows has occurred.
+  // Do not check for strong normalization, because no modification of
+  // rows has occurred.
   assert(OK(false));
 }
 

@@ -203,6 +203,7 @@ PPL::Generator_System::add_corresponding_closure_points() {
       gs.add_pending_row(cp);
     }
   }
+  assert(OK());
 }
 
 
@@ -228,6 +229,7 @@ PPL::Generator_System::add_corresponding_points() {
       gs.add_pending_row(p);
     }
   }
+  assert(OK());
 }
 
 bool
@@ -322,6 +324,7 @@ PPL::Generator_System::insert(const Generator& g) {
       // Inserting the new generator.
       Linear_System::insert(tmp_g);
     }
+  assert(OK());
 }
 
 void
@@ -365,6 +368,7 @@ PPL::Generator_System::insert_pending(const Generator& g) {
       // Inserting the new generator.
       Linear_System::insert_pending(tmp_g);
     }
+  assert(OK());
 }
 
 PPL::dimension_type

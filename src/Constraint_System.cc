@@ -214,7 +214,6 @@ PPL::Constraint_System::has_strict_inequalities() const {
   return false;
 }
 
-
 void
 PPL::Constraint_System::insert(const Constraint& c) {
   // We are sure that the matrix has no pending rows
@@ -243,6 +242,7 @@ PPL::Constraint_System::insert(const Constraint& c) {
       tmp_c.set_not_necessarily_closed();
       Linear_System::insert(tmp_c);
     }
+  assert(OK());
 }
 
 void
@@ -268,6 +268,7 @@ PPL::Constraint_System::insert_pending(const Constraint& c) {
       tmp_c.set_not_necessarily_closed();
       Linear_System::insert_pending(tmp_c);
     }
+  assert(OK());
 }
 
 PPL::dimension_type
