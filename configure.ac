@@ -24,10 +24,10 @@
 # Process this file with autoconf to produce a configure script.
 
 # Every other copy of the package version number gets its value from here.
-AC_INIT([the Parma Polyhedra Library], 0.6pre6, ppl-devel@cs.unipr.it, ppl)
+AC_INIT([the Parma Polyhedra Library],[0.6pre6],[ppl-devel@cs.unipr.it],[ppl])
 
 # Minimum autoconf version required.
-AC_PREREQ(2.57)
+AC_PREREQ(2.59)
 
 # Make sure the sources are there.
 AC_CONFIG_SRCDIR(src/Polyhedron_public.cc)
