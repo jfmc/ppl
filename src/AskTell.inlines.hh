@@ -432,7 +432,7 @@ lcompare(const AskTell<CS>& x, const AskTell<CS>& y) {
 				      AskTell<CS>::Less());
 }
 
-// Output
+namespace IO_Operators {
 
 template <typename CS>
 std::ostream&
@@ -443,11 +443,13 @@ operator<<(std::ostream& s, const AskTell<CS>& x) {
     s << "BOTTOM";
   else {
     typename AskTell<CS>::const_iterator xi;
-    for (xi=x.begin(); xi != x.end(); ++xi)
+    for (xi = x.begin(); xi != x.end(); ++xi)
       s << "(" << (*xi).first << " -> " << (*xi).second << ")";
   }
   return s;
 }
+
+} // namespace IO_Operators
 
 } // namespace Parma_Polyhedra_Library
 

@@ -41,6 +41,8 @@ site: http://www.cs.unipr.it/ppl/ . */
 
 namespace Parma_Polyhedra_Library {
 
+namespace IO_Operators {
+
 //! Output operator.
 /*!
   \relates Polyhedron
@@ -52,6 +54,8 @@ namespace Parma_Polyhedra_Library {
 */
 std::ostream&
 operator<<(std::ostream& s, const Polyhedron& ph);
+
+} // namespace IO_Operators
 
 //! \brief
 //! Returns <CODE>true</CODE> if and only if

@@ -52,7 +52,7 @@ PPL::Poly_Gen_Relation::ascii_dump(std::ostream& s) const {
 }
 
 std::ostream&
-PPL::operator<<(std::ostream& s, const Poly_Gen_Relation& r) {
+PPL::IO_Operators::operator<<(std::ostream& s, const Poly_Gen_Relation& r) {
   r.ascii_dump(s);
   return s;
 }

@@ -27,6 +27,7 @@ site: http://www.cs.unipr.it/ppl/ . */
 #include <string>
 
 using namespace Parma_Polyhedra_Library;
+using namespace Parma_Polyhedra_Library::IO_Operators;
 using namespace std;
 
 bool

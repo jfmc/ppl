@@ -29,6 +29,7 @@ site: http://www.cs.unipr.it/ppl/ . */
 
 using namespace std;
 using namespace Parma_Polyhedra_Library;
+using namespace Parma_Polyhedra_Library::IO_Operators;
 
 #ifndef NOISY
 #define NOISY 0

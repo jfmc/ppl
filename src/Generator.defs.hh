@@ -37,7 +37,12 @@ namespace Parma_Polyhedra_Library {
 
 // Put it in the namespace here to declare it friend later.
 bool operator<=(const Polyhedron& x, const Polyhedron& y);
+
+namespace IO_Operators {
+
 std::ostream& operator<<(std::ostream& s, const Generator& g);
+
+} // namespace IO_Operators
 
 } // namespace Parma_Polyhedra_Library
 
@@ -375,7 +380,8 @@ private:
 
   //! Output operator.
   friend std::ostream&
-  Parma_Polyhedra_Library::operator<<(std::ostream& s, const Generator& g);
+  Parma_Polyhedra_Library::IO_Operators::operator<<(std::ostream& s,
+						    const Generator& g);
 
   //! Copy-constructor with given dimension.
   Generator(const Generator& g, dimension_type dimension);

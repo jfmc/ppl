@@ -266,7 +266,7 @@ PPL::operator<(const SatRow& x, const SatRow& y) {
 
 /*! \relates Parma_Polyhedra_Library::SatRow */
 std::ostream&
-PPL::operator<<(std::ostream& s, const SatRow& r) {
+PPL::IO_Operators::operator<<(std::ostream& s, const SatRow& r) {
   for (int i = 0, last = r.last(); i <= last; ++i)
     s << (r[i] ? "1" : "0") << " ";
   s << "0 ...";

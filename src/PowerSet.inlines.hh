@@ -296,7 +296,7 @@ lcompare(const PowerSet<CS>& x, const PowerSet<CS>& y) {
   }
 }
 
-// Output
+namespace IO_Operators {
 
 template <typename CS>
 std::ostream&
@@ -318,6 +318,8 @@ operator<<(std::ostream& s, const PowerSet<CS>& x) {
   }
   return s;
 }
+
+} // namespace IO_Operators
 
 template <typename CS>
 dimension_type

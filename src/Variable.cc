@@ -44,7 +44,7 @@ PPL::Variable::default_output_function(std::ostream& s, const Variable& v) {
 
 /*! \relates Parma_Polyhedra_Library::Variable */
 std::ostream&
-PPL::operator<<(std::ostream& s, const Variable& v) {
+PPL::IO_Operators::operator<<(std::ostream& s, const Variable& v) {
   (*Variable::current_output_function)(s, v);
   return s;
 }

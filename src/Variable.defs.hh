@@ -31,10 +31,14 @@ site: http://www.cs.unipr.it/ppl/ . */
 
 namespace Parma_Polyhedra_Library {
 
+namespace IO_Operators {
+
 //! Output operator.
 /*! \relates Variable */
 std::ostream&
 operator<<(std::ostream& s, const Variable& v);
+
+} // namespace IO_Operators
 
 //! Defines a total ordering on variables.
 /*! \relates Variable */
@@ -95,7 +99,8 @@ private:
   friend class Init;
 
   friend std::ostream&
-  Parma_Polyhedra_Library::operator<<(std::ostream& s, const Variable& v);
+  Parma_Polyhedra_Library::IO_Operators::operator<<(std::ostream& s,
+						    const Variable& v);
 
   //! Pointer to the current output function.
   static Output_Function_Type* current_output_function;

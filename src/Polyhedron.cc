@@ -4574,7 +4574,7 @@ PPL::Polyhedron::OK(bool check_not_empty) const {
 
 /*! \relates Parma_Polyhedra_Library::Polyhedron */
 std::ostream&
-PPL::operator<<(std::ostream& s, const Polyhedron& ph) {
+PPL::IO_Operators::operator<<(std::ostream& s, const Polyhedron& ph) {
   if (ph.check_empty())
     s << "false";
   else

@@ -17,6 +17,14 @@ namespace Parma_Polyhedra_Library {
 
 class Polyhedron;
 
+//! All input output operators are confined into this namespace.
+/*!
+  This is done so that the library's input output operators
+  do not to interfere with those the user might want to define.
+*/
+namespace IO_Operators {
+}
+
 }
 
 //! The standard C++ namespace.

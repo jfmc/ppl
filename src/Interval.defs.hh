@@ -39,7 +39,12 @@ bool operator< (const ExtendedRational& x, const ExtendedRational& y);
 bool operator> (const ExtendedRational& x, const ExtendedRational& y);
 bool operator<=(const ExtendedRational& x, const ExtendedRational& y);
 bool operator>=(const ExtendedRational& x, const ExtendedRational& y);
+
+namespace IO_Operators {
+
 std::ostream& operator<<(std::ostream& s, const ExtendedRational& x);
+
+} // namespace IO_Operators
 
 } // namespace Parma_Polyhedra_Library
 
@@ -95,8 +100,8 @@ public:
   Parma_Polyhedra_Library::operator>=(const ExtendedRational& x,
 				      const ExtendedRational& y);
   friend std::ostream&
-  Parma_Polyhedra_Library::operator<<(std::ostream& s,
-				      const ExtendedRational& x);
+  Parma_Polyhedra_Library::IO_Operators::operator<<(std::ostream& s,
+						    const ExtendedRational& x);
 };
 
 

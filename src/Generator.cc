@@ -124,7 +124,7 @@ PPL::Generator::line(const LinExpression& e) {
 }
 
 std::ostream&
-PPL::operator<<(std::ostream& s, const Generator& g) {
+PPL::IO_Operators::operator<<(std::ostream& s, const Generator& g) {
   bool needed_divisor = false;
   bool extra_parentheses = false;
   int num_variables = g.space_dimension();

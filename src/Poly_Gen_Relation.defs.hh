@@ -30,13 +30,18 @@ site: http://www.cs.unipr.it/ppl/ . */
 namespace Parma_Polyhedra_Library {
 
 // Put them in the namespace here to declare them friend later.
-std::ostream& operator<<(std::ostream& s, const Poly_Gen_Relation& r);
 bool operator==(const Poly_Gen_Relation& x, const Poly_Gen_Relation& y);
 bool operator!=(const Poly_Gen_Relation& x, const Poly_Gen_Relation& y);
 Poly_Gen_Relation operator&&(const Poly_Gen_Relation& x,
 			     const Poly_Gen_Relation& y);
 Poly_Gen_Relation operator-(const Poly_Gen_Relation& x,
 			    const Poly_Gen_Relation& y);
+
+namespace IO_Operators {
+
+std::ostream& operator<<(std::ostream& s, const Poly_Gen_Relation& r);
+
+} // namespace IO_Operators
 
 } // namespace Parma_Polyhedra_Library
 
@@ -97,8 +102,8 @@ private:
 
   //! Output operator.
   friend std::ostream&
-  Parma_Polyhedra_Library::operator<<(std::ostream& s,
-				      const Poly_Gen_Relation& r);
+  Parma_Polyhedra_Library::
+  IO_Operators::operator<<(std::ostream& s, const Poly_Gen_Relation& r);
 
 public:
 #ifdef PPL_DOXYGEN_INCLUDE_IMPLEMENTATION_DETAILS

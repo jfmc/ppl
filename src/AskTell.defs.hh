@@ -47,11 +47,15 @@ template <typename CS>
 int
 lcompare(const AskTell<CS>&, const AskTell<CS>&);
 
+namespace IO_Operators {
+
 template <typename CS>
 std::ostream&
-operator <<(std::ostream&, const AskTell<CS>&);
+operator<<(std::ostream&, const AskTell<CS>&);
 
-}
+} // namespace IO_Operators
+
+} // namespace Parma_Polyhedra_Library
 
 //! The ask and tell construction on constraint systems.
 template <typename CS>
@@ -96,7 +100,7 @@ public:
 
   std::ostream& print(std::ostream &s);
 
-  friend std::ostream& operator <<<>(std::ostream& s, const AskTell& x);
+  //friend std::ostream& operator<<<>(std::ostream& s, const AskTell& x);
 
 public:
 

@@ -29,7 +29,7 @@ site: http://www.cs.unipr.it/ppl/ . */
 namespace PPL = Parma_Polyhedra_Library;
 
 std::ostream&
-PPL::operator<<(std::ostream& s, const ExtendedRational& x) {
+PPL::IO_Operators::operator<<(std::ostream& s, const ExtendedRational& x) {
   if (x.e < 0)
     s << "-infty";
   else if (x.e > 0)

@@ -68,9 +68,13 @@ Determinate<PH>
 operator*(const Determinate<PH>& x, const Determinate<PH>& y);
 #endif
 
+namespace IO_Operators {
+
 template <typename PH>
 std::ostream&
 operator<<(std::ostream&, const Determinate<PH>&);
+
+} // namespace IO_Operators
 
 } // namespace Parma_Polyhedra_Library
 
@@ -120,8 +124,6 @@ public:
 				  const Determinate& y);
 #endif
   friend bool lcompare<>(const Determinate& x, const Determinate& y);
-
-  friend std::ostream& operator<<<>(std::ostream& s, const Determinate& x);
 
   //! Returns the dimension of the vector space enclosing \p *this.
   dimension_type space_dimension() const;

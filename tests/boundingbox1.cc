@@ -47,14 +47,14 @@ void test1() {
   
 #if NOISY
   print_constraints(ph, "*** test1 ph ***");
-  nbox.print_box("*** test1 nbox ***");
-  pbox.print_box("*** test1 pbox ***");
+  nbox.print(cout, "*** test1 nbox ***");
+  pbox.print(cout, "*** test1 pbox ***");
 #endif
 
   BBox known_box(2);
 
 #if NOISY
-  known_box.print_box("*** test1 known_box ***");
+  known_box.print(cout, "*** test1 known_box ***");
 #endif
 
    if (nbox != known_box || pbox != known_box)
@@ -78,8 +78,8 @@ void test2() {
 
 #if NOISY
   print_constraints(ph, "*** test2 ph ***");
-  nbox.print_box("*** test2 nbox ***");
-  pbox.print_box("*** test2 pbox ***");
+  nbox.print(cout, "*** test2 nbox ***");
+  pbox.print(cout, "*** test2 pbox ***");
 #endif
   
   BBox known_nbox(2);
@@ -89,8 +89,8 @@ void test2() {
   BBox known_pbox(2);
   known_pbox.raise_lower_bound(1, true, 0, 1);
 #if NOISY
-  known_nbox.print_box("*** test2 known_nbox ***");
-  known_pbox.print_box("*** test2 known_pbox ***");
+  known_nbox.print(cout, "*** test2 known_nbox ***");
+  known_pbox.print(cout, "*** test2 known_pbox ***");
 #endif
 
   if (nbox != known_nbox || pbox != known_pbox || !(nbox <= pbox))
@@ -115,8 +115,8 @@ void test3() {
 
 #if NOISY
   print_constraints(ph, "*** test3 ph ***");
-  nbox.print_box("*** test3 nbox ***");
-  pbox.print_box("*** test3 pbox ***");
+  nbox.print(cout, "*** test3 nbox ***");
+  pbox.print(cout, "*** test3 pbox ***");
 #endif
 
   BBox known_nbox(2);
@@ -130,8 +130,8 @@ void test3() {
   known_pbox.lower_upper_bound(1, true, 4, 1);
 
 #if NOISY
-  known_nbox.print_box("*** test3 known_nbox ***");
-  known_pbox.print_box("*** test3 known_pbox ***");
+  known_nbox.print(cout, "*** test3 known_nbox ***");
+  known_pbox.print(cout, "*** test3 known_pbox ***");
 #endif
 
   if (nbox != known_nbox || pbox != known_pbox || !(nbox <= pbox))
@@ -159,8 +159,8 @@ void test4() {
 
 #if NOISY
   print_constraints(ph, "*** test4 ph ***");
-  nbox.print_box("*** test4 nbox ***");
-  pbox.print_box("*** test4 pbox ***");
+  nbox.print(cout, "*** test4 nbox ***");
+  pbox.print(cout, "*** test4 pbox ***");
 #endif
 
   BBox known_nbox(4);
@@ -176,8 +176,8 @@ void test4() {
   known_pbox.raise_lower_bound(3, true, 5, 1);
 
 #if NOISY
-  known_nbox.print_box("*** test4 known_nbox ***");
-  known_pbox.print_box("*** test4 known_pbox ***");
+  known_nbox.print(cout, "*** test4 known_nbox ***");
+  known_pbox.print(cout, "*** test4 known_pbox ***");
 #endif
 
   if (nbox != known_nbox || pbox != known_pbox || !(nbox <= pbox))
@@ -196,14 +196,14 @@ void test5() {
 
 #if NOISY
   print_constraints(ph, "*** test5 ph ***");
-  nbox.print_box("*** test5 nbox ***");
-  pbox.print_box("*** test5 pbox ***");
+  nbox.print(cout, "*** test5 nbox ***");
+  pbox.print(cout, "*** test5 pbox ***");
 #endif
 
   BBox known_box(2);
 
 #if NOISY
-  known_box.print_box("*** test5 known_box ***");
+  known_box.print(cout, "*** test5 known_box ***");
 #endif
 
   if (nbox != known_box || pbox != known_box || !(nbox <= pbox))
@@ -222,14 +222,14 @@ void test6() {
 
 #if NOISY
   print_constraints(ph, "*** test6 ph ***");
-  nbox.print_box("*** test6 nbox ***");
-  pbox.print_box("*** test6 pbox ***");
+  nbox.print(cout, "*** test6 nbox ***");
+  pbox.print(cout, "*** test6 pbox ***");
 #endif
 
   BBox known_box(0);
 
 #if NOISY
-  known_box.print_box("*** test6 known_box ***");
+  known_box.print(cout, "*** test6 known_box ***");
 #endif
 
   if (nbox != known_box || pbox != known_box || !(nbox <= pbox))
@@ -248,15 +248,15 @@ void test7() {
 
 #if NOISY
   print_constraints(ph, "*** test7 ph ***");
-  nbox.print_box("*** test7 nbox ***");
-  pbox.print_box("*** test7 pbox ***");
+  nbox.print(cout, "*** test7 nbox ***");
+  pbox.print(cout, "*** test7 pbox ***");
 #endif
 
   BBox known_box(ph.space_dimension());
   known_box.set_empty();
 
 #if NOISY
-  known_box.print_box("*** test7 known_box ***");
+  known_box.print(cout, "*** test7 known_box ***");
 #endif
 
   if (nbox != known_box || pbox != known_box || !(nbox <= pbox))
@@ -280,8 +280,8 @@ void test8() {
 
 #if NOISY
   print_constraints(ph, "*** test8 ph ***");
-  nbox.print_box("*** test8 nbox ***");
-  pbox.print_box("*** test8 pbox ***");
+  nbox.print(cout, "*** test8 nbox ***");
+  pbox.print(cout, "*** test8 pbox ***");
 #endif
 
   BBox known_box(2);
@@ -291,7 +291,7 @@ void test8() {
   known_box.lower_upper_bound(1, true, 4, 1);
 
 #if NOISY
-  known_box.print_box("*** test8 known_box ***");
+  known_box.print(cout, "*** test8 known_box ***");
 #endif
 
   if (nbox != known_box || pbox != known_box || !(nbox <= pbox))
@@ -319,8 +319,8 @@ void test9() {
 
 #if NOISY
   print_constraints(ph, "*** test9 ph constraints ***");
-  nbox.print_box("*** test9 nbox ***");
-  pbox.print_box("*** test9 pbox ***");
+  nbox.print(cout, "*** test9 nbox ***");
+  pbox.print(cout, "*** test9 pbox ***");
 #endif
 
   BBox known_box(2);
@@ -329,7 +329,7 @@ void test9() {
   known_box.raise_lower_bound(1, true, 0, 1);
   known_box.lower_upper_bound(1, true, 1, 1);
 #if NOISY
-  known_box.print_box("*** test9 known_box ***");
+  known_box.print(cout, "*** test9 known_box ***");
 #endif
 
   if (nbox != known_box || pbox != known_box || !(nbox <= pbox))
@@ -360,8 +360,8 @@ void test10() {
   ph.shrink_bounding_box(nbox);
 
 #if NOISY
-  nbox.print_box("*** test10 nbox ***");
-  pbox.print_box("*** test10 pbox ***");
+  nbox.print(cout, "*** test10 nbox ***");
+  pbox.print(cout, "*** test10 pbox ***");
 #endif
 
   BBox known_nbox(4);
@@ -375,7 +375,7 @@ void test10() {
   known_pbox.raise_lower_bound(1, true, 4, 1);
 
 #if NOISY
-  known_nbox.print_box("*** test10 known_nbox ***");
+  known_nbox.print(cout, "*** test10 known_nbox ***");
 #endif
 
   if (nbox != known_nbox)

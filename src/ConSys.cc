@@ -433,7 +433,7 @@ PPL::ConSys::OK() const {
 
 /*! \relates Parma_Polyhedra_Library::ConSys */
 std::ostream&
-PPL::operator<<(std::ostream& s, const ConSys& cs) {
+PPL::IO_Operators::operator<<(std::ostream& s, const ConSys& cs) {
   ConSys::const_iterator i = cs.begin();
   ConSys::const_iterator cs_end = cs.end();
   if (i == cs_end)

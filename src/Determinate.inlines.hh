@@ -204,6 +204,8 @@ Determinate<PH>::OK() const {
   return prep->ph.OK();
 }
 
+namespace IO_Operators {
+
 template <typename PH>
 std::ostream&
 operator<<(std::ostream& s, const Determinate<PH>& x) {
@@ -225,6 +227,8 @@ operator<<(std::ostream& s, const Determinate<PH>& x) {
   }
   return s;
 }
+
+} // namespace IO_Operators
 
 template <typename PH>
 bool

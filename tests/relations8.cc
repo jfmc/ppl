@@ -25,6 +25,7 @@ site: http://www.cs.unipr.it/ppl/ . */
 
 using namespace std;
 using namespace Parma_Polyhedra_Library;
+using namespace Parma_Polyhedra_Library::IO_Operators;
 
 #ifndef NOISY
 #define NOISY 0
@@ -54,7 +55,7 @@ main() {
 
   Poly_Con_Relation rel = ph.relation_with(c);
 #if NOISY
-  cout << "ph.relation_with(y == -1) == " << rel << endl;
+  cout << "ph.relation_with(c) == " << rel << endl;
 #endif
 
   Poly_Con_Relation known_result = Poly_Con_Relation::is_disjoint();

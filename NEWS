@@ -59,6 +59,10 @@ o  New function LinExpression operator+(const LinExpression&): previously
 
 o  Added a a parameter to Polyhedron::shrink_bounding_box()...
 
+o  All the input/output operators have been confined into namespace
+   Parma_Polyhedra_Library::IO_Operators.  This way they do not conflict
+   with the operators the user might want to define.
+
 
 Bugfixes
 ========

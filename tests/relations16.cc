@@ -26,6 +26,7 @@ site: http://www.cs.unipr.it/ppl/ . */
 
 using namespace std;
 using namespace Parma_Polyhedra_Library;
+using namespace Parma_Polyhedra_Library::IO_Operators;
 
 #ifndef NOISY
 #define NOISY 0
@@ -46,8 +47,7 @@ main() {
   Poly_Con_Relation rel = ph.relation_with(B > 0);
 
 #if NOISY
-  print_generators(ph1, "*** ph1 ***");
-  print_generators(ph2, "*** ph2 ***");
+  print_generators(ph, "*** ph ***");
   cout << "ph.relation_with(B > 0) == " << rel << endl;
 #endif
 

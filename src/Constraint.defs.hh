@@ -34,9 +34,13 @@ site: http://www.cs.unipr.it/ppl/ . */
 
 namespace Parma_Polyhedra_Library {
 
+namespace IO_Operators {
+
 //! Output operator.
 /*! \relates Constraint */
 std::ostream& operator<<(std::ostream& s, const Constraint& c);
+
+} // namespace IO_Operators
 
 // Put them in the namespace here to declare them friend later.
 Constraint operator==(const LinExpression& e1, const LinExpression& e2);

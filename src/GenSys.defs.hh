@@ -36,6 +36,8 @@ site: http://www.cs.unipr.it/ppl/ . */
 
 namespace Parma_Polyhedra_Library {
 
+namespace IO_Operators {
+
 //! Output operator.
 /*!
   \relates GenSys
@@ -43,6 +45,8 @@ namespace Parma_Polyhedra_Library {
   \p s the generators of \p gs, all in one row and separated by ", ".
 */
 std::ostream& operator<<(std::ostream& s, const GenSys& gs);
+
+} // namespace IO_Operators
 
 // Put it in the namespace here to declare it friend later.
 bool operator<=(const Polyhedron& x, const Polyhedron& y);

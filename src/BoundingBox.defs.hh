@@ -123,7 +123,11 @@ private:
   mutable bool empty_up_to_date;
 };
 
+namespace IO_Operators {
+
 std::ostream& operator<<(std::ostream& s, const BoundingBox& bbox);
+
+} // namespace IO_Operators
 
 } // namespace Parma_Polyhedra_Library
 

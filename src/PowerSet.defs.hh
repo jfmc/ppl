@@ -50,9 +50,13 @@ template <typename CS>
 int
 lcompare(const PowerSet<CS>&, const PowerSet<CS>&);
 
+namespace IO_Operators {
+
 template <typename CS>
 std::ostream&
 operator<<(std::ostream&, const PowerSet<CS>&);
+
+} // namespace IO_Operators
 
 } // namespace Parma_Polyhedra_Library
 
@@ -99,7 +103,7 @@ public:
 
   friend int lcompare<>(const PowerSet& x, const PowerSet& y);
 
-  friend std::ostream& operator <<<>(std::ostream& s, const PowerSet& x);
+  //friend std::ostream& operator <<<>(std::ostream& s, const PowerSet& x);
 
   //! Returns the dimension of the vector space enclosing \p *this.
   dimension_type space_dimension() const;

@@ -757,7 +757,7 @@ PPL::GenSys::OK() const {
 
 /*! \relates Parma_Polyhedra_Library::GenSys */
 std::ostream&
-PPL::operator<<(std::ostream& s, const GenSys& gs) {
+PPL::IO_Operators::operator<<(std::ostream& s, const GenSys& gs) {
   GenSys::const_iterator i = gs.begin();
   GenSys::const_iterator gs_end = gs.end();
   if (i == gs_end)
