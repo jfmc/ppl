@@ -24,7 +24,7 @@ CPPFLAGS = @extra_cpp_flags@
 TESTS = addconstraints1 addconstraints2 addconstraints3 \
 	adddimensions1 \
 	addgenerators1 addgenerators2 \
-	affine_image1 \
+	affineimage1 \
 	affinetrans \
         append1 append2 \
 	convexhull1 \
@@ -49,7 +49,7 @@ adddimensions1_SOURCES = adddimensions1.cc
 addgenerators1_SOURCES = addgenerators1.cc
 addgenerators2_SOURCES = addgenerators2.cc
 
-affine_image1_SOURCES = affine_image1.cc
+affineimage1_SOURCES = affineimage1.cc
 
 affinetrans_SOURCES = affinetrans.cc
 
