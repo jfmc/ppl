@@ -35,13 +35,15 @@ Whenever appropriate for ensuring efficiency, the generic std::swap
 algorithm should be specialized to use the swap method.
 
 
-Internal linkage
-----------------
+Limiting the visibility of variables and functions
+--------------------------------------------------
 
 Avoid using the keyword "static" to specify that global variables or
-functions should have internal linkage; use the anonymous namespace,
-instead. The keyword "static" should only appear inside class
-definitions or function bodies. As an example,
+functions should be visible only inside the current translation unit;
+use the anonymous namespace, instead. The keyword "static" should
+only appear inside class definitions or function bodies. As an example,
+
+static const char* s = "Not accessible by other translation units";
 
 static void f() {
   // ... function body ...
@@ -50,6 +52,8 @@ static void f() {
 should be replaced by
 
 namespace {
+
+const char* s = "Not accessible by other translation units";
 
 void f() {
   // ... function body ...
