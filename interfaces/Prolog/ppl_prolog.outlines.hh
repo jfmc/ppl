@@ -767,7 +767,7 @@ ppl_limited_widening_assign(Prolog_term_ref t_lhs,
     }
     PPL::Polyhedron& x = *static_cast<PPL::Polyhedron*>(lhs);
     const PPL::Polyhedron& y = *static_cast<const PPL::Polyhedron*>(rhs);
-    x.limited_widening_assign(y,cs);
+    x.limited_widening_assign(y, cs);
     return PROLOG_SUCCESS;
   }
   CATCH_ALL;
@@ -917,3 +917,24 @@ ppl_relation_with_generator(Prolog_term_ref t_ph, Prolog_term_ref t_g) {
   return PROLOG_FAILURE;
 }
 
+extern "C" Prolog_foreign_return_type
+ppl_add_generators_and_minimize(Prolog_term_ref t_ph, 
+				 Prolog_term_ref t_glist) {
+  try {
+    PPL::Polyhedron* ph = get_ph_pointer(t_ph);
+    if (ph == 0)
+      return PROLOG_FAILURE;
+    CHECK(ph);
+    PPL::GenSys gs;
+    Prolog_term_ref g = Prolog_new_term_ref();
+
+    while (Prolog_is_cons(t_glist)) {
+      Prolog_get_cons(t_glist, g, t_glist);
+      gs.insert(build_generator(g));
+    }
+
+    ph->add_generators_and_minimize(gs);
+  }
+  CATCH_ALL;
+  return PROLOG_FAILURE;
+}
