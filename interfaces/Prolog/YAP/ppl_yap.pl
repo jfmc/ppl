@@ -1,1 +1,1 @@
-:- load_foreign_files([libpplyap,libgmp,libgmpxx,libppl,'libstdc++'], [], init).
+:- load_foreign_files([ppl_yap], ['-lppl','-lgmp','-lgmpxx','-lstdc++'], init).

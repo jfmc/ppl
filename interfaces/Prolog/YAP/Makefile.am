@@ -28,46 +28,16 @@ VPATH = @srcdir@
 
 SUBDIRS =
 
-# Libtool -version-info for libpplyap.la.
-#
-#  1. Start with version information of `0:0:0' for each libtool library.
-#
-#  2. Update the version information only immediately before a public
-#     release of your software.  More frequent updates are unnecessary,
-#     and only guarantee that the current interface number gets larger
-#     faster.
-#
-#  3. If the library source code has changed at all since the last
-#     update, then increment REVISION (`C:R:A' becomes `C:r+1:A').
-#
-#  4. If any interfaces have been added, removed, or changed since the
-#     last update, increment CURRENT, and set REVISION to 0.
-#
-#  5. If any interfaces have been added since the last public release,
-#     then increment AGE.
-#
-#  6. If any interfaces have been removed since the last public release,
-#     then set AGE to 0.
-#
-#	PPL release		-version-info
-#	    0.1			    -----
-#	    0.2			    -----
-#	    0.3			    -----
-#	    0.4			    0:0:0
+EXTRA_DIST = ppl_yap.pl yap_clpq.pl
 
-LIBPPLYAP_LT_CURRENT =  0
-LIBPPLYAP_LT_REVISION = 0
-LIBPPLYAP_LT_AGE =      0
+if HAVE_YAP_PROLOG
 
 INCLUDES = -I$(top_builddir)/src @extra_includes@
 
-lib_LTLIBRARIES = libpplyap.la
-
-libpplyap_la_SOURCES = ppl_yap.cc
-
-libpplyap_la_LDFLAGS = \
--module \
--version-info $(LIBPPLYAP_LT_CURRENT):$(LIBPPLYAP_LT_REVISION):$(LIBPPLYAP_LT_AGE)
+pkglib_LTLIBRARIES = ppl_yap.la
+ppl_yap_la_SOURCES = ppl_yap.cc
+ppl_yap_la_LIBADD = $(top_builddir)/src/libppl.la @extra_libraries@
+ppl_yap_la_LDFLAGS = -no-undefined -module -avoid-version
 
 CLPQ_TESTS = \
 ack.clpq \
@@ -77,19 +47,6 @@ mc91.clpq \
 smm.clpq \
 sumto.clpq \
 tak.clpq
-
-EXTRA_DIST = ppl_yap.pl yap_clpq.pl
-
-if HAVE_YAP_PROLOG
-#check_PROGRAMS = pplyap
-#pplyap_SOURCES = ppl_yap.cc
-#pplyap_LDADD = libpplyap.la $(top_builddir)/src/libppl.la /usr/local/lib/pl-5.0.1/runtime/i686-linux/libpl.a -lreadline -ldl -ltermcap @extra_libraries@
-
-#pplyap$(EXEEXT): ppl_yap.o #ppl_yap.pl
-#	yaplc -o $@ $+ -L '-L../../../src/.libs -lppl -lgmp -lgmpxx -lstdc++'
-
-#yap_clpq$(EXEEXT): yap_clpq.pl ppl_yap.o ppl_yap.pl ../clpq.pl
-#	yaplc -o $@ $+ -L '-L../../../src/.libs -lppl -lgmp -lgmpxx -lstdc++'
 
 #check-local: yap_clpq$(EXEEXT) ../check_script ../expected
 #	for k in $(CLPQ_TESTS); do cp -f $(srcdir)/../$$k .; done
