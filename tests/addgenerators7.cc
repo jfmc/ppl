@@ -1,4 +1,4 @@
-/* Testing add_generators_and_minimize(gs) for NNC_Polyhedron.
+/* Test add_generators_and_minimize(gs) for NNC_Polyhedron.
    Copyright (C) 2001, 2002 Roberto Bagnara <bagnara@cs.unipr.it>
 
 This file is part of the Parma Polyhedra Library (PPL).
@@ -36,7 +36,7 @@ main() {
 
   Variable x(0);
   Variable y(1);
-  
+
   GenSys gs1;
   gs1.insert(closure_point());
   gs1.insert(closure_point(4*x));
@@ -46,27 +46,27 @@ main() {
   gs1.insert(point(4*x + y));
   gs1.insert(point(x + 4*y));
   gs1.insert(point(3*y));
-  
+
   NNC_Polyhedron ph(gs1);
 
 #if NOISY
   print_generators(ph, "*** ph ***");
 #endif
-  
+
   GenSys gs2;
   gs2.insert(point());
   gs2.insert(point(4*x));
   gs2.insert(point(4*y));
   gs2.insert(point(4*x + 4*y));
-  
+
   ph.add_generators_and_minimize(gs2);
-  
+
   GenSys gs3;
   gs3.insert(point());
   gs3.insert(point(4*x));
   gs3.insert(point(4*y));
   gs3.insert(point(4*x + 4*y));
-  
+
   NNC_Polyhedron known_result(gs3);
 
   C_Polyhedron closed_ph(ph);

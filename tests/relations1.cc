@@ -1,4 +1,4 @@
-/* Testing Polyhedron::relation_with(g).
+/* Test Polyhedron::relation_with(g).
    Copyright (C) 2001, 2002 Roberto Bagnara <bagnara@cs.unipr.it>
 
 This file is part of the Parma Polyhedra Library (PPL).

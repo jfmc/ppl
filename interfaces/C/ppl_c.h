@@ -32,6 +32,7 @@ Detailed description with examples to be written.
 #define PPL_ppl_c_h 1
 
 #include <gmp.h>
+#include <stddef.h>
 
 /*
   __P is a macro used to wrap function prototypes, so that compilers
@@ -75,6 +76,16 @@ enum ppl_enum_error_code {
   PPL_ERROR_UNEXPECTED_ERROR = -6
 };
 
+/*!
+  An unsigned integral type for representing space dimensions.
+*/
+typedef size_t ppl_dimension_type;
+
+/*!
+  Writes to \p m the the maximum space dimension this library can handle.
+*/
+int
+ppl_max_space_dimension __P((ppl_dimension_type* m));
 
 /*!
   Initializes the Parma Polyhedra Library.
@@ -118,13 +129,13 @@ PPL_TYPE_DECLARATION(Constraint);
 
 PPL_TYPE_DECLARATION(ConSys);
 
-PPL_TYPE_DECLARATION(ConSys__const_iterator);
+PPL_TYPE_DECLARATION(ConSys_const_iterator);
 
 PPL_TYPE_DECLARATION(Generator);
 
 PPL_TYPE_DECLARATION(GenSys);
 
-PPL_TYPE_DECLARATION(GenSys__const_iterator);
+PPL_TYPE_DECLARATION(GenSys_const_iterator);
 
 PPL_TYPE_DECLARATION(Polyhedron);
 
@@ -203,7 +214,7 @@ ppl_new_LinExpression __P((ppl_LinExpression_t* ple));
 */
 int
 ppl_new_LinExpression_with_dimension __P((ppl_LinExpression_t* ple,
-					  unsigned int d));
+					  ppl_dimension_type d));
 
 /*!
   Builds a linear expression that is a copy of \p le; writes an handle
@@ -250,7 +261,7 @@ __P((ppl_LinExpression_t dst, ppl_const_LinExpression_t src));
 */
 int
 ppl_LinExpression_add_to_coefficient __P((ppl_LinExpression_t le,
-					  unsigned int var,
+					  ppl_dimension_type var,
 					  ppl_const_Coefficient_t n));
 
 /*!
@@ -418,7 +429,8 @@ ppl_delete_ConSys __P((ppl_const_ConSys_t cs));
   Assigns a copy of the constraint system \p src to \p dst.
 */
 int
-ppl_assign_ConSys_from_ConSys __P((ppl_ConSys_t dst, ppl_const_ConSys_t src));
+ppl_assign_ConSys_from_ConSys __P((ppl_ConSys_t dst,
+				   ppl_const_ConSys_t src));
 
 /*!
   Returns the dimension of the vector space enclosing \p *this.
@@ -431,7 +443,8 @@ ppl_ConSys_space_dimension __P((ppl_const_ConSys_t cs));
   dimension is increased, if necessary.
 */
 int
-ppl_ConSys_insert_Constraint __P((ppl_ConSys_t cs, ppl_const_Constraint_t c));
+ppl_ConSys_insert_Constraint __P((ppl_ConSys_t cs,
+				  ppl_const_Constraint_t c));
 
 /*!
   Returns a positive integer if \p cs is well formed, i.e., if it
@@ -447,70 +460,69 @@ ppl_ConSys_OK __P((ppl_const_ConSys_t c));
   \p pcit.
 */
 int
-ppl_new_ConSys__const_iterator __P((ppl_ConSys__const_iterator_t* pcit));
+ppl_new_ConSys_const_iterator __P((ppl_ConSys_const_iterator_t* pcit));
 
 /*!
   Builds a const iterator system that is a copy of \p cit; writes an
   handle for the newly created const iterator at address \p pcit.
 */
 int
-ppl_new_ConSys__const_iterator_from_ConSys__const_iterator
-__P((ppl_ConSys__const_iterator_t* pcit,
-     ppl_const_ConSys__const_iterator_t cit));
+ppl_new_ConSys_const_iterator_from_ConSys_const_iterator
+__P((ppl_ConSys_const_iterator_t* pcit,
+     ppl_const_ConSys_const_iterator_t cit));
 
 /*!
   Invalidates the handle \p cit: this makes sure the corresponding
   resources will eventually be released.
 */
 int
-ppl_delete_ConSys__const_iterator
-__P((ppl_const_ConSys__const_iterator_t cit));
+ppl_delete_ConSys_const_iterator
+__P((ppl_const_ConSys_const_iterator_t cit));
 
 /*!
   Assigns a copy of the const iterator \p src to \p dst.
 */
 int
-ppl_assign_ConSys__const_iterator_from_ConSys__const_iterator
-__P((ppl_ConSys__const_iterator_t dst,
-     ppl_const_ConSys__const_iterator_t src));
+ppl_assign_ConSys_const_iterator_from_ConSys_const_iterator
+__P((ppl_ConSys_const_iterator_t dst,
+     ppl_const_ConSys_const_iterator_t src));
 
 /*!
   Assigns to \p cit a const iterator "pointing" to the beginning of
   the constraint system \p cs.
 */
 int
-ppl_ConSys_begin __P((ppl_ConSys_t cs, ppl_ConSys__const_iterator_t cit));
+ppl_ConSys_begin __P((ppl_ConSys_t cs, ppl_ConSys_const_iterator_t cit));
 
 /*!
   Assigns to \p cit a const iterator "pointing" past the end of the
   constraint system \p cs.
 */
 int
-ppl_ConSys_end __P((ppl_ConSys_t cs, ppl_ConSys__const_iterator_t cit));
+ppl_ConSys_end __P((ppl_ConSys_t cs, ppl_ConSys_const_iterator_t cit));
 
 /*!
   Dereference \p cit writing a const handle to the resulting
   constraint at address \p pc.
 */
 int
-ppl_ConSys__const_iterator_dereference
-__P((ppl_const_ConSys__const_iterator_t cit,
-     ppl_const_Constraint_t* pc));
+ppl_ConSys_const_iterator_dereference
+__P((ppl_const_ConSys_const_iterator_t cit, ppl_const_Constraint_t* pc));
 
 /*!
   Increment \p cit so that it "points" to the next constraint.
 */
 int
-ppl_ConSys__const_iterator_increment __P((ppl_ConSys__const_iterator_t cit));
+ppl_ConSys_const_iterator_increment __P((ppl_ConSys_const_iterator_t cit));
 
 /*!
   Returns a positive integer if the iterators corresponding to \p x and
   \p y are equal; return 0 if they are different.
 */
 int
-ppl_ConSys__const_iterator_equal_test
-__P((ppl_const_ConSys__const_iterator_t x,
-     ppl_const_ConSys__const_iterator_t y));
+ppl_ConSys_const_iterator_equal_test
+__P((ppl_const_ConSys_const_iterator_t x,
+     ppl_const_ConSys_const_iterator_t y));
 
 
 /*!
@@ -658,7 +670,8 @@ ppl_delete_GenSys __P((ppl_const_GenSys_t gs));
   Assigns a copy of the generator system \p src to \p dst.
 */
 int
-ppl_assign_GenSys_from_GenSys __P((ppl_GenSys_t dst, ppl_const_GenSys_t src));
+ppl_assign_GenSys_from_GenSys __P((ppl_GenSys_t dst,
+				   ppl_const_GenSys_t src));
 
 /*!
   Returns the dimension of the vector space enclosing \p *this.
@@ -687,32 +700,32 @@ ppl_GenSys_OK __P((ppl_const_GenSys_t c));
   \p pgit.
 */
 int
-ppl_new_GenSys__const_iterator __P((ppl_GenSys__const_iterator_t* pgit));
+ppl_new_GenSys_const_iterator __P((ppl_GenSys_const_iterator_t* pgit));
 
 /*!
   Builds a const iterator system that is a copy of \p git; writes an
   handle for the newly created const iterator at address \p pgit.
 */
 int
-ppl_new_GenSys__const_iterator_from_GenSys__const_iterator
-__P((ppl_GenSys__const_iterator_t* pgit,
-     ppl_const_GenSys__const_iterator_t git));
+ppl_new_GenSys_const_iterator_from_GenSys_const_iterator
+__P((ppl_GenSys_const_iterator_t* pgit,
+     ppl_const_GenSys_const_iterator_t git));
 
 /*!
   Invalidates the handle \p git: this makes sure the corresponding
   resources will eventually be released.
 */
 int
-ppl_delete_GenSys__const_iterator
-__P((ppl_const_GenSys__const_iterator_t git));
+ppl_delete_GenSys_const_iterator
+__P((ppl_const_GenSys_const_iterator_t git));
 
 /*!
   Assigns a copy of the const iterator \p src to \p dst.
 */
 int
-ppl_assign_GenSys__const_iterator_from_GenSys__const_iterator
-__P((ppl_GenSys__const_iterator_t dst,
-     ppl_const_GenSys__const_iterator_t src));
+ppl_assign_GenSys_const_iterator_from_GenSys_const_iterator
+__P((ppl_GenSys_const_iterator_t dst,
+     ppl_const_GenSys_const_iterator_t src));
 
 /*!
   Assigns to \p git a const iterator "pointing" to the beginning of
@@ -720,7 +733,7 @@ __P((ppl_GenSys__const_iterator_t dst,
 */
 int
 ppl_GenSys_begin __P((ppl_const_GenSys_t gs,
-		      ppl_GenSys__const_iterator_t git));
+		      ppl_GenSys_const_iterator_t git));
 
 /*!
   Assigns to \p git a const iterator "pointing" past the end of the
@@ -728,31 +741,31 @@ ppl_GenSys_begin __P((ppl_const_GenSys_t gs,
 */
 int
 ppl_GenSys_end __P((ppl_const_GenSys_t gs,
-		    ppl_GenSys__const_iterator_t git));
+		    ppl_GenSys_const_iterator_t git));
 
 /*!
   Dereference \p git writing a const handle to the resulting
   generator at address \p pg.
 */
 int
-ppl_GenSys__const_iterator_dereference
-__P((ppl_const_GenSys__const_iterator_t git,
+ppl_GenSys_const_iterator_dereference
+__P((ppl_const_GenSys_const_iterator_t git,
      ppl_const_Generator_t* pg));
 
 /*!
   Increment \p git so that it "points" to the next generator.
 */
 int
-ppl_GenSys__const_iterator_increment __P((ppl_GenSys__const_iterator_t git));
+ppl_GenSys_const_iterator_increment __P((ppl_GenSys_const_iterator_t git));
 
 /*!
   Return a positive integer if the iterators corresponding to \p x and
   \p y are equal; return 0 if they are different.
 */
 int
-ppl_GenSys__const_iterator_equal_test
-__P((ppl_const_GenSys__const_iterator_t x,
-     ppl_const_GenSys__const_iterator_t y));
+ppl_GenSys_const_iterator_equal_test
+__P((ppl_const_GenSys_const_iterator_t x,
+     ppl_const_GenSys_const_iterator_t y));
 
 
 /*!
@@ -761,7 +774,7 @@ __P((ppl_const_GenSys__const_iterator_t x,
 */
 int
 ppl_new_C_Polyhedron_from_dimension __P((ppl_Polyhedron_t* pph,
-					 unsigned int d));
+					 ppl_dimension_type d));
 
 /*!
   Builds an universe NNC polyhedron of dimension \p d and writes an
@@ -769,7 +782,7 @@ ppl_new_C_Polyhedron_from_dimension __P((ppl_Polyhedron_t* pph,
 */
 int
 ppl_new_NNC_Polyhedron_from_dimension __P((ppl_Polyhedron_t* pph,
-					   unsigned int d));
+					   ppl_dimension_type d));
 
 /*!
   Builds an empty closed polyhedron of dimension \p d and writes an
@@ -777,7 +790,7 @@ ppl_new_NNC_Polyhedron_from_dimension __P((ppl_Polyhedron_t* pph,
 */
 int
 ppl_new_C_Polyhedron_empty_from_dimension __P((ppl_Polyhedron_t* pph,
-					       unsigned int d));
+					       ppl_dimension_type d));
 
 /*!
   Builds an empty NNC polyhedron of dimension \p d and writes an
@@ -785,7 +798,7 @@ ppl_new_C_Polyhedron_empty_from_dimension __P((ppl_Polyhedron_t* pph,
 */
 int
 ppl_new_NNC_Polyhedron_empty_from_dimension __P((ppl_Polyhedron_t* pph,
-					       unsigned int d));
+					       ppl_dimension_type d));
 
 /*!
   Builds a closed polyhedron that is a copy of \p ph; writes an handle
@@ -931,7 +944,7 @@ ppl_new_NNC_Polyhedron_recycle_GenSys __P((ppl_Polyhedron_t* pph,
   The bounding box is accessed by using the following functions,
   passed as arguments:
     \code
-      unsigned int space_dimension()
+      ppl_dimension_type space_dimension()
     \endcode
     returns the dimension of the vector space enclosing the polyhedron
     represented by the bounding box.
@@ -943,43 +956,42 @@ ppl_new_NNC_Polyhedron_recycle_GenSys __P((ppl_Polyhedron_t* pph,
     other functions. However, if <CODE>is_empty()</CODE> does not
     return 0, none of the functions below will be called.
     \code
-      int get_lower_bound(unsigned int k, int closed,
+      int get_lower_bound(ppl_dimension_type k, int closed,
                           ppl_Coefficient_t n, ppl_Coefficient_t d)
     \endcode
-    Let \f$I\f$ the interval corresponding to the <CODE>k</CODE>-th dimension.
-    If \f$I\f$ is not bounded from below, simply return 0.
-    Otherwise, set <CODE>closed</CODE>, <CODE>n</CODE> and <CODE>d</CODE>
-    as follows: <CODE>closed</CODE> is set to 0 if the lower boundary
-    of \f$I\f$ is open and is set to a value different from zero otherwise;
-    <CODE>n</CODE> and <CODE>d</CODE> are assigned the integers
-    \f$n\f$ and \f$d\f$ such that the canonical fraction \f$n/d\f$
-    corresponds to the greatest lower bound of \f$I\f$.
-    The fraction \f$n/d\f$ is in canonical form if and only if \f$n\f$
-    and \f$d\f$ have no common factors and \f$d\f$ is positive, \f$0/1\f$
-    being the unique representation for zero.
+    Let \f$I\f$ the interval corresponding to the <CODE>k</CODE>-th
+    dimension.  If \f$I\f$ is not bounded from below, simply return 0.
+    Otherwise, set <CODE>closed</CODE>, <CODE>n</CODE> and
+    <CODE>d</CODE> as follows: <CODE>closed</CODE> is set to 0 if the
+    lower boundary of \f$I\f$ is open and is set to a value different
+    from zero otherwise; <CODE>n</CODE> and <CODE>d</CODE> are
+    assigned the integers \f$n\f$ and \f$d\f$ such that the canonical
+    fraction \f$n/d\f$ corresponds to the greatest lower bound of
+    \f$I\f$.  The fraction \f$n/d\f$ is in canonical form if and only
+    if \f$n\f$ and \f$d\f$ have no common factors and \f$d\f$ is
+    positive, \f$0/1\f$ being the unique representation for zero.
     \code
-      int get_upper_bound(unsigned int k, int closed,
+      int get_upper_bound(ppl_dimension_type k, int closed,
                           ppl_Coefficient_t n, ppl_Coefficient_t d)
     \endcode
-    Let \f$I\f$ the interval corresponding to the <CODE>k</CODE>-th dimension.
-    If \f$I\f$ is not bounded from above, simply return 0.
-    Otherwise, set <CODE>closed</CODE>, <CODE>n</CODE> and <CODE>d</CODE>
-    as follows: <CODE>closed</CODE> is set to 0 if the upper boundary
-    of \f$I\f$ is open and is set to a value different from 0 otherwise;
-    <CODE>n</CODE> and <CODE>d</CODE>
-    are assigned the integers
-    \f$n\f$ and \f$d\f$ such that the canonical fraction \f$n/d\f$
-    corresponds to the least upper bound of \f$I\f$.
+    Let \f$I\f$ the interval corresponding to the <CODE>k</CODE>-th
+    dimension.  If \f$I\f$ is not bounded from above, simply return 0.
+    Otherwise, set <CODE>closed</CODE>, <CODE>n</CODE> and
+    <CODE>d</CODE> as follows: <CODE>closed</CODE> is set to 0 if the
+    upper boundary of \f$I\f$ is open and is set to a value different
+    from 0 otherwise; <CODE>n</CODE> and <CODE>d</CODE> are assigned
+    the integers \f$n\f$ and \f$d\f$ such that the canonical fraction
+    \f$n/d\f$ corresponds to the least upper bound of \f$I\f$.
 */
 int
 ppl_new_C_Polyhedron_from_bounding_box
 __P((ppl_Polyhedron_t* pph,
-     unsigned int (*space_dimension)(void),
+     ppl_dimension_type (*space_dimension)(void),
      int (*is_empty)(void),
-     int (*get_lower_bound)(unsigned int k, int closed,
+     int (*get_lower_bound)(ppl_dimension_type k, int closed,
 			    ppl_Coefficient_t n,
 			    ppl_Coefficient_t d),
-     int (*get_upper_bound)(unsigned int k, int closed,
+     int (*get_upper_bound)(ppl_dimension_type k, int closed,
 			    ppl_Coefficient_t n,
 			    ppl_Coefficient_t d)));
 
@@ -991,7 +1003,7 @@ __P((ppl_Polyhedron_t* pph,
   The bounding box is accessed by using the following functions,
   passed as arguments:
     \code
-      unsigned int space_dimension()
+      ppl_dimension_type space_dimension()
     \endcode
     returns the dimension of the vector space enclosing the polyhedron
     represented by the bounding box.
@@ -1003,43 +1015,42 @@ __P((ppl_Polyhedron_t* pph,
     other functions. However, if <CODE>is_empty()</CODE> does not
     return 0, none of the functions below will be called.
     \code
-      int get_lower_bound(unsigned int k, int closed,
+      int get_lower_bound(ppl_dimension_type k, int closed,
                           ppl_Coefficient_t n, ppl_Coefficient_t d)
     \endcode
-    Let \f$I\f$ the interval corresponding to the <CODE>k</CODE>-th dimension.
-    If \f$I\f$ is not bounded from below, simply return 0.
-    Otherwise, set <CODE>closed</CODE>, <CODE>n</CODE> and <CODE>d</CODE>
-    as follows: <CODE>closed</CODE> is set to 0 if the lower boundary
-    of \f$I\f$ is open and is set to a value different from zero otherwise;
-    <CODE>n</CODE> and <CODE>d</CODE> are assigned the integers
-    \f$n\f$ and \f$d\f$ such that the canonical fraction \f$n/d\f$
-    corresponds to the greatest lower bound of \f$I\f$.
-    The fraction \f$n/d\f$ is in canonical form if and only if \f$n\f$
-    and \f$d\f$ have no common factors and \f$d\f$ is positive, \f$0/1\f$
-    being the unique representation for zero.
+    Let \f$I\f$ the interval corresponding to the <CODE>k</CODE>-th
+    dimension.  If \f$I\f$ is not bounded from below, simply return 0.
+    Otherwise, set <CODE>closed</CODE>, <CODE>n</CODE> and
+    <CODE>d</CODE> as follows: <CODE>closed</CODE> is set to 0 if the
+    lower boundary of \f$I\f$ is open and is set to a value different
+    from zero otherwise; <CODE>n</CODE> and <CODE>d</CODE> are
+    assigned the integers \f$n\f$ and \f$d\f$ such that the canonical
+    fraction \f$n/d\f$ corresponds to the greatest lower bound of
+    \f$I\f$.  The fraction \f$n/d\f$ is in canonical form if and only
+    if \f$n\f$ and \f$d\f$ have no common factors and \f$d\f$ is
+    positive, \f$0/1\f$ being the unique representation for zero.
     \code
-      int get_upper_bound(unsigned int k, int closed,
+      int get_upper_bound(ppl_dimension_type k, int closed,
                           ppl_Coefficient_t n, ppl_Coefficient_t d)
     \endcode
-    Let \f$I\f$ the interval corresponding to the <CODE>k</CODE>-th dimension.
-    If \f$I\f$ is not bounded from above, simply return 0.
-    Otherwise, set <CODE>closed</CODE>, <CODE>n</CODE> and <CODE>d</CODE>
-    as follows: <CODE>closed</CODE> is set to 0 if the upper boundary
-    of \f$I\f$ is open and is set to a value different from 0 otherwise;
-    <CODE>n</CODE> and <CODE>d</CODE>
-    are assigned the integers
-    \f$n\f$ and \f$d\f$ such that the canonical fraction \f$n/d\f$
-    corresponds to the least upper bound of \f$I\f$.
+    Let \f$I\f$ the interval corresponding to the <CODE>k</CODE>-th
+    dimension.  If \f$I\f$ is not bounded from above, simply return 0.
+    Otherwise, set <CODE>closed</CODE>, <CODE>n</CODE> and
+    <CODE>d</CODE> as follows: <CODE>closed</CODE> is set to 0 if the
+    upper boundary of \f$I\f$ is open and is set to a value different
+    from 0 otherwise; <CODE>n</CODE> and <CODE>d</CODE> are assigned
+    the integers \f$n\f$ and \f$d\f$ such that the canonical fraction
+    \f$n/d\f$ corresponds to the least upper bound of \f$I\f$.
 */
 int
 ppl_new_NNC_Polyhedron_from_bounding_box
 __P((ppl_Polyhedron_t* pph,
-     unsigned int (*space_dimension)(void),
+     ppl_dimension_type (*space_dimension)(void),
      int (*is_empty)(void),
-     int (*get_lower_bound)(unsigned int k, int closed,
+     int (*get_lower_bound)(ppl_dimension_type k, int closed,
 			    ppl_Coefficient_t n,
 			    ppl_Coefficient_t d),
-     int (*get_upper_bound)(unsigned int k, int closed,
+     int (*get_upper_bound)(ppl_dimension_type k, int closed,
 			    ppl_Coefficient_t n,
 			    ppl_Coefficient_t d)));
 
@@ -1259,24 +1270,24 @@ ppl_Polyhedron_add_generators_and_minimize __P((ppl_Polyhedron_t ph,
 */
 int
 ppl_Polyhedron_add_dimensions_and_embed __P((ppl_Polyhedron_t ph,
-					     unsigned int d));
+					     ppl_dimension_type d));
 
 /*!
   Adds \p d new dimensions to the space enclosing the polyhedron \p ph.
 */
 int
 ppl_Polyhedron_add_dimensions_and_project __P((ppl_Polyhedron_t ph,
-					       unsigned int d));
+					       ppl_dimension_type d));
 
 /*!
   Removes from \p ph and its containing space the dimensions that are
   specified in first \p n positions of the array \p ds.  The presence
-  of duplicates in \p ds is innocuous.
+  of duplicates in \p ds is a waste but an innocuous one.
 */
 int
 ppl_Polyhedron_remove_dimensions __P((ppl_Polyhedron_t ph,
-				      unsigned int ds[],
-				      unsigned int n));
+				      ppl_dimension_type ds[],
+				      size_t n));
 
 /*!
   Removes the higher dimensions from \p ph and its enclosing space so
@@ -1284,7 +1295,7 @@ ppl_Polyhedron_remove_dimensions __P((ppl_Polyhedron_t ph,
 */
 int
 ppl_Polyhedron_remove_higher_dimensions __P((ppl_Polyhedron_t ph,
-					     unsigned int d));
+					     ppl_dimension_type d));
 
 /*!
   Transforms the polyhedron \p ph, assigning an affine expression
@@ -1296,7 +1307,7 @@ ppl_Polyhedron_remove_higher_dimensions __P((ppl_Polyhedron_t ph,
 */
 int
 ppl_Polyhedron_affine_image __P((ppl_Polyhedron_t ph,
-				 unsigned int var,
+				 ppl_dimension_type var,
 				 ppl_const_LinExpression_t le,
 				 ppl_const_Coefficient_t d));
 
@@ -1310,7 +1321,7 @@ ppl_Polyhedron_affine_image __P((ppl_Polyhedron_t ph,
 */
 int
 ppl_Polyhedron_affine_preimage __P((ppl_Polyhedron_t ph,
-				    unsigned int var,
+				    ppl_dimension_type var,
 				    ppl_const_LinExpression_t le,
 				    ppl_const_Coefficient_t d));
 
@@ -1327,7 +1338,7 @@ ppl_Polyhedron_affine_preimage __P((ppl_Polyhedron_t ph,
 
   \param raise_lower_bound
   a pointer to a void function with arguments
-  <CODE>(unsigned int k, int closed,
+  <CODE>(ppl_dimension_type k, int closed,
          ppl_const_Coefficient_t n, ppl_const_Coefficient_t d)</CODE>
   that intersects the interval corresponding to the <CODE>k</CODE>-th
   dimension with \f$[n/d, +\infty)\f$ if <CODE>closed</CODE> is non-zero,
@@ -1338,7 +1349,7 @@ ppl_Polyhedron_affine_preimage __P((ppl_Polyhedron_t ph,
 
   \param lower_upper_bound
   a pointer to a void function with argument
-  <CODE>(unsigned int k, int closed,
+  <CODE>(ppl_dimension_type k, int closed,
          ppl_const_Coefficient_t n, ppl_const_Coefficient_t d)</CODE>
   that intersects the interval corresponding to the <CODE>k</CODE>-th
   dimension with \f$(-\infty, n/d]\f$ if <CODE>closed</CODE> is non-zero,
@@ -1349,10 +1360,10 @@ int
 ppl_Polyhedron_shrink_bounding_box
 __P((ppl_const_Polyhedron_t ph,
      void (*set_empty)(void),
-     void (*raise_lower_bound)(unsigned int k, int closed,
+     void (*raise_lower_bound)(ppl_dimension_type k, int closed,
 			       ppl_const_Coefficient_t n,
 			       ppl_const_Coefficient_t d),
-     void (*lower_upper_bound)(unsigned int k, int closed,
+     void (*lower_upper_bound)(ppl_dimension_type k, int closed,
 			       ppl_const_Coefficient_t n,
 			       ppl_const_Coefficient_t d)));
 

@@ -27,7 +27,7 @@ site: http://www.cs.unipr.it/ppl/ . */
 #include "Generator.types.hh"
 #include "Row.defs.hh"
 #include "Variable.defs.hh"
-#include "ConSys.defs.hh"
+#include "ConSys.types.hh"
 #include "GenSys.defs.hh"
 #include "LinExpression.defs.hh"
 #include "Polyhedron.types.hh"
@@ -230,7 +230,6 @@ void swap(Parma_Polyhedra_Library::Generator& x,
   the notion of <EM>coefficient</EM> with the notion of <EM>coordinate</EM>:
   these are equivalent only when the divisor of the (closure) point is 1.
 */
-
 class Parma_Polyhedra_Library::Generator : private Row {
 public:
   //! Returns the line of direction \p e.
@@ -278,7 +277,7 @@ public:
   Generator& operator=(const Generator& g);
 
   //! Returns the dimension of the vector space enclosing \p *this.
-  size_t space_dimension() const;
+  dimension_type space_dimension() const;
 
   //! The generator type.
   enum Type {
@@ -367,16 +366,18 @@ private:
   friend class Parma_Polyhedra_Library::GenSys::const_iterator;
   friend class Parma_Polyhedra_Library::Polyhedron;
   friend const Integer&
-  Parma_Polyhedra_Library::operator*(const Constraint& c, const Generator& g);
+  Parma_Polyhedra_Library::operator*(const Constraint& c,
+				     const Generator& g);
   friend const Integer&
   Parma_Polyhedra_Library::reduced_scalar_product(const Constraint& c,
 						  const Generator& g);
   friend
   Parma_Polyhedra_Library::LinExpression::LinExpression(const Generator& g);
-  friend
-  bool Parma_Polyhedra_Library
-  ::ConSys::satisfies_all_constraints(const Generator& g)
- const;
+
+  // FIXME: the following friend declaration is only to grant access to
+  // ConSys::satisfies_all_constraints().
+  friend class Parma_Polyhedra_Library::ConSys;
+
   friend bool Parma_Polyhedra_Library::operator<=(const Polyhedron& x,
 						  const Polyhedron& y);
   friend void std::swap(Parma_Polyhedra_Library::Generator& x,
@@ -386,8 +387,8 @@ private:
   friend std::ostream&
   Parma_Polyhedra_Library::operator<<(std::ostream& s, const Generator& g);
 
-  //! Copy-constructor with given size.
-  Generator(const Generator& g, size_t sz);
+  //! Copy-constructor with given dimension.
+  Generator(const Generator& g, dimension_type dimension);
 
   //! Returns <CODE>true</CODE> if and only if \p *this is not a line.
   bool is_ray_or_point() const;

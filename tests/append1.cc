@@ -31,7 +31,9 @@ using namespace Parma_Polyhedra_Library;
 #endif
 
 void
-shift_rename_add(const C_Polyhedron& p, size_t offset, C_Polyhedron& q) {
+shift_rename_add(const C_Polyhedron& p,
+		 dimension_type offset,
+		 C_Polyhedron& q) {
   if (p.space_dimension() == 0)
     exit(1);
 

@@ -1,4 +1,4 @@
-/* Testing Polyhedron::relation_with(g): we verify that a zero-dimensional
+/* Test Polyhedron::relation_with(g): we verify that a zero-dimensional
    generator is subsumed by a zero-dimensional, universal polyhedron.
    Copyright (C) 2001, 2002 Roberto Bagnara <bagnara@cs.unipr.it>
 

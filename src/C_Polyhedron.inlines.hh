@@ -27,7 +27,8 @@ site: http://www.cs.unipr.it/ppl/ . */
 namespace Parma_Polyhedra_Library {
 
 inline
-C_Polyhedron::C_Polyhedron(size_t num_dimensions, Degenerate_Kind kind)
+C_Polyhedron::C_Polyhedron(dimension_type num_dimensions,
+			   Degenerate_Kind kind)
   : Polyhedron(NECESSARILY_CLOSED, num_dimensions, kind) {
 }
 

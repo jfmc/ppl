@@ -35,7 +35,7 @@ LinExpression::LinExpression()
 }
 
 inline
-LinExpression::LinExpression(size_t sz, bool)
+LinExpression::LinExpression(dimension_type sz, bool)
   : Row(Row::Type(), sz) {
 }
 
@@ -55,7 +55,7 @@ LinExpression::~LinExpression() {
 }
 
 inline
-LinExpression::LinExpression(const LinExpression& e, size_t sz)
+LinExpression::LinExpression(const LinExpression& e, dimension_type sz)
   : Row(e, sz, sz) {
 }
 
@@ -65,7 +65,7 @@ LinExpression::LinExpression(const Integer& n)
   (*this)[0] = n;
 }
 
-inline size_t
+inline dimension_type
 LinExpression::space_dimension() const {
   return size() - 1;
 }

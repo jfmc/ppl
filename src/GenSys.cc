@@ -37,7 +37,7 @@ namespace PPL = Parma_Polyhedra_Library;
 
 bool
 PPL::GenSys::adjust_topology_and_dimension(Topology new_topology,
-					   size_t new_space_dim) {
+					   dimension_type new_space_dim) {
   assert(space_dimension() <= new_space_dim);
 
   if (num_rows() == 0) {
@@ -51,8 +51,8 @@ PPL::GenSys::adjust_topology_and_dimension(Topology new_topology,
   }
 
   // Here `num_rows() > 0'.
-  size_t old_space_dim = space_dimension();
-  size_t cols_to_be_added = new_space_dim - old_space_dim;
+  dimension_type old_space_dim = space_dimension();
+  dimension_type cols_to_be_added = new_space_dim - old_space_dim;
   Topology old_topology = topology();
 
   if (old_topology != new_topology)
@@ -82,8 +82,8 @@ PPL::GenSys::adjust_topology_and_dimension(Topology new_topology,
       else
 	add_zero_columns(1);
       GenSys& gs = *this;
-      size_t eps_index = new_space_dim + 1;
-      for (size_t i = num_rows(); i-- > 0; )
+      dimension_type eps_index = new_space_dim + 1;
+      for (dimension_type i = num_rows(); i-- > 0; )
 	gs[i][eps_index] = gs[i][0];
       set_not_necessarily_closed();
     }
@@ -109,8 +109,8 @@ PPL::GenSys::has_closure_points() const {
   if (is_necessarily_closed())
     return false;
   const GenSys& gs = *this;
-  size_t eps_index = gs.num_columns() - 1;
-  for (size_t i = num_rows(); i-- > 0; )
+  dimension_type eps_index = gs.num_columns() - 1;
+  for (dimension_type i = num_rows(); i-- > 0; )
     if (gs[i][0] != 0 && gs[i][eps_index] == 0)
       return true;
   return false;
@@ -122,14 +122,14 @@ PPL::GenSys::has_points() const {
   const GenSys& gs = *this;
   // Avoiding the repeated tests on topology.
   if (is_necessarily_closed())
-    for (size_t i = num_rows(); i-- > 0; ) {
+    for (dimension_type i = num_rows(); i-- > 0; ) {
       if (gs[i][0] != 0)
 	return true;
     }
   else {
     // is_necessarily_closed() == false.
-    size_t eps_index = gs.num_columns() - 1;
-    for (size_t i = num_rows(); i-- > 0; )
+    dimension_type eps_index = gs.num_columns() - 1;
+    for (dimension_type i = num_rows(); i-- > 0; )
     if (gs[i][eps_index] > 0)
       return true;
   }
@@ -156,10 +156,10 @@ PPL::GenSys::insert(const Generator& g) {
       // (i.e., the epsilon coefficient is equal to the divisor);
       // rays and lines must have epsilon coefficient equal to 0.
       // Note: normalization is preserved.
-      size_t eps_index = num_columns();
+      dimension_type eps_index = num_columns();
       add_zero_columns(1);
       GenSys& gs = *this;
-      for (size_t i = num_rows(); i-- > 0; ) {
+      for (dimension_type i = num_rows(); i-- > 0; ) {
 	Generator& gen = gs[i];
 	if (gen[0] != 0)
 	  gen[eps_index] = gen[0];
@@ -172,7 +172,8 @@ PPL::GenSys::insert(const Generator& g) {
       // The generator system is NOT necessarily closed:
       // copy the generator, adding the missing dimensions
       // and the epsilon coefficient.
-      size_t new_size = 2 + std::max(g.space_dimension(), space_dimension());
+      dimension_type new_size = 2 + std::max(g.space_dimension(),
+					     space_dimension());
       Generator tmp_g(g, new_size);
       // If it was a point, set the epsilon coordinate to 1
       // (i.e., set the coefficient equal to the divisor).
@@ -185,37 +186,37 @@ PPL::GenSys::insert(const Generator& g) {
     }
 }
 
-size_t
+PPL::dimension_type
 PPL::GenSys::num_lines() const {
-  size_t n = 0;
+  dimension_type n = 0;
   // If the Matrix happens to be sorted, take advantage of the fact
   // that lines are at the top of the system.
   if (is_sorted()) {
-    size_t nrows = num_rows();
-    for (size_t i = 0; i < nrows && (*this)[i].is_line(); ++i)
+    dimension_type nrows = num_rows();
+    for (dimension_type i = 0; i < nrows && (*this)[i].is_line(); ++i)
       ++n;
   }
   else
-    for (size_t i = num_rows(); i-- > 0 ; )
+    for (dimension_type i = num_rows(); i-- > 0 ; )
       if ((*this)[i].is_line())
 	++n;
   return n;
 }
 
-size_t
+PPL::dimension_type
 PPL::GenSys::num_rays() const {
-  size_t n = 0;
+  dimension_type n = 0;
   // If the Matrix happens to be sorted, take advantage of the fact
   // that rays and points are at the bottom of the system and
   // rays have the inhomogeneous term equal to zero.
   if (is_sorted()) {
     const GenSys& x = *this;
-    for (size_t i = num_rows(); i != 0 && x[--i].is_ray_or_point(); )
+    for (dimension_type i = num_rows(); i != 0 && x[--i].is_ray_or_point(); )
       if (x[i][0] == 0)
 	++n;
   }
   else
-    for (size_t i = num_rows(); i-- > 0 ; ) {
+    for (dimension_type i = num_rows(); i-- > 0 ; ) {
       const Generator& g = (*this)[i];
       if (g.is_ray_or_point() && g[0] == 0)
 	++n;
@@ -235,7 +236,7 @@ PPL::GenSys::relation_with(const Constraint& c) const {
   assert(space_dimension() >= c.space_dimension());
   // Number of generators: the case of an empty polyhedron
   // has already been filtered out by the caller.
-  size_t n_rows = num_rows();
+  dimension_type n_rows = num_rows();
   assert(n_rows > 0);
   const GenSys& gen_sys = *this;
 
@@ -256,7 +257,7 @@ PPL::GenSys::relation_with(const Constraint& c) const {
       // a generator yet.
       int first_point_or_nonsaturating_ray_sign = 2;
 
-      for (size_t i = n_rows; i-- > 0; ) {
+      for (dimension_type i = n_rows; i-- > 0; ) {
 	const Generator& g = gen_sys[i];
 	int sp_sign = sgn(c * g);
 	// Checking whether the generator saturates the equality.
@@ -326,7 +327,7 @@ PPL::GenSys::relation_with(const Constraint& c) const {
       // non-saturating ray.
       bool first_point_or_nonsaturating_ray = true;
 
-      for (size_t i = n_rows; i-- > 0; ) {
+      for (dimension_type i = n_rows; i-- > 0; ) {
 	const Generator& g = gen_sys[i];
 	int sp_sign = sgn(c * g);
 	// Checking whether the generator saturates the non-strict
@@ -436,7 +437,7 @@ PPL::GenSys::relation_with(const Constraint& c) const {
       // as soon as either we find (any) point or we find a
       // non-saturating ray.
       bool first_point_or_nonsaturating_ray = true;
-      for (size_t i = n_rows; i-- > 0; ) {
+      for (dimension_type i = n_rows; i-- > 0; ) {
 	const Generator& g = gen_sys[i];
 	// Using the reduced scalar product operator to avoid
 	// both topology and num_columns mismatches.
@@ -554,7 +555,7 @@ PPL::GenSys::relation_with(const Constraint& c) const {
   \p expr is a constant parameter and unaltered by this computation.
 */
 void
-PPL::GenSys::affine_image(size_t v,
+PPL::GenSys::affine_image(dimension_type v,
 			  const LinExpression& expr,
 			  const Integer& denominator) {
   // `v' is the index of a column corresponding to
@@ -564,16 +565,16 @@ PPL::GenSys::affine_image(size_t v,
   assert(expr.space_dimension() <= space_dimension());
   assert(denominator != 0);
 
-  size_t n_columns = num_columns();
-  size_t n_rows = num_rows();
+  dimension_type n_columns = num_columns();
+  dimension_type n_rows = num_rows();
   GenSys& x = *this;
 
   // Compute the numerator of the affine transformation and assign it
   // to the column of `*this' indexed by `v'.
-  for (size_t i = n_rows; i-- > 0; ) {
+  for (dimension_type i = n_rows; i-- > 0; ) {
     Generator& row = x[i];
     tmp_Integer[1] = 0;
-    for (size_t j = expr.size(); j-- > 0; )
+    for (dimension_type j = expr.size(); j-- > 0; )
       tmp_Integer[1] += row[j] * expr[j];
     std::swap(tmp_Integer[1], row[v]); 
   }
@@ -582,8 +583,8 @@ PPL::GenSys::affine_image(size_t v,
     // Since we want integer elements in the matrix,
     // we multiply by `denominator' all the columns of `*this'
     // having an index different from `v'.
-    for (size_t i = n_rows; i-- > 0; )
-      for (size_t j = n_columns; j-- > 0; )
+    for (dimension_type i = n_rows; i-- > 0; )
+      for (dimension_type j = n_columns; j-- > 0; )
 	if (j != v)
 	  x[i][j] *= denominator;
 
@@ -597,18 +598,19 @@ PPL::GenSys::affine_image(size_t v,
 }
 
 /*!
-  Like <CODE>ConSys::print()</CODE>, this prints the number of rows,
-  the number of columns and value of \p sorted, using the
-  <CODE>Matrix::print()</CODE> method, then prints the contents of
-  all the rows, specifying whether a row represent a line or a point/ray.
+  Like <CODE>ConSys::ASCII_dump()</CODE>, this prints the number of
+  rows, the number of columns and value of \p sorted, using the
+  <CODE>Matrix::ASCII_dump()</CODE> method, then prints the contents
+  of all the rows, specifying whether a row represent a line or a
+  point/ray.
 */
 void
-PPL::GenSys::print(std::ostream& s) const {
-  Matrix::print(s);
+PPL::GenSys::ASCII_dump(std::ostream& s) const {
+  Matrix::ASCII_dump(s);
   const char separator = ' ';
   const GenSys& x = *this;
-  for (size_t i = 0; i < x.num_rows(); ++i) {
-    for (size_t j = 0; j < x.num_columns(); ++j)
+  for (dimension_type i = 0; i < x.num_rows(); ++i) {
+    for (dimension_type j = 0; j < x.num_columns(); ++j)
       s << x[i][j] << separator;
     s << separator << separator;
     switch (static_cast<Generator>(x[i]).type()) {
@@ -629,72 +631,64 @@ PPL::GenSys::print(std::ostream& s) const {
   }
 }
 
-/*! \relates Parma_Polyhedra_Library::GenSys */
-std::ostream&
-PPL::operator<<(std::ostream& s, const GenSys& gs) {
-  gs.print(s);
-  return s;
-}
-
 /*!
-  Like <CODE>ConSys::get()</CODE>, this uses <CODE>Matrix::get()</CODE>
-  to resize the matrix of generators taking information from \p s,
-  then initializes the coefficients of each generator and its type
-  (line or ray/point).
+  Like <CODE>ConSys::ASCII_load()</CODE>, this uses
+  <CODE>Matrix::ASCII_load()</CODE> to resize the matrix of generators
+  taking information from \p s, then initializes the coefficients of
+  each generator and its type (line or ray/point).
 */
-void
-PPL::GenSys::get(std::istream& s) {
-  Matrix::get(s);
-  std::string tempstr;
+bool
+PPL::GenSys::ASCII_load(std::istream& s) {
+  if (!Matrix::ASCII_load(s))
+    return false;
+
   GenSys& x = *this;
-  for (size_t i = 0; i < x.num_rows(); ++i) {
-    for (size_t j = 0; j < x.num_columns(); ++j)
-      s >> x[i][j];
-    s >> tempstr;
-    if (tempstr == "L")
+  for (dimension_type i = 0; i < x.num_rows(); ++i) {
+    for (dimension_type j = 0; j < x.num_columns(); ++j)
+      if (!(s >> x[i][j]))
+	return false;
+
+    std::string str;
+    if (!(s >> str))
+      return false;
+    if (str == "L")
       x[i].set_is_line();
     else
       x[i].set_is_ray_or_point();
+
     // Checking for equality of actual and declared types.
     switch (static_cast<Generator>(x[i]).type()) {
     case Generator::LINE:
-      if (tempstr == "L")
+      if (str == "L")
 	continue;
       break;
     case Generator::RAY:
-      if (tempstr == "R")
+      if (str == "R")
 	continue;
       break;
     case Generator::POINT:
-      if (tempstr == "P")
+      if (str == "P")
 	continue;
       break;
     case Generator::CLOSURE_POINT:
-      if (tempstr == "C")
+      if (str == "C")
 	continue;
       break;
     }
     // Reaching this point means that the input was illegal.
-    throw std::runtime_error("void PPL::GenSys::get(s)");
+    return false;
   }
   // Checking for well-formedness.
-  if (!x.OK())
-    throw std::runtime_error("void PPL::GenSys::get(s)");
-}
-
-/*! \relates Parma_Polyhedra_Library::GenSys */
-std::istream&
-PPL::operator>>(std::istream& s, GenSys& gs) {
-  gs.get(s);
-  return s;
+  assert(OK());
+  return true;
 }
 
 void
 PPL::GenSys::remove_invalid_lines_and_rays() {
   // The origin of the vector space cannot be a valid line/ray.
   GenSys& gs = *this;
-  size_t n_rows = gs.num_rows();
-  for (size_t i = n_rows; i-- > 0; ) {
+  dimension_type n_rows = gs.num_rows();
+  for (dimension_type i = n_rows; i-- > 0; ) {
     Generator& g = gs[i];
     if (g[0] == 0 && g.all_homogeneous_terms_are_zero()) {
       // An invalid line/ray has been found.
@@ -719,7 +713,7 @@ PPL::GenSys::OK() const {
     return false;
 
   // Checking each generator in the system.
-  for (size_t i = num_rows(); i-- > 0; ) {
+  for (dimension_type i = num_rows(); i-- > 0; ) {
     const Generator& g = (*this)[i];
     if (!g.OK())
       return false;
@@ -727,4 +721,20 @@ PPL::GenSys::OK() const {
 
   // All checks passed.
   return true;
+}
+
+std::ostream&
+PPL::operator<<(std::ostream& s, const GenSys& gs) {
+  GenSys::const_iterator i = gs.begin();
+  GenSys::const_iterator gs_end = gs.end();
+  if (i == gs_end)
+    s << "false";
+  else {
+    while (i != gs_end) {
+      s << *i++;
+      if (i != gs_end)
+	s << ", ";
+    }
+  }
+  return s;
 }

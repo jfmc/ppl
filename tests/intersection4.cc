@@ -1,4 +1,4 @@
-/* Testing Polyhedron::intersection_assign_and_minimize() and
+/* Test Polyhedron::intersection_assign_and_minimize() and
    C_Polyhedron::intersection_assign(): we intersect an empty
    polyhedron with one non-empty.
    Copyright (C) 2001, 2002 Roberto Bagnara <bagnara@cs.unipr.it>

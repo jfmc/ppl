@@ -50,7 +50,8 @@ ConSys::ConSys(Topology topol)
 }
 
 inline
-ConSys::ConSys(Topology topol, size_t n_rows, size_t n_columns)
+ConSys::ConSys(Topology topol,
+	       dimension_type n_rows, dimension_type n_columns)
   : Matrix(topol, n_rows, n_columns) {
 }
 
@@ -65,16 +66,16 @@ ConSys::operator=(const ConSys& y) {
 }
 
 inline Constraint&
-ConSys::operator[](size_t k) {
+ConSys::operator[](dimension_type k) {
   return static_cast<Constraint&> (Matrix::operator[](k));
 }
 
 inline const Constraint&
-ConSys::operator[](size_t k) const {
+ConSys::operator[](dimension_type k) const {
   return static_cast<const Constraint&> (Matrix::operator[](k));
 }
 
-inline size_t
+inline dimension_type
 ConSys::space_dimension() const {
   return Matrix::space_dimension();
 }

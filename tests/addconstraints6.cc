@@ -1,4 +1,4 @@
-/* Testing Polyhedron::add_constraints_and_minimize(): we add a system
+/* Test Polyhedron::add_constraints_and_minimize(): we add a system
    of constraints to an universal polyhedron.
    Copyright (C) 2001, 2002 Roberto Bagnara <bagnara@cs.unipr.it>
 

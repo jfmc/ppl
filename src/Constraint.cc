@@ -43,11 +43,11 @@ PPL::Constraint::throw_dimension_incompatible(const char* method,
 }
 
 PPL::Constraint
-PPL::operator>>(const Constraint& y, unsigned int offset) {
-  size_t y_size = y.size();
+PPL::operator>>(const Constraint& y, dimension_type offset) {
+  dimension_type y_size = y.size();
   Constraint x(y.Row::type(), y_size+offset);
   x[0] = y[0];
-  for (size_t i = 1; i < y_size; ++i)
+  for (dimension_type i = 1; i < y_size; ++i)
     x[i+offset] = y[i];
   return x;
 }
@@ -68,7 +68,7 @@ PPL::Constraint::is_trivial_true() const {
       return false;
     else {
       // The constraint is NOT necessarily closed.
-      size_t eps_index = size() - 1;
+      dimension_type eps_index = size() - 1;
       int eps_sign = sgn(x[eps_index]);
       if (eps_sign > 0)
 	// We have found the constraint epsilon >= 0.
@@ -83,11 +83,11 @@ PPL::Constraint::is_trivial_true() const {
 	  // where k is a non negative integer, cannot be trivially true.
 	  return false;
 	// Checking for another non-zero coefficient.
-	for (size_t i = eps_index; --i > 0; )
+	for (dimension_type i = eps_index; --i > 0; )
 	  if (x[i] != 0)
 	    return false;
 	// We have the inequality `k > 0',
-	// where k is a positive integer. 
+	// where k is a positive integer.
 	return true;
       }
     }
@@ -111,7 +111,7 @@ PPL::Constraint::is_trivial_false() const {
       return false;
     else {
       // The constraint is NOT necessarily closed.
-      size_t eps_index = size() - 1;
+      dimension_type eps_index = size() - 1;
       if (x[eps_index] >= 0)
 	// If positive, we have found the constraint epsilon >= 0.
 	// If zero, one of the `true' dimensions has a non-zero coefficient.
@@ -124,11 +124,11 @@ PPL::Constraint::is_trivial_false() const {
 	  // where k is a positive integer, cannot be trivially false.
 	  return false;
 	// Checking for another non-zero coefficient.
-	for (size_t i = eps_index; --i > 0; )
+	for (dimension_type i = eps_index; --i > 0; )
 	  if (x[i] != 0)
 	    return false;
 	// We have the inequality `k > 0',
-	// where k is zero or a negative integer. 
+	// where k is zero or a negative integer.
 	return true;
       }
     }
@@ -144,7 +144,7 @@ PPL::Constraint::is_matching_strict_inequality(const Constraint& c) const {
   if (sc[0] == c[0]) {
     // Inhomogeneous terms are equal: we can simply compare coefficients
     // (disregarding the epsilon coefficient).
-    for (size_t i = sc.size() - 2; i > 0; --i)
+    for (dimension_type i = sc.size() - 2; i > 0; --i)
       if (sc[i] != c[i])
 	return false;
     return true;
@@ -163,7 +163,7 @@ PPL::Constraint::is_matching_strict_inequality(const Constraint& c) const {
     Integer& normalization_factor = tmp_Integer[1];
     exact_div_assign(normalization_factor, sc[0], c[0]);
     Integer& normalized_coefficient = tmp_Integer[2];
-    for (size_t i = sc.size() - 2; i > 0; --i) {
+    for (dimension_type i = sc.size() - 2; i > 0; --i) {
       // CHECK ME: is exact division more efficient than multiplication?
       normalized_coefficient = c[i] * normalization_factor;
       if (normalized_coefficient != sc[i])

@@ -24,8 +24,9 @@ site: http://www.cs.unipr.it/ppl/ . */
 #ifndef PPL_Row_defs_hh
 #define PPL_Row_defs_hh 1
 
-#include "Topology.hh"
 #include "Row.types.hh"
+#include "globals.hh"
+#include "Topology.hh"
 #include "Integer.types.hh"
 #include "LinExpression.types.hh"
 #include "Constraint.types.hh"
@@ -87,7 +88,7 @@ public:
   const Integer& inhomogeneous_term() const;
 
   //! Returns the coefficient \f$a_n\f$.
-  const Integer& coefficient(size_t n) const;
+  const Integer& coefficient(dimension_type n) const;
 
   enum Kind {
     LINE_OR_EQUALITY = 0,
@@ -98,15 +99,15 @@ public:
   class Type;
 
   //! Tight constructor: resizing will require reallocation.
-  Row(Type t, size_t sz);
+  Row(Type t, dimension_type sz);
 
   //! Sizing constructor with type.
-  Row(Type t, size_t sz, size_t capacity);
+  Row(Type t, dimension_type sz, dimension_type capacity);
 
   //! Post-constructors: to construct properly default-constructed elements.
   //@{
-  void construct(Type t, size_t sz);
-  void construct(Type t, size_t sz, size_t capacity);
+  void construct(Type t, dimension_type sz);
+  void construct(Type t, dimension_type sz, dimension_type capacity);
   //@}
 
   //! Pre-constructs a row: construction must be completed by construct().
@@ -116,10 +117,10 @@ public:
   Row(const Row& y);
 
   //! Copy constructor with specified capacity.
-  Row(const Row& y, size_t capacity);
+  Row(const Row& y, dimension_type capacity);
 
   //! Copy constructor with specified size and capacity.
-  Row(const Row& y, size_t sz, size_t capacity);
+  Row(const Row& y, dimension_type sz, dimension_type capacity);
 
   //! Destructor.
   ~Row();
@@ -134,18 +135,18 @@ public:
   void assign(Row& y);
 
   //! Resizes the row without copying the old contents.
-  void resize_no_copy(size_t new_size);
+  void resize_no_copy(dimension_type new_size);
 
   //! Grows the row without copying the old contents.
-  void grow_no_copy(size_t new_size);
+  void grow_no_copy(dimension_type new_size);
 
   //! Shrinks the row by erasing elements at the end.
-  void shrink(size_t new_size);
+  void shrink(dimension_type new_size);
 
   //! @name Subscript operators.
   //@{
-  Integer& operator[](size_t k);
-  const Integer& operator[](size_t k) const;
+  Integer& operator[](dimension_type k);
+  const Integer& operator[](dimension_type k) const;
   //@}
 
   //! @name Type inspection methods.
@@ -166,10 +167,10 @@ public:
   //@}
 
   //! Gives the number of coefficients currently in use.
-  size_t size() const;
+  dimension_type size() const;
 
   //! Returns the dimension of the vector space enclosing \p *this.
-  size_t space_dimension() const;
+  dimension_type space_dimension() const;
 
   //! Normalizes all the coefficients so that they are mutually prime.
   void normalize();
@@ -179,7 +180,7 @@ public:
   void strong_normalize();
 
   //! Linearly combines \p *this with \p y such that \p *this[k] is 0.
-  void linear_combine(const Row& y, size_t k);
+  void linear_combine(const Row& y, dimension_type k);
 
   //! Returns <CODE>true</CODE> if and only if all the homogeneous
   //! terms of \p *this are zero.
@@ -190,7 +191,7 @@ public:
   Parma_Polyhedra_Library::operator<<(std::ostream& s, const Row& row);
 
   //! Checks if all the invariants are satisfied.
-  bool OK(size_t row_size, size_t row_capacity) const;
+  bool OK(dimension_type row_size, dimension_type row_capacity) const;
 
 private:
   friend class Parma_Polyhedra_Library::LinExpression;
@@ -205,10 +206,10 @@ private:
 #if EXTRA_ROW_DEBUG
 
   //! The capacity of the row (only available during debugging).
-  size_t capacity_;
+  dimension_type capacity_;
 
   //! Returns the capacity of the row (only available during debugging).
-  size_t capacity() const;
+  dimension_type capacity() const;
 
 #endif // defined(EXTRA_ROW_DEBUG)
 };
@@ -313,48 +314,48 @@ class Parma_Polyhedra_Library::Row::Impl {
 public:
   //! @name Custom allocator and deallocator.
   //@{
-  void* operator new(size_t fixed_size, size_t capacity);
-  void operator delete(void* p, size_t capacity);
+  void* operator new(size_t fixed_size, dimension_type capacity);
+  void operator delete(void* p, dimension_type capacity);
   void operator delete(void* p);
   //@}
 
   //! Sizing constructor.
-  Impl(Type t, size_t sz);
+  Impl(Type t, dimension_type sz);
 
   //! Copy constructor.
   Impl(const Impl& y);
 
   //! Copy constructor with specified size.
-  Impl(const Impl& y, size_t sz);
+  Impl(const Impl& y, dimension_type sz);
 
   //! Destructor.
   ~Impl();
 
   //! Resizes without copying the old contents.
-  void resize_no_copy(size_t new_size);
+  void resize_no_copy(dimension_type new_size);
 
   //! Grows without copying the old contents.
-  void grow_no_copy(size_t new_size);
+  void grow_no_copy(dimension_type new_size);
 
   //! Shrinks by erasing elements at the end.
-  void shrink(size_t new_size);
+  void shrink(dimension_type new_size);
 
   //! @name Subscript operators.
   //@{
-  Integer& operator[](size_t k);
-  const Integer& operator[](size_t k) const;
+  Integer& operator[](dimension_type k);
+  const Integer& operator[](dimension_type k) const;
   //@}
 
   //! @name Size accessors.
   //@{
-  size_t size() const;
-  void set_size(size_t new_sz);
+  dimension_type size() const;
+  void set_size(dimension_type new_sz);
   void bump_size();
   //@}
 
 private:
   //! The number of coefficients in the row.
-  size_t size_;
+  dimension_type size_;
 
 public:
   // FIXME: this should become private.
@@ -363,7 +364,11 @@ public:
 
 private:
   //! The vector of coefficients.
-  Integer vec_[PPL_FLEXIBLE_ARRAY];
+  Integer vec_[
+#if !CXX_SUPPORTS_FLEXIBLE_ARRAYS
+	       1
+#endif
+  ];
 
 private:
   //! Private and unimplemented: default construction is not allowed.

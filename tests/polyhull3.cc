@@ -1,4 +1,4 @@
-/* Testing Polyhedron::poly_hull_assign(): we use two polyhedra
+/* Test Polyhedron::poly_hull_assign(): we use two polyhedra
    defined by their systems of constraints.
    Copyright (C) 2001, 2002 Roberto Bagnara <bagnara@cs.unipr.it>
 

@@ -1,4 +1,4 @@
-/* Testing Polyhedron::concatenate_assign(): we concatenate a
+/* Test Polyhedron::concatenate_assign(): we concatenate a
    two-dimensional system of constraints to an empty, two-dimensional
    polyhedron. The result is am empty, four-dimansional polyhedron
    Copyright (C) 2001, 2002 Roberto Bagnara <bagnara@cs.unipr.it>

@@ -29,14 +29,22 @@ site: http://www.cs.unipr.it/ppl/ . */
 
 namespace PPL = Parma_Polyhedra_Library;
 
-/*! \relates Parma_Polyhedra_Library::Variable */
-std::ostream&
-PPL::operator<<(std::ostream& s, const Variable& v) {
-  unsigned int varid = v.id();
+PPL::Variable::Output_Function_Type*
+PPL::Variable::current_output_function = 0;
+
+void
+PPL::Variable::default_output_function(std::ostream& s, const Variable& v) {
+  dimension_type varid = v.id();
   char c = 'A' + (varid % 26);
-  unsigned int i = varid / 26;
+  dimension_type i = varid / 26;
   s << c;
   if (i > 0)
     s << i;
+}
+
+/*! \relates Parma_Polyhedra_Library::Variable */
+std::ostream&
+PPL::operator<<(std::ostream& s, const Variable& v) {
+  (*Variable::current_output_function)(s, v);
   return s;
 }

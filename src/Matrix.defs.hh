@@ -66,7 +66,7 @@ protected:
     matrix whose rows are all initialized to rays or points or inequalities
     of the given topology.
   */
-  Matrix(Topology topol, size_t n_rows, size_t n_columns);
+  Matrix(Topology topol, dimension_type n_rows, dimension_type n_columns);
 
   //! Copy-constructor.
   Matrix(const Matrix& y);
@@ -176,12 +176,12 @@ private:
   Topology row_topology;
 
   //! Size of the initialized part of each row.
-  size_t row_size;
+  dimension_type row_size;
 
   //! \brief
   //! Capacity allocated for each row, i.e., number of
   //! <CODE>Integer</CODE> objects that each row can contain.
-  size_t row_capacity;
+  dimension_type row_capacity;
 
   //! \brief
   //! <CODE>true</CODE> if rows are sorted in the ascending order as
@@ -216,7 +216,7 @@ public:
     The contents of the old matrix are copied upper, left-hand corner
     of the new matrix, which is then assigned to \p *this.
   */
-  void grow(size_t new_n_rows, size_t new_n_columns);
+  void grow(dimension_type new_n_rows, dimension_type new_n_columns);
   
   //! Resizes the matrix without worrying about the old contents.
   /*!
@@ -229,14 +229,15 @@ public:
     without copying the content of the old matrix and assigned
     to \p *this.
   */
-  void resize_no_copy(size_t new_n_rows, size_t new_n_columns);
+  void resize_no_copy(dimension_type new_n_rows,
+		      dimension_type new_n_columns);
 
   //! Adds \p n columns of zeros to the matrix.
   /*!
     Turns the \f$r \times c\f$ matrix \f$M\f$ into
     the \f$r \times (c+n)\f$ matrix \f$(M \, 0)\f$.
   */
-  void add_zero_columns(size_t n);
+  void add_zero_columns(dimension_type n);
   
   //! Adds \p n non-zero rows and columns to the matrix.
   /*!
@@ -248,10 +249,10 @@ public:
     where \f$J\f$ is the specular image
     of the \f$n \times n\f$ identity matrix.
   */
-  void add_rows_and_columns(size_t n);
+  void add_rows_and_columns(dimension_type n);
 
   //! Swaps the columns having indexes \p i and \p j.
-  void swap_columns(size_t i,  size_t j);
+  void swap_columns(dimension_type i,  dimension_type j);
 
   //! Accessors
   //@{
@@ -275,20 +276,20 @@ public:
     also the column of the \f$\epsilon\f$-dimension coefficients
     will be ignored.
   */
-  size_t space_dimension() const;
+  dimension_type space_dimension() const;
 
   //! \brief
   //! Returns the number of columns of the matrix
   //! (i.e., the size of the rows).
-  size_t num_columns() const;
+  dimension_type num_columns() const;
 
   //! Returns the number of rows in the matrix.
-  size_t num_rows() const;
+  dimension_type num_rows() const;
 
   //! \brief
   //! Returns the number of rows in the matrix
   //! that represent either lines or equalities.
-  size_t num_lines_or_equalities() const;
+  dimension_type num_lines_or_equalities() const;
   //@}
 
   //! \brief
@@ -299,10 +300,10 @@ public:
   //! @name Subscript operators.
   //@{
   //! Returns a reference to the \p k-th row of the matrix.
-  Row& operator[](size_t k);
+  Row& operator[](dimension_type k);
 
   //! Returns a constant reference to the \p k-th row of the matrix.
-  const Row& operator[](size_t k) const;
+  const Row& operator[](dimension_type k) const;
   //@}
 
   //! Normalizes the matrix.
@@ -337,31 +338,31 @@ public:
   //! Clears the matrix deallocating all its rows.
   void clear();
 
-  //! @name Input/Output.
-  //@{
-  //! Raw read method.
-  /*!
-    This virtual method is meant to read into a Matrix object
-    the information produced by a <CODE>print()</CODE> output.
-    The specialized methods provided by ConSys and GenSys
-    take care of properly reading the contents of the matrix.
-  */
-  virtual void get(std::istream& s);
-
-  //! Raw write method.
+  //! Writes to \p s an ASCII representation of the internal
+  //! representation of \p *this.
   /*!
     This virtual method prints the topology, the number of rows,
     the number of columns and the \p sorted flag.
     The specialized methods provided by ConSys and GenSys
     take care of properly printing the contents of the matrix.
   */
-  virtual void print(std::ostream& s) const;
-  //@}
+  virtual void ASCII_dump(std::ostream& s) const;
+
+  //! Loads from \p s an ASCII representation (as produced by \ref
+  //! ASCII_dump) and sets \p *this accordingly.  Returns <CODE>true</CODE>
+  //! if successful, <CODE>false</CODE> otherwise.
+  /*!
+    This virtual method is meant to read into a Matrix object
+    the information produced by the output of <CODE>ASCII_dump()</CODE>.
+    The specialized methods provided by ConSys and GenSys
+    take care of properly reading the contents of the matrix.
+  */
+  virtual bool ASCII_load(std::istream& s);
 
   //! \brief
   //! Erases from the matrix all the rows but those having
   //! an index less than \p first_to_erase.
-  void erase_to_end(size_t first_to_erase);
+  void erase_to_end(dimension_type first_to_erase);
 
   //! \brief
   //! Sorts the matrix, removing duplicates,
@@ -383,7 +384,7 @@ public:
     for each equality, the pivot is chosen starting from
     the right-most columns.
   */
-  size_t gauss();
+  dimension_type gauss();
 
   //! \brief
   //! Back-substitutes the coefficients to reduce
@@ -395,7 +396,7 @@ public:
     as a function of the remaining ones and then substitutes this expression
     in all the other rows.
   */
-  void back_substitute(size_t rank);
+  void back_substitute(dimension_type rank);
 
   //! Checks if all the invariants are satisfied.
   bool OK() const;
@@ -426,18 +427,6 @@ bool operator==(const Matrix& x, const Matrix& y);
 /*! \relates Matrix */
 #endif // PPL_DOXYGEN_INCLUDE_IMPLEMENTATION_DETAILS
 bool operator!=(const Matrix& x, const Matrix& y);
-
-#ifdef PPL_DOXYGEN_INCLUDE_IMPLEMENTATION_DETAILS
-//! Input operator.
-/*! \relates Matrix */
-#endif // PPL_DOXYGEN_INCLUDE_IMPLEMENTATION_DETAILS
-std::istream& operator>>(std::istream& s, Matrix& m);
-
-#ifdef PPL_DOXYGEN_INCLUDE_IMPLEMENTATION_DETAILS
-//! Output operator.
-/*! \relates Matrix */
-#endif // PPL_DOXYGEN_INCLUDE_IMPLEMENTATION_DETAILS
-std::ostream& operator<<(std::ostream& s, const Matrix& m);
 
 } // namespace Parma_Polyhedra_Library
 

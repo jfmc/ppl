@@ -95,7 +95,7 @@ public:
   friend std::ostream& operator <<<>(std::ostream& s, const PowerSet& x);
 
   //! Returns the dimension of the vector space enclosing \p *this.
-  size_t space_dimension() const;
+  dimension_type space_dimension() const;
 
   //! \brief
   //! Intersects \p *this with (a copy of) constraint \p c.
@@ -120,12 +120,12 @@ public:
   //! \brief
   //! Adds \p m new dimensions and embeds the old polyhedron
   //! into the new space.
-  void add_dimensions_and_embed(size_t m);
+  void add_dimensions_and_embed(dimension_type m);
 
   //! \brief
   //! Adds \p m new dimensions to the polyhedron
   //! and does not embed it in the new space.
-  void add_dimensions_and_project(size_t m);
+  void add_dimensions_and_project(dimension_type m);
 
   //! \brief
   //! Removes all the specified dimensions.
@@ -146,7 +146,7 @@ public:
     \exception std::invalid_argument thrown if \p new_dimensions is greater
                                      than the space dimension of \p *this.
   */
-  void remove_higher_dimensions(size_t new_dimension);
+  void remove_higher_dimensions(dimension_type new_dimension);
 
   template <typename PartialFunction>
   void shuffle_dimensions(const PartialFunction& pfunc);
@@ -191,22 +191,32 @@ private:
   Sequence sequence;
 
   //! The number of dimensions of the enclosing vector space.
-  size_t space_dim;
+  dimension_type space_dim;
 
   void omega_reduction();
+
+  bool definitely_contains(const CS& y) const;
 
 public:
   typedef typename Sequence::iterator iterator;
   typedef typename Sequence::const_iterator const_iterator;
+  typedef typename Sequence::reverse_iterator reverse_iterator;
+  typedef typename Sequence::const_reverse_iterator const_reverse_iterator;
   typedef typename Sequence::value_type value_type;
 
-  size_t size() const;
+  dimension_type size() const;
 
   iterator begin();
   const_iterator begin() const;
 
   iterator end();
   const_iterator end() const;
+
+  reverse_iterator rbegin();
+  const_reverse_iterator rbegin() const;
+
+  reverse_iterator rend();
+  const_reverse_iterator rend() const;
 };
 
 #include "PowerSet.inlines.hh"

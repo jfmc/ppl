@@ -308,6 +308,650 @@ error10() {
   }
 }
 
+
+void
+error11() {
+  set_handlers();
+  
+  Variable A(0);
+  Variable B(1);
+  
+  C_Polyhedron ph1(2);
+  ph1.add_constraint(A >= 2);
+
+  NNC_Polyhedron ph2(2);
+  ph2.add_constraint(A - B > 0);
+  ph2.add_constraint(A >= 0);
+
+#if NOISY
+  print_constraints(ph1, "*** ph1 ***");
+  print_constraints(ph2, "*** ph2 ***");
+#endif
+  try {
+    // This is an invalid use of the function
+    // `intersection_assign_and_minimize': it is illegal to apply
+    // to a closed polyhedron and a non-closed polyhedron.
+    ph1.intersection_assign_and_minimize(ph2);
+  }
+  catch(invalid_argument& e) {
+#if NOISY
+    cout << "invalid_polyhedra: " << e.what() << endl << endl;
+#endif
+  }
+  catch (...) {
+    exit(1);
+  }
+}
+
+void
+error12() {
+  set_handlers();
+  
+  Variable A(0);
+  Variable B(1);
+  
+  C_Polyhedron ph1(2);
+  ph1.add_constraint(B >= 2);
+
+  NNC_Polyhedron ph2(2);
+  ph2.add_constraint(A - B > 0);
+  ph2.add_constraint(B >= 0);
+
+#if NOISY
+  print_constraints(ph1, "*** ph1 ***");
+  print_constraints(ph2, "*** ph2 ***");
+#endif
+  try {
+    // This is an invalid use of the function
+    // `intersection_assign': it is illegal to apply this function
+    // to a closed polyhedron and a non-closed polyhedron.
+    ph1.intersection_assign(ph2);
+  }
+  catch(invalid_argument& e) {
+#if NOISY
+    cout << "invalid_polyhedra: " << e.what() << endl << endl;
+#endif
+  }
+  catch (...) {
+    exit(1);
+  }
+}
+
+
+void
+error13() {
+  set_handlers();
+
+  Variable A(0);
+  Variable B(1);
+
+  GenSys gs1;
+  gs1.insert(point());
+  gs1.insert(point(3*A));
+  C_Polyhedron ph1(gs1);
+
+  GenSys gs2;
+  gs2.insert(point(B));
+  gs2.insert(closure_point());
+  gs2.insert(closure_point(3*B));
+  NNC_Polyhedron ph2(gs2);
+
+#if NOISY
+  print_generators(ph1, "*** ph1 ***");
+  print_generators(ph2, "*** ph2 ***");
+#endif
+  
+   try {
+     // This is an invalid use of the function
+     // `poly_hull_assign_and_minimize': it is illegal to apply
+     // this function to a closed polyhedron and a
+     // non-closed polyhedron.
+    ph1.poly_hull_assign_and_minimize(ph2);
+  }
+  catch(invalid_argument& e) {
+#if NOISY
+    cout << "invalid_polyhedra: " << e.what() << endl << endl;
+#endif
+  }
+  catch (...) {
+    exit(1);
+  }
+}
+
+void
+error14() {
+  set_handlers();
+
+  Variable A(0);
+  Variable B(1);
+
+  GenSys gs1;
+  gs1.insert(point());
+  gs1.insert(point(3*B));
+  C_Polyhedron ph1(gs1);
+
+  GenSys gs2;
+  gs2.insert(point(2*A));
+  gs2.insert(closure_point());
+  gs2.insert(closure_point(3*A));
+  NNC_Polyhedron ph2(gs2);
+
+#if NOISY
+  print_generators(ph1, "*** ph1 ***");
+  print_generators(ph2, "*** ph2 ***");
+#endif
+  
+   try {
+    // This is an invalid use of the function
+    // `poly_hull_assign': it is illegal to apply this function
+    // to a closed polyhedron and a non-closed polyhedron.
+    ph1.poly_hull_assign(ph2);
+  }
+  catch(invalid_argument& e) {
+#if NOISY
+    cout << "invalid_polyhedra: " << e.what() << endl << endl;
+#endif
+  }
+  catch (...) {
+    exit(1);
+  }
+}
+
+void
+error15() {
+  set_handlers();
+
+  Variable A(0);
+  Variable B(1);
+  
+  C_Polyhedron ph1(2);
+  ph1.add_constraint(A >= 0);
+  ph1.add_constraint(A <= 4);
+  ph1.add_constraint(B >= 0);
+  ph1.add_constraint(B <= 4);
+
+  NNC_Polyhedron ph2(2);
+  ph2.add_constraint(A >= 2);
+  ph2.add_constraint(A <= 6);
+  ph2.add_constraint(B >= 0);
+  ph2.add_constraint(B <= 4);
+
+#if NOISY
+  print_constraints(ph1, "*** ph1 ***");
+  print_constraints(ph2, "*** ph2 ***");
+#endif
+
+  try {
+    // This is an invalid use of the function
+    // `poly_difference_assign': it is illegal to apply this function
+    // to a closed polyhedron and a non-closed polyhedron.
+    ph1.poly_difference_assign(ph2);
+  }
+  catch(invalid_argument& e) {
+#if NOISY
+    cout << "invalid_polyhedra: " << e.what() << endl << endl;
+#endif
+  }
+  catch (...) {
+    exit(1);
+  }
+}
+
+void
+error16() {
+  set_handlers();
+
+  Variable A(0);
+  Variable B(1);
+  
+  C_Polyhedron ph1(2);
+  ph1.add_constraint(A >= 0);
+  ph1.add_constraint(A <= 2);
+  ph1.add_constraint(A - B >= 0);
+
+  NNC_Polyhedron ph2(2);
+  ph2.add_constraint(A >= 0);
+  ph2.add_constraint(A <= 4);
+  ph2.add_constraint(A - B >= 0);
+
+#if NOISY
+  print_constraints(ph1, "*** ph1 ***");
+  print_constraints(ph2, "*** ph2 ***");
+#endif
+
+  try {
+    // This is an invalid use of the function
+    // `H79_widening_assign': it is illegal to apply this function
+    // to a closed polyhedron and a non-closed polyhedron.
+    ph2.H79_widening_assign(ph1);
+  }
+  catch(invalid_argument& e) {
+#if NOISY
+    cout << "invalid_polyhedra: " << e.what() << endl << endl;
+#endif
+  }
+  catch (...) {
+    exit(1);
+  }
+}    
+
+void
+error17() {
+  set_handlers();
+
+  Variable A(0);
+  Variable B(1);
+  
+  NNC_Polyhedron ph1(2);
+  ph1.add_constraint(A >= 0);
+  ph1.add_constraint(A <= 2);
+  ph1.add_constraint(A - B >= 0);
+
+  C_Polyhedron ph2(2);
+  ph2.add_constraint(A >= 0);
+  ph2.add_constraint(A <= 4);
+  ph2.add_constraint(A - B >= 0);
+
+  ConSys cs;
+  cs.insert(A <= 8);
+
+#if NOISY
+  print_constraints(ph1, "*** ph1 ***");
+  print_constraints(ph2, "*** ph2 ***");
+  print_constraints(cs, "*** cs ***");
+#endif
+
+  try {
+    // This is an invalid use of the function
+    // `limited_H79_widening_assign': it is illegal to
+    // apply this function to a closed polyhedron and
+    // a non-closed polyhedron.
+    ph2.limited_H79_widening_assign(ph1, cs);
+  }
+  catch(invalid_argument& e) {
+#if NOISY
+    cout << "invalid_polyhedra: " << e.what() << endl << endl;
+#endif
+  }
+  catch (...) {
+    exit(1);
+  }
+}    
+
+void
+error18() {
+  set_handlers();
+
+  Variable A(0);
+  Variable B(1);
+  
+  C_Polyhedron ph1(2);
+  ph1.add_constraint(A >= 0);
+  ph1.add_constraint(A <= 2);
+  ph1.add_constraint(A - B >= 0);
+
+  C_Polyhedron ph2(2);
+  ph2.add_constraint(A >= 0);
+  ph2.add_constraint(A <= 4);
+  ph2.add_constraint(A - B >= 0);
+
+  ConSys cs;
+  cs.insert(A < 8);
+
+#if NOISY
+  print_constraints(ph1, "*** ph1 ***");
+  print_constraints(ph2, "*** ph2 ***");
+  print_constraints(cs, "*** cs ***");
+#endif
+
+  try {
+    // This is an invalid use of the function
+    // `limited_H79_widening_assign': it is illegal to
+    // apply this function to two closed polyhedra and
+    // to a non-closed system of constraints.
+    ph2.limited_H79_widening_assign(ph1, cs);
+  }
+  catch(invalid_argument& e) {
+#if NOISY
+    cout << "invalid_system_of_constraints: " << e.what() << endl << endl;
+#endif
+  }
+  catch (...) {
+    exit(1);
+  }
+}    
+
+void
+error19() {
+  set_handlers();
+
+  Variable A(0);
+  Variable B(1);
+
+  C_Polyhedron ph1(2);
+  ph1.add_constraint(A >= 0);
+  ph1.add_constraint(B >= 0);
+  ph1.add_constraint(A + B <= 1);
+
+  GenSys gs;
+  gs.insert(point(2*A + 2*B));
+  gs.insert(ray(A + B));
+  NNC_Polyhedron ph2(gs);
+
+#if NOISY
+  print_generators(ph1, "*** ph1 ***");
+  print_generators(ph2, "*** ph2 ***");
+#endif
+
+ try {
+    // This is an invalid use of the function
+    // `time_elapse_assign': it is illegal to
+    // apply this function to a closed polyhedron and
+    // a non-closed polyhedron.
+    ph1.time_elapse_assign(ph2);
+  }
+  catch(invalid_argument& e) {
+#if NOISY
+    cout << "invalid_polyhedra: " << e.what() << endl << endl;
+#endif
+  }
+  catch (...) {
+    exit(1);
+  }
+}
+  
+void
+error20() {
+  set_handlers();
+
+  Variable A(0);
+
+  C_Polyhedron ph1(1);
+  ph1.add_constraint(A >= 5);
+
+  NNC_Polyhedron ph2(1);
+  ph2.add_constraint(A > 0);
+
+#if NOISY
+  print_constraints(ph1, "*** ph1 ***");
+  print_constraints(ph2, "*** ph2 ***");
+#endif
+  
+  try {
+    // This is an invalid use of the `operator<=':
+    // it is illegal to apply this function to a
+    // closed polyhedron and a non-closed polyhedron.
+    ph1 <= ph2;
+  }
+  catch(invalid_argument& e) {
+#if NOISY
+    cout << "invalid_polyhedra: " << e.what() << endl << endl;
+#endif
+  }
+  catch (...) {
+    exit(1);
+  }
+}
+
+void
+error21() {
+  set_handlers();
+
+  Variable A(0);
+  Variable B(1);
+  
+  NNC_Polyhedron ph1(2);
+  ph1.add_constraint(A >= 0);
+  ph1.add_constraint(A - B > 0);
+
+  const ConSys cs = ph1.constraints();
+
+#if NOISY
+  print_constraints(cs, "*** cs ***");
+#endif
+  
+  try {
+    // This is an incorrect use of the function
+    // C_Polyhedron::C_Polyhedron(cs): it is illegal to built a
+    // closed polyhedron starting from a system of constraints
+    // that contains strict inequalities.
+    C_Polyhedron ph2(cs);
+  }
+  catch(invalid_argument& e) {
+#if NOISY
+    cout << "invalid_system_of_constraints: " << e.what() << endl << endl;
+#endif
+  }
+  catch (...) {
+    exit(1);
+  }
+}   
+
+void
+error22() {
+  set_handlers();
+
+  Variable A(0);
+
+  GenSys gs1;
+  gs1.insert(point(3*A));
+  gs1.insert(closure_point(2*A));
+  gs1.insert(ray(A));
+
+  NNC_Polyhedron ph1(gs1);
+
+  const GenSys gs2 = ph1.generators();
+
+  try {
+    // This is an incorrect use of the function
+    // `C_Polyhedron(const GenSys)': it is illegal to built
+    // a closed polyhedron starting from a constant non-closed
+    // system of generators.
+    C_Polyhedron ph2(gs2);
+  }
+  catch(invalid_argument& e) {
+#if NOISY
+    cout << "invalid_system_of_generators: " << e.what() << endl << endl;
+#endif
+  }
+  catch (...) {
+    exit(1);
+  }
+}
+
+void
+error23() {
+  set_handlers();
+
+  NNC_Polyhedron ph(0, NNC_Polyhedron::EMPTY);
+
+  try {
+    // This is an incorrect use of the function
+    // `add_generator(g)': it is illegal add a closure point
+    // to a zero-dimensional and empty non-closed polyhedron.
+    ph.add_generator(closure_point());
+  }
+  catch(invalid_argument& e) {
+#if NOISY
+    cout << "invalid_generator: " << e.what() << endl << endl;
+#endif
+  }
+  catch (...) {
+    exit(1);
+  }
+}
+
+void
+error24() {
+  set_handlers();
+  
+  NNC_Polyhedron ph(0, NNC_Polyhedron::EMPTY);
+
+#if NOISY
+  print_constraints(ph, "*** ph ***");
+#endif
+
+  GenSys gs;
+  gs.insert(closure_point());
+
+  try {
+    // This is an invalid used of the function
+    // `add_generators_and_minimize(gs)': it is illegal to
+    // add a system of generators that does not contain points
+    // to an empty zero-dimensional polyhedron.
+    ph.add_generators_and_minimize(gs);
+  }
+  catch (invalid_argument& e) {
+#if NOISY
+    cout << "invalid_system_of_generators: " << e.what() << endl << endl;
+#endif
+  }
+  catch (...) {
+    exit(1);
+  }
+}
+
+void
+error25() {
+  set_handlers();
+  
+  NNC_Polyhedron ph(0, NNC_Polyhedron::EMPTY);
+
+#if NOISY
+  print_constraints(ph, "*** ph ***");
+#endif
+
+  GenSys gs;
+  gs.insert(closure_point());
+
+  try {
+    // This is an invalid used of the function
+    // `add_generators(gs)': it is illegal to
+    // add a system of generators that does not contain points
+    // to an empty zero-dimensional polyhedron.
+    ph.add_generators(gs);
+  }
+  catch (invalid_argument& e) {
+#if NOISY
+    cout << "invalid_system_of_generators: " << e.what() << endl << endl;
+#endif
+  }
+  catch (...) {
+    exit(1);
+  }
+}
+
+void
+error26() {
+  set_handlers();
+
+  Variable A(0);
+
+  NNC_Polyhedron ph1(1);
+  ph1.add_constraint(A > 5);
+
+  C_Polyhedron ph2(1);
+  ph2.add_constraint(A >= 0);
+
+#if NOISY
+  print_constraints(ph1, "*** ph1 ***");
+  print_constraints(ph2, "*** ph2 ***");
+#endif
+  
+  try {
+    // This is an invalid use of the `operator<=':
+    // it is illegal to apply this function to a
+    // closed polyhedron and a non-closed polyhedron.
+    ph1 <= ph2;
+  }
+  catch(invalid_argument& e) {
+#if NOISY
+    cout << "invalid_polyhedra: " << e.what() << endl << endl;
+#endif
+  }
+  catch (...) {
+    exit(1);
+  }
+}
+
+void
+error27() {
+  set_handlers();
+
+  Variable A(0);
+  Variable B(1);
+
+  C_Polyhedron ph1(2);
+  ph1.add_constraint(A >= 0);
+  ph1.add_constraint(A <= 2);
+  ph1.add_constraint(A - B >= 0);
+
+  NNC_Polyhedron ph2(2);
+  ph2.add_constraint(A >= 0);
+  ph2.add_constraint(A <= 4);
+  ph2.add_constraint(A - B >= 0);
+
+  ConSys cs;
+  cs.insert(A < 8);
+
+#if NOISY
+  print_constraints(ph1, "*** ph1 ***");
+  print_constraints(ph2, "*** ph2 ***");
+  print_constraints(cs, "*** cs ***");
+#endif
+
+  try {
+    // This is an invalid use of the function
+    // `limited_H79_widening_assign': it is illegal to
+    // apply this function to a non-closed polyhedron,
+    // a non-closed polyhedron and a system of
+    // constraints that contains strict inequalities.
+    ph2.limited_H79_widening_assign(ph1, cs);
+  }
+  catch(invalid_argument& e) {
+#if NOISY
+    cout << "invalid_system_of_constraints: " << e.what() << endl << endl;
+#endif
+  }
+  catch (...) {
+    exit(1);
+  }
+}
+
+void
+error28() {
+  set_handlers();
+
+  Variable A(0);
+  Variable B(1);
+
+  C_Polyhedron ph1(2);
+  ph1.add_constraint(A <= 2);
+  ph1.add_constraint(B >= 0);
+  ph1.add_constraint(A - B >= 0);
+
+  NNC_Polyhedron ph2(2);
+  ph2.add_constraint(A < 5);
+  ph2.add_constraint(B >= 0);
+  ph2.add_constraint(A - B >= 0);
+
+try {
+    // This is an invalid use of the function
+    // `BBRZ02_widening_assign': it is illegal to
+    // apply this function to a non-closed polyhedron and
+    // a non-closed polyhedron.
+    ph2.BBRZ02_widening_assign(ph1);
+  }
+  catch(invalid_argument& e) {
+#if NOISY
+    cout << "invalid_polyhedra: " << e.what() << endl << endl;
+#endif
+  }
+  catch (...) {
+    exit(1);
+  }
+}
+
 int
 main() {
   
@@ -320,7 +964,24 @@ main() {
   error7();
   error8();
   error9();
-  error10();
+  error11();
+  error12();
+  error13();
+  error14();
+  error15();
+  error16();
+  error17();
+  error18();
+  error19();
+  error20();
+  error21();
+  error22();
+  error23();
+  error24();
+  error25();
+  error26();
+  error27();
+  error28();
 
   return 0;
 }

@@ -26,6 +26,6 @@ VPATH = @srcdir@
 
 @SET_MAKE@
 
-m4macros = ac_check_gmp.m4
+m4macros = ac_check_gmp.m4 ac_cxx_flexible_arrays.m4
 
 EXTRA_DIST = $(m4macros) 

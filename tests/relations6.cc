@@ -1,4 +1,4 @@
-/* Testing Polyhedron::relation_with(c): we verify that all the points
+/* Test Polyhedron::relation_with(c): we verify that all the points
    of an empty polyhedron saturate a constraints.
    Copyright (C) 2001, 2002 Roberto Bagnara <bagnara@cs.unipr.it>
 

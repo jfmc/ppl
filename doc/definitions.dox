@@ -44,23 +44,23 @@ e.g., in the field of computational geometry.
 
 The main features of the library are the following:
 - it is user friendly:
-  you write <CODE>x + 2*y + 5*z <= 7</CODE> when you mean it; 
+  you write <CODE>x + 2*y + 5*z <= 7</CODE> when you mean it;
 - it is fully dynamic:
   available virtual memory is the only limitation to the
-  dimension of anything; 
+  dimension of anything;
 - it provides full support for the manipulation of convex polyhedra
   that are not topologically closed;
 - it is written in standard C++: meant to be portable;
 - it is exception-safe: never leaks resources or leaves invalid object
   fragments around;
-- it is rather efficient: and we hope to make it even more so; 
+- it is rather efficient: and we hope to make it even more so;
 - it is thoroughly documented:
-  perhaps not literate programming but close enough; 
+  perhaps not literate programming but close enough;
 - it is free software: distributed under the terms of the
-  GNU General Public License. 
+  GNU General Public License.
 
 In the following sections we describe the polyhedra and
-the different representations and operations 
+the different representations and operations
 supported by the PPL in more detail.
 For more information about the definitions and results stated here see:
 - R. Bagnara, E. Ricci, E. Zaffanella and P. M. Hill - Possibly Not Closed
@@ -391,7 +391,7 @@ must obey the following <EM>topological-compatibility</EM> rules:
 - all constraints except for strict constraints
   and all generators except for closure points are
   topologically-compatible with both C and NNC polyhedra;
-- strict inequality constraints and closure points are 
+- strict inequality constraints and closure points are
   topologically-compatible with a polyhedron if and only if it is NNC.
 
 Wherever possible,
@@ -582,14 +582,14 @@ This variable and expression determine the affine transformation
 That is, \f$\phi\f$ is the transformation
 defined by the matrix and vector
   \f[
- A = 
+ A =
    \begin{pmatrix}
      1       & 0  & \dots & 0       & 0      & 0       & \dots & 0       \\
      0       & 1  & \dots & 0       & 0      & 0       & \dots & 0       \\
-     \vdots  & \vdots &   & \vdots  & \vdots & \vdots  &       & \vdots  \\   
+     \vdots  & \vdots &   & \vdots  & \vdots & \vdots  &       & \vdots  \\
      a_0     & a_1  & \dots & a_{k-1} & a_k    & a_{k+1} & \dots & a_{n-1} \\
-      \vdots & \vdots &   & \vdots  & \vdots & \vdots  &       & \vdots  \\   
-     0       & 0  & \dots & 0       & 0      & 0       & \dots & 1      
+      \vdots & \vdots &   & \vdots  & \vdots & \vdots  &       & \vdots  \\
+     0       & 0  & \dots & 0       & 0      & 0       & \dots & 1
    \end{pmatrix}, \qquad
  \vect{b} =
    \begin{pmatrix}
@@ -696,7 +696,7 @@ does not change \f$\cP\f$.
 The library provides widening operators for the domain of
 NNC polyhedra.
 These operators use a widening, we call <EM>H79-widening</EM>,
-which is based on that introduced in 
+which is based on that introduced in
 N. Halbwachs,
 <EM>Détermination automatique de relations linéaires vérifiées
 par les variables d'un programme</EM>,
@@ -756,7 +756,7 @@ An \f$n\f$-dimensional <EM>box</EM> \f$\cB\f$ in \f$\Rset^n\f$
 is a sequence of \f$n\f$ intervals in \f$\Rset\f$.
 
 The polyhedron \f$\cP\f$ <EM>represents a box \f$\cB\f$</EM> in \f$\Rset^n\f$
-if \f$\cP\f$ 
+if \f$\cP\f$
 is described by a constraint system in \f$\Rset^n\f$ that
 consists of one constraint for each bounded bound (lower and upper)
 in an interval in \f$\cB\f$:
@@ -764,7 +764,7 @@ Letting \f$\vect{e}_i = (0, \ldots, 1, \ldots, 0)\f$ be the vector in
 \f$\Rset^n\f$ with 1 in the \f$i\f$'th position
 and zeros in every other position;
 if the lower bound of the \f$i\f$'th interval in \f$\cB\f$
-is bounded, the corresponding constraint is defined as 
+is bounded, the corresponding constraint is defined as
 \f$\langle \vect{e}_i, \vect{x} \rangle \relop b\f$,
 where \f$b\f$ is the value of the bound and
 \f$\mathord{\relop}\f$ is \f$\mathord{\geq}\f$ if it is a closed bound and
@@ -775,16 +775,16 @@ the corresponding constraint is defined as
 \f$\langle\vect{e}_i,\vect{x}\rangle \relop b\f$,
 where \f$b\f$ is the value of the bound and
 \f$\mathord{\relop}\f$ is \f$\mathord{\leq}\f$ if it is a closed bound and
-\f$\mathord{<}\f$ if it is an open bound. 
+\f$\mathord{<}\f$ if it is an open bound.
 
-If every bound in the intervals 
+If every bound in the intervals
 defining a box \f$\cB\f$ is either closed and bounded
 or open and unbounded, then
 \f$\cB\f$ represents a closed polyhedron.
 
 The <EM>bounding box</EM> of an NNC polyhedron \f$\cP\f$ is
 the smallest \f$n\f$-dimensional box
-containing \f$\cP\f$. 
+containing \f$\cP\f$.
 
 The library provides operations for computing the bounding box
 of an NNC polyhedron and conversely, for obtaining the NNC polyhedron
@@ -987,8 +987,8 @@ where \f$\xi \geq 0\f$. That is,
 \f]
 \f[
   C = \{\,
-           (\xi \vect{x}^\transpose, \xi)^\transpose 
-      \mid 
+           (\xi \vect{x}^\transpose, \xi)^\transpose
+      \mid
            \xi A\vect{x} - \xi \vect{b}
 	   \geq \vect{0}, \xi \geq 0
       \,\}
@@ -1004,7 +1004,7 @@ and, for the (\f$m + 1\f$)'st row,
 We call  \f$C\f$ the
 <EM>corresponding polyhedral cone for \f$P\f$</EM>.
 
-The (\f$m+1\f$)'st row 
+The (\f$m+1\f$)'st row
 \f$(\vect{0}^\transpose, 1)\f$
 represents the <EM>positivity constraint</EM> \f$1 \geq 0\f$.
 
@@ -1029,7 +1029,7 @@ The systems of generators for \f$P\f$ and \f$C\f$ are such that:
 - Every ray in \f$C\f$ corresponds to a vertex or ray in \f$P\f$.
 - The origin in \f$\Rset^{n+1}\f$ is a point in \f$C\f$.
 
-Thus, in the cone \f$C\f$, a ray derived from a vertex 
+Thus, in the cone \f$C\f$, a ray derived from a vertex
 in \f$P\f$ differs from a ray derived from a ray in \f$P\f$
 only in that, for a vertex,
 the (\f$n+1\f$)'st term is different from zero and,
@@ -1113,7 +1113,7 @@ Let \f$P\f$ be a non-empty polyhedron. The set
   F = \{ \vect{p} \} + \linspace (P),
 \f]
 where \f$\vect{p}\f$ is a point of \f$P\f$ and the symbol
-'\f$+\f$' denotes the Minkowski's sum, is a <EM>minimal proper face</EM> of  
+'\f$+\f$' denotes the Minkowski's sum, is a <EM>minimal proper face</EM> of
 the polyhedron if \f$F\f$ is a proper face of \f$P\f$.
 
 <B>Facet</B>

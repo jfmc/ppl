@@ -35,7 +35,7 @@ SatMatrix::SatMatrix()
 }
 
 inline
-SatMatrix::SatMatrix(size_t n_rows, size_t n_columns)
+SatMatrix::SatMatrix(dimension_type n_rows, dimension_type n_columns)
   : rows(n_rows),
     row_size(n_columns) {
 }
@@ -54,7 +54,7 @@ SatMatrix::~SatMatrix() {
   Erases the rows from the \p first_to_erase -th to the last one.
 */
 inline void
-SatMatrix::rows_erase_to_end(size_t first_to_erase) {
+SatMatrix::rows_erase_to_end(dimension_type first_to_erase) {
   // The first row to be erased cannot be greater
   // than the actual number of the rows of the matrix.
   assert(first_to_erase <= rows.size());
@@ -67,7 +67,7 @@ SatMatrix::rows_erase_to_end(size_t first_to_erase) {
   Erases the columns from the \p first_to_erase -th to the last one.
 */
 inline void
-SatMatrix::columns_erase_to_end(size_t first_to_erase) {
+SatMatrix::columns_erase_to_end(dimension_type first_to_erase) {
   // The first column to be erased cannot be greater
   // than the actual number of the columns of the matrix.
   assert(first_to_erase <= row_size);
@@ -88,7 +88,7 @@ SatMatrix::swap(SatMatrix& y) {
   Returns a reference to the \p k -th row.
 */
 inline SatRow&
-SatMatrix::operator[](size_t k) {
+SatMatrix::operator[](dimension_type k) {
   assert(k < rows.size());
   return rows[k];
 }
@@ -97,17 +97,17 @@ SatMatrix::operator[](size_t k) {
   Returns a constant reference to the \p k -th row.
 */
 inline const SatRow&
-SatMatrix::operator[](size_t k) const {
+SatMatrix::operator[](dimension_type k) const {
   assert(k < rows.size());
   return rows[k];
 }
 
-inline size_t
+inline dimension_type
 SatMatrix::num_columns() const {
   return row_size;
 }
 
-inline size_t
+inline dimension_type
 SatMatrix::num_rows() const {
   return rows.size();
 }

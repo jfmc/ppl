@@ -50,7 +50,8 @@ GenSys::GenSys(Topology topol)
 }
 
 inline
-GenSys::GenSys(Topology topol, size_t n_rows, size_t n_columns)
+GenSys::GenSys(Topology topol,
+	       dimension_type n_rows, dimension_type n_columns)
   : Matrix(topol, n_rows, n_columns) {
 }
 
@@ -64,7 +65,7 @@ GenSys::operator=(const GenSys& y) {
   return *this;
 }
 
-inline size_t
+inline dimension_type
 GenSys::space_dimension() const {
   return Matrix::space_dimension();
 }
@@ -75,12 +76,12 @@ GenSys::clear() {
 }
 
 inline Generator&
-GenSys::operator[](size_t k) {
+GenSys::operator[](dimension_type k) {
   return static_cast<Generator&>(Matrix::operator[](k));
 }
 
 inline const Generator&
-GenSys::operator[](size_t k) const {
+GenSys::operator[](dimension_type k) const {
   return static_cast<const Generator&>(Matrix::operator[](k));
 }
 

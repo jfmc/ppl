@@ -25,6 +25,7 @@ site: http://www.cs.unipr.it/ppl/ . */
 #define PPL_SatRow_defs_hh 1
 
 #include "SatRow.types.hh"
+#include "globals.hh"
 #include <iosfwd>
 #include <gmp.h>
 
@@ -68,16 +69,16 @@ public:
   void swap(SatRow& y);
 
   //! Returns the truth value corresponding to the bit in position \p k.
-  bool operator[](size_t k) const;
+  bool operator[](unsigned int k) const;
 
   //! Sets the bit in position \p k.
-  void set(size_t k);
+  void set(unsigned int k);
 
   //! Clears the bit in position \p k.
-  void clear(size_t k);
+  void clear(unsigned int k);
 
   //! Clears bits from position \p k (included) onwards.
-  void clear_from(size_t k);
+  void clear_from(unsigned int k);
 
   //! Clears all the bit of the row.
   void clear();
@@ -115,7 +116,7 @@ public:
 						 SatRow& z);
 
   //! Return the size of the row.
-  size_t size();
+  unsigned int size();
 
   //! Returns the index of the first set bit or -1 if no bit is set.
   int first() const;
@@ -132,7 +133,7 @@ public:
   int prev(int position) const;
 
   //! Returns the number of set bits in the row.
-  size_t count_ones() const;
+  unsigned int count_ones() const;
 
   //! Returns <CODE>true</CODE> if no bit is set in the row.
   bool empty() const;

@@ -1,4 +1,4 @@
-/* Testing Polyhedron::bounding_box().
+/* Test Polyhedron::bounding_box().
    Copyright (C) 2001, 2002 Roberto Bagnara <bagnara@cs.unipr.it>
 
 This file is part of the Parma Polyhedra Library (PPL).
@@ -118,53 +118,53 @@ private:
   vector<BInterval> box;
 
 public:
-  BBox(unsigned int dimension) {
+  BBox(dimension_type dimension) {
     box.resize(dimension);
   }
 
-  unsigned int space_dimension() const {
+  dimension_type space_dimension() const {
     return box.size();
   }
 
-  const BInterval& operator[](size_t k) const {
+  const BInterval& operator[](dimension_type k) const {
     return box[k];
   }
 
   void print_box(const string& intro = "") {
     if (!intro.empty())
       cout << intro << endl;
-    size_t dim = box.size();
-    for (size_t j = 0; j != dim ; j++) {
+    dimension_type dim = box.size();
+    for (dimension_type j = 0; j != dim ; j++) {
       cout << j << " AXES:  ";
       box[j].print_interval();
     }
   }
 
-  void raise_lower_bound(size_t k, bool closed,
+  void raise_lower_bound(dimension_type k, bool closed,
 			 const Integer& c, const Integer& d) {
     assert(k < box.size());
     box[k].raise_lower_bound(closed, c, d);
   }
 
-  void lower_upper_bound(size_t k, bool closed,
+  void lower_upper_bound(dimension_type k, bool closed,
 			 const Integer& c, const Integer& d) {
     assert(k < box.size());
     box[k].lower_upper_bound(closed, c, d);
   }
 
   void set_empty() {
-    for (size_t k = box.size(); k-- > 0; )
+    for (dimension_type k = box.size(); k-- > 0; )
       box[k].set_empty();
   }
 };
 
 bool
 operator==(const BBox& x, const BBox& y) {
-  unsigned int dimension = x.space_dimension();
+  dimension_type dimension = x.space_dimension();
   if (dimension != y.space_dimension())
     return false;
 
-  for (unsigned int i = dimension; i-- > 0; )
+  for (dimension_type i = dimension; i-- > 0; )
     if (x[i] != y[i])
       return false;
 
@@ -189,13 +189,13 @@ void test_c0() {
 #if NOISY
   print_generators(ph, "*** test_c0 ph ***");
 #endif
-  
+
   BBox box(2);
   ph.shrink_bounding_box(box);
 #if NOISY
   box.print_box("*** test_c0 box ***");
 #endif
-  
+
   BBox known_box(2);
 #if NOISY
   known_box.print_box("*** test_c0 known ***");
@@ -219,13 +219,13 @@ void test_nnc0() {
 #if NOISY
   print_generators(ph, "*** test_nnc0 ph ***");
 #endif
-  
+
   BBox box(2);
   ph.shrink_bounding_box(box);
 #if NOISY
   box.print_box("*** test_nnc0 box ***");
 #endif
-  
+
   BBox known_box(2);
 #if NOISY
   known_box.print_box("*** test_nnc0 known ***");
@@ -250,15 +250,15 @@ void test_c1() {
 #if NOISY
   print_generators(ph, "*** test_c1 ph ***");
 #endif
-  
+
   BBox box(ph.space_dimension());
   ph.shrink_bounding_box(box);
 
 #if NOISY
     box.print_box("*** test_c1 box ***");
 #endif
-   
-  
+
+
   BBox known_box(2);
   known_box.raise_lower_bound(0, true, 0, 1);
   known_box.raise_lower_bound(1, true, 0, 1);
@@ -285,15 +285,15 @@ void test_nnc1() {
 #if NOISY
   print_generators(ph, "*** test_nnc1 ph ***");
 #endif
-  
+
   BBox box(ph.space_dimension());
   ph.shrink_bounding_box(box);
 
 #if NOISY
     box.print_box("*** test_nnc1 box ***");
 #endif
-   
-  
+
+
   BBox known_box(2);
   known_box.raise_lower_bound(0, true, 0, 1);
   known_box.raise_lower_bound(1, true, 0, 1);
@@ -306,7 +306,7 @@ void test_nnc1() {
 
 #endif // NNC_TESTS
 }
- 
+
 // This is a bounded C polyhedron;
 void test_c2() {
 #if C_TESTS
@@ -326,7 +326,7 @@ void test_c2() {
 #if NOISY
   box.print_box("*** test_c2 box ***");
 #endif
-  
+
   BBox known_box(2);
   known_box.raise_lower_bound(0, true, -2, 3);
   known_box.lower_upper_bound(0, true, 4, 1);
@@ -341,7 +341,7 @@ void test_c2() {
 
 #endif // C_TESTS
 }
- 
+
 // This is a bounded NNC polyhedron;
 void test_nnc2() {
 #if NNC_TESTS
@@ -361,7 +361,7 @@ void test_nnc2() {
 #if NOISY
   box.print_box("*** test_nnc2 box ***");
 #endif
-  
+
   BBox known_box(2);
   known_box.raise_lower_bound(0, true, -2, 3);
   known_box.lower_upper_bound(0, true, 4, 1);
@@ -376,7 +376,7 @@ void test_nnc2() {
 
 #endif // NNC_TESTS
 }
- 
+
 // This is a unbounded C polyhedron in 4D but bounded in 2D;
 void test_c3() {
 #if C_TESTS
@@ -399,7 +399,7 @@ void test_c3() {
 #if NOISY
   box.print_box("*** test_c3 box ***");
 #endif
-  
+
   BBox known_box(4);
   known_box.raise_lower_bound(1, true, -2, 3);
   known_box.lower_upper_bound(1, true, 4, 1);
@@ -409,13 +409,13 @@ void test_c3() {
 #if NOISY
   known_box.print_box("*** test_c3 known ***");
 #endif
-  
+
   if (box != known_box)
     exit(1);
 
 #endif // C_TESTS
 }
- 
+
 // This is a unbounded NNC polyhedron in 4D but bounded in 2D;
 void test_nnc3() {
 #if NNC_TESTS
@@ -438,7 +438,7 @@ void test_nnc3() {
 #if NOISY
   box.print_box("*** test_nnc3 box ***");
 #endif
-  
+
   BBox known_box(4);
   known_box.raise_lower_bound(1, true, -2, 3);
   known_box.lower_upper_bound(1, true, 4, 1);
@@ -448,28 +448,28 @@ void test_nnc3() {
 #if NOISY
   known_box.print_box("*** test_nnc3 known ***");
 #endif
-  
+
   if (box != known_box)
     exit(1);
 
 #endif // NNC_TESTS
 }
 
-// This is a universal, 2-dimensional C polyhedron. 
+// This is a universal, 2-dimensional C polyhedron.
 void test_c4() {
 #if C_TESTS
   C_Polyhedron ph(2);
 
 #if NOISY
   print_constraints(ph, "*** test_c4 ph ***");
-#endif  
- 
+#endif
+
   BBox box(ph.space_dimension());
   ph.shrink_bounding_box(box);
 #if NOISY
   box.print_box("*** test_c4 box ***");
 #endif
-  
+
   BBox known_box(2);
 #if NOISY
   known_box.print_box("*** test_c4 known ***");
@@ -481,21 +481,21 @@ void test_c4() {
 #endif // C_TESTS
 }
 
-// This is a universal, 2-dimensional NNC polyhedron. 
+// This is a universal, 2-dimensional NNC polyhedron.
 void test_nnc4() {
 #if NNC_TESTS
   NNC_Polyhedron ph(2);
 
 #if NOISY
   print_constraints(ph, "*** test_nnc4 ph ***");
-#endif  
- 
+#endif
+
   BBox box(ph.space_dimension());
   ph.shrink_bounding_box(box);
 #if NOISY
   box.print_box("*** test_nnc4 box ***");
 #endif
-  
+
   BBox known_box(2);
 #if NOISY
   known_box.print_box("*** test_nnc4 known ***");
@@ -507,21 +507,21 @@ void test_nnc4() {
 #endif // NNC_TESTS
 }
 
-  // This is an zero-dimensional C polyhedron. 
+  // This is an zero-dimensional C polyhedron.
 void test_c5() {
 #if C_TESTS
   C_Polyhedron ph;
 
 #if NOISY
   print_constraints(ph, "*** test_c5 ph ***");
-#endif  
- 
+#endif
+
   BBox box(ph.space_dimension());
   ph.shrink_bounding_box(box);
 #if NOISY
   box.print_box("*** test5_c box ***");
 #endif
-  
+
   BBox known_box(0);
 #if NOISY
   known_box.print_box("*** test_c5 known ***");
@@ -533,21 +533,21 @@ void test_c5() {
 #endif // C_TESTS
 }
 
-// This is an zero-dimensional NNC polyhedron. 
+// This is an zero-dimensional NNC polyhedron.
 void test_nnc5() {
 #if NNC_TEST
   NNC_Polyhedron ph;
 
 #if NOISY
   print_constraints(ph, "*** test_nnc5 ph ***");
-#endif  
- 
+#endif
+
   BBox box(ph.space_dimension());
   ph.shrink_bounding_box(box);
 #if NOISY
   box.print_box("*** test_nnc5 box ***");
 #endif
-  
+
   BBox known_box(0);
 #if NOISY
   known_box.print_box("*** test_nnc5 known ***");
@@ -559,16 +559,16 @@ void test_nnc5() {
 #endif // NNC_TESTS
 }
 
-// This is an empty C polyhedron. 
+// This is an empty C polyhedron.
 void test_c6() {
 #if C_TESTS
   C_Polyhedron ph(2, C_Polyhedron::EMPTY);
 
 #if NOISY
   print_constraints(ph, "*** test_c6 ph ***");
-#endif  
- 
-  
+#endif
+
+
   BBox box(ph.space_dimension());
   ph.shrink_bounding_box(box);
 #if NOISY
@@ -587,16 +587,16 @@ void test_c6() {
 #endif // C_TESTS
 }
 
-// This is an empty NNC polyhedron. 
+// This is an empty NNC polyhedron.
 void test_nnc6() {
 #if NNC_TESTS
   NNC_Polyhedron ph(2, C_Polyhedron::EMPTY);
 
 #if NOISY
   print_constraints(ph, "*** test_nnc6 ph ***");
-#endif  
- 
-  
+#endif
+
+
   BBox box(ph.space_dimension());
   ph.shrink_bounding_box(box);
 #if NOISY
@@ -633,7 +633,7 @@ void test_c7() {
 #if NOISY
   box.print_box("*** test_c7 box ***");
 #endif
-  
+
   BBox known_box(2);
   known_box.raise_lower_bound(0, true, 2, 1);
   known_box.lower_upper_bound(0, true, 2, 1);
@@ -667,7 +667,7 @@ void test_nnc7() {
 #if NOISY
   box.print_box("*** test_nnc7 box ***");
 #endif
-  
+
   BBox known_box(2);
   known_box.raise_lower_bound(0, true, 2, 1);
   known_box.lower_upper_bound(0, true, 2, 1);
@@ -694,7 +694,7 @@ void test_c8() {
   cs.insert(x <= 1);
   cs.insert(y >= 0);
   cs.insert(y <= 1);
- 
+
   C_Polyhedron ph(cs);
 
 #if NOISY
@@ -733,7 +733,7 @@ void test_nnc8() {
   cs.insert(x <= 1);
   cs.insert(y >= 0);
   cs.insert(y <= 1);
- 
+
   NNC_Polyhedron ph(cs);
 
 #if NOISY
@@ -759,7 +759,7 @@ void test_nnc8() {
 
 #endif // NNC_TESTS
 }
- 
+
 // This is a unbounded NNC polyhedron in 4D but bounded in 2D
 void test_c9() {
 #if C_TESTS
@@ -782,7 +782,7 @@ void test_c9() {
 #if NOISY
   box.print_box("*** test_c9 box ***");
 #endif
-  
+
   BBox known_box(4);
   known_box.raise_lower_bound(1, true, -2, 3);
   known_box.lower_upper_bound(1, true, 4, 1);
@@ -792,13 +792,13 @@ void test_c9() {
 #if NOISY
   known_box.print_box("*** test_c9 known ***");
 #endif
-  
+
   if (box != known_box)
     exit(1);
 
 #endif // C_TESTS
 }
- 
+
 // This is a unbounded NNC polyhedron in 4D but bounded in 2D
 // with strict inequality and closure points at the lower bound.
 void test_nnc9() {
@@ -822,7 +822,7 @@ void test_nnc9() {
 #if NOISY
   box.print_box("*** test_nnc9 box ***");
 #endif
-  
+
   BBox known_box(4);
   known_box.raise_lower_bound(1, false, -2, 3);
   known_box.lower_upper_bound(1, true, 4, 1);
@@ -832,15 +832,15 @@ void test_nnc9() {
 #if NOISY
   known_box.print_box("*** test_nnc9 known ***");
 #endif
-  
+
   if (box != known_box)
     exit(1);
 
 #endif // NNC_TESTS
 }
 
- 
-// This is a bounded NNC polyhedron with strict inequalities 
+
+// This is a bounded NNC polyhedron with strict inequalities
 // causing upper and lower bounds of the box to be open.
 void test_nnc10() {
 #if NNC_TESTS
@@ -860,7 +860,7 @@ void test_nnc10() {
 #if NOISY
   box.print_box("*** test_nnc10 box ***");
 #endif
-  
+
   BBox known_box(2);
   known_box.raise_lower_bound(0, true, -2, 3);
   known_box.lower_upper_bound(0, false, 4, 1);
@@ -875,7 +875,7 @@ void test_nnc10() {
 
 #endif // NNC_TESTS
 }
- 
+
 
 int
 main() {

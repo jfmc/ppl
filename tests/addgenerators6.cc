@@ -1,4 +1,4 @@
-/* Testing Polyhedron::add_generators(): we add a one-dimensional
+/* Test Polyhedron::add_generators(): we add a one-dimensional
    system of generators to a two-dimensional polyhedron.
    Copyright (C) 2001, 2002 Roberto Bagnara <bagnara@cs.unipr.it>
 

@@ -1,4 +1,4 @@
-/* Testing Polyhedron::add_dimensions_and_project(): we apply this
+/* Test Polyhedron::add_dimensions_and_project(): we apply this
    function to a zero-dimensional, universal polyhedron.
    Copyright (C) 2001, 2002 Roberto Bagnara <bagnara@cs.unipr.it>
 

@@ -1,4 +1,4 @@
-/* Testing Polyhedron::affine_preimage(): the transformation is not
+/* Test Polyhedron::affine_preimage(): the transformation is not
    invertible and the polyhedron is defined by its system of constraints.
    Copyright (C) 2001, 2002 Roberto Bagnara <bagnara@cs.unipr.it>
 

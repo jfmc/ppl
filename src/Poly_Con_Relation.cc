@@ -32,7 +32,7 @@ site: http://www.cs.unipr.it/ppl/ . */
 namespace PPL = Parma_Polyhedra_Library;
 
 void
-PPL::Poly_Con_Relation::print(std::ostream& s) const {
+PPL::Poly_Con_Relation::ASCII_dump(std::ostream& s) const {
   flags_t f = flags;
   if (f == NOTHING) {
     s << "NOTHING";
@@ -65,7 +65,7 @@ PPL::Poly_Con_Relation::print(std::ostream& s) const {
 
 std::ostream&
 PPL::operator<<(std::ostream& s, const Poly_Con_Relation& r) {
-  r.print(s);
+  r.ASCII_dump(s);
   return s;
 }
 

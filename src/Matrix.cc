@@ -35,17 +35,18 @@ site: http://www.cs.unipr.it/ppl/ . */
 
 namespace PPL = Parma_Polyhedra_Library;
 
-size_t
+PPL::dimension_type
 PPL::Matrix::num_lines_or_equalities() const {
-  size_t n = 0;
-  for (size_t i = num_rows(); i != 0; )
+  dimension_type n = 0;
+  for (dimension_type i = num_rows(); i != 0; )
     if (rows[--i].is_line_or_equality())
       ++n;
   return n;
 }
 
 
-PPL::Matrix::Matrix(Topology topol, size_t n_rows, size_t n_columns)
+PPL::Matrix::Matrix(Topology topol,
+		    dimension_type n_rows, dimension_type n_columns)
   : rows(n_rows),
     row_topology(topol),
     row_size(n_columns),
@@ -54,7 +55,7 @@ PPL::Matrix::Matrix(Topology topol, size_t n_rows, size_t n_columns)
   // Build the appropriate row type.
   Row::Type row_type(topol, Row::RAY_OR_POINT_OR_INEQUALITY);
   // Construct in direct order: will destroy in reverse order.
-  for (size_t i = 0; i < n_rows; ++i)
+  for (dimension_type i = 0; i < n_rows; ++i)
     rows[i].construct(row_type, n_columns, row_capacity);
 }
 
@@ -81,17 +82,17 @@ PPL::Matrix::operator=(const Matrix& y) {
 void
 PPL::Matrix::set_rows_topology() {
   if (is_necessarily_closed())
-    for (size_t i = num_rows(); i-- > 0; )
+    for (dimension_type i = num_rows(); i-- > 0; )
       rows[i].set_necessarily_closed();
   else
-    for (size_t i = num_rows(); i-- > 0; )
+    for (dimension_type i = num_rows(); i-- > 0; )
       rows[i].set_not_necessarily_closed();
 }
 
 
 void
-PPL::Matrix::grow(size_t new_n_rows, size_t new_n_columns) {
-  size_t old_n_rows = rows.size();
+PPL::Matrix::grow(dimension_type new_n_rows, dimension_type new_n_columns) {
+  dimension_type old_n_rows = rows.size();
 
   assert(new_n_rows >= old_n_rows);
   assert(new_n_columns >= row_size);
@@ -113,7 +114,7 @@ PPL::Matrix::grow(size_t new_n_rows, size_t new_n_columns) {
 	new_rows.insert(new_rows.end(), new_n_rows, Row());
 	// Construct the new rows.
 	Row::Type row_type(row_topology, Row::RAY_OR_POINT_OR_INEQUALITY);
-	size_t i = new_n_rows;
+	dimension_type i = new_n_rows;
 	while (i-- > old_n_rows)
 	  new_rows[i].construct(row_type, new_n_columns, row_capacity);
 	// Steal the old rows.
@@ -127,7 +128,7 @@ PPL::Matrix::grow(size_t new_n_rows, size_t new_n_columns) {
 	// Reallocation will NOT take place.
 	rows.insert(rows.end(), new_n_rows - old_n_rows, Row());
 	Row::Type row_type(row_topology, Row::RAY_OR_POINT_OR_INEQUALITY);
-	for (size_t i = new_n_rows; i-- > old_n_rows; )
+	for (dimension_type i = new_n_rows; i-- > old_n_rows; )
 	  rows[i].construct(row_type, new_n_columns, row_capacity);
       }
     }
@@ -139,7 +140,7 @@ PPL::Matrix::grow(size_t new_n_rows, size_t new_n_columns) {
       // Construct the new rows.
       new_matrix.row_size = new_n_columns;
       new_matrix.row_capacity = compute_capacity(new_n_columns);
-      size_t i = new_n_rows;
+      dimension_type i = new_n_rows;
       Row::Type row_type(row_topology, Row::RAY_OR_POINT_OR_INEQUALITY);
       while (i-- > old_n_rows)
 	new_matrix.rows[i].construct(row_type,
@@ -168,13 +169,13 @@ PPL::Matrix::grow(size_t new_n_rows, size_t new_n_columns) {
     // We need more columns.
     if (new_n_columns <= row_capacity)
       // But we have enough capacity: we resize existing rows.
-      for (size_t i = old_n_rows; i-- > 0; )
+      for (dimension_type i = old_n_rows; i-- > 0; )
 	rows[i].grow_no_copy(new_n_columns);
     else {
       // Capacity exhausted: we must reallocate the rows and
       // make sure all the rows have the same capacity.
-      size_t new_row_capacity = compute_capacity(new_n_columns);
-      for (size_t i = old_n_rows; i-- > 0; ) {
+      dimension_type new_row_capacity = compute_capacity(new_n_columns);
+      for (dimension_type i = old_n_rows; i-- > 0; ) {
 	Row new_row(rows[i], new_n_columns, new_row_capacity);
 	std::swap(rows[i], new_row);
       }
@@ -196,8 +197,9 @@ PPL::Matrix::grow(size_t new_n_rows, size_t new_n_columns) {
 }
 
 void
-PPL::Matrix::resize_no_copy(size_t new_n_rows, size_t new_n_columns) {
-  size_t old_n_rows = rows.size();
+PPL::Matrix::resize_no_copy(dimension_type new_n_rows,
+			    dimension_type new_n_columns) {
+  dimension_type old_n_rows = rows.size();
   // Note that, if we have `new_n_rows <= old_n_rows' and
   // `new_n_columns >= row_size', the matrix will keep its sortedness.
   // This is obvious if `new_n_columns == row_size'.
@@ -213,7 +215,7 @@ PPL::Matrix::resize_no_copy(size_t new_n_rows, size_t new_n_columns) {
 	new_rows.insert(new_rows.end(), new_n_rows, Row());
 	// Construct the new rows.
 	Row::Type row_type(row_topology, Row::LINE_OR_EQUALITY);
-	size_t i = new_n_rows;
+	dimension_type i = new_n_rows;
 	while (i-- > old_n_rows)
 	  new_rows[i].construct(row_type, new_n_columns, row_capacity);
 	// Steal the old rows.
@@ -227,7 +229,7 @@ PPL::Matrix::resize_no_copy(size_t new_n_rows, size_t new_n_columns) {
 	// Reallocation will NOT take place.
 	rows.insert(rows.end(), new_n_rows - old_n_rows, Row());
 	Row::Type row_type(row_topology, Row::LINE_OR_EQUALITY);
-	for (size_t i = new_n_rows; i-- > old_n_rows; )
+	for (dimension_type i = new_n_rows; i-- > old_n_rows; )
 	  rows[i].construct(row_type, new_n_columns, row_capacity);
       }
       // Even though `*this' may happen to keep its sortedness,
@@ -252,7 +254,7 @@ PPL::Matrix::resize_no_copy(size_t new_n_rows, size_t new_n_columns) {
   if (new_n_columns != row_size) {
     if (new_n_columns < row_size) {
       // Shrink the existing rows.
-      for (size_t i = old_n_rows; i-- > 0; )
+      for (dimension_type i = old_n_rows; i-- > 0; )
 	rows[i].shrink(new_n_columns);
       // Ditto.
       set_sorted(false);
@@ -261,14 +263,14 @@ PPL::Matrix::resize_no_copy(size_t new_n_rows, size_t new_n_columns) {
       // We need more columns.
       if (new_n_columns <= row_capacity)
 	// But we have enough capacity: we resize existing rows.
-	for (size_t i = old_n_rows; i-- > 0; )
+	for (dimension_type i = old_n_rows; i-- > 0; )
 	  rows[i].grow_no_copy(new_n_columns);
       else {
 	// Capacity exhausted: we must reallocate the rows and
 	// make sure all the rows have the same capacity.
-	size_t new_row_capacity = compute_capacity(new_n_columns);
+	dimension_type new_row_capacity = compute_capacity(new_n_columns);
 	Row::Type row_type(row_topology, Row::LINE_OR_EQUALITY);
-	for (size_t i = old_n_rows; i-- > 0; ) {
+	for (dimension_type i = old_n_rows; i-- > 0; ) {
 	  Row new_row(row_type, new_n_columns, new_row_capacity);
 	  std::swap(rows[i], new_row);
 	}
@@ -280,7 +282,7 @@ PPL::Matrix::resize_no_copy(size_t new_n_rows, size_t new_n_columns) {
 }
 
 void
-PPL::Matrix::print(std::ostream& s) const {
+PPL::Matrix::ASCII_dump(std::ostream& s) const {
   using std::endl;
 
   const Matrix& x = *this;
@@ -295,41 +297,37 @@ PPL::Matrix::print(std::ostream& s) const {
     << endl;
 }
 
-/*! \relates Parma_Polyhedra_Library::Matrix */
-std::ostream&
-PPL::operator<<(std::ostream& s, const Matrix& m) {
-  m.print(s);
-  return s;
-}
-
-void
-PPL::Matrix::get(std::istream& s) {
-  size_t nrows;
-  size_t ncols;
-  std::string tempstr;
-  s >> tempstr;
-  assert(tempstr == "topology");
-  s >> tempstr;
-  if (tempstr == "NECESSARILY_CLOSED")
+bool
+PPL::Matrix::ASCII_load(std::istream& s) {
+  std::string str;
+  if (!(s >> str) || str != "topology")
+    return false;
+  if (!(s >> str))
+    return false;
+  if (str == "NECESSARILY_CLOSED")
     set_necessarily_closed();
   else {
-    assert(tempstr == "NOT_NECESSARILY_CLOSED");
+    if (str != "NOT_NECESSARILY_CLOSED")
+      return false;
     set_not_necessarily_closed();
   }
-  s >> nrows
-    >> tempstr
-    >> ncols;
-  resize_no_copy(nrows, ncols);
-  s >> tempstr;
-  assert(tempstr == "(sorted)" || tempstr == "(not_sorted)");
-  set_sorted(tempstr == "(sorted)");
-}
 
-/*! \relates Parma_Polyhedra_Library::Matrix */
-std::istream&
-PPL::operator>>(std::istream& s, Matrix& m) {
-  m.get(s);
-  return s;
+  dimension_type nrows;
+  dimension_type ncols;
+  if (!(s >> nrows))
+    return false;
+  if (!(s >> str))
+    return false;
+  if (!(s >> ncols))
+      return false;
+  resize_no_copy(nrows, ncols);
+  
+  if (!(s >> str) || (str != "(sorted)" && str != "(not_sorted)"))
+    return false;
+  set_sorted(str == "(sorted)");
+  // Check for well-formedness.
+  assert(OK());
+  return true;
 }
 
 void
@@ -383,11 +381,11 @@ PPL::Matrix::merge_rows_assign(const Matrix& y) {
 void
 PPL::Matrix::sort_rows() {
   Matrix& x = *this;
-  size_t n_rows = x.num_rows();
+  dimension_type n_rows = x.num_rows();
   Row x_i;
-  for (size_t i = 1; i < n_rows; ) {
+  for (dimension_type i = 1; i < n_rows; ) {
     x_i.assign(x[i]);
-    size_t j;
+    dimension_type j;
     int cmp = 1;
     for (j = i; j > 0; --j) {
       cmp = compare(x[j-1], x_i);
@@ -420,7 +418,7 @@ PPL::Matrix::add_row(const Row& row) {
   // of elements of the existing rows of the matrix.
   assert(row.size() == row_size);
   bool was_sorted = is_sorted();
-  size_t new_rows_size = rows.size() + 1;
+  dimension_type new_rows_size = rows.size() + 1;
   if (rows.capacity() < new_rows_size) {
     // Reallocation will take place.
     std::vector<Row> new_rows;
@@ -428,7 +426,7 @@ PPL::Matrix::add_row(const Row& row) {
     new_rows.insert(new_rows.end(), new_rows_size, Row());
     // Put the new row in place.
     Row new_row(row, row_capacity);
-    size_t i = new_rows_size-1;
+    dimension_type i = new_rows_size-1;
     std::swap(new_rows[i], new_row);
     // Steal the old rows.
     while (i-- > 0)
@@ -445,7 +443,7 @@ PPL::Matrix::add_row(const Row& row) {
   }
   // Check whether the modified Matrix happens to be sorted.
   if (was_sorted) {
-    size_t nrows = num_rows();
+    dimension_type nrows = num_rows();
     // The added row may have caused the matrix to be not sorted anymore.
     if (nrows > 1) {
       // If the matrix is not empty and the inserted row
@@ -464,7 +462,7 @@ void
 PPL::Matrix::insert(const Row& row) {
   assert(topology() == row.topology());
 
-  size_t old_num_rows = num_rows();
+  dimension_type old_num_rows = num_rows();
 
   // Resize the matrix, if necessary.
   if (row.size() > row_size) {
@@ -473,7 +471,7 @@ PPL::Matrix::insert(const Row& row) {
     else {
       // After resizing, move the epsilon coefficients to
       // the last column (note: sorting is preserved).
-      size_t old_eps_index = row_size - 1;
+      dimension_type old_eps_index = row_size - 1;
       grow(old_num_rows, row.size());
       swap_columns(old_eps_index, row_size - 1);
     }
@@ -499,7 +497,7 @@ PPL::Matrix::insert(const Row& row) {
 void
 PPL::Matrix::add_row(Row::Type type) {
   bool was_sorted = is_sorted();
-  size_t new_rows_size = rows.size() + 1;
+  dimension_type new_rows_size = rows.size() + 1;
   if (rows.capacity() < new_rows_size) {
     // Reallocation will take place.
     std::vector<Row> new_rows;
@@ -507,7 +505,7 @@ PPL::Matrix::add_row(Row::Type type) {
     new_rows.insert(new_rows.end(), new_rows_size, Row());
     // Put the new row in place.
     Row new_row(type, row_size, row_capacity);
-    size_t i = new_rows_size-1;
+    dimension_type i = new_rows_size-1;
     std::swap(new_rows[i], new_row);
     // Steal the old rows.
     while (i-- > 0)
@@ -523,7 +521,7 @@ PPL::Matrix::add_row(Row::Type type) {
 
   // Check whether the modified Matrix happens to be sorted.
   if (was_sorted) {
-    size_t nrows = num_rows();
+    dimension_type nrows = num_rows();
     // The added row may have caused the matrix to be not sorted anymore.
     if (nrows > 1) {
       // If the matrix is not empty and the inserted row
@@ -539,22 +537,22 @@ PPL::Matrix::add_row(Row::Type type) {
 }
 
 void
-PPL::Matrix::swap_columns(size_t i,  size_t j) {
+PPL::Matrix::swap_columns(dimension_type i,  dimension_type j) {
   assert(i != j && i < num_columns() && j < num_columns());
-  for (size_t k = num_rows(); k-- > 0; )
+  for (dimension_type k = num_rows(); k-- > 0; )
     std::swap(rows[k][i], rows[k][j]);
 }
 
 void
 PPL::Matrix::normalize() {
-  for (size_t i = num_rows(); i-- > 0; )
+  for (dimension_type i = num_rows(); i-- > 0; )
     rows[i].normalize();
   set_sorted(false);
 }
 
 void
 PPL::Matrix::strong_normalize() {
-  for (size_t i = num_rows(); i-- > 0; )
+  for (dimension_type i = num_rows(); i-- > 0; )
     rows[i].strong_normalize();
   set_sorted(false);
 }
@@ -564,10 +562,10 @@ bool
 PPL::operator==(const Matrix& x, const Matrix& y) {
   if (x.num_columns() != y.num_columns())
     return false;
-  size_t x_num_rows = x.num_rows();
+  dimension_type x_num_rows = x.num_rows();
   if (x_num_rows != y.num_rows())
     return false;
-  for (size_t i = x_num_rows; i-- > 0; )
+  for (dimension_type i = x_num_rows; i-- > 0; )
     if (compare(x[i], y[i]) != 0)
       return false;
   return true;
@@ -576,14 +574,14 @@ PPL::operator==(const Matrix& x, const Matrix& y) {
 void
 PPL::Matrix::sort_and_remove_with_sat(SatMatrix& sat) {
   Matrix& x = *this;
-  size_t num_kept_rows = x.num_rows();
+  dimension_type num_kept_rows = x.num_rows();
   assert(num_kept_rows == sat.num_rows());
   if (num_kept_rows <= 1) {
     set_sorted(true);
     return;
   }
-  for (size_t i = 0; i < num_kept_rows - 1; ++i) {
-    for (size_t j = num_kept_rows - 1 ; j > i ; --j) {
+  for (dimension_type i = 0; i < num_kept_rows - 1; ++i) {
+    for (dimension_type j = num_kept_rows - 1 ; j > i ; --j) {
       int cmp = compare(x[j], x[j - 1]);
       if (cmp == 0) {
 	// If the compared rows are equals, we move the one with
@@ -611,15 +609,15 @@ PPL::Matrix::sort_and_remove_with_sat(SatMatrix& sat) {
   x.set_sorted(true);
 }
 
-size_t
+PPL::dimension_type
 PPL::Matrix::gauss() {
-  size_t rank = 0;
+  dimension_type rank = 0;
   // Will keep track of the variations on the matrix of equalities.
   bool changed = false;
-  size_t n_columns =  num_columns();
-  size_t n_lines_or_equalities = num_lines_or_equalities();
-  for (size_t j = n_columns; j-- > 0; ) {
-    for (size_t i = rank; i < n_lines_or_equalities; ++i) {
+  dimension_type n_columns =  num_columns();
+  dimension_type n_lines_or_equalities = num_lines_or_equalities();
+  for (dimension_type j = n_columns; j-- > 0; ) {
+    for (dimension_type i = rank; i < n_lines_or_equalities; ++i) {
       // Looking for the first non-zero coefficient (the pivot)
       // in the j-th column, starting from the last column.
       if (rows[i][j] != 0) {
@@ -635,7 +633,7 @@ PPL::Matrix::gauss() {
 	// We want the pivot to be greater than zero to
 	// simplify future computing (back-substitution).
 	if (rows[rank][j] < 0) {
-	  for (size_t k = n_columns; k-- > 0; )
+	  for (dimension_type k = n_columns; k-- > 0; )
 	    negate(rows[rank][k]);
 	  // Matrix has changed.
 	  changed = true;
@@ -643,7 +641,7 @@ PPL::Matrix::gauss() {
 	// Linear combining the row containing the pivot with
 	// all the ones that follow it such that all the elements
 	// on the j-th column (of these rows) become 0.
-	for (size_t k = i + 1; k < n_lines_or_equalities; ++k) {
+	for (dimension_type k = i + 1; k < n_lines_or_equalities; ++k) {
 	  if (rows[k][j] != 0) {
 	    rows[k].linear_combine(rows[rank], j);
 	    changed = true;
@@ -662,18 +660,18 @@ PPL::Matrix::gauss() {
 }
 
 void
-PPL::Matrix::back_substitute(size_t rank) {
+PPL::Matrix::back_substitute(dimension_type rank) {
   bool was_sorted = is_sorted();
-  size_t nrows = num_rows();
-  for (size_t k = rank; k-- > 0; ) {
+  dimension_type nrows = num_rows();
+  for (dimension_type k = rank; k-- > 0; ) {
     // For each row, starting from the rank-th one,
     // looks for the last non-zero element.
     // j will be the index of such a element.
-    size_t j = num_columns() - 1;
+    dimension_type j = num_columns() - 1;
     while (j != 0 && rows[k][j] == 0)
       --j;
 
-    for (size_t i = 0; i < nrows; ++i)
+    for (dimension_type i = 0; i < nrows; ++i)
       // i runs through all the rows of the matrix.
       if (i > k && i < rank)
 	// Coefficients on the j-th column of the rows
@@ -706,7 +704,7 @@ PPL::Matrix::back_substitute(size_t rank) {
 	// linear combination takes place.
 	if (rows[i].is_ray_or_point_or_inequality())
 	  if (rows[k][j] < 0)
-	    for (size_t h = num_columns(); h-- > 0; )
+	    for (dimension_type h = num_columns(); h-- > 0; )
 	      rows[k][h].negate();
 #endif
 	
@@ -738,17 +736,17 @@ PPL::Matrix::back_substitute(size_t rank) {
 }
 
 void
-PPL::Matrix::add_rows_and_columns(size_t n) {
+PPL::Matrix::add_rows_and_columns(dimension_type n) {
   assert(n > 0);
   bool was_sorted = is_sorted();
-  size_t old_n_rows = num_rows();
-  size_t old_n_columns = num_columns();
+  dimension_type old_n_rows = num_rows();
+  dimension_type old_n_columns = num_columns();
   grow(old_n_rows + n, old_n_columns + n);
   Matrix& x = *this;
   // The old matrix is moved to the bottom.
-  for (size_t i = old_n_rows; i-- > 0; )
+  for (dimension_type i = old_n_rows; i-- > 0; )
     std::swap(x[i], x[i + n]);
-  for (size_t i = n, c = old_n_columns; i-- > 0; ) {
+  for (dimension_type i = n, c = old_n_columns; i-- > 0; ) {
     // The top right-hand sub-matrix (i.e., the matrix made
     // of new rows and columns) is set to the specular image
     // of the identity matrix.
@@ -774,7 +772,7 @@ PPL::Matrix::add_rows_and_columns(size_t n) {
 bool
 PPL::Matrix::check_sorted() const {
   const Matrix& x = *this;
-  for (size_t i = num_rows(); i-- > 1; )
+  for (dimension_type i = num_rows(); i-- > 1; )
     if (x[i] < x[i-1])
       return false;
   return true;
@@ -814,7 +812,7 @@ PPL::Matrix::OK() const {
   // both cases it must have at least one column for the inhomogeneous
   // term and, if it is non-necessarily closed, another one
   // for the epsilon coefficient.
-  size_t min_cols = is_necessarily_closed() ? 1 : 2;
+  dimension_type min_cols = is_necessarily_closed() ? 1 : 2;
   if (num_columns() < min_cols) {
 #ifndef NDEBUG
     cerr << "Matrix has fewer columns than the minimum "
@@ -828,8 +826,8 @@ PPL::Matrix::OK() const {
   }
 
   const Matrix& x = *this;
-  size_t n_rows = num_rows();
-  for (size_t i = 0; i < n_rows; ++i) {
+  dimension_type n_rows = num_rows();
+  for (dimension_type i = 0; i < n_rows; ++i) {
     if (!x[i].OK(row_size, row_capacity))
       return false;
     // Checking for topology mismatches.

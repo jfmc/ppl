@@ -32,7 +32,7 @@
 
 
 % solve(+Goals, +VariableNames)
-% 
+%
 % Tries to solve the query `Goals' and to present the results
 % to the user by referring to the original variable names
 % contained in `VariableNames'.

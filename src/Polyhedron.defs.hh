@@ -25,6 +25,7 @@ site: http://www.cs.unipr.it/ppl/ . */
 #define PPL_Polyhedron_defs_hh 1
 
 #include "Polyhedron.types.hh"
+#include "globals.hh"
 #include "Variable.defs.hh"
 #include "LinExpression.defs.hh"
 #include "ConSys.defs.hh"
@@ -39,6 +40,18 @@ site: http://www.cs.unipr.it/ppl/ . */
 #include <set>
 
 namespace Parma_Polyhedra_Library {
+
+//! Output operator.
+/*!
+  \relates Polyhedron
+  Writes a textual representation of \p ph on \p s:
+  <CODE>false</CODE> is written if \p ph is an empty polyhedron;
+  <CODE>true</CODE> is written if \p ph is a universe polyhedron;
+  a minimized system of constraints defining \p ph is written otherwise,
+  all constraints in one row separated by ", ".
+*/
+std::ostream&
+operator<<(std::ostream& s, const Polyhedron& ph);
 
 //! \brief
 //! Returns <CODE>true</CODE> if and only if
@@ -91,10 +104,8 @@ bool operator>(const Polyhedron& x, const Polyhedron& y);
 */
 bool operator>=(const Polyhedron& x, const Polyhedron& y);
 
-// Put them in the namespace here to declare them friend later.
+// Put it in the namespace here to declare it friend later.
 bool operator<=(const Polyhedron& x, const Polyhedron& y);
-std::ostream& operator<<(std::ostream& s, const Polyhedron& p);
-std::istream& operator>>(std::istream& s, Polyhedron& p);
 
 } // namespace Parma_Polyhedra_Library
 
@@ -269,11 +280,11 @@ std::istream& operator>>(std::istream& s, Polyhedron& p);
   LinExpression coeff = x + 4;
   ph.affine_image(x, coeff);
     \endcode
-    In this example the starting polyhedron is a square in \f$\Rset^2\f$,
-    the considered variable is \f$x\f$ and the affine expression is \f$x+4\f$.
-    The resulting polyhedron is the same square translated towards right.
-    Moreover, if the affine transformation for the same variable \p x
-    is \f$x+y\f$:
+    In this example the starting polyhedron is a square in
+    \f$\Rset^2\f$, the considered variable is \f$x\f$ and the affine
+    expression is \f$x+4\f$.  The resulting polyhedron is the same
+    square translated towards right.  Moreover, if the affine
+    transformation for the same variable \p x is \f$x+y\f$:
     \code
   LinExpression coeff = x + y;
     \endcode
@@ -384,7 +395,9 @@ protected:
     \param kind           Specifies whether the universe or the empty
                           polyhedron has to be built.
   */
-  Polyhedron(Topology topol, size_t num_dimensions, Degenerate_Kind kind);
+  Polyhedron(Topology topol,
+	     dimension_type num_dimensions,
+	     Degenerate_Kind kind);
 
   //! Builds a polyhedron from a system of constraints.
   /*!
@@ -444,7 +457,7 @@ protected:
 
     The template class Box must provide the following methods.
     \code
-      unsigned int space_dimension() const
+      dimension_type space_dimension() const
     \endcode
     returns the dimension of the vector space enclosing the polyhedron
     represented by the bounding box.
@@ -457,30 +470,32 @@ protected:
     methods below.  However, if <CODE>is_empty()</CODE> returns
     <CODE>true</CODE>, none of the functions below will be called.
     \code
-      bool get_lower_bound(unsigned int k, bool closed,
+      bool get_lower_bound(dimension_type k, bool closed,
                            Integer& n, Integer& d) const
     \endcode
-    Let \f$I\f$ the interval corresponding to the <CODE>k</CODE>-th dimension.
-    If \f$I\f$ is not bounded from below, simply return <CODE>false</CODE>.
-    Otherwise, set <CODE>closed</CODE>, <CODE>n</CODE> and <CODE>d</CODE>
-    as follows: <CODE>closed</CODE> is set to <CODE>true</CODE> if the 
-    the lower boundary of \f$I\f$ is closed and is set to <CODE>false</CODE>
-    otherwise; <CODE>n</CODE> and <CODE>d</CODE> are assigned the integers
+    Let \f$I\f$ the interval corresponding to the <CODE>k</CODE>-th
+    dimension.  If \f$I\f$ is not bounded from below, simply return
+    <CODE>false</CODE>.  Otherwise, set <CODE>closed</CODE>,
+    <CODE>n</CODE> and <CODE>d</CODE> as follows: <CODE>closed</CODE>
+    is set to <CODE>true</CODE> if the the lower boundary of \f$I\f$
+    is closed and is set to <CODE>false</CODE> otherwise;
+    <CODE>n</CODE> and <CODE>d</CODE> are assigned the integers
     \f$n\f$ and \f$d\f$ such that the canonical fraction \f$n/d\f$
-    corresponds to the greatest lower bound of \f$I\f$.
-    The fraction \f$n/d\f$ is in canonical form if and only if \f$n\f$
-    and \f$d\f$ have no common factors and \f$d\f$ is positive, \f$0/1\f$
-    being the unique representation for zero.
+    corresponds to the greatest lower bound of \f$I\f$.  The fraction
+    \f$n/d\f$ is in canonical form if and only if \f$n\f$ and \f$d\f$
+    have no common factors and \f$d\f$ is positive, \f$0/1\f$ being
+    the unique representation for zero.
     \code
-      bool get_upper_bound(unsigned int k, bool closed,
+      bool get_upper_bound(dimension_type k, bool closed,
                            Integer& n, Integer& d) const
     \endcode
-    Let \f$I\f$ the interval corresponding to the <CODE>k</CODE>-th dimension.
-    If \f$I\f$ is not bounded from above, simply return <CODE>false</CODE>.
-    Otherwise, set <CODE>closed</CODE>, <CODE>n</CODE> and <CODE>d</CODE>
-    as follows: <CODE>closed</CODE> is set to <CODE>true</CODE> if the 
-    the upper boundary of \f$I\f$ is closed and is set to <CODE>false</CODE>
-    otherwise; <CODE>n</CODE> and <CODE>d</CODE> are assigned the integers
+    Let \f$I\f$ the interval corresponding to the <CODE>k</CODE>-th
+    dimension.  If \f$I\f$ is not bounded from above, simply return
+    <CODE>false</CODE>.  Otherwise, set <CODE>closed</CODE>,
+    <CODE>n</CODE> and <CODE>d</CODE> as follows: <CODE>closed</CODE>
+    is set to <CODE>true</CODE> if the the upper boundary of \f$I\f$
+    is closed and is set to <CODE>false</CODE> otherwise;
+    <CODE>n</CODE> and <CODE>d</CODE> are assigned the integers
     \f$n\f$ and \f$d\f$ such that the canonical fraction \f$n/d\f$
     corresponds to the least upper bound of \f$I\f$.
   */
@@ -497,7 +512,7 @@ public:
   ~Polyhedron();
 
   //! Returns the dimension of the vector space enclosing \p *this.
-  size_t space_dimension() const;
+  dimension_type space_dimension() const;
 
   //! \brief
   //! Assigns to \p *this the intersection of \p *this and \p y,
@@ -641,6 +656,18 @@ public:
 
   //! \brief
   //! Assigns to \p *this the result of computing the
+  //! \ref BBRZ02_widening "BBRZ02-widening" between \p *this and \p y.
+  /*!
+    \param y           A polyhedron that <EM>must</EM>
+                       be contained in \p *this.
+    \exception std::invalid_argument thrown if \p *this and \p y
+                                     are topology-incompatible
+                                     or dimension-incompatible.
+  */
+  void BBRZ02_widening_assign(const Polyhedron& y);
+
+  //! \brief
+  //! Assigns to \p *this the result of computing the
   //! \ref time_elapse "time-elapse" between \p *this and \p y.
   /*!
     \exception std::invalid_argument thrown if \p *this and \p y
@@ -735,7 +762,7 @@ public:
     \endcode
     causes the box to become empty, i.e., to represent the empty set.
     \code
-      raise_lower_bound(unsigned int k, bool closed,
+      raise_lower_bound(dimension_type k, bool closed,
                         const Integer& n, const Integer& d)
     \endcode
     intersects the interval corresponding to the <CODE>k</CODE>-th dimension
@@ -745,7 +772,7 @@ public:
     and \f$d\f$ have no common factors and \f$d\f$ is positive, \f$0/1\f$
     being the unique representation for zero.
     \code
-      lower_upper_bound(unsigned int k, bool closed,
+      lower_upper_bound(dimension_type k, bool closed,
                         const Integer& n, const Integer& d)
     \endcode
     intersects the interval corresponding to the <CODE>k</CODE>-th dimension
@@ -795,7 +822,7 @@ public:
       \,\bigr\}.
     \f]
   */
-  void add_dimensions_and_embed(size_t m);
+  void add_dimensions_and_embed(dimension_type m);
 
   //! \brief
   //! Adds \p m new dimensions to the polyhedron
@@ -817,7 +844,7 @@ public:
       \,\bigr\}.
     \f]
   */
-  void add_dimensions_and_project(size_t m);
+  void add_dimensions_and_project(dimension_type m);
 
   //! \brief
   //! Removes all the specified dimensions.
@@ -838,9 +865,10 @@ public:
     \exception std::invalid_argument thrown if \p new_dimensions is greater
                                      than the space dimension of \p *this.
   */
-  void remove_higher_dimensions(size_t new_dimension);
+  void remove_higher_dimensions(dimension_type new_dimension);
 
-  //! Shuffles the dimensions of a polyhedron according to a partial function.
+  //! Shuffles the dimensions of a polyhedron
+  //! according to a partial function.
   /*!
     \param pfunc    The partial function specifyng the destiny
                     of each dimension.
@@ -858,12 +886,12 @@ public:
     <CODE>has_empty_codomain()</CODE> returns <CODE>true</CODE>, none
     of the functions below will be called.
     \code
-      unsigned int max_in_codomain() const
+      dimension_type max_in_codomain() const
     \endcode
-    returns the maximum unsigned integer that belongs to the codomain
+    returns the maximum value that belongs to the codomain
     of the partial function.
     \code
-      bool maps(unsigned int i, unsigned int& j) const
+      bool maps(dimension_type i, dimension_type& j) const
     \endcode
     Let \f$f\f$ be the represented function and \f$n\f$ be the value of \p i.
     If \f$f\f$ is defined in \f$n\f$, then \f$f(n)\f$ is assigned to \p j
@@ -989,13 +1017,18 @@ public:
   Parma_Polyhedra_Library::operator<=(const Polyhedron& x,
 				      const Polyhedron& y);
 
-  //! Output operator.
-  friend std::ostream&
-  Parma_Polyhedra_Library::operator<<(std::ostream& s, const Polyhedron& p);
+#ifdef PPL_DOXYGEN_INCLUDE_IMPLEMENTATION_DETAILS
+  //! Writes to \p s an ASCII representation of the internal
+  //! representation of \p *this.
+#endif // PPL_DOXYGEN_INCLUDE_IMPLEMENTATION_DETAILS
+  void ASCII_dump(std::ostream& s) const;
 
-  //! Input operator.
-  friend std::istream&
-  Parma_Polyhedra_Library::operator>>(std::istream& s, Polyhedron& p);
+#ifdef PPL_DOXYGEN_INCLUDE_IMPLEMENTATION_DETAILS
+  //! Loads from \p s an ASCII representation (as produced by \ref
+  //! ASCII_dump) and sets \p *this accordingly.  Returns <CODE>true</CODE>
+  //! if successful, <CODE>false</CODE> otherwise.
+#endif // PPL_DOXYGEN_INCLUDE_IMPLEMENTATION_DETAILS
+  bool ASCII_load(std::istream& s);
 
   //! \brief
   //! Swaps \p *this with polyhedron \p y.
@@ -1023,7 +1056,7 @@ private:
   Status status;
 
   //! The number of dimensions of the enclosing vector space.
-  size_t space_dim;
+  dimension_type space_dim;
 
   //! Returns the topological kind of the polyhedron.
   Topology topology() const;
@@ -1313,15 +1346,15 @@ private:
                              Matrix& mat2,
                              SatMatrix& sat1,
                              SatMatrix& sat2,
-			     size_t add_dim);
+			     dimension_type add_dim);
 
   //! Performs the conversion from constraints to generators and vice versa.
   // Detailed Doxygen comment to be found in file conversion.cc.
-  static size_t conversion(Matrix& entry,
-			   size_t start,
+  static dimension_type conversion(Matrix& entry,
+			   dimension_type start,
 			   Matrix& result,
 			   SatMatrix& sat,
-			   size_t num_lines_or_equalities);
+			   dimension_type num_lines_or_equalities);
 
   //! \brief
   //! Uses Gauss' elimination method to simplify the result of
@@ -1341,6 +1374,14 @@ private:
   static bool add_and_minimize(bool con_to_gen,
 			       Matrix& source1, Matrix& dest, SatMatrix& sat,
 			       const Matrix& source2);
+  
+  //! Returns <CODE>true</CODE> if the given polyhedra satisfy
+  //! the theorem of BBRZ02.
+  /*!
+    \param x        The greater polyhedron.
+    \param y        The smaller polyhedron.
+  */
+  static bool is_BBRZ02_stabilizing(const Polyhedron& x, const Polyhedron& y);
 
   /*! @name Exception throwers
     Throw an exception after having formatted the appropriate
@@ -1365,7 +1406,7 @@ private:
   void throw_dimension_incompatible(const char* method,
 				    const Row& y) const;
   void throw_dimension_incompatible(const char* method,
-				    size_t needed_dim) const;
+				    dimension_type required_dim) const;
 
   void throw_invalid_generator(const char* method) const;
   void throw_invalid_generators(const char* method) const;

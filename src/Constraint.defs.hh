@@ -59,7 +59,7 @@ Constraint operator>(const LinExpression& e1, const LinExpression& e2);
 Constraint operator>(const LinExpression& e, const Integer& n);
 Constraint operator>(const Integer& n, const LinExpression& e);
 
-Constraint operator>>(const Constraint& c, unsigned int offset);
+Constraint operator>>(const Constraint& c, dimension_type offset);
 
 } // namespace Parma_Polyhedra_Library
 
@@ -153,7 +153,7 @@ void swap(Parma_Polyhedra_Library::Constraint& x,
   cout << "Constraint c1: " << c1 << endl;
   if (c1.is_equality())
     cout << "Constraint c1 is not an inequality." << endl;
-  else { 
+  else {
     LinExpression e;
     for (int i = c1.space_dimension() - 1; i >= 0; i--)
       e += c1.coefficient(Variable(i)) * Variable(i);
@@ -183,7 +183,7 @@ public:
   Constraint& operator=(const Constraint& c);
 
   //! Returns the dimension of the vector space enclosing \p *this.
-  size_t space_dimension() const;
+  dimension_type space_dimension() const;
 
   //! The constraint type.
   enum Type {
@@ -202,17 +202,17 @@ public:
   //! Returns <CODE>true</CODE> if and only if
   //! \p *this is an equality constraint.
   bool is_equality() const;
-  
+
   //! \brief
   //! Returns <CODE>true</CODE> if and only if
   //! \p *this is an inequality constraint (either strict or non-strict).
   bool is_inequality() const;
-  
+
   //! \brief
   //! Returns <CODE>true</CODE> if and only if
   //! \p *this is a non-strict inequality constraint.
   bool is_nonstrict_inequality() const;
-  
+
   //! \brief
   //! Returns <CODE>true</CODE> if and only if
   //! \p *this is a strict inequality constraint.
@@ -224,7 +224,7 @@ public:
     is greater than or equal to the space-dimension of \p *this.
   */
   const Integer& coefficient(Variable v) const;
-  
+
   //! Returns the inhomogeneous term of \p *this.
   const Integer& inhomogeneous_term() const;
 
@@ -244,7 +244,8 @@ private:
   friend class Parma_Polyhedra_Library::ConSys::const_iterator;
   friend class Parma_Polyhedra_Library::Polyhedron;
   friend const Integer&
-  Parma_Polyhedra_Library::operator*(const Constraint& c, const Generator& g);
+  Parma_Polyhedra_Library::operator*(const Constraint& c,
+				     const Generator& g);
   friend const Integer&
   Parma_Polyhedra_Library::reduced_scalar_product(const Constraint& c,
 						  const Generator& g);
@@ -264,7 +265,7 @@ private:
   //! \brief
   //! Builds a constraint, having type \p type, which is able
   //! to store \p sz coefficients, whose values are left unspecified.
-  Constraint(Row::Type t, size_t sz);
+  Constraint(Row::Type t, dimension_type sz);
 
   //! Swaps \p *this with \p y.
   void swap(Constraint& y);
@@ -355,10 +356,10 @@ private:
   //! by adding \p offset to their Cartesian axis identifier.
   friend Constraint
   Parma_Polyhedra_Library::operator>>(const Constraint& c,
-				      unsigned int offset);
+				      dimension_type offset);
 
   //! Copy-constructor with given size.
-  Constraint(const Constraint& c, size_t sz);
+  Constraint(const Constraint& c, dimension_type sz);
 
   //! \brief
   //! The zero-dimension space constraint \f$\epsilon \leq 1\f$
@@ -405,7 +406,7 @@ private:
 
   //! Sets the constraint type to <CODE>EQUALITY</CODE>.
   void set_is_equality();
- 
+
   //! Sets the constraint type to <CODE>INEQUALITY</CODE>.
   void set_is_inequality();
 };

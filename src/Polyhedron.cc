@@ -114,7 +114,7 @@ PPL::Polyhedron::throw_dimension_incompatible(const char* method,
 
 void
 PPL::Polyhedron::throw_dimension_incompatible(const char* method,
-					      size_t required_dim) const {
+					      dimension_type required_dim) const {
   std::ostringstream s;
   s << "PPL::";
   if (is_necessarily_closed())
@@ -320,7 +320,7 @@ PPL::Polyhedron::minimized_generators() const {
 
 
 PPL::Polyhedron::Polyhedron(Topology topol,
-			    size_t num_dimensions,
+			    dimension_type num_dimensions,
 			    Degenerate_Kind kind)
   : con_sys(topol),
     gen_sys(topol),
@@ -364,7 +364,7 @@ PPL::Polyhedron::Polyhedron(Topology topol, ConSys& cs)
     sat_c(),
     sat_g() {
   // Try to adapt `cs' to the required topology.
-  size_t cs_space_dim = cs.space_dimension();
+  dimension_type cs_space_dim = cs.space_dimension();
   if (!cs.adjust_topology_and_dimension(topol, cs_space_dim))
     throw_topology_incompatible("Polyhedron(cs)", cs);
 
@@ -387,7 +387,7 @@ PPL::Polyhedron::Polyhedron(Topology topol, ConSys& cs)
   space_dim = 0;
   if (cs.num_columns() > 0)
     // See if an inconsistent constraint has been passed.
-    for (size_t i = cs.num_rows(); i-- > 0; )
+    for (dimension_type i = cs.num_rows(); i-- > 0; )
       if (cs[i].is_trivial_false()) {
 	// Inconsistent constraint found: the polyhedron is empty.
 	set_empty();
@@ -404,7 +404,7 @@ PPL::Polyhedron::Polyhedron(Topology topol, const ConSys& ccs)
   ConSys cs = ccs;
 
   // Try to adapt `cs' to the required topology.
-  size_t cs_space_dim = cs.space_dimension();
+  dimension_type cs_space_dim = cs.space_dimension();
   if (!cs.adjust_topology_and_dimension(topol, cs_space_dim))
     throw_topology_incompatible("Polyhedron(cs)", cs);
 
@@ -427,7 +427,7 @@ PPL::Polyhedron::Polyhedron(Topology topol, const ConSys& ccs)
   space_dim = 0;
   if (cs.num_columns() > 0)
     // See if an inconsistent constraint has been passed.
-    for (size_t i = cs.num_rows(); i-- > 0; )
+    for (dimension_type i = cs.num_rows(); i-- > 0; )
       if (cs[i].is_trivial_false()) {
 	// Inconsistent constraint found: the polyhedron is empty.
 	set_empty();
@@ -451,7 +451,7 @@ PPL::Polyhedron::Polyhedron(Topology topol, GenSys& gs)
   if (!gs.has_points())
     throw_invalid_generators("Polyhedron(gs)");
 
-  size_t gs_space_dim = gs.space_dimension();
+  dimension_type gs_space_dim = gs.space_dimension();
   // Try to adapt `gs' to the required topology.
   if (!gs.adjust_topology_and_dimension(topol, gs_space_dim))
     throw_topology_incompatible("Polyhedron(gs)", gs);
@@ -495,7 +495,7 @@ PPL::Polyhedron::Polyhedron(Topology topol, const GenSys& cgs)
   if (!gs.has_points())
     throw_invalid_generators("Polyhedron(gs)");
 
-  size_t gs_space_dim = gs.space_dimension();
+  dimension_type gs_space_dim = gs.space_dimension();
   // Try to adapt `gs' to the required topology.
   if (!gs.adjust_topology_and_dimension(topol, gs_space_dim))
     throw_topology_incompatible("Polyhedron(gs)", gs);
@@ -656,9 +656,9 @@ PPL::Polyhedron::strongly_minimize_generators() const {
   // This SatRow will have all and only the indexes
   // of strict inequalities set to 1.
   SatRow sat_all_but_strict_ineq;
-  size_t cs_rows = con_sys.num_rows();
-  size_t n_equals = con_sys.num_equalities();
-  for (size_t i = cs_rows; i-- > n_equals; )
+  dimension_type cs_rows = con_sys.num_rows();
+  dimension_type n_equals = con_sys.num_equalities();
+  for (dimension_type i = cs_rows; i-- > n_equals; )
     if (con_sys[i].is_strict_inequality())
       sat_all_but_strict_ineq.set(i);
 
@@ -669,10 +669,10 @@ PPL::Polyhedron::strongly_minimize_generators() const {
   // and eventually move them to the bottom part of the system.
   GenSys& gs = const_cast<GenSys&>(gen_sys);
   SatMatrix& sat = const_cast<SatMatrix&>(sat_c);
-  size_t gs_rows = gs.num_rows();
-  size_t n_lines = gs.num_lines();
-  size_t eps_index = gs.num_columns() - 1;
-  for (size_t i = n_lines; i < gs_rows; )
+  dimension_type gs_rows = gs.num_rows();
+  dimension_type n_lines = gs.num_lines();
+  dimension_type eps_index = gs.num_columns() - 1;
+  for (dimension_type i = n_lines; i < gs_rows; )
     if (gs[i].is_point()) {
       // Compute the SatRow corresponding to the candidate point
       // when strict inequality constraints are ignored.
@@ -682,7 +682,7 @@ PPL::Polyhedron::strongly_minimize_generators() const {
       // namely, if there exists another point that saturates
       // all the non-strict inequalities saturated by the candidate.
       bool eps_redundant = false;
-      for (size_t j = n_lines; j < gs_rows; ++j)
+      for (dimension_type j = n_lines; j < gs_rows; ++j)
 	if (i != j && gs[j].is_point() && sat[j] <= sat_gi) {
 	  // Point `gs[i]' is eps-redundant:
 	  // move it to the bottom of the generator system,
@@ -756,9 +756,9 @@ PPL::Polyhedron::strongly_minimize_constraints() const {
   SatRow sat_all_but_points;
   SatRow sat_all_but_closure_points;
 
-  size_t gs_rows = gen_sys.num_rows();
-  size_t n_lines = gen_sys.num_lines();
-  for (size_t i = gs_rows; i-- > n_lines; )
+  dimension_type gs_rows = gen_sys.num_rows();
+  dimension_type n_lines = gen_sys.num_lines();
+  for (dimension_type i = gs_rows; i-- > n_lines; )
     switch (gen_sys[i].type()) {
     case Generator::RAY:
       sat_all_but_rays.set(i);
@@ -798,10 +798,10 @@ PPL::Polyhedron::strongly_minimize_constraints() const {
   // to the bottom part of the system.
   ConSys& cs = x.con_sys;
   SatMatrix& sat = x.sat_g;
-  size_t cs_rows = cs.num_rows();
-  size_t n_equals = cs.num_equalities();
-  size_t eps_index = cs.num_columns() - 1;
-  for (size_t i = n_equals; i < cs_rows; )
+  dimension_type cs_rows = cs.num_rows();
+  dimension_type n_equals = cs.num_equalities();
+  dimension_type eps_index = cs.num_columns() - 1;
+  for (dimension_type i = n_equals; i < cs_rows; )
     if (cs[i].is_strict_inequality()) {
       // First, check if it is saturated by no closure points
       SatRow sat_ci;
@@ -816,7 +816,7 @@ PPL::Polyhedron::strongly_minimize_constraints() const {
 	// Check if it was the eps_leq_one constraint.
 	const Constraint& c = cs[cs_rows];
 	bool all_zeros = true;
-	for (size_t k = eps_index; k-- > 1; )
+	for (dimension_type k = eps_index; k-- > 1; )
 	  if (c[k] != 0) {
 	    all_zeros = false;
 	    break;
@@ -840,7 +840,7 @@ PPL::Polyhedron::strongly_minimize_constraints() const {
       sat_ci.clear();
       set_union(sat[i], sat_all_but_points, sat_ci);
       bool eps_redundant = false;
-      for (size_t j = n_equals; j < cs_rows; ++j)
+      for (dimension_type j = n_equals; j < cs_rows; ++j)
 	if (i != j && cs[j].is_strict_inequality() && sat[j] <= sat_ci) {
 	  // Constraint `cs[i]' is eps-redundant:
 	  // move it to the bottom of the constraint system,
@@ -904,7 +904,7 @@ PPL::Polyhedron::strongly_minimize_constraints() const {
     Constraint& eps_leq_one = cs[cs_rows];
     eps_leq_one[0] = 1;
     eps_leq_one[eps_index] = -1;
-    for (size_t k = eps_index; k-- > 1; )
+    for (dimension_type k = eps_index; k-- > 1; )
       eps_leq_one[k] = 0;
     // If this is the only change performed to the constraint system,
     // maybe we can keep things consistent.
@@ -969,9 +969,9 @@ PPL::Polyhedron::strongly_minimize() const {
   SatRow sat_all_but_rays;
   SatRow sat_all_but_points;
   SatRow sat_all_but_closure_points;
-  size_t gs_rows = gen_sys.num_rows();
-  size_t n_lines = gen_sys.num_lines();
-  for (size_t i = gs_rows; i-- > n_lines; )
+  dimension_type gs_rows = gen_sys.num_rows();
+  dimension_type n_lines = gen_sys.num_lines();
+  for (dimension_type i = gs_rows; i-- > n_lines; )
     switch (gen_sys[i].type()) {
     case Generator::RAY:
       sat_all_but_rays.set(i);
@@ -1000,14 +1000,14 @@ PPL::Polyhedron::strongly_minimize() const {
   // Find, if it exists, the strict inequality in `con_sys'
   // that saturates no closure point encodings
   // (there exists at most one such a strict inequality).
-  size_t cs_rows = con_sys.num_rows();
-  size_t eps_index = con_sys.num_columns() - 1;
-  for (size_t i = con_sys.num_equalities(); i < cs_rows; ++i) {
+  dimension_type cs_rows = con_sys.num_rows();
+  dimension_type eps_index = con_sys.num_columns() - 1;
+  for (dimension_type i = con_sys.num_equalities(); i < cs_rows; ++i) {
     const Constraint& ci = con_sys[i];
     if (ci.is_strict_inequality()) {
       // Check if it is the eps_leq_one constraint.
       bool all_zeros = true;
-      for (size_t k = eps_index; k-- > 1; )
+      for (dimension_type k = eps_index; k-- > 1; )
 	if (ci[k] != 0) {
 	  all_zeros = false;
 	  break;
@@ -1029,7 +1029,7 @@ PPL::Polyhedron::strongly_minimize() const {
 	Constraint& eps_leq_one = const_cast<Constraint&>(ci);
 	eps_leq_one[0] = 1;
 	eps_leq_one[eps_index] = -1;
-	for (size_t k = eps_index; k-- > 1; )
+	for (dimension_type k = eps_index; k-- > 1; )
 	  eps_leq_one[k] = 0;
 	// `con_sys' is no longer sorted.
 	ConSys& cs = const_cast<ConSys&>(con_sys);
@@ -1176,15 +1176,15 @@ PPL::Polyhedron::update_sat_c() const {
   assert(generators_are_minimized());
   assert(!sat_c_is_up_to_date());
 
-  size_t csr = con_sys.num_rows();
-  size_t gsr = gen_sys.num_rows();
+  dimension_type csr = con_sys.num_rows();
+  dimension_type gsr = gen_sys.num_rows();
   Polyhedron& x = const_cast<Polyhedron&>(*this);
 
   // The columns of `sat_c' represent the constraints and
   // its rows represent the generators: resize accordingly.
   x.sat_c.resize(gsr, csr);
-  for (size_t i = gsr; i-- > 0; )
-    for (size_t j = csr; j-- > 0; ) {
+  for (dimension_type i = gsr; i-- > 0; )
+    for (dimension_type j = csr; j-- > 0; ) {
       int sp_sign = sgn(con_sys[j] * gen_sys[i]);
       // The negativity of this scalar product would mean
       // that the generator `gen_sys[i]' violates the constraint
@@ -1207,15 +1207,15 @@ PPL::Polyhedron::update_sat_g() const {
   assert(generators_are_minimized());
   assert(!sat_g_is_up_to_date());
 
-  size_t csr = con_sys.num_rows();
-  size_t gsr = gen_sys.num_rows();
+  dimension_type csr = con_sys.num_rows();
+  dimension_type gsr = gen_sys.num_rows();
   Polyhedron& x = const_cast<Polyhedron&>(*this);
 
   // The columns of `sat_g' represent generators and its
   // rows represent the constraints: resize accordingly.
   x.sat_g.resize(csr, gsr);
-  for (size_t i = csr; i-- > 0; )
-    for (size_t j = gsr; j-- > 0; ) {
+  for (dimension_type i = csr; i-- > 0; )
+    for (dimension_type j = gsr; j-- > 0; ) {
       int sp_sign = sgn(con_sys[i] * gen_sys[j]);
       // The negativity of this scalar product would mean
       // that the generator `gen_sys[j]' violates the constraint
@@ -1240,7 +1240,7 @@ PPL::operator<=(const Polyhedron& x, const Polyhedron& y) {
     Polyhedron::throw_topology_incompatible("operator<=("
 					    "const Polyhedron& x, "
 					    "const Polyhedron& y)", x, y);
-  size_t x_space_dim = x.space_dim;
+  dimension_type x_space_dim = x.space_dim;
   // Dimension-compatibility check.
   if (x_space_dim != y.space_dim)
     Polyhedron::throw_dimension_incompatible("operator<=("
@@ -1278,10 +1278,10 @@ PPL::operator<=(const Polyhedron& x, const Polyhedron& y) {
     // This comes from the definition of a polyhedron as the set of
     // vectors satisfying a constraint system and the fact that all
     // vectors in `x' can be obtained by suitably combining its generators.
-    for (size_t i = cs.num_rows(); i-- > 0; ) {
+    for (dimension_type i = cs.num_rows(); i-- > 0; ) {
       const Constraint& c = cs[i];
       if (c.is_inequality()) {
-	for (size_t j = gs.num_rows(); j-- > 0; ) {
+	for (dimension_type j = gs.num_rows(); j-- > 0; ) {
 	  const Generator& g = gs[j];
 	  int sp_sign = sgn(c * g);
 	  if (g.is_line()) {
@@ -1296,19 +1296,19 @@ PPL::operator<=(const Polyhedron& x, const Polyhedron& y) {
       }
       else
 	// `c' is an equality.
-	for (size_t j = gs.num_rows(); j-- > 0; )
+	for (dimension_type j = gs.num_rows(); j-- > 0; )
 	  if (c * gs[j] != 0)
 	    return false;
     }
   else {
     // Here we have a NOT necessarily closed polyhedron: using the
     // reduced scalar product, which ignores the epsilon coefficient.
-    size_t eps_index = x_space_dim + 1;
-    for (size_t i = cs.num_rows(); i-- > 0; ) {
+    dimension_type eps_index = x_space_dim + 1;
+    for (dimension_type i = cs.num_rows(); i-- > 0; ) {
       const Constraint& c = cs[i];
       switch (c.type()) {
       case Constraint::NONSTRICT_INEQUALITY:
-	for (size_t j = gs.num_rows(); j-- > 0; ) {
+	for (dimension_type j = gs.num_rows(); j-- > 0; ) {
 	  const Generator& g = gs[j];
 	  int sp_sign = sgn(reduced_scalar_product(c, g));
 	  if (g.is_line()) {
@@ -1322,12 +1322,12 @@ PPL::operator<=(const Polyhedron& x, const Polyhedron& y) {
 	}
 	break;
       case Constraint::EQUALITY:
-	for (size_t j = gs.num_rows(); j-- > 0; )
+	for (dimension_type j = gs.num_rows(); j-- > 0; )
 	  if (reduced_scalar_product(c, gs[j]) != 0)
 	    return false;
 	break;
       case Constraint::STRICT_INEQUALITY:
-	for (size_t j = gs.num_rows(); j-- > 0; ) {
+	for (dimension_type j = gs.num_rows(); j-- > 0; ) {
 	  const Generator& g = gs[j];
 	  int sp_sign = sgn(reduced_scalar_product(c, g));
 	  if (g[eps_index] > 0) {
@@ -1363,7 +1363,7 @@ PPL::Polyhedron::intersection_assign_and_minimize(const Polyhedron& y) {
   // Topology compatibility check.
   if (x.topology() != y.topology())
     throw_topology_incompatible("inters_assign_and_min(y)", y);
-  size_t x_space_dim = x.space_dim;
+  dimension_type x_space_dim = x.space_dim;
   // Dimension-compatibility check.
   if (x_space_dim != y.space_dim)
     throw_dimension_incompatible("inters_assign_and_min(y)", y);
@@ -1418,7 +1418,7 @@ PPL::Polyhedron::intersection_assign(const Polyhedron& y) {
   // Topology compatibility check.
   if (x.topology() != y.topology())
     throw_topology_incompatible("inters_assign(y)", y);
-  size_t x_space_dim = x.space_dim;
+  dimension_type x_space_dim = x.space_dim;
   // Dimension-compatibility check.
   if (x_space_dim != y.space_dim)
     throw_dimension_incompatible("inters_assign(y)", y);
@@ -1461,7 +1461,7 @@ PPL::Polyhedron::concatenate_assign(const Polyhedron& y) {
   if (topology() != y.topology())
     throw_topology_incompatible("concatenate_assign(y)", y);
 
-  size_t added_columns = y.space_dimension();
+  dimension_type added_columns = y.space_dimension();
 
   // If `*this' or `y' are empty polyhedra, it is sufficient to adjust
   // the dimension of the space.
@@ -1491,9 +1491,9 @@ PPL::Polyhedron::concatenate_assign(const Polyhedron& y) {
   // by leaving the old system of constraints in the upper left-hand side
   // and placing the constraints of `cs' in the lower right-hand side.
   // NOTE: here topologies agree, whereas dimensions may not agree.
-  size_t old_num_rows = con_sys.num_rows();
-  size_t old_num_columns = con_sys.num_columns();
-  size_t added_rows = cs.num_rows();
+  dimension_type old_num_rows = con_sys.num_rows();
+  dimension_type old_num_columns = con_sys.num_columns();
+  dimension_type added_rows = cs.num_rows();
 
   con_sys.grow(old_num_rows + added_rows, old_num_columns + added_columns);
 
@@ -1503,8 +1503,8 @@ PPL::Polyhedron::concatenate_assign(const Polyhedron& y) {
 			 old_num_columns - 1 + added_columns);
   // Steal the constraints from `cs' and put them in `con_sys'
   // using the right displacement for coefficients.
-  size_t cs_num_columns = cs.num_columns();
-  for (size_t i = added_rows; i-- > 0; ) {
+  dimension_type cs_num_columns = cs.num_columns();
+  for (dimension_type i = added_rows; i-- > 0; ) {
     Constraint& c_old = cs[i];
     Constraint& c_new = con_sys[old_num_rows + i];
     // Method `grow', by default, added inequalities.
@@ -1514,7 +1514,7 @@ PPL::Polyhedron::concatenate_assign(const Polyhedron& y) {
     std::swap(c_new[0], c_old[0]);
     // All homogeneous terms (included the epsilon coefficient,
     // if present) are displaced by `space_dim' columns.
-    for (size_t j = 1; j < cs_num_columns; ++j)
+    for (dimension_type j = 1; j < cs_num_columns; ++j)
       std::swap(c_old[j], c_new[space_dim + j]);
   }
   // Update space dimension.
@@ -1541,7 +1541,7 @@ PPL::Polyhedron::poly_hull_assign_and_minimize(const Polyhedron& y) {
   // Topology compatibility check.
   if (x.topology() != y.topology())
     throw_topology_incompatible("poly_hull_assign_and_min(y)", y);    
-  size_t x_space_dim = x.space_dim;
+  dimension_type x_space_dim = x.space_dim;
   // Dimension-compatibility check.
   if (x_space_dim != y.space_dim)
     throw_dimension_incompatible("poly_hull_assign_and_min(y)", y);
@@ -1594,7 +1594,7 @@ PPL::Polyhedron::poly_hull_assign(const Polyhedron& y) {
   // Topology compatibility check.
   if (x.topology() != y.topology())
     throw_topology_incompatible("poly_hull_assign(y)", y);    
-  size_t x_space_dim = x.space_dim;
+  dimension_type x_space_dim = x.space_dim;
   // Dimension-compatibility check.
   if (x_space_dim != y.space_dim)
     throw_dimension_incompatible("poly_hull_assign(y)", y);
@@ -1643,7 +1643,7 @@ PPL::Polyhedron::poly_difference_assign(const Polyhedron& y) {
   // Topology compatibility check.
   if (x.topology() != y.topology())
     throw_topology_incompatible("poly_difference_assign(y)", y);    
-  size_t x_space_dim = x.space_dim;
+  dimension_type x_space_dim = x.space_dim;
   // Dimension-compatibility check.
   if (x_space_dim != y.space_dim)
     throw_dimension_incompatible("poly_difference_assign(y)", y);
@@ -1726,7 +1726,7 @@ PPL::Polyhedron::add_dimensions(Matrix& mat1,
 				Matrix& mat2,
 				SatMatrix& sat1,
 				SatMatrix& sat2,
-				size_t add_dim) {
+				dimension_type add_dim) {
   assert(mat1.topology() == mat2.topology());
   assert(mat1.num_columns() == mat2.num_columns());
   assert(add_dim != 0);
@@ -1741,15 +1741,15 @@ PPL::Polyhedron::add_dimensions(Matrix& mat1,
   // because the polyhedron has not been embedded in the new space.
   sat1.resize(sat1.num_rows() + add_dim, sat1.num_columns());
   // The old matrix is copied at the end of the new matrix.
-  for (size_t i = sat1.num_rows() - add_dim; i-- > 0; )
+  for (dimension_type i = sat1.num_rows() - add_dim; i-- > 0; )
     std::swap(sat1[i], sat1[i+add_dim]);
   // Computes the "sat_c", too.
   sat2.transpose_assign(sat1);
 
   if (!mat1.is_necessarily_closed()) {
     // Moving the epsilon coefficients in the last column.
-    size_t new_eps_index = mat1.num_columns() - 1;
-    size_t old_eps_index = new_eps_index - add_dim;
+    dimension_type new_eps_index = mat1.num_columns() - 1;
+    dimension_type old_eps_index = new_eps_index - add_dim;
     // This swap preserves sortedness of `mat1'.
     mat1.swap_columns(old_eps_index, new_eps_index);
 
@@ -1757,13 +1757,13 @@ PPL::Polyhedron::add_dimensions(Matrix& mat1,
     if (!mat2.is_sorted())
       mat2.swap_columns(old_eps_index, new_eps_index);
     else {
-      for (size_t i = mat2.num_rows(); i-- > add_dim; ) {
+      for (dimension_type i = mat2.num_rows(); i-- > add_dim; ) {
 	Row& r = mat2[i];
 	std::swap(r[old_eps_index], r[new_eps_index]);
       }
       // The upper-right corner of `mat2' contains the J matrix:
       // swap coefficients to preserve sortedness.
-      for (size_t i = add_dim; i-- > 0; ++old_eps_index) {
+      for (dimension_type i = add_dim; i-- > 0; ++old_eps_index) {
 	Row& r = mat2[i];
 	std::swap(r[old_eps_index], r[old_eps_index + 1]);
       }
@@ -1775,7 +1775,7 @@ PPL::Polyhedron::add_dimensions(Matrix& mat1,
 
 
 void
-PPL::Polyhedron::add_dimensions_and_embed(size_t m) {
+PPL::Polyhedron::add_dimensions_and_embed(dimension_type m) {
   // Adding no dimensions to any polyhedron is a no-op.
   if (m == 0)
     return;
@@ -1812,7 +1812,8 @@ PPL::Polyhedron::add_dimensions_and_embed(size_t m) {
     // `sat_c' must be up to date for add_dimensions(...).
     if (!sat_c_is_up_to_date())
       update_sat_c();
-    // Adds rows and/or columns to both matrices (constraints and generators).
+    // Adds rows and/or columns to both matrices (constraints and
+    // generators).
     add_dimensions(con_sys, gen_sys, sat_c, sat_g, m);
   }
   else if (constraints_are_up_to_date()) {
@@ -1835,15 +1836,15 @@ PPL::Polyhedron::add_dimensions_and_embed(size_t m) {
       if (!gen_sys.is_sorted())
 	gen_sys.swap_columns(space_dim + 1, space_dim + 1 + m);
       else {
-	size_t old_eps_index = space_dim + 1;
-	size_t new_eps_index = old_eps_index + m;
-	for (size_t i = gen_sys.num_rows(); i-- > m; ) {
+	dimension_type old_eps_index = space_dim + 1;
+	dimension_type new_eps_index = old_eps_index + m;
+	for (dimension_type i = gen_sys.num_rows(); i-- > m; ) {
 	  Row& r = gen_sys[i];
 	  std::swap(r[old_eps_index], r[new_eps_index]);
 	}
 	// The upper-right corner of `gen_sys' contains the J matrix:
 	// swap coefficients to preserve sortedness.
-	for (size_t i = m; i-- > 0; ++old_eps_index) {
+	for (dimension_type i = m; i-- > 0; ++old_eps_index) {
 	  Row& r = gen_sys[i];
 	  std::swap(r[old_eps_index], r[old_eps_index + 1]);
 	}
@@ -1859,7 +1860,7 @@ PPL::Polyhedron::add_dimensions_and_embed(size_t m) {
 }
 
 void
-PPL::Polyhedron::add_dimensions_and_project(size_t m) {
+PPL::Polyhedron::add_dimensions_and_project(dimension_type m) {
   // Adding no dimensions to any polyhedron is a no-op.
   if (m == 0)
     return;
@@ -1898,7 +1899,8 @@ PPL::Polyhedron::add_dimensions_and_project(size_t m) {
     // `sat_g' must be up to date for add_dimensions(...).
     if (!sat_g_is_up_to_date())
       update_sat_g();
-    // Adds rows and/or columns to both matrices (constraints and generators).
+    // Adds rows and/or columns to both matrices (constraints and
+    // generators).
     add_dimensions(gen_sys, con_sys, sat_g, sat_c, m);
   }
   else if (constraints_are_up_to_date()) {
@@ -1911,15 +1913,15 @@ PPL::Polyhedron::add_dimensions_and_project(size_t m) {
       if (!con_sys.is_sorted())
 	con_sys.swap_columns(space_dim + 1, space_dim + 1 + m);
       else {
-	size_t old_eps_index = space_dim + 1;
-	size_t new_eps_index = old_eps_index + m;
-	for (size_t i = con_sys.num_rows(); i-- > m; ) {
+	dimension_type old_eps_index = space_dim + 1;
+	dimension_type new_eps_index = old_eps_index + m;
+	for (dimension_type i = con_sys.num_rows(); i-- > m; ) {
 	  Row& r = con_sys[i];
 	  std::swap(r[old_eps_index], r[new_eps_index]);
 	}
 	// The upper-right corner of `con_sys' contains the J matrix:
 	// swap coefficients to preserve sortedness.
-	for (size_t i = m; i-- > 0; ++old_eps_index) {
+	for (dimension_type i = m; i-- > 0; ++old_eps_index) {
 	  Row& r = con_sys[i];
 	  std::swap(r[old_eps_index], r[old_eps_index + 1]);
 	}
@@ -1953,12 +1955,12 @@ PPL::Polyhedron::remove_dimensions(const std::set<Variable>& to_be_removed) {
 
   // Dimension-compatibility check: the variable having
   // maximum cardinality is the one occurring last in the set.
-  unsigned int max_dim_to_be_removed = to_be_removed.rbegin()->id();
+  dimension_type max_dim_to_be_removed = to_be_removed.rbegin()->id();
   if (max_dim_to_be_removed >= space_dim)
     throw_dimension_incompatible("remove_dimensions(vs)",
 				 max_dim_to_be_removed);
 
-  size_t new_space_dim = space_dim - to_be_removed.size();
+  dimension_type new_space_dim = space_dim - to_be_removed.size();
 
   if (is_empty()
       || (!generators_are_up_to_date() && !update_generators())) {
@@ -1983,14 +1985,14 @@ PPL::Polyhedron::remove_dimensions(const std::set<Variable>& to_be_removed) {
   // by shifting left those columns that will not be removed.
   std::set<Variable>::const_iterator tbr = to_be_removed.begin();
   std::set<Variable>::const_iterator tbr_end = to_be_removed.end();
-  size_t dst_col = tbr->id() + 1;
-  size_t src_col = dst_col + 1;
-  size_t nrows = gen_sys.num_rows();
+  dimension_type dst_col = tbr->id() + 1;
+  dimension_type src_col = dst_col + 1;
+  dimension_type nrows = gen_sys.num_rows();
   for (++tbr; tbr != tbr_end; ++tbr) {
-    size_t tbr_col = tbr->id() + 1;
+    dimension_type tbr_col = tbr->id() + 1;
     // All columns in between are moved to the left.
     while (src_col < tbr_col) {
-      for (size_t r = nrows; r-- > 0; )
+      for (dimension_type r = nrows; r-- > 0; )
 	std::swap(gen_sys[r][dst_col], gen_sys[r][src_col]);
       ++dst_col;
       ++src_col;
@@ -1998,9 +2000,9 @@ PPL::Polyhedron::remove_dimensions(const std::set<Variable>& to_be_removed) {
     ++src_col;
   }
   // Moving the remaining columns.
-  size_t ncols = gen_sys.num_columns();
+  dimension_type ncols = gen_sys.num_columns();
   while (src_col < ncols) {
-    for (size_t r = nrows; r-- > 0; )
+    for (dimension_type r = nrows; r-- > 0; )
       std::swap(gen_sys[r][dst_col], gen_sys[r][src_col]);
     ++src_col;
     ++dst_col;
@@ -2023,7 +2025,7 @@ PPL::Polyhedron::remove_dimensions(const std::set<Variable>& to_be_removed) {
 }
 
 void
-PPL::Polyhedron::remove_higher_dimensions(size_t new_dimension) {
+PPL::Polyhedron::remove_higher_dimensions(dimension_type new_dimension) {
   // Dimension-compatibility check: the variable having
   // maximum cardinality is the one occurring last in the set.
   if (new_dimension > space_dim)
@@ -2055,7 +2057,7 @@ PPL::Polyhedron::remove_higher_dimensions(size_t new_dimension) {
     return;
   }
 
-  size_t new_num_cols = new_dimension + 1;
+  dimension_type new_num_cols = new_dimension + 1;
   if (!is_necessarily_closed()) {
     // The polyhedron is NOT necessarily closed: move the column
     // of the epsilon coefficients to its new place.
@@ -2084,7 +2086,7 @@ PPL::Polyhedron::add_constraints_and_minimize(ConSys& cs) {
     throw_topology_incompatible("add_constraints_and_min(cs)", cs);
   // Dimension-compatibility check:
   // the dimension of `cs' can not be greater than space_dim.
-  size_t cs_space_dim = cs.space_dimension();
+  dimension_type cs_space_dim = cs.space_dimension();
   if (space_dim < cs_space_dim)
     throw_dimension_incompatible("add_constraints_and_min(cs)", cs);
 
@@ -2218,7 +2220,7 @@ PPL::Polyhedron::add_generator(const Generator& g) {
     throw_topology_incompatible("add_generator(g)", g);
   // Dimension-compatibility check:
   // the dimension of `g' can not be greater than space_dim.
-  size_t g_space_dim = g.space_dimension();
+  dimension_type g_space_dim = g.space_dimension();
   if (space_dim < g_space_dim)
     throw_dimension_incompatible("add_generator(g)", g);
 
@@ -2311,7 +2313,7 @@ PPL::Polyhedron::add_constraints(ConSys& cs) {
     throw_topology_incompatible("add_constraints(cs)", cs);
   // Dimension-compatibility check:
   // the dimension of `cs' can not be greater than space_dim.
-  size_t cs_space_dim = cs.space_dimension();
+  dimension_type cs_space_dim = cs.space_dimension();
   if (space_dim < cs_space_dim)
     throw_dimension_incompatible("add_constraints(cs)", cs);
 
@@ -2361,11 +2363,11 @@ PPL::Polyhedron::add_constraints(ConSys& cs) {
   // In contrast, in the non-BE_LAZY version, by using the method
   // Matrix::merge_rows_assign() we force `con_sys' to be sorted
   // and we _copy_ `cs'.
-  size_t old_num_rows = con_sys.num_rows();
-  size_t cs_num_rows = cs.num_rows();
-  size_t cs_num_columns = cs.num_columns();
+  dimension_type old_num_rows = con_sys.num_rows();
+  dimension_type cs_num_rows = cs.num_rows();
+  dimension_type cs_num_columns = cs.num_columns();
   con_sys.grow(old_num_rows + cs_num_rows, con_sys.num_columns());
-  for (size_t i = cs_num_rows; i-- > 0; ) {
+  for (dimension_type i = cs_num_rows; i-- > 0; ) {
     // NOTE: we cannot directly swap the rows, since they might have
     // different capacities (besides possibly having different sizes):
     // thus, we steal one coefficient at a time.
@@ -2373,7 +2375,7 @@ PPL::Polyhedron::add_constraints(ConSys& cs) {
     Constraint& c_old = cs[i];
     if (c_old.is_equality())
       c_new.set_is_equality();
-    for (size_t j = cs_num_columns; j-- > 0; )
+    for (dimension_type j = cs_num_columns; j-- > 0; )
       std::swap(c_new[j], c_old[j]);
   }
   // The new constraints have been simply appended.
@@ -2410,7 +2412,7 @@ PPL::Polyhedron::add_generators_and_minimize(GenSys& gs) {
     throw_topology_incompatible("add_generators_and_min(gs)", gs);
   // Dimension-compatibility check:
   // the dimension of `gs' can not be greater than space_dimension().
-  size_t gs_space_dim = gs.space_dimension();
+  dimension_type gs_space_dim = gs.space_dimension();
   if (space_dim < gs_space_dim)
     throw_dimension_incompatible("add_generators_and_min(gs)", gs);
 
@@ -2480,7 +2482,7 @@ PPL::Polyhedron::add_generators(GenSys& gs) {
     throw_topology_incompatible("add_generators(gs)", gs);
   // Dimension-compatibility check:
   // the dimension of `gs' can not be greater than space_dim.
-  size_t gs_space_dim = gs.space_dimension();
+  dimension_type gs_space_dim = gs.space_dimension();
   if (space_dim < gs_space_dim)
     throw_dimension_incompatible("add_generators(gs)", gs);
 
@@ -2535,70 +2537,84 @@ PPL::Polyhedron::add_generators(GenSys& gs) {
   assert(OK(true));
 }
 
-
-std::ostream&
-PPL::operator<<(std::ostream& s, const Polyhedron& p) {
+void
+PPL::Polyhedron::ASCII_dump(std::ostream& s) const {
   using std::endl;
 
   s << "space_dim "
-    << p.space_dimension()
-    << endl
-    << p.status
-    << endl
-    << "con_sys ("
-    << (p.constraints_are_up_to_date() ? "" : "not_")
-    << "up-to-date)"
-    << endl
-    << p.con_sys
-    << endl
-    << "gen_sys ("
-    << (p.generators_are_up_to_date() ? "" : "not_")
-    << "up-to-date)"
-    << endl
-    << p.gen_sys
-    << endl
-    << "sat_c"
-    << endl
-    << p.sat_c
-    << endl
-    << "sat_g"
-    << endl
-    << p.sat_g
+    << space_dimension()
     << endl;
-
-  return s;
+  status.ASCII_dump(s);
+  s << endl
+    << "con_sys ("
+    << (constraints_are_up_to_date() ? "" : "not_")
+    << "up-to-date)"
+    << endl;
+  con_sys.ASCII_dump(s);
+  s << endl
+    << "gen_sys ("
+    << (generators_are_up_to_date() ? "" : "not_")
+    << "up-to-date)"
+    << endl;
+  gen_sys.ASCII_dump(s);
+  s << endl
+    << "sat_c"
+    << endl;
+  sat_c.ASCII_dump(s);
+  s << endl
+    << "sat_g"
+    << endl;
+  sat_c.ASCII_dump(s);
+  s << endl;
 }
 
-std::istream&
-PPL::operator>>(std::istream& s, Polyhedron& p) {
+bool
+PPL::Polyhedron::ASCII_load(std::istream& s) {
   std::string str;
 
-  s >> str;
-  assert(str == "space_dim");
-  s >> p.space_dim;
+  if (!(s >> str) || str != "space_dim")
+    return false;
 
-  s >> p.status;
+  if (!(s >> space_dim))
+    return false;
 
-  s >> str;
-  assert(str == "con_sys");
-  s >> str;
-  assert(str == "(not_up-to-date)" || str == "(up-to-date)");
-  s >> p.con_sys;
-  s >> str;
-  assert(str == "gen_sys");
-  s >> str;
-  assert(str == "(not_up-to-date)" || str == "(up-to-date)");
-  s >> p.gen_sys;
-  s >> str;
-  assert(str == "sat_c");
-  s >> p.sat_c;
-  s >> str;
-  assert(str == "sat_g");
-  s >> p.sat_g;
+  if (!status.ASCII_load(s))
+    return false;
 
-  return s;
+  if (!(s >> str) || str != "con_sys")
+    return false;
+
+  if (!(s >> str) || (str != "(not_up-to-date)" && str != "(up-to-date)"))
+    return false;
+
+  if (!con_sys.ASCII_load(s))
+    return false;
+
+  if (!(s >> str) || str != "gen_sys")
+    return false;
+
+  if (!(s >> str) || (str != "(not_up-to-date)" && str != "(up-to-date)"))
+    return false;
+
+  if (!gen_sys.ASCII_load(s))
+    return false;
+
+  if (!(s >> str) || str != "sat_c")
+    return false;
+
+  if (!sat_c.ASCII_load(s))
+    return false;
+
+  if (!(s >> str) || str != "sat_g")
+    return false;
+
+  if (!sat_g.ASCII_load(s))
+    return false;
+
+  // Check for well-formedness.
+  assert(OK());
+  return true;
 }
-
 
 /*!
   When considering the generators of a polyhedron, the
@@ -2677,11 +2693,11 @@ PPL::Polyhedron::affine_image(const Variable& var,
   // Dimension-compatibility checks.
   // The dimension of `expr' should not be greater than the dimension
   // of `*this'.
-  size_t expr_space_dim = expr.space_dimension();
+  dimension_type expr_space_dim = expr.space_dimension();
   if (space_dim < expr_space_dim)
     throw_dimension_incompatible("affine_image(v, e, d)", expr);
   // `var' should be one of the dimensions of the polyhedron.
-  size_t num_var = var.id() + 1;
+  dimension_type num_var = var.id() + 1;
   if (num_var > space_dim)
     throw_dimension_incompatible("affine_image(v, e, d)", var.id());
 
@@ -2778,7 +2794,7 @@ PPL::Polyhedron::affine_image(const Variable& var,
   \f[
     {a'}_{ij}
       = \begin{cases}
-          a_{ij} * \mathrm{denominator} + a_{i\mathrm{var}} * \mathrm{expr}[j]
+          a_{ij} * \mathrm{denominator} + a_{i\mathrm{var}}*\mathrm{expr}[j]
             \quad \mathrm{for } j \neq \mathrm{var}; \\
           \mathrm{expr}[\mathrm{var}] * a_{i\mathrm{var}},
             \quad \text{for } j = \mathrm{var}.
@@ -2796,11 +2812,11 @@ PPL::Polyhedron::affine_preimage(const Variable& var,
   // Dimension-compatibility checks.
   // The dimension of `expr' should not be greater than the dimension
   // of `*this'.
-  size_t expr_space_dim = expr.space_dimension();
+  dimension_type expr_space_dim = expr.space_dimension();
   if (space_dim < expr_space_dim)
     throw_dimension_incompatible("affine_preimage(v, e, d)", expr);
   // `var' should be one of the dimensions of the polyhedron.
-  size_t num_var = var.id() + 1;
+  dimension_type num_var = var.id() + 1;
   if (num_var > space_dim)
     throw_dimension_incompatible("affine_preimage(v, e, d)", var.id());
 
@@ -2904,7 +2920,7 @@ PPL::Polyhedron::H79_widening_assign(const Polyhedron& y) {
   if (x.topology() != y.topology())
     throw_topology_incompatible("H79_widening_assign(y)", y);
   // Dimension-compatibility check.
-  size_t x_space_dim = x.space_dim;
+  dimension_type x_space_dim = x.space_dim;
   if (x_space_dim != y.space_dim)
     throw_dimension_incompatible("H79_widening_assign(y)", y);
 
@@ -2987,15 +3003,15 @@ PPL::Polyhedron::H79_widening_assign(const Polyhedron& y) {
   // satisfy the saturation rule (see Section \ref prelims), then
   // it will not appear in the resulting constraint system,
   // because `tmp_sat_g' is built starting from a minimized polyhedron.
-  size_t n_constraints = x.con_sys.num_rows();
+  dimension_type n_constraints = x.con_sys.num_rows();
   // Note: the loop index `i' goes upwards to avoid reversing
   // the ordering of the chosen constraints.
-  for (size_t i = 0; i < n_constraints; ++i) {
+  for (dimension_type i = 0; i < n_constraints; ++i) {
     buffer.clear();
     // The saturation row `buffer' is built considering the `i'-th
     // constraint of the polyhedron `x' and the generators of the
     // polyhedron `y'.
-    for (size_t j = y.gen_sys.num_rows(); j-- > 0; ) {
+    for (dimension_type j = y.gen_sys.num_rows(); j-- > 0; ) {
       int sp_sgn = sgn(y.gen_sys[j] * x.con_sys[i]);
       // We are assuming that y <= x.
       assert(sp_sgn >= 0);
@@ -3023,9 +3039,9 @@ PPL::Polyhedron::H79_widening_assign(const Polyhedron& y) {
   assert(x.OK(true));
 }
 
-
 void
-PPL::Polyhedron::limited_H79_widening_assign(const Polyhedron& y, ConSys& cs) {
+PPL::Polyhedron::limited_H79_widening_assign(const Polyhedron& y,
+					     ConSys& cs) {
   Polyhedron& x = *this;
   // Topology compatibility check.
   if (x.is_necessarily_closed()) {
@@ -3038,11 +3054,11 @@ PPL::Polyhedron::limited_H79_widening_assign(const Polyhedron& y, ConSys& cs) {
     throw_topology_incompatible("limited_H79_widening_assign(y, cs)", y);
 
   // Dimension-compatibility check.
-  size_t x_space_dim = x.space_dim;
+  dimension_type x_space_dim = x.space_dim;
   if (x_space_dim != y.space_dim)
     throw_dimension_incompatible("limited_H79_widening_assign(y, cs)", y);
   // `cs' must be dimension-compatible with the two polyhedra.
-  size_t cs_space_dim = cs.space_dimension();
+  dimension_type cs_space_dim = cs.space_dimension();
   if (x_space_dim < cs_space_dim)
     throw_dimension_incompatible("limited_H79_widening_assign(y, cs)", cs);
 
@@ -3077,8 +3093,9 @@ PPL::Polyhedron::limited_H79_widening_assign(const Polyhedron& y, ConSys& cs) {
     // We have just discovered that `x' is empty.
     return;
 
-  size_t new_cs_num_rows = 0;
-  for (size_t i = 0, cs_num_rows = cs.num_rows(); i < cs_num_rows; ++i) {
+  dimension_type new_cs_num_rows = 0;
+  for (dimension_type
+	 i = 0, cs_num_rows = cs.num_rows(); i < cs_num_rows; ++i) {
     // The constraints to be added must be saturated by both `x' and `y'.
     // We only consider the generators of the greater polyhedron `x',
     // because the generators of `y' can be obtained by combining
@@ -3125,6 +3142,392 @@ PPL::Polyhedron::limited_H79_widening_assign(const Polyhedron& y, ConSys& cs) {
   assert(OK());
 }
 
+bool
+PPL::Polyhedron::is_BBRZ02_stabilizing(const Polyhedron& x,
+				       const Polyhedron& y) {
+  assert(x.constraints_are_minimized());
+  assert(y.constraints_are_minimized());
+  assert(x.generators_are_minimized());
+  assert(y.generators_are_minimized());
+
+  dimension_type x_num_equalities = x.con_sys.num_equalities();
+  dimension_type y_num_equalities = y.con_sys.num_equalities();
+  
+  // If the dimension of `x' is greater than the dimension of `y',
+  // we return true. To check this condition, we can
+  // verify if the number of equalities of `y' is greater than the
+  // number of equalities of `x'.
+  if (x_num_equalities < y_num_equalities)
+    return true;
+  // The dimension of `y' can not be greater than the dimension of
+  // `x' because `y' is included into `x'.
+  assert(x_num_equalities == y_num_equalities);
+  
+  // The two polyhedra have the same dimension. If the dimension
+  // of the lineality space of `x' is greater than the dimension of
+  // the lineality space of `y', we return true.
+  dimension_type x_num_lines = x.gen_sys.num_lines();
+  dimension_type y_num_lines = y.gen_sys.num_lines();
+  if (x_num_lines > y_num_lines)
+    return true;
+
+  // The dimension of the lineality space of `y' can not be greater
+  // than the dimension of the lineality space of
+  // `x' because `y' is included into `x'.
+  assert (x_num_lines == y_num_lines);
+
+  dimension_type x_gen_sys_num_rows = x.gen_sys.num_rows();
+  dimension_type y_gen_sys_num_rows = y.gen_sys.num_rows();
+  if (x.is_necessarily_closed()) {
+    // If the number of points of `y' is greater than
+    // the number of points of `x', we return true.
+    if (x_gen_sys_num_rows - x_num_lines - x.gen_sys.num_rays() <
+	y_gen_sys_num_rows - y_num_lines - y.gen_sys.num_rays())
+      return true;
+  }
+  else {
+    dimension_type x_num_closure_points = 0;
+    for (dimension_type i = x_gen_sys_num_rows; i-- > 0; )
+      if (x.gen_sys[i].is_closure_point())
+	++x_num_closure_points;
+    dimension_type y_num_closure_points = 0;
+    for (dimension_type i = y_gen_sys_num_rows; i-- > 0; )
+      if (y.gen_sys[i].is_closure_point())
+	++y_num_closure_points;
+    // If the number of closure points of `y' is greater than
+    // the number of points of `x', we return true.
+    if (x_num_closure_points < y_num_closure_points)
+      return true;
+  }
+  return false;
+}
+
+void
+PPL::Polyhedron::BBRZ02_widening_assign(const Polyhedron& y) {
+  Polyhedron& x = *this;
+  // Topology compatibility check.
+  if (x.topology() != y.topology())
+    throw_topology_incompatible("BBRZ02_widening_assign(y)", y);
+  // Dimension-compatibility check.
+  dimension_type x_space_dim = x.space_dim;
+  if (x_space_dim != y.space_dim)
+    throw_dimension_incompatible("BBRZ02_widening_assign(y)", y);
+
+#ifndef NDEBUG
+  {
+    // We assume that y is contained or equal to x.
+    Polyhedron x_copy = x;
+    Polyhedron y_copy = y;
+    assert(y_copy <= x_copy);
+  }
+#endif
+
+  // If any argument is zero-dimensional or empty,
+  // the BBRZ02-widening behaves as the identity function.
+  if (x_space_dim == 0 || x.is_empty() || y.is_empty())
+    return;
+
+  // `x.con_sys' and `x.gen_sys' should be in minimal form.
+  x.minimize();
+
+  // `y.con_sys' and `y.gen_sys' should be in minimal form.
+  if (y.is_necessarily_closed()) {
+    if (!y.minimize())
+      // `y' is empty: the result is `x'.
+      return;
+  }
+  else {
+    // Dealing with a NNC polyhedron.
+    // To obtain a correct reasoning when comparing
+    // the constraints of `x' with the generators of `y',
+    // we enforce the inclusion relation holding between
+    // the two NNC polyhedra `x' and `y' (i.e., `y <= x')
+    // to also hold for the corresponding eps-representations:
+    // this is obtained by intersecting the two eps-representations.
+    Polyhedron& yy = const_cast<Polyhedron&>(y);
+    if (!yy.intersection_assign_and_minimize(x))
+      // `y' is empty: the result is `x'.
+      return;
+  }
+  
+  // If `is_BBRZ02_stabilizing()' returns true, the resulting
+  // polyhedron is `x'.
+  if (is_BBRZ02_stabilizing(x, y))
+    return;
+
+  // In this function we need a temporary system of constraints composed
+  // by the constraints that are common to `x' and `y'.
+  ConSys common_con_sys;
+  if (is_necessarily_closed())
+    // Add the positivity constraint.
+    common_con_sys.insert(Constraint::zero_dim_positivity());
+  else
+    // Add the \epsilon constraints.
+    common_con_sys.insert(Constraint::epsilon_leq_one());
+  common_con_sys.adjust_topology_and_dimension(x.topology(), x_space_dim);
+
+  dimension_type y_con_sys_num_rows = y.con_sys.num_rows();
+  for (dimension_type i = y_con_sys_num_rows; i-- > 0; ) {
+    Constraint c = y.con_sys[i];
+    Poly_Con_Relation relation = x.relation_with(c);
+    if (relation.implies(Poly_Con_Relation::is_included()))
+      // The constraint `c' of `y' is a constraint of `x', too.
+      // So, we add this constraint to `common_con_sys'.
+      common_con_sys.add_row(c);
+  }
+  common_con_sys.sort_rows();
+
+  // ****************
+  // First technique.
+  // ****************
+
+  // To implement the first technique of the widening proposed in
+  // BBRZ02 we must have a copy of `x'.
+  Polyhedron x1(x);
+
+  // `y.sat_c' should be up-to-date.
+  if (!y.sat_c_is_up_to_date())
+    const_cast<SatMatrix&>(y.sat_c).transpose_assign(y.sat_g);
+
+  // The saturation matrix `y.sat_c' is copied in a temporary one:
+  // in this way, the new saturation matrix can be sorted
+  // without modifying the constant polyhedron `y'.
+  SatMatrix tmp_y_sat_c(y.sat_c);
+  tmp_y_sat_c.sort_rows();
+
+  dimension_type x1_con_sys_num_rows = x1.con_sys.num_rows();
+  dimension_type y_gen_sys_num_rows = y.gen_sys.num_rows();
+
+  // We build a temporary saturation matrix in which we put the relations
+  // between the constraints of `x1' and the generators of `y'.
+  SatMatrix tmp_sat(y_gen_sys_num_rows, x1_con_sys_num_rows);
+  for (dimension_type i = y_gen_sys_num_rows; i-- > 0; )
+    for (dimension_type j = x1_con_sys_num_rows; j-- > 0; )
+      if (x1.con_sys[j]*y.gen_sys[i] > 0)
+        tmp_sat[i].set(j);
+
+  // We must have also the transpose saturation matrix of `tmp_sat'
+  // and a temporary ordered copy of `y.sat_g'.
+  SatMatrix tmp_transpose;
+  tmp_transpose.transpose_assign(tmp_sat);
+  SatMatrix tmp_y_sat_g(y.sat_c);
+  tmp_y_sat_g.transpose();
+
+  // The system of constraints of the resulting polyhedron
+  // contains the constraints of `common_con_sys'.
+  ConSys new_con_sys(common_con_sys);
+  // We must choose a point (if the polyhedra are necessarily closed)
+  // or a closure point (if the polyhedra are not necessarily closed)
+  // that belong to `x' and `y'.
+  for (dimension_type i = y_gen_sys_num_rows; i-- > 0; ) {
+    Generator g = y.gen_sys[i];
+    if ((g.is_point() && x1.is_necessarily_closed())
+	|| (g.is_closure_point() && !x1.is_necessarily_closed()))
+      if (tmp_y_sat_c.sorted_contains(tmp_sat[i])) {
+	// We must choose the constraints of `x' that are saturated by `g'
+	// and that "evolve" since the constraints of `y'.
+	ConSys tmp_con(x1.topology(), 0, x1.con_sys.num_columns());
+	for (dimension_type j = x1_con_sys_num_rows; j--; ) {
+	  Constraint c = x1.con_sys[j];
+	  // If `c' is an equality, it is also a constraint of `y'
+	  // and so we have just considered it, when we build the
+	  // system of common constraints.
+	  if (!c.is_equality())
+	    if(c*g == 0)
+	      for (dimension_type h = y_con_sys_num_rows; h-- > 0; )
+		if (tmp_y_sat_g[h] < tmp_transpose[j]) {
+		  tmp_con.add_row(c);
+		  break;
+		}
+	}
+	// We build the new constraint that is
+	// obtained adding all the chosen constraint.
+	if (tmp_con.num_rows() != 0) {
+	  if (tmp_con.num_rows() == 1)
+	    new_con_sys.add_row(tmp_con[0]);
+	  else {
+	    LinExpression e(0);
+	    bool strict_inequality = false;
+	    for (dimension_type h = tmp_con.num_rows(); h-- > 0; ) {
+	      tmp_con[h].normalize();
+	      e += LinExpression(tmp_con[h]);
+	      if (tmp_con[h].is_strict_inequality())
+		strict_inequality = true;
+	    }
+	    e.normalize();
+
+	    // If there is a strict inequality in the
+	    // chosen constraints, the new constraint is a
+	    // strict inequality, too. Otherwise it is
+	    // a non-strict inequality.
+	    if (strict_inequality)
+	      new_con_sys.insert(e > 0);
+	    else
+	      new_con_sys.insert(e >= 0);
+	  }
+	}
+      }
+  }
+  std::swap(new_con_sys, x1.con_sys);
+
+  // The resulting polyhedron has only
+  // the system of constraints up to date.
+  x1.clear_generators_up_to_date();
+  x1.clear_constraints_minimized();
+
+  x1.minimize();
+  if (is_BBRZ02_stabilizing(x1, y)) {
+    // If `is_BBRZ02_stabilizing()' returns true, the resulting
+    // polyhedron is `x1'.
+    std::swap(x, x1);
+    return;
+  }
+  
+  // *****************
+  // Second technique.
+  // *****************
+
+  // To implement the secondtechnique of the widening proposed in
+  // BBRZ02 we must have a copy of `x'.
+  Polyhedron x2(x);
+  dimension_type x2_gen_sys_num_rows = x2.gen_sys.num_rows();
+  
+  for (dimension_type i = x2_gen_sys_num_rows; i-- > 0; ) {
+    Generator& x2_g = x2.gen_sys[i];
+    // We choose a point (if the polyhedra are necessarily closed)
+    // or a closure point (if the polyhedra are not necessarily closed)
+    // that belongs to `x2' and not to `y'.
+    if ((x2_g.is_point() && x2.is_necessarily_closed())
+	|| (x2_g.is_closure_point() && !x2.is_necessarily_closed())) {
+      GenSys tmp_gen(x2.topology(), 0, x2.gen_sys.num_columns());
+      Poly_Gen_Relation relation = y.relation_with(x2_g);
+      if (relation == Poly_Gen_Relation::nothing()) {
+	for (dimension_type k = y_gen_sys_num_rows; k-- > 0; ) {
+	  Generator y_g = y.gen_sys[k];
+	  // For each point (if the polyhedra are necessarily closed)
+	  // or a closure point (if the polyhedra are not necessarily
+	  // closed)of `y', we built a ray `x_g' - `y_g'.
+	  if ((y_g.is_point() && y.is_necessarily_closed())
+	      || (y_g.is_closure_point() && !y.is_necessarily_closed())) {
+	    Generator tmp_x2_g(x2_g);
+	    tmp_x2_g.linear_combine(y_g, 0);
+	    // If the new ray satisfies all the constraints of
+	    // `common_con_sys', we add it to a temporary matrix.
+	    bool not_satisfies = false;
+	    for (dimension_type h = common_con_sys.num_rows(); h-- > 0; )
+	      if (tmp_x2_g * common_con_sys[h] < 0) {
+		not_satisfies = true;
+		break;
+	      }
+	    if (!not_satisfies) {
+	      tmp_gen.add_row(tmp_x2_g);
+	      tmp_gen.set_sorted(false);
+	      if (!x2.is_necessarily_closed())
+		tmp_gen[tmp_gen.num_rows() - 1][x_space_dim + 1] = 0;
+	    }
+	  }
+	}
+	// If `tmp_gen' contains only a ray, it is added to the
+	// system of generators of `x'.
+	if (tmp_gen.num_rows() != 0) {
+	  if (tmp_gen.num_rows() == 1)
+	    x.gen_sys.add_row(tmp_gen[0]);
+	  else {
+	    // Otherwise, we "average" the directions of the rays
+	    // that belong to `tmp_gen' and we add the new ray to the
+	    // system of generators of `x'.
+	    tmp_gen.sort_rows();
+	    LinExpression e(0);
+	    for (dimension_type j = tmp_gen.num_rows(); j-- > 0; )
+	      e += LinExpression(tmp_gen[j]);
+	    e.normalize();
+	    x2.gen_sys.insert(ray(e));
+	  }
+	}
+      }
+    }
+  }
+
+  // The resulting polyhedron has only
+  // the system of generators up to date.
+  x2.clear_generators_minimized();
+  x2.clear_constraints_up_to_date();
+ 
+  x2.minimize();
+  if (is_BBRZ02_stabilizing(x2, y)) {
+    // If `is_BBRZ02_stabilizing()' returns true, the resulting
+    // polyhedron is `x2'.
+    std::swap(x, x2);
+    return;
+  }
+
+  // ********************************************
+  // We use another technique that modifies the
+  // rays of `x'.
+  // ********************************************
+
+  // To implement the this technique of the widening
+  // we must have a copy of `x'.
+  Polyhedron x3(x);
+
+  dimension_type x3_gen_sys_num_rows = x3.gen_sys.num_rows();
+  dimension_type x3_con_sys_num_rows = x3.con_sys.num_rows();
+  if (!x3.sat_c_is_up_to_date())
+    x3.sat_c.transpose_assign(x3.sat_g);
+
+  for (dimension_type i = y_gen_sys_num_rows; i-- > 0; )
+    for (dimension_type j = x3_con_sys_num_rows; j-- > 0; )
+      if (x3.con_sys[j]*y.gen_sys[i] > 0)
+        tmp_sat[i].set(j);
+      else
+	tmp_sat[i].clear(j);
+  for (dimension_type i = x3_gen_sys_num_rows; i-- > 0; ) {
+    // We choose a ray of `x3' that doesn't belong to `y' and
+    // "evolved" since a ray of `y'.
+    Generator& x3_g = x3.gen_sys[i];
+    if (x3_g.is_ray()) {
+      std::vector<bool> considered(x3.space_dim + 1);
+      Poly_Gen_Relation rel = y.relation_with(x3_g);
+      for (dimension_type j = y_gen_sys_num_rows; j-- > 0; ) {
+	Generator y_g = y.gen_sys[j];
+	if (y_g.is_ray() && tmp_sat[j] > x3.sat_c[i]
+	    && rel == Poly_Gen_Relation::nothing()) {
+	  x3.gen_sys.set_sorted(false);
+	  Integer tmp_1;
+	  Integer tmp_2;
+	  // We modify the ray of `x' according to how it
+	  // evolve since the ray of `y'.
+	  for (dimension_type k = 1; k < x3.space_dim && !considered[k]; ++k)
+	    for (dimension_type h = k + 1;
+		 h <= x3.space_dim && !considered[h]; ++h) {
+	      tmp_1 = x3_g[k] * y_g[h];
+	      tmp_2 = x3_g[h] * y_g[k];
+	      bool minor = false;
+	      int sp_sign = sgn(x3_g[h] * y_g[h]);
+	      if (tmp_1 < tmp_2 && sp_sign >= 0
+		  || tmp_1 > tmp_2 && sp_sign < 0)
+		minor = true;
+	      if (tmp_1 != tmp_2)
+		if (minor) {
+		  x3_g[k] = 0;
+		  considered[k] = true;
+		}
+		else {
+		  x3_g[h] = 0;
+		  considered[h] = true;
+		}
+	    }
+	  x3_g.normalize();
+	}
+      }
+    }
+  }
+  x3.clear_generators_minimized();
+  x3.clear_constraints_up_to_date();
+  std::swap(x, x3);
+  
+  assert(x.OK(true));
+}
 
 void
 PPL::Polyhedron::time_elapse_assign(const Polyhedron& y) {
@@ -3132,7 +3535,7 @@ PPL::Polyhedron::time_elapse_assign(const Polyhedron& y) {
   // Topology compatibility check.
   if (x.topology() != y.topology())
     throw_topology_incompatible("time_elapse_assign(y)", y);
-  size_t x_space_dim = x.space_dim;
+  dimension_type x_space_dim = x.space_dim;
   // Dimension-compatibility checks.
   if (x_space_dim != y.space_dim)
     throw_dimension_incompatible("time_elapse_assign(y)", y);
@@ -3154,12 +3557,12 @@ PPL::Polyhedron::time_elapse_assign(const Polyhedron& y) {
 
   // At this point the generator systems of both polyhedra are up-to-date.
   GenSys gs = y.gen_sys;
-  size_t gs_num_rows = gs.num_rows();
+  dimension_type gs_num_rows = gs.num_rows();
 
   if (!x.is_necessarily_closed()) {
     // `x' and `y' are NNC polyhedra.
-    size_t eps_index = space_dim + 1;
-    for (size_t i = gs_num_rows; i-- > 0; )
+    dimension_type eps_index = space_dim + 1;
+    for (dimension_type i = gs_num_rows; i-- > 0; )
       switch (gs[i].type()) {
       case Generator::POINT:
 	// Transform it into (and then treat it as) a closure point.
@@ -3188,7 +3591,7 @@ PPL::Polyhedron::time_elapse_assign(const Polyhedron& y) {
   }
   else
     // `x' and `y' are C polyhedra.
-    for (size_t i = gs_num_rows; i-- > 0; )
+    for (dimension_type i = gs_num_rows; i-- > 0; )
       switch (gs[i].type()) {
       case Generator::POINT:
 	{
@@ -3257,13 +3660,13 @@ PPL::Polyhedron::check_universe() const {
     obtain_sorted_constraints();
     const Constraint& eps_leq_one = con_sys[0]; 
     const Constraint& positivity = con_sys[1]; 
-    size_t eps_index = con_sys.num_columns() - 1;
+    dimension_type eps_index = con_sys.num_columns() - 1;
     if (eps_leq_one[0] <= 0
 	|| eps_leq_one[eps_index] >= 0
 	|| positivity[0] <= 0
 	|| positivity[eps_index] != 0)
       return false;
-    for (size_t i = eps_index; i-- > 1; )
+    for (dimension_type i = eps_index; i-- > 1; )
       if (eps_leq_one[i] != 0 || positivity[i] != 0)
 	return false;
     return true;
@@ -3278,7 +3681,7 @@ PPL::Polyhedron::is_bounded() const {
       || (!generators_are_up_to_date() && !update_generators()))
     return true;
   
-  for (size_t i = gen_sys.num_rows(); i-- > 0; )
+  for (dimension_type i = gen_sys.num_rows(); i-- > 0; )
     if (gen_sys[i][0] == 0)
       // A line or a ray has been found.
       // If the polyhedron is necessarily closed or
@@ -3297,7 +3700,7 @@ bool
 PPL::Polyhedron::bounds(const LinExpression& expr, bool from_above) const {
   // The dimension of `expr' should not be greater than the dimension
   // of `*this'.
-  size_t expr_space_dim = expr.space_dimension();
+  dimension_type expr_space_dim = expr.space_dimension();
   if (space_dim < expr_space_dim)
     throw_dimension_incompatible((from_above
 				  ? "bounds_from_above(e)"
@@ -3309,23 +3712,23 @@ PPL::Polyhedron::bounds(const LinExpression& expr, bool from_above) const {
       || (!generators_are_up_to_date() && !update_generators()))
     return true;
   
-  for (size_t i = gen_sys.num_rows(); i-- > 0; ) {
+  for (dimension_type i = gen_sys.num_rows(); i-- > 0; ) {
     const Generator& g = gen_sys[i];
     // Only lines and rays in `*this' can cause `expr' to be unbounded.
     if (g[0] == 0) {
       // Compute the scalar product between `g' and `expr'.
       tmp_Integer[0] = 0;
-      for (size_t j = expr.size(); j-- > 0; ) {
+      for (dimension_type j = expr.size(); j-- > 0; ) {
 	// The following two lines optimize the computation
 	// of tmp_Integer[0] += g[j] * expr[j].
 	tmp_Integer[1] = g[j] * expr[j];
 	tmp_Integer[0] += tmp_Integer[1];
       }
-      int sp_sign = sgn(tmp_Integer[0]);
-      if (sp_sign != 0
+      int sign = sgn(tmp_Integer[0]);
+      if (sign != 0
 	  && (g.is_line()
-	      || (from_above && sp_sign > 0)
-	      || (!from_above && sp_sign < 0)))
+	      || (from_above && sign > 0)
+	      || (!from_above && sign < 0)))
 	// `*this' does not bound `expr'.
 	return false;
     }
@@ -3364,7 +3767,7 @@ PPL::Polyhedron::topological_closure_assign() {
   if (is_empty() || space_dimension() == 0)
     return;
 
-  size_t eps_index = space_dim + 1;
+  dimension_type eps_index = space_dim + 1;
   bool changed = false;
 
   if (constraints_are_up_to_date()) {
@@ -3372,8 +3775,8 @@ PPL::Polyhedron::topological_closure_assign() {
     // the corresponding non-strict inequality constraints
     // are already (either explicitly or implicitly) in the
     // constraint system and will be left there.
-    size_t cs_rows = con_sys.num_rows();
-    for (size_t i = cs_rows; i-- > 0; ) {
+    dimension_type cs_rows = con_sys.num_rows();
+    for (dimension_type i = cs_rows; i-- > 0; ) {
       Constraint& c = con_sys[i];
       if (c[eps_index] < 0 && !c.is_trivial_true()) {
 	--cs_rows;
@@ -3393,7 +3796,7 @@ PPL::Polyhedron::topological_closure_assign() {
   else {
     assert(generators_are_up_to_date());
     // Transform all closure points into points.
-    for (size_t i = gen_sys.num_rows(); i-- > 0; ) {
+    for (dimension_type i = gen_sys.num_rows(); i-- > 0; ) {
       Generator& g = gen_sys[i];
       if (g[0] > 0 && g[eps_index] == 0) {
 	// Make it a point (normalization is preserved).
@@ -3433,7 +3836,8 @@ PPL::Polyhedron::OK(bool check_not_empty) const {
 
   // The expected number of columns in the constraint and generator
   // systems, if they are not empty. 
-  size_t poly_num_columns = space_dim + (is_necessarily_closed() ? 1 : 2); 
+  dimension_type poly_num_columns
+    = space_dim + (is_necessarily_closed() ? 1 : 2); 
 
   // Check whether the topologies of `con_sys' and `gen_sys' agree.
   if (con_sys.topology() != gen_sys.topology()) {
@@ -3621,7 +4025,7 @@ PPL::Polyhedron::OK(bool check_not_empty) const {
       GenSys copy_of_gen_sys = gen_sys;
       SatMatrix new_sat_c;
       minimize(false, copy_of_gen_sys, new_con_sys, new_sat_c);
-      size_t copy_num_lines = copy_of_gen_sys.num_lines();
+      dimension_type copy_num_lines = copy_of_gen_sys.num_lines();
       if (gen_sys.num_rows() != copy_of_gen_sys.num_rows()
 	  || gen_sys.num_lines() != copy_num_lines
 	  || gen_sys.num_rays() != copy_of_gen_sys.num_rays()) {
@@ -3629,9 +4033,9 @@ PPL::Polyhedron::OK(bool check_not_empty) const {
 	cerr << "Generators are declared minimized, but they are not!"
 	     << endl
 	     << "Here is the minimized form of the generators:"
-	     << endl
-	     << copy_of_gen_sys
 	     << endl;
+	copy_of_gen_sys.ASCII_dump(cerr);
+	cerr << endl;
 #endif
 	goto bomb;
       }
@@ -3664,9 +4068,9 @@ PPL::Polyhedron::OK(bool check_not_empty) const {
 	       << "dimension of lineality space equal to 0)"
 	       << endl
 	       << "Here is the minimized form of the generators:"
-	       << endl
-	       << copy_of_gen_sys
 	       << endl;
+	  copy_of_gen_sys.ASCII_dump(cerr);
+	  cerr << endl;
 #endif
 	    goto bomb;
 	}
@@ -3686,7 +4090,7 @@ PPL::Polyhedron::OK(bool check_not_empty) const {
     // -* the positivity constraint, for necessarily closed polyhedra;
     // -* the epsilon <= 1 constraint, for NNC polyhedra.
     bool no_positivity_constraint = true;
-    for (size_t i = con_sys.num_rows(); i-- > 0; )
+    for (dimension_type i = con_sys.num_rows(); i-- > 0; )
       if (con_sys[i][0] != 0) {
 	no_positivity_constraint = false;
 	break;
@@ -3728,9 +4132,9 @@ PPL::Polyhedron::OK(bool check_not_empty) const {
 	cerr << "Constraints are declared minimized, but they are not!"
 	     << endl
 	     << "Here is the minimized form of the constraints:"
-	     << endl
-	     << copy_of_con_sys
 	     << endl;
+	copy_of_con_sys.ASCII_dump(cerr);
+	cerr << endl;
 #endif
 	goto bomb;
       }
@@ -3754,9 +4158,9 @@ PPL::Polyhedron::OK(bool check_not_empty) const {
 	cerr << "Constraints are declared minimized, but they are not!"
 	     << endl
 	     << "Here is the minimized form of the constraints:"
-	     << endl
-	     << copy_of_con_sys
 	     << endl;
+	copy_of_con_sys.ASCII_dump(cerr);
+	cerr << endl;
 #endif
 	goto bomb;
       }
@@ -3764,10 +4168,10 @@ PPL::Polyhedron::OK(bool check_not_empty) const {
   }
 
   if (sat_c_is_up_to_date())
-    for (size_t i = sat_c.num_rows(); i-- > 0; ) {
+    for (dimension_type i = sat_c.num_rows(); i-- > 0; ) {
       Generator tmp_gen = gen_sys[i];
       SatRow tmp_sat = sat_c[i];
-      for (size_t j = sat_c.num_columns(); j-- > 0; )
+      for (dimension_type j = sat_c.num_columns(); j-- > 0; )
 	if (sgn(tmp_gen * con_sys[j]) != tmp_sat[j]) {
 #ifndef NDEBUG
 	  cerr << "sat_c is declared up-to-date, but it is not!"
@@ -3778,10 +4182,10 @@ PPL::Polyhedron::OK(bool check_not_empty) const {
     }
 
   if (sat_g_is_up_to_date())
-    for (size_t i = sat_g.num_rows(); i-- > 0; ) {
+    for (dimension_type i = sat_g.num_rows(); i-- > 0; ) {
       Constraint tmp_con = con_sys[i];
       SatRow tmp_sat = sat_g[i];
-      for (size_t j = sat_g.num_columns(); j-- > 0; )
+      for (dimension_type j = sat_g.num_columns(); j-- > 0; )
 	if (sgn(tmp_con * gen_sys[j]) != tmp_sat[j]) {
 #ifndef NDEBUG
 	  cerr << "sat_g is declared up-to-date, but it is not!"
@@ -3796,9 +4200,17 @@ PPL::Polyhedron::OK(bool check_not_empty) const {
  bomb:
 #ifndef NDEBUG
   cerr << "Here is the guilty polyhedron:"
-       << endl
-       << *this
        << endl;
+  ASCII_dump(cerr);
 #endif
   return false;
+}
+
+std::ostream&
+PPL::operator<<(std::ostream& s, const Polyhedron& ph) {
+  if (ph.check_empty())
+    s << "false";
+  else
+    s << ph.minimized_constraints();
+  return s;
 }

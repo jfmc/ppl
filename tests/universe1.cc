@@ -1,4 +1,4 @@
-/* Testing Polyhedron::check_universe(): we apply this function
+/* Test Polyhedron::check_universe(): we apply this function
    to a three-dimensional polyhedron.
    Copyright (C) 2001, 2002 Roberto Bagnara <bagnara@cs.unipr.it>
 

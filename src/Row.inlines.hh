@@ -29,6 +29,12 @@ site: http://www.cs.unipr.it/ppl/ . */
 #include <algorithm>
 #include <vector>
 
+#if CXX_SUPPORTS_FLEXIBLE_ARRAYS
+  #define FIRST_FLEXIBLE_ELEMENT 0
+#else
+  #define FIRST_FLEXIBLE_ELEMENT 1
+#endif
+
 namespace Parma_Polyhedra_Library {
 
 /*!
@@ -37,10 +43,14 @@ namespace Parma_Polyhedra_Library {
   allocated memory.
 */
 inline void*
-Row::Impl::operator new(size_t fixed_size, size_t capacity) {
+Row::Impl::operator new(size_t fixed_size, dimension_type capacity) {
+#if CXX_SUPPORTS_FLEXIBLE_ARRAYS
   return ::operator new(fixed_size + capacity*sizeof(Integer));
+#else
+  assert(capacity >= 1);
+  return ::operator new(fixed_size + (capacity-1)*sizeof(Integer));
+#endif
 }
-
 
 /*!
   Uses the standard operator delete to free the memory
@@ -57,28 +67,25 @@ Row::Impl::operator delete(void* p) {
   uses the standard operator delete to free the memory \p p points to.
 */
 inline void
-Row::Impl::operator delete(void* p, size_t) {
+Row::Impl::operator delete(void* p, dimension_type) {
   ::operator delete(p);
 }
-
 
 /*!
   Returns the actual size of the row \p this points to.
 */
-inline size_t
+inline dimension_type
 Row::Impl::size() const {
   return size_;
 }
-
 
 /*!
   Sets to \p new_size the actual size of \p *this.
 */
 inline void
-Row::Impl::set_size(size_t new_sz) {
+Row::Impl::set_size(dimension_type new_sz) {
   size_ = new_sz;
 }
-
 
 /*!
   Increment the size of \p *this by 1.
@@ -88,27 +95,24 @@ Row::Impl::bump_size() {
   ++size_;
 }
 
-
 /*!
   Shrinks the real implementation of the row if
   \p new_size is less than <CODE>size()</CODE> ,
   otherwise it is grown without copying the old contents.
 */
 inline void
-Row::Impl::resize_no_copy(size_t new_size) {
+Row::Impl::resize_no_copy(dimension_type new_size) {
   if (new_size < size())
     shrink(new_size);
   else
     grow_no_copy(new_size);
 }
 
-
 inline
-Row::Impl::Impl(Type t, size_t sz)
+Row::Impl::Impl(Type t, dimension_type sz)
   : size_(0), type(t) {
   grow_no_copy(sz);
 }
-
 
 inline
 Row::Impl::Impl(const Impl& y)
@@ -117,12 +121,11 @@ Row::Impl::Impl(const Impl& y)
 }
 
 inline
-Row::Impl::Impl(const Impl& y, size_t sz)
+Row::Impl::Impl(const Impl& y, dimension_type sz)
   : size_(0), type(y.type) {
   copy_construct(y);
   grow_no_copy(sz);
 }
-
 
 /*!
   Uses <CODE>shrink()</CODE> method with argument \f$0\f$
@@ -130,29 +133,26 @@ Row::Impl::Impl(const Impl& y, size_t sz)
 */
 inline
 Row::Impl::~Impl() {
-  shrink(0);
+  shrink(FIRST_FLEXIBLE_ELEMENT);
 }
 
-
 /*!
-  Returns a reference to the \p k-th element of \p *this row.
+  Returns a reference to the \p k-th element of \p *this.
 */
 inline Integer&
-Row::Impl::operator[](size_t k) {
+Row::Impl::operator[](dimension_type k) {
   assert(k < size());
   return vec_[k];
 }
-
 
 /*!
-  Returns a constant reference to the \p k-th element of \p *this row.
+  Returns a constant reference to the \p k-th element of \p *this.
 */
 inline const Integer&
-Row::Impl::operator[](size_t k) const {
+Row::Impl::operator[](dimension_type k) const {
   assert(k < size());
   return vec_[k];
 }
-
 
 inline
 Row::Type::Type()
@@ -227,7 +227,7 @@ Row::Type::set_not_necessarily_closed() {
 /*!
   Returns the size of \p *this row.
 */
-inline size_t
+inline dimension_type
 Row::size() const {
   return impl->size();
 }
@@ -238,9 +238,8 @@ Row::type() const {
   return impl->type;
 }
 
-
 /*!
-  Returns <CODE>true</CODE> if \p *this row represent a constraint
+  Returns <CODE>true</CODE> if \p *this represents a constraint
   or generator in a necessarily closed polyhedron.
 */
 inline bool
@@ -248,16 +247,16 @@ Row::is_necessarily_closed() const {
   return type().is_necessarily_closed();
 }
 
-inline size_t
+inline dimension_type
 Row::space_dimension() const {
-  size_t sz = size();
+  dimension_type sz = size();
   return (sz == 0)
     ? 0
     : sz - (is_necessarily_closed() ? 1 : 2);
 }
 
 #if EXTRA_ROW_DEBUG
-inline size_t
+inline dimension_type
 Row::capacity() const {
   return capacity_;
 }
@@ -271,41 +270,43 @@ Row::Row()
   : impl(0) {
 }
 
-
 /*!
   \param t          The type of the row that will be constructed.
   \param sz         The size of the row that will be constructed.
-  \param capacity   The capacity of the row that will be constructed.
+  \param capacity   The minimum capacity of the row that will be constructed.
 
-  The row that we are constructing has a fixed capacity, i.e., it can
-  contain \p capacity elements; furthermore the actual number of elements
-  that has to be considered is \p sz.
+  The row that we are constructing has a minimum capacity, i.e., it
+  can contain at least \p capacity elements, \p sz of which will be
+  constructed now.
 */
 inline void
-Row::construct(Type t, size_t sz, size_t capacity) {
+Row::construct(Type t, dimension_type sz, dimension_type capacity) {
   assert(capacity >= sz);
+#if !CXX_SUPPORTS_FLEXIBLE_ARRAYS
+  if (capacity == 0)
+    ++capacity;
+#endif
   impl = new (capacity) Impl(t, sz);
 #if EXTRA_ROW_DEBUG
   capacity_ = capacity;
 #endif
 }
 
-
 /*!
-  Builds a row having the capacity equal to its \p sz.
+  Builds a row with size \p sz and minimum capacity.
 */
 inline void
-Row::construct(Type t, size_t sz) {
+Row::construct(Type t, dimension_type sz) {
   construct(t, sz, sz);
 }
 
 inline
-Row::Row(Type t, size_t sz, size_t capacity) {
+Row::Row(Type t, dimension_type sz, dimension_type capacity) {
   construct(t, sz, capacity);
 }
 
 inline
-Row::Row(Type t, size_t sz) {
+Row::Row(Type t, dimension_type sz) {
   construct(t, sz);
 }
 
@@ -315,7 +316,11 @@ Row::Row(const Row& y)
 	 ? new (compute_capacity(y.size())) Impl(*y.impl)
 	 : 0) {
 #if EXTRA_ROW_DEBUG
+ #if CXX_SUPPORTS_FLEXIBLE_ARRAYS
   capacity_ = y.impl ? compute_capacity(y.size()) : 0;
+ #else
+  capacity_ = y.impl ? compute_capacity(y.size()) : 1;
+ #endif
 #endif
 }
 
@@ -324,8 +329,12 @@ Row::Row(const Row& y)
   provided it is greater than or equal to \p y size.
 */
 inline
-Row::Row(const Row& y, size_t capacity) {
+Row::Row(const Row& y, dimension_type capacity) {
   assert(capacity >= y.size());
+#if !CXX_SUPPORTS_FLEXIBLE_ARRAYS
+  if (capacity == 0)
+    ++capacity;
+#endif
   impl = y.impl ? new (capacity) Impl(*y.impl) : 0;
 #if EXTRA_ROW_DEBUG
   capacity_ = capacity;
@@ -334,12 +343,17 @@ Row::Row(const Row& y, size_t capacity) {
 
 /*!
   Allows to specify size and capacity,
-  provided they are both greater then or equal to \p y size.
+  provided they are both greater then or equal to the size of \p y.
   Of course, \p sz must also be less than or equal to \p capacity.
 */
 inline
-Row::Row(const Row& y, size_t sz, size_t capacity) {
-  assert(capacity >= y.size());
+Row::Row(const Row& y, dimension_type sz, dimension_type capacity) {
+  assert(capacity >= sz);
+  assert(sz >= y.size());
+#if !CXX_SUPPORTS_FLEXIBLE_ARRAYS
+  if (capacity == 0)
+    ++capacity;
+#endif
   impl = y.impl ? new (capacity) Impl(*y.impl, sz) : 0;
 #if EXTRA_ROW_DEBUG
   capacity_ = capacity;
@@ -356,7 +370,7 @@ Row::~Row() {
   otherwise grows the row without copying the old contents.
 */
 inline void
-Row::resize_no_copy(size_t new_sz) {
+Row::resize_no_copy(dimension_type new_sz) {
   assert(impl);
 #if EXTRA_ROW_DEBUG
   assert(new_sz <= capacity_);
@@ -369,7 +383,7 @@ Row::resize_no_copy(size_t new_sz) {
   size \p new_sz.
 */
 inline void
-Row::grow_no_copy(size_t new_sz) {
+Row::grow_no_copy(dimension_type new_sz) {
   assert(impl);
 #if EXTRA_ROW_DEBUG
   assert(new_sz <= capacity_);
@@ -382,7 +396,7 @@ Row::grow_no_copy(size_t new_sz) {
   the end.
 */
 inline void
-Row::shrink(size_t new_sz) {
+Row::shrink(dimension_type new_sz) {
   assert(impl);
   impl->shrink(new_sz);
 }
@@ -403,7 +417,6 @@ Row::assign(Row& y) {
 #endif
 }
 
-
 inline Row&
 Row::operator=(const Row& y) {
   // Copy-construct `tmp' from `y'.
@@ -413,7 +426,6 @@ Row::operator=(const Row& y) {
   // Now `tmp' goes out of scope, so the old `*this' will be destroyed.
   return *this;
 }
-
 
 /*!
   Returns <CODE>true</CODE> if \p *this row represent a line or
@@ -449,7 +461,6 @@ Row::set_is_line_or_equality() {
   impl->type.set_is_line_or_equality();
 }
 
-
 /*!
   Sets to \p RAY_OR_POINT_OR_INEQUALITY the type of \p *this row.
 */
@@ -468,12 +479,11 @@ Row::set_not_necessarily_closed() {
   impl->type.set_not_necessarily_closed();
 }
 
-
 /*!
   Returns a reference to the element of the row indexed by \p k.
 */
 inline Integer&
-Row::operator[](size_t k) {
+Row::operator[](dimension_type k) {
   return (*impl)[k];
 }
 
@@ -481,7 +491,7 @@ Row::operator[](size_t k) {
   Returns a constant reference to the element of the row indexed by \p k.
 */
 inline const Integer&
-Row::operator[](size_t k) const {
+Row::operator[](dimension_type k) const {
   return (*impl)[k];
 }
 
@@ -491,7 +501,7 @@ Row::inhomogeneous_term() const {
 }
 
 inline const Integer&
-Row::coefficient(size_t k) const {
+Row::coefficient(dimension_type k) const {
   return (*this)[k+1];
 }
 

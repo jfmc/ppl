@@ -1,4 +1,4 @@
-/* Testing Polyhedron::poly_hull_assign() and
+/* Test Polyhedron::poly_hull_assign() and
    C_Polyhedron::poly_hull_assign_and_minimize(): we apply these
    functions to an empty polyhedron.
    Copyright (C) 2001, 2002 Roberto Bagnara <bagnara@cs.unipr.it>

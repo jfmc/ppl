@@ -1,4 +1,4 @@
-/* Testing Polyhedron::add_generators_and_minimize(): we add a system of
+/* Test Polyhedron::add_generators_and_minimize(): we add a system of
    generators to a zero-dimensional, universal polyhedron.
    Copyright (C) 2001, 2002 Roberto Bagnara <bagnara@cs.unipr.it>
 

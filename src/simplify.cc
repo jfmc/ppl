@@ -41,8 +41,8 @@ namespace PPL = Parma_Polyhedra_Library;
   to inequalities (resp., rays and points). This partial sortedness
   condition will also hold on exit.
 
-  \p mat may be modified by swapping some of its rows and by possibly removing
-  some of them, if they turn out to be redundant.
+  \p mat may be modified by swapping some of its rows and by possibly
+  removing some of them, if they turn out to be redundant.
 
   If \p mat is a matrix of constraints, then the rows of \p sat are
   indexed by constraints and its columns are indexed by generators;
@@ -83,25 +83,25 @@ namespace PPL = Parma_Polyhedra_Library;
 
 int
 PPL::Polyhedron::simplify(Matrix& mat, SatMatrix& sat) {
-  size_t num_rows = mat.num_rows();
-  size_t num_columns = mat.num_columns();
-  size_t num_cols_sat = sat.num_columns();
+  dimension_type num_rows = mat.num_rows();
+  dimension_type num_columns = mat.num_columns();
+  dimension_type num_cols_sat = sat.num_columns();
 
   // Looking for the first inequality in `mat'.
-  size_t num_equal_or_line = 0;
+  dimension_type num_equal_or_line = 0;
   while (num_equal_or_line < num_rows
 	 && mat[num_equal_or_line].is_line_or_equality())
     ++num_equal_or_line;
 
   // `num_saturators[i]' will contain the number of generators
   // that saturate the constraint `mat[i]'.
-  static std::vector<size_t> num_saturators;
+  static std::vector<dimension_type> num_saturators;
   num_saturators.reserve(num_rows);
 
   // Computing the number of saturators for each inequality,
   // possibly identifying and swapping those that happen to be
   // equalities (see Proposition above).
-  for (size_t i = num_equal_or_line; i < num_rows; ++i)
+  for (dimension_type i = num_equal_or_line; i < num_rows; ++i)
     // FIXME: in the following (commented out) boolean test,
     // the condition `mat[i].is_line_or_equality()' is never met,
     // because on entry the matrix `mat' is partially sorted.
@@ -132,7 +132,7 @@ PPL::Polyhedron::simplify(Matrix& mat, SatMatrix& sat) {
   // which is the property needed by the function gauss().
   // We can simplify the system of equalities, obtaining the rank
   // of `mat' as result.
-  size_t rank = mat.gauss();
+  dimension_type rank = mat.gauss();
   // Now the irredundant equalities of `mat' have indexes from 0
   // to `rank' - 1, whereas the equalities having indexes from `rank'
   // to `num_equal_or_line' - 1 are all redundant.
@@ -148,7 +148,7 @@ PPL::Polyhedron::simplify(Matrix& mat, SatMatrix& sat) {
     // Note that we exit the loop either because we have moved all
     // redundant equalities or because we have moved all the
     // inequalities.
-    for (size_t redundant = rank, erasing = num_rows;
+    for (dimension_type redundant = rank, erasing = num_rows;
 	 redundant < num_equal_or_line && erasing > num_equal_or_line; ) {
       --erasing;
       std::swap(mat[redundant], mat[erasing]);
@@ -196,8 +196,8 @@ PPL::Polyhedron::simplify(Matrix& mat, SatMatrix& sat) {
   //      ==>
   //        redundant(mat[i]).
   //
-  size_t min_saturators = num_columns - num_equal_or_line - 1;
-  for (size_t i = num_equal_or_line; i < num_rows; ) {
+  dimension_type min_saturators = num_columns - num_equal_or_line - 1;
+  for (dimension_type i = num_equal_or_line; i < num_rows; ) {
     if (num_saturators[i] < min_saturators) {
       // The inequality `mat[i]' is redundant.
       --num_rows;
@@ -211,14 +211,14 @@ PPL::Polyhedron::simplify(Matrix& mat, SatMatrix& sat) {
   }
 
   // Now we check the independence rule.
-  for (size_t i = num_equal_or_line; i < num_rows; ) {
+  for (dimension_type i = num_equal_or_line; i < num_rows; ) {
     bool redundant = false;
     // NOTE: in the inner loop, index `j' runs through _all_ the
     // inequalities and we do not test `sat[i] < sat[j]'.
     // Experimentation has shown that this is faster than having
     // `j' only run through the indexes greater than `i' and
     // also doing the test `sat[i] < sat[j]'.
-    for (size_t j = num_equal_or_line; j < num_rows; ) {
+    for (dimension_type j = num_equal_or_line; j < num_rows; ) {
       if (i == j)
 	// Want to compare different rows of mat.
 	++j;
@@ -279,7 +279,7 @@ PPL::Polyhedron::simplify(Matrix& mat, SatMatrix& sat) {
   // (i.e., those having indexes from `num_equal_or_line' to
   // `num_rows' - 1) represent the irredundant inequalities: here we
   // check if the flag is set (that of the equalities is already set).
-  for (size_t i = num_equal_or_line; i < num_rows; ++i)
+  for (dimension_type i = num_equal_or_line; i < num_rows; ++i)
     assert(mat[i].is_ray_or_point_or_inequality());
   // Here we are checking if `mat' and `sat' have the same number of rows,
   // i.e., the new number of rows obtained excluding the rows of redundant

@@ -27,13 +27,23 @@ site: http://www.cs.unipr.it/ppl/ . */
 namespace Parma_Polyhedra_Library {
 
 inline
-Variable::Variable(unsigned int i)
+Variable::Variable(dimension_type i)
   : varid(i) {
 }
 
-inline unsigned int
+inline dimension_type
 Variable::id() const {
   return varid;
+}
+
+inline void
+Variable::set_output_function(Output_Function_Type* p) {
+  current_output_function = p;
+}
+
+inline Variable::Output_Function_Type*
+Variable::get_output_function() {
+  return current_output_function;
 }
 
 /*! \relates Variable */

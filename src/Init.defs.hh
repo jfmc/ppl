@@ -44,7 +44,7 @@ site: http://www.cs.unipr.it/ppl/ . */
 class Parma_Polyhedra_Library::Init {
 private:
   //! Count the number of objects created.
-  static unsigned count;
+  static unsigned int count;
 
 public:
   //! Initializes the PPL.

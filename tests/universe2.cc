@@ -1,4 +1,4 @@
-/* Testing Polyhedron::check_universe(): we verify that a polyhedron
+/* Test Polyhedron::check_universe(): we verify that a polyhedron
    defined by a non-trivial system of constraints is not universal.
    Copyright (C) 2001, 2002 Roberto Bagnara <bagnara@cs.unipr.it>
 

@@ -24,7 +24,7 @@
 # Process this file with autoconf to produce a configure script.
 
 # Every other copy of the package version number gets its value from here.
-AC_INIT([the Parma Polyhedra Library], 0.5pre2, ppl-devel@cs.unipr.it, ppl)
+AC_INIT([the Parma Polyhedra Library], 0.5pre3, ppl-devel@cs.unipr.it, ppl)
 
 # Minimum autoconf version required.
 AC_PREREQ(2.52g)
@@ -50,24 +50,6 @@ AH_TOP([
 ])
 
 AH_BOTTOM([
-
-// Neutralize relops for GCC 2.96.
-#ifndef __SGI_STL_INTERNAL_RELOPS
-#define __SGI_STL_INTERNAL_RELOPS
-#endif
-
-#if __GNUC__ >= 3
-// Flexible array members at the end of a struct
-// are defined as in
-//   Type array[];
-#define PPL_FLEXIBLE_ARRAY
-#else
-// Flexible array members at the end of a struct
-// are defined as in
-//   Type array[0];
-#define PPL_FLEXIBLE_ARRAY 0
-#endif
-
 #endif // !defined(PPL_ppl_config_h)
 ])
 
@@ -91,6 +73,9 @@ CXX=$with_cxx)
 
 AC_LANG(C++)
 
+# Check whether the C++ compiler supports flexible arrays.
+AC_CXX_SUPPORTS_FLEXIBLE_ARRAYS
+
 # Checks for programs.
 AC_PROG_CC
 AC_PROG_CXX
@@ -111,7 +96,10 @@ Do not forget to enable the C++ interface: add --enable-cxx
 to the configuration options.])
 fi
 
-AC_CHECK_SIZEOF(mp_limb_t, 4, [#include <gmp.h>])
+AC_CHECK_SIZEOF(mp_limb_t, 4, [
+#include <stdio.h>
+#include <gmp.h>
+])
 
 extra_includes="${extra_includes} ${gmp_includes_option}"
 extra_libraries="${extra_libraries} ${gmp_library_option}"
@@ -184,13 +172,40 @@ yes)
   ;;
 no)
   AC_MSG_RESULT(no)
-  AC_DEFINE(NDEBUG, 1, [Assertions are disabled when this is defined])
-  debug_flag="-DNDEBUG=1"
   ;;
 *)
   AC_MSG_ERROR([bad value ${enableval} --enable-assertions, needs yes or no])
   ;;
 esac
+enable_assertions=${enableval}
+
+enableval=no
+AC_MSG_CHECKING([whether to enable even more run-time assertions])
+AC_ARG_ENABLE(more-assertions,
+[  --enable-more-assertions check even more run-time assertions])
+case "${enableval}" in
+yes)
+  AC_MSG_RESULT(yes)
+  AC_DEFINE(EXTRA_ROW_DEBUG, 1, [Enable more assertions when defined.])
+  debug_flag="-DEXTRA_ROW_DEBUG=1"
+  ;;
+no)
+  AC_MSG_RESULT(no)
+  ;;
+*)
+  AC_MSG_ERROR([bad value ${enableval} --enable-more-assertions, needs yes or no])
+  ;;
+esac
+enable_more_assertions=${enableval}
+
+if test x"$enable_assertions" = xno
+then
+  if test x"$enable_more_assertions" = xno
+  then
+    AC_DEFINE(NDEBUG, 1, [Assertions are disabled when this is defined.])
+    debug_flag="$debug_flag -DNDEBUG=1"
+  fi
+fi
 
 arch=no
 enableval=standard

@@ -24,6 +24,15 @@ o  New constructors to build polyhedra from read-only constraint and
    and <S> is either "ConSys" or "GenSys".  The old names have been
    given to the new const functions.
 
+o  New type `dimension_type': an unsigned integral type for representing
+   space dimensions.
+
+o  New function dimension_type max_space_dimension():
+   returns the maximum space dimension this library can handle.
+
+o  In all the identifiers exported by the C interface, any occurrence
+   of "__" (double underscore) has been replaced by "_" (underscore).
+
 o  New method: template <typename PartialFunction>
    void shuffle_dimensions(const PartialFunction&).
    TO BE CONTINUED
@@ -56,6 +65,9 @@ o  Fixed a bug in method Polyhedron::add_generator(const Generator&)
 o  Fixed a bug in method GenSys::insert(const Generator&) whereby the
    insertion of a generator into an empty generator system might be
    mishandled.
+
+o  Fixed a bug in method Polyhedron::operator<=(const Polyehdron&)
+   whereby the lines of the polyhedron were handled improperly.
 
 
 --------------------------------------------------------------------------
@@ -173,7 +185,7 @@ o  The methods Polyhedron::widening_assign() and
    Polyhedron::H79_widening_assign() and
    Polyhedron::limited_H79_widening_assign(), respectively.
    This emphasizes the fact that they implement extensions
-   of the widenings introduced in 
+   of the widenings introduced in
 
      N. Halbwachs.
      Détermination Automatique de Relations Linéaires

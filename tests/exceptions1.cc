@@ -126,9 +126,10 @@ error4() {
   gs.insert(line(x + y + z));
 
   try {
-    // This is an incorrect use of the function C_Polyhedron::C_Polyhedron(gs):
-    // it is illegal to built a polyhedron starting from a system
-    // of generators that does not contain a point. 
+    // This is an incorrect use of the function
+    // C_Polyhedron::C_Polyhedron(gs): it is illegal to built a
+    // polyhedron starting from a system of generators that does not
+    // contain a point.
     C_Polyhedron ph(gs);
   }
   catch (invalid_argument& e) {
@@ -461,9 +462,10 @@ error16() {
   C_Polyhedron ph(1);
 
   try {
-    // This is an invalid use of the function C_Polyhedron::add_constraint(c):
-    // it is illegal to insert a constraints that contains a variable
-    // that is not in the space of the polyhedron.
+    // This is an invalid use of the function
+    // C_Polyhedron::add_constraint(c): it is illegal to insert a
+    // constraints that contains a variable that is not in the space
+    // of the polyhedron.
     ph.add_constraint(y >= 0);
   }
   catch (invalid_argument& e) {
@@ -574,9 +576,10 @@ error20() {
   C_Polyhedron ph(1, C_Polyhedron::EMPTY);
 
   try {
-    // This is an invalid use of the function C_Polyhedron::add_generators(gs):
-    // it is illegal to a system of generators that is dimensional
-    // incompatible with the polyhedron.
+    // This is an invalid use of the function
+    // C_Polyhedron::add_generators(gs): it is illegal to a system of
+    // generators that is dimensional incompatible with the
+    // polyhedron.
     GenSys gs;
     gs.insert(point());
     gs.insert(line(x + y));
@@ -631,9 +634,10 @@ error22() {
   C_Polyhedron ph(2);
 
   try {
-    // This is an invalid use of the function C_Polyhedronn::relation_with(g):
-    // it is illegal to apply this function to a generator that is
-    // not dimensional compatible with the polyhedron.
+    // This is an invalid use of the function
+    // C_Polyhedronn::relation_with(g): it is illegal to apply this
+    // function to a generator that is not dimensional compatible with
+    // the polyhedron.
     Generator g(point(z));
     ph.relation_with(g);
   }
@@ -799,9 +803,9 @@ error28() {
   C_Polyhedron ph(3, C_Polyhedron::EMPTY);
 
   try {
-    // This is an invalid use of the function C_Polyhedron::add_generators(gs):
-    // it is illegal to add a system of generators with no points
-    // to an empty polyhedron. 
+    // This is an invalid use of the function
+    // C_Polyhedron::add_generators(gs): it is illegal to add a system
+    // of generators with no points to an empty polyhedron.
     GenSys gs;
     gs.insert(ray(x + y));
     gs.insert(ray(x - y));
@@ -890,6 +894,188 @@ error31() {
   }
 }
 
+void
+error32() {
+  set_handlers();
+
+  Variable A(0);
+  Variable B(1);
+
+  GenSys gs1;
+  gs1.insert(ray(A));
+  gs1.insert(line(B));
+  
+  const GenSys gs2 = gs1;
+
+#if NOISY
+  print_generators(gs2, "*** gs2 ***");
+#endif
+  
+  try {
+    // This is an incorrect use of the function
+    // `C_Polyhedron::C_Polyhedron(gs)': it is illegal to built a
+    // closed polyhedron starting from a constant system of 
+    // generators that does not contain points.
+    C_Polyhedron ph2(gs2);
+  }
+  catch(invalid_argument& e) {
+#if NOISY
+    cout << "invalid_system_of_generators: " << e.what() << endl << endl;
+#endif
+  }
+  catch (...) {
+    exit(1);
+  }
+}  
+
+void
+error33() {
+  set_handlers();
+
+  Variable A(0);
+
+  C_Polyhedron ph1(2, C_Polyhedron::EMPTY);
+
+#if NOISY
+  print_generators(ph1, "*** ph1 ***");
+#endif
+  
+  try {
+    // This is an incorrect use of the function
+    // `add_generator(g)': it is illegal to add a
+    // ray to an empty polyhedron.
+    ph1.add_generator(ray(A));
+  }
+  catch(invalid_argument& e) {
+#if NOISY
+    cout << "invalid_generator: " << e.what() << endl << endl;
+#endif
+  }
+  catch (...) {
+    exit(1);
+  }
+} 
+
+void
+error34() {
+  set_handlers();
+
+  Variable A(0);
+  Variable B(1);
+
+  C_Polyhedron ph(1);
+  ph.add_constraint(A >= 3);
+  ph.add_constraint(A <= 5);
+
+  try {
+    // This is an invalid used of the function
+    // `C_Polyhedron::bounds_from_above(v, expr, d)': it is illegal to
+    // use a variable in the expression that does not apper in the
+    // space of the polyhedron.
+    ph.bounds_from_above(A + B);
+  }
+  catch (invalid_argument& e) {
+#if NOISY
+    cout << "invalid_expression: " << e.what() << endl << endl;
+#endif
+  }
+  catch (...) {
+    exit(1);
+  }
+}
+
+void
+error35() {
+  set_handlers();
+  
+  Variable A(0);
+  Variable B(1);
+
+  C_Polyhedron ph(2, C_Polyhedron::EMPTY);
+
+#if NOISY
+  print_constraints(ph, "*** ph ***");
+#endif
+
+  GenSys gs;
+  gs.insert(line(A));
+  gs.insert(ray(B));
+
+  try {
+    // This is an invalid used of the function
+    // `add_generators_and_minimize(gs)': it is illegal to
+    // add a system of generators that does not contain points
+    // to an empty polyhedron.
+    ph.add_generators_and_minimize(gs);
+  }
+  catch (invalid_argument& e) {
+#if NOISY
+    cout << "invalid_system_of_generators: " << e.what() << endl << endl;
+#endif
+  }
+  catch (...) {
+    exit(1);
+  }
+}
+
+void
+error36() {
+  set_handlers();
+  
+  Variable A(0);
+  Variable B(1);
+
+  C_Polyhedron ph(2, C_Polyhedron::EMPTY);
+
+#if NOISY
+  print_constraints(ph, "*** ph ***");
+#endif
+
+  GenSys gs;
+  gs.insert(ray(A));
+  gs.insert(ray(B));
+
+  try {
+    // This is an invalid used of the function
+    // `add_generators(gs)': it is illegal to
+    // add a system of generators that does not contain points
+    // to an empty polyhedron.
+    ph.add_generators(gs);
+  }
+  catch (invalid_argument& e) {
+#if NOISY
+    cout << "invalid_system_of_generators: " << e.what() << endl << endl;
+#endif
+  }
+  catch (...) {
+    exit(1);
+  }
+}
+
+void
+error37() {
+  set_handlers();
+
+  C_Polyhedron ph1(5);
+  C_Polyhedron ph2(10);
+
+  try {
+    // This is an invalid use of the function
+    // C_Polyhedron::BBRZ02_widening_assign(ph2): it is illegal to apply
+    // this function to two polyhedra that are not dimensional
+    // compatible.
+    ph2.BBRZ02_widening_assign(ph1);
+  }
+  catch (invalid_argument& e) {
+#if NOISY
+    cout << "invalid_polyhedra: " << e.what() << endl << endl; 
+#endif
+  }
+  catch (...) {
+    exit(1);
+  }
+}
+
 
 int
 main() {
@@ -925,6 +1111,12 @@ main() {
   error29();
   error30();
   error31();
+  error32();
+  error33();
+  error34();
+  error35();
+  error36();
+  error37();
 
   return 0;
 }

@@ -37,8 +37,8 @@ Generator::Generator(const Generator& g)
 }
 
 inline
-Generator::Generator(const Generator& g, size_t sz)
-  : Row(g, sz, sz) {
+Generator::Generator(const Generator& g, dimension_type dimension)
+  : Row(g, dimension, dimension) {
 }
 
 inline
@@ -51,7 +51,7 @@ Generator::operator=(const Generator& g) {
   return *this;
 }
 
-inline size_t
+inline dimension_type
 Generator::space_dimension() const {
   return Row::space_dimension();
 }

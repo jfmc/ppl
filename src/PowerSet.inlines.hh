@@ -25,6 +25,7 @@ site: http://www.cs.unipr.it/ppl/ . */
 #define PPL_PowerSet_inlines_hh 1
 
 #include <algorithm>
+#include <deque>
 
 namespace Parma_Polyhedra_Library {
 
@@ -53,7 +54,31 @@ PowerSet<CS>::end() const {
 }
 
 template <typename CS>
-size_t
+typename PowerSet<CS>::reverse_iterator
+PowerSet<CS>::rbegin() {
+  return sequence.rbegin();
+}
+
+template <typename CS>
+typename PowerSet<CS>::const_reverse_iterator
+PowerSet<CS>::rbegin() const {
+  return sequence.rbegin();
+}
+
+template <typename CS>
+typename PowerSet<CS>::reverse_iterator
+PowerSet<CS>::rend() {
+  return sequence.rend();
+}
+
+template <typename CS>
+typename PowerSet<CS>::const_reverse_iterator
+PowerSet<CS>::rend() const {
+  return sequence.rend();
+}
+
+template <typename CS>
+dimension_type
 PowerSet<CS>::size() const {
   return sequence.size();
 }
@@ -71,24 +96,37 @@ PowerSet<CS>::PowerSet(const ConSys& cs)
 }
 
 template <typename CS>
-void PowerSet<CS>::omega_reduction() {
-  iterator xi, xin, yi, yin;
-  for (xi = xin = begin(); xi != end(); xi = xin) {
+void
+PowerSet<CS>::omega_reduction() {
+  for (iterator xi = begin(), xin = xi; xi != end(); xi = xin) {
     ++xin;
     const CS& xv = *xi;
-    for (yi = yin = begin(); yi != end(); yi = yin) {
+    for (iterator yi = xin, yin = yi; yi != end(); yi = yin) {
       ++yin;
       if (xi == yi)
 	continue;
       const CS& yv = *yi;
-      if (yv.definitely_entails(xv))
+      if (yv.definitely_entails(xv)) {
+	if (yi == xin)
+	  ++xin;
 	sequence.erase(yi);
+      }
       else if (xv.definitely_entails(yv)) {
 	sequence.erase(xi);
 	break;
       }
     }
   }
+  assert(OK());
+}
+
+template <typename CS>
+bool
+PowerSet<CS>::definitely_contains(const CS& y) const {
+  for (const_iterator xi = begin(), xend = end(); xi != xend; ++xi)
+    if (xi->is_definitely_equivalent_to(y))
+      return true;
+  return false;
 }
 
 template <typename CS>
@@ -259,7 +297,8 @@ lcompare(const PowerSet<CS>& x, const PowerSet<CS>& y) {
 // Output
 
 template <typename CS>
-std::ostream& operator<< (std::ostream& s, const PowerSet<CS>& x) {
+std::ostream&
+operator<<(std::ostream& s, const PowerSet<CS>& x) {
   if (x.is_bottom())
     s << "false";
   else if ((x.size() == 1) && (*(x.begin())).is_top())
@@ -279,7 +318,7 @@ std::ostream& operator<< (std::ostream& s, const PowerSet<CS>& x) {
 }
 
 template <typename CS>
-size_t
+dimension_type
 PowerSet<CS>::space_dimension() const {
   return space_dim;
 }
@@ -287,30 +326,47 @@ PowerSet<CS>::space_dimension() const {
 template <typename CS>
 void
 PowerSet<CS>::add_constraint(const Constraint& c) {
-  for (typename PowerSet<CS>::iterator i = begin(),
-	 xend = end(); i != xend; ++i)
-    i->add_constraint(c);
+  for (typename PowerSet<CS>::iterator xi = begin(),
+	 xin = xi, xend = end(); xi != xend; xi = xin) {
+    ++xin;
+    CS& xv = *xi;
+    xv.add_constraint(c);
+    if (xv.is_bottom()) {
+      sequence.erase(xi);
+      xend = end();
+    }	
+  }
   omega_reduction();
 }
 
 template <typename CS>
 void
 PowerSet<CS>::add_constraints(ConSys& cs) {
-  if (size() == 1)
-    begin()->add_constraints(cs);
+  typename PowerSet<CS>::iterator xi = begin();
+  if (size() == 1) {
+    CS& xv = *xi;
+    xv.add_constraints(cs);
+    if (xv.is_bottom())
+      sequence.erase(xi);
+  }
   else
-    for (typename PowerSet<CS>::iterator i = begin(),
-	   xend = end(); i != xend; ++i) {
-      // i->add_constraints(ConSys(cs));
+    for (typename PowerSet<CS>::iterator xin = xi,
+	   xend = end(); xi != xend; xi = xin) {
+      ++xin;
+      CS& xv = *xi;
       ConSys cs_copy = cs;
-      i->add_constraints(cs_copy);
+      xv.add_constraints(cs_copy);
+      if (xv.is_bottom()) {
+	sequence.erase(xi);
+	xend = end();
+      }	
     }
   omega_reduction();
 }
 
 template <typename CS>
 void
-PowerSet<CS>::add_dimensions_and_embed(size_t m) {
+PowerSet<CS>::add_dimensions_and_embed(dimension_type m) {
   space_dim += m;
   for (typename PowerSet<CS>::iterator i = begin(),
 	 xend = end(); i != xend; ++i)
@@ -320,7 +376,7 @@ PowerSet<CS>::add_dimensions_and_embed(size_t m) {
 
 template <typename CS>
 void
-PowerSet<CS>::add_dimensions_and_project(size_t m) {
+PowerSet<CS>::add_dimensions_and_project(dimension_type m) {
   space_dim += m;
   for (typename PowerSet<CS>::iterator i = begin(),
 	 xend = end(); i != xend; ++i)
@@ -340,7 +396,7 @@ PowerSet<CS>::remove_dimensions(const std::set<Variable>& to_be_removed) {
 
 template <typename CS>
 void
-PowerSet<CS>::remove_higher_dimensions(size_t new_dimension) {
+PowerSet<CS>::remove_higher_dimensions(dimension_type new_dimension) {
   space_dim = new_dimension;
   for (typename PowerSet<CS>::iterator i = begin(),
 	 xend = end(); i != xend; ++i)
@@ -353,9 +409,9 @@ template <typename PartialFunction>
 void
 PowerSet<CS>::shuffle_dimensions(const PartialFunction& pfunc) {
   if (is_bottom()) {
-    unsigned int n = 0;
-    for (unsigned int i = space_dim; i-- > 0; ) {
-      unsigned int new_i;
+    dimension_type n = 0;
+    for (dimension_type i = space_dim; i-- > 0; ) {
+      dimension_type new_i;
       if (pfunc.maps(i, new_i))
 	++n;
     }
@@ -368,6 +424,7 @@ PowerSet<CS>::shuffle_dimensions(const PartialFunction& pfunc) {
     space_dim = b->space_dimension();
     omega_reduction();
   }
+  assert(OK());
 }
 
 template <typename CS>
@@ -379,16 +436,70 @@ template <typename CS>
 void
 PowerSet<CS>::limited_H79_widening_assign(const PowerSet& y,
 					  ConSys& cs) {
+  std::deque<iterator> possibly_new;
+  for (iterator xi = begin(), xend = end(); xi != xend; ++xi)
+    if (!y.definitely_contains(*xi))
+      possibly_new.push_back(xi);
+
+  if (possibly_new.empty())
+    return;
+
+  // Heuristics: less precise elements are later in the sequence.
+  typename std::deque<iterator>::const_reverse_iterator ni
+    = possibly_new.rbegin();
+  typename std::deque<iterator>::const_reverse_iterator nend
+    = possibly_new.rend();
+  const iterator& zi = *ni;
+  CS new_upper_bound(*zi);
+  sequence.erase(zi);
+  for (++ni; ni != nend; ++ni) {
+    const iterator& xi = *ni;
+    assert(xi->OK());
+    new_upper_bound.upper_bound_assign(*xi);
+    sequence.erase(xi);
+  }
+
+  if (sequence.empty()) {
+    // Heuristics again: less precise elements are later in the sequence.
+    const_reverse_iterator yi = y.rbegin();
+    const_reverse_iterator yend = y.rend();
+    CS old_upper_bound(*yi);
+    for (++yi; yi != yend; ++yi)
+      old_upper_bound.upper_bound_assign(*yi);
+
+    assert(old_upper_bound.definitely_entails(new_upper_bound));
+
+    new_upper_bound.limited_H79_widening_assign(old_upper_bound, cs);
+  }
+  else{
+    // Heuristics again: less precise elements are later in the sequence.
+    const_reverse_iterator xi = rbegin();
+    const_reverse_iterator xend = rend();
+    CS old_upper_bound(*xi);
+    for (++xi; xi != xend; ++xi)
+      old_upper_bound.upper_bound_assign(*xi);
+
+    new_upper_bound.upper_bound_assign(old_upper_bound);
+
+    new_upper_bound.limited_H79_widening_assign(old_upper_bound, cs);
+  }
+
+  sequence.push_back(new_upper_bound);
+
+  omega_reduction();
 }
 
 template <typename CS>
 bool
 PowerSet<CS>::OK() const {
   for (typename PowerSet<CS>::const_iterator i = begin(),
-	 xend = end(); i != xend; ++i)
+	 xend = end(); i != xend; ++i) {
     if (!i->OK()
 	|| i->space_dimension() != space_dim)
       return false;
+    if (i->is_bottom())
+      return false;
+  }
   return true;
 }
  

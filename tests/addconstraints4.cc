@@ -1,4 +1,4 @@
-/* Testing Polyhedron::add_constraints_and_minimize(): we add a
+/* Test Polyhedron::add_constraints_and_minimize(): we add a
    zero-dimensional and empty system of constraints to a polyhedron.
    Copyright (C) 2001, 2002 Roberto Bagnara <bagnara@cs.unipr.it>
 

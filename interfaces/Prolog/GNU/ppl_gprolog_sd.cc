@@ -37,6 +37,9 @@ static const Prolog_foreign_return_type PROLOG_FAILURE = FALSE;
 
 namespace PPL = Parma_Polyhedra_Library;
 
+static Prolog_atom a_dollar_address;
+static Prolog_atom a_throw;
+
 /*!
   Return a new term reference.
 */
@@ -173,13 +176,13 @@ Prolog_put_address(Prolog_term_ref& t, void* p) {
     unsigned short s[2];
   } u;
   u.l = reinterpret_cast<unsigned long>(p);
-  return Prolog_construct_cons(t, Mk_Positive(u.s[0]), Mk_Positive(u.s[1]));
+  return Prolog_construct_compound(t, a_dollar_address,
+				   Mk_Positive(u.s[0]), Mk_Positive(u.s[1]));
 }
-
-static Prolog_atom a_throw;
 
 static void
 ppl_Prolog_sysdep_init() {
+  a_dollar_address = Create_Allocate_Atom("$address");
   a_throw = Find_Atom("throw");
 }
 
@@ -258,14 +261,18 @@ Prolog_get_long(Prolog_term_ref t, long& v) {
 */
 static inline bool
 Prolog_is_address(Prolog_term_ref t) {
-  if (!Prolog_is_cons(t))
+  if (!Prolog_is_compound(t))
     return false;
-  Prolog_term_ref* ht = Rd_List_Check(t);
+  Prolog_atom name;
+  int arity;
+  Prolog_term_ref* a = Rd_Compound_Check(t, &name, &arity);
+  if (name != a_dollar_address || arity != 2)
+    return false;
   for (int i = 0; i <= 1; ++i) {
-    if (!Prolog_is_integer(ht[i]))
+    if (!Prolog_is_integer(a[i]))
       return false;
     long l;
-    if (!Prolog_get_long(ht[i], l))
+    if (!Prolog_get_long(a[i], l))
       return false;
     if (l < 0 || l > USHRT_MAX)
       return false;
@@ -281,13 +288,15 @@ Prolog_is_address(Prolog_term_ref t) {
 static inline bool
 Prolog_get_address(Prolog_term_ref t, void*& p) {
   assert(Prolog_is_address(t));
-  Prolog_term_ref* ht = Rd_List_Check(t);
+  static Prolog_atom dummy_name;
+  static int dummy_arity;
+  Prolog_term_ref* a = Rd_Compound_Check(t, &dummy_name, &dummy_arity);
   union {
     unsigned long l;
     unsigned short s[2];
   } u;
-  u.s[0] = Rd_Integer_Check(ht[0]);
-  u.s[1] = Rd_Integer_Check(ht[1]);
+  u.s[0] = Rd_Integer_Check(a[0]);
+  u.s[1] = Rd_Integer_Check(a[1]);
   p = reinterpret_cast<void*>(u.l);
   return true;
 }

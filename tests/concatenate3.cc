@@ -1,4 +1,4 @@
-/* Testing Polyhedron::concatenate_assign(): we concatenate a
+/* Test Polyhedron::concatenate_assign(): we concatenate a
    two-dimensional polyhedron to a zero-dimensional, universal
    polyhedron. The resulting polyhedron is equal to the second
    polyhedron.

@@ -54,7 +54,7 @@ public:
     Both parameters are optional:
     by default, a 0-dimension space universe NNC polyhedron is built.
   */
-  explicit NNC_Polyhedron(size_t num_dimensions = 0,
+  explicit NNC_Polyhedron(dimension_type num_dimensions = 0,
 			  Degenerate_Kind kind = UNIVERSE);
 
   //! Builds an NNC polyhedron from a system of constraints.

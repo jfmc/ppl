@@ -1,4 +1,4 @@
-/* Testing Polyhedron::add_constraints_and_minimize() obtaining an empty
+/* Test Polyhedron::add_constraints_and_minimize() obtaining an empty
    polyhedron.
    Copyright (C) 2001, 2002 Roberto Bagnara <bagnara@cs.unipr.it>
 

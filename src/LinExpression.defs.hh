@@ -30,8 +30,8 @@ site: http://www.cs.unipr.it/ppl/ . */
 #include "Row.defs.hh"
 #include "Integer.types.hh"
 #include "Variable.types.hh"
-#include "ConSys.defs.hh"
-#include "GenSys.defs.hh"
+#include "ConSys.types.hh"
+#include "GenSys.types.hh"
 #include "Polyhedron.types.hh"
 #include <cstddef>
 
@@ -117,7 +117,6 @@ void swap(Parma_Polyhedra_Library::LinExpression& x,
     respectively; also, in the fourth line of code, \p e is created
     with space-dimension zero and then extended to space-dimension 3.
 */
-
 class Parma_Polyhedra_Library::LinExpression : private Row {
 public:
   //! Default constructor: returns a copy of LinExpression::zero().
@@ -167,7 +166,7 @@ public:
   explicit LinExpression(const Generator& g);
 
   //! Returns the dimension of the vector space enclosing \p *this.
-  size_t space_dimension() const;
+  dimension_type space_dimension() const;
 
   //! Returns the (zero-dimension space) constant 0.
   static const LinExpression& zero();
@@ -176,26 +175,27 @@ private:
   friend class Parma_Polyhedra_Library::Constraint;
   friend class Parma_Polyhedra_Library::Generator;
   friend class Parma_Polyhedra_Library::Polyhedron;
-  friend void
-  Parma_Polyhedra_Library::ConSys::affine_preimage(size_t v,
-						   const LinExpression& expr,
-						   const Integer& denominator);
-  friend void
-  Parma_Polyhedra_Library::GenSys::affine_image(size_t v,
-						const LinExpression& expr,
-						const Integer& denominator);
+
+  // FIXME: the following friend declaration is only to grant access to
+  // ConSys::affine_preimage().
+  friend class Parma_Polyhedra_Library::ConSys;
+
+  // FIXME: the following friend declaration is only to grant access to
+  // GenSys::affine_image().
+  friend class Parma_Polyhedra_Library::GenSys;
+
   friend void std::swap(Parma_Polyhedra_Library::LinExpression& x,
 		       Parma_Polyhedra_Library::LinExpression& y);
 
   //! Copy-constructor with a specified dimension.
-  LinExpression(const LinExpression& e, size_t sz);
+  LinExpression(const LinExpression& e, dimension_type sz);
 
   //! Implementation sizing constructor.
   /*!
     The bool parameter is just to avoid problems with
     the constructor LinExpression(const Integer& n).
   */
-  LinExpression(size_t sz, bool);
+  LinExpression(dimension_type sz, bool);
 
   //! Swaps \p *this with \p y.
   void swap(LinExpression& y);

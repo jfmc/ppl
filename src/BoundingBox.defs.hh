@@ -25,6 +25,7 @@ site: http://www.cs.unipr.it/ppl/ . */
 #define PPL_BoundingBox_defs_hh 1
 
 #include "Integer.types.hh"
+#include "globals.hh"
 #include "Interval.defs.hh"
 #include <vector>
 #include <iosfwd>
@@ -34,14 +35,14 @@ namespace Parma_Polyhedra_Library {
 class BoundingBox {
 public:
   //! Constructs a universe bounding box of dimension \p num_dimensions.
-  BoundingBox(unsigned int num_dimensions);
+  BoundingBox(dimension_type num_dimensions);
 
   //! Returns the dimension of the vector space enclosing \p *this.
-  unsigned int space_dimension() const;
+  dimension_type space_dimension() const;
 
   //! Returns a reference the interval that bounds
   //! the box on the <CODE>k</CODE>-th dimension.
-  const Interval& operator[](size_t k) const;
+  const Interval& operator[](dimension_type k) const;
 
   //! Returns <CODE>true</CODE> if and only if \p *this is empty.
   bool is_empty() const;
@@ -51,19 +52,20 @@ public:
   //! Otherwise returns <CODE>true</CODE> and set \p closed,
   //! \p n and \p d accordingly.
   /*!
-    Let \f$I\f$ the interval corresponding to the <CODE>k</CODE>-th dimension.
-    If \f$I\f$ is not bounded from below, simply return <CODE>false</CODE>.
-    Otherwise, set <CODE>closed</CODE>, <CODE>n</CODE> and <CODE>d</CODE>
-    as follows: <CODE>closed</CODE> is set to <CODE>true</CODE> if the 
-    the lower boundary of \f$I\f$ is closed and is set to <CODE>false</CODE>
-    otherwise; <CODE>n</CODE> and <CODE>d</CODE> are assigned the integers
+    Let \f$I\f$ the interval corresponding to the <CODE>k</CODE>-th
+    dimension.  If \f$I\f$ is not bounded from below, simply return
+    <CODE>false</CODE>.  Otherwise, set <CODE>closed</CODE>,
+    <CODE>n</CODE> and <CODE>d</CODE> as follows: <CODE>closed</CODE>
+    is set to <CODE>true</CODE> if the the lower boundary of \f$I\f$
+    is closed and is set to <CODE>false</CODE> otherwise;
+    <CODE>n</CODE> and <CODE>d</CODE> are assigned the integers
     \f$n\f$ and \f$d\f$ such that the canonical fraction \f$n/d\f$
-    corresponds to the greatest lower bound of \f$I\f$.
-    The fraction \f$n/d\f$ is in canonical form if and only if \f$n\f$
-    and \f$d\f$ have no common factors and \f$d\f$ is positive, \f$0/1\f$
-    being the unique representation for zero.
+    corresponds to the greatest lower bound of \f$I\f$.  The fraction
+    \f$n/d\f$ is in canonical form if and only if \f$n\f$ and \f$d\f$
+    have no common factors and \f$d\f$ is positive, \f$0/1\f$ being
+    the unique representation for zero.
   */
-  bool get_lower_bound(unsigned int k, bool& closed,
+  bool get_lower_bound(dimension_type k, bool& closed,
 		       Integer& n, Integer& d) const;
 
   //! If the <CODE>k</CODE>-th dimension is unbounded above,
@@ -71,16 +73,17 @@ public:
   //! Otherwise returns <CODE>true</CODE> and set \p closed,
   //! \p n and \p d accordingly.
   /*!
-    Let \f$I\f$ the interval corresponding to the <CODE>k</CODE>-th dimension.
-    If \f$I\f$ is not bounded from above, simply return <CODE>false</CODE>.
-    Otherwise, set <CODE>closed</CODE>, <CODE>n</CODE> and <CODE>d</CODE>
-    as follows: <CODE>closed</CODE> is set to <CODE>true</CODE> if the 
-    the upper boundary of \f$I\f$ is closed and is set to <CODE>false</CODE>
-    otherwise; <CODE>n</CODE> and <CODE>d</CODE> are assigned the integers
+    Let \f$I\f$ the interval corresponding to the <CODE>k</CODE>-th
+    dimension.  If \f$I\f$ is not bounded from above, simply return
+    <CODE>false</CODE>.  Otherwise, set <CODE>closed</CODE>,
+    <CODE>n</CODE> and <CODE>d</CODE> as follows: <CODE>closed</CODE>
+    is set to <CODE>true</CODE> if the the upper boundary of \f$I\f$
+    is closed and is set to <CODE>false</CODE> otherwise;
+    <CODE>n</CODE> and <CODE>d</CODE> are assigned the integers
     \f$n\f$ and \f$d\f$ such that the canonical fraction \f$n/d\f$
     corresponds to the least upper bound of \f$I\f$.
   */
-  bool get_upper_bound(unsigned int k, bool& closed,
+  bool get_upper_bound(dimension_type k, bool& closed,
 		       Integer& n, Integer& d) const;
 
   //! Causes the box to become empty, i.e., to represent the empty set.
@@ -94,7 +97,7 @@ public:
     with \f$(n/d, +\infty)\f$ if <CODE>closed</CODE> is <CODE>false</CODE>.
     The fraction \f$n/d\f$ must be in canonical form;
   */
-  void raise_lower_bound(unsigned int k, bool closed,
+  void raise_lower_bound(dimension_type k, bool closed,
 			 const Integer& n, const Integer& d);
 
   //! Lowers the upper bound of the interval corresponding
@@ -106,7 +109,7 @@ public:
     is <CODE>false</CODE>.
     The fraction \f$n/d\f$ must be in canonical form.
   */
-  void lower_upper_bound(unsigned int k, bool closed,
+  void lower_upper_bound(dimension_type k, bool closed,
 			 const Integer& n, const Integer& d);
 
 private:

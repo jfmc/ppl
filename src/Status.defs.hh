@@ -124,6 +124,19 @@ public:
   //! Checks if all the invariants are satisfied.
   bool OK() const;
 
+#ifdef PPL_DOXYGEN_INCLUDE_IMPLEMENTATION_DETAILS
+  //! Writes to \p s an ASCII representation of the internal
+  //! representation of \p *this.
+#endif // PPL_DOXYGEN_INCLUDE_IMPLEMENTATION_DETAILS
+  void ASCII_dump(std::ostream& s) const;
+
+#ifdef PPL_DOXYGEN_INCLUDE_IMPLEMENTATION_DETAILS
+  //! Loads from \p s an ASCII representation (as produced by \ref
+  //! ASCII_dump) and sets \p *this accordingly.  Returns <CODE>true</CODE>
+  //! if successful, <CODE>false</CODE> otherwise.
+#endif // PPL_DOXYGEN_INCLUDE_IMPLEMENTATION_DETAILS
+  bool ASCII_load(std::istream& s);
+
 private:
   //! Status is implemented by means of a finite bitset.
   typedef unsigned int flags_t;
@@ -158,22 +171,6 @@ private:
   //! Reset the bits in \p mask.
   void reset(flags_t mask);
 };
-
-namespace Parma_Polyhedra_Library {
-
-#ifdef PPL_DOXYGEN_INCLUDE_IMPLEMENTATION_DETAILS
-//! Output operator.
-/*! \relates Status */
-#endif // PPL_DOXYGEN_INCLUDE_IMPLEMENTATION_DETAILS
-std::ostream& operator<<(std::ostream& s, const Status& u);
-
-#ifdef PPL_DOXYGEN_INCLUDE_IMPLEMENTATION_DETAILS
-//! Input operator.
-/*! \relates Status */
-#endif // PPL_DOXYGEN_INCLUDE_IMPLEMENTATION_DETAILS
-std::istream& operator>>(std::istream& s, Status& u);
-
-} // namespace Parma_Polyhedra_Library
 
 #include "Status.inlines.hh"
 

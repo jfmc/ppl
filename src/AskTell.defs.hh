@@ -62,7 +62,8 @@ protected:
   typedef std::map<CS, CS, Less> Base;
   void pair_insert(const CS& a, const CS& t);
   void pair_insert_good(const CS& a, const CS& t);
-//  inline const_iterator pair_insert(const_iterator& p, AskTellPair<CS>& pair);
+  //inline const_iterator pair_insert(const_iterator& p,
+  //                                  AskTellPair<CS>& pair);
 
   bool reduce();
   bool deduce();

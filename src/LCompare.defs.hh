@@ -29,7 +29,8 @@ site: http://www.cs.unipr.it/ppl/ . */
 
 //! A function object for lexical comparison.
 template <typename T>
-class Parma_Polyhedra_Library::LCompare : std::binary_function<T, T, bool> {
+class Parma_Polyhedra_Library::LCompare
+  : public std::binary_function<T, T, bool> {
 public:
   bool operator()(const T& x, const T& y) const;
 };

@@ -59,7 +59,8 @@ static const char* usage_string
 "  -h, --help              prints this help text to stderr\n"
 "  -oPATH, --output=PATH   appends output to PATH\n"
 "  -t, --timings           prints timings to stderr\n"
-"  -v, --verbose           outputs also the constraints and objective function\n";
+"  -v, --verbose           outputs also the constraints "
+"and objective function\n";
 
 
 #define OPTION_LETTERS "bcmMC:V:ho:tv"
@@ -268,7 +269,7 @@ static ppl_Coefficient_t ppl_coeff;
 static LPX* lp;
 
 static void
-print_variable(FILE* f, unsigned int var) {
+print_variable(FILE* f, ppl_dimension_type var) {
   const char* name = lpx_get_col_name(lp, var+1);
   if (name != NULL)
     fprintf(f, "%s", name);
@@ -428,7 +429,7 @@ solve(char* file_name) {
   ppl_Polyhedron_t ppl_ph;
   ppl_ConSys_t ppl_cs;
   ppl_const_GenSys_t ppl_const_gs;
-  ppl_GenSys__const_iterator_t git1, git2, ogit;
+  ppl_GenSys_const_iterator_t git1, git2, ogit;
   ppl_const_Generator_t ppl_const_g;
   ppl_LinExpression_t ppl_le;
   int dimension, row, num_rows, column, nz, i, type;
@@ -486,7 +487,7 @@ solve(char* file_name) {
   for (row = 1; row <= num_rows; ++row) {
     /* Initialize the least common multiple computation. */
     mpz_set_si(den_lcm, 1);
-    /* Set `nz' to the number of non-zero coefficients. */ 
+    /* Set `nz' to the number of non-zero coefficients. */
     nz = lpx_get_mat_row(lp, row, coefficient_index, coefficient_value);
     for (i = 1; i <= nz; ++i) {
       mpq_set_d(rational_coefficient[i], coefficient_value[i]);
@@ -613,7 +614,8 @@ solve(char* file_name) {
   }
 
   if (verbose)
-    fprintf(output_file, "\n%s\n", (maximize ? "Maximizing." : "Minimizing."));
+    fprintf(output_file, "\n%s\n",
+	    (maximize ? "Maximizing." : "Minimizing."));
 
   /* Check whether the problem is unbounded. */
   unbounded = !ppl_Polyhedron_bounds_from_above(ppl_ph, ppl_objective_le);
@@ -645,15 +647,15 @@ solve(char* file_name) {
     mpq_init(candidate[i]);
 
   mpq_init(optimum);
-  ppl_new_GenSys__const_iterator(&ogit);
+  ppl_new_GenSys_const_iterator(&ogit);
   first_candidate = 1;
 
-  ppl_new_GenSys__const_iterator(&git1);
-  ppl_new_GenSys__const_iterator(&git2);
+  ppl_new_GenSys_const_iterator(&git1);
+  ppl_new_GenSys_const_iterator(&git2);
   ppl_GenSys_begin(ppl_const_gs, git1);
   ppl_GenSys_end(ppl_const_gs, git2);
-  while (ppl_GenSys__const_iterator_equal_test(git1, git2) == 0) {
-    ppl_GenSys__const_iterator_dereference(git1, &ppl_const_g);
+  while (ppl_GenSys_const_iterator_equal_test(git1, git2) == 0) {
+    ppl_GenSys_const_iterator_dereference(git1, &ppl_const_g);
     if (ppl_Generator_type(ppl_const_g) == PPL_GENERATOR_TYPE_POINT) {
       ppl_Generator_divisor(ppl_const_g, ppl_coeff);
       ppl_Coefficient_to_mpz_t(ppl_coeff, tmp_z);
@@ -675,18 +677,18 @@ solve(char* file_name) {
 	  || (!maximize && (mpq_cmp(tmp1_q, optimum) < 0))) {
 	first_candidate = 0;
 	mpq_set(optimum, tmp1_q);
-	ppl_assign_GenSys__const_iterator_from_GenSys__const_iterator(ogit,
+	ppl_assign_GenSys_const_iterator_from_GenSys_const_iterator(ogit,
 								      git1);
       }
     }
-    ppl_GenSys__const_iterator_increment(git1);
+    ppl_GenSys_const_iterator_increment(git1);
   }
 
   assert(!first_candidate);
 
   fprintf(output_file, "Optimum value:\n%f\n", mpq_get_d(optimum));
   fprintf(output_file, "Optimum location:\n");
-  ppl_GenSys__const_iterator_dereference(ogit, &ppl_const_g);
+  ppl_GenSys_const_iterator_dereference(ogit, &ppl_const_g);
   ppl_Generator_divisor(ppl_const_g, ppl_coeff);
   ppl_Coefficient_to_mpz_t(ppl_coeff, tmp_z);
   for (i = 0; i < dimension; ++i) {

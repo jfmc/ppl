@@ -60,12 +60,12 @@ public:
     \param num_dimensions   The number of dimensions of the vector
                             space enclosing the C polyhedron.
     \param kind             Specifies whether a universe or an empty
-                            C polyhedron should be built. 
+                            C polyhedron should be built.
 
     Both parameters are optional:
     by default, a 0-dimension space universe C polyhedron is built.
   */
-  explicit C_Polyhedron(size_t num_dimensions = 0,
+  explicit C_Polyhedron(dimension_type num_dimensions = 0,
 			Degenerate_Kind kind = UNIVERSE);
 
   //! Builds a C polyhedron from a system of constraints.

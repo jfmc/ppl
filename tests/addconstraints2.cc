@@ -1,4 +1,5 @@
-/* Test Polyhedron::remove_higher_dimensions().
+/* Test Polyhedron::add_constraints(): we add an empty system of
+   constraints to a non-empty polyhedron.
    Copyright (C) 2001, 2002 Roberto Bagnara <bagnara@cs.unipr.it>
 
 This file is part of the Parma Polyhedra Library (PPL).
@@ -34,29 +35,28 @@ int
 main() {
   set_handlers();
 
-  Variable x(0);
-  Variable y(1);
-  Variable z(2);
-  Variable w(3);
+  Variable A(0);
+  Variable B(1);
 
-  GenSys gs;
-  gs.insert(point(x + y + 2*z - w));
+  C_Polyhedron ph(2);
+  ph.add_constraint(A >= 0);
+  ph.add_constraint(B >= 0);
 
-  C_Polyhedron ph(gs);
+  ConSys cs;
+
 #if NOISY
-  print_generators(ph, "*** ph ***");
+  print_constraints(ph, "*** ph ***");
+  print_constraints(cs, "*** cs ***");
 #endif
 
-  ph.remove_higher_dimensions(2);
+  C_Polyhedron known_result(ph);
 
-  GenSys gs_known_result;
-  gs_known_result.insert(point(x + y));
-  C_Polyhedron known_result(gs_known_result);
+  ph.add_constraints(cs);
 
   int retval = (ph == known_result) ? 0 : 1;
 
 #if NOISY
-  print_generators(ph, "*** After remove_higher_dimensions(2) ***");
+  print_constraints(ph, "*** ph ***");
 #endif
 
   return retval;

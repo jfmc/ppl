@@ -1,4 +1,4 @@
-/* Testing Polyhedron::add_dimensions_and_project() and
+/* Test Polyhedron::add_dimensions_and_project() and
    C_Polyhedron::add_dimensions_and_embed(): we add dimensions to an
    empty polyhedron.
    Copyright (C) 2001, 2002 Roberto Bagnara <bagnara@cs.unipr.it>

@@ -32,50 +32,45 @@ site: http://www.cs.unipr.it/ppl/ . */
 namespace PPL = Parma_Polyhedra_Library;
 
 /*!
-  Adds new positions to the real implementation of the row
-  obtaining a new row having size \p new_size.
+  Adds new positions to the implementation of the row
+  obtaining a new row with size \p new_size.
 */
 void
-PPL::Row::Impl::grow_no_copy(size_t new_size) {
+PPL::Row::Impl::grow_no_copy(dimension_type new_size) {
   assert(size() <= new_size);
-  for (size_t i = size(); i < new_size; ++i) {
+  for (dimension_type i = size(); i < new_size; ++i) {
     new (&vec_[i]) Integer();
     bump_size();
   }
 }
 
-
 /*!
-  Delete elements from the real implementation of the row
-  from \p new_size - th position to the end.
+  Destroys elements of the row implementation
+  from position \p new_size to the end.
 */
 void
-PPL::Row::Impl::shrink(size_t new_size) {
+PPL::Row::Impl::shrink(dimension_type new_size) {
   assert(new_size <= size());
   // We assume construction was done "forward".
   // We thus perform destruction "backward".
-  for (size_t i = size(); i-- > new_size; )
+  for (dimension_type i = size(); i-- > new_size; )
     // ~Integer() does not throw exceptions.  So we do.
     vec_[i].~Integer();
   set_size(new_size);
 }
 
-
 void
 PPL::Row::Impl::copy_construct(const Impl& y) {
-  size_t y_size = y.size();
-  for (size_t i = 0; i < y_size; ++i) {
+  dimension_type y_size = y.size();
+  for (dimension_type i = 0; i < y_size; ++i) {
     new (&vec_[i]) Integer(y.vec_[i]);
     bump_size();
   }
 }
 
-
 /*!
   Computes the Greatest Common Divisor (GCD) among the elements of
   the row and normalizes them by the GCD itself.
-  This is useful because we know that constraints and generators are
-  unique up a multiplicative coefficient.
 */
 void
 PPL::Row::normalize() {
@@ -83,34 +78,33 @@ PPL::Row::normalize() {
   // Compute the GCD of all the coefficients.
   // The GCD goes into tmp_Integer(1).
   tmp_Integer[1] = 0;
-  size_t sz = size();
-  for (size_t i = sz; i-- > 0; ) {
+  dimension_type sz = size();
+  for (dimension_type i = sz; i-- > 0; ) {
     const Integer& x_i = x[i];
     if (x_i != 0)
       gcd_assign(tmp_Integer[1], x_i);
   }
   if (tmp_Integer[1] > 1)
     // Divide the coefficients by the GCD.
-    for (size_t i = sz; i-- > 0; )
+    for (dimension_type i = sz; i-- > 0; )
       exact_div_assign(x[i], tmp_Integer[1]);
 }
 
-
 /*!
-  In addition to the normalization performed by normalize(),
-  this method ensures that the first non-zero coefficient
-  of lines and equalities is negative.
+  In addition to the normalization performed by normalize(), this
+  method ensures that the first non-zero coefficient of lines and
+  equalities is negative.
 */
 void
 PPL::Row::strong_normalize() {
   Row& x = *this;
   x.normalize();
 
-  size_t sz = x.size();
+  dimension_type sz = x.size();
   if (x.is_line_or_equality()) {
     //`first_non_zero' indicates the index of the first
     // coefficient of the row different from zero.
-    size_t first_non_zero;
+    dimension_type first_non_zero;
     for (first_non_zero = 0; first_non_zero < sz; ++first_non_zero)
       if (x[first_non_zero] != 0)
 	break;
@@ -118,11 +112,10 @@ PPL::Row::strong_normalize() {
       // If the first non-zero coefficient of the row is
       // positive, we negate the entire row.
       if (x[first_non_zero] > 0)
-	for (size_t j = first_non_zero; j < sz; ++j)
+	for (dimension_type j = first_non_zero; j < sz; ++j)
 	  negate(x[j]);
   }
 }
-
 
 /*!
   \relates Parma_Polyhedra_Library::Row
@@ -165,10 +158,10 @@ PPL::compare(const Row& x, const Row& y) {
     return y_is_line_or_equality ? 2 : -2;
 
   // Compare all the coefficients of the row starting from position 1.
-  size_t xsz = x.size();
-  size_t ysz = y.size();
-  size_t min_sz = std::min(xsz, ysz);
-  size_t i;
+  dimension_type xsz = x.size();
+  dimension_type ysz = y.size();
+  dimension_type min_sz = std::min(xsz, ysz);
+  dimension_type i;
   for (i = 1; i < min_sz; ++i)
     if (int comp = cmp(x[i], y[i]))
       // There is at least a different coefficient.
@@ -201,7 +194,7 @@ PPL::operator*(const Row& x, const Row& y) {
   // dimension-compatible.
   assert(x.size() <= y.size());
   tmp_Integer[0] = 0;
-  for (size_t i = x.size(); i-- > 0; ) {
+  for (dimension_type i = x.size(); i-- > 0; ) {
     // The following two lines optimize the computation
     // of tmp_Integer[0] += x[i] * y[i].
     tmp_Integer[1] = x[i] * y[i];
@@ -209,7 +202,6 @@ PPL::operator*(const Row& x, const Row& y) {
   }
   return tmp_Integer[0];
 }
-
 
 /*! \relates Parma_Polyhedra_Library::Row */
 const PPL::Integer&
@@ -219,7 +211,7 @@ PPL::reduced_scalar_product(const Row& x, const Row& y) {
   assert(!x.is_necessarily_closed());
   assert(x.size() - 1 <= y.size());
   tmp_Integer[0] = 0;
-  for (size_t i = x.size() - 1; i-- > 0; ) {
+  for (dimension_type i = x.size() - 1; i-- > 0; ) {
     // The following two lines optimize the computation
     // of tmp_Integer[0] += x[i] * y[i].
     tmp_Integer[1] = x[i] * y[i];
@@ -227,7 +219,6 @@ PPL::reduced_scalar_product(const Row& x, const Row& y) {
   }
   return tmp_Integer[0];
 }
-
 
 /*!
   \param y   The row that will be combined with \p *this object.
@@ -238,7 +229,7 @@ PPL::reduced_scalar_product(const Row& x, const Row& y) {
   resulting row to \p *this and normalizes it.
 */
 void
-PPL::Row::linear_combine(const Row& y, size_t k) {
+PPL::Row::linear_combine(const Row& y, dimension_type k) {
   Row& x = *this;
   // We can combine only vector of the same dimension.
   assert(x.size() == y.size());
@@ -250,7 +241,7 @@ PPL::Row::linear_combine(const Row& y, size_t k) {
   exact_div_assign(tmp_Integer[2], x[k], tmp_Integer[1]);
   exact_div_assign(tmp_Integer[3], y[k], tmp_Integer[1]);
 
-  for (size_t i = size(); i-- > 0; )
+  for (dimension_type i = size(); i-- > 0; )
     if (i != k) {
       tmp_Integer[4] = x[i] * tmp_Integer[3];
       tmp_Integer[5] = y[i] * tmp_Integer[2];
@@ -267,8 +258,8 @@ PPL::Row::linear_combine(const Row& y, size_t k) {
 
 std::ostream&
 PPL::operator<<(std::ostream& s, const Row& row) {
-  size_t i = 0;
-  size_t size = row.size();
+  dimension_type i = 0;
+  dimension_type size = row.size();
   if (i < size)
     s << row[i];
   for (++i ; i < size; ++i)
@@ -279,15 +270,15 @@ PPL::operator<<(std::ostream& s, const Row& row) {
 bool
 PPL::Row::all_homogeneous_terms_are_zero() const {
   const Row& x = *this;
-  for (size_t i = x.size(); --i > 0; )
+  for (dimension_type i = x.size(); --i > 0; )
     if (x[i] != 0)
       return false;
   return true;
 }
 
 bool
-PPL::Row::OK(size_t row_size,
-	     size_t
+PPL::Row::OK(dimension_type row_size,
+	     dimension_type
 #if EXTRA_ROW_DEBUG
 	     row_capacity
 #endif
@@ -299,9 +290,20 @@ PPL::Row::OK(size_t row_size,
 
   bool is_broken = false;
 #if EXTRA_ROW_DEBUG
+ #if !CXX_SUPPORTS_FLEXIBLE_ARRAYS
+  if (capacity_ == 0) {
+    cerr << "Illegal row capacity: is 0, should be at least 1"
+	 << endl;
+    is_broken = true;
+  }
+  else if (capacity_ == 1 && row_capacity == 0)
+    // This is fine.
+    ;
+  else
+ #endif
   if (capacity_ != row_capacity) {
     cerr << "Row capacity mismatch: is " << capacity_
-	 << ", should be " << row_capacity
+	 << ", should be " << row_capacity << "."
 	 << endl;
     is_broken = true;
   }
@@ -309,7 +311,7 @@ PPL::Row::OK(size_t row_size,
   if (size() != row_size) {
 #ifndef NDEBUG
     cerr << "Row size mismatch: is " << size()
-	 << ", should be " << row_size
+	 << ", should be " << row_size << "."
 	 << endl;
 #endif
     is_broken = true;
@@ -318,21 +320,21 @@ PPL::Row::OK(size_t row_size,
   if (capacity_ < size()) {
 #ifndef NDEBUG
     cerr << "Row is completely broken: capacity is " << capacity_
-	 << ", size is " << size()
+	 << ", size is " << size() << "."
 	 << endl;
 #endif
     is_broken = true;
   }
 #endif
   // Topology consistency check.
-  size_t min_cols = is_necessarily_closed() ? 1 : 2;
+  dimension_type min_cols = is_necessarily_closed() ? 1 : 2;
   if (size() < min_cols) {
 #ifndef NDEBUG
     cerr << "Row has fewer coefficeints than the minumum "
 	 << "allowed by its topology:"
 	 << endl
 	 << "size is " << size()
-	 << ", minimum is " << min_cols
+	 << ", minimum is " << min_cols << "."
 	 << endl;
 #endif
     is_broken = true;

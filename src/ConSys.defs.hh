@@ -37,10 +37,16 @@ site: http://www.cs.unipr.it/ppl/ . */
 
 namespace Parma_Polyhedra_Library {
 
-// Put them in the namespace here to declare them friend later.
-bool operator<=(const Polyhedron& x, const Polyhedron& y);
+//! Output operator.
+/*!
+  \relates ConSys
+  Writes <CODE>true</CODE> if \p cs is empty.  Otherwise, writes on
+  \p s the constraints of \p cs, all in one row and separated by ", ".
+*/
 std::ostream& operator<<(std::ostream& s, const ConSys& cs);
-std::istream& operator>>(std::istream& s, ConSys& cs);
+
+// Put it in the namespace here to declare it friend later.
+bool operator<=(const Polyhedron& x, const Polyhedron& y);
 
 } // namespace Parma_Polyhedra_Library
 
@@ -133,7 +139,7 @@ public:
   ConSys& operator=(const ConSys& y);
 
   //! Returns the dimension of the vector space enclosing \p *this.
-  size_t space_dimension() const;
+  dimension_type space_dimension() const;
 
   //! \brief
   //! Removes all the constraints from the constraint system
@@ -154,7 +160,7 @@ public:
   /*!
     A const_iterator is used to provide read-only access
     to each constraint contained in an object of ConSys.
-    
+
     \par Example
     The following code prints the system of constraints
     defining the polyhedron <CODE>ph</CODE>:
@@ -174,33 +180,33 @@ public:
   public:
     //! Default constructor.
     const_iterator();
-    
+
     //! Ordinary copy-constructor.
     const_iterator(const const_iterator& y);
-    
+
     //! Destructor.
     virtual ~const_iterator();
-    
+
     //! Assignment operator.
     const_iterator& operator=(const const_iterator& y);
-    
+
     //! Dereference operator.
     const Constraint& operator*() const;
-    
+
     //! Indirect member selector.
     const Constraint* operator->() const;
-    
+
     //! Prefix increment operator.
     const_iterator& operator++();
-    
+
     //! Postfix increment operator.
     const_iterator operator++(int);
-    
+
     //! \brief
     //! Returns <CODE>true</CODE> if and only if
     //! \p *this and \p y are identical.
     bool operator==(const const_iterator& y) const;
-    
+
     //! \brief
     //! Returns <CODE>true</CODE> if and only if
     //! \p *this and \p y are different.
@@ -211,7 +217,7 @@ public:
 
     //! The const iterator over the matrix of constraints.
     Matrix::const_iterator i;
-  
+
     //! A const pointer to the matrix of constraints.
     const Matrix* csp;
 
@@ -233,22 +239,33 @@ public:
   //! if \p *this is not empty;
   //! otherwise, returns the past-the-end const_iterator.
   const_iterator begin() const;
-  
+
   //! Returns the past-the-end const_iterator.
   const_iterator end() const;
 
   //! Checks if all the invariants are satisfied.
   bool OK() const;
 
+#ifdef PPL_DOXYGEN_INCLUDE_IMPLEMENTATION_DETAILS
+  //! Writes to \p s an ASCII representation of the internal
+  //! representation of \p *this.
+#endif // PPL_DOXYGEN_INCLUDE_IMPLEMENTATION_DETAILS
+  void ASCII_dump(std::ostream& s) const;
+
+#ifdef PPL_DOXYGEN_INCLUDE_IMPLEMENTATION_DETAILS
+  //! Loads from \p s an ASCII representation (as produced by \ref
+  //! ASCII_dump) and sets \p *this accordingly.  Returns <CODE>true</CODE>
+  //! if successful, <CODE>false</CODE> otherwise.
+#endif // PPL_DOXYGEN_INCLUDE_IMPLEMENTATION_DETAILS
+  bool ASCII_load(std::istream& s);
+
 private:
   friend class Parma_Polyhedra_Library::Polyhedron;
+
   friend bool
   Parma_Polyhedra_Library::operator<=(const Polyhedron& x,
 				      const Polyhedron& y);
-  friend std::ostream&
-  Parma_Polyhedra_Library::operator<<(std::ostream& s, const ConSys& m);
-  friend std::istream&
-  Parma_Polyhedra_Library::operator>>(std::istream& s, ConSys& cs);
+
   friend void std::swap(Parma_Polyhedra_Library::ConSys& x,
 			Parma_Polyhedra_Library::ConSys& y);
 
@@ -259,7 +276,7 @@ private:
   //! Builds a system of \p n_rows constraints on a \p n_columns - 1
   //! dimensional space (including the \f$\epsilon\f$ dimension, if
   //! \p topol is <CODE>NOT_NECESSARILY_CLOSED</CODE>).
-  ConSys(Topology topol, size_t n_rows, size_t n_columns);
+  ConSys(Topology topol, dimension_type n_rows, dimension_type n_columns);
 
   //! Swaps \p *this with \p y.
   void swap(ConSys& y);
@@ -272,7 +289,7 @@ private:
   //! equal to <CODE>NECESSARILY_CLOSED</CODE> and \p *this
   //! contains strict inequalities.
   bool adjust_topology_and_dimension(Topology topol,
-				     size_t num_dimensions);
+				     dimension_type num_dimensions);
 
   //! \brief
   //! For each strict inequality in \p *this,
@@ -289,30 +306,25 @@ private:
   bool has_strict_inequalities() const;
 
   //! Returns the \p k- th constraint of the system.
-  Constraint& operator[](size_t k);
-  
+  Constraint& operator[](dimension_type k);
+
   //! Returns a constant reference to the \p k- th constraint of the system.
-  const Constraint& operator[](size_t k) const;
+  const Constraint& operator[](dimension_type k) const;
 
   //! Returns <CODE>true</CODE> if \p g satisfies all the constraints.
   bool satisfies_all_constraints(const Generator& g) const;
 
-  //! Substitutes a given column of coefficients by a given affine expression.
-  void affine_preimage(size_t v,
+  //! Substitutes a given column of coefficients by a given
+  //! affine expression.
+  void affine_preimage(dimension_type v,
 		       const LinExpression& expr,
 		       const Integer& denominator);
 
   //! Returns the number of the equality constraints.
-  size_t num_equalities() const;
-  
-  //! Returns the number of the inequality constraints.
-  size_t num_inequalities() const;
+  dimension_type num_equalities() const;
 
-  //! Input operator.
-  void get(std::istream& s);
-  
-  //! Output operator.
-  void print(std::ostream& s) const;
+  //! Returns the number of the inequality constraints.
+  dimension_type num_inequalities() const;
 };
 
 // ConSys.inlines.hh is not included here on purpose.

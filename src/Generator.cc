@@ -63,7 +63,7 @@ PPL::Generator::point(const LinExpression& e, const Integer& d) {
   // all the coefficients of the point, because we want to preserve
   // the invariant: the divisor of a point is strictly positive.
   if (d < 0)
-    for (size_t i = g.size(); i-- > 0; )
+    for (dimension_type i = g.size(); i-- > 0; )
       negate(g[i]);
 
   g.set_is_ray_or_point();
@@ -75,7 +75,8 @@ PPL::Generator::point(const LinExpression& e, const Integer& d) {
 PPL::Generator
 PPL::Generator::closure_point(const LinExpression& e, const Integer& d) {
   if (d == 0)
-    throw std::invalid_argument("Generator PPL::closure_point(e, d): d == 0");
+    throw
+      std::invalid_argument("Generator PPL::closure_point(e, d): d == 0");
   // Adding the epsilon dimension with coefficient 0.
   LinExpression ec = 0 * Variable(e.space_dimension());
   ec += e;
@@ -259,7 +260,7 @@ PPL::Generator::OK() const {
       // Check whether it is the minus_epsilon_ray.
       bool is_minus_epsilon_ray = (g[size() - 1] < 0);
       if (is_minus_epsilon_ray)
-	for (size_t i = size() - 1; i-- > 1; )
+	for (dimension_type i = size() - 1; i-- > 1; )
 	  if (g[i] != 0) {
 	    is_minus_epsilon_ray = false;
 	    break;

@@ -1,4 +1,4 @@
-/* Testing add_dimensions_and_project() for NNC_Polyhedron.
+/* Test add_dimensions_and_project() for NNC_Polyhedron.
    Copyright (C) 2001, 2002 Roberto Bagnara <bagnara@cs.unipr.it>
 
 This file is part of the Parma Polyhedra Library (PPL).
@@ -52,11 +52,11 @@ main() {
   gs.insert(closure_point(3*x));
 
   NNC_Polyhedron ph2(gs);
-  
+
 #if NOISY
   print_generators(ph2, "*** ph2 ***");
 #endif
-  
+
   ph2.add_dimensions_and_project(2);
 
   int retval = (ph1 == ph2) ? 0 : 1;
@@ -65,7 +65,7 @@ main() {
   print_constraints(ph1, "*** ph1 after add_dimensions_and_embed ***");
   print_generators(ph2, "*** ph2 after add_dimensions_and_embed ***");
 #endif
-  
+
   return retval;
 }
-  
+

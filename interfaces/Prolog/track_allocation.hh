@@ -55,8 +55,8 @@ PolyTracker::PolyTracker() {
 
 inline
 PolyTracker::~PolyTracker() {
-  size_t n = s.size();
-  if (n > 0) 
+  std::set::size_type n = s.size();
+  if (n > 0)
     std::cerr << "PolyTracker: " << n << " polyhedra leaked!" << std::endl;
 }
 
@@ -82,7 +82,8 @@ PolyTracker::check(const void* pp) const {
 void
 PolyTracker::remove(const void* pp) {
   if (s.erase(pp) != 1) {
-    std::cerr << "PolyTracker: attempt to deallocate an inexistent polyhedron."
+    std::cerr << "PolyTracker: attempt to deallocate "
+	      << "an inexistent polyhedron."
 	      << std::endl;
     abort();
   }

@@ -36,10 +36,16 @@ site: http://www.cs.unipr.it/ppl/ . */
 
 namespace Parma_Polyhedra_Library {
 
-// Put them in the namespace here to declare them friend later.
-bool operator<=(const Polyhedron& x, const Polyhedron& y);
+//! Output operator.
+/*!
+  \relates GenSys
+  Writes <CODE>false</CODE> if \p gs is empty.  Otherwise, writes on
+  \p s the generators of \p gs, all in one row and separated by ", ".
+*/
 std::ostream& operator<<(std::ostream& s, const GenSys& gs);
-std::istream& operator>>(std::istream& s, GenSys& gs);
+
+// Put it in the namespace here to declare it friend later.
+bool operator<=(const Polyhedron& x, const Polyhedron& y);
 
 } // namespace Parma_Polyhedra_Library
 
@@ -61,9 +67,10 @@ void swap(Parma_Polyhedra_Library::GenSys& x,
     When inserting generators in a system, dimensions are automatically
     adjusted so that all the generators in the system are defined
     on the same vector space.
-    A system of generators which is meant to define a non-empty polyhedron
-    must include at least one point: the reason is that lines, rays
-    and closure points need a supporting point (they only specify directions).
+    A system of generators which is meant to define a non-empty
+    polyhedron must include at least one point: the reason is that
+    lines, rays and closure points need a supporting point (they only
+    specify directions).
 
     \par
      In all the examples it is assumed that variables
@@ -185,7 +192,7 @@ public:
   GenSys& operator=(const GenSys& y);
 
   //! Returns the dimension of the vector space enclosing \p *this.
-  size_t space_dimension() const;
+  dimension_type space_dimension() const;
 
   //! \brief
   //! Removes all the generators from the generator system
@@ -294,15 +301,27 @@ public:
   //! Checks if all the invariants are satisfied.
   bool OK() const;
 
+
+#ifdef PPL_DOXYGEN_INCLUDE_IMPLEMENTATION_DETAILS
+  //! Writes to \p s an ASCII representation of the internal
+  //! representation of \p *this.
+#endif // PPL_DOXYGEN_INCLUDE_IMPLEMENTATION_DETAILS
+  void ASCII_dump(std::ostream& s) const;
+
+#ifdef PPL_DOXYGEN_INCLUDE_IMPLEMENTATION_DETAILS
+  //! Loads from \p s an ASCII representation (as produced by \ref
+  //! ASCII_dump) and sets \p *this accordingly.  Returns <CODE>true</CODE>
+  //! if successful, <CODE>false</CODE> otherwise.
+#endif // PPL_DOXYGEN_INCLUDE_IMPLEMENTATION_DETAILS
+  bool ASCII_load(std::istream& s);
+
 private:
   friend class Parma_Polyhedra_Library::Polyhedron;
+
   friend bool
   Parma_Polyhedra_Library::operator<=(const Polyhedron& x,
 				      const Polyhedron& y);
-  friend std::ostream&
-  Parma_Polyhedra_Library::operator<<(std::ostream& s, const GenSys& gs);
-  friend std::istream&
-  Parma_Polyhedra_Library::operator>>(std::istream& s, GenSys& gs);
+
   friend void std::swap(Parma_Polyhedra_Library::GenSys& x,
 			Parma_Polyhedra_Library::GenSys& y);
 
@@ -313,7 +332,7 @@ private:
   //! Builds a system of \p n_rows rays/points on a \p n_columns - 1
   //! dimensional space (including the \f$\epsilon\f$ dimension, if
   //! \p topol is <CODE>NOT_NECESSARILY_CLOSED</CODE>).
-  GenSys(Topology topol, size_t n_rows, size_t n_columns);
+  GenSys(Topology topol, dimension_type n_rows, dimension_type n_columns);
 
   //! Swaps \p *this with \p y.
   void swap(GenSys& y);
@@ -326,7 +345,7 @@ private:
   //! equal to <CODE>NECESSARILY_CLOSED</CODE> and \p *this
   //! contains closure points.
   bool adjust_topology_and_dimension(Topology topol,
-				     size_t num_dimensions);
+				     dimension_type num_dimensions);
 
   //! \brief
   //! Returns <CODE>true</CODE> if and only if \p *this
@@ -339,10 +358,10 @@ private:
   bool has_closure_points() const;
 
   //! Returns the \p k- th generator of the system.
-  Generator& operator[](size_t k);
+  Generator& operator[](dimension_type k);
 
   //! Returns a constant reference to the \p k- th generator of the system.
-  const Generator& operator[](size_t k) const;
+  const Generator& operator[](dimension_type k) const;
 
   //! \brief
   //! Returns the relations holding between the generator system
@@ -351,15 +370,15 @@ private:
   relation_with(const Constraint& c) const;
 
   //! Assigns to a given variable an affine expression.
-  void affine_image(size_t v,
+  void affine_image(dimension_type v,
 		    const LinExpression& expr,
 		    const Integer& denominator);
 
   //! Returns the number of lines of the system.
-  size_t num_lines() const;
+  dimension_type num_lines() const;
 
   //! Returns the number of rays of the system.
-  size_t num_rays() const;
+  dimension_type num_rays() const;
 
   //! \brief
   //! Removes all the invalid lines and rays.
@@ -368,12 +387,6 @@ private:
     the homogeneous terms set to zero.
   */
   void remove_invalid_lines_and_rays();
-
-  //! Input operator.
-  void get(std::istream& s);
-
-  //! Output operator.
-  void print(std::ostream& s) const;
 };
 
 // GenSys.inlines.hh is not included here on purpose.

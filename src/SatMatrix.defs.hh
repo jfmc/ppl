@@ -24,9 +24,10 @@ site: http://www.cs.unipr.it/ppl/ . */
 #ifndef PPL_SatMatrix_defs_hh
 #define PPL_SatMatrix_defs_hh 1
 
+#include "SatMatrix.types.hh"
 #include "SatRow.defs.hh"
 #include <vector>
-#include "SatMatrix.types.hh"
+#include <iosfwd>
 
 #ifdef PPL_DOXYGEN_INCLUDE_IMPLEMENTATION_DETAILS
 /*!
@@ -40,24 +41,13 @@ site: http://www.cs.unipr.it/ppl/ . */
 #endif // PPL_DOXYGEN_INCLUDE_IMPLEMENTATION_DETAILS
 
 class Parma_Polyhedra_Library::SatMatrix {
-private:
-  //! Contains the rows of the matrix.
-  std::vector<SatRow> rows;
-
-  //! Size of the initialized part of each row.
-  size_t row_size;
-
-  struct RowCompare {
-    bool operator()(const SatRow& x, const SatRow& y) const;
-  };
-
 public:
   //! Default constructor.
   SatMatrix();
 
   //! Construct a saturation matrix with \p n_rows rows
   //! and \p n_columns columns.
-  SatMatrix(size_t n_rows, size_t n_columns);
+  SatMatrix(dimension_type n_rows, dimension_type n_columns);
 
   //! Copy-constructor.
   SatMatrix(const SatMatrix& y);
@@ -72,10 +62,10 @@ public:
   void swap(SatMatrix& y);
 
   //! Subscript operator.
-  SatRow& operator[](size_t k);
+  SatRow& operator[](dimension_type k);
 
   //! Subscript operator.
-  const SatRow& operator[](size_t k) const;
+  const SatRow& operator[](dimension_type k) const;
 
   //! Clears the matrix deallocating all its rows.
   void clear();
@@ -87,10 +77,10 @@ public:
   void transpose_assign(const SatMatrix& y);
 
   //! Returns the number of columns of \p *this.
-  size_t num_columns() const;
+  dimension_type num_columns() const;
 
   //! Returns the number of rows of \p *this.
-  size_t num_rows() const;
+  dimension_type num_rows() const;
 
   //! Sorts the rows and removes duplicates.
   void sort_rows();
@@ -102,22 +92,42 @@ public:
   void add_row(const SatRow& row);
 
   //! Erases the rows from the \p first_to_erase -th to the last one.
-  void rows_erase_to_end(size_t first_to_erase);
+  void rows_erase_to_end(dimension_type first_to_erase);
 
   //! Erases the columns from the \p first_to_erase -th to the last one.
-  void columns_erase_to_end(size_t first_to_erase);
+  void columns_erase_to_end(dimension_type first_to_erase);
 
   //! Resizes the matrix copying the old contents.
-  void resize(size_t new_n_rows, size_t new_n_columns);
+  void resize(dimension_type new_n_rows, dimension_type new_n_columns);
 
   //! Checks if all the invariants are satisfied.
   bool OK() const;
+
+  //! Writes to \p s an ASCII representation of the internal
+  //! representation of \p *this.
+  void ASCII_dump(std::ostream& s) const;
+
+  //! Loads from \p s an ASCII representation (as produced by \ref
+  //! ASCII_dump) and sets \p *this accordingly.  Returns <CODE>true</CODE>
+  //! if successful, <CODE>false</CODE> otherwise.
+  bool ASCII_load(std::istream& s);
 
 #ifndef NDEBUG
   //! Checks whether \p *this is sorted.
   //! It does NOT check for duplicates.
   bool check_sorted() const;
 #endif
+
+private:
+  //! Contains the rows of the matrix.
+  std::vector<SatRow> rows;
+
+  //! Size of the initialized part of each row.
+  dimension_type row_size;
+
+  struct RowCompare {
+    bool operator()(const SatRow& x, const SatRow& y) const;
+  };
 };
 
 namespace std {
@@ -146,18 +156,6 @@ bool operator==(const SatMatrix& x, const SatMatrix& y);
 /*! \relates SatMatrix */
 #endif // PPL_DOXYGEN_INCLUDE_IMPLEMENTATION_DETAILS
 bool operator!=(const SatMatrix& x, const SatMatrix& y);
-
-#ifdef PPL_DOXYGEN_INCLUDE_IMPLEMENTATION_DETAILS
-//! Input operator.
-/*! \relates SatMatrix */
-#endif // PPL_DOXYGEN_INCLUDE_IMPLEMENTATION_DETAILS
-std::ostream& operator<<(std::ostream& s, const SatMatrix& x);
-
-#ifdef PPL_DOXYGEN_INCLUDE_IMPLEMENTATION_DETAILS
-//! Output operator.
-/*! \relates SatMatrix */
-#endif // PPL_DOXYGEN_INCLUDE_IMPLEMENTATION_DETAILS
-std::istream& operator>>(std::istream& s, SatMatrix& x);
 
 } // namespace Parma_Polyhedra_Library
 

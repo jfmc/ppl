@@ -38,7 +38,7 @@ namespace PPL = Parma_Polyhedra_Library;
 
 bool
 PPL::ConSys::adjust_topology_and_dimension(Topology new_topology,
-					   size_t new_space_dim) {
+					   dimension_type new_space_dim) {
   assert(space_dimension() <= new_space_dim);
 
   if (num_rows() == 0) {
@@ -52,8 +52,8 @@ PPL::ConSys::adjust_topology_and_dimension(Topology new_topology,
   }
 
   // Here `num_rows() > 0'.
-  size_t old_space_dim = space_dimension();
-  size_t cols_to_be_added = new_space_dim - old_space_dim;
+  dimension_type old_space_dim = space_dimension();
+  dimension_type cols_to_be_added = new_space_dim - old_space_dim;
   Topology old_topology = topology();
 
   if (cols_to_be_added > 0)
@@ -114,9 +114,9 @@ void
 PPL::ConSys::add_corresponding_nonstrict_inequalities() {
   assert(!is_necessarily_closed());
   ConSys& cs = *this;
-  size_t n_rows = cs.num_rows();
-  size_t eps_index = cs.num_columns() - 1;
-  for (size_t i = n_rows; i-- > 0; ) {
+  dimension_type n_rows = cs.num_rows();
+  dimension_type eps_index = cs.num_columns() - 1;
+  for (dimension_type i = n_rows; i-- > 0; ) {
     const Constraint& c = cs[i];
     if (c[eps_index] < 0) {
       // `c' is a strict inequality: adding the non-strict inequality.
@@ -134,8 +134,8 @@ PPL::ConSys::has_strict_inequalities() const {
   if (is_necessarily_closed())
     return false;
   const ConSys& cs = *this;
-  size_t eps_index = cs.num_columns() - 1;
-  for (size_t i = num_rows(); i-- > 0; )
+  dimension_type eps_index = cs.num_columns() - 1;
+  for (dimension_type i = num_rows(); i-- > 0; )
     // Optimized type checking: we already know the topology;
     // also, equalities have the epsilon coefficient equal to zero.
     // NOTE: the constraint eps_leq_one should not be considered
@@ -163,29 +163,31 @@ PPL::ConSys::insert(const Constraint& c) {
       // Here `*this' is NNC and `c' is necessarily closed.
       // Copying the constraint adding the epsilon coefficient
       // and the missing dimensions, if any.
-      size_t new_size = 2 + std::max(c.space_dimension(), space_dimension());
+      dimension_type new_size = 2 + std::max(c.space_dimension(),
+					     space_dimension());
       Constraint tmp_c(c, new_size);
       tmp_c.set_not_necessarily_closed();
       Matrix::insert(tmp_c);
     }
 }
 
-size_t
+PPL::dimension_type
 PPL::ConSys::num_inequalities() const {
   int n = 0;
   // If the Matrix happens to be sorted, take advantage of the fact
   // that inequalities are at the bottom of the system.
   if (is_sorted())
-    for (size_t i = num_rows(); i != 0 && (*this)[--i].is_inequality(); )
+    for (dimension_type i = num_rows();
+	 i != 0 && (*this)[--i].is_inequality(); )
       ++n;
   else
-    for (size_t i = num_rows(); i-- > 0 ; )
+    for (dimension_type i = num_rows(); i-- > 0 ; )
       if ((*this)[i].is_inequality())
 	++n;
   return n;
 }
 
-size_t
+PPL::dimension_type
 PPL::ConSys::num_equalities() const {
   return num_rows() - num_inequalities();
 }
@@ -242,7 +244,7 @@ PPL::ConSys::satisfies_all_constraints(const Generator& g) const {
 
   const ConSys& cs = *this;
   if (cs.is_necessarily_closed())
-    for (size_t i = cs.num_rows(); i-- > 0; ) {
+    for (dimension_type i = cs.num_rows(); i-- > 0; ) {
       const Constraint& c = cs[i];
       int sp_sign = sgn(sp_fp(g, c));
       if (c.is_inequality()) {
@@ -260,7 +262,7 @@ PPL::ConSys::satisfies_all_constraints(const Generator& g) const {
     if (g.is_point())
       // Generator `g' is a point: have to perform the special test
       // when dealing with a strict inequality.
-      for (size_t i = cs.num_rows(); i-- > 0; ) {
+      for (dimension_type i = cs.num_rows(); i-- > 0; ) {
 	const Constraint& c = cs[i];
 	int sp_sign = sgn(sp_fp(g, c));
 	switch (c.type()) {
@@ -280,7 +282,7 @@ PPL::ConSys::satisfies_all_constraints(const Generator& g) const {
       }
     else
       // Generator `g' is a line, ray or closure point.
-      for (size_t i = cs.num_rows(); i-- > 0; ) {
+      for (dimension_type i = cs.num_rows(); i-- > 0; ) {
 	const Constraint& c = cs[i];
 	int sp_sign = sgn(sp_fp(g, c));
 	if (c.is_inequality()) {
@@ -327,7 +329,7 @@ PPL::ConSys::satisfies_all_constraints(const Generator& g) const {
   \p expr is a constant parameter and unaltered by this computation.
 */
 void
-PPL::ConSys::affine_preimage(size_t v,
+PPL::ConSys::affine_preimage(dimension_type v,
 			     const LinExpression& expr,
 			     const Integer& denominator) {
   // `v' is the index of a column corresponding to
@@ -337,18 +339,18 @@ PPL::ConSys::affine_preimage(size_t v,
   assert(expr.space_dimension() <= space_dimension());
   assert(denominator != 0);
 
-  size_t n_columns = num_columns();
-  size_t n_rows = num_rows();
-  size_t expr_size = expr.size();
+  dimension_type n_columns = num_columns();
+  dimension_type n_rows = num_rows();
+  dimension_type expr_size = expr.size();
   bool not_invertible = (v >= expr_size || expr[v] == 0);
   ConSys& x = *this;
 
   if (denominator != 1)
-    for (size_t i = n_rows; i-- > 0; ) {
+    for (dimension_type i = n_rows; i-- > 0; ) {
       Constraint& row = x[i];
       Integer& row_v = row[v];
       if (row_v != 0) {
-	for (size_t j = n_columns; j-- > 0; )
+	for (dimension_type j = n_columns; j-- > 0; )
 	  if (j != v) {
 	    row[j] *= denominator;
 	    if (j < expr_size)
@@ -363,11 +365,11 @@ PPL::ConSys::affine_preimage(size_t v,
   else
     // Here `denominator' == 1: optimized computation
     // only considering columns having indexes < expr_size.
-    for (size_t i = n_rows; i-- > 0; ) {
+    for (dimension_type i = n_rows; i-- > 0; ) {
       Constraint& row = x[i];
       Integer& row_v = row[v];
       if (row_v != 0) {
-	for (size_t j = expr_size; j-- > 0; )
+	for (dimension_type j = expr_size; j-- > 0; )
 	  if (j != v)
 	    row[j] += row_v * expr[j];
 	if (not_invertible)
@@ -380,18 +382,18 @@ PPL::ConSys::affine_preimage(size_t v,
 }
 
 /*!
-  Raw write function: prints the number of rows,
-  the number of columns and the value of \p sorted invoking the
-  <CODE>Matrix::print()</CODE> method, then prints the contents of
-  all the rows, specifying whether a row is an equality or an inequality.
+  Prints the number of rows, the number of columns and the value of \p
+  sorted invoking the <CODE>Matrix::ASCII_dump()</CODE> method, then
+  prints the contents of all the rows, specifying whether a row is an
+  equality or an inequality.
 */
 void
-PPL::ConSys::print(std::ostream& s) const {
-  Matrix::print(s);
+PPL::ConSys::ASCII_dump(std::ostream& s) const {
+  Matrix::ASCII_dump(s);
   const char separator = ' ';
   const ConSys& x = *this;
-  for (size_t i = 0; i < x.num_rows(); ++i) {
-    for (size_t j = 0; j < x.num_columns(); ++j)
+  for (dimension_type i = 0; i < x.num_rows(); ++i) {
+    for (dimension_type j = 0; j < x.num_columns(); ++j)
       s << x[i][j] << separator;
     s << separator << separator;
     switch (static_cast<Constraint>(x[i]).type()) {
@@ -409,60 +411,52 @@ PPL::ConSys::print(std::ostream& s) const {
   }
 }
 
-/*! \relates Parma_Polyhedra_Library::ConSys */
-std::ostream&
-PPL::operator<<(std::ostream& s, const ConSys& cs) {
-  cs.print(s);
-  return s;
-}
-
 /*!
-  Raw read function: resizes the matrix of constraints using number of
-  rows and number of columns read from \p s, then initializes the
-  coefficients of each constraint and its type (equality or inequality)
-  reading the contents from \p s.
+  Resizes the matrix of constraints using number of rows and number of
+  columns read from \p s, then initializes the coefficients of each
+  constraint and its type (equality or inequality) reading the
+  contents from \p s.
 */
-void
-PPL::ConSys::get(std::istream& s) {
-  Matrix::get(s);
-  std::string tempstr;
+bool
+PPL::ConSys::ASCII_load(std::istream& s) {
+  if (!Matrix::ASCII_load(s))
+    return false;
+
+  std::string str;
   ConSys& x = *this;
-  for (size_t i = 0; i < x.num_rows(); ++i) {
-    for (size_t j = 0; j < x.num_columns(); ++j)
-      s >> x[i][j];
-    s >> tempstr;
-    if (tempstr == "=")
+  for (dimension_type i = 0; i < x.num_rows(); ++i) {
+    for (dimension_type j = 0; j < x.num_columns(); ++j)
+      if (!(s >> x[i][j]))
+	return false;
+
+    if (!(s >> str))
+      return false;
+    if (str == "=")
       x[i].set_is_equality();
     else
       x[i].set_is_inequality();
+
     // Checking for equality of actual and declared types.
     switch (static_cast<Constraint>(x[i]).type()) {
     case Constraint::EQUALITY:
-      if (tempstr == "=")
+      if (str == "=")
 	continue;
       break;
     case Constraint::NONSTRICT_INEQUALITY:
-      if (tempstr == ">=")
+      if (str == ">=")
 	continue;
       break;
     case Constraint::STRICT_INEQUALITY:
-      if (tempstr == ">")
+      if (str == ">")
 	continue;
       break;
     }
     // Reaching this point means that the input was illegal.
-    throw std::runtime_error("void PPL::ConSys::get(s)");
+    return false;
   }
-  // Checking for well-formedness.
-  if (!x.OK())
-    throw std::runtime_error("void PPL::ConSys::get(s)");
-}
-
-/*! \relates Parma_Polyhedra_Library::ConSys */
-std::istream&
-PPL::operator>>(std::istream& s, ConSys& cs) {
-  cs.get(s);
-  return s;
+  // Check for well-formedness.
+  assert(OK());
+  return true;
 }
 
 /*!
@@ -473,4 +467,20 @@ PPL::operator>>(std::istream& s, ConSys& cs) {
 bool
 PPL::ConSys::OK() const {
   return Matrix::OK();
+}
+
+std::ostream&
+PPL::operator<<(std::ostream& s, const ConSys& cs) {
+  ConSys::const_iterator i = cs.begin();
+  ConSys::const_iterator cs_end = cs.end();
+  if (i == cs_end)
+    s << "true";
+  else {
+    while (i != cs_end) {
+      s << *i++;
+      if (i != cs_end)
+	s << ", ";
+    }
+  }
+  return s;
 }
