@@ -1519,7 +1519,7 @@ PPL::Polyhedron::add_constraints(ConSys& cs) {
   for (size_t i = cs_num_rows; i-- > 0; ) {
     // NOTE: we cannot directly swap the rows, since they might have
     // different capacities (besides possibly having different sizes):
-    // thus, we steel one coefficient at a time.
+    // thus, we steal one coefficient at a time.
     Constraint& c_new = con_sys[old_num_rows + i];
     Constraint& c_old = cs[i];
     if (c_old.is_equality())
