@@ -3271,38 +3271,40 @@ PPL::Polyhedron::BBRZ02_widening_assign(const Polyhedron& y) {
   // ****************
   // First technique.
   // ****************
-  
+
   // To implement the first technique of the widening proposed in
   // BBRZ02 we must have a copy of `x'.
   Polyhedron x1(x);
 
-  // `y.sat_c' should be up-to-date.
-  if (!y.sat_c_is_up_to_date())
-    const_cast<SatMatrix&>(y.sat_c).transpose_assign(y.sat_g);
+  // We must choose the constraints of `x' that does not
+  // belong to the system of constraints of `y'.
+  // To choose this constraints we use `x.sat_g'
+  if (!x1.sat_g_is_up_to_date())
+    x1.update_sat_g();
+  dimension_type common_con_sys_num_rows = common_con_sys.num_rows();
+  dimension_type x1_gen_sys_num_rows = x.gen_sys.num_rows();
+  // We built a temporary saturation matrix that contains the
+  // relations between the constraints of `common_con_sys' and
+  // the generators of `x'.
+  SatMatrix common_sat_g(common_con_sys_num_rows, x1_gen_sys_num_rows);
+  for (dimension_type i = common_con_sys_num_rows; i-- > 0; ) {
+    Constraint& c = common_con_sys[i];
+    for (dimension_type j = x1_gen_sys_num_rows; j-- > 0; ) {
+      Generator& g = x1.gen_sys[j];
+      if (sgn(c * g) != 0)
+	common_sat_g[i].set(j);
+    }
+  }
+  common_sat_g.sort_rows();
 
-  // The saturation matrix `y.sat_c' is copied in a temporary one:
-  // in this way, the new saturation matrix can be sorted
-  // without modifying the constant polyhedron `y'.
-  SatMatrix tmp_y_sat_c(y.sat_c);
-  tmp_y_sat_c.sort_rows();
-
+  // The system of constraints `x_con_sys_minus_y_con_sys' contains
+  // the constraints of `x' that does not belong also to `y'.
+  ConSys x_con_sys_minus_y_con_sys;
   dimension_type x1_con_sys_num_rows = x1.con_sys.num_rows();
-  dimension_type y_gen_sys_num_rows = y.gen_sys.num_rows();
-  
-  // We build a temporary saturation matrix in which we put the relations
-  // between the constraints of `x1' and the generators of `y'.
-  SatMatrix tmp_sat(y_gen_sys_num_rows, x1_con_sys_num_rows);
-  for (dimension_type i = y_gen_sys_num_rows; i-- > 0; )
-    for (dimension_type j = x1_con_sys_num_rows; j-- > 0; )
-      if (x1.con_sys[j] * y.gen_sys[i] > 0)
-        tmp_sat[i].set(j);
-
-  // We must have also the transpose saturation matrix of `tmp_sat'
-  // and a temporary ordered copy of `y.sat_g'.
-  SatMatrix tmp_transpose;
-  tmp_transpose.transpose_assign(tmp_sat);
-  SatMatrix tmp_y_sat_g(y.sat_c);
-  tmp_y_sat_g.transpose();
+  for (dimension_type i = x1_con_sys_num_rows; i-- > 0; )
+    if (!x1.con_sys[i].is_equality())
+      if (!common_sat_g.sorted_contains(x1.sat_g[i]))
+	x_con_sys_minus_y_con_sys.insert(x1.con_sys[i]);
 
   // The system of constraints of the resulting polyhedron
   // contains the constraints of `common_con_sys'.
@@ -3313,56 +3315,93 @@ PPL::Polyhedron::BBRZ02_widening_assign(const Polyhedron& y) {
   // closed polyhedra, we can consider only the closure points,
   // because the role of the points can be played by the closure
   // points.
+  dimension_type y_gen_sys_num_rows = y.gen_sys.num_rows();
   for (dimension_type i = y_gen_sys_num_rows; i-- > 0; ) {
     const Generator& g = y.gen_sys[i];
     if ((g.is_point() && x1.is_necessarily_closed())
-	|| (g.is_closure_point() && !x1.is_necessarily_closed()))
-      if (tmp_y_sat_c.sorted_contains(tmp_sat[i])) {
-	// We must choose the constraints of `x' that are saturated by
-	// `g' and that "evolve" since the constraints of `y'.
-	ConSys tmp_con_sys(x1.topology(), 0, x1.con_sys.num_columns());
-	for (dimension_type j = x1_con_sys_num_rows; j--; ) {
-	  Constraint& c = x1.con_sys[j];
-	  // If `c' is an equality, it is also a constraint of `y' and
-	  // so we have just considered it, when we build the system
-	  // of common constraints.
-	  if (!c.is_equality())
-	    if(c * g == 0)
-	      for (dimension_type h = y_con_sys_num_rows; h-- > 0; )
-		if (tmp_y_sat_g[h] < tmp_transpose[j]) {
-		  tmp_con_sys.insert(c);
-		  break;
-		}
-	}
-	// We build the new constraint that is
-	// obtained adding all the chosen constraint.
-	if (tmp_con_sys.num_rows() != 0) {
-	  if (tmp_con_sys.num_rows() == 1)
-	    new_con_sys.insert(tmp_con_sys[0]);
-	  else {
-	    LinExpression e(0);
-	    bool strict_inequality = false;
-	    for (dimension_type h = tmp_con_sys.num_rows(); h-- > 0; ) {
-	      tmp_con_sys[h].normalize();
-	      e += LinExpression(tmp_con_sys[h]);
-	      if (tmp_con_sys[h].is_strict_inequality())
-		strict_inequality = true;
-	    }
-	    e.normalize();
+	|| (g.is_closure_point() && !x1.is_necessarily_closed())) {
+      // We choose a constraint of `x' that saturates the point `g'
+      // and that belongs to `x_con_sys_minus_y_con_sys' and we put
+      // these constraints in a temporary system of constraints.
+      ConSys tmp_con_sys(x1.topology(), 0, x1.con_sys.num_columns());
+      for (dimension_type j = x_con_sys_minus_y_con_sys.num_rows();
+	   j-- > 0; ) {
+	Constraint& c = x_con_sys_minus_y_con_sys[j];
+	if (c * g == 0)
+	  tmp_con_sys.insert(c);
+      }
+      // We build the new constraint that is
+      // obtained adding all the chosen normalized constraint.
+      if (tmp_con_sys.num_rows() != 0) {
+	if (tmp_con_sys.num_rows() == 1)
+	  // If we have chosen only a constraint, we add it to the
+	  // new system.
+	  new_con_sys.insert(tmp_con_sys[0]);
+	else {
+	  // The number of the chosen constraints is greather than 1.
+	  dimension_type tmp_con_sys_num_rows = tmp_con_sys.num_rows();
+	  // We compute the norms of the vectors composed by the
+	  // homogeneous terms of the chosen constraints and 
+	  // we put it into the vector `norms'.
+	  // NOTE: Actually, the coefficients of `norms' are the
+	  // square of the norms of the vectors.
+	  std::vector<Integer> norms(tmp_con_sys_num_rows);
+	  for (dimension_type h = tmp_con_sys_num_rows; h-- > 0; ) {
+	    Constraint& tmp_c = tmp_con_sys[h];
+	    for (dimension_type k = tmp_con_sys.num_columns(); k-- > 1; )
+	    norms[h] += tmp_c[k] * tmp_c[k];
+	  }
 
-	    // If there is a strict inequality in the chosen
-	    // constraints, the new constraint is a strict inequality,
-	    // too. Otherwise it is a non-strict inequality.
+	  // In `lcm_norm' we put the least common multiple of the
+	  // coefficients of the vector `norms'.
+	  Integer lcm_norm = norms[0];
+	  for (dimension_type h = 0; h < tmp_con_sys_num_rows; ++h)
+	    lcm_assign(lcm_norm, norms[h]);
+	  
+	  // The new constraints is equal to `e op b', where `op' is
+	  // the symbol of strict inequality if in the system
+	  // `tmp_con_sys' there is a strict inequality or otherwise
+	  // the symbol of not strict inequality; `e' is equal to the
+	  // sum of all vectors that are obtained from the constraints
+	  // of `tmp_con_sys' erasing the non-homogeneous term and
+	  // modifying them so that they have the same length; `b' is
+	  // equal to `e * g'.
+	  // NOTE: The real thing that we do is a bad approximation of
+	  // what we have just written. We are still working on this
+	  // problem.
+	  LinExpression e(0);
+	  bool strict_inequality = false;
+	  for (dimension_type h = tmp_con_sys_num_rows; h-- > 0; ) {
+	    //for (dimension_type h = 0; h < tmp_con_sys.num_rows(); ++h) {
+	    LinExpression tmp(tmp_con_sys[h]);
+	    tmp -= tmp[0];
+	    for (dimension_type t = tmp.size(); t-- > 1; )
+	      tmp[t] = tmp[t] * lcm_norm / norms[h];
+	    e += tmp;
+	    if (tmp_con_sys[h].is_strict_inequality())
+	      strict_inequality = true;
+	  }
+	  Integer tmp = 0;
+	  for (size_t t = e.size(); t-- > 1; )
+	    tmp+= e[t] * g[t];
+	  e -= tmp;
+	  e.normalize();
+	  
+	  // If there is a strict inequality in the chosen
+	  // constraints, the new constraint is a strict inequality,
+	  // too. Otherwise it is a non-strict inequality.
+	  if (!e.all_homogeneous_terms_are_zero())
 	    if (strict_inequality)
 	      new_con_sys.insert(e > 0);
 	    else
 	      new_con_sys.insert(e >= 0);
-	  }
+	  
 	}
       }
+    }
   }
   std::swap(new_con_sys, x1.con_sys);
-
+  
   // The resulting polyhedron has only
   // the system of constraints up to date.
   x1.clear_generators_up_to_date();
@@ -3379,7 +3418,7 @@ PPL::Polyhedron::BBRZ02_widening_assign(const Polyhedron& y) {
   // *****************
   // Second technique.
   // *****************
- 
+
   // To implement the secondtechnique of the widening proposed in
   // BBRZ02 we must have a copy of `x'.
   Polyhedron x2(x);
@@ -3474,18 +3513,18 @@ PPL::Polyhedron::BBRZ02_widening_assign(const Polyhedron& y) {
   if (!x3.sat_c_is_up_to_date())
     x3.sat_c.transpose_assign(x3.sat_g);
 
-  //tmp_sat.resize(y_gen_sys_num_rows, x3_con_sys_num_rows);
-  assert(tmp_sat.num_columns() >= x3_con_sys_num_rows);
+  // We build a temporary saturation matrix in which we put the relations
+  // between the constraints of `x3' and the generators of `y'.
+  SatMatrix tmp_sat(y_gen_sys_num_rows, x3_con_sys_num_rows);
   for (dimension_type i = y_gen_sys_num_rows; i-- > 0; )
     for (dimension_type j = x3_con_sys_num_rows; j-- > 0; )
       if (x3.con_sys[j] * y.gen_sys[i] > 0)
         tmp_sat[i].set(j);
-      else
-	tmp_sat[i].clear(j);
+
   for (dimension_type i = x3_gen_sys_num_rows; i-- > 0; ) {
     // We choose a ray of `x3' that doesn't belong to `y' and
     // "evolved" since a ray of `y'.
-    Generator& x3_g = x3.gen_sys[i];
+    Generator x3_g = x3.gen_sys[i];
     if (x3_g.is_ray()) {
       std::vector<bool> considered(x3.space_dim + 1);
       Poly_Gen_Relation rel = y.relation_with(x3_g);
@@ -3509,7 +3548,7 @@ PPL::Polyhedron::BBRZ02_widening_assign(const Polyhedron& y) {
 		  || tmp_1 > tmp_2 && sp_sign < 0)
 		minor = true;
 	      if (tmp_1 != tmp_2)
-		if (minor) {
+		if ((minor && x3_g[k] > 0) || (!minor && x3_g[k] < 0)) {
 		  x3_g[k] = 0;
 		  considered[k] = true;
 		}
@@ -3519,6 +3558,7 @@ PPL::Polyhedron::BBRZ02_widening_assign(const Polyhedron& y) {
 		}
 	    }
 	  x3_g.normalize();
+	  x3.gen_sys.insert(x3_g);
 	}
       }
     }

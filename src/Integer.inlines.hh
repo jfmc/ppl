@@ -42,6 +42,16 @@ gcd_assign(Integer& x, const Integer& y, const Integer& z) {
 }
 
 inline void
+lcm_assign(Integer& x, const Integer& y) {
+  mpz_lcm(x.get_mpz_t(), x.get_mpz_t(), y.get_mpz_t());
+}
+
+inline void
+lcm_assign(Integer& x, const Integer& y, const Integer& z) {
+  mpz_lcm(x.get_mpz_t(), y.get_mpz_t(), z.get_mpz_t());
+}
+
+inline void
 exact_div_assign(Integer& x, const Integer& y) {
   mpz_divexact(x.get_mpz_t(), x.get_mpz_t(), y.get_mpz_t());
 }
