@@ -78,13 +78,8 @@ PPL::GenSys::adjust_topology_and_dimension(Topology new_topology,
       add_zero_columns(cols_to_be_added);
       // ... and, if needed, move the \epsilon coefficients
       // to the new last column.
-      if (old_topology == NON_NECESSARILY_CLOSED) {
-	GenSys& gs = *this;
-	size_t old_eps_index = old_space_dim + 1;
-	size_t new_eps_index = new_space_dim + 1;
-	for (size_t i = num_rows(); i-- > 0; )
-	  std::swap(gs[i][new_eps_index], gs[i][old_eps_index]);
-      }
+      if (old_topology == NON_NECESSARILY_CLOSED)
+	swap_columns(old_space_dim + 1, new_space_dim + 1);
     }
   else
     // Here `cols_to_be_added == 0', so that
@@ -138,7 +133,7 @@ PPL::GenSys::has_points() const {
 	return true;
     }
   else {
-    // is_non_necessarily_closed() == true.
+    // is_necessarily_closed() == false.
     size_t eps_index = gs.num_columns() - 1;
     for (size_t i = num_rows(); i-- > 0; )
     if (gs[i][eps_index] != 0)
@@ -176,7 +171,9 @@ PPL::GenSys::insert(const Generator& g) {
       // The generator system is NOT necessarily closed:
       // copy the generator, adding the missing dimensions
       // and the \epsilon coefficient.
-      size_t gs_size = num_columns();
+      // NOTE: computing `gs_size = num_columns()' would provide
+      //       a wrong result if the matrix has no rows.
+      size_t gs_size = space_dimension() + 2;
       Generator tmp_g(g, gs_size);
       // If it was a point, set the \epsilon coordinate to 1
       // (i.e., set the coefficient equal to the divisor).
