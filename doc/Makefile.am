@@ -9,6 +9,7 @@
 # implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
 
 srcdir = @srcdir@
+srcpath = @srcpath@
 VPATH = @srcdir@
 
 @SET_MAKE@
@@ -55,7 +56,7 @@ user-print.latex-dir    \
 devref-browse.latex-dir \
 devref-print.latex-dir
 
-TEX_ENV = TEXINPUTS=$(srcdir):$(TEXINPUTS)
+TEX_ENV = TEXINPUTS=$(srcpath):$(TEXINPUTS)
 
 .SECONDARY: $(LATEX_DIRS)
 
