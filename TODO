@@ -7,8 +7,6 @@ To be Done Just After Merging the Strict Branch
 
 2) Add the swap() function for LinExpression.
 
-3) Check why we use \enum to document enums.
-
 4) Stop using <CODE> </CODE> tags.
 
 5) Rename Constraint::coefficient(void) to

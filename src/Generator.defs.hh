@@ -257,9 +257,7 @@ public:
   size_t space_dimension() const;
 
   //! The generator type.
-  /*! \enum Type
-      Describes the type of the generator.
-  */
+  /*! Describes the type of the generator. */
   enum Type {
     /*! The generator is a line. */
     LINE,

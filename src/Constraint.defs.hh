@@ -266,9 +266,7 @@ public:
   */
 
   //! The constraint type.
-  /*! \enum Type
-      Describes the type of the constraint.
-  */
+  /*! Describes the type of the constraint. */
   enum Type {
     /*! The constraint is an equality. */
     EQUALITY,
