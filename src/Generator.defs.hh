@@ -200,6 +200,12 @@ namespace Parma_Polyhedra_Library {
   When working with a vertex, be careful not to confuse the notion
   of <EM>coefficient</EM> with the notion of <EM>coordinate</EM>:
   these are equivalent only when the divisor of the vertex is 1.
+
+  \internal
+  An invariant for the vertex is that the denominator is positive. So, if
+  we built a vertex with a negative denominator, we negate all the row.
+  The invariant is always mainteined, because the combinatins of a vertex 
+  with another generator are always positive.
 */
 
 class Parma_Polyhedra_Library::Generator : PPL_HIDDEN Row {

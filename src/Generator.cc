@@ -49,6 +49,13 @@ PPL::vertex(const LinExpression& e, const Integer& d) {
   LinExpression ec = e;
   Generator g(ec);
   g[0] = d;
+
+  // If the denominator is negative, we multiply the vertex for
+  // -1, because we want that the denominator is always positive.
+  if (d < 0)
+    for (size_t i = g.size(); i-- > 0; )
+      negate(g[i]);
+
   g.set_is_ray_or_vertex();
   return g;
 }

@@ -222,7 +222,7 @@ PPL::Polyhedron::Polyhedron(GenSys& gs)
     size_t i = 0;
     size_t iend = gs.num_rows();
     for ( ; i < iend; ++i) {
-      if (gs[i][0] != 0)
+      if (gs[i][0] > 0)
 	break;
     }
     if (i == iend)
@@ -244,7 +244,7 @@ PPL::Polyhedron::Polyhedron(GenSys& gs)
     status.set_empty();
   else
     // It has to be a vertex.
-    assert(gs[0][0] != 0);
+    assert(gs[0][0] > 0);
 }
 
 
@@ -1663,7 +1663,7 @@ PPL::Polyhedron::add_generators_and_minimize(GenSys& gs) {
     size_t i = 0;
     size_t iend = gs.num_rows();
     for ( ; i < iend; ++i) {
-      if (gs[i][0] != 0)
+      if (gs[i][0] > 0)
 	break;
     }
     if (i == iend)
@@ -1715,7 +1715,7 @@ PPL::Polyhedron::add_generators(GenSys& gs) {
     size_t i = 0;
     size_t iend = gs.num_rows();
     for ( ; i < iend; ++i) {
-      if (gs[i][0] != 0)
+      if (gs[i][0] > 0)
 	break;
     }
     if (i == iend)
