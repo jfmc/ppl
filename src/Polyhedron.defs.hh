@@ -564,44 +564,42 @@ public:
   //! bounded from above in \p *this, in which case the supremum
   //! value is computed.
   /*!
-    \param expr         The linear expression to be maximized subject
-                        to \p *this;
-    \param numerator    The numerator of the supremum value;
-    \param denominator  The denominator of the supremum value;
-    \param maximum      <CODE>true</CODE> if and only if the supremum
-                        is also the maximum value.
+    \param expr     The linear expression to be maximized subject to \p *this;
+    \param sup_n    The numerator of the supremum value;
+    \param sup_d    The denominator of the supremum value;
+    \param maximum  <CODE>true</CODE> if and only if the supremum
+                    is also the maximum value.
     \exception std::invalid_argument thrown if \p expr and \p *this
                                      are dimension-incompatible.
 
-    If \p expr is not bounded from above, <CODE>false</CODE> is returned
-    and \p numerator, \p denominator and \p maximum
-    are left untouched.
+    If \p *this is empty or \p expr is not bounded from above,
+    <CODE>false</CODE> is returned and \p sup_n, \p sup_d and \p
+    maximum are left untouched.
   */
   bool maximize(const LinExpression& expr,
-		Integer& numerator, Integer& denominator, bool& maximum) const;
+		Integer& sup_n, Integer& sup_d, bool& maximum) const;
 
   //! \brief
   //! Returns <CODE>true</CODE> if and only if \p expr is
   //! bounded from above in \p *this, in which case the supremum
   //! value and a point where \p expr reaches it are computed.
   /*!
-    \param expr         The linear expression to be maximized subject
-                        to \p *this;
-    \param numerator    The numerator of the supremum value;
-    \param denominator  The denominator of the supremum value;
-    \param maximum      <CODE>true</CODE> if and only if the supremum
-                        is also the maximum value;
-    \param point        A point or closure point where \p expr
-                        reaches its supremum value.
+    \param expr     The linear expression to be maximized subject to \p *this;
+    \param sup_n    The numerator of the supremum value;
+    \param sup_d    The denominator of the supremum value;
+    \param maximum  <CODE>true</CODE> if and only if the supremum
+                    is also the maximum value;
+    \param point    A point or closure point where \p expr
+                    reaches its supremum value.
     \exception std::invalid_argument thrown if \p expr and \p *this
                                      are dimension-incompatible.
 
-    If \p expr is not bounded from above, <CODE>false</CODE> is returned
-    and \p numerator, \p denominator, \p maximum and \p point
-    are left untouched.
+    If \p *this is empty or \p expr is not bounded from above,
+    <CODE>false</CODE> is returned and \p sup_n, \p sup_d, \p maximum
+    and \p point are left untouched.
   */
   bool maximize(const LinExpression& expr,
-		Integer& numerator, Integer& denominator, bool& maximum,
+		Integer& sup_n, Integer& sup_d, bool& maximum,
 		Generator& point) const;
 
   //! \brief
@@ -609,44 +607,42 @@ public:
   //! bounded from below in \p *this, in which case the infimum
   //! value is computed.
   /*!
-    \param expr         The linear expression to be minimized subject
-                        to \p *this;
-    \param numerator    The numerator of the infimum value;
-    \param denominator  The denominator of the infimum value;
-    \param minimum      <CODE>true</CODE> if and only if the infimum
-                        is also the minimum value.
+    \param expr     The linear expression to be minimized subject to \p *this;
+    \param inf_n    The numerator of the infimum value;
+    \param inf_d    The denominator of the infimum value;
+    \param minimum  <CODE>true</CODE> if and only if the infimum
+                    is also the minimum value.
     \exception std::invalid_argument thrown if \p expr and \p *this
                                      are dimension-incompatible.
 
-    If \p expr is not bounded from below, <CODE>false</CODE> is returned
-    and \p numerator, \p denominator and \p minimum
-    are left untouched.
+    If \p *this is empty or \p expr is not bounded from below,
+    <CODE>false</CODE> is returned and \p inf_n, \p inf_d and \p
+    minimum are left untouched.
   */
   bool minimize(const LinExpression& expr,
-		Integer& numerator, Integer& denominator, bool& minimum) const;
+		Integer& inf_n, Integer& inf_d, bool& minimum) const;
 
   //! \brief
   //! Returns <CODE>true</CODE> if and only if \p expr is
   //! bounded from below in \p *this, in which case the infimum
   //! value and a point where \p expr reaches it are computed.
   /*!
-    \param expr         The linear expression to be minimized subject
-                        to \p *this;
-    \param numerator    The numerator of the infimum value;
-    \param denominator  The denominator of the infimum value;
-    \param minimum      <CODE>true</CODE> if and only if the infimum
-                        is also the minimum value;
-    \param point        A point or closure point where \p expr
-                        reaches its infimum value.
+    \param expr     The linear expression to be minimized subject to \p *this;
+    \param inf_n    The numerator of the infimum value;
+    \param inf_d    The denominator of the infimum value;
+    \param minimum  <CODE>true</CODE> if and only if the infimum
+                    is also the minimum value;
+    \param point    A point or closure point where \p expr
+                    reaches its infimum value.
     \exception std::invalid_argument thrown if \p expr and \p *this
                                      are dimension-incompatible.
 
-    If \p expr is not bounded from below, <CODE>false</CODE> is returned
-    and \p numerator, \p denominator, \p minimum and \p point
-    are left untouched.
+    If \p *this is empty or \p expr is not bounded from below,
+    <CODE>false</CODE> is returned and \p inf_n, \p inf_d, \p minimum
+    and \p point are left untouched.
   */
   bool minimize(const LinExpression& expr,
-		Integer& numerator, Integer& denominator, bool& minimum,
+		Integer& inf_n, Integer& inf_d, bool& minimum,
 		Generator& point) const;
 
   //! Returns <CODE>true</CODE> if and only if \p *this contains \p y.
@@ -1848,6 +1844,30 @@ private:
                                      are dimension-incompatible.
   */
   bool bounds(const LinExpression& expr, bool from_above) const;
+
+  //! Maximizes or minimizes \p expr subject to \p *this.
+  /*!
+    \param expr      The linear expression to be maximized or minimized
+                     subject to \p *this;
+    \param maximize  <CODE>true</CODE> if maximization is what is wanted;
+    \param ext_n     The numerator of the extremum value;
+    \param ext_d     The denominator of the extremum value;
+    \param included  <CODE>true</CODE> if and only if the extremum
+                     of \p expr can actually be reached in \p * this;
+    \param ppoint    When nonzero, points to a Generator object for
+                     storing a point or closure point where \p expr
+                     reaches the extremum value.
+    \exception std::invalid_argument thrown if \p expr and \p *this
+                                     are dimension-incompatible.
+
+    If \p *this is empty or \p expr is not bounded in the appropriate
+    direction, <CODE>false</CODE> is returned and \p ext_n, \p ext_d,
+    \p included and \p *ppoint are left untouched.
+  */
+  bool max_min(const LinExpression& expr,
+	       const bool maximize,
+	       Integer& ext_n, Integer& ext_d, bool& included,
+	       Generator* const ppoint = 0) const;
 
   //! \name Widening- and Extrapolation-Related Functions
   //@{

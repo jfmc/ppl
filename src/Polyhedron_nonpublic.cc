@@ -527,6 +527,54 @@ PPL::Polyhedron::bounds(const LinExpression& expr,
   return true;
 }
 
+bool
+PPL::Polyhedron::max_min(const LinExpression& expr,
+			 const bool maximize,
+			 Integer& ext_n, Integer& ext_d, bool& included,
+			 Generator* const ppoint) const {
+  // The dimension of `expr' should not be greater than the dimension
+  // of `*this'.
+  const dimension_type expr_space_dim = expr.space_dimension();
+  if (space_dim < expr_space_dim)
+    throw_dimension_incompatible((maximize
+				  ? "maximize(e, ...)"
+				  : "minimize(e, ...)"), "e", expr);
+
+  // For an empty polyhedron we simply return false.
+  if (marked_empty()
+      || (has_pending_constraints() && !process_pending_constraints())
+      || (!generators_are_up_to_date() && !update_generators()))
+    return false;
+
+#if 0
+  // The polyhedron has updated, possibly pending generators.
+  for (dimension_type i = gen_sys.num_rows(); i-- > 0; ) {
+    const Generator& g = gen_sys[i];
+    // Lines and rays in `*this' can cause `expr' to be unbounded.
+    if (g[0] == 0) {
+      // Compute the scalar product between `g' and `expr'.
+      tmp_Integer[0] = 0;
+      for (dimension_type j = expr.size(); j-- > 0; ) {
+	// The following two lines optimize the computation
+	// of tmp_Integer[0] += g[j] * expr[j].
+	tmp_Integer[1] = g[j] * expr[j];
+	tmp_Integer[0] += tmp_Integer[1];
+      }
+      const int sign = sgn(tmp_Integer[0]);
+      if (sign != 0
+	  && (g.is_line()
+	      || (maximize && sign > 0)
+	      || (!maximize && sign < 0)))
+	// `*this' does not bound `expr'.
+	return false;
+    }
+  }
+#endif
+  // No sources of unboundedness have been found for `expr'
+  // in the given direction.
+  return true;
+}
+
 void
 PPL::Polyhedron::set_zero_dim_univ() {
   status.set_zero_dim_univ();
