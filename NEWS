@@ -7,8 +7,8 @@ Parma Polyhedra Library NEWS -- history of user-visible changes
 NEWS for version 0.4 (released date unknown)
 --------------------------------------------------------------------------
 
-New Features
-============
+New and Changed Features
+========================
 
 o  All method and variable names containing the word "vertex"
    have been replaced by names containing the word "point"
@@ -22,7 +22,10 @@ o  The methods Polyhedron::includes(const Generator&) and
    Polyhedron::relation_with(const Constraint&),
    which return values of the new enumeration types
    Relation_Poly_Gen and Relation_Poly_Con, respectively.
-   
+
+o  The method Constraint::coefficient(void) has been renamed
+   to Constraint::inhomogeneous_term(void).
+
 o  The library no longer calls abort(): appropriate exceptions
    are always thrown instead.
 

@@ -49,16 +49,6 @@ Minor and Not So Minor Things
      http://www.cs.unipr.it/ppl/Documentation/bibliography#NemhauserW88
 
 
-Non-Necessarily-Closed Polyhedra
-================================
-
-We would like to support the library so as to deal with
-NNC polyhedra, i.e., polyhedra that can be expressed
-as the intersection of hyperspaces that need not be closed.
-This is work in progress and we hope to include it in
-release 0.4 of the Parma Polyhedra Library.
-
-
 Z-Polyhedra
 ===========
 
