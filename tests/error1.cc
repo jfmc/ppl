@@ -15,7 +15,7 @@ main() {
   GenSys gs;
   try {
     // This is an invalid vertex.
-    gs.insert(x + y + z /= 0);
+    gs.insert(vertex(x + y + z, 0));
   }
   catch (invalid_argument& e) {
 #if NOISY

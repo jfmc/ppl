@@ -65,7 +65,7 @@ main() {
 
   COUNT(ph);
   for (int n = 1; n <= 200; ++n) {
-    ph.insert(random(maxc)*x + random(maxc)*y + random(maxc)*z /= 1);
+    ph.insert(vertex(random(maxc)*x + random(maxc)*y + random(maxc)*z));
     COUNT(ph);
   }
 

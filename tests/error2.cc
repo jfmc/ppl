@@ -12,9 +12,9 @@ main() {
   Variable y(1);
 
   GenSys gs;
-  gs.insert(x + y /= 1);
-  gs.insert(1 ^ x + 0*y);
-  gs.insert(1 ^ 0*x + y);
+  gs.insert(vertex(x + y));
+  gs.insert(ray(x + 0*y));
+  gs.insert(ray(0*x + y));
   Polyhedron ph(gs);
   LinExpression coeff = x + y + 1;
   try {

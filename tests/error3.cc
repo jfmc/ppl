@@ -12,7 +12,7 @@ int main() {
   Variable y(1);
   Polyhedron p1;
   Polyhedron p2;
-  p2.insert(x + y /= 1);
+  p2.insert(vertex(x + y));
   try {
     p2.convex_hull_assign(p1);
   }
