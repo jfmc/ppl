@@ -605,6 +605,34 @@ ppl_check_empty(Prolog_term_ref t_ph) {
 }
 
 extern "C" Prolog_foreign_return_type
+ppl_check_universe(Prolog_term_ref t_ph) {
+  try {
+    const PPL::Polyhedron* ph = get_ph_pointer(t_ph);
+    if (ph == 0)
+      return PROLOG_FAILURE;
+    CHECK(ph);
+    if (ph->check_universe())
+      return PROLOG_SUCCESS;
+  }
+  CATCH_ALL;
+  return PROLOG_FAILURE;
+}
+
+extern "C" Prolog_foreign_return_type
+ppl_is_bounded(Prolog_term_ref t_ph) {
+  try {
+    const PPL::Polyhedron* ph = get_ph_pointer(t_ph);
+    if (ph == 0)
+      return PROLOG_FAILURE;
+    CHECK(ph);
+    if (ph->is_bounded())
+      return PROLOG_SUCCESS;
+  }
+  CATCH_ALL;
+  return PROLOG_FAILURE;
+}
+
+extern "C" Prolog_foreign_return_type
 ppl_intersection_assign(Prolog_term_ref t_lhs, Prolog_term_ref t_rhs) {
   try {
     PPL::Polyhedron* lhs = get_ph_pointer(t_lhs);
