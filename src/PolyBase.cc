@@ -831,7 +831,7 @@ PPL::operator<=(const PolyBase& x, const PolyBase& y) {
       const Generator& gx = x.gen_sys[i];
       for (size_t j = y.con_sys.num_rows(); j-- > 0; ) {
 	const Constraint& cy = y.con_sys[j];
-	bool do_normal_test = (cy[eps_index] == 0 && gx[eps_index] == 0);
+	bool do_normal_test = (cy[eps_index] == 0 || gx[eps_index] == 0);
 	// If `do_normal_test' is true, then we perform the same
 	// test we did for necessarily closed polyhedra.
 	// If otherwise `do_normal_test' is false, then
