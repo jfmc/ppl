@@ -60,8 +60,6 @@ PPL::Polyhedron::Polyhedron(const Topology topol,
     if (num_dimensions > 0) {
       add_low_level_constraints(con_sys);
       con_sys.adjust_topology_and_space_dimension(topol, num_dimensions);
-      // CHECK ME.
-      // The constraint system is in the minimal form.
       set_constraints_minimized();
     }
   space_dim = num_dimensions;
@@ -82,7 +80,7 @@ PPL::Polyhedron::Polyhedron(const Polyhedron& y)
   if (y.sat_c_is_up_to_date())
     sat_c = y.sat_c;
   if (y.sat_g_is_up_to_date())
-      sat_g = y.sat_g;
+    sat_g = y.sat_g;
 }
 
 PPL::Polyhedron::Polyhedron(const Topology topol, const ConSys& ccs)
@@ -1463,6 +1461,20 @@ throw_dimension_incompatible(const char* method,
     << "this->space_dimension() == " << space_dimension()
     << ", required space dimension == " << required_space_dim << ".";
   throw std::invalid_argument(s.str());
+}
+
+void
+PPL::Polyhedron::throw_space_dimension_overflow(const char* method,
+						const char* reason) const {
+  std::ostringstream s;
+  s << "PPL::";
+  if (is_necessarily_closed())
+    s << "C_";
+  else
+    s << "NNC_";
+  s << "Polyhedron::" << method << ":" << std::endl
+  << reason << ".";
+  throw std::length_error(s.str());
 }
 
 void
