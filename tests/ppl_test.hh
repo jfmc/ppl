@@ -145,8 +145,8 @@ numer_denom(const Checked_Number<T, Policy>& from,
   den = q.get_den();
 }
 
-typedef BD_Shape<Checked_Number<mpq_class, Extended_Number_Policy> > TBD_Shape;
-//typedef BD_Shape<Checked_Number<int, Extended_Number_Policy> > TBD_Shape;
+//typedef BD_Shape<Checked_Number<mpq_class, Extended_Number_Policy> > TBD_Shape;
+typedef BD_Shape<Checked_Number<int, Extended_Number_Policy> > TBD_Shape;
 #endif
 
 }
