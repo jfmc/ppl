@@ -56,7 +56,7 @@ Qs2:        The resulting list of temporary polyhedra.
 */
 
 %%% The base case.
-solve(true,_Polyhedron,Dims,Dims,_Q,Qs,Qs):-
+solve(true,_Polyhedron,Dims,Dims,_,Qs,Qs):-
     !.
 
 %%% The case when the query is equality.
@@ -70,19 +70,16 @@ solve(A=B,Polyhedron,InDims,OutDims,Q,Qs,Qs):-
     solve({A=B},Polyhedron,InDims,OutDims,Q,Qs,Qs).
 
 %%% The case when the query is a set of constraints.
-solve({Cs},Polyhedron,InDims,InDims,Q,Qs,Qs):- 
-    !,
+solve({Cs},Polyhedron,InDims,InDims,Q,Qs,Qs):-
     ppl_remove_higher_dimensions(Polyhedron,InDims),
     ppl_convex_hull_assign(Polyhedron,Q),
          % The number of extra dimensions is the number of new variables.
          % Solve the constraints using the constraint solver.
-    solve_constraints(Cs,Polyhedron,Q),
-         % If the Polyhedron is empty, then we fail 
-         % and delete the copy of the polyhedron.
+    solve_constraints(Cs,Polyhedron),
+         % If the Polyhedron is empty, then we fail. 
     (
      ppl_check_empty(Polyhedron)
     ->
-     ppl_delete_polyhedron(Q),
      fail
     ;
      true
@@ -115,24 +112,21 @@ solve(Atom,Polyhedron,InDims,OutDims,Q,InQs,[Q1|Q1s]):-
          % Now we can solve the body.
     solve(Body,Polyhedron,BOutDims,OutDims,Q1,InQs,Q1s).
 
-/*
-The constraints are solved by inserting them into the polyhedron.
-This fails if the constraints are unsatisfiable.
-*/
-solve_constraints((C,D),Polyhedron,Q):- 
-    !,
-    solve_constraints(C,Polyhedron,Q),
-    solve_constraints(D,Polyhedron,Q).
-solve_constraints(C,Polyhedron,_Q):- 
-    ppl_insert_constraint(Polyhedron,C).
+solve(Atom,_Polyhedron,_InDims,_OutDims,Q,_InQs,_):-
+     Atom \= (_,_),
+     !,
+     ppl_delete_polyhedron(Q),
+     fail.
 
 /*
-The two lists are made equal in the polyhedron.
+The constraints are solved by inserting them into the polyhedron.
 */
-solve_equal_list([],[],_Polyhedron).
-solve_equal_list([A|As],[B|Bs],Polyhedron):-
-    solve_constraints(A=B,Polyhedron),
-    solve_equal_list(As,Bs,Polyhedron).
+solve_constraints((C,D),Polyhedron):- 
+    !,
+    solve_constraints(C,Polyhedron),
+    solve_constraints(D,Polyhedron).
+solve_constraints(C,Polyhedron):- 
+    ppl_insert_constraint(Polyhedron,C).
 
 /*
 Displays the constraints.
@@ -160,7 +154,6 @@ numvars_list([Arg|Args],InN,OutN):-
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 :- dynamic user_clause/2.
-:- dynamic polyhedron_stack/1.
 
 write_error(Message) :-
   write('clpq error: '),
@@ -226,8 +219,7 @@ main_loop :-
 clear_program :-
   retract(user_clause(_, _)),
   fail.
-clear_program:-
-  retract(polyhedron_stack(_)).
+clear_program.
 
 list_program :-
   user_clause(Head, Body),
@@ -289,41 +281,19 @@ do_command(statistics) :-
   main_loop.
 do_command(Query) :-
   solve(Query,Qs),
-  retract(polyhedron_stack(Ps)),
-  remove_redundant(Ps,Qs),
-  assert(polyhedron_stack(Qs)),
   query_next_solution,
       % If query_next_solution succeeds,
       % then no more solutions are required and stack of
       % temporary polyhedra can be removed.
-  retract(polyhedron_stack(Qs)),
   delete_polyhedra(Qs),
-  assert(polyhedron_stack([])),
   main_loop.
 do_command(_) :-
-  retract(polyhedron_stack(Ps)),
-  delete_polyhedra(Ps),
-  assert(polyhedron_stack([])),
   main_loop.
-
-remove_redundant([],_Qs).
-remove_redundant([P|Ps],Qs):-
-  member_check(P,Qs),
-  !,
-  remove_redundant(Ps,Qs).
-remove_redundant([P|Ps],Qs):-
-  ppl_delete_polyhedron(P),
-  remove_redundant(Ps,Qs).
 
 delete_polyhedra([]).
 delete_polyhedra([Q|Qs]):-
    ppl_delete_polyhedron(Q),
    delete_polyhedra(Qs).
-
-member_check(A,[A|_]):-
-   !.
-member_check(A,[_|Bs]):-
-   member_check(A,Bs).
 
 query_next_solution :-
   write(' more? '),
@@ -344,5 +314,4 @@ query_next_solution :-
 
 :-
   nofileerrors,
-  assert(polyhedron_stack([])),
   main_loop.
