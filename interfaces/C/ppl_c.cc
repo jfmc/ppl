@@ -132,6 +132,25 @@ CATCH_ALL
 
 DECLARE_CONVERSIONS(Coefficient)
 
+DECLARE_CONVERSIONS(LinExpression)
+
+DECLARE_CONVERSIONS(Constraint)
+
+DECLARE_CONVERSIONS(ConSys)
+
+typedef ConSys::const_iterator ConSys__const_iterator;
+DECLARE_CONVERSIONS(ConSys__const_iterator)
+
+DECLARE_CONVERSIONS(Generator)
+
+DECLARE_CONVERSIONS(GenSys)
+
+typedef GenSys::const_iterator GenSys__const_iterator;
+DECLARE_CONVERSIONS(GenSys__const_iterator)
+
+DECLARE_CONVERSIONS(Polyhedron)
+
+
 int
 ppl_new_Coefficient(ppl_Coefficient_t* pc) try {
   *pc = to_nonconst(new Integer(0));
@@ -193,8 +212,6 @@ ppl_Coefficient_OK(ppl_const_Coefficient_t /* c */) try {
 }
 CATCH_ALL
 
-
-DECLARE_CONVERSIONS(LinExpression)
 
 int
 ppl_new_LinExpression(ppl_LinExpression_t* ple) try {
@@ -271,8 +288,6 @@ ppl_LinExpression_OK(ppl_const_LinExpression_t /* le */) try {
 CATCH_ALL
 
 
-DECLARE_CONVERSIONS(Constraint)
-
 int
 ppl_new_Constraint(ppl_Constraint_t* pc,
 		   ppl_const_LinExpression_t le,
@@ -318,6 +333,15 @@ CATCH_ALL
 int
 ppl_new_Constraint_zero_dim_positivity(ppl_Constraint_t* pc) try {
   *pc = to_nonconst(new Constraint(Constraint::zero_dim_positivity()));
+  return 0;
+}
+CATCH_ALL
+
+int
+ppl_new_Constraint_from_Constraint(ppl_Constraint_t* pc,
+				   ppl_const_Constraint_t c) try {
+  const Constraint& cc = *to_const(c);
+  *pc = to_nonconst(new Constraint(cc));
   return 0;
 }
 CATCH_ALL
@@ -387,8 +411,15 @@ ppl_Constraint_OK(ppl_const_Constraint_t /* c */) try {
 }
 CATCH_ALL
 
+int
+ppl_new_LinExpression_from_Constraint(ppl_LinExpression_t* ple,
+				      ppl_const_Constraint_t c) try {
+  const Constraint& cc = *to_const(c);
+  *ple = to_nonconst(new LinExpression(cc));
+  return 0;
+}
+CATCH_ALL
 
-DECLARE_CONVERSIONS(ConSys)
 
 int
 ppl_new_ConSys(ppl_ConSys_t* pcs) try {
@@ -459,9 +490,6 @@ ppl_ConSys_OK(ppl_const_ConSys_t cs) try {
 }
 CATCH_ALL
 
-
-typedef ConSys::const_iterator ConSys__const_iterator;
-DECLARE_CONVERSIONS(ConSys__const_iterator)
 
 int
 ppl_new_ConSys__const_iterator(ppl_ConSys__const_iterator_t* pcit) try {
@@ -544,8 +572,6 @@ ppl_ConSys__const_iterator_equal_test
 CATCH_ALL
 
 
-DECLARE_CONVERSIONS(Generator)
-
 int
 ppl_new_Generator(ppl_Generator_t* pg,
 		  ppl_const_LinExpression_t le,
@@ -593,6 +619,15 @@ ppl_new_Generator_zero_dim_closure_point(ppl_Generator_t* pg) try {
 }
 CATCH_ALL
 #endif
+
+int
+ppl_new_Generator_from_Generator(ppl_Generator_t* pg,
+				 ppl_const_Generator_t g) try {
+  const Generator& gg = *to_const(g);
+  *pg = to_nonconst(new Generator(gg));
+  return 0;
+}
+CATCH_ALL
 
 int
 ppl_delete_Generator(ppl_const_Generator_t le) try {
@@ -661,8 +696,15 @@ ppl_Generator_OK(ppl_const_Generator_t /* g */) try {
 }
 CATCH_ALL
 
+int
+ppl_new_LinExpression_from_Generator(ppl_LinExpression_t* ple,
+				     ppl_const_Generator_t g) try {
+  const Generator& gg = *to_const(g);
+  *ple = to_nonconst(new LinExpression(gg));
+  return 0;
+}
+CATCH_ALL
 
-DECLARE_CONVERSIONS(GenSys)
 
 int
 ppl_new_GenSys(ppl_GenSys_t* pgs) try {
@@ -732,9 +774,6 @@ ppl_GenSys_OK(ppl_const_GenSys_t gs) try {
 }
 CATCH_ALL
 
-
-typedef GenSys::const_iterator GenSys__const_iterator;
-DECLARE_CONVERSIONS(GenSys__const_iterator)
 
 int
 ppl_new_GenSys__const_iterator(ppl_GenSys__const_iterator_t* pgit) try {
@@ -816,8 +855,6 @@ ppl_GenSys__const_iterator_equal_test
 }
 CATCH_ALL
 
-
-DECLARE_CONVERSIONS(Polyhedron)
 
 int
 ppl_new_C_Polyhedron_from_dimension(ppl_Polyhedron_t* pph,

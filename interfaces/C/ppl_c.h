@@ -125,6 +125,23 @@ typedef struct ppl_ ## Type ## _tag const* ppl_const_ ## Type ## _t
 
 PPL_TYPE_DECLARATION(Coefficient);
 
+PPL_TYPE_DECLARATION(LinExpression);
+
+PPL_TYPE_DECLARATION(Constraint);
+
+PPL_TYPE_DECLARATION(ConSys);
+
+PPL_TYPE_DECLARATION(ConSys__const_iterator);
+
+PPL_TYPE_DECLARATION(Generator);
+
+PPL_TYPE_DECLARATION(GenSys);
+
+PPL_TYPE_DECLARATION(GenSys__const_iterator);
+
+PPL_TYPE_DECLARATION(Polyhedron);
+
+
 /*!
   Creates a new coefficent with value 0 and writes an handle for the
   newly created coefficient at address \p pc.
@@ -183,8 +200,6 @@ int
 ppl_Coefficient_OK __P((ppl_const_Coefficient_t c));
 
 
-PPL_TYPE_DECLARATION(LinExpression);
-
 /*!
   Creates a new linear expression corresponding to the constant 0 in a
   zero-dimensional space; writes an handle for the new linear
@@ -209,6 +224,22 @@ ppl_new_LinExpression_with_dimension __P((ppl_LinExpression_t* ple,
 int
 ppl_new_LinExpression_from_LinExpression __P((ppl_LinExpression_t* ple,
 					      ppl_const_LinExpression_t le));
+
+/*!
+  Builds a linear expression corresponding to constraint \p c;
+  writes an handle for the newly created linear expression at address \p ple.
+*/
+int
+ppl_new_LinExpression_from_Constraint __P((ppl_LinExpression_t* ple,
+					   ppl_const_Constraint_t c));
+
+/*!
+  Builds a linear expression corresponding to generator \p g;
+  writes an handle for the newly created linear expression at address \p ple.
+*/
+int
+ppl_new_LinExpression_from_Generator __P((ppl_LinExpression_t* ple,
+					  ppl_const_Generator_t g));
 
 /*!
   Invalidates the handle \p le: this makes sure the corresponding
@@ -257,8 +288,6 @@ int
 ppl_LinExpression_OK __P((ppl_const_LinExpression_t le));
 
 
-PPL_TYPE_DECLARATION(Constraint);
-
 /*!
   Describes the relations represented by a constraint.
 */
@@ -300,6 +329,14 @@ ppl_new_Constraint_zero_dim_false __P((ppl_Constraint_t* pc));
 */
 int
 ppl_new_Constraint_zero_dim_positivity __P((ppl_Constraint_t* pc));
+
+/*!
+  Builds a constraint that is a copy of \p c; writes an handle
+  for the newly created constraint at address \p pc.
+*/
+int
+ppl_new_Constraint_from_Constraint __P((ppl_Constraint_t* pc,
+					ppl_const_Constraint_t c));
 
 /*!
   Invalidates the handle \p c: this makes sure the corresponding
@@ -351,8 +388,6 @@ ppl_Constraint_inhomogeneous_term __P((ppl_const_Constraint_t c,
 int
 ppl_Constraint_OK __P((ppl_const_Constraint_t c));
 
-
-PPL_TYPE_DECLARATION(ConSys);
 
 /*!
   Builds an empty system of constraints and writes an handle to it at
@@ -418,8 +453,6 @@ ppl_ConSys_insert_Constraint __P((ppl_ConSys_t cs, ppl_const_Constraint_t c));
 int
 ppl_ConSys_OK __P((ppl_const_ConSys_t c));
 
-
-PPL_TYPE_DECLARATION(ConSys__const_iterator);
 
 /*!
   Builds a new `const iterator' and writes an handle to it at address
@@ -492,8 +525,6 @@ __P((ppl_const_ConSys__const_iterator_t x,
      ppl_const_ConSys__const_iterator_t y));
 
 
-PPL_TYPE_DECLARATION(Generator);
-
 /*!
   Describes the different kinds of generators.
 */
@@ -538,6 +569,14 @@ ppl_new_Generator_zero_dim_point __P((ppl_Generator_t* pg));
 */
 int
 ppl_new_Generator_zero_dim_closure_point __P((ppl_Generator_t* pg));
+
+/*!
+  Builds a generator that is a copy of \p g; writes an handle
+  for the newly created generator at address \p pg.
+*/
+int
+ppl_new_Generator_from_Generator __P((ppl_Generator_t* pg,
+				      ppl_const_Generator_t g));
 
 /*!
   Invalidates the handle \p g: this makes sure the corresponding
@@ -588,8 +627,6 @@ ppl_Generator_divisor __P((ppl_const_Generator_t g, ppl_Coefficient_t n));
 int
 ppl_Generator_OK __P((ppl_const_Generator_t g));
 
-
-PPL_TYPE_DECLARATION(GenSys);
 
 /*!
   Builds an empty system of generators and writes an handle to it at
@@ -656,8 +693,6 @@ ppl_GenSys_insert_Generator __P((ppl_GenSys_t gs, ppl_const_Generator_t g));
 int
 ppl_GenSys_OK __P((ppl_const_GenSys_t c));
 
-
-PPL_TYPE_DECLARATION(GenSys__const_iterator);
 
 /*!
   Builds a new `const iterator' and writes an handle to it at address
@@ -731,8 +766,6 @@ ppl_GenSys__const_iterator_equal_test
 __P((ppl_const_GenSys__const_iterator_t x,
      ppl_const_GenSys__const_iterator_t y));
 
-
-PPL_TYPE_DECLARATION(Polyhedron);
 
 /*!
   Builds an universe closed polyhedron of dimension \p d and writes an
