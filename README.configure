@@ -110,16 +110,16 @@ Let us take the occasion to stress, once again, the fact that you
 _must_ use the same C++ compiler to compile the C++ interface of GMP,
 the PPL and your application, if you use the C++ interface of the PPL.
 
-Here is an example with the Intel C/C++ compiler version 8.0.  Assuming
+Here is an example with the Intel C/C++ compiler version 8.1.  Assuming
 you have configured GMP with a command like
 
-  CC=icc CXX=icpc /path/to/gmp-4.1.3/configure --enable-cxx \
+  CC=icc CXX=icpc /path/to/gmp-4.1.4/configure --enable-cxx \
     --prefix=/opt/intel_cc_80
 
 you can configure the PPL with a command like
 
   /path/to/ppl-x.y/configure --with-cxx=icpc --with-cc=icc \
-    --with-cxxflags="-w2 -wd177,193,279,383,444,981,1418" \
+    --with-cxxflags="-w2 -wd161,177,193,279,383,444,981,1188,1418" \
     --with-libgmpxx-prefix=/opt/intel_cc_80
 
 Notice that the `--with-cxxflags' option is absolutely non-essential
@@ -129,7 +129,7 @@ passed to the configure script.
 As an other example, here is how you can compile the PPL with
 Comeau C/C++ 4.3.3.  First configure GMP with a command like
 
-  CXX=como /path/to/gmp-4.1.3/configure --enable-cxx \
+  CXX=como /path/to/gmp-4.1.4/configure --enable-cxx \
     --disable-shared --prefix=/usr/local/lib/como433/local
 
 Then you can configure the PPL with a command like
