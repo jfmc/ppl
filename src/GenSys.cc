@@ -285,9 +285,12 @@ PPL::GenSys::affine_image(size_t v,
       for (size_t j = 0; j < num_columns; ++j)
 	if (j != v)
 	  x[i][j] *= denominator;
-  // We may have trasformed valid lines and rays
+
+  // If the mapping in not invertible,
+  // we may have trasformed valid lines and rays
   // into the origin of the space.
-  x.remove_invalid_lines_and_rays();
+  if (expr[num_var] == 0)
+    x.remove_invalid_lines_and_rays();
 
   x.strong_normalize();
 }
