@@ -23,8 +23,7 @@ site: http://www.cs.unipr.it/ppl/ . */
 
 #include <config.h>
 
-#include "Status.defs.hh"
-
+#include "Polyhedron.defs.hh"
 #include <iostream>
 #include <string>
 #include <cassert>
@@ -40,15 +39,15 @@ const std::string consys_min = "CM";
 const std::string gensys_min = "GM";
 const std::string consys_upd = "CS";
 const std::string gensys_upd = "GS";
-const std::string sat_c = "SC";
-const std::string sat_g = "SG";
+const std::string satc_upd = "SC";
+const std::string satg_upd = "SG";
 const std::string consys_pending = "CP";
 const std::string gensys_pending = "GP";
 const char yes = '+';
 const char no = '-';
 const char sep = ' ';
 
-/*! \relates Parma_Polyhedra_Library::Status
+/*! \relates Parma_Polyhedra_Library::Polyhedron::Status
   Reads a keyword and its associated on/off flag from \p s.
   Returns <CODE>true</CODE> if the operation is successful,
   returns <CODE>false</CODE> otherwise.
@@ -69,7 +68,7 @@ get_field(std::istream& s, const std::string& keyword, bool& positive) {
 } // namespace
 
 void
-PPL::Status::ascii_dump(std::ostream& s) const {
+PPL::Polyhedron::Status::ascii_dump(std::ostream& s) const {
   s << (test_zero_dim_univ() ? yes : no) << zero_dim_univ << sep
     << (test_empty() ? yes : no) << empty << sep
     << sep
@@ -82,12 +81,12 @@ PPL::Status::ascii_dump(std::ostream& s) const {
     << (test_c_pending() ? yes : no) << consys_pending << sep
     << (test_g_pending() ? yes : no) << gensys_pending << sep
     << sep
-    << (test_sat_c_up_to_date() ? yes : no) << sat_c << sep
-    << (test_sat_g_up_to_date() ? yes : no) << sat_g << sep;
+    << (test_sat_c_up_to_date() ? yes : no) << satc_upd << sep
+    << (test_sat_g_up_to_date() ? yes : no) << satg_upd << sep;
 }
 
 bool
-PPL::Status::ascii_load(std::istream& s) {
+PPL::Polyhedron::Status::ascii_load(std::istream& s) {
   bool positive;
 
   if (!get_field(s, zero_dim_univ, positive))
@@ -142,14 +141,14 @@ PPL::Status::ascii_load(std::istream& s) {
   else
     reset_g_pending();
 
-  if (!get_field(s, sat_c, positive))
+  if (!get_field(s, satc_upd, positive))
     return false;
   if (positive)
     set_sat_c_up_to_date();
   else
     reset_sat_c_up_to_date();
 
-  if (!get_field(s, sat_g, positive))
+  if (!get_field(s, satg_upd, positive))
     return false;
   if (positive)
     set_sat_g_up_to_date();
@@ -162,7 +161,7 @@ PPL::Status::ascii_load(std::istream& s) {
 }
 
 bool
-PPL::Status::OK() const {
+PPL::Polyhedron::Status::OK() const {
   if (test_zero_dim_univ())
     // Zero-dim universe is OK.
     return true;

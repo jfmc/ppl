@@ -24,28 +24,6 @@ site: http://www.cs.unipr.it/ppl/ . */
 #ifndef PPL_Status_defs_hh
 #define PPL_Status_defs_hh 1
 
-#include "Status.types.hh"
-#include <iosfwd>
-
-namespace Parma_Polyhedra_Library {
-
-// Put them in the namespace here to declare them friends later.
-#if PPL_DOXYGEN_INCLUDE_IMPLEMENTATION_DETAILS
-//! Intersection: yields the assertions that are in \p x <EM>and</EM> \p y.
-/*! \relates Status */
-#endif // PPL_DOXYGEN_INCLUDE_IMPLEMENTATION_DETAILS
-Status operator&(Status x, Status y);
-
-#if PPL_DOXYGEN_INCLUDE_IMPLEMENTATION_DETAILS
-//! Union: yields the assertions that are in \p x <EM>or</EM> \p y.
-/*! \relates Status */
-#endif // PPL_DOXYGEN_INCLUDE_IMPLEMENTATION_DETAILS
-Status operator|(Status x, Status y);
-
-} // namespace Parma_Polyhedra_Library
-
-
-#ifdef PPL_DOXYGEN_INCLUDE_IMPLEMENTATION_DETAILS
 //! A conjunctive assertion about a polyhedron.
 /*!
   The assertions supported are:
@@ -101,18 +79,18 @@ Status operator|(Status x, Status y);
   - <EM>generators' saturation matrix up-to-date</EM> implies both
     <EM>constraints up-to-date</EM> and <EM>generators up-to-date</EM>.
 */
-#endif // PPL_DOXYGEN_INCLUDE_IMPLEMENTATION_DETAILS
-
-class Parma_Polyhedra_Library::Status {
+class Status {
 public:
   //! By default Status is the <EM>zero-dim universe</EM> assertion.
   Status();
 
+#if 0
   friend Status
   Parma_Polyhedra_Library::operator&(Status x, Status y);
 
   friend Status
   Parma_Polyhedra_Library::operator|(Status x, Status y);
+#endif
 
   //! \name Test, remove or add an individual assertion from the conjunction.
   //@{
@@ -207,7 +185,5 @@ private:
   //! Reset the bits in \p mask.
   void reset(flags_t mask);
 };
-
-#include "Status.inlines.hh"
 
 #endif // !defined(PPL_Status_defs_hh)

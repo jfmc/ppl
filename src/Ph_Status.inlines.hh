@@ -27,54 +27,56 @@ site: http://www.cs.unipr.it/ppl/ . */
 namespace Parma_Polyhedra_Library {
 
 inline
-Status::Status(flags_t mask)
+Polyhedron::Status::Status(flags_t mask)
   : flags(mask) {
 }
 
 inline
-Status::Status()
+Polyhedron::Status::Status()
   : flags(ZERO_DIM_UNIV) {
 }
 
-/*! \relates Status */
-inline Status
-operator&(Status x, Status y) {
-  return Status(x.flags & y.flags);
+#if 0
+/*! \relates Polyhedron::Status */
+inline Polyhedron::Status
+operator&(Polyhedron::Status x, Polyhedron::Status y) {
+  return Polyhedron::Status(x.flags & y.flags);
 }
 
-/*! \relates Status */
-inline Status
-operator|(Status x, Status y) {
-  return Status(x.flags | y.flags);
+/*! \relates Polyhedron::Status */
+inline Polyhedron::Status
+operator|(Polyhedron::Status x, Polyhedron::Status y) {
+  return Polyhedron::Status(x.flags | y.flags);
 }
+#endif
 
 inline bool
-Status::test_all(flags_t mask) const {
+Polyhedron::Status::test_all(flags_t mask) const {
   return (flags & mask) == mask;
 }
 
 inline bool
-Status::test_any(flags_t mask) const {
+Polyhedron::Status::test_any(flags_t mask) const {
   return flags & mask;
 }
 
 inline void
-Status::set(flags_t mask) {
+Polyhedron::Status::set(flags_t mask) {
   flags |= mask;
 }
 
 inline void
-Status::reset(flags_t mask) {
+Polyhedron::Status::reset(flags_t mask) {
   flags &= ~mask;
 }
 
 inline bool
-Status::test_zero_dim_univ() const {
+Polyhedron::Status::test_zero_dim_univ() const {
   return flags == ZERO_DIM_UNIV;
 }
 
 inline void
-Status::reset_zero_dim_univ() {
+Polyhedron::Status::reset_zero_dim_univ() {
   // This is a no-op if the current status is not zero-dim.
   if (flags == ZERO_DIM_UNIV)
     // In the zero-dim space, if it is not the universe it is empty.
@@ -82,145 +84,145 @@ Status::reset_zero_dim_univ() {
 }
 
 inline void
-Status::set_zero_dim_univ() {
+Polyhedron::Status::set_zero_dim_univ() {
   // Zero-dim universe is incompatible with anything else.
   flags = ZERO_DIM_UNIV;
 }
 
 inline bool
-Status::test_empty() const {
+Polyhedron::Status::test_empty() const {
   return test_any(EMPTY);
 }
 
 inline void
-Status::reset_empty() {
+Polyhedron::Status::reset_empty() {
   reset(EMPTY);
 }
 
 inline void
-Status::set_empty() {
+Polyhedron::Status::set_empty() {
   flags = EMPTY;
 }
 
 inline bool
-Status::test_c_up_to_date() const {
+Polyhedron::Status::test_c_up_to_date() const {
   return test_any(C_UP_TO_DATE);
 }
 
 inline void
-Status::reset_c_up_to_date() {
+Polyhedron::Status::reset_c_up_to_date() {
   reset(C_UP_TO_DATE);
 }
 
 inline void
-Status::set_c_up_to_date() {
+Polyhedron::Status::set_c_up_to_date() {
   set(C_UP_TO_DATE);
 }
 
 inline bool
-Status::test_g_up_to_date() const {
+Polyhedron::Status::test_g_up_to_date() const {
   return test_any(G_UP_TO_DATE);
 }
 
 inline void
-Status::reset_g_up_to_date() {
+Polyhedron::Status::reset_g_up_to_date() {
   reset(G_UP_TO_DATE);
 }
 
 inline void
-Status::set_g_up_to_date() {
+Polyhedron::Status::set_g_up_to_date() {
   set(G_UP_TO_DATE);
 }
 
 inline bool
-Status::test_c_minimized() const {
+Polyhedron::Status::test_c_minimized() const {
   return test_any(C_MINIMIZED);
 }
 
 inline void
-Status::reset_c_minimized() {
+Polyhedron::Status::reset_c_minimized() {
   reset(C_MINIMIZED);
 }
 
 inline void
-Status::set_c_minimized() {
+Polyhedron::Status::set_c_minimized() {
   set(C_MINIMIZED);
 }
 
 inline bool
-Status::test_g_minimized() const {
+Polyhedron::Status::test_g_minimized() const {
   return test_any(G_MINIMIZED);
 }
 
 inline void
-Status::reset_g_minimized() {
+Polyhedron::Status::reset_g_minimized() {
   reset(G_MINIMIZED);
 }
 
 inline void
-Status::set_g_minimized() {
+Polyhedron::Status::set_g_minimized() {
   set(G_MINIMIZED);
 }
 
 
 inline bool
-Status::test_c_pending() const {
+Polyhedron::Status::test_c_pending() const {
   return test_any(CS_PENDING);
 }
 
 inline void
-Status::reset_c_pending() {
+Polyhedron::Status::reset_c_pending() {
   reset(CS_PENDING);
 }
 
 inline void
-Status::set_c_pending() {
+Polyhedron::Status::set_c_pending() {
   set(CS_PENDING);
 }
 
 inline bool
-Status::test_g_pending() const {
+Polyhedron::Status::test_g_pending() const {
   return test_any(GS_PENDING);
 }
 
 inline void
-Status::reset_g_pending() {
+Polyhedron::Status::reset_g_pending() {
   reset(GS_PENDING);
 }
 
 inline void
-Status::set_g_pending() {
+Polyhedron::Status::set_g_pending() {
   set(GS_PENDING);
 }
 
 
 inline bool
-Status::test_sat_c_up_to_date() const {
+Polyhedron::Status::test_sat_c_up_to_date() const {
   return test_any(SAT_C_UP_TO_DATE);
 }
 
 inline void
-Status::reset_sat_c_up_to_date() {
+Polyhedron::Status::reset_sat_c_up_to_date() {
   reset(SAT_C_UP_TO_DATE);
 }
 
 inline void
-Status::set_sat_c_up_to_date() {
+Polyhedron::Status::set_sat_c_up_to_date() {
   set(SAT_C_UP_TO_DATE);
 }
 
 inline bool
-Status::test_sat_g_up_to_date() const {
+Polyhedron::Status::test_sat_g_up_to_date() const {
   return test_any(SAT_G_UP_TO_DATE);
 }
 
 inline void
-Status::reset_sat_g_up_to_date() {
+Polyhedron::Status::reset_sat_g_up_to_date() {
   reset(SAT_G_UP_TO_DATE);
 }
 
 inline void
-Status::set_sat_g_up_to_date() {
+Polyhedron::Status::set_sat_g_up_to_date() {
   set(SAT_G_UP_TO_DATE);
 }
 

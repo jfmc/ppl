@@ -83,7 +83,6 @@ Variable.types.hh \
 LinExpression.types.hh \
 ConSys.types.hh \
 GenSys.types.hh \
-Status.types.hh \
 Poly_Con_Relation.types.hh \
 Poly_Gen_Relation.types.hh \
 Polyhedron.types.hh \
@@ -124,9 +123,8 @@ Poly_Con_Relation.defs.hh \
 Poly_Con_Relation.inlines.hh \
 Poly_Gen_Relation.defs.hh \
 Poly_Gen_Relation.inlines.hh \
-Status.defs.hh \
-Status.inlines.hh \
 Polyhedron.defs.hh \
+Ph_Status.inlines.hh \
 Polyhedron.inlines.hh \
 C_Polyhedron.defs.hh \
 C_Polyhedron.inlines.hh \
@@ -168,14 +166,15 @@ NNC_Polyhedron.cc \
 Row.cc \
 SatMatrix.cc \
 SatRow.cc \
-Status.cc \
+Ph_Status.cc \
 Variable.cc \
 conversion.cc \
 minimize.cc \
 simplify.cc \
 globals.cc \
 version.cc \
-$(INCLUDE_FILES)
+$(INCLUDE_FILES) \
+Ph_Status.idefs.hh
 
 # The ordering of the following list *matters*!
 DOC_FILES = \
@@ -237,9 +236,10 @@ ppl_install.hh:	ppl_header.top $(top_builddir)/config.h ppl_header.middle $(INCL
 	cat $(srcdir)/ppl_header.top \
 		$(top_builddir)/src/version.hh $(top_builddir)/config.h \
 		$(srcdir)/ppl_header.middle tmp/includes >ppl_install.hh
-	$(CXXCPP) -P @debug_flag@ tmp/noincludes.cc >>ppl_install.hh
+	$(CXXCPP) -I$(srcdir) -P @debug_flag@ tmp/noincludes.cc \
+		>>ppl_install.hh
 	cat $(srcdir)/ppl_header.bottom >>ppl_install.hh
-	rm -rf tmp*
+	rm -rf tmp
 
 # ppl.hh and ppl_install.hh are not distributed.
 dist-hook:

@@ -33,11 +33,11 @@ site: http://www.cs.unipr.it/ppl/ . */
 #include "GenSys.defs.hh"
 #include "GenSys.inlines.hh"
 #include "SatMatrix.defs.hh"
-#include "Status.defs.hh"
 #include "Generator.types.hh"
 #include "Poly_Con_Relation.defs.hh"
 #include "Poly_Gen_Relation.defs.hh"
 #include <vector>
+#include <iosfwd>
 
 namespace Parma_Polyhedra_Library {
 
@@ -1482,6 +1482,8 @@ private:
   //! The saturation matrix having generators on its columns.
   SatMatrix sat_g;
 
+  /* DO NOT MOVE THIS LINE */ #include "Ph_Status.idefs.hh"
+
   //! The status flags to keep track of the polyhedron's internal state.
   Status status;
 
@@ -2030,6 +2032,7 @@ void swap(Parma_Polyhedra_Library::Polyhedron& x,
 
 } // namespace std
 
+#include "Ph_Status.inlines.hh"
 #include "Polyhedron.inlines.hh"
 
 #endif // !defined(PPL_Polyhedron_defs_hh)
