@@ -112,4 +112,4 @@ MOSTLYCLEANFILES = \
 tough_examples \
 obtained
 
-endif # HAVE_MD5SUM
+endif HAVE_MD5SUM

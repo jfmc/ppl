@@ -112,4 +112,4 @@ check_script check_script2 check_script3 \
 obtained obtained2 obtained3 \
 $(CLPQ_TESTS)
 
-endif # HAVE_YAP_PROLOG
+endif HAVE_YAP_PROLOG

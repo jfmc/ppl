@@ -152,4 +152,4 @@ ciao_clpq ciao_clpq2 ciao_pl_check \
 obtained obtained2 obtained3\
 $(CLPQ_TESTS)
 
-endif # HAVE_CIAO_PROLOG
+endif HAVE_CIAO_PROLOG

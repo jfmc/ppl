@@ -1070,7 +1070,7 @@ WATCHDOG_TESTS = watchdog1
 watchdog1_SOURCES = $(watchdog1_SRCS)
 watchdog1_LDADD = $(LDADD) $(top_builddir)/Watchdog/libpwl.la
 
-endif # BUILD_WATCHDOG_LIBRARY
+endif BUILD_WATCHDOG_LIBRARY
 
 TESTS = $(ORIGINAL_TESTS) $(DERIVED_TESTS) $(WATCHDOG_TESTS)
 

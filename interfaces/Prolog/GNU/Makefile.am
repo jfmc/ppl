@@ -139,4 +139,4 @@ obtained obtained2 obtained3 \
 $(CLPQ_TESTS) \
 check_script3
 
-endif # HAVE_GNU_PROLOG
+endif HAVE_GNU_PROLOG
