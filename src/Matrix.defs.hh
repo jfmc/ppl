@@ -49,6 +49,12 @@ site: http://www.cs.unipr.it/ppl/ . */
 
 class Parma_Polyhedra_Library::Matrix {
 protected:
+  //! Returns the maximum number of rows of a Matrix.
+  static dimension_type max_num_rows();
+
+  //! Returns the maximum number of columns of a Matrix.
+  static dimension_type max_num_columns();
+
   //! Builds an empty matrix with specified topology.
   /*!
     Rows' size and capacity are initialized to \f$0\f$.
