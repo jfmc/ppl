@@ -457,8 +457,13 @@ public:
 
   //! Returns the system of constraints.
   const ConSys& constraints() const;
+  //! Returns the system of constraints, with no redundant constraint.
+  const ConSys& minimized_constraints() const;
+
   //! Returns the system of generators.
   const GenSys& generators() const;
+  //! Returns the system of generators, with no redundant generator.
+  const GenSys& minimized_generators() const;
 
   //! Adds a copy of constraint \p c to the system of constraints
   //! of \p *this.

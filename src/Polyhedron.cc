@@ -274,6 +274,18 @@ PPL::Polyhedron::constraints() const {
   return con_sys;
 }
 
+/*!
+  Returns a constant reference to the systems of constraints,
+  which contains no redundant constraint.
+*/
+const PPL::ConSys&
+PPL::Polyhedron::minimized_constraints() const {
+  if (is_necessarily_closed())
+    minimize();
+  else
+    NNC_minimize_constraints();
+  return constraints();
+}
 
 /*!
   Updates the generators as necessary, then returns a constant
@@ -301,6 +313,19 @@ PPL::Polyhedron::generators() const {
   // We insist in returning a sorted system of generators.
   obtain_sorted_generators();
   return gen_sys;
+}
+
+/*!
+  Returns a constant reference to the systems of generators,
+  which contains no redundant generator.
+*/
+const PPL::GenSys&
+PPL::Polyhedron::minimized_generators() const {
+  if (is_necessarily_closed())
+    minimize();
+  else
+    NNC_minimize_generators();
+  return generators();
 }
 
 
