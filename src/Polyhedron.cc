@@ -43,7 +43,6 @@ namespace PPL = Parma_Polyhedra_Library;
 */
 const PPL::ConSys&
 PPL::Polyhedron::constraints() const {
-  size_t space_dim = space_dimension();
   if (is_empty()) {
     if (con_sys.num_rows() == 0) {
       // The 0-dim unsatisfiable constraint is extended to
@@ -102,7 +101,7 @@ PPL::Polyhedron::generators() const {
     return gen_sys;
   }
 
-  if (space_dimension() == 0) {
+  if (space_dim == 0) {
     assert(gen_sys.num_columns() == 0 && gen_sys.num_rows() == 0);
     return GenSys::zero_dim_univ();
   }
@@ -300,7 +299,7 @@ PPL::Polyhedron::set_zero_dim_univ() {
 */
 void
 PPL::Polyhedron::update_constraints() const {
-  assert(space_dimension() > 0);
+  assert(space_dim > 0);
   assert(!is_empty());
   assert(generators_are_up_to_date());
 
@@ -323,7 +322,7 @@ PPL::Polyhedron::update_constraints() const {
 */
 bool
 PPL::Polyhedron::update_generators() const {
-  assert(space_dimension() > 0);
+  assert(space_dim > 0);
   assert(!is_empty());
   assert(constraints_are_up_to_date());
 
@@ -354,7 +353,7 @@ void
 PPL::Polyhedron::minimize() const {
 
   // 0-dim space or empty polyhedra are already minimized.
-  if (space_dimension() == 0
+  if (space_dim == 0
       || is_empty()
       || (constraints_are_minimized() && generators_are_minimized()))
     return;
@@ -608,8 +607,9 @@ throw_different_dimensions(const char* method,
 */
 bool
 PPL::operator <=(const Polyhedron& x, const Polyhedron& y) {
-  size_t x_space_dim = x.space_dimension();
-  if (x_space_dim != y.space_dimension())
+  size_t x_space_dim = x.space_dim;
+  // Dimension-compatibility check.
+  if (x_space_dim != y.space_dim)
     throw_different_dimensions("PPL::operator <=(x, y)",
 				x, y);
   if (x.is_empty())
@@ -647,9 +647,9 @@ PPL::operator <=(const Polyhedron& x, const Polyhedron& y) {
 void
 PPL::Polyhedron::intersection_assign_and_minimize(const Polyhedron& y) {
   Polyhedron& x = *this;
-  size_t x_space_dim = x.space_dimension();
+  size_t x_space_dim = x.space_dim;
   // Dimension-compatibility check.
-  if (x_space_dim != y.space_dimension())
+  if (x_space_dim != y.space_dim)
     throw_different_dimensions("PPL::Polyhedron::inters_assign_and_min(y)",
 			       x, y);
 
@@ -702,9 +702,9 @@ PPL::Polyhedron::intersection_assign_and_minimize(const Polyhedron& y) {
 void
 PPL::Polyhedron::intersection_assign(const Polyhedron& y) {
   Polyhedron& x = *this;
-  size_t x_space_dim = x.space_dimension();
+  size_t x_space_dim = x.space_dim;
   // Dimension-compatibility check.
-  if (x_space_dim != y.space_dimension())
+  if (x_space_dim != y.space_dim)
     throw_different_dimensions("PPL::Polyhedron::inters_assign_and_min(y)",
 			       x, y);
 
@@ -748,9 +748,9 @@ PPL::Polyhedron::intersection_assign(const Polyhedron& y) {
 void
 PPL::Polyhedron::convex_hull_assign_and_minimize(const Polyhedron& y) {
   Polyhedron& x = *this;
-  size_t x_space_dim = x.space_dimension();
+  size_t x_space_dim = x.space_dim;
   // Dimension-compatibility check.
-  if (x_space_dim != y.space_dimension())
+  if (x_space_dim != y.space_dim)
     throw_different_dimensions("PPL::Polyhedron::con_hull_assign_and_min(y)",
 			       x, y);
 
@@ -797,9 +797,9 @@ PPL::Polyhedron::convex_hull_assign_and_minimize(const Polyhedron& y) {
 void
 PPL::Polyhedron::convex_hull_assign(const Polyhedron& y) {
   Polyhedron& x = *this;
-  size_t x_space_dim = x.space_dimension();
+  size_t x_space_dim = x.space_dim;
   // Dimension-compatibility check.
-  if (x_space_dim != y.space_dimension())
+  if (x_space_dim != y.space_dim)
     throw_different_dimensions("PPL::Polyhedron::convex_hull_assign(y)",
 			       x, y);
 
@@ -912,7 +912,7 @@ PPL::Polyhedron::add_dimensions_and_embed(size_t dim) {
     return;
   }
 
-  if (space_dimension() == 0) {
+  if (space_dim == 0) {
     assert(status.test_zero_dim_univ());
     // The system of constraints describing the universe polyhedron
     // only has the positivity constraint; it is in minimal form.
@@ -989,7 +989,7 @@ PPL::Polyhedron::add_dimensions_and_project(size_t dim) {
     return;
   }
 
-  if (space_dimension() == 0) {
+  if (space_dim == 0) {
     assert(status.test_zero_dim_univ());
 #ifndef BE_LAZY
     // We create a specular identity matrix having dim+1 rows.
@@ -1067,7 +1067,7 @@ PPL::Polyhedron::remove_dimensions(const std::set<Variable>& to_be_removed) {
   // Dimension-compatibility check: the variable having
   // maximum cardinality is the one occurring last in the set.
   unsigned int max_dim_to_be_removed = to_be_removed.rbegin()->id();
-  if (max_dim_to_be_removed >= space_dimension())
+  if (max_dim_to_be_removed >= space_dim)
     throw_dimension_incompatible("void PPL::Polyhedron::remove_dimensions(vs)",
 				 *this, max_dim_to_be_removed);
 
@@ -1201,10 +1201,9 @@ throw_different_dimensions(const char* method,
 */
 bool
 PPL::Polyhedron::add_constraints_and_minimize(ConSys& cs) {
-  size_t cs_space_dim = cs.space_dimension();
-  size_t space_dim = space_dimension();
   // Dimension-compatibility check:
-  // the dimension of `cs' can not be greater than space_dimension().
+  // the dimension of `cs' can not be greater than space_dim.
+  size_t cs_space_dim = cs.space_dimension();
   if (space_dim < cs_space_dim)
     throw_different_dimensions("PPL::Polyhedron::add_constraints_and_min(cs)",
 			       *this, cs);
@@ -1281,9 +1280,8 @@ throw_different_dimensions(const char* method,
 */
 void
 PPL::Polyhedron::insert(const Constraint& c) {
-  size_t space_dim = space_dimension();
   // Dimension-compatibility check:
-  // the dimension of `c' can not be greater than space_dimension().
+  // the dimension of `c' can not be greater than space_dim.
   if (space_dim < c.space_dimension())
     throw_different_dimensions("PPL::Polyhedron::insert(c)",
 			       *this, c);
@@ -1325,8 +1323,7 @@ PPL::Polyhedron::insert(const Constraint& c) {
 void
 PPL::Polyhedron::insert(const Generator& g) {
   // Dimension-compatibility check:
-  // the dimension of `g' can not be greater than space_dimension().
-  size_t space_dim = space_dimension();
+  // the dimension of `g' can not be greater than space_dim.
   size_t g_space_dim = g.space_dimension();
   if (space_dim < g_space_dim)
     throw_different_dimensions("PPL::Polyhedron::insert(g)",
@@ -1384,8 +1381,7 @@ PPL::Polyhedron::insert(const Generator& g) {
 void
 PPL::Polyhedron::add_constraints(ConSys& cs) {
   // Dimension-compatibility check:
-  // the dimension of `cs' can not be greater than space_dimension().
-  size_t space_dim = space_dimension();
+  // the dimension of `cs' can not be greater than space_dim.
   size_t cs_space_dim = cs.space_dimension();
   if (space_dim < cs_space_dim)
     throw_different_dimensions("PPL::Polyhedron::add_constraints(c)",
@@ -1468,7 +1464,7 @@ PPL::Polyhedron::add_dimensions_and_constraints(ConSys& cs) {
 
   // For a non-empty 0-dim space polyhedron,
   // the result is the polyhedron defined by `cs'.
-  if (space_dimension() == 0) {
+  if (space_dim == 0) {
     Polyhedron y(cs);
     swap(y);
     return;
@@ -1515,11 +1511,9 @@ PPL::Polyhedron::add_dimensions_and_constraints(ConSys& cs) {
 */
 void
 PPL::Polyhedron::add_generators_and_minimize(GenSys& gs) {
-  size_t space_dim = space_dimension();
-  size_t gs_space_dim = gs.space_dimension();
-
   // Dimension-compatibility check:
   // the dimension of `gs' can not be greater than space_dimension().
+  size_t gs_space_dim = gs.space_dimension();
   if (space_dim < gs_space_dim)
     throw_different_dimensions("PPL::Polyhedron::add_generators_and_min(g)",
 			       *this, gs);
@@ -1569,11 +1563,9 @@ PPL::Polyhedron::add_generators_and_minimize(GenSys& gs) {
 */
 void
 PPL::Polyhedron::add_generators(GenSys& gs) {
-  size_t space_dim = space_dimension();
-  size_t gs_space_dim = gs.space_dimension();
-
   // Dimension-compatibility check:
-  // the dimension of `gs' can not be greater than space_dimension().
+  // the dimension of `gs' can not be greater than space_dim.
+  size_t gs_space_dim = gs.space_dimension();
   if (space_dim < gs_space_dim)
     throw_different_dimensions("PPL::Polyhedron::add_generators(g)",
 			       *this, gs);
@@ -1758,20 +1750,21 @@ PPL::Polyhedron::affine_image(const Variable& var,
     throw std::invalid_argument("void PPL::Polyhedron::affine_image"
 				"(v, e, d): d == 0");
   Polyhedron& x = *this;
-  size_t x_space_dim = x.space_dimension();
-  size_t num_var = var.id() + 1;
+  // Dimension-compatibility checks.
+  // The dimension of `expr' should not be greater than the dimension of `x'.
+  size_t x_space_dim = x.space_dim;
   size_t expr_space_dim = expr.space_dimension();
   if (x_space_dim < expr_space_dim)
     throw_different_dimensions("PPL::Polyhedron::affine_image(v, e, d)",
 			       x, expr);
-
-  // Index of var must be in the range of the variables of generators.
+  // `var' should be one of the dimensions of the polyhedron.
+  size_t num_var = var.id() + 1;
   if (num_var >= x_space_dim + 1)
     throw_dimension_incompatible("PPL::Polyhedron::affine_image(v, e, d)",
 				 x, var.id());
-  if (x.is_empty()) {
+
+  if (x.is_empty())
     return;
-  }
 
   if (x_space_dim > expr_space_dim) {
     LinExpression copy(expr, x_space_dim + 1);
@@ -1875,14 +1868,15 @@ PPL::Polyhedron::affine_preimage(const Variable& var,
 				"(v, e, d): d == 0");
 
   Polyhedron& x = *this;
-  size_t x_space_dim = x.space_dimension();
-  size_t num_var = var.id() + 1;
+  // Dimension-compatibility checks.
+  // The dimension of `expr' should not be greater than the dimension of `x'.
+  size_t x_space_dim = x.space_dim;
   size_t expr_space_dim = expr.space_dimension();
   if (x_space_dim < expr_space_dim)
     throw_different_dimensions("PPL::Polyhedron::affine_preimage(v, e, d)",
 			       x, expr);
-
-  // Index of var must be in the range of the variables of generators.
+  // `var' should be one of the dimensions of the polyhedron.
+  size_t num_var = var.id() + 1;
   if (num_var >= x_space_dim + 1)
     throw_dimension_incompatible("PPL::Polyhedron::affine_preimage(v, e, d)",
 				 x, var.id());
@@ -1929,7 +1923,7 @@ PPL::Polyhedron::affine_preimage(const Variable& var,
 */
 PPL::GenSys_Con_Rel
 PPL::Polyhedron::satisfies(const Constraint& c) {
-  size_t space_dim = space_dimension();
+  // Dimension-compatibility check.
   if (space_dim < c.space_dimension())
     throw_different_dimensions("PPL::Polyhedron::satisfies(c)",
 			       *this, c);
@@ -1950,13 +1944,13 @@ PPL::Polyhedron::satisfies(const Constraint& c) {
 */
 bool
 PPL::Polyhedron::includes(const Generator& g) {
-  size_t space_dim =space_dimension();
+  // Dimension-compatibility check.
   if (space_dim < g.space_dimension())
      throw_different_dimensions("PPL::Polyhedron::includes(g)",
 				 *this, g);
 
   // Any generators is included in an empty-polyhedron.
-  if(is_empty())
+  if (is_empty())
     return false;
 
   // A universe polyhedron in a zero-dimensional space includes
@@ -1965,7 +1959,7 @@ PPL::Polyhedron::includes(const Generator& g) {
     return true;
 
   else {
-    if(!constraints_are_up_to_date())
+    if (!constraints_are_up_to_date())
       update_constraints();
 
     return con_sys.satisfies_all_constraints(g);
@@ -1993,9 +1987,10 @@ PPL::Polyhedron::widening_assign(const Polyhedron& y) {
     assert(y_copy <= x_copy);
   }
 #endif
-  size_t x_space_dim = x.space_dimension();
-  size_t y_space_dim = y.space_dimension();
+
   // Dimension-compatibility check.
+  size_t x_space_dim = x.space_dim;
+  size_t y_space_dim = y.space_dim;
   if (x_space_dim != y_space_dim)
     throw_different_dimensions("PPL::Polyhedron::widening_assign(y)",
 			       *this, y);
@@ -2121,15 +2116,15 @@ PPL::Polyhedron::limited_widening_assign(const Polyhedron& y,
     assert(y_copy <= x_copy);
   }
 #endif
-  size_t x_space_dim = x.space_dimension();
-  size_t y_space_dim = y.space_dimension();
-  size_t cs_space_dim = cs.space_dimension();
+
   // Dimension-compatibility check.
+  size_t x_space_dim = x.space_dim;
+  size_t y_space_dim = y.space_dim;
   if (x_space_dim != y_space_dim)
     throw_different_dimensions("PPL::Polyhedron::limited_widening_assign(y,c)",
 			       *this, y);
-
   // `cs' must be dimension-compatible with the two polyhedrons.
+  size_t cs_space_dim = cs.space_dimension();
   if (x_space_dim < cs_space_dim)
     throw_different_dimensions("PPL::Polyhedron::limited_widening_assign(y,c)",
 			       *this, cs);
@@ -2253,9 +2248,9 @@ PPL::Polyhedron::OK(bool check_not_empty) const {
     if (con_sys.num_rows() == 0)
       return true;
     else {
-      if (con_sys.space_dimension() != space_dimension()) {
+      if (con_sys.space_dimension() != space_dim) {
 	cerr << "The polyhedron is in a space of dimension "
-	     << space_dimension()
+	     << space_dim
 	     << " while the system of constraints is in a space of dimension "
 	     << con_sys.space_dimension()
 	     << endl;
@@ -2277,7 +2272,7 @@ PPL::Polyhedron::OK(bool check_not_empty) const {
   // A zero-dimensional, non-empty polyhedron is legal only if the
   // system of constraint `con_sys' and the system of generators
   // `gen_sys' have no rows.
-  if (space_dimension() == 0)
+  if (space_dim == 0)
     if (con_sys.num_rows() != 0 || gen_sys.num_rows() != 0) {
       cerr << "Zero-dimensional polyhedron with a non-empty"
 	   << endl
@@ -2304,7 +2299,7 @@ PPL::Polyhedron::OK(bool check_not_empty) const {
   // `sat_c'   : number of generators  x number of constraints
   // `sat_g'   : number of constraints x number of generators
   if (constraints_are_up_to_date()) {
-    if (con_sys.num_columns() != space_dimension() + 1) {
+    if (con_sys.num_columns() != space_dim + 1) {
       cerr << "Incompatible size! (con_sys and space_dim)"
 	   << endl;
       goto bomb;
@@ -2330,7 +2325,7 @@ PPL::Polyhedron::OK(bool check_not_empty) const {
   }
 
   if (generators_are_up_to_date()) {
-    if (gen_sys.num_columns() != space_dimension() + 1) {
+    if (gen_sys.num_columns() != space_dim + 1) {
       cerr << "Incompatible size! (gen_sys and space_dim)"
 	   << endl;
       goto bomb;

@@ -108,17 +108,18 @@ PPL::GenSys::num_rays() const {
 */
 PPL::GenSys_Con_Rel
 PPL::GenSys::satisfy(const Constraint& c) const {
-  size_t space_dim = space_dimension();
+  size_t gs_space_dim = space_dimension();
   size_t c_space_dim = c.space_dimension();
-  // Generators and constraint `c' have to be given in
-  // spaces having the same dimension.
-  assert(space_dim >= c_space_dim);
+  // Note: this method is not public and it is the responsibility
+  // of the caller to actually test for dimension compatibility.
+  // We simply _assert_ it.
+  assert(gs_space_dim >= c_space_dim);
   const  GenSys& gen_sys = *this;
   // Number of generators.
   size_t n_rows = num_rows();
   if (c.is_equality()) {
     for (size_t i = n_rows; i-- > 0;)
-      if (c_space_dim < space_dim)
+      if (c_space_dim < gs_space_dim)
 	if (c * gen_sys[i] != 0)
 	  // There is at least one generator that does not satisfy `c'.
 	  return SOME_SATISFY;
