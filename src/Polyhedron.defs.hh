@@ -403,10 +403,8 @@ public:
   bool limited_widening_assign(const Polyhedron& y, ConSys& cs);
 
   //! Returns the system of constraints.
-  //! \exception std::invalid_argument thrown if \p *this is empty.
   const ConSys& constraints() const;
   //! Returns the system of generators.
-  //! \exception std::invalid_argument thrown if \p *this is zero-dimensional.
   const GenSys& generators() const;
 
   //! Inserts a copy of constraint \p c into the system of constraints
