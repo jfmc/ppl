@@ -1,5 +1,36 @@
 @PREAMBLE{ "\newcommand{\noopsort}[1]{}" }
 
+@PhdThesis{Bagnara97th,
+  Author = "R. Bagnara",
+  Title  = "Data-Flow Analysis for Constraint Logic-Based Languages",
+  School = "Dipartimento di Informatica, Universit\`a di Pisa",
+  Address = "Pisa, Italy",
+  Month = "March",
+  Year   = 1997,
+  Note = "Printed as Report TD-1/97",
+  Abstract = "We aim at the the development of precise, practical, and
+             theoretically well-founded data-flow analyzers for
+             constraint logic-based languages. The design and
+             development of such an analyzer fostered a number of
+             research problems that we had to address. A hierarchy of
+             constraint systems is introduced that is suitable for
+             designing and combining abstract domains. The rational
+             construction of a generic domain for the structural
+             analysis of CLP programs is presented. We also address
+             the problem of the ``missing \emph{occur-check}'' in many
+             implemented languages.  We introduce a new family of
+             domains, based on constraint propagation techniques, for
+             the abstraction of the numerical leaves that occur in the
+             terms of CLP languages. Despite the fact that groundness
+             analysis for logic-based languages is a widely studied
+             subject, a novel domain for groundness analysis is
+             presented that outperforms the existing domains from
+             several points of view. Finally, we present a bottom-up
+             analysis technique for CLP languages that allows for the
+             precise derivation of both call- and success-patterns
+             preserving the connection between them."
+}
+
 @Article{Bagnara98SCP,
   Author = "R. Bagnara",
   Title = "A Hierarchy of Constraint Systems for Data-Flow Analysis
@@ -946,6 +977,31 @@
               array indices variables and also to the abstract
               description of integer arrays."
 }
+
+@Inproceedings{Mine01b,
+  Author = "A. Min\'e",
+  Title  = "The Octagon Abstract Domain",
+  Booktitle = "Proceedings of the Eighth Working Conference
+               on Reverse Engineering (WCRE'01)",
+  Address = "Stuttgart, Germany",
+  Year = 2001,
+  Publisher = "IEEE Computer Society Press",
+  Pages     = "310--319",
+  Abstract = "This article presents a new numerical abstract domain
+              for static analysis by abstract interpretation. It
+              extends our previously proposed DBM-based numerical
+              abstract domain and allows us to represent invariants of
+              the form ($\pm x \pm y \leq c$), where $x$ and $y$ are
+              program variables and $c$ is a real constant. We focus
+              on giving an efficient representation based on
+              Difference-Bound Matrices---$\mathcal{O}(n^2)$ memory
+              cost, where $n$ is the number of variables---and
+              graph-based algorithms for all common abstract
+              operators---$\mathcal{O}(n^3)$ time cost. This includes
+              a normal form algorithm to test equivalence of
+              representation and a widening operator to compute least
+              fixpoint approximations."
+}  
 
 @Incollection{MotzkinRTT53,
   Author = "T. S. Motzkin and H. Raiffa and G. L. Thompson and R. M. Thrall",
