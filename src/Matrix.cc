@@ -820,7 +820,7 @@ PPL::Matrix::add_rows_and_columns(size_t n) {
   assert(OK());
 }
 
-#ifndef NDEBUG
+
 /*!
   Returns <CODE>true</CODE> if \p *this is sorted, <CODE>false</CODE>
   otherwise.
@@ -833,7 +833,6 @@ PPL::Matrix::check_sorted() const {
       return false;
   return true;
 }
-#endif
 
 
 bool
@@ -855,8 +854,8 @@ PPL::Matrix::OK() const {
 
   if (sorted && !check_sorted()) {
     is_broken = true;
-    cerr << "The matrix declares itself to be sorted but it is not!"
-	 << endl;
+    std::cerr << "The matrix declares itself to be sorted but it is not!"
+	      << std::endl;
   }
 
   return !is_broken;

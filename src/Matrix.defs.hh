@@ -158,11 +158,10 @@ public:
   size_t num_rows() const;
   size_t num_lines_or_equalities() const;
   //@}
-#ifndef NDEBUG
+
   //! Checks whether a Matrix is sorted.
   //! It does NOT check for duplicates.
   bool check_sorted() const;
-#endif
 
   //! @name Subscript operators.
   //@{
