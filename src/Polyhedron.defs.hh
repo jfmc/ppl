@@ -66,7 +66,7 @@ namespace Parma_Polyhedra_Library {
 //! A convex polyhedron.
 /*!
   An object of the class Polyhedron represents a convex polyhedron
-  in the space \f$\mathbb{R}^n\f$.
+  in the space \f$\Rset^n\f$.
 
   A polyhedron can be specified as either a finite system of constraints
   or a finite set of generators (see Minkowski's theorem in definition.dox).
@@ -77,7 +77,7 @@ namespace Parma_Polyhedra_Library {
   that they are not in the minimal form.
  
   \par Example 1
-  The following code builds a square in \f$\mathbb{R}^2\f$ starting from
+  The following code builds a square in \f$\Rset^2\f$ starting from
   the system of constraints:
   \code 
   Variable x(0);
@@ -103,7 +103,7 @@ namespace Parma_Polyhedra_Library {
   \endcode
 
   \par Example 2
-  The following code builds an half-strip in \f$\mathbb{R}^2\f$ 
+  The following code builds an half-strip in \f$\Rset^2\f$ 
   starting from the system of constraints:
   \code
   Variable x(0);
@@ -127,7 +127,7 @@ namespace Parma_Polyhedra_Library {
   \endcode
 
   \par Example 3
-  The following code builds the half-plane in \f$\mathbb{R}^2\f$
+  The following code builds the half-plane in \f$\Rset^2\f$
   starting from the constraints:
   \code
   Variable x(0);
@@ -160,7 +160,7 @@ namespace Parma_Polyhedra_Library {
   ph.add_dimensions_and_embed(1);
   \endcode
   The starting polyhedron is a point whose abscissa is equal to \f$2\f$
-  in \f$\mathbb{R}\f$. The resulting polyhedron in \f$\mathbb{R}^2\f$ 
+  in \f$\Rset\f$. The resulting polyhedron in \f$\Rset^2\f$ 
   is a line parallel to the axis \f$y\f$ and its intersection with the
   axis \f$x\f$ is the point with the abscissa equal to \f$2\f$.
   
@@ -195,7 +195,7 @@ namespace Parma_Polyhedra_Library {
   LinExpression coeff = x + 0*y + 4;
   ph.assign_variable(x, coeff, d);
   \endcode
-  In this example the starting polyhedron is a square in \f$\mathbb{R}^2\f$, 
+  In this example the starting polyhedron is a square in \f$\Rset^2\f$, 
   \p var is the variable \f$x\f$, the affine_expression is \f$x+4\f$,
   the resulting polyhedron is the same square translated towards right.
   Moreover, if the affine transformation for the same variable is \f$x+y\f$

@@ -770,7 +770,7 @@ PPL::Polyhedron::add_dimensions_and_embed(size_t add_dim) {
   the new variable to be zero. So the new matrix of generators is made 
   by adding \p add_dim zero-columns to the old matrix.
   For example if we have a line lying on the plane \f$xy\f$, we 
-  add a third dimension \f$z\f$ and project the line in \f$\mathbb{R}^3\f$,
+  add a third dimension \f$z\f$ and project the line in \f$\Rset^3\f$,
   we still obtain the line on the plane \f$xy\f$ but now the new 
   considered space has one more dimension.
 */
@@ -1185,8 +1185,8 @@ PPL::operator >>(std::istream& s, PPL::Polyhedron& p) {
   \f[
     P = \bigl\{\,x = (x_0, \ldots, x_{n-1})^\mathrm{T} \bigm| 
                x = \lambda R + \mu V, 
-               \lambda \in \mathbb{R}^{m_1}_+, 
-               \mu \in \mathbb{R}^{m_2}_+,
+               \lambda \in \Rset^{m_1}_+, 
+               \mu \in \Rset^{m_2}_+,
 	       \sum_{i = 0}^{m_1 - 1} \lambda_i = 1\,\bigr\}
   \f]
   and \f$T\f$ is the affine transformation to apply to \f$P\f$, then 

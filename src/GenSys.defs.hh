@@ -61,7 +61,7 @@ namespace Parma_Polyhedra_Library {
     points, and for a ray the point from which it starts.
     
     \par Example 1
-    The following code builds the axis \f$x\f$ in \f$\mathbb{R}^2\f$:
+    The following code builds the axis \f$x\f$ in \f$\Rset^2\f$:
     \code
     Variable x(0);
     Variable y(1);
@@ -70,7 +70,7 @@ namespace Parma_Polyhedra_Library {
     gs.insert(1 | x + 0 * y);
     \endcode
     Instead, the following code builds a line parallel to the axis
-    \f$x\f$ in \f$\mathbb{R}^2\f$: 
+    \f$x\f$ in \f$\Rset^2\f$: 
     \code
     Variable x(0);
     Variable y(1);
@@ -89,7 +89,7 @@ namespace Parma_Polyhedra_Library {
 
     \par Example 2
     The following code builds a ray that corresponds to the positive
-    part of the axis \f$x\f$ in \f$\mathbb{R}^2\f$:
+    part of the axis \f$x\f$ in \f$\Rset^2\f$:
     \code
     Variable x(0);
     Variable y(1);
@@ -116,7 +116,7 @@ namespace Parma_Polyhedra_Library {
 
 
     \par Example 3
-    The following code builds a square in \f$\mathbb{R}^2\f$ 
+    The following code builds a square in \f$\Rset^2\f$ 
     (the same of the first example for the system of constraints):
     \code
     Variable x(0);
@@ -129,7 +129,7 @@ namespace Parma_Polyhedra_Library {
     \endcode
 
     \par Example 4
-    The following code builds an half-strip in \f$\mathbb{R}^2\f$:
+    The following code builds an half-strip in \f$\Rset^2\f$:
     (the same of the second example for the system of constraints): 
     \code 
     Variable x(0);

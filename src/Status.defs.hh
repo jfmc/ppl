@@ -38,7 +38,7 @@ namespace Parma_Polyhedra_Library {
   This class implements conjunctions of assertions about a polyhedron.
   The assertions supported are:
   - <EM>zero-dim</EM>: the polyhedron is the zero-dimensional singleton
-    \f$\mathbb{R}^0 = \{\cdot\}\f$;
+    \f$\Rset^0 = \{\cdot\}\f$;
   - <EM>empty</EM>: the polyhedron is the empty set;
   - <EM>constraints up-to-date</EM>: the polyhedron is correctly
     characterized by the attached set of constraints;

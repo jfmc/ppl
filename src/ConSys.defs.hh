@@ -39,7 +39,7 @@ site: http://www.cs.unipr.it/ppl/ . */
     i.e. a container of objects of the class Constraint.
     
     \par Example 1
-    The following code builds a square in \f$\mathbb{R}^2\f$:
+    The following code builds a square in \f$\Rset^2\f$:
     \code
     Variable x(0);
     Variable y(1);
@@ -51,7 +51,7 @@ site: http://www.cs.unipr.it/ppl/ . */
     \endcode
 
     \par Example 2
-    The following code builds an half-strip in \f$\mathbb{R}^2\f$:
+    The following code builds an half-strip in \f$\Rset^2\f$:
     \code
     Variable x(0);
     Variable y(1);
