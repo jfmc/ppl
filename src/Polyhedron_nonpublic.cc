@@ -507,7 +507,8 @@ PPL::Polyhedron::bounds(const LinExpression& expr,
     if (g[0] == 0) {
       // Compute the scalar product between `g' and `expr'.
       tmp_Integer[0] = 0;
-      for (dimension_type j = expr.size(); j-- > 0; ) {
+      // Note the pre-decrement of `j': last iteration should be for `j == 1'.
+      for (dimension_type j = expr.size(); --j > 0; ) {
 	// The following two lines optimize the computation
 	// of tmp_Integer[0] += g[j] * expr[j].
 	tmp_Integer[1] = g[j] * expr[j];
