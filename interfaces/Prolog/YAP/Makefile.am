@@ -28,7 +28,7 @@ VPATH = @srcdir@
 
 SUBDIRS =
 
-EXTRA_DIST = ppl_yap.pl yap_clpq.pl
+EXTRA_DIST = ppl_yap.pl yap_clpq.pl yap_clpq2.pl
 
 if HAVE_YAP_PROLOG
 
@@ -57,7 +57,7 @@ schedule.clpq
 
 CLPQ_TESTS = $(CLPQ_TESTS_NONSTRICT) $(CLPQ_TESTS_STRICT) 
 
-check-local: yap_clpq.pl ../check_script ../expected ../check_script2 ../expected2
+check-local: yap_clpq.pl ../check_script ../expected yap_clpq2.pl ../check_script2 ../expected2
 	for k in $(CLPQ_TESTS); do cp -f $(srcdir)/../$$k .; done
 	echo "main." >check_script
 	cat $(srcdir)/../check_script >>check_script
