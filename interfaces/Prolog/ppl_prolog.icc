@@ -1861,13 +1861,13 @@ Prolog_foreign_return_type
 widening_assign(Prolog_term_ref t_lhs,
 		Prolog_term_ref t_rhs,
 		void (Polyhedron::* widening_assign)(const Polyhedron&,
-						     unsigned* tp = 0)) {
+						     unsigned* tp)) {
   try {
     Polyhedron* lhs = term_to_polyhedron_handle(t_lhs);
     const Polyhedron* rhs = term_to_polyhedron_handle(t_rhs);
     CHECK(lhs);
     CHECK(rhs);
-    (lhs->*widening_assign)(*rhs);
+    (lhs->*widening_assign)(*rhs, 0);
     return PROLOG_SUCCESS;
   }
   CATCH_ALL;
@@ -1903,7 +1903,7 @@ widening_assign_with_token(Prolog_term_ref t_lhs,
 			   Prolog_term_ref t_t,
 			   void (Polyhedron::*
 				 widening_assign)(const Polyhedron&,
-						  unsigned* tp = 0)) {
+						  unsigned* tp)) {
   try {
     Polyhedron* lhs = term_to_polyhedron_handle(t_lhs);
     const Polyhedron* rhs = term_to_polyhedron_handle(t_rhs);
@@ -1945,7 +1945,7 @@ limited_extrapolation_assign(Prolog_term_ref t_lhs,
 			     void (Polyhedron::*
 				   limited_extrap_assign)(const Polyhedron&,
 							  const ConSys&,
-							  unsigned* tp = 0)) {
+							  unsigned* tp)) {
   try {
     Polyhedron* lhs = term_to_polyhedron_handle(t_lhs);
     const Polyhedron* rhs = term_to_polyhedron_handle(t_rhs);
@@ -1958,7 +1958,7 @@ limited_extrapolation_assign(Prolog_term_ref t_lhs,
       Prolog_get_cons(t_clist, c, t_clist);
       cs.insert(build_constraint(c));
     }
-    (lhs->*limited_extrap_assign)(*rhs, cs);
+    (lhs->*limited_extrap_assign)(*rhs, cs, 0);
     return PROLOG_SUCCESS;
   }
   CATCH_ALL;
