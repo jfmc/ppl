@@ -32,7 +32,7 @@ site: http://www.cs.unipr.it/ppl/ . */
 \anchor CInterfaceDetails
 All the declarations needed for using the PPL's C interface
 (preprocessor symbols, data types, variables and
-functions) are collected in the header file <CODE>ppl_c.h</CODE>.
+functions) are collected in the header file <CODE>%ppl_c.h</CODE>.
 This file, which is designed to work with pre-ANSI and ANSI C compilers
 as well as C99 and C++ compilers, should be included, either directly
 or via some other header file, with the directive
@@ -40,13 +40,13 @@ or via some other header file, with the directive
 #include <ppl_c.h>
 \endcode
 If this directive does not work, then your compiler is unable to find
-the file <CODE>ppl_c.h</CODE>. So check that the library is installed
+the file <CODE>%ppl_c.h</CODE>. So check that the library is installed
 (if it is not installed, you may want to <CODE>make install</CODE>,
 perhaps with root privileges); that it is installed in the right place
 (if not you may want to reconfigure the library using the appropriate
 pathname for the <CODE>--prefix</CODE> option); and that your compiler
 knows where it is installed (if not you should add the path to the
-directory where <CODE>ppl_c.h</CODE> is located to the compiler's
+directory where <CODE>%ppl_c.h</CODE> is located to the compiler's
 include file search path; this is usually done with the
 <CODE>-I</CODE> option).
 
