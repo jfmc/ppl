@@ -262,13 +262,13 @@ public:
   void swap(Polyhedra_PowerSet& y);
 
   //! \brief
-  //! Adds \p m new dimensions and embeds the old polyhedron
-  //! in the new space.
+  //! Adds \p m new dimensions to the space containing \p *this 
+  //! and embeds each polyhedron in \p *this in the new space.
   void add_dimensions_and_embed(dimension_type m);
 
   //! \brief
-  //! Adds \p m new dimensions to the polyhedron
-  //! and does not embed it in the new space.
+  //! For each polyhedron in \p *this, adds \p m new dimensions
+  //! without embedding it in the new space.
   void add_dimensions_and_project(dimension_type m);
 
   //! Assigns to \p *this the concatenation of \p *this and \p y.
