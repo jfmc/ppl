@@ -46,7 +46,7 @@ In order to use this version of the PPL you must make sure that:
 (3) that this C++ interface was compiled with the same compiler
     version with which you will compile the PPL;
 (4) that your C and C++ compilers and your linker will find _that_
-   version of GMP and not others that may be present in your system.
+    version of GMP and not others that may be present in your system.
 
 Since the binary distributions of GMP most likely contain a version
 that was compiled with the C++ interface disabled, or compiled with
