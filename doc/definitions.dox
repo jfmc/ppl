@@ -582,18 +582,18 @@ if the lower bound of the \f$i\f$'th interval in \f$\cB\f$
 is bounded, the corresponding constraint is defined as 
 \f$\langle \vect{e}_i, \vect{x} \rangle \relop b\f$,
 where \f$b\f$ is the value of the bound and
-\f$\mathord{\relop}\f$ is \f$\mathord{\geq}\f$ if the lower bound is closed,
-\f$\mathord{>}\f$ if the lower bound is open.
+\f$\mathord{\relop}\f$ is \f$\mathord{\geq}\f$ if it is a closed bound and
+\f$\mathord{>}\f$ if it is an open bound.
 Similarly,
 if the upper bound of the \f$i\f$'th interval in \f$\cB\f$ is bounded,
 the corresponding constraint is defined as
 \f$\langle\vect{e}_i,\vect{x}\rangle \relop b\f$,
 where \f$b\f$ is the value of the bound and
-\f$\mathord{\relop}\f$ is \f$\mathord{\leq}\f$ if the upper bound is closed,
-\f$\mathord{<}\f$ if the upper bound is open. 
+\f$\mathord{\relop}\f$ is \f$\mathord{\leq}\f$ if it is a closed bound and
+\f$\mathord{<}\f$ if it is an open bound. 
 
 If every bound in the intervals 
-in a box \f$\cB\f$ is either closed and bounded
+defining a box \f$\cB\f$ is either closed and bounded
 or open and unbounded, then
 \f$\cB\f$ represents a closed polyhedron.
 
