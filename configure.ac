@@ -24,7 +24,7 @@
 # Process this file with autoconf to produce a configure script.
 
 # Every other copy of the package version number gets its value from here.
-AC_INIT([the Parma Polyhedra Library], 0.4pre2, ppl-devel@cs.unipr.it, ppl)
+AC_INIT([the Parma Polyhedra Library], 0.4pre3, ppl-devel@cs.unipr.it, ppl)
 
 # Minimum autoconf version required.
 AC_PREREQ(2.52g)
@@ -77,7 +77,7 @@ AC_ARG_WITH(cc,
 [  --with-cc=xxx           use XXX as the C compiler],
 CC=$with_cc)
 
-AC_LANG_C
+AC_LANG(C)
 AC_PROG_CC
 
 # Checks for typedefs, structures, and compiler characteristics.
@@ -90,7 +90,7 @@ AC_ARG_WITH(cxx,
 [  --with-cxx=xxx          use XXX as the C++ compiler],
 CXX=$with_cxx)
 
-AC_LANG_CPLUSPLUS
+AC_LANG(C++)
 AC_PROG_CXX
 AC_PROG_CXXCPP
 
@@ -377,8 +377,10 @@ AM_CONDITIONAL(HAVE_YAP_PROLOG, test x$YAP_PROLOG = xyap)
 
 # Check for the GLPK library
 
+AC_LANG_PUSH(C)
 AC_CHECK_HEADER(glpk.h, HAVE_GLPK_H=yes)
 AM_CONDITIONAL(HAVE_GLPK, test x$HAVE_GLPK_H = xyes)
+AC_LANG_POP(C)
 
 # Checks for header files.
 
