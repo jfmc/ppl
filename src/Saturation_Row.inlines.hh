@@ -50,11 +50,6 @@ Saturation_Row::operator=(const Saturation_Row& y) {
   return *this;
 }
 
-inline bool
-Saturation_Row::operator[](const unsigned int k) const {
-  return mpz_tstbit(vec, k);
-}
-
 inline void
 Saturation_Row::set(const unsigned int k) {
   mpz_setbit(vec, k);
@@ -72,7 +67,9 @@ Saturation_Row::clear_from(const unsigned int k) {
 
 inline unsigned int
 Saturation_Row::count_ones() const {
-  return mpz_popcount(vec);
+  size_t vec_size = mpz_size(vec);
+  assert(vec_size >= 0);
+  return mpn_popcount(vec->_mp_d, vec_size);
 }
 
 inline bool
@@ -108,18 +105,6 @@ Saturation_Row::first_one(mp_limb_t w) {
 }
 
 #endif
-
-/*! \relates Saturation_Row */
-inline bool
-operator==(const Saturation_Row& x, const Saturation_Row& y) {
-  return mpz_cmp(x.vec, y.vec) == 0;
-}
-
-/*! \relates Saturation_Row */
-inline bool
-operator!=(const Saturation_Row& x, const Saturation_Row& y) {
-  return mpz_cmp(x.vec, y.vec) != 0;
-}
 
 /*! \relates Saturation_Row */
 inline void

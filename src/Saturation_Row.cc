@@ -196,6 +196,19 @@ PPL::Saturation_Row::prev(int position) const {
   return -1;
 }
 
+bool
+PPL::Saturation_Row::operator[](const unsigned int k) const {
+  size_t vec_size = mpz_size(vec);
+  assert(vec_size >= 0);
+
+  unsigned long i = k / GMP_NUMB_BITS;
+  if (i >= vec_size)
+    return false;
+
+  mp_limb_t limb = *(vec->_mp_d + i);
+  return (limb >> (k % GMP_NUMB_BITS)) & 1;
+}
+
 /*! \relates Parma_Polyhedra_Library::Saturation_Row */
 int
 PPL::compare(const Saturation_Row& x, const Saturation_Row& y) {
@@ -287,6 +300,34 @@ PPL::strict_subset(const Saturation_Row& x, const Saturation_Row& y) {
     --x_size;
   }
   return different;
+}
+
+/*! \relates Saturation_Row */
+bool
+PPL::operator==(const Saturation_Row& x, const Saturation_Row& y) {
+  const size_t x_vec_size = mpz_size(x.vec);
+  assert(x_vec_size >= 0);
+  const size_t y_vec_size = mpz_size(y.vec);
+  assert(y_vec_size >= 0);
+
+  if (x_vec_size != y_vec_size)
+    return false;
+
+  return mpn_cmp(x.vec->_mp_d, y.vec->_mp_d, x_vec_size) == 0;
+}
+
+/*! \relates Saturation_Row */
+bool
+PPL::operator!=(const Saturation_Row& x, const Saturation_Row& y) {
+  const size_t x_vec_size = mpz_size(x.vec);
+  assert(x_vec_size >= 0);
+  const size_t y_vec_size = mpz_size(y.vec);
+  assert(y_vec_size >= 0);
+
+  if (x_vec_size != y_vec_size)
+    return true;
+
+  return mpn_cmp(x.vec->_mp_d, y.vec->_mp_d, x_vec_size) != 0;
 }
 
 bool
