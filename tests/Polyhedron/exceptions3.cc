@@ -30,7 +30,9 @@ using namespace Parma_Polyhedra_Library;
 #define NOISY 0
 #endif
 
-static void
+namespace {
+
+void
 error1() {
   try {
     // This is an invalid use of the constructor of a Variable:
@@ -52,7 +54,7 @@ error1() {
   }
 }
 
-static void
+void
 error2() {
   try {
     Variable v(Linear_Expression::max_space_dimension());
@@ -75,7 +77,7 @@ error2() {
   }
 }
 
-static void
+void
 error3() {
   try {
     Variable v(Linear_Expression::max_space_dimension());
@@ -99,7 +101,7 @@ error3() {
   }
 }
 
-static void
+void
 error4() {
   try {
     Variable v(Linear_Expression::max_space_dimension());
@@ -123,7 +125,7 @@ error4() {
   }
 }
 
-static void
+void
 error5() {
   try {
     // This is an invalid use of the constructor of a polyhedron:
@@ -145,7 +147,7 @@ error5() {
   }
 }
 
-static void
+void
 error6() {
   try {
     C_Polyhedron ph(1);
@@ -168,7 +170,7 @@ error6() {
   }
 }
 
-static void
+void
 error7() {
   try {
     C_Polyhedron ph(1);
@@ -191,7 +193,7 @@ error7() {
   }
 }
 
-static void
+void
 error8() {
   try {
     C_Polyhedron ph(C_Polyhedron::max_space_dimension(), C_Polyhedron::EMPTY);
@@ -215,7 +217,7 @@ error8() {
   }
 }
 
-static void
+void
 error9() {
   try {
     C_Polyhedron ph(1);
@@ -239,6 +241,8 @@ error9() {
     exit(1);
   }
 }
+
+} // namespace
 
 int
 main() TRY {

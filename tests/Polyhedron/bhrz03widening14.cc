@@ -31,7 +31,9 @@ using namespace Parma_Polyhedra_Library::IO_Operators;
 #define NOISY 0
 #endif
 
-static Generator_System
+namespace {
+
+Generator_System
 g_0() {
   Variable A(0);
   Variable B(1);
@@ -43,7 +45,7 @@ g_0() {
   return new_gs;
 }
 
-static Generator
+Generator
 splitting_segment(const Generator& p1,
 		  const Generator& p2,
 		  unsigned magic_number) {
@@ -59,7 +61,7 @@ splitting_segment(const Generator& p1,
   return point((magic_number+1)*expr, magic_number*2*d1*d2);
 }
 
-static Generator_System
+Generator_System
 double_generators(const Generator_System& gs, unsigned magic_number) {
   Generator_System new_gs;
   Generator_System::const_iterator i = gs.begin();
@@ -80,7 +82,7 @@ double_generators(const Generator_System& gs, unsigned magic_number) {
   return new_gs;
 }
 
-static C_Polyhedron
+C_Polyhedron
 p(unsigned n) {
 
   unsigned needed_vertices = n + 4;
@@ -111,6 +113,8 @@ p(unsigned n) {
   C_Polyhedron ph = C_Polyhedron(gs);
   return ph;
 }
+
+} // namespace
 
 
 int

@@ -32,7 +32,9 @@ using namespace Parma_Polyhedra_Library::IO_Operators;
 #define NOISY 0
 #endif
 
-static void
+namespace {
+
+void
 test1() {
   Variable A(0);
   Variable B(1);
@@ -57,7 +59,7 @@ test1() {
     exit(1);
 }
 
-static void
+void
 test2() {
   Variable A(0);
   Variable B(1);
@@ -82,6 +84,8 @@ test2() {
   if (!ok)
     exit(1);
 }
+
+} // namespace
 
 int
 main() TRY {

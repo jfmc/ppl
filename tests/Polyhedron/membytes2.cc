@@ -30,8 +30,12 @@ using namespace Parma_Polyhedra_Library;
 #define NOISY 0
 #endif
 
-static void loo(...) {
+namespace {
+
+void loo(...) {
 }
+
+} // namespace
 
 int
 main() TRY {

@@ -30,7 +30,9 @@ using namespace Parma_Polyhedra_Library;
 #define NOISY 0
 #endif
 
-static bool
+namespace {
+
+bool
 try_intersection_assign_and_minimize(C_Polyhedron& ph1,
 				     const C_Polyhedron& ph2,
 				     // Note intentional call-by-value!
@@ -48,6 +50,8 @@ try_intersection_assign_and_minimize(C_Polyhedron& ph1,
 
   return ph1 == known_result;
 }
+
+} // namespace
 
 int
 main() TRY {

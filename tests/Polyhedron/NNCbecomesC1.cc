@@ -30,7 +30,9 @@ using namespace Parma_Polyhedra_Library;
 #define NOISY 0
 #endif
 
-static void
+namespace {
+
+void
 test1() {
   Variable x(0);
   Variable y(1);
@@ -57,7 +59,7 @@ test1() {
     exit(1);
 }
 
-static void
+void
 test2() {
   Variable A(0);
   Variable B(1);
@@ -85,6 +87,8 @@ test2() {
   if (ph2 != known_result)
     exit(1);
 }
+
+} // namespace
 
 int
 main() TRY {

@@ -35,9 +35,11 @@ using namespace Parma_Polyhedra_Library::IO_Operators;
 #define NOISY 0
 #endif
 
-static const char* my_file = "writerelation1.dat";
+namespace {
 
-static void
+const char* my_file = "writerelation1.dat";
+
+void
 test1() {
   Poly_Con_Relation rel(Poly_Con_Relation::nothing());
   rel.OK();
@@ -48,7 +50,7 @@ test1() {
   close(f);
 }
 
-static void
+void
 test2() {
   Poly_Gen_Relation rel(Poly_Gen_Relation::nothing());
   rel.OK();
@@ -59,7 +61,7 @@ test2() {
   close(f);
 }
 
-static void
+void
 test3() {
   Poly_Con_Relation rel(Poly_Con_Relation::is_disjoint());
   rel.OK();
@@ -70,7 +72,7 @@ test3() {
   close(f);
 }
 
-static void
+void
 test4() {
   Poly_Gen_Relation rel(Poly_Gen_Relation::subsumes());
   rel.OK();
@@ -80,6 +82,8 @@ test4() {
   f << rel << endl;
   close(f);
 }
+
+} // namespace
 
 int
 main() TRY {

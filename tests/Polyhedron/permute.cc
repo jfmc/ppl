@@ -30,7 +30,9 @@ using namespace Parma_Polyhedra_Library;
 #define NOISY 0
 #endif
 
-static void
+namespace {
+
+void
 shift_rename_add(const C_Polyhedron& p,
 		 dimension_type offset,
 		 C_Polyhedron& q) {
@@ -39,7 +41,7 @@ shift_rename_add(const C_Polyhedron& p,
   q.intersection_assign(r);
 }
 
-static void
+void
 append_init(C_Polyhedron& base, C_Polyhedron& induct, C_Polyhedron& expect,
             dimension_type& offset, unsigned int& arity) {
   offset = 3;
@@ -80,7 +82,7 @@ append_init(C_Polyhedron& base, C_Polyhedron& induct, C_Polyhedron& expect,
   expect.add_constraint(C >= B);
 }
 
-static void
+void
 fix_point(C_Polyhedron& start, C_Polyhedron& induct, C_Polyhedron& finish,
           dimension_type offset, unsigned int arity) {
   // Initialize the fixpoint iteration.
@@ -122,7 +124,7 @@ fix_point(C_Polyhedron& start, C_Polyhedron& induct, C_Polyhedron& finish,
   finish = current;
 }
 
-static void
+void
 append_size_rel(C_Polyhedron& ph) {
   C_Polyhedron start;
   C_Polyhedron induct;
@@ -133,7 +135,7 @@ append_size_rel(C_Polyhedron& ph) {
   fix_point(start, induct, ph, recursive_offset, arity);
 }
 
-static void
+void
 permute_init(C_Polyhedron& base, C_Polyhedron& induct, C_Polyhedron& expect,
              C_Polyhedron& ph_append,
              dimension_type& offset, unsigned int& arity) {
@@ -189,6 +191,8 @@ permute_init(C_Polyhedron& base, C_Polyhedron& induct, C_Polyhedron& expect,
   expect.add_constraint(A >= 0);
   expect.add_constraint(B >= 0);
 }
+
+} // namespace
 
 int
 main() TRY {

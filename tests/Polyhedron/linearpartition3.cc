@@ -31,7 +31,9 @@ using namespace Parma_Polyhedra_Library::IO_Operators;
 #define NOISY 0
 #endif
 
-static bool
+namespace {
+
+bool
 partition_ok(const C_Polyhedron& p,
 	     const C_Polyhedron& q,
 	     const pair<C_Polyhedron,
@@ -63,6 +65,8 @@ partition_ok(const C_Polyhedron& p,
   // The union of all the elements in `partition' must be exactly `q'.
   return the_union == nnc_q;
 }
+
+} // namespace
 
 
 int main() TRY {

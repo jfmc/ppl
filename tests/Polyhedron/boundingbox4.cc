@@ -30,8 +30,10 @@ using namespace Parma_Polyhedra_Library;
 #define NOISY 0
 #endif
 
+namespace {
+
 // This is a unbounded box in 4D but bounded in 2D with strict inequalities.
-static void
+void
 test1() {
   Bounding_Box box(4);
   box.raise_lower_bound(1, false, -2, 3);
@@ -64,7 +66,7 @@ test1() {
 
 // This is a bounded NNC polyhedron with strict inequalities
 // causing upper and lower bounds of the box to be open.
-static void
+void
 test2() {
   Bounding_Box box(4);
   box.raise_lower_bound(1, true, -2, 3);
@@ -93,7 +95,7 @@ test2() {
 }
 
 // This is an empty box in 2D.
-static void
+void
 test3() {
   Bounding_Box box(2);
   box.set_empty();
@@ -113,6 +115,8 @@ test3() {
   if (ph != known_ph)
     exit(1);
 }
+
+} // namespace
 
 int
 main() TRY {

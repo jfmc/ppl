@@ -30,7 +30,9 @@ using namespace Parma_Polyhedra_Library;
 #define NOISY 0
 #endif
 
-static void
+namespace {
+
+void
 error1() {
   Variable x(0);
   Variable y(1);
@@ -58,7 +60,7 @@ error1() {
   }
 }
 
-static void
+void
 error2() {
   Variable x(0);
   Variable y(1);
@@ -88,7 +90,7 @@ error2() {
   }
 }
 
-static void
+void
 error3() {
   Variable x(0);
   Variable y(1);
@@ -114,7 +116,7 @@ error3() {
   }
 }
 
-static void
+void
 error4() {
   Variable x(0);
   Variable y(1);
@@ -141,7 +143,7 @@ error4() {
   }
 }
 
-static void
+void
 error5() {
   Variable x(0);
   Variable y(1);
@@ -176,7 +178,7 @@ error5() {
   }
 }
 
-static void
+void
 error6() {
   Variable x(0);
   Variable y(1);
@@ -202,7 +204,7 @@ error6() {
   }
 }
 
-static void
+void
 error7() {
   Variable x(0);
   Variable y(1);
@@ -230,7 +232,7 @@ error7() {
   }
 }
 
-static void
+void
 error8() {
   Variable x(0);
   Variable y(1);
@@ -257,7 +259,7 @@ error8() {
   }
 }
 
-static void
+void
 error9() {
   Variable x(0);
   Variable y(1);
@@ -287,7 +289,7 @@ error9() {
   }
 }
 
-static void
+void
 error10() {
   Variable x(0);
   Variable y(1);
@@ -317,7 +319,7 @@ error10() {
   }
 }
 
-static void
+void
 error11() {
   Variable x(0);
   Variable y(1);
@@ -344,7 +346,7 @@ error11() {
   }
 }
 
-static void
+void
 error12() {
   C_Polyhedron ph1(7);
 
@@ -367,7 +369,7 @@ error12() {
   }
 }
 
-static void
+void
 error13() {
   Variable w(4);
 
@@ -393,7 +395,7 @@ error13() {
   }
 }
 
-static void
+void
 error14() {
   C_Polyhedron ph(5);
 
@@ -414,7 +416,7 @@ error14() {
   }
 }
 
-static void
+void
 error15() {
   Variable x(0);
   Variable y(1);
@@ -441,7 +443,7 @@ error15() {
   }
 }
 
-static void
+void
 error16() {
   Variable y(1);
 
@@ -465,7 +467,7 @@ error16() {
   }
 }
 
-static void
+void
 error17() {
   Variable x(0);
   Variable y(1);
@@ -492,7 +494,7 @@ error17() {
   }
 }
 
-static void
+void
 error18() {
   Variable x(0);
   Variable y(1);
@@ -526,7 +528,7 @@ error18() {
   }
 }
 
-static void
+void
 error19() {
   Variable x(0);
   Variable y(1);
@@ -550,7 +552,7 @@ error19() {
   }
 }
 
-static void
+void
 error20() {
   Variable x(0);
   Variable y(1);
@@ -578,7 +580,7 @@ error20() {
   }
 }
 
-static void
+void
 error21() {
   Variable x(0);
   Variable y(1);
@@ -607,7 +609,7 @@ error21() {
   }
 }
 
-static void
+void
 error22() {
   Variable z(2);
 
@@ -632,7 +634,7 @@ error22() {
   }
 }
 
-static void
+void
 error23() {
   C_Polyhedron ph1(5);
   C_Polyhedron ph2(10);
@@ -655,7 +657,7 @@ error23() {
   }
 }
 
-static void
+void
 error24() {
   Variable y(1);
 
@@ -683,7 +685,7 @@ error24() {
   }
 }
 
-static void
+void
 error25() {
   Variable x(0);
   Variable y(1);
@@ -720,7 +722,7 @@ error25() {
   }
 }
 
-static void
+void
 error26() {
   Variable x(0);
   Variable y(1);
@@ -748,7 +750,7 @@ error26() {
   }
 }
 
-static void
+void
 error27() {
   Variable x(0);
 
@@ -773,7 +775,7 @@ error27() {
   }
 }
 
-static void
+void
 error28() {
   Variable x(0);
   Variable y(1);
@@ -800,7 +802,7 @@ error28() {
   }
 }
 
-static void
+void
 error29() {
   Variable x(0);
   Variable y(1);
@@ -828,7 +830,7 @@ error29() {
   }
 }
 
-static void
+void
 error30() {
 
   C_Polyhedron ph1(3);
@@ -851,7 +853,7 @@ error30() {
   }
 }
 
-static void
+void
 error31() {
   C_Polyhedron ph1(3);
   C_Polyhedron ph2(8);
@@ -873,7 +875,7 @@ error31() {
   }
 }
 
-static void
+void
 error32() {
   Variable A(0);
   Variable B(1);
@@ -906,7 +908,7 @@ error32() {
   }
 }
 
-static void
+void
 error33() {
   Variable A(0);
 
@@ -933,7 +935,7 @@ error33() {
   }
 }
 
-static void
+void
 error34() {
   Variable A(0);
   Variable B(1);
@@ -960,7 +962,7 @@ error34() {
   }
 }
 
-static void
+void
 error35() {
   Variable A(0);
   Variable B(1);
@@ -993,7 +995,7 @@ error35() {
   }
 }
 
-static void
+void
 error36() {
   Variable A(0);
   Variable B(1);
@@ -1026,7 +1028,7 @@ error36() {
   }
 }
 
-static void
+void
 error37() {
   C_Polyhedron ph1(5);
   C_Polyhedron ph2(10);
@@ -1049,7 +1051,7 @@ error37() {
   }
 }
 
-static void
+void
 error38() {
   Variable A(0);
   Variable B(1);
@@ -1076,7 +1078,7 @@ error38() {
   }
 }
 
-static void
+void
 error39() {
   Variable A(0);
   Variable B(1);
@@ -1101,7 +1103,7 @@ error39() {
   }
 }
 
-static void
+void
 error40() {
   Variable A(0);
   Variable B(1);
@@ -1127,7 +1129,7 @@ error40() {
   }
 }
 
-static void
+void
 error41() {
   Variable A(0);
   Variable B(1);
@@ -1154,7 +1156,7 @@ error41() {
   }
 }
 
-static void
+void
 error42() {
   Variable A(0);
   Variable B(1);
@@ -1181,7 +1183,7 @@ error42() {
   }
 }
 
-static void
+void
 error43() {
   Generator_System gs;
   Linear_Expression e;
@@ -1202,7 +1204,7 @@ error43() {
   }
 }
 
-static void
+void
 error44() {
   Generator_System gs;
   Linear_Expression e;
@@ -1223,7 +1225,7 @@ error44() {
   }
 }
 
-static void
+void
 error45() {
   Variable A(0);
   Variable B(1);
@@ -1249,7 +1251,7 @@ error45() {
   }
 }
 
-static void
+void
 error46() {
   Variable A(0);
   Variable B(1);
@@ -1271,7 +1273,7 @@ error46() {
   }
 }
 
-static void
+void
 error47() {
   Variable A(0);
   Variable B(1);
@@ -1296,6 +1298,8 @@ error47() {
     exit(1);
   }
 }
+
+} // namespace
 
 int
 main() TRY {

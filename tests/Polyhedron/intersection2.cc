@@ -30,7 +30,9 @@ using namespace Parma_Polyhedra_Library;
 #define NOISY 0
 #endif
 
-static int
+namespace {
+
+int
 count_points(const C_Polyhedron& ph) {
   if (ph.is_empty() || ph.space_dimension() == 0)
     return 0;
@@ -44,6 +46,8 @@ count_points(const C_Polyhedron& ph) {
       ++count;
   return count;
 }
+
+} // namespace
 
 int
 main() TRY {

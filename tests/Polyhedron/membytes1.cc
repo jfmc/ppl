@@ -30,10 +30,12 @@ using namespace Parma_Polyhedra_Library;
 #define NOISY 0
 #endif
 
-static void loo(...) {
+namespace {
+
+void loo(...) {
 }
 
-static void
+void
 add_constraint(C_Polyhedron& ph, const Constraint& c) {
   const memory_size_type ph_memory_before = ph.total_memory_in_bytes();
   const memory_size_type c_memory = c.total_memory_in_bytes();
@@ -49,7 +51,7 @@ add_constraint(C_Polyhedron& ph, const Constraint& c) {
 #endif
 }
 
-static void
+void
 add_generator(C_Polyhedron& ph, const Generator& g) {
   const memory_size_type ph_memory_before = ph.total_memory_in_bytes();
   const memory_size_type g_memory = g.total_memory_in_bytes();
@@ -65,7 +67,7 @@ add_generator(C_Polyhedron& ph, const Generator& g) {
 #endif
 }
 
-static void
+void
 minimize(C_Polyhedron& ph) {
   const memory_size_type ph_memory_before = ph.total_memory_in_bytes();
   (void) ph.minimized_generators();
@@ -78,6 +80,8 @@ minimize(C_Polyhedron& ph) {
   loo(ph_memory_before, ph_memory_after);
 #endif
 }
+
+} // namespace
 
 int
 main() TRY {

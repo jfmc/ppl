@@ -31,13 +31,15 @@ using namespace Parma_Polyhedra_Library::IO_Operators;
 #define NOISY 0
 #endif
 
-static Variable A(0);
-static Variable B(1);
-static Variable C(2);
-static Variable D(3);
-static Variable E(4);
+namespace {
 
-static const Generator_System&
+Variable A(0);
+Variable B(1);
+Variable C(2);
+Variable D(3);
+Variable E(4);
+
+const Generator_System&
 fixed_part() {
   static Generator_System gs;
   static bool initialized = false;
@@ -53,7 +55,7 @@ fixed_part() {
   return gs;
 }
 
-static C_Polyhedron
+C_Polyhedron
 p(unsigned n) {
   C_Polyhedron ph(fixed_part());
   n += 2;
@@ -71,6 +73,8 @@ p(unsigned n) {
   }
   return ph;
 }
+
+} // namespace
 
 int
 main() TRY {

@@ -31,10 +31,12 @@ using namespace Parma_Polyhedra_Library::IO_Operators;
 #define NOISY 0
 #endif
 
+namespace {
+
 Variable x(0);
 Variable y(1);
 
-static C_Polyhedron
+C_Polyhedron
 rectangle(int lx, int ly, int dx, int dy) {
   C_Polyhedron ph(2, Polyhedron::EMPTY);
   ph.add_generator(point((lx+0*dx)*x + (ly+0*dy)*y));
@@ -43,6 +45,8 @@ rectangle(int lx, int ly, int dx, int dy) {
   ph.add_generator(point((lx+0*dx)*x + (ly+1*dy)*y));
   return ph;
 }
+
+} // namespace
 
 int main() TRY {
   set_handlers();

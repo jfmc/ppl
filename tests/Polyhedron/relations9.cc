@@ -31,7 +31,9 @@ using namespace Parma_Polyhedra_Library::IO_Operators;
 #define NOISY 0
 #endif
 
-static void test1() {
+namespace {
+
+void test1() {
   // The zero-dim universe polyhedron.
   C_Polyhedron ph;
   Poly_Con_Relation rel = ph.relation_with(Linear_Expression(0) > 0);
@@ -48,7 +50,7 @@ static void test1() {
     exit(1);
 }
 
-static void test2() {
+void test2() {
   // The zero-dim universe polyhedron.
   C_Polyhedron ph;
   Poly_Con_Relation rel = ph.relation_with(Linear_Expression(0) > 1);
@@ -64,7 +66,7 @@ static void test2() {
     exit(1);
 }
 
-static void test3() {
+void test3() {
   // The zero-dim universe polyhedron.
   C_Polyhedron ph;
   Poly_Con_Relation rel = ph.relation_with(Linear_Expression(1) > 0);
@@ -80,7 +82,7 @@ static void test3() {
     exit(1);
 }
 
-static void test4() {
+void test4() {
   // An empty polyhedron.
   C_Polyhedron ph(1);
   ph.add_constraint(Linear_Expression(0) >= 1);
@@ -100,7 +102,7 @@ static void test4() {
     exit(1);
 }
 
-static void test5() {
+void test5() {
   Variable A(0);
   Variable B(1);
   Constraint_System cs(A + B == 3);
@@ -120,7 +122,7 @@ static void test5() {
     exit(1);
 }
 
-static void test6() {
+void test6() {
   Variable A(0);
   Variable B(1);
   Constraint_System cs(A + B <= 3);
@@ -139,7 +141,7 @@ static void test6() {
     exit(1);
 }
 
-static void test7() {
+void test7() {
   Variable A(0);
   Variable B(1);
   Constraint_System cs;
@@ -161,7 +163,7 @@ static void test7() {
     exit(1);
 }
 
-static void test8() {
+void test8() {
   Variable A(0);
   Variable B(1);
   Constraint_System cs;
@@ -182,6 +184,8 @@ static void test8() {
   if (rel != known_result)
     exit(1);
 }
+
+} // namespace
 
 int main() TRY {
 

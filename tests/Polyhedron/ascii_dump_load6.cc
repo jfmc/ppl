@@ -32,9 +32,11 @@ using namespace Parma_Polyhedra_Library;
 #define NOISY 0
 #endif
 
-static const char* my_file = "ascii_dump_load6.dat";
+namespace {
 
-static void
+const char* my_file = "ascii_dump_load6.dat";
+
+void
 test1() {
 #if NOISY
   cout << "test1()" << endl;
@@ -58,7 +60,7 @@ test1() {
     exit(1);
 }
 
-static void
+void
 test2() {
 #if NOISY
   cout << "test2()" << endl;
@@ -82,7 +84,7 @@ test2() {
     exit(1);
 }
 
-static void
+void
 test3() {
 #if NOISY
   cout << "test3()" << endl;
@@ -103,7 +105,7 @@ test3() {
     exit(1);
 }
 
-static void
+void
 test4() {
 #if NOISY
   cout << "test4()" << endl;
@@ -124,7 +126,7 @@ test4() {
     exit(1);
 }
 
-static void
+void
 test5() {
 #if NOISY
   cout << "test5()" << endl;
@@ -145,7 +147,7 @@ test5() {
     exit(1);
 }
 
-static void
+void
 test6() {
 #if NOISY
   cout << "test6()" << endl;
@@ -166,7 +168,7 @@ test6() {
     exit(1);
 }
 
-static void
+void
 test7() {
 #if NOISY
   cout << "test7()" << endl;
@@ -187,7 +189,7 @@ test7() {
     exit(1);
 }
 
-static void
+void
 test8() {
 #if NOISY
   cout << "test8()" << endl;
@@ -208,7 +210,7 @@ test8() {
     exit(1);
 }
 
-static void
+void
 test9() {
 #if NOISY
   cout << "test9()" << endl;
@@ -230,7 +232,7 @@ test9() {
 }
 
 
-static void
+void
 test10() {
 #if NOISY
   cout << "test10()" << endl;
@@ -250,6 +252,8 @@ test10() {
   if (!ok)
     exit(1);
 }
+
+} // namespace
 
 int
 main() TRY {

@@ -31,7 +31,9 @@ using namespace Parma_Polyhedra_Library::IO_Operators;
 #define NOISY 0
 #endif
 
-static Generator_System
+namespace {
+
+Generator_System
 gs_square(const Coefficient& half_side) {
   Variable A(0);
   Variable B(1);
@@ -43,7 +45,7 @@ gs_square(const Coefficient& half_side) {
   return gs;
 }
 
-static Generator_System
+Generator_System
 gs_rhombus(const Coefficient& half_diagonal) {
   Variable A(0);
   Variable B(1);
@@ -56,7 +58,7 @@ gs_rhombus(const Coefficient& half_diagonal) {
 }
 
 
-static C_Polyhedron
+C_Polyhedron
 p(unsigned n) {
 
   Coefficient half_diagonal = 2;
@@ -85,6 +87,8 @@ p(unsigned n) {
 
   return ph;
 }
+
+} // namespace
 
 int
 main() TRY {

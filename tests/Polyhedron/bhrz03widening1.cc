@@ -30,7 +30,9 @@ using namespace Parma_Polyhedra_Library;
 #define NOISY 0
 #endif
 
-static bool
+namespace {
+
+bool
 dimensions() {
   Variable A(0);
   Variable B(1);
@@ -70,7 +72,7 @@ dimensions() {
   return ph1 == ph1_copy;
 }
 
-static bool
+bool
 lines() {
   Variable A(0);
   Variable B(1);
@@ -98,7 +100,7 @@ lines() {
   return ph1 == ph1_copy;
 }
 
-static bool
+bool
 points() {
   Variable A(0);
   Variable B(1);
@@ -131,6 +133,8 @@ points() {
 
   return ph1 == ph1_copy;
 }
+
+} // namespace
 
 int
 main() TRY {

@@ -32,7 +32,9 @@ using namespace Parma_Polyhedra_Library;
 #define NOISY 0
 #endif
 
-static int
+namespace {
+
+int
 test1() {
   Variable A(0);
   Variable B(1);
@@ -63,7 +65,7 @@ test1() {
 }
 
 
-static int
+int
 test2() {
   Variable A(0);
   Variable B(1);
@@ -93,7 +95,7 @@ test2() {
   return retval;
 }
 
-static int
+int
 test3() {
   Variable A(0);
   Variable B(1);
@@ -124,7 +126,7 @@ test3() {
 }
 
 
-static int
+int
 test4() {
   Variable A(0);
   Variable B(1);
@@ -153,7 +155,7 @@ test4() {
   return retval;
 }
 
-static int
+int
 test5() {
   Variable A(0);
   Variable B(1);
@@ -183,7 +185,7 @@ test5() {
 }
 
 
-static int
+int
 test6() {
   Variable A(0);
   Variable B(1);
@@ -215,6 +217,8 @@ test6() {
 
   return retval;
 }
+
+} // namespace
 
 int
 main() TRY {

@@ -32,7 +32,9 @@ using namespace Parma_Polyhedra_Library;
 #define NOISY 0
 #endif
 
-static void
+namespace {
+
+void
 compute_open_hypercube_generators(dimension_type dimension) {
   NNC_Polyhedron hypercube(dimension);
   for (dimension_type i = 0; i < dimension; ++i) {
@@ -59,9 +61,9 @@ public:
   }
 };
 
-static Timeout t;
+Timeout t;
 
-static bool
+bool
 timed_compute_open_hypercube_generators(dimension_type dimension,
 					int hundredth_secs) {
   try {
@@ -89,6 +91,8 @@ timed_compute_open_hypercube_generators(dimension_type dimension,
   // Should never get here.
   return false;
 }
+
+} // namespace
 
 #define INIT_TIME 20
 

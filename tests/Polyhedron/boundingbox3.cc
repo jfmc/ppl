@@ -30,8 +30,10 @@ using namespace Parma_Polyhedra_Library;
 #define NOISY 0
 #endif
 
+namespace {
+
 // The box is the xy plane.
-static void
+void
 test1() {
   Bounding_Box box(2);
 
@@ -49,7 +51,7 @@ test1() {
 }
 
 // This box is the closed +ve quadrant.
-static void
+void
 test2() {
   Bounding_Box box(2);
   box.raise_lower_bound(0, true, 0, 1);
@@ -74,7 +76,7 @@ test2() {
 }
 
 // A bounded box in 2D.
-static void
+void
 test3() {
   Bounding_Box box(2);
   box.raise_lower_bound(0, true, -2, 3);
@@ -103,7 +105,7 @@ test3() {
 }
 
 // This is a unbounded closed box in 4D but bounded in 2D.
-static void
+void
 test4() {
   Bounding_Box box(4);
   box.raise_lower_bound(1, true, -2, 3);
@@ -135,7 +137,7 @@ test4() {
 }
 
 // This is a zero-dimensional box.
-static void
+void
 test5() {
   Bounding_Box box(0);
 
@@ -153,7 +155,7 @@ test5() {
 }
 
 // This is an empty closed box in 2D.
-static void
+void
 test6() {
   Bounding_Box box(2);
   box.set_empty();
@@ -175,7 +177,7 @@ test6() {
 }
 
 // This box is a single point.
-static void
+void
 test7() {
   Bounding_Box box(2);
   box.raise_lower_bound(0, true, 2, 1);
@@ -202,7 +204,7 @@ test7() {
 }
 
 // This box is a closed unit square.
-static void
+void
 test8() {
   Bounding_Box box(2);
   box.raise_lower_bound(0, true, 0, 1);
@@ -234,7 +236,7 @@ test8() {
 
 // Constructs the polyhedron { x >= 0, x <= 1/2, y >= 0 }
 // from the corresponding box.
-static void
+void
 test9() {
   Bounding_Box box(2);
   box.raise_lower_bound(0, true, 0, 1);
@@ -262,6 +264,8 @@ test9() {
   if (ph != known_ph)
     exit(1);
 }
+
+} // namespace
 
 int
 main() TRY {

@@ -43,12 +43,14 @@ namespace Parma_Polyhedra_Library {
 //    ---------
 //    M O N E Y
 
-static void
+namespace {
+
+void
 less_than(C_Polyhedron& ph, Variable X, Variable Y) {
   ph.add_constraint(X+1 <= Y);
 }
 
-static void
+void
 constraints(C_Polyhedron& ph,
 	    Variable S,
 	    Variable E,
@@ -94,6 +96,8 @@ constraints(C_Polyhedron& ph,
   less_than(ph, D, R);
   less_than(ph, R, S);
 }
+
+} // namespace
 
 int
 main() TRY {

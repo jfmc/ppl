@@ -30,13 +30,15 @@ using namespace Parma_Polyhedra_Library;
 #define NOISY 0
 #endif
 
+namespace {
+
 Variable A(0);
 Variable B(1);
 Variable C(2);
 Variable D(3);
 
 // Test with an empty polyhedron.
-static void
+void
 test1() {
   NNC_Polyhedron ph1(3, NNC_Polyhedron::EMPTY);
 
@@ -63,7 +65,7 @@ test1() {
 }
 
 // Trivial fold.
-static void
+void
 test2() {
   NNC_Polyhedron ph1(3);
   ph1.add_constraint(A >= 0);
@@ -94,7 +96,7 @@ test2() {
 
 
 // Test as given in [GopanDMDRS04] on page 519 but with strict constraints.
-static void
+void
 test3() {
   NNC_Polyhedron ph1(2);
   ph1.add_constraint(A > 1);
@@ -128,7 +130,7 @@ test3() {
 
 
 // Test folding several dimensions into a higher dimension.
-static void
+void
 test4() {
   NNC_Polyhedron ph1(3);
   ph1.add_constraint(A > 1);
@@ -163,7 +165,7 @@ test4() {
 }
 
 // Test folding dimensions into a lower dimension.
-static void
+void
 test5() {
   NNC_Polyhedron ph1(4);
   ph1.add_constraint(A > 0);
@@ -199,7 +201,7 @@ test5() {
 }
 
 // Test folding dimensions into an intermediate dimension.
-static void
+void
 test6() {
   NNC_Polyhedron ph1(4);
   ph1.add_constraint(A >= 0);
@@ -236,6 +238,8 @@ test6() {
   if (!ok)
     exit(1);
 }
+
+} // namespace
 
 int
 main() TRY {

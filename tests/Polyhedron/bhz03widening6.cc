@@ -38,12 +38,10 @@ Variable Y(1);
 
 typedef Polyhedra_Powerset<C_Polyhedron> PSet;
 
-} // namespace
-
 // This tests the third case of the widening definition when the widening
 // takes the the default option of returning a singleton set consisting
 // of the convex hull of the set to be widened.
-static void
+void
 test1() {
   C_Polyhedron p1(2);
   p1.add_constraint(X >= 0);
@@ -114,7 +112,7 @@ test1() {
 
 // This tests the first case of the widening definition when the widening
 // does nothing as the lgo for the polyhull is decreasing.
-static void
+void
 test2() {
   C_Polyhedron p1(2);
   p1.add_constraint(Y >= 2);
@@ -191,7 +189,7 @@ test2() {
 // This tests the first case of the widening definition when the widening
 // does nothing; the polyhull is stable with respect to the certificate
 // and the multiset ordering for this certificate is decreasing.
-static void
+void
 test3() {
   C_Polyhedron p1(2);
   p1.add_constraint(X >= 1);
@@ -263,7 +261,7 @@ test3() {
 
 // This tests the first case of the widening definition when the widening
 // of the elements of the set reduces the multiset ordering.
-static void
+void
 test4() {
   C_Polyhedron p1(2);
   p1.add_constraint(Y >= 2);
@@ -337,6 +335,8 @@ test4() {
       !T2.geometrically_covers(old_T2) || !T2.geometrically_covers(T1))
     exit(1);
 }
+
+} // namespace
 
 int
 main() TRY {

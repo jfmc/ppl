@@ -31,8 +31,10 @@ using namespace Parma_Polyhedra_Library;
 #define NOISY 0
 #endif
 
+namespace {
+
 #if NOISY
-static void
+void
 print_function(const PFunction& function, const std::string& intro = "",
 	       std::ostream& s = std::cout) {
   if (!intro.empty())
@@ -41,7 +43,7 @@ print_function(const PFunction& function, const std::string& intro = "",
 }
 #endif
 
-static void
+void
 test1() {
   PFunction function;
 
@@ -66,7 +68,7 @@ test1() {
     exit(1);
 }
 
-static void
+void
 test2() {
   PFunction function;
 
@@ -91,7 +93,7 @@ test2() {
     exit(1);
 }
 
-static void
+void
 test3() {
   Variable A(0);
   Variable B(1);
@@ -132,7 +134,7 @@ test3() {
     exit(1);
 }
 
-static void
+void
 test4() {
   Variable A(0);
   Variable B(1);
@@ -172,7 +174,7 @@ test4() {
     exit(1);
 }
 
-static void
+void
 test5() {
   Variable A(0);
   Variable B(1);
@@ -209,7 +211,7 @@ test5() {
     exit(1);
 }
 
-static void
+void
 test6() {
   Variable A(0);
   Variable B(1);
@@ -244,7 +246,7 @@ test6() {
     exit(1);
 }
 
-static void
+void
 test7() {
   Variable A(0);
   Variable B(1);
@@ -286,7 +288,7 @@ test7() {
     exit(1);
 }
 
-static void
+void
 test8() {
   Variable A(0);
   Variable B(1);
@@ -325,7 +327,7 @@ test8() {
     exit(1);
 }
 
-static void
+void
 test9() {
   PFunction function;
   function.insert(0, 1);
@@ -351,6 +353,8 @@ test9() {
   if (!ok)
     exit(1);
 }
+
+} // namespace
 
 int
 main() TRY {

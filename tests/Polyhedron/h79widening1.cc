@@ -30,7 +30,9 @@ using namespace Parma_Polyhedra_Library;
 #define NOISY 0
 #endif
 
-static bool
+namespace {
+
+bool
 try_H79_widening_assign(C_Polyhedron& ph1, const C_Polyhedron& ph2,
 			// Note intentional call-by-value!
 			C_Polyhedron known_result) {
@@ -47,6 +49,8 @@ try_H79_widening_assign(C_Polyhedron& ph1, const C_Polyhedron& ph2,
 
   return ph1 == known_result;
 }
+
+} // namespace
 
 int
 main() TRY {

@@ -31,9 +31,11 @@ using namespace Parma_Polyhedra_Library;
 #define NOISY 0
 #endif
 
+namespace {
+
 // This is a non-bounded closed polyhedron consisting of the line x = y.
 // The bounding box is the xy plane - the universal polyhedron.
-static void
+void
 test1() {
   Variable x(0);
   Variable y(1);
@@ -65,7 +67,7 @@ test1() {
 // This is non-bounded closed polyhedron  in 2D consisting of a wedge bounded
 // by y >= 0 and x >= y.
 // The resulting bounding box depends on the complexity class.
-static void
+void
 test2() {
   Variable x(0);
   Variable y(1);
@@ -102,7 +104,7 @@ test2() {
 }
 
 // This is a bounded non-rectangular closed polyhedron in 2D.
-static void
+void
 test3() {
   Variable x(0);
   Variable y(1);
@@ -144,7 +146,7 @@ test3() {
 }
 
 // This is an unbounded closed polyhedron in 4D but bounded in 2D.
-static void
+void
 test4() {
   Variable x(1);
   Variable y(2);
@@ -190,7 +192,7 @@ test4() {
 }
 
 // This is the universal, 2-dimensional closed polyhedron.
-static void
+void
 test5() {
   C_Polyhedron ph(2);
 
@@ -217,7 +219,7 @@ test5() {
 }
 
 // This is a zero-dimensional closed polyhedron.
-static void
+void
 test6() {
   C_Polyhedron ph;
 
@@ -244,7 +246,7 @@ test6() {
 }
 
 // This is an empty closed polyhedron in 2D.
-static void
+void
 test7() {
   C_Polyhedron ph(2, C_Polyhedron::EMPTY);
 
@@ -272,7 +274,7 @@ test7() {
 }
 
 // This is a bounded polyhedron that is a single point.
-static void
+void
 test8() {
   Variable x(0);
   Variable y(1);
@@ -308,7 +310,7 @@ test8() {
 }
 
 // This is a unit square closed polyhedron.
-static void
+void
 test9() {
   Variable x(0);
   Variable y(1);
@@ -347,7 +349,7 @@ test9() {
 }
 
 // This is a bounded rectangular closed polyhedron;
-static void
+void
 test10() {
   Variable x(0);
   Variable y(1);
@@ -387,6 +389,8 @@ test10() {
   if (nbox != known_box || pbox != known_box)
     exit(1);
 }
+
+} // namespace
 
 int
 main() TRY {

@@ -30,13 +30,15 @@ using namespace Parma_Polyhedra_Library;
 #define NOISY 0
 #endif
 
+namespace {
+
 Variable A(0);
 Variable B(1);
 Variable C(2);
 Variable D(3);
 
 // Test using constraints for NNC polyhedron.
-static void
+void
 test1() {
 
   NNC_Polyhedron ph1(2);
@@ -72,7 +74,7 @@ test1() {
 }
 
 // Test using generators for NNC polyhedron.
-static void
+void
 test2() {
   NNC_Polyhedron ph1(2, NNC_Polyhedron::EMPTY);
   ph1.add_generator(point(A));
@@ -105,6 +107,8 @@ test2() {
   if (!ok)
     exit(1);
 }
+
+} // namespace
 
 int
 main() TRY {

@@ -33,7 +33,11 @@ using namespace Parma_Polyhedra_Library::IO_Operators;
 #define NOISY 0
 #endif
 
-static const char* my_file = "writegensys1.dat";
+namespace {
+
+const char* my_file = "writegensys1.dat";
+
+} // namespace
 
 int
 main() TRY {

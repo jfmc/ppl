@@ -31,11 +31,13 @@ using namespace Parma_Polyhedra_Library::IO_Operators;
 #define NOISY 0
 #endif
 
-static Variable A(0);
-static Variable B(1);
-static Variable C(2);
+namespace {
 
-static Generator_System
+Variable A(0);
+Variable B(1);
+Variable C(2);
+
+Generator_System
 g_0() {
   Generator_System new_gs;
   new_gs.insert(ray(A + C));
@@ -45,7 +47,7 @@ g_0() {
   return new_gs;
 }
 
-static Generator
+Generator
 splitting_facet(const Generator& r1,
 		const Generator& r2,
 		unsigned magic_number) {
@@ -59,7 +61,7 @@ splitting_facet(const Generator& r1,
   return ray(expr);
 }
 
-static Generator_System
+Generator_System
 double_generators(const Generator_System& gs, unsigned magic_number) {
   Generator_System new_gs;
   Generator_System::const_iterator i = gs.begin();
@@ -81,7 +83,7 @@ double_generators(const Generator_System& gs, unsigned magic_number) {
 }
 
 
-static C_Polyhedron
+C_Polyhedron
 p(unsigned n) {
 
   unsigned needed_facets = n + 4;
@@ -113,6 +115,7 @@ p(unsigned n) {
   return ph;
 }
 
+} // namespace
 
 int
 main() TRY {

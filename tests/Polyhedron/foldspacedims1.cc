@@ -30,13 +30,15 @@ using namespace Parma_Polyhedra_Library;
 #define NOISY 0
 #endif
 
+namespace {
+
 Variable A(0);
 Variable B(1);
 Variable C(2);
 Variable D(3);
 
 // Test with a universe polyhedron.
-static void
+void
 test1() {
   C_Polyhedron ph1(3);
 
@@ -63,7 +65,7 @@ test1() {
 }
 
 // Test with an empty polyhedron.
-static void
+void
 test2() {
   C_Polyhedron ph1(3, C_Polyhedron::EMPTY);
 
@@ -90,7 +92,7 @@ test2() {
 }
 
 // Trivial fold.
-static void
+void
 test3() {
   C_Polyhedron ph1(3);
   ph1.add_constraint(A >= 0);
@@ -121,7 +123,7 @@ test3() {
 
 
 // Test as given in [GopanDMDRS04] on page 519.
-static void
+void
 test4() {
   C_Polyhedron ph1(2);
   ph1.add_constraint(A >= 1);
@@ -157,7 +159,7 @@ test4() {
 // Test that takes the expected result of the expand operation
 // example given in [GopanDMDRS04] on page 519 and folds it to recover
 // the unexpanded polyhedron.
-static void
+void
 test5() {
   C_Polyhedron ph1(3, C_Polyhedron::EMPTY);
   ph1.add_generator(point(A + 2*B + 2*C));
@@ -196,7 +198,7 @@ test5() {
 }
 
 // Test folding several dimensions into a higher dimension.
-static void
+void
 test6() {
   C_Polyhedron ph1(3);
   ph1.add_constraint(A >= 1);
@@ -231,7 +233,7 @@ test6() {
 }
 
 // Test fold_space_dimensions() when there are rays.
-static void
+void
 test7() {
   C_Polyhedron ph1(3, C_Polyhedron::EMPTY);
   ph1.add_generator(point(A));
@@ -265,7 +267,7 @@ test7() {
 }
 
 // Test folding dimensions into a lower dimension.
-static void
+void
 test8() {
   C_Polyhedron ph1(4);
   ph1.add_constraint(A >= 0);
@@ -301,7 +303,7 @@ test8() {
 }
 
 // Test folding dimensions into an intermediate dimension.
-static void
+void
 test9() {
   C_Polyhedron ph1(4);
   ph1.add_constraint(A >= 0);
@@ -338,6 +340,8 @@ test9() {
   if (!ok)
     exit(1);
 }
+
+} // namespace
 
 int
 main() TRY {
