@@ -59,7 +59,8 @@ ORIGINAL_TESTS = \
 	inclusion1 \
         intersection1 intersection2 intersection3 intersection4 \
 	intersection5 intersection6 intersection7 \
-	limitedh79widening1 limitedh79widening2\
+	limitedh79widening1 limitedh79widening2 \
+	limitedh79widening3 \
 	mc91 \
 	memory1 \
 	onepoint \
@@ -99,6 +100,7 @@ DERIVED_TESTS = \
 	nnc_intersection4 nnc_intersection5 nnc_intersection6 \
 	nnc_intersection7 \
 	nnc_limitedh79widening1 nnc_limitedh79widening2 \
+	nnc_limitedh79widening3 \
 	nnc_mc91 \
 	nnc_onepoint \
 	nnc_permute \
@@ -200,6 +202,7 @@ intersection7_SOURCES = intersection7.cc
 
 limitedh79widening1_SOURCES = limitedh79widening1.cc
 limitedh79widening2_SOURCES = limitedh79widening2.cc
+limitedh79widening3_SOURCES = limitedh79widening3.cc
 
 memory1_SOURCES = memory1.cc
 
@@ -369,6 +372,8 @@ nnc_limitedh79widening1_SOURCES = limitedh79widening1.cc
 nnc_limitedh79widening1_CXXFLAGS = $(DERIVED_CXXFLAGS)
 nnc_limitedh79widening2_SOURCES = limitedh79widening2.cc
 nnc_limitedh79widening2_CXXFLAGS = $(DERIVED_CXXFLAGS)
+nnc_limitedh79widening3_SOURCES = limitedh79widening3.cc
+nnc_limitedh79widening3_CXXFLAGS = $(DERIVED_CXXFLAGS)
 
 nnc_mc91_SOURCES = mc91.cc
 nnc_mc91_CXXFLAGS = $(DERIVED_CXXFLAGS)
