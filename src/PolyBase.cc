@@ -2035,11 +2035,9 @@ PPL::PolyBase::add_constraints(ConSys& cs) {
   }
 
   // We only need that the system of constraints is up-to-date.
-  if (!constraints_are_up_to_date())
-    minimize();
-
-  // Adding constraints to an empty polyhedron is a no-op.
-  if (is_empty())
+  if (!constraints_are_up_to_date() && !minimize())
+    // We have just discovered that `*this' is empty, and adding
+    // constraints to an empty polyhedron is a no-op.
     return;
 
   // FIXME: the following instruction breaks all the
@@ -2286,11 +2284,9 @@ PPL::PolyBase::add_generators(GenSys& gs) {
     gs.add_corresponding_closure_points();
 
   // We only need that the system of generators is up-to-date.
-  if (!generators_are_up_to_date())
-    minimize();
-
-  if (is_empty()) {
-    // Checking if the system of generators contains a point.
+  if (!generators_are_up_to_date() && !minimize()) {
+    // We have just discovered that `*this' is empty.
+    // So `gs' must contain at least one point.
     if (!gs.has_points())
       throw_invalid_generators("add_generators(gs)", *this);
     // The polyhedron is no longer empty and generators are up-to-date.
@@ -2726,12 +2722,11 @@ PPL::PolyBase::widening_assign(const PolyBase& y) {
   // the saturation matrix `sat_g' of the polyhedron `y'. To obtain
   // the saturation matrix, the minimal system of constraints and
   // the minimal system of generators are necessary.
-  y.minimize();
-  // After the minimize, a polyhedron can become empty if the system
-  // of constraints was unsatisfiable.
-  // If the polyhedron `y' is empty, the widened polyhedron is `x'.
-  if (y.is_empty())
+  if (!y.minimize())
+    // We have just discovered that `y' is empty, so that the widened
+    // polyhedron is `x'.
     return;
+
   // We only need that the system of constraints is up-to-date
   // because
   // - if the system of constraints is insoluble, this means that
@@ -2861,59 +2856,58 @@ PPL::PolyBase::limited_widening_assign(const PolyBase& y, ConSys& cs) {
   if (x_space_dim == 0)
     return;
 
-  y.minimize();
-  // After the minimize, a polyhedron can become empty if the system
-  // of constraints is unsatisfiable.
-  if (!y.is_empty()) {
-    // Update the generators of `x': these are used to select,
-    // from the constraints in `cs', those that must be added
-    // to the resulting polyhedron.
-    if (!x.generators_are_up_to_date())
-      x.update_generators();
+  if (!y.minimize())
+    // We have just discovered that `y' is empty.
+    return;
 
-    size_t new_cs_num_rows = 0;
-    for (size_t i = 0, cs_num_rows = cs.num_rows(); i < cs_num_rows; ++i) {
-      // The constraints to be added must be saturated by both `x' and `y'.
-      // We only consider the generators of the greater polyhedron `x',
-      // because the generators of `y' can be obtained by combining
-      // those of `x' (since `y' is contained in `x').
-      Poly_Con_Relation relation = x.gen_sys.relation_with(cs[i]);
-      if (relation == Poly_Con_Relation::saturates()
-	  || relation == Poly_Con_Relation::is_included())
-	// The chosen constraints are put at the top of the
-	// matrix \p cs.
-	std::swap(cs[new_cs_num_rows], cs[i]);
-      ++new_cs_num_rows;
-    }
-    x.widening_assign(y);
-    // We erase the constraints that are not saturated or satisfied
-    // by the generators of `x' and `y' and that have been put to
-    // the end of the matrix \p cs.
-    cs.erase_to_end(new_cs_num_rows);
+  // Update the generators of `x': these are used to select,
+  // from the constraints in `cs', those that must be added
+  // to the resulting polyhedron.
+  if (!x.generators_are_up_to_date())
+    x.update_generators();
+
+  size_t new_cs_num_rows = 0;
+  for (size_t i = 0, cs_num_rows = cs.num_rows(); i < cs_num_rows; ++i) {
+    // The constraints to be added must be saturated by both `x' and `y'.
+    // We only consider the generators of the greater polyhedron `x',
+    // because the generators of `y' can be obtained by combining
+    // those of `x' (since `y' is contained in `x').
+    Poly_Con_Relation relation = x.gen_sys.relation_with(cs[i]);
+    if (relation == Poly_Con_Relation::saturates()
+	|| relation == Poly_Con_Relation::is_included())
+      // The chosen constraints are put at the top of the
+      // matrix \p cs.
+      std::swap(cs[new_cs_num_rows], cs[i]);
+    ++new_cs_num_rows;
+  }
+  x.widening_assign(y);
+  // We erase the constraints that are not saturated or satisfied
+  // by the generators of `x' and `y' and that have been put to
+  // the end of the matrix \p cs.
+  cs.erase_to_end(new_cs_num_rows);
 
 #if 1
-    // FIXME : merge_rows_assign (in the #else branch below)
-    // does not automatically adjust the topology of cs !!!
-    // However, by simply calling add_constraints() we will
-    // likely duplicate a big number of constraints.
-    x.add_constraints(cs);
+  // FIXME : merge_rows_assign (in the #else branch below)
+  // does not automatically adjust the topology of cs !!!
+  // However, by simply calling add_constraints() we will
+  // likely duplicate a big number of constraints.
+  x.add_constraints(cs);
 #else
-    // The system of constraints of the resulting polyhedron is
-    // composed by the constraints of the widened polyhedron `x'
-    // and by those of the new `cs'.
-    // The function `merge_row_assign' automatically resizes
-    // the system `cs' if the dimension of the space of `cs'
-    // is smaller then the dimension of the space of the polyhedron.
-    cs.sort_rows();
-    x.con_sys.sort_rows();
-    x.con_sys.merge_rows_assign(cs);
+  // The system of constraints of the resulting polyhedron is
+  // composed by the constraints of the widened polyhedron `x'
+  // and by those of the new `cs'.
+  // The function `merge_row_assign' automatically resizes
+  // the system `cs' if the dimension of the space of `cs'
+  // is smaller then the dimension of the space of the polyhedron.
+  cs.sort_rows();
+  x.con_sys.sort_rows();
+  x.con_sys.merge_rows_assign(cs);
 #endif
 
-    // Only the system of constraints is up-to-date.
-    x.set_constraints_up_to_date();
-    x.clear_constraints_minimized();
-    x.clear_generators_up_to_date();
-  }
+  // Only the system of constraints is up-to-date.
+  x.set_constraints_up_to_date();
+  x.clear_constraints_minimized();
+  x.clear_generators_up_to_date();
 
   assert(OK());
 }
