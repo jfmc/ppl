@@ -177,6 +177,9 @@ public:
   //! Copy-constructor.
   E_NIT(const E_NIT& y);
 
+  //! Builds a plus-infinity object.
+  E_NIT(const Plus_Infinity&);
+
   //! Assignment operator.
   E_NIT& operator=(E_NIT y);
 
@@ -185,6 +188,9 @@ public:
 
   //! Assignment operator from an Coefficient.
   E_NIT& operator=(const Coefficient& y);
+
+  //! Assign plus infinity.
+  E_NIT& operator=(const Plus_Infinity&);
 
   //! Returns <CODE>true</CODE> if and only if \p *this is plus infinity.
   bool is_plus_infinity() const;

@@ -31,6 +31,36 @@ site: http://www.cs.unipr.it/ppl/ . */
 namespace Parma_Polyhedra_Library {
 
 template <typename T>
+inline T
+E_NIT<T>::pinf() {
+  return std::numeric_limits<T>::max();
+}
+
+template <typename T>
+inline T
+E_NIT<T>::max() {
+  return std::numeric_limits<T>::max() - 1;
+}
+
+template <typename T>
+inline T
+E_NIT<T>::min() {
+  return std::numeric_limits<T>::min() + 2;
+}
+
+template <typename T>
+inline T
+E_NIT<T>::minf() {
+  return std::numeric_limits<T>::min() + 1;
+}
+
+template <typename T>
+inline T
+E_NIT<T>::nnum() {
+  return std::numeric_limits<T>::min();
+}
+
+template <typename T>
 inline
 E_NIT<T>::E_NIT()
   : n() {
@@ -65,6 +95,12 @@ E_NIT<T>::E_NIT(const E_NIT& y)
 }
 
 template <typename T>
+inline
+E_NIT<T>::E_NIT(const Plus_Infinity&)
+  : n(pinf()) {
+}
+
+template <typename T>
 inline E_NIT<T>&
 E_NIT<T>::operator=(T y) {
   if (y > 0 && y > max())
@@ -96,33 +132,9 @@ E_NIT<T>::operator=(const Coefficient& y) {
 }
 
 template <typename T>
-inline T
-E_NIT<T>::pinf() {
-  return std::numeric_limits<T>::max();
-}
-
-template <typename T>
-inline T
-E_NIT<T>::max() {
-  return std::numeric_limits<T>::max() - 1;
-}
-
-template <typename T>
-inline T
-E_NIT<T>::min() {
-  return std::numeric_limits<T>::min() + 2;
-}
-
-template <typename T>
-inline T
-E_NIT<T>::minf() {
-  return std::numeric_limits<T>::min() + 1;
-}
-
-template <typename T>
-inline T
-E_NIT<T>::nnum() {
-  return std::numeric_limits<T>::min();
+inline E_NIT<T>&
+E_NIT<T>::operator=(const Plus_Infinity&) {
+  n = pinf();
 }
 
 template <typename T>
