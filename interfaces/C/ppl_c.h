@@ -189,6 +189,21 @@ ppl_new_Constraint __P((ppl_Constraint_t* pc,
 			enum ppl_enum_Constraint_Type));
 
 /*!
+  Creates the unsatisfiable (zero-dimension space) constraint \f$0 = 1\f$
+  and writes an handle for it at address \p pc.
+*/
+int
+ppl_new_Constraint_zero_dim_false __P((ppl_Constraint_t* pc));
+
+/*!
+  Creates the true (zero-dimension space) constraint \f$0 \leq 1\f$,
+  also known as <EM>positivity constraint</EM>.
+  An handle for the newly created constraint is written at address \p pc.
+*/
+int
+ppl_new_Constraint_zero_dim_positivity __P((ppl_Constraint_t* pc));
+
+/*!
   Invalidates the handle \p c: this makes sure the corresponding
   resources will eventually be released.
 */
@@ -241,6 +256,13 @@ int
 ppl_new_ConSys __P((ppl_ConSys_t* pcs));
 
 /*!
+  Builds a zero-dimensional, unsatisfiable constraint system and
+  writes an handle to it at address \p pcs.
+*/
+int
+ppl_new_ConSys_zero_dim_empty __P((ppl_ConSys_t* pcs));
+
+/*!
   Builds the singleton constraint system containing only a copy of
   constraint \p c; writes an handle for the newly created system at
   address \p pcs.
@@ -283,75 +305,77 @@ int
 ppl_ConSys_insert_Constraint __P((ppl_ConSys_t cs, ppl_const_Constraint_t c));
 
 
-PPL_TYPE_DECLARATION(ConSys_const_iterator);
+PPL_TYPE_DECLARATION(ConSys__const_iterator);
 
 /*!
   Builds a new `const iterator' and writes an handle to it at address
   \p pcit.
 */
 int
-ppl_new_ConSys_const_iterator __P((ppl_ConSys_const_iterator_t* pcit));
+ppl_new_ConSys__const_iterator __P((ppl_ConSys__const_iterator_t* pcit));
 
 /*!
   Builds a const iterator system that is a copy of \p cit; writes an
   handle for the newly created const iterator at address \p pcit.
 */
 int
-ppl_new_ConSys_const_iterator_from_ConSys_const_iterator
-__P((ppl_ConSys_const_iterator_t* pcit,
-     ppl_const_ConSys_const_iterator_t cit));
+ppl_new_ConSys__const_iterator_from_ConSys__const_iterator
+__P((ppl_ConSys__const_iterator_t* pcit,
+     ppl_const_ConSys__const_iterator_t cit));
 
 /*!
   Invalidates the handle \p cit: this makes sure the corresponding
   resources will eventually be released.
 */
 int
-ppl_delete_ConSys_const_iterator __P((ppl_const_ConSys_const_iterator_t cit));
+ppl_delete_ConSys__const_iterator
+__P((ppl_const_ConSys__const_iterator_t cit));
 
 /*!
   Assigns an exact copy of the const iterator \p src to \p dst.
 */
 int
-ppl_assign_ConSys_const_iterator_from_ConSys_const_iterator
-__P((ppl_ConSys_const_iterator_t dst, ppl_const_ConSys_const_iterator_t src));
+ppl_assign_ConSys__const_iterator_from_ConSys__const_iterator
+__P((ppl_ConSys__const_iterator_t dst,
+     ppl_const_ConSys__const_iterator_t src));
 
 /*!
   Assigns to \p cit a const iterator "pointing" to the beginning of
   the constraint system \p cs.
 */
 int
-ppl_ConSys_begin __P((ppl_ConSys_t cs, ppl_ConSys_const_iterator_t cit));
+ppl_ConSys_begin __P((ppl_ConSys_t cs, ppl_ConSys__const_iterator_t cit));
 
 /*!
   Assigns to \p cit a const iterator "pointing" past the end of the
   constraint system \p cs.
 */
 int
-ppl_ConSys_end __P((ppl_ConSys_t cs, ppl_ConSys_const_iterator_t* pcit));
+ppl_ConSys_end __P((ppl_ConSys_t cs, ppl_ConSys__const_iterator_t* pcit));
 
 /*!
   Dereference \p cit writing a const handle to the resulting
   constraint at address \p pc.
 */
 int
-ppl_ConSys_const_iterator_dereference
-__P((ppl_const_ConSys_const_iterator_t cit,
+ppl_ConSys__const_iterator_dereference
+__P((ppl_const_ConSys__const_iterator_t cit,
      ppl_const_Constraint_t* pc));
 
 /*!
   Increment \p cit so that it "points" to the next constraint.
 */
 int
-ppl_ConSys_const_iterator_increment __P((ppl_ConSys_const_iterator_t cit));
+ppl_ConSys__const_iterator_increment __P((ppl_ConSys__const_iterator_t cit));
 
 /*!
   Return a positive integer if the iterators corresponding to \p x and
   \p y are equal; return 0 if they are different.
 */
 int
-ppl_ConSys_const_iterator_equal_test
-__P((ppl_const_ConSys_const_iterator_t x,
-     ppl_const_ConSys_const_iterator_t y));
+ppl_ConSys__const_iterator_equal_test
+__P((ppl_const_ConSys__const_iterator_t x,
+     ppl_const_ConSys__const_iterator_t y));
 
 
 PPL_TYPE_DECLARATION(Generator);
@@ -376,14 +400,34 @@ enum ppl_enum_Generator_Type {
 
 
 /*!
-  Creates the new generator `\p le \p rel 0' and writes an handle for
-  it at address \p pg.  The space dimension of the new generator is
-  equal to the space dimension of \p le.
+  Creates a new generator of direction \p le and type \p t.  If the
+  generator to be created is a point or a closure point, the divisor
+  \p d is applied to \p le.  For other types of generators \p d is
+  simply disregarded.  An handle for the new generator is written at
+  address \p pg.  The space dimension of the new generator is equal to
+  the space dimension of \p le.
 */
 int
 ppl_new_Generator __P((ppl_Generator_t* pg,
 		       ppl_const_LinExpression_t le,
-		       enum ppl_enum_Generator_Type));
+		       enum ppl_enum_Generator_Type t,
+		       ppl_const_Coefficient_t d));
+
+/*!
+  Creates the point that is the origin of the zero-dimensional space
+  \f$\Rset^0\f$.  Writes an handle for the new generator at address
+  \p pg.
+*/
+int
+ppl_new_Generator_zero_dim_point __P((ppl_Generator_t* pg));
+
+/*!
+  Creates, as a closure point, the point that is the origin of the
+  zero-dimensional space \f$\Rset^0\f$.  Writes an handle for the new
+  generator at address \p pg.
+*/
+int
+ppl_new_Generator_zero_dim_closure_point __P((ppl_Generator_t* pg));
 
 /*!
   Invalidates the handle \p g: this makes sure the corresponding
@@ -437,6 +481,14 @@ PPL_TYPE_DECLARATION(GenSys);
 int
 ppl_new_GenSys __P((ppl_GenSys_t* pgs));
 
+/*
+  Creates the universe zero-dimensional system of generators (i.e.,
+  containing the origin only).  Writes an handle to the new system at
+  address \p pgs.
+*/
+int
+ppl_new_GenSys_zero_dim_univ __P((ppl_GenSys_t* pgs));
+
 /*!
   Builds the singleton generator system containing only a copy of
   generator \p g; writes an handle for the newly created system at
@@ -480,83 +532,80 @@ int
 ppl_GenSys_insert_Generator __P((ppl_GenSys_t gs, ppl_const_Generator_t g));
 
 
-PPL_TYPE_DECLARATION(GenSys_const_iterator);
+PPL_TYPE_DECLARATION(GenSys__const_iterator);
 
 /*!
   Builds a new `const iterator' and writes an handle to it at address
   \p pgit.
 */
 int
-ppl_new_GenSys_const_iterator __P((ppl_GenSys_const_iterator_t* pgit));
+ppl_new_GenSys__const_iterator __P((ppl_GenSys__const_iterator_t* pgit));
 
 /*!
   Builds a const iterator system that is a copy of \p git; writes an
   handle for the newly created const iterator at address \p pgit.
 */
 int
-ppl_new_GenSys_const_iterator_from_GenSys_const_iterator
-__P((ppl_GenSys_const_iterator_t* pgit,
-     ppl_const_GenSys_const_iterator_t git));
+ppl_new_GenSys__const_iterator_from_GenSys__const_iterator
+__P((ppl_GenSys__const_iterator_t* pgit,
+     ppl_const_GenSys__const_iterator_t git));
 
 /*!
   Invalidates the handle \p git: this makes sure the corresponding
   resources will eventually be released.
 */
 int
-ppl_delete_GenSys_const_iterator __P((ppl_const_GenSys_const_iterator_t git));
+ppl_delete_GenSys__const_iterator
+__P((ppl_const_GenSys__const_iterator_t git));
 
 /*!
   Assigns an exact copy of the const iterator \p src to \p dst.
 */
 int
-ppl_assign_GenSys_const_iterator_from_GenSys_const_iterator
-__P((ppl_GenSys_const_iterator_t dst, ppl_const_GenSys_const_iterator_t src));
+ppl_assign_GenSys__const_iterator_from_GenSys__const_iterator
+__P((ppl_GenSys__const_iterator_t dst,
+     ppl_const_GenSys__const_iterator_t src));
 
 /*!
   Assigns to \p git a const iterator "pointing" to the beginning of
   the generator system \p gs.
 */
 int
-ppl_GenSys_begin __P((ppl_GenSys_t gs, ppl_GenSys_const_iterator_t git));
+ppl_GenSys_begin __P((ppl_GenSys_t gs, ppl_GenSys__const_iterator_t git));
 
 /*!
   Assigns to \p git a const iterator "pointing" past the end of the
   generator system \p gs.
 */
 int
-ppl_GenSys_end __P((ppl_GenSys_t gs, ppl_GenSys_const_iterator_t* pgit));
+ppl_GenSys_end __P((ppl_GenSys_t gs, ppl_GenSys__const_iterator_t* pgit));
 
 /*!
   Dereference \p git writing a const handle to the resulting
   generator at address \p pg.
 */
 int
-ppl_GenSys_const_iterator_dereference
-__P((ppl_const_GenSys_const_iterator_t git,
+ppl_GenSys__const_iterator_dereference
+__P((ppl_const_GenSys__const_iterator_t git,
      ppl_const_Generator_t* pg));
 
 /*!
   Increment \p git so that it "points" to the next generator.
 */
 int
-ppl_GenSys_const_iterator_increment __P((ppl_GenSys_const_iterator_t git));
+ppl_GenSys__const_iterator_increment __P((ppl_GenSys__const_iterator_t git));
 
 /*!
   Return a positive integer if the iterators corresponding to \p x and
   \p y are equal; return 0 if they are different.
 */
 int
-ppl_GenSys_const_iterator_equal_test
-__P((ppl_const_GenSys_const_iterator_t x,
-     ppl_const_GenSys_const_iterator_t y));
+ppl_GenSys__const_iterator_equal_test
+__P((ppl_const_GenSys__const_iterator_t x,
+     ppl_const_GenSys__const_iterator_t y));
 
 
 #if 0
-/*! Returns the singleton system containing only
-    Constraint::zero_dim_false().  */
-static const ConSys& zero_dim_empty();
-#endif
-
 typedef struct ppl_GenSys_tag *ppl_GenSys_t;
 
 typedef struct ppl_Polyhedron_tag *ppl_Polyhedron_t;
@@ -583,6 +632,7 @@ ppl_delete_Polyhedron __P((ppl_Polyhedron_t p));
 
 int
 ppl_Polyhedron_space_dimension __P((ppl_Polyhedron_t p));
+#endif
 
 __END_DECLS
 #undef __P
