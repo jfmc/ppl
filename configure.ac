@@ -382,9 +382,6 @@ AC_C_CONST
 AC_C_INLINE
 AC_C_BIGENDIAN
 
-# Checks for C functions.
-AC_CHECK_FUNCS(ffs)
-
 # Checks for C type sizes.
 AC_CHECK_SIZEOF(int)
 AC_CHECK_SIZEOF(long long)
@@ -405,6 +402,10 @@ AC_CXX_SUPPORTS_LONG_DOUBLE
 
 # Check whether the C++ compiler supports long long integers.
 AC_CXX_SUPPORTS_LONG_LONG
+
+# Checks for the availability of C library functions in C++.
+AC_CHECK_DECLS([ffs], , , [#include <strings.h>])
+AC_CHECK_DECLS([strtoll,strtoull], , , [#include <cstdlib>])
 
 
 # GMP library
