@@ -28,7 +28,7 @@ VPATH = @srcdir@
 
 SUBDIRS =
 
-EXTRA_DIST = ppl_swiprolog.cc pl_clpq.cc pl_clpq.pl
+EXTRA_DIST = ppl_swiprolog.cc ppl_swiprolog.pl pl_clpq.cc pl_clpq.pl
 
 if HAVE_SWI_PROLOG
 
