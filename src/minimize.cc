@@ -143,13 +143,7 @@ PPL::Polyhedron::minimize(bool con_to_gen,
   size_t num_lines_or_equalities = conversion(source, 0,
 					      dest, tmp_sat,
 					      dest.num_lines_or_equalities());
-#if 0
-  using std::cout;
-  using std::endl;
-  cout << "source: " << source.num_rows() << endl << source << endl;
-  cout << "dest" << endl << dest << endl;
-  cout << "sat" << endl << tmp_sat << endl;
-#endif
+
   // `empty_or_illegal' will remain set to `true' if there
   // not exists a ray/vertex or an inequality having a positive
   // inhomogeneous term.
@@ -198,26 +192,37 @@ PPL::Polyhedron::minimize(bool con_to_gen,
 
     // Deleting the redundant rows of `source'.
     simplify(source, sat);
-
+    size_t source_num_rows = source.num_rows();
     if (pos)
       // If the polyhedron is positive and we are computing the system of
       // constraints we erase the constraints of positivity of all the
-      // variables. This constraints are builts during the conversion().
+      // variables and those that are a linear combination of a constraints
+      // of positivity of variables and an equalities. This constraints are
+      // builts during the conversion().
       if (!con_to_gen) {
     	tmp_sat.transpose_assign(sat);
-	// We must simplify also the `dest', because in this case can be
-	// constraints that are redundant with the constraints of positivity
-	// of the variables.
-	simplify(dest, tmp_sat);
-	for (size_t i =  dest.num_lines_or_equalities(); i < dest_num_rows; ) {
+	for (size_t i = dest_num_rows; i-- > num_lines_or_equalities; )
 	  if (dest[i].only_a_term_is_positive()) {
 	    --dest_num_rows;
 	    std::swap(dest[i], dest[dest_num_rows]);
 	    std::swap(tmp_sat[i], tmp_sat[dest_num_rows]);
 	  }
 	  else
-	    ++i;
-	}
+	    if (tmp_sat[i].last() == tmp_sat[i].first()
+		&& tmp_sat[i].last() != -1) {
+	      size_t only = tmp_sat[i].last();
+	      for (size_t j = 0; j < num_lines_or_equalities; ++j)
+		if (dest[j][only] != 0 && dest[i][only] != 0) {
+		  Row tmp(dest[i]);
+		  tmp.linear_combine(dest[j], only);
+		  if (tmp.only_a_term_is_positive()) {
+		    --dest_num_rows;
+		    std::swap(dest[i], dest[dest_num_rows]);
+		    std::swap(tmp_sat[i], tmp_sat[dest_num_rows]);
+		    break;
+		  }
+		} 
+	    }
 	dest.erase_to_end(dest_num_rows);
 	tmp_sat.rows_erase_to_end(dest_num_rows);
 	sat.transpose_assign(tmp_sat);
@@ -226,8 +231,8 @@ PPL::Polyhedron::minimize(bool con_to_gen,
 	// If the polyhedron is positive and we are computing the system of
 	// generators, we must erase the constraints of positivity of
 	// variables, that there still are.  
-	size_t source_num_rows = source.num_rows();
-	for (size_t i = source.num_lines_or_equalities();
+	source_num_rows = source.num_rows();
+ 	for (size_t i = source.num_lines_or_equalities();
 	     i < source_num_rows; )
 	  if (source[i].only_a_term_is_positive()) {
 	    --source_num_rows;
@@ -238,7 +243,7 @@ PPL::Polyhedron::minimize(bool con_to_gen,
 	    ++i;
 	source.erase_to_end(source_num_rows);
 	sat.rows_erase_to_end(source_num_rows);
-        
+	
 	source.set_sorted(false);
       }
   }
@@ -306,6 +311,8 @@ PPL::Polyhedron::add_and_minimize(bool con_to_gen,
   // `k2' runs through the rows of `source2'.
   size_t k2 = 0;
   size_t source2_num_rows = source2.num_rows();
+  size_t num_columns = source1.num_columns();
+  size_t dest_num_rows = dest.num_rows();
 
   if (pos && !con_to_gen) {
     bool negative = false;
@@ -320,7 +327,21 @@ PPL::Polyhedron::add_and_minimize(bool con_to_gen,
       return true;
   }
  
-
+  if (pos)
+    if (!con_to_gen) {
+      dest.grow(dest_num_rows + num_columns, num_columns);
+      sat.resize(dest_num_rows + num_columns, old_source1_num_rows);
+      for (size_t i = 0; i < num_columns; ++i) {
+	dest[dest_num_rows + i][i] = 1;
+	dest[dest_num_rows + i].set_is_ray_or_vertex_or_inequality();
+	for (size_t j = 0; j < old_source1_num_rows; ++j)
+	  if (source1[j][i] != 0)
+	    sat[dest_num_rows + i].set(j);
+      }
+      dest_num_rows += num_columns;
+      dest.set_sorted(false);
+    }
+      
   while (k1 < old_source1_num_rows && k2 < source2_num_rows) {
     // Add to `source1' the non-redundant constraints from `source2'
     // without sort.
@@ -354,6 +375,8 @@ PPL::Polyhedron::add_and_minimize(bool con_to_gen,
     ++index;
     ++k2;
   }
+  size_t source1_num_rows = source1.num_rows();
+
   // At this point `source1' has the old rows of `source1' from the
   // one indexed by 0 and the one indexed by `old_source1_num_rows' - 1.
   // The remaining rows (from the `old_source1_num_rows'-th one to the
@@ -371,9 +394,9 @@ PPL::Polyhedron::add_and_minimize(bool con_to_gen,
   // If the polyhedron is positive the saturation matrix must consider the
   // behaviour of the system of generators that we have with the constraints
   // of positivity of the variables.
-  size_t dest_num_rows = dest.num_rows();
-  size_t source1_num_rows = source1.num_rows();
+  dest_num_rows = dest.num_rows();
   size_t num_positive = 0;
+
   SatMatrix tmp_sat;
   if (pos) {
     num_positive = source1.num_columns();
@@ -389,26 +412,21 @@ PPL::Polyhedron::add_and_minimize(bool con_to_gen,
       }
     }
     else {
-      tmp_sat.resize(num_positive + dest_num_rows, source1_num_rows);
-      for (size_t i = 0; i < source1_num_rows; ++i) {
-	for (size_t j = 0; j < num_positive; ++j)
-	  if (source1[i][j] != 0)
-	    tmp_sat[j].set(i);
-	for (size_t j = 0; j < dest_num_rows; ++j)
-	  if (sat[j][i]) {
-	    
-	    tmp_sat[num_positive + j].set(i);
-	  }
-      }
+      tmp_sat.resize(dest_num_rows, source1_num_rows);
+      
+      // Copy the old `sat' into the new one.
+      for (size_t i = sat.num_rows(); i-- > 0; )
+	tmp_sat[i] = sat[i];
     }
   }
   else {
-    tmp_sat.resize(dest_num_rows, source1.num_rows());
-    
+    // SatMatrix tmp_sat(dest_num_rows, source1_num_rows);
+    tmp_sat.resize(dest_num_rows, source1_num_rows);
     // Copy the old `sat' into the new one.
     for (size_t i = sat.num_rows(); i-- > 0; )
       tmp_sat[i] = sat[i];
   }
+
   // We can compute the matrix of generators corresponding to the new
   // matrix of constraints: we invoke the function conversion() but
   // this time `start' is the index of the first row added to the
@@ -417,7 +435,7 @@ PPL::Polyhedron::add_and_minimize(bool con_to_gen,
   size_t num_lines_or_equalities = conversion(source1, old_source1_num_rows,
 					      dest, tmp_sat,
 					      dest.num_lines_or_equalities());
- 
+
   // A non-empty polyhedron must have a constraints representation that
   // provides the positivity constraint and a generators representation
   // that provides at least one vertex (see the function minimize()).
@@ -457,19 +475,32 @@ PPL::Polyhedron::add_and_minimize(bool con_to_gen,
       std::swap(tmp,sat);
     }
     // If the polyhedron is positive, we erase the constraints of positivity
-    // of the variables and then we re-obtain the `sat_c'.
+    // of the variables and those that are a linear combination of constraints
+    // of positivity of variable and equalities. Then we re-obtain the `sat_c'.
     if (pos) {
       if (!con_to_gen) {
 	sat.transpose_assign(sat);
-	for (size_t i =  dest.num_lines_or_equalities(); i < dest_num_rows; ) {
+	for (size_t i = dest_num_rows; i-- > num_lines_or_equalities; )
 	  if (dest[i].only_a_term_is_positive()) {
 	    --dest_num_rows;
 	    std::swap(dest[i], dest[dest_num_rows]);
 	    std::swap(sat[i], sat[dest_num_rows]);
 	  }
 	  else
-	    ++i;
-	}
+	    if (sat[i].last() == sat[i].first() && sat[i].last() != -1) {
+	      size_t only = sat[i].last();
+	      for (size_t j = 0; j < num_lines_or_equalities; ++j)
+		if (dest[j][only] != 0 && dest[i][only] != 0) {
+		  Row tmp(dest[i]);
+		  tmp.linear_combine(dest[j], only);
+		  if (tmp.only_a_term_is_positive()) {
+		    --dest_num_rows;
+		    std::swap(dest[i], dest[dest_num_rows]);
+		    std::swap(sat[i], sat[dest_num_rows]);
+		    break;
+		  }
+		}
+	    }
 	dest.erase_to_end(dest_num_rows);
 	sat.rows_erase_to_end(dest_num_rows);
       }

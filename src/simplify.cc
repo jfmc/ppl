@@ -130,6 +130,7 @@ PPL::Polyhedron::simplify(Matrix& mat, SatMatrix& sat) {
   // to simplify the system of equalities, obtaining the rank
   // of `mat' as result.
   size_t rank = mat.gauss();
+
   // Since Gauss' elimination works on the equalities system, the
   // order of inequalities in `mat' is unchanged.
   // Also, now we have irredundant equalities in the first `rank' rows
