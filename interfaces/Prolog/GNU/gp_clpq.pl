@@ -4,6 +4,7 @@
 eat_eol.
 
 main :-
-    ppl_init,
+    ppl_initialize,
     common_main,
+    ppl_finalize,
     halt.

@@ -345,7 +345,7 @@ ppl_Prolog_sysdep_init() {
 
 extern "C" void
 init() {
-  ppl_init();
+  ppl_initialize();
   YAP_USER_C_PREDICATE(ppl_initialize, 0);
   YAP_USER_C_PREDICATE(ppl_finalize, 0);
   YAP_USER_C_PREDICATE(ppl_new_Polyhedron_from_dimension, 3);
@@ -388,4 +388,5 @@ init() {
   YAP_USER_C_PREDICATE(ppl_Polyhedron_contains_Polyhedron, 2);
   YAP_USER_C_PREDICATE(ppl_Polyhedron_strictly_contains_Polyhedron, 2);
   YAP_USER_C_PREDICATE(ppl_Polyhedron_equals_Polyhedron, 2);
+  YAP_USER_C_PREDICATE(ppl_Polyhedron_get_bounding_box, 2);
 }

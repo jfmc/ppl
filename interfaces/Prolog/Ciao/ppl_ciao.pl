@@ -42,14 +42,115 @@
 	ppl_Polyhedron_contains_Polyhedron/2,
 	ppl_Polyhedron_strictly_contains_Polyhedron/2,
 	ppl_Polyhedron_equals_Polyhedron/2
+	ppl_Polyhedron_get_bounding_box/2
 ],
 [
 	assertions,
-	basic_modes,
+	basicmodes,
 	regtypes,
 	foreign_interface
 ]).
 
+:- true pred ppl_initialize :: foreign.
+
+:- true pred ppl_finalize:: foreign.
+
+:- true pred ppl_new_Polyhedron_from_dimension(in(Kind),
+                                               in(Dimension),
+                                               in(Handle))
+             :: any_term(Kind) * any_term(Dimension) * any_term
+/*
+:- true pred ppl_new_Polyhedron_empty_from_dimension/3,
+:- true pred ppl_new_Polyhedron_from_Polyhedron/4,
+:- true pred ppl_new_Polyhedron_from_ConSys/3,
+:- true pred ppl_new_Polyhedron_from_GenSys/3,
+:- true pred ppl_delete_Polyhedron/1,
+:- true pred ppl_Polyhedron_space_dimension/2,
+:- true pred ppl_Polyhedron_intersection_assign/2,
+:- true pred ppl_Polyhedron_intersection_assign_and_minimize/2,
+:- true pred ppl_Polyhedron_poly_hull_assign/2,
+:- true pred ppl_Polyhedron_poly_hull_assign_and_minimize/2,
+:- true pred ppl_Polyhedron_poly_difference_assign/2,
+:- true pred ppl_Polyhedron_poly_difference_assign_and_minimize/2,
+:- true pred ppl_Polyhedron_widening_assign/2,
+:- true pred ppl_Polyhedron_limited_widening_assign/3,
+:- true pred ppl_Polyhedron_get_constraints/2,
+:- true pred ppl_Polyhedron_get_minimized_constraints/2,
+:- true pred ppl_Polyhedron_get_generators/2,
+:- true pred ppl_Polyhedron_get_minimized_generators/2,
+:- true pred ppl_Polyhedron_add_constraint/2,
+:- true pred ppl_Polyhedron_add_generator/2,
+:- true pred ppl_Polyhedron_add_constraints/2,
+:- true pred ppl_Polyhedron_add_constraints_and_minimize/2,
+:- true pred ppl_Polyhedron_add_generators/2,
+:- true pred ppl_Polyhedron_add_generators_and_minimize/2,
+:- true pred ppl_Polyhedron_add_dimensions_and_constraints/2,
+:- true pred ppl_Polyhedron_add_dimensions_and_project/2,
+:- true pred ppl_Polyhedron_add_dimensions_and_embed/2,
+:- true pred ppl_Polyhedron_remove_dimensions/2,
+:- true pred ppl_Polyhedron_remove_higher_dimensions/2,
+:- true pred ppl_Polyhedron_affine_image/4,
+:- true pred ppl_Polyhedron_affine_preimage/4,
+:- true pred ppl_Polyhedron_relation_with_constraint/3,
+:- true pred ppl_Polyhedron_relation_with_generator/3,
+:- true pred ppl_Polyhedron_check_empty/1,
+:- true pred ppl_Polyhedron_check_universe/1,
+:- true pred ppl_Polyhedron_is_bounded/1,
+:- true pred ppl_Polyhedron_contains_Polyhedron/2,
+:- true pred ppl_Polyhedron_strictly_contains_Polyhedron/2,
+:- true pred ppl_Polyhedron_equals_Polyhedron/2
+*/
+
+:- use_foreign_source('ppl_ciao.cc').
+
+:- impl_defined(
+[
+	ppl_initialize/0,
+	ppl_finalize/0,
+	ppl_new_Polyhedron_from_dimension/3,
+	ppl_new_Polyhedron_empty_from_dimension/3,
+	ppl_new_Polyhedron_from_Polyhedron/4,
+	ppl_new_Polyhedron_from_ConSys/3,
+	ppl_new_Polyhedron_from_GenSys/3,
+	ppl_delete_Polyhedron/1,
+	ppl_Polyhedron_space_dimension/2,
+	ppl_Polyhedron_intersection_assign/2,
+	ppl_Polyhedron_intersection_assign_and_minimize/2,
+	ppl_Polyhedron_poly_hull_assign/2,
+	ppl_Polyhedron_poly_hull_assign_and_minimize/2,
+	ppl_Polyhedron_poly_difference_assign/2,
+	ppl_Polyhedron_poly_difference_assign_and_minimize/2,
+	ppl_Polyhedron_widening_assign/2,
+	ppl_Polyhedron_limited_widening_assign/3,
+	ppl_Polyhedron_get_constraints/2,
+	ppl_Polyhedron_get_minimized_constraints/2,
+	ppl_Polyhedron_get_generators/2,
+	ppl_Polyhedron_get_minimized_generators/2,
+	ppl_Polyhedron_add_constraint/2,
+	ppl_Polyhedron_add_generator/2,
+	ppl_Polyhedron_add_constraints/2,
+	ppl_Polyhedron_add_constraints_and_minimize/2,
+	ppl_Polyhedron_add_generators/2,
+	ppl_Polyhedron_add_generators_and_minimize/2,
+	ppl_Polyhedron_add_dimensions_and_constraints/2,
+	ppl_Polyhedron_add_dimensions_and_project/2,
+	ppl_Polyhedron_add_dimensions_and_embed/2,
+	ppl_Polyhedron_remove_dimensions/2,
+	ppl_Polyhedron_remove_higher_dimensions/2,
+	ppl_Polyhedron_affine_image/4,
+	ppl_Polyhedron_affine_preimage/4,
+	ppl_Polyhedron_relation_with_constraint/3,
+	ppl_Polyhedron_relation_with_generator/3,
+	ppl_Polyhedron_check_empty/1,
+	ppl_Polyhedron_check_universe/1,
+	ppl_Polyhedron_is_bounded/1,
+	ppl_Polyhedron_contains_Polyhedron/2,
+	ppl_Polyhedron_strictly_contains_Polyhedron/2,
+	ppl_Polyhedron_equals_Polyhedron/2
+	ppl_Polyhedron_get_bounding_box/2
+]).
+
+/*
 :- use_foreign_source(ppl_ciao).
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
@@ -202,3 +303,4 @@ ppl_add_generators(Polyhedron, [G|Generators]) :-
 
 ppl_add_constraints_and_minimize(Polyhedron, Constraints) :-
   ppl_add_constraints_and_minimize(Polyhedron, Constraints, 1).
+*/

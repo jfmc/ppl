@@ -414,6 +414,7 @@ SP_STUB_1(ppl_Polyhedron_is_bounded, 1)
 SP_STUB_2(ppl_Polyhedron_contains_Polyhedron, 2)
 SP_STUB_2(ppl_Polyhedron_strictly_contains_Polyhedron, 2)
 SP_STUB_2(ppl_Polyhedron_equals_Polyhedron, 2)
+SP_STUB_2(ppl_Polyhedron_get_bounding_box, 2)
 
 #define SP_DEFINE_C_PREDICATE(name, arity) \
   SP_define_c_predicate(#name, arity, "user", sp_stub_##name, NULL)
@@ -472,6 +473,7 @@ ppl_sicstus_init(int /* when */) {
   SP_DEFINE_C_PREDICATE(ppl_Polyhedron_contains_Polyhedron, 2);
   SP_DEFINE_C_PREDICATE(ppl_Polyhedron_strictly_contains_Polyhedron, 2);
   SP_DEFINE_C_PREDICATE(ppl_Polyhedron_equals_Polyhedron, 2);
+  SP_DEFINE_C_PREDICATE(ppl_Polyhedron_get_bounding_box, 2);
 }
 
 extern "C" void

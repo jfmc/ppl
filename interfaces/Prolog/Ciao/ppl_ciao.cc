@@ -331,5 +331,5 @@ ppl_Prolog_sysdep_init() {
 
 extern "C" void
 init() {
-  ppl_init();
+  ppl_initialize();
 }

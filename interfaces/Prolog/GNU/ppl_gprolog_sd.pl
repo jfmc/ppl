@@ -1,4 +1,3 @@
-:- foreign(ppl_init).
 :- foreign(ppl_initialize).
 :- foreign(ppl_finalize).
 :- foreign(ppl_new_Polyhedron_from_dimension(+term, +term, +term)).

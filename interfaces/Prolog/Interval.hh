@@ -24,6 +24,8 @@ site: http://www.cs.unipr.it/ppl/ . */
 #ifndef _Interval_hh
 #define _Interval_hh 1
 
+namespace Parma_Polyhedra_Library {
+
 class ExtendedRational {
 private:
   //! Positive if +infinity, negative if -infinity, zero otherwise.
@@ -36,7 +38,7 @@ public:
     : e(0), v(n) {
   }
 
-  ExtendedRational(const PPL::Integer& num, const PPL::Integer& den)
+  ExtendedRational(const Integer& num, const Integer& den)
     : e(0), v(num, den) {
   }
 
@@ -44,6 +46,34 @@ public:
     : e(sign == '+' ? 1 : -1) {
     assert(sign == '+' || sign == '-');
   }
+
+  int direction_of_infinity() const {
+    return e;
+  }
+
+#if 0
+  const Integer& numerator() const {
+    return v.get_num();
+  }
+
+  const Integer& denominator() const {
+    return v.get_den();
+  }
+#else
+  void canonicalize() const {
+    const_cast<ExtendedRational*>(this)->v.canonicalize();
+  }
+
+  Integer numerator() const {
+    canonicalize();
+    return v.get_num();
+  }
+
+  Integer denominator() const {
+    canonicalize();
+    return v.get_den();
+  }
+#endif
 
   friend bool operator==(const ExtendedRational& x, const ExtendedRational& y);
   friend bool operator!=(const ExtendedRational& x, const ExtendedRational& y);
@@ -121,6 +151,15 @@ protected:
   friend bool operator> (const UBoundary& x, Value y);
   friend bool operator<=(const UBoundary& x, Value y);
   friend bool operator>=(const LBoundary& x, Value y);
+
+public:
+  bool is_closed() const {
+    return flag == ZERO;
+  }
+
+  const ExtendedRational& bound() const {
+    return value;
+  }
 };
 
 
@@ -130,7 +169,7 @@ public:
   enum OpenClosed { OPEN = Boundary::POS, CLOSED = Boundary::ZERO };
 
   LBoundary(const Boundary::Value& v, OpenClosed f = CLOSED)
-    : Boundary(value, f == CLOSED ? ZERO : POS) {
+    : Boundary(v, f == CLOSED ? ZERO : POS) {
   }
 };
 
@@ -140,7 +179,7 @@ public:
   enum OpenClosed { OPEN = Boundary::NEG, CLOSED = Boundary::ZERO };
 
   UBoundary(const Boundary::Value& v, OpenClosed f = CLOSED)
-    : Boundary(value, f == CLOSED ? ZERO : NEG) {
+    : Boundary(v, f == CLOSED ? ZERO : NEG) {
   }
 };
 
@@ -249,17 +288,26 @@ operator>=(const LBoundary& x, Boundary::Value y) {
 }
 
 class Interval {
-public:
+private:
   LBoundary lower;
   UBoundary upper;
 
+public:
   //! Construct the interval (-infinity, +infinity).
   Interval()
     : lower('-', LBoundary::OPEN), upper('+', UBoundary::OPEN) {
   }
 
-  bool empty() const {
+  bool is_empty() const {
     return lower > upper;
+  }
+
+  const LBoundary& lower_bound() const {
+    return lower;
+  }
+
+  const UBoundary& upper_bound() const {
+    return upper;
   }
 
   void raise_lower_bound(LBoundary new_lower) {
@@ -275,8 +323,10 @@ public:
   void set_empty() {
     lower = LBoundary('+', LBoundary::OPEN);
     upper = UBoundary('-', UBoundary::OPEN);
-    assert(empty());
+    assert(is_empty());
   }
 };
+
+} // namespace Parma_Polyhedra_Library
 
 #endif
