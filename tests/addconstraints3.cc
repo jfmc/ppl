@@ -37,16 +37,28 @@ main() try {
   Variable x(0);
   Variable y(1);
 
-  ConSys cs;
-  cs.insert(x + y >= 0);
-  C_Polyhedron p(cs);
+  ConSys cs1;
+  cs1.insert(x + y >= 0);
+  C_Polyhedron ph(cs1);
+
+#if NOISY
+  print_constraints(ph, "*** ph ***");
+#endif
 
   LinExpression e(1);
-  ConSys c;
-  c.insert(e == 0);
-  p.add_constraints(c);
+  ConSys cs2;
+  cs2.insert(e == 0);
+  ph.add_constraints(cs2);
 
-  return 0;
+  C_Polyhedron known_result(2, C_Polyhedron::EMPTY);
+
+  int retval = (ph == known_result) ? 0 : 1;
+
+#if NOISY
+  print_constraints(ph, "*** After ph.add_constraints(cs2) ***");
+#endif
+
+  return retval;
 }
 catch (...) {
   return 1;

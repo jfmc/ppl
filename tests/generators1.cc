@@ -47,15 +47,18 @@ main() try {
 
   ConSys cs = ph.constraints();
 
+  C_Polyhedron known_result(2);
+  known_result.add_constraint(x == -1);
+  known_result.add_constraint(y == -1);
+
+  int retval = (ph == known_result && ph.OK()) ? 0 : 1;
+
 #if NOISY
   print_constraints(ph, "*** ph constraints ***");
   print_generators(ph, "*** ph generators ***");
 #endif
-  
-  if (!ph.OK())
-    exit(1);
 
-  return 0;
+  return retval;
 }
 catch (std::invalid_argument& e) {
 #if NOISY

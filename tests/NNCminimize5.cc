@@ -1,4 +1,5 @@
-/* Full minimization of a NNC-redundant constraint system.
+/* Full minimization of a NNC-redundant constraint system
+   and a NNC-redundant generator system.
    Copyright (C) 2001, 2002 Roberto Bagnara <bagnara@cs.unipr.it>
 
 This file is part of the Parma Polyhedra Library (PPL).
@@ -56,15 +57,49 @@ main() {
   print_generators(ph1.generators(), "*** ph1 generators ***");
 #endif
 
+  NNC_Polyhedron copy_ph1(ph1);
+  
+  int num_constraints = 0;
+  for (ConSys::const_iterator i = ph1.constraints().begin(),
+	 iend = ph1.constraints().end(); i != iend; ++i)
+    ++num_constraints;
+
+  ph1.minimized_constraints();
+  
+  int num_minimized_constraints = 0;
+  for (ConSys::const_iterator i = ph1.constraints().begin(),
+	 iend = ph1.constraints().end(); i != iend; ++i)
+    ++num_minimized_constraints;
+
 #if NOISY
-  std::cout << "After strong minimization" << std::endl;
-  print_constraints(ph1.minimized_constraints(),
-		    "*** ph1 minimized constraints ***");
-  cerr << "poly ph1" << endl;
-  cerr << ph1 << endl;
-  print_generators(ph1.minimized_generators(),
-		   "*** ph1 minimized generators ***");
+  print_constraints(ph1, "*** After ph1.minimized_constraints() ***");
+  cout << "num_constraints = " << num_constraints << endl;
+  cout << "num_minimized_constraints = "
+       << num_minimized_constraints << endl;
 #endif
 
-  return 0;
+  int num_points = 0;
+  for (GenSys::const_iterator i = copy_ph1.generators().begin(),
+	 iend = copy_ph1.generators().end(); i != iend; ++i)
+    if ((*i).is_point() || (*i).is_closure_point())
+      ++num_points;
+
+  copy_ph1.minimized_generators();
+  
+  int num_minimized_points = 0;
+  for (GenSys::const_iterator i = copy_ph1.generators().begin(),
+	 iend = copy_ph1.generators().end(); i != iend; ++i)
+    if ((*i).is_point() || (*i).is_closure_point())
+      ++num_minimized_points;
+
+#if NOISY
+  print_generators(copy_ph1,
+		   "*** After copy_ph1_minimized_generators() ***");
+  cout << "num_points = " << num_points << endl;
+  cout << "num_minimized_points = "
+       << num_minimized_points << endl;
+#endif
+
+  return (num_constraints == num_minimized_constraints + 1 &&
+	  num_points == num_minimized_points + 1) ? 0 : 1;
 }

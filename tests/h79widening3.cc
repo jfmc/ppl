@@ -54,12 +54,16 @@ main() {
   print_constraints(ph4, "*** ph4 ***");
   print_constraints(ph, "*** ph ***");
 #endif
+  
+  NNC_Polyhedron known_result(ph4);
 
   ph.H79_widening_assign(ph4);
+
+  int retval = (ph == known_result) ? 0 : 1;
 
 #if NOISY
   print_constraints(ph, "*** After H79_widening_assign ***");
 #endif
 
-  return 0;
+  return retval;
 }

@@ -53,9 +53,14 @@ main() {
 
   ph1.H79_widening_assign(ph2);
 
+  C_Polyhedron known_result(2);
+  known_result.add_constraint(B >= 0);
+
+  int retval = (ph1 == known_result) ? 0 : 1;
+
 #if NOISY
   print_constraints(ph1, "*** After H79_widening_assign ***");
 #endif
 
-  return 0;
+  return retval;
 }

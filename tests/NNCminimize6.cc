@@ -55,6 +55,12 @@ main() {
 
   ph.minimized_constraints();
 
+  NNC_Polyhedron known_result(1);
+  known_result.add_constraint(3*x >= 1);
+  known_result.add_constraint(2*x <= 1);
+
+  int retval = (ph == known_result) ? 0 : 1;
+
 #if NOISY
   cout << endl << "After NNC minimization" << endl;
   print_constraints(ph.constraints(), "*** ph constraints ***");
@@ -67,5 +73,5 @@ main() {
 
 #endif
 
-  return 0;
+  return retval;
 }
