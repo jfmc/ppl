@@ -3198,7 +3198,6 @@ PPL::Polyhedron::bounds(const LinExpression& expr, bool from_above) const {
   return true;
 }
 
-// FIXME.
 bool
 PPL::Polyhedron::is_topologically_closed() const {
   // Necessarily closed polyhedra are trivially closed.
@@ -3208,39 +3207,17 @@ PPL::Polyhedron::is_topologically_closed() const {
   if (is_empty() || space_dimension() == 0)
     return true;
 
-  if (generators_are_minimized()) {
-    // A polyhedron is closed iff all of its (non-redundant)
-    // closure points are matched by a corresponding point.
-    size_t n_rows = gen_sys.num_rows();
-    size_t n_lines = gen_sys.num_lines();
-    for (size_t i = n_rows; i-- > n_lines; ) {
-      const Generator& gi = gen_sys[i];
-      if (gi.is_closure_point()) {
-	bool gi_has_no_matching_point = true;
-	for (size_t j = n_rows; j-- > n_lines; ) {
-	  const Generator& gj = gen_sys[j];
-	  if (i != j
-	      && gj.is_point()
-	      && gi.is_matching_closure_point(gj)) {
-	    gi_has_no_matching_point = false;
-	    break;
-	  }
-	}
-	if (gi_has_no_matching_point)
-	  return false;
-      }
-    }
-    // All closure points are matched.
-    return true;
-  }
-
-  // A polyhedron is closed if, after strong minimization
-  // of its constraint system, it has no strict inequalities.
-  strongly_minimize_constraints();
-  return is_empty() || !con_sys.has_strict_inequalities();
+  // A polyhedron is closed if its (weakly) minimized
+  // generator system has no closure points.
+  if (!generators_are_minimized())
+    if (!minimize())
+      // Found empty: it is topologically closed.
+      return true;
+  // Here the polyhedron is not empty and
+  // generators are weakly minimized.
+  return gen_sys.has_closure_points();
 }
 
-// FIXME.
 void
 PPL::Polyhedron::topological_closure_assign() {
   // Necessarily closed polyhedra are trivially closed.
@@ -3254,31 +3231,45 @@ PPL::Polyhedron::topological_closure_assign() {
   bool changed = false;
 
   if (constraints_are_up_to_date()) {
-    // Transform all strict inequalities into non-strict ones.
-    for (size_t i = con_sys.num_rows(); i-- > 0; ) {
+    // Remove all strict inequality constraints:
+    // the corresponding non-strict inequality constraints
+    // are already (either explicitly or implicitly) in the
+    // constraint system and will be left there.
+    size_t cs_rows = con_sys.num_rows();
+    for (size_t i = cs_rows; i-- > 0; ) {
       Constraint& c = con_sys[i];
       if (c[eps_index] < 0 && !c.is_trivial_true()) {
-	c[eps_index] = 0;
-	// Enforce normalization.
-	c.normalize();
+	--cs_rows;
+	std::swap(c, con_sys[cs_rows]);
 	changed = true;
       }
     }
     if (changed) {
-      con_sys.insert(Constraint::epsilon_leq_one());
+      con_sys.erase_to_end(cs_rows);
       // After changing the system of constraints, the generators
-      // are no longer up-to-date and the constraints are no longer
-      // minimized.
+      // are no longer up-to-date. The constraints preserve their
+      // minimization and sortedness.
       clear_generators_up_to_date();
-      clear_constraints_minimized();
-   }
+    }
   }
   else {
     assert(generators_are_up_to_date());
-    // Add the corresponding point to each closure point.
-    gen_sys.add_corresponding_points();
-    // The system of generators is no longer minimized.
-    clear_generators_minimized();
+    // Transform all closure points into points.
+    for (size_t i = gen_sys.num_rows(); i-- > 0; ) {
+      Generator& g = gen_sys[i];
+      if (g[0] > 0 && g[eps_index] == 0) {
+	// Make it a point (normalization is preserved).
+	g[eps_index] = g[0];
+	changed = true;
+      }
+    }
+    if (changed) {
+      // After changing the system of generators, the constraints
+      // are no longer up-to-date and the generators are no longer
+      // minimized (but sortedness of generators is preserved!).
+      clear_generators_up_to_date();
+      clear_constraints_minimized();
+    }
   }
 }
 
