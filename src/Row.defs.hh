@@ -40,9 +40,11 @@ site: http://www.cs.unipr.it/ppl/ . */
 #endif
 
 namespace Parma_Polyhedra_Library {
-  // Put it in the namespace here to declare it friend later.
-  std::ostream& operator<<(std::ostream& s, const Row& row);
-}
+
+// Put it in the namespace here to declare it friend later.
+std::ostream& operator<<(std::ostream& s, const Row& row);
+
+} // namespace Parma_Polyhedra_Library
 
 #ifdef PPL_DOXYGEN_INCLUDE_IMPLEMENTATION_DETAILS
 /*!
@@ -212,42 +214,42 @@ private:
 namespace Parma_Polyhedra_Library {
 
 #ifdef PPL_DOXYGEN_INCLUDE_IMPLEMENTATION_DETAILS
-  //! Computes the scalar product between \p x and \p y.
-  /*! \relates Row */
+//! Computes the scalar product between \p x and \p y.
+/*! \relates Row */
 #endif // PPL_DOXYGEN_INCLUDE_IMPLEMENTATION_DETAILS
-  const Integer& operator*(const Row& x, const Row& y);
+const Integer& operator*(const Row& x, const Row& y);
 
 #ifdef PPL_DOXYGEN_INCLUDE_IMPLEMENTATION_DETAILS
-  //! \brief Computes the \e reduced scalar product between \p x and \p y,
-  //! where the \f$\epsilon\f$ coefficient of \p x is ignored.
-  /*! \relates Row */
+//! \brief Computes the \e reduced scalar product between \p x and \p y,
+//! where the \f$\epsilon\f$ coefficient of \p x is ignored.
+/*! \relates Row */
 #endif // PPL_DOXYGEN_INCLUDE_IMPLEMENTATION_DETAILS
-  const Integer& reduced_scalar_product(const Row& x, const Row& y);
+const Integer& reduced_scalar_product(const Row& x, const Row& y);
 
 #ifdef PPL_DOXYGEN_INCLUDE_IMPLEMENTATION_DETAILS
-  //! The basic comparison function.
-  /*! \relates Row */
+//! The basic comparison function.
+/*! \relates Row */
 #endif // PPL_DOXYGEN_INCLUDE_IMPLEMENTATION_DETAILS
-  int compare(const Row& x, const Row& y);
+int compare(const Row& x, const Row& y);
 
 #ifdef PPL_DOXYGEN_INCLUDE_IMPLEMENTATION_DETAILS
-  //! @name Classical comparison operators.
-  //@{
+//! @name Classical comparison operators.
+//@{
 #endif // PPL_DOXYGEN_INCLUDE_IMPLEMENTATION_DETAILS
-  /*! \relates Row */
-  bool operator==(const Row& x, const Row& y);
-  /*! \relates Row */
-  bool operator!=(const Row& x, const Row& y);
-  /*! \relates Row */
-  bool operator<=(const Row& x, const Row& y);
-  /*! \relates Row */
-  bool operator <(const Row& x, const Row& y);
-  /*! \relates Row */
-  bool operator>=(const Row& x, const Row& y);
-  /*! \relates Row */
-  bool operator >(const Row& x, const Row& y);
+/*! \relates Row */
+bool operator==(const Row& x, const Row& y);
+/*! \relates Row */
+bool operator!=(const Row& x, const Row& y);
+/*! \relates Row */
+bool operator<=(const Row& x, const Row& y);
+/*! \relates Row */
+bool operator <(const Row& x, const Row& y);
+/*! \relates Row */
+bool operator>=(const Row& x, const Row& y);
+/*! \relates Row */
+bool operator >(const Row& x, const Row& y);
 #ifdef PPL_DOXYGEN_INCLUDE_IMPLEMENTATION_DETAILS
-  //@}
+//@}
 #endif // PPL_DOXYGEN_INCLUDE_IMPLEMENTATION_DETAILS
 
 } // namespace Parma_Polyhedra_Library

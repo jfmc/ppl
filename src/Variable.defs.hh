@@ -70,15 +70,16 @@ private:
 
 namespace Parma_Polyhedra_Library {
 
-  //! Output operator.
-  /*! \relates Variable */
-  std::ostream&
-  operator<<(std::ostream& s, const Variable& v);
+//! Output operator.
+/*! \relates Variable */
+std::ostream&
+operator<<(std::ostream& s, const Variable& v);
 
-  //! Defines a total ordering on variables.
-  /*! \relates Variable */
-  bool operator<(const Variable& v, const Variable& w);
-}
+//! Defines a total ordering on variables.
+/*! \relates Variable */
+bool operator<(const Variable& v, const Variable& w);
+
+} // namespace Parma_Polyhedra_Library
 
 #include "Variable.inlines.hh"
 

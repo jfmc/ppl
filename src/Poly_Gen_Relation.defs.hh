@@ -28,15 +28,18 @@ site: http://www.cs.unipr.it/ppl/ . */
 #include <iosfwd>
 
 namespace Parma_Polyhedra_Library {
-  // Put them in the namespace here to declare them friend later.
-  std::ostream& operator<<(std::ostream& s, const Poly_Gen_Relation& r);
-  bool operator==(const Poly_Gen_Relation& x, const Poly_Gen_Relation& y);
-  bool operator!=(const Poly_Gen_Relation& x, const Poly_Gen_Relation& y);
-  Poly_Gen_Relation operator&&(const Poly_Gen_Relation& x,
-			       const Poly_Gen_Relation& y);
-  Poly_Gen_Relation operator-(const Poly_Gen_Relation& x,
-			      const Poly_Gen_Relation& y);
-}
+
+// Put them in the namespace here to declare them friend later.
+std::ostream& operator<<(std::ostream& s, const Poly_Gen_Relation& r);
+bool operator==(const Poly_Gen_Relation& x, const Poly_Gen_Relation& y);
+bool operator!=(const Poly_Gen_Relation& x, const Poly_Gen_Relation& y);
+Poly_Gen_Relation operator&&(const Poly_Gen_Relation& x,
+			     const Poly_Gen_Relation& y);
+Poly_Gen_Relation operator-(const Poly_Gen_Relation& x,
+			    const Poly_Gen_Relation& y);
+
+} // namespace Parma_Polyhedra_Library
+
 
 //! The relation between a polyhedron and a generator
 /*!

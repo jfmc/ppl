@@ -39,61 +39,62 @@ site: http://www.cs.unipr.it/ppl/ . */
 #include <set>
 
 namespace Parma_Polyhedra_Library {
-  //! \brief
-  //! Returns <CODE>true</CODE> if and only if
-  //! \p x and \p y are the same polyhedron.
-  /*!
-    \relates Polyhedron
-    \exception std::invalid_argument thrown if \p x and \p y
-                                     are topology-incompatible
-                                     or dimension-incompatible.
-  */
-  bool operator==(const Polyhedron& x, const Polyhedron& y);
 
-  //! \brief
-  //! Returns <CODE>true</CODE> if and only if
-  //! \p x and \p y are different polyhedra.
-  /*!
-    \relates Polyhedron
-    \exception std::invalid_argument thrown if \p x and \p y
-                                     are topology-incompatible
-                                     or dimension-incompatible.
-  */
-  bool operator!=(const Polyhedron& x, const Polyhedron& y);
+//! \brief
+//! Returns <CODE>true</CODE> if and only if
+//! \p x and \p y are the same polyhedron.
+/*!
+  \relates Polyhedron
+  \exception std::invalid_argument thrown if \p x and \p y
+  are topology-incompatible
+  or dimension-incompatible.
+*/
+bool operator==(const Polyhedron& x, const Polyhedron& y);
 
-  //! \brief
-  //! Returns <CODE>true</CODE> if and only if
-  //! \p x is strictly contained in \p y.
-  /*!
-    \relates Polyhedron
-    \exception std::invalid_argument thrown if \p x and \p y
-                                     are topology-incompatible
-                                     or dimension-incompatible.
-  */
-  bool operator<(const Polyhedron& x, const Polyhedron& y);
+//! \brief
+//! Returns <CODE>true</CODE> if and only if
+//! \p x and \p y are different polyhedra.
+/*!
+  \relates Polyhedron
+  \exception std::invalid_argument thrown if \p x and \p y
+  are topology-incompatible
+  or dimension-incompatible.
+*/
+bool operator!=(const Polyhedron& x, const Polyhedron& y);
 
-  //! Returns <CODE>true</CODE> if and only if \p x strictly contains \p y.
-  /*!
-    \relates Polyhedron
-    \exception std::invalid_argument thrown if \p x and \p y
-                                     are topology-incompatible
-                                     or dimension-incompatible.
-  */
-  bool operator>(const Polyhedron& x, const Polyhedron& y);
+//! \brief
+//! Returns <CODE>true</CODE> if and only if
+//! \p x is strictly contained in \p y.
+/*!
+  \relates Polyhedron
+  \exception std::invalid_argument thrown if \p x and \p y
+                                   are topology-incompatible
+                                   or dimension-incompatible.
+*/
+bool operator<(const Polyhedron& x, const Polyhedron& y);
 
-  //! Returns <CODE>true</CODE> if and only if \p x contains \p y.
-  /*!
-    \relates Polyhedron
-    \exception std::invalid_argument thrown if \p x and \p y
-                                     are topology-incompatible
-                                     or dimension-incompatible.
-  */
-  bool operator>=(const Polyhedron& x, const Polyhedron& y);
+//! Returns <CODE>true</CODE> if and only if \p x strictly contains \p y.
+/*!
+  \relates Polyhedron
+  \exception std::invalid_argument thrown if \p x and \p y
+                                   are topology-incompatible
+                                   or dimension-incompatible.
+*/
+bool operator>(const Polyhedron& x, const Polyhedron& y);
 
-  // Put them in the namespace here to declare them friend later.
-  bool operator<=(const Polyhedron& x, const Polyhedron& y);
-  std::ostream& operator<<(std::ostream& s, const Polyhedron& p);
-  std::istream& operator>>(std::istream& s, Polyhedron& p);
+//! Returns <CODE>true</CODE> if and only if \p x contains \p y.
+/*!
+  \relates Polyhedron
+  \exception std::invalid_argument thrown if \p x and \p y
+                                   are topology-incompatible
+                                   or dimension-incompatible.
+*/
+bool operator>=(const Polyhedron& x, const Polyhedron& y);
+
+// Put them in the namespace here to declare them friend later.
+bool operator<=(const Polyhedron& x, const Polyhedron& y);
+std::ostream& operator<<(std::ostream& s, const Polyhedron& p);
+std::istream& operator>>(std::istream& s, Polyhedron& p);
 
 } // namespace Parma_Polyhedra_Library
 

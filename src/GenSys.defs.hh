@@ -35,11 +35,13 @@ site: http://www.cs.unipr.it/ppl/ . */
 #include <vector>
 
 namespace Parma_Polyhedra_Library {
-  // Put them in the namespace here to declare them friend later.
-  bool operator<=(const Polyhedron& x, const Polyhedron& y);
-  std::ostream& operator<<(std::ostream& s, const GenSys& gs);
-  std::istream& operator>>(std::istream& s, GenSys& gs);
-}
+
+// Put them in the namespace here to declare them friend later.
+bool operator<=(const Polyhedron& x, const Polyhedron& y);
+std::ostream& operator<<(std::ostream& s, const GenSys& gs);
+std::istream& operator>>(std::istream& s, GenSys& gs);
+
+} // namespace Parma_Polyhedra_Library
 
 
 namespace std {

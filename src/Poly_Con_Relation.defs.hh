@@ -28,15 +28,18 @@ site: http://www.cs.unipr.it/ppl/ . */
 #include <iosfwd>
 
 namespace Parma_Polyhedra_Library {
-  // Put them in the namespace here to declare them friend later.
-  std::ostream& operator<<(std::ostream& s, const Poly_Con_Relation& r);
-  bool operator==(const Poly_Con_Relation& x, const Poly_Con_Relation& y);
-  bool operator!=(const Poly_Con_Relation& x, const Poly_Con_Relation& y);
-  Poly_Con_Relation operator&&(const Poly_Con_Relation& x,
-			       const Poly_Con_Relation& y);
-  Poly_Con_Relation operator-(const Poly_Con_Relation& x,
-			      const Poly_Con_Relation& y);
-}
+
+// Put them in the namespace here to declare them friend later.
+std::ostream& operator<<(std::ostream& s, const Poly_Con_Relation& r);
+bool operator==(const Poly_Con_Relation& x, const Poly_Con_Relation& y);
+bool operator!=(const Poly_Con_Relation& x, const Poly_Con_Relation& y);
+Poly_Con_Relation operator&&(const Poly_Con_Relation& x,
+			     const Poly_Con_Relation& y);
+Poly_Con_Relation operator-(const Poly_Con_Relation& x,
+			    const Poly_Con_Relation& y);
+
+} // namespace Parma_Polyhedra_Library
+
 
 //! The relation between a polyhedron and a constraint.
 /*!

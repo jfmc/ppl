@@ -36,28 +36,30 @@ site: http://www.cs.unipr.it/ppl/ . */
 #include <cstddef>
 
 namespace Parma_Polyhedra_Library {
-  // Put them in the namespace here to declare them friend later.
-  LinExpression operator+(const LinExpression& e1, const LinExpression& e2);
-  LinExpression operator+(const Integer& n, const LinExpression& e);
-  LinExpression operator+(const LinExpression& e, const Integer& n);
 
-  LinExpression operator-(const LinExpression& e);
+// Put them in the namespace here to declare them friend later.
+LinExpression operator+(const LinExpression& e1, const LinExpression& e2);
+LinExpression operator+(const Integer& n, const LinExpression& e);
+LinExpression operator+(const LinExpression& e, const Integer& n);
 
-  LinExpression operator-(const LinExpression& e1, const LinExpression& e2);
-  LinExpression operator-(const Integer& n, const LinExpression& e);
-  LinExpression operator-(const LinExpression& e, const Integer& n);
+LinExpression operator-(const LinExpression& e);
 
-  LinExpression operator*(const Integer& n, const LinExpression& e);
-  LinExpression operator*(const LinExpression& e, const Integer& n);
+LinExpression operator-(const LinExpression& e1, const LinExpression& e2);
+LinExpression operator-(const Integer& n, const LinExpression& e);
+LinExpression operator-(const LinExpression& e, const Integer& n);
 
-  LinExpression& operator+=(LinExpression& e1, const LinExpression& e2);
-  LinExpression& operator+=(LinExpression& e, const Variable& v);
-  LinExpression& operator+=(LinExpression& e, const Integer& n);
+LinExpression operator*(const Integer& n, const LinExpression& e);
+LinExpression operator*(const LinExpression& e, const Integer& n);
 
-  LinExpression& operator-=(LinExpression& e1, const LinExpression& e2);
-  LinExpression& operator-=(LinExpression& e, const Variable& v);
-  LinExpression& operator-=(LinExpression& e, const Integer& n);
-}
+LinExpression& operator+=(LinExpression& e1, const LinExpression& e2);
+LinExpression& operator+=(LinExpression& e, const Variable& v);
+LinExpression& operator+=(LinExpression& e, const Integer& n);
+
+LinExpression& operator-=(LinExpression& e1, const LinExpression& e2);
+LinExpression& operator-=(LinExpression& e, const Variable& v);
+LinExpression& operator-=(LinExpression& e, const Integer& n);
+
+} // namespace Parma_Polyhedra_Library
 
 
 namespace std {

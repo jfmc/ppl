@@ -412,31 +412,32 @@ void swap(Parma_Polyhedra_Library::Matrix& x,
 
 } // namespace std
 
+
 namespace Parma_Polyhedra_Library {
 
 #ifdef PPL_DOXYGEN_INCLUDE_IMPLEMENTATION_DETAILS
-  //! Returns <CODE>true</CODE> if and only if \p x and \p y are identical.
-  /*! \relates Matrix */
+//! Returns <CODE>true</CODE> if and only if \p x and \p y are identical.
+/*! \relates Matrix */
 #endif // PPL_DOXYGEN_INCLUDE_IMPLEMENTATION_DETAILS
-  bool operator==(const Matrix& x, const Matrix& y);
+bool operator==(const Matrix& x, const Matrix& y);
 
 #ifdef PPL_DOXYGEN_INCLUDE_IMPLEMENTATION_DETAILS
-  //! Returns <CODE>true</CODE> if and only if \p x and \p y are different.
-  /*! \relates Matrix */
+//! Returns <CODE>true</CODE> if and only if \p x and \p y are different.
+/*! \relates Matrix */
 #endif // PPL_DOXYGEN_INCLUDE_IMPLEMENTATION_DETAILS
-  bool operator!=(const Matrix& x, const Matrix& y);
+bool operator!=(const Matrix& x, const Matrix& y);
 
 #ifdef PPL_DOXYGEN_INCLUDE_IMPLEMENTATION_DETAILS
-  //! Input operator.
-  /*! \relates Matrix */
+//! Input operator.
+/*! \relates Matrix */
 #endif // PPL_DOXYGEN_INCLUDE_IMPLEMENTATION_DETAILS
-  std::istream& operator>>(std::istream& s, Matrix& m);
+std::istream& operator>>(std::istream& s, Matrix& m);
 
 #ifdef PPL_DOXYGEN_INCLUDE_IMPLEMENTATION_DETAILS
-  //! Output operator.
-  /*! \relates Matrix */
+//! Output operator.
+/*! \relates Matrix */
 #endif // PPL_DOXYGEN_INCLUDE_IMPLEMENTATION_DETAILS
-  std::ostream& operator<<(std::ostream& s, const Matrix& m);
+std::ostream& operator<<(std::ostream& s, const Matrix& m);
 
 } // namespace Parma_Polyhedra_Library
 

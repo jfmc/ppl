@@ -28,10 +28,13 @@ site: http://www.cs.unipr.it/ppl/ . */
 #include <iosfwd>
 
 namespace Parma_Polyhedra_Library {
-  // Put them in the namespace here to declare them friends later.
-  Status operator&(const Status& x, const Status& y);
-  Status operator|(const Status& x, const Status& y);
-}
+
+// Put them in the namespace here to declare them friends later.
+Status operator&(const Status& x, const Status& y);
+Status operator|(const Status& x, const Status& y);
+
+} // namespace Parma_Polyhedra_Library
+
 
 #ifdef PPL_DOXYGEN_INCLUDE_IMPLEMENTATION_DETAILS
 /*!
@@ -157,18 +160,20 @@ private:
 };
 
 namespace Parma_Polyhedra_Library {
-#ifdef PPL_DOXYGEN_INCLUDE_IMPLEMENTATION_DETAILS
-  //! Output operator.
-  /*! \relates Status */
-#endif // PPL_DOXYGEN_INCLUDE_IMPLEMENTATION_DETAILS
-  std::ostream& operator<<(std::ostream& s, const Status& u);
 
 #ifdef PPL_DOXYGEN_INCLUDE_IMPLEMENTATION_DETAILS
-  //! Input operator.
-  /*! \relates Status */
+//! Output operator.
+/*! \relates Status */
 #endif // PPL_DOXYGEN_INCLUDE_IMPLEMENTATION_DETAILS
-  std::istream& operator>>(std::istream& s, Status& u);
-}
+std::ostream& operator<<(std::ostream& s, const Status& u);
+
+#ifdef PPL_DOXYGEN_INCLUDE_IMPLEMENTATION_DETAILS
+//! Input operator.
+/*! \relates Status */
+#endif // PPL_DOXYGEN_INCLUDE_IMPLEMENTATION_DETAILS
+std::istream& operator>>(std::istream& s, Status& u);
+
+} // namespace Parma_Polyhedra_Library
 
 #include "Status.inlines.hh"
 

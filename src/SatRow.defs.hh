@@ -29,16 +29,19 @@ site: http://www.cs.unipr.it/ppl/ . */
 #include <gmp.h>
 
 namespace Parma_Polyhedra_Library {
-  // Put them in the namespace here to declare them friends later.
-  int compare(const SatRow& x, const SatRow& y);
-  bool operator==(const SatRow& x, const SatRow& y);
-  bool operator!=(const SatRow& x, const SatRow& y);
-  bool operator <(const SatRow& x, const SatRow& y);
-  bool operator >(const SatRow& x, const SatRow& y);
-  bool operator<=(const SatRow& x, const SatRow& y);
-  bool operator>=(const SatRow& x, const SatRow& y);
-  void set_union(const SatRow& x, const SatRow& y, SatRow& z);
-}
+
+// Put them in the namespace here to declare them friends later.
+int compare(const SatRow& x, const SatRow& y);
+bool operator==(const SatRow& x, const SatRow& y);
+bool operator!=(const SatRow& x, const SatRow& y);
+bool operator <(const SatRow& x, const SatRow& y);
+bool operator >(const SatRow& x, const SatRow& y);
+bool operator<=(const SatRow& x, const SatRow& y);
+bool operator>=(const SatRow& x, const SatRow& y);
+void set_union(const SatRow& x, const SatRow& y, SatRow& z);
+
+} // namespace Parma_Polyhedra_Library
+
 
 class Parma_Polyhedra_Library::SatRow {
 private:
@@ -139,12 +142,14 @@ public:
 };
 
 namespace Parma_Polyhedra_Library {
+
 #ifdef PPL_DOXYGEN_INCLUDE_IMPLEMENTATION_DETAILS
-  //! Output operator.
-  /*! \relates SatRow */
+//! Output operator.
+/*! \relates SatRow */
 #endif // PPL_DOXYGEN_INCLUDE_IMPLEMENTATION_DETAILS
-  std::ostream& operator<<(std::ostream& s, const SatRow& r);
-}
+std::ostream& operator<<(std::ostream& s, const SatRow& r);
+
+} // namespace Parma_Polyhedra_Library
 
 
 namespace std {

@@ -33,33 +33,36 @@ site: http://www.cs.unipr.it/ppl/ . */
 #include <iosfwd>
 
 namespace Parma_Polyhedra_Library {
-  //! Output operator.
-  /*! \relates Constraint */
-  std::ostream& operator<<(std::ostream& s, const Constraint& c);
 
-  // Put them in the namespace here to declare them friend later.
-  Constraint operator==(const LinExpression& e1, const LinExpression& e2);
-  Constraint operator==(const LinExpression& e, const Integer& n);
-  Constraint operator==(const Integer& n, const LinExpression& e);
+//! Output operator.
+/*! \relates Constraint */
+std::ostream& operator<<(std::ostream& s, const Constraint& c);
 
-  Constraint operator<=(const LinExpression& e1, const LinExpression& e2);
-  Constraint operator<=(const LinExpression& e, const Integer& n);
-  Constraint operator<=(const Integer& n, const LinExpression& e);
+// Put them in the namespace here to declare them friend later.
+Constraint operator==(const LinExpression& e1, const LinExpression& e2);
+Constraint operator==(const LinExpression& e, const Integer& n);
+Constraint operator==(const Integer& n, const LinExpression& e);
 
-  Constraint operator>=(const LinExpression& e1, const LinExpression& e2);
-  Constraint operator>=(const LinExpression& e, const Integer& n);
-  Constraint operator>=(const Integer& n, const LinExpression& e);
+Constraint operator<=(const LinExpression& e1, const LinExpression& e2);
+Constraint operator<=(const LinExpression& e, const Integer& n);
+Constraint operator<=(const Integer& n, const LinExpression& e);
 
-  Constraint operator<(const LinExpression& e1, const LinExpression& e2);
-  Constraint operator<(const LinExpression& e, const Integer& n);
-  Constraint operator<(const Integer& n, const LinExpression& e);
+Constraint operator>=(const LinExpression& e1, const LinExpression& e2);
+Constraint operator>=(const LinExpression& e, const Integer& n);
+Constraint operator>=(const Integer& n, const LinExpression& e);
 
-  Constraint operator>(const LinExpression& e1, const LinExpression& e2);
-  Constraint operator>(const LinExpression& e, const Integer& n);
-  Constraint operator>(const Integer& n, const LinExpression& e);
+Constraint operator<(const LinExpression& e1, const LinExpression& e2);
+Constraint operator<(const LinExpression& e, const Integer& n);
+Constraint operator<(const Integer& n, const LinExpression& e);
 
-  Constraint operator>>(const Constraint& c, unsigned int offset);
-}
+Constraint operator>(const LinExpression& e1, const LinExpression& e2);
+Constraint operator>(const LinExpression& e, const Integer& n);
+Constraint operator>(const Integer& n, const LinExpression& e);
+
+Constraint operator>>(const Constraint& c, unsigned int offset);
+
+} // namespace Parma_Polyhedra_Library
+
 
 namespace std {
 

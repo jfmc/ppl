@@ -36,11 +36,14 @@ site: http://www.cs.unipr.it/ppl/ . */
 #include <iosfwd>
 
 namespace Parma_Polyhedra_Library {
-  // Put them in the namespace here to declare them friend later.
-  bool operator<=(const Polyhedron& x, const Polyhedron& y);
-  std::ostream& operator<<(std::ostream& s, const ConSys& cs);
-  std::istream& operator>>(std::istream& s, ConSys& cs);
-}
+
+// Put them in the namespace here to declare them friend later.
+bool operator<=(const Polyhedron& x, const Polyhedron& y);
+std::ostream& operator<<(std::ostream& s, const ConSys& cs);
+std::istream& operator>>(std::istream& s, ConSys& cs);
+
+} // namespace Parma_Polyhedra_Library
+
 
 namespace std {
 

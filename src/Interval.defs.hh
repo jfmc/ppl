@@ -30,14 +30,17 @@ site: http://www.cs.unipr.it/ppl/ . */
 #include <gmpxx.h>
 
 namespace Parma_Polyhedra_Library {
-  // Put them in the namespace here to declare them friend later.
-  bool operator==(const ExtendedRational& x, const ExtendedRational& y);
-  bool operator!=(const ExtendedRational& x, const ExtendedRational& y);
-  bool operator< (const ExtendedRational& x, const ExtendedRational& y);
-  bool operator> (const ExtendedRational& x, const ExtendedRational& y);
-  bool operator<=(const ExtendedRational& x, const ExtendedRational& y);
-  bool operator>=(const ExtendedRational& x, const ExtendedRational& y);
-}
+
+// Put them in the namespace here to declare them friend later.
+bool operator==(const ExtendedRational& x, const ExtendedRational& y);
+bool operator!=(const ExtendedRational& x, const ExtendedRational& y);
+bool operator< (const ExtendedRational& x, const ExtendedRational& y);
+bool operator> (const ExtendedRational& x, const ExtendedRational& y);
+bool operator<=(const ExtendedRational& x, const ExtendedRational& y);
+bool operator>=(const ExtendedRational& x, const ExtendedRational& y);
+
+} // namespace Parma_Polyhedra_Library
+
 
 class Parma_Polyhedra_Library::ExtendedRational {
 private:
@@ -91,32 +94,36 @@ public:
 				      const ExtendedRational& y);
 };  
 
+
 namespace Parma_Polyhedra_Library {
-  // Put them in the namespace here to declare them friend later.
-  bool operator==(const Boundary& x, const Boundary& y);
-  bool operator!=(const Boundary& x, const Boundary& y);
-  bool operator< (const Boundary& x, const Boundary& y);
-  bool operator> (const Boundary& x, const Boundary& y);
-  bool operator<=(const Boundary& x, const Boundary& y);
-  bool operator>=(const Boundary& x, const Boundary& y);
 
-  bool operator==(const Boundary& x, ExtendedRational y);
-  bool operator!=(const Boundary& x, ExtendedRational y);
-  bool operator< (const Boundary& x, ExtendedRational y);
-  bool operator> (const Boundary& x, ExtendedRational y);
-  bool operator<=(const Boundary& x, ExtendedRational y);
-  bool operator>=(const Boundary& x, ExtendedRational y);
+// Put them in the namespace here to declare them friend later.
+bool operator==(const Boundary& x, const Boundary& y);
+bool operator!=(const Boundary& x, const Boundary& y);
+bool operator< (const Boundary& x, const Boundary& y);
+bool operator> (const Boundary& x, const Boundary& y);
+bool operator<=(const Boundary& x, const Boundary& y);
+bool operator>=(const Boundary& x, const Boundary& y);
 
-  bool operator< (const LBoundary& x, const UBoundary& y);
-  bool operator> (const UBoundary& x, const LBoundary& y);
-  bool operator<=(const UBoundary& x, const LBoundary& y);
-  bool operator>=(const LBoundary& x, const UBoundary& y);
+bool operator==(const Boundary& x, ExtendedRational y);
+bool operator!=(const Boundary& x, ExtendedRational y);
+bool operator< (const Boundary& x, ExtendedRational y);
+bool operator> (const Boundary& x, ExtendedRational y);
+bool operator<=(const Boundary& x, ExtendedRational y);
+bool operator>=(const Boundary& x, ExtendedRational y);
 
-  bool operator< (const LBoundary& x, ExtendedRational y);
-  bool operator> (const UBoundary& x, ExtendedRational y);
-  bool operator<=(const UBoundary& x, ExtendedRational y);
-  bool operator>=(const LBoundary& x, ExtendedRational y);
-}
+bool operator< (const LBoundary& x, const UBoundary& y);
+bool operator> (const UBoundary& x, const LBoundary& y);
+bool operator<=(const UBoundary& x, const LBoundary& y);
+bool operator>=(const LBoundary& x, const UBoundary& y);
+
+bool operator< (const LBoundary& x, ExtendedRational y);
+bool operator> (const UBoundary& x, ExtendedRational y);
+bool operator<=(const UBoundary& x, ExtendedRational y);
+bool operator>=(const LBoundary& x, ExtendedRational y);
+
+} // namespace Parma_Polyhedra_Library
+
 
 class Parma_Polyhedra_Library::Boundary {
 protected:

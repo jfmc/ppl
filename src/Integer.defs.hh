@@ -28,16 +28,17 @@ site: http://www.cs.unipr.it/ppl/ . */
 
 namespace Parma_Polyhedra_Library {
 
-  inline void negate(Integer& x);
-  inline void gcd_assign(Integer& x, const Integer& y);
-  inline void gcd_assign(Integer& x, const Integer& y, const Integer& z);
-  inline void exact_div_assign(Integer& x, const Integer& y);
-  inline void exact_div_assign(Integer& x, const Integer& y, const Integer& z);
-  inline int cmp(const Integer& x, const Integer& y);
-  inline const Integer& Integer_zero();
-  inline const Integer& Integer_one();
+inline void negate(Integer& x);
+inline void gcd_assign(Integer& x, const Integer& y);
+inline void gcd_assign(Integer& x, const Integer& y, const Integer& z);
+inline void exact_div_assign(Integer& x, const Integer& y);
+inline void exact_div_assign(Integer& x, const Integer& y, const Integer& z);
+inline int cmp(const Integer& x, const Integer& y);
+inline const Integer& Integer_zero();
+inline const Integer& Integer_one();
 
 } // namespace Parma_Polyhedra_Library
+
 
 namespace std {
 
