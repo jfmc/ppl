@@ -851,6 +851,33 @@ PPL::Matrix::swap_columns(const dimension_type i,  const dimension_type j) {
 }
 
 void
+PPL::Matrix::permute_columns(const dimension_type cycles[],
+			     const dimension_type n) {
+  for (dimension_type k = num_rows(); k-- > 0; ) {
+    Row& rows_k = rows[k];
+    for (dimension_type i = 0, j = 0; i < n; i = ++j) {
+      // Make `j' be the index of the next cycle terminator.
+      while (cycles[j] != 0)
+	++j;
+      // Cycles of length less than 2 are not allowed.
+      assert(j - i >= 2);
+      if (j - i == 2)
+	// For cycles of length 2 no temporary is needed, just a swap.
+	std::swap(rows_k[cycles[i]], rows_k[cycles[i+1]]);
+      else {
+	// Longer cycles need a temporary.
+	std::swap(tmp_Integer[0], rows_k[cycles[i]]);
+	for ( ; i < j-1; ++i)
+	  std::swap(rows_k[cycles[i]], rows_k[cycles[i+1]]);
+	std::swap(rows_k[cycles[j-1]], tmp_Integer[0]);
+      }
+    }
+  }
+  // The matrix may have lost sortedness.
+  set_sorted(false);
+}
+
+void
 PPL::Matrix::normalize() {
   // We normalize also the pending rows.
   for (dimension_type i = num_rows(); i-- > 0; )

@@ -261,6 +261,24 @@ public:
   //! Swaps the columns having indexes \p i and \p j.
   void swap_columns(dimension_type i,  dimension_type j);
 
+  //! Permutes the columns of the matrix.
+  /*
+    \param cycles      An array representing the non-trivial cycles
+                       of the permutation according to which the columns
+                       must be rearranged.
+    \param n           The length of \p cycles.
+
+    The array contains, one after the other, the non-trivial cycles
+    (i.e., the cycles of length greater than one) of a permutation of
+    non-zero column indexes.  Each cycle is terminated by zero.
+    For example, assuming the matrix has 6 columns, the permutation
+    \f$ \{ 1 \mapsto 3, 2 \mapsto 4, 3 \mapsto 6, 4 \mapsto 2,
+    5 \mapsto 5, 6 \mapsto 1 \}\f$ can be represented
+    by the non-trivial cycles \f$(1 3 6)(2 4)\f$ that, in turn can be
+    represented by an array of 6 elements containing 1, 3, 6, 0, 2, 4, 0.
+  */
+  void permute_columns(const dimension_type cycles[], dimension_type n);
+
   //! \name Accessors.
   //@{
   //! Returns the matrix topology.
