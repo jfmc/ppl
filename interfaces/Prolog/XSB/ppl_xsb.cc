@@ -91,7 +91,7 @@ Prolog_put_term(Prolog_term_ref& t, Prolog_term_ref u) {
 */
 static inline int
 Prolog_put_long(Prolog_term_ref& t, long l) {
-  assert(is_var(t));
+  assert(is_var(t) == TRUE);
   return c2p_int(l, t) != FALSE;
 }
 
@@ -100,7 +100,7 @@ Prolog_put_long(Prolog_term_ref& t, long l) {
 */
 static inline int
 Prolog_put_ulong(Prolog_term_ref& t, unsigned long ul) {
-  assert(is_var(t));
+  assert(is_var(t) == TRUE);
   return c2p_int(ul, t) != FALSE;
 }
 
@@ -110,7 +110,7 @@ Prolog_put_ulong(Prolog_term_ref& t, unsigned long ul) {
 */
 static inline int
 Prolog_put_atom_chars(Prolog_term_ref& t, const char* s) {
-  assert(is_var(t));
+  assert(is_var(t) == TRUE);
   // FIXME: the following cast is really a bug in XSB.
   return c2p_string(string_find(const_cast<char*>(s), 1), t) != FALSE;
 }
@@ -120,7 +120,7 @@ Prolog_put_atom_chars(Prolog_term_ref& t, const char* s) {
 */
 static inline int
 Prolog_put_atom(Prolog_term_ref& t, Prolog_atom a) {
-  assert(is_var(t));
+  assert(is_var(t) == TRUE);
   return c2p_string(a, t) != FALSE;
 }
 
@@ -129,7 +129,7 @@ Prolog_put_atom(Prolog_term_ref& t, Prolog_atom a) {
 */
 static inline int
 Prolog_put_address(Prolog_term_ref& t, void* p) {
-  assert(is_var(t));
+  assert(is_var(t) == TRUE);
   return c2p_int(reinterpret_cast<long>(p), t) != FALSE;
 }
 
