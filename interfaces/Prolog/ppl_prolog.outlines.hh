@@ -746,6 +746,35 @@ ppl_widening_assign(Prolog_term_ref t_lhs, Prolog_term_ref t_rhs) {
 }
 
 extern "C" Prolog_foreign_return_type
+ppl_limited_widening_assign(Prolog_term_ref t_lhs, 
+                            Prolog_term_ref t_rhs, 
+                            Prolog_term_ref t_clist) {
+  try {
+    PPL::Polyhedron* lhs = get_ph_pointer(t_lhs);
+    if (lhs == 0)
+      return PROLOG_FAILURE;
+    const PPL::Polyhedron* rhs = get_ph_pointer(t_rhs);
+    if (rhs == 0)
+      return PROLOG_FAILURE;
+    CHECK(lhs);
+    CHECK(rhs);
+    PPL::ConSys cs;
+    Prolog_term_ref c = Prolog_new_term_ref();
+
+    while (Prolog_is_cons(t_clist)) {
+      Prolog_get_cons(t_clist, c, t_clist);
+      cs.insert(build_constraint(c));
+    }
+    PPL::Polyhedron& x = *static_cast<PPL::Polyhedron*>(lhs);
+    const PPL::Polyhedron& y = *static_cast<const PPL::Polyhedron*>(rhs);
+    x.limited_widening_assign(y,cs);
+    return PROLOG_SUCCESS;
+  }
+  CATCH_ALL;
+  return PROLOG_FAILURE;
+}
+
+extern "C" Prolog_foreign_return_type
 ppl_get_constraints(Prolog_term_ref t_ph, Prolog_term_ref t_clist) {
   try {
     const PPL::Polyhedron* ph = get_ph_pointer(t_ph);
@@ -859,3 +888,32 @@ ppl_init() {
   }
   return PROLOG_SUCCESS;
 }
+
+extern "C" Prolog_foreign_return_type
+ppl_relation_with_constraint(Prolog_term_ref t_ph, Prolog_term_ref t_c) {
+  try {
+    PPL::Polyhedron* ph = get_ph_pointer(t_ph);
+    if (ph == 0)
+      return PROLOG_FAILURE;
+    CHECK(ph);
+    ph->relation_with(build_constraint(t_c));
+    return PROLOG_SUCCESS;
+  }
+  CATCH_ALL;
+  return PROLOG_FAILURE;
+}
+
+extern "C" Prolog_foreign_return_type
+ppl_relation_with_generator(Prolog_term_ref t_ph, Prolog_term_ref t_g) {
+  try {
+    PPL::Polyhedron* ph = get_ph_pointer(t_ph);
+    if (ph == 0)
+      return PROLOG_FAILURE;
+    CHECK(ph);
+    ph->relation_with(build_generator(t_g));
+    return PROLOG_SUCCESS;
+  }
+  CATCH_ALL;
+  return PROLOG_FAILURE;
+}
+
