@@ -93,9 +93,8 @@ BUILT_SOURCES = ppl.hh
 include_HEADERS = ppl.hh
 
 ppl.hh:	$(include_files) ppl.cc protect.sed restore.sed
-	cp -f $(srcdir)/ppl.cc .
 	cpp -C -P -H $(INCLUDES) \
-		@debug_flag@ -DOUTLINE=0 ppl.cc >/dev/null 2>tmp.1
+		@debug_flag@ -DOUTLINE=0 $(srcdir)/ppl.cc >/dev/null 2>tmp.1
 	sed -e "s/^\.* //g" -e "/^\/usr/d" -e "/Multiple /d" <tmp.1 \
 		| sort -u >tmp.2
 	mkdir -p tmp
@@ -103,14 +102,14 @@ ppl.hh:	$(include_files) ppl.cc protect.sed restore.sed
 	do \
 		sed -f $(srcdir)/protect.sed <$$k >tmp/`basename $$k` ;\
 	done
-	$(MYCPP) -C -P -nostdinc -Itmp \
+	$(MYCPP) -C -P -nostdinc -I- -Itmp \
 		@debug_flag@ -DOUTLINE=0 -DINLINE=inline \
-		-DPPL_INTERNAL=private ppl.cc >tmp.3
+		-DPPL_INTERNAL=private $(srcdir)/ppl.cc >tmp.3
 	echo "#ifndef _ppl_hh" >ppl.hh
 	echo "#define _ppl_hh 1" >>ppl.hh
 	sed -f $(srcdir)/restore.sed <tmp.3 >>ppl.hh
 	echo "#endif" >>ppl.hh
-	rm -rf tmp* ppl.cc
+	rm -rf tmp*
 
 # ppl.hh is not distributed.
 dist-hook:
