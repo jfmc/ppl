@@ -31,6 +31,7 @@ site: http://www.cs.unipr.it/ppl/ . */
 #include "Constraint.types.hh"
 #include "Polyhedron.types.hh"
 #include "Poly_Con_Relation.defs.hh"
+#include "Grid.types.hh"
 #include <iosfwd>
 
 namespace Parma_Polyhedra_Library {
@@ -240,10 +241,10 @@ public:
   */
   class const_iterator
     : public std::iterator<std::forward_iterator_tag,
-				Generator,
-				void,
-				const Generator*,
-                                const Generator&> {
+			   Generator,
+			   void,
+			   const Generator*,
+			   const Generator&> {
   public:
     //! Default constructor.
     const_iterator();
@@ -347,6 +348,7 @@ public:
 private:
   friend class const_iterator;
   friend class Parma_Polyhedra_Library::Polyhedron;
+  friend class Parma_Polyhedra_Library::Grid;
 
   friend bool
   Parma_Polyhedra_Library::operator==(const Polyhedron& x,
