@@ -411,14 +411,11 @@ PPL::Polyhedron::Polyhedron(Topology topol, const ConSys& ccs)
   if (cs.num_rows() > 0 && cs_space_dim > 0) {
     // Stealing the rows from `cs'.
     std::swap(con_sys, cs);
-    if (topol == NECESSARILY_CLOSED)
-      // Add the positivity constraint.
-      con_sys.insert(Constraint::zero_dim_positivity());
-    else {
-      // Add the epsilon constraints.
-      con_sys.insert(Constraint::epsilon_leq_one());
-      con_sys.insert(Constraint::epsilon_geq_zero());
-    }
+    if (topol == NOT_NECESSARILY_CLOSED)
+      // For each strict inequality we must also have
+      // the corresponding non-strict inequality.
+      con_sys.add_corresponding_nonstrict_inequalities();
+    add_low_level_constraints(con_sys);
     set_constraints_up_to_date();
     // Set the space dimension.
     space_dim = cs_space_dim;
@@ -437,7 +434,6 @@ PPL::Polyhedron::Polyhedron(Topology topol, const ConSys& ccs)
 	return;
       }
 }
-
 
 PPL::Polyhedron::Polyhedron(Topology topol, GenSys& gs)
   : con_sys(topol),
@@ -508,9 +504,9 @@ PPL::Polyhedron::Polyhedron(Topology topol, const GenSys& cgs)
     // Stealing the rows from `gs'.
     std::swap(gen_sys, gs);
     // In a generator system describing a NNC polyhedron,
-    // for each point we must also have the corresponding closure point.
+    // we must have the minus_epsilon_ray.
     if (topol == NOT_NECESSARILY_CLOSED)
-      gen_sys.add_corresponding_closure_points();
+      gen_sys.insert(Generator::zero_dim_minus_epsilon_ray());
     set_generators_up_to_date();
     // Set the space dimension.
     space_dim = gs_space_dim;
