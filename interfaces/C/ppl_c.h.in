@@ -723,7 +723,7 @@ int
 ppl_new_ConSys_const_iterator __P((ppl_ConSys_const_iterator_t* pcit));
 
 /*! \brief
-  Builds a const iterator system that is a copy of \p cit; writes an
+  Builds a const iterator that is a copy of \p cit; writes an
   handle for the newly created const iterator at address \p pcit.
 */
 int
@@ -978,7 +978,7 @@ int
 ppl_new_GenSys_const_iterator __P((ppl_GenSys_const_iterator_t* pgit));
 
 /*! \brief
-  Builds a const iterator system that is a copy of \p git; writes an
+  Builds a const iterator that is a copy of \p git; writes an
   handle for the newly created const iterator at address \p pgit.
 */
 int
