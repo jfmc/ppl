@@ -1771,11 +1771,15 @@ PPL::PolyBase::add_dimensions_and_constraints(ConSys& cs) {
   size_t old_num_rows = con_sys.num_rows();
   size_t old_num_columns = con_sys.num_columns();
   size_t added_rows = cs.num_rows();
+
   con_sys.grow(old_num_rows + added_rows, old_num_columns + added_columns);
+
   // Move the \epsilon coefficient to the last column, if needed.
   if (!is_necessarily_closed())
     con_sys.swap_columns(old_num_columns - 1,
 			 old_num_columns - 1 + added_columns);
+  // Steal the constraints from `cs' and put them in `con_sys'
+  // using the right displacement for coefficients.
   for (size_t i = added_rows; i-- > 0; ) {
     Constraint& c_new = con_sys[old_num_rows + i];
     Constraint& c_old = cs[i];
@@ -1783,7 +1787,7 @@ PPL::PolyBase::add_dimensions_and_constraints(ConSys& cs) {
     if (c_old.is_equality())
       c_new.set_is_equality();
     std::swap(c_new[0], c_old[0]);
-    for (size_t j = added_columns; j-- > 1; )
+    for (size_t j = added_columns + 1; j-- > 1; )
       std::swap(c_new[old_num_columns - 1 + j], c_old[j]);
   }
   // Update space dimension.
