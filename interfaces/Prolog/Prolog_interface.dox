@@ -52,6 +52,28 @@ Here we just describe those aspects that are specific to the Prolog interface.
 
 First, here is a list of notes with general information and advice
 on the use of the interface.
+
+- The Prolog interface to the PPL is initialized and finalized by the
+  predicates <CODE>ppl_initialize/0</CODE> and <CODE>ppl_finalize/0</CODE>.
+  Thus the only interface predicates callable after
+  <CODE>ppl_finalize/0</CODE> are <CODE>ppl_finalize/0</CODE> itself
+  (this further call has no effect) and <CODE>ppl_initialize/0</CODE>,
+  after which the interface's services are usable again.
+%
+  Some Prolog systems allow the specification of initialization
+  and deinitialization functions in their foreign language interfaces.
+  The corresponding incarnations of the PPL-Prolog interface
+  have been written so that <CODE>ppl_initialize/0</CODE> and/or
+  <CODE>ppl_finalize/0</CODE> are called automatically.
+  Section \ref PI_SD_Features "System-Dependent Features" will detail
+  in which cases initialization and finalization is automatically
+  performed or is left to the Prolog programmer's responsibility.
+  However, for portable applications, it is best
+  to invoke <CODE>ppl_initialize/0</CODE> and <CODE>ppl_finalize/0</CODE>
+  explicitly: since they can be called multiple times without problems,
+  this will result in enhanced portability at a cost that is, by all means,
+  negligible.
+
 -  A PPL polyhedron can only be accessed by means of a Prolog term
    called a <EM>handle</EM>.
    Note, however, that the data structure of a handle,
@@ -114,58 +136,49 @@ on the use of the interface.
   All subsequent operations on the polyhedron must respect all the
   topological compatibility rules stated in Section \ref representation.
 
-- The predicates <CODE>ppl_initialize/0</CODE> and <CODE>ppl_finalize/0</CODE>
-  initialize and finalize, respectively, the Prolog interface.
-  Thus the only interface predicates callable after
-  <CODE>ppl_finalize/0</CODE> are <CODE>ppl_finalize/0</CODE> itself
-  (this further call has no effect) and <CODE>ppl_initialize/0</CODE>,
-  after which the interface's services are usable again.
-%
-  Some Prolog systems allow the specification of initialization
-  and deinitialization functions in their foreign language interfaces.
-  The corresponding incarnations of the PPL-Prolog interface
-  have been written so that <CODE>ppl_initialize/0</CODE> and/or
-  <CODE>ppl_finalize/0</CODE> are called automatically.
-  Section \ref PI_SD_Features "System-Dependent Features" will detail
-  in which cases initialization and finalization is automatically
-  performed or is left to the Prolog programmer's responsibility.
-  However, for portable applications, it is best
-  to invoke <CODE>ppl_initialize/0</CODE> and <CODE>ppl_finalize/0</CODE>
-  explicitly: since they can be called multiple times without problems,
-  this will result in enhanced portability at a cost that is, by all means,
-  negligible.
-
+- Any application using the PPL should make sure that only the
+intended version(s) of the library are ever used.
+Predicates
+\code
+ppl_version_major/1,
+ppl_version_minor/1,
+ppl_version_revision/1,
+ppl_version_beta/1,
+ppl_version/1,
+ppl_banner.
+\endcode
+allow run-time checking of information about the version being used.
 
 <H2>PPL Predicate List</H2>
 
 Here is a list of all the PPL predicates provided by the Prolog interface.
 
 <CODE>
-  ppl_version_major(-Integer)
+  ppl_version_major(?Integer)
 </CODE>
 
 <CODE>
-  ppl_version_minor(-Integer)
+  ppl_version_minor(?Integer)
 </CODE>
 
 <CODE>
-  ppl_version_revision(-Integer)
+  ppl_version_revision(?Integer)
 </CODE>
 
 <CODE>
-  ppl_version_beta(-Integer)
+  ppl_version_beta(?Integer)
 </CODE>
 
 <CODE>
-  ppl_version(-Atom)
+  ppl_version(?Atom)
 </CODE>
 
 <CODE>
-  ppl_banner(-Atom)
+  ppl_banner(?Atom)
 </CODE>
 
 <CODE>
-  ppl_max_space_dimension(-Integer)
+  ppl_max_space_dimension(?Integer)
 </CODE>
 
 <CODE>
@@ -274,21 +287,21 @@ Here is a list of all the PPL predicates provided by the Prolog interface.
 </CODE>
 
 <CODE>
-  ppl_Polyhedron_maximize(+Handle, +LinExpr, -Integer, -Integer, +Bool)
+  ppl_Polyhedron_maximize(+Handle, +LinExpr, ?Integer, ?Integer, ?Bool)
 </CODE>
 
 <CODE>
-  ppl_Polyhedron_maximize_with_point(+Handle, +LinExpr, -Integer, -Integer,
-                                     -Bool, -Point)
+  ppl_Polyhedron_maximize_with_point(+Handle, +LinExpr, ?Integer, ?Integer,
+                                     ?Bool, ?Point)
 </CODE>
 
 <CODE>
-  ppl_Polyhedron_minimize(+Handle, +LinExpr, -Integer, -Integer, +Bool)
+  ppl_Polyhedron_minimize(+Handle, +LinExpr, ?Integer, ?Integer, ?Bool)
 </CODE>
 
 <CODE>
-  ppl_Polyhedron_minimize_with_point(+Handle, +LinExpr, -Integer, -Integer,
-                                     -Bool, -Point)
+  ppl_Polyhedron_minimize_with_point(+Handle, +LinExpr, ?Integer, ?Integer,
+                                     ?Bool, ?Point)
 </CODE>
 
 <CODE>
@@ -586,34 +599,61 @@ For full definitions of terminology used here, see Sections
 \ref preamble, \ref introduction, \ref representation
 and \ref operations of this manual.
 
-<H2><CODE>
+
+<H2><CODE> ppl_version_major(?Integer) </CODE></H2>
+  Unifies <CODE>Integer</CODE> with the major number of the PPL version.
+
+<H2><CODE> ppl_version_minor(?Integer) </CODE></H2>
+  Unifies <CODE>Integer</CODE> with the minor number of the PPL version.
+
+<H2><CODE> ppl_version_revision(?Integer) </CODE></H2>
+  Unifies <CODE>Integer</CODE> with the revision number of the PPL version.
+
+<H2><CODE> ppl_version_beta(?Integer) </CODE></H2>
+  Unifies <CODE>Integer</CODE> with the beta number of the PPL version.
+
+<H2><CODE> ppl_version(?Atom) </CODE></H2>
+  Unifies <CODE>Atom</CODE> with the PPL version.
+
+<H2><CODE> ppl_banner(?Atom) </CODE></H2>
+  Unifies <CODE>Atom</CODE> with
+  information about the PPL version, the licensing, the lack of any
+  warranty whatsoever, the C++ compiler used to build the library,
+  where to report bugs and where to look for further information.
+
+<H2><CODE> ppl_max_space_dimension(?Integer) </CODE></H2>
+  
+  Unifies <CODE>Integer</CODE> with the maximum space dimension
+  this library can handle.
+
+<H2><CODE> 
   ppl_initialize
-</CODE></H2>
+ </CODE></H2>
 
   Initializes the PPL interface.
   Multiple calls to <CODE>ppl_initialize</CODE> does no harm.
 
-<H2><CODE>
+<H2><CODE> 
   ppl_finalize
-</CODE></H2>
+ </CODE></H2>
 
   Finalizes the PPL interface.
   Once this is executed, the next call to an interface predicate must
   either be to <CODE>ppl_initialize</CODE> or to <CODE>ppl_finalize</CODE>.
   Multiple calls to <CODE>ppl_finalize</CODE> does no harm.
 
-<H2><CODE>ppl_set_timeout_exception_atom(+Atom)</CODE></H2>
+<H2><CODE> ppl_set_timeout_exception_atom(+Atom) </CODE></H2>
 
    Sets the atom to be thrown by timeout exceptions
    to <CODE>Atom</CODE>.
    The default value is <CODE>time_out</CODE>.
 
-<H2><CODE>ppl_timeout_exception_atom(?Atom)</CODE></H2>
+<H2><CODE> ppl_timeout_exception_atom(?Atom) </CODE></H2>
 
    The atom to be thrown by timeout exceptions
    is unified with <CODE>Atom</CODE>.
 
-<H2><CODE>ppl_set_timeout(+Integer)</CODE></H2>
+<H2><CODE> ppl_set_timeout(+Integer) </CODE></H2>
 
    Computations taking exponential time will be interrupted
    some time after <CODE>Integer</CODE> ms after that call.
@@ -621,13 +661,13 @@ and \ref operations of this manual.
    exception atom will be thrown.
    <CODE>Integer</CODE> must be strictly greater than zero.
 
-<H2><CODE>ppl_reset_timeout</CODE></H2>
+<H2><CODE> ppl_reset_timeout </CODE></H2>
 
    Resets the timeout time so that the computation is not interrupted.
 
-<H2><CODE>
+<H2><CODE> 
   ppl_new_Polyhedron_from_dimension(+Topology, +Integer, -Handle)
-</CODE></H2>
+ </CODE></H2>
 
    Creates a new universe C or NNC polyhedron \f$\cP\f$,
    depending on the value of <CODE>Topology</CODE>,
@@ -640,7 +680,7 @@ and \ref operations of this manual.
    creates the C polyhedron defining the 3-dimensional vector space
    \f$\Rset^3\f$ with \p X bound to a valid handle for accessing it.
 
-<H2><CODE>
+<H2><CODE> 
   ppl_new_Polyhedron_empty_from_dimension(+Topology, +Integer, -Handle)
 </CODE>
 </H2>
@@ -656,10 +696,10 @@ and \ref operations of this manual.
    creates an empty NNC polyhedron embedded in \f$\Rset^3\f$ with
    \p X bound to a valid handle for accessing it.
 
-<H2><CODE>
+<H2><CODE> 
 ppl_new_Polyhedron_from_Polyhedron(+Topology_1, +Handle_1,
                                    +Topology_2, -Handle_2)
-</CODE></H2>
+ </CODE></H2>
 
    If <CODE>Handle_1</CODE> refers to a C or NNC polyhedron \f$\cP_1\f$
    (depending on the value of <CODE>Topology_1</CODE>),
@@ -682,30 +722,30 @@ ppl_new_Polyhedron_from_Polyhedron(+Topology_1, +Handle_1,
    care must be taken that the source polyhedron referenced by
    <CODE>Handle1</CODE> is topologically closed.
 
-<H2><CODE>
+<H2><CODE> 
    ppl_new_Polyhedron_from_constraints(+Topology,
                    +Constraint_System, -Handle)
-</CODE></H2>
+ </CODE></H2>
 
    Creates a polyhedron \f$\cP\f$ represented by
    <CODE>Constraint_System</CODE> with topology C or NNC,
    depending on the value of <CODE>Topology</CODE>.
    <CODE>Handle</CODE> is unified with the handle for \f$\cP\f$.
 
-<H2><CODE>
+<H2><CODE> 
    ppl_new_Polyhedron_from_generators(+Topology,
                    +Generator_System, -Handle)
-</CODE></H2>
+ </CODE></H2>
 
    Creates a polyhedron \f$\cP\f$ represented by
    <CODE>Generator_System</CODE> with topology C or NNC,
    depending on the value of <CODE>Topology</CODE>.
    <CODE>Handle</CODE> is unified with the handle for \f$\cP\f$.
 
-<H2><CODE>
+<H2><CODE> 
    ppl_new_Polyhedron_from_bounding_box(+Topology,
                    +Box, -Handle)
-</CODE></H2>
+ </CODE></H2>
 
    Creates a polyhedron \f$\cP\f$ represented by <CODE>Box</CODE>
    with topology C or NNC,
@@ -715,55 +755,55 @@ ppl_new_Polyhedron_from_Polyhedron(+Topology_1, +Handle_1,
    can be included in an interval in <CODE>Box</CODE>
    only if <CODE>Topology</CODE> is <CODE>nnc</CODE>.
 
-<H2><CODE>ppl_Polyhedron_swap(+Handle1, +Handle2)</CODE></H2>
+<H2><CODE> ppl_Polyhedron_swap(+Handle1, +Handle2) </CODE></H2>
 
    Swaps the polyhedron referenced by <CODE>Handle1</CODE>
    with the one referenced by <CODE>Handle2</CODE>.
    The polyhedra \f$\cP\f$ and \f$\cQ\f$ must have the same topology.
 
-<H2><CODE>ppl_delete_Polyhedron(+Handle)</CODE></H2>
+<H2><CODE> ppl_delete_Polyhedron(+Handle) </CODE></H2>
 
    Deletes the polyhedron referenced by <CODE>Handle</CODE>.
    After execution,
    <CODE>Handle</CODE> is no longer a valid handle for a PPL polyhedron.
 
-<H2><CODE>ppl_Polyhedron_space_dimension(+Handle, -Integer)</CODE></H2>
+<H2><CODE> ppl_Polyhedron_space_dimension(+Handle, ?Integer) </CODE></H2>
 
    Unifies the space dimension of the polyhedron referenced by
    <CODE>Handle</CODE> with <CODE>Integer</CODE>.
 
-<H2><CODE>ppl_Polyhedron_get_constraints(+Handle, -Constraint_System)
-</CODE></H2>
+<H2><CODE> ppl_Polyhedron_get_constraints(+Handle, ?Constraint_System)
+ </CODE></H2>
 
    Unifies <CODE>Constraint_System</CODE> with a list of
    the constraints in the constraints system
    representing the polyhedron referenced by <CODE>Handle</CODE>.
 
-<H2><CODE>ppl_Polyhedron_get_minimized_constraints(+Handle,
-                                                   -Constraint_System)
-</CODE></H2>
+<H2><CODE> ppl_Polyhedron_get_minimized_constraints(+Handle,
+                                                   ?Constraint_System)
+ </CODE></H2>
 
    Unifies <CODE>Constraint_System</CODE> with a minimized list of
    the constraints in the constraints system
    representing the polyhedron referenced by <CODE>Handle</CODE>.
 
-<H2><CODE>ppl_Polyhedron_get_generators(+Handle, -Generator_System)
-</CODE></H2>
+<H2><CODE> ppl_Polyhedron_get_generators(+Handle, ?Generator_System)
+ </CODE></H2>
 
    Unifies <CODE>Generator_System</CODE> with a list of
    the generators in the generators system
    representing the polyhedron referenced by <CODE>Handle</CODE>.
 
-<H2><CODE>ppl_Polyhedron_get_minimized_generators(+Handle,
-                                                  -Generator_System)
-</CODE></H2>
+<H2><CODE> ppl_Polyhedron_get_minimized_generators(+Handle,
+                                                  ?Generator_System)
+ </CODE></H2>
 
    Unifies <CODE>Generator_System</CODE> with a minimized list of
    the generators in the generators system
    representing the polyhedron referenced by <CODE>Handle</CODE>.
 
-<H2><CODE>ppl_Polyhedron_relation_with_constraint(+Handle, +Constraint,
-               -Relation_List)</CODE></H2>
+<H2><CODE> ppl_Polyhedron_relation_with_constraint(+Handle, +Constraint,
+               ?Relation_List) </CODE></H2>
 
 Unifies <CODE>Relation_List</CODE> with the list of relations the polyhedron
 referenced by <CODE>Handle</CODE>
@@ -771,17 +811,17 @@ has with <CODE>Constraint</CODE>.
 The possible relations are listed in the grammar rules above;
 their meaning is given in Section \ref operations.
 
-<H2><CODE>ppl_Polyhedron_relation_with_generator(+Handle, +Generator,
-               -Relation_List)</CODE></H2>
+<H2><CODE> ppl_Polyhedron_relation_with_generator(+Handle, +Generator,
+               ?Relation_List) </CODE></H2>
 
 Unifies <CODE>Relation_List</CODE> with the list of relations the polyhedron
 referenced by <CODE>Handle</CODE> has with <CODE>Generator</CODE>.
 The possible relations are listed in the grammar rules above;
 their meaning is given in Section \ref operations.
 
-<H2><CODE>ppl_Polyhedron_get_bounding_box(+Handle,
+<H2><CODE> ppl_Polyhedron_get_bounding_box(+Handle,
                                           +Complexity,
-            	                          -Box)</CODE></H2>
+            	                          ?Box) </CODE></H2>
 
    Succeeds if and only if the bounding box
    of the polyhedron referenced by
@@ -814,74 +854,136 @@ to be used has the following meaning:
 - <CODE>any</CODE> allows
   code of the universal complexity class.
 
-<H2><CODE>ppl_Polyhedron_is_empty(+Handle)</CODE></H2>
+<H2><CODE> ppl_Polyhedron_is_empty(+Handle) </CODE></H2>
 
    Succeeds if and only if the polyhedron referenced by
    <CODE>Handle</CODE> is empty.
 
-<H2><CODE>ppl_Polyhedron_is_universe(+Handle)</CODE></H2>
+<H2><CODE> ppl_Polyhedron_is_universe(+Handle) </CODE></H2>
 
    Succeeds if and only if the polyhedron referenced by
    <CODE>Handle</CODE> is the universe.
 
-<H2><CODE>ppl_Polyhedron_is_bounded(+Handle)</CODE></H2>
+<H2><CODE> ppl_Polyhedron_is_bounded(+Handle) </CODE></H2>
 
    Succeeds if and only if the polyhedron referenced by
    <CODE>Handle</CODE> is bounded.
 
-<H2><CODE>ppl_Polyhedron_bounds_from_above(+Handle,
-                                   +LinExpr)</CODE></H2>
+<H2><CODE> ppl_Polyhedron_bounds_from_above(+Handle,
+                                   +LinExpr) </CODE></H2>
 
    Succeeds if and only if <CODE>LinExpr</CODE> is bounded from above in
    the polyhedron referenced by <CODE>Handle</CODE>.
 
 
-<H2><CODE>ppl_Polyhedron_bounds_from_below(+Handle,
-                                   +LinExpr)</CODE></H2>
+<H2><CODE> ppl_Polyhedron_bounds_from_below(+Handle,
+                                   +LinExpr) </CODE></H2>
 
    Succeeds if and only if <CODE>LinExpr</CODE> is bounded from below in
    the polyhedron referenced by <CODE>Handle</CODE>.
 
 
-<H2><CODE>ppl_Polyhedron_is_topologically_closed(+Handle)</CODE></H2>
+<H3><CODE> 
+  ppl_Polyhedron_maximize(+Handle, +LinExpr, ?Integer, ?Integer, ?Bool)
+ </CODE></H3>
+
+  Succeeds if and only if the polyhedron \f$P\f$ referenced by
+  <CODE>Handle</CODE> is not empty
+  and <CODE>LinExpr</CODE> is bounded from above in \f$P\f$.
+
+  <CODE>Integer1</CODE> is unified with the numerator of the supremum value
+  and <CODE>Integer2</CODE> with the denominator of the supremum value.
+  If the supremum is also the maximum,
+  <CODE>Bool</CODE> is unified with the atom <CODE>true</CODE>
+  and, otherwise, unified with the atom <CODE>false</CODE>.
+  
+<H2><CODE> 
+  ppl_Polyhedron_maximize_with_point(+Handle, +LinExpr, ?Integer1, ?Integer2,
+                                     ?Bool, ?Point)
+ </CODE></H2>
+
+  Succeeds if and only if the polyhedron \f$P\f$ referenced by
+  <CODE>Handle</CODE> is not empty
+  and <CODE>LinExpr</CODE> is bounded from above in \f$P\f$.
+  
+  <CODE>Integer1</CODE> is unified with the numerator of the supremum value,
+  <CODE>Integer2</CODE> with the denominator of the supremum value,
+  and <CODE>Point</CODE> with a point or closure point where
+  <CODE>LinExpr</CODE> reaches this value.
+  If the supremum is also the maximum,
+  <CODE>Bool</CODE> is unified with the atom <CODE>true</CODE>
+  and, otherwise, unified with the atom <CODE>false</CODE>.
+  
+<H2><CODE>
+  ppl_Polyhedron_minimize(+Handle, +LinExpr, ?Integer, ?Integer, ?Bool)
+</CODE></H2>
+
+  Succeeds if and only if the polyhedron \f$P\f$ referenced by
+  <CODE>Handle</CODE> is not empty
+  and <CODE>LinExpr</CODE> is bounded from below in \f$P\f$.
+
+  <CODE>Integer1</CODE> is unified with the numerator of the infimum value
+  and <CODE>Integer2</CODE> with the denominator of the infimum value.
+  If the infimum is also the minimum,
+  <CODE>Bool</CODE> is unified with the atom <CODE>true</CODE>
+  and, otherwise, unified with the atom <CODE>false</CODE>.
+
+<H2><CODE>
+  ppl_Polyhedron_minimize_with_point(+Handle, +LinExpr, ?Integer, ?Integer,
+                                     ?Bool, ?Point)
+</CODE></H2>
+
+  Succeeds if and only if the polyhedron \f$P\f$ referenced by
+  <CODE>Handle</CODE> is not empty
+  and <CODE>LinExpr</CODE> is bounded from below in \f$P\f$.
+
+  <CODE>Integer1</CODE> is unified with the numerator of the infimum value,
+  <CODE>Integer2</CODE> with the denominator of the infimum value,
+  and <CODE>Point</CODE> with  a point or closure point where
+  <CODE>LinExpr</CODE> reaches this value.
+  If the infimum is also the minimum,
+  <CODE>Bool</CODE> is unified with the atom <CODE>true</CODE>
+  and, otherwise, unified with the atom <CODE>false</CODE>.
+
+<H2><CODE> ppl_Polyhedron_is_topologically_closed(+Handle) </CODE></H2>
 
    Succeeds if and only if the polyhedron referenced by
    <CODE>Handle</CODE> is topologically closed.
 
-<H2><CODE>ppl_Polyhedron_contains_Polyhedron(+Handle_1, +Handle_2)</CODE></H2>
+<H2><CODE> ppl_Polyhedron_contains_Polyhedron(+Handle_1, +Handle_2) </CODE></H2>
 
    Succeeds if and only if the polyhedron referenced by
    <CODE>Handle_1</CODE> is included in or
    equal to the polyhedron referenced by <CODE>Handle_2</CODE>.
 
-<H2><CODE>ppl_Polyhedron_strictly_contains_Polyhedron(+Handle_1, +Handle_2)</CODE></H2>
+<H2><CODE> ppl_Polyhedron_strictly_contains_Polyhedron(+Handle_1, +Handle_2) </CODE></H2>
 
    Succeeds if and only if the polyhedron referenced by
    <CODE>Handle_1</CODE> is included in but not
    equal to the polyhedron referenced by <CODE>Handle_2</CODE>.
 
-<H2><CODE>ppl_Polyhedron_is_disjoint_from_Polyhedron(+Handle_1, +Handle_2)
-    </CODE></H2>
+<H2><CODE> ppl_Polyhedron_is_disjoint_from_Polyhedron(+Handle_1, +Handle_2)
+     </CODE></H2>
 
    Succeeds if and only if the polyhedron referenced by
    <CODE>Handle_1</CODE> is disjoint from
    the polyhedron referenced by <CODE>Handle_2</CODE>.
 
-<H2><CODE>ppl_Polyhedron_equals_Polyhedron(+Handle_1, +Handle_2)</CODE></H2>
+<H2><CODE> ppl_Polyhedron_equals_Polyhedron(+Handle_1, +Handle_2) </CODE></H2>
 
    Succeeds if and only if the polyhedron referenced by
    <CODE>Handle_1</CODE> is
    equal to the polyhedron referenced by <CODE>Handle_2</CODE>.
 
-<H2><CODE>ppl_Polyhedron_OK(+Handle)</CODE></H2>
+<H2><CODE> ppl_Polyhedron_OK(+Handle) </CODE></H2>
 
    Succeeds only if the polyhedron referenced by
    <CODE>Handle</CODE> is well formed, i.e., if it
    satisfies all its implementation invariants.  Useful for debugging purposes.
 
-<H2><CODE>ppl_Polyhedron_add_constraint(+Handle, +Constraint)</CODE></H2>
+<H2><CODE> ppl_Polyhedron_add_constraint(+Handle, +Constraint) </CODE></H2>
 
-<H2><CODE>ppl_Polyhedron_add_constraint_and_minimize(+Handle, +Constraint)</CODE></H2>
+<H2><CODE> ppl_Polyhedron_add_constraint_and_minimize(+Handle, +Constraint) </CODE></H2>
 
    Updates the polyhedron referenced by <CODE>Handle</CODE> to
    one obtained by adding
@@ -900,9 +1002,9 @@ to be used has the following meaning:
    Note that <CODE>ppl_Polyhedron_add_constraint_and_minimize/2</CODE>
    will fail if, after adding the constraint, the polyhedron is empty.
 
-<H2><CODE>ppl_Polyhedron_add_generator(+Handle, +Generator)</CODE></H2>
+<H2><CODE> ppl_Polyhedron_add_generator(+Handle, +Generator) </CODE></H2>
 
-<H2><CODE>ppl_Polyhedron_add_generator_and_minimize(+Handle, +Generator)</CODE></H2>
+<H2><CODE> ppl_Polyhedron_add_generator_and_minimize(+Handle, +Generator) </CODE></H2>
 
    Updates the polyhedron referenced by <CODE>Handle</CODE> to
    one obtained by adding
@@ -916,8 +1018,8 @@ to be used has the following meaning:
     will update the polyhedron with handle \p X to be the single point
     \f$(-12.5, -0.625, 0)^\transpose\f$ in the vector space \f$\Rset^3\f$.
 
-<H2><CODE>ppl_Polyhedron_add_constraints(+Handle, +Constraint_System)
-</CODE></H2>
+<H2><CODE> ppl_Polyhedron_add_constraints(+Handle, +Constraint_System)
+ </CODE></H2>
 
    Updates the polyhedron referenced by <CODE>Handle</CODE> to
    one obtained by adding to its constraint system the constraints in
@@ -935,8 +1037,8 @@ The updated polyhedron referenced by <CODE>Handle</CODE> can be empty
 and a query will succeed even when
 <CODE>Constraint_System</CODE> is unsatisfiable.
 
-<H2><CODE>ppl_Polyhedron_add_constraints_and_minimize(+Handle,
-                                   +Constraint_System)</CODE></H2>
+<H2><CODE> ppl_Polyhedron_add_constraints_and_minimize(+Handle,
+                                   +Constraint_System) </CODE></H2>
 
    Updates the polyhedron referenced by <CODE>Handle</CODE> to
    one obtained by adding to its constraint system the constraints in
@@ -958,8 +1060,8 @@ and a query will succeed even when
         [4*A + B >= 3, A = 0, B =< 0]),
       ppl_Polyhedron_get_constraints(X, CS).
 \endcode
-<H2><CODE>ppl_Polyhedron_add_generators(+Handle, +Generator_System)
-</CODE></H2>
+<H2><CODE> ppl_Polyhedron_add_generators(+Handle, +Generator_System)
+ </CODE></H2>
 
    Updates the polyhedron referenced by <CODE>Handle</CODE> to
    one obtained by adding to its generator system the generators in
@@ -984,8 +1086,8 @@ and a query will succeed even when
    GS = [ray(2*A), point(1*A+1*B+1*C), ray(1*A)]
 \endcode
 
-<H2><CODE>ppl_Polyhedron_add_generators_and_minimize(+Handle,
-                                   +Generator_System)</CODE></H2>
+<H2><CODE> ppl_Polyhedron_add_generators_and_minimize(+Handle,
+                                   +Generator_System) </CODE></H2>
 
    Updates the polyhedron referenced by <CODE>Handle</CODE> to
    one obtained by adding to its generator system the generators in
@@ -1005,42 +1107,42 @@ and a query will succeed even when
    GS = [point(1*A+1*B+1*C), ray(1*A)]
 \endcode
 
-<H2><CODE>ppl_Polyhedron_intersection_assign(+Handle_1, +Handle_2)</CODE></H2>
-<H2><CODE>ppl_Polyhedron_intersection_assign_and_minimize(+Handle_1,
-                     +Handle_2)</CODE></H2>
+<H2><CODE> ppl_Polyhedron_intersection_assign(+Handle_1, +Handle_2) </CODE></H2>
+<H2><CODE> ppl_Polyhedron_intersection_assign_and_minimize(+Handle_1,
+                     +Handle_2) </CODE></H2>
 
    Assigns to the polyhedron referenced by <CODE>Handle_1</CODE>
    its intersection with the polyhedra referenced by <CODE>Handle_2</CODE>.
 
-<H2><CODE>ppl_Polyhedron_poly_hull_assign(+Handle_1, +Handle_2)</CODE></H2>
-<H2><CODE>ppl_Polyhedron_poly_hull_assign_and_minimize(+Handle_1,
-               +Handle_2)</CODE></H2>
+<H2><CODE> ppl_Polyhedron_poly_hull_assign(+Handle_1, +Handle_2) </CODE></H2>
+<H2><CODE> ppl_Polyhedron_poly_hull_assign_and_minimize(+Handle_1,
+               +Handle_2) </CODE></H2>
 
    Assigns to the polyhedron referenced by <CODE>Handle_1</CODE>
    its poly-hull with the polyhedra referenced by <CODE>Handle_2</CODE>.
 
-<H2><CODE>ppl_Polyhedron_poly_difference_assign(+Handle_1, +Handle_2)</CODE></H2>
+<H2><CODE> ppl_Polyhedron_poly_difference_assign(+Handle_1, +Handle_2) </CODE></H2>
 
    Assigns to the polyhedron referenced by <CODE>Handle_1</CODE>
    its poly-difference with the polyhedron referenced by <CODE>Handle_2</CODE>.
 
-<H2><CODE>ppl_Polyhedron_affine_image(+Handle, +PPL_Var,
-               +LinExpr, +Integer)</CODE></H2>
+<H2><CODE> ppl_Polyhedron_affine_image(+Handle, +PPL_Var,
+               +LinExpr, +Integer) </CODE></H2>
 
    Transforms the polyhedron referenced by <CODE>Handle</CODE>
    assigning the affine expression <CODE>LinExpr</CODE>/<CODE>Integer</CODE>
    to <CODE>PPL_Var</CODE>.
 
-<H2><CODE>ppl_Polyhedron_affine_preimage(+Handle, +PPL_Var,
-               +LinExpr, +Integer)</CODE></H2>
+<H2><CODE> ppl_Polyhedron_affine_preimage(+Handle, +PPL_Var,
+               +LinExpr, +Integer) </CODE></H2>
 
 This is the inverse transformation to that for <CODE>ppl_affine_image</CODE>.
 
-<H2><CODE>ppl_Polyhedron_generalized_affine_image(+Handle,
+<H2><CODE> ppl_Polyhedron_generalized_affine_image(+Handle,
                +PPL_Var,
                +Relation_Symbol
                +LinExpr,
-               +Integer)</CODE></H2>
+               +Integer) </CODE></H2>
 
    Transforms the polyhedron referenced by <CODE>Handle</CODE>
    assigning the generalized
@@ -1049,10 +1151,10 @@ This is the inverse transformation to that for <CODE>ppl_affine_image</CODE>.
    <CODE>LinExpr</CODE>/<CODE>Integer</CODE>.
 
 
-<H2><CODE>ppl_Polyhedron_generalized_affine_image_lhs_rhs(+Handle,
+<H2><CODE> ppl_Polyhedron_generalized_affine_image_lhs_rhs(+Handle,
                +LinExpr1,
                +Relation_Symbol
-               +LinExpr2)</CODE></H2>
+               +LinExpr2) </CODE></H2>
 
    Transforms the polyhedron referenced by <CODE>Handle</CODE>
    assigning the generalized
@@ -1060,14 +1162,14 @@ This is the inverse transformation to that for <CODE>ppl_affine_image</CODE>.
    <CODE>LinExpr1</CODE> <CODE>Relation_Symbol</CODE>
    <CODE>LinExpr2</CODE>.
 
-<H2><CODE>ppl_Polyhedron_time_elapse_assign(+Handle_1, +Handle_2)</CODE></H2>
+<H2><CODE> ppl_Polyhedron_time_elapse_assign(+Handle_1, +Handle_2) </CODE></H2>
 
    Assigns to the polyhedron \f$\cP\f$ referenced by <CODE>Handle_1</CODE>
    the time-elapse \f$ (\cP \nearrow \cQ)\f$
    with the polyhedra \f$\cQ\f$ referenced by <CODE>Handle_2</CODE>.
 
-<H2><CODE>ppl_Polyhedron_BHRZ03_widening_assign_with_token(+Handle_1,
-               +Handle_2, ?Integer)</CODE></H2>
+<H2><CODE> ppl_Polyhedron_BHRZ03_widening_assign_with_token(+Handle_1,
+               +Handle_2, ?Integer) </CODE></H2>
 
    The polyhedra referenced by <CODE>Handle_1</CODE>
    and <CODE>Handle_2</CODE> are unaltered.
@@ -1075,17 +1177,17 @@ This is the inverse transformation to that for <CODE>ppl_affine_image</CODE>.
    a BHRZ03 widening would have changed the polyhedron referenced
    by <CODE>Handle_1</CODE> and is 1 otherwise.
 
-<H2><CODE>ppl_Polyhedron_BHRZ03_widening_assign(+Handle_1,
-               +Handle_2)</CODE></H2>
+<H2><CODE> ppl_Polyhedron_BHRZ03_widening_assign(+Handle_1,
+               +Handle_2) </CODE></H2>
 
   Assigns to the polyhedron referenced by <CODE>Handle_1</CODE>
    its BHRZ03-widening with the polyhedra referenced by <CODE>Handle_2</CODE>.
 
-<H2><CODE>ppl_Polyhedron_limited_BHRZ03_extrapolation_assign_with_token(
+<H2><CODE> ppl_Polyhedron_limited_BHRZ03_extrapolation_assign_with_token(
                +Handle_1,
                +Handle_2,
                +Constraint_System,
-               ?Integer)</CODE></H2>
+               ?Integer) </CODE></H2>
 
    The polyhedra referenced by <CODE>Handle_1</CODE>
    and <CODE>Handle_2</CODE> are unaltered.
@@ -1095,20 +1197,20 @@ This is the inverse transformation to that for <CODE>ppl_affine_image</CODE>.
   <CODE>Constraint_System</CODE> would have changed the polyhedron referenced
    by <CODE>Handle_1</CODE> and is 1 otherwise.
 
-<H2><CODE>ppl_Polyhedron_limited_BHRZ03_extrapolation_assign(+Handle_1,
+<H2><CODE> ppl_Polyhedron_limited_BHRZ03_extrapolation_assign(+Handle_1,
                +Handle_2,
-               +Constraint_System)</CODE></H2>
+               +Constraint_System) </CODE></H2>
 
    Assigns to the polyhedron \f$\cP\f$ referenced by <CODE>Handle_1</CODE>
   the result of its BHRZ03-widening with the polyhedra referenced by
   <CODE>Handle_2</CODE>, improved by enforcing those constraints in
   <CODE>Constraint_System</CODE>.
 
-<H2><CODE>ppl_Polyhedron_bounded_BHRZ03_extrapolation_assign_with_token(
+<H2><CODE> ppl_Polyhedron_bounded_BHRZ03_extrapolation_assign_with_token(
                +Handle_1,
                +Handle_2,
                +Constraint_System,
-               ?Integer)</CODE></H2>
+               ?Integer) </CODE></H2>
 
   The polyhedron \f$\cP_1\f$ and \f$\cP_2\f$ referenced by
    <CODE>Handle_1</CODE> and <CODE>Handle_2</CODE>, respectively are unaltered.
@@ -1121,9 +1223,9 @@ This is the inverse transformation to that for <CODE>ppl_affine_image</CODE>.
    by <CODE>Handle_1</CODE> and is 1 otherwise.
 
 
-<H2><CODE>ppl_Polyhedron_bounded_BHRZ03_extrapolation_assign(+Handle_1,
+<H2><CODE> ppl_Polyhedron_bounded_BHRZ03_extrapolation_assign(+Handle_1,
                +Handle_2,
-               +Constraint_System)</CODE></H2>
+               +Constraint_System) </CODE></H2>
 
    Assigns to the polyhedron \f$\cP\f$ referenced by <CODE>Handle_1</CODE>
   the result of its BHRZ03-widening with the polyhedra referenced by
@@ -1132,8 +1234,8 @@ This is the inverse transformation to that for <CODE>ppl_affine_image</CODE>.
   by all the points of \f$\cP\f$ together with the constraints in
   <CODE>Constraint_System</CODE>.
 
-<H2><CODE>ppl_Polyhedron_H79_widening_assign_with_token(+Handle_1,
-               +Handle_2, ?Integer)</CODE></H2>
+<H2><CODE> ppl_Polyhedron_H79_widening_assign_with_token(+Handle_1,
+               +Handle_2, ?Integer) </CODE></H2>
 
    The polyhedra referenced by <CODE>Handle_1</CODE>
    and <CODE>Handle_2</CODE> are unaltered.
@@ -1141,16 +1243,16 @@ This is the inverse transformation to that for <CODE>ppl_affine_image</CODE>.
    an H79 widening would have changed the polyhedron referenced
    by <CODE>Handle_1</CODE> and is 1 otherwise.
 
-<H2><CODE>ppl_Polyhedron_H79_widening_assign(+Handle_1,
-               +Handle_2)</CODE></H2>
+<H2><CODE> ppl_Polyhedron_H79_widening_assign(+Handle_1,
+               +Handle_2) </CODE></H2>
 
    Assigns to the polyhedron referenced by <CODE>Handle_1</CODE>
    its H79-widening with the polyhedra referenced by <CODE>Handle_2</CODE>.
 
-<H2><CODE>ppl_Polyhedron_limited_H79_extrapolation_assign_with_token(+Handle_1,
+<H2><CODE> ppl_Polyhedron_limited_H79_extrapolation_assign_with_token(+Handle_1,
                +Handle_2,
                +Constraint_System,
-               ?Integer)</CODE></H2>
+               ?Integer) </CODE></H2>
 
    The polyhedra referenced by <CODE>Handle_1</CODE>
    and <CODE>Handle_2</CODE> are unaltered.
@@ -1160,19 +1262,19 @@ This is the inverse transformation to that for <CODE>ppl_affine_image</CODE>.
   <CODE>Constraint_System</CODE> would have changed the polyhedron referenced
    by <CODE>Handle_1</CODE> and is 1 otherwise.
 
-<H2><CODE>ppl_Polyhedron_limited_H79_extrapolation_assign(+Handle_1,
+<H2><CODE> ppl_Polyhedron_limited_H79_extrapolation_assign(+Handle_1,
                +Handle_2,
-               +Constraint_System)</CODE></H2>
+               +Constraint_System) </CODE></H2>
 
    Assigns to the polyhedron \f$\cP\f$ referenced by <CODE>Handle_1</CODE>
   its H79-widening with the polyhedra referenced by
   <CODE>Handle_2</CODE>, improved by enforcing those constraints in
   <CODE>Constraint_System</CODE>.
 
-<H2><CODE>ppl_Polyhedron_bounded_H79_extrapolation_assign_with_token(+Handle_1,
+<H2><CODE> ppl_Polyhedron_bounded_H79_extrapolation_assign_with_token(+Handle_1,
                +Handle_2,
                +Constraint_System,
-               ?Integer)</CODE></H2>
+               ?Integer) </CODE></H2>
 
 
   The polyhedron \f$\cP_1\f$ and \f$\cP_2\f$ referenced by
@@ -1185,9 +1287,9 @@ This is the inverse transformation to that for <CODE>ppl_affine_image</CODE>.
   <CODE>Constraint_System</CODE> would have changed the polyhedron referenced
    by <CODE>Handle_1</CODE> and is 1 otherwise.
 
-<H2><CODE>ppl_Polyhedron_bounded_H79_extrapolation_assign(+Handle_1,
+<H2><CODE> ppl_Polyhedron_bounded_H79_extrapolation_assign(+Handle_1,
                +Handle_2,
-               +Constraint_System)</CODE></H2>
+               +Constraint_System) </CODE></H2>
 
    Assigns to the polyhedron \f$\cP\f$ referenced by <CODE>Handle_1</CODE>
   the result of its H79-widening with the polyhedra referenced by
@@ -1196,13 +1298,13 @@ This is the inverse transformation to that for <CODE>ppl_affine_image</CODE>.
   by all the points of \f$\cP\f$ together with the constraints in
   <CODE>Constraint_System</CODE>.
 
-<H2><CODE>ppl_Polyhedron_topological_closure_assign(+Handle)</CODE></H2>
+<H2><CODE> ppl_Polyhedron_topological_closure_assign(+Handle) </CODE></H2>
 
    Assigns to the polyhedron referenced by <CODE>Handle</CODE>
    its topological closure.
 
-<H2><CODE>ppl_Polyhedron_add_dimensions_and_embed(+Handle, +Integer)
-</CODE></H2>
+<H2><CODE> ppl_Polyhedron_add_dimensions_and_embed(+Handle, +Integer)
+ </CODE></H2>
 
    Embeds the polyhedron  referenced by <CODE>Handle</CODE>
    in a space that is enlarged by <CODE>Integer</CODE> dimensions,
@@ -1217,8 +1319,8 @@ This is the inverse transformation to that for <CODE>ppl_affine_image</CODE>.
    GS = [point(0),line(1*A),line(1*B)]
 \endcode
 
-<H2><CODE>ppl_Polyhedron_add_dimensions_and_project(+Handle, +Integer)
-</CODE></H2>
+<H2><CODE> ppl_Polyhedron_add_dimensions_and_project(+Handle, +Integer)
+ </CODE></H2>
 
    Projects the polyhedron  referenced by <CODE>Handle</CODE>
    onto a space that is enlarged by <CODE>Integer</CODE> dimensions,
@@ -1233,7 +1335,7 @@ This is the inverse transformation to that for <CODE>ppl_affine_image</CODE>.
    GS = [point(0)]
 \endcode
 
-<H2><CODE>ppl_Polyhedron_concatenate_assign(+Handle1, +Handle2)</CODE></H2>
+<H2><CODE> ppl_Polyhedron_concatenate_assign(+Handle1, +Handle2) </CODE></H2>
 
    Updates the polyhedron \f$\cP_1\f$ referenced  by <CODE>Handle1</CODE>
    by first embedding \f$\cP_1\f$ in a new space enlarged by
@@ -1254,8 +1356,8 @@ This is the inverse transformation to that for <CODE>ppl_affine_image</CODE>.
    CS = [1*C > 1, 1*D >= 0, 1*E >= 0]
 \endcode
 
-<H2><CODE>ppl_Polyhedron_remove_dimensions(+Handle,
-               +List_of_PPL_Vars)</CODE></H2>
+<H2><CODE> ppl_Polyhedron_remove_dimensions(+Handle,
+               +List_of_PPL_Vars) </CODE></H2>
 
    Removes the dimensions given by the identifiers of the
    PPL variables in list <CODE>List_of_PPL_Vars</CODE>
@@ -1275,7 +1377,7 @@ This is the inverse transformation to that for <CODE>ppl_affine_image</CODE>.
    GS = [point(0),line(1*A),line(1*B),line(0)]
 \endcode
 
-<H2><CODE>ppl_Polyhedron_remove_higher_dimensions(+Handle, +Integer))</CODE></H2>
+<H2><CODE> ppl_Polyhedron_remove_higher_dimensions(+Handle, +Integer)) </CODE></H2>
 
    Projects the the polyhedron  referenced to by <CODE>Handle</CODE>
    onto  the first <CODE>Integer</CODE> dimension.
@@ -1286,7 +1388,7 @@ This is the inverse transformation to that for <CODE>ppl_affine_image</CODE>.
       ppl_Polyhedron_space_dimension(X, K).
 \endcode
 
-<H2><CODE>ppl_Polyhedron_map_dimensions(+Handle, +P_Func))</CODE></H2>
+<H2><CODE> ppl_Polyhedron_map_dimensions(+Handle, +P_Func)) </CODE></H2>
 
    Maps the dimensions of the polyhedron referenced by <CODE>Handle</CODE>
    using the partial function defined by <CODE>P_Func</CODE>.
