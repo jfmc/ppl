@@ -221,6 +221,15 @@ Polyhedron::bounds_from_below(const LinExpression& expr) const {
   return bounds(expr, false);
 }
 
+inline void
+Polyhedron::add_low_level_constraints(ConSys& cs) {
+  if (!cs.is_necessarily_closed())
+    // The epsilon-upper-bound constraint.
+    cs.insert(Constraint::epsilon_leq_one());
+  // The positivity constraint.
+  cs.insert(Constraint::zero_dim_positivity());
+}
+
 template <typename Box>
 Polyhedron::Polyhedron(Topology topol, const Box& box)
   : con_sys(topol),
@@ -292,16 +301,7 @@ Polyhedron::Polyhedron(Topology topol, const Box& box)
     }
   }
 
-  if (topol == NECESSARILY_CLOSED)
-    // Adding the positivity constraint.
-    con_sys.insert(Constraint::zero_dim_positivity());
-  else {
-    // Polyhedron NOT-necessarily closed:
-    // adding the epsilon dimension constraints.
-    con_sys.insert(Constraint::epsilon_leq_one());
-    con_sys.insert(Constraint::epsilon_geq_zero());
-  }
-  
+  add_low_level_constraints(con_sys);  
   // Now removing the dummy constraint inserted before.
   size_t n_rows = con_sys.num_rows() - 1;
   con_sys[0].swap(con_sys[n_rows]);

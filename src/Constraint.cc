@@ -52,15 +52,6 @@ PPL::operator>>(const Constraint& y, unsigned int offset) {
   return x;
 }
 
-PPL::Constraint
-PPL::Constraint::construct_epsilon_geq_zero() {
-  LinExpression e = Variable(0);
-  Constraint c = Constraint(e);
-  c.set_not_necessarily_closed();
-  c.set_is_ray_or_point_or_inequality();
-  return c;
-}
-
 bool
 PPL::Constraint::is_trivial_true() const {
   assert(size() > 0);

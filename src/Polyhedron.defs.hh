@@ -1220,6 +1220,9 @@ private:
   */
   bool bounds(const LinExpression& expr, bool from_above) const;
 
+  //! Adds the low-level constraints to the constraint system.
+  static void add_low_level_constraints(ConSys& cs);
+
   //! Adds new dimensions to the given matrices.
   /*!
     \param mat1      The matrix to which columns are added.

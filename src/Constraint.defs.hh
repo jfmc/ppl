@@ -361,14 +361,6 @@ private:
   Constraint(const Constraint& c, size_t sz);
 
   //! \brief
-  //! Builds a new copy of the zero-dimension space constraint
-  //! \f$\epsilon \geq 0\f$ (used to implement NNC polyhedra).
-  static Constraint construct_epsilon_geq_zero();
-
-  //! Returns the zero-dimension space constraint \f$\epsilon \geq 0\f$.
-  static const Constraint& epsilon_geq_zero();
-
-  //! \brief
   //! The zero-dimension space constraint \f$\epsilon \leq 1\f$
   //! (used to implement NNC polyhedra).
   static const Constraint& epsilon_leq_one();

@@ -282,12 +282,6 @@ Constraint::zero_dim_positivity() {
 }
 
 inline const Constraint&
-Constraint::epsilon_geq_zero() {
-  static Constraint eps_geq_zero = construct_epsilon_geq_zero();
-  return eps_geq_zero;
-}
-
-inline const Constraint&
 Constraint::epsilon_leq_one() {
   static Constraint eps_leq_one(LinExpression::zero() < Integer_one());
   return eps_leq_one;
