@@ -1126,8 +1126,8 @@ that are provided by the library for any given base-level domain \f$D\f$.
 Given the sets \f$\cS_1\f$ and \f$\cS_2 \in D_{\smallP}\f$, the
 <EM>meet</EM> and <EM>upper bound</EM> operators provided by the
 library returns the set
-\f$\{d_1 \meet d_2 | d_1 \in \cS_1, d_2 \in \cS_2\}\f$ and
-reduced set union \f$\nonredmap(\cS_1 \union \cS_2)\f$ respectively.
+\f$\nonredmap\bigl(\{d_1 \meet d_2 \,|\, d_1 \in \cS_1, d_2 \in \cS_2\}\bigr)\f$
+and reduced set union \f$\nonredmap(\cS_1 \union \cS_2)\f$ respectively.
 
 \anchor ps_add_disjunct
 <B>Adding a Disjunct</B>
@@ -1156,7 +1156,7 @@ domain in Section \ref ps_operations, we provide some operations that
 are specific to this instantiation.  Of these, most correspond to the
 application of the equivalent operation on each of the NNC polyhedron
 that are in the given set. Here we just describe those operations that
-are particular to the polyhedral powerset domain.
+are particular to the polyhedra powerset domain.
 
 \anchor pps_geometric
 <B>Geometric Comparisons</B>
