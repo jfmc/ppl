@@ -75,7 +75,8 @@ ciao_clpq2: libppl_ciao.la ppl_ciao.pl ciao_clpq.pl ../clpq2.pl
 	  rm -f ciao_clpq2.pl ppl_ciao.pl clpq2.pl; \
 	fi
 
-CLPQ_TESTS = \
+
+CLPQ_TESTS_NONSTRICT = \
 ack.clpq \
 ackn.clpq \
 fib.clpq \
@@ -83,6 +84,11 @@ mc91.clpq \
 smm.clpq \
 sumto.clpq \
 tak.clpq
+
+CLPQ_TESTS_STRICT = \
+schedule.clpq
+
+CLPQ_TESTS = $(CLPQ_TESTS_NONSTRICT) $(CLPQ_TESTS_STRICT)
 
 check-local: ciao_clpq$(EXEEXT) ../check_script ../expected ciao_clpq2$(EXEEXT) ../check_script2 ../expected2
 	for k in $(CLPQ_TESTS); do cp -f $(srcdir)/../$$k .; done
