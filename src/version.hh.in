@@ -46,6 +46,22 @@ site: http://www.cs.unipr.it/ppl/ . */
 
 namespace Parma_Polyhedra_Library {
 
+//! Returns the major number of the PPL version.
+unsigned
+version_major();
+
+//! Returns the minor number of the PPL version.
+unsigned
+version_minor();
+
+//! Returns the revision number of the PPL version.
+unsigned
+version_revision();
+
+//! Returns the beta number of the PPL version.
+unsigned
+version_beta();
+
 //! Returns a character string containing the PPL version.
 const char* version();
 
