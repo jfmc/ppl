@@ -143,63 +143,69 @@ private:
   //! Default constructor: private and not implemented.
   Constraint();
 
+  //! Builds a constraint (of unspecified type) stealing
+  //! the coefficients from \p e.
   Constraint(LinExpression& e);
 
+  //! Builds a constraint, having type \p type, which is able
+  //! to store \p sz coefficients, whose values are left unspecified.
   Constraint(Row::Type t, size_t sz);
 
+  //! Throws a <CODE>std::invalid_argument</CODE> exception
+  //! containing the appropriate error message.
   void
   throw_dimension_incompatible(const char* method, Variable v) const;
 
   //! Returns the constraint \p e1 = \p e2.
   friend Constraint
   Parma_Polyhedra_Library::operator==(const LinExpression& e1,
-				       const LinExpression& e2);
+				      const LinExpression& e2);
 
   //! Returns the constraint \p e = \p n.
   friend Constraint
   Parma_Polyhedra_Library::operator==(const LinExpression& e,
-				       const Integer& n);
+				      const Integer& n);
 
   //! Returns the constraint \p n = \p e.
   friend Constraint
   Parma_Polyhedra_Library::operator==(const Integer& n,
-				       const LinExpression& e);
+				      const LinExpression& e);
 
   //! Returns the constraint \p e1 >= \p e2.
   friend Constraint
   Parma_Polyhedra_Library::operator>=(const LinExpression& e1,
-				       const LinExpression& e2);
+				      const LinExpression& e2);
 
   //! Returns the constraint \p e >= \p n.
   friend Constraint
   Parma_Polyhedra_Library::operator>=(const LinExpression& e,
-				       const Integer& n);
+				      const Integer& n);
 
   //! Returns the constraint \p n >= \p e.
   friend Constraint
   Parma_Polyhedra_Library::operator>=(const Integer& n,
-				       const LinExpression& e);
+				      const LinExpression& e);
 
   //! Returns the constraint \p e1 <= \p e2.
   friend Constraint
   Parma_Polyhedra_Library::operator<=(const LinExpression& e1,
-				       const LinExpression& e2);
+				      const LinExpression& e2);
 
   //! Returns the constraint \p e <= \p n.
   friend Constraint
   Parma_Polyhedra_Library::operator<=(const LinExpression& e,
-				       const Integer& n);
+				      const Integer& n);
 
   //! Returns the constraint \p n <= \p e.
   friend Constraint
   Parma_Polyhedra_Library::operator<=(const Integer& n,
-				       const LinExpression& e);
+				      const LinExpression& e);
 
   //! Returns the constraint \p c with variables renamed
   //! by adding \p offset to their Cartesian axis identifier.
   friend Constraint
   Parma_Polyhedra_Library::operator>>(const Constraint& c,
-				       unsigned int offset);
+				      unsigned int offset);
 
 public:
   //! Ordinary copy-constructor.
@@ -248,8 +254,14 @@ PPL_INTERNAL:
   //! or \f$0 = n\f$, where \f$n \neq 0\f$.
   bool is_trivial_false() const;
 
+  //! The constraint type.
+  /*! \enum Type
+      Describes the type of the constraint.
+  */
   enum Type {
+    /*! The constraint is an equality. */
     EQUALITY = Row::LINE_OR_EQUALITY,
+    /*! The constraint is an inequality. */
     INEQUALITY = Row::RAY_OR_VERTEX_OR_INEQUALITY
   };
 

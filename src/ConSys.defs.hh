@@ -131,7 +131,9 @@ public:
                                 const Constraint&> {
 
   private:
+    //! The const iterator over the matrix of constraints.
     Matrix::const_iterator i;
+    //! A const pointer to the matrix of constraints.
     const Matrix* csp;
 
     //! Constructor.

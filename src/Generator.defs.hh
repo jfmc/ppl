@@ -203,8 +203,12 @@ namespace Parma_Polyhedra_Library {
 
 class Parma_Polyhedra_Library::Generator : PPL_HIDDEN Row {
 private:
+  //! Builds a generator (of unspecified type) stealing
+  //! the coefficients from \p e.
   Generator(LinExpression& e);
 
+  //! Throws a <CODE>std::invalid_argument</CODE> exception
+  //! containing the appropriate error message.
   void
   throw_dimension_incompatible(const char* method, Variable v) const;
 
@@ -245,7 +249,7 @@ public:
   //! The generator type.
   /*! \enum Type
       Describes the type of the generator.
-   */
+  */
   enum Type {
     /*! \hideinitializer
       The generator is a line.

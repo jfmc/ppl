@@ -186,6 +186,7 @@ public:
                                 const Generator&> {
 
   private:
+    //! The const iterator over the matrix of generators.
     Matrix::const_iterator i;
 
     //! Copy-constructor.

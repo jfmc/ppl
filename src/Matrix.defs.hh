@@ -113,10 +113,14 @@ protected:
   };
 
 public:
+  //! Returns the const_iterator pointing to the first row,
+  //! if \p *this is not empty;
+  //! otherwise, returns the past-the-end const_iterator.
   const_iterator begin() const {
     return const_iterator(rows.begin());
   }
 
+  //! Returns the past-the-end const_iterator.
   const_iterator end() const {
     return const_iterator(rows.end());
   }

@@ -71,7 +71,9 @@ The class Row allows us to build objects like these:
 class Parma_Polyhedra_Library::Row {
 
 public:
+  //! Returns the inhomogeneous term.
   const Integer& coefficient() const;
+  //! Returns the coefficient \f$a_n\f$.
   const Integer& coefficient(size_t n) const;
 
 public:
@@ -172,11 +174,11 @@ private:
   Impl* impl;
 
 #ifndef NDEBUG
-  // For debugging only: the capacity of the row.
+  //! The capacity of the row (only available during debugging).
   size_t capacity_;
 
 PPL_INTERNAL:
-  // Its accessor.
+  //! Returns the capacity of the row (only available during debugging).
   size_t capacity() const;
 #endif
 };
