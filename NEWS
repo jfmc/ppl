@@ -93,6 +93,9 @@ o  Fixed a bug in the C interface function ppl_Polyhedron_map_dimensions()
 
 o  Fixed a deadlock bug in the watchdog library.
 
+o  Fixed a bug in Polyhedron::poly_difference_assign(const Polyhedron&)
+   whereby a wrong result was computed.
+
 
 --------------------------------------------------------------------------
 NEWS for version 0.5  (released on April 28, 2003)
