@@ -24,16 +24,16 @@
 # Process this file with autoconf to produce a configure script.
 
 # Every other copy of the package version number gets its value from here.
-AC_INIT([the Parma Polyhedra Library], 0.5pre3, ppl-devel@cs.unipr.it, ppl)
+AC_INIT([the Parma Polyhedra Library], 0.5pre4, ppl-devel@cs.unipr.it, ppl)
 
 # Minimum autoconf version required.
-AC_PREREQ(2.52g)
+AC_PREREQ(2.54)
 
 # Make sure the sources are there.
 AC_CONFIG_SRCDIR(src/Polyhedron.cc)
 
 # Use Automake.
-AM_INIT_AUTOMAKE([foreign dist-bzip2 dist-zip 1.5])
+AM_INIT_AUTOMAKE([foreign dist-bzip2 dist-zip 1.7])
 AC_SUBST(VERSION)
 
 # Generate a configuration header file.
@@ -341,13 +341,13 @@ AM_CONDITIONAL(HAVE_GNU_PROLOG, test x$GNU_PROLOG = xgprolog)
 AC_CHECK_PROG(SICSTUS_PROLOG, sicstus, sicstus)
 if test x"$SICSTUS_PROLOG" = xsicstus
 then
-# We require SICStus Prolog 3.9.0 or later.
+# We require SICStus Prolog 3.9.1 or later.
 AC_CHECK_HEADER(sicstus/sicstus.h,
-                AC_MSG_CHECKING([for SICStus version 3.9.0 or later])
+                AC_MSG_CHECKING([for SICStus version 3.9.1 or later])
                 AC_EGREP_CPP(yes,
                   [
                     #include <sicstus/sicstus.h>
-                    #if SICSTUS_MAJOR_VERSION > 3 || (SICSTUS_MAJOR_VERSION == 3 && SICSTUS_MINOR_VERSION >= 9)
+                    #if SICSTUS_MAJOR_VERSION > 3 || (SICSTUS_MAJOR_VERSION == 3 && SICSTUS_MINOR_VERSION > 9) || (SICSTUS_MAJOR_VERSION == 3 && SICSTUS_MINOR_VERSION == 9 && SICSTUS_REVISION_VERSION >= 1)
                       yes
                     #endif
                   ],
@@ -413,7 +413,18 @@ AC_LANG_POP(C)
 
 # Checks for header files.
 
-AC_CHECK_HEADERS([sys/resource.h])
+AC_CHECK_HEADERS([sys/resource.h sys/time.h sys/types.h unistd.h])
+
+# Checks for header declarations.
+
+AC_CHECK_DECLS([RLIMIT_DATA, RLIMIT_RSS, RLIMIT_VMEM, RLIMIT_AS],
+               ,
+               ,
+               [
+#ifdef HAVE_SYS_RESOURCE_H
+# include <sys/resource.h>
+#endif
+])
 
 # Checks for typedefs, structures, and compiler characteristics.
 # Nothing for the time being.

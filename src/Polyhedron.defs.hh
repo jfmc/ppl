@@ -104,8 +104,23 @@ bool operator>(const Polyhedron& x, const Polyhedron& y);
 */
 bool operator>=(const Polyhedron& x, const Polyhedron& y);
 
-// Put it in the namespace here to declare it friend later.
+//! Returns <CODE>true</CODE> if and only if \p x is contained in \p y.
+/*!
+  \relates Polyhedron
+  \exception std::invalid_argument thrown if \p x and \p y
+                                   are topology-incompatible
+                                   or dimension-incompatible.
+*/
 bool operator<=(const Polyhedron& x, const Polyhedron& y);
+
+//! Returns <CODE>true</CODE> if and only if \p x and \p y are disjoint.
+/*!
+  \relates Polyhedron
+  \exception std::invalid_argument thrown if \p x and \p y
+                                   are topology-incompatible
+                                   or dimension-incompatible.
+*/
+bool are_disjoint(const Polyhedron& x, const Polyhedron& y);
 
 } // namespace Parma_Polyhedra_Library
 
@@ -124,7 +139,7 @@ bool operator<=(const Polyhedron& x, const Polyhedron& y);
     These systems can contain redundant members: in this case we say
     that they are not in the minimal form.
     Most operators on polyhedra are provided with two implementations: 
-    one of these, denoted <CODE><operator-name>_and_minimize</CODE>,
+    one of these, denoted <CODE>\<operator-name\>_and_minimize</CODE>,
     also enforces the minimization of the representations,
     and returns the Boolean value <CODE>false</CODE> whenever
     the resulting polyhedron turns out to be empty.
@@ -386,7 +401,6 @@ protected:
   //! Ordinary copy-constructor.
   Polyhedron(const Polyhedron& y);
 
-  //! \brief
   //! Builds a polyhedron having the specified properties.
   /*!
     \param topol          The topology of the polyhedron;
@@ -518,8 +532,7 @@ public:
   //! Assigns to \p *this the intersection of \p *this and \p y,
   //! minimizing the result.
   /*!
-    \return
-      <CODE>false</CODE> if and only if the result is empty.
+    \return    <CODE>false</CODE> if and only if the result is empty.
     \exception std::invalid_argument thrown if \p *this and \p y
                                      are topology-incompatible
                                      or dimension-incompatible.
@@ -569,7 +582,7 @@ public:
   //! Assigns to \p *this the poly-hull of \p *this and \p y,
   //! minimizing the result.
   /*!
-    \return       <CODE>false</CODE> if and only if the result is empty.
+    \return    <CODE>false</CODE> if and only if the result is empty.
     \exception std::invalid_argument thrown if \p *this and \p y
                                      are topology-incompatible
                                      or dimension-incompatible.
@@ -667,6 +680,23 @@ public:
   void BBRZ02_widening_assign(const Polyhedron& y);
 
   //! \brief
+  //! Limits the \ref BBRZ02_widening "BBRZ02-widening" computation
+  //! between \p *this and \p y by enforcing constraints \p cs
+  //! and assigns the result to \p *this.
+  /*!
+    \param y                 A polyhedron that <EM>must</EM>
+                             be contained in \p *this.
+    \param cs                The system of constraints that limits
+                             the widened polyhedron. It is not
+                             declared <CODE>const</CODE>
+                             because it can be modified.
+    \exception std::invalid_argument thrown if \p *this, \p y and \p cs
+                                     are topology-incompatible
+                                     or dimension-incompatible.
+  */
+  void limited_BBRZ02_widening_assign(const Polyhedron& y, ConSys& cs);
+
+  //! \brief
   //! Assigns to \p *this the result of computing the
   //! \ref time_elapse "time-elapse" between \p *this and \p y.
   /*!
@@ -691,7 +721,7 @@ public:
 
   //! \brief
   //! Adds a copy of constraint \p c to the system of constraints
-  //! of \p *this.
+  //! of \p *this (without minimizing the result).
   /*!
     \exception std::invalid_argument thrown if \p *this and constraint \p c
                                      are topology-incompatible
@@ -700,8 +730,19 @@ public:
   void add_constraint(const Constraint& c);
 
   //! \brief
+  //! Adds a copy of constraint \p c to the system of constraints
+  //! of \p *this, minimizing the result
+  /*!
+    \return    <CODE>false</CODE> if and only if the result is empty.
+    \exception std::invalid_argument thrown if \p *this and constraint \p c
+                                     are topology-incompatible
+                                     or dimension-incompatible.
+  */
+  bool add_constraint_and_minimize(const Constraint& c);
+
+  //! \brief
   //! Adds a copy of generator \p g to the system of generators
-  //! of \p *this.
+  //! of \p *this (without minimizing the result).
   /*!
     \exception std::invalid_argument thrown if \p *this and generator \p g
                                      are topology-incompatible
@@ -712,9 +753,22 @@ public:
   void add_generator(const Generator& g);
 
   //! \brief
+  //! Adds a copy of generator \p g to the system of generators
+  //! of \p *this, minimizing the result.
+  /*!
+    \return    <CODE>false</CODE> if and only if the result is empty.
+    \exception std::invalid_argument thrown if \p *this and generator \p g
+                                     are topology-incompatible
+                                     or dimension-incompatible,
+                                     or if \p *this is an empty polyhedron
+                                     and \p g is not a point.
+  */
+  bool add_generator_and_minimize(const Generator& g);
+
+  //! \brief
   //! Assigns to \p *this the \ref affine_transformation "affine image"
-  //! of \p *this under the function mapping variable \p v into the
-  //! affine expression specified by \p expr and \p d.
+  //! of \p *this under the function mapping variable \p var into the
+  //! affine expression specified by \p expr and \p denominator.
   /*!
     \param var           The variable to which the affine
                          expression is assigned.
@@ -726,6 +780,74 @@ public:
                                      are dimension-incompatible
                                      or if \p var is not a dimension
                                      of \p *this.
+
+    \if Include_Implementation_Details
+
+    When considering the generators of a polyhedron, the
+    affine transformation
+    \f[
+      \frac{\sum_{i=0}^{n-1} a_i x_i + b}{\mathrm{denominator}}
+      \f]
+      is assigned to \p var where \p expr is
+      \f$\sum_{i=0}^{n-1} a_i x_i + b\f$
+      (\f$b\f$ is the inhomogeneous term).
+
+      If constraints are up-to-date, it uses the specialized function
+      affine_preimage() (for the system of constraints)
+      and inverse transformation to reach the same result.
+      To obtain the inverse transformation we use the following observation.
+      
+      Observation:
+      -# The affine transformation is invertible if the coefficient
+         of \p var in this transformation (i.e., \f$a_\mathrm{var}\f$)
+	 is different from zero.
+      -# If the transformation is invertible, then we can write
+         \f[
+  	   \mathrm{denominator} * {x'}_\mathrm{var}
+	     = \sum_{i = 0}^{n - 1} a_i x_i + b
+	     = a_\mathrm{var} x_\mathrm{var}
+	       + \sum_{i \neq var} a_i x_i + b,
+         \f]
+         so that the inverse transformation is
+         \f[
+	   a_\mathrm{var} x_\mathrm{var}
+             = \mathrm{denominator} * {x'}_\mathrm{var}
+               - \sum_{i \neq j} a_i x_i - b.
+         \f]
+
+      Then, if the transformation is invertible, all the entities that
+      were up-to-date remain up-to-date. Otherwise only generators remain
+      up-to-date.
+
+      In other words, if \f$R\f$ is a \f$m_1 \times n_1\f$ matrix representing
+      the rays of the polyhedron, \f$V\f$ is a \f$m_2 \times n_2\f$
+      matrix representing the points of the polyhedron and
+      \f[
+        P = \bigl\{\,
+              \vect{x} = (x_0, \ldots, x_{n-1})^\mathrm{T}
+            \bigm|
+              \vect{x} = \vect{\lambda} R + \vect{\mu} V,
+	      \vect{\lambda} \in \Rset^{m_1}_+,
+	      \vect{\mu} \in \Rset^{m_2}_+,
+	      \sum_{i = 0}^{m_1 - 1} \lambda_i = 1
+            \,\bigr\}
+      \f]
+      and \f$T\f$ is the affine transformation to apply to \f$P\f$, then
+      the resulting polyhedron is
+      \f[
+        P' = \bigl\{\,
+               (x_0, \ldots, T(x_0, \ldots, x_{n-1}),
+                       \ldots, x_{n-1})^\mathrm{T}
+             \bigm|
+               (x_0, \ldots, x_{n-1})^\mathrm{T} \in P
+             \,\bigr\}.
+      \f]
+
+      Affine transformations are, for example:
+        - translations
+        - rotations
+        - symmetries.
+    \endif
   */
   void affine_image(const Variable& var,
 		    const LinExpression& expr,
@@ -733,8 +855,8 @@ public:
 
   //! \brief
   //! Assigns to \p *this the \ref affine_transformation "affine preimage"
-  //! of \p *this under the function mapping variable \p v into the
-  //! affine expression specified by \p expr and \p d.
+  //! of \p *this under the function mapping variable \p var into the
+  //! affine expression specified by \p expr and \p denominator.
   /*!
     \param var           The variable to which the affine expression
                          is substituted.
@@ -746,10 +868,123 @@ public:
                                      are dimension-incompatible
                                      or if \p var is not a dimension
                                      of \p *this.
+
+    \if Include_Implementation_Details
+
+    When considering constraints of a polyhedron, the affine transformation
+    \f[
+      \frac{\sum_{i=0}^{n-1} a_i x_i + b}{denominator},
+    \f]
+    is assigned to \p var where \p expr is
+    \f$\sum_{i=0}^{n-1} a_i x_i + b\f$
+    (\f$b\f$ is the inhomogeneous term).
+
+    If generators are up-to-date, then the specialized function
+    affine_image() is used (for the system of generators)
+    and inverse transformation to reach the same result.
+    To obtain the inverse transformation, we use the following observation.
+
+    Observation:
+    -# The affine transformation is invertible if the coefficient
+       of \p var in this transformation (i.e. \f$a_\mathrm{var}\f$)
+       is different from zero.
+    -# If the transformation is invertible, then we can write
+       \f[
+  	 \mathrm{denominator} * {x'}_\mathrm{var}
+	   = \sum_{i = 0}^{n - 1} a_i x_i + b
+           = a_\mathrm{var} x_\mathrm{var}
+               + \sum_{i \neq \mathrm{var}} a_i x_i + b,
+       \f],
+       the inverse transformation is
+       \f[
+	 a_\mathrm{var} x_\mathrm{var}
+           = \mathrm{denominator} * {x'}_\mathrm{var}
+               - \sum_{i \neq j} a_i x_i - b.
+       \f].
+
+    Then, if the transformation is invertible, all the entities that
+    were up-to-date remain up-to-date. Otherwise only constraints remain
+    up-to-date.
+
+    In other words, if \f$A\f$ is a \f$m \times n\f$ matrix representing
+    the constraints of the polyhedron, \f$T\f$ is the affine transformation
+    to apply to \f$P\f$ and
+    \f[
+      P = \bigl\{\,
+            \vect{x} = (x_0, \ldots, x_{n-1})^\mathrm{T}
+          \bigm|
+            A\vect{x} \geq \vect{0}
+          \,\bigr\}.
+    \f]
+    The resulting polyhedron is
+    \f[
+      P' = \bigl\{\,
+             \vect{x} = (x_0, \ldots, x_{n-1}))^\mathrm{T}
+           \bigm|
+             A'\vect{x} \geq \vect{0}
+           \,\bigr\},
+    \f]
+    where \f$A'\f$ is defined as follows:
+    \f[
+      {a'}_{ij}
+        = \begin{cases}
+            a_{ij} * \mathrm{denominator} + a_{i\mathrm{var}}*\mathrm{expr}[j]
+              \quad \mathrm{for } j \neq \mathrm{var}; \\
+            \mathrm{expr}[\mathrm{var}] * a_{i\mathrm{var}},
+              \quad \text{for } j = \mathrm{var}.
+          \end{cases}
+    \f]
+    \endif
   */
   void affine_preimage(const Variable& var,
 		       const LinExpression& expr,
 		       const Integer& denominator = Integer_one());
+
+  //! \brief
+  //! Assigns to \p *this the image of \p *this with respect to the
+  //! \ref generalized_image "generalized affine transfer function"
+  //! \f$\mathrm{var}' \relop \frac{\mathrm{expr}}{\mathrm{denominator}}\f$,
+  //! where \f$\mathord{\relop}\f$ is the relation operator encoded
+  //! by \p relop.
+  /*!
+    \param var           The left hand side variable of
+                         the generalized affine transfer function.
+    \param relop         The relation operator.
+    \param expr          The numerator of the right hand side
+                         affine expression.
+    \param denominator   The denominator of the right hand side affine
+                         expression (optional argument with default value 1.)
+    \exception std::invalid_argument thrown if \p denominator is zero
+                                     or if \p expr and \p *this
+                                     are dimension-incompatible
+                                     or if \p var is not a dimension
+                                     of \p *this
+				     or if \p *this is a C_Polyhedron and
+				     \p relop is a strict relation operator.
+  */
+  void generalized_affine_image(const Variable& var,
+				const Relation_Operator relop,
+				const LinExpression& expr,
+				const Integer& denominator = Integer_one());
+
+  //! \brief
+  //! Assigns to \p *this the image of \p *this with respect to the
+  //! \ref generalized_image "generalized affine transfer function"
+  //! \f$\mathrm{lhs}' \relop \mathrm{rhs}\f$, where
+  //! \f$\mathord{\relop}\f$ is the relation operator encoded by \p relop.
+  /*!
+    \param lhs           The left hand side affine expression.
+    \param relop         The relation operator.
+    \param rhs           The right hand side affine expression.
+    \exception std::invalid_argument thrown if \p *this is
+                                     dimension-incompatible with
+                                     \p lhs or \p rhs
+				     or if \p *this is a C_Polyhedron and
+				     \p relop is a strict relation operator.
+  */
+  void generalized_affine_image(const LinExpression& lhs,
+				const Relation_Operator relop,
+				const LinExpression& rhs);
 
   //! Use \p *this to shrink a generic, interval-based bounding box.
   /*!
@@ -846,7 +1081,6 @@ public:
   */
   void add_dimensions_and_project(dimension_type m);
 
-  //! \brief
   //! Removes all the specified dimensions.
   /*!
     \param to_be_removed  The set of Variable objects corresponding
@@ -867,6 +1101,7 @@ public:
   */
   void remove_higher_dimensions(dimension_type new_dimension);
 
+  //! \brief
   //! Shuffles the dimensions of a polyhedron
   //! according to a partial function.
   /*!
@@ -902,12 +1137,11 @@ public:
   void shuffle_dimensions(const PartialFunction& pfunc);
 
   //! \brief
-  //! Adds the specified constraints and minimizes the result,
-  //! which is assigned to \p *this.
+  //! \brief Adds the constraints in \p cs to the system of constraints
+  //! of \p *this (without minimizing the result).
   /*!
-    \return
-      <CODE>false</CODE> if and only if the result is empty.
-    \param  cs            The constraints that will be added to the
+    \return    <CODE>false</CODE> if and only if the result is empty.
+    \param     cs         The constraints that will be added to the
                           current system of constraints. This parameter
                           is not declared <CODE>const</CODE> because
                           it can be modified.
@@ -917,7 +1151,8 @@ public:
   */
   bool add_constraints_and_minimize(ConSys& cs);
 
-  //! Adds the specified constraints without minimizing.
+  //! \brief Adds the constraints in \p cs to the system of constraints
+  //! of \p *this, minimizing the result.
   /*!
     \param  cs             The constraints that will be added to the
                            current system of constraints. This parameter
@@ -929,18 +1164,30 @@ public:
   */
   void add_constraints(ConSys& cs);
 
-  //! \brief
-  //! Adds the specified generators and minimizes the result,
-  //! which is assigned to \p *this.
+  //! \brief Adds the generators in \p gs to the system of generators
+  //! of \p *this (without minimizing the result).
   /*!
-    \return
-      <CODE>false</CODE> if and only if the result is empty.
-    \param  gs          The generators that will be added to the
+    \param  gs             The generators that will be added to the
+                           current system of generators. This parameter
+                           is not declared <CODE>const</CODE> because
+			   it can be modified.
+    \exception std::invalid_argument thrown if \p *this and \p gs
+                                     are topology-incompatible
+			             or dimension-incompatible,
+				     or if \p *this is empty and
+                                     the system of generators \p gs
+                                     is not empty, but has no points.
+  */
+  void add_generators(GenSys& gs);
+
+  //! \brief Adds the generators in \p gs to the system of generators
+  //! of \p *this, minimizing the result.
+  /*!
+    \return    <CODE>false</CODE> if and only if the result is empty.
+    \param     gs       The generators that will be added to the
                         current system of generators. The parameter is
                         not declared <CODE>const</CODE> because it
                         can be modified.
-    \return             <CODE>false</CODE> if the resulting
-                        polyhedron is empty.
     \exception std::invalid_argument thrown if \p *this and \p gs
                                      are topology-incompatible
                                      or dimension-incompatible,
@@ -949,20 +1196,6 @@ public:
                                      is not empty, but has no points.
   */
   bool add_generators_and_minimize(GenSys& gs);
-
-  //! \brief
-  //! Adds the specified generators without minimizing.
-  //! \param  gs             The generators that will be added to the
-  //!                        current system of generators. This parameter
-  //!                        is not declared <CODE>const</CODE> because
-  //!                        it can be modified.
-  //! \exception std::invalid_argument thrown if \p *this and \p gs
-  //!                                  are topology-incompatible
-  //!                                  or dimension-incompatible,
-  //!                                  or if \p *this is empty and
-  //!                                  the system of generators \p gs
-  //!                                  is not empty, but has no points.
-  void add_generators(GenSys& gs);
 
   //! \brief
   //! Returns <CODE>true</CODE> if and only if \p *this is
@@ -1005,30 +1238,36 @@ public:
   //! Assigns to \p *this its topological closure.
   void topological_closure_assign();
 
-  //! \brief
-  //! Returns <CODE>true</CODE> if and only if
-  //! polyhedron \p x is contained in polyhedron \p y.
-  /*!
-    \exception std::invalid_argument thrown if \p x and \p y
-                                     are topology-incompatible
-                                     or dimension-incompatible.
-  */
-  friend bool
-  Parma_Polyhedra_Library::operator<=(const Polyhedron& x,
-				      const Polyhedron& y);
+  friend bool Parma_Polyhedra_Library::operator<=(const Polyhedron& x,
+						  const Polyhedron& y);
+  friend bool Parma_Polyhedra_Library::are_disjoint(const Polyhedron& x,
+						    const Polyhedron& y);
 
 #ifdef PPL_DOXYGEN_INCLUDE_IMPLEMENTATION_DETAILS
+  //! \brief
   //! Writes to \p s an ASCII representation of the internal
   //! representation of \p *this.
 #endif // PPL_DOXYGEN_INCLUDE_IMPLEMENTATION_DETAILS
-  void ASCII_dump(std::ostream& s) const;
+  void ascii_dump(std::ostream& s) const;
 
 #ifdef PPL_DOXYGEN_INCLUDE_IMPLEMENTATION_DETAILS
+  //! \brief
   //! Loads from \p s an ASCII representation (as produced by \ref
-  //! ASCII_dump) and sets \p *this accordingly.  Returns <CODE>true</CODE>
+  //! ascii_dump) and sets \p *this accordingly.  Returns <CODE>true</CODE>
   //! if successful, <CODE>false</CODE> otherwise.
 #endif // PPL_DOXYGEN_INCLUDE_IMPLEMENTATION_DETAILS
-  bool ASCII_load(std::istream& s);
+  bool ascii_load(std::istream& s);
+
+#ifdef PPL_DOXYGEN_INCLUDE_IMPLEMENTATION_DETAILS
+  //! \brief
+  //! Applies strong minimization to both the constraints and generators
+  //! of an NNC polyhedron.
+  /*!
+    \return       <CODE>false</CODE> if and only if \p *this turns out
+                  to be an empty polyhedron.
+  */
+#endif // PPL_DOXYGEN_INCLUDE_IMPLEMENTATION_DETAILS
+  bool strongly_minimize() const;
 
   //! \brief
   //! Swaps \p *this with polyhedron \p y.
@@ -1066,9 +1305,7 @@ private:
   //! is necessarily closed.
   bool is_necessarily_closed() const;
 
-  /*! @name Private Verifiers
-    Verify if individual flags are set.
-  */
+  //! @name Private verifiers: verify if individual flags are set.
   //@{
   //! Returns <CODE>true</CODE> if the polyhedron is known to be empty.
   /*!
@@ -1108,9 +1345,7 @@ private:
   bool sat_g_is_up_to_date() const;
   //@}
 
-  /*! @name State flag setters.
-    Set only the specified flags.
-  */
+  //! @name State flag setters: set only the specified flags.
   //@{
   //! \brief
   //! Sets \p status to express that the polyhedron
@@ -1142,9 +1377,7 @@ private:
   void set_sat_g_up_to_date();
   //@}
 
-  /*! @name State flag cleaners.
-    Clear only the specified flag.
-  */
+  //! @name State flag cleaners: clear only the specified flag.
   //@{
   //! Clears the \p status flag indicating that the polyhedron is empty.
   void clear_empty();
@@ -1285,15 +1518,6 @@ private:
   */
   bool minimize() const;
 
-  //! \brief
-  //! Applies strong minimization to both the constraints and generators
-  //! of an NNC polyhedron.
-  /*!
-    \return       <CODE>false</CODE> if and only if \p *this turns out
-                  to be an empty polyhedron.
-  */
-  bool strongly_minimize() const;
-
   //! Applies strong minimization to the constraints of an NNC polyhedron.
   /*!
     \return       <CODE>false</CODE> if and only if \p *this turns out
@@ -1309,6 +1533,11 @@ private:
   bool strongly_minimize_generators() const;
 
   //! \brief
+  //! Copies into \p cs_selection the constraints that will be used
+  //! to compute the \ref H79_widening "H79-widening" of \p *this and \p y.
+  void select_H79_constraints(const Polyhedron& y,
+			      ConSys& cs_selection) const;
+
   //! Checks if and how \p expr is bounded in \p *this.
   /*!
     Returns <CODE>true</CODE> if and only if \p from_above is
@@ -1348,13 +1577,14 @@ private:
                              SatMatrix& sat2,
 			     dimension_type add_dim);
 
+  //! \brief
   //! Performs the conversion from constraints to generators and vice versa.
   // Detailed Doxygen comment to be found in file conversion.cc.
   static dimension_type conversion(Matrix& entry,
-			   dimension_type start,
-			   Matrix& result,
-			   SatMatrix& sat,
-			   dimension_type num_lines_or_equalities);
+				   dimension_type start,
+				   Matrix& result,
+				   SatMatrix& sat,
+				   dimension_type num_lines_or_equalities);
 
   //! \brief
   //! Uses Gauss' elimination method to simplify the result of
@@ -1375,6 +1605,7 @@ private:
 			       Matrix& source1, Matrix& dest, SatMatrix& sat,
 			       const Matrix& source2);
   
+  //! \brief
   //! Returns <CODE>true</CODE> if the given polyhedra satisfy
   //! the theorem of BBRZ02.
   /*!
@@ -1383,10 +1614,7 @@ private:
   */
   static bool is_BBRZ02_stabilizing(const Polyhedron& x, const Polyhedron& y);
 
-  /*! @name Exception throwers
-    Throw an exception after having formatted the appropriate
-    error message.
-   */
+  //! @name Exception throwers.
   //@{
   void throw_topology_incompatible(const char* method,
 				   const Polyhedron& y) const;
@@ -1402,8 +1630,10 @@ private:
   void throw_dimension_incompatible(const char* method,
 				    const Polyhedron& y) const;
   void throw_dimension_incompatible(const char* method,
+				    const char* name_system,
 				    const Matrix& y) const;
   void throw_dimension_incompatible(const char* method,
+				    const char* name_row,
 				    const Row& y) const;
   void throw_dimension_incompatible(const char* method,
 				    dimension_type required_dim) const;

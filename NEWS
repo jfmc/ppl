@@ -37,26 +37,35 @@ o  New method: template <typename PartialFunction>
    void shuffle_dimensions(const PartialFunction&).
    TO BE CONTINUED
 
+o  New function LinExpression& operator*=(LinExpression&, const Integer&)
+   to multiply (in place) an expression by a scalar.
+
+o  New function bool are_disjoint(const Polyhedron&, const Polyhedron&)
+   returning true if and only if the two polyhedra are disjoint.
+
+o  New methods bool Polyhedron::add_constraint_and_minimize(const
+   Constraint&) and bool Polyhedron::add_generator_and_minimize(const
+   Generator&) to add a constraint or a generator and minimizing the
+   result at the same time.
+
+o  New methods void Polyhedron::BBRZ02_widening_assign(const Polyhedron&)
+   and void Polyhedron::BBRZ02_limited_widening_assign(const Polyhedron&,
+   ConSys&).  The BBRZ02 widening is a novel widening that is always more
+   precise than the, by now standard, one we call H79.
+
 
 Bugfixes
 ========
 
-o  Fixed a bug in Polyhedron::poly_difference_assign(const Polyhedron& y)
-   whereby the equality constraints of `y' were ignored (the bug was
-   affecting both C and NNC computations).
+o  Any?
 
-o  Fixed a bug in Polyhedron::operator=(const Polyhedron& y).  This bug,
-   which is triggered in some cases when `y' is empty, should only affect
-   versions of the library obtained with the `--enable-assertions'
-   configuration flag.
 
-o  Fixed a bug in Polyhedron::check_universe(), which was returning
-   the wrong result when called on a zero-dim universe polyhedron.
+--------------------------------------------------------------------------
+NEWS for version 0.4.2 (released on October 4, 2002)
+--------------------------------------------------------------------------
 
-o  Fixed a bug in NNC_Polyhedron::NNC_Polyhedron(ConSys& cs) whereby
-   an invariant was violated in case `cs' was empty.  This bug
-   should only affect versions of the library obtained with the
-   `--enable-assertions' configuration flag.
+Bugfixes
+========
 
 o  Fixed a bug in method Polyhedron::add_generator(const Generator&)
    whereby we were not adding the corresponding closure point when adding
@@ -68,6 +77,19 @@ o  Fixed a bug in method GenSys::insert(const Generator&) whereby the
 
 o  Fixed a bug in method Polyhedron::operator<=(const Polyehdron&)
    whereby the lines of the polyhedron were handled improperly.
+
+o  Fixed a bug in a private method used to implement public method
+   Polyhedron::relation_with(const Generator& g),
+   whereby a wrong result was obtained when `g' was a line.
+
+o  Fixed a bug in methods Polyhedron::affine_image() and
+   Polyhedron::affine_preimage(), whereby a wrong result could be
+   obtained when using a negative denominator for the affine expression.
+
+o  Fixed a bug in methods Polyhedron::minimized_constraints() and
+   Polyhedron::minimized_generators(), whereby a library invariant
+   was violated when calling these methods on a zero-dimensional space
+   universe NNC polyhedron.
 
 
 --------------------------------------------------------------------------

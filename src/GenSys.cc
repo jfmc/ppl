@@ -224,10 +224,6 @@ PPL::GenSys::num_rays() const {
   return n;
 }
 
-/*!
-  Returns the relations holding between the set of points generated
-  by \p *this and the constraint \p c.
-*/
 PPL::Poly_Con_Relation
 PPL::GenSys::relation_with(const Constraint& c) const {
   // Note: this method is not public and it is the responsibility
@@ -533,27 +529,6 @@ PPL::GenSys::relation_with(const Constraint& c) const {
 }
 
 
-/*!
-  \param v            Index of the column to which the
-                      affine transformation is assigned.
-  \param expr         The numerator of the affine transformation:
-                      \f$\sum_{i = 0}^{n - 1} a_i x_i + b\f$.
-  \param denominator  The denominator of the affine transformation.
-
-  We want to allow affine transformations (see the Introduction) having
-  any rational coefficients. Since the coefficients of the
-  constraints are integers we must also provide an integer \p denominator
-  that will be used as denominator of the affine transformation.
-
-  The affine transformation assigns to each element of \p v -th
-  column the follow expression:
-  \f[
-    \frac{\sum_{i = 0}^{n - 1} a_i x_i + b}
-         {\mathrm{denominator}}.
-  \f]
-
-  \p expr is a constant parameter and unaltered by this computation.
-*/
 void
 PPL::GenSys::affine_image(dimension_type v,
 			  const LinExpression& expr,
@@ -563,7 +538,7 @@ PPL::GenSys::affine_image(dimension_type v,
   // nor the epsilon dimension of NNC polyhedra).
   assert(v > 0 && v <= space_dimension());
   assert(expr.space_dimension() <= space_dimension());
-  assert(denominator != 0);
+  assert(denominator > 0);
 
   dimension_type n_columns = num_columns();
   dimension_type n_rows = num_rows();
@@ -579,14 +554,15 @@ PPL::GenSys::affine_image(dimension_type v,
     std::swap(tmp_Integer[1], row[v]); 
   }
 
-  if (denominator != 1)
+  if (denominator != 1) {
     // Since we want integer elements in the matrix,
-    // we multiply by `denominator' all the columns of `*this'
-    // having an index different from `v'.
+    // we multiply by the value of `denominator'
+    // all the columns of `*this' having an index different from `v'.
     for (dimension_type i = n_rows; i-- > 0; )
       for (dimension_type j = n_columns; j-- > 0; )
 	if (j != v)
 	  x[i][j] *= denominator;
+  }
 
   // If the mapping is not invertible we may have trasformed
   // valid lines and rays into the origin of the space.
@@ -597,16 +573,9 @@ PPL::GenSys::affine_image(dimension_type v,
   x.strong_normalize();
 }
 
-/*!
-  Like <CODE>ConSys::ASCII_dump()</CODE>, this prints the number of
-  rows, the number of columns and value of \p sorted, using the
-  <CODE>Matrix::ASCII_dump()</CODE> method, then prints the contents
-  of all the rows, specifying whether a row represent a line or a
-  point/ray.
-*/
 void
-PPL::GenSys::ASCII_dump(std::ostream& s) const {
-  Matrix::ASCII_dump(s);
+PPL::GenSys::ascii_dump(std::ostream& s) const {
+  Matrix::ascii_dump(s);
   const char separator = ' ';
   const GenSys& x = *this;
   for (dimension_type i = 0; i < x.num_rows(); ++i) {
@@ -631,15 +600,9 @@ PPL::GenSys::ASCII_dump(std::ostream& s) const {
   }
 }
 
-/*!
-  Like <CODE>ConSys::ASCII_load()</CODE>, this uses
-  <CODE>Matrix::ASCII_load()</CODE> to resize the matrix of generators
-  taking information from \p s, then initializes the coefficients of
-  each generator and its type (line or ray/point).
-*/
 bool
-PPL::GenSys::ASCII_load(std::istream& s) {
-  if (!Matrix::ASCII_load(s))
+PPL::GenSys::ascii_load(std::istream& s) {
+  if (!Matrix::ascii_load(s))
     return false;
 
   GenSys& x = *this;
@@ -700,12 +663,6 @@ PPL::GenSys::remove_invalid_lines_and_rays() {
   gs.erase_to_end(n_rows);
 }
 
-/*!
-  Returns <CODE>true</CODE> if and only if \p *this actually represents
-  a system of generators. So, \p *this must satisfy some rule:
-  -# it must be a valid Matrix;
-  -# every row in the matrix must be a valid generator.
-*/
 bool
 PPL::GenSys::OK() const {
   // A GenSys must be a valid Matrix.
@@ -723,6 +680,7 @@ PPL::GenSys::OK() const {
   return true;
 }
 
+/*! \relates Parma_Polyhedra_Library::GenSys */
 std::ostream&
 PPL::operator<<(std::ostream& s, const GenSys& gs) {
   GenSys::const_iterator i = gs.begin();

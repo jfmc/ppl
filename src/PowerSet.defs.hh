@@ -25,7 +25,6 @@ site: http://www.cs.unipr.it/ppl/ . */
 #define PPL_PowerSet_defs_hh
 
 #include "PowerSet.types.hh"
-#include "LCompare.defs.hh"
 #include <iosfwd>
 #include <list>
 
@@ -62,8 +61,15 @@ operator<<(std::ostream&, const PowerSet<CS>&);
 template <typename CS>
 class Parma_Polyhedra_Library::PowerSet {
 public:
-  //! Creates a universe (top) PowerSet.
-  PowerSet();
+  //! Builds a universe (top) or empty (bottom) PowerSet.
+  /*!
+    \param num_dimensions   The number of dimensions of the vector
+                            space enclosing the powerset.
+    \param universe         If <CODE>true</CODE>, a universe PowerSet
+                            is built;  an empty PowerSet is built otherwise.
+  */
+  explicit PowerSet(dimension_type num_dimensions = 0,
+		    bool universe = true);
 
   //! Creates a PowerSet with the same information contents as \p cs.
   PowerSet(const ConSys& cs);
@@ -79,6 +85,7 @@ public:
 
   void concatenate_assign(const PowerSet& y);
 
+  //! \brief
   //! Returns <CODE>true</CODE> if \p *this definitely entails \p y.
   //! Returns <CODE>false</CODE> if \p *this may not entail \p y
   //! (i.e., if \p *this does not entail \p y or if entailment could
@@ -97,7 +104,6 @@ public:
   //! Returns the dimension of the vector space enclosing \p *this.
   dimension_type space_dimension() const;
 
-  //! \brief
   //! Intersects \p *this with (a copy of) constraint \p c.
   /*!
     \exception std::invalid_argument thrown if \p *this and constraint \p c
@@ -127,7 +133,6 @@ public:
   //! and does not embed it in the new space.
   void add_dimensions_and_project(dimension_type m);
 
-  //! \brief
   //! Removes all the specified dimensions.
   /*!
     \param to_be_removed  The set of Variable objects corresponding

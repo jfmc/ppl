@@ -173,9 +173,7 @@ PPL::Constraint::is_matching_strict_inequality(const Constraint& c) const {
   }
 }
 
-/*!
-  \relates Parma_Polyhedra_Library::Constraint
-*/
+/*! \relates Parma_Polyhedra_Library::Constraint */
 std::ostream&
 PPL::operator<<(std::ostream& s, const Constraint& c) {
   int num_variables = c.space_dimension();

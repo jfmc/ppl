@@ -35,9 +35,9 @@ site: http://www.cs.unipr.it/ppl/ . */
 #include <iosfwd>
 
 #ifndef EXTRA_ROW_DEBUG
-//! When EXTRA_ROW_DEBUG evaluates to <CODE>true</CODE>, each row
-//! carries its own capacity; this enables extra consistency checks to
-//! be performed.
+// When EXTRA_ROW_DEBUG evaluates to <CODE>true</CODE>, each row
+// carries its own capacity; this enables extra consistency checks to
+// be performed.
 #define EXTRA_ROW_DEBUG 0
 #endif
 
@@ -104,9 +104,11 @@ public:
   //! Sizing constructor with type.
   Row(Type t, dimension_type sz, dimension_type capacity);
 
-  //! Post-constructors: to construct properly default-constructed elements.
+  //! @name Post-constructors.
   //@{
+  //! Constructs properly a default-constructed element.
   void construct(Type t, dimension_type sz);
+  //! Constructs properly a default-constructed element.
   void construct(Type t, dimension_type sz, dimension_type capacity);
   //@}
 
@@ -138,9 +140,17 @@ public:
   void resize_no_copy(dimension_type new_size);
 
   //! Grows the row without copying the old contents.
+  /*!
+    Adds new positions to the implementation of the row
+    obtaining a new row with size \p new_size.
+  */
   void grow_no_copy(dimension_type new_size);
 
   //! Shrinks the row by erasing elements at the end.
+  /*!
+    Destroys elements of the row implementation
+    from position \p new_size to the end.
+  */
   void shrink(dimension_type new_size);
 
   //! @name Subscript operators.
@@ -173,15 +183,34 @@ public:
   dimension_type space_dimension() const;
 
   //! Normalizes all the coefficients so that they are mutually prime.
+  /*!
+    Computes the Greatest Common Divisor (GCD) among the elements of
+    the row and normalizes them by the GCD itself.
+  */
   void normalize();
 
+  //! \brief
   //! Strong normalization: ensures that different rows represent
   //! different hyperplanes or hyperspaces.
+  /*!
+    In addition to the normalization performed by Row::normalize(), this
+    method ensures that the first non-zero coefficient of lines and
+    equalities is negative.
+  */
   void strong_normalize();
 
-  //! Linearly combines \p *this with \p y such that \p *this[k] is 0.
+  //! Linearly combines \p *this with \p y so that \p *this[k] is 0.
+  /*!
+    \param y   The row that will be combined with \p *this object.
+    \param k   The position of \p *this that have to be \f$0\f$.
+
+    Computes a linear combination between \p *this and \p y such
+    that the k-th element of \p *this become \f$0\f$. Then it assigns the
+    resulting row to \p *this and normalizes it.
+  */
   void linear_combine(const Row& y, dimension_type k);
 
+  //! \brief
   //! Returns <CODE>true</CODE> if and only if all the homogeneous
   //! terms of \p *this are zero.
   bool all_homogeneous_terms_are_zero() const;
@@ -223,7 +252,8 @@ namespace Parma_Polyhedra_Library {
 const Integer& operator*(const Row& x, const Row& y);
 
 #ifdef PPL_DOXYGEN_INCLUDE_IMPLEMENTATION_DETAILS
-//! \brief Computes the \e reduced scalar product between \p x and \p y,
+//! \brief
+//! Computes the \e reduced scalar product between \p x and \p y,
 //! where the \f$\epsilon\f$ coefficient of \p x is ignored.
 /*! \relates Row */
 #endif // PPL_DOXYGEN_INCLUDE_IMPLEMENTATION_DETAILS
@@ -231,7 +261,37 @@ const Integer& reduced_scalar_product(const Row& x, const Row& y);
 
 #ifdef PPL_DOXYGEN_INCLUDE_IMPLEMENTATION_DETAILS
 //! The basic comparison function.
-/*! \relates Row */
+/*! \relates Row
+
+  \param x    A row of coefficients.
+  \param y    Another row.
+
+  \return     The returned absolute value can be \f$0, 1\f$ or \f$2\f$.
+
+  Compares \p x and \p y, where \p x and \p y may be of different size,
+  in which case the "missing" coefficients are assumed to be zero.
+  The comparison is such that:
+  -# equalities are smaller than inequalities;
+  -# lines are smaller than points and rays;
+  -# the ordering is lexicographic;
+  -# the positions compared are, in decreasing order of significance,
+     1, 2, ..., \p size(), 0;
+  -# the result is negative, zero, or positive if x is smaller than,
+     equal to, or greater than y, respectively;
+  -# when \p x and \p y are different, the absolute value of the
+     result is 1 if the difference is due to the coefficient in
+     position 0; it is 2 otherwise.
+
+  When \p x and \p y represent the hyper-planes associated
+  to two equality or inequality constraints, the coefficient
+  at 0 is the known term.
+  In this case, the return value can be characterized as follows:
+  - -2, if \p x is smaller than \p y and they are \e not parallel;
+  - -1, if \p x is smaller than \p y and they \e are parallel;
+  -  0, if \p x and y are equal;
+  - +1, if \p y is smaller than \p x and they \e are parallel;
+  - +2, if \p y is smaller than \p x and they are \e not parallel.
+*/
 #endif // PPL_DOXYGEN_INCLUDE_IMPLEMENTATION_DETAILS
 int compare(const Row& x, const Row& y);
 
@@ -266,6 +326,7 @@ public:
   //! The default Row::Type is a line/equality of a closed polyhedron.
   Type();
 
+  //! \brief
   //! Builds the Row type by providing the two needed
   //! pieces of information.
   Type(Topology topol, Kind kind);
@@ -281,7 +342,7 @@ public:
   void set_is_ray_or_point_or_inequality();
   void set_necessarily_closed();
   void set_not_necessarily_closed();
-  //!@}
+  //@}
 
 private:
   //! Type is implemented by means of a finite bitset.

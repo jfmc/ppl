@@ -45,6 +45,7 @@ public:
   //! Default constructor.
   SatMatrix();
 
+  //! \brief
   //! Construct a saturation matrix with \p n_rows rows
   //! and \p n_columns columns.
   SatMatrix(dimension_type n_rows, dimension_type n_columns);
@@ -85,7 +86,16 @@ public:
   //! Sorts the rows and removes duplicates.
   void sort_rows();
 
-  //! Looks for \p row in \p *this that is assumed to be sorted.
+  //! Looks for \p row in \p *this, which is assumed to be sorted.
+  /*!
+    \param row   The row that will be searched for in the matrix.
+
+    \return      <CODE>true</CODE> if \p row belongs
+                 to \p *this, false otherwise.
+
+    Given a sorted saturation matrix (this ensures better efficiency),
+    tells whether it contains the given row.
+  */
   bool sorted_contains(const SatRow& row) const;
 
   //! Adds \p row to \p *this.
@@ -103,18 +113,19 @@ public:
   //! Checks if all the invariants are satisfied.
   bool OK() const;
 
+  //! \brief
   //! Writes to \p s an ASCII representation of the internal
   //! representation of \p *this.
-  void ASCII_dump(std::ostream& s) const;
+  void ascii_dump(std::ostream& s) const;
 
+  //! \brief
   //! Loads from \p s an ASCII representation (as produced by \ref
-  //! ASCII_dump) and sets \p *this accordingly.  Returns <CODE>true</CODE>
+  //! ascii_dump) and sets \p *this accordingly.  Returns <CODE>true</CODE>
   //! if successful, <CODE>false</CODE> otherwise.
-  bool ASCII_load(std::istream& s);
+  bool ascii_load(std::istream& s);
 
 #ifndef NDEBUG
-  //! Checks whether \p *this is sorted.
-  //! It does NOT check for duplicates.
+  //! Checks whether \p *this is sorted. It does NOT check for duplicates.
   bool check_sorted() const;
 #endif
 
@@ -144,14 +155,16 @@ void swap(Parma_Polyhedra_Library::SatMatrix& x,
 namespace Parma_Polyhedra_Library {
 
 #ifdef PPL_DOXYGEN_INCLUDE_IMPLEMENTATION_DETAILS
-//! \brief Returns <CODE>true</CODE> if and only if
+//! \brief
+//! Returns <CODE>true</CODE> if and only if
 //! \p x and \p y are identical.
 /*! \relates SatMatrix */
 #endif // PPL_DOXYGEN_INCLUDE_IMPLEMENTATION_DETAILS
 bool operator==(const SatMatrix& x, const SatMatrix& y);
 
 #ifdef PPL_DOXYGEN_INCLUDE_IMPLEMENTATION_DETAILS
-//! \brief Returns <CODE>true</CODE> if and only if
+//! \brief
+//! Returns <CODE>true</CODE> if and only if
 //! \p x and \p y are different.
 /*! \relates SatMatrix */
 #endif // PPL_DOXYGEN_INCLUDE_IMPLEMENTATION_DETAILS

@@ -46,9 +46,7 @@ ppl_sicstus_sd_la_LDFLAGS = -no-undefined -module -avoid-version
 ppl_sicstus$(EXEEXT): ppl_sicstus.s.o $(top_builddir)/src/libppl.la
 	spld --main=prolog \
 		--resources=ppl_sicstus.s.o -o $@ \
-		-LD -lstdc++ \
-		-Wl,-whole-archive -L$(top_builddir)/src/.libs -lppl \
-		-Wl,-no-whole-archive \
+		-LD -lstdc++ -L$(top_builddir)/src/.libs -lppl \
 		@extra_libraries@
 
 ppl_sicstus.s.o: ppl_sicstus.pl ppl_sicstus_sd.o
@@ -56,7 +54,7 @@ ppl_sicstus.s.o: ppl_sicstus.pl ppl_sicstus_sd.o
 
 ppl_sicstus.so: ppl_sicstus.pl ppl_sicstus_sd.o
 	splfr $(srcdir)/ppl_sicstus.pl ppl_sicstus_sd.o \
-		-L$(top_builddir)/src/.libs -lppl @extra_libraries@
+		-L$(top_builddir)/src/.libs -lppl @extra_libraries@ -lstdc++
 
 CLPQ_TESTS_NONSTRICT = \
 ack.clpq \

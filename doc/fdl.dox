@@ -9,6 +9,7 @@ Copyright (C) 2000  Free Software Foundation, Inc.
 Everyone is permitted to copy and distribute verbatim copies
 of this license document, but changing it is not allowed.
 </PRE>
+
 <P>
 <STRONG>0. PREAMBLE</STRONG>
 <P>
@@ -335,7 +336,8 @@ number of this License, you may choose any version ever published (not
 as a draft) by the Free Software Foundation.
 <P>
 
-<H2>How to use this License for your documents</H2>
+<H1>How to use this License for your documents</H1>
+
 <P>
 To use this License in a document you have written, include a copy of
 the License in the document and put the following copyright and

@@ -32,11 +32,6 @@ site: http://www.cs.unipr.it/ppl/ . */
 namespace PPL = Parma_Polyhedra_Library;
 
 /*!
-  \fn static bool PPL::Polyhedron::minimize(bool con_to_gen,
-                                            Matrix& source,
-                                            Matrix& dest,
-                                            SatMatrix& sat)
-
   \param con_to_gen   <CODE>true</CODE> if \p source represents the
                       constraints, <CODE>false</CODE> otherwise.
   \param source       The given matrix, which is not empty.
@@ -64,7 +59,6 @@ namespace PPL = Parma_Polyhedra_Library;
   This will simplify the description of the function; the dual case is
   similar.
 */
-
 bool
 PPL::Polyhedron::minimize(bool con_to_gen,
 			  Matrix& source, Matrix& dest, SatMatrix& sat) {
@@ -175,13 +169,8 @@ PPL::Polyhedron::minimize(bool con_to_gen,
   return false;
 }
 
+
 /*!
-  \fn bool PPL::Polyhedron::add_and_minimize(bool con_to_gen,
-                                             Matrix& source1,
-                                             Matrix& dest,
-                                             SatMatrix& sat,
-                                             const Matrix& source2)
-					
   \param con_to_gen   <CODE>true</CODE> if \p source1 and \p source2
                       are matrix of constraints, <CODE>false</CODE>
                       otherwise.

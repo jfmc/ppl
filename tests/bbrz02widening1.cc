@@ -32,8 +32,6 @@ using namespace Parma_Polyhedra_Library;
 
 bool
 dimensions() {
-  set_handlers();
-
   Variable A(0);
   Variable B(1);
   Variable C(2);
@@ -74,8 +72,6 @@ dimensions() {
 
 bool
 lines() {
-  set_handlers();
-
   Variable A(0);
   Variable B(1);
 
@@ -104,8 +100,6 @@ lines() {
 
 bool
 points() {
-  set_handlers();
-
   Variable A(0);
   Variable B(1);
 
@@ -140,6 +134,7 @@ points() {
 
 int
 main() {
+  set_handlers();
 
   if (!dimensions())
     return 1;

@@ -34,10 +34,10 @@ namespace Parma_Polyhedra_Library {
 //! Returns <CODE>true</CODE> if and only if
 //! \p x and \p y are the same polyhedron.
 /*!
-  \relates Determinate<PH>
+  \relates Determinate\<PH\>
   \exception std::invalid_argument thrown if \p x and \p y
-  are topology-incompatible
-  or dimension-incompatible.
+                                          are topology-incompatible
+                                          or dimension-incompatible.
 */
 template <typename PH>
 bool operator==(const Determinate<PH>& x, const Determinate<PH>& y);
@@ -46,7 +46,7 @@ bool operator==(const Determinate<PH>& x, const Determinate<PH>& y);
 //! Returns <CODE>true</CODE> if and only if
 //! \p x and \p y are different polyhedra.
 /*!
-  \relates Determinate<PH>
+  \relates Determinate\<PH\>
   \exception std::invalid_argument thrown if \p x and \p y
   are topology-incompatible
   or dimension-incompatible.
@@ -79,8 +79,7 @@ template <typename PH>
 class Parma_Polyhedra_Library::Determinate {
 public:
   explicit
-  Determinate(dimension_type num_dimensions = 0,
-	      Polyhedron::Degenerate_Kind kind = Polyhedron::UNIVERSE);
+  Determinate(dimension_type num_dimensions = 0, bool universe = true);
   Determinate(const PH& p);
   Determinate(const ConSys& cs);
   Determinate(const Determinate& y);
@@ -102,6 +101,9 @@ public:
 
   Determinate& operator <<= (dimension_type n);
   Determinate& hide_assign(dimension_type n);
+
+  const PH& polyhedron() const;
+  PH& polyhedron();
 
   inline bool is_top() const;
   inline bool is_bottom() const;
@@ -225,6 +227,7 @@ public:
 private:
   class Rep {
   private:
+    //! \brief
     //! Count the number of references:
     //! -   0: leaked, \p pph is non-const;
     //! -   1: one reference, \p pph is non-const;
@@ -252,6 +255,7 @@ private:
     //! Register a new reference.
     void new_reference() const;
 
+    //! \brief
     //! Unregister a reference and return true if the representation
     //! has become unreferenced.
     bool del_reference() const;

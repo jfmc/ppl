@@ -1146,6 +1146,28 @@ __P((ppl_Polyhedron_t x, ppl_const_Polyhedron_t y));
 
 /*!
   If the polyhedron \p y is contained in (or equal to) the polyhedron
+  \p x, assigns to \p x the BBRZ02-widening of \p x and \p y.
+*/
+int
+ppl_Polyhedron_BBRZ02_widening_assign __P((ppl_Polyhedron_t x,
+					   ppl_const_Polyhedron_t y));
+
+/*!
+  If the polyhedron \p y is contained in (or equal to) the polyhedron
+  \p x, assigns to \p x the BBRZ02-widening of \p x and \p y intersected with
+  the constraint system \p cs.
+
+  \warning
+  This function modifies the constraint system referenced by \p cs:
+  upon return, no assumption can be made on its value.
+*/
+int
+ppl_Polyhedron_limited_BBRZ02_widening_assign __P((ppl_Polyhedron_t x,
+						   ppl_const_Polyhedron_t y,
+						   ppl_ConSys_t cs));
+
+/*!
+  If the polyhedron \p y is contained in (or equal to) the polyhedron
   \p x, assigns to \p x the H79-widening of \p x and \p y.
 */
 int
@@ -1207,12 +1229,33 @@ ppl_Polyhedron_add_constraint __P((ppl_Polyhedron_t ph,
 				   ppl_const_Constraint_t c));
 
 /*!
+  Adds a copy of the constraint \p c to the system of constraints of
+  \p ph.  Returns a positive integer if the resulting polyhedron is
+  non-empty; returns 0 if it is empty.  Upon successful return, \p ph
+  is guaranteed to be minimized.
+
+*/
+int
+ppl_Polyhedron_add_constraint_and_minimize __P((ppl_Polyhedron_t ph,
+						ppl_const_Constraint_t c));
+
+/*!
   Adds a copy of the generator \p g to the system of generatorss of
   \p ph.
 */
 int
 ppl_Polyhedron_add_generator __P((ppl_Polyhedron_t ph,
 				  ppl_const_Generator_t g));
+
+/*!
+  Adds a copy of the generator \p g to the system of generatorss of
+  \p ph.  Returns a positive integer if the resulting polyhedron is
+  non-empty; returns 0 if it is empty.  Upon successful return, \p ph
+  is guaranteed to be minimized.
+*/
+int
+ppl_Polyhedron_add_generator_and_minimize __P((ppl_Polyhedron_t ph,
+					       ppl_const_Generator_t g));
 
 /*!
   Adds the system of constraints \p cs to the system of constraints of
@@ -1252,7 +1295,7 @@ ppl_Polyhedron_add_generators __P((ppl_Polyhedron_t ph, ppl_GenSys_t gs));
 
 /*!
   Adds the system of generators \p gs to the system of generators of
-  \p ph. Returns a positive integer if the resulting polyhedron is
+  \p ph.  Returns a positive integer if the resulting polyhedron is
   non-empty; returns 0 if it is empty.  Upon successful return, \p ph
   is guaranteed to be minimized.
 
@@ -1487,6 +1530,14 @@ ppl_Polyhedron_contains_Polyhedron __P((ppl_const_Polyhedron_t x,
 int
 ppl_Polyhedron_strictly_contains_Polyhedron __P((ppl_const_Polyhedron_t x,
 						 ppl_const_Polyhedron_t y));
+
+/*!
+  Returns a positive integer if \p x and \p y are disjoint; returns 0
+  if they are not.
+*/
+int
+ppl_Polyhedron_is_disjoint_from_Polyhedron __P((ppl_const_Polyhedron_t x,
+						ppl_const_Polyhedron_t y));
 
 /*!
   Returns a positive integer if \p ph is well formed, i.e., if it

@@ -60,7 +60,7 @@ main() {
   ph2.BBRZ02_widening_assign(ph1);
 
   C_Polyhedron known_result(3);
-  known_result.add_constraint(2*A + B - C >= 0);
+  known_result.add_constraint(4*A + 4*B - 3*C >= 0);
   known_result.add_constraint(C >= 0);
 
   int retval = (ph2 == known_result) ? 0 : 1;
