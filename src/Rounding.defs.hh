@@ -42,12 +42,12 @@ public:
   Rounding(Direction d);
   void set_direction(Direction d);
   Direction direction() const;
-private:
-  Direction dir;
   template <typename To>
   void save(Rounding_State& current);
   template <typename To>
   void restore(const Rounding_State& state);
+private:
+  Direction dir;
 };
 
 class Rounding_State {
