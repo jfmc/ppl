@@ -226,7 +226,9 @@ PPL::subset_or_equal(const SatRow& x, const SatRow& y) {
       ++yp;
       --x_size;
     }
-  } else {
+  }
+  else {
+    // x_size > y_size
     x_size -= y_size;
     while (y_size > 0) {
       if (*xp & ~*yp)
@@ -248,35 +250,60 @@ PPL::subset_or_equal(const SatRow& x, const SatRow& y) {
 /*! \relates Parma_Polyhedra_Library::SatRow */
 bool
 PPL::strict_subset(const SatRow& x, const SatRow& y) {
-  const size_t x_size = mpz_size(x.vec);
-  const size_t y_size = mpz_size(y.vec);
+  size_t x_size = mpz_size(x.vec);
+  size_t y_size = mpz_size(y.vec);
   bool one_diff = false;
-  size_t x_li = 0;
-  size_t y_li = 0;
-  while (x_li < x_size && y_li < y_size) {
-    const mp_limb_t a = mpz_getlimbn(x.vec, x_li++);
-    const mp_limb_t b = mpz_getlimbn(y.vec, y_li++);
-    const mp_limb_t c = a | b;
-    if (c != b)
-      return false;
-    else if (c != a)
-      one_diff = true;
-  }
-  if (x_size < y_size) {
-    if (one_diff)
-      return true;
-    while (y_li < y_size)
-      if (mpz_getlimbn(y.vec, y_li++) != 0)
+  mp_srcptr xp = x.vec->_mp_d;
+  mp_srcptr yp = y.vec->_mp_d;
+  if (x_size <= y_size) {
+    y_size -= x_size;
+    while (x_size > 0) {
+      const mp_limb_t a = *xp;
+      const mp_limb_t b = *yp;
+      const mp_limb_t c = a | b;
+      if (c != b)
+	return false;
+      else if (c != a)
+	one_diff = true;
+      ++xp;
+      ++yp;
+      --x_size;
+    }
+    if (x_size < y_size) {
+      if (one_diff)
 	return true;
-    return false;
+      while (y_size > 0) {
+	if (*yp)
+	  return true;
+	++yp;
+	--y_size;
+      }
+      return false;
+    }
   }
-  else if (x_size > y_size) {
+  else {
+    // x_size > y_size
+    x_size -= y_size;
+    while (y_size > 0) {
+      const mp_limb_t a = *xp;
+      const mp_limb_t b = *yp;
+      const mp_limb_t c = a | b;
+      if (c != b)
+	return false;
+      else if (c != a)
+	one_diff = true;
+      ++xp;
+      ++yp;
+      --x_size;
+    }
     if (!one_diff)
       return false;
-    while (x_li < x_size)
-      if (mpz_getlimbn(x.vec, x_li++) != 0)
+    while (x_size > 0) {
+      if (*xp)
 	return false;
-    return true;
+      ++xp;
+      --x_size;
+    }
   }
   return one_diff;
 }
