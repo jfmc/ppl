@@ -51,23 +51,25 @@ namespace Parma_Polyhedra_Library {
 
 namespace Checked {
 
-template <typename Type>
+template <typename Policy, typename Type>
 inline Type
 plus_infinity_int() {
   return Limits<Type>::max;
 }
 
-template <typename Type>
+template <typename Policy, typename Type>
 inline Type
 minus_infinity_int() {
   return Limits<Type>::min >= 0 ? Limits<Type>::max - 1 : Limits<Type>::min;
 }
 
 
-template <typename Type>
+template <typename Policy, typename Type>
 inline Type
 not_a_number_int() {
-  return Limits<Type>::min >= 0 ? Limits<Type>::max - 2 : Limits<Type>::min + 1;
+  return Limits<Type>::min >= 0 
+	  ? Limits<Type>::max - Policy::store_infinity * 2 
+	  : Limits<Type>::min + Policy::store_infinity;
 }
 
 template <typename Policy, typename Type>
@@ -92,7 +94,7 @@ set_neg_overflow_int(Type& to, const Rounding& mode) {
   switch (mode.direction()) {
   case Rounding::DOWN:
     if (Policy::store_infinity) {
-      to = minus_infinity_int<Type>();
+      to = minus_infinity_int<Policy, Type>();
       return V_NEG_OVERFLOW;
     }
     /* Fall through */
@@ -108,7 +110,7 @@ set_pos_overflow_int(Type& to, const Rounding& mode) {
   switch (mode.direction()) {
   case Rounding::UP:
     if (Policy::store_infinity) {
-      to = plus_infinity_int<Type>();
+      to = plus_infinity_int<Policy, Type>();
       return V_POS_OVERFLOW;
     }
     /* Fall through */
@@ -121,14 +123,14 @@ set_pos_overflow_int(Type& to, const Rounding& mode) {
 template <typename Policy, typename Type>
 inline Result
 classify_int(const Type v, bool nan, bool inf, bool sign) {
-  if (Policy::store_nan && (nan || sign) && v == not_a_number_int<Type>())
+  if (Policy::store_nan && (nan || sign) && v == not_a_number_int<Policy, Type>())
     return V_UNKNOWN;
   if (!inf & !sign)
     return V_NORMAL;
   if (Policy::store_infinity) {
-    if (v == minus_infinity_int<Type>())
+    if (v == minus_infinity_int<Policy, Type>())
       return inf ? V_MINUS_INFINITY : V_LT;
-    if (v == plus_infinity_int<Type>())
+    if (v == plus_infinity_int<Policy, Type>())
       return inf ? V_PLUS_INFINITY : V_GT;
   }
   if (sign) {
@@ -157,16 +159,16 @@ inline void
 set_special_int(Type& v, Result r) {
   r = type(r);
   if (Policy::store_nan && r == V_UNKNOWN) {
-    v = not_a_number_int<Type>();
+    v = not_a_number_int<Policy, Type>();
     return;
   }
   if (Policy::store_infinity) {
     switch (r) {
     case V_MINUS_INFINITY:
-      v = minus_infinity_int<Type>();
+      v = minus_infinity_int<Policy, Type>();
       break;
     case V_PLUS_INFINITY:
-      v = plus_infinity_int<Type>();
+      v = plus_infinity_int<Policy, Type>();
       break;
     default:
       break;
