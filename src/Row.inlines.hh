@@ -102,20 +102,20 @@ Row::Impl::resize_no_copy(size_t new_size) {
 
 inline
 Row::Impl::Impl(Type t, size_t sz)
-  : type(t), size_(0) {
+  : size_(0), type(t) {
   grow_no_copy(sz);
 }
 
 
 inline
 Row::Impl::Impl(const Impl& y)
-  : type(y.type), size_(0) {
+  : size_(0), type(y.type) {
   copy_construct(y);
 }
 
 inline
 Row::Impl::Impl(const Impl& y, size_t sz)
-  : type(y.type), size_(0) {
+  : size_(0), type(y.type) {
   copy_construct(y);
   grow_no_copy(sz);
 }
