@@ -77,7 +77,7 @@ public:
   //! Sets the bit at row \p i, column \p j.
   void set(size_t i, size_t j);
 
-  //! Clears all the rows.
+  //! Clears the matrix deallocating all its rows.
   void clear();
 
   //! Transposes the matrix.

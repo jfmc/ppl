@@ -53,7 +53,6 @@ SatMatrix::~SatMatrix() {
 */
 inline void
 SatMatrix::rows_erase_to_end(size_t first_to_erase) {
-  assert(OK());
   // The first row to be erased cannot be greater
   // than the actual number of the rows of the matrix.
   assert(first_to_erase <= rows.size());
@@ -67,7 +66,6 @@ SatMatrix::rows_erase_to_end(size_t first_to_erase) {
 */
 inline void
 SatMatrix::columns_erase_to_end(size_t first_to_erase) {
-  assert(OK());
   // The first column to be erased cannot be greater
   // than the actual number of the columns of the matrix.
   assert(first_to_erase <= row_size);
@@ -80,10 +78,8 @@ SatMatrix::columns_erase_to_end(size_t first_to_erase) {
 */
 inline void
 SatMatrix::swap(SatMatrix& y) {
-  assert(OK());
   std::swap(row_size, y.row_size);
   std::swap(rows, y.rows);
-  assert(OK());
 }
 
 /*!
@@ -112,6 +108,13 @@ SatMatrix::num_columns() const {
 inline size_t
 SatMatrix::num_rows() const {
   return rows.size();
+}
+
+inline void
+SatMatrix::clear() {
+  // Clear `rows' and minimize its capacity.
+  std::vector<SatRow>().swap(rows);
+  row_size = 0;
 }
 
 inline bool

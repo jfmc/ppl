@@ -114,17 +114,6 @@ PPL::SatMatrix::transpose_assign(const SatMatrix& y) {
 }
 
 /*!
-  Clears all the rows.
-*/
-void
-PPL::SatMatrix::clear() {
-  SatMatrix& x = *this;
-  for (size_t i = num_rows(); i-- > 0; )
-    x[i].clear();
-  assert(x.OK());
-}
-
-/*!
   Resizes the matrix copying the old contents.
 */
 void
