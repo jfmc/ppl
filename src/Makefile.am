@@ -135,6 +135,6 @@ install-data-local: ppl_install.hh
 uninstall-local:
 	rm -f $(DESTDIR)$(includedir)/ppl.hh
 
-EXTRA_DIST = ppl_header.top ppl_header.bottom
+EXTRA_DIST = ppl_header.top ppl_header.middle ppl_header.bottom
 
 MOSTLYCLEANFILES = $(BUILT_SOURCES)
