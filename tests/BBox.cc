@@ -23,6 +23,10 @@ site: http://www.cs.unipr.it/ppl/ . */
 
 #include "BBox.hh"
 #include <iostream>
+#include "ppl_install.hh"
+
+using namespace Parma_Polyhedra_Library;
+using namespace Parma_Polyhedra_Library::IO_Operators;
 
 void
 BInterval::raise_lower_bound(bool closed,
@@ -54,32 +58,29 @@ BInterval::set_empty() {
   ld = 1;
 }
 
+static void
+print_rational(std::ostream& s, const Integer& c, const Integer& d) {
+  s << c;
+  if (d != 1)
+    s << "/" << d;
+}
+
 void
 BInterval::print(std::ostream& s) const {
-  s << "lower bound = ";
   if (ld != 0) {
-    if (lclosed == true)
-      s << " true ";
-    else
-      s << " false";
-    s << " : " << lc << " / " << ld << "," << std::endl;
+    s << (lclosed ? "[" : "(");
+    print_rational(s, lc, ld);
   }
   else
-    s << " none " << std::endl;
-
-  s << "         ";
-  s << "upper bound = ";
+    s << "(-inf";
+  s << ", ";
   if (ud != 0) {
-    if (uclosed == true)
-      s << " true ";
-    else
-      s << " false";
-    s << " : " << uc << " / " << ud << "." << std::endl;
+    print_rational(s, uc, ud);
+    s << (uclosed ? "]" : ")");
   }
   else
-    s << " none,  " << std::endl;
+    s << "+inf)";
 }
- 
 
 bool
 operator==(const BInterval& x, const BInterval& y) {
@@ -140,8 +141,9 @@ BBox::print(std::ostream& s, const std::string& intro) const {
     s << intro << std::endl;
   dimension_type dim = box.size();
   for (dimension_type j = 0; j != dim ; j++) {
-    s << j << " AXES:  ";
+    s << Variable(j) << ": ";
     box[j].print(s);
+    s << std::endl;
   }
 }
 
