@@ -183,6 +183,12 @@ public:
   for (GenSys::const_iterator i = gs.begin(); i != iend; ++i)
     cout << *i << endl;
       \endcode
+      The same effect can be obtained more concisely by using
+      more features of the STL:
+      \code
+  const GenSys gs = ph.generators();
+  copy(gs.begin(), gs.end(), ostream_iterator<Generator>(cout, "\n"));
+      \endcode
   */
   class const_iterator
     : public std::iterator<std::forward_iterator_tag,
