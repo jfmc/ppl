@@ -68,7 +68,8 @@ Prolog_put_long(Prolog_term_ref& t, long i) {
 }
 
 /*!
-  Assign to \p t an atom whose name is given by the null-terminated string \s.
+  Assign to \p t an atom whose name is given
+  by the null-terminated string \p s.
 */
 static inline bool
 Prolog_put_atom_chars(Prolog_term_ref& t, const char* s) {
@@ -348,20 +349,20 @@ Integer_to_integer_term(const PPL::Integer& n) {
 
 #include "../ppl_prolog.icc"
 
-#define YAP_STUB_0(name, arity) \
+#define YAP_STUB_0(name) \
 extern "C" Prolog_foreign_return_type \
 yap_stub_##name() { \
   return name(); \
 }
 
-#define YAP_STUB_1(name, arity) \
+#define YAP_STUB_1(name) \
 extern "C" Prolog_foreign_return_type \
 yap_stub_##name() { \
   Prolog_term_ref arg1 = ARG1; \
   return name(arg1); \
 }
 
-#define YAP_STUB_2(name, arity) \
+#define YAP_STUB_2(name) \
 extern "C" Prolog_foreign_return_type \
 yap_stub_##name() { \
   Prolog_term_ref arg1 = ARG1; \
@@ -369,7 +370,7 @@ yap_stub_##name() { \
   return name(arg1, arg2); \
 }
 
-#define YAP_STUB_3(name, arity) \
+#define YAP_STUB_3(name) \
 extern "C" Prolog_foreign_return_type \
 yap_stub_##name() { \
   Prolog_term_ref arg1 = ARG1; \
@@ -378,7 +379,7 @@ yap_stub_##name() { \
   return name(arg1, arg2, arg3); \
 }
 
-#define YAP_STUB_4(name, arity) \
+#define YAP_STUB_4(name) \
 extern "C" Prolog_foreign_return_type \
 yap_stub_##name() { \
   Prolog_term_ref arg1 = ARG1; \
@@ -388,54 +389,54 @@ yap_stub_##name() { \
   return name(arg1, arg2, arg3, arg4); \
 }
 
-YAP_STUB_0(ppl_initialize, 0)
-YAP_STUB_0(ppl_finalize, 0)
-YAP_STUB_3(ppl_new_Polyhedron_from_dimension, 3)
-YAP_STUB_3(ppl_new_Polyhedron_empty_from_dimension, 3)
-YAP_STUB_4(ppl_new_Polyhedron_from_Polyhedron, 4)
-YAP_STUB_3(ppl_new_Polyhedron_from_constraints, 3)
-YAP_STUB_3(ppl_new_Polyhedron_from_generators, 3)
-YAP_STUB_3(ppl_new_Polyhedron_from_bounding_box, 3)
-YAP_STUB_1(ppl_delete_Polyhedron, 1)
-YAP_STUB_2(ppl_Polyhedron_space_dimension, 2)
-YAP_STUB_2(ppl_Polyhedron_intersection_assign, 2)
-YAP_STUB_2(ppl_Polyhedron_intersection_assign_and_minimize, 2)
-YAP_STUB_2(ppl_Polyhedron_poly_hull_assign, 2)
-YAP_STUB_2(ppl_Polyhedron_poly_hull_assign_and_minimize, 2)
-YAP_STUB_2(ppl_Polyhedron_poly_difference_assign, 2)
-YAP_STUB_2(ppl_Polyhedron_poly_difference_assign_and_minimize, 2)
-YAP_STUB_2(ppl_Polyhedron_H79_widening_assign, 2)
-YAP_STUB_3(ppl_Polyhedron_limited_H79_widening_assign, 3)
-YAP_STUB_1(ppl_Polyhedron_topological_closure_assign, 1)
-YAP_STUB_2(ppl_Polyhedron_get_constraints, 2)
-YAP_STUB_2(ppl_Polyhedron_get_minimized_constraints, 2)
-YAP_STUB_2(ppl_Polyhedron_get_generators, 2)
-YAP_STUB_2(ppl_Polyhedron_get_minimized_generators, 2)
-YAP_STUB_2(ppl_Polyhedron_add_constraint, 2)
-YAP_STUB_2(ppl_Polyhedron_add_generator, 2)
-YAP_STUB_2(ppl_Polyhedron_add_constraints, 2)
-YAP_STUB_2(ppl_Polyhedron_add_constraints_and_minimize, 2)
-YAP_STUB_2(ppl_Polyhedron_add_generators, 2)
-YAP_STUB_2(ppl_Polyhedron_add_generators_and_minimize, 2)
-YAP_STUB_2(ppl_Polyhedron_add_dimensions_and_constraints, 2)
-YAP_STUB_2(ppl_Polyhedron_add_dimensions_and_project, 2)
-YAP_STUB_2(ppl_Polyhedron_add_dimensions_and_embed, 2)
-YAP_STUB_2(ppl_Polyhedron_remove_dimensions, 2)
-YAP_STUB_2(ppl_Polyhedron_remove_higher_dimensions, 2)
-YAP_STUB_4(ppl_Polyhedron_affine_image, 4)
-YAP_STUB_4(ppl_Polyhedron_affine_preimage, 4)
-YAP_STUB_3(ppl_Polyhedron_relation_with_constraint, 3)
-YAP_STUB_3(ppl_Polyhedron_relation_with_generator, 3)
-YAP_STUB_1(ppl_Polyhedron_check_empty, 1)
-YAP_STUB_1(ppl_Polyhedron_check_universe, 1)
-YAP_STUB_1(ppl_Polyhedron_is_bounded, 1)
-YAP_STUB_2(ppl_Polyhedron_bounds_from_above, 2)
-YAP_STUB_2(ppl_Polyhedron_bounds_from_below, 2)
-YAP_STUB_1(ppl_Polyhedron_is_topologically_closed, 1)
-YAP_STUB_2(ppl_Polyhedron_contains_Polyhedron, 2)
-YAP_STUB_2(ppl_Polyhedron_strictly_contains_Polyhedron, 2)
-YAP_STUB_2(ppl_Polyhedron_equals_Polyhedron, 2)
-YAP_STUB_2(ppl_Polyhedron_get_bounding_box, 2)
+YAP_STUB_0(ppl_initialize)
+YAP_STUB_0(ppl_finalize)
+YAP_STUB_3(ppl_new_Polyhedron_from_dimension)
+YAP_STUB_3(ppl_new_Polyhedron_empty_from_dimension)
+YAP_STUB_4(ppl_new_Polyhedron_from_Polyhedron)
+YAP_STUB_3(ppl_new_Polyhedron_from_constraints)
+YAP_STUB_3(ppl_new_Polyhedron_from_generators)
+YAP_STUB_3(ppl_new_Polyhedron_from_bounding_box)
+YAP_STUB_1(ppl_delete_Polyhedron)
+YAP_STUB_2(ppl_Polyhedron_space_dimension)
+YAP_STUB_2(ppl_Polyhedron_intersection_assign)
+YAP_STUB_2(ppl_Polyhedron_intersection_assign_and_minimize)
+YAP_STUB_2(ppl_Polyhedron_poly_hull_assign)
+YAP_STUB_2(ppl_Polyhedron_poly_hull_assign_and_minimize)
+YAP_STUB_2(ppl_Polyhedron_poly_difference_assign)
+YAP_STUB_2(ppl_Polyhedron_poly_difference_assign_and_minimize)
+YAP_STUB_2(ppl_Polyhedron_H79_widening_assign)
+YAP_STUB_3(ppl_Polyhedron_limited_H79_widening_assign)
+YAP_STUB_1(ppl_Polyhedron_topological_closure_assign)
+YAP_STUB_2(ppl_Polyhedron_get_constraints)
+YAP_STUB_2(ppl_Polyhedron_get_minimized_constraints)
+YAP_STUB_2(ppl_Polyhedron_get_generators)
+YAP_STUB_2(ppl_Polyhedron_get_minimized_generators)
+YAP_STUB_2(ppl_Polyhedron_add_constraint)
+YAP_STUB_2(ppl_Polyhedron_add_generator)
+YAP_STUB_2(ppl_Polyhedron_add_constraints)
+YAP_STUB_2(ppl_Polyhedron_add_constraints_and_minimize)
+YAP_STUB_2(ppl_Polyhedron_add_generators)
+YAP_STUB_2(ppl_Polyhedron_add_generators_and_minimize)
+YAP_STUB_2(ppl_Polyhedron_add_dimensions_and_constraints)
+YAP_STUB_2(ppl_Polyhedron_add_dimensions_and_project)
+YAP_STUB_2(ppl_Polyhedron_add_dimensions_and_embed)
+YAP_STUB_2(ppl_Polyhedron_remove_dimensions)
+YAP_STUB_2(ppl_Polyhedron_remove_higher_dimensions)
+YAP_STUB_4(ppl_Polyhedron_affine_image)
+YAP_STUB_4(ppl_Polyhedron_affine_preimage)
+YAP_STUB_3(ppl_Polyhedron_relation_with_constraint)
+YAP_STUB_3(ppl_Polyhedron_relation_with_generator)
+YAP_STUB_1(ppl_Polyhedron_check_empty)
+YAP_STUB_1(ppl_Polyhedron_check_universe)
+YAP_STUB_1(ppl_Polyhedron_is_bounded)
+YAP_STUB_2(ppl_Polyhedron_bounds_from_above)
+YAP_STUB_2(ppl_Polyhedron_bounds_from_below)
+YAP_STUB_1(ppl_Polyhedron_is_topologically_closed)
+YAP_STUB_2(ppl_Polyhedron_contains_Polyhedron)
+YAP_STUB_2(ppl_Polyhedron_strictly_contains_Polyhedron)
+YAP_STUB_2(ppl_Polyhedron_equals_Polyhedron)
+YAP_STUB_2(ppl_Polyhedron_get_bounding_box)
 
 #define YAP_USER_C_PREDICATE(name, arity) \
  UserCPredicate(#name, reinterpret_cast<int(*)()>(yap_stub_##name), arity)

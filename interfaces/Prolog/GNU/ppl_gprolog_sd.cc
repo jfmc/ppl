@@ -65,7 +65,8 @@ Prolog_put_long(Prolog_term_ref& t, long i) {
 }
 
 /*!
-  Assign to \p t an atom whose name is given by the null-terminated string \s.
+  Assign to \p t an atom whose name is given
+  by the null-terminated string \p s.
 */
 static inline bool
 Prolog_put_atom_chars(Prolog_term_ref& t, const char* s) {
