@@ -26,28 +26,4 @@ VPATH = @srcdir@
 
 @SET_MAKE@
 
-SUBDIRS = examples
-
-AM_CPPFLAGS = -I$(top_builddir) -I$(top_builddir)/src @extra_includes@
-
-noinst_PROGRAMS = ppl_lcdd
-ppl_lcdd_SOURCES = ppl_lcdd.cc
-ppl_lcdd_LDADD = \
-$(top_builddir)/src/libppl.la \
-@extra_libraries@
-
-# check-local: $(MPS_FILES) ppl_lcdd #expected
-# 	rm -f obtained
-# 	for k in $(MPS_FILES); \
-# 	do \
-# 	  for m in --min --max; \
-# 	  do \
-# 	    echo "*** ppl_lcdd -v $$m -oobtained $$k" >>obtained; \
-# 	    $(LIBTOOL) --mode=execute -dlopen ../../../src/libppl.la \
-# 	      -dlopen ../libppl_c.la \
-# 	        ./ppl_lcdd -v $$m -oobtained $(srcdir)/$$k >/dev/null; \
-# 	  done \
-# 	done
-# 	diff -q --ignore-all-space $(srcdir)/expected obtained
-
-# MOSTLYCLEANFILES = obtained
+dist_noinst_DATA = afiro.mps bgprtr.mps ex1.mps sample.mps unboundedmin.mps

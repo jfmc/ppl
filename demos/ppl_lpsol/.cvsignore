@@ -2,5 +2,5 @@
 .libs
 Makefile
 Makefile.in
-lpenum
 obtained
+ppl_lpsol

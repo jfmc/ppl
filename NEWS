@@ -4,11 +4,23 @@ Parma Polyhedra Library NEWS -- history of user-visible changes
 
 
 --------------------------------------------------------------------------
-NEWS for version 0.6  (released date to be decided)
+NEWS for version 0.6  (released on August xx, 2004)
 --------------------------------------------------------------------------
 
 New and Changed Features
 ========================
+
+o  A new `demos' directory has been added.  In the `ppl_lcdd'
+   subdirectory, this contains a sort of clone of the cddlib test
+   program `lcdd', written using the PPL's C++ interface, together
+   with several example polyhedra in the formats that the program can
+   handle.  The `ppl_lpsol' subdirectory contains another demo program
+   that solves linear programming problems by vertex/point
+   enumeration.  This is written using the PPL's C interface and comes
+   with several example problems in the Mathematical Programming
+   System (MPS) format.  In order to read MPS files, `ppl_lpsol' uses
+   the GNU Linear Programming Kit (GLPK); thus `ppl_lpsol' is only compiled
+   if a suitable version of GLPK is available.
 
 o  The documentation has been improved in various ways.
 

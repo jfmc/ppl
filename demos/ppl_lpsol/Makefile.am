@@ -26,32 +26,32 @@ VPATH = @srcdir@
 
 @SET_MAKE@
 
-MPS_FILES = afiro.mps bgprtr.mps ex1.mps sample.mps unboundedmin.mps
+SUBDIRS = examples
 
-EXTRA_DIST = lpenum.c $(MPS_FILES) expected
+EXTRA_DIST = ppl_lpsol.c expected
 
 if HAVE_GLPK
 
 AM_CPPFLAGS = -I$(top_builddir)/interfaces/C @extra_includes@
 
-noinst_PROGRAMS = lpenum
-lpenum_SOURCES = lpenum.c
-lpenum_LDADD = \
+noinst_PROGRAMS = ppl_lpsol
+ppl_lpsol_SOURCES = ppl_lpsol.c
+ppl_lpsol_LDADD = \
 -lglpk \
 $(top_builddir)/interfaces/C/libppl_c.la \
 $(top_builddir)/src/libppl.la \
 @extra_libraries@
 
-check-local: $(MPS_FILES) lpenum #expected
+check-local: ppl_lpsol expected
 	rm -f obtained
-	for k in $(MPS_FILES); \
+	for k in $(srcdir)/examples/*.mps; \
 	do \
 	  for m in --min --max; \
 	  do \
-	    echo "*** lpenum -v $$m -oobtained $$k" >>obtained; \
-	    $(LIBTOOL) --mode=execute -dlopen ../../../src/libppl.la \
-	      -dlopen ../libppl_c.la \
-	        ./lpenum -v $$m -oobtained $(srcdir)/$$k >/dev/null; \
+	    echo "*** ppl_lpsol -v $$m -oobtained `basename $$k`" >>obtained; \
+	    $(LIBTOOL) --mode=execute -dlopen ../../src/libppl.la \
+	      -dlopen ../../interfaces/C/libppl_c.la \
+	        ./ppl_lpsol -v $$m -oobtained $$k >/dev/null; \
 	  done \
 	done
 	diff -q --ignore-all-space $(srcdir)/expected obtained

@@ -1,4 +1,4 @@
-*** lpenum -v --min -oobtained afiro.mps
+*** ppl_lpsol -v --min -oobtained afiro.mps
 Constraints:
 X01 - X02 - X03 = 0
 2386907802506363*X01 - X04 = 0
@@ -97,7 +97,7 @@ X36 = 0
 X37 = 44
 X38 = 8.00292e-15
 X39 = 0
-*** lpenum -v --max -oobtained afiro.mps
+*** ppl_lpsol -v --max -oobtained afiro.mps
 Constraints:
 X01 - X02 - X03 = 0
 2386907802506363*X01 - X04 = 0
@@ -196,7 +196,7 @@ X36 = 0
 X37 = 0
 X38 = 0
 X39 = 44
-*** lpenum -v --min -oobtained bgprtr.mps
+*** ppl_lpsol -v --min -oobtained bgprtr.mps
 Constraints:
 P1T1 + P2T1 - NDT1 = 130
 P1T2 + P2T2 - NDT2 = 190
@@ -253,7 +253,7 @@ T2T1 >= 0
 B2T2 >= 0
 T2T2 >= 0
 Unfeasible problem.
-*** lpenum -v --max -oobtained bgprtr.mps
+*** ppl_lpsol -v --max -oobtained bgprtr.mps
 Constraints:
 P1T1 + P2T1 - NDT1 = 130
 P1T2 + P2T2 - NDT2 = 190
@@ -310,7 +310,7 @@ T2T1 >= 0
 B2T2 >= 0
 T2T2 >= 0
 Unfeasible problem.
-*** lpenum -v --min -oobtained ex1.mps
+*** ppl_lpsol -v --min -oobtained ex1.mps
 Constraints:
 -2*x1 - x2 >= -5
 4*x1 - 4*x2 >= -5
@@ -324,7 +324,7 @@ Optimum value:
 Optimum location:
 x1 = 1.25
 x2 = 2.5
-*** lpenum -v --max -oobtained ex1.mps
+*** ppl_lpsol -v --max -oobtained ex1.mps
 Constraints:
 -2*x1 - x2 >= -5
 4*x1 - 4*x2 >= -5
@@ -338,7 +338,7 @@ Optimum value:
 Optimum location:
 x1 = 2.5
 x2 = 0
-*** lpenum -v --min -oobtained sample.mps
+*** ppl_lpsol -v --min -oobtained sample.mps
 Constraints:
 -x1 - x2 - x3 >= -100
 -10*x1 - 4*x2 - 5*x3 >= -600
@@ -355,7 +355,7 @@ Optimum location:
 x1 = 33.3333
 x2 = 66.6667
 x3 = 0
-*** lpenum -v --max -oobtained sample.mps
+*** ppl_lpsol -v --max -oobtained sample.mps
 Constraints:
 -x1 - x2 - x3 >= -100
 -10*x1 - 4*x2 - 5*x3 >= -600
@@ -372,7 +372,7 @@ Optimum location:
 x1 = 0
 x2 = 0
 x3 = 0
-*** lpenum -v --min -oobtained unboundedmin.mps
+*** ppl_lpsol -v --min -oobtained unboundedmin.mps
 Constraints:
 -2*x1 + x2 >= 0
 x1 + x2 >= 0
@@ -382,7 +382,7 @@ Objective function:
 x1 - 2*x2
 Minimizing.
 Unbounded problem.
-*** lpenum -v --max -oobtained unboundedmin.mps
+*** ppl_lpsol -v --max -oobtained unboundedmin.mps
 Constraints:
 -2*x1 + x2 >= 0
 x1 + x2 >= 0

@@ -492,6 +492,9 @@ AC_CONFIG_FILES(Makefile
                 m4/Makefile
                 demos/Makefile
 		demos/ppl_lcdd/Makefile
+		demos/ppl_lcdd/examples/Makefile
+		demos/ppl_lpsol/Makefile
+		demos/ppl_lpsol/examples/Makefile
                 doc/Makefile
                 doc/user-browse.doxyconf-latex
                 doc/devref-browse.doxyconf-latex
@@ -502,7 +505,6 @@ AC_CONFIG_FILES(Makefile
                 interfaces/Makefile
                 interfaces/C/Makefile
 		interfaces/C/ppl_c.h
-                interfaces/C/lpenum/Makefile
                 interfaces/Prolog/Makefile
                 interfaces/Prolog/Ciao/Makefile
                 interfaces/Prolog/GNU/Makefile
