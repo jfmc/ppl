@@ -1229,7 +1229,6 @@ PPL::Polyhedron::insert(const Generator& g) {
   // Generators no longer minimized, constraints no longer up-to-date.
   clear_generators_minimized();
   clear_constraints_up_to_date();
-
 }
 
 
@@ -1538,8 +1537,8 @@ PPL::Polyhedron::assign_variable(const Variable& var,
 
   // Index of var must be in the range of the variables of generators.
   if (!(num_var < num_columns))
-    throw std::invalid_argument("PPL::Polyhedron::assign_variable(v, e, d):"
-				" v is not in *this");
+    throw std::invalid_argument("PPL::Polyhedron::assign_variable(v, e, d): "
+				"*this and v dimension-incompatible");
 
   if (expr[num_var] != 0) {
     // The transformation is invertible.
@@ -2002,7 +2001,7 @@ PPL::Polyhedron::OK(bool check_not_empty) const {
   // `gen_sys' have no rows.
   if (space_dimension() == 0)
     if (!(gen_sys.num_rows() == 0 && con_sys.num_rows() == 0))
-      cerr << "Polyhedron zeor-dimensional"
+      cerr << "Polyhedron zero-dimensional"
 	   << endl
 	   << "and with constraints or generator not clear"
 	   << endl;
