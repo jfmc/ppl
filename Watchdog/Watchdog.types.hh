@@ -15,6 +15,7 @@ PURPOSE. */
 namespace Parma_Watchdog_Library {
   class Watchdog;
   class Flag;
+  class Init;
 }
 
 #endif // !defined(PWL_Watchdog_types_hh)

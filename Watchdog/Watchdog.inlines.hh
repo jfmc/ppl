@@ -185,6 +185,24 @@ Watchdog::Watchdog(int units, void (*function)())
   in_critical_section = false;
 }
 
+inline
+Init::Init() {
+  // Only when the first Init object is constructed...
+  if (count++ == 0) {
+    // ... the library is initialized.
+    Watchdog::initialize();
+  }
+}
+
+inline
+Init::~Init() {
+  // Only when the last Init object is destroyed...
+  if (--count == 0) {
+    // ... the library is finalized.
+    Watchdog::finalize();
+  }
+}
+
 } // namespace Parma_Watchdog_Library
 
 #endif // !defined(PWL_Watchdog_inlines_hh)

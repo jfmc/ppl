@@ -221,4 +221,10 @@ PWL::Watchdog::initialize() {
   }
 }
 
+void
+PWL::Watchdog::finalize() {
+}
+
 PWL::Watchdog::Time PWL::Watchdog::reschedule_time(1);
+
+unsigned int PWL::Init::count = 0;

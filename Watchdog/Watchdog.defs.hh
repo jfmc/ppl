@@ -40,8 +40,6 @@ extern "C" void PWL_handle_timeout(int signum);
 //! A watchdog timer.
 class Watchdog {
 public:
-  static void initialize();
-
   template <typename Flag_Base, typename Flag>
   Watchdog(int units, const Flag_Base* volatile* holder, Flag& flag);
 
@@ -50,6 +48,10 @@ public:
 
 
 private:
+  friend class Init;
+  static void initialize();
+  static void finalize();
+
   //! A class for representing and manipulationg positive time intervals.
   class Time {
   private:
@@ -192,9 +194,28 @@ private:
   friend void Parma_Watchdog_Library::PWL_handle_timeout(int signum);
 };
 
+class Parma_Watchdog_Library::Init {
+private:
+  //! Count the number of objects created.
+  static unsigned int count;
+
+public:
+  //! Initializes the PWL.
+  Init();
+
+  //! Finalizes the PWL.
+  ~Init();
+};
+
 } // namespace Parma_Watchdog_Library
 
 #include "Watchdog.inlines.hh"
+
+namespace {
+
+Parma_Watchdog_Library::Init Parma_Watchdog_Library_initializer;
+
+} // namespace
 
 #endif // !defined(PWL_Watchdog_defs_hh)
 
