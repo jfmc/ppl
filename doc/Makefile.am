@@ -15,32 +15,32 @@ VPATH = @srcdir@
 @SET_MAKE@
 
 LICENSES = \
-gpl.pdf   \
+gpl.pdf \
 gpl.ps.gz \
-fdl.pdf   \
+fdl.pdf \
 fdl.ps.gz
 
-HTML_DIRS =     \
-ppl-user-@VERSION@-html   \
+HTML_DIRS = \
+ppl-user-@VERSION@-html \
 ppl-devref-@VERSION@-html
 
 ALL_TARGETS = \
-$(HTML_DIRS)                     \
-$(LICENSES)                      \
-ppl-user-@VERSION@-browse.pdf    \
-ppl-user-@VERSION@-print.pdf     \
-ppl-user-@VERSION@-print.ps.gz   \
-ppl-user-@VERSION@-html.tar.gz   \
-ppl-devref-@VERSION@-browse.pdf  \
-ppl-devref-@VERSION@-print.pdf   \
+$(HTML_DIRS) \
+$(LICENSES) \
+ppl-user-@VERSION@-browse.pdf \
+ppl-user-@VERSION@-print.pdf \
+ppl-user-@VERSION@-print.ps.gz \
+ppl-user-@VERSION@-html.tar.gz \
+ppl-devref-@VERSION@-browse.pdf \
+ppl-devref-@VERSION@-print.pdf \
 ppl-devref-@VERSION@-print.ps.gz \
 ppl-devref-@VERSION@-html.tar.gz
 
 # We distribute some preprocessed user's documentation,
 # both for browsing and for printing.
 DIST_DOCS = \
-ppl-user-@VERSION@-browse.pdf  \
-ppl-user-@VERSION@-print.pdf   \
+ppl-user-@VERSION@-browse.pdf \
+ppl-user-@VERSION@-print.pdf \
 ppl-user-@VERSION@-print.ps.gz
 
 # Do nothing by default.
@@ -54,15 +54,19 @@ world: $(ALL_TARGETS)
 
 PPL_SOURCE_FILES = $(wildcard $(srcdir)/../src/*.hh $(srcdir)/../src/*.cc)
 
-DOX_FILES = definitions.dox gpl.dox fdl.dox
+DOX_FILES = \
+definitions.dox \
+../interfaces/Prolog/Prolog_interface.dox \
+gpl.dox \
+fdl.dox
 
 USER_STUFF = $(DOX_FILES) user.tex $(top_builddir)/src/ppl.hh
 
 DEVREF_STUFF = $(DOX_FILES) devref.tex $(PPL_SOURCE_FILES)
 
-LATEX_DIRS =            \
-user-browse.latex-dir   \
-user-print.latex-dir    \
+LATEX_DIRS = \
+user-browse.latex-dir \
+user-print.latex-dir \
 devref-browse.latex-dir \
 devref-print.latex-dir
 
@@ -110,18 +114,18 @@ ppl-%-@VERSION@-html: %.doxyconf-html $(DEVREF_STUFF)
 	dvips -o $@ $<
 
 EXTRA_DIST= \
-$(DIST_DOCS)                 \
-$(DOX_FILES)                 \
-user-browse.doxyconf-latex   \
+$(DIST_DOCS) \
+$(DOX_FILES) \
+user-browse.doxyconf-latex \
 devref-browse.doxyconf-latex \
-user-print.doxyconf-latex    \
-devref-print.doxyconf-latex  \
-user.doxyconf-html           \
-devref.doxyconf-html         \
-user.tex                     \
-devref.tex                   \
-gpl.tex                      \
-fdl.tex                      \
+user-print.doxyconf-latex \
+devref-print.doxyconf-latex \
+user.doxyconf-html \
+devref.doxyconf-html \
+user.tex \
+devref.tex \
+gpl.tex \
+fdl.tex \
 ppl.sty
 
 mostlyclean-local:

@@ -311,9 +311,10 @@ WARN_LOGFILE           =
 # files or directories with spaces.
 
 INPUT                  = @srcdir@/definitions.dox \
+                         ../src/ppl.hh \
+                         @srcdir@/../interfaces/Prolog/Prolog_interface.dox \
                          @srcdir@/gpl.dox \
-                         @srcdir@/fdl.dox \
-                         ../src/ppl.hh
+                         @srcdir@/fdl.dox
 
 # If the value of the INPUT tag contains directories, you can use the
 # FILE_PATTERNS tag to specify one or more wildcard pattern (like

@@ -1,0 +1,83 @@
+/*! \page Prolog_Interface Prolog Interface
+
+
+\subsection PI_Intro Introduction
+
+To be written.
+
+
+\subsection PI_SD_Features System-Dependent Features
+
+To be written.
+
+
+<H4>GNU Prolog</H4>
+
+To be written.
+
+
+<H4>SWI Prolog</H4>
+
+To be written.
+
+
+<H4>SICStus Prolog</H4>
+
+In order to use the library you should
+load <CODE>ppl_sicstus.pl</CODE>.
+
+
+\subsection PI_SI_Features System-Independent Features
+
+Introduce the basic concepts here.
+
+<H4><CODE>ppl_new_polyhedron(+Dimension, -Polyhedron)</CODE></H4>
+
+To be written.
+
+<H4><CODE>ppl_new_empty_polyhedron(+Dimension, -Polyhedron)</CODE></H4>
+
+To be written.
+
+<H4><CODE>ppl_delete_polyhedron(+Polyhedron)</CODE></H4>
+
+To be written.
+
+<H4><CODE>ppl_space_dimension(+Polyhedron, -Dimension)</CODE></H4>
+
+To be written.
+
+<H4><CODE>ppl_insert_constraint(+Polyhedron, +Constraint)</CODE></H4>
+
+To be written.
+
+<H4><CODE>ppl_insert_generator(+Polyhedron, +Generator)</CODE></H4>
+
+To be written.
+
+<H4><CODE>ppl_check_empty(+Polyhedron)</CODE></H4>
+
+To be written.
+
+<H4><CODE>ppl_get_constraints(+Polyhedron, -List)</CODE></H4>
+
+To be written.
+
+<H4><CODE>ppl_get_generators(+Polyhedron, -List)</CODE></H4>
+
+To be written.
+
+<H4><CODE>ppl_intersection_assign(+Polyhedron_1, +Polyhedron_2)</CODE></H4>
+
+To be written.
+
+<H4><CODE>ppl_convex_hull_assign(+Polyhedron_1, +Polyhedron_2)</CODE></H4>
+
+To be written.
+
+<H4><CODE>ppl_widening_assign(+Polyhedron_1, +Polyhedron_2)</CODE></H4>
+
+To be written.
+
+*/
+
