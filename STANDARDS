@@ -27,6 +27,14 @@ All other things being equal, always prefer preincrement and
 predecrement to postincrement and postdecrement.
 
 
+Swap specialization
+-------------------
+
+All library types should provide a publicly available swap method.
+Whenever appropriate for ensuring efficiency, the generic std::swap
+algorithm should be specialized to use the swap method.
+
+
 Length of source lines
 ----------------------
 
