@@ -325,22 +325,6 @@ get_unsigned_int(long n) {
   }
 }
 
-static int
-get_int(long n) {
-  if (n >= 0 && static_cast<unsigned long>(n) <= UINT_MAX)
-    return n;
-  else {
-    long minus_n = -n;
-    if (static_cast<unsigned long>(minus_n) <= UINT_MAX)
-      return n;
-    else {
-      Prolog_term_ref n_term = Prolog_new_term_ref();
-      Prolog_put_long(n_term, n);
-      throw integer_out_of_range(n_term);
-    }
-  }
-}
-
 static unsigned int
 term_to_unsigned_int(Prolog_term_ref t) {
   if (Prolog_is_integer(t)) {
@@ -349,16 +333,6 @@ term_to_unsigned_int(Prolog_term_ref t) {
       return get_unsigned_int(v);
   }
   throw not_unsigned_int(t);
-}
-
-static unsigned int
-term_to_integer(Prolog_term_ref t) {
-  if (Prolog_is_integer(t)) {
-    long v;
-    if (Prolog_get_long(t, v))
-      return get_int(v);
-  }
-  throw integer_out_of_range(t);
 }
 
 static Prolog_atom
@@ -832,192 +806,142 @@ ppl_new_Polyhedron_from_GenSys(Prolog_term_ref t_tp,
   return PROLOG_FAILURE;
 }
 
+enum Boundary_Kind {
+  LOWER,
+  UPPER
+};
+
+static bool
+term_to_boundary(Prolog_term_ref t_b, Boundary_Kind kind,
+		 bool& finite, bool& closed,
+		 PPL::Integer& n, PPL::Integer& d) {
+  if (!Prolog_is_compound(t_b))
+    return false;
+
+  Prolog_atom functor;
+  int arity;
+
+  Prolog_get_compound_name_arity(t_b, functor, arity);
+  // A boundary term is either of the form c(Limit) or o(Limit).
+  if (arity != 1 || (functor != a_c && functor != a_o))
+    return false;
+
+  Prolog_atom open_closed_atom = functor;
+
+  Prolog_term_ref t_limit = Prolog_new_term_ref();
+  Prolog_get_arg(1, t_b, t_limit);
+  if (Prolog_is_integer(t_limit)) {
+    // A finite, integral limit.
+    finite = true;
+    closed = (open_closed_atom == a_c);
+    n = integer_term_to_Integer(t_limit);
+    d = 1;
+  }
+  else if (Prolog_is_atom(t_limit)) {
+    Prolog_atom a;
+    Prolog_get_atom_name(t_limit, a);
+    Prolog_atom allowed_infinity = (kind == LOWER ? a_minf : a_pinf);
+    // Only open bounds may be unbounded.
+    if (a != allowed_infinity || open_closed_atom != a_o)
+      return false;
+
+    finite = false;
+  }
+  else if (Prolog_is_compound(t_limit)) {
+    Prolog_get_compound_name_arity(t_limit, functor, arity);
+    if (arity != 2 || functor != a_slash)
+      return false;
+
+    Prolog_term_ref t_n = Prolog_new_term_ref();
+    Prolog_term_ref t_d = Prolog_new_term_ref();
+    Prolog_get_arg(1, t_limit, t_n);
+    Prolog_get_arg(2, t_limit, t_d);
+
+    finite = true;
+    closed = (open_closed_atom == a_c);
+    n = integer_term_to_Integer(t_n);
+    d = integer_term_to_Integer(t_d);
+    // Catch divisions by zero here.
+    if (d == 0)
+      return false;
+  }
+  return true;
+}
+
 extern "C" Prolog_foreign_return_type
 ppl_new_Polyhedron_from_bounding_box(Prolog_term_ref t_tp,
 				     Prolog_term_ref t_bb,
 				     Prolog_term_ref t_ph) {
   try {
-    // flag is true if input box t_bb has correct syntax
-    // and false otherwise - if it is false the polyhedron is
-    // unchanged and it terminates with PROLOG_FAILURE.
-    bool box_ok = true;
     // Compute the space dimension.
     Prolog_term_ref t_l = Prolog_new_term_ref();
-    Prolog_term_ref t_dummy = Prolog_new_term_ref();
+    Prolog_term_ref t_interval = Prolog_new_term_ref();
     Prolog_put_term(t_l, t_bb);
     unsigned int dimension;
     for (dimension = 0; Prolog_is_cons(t_l); ++dimension)
-      Prolog_get_cons(t_l, t_dummy, t_l);
-    // If the list is not properly terminated, fail.
+      Prolog_get_cons(t_l, t_interval, t_l);
+    // Check whether the list is properly terminated.
     if (!Prolog_is_atom(t_l))
-      box_ok = false;
+      goto fail;
     else {
-      Prolog_atom nil;
-      Prolog_get_atom_name(t_l, nil);
-      if (nil != a_nil)
-        box_ok = false;
+      Prolog_atom a;
+      Prolog_get_atom_name(t_l, a);
+      if (a != a_nil)
+        goto fail;
     }
 
     PPL::BoundingBox bbox(dimension);
     // Set bbox to reflect its Prolog representation.
-    // ... catches empty boxes and uses raise_lower and lower_upper ...
-    for (unsigned int i = 0;
-               (i != dimension  && !bbox.is_empty() && box_ok); ++i) {
-      Prolog_term_ref t_interval = Prolog_new_term_ref();
+    for (unsigned int i = 0; i < dimension; ++i) {
       Prolog_get_cons(t_bb, t_interval, t_bb);
-      Prolog_atom funct_interval;
-      int ar_interval;
-      if (Prolog_is_compound(t_interval))
-        Prolog_get_compound_name_arity(t_interval,
-                           funct_interval, ar_interval);
-      else
-        box_ok = false;
-      // check the interval has correct syntax and, if so get the upper
-      // and lower limits.
-      if (box_ok && ar_interval == 2 && funct_interval == a_i) {
-        Prolog_term_ref t_low = Prolog_new_term_ref();
-        Prolog_get_arg(1, t_interval, t_low);
-        Prolog_atom funct_l = a_c;
-        Prolog_term_ref t_upp = Prolog_new_term_ref();
-        Prolog_get_arg(2, t_interval, t_upp);
-        Prolog_atom funct_u = a_c;
-        int ar_l, ar_u;
-        if (Prolog_is_compound(t_low) && Prolog_is_compound(t_upp)) {
-          Prolog_get_compound_name_arity(t_low, funct_l, ar_l);
-          Prolog_get_compound_name_arity(t_upp, funct_u, ar_u);
-        }
-        else
-          box_ok = false;
-        // check the limits have correct syntax.
-        if (box_ok && ar_l == 1 && (funct_l == a_c || funct_l == a_o)
-            && ar_u == 1 && (funct_u == a_c || funct_u == a_o)) {
-          // find the value of the lower bound
-          Prolog_term_ref t_llimit = Prolog_new_term_ref();
-          Prolog_get_arg(1, t_low, t_llimit);
-          int lnum = 1;
-          // set the denominator to 0 - indicating it is initially unbound
-          unsigned int lden = 0;
-          // the bound is an integer - the denominator = 1
-          if (Prolog_is_integer(t_llimit)) {
-	    lnum = 
-               term_to_integer(t_llimit);
-	    lden = 1;
-	  }
-          // the bound is the atom minf - leave the denominator = 0.
-          else if (Prolog_is_atom(t_llimit)) {
-            Prolog_atom inf;
-	    Prolog_get_atom_name(t_llimit, inf);
-            if (inf != a_minf || (inf == a_minf && funct_l != a_o))
-              box_ok = false;
-	  }
-          // the bound is a rational n/d
-          else {
-            Prolog_atom funct_slash;
-            int ar_limit = 2;
-            if (Prolog_is_compound(t_llimit)) {
-              Prolog_get_compound_name_arity(t_llimit, funct_slash, 
-                                             ar_limit);
-	    }
-            else
-              box_ok = false;
-	    if (box_ok && ar_limit == 2 && funct_slash == a_slash) {
-              Prolog_term_ref t_lnum = Prolog_new_term_ref();
-              Prolog_term_ref t_lden = Prolog_new_term_ref();
-              Prolog_get_arg(1, t_llimit, t_lnum);
-              Prolog_get_arg(2, t_llimit, t_lden);
-              if (Prolog_is_integer(t_lnum) && Prolog_is_integer(t_lden)) {
-	        lnum = term_to_integer(t_lnum);
-                lden = term_to_unsigned_int(t_lden);
-	      }
-              else
-                box_ok = false;
-	    }
-            else
-              box_ok = false;
-	  }
-          // find the value of the upper bound
-          Prolog_term_ref t_ulimit = Prolog_new_term_ref();
-          Prolog_get_arg(1, t_upp, t_ulimit);
-          int unum = 1;
-          // set the denominator to 0 - indicating it is initially unbound
-          unsigned int uden = 0;
-          // the bound is an integer - the denominator = 1
-          if (Prolog_is_integer(t_ulimit)) {
-	    unum = 
-               term_to_integer(t_ulimit);
-	    uden = 1;
-	  }
-          // the bound is the atom minf - leave the denominator = 0.
-          else if (Prolog_is_atom(t_ulimit)) {
-            Prolog_atom inf;
-	    Prolog_get_atom_name(t_ulimit, inf);
-            if (inf != a_pinf || (inf == a_pinf && funct_u != a_o))
-              box_ok = false;
-	  }
-          // the bound is a rational n/d
-          else {
-            Prolog_atom funct_slash;
-            int ar_limit = 2;
-            if (Prolog_is_compound(t_ulimit)) {
-              Prolog_get_compound_name_arity(t_ulimit, funct_slash, 
-                                             ar_limit);
-	    }
-            else
-              box_ok = false;
-	    if (box_ok && ar_limit == 2 && funct_slash == a_slash) {
-              Prolog_term_ref t_unum = Prolog_new_term_ref();
-              Prolog_term_ref t_uden = Prolog_new_term_ref();
-              Prolog_get_arg(1, t_ulimit, t_unum);
-              Prolog_get_arg(2, t_ulimit, t_uden);
-              if (Prolog_is_integer(t_unum) && Prolog_is_integer(t_uden)) {
-	        unum = term_to_integer(t_unum);
-                uden = term_to_unsigned_int(t_uden);
-	      }
-              else
-                box_ok = false;
-	    }
-            else
-              box_ok = false;
-	  }
+      // An interval is of the form i(Lower_Bound, Upper_Bound).
+      if (!Prolog_is_compound(t_interval))
+	goto fail;
+      Prolog_atom functor;
+      int arity;
+      Prolog_get_compound_name_arity(t_interval, functor, arity);
+      if (arity != 2 || functor != a_i)
+	goto fail;
 
-          // Only raise the lower bound if the box is ok and
-          // the new value is a proper bound.
-          if (lden != 0 && box_ok) {
-             bool lb = (funct_l == a_c);
-             bbox.raise_lower_bound(i, lb, lnum, lden);
-	  }
-          // Only lower the upper bound if the box is ok and
-          // the new value is a proper bound.
-          if (uden != 0 && box_ok) {
-            bool ub = (funct_u == a_c);
-            bbox.lower_upper_bound(i, ub, unum, uden);
-	  }
-	}
-        else
-          box_ok = false;
-      }
-      else
-        box_ok = false;
+      bool finite;
+      bool closed;
+      PPL::Integer n;
+      PPL::Integer d;
+      Prolog_term_ref t_bound = Prolog_new_term_ref();
+
+      // Get and raise the lower bound.
+      Prolog_get_arg(1, t_interval, t_bound);
+      if (!term_to_boundary(t_bound, LOWER, finite, closed, n, d))
+	goto fail;
+      if (finite)
+	bbox.raise_lower_bound(i, closed, n, d);
+
+      // Get and lower the upper bound.
+      Prolog_get_arg(2, t_interval, t_bound);
+      if (!term_to_boundary(t_bound, UPPER, finite, closed, n, d))
+	goto fail;
+      if (finite)
+	bbox.lower_upper_bound(i, closed, n, d);
     }
-      
-    if (box_ok) {
-      PPL::Polyhedron* ph;
-      Prolog_atom tp = term_to_polyhedron_kind(t_tp);
-      if (tp == a_c)
-        ph = new PPL::C_Polyhedron(PPL::From_Bounding_Box(), bbox);
-      else
-        ph = new PPL::NNC_Polyhedron(PPL::From_Bounding_Box(), bbox);
-      Prolog_term_ref tmp = Prolog_new_term_ref();
-      Prolog_put_address(tmp, ph);
-      if (Prolog_unify(t_ph, tmp)) {
-        REGISTER(ph);
-        return PROLOG_SUCCESS;
-      }
-      else
-        delete ph;
+
+    PPL::Polyhedron* ph;
+    Prolog_atom tp = term_to_polyhedron_kind(t_tp);
+    if (tp == a_c)
+      ph = new PPL::C_Polyhedron(PPL::From_Bounding_Box(), bbox);
+    else
+      ph = new PPL::NNC_Polyhedron(PPL::From_Bounding_Box(), bbox);
+    Prolog_term_ref tmp = Prolog_new_term_ref();
+    Prolog_put_address(tmp, ph);
+    if (Prolog_unify(t_ph, tmp)) {
+      REGISTER(ph);
+      return PROLOG_SUCCESS;
     }
+    else
+      delete ph;
   }
   CATCH_ALL;
+
+ fail:
   return PROLOG_FAILURE;
 }
 
@@ -1669,7 +1593,7 @@ interval_term(const PPL::Interval& i) {
     else
       Prolog_construct_compound(lt, a_o, extended_rational_term(l.bound()));
 
-    // Upper bound
+    // Upper bound.
     const PPL::UBoundary& u = i.upper_bound();
     Prolog_term_ref ut = Prolog_new_term_ref();
     if (u.is_closed())
