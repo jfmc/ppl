@@ -62,8 +62,6 @@ LIBPPL_C_LT_AGE =      1
 
 AM_CPPFLAGS = -I$(top_srcdir)/src @extra_includes@
 
-CPPFLAGS = @extra_cpp_flags@
-
 lib_LTLIBRARIES = libppl_c.la
 libppl_c_la_SOURCES = ppl_c.cc
 libppl_c_la_LDFLAGS = \

@@ -480,7 +480,6 @@ fi
 
 AC_SUBST(extra_includes)
 AC_SUBST(extra_libraries)
-AC_SUBST(extra_cpp_flags)
 AC_SUBST(debug_flag)
 AC_SUBST(xsb_includes)
 

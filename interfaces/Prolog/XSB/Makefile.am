@@ -35,7 +35,7 @@ if HAVE_XSB_PROLOG
 
 AM_CPPFLAGS = \
 -I$(top_srcdir)/src -I$(top_srcdir)/Watchdog \
-@extra_includes@ @extra_cpp_flags@ \
+@extra_includes@ \
 @xsb_includes@
 
 pkglib_LTLIBRARIES = ppl_xsb.la

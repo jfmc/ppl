@@ -63,8 +63,6 @@ LIBPPL_LT_AGE =      0
 
 AM_CPPFLAGS = -I$(top_builddir) -I$(top_srcdir)/src @extra_includes@
 
-CPPFLAGS = @extra_cpp_flags@
-
 lib_LTLIBRARIES = libppl.la
 
 # The ordering of the following list *matters*!

@@ -34,7 +34,7 @@ if HAVE_GNU_PROLOG
 
 AM_CPPFLAGS = \
 -I$(top_srcdir)/src -I$(top_srcdir)/Watchdog \
-@extra_includes@ @extra_cpp_flags@
+@extra_includes@
 
 bin_PROGRAMS = ppl_gprolog
 ppl_gprolog_SOURCES =

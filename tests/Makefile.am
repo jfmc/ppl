@@ -39,8 +39,6 @@ print.cc
 
 LDADD = $(top_builddir)/src/libppl.la libppl_tests.a @extra_libraries@
 
-CPPFLAGS = @extra_cpp_flags@
-
 ORIGINAL_TESTS = \
 	CbecomesNNC1 \
 	NNCminimize1 NNCminimize2 NNCminimize3 NNCminimize4 NNCminimize5 \

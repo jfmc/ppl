@@ -34,7 +34,7 @@ if HAVE_YAP_PROLOG
 
 AM_CPPFLAGS = \
 -I$(top_srcdir)/src -I$(top_srcdir)/Watchdog \
-@extra_includes@ @extra_cpp_flags@
+@extra_includes@
 
 pkglib_LTLIBRARIES = ppl_yap.la
 ppl_yap_la_SOURCES = ppl_yap.cc
