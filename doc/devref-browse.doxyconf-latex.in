@@ -131,7 +131,7 @@ INTERNAL_DOCS          = YES
 # doxygen to hide any special comment blocks from generated source code 
 # fragments. Normal C and C++ comments will always remain visible.
 
-STRIP_CODE_COMMENTS    = NO
+STRIP_CODE_COMMENTS    = YES
 
 # If the CASE_SENSE_NAMES tag is set to NO then Doxygen will only generate 
 # file names in lower case letters. If set to YES upper case letters are also 
@@ -302,6 +302,12 @@ WARN_LOGFILE           =
 # with spaces.
 
 INPUT                  = @srcdir@/definitions.dox \
+                         @srcdir@/../src/Init.defs.hh \
+                         @srcdir@/../src/Init.inlines.hh \
+                         @srcdir@/../src/Init.cc \
+                         @srcdir@/../src/initializer.hh \
+                         @srcdir@/../src/globals.hh \
+                         @srcdir@/../src/globals.cc \
                          @srcdir@/../src/Row.defs.hh \
                          @srcdir@/../src/Row.inlines.hh \
                          @srcdir@/../src/Row.cc \
@@ -314,6 +320,12 @@ INPUT                  = @srcdir@/definitions.dox \
                          @srcdir@/../src/SatMatrix.defs.hh \
                          @srcdir@/../src/SatMatrix.inlines.hh \
                          @srcdir@/../src/SatMatrix.cc \
+                         @srcdir@/../src/Variable.defs.hh \
+                         @srcdir@/../src/Variable.inlines.hh \
+                         @srcdir@/../src/Variable.cc \
+                         @srcdir@/../src/LinExpression.defs.hh \
+                         @srcdir@/../src/LinExpression.inlines.hh \
+                         @srcdir@/../src/LinExpression.cc \
                          @srcdir@/../src/Constraint.defs.hh \
                          @srcdir@/../src/Constraint.inlines.hh \
                          @srcdir@/../src/Constraint.cc \
@@ -335,6 +347,12 @@ INPUT                  = @srcdir@/definitions.dox \
                          @srcdir@/../src/conversion.cc \
                          @srcdir@/../src/minimize.cc \
                          @srcdir@/../src/simplify.cc \
+                         @srcdir@/../src/Poly_Con_Relation.defs.hh \
+                         @srcdir@/../src/Poly_Con_Relation.inlines.hh \
+                         @srcdir@/../src/Poly_Con_Relation.cc \
+                         @srcdir@/../src/Poly_Gen_Relation.defs.hh \
+                         @srcdir@/../src/Poly_Gen_Relation.inlines.hh \
+                         @srcdir@/../src/Poly_Gen_Relation.cc \
                          @srcdir@/../interfaces/Prolog/Prolog_interface.dox \
                          @srcdir@/../interfaces/Prolog/Ciao/ppl_ciao.cc \
                          @srcdir@/../interfaces/Prolog/GNU/ppl_gprolog.cc \
