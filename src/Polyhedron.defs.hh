@@ -768,7 +768,8 @@ public:
     <CODE>lower_upper_bound(k, closed, n, d)</CODE>.
   */
   template <typename Box>
-  void shrink_bounding_box(Box& box, Complexity_Class complexity = ANY) const;
+  void shrink_bounding_box(Box& box,
+			   Complexity_Class complexity = ANY_COMPLEXITY) const;
 
   //! Checks if all the invariants are satisfied.
   /*!

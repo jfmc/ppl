@@ -48,6 +48,9 @@ o  The `ppl_lcdd' demo is now able to parse problems produced by lrs,
    i.e., where the number of rows of the matrix is omitted and replaced
    by "*****" (five asterisks).
 
+o  The enumeration values of enum Complexity_Class have been renamed
+   POLYNOMIAL_COMPLEXITY, SIMPLEX_COMPLEXITY and ANY_COMPLEXITY.
+
 
 Bugfixes
 ========

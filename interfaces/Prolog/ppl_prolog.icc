@@ -1581,11 +1581,11 @@ ppl_Polyhedron_get_bounding_box(Prolog_term_ref t_ph,
     }
     Complexity_Class cc;
     if (p_cc == a_polynomial)
-      cc = POLYNOMIAL;
+      cc = POLYNOMIAL_COMPLEXITY;
     else if (p_cc == a_simplex)
-      cc = SIMPLEX;
+      cc = SIMPLEX_COMPLEXITY;
     else
-      cc = ANY;
+      cc = ANY_COMPLEXITY;
 
     dimension_type dimension = ph->space_dimension();
     BoundingBox bbox(dimension);

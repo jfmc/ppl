@@ -195,9 +195,9 @@ ppl_initialize(void) try {
   PPL_POLY_GEN_RELATION_SUBSUMES
     = Poly_Gen_Relation::subsumes().get_flags();
 
-  PPL_COMPLEXITY_CLASS_POLYNOMIAL = POLYNOMIAL;
-  PPL_COMPLEXITY_CLASS_SIMPLEX = SIMPLEX;
-  PPL_COMPLEXITY_CLASS_ANY = ANY;
+  PPL_COMPLEXITY_CLASS_POLYNOMIAL = POLYNOMIAL_COMPLEXITY;
+  PPL_COMPLEXITY_CLASS_SIMPLEX = SIMPLEX_COMPLEXITY;
+  PPL_COMPLEXITY_CLASS_ANY = ANY_COMPLEXITY;
 
   c_variable_output_function = c_variable_default_output_function;
   saved_cxx_Variable_output_function = Variable::get_output_function();
@@ -1960,9 +1960,9 @@ ppl_Polyhedron_shrink_bounding_box
  void (*lower_upper_bound)(ppl_dimension_type k, int closed,
 			   ppl_const_Coefficient_t n,
 			   ppl_const_Coefficient_t d)) try {
-  if (complexity != POLYNOMIAL
-      && complexity != SIMPLEX
-      && complexity != ANY)
+  if (complexity != POLYNOMIAL_COMPLEXITY
+      && complexity != SIMPLEX_COMPLEXITY
+      && complexity != ANY_COMPLEXITY)
     return PPL_ERROR_INVALID_ARGUMENT;
 
   const Polyhedron& pph = *to_const(ph);

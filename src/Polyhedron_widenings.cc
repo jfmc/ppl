@@ -377,7 +377,7 @@ PPL::Polyhedron::bounded_H79_extrapolation_assign(const Polyhedron& y,
 						  unsigned* tp) {
   ConSys bounding_cs;
   BW_Box box(bounding_cs);
-  shrink_bounding_box(box, ANY);
+  shrink_bounding_box(box, ANY_COMPLEXITY);
   limited_H79_extrapolation_assign(y, cs, tp);
   add_recycled_constraints(bounding_cs);
 }
@@ -853,7 +853,7 @@ PPL::Polyhedron::bounded_BHRZ03_extrapolation_assign(const Polyhedron& y,
 						     unsigned* tp) {
   ConSys bounding_cs;
   BW_Box box(bounding_cs);
-  shrink_bounding_box(box, ANY);
+  shrink_bounding_box(box, ANY_COMPLEXITY);
   limited_BHRZ03_extrapolation_assign(y, cs, tp);
   add_recycled_constraints(bounding_cs);
 }

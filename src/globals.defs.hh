@@ -57,12 +57,12 @@ enum Relation_Symbol {
 
 //! Complexity pseudo-classes.
 enum Complexity_Class {
-  //! Worst-case polynomial.
-  POLYNOMIAL,
-  //! Worst-case exponential but typically polynomial.
-  SIMPLEX,
+  //! Worst-case polynomial complexity.
+  POLYNOMIAL_COMPLEXITY,
+  //! Worst-case exponential complexity but typically polynomial behavior.
+  SIMPLEX_COMPLEXITY,
   //! Any complexity.
-  ANY
+  ANY_COMPLEXITY
 };
 
 #ifdef PPL_DOXYGEN_INCLUDE_IMPLEMENTATION_DETAILS
