@@ -250,9 +250,9 @@ Polyhedra_PowerSet<PH>::pairwise_reduce() {
       if (marked[i_index])
 	continue;
       PH& pi = i->polyhedron();
-      int j_index = 0;
-      const_iterator j;
-      for (j = i, ++j; j != send; ++j, ++j_index) {
+      const_iterator j = i;
+      int j_index = i_index;
+      for (++j, ++j_index; j != send; ++j, ++j_index) {
 	if (marked[j_index])
 	  continue;
 	const PH& pj = j->polyhedron();
@@ -284,26 +284,36 @@ Polyhedra_PowerSet<PH>::
 BGP99_heuristics_assign(const Polyhedra_PowerSet& y,
 			void (Polyhedron::*wm)
 			(const Polyhedron&, unsigned*)) {
+#ifndef NDEBUG
+  {
+    // We assume that y entails *this.
+    const Polyhedra_PowerSet<PH> x_copy = *this;
+    const Polyhedra_PowerSet<PH> y_copy = y;
+    assert(y_copy.definitely_entails(x_copy));
+  }
+#endif
+
   size_type n = size();
   Sequence new_sequence;
   std::deque<bool> marked(n, false);
-  iterator sbegin = begin();
-  iterator send = end();
+  const_iterator sbegin = begin();
+  const_iterator send = end();
   unsigned i_index = 0;
-  for (iterator i = sbegin; i != send; ++i, ++i_index)
+  for (const_iterator i = sbegin; i != send; ++i, ++i_index)
     for (const_iterator j = y.begin(), y_end = y.end(); j != y_end; ++j) {
-      PH& pi = i->polyhedron();
+      const PH& pi = i->polyhedron();
       const PH& pj = j->polyhedron();
       if (pi.contains(pj)) {
-	(pi.*wm)(pj, 0);
-	add_non_bottom_disjunct(new_sequence, pi);
+	PH pi_copy = pi;
+	(pi_copy.*wm)(pj, 0);
+	add_non_bottom_disjunct(new_sequence, pi_copy);
 	marked[i_index] = true;
       }
     }
   iterator nsbegin = new_sequence.begin();
   iterator nsend = new_sequence.end();
   i_index = 0;
-  for (iterator i = sbegin; i != send; ++i, ++i_index)
+  for (const_iterator i = sbegin; i != send; ++i, ++i_index)
     if (!marked[i_index])
       add_non_bottom_disjunct(new_sequence, *i, nsbegin, nsend);
   std::swap(sequence, new_sequence);
@@ -358,7 +368,7 @@ Polyhedra_PowerSet<PH>::BGP99_extrapolation_assign(const Polyhedra_PowerSet& y,
 
 #ifndef NDEBUG
   {
-    // We assume that y is entailed by or equal to *this.
+    // We assume that y entails *this.
     const Polyhedra_PowerSet<PH> x_copy = x;
     const Polyhedra_PowerSet<PH> y_copy = y;
     assert(y_copy.definitely_entails(x_copy));
@@ -386,7 +396,7 @@ limited_BGP99_extrapolation_assign(const Polyhedra_PowerSet& y,
 
 #ifndef NDEBUG
   {
-    // We assume that y is entailed by or equal to *this.
+    // We assume that y entails *this.
     const Polyhedra_PowerSet<PH> x_copy = x;
     const Polyhedra_PowerSet<PH> y_copy = y;
     assert(y_copy.definitely_entails(x_copy));
@@ -466,7 +476,7 @@ Polyhedra_PowerSet<PH>::BHZ03_widening_assign(const Polyhedra_PowerSet& y,
 
 #ifndef NDEBUG
   {
-    // We assume that y is entailed by or equal to *this.
+    // We assume that y entails *this.
     const Polyhedra_PowerSet<PH> x_copy = x;
     const Polyhedra_PowerSet<PH> y_copy = y;
     assert(y_copy.definitely_entails(x_copy));
@@ -515,21 +525,21 @@ Polyhedra_PowerSet<PH>::BHZ03_widening_assign(const Polyhedra_PowerSet& y,
   }
 
   // Second widening technique: try the BGP99 powerset heuristics.
-  Polyhedra_PowerSet<PH> extrapolated_x = x;
-  extrapolated_x.BGP99_extrapolation_assign(y, wm);
+  Polyhedra_PowerSet<PH> bgp99_heuristics = x;
+  bgp99_heuristics.BGP99_heuristics_assign(y, wm);
 
-  // Compute the poly-hull of `extrapolated_x'.
-  PH extrapolated_x_hull(x.space_dim, PH::EMPTY);
-  for (const_iterator i = extrapolated_x.begin(),
-	 iend = extrapolated_x.end(); i != iend; ++i)
-    extrapolated_x_hull.poly_hull_assign(i->polyhedron());
+  // Compute the poly-hull of `bgp99_heuristics'.
+  PH bgp99_heuristics_hull(x.space_dim, PH::EMPTY);
+  for (const_iterator i = bgp99_heuristics.begin(),
+	 iend = bgp99_heuristics.end(); i != iend; ++i)
+    bgp99_heuristics_hull.poly_hull_assign(i->polyhedron());
   
   // Check for stabilization and, if successful,
   // commit to the result of the extrapolation.
-  hull_stabilization = y_hull_info.compare(extrapolated_x_hull);
+  hull_stabilization = y_hull_info.compare(bgp99_heuristics_hull);
   if (hull_stabilization == 1) {
     // The poly-hull is stabilizing.
-    std::swap(x, extrapolated_x);
+    std::swap(x, bgp99_heuristics);
     return;
   }
   else if (hull_stabilization == 0 && y_is_not_a_singleton) {
@@ -538,30 +548,30 @@ Polyhedra_PowerSet<PH>::BHZ03_widening_assign(const Polyhedra_PowerSet& y,
       y.collect_multiset_lgo_info(y_info);
       y_info_computed = true;
     }
-    if (extrapolated_x.is_multiset_lgo_stabilizing(y_info)) {
-      std::swap(x, extrapolated_x);
+    if (bgp99_heuristics.is_multiset_lgo_stabilizing(y_info)) {
+      std::swap(x, bgp99_heuristics);
       return;
     }
-    // Third widening technique: pairwise-reduction on `extrapolated_x'.
+    // Third widening technique: pairwise-reduction on `bgp99_heuristics'.
     // Note that pairwise-reduction does not affect the computation
     // of the poly-hulls, so that we only have to check the multiset
     // lgo relation.
-    Polyhedra_PowerSet<PH> reduced_extrapolated_x(extrapolated_x);
-    reduced_extrapolated_x.pairwise_reduce();
-    if (reduced_extrapolated_x.is_multiset_lgo_stabilizing(y_info)) {
-      std::swap(x, reduced_extrapolated_x);
+    Polyhedra_PowerSet<PH> reduced_bgp99_heuristics(bgp99_heuristics);
+    reduced_bgp99_heuristics.pairwise_reduce();
+    if (reduced_bgp99_heuristics.is_multiset_lgo_stabilizing(y_info)) {
+      std::swap(x, reduced_bgp99_heuristics);
       return;
     }
   }
 
   // Fourth widening technique: this is applicable only when
-  // `y_hull' is a proper subset of `extrapolated_x_hull'.
-  if (extrapolated_x_hull.strictly_contains(y_hull)) {
-    // Compute (y_hull \widen extrapolated_x_hull).
-    PH ph = extrapolated_x_hull;
+  // `y_hull' is a proper subset of `bgp99_heuristics_hull'.
+  if (bgp99_heuristics_hull.strictly_contains(y_hull)) {
+    // Compute (y_hull \widen bgp99_heuristics_hull).
+    PH ph = bgp99_heuristics_hull;
     (ph.*wm)(y_hull, 0);
-    // Compute the poly-difference between `ph' and `extrapolated_x_hull'.
-    ph.poly_difference_assign(extrapolated_x_hull);
+    // Compute the poly-difference between `ph' and `bgp99_heuristics_hull'.
+    ph.poly_difference_assign(bgp99_heuristics_hull);
     x.add_disjunct(ph);
     return;
   }
@@ -587,7 +597,7 @@ Polyhedra_PowerSet<PH>
 
 #ifndef NDEBUG
   {
-    // We assume that y is entailed by or equal to *this.
+    // We assume that y entails *this.
     const Polyhedra_PowerSet<PH> x_copy = x;
     const Polyhedra_PowerSet<PH> y_copy = y;
     assert(y_copy.definitely_entails(x_copy));
@@ -636,21 +646,21 @@ Polyhedra_PowerSet<PH>
   }
 
   // Second widening technique: try the BGP99 powerset heuristics.
-  Polyhedra_PowerSet<PH> extrapolated_x = x;
-  extrapolated_x.limited_BGP99_heuristics_assign(y, cs, lwm);
+  Polyhedra_PowerSet<PH> bgp99_heuristics = x;
+  bgp99_heuristics.limited_BGP99_heuristics_assign(y, cs, lwm);
 
-  // Compute the poly-hull of `extrapolated_x'.
-  PH extrapolated_x_hull(x.space_dim, PH::EMPTY);
-  for (const_iterator i = extrapolated_x.begin(),
-	 iend = extrapolated_x.end(); i != iend; ++i)
-    extrapolated_x_hull.poly_hull_assign(i->polyhedron());
+  // Compute the poly-hull of `bgp99_heuristics'.
+  PH bgp99_heuristics_hull(x.space_dim, PH::EMPTY);
+  for (const_iterator i = bgp99_heuristics.begin(),
+	 iend = bgp99_heuristics.end(); i != iend; ++i)
+    bgp99_heuristics_hull.poly_hull_assign(i->polyhedron());
   
   // Check for stabilization and, if successful,
   // commit to the result of the extrapolation.
-  hull_stabilization = y_hull_info.compare(extrapolated_x_hull);
+  hull_stabilization = y_hull_info.compare(bgp99_heuristics_hull);
   if (hull_stabilization == 1) {
     // The poly-hull is stabilizing.
-    std::swap(x, extrapolated_x);
+    std::swap(x, bgp99_heuristics);
     return;
   }
   else if (hull_stabilization == 0 && y_is_not_a_singleton) {
@@ -659,30 +669,30 @@ Polyhedra_PowerSet<PH>
       y.collect_multiset_lgo_info(y_info);
       y_info_computed = true;
     }
-    if (extrapolated_x.is_multiset_lgo_stabilizing(y_info)) {
-      std::swap(x, extrapolated_x);
+    if (bgp99_heuristics.is_multiset_lgo_stabilizing(y_info)) {
+      std::swap(x, bgp99_heuristics);
       return;
     }
-    // Third widening technique: pairwise-reduction on `extrapolated_x'.
+    // Third widening technique: pairwise-reduction on `bgp99_heuristics'.
     // Note that pairwise-reduction does not affect the computation
     // of the poly-hulls, so that we only have to check the multiset
     // lgo relation.
-    Polyhedra_PowerSet<PH> reduced_extrapolated_x(extrapolated_x);
-    reduced_extrapolated_x.pairwise_reduce();
-    if (reduced_extrapolated_x.is_multiset_lgo_stabilizing(y_info)) {
-      std::swap(x, reduced_extrapolated_x);
+    Polyhedra_PowerSet<PH> reduced_bgp99_heuristics(bgp99_heuristics);
+    reduced_bgp99_heuristics.pairwise_reduce();
+    if (reduced_bgp99_heuristics.is_multiset_lgo_stabilizing(y_info)) {
+      std::swap(x, reduced_bgp99_heuristics);
       return;
     }
   }
 
   // Fourth widening technique: this is applicable only when
-  // `y_hull' is a proper subset of `extrapolated_x_hull'.
-  if (extrapolated_x_hull.strictly_contains(y_hull)) {
-    // Compute (y_hull \widen extrapolated_x_hull).
-    PH ph = extrapolated_x_hull;
+  // `y_hull' is a proper subset of `bgp99_heuristics_hull'.
+  if (bgp99_heuristics_hull.strictly_contains(y_hull)) {
+    // Compute (y_hull \widen bgp99_heuristics_hull).
+    PH ph = bgp99_heuristics_hull;
     (ph.*lwm)(y_hull, cs, 0);
-    // Compute the poly-difference between `ph' and `extrapolated_x_hull'.
-    ph.poly_difference_assign(extrapolated_x_hull);
+    // Compute the poly-difference between `ph' and `bgp99_heuristics_hull'.
+    ph.poly_difference_assign(bgp99_heuristics_hull);
     x.add_disjunct(ph);
     return;
   }
