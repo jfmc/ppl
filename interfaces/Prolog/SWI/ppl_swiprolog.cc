@@ -346,6 +346,7 @@ static PL_extension predicates[] = {
   PL_EXTENSION_ENTRY(ppl_Polyhedron_BHRZ03_widening_assign, 2)
   PL_EXTENSION_ENTRY(ppl_Polyhedron_BHRZ03_widening_assign_with_tokens, 3)
   PL_EXTENSION_ENTRY(ppl_Polyhedron_limited_BHRZ03_extrapolation_assign, 3)
+  PL_EXTENSION_ENTRY(ppl_Polyhedron_bounded_BHRZ03_extrapolation_assign, 3)
   PL_EXTENSION_ENTRY(ppl_Polyhedron_H79_widening_assign, 2)
   PL_EXTENSION_ENTRY(ppl_Polyhedron_limited_H79_extrapolation_assign, 3)
   PL_EXTENSION_ENTRY(ppl_Polyhedron_topological_closure_assign, 1)

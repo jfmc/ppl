@@ -50,6 +50,9 @@ site: http://www.cs.unipr.it/ppl/ . */
 :- foreign(ppl_Polyhedron_limited_BHRZ03_extrapolation_assign(+term,
 							      +term,
 							      +term)).
+:- foreign(ppl_Polyhedron_bounded_BHRZ03_extrapolation_assign(+term,
+							      +term,
+							      +term)).
 :- foreign(ppl_Polyhedron_H79_widening_assign(+term, +term)).
 :- foreign(ppl_Polyhedron_limited_H79_extrapolation_assign(+term,
 							   +term,
