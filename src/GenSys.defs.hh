@@ -29,6 +29,7 @@ site: http://www.cs.unipr.it/ppl/ . */
 #include "Matrix.defs.hh"
 #include "Generator.types.hh"
 #include "Constraint.types.hh"
+#include "Polyhedron.types.hh"
 #include "Poly_Con_Relation.defs.hh"
 #include <cstddef>
 #include <vector>
@@ -137,10 +138,13 @@ class Parma_Polyhedra_Library::GenSys : PPL_HIDDEN Matrix {
 public:
   //! Default constructor: builds an empty system of generators.
   GenSys();
+
   //! Builds the singleton system containing only generator \p g.
   GenSys(const Generator& g);
+
   //! Ordinary copy-constructor.
   GenSys(const GenSys& gs);
+
   //! Destructor.
   virtual ~GenSys();
 
@@ -245,6 +249,8 @@ public:
   const_iterator end() const;
 
 PPL_INTERNAL:
+  friend class Parma_Polyhedra_Library::Polyhedron;
+
   //! Constructor: builds an empty system of generators
   //! having the specified topology.
   GenSys(Topology topol);

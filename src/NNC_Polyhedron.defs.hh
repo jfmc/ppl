@@ -70,7 +70,7 @@ public:
   // of Polyhedron, once it has been peer reviewed.
   // Notice that a topological clash is impossible here.
   template <class Box>
-  NNC_Polyhedron(From_Bounding_Box, const Box& box);
+  NNC_Polyhedron(const Box& box, From_Bounding_Box);
 
   //! Ordinary copy-constructor.
   NNC_Polyhedron(const NNC_Polyhedron& y);

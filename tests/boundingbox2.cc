@@ -49,9 +49,7 @@ void test_c0() {
   BoundingBox box(2);
   ph.shrink_bounding_box(box);
 
-  From_Bounding_Box dummy;
-
-  C_Polyhedron known_ph(dummy, box);
+  C_Polyhedron known_ph(box, From_Bounding_Box());
 
 #if NOISY
   print_generators(known_ph, "*** test_c0 known_ph ***");
@@ -80,9 +78,7 @@ void test_nnc0() {
   BoundingBox box(2);
   ph.shrink_bounding_box(box);
 
-  From_Bounding_Box dummy;
-
-  NNC_Polyhedron known_ph(dummy, box);
+  NNC_Polyhedron known_ph(box, From_Bounding_Box());
 
 #if NOISY
   print_generators(known_ph, "*** test_nnc0 known_ph ***");
@@ -112,9 +108,7 @@ void test_c1() {
   BoundingBox box(2);
   ph.shrink_bounding_box(box);
 
-  From_Bounding_Box dummy;
-
-  C_Polyhedron known_ph(dummy, box);
+  C_Polyhedron known_ph(box, From_Bounding_Box());
 
 #if NOISY
   print_generators(known_ph, "*** test_c1 known_ph ***");
@@ -144,9 +138,7 @@ void test_nnc1() {
   BoundingBox box(2);
   ph.shrink_bounding_box(box);
 
-  From_Bounding_Box dummy;
-
-  NNC_Polyhedron known_ph(dummy, box);
+  NNC_Polyhedron known_ph(box, From_Bounding_Box());
 
 #if NOISY
   print_generators(known_ph, "*** test_nnc1 known_ph ***");
@@ -177,9 +169,7 @@ void test_c2() {
   BoundingBox box(2);
   ph.shrink_bounding_box(box);
 
-  From_Bounding_Box dummy;
-
-  C_Polyhedron known_ph(dummy, box);
+  C_Polyhedron known_ph(box, From_Bounding_Box());
 
 #if NOISY
   print_generators(known_ph, "*** test_c2 known_ph ***");
@@ -210,9 +200,7 @@ void test_nnc2() {
   BoundingBox box(2);
   ph.shrink_bounding_box(box);
 
-  From_Bounding_Box dummy;
-
-  NNC_Polyhedron known_ph(dummy, box);
+  NNC_Polyhedron known_ph(box, From_Bounding_Box());
 
 #if NOISY
   print_generators(known_ph, "*** test_nnc2 known_ph ***");
@@ -246,9 +234,7 @@ void test_c3() {
   BoundingBox box(4);
   ph.shrink_bounding_box(box);
 
-  From_Bounding_Box dummy;
-
-  C_Polyhedron known_ph(dummy, box);
+  C_Polyhedron known_ph(box, From_Bounding_Box());
 
 #if NOISY
   print_generators(known_ph, "*** test_c3 known_ph ***");
@@ -282,9 +268,7 @@ void test_nnc3() {
   BoundingBox box(4);
   ph.shrink_bounding_box(box);
 
-  From_Bounding_Box dummy;
-
-  NNC_Polyhedron known_ph(dummy, box);
+  NNC_Polyhedron known_ph(box, From_Bounding_Box());
 
 #if NOISY
   print_generators(known_ph, "*** test_nnc3 known_ph ***");
@@ -309,9 +293,7 @@ void test_c4() {
   BoundingBox box(2);
   ph.shrink_bounding_box(box);
 
-  From_Bounding_Box dummy;
-
-  C_Polyhedron known_ph(dummy, box);
+  C_Polyhedron known_ph(box, From_Bounding_Box());
 
 #if NOISY
   print_generators(known_ph, "*** test_c4 known_ph ***");
@@ -336,9 +318,7 @@ void test_nnc4() {
   BoundingBox box(2);
   ph.shrink_bounding_box(box);
 
-  From_Bounding_Box dummy;
-
-  NNC_Polyhedron known_ph(dummy, box);
+  NNC_Polyhedron known_ph(box, From_Bounding_Box());
 
 #if NOISY
   print_generators(known_ph, "*** test_nnc4 known_ph ***");
@@ -362,9 +342,7 @@ void test_c5() {
   BoundingBox box(0);
   ph.shrink_bounding_box(box);
 
-  From_Bounding_Box dummy;
-
-  C_Polyhedron known_ph(dummy, box);
+  C_Polyhedron known_ph(box, From_Bounding_Box());
 
 #if NOISY
   print_generators(known_ph, "*** test_c5 known_ph ***");
@@ -388,9 +366,7 @@ void test_nnc5() {
   BoundingBox box(0);
   ph.shrink_bounding_box(box);
 
-  From_Bounding_Box dummy;
-
-  NNC_Polyhedron known_ph(dummy, box);
+  NNC_Polyhedron known_ph(box, From_Bounding_Box());
 
 #if NOISY
   print_generators(known_ph, "*** test_nnc5 known_ph ***");
@@ -414,9 +390,7 @@ void test_c6() {
   BoundingBox box(2);
   ph.shrink_bounding_box(box);
 
-  From_Bounding_Box dummy;
-
-  C_Polyhedron known_ph(dummy, box);
+  C_Polyhedron known_ph(box, From_Bounding_Box());
 
 #if NOISY
   print_generators(known_ph, "*** test_c6 known_ph ***");
@@ -440,9 +414,7 @@ void test_nnc6() {
   BoundingBox box(2);
   ph.shrink_bounding_box(box);
 
-  From_Bounding_Box dummy;
-
-  NNC_Polyhedron known_ph(dummy, box);
+  NNC_Polyhedron known_ph(box, From_Bounding_Box());
 
 #if NOISY
   print_generators(known_ph, "*** test_nnc6 known_ph ***");
@@ -471,9 +443,7 @@ void test_c7() {
   BoundingBox box(2);
   ph.shrink_bounding_box(box);
 
-  From_Bounding_Box dummy;
-
-  C_Polyhedron known_ph(dummy, box);
+  C_Polyhedron known_ph(box, From_Bounding_Box());
 
 #if NOISY
   print_generators(known_ph, "*** test_c7 known_ph ***");
@@ -502,9 +472,7 @@ void test_nnc7() {
   BoundingBox box(2);
   ph.shrink_bounding_box(box);
 
-  From_Bounding_Box dummy;
-
-  NNC_Polyhedron known_ph(dummy, box);
+  NNC_Polyhedron known_ph(box, From_Bounding_Box());
 
 #if NOISY
   print_generators(known_ph, "*** test_nnc7 known_ph ***");
@@ -537,9 +505,7 @@ void test_c8() {
   BoundingBox box(2);
   ph.shrink_bounding_box(box);
 
-  From_Bounding_Box dummy;
-
-  C_Polyhedron known_ph(dummy, box);
+  C_Polyhedron known_ph(box, From_Bounding_Box());
 
 #if NOISY
   print_generators(known_ph, "*** test_c8 known_ph ***");
@@ -572,9 +538,7 @@ void test_nnc8() {
   BoundingBox box(2);
   ph.shrink_bounding_box(box);
 
-  From_Bounding_Box dummy;
-
-  NNC_Polyhedron known_ph(dummy, box);
+  NNC_Polyhedron known_ph(box, From_Bounding_Box());
 
 #if NOISY
   print_generators(known_ph, "*** test_nnc8 known_ph ***");
@@ -607,9 +571,7 @@ void test_c9() {
   BoundingBox box(4);
   ph.shrink_bounding_box(box);
 
-  From_Bounding_Box dummy;
-
-  C_Polyhedron known_ph(dummy, box);
+  C_Polyhedron known_ph(box, From_Bounding_Box());
 
 #if NOISY
   print_generators(known_ph, "*** test_c9 known_ph ***");
@@ -644,9 +606,7 @@ void test_nnc9() {
   BoundingBox box(4);
   ph.shrink_bounding_box(box);
 
-  From_Bounding_Box dummy;
-
-  NNC_Polyhedron known_ph(dummy, box);
+  NNC_Polyhedron known_ph(box, From_Bounding_Box());
 
 #if NOISY
   print_generators(known_ph, "*** test_nnc9 known_ph ***");
@@ -678,9 +638,7 @@ void test_nnc10() {
   BoundingBox box(2);
   ph.shrink_bounding_box(box);
 
-  From_Bounding_Box dummy;
-
-  NNC_Polyhedron known_ph(dummy, box);
+  NNC_Polyhedron known_ph(box, From_Bounding_Box());
 
 #if NOISY
   print_generators(known_ph, "*** test_nnc known_ph ***");
@@ -711,9 +669,7 @@ void test_nnc11() {
   BoundingBox box(2);
   ph.shrink_bounding_box(box);
 
-  From_Bounding_Box dummy;
-
-  NNC_Polyhedron known_ph(dummy, box);
+  NNC_Polyhedron known_ph(box, From_Bounding_Box());
 
 #if NOISY
   print_generators(known_ph, "*** test_nnc11 known_ph ***");
@@ -734,9 +690,7 @@ void test_c12() {
   box.lower_upper_bound(0, true, 1, 2);
   box.raise_lower_bound(1, true, 0, 1);
   
-  From_Bounding_Box dummy;
-
-  C_Polyhedron ph(dummy, box);
+  C_Polyhedron ph(box, From_Bounding_Box());
 
 #if NOISY
   print_generators(ph, "*** test_c12 ph ***");

@@ -43,7 +43,7 @@ NNC_Polyhedron::NNC_Polyhedron(GenSys& gs)
 }
 
 template <class Box>
-NNC_Polyhedron::NNC_Polyhedron(From_Bounding_Box, const Box& box)
+NNC_Polyhedron::NNC_Polyhedron(const Box& box, From_Bounding_Box)
   : Polyhedron(NOT_NECESSARILY_CLOSED, box) {
 }
 

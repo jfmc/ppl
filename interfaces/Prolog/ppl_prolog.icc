@@ -938,9 +938,9 @@ ppl_new_Polyhedron_from_bounding_box(Prolog_term_ref t_tp,
     PPL::Polyhedron* ph;
     Prolog_atom tp = term_to_polyhedron_kind(t_tp);
     if (tp == a_c)
-      ph = new PPL::C_Polyhedron(PPL::From_Bounding_Box(), bbox);
+      ph = new PPL::C_Polyhedron(bbox, PPL::From_Bounding_Box());
     else
-      ph = new PPL::NNC_Polyhedron(PPL::From_Bounding_Box(), bbox);
+      ph = new PPL::NNC_Polyhedron(bbox, PPL::From_Bounding_Box());
     Prolog_term_ref tmp = Prolog_new_term_ref();
     Prolog_put_address(tmp, ph);
     if (Prolog_unify(t_ph, tmp)) {

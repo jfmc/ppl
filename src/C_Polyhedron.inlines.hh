@@ -43,7 +43,7 @@ C_Polyhedron::C_Polyhedron(GenSys& gs)
 }
 
 template <class Box>
-C_Polyhedron::C_Polyhedron(From_Bounding_Box, const Box& box)
+C_Polyhedron::C_Polyhedron(const Box& box, From_Bounding_Box)
   : Polyhedron(NECESSARILY_CLOSED, box) {
 }
 

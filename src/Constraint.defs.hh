@@ -28,10 +28,10 @@ site: http://www.cs.unipr.it/ppl/ . */
 #include "Row.defs.hh"
 #include "Variable.defs.hh"
 #include "LinExpression.types.hh"
+#include "Polyhedron.types.hh"
 #include <iosfwd>
 
 namespace Parma_Polyhedra_Library {
-
   //! Output operator.
   std::ostream& operator<<(std::ostream& s, const Constraint& c);
 
@@ -158,7 +158,71 @@ namespace Parma_Polyhedra_Library {
   constraint considered.
 */
 class Parma_Polyhedra_Library::Constraint : PPL_HIDDEN Row {
+public:
+  //! Ordinary copy-constructor.
+  Constraint(const Constraint& c);
+
+  //! Destructor.
+  ~Constraint();
+
+  //! Assignment operator.
+  Constraint& operator=(const Constraint& c);
+
+  //! Returns the dimension of the vector space enclosing \p *this.
+  size_t space_dimension() const;
+
+  //! The constraint type.
+  /*! Describes the type of the constraint. */
+  enum Type {
+    /*! The constraint is an equality. */
+    EQUALITY,
+    /*! The constraint is a non-strict inequality. */
+    NONSTRICT_INEQUALITY,
+    /*! The constraint is a strict inequality. */
+    STRICT_INEQUALITY
+  };
+
+  //! Returns the constraint type of \p *this.
+  Type type() const;
+
+  //! Returns <CODE>true</CODE> if and only if
+  //! \p *this is an equality constraint.
+  bool is_equality() const;
+  
+  //! Returns <CODE>true</CODE> if and only if
+  //! \p *this is an inequality constraint (either strict or non-strict).
+  bool is_inequality() const;
+  
+  //! Returns <CODE>true</CODE> if and only if
+  //! \p *this is a non-strict inequality constraint.
+  bool is_nonstrict_inequality() const;
+  
+  //! Returns <CODE>true</CODE> if and only if
+  //! \p *this is a strict inequality constraint.
+  bool is_strict_inequality() const;
+
+  //! If the index of variable \p v is less than the space-dimension
+  //! of \p *this, returns the coefficient of \p v in \p *this.
+  //! \exception std::invalid_argument thrown if the index of \p v
+  //! is greater than or equal to the space-dimension of \p *this.
+  const Integer& coefficient(Variable v) const;
+  
+  //! Returns the inhomogeneous term of \p *this.
+  const Integer& inhomogeneous_term() const;
+
+  //! The unsatisfiable (zero-dimension space) constraint \f$0 = 1\f$.
+  static const Constraint& zero_dim_false();
+
+  //! The true (zero-dimension space) constraint \f$0 \leq 1\f$,
+  //! also known as <EM>positivity constraint</EM>.
+  static const Constraint& zero_dim_positivity();
+
+  //! Checks if all the invariants are satisfied.
+  bool OK() const;
+
 private:
+  friend class Parma_Polyhedra_Library::Polyhedron;
+
   //! Default constructor: private and not implemented.
   Constraint();
 
@@ -255,68 +319,6 @@ private:
   friend Constraint
   Parma_Polyhedra_Library::operator>>(const Constraint& c,
 				      unsigned int offset);
-
-public:
-  //! Ordinary copy-constructor.
-  Constraint(const Constraint& c);
-
-  //! Destructor.
-  ~Constraint();
-
-  //! Assignment operator.
-  Constraint& operator=(const Constraint& c);
-
-  //! Returns the dimension of the vector space enclosing \p *this.
-  size_t space_dimension() const;
-
-  //! The constraint type.
-  /*! Describes the type of the constraint. */
-  enum Type {
-    /*! The constraint is an equality. */
-    EQUALITY,
-    /*! The constraint is a non-strict inequality. */
-    NONSTRICT_INEQUALITY,
-    /*! The constraint is a strict inequality. */
-    STRICT_INEQUALITY
-  };
-
-  //! Returns the constraint type of \p *this.
-  Type type() const;
-
-  //! Returns <CODE>true</CODE> if and only if
-  //! \p *this is an equality constraint.
-  bool is_equality() const;
-  
-  //! Returns <CODE>true</CODE> if and only if
-  //! \p *this is an inequality constraint (either strict or non-strict).
-  bool is_inequality() const;
-  
-  //! Returns <CODE>true</CODE> if and only if
-  //! \p *this is a non-strict inequality constraint.
-  bool is_nonstrict_inequality() const;
-  
-  //! Returns <CODE>true</CODE> if and only if
-  //! \p *this is a strict inequality constraint.
-  bool is_strict_inequality() const;
-
-  //! If the index of variable \p v is less than the space-dimension
-  //! of \p *this, returns the coefficient of \p v in \p *this.
-  //! \exception std::invalid_argument thrown if the index of \p v
-  //! is greater than or equal to the space-dimension of \p *this.
-  const Integer& coefficient(Variable v) const;
-  
-  //! Returns the inhomogeneous term of \p *this.
-  const Integer& inhomogeneous_term() const;
-
-  //! The unsatisfiable (zero-dimension space) constraint \f$0 = 1\f$.
-  static const Constraint& zero_dim_false();
-
-  //! The true (zero-dimension space) constraint \f$0 \leq 1\f$,
-  //! also known as <EM>positivity constraint</EM>.
-  static const Constraint& zero_dim_positivity();
-
-  //! Checks if all the invariants are satisfied.
-  bool OK() const;
 
 PPL_INTERNAL:
   //! Copy-constructor with given size.

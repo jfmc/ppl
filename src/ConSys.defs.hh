@@ -28,6 +28,7 @@ site: http://www.cs.unipr.it/ppl/ . */
 #include "ConSys.types.hh"
 #include "Matrix.defs.hh"
 #include "Generator.types.hh"
+#include "Polyhedron.types.hh"
 #include "Constraint.defs.hh"
 #include <cstddef>
 #include <vector>
@@ -192,6 +193,8 @@ public:
   const_iterator end() const;
 
 PPL_INTERNAL:
+  friend class Parma_Polyhedra_Library::Polyhedron;
+
   //! Constructor: builds an empty system of constraints
   //! having the specified topology.
   ConSys(Topology topol);

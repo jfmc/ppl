@@ -91,7 +91,7 @@ public:
   // FIXME: adapt the documentation of the corresponding constructor
   // of Polyhedron, once it has been peer reviewed.
   template <class Box>
-  C_Polyhedron(From_Bounding_Box, const Box& box);
+  C_Polyhedron(const Box& box, From_Bounding_Box);
 
   //! The assignment operator.
   //! (Note that \p *this and \p y can be dimension-incompatible.)
