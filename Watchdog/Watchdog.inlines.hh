@@ -24,6 +24,8 @@ site: http://www.cs.unipr.it/Software/ . */
 #ifndef PWL_Watchdog_inlines_hh
 #define PWL_Watchdog_inlines_hh 1
 
+#include <stdexcept>
+
 namespace Parma_Watchdog_Library {
 
 template <typename Flag_Base, typename Flag>
@@ -172,6 +174,9 @@ template <typename Flag_Base, typename Flag>
 Watchdog::Watchdog(int units, const Flag_Base* volatile* holder, Flag& flag)
   : expired(false),
     handler(new Handler_Flag<Flag_Base, Flag>(holder, flag)) {
+  if (units <= 0)
+    throw std::invalid_argument("Watchdog constructor called with a"
+				" non-positive number of time units");
   in_critical_section = true;
   pending_position = new_watchdog_event(units, handler, &expired);
   in_critical_section = false;
@@ -180,6 +185,9 @@ Watchdog::Watchdog(int units, const Flag_Base* volatile* holder, Flag& flag)
 inline
 Watchdog::Watchdog(int units, void (*function)())
   : expired(false), handler(new Handler_Function(function)) {
+  if (units <= 0)
+    throw std::invalid_argument("Watchdog constructor called with a"
+				" non-positive number of time units");
   in_critical_section = true;
   pending_position = new_watchdog_event(units, handler, &expired);
   in_critical_section = false;
