@@ -430,15 +430,9 @@ PPL::Polyhedron::conversion(Matrix& source,
       if (scalar_prod[index_non_zero] < 0) {
 	// The ray `dest[index_non_zero]' lies on the wrong half-space:
 	// we change it to have the opposite direction.
-	// FIXME: the following qualification PPL:: is there only
-	//        to get around a bug of GCC version 2.96 20000731
-	//        (Red Hat Linux 7.1 2.96-98)
-	PPL::negate(scalar_prod[index_non_zero]);
+	negate(scalar_prod[index_non_zero]);
 	for (dimension_type j = dest_num_columns; j-- > 0; )
-	  // FIXME: the following qualification PPL:: is there only
-	  //        to get around a bug of GCC version 2.96 20000731
-	  //        (Red Hat Linux 7.1 2.96-98)
-	  PPL::negate(dest[index_non_zero][j]);
+	  negate(dest[index_non_zero][j]);
       }
       // Having changed a line into a ray, we set `dest' to be a
       // non-sorted matrix, we decrement the number of lines of `dest' and,
