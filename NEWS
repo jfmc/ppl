@@ -66,6 +66,9 @@ Bugfixes
 o  Fixed a bug that was affecting Polyhedra_PowerSet::geometrically_covers()
    and Polyhedra_PowerSet::geometrically_equals().
 
+o  Method C_Polyhedron::H79_widening_assign() now widens the polyhedron
+   itself instead of the homogenized polyhedral cone representing it.
+
 o  Fixed a bug that was affecting Polyhedron::H79_widening_assign()
    as well as all the limited and bounded extrapolation operators.
 
