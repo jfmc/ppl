@@ -74,6 +74,7 @@ ORIGINAL_TESTS = \
 	bhrz03widening17 bhrz03widening18 bhrz03widening19 \
 	bhz03widening1 bhz03widening2 \
 	bounded1 \
+	boundedh79extrapolation1 \
 	bounds1 bounds2 \
 	boundingbox1 boundingbox2 boundingbox3 boundingbox4 \
 	concatenate1 concatenate2 concatenate3 concatenate4 concatenate5 \
@@ -162,6 +163,7 @@ DERIVED_TESTS = \
 	nnc_bhrz03widening8 nnc_bhrz03widening9 \
 	nnc_bhrz03widening10 nnc_bhrz03widening11 nnc_bhrz03widening12 \
 	nnc_bounded1 \
+	nnc_boundedh79extrapolation1 \
 	nnc_boundingbox1 nnc_boundingbox3 \
 	nnc_bounds1 nnc_bounds2 \
 	nnc_concatenate1 nnc_concatenate2 nnc_concatenate3 nnc_concatenate4 \
@@ -336,6 +338,8 @@ bhz03widening1_SOURCES = bhz03widening1.cc
 bhz03widening2_SOURCES = bhz03widening2.cc
 
 bounded1_SOURCES = bounded1.cc
+
+boundedh79extrapolation1_SOURCES = boundedh79extrapolation1.cc
 
 bounds1_SOURCES = bounds1.cc
 bounds2_SOURCES = bounds2.cc
@@ -698,6 +702,9 @@ nnc_bhrz03widening12_CXXFLAGS = $(DERIVED_CXXFLAGS)
 
 nnc_bounded1_SOURCES = bounded1.cc
 nnc_bounded1_CXXFLAGS = $(DERIVED_CXXFLAGS)
+
+nnc_boundedh79extrapolation1_SOURCES = boundedh79extrapolation1.cc
+nnc_boundedh79extrapolation1_CXXFLAGS = $(DERIVED_CXXFLAGS)
 
 nnc_boundingbox1_SOURCES = boundingbox1.cc BBox.cc
 nnc_boundingbox1_CXXFLAGS = $(DERIVED_CXXFLAGS)
