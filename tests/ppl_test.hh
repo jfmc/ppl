@@ -57,26 +57,36 @@ bool is_nonnegative(const Checked_Number<T, Policy>& x) {
 
 template <typename T, typename Policy>
 bool exact_neg(Checked_Number<T, Policy>& to, const Checked_Number<T, Policy>& x) {
-  return to.assign_neg(x, Rounding::IGNORE) == V_EQ;
+  return to.assign_neg(x, ROUND_IGNORE) == V_EQ;
 }
 
 template <typename To, typename To_Policy>
 void div_round_up(Checked_Number<To, To_Policy>& to,
 		  const Coefficient& x,
 		  const Coefficient& y) {
+#if 0
   Rounding_State old;
   Checked_Number<To, To_Policy> nx;
-  Rounding x_r(y < 0 ? Rounding::DOWN : Rounding::UP);
-  x_r.internal_save<To>(old);
+  Rounding_Dir x_r(y < 0 ? ROUND_DOWN : ROUND_UP);
+  rounding_save_internal<To>(x_r, old);
   nx.assign(x, x_r);
   Checked_Number<To, To_Policy> ny;
-  Rounding y_r(x > 0 ? Rounding::DOWN : Rounding::UP);
-  y_r.internal_install<To>();
+  Rounding_Dir y_r(x > 0 ? ROUND_DOWN : ROUND_UP);
+  rounding_install_internal<To>(y_r);
   ny.assign(y, y_r);
-  Rounding to_r(Rounding::UP);
-  to_r.internal_install<To>();
-  to.assign_div(nx, ny, to_r);
-  to_r.internal_restore<To>(old);
+  rounding_install_internal<To>(ROUND_UP);
+  to.assign_div(nx, ny, ROUND_UP);
+  rounding_restore_internal<To>(old, ROUND_UP);
+#else
+  Rounding_State old;
+  Coefficient q;
+  Coefficient::internal_save_rounding(ROUND_UP, old);
+  q.assign_div(x, y, ROUND_UP);
+  Coefficient::internal_restore_rounding(old, ROUND_UP);
+  Checked_Number<To, To_Policy>::internal_save_rounding(ROUND_UP, old);
+  to.assign(q, ROUND_UP);
+  Checked_Number<To, To_Policy>::internal_restore_rounding(old, ROUND_UP);
+#endif
 }
 
 template <typename T, typename Policy>
@@ -84,10 +94,9 @@ void add_round_up(Checked_Number<T, Policy>& to,
 		  const Checked_Number<T, Policy>& x,
 		  const Checked_Number<T, Policy>& y) {
   Rounding_State old;
-  Rounding mode(Rounding::UP);
-  mode.internal_save<T>(old);
-  to.assign_add(x, y, mode);
-  mode.internal_restore<T>(old);
+  Checked_Number<T, Policy>::internal_save_rounding(ROUND_UP, old);
+  to.assign_add(x, y, ROUND_UP);
+  Checked_Number<T, Policy>::internal_restore_rounding(old, ROUND_UP);
 }
 
 template <typename T, typename Policy>
@@ -95,20 +104,18 @@ void add_round_down(Checked_Number<T, Policy>& to,
 		    const Checked_Number<T, Policy>& x,
 		    const Checked_Number<T, Policy>& y) {
   Rounding_State old;
-  Rounding mode(Rounding::DOWN);
-  mode.internal_save<T>(old);
-  to.assign_add(x, y, mode);
-  mode.internal_restore<T>(old);
+  Checked_Number<T, Policy>::internal_save_rounding(ROUND_DOWN, old);
+  to.assign_add(x, y, ROND_DOWN);
+  Checked_Number<T, Policy>::internal_restore_rounding(old, ROUND_UP);
 }
 
 template <typename T, typename Policy>
 void negate_round_down(Checked_Number<T, Policy>& to,
 		       const Checked_Number<T, Policy>& x) {
   Rounding_State old;
-  Rounding mode(Rounding::DOWN);
-  mode.internal_save<T>(old);
+  Checked_Number<To, To_Policy>::internal_save_rounding(ROUND_DOWN, old);
   to.assign_neg(x, mode);
-  mode.internal_restore<T>(old);
+  Checked_Number<To, To_Policy>::internal_restore_rounding(old, ROUND_UP);
 }
 
 template <typename T, typename Policy>
@@ -118,7 +125,7 @@ void numer_denom(const Checked_Number<T, Policy>& from,
   if (from.is_nan() || from.is_minf() || from.is_pinf())
     abort();
   mpq_class q;
-  Checked::assign<Checked::Transparent_Policy>(q, raw_value(from), Rounding::IGNORE);
+  Checked::assign<Checked::Transparent_Policy>(q, raw_value(from), ROUND_IGNORE);
   q.canonicalize();
   num = q.get_num();
   den = q.get_den();

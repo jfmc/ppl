@@ -33,7 +33,7 @@ namespace Parma_Polyhedra_Library {
 namespace Checked {
 
 template <typename To_Policy, typename From_Policy, typename To, typename From>
-Result assign_ext(To& to, const From& from, const Rounding& mode);
+Result assign_ext(To& to, const From& from, Rounding_Dir dir);
 
 template <typename Policy, typename Type>
 Result sgn_ext(const Type& x);
@@ -42,46 +42,46 @@ template <typename Policy1, typename Policy2, typename Type1, typename Type2>
 Result cmp_ext(const Type1& x, const Type2& y);
 
 template <typename To_Policy, typename From_Policy, typename To, typename From>
-Result neg_ext(To& to, const From& x, const Rounding& mode);
+Result neg_ext(To& to, const From& x, Rounding_Dir dir);
 
 template <typename To_Policy, typename From_Policy, typename To, typename From>
-Result abs_ext(To& to, const From& x, const Rounding& mode);
+Result abs_ext(To& to, const From& x, Rounding_Dir dir);
 
 template <typename To_Policy, typename From1_Policy, typename From2_Policy, typename To, typename From1, typename From2>
-Result add_ext(To& to, const From1& x, const From2& y, const Rounding& mode);
+Result add_ext(To& to, const From1& x, const From2& y, Rounding_Dir dir);
 
 template <typename To_Policy, typename From1_Policy, typename From2_Policy, typename To, typename From1, typename From2>
-Result sub_ext(To& to, const From1& x, const From2& y, const Rounding& mode);
+Result sub_ext(To& to, const From1& x, const From2& y, Rounding_Dir dir);
 
 template <typename To_Policy, typename From1_Policy, typename From2_Policy, typename To, typename From1, typename From2>
-Result mul_ext(To& to, const From1& x, const From2& y, const Rounding& mode);
+Result mul_ext(To& to, const From1& x, const From2& y, Rounding_Dir dir);
 
 template <typename To_Policy, typename From1_Policy, typename From2_Policy, typename To, typename From1, typename From2>
-Result div_ext(To& to, const From1& x, const From2& y, const Rounding& mode);
+Result div_ext(To& to, const From1& x, const From2& y, Rounding_Dir dir);
 
 template <typename To_Policy, typename From1_Policy, typename From2_Policy, typename To, typename From1, typename From2>
-Result rem_ext(To& to, const From1& x, const From2& y, const Rounding& mode);
+Result rem_ext(To& to, const From1& x, const From2& y, Rounding_Dir dir);
 
 template <typename To_Policy, typename From1_Policy, typename From2_Policy, typename To, typename From1, typename From2>
-Result add_mul_ext(To& to, const From1& x, const From2& y, const Rounding& mode);
+Result add_mul_ext(To& to, const From1& x, const From2& y, Rounding_Dir dir);
 
 template <typename To_Policy, typename From1_Policy, typename From2_Policy, typename To, typename From1, typename From2>
-Result sub_mul_ext(To& to, const From1& x, const From2& y, const Rounding& mode);
+Result sub_mul_ext(To& to, const From1& x, const From2& y, Rounding_Dir dir);
 
 template <typename To_Policy, typename From_Policy, typename To, typename From>
-Result sqrt_ext(To& to, const From& x, const Rounding& mode);
+Result sqrt_ext(To& to, const From& x, Rounding_Dir dir);
 
 template <typename To_Policy, typename From1_Policy, typename From2_Policy, typename To, typename From1, typename From2>
-Result gcd_ext(To& to, const From1& x, const From2& y, const Rounding& mode);
+Result gcd_ext(To& to, const From1& x, const From2& y, Rounding_Dir dir);
 
 template <typename To_Policy, typename From1_Policy, typename From2_Policy, typename To, typename From1, typename From2>
-Result lcm_ext(To& to, const From1& x, const From2& y, const Rounding& mode);
+Result lcm_ext(To& to, const From1& x, const From2& y, Rounding_Dir dir);
 
 template <typename Policy, typename Type>
-Result to_c_string_ext(char* str, size_t size, const Type& x, const Numeric_Format& format, const Rounding& mode);
+Result to_c_string_ext(char* str, size_t size, const Type& x, const Numeric_Format& format, Rounding_Dir dir);
 
 template <typename Policy, typename Type>
-Result from_c_string_ext(Type& x, const char* str, const Numeric_Format& format, const Rounding& mode);
+Result from_c_string_ext(Type& x, const char* str, const Numeric_Format& format, Rounding_Dir dir);
 
 } // namespace Checked
 

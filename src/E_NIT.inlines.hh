@@ -74,7 +74,7 @@ E_NIT<T>::E_NIT(const Coefficient& y) {
   if (y < 0 && y < min())
     n = minf();
   else
-    Checked::assign<Checked::Transparent_Policy>(n, raw_value(y), Rounding::IGNORE);
+    Checked::assign<Checked::Transparent_Policy>(n, raw_value(y), ROUND_IGNORE);
 }
 
 template <typename T>
@@ -127,7 +127,7 @@ E_NIT<T>::operator=(const Coefficient& y) {
   if (y < 0 && y < min())
     n = minf();
   else
-    Checked::assign<Checked::Transparent_Policy>(n, raw_value(y), Rounding::IGNORE);
+    Checked::assign<Checked::Transparent_Policy>(n, raw_value(y), ROUND_IGNORE);
   return *this;
 }
 

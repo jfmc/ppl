@@ -49,7 +49,7 @@ struct Checked_Number_Default_Policy {
   static const int check_overflow = 1;
   static const int check_divbyzero = 0;
   static const int check_sqrt_neg = 0;
-  static const int round_inexact = 0;
+  static const int use_corrent_rounding = 0;
   static const int store_nan = 0;
   static const int store_infinity = 0;
   static const int convertible = 1;
@@ -62,7 +62,7 @@ struct Extended_Number_Policy {
   static const int check_overflow = 1;
   static const int check_divbyzero = 0;
   static const int check_sqrt_neg = 0;
-  static const int round_inexact = 1;
+  static const int use_corrent_rounding = 1;
   static const int store_nan = 1;
   static const int store_infinity = 1;
   static const int fpu_classify = 0;
@@ -163,15 +163,15 @@ public:
 
   bool OK() const;
   Result classify(bool nan = true, bool inf = true, bool sign = true) const;
-  Result assign(const Minus_Infinity&, const Rounding& mode = Rounding::CURRENT);
-  Result assign(const Plus_Infinity&, const Rounding& mode = Rounding::CURRENT);
-  Result assign(const Not_A_Number&, const Rounding& mode = Rounding::CURRENT);
+  Result assign(const Minus_Infinity&, Rounding_Dir dir = ROUND_CURRENT);
+  Result assign(const Plus_Infinity&, Rounding_Dir dir = ROUND_CURRENT);
+  Result assign(const Not_A_Number&, Rounding_Dir dir = ROUND_CURRENT);
 
 #define FUNC1(name) \
   template <typename From> \
-  Result name(const From& x, const Rounding& mode = Rounding::CURRENT); \
+  Result name(const From& x, Rounding_Dir dir = ROUND_CURRENT); \
   template <typename From, typename From_Policy> \
-  Result name(const Checked_Number<From, From_Policy>& x, const Rounding& mode = Rounding::CURRENT);
+  Result name(const Checked_Number<From, From_Policy>& x, Rounding_Dir dir = ROUND_CURRENT);
 
   FUNC1(assign)
   FUNC1(assign_neg)
@@ -182,16 +182,16 @@ public:
 
 #define FUNC2(name) \
   template <typename From1, typename From2> \
-  Result name(const From1& x, const From2& y, const Rounding& mode = Rounding::CURRENT); \
+  Result name(const From1& x, const From2& y, Rounding_Dir dir = ROUND_CURRENT); \
   template <typename From1, \
 	    typename From2, typename Policy2> \
-  Result name(const From1& x, const Checked_Number<From2, Policy2>& y, const Rounding& mode = Rounding::CURRENT); \
+  Result name(const From1& x, const Checked_Number<From2, Policy2>& y, Rounding_Dir dir = ROUND_CURRENT); \
   template <typename From1, typename Policy1, \
 	    typename From2> \
-  Result name(const Checked_Number<From1, Policy1>& x, const From2& y, const Rounding& mode = Rounding::CURRENT); \
+  Result name(const Checked_Number<From1, Policy1>& x, const From2& y, Rounding_Dir dir = ROUND_CURRENT); \
   template <typename From1, typename Policy1, \
 	    typename From2, typename Policy2> \
-  Result name(const Checked_Number<From1, Policy1>& x, const Checked_Number<From2, Policy2>& y, const Rounding& mode = Rounding::CURRENT);
+  Result name(const Checked_Number<From1, Policy1>& x, const Checked_Number<From2, Policy2>& y, Rounding_Dir dir = ROUND_CURRENT);
 
   FUNC2(assign_add)
   FUNC2(assign_sub)
@@ -275,8 +275,10 @@ public:
   //! Swaps \p *this with \p y.
   void swap(Checked_Number& y);
 
-  static void save_rounding(const Rounding& mode, Rounding_State& current);
-  static void restore_rounding(const Rounding_State& state, const Rounding& current);
+  static void save_rounding(Rounding_Dir dir, Rounding_State& old);
+  static void restore_rounding(const Rounding_State& old, Rounding_Dir dir);
+  static void internal_save_rounding(Rounding_Dir dir, Rounding_State& old);
+  static void internal_restore_rounding(const Rounding_State& old, Rounding_Dir dir);
 
 private:
   //! The underlying native integer value.

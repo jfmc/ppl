@@ -35,8 +35,8 @@ ERational::ERational(Coefficient_traits::const_reference num,
 		     Coefficient_traits::const_reference den)
   : e(0) {
   assert(den != 0);
-  Checked::assign<Checked::Transparent_Policy>(v.get_num(), raw_value(num), Rounding::IGNORE);
-  Checked::assign<Checked::Transparent_Policy>(v.get_den(), raw_value(den), Rounding::IGNORE);
+  Checked::assign<Checked::Transparent_Policy>(v.get_num(), raw_value(num), ROUND_IGNORE);
+  Checked::assign<Checked::Transparent_Policy>(v.get_den(), raw_value(den), ROUND_IGNORE);
   v.canonicalize();
 }
 

@@ -341,7 +341,7 @@ int
 ppl_Coefficient_to_mpz_t(ppl_const_Coefficient_t c, mpz_t z) try {
   // FIXME: this is a kludge.
   mpz_class v;
-  Checked::assign<Check_Overflow_Policy>(v, raw_value(*to_const(c)), Rounding(Rounding::IGNORE));
+  Checked::assign<Check_Overflow_Policy>(v, raw_value(*to_const(c)), ROUND_IGNORE);
   mpz_set(z, v.get_mpz_t());
   return 0;
 }

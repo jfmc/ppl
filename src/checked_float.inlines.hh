@@ -213,22 +213,20 @@ prepare_inexact() {
 
 template <typename Policy>
 inline Result 
-result_relation(const Rounding& mode) {
-  Result r;
-  if (Policy::fpu_check_inexact) {
-    if (!fpu_check_inexact())
-      return V_EQ;
-    r = VC_NORMAL;
+result_relation(Rounding_Dir dir) {
+  if (Policy::fpu_check_inexact && !fpu_check_inexact())
+    return V_EQ;
+  else if (want_rounding<Policy>(dir)) {
+    switch (rounding_direction(dir)) {
+    case ROUND_DOWN:
+      return Policy::fpu_check_inexact ? V_GT : V_GE;
+    case ROUND_UP:
+      return Policy::fpu_check_inexact ? V_LT : V_LE;
+    default:
+      return Policy::fpu_check_inexact ? V_NE : V_LGE;
+    }
   } else
-    r = V_EQ;
-  switch (mode.direction()) {
-  case Rounding::DOWN:
-    return static_cast<Result>(r | V_GT);
-  case Rounding::UP:
-    return static_cast<Result>(r | V_LT);
-  default:
-    return static_cast<Result>(r | V_NE);
-  }
+    return Policy::fpu_check_inexact ? V_NE : V_LGE;
 }
 
 template <typename Policy, typename Type>
@@ -241,92 +239,92 @@ classify_float_(const Type x) {
 
 template <typename Policy, typename From, typename To>
 inline Result 
-assign_float_float_exact(To& to, const From from, const Rounding&) {
+assign_float_float_exact(To& to, const From from, Rounding_Dir) {
   to = from;
   return static_cast<Result>(classify_float_<Policy>(to) | V_EQ);
 }
 
 template <typename Policy, typename To, typename From>
 inline Result
-assign_float_float(To& to, const From from, const Rounding& mode) {
+assign_float_float(To& to, const From from, Rounding_Dir dir) {
   prepare_inexact<Policy>();
   to = from;
   return static_cast<Result>(classify_float_<Policy>(to) | 
-			     result_relation<Policy>(mode));
+			     result_relation<Policy>(dir));
 }
 
 template <typename Policy, typename Type>
 inline Result 
-assign_result_inexact(Type& to, const Type from, const Rounding& mode) {
+assign_result_inexact(Type& to, const Type from, Rounding_Dir dir) {
   to = from;
   return static_cast<Result>(classify_float_<Policy>(to) | 
-			     result_relation<Policy>(mode));
+			     result_relation<Policy>(dir));
 }
 
 template <typename Policy, typename Type>
 inline Result 
-neg_float(Type& to, const Type from, const Rounding& mode) {
-  return assign_float_float_exact<Policy>(to, -from, mode);
+neg_float(Type& to, const Type from, Rounding_Dir dir) {
+  return assign_float_float_exact<Policy>(to, -from, dir);
 }
 
 template <typename Policy, typename Type>
 inline Result 
-add_float(Type& to, const Type x, const Type y, const Rounding& mode) {
+add_float(Type& to, const Type x, const Type y, Rounding_Dir dir) {
   prepare_inexact<Policy>();
-  return assign_result_inexact<Policy>(to, x + y, mode);
+  return assign_result_inexact<Policy>(to, x + y, dir);
 }
 
 template <typename Policy, typename Type>
 inline Result 
-sub_float(Type& to, const Type x, const Type y, const Rounding& mode) {
+sub_float(Type& to, const Type x, const Type y, Rounding_Dir dir) {
   prepare_inexact<Policy>();
-  return assign_result_inexact<Policy>(to, x - y, mode);
+  return assign_result_inexact<Policy>(to, x - y, dir);
 }
 
 template <typename Policy, typename Type>
 inline Result 
-mul_float(Type& to, const Type x, const Type y, const Rounding& mode) {
+mul_float(Type& to, const Type x, const Type y, Rounding_Dir dir) {
   prepare_inexact<Policy>();
-  return assign_result_inexact<Policy>(to, x * y, mode);
+  return assign_result_inexact<Policy>(to, x * y, dir);
 }
 
 template <typename Policy, typename Type>
 inline Result 
-div_float(Type& to, const Type x, const Type y, const Rounding& mode) {
+div_float(Type& to, const Type x, const Type y, Rounding_Dir dir) {
   if (Policy::check_divbyzero && y == 0) {
     to = NAN;
     return V_DIV_ZERO;
   }
   prepare_inexact<Policy>();
-  return assign_result_inexact<Policy>(to, x / y, mode);
+  return assign_result_inexact<Policy>(to, x / y, dir);
 }
 
 template <typename Policy, typename Type>
 inline Result 
-rem_float(Type& to, const Type x, const Type y, const Rounding& mode) {
+rem_float(Type& to, const Type x, const Type y, Rounding_Dir dir) {
   if (Policy::check_divbyzero && y == 0) {
     to = NAN;
     return V_MOD_ZERO;
   }
   prepare_inexact<Policy>();
-  return assign_result_inexact<Policy>(to, std::fmod(x, y, mode));
+  return assign_result_inexact<Policy>(to, std::fmod(x, y, dir));
 }
 
 template <typename Policy, typename Type>
 inline Result
-abs_float(Type& to, const Type from, const Rounding& mode) {
-  return assign_float_float_exact<Policy>(to, std::abs(from), mode);
+abs_float(Type& to, const Type from, Rounding_Dir dir) {
+  return assign_float_float_exact<Policy>(to, std::abs(from), dir);
 }
 
 template <typename Policy, typename Type>
 inline Result
-sqrt_float(Type& to, const Type from, const Rounding& mode) {
+sqrt_float(Type& to, const Type from, Rounding_Dir dir) {
   if (Policy::check_sqrt_neg && from < 0) {
     to = NAN;
     return V_SQRT_NEG;
   }
   prepare_inexact<Policy>();
-  return assign_result_inexact<Policy>(to, std::sqrt(from), mode);
+  return assign_result_inexact<Policy>(to, std::sqrt(from), dir);
 }
 
 template <typename Policy, typename Type>
@@ -349,32 +347,32 @@ cmp_float(const Type x, const Type y) {
 
 template <typename Policy, typename To, typename From>
 inline Result 
-assign_float_int_exact(To& to, const From from, const Rounding&) {
+assign_float_int_exact(To& to, const From from, Rounding_Dir) {
   to = from;
   return V_EQ;
 }
 
 template <typename Policy, typename To, typename From>
 inline Result
-assign_float_int(To& to, const From from, const Rounding& mode) {
+assign_float_int(To& to, const From from, Rounding_Dir dir) {
   prepare_inexact<Policy>();
   to = from;
-  return result_relation<Policy>(mode);
+  return result_relation<Policy>(dir);
 }
 
 
 template <typename Policy, typename Type>
 inline Result 
-add_mul_float(Type& to, const Type x, const Type y, const Rounding& mode) {
+add_mul_float(Type& to, const Type x, const Type y, Rounding_Dir dir) {
   prepare_inexact<Policy>();
-  return assign_result_inexact<Policy>(to, std::fma(to, x, y), mode);
+  return assign_result_inexact<Policy>(to, std::fma(to, x, y), dir);
 }
 
 template <typename Policy, typename Type>
 inline Result 
-sub_mul_float(Type& to, const Type x, const Type y, const Rounding& mode) {
+sub_mul_float(Type& to, const Type x, const Type y, Rounding_Dir dir) {
   prepare_inexact<Policy>();
-  return assign_result_inexact<Policy>(to, std::fma(to, x, -y), mode);
+  return assign_result_inexact<Policy>(to, std::fma(to, x, -y), dir);
 }
 
 template <typename T>
@@ -412,7 +410,7 @@ dtostr_<long double>(char *str, size_t size, long double x) {
 
 template <typename Policy, typename Type>
 inline Result
-from_c_string_float(Type& to, const char* from, const Rounding& mode) {
+from_c_string_float(Type& to, const char* from, Rounding_Dir dir) {
   errno = 0;
   char *end;
   long v = strtod_<Type>(from, &end, 0);
@@ -429,12 +427,12 @@ from_c_string_float(Type& to, const char* from, const Rounding& mode) {
     return set_special<Policy>(to, V_CVT_STR_UNK);
   to = v;
   // FIXME:
-  return assign_float_float_exact<Policy>(to, v, mode);
+  return assign_float_float_exact<Policy>(to, v, dir);
 }
 
 template <typename Policy, typename Type>
 inline Result
-to_c_string_float(char* str, size_t size, Type& from, const Numeric_Format&, const Rounding&) {
+to_c_string_float(char* str, size_t size, Type& from, const Numeric_Format&, Rounding_Dir) {
   dtostr_(str, size, from);
   return V_EQ;
 }

@@ -125,7 +125,7 @@ SPECIALIZE_SUCC(mpq, mpq_class)
 
 template <typename Policy>
 inline Result
-assign_mpq_mpz(mpq_class& to, const mpz_class& from, const Rounding&) {
+assign_mpq_mpz(mpq_class& to, const mpz_class& from, Rounding_Dir) {
   to = from;
   return V_EQ;
 }
@@ -134,7 +134,7 @@ SPECIALIZE_ASSIGN(mpq_mpz, mpq_class, mpz_class)
 
 template <typename Policy, typename From>
 inline Result
-assign_mpq_signed_int(mpq_class& to, const From from, const Rounding&) {
+assign_mpq_signed_int(mpq_class& to, const From from, Rounding_Dir) {
   if (sizeof(From) <= sizeof(long))
     to = static_cast<long>(from);
   else {
@@ -159,7 +159,7 @@ SPECIALIZE_ASSIGN(mpq_signed_int, mpq_class, long long)
 
 template <typename Policy, typename From>
 inline Result
-assign_mpq_unsigned_int(mpq_class& to, const From from, const Rounding&) {
+assign_mpq_unsigned_int(mpq_class& to, const From from, Rounding_Dir) {
   if (sizeof(From) <= sizeof(unsigned long))
     to = static_cast<unsigned long>(from);
   else {
@@ -177,7 +177,7 @@ SPECIALIZE_ASSIGN(mpq_unsigned_int, mpq_class, unsigned long long)
 
 template <typename Policy, typename From>
 inline Result
-assign_mpq_float(mpq_class& to, const From from, const Rounding&) {
+assign_mpq_float(mpq_class& to, const From from, Rounding_Dir) {
   to = from;
   return V_EQ;
 }
@@ -187,7 +187,7 @@ SPECIALIZE_ASSIGN(mpq_float, mpq_class, double)
 
 template <typename Policy>
 inline Result
-neg_mpq(mpq_class& to, const mpq_class& from, const Rounding&) {
+neg_mpq(mpq_class& to, const mpq_class& from, Rounding_Dir) {
   mpq_neg(to.get_mpq_t(), from.get_mpq_t());
   return V_EQ;
 }
@@ -196,7 +196,7 @@ SPECIALIZE_NEG(mpq, mpq_class, mpq_class)
 
 template <typename Policy>
 inline Result
-add_mpq(mpq_class& to, const mpq_class& x, const mpq_class& y, const Rounding&) {
+add_mpq(mpq_class& to, const mpq_class& x, const mpq_class& y, Rounding_Dir) {
   to = x + y;
   return V_EQ;
 }
@@ -205,7 +205,7 @@ SPECIALIZE_ADD(mpq, mpq_class, mpq_class)
 
 template <typename Policy>
 inline Result
-sub_mpq(mpq_class& to, const mpq_class& x, const mpq_class& y, const Rounding&) {
+sub_mpq(mpq_class& to, const mpq_class& x, const mpq_class& y, Rounding_Dir) {
   to = x - y;
   return V_EQ;
 }
@@ -214,7 +214,7 @@ SPECIALIZE_SUB(mpq, mpq_class, mpq_class)
 
 template <typename Policy>
 inline Result
-mul_mpq(mpq_class& to, const mpq_class& x, const mpq_class& y, const Rounding&) {
+mul_mpq(mpq_class& to, const mpq_class& x, const mpq_class& y, Rounding_Dir) {
   to = x * y;
   return V_EQ;
 }
@@ -223,7 +223,7 @@ SPECIALIZE_MUL(mpq, mpq_class, mpq_class)
 
 template <typename Policy>
 inline Result
-div_mpq(mpq_class& to, const mpq_class& x, const mpq_class& y, const Rounding&) {
+div_mpq(mpq_class& to, const mpq_class& x, const mpq_class& y, Rounding_Dir) {
   if (Policy::check_divbyzero && sgn(y) == 0)
     return set_special<Policy>(to, V_DIV_ZERO);
   to = x / y;
@@ -234,7 +234,7 @@ SPECIALIZE_DIV(mpq, mpq_class, mpq_class)
 
 template <typename Policy>
 inline Result
-rem_mpq(mpq_class& to, const mpq_class& x, const mpq_class& y, const Rounding&) {
+rem_mpq(mpq_class& to, const mpq_class& x, const mpq_class& y, Rounding_Dir) {
   if (Policy::check_divbyzero && sgn(y) == 0)
     return set_special<Policy>(to, V_MOD_ZERO);
   to = x / y;
@@ -246,7 +246,7 @@ SPECIALIZE_REM(mpq, mpq_class, mpq_class)
 
 template <typename Policy>
 inline Result
-abs_mpq(mpq_class& to, const mpq_class& from, const Rounding&) {
+abs_mpq(mpq_class& to, const mpq_class& from, Rounding_Dir) {
   to = abs(from);
   return V_EQ;
 }
@@ -255,7 +255,7 @@ SPECIALIZE_ABS(mpq, mpq_class, mpq_class)
 
 template <typename Policy>
 inline Result
-from_c_string_mpq(mpq_class& to, const char* from, const Rounding&) {
+from_c_string_mpq(mpq_class& to, const char* from, Rounding_Dir) {
   if (mpq_set_str(to.get_mpq_t(), from, 10) != 0)
     return set_special<Policy>(to, V_CVT_STR_UNK);
   to.canonicalize();
@@ -264,7 +264,7 @@ from_c_string_mpq(mpq_class& to, const char* from, const Rounding&) {
 
 template <typename Policy>
 inline Result
-to_c_string_mpq(char* str, size_t size, const mpq_class& from, const Numeric_Format&, const Rounding&) {
+to_c_string_mpq(char* str, size_t size, const mpq_class& from, const Numeric_Format&, Rounding_Dir) {
   std::string s = from.get_str();
   strncpy(str, s.c_str(), size);
   return V_EQ;

@@ -37,7 +37,7 @@ struct Check_Overflow_Policy {
   static const int check_overflow = 1;
   static const int check_divbyzero = 0;
   static const int check_sqrt_neg = 0;
-  static const int round_inexact = 0;
+  static const int use_corrent_rounding = 0;
   static const int store_nan = 0;
   static const int store_infinity = 0;
   static const int convertible = 1;
@@ -60,8 +60,8 @@ struct Transparent_Policy {
   static const int check_divbyzero = 0;
   //! Check for attempts to take the square root of a negative number.
   static const int check_sqrt_neg = 0;
-  //! Support rounding mode
-  static const int round_inexact = 0;
+  //! Support current rounding direction
+  static const int use_corrent_rounding = 0;
   //! Store unknown special value.
   static const int store_nan = 0;
   //! Store overflow special values.
@@ -263,35 +263,35 @@ struct FUNCTION_CLASS(name) <Policy, type1, type2, type3> { \
 #define SPECIALIZE_IS_PINF(suf, Type) \
   SPECIALIZE_FUN1_0_0(is_pinf, suf, bool, const, Type)
 #define SPECIALIZE_ASSIGN(suf, To, From) \
-  SPECIALIZE_FUN2_0_1(assign, suf, Result, nonconst, To, const, From, const Rounding&)
+  SPECIALIZE_FUN2_0_1(assign, suf, Result, nonconst, To, const, From, Rounding_Dir)
 #define SPECIALIZE_NEG(suf, To, From) \
-  SPECIALIZE_FUN2_0_1(neg, suf, Result, nonconst, To, const, From, const Rounding&)
+  SPECIALIZE_FUN2_0_1(neg, suf, Result, nonconst, To, const, From, Rounding_Dir)
 #define SPECIALIZE_ABS(suf, To, From) \
-  SPECIALIZE_FUN2_0_1(abs, suf, Result, nonconst, To, const, From, const Rounding&)
+  SPECIALIZE_FUN2_0_1(abs, suf, Result, nonconst, To, const, From, Rounding_Dir)
 #define SPECIALIZE_SQRT(suf, To, From) \
-  SPECIALIZE_FUN2_0_1(sqrt, suf, Result, nonconst, To, const, From, const Rounding&)
+  SPECIALIZE_FUN2_0_1(sqrt, suf, Result, nonconst, To, const, From, Rounding_Dir)
 #define SPECIALIZE_ADD(suf, To, From) \
-  SPECIALIZE_FUN3_0_1(add, suf, Result, nonconst, To, const, From, const, From, const Rounding&)
+  SPECIALIZE_FUN3_0_1(add, suf, Result, nonconst, To, const, From, const, From, Rounding_Dir)
 #define SPECIALIZE_SUB(suf, To, From) \
-  SPECIALIZE_FUN3_0_1(sub, suf, Result, nonconst, To, const, From, const, From, const Rounding&)
+  SPECIALIZE_FUN3_0_1(sub, suf, Result, nonconst, To, const, From, const, From, Rounding_Dir)
 #define SPECIALIZE_MUL(suf, To, From) \
-  SPECIALIZE_FUN3_0_1(mul, suf, Result, nonconst, To, const, From, const, From, const Rounding&)
+  SPECIALIZE_FUN3_0_1(mul, suf, Result, nonconst, To, const, From, const, From, Rounding_Dir)
 #define SPECIALIZE_DIV(suf, To, From) \
-  SPECIALIZE_FUN3_0_1(div, suf, Result, nonconst, To, const, From, const, From, const Rounding&)
+  SPECIALIZE_FUN3_0_1(div, suf, Result, nonconst, To, const, From, const, From, Rounding_Dir)
 #define SPECIALIZE_REM(suf, To, From) \
-  SPECIALIZE_FUN3_0_1(rem, suf, Result, nonconst, To, const, From, const, From, const Rounding&)
+  SPECIALIZE_FUN3_0_1(rem, suf, Result, nonconst, To, const, From, const, From, Rounding_Dir)
 #define SPECIALIZE_ADD_MUL(suf, To, From) \
-  SPECIALIZE_FUN3_0_1(add_mul, suf, Result, nonconst, To, const, From, const, From, const Rounding&)
+  SPECIALIZE_FUN3_0_1(add_mul, suf, Result, nonconst, To, const, From, const, From, Rounding_Dir)
 #define SPECIALIZE_SUB_MUL(suf, To, From) \
-  SPECIALIZE_FUN3_0_1(sub_mul, suf, Result, nonconst, To, const, From, const, From, const Rounding&)
+  SPECIALIZE_FUN3_0_1(sub_mul, suf, Result, nonconst, To, const, From, const, From, Rounding_Dir)
 #define SPECIALIZE_GCD(suf, To, From) \
-  SPECIALIZE_FUN3_0_1(gcd, suf, Result, nonconst, To, const, From, const, From, const Rounding&)
+  SPECIALIZE_FUN3_0_1(gcd, suf, Result, nonconst, To, const, From, const, From, Rounding_Dir)
 #define SPECIALIZE_LCM(suf, To, From) \
-  SPECIALIZE_FUN3_0_1(lcm, suf, Result, nonconst, To, const, From, const, From, const Rounding&)
+  SPECIALIZE_FUN3_0_1(lcm, suf, Result, nonconst, To, const, From, const, From, Rounding_Dir)
 #define SPECIALIZE_FROM_C_STRING(suf, Type) \
-  SPECIALIZE_FUN1_0_2(from_c_string, suf, Result, nonconst, Type, const char*, const Rounding&)
+  SPECIALIZE_FUN1_0_2(from_c_string, suf, Result, nonconst, Type, const char*, Rounding_Dir)
 #define SPECIALIZE_TO_C_STRING(suf, Type) \
-  SPECIALIZE_FUN1_2_2(to_c_string, suf, Result, char *, size_t, const, Type, const Numeric_Format&, const Rounding&)
+  SPECIALIZE_FUN1_2_2(to_c_string, suf, Result, char *, size_t, const, Type, const Numeric_Format&, Rounding_Dir)
 
 
 DECLARE_FUN1_0_0(pred,        Result, nonconst, Type)
@@ -303,24 +303,24 @@ DECLARE_FUN1_0_3(classify,    Result, const, Type, bool, bool, bool)
 DECLARE_FUN1_0_0(is_nan,      bool, const, Type)
 DECLARE_FUN1_0_0(is_minf,     bool, const, Type)
 DECLARE_FUN1_0_0(is_pinf,     bool, const, Type)
-DECLARE_FUN2_0_1(assign,      Result, nonconst, To, const, From, const Rounding&)
-DECLARE_FUN2_0_1(neg,         Result, nonconst, To, const, From, const Rounding&)
-DECLARE_FUN2_0_1(abs,         Result, nonconst, To, const, From, const Rounding&)
-DECLARE_FUN2_0_1(sqrt,        Result, nonconst, To, const, From, const Rounding&)
-DECLARE_FUN3_0_1(add,         Result, nonconst, To, const, From1, const, From2, const Rounding&)
-DECLARE_FUN3_0_1(sub,         Result, nonconst, To, const, From1, const, From2, const Rounding&)
-DECLARE_FUN3_0_1(mul,         Result, nonconst, To, const, From1, const, From2, const Rounding&)
-DECLARE_FUN3_0_1(div,         Result, nonconst, To, const, From1, const, From2, const Rounding&)
-DECLARE_FUN3_0_1(rem,         Result, nonconst, To, const, From1, const, From2, const Rounding&)
-DECLARE_FUN3_0_1(add_mul,     Result, nonconst, To, const, From1, const, From2, const Rounding&)
-DECLARE_FUN3_0_1(sub_mul,     Result, nonconst, To, const, From1, const, From2, const Rounding&)
-DECLARE_FUN3_0_1(gcd,         Result, nonconst, To, const, From1, const, From2, const Rounding&)
-DECLARE_FUN3_0_1(lcm,         Result, nonconst, To, const, From1, const, From2, const Rounding&)
-DECLARE_FUN1_0_2(from_c_string, Result, nonconst, Type, const char*, const Rounding&)
-DECLARE_FUN1_2_2(to_c_string, Result, char*, size_t, const, Type, const Numeric_Format&, const Rounding&)
+DECLARE_FUN2_0_1(assign,      Result, nonconst, To, const, From, Rounding_Dir)
+DECLARE_FUN2_0_1(neg,         Result, nonconst, To, const, From, Rounding_Dir)
+DECLARE_FUN2_0_1(abs,         Result, nonconst, To, const, From, Rounding_Dir)
+DECLARE_FUN2_0_1(sqrt,        Result, nonconst, To, const, From, Rounding_Dir)
+DECLARE_FUN3_0_1(add,         Result, nonconst, To, const, From1, const, From2, Rounding_Dir)
+DECLARE_FUN3_0_1(sub,         Result, nonconst, To, const, From1, const, From2, Rounding_Dir)
+DECLARE_FUN3_0_1(mul,         Result, nonconst, To, const, From1, const, From2, Rounding_Dir)
+DECLARE_FUN3_0_1(div,         Result, nonconst, To, const, From1, const, From2, Rounding_Dir)
+DECLARE_FUN3_0_1(rem,         Result, nonconst, To, const, From1, const, From2, Rounding_Dir)
+DECLARE_FUN3_0_1(add_mul,     Result, nonconst, To, const, From1, const, From2, Rounding_Dir)
+DECLARE_FUN3_0_1(sub_mul,     Result, nonconst, To, const, From1, const, From2, Rounding_Dir)
+DECLARE_FUN3_0_1(gcd,         Result, nonconst, To, const, From1, const, From2, Rounding_Dir)
+DECLARE_FUN3_0_1(lcm,         Result, nonconst, To, const, From1, const, From2, Rounding_Dir)
+DECLARE_FUN1_0_2(from_c_string, Result, nonconst, Type, const char*, Rounding_Dir)
+DECLARE_FUN1_2_2(to_c_string, Result, char*, size_t, const, Type, const Numeric_Format&, Rounding_Dir)
 
 template <typename Policy, typename To>
-Result round(To& to, Result r, const Rounding& mode);
+Result round(To& to, Result r, Rounding_Dir dir);
 
 } // namespace Checked
 

@@ -29,7 +29,7 @@ namespace Checked {
 
 template <typename Policy, typename Type>
 struct FUNCTION_CLASS(assign)<Policy, Type, Type> {
-  static inline Result function(Type& to, const Type& from, const Rounding&) {
+  static inline Result function(Type& to, const Type& from, Rounding_Dir) {
     to = from;
     return V_EQ;
   }
@@ -37,9 +37,9 @@ struct FUNCTION_CLASS(assign)<Policy, Type, Type> {
 
 template <typename Policy, typename To, typename From>
 inline Result
-abs_generic(To& to, const From& from, const Rounding& mode) {
+abs_generic(To& to, const From& from, Rounding_Dir dir) {
   if (from < 0)
-    return neg<Policy>(to, from, mode);
+    return neg<Policy>(to, from, dir);
   to = from;
   return V_EQ;
 }
@@ -77,14 +77,13 @@ sub(Result r1, Result r2) {
 
 template <typename Policy, typename To, typename From>
 inline Result
-gcd_common(To& to, const From& x, const From& y, const Rounding& mode) {
+gcd_common(To& to, const From& x, const From& y, Rounding_Dir dir) {
   To nx = x;
   To ny = y;
   To rm;
   while (ny != 0) {
-    Result r = rem<Policy>(rm, nx, ny, mode);
-    if (r != V_EQ)
-      assert(r == V_EQ);
+    Result r = rem<Policy>(rm, nx, ny, dir);
+    assert(r == V_EQ);
     nx = ny;
     ny = rm;
   }
@@ -94,40 +93,40 @@ gcd_common(To& to, const From& x, const From& y, const Rounding& mode) {
 
 template <typename Policy, typename To, typename From1, typename From2>
 inline Result
-gcd_generic(To& to, const From1& x, const From2& y, const Rounding& mode) {
+gcd_generic(To& to, const From1& x, const From2& y, Rounding_Dir dir) {
   if (x == 0)
-    return abs<Policy>(to, y, mode);
+    return abs<Policy>(to, y, dir);
   if (y == 0)
-    return abs<Policy>(to, x, mode);
+    return abs<Policy>(to, x, dir);
   To nx, ny;
   Result r;
   used(r);
-  r = abs<Policy>(nx, x, mode);
+  r = abs<Policy>(nx, x, dir);
   assert(r == V_EQ);
-  r = abs<Policy>(ny, y, mode);
+  r = abs<Policy>(ny, y, dir);
   assert(r == V_EQ);
-  return gcd_common<Policy>(to, nx, ny, mode);
+  return gcd_common<Policy>(to, nx, ny, dir);
 }
 
 template <typename Policy, typename To, typename From1, typename From2>
 inline Result
-lcm_generic(To& to, const From1& x, const From2& y, const Rounding& mode) {
+lcm_generic(To& to, const From1& x, const From2& y, Rounding_Dir dir) {
   if (x == 0 || y == 0) {
     to = 0;
     return V_EQ;
   }
   To nx, ny;
   Result r;
-  r = abs<Policy>(nx, x, mode);
+  r = abs<Policy>(nx, x, dir);
   assert(r == V_EQ);
-  r = abs<Policy>(ny, y, mode);
+  r = abs<Policy>(ny, y, dir);
   assert(r == V_EQ);
   To gcd;
-  r = gcd_common<Policy>(gcd, nx, ny, mode);
+  r = gcd_common<Policy>(gcd, nx, ny, dir);
   assert(r == V_EQ);
-  r = div<Policy>(to, nx, gcd, mode);
+  r = div<Policy>(to, nx, gcd, dir);
   assert(r == V_EQ);
-  return mul<Policy>(to, to, ny, mode);
+  return mul<Policy>(to, to, ny, dir);
 }
 
 template <typename Policy, typename Type>
@@ -150,15 +149,22 @@ cmp_generic(const Type& x, const Type& y) {
   return V_EQ;
 }
 
+template <typename Policy>
+inline bool
+want_rounding(Rounding_Dir dir) {
+  return dir != ROUND_IGNORE &&
+    (Policy::use_corrent_rounding || dir != ROUND_CURRENT);
+}
+
 template <typename Policy, typename To>
 inline Result
-round(To& to, Result r, const Rounding& mode) {
-  switch (mode.direction()) {
-  case Rounding::DOWN:
+round(To& to, Result r, Rounding_Dir dir) {
+  switch (rounding_direction(dir)) {
+  case ROUND_DOWN:
     if (r == V_LT)
       return static_cast<Result>(pred<Policy>(to) | V_GT);
     return r;
-  case Rounding::UP:
+  case ROUND_UP:
     if (r == V_GT)
       return static_cast<Result>(succ<Policy>(to) | V_LT);
     return r;

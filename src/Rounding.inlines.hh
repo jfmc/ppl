@@ -27,88 +27,57 @@ site: http://www.cs.unipr.it/ppl/ . */
 
 namespace Parma_Polyhedra_Library {
 
-static Rounding_State current_rounding;
+static Rounding_Dir current_rounding_dir;
 
-inline
-Rounding::Rounding()
-  : dir(Rounding::CURRENT) {
-}
-
-inline
-Rounding::Rounding(Direction d)
-  : dir(d) {
-}
-
-inline void
-Rounding::set_direction(Rounding::Direction d) {
-  assert(d != Rounding::CURRENT);
-  dir = d;
-}
-
-inline Rounding::Direction
-Rounding::direction() const {
-  if (dir != CURRENT) {
-    assert(dir == current_rounding.dir);
-    return dir;
-  }
-  return current_rounding.dir;
-}
-
-inline
-Rounding_State::Rounding_State()
-  : dir(Rounding::IGNORE) {
-}
-
-inline
-Rounding_State::~Rounding_State()
-{
-  assert(this != &current_rounding || dir == Rounding::IGNORE);
+inline Rounding_Dir
+rounding_direction(Rounding_Dir dir) {
+  return dir == ROUND_CURRENT ? current_rounding_dir : dir;
 }
 
 template <typename To>
 inline void
-Rounding::internal_install() const {
-  if (use_fpu_rounding(To) && dir != Rounding::IGNORE)
+rounding_install_internal(Rounding_Dir dir) {
+  if (use_fpu_rounding(To) && dir != ROUND_IGNORE)
     fpu_save_rounding_direction(dir);
 }
 
 template <typename To>
 inline void
-Rounding::internal_save(Rounding_State& current) const {
-  if (use_fpu_rounding(To) && dir != Rounding::IGNORE)
-    current.fpu_dir = fpu_save_rounding_direction(dir);
+rounding_save_internal(Rounding_Dir dir, Rounding_State& old) {
+  if (use_fpu_rounding(To) && dir != ROUND_IGNORE)
+    old.fpu_dir = fpu_save_rounding_direction(dir);
 }
 
 template <typename To>
 inline void
-Rounding::internal_restore(const Rounding_State& state) const {
-  if (use_fpu_rounding(To))
-    fpu_restore_rounding_direction(state.fpu_dir);
+rounding_restore_internal(const Rounding_State& old, Rounding_Dir dir) {
+  if (use_fpu_rounding(To) && dir != ROUND_IGNORE)
+    fpu_restore_rounding_direction(old.fpu_dir);
 }
 
 template <typename To>
 inline void
-Rounding::install() const {
-  assert(dir != Rounding::CURRENT);
-  internal_install();
-  current_rounding.dir = dir;
+rounding_install(Rounding_Dir dir) {
+  assert(dir != ROUND_CURRENT);
+  rounding_install_internal<To>(dir);
+  current_rounding_dir = dir;
 }
 
 template <typename To>
 inline void
-Rounding::save(Rounding_State& current) const {
-  assert(dir != Rounding::CURRENT);
-  internal_save(current);
-  current.dir = current_rounding.dir;
-  current_rounding.dir = dir;
+rounding_save(Rounding_Dir dir, Rounding_State& old) {
+  assert(dir != ROUND_CURRENT);
+  old.dir = current_rounding_dir;
+  rounding_save_internal<To>(dir, old);
+  current_rounding_dir = dir;
 }
 
 template <typename To>
 inline void
-Rounding::restore(const Rounding_State& state) const {
-  assert(current_rounding.dir == dir);
-  internal_restore(state);
-  current_rounding.dir = state.dir;
+rounding_restore(const Rounding_State& old, Rounding_Dir dir) {
+  assert(current_rounding_dir == dir);
+  rounding_restore_internal<To>(old, dir);
+  current_rounding_dir = old.dir;
 }
 
 } // namespace Parma_Polyhedra_Library

@@ -30,43 +30,34 @@ site: http://www.cs.unipr.it/ppl/ . */
 
 namespace Parma_Polyhedra_Library {
 
-class Rounding {
-public:
-  enum Direction {
-    DOWN = FPU_DOWNWARD,
-    UP = FPU_UPWARD,
-    IGNORE = -1,
-    CURRENT = -2
-  };
-  Rounding();
-  Rounding(Direction d);
-  void set_direction(Direction d);
-  Direction direction() const;
-  template <typename To>
-  void internal_install() const;
-  template <typename To>
-  void internal_save(Rounding_State& current) const;
-  template <typename To>
-  void internal_restore(const Rounding_State& state) const;
-  template <typename To>
-  void install() const;
-  template <typename To>
-  void save(Rounding_State& current) const;
-  template <typename To>
-  void restore(const Rounding_State& state) const;
-private:
-  Direction dir;
+enum Rounding_Dir {
+  ROUND_DOWN = FPU_DOWNWARD,
+  ROUND_UP = FPU_UPWARD,
+  ROUND_IGNORE = -1,
+  ROUND_CURRENT = -2
 };
 
 class Rounding_State {
 public:
-  Rounding_State();
-  ~Rounding_State();
-private:
+  Rounding_Dir dir;
   int fpu_dir;
-  Rounding::Direction dir;
-  friend class Rounding;
 };
+
+Rounding_Dir rounding_direction(Rounding_Dir dir);
+
+template <typename To>
+void rounding_install_internal(Rounding_Dir dir);
+template <typename To>
+void rounding_save_internal(Rounding_Dir dir, Rounding_State& old);
+template <typename To>
+void rounding_restore_internal(const Rounding_State& old, Rounding_Dir dir);
+
+template <typename To>
+void rounding_install(Rounding_Dir dir);
+template <typename To>
+void rounding_save(Rounding_Dir dir, Rounding_State& old);
+template <typename To>
+void rounding_restore(const Rounding_State& old, Rounding_Dir dir);
 
 } // namespace Parma_Polyhedra_Library
 

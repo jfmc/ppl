@@ -138,25 +138,21 @@ SPECIALIZE_SUCC(mpz, mpz_class)
 
 template <typename Policy>
 inline Result
-assign_mpz_mpq(mpz_class& to, const mpq_class& from, const Rounding& mode) {
-  if (Policy::round_inexact && mode.direction() != Rounding::IGNORE) {
+assign_mpz_mpq(mpz_class& to, const mpq_class& from, Rounding_Dir dir) {
+  if (want_rounding<Policy>(dir)) {
     mpz_srcptr n = from.get_num().get_mpz_t();
     mpz_srcptr d = from.get_den().get_mpz_t();
     mpz_t rem;
     mpz_init(rem);
     mpz_tdiv_qr(to.get_mpz_t(), rem, n, d);
-    Result r;
     switch (mpz_sgn(rem)) {
     case -1:
-      r = V_LT;
-      break;
+      return round<Policy>(to, V_LT, dir);
     case 1:
-      r = V_GT;
-      break;
+      return round<Policy>(to, V_GT, dir);
     default:
       return V_EQ;
     }
-    return round<Policy>(to, r, mode);
   }
   else {
     to = from;
@@ -168,7 +164,7 @@ SPECIALIZE_ASSIGN(mpz_mpq, mpz_class, mpq_class)
 
 template <typename Policy, typename From>
 inline Result
-assign_mpz_signed_int(mpz_class& to, const From from, const Rounding&) {
+assign_mpz_signed_int(mpz_class& to, const From from, Rounding_Dir) {
   if (sizeof(From) <= sizeof(long))
     to = static_cast<long>(from);
   else {
@@ -192,7 +188,7 @@ SPECIALIZE_ASSIGN(mpz_signed_int, mpz_class, long long)
 
 template <typename Policy, typename From>
 inline Result
-assign_mpz_unsigned_int(mpz_class& to, const From from, const Rounding&) {
+assign_mpz_unsigned_int(mpz_class& to, const From from, Rounding_Dir) {
   if (sizeof(From) <= sizeof(unsigned long))
     to = static_cast<unsigned long>(from);
   else
@@ -208,18 +204,16 @@ SPECIALIZE_ASSIGN(mpz_unsigned_int, mpz_class, unsigned long long)
 
 template <typename Policy, typename From>
 inline Result
-assign_mpz_float(mpz_class& to, const From from, const Rounding& mode) {
-  if (Policy::round_inexact && mode.direction() != Rounding::IGNORE) {
+assign_mpz_float(mpz_class& to, const From from, Rounding_Dir dir) {
+  if (want_rounding<Policy>(dir)) {
     double n = rint(from);
     to = n;
-    Result r;
     if (from < n)
-      r = V_LT;
+      return round<Policy>(to, V_LT, dir);
     else if (from > n)
-      r = V_GT;
+      return round<Policy>(to, V_GT, dir);
     else
       return V_EQ;
-    return round<Policy>(to, r, mode);
   }
   else {
     to = from;
@@ -232,7 +226,7 @@ SPECIALIZE_ASSIGN(mpz_float, mpz_class, double)
 
 template <typename Policy>
 inline Result
-neg_mpz(mpz_class& to, const mpz_class& from, const Rounding&) {
+neg_mpz(mpz_class& to, const mpz_class& from, Rounding_Dir) {
   mpz_neg(to.get_mpz_t(), from.get_mpz_t());
   return V_EQ;
 }
@@ -241,7 +235,7 @@ SPECIALIZE_NEG(mpz, mpz_class, mpz_class)
 
 template <typename Policy>
 inline Result
-add_mpz(mpz_class& to, const mpz_class& x, const mpz_class& y, const Rounding&) {
+add_mpz(mpz_class& to, const mpz_class& x, const mpz_class& y, Rounding_Dir) {
   to = x + y;
   return V_EQ;
 }
@@ -250,7 +244,7 @@ SPECIALIZE_ADD(mpz, mpz_class, mpz_class)
 
 template <typename Policy>
 inline Result
-sub_mpz(mpz_class& to, const mpz_class& x, const mpz_class& y, const Rounding&) {
+sub_mpz(mpz_class& to, const mpz_class& x, const mpz_class& y, Rounding_Dir) {
   to = x - y;
   return V_EQ;
 }
@@ -259,7 +253,7 @@ SPECIALIZE_SUB(mpz, mpz_class, mpz_class)
 
 template <typename Policy>
 inline Result
-mul_mpz(mpz_class& to, const mpz_class& x, const mpz_class& y, const Rounding&) {
+mul_mpz(mpz_class& to, const mpz_class& x, const mpz_class& y, Rounding_Dir) {
   to = x * y;
   return V_EQ;
 }
@@ -268,25 +262,21 @@ SPECIALIZE_MUL(mpz, mpz_class, mpz_class)
 
 template <typename Policy>
 inline Result
-div_mpz(mpz_class& to, const mpz_class& x, const mpz_class& y, const Rounding& mode) {
+div_mpz(mpz_class& to, const mpz_class& x, const mpz_class& y, Rounding_Dir dir) {
   if (Policy::check_divbyzero && ::sgn(y) == 0)
     return set_special<Policy>(to, V_DIV_ZERO);
-  if (Policy::round_inexact && mode.direction() != Rounding::IGNORE) {
+  if (want_rounding<Policy>(dir)) {
     mpz_t rem;
     mpz_init(rem);
     mpz_tdiv_qr(to.get_mpz_t(), rem, x.get_mpz_t(), y.get_mpz_t());
-    Result r;
     switch (mpz_sgn(rem)) {
     case -1:
-      r = V_LT;
-      break;
+      return round<Policy>(to, V_LT, dir);
     case 1:
-      r = V_GT;
-      break;
+      return round<Policy>(to, V_GT, dir);
     default:
       return V_EQ;
     }
-    return round<Policy>(to, r, mode);
   }
   else {
     mpz_divexact(to.get_mpz_t(), x.get_mpz_t(), y.get_mpz_t());
@@ -298,7 +288,7 @@ SPECIALIZE_DIV(mpz, mpz_class, mpz_class)
 
 template <typename Policy>
 inline Result
-rem_mpz(mpz_class& to, const mpz_class& x, const mpz_class& y, const Rounding&) {
+rem_mpz(mpz_class& to, const mpz_class& x, const mpz_class& y, Rounding_Dir) {
   if (Policy::check_divbyzero && ::sgn(y) == 0)
     return set_special<Policy>(to, V_MOD_ZERO);
   to = x % y;
@@ -309,7 +299,7 @@ SPECIALIZE_REM(mpz, mpz_class, mpz_class)
 
 template <typename Policy>
 inline Result
-abs_mpz(mpz_class& to, const mpz_class& from, const Rounding&) {
+abs_mpz(mpz_class& to, const mpz_class& from, Rounding_Dir) {
   to = abs(from);
   return V_EQ;
 }
@@ -318,7 +308,7 @@ SPECIALIZE_ABS(mpz, mpz_class, mpz_class)
 
 template <typename Policy>
 inline Result
-add_mul_mpz(mpz_class& to, const mpz_class& x, const mpz_class& y, const Rounding&) {
+add_mul_mpz(mpz_class& to, const mpz_class& x, const mpz_class& y, Rounding_Dir) {
   mpz_addmul(to.get_mpz_t(), x.get_mpz_t(), y.get_mpz_t());
   return V_EQ;
 }
@@ -327,7 +317,7 @@ SPECIALIZE_ADD_MUL(mpz, mpz_class, mpz_class)
 
 template <typename Policy>
 inline Result
-sub_mul_mpz(mpz_class& to, const mpz_class& x, const mpz_class& y, const Rounding&) {
+sub_mul_mpz(mpz_class& to, const mpz_class& x, const mpz_class& y, Rounding_Dir) {
   mpz_submul(to.get_mpz_t(), x.get_mpz_t(), y.get_mpz_t());
   return V_EQ;
 }
@@ -336,7 +326,7 @@ SPECIALIZE_SUB_MUL(mpz, mpz_class, mpz_class)
 
 template <typename Policy>
 inline Result
-gcd_mpz(mpz_class& to, const mpz_class& x, const mpz_class& y, const Rounding&) {
+gcd_mpz(mpz_class& to, const mpz_class& x, const mpz_class& y, Rounding_Dir) {
   mpz_gcd(to.get_mpz_t(), x.get_mpz_t(), y.get_mpz_t());
   return V_EQ;
 }
@@ -345,7 +335,7 @@ SPECIALIZE_GCD(mpz, mpz_class, mpz_class)
 
 template <typename Policy>
 inline Result
-lcm_mpz(mpz_class& to, const mpz_class& x, const mpz_class& y, const Rounding&) {
+lcm_mpz(mpz_class& to, const mpz_class& x, const mpz_class& y, Rounding_Dir) {
   mpz_lcm(to.get_mpz_t(), x.get_mpz_t(), y.get_mpz_t());
   return V_EQ;
 }
@@ -354,15 +344,15 @@ SPECIALIZE_LCM(mpz, mpz_class, mpz_class)
 
 template <typename Policy>
 inline Result
-sqrt_mpz(mpz_class& to, const mpz_class& from, const Rounding& mode) {
+sqrt_mpz(mpz_class& to, const mpz_class& from, Rounding_Dir dir) {
   if (Policy::check_sqrt_neg && from < 0)
     return set_special<Policy>(to, V_SQRT_NEG);
-  if (Policy::round_inexact && mode.direction() != Rounding::IGNORE) {
+  if (want_rounding<Policy>(dir)) {
     mpz_class r;
     mpz_sqrtrem(to.get_mpz_t(), r.get_mpz_t(), from.get_mpz_t());
     if (r == 0)
       return V_EQ;
-    return round<Policy>(to, V_GT, mode);
+    return round<Policy>(to, V_GT, dir);
   }
   else {
     to = sqrt(from);
@@ -394,7 +384,7 @@ SPECIALIZE_CMP(mp, mpq_class, mpq_class)
 
 template <typename Policy>
 inline Result
-from_c_string_mpz(mpz_class& to, const char* from, const Rounding&) {
+from_c_string_mpz(mpz_class& to, const char* from, Rounding_Dir) {
   if (mpz_set_str(to.get_mpz_t(), from, 10) != 0)
     return set_special<Policy>(to, V_CVT_STR_UNK);
   return V_EQ;
@@ -402,7 +392,7 @@ from_c_string_mpz(mpz_class& to, const char* from, const Rounding&) {
 
 template <typename Policy>
 inline Result
-to_c_string_mpz(char* str, size_t size, const mpz_class& from, const Numeric_Format&, const Rounding&) {
+to_c_string_mpz(char* str, size_t size, const mpz_class& from, const Numeric_Format&, Rounding_Dir) {
   std::string s = from.get_str();
   strncpy(str, s.c_str(), size);
   return V_EQ;

@@ -43,9 +43,9 @@ sgn_ext(const Type& x) {
 template <typename To_Policy, typename From_Policy,
 	  typename To, typename From>
 inline Result
-assign_ext(To& to, const From& from, const Rounding& mode) {
+assign_ext(To& to, const From& from, Rounding_Dir dir) {
   if (handle_ext_natively(To) && handle_ext_natively(From))
-    return assign<To_Policy>(to, from, mode);
+    return assign<To_Policy>(to, from, dir);
   if (is_nan<From_Policy>(from))
     return set_special<To_Policy>(to, VC_NAN);
   else if (is_minf<From_Policy>(from))
@@ -53,15 +53,15 @@ assign_ext(To& to, const From& from, const Rounding& mode) {
   else if (is_pinf<From_Policy>(from))
     return set_special<To_Policy>(to, VC_PLUS_INFINITY);
   else
-    return assign<To_Policy>(to, from, mode);
+    return assign<To_Policy>(to, from, dir);
 }
 
 template <typename To_Policy, typename From_Policy,
 	  typename To, typename From>
 inline Result
-neg_ext(To& to, const From& x, const Rounding& mode) {
+neg_ext(To& to, const From& x, Rounding_Dir dir) {
   if (handle_ext_natively(To) && handle_ext_natively(From))
-    return neg<To_Policy>(to, x, mode);
+    return neg<To_Policy>(to, x, dir);
   if (is_nan<From_Policy>(x))
     return set_special<To_Policy>(to, VC_NAN);
   else if (is_minf<From_Policy>(x))
@@ -69,29 +69,29 @@ neg_ext(To& to, const From& x, const Rounding& mode) {
   else if (is_pinf<From_Policy>(x))
     return set_special<To_Policy>(to, VC_MINUS_INFINITY);
   else
-    return neg<To_Policy>(to, x, mode);
+    return neg<To_Policy>(to, x, dir);
 }
 
 template <typename To_Policy, typename From_Policy,
 	  typename To, typename From>
 inline Result
-abs_ext(To& to, const From& x, const Rounding& mode) {
+abs_ext(To& to, const From& x, Rounding_Dir dir) {
   if (handle_ext_natively(To) && handle_ext_natively(From))
-    return abs<To_Policy>(to, x, mode);
+    return abs<To_Policy>(to, x, dir);
   if (is_nan<From_Policy>(x))
     return set_special<To_Policy>(to, VC_NAN);
   else if (is_minf<From_Policy>(x) || is_pinf<From_Policy>(x))
     return set_special<To_Policy>(to, VC_PLUS_INFINITY);
   else
-    return abs<To_Policy>(to, x, mode);
+    return abs<To_Policy>(to, x, dir);
 }
 
 template <typename To_Policy, typename From1_Policy, typename From2_Policy,
 	  typename To, typename From1, typename From2>
 inline Result
-add_ext(To& to, const From1& x, const From2& y, const Rounding& mode) {
+add_ext(To& to, const From1& x, const From2& y, Rounding_Dir dir) {
   if (handle_ext_natively(To) && handle_ext_natively(From1) && handle_ext_natively(From2))
-    return add<To_Policy>(to, x, y, mode);
+    return add<To_Policy>(to, x, y, dir);
   if (is_nan<From1_Policy>(x) || is_nan<From2_Policy>(y))
     return set_special<To_Policy>(to, VC_NAN);
   else if (is_minf<From1_Policy>(x)) {
@@ -112,16 +112,16 @@ add_ext(To& to, const From1& x, const From2& y, const Rounding& mode) {
     else if (is_pinf<From2_Policy>(y)) 
       return set_special<To_Policy>(to, VC_PLUS_INFINITY);
     else
-      return add<To_Policy>(to, x, y, mode);
+      return add<To_Policy>(to, x, y, dir);
   }
 }
     
 template <typename To_Policy, typename From1_Policy, typename From2_Policy,
 	  typename To, typename From1, typename From2>
 inline Result
-sub_ext(To& to, const From1& x, const From2& y, const Rounding& mode) {
+sub_ext(To& to, const From1& x, const From2& y, Rounding_Dir dir) {
   if (handle_ext_natively(To) && handle_ext_natively(From1) && handle_ext_natively(From2))
-    return sub<To_Policy>(to, x, y, mode);
+    return sub<To_Policy>(to, x, y, dir);
   if (is_nan<From1_Policy>(x) || is_nan<From2_Policy>(y))
     return set_special<To_Policy>(to, VC_NAN);
   else if (is_minf<From1_Policy>(x)) {
@@ -142,16 +142,16 @@ sub_ext(To& to, const From1& x, const From2& y, const Rounding& mode) {
     else if (is_pinf<From2_Policy>(y)) 
       return set_special<To_Policy>(to, VC_MINUS_INFINITY);
     else
-      return sub<To_Policy>(to, x, y, mode);
+      return sub<To_Policy>(to, x, y, dir);
   }
 }
     
 template <typename To_Policy, typename From1_Policy, typename From2_Policy,
 	  typename To, typename From1, typename From2>
 inline Result
-mul_ext(To& to, const From1& x, const From2& y, const Rounding& mode) {
+mul_ext(To& to, const From1& x, const From2& y, Rounding_Dir dir) {
   if (handle_ext_natively(To) && handle_ext_natively(From1) && handle_ext_natively(From2))
-    return mul<To_Policy>(to, x, y, mode);
+    return mul<To_Policy>(to, x, y, dir);
   if (is_nan<From1_Policy>(x) || is_nan<From2_Policy>(y))
     return set_special<To_Policy>(to, VC_NAN);
   if (is_minf<From1_Policy>(x)) {
@@ -195,14 +195,14 @@ mul_ext(To& to, const From1& x, const From2& y, const Rounding& mode) {
       }
     }
     else
-      return mul<To_Policy>(to, x, y, mode);
+      return mul<To_Policy>(to, x, y, dir);
   }
 }
     
 template <typename To_Policy, typename From1_Policy, typename From2_Policy,
 	  typename To, typename From1, typename From2>
 inline Result
-add_mul_ext(To& to, const From1& x, const From2& y, const Rounding& mode) {
+add_mul_ext(To& to, const From1& x, const From2& y, Rounding_Dir dir) {
   Result rto;
   Result rx;
   Result ry;
@@ -212,7 +212,7 @@ add_mul_ext(To& to, const From1& x, const From2& y, const Rounding& mode) {
       || (ry = classify<From2_Policy>(y, true, true, true)) == VC_NAN)
     return set_special<To_Policy>(to, VC_NAN);
   else if (!(is_special(rto) || is_special(rx) || is_special(ry)))
-    return add_mul<To_Policy>(to, x, y, mode);
+    return add_mul<To_Policy>(to, x, y, dir);
   else if (rx == VC_NORMAL && ry == VC_NORMAL)
     r = rto;
   else {
@@ -231,7 +231,7 @@ add_mul_ext(To& to, const From1& x, const From2& y, const Rounding& mode) {
 template <typename To_Policy, typename From1_Policy, typename From2_Policy,
 	  typename To, typename From1, typename From2>
 inline Result
-sub_mul_ext(To& to, const From1& x, const From2& y, const Rounding& mode) {
+sub_mul_ext(To& to, const From1& x, const From2& y, Rounding_Dir dir) {
   Result rto;
   Result rx;
   Result ry;
@@ -241,7 +241,7 @@ sub_mul_ext(To& to, const From1& x, const From2& y, const Rounding& mode) {
       || (ry = classify<From2_Policy>(y, true, true, true)) == VC_NAN)
     return set_special<To_Policy>(to, VC_NAN);
   else if (!(is_special(rto) || is_special(rx) || is_special(ry)))
-    return sub_mul<To_Policy>(to, x, y, mode);
+    return sub_mul<To_Policy>(to, x, y, dir);
   else if (rx == VC_NORMAL && ry == VC_NORMAL)
     r = rto;
   else {
@@ -260,9 +260,9 @@ sub_mul_ext(To& to, const From1& x, const From2& y, const Rounding& mode) {
 template <typename To_Policy, typename From1_Policy, typename From2_Policy,
 	  typename To, typename From1, typename From2>
 inline Result
-div_ext(To& to, const From1& x, const From2& y, const Rounding& mode) {
+div_ext(To& to, const From1& x, const From2& y, Rounding_Dir dir) {
   if (handle_ext_natively(To) && handle_ext_natively(From1) && handle_ext_natively(From2))
-    return div<To_Policy>(to, x, y, mode);
+    return div<To_Policy>(to, x, y, dir);
   if (is_nan<From1_Policy>(x) || is_nan<From2_Policy>(y))
     return set_special<To_Policy>(to, VC_NAN);
   if (is_minf<From1_Policy>(x)) {
@@ -299,7 +299,7 @@ div_ext(To& to, const From1& x, const From2& y, const Rounding& mode) {
       return V_EQ;
     }
     else
-      return div<To_Policy>(to, x, y, mode);
+      return div<To_Policy>(to, x, y, dir);
   }
 }
     
@@ -307,9 +307,9 @@ div_ext(To& to, const From1& x, const From2& y, const Rounding& mode) {
 template <typename To_Policy, typename From1_Policy, typename From2_Policy,
 	  typename To, typename From1, typename From2>
 inline Result
-rem_ext(To& to, const From1& x, const From2& y, const Rounding& mode) {
+rem_ext(To& to, const From1& x, const From2& y, Rounding_Dir dir) {
   if (handle_ext_natively(To) && handle_ext_natively(From1) && handle_ext_natively(From2))
-    return rem<To_Policy>(to, x, y, mode);
+    return rem<To_Policy>(to, x, y, dir);
   if (is_nan<From1_Policy>(x) || is_nan<From2_Policy>(y))
     return set_special<To_Policy>(to, VC_NAN);
   else if (is_minf<From1_Policy>(x) || is_pinf<From1_Policy>(x))
@@ -320,16 +320,16 @@ rem_ext(To& to, const From1& x, const From2& y, const Rounding& mode) {
       return V_EQ;
     }
     else
-      return rem<To_Policy>(to, x, y, mode);
+      return rem<To_Policy>(to, x, y, dir);
   }
 }
     
 template <typename To_Policy, typename From_Policy,
 	  typename To, typename From>
 inline Result
-sqrt_ext(To& to, const From& x, const Rounding& mode) {
+sqrt_ext(To& to, const From& x, Rounding_Dir dir) {
   if (handle_ext_natively(To) && handle_ext_natively(From))
-    return sqrt<To_Policy>(to, x, mode);
+    return sqrt<To_Policy>(to, x, dir);
   if (is_nan<From_Policy>(x))
     return set_special<To_Policy>(to, VC_NAN);
   else if (is_minf<From_Policy>(x))
@@ -337,34 +337,34 @@ sqrt_ext(To& to, const From& x, const Rounding& mode) {
   else if (is_pinf<From_Policy>(x))
     return set_special<To_Policy>(to, VC_PLUS_INFINITY);
   else
-    return sqrt<To_Policy>(to, x, mode);
+    return sqrt<To_Policy>(to, x, dir);
 }
 
 template <typename To_Policy, typename From1_Policy, typename From2_Policy,
 	  typename To, typename From1, typename From2>
 inline Result
-gcd_ext(To& to, const From1& x, const From2& y, const Rounding& mode) {
+gcd_ext(To& to, const From1& x, const From2& y, Rounding_Dir dir) {
   if (is_nan<From1_Policy>(x) || is_nan<From2_Policy>(y))
     return set_special<To_Policy>(to, VC_NAN);
   else if (is_minf<From1_Policy>(x) || is_pinf<From1_Policy>(x))
-    return abs_ext<To_Policy, From2_Policy>(to, y, mode);
+    return abs_ext<To_Policy, From2_Policy>(to, y, dir);
   else if (is_minf<From2_Policy>(y) || is_pinf<From2_Policy>(y))
-    return abs_ext<To_Policy, From1_Policy>(to, x, mode);
+    return abs_ext<To_Policy, From1_Policy>(to, x, dir);
   else
-    return gcd<To_Policy>(to, x, y, mode);
+    return gcd<To_Policy>(to, x, y, dir);
 }
     
 template <typename To_Policy, typename From1_Policy, typename From2_Policy,
 	  typename To, typename From1, typename From2>
 inline Result
-lcm_ext(To& to, const From1& x, const From2& y, const Rounding& mode) {
+lcm_ext(To& to, const From1& x, const From2& y, Rounding_Dir dir) {
   if (is_nan<From1_Policy>(x) || is_nan<From2_Policy>(y))
     return set_special<To_Policy>(to, VC_NAN);
   else if (is_minf<From1_Policy>(x) || is_pinf<From1_Policy>(x) ||
 	   is_minf<From2_Policy>(y) || is_pinf<From2_Policy>(y))
     return set_special<To_Policy>(to, VC_PLUS_INFINITY);
   else
-    return lcm<To_Policy>(to, x, y, mode);
+    return lcm<To_Policy>(to, x, y, dir);
 }
 
 template <typename Policy1, typename Policy2,
@@ -484,9 +484,9 @@ ne_ext(const Type1& x, const Type2& y) {
 
 template <typename Policy, typename Type>
 inline Result
-to_c_string_ext(char *str, size_t size, const Type& x, const Numeric_Format& format, const Rounding& mode) {
+to_c_string_ext(char *str, size_t size, const Type& x, const Numeric_Format& format, Rounding_Dir dir) {
   if (handle_ext_natively(Type))
-    return to_c_string<Policy>(str, size, x, format, mode);
+    return to_c_string<Policy>(str, size, x, format, dir);
   if (is_nan<Policy>(x)) {
     strncpy(str, "nan", size);
     return VC_NAN;
@@ -500,21 +500,21 @@ to_c_string_ext(char *str, size_t size, const Type& x, const Numeric_Format& for
     return VC_PLUS_INFINITY;
   }
   else
-    return to_c_string<Policy>(str, size, x, format, mode);
+    return to_c_string<Policy>(str, size, x, format, dir);
 }
 
 template <typename Policy, typename Type>
 inline Result
-from_c_string_ext(Type& x, const char *str, const Rounding& mode) {
+from_c_string_ext(Type& x, const char *str, Rounding_Dir dir) {
   if (handle_ext_natively(Type))
-    return from_c_string<Policy>(x, str, mode);
+    return from_c_string<Policy>(x, str, dir);
   if (strcmp(str, "-inf") == 0)
     return set_special<Policy>(x, VC_MINUS_INFINITY);
   if (strcmp(str, "+inf") == 0)
     return set_special<Policy>(x, VC_PLUS_INFINITY);
   if (strcmp(str, "nan") == 0)
     return set_special<Policy>(x, VC_NAN);
-  return from_c_string<Policy>(x, str, mode);
+  return from_c_string<Policy>(x, str, dir);
 }
 
 } // namespace Checked
