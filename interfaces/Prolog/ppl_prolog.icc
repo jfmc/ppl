@@ -119,6 +119,24 @@ handle_exception(const not_a_variable& e) {
 }
 
 static void
+handle_exception(const not_a_polyhedron_kind& e) {
+  Prolog_term_ref culprit = Prolog_new_term_ref();
+  Prolog_term_ref arg_no = Prolog_new_term_ref();
+  Prolog_term_ref expected_domain = Prolog_new_term_ref();
+  Prolog_term_ref et = Prolog_new_term_ref();
+
+  Prolog_put_term(culprit, e.term());
+  Prolog_put_long(arg_no, 1);
+  Prolog_put_atom_chars(expected_domain, "'c' or 'nnc'");
+  Prolog_construct_compound(et,
+			    Prolog_atom_from_string("term_to_polyhedron_kind"),
+			    culprit);
+  Prolog_construct_compound(et, Prolog_atom_from_string("domain_error"),
+			    et, arg_no, expected_domain, culprit);
+  Prolog_raise_exception(et);
+}
+
+static void
 handle_exception(const unknown_interface_error& e) {
   Prolog_term_ref et = Prolog_new_term_ref();
   Prolog_put_atom_chars(et, e.where());
@@ -150,6 +168,9 @@ handle_exception(const std::exception& e) {
     handle_exception(e); \
   } \
   catch (const not_a_variable& e) { \
+    handle_exception(e); \
+  } \
+  catch (const not_a_polyhedron_kind& e) { \
     handle_exception(e); \
   } \
   catch (const unknown_interface_error& e) { \
@@ -269,12 +290,14 @@ term_to_unsigned_int(Prolog_term_ref t) {
 }
 
 static Prolog_atom
-term_to_atom(Prolog_term_ref t) {
-  Prolog_atom functor;
-  if (Prolog_is_atom(t) && Prolog_get_atom_name(t, functor))
-    return functor;
-  // FIXME this is the wrong exception
-  throw non_linear("term_to_atom", t);
+term_to_polyhedron_kind(Prolog_term_ref t) {
+  if (Prolog_is_atom(t)) {
+    Prolog_atom name;
+    if (Prolog_get_atom_name(t, name)
+	&& (name == a_c || name == a_nnc))
+      return name;
+  }
+  throw not_a_polyhedron_kind(t);
 }
 
 static PPL::LinExpression
@@ -594,25 +617,23 @@ ppl_finalize() {
 
 extern "C" Prolog_foreign_return_type
 ppl_new_Polyhedron_from_dimension(Prolog_term_ref t_tp,
-                                    Prolog_term_ref t_nd,
-				    Prolog_term_ref t_ph) {
+				  Prolog_term_ref t_nd,
+				  Prolog_term_ref t_ph) {
   try {
     PPL::Polyhedron* ph;
-    Prolog_atom tp = term_to_atom(t_tp);
-    if (tp == a_c || tp == a_nnc) {
-      if (tp == a_c)
-        ph = new PPL::C_Polyhedron(term_to_unsigned_int(t_nd));
-      else
-        ph = new PPL::NNC_Polyhedron(term_to_unsigned_int(t_nd));
-      Prolog_term_ref tmp = Prolog_new_term_ref();
-      Prolog_put_address(tmp, ph);
-      if (Prolog_unify(t_ph, tmp)) {
-        REGISTER(ph);
-        return PROLOG_SUCCESS;
-      }
-      else
-        delete ph;
+    Prolog_atom tp = term_to_polyhedron_kind(t_tp);
+    if (tp == a_c)
+      ph = new PPL::C_Polyhedron(term_to_unsigned_int(t_nd));
+    else
+      ph = new PPL::NNC_Polyhedron(term_to_unsigned_int(t_nd));
+    Prolog_term_ref tmp = Prolog_new_term_ref();
+    Prolog_put_address(tmp, ph);
+    if (Prolog_unify(t_ph, tmp)) {
+      REGISTER(ph);
+      return PROLOG_SUCCESS;
     }
+    else
+      delete ph;
   }
   CATCH_ALL;
   return PROLOG_FAILURE;
@@ -659,26 +680,24 @@ ppl_new_NNC_Polyhedron_from_dimension(Prolog_term_ref t_nd,
 extern "C" Prolog_foreign_return_type
 ppl_new_Polyhedron_empty_from_dimension(Prolog_term_ref t_tp,
                                         Prolog_term_ref t_nd,
-					  Prolog_term_ref t_ph) {
+					Prolog_term_ref t_ph) {
   try {
     PPL::Polyhedron* ph;
-    Prolog_atom tp = term_to_atom(t_tp);
-    if (tp == a_c || tp == a_nnc) {
-      if (tp == a_c)
-        ph = new PPL::C_Polyhedron(term_to_unsigned_int(t_nd),
-			      PPL::Polyhedron::EMPTY);
-      else
-        ph = new PPL::NNC_Polyhedron(term_to_unsigned_int(t_nd),
-			      PPL::Polyhedron::EMPTY);
-      Prolog_term_ref tmp = Prolog_new_term_ref();
-      Prolog_put_address(tmp, ph);
-      if (Prolog_unify(t_ph, tmp)) {
-        REGISTER(ph);
-        return PROLOG_SUCCESS;
-      }
-      else
-        delete ph;
+    Prolog_atom tp = term_to_polyhedron_kind(t_tp);
+    if (tp == a_c)
+      ph = new PPL::C_Polyhedron(term_to_unsigned_int(t_nd),
+				 PPL::Polyhedron::EMPTY);
+    else
+      ph = new PPL::NNC_Polyhedron(term_to_unsigned_int(t_nd),
+				   PPL::Polyhedron::EMPTY);
+    Prolog_term_ref tmp = Prolog_new_term_ref();
+    Prolog_put_address(tmp, ph);
+    if (Prolog_unify(t_ph, tmp)) {
+      REGISTER(ph);
+      return PROLOG_SUCCESS;
     }
+    else
+      delete ph;
   }
   CATCH_ALL;
   return PROLOG_FAILURE;
