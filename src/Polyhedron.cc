@@ -27,6 +27,7 @@ site: http://www.cs.unipr.it/ppl/ . */
 
 #include "Generator.defs.hh"
 #include "Constraint.defs.hh"
+#include "Statistics.hh"
 #include <cassert>
 #include <string>
 #include <iostream>
@@ -4085,17 +4086,6 @@ PPL::Polyhedron::BHRZ03_combining_constraints(const Polyhedron& y,
 #if PPL_STATISTICS
   statistics->technique.combining_constraints++;
 #endif
-#if 0
-  std::cout << "======== BHRZ03: combining_constraints ========" << std::endl;
-  std::cout << "x.con_sys.num_rows() = "
-	    << x.con_sys.num_rows() << std::endl;
-  std::cout << "y.con_sys.num_rows() = "
-	    << y.con_sys.num_rows() << std::endl;
-  std::cout << "H79.con_sys.num_rows() = "
-	    << H79.con_sys.num_rows() << std::endl;
-  std::cout << "result.con_sys.num_rows() = "
-	    << result.con_sys.num_rows() << std::endl;
-#endif
   std::swap(x, result);
   assert(x.OK(true));
   return true;
@@ -4162,17 +4152,6 @@ PPL::Polyhedron::BHRZ03_evolving_points(const Polyhedron& y,
   // The widening technique was successful.
 #if PPL_STATISTICS
   statistics->technique.evolving_points++;
-#endif
-#if 0
-  std::cout << "======== BHRZ03: evolving points ========" << std::endl;
-  std::cout << "x.con_sys.num_rows() = "
-	    << x.con_sys.num_rows() << std::endl;
-  std::cout << "y.con_sys.num_rows() = "
-	    << y.con_sys.num_rows() << std::endl;
-  std::cout << "H79.con_sys.num_rows() = "
-	    << H79.con_sys.num_rows() << std::endl;
-  std::cout << "result.con_sys.num_rows() = "
-	    << result.con_sys.num_rows() << std::endl;
 #endif
   std::swap(x, result);
   assert(x.OK(true));
@@ -4259,17 +4238,6 @@ PPL::Polyhedron::BHRZ03_evolving_rays(const Polyhedron& y,
   // The technique was successful.
 #if PPL_STATISTICS
   statistics->technique.evolving_rays++;
-#endif
-#if 0
-  std::cout << "======== BHRZ03: evolving rays ========" << std::endl;
-  std::cout << "x.con_sys.num_rows() = "
-	    << x.con_sys.num_rows() << std::endl;
-  std::cout << "y.con_sys.num_rows() = "
-	    << y.con_sys.num_rows() << std::endl;
-  std::cout << "H79.con_sys.num_rows() = "
-	    << H79.con_sys.num_rows() << std::endl;
-  std::cout << "result.con_sys.num_rows() = "
-	    << result.con_sys.num_rows() << std::endl;
 #endif
   std::swap(x, result);
   assert(x.OK(true));
@@ -4399,15 +4367,6 @@ PPL::Polyhedron::BHRZ03_widening_assign(const Polyhedron& y, unsigned* tp) {
   // No previous technique was successful: fall back to the H79 widening.
 #if PPL_STATISTICS
   statistics->technique.h79++;
-#endif
-#if 0
-  std::cout << "======== BHRZ03: H79 ========" << std::endl;
-  std::cout << "x.con_sys.num_rows() = "
-	    << x.con_sys.num_rows() << std::endl;
-  std::cout << "y.con_sys.num_rows() = "
-	    << y.con_sys.num_rows() << std::endl;
-  std::cout << "H79.con_sys.num_rows() = "
-	    << H79.con_sys.num_rows() << std::endl;
 #endif
   std::swap(x, H79);
   assert(x.OK(true));

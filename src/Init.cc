@@ -27,6 +27,7 @@ site: http://www.cs.unipr.it/ppl/ . */
 #include "globals.hh"
 #include "Variable.defs.hh"
 
+#include "Statistics.hh"
 #if PPL_STATISTICS
 #include <iostream>
 #endif
@@ -34,6 +35,10 @@ site: http://www.cs.unipr.it/ppl/ . */
 namespace PPL = Parma_Polyhedra_Library;
 
 unsigned int PPL::Init::count = 0;
+
+#if PPL_STATISTICS
+PPL::bhrz03_statistics* PPL::statistics = 0;
+#endif
 
 PPL::Init::Init() {
   // Only when the first Init object is constructed...
@@ -77,6 +82,7 @@ PPL::Init::~Init() {
 	      << "RAYS=" << statistics->reason.zero_coord_rays << "-"
 	      << "SAME=" << statistics->reason.equal << ")" << std::endl;
     std::cerr << "bhrz03-techniques("
+	      << "DELAY=" << statistics->technique.delay << "-"
 	      << "NOP=" << statistics->technique.nop << "-"
 	      << "AC=" << statistics->technique.combining_constraints << "-"
 	      << "EP=" << statistics->technique.evolving_points << "-"

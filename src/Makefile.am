@@ -98,6 +98,7 @@ BoundingBox.defs.hh \
 BoundingBox.inlines.hh \
 Variable.defs.hh \
 Variable.inlines.hh \
+Statistics.hh \
 Init.defs.hh \
 initializer.hh \
 Topology.hh \

@@ -67,7 +67,3 @@ PPL::reduced_scalar_product(const Constraint& x, const Generator& y) {
   }
   return tmp_Integer[0];
 }
-
-#if PPL_STATISTICS
-PPL::bhrz03_statistics* PPL::statistics;
-#endif
