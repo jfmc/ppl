@@ -28,7 +28,23 @@ site: http://www.cs.unipr.it/ppl/ . */
 #include "NNC_Polyhedron.types.hh"
 #include "PolyBase.defs.hh"
 
-//! A non-necessarily closed convex polyhedron.
+//! A not necessarily closed convex polyhedron.
+/*!
+    An object of the class NNC_Polyhedron represents a
+    <EM>not necessarily closed</EM> (NNC) convex polyhedron
+    in the vector space \f$\Rset^n\f$.
+
+    \note
+    NNC polyhedra are a generalization of necessarily closed polyhedra:
+    this means that any object of the class Polyhedron
+    can be converted into an object of the class NNC_Polyhedron
+    and all the methods defined for Polyhedron objects are also
+    available when using objects of the class NNC_Polyhedron.
+    The reason for defining two different classes is that
+    necessarily closed polyhedra (i.e., objects of the class Polyhedron)
+    are characterized by a more efficient implementation,
+    requiring less time and memory resources.
+*/
 class Parma_Polyhedra_Library::NNC_Polyhedron : public PolyBase {
 public:
 
@@ -57,8 +73,7 @@ public:
   //! Ordinary copy-constructor.
   NNC_Polyhedron(const NNC_Polyhedron& y);
 
-  //! Builds a NNC polyhedron from a Polyhedron.
-  //! \param y       The necessarily closed polyhedron.
+  //! Builds a NNC polyhedron from the Polyhedron \p y.
   explicit NNC_Polyhedron(const Polyhedron& y);
 
   //! The assignment operator.
