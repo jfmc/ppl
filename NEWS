@@ -4,7 +4,7 @@ Parma Polyhedra Library NEWS -- history of user-visible changes
 
 
 --------------------------------------------------------------------------
-NEWS for version 0.2 (released on November x, 2001)
+NEWS for version 0.2 (released on November 14, 2001)
 --------------------------------------------------------------------------
 
 New Features
@@ -18,7 +18,8 @@ o  All user-accessible library methods are now guarded by suitable
    sanity checks.  Exception are thrown whenever the library is not
    called in the intended way.
 
-o  A SICStus Prolog interface is now available.
+o  A SICStus Prolog interface is now available.  It comes with a somewhat
+   interesting demo: a toy CLP(Q) interpreter.
 
 Bugfixes
 ========
