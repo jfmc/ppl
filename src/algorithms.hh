@@ -40,7 +40,7 @@ linear_partition_aux(const Constraint& c,
   LinExpression le(c);
   Constraint neg_c = c.is_strict_inequality() ? (le <= 0) : (le < 0);
   NNC_Polyhedron qqq(qq);
-  if (!qqq.add_constraint_and_minimize(neg_c))
+  if (qqq.add_constraint_and_minimize(neg_c))
     r.inject(qqq);
   qq.add_constraint(c);
 }
