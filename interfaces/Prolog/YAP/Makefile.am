@@ -80,7 +80,19 @@ check-local: yap_clpq.pl ../check_script ../expected yap_clpq2.pl ../check_scrip
 		yap -l $(srcdir)/yap_clpq2.pl \
 			<check_script2 >obtained2
 	diff -q --ignore-all-space $(srcdir)/../expected2 obtained2
+	cat $(srcdir)/ppl_yap.pl $(srcdir)/../pl_check.pl >yap_pl_check.pl
+	echo "main." >check_script3
+	$(LIBTOOL) --mode=execute \
+		-dlopen ../../../src/libppl.la \
+		-dlopen ../../../Watchdog/libpwl.la \
+		-dlopen ppl_yap.la \
+		yap -l $(srcdir)/yap_pl_check.pl \
+			<check_script3 >obtained3
+	diff -q --ignore-all-space $(srcdir)/../expected3 obtained3
 
-MOSTLYCLEANFILES = check_script check_script2 $(CLPQ_TESTS) obtained obtained2
+MOSTLYCLEANFILES = \
+check_script check_script2 check_script3 \
+obtained obtained2 obtained3 \
+$(CLPQ_TESTS)
 
 endif
