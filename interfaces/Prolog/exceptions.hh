@@ -111,6 +111,10 @@ public:
   explicit PPL_integer_out_of_range(const Parma_Polyhedra_Library::Integer& i)
     : n(i) {
   }
+
+  const Parma_Polyhedra_Library::Integer i() const {
+    return n;
+  }
 };
 
 class unknown_interface_error {

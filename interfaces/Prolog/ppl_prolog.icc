@@ -123,6 +123,7 @@ Prolog_atom a_false;
 
 // To build exception terms.
 Prolog_atom a_ppl_invalid_argument;
+Prolog_atom a_ppl_representation_error;
 Prolog_atom a_expected;
 Prolog_atom a_found;
 Prolog_atom a_where;
@@ -131,57 +132,58 @@ struct {
   Prolog_atom* p_atom;
   const char* name;
 } const prolog_atoms[] = {
-  { &a_nil,                  "[]" },
+  { &a_nil,                      "[]" },
 
-  { &a_dollar_VAR,           "$VAR" },
+  { &a_dollar_VAR,               "$VAR" },
 
-  { &a_plus,                 "+" },
-  { &a_minus,                "-" },
-  { &a_asterisk,             "*" },
+  { &a_plus,                     "+" },
+  { &a_minus,                    "-" },
+  { &a_asterisk,                 "*" },
 
-  { &a_slash,                "/" },
+  { &a_slash,                    "/" },
 
-  { &a_equal,                "=" },
-  { &a_greater_than_equal,   ">=" },
-  { &a_equal_less_than,      "=<" },
-  { &a_greater_than,         ">" },
-  { &a_less_than,            "<" },
+  { &a_equal,                    "=" },
+  { &a_greater_than_equal,       ">=" },
+  { &a_equal_less_than,          "=<" },
+  { &a_greater_than,             ">" },
+  { &a_less_than,                "<" },
 
-  { &a_line,                 "line" },
-  { &a_ray,                  "ray" },
-  { &a_point,                "point" },
-  { &a_closure_point,        "closure_point" },
+  { &a_line,                     "line" },
+  { &a_ray,                      "ray" },
+  { &a_point,                    "point" },
+  { &a_closure_point,            "closure_point" },
 
-  { &a_is_disjoint,          "is_disjoint" },
-  { &a_strictly_intersects,  "strictly_intersects" },
-  { &a_is_included,          "is_included" },
-  { &a_saturates,            "saturates" },
+  { &a_is_disjoint,              "is_disjoint" },
+  { &a_strictly_intersects,      "strictly_intersects" },
+  { &a_is_included,              "is_included" },
+  { &a_saturates,                "saturates" },
 
-  { &a_subsumes,             "subsumes" },
+  { &a_subsumes,                 "subsumes" },
 
-  { &a_c,                    "c" },
-  { &a_nnc,                  "nnc" },
-  { &a_o,                    "o" },
-  { &a_i,                    "i" },
-  { &a_empty,                "empty" },
+  { &a_c,                        "c" },
+  { &a_nnc,                      "nnc" },
+  { &a_o,                        "o" },
+  { &a_i,                        "i" },
+  { &a_empty,                    "empty" },
 
-  { &a_minf,                 "minf" },
-  { &a_pinf,                 "pinf" },
+  { &a_minf,                     "minf" },
+  { &a_pinf,                     "pinf" },
 
-  { &a_polynomial,           "polynomial" },
-  { &a_simplex,              "simplex" },
-  { &a_any,                  "any" },
+  { &a_polynomial,               "polynomial" },
+  { &a_simplex,                  "simplex" },
+  { &a_any,                      "any" },
 
-  { &a_time_out,             "time_out" },
-  { &a_out_of_memory,        "out_of_memory" },
+  { &a_time_out,                 "time_out" },
+  { &a_out_of_memory,            "out_of_memory" },
 
-  { &a_true,                 "true" },
-  { &a_false,                "false" },
+  { &a_true,                     "true" },
+  { &a_false,                    "false" },
 
-  { &a_ppl_invalid_argument, "ppl_invalid_argument" },
-  { &a_expected,             "expected" },
-  { &a_found,                "found" },
-  { &a_where,                "where" }
+  { &a_ppl_invalid_argument,     "ppl_invalid_argument" },
+  { &a_ppl_representation_error, "ppl_representation_error" },
+  { &a_expected,                 "expected" },
+  { &a_found,                    "found" },
+  { &a_where,                    "where" }
 };
 
 Prolog_term_ref
@@ -335,9 +337,16 @@ handle_exception(const not_a_polyhedron_handle& e) {
 
 void
 handle_exception(const PPL_integer_out_of_range& e) {
-  Prolog_term_ref et = Prolog_new_term_ref();
-  Prolog_put_atom_chars(et, "FIXME");
-  Prolog_raise_exception(et);
+  Prolog_term_ref where = Prolog_new_term_ref();
+  Prolog_construct_compound(where, a_where,
+			    Prolog_atom_term_from_string("Integer_to_integer_term"));
+
+  Prolog_term_ref exception_term = Prolog_new_term_ref();
+  std::string s = e.i().get_str();
+  Prolog_construct_compound(exception_term, a_ppl_representation_error,
+			    Prolog_atom_term_from_string(s.c_str()),
+			    where);
+  Prolog_raise_exception(exception_term);
 }
 
 void
@@ -926,20 +935,21 @@ ppl_set_timeout_exception_atom(Prolog_term_ref t_tea) {
 	return PROLOG_SUCCESS;
       }
     }
-    Prolog_term_ref culprit = Prolog_new_term_ref();
-    Prolog_term_ref arg_no = Prolog_new_term_ref();
-    Prolog_term_ref expected_domain = Prolog_new_term_ref();
-    Prolog_term_ref et = Prolog_new_term_ref();
+    Prolog_term_ref found = Prolog_new_term_ref();
+    Prolog_construct_compound(found, a_found, t_tea);
 
-    Prolog_put_term(culprit, t_tea);
-    Prolog_put_long(arg_no, 1);
-    Prolog_put_atom_chars(expected_domain, "atom");
-    Prolog_construct_compound(et,
-			      Prolog_atom_from_string("ppl_set_timeout_exception_atom"),
-			      culprit);
-    Prolog_construct_compound(et, Prolog_atom_from_string("domain_error"),
-			      et, arg_no, expected_domain, culprit);
-    Prolog_raise_exception(et);
+    Prolog_term_ref expected = Prolog_new_term_ref();
+    Prolog_construct_compound(expected, a_expected,
+			      Prolog_atom_term_from_string("atom"));
+
+    Prolog_term_ref where = Prolog_new_term_ref();
+    Prolog_construct_compound(where, a_where,
+			      Prolog_atom_term_from_string("ppl_set_timeout_exception_atom"));
+
+    Prolog_term_ref exception_term = Prolog_new_term_ref();
+    Prolog_construct_compound(exception_term, a_ppl_invalid_argument,
+			      found, expected, where);
+    Prolog_raise_exception(exception_term);
     return PROLOG_FAILURE;
   }
   CATCH_ALL;
