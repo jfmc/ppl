@@ -146,6 +146,13 @@ Powerset<CS>::Powerset()
 }
 
 template <typename CS>
+Powerset<CS>::Powerset(const CS& d)
+  : sequence(), reduced(true) {
+  if (!d.is_bottom())
+    push_back(d);
+}
+
+template <typename CS>
 void
 Powerset<CS>::collapse(const iterator sink) {
   assert(sink != end());

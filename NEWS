@@ -28,6 +28,10 @@ o  New explicit constructors and assignment operators allowing to obtain a
    and the other way around.  In the latter case, the topological closure
    of the element polyhedra is computed.
 
+o  New explicit constructor Powerset<CS>::Powerset(const CS& d):  if `d'
+   is not bottom, builds a powerset containing only `d';  builds the empty
+   powerset otherwise.
+
 o  New method
 
      Polyhedra_Powerset::poly_difference_assign(const Polyhedra_Powerset& y)

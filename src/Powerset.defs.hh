@@ -64,11 +64,16 @@ operator<<(std::ostream& s, const Powerset<CS>& x);
 template <typename CS>
 class Parma_Polyhedra_Library::Powerset {
 public:
-  //! Default constructor.
+  //! Default constructor: builds the empty set.
   Powerset();
 
   //! Ordinary copy-constructor.
   Powerset(const Powerset& y);
+
+  //! \brief
+  //! If \p d is not bottom, builds a powerset containing only \p d.
+  //! Builds the empty powerset otherwise.
+  explicit Powerset(const CS& d);
 
   //! The assignment operator.
   Powerset& operator=(const Powerset& y);
