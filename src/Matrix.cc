@@ -852,6 +852,7 @@ PPL::Matrix::swap_columns(const dimension_type i,  const dimension_type j) {
 
 void
 PPL::Matrix::permute_columns(const std::vector<dimension_type>& cycles) {
+  TEMP_INTEGER(tmp);
   const dimension_type n = cycles.size();
   for (dimension_type k = num_rows(); k-- > 0; ) {
     Row& rows_k = rows[k];
@@ -866,10 +867,17 @@ PPL::Matrix::permute_columns(const std::vector<dimension_type>& cycles) {
 	std::swap(rows_k[cycles[i]], rows_k[cycles[i+1]]);
       else {
 	// Longer cycles need a temporary.
+#ifdef DONT_USE_NEW_TEMPS
 	std::swap(rows_k[cycles[j-1]], tmp_Integer[0]);
 	for (dimension_type l = j-1; l > i; --l)
 	  std::swap(rows_k[cycles[l-1]], rows_k[cycles[l]]);
 	std::swap(tmp_Integer[0], rows_k[cycles[i]]);
+#else
+	std::swap(rows_k[cycles[j-1]], tmp);
+	for (dimension_type l = j-1; l > i; --l)
+	  std::swap(rows_k[cycles[l-1]], rows_k[cycles[l]]);
+	std::swap(tmp, rows_k[cycles[i]]);
+#endif
       }
     }
   }
@@ -998,6 +1006,8 @@ PPL::Matrix::gram_shmidt() {
 
   const dimension_type n_columns = num_columns();
 
+  TEMP_INTEGER(prod);
+  TEMP_INTEGER(accum);
   // Start from the second line/equality of the matrix.
   for (dimension_type i = 1; i < rank; i++) {
     Row& rows_i = rows[i];
@@ -1008,6 +1018,7 @@ PPL::Matrix::gram_shmidt() {
       const std::vector<Integer>& mu_j = mu[j];
       if (j > 0)
 	mu_i[j] *= mu[j-1][j-1];
+#ifdef DONT_USE_NEW_TEMPS
       tmp_Integer[0] = 0;
       for (dimension_type h = 0; h < j; h++) {
         tmp_Integer[0] *= mu[h][h];
@@ -1017,6 +1028,17 @@ PPL::Matrix::gram_shmidt() {
 	  exact_div_assign(tmp_Integer[0], mu[h-1][h-1]);
       }
       mu_i[j] -= tmp_Integer[0];
+#else
+      accum = 0;
+      for (dimension_type h = 0; h < j; h++) {
+        accum *= mu[h][h];
+	prod = mu_i[h] * mu_j[h];
+	accum += prod;
+	if (h > 0)
+	  exact_div_assign(accum, mu[h-1][h-1]);
+      }
+      mu_i[j] -= accum;
+#endif
     }
 
     // Let the `i'-th line become orthogonal wrt the `j'-th line,
@@ -1027,8 +1049,13 @@ PPL::Matrix::gram_shmidt() {
       const Integer& mu_jj = mu[j][j];
       for (dimension_type k = n_columns; k-- > 0; ) {
         rows_i[k] *= mu_jj;
+#ifdef DONT_USE_NEW_TEMPS
         tmp_Integer[0] = mu_ij * rows_j[k];
         rows_i[k] -= tmp_Integer[0];
+#else
+        prod = mu_ij * rows_j[k];
+        rows_i[k] -= prod;
+#endif
 	if (j > 0)
 	  exact_div_assign(rows_i[k], mu[j-1][j-1]);
       }

@@ -70,6 +70,67 @@ enum Complexity_Class {
 #endif
 extern Integer* tmp_Integer;
 
+#ifndef DONT_USE_NEW_TEMPS
+
+class Integer_free_list_element {
+private:
+  Integer i;
+  Integer_free_list_element* p;
+
+public:
+  Integer_free_list_element()
+    : i() {
+  }
+
+  Integer& integer() {
+    return i;
+  }
+
+  Integer_free_list_element*& next() {
+    return p;
+  }
+};
+
+extern Integer_free_list_element* Integer_free_list_first;
+
+inline Integer&
+get_tmp_Integer() {
+  Integer* p;
+  if (Integer_free_list_first != 0) {
+    p = &Integer_free_list_first->integer();
+    Integer_free_list_first = Integer_free_list_first->next();
+  }
+  else
+    p = reinterpret_cast<Integer*>(new Integer_free_list_element());
+  return *p;
+}
+
+inline void
+release_tmp_Integer(Integer& i) {
+  Integer_free_list_element& e = reinterpret_cast<Integer_free_list_element&>(i);
+  e.next() = Integer_free_list_first;
+  Integer_free_list_first = &e;
+}
+
+class Temp_Integer_Holder {
+private:
+  Integer& hold;
+
+public:
+  Temp_Integer_Holder(Integer& i)
+    : hold(i) {
+  }
+  ~Temp_Integer_Holder() {
+    release_tmp_Integer(hold);
+  }
+};
+
+#define TEMP_INTEGER(id) \
+Integer& id = get_tmp_Integer(); \
+Temp_Integer_Holder temp_Integer_holder_ ## id = (id)
+
+#endif
+
 #ifdef PPL_DOXYGEN_INCLUDE_IMPLEMENTATION_DETAILS
 //! Speculative allocation function.
 /*!

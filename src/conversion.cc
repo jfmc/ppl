@@ -372,6 +372,14 @@ PPL::Polyhedron::conversion(Matrix& source,
   // constraints seen so far, to be used as a displacement when swapping rows.
   dimension_type source_num_redundant = 0;
 
+#ifndef DONT_USE_NEW_TEMPS
+  TEMP_INTEGER(scale);
+  TEMP_INTEGER(scaled_sp_i);
+  TEMP_INTEGER(scaled_sp_o);
+  TEMP_INTEGER(prod1);
+  TEMP_INTEGER(prod2);
+#endif
+
   // Converting the sub-matrix of `source' having rows with indexes
   // from `start' to the last one (i.e., `source_num_rows' - 1).
   for (dimension_type k = start; k < source_num_rows; ) {
@@ -481,6 +489,7 @@ PPL::Polyhedron::conversion(Matrix& source,
 	  //   dest[i][c] *= scaled_sp_n;
 	  //   dest[i][c] -= scaled_sp_i * dest[num_lines_or_equalities][c];
 	  // }
+#ifdef DONT_USE_NEW_TEMPS
 	  gcd_assign(tmp_Integer[1],
 		     scalar_prod[i],
 		     scalar_prod[num_lines_or_equalities]);
@@ -496,6 +505,23 @@ PPL::Polyhedron::conversion(Matrix& source,
 	      * dest[num_lines_or_equalities][c];
 	    dest[i][c] = tmp_Integer[4] - tmp_Integer[5];
 	  }
+#else
+	  gcd_assign(scale,
+		     scalar_prod[i],
+		     scalar_prod[num_lines_or_equalities]);
+	  exact_div_assign(scaled_sp_i,
+			   scalar_prod[i],
+			   scale);
+	  exact_div_assign(scaled_sp_o,
+			   scalar_prod[num_lines_or_equalities],
+			   scale);
+	  for (dimension_type c = dest_num_columns; c-- > 0; ) {
+	    // FIXME: why not use one less temporary?
+	    prod1 = scaled_sp_o * dest[i][c];
+	    prod2 = scaled_sp_i * dest[num_lines_or_equalities][c];
+	    dest[i][c] = prod1 - prod2;
+	  }
+#endif
 	  dest[i].strong_normalize();
 	  scalar_prod[i] = 0;
 	  // `dest' has already been set as non-sorted.
@@ -523,6 +549,7 @@ PPL::Polyhedron::conversion(Matrix& source,
 	  //   dest[i][c] *= scaled_sp_n;
 	  //   dest[i][c] -= scaled_sp_i * dest[num_lines_or_equalities][c];
 	  // }
+#ifdef DONT_USE_NEW_TEMPS
 	  gcd_assign(tmp_Integer[1],
 		     scalar_prod[i],
 		     scalar_prod[num_lines_or_equalities]);
@@ -538,6 +565,23 @@ PPL::Polyhedron::conversion(Matrix& source,
 	      * dest[num_lines_or_equalities][c];
 	    dest[i][c] = tmp_Integer[4] - tmp_Integer[5];
 	  }
+#else
+	  gcd_assign(scale,
+		     scalar_prod[i],
+		     scalar_prod[num_lines_or_equalities]);
+	  exact_div_assign(scaled_sp_i,
+			   scalar_prod[i],
+			   scale);
+	  exact_div_assign(scaled_sp_o,
+			   scalar_prod[num_lines_or_equalities],
+			   scale);
+	  for (dimension_type c = dest_num_columns; c-- > 0; ) {
+	    // FIXME: why not use one less temporary?
+	    prod1 = scaled_sp_o * dest[i][c];
+	    prod2 = scaled_sp_i * dest[num_lines_or_equalities][c];
+	    dest[i][c] = prod1 - prod2;
+	  }
+#endif
 	  dest[i].strong_normalize();
 	  scalar_prod[i] = 0;
 	  // `dest' has already been set as non-sorted.
@@ -735,6 +779,7 @@ PPL::Polyhedron::conversion(Matrix& source,
 		  //   new_row[c] = scaled_sp_i * dest[j][c];
 		  //   new_row[c] -= scaled_sp_j * dest[i][c];
 		  // }
+#ifdef DONT_USE_NEW_TEMPS
 		  gcd_assign(tmp_Integer[1],
 			     scalar_prod[i],
 			     scalar_prod[j]);
@@ -749,6 +794,22 @@ PPL::Polyhedron::conversion(Matrix& source,
 		    tmp_Integer[5] = tmp_Integer[3] * dest[i][c];
 		    new_row[c] = tmp_Integer[4] - tmp_Integer[5];
 		  }
+#else
+		  gcd_assign(scale,
+			     scalar_prod[i],
+			     scalar_prod[j]);
+		  exact_div_assign(scaled_sp_i,
+				   scalar_prod[i],
+				   scale);
+		  exact_div_assign(scaled_sp_o,
+				   scalar_prod[j],
+				   scale);
+		  for (dimension_type c = dest_num_columns; c-- > 0; ) {
+		    prod1 = scaled_sp_i * dest[j][c];
+		    prod2 = scaled_sp_o * dest[i][c];
+		    new_row[c] = prod1 - prod2;
+		  }
+#endif
 		  new_row.strong_normalize();
 		  // Since we added a new generator to `dest',
 		  // we also add a new element to `scalar_prod';

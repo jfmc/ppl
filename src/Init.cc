@@ -48,8 +48,10 @@ PPL::Init::Init() {
   if (count++ == 0) {
     // ... the GMP memory allocation functions are set, ...
     set_GMP_memory_allocation_functions();
+#ifdef DONT_USE_NEW_TEMPS
     // ... then memory is allocated for tmp_Integer, ...
     tmp_Integer = new Integer[6];
+#endif
     // ... and the default output function for Variable objects is set.
     Variable::set_output_function(Variable::default_output_function);
   }
@@ -58,6 +60,10 @@ PPL::Init::Init() {
 PPL::Init::~Init() {
   // Only when the last Init object is destroyed...
   if (--count == 0)
+#ifdef DONT_USE_NEW_TEMPS
     // ... tmp_Integer is also destroyed.
     delete[] tmp_Integer;
+#else
+    ;
+#endif
 }

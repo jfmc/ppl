@@ -205,6 +205,7 @@ PPL::Generator::is_matching_closure_point(const Generator& p) const {
     return true;
   }
   else {
+#ifdef DONT_USE_NEW_TEMPS
     // Divisors are different: divide them by their GCD
     // to simplify the following computation.
     gcd_assign(tmp_Integer[1], cp[0], p[0]);
@@ -222,6 +223,30 @@ PPL::Generator::is_matching_closure_point(const Generator& p) const {
 	return false;
     }
     return true;
+#else
+    // Divisors are different: divide them by their GCD
+    // to simplify the following computation.
+    TEMP_INTEGER(gcd);
+    gcd_assign(gcd, cp[0], p[0]);
+    const bool rel_prime = (gcd == 1);
+    TEMP_INTEGER(cp_0_scaled);
+    TEMP_INTEGER(p_0_scaled);
+    if (!rel_prime) {
+      exact_div_assign(cp_0_scaled, cp[0], gcd);
+      exact_div_assign(p_0_scaled, p[0], gcd);
+    }
+    const Integer& cp_div = rel_prime ? cp[0] : cp_0_scaled;
+    const Integer& p_div = rel_prime ? p[0] : p_0_scaled;
+    TEMP_INTEGER(prod1);
+    TEMP_INTEGER(prod2);
+    for (dimension_type i = cp.size() - 2; i > 0; --i) {
+      prod1 = cp[i] * p_div;
+      prod2 = p[i] * cp_div;
+      if (prod1 != prod2)
+	return false;
+    }
+    return true;
+#endif
   }
 }
 

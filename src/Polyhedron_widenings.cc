@@ -729,8 +729,13 @@ PPL::Polyhedron::BHRZ03_evolving_rays(const Polyhedron& y,
 
   // Candidate rays are kept in a temporary generator system.
   GenSys candidate_rays;
+#ifdef DONT_USE_NEW_TEMPS
   Integer& tmp_1 = tmp_Integer[0];
   Integer& tmp_2 = tmp_Integer[1];
+#else
+  TEMP_INTEGER(tmp_1);
+  TEMP_INTEGER(tmp_2);
+#endif
   for (dimension_type i = x_gen_sys_num_rows; i-- > 0; ) {
     const Generator& x_g = x.gen_sys[i];
     // We choose a ray of `x' that does not belong to `y'.

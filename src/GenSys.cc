@@ -724,10 +724,18 @@ PPL::GenSys::affine_image(dimension_type v,
   // to the column of `*this' indexed by `v'.
   for (dimension_type i = n_rows; i-- > 0; ) {
     Generator& row = x[i];
+#ifdef DONT_USE_NEW_TEMPS
     tmp_Integer[1] = 0;
     for (dimension_type j = expr.size(); j-- > 0; )
       tmp_Integer[1] += row[j] * expr[j];
     std::swap(tmp_Integer[1], row[v]);
+#else
+    TEMP_INTEGER(numerator);
+    numerator = 0;
+    for (dimension_type j = expr.size(); j-- > 0; )
+      numerator += row[j] * expr[j];
+    std::swap(numerator, row[v]);
+#endif
   }
 
   if (denominator != 1) {
