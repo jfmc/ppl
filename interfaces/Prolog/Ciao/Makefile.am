@@ -66,7 +66,7 @@ ciao_clpq: libppl_ciao.la ppl_ciao.pl ciao_clpq.pl ../tests/clpq.pl
 	ciaoc -o $@ ciao_clpq.pl
 	if [ $(abs_srcdir) != `pwd` ]; then \
 	  rm -f ciao_clpq.pl ppl_ciao.pl; \
-	  rm -f ../tests/clpq.pl; \
+	  rm -f ../clpq.pl; \
 	fi
 
 ciao_clpq2: libppl_ciao.la ppl_ciao.pl ciao_clpq.pl ../tests/clpq2.pl
