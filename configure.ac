@@ -267,35 +267,45 @@ AC_MSG_CHECKING([the type of integral values to use as coefficients])
 AC_ARG_ENABLE(coefficients,
 [  --enable-coefficients   select the type of the coefficients])
 case "${enableval}" in
-native-short)
-  AC_MSG_RESULT([native short])
+native-int8)
+  AC_MSG_RESULT([native 8 bits integers])
   coefficient_kind=native
-  coefficient_type=short
+  coefficient_type=int8_t
   ;;
-native-long)
-  AC_MSG_RESULT([native long])
+native-int16)
+  AC_MSG_RESULT([native 16 bits integers])
   coefficient_kind=native
-  coefficient_type=long
+  coefficient_type=int16_t
   ;;
-native-longlong)
-  AC_MSG_RESULT([native longlong])
+native-int32)
+  AC_MSG_RESULT([native 32 bits integers])
   coefficient_kind=native
-  coefficient_type="long long"
+  coefficient_type=int32_t
   ;;
-checked-short)
-  AC_MSG_RESULT([checked short])
-  coefficient_kind=checked
-  coefficient_type=short
+native-int64)
+  AC_MSG_RESULT([native 64 bits integers])
+  coefficient_kind=native
+  coefficient_type="int64_t"
   ;;
-checked-long)
-  AC_MSG_RESULT([checked long])
+checked-int8)
+  AC_MSG_RESULT([checked 8 bits integers])
   coefficient_kind=checked
-  coefficient_type=long
+  coefficient_type=int8_t
   ;;
-checked-longlong)
-  AC_MSG_RESULT([checked longlong])
+checked-int16)
+  AC_MSG_RESULT([checked 16 bits integers])
   coefficient_kind=checked
-  coefficient_type="long long"
+  coefficient_type=int16_t
+  ;;
+checked-int32)
+  AC_MSG_RESULT([checked 32 bits integers])
+  coefficient_kind=checked
+  coefficient_type=int32_t
+  ;;
+checked-int64)
+  AC_MSG_RESULT([checked 64 bits integers])
+  coefficient_kind=checked
+  coefficient_type="int64_t"
   ;;
 gmp)
   AC_MSG_RESULT([GMP])
@@ -303,7 +313,7 @@ gmp)
   coefficient_type=gmp
   ;;
 *)
-  AC_MSG_ERROR([bad value ${enableval} for --enable-coefficients, checked-short, checked-long, checked-longlong, gmp, native-short, native-long or native-longlong])
+  AC_MSG_ERROR([bad value ${enableval} for --enable-coefficients, checked-int32, checked-int64, checked-int16, checked-int8, gmp, native-int32, native-int64, native-int16 or native-int8])
   ;;
 esac
 

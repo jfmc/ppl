@@ -14,6 +14,9 @@ PURPOSE. */
 
 #include "Integer_traits_template.hh"
 
+// Kludge
+#include <stdint.h>
+
 #ifdef NATIVE_INTEGERS
 #include "Native_Integer.types.hh"
 #endif

@@ -106,6 +106,7 @@ $(COEFFICIENT_TYPES_INCLUDE_FILES) \
 Integer.types.hh \
 Interval.types.hh \
 BoundingBox.types.hh \
+Checked_Number.types.hh \
 Constraint.types.hh \
 Generator.types.hh \
 Init.types.hh \
@@ -123,9 +124,18 @@ BHRZ03_Certificate.types.hh \
 Polyhedron.types.hh \
 C_Polyhedron.types.hh \
 NNC_Polyhedron.types.hh \
+float.types.hh \
 globals.hh \
 statistics.hh \
 $(COEFFICIENT_DEFS_INCLUDE_FILES) \
+checked.defs.hh \
+Checked_Number.defs.hh \
+checked_float.inlines.hh \
+checked_int.inlines.hh \
+checked_mpq.inlines.hh \
+checked_mpz.inlines.hh \
+checked.inlines.hh \
+Checked_Integer.inlines.hh \
 Integer.defs.hh \
 Interval.defs.hh \
 Interval.inlines.hh \
@@ -189,6 +199,7 @@ ConSys.cc \
 GenSys.cc \
 Generator.cc \
 Init.cc \
+Checked_Number.cc \
 Integer.cc \
 Interval.cc \
 LinExpression.cc \
