@@ -1,4 +1,4 @@
-/* Abstract checked arithmetic functions: fallbacks
+/* Abstract checked arithmetic functions: fallbacks.
    Copyright (C) 2001-2004 Roberto Bagnara <bagnara@cs.unipr.it>
 
 This file is part of the Parma Polyhedra Library (PPL).
@@ -65,8 +65,8 @@ add(Result r1, Result r2) {
   if (r2 == V_EQ)
     return r1;
   Result ret = V_APPROX;
-  if (((r1 & V_LT) && (r2 & V_GT)) ||
-      ((r1 & V_GT) && (r2 & V_LT)))
+  if (((r1 & V_LT) && (r2 & V_GT))
+      || ((r1 & V_GT) && (r2 & V_LT)))
     return (Result) (ret | V_LGE);
   if ((r1 & r2) & V_EQ)
     ret = (Result) (ret | V_EQ);
@@ -92,12 +92,12 @@ sgn(Result xr, const Type& x) {
     return V_GT;
   default:
     return sgn<Policy>(x);
-    break;
   }
 }
 
 template <typename Policy, typename To, typename From1, typename From2>
-inline Result add(To& to, Result xr, const From1& x, Result yr, const From2& y) {
+inline Result
+add(To& to, Result xr, const From1& x, Result yr, const From2& y) {
   if (xr == V_DOMAIN || yr == V_DOMAIN)
     return V_DOMAIN;
   if (xr == V_UNKNOWN || yr == V_UNKNOWN)
@@ -117,7 +117,8 @@ inline Result add(To& to, Result xr, const From1& x, Result yr, const From2& y) 
 }
 
 template <typename Policy, typename To, typename From1, typename From2>
-inline Result sub(To& to, Result xr, const From1& x, Result yr, const From2& y) {
+inline Result
+sub(To& to, Result xr, const From1& x, Result yr, const From2& y) {
   if (xr == V_DOMAIN || yr == V_DOMAIN)
     return V_DOMAIN;
   if (xr == V_UNKNOWN || yr == V_UNKNOWN)
@@ -262,10 +263,11 @@ sgn_ext(const Type& x) {
 template <typename Policy, typename Type1, typename Type2>
 inline Result
 cmp_ext(const Type1& x, const Type2& y) {
-  Result rx, ry;
+  Result rx;
+  Result ry;
   Result r;
-  if ((rx = value_type<Policy>(x)) == V_UNKNOWN ||
-      (ry = value_type<Policy>(y)) == V_UNKNOWN)
+  if ((rx = value_type<Policy>(x)) == V_UNKNOWN
+      || (ry = value_type<Policy>(y)) == V_UNKNOWN)
     r = V_UNKNOWN;
   else if (rx == V_EQ && ry == V_EQ)
     r = cmp<Policy>(x, y);
@@ -307,10 +309,11 @@ abs_ext(To& to, const From& x) {
 template <typename Policy, typename To, typename From1, typename From2>
 inline Result
 add_ext(To& to, const From1& x, const From2& y) {
-  Result rx, ry;
+  Result rx;
+  Result ry;
   Result r;
-  if ((rx = value_type<Policy>(x)) == V_UNKNOWN ||
-      (ry = value_type<Policy>(y)) == V_UNKNOWN)
+  if ((rx = value_type<Policy>(x)) == V_UNKNOWN
+      || (ry = value_type<Policy>(y)) == V_UNKNOWN)
     r = V_UNKNOWN;
   else if (rx == V_EQ && ry == V_EQ)
     r = add<Policy>(to, x, y);
@@ -327,10 +330,11 @@ add_ext(To& to, const From1& x, const From2& y) {
 template <typename Policy, typename To, typename From1, typename From2>
 inline Result
 sub_ext(To& to, const From1& x, const From2& y) {
-  Result rx, ry;
+  Result rx;
+  Result ry;
   Result r;
-  if ((rx = value_type<Policy>(x)) == V_UNKNOWN ||
-      (ry = value_type<Policy>(y)) == V_UNKNOWN)
+  if ((rx = value_type<Policy>(x)) == V_UNKNOWN
+      || (ry = value_type<Policy>(y)) == V_UNKNOWN)
     r = V_UNKNOWN;
   else if (rx == V_EQ && ry == V_EQ)
     r = sub<Policy>(to, x, y);
@@ -347,10 +351,11 @@ sub_ext(To& to, const From1& x, const From2& y) {
 template <typename Policy, typename To, typename From1, typename From2>
 inline Result
 mul_ext(To& to, const From1& x, const From2& y) {
-  Result rx, ry;
+  Result rx;
+  Result ry;
   Result r;
-  if ((rx = value_type<Policy>(x)) == V_UNKNOWN ||
-      (ry = value_type<Policy>(y)) == V_UNKNOWN)
+  if ((rx = value_type<Policy>(x)) == V_UNKNOWN
+      || (ry = value_type<Policy>(y)) == V_UNKNOWN)
     r = V_UNKNOWN;
   else if (rx == V_EQ && ry == V_EQ)
     r = mul<Policy>(to, x, y);
@@ -372,10 +377,11 @@ mul_ext(To& to, const From1& x, const From2& y) {
 template <typename Policy, typename To, typename From1, typename From2>
 inline Result
 div_ext(To& to, const From1& x, const From2& y) {
-  Result rx, ry;
+  Result rx;
+  Result ry;
   Result r;
-  if ((rx = value_type<Policy>(x)) == V_UNKNOWN ||
-      (ry = value_type<Policy>(y)) == V_UNKNOWN)
+  if ((rx = value_type<Policy>(x)) == V_UNKNOWN
+      || (ry = value_type<Policy>(y)) == V_UNKNOWN)
     r = V_UNKNOWN;
   else if (rx == V_EQ) {
     if (ry == V_EQ)
@@ -407,10 +413,11 @@ div_ext(To& to, const From1& x, const From2& y) {
 template <typename Policy, typename To, typename From1, typename From2>
 inline Result
 mod_ext(To& to, const From1& x, const From2& y) {
-  Result rx, ry;
+  Result rx;
+  Result ry;
   Result r;
-  if ((rx = value_type<Policy>(x)) == V_UNKNOWN ||
-      (ry = value_type<Policy>(y)) == V_UNKNOWN)
+  if ((rx = value_type<Policy>(x)) == V_UNKNOWN
+      || (ry = value_type<Policy>(y)) == V_UNKNOWN)
     r = V_UNKNOWN;
   else if (rx == V_EQ) {
     if (ry == V_EQ)
@@ -445,10 +452,11 @@ sqrt_ext(To& to, const From& x) {
 template <typename Policy, typename To, typename From1, typename From2>
 inline Result
 gcd_ext(To& to, const From1& x, const From2& y) {
-  Result rx, ry;
+  Result rx;
+  Result ry;
   Result r;
-  if ((rx = value_type<Policy>(x)) == V_UNKNOWN ||
-      (ry = value_type<Policy>(y)) == V_UNKNOWN)
+  if ((rx = value_type<Policy>(x)) == V_UNKNOWN
+      || (ry = value_type<Policy>(y)) == V_UNKNOWN)
     r = V_UNKNOWN;
   else if (rx == V_EQ) {
     if (ry == V_EQ)
@@ -471,10 +479,11 @@ gcd_ext(To& to, const From1& x, const From2& y) {
 template <typename Policy, typename To, typename From1, typename From2>
 inline Result
 lcm_ext(To& to, const From1& x, const From2& y) {
-  Result rx, ry;
+  Result rx;
+  Result ry;
   Result r;
-  if ((rx = value_type<Policy>(x)) == V_UNKNOWN ||
-      (ry = value_type<Policy>(y)) == V_UNKNOWN)
+  if ((rx = value_type<Policy>(x)) == V_UNKNOWN
+      || (ry = value_type<Policy>(y)) == V_UNKNOWN)
     r = V_UNKNOWN;
   else if (rx == V_EQ && ry == V_EQ)
     r = lcm<Policy>(to, x, y);

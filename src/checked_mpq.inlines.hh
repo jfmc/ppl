@@ -1,4 +1,4 @@
-/* Specialized checked functions for GMP mpq
+/* Specialized "checked" functions for GMP's mpq_class numbers.
    Copyright (C) 2001-2004 Roberto Bagnara <bagnara@cs.unipr.it>
 
 This file is part of the Parma Polyhedra Library (PPL).
@@ -24,8 +24,8 @@ site: http://www.cs.unipr.it/ppl/ . */
 #ifndef PPL_checked_mpq_inlines_hh
 #define PPL_checked_mpq_inlines_hh 1
 
-#include <gmpxx.h>
 #include "checked_mpz.inlines.hh"
+#include <gmpxx.h>
 
 namespace Parma_Polyhedra_Library {
 
@@ -63,7 +63,8 @@ set_special_mpq(mpq_class& v, const Result r) {
       num = 1;
     else
       return;
-  } else
+  }
+  else
     return;
   v.get_num() = num;
   v.get_den() = 0;
@@ -137,7 +138,8 @@ inline Result
 assign_int_mpq(To& to, const mpq_class& from) {
   mpz_srcptr n = from.get_num().get_mpz_t();
   mpz_srcptr d = from.get_den().get_mpz_t();
-  mpz_t q, r;
+  mpz_t q;
+  mpz_t r;
   mpz_init(q);
   if (Policy::check_inexact) {
     mpz_init(r);

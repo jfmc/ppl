@@ -1,4 +1,4 @@
-/* Specialized checked functions for native integers
+/* Specialized "checked" functions for native integer numbers.
    Copyright (C) 2001-2004 Roberto Bagnara <bagnara@cs.unipr.it>
 
 This file is part of the Parma Polyhedra Library (PPL).
@@ -24,15 +24,29 @@ site: http://www.cs.unipr.it/ppl/ . */
 #ifndef PPL_checked_int_inlines_hh
 #define PPL_checked_int_inlines_hh 1
 
-#include <cerrno>
 #include "Limits.hh"
 #include "float.types.hh"
+#include <cerrno>
 
-#define CHECKED_INT_POS_OVERFLOW(Type) (Limits<Type>::max)
-#define CHECKED_INT_NEG_OVERFLOW(Type) (Limits<Type>::min >= 0 ? Limits<Type>::max - 1 : Limits<Type>::min)
-#define CHECKED_INT_UNKNOWN(Type) (Limits<Type>::min >= 0 ? Limits<Type>::max - 2 : Limits<Type>::min + 1)
-#define CHECKED_INT_MIN(Type, Policy) (Limits<Type>::min + (Limits<Type>::min >= 0 ? 0 : (Policy::store_overflows + Policy::store_unknown)))
-#define CHECKED_INT_MAX(Type, Policy) (Limits<Type>::max - (Limits<Type>::min >= 0 ? 2 : 1) * Policy::store_overflows - Policy::store_unknown)
+#define CHECKED_INT_POS_OVERFLOW(Type) \
+(Limits<Type>::max)
+
+#define CHECKED_INT_NEG_OVERFLOW(Type) \
+(Limits<Type>::min >= 0 ? Limits<Type>::max - 1 : Limits<Type>::min)
+
+#define CHECKED_INT_UNKNOWN(Type) \
+(Limits<Type>::min >= 0 ? Limits<Type>::max - 2 : Limits<Type>::min + 1)
+
+#define CHECKED_INT_MIN(Type, Policy) \
+(Limits<Type>::min \
+ + (Limits<Type>::min >= 0 \
+    ? 0 \
+    : (Policy::store_overflows + Policy::store_unknown)))
+
+#define CHECKED_INT_MAX(Type, Policy) \
+(Limits<Type>::max \
+ - (Limits<Type>::min >= 0 ? 2 : 1) \
+ * Policy::store_overflows - Policy::store_unknown)
 
 
 namespace Parma_Polyhedra_Library {
@@ -212,7 +226,8 @@ assign_unsigned_int_signed_int(To& to, const From from) {
       r = V_NEG_OVERFLOW;
       goto bad;
     }
-    if (sizeof(To) < sizeof(From) && from > static_cast<From>(CHECKED_INT_MAX(To, Policy))) {
+    if (sizeof(To) < sizeof(From)
+	&& from > static_cast<From>(CHECKED_INT_MAX(To, Policy))) {
       r = V_POS_OVERFLOW;
       goto bad;
     }
@@ -415,7 +430,8 @@ assign_unsigned_int_c_string(To& to, c_string from) {
   if (c == '-') {
     if (errno || v != 0)
       return V_NEG_OVERFLOW;
-  } else {
+  }
+  else {
     if (errno == ERANGE)
       return V_POS_OVERFLOW;
   }
@@ -451,7 +467,8 @@ assign_unsigned_long_long_c_string(To& to, c_string from) {
   if (c == '-') {
     if (errno || v != 0)
       return V_NEG_OVERFLOW;
-  } else {
+  }
+  else {
     if (errno == ERANGE)
       return V_POS_OVERFLOW;
   }
@@ -473,15 +490,12 @@ SPECIALIZE_ASSIGN(unsigned_long_long_c_string, unsigned long long, c_string)
 template<typename T>
 struct Larger_Types;
 
-/* 
-   The following is architecture dependant.
-   It should be ok of ia32.
-
-   Choosen guidelines:
-   - avoid division where possibile (int_larger variant for mul)
-   - use int_larger variant for types smaller than architecture bit size
-*/
-
+// The following is architecture dependent.
+// It should be OK of ia32.
+//
+// Chosen guidelines:
+//   - avoid division where possibile (int_larger variant for mul)
+//   - use int_larger variant for types smaller than architecture bit size
 template <>
 struct Larger_Types<char> {
   static const bool Neg_ = true;

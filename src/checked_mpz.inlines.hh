@@ -1,4 +1,4 @@
-/* Specialized checked functions for GMP mpz
+/* Specialized "checked" functions for GMP's mpz_class numbers.
    Copyright (C) 2001-2004 Roberto Bagnara <bagnara@cs.unipr.it>
 
 This file is part of the Parma Polyhedra Library (PPL).
@@ -24,9 +24,9 @@ site: http://www.cs.unipr.it/ppl/ . */
 #ifndef PPL_checked_mpz_inlines_hh
 #define PPL_checked_mpz_inlines_hh 1
 
-#include <cmath>
-#include <gmpxx.h>
 #include "Limits.hh"
+#include <gmpxx.h>
+#include <cmath>
 
 namespace Parma_Polyhedra_Library {
 
@@ -35,14 +35,12 @@ namespace Checked {
 typedef int mpz_size_t;
 
 inline mpz_size_t
-get_mpz_size(const mpz_class &v)
-{
+get_mpz_size(const mpz_class &v) {
   return v.get_mpz_t()->_mp_size;
 }
 
 inline void
-set_mpz_size(mpz_class &v, mpz_size_t size)
-{
+set_mpz_size(mpz_class &v, mpz_size_t size) {
   v.get_mpz_t()->_mp_size = size;
 }
 

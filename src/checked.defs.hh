@@ -46,75 +46,77 @@ typedef const char* c_string;
 namespace Checked {
 
 struct Policy_Safe {
-  /* Check for overflowed result */
+  //! Check for overflowed result.
   static const int check_overflow = 1;
-  /* Check for inexact result */
+  //! Check for inexact result.
   static const int check_inexact = 1;
-  /* Check for division by zero attempt */
+  //! Check for attempts to divide by zero.
   static const int check_divbyzero = 1;
-  /* Check for sqrt of negative number attempt */
+  //! Check for attempts to take the square root of a negative number.
   static const int check_sqrt_neg = 1;
-  /* Store unknown special value */
+  //! Store unknown special value.
   static const int store_unknown = 1;
-  /* Store overflow special values */
+  //! Store overflow special values.
   static const int store_overflows = 1;
-  /* Check for float NaN argument */
+  //! Check for float NaN argument.
   static const int check_nan_arg = 1;
-  /* Check for float infinity argument */
+  //! Check for float infinity argument.
   static const int check_infinity_arg = 1;
-  /* Check for float NaN result */
+  //! Check for float NaN result.
   static const int check_nan_result = 1;
 };
 
 
 enum Result {
-  // Returned result is exact
+  //! The returned result is exact.
   V_EQ = 1,
 
-  // Returned result is inexact and rounded up
+  //! The returned result is inexact and rounded up.
   V_LT = 2,
 
-  // Returned result is inexact and rounded down
+  //! The returned result is inexact and rounded down.
   V_GT = 4,
 
-  // Returned result is inexact
+  //! The returned result is inexact.
   V_NE = V_LT | V_GT,
 
-  // Returned result may be inexact and rounded up
+  //! The returned result may be inexact and rounded up.
   V_LE = V_EQ | V_LT,
 
-  // Returned result may be inexact and rounded down
+  //! The returned result may be inexact and rounded down.
   V_GE = V_EQ | V_GT,
 
-  // Returned result may be inexact
+  //! The returned result may be inexact.
   V_LGE = V_LT | V_EQ | V_GT,
 
-  // Returned result may not be the nearest representable of exact result
-  // To be OR'ed with values above
+  //! \brief
+  //! The returned result may not be the nearest representable
+  //! approximation of the exact result.  To be OR'ed with values
+  //! above.
   V_APPROX = 8,
 
-  // Special results (no numeric result is returned)
-  // Keep all of these > V_UNKNOWN
+  // Special results (no numeric result is returned).
+  // Keep all of these > V_UNKNOWN.
 
-  // The result is unknown
+  //! The result is unknown.
   V_UNKNOWN = 16,
 
-  // Result is out of numeric domain
+  //! The result is outside the considered numeric domain.
   V_DOMAIN = 17,
 
-  // Negative overflow
+  //! Negative overflow.
   V_NEG_OVERFLOW = 18,
 
-  // Positive overflow
+  //! Positive overflow.
   V_POS_OVERFLOW = 19
 
 };
 
 
-/*
-  It's a pity that function partial specialization is not permitted by C++.
-  We use class encapsulated function and partial specialization of containing classes.
-*/
+// It is a pity that function partial specialization is not permitted
+// by C++.  To (partly) overcome this limitation, we use class
+// encapsulated functions and partial specialization of containing
+// classes.
 
 #define FUNCTION_CLASS(name) name ## _function_struct
 
