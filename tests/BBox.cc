@@ -23,7 +23,6 @@ site: http://www.cs.unipr.it/ppl/ . */
 
 #include "BBox.hh"
 #include <iostream>
-#include "ppl_install.hh"
 
 using namespace Parma_Polyhedra_Library;
 using namespace Parma_Polyhedra_Library::IO_Operators;
