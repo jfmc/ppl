@@ -109,7 +109,8 @@ ORIGINAL_TESTS = \
 	timeelapse6 timeelapse7 \
 	topclosed1 topclosed2 topclosed3 \
 	topclosure1 topclosure2 topclosure3 \
-	universe1 universe2 universe3 universe4 universe5 universe6
+	universe1 universe2 universe3 universe4 universe5 universe6 \
+	writepolyhedron1
 
 DERIVED_TESTS = \
 	nnc_addconstraint2 nnc_addconstraint3 \
@@ -448,6 +449,8 @@ universe3_SOURCES = universe3.cc
 universe4_SOURCES = universe4.cc
 universe5_SOURCES = universe5.cc
 universe6_SOURCES = universe6.cc
+
+writepolyhedron1_SOURCES = writepolyhedron1.cc files.cc
 
 #
 # Sources and compilation flags for the derived check programs
@@ -840,4 +843,5 @@ BUGS =
 MOSTLYCLEANFILES = \
 ascii_dump_load_1.dat \
 ascii_dump_load_2.dat \
-ascii_dump_load_3.dat 
+ascii_dump_load_3.dat \
+writepolyhedron1.dat
