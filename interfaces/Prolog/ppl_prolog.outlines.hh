@@ -469,7 +469,7 @@ extern "C" Prolog_foreign_return_type
 ppl_new_polyhedron(Prolog_term_ref t_ph, Prolog_term_ref t_nd) {
   try {
     PPL::Polyhedron* ph
-      = new PPL::Polyhedron(term_to_unsigned_int(t_nd));
+      = new PPL::C_Polyhedron(term_to_unsigned_int(t_nd));
     Prolog_term_ref tmp = Prolog_new_term_ref();
     Prolog_put_address(tmp, ph);
     if (Prolog_unify(t_ph, tmp)) {
@@ -487,8 +487,8 @@ extern "C" Prolog_foreign_return_type
 ppl_new_empty_polyhedron(Prolog_term_ref t_ph, Prolog_term_ref t_nd) {
   try {
     PPL::Polyhedron* ph
-      = new PPL::Polyhedron(term_to_unsigned_int(t_nd),
-			    PPL::Polyhedron::EMPTY);
+      = new PPL::C_Polyhedron(term_to_unsigned_int(t_nd),
+			      PPL::Polyhedron::EMPTY);
     Prolog_term_ref tmp = Prolog_new_term_ref();
     Prolog_put_address(tmp, ph);
     if (Prolog_unify(t_ph, tmp)) {
@@ -505,11 +505,12 @@ ppl_new_empty_polyhedron(Prolog_term_ref t_ph, Prolog_term_ref t_nd) {
 extern "C" Prolog_foreign_return_type
 ppl_copy_polyhedron(Prolog_term_ref t_source, Prolog_term_ref t_ph) {
   try {
-    const PPL::Polyhedron* source_ph = get_ph_pointer(t_source);
+    const PPL::C_Polyhedron* source_ph
+      = static_cast<const PPL::C_Polyhedron*>(get_ph_pointer(t_source));
     if (source_ph == 0)
       return PROLOG_FAILURE;
     CHECK(source_ph);
-    PPL::Polyhedron* ph = new PPL::Polyhedron(*source_ph);
+    PPL::C_Polyhedron* ph = new PPL::C_Polyhedron(*source_ph);
     Prolog_term_ref tmp = Prolog_new_term_ref();
     Prolog_put_address(tmp, ph);
     if (Prolog_unify(t_ph, tmp)) {
