@@ -1,6 +1,8 @@
 Enhancements for PPL 0.8 or later versions
 ==========================================
 
+- Add our implementation of bounded difference shapes.
+- Add the simplex method to Constraint_System.
 - For the Powerset class, find a way for the user to obtain access to
   the sequence of disjuncts, while still enforcing the class invariants.
   What is currently missing is a clean and safe way to drop one of the
