@@ -547,32 +547,83 @@ PPL::Polyhedron::max_min(const LinExpression& expr,
       || (!generators_are_up_to_date() && !update_generators()))
     return false;
 
-#if 0
   // The polyhedron has updated, possibly pending generators.
+  // The following loop will iterate through the generator
+  // to find the extremum.
+  mpq_class extremum;
+
+  // True if we have no other candidate extremum to compare with.
+  bool first_candidate = true;
+
+  // To store the position of the current candidate extremum.
+  dimension_type ext_position;
+
+  // Whether the current candidate extremum is included or not.
+  bool ext_included;
+
   for (dimension_type i = gen_sys.num_rows(); i-- > 0; ) {
     const Generator& g = gen_sys[i];
+
+    // Compute the scalar product between `g' and `expr'.
+    tmp_Integer[0] = 0;
+    // Note the pre-decrement of `j': last iteration should be for `j == 1'.
+    for (dimension_type j = expr.size(); --j > 0; ) {
+      // The following two lines optimize the computation
+      // of tmp_Integer[0] += g[j] * expr[j].
+      tmp_Integer[1] = g[j] * expr[j];
+      tmp_Integer[0] += tmp_Integer[1];
+    }
+
     // Lines and rays in `*this' can cause `expr' to be unbounded.
     if (g[0] == 0) {
-      // Compute the scalar product between `g' and `expr'.
-      tmp_Integer[0] = 0;
-      for (dimension_type j = expr.size(); j-- > 0; ) {
-	// The following two lines optimize the computation
-	// of tmp_Integer[0] += g[j] * expr[j].
-	tmp_Integer[1] = g[j] * expr[j];
-	tmp_Integer[0] += tmp_Integer[1];
-      }
       const int sign = sgn(tmp_Integer[0]);
       if (sign != 0
 	  && (g.is_line()
 	      || (maximize && sign > 0)
 	      || (!maximize && sign < 0)))
-	// `*this' does not bound `expr'.
+	// `expr' is unbounded in `*this'.
 	return false;
     }
+    else {
+      // We have a point or a closure point.
+      assert(g.is_point() || g.is_closure_point());
+      // Notice that we are ignoring the constant term in `expr' here.
+      // We will add it to the extremum as soon as we find it.
+      mpq_class candidate(tmp_Integer[0], g[0]);
+      candidate.canonicalize();
+      const bool g_is_point = g.is_point();
+      if (first_candidate
+	  || (maximize
+	      && (candidate > extremum
+		  || (g_is_point
+		      && !ext_included
+		      && candidate == extremum)))
+	  || (!maximize
+	      && (candidate < extremum
+		  || (g_is_point
+		      && !ext_included
+		      && candidate == extremum)))) {
+	// We have a (new) candidate extremum.
+	first_candidate = false;
+	extremum = candidate;
+	ext_position = i;
+	ext_included = g_is_point;
+      }
+    }
   }
-#endif
-  // No sources of unboundedness have been found for `expr'
-  // in the given direction.
+
+  // Add in the constant term in `expr'.
+  extremum += expr[0];
+
+  // The polyhedron is bounded in the right direction and we have
+  // computed the extremum: write the result into the caller's structures.
+  assert(!first_candidate);
+  ext_n = extremum.get_num();
+  ext_d = extremum.get_den();
+  included = ext_included;
+  if (ppoint != 0)
+    *ppoint = gen_sys[ext_position];
+
   return true;
 }
 
