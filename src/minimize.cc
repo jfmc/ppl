@@ -200,38 +200,22 @@ PPL::Polyhedron::minimize(bool con_to_gen,
       // combination of a constraints of positivity of variables and an
       // equalities.
       if (!con_to_gen) {
-    	tmp_sat.transpose_assign(sat);
-	simplify(dest, tmp_sat);
-	dest_num_rows = dest.num_rows();
-	for (size_t i = dest_num_rows; i-- > num_lines_or_equalities; )
-	  if (dest[i].only_a_term_is_positive()) {
-	    --dest_num_rows;
-	    std::swap(dest[i], dest[dest_num_rows]);
-	    std::swap(tmp_sat[i], tmp_sat[dest_num_rows]);
-	  }
-	  else
-	    if (tmp_sat[i].last() == tmp_sat[i].first()
-		&& tmp_sat[i].last() != -1) {
-	      for (size_t j = 0; j < num_lines_or_equalities; ++j) {
-		size_t h;
-		for (h = 0; h < source_num_columns; ++h)
-		  if (dest[i][h] != 0 && dest[j][h] != 0)
-		    break;
-		if (h < source_num_columns) { 
-		  Row tmp(dest[i]);
-		  tmp.linear_combine(dest[j], h);
-		  if (tmp.only_a_term_is_positive()) {
-		    --dest_num_rows;
-		    std::swap(dest[i], dest[dest_num_rows]);
-		    std::swap(tmp_sat[i], tmp_sat[dest_num_rows]);
-		    break;
-		  }
-		}
-	      }
-	    }
-	dest.erase_to_end(dest_num_rows);
-	tmp_sat.rows_erase_to_end(dest_num_rows);
-	sat.transpose_assign(tmp_sat);
+	source.resize_no_copy(source_num_columns, source_num_columns);
+	for(size_t i = source_num_columns; i-- > 0; ) {
+	  for (size_t j = source_num_columns; j-- > 0; )
+	    if (j != i)
+	      source[i][j] = 0;
+	  source[i][i] = 1;
+	  source[i].set_is_ray_or_vertex_or_inequality();
+	}
+	source.set_sorted(false);
+	SatMatrix tmp(source_num_columns,
+		      source_num_columns + dest.num_rows());
+	for (size_t i = 0; i < source_num_columns; ++i)
+	  tmp[i].set(i);
+
+	conversion(dest, 0, source, tmp, 0);
+	std::swap(tmp, sat);
       }
       else {
 	// If the polyhedron is positive and we are computing the system of
@@ -486,36 +470,20 @@ PPL::Polyhedron::add_and_minimize(bool con_to_gen,
     // equalities. Then we re-obtain the `sat_c'.
     if (pos) {
       if (!con_to_gen) {
-	sat.transpose_assign(sat);
-	simplify(dest, sat);
-	dest_num_rows = dest.num_rows();
-	for (size_t i = dest_num_rows; i-- > num_lines_or_equalities; )
-	  if (dest[i].only_a_term_is_positive()) {
-	    --dest_num_rows;
-	    std::swap(dest[i], dest[dest_num_rows]);
-	    std::swap(sat[i], sat[dest_num_rows]);
-	  }
-	  else
-	    if (sat[i].last() == sat[i].first() && sat[i].last() != -1) {
-	      for (size_t j = 0; j < num_lines_or_equalities; ++j) {
-		size_t h;
-		for (h = 0; h < num_columns; ++h)
-		  if (dest[j][h] != 0 && dest[i][h] != 0)
-		    break;
-		if (h < num_columns) {
-		  Row tmp(dest[i]);
-		  tmp.linear_combine(dest[j], h);
-		  if (tmp.only_a_term_is_positive()) {
-		    --dest_num_rows;
-		    std::swap(dest[i], dest[dest_num_rows]);
-		    std::swap(sat[i], sat[dest_num_rows]);
-		    break;
-		  }
-		}		
-	      }
-	    }
-	dest.erase_to_end(dest_num_rows);
-	sat.rows_erase_to_end(dest_num_rows);
+	source1.resize_no_copy(num_columns, num_columns);
+	for(size_t i = num_columns; i-- > 0; ) {
+	  for (size_t j = num_columns; j-- > 0; )
+	    if (j != i)
+	      source1[i][j] = 0;
+	  source1[i][i] = 1;
+	  source1[i].set_is_ray_or_vertex_or_inequality();
+	}
+       	SatMatrix tmp(num_columns, num_columns + dest.num_rows());
+	for (size_t i = 0; i < num_columns; ++i)
+	  tmp[i].set(i);
+	conversion(dest, 0, source1, tmp, 0);
+	tmp.transpose_assign(tmp);
+	std::swap(tmp, sat);
       }
       else {
 	for (size_t i = source1.num_lines_or_equalities();
