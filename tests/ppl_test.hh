@@ -87,7 +87,7 @@ div_round_up(Checked_Number<To, To_Policy>& to,
   Rounding_State old;
   Coefficient q;
   rounding_save_internal<Coefficient>(ROUND_UP, old);
-  Result r = q.assign_div(x, y, ROUND_UP);
+  Result r = Checked::div<Check_Overflow_Policy>(raw_value(q), raw_value(x), raw_value(y), ROUND_UP);
   rounding_restore_internal<Coefficient>(old, ROUND_UP);
   if (r == V_POS_OVERFLOW) {
     to = PLUS_INFINITY;
