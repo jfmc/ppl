@@ -165,25 +165,41 @@ static Prolog_atom a_line;
 static Prolog_atom a_ray;
 static Prolog_atom a_point;
 
+// For the relation between a polyhedron and a constraint.
+static Prolog_atom a_is_disjoint;
+static Prolog_atom a_strictly_intersects;
+static Prolog_atom a_is_included;
+static Prolog_atom a_saturates;
+
+// For the relation between a polyhedron and a generator.
+static Prolog_atom a_subsumes;
+
 static struct {
   Prolog_atom* p_atom;
   const char* name;
 } const prolog_atoms[] = {
-  { &a_nil,                "[]" },
+  { &a_nil,                 "[]" },
 
-  { &a_dollar_VAR,         "$VAR" },
+  { &a_dollar_VAR,          "$VAR" },
 
-  { &a_plus,               "+" },
-  { &a_minus,              "-" },
-  { &a_asterisk,           "*" },
+  { &a_plus,                "+" },
+  { &a_minus,               "-" },
+  { &a_asterisk,            "*" },
 
-  { &a_equal,              "=" },
-  { &a_greater_than_equal, ">=" },
-  { &a_equal_less_than,    "=<" },
+  { &a_equal,               "=" },
+  { &a_greater_than_equal,  ">=" },
+  { &a_equal_less_than,     "=<" },
 
-  { &a_line,               "line" },
-  { &a_ray,                "ray" },
-  { &a_point,              "point" },
+  { &a_line,                "line" },
+  { &a_ray,                 "ray" },
+  { &a_point,               "point" },
+
+  { &a_is_disjoint,         "is_disjoint" },
+  { &a_strictly_intersects, "strictly_intersects" },
+  { &a_is_included,         "is_included" },
+  { &a_saturates,           "saturates" },
+
+  { &a_subsumes,            "subsumes" },
 };
 
 static Prolog_term_ref
