@@ -360,8 +360,8 @@ div_round_up<E_Rational>(const Coefficient& x, const Coefficient& y) {
     else
       z = E_Rational::minus_infinity();
   else {
-    Checked::assign<Checked::Transparent_Policy>(z.n.get_num(), raw_value(x), Rounding(Rounding::IGNORE));
-    Checked::assign<Checked::Transparent_Policy>(z.n.get_den(), raw_value(y), Rounding(Rounding::IGNORE));
+    Checked::assign<Checked::Transparent_Policy>(z.n.get_num(), raw_value(x), Rounding::IGNORE);
+    Checked::assign<Checked::Transparent_Policy>(z.n.get_den(), raw_value(y), Rounding::IGNORE);
     z.n.canonicalize();
   }
   return z;
@@ -404,8 +404,8 @@ div_round_up(const E_Rational& x, const Coefficient& y) {
     Coefficient numer, denom;
     x.numer_denom(numer, denom);
     denom *= y;
-    Checked::assign<Checked::Transparent_Policy>(z.n.get_num(), raw_value(numer), Rounding(Rounding::IGNORE));
-    Checked::assign<Checked::Transparent_Policy>(z.n.get_den(), raw_value(denom), Rounding(Rounding::IGNORE));
+    Checked::assign<Checked::Transparent_Policy>(z.n.get_num(), raw_value(numer), Rounding::IGNORE);
+    Checked::assign<Checked::Transparent_Policy>(z.n.get_den(), raw_value(denom), Rounding::IGNORE);
     z.n.canonicalize();
   }
   return z;
