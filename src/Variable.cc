@@ -32,6 +32,11 @@ namespace PPL = Parma_Polyhedra_Library;
 PPL::Variable::output_function_type*
 PPL::Variable::current_output_function = 0;
 
+bool
+PPL::Variable::OK() const {
+  return id() < max_space_dimension();
+}
+
 void
 PPL::Variable::default_output_function(std::ostream& s, const Variable& v) {
   dimension_type varid = v.id();

@@ -109,6 +109,9 @@ public:
   //! Returns the size in bytes of the memory managed by \p *this.
   memory_size_type external_memory_in_bytes() const;
 
+  //! Checks if all the invariants are satisfied.
+  bool OK() const;
+
   //! Type of output functions.
   typedef void output_function_type(std::ostream& s, const Variable& v);
 
