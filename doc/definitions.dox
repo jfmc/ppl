@@ -319,10 +319,11 @@ In this case, as \f$P\f$ is necessarily non-empty, it must
 contain points of \f$\cP\f$ that are <EM>not</EM> vertices.
 For instance, the half-space of \f$\Rset^2\f$ corresponding to the single
 constraint \f$y \geq 0\f$ can be represented by the generator system
-\f$\cG = (L, R, P)\f$ such that
+\f$\cG = (L, R, P, C)\f$ such that
 \f$L = \bigl\{ (1, 0)^\transpose \bigr\}\f$,
-\f$R = \bigl\{ (0, 1)^\transpose \bigr\}\f$, and
-\f$P = \bigl\{ (0, 0)^\transpose \bigr\}\f$.
+\f$R = \bigl\{ (0, 1)^\transpose \bigr\}\f$,
+\f$P = \bigl\{ (0, 0)^\transpose \bigr\}\f$, and
+\f$C = \emptyset\f$.
 It is also worth noting that the only ray in \f$R\f$
 is <EM>not</EM> an extreme ray of \f$\cP\f$.
 
