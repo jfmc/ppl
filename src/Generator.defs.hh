@@ -61,9 +61,9 @@ namespace Parma_Polyhedra_Library {
   Each type of generator is built by applying a particular operator
   (<CODE>|</CODE> for a line, <CODE>^</CODE> for a ray
   and <CODE>/=</CODE> for a vertex) to a linear expression.
-  The linear expression represents a direction in the space:
-  note that the inhomogeneous term of this linear expression
-  is clearly disregarded.
+  The linear expression represents a direction in the space.
+  This means that a linear expression used to define a vertex, ray or line
+  should be homogeneous and any constant term will be ignored.
 
     \par
     In all the examples it is assumed that variables
@@ -82,10 +82,9 @@ namespace Parma_Polyhedra_Library {
     \endcode
     When specifying a line, the actual value of the first argument
     of the operator is not significant.
-    As we said above, also the inhomogeneous term of the linear expression
-    is not significant.
-    Thus, the same effect would have been obtained by replacing
-    the above definition by, e.g.,
+    Also, as mentioned above, the constant term of the linear expression
+    is not relevant.
+    Thus, the following code has the same effect:
     \code
   Generator line(18 | x - y - z + 15);
     \endcode
@@ -96,7 +95,7 @@ namespace Parma_Polyhedra_Library {
     \code
   Generator ray(1 ^ x - y - z);
     \endcode
-    As is the case for lines, when specifying a ray the actual value
+    As is the case for lines, when specifying a ray, the actual value
     of the first argument is not significant.
 
     \par Example 3
@@ -108,7 +107,7 @@ namespace Parma_Polyhedra_Library {
     Note that the second argument of the operator is
     the <EM>denominator</EM> for the coefficients
     of the linear expression.
-    Therefore, the same vertex as above can be obtain also with the code:
+    Therefore, the same vertex as above can also be obtained with the code:
     \code
   Generator vertex(2*x + 6*y + 4*z /= 2);
     \endcode
