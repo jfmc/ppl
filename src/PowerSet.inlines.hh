@@ -134,7 +134,7 @@ PowerSet<CS>::definitely_contains(const CS& y) const {
 
 template <typename CS>
 PowerSet<CS>&
-PowerSet<CS>::inject(const CS& c) {
+PowerSet<CS>::add_disjunct(const CS& c) {
   if (!c.is_bottom()) {
     sequence.push_back(c);
     omega_reduction();

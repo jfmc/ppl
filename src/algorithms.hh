@@ -77,7 +77,7 @@ linear_partition_aux(const Constraint& c,
   Constraint neg_c = c.is_strict_inequality() ? (le <= 0) : (le < 0);
   NNC_Polyhedron qqq(qq);
   if (qqq.add_constraint_and_minimize(neg_c))
-    r.inject(qqq);
+    r.add_disjunct(qqq);
   qq.add_constraint(c);
 }
 
@@ -149,7 +149,7 @@ complete_reduction(PowerSet<Determinate<PH> >& p) {
 	const PH& pj = j->polyhedron();
 	if (poly_hull_assign_if_exact(pi, pj)) {
 	  marked[i_index] = marked[j_index] = true;
-	  q.inject(pi);
+	  q.add_disjunct(pi);
 	  ++deleted;
 	  goto next;
 	}
@@ -160,7 +160,7 @@ complete_reduction(PowerSet<Determinate<PH> >& p) {
     i_index = 0;
     for (iter i = p_begin; i != p_end; ++i, ++i_index)
       if (!marked[i_index])
-	q.inject(*i);
+	q.add_disjunct(*i);
     p = q;
     n -= deleted;
   } while (deleted > 0);
@@ -189,14 +189,14 @@ extrapolation_assign(PowerSet<Determinate<PH> >& r,
       const PH& qj = j->polyhedron();
       if (ri.contains(qj)) {
 	(ri.*extrapolation_assign)(qj, 0);
-	p.inject(ri);
+	p.add_disjunct(ri);
 	marked[i_index] = true;
       }
     }
   i_index = 0;
   for (iter i = r_begin; i != r_end; ++i, ++i_index)
     if (!marked[i_index])
-      p.inject(*i);
+      p.add_disjunct(*i);
   r = p;
 }
 

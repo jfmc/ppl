@@ -107,7 +107,7 @@ public:
   PowerSet(const ConSys& cs);
 
   //! Adds to \p *this the disjunct \p c.
-  PowerSet& inject(const CS& c);
+  PowerSet& add_disjunct(const CS& c);
 
   //! Assigns to \p *this an upper bound of \p *this and \p y.
   void upper_bound_assign(const PowerSet& y);
