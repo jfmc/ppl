@@ -271,6 +271,8 @@ public:
   //! Builds a polyhedron from a system of constraints.
   Polyhedron(ConSys& cs);
   //! Builds a polyhedron from a system of generators.
+  //! \exception std::invalid_argument thrown if the system of generators
+  //!                                  has no vertex.
   Polyhedron(GenSys& gs);
   // Destructor
   ~Polyhedron();

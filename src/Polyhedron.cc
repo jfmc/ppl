@@ -182,6 +182,17 @@ PPL::Polyhedron::Polyhedron(GenSys& gs)
     // A matrix of generators must have at least two columns:
     // one for the inhomogeneus term and the other for a variable.
     assert(gs.num_columns() >= 2);
+    size_t i = 0;
+    size_t iend = gs.num_rows();
+    // We suppose that the user inserts vertices first in a system of
+    // generators.
+    for ( ; i < iend; ++i) {
+      if (gs[i][0] != 0)
+	break;
+    }
+    if (i == iend)
+      throw std::invalid_argument("PPL::Polyhedron::Polyhedron(gs)"
+				  "with no-empty gs with no vertices");
     // Note that this swap destroys the given argument `gs' because
     // it is swapped with `gen_sys' that is created empty, i.e., with
     // the default constructor.
