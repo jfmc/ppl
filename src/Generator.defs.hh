@@ -97,14 +97,14 @@ namespace Parma_Polyhedra_Library {
   Variable x(0);
   Variable y(1);
   Variable z(2);
-  Generator vertex(x + 3 * y + 2 * z \= 1);
+  Generator vertex(x + 3 * y + 2 * z /= 1);
   \endcode
   The same vertex as above can be obtain also with the following code:
   \code
   Variable x(0);
   Variable y(1);
   Variable z(2);
-  Generator vertex(2 * x + 6 * y + 4 * z \= 2);
+  Generator vertex(2 * x + 6 * y + 4 * z /= 2);
   \endcode
   Obviously, the second argument is more useful to specify vertices
   having some non-integer (rational) coordinates.
@@ -114,7 +114,7 @@ namespace Parma_Polyhedra_Library {
   Variable x(0);
   Variable y(1);
   Variable z(2);
-  Generator vertex(-15 * x + 32 * y + 21 * z \= 10);
+  Generator vertex(-15 * x + 32 * y + 21 * z /= 10);
   \endcode
 
 */
