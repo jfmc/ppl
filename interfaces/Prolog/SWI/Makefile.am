@@ -73,7 +73,7 @@ pl_clpq$(EXEEXT): ppl_swiprolog.o pl_clpq.o pl_clpq.pl ../clpq.pl
 pl_clpq2$(EXEEXT): ppl_swiprolog.o pl_clpq.o pl_clpq.pl ../clpq2.pl
 	plld -pl-options,-g,main., -o $@ $+ -L$(top_builddir)/src/.libs -lppl @extra_libraries@
 
-check-local: pl_clpq pl_clpq2 ../check_script ../expected
+check-local: pl_clpq ../check_script ../expected pl_clpq2 ../check_script2 ../expected2
 	for k in $(CLPQ_TESTS); do cp -f $(srcdir)/../$$k .; done
 	$(LIBTOOL) --mode=execute -dlopen ../../../src/libppl.la \
 		./pl_clpq <$(srcdir)/../check_script >obtained
