@@ -53,7 +53,7 @@ For any additional question you might have, please do not hesitate to
 write to ppl-devel@cs.unipr.it.
 
 Here is the contents of the PPL 0.6.1 source distributions
-(19 directories, 739 files):
+(19 directories, 736 files):
 
 ppl-0.6.1/
 |-- BUGS
@@ -811,8 +811,6 @@ ppl-0.6.1/
     |-- writepolyhedron3.cc
     |-- writerelation1.cc
     `-- writevariable1.cc
-
-19 directories, 736 files
 
 --------
 
