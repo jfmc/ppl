@@ -24,16 +24,16 @@
 # Process this file with autoconf to produce a configure script.
 
 # Every other copy of the package version number gets its value from here.
-AC_INIT([the Parma Watchdog Library], 0.1, bagnara@cs.unipr.it, watchdog)
+AC_INIT([the Parma Watchdog Library], 0.2pre1, bagnara@cs.unipr.it, watchdog)
 
 # Minimum autoconf version required.
-AC_PREREQ(2.54)
+AC_PREREQ(2.57)
 
 # Make sure the sources are there.
 AC_CONFIG_SRCDIR([Watchdog.cc])
 
 # Use Automake.
-AM_INIT_AUTOMAKE([foreign dist-bzip2 dist-zip 1.7])
+AM_INIT_AUTOMAKE([foreign dist-bzip2 dist-zip 1.7.3])
 AC_SUBST(VERSION)
 
 # Generate a configuration header file.
@@ -256,7 +256,7 @@ fi
 # Libtool.
 # Turn off shared libraries during beta-testing, since they
 # make debugging harder and the build process takes too long.
-AC_DISABLE_SHARED
+#AC_DISABLE_SHARED
 AC_LIBTOOL_DLOPEN
 AC_LIBTOOL_WIN32_DLL
 AC_PROG_LIBTOOL

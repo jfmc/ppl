@@ -27,13 +27,13 @@
 AC_INIT([the Parma Polyhedra Library], 0.5pre12, ppl-devel@cs.unipr.it, ppl)
 
 # Minimum autoconf version required.
-AC_PREREQ(2.54)
+AC_PREREQ(2.57)
 
 # Make sure the sources are there.
 AC_CONFIG_SRCDIR(src/Polyhedron.cc)
 
 # Use Automake.
-AM_INIT_AUTOMAKE([foreign dist-bzip2 dist-zip 1.7])
+AM_INIT_AUTOMAKE([foreign dist-bzip2 dist-zip 1.7.3])
 AC_SUBST(VERSION)
 
 # Generate a configuration header file.
