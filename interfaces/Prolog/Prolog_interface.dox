@@ -600,10 +600,10 @@ ppl_new_Polyhedron_from_Polyhedron(+Topology_1, +Handle_1,
 
    Assigns to the polyhedron \f$\cP\f$ referenced by <CODE>Handle_1</CODE>
   the result of its BHRZ03-widening with the polyhedra referenced by
-  <CODE>Handle_2</CODE>, improved by enforcing those constraints in
+  <CODE>Handle_2</CODE> improved by enforcing all the constraints of
+  the form \f$\pm x \leq r\f$ and \f$\pm x < r\f$ that are satisfied
+  by all the points of \f$\cP\f$ together with the constraints in
   <CODE>Constraint_System</CODE>.
-  <CODE>Constraint_System</CODE> must be a list of constraints of the form
-  <CODE>Var =< LinExpr</CODE> or <CODE>Var < LinExpr</CODE>.
 
 <H2><CODE>ppl_Polyhedron_H79_widening_assign(+Handle_1, +Handle_2)</CODE></H2>
 
@@ -633,10 +633,10 @@ ppl_new_Polyhedron_from_Polyhedron(+Topology_1, +Handle_1,
 
    Assigns to the polyhedron \f$\cP\f$ referenced by <CODE>Handle_1</CODE>
   the result of its H79-widening with the polyhedra referenced by
-  <CODE>Handle_2</CODE>, improved by enforcing those constraints in
+  <CODE>Handle_2</CODE> improved by enforcing all the constraints of
+  the form \f$\pm x \leq r\f$ and \f$\pm x < r\f$ that are satisfied
+  by all the points of \f$\cP\f$ together with the constraints in
   <CODE>Constraint_System</CODE>.
-  <CODE>Constraint_System</CODE> must be a list of constraints of the form
-  <CODE>Var =< LinExpr</CODE> or <CODE>Var < LinExpr</CODE>.
 
 <H2><CODE>ppl_Polyhedron_topological_closure_assign(+Handle)</CODE></H2>
 
