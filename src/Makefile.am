@@ -102,6 +102,7 @@ endif
 
 # The ordering of the following list *matters*!
 INCLUDE_FILES = \
+compiler.hh \
 float.types.hh \
 Coefficient_traits_template.hh \
 $(COEFFICIENT_TYPES_INCLUDE_FILES) \
@@ -135,7 +136,17 @@ DB_Row.types.hh \
 DB_Matrix.types.hh \
 BD_Shape.types.hh \
 float.types.hh \
+Float.defs.hh \
+Float.inlines.hh \
 Limits.hh \
+fpu.defs.hh \
+fpu-ia32.inlines.hh \
+Rounding.types.hh \
+Rounding.defs.hh \
+Rounding.inlines.hh \
+Result.defs.hh \
+Result.inlines.hh \
+Numeric_Format.defs.hh \
 checked.defs.hh \
 checked.inlines.hh \
 checked_int.inlines.hh \
