@@ -4,6 +4,38 @@ Parma Polyhedra Library NEWS -- history of user-visible changes
 
 
 --------------------------------------------------------------------------
+NEWS for version 0.3 (released on February 24, 2002)
+--------------------------------------------------------------------------
+
+New Features
+============
+
+o  The library has been ported under libtool: it is now possible
+   to build dynamic libraries as well.
+
+o  We now use the integer C++ class of GMP to represent the
+   coefficients of constraints and generators, instead of our own
+   (very much inferior) Integer class.  The drawback is that we
+   now require GMP 4.0.1 or higher.
+
+o  The method Polyhedron::add_generators(GenSys&) is now lazy,
+   i.e., no minimization is performed.  Adding generators and
+   minimizing at the same time is provided by the method
+   Polyhedron::add_generators_and_minimize(GenSys&).
+
+o  Some performance improvements.
+
+o  Added more test programs.
+
+
+Bugfixes
+========
+
+o  Fixed Polyhedron::satisfies(const Constraints&) and
+   Polyhedron::affine_image().
+
+
+--------------------------------------------------------------------------
 NEWS for version 0.2 (released on November 14, 2001)
 --------------------------------------------------------------------------
 
