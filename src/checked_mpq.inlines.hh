@@ -214,8 +214,7 @@ SPECIALIZE_ABS(mpq, mpq_class, mpq_class&)
 namespace std {
 
 inline void
-std::swap(mpq_class& x, mpq_class& y)
-{
+swap(mpq_class& x, mpq_class& y) {
   mpq_swap(x.get_mpq_t(), y.get_mpq_t());
 }
 

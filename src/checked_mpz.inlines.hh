@@ -331,8 +331,7 @@ SPECIALIZE_SQRT(mpz, mpz_class, mpz_class&)
 namespace std {
 
 inline void
-std::swap(mpz_class& x, mpz_class& y)
-{
+swap(mpz_class& x, mpz_class& y) {
   mpz_swap(x.get_mpz_t(), y.get_mpz_t());
 }
 
