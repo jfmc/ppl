@@ -2065,10 +2065,23 @@ PPL::Polyhedron::add_generator(const Generator& g) {
     // the specification says we can only insert a point.
     if (!g.is_point())
       throw_invalid_generator("add_generator(g)");
-    if (g.is_necessarily_closed() || !is_necessarily_closed())
-      // Since `gen_sys' is not empty, the topology and space dimension
-      // of the inserted generator are automatically adjusted.
+    if (g.is_necessarily_closed() || !is_necessarily_closed()) {
       gen_sys.insert(g);
+      // Since `gen_sys' was empty, after inserting `g' we have to resize
+      // the system of generators to have the right dimension.
+      gen_sys.adjust_topology_and_dimension(topology(), space_dim);
+      if (!is_necessarily_closed()) {
+	// In the NNC topology, each point has to be matched by
+	// a corresponding closure point:
+	// turn the just inserted point into the corresponding
+	// (normalized) closure point.
+	Generator& cp = gen_sys[gen_sys.num_rows() - 1];
+	cp[space_dim + 1] = 0;
+	cp.normalize();
+	// Re-insert the point (which is already normalized).
+	gen_sys.insert(g);
+      }
+    }
     else {
       assert(!g.is_closure_point());
       // Note: here we have a _legal_ topology mismatch, because
@@ -2091,10 +2104,10 @@ PPL::Polyhedron::add_generator(const Generator& g) {
 	throw std::runtime_error("PPL::C_Polyhedron::add_generator"
 				 "(const Generator& g)");
       }
+      // Since `gen_sys' was empty, after inserting `g' we have to resize
+      // the system of generators to have the right dimension.
+      gen_sys.adjust_topology_and_dimension(topology(), space_dim);
     }
-    // `gen_sys' was empty: after inserting `g' we have to resize
-    // the system of generators to have the right dimension.
-    gen_sys.adjust_topology_and_dimension(topology(), space_dim);
     // No longer empty, generators up-to-date and minimized.
     clear_empty();
     set_generators_minimized();
