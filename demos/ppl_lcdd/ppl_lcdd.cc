@@ -45,7 +45,7 @@ namespace PPL = Parma_Polyhedra_Library;
 #error "PPL version 0.6 or following is required"
 #endif
 
-#define POLYHEDRON_TYPE PPL::C_Polyhedron
+typedef PPL::C_Polyhedron POLYHEDRON_TYPE;
 
 #elif defined(USE_POLKA)
 
@@ -65,7 +65,7 @@ extern "C" {
 #define pkint_set(a,b) mpz_set((a).rep, (b))
 }
 
-#define POLYHEDRON_TYPE poly_t*
+typedef poly_t* POLYHEDRON_TYPE;
 
 #elif defined(USE_POLYLIB)
 
@@ -78,7 +78,7 @@ extern "C" {
 // This is required (and, yes, 20000 is a magic number ;-)
 const unsigned max_constraints_or_generators = 20000;
 
-#define POLYHEDRON_TYPE Polyhedron*
+typedef Polyhedron* POLYHEDRON_TYPE;
 
 #endif
 
@@ -433,6 +433,21 @@ guarded_write(std::ostream& out, const T& x) {
     fatal("cannot write to output file `%s'", output_file_name);
 }
 
+#if defined (USE_POLKA)
+template <>
+void
+guarded_write(std::ostream& out, const pkint_t& x) {
+  bool succeeded = false;
+  try {
+    succeeded = out << x.rep;
+  }
+  catch (...) {
+  }
+  if (!succeeded)
+    fatal("cannot write to output file `%s'", output_file_name);
+}
+#endif
+
 enum Number_Type { INTEGER, RATIONAL, REAL };
 
 void
@@ -542,6 +557,7 @@ read_polyhedron(std::istream& in, POLYHEDRON_TYPE& ph) {
   unsigned num_columns;
   if (!guarded_read(in, num_columns))
     error("illegal or missing number of columns");
+  unsigned space_dim = num_columns - 1;
 
   if (!guarded_read(in, s))
     error("missing number type");
@@ -574,7 +590,6 @@ read_polyhedron(std::istream& in, POLYHEDRON_TYPE& ph) {
 #elif defined(USE_POLKA)
 
   // Initialize polka in non-strict mode.
-  unsigned space_dim = num_columns - 1;
   // 25000 is a magic number: with 22500 Polka 2.0.2 dies on
   // mit31-20.ine with the error "Chernikova: out of table space".
   polka_initialize(polka_false, space_dim, 25000);
@@ -584,7 +599,6 @@ read_polyhedron(std::istream& in, POLYHEDRON_TYPE& ph) {
 #elif defined(USE_POLYLIB)
 
   // Declare and allocate a PolyLib matrix.
-  unsigned space_dim = num_columns - 1;
   Matrix* mat = Matrix_Alloc(num_rows+1, space_dim+2);
 
 #endif
@@ -592,7 +606,8 @@ read_polyhedron(std::istream& in, POLYHEDRON_TYPE& ph) {
   unsigned row = 0;
   std::set<unsigned>::iterator linearity_end = linearity.end();
   if (rep == V) {
-    std::vector<mpz_class> coefficients(num_columns-1);
+    // The V representation allows for `space_dim' coordinates.
+    std::vector<mpz_class> coefficients(space_dim);
     mpz_class denominator;
     bool has_a_point = false;
     for (row = 0; !has_num_rows || row < num_rows; ++row) {
@@ -614,25 +629,31 @@ read_polyhedron(std::istream& in, POLYHEDRON_TYPE& ph) {
       read_coefficients(in, number_type, coefficients, denominator);
 
 #if defined(USE_PPL)
+      // PPL variables have indices 0, 1, ..., space_dim-1.
       PPL::LinExpression e;
-      for (unsigned j = num_columns-1; j-- > 0; ) {
+      for (unsigned j = space_dim; j-- > 0; )
 	e += coefficients[j] * PPL::Variable(j);
 #elif defined(USE_POLKA)
-      for (unsigned j = num_columns-1; j-- > 0; ) {
+      // NewPolka variables have indices 2, 3, ..., space_dim+1.
+      for (unsigned j = space_dim; j-- > 0; )
 	pkint_set(mat->p[row][j+2], coefficients[j].get_mpz_t());
 #elif defined(USE_POLYLIB)
-      for (unsigned j = num_columns-1; j-- > 0; ) {
+      // PolyLib variables have indices 1, 2, ..., space_dim.
+      for (unsigned j = space_dim; j-- > 0; )
 	value_assign(mat->p[row][j+1], coefficients[j].get_mpz_t());
 #endif
-      }
       if (vertex_marker == 1) {
 	assert(linearity.find(row+1) == linearity_end);
 #if defined(USE_PPL)
 	gs.insert(point(e, denominator));
 #elif defined(USE_POLKA)
+	// NewPolka stores the generator kind at index 0 (1 = ray/point)
+	// and the common denominator at index 1.
 	pkint_set_si(mat->p[row][0], 1);
 	pkint_set(mat->p[row][1], denominator.get_mpz_t());
 #elif defined(USE_POLYLIB)
+	// PolyLib stores the generator kind at index 0 (1 = ray/point)
+	// and the common denominator at index space_dim+1.
 	value_set_si(mat->p[row][0], 1);
 	value_assign(mat->p[row][space_dim+1], denominator.get_mpz_t());
 #endif
@@ -642,9 +663,13 @@ read_polyhedron(std::istream& in, POLYHEDRON_TYPE& ph) {
 #if defined(USE_PPL)
 	gs.insert(line(e));
 #elif defined(USE_POLKA)
+	// NewPolka stores the generator kind at index 0 (0 = line)
+	// and the common denominator at index 1 (0 for ray/line).
 	pkint_set_si(mat->p[row][0], 0);
 	pkint_set_si(mat->p[row][1], 0);
- #elif defined(USE_POLYLIB)
+#elif defined(USE_POLYLIB)
+	// PolyLib stores the generator kind at index 0 (0 = line)
+	// and the common denominator at index space_dim+1 (0 for ray/line).
 	value_set_si(mat->p[row][0], 0);
 	value_set_si(mat->p[row][space_dim+1], 0);
 #endif
@@ -653,9 +678,13 @@ read_polyhedron(std::istream& in, POLYHEDRON_TYPE& ph) {
 #if defined(USE_PPL)
 	gs.insert(ray(e));
 #elif defined(USE_POLKA)
+	// NewPolka stores the generator kind at index 0 (1 = ray/point)
+	// and the common denominator at index 1 (0 for ray/line).
 	pkint_set_si(mat->p[row][0], 1);
 	pkint_set_si(mat->p[row][1], 0);
 #elif defined(USE_POLYLIB)
+	// PolyLib stores the generator kind at index 0 (1 = ray/point)
+	// and the common denominator at index space_dim+1 (0 for ray/line).
 	value_set_si(mat->p[row][0], 1);
 	value_set_si(mat->p[row][space_dim+1], 0);
 #endif
@@ -666,14 +695,14 @@ read_polyhedron(std::istream& in, POLYHEDRON_TYPE& ph) {
 #if defined(USE_PPL)
       gs.insert(PPL::point());
 #elif defined(USE_POLKA)
-      // Add the origin as a vertex.
+      // Add the origin as a point.
       pkint_set_si(mat->p[num_rows][0], 1);
       pkint_set_si(mat->p[num_rows][1], 1);
-      for (unsigned j = num_columns-1; j-- > 0; )
+      for (unsigned j = space_dim; j-- > 0; )
 	pkint_set_si(mat->p[num_rows][j+2], 0);
       ++num_rows;
 #elif defined(USE_POLYLIB)
-      // Add the origin as a vertex.
+      // Add the origin as a point.
       value_set_si(mat->p[num_rows][0], 1);
       value_set_si(mat->p[num_rows][space_dim+1], 1);
       for (unsigned j = space_dim; j-- > 0; )
@@ -703,7 +732,9 @@ read_polyhedron(std::istream& in, POLYHEDRON_TYPE& ph) {
   }
   else {
     assert(rep == H);
-    std::vector<mpz_class> coefficients(num_columns);
+    // The H representation stores the inhomogeneous term at index 0,
+    // and the variables' coefficients at indices 1, 2, ..., space_dim.
+    std::vector<mpz_class> coefficients(space_dim+1);
     mpz_class denominator;
     for (row = 0; !has_num_rows || row < num_rows; ++row) {
       if (!has_num_rows) {
@@ -721,17 +752,22 @@ read_polyhedron(std::istream& in, POLYHEDRON_TYPE& ph) {
 	read_coefficients(in, number_type, coefficients, denominator);
 
 #if defined(USE_PPL)
+      // PPL variables have indices 0, 1, ..., space_dim-1.
       PPL::LinExpression e;
       for (unsigned j = num_columns; j-- > 1; )
 	e += coefficients[j] * PPL::Variable(j-1);
       e += coefficients[0];
 #elif defined(USE_POLKA)
+      // NewPolka variables have indices 2, 3, ..., space_dim+1.
       for (unsigned j = num_columns; j-- > 1; )
 	pkint_set(mat->p[row][j+1], coefficients[j].get_mpz_t());
+      // NewPolka stores the inhomogeneous term at index 1.
       pkint_set(mat->p[row][1], coefficients[0].get_mpz_t());
 #elif defined(USE_POLYLIB)
+      // PolyLib variables have indices 1, 2, ..., space_dim.
       for (unsigned j = num_columns; j-- > 1; )
 	value_assign(mat->p[row][j], coefficients[j].get_mpz_t());
+      // PolyLib stores the inhomogeneous term at index space_dim+1.
       value_assign(mat->p[row][space_dim+1], coefficients[0].get_mpz_t());
 #endif
 
@@ -739,8 +775,10 @@ read_polyhedron(std::istream& in, POLYHEDRON_TYPE& ph) {
 #if defined(USE_PPL)
 	cs.insert(e == 0);
 #elif defined(USE_POLKA)
+	// NewPolka stores the constraint kind at index 0 (0 = equality).
 	pkint_set_si(mat->p[row][0], 0);
 #elif defined(USE_POLYLIB)
+	// PolyLib stores the constraint kind at index 0 (0 = equality).
 	value_set_si(mat->p[row][0], 0);
 #endif
       }
@@ -748,8 +786,10 @@ read_polyhedron(std::istream& in, POLYHEDRON_TYPE& ph) {
 #if defined(USE_PPL)
 	cs.insert(e >= 0);
 #elif defined(USE_POLKA)
+	// NewPolka stores the constraint kind at index 0 (1 = inequality).
 	pkint_set_si(mat->p[row][0], 1);
 #elif defined(USE_POLYLIB)
+	// PolyLib stores the constraint kind at index 0 (1 = inequality).
 	value_set_si(mat->p[row][0], 1);
 #endif
       } 
@@ -817,18 +857,20 @@ read_polyhedron(std::istream& in, POLYHEDRON_TYPE& ph) {
   return rep;
 }
 
-#if defined(USE_PPL)
 void
 write_polyhedron(std::ostream& out,
-		 const PPL::Polyhedron& ph,
+		 const POLYHEDRON_TYPE& ph,
 		 const Representation rep) {
   if (rep == H)
     guarded_write(out, "H-representation\n");
-  else
+  else {
+    assert(rep == V);
     guarded_write(out, "V-representation\n");
+  }
 
-  unsigned num_rows = 0;
   std::set<unsigned> linearity;
+#if defined(USE_PPL)
+  unsigned num_rows = 0;
   if (rep == H) {
     const PPL::ConSys& cs = ph.constraints();
     for (PPL::ConSys::const_iterator i = cs.begin(),
@@ -839,7 +881,6 @@ write_polyhedron(std::ostream& out,
     }
   }
   else {
-    assert(rep == V);
     const PPL::GenSys& gs = ph.generators();
     for (PPL::GenSys::const_iterator i = gs.begin(),
 	   gs_end = gs.end(); i != gs_end; ++i) {
@@ -848,6 +889,24 @@ write_polyhedron(std::ostream& out,
 	linearity.insert(linearity.end(), num_rows);
     }
   }
+#elif defined(USE_POLKA)
+  // Don't even try to get frames if the polyhedron is empty.
+  const matrix_t* mat = (rep == H)
+    ? poly_constraints(ph)
+    : (poly_is_empty(ph) ? 0 : poly_frames(ph));
+  const unsigned num_rows = (rep == V && poly_is_empty(ph)) ? 0 : mat->nbrows;
+  for (unsigned i = 0; i < num_rows; ++i)
+    if (pkint_sgn(mat->p[i][0]) == 0)
+      linearity.insert(linearity.end(), i+1);
+#elif defined(USE_POLYLIB)
+  const Matrix* mat = (rep == H)
+    ? Polyhedron2Constraints(ph)
+    : Polyhedron2Rays(ph);
+  const unsigned num_rows = mat->NbRows;
+  for (unsigned i = 0; i < num_rows; ++i)
+    if (value_sign(mat->p[i][0]) == 0)
+      linearity.insert(linearity.end(), i+1);
+#endif
 
   if (!linearity.empty()) {
     guarded_write(out, "linearity ");
@@ -860,16 +919,26 @@ write_polyhedron(std::ostream& out,
     guarded_write(out, '\n');
   }
 
+#if defined(USE_PPL)
   PPL::dimension_type space_dim = ph.space_dimension();
+#elif defined(USE_POLKA)
+  unsigned space_dim = poly_dimension(ph);
+#elif defined(USE_POLYLIB)
+  unsigned space_dim = mat->NbColumns - 2;
+#endif
 
   guarded_write(out, "begin\n");
   guarded_write(out, num_rows);
   guarded_write(out, ' ');
   guarded_write(out, space_dim+1);
   guarded_write(out, ' ');
-
-  if (rep == H) {
+  if (rep == H)
     guarded_write(out, "integer\n");
+  else
+    guarded_write(out, "rational\n");
+
+#if defined(USE_PPL)
+  if (rep == H) {
     const PPL::ConSys& cs = ph.constraints();
     for (PPL::ConSys::const_iterator i = cs.begin(),
 	   cs_end = cs.end(); i != cs_end; ++i) {
@@ -884,7 +953,6 @@ write_polyhedron(std::ostream& out,
   }
   else {
     assert(rep == V);
-    guarded_write(out, "rational\n");
     const PPL::GenSys& gs = ph.generators();
     for (PPL::GenSys::const_iterator i = gs.begin(),
 	   gs_end = gs.end(); i != gs_end; ++i) {
@@ -912,6 +980,85 @@ write_polyhedron(std::ostream& out,
       guarded_write(out, '\n');
     }
   }
+#elif defined(USE_POLKA)
+  if (rep == H) {
+    for (unsigned i = 0; i < num_rows; ++i) {
+      const pkint_t* c = mat->p[i];
+      // The inhomogeneous term.
+      guarded_write(out, c[1]);
+      // The variables' coefficients.
+      for (unsigned j = 0; j < space_dim; ++j) {
+	guarded_write(out, ' ');
+	guarded_write(out, c[j+2]);
+      }
+      guarded_write(out, '\n');
+    }
+  }
+  else {
+    assert(rep == V);
+    for (unsigned i = 0; i < num_rows; ++i) {
+      const pkint_t* g = mat->p[i];
+      guarded_write(out, g[0]);
+      const pkint_t divisor = g[1];
+      if (pkint_sgn(divisor) != 0)
+	// `g' is a point.
+	for (unsigned j = 0; j < space_dim; ++j) {
+	  guarded_write(out, ' ');
+	  if (pkint_sgn(g[j+2]) == 0)
+	    guarded_write(out, '0');
+	  else
+	    guarded_write(out, mpq_class(mpz_class(g[j+2].rep),
+					 mpz_class(divisor.rep)));
+	}
+      else
+	// `g' is a ray or a line.
+	for (unsigned j = 0; j < space_dim; ++j) {
+	  guarded_write(out, ' ');
+	  guarded_write(out, g[j+2]);
+	}
+      guarded_write(out, '\n');
+    }
+  }
+#elif defined (USE_POLYLIB)
+  if (rep == H) {
+    for (unsigned i = 0; i < num_rows; ++i) {
+      const Value* c = mat->p[i];
+      // The inhomogeneous term.
+      guarded_write(out, c[space_dim+1]);
+      // The variables' coefficients.
+      for (unsigned j = 0; j < space_dim; ++j) {
+	guarded_write(out, ' ');
+	guarded_write(out, c[j+1]);
+      }
+      guarded_write(out, '\n');
+    }
+  }
+  else {
+    assert(rep == V);
+    for (unsigned i = 0; i < num_rows; ++i) {
+      const Value* g = mat->p[i];
+      guarded_write(out, g[0]);
+      const Value& divisor = g[space_dim+1];
+      if (value_sign(divisor) != 0)
+	// `g' is a point.
+	for (unsigned j = 0; j < space_dim; ++j) {
+	  guarded_write(out, ' ');
+	  if (value_sign(g[j+1]) == 0)
+	    guarded_write(out, '0');
+	  else
+	    guarded_write(out, mpq_class(mpz_class(g[j+1]),
+					 mpz_class(divisor)));
+	}
+      else
+	// `g' is a ray or a line.
+	for (unsigned j = 0; j < space_dim; ++j) {
+	  guarded_write(out, ' ');
+	  guarded_write(out, g[j+1]);
+	}
+      guarded_write(out, '\n');
+    }
+  }
+#endif
   guarded_write(out, "end\n");
 
   // Flush `out'.
@@ -924,7 +1071,6 @@ write_polyhedron(std::ostream& out,
   if (!flush_succeeded)
     fatal("cannot write to output file `%s'", output_file_name);
 }
-#endif
 
 } // namespace
 
@@ -998,27 +1144,10 @@ main(int argc, char* argv[]) try {
 #endif
 
   // Write the result of the conversion.
-  if (rep == V) {
-#if defined(USE_PPL)
+  if (rep == V)
     write_polyhedron(output(), ph, H);
-#elif defined(USE_POLKA)
-    matrix_print(poly_constraints(ph));
-#elif defined(USE_POLYLIB)
-    Matrix_Print(stdout, 0, Polyhedron2Constraints(ph));
-#endif
-  }
-  else {
-#if defined(USE_PPL)
+  else
     write_polyhedron(output(), ph, V);
-#elif defined(USE_POLKA)
-    if (poly_is_empty(ph))
-      printf("%d %d\n", 0, poly_dimension(ph)+2);
-    else
-      matrix_print(poly_frames(ph));
-#elif defined(USE_POLYLIB)
-    Matrix_Print(stdout, 0, Polyhedron2Rays(ph));
-#endif
-  }
 
 #if defined(USE_PPL)
   // Check the result, if requested to do so.
