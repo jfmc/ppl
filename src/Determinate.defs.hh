@@ -118,6 +118,9 @@ public:
   //! Assignment operator.
   Determinate& operator=(const Determinate& y);
 
+  //! Swaps \p *this with \p y.
+  void swap(Determinate& y);
+
 #ifdef PPL_DOXYGEN_INCLUDE_IMPLEMENTATION_DETAILS
   //! \brief
   //! On return from this method, the representation of \p *this
@@ -336,6 +339,17 @@ private:
   //! A pointer to the possibly shared representation of the polyhedron.
   Rep* prep;
 };
+
+
+namespace std {
+
+//! Specializes <CODE>std::swap</CODE>.
+/*! \relates Parma_Polyhedra_Library::Determinate */
+template <typename PH>
+void swap(Parma_Polyhedra_Library::Determinate<PH>& x,
+	  Parma_Polyhedra_Library::Determinate<PH>& y);
+
+} // namespace std
 
 #include "Determinate.inlines.hh"
 

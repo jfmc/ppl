@@ -60,6 +60,13 @@ Polyhedra_PowerSet<PH>::operator=(const Polyhedra_PowerSet& y) {
 }
 
 template <typename PH>
+inline void
+Polyhedra_PowerSet<PH>::swap(Polyhedra_PowerSet& y) {
+  Base::swap(y);
+  std::swap(space_dim, y.space_dim);
+}
+
+template <typename PH>
 dimension_type
 Polyhedra_PowerSet<PH>::space_dimension() const {
   return space_dim;
@@ -703,5 +710,18 @@ Polyhedra_PowerSet<PH>::OK() const {
 }
 
 } // namespace Parma_Polyhedra_Library
+
+
+namespace std {
+
+/*! \relates Parma_Polyhedra_Library::Polyhedra_PowerSet */
+template <typename PH>
+inline void
+swap(Parma_Polyhedra_Library::Polyhedra_PowerSet<PH>& x,
+     Parma_Polyhedra_Library::Polyhedra_PowerSet<PH>& y) {
+  x.swap(y);
+}
+
+} // namespace std
 
 #endif // !defined(PPL_Polyhedra_PowerSet_inlines_hh)

@@ -95,6 +95,9 @@ public:
   //! The assignment operator.
   PowerSet& operator=(const PowerSet& y);
 
+  //! Swaps \p *this with \p y.
+  void swap(PowerSet& y);
+
   //! Adds to \p *this the disjunct \p d.
   void add_disjunct(const CS& d);
 
@@ -207,6 +210,17 @@ protected:
   //! assuming \p d is not the bottom element.
   static void add_non_bottom_disjunct(Sequence& s, const CS& d);
 };
+
+
+namespace std {
+
+//! Specializes <CODE>std::swap</CODE>.
+/*! \relates Parma_Polyhedra_Library::PowerSet */
+template <typename CS>
+void swap(Parma_Polyhedra_Library::PowerSet<CS>& x,
+	  Parma_Polyhedra_Library::PowerSet<CS>& y);
+
+} // namespace std
 
 #include "PowerSet.inlines.hh"
 

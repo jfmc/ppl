@@ -127,7 +127,10 @@ public:
   //! The assignment operator.
   //! (\p *this and \p y can be dimension-incompatible.)
   AskTell& operator=(const AskTell& y);
-  
+
+  //! Swaps \p *this with \p y.
+  void swap(AskTell& y);
+
   //! Creates an ask-and-tell constraint system with the same information contents as \p cs.
   AskTell(const ConSys& cs);
 
@@ -281,6 +284,17 @@ public:
     return sequence.erase(position);
   }
 };
+
+
+namespace std {
+
+//! Specializes <CODE>std::swap</CODE>.
+/*! \relates Parma_Polyhedra_Library::AskTell */
+template <typename CS>
+void swap(Parma_Polyhedra_Library::AskTell<CS>& x,
+	  Parma_Polyhedra_Library::AskTell<CS>& y);
+
+} // namespace std
 
 #include "AskTell.inlines.hh"
 

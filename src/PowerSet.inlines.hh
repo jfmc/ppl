@@ -122,6 +122,13 @@ PowerSet<CS>::operator=(const PowerSet<CS>& y) {
 }
 
 template <typename CS>
+inline void
+PowerSet<CS>::swap(PowerSet& y) {
+  std::swap(sequence, y.sequence);
+  std::swap(reduced, y.reduced);
+}
+
+template <typename CS>
 PowerSet<CS>::PowerSet()
   : sequence(), reduced(true) {
 }
@@ -380,5 +387,18 @@ PowerSet<CS>::OK() const {
 }
 
 } // namespace Parma_Polyhedra_Library
+
+
+namespace std {
+
+/*! \relates Parma_Polyhedra_Library::PowerSet */
+template <typename CS>
+inline void
+swap(Parma_Polyhedra_Library::PowerSet<CS>& x,
+     Parma_Polyhedra_Library::PowerSet<CS>& y) {
+  x.swap(y);
+}
+
+} // namespace std
 
 #endif // !defined(PPL_PowerSet_inlines_hh)

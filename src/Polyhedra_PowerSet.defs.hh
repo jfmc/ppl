@@ -75,7 +75,10 @@ public:
   //! The assignment operator.
   //! (\p *this and \p y can be dimension-incompatible.)
   Polyhedra_PowerSet& operator=(const Polyhedra_PowerSet& y);
-  
+
+  //! Swaps \p *this with \p y.
+  void swap(Polyhedra_PowerSet& y);
+
 private:
   //! The number of dimensions of the enclosing vector space.
   dimension_type space_dim;
@@ -206,6 +209,17 @@ private:
   //! is satbilizing with respect to the multiset lgo information \p y_info.
   bool is_multiset_lgo_stabilizing(const multiset_lgo_info& y_info) const;
 };
+
+
+namespace std {
+
+//! Specializes <CODE>std::swap</CODE>.
+/*! \relates Parma_Polyhedra_Library::PowerSet */
+template <typename PH>
+void swap(Parma_Polyhedra_Library::Polyhedra_PowerSet<PH>& x,
+	  Parma_Polyhedra_Library::Polyhedra_PowerSet<PH>& y);
+
+} // namespace std
 
 #include "Polyhedra_PowerSet.inlines.hh"
 

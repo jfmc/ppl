@@ -101,6 +101,13 @@ AskTell<CS>:: operator=(const AskTell<CS>& y) {
 }
 
 template <typename CS>
+inline void
+AskTell<CS>::swap(AskTell& y) {
+  std::swap(sequence, y.sequence);
+  std::swap(space_dim, y.space_dim);
+}
+
+template <typename CS>
 AskTell<CS>::AskTell(const ConSys& cs)
   : space_dim(cs.space_dimension()) {
   CS tell(cs);
@@ -636,5 +643,18 @@ AskTell<CS>::H79_extrapolation_assign(const AskTell& y) {
 }
 
 } // namespace Parma_Polyhedra_Library
+
+
+namespace std {
+
+/*! \relates Parma_Polyhedra_Library::AskTell */
+template <typename CS>
+inline void
+swap(Parma_Polyhedra_Library::AskTell<CS>& x,
+     Parma_Polyhedra_Library::AskTell<CS>& y) {
+  x.swap(y);
+}
+
+} // namespace std
 
 #endif // !defined(PPL_AskTell_inlines_hh)

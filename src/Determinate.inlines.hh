@@ -108,6 +108,12 @@ Determinate<PH>::operator=(const Determinate& y) {
 }
 
 template <typename PH>
+inline void
+Determinate<PH>::swap(Determinate& y) {
+  std::swap(prep, y.prep);
+}
+
+template <typename PH>
 void
 Determinate<PH>::mutate() {
   if (prep->is_shared()) {
@@ -337,5 +343,18 @@ Determinate<PH>::limited_H79_extrapolation_assign(const Determinate& y,
 }
 
 } // namespace Parma_Polyhedra_Library
+
+
+namespace std {
+
+/*! \relates Parma_Polyhedra_Library::Determinate */
+template <typename PH>
+inline void
+swap(Parma_Polyhedra_Library::Determinate<PH>& x,
+     Parma_Polyhedra_Library::Determinate<PH>& y) {
+  x.swap(y);
+}
+
+} // namespace std
 
 #endif // !defined(PPL_Determinate_inlines_hh)
