@@ -56,6 +56,11 @@ o  Fixed a bug in a private method used to implement public method
    Polyhedron::relation_with(const Generator& g),
    whereby a wrong result was obtained when `g' was a line.
 
+o  Fixed a bug whereby a library invariant was violated when calling
+   the method Polyhedron::affine_image() with a negative denominator
+   for the affine expression.
+
+
 --------------------------------------------------------------------------
 NEWS for version 0.4.1 (released on July 30, 2002)
 --------------------------------------------------------------------------
