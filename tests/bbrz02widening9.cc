@@ -95,26 +95,19 @@ main() {
 #endif
     C_Polyhedron q_i = q_i_minus_1;
     q_i.poly_hull_assign(p_i);
+
 #if NOISY
     std::cout << "*** Poly-hull of previous with new:" << std::endl;
     std::cout << q_i.generators() << std::endl;
 #endif
-    // IF I UNCOMMENT THE FOLLOWING TEST, THE PROBLEM GOES AWAY.
-    // HOWEVER, THE POINT I WANT TO MAKE IS THAT THE CONTRACT WITH THE
-    // USER DOES NOT SAY I HAVE TO CHECK BEFORE CALLING THE WIDENING.
-    // IT SAYS SOMETHING DIFFERENT: IT SAYS THAT THE CHAIN DEFINED
-    // ABOVE (q_i) WILL BE ULTIMATELY STATIONARY AND, IMPLICITELY,
-    // THAT THE ONLY CHECK I NEED TO MAKE TO SEE IF I AM DONE IS THE
-    // ONE BELOW MARKED WITH `***'.
-    //if (q_i == p_i)
-    //  break;
+   
+    q_i.BBRZ02_widening_assign(q_i_minus_1);
 
-    q_i.BBRZ02_widening_assign(p_i);
 #if NOISY
     std::cout << "*** Result of widening poly-hull with new:" << std::endl;
     std::cout << q_i.generators() << std::endl;
 #endif
-    if (q_i == q_i_minus_1) // ***
+    if (q_i == q_i_minus_1)
       return 0;
     q_i_minus_1 = q_i;
   }
