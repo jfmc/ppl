@@ -78,12 +78,14 @@ fdl.dox
 USER_STUFF = \
 $(DOX_FILES) \
 user.tex \
+ppl.sty \
 $(top_builddir)/src/ppl.hh \
 $(top_srcdir)/interfaces/C/ppl_c.h
 
 DEVREF_STUFF = \
 $(DOX_FILES) \
 devref.tex \
+ppl.sty \
 $(PPL_SOURCE_FILES)
 
 LATEX_DIRS = \
