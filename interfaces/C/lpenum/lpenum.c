@@ -514,8 +514,10 @@ solve(char* file_name) {
     ppl_delete_LinExpression(ppl_le);
   }
 
-  // FIXME: here we could build the polyhedron and minimize it before
-  //        adding the variable bounds.
+  /*
+    FIXME: here we could build the polyhedron and minimize it before
+    adding the variable bounds.
+  */
 
   /* Set up the columns constraints, i.e., variable bounds. */
   for (column = 1; column <= dimension; ++column) {
@@ -561,7 +563,7 @@ solve(char* file_name) {
 
   if (empty) {
     fprintf(output_file, "Unfeasible problem.\n");
-    // Check!!!
+    /* FIXME: check!!! */
     return;
   }
 
@@ -629,7 +631,7 @@ solve(char* file_name) {
 
   if (unbounded) {
     fprintf(output_file, "Unbounded problem.\n");
-    // Check!!!
+    /* FIXEM: check!!! */
     return;
   }
 
