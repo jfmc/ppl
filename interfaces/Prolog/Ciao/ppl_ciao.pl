@@ -30,6 +30,7 @@ site: http://www.cs.unipr.it/ppl/ . */
 	ppl_new_Polyhedron_from_Polyhedron/4,
 	ppl_new_Polyhedron_from_ConSys/3,
 	ppl_new_Polyhedron_from_GenSys/3,
+	ppl_new_Polyhedron_from_bounding_box/3,
 	ppl_delete_Polyhedron/1,
 	ppl_Polyhedron_space_dimension/2,
 	ppl_Polyhedron_intersection_assign/2,
@@ -64,7 +65,7 @@ site: http://www.cs.unipr.it/ppl/ . */
 	ppl_Polyhedron_is_bounded/1,
 	ppl_Polyhedron_contains_Polyhedron/2,
 	ppl_Polyhedron_strictly_contains_Polyhedron/2,
-	ppl_Polyhedron_equals_Polyhedron/2
+	ppl_Polyhedron_equals_Polyhedron/2,
 	ppl_Polyhedron_get_bounding_box/2
 ],
 [

@@ -353,6 +353,7 @@ init() {
   YAP_USER_C_PREDICATE(ppl_new_Polyhedron_from_Polyhedron, 4);
   YAP_USER_C_PREDICATE(ppl_new_Polyhedron_from_ConSys, 3);
   YAP_USER_C_PREDICATE(ppl_new_Polyhedron_from_GenSys, 3);
+  YAP_USER_C_PREDICATE(ppl_new_Polyhedron_from_bounding_box, 3);
   YAP_USER_C_PREDICATE(ppl_delete_Polyhedron, 1);
   YAP_USER_C_PREDICATE(ppl_Polyhedron_space_dimension, 2);
   YAP_USER_C_PREDICATE(ppl_Polyhedron_intersection_assign, 2);

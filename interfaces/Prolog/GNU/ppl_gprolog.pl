@@ -28,6 +28,7 @@ site: http://www.cs.unipr.it/ppl/ . */
 :- foreign(ppl_new_Polyhedron_from_Polyhedron(+term, +term, +term, +term)).
 :- foreign(ppl_new_Polyhedron_from_ConSys(+term, +term, +term)).
 :- foreign(ppl_new_Polyhedron_from_GenSys(+term, +term, +term)).
+:- foreign(ppl_new_Polyhedron_from_bounding_box(+term, +term, +term)).
 :- foreign(ppl_delete_Polyhedron(+term)).
 :- foreign(ppl_Polyhedron_space_dimension(+term, +term)).
 :- foreign(ppl_Polyhedron_intersection_assign(+term, +term)).
@@ -63,3 +64,4 @@ site: http://www.cs.unipr.it/ppl/ . */
 :- foreign(ppl_Polyhedron_contains_Polyhedron(+term, +term)).
 :- foreign(ppl_Polyhedron_strictly_contains_Polyhedron(+term, +term)).
 :- foreign(ppl_Polyhedron_equals_Polyhedron(+term, +term)).
+:- foreign(ppl_Polyhedron_get_bounding_box(+term, +term)).

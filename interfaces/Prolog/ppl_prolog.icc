@@ -323,6 +323,22 @@ get_unsigned_int(long n) {
   }
 }
 
+static int
+get_int(long n) {
+  if (n >= 0 && static_cast<unsigned long>(n) <= UINT_MAX)
+    return n;
+  else {
+    long minus_n = -n;
+    if (static_cast<unsigned long>(minus_n) <= UINT_MAX)
+      return n;
+    else {
+      Prolog_term_ref n_term = Prolog_new_term_ref();
+      Prolog_put_long(n_term, n);
+      throw integer_out_of_range(n_term);
+    }
+  }
+}
+
 static unsigned int
 term_to_unsigned_int(Prolog_term_ref t) {
   if (Prolog_is_integer(t)) {
@@ -331,6 +347,16 @@ term_to_unsigned_int(Prolog_term_ref t) {
       return get_unsigned_int(v);
   }
   throw not_unsigned_int(t);
+}
+
+static unsigned int
+term_to_integer(Prolog_term_ref t) {
+  if (Prolog_is_integer(t)) {
+    long v;
+    if (Prolog_get_long(t, v))
+      return get_int(v);
+  }
+  throw integer_out_of_range(t);
 }
 
 static Prolog_atom
@@ -809,6 +835,10 @@ ppl_new_Polyhedron_from_bounding_box(Prolog_term_ref t_tp,
 				     Prolog_term_ref t_bb,
 				     Prolog_term_ref t_ph) {
   try {
+    // flag is true if input box t_bb has correct syntax
+    // and false otherwise - if it is false the polyhedron is
+    // unchanged and it terminates with PROLOG_FAILURE.
+    bool box_ok = true;
     // Compute the space dimension.
     Prolog_term_ref t_l = Prolog_new_term_ref();
     Prolog_term_ref t_dummy = Prolog_new_term_ref();
@@ -821,35 +851,125 @@ ppl_new_Polyhedron_from_bounding_box(Prolog_term_ref t_tp,
     PPL::BoundingBox bbox(dimension);
     // Set bbox to reflect its Prolog representation.
     // ... catches empty boxes and uses raise_lower and lower_upper ...
-    for (unsigned int i = 0; i != dimension; ++i) {
+    for (unsigned int i = 0;
+               (i != dimension  && !bbox.is_empty() && box_ok); ++i) {
       // lower bound
-      Prolog_atom funct_l = a_c;
-      int lnum = 0;
-      unsigned int lden = 1;
-      bool lb = (funct_l == a_c);
-      bbox.raise_lower_bound(i, lb, lnum, lden);
-      // upper bound
-      Prolog_atom funct_u = a_c;
-      int unum = 1;
-      unsigned int uden = 1;
-      bool ub = (funct_u == a_c);
-      bbox.lower_upper_bound(i, ub, unum, uden);
-    }
+      Prolog_term_ref t_interval = Prolog_new_term_ref();
+      Prolog_get_cons(t_bb, t_interval, t_bb);
+      Prolog_atom funct_interval;
+      int ar_interval;
+      Prolog_get_compound_name_arity(t_interval, funct_interval, ar_interval);
+      if (ar_interval == 2 && funct_interval == a_i) {
+        Prolog_term_ref t_low = Prolog_new_term_ref();
+        Prolog_get_arg(1, t_interval, t_low);
+        Prolog_atom funct_l = a_c;
+        Prolog_term_ref t_upp = Prolog_new_term_ref();
+        Prolog_get_arg(2, t_interval, t_upp);
+        Prolog_atom funct_u = a_c;
+        int ar_l, ar_u;
+        Prolog_get_compound_name_arity(t_low, funct_l, ar_l);
+        Prolog_get_compound_name_arity(t_upp, funct_u, ar_u);
+        if (ar_l == 1 && (funct_l == a_c || funct_l == a_o)
+            && ar_u == 1 && (funct_u == a_c || funct_u == a_o)) {
+          // lower bound
+          Prolog_term_ref t_llimit = Prolog_new_term_ref();
+          Prolog_get_arg(1, t_low, t_llimit);
+          int lnum = 1;
+          unsigned int lden = 0;
+          if (Prolog_is_integer(t_llimit)) {
+	    lnum = 
+               term_to_integer(t_llimit);
+	    lden = 1;
+	  }
+          else {
+            if (Prolog_is_atom(t_llimit)) {
+              Prolog_atom inf;
+	      Prolog_get_atom_name(t_llimit, inf);
+              if (inf != a_minf || (inf = a_minf && funct_l != a_o))
+                box_ok = false;
+	    }
+            else {
+              Prolog_atom funct_slash;
+              int ar_limit = 2;
+              Prolog_get_compound_name_arity(t_llimit, funct_slash, 
+                                             ar_limit);
+	      if (ar_limit == 2 && funct_slash == a_slash) {
+                Prolog_term_ref t_lnum = Prolog_new_term_ref();
+                Prolog_term_ref t_lden = Prolog_new_term_ref();
+                Prolog_get_arg(1, t_llimit, t_lnum);
+                Prolog_get_arg(2, t_llimit, t_lden);
+	        lnum = 
+                    term_to_integer(t_lnum);
+                lden = 
+                    term_to_unsigned_int(t_lden);
+	      }
+	    }
+	  }
+          bool lb = (funct_l == a_c);
+          if (lden != 0 && box_ok)
+             bbox.raise_lower_bound(i, lb, lnum, lden);
+          // upper bound
+          Prolog_term_ref t_ulimit = Prolog_new_term_ref();
+          Prolog_get_arg(1, t_upp, t_ulimit);
+          int unum = 1;
+          unsigned int uden = 0;
+          if (Prolog_is_integer(t_ulimit)) {
+	    unum = 
+               term_to_integer(t_ulimit);
+	    uden = 1;
+	  }
+          else {
+            if (Prolog_is_atom(t_ulimit)) {
+              Prolog_atom inf;
+	      Prolog_get_atom_name(t_ulimit, inf);
+              if (inf != a_pinf || (inf = a_pinf && funct_u != a_o))
+                box_ok = false;
+	    }
+            else {
+              Prolog_atom funct_slash;
+              int ar_limit = 2;
+              Prolog_get_compound_name_arity(t_ulimit, funct_slash, 
+                                             ar_limit);
 
-    PPL::Polyhedron* ph;
-    Prolog_atom tp = term_to_polyhedron_kind(t_tp);
-    if (tp == a_c)
-      ph = new PPL::C_Polyhedron(PPL::From_Bounding_Box(), bbox);
-    else
-      ph = new PPL::NNC_Polyhedron(PPL::From_Bounding_Box(), bbox);
-    Prolog_term_ref tmp = Prolog_new_term_ref();
-    Prolog_put_address(tmp, ph);
-    if (Prolog_unify(t_ph, tmp)) {
-      REGISTER(ph);
-      return PROLOG_SUCCESS;
+	      if (ar_limit == 2 && funct_slash == a_slash) {
+                Prolog_term_ref t_unum = Prolog_new_term_ref();
+                Prolog_term_ref t_uden = Prolog_new_term_ref();
+                Prolog_get_arg(1, t_ulimit, t_unum);
+                Prolog_get_arg(2, t_ulimit, t_uden);
+	        unum = 
+                    term_to_integer(t_unum);
+                uden = 
+                    term_to_unsigned_int(t_uden);
+	      }
+	    }
+	  }
+          bool ub = (uden != 0 && funct_u == a_c);
+          if (uden != 0 && box_ok)
+            bbox.lower_upper_bound(i, ub, unum, uden);
+	}
+        else
+          box_ok = false;
+      }
+      else
+        box_ok = false;
     }
-    else
-      delete ph;
+      
+    if (box_ok) {
+      PPL::Polyhedron* ph;
+      Prolog_atom tp = term_to_polyhedron_kind(t_tp);
+      if (tp == a_c)
+        ph = new PPL::C_Polyhedron(PPL::From_Bounding_Box(), bbox);
+      else
+        ph = new PPL::NNC_Polyhedron(PPL::From_Bounding_Box(), bbox);
+      Prolog_term_ref tmp = Prolog_new_term_ref();
+      Prolog_put_address(tmp, ph);
+      if (Prolog_unify(t_ph, tmp)) {
+        REGISTER(ph);
+        return PROLOG_SUCCESS;
+      }
+      else
+        delete ph;
+    }
   }
   CATCH_ALL;
   return PROLOG_FAILURE;

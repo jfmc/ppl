@@ -379,6 +379,7 @@ SP_STUB_3(ppl_new_Polyhedron_empty_from_dimension, 3)
 SP_STUB_4(ppl_new_Polyhedron_from_Polyhedron, 4)
 SP_STUB_3(ppl_new_Polyhedron_from_ConSys, 3)
 SP_STUB_3(ppl_new_Polyhedron_from_GenSys, 3)
+SP_STUB_3(ppl_new_Polyhedron_from_bounding_box, 3)
 SP_STUB_1(ppl_delete_Polyhedron, 1)
 SP_STUB_2(ppl_Polyhedron_space_dimension, 2)
 SP_STUB_2(ppl_Polyhedron_intersection_assign, 2)
@@ -438,6 +439,7 @@ ppl_sicstus_init(int /* when */) {
   SP_DEFINE_C_PREDICATE(ppl_new_Polyhedron_from_Polyhedron, 4);
   SP_DEFINE_C_PREDICATE(ppl_new_Polyhedron_from_ConSys, 3);
   SP_DEFINE_C_PREDICATE(ppl_new_Polyhedron_from_GenSys, 3);
+  SP_DEFINE_C_PREDICATE(ppl_new_Polyhedron_from_bounding_box, 3);
   SP_DEFINE_C_PREDICATE(ppl_delete_Polyhedron, 1);
   SP_DEFINE_C_PREDICATE(ppl_Polyhedron_space_dimension, 2);
   SP_DEFINE_C_PREDICATE(ppl_Polyhedron_intersection_assign, 2);
