@@ -51,6 +51,12 @@ compute_capacity(size_t requested_size) {
   return 2*(requested_size + 1);
 }
 
+//! Abstract base class for the user objects' the PPL can throw.
+class Throwable {
+public:
+  virtual void throw_me() const = 0;
+};
+
 //! This pointer, which is initialized to zero, is checked at polynomial
 //! intervals along any exponential computation path in the library.
 //! When it is found nonzero the exception it points to is thrown.
@@ -66,7 +72,7 @@ compute_capacity(size_t requested_size) {
 //!       never assigns to it.  In particular, it does not zero it again
 //!       when the exception is thrown: it is the client's responsibility
 //!       to do so.
-extern const std::exception* volatile abandon_exponential_computations;
+extern const Throwable* volatile abandon_exponential_computations;
 
 #ifdef PPL_DOXYGEN_INCLUDE_IMPLEMENTATION_DETAILS
 //! If the pointer abandon_exponential_computations is found
@@ -75,10 +81,10 @@ extern const std::exception* volatile abandon_exponential_computations;
 inline void
 maybe_abandon() {
   if (abandon_exponential_computations) {
-    const std::exception* p = abandon_exponential_computations;
+    const Throwable* p = abandon_exponential_computations;
     // Might have been zeroed since we checked.
     if (p)
-      throw *p;
+      p->throw_me();
   }
 }
 
