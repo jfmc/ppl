@@ -103,6 +103,27 @@ public:
   }
 };
 
+class not_a_complexity_class : public internal_exception {
+public:
+  explicit not_a_complexity_class(Prolog_term_ref t)
+    : internal_exception(t) {
+  }
+};
+
+class not_universe_or_empty : public internal_exception {
+public:
+  explicit not_universe_or_empty(Prolog_term_ref t)
+    : internal_exception(t) {
+  }
+};
+
+class not_a_relation : public internal_exception {
+public:
+  explicit not_a_relation(Prolog_term_ref t)
+    : internal_exception(t) {
+  }
+};
+
 class PPL_integer_out_of_range {
 private:
   Parma_Polyhedra_Library::Coefficient n;

@@ -202,7 +202,8 @@ Here is a list of all the PPL predicates provided by the Prolog interface.
 </CODE>
 
 <CODE>
-  ppl_new_Polyhedron_from_space_dimension(+Topology, +Dimension_Type, +Atom, -Handle)
+  ppl_new_Polyhedron_from_space_dimension(+Topology, +Dimension_Type,
+                                          +Universe_or_Empty, -Handle)
 </CODE>
 
 <CODE>
@@ -588,15 +589,20 @@ The specification uses the following grammar rules:
 
  Atom        --> Prolog atom
 
- Relation    --> is_disjoint		between a constraint and a polyhedron
-	    | strictly_intersects	between a constraint and a polyhedron
-	    | is_included		between a constraint and a polyhedron
-	    | saturates			between a constraint and a polyhedron
-            | subsumes			between a generator and a polyhedron
+ Universe_or_Empty			polyhedron
+             --> universe
+            | empty
 
- Relation_List				list of relations
+ Poly_Relation				polyhedron relation:
+             --> is_disjoint		with a constraint
+	    | strictly_intersects	with a constraint
+	    | is_included		with a constraint
+	    | saturates			with a constraint
+            | subsumes			with a generator
+
+ Poly_Relation_List			list of polyhedron relations
 	     --> []
-	    | [Relation | Relation_List]
+	    | [Poly_Relation | Poly_Relation_List]
 
  Complexity  --> polynomial | simplex | any		
 
@@ -699,7 +705,7 @@ and \ref operations of this manual.
 
 <H2><CODE>
   ppl_new_Polyhedron_from_space_dimension(+Topology, +Dimension_Type,
-      +Atom, -Handle)
+                                          +Universe_or_Empty, -Handle)
 </CODE>
 </H2>
 
@@ -836,25 +842,24 @@ ppl_new_Polyhedron_from_Polyhedron(+Topology_1, +Handle_1,
    representing the polyhedron referenced by <CODE>Handle</CODE>.
 
 <H2><CODE> ppl_Polyhedron_relation_with_constraint(+Handle, +Constraint,
-               ?Relation_List) </CODE></H2>
+               ?Poly_Relation_List) </CODE></H2>
 
-Unifies <CODE>Relation_List</CODE> with the list of relations the polyhedron
-referenced by <CODE>Handle</CODE>
-has with <CODE>Constraint</CODE>.
-The possible relations are listed in the grammar rules above;
-their meaning is given in the paragraph
-\ref relation_with "specifying the relation_with operations"
-in Section \ref operations.
+Unifies <CODE>Poly_Relation_List</CODE> with the list of relations the
+polyhedron referenced by <CODE>Handle</CODE> has with
+<CODE>Constraint</CODE>.  The possible relations are listed in the
+grammar rules above; their meaning is given in the paragraph \ref
+relation_with "specifying the relation_with operations" in Section
+\ref operations.
 
 <H2><CODE> ppl_Polyhedron_relation_with_generator(+Handle, +Generator,
-               ?Relation_List) </CODE></H2>
+               ?Poly_Relation_List) </CODE></H2>
 
-Unifies <CODE>Relation_List</CODE> with the list of relations the polyhedron
-referenced by <CODE>Handle</CODE> has with <CODE>Generator</CODE>.
-The possible relations are listed in the grammar rules above;
-their meaning is given in the paragraph
-\ref relation_with "specifying the relation_with operations"
-in Section \ref operations.
+Unifies <CODE>Poly_Relation_List</CODE> with the list of relations the
+polyhedron referenced by <CODE>Handle</CODE> has with
+<CODE>Generator</CODE>.  The possible relations are listed in the
+grammar rules above; their meaning is given in the paragraph \ref
+relation_with "specifying the relation_with operations" in Section
+\ref operations.
 
 <H2><CODE> ppl_Polyhedron_get_bounding_box(+Handle,
                                           +Complexity,

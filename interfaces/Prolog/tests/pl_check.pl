@@ -289,8 +289,6 @@ handle_exceptions :-
 % Tests new_Polyhedron_from_space_dimension/4 and ppl_delete_Polyhedron/1.
 new_poly_from_dim :-
   make_vars(1,[A]),
-  \+ new_poly_from_dim(c, xxx, A = 0), 
-  \+ new_poly_from_dim(nnc, xxx, A = 0), 
   new_poly_from_dim(c, universe, A >= 0),
   new_poly_from_dim(nnc, universe, A > 0),
   new_poly_from_dim(c, empty, _),
@@ -300,7 +298,6 @@ new_poly_from_dim :-
 % and ppl_Polyhedron_add_constraint/2.
 new_poly_from_dim(T, Universe_Or_Empty, Con) :-
   \+ clean_ppl_new_Polyhedron_from_space_dimension(T, 3, Universe_Or_Empty, 0),
-  \+ clean_ppl_new_Polyhedron_from_space_dimension(T, 3, xxx, P),
   clean_ppl_new_Polyhedron_from_space_dimension(T, 3, Universe_Or_Empty, P),
   (Universe_Or_Empty = universe ->
       (ppl_Polyhedron_is_universe(P),
@@ -821,7 +818,6 @@ affine_gen(T) :-
   make_vars(2, [A, B]),
   clean_ppl_new_Polyhedron_from_space_dimension(T, 2, universe, P),
   ppl_Polyhedron_add_constraint(P, A - B = 1),
-  \+ ppl_Polyhedron_generalized_affine_image(P, A, x, A + 1, 1),
   ppl_Polyhedron_generalized_affine_image(P, A, =<, A + 1, 1),
   clean_ppl_new_Polyhedron_from_constraints(T,
                                       [A - B =< 2],
@@ -842,8 +838,6 @@ affine_genlr :-
 affine_genlr(T, R, CS, [A,B]) :-
   clean_ppl_new_Polyhedron_from_space_dimension(T, 2, universe, P),
   ppl_Polyhedron_add_constraint(P, A - B = 1),
-  \+  ppl_Polyhedron_generalized_affine_image_lhs_rhs(P, B - 1, x, A + 1),
-  \+  ppl_Polyhedron_generalized_affine_image_lhs_rhs(P, B - 1, x + y, A + 1),
   ppl_Polyhedron_generalized_affine_image_lhs_rhs(P, B - 1, R, A + 1),
   clean_ppl_new_Polyhedron_from_constraints(T, CS, P1),
   ppl_Polyhedron_equals_Polyhedron(P, P1),
@@ -1454,7 +1448,8 @@ remove_dim(T) :-
   make_vars(3, [A, B, C]),
   clean_ppl_new_Polyhedron_from_space_dimension(T, 3, universe, P),
   ppl_Polyhedron_add_constraints(P, [A >= 1, B >= 0, C >= 2]),
-  ppl_Polyhedron_remove_space_dimensions(P,[]),
+  \+ ppl_Polyhedron_remove_space_dimensions(P, x),
+  ppl_Polyhedron_remove_space_dimensions(P, []),
   clean_ppl_new_Polyhedron_from_constraints(T,
                                       [A >= 1, B >= 0, C >= 2],
                                       P0),
@@ -1547,6 +1542,7 @@ fold_dims(T) :-
   make_vars(4, [A, B, C, D]),
   clean_ppl_new_Polyhedron_from_space_dimension(T, 4, universe, P),
   ppl_Polyhedron_add_constraints(P, [A >= 1, B >= 0, C >= 2, D >= 0]),
+  \+ ppl_Polyhedron_fold_space_dimensions(P, x, B),
   ppl_Polyhedron_fold_space_dimensions(P, [D], B),
   ppl_Polyhedron_space_dimension(P, 3),
   clean_ppl_new_Polyhedron_from_space_dimension(T, 3, universe, P1),
@@ -1581,6 +1577,7 @@ map_dim(T) :-
   make_vars(4, [A, B, C, D]),
   clean_ppl_new_Polyhedron_from_space_dimension(T, 3, universe, P),
   ppl_Polyhedron_add_constraints(P, [A >= 2, B >= 1, C >= 0]),
+  \+  ppl_Polyhedron_map_space_dimensions(P, x),
   ppl_Polyhedron_map_space_dimensions(P, [A-B, B-C, C-A]),
   clean_ppl_new_Polyhedron_from_space_dimension(T, 3, universe, Q),
   ppl_Polyhedron_add_constraints(Q, [A >= 0, B >= 2, C >= 1]),
@@ -1786,7 +1783,6 @@ get_bounding_box:-
 get_bounding_box(T, CS, Box) :-
   clean_ppl_new_Polyhedron_from_space_dimension(T, 2, universe, P),
   ppl_Polyhedron_add_constraints(P, CS),
-  \+ppl_Polyhedron_get_bounding_box(P, a, Box),
   \+ppl_Polyhedron_get_bounding_box(P, any, box),
   ppl_Polyhedron_get_bounding_box(P, any, Box),
   ppl_Polyhedron_get_bounding_box(P, polynomial, Box1),
@@ -2027,7 +2023,7 @@ exceptions :-
 % It does not check those that are dependent on a specific Prolog system.
 
 exception_prolog(V) :-
-   exception_prolog1(8, V).
+   exception_prolog1(11, V).
 
 exception_prolog1(0, _) :- !.
 exception_prolog1(N, V) :-
@@ -2095,6 +2091,26 @@ exception_prolog(7, [A,B,C]) :-
 %% TEST: not_a_polyhedron_handle
 exception_prolog(8, _) :-
   must_catch(ppl_Polyhedron_space_dimension(_, _N)).
+
+%% TEST: not_a_complexity_class
+exception_prolog(9, [A, _, _]) :-
+   clean_ppl_new_Polyhedron_from_generators(c,
+               [point(A)], P),
+   must_catch(ppl_Polyhedron_get_bounding_box(P, a, _Box)).
+ 
+%% TEST: not_universe_or_empty
+exception_prolog(10, _) :-
+  must_catch(ppl_new_Polyhedron_from_space_dimension(c, 3, xxx, _)).
+
+%% TEST: not_relation
+exception_prolog(11, [A, B, _]) :-
+  clean_ppl_new_Polyhedron_from_generators(c,
+               [point(A)], P),
+  must_catch(ppl_Polyhedron_generalized_affine_image(P, A, x, A + 1, 1)),
+  must_catch(
+     ppl_Polyhedron_generalized_affine_image_lhs_rhs(P, B - 1, x, A + 1)),
+  must_catch(
+     ppl_Polyhedron_generalized_affine_image_lhs_rhs(P, B - 1, x + y, A + 1)).
 
 % exception_sys_prolog(+N, +V) checks exceptions thrown by Prolog interfaces
 % that are dependent on a specific Prolog system.
@@ -2263,12 +2279,8 @@ delete_all_ppl_Polyhedra([P|Ps]) :-
 
 %%% predicates for ensuring new polyhedra are always deleted on failure %
 
-clean_ppl_new_Polyhedron_from_space_dimension(T, D, universe, P) :-
-  ppl_new_Polyhedron_from_space_dimension(T, D, universe, P),
-  cleanup_ppl_Polyhedron(P).
-
-clean_ppl_new_Polyhedron_from_space_dimension(T, D, empty, P) :-
-  ppl_new_Polyhedron_from_space_dimension(T, D, empty, P),
+clean_ppl_new_Polyhedron_from_space_dimension(T, D, Universe_or_Empty, P) :-
+  ppl_new_Polyhedron_from_space_dimension(T, D, Universe_or_Empty, P),
   cleanup_ppl_Polyhedron(P).
 
 clean_ppl_new_Polyhedron_from_constraints(T, CS, P) :-

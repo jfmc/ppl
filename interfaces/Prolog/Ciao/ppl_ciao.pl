@@ -727,8 +727,13 @@ ppl_Polyhedron_bounded_H79_extrapolation_assign_with_token(Handle1,
 :- true pred ppl_Polyhedron_concatenate_assign(in(Handle1), in(Handle2))
   :: any_term * any_term + foreign.
 
-:- true pred ppl_Polyhedron_remove_space_dimensions(in(Handle), in(VList))
-  :: any_term * any_term + foreign.
+ppl_Polyhedron_remove_space_dimensions(Handle, VList) :-
+	ppl_Polyhedron_remove_space_dimensions_2(Handle, VList, 1).
+
+:- true pred ppl_Polyhedron_remove_space_dimensions_2(in(Handle), in(VList),
+                                                go(Success))
+  :: any_term * any_term * int
+ + (returns(Success), foreign(ppl_Polyhedron_remove_space_dimensions)).
 
 :- true pred ppl_Polyhedron_remove_higher_space_dimensions(in(Handle),
                                                            in(Dimensions))
@@ -893,7 +898,8 @@ ppl_Polyhedron_map_space_dimensions(Handle, PIFunc) :-
         ppl_Polyhedron_add_space_dimensions_and_project/2,
         ppl_Polyhedron_add_space_dimensions_and_embed/2,
         ppl_Polyhedron_concatenate_assign/2,
-        ppl_Polyhedron_remove_space_dimensions/2,
+%        ppl_Polyhedron_remove_space_dimensions/2,
+        ppl_Polyhedron_remove_space_dimensions_2/3,
         ppl_Polyhedron_remove_higher_space_dimensions/2,
         ppl_Polyhedron_expand_space_dimension/3,
 %        ppl_Polyhedron_fold_space_dimensions/3,
