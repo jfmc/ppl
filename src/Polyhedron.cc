@@ -36,10 +36,6 @@ site: http://www.cs.unipr.it/ppl/ . */
 
 #define BE_LAZY
 
-#ifndef EVOLVING_RAYS_SATURATORS
-#define EVOLVING_RAYS_SATURATORS 1
-#endif
-
 #ifndef COMPARE_H79
 #define COMPARE_H79 0
 #endif
@@ -3326,52 +3322,57 @@ PPL::Polyhedron::relation_with(const Generator& g) const {
 
 void
 PPL::Polyhedron::select_H79_constraints(const Polyhedron& y,
-					ConSys& cs_selection) const {
-  // Private method: the caller must ensure the following conditions.
+					ConSys& cs_selected,
+					ConSys& cs_not_selected) const {
+  // Private method: the caller must ensure the following conditions
+  // (beside the inclusion `y <= x').
   assert(topology() == y.topology()
-	 && topology() == cs_selection.topology()
-	 && space_dimension() == y.space_dimension());
+	 && topology() == cs_selected.topology()
+	 && topology() == cs_not_selected.topology());
+  assert(space_dimension() == y.space_dimension());
   assert(!is_empty()
 	 && !has_pending_generators()
 	 && constraints_are_up_to_date());
   assert(!y.is_empty()
 	 && !y.has_something_pending()
 	 && y.constraints_are_minimized()
-	 && y.generators_are_minimized());
-  
-  // Add low-level constraints.
-  add_low_level_constraints(cs_selection);
-  // Now adjust dimensions, if needed.
-  cs_selection.adjust_topology_and_dimension(topology(), space_dimension());
+	 && y.generators_are_up_to_date());
 
   // Obtain a sorted copy of `y.sat_g'.
   if (!y.sat_g_is_up_to_date())
     y.update_sat_g();
   SatMatrix tmp_sat_g = y.sat_g;
   tmp_sat_g.sort_rows();
-  // The size of `buffer' will reach sat.num_columns() bit.
-  SatRow buffer;
 
-  // A constraint in `con_sys' is copied into `cs_selection'
+  // A constraint in `con_sys' is copied into `cs_selected'
   // if its behavior with respect to `y.gen_sys' is the same
   // as that of another constraint in `y.con_sys'.
+  // otherwise it is copied into `cs_not_selected'.
   // Namely, we check whether the saturation row `buffer'
   // (built starting from the given constraint and `y.gen_sys')
   // is a row of the saturation matrix `tmp_sat_g'.
-  // Note: if the considered constraint of `con_sys' does not
+
+  // CHECK ME: the following comment is only applicable when `y.gen_sys'
+  // is minimized. In that case, the comment suggests that it would be
+  // possible to use a fast (but incomplete) redundancy test based on
+  // the number of saturators in `buffer'.
+  // NOTE: If the considered constraint of `con_sys' does not
   // satisfy the saturation rule (see Section \ref prelims), then
   // it will not appear in the resulting constraint system,
   // because `tmp_sat_g' is built starting from a minimized polyhedron.
 
+  // The size of `buffer' will reach sat.num_columns() bit.
+  SatRow buffer;
   // Note: the loop index `i' goes upwards to avoid reversing
   // the ordering of the chosen constraints.
   for (dimension_type i = 0, iend = con_sys.num_rows(); i < iend; ++i) {
-    buffer.clear();
+    const Constraint& ci = con_sys[i];
     // The saturation row `buffer' is built considering
     // the `i'-th constraint of the polyhedron `x' and
     // all the generators of the polyhedron `y'.
+    buffer.clear();
     for (dimension_type j = y.gen_sys.num_rows(); j-- > 0; ) {
-      int sp_sgn = sgn(y.gen_sys[j] * con_sys[i]);
+      int sp_sgn = sgn(y.gen_sys[j] * ci);
       // We are assuming that `y <= x'.
       assert(sp_sgn >= 0);
       if (sp_sgn > 0)
@@ -3380,7 +3381,9 @@ PPL::Polyhedron::select_H79_constraints(const Polyhedron& y,
     // We check whether `buffer' is a row of `tmp_sat_g',
     // exploiting its sortedness in order to have faster comparisons.
     if (tmp_sat_g.sorted_contains(buffer))
-      cs_selection.insert(con_sys[i]);
+      cs_selected.insert(ci);
+    else
+      cs_not_selected.insert(ci);      
   }
 }
 
@@ -3432,28 +3435,46 @@ PPL::Polyhedron::H79_widening_assign(const Polyhedron& y) {
   }
 
   // `x.con_sys' is just required to be up-to-date, because:
-  // - if `x.con_sys' is unsatisfiable, then also `y' is empty
-  //   and so the resulting polyhedron is `x';
+  // - if `x.con_sys' is unsatisfiable, then by assumption
+  //   also `y' is empty, so that the resulting polyhedron is `x';
   // - redundant constraints in `x.con_sys' do not affect the result
   //   of the widening, because if they are selected they will be
   //   redundant even in the result.
-  if (has_something_pending())
-    remove_pending_to_obtain_constraints();
+  if (has_pending_generators())
+    process_pending_generators();
   else if (!x.constraints_are_up_to_date())
     x.update_constraints();
 
-  // Copy into `H79_con_sys' the constraints that are common
-  // to `x' and `y', according to the definition of the H79 widening.
-  ConSys H79_con_sys(x.topology());
-  x.select_H79_constraints(y, H79_con_sys);
+  // Copy into `H79_con_sys' the constraints of `x' that are common to `y',
+  // according to the definition of the H79 widening.
+  Topology tpl = x.topology();
+  dimension_type num_columns = x.con_sys.num_columns();
+  ConSys H79_cs(tpl, 0, num_columns);
+  ConSys x_minus_H79_cs(tpl, 0, num_columns);
+  x.select_H79_constraints(y, H79_cs, x_minus_H79_cs);
 
-  // Let `H79_con_sys' be the constraint system of `x'
-  // and update the status of `x'.
-  std::swap(x.con_sys, H79_con_sys);
-  x.set_constraints_up_to_date();
-  x.clear_constraints_minimized();
-  x.clear_generators_up_to_date();
-
+  if (x_minus_H79_cs.num_rows() == 0)
+    // We selected all of the constraints of `x',
+    // thus the result of the widening is `x'.
+    return;
+  else if (H79_cs.num_rows() == 0) {
+    // No constraint has been selected:
+    // return the universe polyhedron.
+    Polyhedron universe(x.topology(), x.space_dimension(), UNIVERSE);
+    std::swap(x, universe);
+  }
+  else {
+    // We selected a non-empty, strict subset of the constraints of `x'.
+    // Add the low-level constraints (which may have got lost during
+    // selection): topology and space-dimension need not be adjusted.
+    add_low_level_constraints(H79_cs);
+    // Let `H79_con_sys' be the new constraint system of `x'
+    // and update the status of `x'.
+    std::swap(x.con_sys, H79_cs);
+    x.set_constraints_up_to_date();
+    x.clear_constraints_minimized();
+    x.clear_generators_up_to_date();
+  }
   assert(x.OK(true));
 }
 
@@ -3553,12 +3574,11 @@ PPL::Polyhedron::limited_H79_widening_assign(const Polyhedron& y,
   cs.sort_rows();
   x.con_sys.sort_rows();
   x.con_sys.merge_rows_assign(cs);
-#endif
-
   // Only the system of constraints is up-to-date.
   x.set_constraints_up_to_date();
   x.clear_constraints_minimized();
   x.clear_generators_up_to_date();
+#endif
 
   assert(OK());
 }
@@ -3566,13 +3586,13 @@ PPL::Polyhedron::limited_H79_widening_assign(const Polyhedron& y,
 bool
 PPL::Polyhedron::is_BHRZ03_stabilizing(const Polyhedron& x,
 				       const Polyhedron& y) {
+  // It is assumed that `y' is included into `x'.
+  assert(x.topology() == y.topology());
   assert(x.space_dimension() == y.space_dimension());
-  assert(x.constraints_are_minimized());
-  assert(y.constraints_are_minimized());
-  assert(x.generators_are_minimized());
-  assert(y.generators_are_minimized());
-  assert(!x.has_something_pending());
-  assert(!y.has_something_pending());
+  assert(!x.is_empty() && !x.has_something_pending()
+	 && x.constraints_are_minimized() && x.generators_are_minimized());
+  assert(!y.is_empty() && !y.has_something_pending()
+	 && y.constraints_are_minimized() && y.generators_are_minimized());
 
   // If the dimension of `x' is greater than the dimension of `y',
   // the chain is stabilizing.
@@ -3624,6 +3644,9 @@ PPL::Polyhedron::is_BHRZ03_stabilizing(const Polyhedron& x,
   dimension_type x_con_sys_num_rows = x.con_sys.num_rows();
   dimension_type y_con_sys_num_rows = y.con_sys.num_rows();
   if (x_con_sys_num_rows < y_con_sys_num_rows) {
+#if 0 //#ifndef NDEBUG
+    std::cout << "BHRZ03_stabilizing: number of constraints" << std::endl;
+#endif
 #if PPL_STATISTICS
     statistics->reason.num_constraints++;
 #endif
@@ -3641,6 +3664,9 @@ PPL::Polyhedron::is_BHRZ03_stabilizing(const Polyhedron& x,
 	   y_cs_end = y.con_sys.end(); i != y_cs_end; ++i)
       y_con_sys_num_rows++;
     if (x_con_sys_num_rows < y_con_sys_num_rows) {
+#if 0 //#ifndef NDEBUG
+    std::cout << "BHRZ03_stabilizing: number of constraints" << std::endl;
+#endif
 #if PPL_STATISTICS
       statistics->reason.num_constraints++;
 #endif
@@ -3768,70 +3794,63 @@ PPL::Polyhedron::is_BHRZ03_stabilizing(const Polyhedron& x,
 
 
 bool
-PPL::Polyhedron::BHRZ03_averaging_constraints(Polyhedron& x,
-					      const Polyhedron& y,
-					      const ConSys& H79_con_sys) {
+PPL::Polyhedron::BHRZ03_averaging_constraints(const Polyhedron& y,
+					      const Polyhedron& H79,
+					      const ConSys& x_minus_H79_cs) {
+  Polyhedron& x = *this;
+  // It is assumed that `y <= x <= H79'.
+  assert(x.topology() == y.topology()
+	 && x.topology() == H79.topology()
+	 && x.topology() == x_minus_H79_cs.topology());
+  assert(x.space_dimension() == y.space_dimension()
+	 && x.space_dimension() == H79.space_dimension()
+	 && x.space_dimension() == x_minus_H79_cs.space_dimension());
+  assert(!x.is_empty() && !x.has_something_pending()
+	 && x.constraints_are_minimized() && x.generators_are_minimized());
+  assert(!y.is_empty() && !y.has_something_pending()
+	 && y.constraints_are_minimized() && y.generators_are_minimized());
+  assert(!H79.is_empty() && !H79.has_something_pending()
+	 && H79.constraints_are_minimized() && H79.generators_are_minimized());
 
-  // FIXME: `H79_con_sys' is a selection of the constraints in `x.con_sys',
-  // so that there should be a better way of computing the constraints
-  // that do not belong to `H79_con_sys', without computing scalar products.
+  // We will choice from `x_minus_H79_cs' many subsets of constraints,
+  // that will be collected (one at a time) into `averaging_cs'.
+  // For each group collected, we compute an average constraint,
+  // that will be stored into `new_cs'.
 
-  // Select the constraints in `x.con_sys' that do not belong to `y.con_sys'.
-  // To this end we use `x.sat_g'.
-  if (!x.sat_g_is_up_to_date())
-    x.update_sat_g();
-  dimension_type H79_con_sys_num_rows = H79_con_sys.num_rows();
-  dimension_type x_gen_sys_num_rows = x.gen_sys.num_rows();
-  // Build a temporary saturation matrix containing the relations
-  // between `H79_con_sys' and `x.gen_sys'.
-  SatMatrix common_sat_g(H79_con_sys_num_rows, x_gen_sys_num_rows);
-  for (dimension_type i = H79_con_sys_num_rows; i-- > 0; ) {
-    const Constraint& c = H79_con_sys[i];
-    for (dimension_type j = x_gen_sys_num_rows; j-- > 0; ) {
-      Generator& g = x.gen_sys[j];
-      if (sgn(c * g) != 0)
-	common_sat_g[i].set(j);
-    }
-  }
-  common_sat_g.sort_rows();
-  
-  // `x_minus_H79_con_sys' will contain the constraints of `x.con_sys'
-  // that do not belong to `H79_con_sys'.
-  ConSys x_minus_H79_con_sys;
-  for (dimension_type i = x.con_sys.num_rows(); i-- > 0; )
-    if (!x.con_sys[i].is_equality())
-      if (!common_sat_g.sorted_contains(x.sat_g[i]))
-	x_minus_H79_con_sys.insert(x.con_sys[i]);
-  
-  // The system of constraints of the resulting polyhedron
-  // contains the constraints of `H79_con_sys'.
-  ConSys new_con_sys = H79_con_sys;
+  // There is no point in applying this technique when `x_minus_H79_cs'
+  // has one constraint at most (no ``new'' constraint can be computed).
+  dimension_type x_minus_H79_cs_num_rows = x_minus_H79_cs.num_rows();
+  if (x_minus_H79_cs_num_rows <= 1)
+    return false;
+
+  Topology tpl = x.topology();
+  dimension_type num_columns = x.con_sys.num_columns();
+  ConSys averaging_cs(tpl, 0, num_columns);
+  ConSys new_cs(tpl, 0, num_columns);
 
   // Consider the points that belong to both `x.gen_sys' and `y.gen_sys'.
   // For NNC polyhedra, the role of points is played by closure points.
   bool closed = x.is_necessarily_closed();
-  ConSys averaging_con_sys(x.topology(), 0, x.con_sys.num_columns());
-  dimension_type x_minus_H79_con_sys_num_rows = x_minus_H79_con_sys.num_rows();
   for (dimension_type i = y.gen_sys.num_rows(); i-- > 0; ) {
     const Generator& g = y.gen_sys[i];
     if ((g.is_point() && closed) || (g.is_closure_point() && !closed)) {
       // Consider all the constraints in `x_minus_H79_con_sys'
       // that are saturated by the point `g'.
-      averaging_con_sys.clear();
-      for (dimension_type j = x_minus_H79_con_sys_num_rows; j-- > 0; ) {
-	Constraint& c = x_minus_H79_con_sys[j];
+      averaging_cs.clear();
+      for (dimension_type j = x_minus_H79_cs_num_rows; j-- > 0; ) {
+	const Constraint& c = x_minus_H79_cs[j];
 	if (c * g == 0)
-	  averaging_con_sys.insert(c);
+	  averaging_cs.insert(c);
       }
       // Build a new constraint by combining all the chosen constraints.
-      dimension_type num_averaging_constraints = averaging_con_sys.num_rows();
-      if (num_averaging_constraints > 0) {
-	if (num_averaging_constraints == 1)
+      dimension_type averaging_cs_num_rows = averaging_cs.num_rows();
+      if (averaging_cs_num_rows > 0) {
+	if (averaging_cs_num_rows == 1)
 	  // No average is needed.
-	  new_con_sys.insert(averaging_con_sys[0]);
+	  new_cs.insert(averaging_cs[0]);
 	else {
 	  // Compute the norms of the chosen constraints
-	  // (ignore the non-homogeneous term).
+	  // (ignore the inhomogeneous term).
 	  // NOTE: Actually, the coefficients of `norms' are the
 	  // truncated integer part of the square roots of the norms
 	  // of the vectors.
@@ -3840,10 +3859,10 @@ PPL::Polyhedron::BHRZ03_averaging_constraints(Polyhedron& x,
 	  // constraints should not be biased by the value of
 	  // epsilon coefficients.
 
-	  std::vector<Integer> norms(num_averaging_constraints);
-	  for (dimension_type h = num_averaging_constraints; h-- > 0; ) {
-	    Constraint& c = averaging_con_sys[h];
-	    for (dimension_type k = averaging_con_sys.num_columns(); k-- > 1; )
+	  std::vector<Integer> norms(averaging_cs_num_rows);
+	  for (dimension_type h = averaging_cs_num_rows; h-- > 0; ) {
+	    Constraint& c = averaging_cs[h];
+	    for (dimension_type k = num_columns; k-- > 1; )
 	      norms[h] += c[k] * c[k];
 	    sqrt_assign(norms[h]);
 	  }
@@ -3851,7 +3870,7 @@ PPL::Polyhedron::BHRZ03_averaging_constraints(Polyhedron& x,
 	  // In `lcm_norm' we put the least common multiple of the
 	  // coefficients of the vector `norms'.
 	  Integer lcm_norm = norms[0];
-	  for (dimension_type h = 0; h < num_averaging_constraints; ++h)
+	  for (dimension_type h = 1; h < averaging_cs_num_rows; h++)
 	    lcm_assign(lcm_norm, norms[h]);
 	  
 	  // Ideally, the new constraint is equal to `e relop b', where
@@ -3867,10 +3886,10 @@ PPL::Polyhedron::BHRZ03_averaging_constraints(Polyhedron& x,
 	  // the vector `e', since we cannot take exact square roots.
 	  LinExpression e(0);
 	  bool strict_inequality = false;
-	  for (dimension_type h = num_averaging_constraints; h-- > 0; ) {
-	    if (averaging_con_sys[h].is_strict_inequality())
+	  for (dimension_type h = averaging_cs_num_rows; h-- > 0; ) {
+	    if (averaging_cs[h].is_strict_inequality())
 	      strict_inequality = true;
-	    LinExpression tmp(averaging_con_sys[h]);
+	    LinExpression tmp(averaging_cs[h]);
 	    tmp -= tmp[0];
 	    for (dimension_type t = tmp.size(); t-- > 1; )
 	      tmp[t] = tmp[t] * lcm_norm / norms[h];
@@ -3884,86 +3903,99 @@ PPL::Polyhedron::BHRZ03_averaging_constraints(Polyhedron& x,
 	  
 	  if (!e.all_homogeneous_terms_are_zero())
 	    if (strict_inequality)
-	      new_con_sys.insert(e > 0);
+	      new_cs.insert(e > 0);
 	    else
-	      new_con_sys.insert(e >= 0);
+	      new_cs.insert(e >= 0);
 	}
       }
     }
   }
-  std::swap(new_con_sys, x.con_sys);
-  // The resulting polyhedron has only
-  // the system of constraints up to date.
-  x.clear_generators_up_to_date();
-  x.clear_constraints_minimized();
 
-  // Check for stabilization.
-  x.minimize();
-  bool stabilizing = is_BHRZ03_stabilizing(x, y);
+  // TODO: `H79 <= result' can be tested more efficiently by checking
+  // that all the constraints in `new_cs' include `H79'. This way we
+  // would avoid creating and minimizing `result' when the technique
+  // does not improve over H79.
 
-  if (stabilizing) {
+  // If no constraint was collected, the technique was not successful.
+  if (new_cs.num_rows() == 0)
+    return false;
 
-#if COMPARE_H79
-    Polyhedron H79(x.topology(), x.space_dimension(), UNIVERSE);
-    ConSys H79_copy(H79_con_sys);
-    H79.add_constraints(H79_copy);
-    if (H79 <= x)
-      return false;
-#endif
+  // The resulting polyhedron is obtained by adding the constraints
+  // in `new_cs' to polyhedron `H79'.
+  Polyhedron result = H79;
+  result.add_constraints_and_minimize(new_cs);
 
-#if 0 //#ifndef NDEBUG
-    std::cout << "BHRZ03: averaging constraints" << std::endl;
-#endif
+  // This widening technique was unsuccessful if the result is not
+  // stabilizing with respect to `y', or if it is not better than `H79'.
+  if (H79 <= result || !is_BHRZ03_stabilizing(result, y))
+    return false;
+
+  // The technique was successful.
 #if PPL_STATISTICS
-    statistics->technique.combining_constraints++;
+  statistics->technique.combining_constraints++;
 #endif
-    assert(x.OK(true));
-  }
-  return stabilizing;
+#if 0 //#ifndef NDEBUG
+  std::cout << "BHRZ03: averaging_constraints" << std::endl;
+#endif
+  std::swap(x, result);
+  assert(x.OK(true));
+  return true;
 }
 
 bool
-PPL::Polyhedron::BHRZ03_evolving_points(Polyhedron& x,
-					const Polyhedron& y,
-					const ConSys& H79_con_sys) {
-  // For each point in `x.gen_sys' that is not included in `y',
-  // this technique identifies a set of rays that subsume this point
-  // and do not violate the constraints in `H79_con_sys'.
+PPL::Polyhedron::BHRZ03_evolving_points(const Polyhedron& y,
+					const Polyhedron& H79) {
+  Polyhedron& x = *this;
+  // It is assumed that `y <= x <= H79'.
+  assert(x.topology() == y.topology()
+	 && x.topology() == H79.topology());
+  assert(x.space_dimension() == y.space_dimension()
+	 && x.space_dimension() == H79.space_dimension());
+  assert(!x.is_empty() && !x.has_something_pending()
+	 && x.constraints_are_minimized() && x.generators_are_minimized());
+  assert(!y.is_empty() && !y.has_something_pending()
+	 && y.constraints_are_minimized() && y.generators_are_minimized());
+  assert(!H79.is_empty() && !H79.has_something_pending()
+	 && H79.constraints_are_minimized() && H79.generators_are_minimized());
+
+  // For each point in `x.gen_sys' that is not in `y',
+  // this technique tries to identify a set of rays that:
+  //  - are included in polyhedron `H79';
+  //  - when added to `y' will subsume the point.
   // All such rays are kept in `valid_rays'.
   GenSys valid_rays;
 
   dimension_type x_gen_sys_num_rows = x.gen_sys.num_rows();
   dimension_type y_gen_sys_num_rows = y.gen_sys.num_rows();
+  bool closed = x.is_necessarily_closed();
   for (dimension_type i = x_gen_sys_num_rows; i-- > 0; ) {
     Generator& g1 = x.gen_sys[i];
     // For C polyhedra, we choose a point of `x.gen_sys'
     // that is not included in `y'.
     // In the case of NNC polyhedra, we can restrict attention to
     // closure points (considering also points will only add redundancy).
-    if ((g1.is_point() && x.is_necessarily_closed())
-	|| (g1.is_closure_point() && !x.is_necessarily_closed())) {
+    if ((g1.is_point() && closed) || (g1.is_closure_point() && !closed)) {
       Poly_Gen_Relation relation = y.relation_with(g1);
       if (relation == Poly_Gen_Relation::nothing()) {
-	// Candidate rays are kept in `new_rays'.
-	GenSys new_rays;
+	GenSys candidate_rays;
 	// For each point (resp., closure point) `g2' in `y.gen_sys',
 	// where `g1' and `g2' are different,
-	// we built the ray `g1 - g2' and put it into `new_rays'.
+	// build the candidate ray `g1 - g2'.
 	for (dimension_type j = y_gen_sys_num_rows; j-- > 0; ) {
 	  const Generator& g2 = y.gen_sys[j];
-	  if ((g2.is_point() && y.is_necessarily_closed())
-	      || (g2.is_closure_point() && !y.is_necessarily_closed())) {
+	  if ((g2.is_point() && closed)
+	      || (g2.is_closure_point() && !closed)) {
 	    // Check that `g1' and `g2' are different.
 	    if (compare(g1, g2) == 0)
 	      continue;
 	    Generator ray_from_g2_to_g1 = g1;
 	    ray_from_g2_to_g1.linear_combine(g2, 0);
-	    new_rays.insert(ray_from_g2_to_g1);
+	    candidate_rays.insert(ray_from_g2_to_g1);
 	  }
 	}
 	// Similarly, for each point (resp., closure point) `g2'
 	// in `x.gen_sys', where `g1' and `g2' are different,
-	// we built the ray `g1 - g2' and put it into `new_rays'.
+	// build the ray `g1 - g2' and put it into `candidate_rays'.
 	for (dimension_type j = x_gen_sys_num_rows; j-- > 0; ) {
 	  // Check that `g1' and `g2' are different:
 	  // since they both belong to `x.gen_sys', which is minimized,
@@ -3971,50 +4003,43 @@ PPL::Polyhedron::BHRZ03_evolving_points(Polyhedron& x,
 	  if (i == j)
 	    continue;
 	  const Generator& g2 = x.gen_sys[j];
-	  if ((g2.is_point() && x.is_necessarily_closed())
-	      || (g2.is_closure_point() && !x.is_necessarily_closed())) {
+	  if ((g2.is_point() && closed)
+	      || (g2.is_closure_point() && !closed)) {
 	    Generator ray_from_g2_to_g1(g1);
 	    ray_from_g2_to_g1.linear_combine(g2, 0);
-	    new_rays.insert(ray_from_g2_to_g1);
+	    candidate_rays.insert(ray_from_g2_to_g1);
 	  }
 	}
-	if (new_rays.num_rows() == 1) {
-	  // `new_rays' contains one ray only: it is a valid ray
-	  // if it satisfies all of the constraints in `H79_con_sys'.
-	  const Generator& new_ray = new_rays[0];
-	  bool is_valid_ray = true;
-	  for (dimension_type j = H79_con_sys.num_rows(); j-- > 0; )
-	    if (new_ray * H79_con_sys[j] < 0) {
-	      is_valid_ray = false;
-	      break;
-	    }
-	  if (is_valid_ray)
-	    valid_rays.insert(new_ray);
+	if (candidate_rays.num_rows() == 1) {
+	  // `candidate_rays' contains one ray only: it is a valid ray
+	  // if it satisfies all the constraints of `H79'.
+	  const Generator& r = candidate_rays[0];
+	  if (H79.relation_with(r) == Poly_Gen_Relation::subsumes())
+	    valid_rays.insert(r);
 	}
 	else
-	  if (new_rays.num_rows() > 1) {
-	    // `new_rays' contains more than one candidate ray.
-	    // After adding a point of `x' to `new_rays',
-	    // we build the corresponding polyhedron
+	  if (candidate_rays.num_rows() > 1) {
+	    // `candidate_rays' contains more than one candidate ray.
+	    // After adding a (any) point of `x' to `candidate_rays',
+	    // we build the corresponding `candidate_ph'
 	    // (a polyhedral cone having the point as apex).
-	    // We compute the intersection of this polyhedron
-	    // with the polyhedron generated by `H79_con_sys':
+	    // We compute the intersection of this polyhedron with `H79':
 	    // the valid rays are those belonging to this intersection.
 	    dimension_type k = x_gen_sys_num_rows - 1;
 	    while (!x.gen_sys[k].is_point())
 	      --k;
 	    // Insert the point.
-	    new_rays.insert(x.gen_sys[k]);
-	    Polyhedron ph(x.topology(), new_rays);
-	    // Have to take a copy, because `H79_con_sys'
-	    // may be needed later.
-	    ConSys H79_con_sys_copy = H79_con_sys;
-	    ph.add_constraints_and_minimize(H79_con_sys_copy);
-	    const GenSys& ph_gs = ph.generators();
-	    // Copy the rays of `ph' into `valid_rays'.
-	    for (dimension_type j = ph_gs.num_rows(); j-- > 0; ) {
-	      const Generator& g = ph_gs[j];
-	      if (g.is_ray())
+	    candidate_rays.insert(x.gen_sys[k]);
+	    Polyhedron candidate_ph(x.topology(), candidate_rays);
+	    // Have to take a copy, because `H79' is a constant parameter.
+	    Polyhedron valid_ph = H79;
+	    valid_ph.intersection_assign_and_minimize(candidate_ph);
+
+	    // Copy the valid rays from `valid_ph'.
+	    const GenSys& valid_gs = valid_ph.generators();
+	    for (dimension_type j = valid_gs.num_rows(); j-- > 0; ) {
+	      const Generator& g = valid_gs[j];
+	      if (g.is_ray() || g.is_line())
 		valid_rays.insert(g);
 	    }
 	  }
@@ -4022,89 +4047,83 @@ PPL::Polyhedron::BHRZ03_evolving_points(Polyhedron& x,
     }
   }
 
-  // We "average" the directions of all the rays that belong to
-  // `valid_rays' and then we add the new ray to the system of
-  // generators of `x'.
-  // NOTE: it is useless copy the polyhedron `x' in a temporary
-  // polyhedron, because the ray that is obtained averaging the
-  // directions of the rays of `valid_rays' is redundant in the system
-  // `valid_rays'.
+  // Be non-intrusive.
+  Polyhedron result = x;
+
+  // We first try "averaging" the directions of all the rays
+  // in `valid_rays' and add the resulting ray to `result'.
   LinExpression e(0);
   for (dimension_type i = valid_rays.num_rows(); i-- > 0; )
     e += LinExpression(valid_rays[i]);
   e.normalize();
+  // Check that `e' can be used to build a ray.
   if (!e.all_homogeneous_terms_are_zero()) {
-    GenSys avg_ray;
-    avg_ray.insert(ray(e));
-    x.add_generators_and_minimize(avg_ray);
-  
-    // Check for stabilization.
-    bool stabilizing = is_BHRZ03_stabilizing(x, y);
-    if (stabilizing) {
-
-#if COMPARE_H79
-      Polyhedron H79(x.topology(), x.space_dimension(), UNIVERSE);
-      ConSys H79_copy(H79_con_sys);
-      H79.add_constraints(H79_copy);
-      if (H79 <= x)
-	// Note: no need to check with the addition of more rays,
-	// since it would result into an even bigger `x'.
-	return false;
-#endif
-
-#if 0 //#ifndef NDEBUG
-      std::cout << "BHRZ03: evolving points" << std::endl;
-#endif
+    result.add_generator(ray(e));
+    result.minimize();
+    // Check for improvement over `H79'.
+    if (H79 <= result)
+      // The technique was not successful.
+      // Note: no need to check with the addition of more rays,
+      // since it would result into an even bigger `result'.
+      return false;
+    if (is_BHRZ03_stabilizing(result, y)) {
+      // The technique was successful.
 #if PPL_STATISTICS
       statistics->technique.evolving_points++;
 #endif
+#if 0 //#ifndef NDEBUG
+  std::cout << "BHRZ03: evolving points" << std::endl;
+#endif
+      std::swap(x, result);
       assert(x.OK(true));
       return true;
     }
   }
 
-  // At this point there is not stabilization adding only a ray
-  // or the ray that we have obtained has all homogeneous terms
-  // equal to zero, we add all the valid rays to `x' and
-  // check for stabilization (which requires minimization).
-  x.add_generators_and_minimize(valid_rays);
-  // Check for stabilization.
-  bool stabilizing = is_BHRZ03_stabilizing(x, y);
+  // Here, either stabilization has not been obtained by adding a single ray
+  // or the ray obtained was illegal (because all homogeneous terms were 0):
+  // try adding all the valid rays to `result'.
+  // NOTE: it is useless to re-assign `x' to `result',
+  // because the only ray added so far was obtained by combining the rays
+  // we are going to add now.
+  result.add_generators_and_minimize(valid_rays);
+  // Check for stabilization wrt `y' and improvement over `H79'.
+  if (H79 <= result || !is_BHRZ03_stabilizing(result, y))
+    return false;
 
-  if (stabilizing) {
-#if 0 //#ifndef NDEBUG
-    std::cout << "BHRZ03: evolving points" << std::endl;
-#endif
+  // The widening technique was successful.
 #if PPL_STATISTICS
-    statistics->technique.evolving_points++;
+  statistics->technique.evolving_points++;
 #endif
-    assert(x.OK(true));
-  }
-  return stabilizing;
+#if 0 //#ifndef NDEBUG
+  std::cout << "BHRZ03: evolving points" << std::endl;
+#endif
+  std::swap(x, result);
+  assert(x.OK(true));
+  return true;
 }
 
 bool
-PPL::Polyhedron::BHRZ03_evolving_rays(Polyhedron& x,
-				      const Polyhedron& y,
-				      const ConSys& H79_con_sys) {
+PPL::Polyhedron::BHRZ03_evolving_rays(const Polyhedron& y,
+				      const Polyhedron& H79) {
+  Polyhedron& x = *this;
+  // It is assumed that `y <= x <= H79'.
+  assert(x.topology() == y.topology()
+	 && x.topology() == H79.topology());
+  assert(x.space_dimension() == y.space_dimension()
+	 && x.space_dimension() == H79.space_dimension());
+  assert(!x.is_empty() && !x.has_something_pending()
+	 && x.constraints_are_minimized() && x.generators_are_minimized());
+  assert(!y.is_empty() && !y.has_something_pending()
+	 && y.constraints_are_minimized() && y.generators_are_minimized());
+  assert(!H79.is_empty() && !H79.has_something_pending()
+	 && H79.constraints_are_minimized() && H79.generators_are_minimized());
+
   dimension_type x_gen_sys_num_rows = x.gen_sys.num_rows();
   dimension_type y_gen_sys_num_rows = y.gen_sys.num_rows();
 
   if (!x.sat_c_is_up_to_date())
     x.sat_c.transpose_assign(x.sat_g);
-
-#if EVOLVING_RAYS_SATURATORS
-  // Build a temporary saturation matrix where the relations
-  // between the constraints of `x' and the rays of `y' are stored.
-  dimension_type x_con_sys_num_rows = x.con_sys.num_rows();
-  SatMatrix tmp_sat(y_gen_sys_num_rows, x_con_sys_num_rows);
-  for (dimension_type i = y_gen_sys_num_rows; i-- > 0; ) {
-    const Generator& y_g = y.gen_sys[i];
-    for (dimension_type j = x_con_sys_num_rows; j-- > 0; )
-      if (x.con_sys[j] * y_g > 0)
-        tmp_sat[i].set(j);
-  }
-#endif
 
   // Candidate rays are kept in a temporary generator system.
   GenSys candidate_rays;
@@ -4115,11 +4134,7 @@ PPL::Polyhedron::BHRZ03_evolving_rays(Polyhedron& x,
     if (x_g.is_ray() && y.relation_with(x_g) == Poly_Gen_Relation::nothing()) {
       for (dimension_type j = y_gen_sys_num_rows; j-- > 0; ) {
 	const Generator& y_g = y.gen_sys[j];
-	if (y_g.is_ray()
-#if EVOLVING_RAYS_SATURATORS
-	    && strict_subset(x.sat_c[i], tmp_sat[j])
-#endif
-	    ) {
+	if (y_g.is_ray()) {
 	  Generator new_ray(x_g);
 	  std::deque<bool> considered(x.space_dim + 1);
 	  Integer tmp_1;
@@ -4162,12 +4177,11 @@ PPL::Polyhedron::BHRZ03_evolving_rays(Polyhedron& x,
 
   // Here `candidate_rays' contains more than one ray
   // (because we added rays in pairs).
-  // Of all the candidate rays, we only consider those that do not
-  // violate the constraints of `H79_con_sys': to this end, we add
-  // any point of `x' to `candidate_rays' and build the corresponding
-  // polyhedron (a polyhedral cone having the point as apex), and then
-  // we compute the intersection of this polyhedron with the polyhedron
-  // defined by `H79_con_sys'.
+  // Of all the candidate rays, we only consider those that are
+  // subsumed by `H79_con_sys': to this end, we add any point of `x'
+  // to `candidate_rays' and build the corresponding polyhedron
+  // (a polyhedral cone having the point as apex), and then we take
+  // the intersection with `H79'.
 
   // Find any point of `x'
   // (it must have at least one, since it is not empty).
@@ -4176,15 +4190,13 @@ PPL::Polyhedron::BHRZ03_evolving_rays(Polyhedron& x,
     --k;
   // Insert the point found and build the polyhedral cone.
   candidate_rays.insert(x.gen_sys[k]);
-  Polyhedron ph(x.topology(), candidate_rays);
-  // Have to take a copy, because `H79_con_sys' is a constant parameter.
-  ConSys H79_con_sys_copy = H79_con_sys;
-  ph.add_constraints_and_minimize(H79_con_sys_copy);
+  Polyhedron candidate_ph(x.topology(), candidate_rays);
+  candidate_ph.intersection_assign_and_minimize(H79);
   // Copy the rays of `ph' into `valid_rays'.
-  const GenSys& ph_gs = ph.generators();
+  const GenSys& gs = candidate_ph.generators();
   GenSys valid_rays;
-  for (dimension_type j = ph_gs.num_rows(); j-- > 0; ) {
-    const Generator& g = ph_gs[j];
+  for (dimension_type j = gs.num_rows(); j-- > 0; ) {
+    const Generator& g = gs[j];
     switch (g.type()) {
     case Generator::RAY:
       // Intentionally fall through.
@@ -4196,34 +4208,29 @@ PPL::Polyhedron::BHRZ03_evolving_rays(Polyhedron& x,
     }
   }
 
-  // If there are no valid rays, we cannot obtain stabilization.
+  // If there are no valid rays, the technique is not successful.
   if (valid_rays.num_rows() == 0)
     return false;
 
-  // Add to `x' the generators in `valid_rays'
-  x.add_generators_and_minimize(valid_rays);
+  // Be non-intrusive.
+  Polyhedron result = x;
+  // Add to `result' the generators in `valid_rays'
+  result.add_generators_and_minimize(valid_rays);
 
-  // Check for stabilization.
-  bool stabilizing = is_BHRZ03_stabilizing(x, y);
-  if (stabilizing) {
+  // Check for stabilization wrt `y' and improvement over `H79'.
+  if (H79 <= result || !is_BHRZ03_stabilizing(result, y))
+    return false;
 
-#if COMPARE_H79
-    Polyhedron H79(x.topology(), x.space_dimension(), UNIVERSE);
-    ConSys H79_copy(H79_con_sys);
-    H79.add_constraints(H79_copy);
-    if (H79 <= x)
-      return false;
-#endif
-
-#if 0 //#ifndef NDEBUG
-    std::cout << "BHRZ03: evolving rays" << std::endl;
-#endif
+  // The technique was successful.
 #if PPL_STATISTICS
-    statistics->technique.evolving_rays++;
+  statistics->technique.evolving_rays++;
 #endif
-    assert(x.OK(true));
-  }
-  return stabilizing;
+#if 0 //#ifndef NDEBUG
+  std::cout << "BHRZ03: evolving rays" << std::endl;
+#endif
+  std::swap(x, result);
+  assert(x.OK(true));
+  return true;
 }
 
 void
@@ -4291,9 +4298,6 @@ PPL::Polyhedron::BHRZ03_widening_assign(const Polyhedron& y) {
   
   // If the iteration is stabilizing, the resulting polyhedron is `x'.
   if (is_BHRZ03_stabilizing(x, y)) {
-#if 0 //#ifndef NDEBUG
-    std::cout << "BHRZ03: immediately stabilizing" << std::endl;
-#endif
 #if PPL_STATISTICS
     statistics->technique.nop++;
 #endif
@@ -4303,45 +4307,52 @@ PPL::Polyhedron::BHRZ03_widening_assign(const Polyhedron& y) {
 
   // Copy into `H79_con_sys' the constraints that are common
   // to `x' and `y', according to the definition of the H79 widening.
-  ConSys H79_con_sys(x.topology());
-  x.select_H79_constraints(y, H79_con_sys);
-  // CHECK ME: why should it be sorted?
-  H79_con_sys.sort_rows();
+  Topology tpl = x.topology();
+  dimension_type num_columns = x.con_sys.num_columns();
+  ConSys H79_cs(tpl, 0, num_columns);
+  ConSys x_minus_H79_cs(tpl, 0, num_columns);
+  x.select_H79_constraints(y, H79_cs, x_minus_H79_cs);
 
-  // The following heuristics are intrusive: to avoid problems,
-  // we backup the current value of `x'.
-  Polyhedron x_backup = x;
-  if (BHRZ03_averaging_constraints(x, y, H79_con_sys))
+  // We cannot have selected all of the rows, since otherwise
+  // the iteration should have been immediately stabilizing.
+  assert(x_minus_H79_cs.num_rows() > 0);
+  // Be careful to obtain the right space dimension
+  // (because `H79_cs' may be empty).
+  Polyhedron H79(tpl, x.space_dimension(), UNIVERSE);
+  H79.add_constraints_and_minimize(H79_cs);
+
+  // NOTE: none of the following widening heuristics is intrusive:
+  // they will modify `x' only when returning successfully.
+  if (x.BHRZ03_averaging_constraints(y, H79, x_minus_H79_cs))
     return;
 
-  // Recover the backup copy of `x'.
-  x = x_backup;
-  if (BHRZ03_evolving_points(x, y, H79_con_sys))
+  assert(H79.OK() && x.OK() && y.OK());
+
+  if (x.BHRZ03_evolving_points(y, H79))
     return;
 
-  // Recover the backup copy of `x'.
-  x = x_backup;
-  if (BHRZ03_evolving_rays(x, y, H79_con_sys))
+  assert(H79.OK() && x.OK() && y.OK());
+
+  if (x.BHRZ03_evolving_rays(y, H79))
     return;
 
-  // Fall back to the H79 widening.
-  Polyhedron ph(x.topology(), H79_con_sys);
-  std::swap(x, ph);
+  assert(H79.OK() && x.OK() && y.OK());
 
+  // No previous technique was successful: fall back to the H79 widening.
 #if PPL_STATISTICS
   statistics->technique.h79++;
 #endif
-#if 0
+#if 0 //#ifndef NDEBUG
   std::cout << "BHRZ03: H79" << std::endl;
 #endif
+  std::swap(x, H79);
+  assert(x.OK(true));
 
 #if NDEBUG
-  // Check for stabilization.
+  // The H79 widening is always stabilizing.
   x.minimize();
   assert(is_BHRZ03_stabilizing(x, y));
 #endif //#if NDEBUG
-
-  assert(x.OK(true));
 }
 
 void

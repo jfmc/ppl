@@ -1608,7 +1608,8 @@ private:
   //! Copies into \p cs_selection the constraints that will be used
   //! to compute the \ref H79_widening "H79-widening" of \p *this and \p y.
   void select_H79_constraints(const Polyhedron& y,
-			      ConSys& cs_selection) const;
+			      ConSys& cs_selected,
+			      ConSys& cs_not_selected) const;
 
   //! Checks if and how \p expr is bounded in \p *this.
   /*!
@@ -1663,8 +1664,8 @@ private:
 
   //! Builds and simplifies constraints from generators (or vice versa).
   // Detailed Doxygen comment to be found in file minimize.cc.
-  static bool minimize(bool con_to_gen, Matrix& source, Matrix& dest,
-		       SatMatrix& sat);
+  static bool minimize(bool con_to_gen,
+		       Matrix& source, Matrix& dest, SatMatrix& sat);
 
   //! \brief
   //! Adds given constraints and builds minimized corresponding generators
@@ -1690,17 +1691,13 @@ private:
   */
   static bool is_BHRZ03_stabilizing(const Polyhedron& x, const Polyhedron& y);
 
-  static bool BHRZ03_averaging_constraints(Polyhedron& x,
-					   const Polyhedron& y,
-					   const ConSys& H79_con_sys);
+  bool BHRZ03_averaging_constraints(const Polyhedron& y,
+ 				    const Polyhedron& H79,
+				    const ConSys& x_minus_H79_con_sys);
 
-  static bool BHRZ03_evolving_points(Polyhedron& x,
-				     const Polyhedron& y,
-				     const ConSys& H79_con_sys);
+  bool BHRZ03_evolving_points(const Polyhedron& y, const Polyhedron& H79);
 
-  static bool BHRZ03_evolving_rays(Polyhedron& x,
-				   const Polyhedron& y,
-				   const ConSys& H79_con_sys);
+  bool BHRZ03_evolving_rays(const Polyhedron& y, const Polyhedron& H79);
 
   //! @name Exception throwers.
   //@{
