@@ -1318,10 +1318,10 @@ PPL::operator==(const Polyhedron& x, const Polyhedron& y) {
   switch (x.quick_equivalence_test(y)) {
   case Polyhedron::TVB_TRUE:
     return true;
-    break;
+
   case Polyhedron::TVB_FALSE:
     return false;
-    break;
+
   default:
     if (x.is_included(y))
       if (x.is_empty())
@@ -1330,7 +1330,6 @@ PPL::operator==(const Polyhedron& x, const Polyhedron& y) {
 	return y.is_included(x);
     else
       return false;
-    break;
   }
 }
 
