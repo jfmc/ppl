@@ -78,7 +78,7 @@ PPL::operator <<(std::ostream& s, const Constraint& c) {
 	  s << " + ";
 	else {
 	  s << " - ";
-	  cv.negate();
+	  negate(cv);
 	}
       }
       else

@@ -14,15 +14,12 @@ ac_cv_have_gmp,
 [AC_LANG_SAVE
  AC_LANG_CPLUSPLUS
  AC_TRY_RUN([
-#include <gmp.h>
-#include <cstddef>
-#include <cstdlib>
+#include <gmpxx.h>
 
 using namespace std;
 
 int main() {
-  mpz_t pie;
-  mpz_init_set_str(pie, "3141592653589793238462643383279502884", 10);
+  mpz_class pie = "3141592653589793238462643383279502884";
   exit(0);
 }
 ],

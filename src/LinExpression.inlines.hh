@@ -24,6 +24,7 @@ site: http://www.cs.unipr.it/ppl/ . */
 
 #include "Variable.defs.hh"
 #include <cassert>
+#include "Integer.defs.hh"
 
 namespace Parma_Polyhedra_Library {
 
@@ -70,7 +71,7 @@ LinExpression::space_dimension() const {
 
 inline const LinExpression&
 LinExpression::zero() {
-  static LinExpression z = LinExpression(Integer::zero());
+  static LinExpression z = LinExpression(Integer_zero());
   return z;
 }
 

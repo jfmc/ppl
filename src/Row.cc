@@ -23,8 +23,8 @@ site: http://www.cs.unipr.it/ppl/ . */
 
 #include <config.h>
 
+#include "Integer.defs.hh"
 #include "Row.defs.hh"
-
 #include "globals.hh"
 #include "maxmin.hh"
 #include <iostream>
@@ -125,12 +125,12 @@ PPL::Row::normalize() {
   for (size_t i = sz; i-- > 0; ) {
     const Integer& x_i = x[i];
     if (x_i != 0)
-      tmp_Integer(1).gcd_assign(x_i);
+      gcd_assign(tmp_Integer(1), x_i);
   }
   if (tmp_Integer(1) > 1)
     // Divide the coefficients by the GCD.
     for (size_t i = sz; i-- > 0; )
-      x[i].exact_div_assign(tmp_Integer(1));
+      exact_div_assign(x[i], tmp_Integer(1));
 }
 
 
@@ -157,7 +157,7 @@ PPL::Row::strong_normalize() {
       // positive, we negate the entire row.
       if (x[first_non_zero] > 0)
 	for (size_t j = first_non_zero; j < sz; ++j)
-	  x[j].negate();
+	  negate(x[j]);
   }
 }
 
@@ -240,7 +240,7 @@ PPL::operator *(const Row& x, const Row& y) {
   Integer result = 0;
   for (size_t i = x.size(); i-- > 0; ) {
     // The following lines optimize the computation of result += x[i] * y[i].
-    tmp_Integer(1).mul_assign(x[i], y[i]);
+    tmp_Integer(1) = x[i] * y[i];
     result += tmp_Integer(1);
   }
   return result;
@@ -263,15 +263,15 @@ PPL::Row::linear_combine(const Row& y, size_t k) {
   // Let g be the GCD between `x[k]' and `y[k]'.
   // For each i the following computes
   //   x[i] = x[i]*y[k]/g - y[i]*x[k]/g.
-  tmp_Integer(1).gcd_assign(x[k], y[k]);
-  tmp_Integer(2).exact_div_assign(x[k], tmp_Integer(1));
-  tmp_Integer(3).exact_div_assign(y[k], tmp_Integer(1));
+  gcd_assign(tmp_Integer(1), x[k], y[k]);
+  exact_div_assign(tmp_Integer(2), x[k], tmp_Integer(1));
+  exact_div_assign(tmp_Integer(3), y[k], tmp_Integer(1));
 
   for (size_t i = size(); i-- > 0; )
     if (i != k) {
-      tmp_Integer(4).mul_assign(x[i], tmp_Integer(3));
-      tmp_Integer(5).mul_assign(y[i], tmp_Integer(2));
-      x[i].sub_assign(tmp_Integer(4), tmp_Integer(5));
+      tmp_Integer(4) = x[i] * tmp_Integer(3);
+      tmp_Integer(5) = y[i] * tmp_Integer(2);
+      x[i] = tmp_Integer(4) - tmp_Integer(5);
     }
   x[k] = 0;
 

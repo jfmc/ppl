@@ -54,6 +54,9 @@ int
 main() {
   set_handlers();
 
+  // Set up a random numbers' generator.
+  gmp_randclass rg(gmp_randinit_default);
+
   Variable x(0);
   Variable y(1);
   Variable z(2);
@@ -68,7 +71,9 @@ main() {
 
   COUNT(ph);
   for (int n = 1; n <= 200; ++n) {
-    ph.insert(vertex(random(maxc)*x + random(maxc)*y + random(maxc)*z));
+    ph.insert(vertex(rg.get_z_range(maxc)*x
+		     + rg.get_z_range(maxc)*y
+		     + rg.get_z_range(maxc)*z));
     COUNT(ph);
   }
 

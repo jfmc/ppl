@@ -287,7 +287,9 @@ static SP_term_ref
 integer_term(const PPL::Integer& n) {
   SP_term_ref t = SP_new_term_ref();
   // FIXME: handle the case where n does not fit into a signed long.
-  SP_put_integer(t, to_slong(n));
+  if (!n.fits_slong_p())
+    abort();
+  SP_put_integer(t, n.get_si());
   return t;
 }
 

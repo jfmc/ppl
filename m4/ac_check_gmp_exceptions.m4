@@ -14,7 +14,7 @@ ac_cv_gmp_supports_exceptions,
 [AC_LANG_SAVE
  AC_LANG_CPLUSPLUS
  AC_TRY_RUN([
-#include <gmp.h>
+#include <gmpxx.h>
 #include <new>
 #include <cstddef>
 #include <cstdlib>
@@ -38,8 +38,7 @@ x_free(void*, size_t) {
 int main() {
   mp_set_memory_functions(x_malloc, x_realloc, x_free);
   try {
-    mpz_t pie;
-    mpz_init_set_str(pie, "3141592653589793238462643383279502884", 10);
+    mpz_class pie = "3141592653589793238462643383279502884";
   }
   catch (bad_alloc) {
     exit(0);

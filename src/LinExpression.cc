@@ -73,7 +73,7 @@ LinExpression
 operator -(const LinExpression& e) {
   LinExpression r(e);
   for (size_t i = e.size(); i-- > 0; )
-    r[i].negate();
+    negate(r[i]);
   return r;
 }
 
@@ -115,7 +115,7 @@ LinExpression
 operator -(const Integer& n, const LinExpression& e) {
   LinExpression r(e);
   for (size_t i = e.size(); i-- > 0; )
-    r[i].negate();
+    negate(r[i]);
   r[0] += n;
 
   return r;

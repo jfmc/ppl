@@ -25,7 +25,7 @@ site: http://www.cs.unipr.it/ppl/ . */
 #define _Row_defs_hh 1
 
 #include "Row.types.hh"
-#include "Integer.defs.hh"
+#include "Integer.types.hh"
 #include <cstddef>
 #include <iosfwd>
 

@@ -15,7 +15,7 @@ dnl Minimum autoconf version required.
 AC_PREREQ(2.52g)
 
 dnl Every other copy of the package version number gets its value from here
-AM_INIT_AUTOMAKE(ppl, 0.3pre2)
+AM_INIT_AUTOMAKE(ppl, 0.3pre3)
 AC_SUBST(VERSION)
 
 AM_CONFIG_HEADER(config.h)
@@ -81,8 +81,8 @@ AC_ARG_WITH(gmp-includes,
 AC_ARG_WITH(gmp-dir,
             [  --with-gmp-dir=DIR      GMP library files are in DIR],
             gmp_dir=${with_gmp_dir}
-            gmp_library_option="${gmp_dir}/libgmp.a",
-            gmp_library_option="-lgmp")
+            gmp_library_option="${gmp_dir}/libgmpxx.a ${gmp_dir}/libgmp.a ",
+            gmp_library_option="-lgmpxx -lgmp")
 
 
 ac_save_LIBS="$LIBS"
@@ -95,7 +95,9 @@ AC_CHECK_HAVE_GMP
 
 if test x"$have_gmp" = xno
 then
-  AC_MSG_ERROR([Cannot find GMP, the GNU Multi-Precision library])
+  AC_MSG_ERROR([Cannot find GMP version 4 or higher.
+GMP is the GNU Multi-Precision library:
+see http://www.swox.com/gmp/ for more information.])
 fi
 
 AC_CHECK_SIZEOF(mp_limb_t, 4, [#include <gmp.h>])
@@ -313,9 +315,10 @@ AC_OUTPUT(Makefile
 
 if test x"$gmp_supports_exceptions" = xno
 then
-  AC_MSG_WARN([*** CANNOT PROPAGATE EXCEPTIONS BACK FROM GMP:])
-  AC_MSG_WARN([*** MEMORY EXHAUSTION MAY RESULT IN ABRUPT TERMINATION.])
-  AC_MSG_WARN([*** If you are using g++, make sure you use version 3.0.1])
-  AC_MSG_WARN([*** or later and use a version of GMP compiled with])
-  AC_MSG_WARN([*** the option -fexceptions.])
+  AC_MSG_WARN([CANNOT PROPAGATE EXCEPTIONS BACK FROM GMP:
+*** MEMORY EXHAUSTION MAY RESULT IN ABRUPT TERMINATION.
+*** If you are using g++, make sure you use version 4.0.1 or higher
+*** and use a version of GMP compiled with the option -fexceptions.
+*** To build such a version, you can configure GMP as follows:
+*** CPPFLAGS=-fexceptions ./configure --enable-cxx --prefix=/usr/local])
 fi

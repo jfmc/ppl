@@ -669,7 +669,7 @@ PPL::Matrix::gauss() {
 	// simplify future computing (back-substitution).
 	if (rows[rank][j] < 0) {
 	  for (size_t k = nb_columns; k-- > 0; )
-	    rows[rank][k].negate();
+	    negate(rows[rank][k]);
 	  // Matrix has changed.
 	  changed = true;
 	}
