@@ -242,10 +242,15 @@ then
   AC_CHECK_HEADERS([sys/time.h])
 
   # Checks for library fuctions.
+  # The following invocations of AC_LANG_PUSH(C) and AC_LANG_POP(C)
+  # are to work around a bug in AC_CHECK_FUNCS.  For more information,
+  # http://www.cs.unipr.it/pipermail/ppl-devel/2002-November/002929.html
+  AC_LANG_PUSH(C)
   AC_CHECK_FUNCS([setitimer],
                  [],
                  AC_MSG_ERROR([CANNOT BUILD THE WATCHDOG LIBRARY
 *** THE SYSTEM DOES NOT PROVIDE THE SETITIMER FUNCTION.]))
+  AC_LANG_POP(C)
 fi
 
 # Libtool.
