@@ -24,6 +24,8 @@ site: http://www.cs.unipr.it/ppl/ . */
 #include <config.h>
 #include "SatMatrix.defs.hh"
 #include "Polyhedron.defs.hh"
+#include <sstream>
+#include <stdexcept>
 
 namespace PPL = Parma_Polyhedra_Library;
 
@@ -86,7 +88,7 @@ PPL::Polyhedron::minimize(bool con_to_ray,
   dest.resize_no_copy(dest_num_rows, dest_num_rows);
 
   // Initializing it to the identity matrix.
-  for(size_t i = dest_num_rows; i-- > 0; ) {
+  for (size_t i = dest_num_rows; i-- > 0; ) {
     for (size_t j = dest_num_rows; j-- > 0; )
       dest[i][j] = 0;
     dest[i][i] = 1;
@@ -143,7 +145,7 @@ PPL::Polyhedron::minimize(bool con_to_ray,
       // the constraint system `dest' lacks the positivity constraint
       // and no linear combination of the constraints in `dest'
       // can reintroduce the positivity constraint.
-      abort();
+      throw std::invalid_argument("PPL internal error");
   else {
     // A vertex has been found: the polyhedron is not empty.
     // Now invoking simplify() to remove all the redundant constraints
@@ -293,7 +295,7 @@ PPL::Polyhedron::add_and_minimize(bool con_to_ray,
     if (con_to_ray)
       return empty_or_illegal;
     else
-      abort();
+      throw std::invalid_argument("PPL internal error");
   }
   else {
     // Since the function conversion() returns a `sat_c' we have to

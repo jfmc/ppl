@@ -32,7 +32,7 @@ using namespace Parma_Polyhedra_Library;
 #define NOISY 0
 
 int
-main() {
+main() try {
   Variable x(0);
   Variable y(1);
 
@@ -55,4 +55,9 @@ main() {
   if (!ph.OK())
     exit(1);
   return 0;
+}
+
+catch (std::invalid_argument& e) {
+  cout << "invalid_argument: " << e.what() << endl;
+  exit(1);
 }
