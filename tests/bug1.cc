@@ -17,6 +17,8 @@ main() {
 
   Polyhedron x;
   Polyhedron y;
+  assert(x.OK());
+  assert(y.OK());
 
   s >> x;
   s >> y;
