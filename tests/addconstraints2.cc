@@ -31,7 +31,7 @@ using namespace Parma_Polyhedra_Library;
 #define NOISY 0
 
 int
-main() {
+main() try {
   set_handlers();
 
   Variable x(0);
@@ -73,4 +73,8 @@ main() {
   int retval = (ph == copy_ph) ? 0 : 1;
 
   return retval;
+}
+catch (std::exception& e) {
+  cout << e.what() << endl;
+  exit(1);
 }
