@@ -103,6 +103,10 @@ unsigned int PPL_POLY_CON_RELATION_SATURATES;
 
 unsigned int PPL_POLY_GEN_RELATION_SUBSUMES;
 
+unsigned int PPL_COMPLEXITY_CLASS_POLYNOMIAL;
+unsigned int PPL_COMPLEXITY_CLASS_SIMPLEX;
+unsigned int PPL_COMPLEXITY_CLASS_ANY;
+
 static Init* init_object_ptr = 0;
 
 int
@@ -127,6 +131,11 @@ ppl_initialize(void) try {
 
   PPL_POLY_GEN_RELATION_SUBSUMES
     = Poly_Gen_Relation::subsumes().get_flags();
+
+  PPL_COMPLEXITY_CLASS_POLYNOMIAL = POLYNOMIAL;
+  PPL_COMPLEXITY_CLASS_SIMPLEX = SIMPLEX;
+  PPL_COMPLEXITY_CLASS_ANY = ANY;
+
   return 0;
 }
 CATCH_ALL
@@ -254,12 +263,13 @@ CATCH_ALL
 
 int
 ppl_assign_LinExpression_from_LinExpression(ppl_LinExpression_t dst,
-					    ppl_const_LinExpression_t src) try {
+					    ppl_const_LinExpression_t src)
+try {
   const LinExpression& ssrc = *to_const(src);
   LinExpression& ddst = *to_nonconst(dst);
   ddst = ssrc;
   return 0;
-  }
+}
 CATCH_ALL
 
 int
@@ -1447,6 +1457,7 @@ public:
 int
 ppl_Polyhedron_shrink_bounding_box
 (ppl_const_Polyhedron_t ph,
+ unsigned int complexity,
  void (*set_empty)(void),
  void (*raise_lower_bound)(ppl_dimension_type k, int closed,
 			   ppl_const_Coefficient_t n,
@@ -1454,10 +1465,14 @@ ppl_Polyhedron_shrink_bounding_box
  void (*lower_upper_bound)(ppl_dimension_type k, int closed,
 			   ppl_const_Coefficient_t n,
 			   ppl_const_Coefficient_t d)) try {
+  if (complexity != POLYNOMIAL
+      && complexity != SIMPLEX
+      && complexity != ANY)
+    return PPL_ERROR_INVALID_ARGUMENT;
+
   const Polyhedron& pph = *to_const(ph);
   CShrinkBox csbox(set_empty, raise_lower_bound, lower_upper_bound);
-  pph.shrink_bounding_box(csbox);
-
+  pph.shrink_bounding_box(csbox, Complexity_Class(complexity));
   return 0;
 }
 CATCH_ALL

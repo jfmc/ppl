@@ -1369,8 +1369,29 @@ ppl_Polyhedron_affine_preimage __P((ppl_Polyhedron_t ph,
 				    ppl_const_Coefficient_t d));
 
 /*!
+  Code of the worst-case polynomial complexity class.
+*/
+extern unsigned int PPL_COMPLEXITY_CLASS_POLYNOMIAL;
+
+/*!
+  Code of the worst-case exponential but typically polynomial
+  complexity class.
+*/
+extern unsigned int PPL_COMPLEXITY_CLASS_SIMPLEX;
+
+/*!
+  Code of the universal complexity class.
+*/
+extern unsigned int PPL_COMPLEXITY_CLASS_ANY;
+
+/*!
   Use \p ph to shrink a generic, interval-based bounding box.
   The bounding box is abstractly provided by means of the parameters,
+
+  \param complexity
+  The code of the complexity class of the algorithm to be used.
+  Must be one of PPL_COMPLEXITY_CLASS_POLYNOMIAL,
+  PPL_COMPLEXITY_CLASS_SIMPLEX, or PPL_COMPLEXITY_CLASS_ANY.
 
   \param ph
   The polyhedron that is used to shrink the bounding box.
@@ -1402,6 +1423,7 @@ ppl_Polyhedron_affine_preimage __P((ppl_Polyhedron_t ph,
 int
 ppl_Polyhedron_shrink_bounding_box
 __P((ppl_const_Polyhedron_t ph,
+     unsigned int complexity,
      void (*set_empty)(void),
      void (*raise_lower_bound)(ppl_dimension_type k, int closed,
 			       ppl_const_Coefficient_t n,
