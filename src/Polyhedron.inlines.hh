@@ -695,9 +695,10 @@ Polyhedron::map_dimensions(const PartialFunction& pfunc) {
     // columns: they remain valid, if they were so.
     if (constraints_are_up_to_date())
       con_sys.permute_columns(cycles, n);
-    if (generators_are_up_to_date()) {
+
+    if (generators_are_up_to_date())
       gen_sys.permute_columns(cycles, n);
-    }
+
     assert(OK());
     return;
   }
