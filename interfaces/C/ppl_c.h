@@ -859,6 +859,36 @@ ppl_new_NNC_Polyhedron_from_GenSys __P((ppl_Polyhedron_t* pph,
 					ppl_GenSys_t gs));
 
 /*!
+  FIXME: adapt the comment of the C++ counterpart.
+*/
+int
+ppl_new_C_Polyhedron_from_bounding_box
+__P((ppl_Polyhedron_t* pph,
+     unsigned int (*space_dimension)(void),
+     int (*is_empty)(unsigned int k),
+     int (*get_lower_bound)(unsigned int k, int closed,
+			    ppl_Coefficient_t n,
+			    ppl_Coefficient_t d),
+     int (*get_upper_bound)(unsigned int k, int closed,
+			    ppl_Coefficient_t n,
+			    ppl_Coefficient_t d)));
+
+/*!
+  FIXME: adapt the comment of the C++ counterpart.
+*/
+int
+ppl_new_NNC_Polyhedron_from_bounding_box
+__P((ppl_Polyhedron_t* pph,
+     unsigned int (*space_dimension)(void),
+     int (*is_empty)(unsigned int k),
+     int (*get_lower_bound)(unsigned int k, int closed,
+			    ppl_Coefficient_t n,
+			    ppl_Coefficient_t d),
+     int (*get_upper_bound)(unsigned int k, int closed,
+			    ppl_Coefficient_t n,
+			    ppl_Coefficient_t d)));
+
+/*!
   Invalidates the handle \p ph: this makes sure the corresponding
   resources will eventually be released.
 */
@@ -1141,6 +1171,11 @@ ppl_Polyhedron_affine_preimage __P((ppl_Polyhedron_t ph,
   \param ph
   The polyhedron that is used to shrink the bounding box.
 
+  \param set_empty
+  a pointer to a void function with arguments <CODE>(unsigned int k)</CODE>
+  that intersects the interval corresponding to the <CODE>k</CODE>-th
+  dimension with \f$\emptyset\f$.
+
   \param raise_lower_bound
   a pointer to a void function with arguments
   <CODE>(unsigned int k, int closed,
@@ -1148,6 +1183,9 @@ ppl_Polyhedron_affine_preimage __P((ppl_Polyhedron_t ph,
   that intersects the interval corresponding to the <CODE>k</CODE>-th
   dimension with \f$[n/d, +\infty)\f$ if <CODE>closed</CODE> is non-zero,
   with \f$(n/d, +\infty)\f$ if <CODE>closed</CODE> is zero.
+  The fraction \f$n/d\f$ is in canonical form, that is, \f$n\f$
+  and \f$d\f$ have no common factors and \f$d\f$ is positive, \f$0/1\f$
+  being the unique representation for zero.
 
   \param lower_upper_bound
   a pointer to a void function with argument
@@ -1156,22 +1194,18 @@ ppl_Polyhedron_affine_preimage __P((ppl_Polyhedron_t ph,
   that intersects the interval corresponding to the <CODE>k</CODE>-th
   dimension with \f$(-\infty, n/d]\f$ if <CODE>closed</CODE> is non-zero,
   with \f$(-\infty, n/d)\f$ if <CODE>closed</CODE> is zero.
-
-  \param set_empty
-  a pointer to a void function with arguments <CODE>(unsigned int k)</CODE>
-  that intersects the interval corresponding to the <CODE>k</CODE>-th
-  dimension with \f$\emptyset\f$.
+  The fraction \f$n/d\f$ is in canonical form.
 */
 int
 ppl_Polyhedron_shrink_bounding_box
 __P((ppl_const_Polyhedron_t ph,
+     void (*set_empty)(unsigned int k),
      void (*raise_lower_bound)(unsigned int k, int closed,
 			       ppl_const_Coefficient_t n,
 			       ppl_const_Coefficient_t d),
      void (*lower_upper_bound)(unsigned int k, int closed,
 			       ppl_const_Coefficient_t n,
-			       ppl_const_Coefficient_t d),
-     void (*set_empty)(unsigned int k)));
+			       ppl_const_Coefficient_t d)));
 
 /*!
   Individual bit saying that the polyhedron and the set of points
