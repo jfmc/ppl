@@ -47,20 +47,19 @@ The library is:
 Informally, a convex polyhedron is a set of points
 (in some \f$n\f$-dimensional vector space) that satisfies
 a finite number of linear inequalities.
-
 In the following sections we describe the polyhedra and
 the different representations and operations 
 supported by the PPL in more detail.
-Here most of the definitions and results are taken from:
+For more information about the definitions and results stated here see:
+- R. Bagnara, E. Ricci, E. Zaffanella and P. M. Hill - Possibly Not Closed
+  Convex Polyhedra and the Parma Polyhedra Library - Quaderno 286 -
+  Department of Mathematics, University of Parma, Italy, May 2002.
+- K. Fukuda - Polyhedral Computation FAQ - Swiss Federal Institute of
+  Technology, Lausanne and Zurich, Switzerland, October 2000.
 - G. L. Nemhauser and L. A. Wolsey - Integer and Combinatorial Optimization -
   Wiley Interscience Series in Discrete Mathematics and Optimization, 1988.
 - D. K. Wilde - A library for doing polyhedral operations - IRISA Publication
   interne n. 785, December 1993.
-- K. Fukuda - Polyhedral Computation FAQ - Swiss Federal Institute of
-  Technology, Lausanne and Zurich, Switzerland, October 2000.
-- R. Bagnara, E. Ricci, E. Zaffanella and P. M. Hill - Possibly Not Closed
-  Convex Polyhedra and the Parma Polyhedra Library - Quaderno 286 -
-  Department of Mathematics, University of Parma, Italy, May 2002.
 
 \section introduction An Introduction to Convex Polyhedra
 
@@ -161,25 +160,12 @@ if there exists a \f$\lambda \in \nonnegRset\f$ such that
   \cP
     \sseq
       \bigl\{\,
-        (x_0, \ldots, x_{n-1})^\transpose \in \Rset^n
+        \vect{x} \in \Rset^n
       \bigm|
         - \lambda \leq x_j \leq \lambda \text{ for } j = 0, \ldots, n-1
       \,\bigr\}.
 \f]
 A bounded polyhedron is also called a <EM>polytope</EM>.
-
-
-<B>Rational Polyhedra</B>
-
-An NNC polyhedron is called <EM>rational</EM>
-if it can be expressed as a constraint system where
-all the constraints have rational coefficients.
-
-The library only supports rational polyhedra.
-The restriction to rational numbers applies not only to polyhedra,
-but also to the other numeric arguments that may be required
-by the operators considered, such as the coefficients defining
-(rational) affine transformations and (rational) bounding boxes.
 
 
 \section representation Representations of Convex Polyhedra
@@ -265,9 +251,8 @@ Let \f$\cP \in \Pset_n\f$ be an NNC polyhedron. Then
   of the topological closure of \f$\cP\f$;
 - a vector \f$\vect{r} \in \Rset^n\f$, where \f$\vect{r} \neq \vect{0}\f$,
   is called a <EM>ray</EM> (or direction of infinity) of \f$\cP\f$
-  if \f$\cP \neq \emptyset\f$ and,
-  for all points \f$\vect{p} \in \cP\f$ and all \f$\lambda \in \nonnegRset\f$,
-  it holds \f$\vect{p} + \lambda \vect{r} \in \cP\f$;
+  if \f$\cP \neq \emptyset\f$ and \f$\vect{p} + \lambda \vect{r} \in \cP\f$,
+  for all points \f$\vect{p} \in \cP\f$ and all \f$\lambda \in \nonnegRset\f$;
 - a vector \f$\vect{l} \in \Rset^n\f$ is called a <EM>line</EM> of \f$\cP\f$
   if both \f$\vect{l}\f$ and \f$-\vect{l}\f$ are rays of \f$\cP\f$.
 
@@ -300,8 +285,6 @@ in the sense that
   \cP = \linearhull(L) + \conichull(R) + \NNChull(P, C),
 \f]
 where the symbol '\f$+\f$' denotes the Minkowski's sum.
-if the NNC polyhedron is rational, then it can be represented
-by a generator system where all the generators have rational coordinates.
 
 When \f$\cP \in \CPset_n\f$ is a closed polyhedron,
 then it can be represented by
@@ -433,6 +416,22 @@ While the space dimension of a constraint, a generator or a system thereof
 is automatically adjusted when needed, the space dimensions of polyhedra
 can only be changed by explicit calls to operators provided for that
 purpose.
+
+<B>Rational Polyhedra</B>
+
+An NNC polyhedron is called <EM>rational</EM>
+if it can be represented by a constraint system where
+all the constraints have rational coefficients.
+It has been shown that an NNC polyhedron is rational
+if and only if it can be represented by a generator system where
+all the generators have rational coefficients.
+
+The library only supports rational polyhedra.
+The restriction to rational numbers applies not only to polyhedra,
+but also to the other numeric arguments that may be required
+by the operators considered, such as the coefficients defining
+(rational) affine transformations and (rational) bounding boxes.
+
 
 \section operations Operations on Convex Polyhedra
 
