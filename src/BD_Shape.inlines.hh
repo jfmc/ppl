@@ -1319,23 +1319,21 @@ BD_Shape<T>::add_space_dimensions_and_embed(dimension_type m) {
   assert(OK());
 }
 
-
 template <typename T>
 inline void
 BD_Shape<T>::add_space_dimensions_and_project(dimension_type m) {
-  // Adding no dimensions to any system of bounded
-  // differences is no-op.
+  // Adding no dimensions to any system of bounded differences is
+  // a no-op.
   if (m == 0)
     return;
 
-  dimension_type k = space_dimension();
-  dimension_type h = dbm.num_rows();
+  dimension_type space_dim = space_dimension();
 
   // If `*this' was zero-dimensional, then we simply add `m' zero-rows
   // and columns. If `*this' was also universal, then we fill diagonal
   // with plus_infinity and set the flag (a non zero-dim universe
   // polyhedron is closed).
-  if (k == 0) {
+  if (space_dim == 0) {
     dbm.grow(m + 1);
     if (!marked_empty()) {
       for (dimension_type i = 0; i <= m; ++i)
@@ -1351,20 +1349,21 @@ BD_Shape<T>::add_space_dimensions_and_project(dimension_type m) {
   // and rows in the matrix of constraints.
   // In the first row and column of the matrix we add `zero' from
   // the h-position to the end.
-  dbm.grow(h + m);
+  dimension_type new_space_dim = space_dim + m;
+  dbm.grow(new_space_dim + 1);
 
   // Fill top-right corner of the matrix with plus_infinity.
-  for (dimension_type i = 1; i < h; ++i){
+  for (dimension_type i = 1; i <= space_dim; ++i){
     DB_Row<T>& dbm_i = dbm[i];
-    for (dimension_type j = h; j < h + m; ++j)
+    for (dimension_type j = space_dim + 1; j <= new_space_dim; ++j)
       dbm_i[j] = PLUS_INFINITY;
   }
   // Bottom of the matrix and first row.
-  for (dimension_type i = h; i < h + m; ++i) {
+  for (dimension_type i = space_dim + 1; i <= new_space_dim; ++i) {
     DB_Row<T>& dbm_i = dbm[i];
     dbm_i[0] = 0;
     dbm[0][i] = 0;
-    for (dimension_type j = 1; j < h + m; ++j)
+    for (dimension_type j = 1; j <= new_space_dim; ++j)
       dbm_i[j] = PLUS_INFINITY;
   }
 
