@@ -1,4 +1,4 @@
-/* Testing C_Polyhedron::limited_widening_CC92_assign().
+/* Testing C_Polyhedron::limited_H79_widening_assign().
    Copyright (C) 2001, 2002 Roberto Bagnara <bagnara@cs.unipr.it>
 
 This file is part of the Parma Polyhedra Library (PPL).
@@ -39,7 +39,8 @@ main() {
   ConSys cs1;
   cs1.insert(x >= 0);
   cs1.insert(x <= 1);
-  cs1.insert(y == 0);
+  cs1.insert(y >= 0);
+  cs1.insert(x - y >= 0);
 
   C_Polyhedron ph1(cs1);
 
@@ -48,9 +49,10 @@ main() {
 #endif
 
   ConSys cs2;
+  cs2.insert(x >= 0);
   cs2.insert(x <= 2);
   cs2.insert(y >= 0);
-  cs2.insert(y <= x);
+  cs2.insert(x - y >= 0);
 
   C_Polyhedron ph2(cs2);
 
@@ -58,21 +60,28 @@ main() {
   print_constraints(ph2, "*** ph2 ****");
 #endif
 
-  // Note: this is inconsistent with both `ph1' and `ph2'.
-  ConSys cs(y <= -1);
+  ConSys cs;
+  cs.insert(x >= 0);
+  cs.insert(y >= 0);
+  cs.insert(x <= 5);
+  cs.insert(y <= 5);
 
 #if NOISY
   print_constraints(cs, "*** cs ****");
 #endif
 
   C_Polyhedron computed_result = ph2;
-  computed_result.limited_widening_CC92_assign(ph1, cs);
+  computed_result.limited_H79_widening_assign(ph1, cs);
+
+  C_Polyhedron known_result(2);
+  known_result.add_constraint(x - y >= 0);
+  known_result.add_constraint(y >= 0);
+  known_result.add_constraint(x <= 5);
 
 #if NOISY
   print_constraints(computed_result,
-		    "*** After limited_widening_CC92_assign ****");
+		    "*** After limited_H79_widening_assign ****");
 #endif
 
-  // The result must be empty.
-  return computed_result.check_empty() ? 0 : 1;
+  return (computed_result == known_result) ? 0 : 1;
 }

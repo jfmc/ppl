@@ -54,9 +54,10 @@ TESTS = $(WATCHDOG_TESTS) \
         empty1 \
 	exceptions1 exceptions2 \
 	generators1 generators2 \
+	h79widening1 h79widening2 h79widening3 \
 	inclusion1 \
         inters1 inters2 inters3 inters4 inters5 inters6 inters7 \
-	limitedwideningcc921 limitedwideningcc922\
+	limitedh79widening1 limitedh79widening2\
 	memory1 \
 	onepoint \
         permute \
@@ -69,8 +70,7 @@ TESTS = $(WATCHDOG_TESTS) \
 	removedim7 \
 	smm1 \
 	timeelapse1 timeelapse2 timeelapse3 timeelapse4 timeelapse5 \
-	universe1 universe2 universe3 universe4 universe5 universe6 \
-	wideningcc921 wideningcc922 wideningcc923
+	universe1 universe2 universe3 universe4 universe5 universe6
 
 NNCinclusion1_SOURCES = NNCinclusion1.cc
 
@@ -135,6 +135,10 @@ exceptions2_SOURCES = exceptions2.cc
 generators1_SOURCES = generators1.cc
 generators2_SOURCES = generators2.cc
 
+h79widening1_SOURCES = h79widening1.cc
+h79widening2_SOURCES = h79widening2.cc
+h79widening3_SOURCES = h79widening3.cc
+
 inclusion1_SOURCES = inclusion1.cc
 
 inters1_SOURCES = inters1.cc
@@ -145,8 +149,8 @@ inters5_SOURCES = inters5.cc
 inters6_SOURCES = inters6.cc
 inters7_SOURCES = inters7.cc
 
-limitedwideningcc921_SOURCES = limitedwideningcc921.cc
-limitedwideningcc922_SOURCES = limitedwideningcc922.cc
+limitedh79widening1_SOURCES = limitedh79widening1.cc
+limitedh79widening2_SOURCES = limitedh79widening2.cc
 
 memory1_SOURCES = memory1.cc
 
@@ -195,10 +199,6 @@ universe3_SOURCES = universe3.cc
 universe4_SOURCES = universe4.cc
 universe5_SOURCES = universe5.cc
 universe6_SOURCES = universe6.cc
-
-wideningcc921_SOURCES = wideningcc921.cc
-wideningcc922_SOURCES = wideningcc922.cc
-wideningcc923_SOURCES = wideningcc923.cc
 
 watchdog1_SRCS = watchdog1.cc timings.cc timings.hh
 

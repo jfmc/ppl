@@ -122,9 +122,9 @@ fix_point(C_Polyhedron& start, C_Polyhedron& induct, C_Polyhedron& finish,
 #if NOISY
     print_constraints(current, "*** after poly_hull_assign_and_minimize***");
 #endif
-    current.widening_CC92_assign(previous);
+    current.H79_widening_assign(previous);
 #if NOISY
-    print_constraints(current, "*** after widening_CC92_assign ***");
+    print_constraints(current, "*** after H79_widening_assign ***");
 #endif
 
   } while (current != previous);

@@ -1,4 +1,4 @@
-/* Test C_Polyhedron::widening_CC92_assign().
+/* Test C_Polyhedron::H79_widening_assign().
    Copyright (C) 2001, 2002 Roberto Bagnara <bagnara@cs.unipr.it>
 
 This file is part of the Parma Polyhedra Library (PPL).
@@ -51,10 +51,10 @@ main() {
   print_constraints(ph2, "*** ph2 ***");
 #endif
 
-  ph1.widening_CC92_assign(ph2);
+  ph1.H79_widening_assign(ph2);
 
 #if NOISY
-  print_constraints(ph1, "*** After widening_CC92_assign ***");
+  print_constraints(ph1, "*** After H79_widening_assign ***");
 #endif
 
   return 0;

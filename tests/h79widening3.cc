@@ -1,4 +1,4 @@
-/* Testing C_Polyhedron::limited_widening_CC92_assign().
+/* Test C_Polyhedron::H79_widening_assign().
    Copyright (C) 2001, 2002 Roberto Bagnara <bagnara@cs.unipr.it>
 
 This file is part of the Parma Polyhedra Library (PPL).
@@ -24,7 +24,6 @@ site: http://www.cs.unipr.it/ppl/ . */
 #include "ppl_install.hh"
 #include "print.hh"
 #include "ehandlers.hh"
-#include <iostream>
 
 using namespace std;
 using namespace Parma_Polyhedra_Library;
@@ -33,55 +32,34 @@ using namespace Parma_Polyhedra_Library;
 
 int
 main() {
-  Variable x(0);
-  Variable y(1);
+  set_handlers();
 
-  ConSys cs1;
-  cs1.insert(x >= 0);
-  cs1.insert(x <= 1);
-  cs1.insert(y >= 0);
-  cs1.insert(x - y >= 0);
+  // This is the example of Figure 3 in [BagnaraRZH02TR].
+  Variable A(0);
 
-  C_Polyhedron ph1(cs1);
+  NNC_Polyhedron ph1(1);
+  ph1.add_constraint(A > 0);
+  ph1.add_constraint(A < 2);
 
-#if NOISY
-  print_constraints(ph1, "*** ph1 ****");
-#endif
+  NNC_Polyhedron ph4(1);
+  ph4.add_constraint(4*A >= 1);
+  ph4.add_constraint(4*A <= 3);
 
-  ConSys cs2;
-  cs2.insert(x >= 0);
-  cs2.insert(x <= 2);
-  cs2.insert(y >= 0);
-  cs2.insert(x - y >= 0);
-
-  C_Polyhedron ph2(cs2);
+  NNC_Polyhedron ph = ph4;
+  ph.intersection_assign_and_minimize(ph1);
+  // At this point, ph and ph4 are two different representations
+  // of the same NNC polyhedron.
 
 #if NOISY
-  print_constraints(ph2, "*** ph2 ****");
+  print_constraints(ph4, "*** ph4 ***");
+  print_constraints(ph, "*** ph ***");
 #endif
 
-  ConSys cs;
-  cs.insert(x >= 0);
-  cs.insert(y >= 0);
-  cs.insert(x <= 5);
-  cs.insert(y <= 5);
+  ph.H79_widening_assign(ph4);
 
 #if NOISY
-  print_constraints(cs, "*** cs ****");
+  print_constraints(ph, "*** After H79_widening_assign ***");
 #endif
 
-  C_Polyhedron computed_result = ph2;
-  computed_result.limited_widening_CC92_assign(ph1, cs);
-
-  C_Polyhedron known_result(2);
-  known_result.add_constraint(x - y >= 0);
-  known_result.add_constraint(y >= 0);
-  known_result.add_constraint(x <= 5);
-
-#if NOISY
-  print_constraints(computed_result,
-		    "*** After limited_widening_CC92_assign ****");
-#endif
-
-  return (computed_result == known_result) ? 0 : 1;
+  return 0;
 }

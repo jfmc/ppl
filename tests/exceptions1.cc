@@ -656,10 +656,10 @@ error23() {
 
   try {
     // This is an invalid use of the function
-    // C_Polyhedron::widening_CC92_assign(ph2): it is illegal to apply
+    // C_Polyhedron::H79_widening_assign(ph2): it is illegal to apply
     // this function to two polyhedra that are not dimensional
     // compatible.
-    ph2.widening_CC92_assign(ph1);
+    ph2.H79_widening_assign(ph1);
   }
   catch (invalid_argument& e) {
 #if NOISY
@@ -685,10 +685,10 @@ error24() {
 
   try {
     // This is an invalid use of the function
-    // C_Polyhedron::limited_widening_CC92_assign(ph2, cs): it is
+    // C_Polyhedron::limited_H79_widening_assign(ph2, cs): it is
     // illegal to apply this function to two polyhedra that are not
     // dimensional compatible.
-    ph2.limited_widening_CC92_assign(ph1, cs);
+    ph2.limited_H79_widening_assign(ph1, cs);
   }
   catch (invalid_argument& e) {
 #if NOISY
@@ -723,10 +723,10 @@ error25() {
 
   try {
     // This is an invalid use of the function
-    // C_Polyhedron::limited_widening_CC92_assign(ph, cs): it is
+    // C_Polyhedron::limited_H79_widening_assign(ph, cs): it is
     // illegal to apply this function to a system of constraints that
     // is not dimensional compatible with the two polyhedra.
-    ph2.limited_widening_CC92_assign(ph1, cs);
+    ph2.limited_H79_widening_assign(ph1, cs);
   }
   catch (invalid_argument& e) {
 #if NOISY

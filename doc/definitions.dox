@@ -547,19 +547,22 @@ does not change \f$\cP\f$.
 
 The library provides widening operators for the domain of
 NNC polyhedra.
-These operators use a widening, we call <EM>CC92-widening</EM>,
-which is based on that described in P. Cousot and R. Cousot,
-Comparing the Galois Connection and Widening/Narrowing Approaches to
-Abstract Interpretation in 
-<EM>Proceedings of the 4th International Symposium
-on Programming Language Implementation and Logic Programming</EM>,
-LNCS 631, pp.269--295, 1992. 
+These operators use a widening, we call <EM>H79-widening</EM>,
+which is based on that introduced in 
+N. Halbwachs,
+<EM>Détermination automatique de relations linéaires vérifiées
+par les variables d'un programme</EM>,
+Thèse de 3ème cicle d'informatique,
+Université scientifique et médicale de Grenoble, Grenoble, France, March 1979.
+This widening is also described in
+N. Halbwachs, Y.-E. Proy, and P. Roumanoff,
+Verification of real-time systems using linear relation analysis,
+<EM>Formal Methods in System Design</EM>, 11(2):157-185, 1997.
 
-There are a few differences between the CC92-widening
+There are a few differences between the H79-widening
 and the widenings described in the cited paper.
-In particular, the CC92-widening of an NNC polyhedron \f$\cP\f$
+In particular, the H79-widening of an NNC polyhedron \f$\cP\f$
    using the NNC polyhedron \f$\cP'\f$:
-
  - allows for equalities in \f$\cP\f$ and \f$\cP'\f$
    (the original definition is restricted to inequalities);
  - does not require \f$\cP\f$ and \f$\cP'\f$ to be closed;

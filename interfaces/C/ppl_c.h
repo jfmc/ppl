@@ -1084,15 +1084,15 @@ __P((ppl_Polyhedron_t x, ppl_const_Polyhedron_t y));
 
 /*!
   If the polyhedron \p y is contained in (or equal to) the polyhedron
-  \p x, assigns to \p x the CC92-widening of \p x and \p y.
+  \p x, assigns to \p x the H79-widening of \p x and \p y.
 */
 int
-ppl_Polyhedron_widening_CC92_assign __P((ppl_Polyhedron_t x,
-					 ppl_const_Polyhedron_t y));
+ppl_Polyhedron_H79_widening_assign __P((ppl_Polyhedron_t x,
+					ppl_const_Polyhedron_t y));
 
 /*!
   If the polyhedron \p y is contained in (or equal to) the polyhedron
-  \p x, assigns to \p x the CC92-widening of \p x and \p y intersected with
+  \p x, assigns to \p x the H79-widening of \p x and \p y intersected with
   the constraint system \p cs.
 
   \warning
@@ -1100,9 +1100,9 @@ ppl_Polyhedron_widening_CC92_assign __P((ppl_Polyhedron_t x,
   upon return, no assumption can be made on its value.
 */
 int
-ppl_Polyhedron_limited_widening_CC92_assign __P((ppl_Polyhedron_t x,
-						 ppl_const_Polyhedron_t y,
-						 ppl_ConSys_t cs));
+ppl_Polyhedron_limited_H79_widening_assign __P((ppl_Polyhedron_t x,
+						ppl_const_Polyhedron_t y,
+						ppl_ConSys_t cs));
 
 /*!
   Writes a const handle to the constraint system defining the

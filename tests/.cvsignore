@@ -59,6 +59,8 @@ exceptions1
 exceptions2
 generators1
 generators2
+h79widening1
+h79widening2
 inclusion1
 inters1
 inters2
@@ -67,8 +69,8 @@ inters4
 inters5
 inters6
 inters7
-limitedwideningcc921
-limitedwideningcc922
+limitedh79widening1
+limitedh79widening2
 memory1
 onepoint
 permute
@@ -108,5 +110,3 @@ universe4
 universe5
 universe6
 watchdog1
-wideningcc921
-wideningcc922

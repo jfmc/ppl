@@ -546,7 +546,7 @@ public:
   Poly_Gen_Relation relation_with(const Generator& g) const;
 
   //! \brief
-  //! Computes a CC92-widening (as described in the Introduction)
+  //! Computes the H79-widening (as described in the Introduction)
   //! between \p *this and \p y and assigns the result to \p *this.
   /*!
     \param y           A polyhedron that <EM>must</EM>
@@ -555,11 +555,11 @@ public:
                                      are topology-incompatible
                                      or dimension-incompatible.
   */
-  void widening_CC92_assign(const Polyhedron& y);
+  void H79_widening_assign(const Polyhedron& y);
 
   //! \brief
-  //! Limits the CC92-widening between \p *this and \p y by \p cs
-  //! CC92 and assigns the result to \p *this.
+  //! Limits the H79-widening between \p *this and \p y by \p cs
+  //! and assigns the result to \p *this.
   /*!
     \param y                 A polyhedron that <EM>must</EM>
                              be contained in \p *this.
@@ -571,7 +571,7 @@ public:
                                      are topology-incompatible
                                      or dimension-incompatible.
   */
-  void limited_widening_CC92_assign(const Polyhedron& y, ConSys& cs);
+  void limited_H79_widening_assign(const Polyhedron& y, ConSys& cs);
 
   //! \brief
   //! Computes the time-elapse between \p *this and \p y and

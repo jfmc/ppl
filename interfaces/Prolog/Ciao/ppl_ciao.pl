@@ -39,8 +39,8 @@ site: http://www.cs.unipr.it/ppl/ . */
 	ppl_Polyhedron_poly_hull_assign_and_minimize/2,
 	ppl_Polyhedron_poly_difference_assign/2,
 	ppl_Polyhedron_poly_difference_assign_and_minimize/2,
-	ppl_Polyhedron_widening_CC92_assign/2,
-	ppl_Polyhedron_limited_widening_CC92_assign/3,
+	ppl_Polyhedron_H79_widening_assign/2,
+	ppl_Polyhedron_limited_H79_widening_assign/3,
         ppl_Polyhedron_toplogical_closure_assign/1,
 	ppl_Polyhedron_get_constraints/2,
 	ppl_Polyhedron_get_minimized_constraints/2,
@@ -154,11 +154,11 @@ site: http://www.cs.unipr.it/ppl/ . */
              :: any_term(Handle1) * any_term(Handle2)
               + foreign.
 
-:- true pred ppl_Polyhedron_widening_CC92_assign(in(Handle1), in(Handle2))
+:- true pred ppl_Polyhedron_H79_widening_assign(in(Handle1), in(Handle2))
              :: any_term(Handle1) * any_term(Handle2)
               + foreign.
 
-:- true pred ppl_Polyhedron_limited_widening_CC92_assign(in(Handle1),
+:- true pred ppl_Polyhedron_limited_H79_widening_assign(in(Handle1),
                                                          in(Handle2))
              :: any_term(Handle1) * any_term(Handle2)
               + foreign.
@@ -294,8 +294,8 @@ site: http://www.cs.unipr.it/ppl/ . */
 	ppl_Polyhedron_poly_hull_assign_and_minimize/2,
 	ppl_Polyhedron_poly_difference_assign/2,
 	ppl_Polyhedron_poly_difference_assign_and_minimize/2,
-	ppl_Polyhedron_widening_CC92_assign/2,
-	ppl_Polyhedron_limited_widening_CC92_assign/3,
+	ppl_Polyhedron_H79_widening_assign/2,
+	ppl_Polyhedron_limited_H79_widening_assign/3,
 	ppl_Polyhedron_get_constraints/2,
 	ppl_Polyhedron_get_minimized_constraints/2,
 	ppl_Polyhedron_get_generators/2,

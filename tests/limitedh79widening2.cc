@@ -1,4 +1,4 @@
-/* Test C_Polyhedron::widening_CC92_assign().
+/* Testing C_Polyhedron::limited_H79_widening_assign().
    Copyright (C) 2001, 2002 Roberto Bagnara <bagnara@cs.unipr.it>
 
 This file is part of the Parma Polyhedra Library (PPL).
@@ -24,6 +24,7 @@ site: http://www.cs.unipr.it/ppl/ . */
 #include "ppl_install.hh"
 #include "print.hh"
 #include "ehandlers.hh"
+#include <iostream>
 
 using namespace std;
 using namespace Parma_Polyhedra_Library;
@@ -32,34 +33,46 @@ using namespace Parma_Polyhedra_Library;
 
 int
 main() {
-  set_handlers();
+  Variable x(0);
+  Variable y(1);
 
-  // This is the example of Figure 3 in [BagnaraRZH02TR].
-  Variable A(0);
+  ConSys cs1;
+  cs1.insert(x >= 0);
+  cs1.insert(x <= 1);
+  cs1.insert(y == 0);
 
-  NNC_Polyhedron ph1(1);
-  ph1.add_constraint(A > 0);
-  ph1.add_constraint(A < 2);
-
-  NNC_Polyhedron ph4(1);
-  ph4.add_constraint(4*A >= 1);
-  ph4.add_constraint(4*A <= 3);
-
-  NNC_Polyhedron ph = ph4;
-  ph.intersection_assign_and_minimize(ph1);
-  // At this point, ph and ph4 are two different representations
-  // of the same NNC polyhedron.
+  C_Polyhedron ph1(cs1);
 
 #if NOISY
-  print_constraints(ph4, "*** ph4 ***");
-  print_constraints(ph, "*** ph ***");
+  print_constraints(ph1, "*** ph1 ****");
 #endif
 
-  ph.widening_CC92_assign(ph4);
+  ConSys cs2;
+  cs2.insert(x <= 2);
+  cs2.insert(y >= 0);
+  cs2.insert(y <= x);
+
+  C_Polyhedron ph2(cs2);
 
 #if NOISY
-  print_constraints(ph, "*** After widening_CC92_assign ***");
+  print_constraints(ph2, "*** ph2 ****");
 #endif
 
-  return 0;
+  // Note: this is inconsistent with both `ph1' and `ph2'.
+  ConSys cs(y <= -1);
+
+#if NOISY
+  print_constraints(cs, "*** cs ****");
+#endif
+
+  C_Polyhedron computed_result = ph2;
+  computed_result.limited_H79_widening_assign(ph1, cs);
+
+#if NOISY
+  print_constraints(computed_result,
+		    "*** After limited_H79_widening_assign ****");
+#endif
+
+  // The result must be empty.
+  return computed_result.check_empty() ? 0 : 1;
 }

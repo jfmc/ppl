@@ -84,19 +84,23 @@ o  The method Constraint::coefficient(void) has been renamed
 
 o  The methods Polyhedron::widening_assign() and
    Polyhedron::limited_widening_assign() have been renamed
-   Polyhedron::widening_CC92_assign() and
-   Polyhedron::limited_widening_CC92_assign(), respectively.
+   Polyhedron::H79_widening_assign() and
+   Polyhedron::limited_H79_widening_assign(), respectively.
    This emphasizes the fact that they implement extensions
    of the widenings introduced in 
 
-     P. Cousot and R. Cousot.
-     Comparing the Galois connection and widening/narrowing
-     approaches to abstract interpretation.
-     In M. Bruynooghe and M. Wirsing, editors, Proceedings of the 4th
-     International Symposium on Programming Language Implementation and
-     Logic Programming, volume 631 of Lecture Notes in Computer Science,
-     pages 269-295, Leuven, Belgium, 1992. Springer-Verlag, Berlin.
+     N. Halbwachs.
+     Détermination Automatique de Relations Linéaires
+     Vérifiées par les Variables d'un Programme.
+     Thèse de 3ème cicle d'informatique,
+     Université scientifique et médicale de Grenoble,
+     Grenoble, France, March 1979.
 
+   and described in
+
+     N. Halbwachs, Y.-E. Proy, and P. Roumanoff.
+     Verification of real-time systems using linear relation analysis.
+     Formal Methods in System Design, 11(2):157-185, 1997.
 
 Bugfixes
 ========

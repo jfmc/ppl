@@ -340,13 +340,13 @@ polydiff_assign_min :-
   ppl_delete_Polyhedron(P1),
   ppl_delete_Polyhedron(P2).
 
-% Tests ppl_Polyhedron_widening_CC92_assign
+% Tests ppl_Polyhedron_H79_widening_assign
 % (using C Polyhedra).
 widen_C :-
   A = '$VAR'(0), B = '$VAR'(1), 
   ppl_new_Polyhedron_from_dimension(c, 2, P),
   ppl_new_Polyhedron_from_constraints(c, [A >= 1, B >= 0], Q),
-  ppl_Polyhedron_widening_CC92_assign(P, Q),
+  ppl_Polyhedron_H79_widening_assign(P, Q),
   ppl_Polyhedron_get_constraints(P, CP),
   ppl_Polyhedron_get_constraints(Q, CQ), 
   CP = [],
@@ -354,26 +354,26 @@ widen_C :-
   ppl_delete_Polyhedron(P),
   ppl_delete_Polyhedron(Q).
 
-% Tests ppl_Polyhedron_limited_widening_CC92_assign
+% Tests ppl_Polyhedron_limited_H79_widening_assign
 % (using C Polyhedra).
 lim_widen_C :-
   A = '$VAR'(0), B = '$VAR'(1), 
   ppl_new_Polyhedron_from_dimension(c, 2, P),
   ppl_new_Polyhedron_from_constraints(c, [A >= 1, B >= 0], Q),
   ppl_Polyhedron_add_constraints_and_minimize(Q, [A >= 1, B >= 0]),
-  ppl_Polyhedron_limited_widening_CC92_assign(P, Q, [A >= 2, B >= 1]),
+  ppl_Polyhedron_limited_H79_widening_assign(P, Q, [A >= 2, B >= 1]),
   ppl_Polyhedron_get_constraints(P, CS),
   CS = [1*A >= 2, 1*B >= 1],
   ppl_delete_Polyhedron(P),
   ppl_delete_Polyhedron(Q).
 
-% Tests ppl_Polyhedron_widening_CC92_assign
+% Tests ppl_Polyhedron_H79_widening_assign
 % (using NNC Polyhedra).
 widen_NNC :-
   A = '$VAR'(0), B = '$VAR'(1), 
   ppl_new_Polyhedron_from_dimension(nnc, 2, P),
   ppl_new_Polyhedron_from_constraints(nnc, [A >= 1, B >= 0], Q),
-  ppl_Polyhedron_widening_CC92_assign(P, Q),
+  ppl_Polyhedron_H79_widening_assign(P, Q),
   ppl_Polyhedron_get_constraints(P, CP),
   ppl_Polyhedron_get_constraints(Q, CQ),
   CP = [],
@@ -381,15 +381,15 @@ widen_NNC :-
   ppl_delete_Polyhedron(P),
   ppl_delete_Polyhedron(Q).
 
-% Tests ppl_Polyhedron_limited_widening_CC92_assign
+% Tests ppl_Polyhedron_limited_H79_widening_assign
 % (using NNC Polyhedra).
 lim_widen_NNC :-
   A = '$VAR'(0), B = '$VAR'(1), 
   ppl_new_Polyhedron_from_dimension(nnc, 2, P),
   ppl_new_Polyhedron_from_constraints(nnc, [A >= 1, B >= 0], Q),
   ppl_Polyhedron_add_constraints_and_minimize(Q, [A >= 1, B >= 0]),
-  ppl_Polyhedron_limited_widening_CC92_assign(P, Q,
-                                              [A >= 2, B >= 1]),
+  ppl_Polyhedron_limited_H79_widening_assign(P, Q,
+                                             [A >= 2, B >= 1]),
   ppl_Polyhedron_get_constraints(P, CS),
   CS = [1*A >= 2, 1*B >= 1],
   ppl_delete_Polyhedron(P),
