@@ -1637,6 +1637,8 @@ minimize_with_point :-
   ppl_delete_Polyhedron(P2),
   ppl_delete_Polyhedron(P3).
 
+%%%%%%%%%%%%%%%%% Watchdog tests %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
 % Tests Watchdog predicates
 % ppl_set_timeout
 % ppl_set_timeout_exception_atom
@@ -1711,9 +1713,12 @@ time_watch(Topology, Goal, NoTimeOut, TimeOut) :-
    ),
    ppl_delete_Polyhedron(PolyCopy).
 
+%%%%%%%%%%%%%%%%% Exceptions %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
 % exceptions/0 tests both Prolog and C++ exceptions using:
 %
 % exception_prolog(+N, +V)
+% exception_sys_prolog(+N, +V)
 % exception_cplusplus(+N, +V)
 %
 % N is the number of the test while V is a list of 3 PPL variables
@@ -1738,96 +1743,122 @@ exceptions :-
    fail.
 exceptions :- !.
 
-exception_prolog(1, [A,B,C]) :-
-   catch(ppl_new_Polyhedron_from_generators(_, [point(A + B + C, 1)], _),
-          M, 
-         check_exception(invalid_argument(M))
-         ).
+% exception_prolog(+N, +V) checks exceptions thrown by the Prolog interface
+% It does not check those that are dependent on a specific Prolog system
 
-exception_prolog(2, [A,B,C]) :-
-  catch(ppl_new_Polyhedron_from_generators(c, [point(B + A*C)], _),
+%% TEST: Prolog_unsigned_out_of_range
+exception_prolog(1, _) :-
+   current_prolog_flag(bounded,false),
+   I = 21474836470,
+   catch(ppl_new_Polyhedron_from_generators(_, [point('$VAR'(I))], P),
           M, 
-         check_exception(invalid_argument(M))
-        ).
+         check_exception(M)
+         ),
+  ppl_delete_Polyhedron(P).
 
+%% TEST: not_unsigned_integer
+exception_prolog(2, _) :-
+  catch(ppl_new_Polyhedron_from_dimension(c, n, P),
+          M, 
+         check_exception(M)
+        ),
+  ppl_delete_Polyhedron(P).
+
+%% TEST: not_unsigned_integer
 exception_prolog(3, _) :-
-  catch(ppl_new_Polyhedron_from_dimension(c, n, _),
+  catch(ppl_set_timeout(-1),
           M, 
-         check_exception(invalid_argument(M))
+         check_exception(M)
         ).
 
-exception_prolog(4, _) :-
-  ppl_new_Polyhedron_from_dimension(c, 0, _),
-  catch(ppl_Polyhedron_space_dimension(_, _N),
+%% TEST: non_linear
+exception_prolog(4, [A,B,C]) :-
+  catch(ppl_new_Polyhedron_from_generators(c, [point(B + A*C)], P),
           M, 
-         check_exception(invalid_argument(M))
-        ).
+         check_exception(M)
+        ),
+  ppl_delete_Polyhedron(P).
 
-exception_prolog(5, [A,B,_]) :-
+%% TEST: not_a_variable
+exception_prolog(5, [A,_,_]) :-
+  ppl_new_Polyhedron_from_dimension(c, 3, P),
+  catch(ppl_Polyhedron_remove_dimensions(P, [A,1]),
+          M, 
+         (ppl_delete_Polyhedron(P),
+         check_exception(M))
+        ),
+  ppl_delete_Polyhedron(P).
+
+%% TEST: not_an_integer
+exception_prolog(6, [A,B,_]) :-
   ppl_new_Polyhedron_from_generators(c, 
                [point(A + B), ray(A), ray(B)], P),
   catch(ppl_Polyhedron_affine_image(P, A, A + B + 1, i),
           M, 
-         check_exception(invalid_argument(M))
-        ).
+         (ppl_delete_Polyhedron(P),
+         check_exception(M))
+        ),
+  ppl_delete_Polyhedron(P).
 
-exception_prolog(6, [A,_,_]) :-
-  ppl_new_Polyhedron_from_dimension(c, 3, P),
-  catch(ppl_Polyhedron_remove_dimensions(P, [A,1]),
+%% TEST: not_a_polyhedron_kind
+exception_prolog(1, [A,B,C]) :-
+   catch(ppl_new_Polyhedron_from_generators(_, [point(A + B + C, 1)], P),
           M, 
-         check_exception(invalid_argument(M))
-        ).
+         check_exception(M)
+         ),
+  ppl_delete_Polyhedron(P).
 
-exception_prolog(7, _) :-
-  catch(ppl_set_timeout(-1),
+%% TEST: not_a_polyhedron_handle
+exception_prolog(4, _) :-
+  catch(ppl_Polyhedron_space_dimension(_, _N),
           M, 
-         check_exception(invalid_argument(M))
+         check_exception(M)
         ).
 
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+% exception_sys_prolog(+N, +V) checks exceptions thrown by Prolog interfaces
+% that are dependent on a specific Prolog system
+% These are only checked if current_prolog_flag(bounded, false) holds. 
 
 exception_sys_prolog(1, [A,B,_]) :-
   current_prolog_flag(max_integer, MaxInt),
-  Max is (MaxInt // 2) + 1,
-  ppl_new_Polyhedron_from_generators(c, [point(Max * A), point(B, 2)], P),
-  catch(ppl_Polyhedron_get_constraints(P, _),
+  ppl_new_Polyhedron_from_constraints(c, [MaxInt * A - B >= 0, 3 >= A], P),
+  catch(ppl_Polyhedron_get_generators(P, _),
           M, 
-         check_exception(representation_error(M))
-       ).
+         (ppl_delete_Polyhedron(P),
+         check_exception(M))
+       ),
+  ppl_delete_Polyhedron(P).
 
-exception_sys_prolog(2, [A,B,_]) :-
+ exception_sys_prolog(2, [A,B,_]) :-
   current_prolog_flag(min_integer, MinInt),
-  Min is (MinInt // 2) - 1,
-  ppl_new_Polyhedron_from_generators(c, [point(Min * A), point(B, 2)], P),
-  catch(ppl_Polyhedron_get_constraints(P, _),
+  ppl_new_Polyhedron_from_constraints(c, [MinInt * A - B =< 0, 2 >= A], P),
+  catch(ppl_Polyhedron_get_generators(P, _),
           M, 
-         check_exception(representation_error(M))
-       ).
+         (ppl_delete_Polyhedron(P),
+         check_exception(M))
+       ),
+  ppl_delete_Polyhedron(P).
 
-exception_sys_prolog(3, _) :-
-  current_prolog_flag(max_integer, MaxInt),
-  Max is MaxInt + 1,
-  catch(ppl_set_timeout(Max),
-          M, 
-         check_exception(invalid_argument(M))
-        ).
-
-
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+% exception_cplusplus(+N, +V) checks exceptions thrown by the C++
+% interface for the PPL
 
 exception_cplusplus(1, [A,B,C]) :-
-   catch(ppl_new_Polyhedron_from_generators(C, [point(A + B + C, 0)], _),
+  catch(ppl_new_Polyhedron_from_generators(C, [point(A + B + C, 0)], P),
           M, 
          (display_message([M]), fail)
-         ).
+         ),
+  ppl_delete_Polyhedron(P).
 
 exception_cplusplus(2, [A,B,_]) :-
   ppl_new_Polyhedron_from_generators(c, 
                [point(A + B), ray(A), ray(B)], P),
   catch(ppl_Polyhedron_affine_image(P, A, A + B + 1, 0),
           M, 
-         (display_message([M]), fail)
-        ).
+         (display_message([M]),
+          ppl_delete_Polyhedron(P),
+          fail)
+        ),
+  ppl_delete_Polyhedron(P).
 
 exception_cplusplus(3, [A, B, _]) :-
   ppl_new_Polyhedron_from_dimension(c, 0, P1),
@@ -1835,22 +1866,31 @@ exception_cplusplus(3, [A, B, _]) :-
                [point(A + B)], P2),
   catch(ppl_Polyhedron_poly_hull_assign_and_minimize(P1, P2),
           M, 
-         (display_message([M]), fail)
-        ).
+         (display_message([M]),
+          ppl_delete_Polyhedron(P1),
+          ppl_delete_Polyhedron(P2),
+          fail)
+        ),
+  ppl_delete_Polyhedron(P1),
+  ppl_delete_Polyhedron(P2).
 
 exception_cplusplus(4, [A,B,C]) :-
-   catch(ppl_new_Polyhedron_from_generators(c, [line(A + B + C)], _),
+   catch(ppl_new_Polyhedron_from_generators(c, [line(A + B + C)], P),
           M, 
          (display_message([M]), fail)
-        ).
+        ),
+  ppl_delete_Polyhedron(P).
 
 exception_cplusplus(5, [A,B,C]) :-
   ppl_new_Polyhedron_from_generators(c, [point(B + 2*C)], P),
   ppl_Polyhedron_remove_dimensions(P,[C]),
   catch(ppl_Polyhedron_remove_dimensions(P,[A,C]),
           M, 
-         (display_message([M]), fail)
-        ).
+         (display_message([M]),
+          ppl_delete_Polyhedron(P),
+          fail)
+        ),
+  ppl_delete_Polyhedron(P).
 
 exception_cplusplus(6, [A,B,_]) :-
   ppl_new_Polyhedron_from_constraints(c, 
@@ -1858,7 +1898,8 @@ exception_cplusplus(6, [A,B,_]) :-
   catch(ppl_Polyhedron_affine_image(P, B, A + 1, 1),
           M, 
          (display_message([M]), fail)
-        ).
+        ),
+  ppl_delete_Polyhedron(P).
 
 exception_cplusplus(7, [A, B, C]) :-
   ppl_new_Polyhedron_from_constraints(c, 
@@ -1866,7 +1907,8 @@ exception_cplusplus(7, [A, B, C]) :-
   catch(ppl_Polyhedron_affine_image(P, B, A + C + 1, 1),
           M, 
          (display_message([M]), fail)
-        ).
+        ),
+  ppl_delete_Polyhedron(P).
 
 exception_cplusplus(8, [A,B,_]) :-
   ppl_new_Polyhedron_from_constraints(c, 
@@ -1874,15 +1916,19 @@ exception_cplusplus(8, [A,B,_]) :-
   catch(ppl_Polyhedron_affine_preimage(P, A, A + B + 1, 0),
           M, 
          (display_message([M]), fail)
-        ).
+        ),
+  ppl_delete_Polyhedron(P).
 
 exception_cplusplus(9, [A, B, C]) :-
   ppl_new_Polyhedron_from_generators(c, 
                [point(0), ray(A + B), ray(A)], P),
   catch(ppl_Polyhedron_affine_preimage(P, C, A + 1, 1),
           M, 
-         (display_message([M]), fail)
-        ).
+         (display_message([M]),
+          ppl_delete_Polyhedron(P),
+          fail)
+        ),
+  ppl_delete_Polyhedron(P).
 
 
 exception_cplusplus(10, [A, B, C]) :-
@@ -1890,8 +1936,13 @@ exception_cplusplus(10, [A, B, C]) :-
                [point(0), point(A), line(A + B)], P),
   catch(ppl_Polyhedron_affine_preimage(P, B, A + C, 1),
           M, 
-         (display_message([M]), fail)
-        ).
+         (display_message([M]),
+          ppl_delete_Polyhedron(P),
+          fail)
+        ),
+  ppl_delete_Polyhedron(P).
+
+%%%%%%%%%%%% extra tests not executed by check_all %%%%%%%%%%%%%%%
 
 % These next 2 tests demonstrate a bug in the bounding box software
 % and are not executed by run_all.
@@ -1913,7 +1964,35 @@ boundingbox2(Box,CS) :-
   ppl_Polyhedron_get_constraints(P,CS),
   ppl_delete_Polyhedron(P).
 
-%%%%%%%%%%%% predicates for output messages %%%%%%%%%%%%%%%
+%%%%%%%%%%%% predicate for making list of ppl variables %%%%%%
+
+% make_var_list(+I,+Dimension,?VariableList)
+% constructs a list of variables with indices from I to Dimension - 1.
+% It is assumed that I =< Dimension.
+
+make_vars(Dim, VarList):-
+  make_var_list(0, Dim, VarList).
+make_var_list(Dim,Dim,[]):- !.
+make_var_list(I,Dim,['$VAR'(I)|VarList]):-
+  I1 is I + 1,
+  make_var_list(I1,Dim,VarList).
+
+%%%%%%%%%%%% predicates for switching on/off output messages %
+
+make_noisy :-
+  (retract(noisy(_)) ->
+      make_noisy
+  ;
+      assertz(noisy(1))
+  ).
+
+make_quiet :-
+  (retract(noisy(_)) ->
+      make_quiet
+   ; assertz(noisy(0))
+  ).
+
+%%%%%%%%%%%% predicates for output messages %%%%%%%%%%%%%%%%%%
 
 error_message(Message):-
    write_all(Message),
@@ -1934,45 +2013,31 @@ write_all([Phrase|Phrases]):-
    ),
    write_all(Phrases).
 
-% make_var_list(+I,+Dimension,?VariableList)
-% constructs a list of variables with indices from I to Dimension - 1.
-% It is assumed that I =< Dimension.
-
-make_vars(Dim, VarList):-
-  make_var_list(0, Dim, VarList).
-make_var_list(Dim,Dim,[]):- !.
-make_var_list(I,Dim,['$VAR'(I)|VarList]):-
-  I1 is I + 1,
-  make_var_list(I1,Dim,VarList).
-
-make_noisy :-
-  (retract(noisy(_)) ->
-      make_noisy
-  ;
-      assertz(noisy(1))
-  ).
-
-make_quiet :-
-  (retract(noisy(_)) ->
-      make_quiet
-   ; assertz(noisy(0))
-  ).
-
 % checks the exception message for the Prolog interface exceptions
 
-check_exception(Exception_Goal):-
-         (call(Exception_Goal) -> fail ; true).
+check_exception(Exception):-
+         (call(format_exception_message(Exception)) -> fail ; true).
 
-invalid_argument(ppl_invalid_argument(found(F), expected(E), where(W))) :-
+
+% formats the messages for the Prolog interface exceptions
+
+format_exception_message(
+             ppl_invalid_argument( found(F), expected(E), where(W))
+                        ) :-
+  !,
   display_message(['PPL Prolog Interface Exception: ', nl, '   ',
                    F, 'is an invalid argument for', W, nl, '   ',
                   F, 'should be', E, '.']).
 
-representation_error(ppl_representation_error(I,
-                                       where(W))) :-
-  (name(I,[45|_]) -> B = 'less than the minimum' ;
-                     B = 'more than the maximum'),
+format_exception_message(
+             ppl_representation_error(I, where(W))
+                        ) :-
+  !,
   display_message(['PPL Prolog Interface Exception: ', nl, '   ',
                    'This Prolog system has bounded integers', nl, '   ',
-                   I, 'is', B, 'allowed for integers', nl, '   ',
+                   I, 'is not in the allowed range of integers', nl, '   ',
                    'in call to', W, '.']).
+
+format_exception_message(Error) :-
+  display_message([Error]).
+
