@@ -84,8 +84,10 @@ PowerSet<CS>::size() const {
 }
 
 template <typename CS>
-PowerSet<CS>::PowerSet(dimension_type num_dimensions)
+PowerSet<CS>::PowerSet(dimension_type num_dimensions, bool universe)
   : space_dim(num_dimensions) {
+  if (universe)
+    sequence.push_back(CS(num_dimensions, true));
 }
 
 template <typename CS>

@@ -79,8 +79,7 @@ template <typename PH>
 class Parma_Polyhedra_Library::Determinate {
 public:
   explicit
-  Determinate(dimension_type num_dimensions = 0,
-	      Polyhedron::Degenerate_Kind kind = Polyhedron::UNIVERSE);
+  Determinate(dimension_type num_dimensions = 0, bool universe = true);
   Determinate(const PH& p);
   Determinate(const ConSys& cs);
   Determinate(const Determinate& y);
