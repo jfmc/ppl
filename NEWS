@@ -10,15 +10,15 @@ NEWS for version 0.4 (released date unknown)
 New Features
 ============
 
-o  The methods Polyhedron::includes(g) and Polyhedron::satisfies(c)
-   have been removed, as well as the enumeration GenSys_Con_Rel.
-   They have been replaced by the new methods Polyhedron::relation_with(g)
-   and Polyhedron::relation_with(c), which return values of the new
-   enumeration types Relation_Poly_Gen and Relation_Poly_Con, resp.
+o  The methods Polyhedron::includes(const Generator&) and
+   Polyhedron::satisfies(const Constraint&) have been removed,
+   as well as the enumeration GenSys_Con_Rel.
+   They have been replaced by the new methods
+   Polyhedron::relation_with(const Generator&) and
+   Polyhedron::relation_with(const Constraint&),
+   which return values of the new enumeration types
+   Relation_Poly_Gen and Relation_Poly_Con, respectively.
    
-	The library no longer calls abort(): appropriate exceptions
-   are always thrown instead.
-
 o  The library no longer calls abort(): appropriate exceptions
    are always thrown instead.
 
@@ -33,6 +33,10 @@ Bugfixes
 
 o  Fixed a bug whereby creating a vertex with a negative denominator
    caused the library to misbehave.
+
+o  Fixed a bug in Polyhedron::add_constraints(ConSys&) whereby
+   we could have created constraint systems having rows with
+   different capacities.
 
 o  ...
 
@@ -73,7 +77,7 @@ o  Added more test programs.
 Bugfixes
 ========
 
-o  Fixed Polyhedron::satisfies(const Constraints&) and
+o  Fixed Polyhedron::satisfies(const Constraint&) and
    Polyhedron::affine_image().
 
 o  Polyhedron::limited_widening_assign(const Polyhedron&, ConSys&)
