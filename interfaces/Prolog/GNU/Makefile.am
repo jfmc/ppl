@@ -49,7 +49,7 @@ ppl_gprolog$(EXEEXT): libppl_gprolog.la ppl_gprolog.pl
 	gplc -o $@ $(srcdir)/ppl_gprolog.pl .libs/libppl_gprolog.a \
 		-L '-L$(top_builddir)/src/.libs -lppl -lgmp -lgmpxx -lstdc++'
 
-CLPQ_TESTS = \
+CLPQ_TESTS_NONSTRICT = \
 ack.clpq \
 ackn.clpq \
 fib.clpq \
@@ -58,6 +58,11 @@ smm.clpq \
 sumto.clpq \
 tak.clpq
 
+CLPQ_TESTS_STRICT = \
+schedule.clpq
+
+CLPQ_TESTS = $(CLPQ_TESTS_NONSTRICT) $(CLPQ_TESTS_STRICT) 
+
 # Notice: we are linking with libppl_gprolog.a statically.
 # This is a kludge until we understand whether and if libtool
 # and gplc can interoperate.
@@ -65,12 +70,19 @@ gp_clpq: libppl_gprolog.la ppl_gprolog.pl gp_clpq.pl ../clpq.pl
 	gplc -o $@ $(srcdir)/ppl_gprolog.pl $(srcdir)/gp_clpq.pl \
 		$(srcdir)/../clpq.pl .libs/libppl_gprolog.a \
 		-L '-L$(top_builddir)/src/.libs -lppl -lgmp -lgmpxx -lstdc++'
+gp_clpq2: libppl_gprolog.la ppl_gprolog.pl gp_clpq.pl ../clpq2.pl
+	gplc -o $@ $(srcdir)/ppl_gprolog.pl $(srcdir)/gp_clpq.pl \
+		$(srcdir)/../clpq2.pl .libs/libppl_gprolog.a \
+		-L '-L$(top_builddir)/src/.libs -lppl -lgmp -lgmpxx -lstdc++'
 
-check-local: gp_clpq ../check_script ../expected
+check-local: gp_clpq ../check_script ../expected gp_clpq2 ../check_script2 ../expected2
 	for k in $(CLPQ_TESTS); do cp -f $(srcdir)/../$$k .; done
 	$(LIBTOOL) --mode=execute -dlopen ../../../src/libppl.la \
 		./gp_clpq <$(srcdir)/../check_script >obtained
 	diff -q --ignore-all-space $(srcdir)/../expected obtained
+	$(LIBTOOL) --mode=execute -dlopen ../../../src/libppl.la \
+		./gp_clpq2 <$(srcdir)/../check_script2 >obtained2
+	diff -q --ignore-all-space $(srcdir)/../expected2 obtained2
 
 MOSTLYCLEANFILES = \
 gp_clpq $(CLPQ_TESTS) obtained
