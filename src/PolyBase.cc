@@ -405,8 +405,9 @@ PPL::PolyBase::PolyBase(Topology topology, GenSys& gs)
 	const Generator& g = gen_sys[i];
 	if (g[eps_index] > 0) {
 	  // `g' is a point: adding the closure point.
-	  gen_sys.add_row(g);
-	  gen_sys[n_rows][eps_index] = 0;
+	  Generator cp = g;
+	  cp[eps_index] = 0;
+	  gen_sys.add_row(cp);
 	  ++n_rows;
 	}
       }
