@@ -28,7 +28,8 @@ namespace Parma_Polyhedra_Library {
 
 //! Used to avoid unused variable warnings from the compiler.
 template <typename T>
-inline void used(const T&) {
+inline void
+used(const T&) {
 }
 
 } // namespace Parma_Polyhedra_Library

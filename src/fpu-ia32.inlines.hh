@@ -61,30 +61,26 @@ typedef struct
 } fenv_t;
 
 inline int
-fpu_get_control()
-{
+fpu_get_control() {
   unsigned short cw;
   __asm__ __volatile__ ("fnstcw %0" : "=m" (cw));
   return cw;
 }
 
 inline void
-fpu_set_control(unsigned short cw)
-{
+fpu_set_control(unsigned short cw) {
   __asm__ __volatile__ ("fldcw %0" : : "m" (cw));
 }
 
 inline int
-fpu_get_status()
-{
+fpu_get_status() {
   int temp;
   __asm__ __volatile__ ("fnstsw %0" : "=a" (temp));
   return temp;
 }
 
 inline void
-fpu_clear_status(unsigned short bits)
-{
+fpu_clear_status(unsigned short bits) {
   /* There is no fldsw instruction */
   fenv_t env;
   __asm__ ("fnstenv %0" : "=m" (env));
@@ -93,20 +89,17 @@ fpu_clear_status(unsigned short bits)
 }
 
 inline void
-fpu_clear_exceptions()
-{
+fpu_clear_exceptions() {
   __asm__ __volatile__ ("fnclex" : /* No outputs.  */);
 }
 
 inline int
-fpu_get_rounding_direction()
-{
+fpu_get_rounding_direction() {
   return fpu_get_control() & FPU_ROUNDING_MASK;
 }
 
 inline int
-fpu_save_rounding_direction(int dir)
-{
+fpu_save_rounding_direction(int dir) {
 #if HIJACK_FPU
   fpu_set_control(FPU_CONTROL_DEFAULT | dir);
   return 0;
@@ -118,8 +111,7 @@ fpu_save_rounding_direction(int dir)
 }
 
 inline void
-fpu_reset_inexact()
-{
+fpu_reset_inexact() {
 #if HIJACK_FPU
   fpu_clear_exceptions();
 #else
@@ -128,15 +120,13 @@ fpu_reset_inexact()
 }
 
 inline int
-fpu_save_rounding_direction_reset_inexact(int dir)
-{
+fpu_save_rounding_direction_reset_inexact(int dir) {
   fpu_reset_inexact();
   return fpu_save_rounding_direction(dir);
 }
 
 inline void
-fpu_restore_rounding_direction(int control)
-{
+fpu_restore_rounding_direction(int control) {
   used(control);
 #if HIJACK_FPU
   fpu_set_control(FPU_CONTROL_DEFAULT);
@@ -146,8 +136,7 @@ fpu_restore_rounding_direction(int control)
 }
 
 inline int
-fpu_check_inexact()
-{
+fpu_check_inexact() {
   return (fpu_get_status() & FPU_INEXACT) ? 1 : 0;
 }
 
