@@ -290,19 +290,14 @@ read_coefficients(std::istream& input,
   }
 }
 
-void
-slurp(const char* path) {
-  std::ifstream input;
-  input.open(path, std::ios_base::in);
-  if (!input)
-    fatal("cannot open input file `%s'", path);
-  input_file_name = path;
+enum Representation { H, V };
 
-  enum Representation { H, V };
+Representation
+read_polyhedron(std::istream& input, PPL::C_Polyhedron& ph) {
   // By default we have an H-representation.
   Representation rep = H;
-  std::string s;
 
+  std::string s;
   std::set<unsigned> linearity;
   while (true) {
     if (!(input >> s))
@@ -325,7 +320,7 @@ slurp(const char* path) {
       if (verbose) {
 	std::cerr << "Linearity: ";
 	for (std::set<unsigned>::const_iterator j = linearity.begin(),
-	       jend = linearity.end(); j != jend; ++j)
+	       linearity_end = linearity.end(); j != linearity_end; ++j)
 	  std::cerr << *j << " ";
 	std::cerr << std::endl;
       }
@@ -407,20 +402,77 @@ slurp(const char* path) {
   if (s != "end")
     error("`%s' found while seeking for `end'", s.c_str());
 
-  while (input >> s) {
-    warning("ignoring command `%s'", s.c_str());
-    input.ignore(std::numeric_limits<std::streamsize>::max(), '\n');
-  }
 
-  // If we are still here, we just make a conversion.
-  if (rep == V) {
-    PPL::C_Polyhedron ph(gs);
-    ph.constraints();
+  ph = rep == V ? PPL::C_Polyhedron(gs) : PPL::C_Polyhedron(cs);
+
+  return rep;
+}
+
+void
+write_polyhedron(std::ostream& output,
+		 const PPL::C_Polyhedron ph,
+		 Representation rep) {
+  output << (rep == H ? "H" : "V") << "-representation\n";
+
+  unsigned num_rows = 0;
+  std::set<unsigned> linearity;
+  if (rep == H) {
+    const PPL::ConSys& cs = ph.constraints();
+    for (PPL::ConSys::const_iterator i = cs.begin(),
+	   cs_end = cs.end(); i != cs_end; ++i) {
+      ++num_rows;
+      if (i->is_equality())
+	linearity.insert(linearity.end(), num_rows);
+    }
   }
   else {
-    PPL::C_Polyhedron ph(cs);
-    ph.generators();
+    assert(rep == V);
+    const PPL::GenSys& gs = ph.generators();
+    for (PPL::GenSys::const_iterator i = gs.begin(),
+	   gs_end = gs.end(); i != gs_end; ++i) {
+      ++num_rows;
+      if (i->is_line())
+	linearity.insert(linearity.end(), num_rows);
+    }
   }
+
+  if (!linearity.empty()) {
+    output << "linearity " << linearity.size();
+    for (std::set<unsigned>::const_iterator j = linearity.begin(),
+	   linearity_end = linearity.end(); j != linearity_end; ++j)
+      output << " " << *j;
+    output << std::endl;
+  }
+
+  PPL::dimension_type space_dim = ph.space_dimension();
+
+  output << "begin\n"
+	 << num_rows << " " << space_dim+1 << " ";
+
+  if (rep == H) {
+    output << "integer\n";
+    const PPL::ConSys& cs = ph.constraints();
+    for (PPL::ConSys::const_iterator i = cs.begin(),
+	   cs_end = cs.end(); i != cs_end; ++i) {
+      const PPL::Constraint& c = *i;
+      output << c.inhomogeneous_term();
+      for (PPL::dimension_type j = 0; j < space_dim; ++j)
+	output << " " << c.coefficient(PPL::Variable(j));
+      output << std::endl;
+    }
+  }
+  else {
+    assert(rep == V);
+    output << "rational\n";
+    const PPL::GenSys& gs = ph.generators();
+    for (PPL::GenSys::const_iterator i = gs.begin(),
+	   gs_end = gs.end(); i != gs_end; ++i) {
+      const PPL::Generator& g = *i;
+      output << (g.is_point() ? '1' : '0');
+    }
+  }
+
+  output << "end" << std::endl;
 }
 
 } // namespace
@@ -447,8 +499,33 @@ main(int argc, char* argv[]) {
   if (max_bytes_of_virtual_memory > 0)
     limit_virtual_memory(max_bytes_of_virtual_memory);
 
-  while (optind < argc)
-    slurp(argv[optind++]);
+  while (optind < argc) {
+    input_file_name = argv[optind++];
+    std::ifstream input;
+    input.open(input_file_name, std::ios_base::in);
+    if (!input)
+      fatal("cannot open input file `%s'", input_file_name);
+
+    PPL::C_Polyhedron ph;
+    Representation rep = read_polyhedron(input, ph);
+
+    std::string s;
+    while (input >> s) {
+      warning("ignoring command `%s'", s.c_str());
+      input.ignore(std::numeric_limits<std::streamsize>::max(), '\n');
+    }
+
+    // If we are still here, we just make a conversion.
+    if (rep == V) {
+      ph.constraints();
+      write_polyhedron(std::cout, ph, H);
+    }
+    else {
+      ph.generators();
+      write_polyhedron(std::cout, ph, V);
+    }
+
+  }
 
   // Close output file, if any.
   if (output_file_name)
