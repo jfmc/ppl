@@ -245,6 +245,7 @@ AC_SUBST(debug_flag)
 AC_OUTPUT(Makefile
           src/Makefile
           src/BitSet/Makefile src/Integer/Makefile
+          tests/Makefile
           doc/Makefile
           doc/user.doxyconf-pdf    doc/devref.doxyconf-pdf
           doc/user.doxyconf-html   doc/devref.doxyconf-html
