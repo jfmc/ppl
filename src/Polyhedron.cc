@@ -650,7 +650,7 @@ PPL::Polyhedron::intersection_assign_and_minimize(const Polyhedron& y) {
   size_t x_space_dim = x.space_dimension();
   // Dimension-compatibility check.
   if (x_space_dim != y.space_dimension())
-    throw_different_dimensions("PPL::Polyhedron::intersection_ass_and_min(y)",
+    throw_different_dimensions("PPL::Polyhedron::inters_assign_and_min(y)",
 			       x, y);
 
   // If one of the two polyhedra is empty, the intersection is empty.
@@ -705,7 +705,7 @@ PPL::Polyhedron::intersection_assign(const Polyhedron& y) {
   size_t x_space_dim = x.space_dimension();
   // Dimension-compatibility check.
   if (x_space_dim != y.space_dimension())
-    throw_different_dimensions("PPL::Polyhedron::intersection_ass_and_min(y)",
+    throw_different_dimensions("PPL::Polyhedron::inters_assign_and_min(y)",
 			       x, y);
 
   // If one of the two polyhedra is empty, the intersection is empty.
@@ -751,7 +751,7 @@ PPL::Polyhedron::convex_hull_assign_and_minimize(const Polyhedron& y) {
   size_t x_space_dim = x.space_dimension();
   // Dimension-compatibility check.
   if (x_space_dim != y.space_dimension())
-    throw_different_dimensions("PPL::Polyhedron::convex_hull_ass_and_min(y)",
+    throw_different_dimensions("PPL::Polyhedron::con_hull_assign_and_min(y)",
 			       x, y);
 
   // Convex hull between a polyhedron `p' and an empty polyhedron is `p'.
@@ -1206,7 +1206,7 @@ PPL::Polyhedron::add_constraints_and_minimize(ConSys& cs) {
   // Dimension-compatibility check:
   // the dimension of `cs' can not be greater than space_dimension().
   if (space_dim < cs_space_dim)
-    throw_different_dimensions("PPL::Polyhedron::add_constraints_and_min(c)",
+    throw_different_dimensions("PPL::Polyhedron::add_constraints_and_min(cs)",
 			       *this, cs);
 
   // Adding no constraints is the same as checking for emptyness.
