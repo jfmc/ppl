@@ -440,8 +440,6 @@ static void
 solve(char* file_name) {
   ppl_Polyhedron_t ppl_ph;
   ppl_ConSys_t ppl_cs;
-  ppl_const_GenSys_t ppl_const_gs;
-  ppl_GenSys_const_iterator_t git1, git2, ogit;
   ppl_const_Generator_t ppl_const_g;
   ppl_LinExpression_t ppl_le;
   int dimension, row, num_rows, column, nz, i, type;
@@ -452,12 +450,13 @@ solve(char* file_name) {
   mpq_t* rational_coefficient;
   mpq_t* objective;
   ppl_LinExpression_t ppl_objective_le;
-  mpq_t* candidate;
-  int first_candidate;
+  ppl_Coefficient_t optimum_n;
+  ppl_Coefficient_t optimum_d;
   mpq_t optimum;
   mpz_t den_lcm;
   int empty;
   int unbounded;
+  int included;
   /* The following is initialized only to avoid a compiler warning. */
   int first_printed = 0;
 
@@ -620,9 +619,6 @@ solve(char* file_name) {
 	fprintf(output_file, "*");
 	print_variable(output_file, i-1);
       }
-
-    if (!maximize)
-      mpz_neg(tmp_z, tmp_z);
     ppl_assign_Coefficient_from_mpz_t(ppl_coeff, tmp_z);
     ppl_LinExpression_add_to_coefficient(ppl_objective_le, i-1, ppl_coeff);
   }
@@ -643,66 +639,39 @@ solve(char* file_name) {
 
   if (unbounded) {
     fprintf(output_file, "Unbounded problem.\n");
-    /* FIXEM: check!!! */
+    /* FIXME: check!!! */
     return;
   }
 
-  ppl_Polyhedron_generators(ppl_ph, &ppl_const_gs);
+  ppl_new_Coefficient(&optimum_n);
+  ppl_new_Coefficient(&optimum_d);
+
+  if (maximize)
+    ppl_Polyhedron_maximize(ppl_ph, ppl_objective_le,
+			    optimum_n, optimum_d, &included,
+			    &ppl_const_g);
+  else
+    ppl_Polyhedron_minimize(ppl_ph, ppl_objective_le,
+			    optimum_n, optimum_d, &included,
+			    &ppl_const_g);
 
   if (print_timings) {
-    fprintf(stderr, "Time to compute the polyhedron's generators: ");
+    fprintf(stderr, "Time to find the optimum: ");
     print_clock(stderr);
     fprintf(stderr, " s\n");
     start_clock();
   }
 
-  candidate = (mpq_t*) malloc((dimension)*sizeof(mpq_t));
-  for (i = 0; i < dimension; ++i)
-    mpq_init(candidate[i]);
+  if (!included)
+    fatal("internal error");
 
   mpq_init(optimum);
-  ppl_new_GenSys_const_iterator(&ogit);
-  first_candidate = 1;
-
-  ppl_new_GenSys_const_iterator(&git1);
-  ppl_new_GenSys_const_iterator(&git2);
-  ppl_GenSys_begin(ppl_const_gs, git1);
-  ppl_GenSys_end(ppl_const_gs, git2);
-  while (ppl_GenSys_const_iterator_equal_test(git1, git2) == 0) {
-    ppl_GenSys_const_iterator_dereference(git1, &ppl_const_g);
-    if (ppl_Generator_type(ppl_const_g) == PPL_GENERATOR_TYPE_POINT) {
-      ppl_Generator_divisor(ppl_const_g, ppl_coeff);
-      ppl_Coefficient_to_mpz_t(ppl_coeff, tmp_z);
-      for (i = 0; i < dimension; ++i) {
-	mpz_set(mpq_denref(candidate[i]), tmp_z);
-	ppl_Generator_coefficient(ppl_const_g, i, ppl_coeff);
-	ppl_Coefficient_to_mpz_t(ppl_coeff, mpq_numref(candidate[i]));
-      }
-
-      /* Here we have a candidate.  Evaluate the objective function. */
-      mpq_set(tmp1_q, objective[0]);
-      for (i = 0; i < dimension; ++i) {
-	mpq_mul(tmp2_q, candidate[i], objective[i+1]);
-	mpq_add(tmp1_q, tmp1_q, tmp2_q);
-      }
-
-      if (first_candidate
-	  || (maximize && (mpq_cmp(tmp1_q, optimum) > 0))
-	  || (!maximize && (mpq_cmp(tmp1_q, optimum) < 0))) {
-	first_candidate = 0;
-	mpq_set(optimum, tmp1_q);
-	ppl_assign_GenSys_const_iterator_from_GenSys_const_iterator(ogit,
-								    git1);
-      }
-    }
-    ppl_GenSys_const_iterator_increment(git1);
-  }
-
-  assert(!first_candidate);
-
+  ppl_Coefficient_to_mpz_t(optimum_n, tmp_z);
+  mpq_set_num(optimum, tmp_z);
+  ppl_Coefficient_to_mpz_t(optimum_d, tmp_z);
+  mpq_set_den(optimum, tmp_z);
   fprintf(output_file, "Optimum value:\n%f\n", mpq_get_d(optimum));
   fprintf(output_file, "Optimum location:\n");
-  ppl_GenSys_const_iterator_dereference(ogit, &ppl_const_g);
   ppl_Generator_divisor(ppl_const_g, ppl_coeff);
   ppl_Coefficient_to_mpz_t(ppl_coeff, tmp_z);
   for (i = 0; i < dimension; ++i) {
@@ -712,8 +681,6 @@ solve(char* file_name) {
     print_variable(output_file, i);
     fprintf(output_file, " = %f\n", mpq_get_d(tmp1_q));
   }
-
-  free(candidate);
 
   ppl_delete_Polyhedron(ppl_ph);
   lpx_delete_prob(lp);
