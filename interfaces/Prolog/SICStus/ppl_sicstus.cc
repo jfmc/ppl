@@ -516,11 +516,11 @@ get_lin_expression(const R& r) {
   SP_term_ref so_far = SP_new_term_ref();
   PPL::Integer coefficient;
   unsigned int varid = 0;
-  unsigned int last_varid = r.last_variable().id();
-  while (varid <= last_varid
+  unsigned int space_dimension = r.space_dimension();
+  while (varid < space_dimension
 	 && (coefficient = r.coefficient(PPL::Variable(varid))) == 0)
     ++varid;
-  if (varid > last_varid) {
+  if (varid >= space_dimension) {
     SP_put_integer(so_far, 0);
   }
   else {
@@ -528,10 +528,10 @@ get_lin_expression(const R& r) {
 		    integer_term(coefficient), variable_term(varid));
     while (true) {
       ++varid;
-      while (varid <= last_varid
+      while (varid < space_dimension
 	     && (coefficient = r.coefficient(PPL::Variable(varid))) == 0)
 	++varid;
-      if (varid > last_varid)
+      if (varid >= space_dimension)
 	break;
       else {
 	SP_term_ref addendum = SP_new_term_ref();
@@ -619,6 +619,8 @@ get_generator(const PPL::Generator& g) {
 	return t;
       }
     }
+  default:
+    abort();
   }
   SP_cons_functor(t, constructor, 1, get_lin_expression(g));
   return t;
