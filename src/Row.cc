@@ -250,22 +250,34 @@ PPL::operator <<(std::ostream& s, const Row& row) {
 }
 
 bool
-PPL::Row::OK(size_t capacity) const {
+PPL::Row::OK(size_t row_size,
+	     size_t
 #ifndef NDEBUG
+	     row_capacity
+#endif
+	     ) const {
   bool is_broken = false;
-  if (capacity_ != capacity) {
+#ifndef NDEBUG
+  if (capacity_ != row_capacity) {
     std::cerr << "Row capacity mismatch: is " << capacity_
-	      << ", should be " << capacity
+	      << ", should be " << row_capacity
 	      << std::endl;
     is_broken = true;
   }
+#endif
+  if (size() != row_size) {
+    std::cerr << "Row size mismatch: is " << size()
+	      << ", should be " << row_size
+	      << std::endl;
+    is_broken = true;
+  }
+#ifndef NDEBUG
   if (capacity_ < size()) {
-    std::cerr << "Row is completely broken: calacity is " << capacity_
+    std::cerr << "Row is completely broken: capacity is " << capacity_
 	      << ", size is " << size()
 	      << std::endl;
     is_broken = true;
   }
-  return !is_broken;
 #endif
-  return true;
+  return !is_broken;
 }

@@ -1469,7 +1469,7 @@ PPL::Polyhedron::add_dimensions_and_constraints(ConSys& cs) {
   size_t old_num_rows = con_sys.num_rows();
   size_t old_num_columns = con_sys.num_columns();
   size_t new_num_columns = old_num_columns + cs.space_dimension();
-  con_sys.resize(old_num_rows + cs.num_rows(), new_num_columns);
+  con_sys.grow(old_num_rows + cs.num_rows(), new_num_columns);
   space_dim = new_num_columns - 1;
   for (size_t i = cs.num_rows(); i-- > 0; ) {
     Constraint& c_new = con_sys[old_num_rows + i];

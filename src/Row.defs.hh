@@ -82,7 +82,7 @@ public:
 
   //! Tight constructor: resizing will require reallocation.
   Row(Type type, size_t size);
-  //! Sizing constructor: resizing will require reallocation.
+  //! Sizing constructor with type.
   Row(Type type, size_t size, size_t capacity);
 
   //! Post-constructors: to construct properly default-constructed elements.
@@ -155,7 +155,7 @@ public:
   Parma_Polyhedra_Library::operator <<(std::ostream& s, const Row& row);
 
   //! Checks if all the invariants are satisfied.
-  bool OK(size_t capacity) const;
+  bool OK(size_t row_size, size_t row_capacity) const;
 
 private:
   class Impl;

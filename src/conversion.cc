@@ -370,8 +370,9 @@ PPL::Polyhedron::conversion(Matrix& source,
     // product is 0 it means that the i-th generator saturates the k-th
     // constraint.
     static std::vector<Integer> scalar_prod;
-    if (scalar_prod.size() < dest_num_rows)
-      scalar_prod.resize(dest_num_rows);
+    int needed_space = dest_num_rows - scalar_prod.size();
+    if (needed_space > 0)
+      scalar_prod.insert(scalar_prod.end(), needed_space, Integer::zero());
     // `index_non_zero' will indicate the first row of `dest' that does
     // not saturate the k-th constraint: we initialize it to
     // `dest_num_rows' and we will change it if we will find a

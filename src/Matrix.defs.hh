@@ -141,9 +141,9 @@ public:
   //! Sets the \p sorted flag of the matrix to \p value.
   void set_sorted(bool value);
 
-  //! Resizes the matrix copying the old contents.
-  void resize(size_t new_num_rows, size_t new_num_columns);
-  //! Resizes without copying.
+  //! Make the matrix grow adding more rows and/or more columns.
+  void grow(size_t new_num_rows, size_t new_num_columns);
+  //! Resizes the matrix without worrying about the old contents.
   void resize_no_copy(size_t new_num_rows, size_t new_num_columns);
 
   //! Turn the matrix \f$M\f$ into \f$(M \, 0)\f$.
