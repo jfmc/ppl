@@ -356,13 +356,22 @@ AM_CONDITIONAL(HAVE_SWI_PROLOG, test x$SWI_PROLOG = xpl)
 # XSB
 
 AC_CHECK_PROG(XSB_PROLOG, xsb, xsb)
+# The foreign language interface include file is `cinterf.h',
+# but this resides in the emulator directory and is not installed
+# in any standard place.
 if test x"$XSB_PROLOG" = xxsb
 then
-AC_CHECK_HEADER(cinterf.h,
-                [],
-                XSB_PROLOG="")
+xsb_emu_dir=`xsb --nobanner --quietload --noprompt \
+                 -e "write('emudir='), \
+                     xsb_configuration(emudir, X), write(X), nl, halt." \
+                 2>/dev/null | sed "s/^emudir=//g"`
+xsb_config_dir=`xsb --nobanner --quietload --noprompt \
+                    -e "write('config_dir='), \
+                        xsb_configuration(config_dir,X), write(X), nl, halt." \
+                    2>/dev/null | sed "s/^config_dir=//g"`
+xsb_includes="-I${xsb_emu_dir} -I${xsb_config_dir}"
 fi
-AM_CONDITIONAL(HAVE_XSB_PROLOG, test x$XSB_PROLOG = xsb)
+AM_CONDITIONAL(HAVE_XSB_PROLOG, test x$XSB_PROLOG = xxsb)
 
 # YAP
 
@@ -406,6 +415,7 @@ AC_SUBST(extra_includes)
 AC_SUBST(extra_libraries)
 AC_SUBST(extra_cpp_flags)
 AC_SUBST(debug_flag)
+AC_SUBST(xsb_includes)
 
 AC_OUTPUT(Makefile
           ppl.lsm ppl.spec
@@ -424,6 +434,7 @@ AC_OUTPUT(Makefile
           interfaces/Prolog/GNU/Makefile
           interfaces/Prolog/SICStus/Makefile
           interfaces/Prolog/SWI/Makefile
+          interfaces/Prolog/XSB/Makefile
           interfaces/Prolog/YAP/Makefile)
 
 if test x"$gmp_supports_exceptions" = xno

@@ -26,7 +26,7 @@ VPATH = @srcdir@
 
 @SET_MAKE@
 
-SUBDIRS = Ciao GNU SICStus SWI YAP
+SUBDIRS = Ciao GNU SICStus SWI XSB YAP
 
 CLPQ_TESTS_NONSTRICT = \
 ack.clpq \
