@@ -86,7 +86,7 @@ enum ppl_enum_error_code {
   /*! \hideinitializer
     A totally unknown, totally unexpected error happened.
     This indicates a bug in the PPL. */
-  PPL_ERROR_UNEXPECTED_ERROR = -6,
+  PPL_ERROR_UNEXPECTED_ERROR = -6
 };
 
 
