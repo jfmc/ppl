@@ -13,7 +13,9 @@ PURPOSE. */
 #define _SatMatrix_types_hh 1
 
 namespace Parma_Polyhedra_Library {
-  class SatMatrix;
+
+class SatMatrix;
+
 }
 
 #endif // !defined(_SatMatrix_types_hh)

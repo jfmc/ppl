@@ -13,7 +13,9 @@ PURPOSE. */
 #define _Constraint_types_hh 1
 
 namespace Parma_Polyhedra_Library {
-  class Constraint;
+
+class Constraint;
+
 }
 
 #endif // !defined(_Constraint_types_hh)

@@ -13,7 +13,9 @@ PURPOSE. */
 #define _Init_types_hh 1
 
 namespace Parma_Polyhedra_Library {
-  class Init;
+
+class Init;
+
 }
 
 #endif // !defined(_Init_types_hh)

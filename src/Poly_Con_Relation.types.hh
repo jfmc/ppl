@@ -13,7 +13,9 @@ PURPOSE. */
 #define _Poly_Con_Relation_types_hh 1
 
 namespace Parma_Polyhedra_Library {
-  class Poly_Con_Relation;
+
+class Poly_Con_Relation;
+
 }
 
 #endif // !defined(_Poly_Con_Relation_types_hh)

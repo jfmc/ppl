@@ -13,7 +13,9 @@ PURPOSE. */
 #define _Status_types_hh 1
 
 namespace Parma_Polyhedra_Library {
-  class Status;
+
+class Status;
+
 }
 
 #endif // !defined(_Status_types_hh)

@@ -13,7 +13,9 @@ PURPOSE. */
 #define _LinExpression_types_hh 1
 
 namespace Parma_Polyhedra_Library {
-  class LinExpression;
+
+class LinExpression;
+
 }
 
 #endif // !defined(_LinExpression_types_hh)

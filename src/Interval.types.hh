@@ -13,11 +13,13 @@ PURPOSE. */
 #define _Interval_types_hh 1
 
 namespace Parma_Polyhedra_Library {
-  class ExtendedRational;
-  class Boundary;
-  class LBoundary;
-  class UBoundary;
-  class Interval;
+
+class ExtendedRational;
+class Boundary;
+class LBoundary;
+class UBoundary;
+class Interval;
+
 }
 
 #endif // !defined(_Interval_types_hh)

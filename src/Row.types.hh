@@ -13,7 +13,9 @@ PURPOSE. */
 #define _Row_types_hh 1
 
 namespace Parma_Polyhedra_Library {
-  class Row;
+
+class Row;
+
 }
 
 #endif // !defined(_Row_types_hh)

@@ -13,7 +13,9 @@ PURPOSE. */
 #define _NNC_Polyhedron_types_hh 1
 
 namespace Parma_Polyhedra_Library {
-  class NNC_Polyhedron;
+
+class NNC_Polyhedron;
+
 }
 
 #endif // !defined(_NNC_Polyhedron_types_hh)

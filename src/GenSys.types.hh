@@ -13,7 +13,9 @@ PURPOSE. */
 #define _GenSys_types_hh 1
 
 namespace Parma_Polyhedra_Library {
-  class GenSys;
+
+class GenSys;
+
 }
 
 #endif // !defined(_GenSys_types_hh)

@@ -13,7 +13,9 @@ PURPOSE. */
 #define _SatRow_types_hh 1
 
 namespace Parma_Polyhedra_Library {
-  class SatRow;
+
+class SatRow;
+
 }
 
 #endif // !defined(_SatRow_types_hh)

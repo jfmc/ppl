@@ -13,7 +13,9 @@ PURPOSE. */
 #define _ConSys_types_hh 1
 
 namespace Parma_Polyhedra_Library {
-  class ConSys;
+
+class ConSys;
+
 }
 
 #endif // !defined(_ConSys_types_hh)

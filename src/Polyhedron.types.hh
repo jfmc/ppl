@@ -14,7 +14,9 @@ PURPOSE. */
 
 //! The entire library is confined into this namespace.
 namespace Parma_Polyhedra_Library {
-  class Polyhedron;
+
+class Polyhedron;
+
 }
 
 //! The standard C++ namespace.

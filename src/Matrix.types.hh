@@ -13,7 +13,9 @@ PURPOSE. */
 #define _Matrix_types_hh 1
 
 namespace Parma_Polyhedra_Library {
-  class Matrix;
+
+class Matrix;
+
 }
 
 #endif // !defined(_Matrix_types_hh)

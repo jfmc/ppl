@@ -13,7 +13,9 @@ PURPOSE. */
 #define _C_Polyhedron_types_hh 1
 
 namespace Parma_Polyhedra_Library {
-  class C_Polyhedron;
+
+class C_Polyhedron;
+
 }
 
 #endif // !defined(_C_Polyhedron_types_hh)

@@ -15,8 +15,10 @@ PURPOSE. */
 #include <gmpxx.h>
 
 namespace Parma_Polyhedra_Library {
-  //! See the GMP's manual available at http://swox.com/gmp/ .
-  typedef mpz_class Integer;
+
+//! See the GMP's manual available at http://swox.com/gmp/ .
+typedef mpz_class Integer;
+
 }
 
 #endif // !defined(_Integer_types_hh)

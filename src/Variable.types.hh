@@ -13,7 +13,9 @@ PURPOSE. */
 #define _Variable_types_hh 1
 
 namespace Parma_Polyhedra_Library {
-  class Variable;
+
+class Variable;
+
 }
 
 #endif // !defined(_Variable_types_hh)

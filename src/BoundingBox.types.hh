@@ -13,7 +13,9 @@ PURPOSE. */
 #define _BoundingBox_types_hh 1
 
 namespace Parma_Polyhedra_Library {
-  class BoundingBox;
+
+class BoundingBox;
+
 }
 
 #endif // !defined(_BoundingBox_types_hh)

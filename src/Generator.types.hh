@@ -13,7 +13,9 @@ PURPOSE. */
 #define _Generator_types_hh 1
 
 namespace Parma_Polyhedra_Library {
-  class Generator;
+
+class Generator;
+
 }
 
 #endif // !defined(_Generator_types_hh)
