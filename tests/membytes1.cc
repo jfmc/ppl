@@ -30,7 +30,10 @@ using namespace Parma_Polyhedra_Library;
 #define NOISY 0
 #endif
 
-void
+static void loo(...) {
+}
+
+static void
 add_constraint(C_Polyhedron& ph, const Constraint& c) {
   const memory_size_type ph_memory_before = ph.total_memory_in_bytes();
   const memory_size_type c_memory = c.total_memory_in_bytes();
@@ -41,10 +44,12 @@ add_constraint(C_Polyhedron& ph, const Constraint& c) {
        << " + " << c_memory
        << " -> " << ph_memory_after
        << endl;
+#else
+  loo(ph_memory_before, c_memory, ph_memory_after);
 #endif
 }
 
-void
+static void
 minimize(C_Polyhedron& ph) {
   const memory_size_type ph_memory_before = ph.total_memory_in_bytes();
   (void) ph.minimized_generators();
@@ -53,6 +58,8 @@ minimize(C_Polyhedron& ph) {
   cout << ph_memory_before
        << " -m-> " << ph_memory_after
        << endl;
+#else
+  loo(ph_memory_before, ph_memory_after);
 #endif
 }
 
@@ -107,6 +114,9 @@ main() TRY {
        << "ph.external_memory_in_bytes() = " << ph_external_size << endl
        << "cs.external_memory_in_bytes() = " << cs_external_size << endl
        << "gs.external_memory_in_bytes() = " << gs_external_size << endl;
+#else
+  loo(ph_total_size, cs_total_size, gs_total_size,
+      ph_external_size, cs_external_size, gs_external_size);
 #endif
 
   return 0;
