@@ -25,6 +25,8 @@ site: http://www.cs.unipr.it/ppl/ . */
 #define _LinExpression_defs_hh 1
 
 #include "LinExpression.types.hh"
+#include "Constraint.types.hh"
+#include "Generator.types.hh"
 #include "Row.defs.hh"
 #include "Variable.types.hh"
 #include <cstddef>
@@ -129,8 +131,8 @@ private:
   //! the constructor LinExpression(const Integer& n).
   LinExpression(size_t sz, bool);
 
-  friend class Constraint;
-  friend class Generator;
+  friend class Parma_Polyhedra_Library::Constraint;
+  friend class Parma_Polyhedra_Library::Generator;
 
   //! Returns the linear expression \p e1 + \p e2.
   friend LinExpression
