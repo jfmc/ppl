@@ -22,19 +22,29 @@ USA.
 For the most up-to-date information see the Parma Polyhedra Library
 site: http://www.cs.unipr.it/ppl/ . */
 
+#include "config.h"
 #include "ppl_c.h"
-#include <sys/resource.h>
 #include <gmp.h>
 #include <glpk.h>
-#include <getopt.h>
 #include <stdio.h>
 #include <assert.h>
 #include <time.h>
 #include <stdarg.h>
 #include <stdlib.h>
 #include <errno.h>
-#include <signal.h>
 #include <string.h>
+
+#ifdef HAVE_GETOPT_H
+# include <getopt.h>
+#endif
+
+#ifdef HAVE_SIGNAL_H
+# include <signal.h>
+#endif
+
+#ifdef HAVE_SYS_RESOURCE_H
+# include <sys/resource.h>
+#endif
 
 #if PPL_VERSION_MAJOR == 0 && PPL_VERSION_MINOR < 6
 # error "PPL version 0.6 or following is required"
@@ -691,7 +701,7 @@ main(int argc, char* argv[]) {
   if (ppl_io_set_variable_output_function(variable_output_function) < 0)
     fatal("cannot install the custom variable output function");
 
-  /* Process command line options */
+  /* Process command line options. */
   process_options(argc, argv);
 
   /* Initialize globals. */
