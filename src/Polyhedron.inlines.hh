@@ -704,7 +704,6 @@ Polyhedron::map_dimensions(const PartialFunction& pfunc) {
   // If control gets here, then `pfunc' is not a permutation and some
   // dimensions must be projected away.
 
-  // TODO: the implementation below is just an executable specification.
   // If there are pending constraints, using `generators()' we process them.
   const GenSys& old_gensys = generators();
 
@@ -716,18 +715,24 @@ Polyhedron::map_dimensions(const PartialFunction& pfunc) {
     return;
   }
 
+  // Make a local copy of the partial function.
+  std::vector<dimension_type> pfunc_maps(space_dim, not_a_dimension());
+  for (dimension_type j = space_dim; j-- > 0; ) {
+    dimension_type pfunc_j;
+    if (pfunc.maps(j, pfunc_j))
+      pfunc_maps[j] = pfunc_j;
+  }
+
   GenSys new_gensys;
   for (GenSys::const_iterator i = old_gensys.begin(),
 	 old_gensys_end = old_gensys.end(); i != old_gensys_end; ++i) {
     const Generator& old_g = *i;
     LinExpression e(0 * Variable(new_space_dimension-1));
     bool all_zeroes = true;
-    for (dimension_type index = 0; index < space_dim; ++index) {
-      dimension_type new_index;
-      if (old_g.coefficient(Variable(index)) != 0
-	  && pfunc.maps(index, new_index)) {
-	e += Variable(new_index)
-	  * old_g.coefficient(Variable(index));
+    for (dimension_type j = space_dim; j-- > 0; ) {
+      if (old_g.coefficient(Variable(j)) != 0
+	  && pfunc_maps[j] != not_a_dimension()) {
+	e += Variable(pfunc_maps[j]) * old_g.coefficient(Variable(j));
 	all_zeroes = false;
       }
     }
@@ -741,12 +746,11 @@ Polyhedron::map_dimensions(const PartialFunction& pfunc) {
 	new_gensys.insert(ray(e));
       break;
     case Generator::POINT:
-      // Note: a point in the origin has all zero homogeneous coefficients.
+      // A point in the origin has all zero homogeneous coefficients.
       new_gensys.insert(point(e, old_g.divisor()));
       break;
     case Generator::CLOSURE_POINT:
-      // Note: a closure point in the origin has all zero homogeneous
-      // coefficients.
+      // A closure point in the origin has all zero homogeneous coefficients.
       new_gensys.insert(closure_point(e, old_g.divisor()));
       break;
     }

@@ -1477,7 +1477,7 @@ public:
     \endcode
     returns the maximum value that belongs to the codomain
     of the partial function.
-    The <CODE>max_in_codomain()</CODE> method is called once.
+    The <CODE>max_in_codomain()</CODE> method is called at most once.
     \code
       bool maps(dimension_type i, dimension_type& j) const
     \endcode
@@ -1486,13 +1486,8 @@ public:
     assigned to \p j and <CODE>true</CODE> is returned.
     If \f$f\f$ is undefined in \f$k\f$, then <CODE>false</CODE> is
     returned.
-    If the partial function is total the method is called \f$n\f$ times
-    where \f$n\f$ is the dimension of the vector space of the domain of
-    the partial function;
-    if the partial function is not total and the polyhedron is
-    empty then this method will not be called;
-    otherwise the number of times the method is called is bounded by
-    \f$n\f$ times the number of generators defining the polyhedron.
+    This method is called at most \f$n\f$ times, where \f$n\f$ is the
+    dimension of the vector space enclosing the polyhedron.
 
     The result is undefined if \p pfunc does not encode a partial
     function with the properties described in the
