@@ -1,21 +1,21 @@
 *** ppl_lpsol -v --min -oobtained afiro.mps
 Constraints:
-X01 - X02 - X03 = 
+X01 - X02 - X03 = 0
 *** ppl_lpsol -v --max -oobtained afiro.mps
 Constraints:
-X01 - X02 - X03 = 
+X01 - X02 - X03 = 0
 *** ppl_lpsol -v --min -oobtained bgprtr.mps
 Constraints:
 *** ppl_lpsol -v --max -oobtained bgprtr.mps
 Constraints:
 *** ppl_lpsol -v --min -oobtained ex1.mps
 Constraints:
-þ*x1 - x2 >= û
-*x1 - *x2 >= û
-x1 >= 
-x2 >= 
+-2*x1 - x2 >= -5
+4*x1 - 4*x2 >= -5
+x1 >= 0
+x2 >= 0
 Objective function:
-x1 - *x2
+x1 - 2*x2
 Minimizing.
 Optimum value:
 -3.75
@@ -24,12 +24,12 @@ x1 = 1.25
 x2 = 2.5
 *** ppl_lpsol -v --max -oobtained ex1.mps
 Constraints:
-þ*x1 - x2 >= û
-*x1 - *x2 >= û
-x1 >= 
-x2 >= 
+-2*x1 - x2 >= -5
+4*x1 - 4*x2 >= -5
+x1 >= 0
+x2 >= 0
 Objective function:
-x1 - *x2
+x1 - 2*x2
 Maximizing.
 Optimum value:
 2.5
@@ -38,28 +38,28 @@ x1 = 2.5
 x2 = 0
 *** ppl_lpsol -v --min -oobtained sample.mps
 Constraints:
--x1 - x2 - x3 >= œ
+-x1 - x2 - x3 >= -100
 *** ppl_lpsol -v --max -oobtained sample.mps
 Constraints:
--x1 - x2 - x3 >= œ
+-x1 - x2 - x3 >= -100
 *** ppl_lpsol -v --min -oobtained unboundedmin.mps
 Constraints:
-þ*x1 + x2 >= 
-x1 + x2 >= 
-x1 >= 
-x2 >= 
+-2*x1 + x2 >= 0
+x1 + x2 >= 0
+x1 >= 0
+x2 >= 0
 Objective function:
-x1 - *x2
+x1 - 2*x2
 Minimizing.
 Unbounded problem.
 *** ppl_lpsol -v --max -oobtained unboundedmin.mps
 Constraints:
-þ*x1 + x2 >= 
-x1 + x2 >= 
-x1 >= 
-x2 >= 
+-2*x1 + x2 >= 0
+x1 + x2 >= 0
+x1 >= 0
+x2 >= 0
 Objective function:
-x1 - *x2
+x1 - 2*x2
 Maximizing.
 Optimum value:
 0
