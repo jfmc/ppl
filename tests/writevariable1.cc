@@ -1,4 +1,4 @@
-/* Test operator<<(std::ostream& s, const Variable& v)
+/* Test operator<<(std::ostream& s, Variable v)
    and the related machinery.
    Copyright (C) 2001-2003 Roberto Bagnara <bagnara@cs.unipr.it>
 
@@ -59,7 +59,7 @@ read_variables_and_check(const string& s) {
 }
 
 static void
-my_output_function(ostream& s, const Variable& v) {
+my_output_function(ostream& s, const Variable v) {
   s << "x" << v.id();
 }
 
