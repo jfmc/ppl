@@ -28,7 +28,7 @@ site: http://www.cs.unipr.it/ppl/ . */
 #include "Linear_Row.defs.hh"
 #include "Variable.defs.hh"
 #include "Linear_Expression.defs.hh"
-#include "ConSys.defs.hh"
+#include "Constraint_System.defs.hh"
 #include "Polyhedron.types.hh"
 #include <iosfwd>
 
@@ -295,8 +295,8 @@ public:
   bool OK() const;
 
 private:
-  friend class Parma_Polyhedra_Library::ConSys;
-  friend class Parma_Polyhedra_Library::ConSys::const_iterator;
+  friend class Parma_Polyhedra_Library::Constraint_System;
+  friend class Parma_Polyhedra_Library::Constraint_System::const_iterator;
   friend class Parma_Polyhedra_Library::Polyhedron;
   // FIXME: the following friend declaration is only to grant access to
   // GenSys::satisfied_by_all_generators().

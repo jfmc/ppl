@@ -47,7 +47,7 @@ main() TRY {
 
   C_Polyhedron known_result = ph1;
 
-  ConSys cs = ph1.constraints();
+  Constraint_System cs = ph1.constraints();
   C_Polyhedron ph2(cs);
 
   int retval = (ph2 == known_result) ? 0 : 1;

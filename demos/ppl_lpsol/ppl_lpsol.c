@@ -336,7 +336,7 @@ variable_output_function(ppl_dimension_type var) {
 static void
 add_constraints(ppl_Linear_Expression_t ppl_le,
 		int type, mpq_t rational_lb, mpq_t rational_ub, mpz_t den_lcm,
-		ppl_ConSys_t ppl_cs) {
+		ppl_Constraint_System_t ppl_cs) {
   ppl_Constraint_t ppl_c;
   ppl_Linear_Expression_t ppl_le2;
   switch (type) {
@@ -355,7 +355,7 @@ add_constraints(ppl_Linear_Expression_t ppl_le,
       ppl_io_fprint_Constraint(output_file, ppl_c);
       fprintf(output_file, "\n");
     }
-    ppl_ConSys_insert_Constraint(ppl_cs, ppl_c);
+    ppl_Constraint_System_insert_Constraint(ppl_cs, ppl_c);
     ppl_delete_Constraint(ppl_c);
     break;
 
@@ -371,7 +371,7 @@ add_constraints(ppl_Linear_Expression_t ppl_le,
       ppl_io_fprint_Constraint(output_file, ppl_c);
       fprintf(output_file, "\n");
     }
-    ppl_ConSys_insert_Constraint(ppl_cs, ppl_c);
+    ppl_Constraint_System_insert_Constraint(ppl_cs, ppl_c);
     ppl_delete_Constraint(ppl_c);
     break;
 
@@ -389,7 +389,7 @@ add_constraints(ppl_Linear_Expression_t ppl_le,
       ppl_io_fprint_Constraint(output_file, ppl_c);
       fprintf(output_file, "\n");
     }
-    ppl_ConSys_insert_Constraint(ppl_cs, ppl_c);
+    ppl_Constraint_System_insert_Constraint(ppl_cs, ppl_c);
     ppl_delete_Constraint(ppl_c);
 
     mpz_mul(tmp_z, den_lcm, mpq_numref(rational_ub));
@@ -404,7 +404,7 @@ add_constraints(ppl_Linear_Expression_t ppl_le,
       ppl_io_fprint_Constraint(output_file, ppl_c);
       fprintf(output_file, "\n");
     }
-    ppl_ConSys_insert_Constraint(ppl_cs, ppl_c);
+    ppl_Constraint_System_insert_Constraint(ppl_cs, ppl_c);
     ppl_delete_Constraint(ppl_c);
     break;
 
@@ -420,7 +420,7 @@ add_constraints(ppl_Linear_Expression_t ppl_le,
       ppl_io_fprint_Constraint(output_file, ppl_c);
       fprintf(output_file, "\n");
     }
-    ppl_ConSys_insert_Constraint(ppl_cs, ppl_c);
+    ppl_Constraint_System_insert_Constraint(ppl_cs, ppl_c);
     ppl_delete_Constraint(ppl_c);
     break;
 
@@ -433,7 +433,7 @@ add_constraints(ppl_Linear_Expression_t ppl_le,
 static void
 solve(char* file_name) {
   ppl_Polyhedron_t ppl_ph;
-  ppl_ConSys_t ppl_cs;
+  ppl_Constraint_System_t ppl_cs;
   ppl_const_Generator_t ppl_const_g;
   ppl_Linear_Expression_t ppl_le;
   int dimension, row, num_rows, column, nz, i, type;
@@ -474,7 +474,7 @@ solve(char* file_name) {
   rational_coefficient = (mpq_t*) malloc((dimension+1)*sizeof(mpq_t));
 
 
-  ppl_new_ConSys(&ppl_cs);
+  ppl_new_Constraint_System(&ppl_cs);
 
   mpq_init(rational_lb);
   mpq_init(rational_ub);
@@ -556,8 +556,8 @@ solve(char* file_name) {
   mpq_clear(rational_lb);
 
   /* Create the polyhedron and get rid of the constraint system. */
-  ppl_new_C_Polyhedron_recycle_ConSys(&ppl_ph, ppl_cs);
-  ppl_delete_ConSys(ppl_cs);
+  ppl_new_C_Polyhedron_recycle_Constraint_System(&ppl_ph, ppl_cs);
+  ppl_delete_Constraint_System(ppl_cs);
 
   if (print_timings) {
     fprintf(stderr, "Time to create a PPL polyhedron: ");

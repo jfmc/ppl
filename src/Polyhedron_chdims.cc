@@ -317,7 +317,7 @@ PPL::Polyhedron::concatenate_assign(const Polyhedron& y) {
   }
 
   // TODO: this implementation is just an executable specification.
-  ConSys cs = y.constraints();
+  Constraint_System cs = y.constraints();
 
   // The constraints of `x' (possibly with pending rows) are required.
   if (has_pending_generators())
@@ -580,9 +580,9 @@ PPL::Polyhedron::expand_space_dimension(Variable var, dimension_type m) {
   add_space_dimensions_and_embed(m);
 
   const dimension_type src_d = var.id();
-  const ConSys& cs = constraints();
-  ConSys new_constraints;
-  for(ConSys::const_iterator i = cs.begin(),
+  const Constraint_System& cs = constraints();
+  Constraint_System new_constraints;
+  for(Constraint_System::const_iterator i = cs.begin(),
 	cs_end = cs.end(); i != cs_end; ++i) {
     const Constraint& c = *i;
 

@@ -35,7 +35,7 @@ error1() {
   Variable x(0);
   Variable y(1);
 
-  ConSys cs;
+  Constraint_System cs;
   cs.insert(x - y > 0);
   cs.insert(x >= 0);
 
@@ -141,7 +141,7 @@ error5() {
   ph.add_constraint(x >= 2);
   ph.add_constraint(y >= 2);
 
-  ConSys cs;
+  Constraint_System cs;
   cs.insert(x == y);
   cs.insert(x < 5);
 
@@ -168,7 +168,7 @@ error6() {
   Variable y(1);
 
   C_Polyhedron ph(3);
-  ConSys cs;
+  Constraint_System cs;
   cs.insert(x > 3);
   cs.insert(x > y);
 
@@ -196,7 +196,7 @@ error7() {
 
   C_Polyhedron ph(3);
 
-  ConSys cs;
+  Constraint_System cs;
   cs.insert(x > 2);
   cs.insert(x == y);
   NNC_Polyhedron qh(cs);
@@ -538,7 +538,7 @@ error17() {
   ph2.add_constraint(A <= 4);
   ph2.add_constraint(A - B >= 0);
 
-  ConSys cs;
+  Constraint_System cs;
   cs.insert(A <= 8);
 
 #if NOISY
@@ -580,7 +580,7 @@ error18() {
   ph2.add_constraint(A <= 4);
   ph2.add_constraint(A - B >= 0);
 
-  ConSys cs;
+  Constraint_System cs;
   cs.insert(A < 8);
 
 #if NOISY
@@ -686,7 +686,7 @@ error21() {
   ph1.add_constraint(A >= 0);
   ph1.add_constraint(A - B > 0);
 
-  const ConSys cs = ph1.constraints();
+  const Constraint_System cs = ph1.constraints();
 
 #if NOISY
   print_constraints(cs, "*** cs ***");
@@ -867,7 +867,7 @@ error27() {
   ph2.add_constraint(A <= 4);
   ph2.add_constraint(A - B >= 0);
 
-  ConSys cs;
+  Constraint_System cs;
   cs.insert(A < 8);
 
 #if NOISY

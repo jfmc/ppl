@@ -426,7 +426,7 @@ error15() {
     // C_Polyhedron::add_constraints_and_minimize(cs): it is illegal to
     // add a system of constraints that is not dimensional incompatible
     // with the polyhedron.
-    ConSys cs;
+    Constraint_System cs;
     cs.insert(x - y >= 0);
     ph.add_constraints_and_minimize(cs);
     exit(1);
@@ -477,7 +477,7 @@ error17() {
     // C_Polyhedron::add_constraints(cs): it is illegal to add a system
     // of constraints that is dimensional incompatible with the
     // polyhedron.
-    ConSys cs;
+    Constraint_System cs;
     cs.insert(x - y == 0);
     ph.add_constraints(cs);
     exit(1);
@@ -662,7 +662,7 @@ error24() {
   C_Polyhedron ph1(1);
   C_Polyhedron ph2(2);
 
-  ConSys cs;
+  Constraint_System cs;
   cs.insert(y <= 9);
 
   try {
@@ -699,7 +699,7 @@ error25() {
   ph2.add_constraint(x >= 0);
   ph2.add_constraint(x <= 5);
 
-  ConSys cs;
+  Constraint_System cs;
   cs.insert(z <= 5);
 
   try {

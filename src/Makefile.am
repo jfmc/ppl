@@ -120,7 +120,7 @@ Linear_Expression.types.hh \
 Linear_System.types.hh \
 Saturation_Row.types.hh \
 Saturation_Matrix.types.hh \
-ConSys.types.hh \
+Constraint_System.types.hh \
 GenSys.types.hh \
 Poly_Con_Relation.types.hh \
 Poly_Gen_Relation.types.hh \
@@ -163,13 +163,13 @@ Linear_System.defs.hh \
 Linear_System.inlines.hh \
 Saturation_Matrix.defs.hh \
 Saturation_Matrix.inlines.hh \
-ConSys.defs.hh \
+Constraint_System.defs.hh \
 GenSys.defs.hh \
 Linear_Expression.defs.hh \
 Linear_Expression.inlines.hh \
 Constraint.defs.hh \
 Constraint.inlines.hh \
-ConSys.inlines.hh \
+Constraint_System.inlines.hh \
 Generator.defs.hh \
 Generator.inlines.hh \
 GenSys.inlines.hh \
@@ -206,7 +206,7 @@ algorithms.hh
 libppl_la_SOURCES = \
 Bounding_Box.cc \
 Constraint.cc \
-ConSys.cc \
+Constraint_System.cc \
 GenSys.cc \
 Generator.cc \
 Init.cc \
@@ -248,7 +248,7 @@ Integer.types.hh \
 Variable.types.hh \
 Linear_Expression.types.hh \
 Constraint.types.hh \
-ConSys.types.hh \
+Constraint_System.types.hh \
 Generator.types.hh \
 GenSys.types.hh \
 Poly_Con_Relation.types.hh \
@@ -261,7 +261,7 @@ NNC_Polyhedron.types.hh \
 Variable.defs.hh \
 Linear_Expression.defs.hh \
 Constraint.defs.hh \
-ConSys.defs.hh \
+Constraint_System.defs.hh \
 Generator.defs.hh \
 GenSys.defs.hh \
 Poly_Con_Relation.defs.hh \

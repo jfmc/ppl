@@ -26,7 +26,7 @@ site: http://www.cs.unipr.it/ppl/ . */
 
 #include "Polyhedra_Powerset.types.hh"
 #include "BHRZ03_Certificate.types.hh"
-#include "ConSys.types.hh"
+#include "Constraint_System.types.hh"
 #include "Constraint.types.hh"
 #include "Polyhedron.defs.hh"
 #include "Variable.defs.hh"
@@ -81,7 +81,7 @@ public:
   explicit Polyhedra_Powerset(const Polyhedra_Powerset<QH>& y);
 
   //! Creates a Polyhedra_Powerset with the same information contents as \p cs.
-  explicit Polyhedra_Powerset(const ConSys& cs);
+  explicit Polyhedra_Powerset(const Constraint_System& cs);
 
   //@} // Constructors and Destructor
 
@@ -165,7 +165,7 @@ public:
     Thrown if \p *this and \p cs are topology-incompatible or
     dimension-incompatible.
   */
-  void add_constraints(const ConSys& cs);
+  void add_constraints(const Constraint_System& cs);
 
   //! \brief
   //! Intersects \p *this with the constraints in \p cs,
@@ -181,7 +181,7 @@ public:
     Thrown if \p *this and \p cs are topology-incompatible or
     dimension-incompatible.
   */
-  bool add_constraints_and_minimize(const ConSys& cs);
+  bool add_constraints_and_minimize(const Constraint_System& cs);
 
   //! \brief
   //! Assign to \p *this the result of (recursively) merging together

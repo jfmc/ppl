@@ -27,7 +27,7 @@ site: http://www.cs.unipr.it/ppl/ . */
 #include "Integer.defs.hh"
 #include "Linear_Expression.defs.hh"
 #include "Constraint.defs.hh"
-#include "ConSys.defs.hh"
+#include "Constraint_System.defs.hh"
 #include "Generator.defs.hh"
 #include "GenSys.defs.hh"
 #include "Polyhedron.defs.hh"
@@ -280,10 +280,10 @@ DECLARE_CONVERSIONS(Linear_Expression)
 
 DECLARE_CONVERSIONS(Constraint)
 
-DECLARE_CONVERSIONS(ConSys)
+DECLARE_CONVERSIONS(Constraint_System)
 
-typedef ConSys::const_iterator ConSys_const_iterator;
-DECLARE_CONVERSIONS(ConSys_const_iterator)
+typedef Constraint_System::const_iterator Constraint_System_const_iterator;
+DECLARE_CONVERSIONS(Constraint_System_const_iterator)
 
 DECLARE_CONVERSIONS(Generator)
 
@@ -624,55 +624,55 @@ CATCH_ALL
 
 
 int
-ppl_new_ConSys(ppl_ConSys_t* pcs) try {
-  *pcs = to_nonconst(new ConSys());
+ppl_new_Constraint_System(ppl_Constraint_System_t* pcs) try {
+  *pcs = to_nonconst(new Constraint_System());
   return 0;
 }
 CATCH_ALL
 
 int
-ppl_new_ConSys_zero_dim_empty(ppl_ConSys_t* pcs) try {
-  *pcs = to_nonconst(new ConSys(ConSys::zero_dim_empty()));
+ppl_new_Constraint_System_zero_dim_empty(ppl_Constraint_System_t* pcs) try {
+  *pcs = to_nonconst(new Constraint_System(Constraint_System::zero_dim_empty()));
   return 0;
 }
 CATCH_ALL
 
 
 int
-ppl_new_ConSys_from_Constraint(ppl_ConSys_t* pcs,
+ppl_new_Constraint_System_from_Constraint(ppl_Constraint_System_t* pcs,
 			       ppl_const_Constraint_t c) try {
   const Constraint& cc = *to_const(c);
-  *pcs = to_nonconst(new ConSys(cc));
+  *pcs = to_nonconst(new Constraint_System(cc));
   return 0;
 }
 CATCH_ALL
 
 int
-ppl_new_ConSys_from_ConSys(ppl_ConSys_t* pcs, ppl_const_ConSys_t cs) try {
-  const ConSys& ccs = *to_const(cs);
-  *pcs = to_nonconst(new ConSys(ccs));
+ppl_new_Constraint_System_from_Constraint_System(ppl_Constraint_System_t* pcs, ppl_const_Constraint_System_t cs) try {
+  const Constraint_System& ccs = *to_const(cs);
+  *pcs = to_nonconst(new Constraint_System(ccs));
   return 0;
 }
 CATCH_ALL
 
 int
-ppl_delete_ConSys(ppl_const_ConSys_t cs) try {
+ppl_delete_Constraint_System(ppl_const_Constraint_System_t cs) try {
   delete to_const(cs);
   return 0;
 }
 CATCH_ALL
 
 int
-ppl_assign_ConSys_from_ConSys(ppl_ConSys_t dst, ppl_const_ConSys_t src) try {
-  const ConSys& ssrc = *to_const(src);
-  ConSys& ddst = *to_nonconst(dst);
+ppl_assign_Constraint_System_from_Constraint_System(ppl_Constraint_System_t dst, ppl_const_Constraint_System_t src) try {
+  const Constraint_System& ssrc = *to_const(src);
+  Constraint_System& ddst = *to_nonconst(dst);
   ddst = ssrc;
   return 0;
 }
 CATCH_ALL
 
 int
-ppl_ConSys_space_dimension(ppl_const_ConSys_t cs,
+ppl_Constraint_System_space_dimension(ppl_const_Constraint_System_t cs,
 			   ppl_dimension_type* m) try {
   *m = to_const(cs)->space_dimension();
   return 0;
@@ -680,46 +680,46 @@ ppl_ConSys_space_dimension(ppl_const_ConSys_t cs,
 CATCH_ALL
 
 int
-ppl_ConSys_clear(ppl_ConSys_t cs) try {
+ppl_Constraint_System_clear(ppl_Constraint_System_t cs) try {
   to_nonconst(cs)->clear();
   return 0;
 }
 CATCH_ALL
 
 int
-ppl_ConSys_insert_Constraint(ppl_ConSys_t cs, ppl_const_Constraint_t c) try {
+ppl_Constraint_System_insert_Constraint(ppl_Constraint_System_t cs, ppl_const_Constraint_t c) try {
   const Constraint& cc = *to_const(c);
-  ConSys& ccs = *to_nonconst(cs);
+  Constraint_System& ccs = *to_nonconst(cs);
   ccs.insert(cc);
   return 0;
 }
 CATCH_ALL
 
 int
-ppl_ConSys_OK(ppl_const_ConSys_t cs) try {
+ppl_Constraint_System_OK(ppl_const_Constraint_System_t cs) try {
   return to_const(cs)->OK() ? 1 : 0;
 }
 CATCH_ALL
 
 
 int
-ppl_new_ConSys_const_iterator(ppl_ConSys_const_iterator_t* pcit) try {
-  *pcit = to_nonconst(new ConSys::const_iterator());
+ppl_new_Constraint_System_const_iterator(ppl_Constraint_System_const_iterator_t* pcit) try {
+  *pcit = to_nonconst(new Constraint_System::const_iterator());
   return 0;
 }
 CATCH_ALL
 
 int
-ppl_new_ConSys_const_iterator_from_ConSys_const_iterator
-(ppl_ConSys_const_iterator_t* pcit,
- ppl_const_ConSys_const_iterator_t cit)  try {
-  *pcit = to_nonconst(new ConSys::const_iterator(*to_const(cit)));
+ppl_new_Constraint_System_const_iterator_from_Constraint_System_const_iterator
+(ppl_Constraint_System_const_iterator_t* pcit,
+ ppl_const_Constraint_System_const_iterator_t cit)  try {
+  *pcit = to_nonconst(new Constraint_System::const_iterator(*to_const(cit)));
   return 0;
 }
 CATCH_ALL
 
 int
-ppl_delete_ConSys_const_iterator(ppl_const_ConSys_const_iterator_t cit)
+ppl_delete_Constraint_System_const_iterator(ppl_const_Constraint_System_const_iterator_t cit)
   try {
   delete to_const(cit);
   return 0;
@@ -727,39 +727,39 @@ ppl_delete_ConSys_const_iterator(ppl_const_ConSys_const_iterator_t cit)
 CATCH_ALL
 
 int
-ppl_assign_ConSys_const_iterator_from_ConSys_const_iterator
-(ppl_ConSys_const_iterator_t dst,
- ppl_const_ConSys_const_iterator_t src) try {
-  const ConSys::const_iterator& ssrc = *to_const(src);
-  ConSys::const_iterator& ddst = *to_nonconst(dst);
+ppl_assign_Constraint_System_const_iterator_from_Constraint_System_const_iterator
+(ppl_Constraint_System_const_iterator_t dst,
+ ppl_const_Constraint_System_const_iterator_t src) try {
+  const Constraint_System::const_iterator& ssrc = *to_const(src);
+  Constraint_System::const_iterator& ddst = *to_nonconst(dst);
   ddst = ssrc;
   return 0;
 }
 CATCH_ALL
 
 int
-ppl_ConSys_begin(ppl_const_ConSys_t cs, ppl_ConSys_const_iterator_t cit)
+ppl_Constraint_System_begin(ppl_const_Constraint_System_t cs, ppl_Constraint_System_const_iterator_t cit)
   try {
-  const ConSys& ccs = *to_const(cs);
-  ConSys::const_iterator& ccit = *to_nonconst(cit);
+  const Constraint_System& ccs = *to_const(cs);
+  Constraint_System::const_iterator& ccit = *to_nonconst(cit);
   ccit = ccs.begin();
   return 0;
 }
 CATCH_ALL
 
 int
-ppl_ConSys_end(ppl_const_ConSys_t cs, ppl_ConSys_const_iterator_t cit) try {
-  const ConSys& ccs = *to_const(cs);
-  ConSys::const_iterator& ccit = *to_nonconst(cit);
+ppl_Constraint_System_end(ppl_const_Constraint_System_t cs, ppl_Constraint_System_const_iterator_t cit) try {
+  const Constraint_System& ccs = *to_const(cs);
+  Constraint_System::const_iterator& ccit = *to_nonconst(cit);
   ccit = ccs.end();
   return 0;
 }
 CATCH_ALL
 
 int
-ppl_ConSys_const_iterator_dereference(ppl_const_ConSys_const_iterator_t cit,
+ppl_Constraint_System_const_iterator_dereference(ppl_const_Constraint_System_const_iterator_t cit,
 				      ppl_const_Constraint_t* pc) try {
-  const ConSys::const_iterator& ccit = *to_const(cit);
+  const Constraint_System::const_iterator& ccit = *to_const(cit);
   const Constraint& c = *ccit;
   *pc = to_const(&c);
   return 0;
@@ -767,19 +767,19 @@ ppl_ConSys_const_iterator_dereference(ppl_const_ConSys_const_iterator_t cit,
 CATCH_ALL
 
 int
-ppl_ConSys_const_iterator_increment(ppl_ConSys_const_iterator_t cit) try {
-  ConSys::const_iterator& ccit = *to_nonconst(cit);
+ppl_Constraint_System_const_iterator_increment(ppl_Constraint_System_const_iterator_t cit) try {
+  Constraint_System::const_iterator& ccit = *to_nonconst(cit);
   ++ccit;
   return 0;
 }
 CATCH_ALL
 
 int
-ppl_ConSys_const_iterator_equal_test
-(ppl_const_ConSys_const_iterator_t x,
- ppl_const_ConSys_const_iterator_t y) try {
-  const ConSys::const_iterator& xx = *to_const(x);
-  const ConSys::const_iterator& yy = *to_const(y);
+ppl_Constraint_System_const_iterator_equal_test
+(ppl_const_Constraint_System_const_iterator_t x,
+ ppl_const_Constraint_System_const_iterator_t y) try {
+  const Constraint_System::const_iterator& xx = *to_const(x);
+  const Constraint_System::const_iterator& yy = *to_const(y);
   return (xx == yy) ? 1 : 0;
 }
 CATCH_ALL
@@ -1149,36 +1149,36 @@ ppl_new_NNC_Polyhedron_from_NNC_Polyhedron(ppl_Polyhedron_t* pph,
 CATCH_ALL
 
 int
-ppl_new_C_Polyhedron_from_ConSys(ppl_Polyhedron_t* pph,
-				 ppl_const_ConSys_t cs) try {
-  const ConSys& ccs = *to_const(cs);
+ppl_new_C_Polyhedron_from_Constraint_System(ppl_Polyhedron_t* pph,
+				 ppl_const_Constraint_System_t cs) try {
+  const Constraint_System& ccs = *to_const(cs);
   *pph = to_nonconst(new C_Polyhedron(ccs));
   return 0;
 }
 CATCH_ALL
 
 int
-ppl_new_C_Polyhedron_recycle_ConSys(ppl_Polyhedron_t* pph,
-				    ppl_ConSys_t cs) try {
-  ConSys& ccs = *to_nonconst(cs);
+ppl_new_C_Polyhedron_recycle_Constraint_System(ppl_Polyhedron_t* pph,
+				    ppl_Constraint_System_t cs) try {
+  Constraint_System& ccs = *to_nonconst(cs);
   *pph = to_nonconst(new C_Polyhedron(ccs));
   return 0;
 }
 CATCH_ALL
 
 int
-ppl_new_NNC_Polyhedron_from_ConSys(ppl_Polyhedron_t* pph,
-				   ppl_const_ConSys_t cs) try {
-  const ConSys& ccs = *to_const(cs);
+ppl_new_NNC_Polyhedron_from_Constraint_System(ppl_Polyhedron_t* pph,
+				   ppl_const_Constraint_System_t cs) try {
+  const Constraint_System& ccs = *to_const(cs);
   *pph = to_nonconst(new NNC_Polyhedron(ccs));
   return 0;
 }
 CATCH_ALL
 
 int
-ppl_new_NNC_Polyhedron_recycle_ConSys(ppl_Polyhedron_t* pph,
-				      ppl_ConSys_t cs) try {
-  ConSys& ccs = *to_nonconst(cs);
+ppl_new_NNC_Polyhedron_recycle_Constraint_System(ppl_Polyhedron_t* pph,
+				      ppl_Constraint_System_t cs) try {
+  Constraint_System& ccs = *to_nonconst(cs);
   *pph = to_nonconst(new NNC_Polyhedron(ccs));
   return 0;
 }
@@ -1427,11 +1427,11 @@ int
 ppl_Polyhedron_limited_BHRZ03_extrapolation_assign_with_tokens
 (ppl_Polyhedron_t x,
  ppl_const_Polyhedron_t y,
- ppl_const_ConSys_t cs,
+ ppl_const_Constraint_System_t cs,
  unsigned* tp) try {
   Polyhedron& xx = *to_nonconst(x);
   const Polyhedron& yy = *to_const(y);
-  const ConSys& ccs = *to_const(cs);
+  const Constraint_System& ccs = *to_const(cs);
   xx.limited_BHRZ03_extrapolation_assign(yy, ccs, tp);
   return 0;
 }
@@ -1440,7 +1440,7 @@ CATCH_ALL
 int
 ppl_Polyhedron_limited_BHRZ03_extrapolation_assign(ppl_Polyhedron_t x,
 						   ppl_const_Polyhedron_t y,
-						   ppl_const_ConSys_t cs) try {
+						   ppl_const_Constraint_System_t cs) try {
   return ppl_Polyhedron_limited_BHRZ03_extrapolation_assign_with_tokens(x, y,
 									cs, 0);
 }
@@ -1450,11 +1450,11 @@ int
 ppl_Polyhedron_bounded_BHRZ03_extrapolation_assign_with_tokens
 (ppl_Polyhedron_t x,
  ppl_const_Polyhedron_t y,
- ppl_const_ConSys_t cs,
+ ppl_const_Constraint_System_t cs,
  unsigned* tp) try {
   Polyhedron& xx = *to_nonconst(x);
   const Polyhedron& yy = *to_const(y);
-  const ConSys& ccs = *to_const(cs);
+  const Constraint_System& ccs = *to_const(cs);
   xx.bounded_BHRZ03_extrapolation_assign(yy, ccs, tp);
   return 0;
 }
@@ -1463,7 +1463,7 @@ CATCH_ALL
 int
 ppl_Polyhedron_bounded_BHRZ03_extrapolation_assign(ppl_Polyhedron_t x,
 						   ppl_const_Polyhedron_t y,
-						   ppl_const_ConSys_t cs) try {
+						   ppl_const_Constraint_System_t cs) try {
   return ppl_Polyhedron_bounded_BHRZ03_extrapolation_assign_with_tokens(x, y,
 									cs, 0);
 }
@@ -1491,11 +1491,11 @@ int
 ppl_Polyhedron_limited_H79_extrapolation_assign_with_tokens
 (ppl_Polyhedron_t x,
  ppl_const_Polyhedron_t y,
- ppl_const_ConSys_t cs,
+ ppl_const_Constraint_System_t cs,
  unsigned* tp) try {
   Polyhedron& xx = *to_nonconst(x);
   const Polyhedron& yy = *to_const(y);
-  const ConSys& ccs = *to_const(cs);
+  const Constraint_System& ccs = *to_const(cs);
   xx.limited_H79_extrapolation_assign(yy, ccs, tp);
   return 0;
 }
@@ -1504,7 +1504,7 @@ CATCH_ALL
 int
 ppl_Polyhedron_limited_H79_extrapolation_assign(ppl_Polyhedron_t x,
 						ppl_const_Polyhedron_t y,
-						ppl_const_ConSys_t cs) try {
+						ppl_const_Constraint_System_t cs) try {
   return ppl_Polyhedron_limited_H79_extrapolation_assign_with_tokens(x, y,
 								     cs, 0);
 }
@@ -1514,11 +1514,11 @@ int
 ppl_Polyhedron_bounded_H79_extrapolation_assign_with_tokens
 (ppl_Polyhedron_t x,
  ppl_const_Polyhedron_t y,
- ppl_const_ConSys_t cs,
+ ppl_const_Constraint_System_t cs,
  unsigned* tp) try {
   Polyhedron& xx = *to_nonconst(x);
   const Polyhedron& yy = *to_const(y);
-  const ConSys& ccs = *to_const(cs);
+  const Constraint_System& ccs = *to_const(cs);
   xx.bounded_H79_extrapolation_assign(yy, ccs, tp);
   return 0;
 }
@@ -1527,7 +1527,7 @@ CATCH_ALL
 int
 ppl_Polyhedron_bounded_H79_extrapolation_assign(ppl_Polyhedron_t x,
 						ppl_const_Polyhedron_t y,
-						ppl_const_ConSys_t cs) try {
+						ppl_const_Constraint_System_t cs) try {
   return ppl_Polyhedron_bounded_H79_extrapolation_assign_with_tokens(x, y,
 								     cs, 0);
 }
@@ -1545,9 +1545,9 @@ CATCH_ALL
 
 int
 ppl_Polyhedron_constraints(ppl_const_Polyhedron_t ph,
-			   ppl_const_ConSys_t* pcs) try {
+			   ppl_const_Constraint_System_t* pcs) try {
   const Polyhedron& pph = *to_const(ph);
-  const ConSys& cs = pph.constraints();
+  const Constraint_System& cs = pph.constraints();
   *pcs = to_const(&cs);
   return 0;
 }
@@ -1555,9 +1555,9 @@ CATCH_ALL
 
 int
 ppl_Polyhedron_minimized_constraints(ppl_const_Polyhedron_t ph,
-				     ppl_const_ConSys_t* pcs) try {
+				     ppl_const_Constraint_System_t* pcs) try {
   const Polyhedron& pph = *to_const(ph);
-  const ConSys& cs = pph.minimized_constraints();
+  const Constraint_System& cs = pph.minimized_constraints();
   *pcs = to_const(&cs);
   return 0;
 }
@@ -1625,9 +1625,9 @@ CATCH_ALL
 
 int
 ppl_Polyhedron_add_constraints(ppl_Polyhedron_t ph,
-			       ppl_const_ConSys_t cs) try {
+			       ppl_const_Constraint_System_t cs) try {
   Polyhedron& pph = *to_nonconst(ph);
-  const ConSys& ccs = *to_const(cs);
+  const Constraint_System& ccs = *to_const(cs);
   pph.add_constraints(ccs);
   return 0;
 }
@@ -1635,9 +1635,9 @@ CATCH_ALL
 
 int
 ppl_Polyhedron_add_constraints_and_minimize(ppl_Polyhedron_t ph,
-					    ppl_const_ConSys_t cs) try {
+					    ppl_const_Constraint_System_t cs) try {
   Polyhedron& pph = *to_nonconst(ph);
-  const ConSys& ccs = *to_const(cs);
+  const Constraint_System& ccs = *to_const(cs);
   return pph.add_constraints_and_minimize(ccs) ? 1 : 0;
 }
 CATCH_ALL
@@ -1663,9 +1663,9 @@ CATCH_ALL
 
 int
 ppl_Polyhedron_add_recycled_constraints(ppl_Polyhedron_t ph,
-					ppl_ConSys_t cs) try {
+					ppl_Constraint_System_t cs) try {
   Polyhedron& pph = *to_nonconst(ph);
-  ConSys& ccs = *to_nonconst(cs);
+  Constraint_System& ccs = *to_nonconst(cs);
   pph.add_recycled_constraints(ccs);
   return 0;
 }
@@ -1673,10 +1673,10 @@ CATCH_ALL
 
 int
 ppl_Polyhedron_add_recycled_constraints_and_minimize(ppl_Polyhedron_t ph,
-						     ppl_ConSys_t cs)
+						     ppl_Constraint_System_t cs)
 try {
   Polyhedron& pph = *to_nonconst(ph);
-  ConSys& ccs = *to_nonconst(cs);
+  Constraint_System& ccs = *to_nonconst(cs);
   return pph.add_recycled_constraints_and_minimize(ccs) ? 1 : 0;
 }
 CATCH_ALL
@@ -2182,7 +2182,7 @@ DEFINE_PRINT_FUNCTIONS(Linear_Expression)
 
 DEFINE_PRINT_FUNCTIONS(Constraint)
 
-DEFINE_PRINT_FUNCTIONS(ConSys)
+DEFINE_PRINT_FUNCTIONS(Constraint_System)
 
 DEFINE_PRINT_FUNCTIONS(Generator)
 

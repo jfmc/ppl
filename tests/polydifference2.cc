@@ -49,7 +49,7 @@ main() TRY {
   print_constraints(ph1, "*** ph1 ***");
 #endif
 
-  ConSys cs2;
+  Constraint_System cs2;
   cs2.insert(1*x + 0*y == 0);
 
   NNC_Polyhedron ph2(cs2);

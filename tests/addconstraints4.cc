@@ -43,7 +43,7 @@ main() TRY {
   print_constraints(ph, "*** ph ***");
 #endif
 
-  ConSys cs;
+  Constraint_System cs;
 
   C_Polyhedron computed_result(ph);
 

@@ -338,9 +338,9 @@ PPL_TYPE_DECLARATION(Linear_Expression);
 
 PPL_TYPE_DECLARATION(Constraint);
 
-PPL_TYPE_DECLARATION(ConSys);
+PPL_TYPE_DECLARATION(Constraint_System);
 
-PPL_TYPE_DECLARATION(ConSys_const_iterator);
+PPL_TYPE_DECLARATION(Constraint_System_const_iterator);
 
 PPL_TYPE_DECLARATION(Generator);
 
@@ -658,14 +658,14 @@ ppl_Constraint_OK __P((ppl_const_Constraint_t c));
   address \p pcs.
 */
 int
-ppl_new_ConSys __P((ppl_ConSys_t* pcs));
+ppl_new_Constraint_System __P((ppl_Constraint_System_t* pcs));
 
 /*! \brief
   Builds a zero-dimensional, unsatisfiable constraint system and
   writes an handle to it at address \p pcs.
 */
 int
-ppl_new_ConSys_zero_dim_empty __P((ppl_ConSys_t* pcs));
+ppl_new_Constraint_System_zero_dim_empty __P((ppl_Constraint_System_t* pcs));
 
 /*! \brief
   Builds the singleton constraint system containing only a copy of
@@ -673,7 +673,7 @@ ppl_new_ConSys_zero_dim_empty __P((ppl_ConSys_t* pcs));
   address \p pcs.
 */
 int
-ppl_new_ConSys_from_Constraint __P((ppl_ConSys_t* pcs,
+ppl_new_Constraint_System_from_Constraint __P((ppl_Constraint_System_t* pcs,
 				    ppl_const_Constraint_t c));
 
 /*! \brief
@@ -681,27 +681,27 @@ ppl_new_ConSys_from_Constraint __P((ppl_ConSys_t* pcs,
   for the newly created system at address \p pcs.
 */
 int
-ppl_new_ConSys_from_ConSys __P((ppl_ConSys_t* pcs, ppl_const_ConSys_t cs));
+ppl_new_Constraint_System_from_Constraint_System __P((ppl_Constraint_System_t* pcs, ppl_const_Constraint_System_t cs));
 
 /*! \brief
   Invalidates the handle \p cs: this makes sure the corresponding
   resources will eventually be released.
 */
 int
-ppl_delete_ConSys __P((ppl_const_ConSys_t cs));
+ppl_delete_Constraint_System __P((ppl_const_Constraint_System_t cs));
 
 /*! \brief
   Assigns a copy of the constraint system \p src to \p dst.
 */
 int
-ppl_assign_ConSys_from_ConSys __P((ppl_ConSys_t dst,
-				   ppl_const_ConSys_t src));
+ppl_assign_Constraint_System_from_Constraint_System __P((ppl_Constraint_System_t dst,
+				   ppl_const_Constraint_System_t src));
 
 /*! \brief
   Writes to \p m the dimension of the vector space enclosing \p cs.
 */
 int
-ppl_ConSys_space_dimension __P((ppl_const_ConSys_t cs,
+ppl_Constraint_System_space_dimension __P((ppl_const_Constraint_System_t cs,
 				ppl_dimension_type* m));
 
 /*! \brief
@@ -709,14 +709,14 @@ ppl_ConSys_space_dimension __P((ppl_const_ConSys_t cs,
   and sets its space dimension to 0.
 */
 int
-ppl_ConSys_clear __P((ppl_ConSys_t cs));
+ppl_Constraint_System_clear __P((ppl_Constraint_System_t cs));
 
 /*! \brief
   Inserts a copy of the constraint \p c into \p cs; the space
   dimension is increased, if necessary.
 */
 int
-ppl_ConSys_insert_Constraint __P((ppl_ConSys_t cs,
+ppl_Constraint_System_insert_Constraint __P((ppl_Constraint_System_t cs,
 				  ppl_const_Constraint_t c));
 
 /*! \brief
@@ -725,7 +725,7 @@ ppl_ConSys_insert_Constraint __P((ppl_ConSys_t cs,
   make some noise if \p cs is broken.  Useful for debugging purposes.
 */
 int
-ppl_ConSys_OK __P((ppl_const_ConSys_t c));
+ppl_Constraint_System_OK __P((ppl_const_Constraint_System_t c));
 
 
 /*! \brief
@@ -733,69 +733,69 @@ ppl_ConSys_OK __P((ppl_const_ConSys_t c));
   \p pcit.
 */
 int
-ppl_new_ConSys_const_iterator __P((ppl_ConSys_const_iterator_t* pcit));
+ppl_new_Constraint_System_const_iterator __P((ppl_Constraint_System_const_iterator_t* pcit));
 
 /*! \brief
   Builds a const iterator that is a copy of \p cit; writes an
   handle for the newly created const iterator at address \p pcit.
 */
 int
-ppl_new_ConSys_const_iterator_from_ConSys_const_iterator
-__P((ppl_ConSys_const_iterator_t* pcit,
-     ppl_const_ConSys_const_iterator_t cit));
+ppl_new_Constraint_System_const_iterator_from_Constraint_System_const_iterator
+__P((ppl_Constraint_System_const_iterator_t* pcit,
+     ppl_const_Constraint_System_const_iterator_t cit));
 
 /*! \brief
   Invalidates the handle \p cit: this makes sure the corresponding
   resources will eventually be released.
 */
 int
-ppl_delete_ConSys_const_iterator
-__P((ppl_const_ConSys_const_iterator_t cit));
+ppl_delete_Constraint_System_const_iterator
+__P((ppl_const_Constraint_System_const_iterator_t cit));
 
 /*! \brief
   Assigns a copy of the const iterator \p src to \p dst.
 */
 int
-ppl_assign_ConSys_const_iterator_from_ConSys_const_iterator
-__P((ppl_ConSys_const_iterator_t dst,
-     ppl_const_ConSys_const_iterator_t src));
+ppl_assign_Constraint_System_const_iterator_from_Constraint_System_const_iterator
+__P((ppl_Constraint_System_const_iterator_t dst,
+     ppl_const_Constraint_System_const_iterator_t src));
 
 /*! \brief
   Assigns to \p cit a const iterator "pointing" to the beginning of
   the constraint system \p cs.
 */
 int
-ppl_ConSys_begin __P((ppl_const_ConSys_t cs, ppl_ConSys_const_iterator_t cit));
+ppl_Constraint_System_begin __P((ppl_const_Constraint_System_t cs, ppl_Constraint_System_const_iterator_t cit));
 
 /*! \brief
   Assigns to \p cit a const iterator "pointing" past the end of the
   constraint system \p cs.
 */
 int
-ppl_ConSys_end __P((ppl_const_ConSys_t cs, ppl_ConSys_const_iterator_t cit));
+ppl_Constraint_System_end __P((ppl_const_Constraint_System_t cs, ppl_Constraint_System_const_iterator_t cit));
 
 /*! \brief
   Dereference \p cit writing a const handle to the resulting
   constraint at address \p pc.
 */
 int
-ppl_ConSys_const_iterator_dereference
-__P((ppl_const_ConSys_const_iterator_t cit, ppl_const_Constraint_t* pc));
+ppl_Constraint_System_const_iterator_dereference
+__P((ppl_const_Constraint_System_const_iterator_t cit, ppl_const_Constraint_t* pc));
 
 /*! \brief
   Increment \p cit so that it "points" to the next constraint.
 */
 int
-ppl_ConSys_const_iterator_increment __P((ppl_ConSys_const_iterator_t cit));
+ppl_Constraint_System_const_iterator_increment __P((ppl_Constraint_System_const_iterator_t cit));
 
 /*! \brief
   Returns a positive integer if the iterators corresponding to \p x and
   \p y are equal; return 0 if they are different.
 */
 int
-ppl_ConSys_const_iterator_equal_test
-__P((ppl_const_ConSys_const_iterator_t x,
-     ppl_const_ConSys_const_iterator_t y));
+ppl_Constraint_System_const_iterator_equal_test
+__P((ppl_const_Constraint_System_const_iterator_t x,
+     ppl_const_Constraint_System_const_iterator_t y));
 
 /*@}*/ /* Functions Related to Constraint Systems */
 
@@ -1182,8 +1182,8 @@ ppl_new_NNC_Polyhedron_from_NNC_Polyhedron __P((ppl_Polyhedron_t* pph,
   The new polyhedron will inherit the space dimension of \p cs.
 */
 int
-ppl_new_C_Polyhedron_from_ConSys __P((ppl_Polyhedron_t* pph,
-				      ppl_const_ConSys_t cs));
+ppl_new_C_Polyhedron_from_Constraint_System __P((ppl_Polyhedron_t* pph,
+				      ppl_const_Constraint_System_t cs));
 
 /*! \brief
   Builds a new closed polyhedron recycling the system of constraints
@@ -1198,8 +1198,8 @@ ppl_new_C_Polyhedron_from_ConSys __P((ppl_Polyhedron_t* pph,
   upon return, no assumption can be made on its value.
 */
 int
-ppl_new_C_Polyhedron_recycle_ConSys __P((ppl_Polyhedron_t* pph,
-					 ppl_ConSys_t cs));
+ppl_new_C_Polyhedron_recycle_Constraint_System __P((ppl_Polyhedron_t* pph,
+					 ppl_Constraint_System_t cs));
 
 /*! \brief
   Builds a new NNC polyhedron from the system of constraints
@@ -1209,8 +1209,8 @@ ppl_new_C_Polyhedron_recycle_ConSys __P((ppl_Polyhedron_t* pph,
   The new polyhedron will inherit the space dimension of \p cs.
 */
 int
-ppl_new_NNC_Polyhedron_from_ConSys __P((ppl_Polyhedron_t* pph,
-					ppl_const_ConSys_t cs));
+ppl_new_NNC_Polyhedron_from_Constraint_System __P((ppl_Polyhedron_t* pph,
+					ppl_const_Constraint_System_t cs));
 
 /*! \brief
   Builds a new NNC polyhedron recycling the system of constraints
@@ -1225,8 +1225,8 @@ ppl_new_NNC_Polyhedron_from_ConSys __P((ppl_Polyhedron_t* pph,
   upon return, no assumption can be made on its value.
 */
 int
-ppl_new_NNC_Polyhedron_recycle_ConSys __P((ppl_Polyhedron_t* pph,
-					   ppl_ConSys_t cs));
+ppl_new_NNC_Polyhedron_recycle_Constraint_System __P((ppl_Polyhedron_t* pph,
+					   ppl_Constraint_System_t cs));
 
 /*! \brief
   Builds a new closed polyhedron from the system of generators
@@ -1446,7 +1446,7 @@ ppl_Polyhedron_affine_dimension __P((ppl_const_Polyhedron_t ph));
 */
 int
 ppl_Polyhedron_constraints __P((ppl_const_Polyhedron_t ph,
-				ppl_const_ConSys_t* pcs));
+				ppl_const_Constraint_System_t* pcs));
 
 /*! \brief
   Writes a const handle to the minimized constraint system defining the
@@ -1454,7 +1454,7 @@ ppl_Polyhedron_constraints __P((ppl_const_Polyhedron_t ph,
 */
 int
 ppl_Polyhedron_minimized_constraints __P((ppl_const_Polyhedron_t ph,
-					  ppl_const_ConSys_t* pcs));
+					  ppl_const_Constraint_System_t* pcs));
 
 /*! \brief
   Writes a const handle to the generator system defining the
@@ -1746,7 +1746,7 @@ ppl_Polyhedron_add_generator_and_minimize __P((ppl_Polyhedron_t ph,
 */
 int
 ppl_Polyhedron_add_constraints __P((ppl_Polyhedron_t ph,
-				    ppl_const_ConSys_t cs));
+				    ppl_const_Constraint_System_t cs));
 
 /*! \brief
   Adds a copy of the system of constraints \p cs to the system of
@@ -1756,7 +1756,7 @@ ppl_Polyhedron_add_constraints __P((ppl_Polyhedron_t ph,
 */
 int
 ppl_Polyhedron_add_constraints_and_minimize __P((ppl_Polyhedron_t ph,
-						 ppl_const_ConSys_t cs));
+						 ppl_const_Constraint_System_t cs));
 
 /*! \brief
   Adds a copy of the system of generators \p gs to the system of
@@ -1786,7 +1786,7 @@ ppl_Polyhedron_add_generators_and_minimize __P((ppl_Polyhedron_t ph,
 */
 int
 ppl_Polyhedron_add_recycled_constraints __P((ppl_Polyhedron_t ph,
-					     ppl_ConSys_t cs));
+					     ppl_Constraint_System_t cs));
 
 /*! \brief
   Adds the system of constraints \p cs to the system of constraints of
@@ -1800,7 +1800,7 @@ ppl_Polyhedron_add_recycled_constraints __P((ppl_Polyhedron_t ph,
 */
 int
 ppl_Polyhedron_add_recycled_constraints_and_minimize __P((ppl_Polyhedron_t ph,
-							  ppl_ConSys_t cs));
+							  ppl_Constraint_System_t cs));
 
 /*! \brief
   Adds the system of generators \p gs to the system of generators of
@@ -2010,7 +2010,7 @@ int
 ppl_Polyhedron_limited_BHRZ03_extrapolation_assign_with_tokens
 __P((ppl_Polyhedron_t x,
      ppl_const_Polyhedron_t y,
-     ppl_const_ConSys_t cs,
+     ppl_const_Constraint_System_t cs,
      unsigned* tp));
 
 /*! \brief
@@ -2023,7 +2023,7 @@ int
 ppl_Polyhedron_limited_BHRZ03_extrapolation_assign
 __P((ppl_Polyhedron_t x,
      ppl_const_Polyhedron_t y,
-     ppl_const_ConSys_t cs));
+     ppl_const_Constraint_System_t cs));
 
 /*! \brief
   If the polyhedron \p y is contained in (or equal to) the polyhedron
@@ -2040,7 +2040,7 @@ int
 ppl_Polyhedron_bounded_BHRZ03_extrapolation_assign_with_tokens
 __P((ppl_Polyhedron_t x,
      ppl_const_Polyhedron_t y,
-     ppl_const_ConSys_t cs,
+     ppl_const_Constraint_System_t cs,
      unsigned* tp));
 
 /*! \brief
@@ -2055,7 +2055,7 @@ int
 ppl_Polyhedron_bounded_BHRZ03_extrapolation_assign
 __P((ppl_Polyhedron_t x,
      ppl_const_Polyhedron_t y,
-     ppl_const_ConSys_t cs));
+     ppl_const_Constraint_System_t cs));
 
 /*! \brief
   If the polyhedron \p y is contained in (or equal to) the polyhedron
@@ -2091,7 +2091,7 @@ int
 ppl_Polyhedron_limited_H79_extrapolation_assign_with_tokens
 __P((ppl_Polyhedron_t x,
      ppl_const_Polyhedron_t y,
-     ppl_const_ConSys_t cs,
+     ppl_const_Constraint_System_t cs,
      unsigned* tp));
 
 /*! \brief
@@ -2103,7 +2103,7 @@ __P((ppl_Polyhedron_t x,
 int
 ppl_Polyhedron_limited_H79_extrapolation_assign __P((ppl_Polyhedron_t x,
 						     ppl_const_Polyhedron_t y,
-						     ppl_const_ConSys_t cs));
+						     ppl_const_Constraint_System_t cs));
 
 /*! \brief
   If the polyhedron \p y is contained in (or equal to) the polyhedron
@@ -2120,7 +2120,7 @@ int
 ppl_Polyhedron_bounded_H79_extrapolation_assign_with_tokens
 __P((ppl_Polyhedron_t x,
      ppl_const_Polyhedron_t y,
-     ppl_const_ConSys_t cs,
+     ppl_const_Constraint_System_t cs,
      unsigned* tp));
 
 /*! \brief
@@ -2135,7 +2135,7 @@ __P((ppl_Polyhedron_t x,
 int
 ppl_Polyhedron_bounded_H79_extrapolation_assign __P((ppl_Polyhedron_t x,
 						     ppl_const_Polyhedron_t y,
-						     ppl_const_ConSys_t cs));
+						     ppl_const_Constraint_System_t cs));
 
 /*! \brief
   Assigns to \p ph its topological closure.
@@ -2256,7 +2256,7 @@ PPL_DECLARE_PRINT_FUNCTIONS(Linear_Expression)
 
 PPL_DECLARE_PRINT_FUNCTIONS(Constraint)
 
-PPL_DECLARE_PRINT_FUNCTIONS(ConSys)
+PPL_DECLARE_PRINT_FUNCTIONS(Constraint_System)
 
 PPL_DECLARE_PRINT_FUNCTIONS(Generator)
 

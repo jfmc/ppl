@@ -42,7 +42,7 @@ main() TRY {
   ph.add_constraint(A >= 0);
   ph.add_constraint(B >= 0);
 
-  ConSys cs;
+  Constraint_System cs;
 
 #if NOISY
   print_constraints(ph, "*** ph ***");

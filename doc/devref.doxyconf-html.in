@@ -486,10 +486,10 @@ INPUT                  = @srcdir@/definitions.dox \
                          @srcdir@/../src/Generator.defs.hh \
                          @srcdir@/../src/Generator.inlines.hh \
                          @srcdir@/../src/Generator.cc \
-                         @srcdir@/../src/ConSys.types.hh \
-                         @srcdir@/../src/ConSys.defs.hh \
-                         @srcdir@/../src/ConSys.inlines.hh \
-                         @srcdir@/../src/ConSys.cc \
+                         @srcdir@/../src/Constraint_System.types.hh \
+                         @srcdir@/../src/Constraint_System.defs.hh \
+                         @srcdir@/../src/Constraint_System.inlines.hh \
+                         @srcdir@/../src/Constraint_System.cc \
                          @srcdir@/../src/GenSys.defs.hh \
                          @srcdir@/../src/GenSys.types.hh \
                          @srcdir@/../src/GenSys.inlines.hh \

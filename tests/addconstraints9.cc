@@ -49,7 +49,7 @@ main() TRY {
   print_generators(ph, "*** ph ***");
 #endif
 
-  ConSys cs;
+  Constraint_System cs;
   cs.insert(x <= 3);
 
 #if NOISY

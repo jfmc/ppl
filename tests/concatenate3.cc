@@ -44,7 +44,7 @@ main() TRY {
   print_constraints(ph, "--- ph ---");
 #endif
 
-  ConSys cs;
+  Constraint_System cs;
   cs.insert(x - 3 >= y);
   cs.insert(y >= 0);
   C_Polyhedron qh(cs);

@@ -180,7 +180,7 @@ main() TRY {
 
   const memory_size_type ph_total_size = ph.total_memory_in_bytes();
   const memory_size_type ph_external_size = ph.external_memory_in_bytes();
-  const ConSys& cs = ph.constraints();
+  const Constraint_System& cs = ph.constraints();
   const memory_size_type cs_total_size = cs.total_memory_in_bytes();
   const memory_size_type cs_external_size = cs.external_memory_in_bytes();
   const GenSys& gs = ph.generators();
@@ -236,7 +236,7 @@ main() TRY {
 #endif
 
   memory_size_type cs_elements_size = 0;
-  for (ConSys::const_iterator i = cs.begin(),
+  for (Constraint_System::const_iterator i = cs.begin(),
 	 cs_end = cs.end(); i != cs_end; ++i)
     cs_elements_size += i->total_memory_in_bytes();
 

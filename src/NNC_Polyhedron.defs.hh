@@ -70,7 +70,7 @@ public:
     declared <CODE>const</CODE> because its data-structures will be
     recycled to build the polyhedron.
   */
-  explicit NNC_Polyhedron(const ConSys& cs);
+  explicit NNC_Polyhedron(const Constraint_System& cs);
 
   //! Builds an NNC polyhedron recycling a system of constraints.
   /*!
@@ -81,7 +81,7 @@ public:
     declared <CODE>const</CODE> because its data-structures will be
     recycled to build the polyhedron.
   */
-  explicit NNC_Polyhedron(ConSys& cs);
+  explicit NNC_Polyhedron(Constraint_System& cs);
 
   //! Builds an NNC polyhedron from a system of generators.
   /*!

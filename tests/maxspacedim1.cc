@@ -39,7 +39,7 @@ template dimension_type foo<Variable>();
 template dimension_type foo<Linear_Expression>();
 template dimension_type foo<Constraint>();
 template dimension_type foo<Generator>();
-template dimension_type foo<ConSys>();
+template dimension_type foo<Constraint_System>();
 template dimension_type foo<GenSys>();
 template dimension_type foo<C_Polyhedron>();
 template dimension_type foo<NNC_Polyhedron>();
@@ -58,7 +58,7 @@ main() TRY {
   PRINT(Linear_Expression);
   PRINT(Constraint);
   PRINT(Generator);
-  PRINT(ConSys);
+  PRINT(Constraint_System);
   PRINT(GenSys);
   PRINT(C_Polyhedron);
   PRINT(NNC_Polyhedron);

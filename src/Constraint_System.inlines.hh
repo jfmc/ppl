@@ -1,4 +1,4 @@
-/* ConSys class implementation: inline functions.
+/* Constraint_System class implementation: inline functions.
    Copyright (C) 2001-2004 Roberto Bagnara <bagnara@cs.unipr.it>
 
 This file is part of the Parma Polyhedra Library (PPL).
@@ -21,168 +21,168 @@ USA.
 For the most up-to-date information see the Parma Polyhedra Library
 site: http://www.cs.unipr.it/ppl/ . */
 
-#ifndef PPL_ConSys_inlines_hh
-#define PPL_ConSys_inlines_hh 1
+#ifndef PPL_Constraint_System_inlines_hh
+#define PPL_Constraint_System_inlines_hh 1
 
 #include "Constraint.defs.hh"
 
 namespace Parma_Polyhedra_Library {
 
 inline
-ConSys::ConSys()
+Constraint_System::Constraint_System()
   : Linear_System(NECESSARILY_CLOSED) {
 }
 
 inline
-ConSys::ConSys(const Constraint& c)
+Constraint_System::Constraint_System(const Constraint& c)
   : Linear_System(c.topology()) {
   Linear_System::insert(c);
 }
 
 inline
-ConSys::ConSys(const ConSys& cs)
+Constraint_System::Constraint_System(const Constraint_System& cs)
   : Linear_System(cs) {
 }
 
 inline
-ConSys::ConSys(const Topology topol)
+Constraint_System::Constraint_System(const Topology topol)
   : Linear_System(topol) {
 }
 
 inline
-ConSys::ConSys(const Topology topol,
+Constraint_System::Constraint_System(const Topology topol,
 	       const dimension_type n_rows, const dimension_type n_columns)
   : Linear_System(topol, n_rows, n_columns) {
 }
 
 inline
-ConSys::~ConSys() {
+Constraint_System::~Constraint_System() {
 }
 
-inline ConSys&
-ConSys::operator=(const ConSys& y) {
+inline Constraint_System&
+Constraint_System::operator=(const Constraint_System& y) {
   Linear_System::operator=(y);
   return *this;
 }
 
 inline Constraint&
-ConSys::operator[](const dimension_type k) {
+Constraint_System::operator[](const dimension_type k) {
   return static_cast<Constraint&>(Linear_System::operator[](k));
 }
 
 inline const Constraint&
-ConSys::operator[](const dimension_type k) const {
+Constraint_System::operator[](const dimension_type k) const {
   return static_cast<const Constraint&>(Linear_System::operator[](k));
 }
 
 inline dimension_type
-ConSys::max_space_dimension() {
+Constraint_System::max_space_dimension() {
   return Linear_System::max_space_dimension();
 }
 
 inline dimension_type
-ConSys::space_dimension() const {
+Constraint_System::space_dimension() const {
   return Linear_System::space_dimension();
 }
 
 inline void
-ConSys::clear() {
+Constraint_System::clear() {
   Linear_System::clear();
 }
 
-inline const ConSys&
-ConSys::zero_dim_empty() {
-  static const ConSys zdf(Constraint::zero_dim_false());
+inline const Constraint_System&
+Constraint_System::zero_dim_empty() {
+  static const Constraint_System zdf(Constraint::zero_dim_false());
   return zdf;
 }
 
 inline
-ConSys::const_iterator::const_iterator()
+Constraint_System::const_iterator::const_iterator()
   : i(), csp(0) {
 }
 
 inline
-ConSys::const_iterator::const_iterator(const const_iterator& y)
+Constraint_System::const_iterator::const_iterator(const const_iterator& y)
   : i(y.i), csp(y.csp) {
 }
 
 inline
-ConSys::const_iterator::~const_iterator() {
+Constraint_System::const_iterator::~const_iterator() {
 }
 
-inline ConSys::const_iterator&
-ConSys::const_iterator::operator=(const const_iterator& y) {
+inline Constraint_System::const_iterator&
+Constraint_System::const_iterator::operator=(const const_iterator& y) {
   i = y.i;
   csp = y.csp;
   return *this;
 }
 
 inline const Constraint&
-ConSys::const_iterator::operator*() const {
+Constraint_System::const_iterator::operator*() const {
   return static_cast<const Constraint&>(*i);
 }
 
 inline const Constraint*
-ConSys::const_iterator::operator->() const {
+Constraint_System::const_iterator::operator->() const {
   return static_cast<const Constraint*>(i.operator->());
 }
 
-inline ConSys::const_iterator&
-ConSys::const_iterator::operator++() {
+inline Constraint_System::const_iterator&
+Constraint_System::const_iterator::operator++() {
   ++i;
   skip_forward();
   return *this;
 }
 
-inline ConSys::const_iterator
-ConSys::const_iterator::operator++(int) {
+inline Constraint_System::const_iterator
+Constraint_System::const_iterator::operator++(int) {
   const const_iterator tmp = *this;
   operator++();
   return tmp;
 }
 
 inline bool
-ConSys::const_iterator::operator==(const const_iterator& y) const {
+Constraint_System::const_iterator::operator==(const const_iterator& y) const {
   return i == y.i;
 }
 
 inline bool
-ConSys::const_iterator::operator!=(const const_iterator& y) const {
+Constraint_System::const_iterator::operator!=(const const_iterator& y) const {
   return i != y.i;
 }
 
 inline
-ConSys::const_iterator::
+Constraint_System::const_iterator::
 const_iterator(const Linear_System::const_iterator& iter,
-	       const ConSys& csys)
+	       const Constraint_System& csys)
   : i(iter), csp(&csys) {
 }
 
-inline ConSys::const_iterator
-ConSys::begin() const {
+inline Constraint_System::const_iterator
+Constraint_System::begin() const {
   const_iterator i(Linear_System::begin(), *this);
   i.skip_forward();
   return i;
 }
 
-inline ConSys::const_iterator
-ConSys::end() const {
+inline Constraint_System::const_iterator
+Constraint_System::end() const {
   const const_iterator i(Linear_System::end(), *this);
   return i;
 }
 
 inline void
-ConSys::swap(ConSys& y) {
+Constraint_System::swap(Constraint_System& y) {
   Linear_System::swap(y);
 }
 
 inline memory_size_type
-ConSys::external_memory_in_bytes() const {
+Constraint_System::external_memory_in_bytes() const {
   return Linear_System::external_memory_in_bytes();
 }
 
 inline memory_size_type
-ConSys::total_memory_in_bytes() const {
+Constraint_System::total_memory_in_bytes() const {
   return Linear_System::total_memory_in_bytes();
 }
 
@@ -191,13 +191,13 @@ ConSys::total_memory_in_bytes() const {
 
 namespace std {
 
-/*! \relates Parma_Polyhedra_Library::ConSys */
+/*! \relates Parma_Polyhedra_Library::Constraint_System */
 inline void
-swap(Parma_Polyhedra_Library::ConSys& x,
-     Parma_Polyhedra_Library::ConSys& y) {
+swap(Parma_Polyhedra_Library::Constraint_System& x,
+     Parma_Polyhedra_Library::Constraint_System& y) {
   x.swap(y);
 }
 
 } // namespace std
 
-#endif // !defined(PPL_ConSys_inlines_hh)
+#endif // !defined(PPL_Constraint_System_inlines_hh)

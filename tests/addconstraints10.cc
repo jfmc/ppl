@@ -40,7 +40,7 @@ main() TRY {
 
   C_Polyhedron ph1(2, C_Polyhedron::EMPTY);
 
-  ConSys cs;
+  Constraint_System cs;
   cs.insert(A - B >= 0);
 
 #if NOISY

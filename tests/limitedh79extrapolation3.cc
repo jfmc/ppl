@@ -34,7 +34,7 @@ int
 main() TRY {
   Variable x(0);
 
-  ConSys cs1;
+  Constraint_System cs1;
   cs1.insert(x >= 0);
   cs1.insert(x <= 1);
   C_Polyhedron ph1(cs1);
@@ -43,7 +43,7 @@ main() TRY {
   print_constraints(ph1, "*** ph1 ****");
 #endif
 
-  ConSys cs2;
+  Constraint_System cs2;
   cs2.insert(x == 0);
   C_Polyhedron ph2(cs2);
 
@@ -51,7 +51,7 @@ main() TRY {
   print_constraints(ph2, "*** ph2 ****");
 #endif
 
-  ConSys cs;
+  Constraint_System cs;
   cs.insert(x >= 0);
 
 #if NOISY

@@ -35,7 +35,7 @@ int
 main(void) {
   Variable x(0);
 
-  ConSys cs1, cs2, cs3, cs4;
+  Constraint_System cs1, cs2, cs3, cs4;
   cs1.insert(x >= 0);
   cs1.insert(x <= 4);
   cs2.insert(x >= 4);

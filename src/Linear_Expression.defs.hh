@@ -30,7 +30,7 @@ site: http://www.cs.unipr.it/ppl/ . */
 #include "Linear_Row.defs.hh"
 #include "Integer.types.hh"
 #include "Variable.types.hh"
-#include "ConSys.types.hh"
+#include "Constraint_System.types.hh"
 #include "GenSys.types.hh"
 #include "Polyhedron.types.hh"
 #include <cstddef>
@@ -259,8 +259,8 @@ private:
   friend class Parma_Polyhedra_Library::Polyhedron;
 
   // FIXME: the following friend declaration is only to grant access to
-  // ConSys::affine_preimage().
-  friend class Parma_Polyhedra_Library::ConSys;
+  // Constraint_System::affine_preimage().
+  friend class Parma_Polyhedra_Library::Constraint_System;
 
   // FIXME: the following friend declaration is only to grant access to
   // GenSys::affine_image().

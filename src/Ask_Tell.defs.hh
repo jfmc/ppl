@@ -25,7 +25,7 @@ site: http://www.cs.unipr.it/ppl/ . */
 #define PPL_Ask_Tell_defs_hh
 
 #include "Ask_Tell.types.hh"
-#include "ConSys.types.hh"
+#include "Constraint_System.types.hh"
 #include "Constraint.types.hh"
 #include "Variable.defs.hh"
 #include "globals.defs.hh"
@@ -134,7 +134,7 @@ public:
   void swap(Ask_Tell& y);
 
   //! Creates an ask-and-tell constraint system with the same information contents as \p cs.
-  Ask_Tell(const ConSys& cs);
+  Ask_Tell(const Constraint_System& cs);
 
   //! Adds to \p *this the pair constituted by \p ask and \p tell.
   Ask_Tell& add_pair(const CS& ask, const CS& tell);
@@ -195,7 +195,7 @@ public:
     Thrown if \p *this and \p cs are topology-incompatible or
     dimension-incompatible.
   */
-  void add_constraints(const ConSys& cs);
+  void add_constraints(const Constraint_System& cs);
 
   //! \brief
   //! Adds \p m new dimensions to the vector space, embedding

@@ -18,6 +18,7 @@ o  The following classes have been renamed as indicated:
 
      AskTell            -> Ask_Tell
      BoundingBox        -> Bounding_Box
+     ConSys             -> Constraint_System
      LinExpression      -> Linear_Expression
      Polyhedra_PowerSet -> Polyhedra_Powerset
      PowerSet           -> Powerset 
@@ -85,17 +86,17 @@ o  The constructor C_Polyhedron(const NNC_Polyhedron& y) no longer
 
 o  The following constructors have been made explicit:
 
-     ConSys::ConSys(const Constraint& c),
+     Constraint_System::Constraint_System(const Constraint& c),
      GenSys::GenSys(const Generator& g),
-     C_Polyhedron::C_Polyhedron(const ConSys& cs),
+     C_Polyhedron::C_Polyhedron(const Constraint_System& cs),
      C_Polyhedron::C_Polyhedron(const GenSys& cs),
-     C_Polyhedron::C_Polyhedron(ConSys& cs),
+     C_Polyhedron::C_Polyhedron(Constraint_System& cs),
      C_Polyhedron::C_Polyhedron(GenSys& cs),
-     NNC_Polyhedron::NNC_Polyhedron(const ConSys& cs),
+     NNC_Polyhedron::NNC_Polyhedron(const Constraint_System& cs),
      NNC_Polyhedron::NNC_Polyhedron(const GenSys& cs),
-     NNC_Polyhedron::NNC_Polyhedron(ConSys& cs),
+     NNC_Polyhedron::NNC_Polyhedron(Constraint_System& cs),
      NNC_Polyhedron::NNC_Polyhedron(GenSys& cs).
-     Polyhedra_Powerset<PH>::Polyhedra_Powerset(const ConSys& cs).
+     Polyhedra_Powerset<PH>::Polyhedra_Powerset(const Constraint_System& cs).
 
 o  Functions in the C interface that compute (space) dimensions
    no longer return their result.  The caller is now required to pass,

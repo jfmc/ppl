@@ -108,7 +108,7 @@ Ask_Tell<CS>::swap(Ask_Tell& y) {
 }
 
 template <typename CS>
-Ask_Tell<CS>::Ask_Tell(const ConSys& cs)
+Ask_Tell<CS>::Ask_Tell(const Constraint_System& cs)
   : space_dim(cs.space_dimension()) {
   CS tell(cs);
   if (!tell.is_top()) {
@@ -210,7 +210,7 @@ Ask_Tell<CS>::add_constraint(const Constraint& c) {
 
 template <typename CS>
 void
-Ask_Tell<CS>::add_constraints(const ConSys& cs) {
+Ask_Tell<CS>::add_constraints(const Constraint_System& cs) {
   CS tell(cs);
   if (!tell.is_top()) {
     CS ask(space_dim);

@@ -38,7 +38,7 @@ main() TRY {
   Variable y(1);
   Variable z(2);
   Variable w(3);
-  ConSys cs1;
+  Constraint_System cs1;
   cs1.insert(x >= 0);
   cs1.insert(y >= 0);
   cs1.insert(x - y >= 0);
@@ -48,7 +48,7 @@ main() TRY {
   print_constraints(ph, "*** ph before ***");
 #endif
 
-  ConSys cs2;
+  Constraint_System cs2;
   cs2.insert(x >= 1);
   cs2.insert(y >= 1);
   cs2.insert(x - y >= -1);

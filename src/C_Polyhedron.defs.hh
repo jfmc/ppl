@@ -82,7 +82,7 @@ public:
     \exception std::invalid_argument
     Thrown if the system of constraints contains strict inequalities.
   */
-  explicit C_Polyhedron(const ConSys& cs);
+  explicit C_Polyhedron(const Constraint_System& cs);
 
   //! Builds a C polyhedron recycling a system of constraints.
   /*!
@@ -96,7 +96,7 @@ public:
     \exception std::invalid_argument
     Thrown if the system of constraints contains strict inequalities.
   */
-  explicit C_Polyhedron(ConSys& cs);
+  explicit C_Polyhedron(Constraint_System& cs);
 
   //! Builds a C polyhedron from a system of generators.
   /*!

@@ -41,10 +41,10 @@ PPL::H79_Certificate::H79_Certificate(const Polyhedron& ph)
   // constraint and epsilon bounds).
   const dimension_type space_dim = ph.space_dimension();
   affine_dim = space_dim;
-  const ConSys& cs = ph.minimized_constraints();
+  const Constraint_System& cs = ph.minimized_constraints();
   // It is assumed that `ph' is not an empty polyhedron.
   assert(!ph.marked_empty());
-  for (ConSys::const_iterator i = cs.begin(),
+  for (Constraint_System::const_iterator i = cs.begin(),
 	 cs_end = cs.end(); i != cs_end; ++i) {
     ++num_constraints;
     if (i->is_equality())
@@ -82,11 +82,11 @@ PPL::H79_Certificate::compare(const Polyhedron& ph) const {
   const dimension_type space_dim = ph.space_dimension();
   dimension_type ph_affine_dim = space_dim;
   dimension_type ph_num_constraints = 0;
-  const ConSys& cs = ph.minimized_constraints();
+  const Constraint_System& cs = ph.minimized_constraints();
   // It is assumed that `ph' is a polyhedron containing the
   // polyhedron described by `*this': hence, it cannot be empty.
   assert(!ph.marked_empty());
-  for (ConSys::const_iterator i = cs.begin(),
+  for (Constraint_System::const_iterator i = cs.begin(),
 	 cs_end = cs.end(); i != cs_end; ++i) {
     ++ph_num_constraints;
     if (i->is_equality())

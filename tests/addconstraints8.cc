@@ -42,7 +42,7 @@ main() TRY {
   print_constraints(ph, "*** ph ***");
 #endif
 
-  ConSys cs;
+  Constraint_System cs;
   cs.insert(Linear_Expression(-1) >= 0);
 
 #if NOISY

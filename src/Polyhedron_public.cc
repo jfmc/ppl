@@ -39,16 +39,16 @@ PPL::Polyhedron::affine_dimension() const {
   if (is_empty())
     return 0;
 
-  const ConSys& cs = minimized_constraints();
+  const Constraint_System& cs = minimized_constraints();
   dimension_type d = space_dim;
-  for (ConSys::const_iterator i = cs.begin(),
+  for (Constraint_System::const_iterator i = cs.begin(),
 	 cs_end = cs.end(); i != cs_end; ++i)
     if (i->is_equality())
       --d;
   return d;
 }
 
-const PPL::ConSys&
+const PPL::Constraint_System&
 PPL::Polyhedron::constraints() const {
   if (marked_empty()) {
     // We want `con_sys' to only contain the unsatisfiable constraint
@@ -56,9 +56,9 @@ PPL::Polyhedron::constraints() const {
     if (con_sys.num_rows() == 0) {
       // The 0-dim unsatisfiable constraint is extended to
       // the appropriate dimension and then stored in `con_sys'.
-      ConSys unsat_cs = ConSys::zero_dim_empty();
+      Constraint_System unsat_cs = Constraint_System::zero_dim_empty();
       unsat_cs.adjust_topology_and_space_dimension(topology(), space_dim);
-      const_cast<ConSys&>(con_sys).swap(unsat_cs);
+      const_cast<Constraint_System&>(con_sys).swap(unsat_cs);
     }
     else {
       // Checking that `con_sys' contains the right thing.
@@ -93,7 +93,7 @@ PPL::Polyhedron::constraints() const {
   return con_sys;
 }
 
-const PPL::ConSys&
+const PPL::Constraint_System&
 PPL::Polyhedron::minimized_constraints() const {
   // `minimize()' or `strongly_minimize_constraints()'
   // will process any pending constraints or generators.
@@ -667,7 +667,7 @@ PPL::Polyhedron::OK(bool check_not_empty) const {
       // rays and points of the polyhedron must be the same
       // of the temporary minimized one. If it does not happen
       // the polyhedron is not OK.
-      ConSys new_con_sys(topology());
+      Constraint_System new_con_sys(topology());
       GenSys gs_without_pending = gen_sys;
       // NOTE: We can avoid to update `index_first_pending'
       // of `gs_without_pending', because it is equal to the
@@ -776,12 +776,12 @@ PPL::Polyhedron::OK(bool check_not_empty) const {
       }
     }
 
-    ConSys cs_without_pending = con_sys;
+    Constraint_System cs_without_pending = con_sys;
     // NOTE: We can avoid to update `index_first_pending'
     // of `cs_without_pending', because it is equal to the
     // new number of rows of `cs_without_pending'.
     cs_without_pending.erase_to_end(con_sys.first_pending_row());
-    ConSys copy_of_con_sys = cs_without_pending;
+    Constraint_System copy_of_con_sys = cs_without_pending;
     GenSys new_gen_sys(topology());
     Saturation_Matrix new_sat_g;
 
@@ -976,7 +976,7 @@ PPL::Polyhedron::add_constraint(const Constraint& c) {
 bool
 PPL::Polyhedron::add_constraint_and_minimize(const Constraint& c) {
   // TODO: this is just an executable specification.
-  ConSys cs(c);
+  Constraint_System cs(c);
   return add_recycled_constraints_and_minimize(cs);
 }
 
@@ -1122,7 +1122,7 @@ PPL::Polyhedron::add_generator_and_minimize(const Generator& g) {
 }
 
 void
-PPL::Polyhedron::add_recycled_constraints(ConSys& cs) {
+PPL::Polyhedron::add_recycled_constraints(Constraint_System& cs) {
   // Topology compatibility check.
   if (is_necessarily_closed() && cs.has_strict_inequalities())
     throw_topology_incompatible("add_constraints(cs)", "cs", cs);
@@ -1202,14 +1202,14 @@ PPL::Polyhedron::add_recycled_constraints(ConSys& cs) {
 }
 
 void
-PPL::Polyhedron::add_constraints(const ConSys& cs) {
+PPL::Polyhedron::add_constraints(const Constraint_System& cs) {
   // TODO: this is just an executable specification.
-  ConSys cs_copy = cs;
+  Constraint_System cs_copy = cs;
   add_recycled_constraints(cs_copy);
 }
 
 bool
-PPL::Polyhedron::add_recycled_constraints_and_minimize(ConSys& cs) {
+PPL::Polyhedron::add_recycled_constraints_and_minimize(Constraint_System& cs) {
   // Topology-compatibility check.
   if (is_necessarily_closed() && cs.has_strict_inequalities())
     throw_topology_incompatible("add_recycled_constraints_and_minimize(cs)",
@@ -1274,9 +1274,9 @@ PPL::Polyhedron::add_recycled_constraints_and_minimize(ConSys& cs) {
 }
 
 bool
-PPL::Polyhedron::add_constraints_and_minimize(const ConSys& cs) {
+PPL::Polyhedron::add_constraints_and_minimize(const Constraint_System& cs) {
   // TODO: this is just an executable specification.
-  ConSys cs_copy = cs;
+  Constraint_System cs_copy = cs;
   return add_recycled_constraints_and_minimize(cs_copy);
 }
 
@@ -1767,8 +1767,8 @@ PPL::Polyhedron::poly_difference_assign(const Polyhedron& y) {
   x.minimize();
   y.minimize();
 
-  const ConSys& y_cs = y.constraints();
-  for (ConSys::const_iterator i = y_cs.begin(),
+  const Constraint_System& y_cs = y.constraints();
+  for (Constraint_System::const_iterator i = y_cs.begin(),
 	 y_cs_end = y_cs.end(); i != y_cs_end; ++i) {
     const Constraint& c = *i;
     assert(!c.is_trivial_true());
@@ -1859,7 +1859,7 @@ PPL::Polyhedron::affine_image(const Variable var,
       }
       else {
 	// The new denominator is negative:
-	// we negate everything once more, as ConSys::affine_preimage()
+	// we negate everything once more, as Constraint_System::affine_preimage()
 	// requires the third argument to be positive.
 	inverse = expr;
 	inverse[var_space_dim] = denominator;
@@ -1920,7 +1920,7 @@ affine_preimage(const Variable var,
     // The transformation is invertible:
     // minimality and saturators are preserved.
     if (constraints_are_up_to_date()) {
-      // ConSys::affine_preimage() requires the third argument
+      // Constraint_System::affine_preimage() requires the third argument
       // to be a positive Integer.
       if (denominator > 0)
 	con_sys.affine_preimage(var_space_dim, expr, denominator);
@@ -1955,7 +1955,7 @@ affine_preimage(const Variable var,
       remove_pending_to_obtain_constraints();
     else if (!constraints_are_up_to_date())
       minimize();
-    // ConSys::affine_preimage() requires the third argument
+    // Constraint_System::affine_preimage() requires the third argument
     // to be a positive Integer.
     if (denominator > 0)
       con_sys.affine_preimage(var_space_dim, expr, denominator);
@@ -2134,7 +2134,7 @@ PPL::Polyhedron::generalized_affine_image(const Linear_Expression& lhs,
     // Constrain the new dimension to be equal to the right hand side.
     // (we force minimization because we will need the generators).
     // FIXME: why not use add_constraint_and_minimize() here?
-    ConSys new_cs1;
+    Constraint_System new_cs1;
     new_cs1.insert(new_var == rhs);
     add_recycled_constraints_and_minimize(new_cs1);
 
@@ -2146,7 +2146,7 @@ PPL::Polyhedron::generalized_affine_image(const Linear_Expression& lhs,
     // the left hand side as dictated by `relsym'
     // (we force minimization because we will need the generators).
     // FIXME: why not use add_constraint_and_minimize() here?
-    ConSys new_cs2;
+    Constraint_System new_cs2;
     switch (relsym) {
     case LESS_THAN:
       new_cs2.insert(lhs < new_var);

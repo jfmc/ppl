@@ -44,7 +44,7 @@ C_Polyhedron::C_Polyhedron(dimension_type num_dimensions,
 }
 
 inline
-C_Polyhedron::C_Polyhedron(const ConSys& cs)
+C_Polyhedron::C_Polyhedron(const Constraint_System& cs)
   : Polyhedron(NECESSARILY_CLOSED,
 	       cs.space_dimension() <= max_space_dimension()
 	       ? cs
@@ -56,7 +56,7 @@ C_Polyhedron::C_Polyhedron(const ConSys& cs)
 }
 
 inline
-C_Polyhedron::C_Polyhedron(ConSys& cs)
+C_Polyhedron::C_Polyhedron(Constraint_System& cs)
   : Polyhedron(NECESSARILY_CLOSED,
 	       cs.space_dimension() <= max_space_dimension()
 	       ? cs

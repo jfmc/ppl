@@ -194,7 +194,7 @@ GenSys::total_memory_in_bytes() const {
 
 namespace std {
 
-/*! \relates Parma_Polyhedra_Library::ConSys */
+/*! \relates Parma_Polyhedra_Library::Constraint_System */
 inline void
 swap(Parma_Polyhedra_Library::GenSys& x,
      Parma_Polyhedra_Library::GenSys& y) {

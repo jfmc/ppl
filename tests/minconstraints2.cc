@@ -44,7 +44,7 @@ main() TRY {
   C_Polyhedron known_result;
   known_result = ph1;
 
-  ConSys cs = ph1.minimized_constraints();
+  Constraint_System cs = ph1.minimized_constraints();
 
   C_Polyhedron ph2(cs);
 

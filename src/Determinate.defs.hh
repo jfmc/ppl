@@ -25,7 +25,7 @@ site: http://www.cs.unipr.it/ppl/ . */
 #define PPL_Determinate_defs_hh
 
 #include "Determinate.types.hh"
-#include "ConSys.types.hh"
+#include "Constraint_System.types.hh"
 #include "Variable.defs.hh"
 #include "globals.defs.hh"
 #include <iosfwd>
@@ -97,7 +97,7 @@ public:
   //! \brief
   //! Injection operator: builds the determinate constraint system element
   //! corresponding to the base-level element represented by \p cs.
-  Determinate(const ConSys& cs);
+  Determinate(const Constraint_System& cs);
 
   //! Copy constructor.
   Determinate(const Determinate& y);
@@ -114,10 +114,10 @@ public:
   dimension_type space_dimension() const;
 
   //! Returns the system of constraints.
-  const ConSys& constraints() const;
+  const Constraint_System& constraints() const;
 
   //! Returns the system of constraints, with no redundant constraint.
-  const ConSys& minimized_constraints() const;
+  const Constraint_System& minimized_constraints() const;
 
   //! Returns a const reference to the embedded element.
   const PH& element() const;
@@ -199,7 +199,7 @@ public:
     Thrown if \p *this and \p cs are topology-incompatible or
     dimension-incompatible.
   */
-  void add_constraints(ConSys& cs);
+  void add_constraints(Constraint_System& cs);
 
   //@} // Space Dimension Preserving Member Functions that May Modify [...]
 
@@ -299,7 +299,7 @@ private:
     Rep(const PH& p);
 
     //! Builds a new representation by copying the constraints in \p cs.
-    Rep(const ConSys& cs);
+    Rep(const Constraint_System& cs);
 
     //! Destructor.
     ~Rep();

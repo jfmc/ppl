@@ -103,7 +103,7 @@ static void test4() {
 static void test5() {
   Variable A(0);
   Variable B(1);
-  ConSys cs(A + B == 3);
+  Constraint_System cs(A + B == 3);
   C_Polyhedron ph(cs);
 
   Poly_Con_Relation rel = ph.relation_with(A + B > 3);
@@ -123,7 +123,7 @@ static void test5() {
 static void test6() {
   Variable A(0);
   Variable B(1);
-  ConSys cs(A + B <= 3);
+  Constraint_System cs(A + B <= 3);
   C_Polyhedron ph(cs);
 
   Poly_Con_Relation rel = ph.relation_with(A + B > 3);
@@ -142,7 +142,7 @@ static void test6() {
 static void test7() {
   Variable A(0);
   Variable B(1);
-  ConSys cs;
+  Constraint_System cs;
   cs.insert(A >= 1);
   cs.insert(B >= 0);
   cs.insert(A + B <= 3);
@@ -164,7 +164,7 @@ static void test7() {
 static void test8() {
   Variable A(0);
   Variable B(1);
-  ConSys cs;
+  Constraint_System cs;
   cs.insert(A >= 1);
   cs.insert(B >= 0);
   cs.insert(A + B <= 3);

@@ -1,4 +1,4 @@
-/* ConSys class declaration.
+/* Constraint_System class declaration.
    Copyright (C) 2001-2004 Roberto Bagnara <bagnara@cs.unipr.it>
 
 This file is part of the Parma Polyhedra Library (PPL).
@@ -21,11 +21,11 @@ USA.
 For the most up-to-date information see the Parma Polyhedra Library
 site: http://www.cs.unipr.it/ppl/ . */
 
-#ifndef PPL_ConSys_defs_hh
-#define PPL_ConSys_defs_hh 1
+#ifndef PPL_Constraint_System_defs_hh
+#define PPL_Constraint_System_defs_hh 1
 
 #include "Linear_Expression.types.hh"
-#include "ConSys.types.hh"
+#include "Constraint_System.types.hh"
 #include "Linear_System.defs.hh"
 #include "Generator.types.hh"
 #include "Polyhedron.types.hh"
@@ -41,11 +41,11 @@ namespace IO_Operators {
 
 //! Output operator.
 /*!
-  \relates Parma_Polyhedra_Library::ConSys
+  \relates Parma_Polyhedra_Library::Constraint_System
   Writes <CODE>true</CODE> if \p cs is empty.  Otherwise, writes on
   \p s the constraints of \p cs, all in one row and separated by ", ".
 */
-std::ostream& operator<<(std::ostream& s, const ConSys& cs);
+std::ostream& operator<<(std::ostream& s, const Constraint_System& cs);
 
 } // namespace IO_Operators
 
@@ -59,15 +59,15 @@ bool operator==(const Polyhedron& x, const Polyhedron& y);
 namespace std {
 
 //! Specializes <CODE>std::swap</CODE>.
-/*! \relates Parma_Polyhedra_Library::ConSys */
-void swap(Parma_Polyhedra_Library::ConSys& x,
-	  Parma_Polyhedra_Library::ConSys& y);
+/*! \relates Parma_Polyhedra_Library::Constraint_System */
+void swap(Parma_Polyhedra_Library::Constraint_System& x,
+	  Parma_Polyhedra_Library::Constraint_System& y);
 
 } // namespace std
 
 //! A system of constraints.
 /*!
-    An object of the class ConSys is a system of constraints,
+    An object of the class Constraint_System is a system of constraints,
     i.e., a multiset of objects of the class Constraint.
     When inserting constraints in a system, space dimensions are
     automatically adjusted so that all the constraints in the system
@@ -85,7 +85,7 @@ void swap(Parma_Polyhedra_Library::ConSys& x,
     The following code builds a system of constraints corresponding to
     a square in \f$\Rset^2\f$:
     \code
-  ConSys cs;
+  Constraint_System cs;
   cs.insert(x >= 0);
   cs.insert(x <= 3);
   cs.insert(y >= 0);
@@ -111,7 +111,7 @@ void swap(Parma_Polyhedra_Library::ConSys& x,
     The following code builds a system of constraints corresponding to
     a half-strip in \f$\Rset^2\f$:
     \code
-  ConSys cs;
+  Constraint_System cs;
   cs.insert(x >= 0);
   cs.insert(x - y <= 0);
   cs.insert(x - y + 1 >= 0);
@@ -126,24 +126,24 @@ void swap(Parma_Polyhedra_Library::ConSys& x,
     reordered, removed (if they are trivial, duplicate or
     implied by other constraints), linearly combined, etc.
 */
-class Parma_Polyhedra_Library::ConSys : private Linear_System {
+class Parma_Polyhedra_Library::Constraint_System : private Linear_System {
 public:
   //! Default constructor: builds an empty system of constraints.
-  ConSys();
+  Constraint_System();
 
   //! Builds the singleton system containing only constraint \p c.
-  explicit ConSys(const Constraint& c);
+  explicit Constraint_System(const Constraint& c);
 
   //! Ordinary copy-constructor.
-  ConSys(const ConSys& cs);
+  Constraint_System(const Constraint_System& cs);
 
   //! Destructor.
-  ~ConSys();
+  ~Constraint_System();
 
   //! Assignment operator.
-  ConSys& operator=(const ConSys& y);
+  Constraint_System& operator=(const Constraint_System& y);
 
-  //! Returns the maximum space dimension a ConSys can handle.
+  //! Returns the maximum space dimension a Constraint_System can handle.
   static dimension_type max_space_dimension();
 
   //! Returns the dimension of the vector space enclosing \p *this.
@@ -162,19 +162,19 @@ public:
   //! \brief
   //! Returns the singleton system containing only
   //! Constraint::zero_dim_false().
-  static const ConSys& zero_dim_empty();
+  static const Constraint_System& zero_dim_empty();
 
   //! An iterator over a system of constraints.
   /*!
     A const_iterator is used to provide read-only access
-    to each constraint contained in an object of ConSys.
+    to each constraint contained in an object of Constraint_System.
 
     \par Example
     The following code prints the system of constraints
     defining the polyhedron <CODE>ph</CODE>:
     \code
-  const ConSys& cs = ph.constraints();
-  for (ConSys::const_iterator i = cs.begin(),
+  const Constraint_System& cs = ph.constraints();
+  for (Constraint_System::const_iterator i = cs.begin(),
          cs_end = cs.end(); i != cs_end; ++i)
     cout << *i << endl;
     \endcode
@@ -221,7 +221,7 @@ public:
     bool operator!=(const const_iterator& y) const;
 
   private:
-    friend class ConSys;
+    friend class Constraint_System;
 
     //! The const iterator over the matrix of constraints.
     Linear_System::const_iterator i;
@@ -231,7 +231,7 @@ public:
 
     //! Constructor.
     const_iterator(const Linear_System::const_iterator& iter,
-		   const ConSys& csys);
+		   const Constraint_System& csys);
 
     //! \p *this skips to the next non-trivial constraint.
     void skip_forward();
@@ -284,20 +284,20 @@ private:
   Parma_Polyhedra_Library::operator==(const Polyhedron& x,
 				      const Polyhedron& y);
 
-  friend void std::swap(Parma_Polyhedra_Library::ConSys& x,
-			Parma_Polyhedra_Library::ConSys& y);
+  friend void std::swap(Parma_Polyhedra_Library::Constraint_System& x,
+			Parma_Polyhedra_Library::Constraint_System& y);
 
   //! Builds an empty system of constraints having the specified topology.
-  explicit ConSys(Topology topol);
+  explicit Constraint_System(Topology topol);
 
   //! \brief
   //! Builds a system of \p n_rows constraints on a \p n_columns - 1
   //! dimensional space (including the \f$\epsilon\f$ dimension, if
   //! \p topol is <CODE>NOT_NECESSARILY_CLOSED</CODE>).
-  ConSys(Topology topol, dimension_type n_rows, dimension_type n_columns);
+  Constraint_System(Topology topol, dimension_type n_rows, dimension_type n_columns);
 
   //! Swaps \p *this with \p y.
-  void swap(ConSys& y);
+  void swap(Constraint_System& y);
 
   //! \brief
   //! Adjusts \p *this so that it matches the topology and
@@ -376,6 +376,6 @@ private:
   void insert_pending(const Constraint& c);
 };
 
-// ConSys.inlines.hh is not included here on purpose.
+// Constraint_System.inlines.hh is not included here on purpose.
 
-#endif // !defined(PPL_ConSys_defs_hh)
+#endif // !defined(PPL_Constraint_System_defs_hh)

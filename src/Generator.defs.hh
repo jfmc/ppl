@@ -27,7 +27,7 @@ site: http://www.cs.unipr.it/ppl/ . */
 #include "Generator.types.hh"
 #include "Row.defs.hh"
 #include "Variable.defs.hh"
-#include "ConSys.types.hh"
+#include "Constraint_System.types.hh"
 #include "GenSys.defs.hh"
 #include "Linear_Expression.defs.hh"
 #include "Polyhedron.types.hh"
@@ -382,8 +382,8 @@ private:
   Parma_Polyhedra_Library::Linear_Expression::Linear_Expression(const Generator& g);
 
   // FIXME: the following friend declaration is only to grant access to
-  // ConSys::satisfies_all_constraints().
-  friend class Parma_Polyhedra_Library::ConSys;
+  // Constraint_System::satisfies_all_constraints().
+  friend class Parma_Polyhedra_Library::Constraint_System;
 
   friend void std::swap(Parma_Polyhedra_Library::Generator& x,
 			Parma_Polyhedra_Library::Generator& y);

@@ -43,7 +43,7 @@ test1() {
 
   C_Polyhedron known_result(ph1);
 
-  ConSys cs = ph1.constraints();
+  Constraint_System cs = ph1.constraints();
   C_Polyhedron ph2(cs);
 
   bool ok = (ph2 == known_result);
@@ -71,7 +71,7 @@ test2() {
 
   C_Polyhedron known_result(ph1);
 
-  ConSys cs = ph1.constraints();
+  Constraint_System cs = ph1.constraints();
   C_Polyhedron ph2(cs);
 
   bool ok = (ph2 == known_result);

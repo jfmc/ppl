@@ -53,8 +53,8 @@ PPL::BHRZ03_Certificate::BHRZ03_Certificate(const Polyhedron& ph)
   const dimension_type space_dim = ph.space_dimension();
   affine_dim = space_dim;
   assert(num_constraints == 0);
-  const ConSys& cs = ph.minimized_constraints();
-  for (ConSys::const_iterator i = cs.begin(),
+  const Constraint_System& cs = ph.minimized_constraints();
+  for (Constraint_System::const_iterator i = cs.begin(),
 	 cs_end = cs.end(); i != cs_end; ++i) {
     ++num_constraints;
     if (i->is_equality())
@@ -150,8 +150,8 @@ PPL::BHRZ03_Certificate::compare(const Polyhedron& ph) const {
   const dimension_type space_dim = ph.space_dimension();
   dimension_type ph_affine_dim = space_dim;
   dimension_type ph_num_constraints = 0;
-  const ConSys& cs = ph.minimized_constraints();
-  for (ConSys::const_iterator i = cs.begin(),
+  const Constraint_System& cs = ph.minimized_constraints();
+  for (Constraint_System::const_iterator i = cs.begin(),
 	 cs_end = cs.end(); i != cs_end; ++i) {
     ++ph_num_constraints;
     if (i->is_equality())

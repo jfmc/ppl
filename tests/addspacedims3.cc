@@ -50,7 +50,7 @@ main() TRY {
 #if NOISY
   print_generators(ph, "*** ph ***");
 #endif
-  ConSys cs = ph.constraints();
+  Constraint_System cs = ph.constraints();
 
   ph.add_space_dimensions_and_embed(2);
 #if NOISY

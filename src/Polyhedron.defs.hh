@@ -28,8 +28,8 @@ site: http://www.cs.unipr.it/ppl/ . */
 #include "globals.defs.hh"
 #include "Variable.defs.hh"
 #include "Linear_Expression.defs.hh"
-#include "ConSys.defs.hh"
-#include "ConSys.inlines.hh"
+#include "Constraint_System.defs.hh"
+#include "Constraint_System.inlines.hh"
 #include "GenSys.defs.hh"
 #include "GenSys.inlines.hh"
 #include "Saturation_Matrix.defs.hh"
@@ -139,7 +139,7 @@ bool operator!=(const Polyhedron& x, const Polyhedron& y);
     The following code builds a polyhedron corresponding to
     a square in \f$\Rset^2\f$, given as a system of constraints:
     \code
-  ConSys cs;
+  Constraint_System cs;
   cs.insert(x >= 0);
   cs.insert(x <= 3);
   cs.insert(y >= 0);
@@ -163,7 +163,7 @@ bool operator!=(const Polyhedron& x, const Polyhedron& y);
     corresponding to a half-strip in \f$\Rset^2\f$,
     given as a system of constraints:
     \code
-  ConSys cs;
+  Constraint_System cs;
   cs.insert(x >= 0);
   cs.insert(x - y <= 0);
   cs.insert(x - y + 1 >= 0);
@@ -389,7 +389,7 @@ protected:
     \exception std::invalid_argument
     Thrown if the topology of \p cs is incompatible with \p topol.
   */
-  Polyhedron(Topology topol, const ConSys& cs);
+  Polyhedron(Topology topol, const Constraint_System& cs);
 
   //! Builds a polyhedron recycling a system of constraints.
   /*!
@@ -406,7 +406,7 @@ protected:
     \exception std::invalid_argument
     Thrown if the topology of \p cs is incompatible with \p topol.
   */
-  Polyhedron(Topology topol, ConSys& cs);
+  Polyhedron(Topology topol, Constraint_System& cs);
 
   //! Builds a polyhedron from a system of generators.
   /*!
@@ -518,10 +518,10 @@ public:
   dimension_type affine_dimension() const;
 
   //! Returns the system of constraints.
-  const ConSys& constraints() const;
+  const Constraint_System& constraints() const;
 
   //! Returns the system of constraints, with no redundant constraint.
-  const ConSys& minimized_constraints() const;
+  const Constraint_System& minimized_constraints() const;
 
   //! Returns the system of generators.
   const GenSys& generators() const;
@@ -858,7 +858,7 @@ public:
     Thrown if \p *this and \p cs are topology-incompatible or
     dimension-incompatible.
   */
-  void add_constraints(const ConSys& cs);
+  void add_constraints(const Constraint_System& cs);
 
   //! \brief Adds the constraints in \p cs to the system of constraints
   //! of \p *this (without minimizing the result).
@@ -875,7 +875,7 @@ public:
     The only assumption that can be made on \p cs upon successful or
     exceptional return is that it can be safely destroyed.
   */
-  void add_recycled_constraints(ConSys& cs);
+  void add_recycled_constraints(Constraint_System& cs);
 
   //! \brief
   //! Adds a copy of the constraints in \p cs to the system
@@ -892,7 +892,7 @@ public:
     Thrown if \p *this and \p cs are topology-incompatible or
     dimension-incompatible.
   */
-  bool add_constraints_and_minimize(const ConSys& cs);
+  bool add_constraints_and_minimize(const Constraint_System& cs);
 
   //! \brief
   //! Adds the constraints in \p cs to the system of constraints
@@ -913,7 +913,7 @@ public:
     The only assumption that can be made on \p cs upon successful or
     exceptional return is that it can be safely destroyed.
   */
-  bool add_recycled_constraints_and_minimize(ConSys& cs);
+  bool add_recycled_constraints_and_minimize(Constraint_System& cs);
 
   //! \brief Adds a copy of the generators in \p gs to the system
   //! of generators of \p *this (without minimizing the result).
@@ -1333,7 +1333,7 @@ public:
     dimension-incompatible.
   */
   void limited_BHRZ03_extrapolation_assign(const Polyhedron& y,
-					   const ConSys& cs,
+					   const Constraint_System& cs,
 					   unsigned* tp = 0);
 
   //! \brief
@@ -1359,7 +1359,7 @@ public:
     dimension-incompatible.
   */
   void bounded_BHRZ03_extrapolation_assign(const Polyhedron& y,
-					   const ConSys& cs,
+					   const Constraint_System& cs,
 					   unsigned* tp = 0);
 
   //! \brief
@@ -1401,7 +1401,7 @@ public:
     dimension-incompatible.
   */
   void limited_H79_extrapolation_assign(const Polyhedron& y,
-					const ConSys& cs,
+					const Constraint_System& cs,
 					unsigned* tp = 0);
 
   //! \brief
@@ -1427,7 +1427,7 @@ public:
     dimension-incompatible.
   */
   void bounded_H79_extrapolation_assign(const Polyhedron& y,
-					const ConSys& cs,
+					const Constraint_System& cs,
 					unsigned* tp = 0);
 
   //@} // Space Dimension Preserving Member Functions that May Modify [...]
@@ -1659,7 +1659,7 @@ public:
 
 private:
   //! The system of constraints.
-  ConSys con_sys;
+  Constraint_System con_sys;
 
   //! The system of generators.
   GenSys gen_sys;
@@ -2098,15 +2098,15 @@ private:
   //! Copies to \p cs_selection the constraints of `y' corresponding
   //! to the definition of the CH78-widening of \p *this and \p y.
   void select_CH78_constraints(const Polyhedron& y,
-			       ConSys& cs_selected) const;
+			       Constraint_System& cs_selected) const;
 
   //! \brief
   //! Splits the constraints of `x' into two subsets, depending on whether
   //! or not they are selected to compute the \ref H79_widening "H79-widening"
   //! of \p *this and \p y.
   void select_H79_constraints(const Polyhedron& y,
-			      ConSys& cs_selected,
-			      ConSys& cs_not_selected) const;
+			      Constraint_System& cs_selected,
+			      Constraint_System& cs_not_selected) const;
 
   friend class Parma_Polyhedra_Library::BHRZ03_Certificate;
   friend class Parma_Polyhedra_Library::H79_Certificate;
@@ -2114,7 +2114,7 @@ private:
   bool BHRZ03_combining_constraints(const Polyhedron& y,
 				    const BHRZ03_Certificate& y_cert,
  				    const Polyhedron& H79,
-				    const ConSys& x_minus_H79_con_sys);
+				    const Constraint_System& x_minus_H79_con_sys);
 
   bool BHRZ03_evolving_points(const Polyhedron& y,
 			      const BHRZ03_Certificate& y_cert,
@@ -2127,7 +2127,7 @@ private:
   //@} // Widening- and Extrapolation-Related Functions
 
   //! Adds the low-level constraints to the constraint system.
-  static void add_low_level_constraints(ConSys& cs);
+  static void add_low_level_constraints(Constraint_System& cs);
 
   //! Adds new space dimensions to the given matrices.
   /*!
@@ -2222,7 +2222,7 @@ protected:
 				   const Generator& g) const;
   void throw_topology_incompatible(const char* method,
 				   const char* cs_name,
-				   const ConSys& cs) const;
+				   const Constraint_System& cs) const;
   void throw_topology_incompatible(const char* method,
 				   const char* gs_name,
 				   const GenSys& gs) const;
@@ -2244,7 +2244,7 @@ protected:
 				    const Generator& g) const;
   void throw_dimension_incompatible(const char* method,
 				    const char* cs_name,
-				    const ConSys& cs) const;
+				    const Constraint_System& cs) const;
   void throw_dimension_incompatible(const char* method,
 				    const char* gs_name,
 				    const GenSys& gs) const;

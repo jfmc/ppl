@@ -30,8 +30,8 @@ namespace PPL = Parma_Polyhedra_Library;
 
 PPL::C_Polyhedron::C_Polyhedron(const NNC_Polyhedron& y)
   : Polyhedron(NECESSARILY_CLOSED, y.space_dimension(), UNIVERSE) {
-  const ConSys& cs = y.constraints();
-  for (ConSys::const_iterator i = cs.begin(),
+  const Constraint_System& cs = y.constraints();
+  for (Constraint_System::const_iterator i = cs.begin(),
 	 cs_end = cs.end(); i != cs_end; ++i) {
     const Constraint& c = *i;
     add_constraint(c.is_strict_inequality() ? (Linear_Expression(c) >= 0) : c);

@@ -42,10 +42,10 @@ test1() {
   ph.add_constraint(A >= 0);
   C_Polyhedron copy_ph(ph);
 
-  ConSys cs1;
+  Constraint_System cs1;
   cs1.insert(A == 0);
   cs1.insert(B >= 0);
-  ConSys cs2(cs1);
+  Constraint_System cs2(cs1);
 
   ph.add_constraints(cs1);
   copy_ph.add_constraints_and_minimize(cs2);
@@ -84,8 +84,8 @@ test2() {
   print_generators(ph2, "*** ph2 ***");
 #endif
 
-  ConSys cs1 = ph2.constraints();
-  ConSys cs2 = ph2.constraints();
+  Constraint_System cs1 = ph2.constraints();
+  Constraint_System cs2 = ph2.constraints();
 
   ph1.add_constraints(cs1);
   copy_ph1.add_constraints_and_minimize(cs2);

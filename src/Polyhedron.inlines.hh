@@ -42,7 +42,7 @@ Polyhedron::max_space_dimension() {
   // One dimension is reserved to have a value of type dimension_type
   // that does not represent a legal dimension.
   return min(std::numeric_limits<dimension_type>::max() - 1,
-	     min(ConSys::max_space_dimension(),
+	     min(Constraint_System::max_space_dimension(),
 		 GenSys::max_space_dimension()
 		 )
 	     );
@@ -266,7 +266,7 @@ Polyhedron::process_pending() const {
 }
 
 inline void
-Polyhedron::add_low_level_constraints(ConSys& cs) {
+Polyhedron::add_low_level_constraints(Constraint_System& cs) {
   if (cs.is_necessarily_closed())
     // The positivity constraint.
     cs.insert(Constraint::zero_dim_positivity());
@@ -441,7 +441,7 @@ Polyhedron::shrink_bounding_box(Box& box, Complexity_Class complexity) const {
       return;
     }
     if (constraints_are_up_to_date()) {
-      for (ConSys::const_iterator i = con_sys.begin(); i != con_sys.end(); ++i)
+      for (Constraint_System::const_iterator i = con_sys.begin(); i != con_sys.end(); ++i)
 	if ((*i).is_trivial_false()){
 	  box.set_empty();
 	  return;
@@ -478,7 +478,7 @@ Polyhedron::shrink_bounding_box(Box& box, Complexity_Class complexity) const {
     // We must copy `con_sys' to a temporary matrix,
     // because we must apply gauss() and back_substitute()
     // to all the matrix and not only to the non-pending part.
-    ConSys cs(con_sys);
+    Constraint_System cs(con_sys);
     if (cs.num_pending_rows() > 0) {
       cs.unset_pending_rows();
       cs.sort_rows();
@@ -489,10 +489,10 @@ Polyhedron::shrink_bounding_box(Box& box, Complexity_Class complexity) const {
     if (has_pending_constraints() || !constraints_are_minimized())
       cs.back_substitute(cs.gauss());
 
-    const ConSys::const_iterator cs_begin = cs.begin();
-    const ConSys::const_iterator cs_end = cs.end();
+    const Constraint_System::const_iterator cs_begin = cs.begin();
+    const Constraint_System::const_iterator cs_end = cs.end();
 
-    for (ConSys::const_iterator i = cs_begin; i != cs_end; ++i) {
+    for (Constraint_System::const_iterator i = cs_begin; i != cs_end; ++i) {
       dimension_type varid = space_dim;
       const Constraint& c = *i;
       // After `gauss()' and `back_substitute()' some constraints can

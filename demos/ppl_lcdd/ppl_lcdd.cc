@@ -584,7 +584,7 @@ read_polyhedron(std::istream& in, POLYHEDRON_TYPE& ph) {
 
 #if defined(USE_PPL)
 
-  PPL::ConSys cs;
+  PPL::Constraint_System cs;
   PPL::GenSys gs;
 
 #elif defined(USE_POLKA)
@@ -872,8 +872,8 @@ write_polyhedron(std::ostream& out,
 #if defined(USE_PPL)
   unsigned num_rows = 0;
   if (rep == H) {
-    const PPL::ConSys& cs = ph.constraints();
-    for (PPL::ConSys::const_iterator i = cs.begin(),
+    const PPL::Constraint_System& cs = ph.constraints();
+    for (PPL::Constraint_System::const_iterator i = cs.begin(),
 	   cs_end = cs.end(); i != cs_end; ++i) {
       ++num_rows;
       if (i->is_equality())
@@ -939,8 +939,8 @@ write_polyhedron(std::ostream& out,
 
 #if defined(USE_PPL)
   if (rep == H) {
-    const PPL::ConSys& cs = ph.constraints();
-    for (PPL::ConSys::const_iterator i = cs.begin(),
+    const PPL::Constraint_System& cs = ph.constraints();
+    for (PPL::Constraint_System::const_iterator i = cs.begin(),
 	   cs_end = cs.end(); i != cs_end; ++i) {
       const PPL::Constraint& c = *i;
       guarded_write(out, c.inhomogeneous_term());
@@ -1202,15 +1202,15 @@ main(int argc, char* argv[]) try {
 
 	// Count the number of constraints of `ph'.
 	unsigned ph_num_constraints = 0;
-	const PPL::ConSys& ph_cs = ph.constraints();
-	for (PPL::ConSys::const_iterator i = ph_cs.begin(),
+	const PPL::Constraint_System& ph_cs = ph.constraints();
+	for (PPL::Constraint_System::const_iterator i = ph_cs.begin(),
 	       ph_cs_end = ph_cs.end(); i != ph_cs_end; ++i)
 	  ++ph_num_constraints;
       
 	// Count the number of constraints of `e_ph'.
 	unsigned e_ph_num_constraints = 0;
-	const PPL::ConSys& e_ph_cs = e_ph.constraints();
-	for (PPL::ConSys::const_iterator i = e_ph_cs.begin(),
+	const PPL::Constraint_System& e_ph_cs = e_ph.constraints();
+	for (PPL::Constraint_System::const_iterator i = e_ph_cs.begin(),
 	       e_ph_cs_end = e_ph_cs.end(); i != e_ph_cs_end; ++i)
 	  ++e_ph_num_constraints;
 

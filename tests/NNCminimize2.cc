@@ -38,7 +38,7 @@ main() TRY {
   Variable y(1);
 
   // Building a square.
-  ConSys cs;
+  Constraint_System cs;
   cs.insert(x >= 0);
   cs.insert(x <= 1);
   cs.insert(y >= 0);

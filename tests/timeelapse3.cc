@@ -38,7 +38,7 @@ main() TRY {
   Variable x(0);
   Variable y(1);
 
-  ConSys cs1;
+  Constraint_System cs1;
   cs1.insert(x > 3);
   cs1.insert(y > 3);
   NNC_Polyhedron ph(cs1);

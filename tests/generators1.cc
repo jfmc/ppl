@@ -45,7 +45,7 @@ main() TRY {
   print_generators(ph, "*** ph ***");
 #endif
 
-  ConSys cs = ph.constraints();
+  Constraint_System cs = ph.constraints();
 
   C_Polyhedron known_result(2);
   known_result.add_constraint(x == -1);

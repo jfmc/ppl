@@ -106,9 +106,9 @@ main() TRY {
   for (int dimension = 2; dimension <= 6; ++dimension) {
     C_Polyhedron ph(dimension, C_Polyhedron::EMPTY);
     random_polytope(ph, dimension, dimension*dimension);
-    const ConSys& cs = ph.constraints();
+    const Constraint_System& cs = ph.constraints();
     unsigned num_constraints = 0;
-    for (ConSys::const_iterator i = cs.begin(), cs_end = cs.end();
+    for (Constraint_System::const_iterator i = cs.begin(), cs_end = cs.end();
 	 i != cs_end;
 	 ++i)
       ++num_constraints;

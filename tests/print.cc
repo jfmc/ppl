@@ -38,11 +38,11 @@ print_constraint(const Constraint& c, const string& intro, ostream& s) {
 }
 
 void
-print_constraints(const ConSys& cs, const string& intro, ostream& s) {
+print_constraints(const Constraint_System& cs, const string& intro, ostream& s) {
   if (!intro.empty())
     s << intro << endl;
-  ConSys::const_iterator i = cs.begin();
-  ConSys::const_iterator cs_end = cs.end();
+  Constraint_System::const_iterator i = cs.begin();
+  Constraint_System::const_iterator cs_end = cs.end();
   bool printed_something = i != cs_end;
   while (i != cs_end) {
     s << *i++;

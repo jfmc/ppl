@@ -42,7 +42,7 @@ main() TRY {
   ph.add_constraint(x >= 1);
   ph.add_constraint(x <= 3);
 
-  ConSys cs = ph.constraints();
+  Constraint_System cs = ph.constraints();
 
 #if NOISY
   print_constraints(ph, "--- ph ---");

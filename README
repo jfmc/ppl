@@ -407,10 +407,10 @@ ppl-0.6/
 |   |-- C_Polyhedron.defs.hh
 |   |-- C_Polyhedron.inlines.hh
 |   |-- C_Polyhedron.types.hh
-|   |-- ConSys.cc
-|   |-- ConSys.defs.hh
-|   |-- ConSys.inlines.hh
-|   |-- ConSys.types.hh
+|   |-- Constraint_System.cc
+|   |-- Constraint_System.defs.hh
+|   |-- Constraint_System.inlines.hh
+|   |-- Constraint_System.types.hh
 |   |-- Constraint.cc
 |   |-- Constraint.defs.hh
 |   |-- Constraint.inlines.hh

@@ -49,7 +49,7 @@ main() TRY {
   gs2.insert(point(2*A + 2*B));
   C_Polyhedron ph2(gs2);
 
-  ConSys cs;
+  Constraint_System cs;
   cs.insert(A <= 5);
   cs.insert(B <= 4);
 

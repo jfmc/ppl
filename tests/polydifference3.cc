@@ -42,7 +42,7 @@ main() TRY {
   print_constraints(ph2, "*** ph2 ***");
 #endif
 
-  ConSys cs;
+  Constraint_System cs;
   cs.insert(Linear_Expression(-4) >= 0);
   C_Polyhedron known_result(cs);
 

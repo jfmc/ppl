@@ -43,7 +43,7 @@ NNC_Polyhedron::NNC_Polyhedron(dimension_type num_dimensions,
 }
 
 inline
-NNC_Polyhedron::NNC_Polyhedron(const ConSys& cs)
+NNC_Polyhedron::NNC_Polyhedron(const Constraint_System& cs)
   : Polyhedron(NOT_NECESSARILY_CLOSED,
 	       cs.space_dimension() <= max_space_dimension()
 	       ? cs
@@ -55,7 +55,7 @@ NNC_Polyhedron::NNC_Polyhedron(const ConSys& cs)
 }
 
 inline
-NNC_Polyhedron::NNC_Polyhedron(ConSys& cs)
+NNC_Polyhedron::NNC_Polyhedron(Constraint_System& cs)
   : Polyhedron(NOT_NECESSARILY_CLOSED,
 	       cs.space_dimension() <= max_space_dimension()
 	       ? cs

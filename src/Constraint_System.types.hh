@@ -9,13 +9,13 @@ WITHOUT ANY WARRANTY, to the extent permitted by law; without even the
 implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR
 PURPOSE. */
 
-#ifndef PPL_ConSys_types_hh
-#define PPL_ConSys_types_hh 1
+#ifndef PPL_Constraint_System_types_hh
+#define PPL_Constraint_System_types_hh 1
 
 namespace Parma_Polyhedra_Library {
 
-class ConSys;
+class Constraint_System;
 
 }
 
-#endif // !defined(PPL_ConSys_types_hh)
+#endif // !defined(PPL_Constraint_System_types_hh)

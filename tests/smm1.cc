@@ -121,7 +121,7 @@ main() TRY {
 	  if (!ph.is_empty()) {
 #if NOISY
 	    cout << "Solution constraints" << endl;
-	    const ConSys& cs = ph.constraints();
+	    const Constraint_System& cs = ph.constraints();
 	    copy(cs.begin(), cs.end(),
 		 ostream_iterator<Constraint>(cout, "\n"));
 	    cout << "Solution generators" << endl;

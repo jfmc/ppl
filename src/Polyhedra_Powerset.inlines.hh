@@ -25,8 +25,8 @@ site: http://www.cs.unipr.it/ppl/ . */
 #define PPL_Polyhedra_Powerset_inlines_hh 1
 
 #include "BHRZ03_Certificate.types.hh"
-#include "ConSys.defs.hh"
-#include "ConSys.inlines.hh"
+#include "Constraint_System.defs.hh"
+#include "Constraint_System.inlines.hh"
 #include "Widening_Function.defs.hh"
 #include <algorithm>
 #include <deque>
@@ -82,7 +82,7 @@ Polyhedra_Powerset<C_Polyhedron>
 }
 
 template <typename PH>
-Polyhedra_Powerset<PH>::Polyhedra_Powerset(const ConSys& cs)
+Polyhedra_Powerset<PH>::Polyhedra_Powerset(const Constraint_System& cs)
   : space_dim(cs.space_dimension()) {
   push_back(Determinate<PH>(cs));
 }
@@ -180,7 +180,7 @@ Polyhedra_Powerset<PH>::add_constraint_and_minimize(const Constraint& c) {
 
 template <typename PH>
 void
-Polyhedra_Powerset<PH>::add_constraints(const ConSys& cs) {
+Polyhedra_Powerset<PH>::add_constraints(const Constraint_System& cs) {
   for (iterator xi = Base::begin(), x_end = Base::end(); xi != x_end; ++xi)
     xi->element().add_constraints(cs);
   Base::reduced = false;
@@ -188,7 +188,7 @@ Polyhedra_Powerset<PH>::add_constraints(const ConSys& cs) {
 
 template <typename PH>
 bool
-Polyhedra_Powerset<PH>::add_constraints_and_minimize(const ConSys& cs) {
+Polyhedra_Powerset<PH>::add_constraints_and_minimize(const Constraint_System& cs) {
   for (iterator xi = Base::begin(),
 	 xin = xi, x_end = Base::end(); xi != x_end; xi = xin) {
     ++xin;
@@ -698,8 +698,8 @@ linear_partition(const PH& p, const PH& q) {
   Polyhedra_Powerset<NNC_Polyhedron> r(p.space_dimension(),
 				       Polyhedron::EMPTY);
   PH qq = q;
-  const ConSys& pcs = p.constraints();
-  for (ConSys::const_iterator i = pcs.begin(),
+  const Constraint_System& pcs = p.constraints();
+  for (Constraint_System::const_iterator i = pcs.begin(),
 	 pcs_end = pcs.end(); i != pcs_end; ++i) {
     const Constraint c = *i;
     if (c.is_equality()) {

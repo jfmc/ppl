@@ -1,4 +1,4 @@
-/* ConSys class implementation (non-inline functions).
+/* Constraint_System class implementation (non-inline functions).
    Copyright (C) 2001-2004 Roberto Bagnara <bagnara@cs.unipr.it>
 
 This file is part of the Parma Polyhedra Library (PPL).
@@ -23,8 +23,8 @@ site: http://www.cs.unipr.it/ppl/ . */
 
 #include <config.h>
 
-#include "ConSys.defs.hh"
-#include "ConSys.inlines.hh"
+#include "Constraint_System.defs.hh"
+#include "Constraint_System.inlines.hh"
 
 #include "Generator.defs.hh"
 #include <cassert>
@@ -36,7 +36,7 @@ site: http://www.cs.unipr.it/ppl/ . */
 namespace PPL = Parma_Polyhedra_Library;
 
 bool
-PPL::ConSys::
+PPL::Constraint_System::
 adjust_topology_and_space_dimension(const Topology new_topology,
 				    const dimension_type new_space_dim) {
   assert(space_dimension() <= new_space_dim);
@@ -103,7 +103,7 @@ adjust_topology_and_space_dimension(const Topology new_topology,
 	// If they are present, we erase these rows, so that the
 	// epsilon column will only contain zeroes: as a consequence,
 	// we just decrement the number of columns to be added.
-	ConSys& cs = *this;
+	Constraint_System& cs = *this;
 	const dimension_type eps_index = old_space_dim + 1;
 	dimension_type cs_num_rows = cs.num_rows();
 	bool was_sorted = cs.is_sorted();
@@ -195,10 +195,10 @@ adjust_topology_and_space_dimension(const Topology new_topology,
 }
 
 bool
-PPL::ConSys::has_strict_inequalities() const {
+PPL::Constraint_System::has_strict_inequalities() const {
   if (is_necessarily_closed())
     return false;
-  const ConSys& cs = *this;
+  const Constraint_System& cs = *this;
   dimension_type eps_index = cs.num_columns() - 1;
   // We verify if the system has strict inequalities
   // also in the pending part.
@@ -214,7 +214,7 @@ PPL::ConSys::has_strict_inequalities() const {
 
 
 void
-PPL::ConSys::insert(const Constraint& c) {
+PPL::Constraint_System::insert(const Constraint& c) {
   // We are sure that the matrix has no pending rows
   // and that the new row is not a pending constraint.
   assert(num_pending_rows() == 0);
@@ -244,7 +244,7 @@ PPL::ConSys::insert(const Constraint& c) {
 }
 
 void
-PPL::ConSys::insert_pending(const Constraint& c) {
+PPL::Constraint_System::insert_pending(const Constraint& c) {
   if (topology() == c.topology())
     Linear_System::insert_pending(c);
   else
@@ -269,11 +269,11 @@ PPL::ConSys::insert_pending(const Constraint& c) {
 }
 
 PPL::dimension_type
-PPL::ConSys::num_inequalities() const {
+PPL::Constraint_System::num_inequalities() const {
   // We are sure that we call this method only when
   // the matrix has no pending rows.
   assert(num_pending_rows() == 0);
-  const ConSys& cs = *this;
+  const Constraint_System& cs = *this;
   int n = 0;
   // If the Linear_System happens to be sorted, take advantage of the fact
   // that inequalities are at the bottom of the system.
@@ -288,7 +288,7 @@ PPL::ConSys::num_inequalities() const {
 }
 
 PPL::dimension_type
-PPL::ConSys::num_equalities() const {
+PPL::Constraint_System::num_equalities() const {
   // We are sure that we call this method only when
   // the matrix has no pending rows.
   assert(num_pending_rows() == 0);
@@ -296,14 +296,14 @@ PPL::ConSys::num_equalities() const {
 }
 
 void
-PPL::ConSys::const_iterator::skip_forward() {
+PPL::Constraint_System::const_iterator::skip_forward() {
   const Linear_System::const_iterator csp_end = csp->end();
   while (i != csp_end && (*this)->is_trivial_true())
     ++i;
 }
 
 bool
-PPL::ConSys::satisfies_all_constraints(const Generator& g) const {
+PPL::Constraint_System::satisfies_all_constraints(const Generator& g) const {
   assert(g.space_dimension() <= space_dimension());
 
   // Setting `sp_fp' to the appropriate scalar product operator.
@@ -314,7 +314,7 @@ PPL::ConSys::satisfies_all_constraints(const Generator& g) const {
     sps_fp = PPL::scalar_product_sign;
   else
     sps_fp = PPL::reduced_scalar_product_sign;
-  const ConSys& cs = *this;
+  const Constraint_System& cs = *this;
 
   if (cs.is_necessarily_closed()) {
     if (g.is_line()) {
@@ -399,7 +399,7 @@ PPL::ConSys::satisfies_all_constraints(const Generator& g) const {
 
 
 void
-PPL::ConSys::affine_preimage(dimension_type v,
+PPL::Constraint_System::affine_preimage(dimension_type v,
 			     const Linear_Expression& expr,
 			     Integer_traits::const_reference denominator) {
   // `v' is the index of a column corresponding to
@@ -413,7 +413,7 @@ PPL::ConSys::affine_preimage(dimension_type v,
   const dimension_type n_rows = num_rows();
   const dimension_type expr_size = expr.size();
   const bool not_invertible = (v >= expr_size || expr[v] == 0);
-  ConSys& x = *this;
+  Constraint_System& x = *this;
 
   if (denominator != 1)
     for (dimension_type i = n_rows; i-- > 0; ) {
@@ -454,8 +454,8 @@ PPL::ConSys::affine_preimage(dimension_type v,
 }
 
 void
-PPL::ConSys::ascii_dump(std::ostream& s) const {
-  const ConSys& x = *this;
+PPL::Constraint_System::ascii_dump(std::ostream& s) const {
+  const Constraint_System& x = *this;
   dimension_type x_num_rows = x.num_rows();
   dimension_type x_num_columns = x.num_columns();
   s << "topology " << (is_necessarily_closed()
@@ -486,7 +486,7 @@ PPL::ConSys::ascii_dump(std::ostream& s) const {
 }
 
 bool
-PPL::ConSys::ascii_load(std::istream& s) {
+PPL::Constraint_System::ascii_load(std::istream& s) {
   std::string str;
   if (!(s >> str) || str != "topology")
     return false;
@@ -520,7 +520,7 @@ PPL::ConSys::ascii_load(std::istream& s) {
     return false;
   set_index_first_pending_row(index);
 
-  ConSys& x = *this;
+  Constraint_System& x = *this;
   for (dimension_type i = 0; i < x.num_rows(); ++i) {
     for (dimension_type j = 0; j < x.num_columns(); ++j)
       if (!(s >> x[i][j]))
@@ -557,15 +557,15 @@ PPL::ConSys::ascii_load(std::istream& s) {
 }
 
 bool
-PPL::ConSys::OK() const {
-  // A ConSys must be a valid Linear_System; do not check for
+PPL::Constraint_System::OK() const {
+  // A Constraint_System must be a valid Linear_System; do not check for
   // strong normalization, since this will be done when
   // checking each individual constraint.
   if (!Linear_System::OK(false))
     return false;
 
   // Checking each constraint in the system.
-  const ConSys& x = *this;
+  const Constraint_System& x = *this;
   for (dimension_type i = num_rows(); i-- > 0; ) {
     const Constraint& c = x[i];
     if (!c.OK())
@@ -576,11 +576,11 @@ PPL::ConSys::OK() const {
   return true;
 }
 
-/*! \relates Parma_Polyhedra_Library::ConSys */
+/*! \relates Parma_Polyhedra_Library::Constraint_System */
 std::ostream&
-PPL::IO_Operators::operator<<(std::ostream& s, const ConSys& cs) {
-  ConSys::const_iterator i = cs.begin();
-  const ConSys::const_iterator cs_end = cs.end();
+PPL::IO_Operators::operator<<(std::ostream& s, const Constraint_System& cs) {
+  Constraint_System::const_iterator i = cs.begin();
+  const Constraint_System::const_iterator cs_end = cs.end();
   if (i == cs_end)
     s << "true";
   else {

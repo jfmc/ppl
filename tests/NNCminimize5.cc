@@ -37,7 +37,7 @@ main() TRY {
 
   Variable x(0);
 
-  ConSys cs;
+  Constraint_System cs;
   cs.insert(x > 0);
   cs.insert(x < 2);
 
@@ -60,14 +60,14 @@ main() TRY {
   NNC_Polyhedron copy_ph1(ph1);
 
   int num_constraints = 0;
-  for (ConSys::const_iterator i = ph1.constraints().begin(),
+  for (Constraint_System::const_iterator i = ph1.constraints().begin(),
 	 cs_end = ph1.constraints().end(); i != cs_end; ++i)
     ++num_constraints;
 
   ph1.minimized_constraints();
 
   int num_minimized_constraints = 0;
-  for (ConSys::const_iterator i = ph1.constraints().begin(),
+  for (Constraint_System::const_iterator i = ph1.constraints().begin(),
 	 cs_end = ph1.constraints().end(); i != cs_end; ++i)
     ++num_minimized_constraints;
 

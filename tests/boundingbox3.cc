@@ -215,7 +215,7 @@ test8() {
   Variable x(0);
   Variable y(1);
 
-  ConSys known_cs;
+  Constraint_System known_cs;
   known_cs.insert(x >= 0);
   known_cs.insert(x <= 1);
   known_cs.insert(y >= 0);

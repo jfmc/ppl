@@ -32,7 +32,7 @@ class Polyhedron;
   would suffice for most uses.
   In more complex situations, such as
   \code
-    const ConSys& cs = ...;
+    const Constraint_System& cs = ...;
     copy(cs.begin(), cs.end(),
 	 ostream_iterator<Constraint>(cout, "\n"));
   \endcode

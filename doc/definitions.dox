@@ -1393,7 +1393,7 @@ for (GenSys::const_iterator gs_end = gs.end(); i != gs_end; ++i)
     break;
 const Generator& p = *i;
 // Get the constraints of `ph'.
-const ConSys& cs = ph.constraints();
+const Constraint_System& cs = ph.constraints();
 // Both the const iterator `i' and the reference `p'
 // are no longer valid at this point.
 cout << p.divisor() << endl;  // Undefinded behavior!

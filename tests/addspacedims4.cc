@@ -47,7 +47,7 @@ main() TRY {
 #endif
 
   C_Polyhedron ph2;
-  ConSys cs = ph2.constraints();
+  Constraint_System cs = ph2.constraints();
 
 #if NOISY
   print_generators(ph2, "*** ph2 ***");

@@ -86,7 +86,7 @@ PPL::Polyhedron::Polyhedron(const Polyhedron& y)
     sat_g = y.sat_g;
 }
 
-PPL::Polyhedron::Polyhedron(const Topology topol, const ConSys& ccs)
+PPL::Polyhedron::Polyhedron(const Topology topol, const Constraint_System& ccs)
   : con_sys(topol),
     gen_sys(topol),
     sat_c(),
@@ -95,7 +95,7 @@ PPL::Polyhedron::Polyhedron(const Topology topol, const ConSys& ccs)
   assert(ccs.space_dimension() <= max_space_dimension());
 
   // TODO: this implementation is just an executable specification.
-  ConSys cs = ccs;
+  Constraint_System cs = ccs;
 
   // Try to adapt `cs' to the required topology.
   const dimension_type cs_space_dim = cs.space_dimension();
@@ -135,7 +135,7 @@ PPL::Polyhedron::Polyhedron(const Topology topol, const ConSys& ccs)
   assert(OK());
 }
 
-PPL::Polyhedron::Polyhedron(const Topology topol, ConSys& cs)
+PPL::Polyhedron::Polyhedron(const Topology topol, Constraint_System& cs)
   : con_sys(topol),
     gen_sys(topol),
     sat_c(),
@@ -416,7 +416,7 @@ PPL::Polyhedron::is_included_in(const Polyhedron& y) const {
   assert(y.OK());
 
   const GenSys& gs = x.gen_sys;
-  const ConSys& cs = y.con_sys;
+  const Constraint_System& cs = y.con_sys;
 
   if (x.is_necessarily_closed())
     // When working with necessarily closed polyhedra,
@@ -1112,7 +1112,7 @@ PPL::Polyhedron::strongly_minimize_constraints() const {
   // For all the strict inequalities in `con_sys', check for
   // eps-redundancy and eventually move them to the bottom part of the
   // system.
-  ConSys& cs = x.con_sys;
+  Constraint_System& cs = x.con_sys;
   Saturation_Matrix& sat = x.sat_g;
   dimension_type cs_rows = cs.num_rows();
   const dimension_type eps_index = cs.num_columns() - 1;
@@ -1382,7 +1382,7 @@ PPL::Polyhedron::throw_topology_incompatible(const char* method,
 void
 PPL::Polyhedron::throw_topology_incompatible(const char* method,
 					     const char* cs_name,
-					     const ConSys&) const {
+					     const Constraint_System&) const {
   assert(is_necessarily_closed());
   std::ostringstream s;
   s << "PPL::C_Polyhedron::" << method << ":" << std::endl
@@ -1444,7 +1444,7 @@ PPL::Polyhedron::throw_dimension_incompatible(const char* method,
 void
 PPL::Polyhedron::throw_dimension_incompatible(const char* method,
 					      const char* cs_name,
-					      const ConSys& cs) const {
+					      const Constraint_System& cs) const {
   throw_dimension_incompatible(method, cs_name, cs.space_dimension());
 }
 
