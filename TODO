@@ -1,11 +1,39 @@
-Minor Things
-============
+Minor and Not So Minor Things
+=============================
 
 - Make sure all the public methods of Polyhedron are
-  available through the Prolog interfaces.
+  available through the Prolog interfaces.  And properly
+  documented there.  (By the way, the documentation of
+  ppl_copy_polyhedron is wrong.)  It would be nice not
+  to require the user of the Prolog interface to read
+  also all the C++ documentation.  We should really put
+  ourselves in the shoes of a _user_.
 
 - Seriously look at all the warnings issued by Doxygen
   when it produces the developer's reference manual.
+  All of these should either result in the discovery
+  of bugs (either in Doxygen or in our code) or in
+  misuses of Doxygen on our part.
+
+- There must be a more efficient way to compute convex
+  differences.
+
+- We still are not providing all the services we ought
+  to provide.  For instance:
+
+  1) Bounding box: obtaining the smallest bounding box
+     (a polyhedron with the sides parallel to the axes)
+     containing a given convex polyhedron.  For this
+     to be really useful an appropriate user interface
+     should also be devised.  The typical use is reverting
+     from a polyhedra-based analysis to an interval-based
+     one.  This method gives an interval for each dimension.
+
+  2) Cutting-plane methods?  Suppose we are only interested
+     in integral solutions.  Then cutting-plane methods
+     (Gomory, Chvátal, ...) allow to shrink P still not losing
+     any integral solution.  See
+     http://www.cs.unipr.it/ppl/Documentation/bibliography#NemhauserW88
 
 
 Non-Necessarily-Closed Polyhedra
@@ -26,7 +54,7 @@ Z-polyhedra are intersections and other representations for discrete sets.
 
   C. Ancourt.
   Génération automatique de codes de transfert pour
-  multiprocesseurs à méemoires locales.
+  multiprocesseurs à mémoires locales.
   PhD thesis, Université de Paris VI, March 1991.
 
 
