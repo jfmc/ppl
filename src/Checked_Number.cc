@@ -70,7 +70,7 @@ throw_result_exception(Result r) {
   case V_INF_MUL_ZERO:
     throw std::domain_error("Multiplication of infinity and zero.");
   case V_INF_SUB_INF:
-    throw std::domain_error("Subraction of infinities.");
+    throw std::domain_error("Subtraction of infinities.");
   case V_MOD_ZERO:
     throw std::domain_error("Remainder of division by zero.");
   case V_SQRT_NEG:

@@ -330,7 +330,7 @@ protected:
   //! The type of the underlying %const_iterator.
   typedef typename Powerset::Sequence::const_iterator Base;
 
-  //! A shorcut for naming traits.
+  //! A shortcut for naming traits.
   typedef typename std::iterator_traits<Base> Traits;
 
   //! A %const_iterator on the sequence of elements.
@@ -412,7 +412,7 @@ protected:
   //! The type of the underlying mutable iterator.
   typedef typename Powerset::Sequence::iterator Base;
 
-  //! A shorcut for naming traits.
+  //! A shortcut for naming traits.
   typedef typename
   std::iterator_traits<typename Powerset::Sequence::const_iterator> Traits;
 

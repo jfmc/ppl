@@ -506,7 +506,8 @@ PPL::Polyhedron::BHRZ03_combining_constraints(const Polyhedron& y,
   Polyhedron result = H79;
   result.add_recycled_constraints_and_minimize(new_cs);
 
-  // Check for stabilization wrt `y_cert' and improvement over `H79'.
+  // Check for stabilization with respect to `y_cert' and improvement
+  // over `H79'.
   if (y_cert.is_stabilizing(result) && !result.contains(H79)) {
     // The technique was successful.
     std::swap(x, result);
@@ -573,7 +574,8 @@ PPL::Polyhedron::BHRZ03_evolving_points(const Polyhedron& y,
   result.add_recycled_generators_and_minimize(candidate_rays);
   result.intersection_assign_and_minimize(H79);
 
-  // Check for stabilization wrt `y_cert' and improvement over `H79'.
+  // Check for stabilization with respect to `y_cert' and improvement
+  // over `H79'.
   if (y_cert.is_stabilizing(result) && !result.contains(H79)) {
     // The technique was successful.
     std::swap(x, result);
@@ -616,7 +618,8 @@ PPL::Polyhedron::BHRZ03_evolving_rays(const Polyhedron& y,
 	const Generator& y_g = y.gen_sys[j];
 	if (y_g.is_ray()) {
 	  Generator new_ray(x_g);
-	  // Modify `new_ray' according to the evolution of `x_g' wrt `y_g'.
+	  // Modify `new_ray' according to the evolution of `x_g' with
+	  // respect to `y_g'.
 	  std::deque<bool> considered(x.space_dim + 1);
 	  for (dimension_type k = 1; k < x.space_dim; ++k)
 	    if (!considered[k])
@@ -661,7 +664,7 @@ PPL::Polyhedron::BHRZ03_evolving_rays(const Polyhedron& y,
   // Intersect with `H79'.
   result.intersection_assign_and_minimize(H79);
 
-  // Check for stabilization wrt `y' and improvement over `H79'.
+  // Check for stabilization with respect to `y' and improvement over `H79'.
   if (y_cert.is_stabilizing(result) && !result.contains(H79)) {
     // The technique was successful.
     std::swap(x, result);

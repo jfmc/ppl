@@ -612,7 +612,7 @@ PPL::Linear_System::gram_shmidt() {
       mu_i[j] -= accum;
     }
 
-    // Let the `i'-th line become orthogonal wrt the `j'-th line,
+    // Let the `i'-th line become orthogonal with respect to the `j'-th line,
     // for all 0 <= j < i.
     for (dimension_type j = 0; j < i; j++) {
       const Linear_Row& x_j = x[j];
@@ -708,7 +708,8 @@ PPL::Linear_System::gram_shmidt() {
 #endif
 
 #ifndef NDEBUG
-    // Check that w is indeed orthogonal wrt all the vectors in the base.
+    // Check that w is indeed orthogonal with respect to all the
+    // vectors in the base.
     for (dimension_type h = rank; h-- > 0; )
       if (scalar_product_sign(w, x[h]) != 0) {
 	std::cout << "Not orthogonal" << std::endl;
@@ -763,6 +764,7 @@ PPL::Linear_System::gauss() {
 	    changed = true;
 	  }
 	}
+	// FIXME: the following comment must be rewritten.
 	// Have to consider the rows following the rank-th one
 	// because until that one are already triangularized.
 	++rank;
@@ -863,7 +865,7 @@ PPL::Linear_System::back_substitute(const dimension_type rank) {
   // Trying to keep sortedness.
   for (dimension_type i = 0; still_sorted && i < nrows-1; ++i)
     if (check_for_sortedness[i])
-      // Have to check sortedness of `mat[i]' wrt `mat[i+1]'.
+      // Have to check sortedness of `mat[i]' with respect to `mat[i+1]'.
       still_sorted = (compare(x[i], x[i+1]) <= 0);
   // Set the sortedness flag.
   set_sorted(still_sorted);

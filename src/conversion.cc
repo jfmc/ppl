@@ -120,7 +120,7 @@ namespace PPL = Parma_Polyhedra_Library;
   for a non-empty polyhedron \f$P\f$,
   it is always possible to find a generating system \f$G\f$ for \f$P\f$
   such that \f$(C, G)\f$ is a DD pair.
-  Conversely, Weil's theorem ensures that, for each generating system
+  Conversely, Weyl's theorem ensures that, for each generating system
   \f$G\f$, it is possible to find a representation system \f$C\f$
   such that \f$(C, G)\f$ is a DD pair.
 

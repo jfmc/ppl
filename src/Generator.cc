@@ -140,7 +140,7 @@ PPL::Generator::is_equivalent_to(const Generator& y) const {
     // First, drop the epsilon-coefficient ...
     Linear_Expression x_expr(x);
     Linear_Expression y_expr(y);
-    // ... second, renormalize ...
+    // ... second, re-normalize ...
     x_expr.normalize();
     y_expr.normalize();
     // ... and finally check for syntactic equality.
@@ -274,7 +274,7 @@ PPL::Generator::OK() const {
   const dimension_type min_size = is_necessarily_closed() ? 1 : 2;
   if (size() < min_size) {
 #ifndef NDEBUG
-    std::cerr << "Generator has fewer coefficeints than the minumum "
+    std::cerr << "Generator has fewer coefficients than the minimum "
 	      << "allowed by its topology:"
 	      << std::endl
 	      << "size is " << size()

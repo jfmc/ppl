@@ -72,11 +72,11 @@ private:
   //! Poly_Gen_Relation is implemented by means of a finite bitset.
   typedef unsigned int flags_t;
 
-  //! \name Bitmasks for the individual assertions
+  //! \name Bit-masks for the individual assertions
   //@{
   static const flags_t NOTHING  = 0U;
   static const flags_t SUBSUMES = 1U << 0;
-  //@} // Bitmasks for the individual assertions
+  //@} // Bit-masks for the individual assertions
 
   //! All assertions together.
   static const flags_t EVERYTHING
@@ -88,7 +88,7 @@ private:
   //! True if and only if the conjunction \p x implies the conjunction \p y.
   static bool implies(flags_t x, flags_t y);
 
-  //! Construct from a bitmask.
+  //! Construct from a bit-mask.
   Poly_Gen_Relation(flags_t mask);
 
   //! Pretty printing.

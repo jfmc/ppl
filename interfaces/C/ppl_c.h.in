@@ -172,7 +172,7 @@ enum ppl_enum_error_code {
   PPL_ARITHMETIC_OVERFLOW = -5,
   /*! \hideinitializer
     An error occurred during a C input/output operation.  A more
-    precise indication of what went wrong is availble via
+    precise indication of what went wrong is available via
     <CODE>errno</CODE>. */
   PPL_STDIO_ERROR = -6,
   /*! \hideinitializer

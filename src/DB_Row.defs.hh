@@ -76,7 +76,7 @@ private:
 };
 
 #ifdef PPL_DOXYGEN_INCLUDE_IMPLEMENTATION_DETAILS
-//! The base class for the single rows of matrixes.
+//! The base class for the single rows of matrices.
 /*!
   The templatic class DB_Row<T> allow the efficient representation of
   the single rows of a matrix. It contains elements of type T stored 

@@ -181,7 +181,7 @@ public:
 };
 
 //! This pointer, which is initialized to zero, is repeatedly checked
-//! along any superlinear (i.e., computationally expensive) computation
+//! along any super-linear (i.e., computationally expensive) computation
 //! path in the library.
 //! When it is found nonzero the exception it points to is thrown.
 //! In other words, making this pointer point to an exception (and

@@ -144,7 +144,7 @@ private:
   //! of the vector space.
   std::vector<Interval> vec;
   //! \brief
-  //! A boolean flag indicating emptyness of the bounding box.
+  //! A boolean flag indicating emptiness of the bounding box.
   //! Only meaningful when \p empty_up_to_date is <CODE>true</CODE>.
   mutable bool empty;
   //! Tells whether or not the flag \p empty is meaningful.

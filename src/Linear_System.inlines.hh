@@ -43,7 +43,7 @@ Linear_System::is_sorted() const {
   // The flag `sorted' does not really reflect the sortedness status
   // of a system (if `sorted' evaluates to `false' nothing is known).
   // This assertion is used to ensure that the system
-  // is actualy sorted when `sorted' value is 'true'.
+  // is actually sorted when `sorted' value is 'true'.
   assert(!sorted || check_sorted());
   return sorted;
 }

@@ -202,7 +202,7 @@ public:
   bool OK() const;
 
 private:
-  //! Bitvector representing the row.
+  //! Bit-vector representing the row.
   mpz_t vec;
 
   //! Assuming \p w is nonzero, returns the index of the first set bit in \p w.

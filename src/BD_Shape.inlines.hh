@@ -677,7 +677,7 @@ BD_Shape<T>::is_transitively_reduced() const {
   // connected all the zero-equivalent variables between them.
   for (dimension_type i = 0; i <= space_dim; ++i) {
     bool jc_i = just_checked[i];
-    // We don't re-controll the already considered single cycles.
+    // We don't re-control the already considered single cycles.
     if (!jc_i) {
       dimension_type v_con = var_conn[i];
       // We consider only the equivalence classes with 
@@ -906,7 +906,7 @@ BD_Shape<T>::relation_with(const Generator& g) const {
   // checking if the generator satisfies all the constraints in the bdiff.
   // To check if the generator satisfies all the constraints it's enough
   // studying the sign of the scalar product between the generator and
-  // all the contraints in the bdiff.
+  // all the constraints in the bdiff.
   
   // We find in `*this' all the constraints.
   for (dimension_type i = 0; i <= space_dim; ++i) {
@@ -988,7 +988,7 @@ BD_Shape<T>::relation_with(const Generator& g) const {
 	  else 
 	    if (!dbm_j_i_is_infinity) {
 	      // The constraint has form -ax <= b.
-	      // The scalarproduct has the form:
+	      // The scalar product has the form:
 	      // 'a * x_i' where x_i = g.coefficient(x).
 	      if (is_line && (!x_dimension_incompatible && g.coefficient(x) != 0))
 		return Poly_Gen_Relation::nothing();

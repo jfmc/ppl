@@ -60,7 +60,7 @@ enum Result {
   //! A negative overflow occurred.
   V_NEG_OVERFLOW = VC_MINUS_INFINITY | V_GT,
 
-  //! Positive infinity result classe
+  //! Positive infinity result class
   VC_PLUS_INFINITY = 32,
 
   //! A positive overflow occurred.

@@ -154,7 +154,7 @@ PPL::Constraint::is_equivalent_to(const Constraint& y) const {
     // First, drop the epsilon-coefficient ...
     Linear_Expression x_expr(x);
     Linear_Expression y_expr(y);
-    // ... then, renormalize ...
+    // ... then, re-normalize ...
     x_expr.normalize();
     y_expr.normalize();
     // ... and finally check for syntactic equality.
@@ -222,7 +222,7 @@ PPL::Constraint::OK() const {
   const dimension_type min_size = is_necessarily_closed() ? 1 : 2;
   if (size() < min_size) {
 #ifndef NDEBUG
-    std::cerr << "Constraint has fewer coefficients than the minumum "
+    std::cerr << "Constraint has fewer coefficients than the minimum "
 	      << "allowed by its topology:"
 	      << std::endl
 	      << "size is " << size()

@@ -1132,7 +1132,7 @@ The PPL provides the finite powerset construction; this takes a
 pre-existing domain and upgrades it to one that can represent
 disjunctive information (by using a <EM>finite</EM> number of
 disjuncts).  The construction follows the approach described in
-\ref Bag98 "[Bag98]", also summarised in \ref BHZ04 "[BHZ04]" where there
+\ref Bag98 "[Bag98]", also summarized in \ref BHZ04 "[BHZ04]" where there
 is an account of generic widenings for the powerset domain (some of
 which are supported in the instantiation of this construction by the
 domain of convex polyhedra and described in Section \ref poly_powerset).
@@ -2083,16 +2083,16 @@ propositions 4.1 and 4.2 on pages 92 and 93).
 
 <B><EM>Proposition</EM></B>
 
-Under the same hypotheses of Minkowsky's theorem,
+Under the same hypotheses of Minkowski's theorem,
 if \f$\cP\f$ is a rational polyhedron then
 all the vertices in \f$V\f$ have rational coefficients and
 we can consider a set \f$R\f$ of extreme rays having
 rational coefficients only.
 
-The second theorem, called Weil's theorem, states that any system of
+The second theorem, called Weyl's theorem, states that any system of
 generators having rational coefficients defines a rational polyhedron:
 
-<B>Weil's theorem</B>
+<B>Weyl's theorem</B>
 
 If \f$A\f$ is a rational \f$m \times n\f$ matrix,
 \f$B\f$ is a rational \f$m' \times n\f$ matrix and

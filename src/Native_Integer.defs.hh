@@ -108,7 +108,7 @@ public:
 
   //! \brief
   //! Conversion operator:
-  //! returns a copy of the undelying native integer value.
+  //! returns a copy of the underlying native integer value.
   operator T() const;
   //! Returns a reference to the underlying native integer value.
   T& raw_value();

@@ -200,7 +200,7 @@ bool operator!=(const Polyhedron& x, const Polyhedron& y);
   ph.add_generator(line(x));
     \endcode
     Note that, although the above polyhedron has no vertices, we must add
-    one point, because otherwise the result of the Minkowsky's sum
+    one point, because otherwise the result of the Minkowski's sum
     would be an empty polyhedron.
     To avoid subtle errors related to the minimization process,
     it is required that the first generator inserted in an empty

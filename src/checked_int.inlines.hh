@@ -663,7 +663,7 @@ struct Larger;
 // The following may be tuned for performance on specific architecture.
 //
 // Current guidelines:
-//   - avoid division where possibile (larger type variant for mul)
+//   - avoid division where possible (larger type variant for mul)
 //   - use larger type variant for types smaller than architecture bit size
 
 template <>

@@ -59,7 +59,7 @@ namespace Parma_Polyhedra_Library {
 
 /*
   The only reason to use these definitions instead of std::numeric_limits
-  is a missing optimization in gcc 3.4.1.
+  is a missing optimization in GCC 3.4.1.
  */
 
 template <typename T>

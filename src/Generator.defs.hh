@@ -366,7 +366,7 @@ public:
 
 private:
   //! \brief
-  //! Builds a generatorof type \p type and topology \p topology,
+  //! Builds a generator of type \p type and topology \p topology,
   //! stealing the coefficients from \p e.
   Generator(Linear_Expression& e, Type type, Topology topology);
 

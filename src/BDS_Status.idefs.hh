@@ -31,7 +31,7 @@ site: http://www.cs.unipr.it/ppl/ . */
     vector space \f$\Rset^0 = \{\cdot\}\f$;
   - <EM>empty</EM>: the polyhedron is the empty set;
   - <EM>transitively closed</EM>: the BD_Shape object is transitively
-    closed, so that all the constraints are as tigher as possible.
+    closed, so that all the constraints are as tighter as possible.
 
   Not all the conjunctions of these elementary assertions constitute
   a legal Status.  In fact:
@@ -76,7 +76,7 @@ private:
   //! Status is implemented by means of a finite bitset.
   typedef unsigned int flags_t;
 
-  //! \name Bitmasks for the individual assertions.
+  //! \name Bit-masks for the individual assertions.
   //@{
   static const flags_t ZERO_DIM_UNIV       = 0U;
   static const flags_t EMPTY               = 1U << 0;
@@ -86,7 +86,7 @@ private:
   //! This holds the current bitset.
   flags_t flags;
 
-  //! Construct from a bitmask.
+  //! Construct from a bit-mask.
   Status(flags_t mask);
 
   //! Check whether <EM>all</EM> bits in \p mask are set.

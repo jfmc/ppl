@@ -149,7 +149,7 @@ private:
   //! Status is implemented by means of a finite bitset.
   typedef unsigned int flags_t;
 
-  //! \name Bitmasks for the individual assertions
+  //! \name Bit-masks for the individual assertions
   //@{
   static const flags_t ZERO_DIM_UNIV    = 0U;
   static const flags_t EMPTY            = 1U << 0;
@@ -161,12 +161,12 @@ private:
   static const flags_t SAT_G_UP_TO_DATE = 1U << 6;
   static const flags_t CS_PENDING       = 1U << 7;
   static const flags_t GS_PENDING       = 1U << 8;
-  //@} // Bitmasks for the individual assertions
+  //@} // Bit-masks for the individual assertions
 
   //! This holds the current bitset.
   flags_t flags;
 
-  //! Construct from a bitmask.
+  //! Construct from a bit-mask.
   Status(flags_t mask);
 
   //! Check whether <EM>all</EM> bits in \p mask are set.

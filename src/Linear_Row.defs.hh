@@ -176,7 +176,7 @@ public:
     void ascii_dump(std::ostream& s) const;
 
   private:
-    //! Builds the type from a bitmask.
+    //! Builds the type from a bit-mask.
     explicit Flags(base_type mask);
 
     //! \name The bits that are currently in use

@@ -113,7 +113,7 @@ template <typename PH>
 inline
 Polyhedra_Powerset<PH>::Polyhedra_Powerset(const Constraint_System& cs)
   // FIXME: calling Base(Determinate<PH>(cs)) will automatically handle
-  // the flag `reduced', but it will also force a non-emptyness test
+  // the flag `reduced', but it will also force a non-emptiness test
   // on the constraint system `cs'.
   : Base(), space_dim(cs.space_dimension()) {
   Polyhedra_Powerset& x = *this;
@@ -651,7 +651,7 @@ Polyhedra_Powerset<PH>::BHZ03_widening_assign(const Polyhedra_Powerset& y,
     return;
   }
 
-  // Fallback to the computation of the poly-hull.
+  // Fall back to the computation of the poly-hull.
   Polyhedra_Powerset<PH> x_hull_singleton(x.space_dim, PH::EMPTY);
   x_hull_singleton.add_disjunct(x_hull);
   std::swap(x, x_hull_singleton);

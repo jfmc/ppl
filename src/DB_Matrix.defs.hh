@@ -46,10 +46,10 @@ operator<<(std::ostream& s, const DB_Matrix<T>& c);
 
 
 #ifdef PPL_DOXYGEN_INCLUDE_IMPLEMENTATION_DETAILS
-//! The base class for the square matrixes.
+//! The base class for the square matrices.
 /*!
   The templatic class DB_Matrix<T> allow the representation of the
-  square matrixes.
+  square matrices.
   Each DB_Matrix<T> object can be viewed as a multiset of DB_Row<T>.
   The class T is a family of extended numbers that must provide 
   representation for \f$ -\infty \f$, \f$0\f$,\f$ +\infty \f$ 
