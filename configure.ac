@@ -270,14 +270,16 @@ AC_PROG_MAKE_SET
 AC_PROG_INSTALL
 
 dnl Checks for Prolog systems.
-AC_CHECK_PROG(SICSTUS, sicstus, sicstus)
-AM_CONDITIONAL(HAVE_SICSTUS, test x$SICSTUS = xsicstus)
-AC_CHECK_PROG(SWI, pl, swi)
-AM_CONDITIONAL(HAVE_SWI, test x$SWI = xswi)
+AC_CHECK_PROG(SICSTUS_PROLOG, sicstus, sicstus)
+AM_CONDITIONAL(HAVE_SICSTUS_PROLOG, test x$SICSTUS_PROLOG = xsicstus)
+AC_CHECK_PROG(SWI_PROLOG, pl, swi)
+AM_CONDITIONAL(HAVE_SWI_PROLOG, test x$SWI_PROLOG = xswi)
+AC_CHECK_PROG(GNU_PROLOG, gprolog, gnu)
+AM_CONDITIONAL(HAVE_GNU_PROLOG, test x$GNU_PROLOG = xgnu)
 
 dnl Checks for header files.
-#AC_CHECK_HEADER(gprolog.h,
-#                extra_if_Prolog_subdirs="${extra_if_Prolog_subdirs} GNU")
+AC_CHECK_HEADER(gprolog.h,
+                extra_if_Prolog_subdirs="${extra_if_Prolog_subdirs} GNU")
 AC_CHECK_HEADER(SWI-Prolog.h,
                 extra_if_Prolog_subdirs="${extra_if_Prolog_subdirs} SWI")
 AC_CHECK_HEADER(sicstus/sicstus.h,
@@ -306,6 +308,7 @@ AC_OUTPUT(Makefile
           doc/user.doxyconf-html         doc/devref.doxyconf-html
           interfaces/Makefile
           interfaces/Prolog/Makefile
+          interfaces/Prolog/GNU/Makefile
           interfaces/Prolog/SICStus/Makefile interfaces/Prolog/SWI/Makefile)
 
 if test x"$gmp_supports_exceptions" = xno
