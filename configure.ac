@@ -396,6 +396,12 @@ AC_CXX_SUPPORTS_FLEXIBLE_ARRAYS
 # Check whether the C++ compiler supports __attribute__ ((weak)).
 AC_CXX_SUPPORTS_ATTRIBUTE_WEAK
 
+# Check whether the C++ compiler supports long double floating point numbers.
+AC_CXX_SUPPORTS_LONG_DOUBLE
+
+# Check whether the C++ compiler supports long long integers.
+AC_CXX_SUPPORTS_LONG_LONG
+
 # GMP library
 
 AC_CHECK_GMP
