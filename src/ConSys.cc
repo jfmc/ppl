@@ -131,14 +131,14 @@ PPL::ConSys::affine_preimage(size_t v,
   // Building the new matrix of constraints.
   for (size_t i = 0; i < n_rows; ++i) {
     Constraint& row = x[i];
-    if (row[v] != 0) {
-      Integer tmp = row[v];
-      row[v] *= expr[v];
+    Integer& row_v = row[v];
+    if (row_v != 0) {
       for (size_t j = 0; j < n_columns; ++j)
 	if (j != v) {
 	  row[j] *= denominator;
-	  row[j] += tmp * expr[j];
+	  row[j] += row_v * expr[j];
 	}
+      row_v *= expr[v];
     }
   }
   x.strong_normalize();
