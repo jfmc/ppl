@@ -29,12 +29,6 @@ site: http://www.cs.unipr.it/ppl/ . */
 #include <algorithm>
 #include <vector>
 
-#if CXX_SUPPORTS_FLEXIBLE_ARRAYS
-  #define FIRST_FLEXIBLE_ELEMENT 0
-#else
-  #define FIRST_FLEXIBLE_ELEMENT 1
-#endif
-
 namespace Parma_Polyhedra_Library {
 
 /*!
@@ -133,7 +127,12 @@ Row::Impl::Impl(const Impl& y, dimension_type sz)
 */
 inline
 Row::Impl::~Impl() {
-  shrink(FIRST_FLEXIBLE_ELEMENT);
+#if CXX_SUPPORTS_FLEXIBLE_ARRAYS
+  shrink(0);
+#else
+  shrink(1);
+#endif
+
 }
 
 /*!

@@ -33,8 +33,15 @@ namespace PPL = Parma_Polyhedra_Library;
 
 void
 PPL::Row::Impl::grow_no_copy(dimension_type new_size) {
-  assert(size() <= new_size);
-  for (dimension_type i = size(); i < new_size; ++i) {
+  dimension_type old_size = size();
+  assert(old_size <= new_size);
+#if !CXX_SUPPORTS_FLEXIBLE_ARRAYS
+  if (old_size == 0 && new_size > 0) {
+    ++old_size;
+    bump_size();
+  }
+#endif
+  for (dimension_type i = old_size; i < new_size; ++i) {
     new (&vec_[i]) Integer();
     bump_size();
   }
@@ -42,6 +49,9 @@ PPL::Row::Impl::grow_no_copy(dimension_type new_size) {
 
 void
 PPL::Row::Impl::shrink(dimension_type new_size) {
+#if !CXX_SUPPORTS_FLEXIBLE_ARRAYS
+  assert(new_size > 0);
+#endif
   assert(new_size <= size());
   // We assume construction was done "forward".
   // We thus perform destruction "backward".
@@ -54,10 +64,22 @@ PPL::Row::Impl::shrink(dimension_type new_size) {
 void
 PPL::Row::Impl::copy_construct(const Impl& y) {
   dimension_type y_size = y.size();
+#if CXX_SUPPORTS_FLEXIBLE_ARRAYS
   for (dimension_type i = 0; i < y_size; ++i) {
     new (&vec_[i]) Integer(y.vec_[i]);
     bump_size();
   }
+#else
+  assert(y_size > 0);
+  if (y_size > 0) {
+    vec_[0] = y.vec_[0];
+    bump_size();
+  }
+  for (dimension_type i = 1; i < y_size; ++i) {
+    new (&vec_[i]) Integer(y.vec_[i]);
+    bump_size();
+  }
+#endif
 }
 
 void
@@ -223,7 +245,7 @@ PPL::Row::OK(dimension_type row_size,
 
   bool is_broken = false;
 #if EXTRA_ROW_DEBUG
- #if !CXX_SUPPORTS_FLEXIBLE_ARRAYS
+# if !CXX_SUPPORTS_FLEXIBLE_ARRAYS
   if (capacity_ == 0) {
     cerr << "Illegal row capacity: is 0, should be at least 1"
 	 << endl;
@@ -233,7 +255,7 @@ PPL::Row::OK(dimension_type row_size,
     // This is fine.
     ;
   else
- #endif
+# endif
   if (capacity_ != row_capacity) {
     cerr << "Row capacity mismatch: is " << capacity_
 	 << ", should be " << row_capacity << "."
