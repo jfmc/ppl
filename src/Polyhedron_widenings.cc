@@ -275,6 +275,14 @@ PPL::Polyhedron::limited_H79_extrapolation_assign(const Polyhedron& y,
 						  const Constraint_System& cs,
 						  unsigned* tp) {
   Polyhedron& x = *this;
+
+  dimension_type cs_num_rows = cs.num_rows();
+  // If `cs' is empty, we fall back to ordinary, non-limited widening.
+  if (cs_num_rows == 0) {
+    x.H79_widening_assign(y, tp);
+    return;
+  }
+
   // Topology compatibility check.
   if (x.is_necessarily_closed()) {
     if (!y.is_necessarily_closed())
@@ -336,8 +344,7 @@ PPL::Polyhedron::limited_H79_extrapolation_assign(const Polyhedron& y,
   const Generator_System& x_gen_sys = x.gen_sys;
   // Iterate upwards here so as to keep the relative ordering of constraints.
   // Not really an issue: just aesthetics.
-  for (dimension_type i = 0,
-	 cs_num_rows = cs.num_rows(); i < cs_num_rows; ++i) {
+  for (dimension_type i = 0; i < cs_num_rows; ++i) {
     const Constraint& c = cs[i];
     if (x_gen_sys.satisfied_by_all_generators(c))
       new_cs.insert(c);
@@ -754,10 +761,19 @@ PPL::Polyhedron::BHRZ03_widening_assign(const Polyhedron& y, unsigned* tp) {
 }
 
 void
-PPL::Polyhedron::limited_BHRZ03_extrapolation_assign(const Polyhedron& y,
-						     const Constraint_System& cs,
-						     unsigned* tp) {
+PPL::Polyhedron::limited_BHRZ03_extrapolation_assign
+(const Polyhedron& y,
+ const Constraint_System& cs,
+ unsigned* tp) {
   Polyhedron& x = *this;
+
+  dimension_type cs_num_rows = cs.num_rows();
+  // If `cs' is empty, we fall back to ordinary, non-limited widening.
+  if (cs_num_rows == 0) {
+    x.BHRZ03_widening_assign(y, tp);
+    return;
+  }
+
   // Topology compatibility check.
   if (x.is_necessarily_closed()) {
     if (!y.is_necessarily_closed())
@@ -819,8 +835,7 @@ PPL::Polyhedron::limited_BHRZ03_extrapolation_assign(const Polyhedron& y,
   const Generator_System& x_gen_sys = x.gen_sys;
   // Iterate upwards here so as to keep the relative ordering of constraints.
   // Not really an issue: just aesthetics.
-  for (dimension_type i = 0,
-	 cs_num_rows = cs.num_rows(); i < cs_num_rows; ++i) {
+  for (dimension_type i = 0; i < cs_num_rows; ++i) {
     const Constraint& c = cs[i];
     if (x_gen_sys.satisfied_by_all_generators(c))
       new_cs.insert(c);
