@@ -148,6 +148,13 @@ Linear_Row::is_necessarily_closed() const {
 }
 
 inline dimension_type
+Linear_Row::max_space_dimension() {
+  // The first coefficient holds the inhomogeneous term or the divisor.
+  // In NNC rows, the last coefficient is for the epsilon dimension.
+  return max_size() - 2;
+}
+
+inline dimension_type
 Linear_Row::space_dimension() const {
   const dimension_type sz = size();
   return (sz == 0)

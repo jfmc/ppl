@@ -299,6 +299,9 @@ public:
   void set_is_ray_or_point_or_inequality();
   //@} // Flags coercion methods
 
+  //! Returns the maximum space dimension a Linear_Row can handle.
+  static dimension_type max_space_dimension();
+
   //! Returns the dimension of the vector space enclosing \p *this.
   dimension_type space_dimension() const;
 
