@@ -51,6 +51,7 @@ site: http://www.cs.unipr.it/ppl/ . */
 	ppl_Polyhedron_swap/2,
 	ppl_delete_Polyhedron/1,
 	ppl_Polyhedron_space_dimension/2,
+	ppl_Polyhedron_dimension/2,
 	ppl_Polyhedron_get_constraints/2,
 	ppl_Polyhedron_get_minimized_constraints/2,
 	ppl_Polyhedron_get_generators/2,

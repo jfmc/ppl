@@ -43,6 +43,7 @@ site: http://www.cs.unipr.it/ppl/ . */
 :- foreign(ppl_Polyhedron_swap(+term, +term)).
 :- foreign(ppl_delete_Polyhedron(+term)).
 :- foreign(ppl_Polyhedron_space_dimension(+term, +term)).
+:- foreign(ppl_Polyhedron_dimension(+term, +term)).
 :- foreign(ppl_Polyhedron_get_constraints(+term, +term)).
 :- foreign(ppl_Polyhedron_get_minimized_constraints(+term, +term)).
 :- foreign(ppl_Polyhedron_get_generators(+term, +term)).

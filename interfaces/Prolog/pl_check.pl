@@ -53,8 +53,8 @@ run_all:-
         error_message(['error in a new poyhedron predicate'])),
    (swap_polys -> true ;
         error_message(['error in swap predicate'])),
-   (space_dim -> true ;
-        error_message(['error in space dimension predicate'])),
+   (poly_dim -> true ;
+        error_message(['error in a dimension predicate'])),
    (basic_operators -> true ;
         error_message(['error in a basic operator predicate'])),
    (transform_polys -> true ;
@@ -138,9 +138,10 @@ swap_polys :-
   !,
   ppl_finalize.
 
-space_dim :-
+poly_dim :-
    ppl_initialize,
    space,
+   shape,
    !,
    ppl_finalize.
 
@@ -390,7 +391,7 @@ swap(T) :-
   ppl_delete_Polyhedron(P),
   ppl_delete_Polyhedron(Q).
 
-%%%%%%%%%%%%%%%%%% Space Dimension %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%%%%%%%%%%%%% Poly Dimension %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
 % Tests ppl_Polyhedron_space_dimension/2.
 space :-
@@ -411,11 +412,63 @@ space(T) :-
   ppl_delete_Polyhedron(Q),
   ppl_delete_Polyhedron(Q1).
 
+
+% Tests ppl_Polyhedron_dimension/2.
+shape :-
+ shape(c), shape(nnc).
+
+shape(T) :-
+  ppl_new_Polyhedron_from_dimension(T, 3, P),
+  ppl_Polyhedron_dimension(P, N),
+  N == 3,
+  \+ ppl_Polyhedron_dimension(P, 2),
+  ppl_new_Polyhedron_from_generators(T, [], Q),
+  ppl_Polyhedron_dimension(Q, M),
+  M == 0,
+  ppl_new_Polyhedron_from_constraints(T, [], Q1),
+  ppl_Polyhedron_dimension(Q1, M1),
+  M1 == 0,
+  ppl_delete_Polyhedron(P),
+  ppl_delete_Polyhedron(Q),
+  ppl_delete_Polyhedron(Q1),
+  make_vars(2, [A, B]),
+  ppl_new_Polyhedron_from_generators(T,
+                                     [point(A), ray(B)],
+                                     P1),
+  ppl_Polyhedron_space_dimension(P1, 2),
+  ppl_Polyhedron_dimension(P1, 1),
+  ppl_new_Polyhedron_from_generators(T,
+                                     [point(A + B, 2)],
+                                     P2),
+  ppl_Polyhedron_space_dimension(P2, 2),
+  ppl_Polyhedron_dimension(P2, 0),
+  ppl_new_Polyhedron_from_constraints(T,
+                                      [A - B >= 0, B >= 0,
+                                       A + B =< 1, B =< 0],
+                                      P3),
+  ppl_Polyhedron_space_dimension(P3, 2),
+  ppl_Polyhedron_dimension(P3, 1),
+  ppl_new_Polyhedron_from_constraints(T,
+                                      [A - B >= 0, B >= 1,
+                                       A + B =< 1],
+                                      P4),
+  (T = c -> 
+            ppl_Polyhedron_add_constraint(P4, B =< 0)
+         ;  
+            ppl_Polyhedron_add_constraint(P4, B < 1)
+  ),
+  ppl_Polyhedron_space_dimension(P4, 2),
+  ppl_Polyhedron_dimension(P4, 0),
+  ppl_delete_Polyhedron(P1),
+  ppl_delete_Polyhedron(P2),
+  ppl_delete_Polyhedron(P3),
+  ppl_delete_Polyhedron(P4).
+
+%%%%%%%%%%%%%%%% Basic Operators %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
 % Tests ppl_Polyhedron_intersection_assign/2.
 inters_assign :-
   inters_assign(c), inters_assign(nnc).
-
-%%%%%%%%%%%%%%%%%% Basic Operators %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
 inters_assign(T) :-
   make_vars(2, [A, B]),
