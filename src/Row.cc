@@ -132,7 +132,7 @@ PPL::Row::normalize() {
       x[i].exact_div_assign(tmp_Integer(1));
   
   // If `x' is an equality (line), we decide that the first
-  // coefficient of the row different from zero in positive.
+  // coefficient of the row different from zero is negative.
   if (x.is_line_or_equality()) {
     //`first_non_zero' indicates the index of the first
     // coefficient of the row different from zero.
@@ -142,8 +142,8 @@ PPL::Row::normalize() {
 	break;
     if (first_non_zero < sz)
       // If the first coefficient of the row different form zero
-      // is negative, we multiply the row for -1.
-      if (x[first_non_zero] < 0)
+      // is positive, we multiply the row for -1.
+      if (x[first_non_zero] > 0)
 	for (size_t j = first_non_zero; j < sz; ++j)
 	  x[j].negate();
   }
