@@ -1120,8 +1120,8 @@ emptyset.
 In this section we briefly describe the generic operations on Powerset Domains
 that are provided by the library for any given base-level domain \f$D\f$.
 
-\anchor ps_meet_join
-<B>Meet and Join</B>
+\anchor ps_meet_upper_bound
+<B>Meet and Upper Bound</B>
 
 Given the sets \f$\cS_1\f$ and \f$\cS_2 \in D_{\smallP}\f$, the
 <EM>meet</EM> and <EM>upper bound</EM> operators provided by the
@@ -1180,6 +1180,18 @@ recursively so that, for each pair \f$\cP, \cQ\f$ of distinct
 polyhedra in the result set, we have
 \f$\cP \uplus \cQ \neq \cP \union \cQ\f$.
 
+\anchor pps_bgp99_extrapolation
+<B>Extrapolation Operators</B>
+
+The library implements a generalization of the extrapolation operator
+for powerset domains proposed in \ref BGP99 "[BGP99]".
+The operator <CODE>BGP99_extrapolation_assign</CODE> is made parametric
+by allowing for the specification of a base-level extrapolation operator
+different from the H79 widening (e.g., the BHRZ03 widening can be used).
+Note that, in the general case, this operator cannot guarantee the
+convergence of the iteration sequence in a finite number of steps
+(for a counter-example, see \ref BHZ04 "[BHZ04]").
+
 \anchor pps_certificate_widening
 <B>Certificate-Based Widenings</B>
 
@@ -1204,8 +1216,9 @@ the templatic operator
 which only exploits a fraction of this generality, by allowing the
 user to specify the base-level widening function and the corresponding
 certificate. The widening strategy is fixed and uses two extrapolation
-heuristics: first, the least upper bound is tried; second, the BGP99
-extrapolation operator is tried, possibly applying
+heuristics: first, the least upper bound is tried; second, the
+\ref pps?bgp99_extrapolation "BGP99 extrapolation operator" is tried,
+possibly applying
 \ref pps_pairwise_merge "pairwise merging".
 If both heuristics fail to converge according to the convergence
 certificate, then an attempt is made to apply the base-level widening
