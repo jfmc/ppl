@@ -35,7 +35,7 @@ bad_result(Result r) {
   case V_POS_OVERFLOW:
     throw std::overflow_error("Positive overflow.");
   case V_UNKNOWN:
-    throw std::domain_error("Undefined result.");
+    throw std::overflow_error("Undefined result.");
   case V_DOMAIN:
     throw std::domain_error("Result is out of numeric domain.");
   default:
