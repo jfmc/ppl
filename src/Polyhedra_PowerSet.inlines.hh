@@ -355,9 +355,9 @@ Polyhedra_PowerSet<PH>::BGP99_extrapolation_assign(const Polyhedra_PowerSet& y,
   }
 #endif
 
+  pairwise_reduce();
   if (max_disjuncts != 0)
     collapse(max_disjuncts);
-  pairwise_reduce();
   BGP99_heuristics_assign(y, wm);
 }
 
@@ -380,9 +380,9 @@ limited_BGP99_extrapolation_assign(const Polyhedra_PowerSet& y,
   }
 #endif
 
+  pairwise_reduce();
   if (max_disjuncts != 0)
     collapse(max_disjuncts);
-  pairwise_reduce();
   limited_BGP99_heuristics_assign(y, cs, wm);
 }
 
