@@ -367,7 +367,9 @@ CATCH_ALL
 int
 ppl_new_LinExpression_with_dimension(ppl_LinExpression_t* ple,
 				     ppl_dimension_type d) try {
-  *ple = to_nonconst(new LinExpression(0*Variable(d)));
+  *ple = to_nonconst(d == 0
+		     ? new LinExpression(0)
+		     : new LinExpression(0*Variable(d-1)));
   return 0;
 }
 CATCH_ALL
