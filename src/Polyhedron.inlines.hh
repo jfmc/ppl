@@ -35,7 +35,7 @@ Parma_Polyhedra_Library::Polyhedron::swap(Polyhedron& y) {
   std::swap(status, y.status);
 }
 
-
+ 
 /*!
   Specializes std::swap to use the fast swap that is provided
   as a member function instead of using the default algorithm

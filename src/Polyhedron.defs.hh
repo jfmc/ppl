@@ -275,57 +275,58 @@ public:
   size_t num_dimensions() const;
   //! Intersects \p *this with polyhedron \p y and
   //! assigns the result to \p *this.
-  //! \exception std::invalid_argument \p *this and \p y
+  //! \exception std::invalid_argument thrown if \p *this and \p y
   //!                                  does not have the same dimension.
   void intersection_assign(const Polyhedron& y);
   //! Assigns the convex hull of \p *this \f$\cup\f$ \p y to \p *this.
-  //! \exception std::invalid_argument \p *this and \p y
+  //! \exception std::invalid_argument thrown if \p *this and \p y
   //!                                  does not have the same dimension.
   void convex_hull_assign(const Polyhedron& y);
   //! Assigns the convex hull of \p *this \f$\cup\f$ \p y to \p *this,
   //! without minimizing the result.
-  //! \exception std::invalid_argument \p *this and \p y
+  //! \exception std::invalid_argument thrown if \p *this and \p y
   //!                                  does not have the same dimension.
   void convex_hull_assign_lazy(const Polyhedron& y);
 
   //! Returns the relation between the generators of \p *this
   //! and the constraint \p c.
-  //! \exception std::invalid_argument \p *this and constraint \p c
-  //!                                  does not have the same dimension.
+  //! \exception std::invalid_argument thrown if\p *this and constraint 
+  //!                                  \p c does not have the same dimension.
   GenSys_Con_Rel satisfies(const Constraint& c);
   //! Tests the inclusion of the generator \p g in a polyhedron.
-  //! \exception std::invalid_argument \p *this and constraint \p g
-  //!                                  does not have the same dimension.
+  //! \exception std::invalid_argument thrown if \p *this and constraint 
+  //!                                  \p g does not have the same dimension.
   bool includes(const Generator& g);
 
   //! Computes the widening between \p *this and \p y and
   //! assigns the result to \p *this.
   //! \param y           The polyhedron that <EM>must</EM>
   //!                    be contained in \p *this.
-  //! \exception std::invalid_argument \p *this and \p y do not have
-  //!                                  the same dimension.
+  //! \exception std::invalid_argument thrown if \p *this and \p y 
+  //!                                  do not have the same dimension.
   void widening_assign(const Polyhedron& y);
   //! Limits the widening between \p *this and \p y by \p constraints
   //! and assigns the result to \p *this.
   //! \param y                 The polyhedron that <EM>must</EM>
   //!                          be contained in \p *this.
-  //! \param constraints       The system of constraints that limits
+  //! \param cs                The system of constraints that limits
   //!                          the widened polyhedron.
   //! \return       <CODE>true</CODE> if the resulting polyhedron is not
   //!               empty <CODE>false</CODE> otherwise.
-  //! \exception std::invalid_argument \p *this, \p y and \p constraints
-  //!                                  do not have the same dimension.
-  bool limited_widening_assign(const Polyhedron& y, ConSys& constraints);
+  //! \exception std::invalid_argument thrown if \p *this, \p y and 
+  //!                                  \p cs do not have the
+  //!                                  same dimension.
+  bool limited_widening_assign(const Polyhedron& y, ConSys& cs);
 
   //! Returns the system of constraints.
-  //! \exception std::invalid_argument constraints of \p *this can not
-  //!                                  be obtained (\p *this is empty
-  //!                                  or zero-dimensional).
+  //! \exception std::invalid_argument thrown if constraints of \p *this 
+  //!                                  can not be obtained (\p *this is 
+  //!                                  empty or zero-dimensional).
   const ConSys& constraints() const;
   //! Returns the system of generators.
-  //! \exception std::invalid_argument generators of \p *this can not
-  //!                                  be obtained (\p *this is empty
-  //!                                  or zero-dimensional).
+  //! \exception std::invalid_argument thrown if generators of \p *this 
+  //!                                  can not be obtained (\p *this is 
+  //!                                  empty or zero-dimensional).
   const GenSys& generators() const;
 
   //! Inserts a new constraint \p c into the system of constraints.
@@ -335,29 +336,29 @@ public:
   void insert(const Generator& g);
 
   //! Assigns an affine expression to the specified variable.
-  //! \param var           The variable to which the affine
+  //! \param v             The variable to which the affine
   //!                      expression is assigned.
-  //! \param expr          The affine expression.
+  //! \param expr          The numerator of theaffine expression.
   //! \param denominator   The denominator of the affine expression.
-  //! \exception std::invalid_argument \p denominator is zero or
-  //!                                  \p expr and \p *this have different
-  //!                                  dimension or
+  //! \exception std::invalid_argument thrown if \p denominator is zero or
+  //!                                  if \p expr and \p *this have 
+  //!                                  different dimension or if
   //!                                  \p var is not a variable of the
   //!                                  polyhedron
-  void assign_variable(const Variable& var,
+  void assign_variable(const Variable& v,
 		       const LinExpression& expr,
 		       Integer& denominator);
   //! Substitutes an affine expression for the specified variable.
-  //! \param var           The variable to which the affine expression is
-  //!                      assigned.
-  //! \param expr          The affine expression.
+  //! \param v             The variable to which the affine expression 
+  //!                      is substituted.
+  //! \param expr          The numerator of the affine expression.
   //! \param denominator   The denominator of the affine expression.
-  //! \exception std::invalid_argument \p denominator is zero or
-  //!                                  \p expr and \p *this have different
-  //!                                  dimension or
+  //! \exception std::invalid_argument thrown if \p denominator is zero or
+  //!                                  if \p expr and \p *this have 
+  //!                                  different dimension or if
   //!                                  \p var is not a variable of the
   //!                                  polyhedron
-  void substitute_variable(const Variable& var,
+  void substitute_variable(const Variable& v,
 			   const LinExpression& expr,
 			   Integer& denominator);
 
@@ -392,35 +393,36 @@ private:
 
 public:
   //! Adds new dimensions and embeds the old polyhedron in the new space.
-  //! \param add_dim      The number of dimensions to add.
-  void add_dimensions_and_embed(size_t add_dim);
+  //! \param dim      The number of dimensions to add.
+  void add_dimensions_and_embed(size_t dim);
   //! Adds new dimensions to the polyhedron
   //! and does not embed it in the new space.
-  //! \param add_dim      The number of dimensions to add.
-  void add_dimensions_and_project(size_t add_dim);
+  //! \param dim      The number of dimensions to add.
+  void add_dimensions_and_project(size_t dim);
   //! Removes the specified dimensions.
   //! \param to_be_remove The set of variable to remove.
   void remove_dimensions(const std::set<Variable>& to_be_removed);
   //! Adds the specified constraints and computes a new polyhedron.
-  //! \param  constraints_to_add   The constraints that will be added to the
-  //!                              current system of constraints.
-  //! \return                      <CODE>false</CODE> if the resulting
-  //!                              polyhedron is empty.
-  //! \exception std::invalid_argument \p *this and \p constraints_to_add
+  //! \param  cs            The constraints that will be added to the
+  //!                       current system of constraints.
+  //! \return               <CODE>false</CODE> if the resulting
+  //!                       polyhedron is empty.
+  //! \exception std::invalid_argument thrown if \p *this and \p cs
   //!                                  does not have the same dimension.
-  bool add_constraints(ConSys& constraints_to_add);
+  bool add_constraints(ConSys& cs);
   //! Adds the specified constraints without minimizing.
-  //! \param  constraints_to_add   The constraints that will be added to the
-  //!                              current system of constraints.
-  //! \exception std::invalid_argument \p *this and \p constraints_to_add
+  //! \param  cs             The constraints that will be added to the
+  //!                        current system of constraints.
+  //! \exception std::invalid_argument thrown if \p *this and \p cs 
   //!                                  does not have the same dimension
-  void add_constraints_lazy(ConSys& constraints_to_add);
+  void add_constraints_lazy(ConSys& cs);
   //! Adds the specified generators.
-  //! \param  generators_to_add   The generators that will be added to the
-  //!                             current system of generators.
-  //! \exception std::invalid_argument \p *this and \p generators_to_add
+  //! \param  gs          The generators that will be added to the
+  //!                     current system of generators.
+  //! \exception std::invalid_argument thrown if \p *this and 
+  //!                                  \p generators_to_add
   //!                                  does not have the same dimension
-  void add_generators(GenSys& generators_to_add);
+  void add_generators(GenSys& gs);
   //! Returns <CODE>true</CODE> if and only if the polyhedron is empty.
   bool check_empty() const;
   //! Returns <CODE>true</CODE> if \p *this is a universe polyhedron.
@@ -531,7 +533,7 @@ private:
 };
 
 namespace std {
-  //! Specialize std::swap to use the faster Polyhedron::swap.
+  //! Specialize std::swap.
   void swap(Parma_Polyhedra_Library::Polyhedron& x,
 	    Parma_Polyhedra_Library::Polyhedron& y);
 }
