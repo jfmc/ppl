@@ -1,0 +1,39 @@
+	PPL - A C++ library for convex polyhedra.
+
+
+Good things to have in the README include:
+
+   1.A brief description of the project.
+
+   2.A pointer to the project website (if it has one)
+
+   3.Notes on the developer's build environment and potential portability problems.
+
+   4.A roadmap describing important files and subdirectories.
+
+   5.Either build/installation instructions or a pointer to a file containing same (usually INSTALL).
+
+   6.Either a maintainers/credits list or a pointer to a file containing same (usually CREDITS).
+
+   7.Either recent project news or a pointer to a file containing same (usually NEWS).
+
+
+  Copyright (C) 2000 Roberto Bagnara
+
+  The Parma Polyhedra Library is free software; you can redistribute it and/or modify
+  it under the terms of the GNU General Public License as published by
+  the Free Software Foundation; either version 2 of the License, or
+  (at your option) any later version.
+
+  This program is distributed in the hope that it will be useful,
+  but WITHOUT ANY WARRANTY; without even the implied warranty of
+  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+  GNU General Public License for more details.
+
+  You should have received a copy of the GNU General Public License
+  along with this program; if not, write to the Free Software
+  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
+
+Comments are welcome.
+
+	- Roberto Bagnara <ppl-devel@cs.unipr.it>

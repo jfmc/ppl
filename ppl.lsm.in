@@ -1,0 +1,21 @@
+Begin3
+Title:		PPL
+Version:	@VERSION@
+Entered-date:	@ISODATE@
+Description:	A C++ library for convex polyhedra.
+		@configure_input@
+		Please edit ppl.lsm.in to fix the Keywords and
+		Primary-site entries, add several more lines of
+		description here if appropriate, and to delete these
+		instructions.
+Keywords:	[substitute your keywords here]
+Author: 	ppl-devel@cs.unipr.it
+Maintained-by:	ppl-devel@cs.unipr.it
+Primary-site:	metlab.unc.edu pub/Linux/apps/some/directory
+		31k ppl-@VERSION@.tar.gz
+		500  ppl.lsm
+Alternate-site: 
+Original-site:  
+Platforms:      
+Copying-policy:	GNU copyleft
+End
