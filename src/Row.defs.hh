@@ -187,7 +187,7 @@ namespace Parma_Polyhedra_Library {
   //! Computes the scalar product between \p x and \p y.
   /*! \relates Row */
 #endif // PPL_DOXYGEN_INCLUDE_IMPLEMENTATION_DETAILS
-  Integer operator*(const Row& x, const Row& y);
+  const Integer& operator*(const Row& x, const Row& y);
 
 #ifdef PPL_DOXYGEN_INCLUDE_IMPLEMENTATION_DETAILS
   //! The basic comparison function.

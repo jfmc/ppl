@@ -194,18 +194,19 @@ PPL::compare(const Row& x, const Row& y) {
   return 0;
 }
 
-PPL::Integer
+const PPL::Integer&
 PPL::operator*(const Row& x, const Row& y) {
   // Scalar product is only defined  if `x' and `y' are
   // dimension-compatible.
   assert(x.size() <= y.size());
-  Integer result = 0;
+  tmp_Integer[0] = 0;
   for (size_t i = x.size(); i-- > 0; ) {
-    // The following lines optimize the computation of result += x[i] * y[i].
+    // The following two lines optimize the computation
+    // of tmp_Integer[0] += x[i] * y[i].
     tmp_Integer[1] = x[i] * y[i];
-    result += tmp_Integer[1];
+    tmp_Integer[0] += tmp_Integer[1];
   }
-  return result;
+  return tmp_Integer[0];
 }
 
 /*!
