@@ -38,11 +38,11 @@ assign_mpq_mpz(mpq_class& to, const mpz_class& from) {
   return V_EQ;
 }
 
-SPECIALIZE_ASSIGN(mpq_mpz, mpq_class, const mpz_class&)
+SPECIALIZE_ASSIGN(mpq_mpz, mpq_class, mpz_class&)
 
 template <typename Policy, typename From>
 inline Result
-assign_mpq_signed_int(mpq_class& to, From from) {
+assign_mpq_signed_int(mpq_class& to, const From from) {
   if (sizeof(From) <= sizeof(unsigned long))
     to = static_cast<unsigned long>(from);
   else {
@@ -66,7 +66,7 @@ SPECIALIZE_ASSIGN(mpq_signed_int, mpq_class, int64_t)
 
 template <typename Policy, typename From>
 inline Result
-assign_mpq_unsigned_int(mpq_class& to, From from) {
+assign_mpq_unsigned_int(mpq_class& to, const From from) {
   if (sizeof(From) <= sizeof(unsigned long))
     to = static_cast<unsigned long>(from);
   else {
@@ -88,14 +88,14 @@ assign_int_mpq(To& to, const mpq_class& from) {
   mpz_srcptr d = from.get_den().get_mpz_t();
   mpz_t q, r;
   mpz_init(q);
-  if (Policy::check_exact) {
+  if (Policy::check_inexact) {
     mpz_init(r);
     mpz_tdiv_qr(q, r, n, d);
   } else {
     mpz_divexact(q, n, d);
   }
   Result ret = assign<Policy>(to, q);
-  if (Policy::check_exact && ret == V_EQ) {
+  if (Policy::check_inexact && ret == V_EQ) {
     switch (mpz_sgn(r)) {
     case -1:
       return V_LT;
@@ -106,18 +106,18 @@ assign_int_mpq(To& to, const mpq_class& from) {
   return ret;
 }
 
-SPECIALIZE_ASSIGN(int_mpq, int8_t, const mpq_class&)
-SPECIALIZE_ASSIGN(int_mpq, int16_t, const mpq_class&)
-SPECIALIZE_ASSIGN(int_mpq, int32_t, const mpq_class&)
-SPECIALIZE_ASSIGN(int_mpq, int64_t, const mpq_class&)
-SPECIALIZE_ASSIGN(int_mpq, u_int8_t, const mpq_class&)
-SPECIALIZE_ASSIGN(int_mpq, u_int16_t, const mpq_class&)
-SPECIALIZE_ASSIGN(int_mpq, u_int32_t, const mpq_class&)
-SPECIALIZE_ASSIGN(int_mpq, u_int64_t, const mpq_class&)
+SPECIALIZE_ASSIGN(int_mpq, int8_t, mpq_class&)
+SPECIALIZE_ASSIGN(int_mpq, int16_t, mpq_class&)
+SPECIALIZE_ASSIGN(int_mpq, int32_t, mpq_class&)
+SPECIALIZE_ASSIGN(int_mpq, int64_t, mpq_class&)
+SPECIALIZE_ASSIGN(int_mpq, u_int8_t, mpq_class&)
+SPECIALIZE_ASSIGN(int_mpq, u_int16_t, mpq_class&)
+SPECIALIZE_ASSIGN(int_mpq, u_int32_t, mpq_class&)
+SPECIALIZE_ASSIGN(int_mpq, u_int64_t, mpq_class&)
 
 template <typename Policy, typename From>
 inline Result
-assign_mpq_float(mpq_class& to, From from) {
+assign_mpq_float(mpq_class& to, const From from) {
   to = from;
   return V_EQ;
 }
@@ -148,7 +148,7 @@ neg_mpq(mpq_class& to, const mpq_class& from) {
   return V_EQ;
 }
 
-SPECIALIZE_NEG(mpq, mpq_class, const mpq_class&)
+SPECIALIZE_NEG(mpq, mpq_class, mpq_class&)
 
 template <typename Policy>
 inline Result 
@@ -157,7 +157,7 @@ add_mpq(mpq_class& to, const mpq_class& x, const mpq_class& y) {
   return V_EQ;
 }
 
-SPECIALIZE_ADD(mpq, mpq_class, const mpq_class&)
+SPECIALIZE_ADD(mpq, mpq_class, mpq_class&)
 
 template <typename Policy>
 inline Result 
@@ -166,7 +166,7 @@ sub_mpq(mpq_class& to, const mpq_class& x, const mpq_class& y) {
   return V_EQ;
 }
 
-SPECIALIZE_SUB(mpq, mpq_class, const mpq_class&)
+SPECIALIZE_SUB(mpq, mpq_class, mpq_class&)
 
 template <typename Policy>
 inline Result 
@@ -175,7 +175,7 @@ mul_mpq(mpq_class& to, const mpq_class& x, const mpq_class& y) {
   return V_EQ;
 }
 
-SPECIALIZE_MUL(mpq, mpq_class, const mpq_class&)
+SPECIALIZE_MUL(mpq, mpq_class, mpq_class&)
 
 template <typename Policy>
 inline Result 
@@ -184,7 +184,7 @@ div_mpq(mpq_class& to, const mpq_class& x, const mpq_class& y) {
   return V_EQ;
 }
 
-SPECIALIZE_DIV(mpq, mpq_class, const mpq_class&)
+SPECIALIZE_DIV(mpq, mpq_class, mpq_class&)
 
 template <typename Policy>
 inline Result 
@@ -194,7 +194,7 @@ mod_mpq(mpq_class& to, const mpq_class& x, const mpq_class& y) {
   return V_EQ;
 }
 
-SPECIALIZE_MOD(mpq, mpq_class, const mpq_class&)
+SPECIALIZE_MOD(mpq, mpq_class, mpq_class&)
 
 template <typename Policy>
 inline Result
@@ -204,7 +204,7 @@ abs_mpq(mpq_class& to, const mpq_class& from)
   return V_EQ;
 }
 
-SPECIALIZE_ABS(mpq, mpq_class, const mpq_class&)
+SPECIALIZE_ABS(mpq, mpq_class, mpq_class&)
 
 } // namespace Checked
 

@@ -35,7 +35,7 @@ namespace Checked {
 template <typename Policy>
 inline Result
 assign_mpz_mpq(mpz_class& to, const mpq_class& from) {
-  if (Policy::check_exact) {
+  if (Policy::check_inexact) {
     mpz_srcptr n = from.get_num().get_mpz_t();
     mpz_srcptr d = from.get_den().get_mpz_t();
     mpz_t r;
@@ -53,11 +53,11 @@ assign_mpz_mpq(mpz_class& to, const mpq_class& from) {
   return V_EQ;
 }
 
-SPECIALIZE_ASSIGN(mpz_mpq, mpz_class, const mpq_class&)
+SPECIALIZE_ASSIGN(mpz_mpq, mpz_class, mpq_class&)
 
 template <typename Policy, typename From>
 inline Result
-assign_mpz_signed_int(mpz_class& to, From from) {
+assign_mpz_signed_int(mpz_class& to, const From from) {
   if (sizeof(From) <= sizeof(unsigned long))
     to = static_cast<unsigned long>(from);
   else {
@@ -65,8 +65,8 @@ assign_mpz_signed_int(mpz_class& to, From from) {
     if (from >= 0)
       mpz_import(m, 1, 1, sizeof(From), 0, 0, &from);
     else {
-      from = -from;
-      mpz_import(m, 1, 1, sizeof(From), 0, 0, &from);
+      From n = -from;
+      mpz_import(m, 1, 1, sizeof(From), 0, 0, &n);
       mpz_neg(m, m);
     }
   }
@@ -80,7 +80,7 @@ SPECIALIZE_ASSIGN(mpz_signed_int, mpz_class, int64_t)
 
 template <typename Policy, typename From>
 inline Result
-assign_mpz_unsigned_int(mpz_class& to, From from) {
+assign_mpz_unsigned_int(mpz_class& to, const From from) {
   if (sizeof(From) <= sizeof(unsigned long))
     to = static_cast<unsigned long>(from);
   else
@@ -96,7 +96,7 @@ SPECIALIZE_ASSIGN(mpz_unsigned_int, mpz_class, u_int64_t)
 
 template <typename Policy, typename From>
 inline Result
-assign_mpz_float(mpz_class& to, From from) {
+assign_mpz_float(mpz_class& to, const From from) {
   if (Policy::check_inexact) {
     double n = rint(from);
     to = n;
@@ -138,7 +138,7 @@ neg_mpz(mpz_class& to, const mpz_class& from) {
   return V_EQ;
 }
 
-SPECIALIZE_NEG(mpz, mpz_class, const mpz_class&)
+SPECIALIZE_NEG(mpz, mpz_class, mpz_class&)
 
 template <typename Policy>
 inline Result 
@@ -147,7 +147,7 @@ add_mpz(mpz_class& to, const mpz_class& x, const mpz_class& y) {
   return V_EQ;
 }
 
-SPECIALIZE_ADD(mpz, mpz_class, const mpz_class&)
+SPECIALIZE_ADD(mpz, mpz_class, mpz_class&)
 
 template <typename Policy>
 inline Result 
@@ -156,7 +156,7 @@ sub_mpz(mpz_class& to, const mpz_class& x, const mpz_class& y) {
   return V_EQ;
 }
 
-SPECIALIZE_SUB(mpz, mpz_class, const mpz_class&)
+SPECIALIZE_SUB(mpz, mpz_class, mpz_class&)
 
 template <typename Policy>
 inline Result 
@@ -165,7 +165,7 @@ mul_mpz(mpz_class& to, const mpz_class& x, const mpz_class& y) {
   return V_EQ;
 }
 
-SPECIALIZE_MUL(mpz, mpz_class, const mpz_class&)
+SPECIALIZE_MUL(mpz, mpz_class, mpz_class&)
 
 template <typename Policy>
 inline Result 
@@ -188,7 +188,7 @@ div_mpz(mpz_class& to, const mpz_class& x, const mpz_class& y) {
   return V_EQ;
 }
 
-SPECIALIZE_DIV(mpz, mpz_class, const mpz_class&)
+SPECIALIZE_DIV(mpz, mpz_class, mpz_class&)
 
 template <typename Policy>
 inline Result 
@@ -199,7 +199,7 @@ mod_mpz(mpz_class& to, const mpz_class& x, const mpz_class& y) {
   return V_EQ;
 }
 
-SPECIALIZE_MOD(mpz, mpz_class, const mpz_class&)
+SPECIALIZE_MOD(mpz, mpz_class, mpz_class&)
 
 template <typename Policy>
 inline Result 
@@ -212,7 +212,7 @@ assign_long_mpz(long& to, const mpz_class& from)
   return sgn(from) < 0 ? V_NEG_OVERFLOW : V_POS_OVERFLOW;
 }
 
-SPECIALIZE_ASSIGN(long_mpz, long, const mpz_class&)
+SPECIALIZE_ASSIGN(long_mpz, long, mpz_class&)
 
 template <typename Policy>
 inline Result 
@@ -225,7 +225,7 @@ assign_unsigned_long_mpz(unsigned long& to, const mpz_class& from)
   return sgn(from) < 0 ? V_NEG_OVERFLOW : V_POS_OVERFLOW;
 }
 
-SPECIALIZE_ASSIGN(unsigned_long_mpz, unsigned long, const mpz_class&)
+SPECIALIZE_ASSIGN(unsigned_long_mpz, unsigned long, mpz_class&)
 
 template <typename Policy, typename To>
 inline Result 
@@ -247,9 +247,9 @@ assign_signed_int_mpz(To& to, const mpz_class& from)
   return sgn(from) < 0 ? V_NEG_OVERFLOW : V_POS_OVERFLOW;
 }
 
-SPECIALIZE_ASSIGN(signed_int_mpz, signed char, const mpz_class&)
-SPECIALIZE_ASSIGN(signed_int_mpz, short, const mpz_class&)
-SPECIALIZE_ASSIGN(signed_int_mpz, int, const mpz_class&)
+SPECIALIZE_ASSIGN(signed_int_mpz, signed char, mpz_class&)
+SPECIALIZE_ASSIGN(signed_int_mpz, short, mpz_class&)
+SPECIALIZE_ASSIGN(signed_int_mpz, int, mpz_class&)
 
 template <typename Policy, typename To>
 inline Result 
@@ -269,9 +269,9 @@ assign_unsigned_int_mpz(To& to, const mpz_class& from)
   return sgn(from) < 0 ? V_NEG_OVERFLOW : V_POS_OVERFLOW;
 }
 
-SPECIALIZE_ASSIGN(unsigned_int_mpz, unsigned char, const mpz_class&)
-SPECIALIZE_ASSIGN(unsigned_int_mpz, unsigned short, const mpz_class&)
-SPECIALIZE_ASSIGN(unsigned_int_mpz, unsigned int, const mpz_class&)
+SPECIALIZE_ASSIGN(unsigned_int_mpz, unsigned char, mpz_class&)
+SPECIALIZE_ASSIGN(unsigned_int_mpz, unsigned short, mpz_class&)
+SPECIALIZE_ASSIGN(unsigned_int_mpz, unsigned int, mpz_class&)
 
 template <typename Policy>
 inline Result 
@@ -281,7 +281,7 @@ abs_mpz(mpz_class& to, const mpz_class& from)
   return V_EQ;
 }
 
-SPECIALIZE_ABS(mpz, mpz_class, const mpz_class&)
+SPECIALIZE_ABS(mpz, mpz_class, mpz_class&)
 
 template <typename Policy>
 inline Result 
@@ -291,7 +291,7 @@ gcd_mpz(mpz_class& to, const mpz_class& x, const mpz_class& y)
   return V_EQ;
 }
 
-SPECIALIZE_GCD(mpz, mpz_class, const mpz_class&)
+SPECIALIZE_GCD(mpz, mpz_class, mpz_class&)
 
 template <typename Policy>
 inline Result 
@@ -301,7 +301,7 @@ lcm_mpz(mpz_class& to, const mpz_class& x, const mpz_class& y)
   return V_EQ;
 }
 
-SPECIALIZE_LCM(mpz, mpz_class, const mpz_class&)
+SPECIALIZE_LCM(mpz, mpz_class, mpz_class&)
 
 template <typename Policy>
 inline Result 
@@ -322,7 +322,7 @@ sqrt_mpz(mpz_class& to, const mpz_class& from)
   return V_EQ;
 }
 
-SPECIALIZE_SQRT(mpz, mpz_class, const mpz_class&)
+SPECIALIZE_SQRT(mpz, mpz_class, mpz_class&)
 
 } // namespace Checked
 

@@ -25,18 +25,6 @@ site: http://www.cs.unipr.it/ppl/ . */
 
 namespace Parma_Polyhedra_Library {
 
-template <typename From>
-inline int
-sgn(From x) {
-  return x > 0 ? 1 : x == 0 ? 0 : -1;
-}
-
-template <typename From>
-inline int
-cmp(From x, From y) {
-  return x > y ? 1 : x == y ? 0 : -1;
-}
-
 namespace Checked {
 
 template <typename Policy, typename Type>
@@ -48,23 +36,25 @@ struct FUNCTION_CLASS(assign)<Policy, Type, Type> {
 };
 
 template <typename Policy, typename To, typename From>
-inline Result
-FUNCTION_CLASS(abs)<Policy, To, From>::function(To& to, From from) {
-  if (from < 0)
-    return neg<Policy>(to, from);
-  to = from;
-  return V_EQ;
-}
+struct FUNCTION_CLASS(abs) {
+  static inline Result function(To& to, const From from) {
+    if (from < 0)
+      return neg<Policy>(to, from);
+    to = from;
+    return V_EQ;
+  }
+};
 
 template <typename Policy, typename To, typename From>
 inline Result
-gcd_common(To& to, From x, From y) {
+gcd_common(To& to, const From x, const From y) {
   To nx = x;
   To ny = y;
   To r;
   while (ny != 0) {
-    Result r = mod<Policy>(r, nx, ny);
-    assert(r == V_EQ);
+    Result ret = mod<Policy>(r, nx, ny);
+    if (ret != V_EQ)
+      assert(ret == V_EQ);
     nx = ny;
     ny = r;
   }
@@ -73,40 +63,54 @@ gcd_common(To& to, From x, From y) {
 }
 
 template <typename Policy, typename To, typename From>
-Result
-FUNCTION_CLASS(gcd)<Policy, To, From>::function(To& to, From x, From y) {
-  if (x == 0)
-    return abs<Policy>(to, y);
-  if (y == 0)
-    return abs<Policy>(to, x);
-  To nx, ny;
-  Result r;
-  r = abs<Policy>(nx, x);
-  assert(r == V_EQ);
-  r = abs<Policy>(ny, y);
-  assert(r == V_EQ);
-  return gcd_common<Policy>(to, nx, ny);
-}
+struct FUNCTION_CLASS(gcd) {
+  static inline Result function(To& to, const From x, const From y) {
+    if (x == 0)
+      return abs<Policy>(to, y);
+    if (y == 0)
+      return abs<Policy>(to, x);
+    To nx, ny;
+    Result r;
+    r = abs<Policy>(nx, x);
+    assert(r == V_EQ);
+    r = abs<Policy>(ny, y);
+    assert(r == V_EQ);
+    return gcd_common<Policy>(to, nx, ny);
+  }
+};
 
 template <typename Policy, typename To, typename From>
-Result
-FUNCTION_CLASS(lcm)<Policy, To, From>::function(To& to, From x, From y) {
-  if (x == 0 || y == 0) {
-    to = 0;
-    return V_EQ;
+struct FUNCTION_CLASS(lcm) {
+  static inline Result function(To& to, const From x, const From y) {
+    if (x == 0 || y == 0) {
+      to = 0;
+      return V_EQ;
+    }
+    To nx, ny;
+    Result r;
+    r = abs<Policy>(nx, x);
+    assert(r == V_EQ);
+    r = abs<Policy>(ny, y);
+    assert(r == V_EQ);
+    To gcd;
+    r = gcd_common<Policy>(gcd, nx, ny);
+    assert(r == V_EQ);
+    r = div<Policy>(to, nx, gcd);
+    assert(r == V_EQ);
+    return mul<Policy>(to, to, ny);
   }
-  To nx, ny;
-  Result r;
-  r = abs<Policy>(nx, x);
-  assert(r == V_EQ);
-  r = abs<Policy>(ny, y);
-  assert(r == V_EQ);
-  To gcd;
-  r = gcd_common<Policy>(gcd, nx, ny);
-  assert(r == V_EQ);
-  r = div<Policy>(to, nx, gcd);
-  assert(r == V_EQ);
-  return mul<Policy>(to, to, ny);
+};
+
+template <typename From>
+inline int
+sgn(const From x) {
+  return x > 0 ? 1 : x == 0 ? 0 : -1;
+}
+
+template <typename From>
+inline int
+cmp(const From x, const From y) {
+  return x > y ? 1 : x == y ? 0 : -1;
 }
 
 } // namespace Checked

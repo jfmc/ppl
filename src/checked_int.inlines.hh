@@ -51,14 +51,14 @@ succ_int(Type& to) {
 
 template<typename Policy, typename To, typename From>
 inline Result
-assign_int_int(To& to, From from) {
+assign_int_int(To& to, const From from) {
   to = To(from);
   return V_EQ;
 }
 
 template<typename Policy, typename To, typename From>
 inline Result
-assign_int_int_check_min(To& to, From from) {
+assign_int_int_check_min(To& to, const From from) {
   if (Policy::check_overflow && from < static_cast<From>(std::numeric_limits<To>::min()))
     return V_NEG_OVERFLOW;
   to = To(from);
@@ -67,7 +67,7 @@ assign_int_int_check_min(To& to, From from) {
 
 template<typename Policy, typename To, typename From>
 inline Result
-assign_int_int_check_max(To& to, From from) {
+assign_int_int_check_max(To& to, const From from) {
   if (Policy::check_overflow && from > static_cast<From>(std::numeric_limits<To>::max()))
     return V_POS_OVERFLOW;
   to = To(from);
@@ -76,7 +76,7 @@ assign_int_int_check_max(To& to, From from) {
 
 template<typename Policy, typename To, typename From>
 inline Result
-assign_int_int_check_min_max(To& to, From from) {
+assign_int_int_check_min_max(To& to, const From from) {
   if (Policy::check_overflow) {
     if (from < static_cast<From>(std::numeric_limits<To>::min()))
       return V_NEG_OVERFLOW;
@@ -136,7 +136,7 @@ ASSIGN2_SIGNED_UNSIGNED(int64_t, u_int64_t)
 
 template<typename Policy, typename To, typename From>
 inline Result
-assign_int_float_check_min_max(To& to, From from) {
+assign_int_float_check_min_max(To& to, const From from) {
   if (Policy::check_overflow) {
     if (from < std::numeric_limits<To>::min())
       return V_NEG_OVERFLOW;
@@ -153,44 +153,44 @@ assign_int_float_check_min_max(To& to, From from) {
   return V_EQ;
 }
 
-SPECIALIZE_ASSIGN(int_float_check_min_max, int8_t, float32_iec559_t)
-SPECIALIZE_ASSIGN(int_float_check_min_max, int16_t, float32_iec559_t)
-SPECIALIZE_ASSIGN(int_float_check_min_max, int32_t, float32_iec559_t)
-SPECIALIZE_ASSIGN(int_float_check_min_max, int64_t, float32_iec559_t)
-SPECIALIZE_ASSIGN(int_float_check_min_max, u_int8_t, float32_iec559_t)
-SPECIALIZE_ASSIGN(int_float_check_min_max, u_int16_t, float32_iec559_t)
-SPECIALIZE_ASSIGN(int_float_check_min_max, u_int32_t, float32_iec559_t)
-SPECIALIZE_ASSIGN(int_float_check_min_max, u_int64_t, float32_iec559_t)
+SPECIALIZE_ASSIGN(int_float_check_min_max, int8_t, float32_t)
+SPECIALIZE_ASSIGN(int_float_check_min_max, int16_t, float32_t)
+SPECIALIZE_ASSIGN(int_float_check_min_max, int32_t, float32_t)
+SPECIALIZE_ASSIGN(int_float_check_min_max, int64_t, float32_t)
+SPECIALIZE_ASSIGN(int_float_check_min_max, u_int8_t, float32_t)
+SPECIALIZE_ASSIGN(int_float_check_min_max, u_int16_t, float32_t)
+SPECIALIZE_ASSIGN(int_float_check_min_max, u_int32_t, float32_t)
+SPECIALIZE_ASSIGN(int_float_check_min_max, u_int64_t, float32_t)
 
-SPECIALIZE_ASSIGN(int_float_check_min_max, int8_t, float64_iec559_t)
-SPECIALIZE_ASSIGN(int_float_check_min_max, int16_t, float64_iec559_t)
-SPECIALIZE_ASSIGN(int_float_check_min_max, int32_t, float64_iec559_t)
-SPECIALIZE_ASSIGN(int_float_check_min_max, int64_t, float64_iec559_t)
-SPECIALIZE_ASSIGN(int_float_check_min_max, u_int8_t, float64_iec559_t)
-SPECIALIZE_ASSIGN(int_float_check_min_max, u_int16_t, float64_iec559_t)
-SPECIALIZE_ASSIGN(int_float_check_min_max, u_int32_t, float64_iec559_t)
-SPECIALIZE_ASSIGN(int_float_check_min_max, u_int64_t, float64_iec559_t)
+SPECIALIZE_ASSIGN(int_float_check_min_max, int8_t, float64_t)
+SPECIALIZE_ASSIGN(int_float_check_min_max, int16_t, float64_t)
+SPECIALIZE_ASSIGN(int_float_check_min_max, int32_t, float64_t)
+SPECIALIZE_ASSIGN(int_float_check_min_max, int64_t, float64_t)
+SPECIALIZE_ASSIGN(int_float_check_min_max, u_int8_t, float64_t)
+SPECIALIZE_ASSIGN(int_float_check_min_max, u_int16_t, float64_t)
+SPECIALIZE_ASSIGN(int_float_check_min_max, u_int32_t, float64_t)
+SPECIALIZE_ASSIGN(int_float_check_min_max, u_int64_t, float64_t)
 
-#ifdef FLOAT96_IEC559_TYPE
-SPECIALIZE_ASSIGN(int_float_check_min_max, int8_t, float96_iec559_t)
-SPECIALIZE_ASSIGN(int_float_check_min_max, int16_t, float96_iec559_t)
-SPECIALIZE_ASSIGN(int_float_check_min_max, int32_t, float96_iec559_t)
-SPECIALIZE_ASSIGN(int_float_check_min_max, int64_t, float96_iec559_t)
-SPECIALIZE_ASSIGN(int_float_check_min_max, u_int8_t, float96_iec559_t)
-SPECIALIZE_ASSIGN(int_float_check_min_max, u_int16_t, float96_iec559_t)
-SPECIALIZE_ASSIGN(int_float_check_min_max, u_int32_t, float96_iec559_t)
-SPECIALIZE_ASSIGN(int_float_check_min_max, u_int64_t, float96_iec559_t)
+#ifdef FLOAT96_TYPE
+SPECIALIZE_ASSIGN(int_float_check_min_max, int8_t, float96_t)
+SPECIALIZE_ASSIGN(int_float_check_min_max, int16_t, float96_t)
+SPECIALIZE_ASSIGN(int_float_check_min_max, int32_t, float96_t)
+SPECIALIZE_ASSIGN(int_float_check_min_max, int64_t, float96_t)
+SPECIALIZE_ASSIGN(int_float_check_min_max, u_int8_t, float96_t)
+SPECIALIZE_ASSIGN(int_float_check_min_max, u_int16_t, float96_t)
+SPECIALIZE_ASSIGN(int_float_check_min_max, u_int32_t, float96_t)
+SPECIALIZE_ASSIGN(int_float_check_min_max, u_int64_t, float96_t)
 #endif
 
-#ifdef FLOAT128_IEC559_TYPE
-SPECIALIZE_ASSIGN(int_float_check_min_max, int8_t, float128_iec559_t)
-SPECIALIZE_ASSIGN(int_float_check_min_max, int16_t, float128_iec559_t)
-SPECIALIZE_ASSIGN(int_float_check_min_max, int32_t, float128_iec559_t)
-SPECIALIZE_ASSIGN(int_float_check_min_max, int64_t, float128_iec559_t)
-SPECIALIZE_ASSIGN(int_float_check_min_max, u_int8_t, float128_iec559_t)
-SPECIALIZE_ASSIGN(int_float_check_min_max, u_int16_t, float128_iec559_t)
-SPECIALIZE_ASSIGN(int_float_check_min_max, u_int32_t, float128_iec559_t)
-SPECIALIZE_ASSIGN(int_float_check_min_max, u_int64_t, float128_iec559_t)
+#ifdef FLOAT128_TYPE
+SPECIALIZE_ASSIGN(int_float_check_min_max, int8_t, float128_t)
+SPECIALIZE_ASSIGN(int_float_check_min_max, int16_t, float128_t)
+SPECIALIZE_ASSIGN(int_float_check_min_max, int32_t, float128_t)
+SPECIALIZE_ASSIGN(int_float_check_min_max, int64_t, float128_t)
+SPECIALIZE_ASSIGN(int_float_check_min_max, u_int8_t, float128_t)
+SPECIALIZE_ASSIGN(int_float_check_min_max, u_int16_t, float128_t)
+SPECIALIZE_ASSIGN(int_float_check_min_max, u_int32_t, float128_t)
+SPECIALIZE_ASSIGN(int_float_check_min_max, u_int64_t, float128_t)
 #endif
 
 #undef ASSIGN2_SIGNED_SIGNED
@@ -200,7 +200,7 @@ SPECIALIZE_ASSIGN(int_float_check_min_max, u_int64_t, float128_iec559_t)
 
 template <typename Policy, typename Type>
 inline Result 
-neg_signed_int(Type& to, Type from) {
+neg_signed_int(Type& to, const Type from) {
   if (Policy::check_overflow && from == std::numeric_limits<Type>::min())
     return V_POS_OVERFLOW;
   to = -from;
@@ -209,7 +209,7 @@ neg_signed_int(Type& to, Type from) {
 
 template <typename Policy, typename Type>
 inline Result 
-neg_unsigned_int(Type& to, Type from) {
+neg_unsigned_int(Type& to, const Type from) {
   if (!Policy::check_overflow || to == 0) {
     to = from;
     return V_EQ;
@@ -219,7 +219,7 @@ neg_unsigned_int(Type& to, Type from) {
 
 template <typename Policy, typename Type>
 inline Result 
-add_signed_int(Type& to, Type x, Type y) {
+add_signed_int(Type& to, const Type x, const Type y) {
   if (Policy::check_overflow) {
     if (y >= 0) {
       if (x > std::numeric_limits<Type>::max() - y)
@@ -233,7 +233,7 @@ add_signed_int(Type& to, Type x, Type y) {
 
 template <typename Policy, typename Type>
 inline Result 
-add_unsigned_int(Type& to, Type x, Type y) {
+add_unsigned_int(Type& to, const Type x, const Type y) {
   if (Policy::check_overflow) {
     if (x > std::numeric_limits<Type>::max() - y)
       return V_POS_OVERFLOW;
@@ -244,7 +244,7 @@ add_unsigned_int(Type& to, Type x, Type y) {
 
 template <typename Policy, typename Type>
 inline Result 
-sub_signed_int(Type& to, Type x, Type y) {
+sub_signed_int(Type& to, const Type x, const Type y) {
   if (Policy::check_overflow) {
     if (y >= 0) {
       if (x < std::numeric_limits<Type>::min() + y)
@@ -258,7 +258,7 @@ sub_signed_int(Type& to, Type x, Type y) {
 
 template <typename Policy, typename Type>
 inline Result 
-sub_unsigned_int(Type& to, Type x, Type y) {
+sub_unsigned_int(Type& to, const Type x, const Type y) {
   if (Policy::check_overflow) {
     if (x < std::numeric_limits<Type>::min() + y)
       return V_NEG_OVERFLOW;
@@ -269,7 +269,7 @@ sub_unsigned_int(Type& to, Type x, Type y) {
 
 template <typename Policy, typename Type>
 inline Result 
-mul_signed_int(Type& to, Type x, Type y) {
+mul_signed_int(Type& to, const Type x, const Type y) {
   if (!Policy::check_overflow) {
     to = x * y;
     return V_EQ;
@@ -293,7 +293,7 @@ mul_signed_int(Type& to, Type x, Type y) {
 
 template <typename Policy, typename Type>
 inline Result 
-mul_unsigned_int(Type& to, Type x, Type y) {
+mul_unsigned_int(Type& to, const Type x, const Type y) {
   if (!Policy::check_overflow) {
     to = x * y;
     return V_EQ;
@@ -311,7 +311,7 @@ mul_unsigned_int(Type& to, Type x, Type y) {
 
 template <typename Policy, typename Type>
 inline Result 
-div_signed_int(Type& to, Type x, Type y) {
+div_signed_int(Type& to, const Type x, const Type y) {
   if (Policy::check_divbyzero && y == 0)
     return V_NAN;
   if (Policy::check_overflow && y == -1)
@@ -330,7 +330,7 @@ div_signed_int(Type& to, Type x, Type y) {
 
 template <typename Policy, typename Type>
 inline Result 
-div_unsigned_int(Type& to, Type x, Type y) {
+div_unsigned_int(Type& to, const Type x, const Type y) {
   if (Policy::check_divbyzero && y == 0)
     return V_NAN;
   if (Policy::check_inexact) {
@@ -345,7 +345,7 @@ div_unsigned_int(Type& to, Type x, Type y) {
 
 template <typename Policy, typename Type>
 inline Result 
-mod_int(Type& to, Type x, Type y) {
+mod_int(Type& to, const Type x, const Type y) {
   if (Policy::check_divbyzero && y == 0)
     return V_NAN;
   to = x % y;
@@ -354,7 +354,7 @@ mod_int(Type& to, Type x, Type y) {
 
 template <typename Type>
 inline void 
-isqrtrem_(Type& q, Type& r, Type from) {
+isqrtrem_(Type& q, Type& r, const Type from) {
   q = 0;
   r = from;
   Type t(1);
@@ -370,7 +370,7 @@ isqrtrem_(Type& q, Type& r, Type from) {
 
 template <typename Policy, typename Type>
 inline Result 
-sqrt_unsigned_int(Type& to, Type from) {
+sqrt_unsigned_int(Type& to, const Type from) {
   Type r;
   isqrtrem_(to, r, from);
   if (Policy::check_inexact && r > 0)
@@ -380,7 +380,7 @@ sqrt_unsigned_int(Type& to, Type from) {
 
 template <typename Policy, typename Type>
 inline Result 
-sqrt_signed_int(Type& to, Type from) {
+sqrt_signed_int(Type& to, const Type from) {
   if (Policy::check_sqrt_neg && from < 0)
     return V_NAN;
   return sqrt_unsigned_int<Policy>(to, from);
@@ -440,7 +440,7 @@ struct Larger_Types<u_int32_t> {
 
 template <typename Policy, typename Type>
 inline Result 
-neg_int_larger(Type& to, Type x) {
+neg_int_larger(Type& to, const Type x) {
   typename Larger_Types<Type>::Neg l = x;
   l = -l;
   return assign<Policy>(to, l);
@@ -448,7 +448,7 @@ neg_int_larger(Type& to, Type x) {
 
 template <typename Policy, typename Type>
 inline Result 
-add_int_larger(Type& to, Type x, Type y) {
+add_int_larger(Type& to, const Type x, const Type y) {
   typename Larger_Types<Type>::Add l = x;
   l += y;
   return assign<Policy>(to, l);
@@ -456,7 +456,7 @@ add_int_larger(Type& to, Type x, Type y) {
 
 template <typename Policy, typename Type>
 inline Result 
-sub_int_larger(Type& to, Type x, Type y) {
+sub_int_larger(Type& to, const Type x, const Type y) {
   typename Larger_Types<Type>::Sub l = x;
   l -= y;
   return assign<Policy>(to, l);
@@ -464,7 +464,7 @@ sub_int_larger(Type& to, Type x, Type y) {
 
 template <typename Policy, typename Type>
 inline Result 
-mul_int_larger(Type& to, Type x, Type y) {
+mul_int_larger(Type& to, const Type x, const Type y) {
   typename Larger_Types<Type>::Mul l = x;
   l *= y;
   return assign<Policy>(to, l);

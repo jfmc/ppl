@@ -30,7 +30,7 @@ namespace Checked {
 
 struct Policy_Safe {
   static const int check_overflow = 1;
-  static const int check_exact = 1;
+  static const int check_inexact = 1;
   static const int check_divbyzero = 1;
   static const int check_sqrt_neg = 1;
   static const int check_normal = 1;
@@ -61,33 +61,27 @@ enum Result {
 #define FUNCTION_CLASS(name) name ## _
 
 #define DECLARE_FUN1(name) \
-template <typename Policy, typename To> \
-struct FUNCTION_CLASS(name) { \
-  static Result function(To& to); \
-}; \
-template <typename Policy, typename To> \
-inline Result name(To& to) { \
-  return FUNCTION_CLASS(name) <Policy, To>::function(to); \
+template <typename Policy, typename Type> \
+struct FUNCTION_CLASS(name); \
+template <typename Policy, typename Type> \
+inline Result name(Type& to) { \
+  return FUNCTION_CLASS(name)<Policy, Type>::function(to); \
 }
 
 #define DECLARE_FUN2(name) \
 template <typename Policy, typename To, typename From> \
-struct FUNCTION_CLASS(name) { \
-  static Result function(To& to, From from); \
-}; \
+struct FUNCTION_CLASS(name); \
 template <typename Policy, typename To, typename From> \
-inline Result name(To& to, From from) { \
-  return FUNCTION_CLASS(name) <Policy, To, From>::function(to, from); \
+inline Result name(To& to, const From from) { \
+  return FUNCTION_CLASS(name)<Policy, To, From>::function(to, from); \
 }
   
 #define DECLARE_FUN3(name) \
 template <typename Policy, typename To, typename From> \
-struct FUNCTION_CLASS(name) { \
-  static Result function(To& to, From x, From y); \
-}; \
+struct FUNCTION_CLASS(name); \
 template <typename Policy, typename To, typename From> \
-inline Result name(To& to, From x, From y) { \
-  return FUNCTION_CLASS(name) <Policy, To, From>::function(to, x, y); \
+inline Result name(To& to, const From x, const From y) { \
+  return FUNCTION_CLASS(name)<Policy, To, From>::function(to, x, y); \
 }
   
   
@@ -108,7 +102,7 @@ DECLARE_FUN3(lcm)
 
 #define SPECIALIZE_FUN1(name, suf, Type) \
 template <typename Policy> \
-struct FUNCTION_CLASS(name) <Policy, Type> { \
+struct FUNCTION_CLASS(name)<Policy, Type> { \
   static inline Result function(Type& to) { \
     return name ## _ ## suf<Policy>(to); \
   } \
@@ -116,8 +110,8 @@ struct FUNCTION_CLASS(name) <Policy, Type> { \
 
 #define SPECIALIZE_FUN2(name, suf, To, From) \
 template <typename Policy> \
-struct FUNCTION_CLASS(name) <Policy, To, From> { \
-  static inline Result function(To& to, From from) { \
+struct FUNCTION_CLASS(name)<Policy, To, From> { \
+  static inline Result function(To& to, const From from) { \
     return name ## _ ## suf<Policy>(to, from); \
   } \
 };
@@ -125,7 +119,7 @@ struct FUNCTION_CLASS(name) <Policy, To, From> { \
 #define SPECIALIZE_FUN3(name, suf, To, From) \
 template <typename Policy> \
 struct FUNCTION_CLASS(name) <Policy, To, From> { \
-  static inline Result function(To& to, From x, From y) { \
+  static inline Result function(To& to, const From x, const From y) { \
     return name ## _ ## suf<Policy>(to, x, y); \
   } \
 };
@@ -144,13 +138,13 @@ struct FUNCTION_CLASS(name) <Policy, To, From> { \
 #define SPECIALIZE_GCD(suf, To, From) SPECIALIZE_FUN3(gcd, suf, To, From)
 #define SPECIALIZE_LCM(suf, To, From) SPECIALIZE_FUN3(lcm, suf, To, From)
 
+template <typename From>
+int sgn(const From x);
+
+template <typename From>
+int cmp(const From x, From y);
+
 } // namespace Checked
-
-template <typename From>
-int sgn(From x);
-
-template <typename From>
-int cmp(From x, From y);
 
 } // namespace Parma_Polyhedra_Library
 
