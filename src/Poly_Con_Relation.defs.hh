@@ -102,6 +102,7 @@ private:
 				      const Poly_Con_Relation& r);
 
 PPL_HIDDEN:
+  //! \brief
   //! Access the internal flags.
   //! This is needed for some foreign language interfaces.
   flags_t get_flags() const;
@@ -110,18 +111,22 @@ public:
   //! The assertion that says nothing.
   static Poly_Con_Relation nothing();
 
+  //! \brief
   //! The polyhedron and the set of points satisfying
   //! the constraint are disjoint.
   static Poly_Con_Relation is_disjoint();
 
+  //! \brief
   //! The polyhedron intersects the set of points satisfying
   //! the constraint, but it is not included in it.
   static Poly_Con_Relation strictly_intersects();
 
+  //! \brief
   //! The polyhedron is included in the set of points satisfying
   //! the constraint.
   static Poly_Con_Relation is_included();
 
+  //! \brief
   //! The polyhedron is included in the set of points saturating
   //! the constraint.
   static Poly_Con_Relation saturates();

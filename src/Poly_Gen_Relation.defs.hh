@@ -96,6 +96,7 @@ private:
 				      const Poly_Gen_Relation& r);
 
 PPL_HIDDEN:
+  //! \brief
   //! Access the internal flags.
   //! This is needed for some foreign language interfaces.
   flags_t get_flags() const;
