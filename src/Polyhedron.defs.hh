@@ -1794,9 +1794,9 @@ private:
   //! \brief
   //! Performs the conversion from constraints to generators and vice versa.
   // Detailed Doxygen comment to be found in file conversion.cc.
-  static dimension_type conversion(Matrix& entry,
+  static dimension_type conversion(Matrix& source,
 				   dimension_type start,
-				   Matrix& result,
+				   Matrix& dest,
 				   SatMatrix& sat,
 				   dimension_type num_lines_or_equalities);
 
