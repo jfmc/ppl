@@ -54,7 +54,7 @@ For any additional question you might have, please do not hesitate to
 write to ppl-devel@cs.unipr.it.
 
 Here is the contents of the PPL 0.7 source distributions
-(21 directories, 866 files):
+(21 directories, 869 files):
 
 ppl-0.7
 |-- BUGS
@@ -119,8 +119,6 @@ ppl-0.7
 |   |-- ltmain.sh
 |   |-- missing
 |   |-- mkinstalldirs
-|   |-- pwl_filter_doxygen.sed
-|   |-- pwl_filter_install.sed
 |   |-- pwl_header.bottom
 |   |-- pwl_header.middle
 |   `-- pwl_header.top
@@ -264,6 +262,7 @@ ppl-0.7
 |   `-- ppl_lpsol
 |       |-- Makefile.am
 |       |-- Makefile.in
+|       |-- dummy.cc
 |       |-- examples
 |       |   |-- Makefile.am
 |       |   |-- Makefile.in
@@ -287,7 +286,7 @@ ppl-0.7
 |-- doc
 |   |-- Makefile.am
 |   |-- Makefile.in
-|   |-- README
+|   |-- README.doc
 |   |-- definitions.dox
 |   |-- devref-browse.doxyconf-latex
 |   |-- devref-browse.doxyconf-latex.in
@@ -468,8 +467,11 @@ ppl-0.7
 |   |-- Makefile.in
 |   |-- ac_check_gmp.m4
 |   |-- ac_cxx_attribute_weak.m4
+|   |-- ac_cxx_double_is_iec_559.m4
 |   |-- ac_cxx_flexible_arrays.m4
+|   |-- ac_cxx_float_is_iec_559.m4
 |   |-- ac_cxx_long_double.m4
+|   |-- ac_cxx_long_double_is_iec_559.m4
 |   |-- ac_cxx_long_long.m4
 |   |-- lib-ld.m4
 |   |-- lib-link.m4
@@ -915,6 +917,7 @@ ppl-0.7
 |   |-- timeelapse6.cc
 |   |-- timeelapse7.cc
 |   |-- timeelapse8.cc
+|   |-- timeelapse9.cc
 |   |-- topclosed1.cc
 |   |-- topclosed2.cc
 |   |-- topclosed3.cc
