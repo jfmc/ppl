@@ -71,6 +71,10 @@ INCLUDE_FILES = \
 Integer.types.hh \
 Integer.defs.hh \
 Integer.inlines.hh \
+Interval.types.hh \
+Interval.defs.hh \
+Interval.inlines.hh \
+BoundingBox.hh \
 globals.hh \
 Init.types.hh \
 Init.defs.hh \
@@ -132,6 +136,8 @@ ConSys.cc \
 GenSys.cc \
 Generator.cc \
 Init.cc \
+Integer.cc \
+Interval.cc \
 LinExpression.cc \
 Matrix.cc \
 Poly_Con_Relation.cc \
