@@ -3,7 +3,6 @@ Enhancements for PPL 0.7
 ========================
 
 - The Powerset class implementation is poorly documented.
-- Completely rewrite the handling of temporary coefficients.
 - Consider renaming Powerset::meet_assign().
 
 
@@ -26,12 +25,12 @@ Enhancements for PPL 0.8 or later versions
   temporarily in algorithms.hh, more efficiently.
 - Provide optimized implementations of Polyhedron::expand_dimension()
   Polyhedron::fold_dimensions().
+- Reconsider the handling of temporary coefficients.
 - In the Prolog interface predicates such as
   ppl_Polyhedron_remove_space_dimensions/2 that require an input list;
   if the argument is not a list, in the current version,
   the call to this predicate will fail. This needs to be changed so that
   an exception is thrown.
-
 
 
 Constructions on Polyhedra
