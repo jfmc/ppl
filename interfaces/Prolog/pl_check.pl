@@ -2042,7 +2042,7 @@ exception_prolog(4, [A,B,C]) :-
   must_catch(ppl_new_Polyhedron_from_generators(c,
                      [point(_D)], _)),
   must_catch(ppl_new_Polyhedron_from_constraints(c,
-                     [_D >= 3], _)),
+                     [_E >= 3], _)),
   must_catch(ppl_new_Polyhedron_from_constraints(c,
                      [A*B = 0], _)),
   must_catch(ppl_new_Polyhedron_from_constraints(c,
