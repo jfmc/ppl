@@ -37,8 +37,6 @@ Enhancements for PPL 0.7
   set_GMP_memory_allocation_functions().  More generally, explain how
   to have memory-guarded computations.
 - Completely rewrite the handling of temporary coefficients.
-- Better explain the tradeoff in the choice between C_ and NNC_Polyhedron.
-- Explain the ordering of the arguments in the widening methods.
 - Implement overflow detection when manipulating space dimensions.
 - Consider renaming Powerset::meet_assign().
 - Provide optimized implementations of Polyhedron::expand_dimension()
