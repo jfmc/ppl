@@ -239,10 +239,19 @@ namespace Parma_Polyhedra_Library {
 
 class Parma_Polyhedra_Library::Polyhedron {
 public:
-  //! Builds the zero-dimensional, universe polyhedron, if \p full is
-  //! <CODE>true</CODE>; otherwise (i.e. \p full is <CODE>false</CODE>)
+  //! Kinds of degenerate polyhedron.
+  enum Degenerate_Kind {
+    //! The full polyhedron in \f$\Rset^0\f$, i.e., a singleton.
+    ZERO_DIMENSIONAL,
+    //! The empty polyhedron, i.e., the empty set.
+    EMPTY
+  };
+
+  //! Builds the zero-dimensional, universe polyhedron, if \p kind is
+  //! <CODE>ZERO_DIMENSIONAL</CODE> (the default);
+  //! otherwise (i.e., \p full is <CODE>EMPTY</CODE>)
   //! builds an empty polyhedron.
-  Polyhedron(bool full = true);
+  Polyhedron(Degenerate_Kind kind = ZERO_DIMENSIONAL);
   //! Ordinary copy-constructor.
   Polyhedron(const Polyhedron& y);
   //! Builds the universe polyhedron of dimension \p num_dimensions.
