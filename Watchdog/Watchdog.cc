@@ -239,7 +239,7 @@ PWL::Watchdog::~Watchdog() {
     remove_watchdog_event(pending_position);
     in_critical_section = false;
   }
-  // delete handler;
+  delete handler;
 }
 
 void
