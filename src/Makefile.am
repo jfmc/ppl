@@ -248,7 +248,6 @@ Saturation_Matrix.cc \
 Saturation_Row.cc \
 Ph_Status.cc \
 Variable.cc \
-BD_Shape.cc \
 conversion.cc \
 minimize.cc \
 simplify.cc \
