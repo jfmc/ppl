@@ -51,16 +51,14 @@ Here we just describe those aspects that are specific to the Prolog interface.
 
 First, here is a list of notes with general information and advice 
 on the use of the interface.
--  A PPL polyhedron can be accessed by means of an ordinary Prolog term
+-  A PPL polyhedron can only be accessed by means of a Prolog term
    called a <EM>handle</EM>.
    Note, however, that the data structure of a handle,
    is implementation-dependent, system-dependent and
    version-dependent, and, for this reason, deliberately left unspecified.
    What we do guarantee is that the handle requires very little memory.
 
--  Only terms bound to <EM>valid</EM> handles may be used to access
-   PPL polyhedra.
-   A handle is made valid by using:
+-  A Prolog term can be bound to a valid handle by using:
 \code
    ppl_new_Polyhedron_from_dimension/3,
    ppl_new_Polyhedron_empty_from_dimension/3,
@@ -100,10 +98,10 @@ on the use of the interface.
   it becomes invalid.
 
 - For a PPL polyhedron with space dimension \p k,
-  the identifiers used for the PPL variables in
-  the constraints and the generators
-  must lie between 0 and \f$k-1\f$.
-  Moreover, when using the predicates that combine PPL polyhedra
+  the identifiers used for the PPL variables
+  must lie between 0 and \f$k-1\f$ and correspond to the indices of the
+  associated Cartesian axes.
+  When using the predicates that combine PPL polyhedra
   or add constraints or generators to a representation of
   a PPL polyhedron,
   the polyhedra referenced and any constraints or generators in the call
@@ -574,16 +572,18 @@ ppl_new_Polyhedron_from_Polyhedron(+Topology_1, +Handle_1,
 
 <H2><CODE>ppl_Polyhedron_BHRZ03_widening_assign(+Handle_1,
                +Handle_2)</CODE></H2>
-<H2><CODE>ppl_Polyhedron_BHRZ03_widening_assign_with_token(+Handle_1,
-               +Handle_2, ?Integer)</CODE></H2>
 
    Assigns to the polyhedron referenced by <CODE>Handle_1</CODE>
    its BHRZ03-widening with the polyhedra referenced by <CODE>Handle_2</CODE>.
-   For the <CODE>_with_token</CODE> version,
-   <CODE>Integer</CODE> is bound to 0 if
-   the polyhedron referenced by <CODE>Handle_1</CODE> has changed
-   (i.e., a widening has taken place)
-   and is bound to 1 otherwise.
+
+<H2><CODE>ppl_Polyhedron_BHRZ03_widening_assign_with_token(+Handle_1,
+               +Handle_2, ?Integer)</CODE></H2>
+
+   The polyhedra referenced by <CODE>Handle_1</CODE>
+   and <CODE>Handle_2</CODE> are unaltered.
+   The token <CODE>Integer</CODE> is 0 if
+   a BHRZ03 widening would have changed the polyhedron referenced
+   by <CODE>Handle_1</CODE> and is 1 otherwise.
 
 <H2><CODE>ppl_Polyhedron_limited_BHRZ03_extrapolation_assign(+Handle_1,
                +Handle_2,
@@ -607,16 +607,17 @@ ppl_new_Polyhedron_from_Polyhedron(+Topology_1, +Handle_1,
 
 <H2><CODE>ppl_Polyhedron_H79_widening_assign(+Handle_1, +Handle_2)</CODE></H2>
 
+   Assigns to the polyhedron referenced by <CODE>Handle_1</CODE>
+   its H79-widening with the polyhedra referenced by <CODE>Handle_2</CODE>.
+
 <H2><CODE>ppl_Polyhedron_H79_widening_assign_with_token(+Handle_1,
                +Handle_2, ?Integer)</CODE></H2>
 
-   Assigns to the polyhedron referenced by <CODE>Handle_1</CODE>
-   its H79-widening with the polyhedra referenced by <CODE>Handle_2</CODE>.
-   For the <CODE>_with_token</CODE> version,
-   <CODE>Integer</CODE> is bound to 0 if
-   the polyhedron referenced by <CODE>Handle_1</CODE> has changed
-   (i.e., a widening has taken place)
-   and is bound to 1 otherwise.
+   The polyhedra referenced by <CODE>Handle_1</CODE>
+   and <CODE>Handle_2</CODE> are unaltered.
+   The token <CODE>Integer</CODE> is 0 if
+   an H79 widening would have changed the polyhedron referenced
+   by <CODE>Handle_1</CODE> and is 1 otherwise.
 
 <H2><CODE>ppl_Polyhedron_limited_H79_extrapolation_assign(+Handle_1,
                +Handle_2,
