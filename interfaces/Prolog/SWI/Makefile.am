@@ -41,7 +41,7 @@ libppl_swiprolog_la_SOURCES = ppl_swiprolog.cc
 libppl_swiprolog_la_LIBADD = $(top_builddir)/src/libppl.la @extra_libraries@
 libppl_swiprolog_la_LDFLAGS = -no-undefined -avoid-version
 
-CLPQ_TESTS = \
+CLPQ_TESTS_NONSTRICT = \
 ack.clpq \
 ackn.clpq \
 fib.clpq \
@@ -50,11 +50,17 @@ smm.clpq \
 sumto.clpq \
 tak.clpq
 
+CLPQ_TESTS_STRICT = \
+schedule.clpq
+
+CLPQ_TESTS = $(CLPQ_TESTS_NONSTRICT) $(CLPQ_TESTS_STRICT) 
+
 bin_PROGRAMS = ppl_pl
 ppl_pl_SOURCES = ppl_pl.cc
 
-check_PROGRAMS = pl_clpq
+check_PROGRAMS = pl_clpq pl_clpq2
 pl_clpq_SOURCES = pl_clpq.cc
+pl_clpq2_SOURCES = pl_clpq.cc
 
 # Notice: we are linking statically until we understand whether
 # and if libtool and plld can interoperate.
@@ -64,11 +70,17 @@ ppl_pl$(EXEEXT): ppl_swiprolog.o ppl_pl.o
 pl_clpq$(EXEEXT): ppl_swiprolog.o pl_clpq.o pl_clpq.pl ../clpq.pl
 	plld -pl-options,-g,main., -o $@ $+ -L$(top_builddir)/src/.libs -lppl @extra_libraries@
 
-check-local: pl_clpq ../check_script ../expected
+pl_clpq2$(EXEEXT): ppl_swiprolog.o pl_clpq.o pl_clpq.pl ../clpq2.pl
+	plld -pl-options,-g,main., -o $@ $+ -L$(top_builddir)/src/.libs -lppl @extra_libraries@
+
+check-local: pl_clpq pl_clpq2 ../check_script ../expected
 	for k in $(CLPQ_TESTS); do cp -f $(srcdir)/../$$k .; done
 	libtool --mode=execute -dlopen ../../../src/libppl.la \
-		./pl_clpq -l $(srcdir)/clpq.pl <$(srcdir)/../check_script >obtained
+		./pl_clpq <$(srcdir)/../check_script >obtained
 	diff -q --ignore-all-space $(srcdir)/../expected obtained
+	libtool --mode=execute -dlopen ../../../src/libppl.la \
+		./pl_clpq2 <$(srcdir)/../check_script2 >obtained2
+	diff -q --ignore-all-space $(srcdir)/../expected2 obtained2
 
-MOSTLYCLEANFILES = pl_clpq $(CLPQ_TESTS) obtained
+MOSTLYCLEANFILES = pl_clpq pl_clpq2 $(CLPQ_TESTS) obtained obtained2
 endif
