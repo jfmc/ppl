@@ -1059,6 +1059,7 @@ domain of convex polyhedra and described in Section \ref poly_powerset).
 
 The construction is built from a pre-existing base-level domain
 \f$D\f$ which must include an entailment relation `\f$\mathord{\entails}\f$',
+a meet operation `\f$\mathord{\meet}\f$',
 a top element `\f$\true\f$' and bottom element `\f$\false\f$'.
 
 As the intended semantics of an element of the powerset of the
@@ -1121,7 +1122,8 @@ that are provided by the library for any given base-level domain \f$D\f$.
 
 Given the sets \f$\cS_1\f$ and \f$\cS_2 \in D_{\smallP}\f$, the
 <EM>meet</EM> and <EM>upper bound</EM> operators provided by the
-library returns the set intersection \f$\cS_1 \inters \cS_2\f$ and
+library returns the set
+\f$\{d_1 \meet d_2 | d_1 \in \cS_1, d_2 \in \cS_2\}\f$ and
 reduced set union \f$\nonredmap(\cS_1 \union \cS_2)\f$ respectively.
 
 \anchor ps_add_disjunct
@@ -1140,6 +1142,37 @@ If the given powerset element is not empty, then the
 singleton powerset consisting of an upper-bound of all the disjuncts.
 
 \section poly_powerset The Polyhedra Powerset Domain
+
+The Polyhedra powerset domain \f$(\Pset_n)_{\smallP}\f$
+provided by the PPL is the finite
+powerset domain (defined in Section \ref powerset) over the domain of
+NNC polyhedra \f$\Pset_n\f$.
+
+In addition to the operations described for the generic powerset
+domain in Section \ref ps_operations, we provide some operations
+that are specific to this instantiation.
+
+\anchor pps_geometric
+<B>Geometric Comparisons</B>
+
+Given the sets \f$\cS_1, \cS_2 \in (\Pset_n)_{\smallP}\f$, then
+we say that \f$\cS_1\f$ <EM>geometrically_covers</EM> \f$\cS_2\f$
+if every point (in some element) in a polyhedron in \f$\cS_2\f$ is also
+a point in a polyhedron in \f$\cS_1\f$.
+If \f$\cS_1\f$ <EM>geometrically_covers</EM> \f$\cS_2\f$
+and \f$\cS_2\f$ <EM>geometrically_covers</EM> \f$\cS_1\f$,
+then we say that they are <EM>geometrically_equal</EM>.
+
+\anchor pps_pairwise_merge
+<B>Pairwise Merge</B>
+
+Given the powerset \f$\cS \in (\Pset_n)_{\smallP}\f$, then the
+<EM>pairwise_merge</EM> operator takes pairs of distinct elements in
+\f$\cS\f$ whose poly-hull is the same as their set-theoretical union
+and replaces them by their union.  This replacement is done
+recursively so that, in the for each pair \f$\cP, \cQ\f$ of distinct
+polyhedra in the result set, we have
+\f$\cP \uplus \cQ \neq \cP \union \cQ\f$.
 
 \section cplusplus Using the Library
 
