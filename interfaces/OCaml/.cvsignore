@@ -1,0 +1,9 @@
+*.la
+*.lo
+.deps
+.libs
+Makefile
+Makefile.in
+ppl_c.ml
+ppl_c.mli
+ppl_c_wrap.c

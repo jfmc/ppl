@@ -26,4 +26,26 @@ VPATH = @srcdir@
 
 @SET_MAKE@
 
-SUBDIRS = C OCaml Prolog
+if HAVE_SWIG
+
+ppl_c.ml ppl_c.mli ppl_c_wrap.c:	ppl_c.swg
+	$(SWIG) -ocaml -I$(top_srcdir)/interfaces/C $<
+
+DIST_FILES = ppl_c.ml ppl_c.mli ppl_c_wrap.c
+
+dist-hook: $(DIST_FILES)
+
+EXTRA_DIST= \
+ppl_c.swg \
+$(DIST_FILES)
+
+#mostlyclean-local:
+#	rm -rf $(ALL_TARGETS) $(LATEX_DIRS) *.aux *.log
+
+#CLEANFILES = $(DIST_DOCS)
+
+else # !HAVE_SWIG
+
+EXTRA_DIST = ppl_c.swg
+
+endif
