@@ -57,8 +57,8 @@ The vectors \f$x\f$ and \f$y\f$ are <EM>orthogonal</EM> if
 
 <B>Convex hull</B>
 
-The <EM>convex hull</EM> of a set \f$K\f$ is the set of all
-the convex combinations of the points in \f$K\f$.
+The <EM>convex hull</EM> of a set \f$K \subseteq \Rset^n\f$ 
+is the set of all the convex combinations of the points in \f$K\f$.
 The set \f$K\f$ is convex if it is its own convex hull.
 
 <B>Affine transformation</B>
@@ -149,7 +149,7 @@ It follows that a polyhedron \f$P\f$ can be always represented as
 \f]
 for some 
 matrix \f$ A \in \Rset^{m} \times \Rset^n\f$ and
-and vector \f$ b \in \Rset^{m}\f$.
+vector \f$ b \in \Rset^{m}\f$.
 
 In the sequel we will refer to linear equalities and linear inequalities
 simply as equalities and inequalities respectively and 
@@ -228,8 +228,8 @@ two rays \f$r_1\f$ and \f$r_2\f$ of \f$P\f$,
   \mu_1, \mu_2 \in  \Rset, \mu_1, \mu_2 \geq 0.
 \f]
 
-Note that the set of extreme rays forms a basis which describes all 
-directions in which the polyhedron is open.
+Note that the set of extreme rays describes all directions in which 
+the polyhedron is open.
 
 <B>Lines</B>
 
@@ -309,8 +309,9 @@ a rational polyhedron:
 If \f$A\f$ is a rational \f$m_1 \times n\f$ matrix, \f$B\f$ is a rational 
 \f$m_2 \times n\f$ matrix and 
 \f[
-  Q = \bigl\{\,x \in \Rset^n \mid x = y^\transpose A + z^\transpose B,
-             \sum_{k=1}^{m_1} y_k = 1, y \in \Rset_+^{m_1}, 
+  Q = \bigl\{\,x \in \Rset^n \mid x^\transpose 
+	     = y^\transpose A + z^\transpose B, 
+	     y \in \Rset_+^{m_1}, \sum_{k=1}^{m_1} y_k = 1, 
 	     z \in \Rset_+^{m_2}\,\bigr\},  
 \f]
 then \f$Q\f$ is a rational polyhedron.
@@ -351,9 +352,9 @@ polyhedral cone \f$C\f$, as shown below:
   C = \{\,(\xi x, \xi)^\transpose \mid \xi Ax - \xi b \geq 0, \xi \geq 0\,\} 
     = \{\,x' \mid A'x' \geq 0\,\} 
 \f]
-where \f$x' = (\xi x, \xi) \in \Rset^{n + 1}\f$ 
-and \f$A'\f$ is the matrix having for its first rows the submatrix 
-\f$(A, b) \in \Rset^m \times \Rset^{n + 1}\f$ 
+where \f$x' = (\xi x, \xi)^\transpose \in \Rset^{n + 1}\f$ 
+and \f$A'\f$ is the \f$(m+1) \times (n+1)\f$ matrix having for its first 
+rows the submatrix \f$(A, b) \in \Rset^m \times \Rset^{n + 1}\f$ 
 and for the last row the vector \f$(0, \ldots, 0, 1) \in \Rset^{n + 1}\f$.
 The cone \f$C\f$, which has a homogeneous representation, we call the
 <EM>corresponding polyhedral cone for \f$P\f$</EM>
@@ -471,7 +472,7 @@ of \f$R\f$ and \f$S\f$ is defined as follows:
   R + S = \{\,r + s \mid r \in R, s \in S\,\}.
 \f]
 
-%\section decomposition Decomposition
+\section decomposition Decomposition
 <B>Decomposition</B>
 
 Because of the PPL choice to consider only polyhedral cones, we can 
@@ -529,7 +530,7 @@ In \f$\Rset^n\f$
 The proofs of these properties can be obtained considering the definitions of 
 dimension and the decomposition of a polyhedron.
 
-%\section saturation Saturation
+\section saturation Saturation
 <B>Saturation</B>
 
 Let us consider a ray \f$r \in \Rset^n\f$ and an inequality 
@@ -635,9 +636,10 @@ It is useful to note that:
 - All rays saturate the positivity constraint and no vertex saturates 
   the positivity constraint; in fact in the homogeneous form
   the positivity constraint is represented by the vector 
-  \f$a = (0, \ldots, 0, 1)\f$, rays are of the form 
-  \f$r = (r_1, \ldots, r_n, 0)\f$ and vertices \f$v = (v_1, \ldots, v_n, d)\f$ 
-  with \f$d \neq 0\f$, thus \f$\langle a, r \rangle = 0\f$ for each ray 
+  \f$a^\transpose = (0, \ldots, 0, 1)\f$, rays are of the form 
+  \f$r = (r_1, \ldots, r_n, 0)^\transpose\f$ and vertices 
+  \f$v = (v_1, \ldots, v_n, d)^\transpose\f$ with \f$d \neq 0\f$, 
+  thus \f$\langle a, r \rangle = 0\f$ for each ray 
   \f$r\f$ and \f$\langle a, v \rangle \neq 0\f$ for each vertex \f$v\f$.
 - The positivity constraint will be irredundant if and only if 
   the size of the set
