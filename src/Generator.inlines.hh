@@ -105,7 +105,7 @@ Generator::set_is_ray_or_point() {
   set_is_ray_or_point_or_inequality();
 }
 
-inline const Integer&
+inline Integer_traits::const_reference
 Generator::coefficient(const Variable v) const {
   const dimension_type v_id = v.id();
   if (v_id >= space_dimension())
@@ -113,9 +113,9 @@ Generator::coefficient(const Variable v) const {
   return Row::coefficient(v_id);
 }
 
-inline const Integer&
+inline Integer_traits::const_reference
 Generator::divisor() const {
-  const Integer& d = Row::inhomogeneous_term();
+  Integer_traits::const_reference d = Row::inhomogeneous_term();
   if (!is_ray_or_point() || d == 0)
     throw_invalid_argument("PPL::Generator::divisor()",
 			   "*this is is neither a point "
@@ -150,13 +150,13 @@ ray(const LinExpression& e) {
 
 /*! \relates Generator */
 inline Generator
-point(const LinExpression& e, const Integer& d) {
+point(const LinExpression& e, Integer_traits::const_reference d) {
   return Generator::point(e, d);
 }
 
 /*! \relates Generator */
 inline Generator
-closure_point(const LinExpression& e, const Integer& d) {
+closure_point(const LinExpression& e, Integer_traits::const_reference d) {
   return Generator::closure_point(e, d);
 }
 

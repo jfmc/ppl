@@ -84,7 +84,7 @@ PPL::operator+(const LinExpression& e1, const LinExpression& e2) {
 
 /*! \relates Parma_Polyhedra_Library::LinExpression */
 PPL::LinExpression
-PPL::operator+(const Integer& n, const LinExpression& e) {
+PPL::operator+(Integer_traits::const_reference n, const LinExpression& e) {
   LinExpression r(e);
   r[0] += n;
   return r;
@@ -137,7 +137,7 @@ PPL::operator-(const LinExpression& e1, const LinExpression& e2) {
 
 /*! \relates Parma_Polyhedra_Library::LinExpression */
 PPL::LinExpression
-PPL::operator-(const Integer& n, const LinExpression& e) {
+PPL::operator-(Integer_traits::const_reference n, const LinExpression& e) {
   LinExpression r(e);
   for (dimension_type i = e.size(); i-- > 0; )
     negate(r[i]);
@@ -149,7 +149,7 @@ PPL::operator-(const Integer& n, const LinExpression& e) {
 
 /*! \relates Parma_Polyhedra_Library::LinExpression */
 PPL::LinExpression
-PPL::operator*(const Integer& n, const LinExpression& e) {
+PPL::operator*(Integer_traits::const_reference n, const LinExpression& e) {
   LinExpression r(e);
   for (dimension_type i = e.size(); i-- > 0; )
     r[i] *= n;
@@ -222,7 +222,7 @@ PPL::operator-=(LinExpression& e, const Variable v) {
 
 /*! \relates Parma_Polyhedra_Library::LinExpression */
 PPL::LinExpression&
-PPL::operator*=(LinExpression& e, const Integer& n) {
+PPL::operator*=(LinExpression& e, Integer_traits::const_reference n) {
   dimension_type e_size = e.size();
   for (dimension_type i = e_size; i-- > 0; )
     e[i] *= n;

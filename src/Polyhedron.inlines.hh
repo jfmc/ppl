@@ -496,8 +496,8 @@ Polyhedron::shrink_bounding_box(Box& box, Complexity_Class complexity) const {
 	    varid = j;
       }
       if (varid != space_dim) {
-	const Integer& d = c.coefficient(Variable(varid));
-	const Integer& n = c.inhomogeneous_term();
+	Integer_traits::const_reference d = c.coefficient(Variable(varid));
+	Integer_traits::const_reference n = c.inhomogeneous_term();
 	// The constraint `c' is of the form
 	// `Variable(varid) + n / d rel 0', where
 	// `rel' is either the relation `==', `>=', or `>'.
@@ -575,9 +575,9 @@ Polyhedron::shrink_bounding_box(Box& box, Complexity_Class complexity) const {
       case Generator::POINT:
       case Generator::CLOSURE_POINT:
 	{
-	  const Integer& d = g.divisor();
+	  Integer_traits::const_reference d = g.divisor();
 	  for (dimension_type j = space_dim; j-- > 0; ) {
-	    const Integer& n = g.coefficient(Variable(j));
+	    Integer_traits::const_reference n = g.coefficient(Variable(j));
 	    ERational r(n, d);
 	    LBoundary lb(r,(g_type == Generator::CLOSURE_POINT
 			    ? LBoundary::OPEN

@@ -26,6 +26,7 @@ site: http://www.cs.unipr.it/ppl/ . */
 
 #include "Integer.types.hh"
 #include "globals.hh"
+#include "Integer.defs.hh"
 #include "Interval.defs.hh"
 #include <vector>
 #include <iosfwd>
@@ -117,7 +118,8 @@ public:
     the space dimension of \p *this or if \p d is equal to zero.
   */
   void raise_lower_bound(dimension_type k, bool closed,
-			 const Integer& n, const Integer& d);
+			 Integer_traits::const_reference n,
+			 Integer_traits::const_reference d);
 
   //! \brief
   //! Lowers the upper bound of the interval corresponding
@@ -131,7 +133,8 @@ public:
     the space dimension of \p *this or if \p d is equal to zero.
   */
   void lower_upper_bound(dimension_type k, bool closed,
-			 const Integer& n, const Integer& d);
+			 Integer_traits::const_reference n,
+			 Integer_traits::const_reference d);
 
 private:
   //! \brief

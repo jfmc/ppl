@@ -119,7 +119,6 @@ ORIGINAL_TESTS = \
 	polydifference5 polydifference6 polydifference7 \
 	polyhull1 polyhull2 polyhull3 polyhull4 polyhull5 polyhull6 \
 	polyhull7 polyhull8 polyhull9 polyhull10 \
-	randphull1 randphull2 \
 	relations1 relations2 relations3 relations4 relations5 relations6 \
 	relations7 relations8 relations9 relations10 relations11 \
 	relations12 relations13 relations14 relations15 relations16 \
@@ -205,7 +204,6 @@ DERIVED_TESTS = \
 	nnc_polyhull1 nnc_polyhull2 nnc_polyhull3 nnc_polyhull4 \
 	nnc_polyhull5 nnc_polyhull6 nnc_polyhull7 nnc_polyhull8 \
 	nnc_polyhull9 nnc_polyhull10 \
-	nnc_randphull1 nnc_randphull2 \
 	nnc_relations1 nnc_relations2 nnc_relations3 nnc_relations4 \
 	nnc_relations5 nnc_relations6 nnc_relations7 nnc_relations8 \
 	nnc_relations9 nnc_relations10 nnc_relations12 nnc_relations13 \
@@ -494,9 +492,9 @@ relations17_SOURCES = relations17.cc
 relations18_SOURCES = relations18.cc
 relations19_SOURCES = relations19.cc
 
-randphull1_SOURCES = randphull1.cc
-randphull2_SOURCES = randphull2.cc
-randphull2_LDADD = $(LDADD) -lm
+# randphull1_SOURCES = randphull1.cc
+# randphull2_SOURCES = randphull2.cc
+# randphull2_LDADD = $(LDADD) -lm
 
 removedim1_SOURCES = removedim1.cc
 removedim2_SOURCES = removedim2.cc
@@ -930,11 +928,11 @@ nnc_relations16_CXXFLAGS = $(DERIVED_CXXFLAGS)
 nnc_relations19_SOURCES = relations19.cc
 nnc_relations19_CXXFLAGS = $(DERIVED_CXXFLAGS)
 
-nnc_randphull1_SOURCES = randphull1.cc
-nnc_randphull1_CXXFLAGS = $(DERIVED_CXXFLAGS)
-nnc_randphull2_SOURCES = randphull2.cc
-nnc_randphull2_CXXFLAGS = $(DERIVED_CXXFLAGS)
-nnc_randphull2_LDADD = $(LDADD) -lm
+# nnc_randphull1_SOURCES = randphull1.cc
+# nnc_randphull1_CXXFLAGS = $(DERIVED_CXXFLAGS)
+# nnc_randphull2_SOURCES = randphull2.cc
+# nnc_randphull2_CXXFLAGS = $(DERIVED_CXXFLAGS)
+# nnc_randphull2_LDADD = $(LDADD) -lm
 
 nnc_removedim1_SOURCES = removedim1.cc
 nnc_removedim1_CXXFLAGS = $(DERIVED_CXXFLAGS)

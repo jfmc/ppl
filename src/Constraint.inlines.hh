@@ -105,7 +105,7 @@ Constraint::set_is_inequality() {
   set_is_ray_or_point_or_inequality();
 }
 
-inline const Integer&
+inline Integer_traits::const_reference
 Constraint::coefficient(const Variable v) const {
   const dimension_type v_id = v.id();
   if (v_id >= space_dimension())
@@ -113,7 +113,7 @@ Constraint::coefficient(const Variable v) const {
   return Row::coefficient(v_id);
 }
 
-inline const Integer&
+inline Integer_traits::const_reference
 Constraint::inhomogeneous_term() const {
   return Row::inhomogeneous_term();
 }
@@ -163,7 +163,7 @@ operator>(const LinExpression& e1, const LinExpression& e2) {
 
 /*! \relates Constraint */
 inline Constraint
-operator==(const Integer& n, const LinExpression& e) {
+operator==(Integer_traits::const_reference n, const LinExpression& e) {
   LinExpression diff = n - e;
   Constraint c(diff);
   c.set_is_equality();
@@ -174,7 +174,7 @@ operator==(const Integer& n, const LinExpression& e) {
 
 /*! \relates Constraint */
 inline Constraint
-operator>=(const Integer& n, const LinExpression& e) {
+operator>=(Integer_traits::const_reference n, const LinExpression& e) {
   LinExpression diff = n - e;
   Constraint c(diff);
   c.set_is_inequality();
@@ -185,7 +185,7 @@ operator>=(const Integer& n, const LinExpression& e) {
 
 /*! \relates Constraint */
 inline Constraint
-operator>(const Integer& n, const LinExpression& e) {
+operator>(Integer_traits::const_reference n, const LinExpression& e) {
   LinExpression diff;
   // Setting the epsilon coefficient to -1.
   // NOTE: this also enforces normalization.
@@ -201,7 +201,7 @@ operator>(const Integer& n, const LinExpression& e) {
 
 /*! \relates Constraint */
 inline Constraint
-operator==(const LinExpression& e, const Integer& n) {
+operator==(const LinExpression& e, Integer_traits::const_reference n) {
   LinExpression diff = e - n;
   Constraint c(diff);
   c.set_is_equality();
@@ -212,7 +212,7 @@ operator==(const LinExpression& e, const Integer& n) {
 
 /*! \relates Constraint */
 inline Constraint
-operator>=(const LinExpression& e, const Integer& n) {
+operator>=(const LinExpression& e, Integer_traits::const_reference n) {
   LinExpression diff = e - n;
   Constraint c(diff);
   c.set_is_inequality();
@@ -223,7 +223,7 @@ operator>=(const LinExpression& e, const Integer& n) {
 
 /*! \relates Constraint */
 inline Constraint
-operator>(const LinExpression& e, const Integer& n) {
+operator>(const LinExpression& e, Integer_traits::const_reference n) {
   LinExpression diff;
   // Setting the epsilon coefficient to -1.
   // NOTE: this also enforces normalization.
@@ -245,13 +245,13 @@ operator<=(const LinExpression& e1, const LinExpression& e2) {
 
 /*! \relates Constraint */
 inline Constraint
-operator<=(const Integer& n, const LinExpression& e) {
+operator<=(Integer_traits::const_reference n, const LinExpression& e) {
   return e >= n;
 }
 
 /*! \relates Constraint */
 inline Constraint
-operator<=(const LinExpression& e, const Integer& n) {
+operator<=(const LinExpression& e, Integer_traits::const_reference n) {
   return n >= e;
 }
 
@@ -263,13 +263,13 @@ operator<(const LinExpression& e1, const LinExpression& e2) {
 
 /*! \relates Constraint */
 inline Constraint
-operator<(const Integer& n, const LinExpression& e) {
+operator<(Integer_traits::const_reference n, const LinExpression& e) {
   return e > n;
 }
 
 /*! \relates Constraint */
 inline Constraint
-operator<(const LinExpression& e, const Integer& n) {
+operator<(const LinExpression& e, Integer_traits::const_reference n) {
   return n > e;
 }
 

@@ -1008,6 +1008,17 @@ PPL::Matrix::gram_shmidt() {
       const std::vector<Integer>& mu_j = mu[j];
       if (j > 0)
 	mu_i[j] *= mu[j-1][j-1];
+#if NATIVE_INTEGERS || CHECKED_INTEGERS
+      Integer tmp = 0;
+      for (dimension_type h = 0; h < j; h++) {
+        tmp = tmp * mu[h][h] + mu_i[h] * mu_j[h];
+	if (h > 0)
+	  tmp /= mu[h-1][h-1];
+      }
+      mu_i[j] -= tmp;
+#else // #if NATIVE_INTEGERS || CHECKED_INTEGERS
+      // The following fragment of code optimizes the above computation
+      // by avoiding some gmp (de-)allocations.
       tmp_Integer[0] = 0;
       for (dimension_type h = 0; h < j; h++) {
         tmp_Integer[0] *= mu[h][h];
@@ -1017,18 +1028,25 @@ PPL::Matrix::gram_shmidt() {
 	  exact_div_assign(tmp_Integer[0], mu[h-1][h-1]);
       }
       mu_i[j] -= tmp_Integer[0];
+#endif // #if NATIVE_INTEGERS || CHECKED_INTEGERS
     }
 
     // Let the `i'-th line become orthogonal wrt the `j'-th line,
     // for all 0 <= j < i.
     for (dimension_type j = 0; j < i; j++) {
       const Row& rows_j = rows[j];
-      const Integer& mu_ij = mu_i[j];
-      const Integer& mu_jj = mu[j][j];
+      Integer_traits::const_reference mu_ij = mu_i[j];
+      Integer_traits::const_reference mu_jj = mu[j][j];
       for (dimension_type k = n_columns; k-- > 0; ) {
+#if NATIVE_INTEGERS || CHECKED_INTEGERS
+        row_i[k] = row_i[k] * mu_jj - mu_ij * row_j[k];
+#else // #if NATIVE_INTEGERS || CHECKED_INTEGERS
+        // The following fragment of code optimizes the above computation
+        // by avoiding some gmp (de-)allocations.
         rows_i[k] *= mu_jj;
         tmp_Integer[0] = mu_ij * rows_j[k];
         rows_i[k] -= tmp_Integer[0];
+#endif // #if NATIVE_INTEGERS || CHECKED_INTEGERS
 	if (j > 0)
 	  exact_div_assign(rows_i[k], mu[j-1][j-1]);
       }

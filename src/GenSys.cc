@@ -664,7 +664,7 @@ PPL::GenSys::satisfied_by_all_generators(const Constraint& c) const {
   // Setting `sp_fp' to the appropriate scalar product operator.
   // This also avoids problems when having _legal_ topology mismatches
   // (which could also cause a mismatch in the number of columns).
-  const Integer& (*sp_fp)(const Row&, const Row&);
+  Integer_traits::const_reference (*sp_fp)(const Row&, const Row&);
   if (c.is_necessarily_closed())
     sp_fp = PPL::operator*;
   else
@@ -708,7 +708,7 @@ PPL::GenSys::satisfied_by_all_generators(const Constraint& c) const {
 void
 PPL::GenSys::affine_image(dimension_type v,
 			  const LinExpression& expr,
-			  const Integer& denominator) {
+			  Integer_traits::const_reference denominator) {
   // `v' is the index of a column corresponding to
   // a "user" variable (i.e., it cannot be the inhomogeneous term,
   // nor the epsilon dimension of NNC polyhedra).
@@ -724,10 +724,23 @@ PPL::GenSys::affine_image(dimension_type v,
   // to the column of `*this' indexed by `v'.
   for (dimension_type i = n_rows; i-- > 0; ) {
     Generator& row = x[i];
-    tmp_Integer[1] = 0;
+#if NATIVE_INTEGERS || CHECKED_INTEGERS
+    Integer tmp = 0;
     for (dimension_type j = expr.size(); j-- > 0; )
-      tmp_Integer[1] += row[j] * expr[j];
-    std::swap(tmp_Integer[1], row[v]);
+      tmp += row[j] * expr[j];
+    std::swap(tmp, row[v]);
+#else // #if NATIVE_INTEGERS || CHECKED_INTEGERS
+    // The following fragment optimizes the above computation
+    // by avoiding gmp (de-)allocations.
+    tmp_Integer[0] = 0;
+    for (dimension_type j = expr.size(); j-- > 0; ) {
+      // The following two lines optimize the computation
+      // of tmp_Integer[0] += row[j] * expr[j].
+      tmp_Integer[1] = row[j] * expr[j];
+      tmp_Integer[0] += tmp_Integer[1];
+    }
+    std::swap(tmp_Integer[0], row[v]);
+#endif // #if NATIVE_INTEGERS || CHECKED_INTEGERS
   }
 
   if (denominator != 1) {

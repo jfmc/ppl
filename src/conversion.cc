@@ -460,36 +460,42 @@ PPL::Polyhedron::conversion(Matrix& source,
       // Note that, by Observation 1 above, the resulting new line
       // will still saturate all the constraints that were saturated by
       // the old line.
+      Integer_traits::const_reference
+	scalar_prod_nle = scalar_prod[num_lines_or_equalities];
+      const Row& dest_nle = dest[num_lines_or_equalities];
       for (dimension_type
 	     i = index_non_zero; i < num_lines_or_equalities; ++i) {
 	if (scalar_prod[i] != 0) {
-	  // The following fragment optimizes the computation of
-	  //
-	  // Integer scale = scalar_prod[i];
-	  // scale.gcd_assign(scalar_prod[num_lines_or_equalities]);
-	  // Integer scaled_sp_i = scalar_prod[i] / scale;
-	  // Integer scaled_sp_n
-	  //   = scalar_prod[num_lines_or_equalities] / scale;
-	  // for (dimension_type c = dest_num_columns; c-- > 0; ) {
-	  //   dest[i][c] *= scaled_sp_n;
-	  //   dest[i][c] -= scaled_sp_i * dest[num_lines_or_equalities][c];
-	  // }
+#if NATIVE_INTEGERS || CHECKED_INTEGERS
+	  Integer scale = scalar_prod[i];
+	  gcd_assign(scale, scalar_prod_nle);
+	  Integer scaled_sp_i = scalar_prod[i] / scale;
+	  Integer scaled_sp_n = scalar_prod_nle / scale;
+	  Row& dest_i = dest[i];
+	  for (dimension_type c = dest_num_columns; c-- > 0; ) {
+	    dest_i[c] *= scaled_sp_n;
+	    dest_i[c] -= scaled_sp_i * dest_nle[c];
+	  }
+#else // #if NATIVE_INTEGERS || CHECKED_INTEGERS
+	  // The following fragment optimizes the above computation
+	  // by avoiding gmp (de-)allocations.
 	  gcd_assign(tmp_Integer[1],
 		     scalar_prod[i],
-		     scalar_prod[num_lines_or_equalities]);
+		     scalar_prod_nle);
 	  exact_div_assign(tmp_Integer[2],
 			   scalar_prod[i],
 			   tmp_Integer[1]);
 	  exact_div_assign(tmp_Integer[3],
-			   scalar_prod[num_lines_or_equalities],
+			   scalar_prod_nle,
 			   tmp_Integer[1]);
+	  Row& dest_i = dest[i];
 	  for (dimension_type c = dest_num_columns; c-- > 0; ) {
-	    tmp_Integer[4] = tmp_Integer[3] * dest[i][c];
-	    tmp_Integer[5] = tmp_Integer[2]
-	      * dest[num_lines_or_equalities][c];
-	    dest[i][c] = tmp_Integer[4] - tmp_Integer[5];
+	    tmp_Integer[4] = tmp_Integer[3] * dest_i[c];
+	    tmp_Integer[5] = tmp_Integer[2] * dest_nle[c];
+	    dest_i[c] = tmp_Integer[4] - tmp_Integer[5];
 	  }
-	  dest[i].strong_normalize();
+#endif // #if NATIVE_INTEGERS || CHECKED_INTEGERS
+	  dest_i.strong_normalize();
 	  scalar_prod[i] = 0;
 	  // `dest' has already been set as non-sorted.
 	}
@@ -505,33 +511,36 @@ PPL::Polyhedron::conversion(Matrix& source,
       for (dimension_type
 	     i = num_lines_or_equalities + 1; i < dest_num_rows; ++i) {
 	if (scalar_prod[i] != 0) {
-	  // The following fragment optimizes the computation of
-	  //
-	  // Integer scale = scalar_prod[i];
-	  // scale.gcd_assign(scalar_prod[num_lines_or_equalities]);
-	  // Integer scaled_sp_i = scalar_prod[i] / scale;
-	  // Integer scaled_sp_n
-	  // = scalar_prod[num_lines_or_equalities] / scale;
-	  // for (dimension_type c = dest_num_columns; c-- > 0; ) {
-	  //   dest[i][c] *= scaled_sp_n;
-	  //   dest[i][c] -= scaled_sp_i * dest[num_lines_or_equalities][c];
-	  // }
+#if NATIVE_INTEGERS || CHECKED_INTEGERS
+	  Integer scale = scalar_prod[i];
+	  gcd_assign(scale, scalar_prod_nle);
+	  Integer scaled_sp_i = scalar_prod[i] / scale;
+	  Integer scaled_sp_n = scalar_prod_nle / scale;
+	  Row& dest_i = dest[i];
+	  for (dimension_type c = dest_num_columns; c-- > 0; ) {
+	    dest[i][c] *= scaled_sp_n;
+	    dest[i][c] -= scaled_sp_i * dest_nle[c];
+	  }
+#else // #if NATIVE_INTEGERS || CHECKED_INTEGERS
+	  // The following fragment optimizes the above computation
+	  // by avoiding gmp (de-)allocations.
 	  gcd_assign(tmp_Integer[1],
 		     scalar_prod[i],
-		     scalar_prod[num_lines_or_equalities]);
+		     scalar_prod_nle);
 	  exact_div_assign(tmp_Integer[2],
 			   scalar_prod[i],
 			   tmp_Integer[1]);
 	  exact_div_assign(tmp_Integer[3],
-			   scalar_prod[num_lines_or_equalities],
+			   scalar_prod_nle,
 			   tmp_Integer[1]);
+	  Row& dest_i = dest[i];
 	  for (dimension_type c = dest_num_columns; c-- > 0; ) {
-	    tmp_Integer[4] = tmp_Integer[3] * dest[i][c];
-	    tmp_Integer[5] = tmp_Integer[2]
-	      * dest[num_lines_or_equalities][c];
-	    dest[i][c] = tmp_Integer[4] - tmp_Integer[5];
+	    tmp_Integer[4] = tmp_Integer[3] * dest_i[c];
+	    tmp_Integer[5] = tmp_Integer[2] * dest_nle[c];
+	    dest_i[c] = tmp_Integer[4] - tmp_Integer[5];
 	  }
-	  dest[i].strong_normalize();
+#endif // #if NATIVE_INTEGERS || CHECKED_INTEGERS
+	  dest_i.strong_normalize();
 	  scalar_prod[i] = 0;
 	  // `dest' has already been set as non-sorted.
 	}
@@ -718,16 +727,20 @@ PPL::Polyhedron::conversion(Matrix& source,
 		  else
 		    sat[dest_num_rows] = new_satrow;
 		  Row& new_row = dest[dest_num_rows];
-		  // The following fragment optimizes the computation of
-		  //
-		  // Integer scale = scalar_prod[i];
-		  // scale.gcd_assign(scalar_prod[j]);
-		  // Integer scaled_sp_i = scalar_prod[i] / scale;
-		  // Integer scaled_sp_j = scalar_prod[j] / scale;
-		  // for (dimension_type c = dest_num_columns; c-- > 0; ) {
-		  //   new_row[c] = scaled_sp_i * dest[j][c];
-		  //   new_row[c] -= scaled_sp_j * dest[i][c];
-		  // }
+#if NATIVE_INTEGERS || CHECKED_INTEGERS
+		  Integer scale = scalar_prod[i];
+		  gcd_assign(scale, scalar_prod[j]);
+		  Integer scaled_sp_i = scalar_prod[i] / scale;
+		  Integer scaled_sp_j = scalar_prod[j] / scale;
+		  const Row& dest_i = dest[i];
+		  const Row& dest_j = dest[j];
+		  for (dimension_type c = dest_num_columns; c-- > 0; ) {
+		    new_row[c] = scaled_sp_i * dest_j[c];
+		    new_row[c] -= scaled_sp_j * dest_i[c];
+		  }
+#else // #if NATIVE_INTEGERS || CHECKED_INTEGERS
+		  // The following fragment optimizes the above computation
+		  // by avoiding gmp (de-)allocations.
 		  gcd_assign(tmp_Integer[1],
 			     scalar_prod[i],
 			     scalar_prod[j]);
@@ -737,11 +750,14 @@ PPL::Polyhedron::conversion(Matrix& source,
 		  exact_div_assign(tmp_Integer[3],
 				   scalar_prod[j],
 				   tmp_Integer[1]);
+		  const Row& dest_i = dest[i];
+		  const Row& dest_j = dest[j];
 		  for (dimension_type c = dest_num_columns; c-- > 0; ) {
-		    tmp_Integer[4] = tmp_Integer[2] * dest[j][c];
-		    tmp_Integer[5] = tmp_Integer[3] * dest[i][c];
+		    tmp_Integer[4] = tmp_Integer[2] * dest_j[c];
+		    tmp_Integer[5] = tmp_Integer[3] * dest_i[c];
 		    new_row[c] = tmp_Integer[4] - tmp_Integer[5];
 		  }
+#endif // #if NATIVE_INTEGERS || CHECKED_INTEGERS
 		  new_row.strong_normalize();
 		  // Since we added a new generator to `dest',
 		  // we also add a new element to `scalar_prod';

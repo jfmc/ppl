@@ -27,6 +27,7 @@ site: http://www.cs.unipr.it/ppl/ . */
 #include "Integer.types.hh"
 #include "Constraint.types.hh"
 #include "Generator.types.hh"
+#include "Integer.defs.hh"
 #include <exception>
 #include <limits>
 
@@ -144,15 +145,16 @@ struct From_Bounding_Box {
   //! Computes the scalar product between \p c and \p g.
   /*! \relates Row */
 #endif // PPL_DOXYGEN_INCLUDE_IMPLEMENTATION_DETAILS
-const Integer& operator*(const Constraint& c, const Generator& g);
+Integer_traits::const_reference
+operator*(const Constraint& c, const Generator& g);
 
 #ifdef PPL_DOXYGEN_INCLUDE_IMPLEMENTATION_DETAILS
   //! \brief Computes the \e reduced scalar product between \p c and \p g,
   //! where the \f$\epsilon\f$ coefficient of \p c is ignored.
   /*! \relates Row */
 #endif // PPL_DOXYGEN_INCLUDE_IMPLEMENTATION_DETAILS
-const Integer& reduced_scalar_product(const Constraint& c,
-				      const Generator& g);
+Integer_traits::const_reference
+reduced_scalar_product(const Constraint& c, const Generator& g);
 
 } // namespace Parma_Polyhedra_Library
 

@@ -35,11 +35,17 @@ const PPL::Throwable* volatile PPL::abandon_exponential_computations = 0;
 
 
 /*! \relates Parma_Polyhedra_Library::Row */
-const PPL::Integer&
+PPL::Integer_traits::const_reference
 PPL::operator*(const Constraint& x, const Generator& y) {
   // Scalar product is only defined  if `x' and `y' are
   // dimension-compatible.
   assert(x.size() <= y.size());
+#if NATIVE_INTEGERS || CHECKED_INTEGERS
+  Integer tmp = 0;
+  for (dimension_type i = x.size(); i-- > 0; )
+    tmp += x[i] * y[i];
+  return tmp;
+#else // #if NATIVE_INTEGERS || CHECKED_INTEGERS
   tmp_Integer[0] = 0;
   for (dimension_type i = x.size(); i-- > 0; ) {
     // The following two lines optimize the computation
@@ -48,16 +54,23 @@ PPL::operator*(const Constraint& x, const Generator& y) {
     tmp_Integer[0] += tmp_Integer[1];
   }
   return tmp_Integer[0];
+#endif // #if NATIVE_INTEGERS || CHECKED_INTEGERS
 }
 
 
 /*! \relates Parma_Polyhedra_Library::Row */
-const PPL::Integer&
+PPL::Integer_traits::const_reference
 PPL::reduced_scalar_product(const Constraint& x, const Generator& y) {
   // The reduced scalar product is only defined
   // if the topology of `x' is NNC and `y' has enough coefficients.
   assert(!x.is_necessarily_closed());
   assert(x.size() - 1 <= y.size());
+#if NATIVE_INTEGERS || CHECKED_INTEGERS
+  Integer tmp = 0;
+  for (dimension_type i = x.size() - 1; i-- > 0; )
+    tmp += x[i] * y[i];
+  return tmp;
+#else // #if NATIVE_INTEGERS || CHECKED_INTEGERS
   tmp_Integer[0] = 0;
   for (dimension_type i = x.size() - 1; i-- > 0; ) {
     // The following two lines optimize the computation
@@ -66,4 +79,5 @@ PPL::reduced_scalar_product(const Constraint& x, const Generator& y) {
     tmp_Integer[0] += tmp_Integer[1];
   }
   return tmp_Integer[0];
+#endif // #if NATIVE_INTEGERS || CHECKED_INTEGERS
 }

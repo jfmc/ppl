@@ -273,7 +273,7 @@ PPL::ConSys::satisfies_all_constraints(const Generator& g) const {
   // Setting `sp_fp' to the appropriate scalar product operator.
   // This also avoids problems when having _legal_ topology mismatches
   // (which could also cause a mismatch in the number of columns).
-  const Integer& (*sp_fp)(const Row&, const Row&);
+  Integer_traits::const_reference (*sp_fp)(const Row&, const Row&);
   if (g.is_necessarily_closed())
     sp_fp = PPL::operator*;
   else
@@ -365,7 +365,7 @@ PPL::ConSys::satisfies_all_constraints(const Generator& g) const {
 void
 PPL::ConSys::affine_preimage(dimension_type v,
 			     const LinExpression& expr,
-			     const Integer& denominator) {
+			     Integer_traits::const_reference denominator) {
   // `v' is the index of a column corresponding to
   // a "user" variable (i.e., it cannot be the inhomogeneous term,
   // nor the epsilon dimension of NNC polyhedra).

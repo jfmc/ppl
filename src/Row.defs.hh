@@ -279,10 +279,10 @@ public:
   dimension_type space_dimension() const;
 
   //! Returns the inhomogeneous term.
-  const Integer& inhomogeneous_term() const;
+  Integer_traits::const_reference inhomogeneous_term() const;
 
   //! Returns the coefficient \f$a_n\f$.
-  const Integer& coefficient(dimension_type n) const;
+  Integer_traits::const_reference coefficient(dimension_type n) const;
 
   //! \name Subscript operators.
   //@{
@@ -290,7 +290,7 @@ public:
   Integer& operator[](dimension_type k);
 
   //! Returns a constant reference to the element of the row indexed by \p k.
-  const Integer& operator[](dimension_type k) const;
+  Integer_traits::const_reference operator[](dimension_type k) const;
   //@}
 
   //! Normalizes the modulo of coefficients so that they are mutually prime.
@@ -363,7 +363,7 @@ namespace Parma_Polyhedra_Library {
 //! Computes the scalar product between \p x and \p y.
 /*! \relates Row */
 #endif // PPL_DOXYGEN_INCLUDE_IMPLEMENTATION_DETAILS
-const Integer& operator*(const Row& x, const Row& y);
+Integer_traits::const_reference operator*(const Row& x, const Row& y);
 
 #ifdef PPL_DOXYGEN_INCLUDE_IMPLEMENTATION_DETAILS
 //! \brief
@@ -371,7 +371,8 @@ const Integer& operator*(const Row& x, const Row& y);
 //! where the \f$\epsilon\f$ coefficient of \p x is ignored.
 /*! \relates Row */
 #endif // PPL_DOXYGEN_INCLUDE_IMPLEMENTATION_DETAILS
-const Integer& reduced_scalar_product(const Row& x, const Row& y);
+Integer_traits::const_reference
+reduced_scalar_product(const Row& x, const Row& y);
 
 #ifdef PPL_DOXYGEN_INCLUDE_IMPLEMENTATION_DETAILS
 //! The basic comparison function.
@@ -567,7 +568,7 @@ public:
   Integer& operator[](dimension_type k);
 
   //! Returns a constant reference to the element of \p *this indexed by \p k.
-  const Integer& operator[](dimension_type k) const;
+  Integer_traits::const_reference operator[](dimension_type k) const;
   //@}
 
 private:

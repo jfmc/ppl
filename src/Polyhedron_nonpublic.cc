@@ -506,6 +506,13 @@ PPL::Polyhedron::bounds(const LinExpression& expr,
     // Only lines and rays in `*this' can cause `expr' to be unbounded.
     if (g[0] == 0) {
       // Compute the scalar product between `g' and `expr'.
+#if NATIVE_INTEGERS || CHECKED_INTEGERS
+      Integer tmp = 0;
+      // Note the pre-decrement of `j': last iteration should be for `j == 1'.
+      for (dimension_type j = expr.size(); --j > 0; )
+	tmp += g[j] * expr[j];
+      const int sign = sgn(tmp);
+#else // #if NATIVE_INTEGERS || CHECKED_INTEGERS
       tmp_Integer[0] = 0;
       // Note the pre-decrement of `j': last iteration should be for `j == 1'.
       for (dimension_type j = expr.size(); --j > 0; ) {
@@ -515,6 +522,7 @@ PPL::Polyhedron::bounds(const LinExpression& expr,
 	tmp_Integer[0] += tmp_Integer[1];
       }
       const int sign = sgn(tmp_Integer[0]);
+#endif // #if NATIVE_INTEGERS || CHECKED_INTEGERS
       if (sign != 0
 	  && (g.is_line()
 	      || (from_above && sign > 0)
@@ -567,6 +575,12 @@ PPL::Polyhedron::max_min(const LinExpression& expr,
     const Generator& g = gen_sys[i];
 
     // Compute the scalar product between `g' and `expr'.
+#if NATIVE_INTEGERS || CHECKED_INTEGERS
+    Integer tmp = 0;
+    // Note the pre-decrement of `j': last iteration should be for `j == 1'.
+    for (dimension_type j = expr.size(); --j > 0; )
+      tmp += g[j] * expr[j];
+#else // #if NATIVE_INTEGERS || CHECKED_INTEGERS
     tmp_Integer[0] = 0;
     // Note the pre-decrement of `j': last iteration should be for `j == 1'.
     for (dimension_type j = expr.size(); --j > 0; ) {
@@ -575,10 +589,15 @@ PPL::Polyhedron::max_min(const LinExpression& expr,
       tmp_Integer[1] = g[j] * expr[j];
       tmp_Integer[0] += tmp_Integer[1];
     }
+#endif // #if NATIVE_INTEGERS || CHECKED_INTEGERS
 
     // Lines and rays in `*this' can cause `expr' to be unbounded.
     if (g[0] == 0) {
+#if NATIVE_INTEGERS || CHECKED_INTEGERS
+      const int sign = sgn(tmp);
+#else
       const int sign = sgn(tmp_Integer[0]);
+#endif
       if (sign != 0
 	  && (g.is_line()
 	      || (maximize && sign > 0)
@@ -591,7 +610,11 @@ PPL::Polyhedron::max_min(const LinExpression& expr,
       assert(g.is_point() || g.is_closure_point());
       // Notice that we are ignoring the constant term in `expr' here.
       // We will add it to the extremum as soon as we find it.
+#if NATIVE_INTEGERS || CHECKED_INTEGERS
+      mpq_class candidate(tmp, g[0]);
+#else
       mpq_class candidate(tmp_Integer[0], g[0]);
+#endif
       candidate.canonicalize();
       const bool g_is_point = g.is_point();
       if (first_candidate
@@ -615,13 +638,13 @@ PPL::Polyhedron::max_min(const LinExpression& expr,
   }
 
   // Add in the constant term in `expr'.
-  extremum += expr[0];
-
+  extremum += mpz_class(expr[0]);
+  
   // The polyhedron is bounded in the right direction and we have
   // computed the extremum: write the result into the caller's structures.
   assert(!first_candidate);
-  ext_n = extremum.get_num();
-  ext_d = extremum.get_den();
+  ext_n = Integer(extremum.get_num());
+  ext_d = Integer(extremum.get_den());
   included = ext_included;
   if (pppoint != 0)
     *pppoint = &gen_sys[ext_position];

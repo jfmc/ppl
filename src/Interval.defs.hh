@@ -27,6 +27,7 @@ site: http://www.cs.unipr.it/ppl/ . */
 #include "Interval.types.hh"
 
 #include "Integer.types.hh"
+#include "Integer.defs.hh"
 #include <gmpxx.h>
 #include <iosfwd>
 
@@ -104,7 +105,8 @@ public:
   /*!
     An undefined behavior is obtained if \p den is equal to zero.
   */
-  ERational(const Integer& num, const Integer& den);
+  ERational(Integer_traits::const_reference num,
+	    Integer_traits::const_reference den);
 
   //! \brief
   //! Builds \f$+\infty\f$ (resp., \f$-\infty\f$)
@@ -130,13 +132,13 @@ public:
   /*!
     The result is undefined if \p *this represents an infinity.
   */
-  const Integer& numerator() const;
+  Integer numerator() const;
 
   //! Returns the denominator of the canonical form for \p *this.
   /*!
     The result is undefined if \p *this represent an infinity.
   */
-  const Integer& denominator() const;
+  Integer denominator() const;
 
   friend bool
   Parma_Polyhedra_Library::operator==(const ERational& x, const ERational& y);

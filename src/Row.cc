@@ -87,7 +87,7 @@ PPL::Row::normalize() {
   tmp_Integer[1] = 0;
   const dimension_type sz = size();
   for (dimension_type i = sz; i-- > 0; ) {
-    const Integer& x_i = x[i];
+    Integer_traits::const_reference x_i = x[i];
     if (x_i != 0)
       gcd_assign(tmp_Integer[1], x_i);
   }
@@ -168,11 +168,17 @@ PPL::compare(const Row& x, const Row& y) {
 }
 
 /*! \relates Parma_Polyhedra_Library::Row */
-const PPL::Integer&
+PPL::Integer_traits::const_reference
 PPL::operator*(const Row& x, const Row& y) {
   // Scalar product is only defined  if `x' and `y' are
   // dimension-compatible.
   assert(x.size() <= y.size());
+#if NATIVE_INTEGERS || CHECKED_INTEGERS
+  Integer tmp = 0;
+  for (dimension_type i = x.size(); i-- > 0; )
+    tmp += x[i] * y[i];
+  return tmp;
+#else // #if NATIVE_INTEGERS || CHECKED_INTEGERS
   tmp_Integer[0] = 0;
   for (dimension_type i = x.size(); i-- > 0; ) {
     // The following two lines optimize the computation
@@ -181,15 +187,22 @@ PPL::operator*(const Row& x, const Row& y) {
     tmp_Integer[0] += tmp_Integer[1];
   }
   return tmp_Integer[0];
+#endif // #if NATIVE_INTEGERS || CHECKED_INTEGERS
 }
 
 /*! \relates Parma_Polyhedra_Library::Row */
-const PPL::Integer&
+PPL::Integer_traits::const_reference
 PPL::reduced_scalar_product(const Row& x, const Row& y) {
   // The reduced scalar product is only defined
   // if the topology of `x' is NNC and `y' has enough coefficients.
   assert(!x.is_necessarily_closed());
   assert(x.size() - 1 <= y.size());
+#if NATIVE_INTEGERS || CHECKED_INTEGERS
+  Integer tmp = 0;
+  for (dimension_type i = x.size() - 1; i-- > 0; )
+    tmp += x[i] * y[i];
+  return tmp;
+#else // #if NATIVE_INTEGERS || CHECKED_INTEGERS
   tmp_Integer[0] = 0;
   for (dimension_type i = x.size() - 1; i-- > 0; ) {
     // The following two lines optimize the computation
@@ -198,6 +211,7 @@ PPL::reduced_scalar_product(const Row& x, const Row& y) {
     tmp_Integer[0] += tmp_Integer[1];
   }
   return tmp_Integer[0];
+#endif // #if NATIVE_INTEGERS || CHECKED_INTEGERS
 }
 
 void
@@ -206,6 +220,18 @@ PPL::Row::linear_combine(const Row& y, const dimension_type k) {
   // We can combine only vector of the same dimension.
   assert(x.size() == y.size());
   assert(y[k] != 0 && x[k] != 0);
+#if NATIVE_INTEGER || CHECKED_INTEGER
+  // Let g be the GCD between `x[k]' and `y[k]'.
+  // For each i the following computes
+  //   x[i] = x[i]*y[k]/g - y[i]*x[k]/g.
+  Integer g;
+  gcd_assign(g, x[k], y[k]);
+  Integer xg = x[k] / g;
+  Integer yg = y[k] / g;
+  for (dimension_type i = size(); i-- > 0; )
+    if (i != k)
+      x[i] = x[i]*yg - y[i]*xg;
+#else // #if NATIVE_INTEGER || CHECKED_INTEGER
   // Let g be the GCD between `x[k]' and `y[k]'.
   // For each i the following computes
   //   x[i] = x[i]*y[k]/g - y[i]*x[k]/g.
@@ -219,6 +245,7 @@ PPL::Row::linear_combine(const Row& y, const dimension_type k) {
       tmp_Integer[5] = y[i] * tmp_Integer[2];
       x[i] = tmp_Integer[4] - tmp_Integer[5];
     }
+#endif // #if NATIVE_INTEGER || CHECKED_INTEGER
   x[k] = 0;
 
   x.strong_normalize();

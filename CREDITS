@@ -10,6 +10,11 @@ written, debugged and improved by the following people:
   Elisa Ricci          <ericci@cs.unipr.it>
   Enea Zaffanella [3]  <zaffanella@cs.unipr.it>
 
+Other contributors:
+
+  Giordano Fracasso    wrote the initial version of the support
+                       for native integer coefficients.
+
 The following people took part to the first phase of the development
 of the library:
 

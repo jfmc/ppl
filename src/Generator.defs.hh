@@ -259,7 +259,7 @@ public:
     \exception std::invalid_argument thrown if \p d is zero.
   */
   static Generator point(const LinExpression& e = LinExpression::zero(),
-			 const Integer& d = Integer_one());
+			 Integer_traits::const_reference d = Integer_one());
 
   //! Returns the closure point at \p e / \p d.
   /*!
@@ -269,7 +269,7 @@ public:
   */
   static Generator
   closure_point(const LinExpression& e = LinExpression::zero(),
-		const Integer& d = Integer_one());
+		Integer_traits::const_reference d = Integer_one());
 
   //! Ordinary copy-constructor.
   Generator(const Generator& g);
@@ -315,14 +315,14 @@ public:
     \exception std::invalid_argument thrown if the index of \p v
     is greater than or equal to the space-dimension of \p *this.
   */
-  const Integer& coefficient(Variable v) const;
+  Integer_traits::const_reference coefficient(Variable v) const;
 
   //! If \p *this is either a point or a closure point, returns its divisor.
   /*!
     \exception std::invalid_argument thrown if \p *this is neither a point
                                      nor a closure point.
   */
-  const Integer& divisor() const;
+  Integer_traits::const_reference divisor() const;
 
   //! Returns the origin of the zero-dimensional space \f$\Rset^0\f$.
   static const Generator& zero_dim_point();
@@ -359,10 +359,10 @@ private:
   friend class Parma_Polyhedra_Library::GenSys;
   friend class Parma_Polyhedra_Library::GenSys::const_iterator;
   friend class Parma_Polyhedra_Library::Polyhedron;
-  friend const Integer&
+  friend Integer_traits::const_reference
   Parma_Polyhedra_Library::operator*(const Constraint& c,
 				     const Generator& g);
-  friend const Integer&
+  friend Integer_traits::const_reference
   Parma_Polyhedra_Library::reduced_scalar_product(const Constraint& c,
 						  const Generator& g);
   friend
@@ -417,17 +417,17 @@ Generator ray(const LinExpression& e);
 
 //! \brief
 //! Shorthand for Generator
-//! Generator::point(const LinExpression& e, const Integer& d).
+//! Generator::point(const LinExpression& e, Integer_traits::const_reference d).
 /*! \relates Generator */
 Generator point(const LinExpression& e = LinExpression::zero(),
-		const Integer& d = Integer_one());
+		Integer_traits::const_reference d = Integer_one());
 
 //! \brief
 //! Shorthand for Generator
-//! Generator::closure_point(const LinExpression& e, const Integer& d).
+//! Generator::closure_point(const LinExpression& e, Integer_traits::const_reference d).
 /*! \relates Generator */
 Generator closure_point(const LinExpression& e = LinExpression::zero(),
-			const Integer& d = Integer_one());
+			Integer_traits::const_reference d = Integer_one());
 
 } // namespace Parma_Polyhedra_Library
 

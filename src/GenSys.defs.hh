@@ -453,7 +453,7 @@ private:
   */
   void affine_image(dimension_type v,
 		    const LinExpression& expr,
-		    const Integer& denominator);
+		    Integer_traits::const_reference denominator);
 
   //! Returns the number of lines of the system.
   dimension_type num_lines() const;

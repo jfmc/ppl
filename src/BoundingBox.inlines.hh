@@ -98,7 +98,8 @@ BoundingBox::set_empty() {
 
 inline void
 BoundingBox::raise_lower_bound(const dimension_type k, const bool closed,
-			       const Integer& n, const Integer& d) {
+			       Integer_traits::const_reference n,
+			       Integer_traits::const_reference d) {
   assert(k < vec.size());
   assert(d != 0);
   vec[k].raise_lower_bound(LBoundary(ERational(n, d),
@@ -110,7 +111,8 @@ BoundingBox::raise_lower_bound(const dimension_type k, const bool closed,
 
 inline void
 BoundingBox::lower_upper_bound(const dimension_type k, const bool closed,
-			       const Integer& n, const Integer& d) {
+			       Integer_traits::const_reference n,
+			       Integer_traits::const_reference d) {
   assert(k < vec.size());
   assert(d != 0);
   vec[k].lower_upper_bound(UBoundary(ERational(n, d),

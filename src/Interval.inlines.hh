@@ -29,7 +29,8 @@ site: http://www.cs.unipr.it/ppl/ . */
 namespace Parma_Polyhedra_Library {
 
 inline
-ERational::ERational(const Integer& num, const Integer& den)
+ERational::ERational(Integer_traits::const_reference num,
+		     Integer_traits::const_reference den)
   : e(0), v(num, den) {
   assert(den != 0);
   v.canonicalize();
@@ -61,16 +62,16 @@ ERational::direction_of_infinity() const {
   return e;
 }
 
-inline const Integer&
+inline Integer
 ERational::numerator() const {
   assert(e == 0);
-  return v.get_num();
+  return Integer(v.get_num());
 }
 
-inline const Integer&
+inline Integer
 ERational::denominator() const {
   assert(e == 0);
-  return v.get_den();
+  return Integer(v.get_den());
 }
 
 /*! \relates ERational */

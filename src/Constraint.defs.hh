@@ -49,50 +49,61 @@ std::ostream& operator<<(std::ostream& s, const Constraint& c);
 Constraint operator==(const LinExpression& e1, const LinExpression& e2);
 //! Returns the constraint \p e = \p n.
 /*! \relates Constraint */
-Constraint operator==(const LinExpression& e, const Integer& n);
+Constraint
+operator==(const LinExpression& e, Integer_traits::const_reference n);
 //! Returns the constraint \p n = \p e.
 /*! \relates Constraint */
-Constraint operator==(const Integer& n, const LinExpression& e);
+Constraint
+operator==(Integer_traits::const_reference n, const LinExpression& e);
 
 //! Returns the constraint \p e1 \<= \p e2.
 /*! \relates Constraint */
 Constraint operator<=(const LinExpression& e1, const LinExpression& e2);
 //! Returns the constraint \p e \<= \p n.
 /*! \relates Constraint */
-Constraint operator<=(const LinExpression& e, const Integer& n);
+Constraint
+operator<=(const LinExpression& e, Integer_traits::const_reference n);
 //! Returns the constraint \p n \<= \p e.
 /*! \relates Constraint */
-Constraint operator<=(const Integer& n, const LinExpression& e);
+Constraint
+operator<=(Integer_traits::const_reference n, const LinExpression& e);
 
 //! Returns the constraint \p e1 \>= \p e2.
 /*! \relates Constraint */
-Constraint operator>=(const LinExpression& e1, const LinExpression& e2);
+Constraint
+operator>=(const LinExpression& e1, const LinExpression& e2);
 //! Returns the constraint \p e \>= \p n.
 /*! \relates Constraint */
-Constraint operator>=(const LinExpression& e, const Integer& n);
+Constraint
+operator>=(const LinExpression& e, Integer_traits::const_reference n);
 //! Returns the constraint \p n \>= \p e.
 /*! \relates Constraint */
-Constraint operator>=(const Integer& n, const LinExpression& e);
+Constraint
+operator>=(Integer_traits::const_reference n, const LinExpression& e);
 
 //! Returns the constraint \p e1 \< \p e2.
 /*! \relates Constraint */
 Constraint operator<(const LinExpression& e1, const LinExpression& e2);
 //! Returns the constraint \p e \< \p n.
 /*! \relates Constraint */
-Constraint operator<(const LinExpression& e, const Integer& n);
+Constraint
+operator<(const LinExpression& e, Integer_traits::const_reference n);
 //! Returns the constraint \p n \< \p e.
 /*! \relates Constraint */
-Constraint operator<(const Integer& n, const LinExpression& e);
+Constraint
+operator<(Integer_traits::const_reference n, const LinExpression& e);
 
 //! Returns the constraint \p e1 \> \p e2.
 /*! \relates Constraint */
 Constraint operator>(const LinExpression& e1, const LinExpression& e2);
 //! Returns the constraint \p e \> \p n.
 /*! \relates Constraint */
-Constraint operator>(const LinExpression& e, const Integer& n);
+Constraint
+operator>(const LinExpression& e, Integer_traits::const_reference n);
 //! Returns the constraint \p n \> \p e.
 /*! \relates Constraint */
-Constraint operator>(const Integer& n, const LinExpression& e);
+Constraint
+operator>(Integer_traits::const_reference n, const LinExpression& e);
 
 } // namespace Parma_Polyhedra_Library
 
@@ -256,10 +267,10 @@ public:
     \exception std::invalid_argument thrown if the index of \p v
     is greater than or equal to the space-dimension of \p *this.
   */
-  const Integer& coefficient(Variable v) const;
+  Integer_traits::const_reference coefficient(Variable v) const;
 
   //! Returns the inhomogeneous term of \p *this.
-  const Integer& inhomogeneous_term() const;
+  Integer_traits::const_reference inhomogeneous_term() const;
 
   //! The unsatisfiable (zero-dimension space) constraint \f$0 = 1\f$.
   static const Constraint& zero_dim_false();
@@ -280,10 +291,10 @@ private:
   // GenSys::satisfied_by_all_generators().
   friend class Parma_Polyhedra_Library::GenSys;
 
-  friend const Integer&
+  friend Integer_traits::const_reference
   Parma_Polyhedra_Library::operator*(const Constraint& c,
 				     const Generator& g);
-  friend const Integer&
+  friend Integer_traits::const_reference
   Parma_Polyhedra_Library::reduced_scalar_product(const Constraint& c,
 						  const Generator& g);
   friend
@@ -318,9 +329,9 @@ private:
 				      const LinExpression& e2);
   friend Constraint
   Parma_Polyhedra_Library::operator==(const LinExpression& e,
-				      const Integer& n);
+				      Integer_traits::const_reference n);
   friend Constraint
-  Parma_Polyhedra_Library::operator==(const Integer& n,
+  Parma_Polyhedra_Library::operator==(Integer_traits::const_reference n,
 				      const LinExpression& e);
 
   friend Constraint
@@ -328,9 +339,9 @@ private:
 				      const LinExpression& e2);
   friend Constraint
   Parma_Polyhedra_Library::operator>=(const LinExpression& e,
-				      const Integer& n);
+				      Integer_traits::const_reference n);
   friend Constraint
-  Parma_Polyhedra_Library::operator>=(const Integer& n,
+  Parma_Polyhedra_Library::operator>=(Integer_traits::const_reference n,
 				      const LinExpression& e);
 
   friend Constraint
@@ -338,9 +349,9 @@ private:
 				      const LinExpression& e2);
   friend Constraint
   Parma_Polyhedra_Library::operator<=(const LinExpression& e,
-				      const Integer& n);
+				      Integer_traits::const_reference n);
   friend Constraint
-  Parma_Polyhedra_Library::operator<=(const Integer& n,
+  Parma_Polyhedra_Library::operator<=(Integer_traits::const_reference n,
 				      const LinExpression& e);
 
   friend Constraint
@@ -348,9 +359,9 @@ private:
 				     const LinExpression& e2);
   friend Constraint
   Parma_Polyhedra_Library::operator>(const LinExpression& e,
-				     const Integer& n);
+				     Integer_traits::const_reference n);
   friend Constraint
-  Parma_Polyhedra_Library::operator>(const Integer& n,
+  Parma_Polyhedra_Library::operator>(Integer_traits::const_reference n,
 				     const LinExpression& e);
 
   friend Constraint
@@ -358,9 +369,9 @@ private:
 				     const LinExpression& e2);
   friend Constraint
   Parma_Polyhedra_Library::operator<(const LinExpression& e,
-				     const Integer& n);
+				     Integer_traits::const_reference n);
   friend Constraint
-  Parma_Polyhedra_Library::operator<(const Integer& n,
+  Parma_Polyhedra_Library::operator<(Integer_traits::const_reference n,
 				     const LinExpression& e);
 
   //! Copy-constructor with given size.

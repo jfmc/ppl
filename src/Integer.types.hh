@@ -12,13 +12,26 @@ PURPOSE. */
 #ifndef PPL_Integer_types_hh
 #define PPL_Integer_types_hh 1
 
-#include <gmpxx.h>
+#include "Integer_traits_template.hh"
+
+#ifdef NATIVE_INTEGERS
+#include "Native_Integer.types.hh"
+#endif
+
+#ifdef CHECKED_INTEGERS
+#include "Checked_Integer.types.hh"
+#endif
+
+#ifdef GMP_INTEGERS
+#include "GMP_Integer.types.hh"
+#endif
 
 namespace Parma_Polyhedra_Library {
 
-//! See the GMP's manual available at http://swox.com/gmp/ .
-typedef mpz_class Integer;
+typedef COEFFICIENT_TYPE Integer;
 
-}
+typedef Integer_traits_template<Integer> Integer_traits;
+
+} // namespace Parma_Polyhedra_Library
 
 #endif // !defined(PPL_Integer_types_hh)

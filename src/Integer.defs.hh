@@ -25,33 +25,18 @@ site: http://www.cs.unipr.it/ppl/ . */
 #define PPL_Integer_defs_hh 1
 
 #include "Integer.types.hh"
+#include <iosfwd>
 
-namespace Parma_Polyhedra_Library {
+#ifdef NATIVE_INTEGERS
+#include "Native_Integer.defs.hh"
+#endif
 
-inline void negate(Integer& x);
-inline void gcd_assign(Integer& x, const Integer& y);
-inline void gcd_assign(Integer& x, const Integer& y, const Integer& z);
-inline void lcm_assign(Integer& x, const Integer& y);
-inline void lcm_assign(Integer& x, const Integer& y, const Integer& z);
-inline void exact_div_assign(Integer& x, const Integer& y);
-inline void exact_div_assign(Integer& x, const Integer& y, const Integer& z);
-inline void sqrt_assign(Integer& x);
-inline void sqrt_assign(Integer& x, const Integer& y);
-inline int cmp(const Integer& x, const Integer& y);
-inline const Integer& Integer_zero();
-inline const Integer& Integer_one();
+#ifdef CHECKED_INTEGERS
+#include "Checked_Integer.defs.hh"
+#endif
 
-} // namespace Parma_Polyhedra_Library
-
-
-namespace std {
-
-//! Specializes <CODE>std::swap</CODE>.
-void swap(Parma_Polyhedra_Library::Integer& x,
-	  Parma_Polyhedra_Library::Integer& y);
-
-} // namespace std
-
-#include "Integer.inlines.hh"
+#ifdef GMP_INTEGERS
+#include "GMP_Integer.defs.hh"
+#endif
 
 #endif // !defined(PPL_Integer_defs_hh)
