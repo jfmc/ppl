@@ -38,8 +38,8 @@ noinst_PROGRAMS = lpenum
 lpenum_SOURCES = lpenum.c
 lpenum_LDADD = \
 -lglpk \
--L$(top_builddir)/interfaces/C -lppl_c \
--L$(top_builddir)/src/ -lppl \
+$(top_builddir)/interfaces/C/libppl_c.la \
+$(top_builddir)/src/libppl.la \
 @extra_libraries@
 
 endif
