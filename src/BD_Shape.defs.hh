@@ -819,8 +819,11 @@ public:
 
   //@} Space-Dimension Preserving Member Functions that May Modify [...]
 
-  //! Returns the system of constraints.
+  //! Returns a system of constraints corresponding to \p *this.
   Constraint_System constraints() const;
+
+  //! Returns a minimized system of constraints corresponding to \p *this.
+  Constraint_System minimized_constraints() const;
 
   //! \name Member Functions that May Modify the Dimension of the Vector Space
   //@{

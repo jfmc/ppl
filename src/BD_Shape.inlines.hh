@@ -3509,6 +3509,13 @@ BD_Shape<T>::constraints() const {
 }
 
 template <typename T>
+inline Constraint_System
+BD_Shape<T>::minimized_constraints() const {
+  transitive_reduction_assign();
+  return constraints();
+}
+
+template <typename T>
 inline void
 BD_Shape<T>::ascii_dump(std::ostream& s) const {
   status.ascii_dump(s);
