@@ -24,8 +24,6 @@ site: http://www.cs.unipr.it/ppl/ . */
 #ifndef PPL_float_types_hh
 #define PPL_float_types_hh
 
-#include <config.h>
-
 #if SIZEOF_FLOAT == 4
 #define FLOAT32_TYPE float
 #elif SIZEOF_DOUBLE == 4
