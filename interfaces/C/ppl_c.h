@@ -765,52 +765,110 @@ __P((ppl_const_GenSys__const_iterator_t x,
 PPL_TYPE_DECLARATION(Polyhedron);
 
 /*!
-  Builds an universe polyhedron of dimension \p d and writes an handle
-  to it at address \p pph.
+  Builds an universe closed polyhedron of dimension \p d and writes an
+  handle to it at address \p pph.
 */
 int
-ppl_new_Polyhedron_from_dimension __P((ppl_Polyhedron_t* pph, unsigned int d));
+ppl_new_C_Polyhedron_from_dimension __P((ppl_Polyhedron_t* pph,
+					 unsigned int d));
 
 /*!
-  Builds an empty polyhedron of dimension \p d and writes an handle
-  to it at address \p pph.
+  Builds an universe NNC polyhedron of dimension \p d and writes an
+  handle to it at address \p pph.
 */
 int
-ppl_new_Polyhedron_empty_from_dimension __P((ppl_Polyhedron_t* pph,
-					     unsigned int d));
+ppl_new_NNC_Polyhedron_from_dimension __P((ppl_Polyhedron_t* pph,
+					   unsigned int d));
+
 /*!
-  Builds a polyhedron that is a copy of \p ph; writes an handle
+  Builds an empty closed polyhedron of dimension \p d and writes an
+  handle to it at address \p pph.
+*/
+int
+ppl_new_C_Polyhedron_empty_from_dimension __P((ppl_Polyhedron_t* pph,
+					       unsigned int d));
+
+/*!
+  Builds an empty NNC polyhedron of dimension \p d and writes an
+  handle to it at address \p pph.
+*/
+int
+ppl_new_NNC_Polyhedron_empty_from_dimension __P((ppl_Polyhedron_t* pph,
+					       unsigned int d));
+
+/*!
+  Builds a closed polyhedron that is a copy of \p ph; writes an handle
   for the newly created polyhedron at address \p pph.
 */
 int
-ppl_new_Polyhedron_from_Polyhedron __P((ppl_Polyhedron_t* pph,
-					ppl_const_Polyhedron_t ph));
+ppl_new_C_Polyhedron_from_C_Polyhedron __P((ppl_Polyhedron_t* pph,
+					    ppl_const_Polyhedron_t ph));
 
 /*!
-  Builds a new polyhedron recycling the system of constraints \p cs
-  and writes an handle for the newly created polyhedron at address \p
-  pph.  Since \p cs will be <EM>the</EM> system of constraints of the
-  new polyhedron, the space dimension is also inherited.
+  Builds an NNC polyhedron that is a copy of \p ph; writes an handle
+  for the newly created polyhedron at address \p pph.
+*/
+int
+ppl_new_NNC_Polyhedron_from_NNC_Polyhedron __P((ppl_Polyhedron_t* pph,
+						ppl_const_Polyhedron_t ph));
+
+/*!
+  Builds a new closed polyhedron recycling the system of constraints
+  \p cs and writes an handle for the newly created polyhedron at
+  address \p pph.  Since \p cs will be <EM>the</EM> system of
+  constraints of the new polyhedron, the space dimension is also
+  inherited.
 
   \warning
   This function modifies the constraint system referenced by \p cs:
   upon return, no assumption can be made on its value.
 */
 int
-ppl_new_Polyhedron_from_ConSys __P((ppl_Polyhedron_t* pph, ppl_ConSys_t cs));
+ppl_new_C_Polyhedron_from_ConSys __P((ppl_Polyhedron_t* pph, ppl_ConSys_t cs));
 
 /*!
-  Builds a new polyhedron recycling the system of generators \p gs
-  and writes an handle for the newly created polyhedron at address \p
-  pph.  Since \p cs will be <EM>the</EM> system of generators of the
-  new polyhedron, the space dimension is also inherited.
+  Builds a new NNC polyhedron recycling the system of constraints
+  \p cs and writes an handle for the newly created polyhedron at
+  address \p pph.  Since \p cs will be <EM>the</EM> system of
+  constraints of the new polyhedron, the space dimension is also
+  inherited.
+
+  \warning
+  This function modifies the constraint system referenced by \p cs:
+  upon return, no assumption can be made on its value.
+*/
+int
+ppl_new_NNC_Polyhedron_from_ConSys __P((ppl_Polyhedron_t* pph,
+					ppl_ConSys_t cs));
+
+/*!
+  Builds a new closed polyhedron recycling the system of generators
+  \p gs and writes an handle for the newly created polyhedron at
+  address \p pph.  Since \p cs will be <EM>the</EM> system of
+  generators of the new polyhedron, the space dimension is also
+  inherited.
 
   \warning
   This function modifies the generator system referenced by \p gs:
   upon return, no assumption can be made on its value.
 */
 int
-ppl_new_Polyhedron_from_GenSys __P((ppl_Polyhedron_t* pph, ppl_GenSys_t gs));
+ppl_new_C_Polyhedron_from_GenSys __P((ppl_Polyhedron_t* pph, ppl_GenSys_t gs));
+
+/*!
+  Builds a new NNC polyhedron recycling the system of generators
+  \p gs and writes an handle for the newly created polyhedron at
+  address \p pph.  Since \p cs will be <EM>the</EM> system of
+  generators of the new polyhedron, the space dimension is also
+  inherited.
+
+  \warning
+  This function modifies the generator system referenced by \p gs:
+  upon return, no assumption can be made on its value.
+*/
+int
+ppl_new_NNC_Polyhedron_from_GenSys __P((ppl_Polyhedron_t* pph,
+					ppl_GenSys_t gs));
 
 /*!
   Invalidates the handle \p ph: this makes sure the corresponding
@@ -820,11 +878,20 @@ int
 ppl_delete_Polyhedron __P((ppl_const_Polyhedron_t ph));
 
 /*!
-  Assigns a copy of the polyhedron \p src to \p dst.
+  Assigns a copy of the closed polyhedron \p src to the closed
+  polyhedron \p dst.
 */
 int
-ppl_assign_Polyhedron_from_Polyhedron __P((ppl_Polyhedron_t dst,
-					   ppl_const_Polyhedron_t src));
+ppl_assign_C_Polyhedron_from_C_Polyhedron __P((ppl_Polyhedron_t dst,
+					       ppl_const_Polyhedron_t src));
+
+/*!
+  Assigns a copy of the NNC polyhedron \p src to the NNC
+  polyhedron \p dst.
+*/
+int
+ppl_assign_NNC_Polyhedron_from_NNC_Polyhedron
+__P((ppl_Polyhedron_t dst, ppl_const_Polyhedron_t src));
 
 /*!
   Swaps the polyhedra \p x and \p y.

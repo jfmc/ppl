@@ -862,9 +862,25 @@ ppl_new_C_Polyhedron_from_dimension(ppl_Polyhedron_t* pph,
 CATCH_ALL
 
 int
+ppl_new_NNC_Polyhedron_from_dimension(ppl_Polyhedron_t* pph,
+				      unsigned int d) try {
+  *pph = to_nonconst(new NNC_Polyhedron(d, Polyhedron::UNIVERSE));
+  return 0;
+}
+CATCH_ALL
+
+int
 ppl_new_C_Polyhedron_empty_from_dimension(ppl_Polyhedron_t* pph,
-					unsigned int d) try {
+					  unsigned int d) try {
   *pph = to_nonconst(new C_Polyhedron(d, Polyhedron::EMPTY));
+  return 0;
+}
+CATCH_ALL
+
+int
+ppl_new_NNC_Polyhedron_empty_from_dimension(ppl_Polyhedron_t* pph,
+					    unsigned int d) try {
+  *pph = to_nonconst(new NNC_Polyhedron(d, Polyhedron::EMPTY));
   return 0;
 }
 CATCH_ALL
@@ -879,6 +895,16 @@ ppl_new_C_Polyhedron_from_C_Polyhedron(ppl_Polyhedron_t* pph,
 CATCH_ALL
 
 int
+ppl_new_NNC_Polyhedron_from_NNC_Polyhedron(ppl_Polyhedron_t* pph,
+					   ppl_const_Polyhedron_t ph) try {
+  const NNC_Polyhedron& phh
+    = *static_cast<const NNC_Polyhedron*>(to_const(ph));
+  *pph = to_nonconst(new NNC_Polyhedron(phh));
+  return 0;
+}
+CATCH_ALL
+
+int
 ppl_new_C_Polyhedron_from_ConSys(ppl_Polyhedron_t* pph, ppl_ConSys_t cs) try {
   ConSys& ccs = *to_nonconst(cs);
   *pph = to_nonconst(new C_Polyhedron(ccs));
@@ -887,7 +913,25 @@ ppl_new_C_Polyhedron_from_ConSys(ppl_Polyhedron_t* pph, ppl_ConSys_t cs) try {
 CATCH_ALL
 
 int
+ppl_new_NNC_Polyhedron_from_ConSys(ppl_Polyhedron_t* pph,
+				   ppl_ConSys_t cs) try {
+  ConSys& ccs = *to_nonconst(cs);
+  *pph = to_nonconst(new NNC_Polyhedron(ccs));
+  return 0;
+}
+CATCH_ALL
+
+int
 ppl_new_C_Polyhedron_from_GenSys(ppl_Polyhedron_t* pph, ppl_GenSys_t gs) try {
+  GenSys& ggs = *to_nonconst(gs);
+  *pph = to_nonconst(new C_Polyhedron(ggs));
+  return 0;
+}
+CATCH_ALL
+
+int
+ppl_new_NNC_Polyhedron_from_GenSys(ppl_Polyhedron_t* pph,
+				   ppl_GenSys_t gs) try {
   GenSys& ggs = *to_nonconst(gs);
   *pph = to_nonconst(new C_Polyhedron(ggs));
   return 0;
@@ -906,6 +950,17 @@ ppl_assign_C_Polyhedron_from_C_Polyhedron(ppl_Polyhedron_t dst,
 					  ppl_const_Polyhedron_t src) try {
   const C_Polyhedron& ssrc = *static_cast<const C_Polyhedron*>(to_const(src));
   C_Polyhedron& ddst = *static_cast<C_Polyhedron*>(to_nonconst(dst));
+  ddst = ssrc;
+  return 0;
+}
+CATCH_ALL
+
+int
+ppl_assign_NNC_Polyhedron_from_NNC_Polyhedron(ppl_Polyhedron_t dst,
+					      ppl_const_Polyhedron_t src) try {
+  const NNC_Polyhedron& ssrc
+    = *static_cast<const NNC_Polyhedron*>(to_const(src));
+  NNC_Polyhedron& ddst = *static_cast<NNC_Polyhedron*>(to_nonconst(dst));
   ddst = ssrc;
   return 0;
 }
