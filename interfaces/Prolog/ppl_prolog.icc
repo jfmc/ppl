@@ -43,8 +43,7 @@ handle_exception(const integer_out_of_range& e) {
   Prolog_put_term(culprit, e.term());
   Prolog_put_long(arg_no, 1);
   {
-    std::string s;
-    std::ostringstream domain(s);
+    std::ostringstream domain;
     domain << "[" << LONG_MIN << ", " << LONG_MAX << "]";
     Prolog_put_atom_chars(expected_domain, domain.str().c_str());
   }
@@ -67,8 +66,7 @@ handle_exception(const not_unsigned_int& e) {
   Prolog_put_term(culprit, e.term());
   Prolog_put_long(arg_no, 1);
   {
-    std::string s;
-    std::ostringstream domain(s);
+    std::ostringstream domain;
     domain << "[" << 0 << ", " << UINT_MAX << "]";
     Prolog_put_atom_chars(expected_domain, domain.str().c_str());
   }
