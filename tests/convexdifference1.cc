@@ -68,11 +68,10 @@ main() try {
 #endif
 
   GenSys gs_known_result;
-  // FIXME: this was just copy-and-pasted from convexhull1.cc.
   gs_known_result.insert(vertex());
-  gs_known_result.insert(vertex(-x + y));
-  gs_known_result.insert(ray(x));
-  gs_known_result.insert(ray(y));
+  gs_known_result.insert(vertex(3*x + 3*y, 2));
+  gs_known_result.insert(vertex(4*x));
+  gs_known_result.insert(vertex(5*x + 3*y, 2));
 
   Polyhedron known_result(gs_known_result);
 

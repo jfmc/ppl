@@ -875,6 +875,11 @@ PPL::Polyhedron::convex_difference_assign(const Polyhedron& y) {
   }
 
   // FIXME: This is just an executable specification.
+  if (x <= y) {
+    x.set_empty();
+    return;
+  }
+
   Polyhedron new_polyhedron(x_space_dim, EMPTY);
 
   const ConSys& x_cs = x.constraints();
@@ -885,26 +890,13 @@ PPL::Polyhedron::convex_difference_assign(const Polyhedron& y) {
     const Constraint& c = *i;
     assert(!c.is_trivial_true());
     assert(!c.is_trivial_false());
-#if 1
-    if (!c.is_equality()) {
+    if (c.is_inequality()) {
       LinExpression e(0 * PPL::Variable(x_space_dim-1));
       for (int varid = c.first(); varid >= 0; varid = c.next(varid))
 	e += PPL::Variable(varid) * c.coefficient(PPL::Variable(varid));
       z_cs.insert(e <= -c.coefficient());
       new_polyhedron.convex_hull_assign(Polyhedron(z_cs));
     }
-#else
-    LinExpression e(0 * PPL::Variable(x_space_dim-1));
-    for (int varid = c.first(); varid >= 0; varid = c.next(varid))
-      e += PPL::Variable(varid) * c.coefficient(PPL::Variable(varid));
-    z_cs.insert(e <= -c.coefficient()-1);
-    new_polyhedron.convex_hull_assign(Polyhedron(z_cs));
-    if (c.is_equality()) {
-      ConSys w_cs = x_cs;
-      w_cs.insert(e >= c.coefficient()+1);
-      new_polyhedron.convex_hull_assign(Polyhedron(w_cs));
-    }
-#endif
   }
   *this = new_polyhedron;
 
