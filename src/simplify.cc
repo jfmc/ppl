@@ -168,7 +168,7 @@ PPL::Polyhedron::simplify(Matrix& mat, SatMatrix& sat) {
     // ones and they are in number of rank.
     num_equal_or_line = rank;
   }
-  // Now we use the redundancy definition (given in definitions.dox)
+  // Now we use the redundancy definition (given in the Introduction)
   // to remove redundant inequalities.
   for (size_t i = num_equal_or_line; i < num_rows; ) {
     // i runs through the inequalities.

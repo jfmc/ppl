@@ -93,12 +93,12 @@ PPL::ConSys::satisfies_all_constraints(const Generator& g) const {
 
 /*!
   \param v            Index of the column to which the
-                      affine transformation is assigned.
-  \param expr  The affine transformation:
+                      affine transformation is substituted.
+  \param expr         The numerator of the affine transformation:
                       \f$\sum_{i = 0}^{n - 1} a_i x_i + b\f$
   \param denominator  The denominator of the affine transformation.
 
-  We want to allow affine transformations (see definitions.dox) having
+  We want to allow affine transformations (see the Introduction) having
   any rational coefficients. Since the coefficients of the
   constraints are integers we must also provide an integer \p denominator
   that will be used as denominator of the affine transformation.
