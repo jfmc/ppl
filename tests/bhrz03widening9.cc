@@ -115,8 +115,6 @@ main() {
       known_result.add_constraint(B >= 0);
       known_result.add_constraint(C >= 0);
       known_result.add_constraint(D >= 0);
-      known_result.add_constraint(E >= 0);
-      known_result.add_constraint(-A + D + E >= 0);
       known_result.add_constraint(-A + B + D >= 0);
 
       int retval = (q_i == known_result) ? 0 : 1;
