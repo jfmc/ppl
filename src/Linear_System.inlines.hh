@@ -75,7 +75,7 @@ Linear_System::Linear_System(const Linear_System& y)
   : Matrix(y),
     row_topology(y.row_topology) {
   unset_pending_rows();
-  // What previously where pending rows may violate sortedness.
+  // Previously pending rows may violate sortedness.
   sorted = (y.num_pending_rows() > 0) ? false : y.sorted;
   assert(num_pending_rows() == 0);
 }
@@ -93,7 +93,7 @@ Linear_System::operator=(const Linear_System& y) {
   Matrix::operator=(y);
   row_topology = y.row_topology;
   unset_pending_rows();
-  // What previously where pending rows may violate sortedness.
+  // Previously pending rows may violate sortedness.
   sorted = (y.num_pending_rows() > 0) ? false : y.sorted;
   assert(num_pending_rows() == 0);
   return *this;
