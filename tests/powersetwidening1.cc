@@ -54,6 +54,7 @@ P(unsigned n) {
     p[3].add_constraint(x <= 8);
     p[3].add_constraint(0 <= y);
     p[3].add_constraint(y <= 8);
+    p[3].add_constraint(x+y <= 14);
     p[3].add_constraint(x-y >= -6);
     p[4] = p[3];
     p[3].add_constraint(5*x-y >= -2);
@@ -70,9 +71,9 @@ P(unsigned n) {
   }
 
   if (p[n].is_universe()) {
-    p[n] = P(n-5);
+    p[n] = P(n-4);
     p[n].affine_image(x, 2*x);
-    p[n].affine_image(y, (Integer(1) << (n/5 + 2)) - 2*y);
+    p[n].affine_image(y, (Integer(1) << ((n-1)/4 + 2)) - 2*y);
   }
 
   return p[n];
@@ -81,39 +82,43 @@ P(unsigned n) {
 PSet
 S(unsigned n) {
   PSet s(2, Polyhedron::EMPTY);
-  switch (n % 4) {
-  case 0:
+  if (n == 0) {
 #if NOISY
-    cout << "S" << n << " = { " << "P" << n + n/4 << " }" << endl;
+    cout << "S0 = { P0 }" << endl;
 #endif
-    s.add_disjunct(P(n + n/4));
-    break;
+    s.add_disjunct(P(0));
+    return s;
+  }
+
+  const int p_base = (n-1)/3*4;
+
+  switch (n % 3) {
   case 1:
 #if NOISY
     cout << "S" << n << " = { "
-	 << "P" << n + n/4 << ", "
-	 << "P" << n + 2 + n/4 << " }" << endl;
+	 << "P" << p_base + 1 << ", "
+	 << "P" << p_base + 3 << " }" << endl;
 #endif
-    s.add_disjunct(P(n + n/4));
-    s.add_disjunct(P(n + 2 + n/4));
+    s.add_disjunct(P(p_base + 1));
+    s.add_disjunct(P(p_base + 3));
     break;
   case 2:
 #if NOISY
     cout << "S" << n << " = { "
-	 << "P" << n + n/4 << ", "
-	 << "P" << n + 1 + n/4 << " }" << endl;
+	 << "P" << p_base + 2 << ", "
+	 << "P" << p_base + 3 << " }" << endl;
 #endif
-    s.add_disjunct(P(n + n/4));
-    s.add_disjunct(P(n + 1 + n/4));
+    s.add_disjunct(P(p_base + 2));
+    s.add_disjunct(P(p_base + 3));
     break;
-  case 3:
+  case 0:
 #if NOISY
     cout << "S" << n << " = { "
-	 << "P" << n - 1 + n/4 << ", "
-	 << "P" << n + 1 + n/4 << " }" << endl;
+	 << "P" << p_base + 2 << ", "
+	 << "P" << p_base + 4 << " }" << endl;
 #endif
-    s.add_disjunct(P(n - 1 + n/4));
-    s.add_disjunct(P(n + 1 + n/4));
+    s.add_disjunct(P(p_base + 2));
+    s.add_disjunct(P(p_base + 4));
     break;
   }    
   return s;
@@ -139,17 +144,18 @@ main() TRY {
 #endif
   bool converged = false;
   for (unsigned n = 1; !converged && n <= 100; ++n) {
-    PSet U = T;
     PSet Sn = S(n);
 #if NOISY
     cout << "S" << n << " = " << Sn << endl;
 #endif
-    T.H79_widening_assign(Sn, 3);
+    Sn.H79_widening_assign(T, 3);
 #if NOISY
-    cout << "T" << n << " = " << T << endl;
+    cout << "T" << n << " = " << Sn << endl;
 #endif
-    if (T.definitely_entails(U))
+    if (Sn.definitely_entails(T))
       converged = true;
+    else
+      std::swap(Sn, T);
   }
 
   return !converged ? 0 : 1;
