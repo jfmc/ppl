@@ -119,4 +119,5 @@ catch (const std::exception& e) {
   cerr << "std::exception caught: "
        << e.what() << " (type == " << typeid(e).name() << ")"
        << endl;
+  return 1;
 }
