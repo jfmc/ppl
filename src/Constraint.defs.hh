@@ -34,6 +34,7 @@ site: http://www.cs.unipr.it/ppl/ . */
 
 namespace Parma_Polyhedra_Library {
   //! Output operator.
+  /*! \relates Constraint */
   std::ostream& operator<<(std::ostream& s, const Constraint& c);
 
   // Put them in the namespace here to declare them friend later.
@@ -358,6 +359,7 @@ private:
 namespace std {
 
 //! Specializes <CODE>std::swap</CODE>.
+/*! \relates Parma_Polyhedra_Library::Constraint */
 void swap(Parma_Polyhedra_Library::Constraint& x,
 	  Parma_Polyhedra_Library::Constraint& y);
 

@@ -34,6 +34,7 @@ site: http://www.cs.unipr.it/ppl/ . */
 namespace Parma_Polyhedra_Library {
 
   //! Output operator.
+  /*! \relates Generator */
   std::ostream&
   operator<<(std::ostream& s, const Generator& g);
 
@@ -361,6 +362,7 @@ private:
 namespace std {
 
 //! Specializes <CODE>std::swap</CODE>.
+/*! \relates Parma_Polyhedra_Library::Generator */
 void swap(Parma_Polyhedra_Library::Generator& x,
 	  Parma_Polyhedra_Library::Generator& y);
 
