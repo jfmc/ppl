@@ -79,7 +79,6 @@ timed_compute_open_hypercube_generators(unsigned int dimension,
   }
   catch (...) {
     exit(1);
-    return false;
   }
 }
 
@@ -101,7 +100,7 @@ main() {
   }
   while (timed_compute_open_hypercube_generators(dimension, INIT_TIME));
 
-  // Now find an upper bound to the time necessary to compute it
+  // Now find an upper bound to the time necessary to compute it.
   int upper_bound = INIT_TIME;
   do {
     upper_bound *= 2;
@@ -125,8 +124,8 @@ main() {
   } while (upper_bound-lower_bound > 4);
 
 #if NOISY
-    cout << "Estimated time for dimension " << dimension
-	 << ": " << (lower_bound+upper_bound)/2 << " 100th of sec" << endl;
+  cout << "Estimated time for dimension " << dimension
+       << ": " << (lower_bound+upper_bound)/2 << " 100th of sec" << endl;
 #endif
 
   return 0;
