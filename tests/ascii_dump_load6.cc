@@ -78,7 +78,7 @@ test2() {
 
 void
 test3() {
- fstream f;
+  fstream f;
   open(f, my_file, ios_base::out);
   f << "space_dim 2\n"
     << "-ZE";
@@ -178,6 +178,41 @@ test8() {
     exit(1);
 }
 
+void
+test9() {
+ fstream f;
+  open(f, my_file, ios_base::out);
+  f << "space_dim 2\n"
+    << "-ZE -EM  +CM +GM  +CS  +GS";
+  close(f);
+  
+  open(f, my_file, ios_base::in);
+  C_Polyhedron ph2;
+  bool ok =! ph2.ascii_load(f);
+  close(f);
+  
+  if (!ok)
+    exit(1);
+}
+
+
+void
+test10() {
+ fstream f;
+  open(f, my_file, ios_base::out);
+  f << "space_dim 2\n"
+    << "-ZE -EM  +CM +GM  +CS  +GS  -SC";
+  close(f);
+  
+  open(f, my_file, ios_base::in);
+  C_Polyhedron ph2;
+  bool ok =! ph2.ascii_load(f);
+  close(f);
+  
+  if (!ok)
+    exit(1);
+}
+
 int
 main() {
   set_handlers();
@@ -190,6 +225,8 @@ main() {
   test6();
   test7();
   test8();
+  test9();
+  test10();
 
   return 0;
 }
