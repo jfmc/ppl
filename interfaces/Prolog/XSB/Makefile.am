@@ -46,15 +46,15 @@ pkglib_DATA = ppl_xsb.O
 ppl_xsb.O: ppl_xsb.H ppl_xsb.cc Makefile
 	if [ $(abs_srcdir) != `pwd` ]; then \
 	  cp -f $(srcdir)/ppl_xsb.H . ; \
-	  cp -f $(srcdir)/ppl_xsb.cc ppl_xsb.c; \
 	fi
+	cp -f $(srcdir)/ppl_xsb.cc ppl_xsb.c
 	echo "consult(ppl_xsb," \
 	  "[cc('$(CXX)'), cc_opts('$(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) " \
 	    "$(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CXXFLAGS) $(CXXFLAGS)')])." \
 		| xsb
+	rm -f ppl_xsb.c
 	if [ $(abs_srcdir) != `pwd` ]; then \
 	  rm -f ppl_xsb.H; \
-	  rm -f ppl_xsb.c; \
 	fi
 
 CLPQ_TESTS_NONSTRICT = \
@@ -80,28 +80,28 @@ check-local: ppl_xsb.la xsb_clpq.P ../clpq.pl ../check_script expected xsb_clpq2
 	for k in $(CLPQ_TESTS); do cp -f $(srcdir)/../$$k .; done
 	if [ $(abs_srcdir) != `pwd` ]; then \
 	  cp -f $(srcdir)/xsb_clpq.P . ; \
-	  cp -f $(srcdir)/../clpq.pl . ; \
 	fi
+	cp -f $(srcdir)/../clpq.pl .
 	$(LIBTOOL) --mode=execute -dlopen ../../../src/libppl.la \
 				-dlopen ppl_xsb.la \
 		xsb xsb_clpq \
 			<$(srcdir)/../check_script >obtained
+	rm -f clpq.pl
 	if [ $(abs_srcdir) != `pwd` ]; then \
 	  rm -f xsb_clpq.P; \
-	  rm -f clpq.pl; \
 	fi
 	diff -q --ignore-all-space $(srcdir)/expected obtained
 	if [ $(abs_srcdir) != `pwd` ]; then \
 	  cp -f $(srcdir)/xsb_clpq2.P . ; \
-	  cp -f $(srcdir)/../clpq2.pl . ; \
 	fi
+	cp -f $(srcdir)/../clpq2.pl .
 	$(LIBTOOL) --mode=execute -dlopen ../../../src/libppl.la \
 				-dlopen ppl_xsb.la \
 		xsb xsb_clpq2 \
 			<$(srcdir)/../check_script2 >obtained2
+	rm -f clpq2.pl
 	if [ $(abs_srcdir) != `pwd` ]; then \
 	  rm -f xsb_clpq2.P; \
-	  rm -f clpq2.pl; \
 	fi
 	diff -q --ignore-all-space $(srcdir)/expected2 obtained2
 
