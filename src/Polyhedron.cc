@@ -1738,11 +1738,9 @@ PPL::Polyhedron::add_dimensions_and_project(size_t dim) {
     assert(status.test_zero_dim_univ() && gen_sys.num_rows() == 0);
     // The system of generators for this polyhedron has only
     // the origin as a point.
-    // In a non-necessarily closed polyhedron, all points
-    // have to be accompanied by the corresponding closure points
-    // (this time, dimensions are automatically adjusted).
+    // In a non-empty NNC polyhedron, we have the minus_eps_ray.
     if (!is_necessarily_closed())
-      gen_sys.insert(Generator::zero_dim_closure_point());
+      gen_sys.insert(Generator::zero_dim_minus_epsilon_ray());
     gen_sys.insert(Generator::zero_dim_point());
     gen_sys.adjust_topology_and_dimension(topology(), dim);
     set_generators_minimized();
