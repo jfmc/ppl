@@ -883,11 +883,98 @@ PPL::Polyhedron::strongly_minimize_constraints() const {
 void
 PPL::Polyhedron::strongly_minimize() const {
   assert(!is_necessarily_closed());
-  // Strongly minimize generators.
+
+  // We need `gen_sys' strongly minimized,
+  // `con_sys' (weakly) minimized
+  // and `sat_g' up-to-date.
   strongly_minimize_generators();
-  // Compute the (weakly) minimized constraints,
-  // which will be in strong minimal form too.
-  update_constraints();
+  minimize();
+  if (!sat_g_is_up_to_date()) {
+    assert(sat_c_is_up_to_date());
+    // From the user perspective, the polyhedron will not change.
+    SatMatrix& sat = const_cast<SatMatrix&>(sat_g);
+    sat.transpose_assign(sat_c);
+  }
+
+  // Now applying a restricted form of strong minimization to `con_sys',
+  // which will preserve `gen_sys' strongly minimized too.
+
+  // Computing mask SatRow's.
+  SatRow sat_all_but_rays;
+  SatRow sat_all_but_points;
+  SatRow sat_all_but_closure_points;
+  size_t gs_rows = gen_sys.num_rows();
+  size_t n_lines = gen_sys.num_lines();
+  for (size_t i = gs_rows; i-- > n_lines; )
+    switch (gen_sys[i].type()) {
+    case Generator::RAY:
+      sat_all_but_rays.set(i);
+      break;
+    case Generator::POINT:
+      sat_all_but_points.set(i);
+      break;
+    case Generator::CLOSURE_POINT:
+      sat_all_but_closure_points.set(i);
+      break;
+    default:
+      // Found a line with index i >= n_lines.
+      throw std::runtime_error("PPL internal error: "
+			       "strongly_minimize.");
+    }
+  SatRow sat_lines_and_rays;
+  set_union(sat_all_but_points, sat_all_but_closure_points,
+	    sat_lines_and_rays);
+  SatRow sat_lines_and_closure_points;
+  set_union(sat_all_but_rays, sat_all_but_points,
+	    sat_lines_and_closure_points);
+  SatRow sat_lines;
+  set_union(sat_lines_and_rays, sat_lines_and_closure_points,
+	    sat_lines);
+
+  // Find, if it exists, the strict inequality in `con_sys'
+  // that saturates no closure point encodings
+  // (there exists at most one such a strict inequality).
+  size_t cs_rows = con_sys.num_rows();
+  size_t eps_index = con_sys.num_columns() - 1;
+  for (size_t i = con_sys.num_equalities(); i < cs_rows; ++i) {
+    const Constraint& ci = con_sys[i];
+    if (ci.is_strict_inequality()) {
+      // Check if it is the eps_leq_one constraint.
+      bool all_zeros = true;
+      for (size_t k = eps_index; k-- > 1; )
+	if (ci[k] != 0) {
+	  all_zeros = false;
+	  break;
+	}
+      if (all_zeros && (ci[0] + ci[eps_index] == 0)) {
+	// It is the eps_leq_one constraint:
+	// the constraint system was already in strong minimal form.
+	assert(OK());
+	return;
+      }
+
+      // Check if `ci' is saturated by no closure points.
+      SatRow sat_ci;
+      set_union(sat_g[i], sat_lines_and_closure_points, sat_ci);
+      if (sat_ci == sat_lines) {
+	// Replace it by the eps_leq_one constraint
+	// (`gen_sys' and `sat_g' are not affected by this change).
+	Constraint& c = const_cast<Constraint&>(ci);
+	c[0] = 1;
+	c[eps_index] = -1;
+	for (size_t k = eps_index; k-- > 1; )
+	  c[k] = 0;
+	// `con_sys' is no longer sorted.
+	ConSys& cs = const_cast<ConSys&>(con_sys);
+	cs.set_sorted(false);
+	// `con_sys' is now in strong minimal form.
+	assert(OK());
+	return;
+      }
+    }
+  }
+  // There was no such a strict inequality:
+  // the constraint system was already in strong minimal form.
   assert(OK());
 }
 
