@@ -29,10 +29,14 @@ site: http://www.cs.unipr.it/ppl/ . */
 namespace PPL = Parma_Polyhedra_Library;
 
 /*!
-  \param mat          The matrix to simplify: it will be modified.
-  \param sat          The saturation matrix corresponding to \p mat.
+  \return
+  The rank of \p mat.
 
-  \return             The rank of \p mat.
+  \param mat
+  The matrix to simplify: it will be modified;
+
+  \param sat
+  The saturation matrix corresponding to \p mat.
 
   \p mat may be modified by swapping some of its rows and by possibly
   removing some of them, if they turn out to be redundant.

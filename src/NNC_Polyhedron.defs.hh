@@ -49,10 +49,11 @@ public:
 
   //! Builds either the universe or the empty NNC polyhedron.
   /*!
-    \param num_dimensions   The number of dimensions of the vector
-                            space enclosing the NNC polyhedron.
-    \param kind             Specifies whether a universe or an empty
-                            NNC polyhedron should be built.
+    \param num_dimensions
+    The number of dimensions of the vector space enclosing the NNC polyhedron;
+
+    \param kind
+    Specifies whether a universe or an empty NNC polyhedron should be built.
 
     Both parameters are optional:
     by default, a 0-dimension space universe NNC polyhedron is built.
@@ -63,40 +64,50 @@ public:
   //! Builds an NNC polyhedron from a system of constraints.
   /*!
     The polyhedron inherits the space dimension of the constraint system.
-    \param cs       The system of constraints defining the polyhedron.
-                    It is not declared <CODE>const</CODE> because its
-                    data-structures will be recycled to build the polyhedron.
+
+    \param cs
+    The system of constraints defining the polyhedron.  It is not
+    declared <CODE>const</CODE> because its data-structures will be
+    recycled to build the polyhedron.
   */
   NNC_Polyhedron(const ConSys& cs);
 
   //! Builds an NNC polyhedron recycling a system of constraints.
   /*!
     The polyhedron inherits the space dimension of the constraint system.
-    \param cs       The system of constraints defining the polyhedron.
-                    It is not declared <CODE>const</CODE> because its
-                    data-structures will be recycled to build the polyhedron.
+
+    \param cs
+    The system of constraints defining the polyhedron.  It is not
+    declared <CODE>const</CODE> because its data-structures will be
+    recycled to build the polyhedron.
   */
   NNC_Polyhedron(ConSys& cs);
 
   //! Builds an NNC polyhedron from a system of generators.
   /*!
     The polyhedron inherits the space dimension of the generator system.
-    \param gs       The system of generators defining the polyhedron.
-                    It is not declared <CODE>const</CODE> because its
-                    data-structures will be recycled to build the polyhedron.
-    \exception std::invalid_argument thrown if the system of generators
-                                     is not empty but has no points.
+
+    \param gs
+    The system of generators defining the polyhedron.  It is not
+    declared <CODE>const</CODE> because its data-structures will be
+    recycled to build the polyhedron.
+
+    \exception std::invalid_argument
+    Thrown if the system of generators is not empty but has no points.
   */
   NNC_Polyhedron(const GenSys& gs);
 
   //! Builds an NNC polyhedron recycling a system of generators.
   /*!
     The polyhedron inherits the space dimension of the generator system.
-    \param gs       The system of generators defining the polyhedron.
-                    It is not declared <CODE>const</CODE> because its
-                    data-structures will be recycled to build the polyhedron.
-    \exception std::invalid_argument thrown if the system of generators
-                                     is not empty but has no points.
+
+    \param gs
+    The system of generators defining the polyhedron.  It is not
+    declared <CODE>const</CODE> because its data-structures will be
+    recycled to build the polyhedron.
+
+    \exception std::invalid_argument
+    Thrown if the system of generators is not empty but has no points.
   */
   NNC_Polyhedron(GenSys& gs);
 
@@ -109,9 +120,13 @@ public:
     the template class Box, see the documentation of the protected method:
       template \<typename Box\>
       Polyhedron::Polyhedron(Topology topol, const Box& box);
-    \param box    The bounding box representing the polyhedron to be built.
-    \param dummy  A dummy tag to syntactically differentiate this one
-                  from the other constructors.
+
+    \param box
+    The bounding box representing the polyhedron to be built;
+
+    \param dummy
+    A dummy tag to syntactically differentiate this one from the other
+    constructors.
   */
   template <typename Box>
   NNC_Polyhedron(const Box& box, From_Bounding_Box dummy);

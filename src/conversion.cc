@@ -37,20 +37,27 @@ namespace PPL = Parma_Polyhedra_Library;
 #define REACTIVE_ABANDONING 1
 
 /*!
-  \param source  The matrix to use to convert \p dest: it
-                 may be modified.
-  \param start   The index of \p source row from which conversion begin.
-  \param dest    The result of the conversion.
-  \param sat     The saturation matrix telling us, for each row in \p source,
-                 which are the rows of \p dest that satisfy but do not
-                 saturate it.
+  \return
+  The number of lines of the polyhedron or the number of equality
+  constraints in the result of conversion.
+
+  \param source
+  The matrix to use to convert \p dest: it may be modified;
+
+  \param start
+  The index of \p source row from which conversion begin;
+
+  \param dest
+  The result of the conversion;
+
+  \param sat
+  The saturation matrix telling us, for each row in \p source, which
+  are the rows of \p dest that satisfy but do not saturate it;
+
   \param num_lines_or_equalities
-                 The number of rows in the matrix \p dest that are
-                 either lines of the polyhedron (when \p dest is
-		 a system of generators) or equality constraints
-		 (when \p dest is a system of constraints).
-  \return        The number of lines of the polyhedron or the number of
-		 equality constraints in the result of conversion.
+  The number of rows in the matrix \p dest that are either lines of
+  the polyhedron (when \p dest is a system of generators) or equality
+  constraints (when \p dest is a system of constraints).
 
   For simplicity, all the following comments assume we are converting a
   constraint system \p source into a generator system \p dest;

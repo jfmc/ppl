@@ -53,10 +53,11 @@ public:
 
   //! Builds a universe (top) or empty (bottom) Polyhedra_PowerSet.
   /*!
-    \param num_dimensions   The number of dimensions of the vector
-                            space enclosing the powerset.
-    \param kind             Specifies whether the universe or the empty
-                            powerset has to be built.
+    \param num_dimensions
+    The number of dimensions of the vector space enclosing the powerset;
+
+    \param kind
+    Specifies whether the universe or the empty powerset has to be built.
   */
   explicit
   Polyhedra_PowerSet(dimension_type num_dimensions = 0,
@@ -86,9 +87,9 @@ public:
 
   //! Intersects \p *this with (a copy of) constraint \p c.
   /*!
-    \exception std::invalid_argument thrown if \p *this and constraint \p c
-                                     are topology-incompatible
-                                     or dimension-incompatible.
+    \exception std::invalid_argument
+    Thrown if \p *this and constraint \p c are topology-incompatible
+    or dimension-incompatible.
   */
   void add_constraint(const Constraint& c);
 
@@ -96,10 +97,12 @@ public:
 
   //! Intersects \p *this with the constraints in \p cs.
   /*!
-    \param  cs             The constraints to intersect with.
-    \exception std::invalid_argument thrown if \p *this and \p cs
-                                     are topology-incompatible
-                                     or dimension-incompatible.
+    \param cs
+    The constraints to intersect with.
+
+    \exception std::invalid_argument
+    Thrown if \p *this and \p cs are topology-incompatible or
+    dimension-incompatible.
   */
   void add_constraints(const ConSys& cs);
 
@@ -125,12 +128,12 @@ public:
 
   //! Removes all the specified dimensions.
   /*!
-    \param to_be_removed  The set of Variable objects corresponding
-                          to the dimensions to be removed.
-    \exception std::invalid_argument thrown if \p *this is
-                                     dimension-incompatible with one
-				     of the Variable objects contained
-				     in \p to_be_removed.
+    \param to_be_removed
+    The set of Variable objects corresponding to the dimensions to be removed.
+
+    \exception std::invalid_argument
+    Thrown if \p *this is dimension-incompatible with one of the
+    Variable objects contained in \p to_be_removed.
   */
   void remove_dimensions(const Variables_Set& to_be_removed);
 
@@ -138,8 +141,9 @@ public:
   //! Removes the higher dimensions so that the resulting space
   //! will have dimension \p new_dimension.
   /*!
-    \exception std::invalid_argument thrown if \p new_dimensions is greater
-                                     than the space dimension of \p *this.
+    \exception std::invalid_argument
+    Thrown if \p new_dimensions is greater than the space dimension
+    of \p *this.
   */
   void remove_higher_dimensions(dimension_type new_dimension);
 
@@ -147,10 +151,12 @@ public:
   //! Returns <CODE>true</CODE> if and only if \p *this semantically 
   //! (i.e., geometrically) contains \p y.
   /*!
-    \exception std::invalid_argument thrown if \p *this and \p y
-                                     are topology-incompatible
-                                     or dimension-incompatible.
-    \warning   This may be <EM>really</EM> expensive!
+    \exception std::invalid_argument
+    Thrown if \p *this and \p y are topology-incompatible or
+    dimension-incompatible.
+
+    \warning
+    This may be <EM>really</EM> expensive!
   */
   bool semantically_contains(const Polyhedra_PowerSet& y) const;
 
@@ -158,10 +164,12 @@ public:
   //! Returns <CODE>true</CODE> if and only if \p *this is semantically 
   //! (i.e., geometrically) equal to \p y.
   /*!
-    \exception std::invalid_argument thrown if \p *this and \p y
-                                     are topology-incompatible
-                                     or dimension-incompatible.
-    \warning   This may be <EM>really</EM> expensive!
+    \exception std::invalid_argument
+    Thrown if \p *this and \p y are topology-incompatible or
+    dimension-incompatible.
+
+    \warning
+    This may be <EM>really</EM> expensive!
   */
   bool semantically_equals(const Polyhedra_PowerSet& y) const;
 

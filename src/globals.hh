@@ -73,9 +73,11 @@ extern Integer* tmp_Integer;
 #ifdef PPL_DOXYGEN_INCLUDE_IMPLEMENTATION_DETAILS
 //! Speculative allocation function.
 /*!
-  \param requested_size   The number of elements we need.
+  \return
+  The actual capacity to be allocated.
 
-  \return                 The actual capacity to be allocated.
+  \param requested_size
+  The number of elements we need.
 
   Computes a capacity given a requested size.
   Allows for speculative allocation aimed at reducing the number of

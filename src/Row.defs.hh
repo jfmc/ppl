@@ -163,9 +163,14 @@ public:
 
   //! Constructs properly a default-constructed element.
   /*!
-    \param t          The type of the row that will be constructed.
-    \param sz         The size of the row that will be constructed.
-    \param capacity   The minimum capacity of the row that will be constructed.
+    \param t
+    The type of the row that will be constructed;
+
+    \param sz
+    The size of the row that will be constructed;
+
+    \param capacity
+    The minimum capacity of the row that will be constructed.
 
     The row that we are constructing has a minimum capacity, i.e., it
     can contain at least \p capacity elements, \p sz of which will be
@@ -319,8 +324,11 @@ public:
 
   //! Linearly combines \p *this with \p y so that <CODE>*this[k]</CODE> is 0.
   /*!
-    \param y   The row that will be combined with \p *this object.
-    \param k   The position of \p *this that have to be \f$0\f$.
+    \param y
+    The row that will be combined with \p *this object;
+
+    \param k
+    The position of \p *this that have to be \f$0\f$.
 
     Computes a linear combination of \p *this and \p y having
     the element of index \p k equal to \f$0\f$. Then it assigns
@@ -376,10 +384,14 @@ const Integer& reduced_scalar_product(const Row& x, const Row& y);
 #ifdef PPL_DOXYGEN_INCLUDE_IMPLEMENTATION_DETAILS
 //! The basic comparison function.
 /*! \relates Row
-  \param x    A row of coefficients.
-  \param y    Another row.
+  \return
+  The returned absolute value can be \f$0\f$, \f$1\f$ or \f$2\f$.
 
-  \return     The returned absolute value can be \f$0\f$, \f$1\f$ or \f$2\f$.
+  \param x
+  A row of coefficients;
+
+  \param y
+  Another row.
 
   Compares \p x and \p y, where \p x and \p y may be of different size,
   in which case the "missing" coefficients are assumed to be zero.

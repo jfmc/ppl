@@ -359,11 +359,14 @@ public:
 protected:
   //! Builds a polyhedron having the specified properties.
   /*!
-    \param topol          The topology of the polyhedron;
-    \param num_dimensions The number of dimensions of the vector space
-                          enclosing the polyhedron;
-    \param kind           Specifies whether the universe or the empty
-                          polyhedron has to be built.
+    \param topol
+    The topology of the polyhedron;
+
+    \param num_dimensions
+    The number of dimensions of the vector space enclosing the polyhedron;
+
+    \param kind
+    Specifies whether the universe or the empty polyhedron has to be built.
   */
   Polyhedron(Topology topol,
 	     dimension_type num_dimensions,
@@ -375,58 +378,79 @@ protected:
   //! Builds a polyhedron from a system of constraints.
   /*!
     The polyhedron inherits the space dimension of the constraint system.
-    \param topol    The topology of the polyhedron;
-    \param cs       The system of constraints defining the polyhedron.
-    \exception std::invalid_argument thrown if the topology of \p cs
-                                     is incompatible with \p topology.
+
+    \param topol
+    The topology of the polyhedron;
+
+    \param cs
+    The system of constraints defining the polyhedron.
+
+    \exception std::invalid_argument
+    Thrown if the topology of \p cs is incompatible with \p topol.
   */
   Polyhedron(Topology topol, const ConSys& cs);
 
   //! Builds a polyhedron recycling a system of constraints.
   /*!
     The polyhedron inherits the space dimension of the constraint system.
-    \param topol    The topology of the polyhedron;
-    \param cs       The system of constraints defining the polyhedron.
-                    It is not declared <CODE>const</CODE> because its
-                    data-structures will be recycled to build the polyhedron.
-    \exception std::invalid_argument thrown if the topology of \p cs
-                                     is incompatible with \p topology.
+
+    \param topol
+    The topology of the polyhedron;
+
+    \param cs
+    The system of constraints defining the polyhedron.  It is not
+    declared <CODE>const</CODE> because its data-structures will be
+    recycled to build the polyhedron.
+
+    \exception std::invalid_argument
+    Thrown if the topology of \p cs is incompatible with \p topol.
   */
   Polyhedron(Topology topol, ConSys& cs);
 
   //! Builds a polyhedron from a system of generators.
   /*!
     The polyhedron inherits the space dimension of the generator system.
-    \param topol    The topology of the polyhedron;
-    \param gs       The system of generators defining the polyhedron.
-    \exception std::invalid_argument thrown if if the topology of \p gs
-                                     is incompatible with \p topol,
-                                     or if the system of generators
-                                     is not empty but has no points.
+
+    \param topol
+    The topology of the polyhedron;
+
+    \param gs
+    The system of generators defining the polyhedron.
+
+    \exception std::invalid_argument
+    Thrown if if the topology of \p gs is incompatible with \p topol,
+    or if the system of generators is not empty but has no points.
   */
   Polyhedron(Topology topol, const GenSys& gs);
 
   //! Builds a polyhedron recycling a system of generators.
   /*!
     The polyhedron inherits the space dimension of the generator system.
-    \param topol    The topology of the polyhedron;
-    \param gs       The system of generators defining the polyhedron.
-                    It is not declared <CODE>const</CODE> because its
-                    data-structures will be recycled to build the polyhedron.
-    \exception std::invalid_argument thrown if if the topology of \p gs
-                                     is incompatible with \p topol,
-                                     or if the system of generators
-                                     is not empty but has no points.
+
+    \param topol
+    The topology of the polyhedron;
+
+    \param gs
+    The system of generators defining the polyhedron.  It is not
+    declared <CODE>const</CODE> because its data-structures will be
+    recycled to build the polyhedron.
+
+    \exception std::invalid_argument
+    Thrown if if the topology of \p gs is incompatible with \p topol,
+    or if the system of generators is not empty but has no points.
   */
   Polyhedron(Topology topol, GenSys& gs);
 
   //! Builds a polyhedron out of a generic, interval-based bounding box.
   /*!
-    \param topol    The topology of the polyhedron;
-    \param box      The bounding box representing the polyhedron
-                    to be built.
-    \exception std::invalid_argument thrown if \p box has intervals that
-                                     are incompatible with \p topol.
+    \param topol
+    The topology of the polyhedron;
+
+    \param box
+    The bounding box representing the polyhedron to be built.
+
+    \exception std::invalid_argument
+    Thrown if \p box has intervals that are incompatible with \p topol.
 
     The template class Box must provide the following methods.
     \code
@@ -503,8 +527,8 @@ public:
   //! Returns the relations holding between the polyhedron \p *this
   //! and the constraint \p c.
   /*!
-    \exception std::invalid_argument thrown if \p *this and constraint
-                                     \p c are dimension-incompatible.
+    \exception std::invalid_argument
+    Thrown if \p *this and constraint \p c are dimension-incompatible.
   */
   Poly_Con_Relation relation_with(const Constraint& c) const;
 
@@ -512,8 +536,8 @@ public:
   //! Returns the relations holding between the polyhedron \p *this
   //! and the generator \p g.
   /*!
-    \exception std::invalid_argument thrown if \p *this and generator
-                                     \p g are dimension-incompatible.
+    \exception std::invalid_argument
+    Thrown if \p *this and generator \p g are dimension-incompatible.
   */
   Poly_Gen_Relation relation_with(const Generator& g) const;
 
@@ -534,9 +558,9 @@ public:
 
   //! Returns <CODE>true</CODE> if and only if \p *this and \p y are disjoint.
   /*!
-    \exception std::invalid_argument thrown if \p x and \p y
-                                     are topology-incompatible
-                                     or dimension-incompatible.
+    \exception std::invalid_argument
+    Thrown if \p x and \p y are topology-incompatible or
+    dimension-incompatible.
   */
   bool is_disjoint_from(const Polyhedron& y) const;
 
@@ -549,8 +573,8 @@ public:
   //! Returns <CODE>true</CODE> if and only if \p expr is
   //! bounded from above in \p *this.
   /*!
-    \exception std::invalid_argument thrown if \p expr and \p *this
-                                     are dimension-incompatible.
+    \exception std::invalid_argument
+    Thrown if \p expr and \p *this are dimension-incompatible.
   */
   bool bounds_from_above(const LinExpression& expr) const;
 
@@ -558,8 +582,8 @@ public:
   //! Returns <CODE>true</CODE> if and only if \p expr is
   //! bounded from below in \p *this.
   /*!
-    \exception std::invalid_argument thrown if \p expr and \p *this
-                                     are dimension-incompatible.
+    \exception std::invalid_argument
+    Thrown if \p expr and \p *this are dimension-incompatible.
   */
   bool bounds_from_below(const LinExpression& expr) const;
 
@@ -568,13 +592,20 @@ public:
   //! and \p expr is bounded from above in \p *this, in which case
   //! the supremum value is computed.
   /*!
-    \param expr     The linear expression to be maximized subject to \p *this;
-    \param sup_n    The numerator of the supremum value;
-    \param sup_d    The denominator of the supremum value;
-    \param maximum  <CODE>true</CODE> if and only if the supremum
-                    is also the maximum value.
-    \exception std::invalid_argument thrown if \p expr and \p *this
-                                     are dimension-incompatible.
+    \param expr
+    The linear expression to be maximized subject to \p *this;
+
+    \param sup_n
+    The numerator of the supremum value;
+
+    \param sup_d
+    The denominator of the supremum value;
+
+    \param maximum 
+    <CODE>true</CODE> if and only if the supremum is also the maximum value.
+
+    \exception std::invalid_argument
+    Thrown if \p expr and \p *this are dimension-incompatible.
 
     If \p *this is empty or \p expr is not bounded from above,
     <CODE>false</CODE> is returned and \p sup_n, \p sup_d
@@ -588,16 +619,25 @@ public:
   //! and \p expr is bounded from above in \p *this, in which case
   //! the supremum value and a point where \p expr reaches it are computed.
   /*!
-    \param expr     The linear expression to be maximized subject to \p *this;
-    \param sup_n    The numerator of the supremum value;
-    \param sup_d    The denominator of the supremum value;
-    \param maximum  <CODE>true</CODE> if and only if the supremum
-                    is also the maximum value;
-    \param pppoint  When nonzero and maximization succeeds, a pointer
-                    to a point or closure point where \p expr reaches
-                    its supremum value will be written at this address.
-    \exception std::invalid_argument thrown if \p expr and \p *this
-                                     are dimension-incompatible.
+    \param expr
+    The linear expression to be maximized subject to \p *this;
+
+    \param sup_n
+    The numerator of the supremum value;
+
+    \param sup_d
+    The denominator of the supremum value;
+
+    \param maximum
+    <CODE>true</CODE> if and only if the supremum is also the maximum value;
+
+    \param pppoint
+    When nonzero and maximization succeeds, a pointer to a point or
+    closure point where \p expr reaches its supremum value will be
+    written at this address.
+
+    \exception std::invalid_argument
+    Thrown if \p expr and \p *this are dimension-incompatible.
 
     If \p *this is empty or \p expr is not bounded from above,
     <CODE>false</CODE> is returned and \p sup_n, \p sup_d, \p maximum
@@ -612,13 +652,20 @@ public:
   //! and \p expr is bounded from below in \p *this, in which case
   //! the infimum value is computed.
   /*!
-    \param expr     The linear expression to be minimized subject to \p *this;
-    \param inf_n    The numerator of the infimum value;
-    \param inf_d    The denominator of the infimum value;
-    \param minimum  <CODE>true</CODE> if and only if the infimum
-                    is also the minimum value.
-    \exception std::invalid_argument thrown if \p expr and \p *this
-                                     are dimension-incompatible.
+    \param expr
+    The linear expression to be minimized subject to \p *this;
+
+    \param inf_n
+    The numerator of the infimum value;
+
+    \param inf_d
+    The denominator of the infimum value;
+
+    \param minimum
+    <CODE>true</CODE> if and only if the infimum is also the minimum value.
+
+    \exception std::invalid_argument
+    Thrown if \p expr and \p *this are dimension-incompatible.
 
     If \p *this is empty or \p expr is not bounded from below,
     <CODE>false</CODE> is returned and \p inf_n, \p inf_d
@@ -632,16 +679,25 @@ public:
   //! and \p expr is bounded from below in \p *this, in which case
   //! the infimum value and a point where \p expr reaches it are computed.
   /*!
-    \param expr     The linear expression to be minimized subject to \p *this;
-    \param inf_n    The numerator of the infimum value;
-    \param inf_d    The denominator of the infimum value;
-    \param minimum  <CODE>true</CODE> if and only if the infimum
-                    is also the minimum value;
-    \param pppoint  When nonzero and minimization succeeds, a pointer
-                    to a point or closure point where \p expr reaches
-                    its infimum value will be written at this address.
-    \exception std::invalid_argument thrown if \p expr and \p *this
-                                     are dimension-incompatible.
+    \param expr
+    The linear expression to be minimized subject to \p *this;
+
+    \param inf_n
+    The numerator of the infimum value;
+
+    \param inf_d
+    The denominator of the infimum value;
+
+    \param minimum
+    <CODE>true</CODE> if and only if the infimum is also the minimum value;
+
+    \param pppoint
+    When nonzero and minimization succeeds, a pointer to a point or
+    closure point where \p expr reaches its infimum value will be
+    written at this address.
+
+    \exception std::invalid_argument
+    Thrown if \p expr and \p *this are dimension-incompatible.
 
     If \p *this is empty or \p expr is not bounded from below,
     <CODE>false</CODE> is returned and \p inf_n, \p inf_d, \p minimum
@@ -653,24 +709,27 @@ public:
 
   //! Returns <CODE>true</CODE> if and only if \p *this contains \p y.
   /*!
-    \exception std::invalid_argument thrown if \p *this and \p y
-                                     are topology-incompatible
-                                     or dimension-incompatible.
+    \exception std::invalid_argument
+    Thrown if \p *this and \p y are topology-incompatible or
+    dimension-incompatible.
   */
   bool contains(const Polyhedron& y) const;
 
   //! Returns <CODE>true</CODE> if and only if \p *this strictly contains \p y.
   /*!
-    \exception std::invalid_argument thrown if \p *this and \p y
-                                     are topology-incompatible
-                                     or dimension-incompatible.
+    \exception std::invalid_argument
+    Thrown if \p *this and \p y are topology-incompatible or
+    dimension-incompatible.
   */
   bool strictly_contains(const Polyhedron& y) const;
 
   //! Uses \p *this to shrink a generic, interval-based bounding box.
   /*!
-    \param box         The bounding box to be shrunk.
-    \param complexity  The complexity class of the algorithm to be used.
+    \param box
+    The bounding box to be shrunk;
+
+    \param complexity
+    The complexity class of the algorithm to be used.
 
     The template class Box must provide the following
     methods, whose return value, if any, is simply ignored.
@@ -707,14 +766,14 @@ public:
 
   //! Checks if all the invariants are satisfied.
   /*!
-    \param check_not_empty
-      <CODE>true</CODE> if and only if, in addition to checking
-      the invariants, \p *this must be checked to be not empty.
-
     \return
-      <CODE>true</CODE> if and only if \p *this satisfies
-      all the invariants and either \p check_not_empty is
-      <CODE>false</CODE> or \p *this is not empty.
+    <CODE>true</CODE> if and only if \p *this satisfies all the
+    invariants and either \p check_not_empty is <CODE>false</CODE> or
+    \p *this is not empty.
+
+    \param check_not_empty
+    <CODE>true</CODE> if and only if, in addition to checking the
+    invariants, \p *this must be checked to be not empty.
 
     The check is performed so as to intrude as little as possible.  If
     the library has been compiled with run-time assertions enabled,
@@ -733,9 +792,9 @@ public:
   //! Adds a copy of constraint \p c to the system of constraints
   //! of \p *this (without minimizing the result).
   /*!
-    \exception std::invalid_argument thrown if \p *this and constraint \p c
-                                     are topology-incompatible
-                                     or dimension-incompatible.
+    \exception std::invalid_argument
+    Thrown if \p *this and constraint \p c are topology-incompatible
+    or dimension-incompatible.
   */
   void add_constraint(const Constraint& c);
 
@@ -743,10 +802,12 @@ public:
   //! Adds a copy of constraint \p c to the system of constraints
   //! of \p *this, minimizing the result
   /*!
-    \return    <CODE>false</CODE> if and only if the result is empty.
-    \exception std::invalid_argument thrown if \p *this and constraint \p c
-                                     are topology-incompatible
-                                     or dimension-incompatible.
+    \return
+    <CODE>false</CODE> if and only if the result is empty.
+
+    \exception std::invalid_argument
+    Thrown if \p *this and constraint \p c are topology-incompatible
+    or dimension-incompatible.
   */
   bool add_constraint_and_minimize(const Constraint& c);
 
@@ -754,11 +815,10 @@ public:
   //! Adds a copy of generator \p g to the system of generators
   //! of \p *this (without minimizing the result).
   /*!
-    \exception std::invalid_argument thrown if \p *this and generator \p g
-                                     are topology-incompatible
-                                     or dimension-incompatible,
-                                     or if \p *this is an empty polyhedron
-                                     and \p g is not a point.
+    \exception std::invalid_argument
+    Thrown if \p *this and generator \p g are topology-incompatible or
+    dimension-incompatible, or if \p *this is an empty polyhedron and
+    \p g is not a point.
   */
   void add_generator(const Generator& g);
 
@@ -766,130 +826,151 @@ public:
   //! Adds a copy of generator \p g to the system of generators
   //! of \p *this, minimizing the result.
   /*!
-    \return    <CODE>false</CODE> if and only if the result is empty.
-    \exception std::invalid_argument thrown if \p *this and generator \p g
-                                     are topology-incompatible
-                                     or dimension-incompatible,
-                                     or if \p *this is an empty polyhedron
-                                     and \p g is not a point.
+    \return
+    <CODE>false</CODE> if and only if the result is empty.
+
+    \exception std::invalid_argument
+    Thrown if \p *this and generator \p g are topology-incompatible or
+    dimension-incompatible, or if \p *this is an empty polyhedron and
+    \p g is not a point.
   */
   bool add_generator_and_minimize(const Generator& g);
 
   //! \brief Adds a copy of the constraints in \p cs to the system
   //! of constraints of \p *this (without minimizing the result).
   /*!
-    \param  cs             Contains the constraints that will be added
-                           to the system of constraints of \p *this.
-    \exception std::invalid_argument thrown if \p *this and \p cs
-                                     are topology-incompatible
-                                     or dimension-incompatible.
+    \param cs
+    Contains the constraints that will be added to the system of
+    constraints of \p *this.
+
+    \exception std::invalid_argument
+    Thrown if \p *this and \p cs are topology-incompatible or
+    dimension-incompatible.
   */
   void add_constraints(const ConSys& cs);
 
   //! \brief Adds the constraints in \p cs to the system of constraints
   //! of \p *this (without minimizing the result).
   /*!
-    \param  cs             The constraint system that will be recycled,
-                           adding its constraints to the system of
-                           constraints of \p *this.
-    \exception std::invalid_argument thrown if \p *this and \p cs
-                                     are topology-incompatible
-                                     or dimension-incompatible.
-    \warning The only assumption that can be made on \p cs upon successful
-             or exceptional return is that it can be safely destroyed.
+    \param cs
+    The constraint system that will be recycled, adding its
+    constraints to the system of constraints of \p *this.
+
+    \exception std::invalid_argument
+    Thrown if \p *this and \p cs are topology-incompatible or
+    dimension-incompatible.
+
+    \warning
+    The only assumption that can be made on \p cs upon successful or
+    exceptional return is that it can be safely destroyed.
   */
   void add_recycled_constraints(ConSys& cs);
 
   //! \brief
-  //! \brief Adds a copy of the constraints in \p cs to the system
+  //! Adds a copy of the constraints in \p cs to the system
   //! of constraints of \p *this, minimizing the result.
   /*!
-    \return <CODE>false</CODE> if and only if the result is empty.
-    \param  cs                 Contains the constraints that will be added
-                               to the system of constraints of \p *this.
-    \exception std::invalid_argument thrown if \p *this and \p cs
-                                     are topology-incompatible
-                                     or dimension-incompatible.
+    \return
+    <CODE>false</CODE> if and only if the result is empty.
+
+    \param cs
+    Contains the constraints that will be added to the system of
+    constraints of \p *this.
+
+    \exception std::invalid_argument
+    Thrown if \p *this and \p cs are topology-incompatible or
+    dimension-incompatible.
   */
   bool add_constraints_and_minimize(const ConSys& cs);
 
   //! \brief
-  //! \brief Adds the constraints in \p cs to the system of constraints
+  //! Adds the constraints in \p cs to the system of constraints
   //! of \p *this, minimizing the result.
   /*!
-    \return <CODE>false</CODE> if and only if the result is empty.
-    \param  cs                 The constraint system that will be recycled,
-                               adding its constraints to the system of
-                               constraints of \p *this.
-    \exception std::invalid_argument thrown if \p *this and \p cs
-                                     are topology-incompatible
-                                     or dimension-incompatible.
-    \warning The only assumption that can be made on \p cs upon successful
-             or exceptional return is that it can be safely destroyed.
+    \return
+    <CODE>false</CODE> if and only if the result is empty.
+
+    \param cs
+    The constraint system that will be recycled, adding its
+    constraints to the system of constraints of \p *this.
+
+    \exception std::invalid_argument
+    Thrown if \p *this and \p cs are topology-incompatible or
+    dimension-incompatible.
+
+    \warning
+    The only assumption that can be made on \p cs upon successful or
+    exceptional return is that it can be safely destroyed.
   */
   bool add_recycled_constraints_and_minimize(ConSys& cs);
 
   //! \brief Adds a copy of the generators in \p gs to the system
   //! of generators of \p *this (without minimizing the result).
   /*!
-    \param  gs             Contains the generators that will be added
-                           to the system of generators of \p *this.
-    \exception std::invalid_argument thrown if \p *this and \p gs
-                                     are topology-incompatible
-			             or dimension-incompatible,
-				     or if \p *this is empty and
-                                     the system of generators \p gs
-                                     is not empty, but has no points.
+    \param gs
+    Contains the generators that will be added to the system of
+    generators of \p *this.
+
+    \exception std::invalid_argument
+    Thrown if \p *this and \p gs are topology-incompatible or
+    dimension-incompatible, or if \p *this is empty and the system of
+    generators \p gs is not empty, but has no points.
   */
   void add_generators(const GenSys& gs);
 
   //! \brief Adds the generators in \p gs to the system of generators
   //! of \p *this (without minimizing the result).
   /*!
-    \param  gs             The generator system that will be recycled,
-                           adding its generators to the system of
-                           generators of \p *this.
-    \exception std::invalid_argument thrown if \p *this and \p gs
-                                     are topology-incompatible
-			             or dimension-incompatible,
-				     or if \p *this is empty and
-                                     the system of generators \p gs
-                                     is not empty, but has no points.
-    \warning The only assumption that can be made on \p gs upon successful
-             or exceptional return is that it can be safely destroyed.
+    \param gs
+    The generator system that will be recycled, adding its generators
+    to the system of generators of \p *this.
+
+    \exception std::invalid_argument
+    Thrown if \p *this and \p gs are topology-incompatible or
+    dimension-incompatible, or if \p *this is empty and the system of
+    generators \p gs is not empty, but has no points.
+
+    \warning
+    The only assumption that can be made on \p gs upon successful or
+    exceptional return is that it can be safely destroyed.
   */
   void add_recycled_generators(GenSys& gs);
 
   //! \brief Adds a copy of the generators in \p gs to the system
   //! of generators of \p *this, minimizing the result.
   /*!
-    \return <CODE>false</CODE> if and only if the result is empty.
-    \param  gs                 Contains the generators that will be added
-                               to the system of generators of \p *this.
-    \exception std::invalid_argument thrown if \p *this and \p gs
-                                     are topology-incompatible
-                                     or dimension-incompatible,
-                                     or if \p *this is empty and the
-                                     the system of generators \p gs
-                                     is not empty, but has no points.
+    \return
+    <CODE>false</CODE> if and only if the result is empty.
+
+    \param gs
+    Contains the generators that will be added to the system of
+    generators of \p *this.
+
+    \exception std::invalid_argument
+    Thrown if \p *this and \p gs are topology-incompatible or
+    dimension-incompatible, or if \p *this is empty and the the system
+    of generators \p gs is not empty, but has no points.
   */
   bool add_generators_and_minimize(const GenSys& gs);
 
   //! \brief Adds the generators in \p gs to the system of generators
   //! of \p *this, minimizing the result.
   /*!
-    \return <CODE>false</CODE> if and only if the result is empty.
-    \param  gs                 The generator system that will be recycled,
-                               adding its generators to the system of
-                               generators of \p *this.
-    \exception std::invalid_argument thrown if \p *this and \p gs
-                                     are topology-incompatible
-                                     or dimension-incompatible,
-                                     or if \p *this is empty and the
-                                     the system of generators \p gs
-                                     is not empty, but has no points.
-    \warning The only assumption that can be made on \p gs upon successful
-             or exceptional return is that it can be safely destroyed.
+    \return
+    <CODE>false</CODE> if and only if the result is empty.
+
+    \param gs
+    The generator system that will be recycled, adding its generators
+    to the system of generators of \p *this.
+
+    \exception std::invalid_argument
+    Thrown if \p *this and \p gs are topology-incompatible or
+    dimension-incompatible, or if \p *this is empty and the the system
+    of generators \p gs is not empty, but has no points.
+
+    \warning
+    The only assumption that can be made on \p gs upon successful or
+    exceptional return is that it can be safely destroyed.
   */
   bool add_recycled_generators_and_minimize(GenSys& gs);
 
@@ -897,9 +978,9 @@ public:
   //! Assigns to \p *this the intersection of \p *this and \p y.
   //! The result is not guaranteed to be minimized.
   /*!
-    \exception std::invalid_argument thrown if \p *this and \p y
-                                     are topology-incompatible
-                                     or dimension-incompatible.
+    \exception std::invalid_argument
+    Thrown if \p *this and \p y are topology-incompatible or
+    dimension-incompatible.
   */
   void intersection_assign(const Polyhedron& y);
 
@@ -907,10 +988,12 @@ public:
   //! Assigns to \p *this the intersection of \p *this and \p y,
   //! minimizing the result.
   /*!
-    \return    <CODE>false</CODE> if and only if the result is empty.
-    \exception std::invalid_argument thrown if \p *this and \p y
-                                     are topology-incompatible
-                                     or dimension-incompatible.
+    \return
+    <CODE>false</CODE> if and only if the result is empty.
+
+    \exception std::invalid_argument
+    Thrown if \p *this and \p y are topology-incompatible or
+    dimension-incompatible.
   */
   bool intersection_assign_and_minimize(const Polyhedron& y);
 
@@ -918,9 +1001,9 @@ public:
   //! Assigns to \p *this the poly-hull of \p *this and \p y.
   //! The result is not guaranteed to be minimized.
   /*!
-    \exception std::invalid_argument thrown if \p *this and \p y
-                                     are topology-incompatible
-                                     or dimension-incompatible.
+    \exception std::invalid_argument
+    Thrown if \p *this and \p y are topology-incompatible or
+    dimension-incompatible.
   */
   void poly_hull_assign(const Polyhedron& y);
 
@@ -928,10 +1011,12 @@ public:
   //! Assigns to \p *this the poly-hull of \p *this and \p y,
   //! minimizing the result.
   /*!
-    \return    <CODE>false</CODE> if and only if the result is empty.
-    \exception std::invalid_argument thrown if \p *this and \p y
-                                     are topology-incompatible
-                                     or dimension-incompatible.
+    \return
+    <CODE>false</CODE> if and only if the result is empty.
+
+    \exception std::invalid_argument
+    Thrown if \p *this and \p y are topology-incompatible or
+    dimension-incompatible.
   */
   bool poly_hull_assign_and_minimize(const Polyhedron& y);
 
@@ -939,9 +1024,9 @@ public:
   //! Assigns to \p *this the \ref poly_difference "poly-difference" of
   //! \p *this and \p y. The result is not guaranteed to be minimized.
   /*!
-    \exception std::invalid_argument thrown if \p *this and \p y
-                                     are topology-incompatible
-                                     or dimension-incompatible.
+    \exception std::invalid_argument
+    Thrown if \p *this and \p y are topology-incompatible or
+    dimension-incompatible.
   */
   void poly_difference_assign(const Polyhedron& y);
 
@@ -950,16 +1035,20 @@ public:
   //! of \p *this under the function mapping variable \p var into the
   //! affine expression specified by \p expr and \p denominator.
   /*!
-    \param var           The variable to which the affine
-                         expression is assigned.
-    \param expr          The numerator of the affine expression.
-    \param denominator   The denominator of the affine expression
-                         (optional argument with default value 1.)
-    \exception std::invalid_argument thrown if \p denominator is zero
-                                     or if \p expr and \p *this
-                                     are dimension-incompatible
-                                     or if \p var is not a dimension
-                                     of \p *this.
+    \param var
+    The variable to which the affine expression is assigned;
+
+    \param expr
+    The numerator of the affine expression;
+
+    \param denominator
+    The denominator of the affine expression (optional argument with
+    default value 1.)
+
+    \exception std::invalid_argument
+    Thrown if \p denominator is zero or if \p expr and \p *this are
+    dimension-incompatible or if \p var is not a dimension of \p
+    *this.
 
     \if Include_Implementation_Details
 
@@ -967,66 +1056,66 @@ public:
     affine transformation
     \f[
       \frac{\sum_{i=0}^{n-1} a_i x_i + b}{\mathrm{denominator}}
-      \f]
-      is assigned to \p var where \p expr is
-      \f$\sum_{i=0}^{n-1} a_i x_i + b\f$
-      (\f$b\f$ is the inhomogeneous term).
+    \f]
+    is assigned to \p var where \p expr is
+    \f$\sum_{i=0}^{n-1} a_i x_i + b\f$
+    (\f$b\f$ is the inhomogeneous term).
 
-      If constraints are up-to-date, it uses the specialized function
-      affine_preimage() (for the system of constraints)
-      and inverse transformation to reach the same result.
-      To obtain the inverse transformation we use the following observation.
+    If constraints are up-to-date, it uses the specialized function
+    affine_preimage() (for the system of constraints)
+    and inverse transformation to reach the same result.
+    To obtain the inverse transformation we use the following observation.
 
-      Observation:
-      -# The affine transformation is invertible if the coefficient
-         of \p var in this transformation (i.e., \f$a_\mathrm{var}\f$)
-	 is different from zero.
-      -# If the transformation is invertible, then we can write
-         \f[
-  	   \mathrm{denominator} * {x'}_\mathrm{var}
-	     = \sum_{i = 0}^{n - 1} a_i x_i + b
-	     = a_\mathrm{var} x_\mathrm{var}
-	       + \sum_{i \neq var} a_i x_i + b,
-         \f]
-         so that the inverse transformation is
-         \f[
-	   a_\mathrm{var} x_\mathrm{var}
-             = \mathrm{denominator} * {x'}_\mathrm{var}
-               - \sum_{i \neq j} a_i x_i - b.
-         \f]
+    Observation:
+    -# The affine transformation is invertible if the coefficient
+       of \p var in this transformation (i.e., \f$a_\mathrm{var}\f$)
+       is different from zero.
+    -# If the transformation is invertible, then we can write
+       \f[
+  	 \mathrm{denominator} * {x'}_\mathrm{var}
+	   = \sum_{i = 0}^{n - 1} a_i x_i + b
+	   = a_\mathrm{var} x_\mathrm{var}
+	     + \sum_{i \neq var} a_i x_i + b,
+       \f]
+       so that the inverse transformation is
+       \f[
+	 a_\mathrm{var} x_\mathrm{var}
+           = \mathrm{denominator} * {x'}_\mathrm{var}
+             - \sum_{i \neq j} a_i x_i - b.
+       \f]
 
-      Then, if the transformation is invertible, all the entities that
-      were up-to-date remain up-to-date. Otherwise only generators remain
-      up-to-date.
+    Then, if the transformation is invertible, all the entities that
+    were up-to-date remain up-to-date. Otherwise only generators remain
+    up-to-date.
 
-      In other words, if \f$R\f$ is a \f$m_1 \times n_1\f$ matrix representing
-      the rays of the polyhedron, \f$V\f$ is a \f$m_2 \times n_2\f$
-      matrix representing the points of the polyhedron and
-      \f[
-        P = \bigl\{\,
-              \vect{x} = (x_0, \ldots, x_{n-1})^\mathrm{T}
-            \bigm|
-              \vect{x} = \vect{\lambda} R + \vect{\mu} V,
-	      \vect{\lambda} \in \Rset^{m_1}_+,
-	      \vect{\mu} \in \Rset^{m_2}_+,
-	      \sum_{i = 0}^{m_1 - 1} \lambda_i = 1
-            \,\bigr\}
-      \f]
-      and \f$T\f$ is the affine transformation to apply to \f$P\f$, then
-      the resulting polyhedron is
-      \f[
-        P' = \bigl\{\,
-               (x_0, \ldots, T(x_0, \ldots, x_{n-1}),
-                       \ldots, x_{n-1})^\mathrm{T}
-             \bigm|
-               (x_0, \ldots, x_{n-1})^\mathrm{T} \in P
-             \,\bigr\}.
-      \f]
+    In other words, if \f$R\f$ is a \f$m_1 \times n_1\f$ matrix representing
+    the rays of the polyhedron, \f$V\f$ is a \f$m_2 \times n_2\f$
+    matrix representing the points of the polyhedron and
+    \f[
+      P = \bigl\{\,
+            \vect{x} = (x_0, \ldots, x_{n-1})^\mathrm{T}
+          \bigm|
+            \vect{x} = \vect{\lambda} R + \vect{\mu} V,
+	    \vect{\lambda} \in \Rset^{m_1}_+,
+	    \vect{\mu} \in \Rset^{m_2}_+,
+	    \sum_{i = 0}^{m_1 - 1} \lambda_i = 1
+          \,\bigr\}
+    \f]
+    and \f$T\f$ is the affine transformation to apply to \f$P\f$, then
+    the resulting polyhedron is
+    \f[
+      P' = \bigl\{\,
+             (x_0, \ldots, T(x_0, \ldots, x_{n-1}),
+                     \ldots, x_{n-1})^\mathrm{T}
+           \bigm|
+             (x_0, \ldots, x_{n-1})^\mathrm{T} \in P
+           \,\bigr\}.
+    \f]
 
-      Affine transformations are, for example:
-        - translations
-        - rotations
-        - symmetries.
+    Affine transformations are, for example:
+    - translations
+    - rotations
+    - symmetries.
     \endif
   */
   void affine_image(Variable var,
@@ -1038,16 +1127,19 @@ public:
   //! of \p *this under the function mapping variable \p var into the
   //! affine expression specified by \p expr and \p denominator.
   /*!
-    \param var           The variable to which the affine expression
-                         is substituted.
-    \param expr          The numerator of the affine expression.
-    \param denominator   The denominator of the affine expression
-                         (optional argument with default value 1.)
-    \exception std::invalid_argument thrown if \p denominator is zero
-                                     or if \p expr and \p *this
-                                     are dimension-incompatible
-                                     or if \p var is not a dimension
-                                     of \p *this.
+    \param var
+    The variable to which the affine expression is substituted;
+
+    \param expr
+    The numerator of the affine expression;
+
+    \param denominator
+    The denominator of the affine expression (optional argument with
+    default value 1.)
+
+    \exception std::invalid_argument
+    Thrown if \p denominator is zero or if \p expr and \p *this are
+    dimension-incompatible or if \p var is not a dimension of \p *this.
 
     \if Include_Implementation_Details
 
@@ -1127,20 +1219,24 @@ public:
   //! where \f$\mathord{\relsym}\f$ is the relation symbol encoded
   //! by \p relsym.
   /*!
-    \param var           The left hand side variable of
-                         the generalized affine transfer function.
-    \param relsym        The relation symbol.
-    \param expr          The numerator of the right hand side
-                         affine expression.
-    \param denominator   The denominator of the right hand side affine
-                         expression (optional argument with default value 1.)
-    \exception std::invalid_argument thrown if \p denominator is zero
-                                     or if \p expr and \p *this
-                                     are dimension-incompatible
-                                     or if \p var is not a dimension
-                                     of \p *this
-				     or if \p *this is a C_Polyhedron and
-				     \p relsym is a strict relation symbol.
+    \param var
+    The left hand side variable of the generalized affine transfer function;
+
+    \param relsym
+    The relation symbol;
+
+    \param expr
+    The numerator of the right hand side affine expression;
+
+    \param denominator
+    The denominator of the right hand side affine expression (optional
+    argument with default value 1.)
+
+    \exception std::invalid_argument
+    Thrown if \p denominator is zero or if \p expr and \p *this are
+    dimension-incompatible or if \p var is not a dimension of \p *this
+    or if \p *this is a C_Polyhedron and \p relsym is a strict
+    relation symbol.
   */
   void generalized_affine_image(Variable var,
 				const Relation_Symbol relsym,
@@ -1153,14 +1249,19 @@ public:
   //! \f$\mathrm{lhs}' \relsym \mathrm{rhs}\f$, where
   //! \f$\mathord{\relsym}\f$ is the relation symbol encoded by \p relsym.
   /*!
-    \param lhs           The left hand side affine expression.
-    \param relsym        The relation symbol.
-    \param rhs           The right hand side affine expression.
-    \exception std::invalid_argument thrown if \p *this is
-                                     dimension-incompatible with
-                                     \p lhs or \p rhs
-				     or if \p *this is a C_Polyhedron and
-				     \p relsym is a strict relation symbol.
+    \param lhs
+    The left hand side affine expression;
+
+    \param relsym
+    The relation symbol;
+
+    \param rhs
+    The right hand side affine expression.
+
+    \exception std::invalid_argument
+    Thrown if \p *this is dimension-incompatible with \p lhs or \p rhs
+    or if \p *this is a C_Polyhedron and \p relsym is a strict
+    relation symbol.
   */
   void generalized_affine_image(const LinExpression& lhs,
 				const Relation_Symbol relsym,
@@ -1170,9 +1271,9 @@ public:
   //! Assigns to \p *this the result of computing the
   //! \ref time_elapse "time-elapse" between \p *this and \p y.
   /*!
-    \exception std::invalid_argument thrown if \p *this and \p y
-                                     are topology-incompatible
-                                     or dimension-incompatible.
+    \exception std::invalid_argument
+    Thrown if \p *this and \p y are topology-incompatible or
+    dimension-incompatible.
   */
   void time_elapse_assign(const Polyhedron& y);
 
@@ -1183,16 +1284,17 @@ public:
   //! Assigns to \p *this the result of computing the
   //! \ref BHRZ03_widening "BHRZ03-widening" between \p *this and \p y.
   /*!
-    \param y           A polyhedron that <EM>must</EM>
-                       be contained in \p *this.
-    \param tp          An optional pointer to an unsigned variable storing
-                       the number of available tokens (to be used when
-                       applying the
-		       \ref widening_with_tokens "widening with tokens"
-		       delay technique).
-    \exception std::invalid_argument thrown if \p *this and \p y
-                                     are topology-incompatible
-                                     or dimension-incompatible.
+    \param y
+    A polyhedron that <EM>must</EM> be contained in \p *this;
+
+    \param tp
+    An optional pointer to an unsigned variable storing the number of
+    available tokens (to be used when applying the
+    \ref widening_with_tokens "widening with tokens" delay technique).
+
+    \exception std::invalid_argument
+    Thrown if \p *this and \p y are topology-incompatible or
+    dimension-incompatible.
   */
   void BHRZ03_widening_assign(const Polyhedron& y, unsigned* tp = 0);
 
@@ -1201,18 +1303,20 @@ public:
   //! computation by also enforcing those constraints in \p cs that are
   //! satisfied by all the points of \p *this.
   /*!
-    \param y                 A polyhedron that <EM>must</EM>
-                             be contained in \p *this.
-    \param cs                The system of constraints used to improve
-                             the widened polyhedron.
-    \param tp                An optional pointer to an unsigned variable
-                             storing the number of available tokens
-                             (to be used when applying the
-			     \ref widening_with_tokens "widening with tokens"
-			     delay technique).
-    \exception std::invalid_argument thrown if \p *this, \p y and \p cs
-                                     are topology-incompatible
-                                     or dimension-incompatible.
+    \param y
+    A polyhedron that <EM>must</EM> be contained in \p *this;
+
+    \param cs
+    The system of constraints used to improve the widened polyhedron;
+
+    \param tp
+    An optional pointer to an unsigned variable storing the number of
+    available tokens (to be used when applying the
+    \ref widening_with_tokens "widening with tokens" delay technique).
+
+    \exception std::invalid_argument
+    Thrown if \p *this, \p y and \p cs are topology-incompatible or
+    dimension-incompatible.
   */
   void limited_BHRZ03_extrapolation_assign(const Polyhedron& y,
 					   const ConSys& cs,
@@ -1225,18 +1329,20 @@ public:
   //! of the form \f$\pm x \leq r\f$ and \f$\pm x < r\f$, with
   //! \f$r \in \Qset\f$, that are satisfied by all the points of \p *this.
   /*!
-    \param y                 A polyhedron that <EM>must</EM>
-                             be contained in \p *this.
-    \param cs                The system of constraints used to improve
-                             the widened polyhedron.
-    \param tp                An optional pointer to an unsigned variable
-                             storing the number of available tokens
-			     (to be used when applying the
-			     \ref widening_with_tokens "widening with tokens"
-			     delay technique).
-    \exception std::invalid_argument thrown if \p *this, \p y and \p cs
-                                     are topology-incompatible
-                                     or dimension-incompatible.
+    \param y
+    A polyhedron that <EM>must</EM> be contained in \p *this;
+
+    \param cs
+    The system of constraints used to improve the widened polyhedron;
+
+    \param tp
+    An optional pointer to an unsigned variable storing the number of
+    available tokens (to be used when applying the
+    \ref widening_with_tokens "widening with tokens" delay technique).
+    
+    \exception std::invalid_argument
+    Thrown if \p *this, \p y and \p cs are topology-incompatible or
+    dimension-incompatible.
   */
   void bounded_BHRZ03_extrapolation_assign(const Polyhedron& y,
 					   const ConSys& cs,
@@ -1246,16 +1352,17 @@ public:
   //! Assigns to \p *this the result of computing the
   //! \ref H79_widening "H79-widening" between \p *this and \p y.
   /*!
-    \param y           A polyhedron that <EM>must</EM>
-                       be contained in \p *this.
-    \param tp          An optional pointer to an unsigned variable storing
-                       the number of available tokens
-		       (to be used when applying the
-		       \ref widening_with_tokens "widening with tokens"
-		       delay technique).
-    \exception std::invalid_argument thrown if \p *this and \p y
-                                     are topology-incompatible
-                                     or dimension-incompatible.
+    \param y
+    A polyhedron that <EM>must</EM> be contained in \p *this;
+
+    \param tp
+    An optional pointer to an unsigned variable storing the number of
+    available tokens (to be used when applying the
+    \ref widening_with_tokens "widening with tokens" delay technique).
+
+    \exception std::invalid_argument
+    Thrown if \p *this and \p y are topology-incompatible or
+    dimension-incompatible.
   */
   void H79_widening_assign(const Polyhedron& y, unsigned* tp = 0);
 
@@ -1264,18 +1371,20 @@ public:
   //! computation by also enforcing those constraints in \p cs that are
   //! satisfied by all the points of \p *this.
   /*!
-    \param y                 A polyhedron that <EM>must</EM>
-                             be contained in \p *this.
-    \param cs                The system of constraints used to improve
-                             the widened polyhedron.
-    \param tp                An optional pointer to an unsigned variable
-                             storing the number of available tokens
-			     (to be used when applying the
-			     \ref widening_with_tokens "widening with tokens"
-			     delay technique).
-    \exception std::invalid_argument thrown if \p *this, \p y and \p cs
-                                     are topology-incompatible
-                                     or dimension-incompatible.
+    \param y
+    A polyhedron that <EM>must</EM> be contained in \p *this;
+
+    \param cs
+    The system of constraints used to improve the widened polyhedron;
+
+    \param tp
+    An optional pointer to an unsigned variable storing the number of
+    available tokens (to be used when applying the
+    \ref widening_with_tokens "widening with tokens" delay technique).
+
+    \exception std::invalid_argument
+    Thrown if \p *this, \p y and \p cs are topology-incompatible or
+    dimension-incompatible.
   */
   void limited_H79_extrapolation_assign(const Polyhedron& y,
 					const ConSys& cs,
@@ -1288,18 +1397,20 @@ public:
   //! of the form \f$\pm x \leq r\f$ and \f$\pm x < r\f$, with
   //! \f$r \in \Qset\f$, that are satisfied by all the points of \p *this.
   /*!
-    \param y                 A polyhedron that <EM>must</EM>
-                             be contained in \p *this.
-    \param cs                The system of constraints used to improve
-                             the widened polyhedron.
-    \param tp                An optional pointer to an unsigned variable
-                             storing the number of available tokens
-			     (to be used when applying the
-			     \ref widening_with_tokens "widening with tokens"
-			     delay technique).
-    \exception std::invalid_argument thrown if \p *this, \p y and \p cs
-                                     are topology-incompatible
-                                     or dimension-incompatible.
+    \param y
+    A polyhedron that <EM>must</EM> be contained in \p *this;
+
+    \param cs
+    The system of constraints used to improve the widened polyhedron;
+
+    \param tp
+    An optional pointer to an unsigned variable storing the number of
+    available tokens (to be used when applying the
+    \ref widening_with_tokens "widening with tokens" delay technique).
+
+    \exception std::invalid_argument
+    Thrown if \p *this, \p y and \p cs are topology-incompatible or
+    dimension-incompatible.
   */
   void bounded_H79_extrapolation_assign(const Polyhedron& y,
 					const ConSys& cs,
@@ -1314,7 +1425,8 @@ public:
   //! Adds \p m new dimensions and embeds the old polyhedron
   //! into the new space.
   /*!
-    \param m      The number of dimensions to add.
+    \param m
+    The number of dimensions to add.
 
     The new dimensions will be those having the highest indexes
     in the new polyhedron, which is characterized by a system
@@ -1336,7 +1448,8 @@ public:
   //! Adds \p m new dimensions to the polyhedron
   //! and does not embed it in the new space.
   /*!
-    \param m      The number of dimensions to add.
+    \param m
+    The number of dimensions to add.
 
     The new dimensions will be those having the highest indexes
     in the new polyhedron, which is characterized by a system
@@ -1378,19 +1491,20 @@ public:
     dimensions; then adds to the system of constraints of \p *this a
     renamed-apart version of the constraints of \p y.
 
-    \exception std::invalid_argument thrown if \p *this and \p y
-                                     are topology-incompatible.
+    \exception std::invalid_argument
+    Thrown if \p *this and \p y are topology-incompatible.
   */
   void concatenate_assign(const Polyhedron& y);
 
   //! Removes all the specified dimensions.
   /*!
-    \param to_be_removed  The set of Variable objects corresponding
-                          to the dimensions to be removed.
-    \exception std::invalid_argument thrown if \p *this is
-                                     dimension-incompatible with one
-				     of the Variable objects contained
-				     in \p to_be_removed.
+    \param to_be_removed
+    The set of Variable objects corresponding to the dimensions to be
+    removed.
+
+    \exception std::invalid_argument
+    Thrown if \p *this is dimension-incompatible with one of the
+    Variable objects contained in \p to_be_removed.
   */
   void remove_dimensions(const Variables_Set& to_be_removed);
 
@@ -1398,8 +1512,9 @@ public:
   //! Removes the higher dimensions so that the resulting space
   //! will have dimension \p new_dimension.
   /*!
-    \exception std::invalid_argument thrown if \p new_dimensions is greater
-                                     than the space dimension of \p *this.
+    \exception std::invalid_argument
+    Thrown if \p new_dimensions is greater than the space dimension of
+    \p *this.
   */
   void remove_higher_dimensions(dimension_type new_dimension);
 
@@ -1407,8 +1522,8 @@ public:
   //! Remaps the dimensions of the vector space
   //! according to a \ref map_dimensions "partial function".
   /*!
-    \param pfunc   The partial function specifying
-                   the destiny of each dimension.
+    \param pfunc
+    The partial function specifying the destiny of each dimension.
 
     The template class PartialFunction must provide the following
     methods.
@@ -1447,13 +1562,14 @@ public:
 
   //! Creates \p m copies of the dimension corresponding to \p var.
   /*!
-    \param var   The variable corresponding to the dimension
-                 to be replicated.
-    \param m     The number of replica to be created.
-    \exception std::invalid_argument thrown if var does not correspond
-                                     to a dimension of the polyhedron.
-    \exception std::invalid_argument thrown if \p *this is
-                                     dimension-incompatible with \p var.
+    \param var
+    The variable corresponding to the dimension to be replicated;
+
+    \param m
+    The number of replica to be created.
+
+    \exception std::invalid_argument
+    Thrown if \p var does not correspond to a dimension of the polyhedron.
 
     If \p *this is \f$n\f$-dimensional, with \f$n > 0\f$,
     and \f$i < n\f$ is <CODE>var.id()</CODE>, then the \f$i\f$-th
@@ -1464,14 +1580,17 @@ public:
 
   //! Folds the dimensions in \p to_be_folded into \p var.
   /*!
-    \param to_be_folded   The set of Variable objects corresponding
-                          to the dimensions to be folded.
-    \param var            The variable corresponding to the dimension
-                          that is the destination of the folding operation.
-    \exception std::invalid_argument thrown if \p *this is
-                                     dimension-incompatible with \p var
-                                     or with one of the Variable objects
-                                     contained in \p to_be_folded.
+    \param to_be_folded
+    The set of Variable objects corresponding to the dimensions to be
+    folded;
+
+    \param var
+    The variable corresponding to the dimension that is the
+    destination of the folding operation.
+
+    \exception std::invalid_argument
+    Thrown if \p *this is dimension-incompatible with \p var or with
+    one of the Variable objects contained in \p to_be_folded.
 
     FIXME: documentation to be completed.
   */
@@ -1492,8 +1611,8 @@ public:
   //! Swaps \p *this with polyhedron \p y.
   //! (\p *this and \p y can be dimension-incompatible.)
   /*!
-    \exception std::invalid_argument thrown if \p x and \p y
-                                     are topology-incompatible.
+    \exception std::invalid_argument
+    Thrown if \p x and \p y are topology-incompatible.
   */
   void swap(Polyhedron& y);
 
@@ -1694,8 +1813,9 @@ private:
   //! Processes the pending rows of either description of the polyhedron
   //! and obtains a minimized polyhedron.
   /*!
-    \return       <CODE>false</CODE> if and only if \p *this turns out
-                  to be an empty polyhedron.
+    \return
+    <CODE>false</CODE> if and only if \p *this turns out to be an
+    empty polyhedron.
 
     It is assumed that the polyhedron does have some constraints or
     generators pending.
@@ -1704,8 +1824,9 @@ private:
 
   //! Processes the pending constraints and obtains a minimized polyhedron.
   /*!
-    \return       <CODE>false</CODE> if and only if \p *this turns out
-                  to be an empty polyhedron.
+    \return
+    <CODE>false</CODE> if and only if \p *this turns out to be an
+    empty polyhedron.
 
     It is assumed that the polyhedron does have some pending constraints.
   */
@@ -1730,8 +1851,9 @@ private:
   //! Lazily integrates the pending descriptions of the polyhedron
   //! to obtain a generator system without pending rows.
   /*!
-    \return       <CODE>false</CODE> if and only if \p *this turns out
-                  to be an empty polyhedron.
+    \return
+    <CODE>false</CODE> if and only if \p *this turns out to be an
+    empty polyhedron.
 
     It is assumed that the polyhedron does have some constraints or
     generators pending.
@@ -1753,8 +1875,9 @@ private:
 
   //! Updates generators starting from constraints and minimizes them.
   /*!
-    \return       <CODE>false</CODE> if and only if \p *this turns out
-                  to be an empty polyhedron.
+    \return
+    <CODE>false</CODE> if and only if \p *this turns out to be an
+    empty polyhedron.
 
     The resulting system of generators is only partially sorted:
     the lines are in the upper part of the matrix,
@@ -1849,8 +1972,9 @@ private:
 
   //! Applies (weak) minimization to both the constraints and generators.
   /*!
-    \return       <CODE>false</CODE> if and only if \p *this turns out
-                  to be an empty polyhedron.
+    \return
+    <CODE>false</CODE> if and only if \p *this turns out to be an
+    empty polyhedron.
 
     Minimization is not attempted if the Status field already declares
     both systems to be minimized.
@@ -1859,15 +1983,17 @@ private:
 
   //! Applies strong minimization to the constraints of an NNC polyhedron.
   /*!
-    \return       <CODE>false</CODE> if and only if \p *this turns out
-                  to be an empty polyhedron.
+    \return
+    <CODE>false</CODE> if and only if \p *this turns out to be an
+    empty polyhedron.
   */
   bool strongly_minimize_constraints() const;
 
   //! Applies strong minimization to the generators of an NNC polyhedron.
   /*!
-    \return       <CODE>false</CODE> if and only if \p *this turns out
-                  to be an empty polyhedron.
+    \return
+    <CODE>false</CODE> if and only if \p *this turns out to be an
+    empty polyhedron.
   */
   bool strongly_minimize_generators() const;
 
@@ -1892,29 +2018,45 @@ private:
     <CODE>true</CODE> and \p expr is bounded from above in \p *this,
     or \p from_above is <CODE>false</CODE> and \p expr is bounded
     from below in \p *this.
-    \param expr        The linear expression to test.
-    \param from_above  <CODE>true</CODE> if and only if the boundedness
-                       of interest is "from above".
-    \exception std::invalid_argument thrown if \p expr and \p *this
-                                     are dimension-incompatible.
+
+    \param expr
+    The linear expression to test;
+
+    \param from_above
+    <CODE>true</CODE> if and only if the boundedness of interest is
+    "from above".
+
+    \exception std::invalid_argument
+    Thrown if \p expr and \p *this are dimension-incompatible.
   */
   bool bounds(const LinExpression& expr, bool from_above) const;
 
   //! Maximizes or minimizes \p expr subject to \p *this.
   /*!
-    \param expr      The linear expression to be maximized or minimized
-                     subject to \p *this;
-    \param maximize  <CODE>true</CODE> if maximization is what is wanted;
-    \param ext_n     The numerator of the extremum value;
-    \param ext_d     The denominator of the extremum value;
-    \param included  <CODE>true</CODE> if and only if the extremum
-                     of \p expr can actually be reached in \p * this;
-    \param pppoint   When nonzero and maximization or minimization succeeds,
-                     a pointer to a point or closure point where \p expr
-                     reaches the corresponding extremum value will be
-                     written at this address.
-    \exception std::invalid_argument thrown if \p expr and \p *this
-                                     are dimension-incompatible.
+    \param expr
+    The linear expression to be maximized or minimized subject to \p
+    *this;
+
+    \param maximize
+    <CODE>true</CODE> if maximization is what is wanted;
+
+    \param ext_n
+    The numerator of the extremum value;
+
+    \param ext_d
+    The denominator of the extremum value;
+
+    \param included
+    <CODE>true</CODE> if and only if the extremum of \p expr can
+    actually be reached in \p * this;
+
+    \param pppoint
+    When nonzero and maximization or minimization succeeds, a pointer
+    to a point or closure point where \p expr reaches the
+    corresponding extremum value will be written at this address.
+
+    \exception std::invalid_argument
+    Thrown if \p expr and \p *this are dimension-incompatible.
 
     If \p *this is empty or \p expr is not bounded in the appropriate
     direction, <CODE>false</CODE> is returned and \p ext_n, \p ext_d,
@@ -1964,13 +2106,22 @@ private:
 
   //! Adds new dimensions to the given matrices.
   /*!
-    \param mat1      The matrix to which columns are added.
-    \param mat2      The matrix to which rows and columns are added.
-    \param sat1      The saturation matrix whose columns are indexed by
-                     the rows of matrix \p mat1. On entry it is up-to-date.
-    \param sat2      The saturation matrix whose columns are indexed by
-                     the rows of \p mat2.
-    \param add_dim   The number of dimensions to add.
+    \param mat1
+    The matrix to which columns are added;
+
+    \param mat2
+    The matrix to which rows and columns are added;
+
+    \param sat1
+    The saturation matrix whose columns are indexed by the rows of
+    matrix \p mat1. On entry it is up-to-date;
+
+    \param sat2
+    The saturation matrix whose columns are indexed by the rows of \p
+    mat2;
+
+    \param add_dim
+    The number of dimensions to add.
 
     Adds new dimensions to the polyhedron modifying the matrices.
     This function is invoked only by <CODE>add_dimensions_and_embed()</CODE>
@@ -1988,8 +2139,11 @@ private:
   //! Returns <CODE>true</CODE> if the given polyhedra satisfy
   //! the theorem of BHRZ03.
   /*!
-    \param x        The greater polyhedron.
-    \param y        The smaller polyhedron.
+    \param x
+    The greater polyhedron;
+
+    \param y
+    The smaller polyhedron.
   */
   static bool is_BHRZ03_stabilizing(const Polyhedron& x, const Polyhedron& y);
 

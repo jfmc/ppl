@@ -29,14 +29,22 @@ site: http://www.cs.unipr.it/ppl/ . */
 namespace PPL = Parma_Polyhedra_Library;
 
 /*!
-  \param con_to_gen   <CODE>true</CODE> if \p source represents the
-                      constraints, <CODE>false</CODE> otherwise.
-  \param source       The given matrix, which is not empty.
-  \param dest         The matrix to build and minimize.
-  \param sat          The saturation matrix.
+  \return
+  <CODE>true</CODE> if the polyhedron is empty, <CODE>false</CODE>
+  otherwise.
 
-  \return             <CODE>true</CODE> if the polyhedron is empty,
-                      <CODE>false</CODE> otherwise.
+  \param con_to_gen
+  <CODE>true</CODE> if \p source represents the constraints,
+  <CODE>false</CODE> otherwise;
+
+  \param source
+  The given matrix, which is not empty;
+
+  \param dest
+  The matrix to build and minimize;
+
+  \param sat
+  The saturation matrix.
 
   \p dest is not <CODE>const</CODE> because it will be built (and then
   modified) during minimize(). Also, \p sat and \p source are
@@ -174,16 +182,25 @@ PPL::Polyhedron::minimize(const bool con_to_gen,
 
 
 /*!
-  \param con_to_gen   <CODE>true</CODE> if \p source1 and \p source2
-                      are matrix of constraints, <CODE>false</CODE>
-                      otherwise.
-  \param source1      The first element of the given DD pair.
-  \param dest         The second element of the given DD pair.
-  \param sat          The saturation matrix that bind \p source1 to \p dest.
-  \param source2      The new system of generators or constraints.
+  \return
+  <CODE>true</CODE> if the obtained polyhedron is empty,
+  <CODE>false</CODE> otherwise.
 
-  \return             <CODE>true</CODE> if the obtained polyhedron
-                      is empty, <CODE>false</CODE> otherwise.
+  \param con_to_gen
+  <CODE>true</CODE> if \p source1 and \p source2 are matrix of
+  constraints, <CODE>false</CODE> otherwise;
+
+  \param source1
+  The first element of the given DD pair;
+
+  \param dest
+  The second element of the given DD pair;
+
+  \param sat
+  The saturation matrix that bind \p source1 to \p dest;
+
+  \param source2
+  The new system of generators or constraints.
 
   It is assumed that \p source1 and \p source2 are sorted and have
   no pending rows. It is also assumed that \p dest has no pending rows.
@@ -275,17 +292,23 @@ PPL::Polyhedron::add_and_minimize(const bool con_to_gen,
 }
 
 /*!
-  \param con_to_gen   <CODE>true</CODE> if \p source is a matrix of
-                      constraints, <CODE>false</CODE> otherwise.
-  \param source       The first element of the given DD pair. It also
-                      contains the pending rows to be processed.
-  \param dest         The second element of the given DD pair.
-                      It cannot have pending rows.
-  \param sat          The saturation matrix that bind the upper part of
-                      \p source to \p dest.
+  \return
+  <CODE>true</CODE> if the obtained polyhedron is empty,
+  <CODE>false</CODE> otherwise.
 
-  \return             <CODE>true</CODE> if the obtained polyhedron
-                      is empty, <CODE>false</CODE> otherwise.
+  \param con_to_gen
+  <CODE>true</CODE> if \p source is a matrix of constraints,
+  <CODE>false</CODE> otherwise;
+
+  \param source
+  The first element of the given DD pair. It also contains the pending
+  rows to be processed;
+
+  \param dest
+  The second element of the given DD pair. It cannot have pending rows;
+
+  \param sat
+  The saturation matrix that bind the upper part of \p source to \p dest.
 
   On entry, the rows of \p sat are indexed by the rows of \p dest
   and its columns are indexed by the non-pending rows of \p source.

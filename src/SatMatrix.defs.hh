@@ -92,10 +92,11 @@ public:
 
   //! Looks for \p row in \p *this, which is assumed to be sorted.
   /*!
-    \param row   The row that will be searched for in the matrix.
+    \return
+    <CODE>true</CODE> if \p row belongs to \p *this, false otherwise.
 
-    \return      <CODE>true</CODE> if \p row belongs
-                 to \p *this, false otherwise.
+    \param row
+    The row that will be searched for in the matrix.
 
     Given a sorted saturation matrix (this ensures better efficiency),
     tells whether it contains the given row.

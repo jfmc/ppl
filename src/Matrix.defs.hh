@@ -63,10 +63,14 @@ protected:
 
   //! Builds a matrix with specified topology and dimensions.
   /*!
-    \param topol       The topology of the matrix that will be created.
-    \param n_rows      The number of rows of the matrix that will be created.
-    \param n_columns   The number of columns of the matrix
-                       that will be created.
+    \param topol
+    The topology of the matrix that will be created;
+
+    \param n_rows
+    The number of rows of the matrix that will be created;
+
+    \param n_columns
+    The number of columns of the matrix that will be created.
 
     This constructor creates an unsorted \p n_rows \f$\times\f$ \p n_columns
     matrix whose rows are all initialized to rays or points or inequalities
@@ -81,10 +85,13 @@ protected:
   //! Split-constructor: builds a matrix by stealing from \p y
   //! the rows having index greater or equal to \p first_stolen.
   /*!
-    \param y              The matrix being split. On entry, it is assumed
-                          that \p y has \p first_stolen + 1 rows at least.
-                          On exit, it will have \p first_stolen rows.
-    \param first_stolen   The index where \p y is split.
+    \param y
+    The matrix being split. On entry, it is assumed that \p y has
+    \p first_stolen + 1 rows at least.  On exit, it will have
+    \p first_stolen rows;
+
+    \param first_stolen
+    The index where \p y is split.
   */
   Matrix(Matrix& y, dimension_type first_stolen);
 
@@ -207,10 +214,11 @@ public:
 
   //! Makes the matrix grow by adding more rows and/or more columns.
   /*!
-    \param new_n_rows      The number of rows of the
-                           resized matrix.
-    \param new_n_columns   The number of columns of the
-                           resized matrix.
+    \param new_n_rows
+    The number of rows of the resized matrix;
+
+    \param new_n_columns
+    The number of columns of the resized matrix.
 
     The matrix is expanded to the specified dimensions preserving
     its contents and avoiding reallocation whenever possible.
@@ -229,10 +237,11 @@ public:
 
   //! Resizes the matrix without worrying about the old contents.
   /*!
-    \param new_n_rows      The number of rows of the
-                           resized matrix.
-    \param new_n_columns   The number of columns of the
-                           resized matrix.
+    \param new_n_rows
+    The number of rows of the resized matrix;
+
+    \param new_n_columns
+    The number of columns of the resized matrix.
 
     The matrix is expanded to the specified dimensions avoiding
     reallocation whenever possible.
@@ -242,8 +251,8 @@ public:
 
   //! Adds \p n columns of zeroes to the matrix.
   /*!
-    \param n      The number of columns to be added:
-                  must be strictly positive.
+    \param n
+    The number of columns to be added: must be strictly positive.
 
     Turns the \f$r \times c\f$ matrix \f$M\f$ into
     the \f$r \times (c+n)\f$ matrix \f$(M \, 0)\f$.
@@ -252,8 +261,8 @@ public:
 
   //! Adds \p n rows and columns to the matrix.
   /*!
-    \param n      The number of rows and columns to be added:
-                  must be strictly positive.
+    \param n
+    The number of rows and columns to be added: must be strictly positive.
 
     Turns the matrix \f$M \in \Rset^r \times \Rset^c\f$ into
     the matrix \f$N \in \Rset^{r+n} \times \Rset^{c+n}\f$
@@ -269,9 +278,9 @@ public:
 
   //! Permutes the columns of the matrix.
   /*
-    \param cycles      A vector representing the non-trivial cycles
-                       of the permutation according to which the columns
-                       must be rearranged.
+    \param cycles
+    A vector representing the non-trivial cycles of the permutation
+    according to which the columns must be rearranged.
 
     The \p cycles vector contains, one after the other, the
     non-trivial cycles (i.e., the cycles of length greater than one)
@@ -436,8 +445,8 @@ public:
   //! Sorts the matrix, removing duplicates,
   //! keeping the saturation matrix consistent.
   /*!
-    \param sat   Saturation matrix with rows corresponding to
-                 the rows of \p *this.
+    \param sat
+    Saturation matrix with rows corresponding to the rows of \p *this.
   */
   void sort_and_remove_with_sat(SatMatrix& sat);
 
@@ -476,8 +485,8 @@ public:
   //! Checks if all the invariants are satisfied.
   /*!
     \param check_strong_normalized
-      <CODE>true</CODE> if and only if the strong normalization of
-      all the rows in the matrix has to be checked.
+    <CODE>true</CODE> if and only if the strong normalization of all
+    the rows in the matrix has to be checked.
 
     By default, the strong normalization check is performed.
     This check may be turned off to avoid useless repeated checking;

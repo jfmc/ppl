@@ -40,9 +40,9 @@ namespace Parma_Polyhedra_Library {
 //! \p x and \p y are the same polyhedron.
 /*!
   \relates Determinate
-  \exception std::invalid_argument thrown if \p x and \p y
-                                          are topology-incompatible
-                                          or dimension-incompatible.
+  \exception std::invalid_argument
+  Thrown if \p x and \p y are topology-incompatible or
+  dimension-incompatible.
 */
 template <typename PH>
 bool operator==(const Determinate<PH>& x, const Determinate<PH>& y);
@@ -52,9 +52,9 @@ bool operator==(const Determinate<PH>& x, const Determinate<PH>& y);
 //! \p x and \p y are different polyhedra.
 /*!
   \relates Determinate
-  \exception std::invalid_argument thrown if \p x and \p y
-                                          are topology-incompatible
-                                          or dimension-incompatible.
+  \exception std::invalid_argument
+  Thrown if \p x and \p y are topology-incompatible or
+  dimension-incompatible.
 */
 template <typename PH>
 bool operator!=(const Determinate<PH>& x, const Determinate<PH>& y);
@@ -195,23 +195,23 @@ public:
   //! Returns the system of generators, with no redundant generator.
   const GenSys& minimized_generators() const;
 
-  //! \brief
   //! Intersects \p *this with (a copy of) constraint \p c.
   /*!
-    \exception std::invalid_argument thrown if \p *this and constraint \p c
-                                     are topology-incompatible
-                                     or dimension-incompatible.
+    \exception std::invalid_argument
+    Thrown if \p *this and constraint \p c are topology-incompatible
+    or dimension-incompatible.
   */
   void add_constraint(const Constraint& c);
 
   //! Intersects \p *this with the constraints in \p cs.
   /*!
-    \param  cs             The constraints to intersect with.
-                           This parameter is not declared
-                           <CODE>const</CODE> because  it can be modified.
-    \exception std::invalid_argument thrown if \p *this and \p cs
-                                     are topology-incompatible
-                                     or dimension-incompatible.
+    \param cs
+    The constraints to intersect with.  This parameter is not declared
+    <CODE>const</CODE> because it can be modified.
+
+    \exception std::invalid_argument
+    Thrown if \p *this and \p cs are topology-incompatible or
+    dimension-incompatible.
   */
   void add_constraints(ConSys& cs);
 
@@ -228,12 +228,13 @@ public:
   //! \brief
   //! Removes all the specified dimensions.
   /*!
-    \param to_be_removed  The set of Variable objects corresponding
-                          to the dimensions to be removed.
-    \exception std::invalid_argument thrown if \p *this is
-                                     dimension-incompatible with one
-				     of the Variable objects contained
-				     in \p to_be_removed.
+    \param to_be_removed
+    The set of Variable objects corresponding to the dimensions to be
+    removed.
+
+    \exception std::invalid_argument
+    Thrown if \p *this is dimension-incompatible with one of the
+    Variable objects contained in \p to_be_removed.
   */
   void remove_dimensions(const Variables_Set& to_be_removed);
 
@@ -241,8 +242,9 @@ public:
   //! Removes the higher dimensions so that the resulting space
   //! will have dimension \p new_dimension.
   /*!
-    \exception std::invalid_argument thrown if \p new_dimensions is greater
-                                     than the space dimension of \p *this.
+    \exception std::invalid_argument
+    Thrown if \p new_dimensions is greater than the space dimension
+    of \p *this.
   */
   void remove_higher_dimensions(dimension_type new_dimension);
 
@@ -253,11 +255,12 @@ public:
   //! Assigns to \p *this the result of computing the
   //! \ref H79_widening "H79-widening" between \p *this and \p y.
   /*!
-    \param y           A polyhedron that <EM>must</EM>
-                       be contained in \p *this.
-    \exception std::invalid_argument thrown if \p *this and \p y
-                                     are topology-incompatible
-                                     or dimension-incompatible.
+    \param y
+    A polyhedron that <EM>must</EM> be contained in \p *this.
+
+    \exception std::invalid_argument
+    Thrown if \p *this and \p y are topology-incompatible or
+    dimension-incompatible.
   */
   void H79_widening_assign(const Determinate& y);
 
@@ -266,15 +269,16 @@ public:
   //! between \p *this and \p y by enforcing constraints \p cs
   //! and assigns the result to \p *this.
   /*!
-    \param y                 A polyhedron that <EM>must</EM>
-                             be contained in \p *this.
-    \param cs                The system of constraints that limits
-                             the widened polyhedron. It is not
-                             declared <CODE>const</CODE>
-                             because it can be modified.
-    \exception std::invalid_argument thrown if \p *this, \p y and \p cs
-                                     are topology-incompatible
-                                     or dimension-incompatible.
+    \param y
+    A polyhedron that <EM>must</EM> be contained in \p *this;
+
+    \param cs
+    The system of constraints that limits the widened polyhedron. It
+    is not declared <CODE>const</CODE> because it can be modified.
+
+    \exception std::invalid_argument
+    Thrown if \p *this, \p y and \p cs are topology-incompatible or
+    dimension-incompatible.
   */
   void limited_H79_extrapolation_assign(const Determinate& y, ConSys& cs);
 
