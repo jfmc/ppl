@@ -47,7 +47,8 @@ o  The constructor C_Polyhedron(const NNC_Polyhedron& y) no longer
 o  Functions in the C interface that compute (space) dimensions
    no longer return their result.  The caller is now required to pass,
    as an extra argument, a pointer to a memory area where the result
-   will be written.
+   will be written.  All the C interface functions now use the return
+   value to signal the success or failure of the requested operation.
 
 o  Now `make check' runs a number of tests with `ppl_lcdd', comparing
    the results to expected ones.
