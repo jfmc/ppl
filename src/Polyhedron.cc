@@ -3311,15 +3311,15 @@ PPL::Polyhedron::topological_closure_assign() {
     // Transform all strict inequalities into non-strict ones.
     for (size_t i = con_sys.num_rows(); i-- > 0; ) {
       Constraint& c = con_sys[i];
-      // FIXME : the non-triviality test is just a patch
-      // to avoid considering the inequality constraint \epsilon <= 1.
       if (c[eps_index] < 0 && !c.is_trivial_true()) {
 	c[eps_index] = 0;
 	changed = true;
       }
     }
-    if (changed)
+    if (changed) {
+      con_sys.insert(Constraint::epsilon_leq_one());
       clear_generators_up_to_date();
+    }
   }
   else {
     assert(generators_are_up_to_date());
