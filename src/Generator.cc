@@ -172,38 +172,56 @@ PPL::Generator::OK() const {
   using std::cerr;
 
   const Generator& g = *this;
-  bool ray_or_line = false;
-  // Looking for points.
-  if (g.is_ray_or_point()) {
-    // A point is legal only if its divisor is strictly positive.
-    if (g[0] < 0) {
-      cerr << "Points cannot have a negative divisor!"
+
+  switch (g.type()) {
+
+  case LINE:
+  case RAY:
+    if (g[0] != 0) {
+      cerr << "Lines must have a zero inhomogeneous term!"
 	   << endl;
       return false;
     }
-    else if (g[0] == 0)
-      // Since rays and lines have a zero inhomogeneous term,
-      // we found a ray.
-      ray_or_line = true;
-  }
-  else if (g[0] != 0) {
-    cerr << "Lines must have a zero inhomogeneous term!"
-	 << endl;
-    return false;
-  }
-  else
-    // We found a line.
-    ray_or_line = true;
+    if (!g.is_necessarily_closed() && g[size() - 1] != 0) {
+      cerr << "Lines and rays must have a zero coefficient "
+	   << "for the epsilon dimension!"
+	   << endl;
+      return false;
+    }
+    // The following test is correct, since we already checked
+    // that the \epsilon coordinate is zero.
+    if (g.all_homogeneous_terms_are_zero()) {
+      cerr << "The origin of the vector space cannot be "
+	   << "a line or a ray!"
+	   << endl;
+      return false;
+    }
+    break;
 
-  if (ray_or_line && g.all_homogeneous_terms_are_zero()) {
-    // By definition, the origin of the space cannot be a ray or a line.
-    cerr << "The origin of the vector space cannot be a ";
-    if (g.is_line())
-      cerr << "line.";
-    else
-      cerr << "ray.";
-    cerr << endl;
-    return false;
+  case POINT:
+    if (g[0] <= 0) {
+      cerr << "Points must have a positive divisor!"
+	   << endl;
+      return false;
+    }
+    if (!g.is_necessarily_closed())
+      if (g[size()-1] <= 0 || g[size()-1] > g[0]) {
+	cerr << "In the NNC topology, "
+	     << "points must have 0 < epsilon <= 1"
+	     << endl;
+	return false;
+      }
+    break;
+
+  case CLOSURE_POINT:
+    if (g[0] <= 0) {
+      cerr << "Closure points must have a positive divisor!"
+	   << endl;
+      return false;
+    }
+    break;
   }
+
+  // All tests passed.
   return true;
 }

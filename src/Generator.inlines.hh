@@ -70,7 +70,7 @@ Generator::type() const {
     // Checking the value of the \epsilon coefficient.
     return (g[size() - 1] == 0) ? CLOSURE_POINT : POINT;
 }
-  
+
 inline bool
 Generator::is_line() const {
   return is_line_or_equality();
