@@ -31,7 +31,7 @@ SUBDIRS = examples
 AM_CPPFLAGS = \
 -I$(top_builddir) \
 -I$(top_builddir)/src \
--I$(top_builddir)/utils \
+-I$(top_srcdir)/utils \
 @extra_includes@
 
 bin_PROGRAMS = ppl_lcdd
