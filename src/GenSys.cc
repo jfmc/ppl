@@ -98,13 +98,14 @@ PPL::GenSys::num_rays() const {
   Returns:
   - <CODE>ALL_SATURATE</CODE> if all generators belong to the hyper-plane
     defined by \p c (saturate \p c),
-  - <CODE>ALL_SATISFY</CODE> if all generators satisfy \p c but do not
-    belong to the hyper-plane defined by \p c,
+  - <CODE>ALL_SATISFY</CODE> if all generators satisfy \p c,
+    but there exists a generator that does not belong to
+    the hyper-plane defined by \p c,
   - <CODE>NONE_SATISFIES</CODE> if no generators satisfy \p c,
   - <CODE>SOME_SATISFY</CODE> if one or more generators do not satisfy \p c.
 
-  If \p c is an equality, only <CODE>ALL_SATISFY</CODE>
-  or <CODE>NONE_SATISFIES</CODE> can be returned.
+  Note that if \p c is an equality, then the value <CODE>ALL_SATISFY</CODE>
+  can not be returned.
 */
 PPL::GenSys_Con_Rel
 PPL::GenSys::satisfy(const Constraint& c) const {
@@ -114,104 +115,121 @@ PPL::GenSys::satisfy(const Constraint& c) const {
   // of the caller to actually test for dimension compatibility.
   // We simply _assert_ it.
   assert(gs_space_dim >= c_space_dim);
-  const  GenSys& gen_sys = *this;
-  // Number of generators.
+  // Number of generators: the case for an empty polyhedron
+  // has already been filtered out by the caller.
   size_t n_rows = num_rows();
+  assert(n_rows > 0);
+  const  GenSys& gen_sys = *this;
+
+  // If `c' is an equality constraint, any generator satisfying it
+  // is actually saturating it.
   if (c.is_equality()) {
-    for (size_t i = n_rows; i-- > 0;)
-      if (c_space_dim < gs_space_dim)
-	if (c * gen_sys[i] != 0)
-	  // There is at least one generator that does not satisfy `c'.
-	  return SOME_SATISFY;
-    // All generators satisfy `c' i.e., saturate it because
-    // `c' is an equality.
-    return ALL_SATURATE;
+    size_t i = 0;
+    for ( ; i < n_rows; ++i)
+      if (c * gen_sys[i] != 0)
+	break;
+
+    if (i == n_rows)
+      // All generators saturate the equality `c'.
+      return ALL_SATURATE;
+
+    if (i > 0)
+      // `gen_sys[0]' saturate and `gen_sys[i]' does not satisfy `c'.
+      return SOME_SATISFY;
+
+    // `gen_sys[0]' does not satisfy `c':
+    // now checking if _all_ generators do not satisfy `c'.
+    for (size_t j = 1; j < n_rows; ++j)
+      if (c * gen_sys[j] == 0)
+	return SOME_SATISFY;
+
+    // If we reached this point, then no generator satisfies `c'.
+    return NONE_SATISFIES;
   }
-  else {
-    // The constraint c is an inequality.
-    // first_ray_or_vertex will be set to `false'
-    // after finding a ray or a vertex (starting from the
-    // last row of the matrix).
-    bool first_ray_or_vertex = true;
-    GenSys_Con_Rel res = ALL_SATURATE;
-    for (size_t i = n_rows; i-- > 0; ) {
-      const Generator& r = gen_sys[i];
-      int sp_sign = sgn(c * r);
-      if (r.is_line()) {
-	if (sp_sign != 0)
-	  // Lines must saturate every constraints.
-	  return SOME_SATISFY;
-      }
-      else {
-	// The generator `r' is a vertex or a ray.
-	if (r[0] == 0) {
-	  // The generator r is a ray.
-	  if (sp_sign != 0) {
-	    if (first_ray_or_vertex) {
-	      // It is the first time that we have
-	      // a ray and we have never had a vertex.
-	      res = (sp_sign > 0) ? ALL_SATISFY : NONE_SATISFIES;
-	      first_ray_or_vertex = false;
-	    }
-	    else {
-	      // It is not the first time we find a ray/vertex.
-	      if ((sp_sign > 0 && res == NONE_SATISFIES)
-		  || (sp_sign < 0 && res != NONE_SATISFIES))
-		// There are some generators satisfying c in two cases:
-		// - if r satisfy c but none of the generators that
-		//   we have already considered satisfy c;
-		// - if r does not satisfy c and there was some generators
-		//   that we have already considered that do not satisfy c.
-		return SOME_SATISFY;
-	      if (sp_sign > 0)
-		// Since we always return if res == SOME_SATISFIES,
-		// at this point r and all the previous generators
-		// satisfy c.
-		res = ALL_SATISFY;
-	    }
-	  }
-	}
-	else {
-	  // The generator r is a vertex.
+
+  // Here the constraint c is an inequality.
+  // first_ray_or_vertex will be set to `false'
+  // after finding a ray or a vertex (starting from the
+  // last row of the matrix).
+  bool first_ray_or_vertex = true;
+  GenSys_Con_Rel res = ALL_SATURATE;
+  for (size_t i = n_rows; i-- > 0; ) {
+    const Generator& r = gen_sys[i];
+    int sp_sign = sgn(c * r);
+    if (r.is_line()) {
+      if (sp_sign != 0)
+	// Lines must saturate every constraints.
+	return SOME_SATISFY;
+    }
+    else {
+      // The generator `r' is a vertex or a ray.
+      if (r[0] == 0) {
+	// The generator r is a ray.
+	if (sp_sign != 0) {
 	  if (first_ray_or_vertex) {
 	    // It is the first time that we have
-	    // a vertex and we have never had a ray.
-	    // If some lines do not saturate c we have already returned,
-	    // so here all lines checked until here (if any) saturate c.
-	    // - If r (that is a vertex) satisfy c then all
-	    //   the generators checked until here satisfy c.
-	    // - If r saturate c then all the generators
-	    //   checked until here saturate c.
-	    // - If r does not satisfy c we have only
-	    //   generators that saturate or do not satisfy c,
-	    //   then none of them satisfy c.
-	    res = (sp_sign > 0) ? ALL_SATISFY :
-	      ((sp_sign == 0) ? ALL_SATURATE : NONE_SATISFIES);
+	    // a ray and we have never had a vertex.
+	    res = (sp_sign > 0) ? ALL_SATISFY : NONE_SATISFIES;
 	    first_ray_or_vertex = false;
 	  }
-	  else{
-	    // It is not the first time we find a
-	    // vertex or it is the first found but
-	    // but it has been preceded by a ray.
-	    if ((sp_sign >= 0 && res == NONE_SATISFIES)
+	  else {
+	    // It is not the first time we find a ray/vertex.
+	    if ((sp_sign > 0 && res == NONE_SATISFIES)
 		|| (sp_sign < 0 && res != NONE_SATISFIES))
-	      // We return SOME_SATISFY in two cases:
-	      // - if r satisfies c and all the previous
-	      //   generators do not;
-	      // - if r does not satisfy c and all the
-	      //   the previous generators satisfy it.
+	      // There are some generators satisfying c in two cases:
+	      // - if r satisfy c but none of the generators that
+	      //   we have already considered satisfy c;
+	      // - if r does not satisfy c and there was some generators
+	      //   that we have already considered that do not satisfy c.
 	      return SOME_SATISFY;
 	    if (sp_sign > 0)
-	      // Since we always return if res == SOME_SATISFIES,
+	      // Since we always return if res == SOME_SATISFY,
 	      // at this point r and all the previous generators
 	      // satisfy c.
 	      res = ALL_SATISFY;
 	  }
 	}
       }
+      else {
+	// The generator r is a vertex.
+	if (first_ray_or_vertex) {
+	  // It is the first time that we have
+	  // a vertex and we have never had a ray.
+	  // If some lines do not saturate c we have already returned,
+	  // so here all lines checked until here (if any) saturate c.
+	  // - If r (that is a vertex) satisfy c then all
+	  //   the generators checked until here satisfy c.
+	  // - If r saturate c then all the generators
+	  //   checked until here saturate c.
+	  // - If r does not satisfy c we have only
+	  //   generators that saturate or do not satisfy c,
+	  //   then none of them satisfy c.
+	  res = (sp_sign > 0) ? ALL_SATISFY :
+	    ((sp_sign == 0) ? ALL_SATURATE : NONE_SATISFIES);
+	  first_ray_or_vertex = false;
+	}
+	else{
+	  // It is not the first time we find a
+	  // vertex or it is the first found but
+	  // but it has been preceded by a ray.
+	  if ((sp_sign >= 0 && res == NONE_SATISFIES)
+		|| (sp_sign < 0 && res != NONE_SATISFIES))
+	    // We return SOME_SATISFY in two cases:
+	    // - if r satisfies c and all the previous
+	    //   generators do not;
+	    // - if r does not satisfy c and all the
+	    //   the previous generators satisfy it.
+	      return SOME_SATISFY;
+	  if (sp_sign > 0)
+	    // Since we always return if res == SOME_SATISFY,
+	    // at this point r and all the previous generators
+	    // satisfy c.
+	    res = ALL_SATISFY;
+	}
+      }
     }
-    return res;
   }
+  return res;
 }
 
 
