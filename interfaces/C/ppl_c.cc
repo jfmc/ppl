@@ -346,3 +346,29 @@ ppl_ConSys_end(ppl_ConSys_t cs, ppl_ConSys_const_iterator_t cit) try {
 }
 CATCH_ALL
 
+int
+ppl_ConSys_const_iterator_dereference(ppl_const_ConSys_const_iterator_t cit,
+				      ppl_const_Constraint_t* pc) try {
+  const ConSys::const_iterator& ccit = *to_const(cit);
+  const Constraint& c = *ccit;
+  *pc = to_const(&c);
+  return 0;
+}
+CATCH_ALL
+
+int
+ppl_ConSys_const_iterator_increment(ppl_ConSys_const_iterator_t cit) try {
+  ConSys::const_iterator& ccit = *to_nonconst(cit);
+  ++ccit;
+  return 0;
+}
+CATCH_ALL
+
+int
+ppl_ConSys_const_iterator_equal_test(ppl_const_ConSys_const_iterator_t x,
+				     ppl_const_ConSys_const_iterator_t y) try {
+  const ConSys::const_iterator& xx = *to_const(x);
+  const ConSys::const_iterator& yy = *to_const(y);
+  return (xx == yy) ? 1 : 0;
+}
+CATCH_ALL

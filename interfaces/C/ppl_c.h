@@ -267,6 +267,23 @@ ppl_ConSys_begin __P((ppl_ConSys_t cs, ppl_ConSys_const_iterator_t cit));
 int
 ppl_ConSys_end __P((ppl_ConSys_t cs, ppl_ConSys_const_iterator_t* pcit));
 
+//! Dereference \p cit writing a const handle to the resulting
+//! constraint at address \p pc.
+int
+ppl_ConSys_const_iterator_dereference
+__P((ppl_const_ConSys_const_iterator_t cit,
+     ppl_const_Constraint_t* pc));
+
+//! Increment \p cit so that it "points" to the next constraint.
+int
+ppl_ConSys_const_iterator_increment __P((ppl_ConSys_const_iterator_t cit));
+
+//! Return a positive integer if the iterators corresponding to \p x and \p y
+//! are equal;  return 0 if they are different.
+int
+ppl_ConSys_const_iterator_equal_test
+__P((ppl_const_ConSys_const_iterator_t x,
+     ppl_const_ConSys_const_iterator_t y));
 
 #if 0
 //! Returns the singleton system containing only
