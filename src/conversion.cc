@@ -741,9 +741,9 @@ PPL::Polyhedron::conversion(Matrix& source,
 		  // the `k'-th constraint.
 		  assert(scalar_prod.size() >= dest_num_rows);
 		  if (scalar_prod.size() <= dest_num_rows)
-		    scalar_prod.push_back(Integer::zero);
+		    scalar_prod.push_back(Integer::zero());
 		  else
-		    scalar_prod[dest_num_rows] = Integer::zero;
+		    scalar_prod[dest_num_rows] = Integer::zero();
 		  ++dest_num_rows;
 		}
 	      }
