@@ -866,6 +866,30 @@ error30() {
   }
 }
 
+void
+error31() {
+  set_handlers();
+
+  C_Polyhedron ph1(3);
+  C_Polyhedron ph2(8);
+
+  try {
+    // This is an incorrect use of function
+    // C_Polyhedron::time_elapse_assign(p): it is illegal to use
+    // it with two polyhedra of different dimensions.
+    ph1.time_elapse_assign(ph2);
+  }
+  catch(invalid_argument& e) {
+#if NOISY
+    cout << "invalid_polyhedra: " << e.what() << endl << endl;
+#endif
+  }
+  catch (...) {
+    exit(1);
+  }
+}
+
+
 int
 main() {
   
@@ -899,6 +923,7 @@ main() {
   error28();
   error29();
   error30();
+  error31();
 
   return 0;
 }

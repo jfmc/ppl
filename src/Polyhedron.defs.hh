@@ -455,6 +455,13 @@ public:
   //!                                  or dimension-incompatible.
   void limited_widening_assign(const Polyhedron& y, ConSys& cs);
 
+  //! Computes the time-elapse between \p *this and \p y and
+  //! assigns the result to \p *this.
+  //! \exception std::invalid_argument thrown if \p *this and \p y
+  //!                                  are dimension-incompatible.
+  void time_elapse_assign(const Polyhedron& y);
+
+
   //! Returns the system of constraints.
   const ConSys& constraints() const;
   //! Returns the system of constraints, with no redundant constraint.

@@ -66,6 +66,7 @@ TESTS = NNCinclusion1 \
 	removedim1 removedim2 removedim3 removedim4 removedim5 removedim6 \
 	removedim7 \
 	smm1 \
+	timeelapse1 timeelapse2 timeelapse3 timeelapse4 timeelapse5 \
 	universe1 universe2 universe3 universe4 universe5 universe6 \
 	widening1
 
@@ -176,6 +177,12 @@ removedim6_SOURCES = removedim6.cc
 removedim7_SOURCES = removedim7.cc
 
 smm1_SOURCES = smm1.cc
+
+timeelapse1_SOURCES = timeelapse1.cc
+timeelapse2_SOURCES = timeelapse2.cc
+timeelapse3_SOURCES = timeelapse3.cc
+timeelapse4_SOURCES = timeelapse4.cc
+timeelapse5_SOURCES = timeelapse5.cc
 
 universe1_SOURCES = universe1.cc
 universe2_SOURCES = universe2.cc

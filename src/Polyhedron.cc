@@ -3046,6 +3046,116 @@ PPL::Polyhedron::limited_widening_assign(const Polyhedron& y, ConSys& cs) {
 }
 
 /*!
+  This function computes the time-elapse between \p *this and
+  \p y. The result is not minimized and it is a NOT_NECESSARY_CLOSED 
+  polyhedron if and only if \p *this is NOT_NECESSARY_CLOSED.
+*/
+void
+PPL::Polyhedron::time_elapse_assign(const Polyhedron& y) {
+  Polyhedron& x = *this;
+  size_t x_space_dim = x.space_dim;
+  // Dimension-compatibility checks.
+  if (x_space_dim != y.space_dim)
+    throw_dimension_incompatible("time_elapse_assign(y)", y);
+  
+  // If both polyhedra are zero-dimensional, the resulting
+  // polyhedron is equal to `*this'.
+  if (x_space_dim == 0)
+    return;
+  
+  // We need to know if `y' is really empty or not. If it is empty
+  // the resulting polyhedron is equal to `x'.
+  if (y.is_empty()
+      || (!y.generators_are_up_to_date() && !y.update_generators()))
+    return;
+  
+  // We need to know if `x' is really empty or not. If it is empty
+  // the resulting polyhedron is empty.
+  if (x.is_empty()
+      || (!x.generators_are_up_to_date() && !x.update_generators()))
+    return;
+
+  // At this point the systems of generators of both polyhedra are
+  // up-to-date.
+  
+  GenSys y_gen_sys = const_cast<GenSys&>(y.gen_sys);
+  size_t y_gen_sys_num_rows = y_gen_sys.num_rows();
+  // `is_adjusted_topology' is false if and only if `y' is
+  // NOT_NECESSARY_CLOSED and `x' is NECESSARY_CLOSED.
+  bool is_adjusted_topology =
+    y_gen_sys.adjust_topology_and_dimension(x.topology(), x_space_dim);
+  
+  // If `y_gen_sys' has closure points, `y' is NOT_NECESSARY_CLOSED.
+  // So, we can use only the lines, rays, and closure points to build
+  // the new system of generators.
+  if (y_gen_sys.has_closure_points()) {
+    for (size_t i = y_gen_sys_num_rows; i-- > 0; ) {
+      if (y_gen_sys[i].is_point()) {
+	--y_gen_sys_num_rows;
+	std::swap(y_gen_sys[i], y_gen_sys[y_gen_sys_num_rows]);
+      }
+      if (y_gen_sys[i].is_closure_point())
+	y_gen_sys[i][x_space_dim + 1] = 0;
+    }
+    // We erase all the points of `y_gen_sys'.
+    y_gen_sys.erase_to_end(y_gen_sys_num_rows);
+  }
+
+  if (!is_adjusted_topology) {
+    // In this case, `y' is NOT_NECESSARY_CLOSED, but
+    // `x' is NECESSARY_CLOSED: this means that we can not adjusted the
+    // topology of `y_gen_sys' according to the topology of `x'.
+    // So, we must build a temporary system of
+    // generators composed only by the lines, the rays of `y' and by
+    // rays that come from the closure points of `y'.
+    GenSys tmp_gen_sys(x.topology(), y_gen_sys_num_rows, x_space_dim + 1);
+    for (size_t i = 0; i < y_gen_sys_num_rows; ++i) {
+      for (size_t j = 1; j <= x_space_dim; ++j)
+	tmp_gen_sys[i][j] = y_gen_sys[i][j];
+      if (y_gen_sys[i].is_line())
+	// The lines are still lines.
+	tmp_gen_sys[i].set_is_line();
+      else {
+	// If the generator is not a line it must be a ray.
+	tmp_gen_sys[i].set_is_ray_or_point();
+      }
+    }
+    std::swap(tmp_gen_sys, y_gen_sys);
+  }
+  else {
+    // At this point, `x' and `y_gen_sys' have the same topology: we must
+    // only say that all points and closure points become rays.
+    for (size_t i = y_gen_sys.num_rows(); i-- > 0; ) {
+      if (y_gen_sys[i].is_point()) {
+	y_gen_sys[i][0] = 0;
+	if (!x.is_necessarily_closed())
+	  y_gen_sys[i][x_space_dim + 1] = 0;
+      }
+    }
+  }
+  // Invalid rays can be built during the previous process.
+  y_gen_sys.remove_invalid_lines_and_rays();
+
+  // The number of rows of `y_gen_sys' can be equal to zero, because
+  // we can have removed the rows with the function
+  // `remove_invalid_lines_and_rays()'. In this case, the resulting
+  // polyhedron is equal to `x'. Otherwise, the two systems are merged.
+  if (y_gen_sys.num_rows() != 0) {
+    // To apply the function `Matrix::merge_row_assign()', the two matrices
+    // must be ordered.
+    x.obtain_sorted_generators();
+    y_gen_sys.sort_rows();
+    x.gen_sys.merge_rows_assign(y_gen_sys);
+    // Only the system of generators is up- to-date.
+    x.clear_constraints_up_to_date();
+    x.clear_generators_minimized();
+  }
+  assert(x.OK(true) & y.OK(true));
+}
+
+
+
+/*!
   Returns <CODE>true</CODE> if and only if \p *this represents
   the universal polyhedron: to be universal, depending on its
   topology, \p *this must contain either just the positivity constraint
