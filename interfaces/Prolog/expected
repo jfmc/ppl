@@ -6,7 +6,7 @@ Type "copying" to see the conditions.
 There is ABSOLUTELY NO WARRANTY for this program.
 Type "warranty" for details.
 PPL clpq ?- yes
-PPL clpq ?- Z = 13
+PPL clpq ?- Z = 5
  more? yes
 PPL clpq ?- yes
 PPL clpq ?- X = 0
@@ -32,4 +32,4 @@ R = 0
 PPL clpq ?- yes
 PPL clpq ?- X = 10
  more? yes
-PPL clpq ?-
+PPL clpq ?- 

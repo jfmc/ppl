@@ -1,5 +1,5 @@
 reconsult('ack.clpq').
-ack(3, 1, Z).
+ack(2, 1, Z).
 
 reconsult('ackn.clpq').
 ack(X, Y, Z).
