@@ -50,6 +50,7 @@ std::ostream& operator<<(std::ostream& s, const ConSys& cs);
 } // namespace IO_Operators
 
 // Put it in the namespace here to declare it friend later.
+/*! \relates Polyhedron */
 bool operator==(const Polyhedron& x, const Polyhedron& y);
 
 } // namespace Parma_Polyhedra_Library
