@@ -99,10 +99,6 @@
 /* Define to empty if `const' does not conform to ANSI C. */
 #undef const
 
-/* Define as `__inline' if that's what the C compiler calls it, or to nothing
-   if it is not supported. */
-#undef inline
-
 
 #endif // !defined(PPL_ppl_config_h)
 
