@@ -75,12 +75,13 @@ pl_clpq2$(EXEEXT): ppl_swiprolog.o pl_clpq.o pl_clpq.pl ../clpq2.pl
 
 check-local: pl_clpq pl_clpq2 ../check_script ../expected
 	for k in $(CLPQ_TESTS); do cp -f $(srcdir)/../$$k .; done
-	libtool --mode=execute -dlopen ../../../src/libppl.la \
+	$(LIBTOOL) --mode=execute -dlopen ../../../src/libppl.la \
 		./pl_clpq <$(srcdir)/../check_script >obtained
 	diff -q --ignore-all-space $(srcdir)/../expected obtained
-	libtool --mode=execute -dlopen ../../../src/libppl.la \
+	$(LIBTOOL) --mode=execute -dlopen ../../../src/libppl.la \
 		./pl_clpq2 <$(srcdir)/../check_script2 >obtained2
 	diff -q --ignore-all-space $(srcdir)/../expected2 obtained2
 
 MOSTLYCLEANFILES = pl_clpq pl_clpq2 $(CLPQ_TESTS) obtained obtained2
+
 endif
