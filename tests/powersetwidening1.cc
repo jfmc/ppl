@@ -28,7 +28,7 @@ using namespace std;
 using namespace Parma_Polyhedra_Library;
 
 #ifndef NOISY
-#define NOISY 1
+#define NOISY 0
 #endif
 
 Variable x(0);
@@ -73,7 +73,7 @@ P(unsigned n) {
   if (p[n].is_universe()) {
     p[n] = P(n-4);
     p[n].affine_image(x, 2*x);
-    p[n].affine_image(y, (Integer(1) << ((n-1)/4 + 2)) - 2*y);
+    p[n].affine_image(y, 8 - 2*y);
   }
 
   return p[n];
