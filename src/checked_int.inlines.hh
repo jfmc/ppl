@@ -537,7 +537,7 @@ struct Larger;
 //   - use larger type variant for types smaller than architecture bit size
 
 template <>
-struct Larger<char> {
+struct Larger<signed char> {
   static const bool use_for_neg = true;
   static const bool use_for_add = true;
   static const bool use_for_sub = true;
