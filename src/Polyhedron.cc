@@ -2044,8 +2044,7 @@ PPL::Polyhedron::affine_preimage(const Variable& var,
 
 /*!
   Returns the relation between \p *this and the constraint \p c.
-  (See the function
-  \p GenSys::satisfy(const Constraint& con)
+  (See the function \p GenSys::satisfy(const Constraint& con)
   for more details).
 */
 PPL::GenSys_Con_Rel
@@ -2058,10 +2057,20 @@ PPL::Polyhedron::satisfies(const Constraint& c) {
     return ALL_SATURATE;
 
   if (space_dim == 0)
-    return SOME_SATISFY;
+    if (c.is_trivial_false())
+      return NONE_SATISFIES;
+    else
+      if (c.is_equality() || c[0] == 0)
+	return ALL_SATURATE;
+      else
+	// The zero-dim vertex does not saturate
+	// the positivity constraint. 
+	return ALL_SATISFY;
+
   if (!generators_are_up_to_date())
     if (!update_generators())
       return ALL_SATURATE;
+
   return gen_sys.satisfy(c);
 }
 
