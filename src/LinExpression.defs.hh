@@ -104,14 +104,15 @@ public:
   //! to the variable \p v.
   LinExpression(const Variable& v);
 
-  //! Copy-constructor with a specified dimension.
-  LinExpression(const LinExpression& e, size_t size);
-
   //! Returns the dimension of the space of \p *this.
   size_t space_dimension() const;
 
   // Constant.
   static const LinExpression& zero();
+
+PPL_INTERNAL:
+  //! Copy-constructor with a specified dimension.
+  LinExpression(const LinExpression& e, size_t size);
 
 private:
   //! Implementation sizing constructor.
