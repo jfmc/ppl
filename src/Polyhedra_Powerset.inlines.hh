@@ -1,4 +1,4 @@
-/* Polyhedra_PowerSet class implementation: inline functions.
+/* Polyhedra_Powerset class implementation: inline functions.
    Copyright (C) 2001-2004 Roberto Bagnara <bagnara@cs.unipr.it>
 
 This file is part of the Parma Polyhedra Library (PPL).
@@ -21,8 +21,8 @@ USA.
 For the most up-to-date information see the Parma Polyhedra Library
 site: http://www.cs.unipr.it/ppl/ . */
 
-#ifndef PPL_Polyhedra_PowerSet_inlines_hh
-#define PPL_Polyhedra_PowerSet_inlines_hh 1
+#ifndef PPL_Polyhedra_Powerset_inlines_hh
+#define PPL_Polyhedra_Powerset_inlines_hh 1
 
 #include "BHRZ03_Certificate.types.hh"
 #include "ConSys.defs.hh"
@@ -37,12 +37,12 @@ namespace Parma_Polyhedra_Library {
 
 template <typename PH>
 dimension_type
-Polyhedra_PowerSet<PH>::max_space_dimension() {
+Polyhedra_Powerset<PH>::max_space_dimension() {
   return PH::max_space_dimension();
 }
 
 template <typename PH>
-Polyhedra_PowerSet<PH>::Polyhedra_PowerSet(dimension_type num_dimensions,
+Polyhedra_Powerset<PH>::Polyhedra_Powerset(dimension_type num_dimensions,
 					   Polyhedron::Degenerate_Kind kind)
   : space_dim(num_dimensions) {
   if (kind == Polyhedron::UNIVERSE)
@@ -50,17 +50,17 @@ Polyhedra_PowerSet<PH>::Polyhedra_PowerSet(dimension_type num_dimensions,
 }
 
 template <typename PH>
-Polyhedra_PowerSet<PH>::Polyhedra_PowerSet(const Polyhedra_PowerSet& y)
+Polyhedra_Powerset<PH>::Polyhedra_Powerset(const Polyhedra_Powerset& y)
   : Base(y), space_dim(y.space_dim) {
 }
 
 template <>
 template <>
 inline
-Polyhedra_PowerSet<NNC_Polyhedron>
-::Polyhedra_PowerSet(const Polyhedra_PowerSet<C_Polyhedron>& y)
+Polyhedra_Powerset<NNC_Polyhedron>
+::Polyhedra_Powerset(const Polyhedra_Powerset<C_Polyhedron>& y)
   : space_dim(y.space_dimension()) {
-  for (Polyhedra_PowerSet<C_Polyhedron>::const_iterator i = y.begin(),
+  for (Polyhedra_Powerset<C_Polyhedron>::const_iterator i = y.begin(),
 	 y_end = y.end(); i != y_end; ++i)
     push_back(Determinate<NNC_Polyhedron>(NNC_Polyhedron(i->element())));
 }
@@ -68,10 +68,10 @@ Polyhedra_PowerSet<NNC_Polyhedron>
 template <>
 template <>
 inline
-Polyhedra_PowerSet<C_Polyhedron>
-::Polyhedra_PowerSet(const Polyhedra_PowerSet<NNC_Polyhedron>& y)
+Polyhedra_Powerset<C_Polyhedron>
+::Polyhedra_Powerset(const Polyhedra_Powerset<NNC_Polyhedron>& y)
   : space_dim(y.space_dimension()) {
-  for (Polyhedra_PowerSet<NNC_Polyhedron>::const_iterator i = y.begin(),
+  for (Polyhedra_Powerset<NNC_Polyhedron>::const_iterator i = y.begin(),
 	 y_end = y.end(); i != y_end; ++i) {
     NNC_Polyhedron ph = i->element();
     ph.topological_closure_assign();
@@ -80,14 +80,14 @@ Polyhedra_PowerSet<C_Polyhedron>
 }
 
 template <typename PH>
-Polyhedra_PowerSet<PH>::Polyhedra_PowerSet(const ConSys& cs)
+Polyhedra_Powerset<PH>::Polyhedra_Powerset(const ConSys& cs)
   : space_dim(cs.space_dimension()) {
   push_back(Determinate<PH>(cs));
 }
 
 template <typename PH>
-Polyhedra_PowerSet<PH>&
-Polyhedra_PowerSet<PH>::operator=(const Polyhedra_PowerSet& y) {
+Polyhedra_Powerset<PH>&
+Polyhedra_Powerset<PH>::operator=(const Polyhedra_Powerset& y) {
   Base::operator=(y);
   space_dim = y.space_dim;
   return *this;
@@ -95,34 +95,34 @@ Polyhedra_PowerSet<PH>::operator=(const Polyhedra_PowerSet& y) {
 
 template <typename PH>
 template <typename QH>
-Polyhedra_PowerSet<PH>&
-Polyhedra_PowerSet<PH>::operator=(const Polyhedra_PowerSet<QH>& y) {
-  Polyhedra_PowerSet<PH> pps = y;
+Polyhedra_Powerset<PH>&
+Polyhedra_Powerset<PH>::operator=(const Polyhedra_Powerset<QH>& y) {
+  Polyhedra_Powerset<PH> pps = y;
   swap(pps);
   return *this;
 }
 
 template <typename PH>
 inline void
-Polyhedra_PowerSet<PH>::swap(Polyhedra_PowerSet& y) {
+Polyhedra_Powerset<PH>::swap(Polyhedra_Powerset& y) {
   Base::swap(y);
   std::swap(space_dim, y.space_dim);
 }
 
 template <typename PH>
 dimension_type
-Polyhedra_PowerSet<PH>::space_dimension() const {
+Polyhedra_Powerset<PH>::space_dimension() const {
   return space_dim;
 }
 
 template <typename PH>
 void
-Polyhedra_PowerSet<PH>::concatenate_assign(const Polyhedra_PowerSet& y) {
+Polyhedra_Powerset<PH>::concatenate_assign(const Polyhedra_Powerset& y) {
   // Ensure omega-reduction here, since what follows has quadratic complexity.
   Base::omega_reduce();
   y.Base::omega_reduce();
   Sequence new_sequence;
-  const Polyhedra_PowerSet<PH>& x = *this;
+  const Polyhedra_Powerset<PH>& x = *this;
   for (const_iterator xi = x.begin(), x_end = x.end(),
 	 y_begin = y.begin(), y_end = y.end(); xi != x_end; ) {
     for (const_iterator yi = y_begin; yi != y_end; ++yi) {
@@ -155,7 +155,7 @@ Polyhedra_PowerSet<PH>::concatenate_assign(const Polyhedra_PowerSet& y) {
 
 template <typename PH>
 void
-Polyhedra_PowerSet<PH>::add_constraint(const Constraint& c) {
+Polyhedra_Powerset<PH>::add_constraint(const Constraint& c) {
   for (iterator xi = Base::begin(), x_end = Base::end(); xi != x_end; ++xi)
     xi->element().add_constraint(c);
   Base::reduced = false;
@@ -163,7 +163,7 @@ Polyhedra_PowerSet<PH>::add_constraint(const Constraint& c) {
 
 template <typename PH>
 bool
-Polyhedra_PowerSet<PH>::add_constraint_and_minimize(const Constraint& c) {
+Polyhedra_Powerset<PH>::add_constraint_and_minimize(const Constraint& c) {
   for (iterator xi = Base::begin(), xin = xi, x_end = Base::end(); xi != x_end; xi = xin) {
     ++xin;
     if (!xi->element().add_constraint_and_minimize(c)) {
@@ -178,7 +178,7 @@ Polyhedra_PowerSet<PH>::add_constraint_and_minimize(const Constraint& c) {
 
 template <typename PH>
 void
-Polyhedra_PowerSet<PH>::add_constraints(const ConSys& cs) {
+Polyhedra_Powerset<PH>::add_constraints(const ConSys& cs) {
   for (iterator xi = Base::begin(), x_end = Base::end(); xi != x_end; ++xi)
     xi->element().add_constraints(cs);
   Base::reduced = false;
@@ -186,7 +186,7 @@ Polyhedra_PowerSet<PH>::add_constraints(const ConSys& cs) {
 
 template <typename PH>
 bool
-Polyhedra_PowerSet<PH>::add_constraints_and_minimize(const ConSys& cs) {
+Polyhedra_Powerset<PH>::add_constraints_and_minimize(const ConSys& cs) {
   for (iterator xi = Base::begin(),
 	 xin = xi, x_end = Base::end(); xi != x_end; xi = xin) {
     ++xin;
@@ -202,7 +202,7 @@ Polyhedra_PowerSet<PH>::add_constraints_and_minimize(const ConSys& cs) {
 
 template <typename PH>
 void
-Polyhedra_PowerSet<PH>::add_dimensions_and_embed(dimension_type m) {
+Polyhedra_Powerset<PH>::add_dimensions_and_embed(dimension_type m) {
   for (iterator i = Base::begin(), send = Base::end(); i != send; ++i)
     i->add_dimensions_and_embed(m);
   space_dim += m;
@@ -211,7 +211,7 @@ Polyhedra_PowerSet<PH>::add_dimensions_and_embed(dimension_type m) {
 
 template <typename PH>
 void
-Polyhedra_PowerSet<PH>::add_dimensions_and_project(dimension_type m) {
+Polyhedra_Powerset<PH>::add_dimensions_and_project(dimension_type m) {
   for (iterator i = Base::begin(), send = Base::end(); i != send; ++i)
     i->add_dimensions_and_project(m);
   space_dim += m;
@@ -220,7 +220,7 @@ Polyhedra_PowerSet<PH>::add_dimensions_and_project(dimension_type m) {
 
 template <typename PH>
 void
-Polyhedra_PowerSet<PH>::remove_dimensions(const Variables_Set& to_be_removed) {
+Polyhedra_Powerset<PH>::remove_dimensions(const Variables_Set& to_be_removed) {
   Variables_Set::size_type num_removed = to_be_removed.size();
   if (num_removed > 0) {
     for (iterator i = Base::begin(), send = Base::end(); i != send; ++i) {
@@ -234,7 +234,7 @@ Polyhedra_PowerSet<PH>::remove_dimensions(const Variables_Set& to_be_removed) {
 
 template <typename PH>
 void
-Polyhedra_PowerSet<PH>::remove_higher_dimensions(dimension_type
+Polyhedra_Powerset<PH>::remove_higher_dimensions(dimension_type
 						 new_dimension) {
   if (new_dimension < space_dim) {
     for (iterator i = Base::begin(), send = Base::end(); i != send; ++i) {
@@ -248,8 +248,8 @@ Polyhedra_PowerSet<PH>::remove_higher_dimensions(dimension_type
 
 template <typename PH>
 bool
-Polyhedra_PowerSet<PH>::
-geometrically_covers(const Polyhedra_PowerSet& y) const {
+Polyhedra_Powerset<PH>::
+geometrically_covers(const Polyhedra_Powerset& y) const {
   for (const_iterator yi = y.Base::begin(),
 	 y_end = y.Base::end(); yi != y_end; ++yi)
     if (!check_containment(yi->element(), *this))
@@ -259,16 +259,16 @@ geometrically_covers(const Polyhedra_PowerSet& y) const {
 
 template <typename PH>
 bool
-Polyhedra_PowerSet<PH>::
-geometrically_equals(const Polyhedra_PowerSet& y) const {
-  const Polyhedra_PowerSet& x = * this;
+Polyhedra_Powerset<PH>::
+geometrically_equals(const Polyhedra_Powerset& y) const {
+  const Polyhedra_Powerset& x = * this;
   return x.geometrically_covers(y) && y.geometrically_covers(x);
 }
 
 template <typename PH>
 template <typename PartialFunction>
 void
-Polyhedra_PowerSet<PH>::map_dimensions(const PartialFunction& pfunc) {
+Polyhedra_Powerset<PH>::map_dimensions(const PartialFunction& pfunc) {
   if (Base::is_bottom()) {
     dimension_type n = 0;
     for (dimension_type i = space_dim; i-- > 0; ) {
@@ -290,7 +290,7 @@ Polyhedra_PowerSet<PH>::map_dimensions(const PartialFunction& pfunc) {
 
 template <typename PH>
 void
-Polyhedra_PowerSet<PH>::pairwise_reduce() {
+Polyhedra_Powerset<PH>::pairwise_reduce() {
   // It is wise to omega-reduce before pairwise-reducing.
   Base::omega_reduce();
 
@@ -338,13 +338,13 @@ Polyhedra_PowerSet<PH>::pairwise_reduce() {
 template <typename PH>
 template <typename Widening>
 void
-Polyhedra_PowerSet<PH>::
-BGP99_heuristics_assign(const Polyhedra_PowerSet& y, Widening wf) {
+Polyhedra_Powerset<PH>::
+BGP99_heuristics_assign(const Polyhedra_Powerset& y, Widening wf) {
 #ifndef NDEBUG
   {
     // We assume that y entails *this.
-    const Polyhedra_PowerSet<PH> x_copy = *this;
-    const Polyhedra_PowerSet<PH> y_copy = y;
+    const Polyhedra_Powerset<PH> x_copy = *this;
+    const Polyhedra_Powerset<PH> y_copy = y;
     assert(y_copy.definitely_entails(x_copy));
   }
 #endif
@@ -381,18 +381,18 @@ BGP99_heuristics_assign(const Polyhedra_PowerSet& y, Widening wf) {
 template <typename PH>
 template <typename Widening>
 void
-Polyhedra_PowerSet<PH>::
-BGP99_extrapolation_assign(const Polyhedra_PowerSet& y,
+Polyhedra_Powerset<PH>::
+BGP99_extrapolation_assign(const Polyhedra_Powerset& y,
 			   Widening wf,
 			   unsigned max_disjuncts) {
   // `x' is the current iteration value.
-  Polyhedra_PowerSet<PH>& x = *this;
+  Polyhedra_Powerset<PH>& x = *this;
 
 #ifndef NDEBUG
   {
     // We assume that y entails *this.
-    const Polyhedra_PowerSet<PH> x_copy = x;
-    const Polyhedra_PowerSet<PH> y_copy = y;
+    const Polyhedra_Powerset<PH> x_copy = x;
+    const Polyhedra_Powerset<PH> y_copy = y;
     assert(y_copy.definitely_entails(x_copy));
   }
 #endif
@@ -406,7 +406,7 @@ BGP99_extrapolation_assign(const Polyhedra_PowerSet& y,
 template <typename PH>
 template <typename Cert>
 void
-Polyhedra_PowerSet<PH>::
+Polyhedra_Powerset<PH>::
 collect_certificates(std::map<Cert, size_type,
 		              typename Cert::Compare>& cert_ms) const {
   assert(Base::is_omega_reduced());
@@ -421,7 +421,7 @@ collect_certificates(std::map<Cert, size_type,
 template <typename PH>
 template <typename Cert>
 bool
-Polyhedra_PowerSet<PH>::
+Polyhedra_Powerset<PH>::
 is_cert_multiset_stabilizing(const std::map<Cert, size_type,
 			                    typename Cert::Compare>& y_cert_ms
 			     ) const {
@@ -469,16 +469,16 @@ is_cert_multiset_stabilizing(const std::map<Cert, size_type,
 template <typename PH>
 template <typename Cert, typename Widening>
 void
-Polyhedra_PowerSet<PH>::BHZ03_widening_assign(const Polyhedra_PowerSet& y,
+Polyhedra_Powerset<PH>::BHZ03_widening_assign(const Polyhedra_Powerset& y,
 					      Widening wf) {
   // `x' is the current iteration value.
-  Polyhedra_PowerSet<PH>& x = *this;
+  Polyhedra_Powerset<PH>& x = *this;
 
 #ifndef NDEBUG
   {
     // We assume that y entails *this.
-    const Polyhedra_PowerSet<PH> x_copy = x;
-    const Polyhedra_PowerSet<PH> y_copy = y;
+    const Polyhedra_Powerset<PH> x_copy = x;
+    const Polyhedra_Powerset<PH> y_copy = y;
     assert(y_copy.definitely_entails(x_copy));
   }
 #endif
@@ -526,7 +526,7 @@ Polyhedra_PowerSet<PH>::BHZ03_widening_assign(const Polyhedra_PowerSet& y,
   }
 
   // Second widening technique: try the BGP99 powerset heuristics.
-  Polyhedra_PowerSet<PH> bgp99_heuristics = x;
+  Polyhedra_Powerset<PH> bgp99_heuristics = x;
   bgp99_heuristics.BGP99_heuristics_assign(y, wf);
 
   // Compute the poly-hull of `bgp99_heuristics'.
@@ -557,7 +557,7 @@ Polyhedra_PowerSet<PH>::BHZ03_widening_assign(const Polyhedra_PowerSet& y,
     // Note that pairwise-reduction does not affect the computation
     // of the poly-hulls, so that we only have to check the multiset
     // certificate relation.
-    Polyhedra_PowerSet<PH> reduced_bgp99_heuristics(bgp99_heuristics);
+    Polyhedra_Powerset<PH> reduced_bgp99_heuristics(bgp99_heuristics);
     reduced_bgp99_heuristics.pairwise_reduce();
     if (reduced_bgp99_heuristics.is_cert_multiset_stabilizing(y_cert_ms)) {
       std::swap(x, reduced_bgp99_heuristics);
@@ -578,7 +578,7 @@ Polyhedra_PowerSet<PH>::BHZ03_widening_assign(const Polyhedra_PowerSet& y,
   }
 
   // Fallback to the computation of the poly-hull.
-  Polyhedra_PowerSet<PH> x_hull_singleton(x.space_dim, PH::EMPTY);
+  Polyhedra_Powerset<PH> x_hull_singleton(x.space_dim, PH::EMPTY);
   x_hull_singleton.add_disjunct(x_hull);
   std::swap(x, x_hull_singleton);
 }
@@ -586,14 +586,14 @@ Polyhedra_PowerSet<PH>::BHZ03_widening_assign(const Polyhedra_PowerSet& y,
 template <typename PH>
 template <typename Widening>
 inline void
-Polyhedra_PowerSet<PH>::
-BHZ03_widening_assign(const Polyhedra_PowerSet& y, Widening wf) {
+Polyhedra_Powerset<PH>::
+BHZ03_widening_assign(const Polyhedra_Powerset& y, Widening wf) {
   BHZ03_widening_assign<BHRZ03_Certificate>(y, wf);
 }
 
 template <typename PH>
 void
-Polyhedra_PowerSet<PH>::ascii_dump(std::ostream& s) const {
+Polyhedra_Powerset<PH>::ascii_dump(std::ostream& s) const {
   s << "size " << Base::size()
     << "\nspace_dim " << space_dim
     << std::endl;
@@ -603,7 +603,7 @@ Polyhedra_PowerSet<PH>::ascii_dump(std::ostream& s) const {
 
 template <typename PH>
 bool
-Polyhedra_PowerSet<PH>::ascii_load(std::istream& s) {
+Polyhedra_Powerset<PH>::ascii_load(std::istream& s) {
   std::string str;
 
   if (!(s >> str) || str != "size")
@@ -620,7 +620,7 @@ Polyhedra_PowerSet<PH>::ascii_load(std::istream& s) {
   if (!(s >> space_dim))
     return false;
 
-  Polyhedra_PowerSet new_pps(space_dim, Polyhedron::EMPTY);
+  Polyhedra_Powerset new_pps(space_dim, Polyhedron::EMPTY);
   while (sz-- > 0) {
     PH ph;
     if (!ph.ascii_load(s))
@@ -636,7 +636,7 @@ Polyhedra_PowerSet<PH>::ascii_load(std::istream& s) {
 
 template <typename PH>
 bool
-Polyhedra_PowerSet<PH>::OK() const {
+Polyhedra_Powerset<PH>::OK() const {
   for (const_iterator i = Base::begin(), send = Base::end(); i != send; ++i)
     if (i->space_dimension() != space_dim) {
 #ifndef NDEBUG
@@ -655,7 +655,7 @@ namespace {
 #ifdef PPL_DOXYGEN_INCLUDE_IMPLEMENTATION_DETAILS
 //! \brief
 //! Partitions polyhedron \p qq according to constraint \p c.
-/*! \relates Polyhedra_PowerSet
+/*! \relates Polyhedra_Powerset
   On exit, the intersection of \p qq and constraint \p c is stored
   in \p qq, whereas the intersection of \p qq with the negation of \p c
   is added as a new disjunct of the powerset \p r.
@@ -665,7 +665,7 @@ template <typename PH>
 void
 linear_partition_aux(const Constraint& c,
 		     PH& qq,
-		     Polyhedra_PowerSet<NNC_Polyhedron>& r) {
+		     Polyhedra_Powerset<NNC_Polyhedron>& r) {
   LinExpression le(c);
   Constraint neg_c = c.is_strict_inequality() ? (le <= 0) : (le < 0);
   NNC_Polyhedron qqq(qq);
@@ -676,11 +676,11 @@ linear_partition_aux(const Constraint& c,
 
 } // namespace
 
-/*! \relates Polyhedra_PowerSet */
+/*! \relates Polyhedra_Powerset */
 template <typename PH>
-std::pair<PH, Polyhedra_PowerSet<NNC_Polyhedron> >
+std::pair<PH, Polyhedra_Powerset<NNC_Polyhedron> >
 linear_partition(const PH& p, const PH& q) {
-  Polyhedra_PowerSet<NNC_Polyhedron> r(p.space_dimension(),
+  Polyhedra_Powerset<NNC_Polyhedron> r(p.space_dimension(),
 				       Polyhedron::EMPTY);
   PH qq = q;
   const ConSys& pcs = p.constraints();
@@ -695,13 +695,13 @@ linear_partition(const PH& p, const PH& q) {
     else
       linear_partition_aux(c, qq, r);
   }
-  return std::pair<PH, Polyhedra_PowerSet<NNC_Polyhedron> >(qq, r);
+  return std::pair<PH, Polyhedra_Powerset<NNC_Polyhedron> >(qq, r);
 }
 
 template <>
 inline void
-Polyhedra_PowerSet<NNC_Polyhedron>
-::poly_difference_assign(const Polyhedra_PowerSet& y) {
+Polyhedra_Powerset<NNC_Polyhedron>
+::poly_difference_assign(const Polyhedra_Powerset& y) {
   // Ensure omega-reduction.
   Base::omega_reduce();
   y.Base::omega_reduce();
@@ -711,9 +711,9 @@ Polyhedra_PowerSet<NNC_Polyhedron>
     Sequence tmp_sequence;
     for (const_iterator nsi = new_sequence.begin(),
 	   ns_end = new_sequence.end(); nsi != ns_end; ++nsi) {
-      std::pair<NNC_Polyhedron, Polyhedra_PowerSet<NNC_Polyhedron> > partition
+      std::pair<NNC_Polyhedron, Polyhedra_Powerset<NNC_Polyhedron> > partition
 	= linear_partition(py, nsi->element());
-      const Polyhedra_PowerSet<NNC_Polyhedron>& residues = partition.second;
+      const Polyhedra_Powerset<NNC_Polyhedron>& residues = partition.second;
       // Append the contents of `residues' to `tmp_sequence'.
       std::copy(residues.begin(), residues.end(), back_inserter(tmp_sequence));
     }
@@ -726,10 +726,10 @@ Polyhedra_PowerSet<NNC_Polyhedron>
 
 template <>
 inline void
-Polyhedra_PowerSet<C_Polyhedron>
-::poly_difference_assign(const Polyhedra_PowerSet& y) {
-  Polyhedra_PowerSet<NNC_Polyhedron> nnc_this = *this;
-  Polyhedra_PowerSet<NNC_Polyhedron> nnc_y = y;
+Polyhedra_Powerset<C_Polyhedron>
+::poly_difference_assign(const Polyhedra_Powerset& y) {
+  Polyhedra_Powerset<NNC_Polyhedron> nnc_this = *this;
+  Polyhedra_Powerset<NNC_Polyhedron> nnc_y = y;
   nnc_this.poly_difference_assign(nnc_y);
   *this = nnc_this;
 }
@@ -739,14 +739,14 @@ Polyhedra_PowerSet<C_Polyhedron>
 
 namespace std {
 
-/*! \relates Parma_Polyhedra_Library::Polyhedra_PowerSet */
+/*! \relates Parma_Polyhedra_Library::Polyhedra_Powerset */
 template <typename PH>
 inline void
-swap(Parma_Polyhedra_Library::Polyhedra_PowerSet<PH>& x,
-     Parma_Polyhedra_Library::Polyhedra_PowerSet<PH>& y) {
+swap(Parma_Polyhedra_Library::Polyhedra_Powerset<PH>& x,
+     Parma_Polyhedra_Library::Polyhedra_Powerset<PH>& y) {
   x.swap(y);
 }
 
 } // namespace std
 
-#endif // !defined(PPL_Polyhedra_PowerSet_inlines_hh)
+#endif // !defined(PPL_Polyhedra_Powerset_inlines_hh)

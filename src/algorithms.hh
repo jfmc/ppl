@@ -25,7 +25,7 @@ site: http://www.cs.unipr.it/ppl/ . */
 #define PPL_algorithms_hh 1
 
 #include "NNC_Polyhedron.defs.hh"
-#include "Polyhedra_PowerSet.defs.hh"
+#include "Polyhedra_Powerset.defs.hh"
 #include "Constraint.defs.hh"
 #include "LinExpression.defs.hh"
 #include "ConSys.defs.hh"
@@ -47,10 +47,10 @@ poly_hull_assign_if_exact(PH& p, const PH& q) {
   PH phull = p;
   NNC_Polyhedron nnc_p(p);
   phull.poly_hull_assign(q);
-  std::pair<PH, Polyhedra_PowerSet<NNC_Polyhedron> >
+  std::pair<PH, Polyhedra_Powerset<NNC_Polyhedron> >
     partition = linear_partition(q, phull);
-  const Polyhedra_PowerSet<NNC_Polyhedron>& s = partition.second;
-  typedef Polyhedra_PowerSet<NNC_Polyhedron>::const_iterator iter;
+  const Polyhedra_Powerset<NNC_Polyhedron>& s = partition.second;
+  typedef Polyhedra_Powerset<NNC_Polyhedron>::const_iterator iter;
   for (iter i = s.begin(), s_end = s.end(); i != s_end; ++i)
     // The polyhedral hull is exact if and only if all the elements
     // of the partition of the polyhedral hull of `p' and `q' with
@@ -65,23 +65,23 @@ poly_hull_assign_if_exact(PH& p, const PH& q) {
 //! \brief
 //! Returns <CODE>true</CODE> if and only if the union of the polyhedra
 //! in \p ps contains the polyhedron \p ph.
-/*! \relates Polyhedra_PowerSet */
+/*! \relates Polyhedra_Powerset */
 #endif // PPL_DOXYGEN_INCLUDE_IMPLEMENTATION_DETAILS
 template <typename PH>
 bool
-check_containment(const PH& ph, const Polyhedra_PowerSet<PH>& ps);
+check_containment(const PH& ph, const Polyhedra_Powerset<PH>& ps);
 
-/*! \relates Polyhedra_PowerSet */
+/*! \relates Polyhedra_Powerset */
 template <typename PH>
 bool
-check_containment(const PH& ph, const Polyhedra_PowerSet<PH>& ps) {
-  Polyhedra_PowerSet<NNC_Polyhedron> tmp(ph.space_dimension(),
+check_containment(const PH& ph, const Polyhedra_Powerset<PH>& ps) {
+  Polyhedra_Powerset<NNC_Polyhedron> tmp(ph.space_dimension(),
 					 Polyhedron::EMPTY);
   tmp.add_disjunct(NNC_Polyhedron(ph));
-  for (typename Polyhedra_PowerSet<PH>::const_iterator i = ps.begin(),
+  for (typename Polyhedra_Powerset<PH>::const_iterator i = ps.begin(),
 	 ps_end = ps.end(); i != ps_end; ++i) {
     const NNC_Polyhedron pi(i->element());
-    for (typename Polyhedra_PowerSet<NNC_Polyhedron>::iterator j = tmp.begin(),
+    for (typename Polyhedra_Powerset<NNC_Polyhedron>::iterator j = tmp.begin(),
 	   jn = j; j != tmp.end(); j = jn) {
       ++jn;
       const NNC_Polyhedron& pj = j->element();
@@ -91,14 +91,14 @@ check_containment(const PH& ph, const Polyhedra_PowerSet<PH>& ps) {
     if (tmp.empty())
       return true;
     else {
-      Polyhedra_PowerSet<NNC_Polyhedron> new_disjuncts(ph.space_dimension(),
+      Polyhedra_Powerset<NNC_Polyhedron> new_disjuncts(ph.space_dimension(),
 						       Polyhedron::EMPTY);
-      for (Polyhedra_PowerSet<NNC_Polyhedron>::iterator j = tmp.begin(),
+      for (Polyhedra_Powerset<NNC_Polyhedron>::iterator j = tmp.begin(),
 	     jn = j; j != tmp.end(); j = jn) {
 	++jn;
 	const NNC_Polyhedron& pj = j->element();
 	if (!pj.is_disjoint_from(pi)) {
-	  std::pair<NNC_Polyhedron, Polyhedra_PowerSet<NNC_Polyhedron> >
+	  std::pair<NNC_Polyhedron, Polyhedra_Powerset<NNC_Polyhedron> >
 	    partition = linear_partition(pi, pj);
 	  tmp.erase(j);
 	  new_disjuncts.upper_bound_assign(partition.second);

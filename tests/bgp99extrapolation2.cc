@@ -34,7 +34,7 @@ int
 main() TRY {
   set_handlers();
 
-  typedef Polyhedra_PowerSet<C_Polyhedron> PSet;
+  typedef Polyhedra_Powerset<C_Polyhedron> PSet;
 
   Variable A(0);
   Variable B(1);

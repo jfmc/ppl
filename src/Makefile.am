@@ -142,12 +142,12 @@ Widening_Function.inlines.hh \
 Determinate.types.hh \
 Determinate.defs.hh \
 Determinate.inlines.hh \
-PowerSet.types.hh \
-PowerSet.defs.hh \
-PowerSet.inlines.hh \
-Polyhedra_PowerSet.types.hh \
-Polyhedra_PowerSet.defs.hh \
-Polyhedra_PowerSet.inlines.hh \
+Powerset.types.hh \
+Powerset.defs.hh \
+Powerset.inlines.hh \
+Polyhedra_Powerset.types.hh \
+Polyhedra_Powerset.defs.hh \
+Polyhedra_Powerset.inlines.hh \
 max_space_dimension.hh \
 algorithms.hh
 
@@ -221,12 +221,12 @@ Widening_Function.inlines.hh \
 Determinate.types.hh \
 Determinate.defs.hh \
 Determinate.inlines.hh \
-PowerSet.types.hh \
-PowerSet.defs.hh \
-PowerSet.inlines.hh \
-Polyhedra_PowerSet.types.hh \
-Polyhedra_PowerSet.defs.hh \
-Polyhedra_PowerSet.inlines.hh \
+Powerset.types.hh \
+Powerset.defs.hh \
+Powerset.inlines.hh \
+Polyhedra_Powerset.types.hh \
+Polyhedra_Powerset.defs.hh \
+Polyhedra_Powerset.inlines.hh \
 algorithms.hh
 
 libppl_la_LDFLAGS = \

@@ -36,7 +36,7 @@ namespace {
 Variable x(0);
 Variable y(1);
 
-typedef Polyhedra_PowerSet<C_Polyhedron> PSet;
+typedef Polyhedra_Powerset<C_Polyhedron> PSet;
 
 const C_Polyhedron&
 P(unsigned n) {

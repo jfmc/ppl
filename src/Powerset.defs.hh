@@ -1,4 +1,4 @@
-/* PowerSet class declaration.
+/* Powerset class declaration.
    Copyright (C) 2001-2004 Roberto Bagnara <bagnara@cs.unipr.it>
 
 This file is part of the Parma Polyhedra Library (PPL).
@@ -21,10 +21,10 @@ USA.
 For the most up-to-date information see the Parma Polyhedra Library
 site: http://www.cs.unipr.it/ppl/ . */
 
-#ifndef PPL_PowerSet_defs_hh
-#define PPL_PowerSet_defs_hh
+#ifndef PPL_Powerset_defs_hh
+#define PPL_Powerset_defs_hh
 
-#include "PowerSet.types.hh"
+#include "Powerset.types.hh"
 #include <iosfwd>
 #include <list>
 #include <set>
@@ -32,24 +32,24 @@ site: http://www.cs.unipr.it/ppl/ . */
 namespace Parma_Polyhedra_Library {
 
 //! Returns <CODE>true</CODE> if and only if \p x and \p y are equivalent.
-/*! \relates PowerSet */
+/*! \relates Powerset */
 template <typename CS>
 bool
-operator==(const PowerSet<CS>& x, const PowerSet<CS>& y);
+operator==(const Powerset<CS>& x, const Powerset<CS>& y);
 
 //! Returns <CODE>true</CODE> if and only if \p x and \p y are not equivalent.
-/*! \relates PowerSet */
+/*! \relates Powerset */
 template <typename CS>
 bool
-operator!=(const PowerSet<CS>& x, const PowerSet<CS>& y);
+operator!=(const Powerset<CS>& x, const Powerset<CS>& y);
 
 namespace IO_Operators {
 
 //! Output operator.
-/*! \relates Parma_Polyhedra_Library::PowerSet */
+/*! \relates Parma_Polyhedra_Library::Powerset */
 template <typename CS>
 std::ostream&
-operator<<(std::ostream& s, const PowerSet<CS>& x);
+operator<<(std::ostream& s, const Powerset<CS>& x);
 
 } // namespace IO_Operators
 
@@ -62,35 +62,35 @@ operator<<(std::ostream& s, const PowerSet<CS>& x);
   constraint systems</EM> as defined in \ref Bag98 "[Bag98]".
 */
 template <typename CS>
-class Parma_Polyhedra_Library::PowerSet {
+class Parma_Polyhedra_Library::Powerset {
 public:
   //! Default constructor.
-  PowerSet();
+  Powerset();
 
   //! Ordinary copy-constructor.
-  PowerSet(const PowerSet& y);
+  Powerset(const Powerset& y);
 
   //! The assignment operator.
-  PowerSet& operator=(const PowerSet& y);
+  Powerset& operator=(const Powerset& y);
 
   //! Swaps \p *this with \p y.
-  void swap(PowerSet& y);
+  void swap(Powerset& y);
 
   //! Adds to \p *this the disjunct \p d.
   void add_disjunct(const CS& d);
 
   //! Assigns to \p *this an upper bound of \p *this and \p y.
-  void upper_bound_assign(const PowerSet& y);
+  void upper_bound_assign(const Powerset& y);
 
   //! Assigns to \p *this the meet of \p *this and \p y.
-  void meet_assign(const PowerSet& y);
+  void meet_assign(const Powerset& y);
 
   //! \brief
   //! Returns <CODE>true</CODE> if \p *this definitely entails \p y.
   //! Returns <CODE>false</CODE> if \p *this may not entail \p y
   //! (i.e., if \p *this does not entail \p y or if entailment could
   //! not be decided).
-  bool definitely_entails(const PowerSet& y) const;
+  bool definitely_entails(const Powerset& y) const;
 
   //! \brief
   //! Returns <CODE>true</CODE> if and only if \p *this is the top
@@ -204,13 +204,13 @@ private:
 namespace std {
 
 //! Specializes <CODE>std::swap</CODE>.
-/*! \relates Parma_Polyhedra_Library::PowerSet */
+/*! \relates Parma_Polyhedra_Library::Powerset */
 template <typename CS>
-void swap(Parma_Polyhedra_Library::PowerSet<CS>& x,
-	  Parma_Polyhedra_Library::PowerSet<CS>& y);
+void swap(Parma_Polyhedra_Library::Powerset<CS>& x,
+	  Parma_Polyhedra_Library::Powerset<CS>& y);
 
 } // namespace std
 
-#include "PowerSet.inlines.hh"
+#include "Powerset.inlines.hh"
 
-#endif // !defined(PPL_PowerSet_defs_hh)
+#endif // !defined(PPL_Powerset_defs_hh)

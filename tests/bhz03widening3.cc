@@ -36,7 +36,7 @@ namespace {
 Variable X(0);
 Variable Y(1);
 
-typedef Polyhedra_PowerSet<C_Polyhedron> PSet;
+typedef Polyhedra_Powerset<C_Polyhedron> PSet;
 
 } // namespace
 

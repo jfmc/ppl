@@ -1,4 +1,4 @@
-/* Polyhedra_PowerSet class declaration.
+/* Polyhedra_Powerset class declaration.
    Copyright (C) 2001-2004 Roberto Bagnara <bagnara@cs.unipr.it>
 
 This file is part of the Parma Polyhedra Library (PPL).
@@ -21,17 +21,17 @@ USA.
 For the most up-to-date information see the Parma Polyhedra Library
 site: http://www.cs.unipr.it/ppl/ . */
 
-#ifndef PPL_Polyhedra_PowerSet_defs_hh
-#define PPL_Polyhedra_PowerSet_defs_hh
+#ifndef PPL_Polyhedra_Powerset_defs_hh
+#define PPL_Polyhedra_Powerset_defs_hh
 
-#include "Polyhedra_PowerSet.types.hh"
+#include "Polyhedra_Powerset.types.hh"
 #include "BHRZ03_Certificate.types.hh"
 #include "ConSys.types.hh"
 #include "Constraint.types.hh"
 #include "Polyhedron.defs.hh"
 #include "Variable.defs.hh"
 #include "Determinate.defs.hh"
-#include "PowerSet.defs.hh"
+#include "Powerset.defs.hh"
 #include "globals.defs.hh"
 #include <iosfwd>
 #include <list>
@@ -40,8 +40,8 @@ site: http://www.cs.unipr.it/ppl/ . */
 
 //! The powerset construction instantiated on PPL polyhedra.
 template <typename PH>
-class Parma_Polyhedra_Library::Polyhedra_PowerSet
-  : public Parma_Polyhedra_Library::PowerSet
+class Parma_Polyhedra_Library::Polyhedra_Powerset
+  : public Parma_Polyhedra_Library::Powerset
 <Parma_Polyhedra_Library::Determinate<PH> > {
 public:
   //! Returns the maximum space dimension a Polyhedra_Powerset<PH> can handle.
@@ -50,7 +50,7 @@ public:
   //! \name Constructors
   //@{
 
-  //! Builds a universe (top) or empty (bottom) Polyhedra_PowerSet.
+  //! Builds a universe (top) or empty (bottom) Polyhedra_Powerset.
   /*!
     \param num_dimensions
     The number of dimensions of the vector space enclosing the powerset;
@@ -59,20 +59,20 @@ public:
     Specifies whether the universe or the empty powerset has to be built.
   */
   explicit
-  Polyhedra_PowerSet(dimension_type num_dimensions = 0,
+  Polyhedra_Powerset(dimension_type num_dimensions = 0,
 		     Polyhedron::Degenerate_Kind kind = Polyhedron::UNIVERSE);
 
   //! Ordinary copy-constructor.
-  Polyhedra_PowerSet(const Polyhedra_PowerSet& y);
+  Polyhedra_Powerset(const Polyhedra_Powerset& y);
 
   //! \brief
   //! Copy-constructor allowing a source powerset with elements of a
   //! different polyhedron kind.
   template <typename QH>
-  Polyhedra_PowerSet(const Polyhedra_PowerSet<QH>& y);
+  Polyhedra_Powerset(const Polyhedra_Powerset<QH>& y);
 
-  //! Creates a Polyhedra_PowerSet with the same information contents as \p cs.
-  Polyhedra_PowerSet(const ConSys& cs);
+  //! Creates a Polyhedra_Powerset with the same information contents as \p cs.
+  Polyhedra_Powerset(const ConSys& cs);
 
   //@} // Constructors and Destructor
 
@@ -94,7 +94,7 @@ public:
     \warning
     This may be <EM>really</EM> expensive!
   */
-  bool geometrically_covers(const Polyhedra_PowerSet& y) const;
+  bool geometrically_covers(const Polyhedra_Powerset& y) const;
 
   //! \brief
   //! Returns <CODE>true</CODE> if and only if \p *this is geometrically
@@ -108,7 +108,7 @@ public:
     \warning
     This may be <EM>really</EM> expensive!
   */
-  bool geometrically_equals(const Polyhedra_PowerSet& y) const;
+  bool geometrically_equals(const Polyhedra_Powerset& y) const;
 
   //! Checks if all the invariants are satisfied.
   bool OK() const;
@@ -203,7 +203,7 @@ public:
     see \ref BGP99 "[BGP99]" and \ref BHZ03b "[BHZ03b]".
   */
   template <typename Widening>
-  void BGP99_extrapolation_assign(const Polyhedra_PowerSet& y,
+  void BGP99_extrapolation_assign(const Polyhedra_Powerset& y,
 				  Widening wf,
 				  unsigned max_disjuncts);
 
@@ -237,13 +237,13 @@ public:
     by \p Cert, see BHRZ03_Certificate or H79_Certificate.
   */
   template <typename Cert, typename Widening>
-  void BHZ03_widening_assign(const Polyhedra_PowerSet& y, Widening wf);
+  void BHZ03_widening_assign(const Polyhedra_Powerset& y, Widening wf);
 
   //! \brief
   //! An instance of the BHZ03 framework using the widening function \p wf
   //! certified by BHRZ03_Certificate.
   template <typename Widening>
-  void BHZ03_widening_assign(const Polyhedra_PowerSet& y, Widening wf);
+  void BHZ03_widening_assign(const Polyhedra_Powerset& y, Widening wf);
 
   //@} // Space-Dimension Preserving Member Functions that May Modify [...]
 
@@ -253,17 +253,17 @@ public:
   //! \brief
   //! The assignment operator
   //! (\p *this and \p y can be dimension-incompatible).
-  Polyhedra_PowerSet& operator=(const Polyhedra_PowerSet& y);
+  Polyhedra_Powerset& operator=(const Polyhedra_Powerset& y);
 
   //! \brief
   //! Assignment operator allowing a source powerset with elements of a
   //! different polyhedron kind
   //! (\p *this and \p y can be dimension-incompatible).
   template <typename QH>
-  Polyhedra_PowerSet& operator=(const Polyhedra_PowerSet<QH>& y);
+  Polyhedra_Powerset& operator=(const Polyhedra_Powerset<QH>& y);
 
   //! Swaps \p *this with \p y.
-  void swap(Polyhedra_PowerSet& y);
+  void swap(Polyhedra_Powerset& y);
 
   //! \brief
   //! Adds \p m new dimensions to the space containing \p *this 
@@ -281,7 +281,7 @@ public:
     \ref poly_difference "poly-difference" of each polyhedron in \p *this
     with each polyhedron in \p y and collecting all these differences.
   */
-  void poly_difference_assign(const Polyhedra_PowerSet& y);
+  void poly_difference_assign(const Polyhedra_Powerset& y);
  
   //! Assigns to \p *this the concatenation of \p *this and \p y.
   /*!
@@ -289,7 +289,7 @@ public:
     "concatenation" of each polyhedron in \p *this with each
     polyhedron in \p y.
   */
-  void concatenate_assign(const Polyhedra_PowerSet& y);
+  void concatenate_assign(const Polyhedra_Powerset& y);
 
   //! Removes all the specified dimensions.
   /*!
@@ -325,7 +325,7 @@ public:
 
 private:
   typedef Determinate<PH> CS;
-  typedef PowerSet<CS> Base;
+  typedef Powerset<CS> Base;
 
 public:
   typedef typename Base::Sequence Sequence;
@@ -361,7 +361,7 @@ private:
   //! Assigns to \p *this the result of applying the BGP99 heuristics
   //! to \p *this and \p y, using the widening function \p wf.
   template <typename Widening>
-  void BGP99_heuristics_assign(const Polyhedra_PowerSet& y, Widening wf);
+  void BGP99_heuristics_assign(const Polyhedra_Powerset& y, Widening wf);
 
   //! Records in \p cert_ms the certificates for this set of polyhedra.
   template <typename Cert>
@@ -381,10 +381,10 @@ private:
 namespace Parma_Polyhedra_Library {
 
 //! Partitions \p q with respect to \p p.
-/*! \relates Polyhedra_PowerSet
+/*! \relates Polyhedra_Powerset
   Let \p p and \p q be two polyhedra.
   The function returns an object <CODE>r</CODE> of type
-  <CODE>std::pair\<PH, Polyhedra_PowerSet\<NNC_Polyhedron\> \></CODE>
+  <CODE>std::pair\<PH, Polyhedra_Powerset\<NNC_Polyhedron\> \></CODE>
   such that
   - <CODE>r.first</CODE> is the intersection of \p p and \p q;
   - <CODE>r.second</CODE> has the property that all its elements are
@@ -401,7 +401,7 @@ namespace Parma_Polyhedra_Library {
   \endif
 */
 template <typename PH>
-std::pair<PH, Polyhedra_PowerSet<NNC_Polyhedron> >
+std::pair<PH, Polyhedra_Powerset<NNC_Polyhedron> >
 linear_partition(const PH& p, const PH& q);
 
 } // namespace Parma_Polyhedra_Library
@@ -410,13 +410,13 @@ linear_partition(const PH& p, const PH& q);
 namespace std {
 
 //! Specializes <CODE>std::swap</CODE>.
-/*! \relates Parma_Polyhedra_Library::Polyhedra_PowerSet */
+/*! \relates Parma_Polyhedra_Library::Polyhedra_Powerset */
 template <typename PH>
-void swap(Parma_Polyhedra_Library::Polyhedra_PowerSet<PH>& x,
-	  Parma_Polyhedra_Library::Polyhedra_PowerSet<PH>& y);
+void swap(Parma_Polyhedra_Library::Polyhedra_Powerset<PH>& x,
+	  Parma_Polyhedra_Library::Polyhedra_Powerset<PH>& y);
 
 } // namespace std
 
-#include "Polyhedra_PowerSet.inlines.hh"
+#include "Polyhedra_Powerset.inlines.hh"
 
-#endif // !defined(PPL_Polyhedra_PowerSet_defs_hh)
+#endif // !defined(PPL_Polyhedra_Powerset_defs_hh)

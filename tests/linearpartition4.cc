@@ -32,9 +32,9 @@ using namespace Parma_Polyhedra_Library::IO_Operators;
 #endif
 
 template <typename PH>
-Polyhedra_PowerSet<NNC_Polyhedron>
+Polyhedra_Powerset<NNC_Polyhedron>
 complement(const PH& ph) {
-  pair<PH, Polyhedra_PowerSet<NNC_Polyhedron> > partition
+  pair<PH, Polyhedra_Powerset<NNC_Polyhedron> > partition
     = linear_partition(ph, PH(ph.space_dimension(), Polyhedron::UNIVERSE));
   return partition.second;
 }
@@ -55,7 +55,7 @@ int main() TRY {
   cout << "p = " << p << endl;
 #endif
 
-  Polyhedra_PowerSet<NNC_Polyhedron> p_c = complement(p);
+  Polyhedra_Powerset<NNC_Polyhedron> p_c = complement(p);
 
 #if NOISY
   cout << "complement(p) = " << p_c << endl;
@@ -71,7 +71,7 @@ int main() TRY {
   cout << "q = " << q << endl;
 #endif
 
-  Polyhedra_PowerSet<NNC_Polyhedron> q_c = complement(q);
+  Polyhedra_Powerset<NNC_Polyhedron> q_c = complement(q);
 
 #if NOISY
   cout << "complement(q) = " << q_c << endl;

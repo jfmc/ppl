@@ -1,4 +1,4 @@
-/* Test Polyhedra_PowerSet<PH>::poly_difference_assign().
+/* Test Polyhedra_Powerset<PH>::poly_difference_assign().
    Copyright (C) 2001-2004 Roberto Bagnara <bagnara@cs.unipr.it>
 
 This file is part of the Parma Polyhedra Library (PPL).
@@ -47,7 +47,7 @@ rectangle(int lx, int ly, int dx, int dy) {
 int main() TRY {
   set_handlers();
 
-  Polyhedra_PowerSet<C_Polyhedron> cross(2, Polyhedron::EMPTY);
+  Polyhedra_Powerset<C_Polyhedron> cross(2, Polyhedron::EMPTY);
   cross.add_disjunct(rectangle(0, 3, 9, 3));
   cross.add_disjunct(rectangle(3, 0, 3, 9));
 
@@ -55,7 +55,7 @@ int main() TRY {
   cout << "cross = " << cross << endl;
 #endif
 
-  Polyhedra_PowerSet<C_Polyhedron> squares(2, Polyhedron::EMPTY);
+  Polyhedra_Powerset<C_Polyhedron> squares(2, Polyhedron::EMPTY);
   squares.add_disjunct(rectangle(1, 4, 1, 1));
   squares.add_disjunct(rectangle(4, 4, 1, 1));
   squares.add_disjunct(rectangle(7, 4, 1, 1));
@@ -66,14 +66,14 @@ int main() TRY {
   cout << "squares = " << squares << endl;
 #endif
 
-  Polyhedra_PowerSet<C_Polyhedron> difference = cross;
+  Polyhedra_Powerset<C_Polyhedron> difference = cross;
   difference.poly_difference_assign(squares);
 
 #if NOISY
   cout << "cross - squares = " << difference << endl;
 #endif
 
-  Polyhedra_PowerSet<C_Polyhedron> intersection = difference;
+  Polyhedra_Powerset<C_Polyhedron> intersection = difference;
   intersection.meet_assign(squares);
 
 #if NOISY
@@ -82,7 +82,7 @@ int main() TRY {
 
   // Check dimension.
 
-  Polyhedra_PowerSet<C_Polyhedron> re_union = difference;
+  Polyhedra_Powerset<C_Polyhedron> re_union = difference;
   re_union.upper_bound_assign(squares);
 #if NOISY
   cout << "(cross - squares) union squares = " << re_union << endl;

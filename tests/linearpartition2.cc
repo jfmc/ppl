@@ -35,17 +35,17 @@ static bool
 partition_ok(const C_Polyhedron& p,
 	     const C_Polyhedron& q,
 	     const pair<C_Polyhedron,
-	     PowerSet<Determinate<NNC_Polyhedron> > >& partition) {
+	     Powerset<Determinate<NNC_Polyhedron> > >& partition) {
   const C_Polyhedron& r = partition.first;
   // `r' must be a subset of or equal to `q'.
   if (!q.contains(r))
     return false;
-  const PowerSet<Determinate<NNC_Polyhedron> >& s = partition.second;
+  const Powerset<Determinate<NNC_Polyhedron> >& s = partition.second;
   NNC_Polyhedron the_union(r);
   // These are the NNC versions of `p' and `q'.
   NNC_Polyhedron nnc_p(p);
   NNC_Polyhedron nnc_q(q);
-  typedef PowerSet<Determinate<NNC_Polyhedron> >::const_iterator iter;
+  typedef Powerset<Determinate<NNC_Polyhedron> >::const_iterator iter;
   for (iter i = s.begin(), s_end = s.end(); i != s_end; ++i) {
     const NNC_Polyhedron& a = i->element();
     // All elements of `s' must be disjoint from `p'.
@@ -90,7 +90,7 @@ int main() TRY {
   cout << "q = " << q << endl;
 #endif
 
-  pair<C_Polyhedron, PowerSet<Determinate<NNC_Polyhedron> > >
+  pair<C_Polyhedron, Powerset<Determinate<NNC_Polyhedron> > >
     result = linear_partition(p, q);
 
 #if NOISY

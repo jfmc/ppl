@@ -10,14 +10,17 @@ NEWS for version 0.7  (released date to be decided)
 New and Changed Features
 ========================
 
+o  The classes PowerSet and Polyhedra_PowerSet have been renamed Powerset
+   and Polyhedra_Powerset, respectively.
+
 o  New constructors and assignment operators allowing to obtain a
-   Polyhedra_PowerSet<NNC_Polyhedron> from a Polyhedra_PowerSet<C_Polyhedron>
+   Polyhedra_Powerset<NNC_Polyhedron> from a Polyhedra_Powerset<C_Polyhedron>
    and the other way around.  In the latter case, the topological clusure
    of the element polyhedra is computed.
 
 o  New method
 
-     Polyhedra_PowerSet::poly_difference_assign(const Polyhedra_PowerSet& y)
+     Polyhedra_Powerset::poly_difference_assign(const Polyhedra_Powerset& y)
 
    assigns to `*this' the poly-difference of `*this' and `y'.
 
