@@ -159,8 +159,8 @@ namespace Parma_Polyhedra_Library {
 
     \par Example 3
     The following code builds the polyhedron corresponding to
-    an half-plane in \f$\Rset^2\f$,
-    by adding a single constraint to the universe polyhedron:
+    an half-plane by adding a single constraint
+    to the universe polyhedron in \f$\Rset^2\f$:
     \code
   Polyhedron ph(2);
   ph.insert(y >= 0);
@@ -169,12 +169,11 @@ namespace Parma_Polyhedra_Library {
     but starting from a system of generators specifying a vertex,
     a ray and a line.
     \code
-  GenSys gs;
-  gs.insert(vertex(0*x + 0*y));
-  gs.insert(ray(0*x + y));
-  gs.insert(line(x + 0*y));
-  Polyhedron ph(gs);
-  \endcode
+  Polyhedron ph(2, Polyhedron::EMPTY);
+  ph.insert(vertex(0*x + 0*y));
+  ph.insert(ray(y));
+  ph.insert(line(x));
+    \endcode
     In this last case, it is important to note that: even if this
     polyhedron has no real vertex, we must add one, because otherwise
     the polyhedron is considered empty.
@@ -187,7 +186,7 @@ namespace Parma_Polyhedra_Library {
   ph.insert(x == 2);
   ph.add_dimensions_and_embed(1);
     \endcode
-    We start with the universe polyhedron in the 0-dimensional space.
+    We build the universe polyhedron in the 1-dimension space \f$\Rset\f$.
     Then we add a single equality constraint,
     thus obtaining the polyhedron corresponding to the singleton set
     \f$\{ 2 \} \sseq \Rset\f$.
@@ -218,12 +217,11 @@ namespace Parma_Polyhedra_Library {
     The following code shows the use of the function
     <CODE>assign_variable</CODE>:
     \code
-  GenSys gs;
-  gs.insert(vertex(0*x + 0*y));
-  gs.insert(vertex(0*x + 3*y));
-  gs.insert(vertex(3*x + 0*y));
-  gs.insert(vertex(3*x + 3*y));
-  Polyhedron ph(gs);
+  Polyhedron ph(2, Polyhedron::EMPTY);
+  ph.insert(vertex(0*x + 0*y));
+  ph.insert(vertex(0*x + 3*y));
+  ph.insert(vertex(3*x + 0*y));
+  ph.insert(vertex(3*x + 3*y));
   LinExpression coeff = x + 0*y + 4;
   ph.assign_variable(x, coeff);
     \endcode
@@ -318,9 +316,9 @@ class Parma_Polyhedra_Library::Polyhedron {
 public:
   //! Kinds of degenerate polyhedra.
   enum Degenerate_Kind {
-    //! The full polyhedron in \f$\Rset^0\f$, i.e., a singleton.
-    ZERO_DIMENSIONAL,
-    //! The empty polyhedron in \f$\Rset^0\f$, i.e., the empty set.
+    //! The universe polyhedron, i.e., the whole vector space.
+    UNIVERSE,
+    //! The empty polyhedron, i.e., the empty set.
     EMPTY
   };
 
@@ -329,17 +327,23 @@ public:
   //! if \p kind is <CODE>ZERO_DIMENSIONAL</CODE> (the default);
   //! otherwise (i.e., if \p kind is <CODE>EMPTY</CODE>)
   //! it builds the empty polyhedron.
-  Polyhedron(Degenerate_Kind kind = ZERO_DIMENSIONAL);
+  // Polyhedron(Degenerate_Kind kind = ZERO_DIMENSIONAL);
+
   //! Ordinary copy-constructor.
   Polyhedron(const Polyhedron& y);
-  //! Builds the universe polyhedron of dimension \p num_dimensions.
-  explicit Polyhedron(size_t num_dimensions);
+  //! Builds either the universe or the empty polyhedron of dimension
+  //! \p num_dimensions. Both parameters are optional:
+  //! by default, a 0-dimension space universe polyhedron is built.
+  explicit Polyhedron(size_t num_dimensions = 0,
+		      Degenerate_Kind kind = UNIVERSE);
   //! Builds a polyhedron from a system of constraints.
+  //! The polyhedron inherits the space dimension of the constraint system.
   //! \param cs       The system of constraints defining the polyhedron.
   //!                 It is not declared <CODE>const</CODE> 
   //!                 because it can be modified.
   Polyhedron(ConSys& cs);
   //! Builds a polyhedron from a system of generators.
+  //! The polyhedron inherits the space dimension of the generator system.
   //! \param gs       The system of generators defining the polyhedron. 
   //!                 It is not declared <CODE>const</CODE>
   //!                 because it can be modified.
@@ -350,6 +354,7 @@ public:
   ~Polyhedron();
 
   //! The assignment operator.
+  //! (Note that \p *this and \p y can be dimension-incompatible.)
   Polyhedron& operator =(const Polyhedron& y);
 
   //! Returns the number of dimensions of the vector space.
@@ -538,6 +543,7 @@ public:
   Parma_Polyhedra_Library::operator >>(std::istream& s, Polyhedron& p);
 
   //! Swaps \p *this with polyhedron \p y.
+  //! (Note that \p *this and \p y can be dimension-incompatible.)
   void swap(Polyhedron& y);
 
 private:
@@ -558,9 +564,6 @@ public:
   //! Returns <CODE>true</CODE> if and only if
   //! \p *this is an empty polyhedron.
   bool is_empty() const;
-  //! Returns <CODE>true</CODE> if and only if
-  //! \p *this is a zero-dimensional polyhedron.
-  bool is_zero_dim() const;
 
 private:
   /*! @name Private Verifiers
@@ -580,7 +583,7 @@ private:
     Set only the specified flags.
   */
   //@{
-  void set_zero_dim();
+  void set_zero_dim_univ();
   void set_empty();
   void set_constraints_up_to_date();
   void set_generators_up_to_date();

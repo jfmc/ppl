@@ -28,7 +28,7 @@ Parma_Polyhedra_Library::Status::Status(status_t mask)
 
 inline
 Parma_Polyhedra_Library::Status::Status()
-  : flags(ZERO_DIM) {
+  : flags(ZERO_DIM_UNIV) {
 }
 
 inline Parma_Polyhedra_Library::Status
@@ -62,22 +62,22 @@ Parma_Polyhedra_Library::Status::reset(status_t mask) {
 }
 
 inline bool
-Parma_Polyhedra_Library::Status::test_zero_dim() const {
-  return flags == ZERO_DIM;
+Parma_Polyhedra_Library::Status::test_zero_dim_univ() const {
+  return flags == ZERO_DIM_UNIV;
 }
 
 inline void
-Parma_Polyhedra_Library::Status::reset_zero_dim() {
-  // This is a no-op if the current status is not zero-dim,
-  if (flags == ZERO_DIM)
-    // No longer zero-dim: what else can we say?
+Parma_Polyhedra_Library::Status::reset_zero_dim_univ() {
+  // This is a no-op if the current status is not zero-dim.
+  if (flags == ZERO_DIM_UNIV)
+    // In the zero-dim space, if it is not the universe it is empty.
     flags = EMPTY;
 }
 
 inline void
-Parma_Polyhedra_Library::Status::set_zero_dim() {
-  // Zero-dim is incompatible with anything else.
-  flags = ZERO_DIM;
+Parma_Polyhedra_Library::Status::set_zero_dim_univ() {
+  // Zero-dim universe is incompatible with anything else.
+  flags = ZERO_DIM_UNIV;
 }
 
 inline bool

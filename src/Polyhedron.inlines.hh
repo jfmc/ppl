@@ -62,15 +62,6 @@ Parma_Polyhedra_Library::Polyhedron::is_empty() const {
 }
 
 /*!
-  Returns <CODE>true</CODE> if and only if \p *this is the
-  full zero-dimensional polyhedron.
-*/
-inline bool
-Parma_Polyhedra_Library::Polyhedron::is_zero_dim() const {
-  return status.test_zero_dim();
-}
-
-/*!
   Returns <CODE>true</CODE> if the system of constraints is up-to-date.
 */
 inline bool
@@ -254,8 +245,8 @@ Parma_Polyhedra_Library::Polyhedron::clear_generators_up_to_date() {
   polyhedron.
 */
 inline void
-Parma_Polyhedra_Library::Polyhedron::set_zero_dim() {
-  status.set_zero_dim();
+Parma_Polyhedra_Library::Polyhedron::set_zero_dim_univ() {
+  status.set_zero_dim_univ();
 }
 
 inline bool
