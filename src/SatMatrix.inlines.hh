@@ -24,6 +24,7 @@ site: http://www.cs.unipr.it/ppl/ . */
 #ifndef PPL_SatMatrix_inlines_hh
 #define PPL_SatMatrix_inlines_hh 1
 
+#include <algorithm>
 #include <cassert>
 
 namespace Parma_Polyhedra_Library {
@@ -115,6 +116,12 @@ inline bool
 SatMatrix::SatRowLessThan::
 operator()(const SatRow& x, const SatRow& y) const {
   return compare(x, y) < 0;
+}
+
+inline bool
+SatMatrix::sorted_contains(const SatRow& row) const {
+  assert(check_sorted());
+  return std::binary_search(rows.begin(), rows.end(), row, SatRowLessThan());
 }
 
 } // namespace Parma_Polyhedra_Library

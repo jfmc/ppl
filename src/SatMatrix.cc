@@ -139,20 +139,6 @@ PPL::SatMatrix::resize(dimension_type new_n_rows,
   assert(OK());
 }
 
-bool
-PPL::SatMatrix::sorted_contains(const SatRow& row) const {
-  assert(check_sorted());
-  const SatMatrix& x = *this;
-  for (dimension_type i = num_rows(); i-- > 0; ) {
-    const int comp = compare(x[i], row);
-    if (comp == 0)
-      return true;
-    else if (comp < 0)
-      return false;
-  }
-  return false;
-}
-
 void
 PPL::SatMatrix::ascii_dump(std::ostream& s) const {
   using std::endl;
