@@ -502,8 +502,8 @@ public:
   //!                                  \p g are dimension-incompatible.
   Poly_Gen_Relation relation_with(const Generator& g) const;
 
-  //! Computes the widening between \p *this and \p y and
-  //! assigns the result to \p *this.
+  //! Computes a CC92-widening (as described in the Introduction)
+  //! between \p *this and \p y and assigns the result to \p *this.
   //! \param y           The polyhedron that <EM>must</EM>
   //!                    be contained in \p *this.
   //! \exception std::invalid_argument thrown if \p *this and \p y
@@ -511,8 +511,8 @@ public:
   //!                                  or dimension-incompatible.
   void widening_CC92_assign(const Polyhedron& y);
 
-  //! Limits the widening between \p *this and \p y by \p cs
-  //! and assigns the result to \p *this.
+  //! Limits the CC92-widening between \p *this and \p y by \p cs
+  //! CC92 and assigns the result to \p *this.
   //! \param y                 The polyhedron that <EM>must</EM>
   //!                          be contained in \p *this.
   //! \param cs                The system of constraints that limits

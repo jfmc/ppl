@@ -1096,7 +1096,7 @@ __P((ppl_Polyhedron_t x, ppl_const_Polyhedron_t y));
 
 /*!
   If the polyhedron \p y is contained in (or equal to) the polyhedron
-  \p x, assigns to \p x the widening of \p x and \p y.
+  \p x, assigns to \p x the CC92-widening of \p x and \p y.
 */
 int
 ppl_Polyhedron_widening_CC92_assign __P((ppl_Polyhedron_t x,
@@ -1104,7 +1104,7 @@ ppl_Polyhedron_widening_CC92_assign __P((ppl_Polyhedron_t x,
 
 /*!
   If the polyhedron \p y is contained in (or equal to) the polyhedron
-  \p x, assigns to \p x the widening of \p x and \p y intersected with
+  \p x, assigns to \p x the CC92-widening of \p x and \p y intersected with
   the constraint system \p cs.
 
   \warning

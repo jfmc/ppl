@@ -2977,7 +2977,8 @@ PPL::Polyhedron::relation_with(const Generator& g) const {
 }
 
 /*!
-  This function computes the widening between \p *this and
+  This function computes a CC92-widening
+  (as described in the Introduction) between \p *this and
   \p y and the result is assigned to the polyhedron \p *this.
   The resulting polyhedron has a system of constraints
   which is up-to-date for just those constraints that are common
@@ -3005,7 +3006,7 @@ PPL::Polyhedron::widening_CC92_assign(const Polyhedron& y) {
   }
 #endif
 
-  // The widening between two polyhedra in a zero-dimensional space
+  // The CC92-widening between two polyhedra in a zero-dimensional space
   // is a polyhedron in a zero-dimensional space, too.
   if (x_space_dim == 0)
     return;
@@ -3112,10 +3113,10 @@ PPL::Polyhedron::widening_CC92_assign(const Polyhedron& y) {
 
 
 /*!
-  This function adds to the widened polyhedron \p *this (obtained
-  starting from \p *this and \p y) the constraints of the matrix
-  \p cs that are satisfied by both the polyhedron \p y and
-  the initial polyhedron \p *this.
+  This function adds to the CC92-widened polyhedron \p *this (obtained
+  starting from \p *this and \p y)
+  the constraints of the matrix \p cs that are satisfied by both
+  the polyhedron \p y and the initial polyhedron \p *this.
   Returns <CODE>true</CODE> if the widened polyhedron \p *this is
   not empty.
 */
@@ -3156,8 +3157,9 @@ PPL::Polyhedron::limited_widening_CC92_assign(const Polyhedron& y,
   if (x.is_empty())
     return;
 
-  // The limited widening between two polyhedra in a zero-dimensional space
-  // is a polyhedron in a zero-dimensional space, too.
+  // The limited CC92-widening between two polyhedra in a
+  // zero-dimensional space is a polyhedron in a zero-dimensional
+  // space, too.
   if (x_space_dim == 0)
     return;
 

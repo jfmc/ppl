@@ -428,7 +428,27 @@ of the result.
 
 <B>Widening Operators</B>
 
-To be written.
+We provide widening operators for the domain of
+NNC polyhedra.
+These operators use a widening, we call <EM>CC92-widening</EM>,
+which is based on that described in P. Cousot and R. Cousot,
+Comparing the Galois Connection and Widening/Narrowing Approaches to
+Abstract Interpretation in 
+<EM>Proceedings of the 4th International Symposium
+on Programming Language Implementation and Logic Programming</EM>,
+LNCS 631, pp.269--295, 1992. 
+
+There are a few differences between the CC92-widening
+and the widenings described in this paper.
+In particular:
+
+ - we allow for equalities whereas the original definition is restricted to
+    inequalities;
+ - The original definition assumes the polyhedra 
+   are closed whereas we assume NNC polyhedra;
+ - The widening operators for the NNC polyhedron \f$P\f$ with 
+   NNC polyhedron \f$P'\f$ requires as a precondition that
+   \f$P' \sseq P\f$.
 
 
 <B>Time-Elapse Operator</B>

@@ -446,17 +446,23 @@ more information regarding these issues.
 
 <H4><CODE>ppl_Polyhedron_widening_CC92_assign(+Handle_1, +Handle_2)</CODE></H4>
 
-   Computes the widening \f$P\f$ between the polyhedra referenced by
-   <CODE>Handle_1</CODE> and <CODE>Handle_2</CODE>.
+   Computes the CC92-widening \f$P\f$ between the polyhedra
+   \f$P_1\f$ referenced by
+   <CODE>Handle_1</CODE> and the polyhedra
+   \f$P_2\f$ referenced by <CODE>Handle_2</CODE>.
    After execution, <CODE>Handle_1</CODE> refers to \f$P\f$.
+   The polyhedron \f$P_1\f$ must be contained in (or equal to)
+   the polyhedron \f$P_2\f$.
 
 <H4><CODE>ppl_Polyhedron_limited_widening_CC92_assign(+Handle_1, +Handle_2,
                +List_of_Constraints)</CODE></H4>
 
-   Computes the widening \f$P\f$ between the polyhedra referenced by
+   Computes the CC92-widening \f$P\f$ between the polyhedra referenced by
    <CODE>Handle_1</CODE> and <CODE>Handle_2</CODE>,
    limited by <CODE>List_of_Constraints</CODE>.
    After execution, <CODE>Handle_1</CODE> refers to \f$P\f$.
+   The polyhedron \f$P_1\f$ must be contained in (or equal to)
+   the polyhedron \f$P_2\f$.
 
 <H4><CODE>ppl_Polyhedron_get_constraints(+Handle, -List_of_Constraints)
 </CODE></H4>
