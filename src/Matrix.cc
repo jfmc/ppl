@@ -1033,8 +1033,11 @@ PPL::Matrix::gram_shmidt() {
 
 PPL::dimension_type
 PPL::Matrix::gauss() {
-  // This method is only applied to a matrix having no pending rows.
+  // This method is only applied to a well-formed matrix
+  // having no pending rows.
+  assert(OK());
   assert(num_pending_rows() == 0);
+
   dimension_type rank = 0;
   // Will keep track of the variations on the matrix of equalities.
   bool changed = false;
@@ -1072,19 +1075,30 @@ PPL::Matrix::gauss() {
   }
   if (changed)
     set_sorted(false);
+  assert(OK());
   return rank;
 }
 
 void
 PPL::Matrix::back_substitute(dimension_type rank) {
-  // This method is only applied to a matrix having no pending rows.
+  // This method is only applied to a well-formed matrix
+  // having no pending rows.
+  assert(OK());
   assert(num_pending_rows() == 0);
   // The matrix describes a non-empty polyhedron and thus it always
   // contains a row which is not a line/equality (corresponding to
   // a vertex or to a low-level constraint).
   assert(num_rows() > rank);
-  bool was_sorted = is_sorted();
+
   dimension_type nrows = num_rows();
+  // Trying to keep sortedness.
+  bool was_sorted = is_sorted();
+  // This deque of booleans will be used to flag those rows that,
+  // before exiting, need to be re-checked for sortedness.
+  std::deque<bool> check_for_sortedness;
+  if (was_sorted)
+    check_for_sortedness.insert(check_for_sortedness.end(), nrows, false); 
+
   for (dimension_type k = rank; k-- > 0; ) {
     // For each row, starting from the rank-th one,
     // looks for the last non-zero element.
@@ -1102,16 +1116,12 @@ PPL::Matrix::back_substitute(dimension_type rank) {
 	// Combine linearly `row_i' with `row_k'
 	// so that `row_i[j]' becomes zero.
 	row_i.linear_combine(row_k, j);
-	// Trying to keep sortedness.
 	if (was_sorted) {
-	  assert(i < k && k < nrows);
-	  // `row_i' has changed: if it still happens to be sorted
-	  // wrt the adjacent row(s), the matrix remains sorted.
-	  if (i != 0)
-	    set_sorted(rows[i-1] <= row_i && row_i <= rows[i+1]);
-	  else
-	    set_sorted(row_i <= rows[1]);
-	  was_sorted = is_sorted();
+	  // Trying to keep sortedness: remember which rows
+	  // have to be re-checked for sortedness at the end.
+	  if (i > 0)
+	    check_for_sortedness[i-1] = true;
+	  check_for_sortedness[i] = true;
 	}
       }
     }
@@ -1121,9 +1131,12 @@ PPL::Matrix::back_substitute(dimension_type rank) {
     // Since an inequality (or ray or point) cannot be multiplied
     // by a negative factor, the coefficient of the pivot must be
     // forced to be positive.
-    if (row_k[j] < 0)
+    bool have_to_negate = (row_k[j] < 0);
+    if (have_to_negate)
       for (dimension_type h = num_columns(); h-- > 0; )
 	PPL::negate(row_k[h]);
+    // Note: we do not mark index `k' in `check_for_sortedness',
+    // because we will later negate back the row.
     
     // Go through all the inequalities of the matrix.
     for (dimension_type i = rank; i < nrows; ++i) {
@@ -1132,27 +1145,31 @@ PPL::Matrix::back_substitute(dimension_type rank) {
 	// Combine linearly the `row_i' with `row_k'
 	// so that `row_i[j]' becomes zero.
 	row_i.linear_combine(row_k, j);
-	// Trying to keep sortedness.
 	if (was_sorted) {
-	  assert(k < i);
-	  // `row_i' has changed: if it still happens to be sorted
-	  // wrt the adjacent row(s), the matrix remains sorted.
-	  if (i != nrows-1)
-	    set_sorted(rows[i-1] <= row_i && row_i <= rows[i+1]);
-	  else
-	    set_sorted(rows[i-1] <= row_i);
-	  was_sorted = is_sorted();
+	  // Trying to keep sortedness: remember which rows
+	  // have to be re-checked for sortedness at the end.
+	  if (i > rank)
+	    check_for_sortedness[i-1] = true;
+	  check_for_sortedness[i] = true;
 	}
       }
     }
 
-    // Restore strong normalization of `row_k'.
-    // TODO: provide a method to just adjust the sign,
-    // because (simple) normalization already holds.
-    // Have a better control of sortedness.
-    row_k.strong_normalize();
-    set_sorted(false);
+    if (have_to_negate)
+      // Negate `row_k' to restore strong-normalization.
+      for (dimension_type h = num_columns(); h-- > 0; )
+	PPL::negate(row_k[h]);
   }
+
+  // Trying to keep sortedness.
+  for (dimension_type i = 0, iend = nrows-1; was_sorted && i < iend; ++i)
+    if (check_for_sortedness[i])
+      // Have to check sortedness of `mat[i]' wrt `mat[i+1]'.
+      was_sorted = (rows[i] <= rows[i+1]);
+  // Set the sortedness flag.
+  set_sorted(was_sorted);
+
+  assert(OK());
 }
 
 
@@ -1182,8 +1199,7 @@ PPL::Matrix::add_rows_and_columns(dimension_type n) {
     // Since ray, points and inequalities come after lines
     // and equalities, this case implies the matrix is sorted.
     set_sorted(true);
-  }
-  
+  }  
   else if (was_sorted)
     set_sorted(x[n-1] <= x[n]);
 
@@ -1262,6 +1278,20 @@ PPL::Matrix::OK() const {
       return false;
     }
   }
+
+  // Check for strong normalization of rows.
+  // Note: normalization cannot be checked inside the Row::OK() method,
+  // because a Row object may also implement a LinExpression object,
+  // which in general cannot be (strongly) normalized.
+  Matrix tmp = x;
+  tmp.strong_normalize();
+  if (x != tmp) {
+#ifndef NDEBUG
+    cerr << "Matrix rows are not strongly normalized!"
+	 << endl;
+#endif
+    return false;
+  }    
 
   if (sorted && !check_sorted()) {
 #ifndef NDEBUG
