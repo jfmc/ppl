@@ -194,6 +194,25 @@ PowerSet<CS>::meet_assign(const PowerSet<CS>& y) {
   std::swap(*this, z);
 }
 
+template <typename CS>
+void
+PowerSet<CS>::concatenate_assign(const PowerSet<CS>& y) {
+  PowerSet<CS> z;
+  const PowerSet<CS>& x = *this;
+  for (typename PowerSet<CS>::const_iterator xi = x.begin(),
+	 xend = x.end(); xi != xend; ++xi) {
+    for (typename PowerSet<CS>::const_iterator yi = y.begin(),
+	   yend = y.end(); yi != yend; ++yi) {
+      CS zi = *xi;
+      zi.concatenate_assign(*yi);
+      if (!zi.is_bottom())
+	z.sequence.push_back(zi);
+    }
+  }
+  z.omega_reduction();
+  std::swap(*this, z);
+}
+
 // Join operator
 
 template <typename CS>
@@ -251,6 +270,12 @@ std::ostream& operator<< (std::ostream& s, const PowerSet<CS>& x) {
 }
 
 template <typename CS>
+size_t
+PowerSet<CS>::space_dimension() const {
+  return space_dim;
+}
+
+template <typename CS>
 void
 PowerSet<CS>::add_constraint(const Constraint& c) {
   for (typename PowerSet<CS>::iterator i = begin(),
@@ -270,21 +295,6 @@ PowerSet<CS>::add_constraints(ConSys& cs) {
       // i->add_constraints(ConSys(cs));
       ConSys cs_copy = cs;
       i->add_constraints(cs_copy);
-    }
-  omega_reduction();
-}
-
-template <typename CS>
-void
-PowerSet<CS>::add_dimensions_and_constraints(ConSys& cs) {
-  if (size() == 1)
-    begin()->add_dimensions_and_constraints(cs);
-  else
-    for (typename PowerSet<CS>::iterator i = begin(),
-	   xend = end(); i != xend; ++i) {
-      //i->add_dimensions_and_constraints(ConSys(cs));
-      ConSys cs_copy = cs;
-      i->add_dimensions_and_constraints(cs_copy);
     }
   omega_reduction();
 }

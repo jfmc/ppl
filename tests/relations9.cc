@@ -1,4 +1,4 @@
-/* Testing C_Polyhedron::relation_with(c) when c is a strict inequality.
+/* Testing Polyhedron::relation_with(c) when c is a strict inequality.
    Copyright (C) 2001, 2002 Roberto Bagnara <bagnara@cs.unipr.it>
 
 This file is part of the Parma Polyhedra Library (PPL).
@@ -21,13 +21,14 @@ USA.
 For the most up-to-date information see the Parma Polyhedra Library
 site: http://www.cs.unipr.it/ppl/ . */
 
-#include "ppl_install.hh"
-#include "print.hh"
+#include "ppl_test.hh"
 
 using namespace std;
 using namespace Parma_Polyhedra_Library;
 
+#ifndef NOISY
 #define NOISY 0
+#endif
 
 void test1() {
   // The zero-dim universe polyhedron.

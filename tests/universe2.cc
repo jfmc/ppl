@@ -1,4 +1,4 @@
-/* Testing C_Polyhedron::check_universe(): we verify that a polyhedron
+/* Testing Polyhedron::check_universe(): we verify that a polyhedron
    defined by a non-trivial system of constraints is not universal.
    Copyright (C) 2001, 2002 Roberto Bagnara <bagnara@cs.unipr.it>
 
@@ -22,14 +22,14 @@ USA.
 For the most up-to-date information see the Parma Polyhedra Library
 site: http://www.cs.unipr.it/ppl/ . */
 
-#include "ppl_install.hh"
-#include "print.hh"
-#include "ehandlers.hh"
+#include "ppl_test.hh"
 
 using namespace std;
 using namespace Parma_Polyhedra_Library;
 
+#ifndef NOISY
 #define NOISY 0
+#endif
 
 int
 main() {

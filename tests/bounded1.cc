@@ -1,4 +1,4 @@
-/* Testing C_Polyhedron::is_bounded(). We apply this function to
+/* Testing Polyhedron::is_bounded(). We apply this function to
    five different type of polyhedra: a non-bounded polyhedron,
    a boundend polyhedra, a zero dimensional polyhedron, a zero-dimensional
    and empty polyhedron and a empty polyhedron.
@@ -24,14 +24,14 @@ USA.
 For the most up-to-date information see the Parma Polyhedra Library
 site: http://www.cs.unipr.it/ppl/ . */
 
-#include "ppl_install.hh"
-#include "print.hh"
-#include "ehandlers.hh"
+#include "ppl_test.hh"
 
 using namespace std;
 using namespace Parma_Polyhedra_Library;
 
+#ifndef NOISY
 #define NOISY 0
+#endif
 
 int
 main() {

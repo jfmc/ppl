@@ -74,6 +74,8 @@ public:
   //! Assigns to \p *this the meet of \p *this and \p y.
   void meet_assign(const PowerSet& y);
 
+  void concatenate_assign(const PowerSet& y);
+
   //! Returns <CODE>true</CODE> if \p *this definitely entails \p y.
   //! Returns <CODE>false</CODE> if \p *this may not entail \p y
   //! (i.e., if \p *this does not entail \p y or if entailment could
@@ -88,6 +90,9 @@ public:
   friend int lcompare<>(const PowerSet& x, const PowerSet& y);
 
   friend std::ostream& operator <<<>(std::ostream& s, const PowerSet& x);
+
+  //! Returns the dimension of the vector space enclosing \p *this.
+  size_t space_dimension() const;
 
   //! \brief
   //! Intersects \p *this with (a copy of) constraint \p c.
@@ -108,20 +113,6 @@ public:
                                      or dimension-incompatible.
   */
   void add_constraints(ConSys& cs);
-
-  //! \brief
-  //! First increases the space dimension of \p *this by adding
-  //! \p cs.space_dimension() new dimensions;
-  //! then intersects \p *this with a renamed-apart version of
-  //! the constraints in \p cs.
-  /*!
-    \param  cs             Specifies the constraints to be added.
-                           This parameter is not declared <CODE>const</CODE>
-                           because it can be modified.
-    \exception std::invalid_argument thrown if \p *this and \p cs
-                                     are topology-incompatible.
-  */
-  void add_dimensions_and_constraints(ConSys& cs);
 
   //! \brief
   //! Adds \p dim new dimensions and embeds the old polyhedron
@@ -158,6 +149,14 @@ private:
   typedef std::list<CS> Sequence;
   typedef typename Sequence::const_reference const_reference;
 
+  //! The sequence container holding powerset's elements.
+  Sequence sequence;
+
+  //! The number of dimensions of the enclosing vector space.
+  size_t space_dim;
+
+  void omega_reduction();
+
 public:
   typedef typename Sequence::iterator iterator;
   typedef typename Sequence::const_iterator const_iterator;
@@ -170,11 +169,6 @@ public:
 
   iterator end();
   const_iterator end() const;
-
-
-  Sequence sequence;
-
-  void omega_reduction();
 };
 
 #include "PowerSet.inlines.hh"

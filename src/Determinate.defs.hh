@@ -30,9 +30,31 @@ site: http://www.cs.unipr.it/ppl/ . */
 
 namespace Parma_Polyhedra_Library {
 
+//! \brief
+//! Returns <CODE>true</CODE> if and only if
+//! \p x and \p y are the same polyhedron.
+/*!
+  \relates Determinate<PH>
+  \exception std::invalid_argument thrown if \p x and \p y
+  are topology-incompatible
+  or dimension-incompatible.
+*/
 template <typename PH>
-class Determinate;
+bool operator==(const Determinate<PH>& x, const Determinate<PH>& y);
 
+//! \brief
+//! Returns <CODE>true</CODE> if and only if
+//! \p x and \p y are different polyhedra.
+/*!
+  \relates Determinate<PH>
+  \exception std::invalid_argument thrown if \p x and \p y
+  are topology-incompatible
+  or dimension-incompatible.
+*/
+template <typename PH>
+bool operator!=(const Determinate<PH>& x, const Determinate<PH>& y);
+
+#if 0
 template <typename PH>
 bool
 lcompare(const Determinate<PH>& x, const Determinate<PH>& y);
@@ -44,6 +66,7 @@ operator+(const Determinate<PH>& x, const Determinate<PH>& y);
 template <typename PH>
 Determinate<PH>
 operator*(const Determinate<PH>& x, const Determinate<PH>& y);
+#endif
 
 template <typename PH>
 std::ostream&
@@ -55,6 +78,9 @@ operator<<(std::ostream&, const Determinate<PH>&);
 template <typename PH>
 class Parma_Polyhedra_Library::Determinate {
 public:
+  explicit
+  Determinate(size_t num_dimensions = 0,
+	      Polyhedron::Degenerate_Kind kind = Polyhedron::UNIVERSE);
   Determinate(const PH& p);
   Determinate(const Determinate& y);
   ~Determinate();
@@ -67,6 +93,8 @@ public:
 
   void meet_assign(const Determinate& y);
 
+  void concatenate_assign(const Determinate& y);
+
   bool definitely_entails(const Determinate& y) const;
 
   Determinate& operator <<= (unsigned int n);
@@ -75,10 +103,21 @@ public:
   inline bool is_top() const;
   inline bool is_bottom() const;
 
-  friend bool lcompare<>(const Determinate& x, const Determinate& y);
+  friend bool
+  operator==<PH>(const Determinate<PH>& x, const Determinate<PH>& y);
+  friend bool
+  operator!=<PH>(const Determinate<PH>& x, const Determinate<PH>& y);
+
+#if 0
   friend Determinate operator +<>(const Determinate& x, const Determinate& y);
   friend Determinate operator *<>(const Determinate& x, const Determinate& y);
+#endif
+  friend bool lcompare<>(const Determinate& x, const Determinate& y);
+
   friend std::ostream& operator<<<>(std::ostream& s, const Determinate& x);
+
+  //! Returns the dimension of the vector space enclosing \p *this.
+  size_t space_dimension() const;
 
   //! \brief
   //! Intersects \p *this with (a copy of) constraint \p c.
@@ -99,20 +138,6 @@ public:
                                      or dimension-incompatible.
   */
   void add_constraints(ConSys& cs);
-
-  //! \brief
-  //! First increases the space dimension of \p *this by adding
-  //! \p cs.space_dimension() new dimensions;
-  //! then intersects \p *this with a renamed-apart version of
-  //! the constraints in \p cs.
-  /*!
-    \param  cs             Specifies the constraints to be added.
-                           This parameter is not declared <CODE>const</CODE>
-                           because it can be modified.
-    \exception std::invalid_argument thrown if \p *this and \p cs
-                                     are topology-incompatible.
-  */
-  void add_dimensions_and_constraints(ConSys& cs);
 
   //! \brief
   //! Adds \p dim new dimensions and embeds the old polyhedron
@@ -179,6 +204,10 @@ private:
       return --references == 0;
     }
 
+    Rep(size_t num_dimensions, Polyhedron::Degenerate_Kind kind)
+      : references(0), ph(num_dimensions, kind) {
+    }
+
     Rep(const PH& p)
       : references(0), ph(p) {
     }
@@ -203,8 +232,6 @@ private:
     else
       return false;
   }
-
-  Determinate();
 };
 
 #include "Determinate.inlines.hh"

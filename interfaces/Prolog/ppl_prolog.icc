@@ -1009,6 +1009,21 @@ ppl_Polyhedron_intersection_assign(Prolog_term_ref t_lhs,
 }
 
 extern "C" Prolog_foreign_return_type
+ppl_Polyhedron_concatenate_assign(Prolog_term_ref t_lhs,
+				  Prolog_term_ref t_rhs) {
+  try {
+    PPL::Polyhedron* lhs = term_to_polyhedron_handle(t_lhs);
+    const PPL::Polyhedron* rhs = term_to_polyhedron_handle(t_rhs);
+    CHECK(lhs);
+    CHECK(rhs);
+    lhs->concatenate_assign(*rhs);
+    return PROLOG_SUCCESS;
+  }
+  CATCH_ALL;
+  return PROLOG_FAILURE;
+}
+
+extern "C" Prolog_foreign_return_type
 ppl_Polyhedron_intersection_assign_and_minimize(Prolog_term_ref t_lhs,
 						Prolog_term_ref t_rhs) {
   try {
@@ -1331,26 +1346,6 @@ ppl_Polyhedron_add_generators_and_minimize(Prolog_term_ref t_ph,
 
     if (ph->add_generators_and_minimize(gs))
       return PROLOG_SUCCESS;
-  }
-  CATCH_ALL;
-  return PROLOG_FAILURE;
-}
-
-extern "C" Prolog_foreign_return_type
-ppl_Polyhedron_add_dimensions_and_constraints(Prolog_term_ref t_ph,
-					      Prolog_term_ref t_clist) {
-  try {
-    PPL::Polyhedron* ph = term_to_polyhedron_handle(t_ph);
-    CHECK(ph);
-    PPL::ConSys cs;
-    Prolog_term_ref c = Prolog_new_term_ref();
-
-    while (Prolog_is_cons(t_clist)) {
-      Prolog_get_cons(t_clist, c, t_clist);
-      cs.insert(build_constraint(c));
-    }
-    ph->add_dimensions_and_constraints(cs);
-    return PROLOG_SUCCESS;
   }
   CATCH_ALL;
   return PROLOG_FAILURE;

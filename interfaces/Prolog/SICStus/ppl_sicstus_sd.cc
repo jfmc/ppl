@@ -391,6 +391,7 @@ SP_STUB_1(ppl_delete_Polyhedron)
 SP_STUB_2(ppl_Polyhedron_space_dimension)
 SP_STUB_2(ppl_Polyhedron_intersection_assign)
 SP_STUB_2(ppl_Polyhedron_intersection_assign_and_minimize)
+SP_STUB_2(ppl_Polyhedron_concatenate_assign)
 SP_STUB_2(ppl_Polyhedron_poly_hull_assign)
 SP_STUB_2(ppl_Polyhedron_poly_hull_assign_and_minimize)
 SP_STUB_2(ppl_Polyhedron_poly_difference_assign)
@@ -408,7 +409,6 @@ SP_STUB_2(ppl_Polyhedron_add_constraints)
 SP_STUB_2(ppl_Polyhedron_add_constraints_and_minimize)
 SP_STUB_2(ppl_Polyhedron_add_generators)
 SP_STUB_2(ppl_Polyhedron_add_generators_and_minimize)
-SP_STUB_2(ppl_Polyhedron_add_dimensions_and_constraints)
 SP_STUB_2(ppl_Polyhedron_add_dimensions_and_project)
 SP_STUB_2(ppl_Polyhedron_add_dimensions_and_embed)
 SP_STUB_2(ppl_Polyhedron_remove_dimensions)
@@ -454,6 +454,7 @@ ppl_sicstus_init(int /* when */) {
   SP_DEFINE_C_PREDICATE(ppl_Polyhedron_space_dimension, 2);
   SP_DEFINE_C_PREDICATE(ppl_Polyhedron_intersection_assign, 2);
   SP_DEFINE_C_PREDICATE(ppl_Polyhedron_intersection_assign_and_minimize, 2);
+  SP_DEFINE_C_PREDICATE(ppl_Polyhedron_concatenate_assign, 2);
   SP_DEFINE_C_PREDICATE(ppl_Polyhedron_poly_hull_assign, 2);
   SP_DEFINE_C_PREDICATE(ppl_Polyhedron_poly_hull_assign_and_minimize, 2);
   SP_DEFINE_C_PREDICATE(ppl_Polyhedron_poly_difference_assign, 2);
@@ -471,7 +472,6 @@ ppl_sicstus_init(int /* when */) {
   SP_DEFINE_C_PREDICATE(ppl_Polyhedron_add_constraints_and_minimize, 2);
   SP_DEFINE_C_PREDICATE(ppl_Polyhedron_add_generators, 2);
   SP_DEFINE_C_PREDICATE(ppl_Polyhedron_add_generators_and_minimize, 2);
-  SP_DEFINE_C_PREDICATE(ppl_Polyhedron_add_dimensions_and_constraints, 2);
   SP_DEFINE_C_PREDICATE(ppl_Polyhedron_add_dimensions_and_project, 2);
   SP_DEFINE_C_PREDICATE(ppl_Polyhedron_add_dimensions_and_embed, 2);
   SP_DEFINE_C_PREDICATE(ppl_Polyhedron_remove_dimensions, 2);

@@ -21,15 +21,14 @@ USA.
 For the most up-to-date information see the Parma Polyhedra Library
 site: http://www.cs.unipr.it/ppl/ . */
 
-#include "ppl_install.hh"
-#include "ehandlers.hh"
-#include <stdexcept>
-#include <iostream>
+#include "ppl_test.hh"
 
 using namespace std;
 using namespace Parma_Polyhedra_Library;
 
+#ifndef NOISY
 #define NOISY 0
+#endif
 
 void
 error1() {
@@ -205,13 +204,13 @@ error7() {
   ConSys cs;
   cs.insert(x > 2);
   cs.insert(x == y);
-  
+  NNC_Polyhedron qh(cs);
+
   try {
-    // This is an incorrect use of the function
-    // add_dimensions_and_constraints(cs): it is illegal to apply
-    // this function to a closed polyhedron with a system of constraints
-    // that contains strict-inequalities.
-    ph.add_dimensions_and_constraints(cs);
+    // This is an incorrect use of the method concatenate_assign(): it
+    // is illegal to apply this method to a closed polyhedron with a
+    // NNC Polyhedron.
+    ph.concatenate_assign(qh);
   }
   catch(invalid_argument& e) {
 #if NOISY

@@ -29,6 +29,13 @@ site: http://www.cs.unipr.it/ppl/ . */
 namespace Parma_Polyhedra_Library {
 
 template <typename PH>
+Determinate<PH>::Determinate(size_t num_dimensions,
+			     Polyhedron::Degenerate_Kind kind)
+  : prep(new Rep(num_dimensions, kind)) {
+  new_reference();
+}
+
+template <typename PH>
 Determinate<PH>::Determinate(const PH& p)
   : prep(new Rep(p)) {
   new_reference();
@@ -59,6 +66,7 @@ Determinate<PH>::operator=(const Determinate& y) {
 template <typename PH>
 void
 Determinate<PH>::mutate() {
+  assert(prep);
   if (prep->is_shared()) {
     prep = new Rep(prep->ph);
     new_reference();
@@ -68,6 +76,8 @@ Determinate<PH>::mutate() {
 template <typename PH>
 void
 Determinate<PH>::upper_bound_assign(const Determinate& y) {
+  assert(prep);
+  assert(y.prep);
   mutate();
   prep->ph.poly_hull_assign(y.prep->ph);
 }
@@ -75,13 +85,26 @@ Determinate<PH>::upper_bound_assign(const Determinate& y) {
 template <typename PH>
 void
 Determinate<PH>::meet_assign(const Determinate& y) {
+  assert(prep);
+  assert(y.prep);
   mutate();
   prep->ph.intersection_assign(y.prep->ph);
 }
 
 template <typename PH>
+void
+Determinate<PH>::concatenate_assign(const Determinate& y) {
+  assert(prep);
+  assert(y.prep);
+  mutate();
+  prep->ph.concatenate_assign(y.prep->ph);
+}
+
+template <typename PH>
 bool
 Determinate<PH>::definitely_entails(const Determinate<PH>& y) const {
+  assert(prep);
+  assert(y.prep);
   return prep->ph <= y.prep->ph;
 }
 
@@ -134,8 +157,32 @@ operator<<(std::ostream& s, const Determinate<PH>& x) {
 }
 
 template <typename PH>
+bool
+operator==(const Determinate<PH>& x, const Determinate<PH>& y) {
+  assert(x.prep);
+  assert(y.prep);
+  return x.prep->ph == y.prep->ph;
+}
+
+template <typename PH>
+bool
+operator!=(const Determinate<PH>& x, const Determinate<PH>& y) {
+  assert(x.prep);
+  assert(y.prep);
+  return x.prep->ph == y.prep->ph;
+}
+
+template <typename PH>
+size_t
+Determinate<PH>::space_dimension() const {
+  assert(prep);
+  return prep->ph.space_dimension();
+}
+
+template <typename PH>
 void
 Determinate<PH>::add_constraint(const Constraint& c) {
+  assert(prep);
   mutate();
   prep->ph.add_constraint(c);
 }
@@ -143,20 +190,15 @@ Determinate<PH>::add_constraint(const Constraint& c) {
 template <typename PH>
 void
 Determinate<PH>::add_constraints(ConSys& cs) {
+  assert(prep);
   mutate();
   prep->ph.add_constraints(cs);
 }
 
 template <typename PH>
 void
-Determinate<PH>::add_dimensions_and_constraints(ConSys& cs) {
-  mutate();
-  prep->ph.add_dimensions_and_constraints(cs);
-}
-
-template <typename PH>
-void
 Determinate<PH>::add_dimensions_and_embed(size_t dim) {
+  assert(prep);
   mutate();
   prep->ph.add_dimensions_and_embed(dim);
 }
@@ -164,6 +206,7 @@ Determinate<PH>::add_dimensions_and_embed(size_t dim) {
 template <typename PH>
 void
 Determinate<PH>::add_dimensions_and_project(size_t dim) {
+  assert(prep);
   mutate();
   prep->ph.add_dimensions_and_project(dim);
 }
@@ -171,6 +214,7 @@ Determinate<PH>::add_dimensions_and_project(size_t dim) {
 template <typename PH>
 void
 Determinate<PH>::remove_dimensions(const std::set<Variable>& to_be_removed) {
+  assert(prep);
   mutate();
   prep->ph.remove_dimensions(to_be_removed);
 }
@@ -178,6 +222,7 @@ Determinate<PH>::remove_dimensions(const std::set<Variable>& to_be_removed) {
 template <typename PH>
 void
 Determinate<PH>::remove_higher_dimensions(size_t new_dimension) {
+  assert(prep);
   mutate();
   prep->ph.remove_higher_dimensions(new_dimension);
 }
