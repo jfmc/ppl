@@ -1064,6 +1064,60 @@ ppl_Polyhedron_affine_preimage(ppl_Polyhedron_t ph,
 }
 CATCH_ALL
 
+class CBox {
+private:
+  void (*r_l_b)(unsigned int k, int closed,
+		ppl_const_Coefficient_t n,
+		ppl_const_Coefficient_t d);
+  void (*l_u_b)(unsigned int k, int closed,
+		ppl_const_Coefficient_t n,
+		ppl_const_Coefficient_t d);
+  void (*s_e)(unsigned int k);
+
+public:
+  CBox(void (*rlb)(unsigned int k, int closed,
+		  ppl_const_Coefficient_t n,
+		  ppl_const_Coefficient_t d),
+      void (*lub)(unsigned int k, int closed,
+		  ppl_const_Coefficient_t n,
+		  ppl_const_Coefficient_t d),
+      void (*se)(unsigned int k))
+    : r_l_b(rlb), l_u_b(lub), s_e(se) {
+  }
+
+  void raise_lower_bound(unsigned int k, bool closed,
+			 const Integer& n, const Integer& d) {
+    r_l_b(k, closed, to_const(&n), to_const(&d));
+  }
+
+  void lower_upper_bound(unsigned int k, bool closed,
+			 const Integer& n, const Integer& d) {
+    l_u_b(k, closed, to_const(&n), to_const(&d));
+  }
+
+  void set_empty(unsigned int k) {
+    s_e(k);
+  }
+};
+
+int
+ppl_Polyhedron_shrink_bounding_box
+(ppl_const_Polyhedron_t ph,
+ void (*raise_lower_bound)(unsigned int k, int closed,
+			   ppl_const_Coefficient_t n,
+			   ppl_const_Coefficient_t d),
+ void (*lower_upper_bound)(unsigned int k, int closed,
+			   ppl_const_Coefficient_t n,
+			   ppl_const_Coefficient_t d),
+ void (*set_empty)(unsigned int k)) try {
+
+  const Polyhedron& pph = *to_const(ph);
+  CBox cbox(raise_lower_bound, lower_upper_bound, set_empty);
+  pph.shrink_bounding_box(cbox);
+
+  return 0;
+}
+CATCH_ALL
 
 int
 ppl_Polyhedron_relation_with_Constraint(ppl_const_Polyhedron_t ph,

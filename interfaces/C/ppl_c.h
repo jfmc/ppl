@@ -1002,6 +1002,45 @@ ppl_Polyhedron_affine_preimage __P((ppl_Polyhedron_t ph,
 				    ppl_const_Coefficient_t d));
 
 /*!
+  Use \p ph to shrink a generic, interval-based bounding box.
+  The bounding box is abstractly provided by means of the parameters,
+
+  \param ph
+  The polyhedron that is used to shrink the bounding box.
+
+  \param raise_lower_bound
+  a pointer to a void function with arguments
+  <CODE>(unsigned int k, int closed,
+         ppl_const_Coefficient_t n, ppl_const_Coefficient_t d)</CODE>
+  that intersects the interval corresponding to the <CODE>k</CODE>-th
+  dimension with \f$[n/d, +\infty)\f$ if <CODE>closed</CODE> is non-zero,
+  with \f$(n/d, +\infty)\f$ if <CODE>closed</CODE> is zero.
+
+  \param lower_upper_bound
+  a pointer to a void function with argument
+  <CODE>(unsigned int k, int closed,
+         ppl_const_Coefficient_t n, ppl_const_Coefficient_t d)</CODE>
+  that intersects the interval corresponding to the <CODE>k</CODE>-th
+  dimension with \f$(-\infty, n/d]\f$ if <CODE>closed</CODE> is non-zero,
+  with \f$(-\infty, n/d)\f$ if <CODE>closed</CODE> is zero.
+
+  \param set_empty
+  a pointer to a void function with arguments <CODE>(unsigned int k)</CODE>
+  that intersects the interval corresponding to the <CODE>k</CODE>-th
+  dimension with \f$\emptyset\f$.
+*/
+int
+ppl_Polyhedron_shrink_bounding_box
+__P((ppl_const_Polyhedron_t ph,
+     void (*raise_lower_bound)(unsigned int k, int closed,
+			       ppl_const_Coefficient_t n,
+			       ppl_const_Coefficient_t d),
+     void (*lower_upper_bound)(unsigned int k, int closed,
+			       ppl_const_Coefficient_t n,
+			       ppl_const_Coefficient_t d),
+     void (*set_empty)(unsigned int k)));
+
+/*!
   Individual bit saying that the polyhedron and the set of points
   satisfying the constraint are disjoint.
 */
