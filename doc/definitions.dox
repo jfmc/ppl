@@ -371,8 +371,8 @@ equivalent to the condition that \f$P\f$ has a vertex.
 (See Nemhauser and Wolsey - Integer and Combinatorial Optimization -
 propositions 4.1 and 4.2 on pages 92 and 93).
 
-The second theorem, called Weil's theorem, states that starting from a 
-system of generators (having rational coefficients) we can build 
+The second theorem, called Weil's theorem, states that, starting from a 
+system of generators (having rational coefficients), we can build 
 a rational polyhedron:
 
 <B>Weil's theorem</B>
@@ -384,7 +384,7 @@ If \f$A\f$ is a rational \f$m \times n\f$ matrix,
         \vect{x} \in \Rset^n
       }{
         \vect{x}^\transpose = \vect{y}^\transpose A + \vect{z}^\transpose B, \\
-        \vect{y} = (y_0, \ldots, y_{m-1}) \in \Rset_+^{m},
+        \vect{y} = (y_0, \ldots, y_{m-1})^\transpose \in \Rset_+^{m},
         \sum_{k=0}^{m-1} y_k = 1, \\
 	\vect{z} \in \Rset_+^{m'}
       }.
