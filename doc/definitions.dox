@@ -498,17 +498,43 @@ For this reason, when computing the poly-difference of two
 C polyhedra, the library will enforce the topological closure
 of the result.
 
+\anchor concatenate
+<B>Concatenating Polyhedra</B>
+
+Viewing a polyhedron as a set of tuples (its points), it is sometimes
+useful to consider the set of tuples obtained by concatenating
+an ordered pair of polyhedra.
+Formally, the <EM>concatenation</EM> of the polyhedra
+\f$\cP \in \Pset_n\f$ and \f$\cQ \in \Pset_m\f$ (taken in this order)
+is the polyhedron \f$\cR \in \Pset_{n+m}\f$ such that
+\f[
+  \cR
+    \defeq
+      \Bigl\{\,
+        (x_0, \ldots, x_{n-1}, y_0, \ldots, y_{m-1})^\transpose
+          \in \Rset^{n+m}
+      \Bigm|
+        (x_0, \ldots, x_{n-1})^\transpose \in \cP,
+        (y_0, \ldots, y_{m-1})^\transpose \in \cQ
+      \,\Bigl\}.
+\f]
+Another way of seeing it is as follows: first embed polyhedron \f$\cP\f$
+into a vector space of dimension \f$n+m\f$ and then add a suitably
+renamed-apart version of the constraints defining \f$\cQ\f$.
+
+\anchor add_dimensions
 <B>Adding New Dimensions to the Vector Space</B>
 
-The library provides two operators for increasing the
-space dimension of an NNC polyhedron \f$\cP \in \Pset_n\f$,
+The library provides two operators for adding a number \f$i\f$ of
+space dimensions to an NNC polyhedron \f$\cP \in \Pset_n\f$,
 therefore transforming it into a new NNC polyhedron
-\f$\cQ \in \Pset_m\f$, where \f$m > n\f$.
+\f$\cQ \in \Pset_{n+i}\f$.
 In both cases, the added dimensions of the vector space
 are those having the highest indices.
 
-The operator \e embedding the polyhedron \f$\cP\f$
-into the new vector space will return the polyhedron \f$\cQ\f$
+The operator <CODE>add_dimensions_and_embed</CODE>
+\e embeds the polyhedron \f$\cP\f$ into the new vector space of
+dimension \f$i+n\f$ and returns the polyhedron \f$\cQ\f$
 defined by all and only the constraints defining \f$\cP\f$
 (the variables corresponding to the added dimensions are unconstrained).
 For instance, when starting from a polyhedron \f$\cP \sseq \Rset^2\f$
@@ -521,8 +547,9 @@ and adding a third dimension, the result will be the polyhedron
        \,\bigr\}.
 \f]
 
-In contrast, the operator \e projecting the polyhedron \f$\cP\f$
-into the new vector space will return the polyhedron \f$\cQ\f$
+In contrast, the operator  <CODE>add_dimensions_and_project</CODE>
+\e projects the polyhedron \f$\cP\f$ into the new vector space of
+dimension \f$i+n\f$ and returns the polyhedron \f$\cQ\f$
 whose constraint system, besides the constraints defining \f$\cP\f$,
 will include additional constraints on the added dimensions.
 Namely, the corresponding variables are all constrained to be equal to 0.
@@ -536,15 +563,16 @@ and adding a third dimension, the result will be the polyhedron
         \,\bigr\}.
 \f]
 
+\anchor remove_dimensions
 <B>Removing Dimensions from the Vector Space</B>
 
-The library provides two operators for decreasing the
-space dimension of an NNC polyhedron \f$\cP \in \Pset_n\f$,
+The library provides two operators for removing
+space dimensions from an NNC polyhedron \f$\cP \in \Pset_n\f$,
 therefore transforming it into a new NNC polyhedron
-\f$\cQ \in \Pset_m\f$, where \f$m < n\f$.
+\f$\cQ \in \Pset_m\f$ where \f$m \leq n\f$.
 
-Given a set of variables, there is an operator that will remove
-all the space dimensions corresponding to the variables in this set.
+Given a set of variables, the operator <CODE>remove_dimensions</CODE>
+removes all the space dimensions specified by the variables in the set.
 For instance, letting \f$\cP \in \Pset_4\f$ be the singleton set
 \f$\bigl\{ (3, 1, 0, 2)^\transpose \bigr\} \sseq \Rset^4\f$,
 then after invoking this operator with the set of variables
@@ -553,8 +581,9 @@ then after invoking this operator with the set of variables
   \cQ = \bigl\{ (3, 2)^\transpose \bigr\} \sseq \Rset^2.
 \f]
 
-Another operator removes from the vector space all the dimensions
-having an index greater than or equal to \f$m\f$.
+Given a space dimension \f$m\f$ less than or equal to that of the polyhedron,
+the operator <CODE>remove_higher_dimensions</CODE> removes
+the dimensions having indices greater than or equal to \f$m\f$.
 For instance, letting \f$\cP \in \Pset_4\f$ defined as before,
 by invoking this operator with \f$m = 2\f$ the resulting polyhedron
 will be
@@ -586,30 +615,6 @@ otherwise the result is \f$\cQ \in \Pset_m\f$ given by
         (v_0, \ldots, v_{n-1})^\transpose \in \cP
       \,\Bigr\}.
 \f]
-
-\anchor concatenate
-<B>Concatenating Polyhedra</B>
-
-Viewing a polyhedron as a set of tuples (its points), it is sometimes
-useful to consider the set of tuples obtained by concatenating
-an ordered pair of polyhedra.
-Formally, the <EM>concatenation</EM> of the polyhedra
-\f$\cP \in \Pset_n\f$ and \f$\cQ \in \Pset_m\f$ (taken in this order)
-is the polyhedron \f$\cR \in \Pset_{n+m}\f$ such that
-\f[
-  \cR
-    \defeq
-      \Bigl\{\,
-        (x_0, \ldots, x_{n-1}, y_0, \ldots, y_{m-1})^\transpose
-          \in \Rset^{n+m}
-      \Bigm|
-        (x_0, \ldots, x_{n-1})^\transpose \in \cP,
-        (y_0, \ldots, y_{m-1})^\transpose \in \cQ
-      \,\Bigl\}.
-\f]
-Another way of seeing it is as follows: first embed polyhedron \f$\cP\f$
-into a vector space of dimension \f$n+m\f$ and then add a suitably
-renamed-apart version of the constraints defining \f$\cQ\f$.
 
 \anchor expand_dimension
 <B>Expanding One Dimension of the Vector Space to Multiple Dimensions</B>
@@ -913,6 +918,53 @@ The polyhedron \f$\cP\f$ <EM>subsumes</EM> the generator \f$g\f$ if
 adding \f$g\f$ to any generator system representing \f$\cP\f$
 does not change \f$\cP\f$.
 
+\anchor bounding_boxes
+<B>Intervals, boxes and bounding boxes</B>
+
+An <EM>interval</EM> in \f$\Rset\f$ is a pair of <EM>bounds</EM>,
+called <EM>lower</EM> and <EM>upper</EM>.
+Each bound can be either (1) <EM>closed and bounded</EM>,
+(2) <EM>open and bounded</EM>, or
+(3) <EM>open and unbounded</EM>.
+If the bound is <EM>bounded</EM>, then it has a value in \f$\Rset\f$.
+An \f$n\f$-dimensional <EM>box</EM> \f$\cB\f$ in \f$\Rset^n\f$
+is a sequence of \f$n\f$ intervals in \f$\Rset\f$.
+
+The polyhedron \f$\cP\f$ <EM>represents a box \f$\cB\f$</EM> in \f$\Rset^n\f$
+if \f$\cP\f$
+is described by a constraint system in \f$\Rset^n\f$ that
+consists of one constraint for each bounded bound (lower and upper)
+in an interval in \f$\cB\f$:
+Letting \f$\vect{e}_i = (0, \ldots, 1, \ldots, 0)^\transpose\f$
+be the vector in \f$\Rset^n\f$ with 1 in the \f$i\f$'th position
+and zeroes in every other position;
+if the lower bound of the \f$i\f$'th interval in \f$\cB\f$
+is bounded, the corresponding constraint is defined as
+\f$\langle \vect{e}_i, \vect{x} \rangle \relsym b\f$,
+where \f$b\f$ is the value of the bound and
+\f$\mathord{\relsym}\f$ is \f$\mathord{\geq}\f$ if it is a closed bound and
+\f$\mathord{>}\f$ if it is an open bound.
+Similarly,
+if the upper bound of the \f$i\f$'th interval in \f$\cB\f$ is bounded,
+the corresponding constraint is defined as
+\f$\langle\vect{e}_i,\vect{x}\rangle \relsym b\f$,
+where \f$b\f$ is the value of the bound and
+\f$\mathord{\relsym}\f$ is \f$\mathord{\leq}\f$ if it is a closed bound and
+\f$\mathord{<}\f$ if it is an open bound.
+
+If every bound in the intervals
+defining a box \f$\cB\f$ is either closed and bounded
+or open and unbounded, then
+\f$\cB\f$ represents a closed polyhedron.
+
+The <EM>bounding box</EM> of an NNC polyhedron \f$\cP\f$ is
+the smallest \f$n\f$-dimensional box
+containing \f$\cP\f$.
+
+The library provides operations for computing the bounding box
+of an NNC polyhedron and conversely, for obtaining the NNC polyhedron
+representing a given bounding box.
+
 \anchor H79_widening
 <B>Widening Operators</B>
 
@@ -991,53 +1043,6 @@ The <EM>bounded</EM> extrapolation operators further enhance each one
 of the limited extrapolation operators described above, by ensuring
 that their results cannot be worse than the smallest
 \ref bounding_boxes "bounding box" enclosing the two argument polyhedra.
-
-\anchor bounding_boxes
-<B>Intervals, boxes and bounding boxes</B>
-
-An <EM>interval</EM> in \f$\Rset\f$ is a pair of <EM>bounds</EM>,
-called <EM>lower</EM> and <EM>upper</EM>.
-Each bound can be either (1) <EM>closed and bounded</EM>,
-(2) <EM>open and bounded</EM>, or
-(3) <EM>open and unbounded</EM>.
-If the bound is <EM>bounded</EM>, then it has a value in \f$\Rset\f$.
-An \f$n\f$-dimensional <EM>box</EM> \f$\cB\f$ in \f$\Rset^n\f$
-is a sequence of \f$n\f$ intervals in \f$\Rset\f$.
-
-The polyhedron \f$\cP\f$ <EM>represents a box \f$\cB\f$</EM> in \f$\Rset^n\f$
-if \f$\cP\f$
-is described by a constraint system in \f$\Rset^n\f$ that
-consists of one constraint for each bounded bound (lower and upper)
-in an interval in \f$\cB\f$:
-Letting \f$\vect{e}_i = (0, \ldots, 1, \ldots, 0)^\transpose\f$
-be the vector in \f$\Rset^n\f$ with 1 in the \f$i\f$'th position
-and zeroes in every other position;
-if the lower bound of the \f$i\f$'th interval in \f$\cB\f$
-is bounded, the corresponding constraint is defined as
-\f$\langle \vect{e}_i, \vect{x} \rangle \relsym b\f$,
-where \f$b\f$ is the value of the bound and
-\f$\mathord{\relsym}\f$ is \f$\mathord{\geq}\f$ if it is a closed bound and
-\f$\mathord{>}\f$ if it is an open bound.
-Similarly,
-if the upper bound of the \f$i\f$'th interval in \f$\cB\f$ is bounded,
-the corresponding constraint is defined as
-\f$\langle\vect{e}_i,\vect{x}\rangle \relsym b\f$,
-where \f$b\f$ is the value of the bound and
-\f$\mathord{\relsym}\f$ is \f$\mathord{\leq}\f$ if it is a closed bound and
-\f$\mathord{<}\f$ if it is an open bound.
-
-If every bound in the intervals
-defining a box \f$\cB\f$ is either closed and bounded
-or open and unbounded, then
-\f$\cB\f$ represents a closed polyhedron.
-
-The <EM>bounding box</EM> of an NNC polyhedron \f$\cP\f$ is
-the smallest \f$n\f$-dimensional box
-containing \f$\cP\f$.
-
-The library provides operations for computing the bounding box
-of an NNC polyhedron and conversely, for obtaining the NNC polyhedron
-representing a given bounding box.
 
 <B>A Note on the Implementation of the Operators</B>
 
@@ -1122,23 +1127,6 @@ GenSys gs = ph.generators();
 \endcode
 The same observations, modulo syntactic sugar, apply to the operators
 defined in the C interface of the library. 
-
-
-\section domain_constructions Domain Constructions using Polyhedra
-
-Besides the domain of convex polyhedra, the library is providing
-preliminary support for the determinate and finite powerset constructions
-of the constraint system hierarchy described in \ref Bag98 "[Bag98]".
-Work is in progress and future versions of the library will also
-include an implementation of the ask-and-tell construction.
-The implementation consists in a generic implementation (in the form
-of C++ templates) of the hierarchy, plus a specialization of the
-finite powerset construction on the domain of convex polyhedra.
-In particular, for the finite powerset of polyhedra the library
-provides the implementation of an instance of the certificate-based
-widening operators proposed in \ref BHZ03b "[BHZ03b]",
-as well as the extrapolation operator proposed in \ref BGP99 "[BGP99]".
-
 
 \section bibliography Bibliography
 
