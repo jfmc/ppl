@@ -69,7 +69,9 @@ main() try{
   return retval;
 }
 catch(invalid_argument& e) {
-    cout << "invalid_polyhedra: " << e.what() << endl << endl;
+#if NOISY
+  cout << "invalid_argument: " << e.what() << endl << endl;
+#endif
 }
 catch (...) {
   exit(1);

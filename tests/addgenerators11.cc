@@ -67,7 +67,9 @@ main() {
     ph2.add_generators_and_minimize(gs2);
   }
   catch (invalid_argument& e) {
-    cout << "invalid_system_of_generators: " << e.what() << endl << endl;
+#if NOISY
+    cout << "invalid_argument: " << e.what() << endl << endl;
+#endif
   } 
   catch (...) {
     exit(1);
