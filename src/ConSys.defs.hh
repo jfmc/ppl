@@ -105,8 +105,8 @@ public:
   //! increasing the number of dimensions if needed.
   void insert(const Constraint& c);
 
-  //! Returns the singleton system (of the appropriate
-  //! topological kind) containing only Constraint::zero_dim_false().
+  //! Returns the singleton system containing only
+  //! Constraint::zero_dim_false().
   static const ConSys& zero_dim_empty();
 
   /*!

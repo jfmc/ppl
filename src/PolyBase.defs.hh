@@ -344,6 +344,7 @@ protected:
 		    Degenerate_Kind kind);
   //! Builds a polyhedron from a system of constraints.
   //! The polyhedron inherits the space dimension of the constraint system.
+  //! \param topology The topology of the polyhedron;
   //! \param cs       The system of constraints defining the polyhedron.
   //!                 It is not declared <CODE>const</CODE>
   //!                 because it can be modified.
@@ -352,6 +353,7 @@ protected:
   PolyBase(Topology topology, ConSys& cs);
   //! Builds a polyhedron from a system of generators.
   //! The polyhedron inherits the space dimension of the generator system.
+  //! \param topology The topology of the polyhedron;
   //! \param gs       The system of generators defining the polyhedron.
   //!                 It is not declared <CODE>const</CODE>
   //!                 because it can be modified.

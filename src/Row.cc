@@ -215,7 +215,7 @@ PPL::operator*(const Row& x, const Row& y) {
 
 /*!
   Computes the \e reduced scalar product of \p x and \p y,
-  where the \f$\epsilon\f& coefficient of \p x is ignored.
+  where the \f$\epsilon\f$ coefficient of \p x is ignored.
 */
 const PPL::Integer&
 PPL::operator^(const Row& x, const Row& y) {

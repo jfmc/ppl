@@ -44,7 +44,7 @@ namespace Parma_Polyhedra_Library {
 
 }
 
-//! A line, ray or point.
+//! A line, ray, point or closure point.
 /*!
   An object of the class Generator is one of the following:
 
@@ -54,6 +54,9 @@ namespace Parma_Polyhedra_Library {
 
   - a point
     \f$\vect{p} = (\frac{a_0}{d}, \ldots, \frac{a_{n-1}}{d})^\transpose\f$;
+
+  - a closure point
+    \f$\vect{cp} = (\frac{a_0}{d}, \ldots, \frac{a_{n-1}}{d})^\transpose\f$;
 
   where \f$n\f$ is the dimension of the space.
 
@@ -65,15 +68,16 @@ namespace Parma_Polyhedra_Library {
 
   \par How to build a generator.
   Each type of generator is built by applying the corresponding
-  function (<CODE>line</CODE>, <CODE>ray</CODE> or <CODE>point</CODE>)
-  to a linear expression, representing a direction in the space;
+  function (<CODE>line</CODE>, <CODE>ray</CODE>, <CODE>point</CODE>
+  or <CODE>closure_point</CODE>) to a linear expression,
+  representing a direction in the space;
   the space-dimension of the generator is defined as the space-dimension
   of the corresponding linear expression.
   Linear expressions used to define a generator should be homogeneous
   (any constant term will be simply ignored).
-  When defining a point, an optional Integer argument can be used
-  as a common <EM>divisor</EM> for all the coefficients occurring
-  in the provided linear expression;
+  When defining points and closure points, an optional Integer argument
+  can be used as a common <EM>divisor</EM> for all the coefficients
+  occurring in the provided linear expression;
   the default value for this argument is 1.
 
   \par
@@ -161,26 +165,41 @@ namespace Parma_Polyhedra_Library {
   \endcode
   If a zero divisor is provided, an exception is thrown.
 
+  \par Example 5
+  Closures points are specified in the same way we defined points,
+  but invoking their specific constructor function.
+  For instance, the closure point
+  \f$\vect{cp} = (1, 0, 2)^\transpose \in \Rset^3\f$ is defined by
+  \code
+  Generator cp = closure_point(1*x + 0*y + 2*z);
+  \endcode
+  For the particular case of the (only) closure point
+  having space-dimension zero, we can use any of the following:
+  \code
+  Generator closure_origin0 = Generator::zero_dim_closure_point();
+  Generator closure_origin0_alt = closure_point();
+  \endcode
+
   \par How to inspect a generator
   Several methods are provided to examine a generator and extract
   all the encoded information: its space-dimension, its type and
   the value of its integer coefficients.
 
-  \par Example 5
+  \par Example 6
   The following code shows how it is possible to access each single
   coefficient of a generator.
   If <CODE>g1</CODE> is a point having coordinates
   \f$(a_0, \ldots, a_{n-1})^\transpose\f$,
-  we construct the point <CODE>g2</CODE> having coordinates
+  we construct the closure point <CODE>g2</CODE> having coordinates
   \f$(a_0, 2 a_1, \ldots, (i+1)a_i, \ldots, n a_{n-1})^\transpose\f$.
   \code
-  if (g1.type() == Generator::POINT) {
+  if (g1.is_point()) {
     cout << "Point g1: " << g1 << endl;
     LinExpression e;
     for (int i = g1.space_dimension() - 1; i >= 0; i--)
       e += (i + 1) * g1.coefficient(Variable(i)) * Variable(i);
-    Generator g2 = point(e, g1.divisor());
-    cout << "Point g2: " << g2 << endl;
+    Generator g2 = closure_point(e, g1.divisor());
+    cout << "Closure point g2: " << g2 << endl;
   }
   else
     cout << "Generator g1 is not a point." << endl;
@@ -192,11 +211,11 @@ namespace Parma_Polyhedra_Library {
   we would obtain the following output:
   \code
   Point g1: p((2*A - B + 3*C)/2)
-  Point g2: p((2*A - 2*B + 9*C)/2)
+  Closure point g2: cp((2*A - 2*B + 9*C)/2)
   \endcode
-  When working with a point, be careful not to confuse the notion
-  of <EM>coefficient</EM> with the notion of <EM>coordinate</EM>:
-  these are equivalent only when the divisor of the point is 1.
+  When working with (closure) points, be careful not to confuse
+  the notion of <EM>coefficient</EM> with the notion of <EM>coordinate</EM>:
+  these are equivalent only when the divisor of the (closure) point is 1.
 */
 
 class Parma_Polyhedra_Library::Generator : PPL_HIDDEN Row {
@@ -226,7 +245,7 @@ private:
   //!                                  of the vector space.
   friend Generator
   Parma_Polyhedra_Library::ray(const LinExpression& e);
-  //! Returns the point at \p e / \p d
+  //! Returns the point at \p e / \p d.
   //! Both \p e and \p d are optional arguments, with default values
   //! LinExpression::zero() and Integer_one(), respectively.
   //! \exception std::invalid_argument thrown if \p d is zero.
@@ -234,7 +253,7 @@ private:
   Parma_Polyhedra_Library::point(const LinExpression& e
 				 = LinExpression::zero(),
 				 const Integer& d = Integer_one());
-  //! Returns the closure point at \p e / \p d
+  //! Returns the closure point at \p e / \p d.
   //! Both \p e and \p d are optional arguments, with default values
   //! LinExpression::zero() and Integer_one(), respectively.
   //! \exception std::invalid_argument thrown if \p d is zero.
@@ -290,8 +309,9 @@ public:
   //! \exception std::invalid_argument thrown if the index of \p v
   //! is greater than or equal to the space-dimension of \p *this.
   const Integer& coefficient(Variable v) const;
-  //! If \p *this is a point, returns its divisor.
-  //! \exception std::invalid_argument thrown if \p *this is not a point.
+  //! If \p *this is either a point or a closure point, returns its divisor.
+  //! \exception std::invalid_argument thrown if \p *this is neither a point
+  //! nor a closure point.
   const Integer& divisor() const;
 
   //! Returns the origin of the zero-dimensional space \f$\Rset^0\f$.
@@ -308,11 +328,11 @@ PPL_INTERNAL:
   Generator(const Generator& g, size_t sz);
 
   //! Returns <CODE>true</CODE> if and only if
-  //! \p *this is either a ray or a point.
+  //! \p *this is not a line.
   bool is_ray_or_point() const;
-  //! Sets the type to <CODE>LINE</CODE>.
+  //! Sets the Row kind to <CODE>LINE_OR_EQUALITY</CODE>.
   void set_is_line();
-  //! Sets the type to <CODE>RAY</CODE>.
+  //! Sets the Row kind to <CODE>RAY_OR_POINT_OR_INEQUALITY</CODE>.
   void set_is_ray_or_point();
 
 private:

@@ -37,14 +37,14 @@ site: http://www.cs.unipr.it/ppl/ . */
 /*!
     An object of the class GenSys is a system of generators,
     i.e., a multiset of objects of the class Generator
-    (lines, rays and points).
+    (lines, rays, points and closure points).
     When inserting generators in a system, dimensions are automatically
     adjusted so that all the generators in the system are defined
     on the same vector space.
     A system of generators which is meant to define a non-empty polyhedron
     must include at least one point, even if the polyhedron has
-    no vertices: the reason is that lines and rays need
-    a supporting point (they only specify directions).
+    no vertices: the reason is that lines, rays and closure points
+    need a supporting point (they only specify directions).
 
     \par
      In all the examples it is assumed that variables
