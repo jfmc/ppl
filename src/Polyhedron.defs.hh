@@ -273,7 +273,7 @@ public:
 
   //! Builds the zero-dimensional, universe polyhedron, if \p kind is
   //! <CODE>ZERO_DIMENSIONAL</CODE> (the default);
-  //! otherwise (i.e., \p full is <CODE>EMPTY</CODE>)
+  //! otherwise (i.e., if \p kind is <CODE>EMPTY</CODE>)
   //! builds an empty polyhedron.
   Polyhedron(Degenerate_Kind kind = ZERO_DIMENSIONAL);
   //! Ordinary copy-constructor.
