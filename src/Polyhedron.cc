@@ -3497,14 +3497,15 @@ PPL::Polyhedron::OK(bool check_not_empty) const {
 #endif
 	goto bomb;
       }
-      else
-	if (!con_sys[0].is_trivial_false()) {
+      if (!con_sys[0].is_trivial_false()) {
 #ifndef NDEBUG
-	  cerr << "Empty polyhedron with a satisfiable system of constraints"
-	       << endl;
+	cerr << "Empty polyhedron with a satisfiable system of constraints"
+	     << endl;
 #endif
-	  goto bomb;
-	}
+	goto bomb;
+      }
+      // Here we have only one, trivially false constraint.
+      return true;
     }
   }
 
