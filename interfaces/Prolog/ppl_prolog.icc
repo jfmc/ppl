@@ -35,6 +35,7 @@ site: http://www.cs.unipr.it/ppl/ . */
 #include "C_Polyhedron.defs.hh"
 #include "NNC_Polyhedron.defs.hh"
 #include "track_allocation.hh"
+#include "max_space_dimension.hh"
 #include "version.hh"
 #include <set>
 #include "Watchdog.defs.hh"
@@ -49,219 +50,6 @@ using namespace Parma_Polyhedra_Library;
 namespace {
 
 Prolog_atom out_of_memory_exception_atom;
-
-void
-handle_exception(const integer_out_of_range& e) {
-  Prolog_term_ref culprit = Prolog_new_term_ref();
-  Prolog_term_ref arg_no = Prolog_new_term_ref();
-  Prolog_term_ref expected_domain = Prolog_new_term_ref();
-  Prolog_term_ref et = Prolog_new_term_ref();
-
-  Prolog_put_term(culprit, e.term());
-  Prolog_put_long(arg_no, 1);
-  {
-    std::ostringstream domain;
-    domain << "[" << LONG_MIN << ", " << LONG_MAX << "]";
-    Prolog_put_atom_chars(expected_domain, domain.str().c_str());
-  }
-  Prolog_construct_compound(et,
-			    Prolog_atom_from_string("integer_term_to_Integer"),
-			    culprit);
-  Prolog_construct_compound(et,
-			    Prolog_atom_from_string("domain_error"),
-			    et, arg_no, expected_domain, culprit);
-  Prolog_raise_exception(et);
-}
-
-void
-handle_exception(const not_unsigned_int& e) {
-  Prolog_term_ref culprit = Prolog_new_term_ref();
-  Prolog_term_ref arg_no = Prolog_new_term_ref();
-  Prolog_term_ref expected_domain = Prolog_new_term_ref();
-  Prolog_term_ref et = Prolog_new_term_ref();
-
-  Prolog_put_term(culprit, e.term());
-  Prolog_put_long(arg_no, 1);
-  {
-    std::ostringstream domain;
-    domain << "[" << 0 << ", " << UINT_MAX << "]";
-    Prolog_put_atom_chars(expected_domain, domain.str().c_str());
-  }
-  Prolog_construct_compound(et,
-			    Prolog_atom_from_string("get_unsigned_int/term_to_unsigned_int"),
-			   culprit);
-  Prolog_construct_compound(et,
-			    Prolog_atom_from_string("domain_error"),
-			    et, arg_no, expected_domain, culprit);
-  Prolog_raise_exception(et);
-}
-
-void
-handle_exception(const non_linear& e) {
-  Prolog_term_ref culprit = Prolog_new_term_ref();
-  Prolog_term_ref arg_no = Prolog_new_term_ref();
-  Prolog_term_ref expected_domain = Prolog_new_term_ref();
-  Prolog_term_ref et = Prolog_new_term_ref();
-
-  Prolog_put_term(culprit, e.term());
-  Prolog_put_long(arg_no, 1);
-  Prolog_put_atom_chars(expected_domain, "linear expression or constraint");
-  Prolog_construct_compound(et, Prolog_atom_from_string(e.who()), culprit);
-  Prolog_construct_compound(et, Prolog_atom_from_string("domain_error"),
-			    et, arg_no, expected_domain, culprit);
-  Prolog_raise_exception(et);
-}
-
-void
-handle_exception(const not_a_variable& e) {
-  Prolog_term_ref culprit = Prolog_new_term_ref();
-  Prolog_term_ref arg_no = Prolog_new_term_ref();
-  Prolog_term_ref expected_domain = Prolog_new_term_ref();
-  Prolog_term_ref et = Prolog_new_term_ref();
-
-  Prolog_put_term(culprit, e.term());
-  Prolog_put_long(arg_no, 1);
-  Prolog_put_atom_chars(expected_domain, "$VAR(integer)");
-  Prolog_construct_compound(et, Prolog_atom_from_string("get_variable"),
-			    culprit);
-  Prolog_construct_compound(et, Prolog_atom_from_string("domain_error"),
-			    et, arg_no, expected_domain, culprit);
-  Prolog_raise_exception(et);
-}
-
-void
-handle_exception(const not_a_polyhedron_kind& e) {
-  Prolog_term_ref culprit = Prolog_new_term_ref();
-  Prolog_term_ref arg_no = Prolog_new_term_ref();
-  Prolog_term_ref expected_domain = Prolog_new_term_ref();
-  Prolog_term_ref et = Prolog_new_term_ref();
-
-  Prolog_put_term(culprit, e.term());
-  Prolog_put_long(arg_no, 1);
-  Prolog_put_atom_chars(expected_domain, "c or nnc");
-  Prolog_construct_compound(et,
-			    Prolog_atom_from_string("term_to_polyhedron_kind"),
-			    culprit);
-  Prolog_construct_compound(et, Prolog_atom_from_string("domain_error"),
-			    et, arg_no, expected_domain, culprit);
-  Prolog_raise_exception(et);
-}
-
-void
-handle_exception(const not_a_polyhedron_handle& e) {
-  Prolog_term_ref culprit = Prolog_new_term_ref();
-  Prolog_term_ref arg_no = Prolog_new_term_ref();
-  Prolog_term_ref expected_domain = Prolog_new_term_ref();
-  Prolog_term_ref et = Prolog_new_term_ref();
-
-  Prolog_put_term(culprit, e.term());
-  Prolog_put_long(arg_no, 1);
-  Prolog_put_atom_chars(expected_domain, "polyhedron handle");
-  Prolog_construct_compound(et,
-			    Prolog_atom_from_string("term_to_polyhedron"),
-			    culprit);
-  Prolog_construct_compound(et, Prolog_atom_from_string("domain_error"),
-			    et, arg_no, expected_domain, culprit);
-  Prolog_raise_exception(et);
-}
-
-void
-handle_exception(const unknown_interface_error& e) {
-  Prolog_term_ref et = Prolog_new_term_ref();
-  Prolog_put_atom_chars(et, e.where());
-  Prolog_raise_exception(et);
-}
-
-void
-handle_exception(const std::bad_alloc&) {
-  Prolog_term_ref et = Prolog_new_term_ref();
-  Prolog_put_atom(et, out_of_memory_exception_atom);
-  Prolog_raise_exception(et);
-}
-
-void
-handle_exception(const std::exception& e) {
-  Prolog_term_ref et = Prolog_new_term_ref();
-  Prolog_put_atom_chars(et, e.what());
-  Prolog_raise_exception(et);
-}
-
-void
-handle_exception() {
-  Prolog_term_ref et = Prolog_new_term_ref();
-  Prolog_put_atom_chars(et, "PPL bug: unknown exception raised");
-  Prolog_raise_exception(et);
-}
-
-class timeout_exception : public Throwable {
-public:
-  void throw_me() const {
-    throw *this;
-  }
-  int priority() const {
-    return 0;
-  }
-  timeout_exception() {
-  }
-};
-
-Prolog_atom timeout_exception_atom;
-
-Parma_Watchdog_Library::Watchdog* p_timeout_object = 0;
-
-void
-reset_timeout() {
-  if (p_timeout_object) {
-    delete p_timeout_object;
-    p_timeout_object = 0;
-    abandon_exponential_computations = 0;
-  }
-}
-
-void
-handle_exception(const timeout_exception&) {
-  assert(p_timeout_object);
-  reset_timeout();
-  Prolog_term_ref et = Prolog_new_term_ref();
-  Prolog_put_atom(et, timeout_exception_atom);
-  Prolog_raise_exception(et);
-}
-
-#define CATCH_ALL \
-  catch (const integer_out_of_range& e) { \
-    handle_exception(e); \
-  } \
-  catch (const not_unsigned_int& e) { \
-    handle_exception(e); \
-  } \
-  catch (const non_linear& e) { \
-    handle_exception(e); \
-  } \
-  catch (const not_a_variable& e) { \
-    handle_exception(e); \
-  } \
-  catch (const not_a_polyhedron_kind& e) { \
-    handle_exception(e); \
-  } \
-  catch (const not_a_polyhedron_handle& e) { \
-    handle_exception(e); \
-  } \
-  catch (const unknown_interface_error& e) { \
-    handle_exception(e); \
-  } \
-  catch (const timeout_exception& e) { \
-    handle_exception(e); \
-  } \
-  catch (const std::bad_alloc& e) { \
-    handle_exception(e); \
-  } \
-  catch (const std::exception& e) { \
-    handle_exception(e); \
-  } \
-  catch (...) { \
-    handle_exception(); \
-  } \
-  return PROLOG_FAILURE
 
 // For Prolog lists.
 Prolog_atom a_nil;
@@ -333,67 +121,339 @@ Prolog_atom a_out_of_memory;
 Prolog_atom a_true;
 Prolog_atom a_false;
 
+// To build exception terms.
+Prolog_atom a_ppl_invalid_argument;
+Prolog_atom a_expected;
+Prolog_atom a_found;
+Prolog_atom a_where;
+
 struct {
   Prolog_atom* p_atom;
   const char* name;
 } const prolog_atoms[] = {
-  { &a_nil,                 "[]" },
+  { &a_nil,                  "[]" },
 
-  { &a_dollar_VAR,          "$VAR" },
+  { &a_dollar_VAR,           "$VAR" },
 
-  { &a_plus,                "+" },
-  { &a_minus,               "-" },
-  { &a_asterisk,            "*" },
+  { &a_plus,                 "+" },
+  { &a_minus,                "-" },
+  { &a_asterisk,             "*" },
 
-  { &a_slash,               "/" },
+  { &a_slash,                "/" },
 
-  { &a_equal,               "=" },
-  { &a_greater_than_equal,  ">=" },
-  { &a_equal_less_than,     "=<" },
-  { &a_greater_than,        ">" },
-  { &a_less_than,           "<" },
+  { &a_equal,                "=" },
+  { &a_greater_than_equal,   ">=" },
+  { &a_equal_less_than,      "=<" },
+  { &a_greater_than,         ">" },
+  { &a_less_than,            "<" },
 
-  { &a_line,                "line" },
-  { &a_ray,                 "ray" },
-  { &a_point,               "point" },
-  { &a_closure_point,       "closure_point" },
+  { &a_line,                 "line" },
+  { &a_ray,                  "ray" },
+  { &a_point,                "point" },
+  { &a_closure_point,        "closure_point" },
 
-  { &a_is_disjoint,         "is_disjoint" },
-  { &a_strictly_intersects, "strictly_intersects" },
-  { &a_is_included,         "is_included" },
-  { &a_saturates,           "saturates" },
+  { &a_is_disjoint,          "is_disjoint" },
+  { &a_strictly_intersects,  "strictly_intersects" },
+  { &a_is_included,          "is_included" },
+  { &a_saturates,            "saturates" },
 
-  { &a_subsumes,            "subsumes" },
+  { &a_subsumes,             "subsumes" },
 
-  { &a_c,                   "c" },
-  { &a_nnc,                 "nnc" },
-  { &a_o,                   "o" },
-  { &a_i,                   "i" },
-  { &a_empty,               "empty" },
+  { &a_c,                    "c" },
+  { &a_nnc,                  "nnc" },
+  { &a_o,                    "o" },
+  { &a_i,                    "i" },
+  { &a_empty,                "empty" },
 
-  { &a_minf,                "minf" },
-  { &a_pinf,                "pinf" },
+  { &a_minf,                 "minf" },
+  { &a_pinf,                 "pinf" },
 
-  { &a_polynomial,          "polynomial" },
-  { &a_simplex,             "simplex" },
-  { &a_any,                 "any" },
+  { &a_polynomial,           "polynomial" },
+  { &a_simplex,              "simplex" },
+  { &a_any,                  "any" },
 
-  { &a_time_out,            "time_out" },
-  { &a_out_of_memory,       "out_of_memory" },
+  { &a_time_out,             "time_out" },
+  { &a_out_of_memory,        "out_of_memory" },
 
-  { &a_true,                "true" },
-  { &a_false,               "false" },
+  { &a_true,                 "true" },
+  { &a_false,                "false" },
+
+  { &a_ppl_invalid_argument, "ppl_invalid_argument" },
+  { &a_expected,             "expected" },
+  { &a_found,                "found" },
+  { &a_where,                "where" }
 };
+
+Prolog_term_ref
+Prolog_atom_term_from_string(const char* s) {
+  Prolog_term_ref t = Prolog_new_term_ref();
+  Prolog_put_atom(t, Prolog_atom_from_string(s));
+  return t;
+}
+
+void
+handle_exception(const Prolog_unsigned_out_of_range& e) {
+  Prolog_term_ref found = Prolog_new_term_ref();
+  Prolog_construct_compound(found, a_found, e.term());
+
+  Prolog_term_ref max = Prolog_new_term_ref();
+  Prolog_put_ulong(max, e.max());
+  Prolog_construct_compound(max,
+			    Prolog_atom_from_string("unsigned_integer"
+						    "_less_than_or_equal_to"),
+			    max);
+  Prolog_term_ref expected = Prolog_new_term_ref();
+  Prolog_construct_compound(expected, a_expected, max);
+
+  Prolog_term_ref where = Prolog_new_term_ref();
+  Prolog_construct_compound(where, a_where,
+			    Prolog_atom_term_from_string("term_to_unsigned"));
+
+  Prolog_term_ref exception_term = Prolog_new_term_ref();
+  Prolog_construct_compound(exception_term, a_ppl_invalid_argument,
+			    found, expected, where);
+  Prolog_raise_exception(exception_term);
+}
+
+void
+handle_exception(const not_unsigned_integer& e) {
+  Prolog_term_ref found = Prolog_new_term_ref();
+  Prolog_construct_compound(found, a_found, e.term());
+
+  Prolog_term_ref expected = Prolog_new_term_ref();
+  Prolog_construct_compound(expected, a_expected,
+			    Prolog_atom_term_from_string("unsigned_integer"));
+
+  Prolog_term_ref where = Prolog_new_term_ref();
+  Prolog_construct_compound(where, a_where,
+			    Prolog_atom_term_from_string("term_to_unsigned"));
+
+  Prolog_term_ref exception_term = Prolog_new_term_ref();
+  Prolog_construct_compound(exception_term, a_ppl_invalid_argument,
+			    found, expected, where);
+  Prolog_raise_exception(exception_term);
+}
+
+void
+handle_exception(const non_linear& e) {
+  Prolog_term_ref found = Prolog_new_term_ref();
+  Prolog_construct_compound(found, a_found, e.term());
+
+  Prolog_term_ref expected = Prolog_new_term_ref();
+  Prolog_construct_compound(expected, a_expected,
+			    Prolog_atom_term_from_string("linear_expression_or_constraint"));
+
+  Prolog_term_ref where = Prolog_new_term_ref();
+  Prolog_construct_compound(where, a_where,
+			    Prolog_atom_term_from_string(e.where()));
+
+  Prolog_term_ref exception_term = Prolog_new_term_ref();
+  Prolog_construct_compound(exception_term, a_ppl_invalid_argument,
+			    found, expected, where);
+  Prolog_raise_exception(exception_term);
+}
+
+void
+handle_exception(const not_a_variable& e) {
+  Prolog_term_ref found = Prolog_new_term_ref();
+  Prolog_construct_compound(found, a_found,
+			    e.term());
+
+  Prolog_term_ref expected = Prolog_new_term_ref();
+  Prolog_construct_compound(expected, a_expected,
+			    Prolog_atom_term_from_string("$VAR(unsigned_integer)"));
+
+  Prolog_term_ref where = Prolog_new_term_ref();
+  Prolog_construct_compound(where, a_where,
+			    Prolog_atom_term_from_string("term_to_Variable"));
+
+  Prolog_term_ref exception_term = Prolog_new_term_ref();
+  Prolog_construct_compound(exception_term, a_ppl_invalid_argument,
+			    found, expected, where);
+  Prolog_raise_exception(exception_term);
+}
+
+void
+handle_exception(const not_an_integer& e) {
+  Prolog_term_ref found = Prolog_new_term_ref();
+  Prolog_construct_compound(found, a_found, e.term());
+
+  Prolog_term_ref expected = Prolog_new_term_ref();
+  Prolog_construct_compound(expected, a_expected,
+			    Prolog_atom_term_from_string("integer"));
+
+  Prolog_term_ref where = Prolog_new_term_ref();
+  Prolog_construct_compound(where, a_where,
+			    Prolog_atom_term_from_string("term_to_Integer"));
+
+  Prolog_term_ref exception_term = Prolog_new_term_ref();
+  Prolog_construct_compound(exception_term, a_ppl_invalid_argument,
+			    found, expected, where);
+  Prolog_raise_exception(exception_term);
+}
+
+void
+handle_exception(const not_a_polyhedron_kind& e) {
+  Prolog_term_ref found = Prolog_new_term_ref();
+  Prolog_construct_compound(found, a_found, e.term());
+
+  Prolog_term_ref expected = Prolog_new_term_ref();
+  Prolog_put_atom(expected, a_nil);
+  Prolog_construct_cons(expected,
+			Prolog_atom_term_from_string("c"), expected);
+  Prolog_construct_cons(expected,
+			Prolog_atom_term_from_string("nnc"), expected);
+  Prolog_construct_compound(expected, a_expected, expected);
+
+  Prolog_term_ref where = Prolog_new_term_ref();
+  Prolog_construct_compound(where, a_where,
+			    Prolog_atom_term_from_string("term_to_polyhedron_kind"));
+  Prolog_term_ref exception_term = Prolog_new_term_ref();
+  Prolog_construct_compound(exception_term, a_ppl_invalid_argument,
+			    found, expected, where);
+  Prolog_raise_exception(exception_term);
+}
+
+void
+handle_exception(const not_a_polyhedron_handle& e) {
+  Prolog_term_ref found = Prolog_new_term_ref();
+  Prolog_construct_compound(found, a_found, e.term());
+
+  Prolog_term_ref expected = Prolog_new_term_ref();
+  Prolog_construct_compound(expected, a_expected,
+			    Prolog_atom_term_from_string("polyhedron_handle"));
+
+  Prolog_term_ref where = Prolog_new_term_ref();
+  Prolog_construct_compound(where, a_where,
+			    Prolog_atom_term_from_string("term_to_polyhedron_handle"));
+
+  Prolog_term_ref exception_term = Prolog_new_term_ref();
+  Prolog_construct_compound(exception_term, a_ppl_invalid_argument,
+			    found, expected, where);
+  Prolog_raise_exception(exception_term);
+}
+
+void
+handle_exception(const PPL_integer_out_of_range& e) {
+  Prolog_term_ref et = Prolog_new_term_ref();
+  Prolog_put_atom_chars(et, "FIXME");
+  Prolog_raise_exception(et);
+}
+
+void
+handle_exception(const unknown_interface_error& e) {
+  Prolog_term_ref et = Prolog_new_term_ref();
+  Prolog_put_atom_chars(et, e.where());
+  Prolog_raise_exception(et);
+}
+
+void
+handle_exception(const std::bad_alloc&) {
+  Prolog_term_ref et = Prolog_new_term_ref();
+  Prolog_put_atom(et, out_of_memory_exception_atom);
+  Prolog_raise_exception(et);
+}
+
+void
+handle_exception(const std::exception& e) {
+  Prolog_term_ref et = Prolog_new_term_ref();
+  Prolog_put_atom_chars(et, e.what());
+  Prolog_raise_exception(et);
+}
+
+void
+handle_exception() {
+  Prolog_term_ref et = Prolog_new_term_ref();
+  Prolog_put_atom_chars(et, "PPL bug: unknown exception raised");
+  Prolog_raise_exception(et);
+}
+
+class timeout_exception : public Throwable {
+public:
+  void throw_me() const {
+    throw *this;
+  }
+  int priority() const {
+    return 0;
+  }
+  timeout_exception() {
+  }
+};
+
+Prolog_atom timeout_exception_atom;
+
+Parma_Watchdog_Library::Watchdog* p_timeout_object = 0;
+
+void
+reset_timeout() {
+  if (p_timeout_object) {
+    delete p_timeout_object;
+    p_timeout_object = 0;
+    abandon_exponential_computations = 0;
+  }
+}
+
+void
+handle_exception(const timeout_exception&) {
+  assert(p_timeout_object);
+  reset_timeout();
+  Prolog_term_ref et = Prolog_new_term_ref();
+  Prolog_put_atom(et, timeout_exception_atom);
+  Prolog_raise_exception(et);
+}
+
+#define CATCH_ALL \
+  catch (const Prolog_unsigned_out_of_range& e) { \
+    handle_exception(e); \
+  } \
+  catch (const not_unsigned_integer& e) { \
+    handle_exception(e); \
+  } \
+  catch (const non_linear& e) { \
+    handle_exception(e); \
+  } \
+  catch (const not_a_variable& e) { \
+    handle_exception(e); \
+  } \
+  catch (const not_an_integer& e) { \
+    handle_exception(e); \
+  } \
+  catch (const not_a_polyhedron_kind& e) { \
+    handle_exception(e); \
+  } \
+  catch (const not_a_polyhedron_handle& e) { \
+    handle_exception(e); \
+  } \
+  catch (const PPL_integer_out_of_range& e) { \
+    handle_exception(e); \
+  } \
+  catch (const unknown_interface_error& e) { \
+    handle_exception(e); \
+  } \
+  catch (const timeout_exception& e) { \
+    handle_exception(e); \
+  } \
+  catch (const std::bad_alloc& e) { \
+    handle_exception(e); \
+  } \
+  catch (const std::exception& e) { \
+    handle_exception(e); \
+  } \
+  catch (...) { \
+    handle_exception(); \
+  } \
+  return PROLOG_FAILURE
 
 Prolog_term_ref
 variable_term(dimension_type varid) {
   Prolog_term_ref v = Prolog_new_term_ref();
-  Prolog_put_long(v, varid);
+  Prolog_put_ulong(v, varid);
   Prolog_term_ref t = Prolog_new_term_ref();
   Prolog_construct_compound(t, a_dollar_VAR, v);
   return t;
 }
 
+#if 0
 unsigned int
 get_unsigned_int(long n) {
   if (n >= 0 && static_cast<unsigned long>(n) <= UINT_MAX)
@@ -401,18 +461,36 @@ get_unsigned_int(long n) {
   else {
     Prolog_term_ref n_term = Prolog_new_term_ref();
     Prolog_put_long(n_term, n);
-    throw not_unsigned_int(n_term);
+    throw not_unsigned_integer(n_term);
   }
 }
+#endif
 
-unsigned int
-term_to_unsigned_int(Prolog_term_ref t) {
-  if (Prolog_is_integer(t)) {
-    long v;
-    if (Prolog_get_long(t, &v))
-      return get_unsigned_int(v);
+template <typename U>
+U
+term_to_unsigned(Prolog_term_ref t) {
+  if (!Prolog_is_integer(t))
+    throw not_unsigned_integer(t);
+
+  U d;
+  long v;
+  if (Prolog_get_long(t, &v))
+    if (v < 0)
+      throw not_unsigned_integer(t);
+    else if (static_cast<unsigned long>(v) > std::numeric_limits<U>::max())
+      throw Prolog_unsigned_out_of_range(t, std::numeric_limits<U>::max());
+    else
+      d = v;
+  else {
+    Integer vv = integer_term_to_Integer(t);
+    if (vv < 0)
+      throw not_unsigned_integer(t);
+    else if (!vv.fits_ulong_p())
+      throw Prolog_unsigned_out_of_range(t, std::numeric_limits<U>::max());
+    else
+      d = vv.get_ui();
   }
-  throw not_unsigned_int(t);
+  return d;
 }
 
 Prolog_atom
@@ -447,7 +525,7 @@ build_lin_expression(Prolog_term_ref t) {
 	  return -build_lin_expression(arg);
 	else if (functor == a_dollar_VAR)
 	  // Variable.
-	  return Variable(term_to_unsigned_int(arg));
+	  return Variable(term_to_unsigned<dimension_type>(arg));
       }
       break;
     case 2:
@@ -569,10 +647,10 @@ build_generator(Prolog_term_ref t) {
       if (Prolog_is_integer(arg2)) {
         if (functor == a_point)
 	  return Generator::point(build_lin_expression(arg1),
-				       integer_term_to_Integer(arg2));
+				  integer_term_to_Integer(arg2));
         else if (functor == a_closure_point)
 	  return Generator::closure_point(build_lin_expression(arg1),
-					       integer_term_to_Integer(arg2));
+					  integer_term_to_Integer(arg2));
       }
     }
   }
@@ -687,7 +765,7 @@ generator_term(const Generator& g) {
 }
 
 Variable
-get_variable(Prolog_term_ref t) {
+term_to_Variable(Prolog_term_ref t) {
   if (Prolog_is_compound(t)) {
     Prolog_atom functor;
     int arity;
@@ -695,10 +773,20 @@ get_variable(Prolog_term_ref t) {
     if (functor == a_dollar_VAR && arity == 1) {
       Prolog_term_ref arg = Prolog_new_term_ref();
       Prolog_get_arg(1, t, arg);
-      return Variable(term_to_unsigned_int(arg));
+      return Variable(term_to_unsigned<dimension_type>(arg));
     }
   }
   throw not_a_variable(t);
+}
+
+Integer
+term_to_Integer(Prolog_term_ref t) {
+  if (Prolog_is_integer(t)) {
+    long v;
+    Prolog_get_long(t, &v);
+    return PPL::Integer(v);
+  }
+  throw not_an_integer(t);
 }
 
 Polyhedron*
@@ -713,14 +801,24 @@ term_to_polyhedron_handle(Prolog_term_ref t_ph) {
 
 bool Prolog_interface_initialized = false;
 
+bool
+unify_long(Prolog_term_ref t, long l) {
+  Prolog_term_ref t_l = Prolog_new_term_ref();
+  return Prolog_put_long(t_l, l) && Prolog_unify(t, t_l);
+}
+
+bool
+unify_ulong(Prolog_term_ref t, unsigned long l) {
+  Prolog_term_ref t_l = Prolog_new_term_ref();
+  return Prolog_put_ulong(t_l, l) && Prolog_unify(t, t_l);
+}
+
 } // namespace
 
 extern "C" Prolog_foreign_return_type
 ppl_version_major(Prolog_term_ref t_v) {
   try {
-    Prolog_term_ref tmp = Prolog_new_term_ref();
-    Prolog_put_long(tmp, long(version_major()));
-    if (Prolog_unify(t_v, tmp))
+    if (unify_ulong(t_v, version_major()))
       return PROLOG_SUCCESS;
   }
   CATCH_ALL;
@@ -729,9 +827,7 @@ ppl_version_major(Prolog_term_ref t_v) {
 extern "C" Prolog_foreign_return_type
 ppl_version_minor(Prolog_term_ref t_v) {
   try {
-    Prolog_term_ref tmp = Prolog_new_term_ref();
-    Prolog_put_long(tmp, long(version_minor()));
-    if (Prolog_unify(t_v, tmp))
+    if (unify_ulong(t_v, version_minor()))
       return PROLOG_SUCCESS;
   }
   CATCH_ALL;
@@ -740,9 +836,7 @@ ppl_version_minor(Prolog_term_ref t_v) {
 extern "C" Prolog_foreign_return_type
 ppl_version_revision(Prolog_term_ref t_v) {
   try {
-    Prolog_term_ref tmp = Prolog_new_term_ref();
-    Prolog_put_long(tmp, long(version_revision()));
-    if (Prolog_unify(t_v, tmp))
+    if (unify_ulong(t_v, version_revision()))
       return PROLOG_SUCCESS;
   }
   CATCH_ALL;
@@ -751,9 +845,7 @@ ppl_version_revision(Prolog_term_ref t_v) {
 extern "C" Prolog_foreign_return_type
 ppl_version_beta(Prolog_term_ref t_v) {
   try {
-    Prolog_term_ref tmp = Prolog_new_term_ref();
-    Prolog_put_long(tmp, long(version_beta()));
-    if (Prolog_unify(t_v, tmp))
+    if (unify_ulong(t_v, version_beta()))
       return PROLOG_SUCCESS;
   }
   CATCH_ALL;
@@ -784,10 +876,7 @@ ppl_banner(Prolog_term_ref t_b) {
 extern "C" Prolog_foreign_return_type
 ppl_max_space_dimension(Prolog_term_ref t_msd) {
   try {
-    Prolog_term_ref tmp = Prolog_new_term_ref();
-    dimension_type msd = max_space_dimension();
-    Prolog_put_long(tmp, long(msd));
-    if (Prolog_unify(t_msd, tmp))
+    if (unify_ulong(t_msd, max_space_dimension()))
       return PROLOG_SUCCESS;
   }
   CATCH_ALL;
@@ -872,7 +961,7 @@ ppl_set_timeout(Prolog_term_ref t_time) {
     // In case a timeout was already set.
     reset_timeout();
     static timeout_exception e;
-    unsigned hundredth_secs = term_to_unsigned_int(t_time);
+    unsigned hundredth_secs = term_to_unsigned<unsigned>(t_time);
     p_timeout_object =
       new
       Parma_Watchdog_Library::Watchdog(hundredth_secs,
@@ -900,9 +989,9 @@ ppl_new_Polyhedron_from_dimension(Prolog_term_ref t_tp,
     Polyhedron* ph;
     Prolog_atom tp = term_to_polyhedron_kind(t_tp);
     if (tp == a_c)
-      ph = new C_Polyhedron(term_to_unsigned_int(t_nd));
+      ph = new C_Polyhedron(term_to_unsigned<dimension_type>(t_nd));
     else
-      ph = new NNC_Polyhedron(term_to_unsigned_int(t_nd));
+      ph = new NNC_Polyhedron(term_to_unsigned<dimension_type>(t_nd));
     Prolog_term_ref tmp = Prolog_new_term_ref();
     Prolog_put_address(tmp, ph);
     if (Prolog_unify(t_ph, tmp)) {
@@ -923,11 +1012,11 @@ ppl_new_Polyhedron_empty_from_dimension(Prolog_term_ref t_tp,
     Polyhedron* ph;
     Prolog_atom tp = term_to_polyhedron_kind(t_tp);
     if (tp == a_c)
-      ph = new C_Polyhedron(term_to_unsigned_int(t_nd),
-				 Polyhedron::EMPTY);
+      ph = new C_Polyhedron(term_to_unsigned<dimension_type>(t_nd),
+			    Polyhedron::EMPTY);
     else
-      ph = new NNC_Polyhedron(term_to_unsigned_int(t_nd),
-				   Polyhedron::EMPTY);
+      ph = new NNC_Polyhedron(term_to_unsigned<dimension_type>(t_nd),
+			      Polyhedron::EMPTY);
     Prolog_term_ref tmp = Prolog_new_term_ref();
     Prolog_put_address(tmp, ph);
     if (Prolog_unify(t_ph, tmp)) {
@@ -1215,11 +1304,7 @@ ppl_Polyhedron_space_dimension(Prolog_term_ref t_ph, Prolog_term_ref t_sd) {
   try {
     const Polyhedron* ph = term_to_polyhedron_handle(t_ph);
     CHECK(ph);
-    dimension_type sd = ph->space_dimension();
-    Prolog_term_ref tmp = Prolog_new_term_ref();
-    if (sd <= LONG_MAX
-	&& Prolog_put_long(tmp, long(sd))
-	&& Prolog_unify(t_sd, tmp))
+    if (unify_ulong(t_sd, ph->space_dimension()))
       return PROLOG_SUCCESS;
   }
   CATCH_ALL;
@@ -1316,31 +1401,25 @@ ppl_Polyhedron_relation_with_constraint(Prolog_term_ref t_ph,
 
     Prolog_term_ref tail = Prolog_new_term_ref();
     Prolog_put_atom(tail, a_nil);
+    Prolog_term_ref t_a = Prolog_new_term_ref();
     while (r != Poly_Con_Relation::nothing()) {
       if (r.implies(Poly_Con_Relation::is_disjoint())) {
-        Prolog_term_ref t_dis = Prolog_new_term_ref();
-	Prolog_put_atom(t_dis, a_is_disjoint);
-        Prolog_construct_cons(tail, t_dis, tail);
+	Prolog_put_atom(t_a, a_is_disjoint);
 	r = r - Poly_Con_Relation::is_disjoint();
       }
       else if (r.implies(Poly_Con_Relation::strictly_intersects())) {
-        Prolog_term_ref t_sin = Prolog_new_term_ref();
-	Prolog_put_atom(t_sin, a_strictly_intersects);
-        Prolog_construct_cons(tail, t_sin, tail);
+	Prolog_put_atom(t_a, a_strictly_intersects);
 	r = r - Poly_Con_Relation::strictly_intersects();
       }
       else if (r.implies(Poly_Con_Relation::is_included())) {
-        Prolog_term_ref t_inc = Prolog_new_term_ref();
-	Prolog_put_atom(t_inc, a_is_included);
-        Prolog_construct_cons(tail, t_inc, tail);
+	Prolog_put_atom(t_a, a_is_included);
 	r = r - Poly_Con_Relation::is_included();
       }
       else if (r.implies(Poly_Con_Relation::saturates())) {
-        Prolog_term_ref t_sat = Prolog_new_term_ref();
-	Prolog_put_atom(t_sat, a_saturates);
-        Prolog_construct_cons(tail, t_sat, tail);
+	Prolog_put_atom(t_a, a_saturates);
 	r = r - Poly_Con_Relation::saturates();
       }
+      Prolog_construct_cons(tail, t_a, tail);
     }
     if (Prolog_unify(t_r, tail))
       return PROLOG_SUCCESS;
@@ -1938,9 +2017,9 @@ ppl_Polyhedron_affine_image(Prolog_term_ref t_ph, Prolog_term_ref t_v,
   try {
     Polyhedron* ph = term_to_polyhedron_handle(t_ph);
     CHECK(ph);
-    ph->affine_image(get_variable(t_v),
+    ph->affine_image(term_to_Variable(t_v),
 		     build_lin_expression(t_le),
-		     integer_term_to_Integer(t_d));
+		     term_to_Integer(t_d));
     return PROLOG_SUCCESS;
   }
   CATCH_ALL;
@@ -1952,9 +2031,9 @@ ppl_Polyhedron_affine_preimage(Prolog_term_ref t_ph, Prolog_term_ref t_v,
   try {
     Polyhedron* ph = term_to_polyhedron_handle(t_ph);
     CHECK(ph);
-    ph->affine_preimage(get_variable(t_v),
+    ph->affine_preimage(term_to_Variable(t_v),
 			build_lin_expression(t_le),
-			integer_term_to_Integer(t_d));
+			term_to_Integer(t_d));
     return PROLOG_SUCCESS;
   }
   CATCH_ALL;
@@ -2001,10 +2080,10 @@ ppl_Polyhedron_generalized_affine_image(Prolog_term_ref t_ph,
     CHECK(ph);
     Relation_Symbol r;
     if (relation_symbol(t_r, r)) {
-      ph->generalized_affine_image(get_variable(t_v),
+      ph->generalized_affine_image(term_to_Variable(t_v),
 				   r,
 				   build_lin_expression(t_le),
-				   integer_term_to_Integer(t_d));
+				   term_to_Integer(t_d));
       return PROLOG_SUCCESS;
     }
   }
@@ -2031,13 +2110,6 @@ ppl_Polyhedron_generalized_affine_image_lhs_rhs(Prolog_term_ref t_ph,
 }
 
 namespace {
-
-bool
-unify_long(Prolog_term_ref t, long l) {
-  Prolog_term_ref t_l = Prolog_new_term_ref();
-  Prolog_put_long(t_l, l);
-  return Prolog_unify(t, t_l);
-}
 
 Prolog_foreign_return_type
 widening_assign_with_token(Prolog_term_ref t_lhs,
@@ -2267,7 +2339,7 @@ ppl_Polyhedron_add_dimensions_and_project(Prolog_term_ref t_ph,
   try {
     Polyhedron* ph = term_to_polyhedron_handle(t_ph);
     CHECK(ph);
-    ph->add_dimensions_and_project(term_to_unsigned_int(t_nnd));
+    ph->add_dimensions_and_project(term_to_unsigned<dimension_type>(t_nnd));
     return PROLOG_SUCCESS;
   }
   CATCH_ALL;
@@ -2279,7 +2351,7 @@ ppl_Polyhedron_add_dimensions_and_embed(Prolog_term_ref t_ph,
   try {
     Polyhedron* ph = term_to_polyhedron_handle(t_ph);
     CHECK(ph);
-    ph->add_dimensions_and_embed(term_to_unsigned_int(t_nnd));
+    ph->add_dimensions_and_embed(term_to_unsigned<dimension_type>(t_nnd));
     return PROLOG_SUCCESS;
   }
   CATCH_ALL;
@@ -2309,7 +2381,7 @@ ppl_Polyhedron_remove_dimensions(Prolog_term_ref t_ph,
     Prolog_term_ref v = Prolog_new_term_ref();
     while (Prolog_is_cons(t_vlist)) {
       Prolog_get_cons(t_vlist, v, t_vlist);
-      dead_variables.insert(get_variable(v));
+      dead_variables.insert(term_to_Variable(v));
     }
     ph->remove_dimensions(dead_variables);
     return PROLOG_SUCCESS;
@@ -2323,7 +2395,7 @@ ppl_Polyhedron_remove_higher_dimensions(Prolog_term_ref t_ph,
   try {
     Polyhedron* ph = term_to_polyhedron_handle(t_ph);
     CHECK(ph);
-    ph->remove_higher_dimensions(term_to_unsigned_int(t_nd));
+    ph->remove_higher_dimensions(term_to_unsigned<dimension_type>(t_nd));
     return PROLOG_SUCCESS;
   }
   CATCH_ALL;
@@ -2403,8 +2475,8 @@ ppl_Polyhedron_map_dimensions(Prolog_term_ref t_ph,
       Prolog_term_ref t_j = Prolog_new_term_ref();
       Prolog_get_arg(1, t_pair, t_i);
       Prolog_get_arg(2, t_pair, t_j);
-      dimension_type i = get_variable(t_i).id();
-      dimension_type j = get_variable(t_j).id();
+      dimension_type i = term_to_Variable(t_i).id();
+      dimension_type j = term_to_Variable(t_j).id();
       if (i >= space_dim || !pfunc.insert(i, j))
 	return PROLOG_FAILURE;
     }
@@ -2412,4 +2484,5 @@ ppl_Polyhedron_map_dimensions(Prolog_term_ref t_ph,
     return PROLOG_SUCCESS;
   }
   CATCH_ALL;
+
 }
