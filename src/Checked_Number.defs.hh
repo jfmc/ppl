@@ -41,6 +41,10 @@ struct Plus_Infinity {
 struct Not_A_Number {
 };
 
+extern Minus_Infinity MINUS_INFINITY;
+extern Plus_Infinity PLUS_INFINITY;
+extern Not_A_Number NOT_A_NUMBER;
+
 struct Checked_Number_Default_Policy {
   static const int check_overflow = 1;
   static const int check_divbyzero = 0;
@@ -52,7 +56,18 @@ struct Checked_Number_Default_Policy {
   static const int fpu_classify = 0;
   static const int fpu_check_inexact = 0;
   static void handle_result(Result r);
-  static void bad_result(Result r);
+};
+
+struct Extended_Number_Policy {
+  static const int check_overflow = 1;
+  static const int check_divbyzero = 0;
+  static const int check_sqrt_neg = 0;
+  static const int round_inexact = 1;
+  static const int store_nan = 1;
+  static const int store_infinity = 1;
+  static const int fpu_classify = 0;
+  static const int fpu_check_inexact = 0;
+  static void handle_result(Result r);
 };
 
 //! A wrapper for native numeric types implementing a given policy.
@@ -139,6 +154,7 @@ public:
 
   //@} // Accessors and Conversions
 
+  bool OK() const;
   Result classify(bool nan = true, bool inf = true, bool sign = true) const;
   Result assign(const Minus_Infinity&, const Rounding& mode = Rounding::CURRENT);
   Result assign(const Plus_Infinity&, const Rounding& mode = Rounding::CURRENT);
@@ -302,13 +318,6 @@ template <typename T, typename Policy>
 struct Checked_Pair<T, Policy, T, Policy> {
   typedef Checked_Number<T, Policy> Checked_Result;
 };
-
-#if 0
-template <typename Policy>
-struct Checked_Pair<signed char, Policy, int, Policy> {
-  typedef Checked_Number<int, Policy> Checked_Result;
-};
-#endif
 
 //! \name Arithmetic Operators
 //@{
@@ -530,6 +539,8 @@ std::istream&
 operator>>(std::istream& is, Checked_Number<T, Policy>& x);
 
 //@} // Input-Output Operators
+
+void throw_result_exception(Result r);
 
 } // namespace Parma_Polyhedra_Library
 

@@ -31,7 +31,24 @@ namespace Parma_Polyhedra_Library {
 inline void
 Checked_Number_Default_Policy::handle_result(Result r) {
   if (is_special(r) || (round_inexact && r != V_EQ))
-    bad_result(r);
+    throw_result_exception(r);
+}
+
+inline void
+Extended_Number_Policy::handle_result(Result r) {
+  switch (r) {
+  case V_EQ:
+  case V_LT:
+  case V_GT:
+  case V_GE:
+  case V_LE:
+  case VC_MINUS_INFINITY:
+  case VC_PLUS_INFINITY:
+    break;
+  default:
+    throw_result_exception(r);
+    break;
+  }
 }
 
 template <typename T, typename Policy>
@@ -111,6 +128,12 @@ raw_value(Checked_Number<T, Policy>& x) {
 }
 
 template <typename T, typename Policy>
+inline bool
+Checked_Number<T, Policy>::OK() const {
+  return true;
+}
+
+template <typename T, typename Policy>
 inline Result
 Checked_Number<T, Policy>::classify(bool nan, bool inf, bool sign) const {
   return Checked::classify<Policy>(v, nan, inf, sign);
@@ -120,6 +143,7 @@ Checked_Number<T, Policy>::classify(bool nan, bool inf, bool sign) const {
 template <typename T, typename Policy>
 size_t
 total_memory_in_bytes(const Checked_Number<T, Policy>& x) {
+  // FIXME
   return sizeof(x);
 }
 
@@ -128,6 +152,22 @@ template <typename T, typename Policy>
 size_t
 external_memory_in_bytes(const Checked_Number<T, Policy>&) {
   return 0;
+}
+
+template <typename To, typename To_Policy>
+inline Result
+Checked_Number<To, To_Policy>::assign(const Minus_Infinity&, const Rounding&) {
+  return Checked::set_special<To_Policy>(v, VC_MINUS_INFINITY);
+}
+template <typename To, typename To_Policy>
+inline Result
+Checked_Number<To, To_Policy>::assign(const Plus_Infinity&, const Rounding&) {
+  return Checked::set_special<To_Policy>(v, VC_PLUS_INFINITY);
+}
+template <typename To, typename To_Policy>
+inline Result
+Checked_Number<To, To_Policy>::assign(const Not_A_Number&, const Rounding&) {
+  return Checked::set_special<To_Policy>(v, VC_NAN);
 }
 
 template <typename To, typename To_Policy>

@@ -25,13 +25,33 @@ site: http://www.cs.unipr.it/ppl/ . */
 
 namespace Parma_Polyhedra_Library {
 
+Minus_Infinity MINUS_INFINITY;
+Plus_Infinity PLUS_INFINITY;
+Not_A_Number NOT_A_NUMBER;
+
 void
-Checked_Number_Default_Policy::bad_result(Result r) {
+throw_result_exception(Result r) {
   switch (r) {
+  case V_LT:
+    throw std::logic_error("Exact result is less than computed one.");
+  case V_LE:
+    throw std::logic_error("Exact result is less or equal than computed one.");
+  case V_GT:
+    throw std::logic_error("Exact result is greater than computed one.");
+  case V_GE:
+    throw std::logic_error("Exact result is greater or equal than computed one.");
+  case V_NE:
+    throw std::logic_error("Exact result is less or greater than computed one.");
+  case V_LGE:
+    throw std::logic_error("Exact result is less, greater or equal than computed one.");
+  case VC_MINUS_INFINITY:
+    throw std::overflow_error("Minus infinity.");
   case V_NEG_OVERFLOW:
     throw std::overflow_error("Negative overflow.");
   case V_UNKNOWN_NEG_OVERFLOW:
     throw std::overflow_error("Unknown result due to negative overflow.");
+  case VC_PLUS_INFINITY:
+    throw std::overflow_error("Plus infinity.");
   case V_POS_OVERFLOW:
     throw std::overflow_error("Positive overflow.");
   case V_UNKNOWN_POS_OVERFLOW:
@@ -40,18 +60,22 @@ Checked_Number_Default_Policy::bad_result(Result r) {
     throw std::domain_error("Invalid numeric string.");
   case V_DIV_ZERO:
     throw std::domain_error("Division by zero.");
+  case V_INF_ADD_INF:
+    throw std::domain_error("Infinities addition.");
+  case V_INF_DIV_INF:
+    throw std::domain_error("Infinities division.");
+  case V_INF_MOD:
+    throw std::domain_error("Remainder of division of infinity.");
+  case V_INF_MUL_ZERO:
+    throw std::domain_error("Multiplication of infinity and zero.");
+  case V_INF_SUB_INF:
+    throw std::domain_error("Subraction of infinities.");
   case V_MOD_ZERO:
-    throw std::domain_error("Modulo by zero.");
+    throw std::domain_error("Remainder of division by zero.");
   case V_SQRT_NEG:
     throw std::domain_error("Square root of negative number.");
-  case V_LT:
-  case V_LE:
-  case V_GT:
-  case V_GE:
-  case V_NE:
-  case V_LGE:
-    throw std::logic_error("Unexpected inexact computation.");
-    break;
+  case V_UNORD_COMP:
+    throw std::domain_error("Unordered comparison.");
   default:
     throw std::logic_error("Unexpected result.");
     break;
