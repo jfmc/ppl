@@ -32,7 +32,69 @@ site: http://www.cs.unipr.it/ppl/ . */
 namespace Parma_Polyhedra_Library {
   // Put them in the namespace here to declare them friend later.
 
-  //! @name Generator.
+  /*! @name How to build a generator.
+    Each type of generator is built by applying a particular operator
+    (<CODE>|</CODE> for a line, <CODE>^</CODE> for a ray
+    and <CODE>/=</CODE> for a vertex) to a linear expression.
+    The linear expression represents a direction in the space:
+    note that the inhomogeneous term of this linear expression
+    is plainly disregarded.
+
+    \par
+    In all the examples it is assumed that variables
+    <CODE>x</CODE>, <CODE>y</CODE> and <CODE>z</CODE>
+    are defined as follows:
+    \code
+  Variable x(0);
+  Variable y(1);
+  Variable z(2);
+    \endcode
+ 
+    \par Example 1
+    The following code builds a line of direction \f$x-y-z\f$:
+    \code
+  Generator line(1 | x - y - z);
+    \endcode
+    When specifying a line, the actual value of the first argument
+    in the constructor is not significant.
+    As we said above, also the inhomogeneous term of the linear expression
+    is not significant.
+    Thus, the same effect would have been obtained by replacing
+    the above definition by, e.g.,
+    \code
+  Generator line(18 | x - y - z + 15);
+    \endcode
+
+    \par Example 2
+    The following code builds a ray with the same direction of the
+    previous line:
+    \code
+  Generator ray(1 ^ x - y - z);
+    \endcode
+    As was the case for lines, when specifying a ray the actual value
+    of the first argument is not significant.
+
+    \par Example 3
+    The following code builds the vertex \f$(1, 3, 2)^\mathrm{T}\f$:
+    \code
+  Generator vertex(x + 3 * y + 2 * z /= 1);
+    \endcode
+    Note that the second argument of the operator is
+    the <EM>denominator</EM> for the coefficients
+    of the linear expression.
+    Therefore, the same vertex as above can be obtain also with the code:
+    \code
+  Generator vertex(2 * x + 6 * y + 4 * z /= 2);
+    \endcode
+    Obviously, the denominator is more usefully exploited
+    to specify those vertices having some non-integer (rational) coordinates.
+    For instance, the vertex \f$(-1.5, 3.2, 2.1)^\mathrm{T}\f$
+    can be specified by the following code:
+    \code
+  Generator vertex(-15 * x + 32 * y + 21 * z /= 10);
+    \endcode
+    If a zero denominator is provided, an exception is thrown.
+   */
   //@{
   //! Returns the (bidirectional) line of direction \p e.
   Generator operator |(int, const LinExpression& e);
@@ -56,68 +118,6 @@ namespace Parma_Polyhedra_Library {
 
   where \f$d\f$ is the dimension of the space.
 
-  Each type of generator is built by specifying a linear expressions,
-  representing a direction in the space.
-  To provide directions, only integer coefficients are used:
-  thus, in order to be able to specify <EM>vertices</EM>
-  having also non-integral (rational) coordinates,
-  an integer denominator \f$b\f$ is required;
-  such a denominator is not needed for lines and rays.
-
-  \par Example 1
-  The following code builds a line of direction \f$x-y-z\f$:
-  \code
-  Variable x(0);
-  Variable y(1);
-  Variable z(2);
-  Generator line(1 | x - y - z);
-  \endcode
-  Note that, when specifying a line, the actual value of the first argument
-  in the constructor is not significant.
-  Thus, the same effect would have been obtained by replacing the last
-  definition by
-  \code
-  Generator line(0 | x - y - z);
-  \endcode
-
-  \par Example 2
-  The following code builds a ray with the same direction of the
-  previous line:
-  \code
-  Variable x(0);
-  Variable y(1);
-  Variable z(2);
-  Generator ray(1 ^ x - y - z);
-  \endcode
-  As was the case for lines, when specifying a ray the actual value
-  of the first argument in the constructor is not significant.
-
-  \par Example 3
-  The following code builds the vertex \f$(1, 3, 2)^\mathrm{T}\f$:
-  \code
-  Variable x(0);
-  Variable y(1);
-  Variable z(2);
-  Generator vertex(x + 3 * y + 2 * z /= 1);
-  \endcode
-  The same vertex as above can be obtain also with the following code:
-  \code
-  Variable x(0);
-  Variable y(1);
-  Variable z(2);
-  Generator vertex(2 * x + 6 * y + 4 * z /= 2);
-  \endcode
-  Obviously, the second argument is more useful to specify vertices
-  having some non-integer (rational) coordinates.
-  For instance, the vertex \f$(-1.5, 3.2, 2.1)^\mathrm{T}\f$
-  can be specified by the following code:
-  \code
-  Variable x(0);
-  Variable y(1);
-  Variable z(2);
-  Generator vertex(-15 * x + 32 * y + 21 * z /= 10);
-  \endcode
-
 */
 
 class Parma_Polyhedra_Library::Generator : public Row {
@@ -140,13 +140,14 @@ public:
   //! Destructor.
   ~Generator();
 
+  //! The generator type.
   enum Type {
     LINE = Row::LINE_OR_EQUALITY,
     RAY = Row::RAY_OR_VERTEX_OR_INEQUALITY,
     VERTEX = RAY+1
   };
 
-  //! Returns the type of \p *this.
+  //! Returns the generator type of \p *this.
   Type type() const;
 
 PPL_INTERNAL:
