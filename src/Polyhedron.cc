@@ -1351,6 +1351,12 @@ PPL::operator<=(const Polyhedron& x, const Polyhedron& y) {
   return true;
 }
 
+bool
+PPL::are_disjoint(const Polyhedron& x, const Polyhedron& y) {
+  Polyhedron z = x;
+  z.intersection_assign_and_minimize(y);
+  return z.check_empty();
+}
 
 bool
 PPL::Polyhedron::intersection_assign_and_minimize(const Polyhedron& y) {

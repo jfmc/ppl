@@ -35,11 +35,13 @@ o  In all the identifiers exported by the C interface, any occurrence
 
 o  New method: template <typename PartialFunction>
    void shuffle_dimensions(const PartialFunction&).
+   TO BE CONTINUED
 
 o  New function LinExpression& operator*=(LinExpression&, const Integer&)
    to multiply (in place) an expression by a scalar.
 
-   TO BE CONTINUED
+o  New function bool are_disjoint(const Polyhedron&, const Polyhedron&)
+   returning true if and only if the two polyhedra are disjoint.
 
 
 Bugfixes

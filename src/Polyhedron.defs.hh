@@ -113,6 +113,15 @@ bool operator>=(const Polyhedron& x, const Polyhedron& y);
 */
 bool operator<=(const Polyhedron& x, const Polyhedron& y);
 
+//! Returns <CODE>true</CODE> if and only if \p x and \p y are disjoint.
+/*!
+  \relates Polyhedron
+  \exception std::invalid_argument thrown if \p x and \p y
+                                   are topology-incompatible
+                                   or dimension-incompatible.
+*/
+bool are_disjoint(const Polyhedron& x, const Polyhedron& y);
+
 } // namespace Parma_Polyhedra_Library
 
 
@@ -1190,9 +1199,10 @@ public:
   //! Assigns to \p *this its topological closure.
   void topological_closure_assign();
 
-  friend bool
-  Parma_Polyhedra_Library::operator<=(const Polyhedron& x,
-				      const Polyhedron& y);
+  friend bool Parma_Polyhedra_Library::operator<=(const Polyhedron& x,
+						  const Polyhedron& y);
+  friend bool Parma_Polyhedra_Library::are_disjoint(const Polyhedron& x,
+						    const Polyhedron& y);
 
 #ifdef PPL_DOXYGEN_INCLUDE_IMPLEMENTATION_DETAILS
   //! \brief
