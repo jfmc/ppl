@@ -934,28 +934,66 @@ ppl_init() {
 }
 
 extern "C" Prolog_foreign_return_type
-ppl_relation_with_constraint(Prolog_term_ref t_ph, Prolog_term_ref t_c) {
+ppl_relation_with_constraint(Prolog_term_ref t_ph, Prolog_term_ref t_c,
+			     Prolog_term_ref t_r) {
   try {
     PPL::Polyhedron* ph = get_ph_pointer(t_ph);
     if (ph == 0)
       return PROLOG_FAILURE;
     CHECK(ph);
-    ph->relation_with(build_constraint(t_c));
-    return PROLOG_SUCCESS;
+    PPL::Poly_Con_Relation r = ph->relation_with(build_constraint(t_c));
+
+    Prolog_term_ref tail = Prolog_new_term_ref();
+    Prolog_put_atom(tail, a_nil);
+    Prolog_term_ref t_a = Prolog_new_term_ref();
+    while (r != PPL::Poly_Con_Relation::nothing()) {
+      if (r.implies(PPL::Poly_Con_Relation::is_disjoint())) {
+	Prolog_put_atom(t_a, a_is_disjoint);
+	r = r && !PPL::Poly_Con_Relation::is_disjoint();
+      }
+      else if (r.implies(PPL::Poly_Con_Relation::strictly_intersects())) {
+	Prolog_put_atom(t_a, a_strictly_intersects);
+	r = r && !PPL::Poly_Con_Relation::strictly_intersects();
+      }
+      else if (r.implies(PPL::Poly_Con_Relation::is_included())) {
+	Prolog_put_atom(t_a, a_is_included);
+	r = r && !PPL::Poly_Con_Relation::is_included();
+      }
+      else if (r.implies(PPL::Poly_Con_Relation::saturates())) {
+	Prolog_put_atom(t_a, a_saturates);
+	r = r && !PPL::Poly_Con_Relation::saturates();
+      }
+      Prolog_construct_cons(tail, t_a, tail);
+    }
+    if (Prolog_unify(t_r, tail))
+      return PROLOG_SUCCESS;
   }
   CATCH_ALL;
   return PROLOG_FAILURE;
 }
 
 extern "C" Prolog_foreign_return_type
-ppl_relation_with_generator(Prolog_term_ref t_ph, Prolog_term_ref t_g) {
+ppl_relation_with_generator(Prolog_term_ref t_ph, Prolog_term_ref t_g,
+			    Prolog_term_ref t_r) {
   try {
     PPL::Polyhedron* ph = get_ph_pointer(t_ph);
     if (ph == 0)
       return PROLOG_FAILURE;
     CHECK(ph);
-    ph->relation_with(build_generator(t_g));
-    return PROLOG_SUCCESS;
+    PPL::Poly_Gen_Relation r = ph->relation_with(build_generator(t_g));
+
+    Prolog_term_ref tail = Prolog_new_term_ref();
+    Prolog_put_atom(tail, a_nil);
+    Prolog_term_ref t_a = Prolog_new_term_ref();
+    while (r != PPL::Poly_Gen_Relation::nothing()) {
+      if (r.implies(PPL::Poly_Gen_Relation::subsumes())) {
+	Prolog_put_atom(t_a, a_subsumes);
+	r = r && !PPL::Poly_Gen_Relation::subsumes();
+      }
+      Prolog_construct_cons(tail, t_a, tail);
+    }
+    if (Prolog_unify(t_r, tail))
+      return PROLOG_SUCCESS;
   }
   CATCH_ALL;
   return PROLOG_FAILURE;
