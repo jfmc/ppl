@@ -28,9 +28,19 @@ VPATH = @srcdir@
 
 SUBDIRS = examples
 
-EXTRA_DIST = ppl_lpsol.c expected
+EXTRA_DIST = \
+ppl_lpsol.c \
+expected_mpz \
+expected_int8 \
+expected_int16 \
+expected_int32 \
+expected_int64
 
 if HAVE_GLPK
+
+COEFFICIENT_MNEMONIC = @coefficient_mnemonic@
+
+EXPECTED = expected_$(COEFFICIENT_MNEMONIC)
 
 AM_CPPFLAGS = -I$(top_builddir)/interfaces/C @extra_includes@
 
@@ -54,7 +64,7 @@ check-local: ppl_lpsol expected
 	        ./ppl_lpsol -v $$m -oobtained $$k >/dev/null; \
 	  done \
 	done
-	diff -q --ignore-all-space $(srcdir)/expected obtained
+	diff -q --ignore-all-space $(srcdir)/$(EXPECTED) obtained
 
 MOSTLYCLEANFILES = obtained
 

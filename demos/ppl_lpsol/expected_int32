@@ -1,0 +1,206 @@
+*** ppl_lpsol -v --min -oobtained afiro.mps
+Constraints:
+X01 - X02 - X03 = 0
+*** ppl_lpsol -v --max -oobtained afiro.mps
+Constraints:
+X01 - X02 - X03 = 0
+*** ppl_lpsol -v --min -oobtained bgprtr.mps
+Constraints:
+P1T1 + P2T1 - NDT1 = 130
+P1T2 + P2T2 - NDT2 = 190
+-450*B1T1 - 45*T1T1 >= -4
+-90*B1T2 - 9*T1T2 >= -8000
+-30*B2T1 - 3*T2T1 >= -3500
+-30*B2T2 - 3*T2T2 >= -3500
+-I1T1 - I2T1 >= -1000
+-I1T2 - I2T2 >= -1000
+I1T1 + E1T1 - 6*B1T1 = 0
+I2T1 + E2T1 - 6*B2T1 = 0
+I1T2 + E1T2 - 6*B1T2 = 0
+I2T2 + E2T2 - 6*B2T2 = 0
+P1T1 + N1T1 - B1T1 = 5
+P1T2 - N1T1 + N1T2 - B1T2 = 0
+P2T1 + N2T1 - B2T1 = 2
+P2T2 - N2T1 + N2T2 - B2T2 = 0
+C1T1 + R1T1 + B1T1 - T1T1 = 6
+C1T2 - C2T1 - R1T1 + R1T2 + B1T2 - T1T2 = 0
+C2T1 + R2T1 + B2T1 - T2T1 = 4
+C1T1 - C2T2 + R2T1 - R2T2 - B2T2 + T2T2 = 0
+P1T1 >= 0
+P1T2 >= 0
+P2T1 >= 0
+P2T2 >= 0
+I1T1 >= 0
+I1T2 >= 0
+I2T1 >= 0
+I2T2 >= 0
+E1T1 >= 0
+E1T2 >= 0
+E2T1 >= 0
+E2T2 >= 0
+C1T1 >= 0
+C1T2 >= 0
+C2T1 >= 0
+C2T2 >= 0
+NDT1 >= 0
+NDT2 >= 0
+R1T1 >= 0
+R1T2 >= 0
+R2T1 >= 0
+R2T2 >= 0
+N1T1 >= 0
+N1T2 >= 0
+N2T1 >= 0
+N2T2 >= 0
+B1T1 >= 0
+T1T1 >= 0
+B1T2 >= 0
+T1T2 >= 0
+B2T1 >= 0
+T2T1 >= 0
+B2T2 >= 0
+T2T2 >= 0
+Unfeasible problem.
+*** ppl_lpsol -v --max -oobtained bgprtr.mps
+Constraints:
+P1T1 + P2T1 - NDT1 = 130
+P1T2 + P2T2 - NDT2 = 190
+-450*B1T1 - 45*T1T1 >= -4
+-90*B1T2 - 9*T1T2 >= -8000
+-30*B2T1 - 3*T2T1 >= -3500
+-30*B2T2 - 3*T2T2 >= -3500
+-I1T1 - I2T1 >= -1000
+-I1T2 - I2T2 >= -1000
+I1T1 + E1T1 - 6*B1T1 = 0
+I2T1 + E2T1 - 6*B2T1 = 0
+I1T2 + E1T2 - 6*B1T2 = 0
+I2T2 + E2T2 - 6*B2T2 = 0
+P1T1 + N1T1 - B1T1 = 5
+P1T2 - N1T1 + N1T2 - B1T2 = 0
+P2T1 + N2T1 - B2T1 = 2
+P2T2 - N2T1 + N2T2 - B2T2 = 0
+C1T1 + R1T1 + B1T1 - T1T1 = 6
+C1T2 - C2T1 - R1T1 + R1T2 + B1T2 - T1T2 = 0
+C2T1 + R2T1 + B2T1 - T2T1 = 4
+C1T1 - C2T2 + R2T1 - R2T2 - B2T2 + T2T2 = 0
+P1T1 >= 0
+P1T2 >= 0
+P2T1 >= 0
+P2T2 >= 0
+I1T1 >= 0
+I1T2 >= 0
+I2T1 >= 0
+I2T2 >= 0
+E1T1 >= 0
+E1T2 >= 0
+E2T1 >= 0
+E2T2 >= 0
+C1T1 >= 0
+C1T2 >= 0
+C2T1 >= 0
+C2T2 >= 0
+NDT1 >= 0
+NDT2 >= 0
+R1T1 >= 0
+R1T2 >= 0
+R2T1 >= 0
+R2T2 >= 0
+N1T1 >= 0
+N1T2 >= 0
+N2T1 >= 0
+N2T2 >= 0
+B1T1 >= 0
+T1T1 >= 0
+B1T2 >= 0
+T1T2 >= 0
+B2T1 >= 0
+T2T1 >= 0
+B2T2 >= 0
+T2T2 >= 0
+Unfeasible problem.
+*** ppl_lpsol -v --min -oobtained ex1.mps
+Constraints:
+-2*x1 - x2 >= -5
+4*x1 - 4*x2 >= -5
+x1 >= 0
+x2 >= 0
+Objective function:
+x1 - 2*x2
+Minimizing.
+Optimum value:
+-3.75
+Optimum location:
+x1 = 1.25
+x2 = 2.5
+*** ppl_lpsol -v --max -oobtained ex1.mps
+Constraints:
+-2*x1 - x2 >= -5
+4*x1 - 4*x2 >= -5
+x1 >= 0
+x2 >= 0
+Objective function:
+x1 - 2*x2
+Maximizing.
+Optimum value:
+2.5
+Optimum location:
+x1 = 2.5
+x2 = 0
+*** ppl_lpsol -v --min -oobtained sample.mps
+Constraints:
+-x1 - x2 - x3 >= -100
+-10*x1 - 4*x2 - 5*x3 >= -600
+-x1 - x2 - 3*x3 >= -150
+x1 >= 0
+x2 >= 0
+x3 >= 0
+Objective function:
+-10*x1 - 6*x2 - 4*x3
+Minimizing.
+Optimum value:
+-733.333
+Optimum location:
+x1 = 33.3333
+x2 = 66.6667
+x3 = 0
+*** ppl_lpsol -v --max -oobtained sample.mps
+Constraints:
+-x1 - x2 - x3 >= -100
+-10*x1 - 4*x2 - 5*x3 >= -600
+-x1 - x2 - 3*x3 >= -150
+x1 >= 0
+x2 >= 0
+x3 >= 0
+Objective function:
+-10*x1 - 6*x2 - 4*x3
+Maximizing.
+Optimum value:
+0
+Optimum location:
+x1 = 0
+x2 = 0
+x3 = 0
+*** ppl_lpsol -v --min -oobtained unboundedmin.mps
+Constraints:
+-2*x1 + x2 >= 0
+x1 + x2 >= 0
+x1 >= 0
+x2 >= 0
+Objective function:
+x1 - 2*x2
+Minimizing.
+Unbounded problem.
+*** ppl_lpsol -v --max -oobtained unboundedmin.mps
+Constraints:
+-2*x1 + x2 >= 0
+x1 + x2 >= 0
+x1 >= 0
+x2 >= 0
+Objective function:
+x1 - 2*x2
+Maximizing.
+Optimum value:
+0
+Optimum location:
+x1 = 0
+x2 = 0
