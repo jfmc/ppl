@@ -1224,11 +1224,11 @@ private:
   ppl_dimension_type (*s_d)(void);
   int (*i_e)(void);
   int (*g_l_b)(ppl_dimension_type k, int closed,
-		ppl_Coefficient_t n,
-		ppl_Coefficient_t d);
+	       ppl_Coefficient_t n,
+	       ppl_Coefficient_t d);
   int (*g_u_b)(ppl_dimension_type k, int closed,
-		ppl_Coefficient_t n,
-		ppl_Coefficient_t d);
+	       ppl_Coefficient_t n,
+	       ppl_Coefficient_t d);
 
 public:
   CBuildBox(ppl_dimension_type (*sd)(void),
