@@ -1,6 +1,7 @@
 Urgent Things
 =============
 
+- Document Polyhedron::shuffle_dimensions().
 - In the manual, explain PPL's I/O operators and how
   to deal with the IO_Operators namespace.
 - Extend the documentation of the Prolog interfaces so as to treat
