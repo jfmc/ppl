@@ -38,14 +38,6 @@ site: http://www.cs.unipr.it/ppl/ . */
 #define GRAM_SHMIDT 0
 #endif
 
-#ifndef BHRZ03_EP_DELAY_INTERSECTION
-#define BHRZ03_EP_DELAY_INTERSECTION 0
-#endif
-
-#ifndef BHRZ03_EP_P1_P2
-#define BHRZ03_EP_P1_P2 1
-#endif
-
 #define BE_LAZY
 
 namespace PPL = Parma_Polyhedra_Library;
@@ -4144,10 +4136,6 @@ PPL::Polyhedron::BHRZ03_evolving_points(const Polyhedron& y,
   // this technique tries to identify a set of rays that:
   //  - are included in polyhedron `H79';
   //  - when added to `y' will subsume the point.
-#if !BHRZ03_EP_DELAY_INTERSECTION
-  // All such rays are kept in `valid_rays'.
-  GenSys valid_rays;
-#endif
   GenSys candidate_rays;
 
   dimension_type x_gen_sys_num_rows = x.gen_sys.num_rows();
@@ -4175,116 +4163,13 @@ PPL::Polyhedron::BHRZ03_evolving_points(const Polyhedron& y,
 	  candidate_rays.insert(ray_from_g2_to_g1);
 	}
       }
-#if !BHRZ03_EP_DELAY_INTERSECTION
-#if !BHRZ03_EP_P1_P2
-      // Similarly, for each point (resp., closure point) `g2'
-      // in `x.gen_sys', where `g1' and `g2' are different,
-      // build the ray `g1 - g2' and put it into `candidate_rays'.
-      for (dimension_type j = x_gen_sys_num_rows; j-- > 0; ) {
-	// Check that `g1' and `g2' are different:
-	// since they both belong to `x.gen_sys', which is minimized,
-	// they are equal if and only if their indexes are the same.
-	if (i == j)
-	    continue;
-	const Generator& g2 = x.gen_sys[j];
-	if ((g2.is_point() && closed)
-	    || (g2.is_closure_point() && !closed)) {
-	    Generator ray_from_g2_to_g1(g1);
-	    ray_from_g2_to_g1.linear_combine(g2, 0);
-	    candidate_rays.insert(ray_from_g2_to_g1);
-	}
-      }
-#endif //#if BHRZ03_EP_P1_P2
-      if (candidate_rays.num_rows() == 1) {
-	// `candidate_rays' contains one ray only: it is a valid ray
-	// if it satisfies all the constraints of `H79'.
-	const Generator& r = candidate_rays[0];
-	if (H79.relation_with(r) == Poly_Gen_Relation::subsumes())
-	  valid_rays.insert(r);
-      }
-      else
-	if (candidate_rays.num_rows() > 1) {
-	  // `candidate_rays' contains more than one candidate ray.
-	  // After adding a (any) point of `x' to `candidate_rays',
-	  // we build the corresponding `candidate_ph'
-	  // (a polyhedral cone having the point as apex).
-	  // We compute the intersection of this polyhedron with `H79':
-	  // the valid rays are those belonging to this intersection.
-	  dimension_type k = x_gen_sys_num_rows - 1;
-	  while (!x.gen_sys[k].is_point())
-	    --k;
-	  // Insert the point.
-	  candidate_rays.insert(x.gen_sys[k]);
-	  Polyhedron candidate_ph(x.topology(), candidate_rays);
-	  // Have to take a copy, because `H79' is a constant parameter.
-	  Polyhedron valid_ph = H79;
-	  valid_ph.intersection_assign_and_minimize(candidate_ph);
-	  
-	  // Copy the valid rays from `valid_ph'.
-	  const GenSys& valid_gs = valid_ph.generators();
-	  for (dimension_type j = valid_gs.num_rows(); j-- > 0; ) {
-	    const Generator& g = valid_gs[j];
-	    if (g.is_ray() || g.is_line())
-	      valid_rays.insert(g);
-	  }
-	}
-#endif //#if !BHRZ03_EP_DELAY_INTERSECTION
     }
   }
 
   // Be non-intrusive.
   Polyhedron result = x;
-
-#if BHRZ03_EP_DELAY_INTERSECTION
   result.add_generators_and_minimize(candidate_rays);
   result.intersection_assign_and_minimize(H79);
-#else //#if BHRZ03_EP_DELAY_INTERSECTION
-  // We first try "averaging" the directions of all the rays
-  // in `valid_rays' and add the resulting ray to `result'.
-  LinExpression e(0);
-  for (dimension_type i = valid_rays.num_rows(); i-- > 0; )
-    e += LinExpression(valid_rays[i]);
-  e.normalize();
-  // Check that `e' can be used to build a ray.
-  if (!e.all_homogeneous_terms_are_zero()) {
-    result.add_generator(ray(e));
-    result.minimize();
-    // Check for improvement over `H79'.
-    if (H79 <= result)
-      // The technique was not successful.
-      // Note: no need to check with the addition of more rays,
-      // since it would result into an even bigger `result'.
-      return false;
-    if (is_BHRZ03_stabilizing(result, y)) {
-      // The technique was successful.
-#if PPL_STATISTICS
-      statistics->technique.evolving_points++;
-#endif
-#if 0
-  std::cout << "======== BHRZ03: evolving points ========" << std::endl;
-  std::cout << "x.con_sys.num_rows() = "
-	    << x.con_sys.num_rows() << std::endl;
-  std::cout << "y.con_sys.num_rows() = "
-	    << y.con_sys.num_rows() << std::endl;
-  std::cout << "H79.con_sys.num_rows() = "
-	    << H79.con_sys.num_rows() << std::endl;
-  std::cout << "result.con_sys.num_rows() = "
-	    << result.con_sys.num_rows() << std::endl;
-#endif
-      std::swap(x, result);
-      assert(x.OK(true));
-      return true;
-    }
-  }
-
-  // Here, either stabilization has not been obtained by adding a single ray
-  // or the ray obtained was illegal (because all homogeneous terms were 0):
-  // try adding all the valid rays to `result'.
-  // NOTE: it is useless to re-assign `x' to `result',
-  // because the only ray added so far was obtained by combining the rays
-  // we are going to add now.
-  result.add_generators_and_minimize(valid_rays);
-#endif //#if!BHRZ03_EP_DELAY_INTERSECTION
 
   // Check for stabilization wrt `y' and improvement over `H79'.
   if (H79 <= result || !is_BHRZ03_stabilizing(result, y))
