@@ -361,7 +361,7 @@ new_poly_from_gens(T, GS) :-
 % Tests ppl_new_Polyhedron_from_bounding_box/2.
 new_poly_from_bounding_box :-
   new_poly_from_bounding_box(c, [i(c(1/2), o(pinf)), i(o(minf), c(-1/2))]),
-%  new_poly_from_bounding_box(c, [empty]),
+  new_poly_from_bounding_box(c, [empty]),
   new_poly_from_bounding_box(nnc,[i(o(0/2), o(pinf)), i(o(minf), o(1))]),
   Max = -4,
   new_poly_from_bounding_box(c, [i(c(Max), c(1)), i(c(-1), c(1))]),
@@ -1510,10 +1510,10 @@ get_bounding_box:-
   get_bounding_box(c, [B >= 0, 4*A =< 2],
                      [i(o(minf), c(1/2)), i(c(0), o(pinf))]),
   get_bounding_box(c, [], [i(o(minf), o(pinf)), i(o(minf), o(pinf))]),
-%  get_bounding_box(c, [1=0], [empty, empty]),
+  get_bounding_box(c, [1=0], [empty, empty]),
   get_bounding_box(nnc,[B > 0, 4*A =< 2],
                      [i(o(minf), c(1/2)), i(o(0), o(pinf))]).
-%  get_bounding_box(nnc,[A > 1, B > 1, A < 1, B < 1], [empty, empty]).
+  get_bounding_box(nnc,[A > 1, B > 1, A < 1, B < 1], [empty, empty]).
 
 get_bounding_box(T, CS, Box) :-
   ppl_new_Polyhedron_from_dimension(T, 2, P),
@@ -1984,50 +1984,6 @@ exception_cplusplus(10, [A, B, C]) :-
 
 check_exception(Exception):-
          (call(format_exception_message(Exception)) -> fail ; true).
-
-%%%%%%%%%%%% extra tests not executed by run_all %%%%%%%%%%%%%%%
-
-% These next 3 tests demonstrate a bug in the bounding box software.
-% and are not executed by run_all.
-
-boundingbox1(Box,CS) :-
-  make_vars(2, [A, B]),
-  ppl_new_Polyhedron_from_constraints(nnc,
-                                      [A > 1, B > 1,
-                                       B < 1, A < 1],
-                                      P),
-  ppl_Polyhedron_get_bounding_box(P, any, Box),
-  ppl_Polyhedron_get_constraints(P,CS),
-  ppl_delete_Polyhedron(P).
-
-boundingbox2(Box,CS) :-
-  ppl_new_Polyhedron_from_dimension(nnc, 2, P),
-  ppl_Polyhedron_add_constraints(P, [0=1]),
-  ppl_Polyhedron_get_bounding_box(P, any, Box),
-  ppl_Polyhedron_get_constraints(P,CS),
-  ppl_delete_Polyhedron(P).
-
-boundingbox_test :-
-  make_vars(1, [A]),
-  ppl_new_Polyhedron_empty_from_dimension(c, 1, P),
-  ppl_Polyhedron_get_constraints(P, CS),
-  ppl_Polyhedron_get_bounding_box(P, any, Box),
-  write('bounding box for polyhedron '),
-  write(CS),
-  write(' is '), write(Box), write('.'), nl,
-  ppl_Polyhedron_add_generator(P, point(0)),
-  ppl_Polyhedron_get_bounding_box(P, any, Box1),
-  ppl_Polyhedron_get_constraints(P, CS1),
-  write('bounding box for polyhedron '),
-  write(CS1),
-  write(' is '), write(Box1), write('.'), nl,
-  ppl_Polyhedron_add_generator(P, line(A)),
-  ppl_Polyhedron_get_bounding_box(P, any, Box2),
-  ppl_Polyhedron_get_constraints(P, CS2),
-  write('bounding box for polyhedron '),
-  write(CS2),
-  write(' is '), write(Box2), write('.'), nl,
-  ppl_delete_Polyhedron(P).
 
 %%%%%%%%%%%% predicate for making list of ppl variables %%%%%%
 
