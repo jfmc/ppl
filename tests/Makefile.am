@@ -15,11 +15,11 @@ VPATH = @srcdir@
 
 SUBDIRS =
 
-INCLUDES = -I$(top_builddir)/src -I$(top_srcdir)/src/BitSet -I$(top_srcdir)/src/Integer
+INCLUDES = -I$(top_builddir)/src
 
-LDADD = $(top_builddir)/src/libppl.a $(top_builddir)/src/Integer/libInteger.a $(top_builddir)/src/BitSet/libBitSet.a -lgmp
+LDADD = -L$(top_builddir)/src -lppl -lgmp
 
-CPPFLAGS = -DPPL_INTERNAL=private @extra_cpp_flags@
+CPPFLAGS = @extra_cpp_flags@
 
 TESTS = inters1 inters2 randchull1
 
