@@ -1204,7 +1204,7 @@ PPL::operator<=(const Polyhedron& x, const Polyhedron& y) {
       const Constraint& c = cs[i];
       switch (c.type()) {
       case Constraint::NONSTRICT_INEQUALITY:
-	for (dimension_type j = gs.num_rows(); j-- > 0; ) {
+	for (size_t j = gs.num_rows(); j-- > 0; ) {
 	  const Generator& g = gs[j];
 	  int sp_sign = sgn(reduced_scalar_product(c, g));
 	  if (g.is_line()) {
