@@ -30,7 +30,14 @@ SUBDIRS =
 
 AM_CPPFLAGS = -I$(top_builddir)/src -I$(top_builddir)/Watchdog @extra_includes@
 
-LDADD = $(top_builddir)/src/libppl.la ehandlers.o print.o @extra_libraries@
+noinst_LIBRARIES = libppl_tests.a
+libppl_tests_a_SOURCES = \
+ehandlers.hh \
+ehandlers.cc \
+print.hh \
+print.cc
+
+LDADD = $(top_builddir)/src/libppl.la libppl_tests.a @extra_libraries@
 
 CPPFLAGS = @extra_cpp_flags@
 
@@ -951,13 +958,11 @@ check_PROGRAMS = $(TESTS) $(BUGS)
 
 noinst_HEADERS = \
 ppl_test.hh \
-ehandlers.hh \
 files.hh \
-print.hh \
 BBox.hh \
 PFunction.hh
 
-EXTRA_DIST = ehandlers.cc print.cc $(watchdog1_SRCS)
+EXTRA_DIST = $(watchdog1_SRCS)
 
 BUGS = bug1
 
