@@ -126,7 +126,7 @@ Notice that the `--with-cxxflags' option is absolutely non-essential
 here and is only included to show how extra compiler options can be
 passed to the configure script.
 
-As an other example, here is how you can compile the PPL with
+As another example, here is how you can compile the PPL with
 Comeau C/C++ 4.3.3.  First configure GMP with a command like
 
   CXX=como /path/to/gmp-4.1.4/configure --enable-cxx \
@@ -167,12 +167,12 @@ where TYPE is one of
   checked-int64     use 64 bits checked integers
 
 When using checked integers is it also wise to increase the
-optimization level, since their efficiency varies much depending on
+optimization level, since their efficiency largely depends on
 the compiler and on the optimization options used.  Adding
 
   --enable-optimization=speed
 
-on the command line is thus recommended (in later releases we will
+to the command line is thus recommended (in later releases we will
 try to make the choice of the optimization options automatic).
 If you want to test the overhead of checked integers with respect
 to plain, unchecked native integers and you really know what you
