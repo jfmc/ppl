@@ -39,6 +39,7 @@ site: http://www.cs.unipr.it/ppl/ . */
 :- foreign(ppl_Polyhedron_poly_difference_assign_and_minimize(+term, +term)).
 :- foreign(ppl_Polyhedron_widening_CC92_assign(+term, +term)).
 :- foreign(ppl_Polyhedron_limited_widening_CC92_assign(+term, +term)).
+:- foreign(ppl_Polyhedron_topological_closure_assign(+term)).
 :- foreign(ppl_Polyhedron_get_constraints(+term, +term)).
 :- foreign(ppl_Polyhedron_get_minimized_constraints(+term, +term)).
 :- foreign(ppl_Polyhedron_get_generators(+term, +term)).
@@ -61,6 +62,7 @@ site: http://www.cs.unipr.it/ppl/ . */
 :- foreign(ppl_Polyhedron_check_empty(+term)).
 :- foreign(ppl_Polyhedron_check_universe(+term)).
 :- foreign(ppl_Polyhedron_is_bounded(+term)).
+:- foreign(ppl_Polyhedron_is_topologically_closed(+term)).
 :- foreign(ppl_Polyhedron_contains_Polyhedron(+term, +term)).
 :- foreign(ppl_Polyhedron_strictly_contains_Polyhedron(+term, +term)).
 :- foreign(ppl_Polyhedron_equals_Polyhedron(+term, +term)).

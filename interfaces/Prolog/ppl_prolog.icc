@@ -1105,6 +1105,18 @@ ppl_Polyhedron_widening_CC92_assign(Prolog_term_ref t_lhs,
 }
 
 extern "C" Prolog_foreign_return_type
+ppl_Polyhedron_topological_closure_assign(Prolog_term_ref t_ph) {
+  try {
+    PPL::Polyhedron* ph = term_to_polyhedron_handle(t_ph);
+    CHECK(ph);
+    ph->topological_closure_assign();
+    return PROLOG_SUCCESS;
+  }
+  CATCH_ALL;
+  return PROLOG_FAILURE;
+}
+
+extern "C" Prolog_foreign_return_type
 ppl_Polyhedron_limited_widening_CC92_assign(Prolog_term_ref t_lhs, 
 					    Prolog_term_ref t_rhs, 
 					    Prolog_term_ref t_clist) {
@@ -1523,6 +1535,18 @@ ppl_Polyhedron_is_bounded(Prolog_term_ref t_ph) {
     const PPL::Polyhedron* ph = term_to_polyhedron_handle(t_ph);
     CHECK(ph);
     if (ph->is_bounded())
+      return PROLOG_SUCCESS;
+  }
+  CATCH_ALL;
+  return PROLOG_FAILURE;
+}
+
+extern "C" Prolog_foreign_return_type
+ppl_Polyhedron_is_topologically_closed(Prolog_term_ref t_ph) {
+  try {
+    const PPL::Polyhedron* ph = term_to_polyhedron_handle(t_ph);
+    CHECK(ph);
+    if (ph->is_topologically_closed())
       return PROLOG_SUCCESS;
   }
   CATCH_ALL;

@@ -48,6 +48,7 @@ widen_C,
 lim_widen_C,
 widen_NNC,
 lim_widen_NNC,
+top_close_assign,
 add_con,
 add_gen,
 add_cons,
@@ -328,6 +329,14 @@ CS = [1*A >= 2, 1*B >= 1],
 ppl_delete_Polyhedron(P),
 ppl_delete_Polyhedron(Q).
 
+top_close_assign :-
+A = '$VAR'(0), B = '$VAR'(1), C = '$VAR'(2), 
+ppl_new_Polyhedron_from_constraints(nnc, [3 > A, 4*A + B - 2*C >= 5], P),
+ppl_Polyhedron_topological_closure_assign(P),
+ppl_Polyhedron_get_constraints(P, CS),
+CS = [4*A + 1*B + -2*C >= 5, -1*A >= -3],
+ppl_delete_Polyhedron(P).
+
 add_con :-
 A = '$VAR'(0), B = '$VAR'(1), 
 ppl_new_Polyhedron_from_dimension(c, 2, P),
@@ -468,6 +477,12 @@ ppl_Polyhedron_check_empty(P1),
 ppl_Polyhedron_add_generators_and_minimize(P1, 
      [point(1*A + 1*B + 1*C, 1)]),
 ppl_Polyhedron_is_bounded(P1),
+ppl_Polyhedron_add_constraints(P,
+     [A > 1, B =< 3, A =< 2]),
+\+ ppl_Polyhedron_is_topologically_closed(P),
+ppl_Polyhedron_add_constraints(P,
+     [A > 2]),
+ppl_Polyhedron_is_topologically_closed(P),
 ppl_delete_Polyhedron(P),
 ppl_delete_Polyhedron(P1).
 

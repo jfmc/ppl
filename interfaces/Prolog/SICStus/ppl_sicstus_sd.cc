@@ -392,6 +392,7 @@ SP_STUB_2(ppl_Polyhedron_poly_difference_assign, 2)
 SP_STUB_2(ppl_Polyhedron_poly_difference_assign_and_minimize, 2)
 SP_STUB_2(ppl_Polyhedron_widening_CC92_assign, 2)
 SP_STUB_3(ppl_Polyhedron_limited_widening_CC92_assign, 3)
+SP_STUB_1(ppl_Polyhedron_topological_closure_assign, 1)
 SP_STUB_2(ppl_Polyhedron_get_constraints, 2)
 SP_STUB_2(ppl_Polyhedron_get_minimized_constraints, 2)
 SP_STUB_2(ppl_Polyhedron_get_generators, 2)
@@ -414,6 +415,7 @@ SP_STUB_3(ppl_Polyhedron_relation_with_generator, 3)
 SP_STUB_1(ppl_Polyhedron_check_empty, 1)
 SP_STUB_1(ppl_Polyhedron_check_universe, 1)
 SP_STUB_1(ppl_Polyhedron_is_bounded, 1)
+SP_STUB_1(ppl_Polyhedron_is_topologically_closed, 1)
 SP_STUB_2(ppl_Polyhedron_contains_Polyhedron, 2)
 SP_STUB_2(ppl_Polyhedron_strictly_contains_Polyhedron, 2)
 SP_STUB_2(ppl_Polyhedron_equals_Polyhedron, 2)
@@ -452,6 +454,7 @@ ppl_sicstus_init(int /* when */) {
   SP_DEFINE_C_PREDICATE(ppl_Polyhedron_poly_difference_assign_and_minimize, 2);
   SP_DEFINE_C_PREDICATE(ppl_Polyhedron_widening_CC92_assign, 2);
   SP_DEFINE_C_PREDICATE(ppl_Polyhedron_limited_widening_CC92_assign, 3);
+  SP_DEFINE_C_PREDICATE(ppl_Polyhedron_topological_closure_assign, 1);
   SP_DEFINE_C_PREDICATE(ppl_Polyhedron_get_constraints, 2);
   SP_DEFINE_C_PREDICATE(ppl_Polyhedron_get_minimized_constraints, 2);
   SP_DEFINE_C_PREDICATE(ppl_Polyhedron_get_generators, 2);
@@ -474,6 +477,7 @@ ppl_sicstus_init(int /* when */) {
   SP_DEFINE_C_PREDICATE(ppl_Polyhedron_check_empty, 1);
   SP_DEFINE_C_PREDICATE(ppl_Polyhedron_check_universe, 1);
   SP_DEFINE_C_PREDICATE(ppl_Polyhedron_is_bounded, 1);
+  SP_DEFINE_C_PREDICATE(ppl_Polyhedron_is_topologically_closed, 1);
   SP_DEFINE_C_PREDICATE(ppl_Polyhedron_contains_Polyhedron, 2);
   SP_DEFINE_C_PREDICATE(ppl_Polyhedron_strictly_contains_Polyhedron, 2);
   SP_DEFINE_C_PREDICATE(ppl_Polyhedron_equals_Polyhedron, 2);
