@@ -124,7 +124,7 @@ operator==(const LinExpression& e1, const LinExpression& e2) {
   c.set_is_equality();
   // Enforcing normalization.
 #if EXTRA_NORMALIZATION
-  c.strongly_normalize();
+  c.strong_normalize();
 #else
   c.normalize();
 #endif
@@ -168,7 +168,7 @@ operator==(const Integer& n, const LinExpression& e) {
   c.set_is_equality();
   // Enforcing normalization.
 #if EXTRA_NORMALIZATION
-  c.strongly_normalize();
+  c.strong_normalize();
 #else
   c.normalize();
 #endif
@@ -207,7 +207,7 @@ operator==(const LinExpression& e, const Integer& n) {
   c.set_is_equality();
   // Enforcing normalization.
 #if EXTRA_NORMALIZATION
-  c.strongly_normalize();
+  c.strong_normalize();
 #else
   c.normalize();
 #endif

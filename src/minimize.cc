@@ -65,7 +65,7 @@ PPL::Polyhedron::minimize(bool con_to_gen,
   // representing the universe polyhedron, homogeneization has added
   // the positive constraint. It also cannot be an empty generator system,
   // since this function is always called starting from a non-empty
-  // polyhedron. 
+  // polyhedron.
   assert(source.num_rows() > 0);
 
   // Sort the source matrix, if necessary.
@@ -93,7 +93,11 @@ PPL::Polyhedron::minimize(bool con_to_gen,
   for (dimension_type i = dest_num_rows; i-- > 0; ) {
     for (dimension_type j = dest_num_rows; j-- > 0; )
       dest[i][j] = 0;
+#if EXTRA_NORMALIZATION
+    dest[i][i] = -1;
+#else
     dest[i][i] = 1;
+#endif
     dest[i].set_is_line_or_equality();
   }
   // The identity matrix `dest' is not sorted

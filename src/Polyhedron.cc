@@ -3380,7 +3380,7 @@ PPL::Polyhedron::select_H79_constraints(const Polyhedron& y,
     // We check whether `buffer' is a row of `tmp_sat_g',
     // exploiting its sortedness in order to have faster comparisons.
     if (tmp_sat_g.sorted_contains(buffer))
-      cs_selection.add_row(con_sys[i]);
+      cs_selection.insert(con_sys[i]);
   }
 }
 

@@ -107,6 +107,10 @@ PPL::Polyhedron::simplify(Matrix& mat, SatMatrix& sat) {
       // The inequality `mat[i]' is saturated by all the generators.
       // Thus, it can be transformed into an equality (see proposition).
       mat[i].set_is_line_or_equality();
+#if EXTRA_NORMALIZATION
+      // We do not enforce strong normalization here, because
+      // it would be later compromized by `gauss' and `back_substitute'.
+#endif
       // We also move it just after all the other equalities,
       // so that matrix `mat' keeps its partial sortedness.
       std::swap(mat[i], mat[num_equal_or_line]);
@@ -268,25 +272,23 @@ PPL::Polyhedron::simplify(Matrix& mat, SatMatrix& sat) {
 
   // Here we physically remove the redundant inequalities previously
   // moved to the bottom of `mat' and the corresponding `sat' rows.
-  // NOTE: We must update `index_first_pending' of `mat', before calling
-  // `erase_to_end'
-  mat.set_index_first_pending_row(num_rows);
   mat.erase_to_end(num_rows);
+  mat.set_index_first_pending_row(num_rows);
   sat.rows_erase_to_end(num_rows);
   // At this point the first `num_equal_or_line' rows of 'mat'
   // represent the irredundant equalities, while the remaining rows
   // (i.e., those having indexes from `num_equal_or_line' to
-  // `num_rows' - 1) represent the irredundant inequalities: here we
-  // check if the flag is set (that of the equalities is already set).
+  // `num_rows' - 1) represent the irredundant inequalities.
+#ifndef NDEBUG
+  // Check if the flag is set (that of the equalities is already set).
   for (dimension_type i = num_equal_or_line; i < num_rows; ++i)
     assert(mat[i].is_ray_or_point_or_inequality());
-  // Here we are checking if `mat' and `sat' have the same number of rows,
-  // i.e., the new number of rows obtained excluding the rows of redundant
-  // inequalities.
+  // Check whether `mat' and `sat' have the same number of rows.
   // FIXME: are these assertions meaningful, given that we just invoked
   // erase_to_end(num_rows) on both matrices?
   assert(mat.num_rows() == num_rows);
   assert(sat.num_rows() == num_rows);
+#endif
 
   // Finally, since now the sub-matrix (of `mat') of the irredundant
   // equalities is in triangular form, we back substitute (using
@@ -294,6 +296,16 @@ PPL::Polyhedron::simplify(Matrix& mat, SatMatrix& sat) {
   // expression obtained considering the equalities starting
   // from the last one.
   mat.back_substitute(num_equal_or_line);
+
+#if EXTRA_NORMALIZATION
+  // Restoring strong normalization, which was lost in `gauss'
+  // and `back_substitute'.
+  for (dimension_type i = num_equal_or_line; i-- > 0; )
+    mat[i].strong_normalize();
+  mat.set_sorted(false);
+  assert(mat.OK());
+#endif
+
   // The returned value is the number of irredundant equalities i.e.,
   // the rank of the sub-matrix of `mat' containing only equalities.
   // (See the Introduction for definition of lineality space dimension).

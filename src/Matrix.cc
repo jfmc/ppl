@@ -953,7 +953,7 @@ PPL::Matrix::back_substitute(dimension_type rank) {
 	if (rows[i].is_ray_or_point_or_inequality())
 	  if (rows[k][j] < 0)
 	    for (dimension_type h = num_columns(); h-- > 0; )
-	      rows[k][h].negate();
+	      negate(rows[k][h]);
 #endif
 	
 	rows[i].linear_combine(rows[k], j);
@@ -999,7 +999,11 @@ PPL::Matrix::add_rows_and_columns(dimension_type n) {
     // of new rows and columns) is set to the specular image
     // of the identity matrix.
     Row& r = x[i];
+#if EXTRA_NORMALIZATION
+    r[c++] = -1;
+#else
     r[c++] = 1;
+#endif
     r.set_is_line_or_equality();
   }
   // If the old matrix was empty, the last row added is either

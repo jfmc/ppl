@@ -116,7 +116,7 @@ PPL::Generator::line(const LinExpression& e) {
   g.set_is_line();
   // Enforcing normalization.
 #if EXTRA_NORMALIZATION
-  g.strongly_normalize();
+  g.strong_normalize();
 #else
   g.normalize();
 #endif
@@ -238,7 +238,7 @@ PPL::Generator::OK() const {
   // A generator has to be normalized.
   Generator tmp = g;
 #if EXTRA_NORMALIZATION
-  tmp.strongly_normalize();
+  tmp.strong_normalize();
 #else
   tmp.normalize();
 #endif
