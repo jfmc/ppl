@@ -108,8 +108,8 @@ ORIGINAL_TESTS = \
 	timeelapse1 timeelapse2 timeelapse3 timeelapse4 timeelapse5 \
 	timeelapse6 timeelapse7 \
 	topclosed1 topclosed2 topclosed3 \
-	topclosure1 topclosure2 \
-	universe1 universe2 universe3 universe4 universe5 universe6 
+	topclosure1 topclosure2 topclosure3 \
+	universe1 universe2 universe3 universe4 universe5 universe6
 
 DERIVED_TESTS = \
 	nnc_addconstraint2 nnc_addconstraint3 \
@@ -440,6 +440,7 @@ topclosed3_SOURCES = topclosed3.cc
 
 topclosure1_SOURCES = topclosure1.cc
 topclosure2_SOURCES = topclosure2.cc
+topclosure3_SOURCES = topclosure3.cc
 
 universe1_SOURCES = universe1.cc
 universe2_SOURCES = universe2.cc
