@@ -953,6 +953,7 @@ ppl_init() {
     Prolog_atom a = Prolog_atom_from_string(prolog_atoms[i].name);
     *prolog_atoms[i].p_atom = a;
   }
+  ppl_Prolog_sysdep_init();
   return PROLOG_SUCCESS;
 }
 
@@ -1137,3 +1138,172 @@ ppl_affine_image(Prolog_term_ref t_ph, Prolog_term_ref t_v,
   CATCH_ALL;
   return PROLOG_FAILURE;
 }
+
+#if 0
+class Boundary {
+private:
+  bool c;
+  PPL::Integer n;
+  PPL::Integer d;
+
+public:
+  Boundary(bool closed, const PPL::Integer& num, const PPL::Integer& den)
+    : c(closed), n(num), d(den) {
+  }  
+
+  bool closed() const {
+    return c;
+  }
+
+  const PPL::Integer& numerator() const {
+    return n;
+  }
+
+  const PPL::Integer& denominator() const {
+    return d;
+  }
+};
+
+class LBoundary : public Boundary {
+public:
+  //! Constructs a "(-infinity" boundary.
+  LBoundary()
+    : Boundary(false, -1, 0) {
+  }  
+
+  LBoundary(bool closed, const PPL::Integer& num, const PPL::Integer& den)
+    : Boundary(closed, num, den) {
+  }
+};
+
+inline bool
+operator<=(const LBoundary& x, const LBoundary& y) {
+  bool x_c = x.closed();
+  const PPL::Integer& x_n = x.numerator();
+  const PPL::Integer& x_d = x.denominator();
+
+  bool y_c = y.closed();
+  const PPL::Integer& y_n = y.numerator();
+  const PPL::Integer& y_d = y.denominator();
+
+  PPL::Integer d = x_d*y_d;
+  PPL::Integer xval = x_n*y_d;
+  PPL::Integer yval = y_n*x_d;
+  return ((d > 0 && xval <= yval)
+	  || (d < 0 && xval >= yval));
+}
+
+inline bool
+operator>=(const LBoundary& x, const LBoundary& y) {
+  return y <= x;
+}
+
+class UBoundary : public Boundary {
+public:
+  //! Constructs a "+infinity)" boundary.
+  UBoundary()
+    : Boundary(false, 1, 0) {
+  }
+
+  UBoundary(bool closed, const PPL::Integer& num, const PPL::Integer& den)
+    : Boundary(closed, 1, 0) {
+  }  
+};
+
+inline bool
+operator<=(const UBoundary& x, const UBoundary& y) {
+  bool x_c = x.closed();
+  const PPL::Integer& x_n = x.numerator();
+  const PPL::Integer& x_d = x.denominator();
+
+  bool y_c = y.closed();
+  const PPL::Integer& y_n = y.numerator();
+  const PPL::Integer& y_d = y.denominator();
+
+  PPL::Integer d = x_d*y_d;
+  PPL::Integer xval = x_n*y_d;
+  PPL::Integer yval = y_n*x_d;
+  return ((d > 0 && xval >= yval)
+	  || (d < 0 && xval <= yval));
+}
+
+inline bool
+operator>=(const UBoundary& x, const UBoundary& y) {
+  return y <= x;
+}
+
+inline bool
+operator>(const LBoundary& x, const UBoundary& y) {
+  return y <= x;
+}
+
+
+class Interval {
+public:
+  LBoundary lower;
+  UBoundary upper;
+
+  //! Construct the interval (-infinity, +infinity).
+  Interval() {
+  }
+
+  bool empty() const {
+    return lower > upper;
+  }
+
+  void raise_lower_bound(LBoundary new_lower) {
+    if (new_lower >= lower)
+      lower = new_lower;
+  }
+
+  void lower_upper_bound(UBoundary new_upper) {
+    if (new_upper <= upper)
+      upper = new_upper;
+  }
+
+  void set_empty() {
+    lower = LBoundary(false, 1, 0);
+    upper = UBoundary(false, -1, 0);
+    assert(empty());
+  }
+};
+
+class PBox {
+private:
+  vector<Interval> vec;
+
+public:
+  PBox(unsigned int dimension)
+    : vec(dimension) {
+  }
+
+  void raise_lower_bound(unsigned int k, bool closed,
+			 const PPL::Integer& n, const PPL::Integer& d) {
+    vec[k].raise_lower_bound(LBoundary(closed, n, d));
+  }
+
+  void lower_upper_bound(unsigned int k, bool closed,
+			 const PPL::Integer& n, const PPL::Integer& d) {
+    vec[k].lower_upper_bound(UBoundary(closed, n, d));
+  }
+
+  void set_empty(unsigned int k) {
+    vec[k].set_empty();
+  }
+};
+
+extern "C" Prolog_foreign_return_type
+ppl_get_bounding_box(Prolog_term_ref t_ph, Prolog_term_ref t_bb) {
+  try {
+    PPL::Polyhedron* ph = get_ph_pointer(t_ph);
+    if (ph == 0)
+      return PROLOG_FAILURE;
+    CHECK(ph);
+
+    // ...
+    return PROLOG_SUCCESS;
+  }
+  CATCH_ALL;
+  return PROLOG_FAILURE;
+}
+#endif
