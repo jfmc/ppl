@@ -53,7 +53,7 @@ typedef const char* c_string;
 namespace Checked {
 
 #ifdef PPL_DOXYGEN_INCLUDE_IMPLEMENTATION_DETAILS
-//! FIXME: A policy checking for all possible kinds of errors.
+//! A policy that specifies a total adherence to behavior of the underlying type.
 #endif // PPL_DOXYGEN_INCLUDE_IMPLEMENTATION_DETAILS
 struct Transparent_Policy {
   //! Check for overflowed result.
