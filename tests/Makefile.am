@@ -111,7 +111,7 @@ ORIGINAL_TESTS = \
 	generators1 generators2 generators3 generators4 generators5 \
 	generators6 \
 	h79widening1 h79widening2 h79widening3 h79widening4 h79widening5 \
-	h79widening6 h79widening7 \
+	h79widening6 h79widening7 h79widening8 \
         intersection1 intersection2 intersection3 intersection4 \
 	intersection5 intersection6 intersection7 intersection8 \
 	intersection9 intersection10 intersection11 \
@@ -439,6 +439,7 @@ h79widening4_SOURCES = h79widening4.cc
 h79widening5_SOURCES = h79widening5.cc
 h79widening6_SOURCES = h79widening6.cc
 h79widening7_SOURCES = h79widening7.cc
+h79widening8_SOURCES = h79widening8.cc
 
 intersection1_SOURCES = intersection1.cc
 intersection2_SOURCES = intersection2.cc
