@@ -71,7 +71,7 @@ Polyhedra_PowerSet<PH>::concatenate_assign(const Polyhedra_PowerSet& y) {
   Sequence new_sequence;
   const Polyhedra_PowerSet<PH>& x = *this;
   for (const_iterator xi = x.begin(), x_end = x.end(); xi != x_end; ++xi)
-    for (const_iterator yi = y.begin(), yend = y.end(); yi != yend; ++yi) {
+    for (const_iterator yi = y.begin(), y_end = y.end(); yi != y_end; ++yi) {
       CS zi = *xi;
       zi.concatenate_assign(*yi);
       assert(!zi.is_bottom());
@@ -100,11 +100,12 @@ Polyhedra_PowerSet<PH>::add_constraint(const Constraint& c) {
 
 template <typename PH>
 void
-Polyhedra_PowerSet<PH>::add_constraints(ConSys& cs) {
+Polyhedra_PowerSet<PH>::add_constraints(const ConSys& cs) {
   for (iterator xi = begin(), xin = xi, x_end = end(); xi != x_end; xi = xin) {
     ++xin;
     CS& xv = *xi;
-    xv.add_constraints(cs);
+    ConSys cs_copy = cs;
+    xv.add_constraints(cs_copy);
     if (xv.is_bottom()) {
       erase(xi);
       x_end = end();
@@ -201,7 +202,7 @@ Polyhedra_PowerSet<PH>::pairwise_reduce() {
 	const PH& pj = j->polyhedron();
 	if (poly_hull_assign_if_exact(pi, pj)) {
 	  marked[i_index] = marked[j_index] = true;
-	  new_sequence.push_back(pi);
+	  add_non_bottom_disjunct(new_sequence, pi);
 	  ++deleted;
 	  goto next;
 	}
@@ -209,15 +210,17 @@ Polyhedra_PowerSet<PH>::pairwise_reduce() {
     next:
       ;
     }
+    iterator nsbegin = new_sequence.begin();
+    iterator nsend = new_sequence.end();
     i_index = 0;
     for (const_iterator i = sbegin; i != send; ++i, ++i_index)
       if (!marked[i_index])
-	new_sequence.push_back(*i);
+	add_non_bottom_disjunct(new_sequence, *i, nsbegin, nsend);
     std::swap(sequence, new_sequence);
     n -= deleted;
   } while (deleted > 0);
-  omega_reduce();
   assert(OK());
+  assert(is_omega_reduced());
 }
 
 template <typename PH>
@@ -238,18 +241,19 @@ Polyhedra_PowerSet<PH>::extrapolation_assign(const Polyhedra_PowerSet& y,
       const PH& pj = j->polyhedron();
       if (pi.contains(pj)) {
 	(pi.*wm)(pj, 0);
-	new_sequence.push_back(pi);
+	add_non_bottom_disjunct(new_sequence, pi);
 	marked[i_index] = true;
       }
     }
+  iterator nsbegin = new_sequence.begin();
+  iterator nsend = new_sequence.end();
   i_index = 0;
   for (iterator i = sbegin; i != send; ++i, ++i_index)
     if (!marked[i_index])
-      new_sequence.push_back(*i);
+      add_non_bottom_disjunct(new_sequence, *i, nsbegin, nsend);
   std::swap(sequence, new_sequence);
   assert(OK());
-  // FIXME: there is a more efficient way to ensure omega reduction here.
-  omega_reduce();
+  assert(is_omega_reduced());
 }
 
 template <typename PH>
@@ -397,18 +401,19 @@ limited_extrapolation_assign(const Polyhedra_PowerSet& y,
       const PH& pj = j->polyhedron();
       if (pi.contains(pj)) {
 	(pi.*wm)(pj, cs, 0);
-	new_sequence.push_back(pi);
+	add_non_bottom_disjunct(new_sequence, pi);
 	marked[i_index] = true;
       }
     }
+  iterator nsbegin = new_sequence.begin();
+  iterator nsend = new_sequence.end();
   i_index = 0;
   for (iterator i = sbegin; i != send; ++i, ++i_index)
     if (!marked[i_index])
-      new_sequence.push_back(*i);
+      add_non_bottom_disjunct(new_sequence, *i, nsbegin, nsend);
   std::swap(sequence, new_sequence);
   assert(OK());
-  // FIXME: there is a more efficient way to ensure omega reduction here.
-  omega_reduce();
+  assert(is_omega_reduced());
 }
 
 template <typename PH>

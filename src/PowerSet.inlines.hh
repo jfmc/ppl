@@ -137,10 +137,10 @@ PowerSet<CS>::omega_reduce() {
       if (yv.definitely_entails(xv)) {
 	if (yi == xin)
 	  ++xin;
-	sequence.erase(yi);
+	erase(yi);
       }
       else if (xv.definitely_entails(yv)) {
-	sequence.erase(xi);
+	erase(xi);
 	break;
       }
     }
@@ -166,13 +166,39 @@ PowerSet<CS>::is_omega_reduced() const {
 }
 
 template <typename CS>
-PowerSet<CS>&
-PowerSet<CS>::add_disjunct(const CS& d) {
-  if (!d.is_bottom()) {
-    sequence.push_back(d);
-    omega_reduce();
+void
+PowerSet<CS>::add_non_bottom_disjunct(Sequence& s,
+				      const CS& d,
+				      iterator& first,
+				      iterator last) {
+  for (iterator xi = first, xin = xi; xi != last; xi = xin) {
+    ++xin;
+    const CS& xv = *xi;
+    if (d.definitely_entails(xv))
+      return;
+    else if (xv.definitely_entails(d)) {
+      if (xi == first)
+	first = xin;
+      s.erase(xi);
+    }
   }
-  return *this;
+  s.push_back(d);
+}
+
+template <typename CS>
+void
+PowerSet<CS>::add_non_bottom_disjunct(Sequence& s, const CS& d) {
+  assert(!d.is_bottom());
+  iterator s_begin = s.begin();
+  iterator s_end = s.end();
+  add_non_bottom_disjunct(s, d, s_begin, s_end);
+}
+
+template <typename CS>
+void
+PowerSet<CS>::add_disjunct(const CS& d) {
+  if (!d.is_bottom())
+    add_non_bottom_disjunct(sequence, d);
 }
 
 template <typename CS>
@@ -184,7 +210,7 @@ PowerSet<CS>::definitely_entails(const PowerSet<CS>& y) const {
 	 x_end = x.end(); found && xi != x_end; ++xi) {
     found = false;
     for (const_iterator yi = y.begin(),
-	   yend = y.end(); !found && yi != yend; ++yi)
+	   y_end = y.end(); !found && yi != y_end; ++yi)
       found = (*xi).definitely_entails(*yi);
   }
   return found;
@@ -214,6 +240,7 @@ PowerSet<CS>::is_top() const {
 template <typename CS>
 inline bool
 PowerSet<CS>::is_bottom() const {
+  assert(OK());
   return sequence.empty();
 }
 
@@ -248,7 +275,7 @@ operator*(const PowerSet<CS>& x, const PowerSet<CS>& y) {
     for (yi = y.begin(); yi != y.end(); ++yi) {
       CS zi = *xi * *yi;
       if (!zi.is_bottom())
-	z.sequence.push_back(zi);
+	z.push_back(zi);
     }
   }
   z.omega_reduce();
@@ -261,7 +288,7 @@ PowerSet<CS>::meet_assign(const PowerSet<CS>& y) {
   const PowerSet<CS>& x = *this;
   Sequence new_sequence;
   for (const_iterator xi = x.begin(), x_end = x.end(); xi != x_end; ++xi)
-    for (const_iterator yi = y.begin(), yend = y.end(); yi != yend; ++yi) {
+    for (const_iterator yi = y.begin(), y_end = y.end(); yi != y_end; ++yi) {
       CS zi = *xi;
       zi.meet_assign(*yi);
       if (!zi.is_bottom())
@@ -274,8 +301,10 @@ PowerSet<CS>::meet_assign(const PowerSet<CS>& y) {
 template <typename CS>
 void
 PowerSet<CS>::upper_bound_assign(const PowerSet<CS>& y) {
-  std::copy(y.begin(), y.end(), back_inserter(sequence));
-  omega_reduce();
+  iterator sbegin = begin();
+  iterator send = end();
+  for (const_iterator i = y.begin(), y_end = y.end(); i != y_end; ++i)
+    add_non_bottom_disjunct(sequence, *i, sbegin, send);
 }
 
 namespace IO_Operators {

@@ -95,13 +95,11 @@ public:
   //! Intersects \p *this with the constraints in \p cs.
   /*!
     \param  cs             The constraints to intersect with.
-                           This parameter is not declared
-                           <CODE>const</CODE> because  it can be modified.
     \exception std::invalid_argument thrown if \p *this and \p cs
                                      are topology-incompatible
                                      or dimension-incompatible.
   */
-  void add_constraints(ConSys& cs);
+  void add_constraints(const ConSys& cs);
 
   //! Assigns to \p *this the concatenation of \p *this and \p y.
   /*!

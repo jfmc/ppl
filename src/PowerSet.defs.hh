@@ -94,9 +94,9 @@ public:
 
   //! The assignment operator.
   PowerSet& operator=(const PowerSet& y);
-  
+
   //! Adds to \p *this the disjunct \p d.
-  PowerSet& add_disjunct(const CS& d);
+  void add_disjunct(const CS& d);
 
   //! Assigns to \p *this an upper bound of \p *this and \p y.
   void upper_bound_assign(const PowerSet& y);
@@ -175,6 +175,28 @@ public:
   void pop_back();
   iterator erase(iterator first, iterator last);
   iterator erase(iterator position);
+
+protected:
+  //! \brief
+  //! Adds to \p *this the disjunct \p d,
+  //! assuming \p d is not the bottom element and ensuring
+  //! partial omega-reduction.
+  /*!
+    If \p d is not the bottom element and is not redundant with respect
+    to the elements in positions between \p first and \p last,
+    adds to \p *this the disjunct \p d, erasing all the elements
+    in the above mentioned positions that are made omega-redundant
+    by the addition of \p d.
+  */
+  static void add_non_bottom_disjunct(Sequence& s,
+				      const CS& d,
+				      iterator& first,
+				      iterator last);
+
+  //! \brief
+  //! Adds to \p *this the disjunct \p d,
+  //! assuming \p d is not the bottom element.
+  static void add_non_bottom_disjunct(Sequence& s, const CS& d);
 };
 
 #include "PowerSet.inlines.hh"
