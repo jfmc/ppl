@@ -1,0 +1,59 @@
+/* Widening_Function class implementation: inline functions.
+   Copyright (C) 2001-2004 Roberto Bagnara <bagnara@cs.unipr.it>
+
+This file is part of the Parma Polyhedra Library (PPL).
+
+The PPL is free software; you can redistribute it and/or modify it
+under the terms of the GNU General Public License as published by the
+Free Software Foundation; either version 2 of the License, or (at your
+option) any later version.
+
+The PPL is distributed in the hope that it will be useful, but WITHOUT
+ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or
+FITNESS FOR A PARTICULAR PURPOSE.  See the GNU General Public License
+for more details.
+
+You should have received a copy of the GNU General Public License
+along with this program; if not, write to the Free Software
+Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307,
+USA.
+
+For the most up-to-date information see the Parma Polyhedra Library
+site: http://www.cs.unipr.it/ppl/ . */
+
+#ifndef PPL_Widening_Function_inlines_hh
+#define PPL_Widening_Function_inlines_hh 1
+
+#include <cassert>
+
+namespace Parma_Polyhedra_Library {
+
+template <typename PH>
+Widening_Function<PH>::Widening_Function(Widening_Method wm)
+  : w_method(wm) { 
+}
+
+template <typename PH>
+inline void
+Widening_Function<PH>::
+operator()(PH& x, const PH& y, unsigned* tp) const {
+  (x.*w_method)(y, tp);
+}
+
+template <typename PH>
+Limited_Widening_Function<PH>::
+Limited_Widening_Function(Limited_Widening_Method lwm, const ConSys& cs)
+  : lw_method(lwm), limiting_cs(cs) { 
+}
+
+template <typename PH>
+inline void
+Limited_Widening_Function<PH>::
+operator()(PH& x, const PH& y, unsigned* tp) const {
+  (x.*w_method)(y, limiting_cs, tp);
+}
+
+} // namespace Parma_Polyhedra_Library
+
+
+#endif // !defined(PPL_Widening_Function_inlines_hh)

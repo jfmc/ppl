@@ -25,6 +25,7 @@ site: http://www.cs.unipr.it/ppl/ . */
 #define PPL_Polyhedra_PowerSet_defs_hh
 
 #include "Polyhedra_PowerSet.types.hh"
+#include "BHRZ03_Certificate.types.hh"
 #include "ConSys.types.hh"
 #include "Constraint.types.hh"
 #include "Polyhedron.defs.hh"
@@ -211,16 +212,13 @@ public:
   void pairwise_reduce();
 
 private:
-  void BGP99_heuristics_assign(const Polyhedra_PowerSet& y,
-			       void (Polyhedron::*wm)(const Polyhedron&,
-						      unsigned*));
-  void limited_BGP99_heuristics_assign(const Polyhedra_PowerSet& y,
-				       const ConSys& cs,
-				       void (Polyhedron::*lwm)
-				       (const Polyhedron&,
-					const ConSys&,
-					unsigned*));
+  template <typename Widening>
+  void BGP99_heuristics_assign(const Polyhedra_PowerSet& y, Widening w);
 
+  template <typename Widening>
+  void BGP99_extrapolation_assign(const Polyhedra_PowerSet& y,
+				  Widening w,
+				  unsigned max_disjuncts);
 public:
   void BGP99_extrapolation_assign(const Polyhedra_PowerSet& y,
 				  void (Polyhedron::*wm)(const Polyhedron&,
@@ -267,50 +265,15 @@ public:
     For a description of the methods that should be provided
     by \p Cert, see BHRZ03_Certificate or H79_Certificate.
   */
-  template <typename Cert>
-  void generic_BHZ03_widening_assign(const Polyhedra_PowerSet& y,
-				     void (Polyhedron::*wm)(const Polyhedron&,
-							    unsigned*));
+  template <typename Cert, typename Widening>
+  void BHZ03_widening_assign(const Polyhedra_PowerSet& y, Widening w);
 
   //! The instance of the BHZ03 framework using BHRZ03_Certificate.
   void BHZ03_widening_assign(const Polyhedra_PowerSet& y,
 			     void (Polyhedron::*wm)(const Polyhedron&,
 						    unsigned*));
-  //! \brief
-  //! FIXME: WHAT?
-  //! Improves the result of the BHZ03 widening by also enforcing
-  //! those constraints in \p cs that are satisfied by all the points
-  //! of \p *this.
-  /*!
-    \param y
-    The finite powerset of polyhedra computed in the previous iteration step.
-    It <EM>must</EM> definitely entail \p *this;
 
-    \param cs
-    The system of constraints used to improve the widened polyhedron;
-
-    \param lwm
-    The limited widening method to be used on polyhedra objects.
-
-    \exception std::invalid_argument
-    Thrown if \p *this, \p y and \p cs are topology-incompatible or
-    dimension-incompatible.
-
-    \note
-    The template parameter \p Cert should be a finite convergence
-    certificate for the base-level limited widening operator \p lwm.
-    For a description of the methods that should be provided
-    by \p Cert, see BHRZ03_Certificate or H79_Certificate.
-  */
-  template <typename Cert>
-  void generic_limited_BHZ03_widening_assign(const Polyhedra_PowerSet& y,
-					     const ConSys& cs,
-					     void (Polyhedron::*lwm)
-					     (const Polyhedron&,
-					      const ConSys&,
-					      unsigned*));
-
-
+  //! The limited instance of the BHZ03 framework using BHRZ03_Certificate.
   void limited_BHZ03_widening_assign(const Polyhedra_PowerSet& y,
 				     const ConSys& cs,
 				     void (Polyhedron::*lwm)

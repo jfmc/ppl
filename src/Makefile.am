@@ -134,6 +134,9 @@ C_Polyhedron.defs.hh \
 C_Polyhedron.inlines.hh \
 NNC_Polyhedron.defs.hh \
 NNC_Polyhedron.inlines.hh \
+Widening_Function.types.hh \
+Widening_Function.defs.hh \
+Widening_Function.inlines.hh \
 Determinate.types.hh \
 Determinate.defs.hh \
 Determinate.inlines.hh \
@@ -213,6 +216,9 @@ Polyhedron.defs.hh \
 C_Polyhedron.defs.hh \
 NNC_Polyhedron.defs.hh \
 globals.hh \
+Widening_Function.types.hh \
+Widening_Function.defs.hh \
+Widening_Function.inlines.hh \
 Determinate.types.hh \
 Determinate.defs.hh \
 Determinate.inlines.hh \
