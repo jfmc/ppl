@@ -40,6 +40,19 @@ o  New method Polyhedron::is_bounded(): it returns true if and only
 o  The library no longer calls abort(): appropriate exceptions
    are always thrown instead.
 
+o  New, complete C interface.
+
+o  Revised and completed Prolog interface:
+   - now supporting GNU Prolog, SICStus Prolog, SWI Prolog and YAP.
+   - all predicates have been renamed to match their intended
+     semantics;
+   - arguments have been reordered where necessary so as to follow the
+     rule "input arguments before output arguments";
+   - predicates added so that all the public methods for Polyhedra in
+     the C++ library are available as Prolog predicates;
+   - the interface has been extended to allow for closed and not
+     necessarily closed polyhedra.
+
 o  The methods named convex_hull_* and convex_difference_*
    have been renamed poly_hull_* and poly_difference_*.
 
