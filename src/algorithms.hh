@@ -60,6 +60,15 @@ linear_partition(const PH& p, const PH& q);
 
 namespace {
 
+#ifdef PPL_DOXYGEN_INCLUDE_IMPLEMENTATION_DETAILS
+//! \brief
+//! Partitions polyhedron \p qq according to constraint \p c.
+/*! \relates Polyhedra_PowerSet
+  On exit, the intersection of \p qq and constraint \p c is stored
+  in \p qq, whereas the intersection of \p qq with the negation of \p c
+  is added as a new disjunct of the powerset \p r.
+*/
+#endif // PPL_DOXYGEN_INCLUDE_IMPLEMENTATION_DETAILS
 template <typename PH>
 void
 linear_partition_aux(const Constraint& c,
@@ -124,10 +133,17 @@ poly_hull_assign_if_exact(PH& p, const PH& q) {
   return true;
 }
 
+#ifdef PPL_DOXYGEN_INCLUDE_IMPLEMENTATION_DETAILS
+//! \brief
+//! Returns <CODE>true</CODE> if and only if the union of the polyhedra
+//! in \p ps contains the polyhedron \p ph.
+/*! \relates Polyhedra_PowerSet */
+#endif // PPL_DOXYGEN_INCLUDE_IMPLEMENTATION_DETAILS
 template <typename PH>
 bool
 check_containment(const PH& ph, const Polyhedra_PowerSet<PH>& ps);
 
+/*! \relates Polyhedra_PowerSet */
 template <typename PH>
 bool
 check_containment(const PH& ph, const Polyhedra_PowerSet<PH>& ps) {
