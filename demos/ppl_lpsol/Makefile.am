@@ -72,6 +72,16 @@ EXPECTED = expected_$(COEFFICIENT_MNEMONIC)
 endif !ASSERTIONS_ENABLED
 
 TOUGH_EXAMPLES = \
+adlittle.mps \
+blend.mps \
+boeing1.mps \
+boeing2.mps \
+kb2.mps \
+mip.mps \
+sc105.mps \
+sc50a.mps \
+sc50b.mps \
+ship08l.mps \
 $(TOUGH_EXAMPLES_IF_ASSERTIONS_ENABLED)
 
 check-local: ppl_lpsol

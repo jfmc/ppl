@@ -1,6 +1,8 @@
 Enhancements for PPL 0.8 or later versions
 ==========================================
 
+- Add a README file in demos/ppl_lpsol/examples explaining the origin
+  of the examples there contained.
 - Add our implementation of bounded difference shapes.
 - Decide which interfaces should be provided for the simplex method,
   write them, and write the documentation for them.

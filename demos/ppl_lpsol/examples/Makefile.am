@@ -26,4 +26,19 @@ VPATH = @srcdir@
 
 @SET_MAKE@
 
-dist_noinst_DATA = afiro.mps bgprtr.mps ex1.mps sample.mps unboundedmin.mps
+dist_noinst_DATA = \
+adlittle.mps \
+afiro.mps \
+bgprtr.mps \
+blend.mps \
+boeing1.mps \
+boeing2.mps \
+ex1.mps \
+kb2.mps \
+mip.mps \
+sample.mps \
+sc105.mps \
+sc50a.mps \
+sc50b.mps \
+ship08l.mps \
+unboundedmin.mps
