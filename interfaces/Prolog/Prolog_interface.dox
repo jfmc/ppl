@@ -92,7 +92,7 @@ The specification uses the following grammar rules:
             | number * LinExpr		multiplication
             | LinExpr * number		multiplication
 
- Relation_Operator
+ Relation_Symbol
              --> =			equals
             | =< 			less than or equal
             | >=			greater than or equal
@@ -100,7 +100,7 @@ The specification uses the following grammar rules:
             | > 			strictly greater than
 
  Constraint 
-             --> LinExpr Relation_Operator LinExpr
+             --> LinExpr Relation_Symbol LinExpr
 					constraint
 
  Constraint_System			list of constraints
@@ -660,26 +660,26 @@ This is the inverse transformation to that for <CODE>ppl_affine_image</CODE>.
 
 <H2><CODE>ppl_Polyhedron_generalized_affine_image(+Handle,
                +PPL_Var,
-               +Relation_Operator
+               +Relation_Symbol
                +LinExpr,
                +Integer)</CODE></H2>
 
    Transforms the polyhedron referenced by <CODE>Handle</CODE>
    assigning the generalized
    affine image with respect to the transfer function
-   <CODE>PPL_Var</CODE> <CODE>Relation_Operator</CODE>
+   <CODE>PPL_Var</CODE> <CODE>Relation_Symbol</CODE>
    <CODE>LinExpr</CODE>/<CODE>Integer</CODE>.
 
 
 <H2><CODE>ppl_Polyhedron_generalized_affine_image_lhs_rhs(+Handle,
                +LinExpr1,
-               +Relation_Operator
+               +Relation_Symbol
                +LinExpr2)</CODE></H2>
 
    Transforms the polyhedron referenced by <CODE>Handle</CODE>
    assigning the generalized
    affine image with respect to the transfer function
-   <CODE>LinExpr1</CODE> <CODE>Relation_Operator</CODE>
+   <CODE>LinExpr1</CODE> <CODE>Relation_Symbol</CODE>
    <CODE>LinExpr2</CODE>.
 
 <H2><CODE>ppl_Polyhedron_relation_with_constraint(+Handle, +Constraint,

@@ -144,8 +144,8 @@ public:
   //! Builds the linear expression corresponding to constraint \p c.
   /*!
     Given the constraint
-    \f$c = \bigl(\sum_{i=0}^{n-1} a_i x_i + b \relop 0\bigr)\f$,
-    where \f$\mathord{\relop} \in \{ =, \geq, > \}\f$,
+    \f$c = \bigl(\sum_{i=0}^{n-1} a_i x_i + b \relsym 0\bigr)\f$,
+    where \f$\mathord{\relsym} \in \{ =, \geq, > \}\f$,
     builds the linear expression \f$\sum_{i=0}^{n-1} a_i x_i + b\f$.
     If \p c is an inequality (resp., equality) constraint, then
     the built linear expression is unique up to a positive

@@ -29,10 +29,10 @@ o  New methods Polyhedron::BHRZ03_widening_assign() and
 
 o  Two new methods have been defined that compute the image of
    a polyhedron under an affine relation. The first method,
-   Polyhedron::generalized_affine_image(var, relop, expr, denom),
+   Polyhedron::generalized_affine_image(var, relsym, expr, denom),
    generalizes the classical Polyhedron::affine_image() method by allowing
-   `relop' to denote any of the relations <, <=, =, >=, >.
-   The second method, Polyhedron::generalized_affine_image(lhs, relop, rhs),
+   `relsym' to denote any of the relations <, <=, =, >=, >.
+   The second method, Polyhedron::generalized_affine_image(lhs, relsym, rhs),
    is a variant where an arbitrary linear expression `lhs' is allowed to
    occur on the left-hand side of the affine relation.
 

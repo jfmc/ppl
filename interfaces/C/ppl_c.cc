@@ -1550,21 +1550,21 @@ CATCH_ALL
 
 namespace {
 
-inline Relation_Operator
-convert(enum ppl_enum_Constraint_Type t) {
+inline Relation_Symbol
+relation_symbol(enum ppl_enum_Constraint_Type t) {
   switch (t) {
   case PPL_CONSTRAINT_TYPE_LESS_THAN:
-    return PPL_LT;
+    return LESS_THAN;
   case PPL_CONSTRAINT_TYPE_LESS_THAN_OR_EQUAL:
-    return PPL_LE;
+    return LESS_THAN_OR_EQUAL;
   case PPL_CONSTRAINT_TYPE_EQUAL:
-    return PPL_EQ;
+    return EQUAL;
   case PPL_CONSTRAINT_TYPE_GREATER_THAN_OR_EQUAL:
-    return PPL_GE;
+    return GREATER_THAN_OR_EQUAL;
   case PPL_CONSTRAINT_TYPE_GREATER_THAN:
-    return PPL_GT;
+    return GREATER_THAN;
   default:
-    return static_cast<Relation_Operator>(t);
+    return static_cast<Relation_Symbol>(t);
   }
 }
 
@@ -1573,13 +1573,14 @@ convert(enum ppl_enum_Constraint_Type t) {
 int
 ppl_Polyhedron_generalized_affine_image(ppl_Polyhedron_t ph,
 					ppl_dimension_type var,
-					enum ppl_enum_Constraint_Type relop,
+					enum ppl_enum_Constraint_Type relsym,
 					ppl_const_LinExpression_t le,
 					ppl_const_Coefficient_t d) try {
   Polyhedron& pph = *to_nonconst(ph);
   const LinExpression& lle = *to_const(le);
   const Integer& dd = *to_const(d);
-  pph.generalized_affine_image(Variable(var), convert(relop), lle, dd);
+  pph.generalized_affine_image(Variable(var), relation_symbol(relsym), lle,
+			       dd);
   return 0;
 }
 CATCH_ALL
@@ -1588,12 +1589,12 @@ int
 ppl_Polyhedron_generalized_affine_image_lhs_rhs
 (ppl_Polyhedron_t ph,
  ppl_const_LinExpression_t lhs,
- enum ppl_enum_Constraint_Type relop,
+ enum ppl_enum_Constraint_Type relsym,
  ppl_const_LinExpression_t rhs) try {
   Polyhedron& pph = *to_nonconst(ph);
   const LinExpression& llhs = *to_const(lhs);
   const LinExpression& rrhs = *to_const(rhs);
-  pph.generalized_affine_image(llhs, convert(relop), rrhs);
+  pph.generalized_affine_image(llhs, relation_symbol(relsym), rrhs);
   return 0;
 }
 CATCH_ALL

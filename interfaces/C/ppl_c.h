@@ -1438,39 +1438,39 @@ ppl_Polyhedron_affine_preimage __P((ppl_Polyhedron_t ph,
 /*!
   Assigns to \p ph the image of \p ph with respect to the
   \ref generalized_image "generalized affine transfer function"
-  \f$\mathrm{var}' \relop \frac{\mathrm{expr}}{\mathrm{denominator}}\f$,
-  where \f$\mathord{\relop}\f$ is the relation operator encoded
-  by \p relop.
-  \param ph    The polyhedron that is transformed.
-  \param var   The left hand side variable of the generalized
-               affine transfer function.
-  \param relop The relation operator.
-  \param le    The numerator of the right hand side affine expression.
-  \param d     The denominator of the right hand side affine expression.
+  \f$\mathrm{var}' \relsym \frac{\mathrm{expr}}{\mathrm{denominator}}\f$,
+  where \f$\mathord{\relsym}\f$ is the relation symbol encoded
+  by \p relsym.
+  \param ph     The polyhedron that is transformed.
+  \param var    The left hand side variable of the generalized
+                affine transfer function.
+  \param relsym The relation symbol.
+  \param le     The numerator of the right hand side affine expression.
+  \param d      The denominator of the right hand side affine expression.
 */
 int
 ppl_Polyhedron_generalized_affine_image
 __P((ppl_Polyhedron_t ph,
      ppl_dimension_type var,
-     enum ppl_enum_Constraint_Type relop,
+     enum ppl_enum_Constraint_Type relsym,
      ppl_const_LinExpression_t le,
      ppl_const_Coefficient_t d));
 
 /*!
   Assigns to \p ph the image of \p ph with respect to the
   \ref generalized_image "generalized affine transfer function"
-  \f$\mathrm{lhs}' \relop \mathrm{rhs}\f$, where
-  \f$\mathord{\relop}\f$ is the relation operator encoded by \p relop.
+  \f$\mathrm{lhs}' \relsym \mathrm{rhs}\f$, where
+  \f$\mathord{\relsym}\f$ is the relation symbol encoded by \p relsym.
   \param ph    The polyhedron that is transformed.
   \param lhs           The left hand side affine expression.
-  \param relop         The relation operator.
+  \param relsym        The relation symbol.
   \param rhs           The right hand side affine expression.
 */
 int
 ppl_Polyhedron_generalized_affine_image_lhs_rhs
 __P((ppl_Polyhedron_t ph,
      ppl_const_LinExpression_t lhs,
-     enum ppl_enum_Constraint_Type relop,
+     enum ppl_enum_Constraint_Type relsym,
      ppl_const_LinExpression_t rhs));
 
 /*!

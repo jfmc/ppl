@@ -3130,7 +3130,7 @@ PPL::Polyhedron::affine_preimage(const Variable& var,
 
 void
 PPL::Polyhedron::generalized_affine_image(const Variable& var,
-					  const Relation_Operator relop,
+					  const Relation_Symbol relsym,
 					  const LinExpression& expr,
 					  const Integer& denominator) {
   // The denominator cannot be zero.
@@ -3150,10 +3150,11 @@ PPL::Polyhedron::generalized_affine_image(const Variable& var,
     throw_dimension_incompatible("generalized_affine_image(v, r, e, d)",
 				 var.id());
 
-  // Strict relation operators are only admitted for NNC polyhedra.
-  if (is_necessarily_closed() && (relop == PPL_LT || relop == PPL_GT))
+  // Strict relation symbols are only admitted for NNC polyhedra.
+  if (is_necessarily_closed()
+      && (relsym == LESS_THAN || relsym == GREATER_THAN))
     throw_generic("generalized_affine_image(v, r, e, d)",
-		  "r is a strict relation operator and "
+		  "r is a strict relation symbol and "
 		  "*this is a C_Polyhedron");
 
   // Any image of an empty polyhedron is empty.
@@ -3162,27 +3163,27 @@ PPL::Polyhedron::generalized_affine_image(const Variable& var,
 
   // First compute the affine image.
   affine_image(var, expr, denominator);
-  switch (relop) {
-  case PPL_LE:
+  switch (relsym) {
+  case LESS_THAN_OR_EQUAL:
     add_generator(ray(-var));
     break;
-  case PPL_EQ:
-    // The relation operator is "==":
+  case EQUAL:
+    // The relation symbol is "==":
     // this is just an affine image computation.
     break;
-  case PPL_GE:
+  case GREATER_THAN_OR_EQUAL:
     add_generator(ray(var));
     break;
-  case PPL_LT:
+  case LESS_THAN:
   // Intentionally fall through.
-  case PPL_GT:
+  case GREATER_THAN:
     {
-      // The relation operator is strict.
+      // The relation symbol is strict.
       assert(!is_necessarily_closed());
       // While adding the ray, we minimize the generators
       // in order to avoid adding too many redundant generators later.
       GenSys gs;
-      gs.insert(ray(relop == PPL_GT ? var : -var));
+      gs.insert(ray(relsym == GREATER_THAN ? var : -var));
       add_generators_and_minimize(gs);
       // We split each point of the generator system into two generators:
       // a closure point, having the same coordinates of the given point,
@@ -3195,7 +3196,7 @@ PPL::Polyhedron::generalized_affine_image(const Variable& var,
 	  Generator& g = gen_sys[i];
 	  // Add a `var'-displaced copy of `g' to the generator system.
 	  gen_sys.add_row(g);
-	  if (relop == PPL_GT)
+	  if (relsym == GREATER_THAN)
 	    gen_sys[gen_sys.num_rows()-1][num_var]++;
 	  else
 	    gen_sys[gen_sys.num_rows()-1][num_var]--;
@@ -3214,7 +3215,7 @@ PPL::Polyhedron::generalized_affine_image(const Variable& var,
 
 void
 PPL::Polyhedron::generalized_affine_image(const LinExpression& lhs,
-					  const Relation_Operator relop,
+					  const Relation_Symbol relsym,
 					  const LinExpression& rhs) {
   // Dimension-compatibility checks.
   // The dimension of `lhs' should not be greater than the dimension
@@ -3230,10 +3231,10 @@ PPL::Polyhedron::generalized_affine_image(const LinExpression& lhs,
     throw_dimension_incompatible("generalized_affine_image(e1, r, e2)",
 				 "e2", rhs);
 
-  // Strict relation operators are only admitted for NNC polyhedra.
-  if (is_necessarily_closed() && (relop == PPL_LT || relop == PPL_GT))
+  // Strict relation symbols are only admitted for NNC polyhedra.
+  if (is_necessarily_closed() && (relsym == LESS_THAN || relsym == GREATER_THAN))
     throw_generic("generalized_affine_image(e1, r, e2)",
-		  "r is a strict relation operator and "
+		  "r is a strict relation symbol and "
 		  "*this is a C_Polyhedron");
 
   // Any image of an empty polyhedron is empty.
@@ -3246,22 +3247,22 @@ PPL::Polyhedron::generalized_affine_image(const LinExpression& lhs,
     if (lhs.coefficient(Variable(lhs_space_dim - 1)) != 0)
       break;
   // If all variables have a zero coefficient, then `lhs' is a constant:
-  // we can simply add the constraint `lhs relop rhs'.
+  // we can simply add the constraint `lhs relsym rhs'.
   if (lhs_space_dim == 0) {
-    switch (relop) {
-    case PPL_LT:
+    switch (relsym) {
+    case LESS_THAN:
       add_constraint(lhs < rhs);
       break;
-    case PPL_LE:
+    case LESS_THAN_OR_EQUAL:
       add_constraint(lhs <= rhs);
       break;
-    case PPL_EQ:
+    case EQUAL:
       add_constraint(lhs == rhs);
       break;
-    case PPL_GE:
+    case GREATER_THAN_OR_EQUAL:
       add_constraint(lhs >= rhs);
       break;
-    case PPL_GT:
+    case GREATER_THAN:
       add_constraint(lhs > rhs);
       break;
     }
@@ -3298,23 +3299,23 @@ PPL::Polyhedron::generalized_affine_image(const LinExpression& lhs,
     add_generators_and_minimize(new_lines);
     
     // Constrain the new dimension so that it is related to
-    // the left hand side as dictated by `relop'
+    // the left hand side as dictated by `relsym'
     // (we force minimization because we will need the generators).
     new_cs.clear();
-    switch (relop) {
-    case PPL_LT:
+    switch (relsym) {
+    case LESS_THAN:
       new_cs.insert(lhs < new_var);
       break;
-    case PPL_LE:
+    case LESS_THAN_OR_EQUAL:
       new_cs.insert(lhs <= new_var);
       break;
-    case PPL_EQ:
+    case EQUAL:
       new_cs.insert(lhs == new_var);
       break;
-    case PPL_GE:
+    case GREATER_THAN_OR_EQUAL:
       new_cs.insert(lhs >= new_var);
       break;
-    case PPL_GT:
+    case GREATER_THAN:
       new_cs.insert(lhs > new_var);
       break;
     }
@@ -3332,21 +3333,21 @@ PPL::Polyhedron::generalized_affine_image(const LinExpression& lhs,
     add_generators_and_minimize(new_lines);
 
     // Constrain the left hand side expression so that it is related to
-    // the right hand side expression as dictated by `relop'.
-    switch (relop) {
-    case PPL_LT:
+    // the right hand side expression as dictated by `relsym'.
+    switch (relsym) {
+    case LESS_THAN:
       add_constraint(lhs < rhs);
       break;
-    case PPL_LE:
+    case LESS_THAN_OR_EQUAL:
       add_constraint(lhs <= rhs);
       break;
-    case PPL_EQ:
+    case EQUAL:
       add_constraint(lhs == rhs);
       break;
-    case PPL_GE:
+    case GREATER_THAN_OR_EQUAL:
       add_constraint(lhs >= rhs);
       break;
-    case PPL_GT:
+    case GREATER_THAN:
       add_constraint(lhs > rhs);
       break;
     }

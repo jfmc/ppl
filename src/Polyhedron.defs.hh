@@ -1062,13 +1062,13 @@ public:
   //! \brief
   //! Assigns to \p *this the image of \p *this with respect to the
   //! \ref generalized_image "generalized affine transfer function"
-  //! \f$\mathrm{var}' \relop \frac{\mathrm{expr}}{\mathrm{denominator}}\f$,
-  //! where \f$\mathord{\relop}\f$ is the relation operator encoded
-  //! by \p relop.
+  //! \f$\mathrm{var}' \relsym \frac{\mathrm{expr}}{\mathrm{denominator}}\f$,
+  //! where \f$\mathord{\relsym}\f$ is the relation symbol encoded
+  //! by \p relsym.
   /*!
     \param var           The left hand side variable of
                          the generalized affine transfer function.
-    \param relop         The relation operator.
+    \param relsym        The relation symbol.
     \param expr          The numerator of the right hand side
                          affine expression.
     \param denominator   The denominator of the right hand side affine
@@ -1079,30 +1079,30 @@ public:
                                      or if \p var is not a dimension
                                      of \p *this
 				     or if \p *this is a C_Polyhedron and
-				     \p relop is a strict relation operator.
+				     \p relsym is a strict relation symbol.
   */
   void generalized_affine_image(const Variable& var,
-				const Relation_Operator relop,
+				const Relation_Symbol relsym,
 				const LinExpression& expr,
 				const Integer& denominator = Integer_one());
 
   //! \brief
   //! Assigns to \p *this the image of \p *this with respect to the
   //! \ref generalized_image "generalized affine transfer function"
-  //! \f$\mathrm{lhs}' \relop \mathrm{rhs}\f$, where
-  //! \f$\mathord{\relop}\f$ is the relation operator encoded by \p relop.
+  //! \f$\mathrm{lhs}' \relsym \mathrm{rhs}\f$, where
+  //! \f$\mathord{\relsym}\f$ is the relation symbol encoded by \p relsym.
   /*!
     \param lhs           The left hand side affine expression.
-    \param relop         The relation operator.
+    \param relsym        The relation symbol.
     \param rhs           The right hand side affine expression.
     \exception std::invalid_argument thrown if \p *this is
                                      dimension-incompatible with
                                      \p lhs or \p rhs
 				     or if \p *this is a C_Polyhedron and
-				     \p relop is a strict relation operator.
+				     \p relsym is a strict relation symbol.
   */
   void generalized_affine_image(const LinExpression& lhs,
-				const Relation_Operator relop,
+				const Relation_Symbol relsym,
 				const LinExpression& rhs);
 
   //! Uses \p *this to shrink a generic, interval-based bounding box.

@@ -50,18 +50,18 @@ not_a_dimension() {
   return std::numeric_limits<dimension_type>::max();
 }
 
-//! Relation operators.
-enum Relation_Operator {
+//! Relation symbols.
+enum Relation_Symbol {
   //! Less than.
-  PPL_LT,
+  LESS_THAN,
   //! Less than or equal to.
-  PPL_LE,
+  LESS_THAN_OR_EQUAL,
   //! Equal to.
-  PPL_EQ,
+  EQUAL,
   //! Greater than or equal to.
-  PPL_GE,
+  GREATER_THAN_OR_EQUAL,
   //! Greater than.
-  PPL_GT
+  GREATER_THAN
 };
 
 //! Complexity pseudo-classes.

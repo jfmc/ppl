@@ -1736,20 +1736,20 @@ ppl_Polyhedron_affine_preimage(Prolog_term_ref t_ph, Prolog_term_ref t_v,
 }
 
 static bool
-relation_operator(Prolog_term_ref t_r, PPL::Relation_Operator& r) {
+relation_symbol(Prolog_term_ref t_r, PPL::Relation_Symbol& r) {
   if (Prolog_is_atom(t_r)) {
     Prolog_atom ra;
       if (Prolog_get_atom_name(t_r, &ra)) {
 	if (ra == a_less_than)
-	  r = PPL::PPL_LT;
+	  r = PPL::LESS_THAN;
 	else if (ra == a_equal_less_than)
-	  r = PPL::PPL_LE;
+	  r = PPL::LESS_THAN_OR_EQUAL;
 	else if (ra == a_equal)
-	  r = PPL::PPL_EQ;
+	  r = PPL::EQUAL;
 	else if (ra == a_greater_than_equal)
-	  r = PPL::PPL_GE;
+	  r = PPL::GREATER_THAN_OR_EQUAL;
 	else if (ra == a_greater_than)
-	  r = PPL::PPL_GT;
+	  r = PPL::GREATER_THAN;
 	else
 	  return false;
       }
@@ -1770,8 +1770,8 @@ ppl_Polyhedron_generalized_affine_image(Prolog_term_ref t_ph,
   try {
     PPL::Polyhedron* ph = term_to_polyhedron_handle(t_ph);
     CHECK(ph);
-    PPL::Relation_Operator r;
-    if (relation_operator(t_r, r)) {
+    PPL::Relation_Symbol r;
+    if (relation_symbol(t_r, r)) {
       ph->generalized_affine_image(get_variable(t_v),
 				   r,
 				   build_lin_expression(t_le),
@@ -1791,8 +1791,8 @@ ppl_Polyhedron_generalized_affine_image_lhs_rhs(Prolog_term_ref t_ph,
   try {
     PPL::Polyhedron* ph = term_to_polyhedron_handle(t_ph);
     CHECK(ph);
-    PPL::Relation_Operator r;
-    if (relation_operator(t_r, r)) {
+    PPL::Relation_Symbol r;
+    if (relation_symbol(t_r, r)) {
       ph->generalized_affine_image(build_lin_expression(t_lhs),
 				   r,
 				   build_lin_expression(t_rhs));

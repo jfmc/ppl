@@ -113,24 +113,24 @@ For any \f$S_1, S_2 \sseq \Rset^n\f$, the <EM>Minkowski's sum</EM> of
 
 For each vector \f$\vect{a} \in \Rset^n\f$ and scalar \f$b \in \Rset\f$,
 where \f$\vect{a} \neq \vect{0}\f$,
-and for each relational operator \f$\mathord{\relop} \in \{ =, \geq, > \}\f$,
-the linear constraint \f$\langle \vect{a}, \vect{x} \rangle \relop b\f$
+and for each relation symbol \f$\mathord{\relsym} \in \{ =, \geq, > \}\f$,
+the linear constraint \f$\langle \vect{a}, \vect{x} \rangle \relsym b\f$
 defines:
 - an affine hyperplane if it is an equality constraint,
-  i.e., if \f$\mathord{\relop} \in \{ = \}\f$;
+  i.e., if \f$\mathord{\relsym} \in \{ = \}\f$;
 - a topologically closed affine half-space if it is
   a non-strict inequality constraint,
-  i.e., if \f$\mathord{\relop} \in \{ \geq \}\f$;
+  i.e., if \f$\mathord{\relsym} \in \{ \geq \}\f$;
 - a topologically open affine half-space if it is
   a strict inequality constraint,
-  i.e., if \f$\mathord{\relop} \in \{ > \}\f$.
+  i.e., if \f$\mathord{\relsym} \in \{ > \}\f$.
 
 Note that each hyperplane \f$\langle \vect{a}, \vect{x} \rangle = b\f$
 can be defined as the intersection of the two closed affine half-spaces
 \f$\langle \vect{a}, \vect{x} \rangle \geq b\f$ and
 \f$\langle -\vect{a}, \vect{x} \rangle \geq -b\f$.
 Also note that, when \f$\vect{a} = \vect{0}\f$,
-the constraint \f$\langle \vect{0}, \vect{x} \rangle \relop b\f$
+the constraint \f$\langle \vect{0}, \vect{x} \rangle \relsym b\f$
 is either a tautology (i.e., always true)
 or inconsistent (i.e., always false), so that it defines
 either the whole vector space \f$\Rset^n\f$ or the empty set \f$\emptyset\f$.
@@ -415,8 +415,8 @@ must obey the following space <EM>dimension-compatibility</EM> rules:
 - polyhedra are dimension-compatible if and only if they have
   the same space dimension;
 - the constraint
-  \f$\langle \vect{a}, \vect{x} \rangle \relop b\f$
-  where \f$\mathord{\relop} \in \{ =, \geq, > \}\f$
+  \f$\langle \vect{a}, \vect{x} \rangle \relsym b\f$
+  where \f$\mathord{\relsym} \in \{ =, \geq, > \}\f$
   and \f$\vect{a}, \vect{x} \in \Rset^m\f$, is dimension-compatible
   with a polyhedron having space dimension \f$n\f$
   if and only if \f$m \leq n\f$;
@@ -687,11 +687,11 @@ The library provides another operator
 which is a generalization of the affine image operator.
 Given a polyhedron \f$\cP \in \Pset_n\f$,
 an affine expression \f$\mathit{lhs} = \sum_{i=0}^{n-1} a'_i x_i + b'\f$,
-a relation operator \f$\mathord{\relop} \in \{ <, \leq, =, \geq, > \}\f$,
+a relation symbol \f$\mathord{\relsym} \in \{ <, \leq, =, \geq, > \}\f$,
 and an affine expression
 \f$\mathit{rhs} = \sum_{i=0}^{n-1} a_i x_i + b\f$,
 the image of \f$\cP\f$ with respect to the transfer function
-\f$\mathit{lhs} \relop \mathit{rhs}\f$ is defined as
+\f$\mathit{lhs} \relsym \mathit{rhs}\f$ is defined as
   \f[
     \sset{
       (w_0, \ldots, w_{n-1})^\transpose \in \Rset^n
@@ -702,11 +702,11 @@ the image of \f$\cP\f$ with respect to the transfer function
           \implies
             w_i = v_i
       \bigr), \\
-      \sum_{i=0}^{n-1} a'_i w_i + b' \relop \sum_{i=0}^{n-1} a_i v_i + b
+      \sum_{i=0}^{n-1} a'_i w_i + b' \relsym \sum_{i=0}^{n-1} a_i v_i + b
     }.
   \f]
 Note that, when \f$\mathit{lhs} = x_k\f$ and
-\f$\mathord{\relop} \in \{ = \}\f$, then the above operator
+\f$\mathord{\relsym} \in \{ = \}\f$, then the above operator
 is equivalent to the application of the standard affine image
 of \f$\cP\f$ with respect to the variable \f$x_k\f$ and the
 affine expression \f$\mathit{rhs}\f$
@@ -747,11 +747,11 @@ and \f$\cC\f$ an arbitrary constraint system representing \f$\cP\f$.
 Suppose also that
 \f$
   c = \bigl(
-        \langle \vect{a}, \vect{x} \rangle \relop b
+        \langle \vect{a}, \vect{x} \rangle \relsym b
       \bigr)
 \f$
 is a constraint
-with \f$\mathord{\relop} \in \{ =, \geq, > \}\f$
+with \f$\mathord{\relsym} \in \{ =, \geq, > \}\f$
 and \f$\cQ\f$ the set of points
 that satisfy \f$c\f$.
 The possible relations between \f$\cP\f$ and \f$c\f$ are as follows.
@@ -798,16 +798,16 @@ be the vector in \f$\Rset^n\f$ with 1 in the \f$i\f$'th position
 and zeros in every other position;
 if the lower bound of the \f$i\f$'th interval in \f$\cB\f$
 is bounded, the corresponding constraint is defined as
-\f$\langle \vect{e}_i, \vect{x} \rangle \relop b\f$,
+\f$\langle \vect{e}_i, \vect{x} \rangle \relsym b\f$,
 where \f$b\f$ is the value of the bound and
-\f$\mathord{\relop}\f$ is \f$\mathord{\geq}\f$ if it is a closed bound and
+\f$\mathord{\relsym}\f$ is \f$\mathord{\geq}\f$ if it is a closed bound and
 \f$\mathord{>}\f$ if it is an open bound.
 Similarly,
 if the upper bound of the \f$i\f$'th interval in \f$\cB\f$ is bounded,
 the corresponding constraint is defined as
-\f$\langle\vect{e}_i,\vect{x}\rangle \relop b\f$,
+\f$\langle\vect{e}_i,\vect{x}\rangle \relsym b\f$,
 where \f$b\f$ is the value of the bound and
-\f$\mathord{\relop}\f$ is \f$\mathord{\leq}\f$ if it is a closed bound and
+\f$\mathord{\relsym}\f$ is \f$\mathord{\leq}\f$ if it is a closed bound and
 \f$\mathord{<}\f$ if it is an open bound.
 
 If every bound in the intervals

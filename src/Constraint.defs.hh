@@ -87,9 +87,9 @@ void swap(Parma_Polyhedra_Library::Constraint& x,
   and \f$b\f$ is the integer inhomogeneous term.
 
   \par How to build a constraint
-  Constraints are typically built by applying a relational operator
+  Constraints are typically built by applying a relation symbol
   to a pair of linear expressions.
-  Available relational operators include equality (<CODE>==</CODE>),
+  Available relation symbols are equality (<CODE>==</CODE>),
   non-strict inequalities (<CODE>\>=</CODE> and <CODE>\<=</CODE>) and
   strict inequalities (<CODE>\<</CODE> and <CODE>\></CODE>).
   The space-dimension of a constraint is defined as the maximum
