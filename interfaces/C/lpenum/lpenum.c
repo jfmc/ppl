@@ -457,6 +457,7 @@ solve(char* file_name) {
   int empty;
   int unbounded;
   int included;
+  int ok;
   /* The following is initialized only to avoid a compiler warning. */
   int first_printed = 0;
 
@@ -628,7 +629,9 @@ solve(char* file_name) {
 	    (maximize ? "Maximizing." : "Minimizing."));
 
   /* Check whether the problem is unbounded. */
-  unbounded = !ppl_Polyhedron_bounds_from_above(ppl_ph, ppl_objective_le);
+  unbounded = maximize
+    ? !ppl_Polyhedron_bounds_from_above(ppl_ph, ppl_objective_le)
+    : !ppl_Polyhedron_bounds_from_below(ppl_ph, ppl_objective_le);
 
   if (print_timings) {
     fprintf(stderr, "Time to check for unboundedness: ");
@@ -646,14 +649,16 @@ solve(char* file_name) {
   ppl_new_Coefficient(&optimum_n);
   ppl_new_Coefficient(&optimum_d);
 
-  if (maximize)
-    ppl_Polyhedron_maximize(ppl_ph, ppl_objective_le,
-			    optimum_n, optimum_d, &included,
-			    &ppl_const_g);
-  else
-    ppl_Polyhedron_minimize(ppl_ph, ppl_objective_le,
-			    optimum_n, optimum_d, &included,
-			    &ppl_const_g);
+  ok = maximize
+    ? ppl_Polyhedron_maximize(ppl_ph, ppl_objective_le,
+			      optimum_n, optimum_d, &included,
+			      &ppl_const_g)
+    : ppl_Polyhedron_minimize(ppl_ph, ppl_objective_le,
+			      optimum_n, optimum_d, &included,
+			      &ppl_const_g);
+
+  if (!ok)
+    fatal("internal error");
 
   if (print_timings) {
     fprintf(stderr, "Time to find the optimum: ");
