@@ -63,7 +63,7 @@ public:
     }
   }
 
-  bool get_lower_bound(unsigned int k, bool closed,
+  bool get_lower_bound(unsigned int k, bool& closed,
 		       Integer& n, Integer& d) const {
     const LBoundary& lb = vec[k].lower_bound();
     const ExtendedRational& lr = lb.bound();
@@ -78,7 +78,7 @@ public:
     return true;
   }
 
-  bool get_upper_bound(unsigned int k, bool closed,
+  bool get_upper_bound(unsigned int k, bool& closed,
 		       Integer& n, Integer& d) const {
     const UBoundary& ub = vec[k].upper_bound();
     const ExtendedRational& ur = ub.bound();
