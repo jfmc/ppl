@@ -83,6 +83,7 @@ gcd_common(To& to, const From& x, const From& y, Rounding_Dir dir) {
   To rm;
   while (ny != 0) {
     Result r = rem<Policy>(rm, nx, ny, dir);
+    used(r);
     assert(r == V_EQ);
     nx = ny;
     ny = rm;
