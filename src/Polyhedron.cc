@@ -38,10 +38,6 @@ site: http://www.cs.unipr.it/ppl/ . */
 #define GRAM_SHMIDT 0
 #endif
 
-#ifndef BHRZ03_AC_CHECKS_H79_BOUNDARY
-#define BHRZ03_AC_CHECKS_H79_BOUNDARY 1
-#endif
-
 #ifndef BHRZ03_EP_DELAY_INTERSECTION
 #define BHRZ03_EP_DELAY_INTERSECTION 0
 #endif
@@ -4020,7 +4016,6 @@ PPL::Polyhedron::BHRZ03_averaging_constraints(const Polyhedron& y,
   for (dimension_type i = y.gen_sys.num_rows(); i-- > 0; ) {
     const Generator& g = y.gen_sys[i];
     if ((g.is_point() && closed) || (g.is_closure_point() && !closed)) {
-#if BHRZ03_AC_CHECKS_H79_BOUNDARY
       // If in `H79.con_sys' there is already an inequality constraint
       // saturating this point, then there is no need to produce another
       // constraint.
@@ -4035,7 +4030,7 @@ PPL::Polyhedron::BHRZ03_averaging_constraints(const Polyhedron& y,
       }
       if (lies_on_the_boundary_of_H79)
 	continue;
-#endif //#if BHRZ03_AC_CHECKS_H79_BOUNDARY
+
       // Consider all the constraints in `x_minus_H79_con_sys'
       // that are saturated by the point `g'.
       averaging_cs.clear();
