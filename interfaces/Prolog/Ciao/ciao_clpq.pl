@@ -21,9 +21,11 @@ USA.
 For the most up-to-date information see the Parma Polyhedra Library
 site: http://www.cs.unipr.it/ppl/ . */
 
-:- module(_, [main/0], [debug]).
+:- module(_, [main/0], []).
+:- use_module(library(debugger)). 
 :- use_module(library(dynamic)). 
 :- use_module(library(lists)). 
+:- use_module(library(prolog_sys)).
 :- use_module(library(read)).
 :- use_module(library(write)).
 :- use_module(ppl_ciao).
