@@ -85,7 +85,7 @@ if HAVE_SWI_PROLOG
 #pplpl_SOURCES = pplpl.cc
 #pplpl_LDADD = libpplswiprolog.la $(top_builddir)/src/libppl.la /usr/local/lib/pl-5.0.2/runtime/i686-linux/libpl.a -lreadline -ldl -ltermcap @extra_libraries@
 
-pl_clpq$(EXEEXT):	ppl_swiprolog.o pl_clpq.o pl_clpq.pl ../clpq.pl
+pl_clpq$(EXEEXT): ppl_swiprolog.o pl_clpq.o pl_clpq.pl ../clpq.pl
 	plld -pl-options,-g,main., -o $@ $+ -L$(top_builddir)/src/.libs -lppl @extra_libraries@
 
 check-local: pl_clpq$(EXEEXT) ../check_script ../expected

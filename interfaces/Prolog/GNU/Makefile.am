@@ -88,12 +88,12 @@ if HAVE_GNU_PROLOG
 #pplgprolog$(EXEEXT): ppl_gprolog.o ppl_gprolog.pl
 #	gplc -o $@ $+ -L '-L../../../src/.libs -lppl -lgmp -lgmpxx -lstdc++'
 
-#gp_clpq$(EXEEXT): gp_clpq.pl ppl_gprolog.o ppl_gprolog.pl ../clpq.pl
-#	gplc -o $@ $+ -L '-L../../../src/.libs -lppl -lgmp -lgmpxx -lstdc++'
+gp_clpq$(EXEEXT): gp_clpq.pl ppl_gprolog.o ppl_gprolog.pl ../clpq.pl
+	gplc -o $@ $+ -L '-L../../../src/.libs -lppl -lgmp -lgmpxx -lstdc++'
 
-#check-local: pplgprolog$(EXEEXT) gp_clpq$(EXEEXT) ../check_script ../expected
-#	for k in $(CLPQ_TESTS); do cp -f $(srcdir)/../$$k .; done
-#	gp_clpq <$(srcdir)/../check_script >obtained
+check-local: gp_clpq$(EXEEXT) ../check_script ../expected
+	for k in $(CLPQ_TESTS); do cp -f $(srcdir)/../$$k .; done
+	gp_clpq <$(srcdir)/../check_script >obtained
 #	diff -q --ignore-all-space $(srcdir)/../expected obtained
 
 MOSTLYCLEANFILES = pplpl $(CLPQ_TESTS) obtained

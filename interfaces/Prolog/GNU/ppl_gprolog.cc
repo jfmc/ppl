@@ -203,7 +203,7 @@ Prolog_is_compound(Prolog_term_ref t) {
 */
 static inline bool
 Prolog_is_cons(Prolog_term_ref t) {
-  return Blt_List(t) != FALSE;
+  return (Blt_Atom(t) == FALSE) && (Blt_List(t) != FALSE);
 }
 
 /*!
