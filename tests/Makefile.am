@@ -50,8 +50,9 @@ ORIGINAL_TESTS = \
 	addgenerators1 addgenerators2 addgenerators3 addgenerators4 \
 	addgenerators5 addgenerators6 addgenerators7 addgenerators8 \
 	addgenerators9 addgenerators10 \
-	affineimage1 affineimage2 \
+	affineimage1 affineimage2 affineimage3 \
 	affinepreimage1 affinepreimage2 affinepreimage3 affinepreimage4 \
+	affinepreimage5 \
 	affinetrans \
         append1 append2 \
 	bbrz02widening1 bbrz02widening2 bbrz02widening3 bbrz02widening4 \
@@ -84,7 +85,7 @@ ORIGINAL_TESTS = \
 	polyhull1 polyhull2 polyhull3 polyhull4 polyhull5 polyhull6 \
 	randphull1 \
 	relations1 relations2 relations3 relations4 relations5 relations6 \
-	relations7 relations8 relations9 \
+	relations7 relations8 relations9 relations10 relations11 \
 	removedim1 removedim2 removedim3 removedim4 removedim5 removedim6 \
 	removedim7 removedim8 removedim9 \
 	smm1 \
@@ -104,9 +105,9 @@ DERIVED_TESTS = \
 	nnc_addgenerators1 nnc_addgenerators2 nnc_addgenerators3 \
 	nnc_addgenerators4 nnc_addgenerators5 nnc_addgenerators6 \
 	nnc_addgenerators9 nnc_addgenerators10 \
-	nnc_affineimage1 nnc_affineimage2 \
+	nnc_affineimage1 nnc_affineimage2 nnc_affineimage3 \
 	nnc_affinepreimage1 nnc_affinepreimage2 nnc_affinepreimage3 \
-	nnc_affinepreimage4 \
+	nnc_affinepreimage4 nnc_affinepreimage5 \
 	nnc_affinetrans \
 	nnc_append1 nnc_append2 \
 	nnc_bbrz02widening1 nnc_bbrz02widening2 nnc_bbrz02widening3 \
@@ -140,7 +141,7 @@ DERIVED_TESTS = \
 	nnc_randphull1 \
 	nnc_relations1 nnc_relations2 nnc_relations3 nnc_relations4 \
 	nnc_relations5 nnc_relations6 nnc_relations7 nnc_relations8 \
-	nnc_relations9 \
+	nnc_relations9 nnc_relations10 \
 	nnc_removedim1 nnc_removedim2 nnc_removedim3 nnc_removedim4 \
 	nnc_removedim5 nnc_removedim6 nnc_removedim8 nnc_removedim9 \
 	nnc_smm1 \
@@ -203,11 +204,13 @@ addgenerators10_SOURCES = addgenerators10.cc
 
 affineimage1_SOURCES = affineimage1.cc
 affineimage2_SOURCES = affineimage2.cc
+affineimage3_SOURCES = affineimage3.cc
 
 affinepreimage1_SOURCES = affinepreimage1.cc
 affinepreimage2_SOURCES = affinepreimage2.cc
 affinepreimage3_SOURCES = affinepreimage3.cc
 affinepreimage4_SOURCES = affinepreimage4.cc
+affinepreimage5_SOURCES = affinepreimage5.cc
 
 affinetrans_SOURCES = affinetrans.cc
 
@@ -316,6 +319,8 @@ relations6_SOURCES = relations6.cc
 relations7_SOURCES = relations7.cc
 relations8_SOURCES = relations8.cc
 relations9_SOURCES = relations9.cc
+relations10_SOURCES = relations10.cc
+relations11_SOURCES = relations11.cc
 
 randphull1_SOURCES = randphull1.cc
 
@@ -411,6 +416,8 @@ nnc_affineimage1_SOURCES = affineimage1.cc
 nnc_affineimage1_CXXFLAGS = $(DERIVED_CXXFLAGS)
 nnc_affineimage2_SOURCES = affineimage2.cc
 nnc_affineimage2_CXXFLAGS = $(DERIVED_CXXFLAGS)
+nnc_affineimage3_SOURCES = affineimage3.cc
+nnc_affineimage3_CXXFLAGS = $(DERIVED_CXXFLAGS)
 
 nnc_affinepreimage1_SOURCES = affinepreimage1.cc
 nnc_affinepreimage1_CXXFLAGS = $(DERIVED_CXXFLAGS)
@@ -420,6 +427,8 @@ nnc_affinepreimage3_SOURCES = affinepreimage3.cc
 nnc_affinepreimage3_CXXFLAGS = $(DERIVED_CXXFLAGS)
 nnc_affinepreimage4_SOURCES = affinepreimage4.cc
 nnc_affinepreimage4_CXXFLAGS = $(DERIVED_CXXFLAGS)
+nnc_affinepreimage5_SOURCES = affinepreimage5.cc
+nnc_affinepreimage5_CXXFLAGS = $(DERIVED_CXXFLAGS)
 
 nnc_affinetrans_SOURCES = affinetrans.cc
 nnc_affinetrans_CXXFLAGS = $(DERIVED_CXXFLAGS)
@@ -592,6 +601,8 @@ nnc_relations8_SOURCES = relations8.cc
 nnc_relations8_CXXFLAGS = $(DERIVED_CXXFLAGS)
 nnc_relations9_SOURCES = relations9.cc
 nnc_relations9_CXXFLAGS = $(DERIVED_CXXFLAGS)
+nnc_relations10_SOURCES = relations10.cc
+nnc_relations10_CXXFLAGS = $(DERIVED_CXXFLAGS)
 
 nnc_randphull1_SOURCES = randphull1.cc
 nnc_randphull1_CXXFLAGS = $(DERIVED_CXXFLAGS)
