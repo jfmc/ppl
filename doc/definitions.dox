@@ -21,6 +21,13 @@
 //  For the most up-to-date information see the Parma Polyhedra Library
 //  site: http://www.cs.unipr.it/ppl/
 
+/*!
+  \defgroup PPL_Library The Library
+  The core implementation of the Parma Polyhedra Library
+  is written in C++. See Namespace, Hierarchical and Compound
+  indexes for additional information.
+*/
+
 /*! \mainpage Convex Polyhedra and the PPL
 \section preamble A Library for Convex Polyhedra
 

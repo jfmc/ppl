@@ -21,11 +21,9 @@ USA.
 For the most up-to-date information see the Parma Polyhedra Library
 site: http://www.cs.unipr.it/ppl/ . */
 
+/*! \defgroup PPL_C_interface C Language Interface */
+//@{
 
-/*! \file
-
-This file implements the C interface.
-*/
 /*
   FIXME: a detailed description with examples should be added
   to the above Doxygen comment.
@@ -1683,3 +1681,5 @@ ppl_Polyhedron_OK __P((ppl_const_Polyhedron_t ph));
 #undef __P
 
 #endif /* !defined(PPL_ppl_c_h) */
+
+//@}

@@ -21,7 +21,7 @@ USA.
 For the most up-to-date information see the Parma Polyhedra Library
 site: http://www.cs.unipr.it/ppl/ . */
 
-/*! \page Prolog_Interface Prolog Interface
+/*! \defgroup Prolog_Interface Prolog Language Interface
 
 \section PI_Introduction Introduction
 
@@ -223,8 +223,9 @@ We first give some general information about using the interface.
   topological compatibility rules stated in Section \ref representation.
 
 - There are a number of predicates whose name ends with
-  <CODE>_and_minimize</CODE>.
-  These are provided to help the user obtain better performance.<BR>
+  <CODE>_and_minimize</CODE>. These were provided, up to version 0.4,
+  to help the user obtain better performance, since in the previous
+  .<BR>
   For some of the operations on polyhedra in the PPL,
   the internal representation of a polyhedra has to be <EM>minimized</EM>:
   if it is not already minimized,
@@ -658,6 +659,7 @@ and a query will succeed even when
    ?- ppl_new_Polyhedron_empty_from_dimension(c, 5, X),
       ppl_Polyhedron_remove_higher_dimensions(X, 3),
       ppl_Polyhedron_space_dimension(X, K).
+\endcode
 
 <H2><CODE>ppl_Polyhedron_shuffle_dimensions(+Handle, +Shuffle_Map))</CODE></H2>
 
