@@ -73,10 +73,11 @@ assign_mpz_signed_int(mpz_class& to, const From from) {
   return V_EQ;
 }
 
-SPECIALIZE_ASSIGN(mpz_signed_int, mpz_class, int8_t)
-SPECIALIZE_ASSIGN(mpz_signed_int, mpz_class, int16_t)
-SPECIALIZE_ASSIGN(mpz_signed_int, mpz_class, int32_t)
-SPECIALIZE_ASSIGN(mpz_signed_int, mpz_class, int64_t)
+SPECIALIZE_ASSIGN(mpz_signed_int, mpz_class, signed char)
+SPECIALIZE_ASSIGN(mpz_signed_int, mpz_class, short)
+SPECIALIZE_ASSIGN(mpz_signed_int, mpz_class, int)
+SPECIALIZE_ASSIGN(mpz_signed_int, mpz_class, long)
+SPECIALIZE_ASSIGN(mpz_signed_int, mpz_class, long long)
 
 template <typename Policy, typename From>
 inline Result
@@ -88,11 +89,11 @@ assign_mpz_unsigned_int(mpz_class& to, const From from) {
   return V_EQ;
 }
 
-SPECIALIZE_ASSIGN(mpz_unsigned_int, mpz_class, u_int8_t)
-SPECIALIZE_ASSIGN(mpz_unsigned_int, mpz_class, u_int16_t)
-SPECIALIZE_ASSIGN(mpz_unsigned_int, mpz_class, u_int32_t)
-SPECIALIZE_ASSIGN(mpz_unsigned_int, mpz_class, u_int64_t)
-
+SPECIALIZE_ASSIGN(mpz_unsigned_int, mpz_class, unsigned char)
+SPECIALIZE_ASSIGN(mpz_unsigned_int, mpz_class, unsigned short)
+SPECIALIZE_ASSIGN(mpz_unsigned_int, mpz_class, unsigned int)
+SPECIALIZE_ASSIGN(mpz_unsigned_int, mpz_class, unsigned long)
+SPECIALIZE_ASSIGN(mpz_unsigned_int, mpz_class, unsigned long long)
 
 template <typename Policy, typename From>
 inline Result
@@ -219,9 +220,9 @@ assign_signed_int_mpz(To& to, const mpz_class& from) {
   if (sizeof(To) <= sizeof(long)) {
     if (from.fits_slong_p()) {
       long v = from.get_si();
-      if (v < std::numeric_limits<To>::min())
+      if (v < Limits<To>::min)
 	return V_NEG_OVERFLOW;
-      if (v > std::numeric_limits<To>::max())
+      if (v > Limits<To>::max)
 	return V_POS_OVERFLOW;
       to = v;
       return V_EQ;
@@ -267,7 +268,7 @@ assign_unsigned_int_mpz(To& to, const mpz_class& from) {
   if (sizeof(To) <= sizeof(unsigned long)) {
     if (from.fits_ulong_p()) {
       unsigned long v = from.get_ui();
-      if (v > std::numeric_limits<To>::max())
+      if (v > Limits<To>::max)
 	return V_POS_OVERFLOW;
       to = v;
       return V_EQ;

@@ -59,10 +59,11 @@ assign_mpq_signed_int(mpq_class& to, const From from) {
   return V_EQ;
 }
 
-SPECIALIZE_ASSIGN(mpq_signed_int, mpq_class, int8_t)
-SPECIALIZE_ASSIGN(mpq_signed_int, mpq_class, int16_t)
-SPECIALIZE_ASSIGN(mpq_signed_int, mpq_class, int32_t)
-SPECIALIZE_ASSIGN(mpq_signed_int, mpq_class, int64_t)
+SPECIALIZE_ASSIGN(mpq_signed_int, mpq_class, signed char)
+SPECIALIZE_ASSIGN(mpq_signed_int, mpq_class, short)
+SPECIALIZE_ASSIGN(mpq_signed_int, mpq_class, int)
+SPECIALIZE_ASSIGN(mpq_signed_int, mpq_class, long)
+SPECIALIZE_ASSIGN(mpq_signed_int, mpq_class, long long)
 
 template <typename Policy, typename From>
 inline Result
@@ -76,10 +77,11 @@ assign_mpq_unsigned_int(mpq_class& to, const From from) {
   return V_EQ;
 }
 
-SPECIALIZE_ASSIGN(mpq_unsigned_int, mpq_class, u_int8_t)
-SPECIALIZE_ASSIGN(mpq_unsigned_int, mpq_class, u_int16_t)
-SPECIALIZE_ASSIGN(mpq_unsigned_int, mpq_class, u_int32_t)
-SPECIALIZE_ASSIGN(mpq_unsigned_int, mpq_class, u_int64_t)
+SPECIALIZE_ASSIGN(mpq_unsigned_int, mpq_class, unsigned char)
+SPECIALIZE_ASSIGN(mpq_unsigned_int, mpq_class, unsigned short)
+SPECIALIZE_ASSIGN(mpq_unsigned_int, mpq_class, unsigned int)
+SPECIALIZE_ASSIGN(mpq_unsigned_int, mpq_class, unsigned long)
+SPECIALIZE_ASSIGN(mpq_unsigned_int, mpq_class, unsigned long long)
 
 template <typename Policy, typename To>
 inline Result
