@@ -278,7 +278,7 @@ public:
   //!                 It is not declared <CODE>const</CODE>
   //!                 because it can be modified.
   //! \exception std::invalid_argument thrown if the system of generators
-  //!                                  is not empty but has no vertices.
+  //!                                  has no vertex.
   Polyhedron(GenSys& gs);
   // Destructor
   ~Polyhedron();
@@ -286,32 +286,32 @@ public:
   //! The assignment operator.
   Polyhedron& operator =(const Polyhedron& y);
 
-  //! Returns the number of dimensions of the space.
+  //! Returns the dimension of the polyhedron.
   size_t num_dimensions() const;
   //! Intersects \p *this with polyhedron \p y and
   //! assigns the result to \p *this.
   //! \exception std::invalid_argument thrown if \p *this and \p y
-  //!                                  are dimension-incompatible.
+  //!                                  have different dimension.
   void intersection_assign(const Polyhedron& y);
   //! Assigns the convex hull of \p *this \f$\cup\f$ \p y to \p *this.
   //! \exception std::invalid_argument thrown if \p *this and \p y
-  //!                                  are dimension-incompatible.
+  //!                                  have different dimension.
   void convex_hull_assign(const Polyhedron& y);
   //! Assigns the convex hull of \p *this \f$\cup\f$ \p y to \p *this,
   //! without minimizing the result.
   //! \exception std::invalid_argument thrown if \p *this and \p y
-  //!                                  are dimension-incompatible.
+  //!                                  have different dimension.
   void convex_hull_assign_lazy(const Polyhedron& y);
 
   //! Returns the relation between the generators of \p *this
   //! and the constraint \p c.
-  //! \exception std::invalid_argument thrown if \p *this and constraint 
-  //!                                  \p c are dimension-incompatible.
+  //! \exception std::invalid_argument thrown if\p *this and constraint 
+  //!                                  \p c have different dimension.
   GenSys_Con_Rel satisfies(const Constraint& c);
   //! Tests the inclusion of the generator \p g in the 
   //! polyhedron \p *this.
   //! \exception std::invalid_argument thrown if \p *this and constraint 
-  //!                                  \p g are dimension-incompatible.
+  //!                                  \p g have different dimension.
   bool includes(const Generator& g);
 
   //! Computes the widening between \p *this and \p y and
@@ -319,7 +319,7 @@ public:
   //! \param y           The polyhedron that <EM>must</EM>
   //!                    be contained in \p *this.
   //! \exception std::invalid_argument thrown if \p *this and \p y 
-  //!                                  are dimension-incompatible.
+  //!                                  have different dimension.
   void widening_assign(const Polyhedron& y);
   //! Limits the widening between \p *this and \p y by \p cs
   //! and assigns the result to \p *this.
@@ -332,7 +332,7 @@ public:
   //! \return       <CODE>true</CODE> if the resulting polyhedron is not
   //!               empty <CODE>false</CODE> otherwise.
   //! \exception std::invalid_argument thrown if \p *this, \p y and 
-  //!                                  \p cs are dimension-incompatible.
+  //!                                  \p cs have different dimension.
   bool limited_widening_assign(const Polyhedron& y, ConSys& cs);
 
   //! Returns the system of constraints.
@@ -356,11 +356,11 @@ public:
   //! \param expr          The numerator of the affine expression.
   //! \param denominator   The denominator of the affine expression
   //!                      (optional argument with default value 1.)
-  //! \exception std::invalid_argument thrown if \p denominator is zero
-  //!                                  or if \p expr and \p *this
-  //!                                  are dimension-incompatible
-  //!                                  or if \p v is not a dimension
-  //!                                  of \p *this.
+  //! \exception std::invalid_argument thrown if \p denominator is zero or
+  //!                                  if \p expr and \p *this have 
+  //!                                  different dimension or if
+  //!                                  \p v is not a variable of the
+  //!                                  polyhedron.
   void assign_variable(const Variable& v,
 		       const LinExpression& expr,
 		       const Integer& denominator = 1);
@@ -370,11 +370,11 @@ public:
   //! \param expr          The numerator of the affine expression.
   //! \param denominator   The denominator of the affine expression
   //!                      (optional argument with default value 1.)
-  //! \exception std::invalid_argument thrown if \p denominator is zero
-  //!                                  or if \p expr and \p *this
-  //!                                  are dimension-incompatible
-  //!                                  or if \p v is not a dimension
-  //!                                  of \p *this.
+  //! \exception std::invalid_argument thrown if \p denominator is zero or
+  //!                                  if \p expr and \p *this have 
+  //!                                  different dimension or if
+  //!                                  \p v is not a variable of the
+  //!                                  polyhedron.
   void substitute_variable(const Variable& v,
 			   const LinExpression& expr,
 			   const Integer& denominator = 1);
@@ -427,7 +427,7 @@ public:
   //! \return               <CODE>false</CODE> if the resulting
   //!                       polyhedron is empty.
   //! \exception std::invalid_argument thrown if \p *this and \p cs
-  //!                                  are dimension-incompatible.
+  //!                                  have different dimension.
   bool add_constraints(ConSys& cs);
   //! Adds the specified constraints without minimizing.
   //! \param  cs             The constraints that will be added to the
@@ -435,7 +435,7 @@ public:
   //!                        is not declared <CODE>const</CODE> because 
   //!                        it can be modified.
   //! \exception std::invalid_argument thrown if \p *this and \p cs 
-  //!                                  are dimension-incompatible.
+  //!                                  have different dimension.
   void add_constraints_lazy(ConSys& cs);
   //! Adds the specified generators.
   //! \param  gs          The generators that will be added to the
@@ -443,7 +443,7 @@ public:
   //!                     not declared <CODE>const</CODE> because it 
   //!                     can be modified.
   //! \exception std::invalid_argument thrown if \p *this and 
-  //!                                  \p gs are dimension-incompatible.
+  //!                                  \p gs have different dimension
   void add_generators(GenSys& gs);
   //! Returns <CODE>true</CODE> if and only if the polyhedron is empty.
   bool check_empty() const;

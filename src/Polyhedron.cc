@@ -1004,8 +1004,8 @@ PPL::Polyhedron::add_constraints(ConSys& cs) {
 */
 void
 PPL::Polyhedron::insert(const Constraint& c) {
-  // Adding a new constraint to an empty polyhedron
-  // results in an empty polyhedron.
+  // If the polyhedron is empty, adding a new constraint it 
+  // is still empty.
   if (is_empty())
     return;
 
@@ -1939,7 +1939,7 @@ PPL::Polyhedron::OK(bool check_not_empty) const {
   // the system of generators, they must have the same number of columns.
   if (constraints_are_up_to_date() && generators_are_up_to_date()
       && con_sys.num_columns() != gen_sys.num_columns()) {
-    cerr << "Constraints and generators are dimension-incompatible:" << endl
+    cerr << "Constraints and generators of different dimensions:" << endl
 	 << con_sys.num_columns()-1 << " and " << gen_sys.num_columns()-1
 	 << endl;
     goto bomb;
