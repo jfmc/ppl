@@ -144,6 +144,46 @@ of GMP and the configuration of the PPL.  This is due to the fact that
 Comeau C/C++ 4.3.3 does not support shared libraries.
 
 
+Enabling the Use of Alternative Coefficient Types
+-------------------------------------------------
+
+When speed is important and the numerical coefficients involved are
+likely to be small, you can configure the PPL to use checked native
+integers (8, 16, 32 or 64 bit) for the representation of the
+coefficients.  This is a safe strategy since, when using checked
+native integers, the library also performs systematic (yet efficient)
+overflow detection and, in case of overflow, an exception is raised.
+To enable the use of various kinds of coefficients, you can use
+the configure option
+
+  --enable-coefficients=TYPE
+
+where TYPE is one of
+
+  gmp               use GMP unbounded integers (default)
+  checked-int8      use  8 bits checked integers
+  checked-int16     use 16 bits checked integers
+  checked-int32     use 32 bits checked integers
+  checked-int64     use 64 bits checked integers
+
+When using checked integers is it also wise to increase the
+optimization level, since their efficiency varies much depending on
+the compiler and on the optimization options used.  Adding
+
+  --enable-optimization=speed
+
+on the command line is thus recommended (in later releases we will
+try to make the choice of the optimization options automatic).
+If you want to test the overhead of checked integers with respect
+to plain, unchecked native integers and you really know what you
+are doing, you may be interested in knowing that these additional
+choices for TYPE are available:
+
+  native-int8      use  8 bits *unchecked* integers
+  native-int16     use 16 bits *unchecked* integers
+  native-int32     use 32 bits *unchecked* integers
+  native-int64     use 64 bits *unchecked* integers
+
 --------
 
 Copyright (C) 2001-2004 Roberto Bagnara <bagnara@cs.unipr.it>
