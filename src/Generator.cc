@@ -115,13 +115,21 @@ std::ostream&
 PPL::operator<<(std::ostream& s, const Generator& g) {
   bool needed_divisor = false;
   bool extra_parentheses = false;
-  int num_variables = g.size() - 1;
-  if (g.is_line())
+  int num_variables = g.space_dimension();
+  Generator::Type t = g.type();
+  switch (t) {
+  case Generator::LINE:
     s << "l(";
-  else if (g[0] == 0)
+    break;
+  case Generator::RAY:
     s << "r(";
-  else {
-    s << "p(";
+    break;
+  case Generator::POINT:
+  case Generator::CLOSURE_POINT:
+    if (t == Generator::POINT)
+      s << "p(";
+    else
+      s << "c(";
     if (g[0] != 1) {
       needed_divisor = true;
       int num_non_zero_coefficients = 0;
@@ -133,7 +141,9 @@ PPL::operator<<(std::ostream& s, const Generator& g) {
 	    break;
 	  }
     }
+    break;
   }
+
   bool first = true;
   for (int v = 0; v < num_variables; ++v) {
     Integer gv = g[v+1];
@@ -156,7 +166,7 @@ PPL::operator<<(std::ostream& s, const Generator& g) {
     }
   }
   if (first)
-    // A point in the origin.
+    // A point or closure point in the origin.
     s << 0;
   if (extra_parentheses)
     s << ")";
