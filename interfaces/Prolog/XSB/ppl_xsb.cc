@@ -577,7 +577,7 @@ XSB_ENTRY_2(ppl_Polyhedron_contains_Polyhedron)
 XSB_ENTRY_2(ppl_Polyhedron_strictly_contains_Polyhedron)
 XSB_ENTRY_2(ppl_Polyhedron_is_disjoint_from_Polyhedron)
 XSB_ENTRY_2(ppl_Polyhedron_equals_Polyhedron)
-XSB_ENTRY_2(ppl_Polyhedron_get_bounding_box)
+XSB_ENTRY_3(ppl_Polyhedron_get_bounding_box)
 
 extern "C" void
 init() {

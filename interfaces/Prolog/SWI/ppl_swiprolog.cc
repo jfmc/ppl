@@ -374,7 +374,7 @@ static PL_extension predicates[] = {
   PL_EXTENSION_ENTRY(ppl_Polyhedron_strictly_contains_Polyhedron, 2)
   PL_EXTENSION_ENTRY(ppl_Polyhedron_is_disjoint_from_Polyhedron, 2)
   PL_EXTENSION_ENTRY(ppl_Polyhedron_equals_Polyhedron, 2)
-  PL_EXTENSION_ENTRY(ppl_Polyhedron_get_bounding_box, 2)
+  PL_EXTENSION_ENTRY(ppl_Polyhedron_get_bounding_box, 3)
   { NULL, 0, NULL, 0 }
 };
 

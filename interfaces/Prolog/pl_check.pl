@@ -710,7 +710,7 @@ boundingbox :-
   A = '$VAR'(0), B = '$VAR'(1),
   ppl_new_Polyhedron_from_dimension(c, 2, P),
   ppl_Polyhedron_add_constraints_and_minimize(P, [B >= 0, 4*A =< 2]),
-  ppl_Polyhedron_get_bounding_box(P, Box),
+  ppl_Polyhedron_get_bounding_box(P, Box, any),
   Box = [i(o(minf), c(+1/2)), i(c(0), o(pinf))],
   ppl_delete_Polyhedron(P).
 
@@ -720,7 +720,7 @@ poly_from_boundingbox_C :-
                                        [i(c(1/2), o(pinf)),
                                         i(o(minf), c(-1/2))],
                                        P),
-  ppl_Polyhedron_get_bounding_box(P, Box),
+  ppl_Polyhedron_get_bounding_box(P, Box, any),
   Box = [i(c(1/2), o(pinf)), i(o(minf), c(-1/2))],
   ppl_delete_Polyhedron(P).
 
@@ -730,7 +730,7 @@ poly_from_boundingbox_NNC :-
                                        [i(o(0/2), o(pinf)),
                                         i(o(minf), o(1))],
                                        P),
-  ppl_Polyhedron_get_bounding_box(P, Box),
+  ppl_Polyhedron_get_bounding_box(P, Box, any),
   Box = [i(o(0), o(pinf)), i(o(minf), o(1))],
   ppl_delete_Polyhedron(P).
 
@@ -765,13 +765,13 @@ boundingbox1(Box,CS) :-
                                       [1*A > 1, 1*B > 1,
                                        -1*B > -1, -1*A > -1],
                                       P),
-  ppl_Polyhedron_get_bounding_box(P, Box),
+  ppl_Polyhedron_get_bounding_box(P, Box, any),
   ppl_Polyhedron_get_constraints(P,CS),
   ppl_delete_Polyhedron(P).
 
 boundingbox2(Box,CS) :-
   ppl_new_Polyhedron_from_dimension(nnc, 2, P),
   ppl_Polyhedron_add_constraints(P, [0=1]),
-  ppl_Polyhedron_get_bounding_box(P, Box),
+  ppl_Polyhedron_get_bounding_box(P, Box, any),
   ppl_Polyhedron_get_constraints(P,CS),
   ppl_delete_Polyhedron(P).

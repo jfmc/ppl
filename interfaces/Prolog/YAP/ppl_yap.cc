@@ -433,7 +433,7 @@ YAP_STUB_2(ppl_Polyhedron_contains_Polyhedron)
 YAP_STUB_2(ppl_Polyhedron_strictly_contains_Polyhedron)
 YAP_STUB_2(ppl_Polyhedron_is_disjoint_from_Polyhedron)
 YAP_STUB_2(ppl_Polyhedron_equals_Polyhedron)
-YAP_STUB_2(ppl_Polyhedron_get_bounding_box)
+YAP_STUB_3(ppl_Polyhedron_get_bounding_box)
 
 #define YAP_USER_C_PREDICATE(name, arity) \
  YAP_UserCPredicate(#name, reinterpret_cast<int(*)()>(yap_stub_##name), arity)
@@ -493,5 +493,5 @@ init() {
   YAP_USER_C_PREDICATE(ppl_Polyhedron_strictly_contains_Polyhedron, 2);
   YAP_USER_C_PREDICATE(ppl_Polyhedron_is_disjoint_from_Polyhedron, 2);
   YAP_USER_C_PREDICATE(ppl_Polyhedron_equals_Polyhedron, 2);
-  YAP_USER_C_PREDICATE(ppl_Polyhedron_get_bounding_box, 2);
+  YAP_USER_C_PREDICATE(ppl_Polyhedron_get_bounding_box, 3);
 }

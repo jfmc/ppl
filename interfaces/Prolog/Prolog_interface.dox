@@ -722,7 +722,8 @@ referenced by <CODE>Handle</CODE> has with <CODE>Generator</CODE>.
    equal to the polyhedron referenced by <CODE>Handle_2</CODE>.
 
 <H2><CODE>ppl_Polyhedron_get_bounding_box(+Handle,
-                                      -Box)</CODE></H2>
+                                          +Complexity,
+            	                          -Box)</CODE></H2>
 
    Succeeds if and only if the bounding box
    of the polyhedron referenced by
@@ -732,7 +733,7 @@ referenced by <CODE>Handle</CODE> has with <CODE>Generator</CODE>.
 \code
    ?- A = '$VAR'(0), B = '$VAR'(1),
       ppl_new_Polyhedron_from_constraints(nnc, [B > 0, 4*A =< 2], X),
-      ppl_Polyhedron_get_bounding_box(X, Box).
+      ppl_Polyhedron_get_bounding_box(X, any, Box).
 
    Box = [i(o(minf), c(1/2)), i(o(0), o(pinf))].
 \endcode
@@ -741,7 +742,7 @@ E.g., the following will fail:
 \code
    ?- A = '$VAR'(0), B = '$VAR'(1),
       ppl_new_Polyhedron_from_constraints(nnc, [B > 0, 4*A =< 2], X),
-      ppl_Polyhedron_get_bounding_box(X, Box),
+      ppl_Polyhedron_get_bounding_box(X, any, Box),
       Box = [i(o(minf), c(2/4)), i(o(0), o(pinf))].
 \endcode
 
