@@ -670,6 +670,24 @@ public:
   void limited_H79_widening_assign(const Polyhedron& y, ConSys& cs);
 
   //! \brief
+  //! Improves the result of the \ref H79_widening "H79-widening"
+  //! computation by also enforcing those constraints in \p cs that are
+  //! satisfied by all the points of \p *this, plus all the constraints
+  //! of the form \f$\pm x \leq r\f$ and \f$\pm x < r\f$, with
+  //! \f$r \in \Qset\f$, that are satisfied by all the points of \p *this.
+  /*!
+    \param y                 A polyhedron that <EM>must</EM>
+                             be contained in \p *this.
+    \param cs                The system of constraints used to improve
+                             the widened polyhedron. It is not declared
+                             <CODE>const</CODE> because it can be modified.
+    \exception std::invalid_argument thrown if \p *this, \p y and \p cs
+                                     are topology-incompatible
+                                     or dimension-incompatible.
+  */
+  void bounded_H79_widening_assign(const Polyhedron& y, ConSys& cs);
+
+  //! \brief
   //! Assigns to \p *this the result of computing the
   //! \ref BHRZ03_widening "BHRZ03-widening" between \p *this and \p y.
   /*!
@@ -696,6 +714,24 @@ public:
                                      or dimension-incompatible.
   */
   void limited_BHRZ03_widening_assign(const Polyhedron& y, ConSys& cs);
+
+  //! \brief
+  //! Improves the result of the \ref BHRZ03_widening "BHRZ03-widening"
+  //! computation by also enforcing those constraints in \p cs that are
+  //! satisfied by all the points of \p *this, plus all the constraints
+  //! of the form \f$\pm x \leq r\f$ and \f$\pm x < r\f$, with
+  //! \f$r \in \Qset\f$, that are satisfied by all the points of \p *this.
+  /*!
+    \param y                 A polyhedron that <EM>must</EM>
+                             be contained in \p *this.
+    \param cs                The system of constraints used to improve
+                             the widened polyhedron. It is not declared
+                             <CODE>const</CODE> because it can be modified.
+    \exception std::invalid_argument thrown if \p *this, \p y and \p cs
+                                     are topology-incompatible
+                                     or dimension-incompatible.
+  */
+  void bounded_BHRZ03_widening_assign(const Polyhedron& y, ConSys& cs);
 
   //! \brief
   //! Assigns to \p *this the result of computing the

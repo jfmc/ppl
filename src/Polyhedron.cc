@@ -3755,6 +3755,51 @@ PPL::Polyhedron::limited_H79_widening_assign(const Polyhedron& y,
   assert(OK());
 }
 
+namespace {
+
+using namespace PPL;
+
+class BW_Box {
+private:
+  ConSys& con_sys;
+
+public:
+
+  BW_Box(ConSys& cs)
+    : con_sys(cs) {
+  }
+
+  void set_empty() {
+    throw std::runtime_error("PPL internal error");
+  }
+
+  void raise_lower_bound(dimension_type k, bool closed,
+			 const Integer& n, const Integer& d) {
+    if (closed)
+      con_sys.insert(d*Variable(k) >= n);
+    else
+      con_sys.insert(d*Variable(k) > n);
+  }
+
+  void lower_upper_bound(dimension_type k, bool closed,
+			 const Integer& n, const Integer& d) {
+    if (closed)
+      con_sys.insert(d*Variable(k) <= n);
+    else
+      con_sys.insert(d*Variable(k) < n);
+  }
+};
+
+} // namespace
+
+void
+PPL::Polyhedron::bounded_H79_widening_assign(const Polyhedron& y,
+					     ConSys& cs) {
+  BW_Box box(cs);
+  shrink_bounding_box(box, ANY);
+  limited_H79_widening_assign(y, cs);
+}
+
 bool
 PPL::Polyhedron::is_BHRZ03_stabilizing(const Polyhedron& x,
 				       const Polyhedron& y) {
@@ -4589,6 +4634,14 @@ PPL::Polyhedron::limited_BHRZ03_widening_assign(const Polyhedron& y,
 						ConSys& cs) {
   BHRZ03_widening_assign(y);
   add_constraints(cs);
+}
+
+void
+PPL::Polyhedron::bounded_BHRZ03_widening_assign(const Polyhedron& y,
+						ConSys& cs) {
+  BW_Box box(cs);
+  shrink_bounding_box(box, ANY);
+  limited_BHRZ03_widening_assign(y, cs);
 }
 
 void
