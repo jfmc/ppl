@@ -26,7 +26,7 @@ VPATH = @srcdir@
 
 @SET_MAKE@
 
-SUBDIRS = @extra_if_Prolog_subdirs@
+SUBDIRS = GNU SICStus SWI YAP
 
 CLPQ_TESTS = \
 ack.clpq \

@@ -1,4 +1,4 @@
-/* Common part of the Prolog interfaces.
+/* Common part of the Prolog interfaces.  -*- C++ -*-
    Copyright (C) 2001, 2002 Roberto Bagnara <bagnara@cs.unipr.it>
 
 This file is part of the Parma Polyhedra Library (PPL).
@@ -28,7 +28,10 @@ site: http://www.cs.unipr.it/ppl/ . */
 #include <sstream>
 #include <climits>
 
-#define TRACK_ALLOCATION 1
+#ifndef TRACK_ALLOCATION
+#define TRACK_ALLOCATION 0
+#endif
+
 #include "track_allocation.hh"
 
 namespace PPL = Parma_Polyhedra_Library;
@@ -451,7 +454,7 @@ get_lin_expression(const R& r) {
 
 static Prolog_term_ref
 constraint_term(const PPL::Constraint& c) {
-  Prolog_atom relation;
+  Prolog_atom relation = 0;
   switch (c.type()) {
     case PPL::Constraint::EQUALITY:
       relation = a_equal;
@@ -475,7 +478,7 @@ constraint_term(const PPL::Constraint& c) {
 static Prolog_term_ref
 generator_term(const PPL::Generator& g) {
   Prolog_term_ref t = Prolog_new_term_ref();
-  Prolog_atom constructor;
+  Prolog_atom constructor = 0;
   switch (g.type()) {
   case PPL::Generator::LINE:
     constructor = a_line;
