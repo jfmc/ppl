@@ -122,7 +122,7 @@ INTERNAL_DOCS          = YES
 # generate a class diagram (in Html and LaTeX) for classes with base
 # or super classes. Setting the tag to NO turns the diagrams off.
 
-CLASS_DIAGRAMS         = YES
+CLASS_DIAGRAMS         = NO
 
 # If the SOURCE_BROWSER tag is set to YES then a list of source files
 # will be generated. Documented entities will be cross-referenced with
@@ -167,7 +167,7 @@ VERBATIM_HEADERS       = NO
 # Doxygen will put list of the files that are included by a file in
 # the documentation of that file.
 
-SHOW_INCLUDE_FILES     = YES
+SHOW_INCLUDE_FILES     = NO
 
 # If the JAVADOC_AUTOBRIEF tag is set to YES then Doxygen will
 # interpret the first line (until the first dot) of a JavaDoc-style
@@ -703,7 +703,7 @@ HAVE_DOT               = YES
 # indirect inheritance relations. Setting this tag to YES will force the 
 # the CLASS_DIAGRAMS tag to NO.
 
-CLASS_GRAPH            = YES
+CLASS_GRAPH            = NO
 
 # If the COLLABORATION_GRAPH and HAVE_DOT tags are set to YES then doxygen 
 # will generate a graph for each documented class showing the direct and 
