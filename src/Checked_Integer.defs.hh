@@ -119,88 +119,88 @@ PPL_INTEGER_DECLARE_NON_MEMBERS(Checked_Integer)
 template <typename T>
 class Parma_Polyhedra_Library::Checked_Integer {
 
-  friend Checked_Integer
-  Parma_Polyhedra_Library::operator+<>(const Checked_Integer x,
-				       const Checked_Integer y);
-  friend Checked_Integer
-  Parma_Polyhedra_Library::operator-<>(const Checked_Integer x,
-				       const Checked_Integer y);
-  friend Checked_Integer
-  Parma_Polyhedra_Library::operator*<>(const Checked_Integer x,
-				       const Checked_Integer y);
-  friend Checked_Integer
-  Parma_Polyhedra_Library::operator/<>(const Checked_Integer x,
-				       const Checked_Integer y);
-  friend Checked_Integer
-  Parma_Polyhedra_Library::operator%<>(const Checked_Integer x,
-				       const Checked_Integer y);
+  friend Checked_Integer<T>
+  Parma_Polyhedra_Library::operator+<T>(const Checked_Integer<T> x,
+					const Checked_Integer<T> y);
+  friend Checked_Integer<T>
+  Parma_Polyhedra_Library::operator-<T>(const Checked_Integer<T> x,
+				       const Checked_Integer<T> y);
+  friend Checked_Integer<T>
+  Parma_Polyhedra_Library::operator*<T>(const Checked_Integer<T> x,
+				       const Checked_Integer<T> y);
+  friend Checked_Integer<T>
+  Parma_Polyhedra_Library::operator/<T>(const Checked_Integer<T> x,
+				       const Checked_Integer<T> y);
+  friend Checked_Integer<T>
+  Parma_Polyhedra_Library::operator%<T>(const Checked_Integer<T> x,
+				       const Checked_Integer<T> y);
 
-  friend Checked_Integer
-  Parma_Polyhedra_Library::operator+<>(const Checked_Integer x);
-  friend Checked_Integer
-  Parma_Polyhedra_Library::operator-<>(const Checked_Integer x);
+  friend Checked_Integer<T>
+  Parma_Polyhedra_Library::operator+<T>(const Checked_Integer<T> x);
+  friend Checked_Integer<T>
+  Parma_Polyhedra_Library::operator-<T>(const Checked_Integer<T> x);
 
   friend bool
-  Parma_Polyhedra_Library::operator==<>(const Checked_Integer x,
-					const Checked_Integer y);
+  Parma_Polyhedra_Library::operator==<T>(const Checked_Integer<T> x,
+					const Checked_Integer<T> y);
   friend bool
-  Parma_Polyhedra_Library::operator!=<>(const Checked_Integer x,
-					const Checked_Integer y);
+  Parma_Polyhedra_Library::operator!=<T>(const Checked_Integer<T> x,
+					const Checked_Integer<T> y);
   friend bool
-  Parma_Polyhedra_Library::operator>=<>(const Checked_Integer x,
-					const Checked_Integer y);
+  Parma_Polyhedra_Library::operator>=<T>(const Checked_Integer<T> x,
+					const Checked_Integer<T> y);
   friend bool
-  Parma_Polyhedra_Library::operator> <>(const Checked_Integer x,
-					const Checked_Integer y);
+  Parma_Polyhedra_Library::operator> <T>(const Checked_Integer<T> x,
+					const Checked_Integer<T> y);
   friend bool
-  Parma_Polyhedra_Library::operator<=<>(const Checked_Integer x,
-					const Checked_Integer y);
+  Parma_Polyhedra_Library::operator<=<T>(const Checked_Integer<T> x,
+					const Checked_Integer<T> y);
   friend bool
-  Parma_Polyhedra_Library::operator< <>(const Checked_Integer x,
-					const Checked_Integer y);
+  Parma_Polyhedra_Library::operator< <T>(const Checked_Integer<T> x,
+					const Checked_Integer<T> y);
 
   friend int
-  Parma_Polyhedra_Library::sgn<>(const Checked_Integer x);
+  Parma_Polyhedra_Library::sgn<T>(const Checked_Integer<T> x);
   friend int
-  Parma_Polyhedra_Library::cmp<>(const Checked_Integer x,
-				 const Checked_Integer y);
+  Parma_Polyhedra_Library::cmp<T>(const Checked_Integer<T> x,
+				 const Checked_Integer<T> y);
 
   friend void
-  Parma_Polyhedra_Library::negate<>(Checked_Integer& x);
+  Parma_Polyhedra_Library::negate<T>(Checked_Integer<T>& x);
 
   friend void
-  Parma_Polyhedra_Library::gcd_assign<>(Checked_Integer<T>& x,
+  Parma_Polyhedra_Library::gcd_assign<T>(Checked_Integer<T>& x,
 					const Checked_Integer<T> y);
   friend void
-  Parma_Polyhedra_Library::gcd_assign<>(Checked_Integer<T>& x,
+  Parma_Polyhedra_Library::gcd_assign<T>(Checked_Integer<T>& x,
 					const Checked_Integer<T> y,
 					const Checked_Integer<T> z);
   friend void
-  Parma_Polyhedra_Library::lcm_assign<>(Checked_Integer<T>& x,
+  Parma_Polyhedra_Library::lcm_assign<T>(Checked_Integer<T>& x,
 					const Checked_Integer<T> y);
   friend void
-  Parma_Polyhedra_Library::lcm_assign<>(Checked_Integer<T>& x,
+  Parma_Polyhedra_Library::lcm_assign<T>(Checked_Integer<T>& x,
 					const Checked_Integer<T> y,
 					const Checked_Integer<T> z);
   friend void
-  Parma_Polyhedra_Library::exact_div_assign<>(Checked_Integer<T>& x,
+  Parma_Polyhedra_Library::exact_div_assign<T>(Checked_Integer<T>& x,
 					      const Checked_Integer<T> y);
   friend void
-  Parma_Polyhedra_Library::exact_div_assign<>(Checked_Integer<T>& x,
+  Parma_Polyhedra_Library::exact_div_assign<T>(Checked_Integer<T>& x,
 					      const Checked_Integer<T> y,
 					      const Checked_Integer<T> z);
   friend void
-  Parma_Polyhedra_Library::sqrt_assign<>(Checked_Integer<T>& x);
+  Parma_Polyhedra_Library::sqrt_assign<T>(Checked_Integer<T>& x);
 
   friend void
-  Parma_Polyhedra_Library::sqrt_assign<>(Checked_Integer<T>& x,
+  Parma_Polyhedra_Library::sqrt_assign<T>(Checked_Integer<T>& x,
 					 const Checked_Integer<T> y);
 
   friend std::ostream&
-  Parma_Polyhedra_Library::operator<< <>(std::ostream& os,
+  Parma_Polyhedra_Library::operator<< <T>(std::ostream& os,
 					 const Checked_Integer<T> x);
   friend std::istream&
-  Parma_Polyhedra_Library::operator>> <>(std::istream& is,
+  Parma_Polyhedra_Library::operator>> <T>(std::istream& is,
 					 Checked_Integer<T>& x);
 
 public:
