@@ -43,13 +43,13 @@ smm.clpq \
 sumto.clpq \
 tak.clpq
 
-EXTRA_DIST = ppl_sicstus.pl clpq.pl clpq2.pl check_script expected \
+EXTRA_DIST = ppl_sicstus.pl sp_clpq.pl check_script expected \
 $(CLPQ_TESTS)
 
 if HAVE_SICSTUS_PROLOG
 check-local: pplsp check_script expected
-	for k in $(CLPQ_TESTS); do cp -f $(srcdir)/$$k .; done
-	./pplsp -l $(srcdir)/clpq.pl <$(srcdir)/check_script >obtained
+	for k in $(CLPQ_TESTS); do cp -f $(srcdir)/../$$k .; done
+	./pplsp -l $(srcdir)/sp_clpq.pl --goal "main." <$(srcdir)/check_script >obtained
 	diff -q --ignore-all-space $(srcdir)/expected obtained
 
 pplsp: ppl_sicstus.s.o $(top_builddir)/src/libppl.la

@@ -23,10 +23,6 @@
 % For the most up-to-date information see the Parma Polyhedra Library
 % site: http://www.cs.unipr.it/ppl/ .
 
-:- ensure_loaded(ppl_sicstus).
-
-:- set_prolog_flag(language, iso).  % FIXME: this is not ISO Prolog
-
 % Object-level clauses are stored as user_clause(Head, Body) facts.
 :- dynamic user_clause/2.
 
@@ -783,8 +779,7 @@ POSSIBILITY OF SUCH DAMAGES.\n').
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%% Startup %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
-:-  set_prolog_flag(language, iso),  % FIXME: this is not ISO Prolog
-    nofileerrors,                    % FIXME: this is not ISO Prolog
+common_main :-
     write('\
 Copyright (C) 2001, 2002 Roberto Bagnara <bagnara@cs.unipr.it>\n\
 this program is free software, covered by the GNU General Public License,\n\
@@ -794,4 +789,3 @@ Type "copying" to see the conditions.\n\
 There is ABSOLUTELY NO WARRANTY for this program.\n\
 Type "warranty" for details.\n'),
   main_loop.
-
