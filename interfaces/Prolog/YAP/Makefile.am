@@ -28,7 +28,7 @@ VPATH = @srcdir@
 
 SUBDIRS =
 
-EXTRA_DIST = ppl_yap.pl yap_clpq.pl yap_clpq2.pl
+EXTRA_DIST = ppl_yap.pl yap_clpq.pl yap_clpq2.pl yap_pl_check.pl
 
 if HAVE_YAP_PROLOG
 
