@@ -752,8 +752,8 @@ PPL::Polyhedron::convex_hull_assign_lazy(const Polyhedron& y) {
   \param add_dim   The number of dimensions to add.
 
   Adds new dimensions to the Polyhedron modifying the matrices.
-  This function is invoked only by <CODE>add_dimension_and_embed()</CODE>
-  and <CODE>add_dimension_and_project()</CODE> passing the matrix of
+  This function is invoked only by <CODE>add_dimensions_and_embed()</CODE>
+  and <CODE>add_dimensions_and_project()</CODE> passing the matrix of
   constraints and that of generators (and the corresponding saturation
   matrices) in different order (see those methods for details).
   Also, this method is invoked only when the polyhedron has at
@@ -813,11 +813,12 @@ PPL::Polyhedron::add_dimensions_and_embed(size_t dim) {
   }
 
   if (space_dimension() == 0) {
-    // We create an identity matrix having dim+1 rows:
+    // We create a specular identity matrix having dim+1 rows:
     // the last row, which has a 1 in correspondence of
     // the inhomogeneous term, corresponds to the origin of the space;
     // all the other rows are the lines corresponding to the Cartesian axes.
-    // This system of generators corresponds to the universe polyhedron.
+    // This system of generators corresponds to the universe polyhedron
+    // and is minimal.
     gen_sys.add_rows_and_columns(dim + 1);
     set_generators_minimized();
     // The system of constraints that describes the universe polyhedron 
@@ -833,7 +834,7 @@ PPL::Polyhedron::add_dimensions_and_embed(size_t dim) {
   // corresponding to the vectors of the canonical basis
   // for the added dimensions. That is, for each new dimension `x[k]'
   // we add the line having that direction. This is done by invoking
-  // the function add_dimension() giving the matrix of generators
+  // the function add_dimensions() giving the matrix of generators
   // as the second argument.
   else if (constraints_are_up_to_date() && generators_are_up_to_date()) {
     // sat_c is necessary in add_dimensions(...).
@@ -883,13 +884,16 @@ PPL::Polyhedron::add_dimensions_and_project(size_t dim) {
   }
 
   if (space_dimension() == 0) {
-    // We must create also the column (and the row, since we add a square
-    // matrix) of the inhomogeneous term.
+    // We create a specular identity matrix having dim+1 rows.
+    // The last row corresponds to the positivity constraint
+    // and is immediately erased to achieve minimality.
+    // All the other rows are the constraints x[k] = 0 defining
+    // the polyhedron given by the origin of the space.
     con_sys.add_rows_and_columns(dim + 1);
     con_sys.erase_to_end(con_sys.num_rows() - 1);
     set_constraints_minimized();
-    // The system of generator that corresponds to this system 
-    // of constraints has only the origin as vertex.
+    // The system of generator for this polyhedron has only
+    // the origin as vertex.
     gen_sys.resize_no_copy(1, dim + 1);
     gen_sys[0][0] = 1;
     gen_sys[0].set_is_ray_or_vertex();
@@ -900,7 +904,7 @@ PPL::Polyhedron::add_dimensions_and_project(size_t dim) {
   // In contrast, in the matrix of constraints, new rows are needed
   // in order to avoid embedding the old polyhedron in the new space.
   // Thus, for each new dimensions `x[k]', we add the constraint
-  // x[k] = 0; this is done by invoking the function add_dimension()
+  // x[k] = 0; this is done by invoking the function add_dimensions()
   // giving the matrix of constraints as the second argument.
   else if (constraints_are_up_to_date() && generators_are_up_to_date()) {
     // sat_g is necessary in add_dimensions(...).
@@ -931,21 +935,36 @@ PPL::Polyhedron::add_dimensions_and_project(size_t dim) {
 void
 PPL::Polyhedron::remove_dimensions(const std::set<Variable>&
 				   to_be_removed) {
-  // Removing dimensions from the empty polyhedron
-  // or from the zero-dimensional polyhedron is a no-op.
-  // So is the removal of no dimensions from any polyhedron.
-  if (is_empty() || (space_dimension() == 0) || to_be_removed.empty())
+  // The removal of no dimensions from any polyhedron is a no-op.
+  // Note that this case also captures the only legal removal of
+  // dimensions from a polyhedron in a 0-dim space.
+  if (to_be_removed.empty())
     return;
 
-  // FIXME: what happens if is_empty() returns false,
-  // but the polyhedron is indeed empty (e.g., inconsistent con_sys) ?
-  // If we compute an empty gen_sys, how do we move columns ?
+  // Checking for dimension-compatibility.
+  if (to_be_removed.max().id >= space_dimension())
+    throw std::invalid_argument("void PPL::Polyhedron::remove_dimensions"
+				"(vs): dimension-incompatible");
+
+  // Removing dimensions from the empty polyhedron just updates
+  // the space_dim member.
+  if (is_empty()) {
+    space_dim -= to_be_removed.size();
+    return;
+  }
 
   if (!generators_are_up_to_date())
     update_generators();
 
-  // Columns to be preserved are moved, and their relative
-  // order is kept.
+  // Emptyness could have been just detected.
+  if (is_empty()) {
+    space_dim -= to_be_removed.size();
+    return;
+  }
+
+  // Columns to be preserved are moved, and their relative order is kept.
+  // The correctness of the following cycle relies on the fact that
+  // we iterate on variables considering first those having higher dimension. 
   size_t nrows = gen_sys.num_rows();
   size_t ncols = gen_sys.num_columns();
   for (std::set<Variable>::const_iterator i = to_be_removed.begin(),
@@ -956,7 +975,7 @@ PPL::Polyhedron::remove_dimensions(const std::set<Variable>&
     --ncols;
     for (size_t r = nrows; r-- > 0; )
       // For each row of the matrix, the columns to be removed are
-      // moved to the last columns because the the function resize()
+      // moved to the last columns because then the function resize()
       // method will exclude these columns.
       std::swap(gen_sys[r][ncols], gen_sys[r][c]);
   }
@@ -973,8 +992,8 @@ PPL::Polyhedron::remove_dimensions(const std::set<Variable>&
     // FIXME: is this flag still needed ?
     set_zero_dim();
     space_dim = 0;
-    // A zero-dimensional polyhedron must have `con_sys'
-    // and `gen_sys' with no rows.
+    // A zero-dimensional polyhedron must have
+    // both `con_sys' and `gen_sys' with no rows.
     gen_sys.clear();
     con_sys.clear();
   }
