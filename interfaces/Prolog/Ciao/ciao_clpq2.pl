@@ -48,7 +48,7 @@ site: http://www.cs.unipr.it/ppl/ . */
 
 eat_eol.
 
-:- include('../clpq2.pl').
+:- include('clpq2.pl').
 
 main :-
     ppl_initialize,
