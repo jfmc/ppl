@@ -64,7 +64,8 @@ o  In conformance with the C++ standard [17.4.3.1.2], in all the
    identifiers exported by the C interface, any occurrence
    of "__" (double underscore) has been replaced by "_" (underscore).
 
-o  Added a parameter to Polyhedron::shrink_bounding_box()...
+o  Added a parameter to Polyhedron::shrink_bounding_box(): this specifies
+   the complexity class of the algorithm to be used.
 
 o  All the input/output operators have been confined into namespace
    Parma_Polyhedra_Library::IO_Operators.  This way they do not conflict
