@@ -128,8 +128,8 @@ check-local: ciao_clpq$(EXEEXT) ../check_script ../expected ciao_clpq2$(EXEEXT) 
 MOSTLYCLEANFILES = \
 fake_main \
 *.itf *.po *.c *.so \
-ciao_clpq ciao_clpq2 \
-obtained obtained2 \
+ciao_clpq ciao_clpq2 ciao_pl_check \
+obtained obtained2 obtained3\
 $(CLPQ_TESTS)
 
 endif

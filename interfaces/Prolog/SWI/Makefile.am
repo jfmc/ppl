@@ -111,6 +111,10 @@ check-local: pl_clpq ../check_script ../expected pl_clpq2 ../check_script2 ../ex
 	fi
 	diff -q --ignore-all-space $(srcdir)/../expected3 obtained3
 
-MOSTLYCLEANFILES = pl_clpq pl_clpq2 $(CLPQ_TESTS) obtained obtained2
+MOSTLYCLEANFILES = \
+pl_clpq pl_clpq2 \
+obtained obtained2 obtained3 \
+$(CLPQ_TESTS) \
+check_script3
 
 endif

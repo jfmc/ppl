@@ -113,6 +113,6 @@ check-local: ppl_sicstus ../check_script ../expected ../check_script2 ../expecte
 MOSTLYCLEANFILES = \
 ppl_sicstus.s.o ppl_sicstus.so \
 $(CLPQ_TESTS) \
-obtained obtained2
+obtained obtained2 obtained3
 
 endif
