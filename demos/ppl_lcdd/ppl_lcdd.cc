@@ -726,41 +726,19 @@ main(int argc, char* argv[]) try {
 
   PPL::C_Polyhedron ph;
   Representation rep = read_polyhedron(input(), ph);
-  //write_polyhedron(std::cout, ph, rep);
 
-  enum Command { None, H_to_V, V_to_H, Project };
+  enum Command { None, H_to_V, V_to_H };
   Command command = None;
 
-  // Read commands, if any.
+  // Warn for misplaced linearity commands, and ignore all what follows.
   std::string s;
   while (guarded_read(input(), s)) {
     if (s == "linearity" || s == "equality" || s == "partial_enum")
       error("the `linearity' command must occur before `begin'");
-    else if (s == "project") {
-      command = Project;
-      std::set<unsigned> indexes;
-      read_indexes_set(input(), indexes, "project");
-      if (verbose) {
-	std::cerr << "Project: ";
-	for (std::set<unsigned>::const_iterator j = indexes.begin(),
-	       indexes_end = indexes.end(); j != indexes_end; ++j)
-	  std::cerr << *j << " ";
-	std::cerr << std::endl;
-      }
-      PPL::Variables_Set vs;
-      for (std::set<unsigned>::const_iterator j = indexes.begin(),
-	     indexes_end = indexes.end(); j != indexes_end; ++j)
-	vs.insert(PPL::Variable(*j - 1));
-      ph.remove_dimensions(vs);
-      write_polyhedron(output(), ph, H);
-      goto commands_done;
-    }
-    else
-      warning("ignoring command `%s'", s.c_str());
     input().ignore(std::numeric_limits<std::streamsize>::max(), '\n');
   }
 
-  // If we are still here, we just make a conversion.
+  // Make the required conversion.
   // Start the timer, if requested to do so.
   if (print_timings)
     start_clock();
@@ -788,7 +766,6 @@ main(int argc, char* argv[]) try {
   else
     write_polyhedron(output(), ph, V);
 
- commands_done:
   // Check the result, if requested to do so.
   if (check_file_name) {
     set_input(check_file_name);
@@ -797,16 +774,6 @@ main(int argc, char* argv[]) try {
     Representation e_rep = read_polyhedron(input(), e_ph);
 
     switch (command) {
-    case Project:
-      {
-	if (ph != e_ph) {
-	  if (verbose)
-	    std::cerr << "Check failed: polyhedra differ"
-		      << std::endl;
-	  return 1;
-	}
-	break;
-      }
     case H_to_V:
       {
 	if (e_rep == H)
