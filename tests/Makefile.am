@@ -67,6 +67,7 @@ ORIGINAL_TESTS = \
         empty1 \
 	exceptions1 exceptions2 \
 	generalizedaffineimage1 generalizedaffineimage2 \
+	generalizedaffineimage3 \
 	generators1 generators2 generators3 generators4 generators5 \
 	h79widening1 h79widening2 h79widening3 h79widening4 h79widening5 \
 	inclusion1 inclusion2 \
@@ -261,6 +262,7 @@ exceptions2_SOURCES = exceptions2.cc
 
 generalizedaffineimage1_SOURCES = generalizedaffineimage1.cc
 generalizedaffineimage2_SOURCES = generalizedaffineimage2.cc
+generalizedaffineimage3_SOURCES = generalizedaffineimage3.cc
 
 generators1_SOURCES = generators1.cc
 generators2_SOURCES = generators2.cc
