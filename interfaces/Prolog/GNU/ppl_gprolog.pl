@@ -44,6 +44,9 @@ site: http://www.cs.unipr.it/ppl/ . */
 :- foreign(ppl_Polyhedron_poly_difference_assign(+term, +term)).
 :- foreign(ppl_Polyhedron_time_elapse_assign(+term, +term)).
 :- foreign(ppl_Polyhedron_BHRZ03_widening_assign(+term, +term)).
+:- foreign(ppl_Polyhedron_BHRZ03_widening_assign_with_tokens(+term,
+							     +term,
+							     +term)).
 :- foreign(ppl_Polyhedron_limited_BHRZ03_extrapolation_assign(+term,
 							      +term,
 							      +term)).
