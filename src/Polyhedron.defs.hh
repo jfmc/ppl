@@ -498,6 +498,8 @@ public:
   //! Removes the specified dimensions.
   //! \param to_be_removed The set of variables to remove.
   void remove_dimensions(const std::set<Variable>& to_be_removed);
+  //! FIXME: this must be commented.
+  void remove_higher_dimensions(size_t new_dimension);
   //! Adds the specified constraints and computes a new polyhedron.
   //! \param  cs            The constraints that will be added to the
   //!                       current system of constraints. This parameter

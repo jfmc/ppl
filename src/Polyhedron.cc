@@ -967,6 +967,18 @@ PPL::Polyhedron::add_dimensions_and_project(size_t dim) {
   assert(OK());
 }
 
+static void
+throw_dimension_incompatible(const char* method,
+			     const PPL::Polyhedron& x,
+			     size_t requested_dimension) {
+  std::string what;
+  std::ostringstream s(what);
+  s << method << ":" << std::endl
+    << "this->space_dimension() == " << x.space_dimension()
+    << ", requested dimension == " << requested_dimension;
+  throw std::invalid_argument(s.str());
+}
+
 /*!
   Removes the dimensions corresponding to the elements of
   the set \p dims_to_remove.
@@ -981,9 +993,10 @@ PPL::Polyhedron::remove_dimensions(const std::set<Variable>& to_be_removed) {
 
   // Dimension-compatibility check: the variable having
   // maximum cardinality is the one occurring last in the set.
-  if (to_be_removed.rbegin()->id() >= space_dimension())
-    throw std::invalid_argument("void PPL::Polyhedron::remove_dimensions"
-				"(vs): dimension-incompatible");
+  unsigned int max_dim_to_be_removed = to_be_removed.rbegin()->id();
+  if (max_dim_to_be_removed >= space_dimension())
+    throw_dimension_incompatible("void PPL::Polyhedron::remove_dimensions(vs)",
+				 *this, max_dim_to_be_removed);
 
   // Removing dimensions from the empty polyhedron
   // just updates the space_dim member.
@@ -1040,7 +1053,7 @@ PPL::Polyhedron::remove_dimensions(const std::set<Variable>& to_be_removed) {
     space_dim = gen_sys.num_columns() - 1;
   else {
     // If less than 2 columns are left,
-    // then polyhedron is the zero-dimension universe.
+    // the resulting polyhedron is the zero-dimension universe.
     space_dim = 0;
     set_zero_dim_univ();
     // A zero-dimension universe polyhedron must have
@@ -1048,7 +1061,63 @@ PPL::Polyhedron::remove_dimensions(const std::set<Variable>& to_be_removed) {
     gen_sys.clear();
     con_sys.clear();
   }
+}
 
+/*!
+  FIXME: a long description must also be provided.
+*/
+void
+PPL::Polyhedron::remove_higher_dimensions(size_t new_dimension) {
+  // The removal of no dimensions from any polyhedron is a no-op.
+  // Note that this case also captures the only legal removal of
+  // dimensions from a polyhedron in a 0-dim space.
+  if (new_dimension == space_dimension())
+    return;
+
+  // Dimension-compatibility check: the variable having
+  // maximum cardinality is the one occurring last in the set.
+  if (new_dimension > space_dimension())
+    throw_dimension_incompatible("void PPL::Polyhedron::"
+				 "remove_higher_dimensions(nd)",
+				 *this, new_dimension);
+
+  // Removing dimensions from the empty polyhedron
+  // just updates the space_dim member.
+  if (is_empty()) {
+    space_dim = new_dimension;
+    con_sys.clear();
+    return;
+  }
+
+  if (!generators_are_up_to_date())
+    update_generators();
+
+  // Emptyness could have been just detected.
+  if (is_empty()) {
+    space_dim = new_dimension;
+    con_sys.clear();
+    return;
+  }
+
+  // The number of remaining columns is new_dimension+1.
+  gen_sys.resize(gen_sys.num_rows(), new_dimension+1);
+
+  // Constraints are no longer up-to-date.
+  clear_constraints_up_to_date();
+
+  // Updating the space dimension.
+  if (gen_sys.num_columns() > 1)
+    space_dim = gen_sys.num_columns() - 1;
+  else {
+    // If less than 2 columns are left,
+    // the resulting polyhedron is the zero-dimension universe.
+    space_dim = 0;
+    set_zero_dim_univ();
+    // A zero-dimension universe polyhedron must have
+    // both `con_sys' and `gen_sys' with no rows.
+    gen_sys.clear();
+    con_sys.clear();
+  }
 }
 
 static void
