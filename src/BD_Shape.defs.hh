@@ -267,7 +267,7 @@ void swap(Parma_Polyhedra_Library::BD_Shape<T>& x,
               = c\downarrow; \\
               ax_i - bx_j \geq c\downarrow \text{ and } ax_i - bx_j 
               \leq c\uparrow,  & \text{otherwise}. 
-            \end{casesxs} 
+            \end{cases} 
           \f]
   with \f$a, b \in \{0, 1\}\f$, where \f$\uparrow\f$ is used to indicate
   an approximation from above and \f$\downarrow\f$ 
