@@ -140,10 +140,11 @@ main() TRY {
   bool converged = false;
   for (unsigned n = 1; !converged && n <= 100; ++n) {
     PSet U = T;
+    PSet Sn = S(n);
 #if NOISY
-    cout << "S" << n << " = " << S(1) << endl;
+    cout << "S" << n << " = " << Sn << endl;
 #endif
-    T.H79_widening_assign(S(n), 3);
+    T.H79_widening_assign(Sn, 3);
 #if NOISY
     cout << "T" << n << " = " << T << endl;
 #endif
