@@ -1131,7 +1131,7 @@ that their results cannot be worse than the smallest
 The PPL provides the finite powerset construction; this takes a
 pre-existing domain and upgrades it to one that can represent
 disjunctive information (by using a <EM>finite</EM> number of
-disjucts).  The construction follows the approach described in
+disjuncts).  The construction follows the approach described in
 \ref Bag98 "[Bag98]", also summarised in \ref BHZ04 "[BHZ04]" where there
 is an account of generic widenings for the powerset domain (some of
 which are supported in the instantiation of this construction by the
@@ -1240,7 +1240,7 @@ NNC polyhedra \f$\Pset_n\f$.
 In addition to the operations described for the generic powerset
 domain in Section \ref ps_operations, we provide some operations that
 are specific to this instantiation.  Of these, most correspond to the
-application of the equivalent operation on each of the NNC polyhedron
+application of the equivalent operation on each of the NNC polyhedra
 that are in the given set. Here we just describe those operations that
 are particular to the polyhedra powerset domain.
 
@@ -1341,7 +1341,7 @@ In earlier versions of the library, a number of operators were introduced
 in two flavors: a <EM>lazy</EM> version and an <EM>eager</EM> version,
 the latter having the operator name ending with <CODE>_and_minimize</CODE>.
 In principle, only the lazy versions should be used.
-The eager versions were added to help a knowledgeble user obtain better
+The eager versions were added to help a knowledgeable user obtain better
 performance in particular cases. Basically, by invoking the eager version
 of an operator, the user is trading laziness to better exploit the
 incrementality of the inner library computations.
@@ -1356,9 +1356,9 @@ For instance, if you have to compute the intersection of several
 polyhedra and you strongly suspect that the result will become empty
 after a few of these intersections, then you may obtain a better
 performance by calling the eager version of the intersection operator,
-since the minimization process also enforces an emptyness check.
+since the minimization process also enforces an emptiness check.
 Note anyway that the same effect can be obtained by interleaving
-the calls of the lazy operator with explicit emptyness checks.
+the calls of the lazy operator with explicit emptiness checks.
 
 <B>On Object-Orientation and Polymorphism: A Disclaimer</B>
 
@@ -1405,8 +1405,8 @@ const Generator& p = *i;
 const Constraint_System& cs = ph.constraints();
 // Both the const iterator `i' and the reference `p'
 // are no longer valid at this point.
-cout << p.divisor() << endl;  // Undefinded behavior!
-++i;                          // Undefinded behavior!
+cout << p.divisor() << endl;  // Undefined behavior!
+++i;                          // Undefined behavior!
 \endcode
 As a rule of thumb, if a polyhedron plays any role in a computation
 (even as a const parameter), then any previously computed reference

@@ -182,7 +182,7 @@ bool operator!=(const Polyhedron& x, const Polyhedron& y);
 
     \par Example 3
     The following code builds the polyhedron corresponding to
-    an half-plane by adding a single constraint
+    a half-plane by adding a single constraint
     to the universe polyhedron in \f$\Rset^2\f$:
     \code
   C_Polyhedron ph(2);
