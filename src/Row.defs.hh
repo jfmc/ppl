@@ -38,7 +38,7 @@ site: http://www.cs.unipr.it/ppl/ . */
 #ifdef PPL_DOXYGEN_INCLUDE_IMPLEMENTATION_DETAILS
 /*! \ingroup PPL_defines
   \brief
-  Enables extra debugging infomration for class Row.
+  Enables extra debugging information for class Row.
 
   When <CODE>EXTRA_ROW_DEBUG</CODE> evaluates to <CODE>true</CODE>,
   each instance of the class Row carries its own capacity; this enables
@@ -351,7 +351,7 @@ private:
   //! Returns the capacity of the row (only available during debugging).
   dimension_type capacity() const;
 
-#endif // defined(EXTRA_ROW_DEBUG)
+#endif // EXTRA_ROW_DEBUG
 };
 
 namespace Parma_Polyhedra_Library {
