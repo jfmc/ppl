@@ -7,6 +7,64 @@
 
 namespace PPL = Parma_Polyhedra_Library;
 
+#ifndef NDEBUG
+#include <set>
+
+class PolyTracker {
+public:
+  void insert(const void* pp);
+  void check(const void* pp);
+  void remove(const void* pp);
+
+  PolyTracker();
+  ~PolyTracker();
+
+private:
+  typedef std::set<const void*, less<const void*> > Set;
+  Set s;
+};
+
+PolyTracker::PolyTracker() {
+}
+
+PolyTracker::~PolyTracker() {
+  int n = s.size();
+  std::cerr << n << " polyhedra leaked!" << std::endl;
+}
+
+void
+PolyTracker::insert(const void* pp) {
+  pair<Set::iterator, bool> stat = s.insert(pp);
+  if (!stat.second)
+    abort();
+}
+
+void
+PolyTracker::check(const void* pp) {
+  if (s.find(pp) == s.end())
+    abort();
+}
+
+void
+PolyTracker::remove(const void* pp) {
+  if (s.erase(pp) != 1)
+    abort();
+}
+
+static PolyTracker poly_tracker;
+
+#define REGISTER(x) poly_tracker.insert(x)
+#define UNREGISTER(x) poly_tracker.remove(x)
+#define CHECK(x) poly_tracker.check(x)
+
+#else
+
+#define REGISTER(x)
+#define UNREGISTER(x)
+#define CHECK(x)
+
+#endif
+
 class internal_exception {
 private:
   SP_term_ref tr;
@@ -277,7 +335,9 @@ get_size_t(long n) {
 extern "C" void*
 ppl_new_polyhedron(long num_dimensions) {
   try {
-    return new PPL::Polyhedron(get_size_t(num_dimensions));
+    PPL::Polyhedron* ret = new PPL::Polyhedron(get_size_t(num_dimensions));
+    REGISTER(ret);
+    return ret;
   }
   CATCH_ALL;
   return 0;
@@ -286,8 +346,10 @@ ppl_new_polyhedron(long num_dimensions) {
 extern "C" void*
 ppl_new_empty_polyhedron(long num_dimensions) {
   try {
-    return new PPL::Polyhedron(get_size_t(num_dimensions),
-			       PPL::Polyhedron::EMPTY);
+    PPL::Polyhedron* ret = new PPL::Polyhedron(get_size_t(num_dimensions),
+					       PPL::Polyhedron::EMPTY);
+    REGISTER(ret);
+    return ret;
   }
   CATCH_ALL;
   return 0;
@@ -296,7 +358,11 @@ ppl_new_empty_polyhedron(long num_dimensions) {
 extern "C" void*
 ppl_copy_polyhedron(const void* pp) {
   try {
-    return new PPL::Polyhedron(*static_cast<const PPL::Polyhedron*>(pp));
+    CHECK(pp);
+    PPL::Polyhedron* ret
+      = new PPL::Polyhedron(*static_cast<const PPL::Polyhedron*>(pp));
+    REGISTER(ret);
+    return ret;
   }
   CATCH_ALL;
   return 0;
@@ -307,6 +373,7 @@ ppl_delete_polyhedron(void* pp) {
   // If destructors throw it is a catastrophy.
   // Anyway...
   try {
+    UNREGISTER(pp);
     delete static_cast<PPL::Polyhedron*>(pp);
   }
   CATCH_PPL;
@@ -314,6 +381,7 @@ ppl_delete_polyhedron(void* pp) {
 
 extern "C" long
 ppl_space_dimension(const void* pp) {
+  CHECK(pp);
   // Polyhedron::space_dimension() cannot throw.
   return static_cast<const PPL::Polyhedron*>(pp)->space_dimension();
 }
@@ -442,6 +510,7 @@ build_constraint(SP_term_ref t) {
 extern "C" void
 ppl_insert_constraint(void* pp, SP_term_ref t) {
   try {
+    CHECK(pp);
     static_cast<PPL::Polyhedron*>(pp)->insert(build_constraint(t));
   }
   CATCH_ALL;
@@ -450,6 +519,7 @@ ppl_insert_constraint(void* pp, SP_term_ref t) {
 extern "C" long
 ppl_add_constraints_and_minimize(void* pp, SP_term_ref constraints_list) {
   try {
+    CHECK(pp);
     PPL::ConSys cs;
     SP_term_ref c = SP_new_term_ref();
     while (SP_is_list(constraints_list)) {
@@ -497,6 +567,7 @@ build_generator(SP_term_ref t) {
 extern "C" void
 ppl_insert_generator(void* pp, SP_term_ref t) {
   try {
+    CHECK(pp);
     static_cast<PPL::Polyhedron*>(pp)->insert(build_generator(t));
   }
   CATCH_ALL;
@@ -505,6 +576,7 @@ ppl_insert_generator(void* pp, SP_term_ref t) {
 extern "C" long
 ppl_check_empty(const void* pp) {
   try {
+    CHECK(pp);
     return static_cast<const PPL::Polyhedron*>(pp)->check_empty() ? 1 : 0;
   }
   CATCH_ALL;
@@ -514,6 +586,8 @@ ppl_check_empty(const void* pp) {
 extern "C" void
 ppl_intersection_assign(void* pp_lhs, const void* pp_rhs) {
   try {
+    CHECK(pp_lhs);
+    CHECK(pp_rhs);
     PPL::Polyhedron& x = *static_cast<PPL::Polyhedron*>(pp_lhs);
     const PPL::Polyhedron& y = *static_cast<const PPL::Polyhedron*>(pp_rhs);
     x.intersection_assign(y);
@@ -524,6 +598,8 @@ ppl_intersection_assign(void* pp_lhs, const void* pp_rhs) {
 extern "C" void
 ppl_convex_hull_assign(void* pp_lhs, const void* pp_rhs) {
   try {
+    CHECK(pp_lhs);
+    CHECK(pp_rhs);
     PPL::Polyhedron& x = *static_cast<PPL::Polyhedron*>(pp_lhs);
     const PPL::Polyhedron& y = *static_cast<const PPL::Polyhedron*>(pp_rhs);
     x.convex_hull_assign_and_minimize(y);
@@ -534,6 +610,8 @@ ppl_convex_hull_assign(void* pp_lhs, const void* pp_rhs) {
 extern "C" void
 ppl_widening_assign(void* pp_lhs, const void* pp_rhs) {
   try {
+    CHECK(pp_lhs);
+    CHECK(pp_rhs);
     static_cast<PPL::Polyhedron*>(pp_lhs)
       ->widening_assign(*static_cast<const PPL::Polyhedron*>(pp_rhs));
   }
@@ -589,6 +667,7 @@ constraint_term(const PPL::Constraint& c) {
 extern "C" void
 ppl_get_constraints(const void* pp, SP_term_ref constraints_list) {
   try {
+    CHECK(pp);
     SP_term_ref tail = SP_new_term_ref();
     SP_put_atom(tail, a_nil);
 
@@ -640,6 +719,7 @@ generator_term(const PPL::Generator& g) {
 extern "C" void
 ppl_get_generators(const void* pp, SP_term_ref generators_list) {
   try {
+    CHECK(pp);
     SP_term_ref tail = SP_new_term_ref();
     SP_put_atom(tail, a_nil);
 
@@ -677,6 +757,7 @@ get_variable(SP_term_ref t) {
 extern "C" void
 ppl_remove_dimensions(void* pp, SP_term_ref variables_list) {
   try {
+    CHECK(pp);
     std::set<PPL::Variable> dead_variables;
     SP_term_ref v = SP_new_term_ref();
     while (SP_is_list(variables_list)) {
@@ -692,6 +773,7 @@ ppl_remove_dimensions(void* pp, SP_term_ref variables_list) {
 extern "C" void
 ppl_remove_higher_dimensions(void* pp, long new_dimension) {
   try {
+    CHECK(pp);
     static_cast<PPL::Polyhedron*>(pp)
       ->remove_higher_dimensions(get_size_t(new_dimension));
   }
@@ -702,6 +784,7 @@ ppl_remove_higher_dimensions(void* pp, long new_dimension) {
 extern "C" void
 ppl_add_dimensions_and_project(void* pp, long num_new_dimensions) {
   try {
+    CHECK(pp);
     static_cast<PPL::Polyhedron*>(pp)
       ->add_dimensions_and_project(get_size_t(num_new_dimensions));
   }
@@ -711,6 +794,7 @@ ppl_add_dimensions_and_project(void* pp, long num_new_dimensions) {
 extern "C" void
 ppl_add_dimensions_and_embed(void* pp, long num_new_dimensions) {
   try {
+    CHECK(pp);
     static_cast<PPL::Polyhedron*>(pp)
       ->add_dimensions_and_embed(get_size_t(num_new_dimensions));
   }
