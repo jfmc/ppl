@@ -564,7 +564,7 @@ under \f$\phi\f$ of the set \f$S \sseq \Rset^n\f$;
 similarly, we denote by \f$\phi^{-1}(S') \sseq \Rset^n\f$
 the <EM>preimage</EM> under \f$\phi\f$ of \f$S' \sseq \Rset^m\f$,
 that is the largest set \f$S \sseq \Rset^n\f$ such that
-\f$\phi(S) = S'\f$.
+\f$\phi(S) \sseq S'\f$.
 
 Both \f$\Pset_n\f$ and \f$\CPset_n\f$ are closed under
 the application of any space-dimension preserving
