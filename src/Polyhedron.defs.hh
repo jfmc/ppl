@@ -300,11 +300,21 @@ public:
 
   //! Computes the widening between \p *this and \p y and 
   //! assigns the result to \p *this.
+  //! \param y           The polyhedron that <EM>must</EM> 
+  //!                    be contained in \p *this.
+  //! \exception std::invalid_argument \p *this and \p y do not have
+  //!                                  the same dimension.
   void widening_assign(const Polyhedron& y);
   //! Limits the widening between \p *this and \p y by \p constraints
   //! and assigns the result to \p *this.
+  //! \param y                 The polyhedron that <EM>must</EM> 
+  //!                          be contained in \p *this.
+  //! \param constraints       The system of constraints that limits
+  //!                          the widened polyhedron.
   //! \return       <CODE>true</CODE> if the resulting polyhedron is not
   //!               empty <CODE>false</CODE> otherwise.
+  //! \exception std::invalid_argument \p *this, \p y and \p constraints
+  //!                                  do not have the same dimension.
   bool limited_widening_assign(const Polyhedron& y, ConSys& constraints);
 
   //! Returns the system of constraints.
@@ -329,7 +339,11 @@ public:
   //!                      expression is assigned.
   //! \param expr          The affine expression.
   //! \param denominator   The denominator of the affine expression.
-  //!   \exception std::invalid_argument \p denominator is zero.
+  //! \exception std::invalid_argument \p denominator is zero or
+  //!                                  \p expr and \p *this have different
+  //!                                  dimension or
+  //!                                  \p var is not a variable of the
+  //!                                  polyhedron 
   void assign_variable(const Variable& var, 
 		       const LinExpression& expr,
 		       Integer& denominator);
@@ -338,7 +352,11 @@ public:
   //!                      assigned.
   //! \param expr          The affine expression.
   //! \param denominator   The denominator of the affine expression.
-  //! \exception std::invalid_argument \p denominator is zero.
+  //! \exception std::invalid_argument \p denominator is zero or
+  //!                                  \p expr and \p *this have different
+  //!                                  dimension or
+  //!                                  \p var is not a variable of the
+  //!                                  polyhedron 
   void substitute_variable(const Variable& var,
 			   const LinExpression& expr,
 			   Integer& denominator);

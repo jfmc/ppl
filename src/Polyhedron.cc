@@ -901,7 +901,7 @@ throw_different_dimensions(const char* method,
   std::ostringstream s(what);
   s << method << ":" << std::endl
     << "this->num_dimensions == " << x.num_dimensions()
-    << ", y->num_dimensions == " ;
+    << ", system->num_dimensions == " ;
   size_t y_num_columns = y.num_columns();
   if (y_num_columns == 0)
     s << y_num_columns;
@@ -1288,14 +1288,17 @@ PPL::Polyhedron::assign_variable(const Variable& var,
   if (denominator == 0)
     throw std::invalid_argument("void PPL::Polyhedron::assign_variable"
 				"(v, e, d) with d == 0");
-
   Polyhedron& x = *this;
   size_t num_columns = x.gen_sys.num_columns();
   size_t num_var = var.id() + 1;
-  assert(num_columns == expr.size());
+  if (num_columns != expr.size())
+    throw std::invalid_argument("PPL::Polyhedron::assign_variable"
+				"(v, e, d) with dim(expr) != dim(*this)");
   
   // Index of var must be in the range of the variables of generators.
-  assert(num_var < num_columns);
+  if (!(num_var < num_columns))
+    throw std::invalid_argument("PPL::Polyhedron::assign_variable(v, e, d)"
+				" with var not in *this");
   
   if (expr[num_var] != 0) {
     // The transformation is invertible.
@@ -1324,6 +1327,8 @@ PPL::Polyhedron::assign_variable(const Variable& var,
     x.clear_generators_minimized();
   }
 }
+
+
 
 /*!
   When considering constraints of a polyhedron, the affine transformation
@@ -1393,8 +1398,14 @@ PPL::Polyhedron::substitute_variable(const Variable& var,
   Polyhedron& x = *this;
   size_t num_columns = x.con_sys.num_columns();
   size_t num_var = var.id() + 1;
-  assert(num_columns == expr.size());
-  assert(num_var < num_columns);
+  if (num_columns != expr.size())
+    throw std::invalid_argument("PPL::Polyhedron::substitute_variable"
+				"(v, e, d) with dim(expr) != dim(*this)"); 
+  
+  // Index of var must be in the range of the variables of generators.
+  if (!(num_var < num_columns))
+    throw std::invalid_argument("PPL::Polyhedron::substitute_variable"
+				"(v, e, d) with var not in *this");
 
   // The transformation is invertible.
   if (expr[num_var] != 0) {
@@ -1497,9 +1508,7 @@ PPL::Polyhedron::includes(const Generator& g) {
 void
 PPL::Polyhedron::widening_assign(const Polyhedron& y) {
   Polyhedron& x = *this;
-  assert(!x.is_empty());
-  assert(!y.is_empty());
-
+  
 #ifndef NDEBUG
   {
     // We assume that y is contained or equal to x.
@@ -1508,7 +1517,6 @@ PPL::Polyhedron::widening_assign(const Polyhedron& y) {
     assert(y_copy <= x_copy);
   }
 #endif
-
 #if DLEVEL >= 1
   cout << endl << "On entry to x.widening_assign(y)" << endl
        << "=== x ===" << endl << x << endl
@@ -1523,14 +1531,22 @@ PPL::Polyhedron::widening_assign(const Polyhedron& y) {
     x.set_zero_dim();
     return;
   }
+  if (y.is_empty())
+    return;
+  if (x.is_empty())
+    return;
   // The polyhedrons must have the same dimensions if neither
   // `x' nor `y' is zero-dimensional.
-  assert(x.num_dimensions() == y.num_dimensions());
+  if (x.num_dimensions() != y.num_dimensions()) 
+    throw_different_dimensions("PPL::Polyhedron::widening_assign(y)",
+			       *this, y);
   // For this function, we need the minimal set of generators and  
   // the saturation matrix `sat_g' of the polyhedron `y'. To obtain
   // the saturation matrix, the minimal system of constraints and 
   // the minimal set of generators are necessary.
   y.minimize();
+  // After the minimize, a polyhedron can become empty if the system
+  // of constraints is unsatisfiable.
   // If the polyhedron `y' is empty, the widened polyhedron is `x'.
   if (y.is_empty())
     return;
@@ -1630,9 +1646,7 @@ bool
 PPL::Polyhedron::limited_widening_assign(const Polyhedron& y,
 					 ConSys& constraints) {
   Polyhedron& x = *this;
-  assert(!x.is_empty());
-  assert(!y.is_empty());
-  
+
 #ifndef NDEBUG
   {
     Polyhedron x_copy = x;
@@ -1648,7 +1662,11 @@ PPL::Polyhedron::limited_widening_assign(const Polyhedron& y,
        << "=== x ===" << endl << x << endl
        << "=== y ===" << endl << y << endl;
 #endif
-
+  if (y.is_empty())
+    return !(x.is_empty());
+  if (x.is_empty())
+    return false;
+  
   // For each x, 
   // x.limited_widening_assign(z,...) = z.limited_widening_assign(x,...) = z,
   // if z is a zero-dimensional polyhedron.  
@@ -1660,17 +1678,24 @@ PPL::Polyhedron::limited_widening_assign(const Polyhedron& y,
   }
   // The two polyhedrons and must have the same dimension, if neither
   // `x' nor `y' is zero-dimensional. 
-  assert(x.num_dimensions() == y.num_dimensions());
+  if (x.num_dimensions() != y.num_dimensions())
+    throw_different_dimensions("PPL::Polyhedron::limited_widening_assign(y,c)",
+			       *this, y);
   // \p constraints must be in the same space of the two polyhedrons:
   // this means that the number of variables of \p constraints
   // is equal to the dimension of the polyhedrons.
-  assert(x.num_dimensions() == constraints.num_columns() - 1);
+  if (x.num_dimensions() != constraints.num_columns() - 1)
+    throw_different_dimensions("PPL::Polyhedron::limited_widening_assign(y,c)",
+			       *this, constraints);
+  
   y.minimize();
   // This function needs that the generators of `x' are up-to-date,
   // because we use these to choose which constraints of the matrix 
   // \p constraints must be added to the resulting polyhedron. 
   if (!x.generators_are_up_to_date())
     x.update_generators();
+  // After the minimize, a polyhedron can become empty if the system
+  // of constraints is unsatisfiable.
   if (!y.is_empty()) {
     size_t con_nbrows = constraints.num_rows();
     size_t nbrows = 0;
