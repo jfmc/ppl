@@ -3215,7 +3215,7 @@ PPL::Polyhedron::is_topologically_closed() const {
       return true;
   // Here the polyhedron is not empty and
   // generators are weakly minimized.
-  return gen_sys.has_closure_points();
+  return !gen_sys.has_closure_points();
 }
 
 void
@@ -3246,9 +3246,10 @@ PPL::Polyhedron::topological_closure_assign() {
     }
     if (changed) {
       con_sys.erase_to_end(cs_rows);
-      // After changing the system of constraints, the generators
-      // are no longer up-to-date. The constraints preserve their
-      // minimization and sortedness.
+      // Constraints preserve minimization,
+      // but they may be no longer sorted.
+      con_sys.set_sorted(false);
+      // The generators are no longer up-to-date.
       clear_generators_up_to_date();
     }
   }
@@ -3264,11 +3265,11 @@ PPL::Polyhedron::topological_closure_assign() {
       }
     }
     if (changed) {
-      // After changing the system of generators, the constraints
-      // are no longer up-to-date and the generators are no longer
-      // minimized (but sortedness of generators is preserved!).
-      clear_generators_up_to_date();
-      clear_constraints_minimized();
+      // Generators are no longer minimized
+      // (but their sortedness is preserved).
+      clear_generators_minimized();
+      // Constraints are no longer up-to-date.
+      clear_constraints_up_to_date();
     }
   }
 }
