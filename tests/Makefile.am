@@ -93,7 +93,7 @@ ORIGINAL_TESTS = \
 	empty1 \
 	exceptions1 exceptions2  exceptions3 \
 	expanddim1 expanddim2 \
-	folddims1 \
+	folddims1 \ folddims2 \
 	generalizedaffineimage1 generalizedaffineimage2 \
 	generalizedaffineimage3 generalizedaffineimage4 \
 	generalizedaffineimage5 generalizedaffineimage6 \
@@ -400,6 +400,7 @@ expanddim1_SOURCES = expanddim1.cc
 expanddim2_SOURCES = expanddim2.cc
 
 folddims1_SOURCES = folddims1.cc
+folddims2_SOURCES = folddims2.cc
 
 generalizedaffineimage1_SOURCES = generalizedaffineimage1.cc
 generalizedaffineimage2_SOURCES = generalizedaffineimage2.cc
