@@ -292,68 +292,13 @@ static mpq_t tmp2_q;
 static ppl_Coefficient_t ppl_coeff;
 static LPX* lp;
 
-static void
-print_variable(FILE* f, ppl_dimension_type var) {
+static const char*
+variable_output_function(ppl_dimension_type var) {
   const char* name = lpx_get_col_name(lp, var+1);
   if (name != NULL)
-    fprintf(f, "%s", name);
+    return name;
   else
-    fprintf(f, "_");
-}
-
-static void
-print_constraint(FILE* f, ppl_const_Constraint_t c) {
-  int dimension = ppl_Constraint_space_dimension(c);
-  int var;
-  int first = 1;
-  for (var = 0; var < dimension; ++var) {
-    ppl_Constraint_coefficient(c, var, ppl_coeff);
-    ppl_Coefficient_to_mpz_t(ppl_coeff, tmp_z);
-    if (mpz_sgn(tmp_z) != 0) {
-      if (!first) {
-	if (mpz_sgn(tmp_z) > 0)
-	  fputc('+', f);
-	else {
-	  fputc('-', f);
-	  mpz_neg(tmp_z, tmp_z);
-	}
-      }
-      else
-	first = 0;
-      if (mpz_cmp_si(tmp_z, -1) == 0)
-	  fputc('-', f);
-      else if (mpz_cmp_si(tmp_z, 1) != 0) {
-	mpz_out_str(f, 10, tmp_z);
-	fputc('*', f);
-      }
-      print_variable(f, var);
-    }
-  }
-  if (first)
-    fputc('0', f);
-  switch (ppl_Constraint_type(c)) {
-  case PPL_CONSTRAINT_TYPE_EQUAL:
-    fprintf(f, " = ");
-    break;
-  case PPL_CONSTRAINT_TYPE_GREATER_THAN_OR_EQUAL:
-    fprintf(f, " >= ");
-    break;
-  case PPL_CONSTRAINT_TYPE_GREATER_THAN:
-    fprintf(f, " > ");
-    break;
-  case PPL_CONSTRAINT_TYPE_LESS_THAN_OR_EQUAL:
-    fprintf(f, " <= ");
-    break;
-  case PPL_CONSTRAINT_TYPE_LESS_THAN:
-    fprintf(f, " < ");
-    break;
-  }
-  ppl_Constraint_inhomogeneous_term(c, ppl_coeff);
-  ppl_Coefficient_to_mpz_t(ppl_coeff, tmp_z);
-  mpz_neg(tmp_z, tmp_z);
-  mpz_out_str(f, 10, tmp_z);
-
-  fflush(f);
+    return 0;
 }
 
 static void
@@ -374,7 +319,7 @@ add_constraints(ppl_LinExpression_t ppl_le,
     ppl_new_Constraint(&ppl_c, ppl_le,
 		       PPL_CONSTRAINT_TYPE_GREATER_THAN_OR_EQUAL);
     if (verbose) {
-      print_constraint(output_file, ppl_c);
+      ppl_io_fprint_Constraint(output_file, ppl_c);
       fprintf(output_file, "\n");
     }
     ppl_ConSys_insert_Constraint(ppl_cs, ppl_c);
@@ -389,7 +334,7 @@ add_constraints(ppl_LinExpression_t ppl_le,
     ppl_new_Constraint(&ppl_c, ppl_le,
 		       PPL_CONSTRAINT_TYPE_LESS_THAN_OR_EQUAL);
     if (verbose) {
-      print_constraint(output_file, ppl_c);
+      ppl_io_fprint_Constraint(output_file, ppl_c);
       fprintf(output_file, "\n");
     }
     ppl_ConSys_insert_Constraint(ppl_cs, ppl_c);
@@ -406,7 +351,7 @@ add_constraints(ppl_LinExpression_t ppl_le,
     ppl_new_Constraint(&ppl_c, ppl_le,
 		       PPL_CONSTRAINT_TYPE_GREATER_THAN_OR_EQUAL);
     if (verbose) {
-      print_constraint(output_file, ppl_c);
+      ppl_io_fprint_Constraint(output_file, ppl_c);
       fprintf(output_file, "\n");
     }
     ppl_ConSys_insert_Constraint(ppl_cs, ppl_c);
@@ -420,7 +365,7 @@ add_constraints(ppl_LinExpression_t ppl_le,
 		       PPL_CONSTRAINT_TYPE_LESS_THAN_OR_EQUAL);
     ppl_delete_LinExpression(ppl_le2);
     if (verbose) {
-      print_constraint(output_file, ppl_c);
+      ppl_io_fprint_Constraint(output_file, ppl_c);
       fprintf(output_file, "\n");
     }
     ppl_ConSys_insert_Constraint(ppl_cs, ppl_c);
@@ -435,7 +380,7 @@ add_constraints(ppl_LinExpression_t ppl_le,
     ppl_new_Constraint(&ppl_c, ppl_le,
 		       PPL_CONSTRAINT_TYPE_EQUAL);
     if (verbose) {
-      print_constraint(output_file, ppl_c);
+      ppl_io_fprint_Constraint(output_file, ppl_c);
       fprintf(output_file, "\n");
     }
     ppl_ConSys_insert_Constraint(ppl_cs, ppl_c);
@@ -641,7 +586,7 @@ solve(char* file_name) {
 	}
 	mpz_out_str(output_file, 10, tmp_z);
 	fprintf(output_file, "*");
-	print_variable(output_file, i-1);
+	ppl_io_fprint_variable(output_file, i-1);
       }
     ppl_assign_Coefficient_from_mpz_t(ppl_coeff, tmp_z);
     ppl_LinExpression_add_to_coefficient(ppl_objective_le, i-1, ppl_coeff);
@@ -721,7 +666,7 @@ solve(char* file_name) {
     mpz_set(mpq_denref(tmp1_q), tmp_z);
     ppl_Generator_coefficient(ppl_const_g, i, ppl_coeff);
     ppl_Coefficient_to_mpz_t(ppl_coeff, mpq_numref(tmp1_q));
-    print_variable(output_file, i);
+    ppl_io_fprint_variable(output_file, i);
     fprintf(output_file, " = %g\n", mpq_get_d(tmp1_q));
   }
 
@@ -747,6 +692,9 @@ main(int argc, char* argv[]) {
   if (strcmp(ppl_source_version, ppl_version()) != 0)
     fatal("was compiled with PPL version %s, but linked with version %s",
 	  ppl_source_version, ppl_version());
+
+  if (ppl_io_set_variable_output_function(variable_output_function) < 0)
+    fatal("cannot install the custom variable output function");
 
   /* Process command line options */
   process_options(argc, argv);
