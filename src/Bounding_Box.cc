@@ -23,6 +23,9 @@ site: http://www.cs.unipr.it/ppl/ . */
 
 #include <config.h>
 #include "Bounding_Box.defs.hh"
+#include "Variable.defs.hh"
+#include "Constraint.defs.hh"
+#include "Constraint_System.inlines.hh"
 #include <iostream>
 
 namespace PPL = Parma_Polyhedra_Library;
@@ -96,6 +99,42 @@ PPL::Bounding_Box::CC76_widening_assign(const Bounding_Box& y) {
 		       stop_points,
 		       stop_points
 		       + sizeof(stop_points)/sizeof(stop_points[0]));
+}
+
+PPL::Constraint_System
+PPL::Bounding_Box::constraints() const {
+  Constraint_System cs;
+  dimension_type space_dim = space_dimension();
+  if (space_dim == 0) {
+    if (is_empty())
+      cs = Constraint_System::zero_dim_empty();
+  }
+  else if (is_empty())
+    cs.insert(0*Variable(space_dim-1) <= -1);
+  else {
+    // KLUDGE: in the future `cs' will be constructed of the right dimension.
+    // For the time being, we force the dimension with the following line.
+    cs.insert(0*Variable(space_dim-1) <= 0);
+
+    for (dimension_type k = 0; k < space_dim; ++k) {
+      bool closed = false;
+      PPL::Coefficient n;
+      PPL::Coefficient d;
+      if (get_lower_bound(k, closed, n, d)) {
+	if (closed)
+	  cs.insert(d*Variable(k) >= n);
+	else
+	  cs.insert(d*Variable(k) > n);
+      }
+      if (get_upper_bound(k, closed, n, d)) {
+	if (closed)
+	  cs.insert(d*Variable(k) <= n);
+	else
+	  cs.insert(d*Variable(k) < n);
+      }
+    }
+  }
+  return cs;
 }
 
 /*! \relates Parma_Polyhedra_Library::Bounding_Box */

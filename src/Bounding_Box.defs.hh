@@ -28,6 +28,7 @@ site: http://www.cs.unipr.it/ppl/ . */
 #include "globals.defs.hh"
 #include "Coefficient.defs.hh"
 #include "Interval.defs.hh"
+#include "Constraint_System.defs.hh"
 #include <vector>
 #include <iosfwd>
 
@@ -137,6 +138,9 @@ public:
   void lower_upper_bound(dimension_type k, bool closed,
 			 Coefficient_traits::const_reference n,
 			 Coefficient_traits::const_reference d);
+
+  //! Returns a system of constraints corresponding to \p *this.
+  Constraint_System constraints() const;
 
   //! \brief
   //! Assigns to \p *this the result of computing the 
