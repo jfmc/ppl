@@ -55,7 +55,15 @@ To be written.
 
 To be written.
 
-<H4><CODE>ppl_remove_dimensions(+Polyhedron, +List)</CODE></H4>
+<H4><CODE>ppl_insert_constraints(+Polyhedron, +List_of_Constraints)</CODE></H4>
+
+To be written.
+
+<H4><CODE>ppl_insert_generators(+Polyhedron, +List_of_Generator)</CODE></H4>
+
+To be written.
+
+<H4><CODE>ppl_remove_dimensions(+Polyhedron, +List_of_PPL_Vars)</CODE></H4>
 
 To be written.
 
@@ -71,11 +79,11 @@ To be written.
 
 To be written.
 
-<H4><CODE>ppl_get_constraints(+Polyhedron, -List)</CODE></H4>
+<H4><CODE>ppl_get_constraints(+Polyhedron, -List_of_Constraints)</CODE></H4>
 
 To be written.
 
-<H4><CODE>ppl_get_generators(+Polyhedron, -List)</CODE></H4>
+<H4><CODE>ppl_get_generators(+Polyhedron, -List_of_Generators)</CODE></H4>
 
 To be written.
 

@@ -69,3 +69,13 @@ foreign(ppl_widening_assign,
 
 ppl_check_empty(Polyhedron) :-
   ppl_check_empty(Polyhedron, 1).
+
+ppl_insert_constraints(_Polyhedron, []).
+ppl_insert_constraints(Polyhedron, [C|Constraints]) :-
+  ppl_insert_constraint(Polyhedron, C),
+  ppl_insert_constraints(Polyhedron, Constraints).
+
+ppl_insert_generators(_Polyhedron, []).
+ppl_insert_generators(Polyhedron, [G|Generators]) :-
+  ppl_insert_generator(Polyhedron, G),
+  ppl_insert_generators(Polyhedron, Generators).
