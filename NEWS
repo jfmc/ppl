@@ -103,6 +103,10 @@ o  Fixed a bug in the C interface function
 
 o  Fixed a bug in the `ppl_lpsol' demo.
 
+o  Fixed a bug in Polyhedron::is_universe() that could manifest itself
+   when the polyhedron is described by a generator system which is
+   not in minimal form.
+
 
 --------------------------------------------------------------------------
 NEWS for version 0.6.1  (released on August 20, 2004)
