@@ -22,6 +22,7 @@
 # site: http://www.cs.unipr.it/ppl/ .
 
 srcdir = @srcdir@
+abs_srcdir = @abs_srcdir@
 VPATH = @srcdir@
 
 @SET_MAKE@
@@ -35,34 +36,48 @@ $(srcdir)/ppl_ocaml_c_wrap.c
 
 $(SWIG_GENERATED_FILES): .swig_ppl_ocaml_c
 
-.swig_ppl_ocaml_c: ppl_ocaml_c.swg
+.swig_ppl_ocaml_c: ppl_ocaml_c.swg $(top_srcdir)/interfaces/C
 	$(SWIG) -ocaml -I$(top_srcdir)/interfaces/C $<
 	@touch $@
 
 SWIG_SUPPORT_FILES = \
-swig.mli \
-swig.ml
+$(srcdir)/swig.mli \
+$(srcdir)/swig.ml
 
 $(SWIG_SUPPORT_FILES):
-	ocamlc -co $@
+	$(SWIG) -ocaml -o $@ -co `basename $@`
 
-%.cmi: %.mli
-	ocamlc -c $< -o $(top_builddir)/interfaces/OCaml/$@
+%.cmi: $(srcdir)/%.mli
+	if [ $(abs_srcdir) != `pwd` ]; then \
+	  cp -f $< . ; \
+	fi
+	ocamlc -c `basename $<`
+	if [ $(abs_srcdir) != `pwd` ]; then \
+	  rm -f `basename $<`; \
+	fi
 
-%.cmo: %.ml
-	ocamlc -c $< -o $(top_builddir)/interfaces/OCaml/$@
+%.cmo: $(srcdir)/%.ml
+	if [ $(abs_srcdir) != `pwd` ]; then \
+	  cp -f $< . ; \
+	fi
+	ocamlc -c `basename $<`
+	if [ $(abs_srcdir) != `pwd` ]; then \
+	  rm -f `basename $<`; \
+	fi
 
 
 nodist_PROGRAM = test
 
-test:	swig.cmi swig.cmo
-	ocamlc -g -c -ccopt -g -ccopt "" $(srcdir)/test.ml
+test:	test.cmo swig.cmi swig.cmo ppl_ocaml_c.cmi ppl_ocaml_c.cmo libppl_ocaml_c.la
+	ocamlc -custom -g -ccopt -g swig.cmo ppl_ocaml_c.cmo  test.cmo -cclib -lppl -cclib -lppl_c -cclib -lgmpxx -cclib -lgmp -cclib .libs/libppl_ocaml_c.a
 
-dist-hook: $(SWIG_GENERATED_FILES)
+dist-hook: $(SWIG_GENERATED_FILES) $(SWIG_SUPPORT_FILES)
 
 EXTRA_DIST= \
+gmp.h \
 ppl_ocaml_c.swg \
-$(SWIG_GENERATED_FILES)
+$(SWIG_GENERATED_FILES) \
+$(SWIG_SUPPORT_FILES)
 
 # Libtool -version-info for libppl_ocaml_c.la.
 #
@@ -107,10 +122,17 @@ libppl_ocaml_c_la_LDFLAGS = \
 #mostlyclean-local:
 #	rm -rf $(ALL_TARGETS) $(LATEX_DIRS) *.aux *.log
 
-CLEANFILES = .swig_ppl_ocaml_c $(SWIG_GENERATED_FILES)
+CLEANFILES = \
+.swig_ppl_ocaml_c \
+swig.cmi \
+swig.cmo \
+ppl_ocaml_c.cmi \
+ppl_ocaml_c.cmo
 
 else # !HAVE_SWIG
 
-EXTRA_DIST = ppl_ocaml_c.swg
+EXTRA_DIST = \
+gmp.h \
+ppl_ocaml_c.swg
 
 endif
