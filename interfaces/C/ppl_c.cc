@@ -130,6 +130,15 @@ namespace {
 
 extern "C" const char*
 c_variable_default_output_function(ppl_dimension_type var) {
+#if SIZEOF_SIZE_T == SIZEOF_UNSIGNED
+# define FORMAT "%u"
+#elif SIZEOF_SIZE_T == SIZEOF_UNSIGNED_LONG
+# define FORMAT "%ul"
+#elif SIZEOF_SIZE_T == SIZEOF_UNSIGNED_LONG_LONG
+# define FORMAT "%ull"
+#else
+# error "Unsupported definition for `size_t'."
+#endif
   // On a 64-bits architecture, `var' will not be more than 2^64-1,
   // (2^64-1)/26 is written with 18 decimal digits, plus one letter,
   // plus one terminator makes 20.
