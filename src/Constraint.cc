@@ -175,17 +175,18 @@ PPL::operator<<(std::ostream& s, const Constraint& c) {
   }
   if (first)
     s << "0";
+  const char* relation_symbol = 0;
   switch (c.type()) {
   case Constraint::EQUALITY:
-    s << " = ";
+    relation_symbol = " = ";
     break;
   case Constraint::NONSTRICT_INEQUALITY:
-    s << " >= ";
+    relation_symbol = " >= ";
     break;
   case Constraint::STRICT_INEQUALITY:
-    s << " > ";
+    relation_symbol = " > ";
     break;
   }
-  s << -c[0];
+  s << relation_symbol << -c[0];
   return s;
 }
