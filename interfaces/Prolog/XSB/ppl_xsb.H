@@ -13,6 +13,7 @@
 	ppl_new_Polyhedron_from_bounding_box/3,
 	ppl_delete_Polyhedron/1,
 	ppl_Polyhedron_space_dimension/2,
+	ppl_Polyhedron_swap/2,
 	ppl_Polyhedron_intersection_assign/2,
 	ppl_Polyhedron_intersection_assign_and_minimize/2,
 	ppl_Polyhedron_concatenate_assign/2,

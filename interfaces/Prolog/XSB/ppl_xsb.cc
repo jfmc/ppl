@@ -388,6 +388,7 @@ Integer_to_integer_term(const PPL::Integer& n) {
 #define ppl_new_Polyhedron_from_bounding_box xsb_stub_ppl_new_Polyhedron_from_bounding_box
 #define ppl_delete_Polyhedron xsb_stub_ppl_delete_Polyhedron
 #define ppl_Polyhedron_space_dimension xsb_stub_ppl_Polyhedron_space_dimension
+#define ppl_Polyhedron_swap xsb_stub_ppl_Polyhedron_swap
 #define ppl_Polyhedron_intersection_assign xsb_stub_ppl_Polyhedron_intersection_assign
 #define ppl_Polyhedron_intersection_assign_and_minimize xsb_stub_ppl_Polyhedron_intersection_assign_and_minimize
 #define ppl_Polyhedron_concatenate_assign xsb_stub_ppl_Polyhedron_concatenate_assign
@@ -449,6 +450,7 @@ Integer_to_integer_term(const PPL::Integer& n) {
 #undef ppl_new_Polyhedron_from_bounding_box
 #undef ppl_delete_Polyhedron
 #undef ppl_Polyhedron_space_dimension
+#undef ppl_Polyhedron_swap
 #undef ppl_Polyhedron_intersection_assign
 #undef ppl_Polyhedron_intersection_assign_and_minimize
 #undef ppl_Polyhedron_concatenate_assign
@@ -548,6 +550,7 @@ XSB_ENTRY_3(ppl_new_Polyhedron_from_generators)
 XSB_ENTRY_3(ppl_new_Polyhedron_from_bounding_box)
 XSB_ENTRY_1(ppl_delete_Polyhedron)
 XSB_ENTRY_2(ppl_Polyhedron_space_dimension)
+XSB_ENTRY_2(ppl_Polyhedron_swap)
 XSB_ENTRY_2(ppl_Polyhedron_intersection_assign)
 XSB_ENTRY_2(ppl_Polyhedron_intersection_assign_and_minimize)
 XSB_ENTRY_2(ppl_Polyhedron_concatenate_assign)

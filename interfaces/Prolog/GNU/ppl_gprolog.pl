@@ -35,6 +35,7 @@ site: http://www.cs.unipr.it/ppl/ . */
 :- foreign(ppl_new_Polyhedron_from_bounding_box(+term, +term, +term)).
 :- foreign(ppl_delete_Polyhedron(+term)).
 :- foreign(ppl_Polyhedron_space_dimension(+term, +term)).
+:- foreign(ppl_Polyhedron_swap(+term, +term)).
 :- foreign(ppl_Polyhedron_intersection_assign(+term, +term)).
 :- foreign(ppl_Polyhedron_intersection_assign_and_minimize(+term, +term)).
 :- foreign(ppl_Polyhedron_concatenate_assign(+term, +term)).
