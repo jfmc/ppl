@@ -266,6 +266,9 @@ PPL::Polyhedron::constraints() const {
     update_constraints();
 
   // We insist in returning a sorted system of constraints.
+  // this is needed so that the const_iterator on ConSys
+  // could correctly filter out the matched non-strict inequalities
+  // in the case of an NNC polyhedron. 
   obtain_sorted_constraints();
   return con_sys;
 }
@@ -276,6 +279,9 @@ PPL::Polyhedron::minimized_constraints() const {
     minimize();
   else
     strongly_minimize_constraints();
+  // Note: calling constraints() also ensure sortedness,
+  // which is required to correctly filter the output
+  // of an NNC constraint system.
   return constraints();
 }
 
@@ -298,10 +304,7 @@ PPL::Polyhedron::generators() const {
     return gen_sys;
   }
 
-  // We insist in returning a sorted system of generators:
-  // this is needed so that the const_iterator on GenSys
-  // could correctly filter out the matched closure points
-  // in the case of a NNC polyhedron. 
+  // We insist in returning a sorted system of generators.
   obtain_sorted_generators();
   return gen_sys;
 }
@@ -312,9 +315,6 @@ PPL::Polyhedron::minimized_generators() const {
     minimize();
   else
     strongly_minimize_generators();
-  // Note: calling generators() also ensure sortedness,
-  // which is required to correctly filter the output
-  // of an NNC generator system.
   return generators();
 }
 
@@ -371,6 +371,10 @@ PPL::Polyhedron::Polyhedron(Topology topol, ConSys& cs)
   if (cs.num_rows() > 0 && cs_space_dim > 0) {
     // Stealing the rows from `cs'.
     std::swap(con_sys, cs);
+    if (topol == NOT_NECESSARILY_CLOSED)
+      // For each strict inequality we must also have
+      // the corresponding non-strict inequality.
+      con_sys.add_corresponding_nonstrict_inequalities();
     add_low_level_constraints(con_sys);
     set_constraints_up_to_date();
     // Set the space dimension.
@@ -417,9 +421,9 @@ PPL::Polyhedron::Polyhedron(Topology topol, GenSys& gs)
     // Stealing the rows from `gs'.
     std::swap(gen_sys, gs);
     // In a generator system describing a NNC polyhedron,
-    // for each point we must also have the corresponding closure point.
+    // we must have the minus_epsilon_ray.
     if (topol == NOT_NECESSARILY_CLOSED)
-      gen_sys.add_corresponding_closure_points();
+      gen_sys.insert(zero_dim_minus_epsilon_ray());
     set_generators_up_to_date();
     // Set the space dimension.
     space_dim = gs_space_dim;
@@ -1172,7 +1176,7 @@ PPL::operator<=(const Polyhedron& x, const Polyhedron& y) {
 	    return false;
     }
   else {
-    // Here we have a NON-necessarily closed polyhedron: using the
+    // Here we have a NOT necessarily closed polyhedron: using the
     // reduced scalar product, which ignores the epsilon coefficient.
     size_t eps_index = x_space_dim + 1;
     for (size_t i = cs.num_rows(); i-- > 0; ) {
@@ -1947,11 +1951,27 @@ PPL::Polyhedron::add_constraint(const Constraint& c) {
   if (!constraints_are_up_to_date())
     update_constraints();
 
-  // Here we know that the system of constraints has at least a row.
-  if (c.is_necessarily_closed() || !is_necessarily_closed())
-    // Since `con_sys' is not empty, the topology and space dimension
-    // of the inserted constraint are automatically adjusted.
+  // Here we know that the system of constraints has at least a row,
+  // so that the space dimension of the inserted constraint
+  // is automatically adjusted.
+  if (c.is_necessarily_closed())
+    // Topology automatically adjusted.
     con_sys.insert(c);
+  else if (!is_necessarily_closed()) {
+    // Topology automatically adjusted.
+    con_sys.insert(c);
+    if (c.is_strict_inequality()) {
+      // In the NNC topology, each strict inequality has to be
+      // matched by a corresponding non-strict inequality:
+      // turn the just inserted strict inequality into the corresponding
+      // (normalized) non-strict inequality.
+      Constraint& nonstrict = con_sys[con_sys.num_rows() - 1];
+      nonstrict[space_dim + 1] = 0;
+      nonstrict.normalize();
+      // Re-insert the strict inequality (which is already normalized).
+      con_sys.insert(c);
+    }
+  }
   else {
     // Note: here we have a _legal_ topology mismatch, because
     // `c' is NOT a strict inequality.
@@ -2000,22 +2020,11 @@ PPL::Polyhedron::add_generator(const Generator& g) {
   }
 
   if (generators_are_up_to_date() || !check_empty()) {
-    if (g.is_necessarily_closed() || !is_necessarily_closed()) {
-      // Since `gen_sys' is not empty, the topology and space dimension
-      // of the inserted generator are automatically adjusted.
+    // Since `gen_sys' is not empty, the space dimension
+    // of the inserted generator is automatically adjusted.
+    if (g.is_necessarily_closed() || !is_necessarily_closed())
+      // Topology automatically adjusted.
       gen_sys.insert(g);
-      if (!is_necessarily_closed() && g.is_point()) {
-	// In the NNC topology, each point has to be matched by
-	// a corresponding closure point:
-	// turn the just inserted point into the corresponding
-	// (normalized) closure point.
-	Generator& cp = gen_sys[gen_sys.num_rows() - 1];
-	cp[space_dim + 1] = 0;
-	cp.normalize();
-	// Re-insert the point (which is already normalized).
-	gen_sys.insert(g);
-      }
-    }
     else {
       assert(!g.is_closure_point());
       // Note: here we have a _legal_ topology mismatch, because
@@ -2054,40 +2063,18 @@ PPL::Polyhedron::add_generator(const Generator& g) {
       // Since `gen_sys' was empty, after inserting `g' we have to resize
       // the system of generators to have the right dimension.
       gen_sys.adjust_topology_and_dimension(topology(), space_dim);
-      if (!is_necessarily_closed()) {
-	// In the NNC topology, each point has to be matched by
-	// a corresponding closure point:
-	// turn the just inserted point into the corresponding
-	// (normalized) closure point.
-	Generator& cp = gen_sys[gen_sys.num_rows() - 1];
-	cp[space_dim + 1] = 0;
-	cp.normalize();
-	// Re-insert the point (which is already normalized).
-	gen_sys.insert(g);
-      }
+      if (!is_necessarily_closed())
+	// In the NNC topology, we have to add the epsilon-ray.
+	gen_sys.insert(Generator::zero_dim_minus_epsilon_ray());
     }
     else {
-      assert(!g.is_closure_point());
-      // Note: here we have a _legal_ topology mismatch, because
-      // `g' is NOT a closure point.
+      // Note: here we have a _legal_ topology mismatch,
+      // because `g' is NOT a closure point (it is a point!)
       // However, by barely invoking `gen_sys.insert(g)' we would
       // cause a change in the topology of `gen_sys', which is wrong.
       // Thus, we insert a "topology corrected" copy of `g'.
       LinExpression nc_expr = LinExpression(g);
-      switch (g.type()) {
-      case Generator::LINE:
-	gen_sys.insert(Generator::line(nc_expr));
-	break;
-      case Generator::RAY:
-	gen_sys.insert(Generator::ray(nc_expr));
-	break;
-      case Generator::POINT:
-	gen_sys.insert(Generator::point(nc_expr, g.divisor()));
-	break;
-      default:
-	throw std::runtime_error("PPL::C_Polyhedron::add_generator"
-				 "(const Generator& g)");
-      }
+      gen_sys.insert(Generator::point(nc_expr, g.divisor()));
       // Since `gen_sys' was empty, after inserting `g' we have to resize
       // the system of generators to have the right dimension.
       gen_sys.adjust_topology_and_dimension(topology(), space_dim);
@@ -2144,6 +2131,10 @@ PPL::Polyhedron::add_constraints(ConSys& cs) {
   // Adjust `cs' to the right topology and space dimension.
   // NOTE: we already checked for topology compatibility.
   cs.adjust_topology_and_dimension(topology(), space_dim);
+  // For NNC polyhedra, each strict inequality must be matched by
+  // the corresponding non-strict inequality.
+  if (!is_necessarily_closed())
+    cs.add_corresponding_nonstrict_inequalities();
 
 #ifdef BE_LAZY
   // Here we do not require `con_sys' to be sorted.
@@ -2195,6 +2186,12 @@ PPL::Polyhedron::add_constraints(ConSys& cs) {
 }
 
 
+// NOTE: I am not modifying this procedure to add the nonstrict inequalities
+//       corresponding to strict ones. This would be required, but this
+//       procedure is typically used with cs coming from a polyehdron,
+//       so that the corresponding non-strict inequalities are already there.
+//       Maybe, we should replace this procedure by something like
+//       Polyhedron::add_dimensions_and_constraints(Polyhedron& ph). 
 void
 PPL::Polyhedron::add_dimensions_and_constraints(ConSys& cs) {
   size_t added_columns = cs.space_dimension();
@@ -2287,7 +2284,7 @@ PPL::Polyhedron::add_generators_and_minimize(GenSys& gs) {
   }
 
   // Adding valid generators to a zero-dim polyhedron
-  // transform it in the zero-dim universe polyhedron.
+  // transforms it in the zero-dim universe polyhedron.
   if (space_dim == 0) {
     if (is_empty() && !gs.has_points())
       throw_invalid_generators("add_generators_and_min(gs)");
@@ -2301,15 +2298,12 @@ PPL::Polyhedron::add_generators_and_minimize(GenSys& gs) {
   // also, we do NOT adjust dimensions now, so that we will
   // spend less time to sort rows.
   gs.adjust_topology_and_dimension(topology(), gs_space_dim);
-
-  // For NNC polyhedra, each point must be matched by
-  // the corresponding closure point.
+  // For NNC polyhedra, we have to add the minus_epsilon_ray.
   if (!is_necessarily_closed())
-    gs.add_corresponding_closure_points();
-
+    gs.insert(Generator::zero_dim_minus_epsilon_ray());
+  // Sorting.
   if (!gs.is_sorted())
     gs.sort_rows();
-
   // Now adjusting dimensions (topology already adjusted).
   // NOTE: sortedness is preserved.
   gs.adjust_topology_and_dimension(topology(), space_dim);
@@ -2375,7 +2369,7 @@ PPL::Polyhedron::add_generators(GenSys& gs) {
   // For NNC polyhedra, each point must be matched by
   // the corresponding closure point.
   if (!is_necessarily_closed())
-    gs.add_corresponding_closure_points();
+    gs.insert(Generator::zero_dim_minus_epsilon_ray());
 
   // We only need that the system of generators is up-to-date.
   if (!generators_are_up_to_date() && !minimize()) {
@@ -3023,16 +3017,15 @@ PPL::Polyhedron::time_elapse_assign(const Polyhedron& y) {
   GenSys gs = y.gen_sys;
   size_t gs_num_rows = gs.num_rows();
 
-  if (!x.is_necessarily_closed())
+  if (!x.is_necessarily_closed()) {
     // `x' and `y' are NNC polyhedra.
+    size_t eps_index = space_dim + 1;
     for (size_t i = gs_num_rows; i-- > 0; )
       switch (gs[i].type()) {
       case Generator::POINT:
-	// The points of `gs' can be erased,
-	// since their role can be played by closure points.
-	--gs_num_rows;
-	std::swap(gs[i], gs[gs_num_rows]);
-	break;
+	// Transform it into (and then treat it as) a closure point.
+	gs[i][eps_index] = 0;
+	// Intentionally fall through.
       case Generator::CLOSURE_POINT:
 	{
 	  Generator& cp = gs[i];
@@ -3053,6 +3046,7 @@ PPL::Polyhedron::time_elapse_assign(const Polyhedron& y) {
 	// For rays and lines, nothing to be done.
 	break;
       }
+  }
   else
     // `x' and `y' are C polyhedra.
     for (size_t i = gs_num_rows; i-- > 0; )
@@ -3079,9 +3073,6 @@ PPL::Polyhedron::time_elapse_assign(const Polyhedron& y) {
       }
   // If it was present, erase the origin point or closure point,
   // which cannot be tranformed into a valid ray or line.
-  // For NNC polyhedra, also erase all the points of `gs',
-  // whose role can be payed by the closure points.
-  // These have been previously moved to the end of `gs'.
   gs.erase_to_end(gs_num_rows);
   
   // `gs' may now have no rows.
