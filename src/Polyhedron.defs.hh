@@ -1492,6 +1492,21 @@ public:
   template <typename PartialFunction>
   void map_dimensions(const PartialFunction& pfunc);
 
+  //! Creates \p m copies of the dimension corresponding to \p var.
+  /*!
+    \param var   The variable corresponding to the dimension
+                 to be replicated.
+    \param m     The number of replica to be created.
+    \exception std::invalid_argument thrown if var does not correspond
+                                     to a dimension of the polyhedron.
+
+    If \p *this is \f$n\f$-dimensional, with \f$n > 0\f$,
+    and \f$i < n\f$ is <CODE>var.id()</CODE>, then the \f$i\f$-th
+    dimension is \ref expand_dimension "expanded" to \p m new dimensions
+    \f$n\f$, \f$n+1\f$, \f$\dots\f$, \f$n+m-1\f$.
+  */
+  void expand_dimension(Variable var, dimension_type m);
+
   //@} // Member Functions that May Modify the Dimension of the Vector Space
 
   friend bool Parma_Polyhedra_Library::operator==(const Polyhedron& x,

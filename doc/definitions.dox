@@ -580,7 +580,8 @@ otherwise the result is \f$\cQ \in \Pset_m\f$ given by
 
 The operator <CODE>expand_dimension</CODE> provided by the library
 adds \f$m\f$ new dimensions to a polyhedron \f$\cP \in \Pset_n\f$,
-with \f$n > 0\f$, so that dimensions \f$n+1\f$, \f$\dots\f$, \f$n+m\f$
+with \f$n > 0\f$, so that dimensions
+\f$n\f$, \f$n+1\f$, \f$\dots\f$, \f$n+m-1\f$
 of the result \f$\cQ\f$ are exact copies of the \f$i\f$-th dimension
 of \f$\cP\f$.  More formally,
 \f[
@@ -591,8 +592,9 @@ of \f$\cP\f$.  More formally,
       }{
         \exists \vect{v}, \vect{w} \in \cP
           \st u_i = v_i \\
-          \qquad \mathord{} \land \forall j = n+1, \dots, n+m \itc u_j = w_i \\
-          \qquad \mathord{} \land \forall k = 1, \dots, n
+          \qquad \mathord{} \land \forall j = n, n+1, \dots, n+m-1
+                                     \itc u_j = w_i \\
+          \qquad \mathord{} \land \forall k = 0, \dots, n-1
                                      \itc k \neq i \implies u_k = v_k = w_k
       }.
 \f]
