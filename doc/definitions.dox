@@ -705,6 +705,29 @@ of \f$\cP\f$ with respect to the variable \f$x_k\f$ and the
 affine expression \f$\mathit{rhs}\f$
 (hence the name given to this operator).
 
+\anchor time_elapse
+<B>Time-Elapse Operator</B>
+
+The <EM>time-elapse</EM> operator has been defined in
+\ref HPR97 "[HPR97]".
+Actually, the time-elapse operator provided by the library
+is a slight generalization of that one,
+since it also works on NNC polyhedra.
+For any two NNC polyhedra \f$\cP, \cQ \in \Pset_n\f$,
+the time-elapse between \f$\cP\f$ and \f$\cQ\f$,
+denoted \f$ \cP \nearrow \cQ\f$,
+is the smallest NNC polyhedron containing the set
+\f[
+  \bigl\{\,
+    \vect{p} + \lambda \vect{q} \in \Rset^n
+  \bigm|
+    \vect{p} \in \cP, \vect{q} \in \cQ, \lambda \in \nonnegRset
+  \,\bigr\}.
+\f]
+Note that, if \f$\cP,\cQ \in \CPset_n\f$ are closed polyhedra,
+the above set is also a closed polyhedron.
+In contrast, when \f$\cQ\f$ is not topologically closed,
+the above set might not be an NNC polyhedron.
 
 <B>Relation-with Operators</B>
 
@@ -746,78 +769,7 @@ The polyhedron \f$\cP\f$ <EM>subsumes</EM> the generator \f$g\f$ if
 adding \f$g\f$ to any generator system representing \f$\cP\f$
 does not change \f$\cP\f$.
 
-\anchor H79_widening
-<B>Widening Operators</B>
-
-The library provides several widening operators for the domain of
-NNC polyhedra, based on two different proposals.
-The first of these, that we call <EM>H79-widening</EM>,
-mainly follows the specification provided in the PhD thesis
-of N. Halbwachs \ref Hal79 "[Hal79]", also described in
-\ref HPR97 "[HPR97]".
-There are a few differences between the H79-widening
-and the widening described in the cited paper.
-In particular, the H79-widening of an NNC polyhedron \f$\cP \in \Pset_n\f$
-using the NNC polyhedron \f$\cQ \in \Pset_n\f$:
- - allows for equalities in \f$\cP\f$ and \f$\cQ\f$
-   (the original definition is restricted to inequalities);
- - does not require \f$\cP\f$ and \f$\cQ\f$ to be topologically closed;
- - requires as a precondition that \f$\cQ \sseq \cP\f$.
-
-\anchor BHRZ03_widening
-The second widening operator, that we call <EM>BHRZ03-widening</EM>,
-is an instance of the specification provided in
-\ref BHRZ03 "[BHRZ03]".
-This operator also requires as a precondition that \f$\cQ \sseq \cP\f$
-and it is guaranteed to provide a result which is at least as precise as
-the H79-widening.
-
-\anchor Widening_with_tokens
-<B>Widening with Tokens</B>
-
-When approximating a fixpoint computation using widening operators,
-a common tactic to improve the precision of the final result is to delay
-the application of widening operators. The usual approach is to fix
-a parameter \f$k\f$ and only apply widenings starting from the
-\f$k\f$-th iteration.
-
-The library also supports an improved widening delay strategy,
-that we call <EM>widening with tokens</EM> \ref BHRZ03 "[BHRZ03]".
-A token is a sort of wildcard allowing for the replacement of the widening
-application by the exact upper bound computation: the token is used
-(and thus consumed) only when the widening would have resulted in an
-actual precision loss (as opposed to the <EM>potential</EM> precision loss
-of the classical delay strategy).
-Thus, all widening operators can be supplied with an optional argument,
-recording the number of available tokens, which is decremented when
-tokens are used. The approximated fixpoint computation will start with
-a fixed number \f$k\f$ of tokens, which will be used if and when needed.
-When there are no tokens left, the widening is always applied.
-
-\anchor time_elapse
-<B>Time-Elapse Operator</B>
-
-The <EM>time-elapse</EM> operator has been defined in
-\ref HPR97 "[HPR97]".
-Actually, the time-elapse operator provided by the library
-is a slight generalization of that one,
-since it also works on NNC polyhedra.
-For any two NNC polyhedra \f$\cP, \cQ \in \Pset_n\f$,
-the time-elapse between \f$\cP\f$ and \f$\cQ\f$,
-denoted \f$ \cP \nearrow \cQ\f$,
-is the smallest NNC polyhedron containing the set
-\f[
-  \bigl\{\,
-    \vect{p} + \lambda \vect{q} \in \Rset^n
-  \bigm|
-    \vect{p} \in \cP, \vect{q} \in \cQ, \lambda \in \nonnegRset
-  \,\bigr\}.
-\f]
-Note that, if \f$\cP,\cQ \in \CPset_n\f$ are closed polyhedra,
-the above set is also a closed polyhedron.
-In contrast, when \f$\cQ\f$ is not topologically closed,
-the above set might not be an NNC polyhedron.
-
+\anchor bounding_boxes
 <B>Intervals, boxes and bounding boxes</B>
 
 An <EM>interval</EM> in \f$\Rset\f$ is a pair of <EM>bounds</EM>,
@@ -863,6 +815,76 @@ containing \f$\cP\f$.
 The library provides operations for computing the bounding box
 of an NNC polyhedron and conversely, for obtaining the NNC polyhedron
 representing a given bounding box.
+
+\anchor H79_widening
+<B>Widening Operators</B>
+
+The library provides two widening operators for the domain of NNC
+polyhedra.  The first one, that we call <EM>H79-widening</EM>, mainly
+follows the specification provided in the PhD thesis of N. Halbwachs
+\ref Hal79 "[Hal79]", also described in \ref HPR97 "[HPR97]".
+There are a few differences between the H79-widening and
+the widening described in the cited paper.
+In particular, the H79-widening of an NNC polyhedron \f$\cP \in \Pset_n\f$
+using the NNC polyhedron \f$\cQ \in \Pset_n\f$:
+ - allows for equalities in \f$\cP\f$ and \f$\cQ\f$
+   (the original definition is restricted to inequalities);
+ - does not require \f$\cP\f$ and \f$\cQ\f$ to be topologically closed;
+ - requires as a precondition that \f$\cQ \sseq \cP\f$.
+
+\anchor BHRZ03_widening
+The second widening operator, that we call <EM>BHRZ03-widening</EM>,
+is an instance of the specification provided in \ref BHRZ03 "[BHRZ03]".
+This operator also requires as a precondition that \f$\cQ \sseq \cP\f$
+and it is guaranteed to provide a result which is at least as precise as
+the H79-widening.
+
+\anchor widening_with_tokens
+<B>Widening with Tokens</B>
+
+When approximating a fixpoint computation using widening operators,
+a common tactic to improve the precision of the final result is to delay
+the application of widening operators. The usual approach is to fix
+a parameter \f$k\f$ and only apply widenings starting from the
+\f$k\f$-th iteration.
+
+The library also supports an improved widening delay strategy,
+that we call <EM>widening with tokens</EM> \ref BHRZ03 "[BHRZ03]".
+A token is a sort of wildcard allowing for the replacement of the widening
+application by the exact upper bound computation: the token is used
+(and thus consumed) only when the widening would have resulted in an
+actual precision loss (as opposed to the <EM>potential</EM> precision loss
+of the classical delay strategy).
+Thus, all widening operators can be supplied with an optional argument,
+recording the number of available tokens, which is decremented when
+tokens are used. The approximated fixpoint computation will start with
+a fixed number \f$k\f$ of tokens, which will be used if and when needed.
+When there are no tokens left, the widening is always applied.
+
+\anchor extrapolation
+<B>Extrapolation Operators</B>
+
+Besides the two widening operators, the library also implements several
+<EM>extrapolation</EM> operators, which differ from widenings in that
+their use along an upper iteration sequence does not ensure convergence
+in a finite number of steps.
+
+In particular, for each of the two widenings there is a corresponding
+<EM>limited</EM> extrapolation operator, which can be used to implement
+the <EM>widening ``up to''</EM> technique as described in
+\ref HPR97 "[HPR97]".
+Each limited extrapolation operator takes a constraint system as an
+additional parameter and uses it to improve the approximation yielded
+by the corresponding widening operator. Note that a convergence guarantee
+can only be obtained by suitably restricting the set of constraints that
+can occur in this additional parameter. For instance, in \ref HPR97 "[HPR97]"
+this set is fixed once and for all before starting the computation of
+the upward iteration sequence.
+
+The <EM>bounded</EM> extrapolation operators further enhance each one
+of the limited extrapolation operators described above, by ensuring
+that their results cannot be worse than the smallest
+\ref bounding_boxes "bounding box" enclosing the two argument polyhedra.
 
 
 \section bibliography Bibliography

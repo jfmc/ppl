@@ -650,7 +650,7 @@ public:
     \param tp          An optional pointer to an unsigned variable storing
                        the number of available tokens
 		       (to be used when applying the
-		       \ref Widening_with_tokens "widening with tokens"
+		       \ref widening_with_tokens "widening with tokens"
 		       delay technique).
     \exception std::invalid_argument thrown if \p *this and \p y
                                      are topology-incompatible
@@ -670,7 +670,7 @@ public:
     \param tp                An optional pointer to an unsigned variable
                              storing the number of available tokens
 			     (to be used when applying the
-			     \ref Widening_with_tokens "widening with tokens"
+			     \ref widening_with_tokens "widening with tokens"
 			     delay technique).
     \exception std::invalid_argument thrown if \p *this, \p y and \p cs
                                      are topology-incompatible
@@ -694,7 +694,7 @@ public:
     \param tp                An optional pointer to an unsigned variable
                              storing the number of available tokens
 			     (to be used when applying the
-			     \ref Widening_with_tokens "widening with tokens"
+			     \ref widening_with_tokens "widening with tokens"
 			     delay technique).
     \exception std::invalid_argument thrown if \p *this, \p y and \p cs
                                      are topology-incompatible
@@ -713,7 +713,7 @@ public:
     \param tp          An optional pointer to an unsigned variable storing
                        the number of available tokens (to be used when
                        applying the
-		       \ref Widening_with_tokens "widening with tokens"
+		       \ref widening_with_tokens "widening with tokens"
 		       delay technique).
     \exception std::invalid_argument thrown if \p *this and \p y
                                      are topology-incompatible
@@ -733,7 +733,7 @@ public:
     \param tp                An optional pointer to an unsigned variable
                              storing the number of available tokens
                              (to be used when applying the
-			     \ref Widening_with_tokens "widening with tokens"
+			     \ref widening_with_tokens "widening with tokens"
 			     delay technique).
     \exception std::invalid_argument thrown if \p *this, \p y and \p cs
                                      are topology-incompatible
@@ -757,7 +757,7 @@ public:
     \param tp                An optional pointer to an unsigned variable
                              storing the number of available tokens
 			     (to be used when applying the
-			     \ref Widening_with_tokens "widening with tokens"
+			     \ref widening_with_tokens "widening with tokens"
 			     delay technique).
     \exception std::invalid_argument thrown if \p *this, \p y and \p cs
                                      are topology-incompatible
