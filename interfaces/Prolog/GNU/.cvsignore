@@ -5,8 +5,10 @@
 .libs
 Makefile
 Makefile.in
+check_script3
 gp_clpq
 gp_clpq2
 obtained
 obtained2
+obtained3
 ppl_gprolog
