@@ -641,25 +641,13 @@ public:
                                      are dimension-incompatible
                                      or if \p var is not a dimension
                                      of \p *this or if \p relsym is 
-                                     a strict relation symbol
-                                     or if \p expr is in two or plus
-				     variables or if the value of 
-                                     coefficient of the single variable 
-                                     in \p expr is different from value of 
-				     \p denominator.
-
-    Note that, only the linear expressions of the form
-    \f[
-      ax_i + c
-    \f]  
-    with  \f$a \in \{0,\f$ denominator \f$ \}\f$ and \f$c\f$ belong to class T 
-    are accepted.
+                                     a strict relation symbol.
   */
-
   void generalized_affine_image(Variable var,
 				const Relation_Symbol relsym,
 				const Linear_Expression& expr,
-				const Coefficient& denominator = Coefficient_one());
+				const Coefficient& denominator
+				= Coefficient_one());
 
   //! \brief
   //! Assigns to \p *this the image of \p *this with respect to the
