@@ -196,6 +196,9 @@ public:
   //! Returns the past-the-end const_iterator.
   const_iterator end() const;
 
+  //! Checks if all the invariants are satisfied.
+  bool OK() const;
+
 private:
   friend class Parma_Polyhedra_Library::Polyhedron;
   friend bool
@@ -244,9 +247,6 @@ private:
   
   //! Returns the number of the inequality constraints.
   size_t num_inequalities() const;
-
-  //! Checks if all the invariants are satisfied.
-  bool OK() const;
 
   //! Input operator.
   void get(std::istream& s);

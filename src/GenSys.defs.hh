@@ -253,6 +253,9 @@ public:
   //! Returns the past-the-end const_iterator.
   const_iterator end() const;
 
+  //! Checks if all the invariants are satisfied.
+  bool OK() const;
+
 private:
   friend class Parma_Polyhedra_Library::Polyhedron;
   friend bool
@@ -321,9 +324,6 @@ private:
   //! Removes all the invalid lines and rays (i.e., those with all
   //! the homogeneous terms set to zero).
   void remove_invalid_lines_and_rays();
-
-  //! Checks if all the invariants are satisfied.
-  bool OK() const;
 
   //! Input operator.
   void get(std::istream& s);
