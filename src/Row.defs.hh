@@ -48,7 +48,7 @@ site: http://www.cs.unipr.it/ppl/ . */
 //! The handler of the actual Row implementation.
 /*!
   Exception-safety is the only responsibility of this class: it has
-  to ensure that its \p impl method is correctly deallocated.
+  to ensure that its \p impl member is correctly deallocated.
 */
 #endif // PPL_DOXYGEN_INCLUDE_IMPLEMENTATION_DETAILS
 class Parma_Polyhedra_Library::Row_Impl_Handler {
